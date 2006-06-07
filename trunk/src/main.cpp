@@ -22,7 +22,7 @@
 /*									     */
 /*****************************************************************************/
 
-#include "CAMainWin.h"
+#include "mainwin.h"
 #include <QApplication>
 
 // Main function
