@@ -24,7 +24,7 @@
 
 #include <QtGui/QtGui>
 
-#include "CAMainWin.h"
+#include "mainwin.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)

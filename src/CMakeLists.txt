@@ -10,13 +10,13 @@
 INCLUDE( ${QT_USE_FILE} )
 
 # Define the UI source files used by Canorus
-set(Canorus_UIs  CAMainWin.ui)
+set(Canorus_UIs  mainwin.ui)
 
 # Define the MOC source files used by Canorus
-set(Canorus_MOCs CAMainWin.h)
+set(Canorus_MOCs mainwin.h)
 
 # Add all sources to Canorus_Srcs
-set(Canorus_Srcs CAMainWin.cpp main.cpp)
+set(Canorus_Srcs mainwin.cpp main.cpp)
 
 # Add all the dependencies needed for the MainWindow
 # add_file_dependencies( CAMainWin.cpp ui_CAMainWin.h )

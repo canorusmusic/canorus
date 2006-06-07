@@ -22,7 +22,7 @@
 /*									     */
 /*****************************************************************************/
 
-#include "ui_CAMainWin.h"
+#include "ui_mainwin.h"
 
 class CAMainWin: public QMainWindow
 {
