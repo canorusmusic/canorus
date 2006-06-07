@@ -1,0 +1,49 @@
+Compiling the Canorus prototype.
+================================
+
+- You need to have a compiler and linker installed
+
+The prototype was only test-compiled with gcc-4.x but should also
+compile file with gcc-3.x. If you encouter problems with one of
+these compilers please report them to the Canorus Development ML
+or on the Canorus project page (forum/support). 
+For those on Win32 or MAC-OSX platform: You need to install the 
+corresponding GNU tools first to compile Canorus (MinGW on Win32, 
+don't know for MAC-OSX).
+
+- Make sure you have Qt4 and Qt4-devel installed
+  (the development files contain headers and qmake)
+- You need to have at least cmake 2.3.4 installed (the
+  newer the version the better at the time of this writing
+  (23 Apr 2006).
+- Configure Canorus from a command shell with the following command: "cmake ."
+
+If you get the following error:
+
+QT_QMAKE_EXECUTABLE set to qmake version: QTVERSION = **Unknown**
+QT_QMAKE_EXECUTABLE = /usr/bin/qmake, please set to path to qmake from qt4.
+Qt qmake not found!
+
+Then you have to do the following as described in the CMakeLists.txt
+project file in the main directory as well:
+
+Either remove the below line and set it to the path of
+your qmake executable or modify the FindQt4.cmake program
+and add "NO_DEFAULT_PATH" to the FIND_PROGRAM(QT_QMAKE_EXECUTABLE
+instruction as last option, so the default path are not searched
+for the qmake binary (like /usr/bin/qmake on Mandriva)
+#set(QT_QMAKE_EXECUTABLE "/usr/lib/qt4/bin/qmake")
+
+If you choose to modify FindQt4.cmake don't forget to either
+set QT4_PATHS or QTDIR to your qt installation path (I recommand 
+to do the latter, as my FindQt4.cmake version searches first in 
+QTDIR *sigh*).
+
+I hope that the NO_DEFAULT_PATH options gets added to newer cmake releases.
+
+- Compile Canorus with the following command: "cmake"
+
+Running the Canorus Prototype
+=============================
+
+simply start "canorus(.exe)"
