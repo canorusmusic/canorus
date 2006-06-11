@@ -47,3 +47,8 @@ Running the Canorus Prototype
 =============================
 
 simply start "canorus(.exe)"
+
+Settings
+========
+The settings are stored in the $HOME/.config/Canorus directory.
+(Recent file list, current menu/perspective settings, options).
