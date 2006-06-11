@@ -414,29 +414,6 @@
     <addaction name="action_Play_script" />
     <addaction name="action_Edit_script" />
    </widget>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionNew" />
-    <addaction name="actionNew_document_wizard" />
-    <addaction name="separator" />
-    <addaction name="actionOpen" />
-    <addaction name="actionOpen_Recent" />
-    <addaction name="separator" />
-    <addaction name="actionSave" />
-    <addaction name="actionSave_as" />
-    <addaction name="actionClose" />
-    <addaction name="separator" />
-    <addaction name="actionImport" />
-    <addaction name="actionExport" />
-    <addaction name="separator" />
-    <addaction name="actionDocument_properties" />
-    <addaction name="actionPrint_preview" />
-    <addaction name="actionPrint" />
-    <addaction name="separator" />
-    <addaction name="actionQuit" />
-   </widget>
    <widget class="QMenu" name="menu_Insert" >
     <property name="title" >
      <string>&amp;Insert</string>
@@ -500,6 +477,29 @@
     <addaction name="actionAbout_Canorus" />
     <addaction name="actionAbout_Qt" />
    </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionNew" />
+    <addaction name="actionNew_document_wizard" />
+    <addaction name="separator" />
+    <addaction name="actionOpen" />
+    <addaction name="actionOpen_Recent" />
+    <addaction name="separator" />
+    <addaction name="actionSave" />
+    <addaction name="actionSave_as" />
+    <addaction name="actionClose" />
+    <addaction name="separator" />
+    <addaction name="actionImport" />
+    <addaction name="actionExport" />
+    <addaction name="separator" />
+    <addaction name="actionDocument_properties" />
+    <addaction name="actionPrint_preview" />
+    <addaction name="actionPrint" />
+    <addaction name="separator" />
+    <addaction name="actionQuit" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuInsert" />
@@ -520,6 +520,9 @@
    </property>
   </action>
   <action name="actionNew" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/filenew.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;New</string>
    </property>
@@ -533,6 +536,9 @@
    </property>
   </action>
   <action name="actionOpen" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/fileopen.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Open...</string>
    </property>
@@ -541,6 +547,9 @@
    </property>
   </action>
   <action name="actionSave" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/filesave.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Save</string>
    </property>
@@ -582,6 +591,9 @@
    </property>
   </action>
   <action name="actionPrint" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/fileprint.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Print...</string>
    </property>
@@ -595,6 +607,9 @@
    </property>
   </action>
   <action name="action_Undo" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/editundo.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Undo</string>
    </property>
@@ -603,6 +618,9 @@
    </property>
   </action>
   <action name="action_Redo" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/editredo.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Redo</string>
    </property>
@@ -611,6 +629,9 @@
    </property>
   </action>
   <action name="action_Copy" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/editcopy.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Copy</string>
    </property>
@@ -619,6 +640,9 @@
    </property>
   </action>
   <action name="actionC_ut" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/editcut.png</iconset>
+   </property>
    <property name="text" >
     <string>C&amp;ut</string>
    </property>
@@ -627,6 +651,9 @@
    </property>
   </action>
   <action name="action_Paste" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/editpaste.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Paste</string>
    </property>
@@ -949,7 +976,9 @@
   </action>
  </widget>
  <pixmapfunction></pixmapfunction>
- <resources/>
+ <resources>
+  <include location="mainwin.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>actionQuit</sender>
