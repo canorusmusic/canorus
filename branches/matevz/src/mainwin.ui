@@ -315,26 +315,12 @@
         <property name="spacing" >
          <number>6</number>
         </property>
-        <item row="0" column="1" >
-         <widget class="QScrollBar" name="verticalScrollBar" >
-          <property name="orientation" >
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" >
-         <widget class="QScrollBar" name="horizontalScrollBar" >
-          <property name="orientation" >
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="0" >
-         <widget class="QFrame" name="frame" >
+         <widget class="CAScrollWidget" name="frame" >
           <property name="sizePolicy" >
            <sizepolicy>
-            <hsizetype>7</hsizetype>
-            <vsizetype>7</vsizetype>
+            <hsizetype>13</hsizetype>
+            <vsizetype>13</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -361,7 +347,7 @@
      <x>0</x>
      <y>0</y>
      <width>823</width>
-     <height>31</height>
+     <height>36</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTools" >
@@ -510,7 +496,16 @@
    <addaction name="menuTools" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>577</y>
+     <width>823</width>
+     <height>29</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolBar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
@@ -997,6 +992,15 @@
   </action>
  </widget>
  <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>CAScrollWidget</class>
+   <extends>QFrame</extends>
+   <header>scrollwidget.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="mainwin.qrc" />
  </resources>
