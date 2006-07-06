@@ -1,7 +1,5 @@
 #include "note.h"
 
-#include <iostream>
-
 CANote::CANote(int length, int x, int y) {
 	length_ = length;
 	xPos_ = x;

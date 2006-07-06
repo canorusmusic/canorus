@@ -1,7 +1,6 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QWheelEvent>
-#include <iostream>
 
 #include "scrollwidget.h"
 #include "note.h"

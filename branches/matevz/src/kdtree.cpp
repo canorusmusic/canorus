@@ -1,5 +1,4 @@
 #include "kdtree.h"
-#include <iostream>
 
 using namespace std;
 

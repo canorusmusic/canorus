@@ -1,7 +1,6 @@
 #include <QScrollBar>
 
 #include "viewport.h"
-#include <iostream>
 
 CAViewPort::CAViewPort(QWidget *p, CAKDTree *t) : QWidget(p) {
 	parent_ = p;
@@ -100,7 +99,6 @@ void CAViewPort::setWorldWidth(int w, bool force) {
 		hScrollBar_->setMaximum(scrollMax);
 	
 	zoom_ = ((float)drawableWidth() / worldW_);
-	cout << "setting world width: w=" << w << ",drawableWidth()=" << drawableWidth() << ",zoom_=" << zoom_ << endl;
 
 	checkScrollBars();
 }
@@ -185,13 +183,9 @@ void CAViewPort::setZoom(float z, int x, int y, bool force) {
 	if (zoom_ - z > 0.0)
 		zoomOut = true;
 
-	cout << "setZoom: z=" << z << ",x=" << x << ",y=" << y << endl;
-
 	//set the world width - updates the zoom level zoom_ as well
 	setWorldWidth((int)(drawableWidth() / z));
 	setWorldHeight((int)(drawableHeight() / z));
-	
-	cout << "zoom_=" << zoom_ << endl;
 	
 	if (!zoomOut) { //zoom in
 		//the new view's center coordinates will become the middle point of the current viewport center coords and the mouse pointer coords
@@ -201,8 +195,8 @@ void CAViewPort::setZoom(float z, int x, int y, bool force) {
 	} else { //zoom out
 		//the new view's center coordinates will become the middle point of the current viewport center coords and the mirrored over center pointer coords
 		//worldX_ + (worldW_/2) + (worldX_ + (worldW_/2) - x)/2
-		setCenterCoords( 1.5*worldX_ + 0.75*worldW_ - 0.5*x,
-		                 1.5*worldY_ + 0.75*worldH_ - 0.5*y,
+		setCenterCoords( (int)(1.5*worldX_ + 0.75*worldW_ - 0.5*x),
+		                 (int)(1.5*worldY_ + 0.75*worldH_ - 0.5*y),
 		                 force );
 	}
 	
@@ -216,8 +210,6 @@ void CAViewPort::paintEvent(QPaintEvent *e) {
 	QPainter p(this);
 	p.drawLine(0, 0, drawableWidth(), drawableHeight());
 	QList<CADrawable *>* l = musElements_->findInRange(worldX_, worldY_, worldW_, worldH_);
-	
-	cout << "worldX_=" << worldX_ << ",worldY_=" << worldY_ << ",worldW_=" << worldW_ << ",worldH_=" << worldH_ << endl;
 	
 	for (int i=0; i<l->size(); i++) {
 		l->at(i)->draw(&p,
