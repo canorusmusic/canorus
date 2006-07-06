@@ -20,7 +20,6 @@ void CANote::draw(QPainter *p, int x, int y, float z) {
 			QRect bBox = p->boundingRect(0,0,0,0,0,QString(0xE125));
 			int w = bBox.width(); //get width from font metrics
 			int h = (int)(0.5*w) + (int)(QUARTER_STEM_LENGTH*z);
-			std::cout << "w=" << w << ",h=" << h << std::endl;
 			QPen pen;
 			pen.setWidth((int)(1*z));
 			pen.setCapStyle(Qt::RoundCap);
