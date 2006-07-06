@@ -8,15 +8,15 @@
 using namespace std;
 
 CAScrollWidget::CAScrollWidget(QWidget *parent) : QFrame(parent) {
-	viewPort_ = new CAViewPort(this, &musElements_);
+	CAViewPort *v;
+	viewPorts_.append(v = lastUsedViewPort_ = new CAViewPort(this, &musElements_));
 	
-	connect(viewPort_, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-	connect(viewPort_, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 	
 	layout_ = new QGridLayout(this);
 	layout_->setMargin(0);
-	layout_->addWidget(viewPort_, 0, 0);
-//	layout_->addWidget(new CAViewPort(this, &musElements_), 1, 0);
+	layout_->addWidget(v, 0, 0);
 	this->setLayout(layout_);
 }
 
@@ -31,14 +31,18 @@ void CAScrollWidget::paintEvent(QPaintEvent *e) {
  * @param CAViewPort *v Pointer to the viewport where the event happened
  */
 void CAScrollWidget::viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
+	lastUsedViewPort_ = v;
+
 	if (e->modifiers()==Qt::ControlModifier) {
 		musElements_.removeElement(coords.x(), coords.y());
 	} else {
 		musElements_.addElement(new CANote(4, coords.x(), coords.y()));
 	}
 	
-	v->checkScrollBars();
-	v->repaint();	
+	for (int i=0; i<viewPorts_.size(); i++) {
+		viewPorts_.at(i)->checkScrollBars();
+		viewPorts_.at(i)->repaint();
+	}
 }
 
 /**
@@ -49,6 +53,8 @@ void CAScrollWidget::viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAVi
  * @param CAViewPort *v Pointer to the viewport where the event happened
  */
 void CAScrollWidget::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *v) {
+	lastUsedViewPort_ = v;
+
 	int val;
 	switch (e->modifiers()) {
 		case Qt::NoModifier:			//scroll horizontally
@@ -80,4 +86,25 @@ void CAScrollWidget::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPor
 }
 
 void CAScrollWidget::resizeEvent(QResizeEvent *) {
+}
+
+void CAScrollWidget::splitVertically(CAViewPort *v) {
+	if (!v) {
+		viewPorts_.append(v = lastUsedViewPort_ = new CAViewPort(this, &musElements_));
+		layout_->addWidget(v, 0, layout_->columnCount(), layout_->rowCount(), 1);
+	}
+}
+
+void CAScrollWidget::splitHorizontally(CAViewPort *v) {
+	if (!v) {
+		viewPorts_.append(v = lastUsedViewPort_ = new CAViewPort(this, &musElements_));
+		layout_->addWidget(v, layout_->rowCount(), 0, 1, layout_->columnCount());
+	}
+}
+
+void CAScrollWidget::unsplit(CAViewPort *v = 0) {
+	viewPorts_.removeAll(v?v:lastUsedViewPort_);
+	layout_->removeWidget(v?v:lastUsedViewPort_);
+
+	delete (v?v:lastUsedViewPort_);
 }

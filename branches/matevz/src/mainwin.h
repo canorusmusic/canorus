@@ -32,6 +32,10 @@ public:
   CAMainWin(QMainWindow *oParent=0);
   ~CAMainWin() {};
 
+private slots:
+	void processSplitHorizontallyEvent(bool);
+	void processSplitVerticallyEvent(bool);
+
 private:
     Ui::MainWindow oMainWin;
 };

@@ -13,6 +13,11 @@ class CAScrollWidget : public QFrame {
 	public:
 		CAScrollWidget(QWidget *);
 		void scrollToElement(CADrawable *);
+		void splitVertically(CAViewPort *v = 0);
+		void splitHorizontally(CAViewPort *v = 0);
+		void unsplit(CAViewPort *);
+		int getViewPortsRows() {return layout_->rowCount();}
+		int getViewPortsColumns() {return layout_->columnCount();}
 
 	signals:		
 		void mousePressEvent(QMouseEvent *);
@@ -32,9 +37,9 @@ class CAScrollWidget : public QFrame {
 		CAKDTree musElements_;	//list of all elements
 
 		//Widgets
-		CAViewPort *viewPort_;	//main canvas for drawing the music elements
-		bool vScrollVisible_, hScrollVisible_;	//are the vertical/horizontal scrollbars visible or not
-		QGridLayout *layout_;	//layout of the main widget, vertical scrollbar on the left and horizontal scrollbar at the bottom
+		QList<CAViewPort *> viewPorts_;	//list of all visible viewports (multiple viewports happen when you use split view etc.)
+		QGridLayout *layout_;	//layout of the viewports widgets
+		CAViewPort *lastUsedViewPort_;	//the last viewport user interacted with
 };
 #endif
 

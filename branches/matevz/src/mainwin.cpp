@@ -31,4 +31,14 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
   : QMainWindow( oParent )
 {
   oMainWin.setupUi( this );
+  
+  connect( oMainWin.actionSplit_horizontally, SIGNAL(triggered(bool)), this, SLOT(processSplitHorizontallyEvent(bool)) );
+}
+
+void CAMainWin::processSplitHorizontallyEvent(bool checked) {
+	oMainWin.frame->splitHorizontally();
+}
+
+void CAMainWin::processSplitVerticallyEvent(bool checked) {
+	oMainWin.frame->splitVertically();
 }
