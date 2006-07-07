@@ -1,5 +1,5 @@
 #include <QScrollBar>
-
+#include <iostream>
 #include "viewport.h"
 
 CAViewPort::CAViewPort(QWidget *p, CAKDTree *t) : QWidget(p) {
@@ -44,7 +44,7 @@ CAViewPort::CAViewPort(QWidget *p, CAKDTree *t) : QWidget(p) {
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
 void CAViewPort::setWorldX(int x, bool force) {
-	if (!force) {
+	if (!force || !musElements_) {
 		int maxX = musElements_->getMaxX();
 		if (x > maxX - worldW_)
 			x = maxX - worldW_;
@@ -65,7 +65,7 @@ void CAViewPort::setWorldX(int x, bool force) {
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
 void CAViewPort::setWorldY(int y, bool force) {
-	if (!force) {
+	if (!force || !musElements_) {
 		int maxY = musElements_->getMaxY();
 		if (y > maxY - worldH_)
 			y = maxY - worldH_;
@@ -95,7 +95,7 @@ void CAViewPort::setWorldWidth(int w, bool force) {
 	worldW_ = w;
 	
 	int scrollMax;
-	if (scrollMax = musElements_->getMaxX() - worldW_ > 0);
+	if ((musElements_) && (scrollMax = musElements_->getMaxX() - worldW_ > 0));
 		hScrollBar_->setMaximum(scrollMax);
 	
 	zoom_ = ((float)drawableWidth() / worldW_);
@@ -116,7 +116,7 @@ void CAViewPort::setWorldHeight(int h, bool force) {
 	worldH_ = h;
 
 	int scrollMax;
-	if (scrollMax = musElements_->getMaxY() - worldH_ > 0);
+	if ((musElements_) && (scrollMax = musElements_->getMaxY() - worldH_ > 0));
 		vScrollBar_->setMaximum(scrollMax);
 
 	zoom_ = ((float)drawableHeight() / worldH_);
@@ -206,11 +206,12 @@ void CAViewPort::setZoom(float z, int x, int y, bool force) {
 void CAViewPort::paintEvent(QPaintEvent *e) {
 	if (!musElements_ || holdRepaint_)
 		return;
-
+	
 	QPainter p(this);
 	p.drawLine(0, 0, drawableWidth(), drawableHeight());
 	QList<CADrawable *>* l = musElements_->findInRange(worldX_, worldY_, worldW_, worldH_);
-	
+	if (!l) return;
+
 	for (int i=0; i<l->size(); i++) {
 		l->at(i)->draw(&p,
 		               (int)((l->at(i)->xPos() - worldX_) * zoom_),
@@ -248,7 +249,7 @@ void CAViewPort::resizeEvent(QResizeEvent *e) {
  * This function calls repaint automatically upon virtual canvas resize event. Otherwise, it doesn't.
  */
 void CAViewPort::checkScrollBars() {
-	if (scrollBarsVisible_ != ScrollBarShowIfNeeded)
+	if ((scrollBarsVisible_ != ScrollBarShowIfNeeded) || (!musElements_))
 		return;
 
 	bool change = false;

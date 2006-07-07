@@ -2,6 +2,7 @@
 #define SCROLLWIDGET_H
 
 #include <QFrame>
+#include <QList>
 #include <QGridLayout>
 
 #include "kdtree.h"
@@ -15,7 +16,8 @@ class CAScrollWidget : public QFrame {
 		void scrollToElement(CADrawable *);
 		void splitVertically(CAViewPort *v = 0);
 		void splitHorizontally(CAViewPort *v = 0);
-		void unsplit(CAViewPort *);
+		void unsplit(CAViewPort *v = 0);
+		void newViewPort(CAViewPort *v = 0);
 		int getViewPortsRows() {return layout_->rowCount();}
 		int getViewPortsColumns() {return layout_->columnCount();}
 

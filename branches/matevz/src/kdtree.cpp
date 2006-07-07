@@ -62,11 +62,11 @@ QList<CADrawable *>* CAKDTree::findInRange(int x, int y, int w, int h) {
 	QList<CADrawable *> *l = new QList<CADrawable *>();
 
 	for (int i=0; i<list_.size(); i++) {
-		if ( (list_.at(i)->xPos() <= x+w) &&
-		     (list_.at(i)->yPos() <= y+h) &&
-		     (list_.at(i)->xPos()+list_.at(i)->width() >= x) &&
-		     (list_.at(i)->yPos()+list_.at(i)->height() >= y) )
-			*l << list_.at(i);
+		if ( (list_[i]->xPos() <= x+w) &&
+		     (list_[i]->yPos() <= y+h) &&
+		     (list_[i]->xPos()+list_[i]->width() >= x) &&
+		     (list_[i]->yPos()+list_[i]->height() >= y) )
+			*l << list_[i];
 	}
 
 	return l;	

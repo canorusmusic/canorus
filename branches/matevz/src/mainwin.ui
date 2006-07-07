@@ -493,6 +493,8 @@
     <addaction name="actionSplit_horizontally" />
     <addaction name="actionSplit_vertically" />
     <addaction name="actionUnsplit" />
+    <addaction name="separator" />
+    <addaction name="actionNew_viewport" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -1012,6 +1014,11 @@
   <action name="actionUnsplit" >
    <property name="text" >
     <string>Unsplit</string>
+   </property>
+  </action>
+  <action name="actionNew_viewport" >
+   <property name="text" >
+    <string>New viewport</string>
    </property>
   </action>
  </widget>

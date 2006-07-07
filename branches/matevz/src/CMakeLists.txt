@@ -5,6 +5,8 @@
 # created with the Qt4 designer
 # INCLUDE(AddFileDependencies)
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
+
 # This line adds the include path of the Qt
 # directory to the compiler include path
 INCLUDE( ${QT_USE_FILE} )
