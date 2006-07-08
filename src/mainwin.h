@@ -32,6 +32,13 @@ public:
   CAMainWin(QMainWindow *oParent=0);
   ~CAMainWin() {};
 
+private slots:
+	//Window menu
+	void processSplitHorizontallyEvent(bool);
+	void processSplitVerticallyEvent(bool);
+	void processUnsplitEvent(bool);
+	void processNewViewPortEvent(bool);
+
 private:
     Ui::MainWindow oMainWin;
 };

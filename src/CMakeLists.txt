@@ -5,6 +5,8 @@
 # created with the Qt4 designer
 # INCLUDE(AddFileDependencies)
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
+
 # This line adds the include path of the Qt
 # directory to the compiler include path
 INCLUDE( ${QT_USE_FILE} )
@@ -13,10 +15,16 @@ INCLUDE( ${QT_USE_FILE} )
 set(Canorus_UIs  mainwin.ui)
 
 # Define the MOC source files used by Canorus
-set(Canorus_MOCs mainwin.h)
+set(Canorus_MOCs mainwin.h scrollwidget.h viewport.h)
 
 # Add all sources to Canorus_Srcs
-set(Canorus_Srcs mainwin.cpp main.cpp)
+set(Canorus_Srcs mainwin.cpp
+	main.cpp
+	kdtree.cpp
+	drawable.cpp
+	note.cpp
+	scrollwidget.cpp
+	viewport.cpp)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
 set(Canorus_Resrcs mainwin.qrc)

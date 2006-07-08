@@ -23,7 +23,6 @@
 /*****************************************************************************/
 
 #include <QtGui/QtGui>
-
 #include "mainwin.h"
 
 // Constructor
@@ -31,4 +30,25 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
   : QMainWindow( oParent )
 {
   oMainWin.setupUi( this );
+  
+  connect( oMainWin.actionSplit_horizontally, SIGNAL(triggered(bool)), this, SLOT(processSplitHorizontallyEvent(bool)) );
+  connect( oMainWin.actionSplit_vertically, SIGNAL(triggered(bool)), this, SLOT(processSplitVerticallyEvent(bool)) );
+  connect( oMainWin.actionUnsplit, SIGNAL(triggered(bool)), this, SLOT(processUnsplitEvent(bool)) );
+  connect( oMainWin.actionNew_viewport, SIGNAL(triggered(bool)), this, SLOT(processNewViewPortEvent(bool)) );
+}
+
+void CAMainWin::processSplitHorizontallyEvent(bool checked) {
+	oMainWin.frame->splitHorizontally();
+}
+
+void CAMainWin::processSplitVerticallyEvent(bool checked) {
+	oMainWin.frame->splitVertically();
+}
+
+void CAMainWin::processUnsplitEvent(bool checked) {
+	oMainWin.frame->unsplit();
+}
+
+void CAMainWin::processNewViewPortEvent(bool checked) {
+	oMainWin.frame->newViewPort();
 }
