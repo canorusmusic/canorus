@@ -70,5 +70,8 @@ class CAViewPort : public QWidget {
 		char scrollBarsVisible_; //are the scrollbars always visible/if needed/never
 		bool allowManualScroll_; //does the scrollbars actually react on user actions - sometimes we only want the scrollbars to show the current location of the score and don't do anything
 		bool holdRepaint_;	//dirty flag to prevent multiple repainting - use when you know what you're doing!
+		bool checkScrollBarsDeadLock_;	//dirty flag to prevent recursive checkScrollBars() calls
+		bool hScrollBarDeadLock_;	//dirty flag to prevent recursive scrollbar calls when its value is manually changed
+		bool vScrollBarDeadLock_;	//dirty flag to prevent recursive scrollbar calls when its value is manually changed
 };
 #endif

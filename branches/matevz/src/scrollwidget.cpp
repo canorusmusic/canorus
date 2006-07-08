@@ -103,7 +103,6 @@ void CAScrollWidget::splitHorizontally(CAViewPort *v) {
 
 		layout_->addWidget(lastUsedViewPort_, layout_->rowCount(), 0, 1, layout_->columnCount());
 		layout_->update();
-		//layout_->addWidget(lastUsedViewPort_, 1, 0);
 	}
 }
 

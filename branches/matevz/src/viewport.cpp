@@ -8,6 +8,9 @@ CAViewPort::CAViewPort(QWidget *p, CAKDTree *t) : QWidget(p) {
 	zoom_ = 1.0;
 	musElements_ = t;
 	holdRepaint_ = false;
+	hScrollBarDeadLock_ = false;
+	vScrollBarDeadLock_ = false;
+	checkScrollBarsDeadLock_ = false;
 	
 	//setup the mouse events and forward them to CAEventName events
 	connect(this, SIGNAL(mousePressEvent(QMouseEvent *)), this, SLOT(processMousePressEvent(QMouseEvent *)));
@@ -37,14 +40,15 @@ CAViewPort::CAViewPort(QWidget *p, CAKDTree *t) : QWidget(p) {
 	layout_->addWidget(canvas_, 0, 0);
 	layout_->addWidget(vScrollBar_, 0, 1);
 	layout_->addWidget(hScrollBar_, 1, 0);
-	this->setLayout(layout_);
+	
+	oldWorldW_ = 0; oldWorldH_ = 0;
 }
 
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
 void CAViewPort::setWorldX(int x, bool force) {
-	if (!force || !musElements_) {
+	if (!force && musElements_) {
 		int maxX = musElements_->getMaxX();
 		if (x > maxX - worldW_)
 			x = maxX - worldW_;
@@ -54,9 +58,9 @@ void CAViewPort::setWorldX(int x, bool force) {
 	
 	oldWorldX_ = worldX_;
 	worldX_ = x;
-	holdRepaint_ = true;
+	hScrollBarDeadLock_ = true;
 	hScrollBar_->setValue(x);
-	holdRepaint_ = false;
+	hScrollBarDeadLock_ = false;
 
 	checkScrollBars();
 }
@@ -65,7 +69,7 @@ void CAViewPort::setWorldX(int x, bool force) {
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
 void CAViewPort::setWorldY(int y, bool force) {
-	if (!force || !musElements_) {
+	if (!force && musElements_) {
 		int maxY = musElements_->getMaxY();
 		if (y > maxY - worldH_)
 			y = maxY - worldH_;
@@ -75,9 +79,9 @@ void CAViewPort::setWorldY(int y, bool force) {
 
 	oldWorldY_ = worldY_;
 	worldY_ = y;
-	holdRepaint_ = true;
+	vScrollBarDeadLock_ = true;
 	vScrollBar_->setValue(y);
-	holdRepaint_ = false;
+	vScrollBarDeadLock_ = false;
 	
 	checkScrollBars();
 }
@@ -87,16 +91,18 @@ void CAViewPort::setWorldY(int y, bool force) {
  */
 void CAViewPort::setWorldWidth(int w, bool force) {
 	if (!force) {
-		if (w < 1)
-			w = 1;
+		if (w < 1) return;
 	}
 	
 	oldWorldW_ = worldW_;
 	worldW_ = w;
 	
 	int scrollMax;
-	if ((musElements_) && (scrollMax = musElements_->getMaxX() - worldW_ > 0));
+	if ((musElements_) && ((scrollMax = musElements_->getMaxX() - worldW_) > 0)) {
+		hScrollBarDeadLock_ = true;
 		hScrollBar_->setMaximum(scrollMax);
+		hScrollBarDeadLock_ = false;
+	}
 	
 	zoom_ = ((float)drawableWidth() / worldW_);
 
@@ -108,16 +114,18 @@ void CAViewPort::setWorldWidth(int w, bool force) {
  */
 void CAViewPort::setWorldHeight(int h, bool force) {
 	if (!force) {
-		if (h < 1)
-			h = 1;
+		if (h < 1) return;
 	}
 	
 	oldWorldH_ = worldH_;
 	worldH_ = h;
 
 	int scrollMax;
-	if ((musElements_) && (scrollMax = musElements_->getMaxY() - worldH_ > 0));
+	if ((musElements_) && ((scrollMax = musElements_->getMaxY() - worldH_) > 0)) {
+		vScrollBarDeadLock_ = true;
 		vScrollBar_->setMaximum(scrollMax);
+		vScrollBarDeadLock_ = false;
+	}
 
 	zoom_ = ((float)drawableHeight() / worldH_);
 
@@ -227,18 +235,15 @@ void CAViewPort::paintEvent(QPaintEvent *e) {
 /**
  * Called on resize event, like user resizes the main window etc.
  * The virtual canvas widget's resize event is connected to this method as well.
+ * Repaint is done automatically after resizeEvent() is finished.
  * 
  * @param QResizeEvent *e Qt resize event
  */
 void CAViewPort::resizeEvent(QResizeEvent *e) {
-	oldWorldW_ = worldW_;
-	oldWorldH_ = worldH_;
-	worldW_ = (int)(drawableWidth() / zoom_);
-	worldH_ = (int)(drawableHeight() / zoom_);
+	setWorldWidth( (int)(drawableWidth() / zoom_) );
+	setWorldHeight( (int)(drawableHeight() / zoom_) );
 	
 	checkScrollBars();
-
-	repaint();
 }
 
 /**
@@ -246,43 +251,44 @@ void CAViewPort::resizeEvent(QResizeEvent *e) {
  * If scrollBarsVisible_ is set to AlwaysVisible or AlwaysHidden, this method does nothing.
  * If set to ShowIfNeeded, check if the whole world scene can get rendered to the widget and
  * then show the scrollbars, if can't and hide them, if the scene can be rendered.
- * This function calls repaint automatically upon virtual canvas resize event. Otherwise, it doesn't.
+ * This function doesn't call repaint automatically upon virtual canvas resize event.
  */
 void CAViewPort::checkScrollBars() {
-	if ((scrollBarsVisible_ != ScrollBarShowIfNeeded) || (!musElements_))
+	if ((scrollBarsVisible_ != ScrollBarShowIfNeeded) || (!musElements_) || (checkScrollBarsDeadLock_))
 		return;
-
+	
 	bool change = false;
-	holdRepaint_ = true;
+	holdRepaint_ = true;	//disable repaint until the scrollbar values are set
+	checkScrollBarsDeadLock_ = true;
 	if ((musElements_->getMaxX() - worldWidth() > 0) || (hScrollBar_->value()!=0)) { //if scrollbar is needed
 		if (!hScrollBar_->isVisible()) {
 			hScrollBar_->show();
-			setWorldHeight((int)(drawableHeight() / zoom_));
 			change = true;
 		}
 	} else //if the whole scene can be drawn on the canvas and the scrollbars are at position 0
 		if (hScrollBar_->isVisible()) {
 			hScrollBar_->hide();
-			setWorldHeight((int)(drawableHeight() / zoom_));
 			change = true;
 		}
 		
 	if ((musElements_->getMaxY() - worldHeight() > 0) || (vScrollBar_->value()!=0)) { //if scrollbar is needed
 		if (!vScrollBar_->isVisible()) {
 			vScrollBar_->show();
-			setWorldWidth((int)(drawableWidth() / zoom_));
 			change = true;
 		}
 	} else //if the whole scene can be drawn on the canvas and the scrollbars are at position 0
 		if (vScrollBar_->isVisible()) {
 			vScrollBar_->hide();
-			setWorldWidth((int)(drawableWidth() / zoom_));
 			change = true;
 		}
 	
+	if (change) {
+		setWorldHeight((int)(drawableHeight() / zoom_));
+		setWorldWidth((int)(drawableWidth() / zoom_));
+	}
+
 	holdRepaint_ = false;
-	if (change)
-		repaint();
+	checkScrollBarsDeadLock_ = false;
 }
 
 void CAViewPort::processMousePressEvent(QMouseEvent *e) {
@@ -317,14 +323,14 @@ void CAViewPort::setScrollBarsVisibility(char status) {
 }
 
 void CAViewPort::processHScrollBarEvent(int val) {
-	if (allowManualScroll_) {
+	if (allowManualScroll_ && !hScrollBarDeadLock_) {
 		setWorldX(val);
 		repaint();
 	}
 }
 
 void CAViewPort::processVScrollBarEvent(int val) {
-	if (allowManualScroll_) {
+	if (allowManualScroll_ && !vScrollBarDeadLock_) {
 		setWorldY(val);
 		repaint();
 	}

@@ -3,6 +3,8 @@
 using namespace std;
 
 CAKDTree::CAKDTree() {
+	maxX_ = 0;
+	maxY_ = 0;
 }
 
 /**
