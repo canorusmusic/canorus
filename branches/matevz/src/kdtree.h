@@ -33,6 +33,7 @@ class CAKDTree {
 		void addElement(CADrawable *elt);
 		bool removeElement(CADrawable *elt);
 		bool removeElement(int x, int y);
+		void clear() { list_.clear(); }
 	
 	private:
 		void calculateMaxXY();
