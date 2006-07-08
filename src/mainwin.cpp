@@ -29,12 +29,26 @@
 CAMainWin::CAMainWin(QMainWindow *oParent)
   : QMainWindow( oParent )
 {
-  oMainWin.setupUi( this );
-  
-  connect( oMainWin.actionSplit_horizontally, SIGNAL(triggered(bool)), this, SLOT(processSplitHorizontallyEvent(bool)) );
-  connect( oMainWin.actionSplit_vertically, SIGNAL(triggered(bool)), this, SLOT(processSplitVerticallyEvent(bool)) );
-  connect( oMainWin.actionUnsplit, SIGNAL(triggered(bool)), this, SLOT(processUnsplitEvent(bool)) );
-  connect( oMainWin.actionNew_viewport, SIGNAL(triggered(bool)), this, SLOT(processNewViewPortEvent(bool)) );
+	oMainWin.setupUi( this );
+	
+	//////////////////////////////////////////////////////
+	//Menu bar actions
+	//////////////////////////////////////////////////////
+	//View menu
+	connect( oMainWin.action_Fullscreen, SIGNAL(triggered(bool)), this, SLOT(processFullScreenEvent(bool)) );
+	
+	//Window
+	connect( oMainWin.actionSplit_horizontally, SIGNAL(triggered(bool)), this, SLOT(processSplitHorizontallyEvent(bool)) );
+	connect( oMainWin.actionSplit_vertically, SIGNAL(triggered(bool)), this, SLOT(processSplitVerticallyEvent(bool)) );
+	connect( oMainWin.actionUnsplit, SIGNAL(triggered(bool)), this, SLOT(processUnsplitEvent(bool)) );
+	connect( oMainWin.actionNew_viewport, SIGNAL(triggered(bool)), this, SLOT(processNewViewPortEvent(bool)) );
+}
+
+void CAMainWin::processFullScreenEvent(bool checked) {
+	if (checked)
+		this->showFullScreen();
+	else
+		this->showNormal();
 }
 
 void CAMainWin::processSplitHorizontallyEvent(bool checked) {

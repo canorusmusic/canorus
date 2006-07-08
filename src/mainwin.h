@@ -33,6 +33,12 @@ public:
   ~CAMainWin() {};
 
 private slots:
+	//////////////////////////////////////////////////////
+	//Menu bar actions
+	//////////////////////////////////////////////////////
+	//View menu
+	void processFullScreenEvent(bool);
+	
 	//Window menu
 	void processSplitHorizontallyEvent(bool);
 	void processSplitVerticallyEvent(bool);
