@@ -27,6 +27,4 @@ void CANote::draw(QPainter *p, int x, int y, float z) {
 			break;
 		
 	}
-	//p->drawLine(x + (int)(xPosOffset_ * z), y + (int)(yPosOffset_ * z),
-	//            x + (int)((xPosOffset_ + width_) * z), y + (int)((yPosOffset_ + height_) * z));
 }

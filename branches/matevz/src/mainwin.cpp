@@ -23,7 +23,6 @@
 /*****************************************************************************/
 
 #include <QtGui/QtGui>
-#include <iostream>
 #include "mainwin.h"
 
 // Constructor
