@@ -23,7 +23,10 @@
 /*****************************************************************************/
 
 #include <QtGui/QtGui>
+
 #include "mainwin.h"
+#include "sheet.h"
+#include "scrollwidget.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
@@ -33,17 +36,20 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	connectActions();
 	
 	newDocument();
-	
 }
 
 void CAMainWin::connectActions() {
 	//////////////////////////////////////////////////////
 	//Menu bar actions
 	//////////////////////////////////////////////////////
+	//File menu
+	connect( oMainWin.actionNew, SIGNAL(triggered(bool)), this, SLOT(processNewEvent(bool)) );
+	connect( oMainWin.actionNew_sheet, SIGNAL(triggered(bool)), this, SLOT(processNewSheetEvent(bool)) );
+	
 	//View menu
 	connect( oMainWin.action_Fullscreen, SIGNAL(triggered(bool)), this, SLOT(processFullScreenEvent(bool)) );
 	
-	//Window
+	//Window menu
 	connect( oMainWin.actionSplit_horizontally, SIGNAL(triggered(bool)), this, SLOT(processSplitHorizontallyEvent(bool)) );
 	connect( oMainWin.actionSplit_vertically, SIGNAL(triggered(bool)), this, SLOT(processSplitVerticallyEvent(bool)) );
 	connect( oMainWin.actionUnsplit, SIGNAL(triggered(bool)), this, SLOT(processUnsplitEvent(bool)) );
@@ -52,7 +58,21 @@ void CAMainWin::connectActions() {
 
 void CAMainWin::newDocument() {
 	_document.clear();
+	clearSheets();
 	
+	addSheet();
+}
+
+void CAMainWin::addSheet() {
+	CASheet *s = _document.addSheet();
+	oMainWin.tabWidget->addTab(new CAScrollWidget(s, 0), QString("Sheet ") + QString(_document.sheetCount()+48) );
+}
+
+void CAMainWin::clearSheets() {
+	for (int i=0; i<oMainWin.tabWidget->count(); i++) {
+		delete ((CAScrollWidget *)(oMainWin.tabWidget->currentWidget()));
+		oMainWin.tabWidget->removeTab(oMainWin.tabWidget->currentIndex());
+	}
 }
 
 void CAMainWin::processFullScreenEvent(bool checked) {
@@ -63,17 +83,25 @@ void CAMainWin::processFullScreenEvent(bool checked) {
 }
 
 void CAMainWin::processSplitHorizontallyEvent(bool checked) {
-	oMainWin.frame->splitHorizontally();
+	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->splitHorizontally();
 }
 
 void CAMainWin::processSplitVerticallyEvent(bool checked) {
-	oMainWin.frame->splitVertically();
+	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->splitVertically();
 }
 
 void CAMainWin::processUnsplitEvent(bool checked) {
-	oMainWin.frame->unsplit();
+	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->unsplit();
 }
 
 void CAMainWin::processNewViewPortEvent(bool checked) {
-	oMainWin.frame->newViewPort();
+	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->newViewPort();
+}
+
+void CAMainWin::processNewEvent(bool checked) {
+	newDocument();
+}
+
+void CAMainWin::processNewSheetEvent(bool checked) {
+	addSheet();
 }

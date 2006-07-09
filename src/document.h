@@ -18,9 +18,17 @@ class CADocument {
 	public:
 		CADocument();
 		void clear();
+		CASheet *addSheet();
+		
+		/**
+		 * Return the number of created sheets in the document.
+		 * 
+		 * @return Number of sheets in the document.
+		 */
+		int sheetCount() { return _sheetList.size(); }
 	
 	private:
-		QList<CAStaff *> _sheetList;	///List of all the sheets in the document
+		QList<CASheet *> _sheetList;	///List of all the sheets in the document
 		QString _title;
 		QString _subTitle;
 		QString _composer;
