@@ -10,10 +10,16 @@
 #define CONTEXT_H_
 
 #include "drawable.h"
+#include "sheet.h"
 
 class CAContext : public CADrawable {
 	public:
+		CAContext(CASheet *s);
+		
 		virtual void clear() = 0;
+		
+	protected:
+		CASheet *_sheet;
 };
 
 #endif /*CONTEXT_H_*/
