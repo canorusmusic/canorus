@@ -14,14 +14,15 @@
 #include "scrollwidget.h"
 #include "note.h"
 
-CAScrollWidget::CAScrollWidget(QWidget *parent) : QFrame(parent) {
+CAScrollWidget::CAScrollWidget(CASheet *s, QWidget *parent) : QFrame(parent) {
+	_layout = new QGridLayout(this);
+	_layout->setMargin(0);
+	_sheet = s;
+
 	_viewPorts.append(_lastUsedViewPort = new CAViewPort(&_musElements, this));
-	
 	connect(_lastUsedViewPort, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 	connect(_lastUsedViewPort, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 	
-	_layout = new QGridLayout(this);
-	_layout->setMargin(0);
 	_layout->addWidget(_lastUsedViewPort, 0, 0);
 }
 
@@ -102,7 +103,7 @@ void CAScrollWidget::unsplit(CAViewPort *v) {
 		return;
 	
 	_viewPorts.removeAll(v?v:_lastUsedViewPort);
-	v?v:_lastUsedViewPort->disconnect();	//disconnect all the signals
+	(v?v:_lastUsedViewPort)->disconnect();	//disconnect all the signals
 	_layout->removeWidget(v?v:_lastUsedViewPort);
 	delete (v?v:_lastUsedViewPort);
 	

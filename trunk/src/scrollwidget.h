@@ -15,6 +15,7 @@
 
 #include "kdtree.h"
 #include "viewport.h"
+#include "sheet.h"
 
 #define DEFAULT_VIEWPORT_WIDTH 400
 #define DEFAULT_VIEWPORT_HEIGHT 400
@@ -30,9 +31,10 @@ class CAScrollWidget : public QFrame {
 		/**
 		 * The default constructor.
 		 * 
+		 * @param s Sheet which this scrollwidget represents 
 		 * @param p Parent widget.
 		 */
-		CAScrollWidget(QWidget *p);
+		CAScrollWidget(CASheet *s, QWidget *p);
 
 		/**
 		 * Split the view horizontally.
@@ -130,6 +132,7 @@ class CAScrollWidget : public QFrame {
 		//Basic properties
 		////////////////////////////////////////////////
 		CAKDTree _musElements;	///List of music elements stored in a tree for faster lookup and other operations. Multiple viewports can share the same list.
+		CASheet *_sheet;	///Pointer to the CASheet which this scrollwidget belongs to
 
 		////////////////////////////////////////////////
 		//Widgets

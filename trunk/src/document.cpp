@@ -28,3 +28,10 @@ void CADocument::clear() {
 	}
 	_sheetList.clear();
 }
+
+CASheet *CADocument::addSheet() {
+	CASheet *s = new CASheet();
+	_sheetList.append(s);
+	
+	return s;
+}
