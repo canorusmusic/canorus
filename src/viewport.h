@@ -14,7 +14,7 @@
 #include <QScrollBar>
 #include <QGridLayout>
 
-#include "kdtree.h"
+class CAKDTree;
 
 /**
  * CAViewPort is the central widget where all the music elements are rendered.

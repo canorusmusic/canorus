@@ -7,7 +7,10 @@
  */
 
 #include <QScrollBar>
+#include <QPainter>
 
+#include "kdtree.h"
+#include "drawable.h"
 #include "viewport.h"
 
 CAViewPort::CAViewPort(CAKDTree *t, QWidget *p) : QWidget(p) {

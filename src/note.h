@@ -12,7 +12,6 @@
 #include <QPainter>
 
 #include "muselement.h"
-#include "drawable.h"
 #include "playable.h"
 
 class CANote :  public CAMusElement, public CAPlayable {

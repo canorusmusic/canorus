@@ -6,6 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include "drawable.h"
 #include "kdtree.h"
 
 CAKDTree::CAKDTree() {

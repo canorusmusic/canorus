@@ -10,7 +10,8 @@
 #define CONTEXT_H_
 
 #include "drawable.h"
-#include "sheet.h"
+
+class CASheet;
 
 class CAContext : public CADrawable {
 	public:

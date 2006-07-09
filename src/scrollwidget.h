@@ -14,11 +14,12 @@
 #include <QGridLayout>
 
 #include "kdtree.h"
-#include "viewport.h"
-#include "sheet.h"
 
 #define DEFAULT_VIEWPORT_WIDTH 400
 #define DEFAULT_VIEWPORT_HEIGHT 400
+
+class CAViewPort;
+class CASheet;
 
 /**
  * CAScrollWidget consists of viewports.

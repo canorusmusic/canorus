@@ -9,11 +9,10 @@
 #ifndef KDTREE_H
 #define KDTREE_H
 
-#include <vector>
 #include <QList>
 #include <QRect>
 
-#include "drawable.h"
+class CADrawable;
 
 /*class Node {
 	public:

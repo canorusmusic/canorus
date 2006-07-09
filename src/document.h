@@ -12,7 +12,7 @@
 #include <QList>
 #include <QString>
 
-#include "sheet.h"
+class CASheet;
 
 class CADocument {
 	public:

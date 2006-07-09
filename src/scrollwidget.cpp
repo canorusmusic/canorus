@@ -11,6 +11,8 @@
 #include <QWheelEvent>
 #include <QPushButton>
 
+#include "viewport.h"
+#include "sheet.h"
 #include "scrollwidget.h"
 #include "note.h"
 

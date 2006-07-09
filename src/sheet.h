@@ -11,8 +11,8 @@
 
 #include <QString>
 
-#include "staff.h"
-#include "context.h"
+class CAContext;
+class CAStaff;
 
 class CASheet {
 	public:
