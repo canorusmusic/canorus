@@ -110,9 +110,10 @@ void CAScrollWidget::unsplit(CAViewPort *v) {
 
 void CAScrollWidget::newViewPort(CAViewPort *v) {
 	_viewPorts.append(_lastUsedViewPort =  new CAViewPort(&_musElements, 0));
-	_lastUsedViewPort->resize(v?v->width():DEFAULT_VIEWPORT_WIDTH, v?v->height():DEFAULT_VIEWPORT_HEIGHT);
 	connect(_lastUsedViewPort, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 	connect(_lastUsedViewPort, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 
 	_lastUsedViewPort->show();
+	//set the _worldW, _worldH and update scrollbars etc. beside the size
+	_lastUsedViewPort->resize(v?v->width():DEFAULT_VIEWPORT_WIDTH, v?v->height():DEFAULT_VIEWPORT_HEIGHT);
 }
