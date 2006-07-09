@@ -109,6 +109,7 @@ void CAViewPort::setWorldWidth(int w, bool force) {
 	if ((_musElements) && ((scrollMax = _musElements->getMaxX() - _worldW) > 0)) {
 		_hScrollBarDeadLock = true;
 		_hScrollBar->setMaximum(scrollMax);
+		_hScrollBar->setPageStep(_worldH);
 		_hScrollBarDeadLock = false;
 	}
 	
@@ -132,6 +133,7 @@ void CAViewPort::setWorldHeight(int h, bool force) {
 	if ((_musElements) && ((scrollMax = _musElements->getMaxY() - _worldH) > 0)) {
 		_vScrollBarDeadLock = true;
 		_vScrollBar->setMaximum(scrollMax);
+		_vScrollBar->setPageStep(_worldH);
 		_vScrollBarDeadLock = false;
 	}
 
