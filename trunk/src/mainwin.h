@@ -49,17 +49,17 @@ private slots:
 	//Menu bar actions
 	////////////////////////////////////////////////////
 	//File menu
-	void processNewEvent(bool);
-	void processNewSheetEvent(bool);
+	void on_actionNew_activated();
+	void on_actionNew_sheet_activated();
 	
 	//View menu
-	void processFullScreenEvent(bool);
+	void on_action_Fullscreen_toggled(bool);
 	
 	//Window menu
-	void processSplitHorizontallyEvent(bool);
-	void processSplitVerticallyEvent(bool);
-	void processUnsplitEvent(bool);
-	void processNewViewPortEvent(bool);
+	void on_actionSplit_horizontally_activated();
+	void on_actionSplit_vertically_activated();
+	void on_actionUnsplit_activated();
+	void on_actionNew_viewport_activated();
 
 private:
 	void connectActions();	///Connect the menu and other actions with its appropriate slots

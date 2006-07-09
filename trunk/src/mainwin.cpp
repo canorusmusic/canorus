@@ -39,21 +39,6 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 }
 
 void CAMainWin::connectActions() {
-	//////////////////////////////////////////////////////
-	//Menu bar actions
-	//////////////////////////////////////////////////////
-	//File menu
-	connect( oMainWin.actionNew, SIGNAL(triggered(bool)), this, SLOT(processNewEvent(bool)) );
-	connect( oMainWin.actionNew_sheet, SIGNAL(triggered(bool)), this, SLOT(processNewSheetEvent(bool)) );
-	
-	//View menu
-	connect( oMainWin.action_Fullscreen, SIGNAL(triggered(bool)), this, SLOT(processFullScreenEvent(bool)) );
-	
-	//Window menu
-	connect( oMainWin.actionSplit_horizontally, SIGNAL(triggered(bool)), this, SLOT(processSplitHorizontallyEvent(bool)) );
-	connect( oMainWin.actionSplit_vertically, SIGNAL(triggered(bool)), this, SLOT(processSplitVerticallyEvent(bool)) );
-	connect( oMainWin.actionUnsplit, SIGNAL(triggered(bool)), this, SLOT(processUnsplitEvent(bool)) );
-	connect( oMainWin.actionNew_viewport, SIGNAL(triggered(bool)), this, SLOT(processNewViewPortEvent(bool)) );
 }
 
 void CAMainWin::newDocument() {
@@ -75,33 +60,33 @@ void CAMainWin::clearSheets() {
 	}
 }
 
-void CAMainWin::processFullScreenEvent(bool checked) {
+void CAMainWin::on_action_Fullscreen_toggled(bool checked) {
 	if (checked)
 		this->showFullScreen();
 	else
 		this->showNormal();
 }
 
-void CAMainWin::processSplitHorizontallyEvent(bool checked) {
+void CAMainWin::on_actionSplit_horizontally_activated() {
 	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->splitHorizontally();
 }
 
-void CAMainWin::processSplitVerticallyEvent(bool checked) {
+void CAMainWin::on_actionSplit_vertically_activated() {
 	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->splitVertically();
 }
 
-void CAMainWin::processUnsplitEvent(bool checked) {
+void CAMainWin::on_actionUnsplit_activated() {
 	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->unsplit();
 }
 
-void CAMainWin::processNewViewPortEvent(bool checked) {
+void CAMainWin::on_actionNew_viewport_activated() {
 	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->newViewPort();
 }
 
-void CAMainWin::processNewEvent(bool checked) {
+void CAMainWin::on_actionNew_activated() {
 	newDocument();
 }
 
-void CAMainWin::processNewSheetEvent(bool checked) {
+void CAMainWin::on_actionNew_sheet_activated() {
 	addSheet();
 }
