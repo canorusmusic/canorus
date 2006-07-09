@@ -19,18 +19,24 @@
 /*		Reinhard Katzmann, GERMANY			             */
 /*		reinhard@suamor.de					     */
 /*									     */
+/*		Matevž Jekovec, SLOVENIA			             */
+/*		matevz.jekovec@guest.arnes.si				     */
 /*									     */
 /*****************************************************************************/
 
 #include "ui_mainwin.h"
 
+#include "document.h"
+
 class CAMainWin: public QMainWindow
 {
-  Q_OBJECT
+	Q_OBJECT
 
 public:
-  CAMainWin(QMainWindow *oParent=0);
-  ~CAMainWin() {};
+	CAMainWin(QMainWindow *oParent = 0);
+	~CAMainWin() {};
+	
+	void newDocument();
 
 private slots:
 	//////////////////////////////////////////////////////
@@ -46,5 +52,8 @@ private slots:
 	void processNewViewPortEvent(bool);
 
 private:
+	void connectActions();	///Connect the menu and other actions with its appropriate slots
+	
     Ui::MainWindow oMainWin;
+    CADocument _document;
 };

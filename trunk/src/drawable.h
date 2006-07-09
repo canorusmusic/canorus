@@ -1,5 +1,13 @@
-#ifndef DRAWABLE_H
-#define DRAWABLE_H
+/** @file drawable.h
+ * 
+ * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+ * All Rights Reserved. See AUTHORS for a complete list of authors.
+ * 
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ */
+
+#ifndef DRAWABLE_H_
+#define DRAWABLE_H_
 
 #include <QPainter>
 #include <QRect>
@@ -8,25 +16,25 @@ class CADrawable {
 	public:
 		CADrawable();
 		virtual void draw(QPainter *, int x, int y, float z) = 0;
-		int xPos() {return xPos_ + xPosOffset_;}
-		int yPos() {return yPos_ + yPosOffset_;}
-		int width() {return width_;}
-		int height() {return height_;}
-		int xCenter() {return xPos_ + xPosOffset_ + (width_)/2;}
-		int yCenter() {return yPos_ + yPosOffset_ + (height_)/2;}
-		const QRect bBox() {return QRect(xPos_ + xPosOffset_, yPos_ + yPosOffset_, width_, height_);}
-		bool visible() {return visible_;}
+		int xPos() { return _xPos + _xPosOffset; }
+		int yPos() { return _yPos + _yPosOffset; }
+		int width() { return _width; }
+		int height() { return _height; }
+		int xCenter() { return _xPos + _xPosOffset + (_width)/2; }
+		int yCenter() { return _yPos + _yPosOffset + (_height)/2; }
+		const QRect bBox() { return QRect(_xPos + _xPosOffset, _yPos + _yPosOffset, _width, _height); }
+		bool visible() { return _visible; }
 		
-		void setVisible(bool v) {visible_ = v;}
+		void setVisible(bool v) { _visible = v; }
 
 	protected:
-		int xPos_;
-		int yPos_;
-		int xPosOffset_;
-		int yPosOffset_;
-		int width_;
-		int height_;
-		bool visible_;
+		int _xPos;
+		int _yPos;
+		int _xPosOffset;
+		int _yPosOffset;
+		int _width;
+		int _height;
+		bool _visible;
 };
-#endif
+#endif /*DRAWABLE_H_*/
 

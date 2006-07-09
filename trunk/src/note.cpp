@@ -1,16 +1,16 @@
 #include "note.h"
 
 CANote::CANote(int length, int x, int y) {
-	length_ = length;
-	xPos_ = x;
-	yPos_ = y;
-	width_ = 9;
-	height_ = 34;
+	_length = length;
+	_xPos = x;
+	_yPos = y;
+	_width = 9;
+	_height = 34;
 }
 
 void CANote::draw(QPainter *p, int x, int y, float z) {
 #define QUARTER_STEM_LENGTH 20
-	switch (length_) {
+	switch (_length) {
 		case 4:
 			y += (int)(QUARTER_STEM_LENGTH*z);
 			p->setFont(QFont("Emmentaler",(int)(16*z)));

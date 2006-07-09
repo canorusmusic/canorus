@@ -21,10 +21,18 @@ set(Canorus_MOCs mainwin.h scrollwidget.h viewport.h)
 set(Canorus_Srcs mainwin.cpp
 	main.cpp
 	kdtree.cpp
-	drawable.cpp
-	note.cpp
 	scrollwidget.cpp
-	viewport.cpp)
+	viewport.cpp
+	document.cpp
+	sheet.cpp
+	context.cpp
+	staff.cpp
+	voice.cpp
+	playable.cpp
+	drawable.cpp
+	muselement.cpp
+	note.cpp
+	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
 set(Canorus_Resrcs mainwin.qrc)

@@ -1,4 +1,4 @@
-/** @file drawable.cpp
+/** @file voice.h
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -6,9 +6,19 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "drawable.h"
+#ifndef VOICE_H_
+#define VOICE_H_
 
-CADrawable::CADrawable() {
-	_xPosOffset = 0;
-	_yPosOffset = 0;
-}
+#include <QList>
+
+#include "muselement.h"
+
+class CAVoice {
+	public:
+		void clear();
+	
+	private:
+		QList<CAMusElement *> _musElementList;
+};
+
+#endif /*VOICE_H_*/
