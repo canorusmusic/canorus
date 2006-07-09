@@ -30,7 +30,13 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
   : QMainWindow( oParent )
 {
 	oMainWin.setupUi( this );
+	connectActions();
 	
+	newDocument();
+	
+}
+
+void CAMainWin::connectActions() {
 	//////////////////////////////////////////////////////
 	//Menu bar actions
 	//////////////////////////////////////////////////////
@@ -42,6 +48,11 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	connect( oMainWin.actionSplit_vertically, SIGNAL(triggered(bool)), this, SLOT(processSplitVerticallyEvent(bool)) );
 	connect( oMainWin.actionUnsplit, SIGNAL(triggered(bool)), this, SLOT(processUnsplitEvent(bool)) );
 	connect( oMainWin.actionNew_viewport, SIGNAL(triggered(bool)), this, SLOT(processNewViewPortEvent(bool)) );
+}
+
+void CAMainWin::newDocument() {
+	_document.clear();
+	
 }
 
 void CAMainWin::processFullScreenEvent(bool checked) {

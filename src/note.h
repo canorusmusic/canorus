@@ -1,17 +1,27 @@
-#ifndef NOTE_H
-#define NOTE
+/** @file note.h
+ * 
+ * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+ * All Rights Reserved. See AUTHORS for a complete list of authors.
+ * 
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ */
+
+#ifndef NOTE_H_
+#define NOTE_H_
 
 #include <QPainter>
 
+#include "muselement.h"
 #include "drawable.h"
+#include "playable.h"
 
-class CANote : public CADrawable {
+class CANote :  public CAMusElement, public CAPlayable {
 	public:
 		CANote(int length, int x, int y);
 		void draw(QPainter *p, int x, int y, float z);
 
 	private:
-		int length_;
+		int _length;
 };
-#endif
+#endif /*NOTE_H_*/
 
