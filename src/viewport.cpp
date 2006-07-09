@@ -52,6 +52,12 @@ CAViewPort::CAViewPort(CAKDTree *t, QWidget *p) : QWidget(p) {
 	_oldWorldW = 0; _oldWorldH = 0;
 }
 
+CAViewPort::~CAViewPort() {
+	_hScrollBar->disconnect();
+	_vScrollBar->disconnect();
+	this->disconnect();
+}
+
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
