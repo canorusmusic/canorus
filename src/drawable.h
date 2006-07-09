@@ -25,6 +25,12 @@ class CADrawable {
 		const QRect bBox() { return QRect(_xPos + _xPosOffset, _yPos + _yPosOffset, _width, _height); }
 		bool visible() { return _visible; }
 		
+		void setXPos(int xPos) { _xPos = xPos; }
+		void setYPos(int yPos) { _yPos = yPos; }
+		void setXPosOffset(int xPosOffset) { _xPosOffset = xPosOffset; }
+		void setYPosOffset(int yPosOffset) { _yPosOffset = yPosOffset; }
+		void setWidth(int width) { _width = width; }
+		void setHeight(int height) { _height = height; }
 		void setVisible(bool v) { _visible = v; }
 
 	protected:

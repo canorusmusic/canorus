@@ -8,6 +8,9 @@
 
 #include "staff.h"
 
+CAStaff::CAStaff(CASheet *s) : CAContext(s) {
+}
+
 void CAStaff::clear() {
 	for (int i=0; i<_voiceList.size(); i++) {
 		_voiceList[i]->clear();

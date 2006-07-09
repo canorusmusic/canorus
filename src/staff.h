@@ -13,13 +13,20 @@
 
 #include "context.h"
 #include "voice.h"
+#include "sheet.h"
 
 class CAStaff : public CAContext {
 	public:
+		CAStaff(CASheet *s);
+		
+		int numberOfLines() { return _numberOfLines; }
+		void setNumberOfLines(int val) { _numberOfLines = val; }
 		void clear();
 		
 	private:
 		QList<CAVoice *> _voiceList;
+		
+		int _numberOfLines;
 };
 
 #endif /*STAFF_H_*/
