@@ -18,7 +18,7 @@ class CADocument {
 	public:
 		CADocument();
 		void clear();
-		CASheet *addSheet();
+		CASheet *addSheet(const QString name);
 		
 		/**
 		 * Return the number of created sheets in the document.

@@ -8,6 +8,10 @@
 
 #include "sheet.h"
 
+CASheet::CASheet(const QString name) {
+	_name = name;
+}
+
 void CASheet::clear() {
 	for (int i=0; i<_contextList.size(); i++) {
 		_contextList[i]->clear();

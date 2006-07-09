@@ -29,8 +29,8 @@ void CADocument::clear() {
 	_sheetList.clear();
 }
 
-CASheet *CADocument::addSheet() {
-	CASheet *s = new CASheet();
+CASheet *CADocument::addSheet(const QString name) {
+	CASheet *s = new CASheet(name);
 	_sheetList.append(s);
 	
 	return s;

@@ -49,13 +49,15 @@ void CAMainWin::newDocument() {
 }
 
 void CAMainWin::addSheet() {
-	CASheet *s = _document.addSheet();
-	oMainWin.tabWidget->addTab(new CAScrollWidget(s, 0), QString("Sheet ") + QString(_document.sheetCount()+48) );
+	CASheet *s = _document.addSheet(QString("Sheet ") + QString::number(_document.sheetCount()+1));
+	
+	oMainWin.tabWidget->addTab(new CAScrollWidget(s, 0), s->name());
+	oMainWin.tabWidget->setCurrentIndex(oMainWin.tabWidget->count()-1);
 }
 
 void CAMainWin::clearSheets() {
-	for (int i=0; i<oMainWin.tabWidget->count(); i++) {
-		delete ((CAScrollWidget *)(oMainWin.tabWidget->currentWidget()));
+	while (oMainWin.tabWidget->count()) {
+		delete _currentScrollWidget;
 		oMainWin.tabWidget->removeTab(oMainWin.tabWidget->currentIndex());
 	}
 }
