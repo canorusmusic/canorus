@@ -63,7 +63,7 @@ private slots:
 
 private:
 	void connectActions();	///Connect the menu and other actions with its appropriate slots
-	
+#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))	
     Ui::MainWindow oMainWin;
     CADocument _document;
 };

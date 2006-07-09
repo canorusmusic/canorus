@@ -9,16 +9,25 @@
 #ifndef SHEET_H_
 #define SHEET_H_
 
+#include <QString>
+
 #include "staff.h"
 #include "context.h"
 
 class CASheet {
 	public:
+		CASheet(const QString name);
+		
+		const QString name() { return _name; }
+		void setName(const QString name) { _name = name; }
+
 		void clear();
-	
+		
 	private:
 		QList<CAContext *> _contextList;	///List of all the contexts in the sheet (lyrics, staffs, tablatures, general-bas markings etc.)
-		QList<CAStaff *> _staffList;	//List of all the staffs only in the sheet
+		QList<CAStaff *> _staffList;	///List of all the staffs only in the sheet
+		
+		QString _name;
 		
 };
 
