@@ -102,6 +102,7 @@ void CAScrollWidget::unsplit(CAViewPort *v) {
 		return;
 	
 	_viewPorts.removeAll(v?v:_lastUsedViewPort);
+	v?v:_lastUsedViewPort->disconnect();	//disconnect all the signals
 	_layout->removeWidget(v?v:_lastUsedViewPort);
 	delete (v?v:_lastUsedViewPort);
 	

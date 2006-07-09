@@ -32,6 +32,11 @@ class CAViewPort : public QWidget {
 		 */
 		CAViewPort(CAKDTree *musElts, QWidget *parent);
 		
+		/**
+		 * Destructor.
+		 */
+		~CAViewPort();
+		
 		///////////////////////////////////////////////
 		//Widget properties
 		///////////////////////////////////////////////
