@@ -6,6 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include "voice.h"
 #include "staff.h"
 
 CAStaff::CAStaff(CASheet *s) : CAContext(s) {

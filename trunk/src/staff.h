@@ -12,15 +12,17 @@
 #include <QList>
 
 #include "context.h"
-#include "voice.h"
-#include "sheet.h"
+
+class CASheet;
+class CAContext;
+class CAVoice;
 
 class CAStaff : public CAContext {
 	public:
 		CAStaff(CASheet *s);
 		
-		int numberOfLines() { return _numberOfLines; }
-		void setNumberOfLines(int val) { _numberOfLines = val; }
+		inline int numberOfLines() { return _numberOfLines; }
+		inline void setNumberOfLines(int val) { _numberOfLines = val; }
 		void clear();
 		
 	private:

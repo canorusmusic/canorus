@@ -6,6 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include "muselement.h"
 #include "voice.h"
 
 void CAVoice::clear() {

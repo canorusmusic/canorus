@@ -6,6 +6,8 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include "context.h"
+#include "staff.h"
 #include "sheet.h"
 
 CASheet::CASheet(const QString name) {

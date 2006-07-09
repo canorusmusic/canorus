@@ -11,7 +11,7 @@
 
 #include <QList>
 
-#include "muselement.h"
+class CAMusElement;
 
 class CAVoice {
 	public:

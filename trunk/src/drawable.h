@@ -9,8 +9,9 @@
 #ifndef DRAWABLE_H_
 #define DRAWABLE_H_
 
-#include <QPainter>
 #include <QRect>
+
+class QPainter;
 
 class CADrawable {
 	public:
