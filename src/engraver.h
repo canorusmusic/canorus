@@ -1,4 +1,4 @@
-/** @file context.cpp
+/** @file engraver.h
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -6,8 +6,15 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "context.h"
+#ifndef ENGRAVER_
+#define ENGRAVER_
 
-CAContext::CAContext(CASheet *s, int x, int y) : CADrawable(x, y) {
-	_sheet = s;
-}
+class CASheet;
+class CAScrollWidget;
+
+class CAEngraver {
+	public:
+		static void reposit(CASheet *s, CAScrollWidget *c);
+};
+
+#endif /*ENGRAVER_*/

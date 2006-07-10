@@ -10,7 +10,9 @@
 
 #include "drawable.h"
 
-CADrawable::CADrawable() {
+CADrawable::CADrawable(int x, int y) {
+	_xPos = x;
+	_yPos = y;
 	_xPosOffset = 0;
 	_yPosOffset = 0;
 }

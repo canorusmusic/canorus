@@ -14,6 +14,12 @@ CASheet::CASheet(const QString name) {
 	_name = name;
 }
 
+void CASheet::addStaff() {
+	CAStaff *s = new CAStaff(this, 0, 50 + 200*(_contextList.size()));
+	_contextList.append(s);
+	_staffList.append(s);
+}
+
 void CASheet::clear() {
 	for (int i=0; i<_contextList.size(); i++) {
 		_contextList[i]->clear();

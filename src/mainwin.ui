@@ -408,22 +408,6 @@
     <addaction name="actionStatus_bar" />
     <addaction name="action_Fullscreen" />
    </widget>
-   <widget class="QMenu" name="menu_Insert" >
-    <property name="title" >
-     <string>&amp;Insert</string>
-    </property>
-    <addaction name="action_Clef" />
-    <addaction name="action_Time_signature" />
-    <addaction name="action_Key_signature" />
-    <addaction name="separator" />
-    <addaction name="action_Special_barline" />
-    <addaction name="action_Expression_marks" />
-    <addaction name="actionC_hord" />
-    <addaction name="action_Pedal_markings" />
-    <addaction name="action_Octaviation" />
-    <addaction name="action_Instrument_change" />
-    <addaction name="action_Midi_instruction" />
-   </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -463,6 +447,23 @@
     <addaction name="actionPrint" />
     <addaction name="separator" />
     <addaction name="actionQuit" />
+   </widget>
+   <widget class="QMenu" name="menu_Insert" >
+    <property name="title" >
+     <string>&amp;Insert</string>
+    </property>
+    <addaction name="actionNew_staff" />
+    <addaction name="action_Clef" />
+    <addaction name="action_Time_signature" />
+    <addaction name="action_Key_signature" />
+    <addaction name="separator" />
+    <addaction name="action_Special_barline" />
+    <addaction name="action_Expression_marks" />
+    <addaction name="actionC_hord" />
+    <addaction name="action_Pedal_markings" />
+    <addaction name="action_Octaviation" />
+    <addaction name="action_Instrument_change" />
+    <addaction name="action_Midi_instruction" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -992,6 +993,11 @@
   <action name="actionNew_sheet" >
    <property name="text" >
     <string>New sheet</string>
+   </property>
+  </action>
+  <action name="actionNew_staff" >
+   <property name="text" >
+    <string>New staff</string>
    </property>
   </action>
  </widget>

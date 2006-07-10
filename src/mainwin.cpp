@@ -27,6 +27,7 @@
 #include "mainwin.h"
 #include "sheet.h"
 #include "scrollwidget.h"
+#include "engraver.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
@@ -91,4 +92,10 @@ void CAMainWin::on_actionNew_activated() {
 
 void CAMainWin::on_actionNew_sheet_activated() {
 	addSheet();
+}
+
+void CAMainWin::on_actionNew_staff_activated() {
+	_currentScrollWidget->sheet()->addStaff();
+	CAEngraver::reposit(_currentScrollWidget->sheet(), _currentScrollWidget);
+	_currentScrollWidget->repaint();
 }

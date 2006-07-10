@@ -1,9 +1,7 @@
 #include "note.h"
 
-CANote::CANote(int length, int x, int y) {
+CANote::CANote(int length, int x, int y) : CAMusElement(x, y) {
 	_length = length;
-	_xPos = x;
-	_yPos = y;
 	_width = 9;
 	_height = 34;
 }

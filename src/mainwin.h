@@ -52,6 +52,9 @@ private slots:
 	void on_actionNew_activated();
 	void on_actionNew_sheet_activated();
 	
+	//Insert menu
+	void on_actionNew_staff_activated();
+	
 	//View menu
 	void on_action_Fullscreen_toggled(bool);
 	

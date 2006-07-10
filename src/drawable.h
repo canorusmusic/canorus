@@ -13,10 +13,20 @@
 
 class QPainter;
 
+typedef struct CADrawSettings {
+		float z;
+		int x;
+		int y;
+		int w;
+		int h;
+		//QPenStyle penStyle;
+		//QColor color;
+};
+
 class CADrawable {
 	public:
-		CADrawable();
-		virtual void draw(QPainter *, int x, int y, float z) = 0;
+		CADrawable(int x, int y);	///x and y position of an element in absolute world units
+		virtual void draw(QPainter *p, const CADrawSettings s) = 0;
 		int xPos() { return _xPos + _xPosOffset; }
 		int yPos() { return _yPos + _yPosOffset; }
 		int width() { return _width; }

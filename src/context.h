@@ -15,7 +15,7 @@ class CASheet;
 
 class CAContext : public CADrawable {
 	public:
-		CAContext(CASheet *s);
+		CAContext(CASheet *s, int x, int y);
 		
 		virtual void clear() = 0;
 		
