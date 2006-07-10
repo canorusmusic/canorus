@@ -19,7 +19,10 @@ class CASheet {
 		CASheet(const QString name);
 		
 		const QString name() { return _name; }
+		QList<CAContext *>* contextList() { return &_contextList; }
+
 		void setName(const QString name) { _name = name; }
+		void addStaff();
 
 		void clear();
 		

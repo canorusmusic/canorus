@@ -218,10 +218,12 @@ void CAViewPort::paintEvent(QPaintEvent *e) {
 	if (!l) return;
 
 	for (int i=0; i<l->size(); i++) {
-		l->at(i)->draw(&p,
+		CADrawSettings s = {
+		               _zoom,
 		               (int)((l->at(i)->xPos() - _worldX) * _zoom),
 		               (int)((l->at(i)->yPos() - _worldY) * _zoom),
-		               _zoom);
+		               drawableWidth(), drawableHeight()};
+		l->at(i)->draw(&p, s);
 	}
 	
 	//flush the oldWorld coordinates as they're needed for the first repaint only

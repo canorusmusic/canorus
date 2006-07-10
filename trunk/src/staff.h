@@ -11,6 +11,8 @@
 
 #include <QList>
 
+class QPainter;
+
 #include "context.h"
 
 class CASheet;
@@ -19,11 +21,12 @@ class CAVoice;
 
 class CAStaff : public CAContext {
 	public:
-		CAStaff(CASheet *s);
+		CAStaff(CASheet *s, int x, int y);
 		
 		inline int numberOfLines() { return _numberOfLines; }
 		inline void setNumberOfLines(int val) { _numberOfLines = val; }
 		void clear();
+		void draw(QPainter *, const CADrawSettings s);
 		
 	private:
 		QList<CAVoice *> _voiceList;

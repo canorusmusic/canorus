@@ -32,6 +32,7 @@ set(Canorus_Srcs mainwin.cpp
 	drawable.cpp
 	muselement.cpp
 	note.cpp
+	engraver.cpp
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)

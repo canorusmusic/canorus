@@ -15,6 +15,7 @@
 #include "sheet.h"
 #include "scrollwidget.h"
 #include "note.h"
+#include "staff.h"
 
 CAScrollWidget::CAScrollWidget(CASheet *s, QWidget *parent) : QFrame(parent) {
 	_layout = new QGridLayout(this);
@@ -31,13 +32,18 @@ CAScrollWidget::CAScrollWidget(CASheet *s, QWidget *parent) : QFrame(parent) {
 void CAScrollWidget::paintEvent(QPaintEvent *e) {
 }
 
+void CAScrollWidget::addElement(CADrawable *elt) {
+	_musElements.addElement(elt);
+}
+
 void CAScrollWidget::viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
 	_lastUsedViewPort = v;
 
 	if (e->modifiers()==Qt::ControlModifier) {
-		_musElements.removeElement(coords.x(), coords.y());
+		//_musElements.removeElement(coords.x(), coords.y());
 	} else {
-		_musElements.addElement(new CANote(4, coords.x(), coords.y()));
+		//_musElements.addElement(new CANote(4, coords.x(), coords.y()));
+		//_musElements.addElement(new CAStaff(_sheet, 0, coords.y()));
 	}
 	
 	for (int i=0; i<_viewPorts.size(); i++) {

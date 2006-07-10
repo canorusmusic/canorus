@@ -36,6 +36,34 @@ class CAScrollWidget : public QFrame {
 		 * @param p Parent widget.
 		 */
 		CAScrollWidget(CASheet *s, QWidget *p);
+		
+		/**
+		 * Return the associated CASheet.
+		 * 
+		 * @return The score sheet current scrollwidget represents
+		 */
+		CASheet *sheet() { return _sheet; }
+		
+		/**
+		 * Add a drawable element to the list.
+		 * 
+		 * @param elt The element to be added.
+		 */
+		void addElement(CADrawable *elt);
+		
+		/**
+		 * Return the number of rows of viewports.
+		 * 
+		 * @return Number of rows the viewports are arranged in.
+		 */
+		int viewPortsRows() { return _layout->rowCount(); }
+
+		/**
+		 * Return the number of columns of viewports.
+		 * 
+		 * @return Number of columns the viewports are arranged in.
+		 */
+		int viewPortsColumns() { return _layout->columnCount(); }
 
 		/**
 		 * Split the view horizontally.
@@ -65,20 +93,6 @@ class CAScrollWidget : public QFrame {
 		 */
 		void newViewPort(CAViewPort *v = 0);
 		
-		/**
-		 * Return the number of rows of viewports.
-		 * 
-		 * @return Number of rows the viewports are arranged in.
-		 */
-		int viewPortsRows() { return _layout->rowCount(); }
-
-		/**
-		 * Return the number of columns of viewports.
-		 * 
-		 * @return Number of columns the viewports are arranged in.
-		 */
-		int viewPortsColumns() { return _layout->columnCount(); }
-
 	signals:
 		/**
 		 * The signal which gets emmitted when you click on an empty place.
