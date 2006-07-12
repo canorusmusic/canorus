@@ -21,6 +21,8 @@ class QMouseEvent;
 class QWheelEvent;
 
 class CADrawable;
+class CADrawableMusElement;
+class CADrawableContext;
 class CAMusElement;
 class CAContext;
 class CASheet;
@@ -35,11 +37,12 @@ class CAScoreViewPort : public CAViewPort {
 		////////////////////////////////////////////////
 		//Score opertaions
 		////////////////////////////////////////////////
-		void addMElement(CADrawable *elt, bool select=false);
-		void addCElement(CADrawable *elt, bool select=false);
+		void addMElement(CADrawableMusElement *elt, bool select=false);
+		void addCElement(CADrawableContext *elt, bool select=false);
 		CANote *addNote(CANote::CANoteLength, int x, int y);
 		CAMusElement *removeMElement(int x, int y);
 		CAMusElement *selectMElement(int x, int y);
+		CAContext *selectCElement(int x, int y);
 		
 		void clearMElements() { _drawableMList.clear(true); }
 		void clearCElements() { _drawableCList.clear(true); }
@@ -363,7 +366,7 @@ class CAScoreViewPort : public CAViewPort {
 		 * @param elt Pointer to the element which we query.
 		 * @return True, if the given element is selected, false otherwise.
 		 */
-		bool isSelected(CADrawable *elt) { return _selection.contains(elt); }
+		bool isSelected(CADrawableMusElement *elt) { return (_musElementSelection.contains(elt)); }
 		
 	private:
 		////////////////////////////////////////////////
@@ -373,8 +376,8 @@ class CAScoreViewPort : public CAViewPort {
 		CAKDTree _drawableCList;	///The list of context drawable elements (staffs, lyrics etc.). Every viewport has its own list of drawable elements and drawable objects themselves!
 		CASheet *_sheet;	///Pointer to the CASheet which the viewport represents
 		
-		QList<CADrawable *> _selection;	///The set of elements being selected.
-		CADrawable *_currentContext;	///The pointer to the currently active context (staff, lyrics).
+		QList<CADrawableMusElement *> _musElementSelection;	///The set of elements being selected.
+		CADrawableContext *_currentContext;	///The pointer to the currently active context (staff, lyrics).
 		
 		int _worldX, _worldY, _worldW, _worldH;	///Absolute world coordinates of the area the viewport is currently showing.
 		float _zoom;	///Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
