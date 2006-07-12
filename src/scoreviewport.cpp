@@ -11,11 +11,14 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QPalette>
+#include <QColor>
 
 #include <iostream>
 
 #include "scoreviewport.h"
 #include "drawable.h"
+#include "drawablecontext.h"
 #include "drawablenote.h"
 #include "muselement.h"
 #include "context.h"
@@ -34,6 +37,9 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	
 	_currentContext = 0;
 	
+	setPalette(QPalette(QColor(255, 255, 240)));
+	setAutoFillBackground(true);
+
 	//setup the mouse events and forward them to CAEventName events
 	connect(this, SIGNAL(mousePressEvent(QMouseEvent *)), this, SLOT(processMousePressEvent(QMouseEvent *)));
 	connect(this, SIGNAL(wheelEvent(QWheelEvent *)), this, SLOT(processWheelEvent(QWheelEvent *)));
@@ -94,36 +100,48 @@ CAScoreViewPort *CAScoreViewPort::clone(QWidget *parent) {
 	return v;
 }
 
-void CAScoreViewPort::addMElement(CADrawable *elt, bool select) {
+void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 	_drawableMList.addElement(elt);
 	if (select) {
-		_selection.clear();
-		_selection << elt;
+		_musElementSelection.clear();
+		_musElementSelection << elt;
 	}
 }
 
-void CAScoreViewPort::addCElement(CADrawable *elt, bool select) {
+void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 	_drawableCList.addElement(elt);
 	if (select)
 		_currentContext = elt;
+}
+
+CAContext* CAScoreViewPort::selectCElement(int x, int y) {
+	QList<CADrawable *>* l = _drawableCList.findInRange(x,y);
+	
+	if (l->size()!=0) {
+		_currentContext = (CADrawableContext*)l->front();
+	}
+	
+	delete l;
+	
+	return (_currentContext?_currentContext->context():0);
 }
 
 CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 	QList<CADrawable *>* l;
 	if ((l=_drawableMList.findInRange(x,y))->size() != 0) { //multiple elements can share the same coordinates
 		int idx;
-			_selection.clear();
-		if ( (_selection.size() != 1) || ((idx = l->indexOf(_selection.front())) == -1) ) {
-			_selection << l->at(0);	//if the previous selection was not a single element or if the new list doesn't contain the selection, add the first element in the available list to the selection
+			_musElementSelection.clear();
+		if ( (_musElementSelection.size() != 1) || ((idx = l->indexOf(_musElementSelection.front())) == -1) ) {
+			_musElementSelection << (CADrawableMusElement*)l->at(0);	//if the previous selection was not a single element or if the new list doesn't contain the selection, add the first element in the available list to the selection
 		} else {
-			_selection << l->at((++idx < l->size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
+			_musElementSelection << (CADrawableMusElement*)l->at((++idx < l->size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
 		}
 		
 		delete l;
 		
-		return ((CADrawableNote*)(_selection.front()))->note();
+		return ((CADrawableMusElement*)_musElementSelection.front())->musElement();
 	} else {
-		_selection.clear();
+		_musElementSelection.clear();
 		delete l;
 		
 		return 0;
@@ -322,9 +340,8 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		l->at(i)->draw(&p, s);
 	}
 
-	
-	p.drawLine(0, 0, drawableWidth(), drawableHeight());
 	delete l;
+	
 	l = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
 	if (!l) return;
 
@@ -334,7 +351,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		               (int)((l->at(i)->xPos() - _worldX) * _zoom),
 		               (int)((l->at(i)->yPos() - _worldY) * _zoom),
 		               drawableWidth(), drawableHeight(),
-		               (_selection.contains(l->at(i))?Qt::red:Qt::black)
+		               (_musElementSelection.contains((CADrawableMusElement*)l->at(i))?Qt::red:Qt::black)
 		               };
 		l->at(i)->draw(&p, s);
 	}

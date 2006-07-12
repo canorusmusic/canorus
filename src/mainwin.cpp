@@ -168,7 +168,8 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPor
 					if ( ((CAScoreViewPort*)v)->removeMElement(coords.x(), coords.y()) )
 						rebuildScoreViewPorts(((CAScoreViewPort*)v)->sheet());
 				} else {
-					if ( ((CAScoreViewPort*)v)->selectMElement(coords.x(), coords.y()) )
+					if ( ((CAScoreViewPort*)v)->selectMElement(coords.x(), coords.y()) ||
+					     ((CAScoreViewPort*)v)->selectCElement(coords.x(), coords.y()) )
 						((CAScoreViewPort*)v)->repaint();
 				}
 				break;
