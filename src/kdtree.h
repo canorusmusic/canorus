@@ -64,11 +64,11 @@ class CAKDTree {
 		 * 
 		 * @param x Top-left X coordinate of the area in absolute world units.
 		 * @param y Top-left Y coordinate of the area in absolute world units.
-		 * @param w Width of the area in absolute world units.
-		 * @param w Width of the area in absolute world units.
+		 * @param w Width of the area in absolute world units. If none given, the area is treated as a point.
+		 * @param w Width of the area in absolute world units. If none given, the area is treated as a point.
 		 * @return Pointer to QList of the elements inside the given area.
 		 */
-		QList<CADrawable *>* findInRange(int x, int y, int w, int h);
+		QList<CADrawable *>* findInRange(int x, int y, int w=0, int h=0);
 		
 		/**
 		 * This is an overloaded member function, provided for convenience.

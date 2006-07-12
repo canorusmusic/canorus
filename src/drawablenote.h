@@ -9,17 +9,16 @@
 #ifndef DRAWABLENOTE_H_
 #define DRAWABLENOTE_H_
 
-#include "drawable.h"
+#include "drawablemuselement.h"
 
 class CANote;
 
-class CADrawableNote : public CADrawable {
+class CADrawableNote : public CADrawableMusElement {
 	public:
 		CADrawableNote(CANote *note, int x, int y);
 		void draw(QPainter *p, CADrawSettings s);
-	
-	private:
-		CANote *_note;	
+		
+		inline CANote *note() { return (CANote*)_musElement; }
 };
 
 #endif /*DRAWABLENOTE_H_*/
