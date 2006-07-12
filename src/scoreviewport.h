@@ -13,6 +13,7 @@
 
 #include "viewport.h"
 #include "kdtree.h"
+#include "note.h"
 
 class QGridLayout;
 class QScrollBar;
@@ -31,8 +32,15 @@ class CAScoreViewPort : public CAViewPort {
 		CAScoreViewPort(CASheet *sheet, QWidget *parent);
 		~CAScoreViewPort();
 		
+		////////////////////////////////////////////////
+		//Score opertaions
+		////////////////////////////////////////////////
 		void addMElement(CADrawable *elt);
 		void addCElement(CADrawable *elt);
+		CANote *addNote(CANote::CANoteLength, int x, int y);
+		CAMusElement *removeMElement(int x, int y);
+		CAMusElement *selectMElement(int x, int y);
+		
 		void clearMElements() { _drawableMList.clear(true); }
 		void clearCElements() { _drawableCList.clear(true); }
 		
@@ -97,7 +105,7 @@ class CAScoreViewPort : public CAViewPort {
 		char scrollBarsVisibility() { return _scrollBarsVisible;}
 		
 		////////////////////////////////////////////////
-		//General actions
+		//View actions
 		////////////////////////////////////////////////
 		/**
 		 * Set the world X coordinate of the viewport.

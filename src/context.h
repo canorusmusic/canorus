@@ -20,6 +20,13 @@ class CAContext {
 	public:
 		CAContext(CASheet *s);
 		
+		/**
+		 * enum CAContextType holds different CAContext types:
+		 * - Staff - Every context with lines which includes various music elements.
+		 * - Tablature - Context similar to Staff, but specialized for guitar.
+		 * - Lyrics - Holds words (syllables) for choir music. Every syllable is assigned to certain CANote.
+		 * - Dynamics - Sometimes we want to have a separate context for the crescendo, rit., mf and other markings
+		 */
 		enum CAContextType {
 			Staff,
 			Tablature,

@@ -101,6 +101,15 @@ void CAScoreViewPort::addCElement(CADrawable *elt) {
 	_drawableCList.addElement(elt);
 }
 
+CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
+}
+
+CANote* CAScoreViewPort::addNote(CANote::CANoteLength noteLength, int x, int y) {
+}
+
+CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
+}
+
 void CAScoreViewPort::importMElements(CAKDTree *elts) {
 	_drawableMList.import(elts);
 }

@@ -8,5 +8,5 @@
 
 #include "muselement.h"
 
-CAMusElement::CAMusElement(int x, int y) : CADrawable(x, y) {
+CAMusElement::CAMusElement() {
 }

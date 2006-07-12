@@ -44,7 +44,7 @@ class CAMainWin: public QMainWindow
 public:
 	CAMainWin(QMainWindow *oParent = 0);
 	~CAMainWin() {};
-	
+
 	void newDocument();
 	
 	////////////////////////////////////////////////////
@@ -103,7 +103,16 @@ private slots:
 	void viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *v);
 
 private:
-#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))
+	/**
+	 * This method is called when multiple viewports share the same logical source and a change has been made in the logical musElement list.
+	 * This method rebuilds the CADrawable elements on viewports from the logical list which was changed.
+	 * 
+	 * @param sheet Pointer to the common CASheet viewports use.
+	 * @param repaint Should the viewports be repainted as well.
+	 */
+	void CAMainWin::rebuildScoreViewPorts(CASheet *sheet, bool repaint=true);
+	
+	#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))
 	CAMode _currentMode;
 	QList<CAViewPort *> _viewPortList;
 	CAViewPort *_activeViewPort;	
