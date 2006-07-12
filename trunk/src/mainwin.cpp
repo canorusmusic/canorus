@@ -48,8 +48,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 }
 
 void CAMainWin::newDocument() {
-	_document.clear();	//clear the data
-	clearUI();			//clear the UI
+	_document.clear();	//clear the logical part
+	clearUI();			//clear the UI part
 	
 	addSheet();			//add a new empty sheet
 }
@@ -77,6 +77,10 @@ void CAMainWin::clearUI() {
 		delete _currentScrollWidget;
 		oMainWin.tabWidget->removeTab(oMainWin.tabWidget->currentIndex());
 	}
+}
+
+void CAMainWin::on_tabWidget_currentChanged(int idx) {
+	_activeViewPort = _currentScrollWidget->lastUsedViewPort();
 }
 
 void CAMainWin::on_action_Fullscreen_toggled(bool checked) {
@@ -128,19 +132,18 @@ void CAMainWin::on_actionNew_sheet_activated() {
 }
 
 void CAMainWin::on_actionNew_staff_activated() {
+	if (_activeViewPort->viewPortType() != CAViewPort::ScoreViewPort)
+		return;
+	
 	CASheet *sheet = ((CAScoreViewPort*)_activeViewPort)->sheet();
 	CAStaff *staff = sheet->addStaff();
 	
-	for (int i=0; i<_viewPortList.size(); i++) {
-		if ( (((CAScoreViewPort*)(_viewPortList[i]))->sheet() == sheet) )
-			((CAScoreViewPort*)(_viewPortList[i]))->update();
-	}
-
-	_activeViewPort->repaint();
+	rebuildScoreViewPorts(sheet);
 }
 
 void CAMainWin::rebuildScoreViewPorts(CASheet *sheet, bool repaint) {
 	for (int i=0; i<_viewPortList.size(); i++) {
+		((CAScoreViewPort*)(_viewPortList[i]))->update();
 		((CAScoreViewPort*)(_viewPortList[i]))->checkScrollBars();
 		_viewPortList[i]->repaint();
 	}
