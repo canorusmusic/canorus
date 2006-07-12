@@ -30,3 +30,9 @@ void CADrawableStaff::draw(QPainter *p, const CADrawSettings s) {
 		            s.w, s.y + dy);
 	}
 }
+
+CADrawableStaff *CADrawableStaff::clone() {
+	CADrawableStaff *d = new CADrawableStaff(_staff, _xPos, _yPos);
+	
+	return d;
+}

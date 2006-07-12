@@ -95,5 +95,6 @@ void CAKDTree::calculateMaxXY() {
 }
 
 void CAKDTree::import(CAKDTree *tree) {
-	_list += tree->list();
+	for (int i=0; i<tree->list().size(); i++)
+		_list += tree->list().at(i)->clone();
 }

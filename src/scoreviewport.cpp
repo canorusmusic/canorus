@@ -78,6 +78,8 @@ CAScoreViewPort *CAScoreViewPort::clone() {
 	
 	v->importMElements(&_drawableMList);
 	v->importCElements(&_drawableCList);
+	
+	return v;
 }
 
 CAScoreViewPort *CAScoreViewPort::clone(QWidget *parent) {
@@ -85,6 +87,8 @@ CAScoreViewPort *CAScoreViewPort::clone(QWidget *parent) {
 	
 	v->importMElements(&_drawableMList);
 	v->importCElements(&_drawableCList);
+	
+	return v;
 }
 
 void CAScoreViewPort::addMElement(CADrawable *elt) {

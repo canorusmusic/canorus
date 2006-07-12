@@ -17,6 +17,7 @@ class CADrawableStaff : public CADrawable {
 	public:
 		CADrawableStaff(CAStaff* staff, int x, int y);
 		void draw(QPainter *, const CADrawSettings s);
+		CADrawableStaff *clone();
 		
 	private:
 		CAStaff *_staff;
