@@ -28,6 +28,13 @@
 
 #include "document.h"
 
+enum CAMode {
+	InsertMode,
+	SelectMode,
+	ReadOnlyMode,
+	PlayMode
+};
+
 class CAViewPort;
 
 class CAMainWin: public QMainWindow
@@ -96,8 +103,8 @@ private slots:
 	void viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *v);
 
 private:
-	void connectActions();	///Connect the menu and other actions with its appropriate slots
 #define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))
+	CAMode _currentMode;
 	QList<CAViewPort *> _viewPortList;
 	CAViewPort *_activeViewPort;	
     Ui::MainWindow oMainWin;

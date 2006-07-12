@@ -90,11 +90,13 @@ class CAScrollWidget : public QFrame {
 		CAViewPort* newViewPort(CAViewPort *v = 0);
 
 		/**
-		 * Unsplit the views.
+		 * Unsplit the views so the given viewport gets deleted.
+		 * If no viewports are given, delete the last active one.
 		 * 
-		 * @param v The viewport that should deleted. If none given, delete the last active one.
+		 * @param v Pointer to the viewport that should be deleted. If none given, delete the last active one.
+		 * @return Pointer to the viewport which was deleted. If none was deleted (ie. the given viewport was not found or there are no viewports left), return 0.
 		 */				
-		void unsplit(CAViewPort *v = 0);
+		CAViewPort* unsplit(CAViewPort *v = 0);
 		
 	private slots:
 		
@@ -123,7 +125,7 @@ class CAScrollWidget : public QFrame {
 		////////////////////////////////////////////////
 		//Widgets
 		////////////////////////////////////////////////
-		QList<CAViewPort *> _viewPorts;	///List of all active viewports (multiple viewports appear, when you use split view etc.)
+		QList<CAViewPort *> _viewPorts;	///List of all docked active viewports (multiple viewports appear, when you use split view etc.). Undocked viewports (when triggered by Window->New viewport) are not stored.
 		QGridLayout *_layout;	///Layout of the viewports widgets
 		CAViewPort *_lastUsedViewPort;	///The last viewport user interacted with
 };

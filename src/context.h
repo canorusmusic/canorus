@@ -15,12 +15,18 @@
 
 class CASheet;
 
+
 class CAContext {
 	public:
-		enum {CAStaff, CATablature, CALyrics, CADynamics};
-
 		CAContext(CASheet *s);
 		
+		enum CAContextType {
+			Staff,
+			Tablature,
+			Lyrics,
+			Dynamics
+		};
+
 		/**
 		 * Set the Context's name.
 		 * 
@@ -28,12 +34,12 @@ class CAContext {
 		 */
 		void setName(const QString name) { _name = name; }
 		virtual void clear() = 0;
-		char type() { return _type; }
+		CAContextType contextType() { return _contextType; }
 		
 	protected:
 		CASheet *_sheet;
 		QString _name;
-		char _type;
+		CAContextType _contextType;
 };
 
 #endif /*CONTEXT_H_*/

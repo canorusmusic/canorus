@@ -7,12 +7,12 @@
  */
 
 #include <QPainter>
-#include <iostream>
+
 #include "voice.h"
 #include "staff.h"
 
 CAStaff::CAStaff(CASheet *s) : CAContext(s) {
-	_type = CAContext::CAStaff;
+	_contextType = CAContext::Staff;
 	_numberOfLines = 5;
 }
 
