@@ -74,11 +74,12 @@ CAViewPort* CAScrollWidget::unsplit(CAViewPort *v) {
 }
 
 CAViewPort* CAScrollWidget::newViewPort(CAViewPort *v) {
-	_viewPorts.append(_lastUsedViewPort = (v?v->clone(0):_lastUsedViewPort->clone(0)));
+	CAViewPort* viewPort;
+	_viewPorts.append(viewPort = v?v->clone(0):_lastUsedViewPort->clone(0));
 
-	_lastUsedViewPort->show();
+	viewPort->show();
 	//set the _worldW, _worldH and update scrollbars etc. beside the size
-	_lastUsedViewPort->resize(v?v->width():DEFAULT_VIEWPORT_WIDTH, v?v->height():DEFAULT_VIEWPORT_HEIGHT);
+	viewPort->resize(v?v->width():DEFAULT_VIEWPORT_WIDTH, v?v->height():DEFAULT_VIEWPORT_HEIGHT);
 	
-	return _lastUsedViewPort;
+	return viewPort;
 }
