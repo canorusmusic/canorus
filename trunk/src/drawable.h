@@ -44,6 +44,8 @@ class CADrawable {
 		void setWidth(int width) { _width = width; }
 		void setHeight(int height) { _height = height; }
 		void setVisible(bool v) { _visible = v; }
+		
+		virtual CADrawable *clone() = 0;
 
 	protected:
 		int _xPos;

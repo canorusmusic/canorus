@@ -17,7 +17,8 @@
 class CANote :  public CAMusElement, public CAPlayable {
 	public:
 		CANote(int length, int x, int y);
-		void draw(QPainter *p, int x, int y, float z);
+		void draw(QPainter *p, CADrawSettings s);
+		CANote *clone();
 
 	private:
 		int _length;

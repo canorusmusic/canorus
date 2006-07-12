@@ -35,8 +35,6 @@ void CAScrollWidget::resizeEvent(QResizeEvent *) {
 CAViewPort* CAScrollWidget::splitVertically(CAViewPort *v) {
 	if (!v) {
 		_viewPorts.append(_lastUsedViewPort = _lastUsedViewPort->clone());
-		connect(_lastUsedViewPort, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-		connect(_lastUsedViewPort, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 		
 		_layout->addWidget(_lastUsedViewPort, 0, _layout->columnCount(), _layout->rowCount(), 1);
 		_layout->update();
@@ -48,8 +46,6 @@ CAViewPort* CAScrollWidget::splitVertically(CAViewPort *v) {
 CAViewPort* CAScrollWidget::splitHorizontally(CAViewPort *v) {
 	if (!v) {
 		_viewPorts.append(_lastUsedViewPort = _lastUsedViewPort->clone());
-		connect(_lastUsedViewPort, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-		connect(_lastUsedViewPort, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 
 		_layout->addWidget(_lastUsedViewPort, _layout->rowCount(), 0, 1, _layout->columnCount());
 		_layout->update();
@@ -71,9 +67,7 @@ void CAScrollWidget::unsplit(CAViewPort *v) {
 }
 
 CAViewPort* CAScrollWidget::newViewPort(CAViewPort *v) {
-	_viewPorts.append(_lastUsedViewPort =  v?v->clone(0):_lastUsedViewPort->clone(0));
-	connect(_lastUsedViewPort, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-	connect(_lastUsedViewPort, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+	_viewPorts.append(_lastUsedViewPort = (v?v->clone(0):_lastUsedViewPort->clone(0)));
 
 	_lastUsedViewPort->show();
 	//set the _worldW, _worldH and update scrollbars etc. beside the size
