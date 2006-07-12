@@ -54,16 +54,23 @@ CAViewPort* CAScrollWidget::splitHorizontally(CAViewPort *v) {
 	}
 }
 
-void CAScrollWidget::unsplit(CAViewPort *v) {
+CAViewPort* CAScrollWidget::unsplit(CAViewPort *v) {
 	if (_viewPorts.size() <= 1)
-		return;
+		return 0;
 	
-	_viewPorts.removeAll(v?v:_lastUsedViewPort);
-	(v?v:_lastUsedViewPort)->disconnect();	//disconnect all the signals
-	_layout->removeWidget(v?v:_lastUsedViewPort);
-	delete (v?v:_lastUsedViewPort);
+	if (!v)
+		v = _lastUsedViewPort;
+		
+	v->disconnect();	//disconnect all the signals
+	_layout->removeWidget(v);
+	delete (v);
 	
 	_lastUsedViewPort = _viewPorts.back();
+	
+	if (_viewPorts.removeAll(v))
+		return v;
+	else
+		return 0;
 }
 
 CAViewPort* CAScrollWidget::newViewPort(CAViewPort *v) {

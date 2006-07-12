@@ -16,7 +16,7 @@
 
 /**
  * CAViewPort is the base widget for different types of views of the document.
- * ViewPort can represent a score view, envelope view, score source view etc.
+ * Viewport can represent a score view, envelope view, score source view etc.
  */
 class CAViewPort : public QWidget {
 	Q_OBJECT
@@ -36,7 +36,22 @@ class CAViewPort : public QWidget {
 		~CAViewPort();
 		
 		/**
-		 * Clone the viewPort.
+		 * This enum holds different viewport types:
+		 * - ScoreViewPort - The main view of the score. All the music elements (staffs, notes, rests) are rendered to this viewport. 
+		 */
+		enum CAViewPortType {
+			ScoreViewPort
+		};
+		
+		/**
+		 * Return the viewport type. See enum CAViewPortType for viewport types.
+		 * 
+		 * @return Return the viewport's type in CAViewPortType type.
+		 */
+		CAViewPortType viewPortType() { return _viewPortType; }
+		
+		/**
+		 * Clone the viewport.
 		 *
 		 * @return Pointer to the new viewPort class.
 		 */
@@ -45,7 +60,7 @@ class CAViewPort : public QWidget {
 		/**
 		 * This is an overloaded member function, provided for convenience.
 		 * 
-		 * Clone the viewPort with a different parent widget.
+		 * Clone the viewport with a different parent widget.
 		 *
 		 * @param parent New parent of the cloned widget.
 		 * @return Pointer to the new viewPort class.
@@ -53,6 +68,11 @@ class CAViewPort : public QWidget {
 		virtual CAViewPort *clone(QWidget *parent) = 0;
 		
 	protected:
+		////////////////////////////////////////////////
+		//General properties
+		////////////////////////////////////////////////
+		CAViewPortType _viewPortType;
+
 		////////////////////////////////////////////////
 		//Widgets
 		////////////////////////////////////////////////

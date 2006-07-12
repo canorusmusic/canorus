@@ -31,7 +31,6 @@ class CASheet {
 		QList<CAStaff *> _staffList;	///List of all the staffs only in the sheet
 		
 		QString _name;
-		
 };
 
 #endif /*SHEET_H_*/

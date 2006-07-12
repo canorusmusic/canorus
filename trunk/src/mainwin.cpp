@@ -42,12 +42,9 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
   : QMainWindow( oParent )
 {
 	oMainWin.setupUi( this );
-	connectActions();
-	
-	newDocument();
-}
 
-void CAMainWin::connectActions() {
+	_currentMode = SelectMode;
+	newDocument();
 }
 
 void CAMainWin::newDocument() {
@@ -104,7 +101,9 @@ void CAMainWin::on_actionSplit_vertically_activated() {
 }
 
 void CAMainWin::on_actionUnsplit_activated() {
-	_currentScrollWidget->unsplit();
+	CAViewPort *v = _currentScrollWidget->unsplit();
+	if (v)
+		_viewPortList.removeAll(v);
 }
 
 void CAMainWin::on_actionNew_viewport_activated() {
@@ -137,6 +136,13 @@ void CAMainWin::on_actionNew_staff_activated() {
 void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
 	_activeViewPort = v;
 
+	switch (_currentMode) {
+		case SelectMode:
+//			v->select(coords.x, coords.y);
+			v->repaint();
+			break;
+	}
+
 	if (e->modifiers()==Qt::ControlModifier) {
 		//_musElements.removeElement(coords.x(), coords.y());
 	} else {
@@ -144,10 +150,10 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPor
 		//_musElements.addElement(new CAStaff(_sheet, 0, coords.y()));
 	}
 	
-	for (int i=0; i<_viewPortList.size(); i++) {
+/*	for (int i=0; i<_viewPortList.size(); i++) {
 		((CAScoreViewPort*)(_viewPortList[i]))->checkScrollBars();
 		_viewPortList[i]->repaint();
-	}
+	} */
 }
 
 void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *c) {

@@ -21,6 +21,8 @@
 #include "engraver.h"
 
 CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(parent) {
+	_viewPortType = CAViewPort::ScoreViewPort;
+	
 	_sheet = sheet;
 	_worldX = _worldY = 0;
 	_zoom = 1.0;
