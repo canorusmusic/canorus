@@ -9,6 +9,7 @@
 #include <QGridLayout>
 #include <QScrollBar>
 #include <QPainter>
+#include <QBrush>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPalette>
@@ -37,9 +38,6 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	
 	_currentContext = 0;
 	
-	setPalette(QPalette(QColor(255, 255, 240)));
-	setAutoFillBackground(true);
-
 	//setup the mouse events and forward them to CAEventName events
 	connect(this, SIGNAL(mousePressEvent(QMouseEvent *)), this, SLOT(processMousePressEvent(QMouseEvent *)));
 	connect(this, SIGNAL(wheelEvent(QWheelEvent *)), this, SLOT(processWheelEvent(QWheelEvent *)));
@@ -327,6 +325,11 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		return;
 	
 	QPainter p(this);
+	
+	//draw the background
+	p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), QBrush(QColor(255, 255, 240)));
+	
+	//draw contexts
 	int j = _drawableCList.size();
 	QList<CADrawable *>* l = _drawableCList.findInRange(_worldX, _worldY, _worldW, _worldH);
 	for (int i=0; i<l->size(); i++) {
@@ -342,9 +345,8 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 
 	delete l;
 	
+	//draw music elements
 	l = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
-	if (!l) return;
-
 	for (int i=0; i<l->size(); i++) {
 		CADrawSettings s = {
 		               _zoom,
