@@ -105,7 +105,7 @@ private slots:
 	/**
 	 * Called when the tab is switched.
 	 */
-	void CAMainWin::on_tabWidget_currentChanged(int);
+	void on_tabWidget_currentChanged(int);
 
 private:
 	/**
@@ -115,7 +115,7 @@ private:
 	 * @param sheet Pointer to the common CASheet viewports use.
 	 * @param repaint Should the viewports be repainted as well.
 	 */
-	void CAMainWin::rebuildScoreViewPorts(CASheet *sheet, bool repaint=true);
+	void rebuildScoreViewPorts(CASheet *sheet, bool repaint=true);
 	
 	#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))
 	CAMode _currentMode;
