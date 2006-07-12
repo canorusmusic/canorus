@@ -11,15 +11,14 @@
 #include "drawablenote.h"
 #include "note.h"
 
-CADrawableNote::CADrawableNote(CANote *note, int x, int y) : CADrawable(x, y) {
-	_note = note;
+CADrawableNote::CADrawableNote(CANote *note, int x, int y) : CADrawableMusElement(note, x, y) {
 	_width = 9;
 	_height = 34;
 }
 
 void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 #define QUARTER_STEM_LENGTH 20
-	switch (_note->noteLength()) {
+	switch (note()->noteLength()) {
 		case CANote::Quarter:
 			s.y += (int)(QUARTER_STEM_LENGTH*s.z);
 			p->setFont(QFont("Emmentaler",(int)(16*s.z)));

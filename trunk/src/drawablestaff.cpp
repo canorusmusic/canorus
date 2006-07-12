@@ -11,8 +11,7 @@
 #include "drawablestaff.h"
 #include "staff.h"
 
-CADrawableStaff::CADrawableStaff(CAStaff *s, int x, int y) : CADrawable(x, y) {
-	_staff = s;
+CADrawableStaff::CADrawableStaff(CAStaff *s, int x, int y) : CADrawableContext(s, x, y) {
 	_width = 0;
 	_height = 60;
 }
@@ -25,14 +24,14 @@ void CADrawableStaff::draw(QPainter *p, const CADrawSettings s) {
 	p->setPen(pen);
 	
 	int dy=0;
-	for (int i=0; i<_staff->numberOfLines(); i++, dy = (int)(((float)i/(_staff->numberOfLines()-1)) * _height * s.z)) {
+	for (int i=0; i<staff()->numberOfLines(); i++, dy = (int)(((float)i/(staff()->numberOfLines()-1)) * _height * s.z)) {
 		p->drawLine(0, s.y + dy,
 		            s.w, s.y + dy);
 	}
 }
 
 CADrawableStaff *CADrawableStaff::clone() {
-	CADrawableStaff *d = new CADrawableStaff(_staff, _xPos, _yPos);
+	CADrawableStaff *d = new CADrawableStaff(staff(), _xPos, _yPos);
 	
 	return d;
 }

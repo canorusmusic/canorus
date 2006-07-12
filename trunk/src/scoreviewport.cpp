@@ -16,6 +16,7 @@
 
 #include "scoreviewport.h"
 #include "drawable.h"
+#include "drawablenote.h"
 #include "muselement.h"
 #include "context.h"
 #include "engraver.h"
@@ -93,15 +94,40 @@ CAScoreViewPort *CAScoreViewPort::clone(QWidget *parent) {
 	return v;
 }
 
-void CAScoreViewPort::addMElement(CADrawable *elt) {
+void CAScoreViewPort::addMElement(CADrawable *elt, bool select) {
 	_drawableMList.addElement(elt);
+	if (select) {
+		_selection.clear();
+		_selection << elt;
+	}
 }
 
-void CAScoreViewPort::addCElement(CADrawable *elt) {
+void CAScoreViewPort::addCElement(CADrawable *elt, bool select) {
 	_drawableCList.addElement(elt);
+	if (select)
+		_currentContext = elt;
 }
 
 CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
+	QList<CADrawable *>* l;
+	if ((l=_drawableMList.findInRange(x,y))->size() != 0) { //multiple elements can share the same coordinates
+		int idx;
+			_selection.clear();
+		if ( (_selection.size() != 1) || ((idx = l->indexOf(_selection.front())) == -1) ) {
+			_selection << l->at(0);	//if the previous selection was not a single element or if the new list doesn't contain the selection, add the first element in the available list to the selection
+		} else {
+			_selection << l->at((++idx < l->size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
+		}
+		
+		delete l;
+		
+		return ((CADrawableNote*)(_selection.front()))->note();
+	} else {
+		_selection.clear();
+		delete l;
+		
+		return 0;
+	}
 }
 
 CANote* CAScoreViewPort::addNote(CANote::CANoteLength noteLength, int x, int y) {
@@ -298,6 +324,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 
 	
 	p.drawLine(0, 0, drawableWidth(), drawableHeight());
+	delete l;
 	l = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
 	if (!l) return;
 

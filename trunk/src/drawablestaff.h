@@ -9,18 +9,16 @@
 #ifndef DRAWABLESTAFF_H_
 #define DRAWABLESTAFF_H_
 
-#include "drawable.h"
+#include "drawablecontext.h"
 
 class CAStaff;
 
-class CADrawableStaff : public CADrawable {
+class CADrawableStaff : public CADrawableContext {
 	public:
 		CADrawableStaff(CAStaff* staff, int x, int y);
 		void draw(QPainter *, const CADrawSettings s);
 		CADrawableStaff *clone();
-		
-	private:
-		CAStaff *_staff;
+		inline CAStaff *staff() { return (CAStaff*)_context; }
 };
 
 #endif /*DRAWABLESTAFF_H_*/

@@ -35,8 +35,8 @@ class CAScoreViewPort : public CAViewPort {
 		////////////////////////////////////////////////
 		//Score opertaions
 		////////////////////////////////////////////////
-		void addMElement(CADrawable *elt);
-		void addCElement(CADrawable *elt);
+		void addMElement(CADrawable *elt, bool select=false);
+		void addCElement(CADrawable *elt, bool select=false);
 		CANote *addNote(CANote::CANoteLength, int x, int y);
 		CAMusElement *removeMElement(int x, int y);
 		CAMusElement *selectMElement(int x, int y);
