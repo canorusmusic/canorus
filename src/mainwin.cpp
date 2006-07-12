@@ -23,11 +23,19 @@
 /*****************************************************************************/
 
 #include <QtGui/QtGui>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QPoint>
+
+#include <iostream>
+
+using namespace std;
 
 #include "mainwin.h"
 #include "sheet.h"
 #include "scrollwidget.h"
 #include "engraver.h"
+#include "scoreviewport.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
@@ -43,20 +51,31 @@ void CAMainWin::connectActions() {
 }
 
 void CAMainWin::newDocument() {
-	_document.clear();
-	clearSheets();
+	_document.clear();	//clear the data
+	clearUI();			//clear the UI
 	
-	addSheet();
+	addSheet();			//add a new empty sheet
 }
 
 void CAMainWin::addSheet() {
 	CASheet *s = _document.addSheet(QString("Sheet ") + QString::number(_document.sheetCount()+1));
+	CAScoreViewPort *v = new CAScoreViewPort(s, 0);
+
+	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 	
-	oMainWin.tabWidget->addTab(new CAScrollWidget(s, 0), s->name());
+	_viewPortList.append(v);
+	
+	oMainWin.tabWidget->addTab(new CAScrollWidget(v, 0), s->name());
 	oMainWin.tabWidget->setCurrentIndex(oMainWin.tabWidget->count()-1);
+	
+	_activeViewPort = v;
 }
 
-void CAMainWin::clearSheets() {
+void CAMainWin::clearUI() {
+	for (int i=0; i<_viewPortList.size(); i++)
+		delete _viewPortList[i];
+
 	while (oMainWin.tabWidget->count()) {
 		delete _currentScrollWidget;
 		oMainWin.tabWidget->removeTab(oMainWin.tabWidget->currentIndex());
@@ -95,7 +114,59 @@ void CAMainWin::on_actionNew_sheet_activated() {
 }
 
 void CAMainWin::on_actionNew_staff_activated() {
-	_currentScrollWidget->sheet()->addStaff();
-	CAEngraver::reposit(_currentScrollWidget->sheet(), _currentScrollWidget);
-	_currentScrollWidget->repaint();
+	CASheet *sheet = ((CAScoreViewPort*)_activeViewPort)->sheet();
+	CAStaff *staff = sheet->addStaff();
+	
+	for (int i=0; i<_viewPortList.size(); i++) {
+		if ( (((CAScoreViewPort*)(_viewPortList[i]))->sheet() == sheet) )
+			((CAScoreViewPort*)(_viewPortList[i]))->update();
+	}
+
+	_activeViewPort->repaint();
+}
+
+void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
+	_activeViewPort = v;
+
+	if (e->modifiers()==Qt::ControlModifier) {
+		//_musElements.removeElement(coords.x(), coords.y());
+	} else {
+		//_musElements.addElement(new CANote(4, coords.x(), coords.y()));
+		//_musElements.addElement(new CAStaff(_sheet, 0, coords.y()));
+	}
+	
+	for (int i=0; i<_viewPortList.size(); i++) {
+		((CAScoreViewPort*)(_viewPortList[i]))->checkScrollBars();
+		_viewPortList[i]->repaint();
+	}
+}
+
+void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *c) {
+	_activeViewPort = c;
+	CAScoreViewPort *v = (CAScoreViewPort*) c;
+
+	int val;
+	switch (e->modifiers()) {
+		case Qt::NoModifier:			//scroll horizontally
+			v->setWorldX( v->worldX() - (int)((0.5*e->delta()) / v->zoom()) );
+			break;
+		case Qt::AltModifier:			//scroll horizontally, fast
+			v->setWorldX( v->worldX() - (int)(e->delta() / v->zoom()) );
+			break;
+		case Qt::ShiftModifier:			//scroll vertically
+			v->setWorldY( v->worldY() - (int)((0.5*e->delta()) / v->zoom()) );
+			break;
+		case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
+			v->setWorldY( v->worldY() - (int)(e->delta() / v->zoom()) );
+			break;
+		case Qt::ControlModifier:		//zoom
+			if (e->delta() > 0)
+				v->setZoom( v->zoom()*1.1, coords.x(), coords.y() );
+			else
+				v->setZoom( v->zoom()/1.1, coords.x(), coords.y() );
+			
+			break;
+	}
+
+	v->repaint();
 }

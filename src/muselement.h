@@ -14,6 +14,7 @@
 class CAMusElement : public CADrawable {
 	public:
 		CAMusElement(int x, int y);
+	
 };
 
 #endif /*MUSELEMENT_H_*/

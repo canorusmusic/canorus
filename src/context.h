@@ -9,18 +9,31 @@
 #ifndef CONTEXT_H_
 #define CONTEXT_H_
 
+#include <QString>
+
 #include "drawable.h"
 
 class CASheet;
 
-class CAContext : public CADrawable {
+class CAContext {
 	public:
-		CAContext(CASheet *s, int x, int y);
+		enum {CAStaff, CATablature, CALyrics, CADynamics};
+
+		CAContext(CASheet *s);
 		
+		/**
+		 * Set the Context's name.
+		 * 
+		 * @param name Context's name in QString format
+		 */
+		void setName(const QString name) { _name = name; }
 		virtual void clear() = 0;
+		char type() { return _type; }
 		
 	protected:
 		CASheet *_sheet;
+		QString _name;
+		char _type;
 };
 
 #endif /*CONTEXT_H_*/

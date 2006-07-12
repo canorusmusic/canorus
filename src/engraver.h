@@ -9,12 +9,11 @@
 #ifndef ENGRAVER_
 #define ENGRAVER_
 
-class CASheet;
-class CAScrollWidget;
+class CAScoreViewPort;
 
 class CAEngraver {
 	public:
-		static void reposit(CASheet *s, CAScrollWidget *c);
+		static void reposit(CAScoreViewPort *v);
 };
 
 #endif /*ENGRAVER_*/

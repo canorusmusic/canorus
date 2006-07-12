@@ -98,8 +98,31 @@ class CAKDTree {
 
 		/**
 		 * Remove all elements from the list.
+		 * 
+		 * @param autoDelete Also delete the contents of the pointers in the list.
 		 */
-		void clear() { _list.clear(); }
+		void clear(bool autoDelete=true);
+		
+		/**
+		 * Number of the elements in the tree.
+		 * 
+		 * @return Number of elements currently in the tree.
+		 */
+		int size() { return _list.size(); }
+		
+		/**
+		 * Import all the elements from the given tree.
+		 * 
+		 * @param tree The tree which all the elements are going to be imported from
+		 */
+		void import(CAKDTree *tree);
+		
+		/**
+		 * Returns the pointer to the list of all the elements.
+		 * 
+		 * @return Pointer to the QList of all the elements.
+		 */
+		QList<CADrawable *>& list() { return _list; }
 	
 	private:
 		////////////////////////////////////////////////

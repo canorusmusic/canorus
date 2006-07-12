@@ -15,7 +15,7 @@ INCLUDE( ${QT_USE_FILE} )
 set(Canorus_UIs  mainwin.ui)
 
 # Define the MOC source files used by Canorus
-set(Canorus_MOCs mainwin.h scrollwidget.h viewport.h)
+set(Canorus_MOCs mainwin.h scrollwidget.h viewport.h scoreviewport.h)
 
 # Add all sources to Canorus_Srcs
 set(Canorus_Srcs mainwin.cpp
@@ -33,6 +33,8 @@ set(Canorus_Srcs mainwin.cpp
 	muselement.cpp
 	note.cpp
 	engraver.cpp
+	drawablestaff.cpp
+	scoreviewport.cpp
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)

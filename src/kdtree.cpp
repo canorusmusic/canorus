@@ -41,14 +41,30 @@ bool CAKDTree::removeElement(int x, int y) {
 	return false;
 }
 
+void CAKDTree::clear(bool autoDelete) {
+	if (autoDelete) {
+		for (int i=0; i<_list.size(); i++)
+			delete _list[i];
+	}
+	
+	_list.clear();
+}
+
 QList<CADrawable *>* CAKDTree::findInRange(int x, int y, int w, int h) {
 	QList<CADrawable *> *l = new QList<CADrawable *>();
 
 	for (int i=0; i<_list.size(); i++) {
-		if ( (_list[i]->xPos() <= x+w) &&
+		if ( ((_list[i]->xPos() <= x+w) &&						//The object is normal and fits into the area
 		     (_list[i]->yPos() <= y+h) &&
 		     (_list[i]->xPos() + _list[i]->width() >= x) &&
-		     (_list[i]->yPos() + _list[i]->height() >= y) )
+		     (_list[i]->yPos() + _list[i]->height() >= y)) ||
+		     ((_list[i]->width() == 0) &&						//The object is unlimited in width (eg. contexts)
+		     (_list[i]->yPos() <= y+h) &&
+		     (_list[i]->yPos() + _list[i]->height() >= y)) ||
+		     ((_list[i]->height() == 0) &&						//The object is unlimited in height (eg. helper lines)
+		     (_list[i]->xPos() <= x+h) &&
+		     (_list[i]->xPos() + _list[i]->width() >= x))
+		    )
 			*l << _list[i];
 	}
 
@@ -76,4 +92,8 @@ void CAKDTree::calculateMaxXY() {
 		if (_list[i]->yPos() + _list[i]->height() > _maxY)
 			_maxY = _list[i]->yPos() + _list[i]->height();
 	}
+}
+
+void CAKDTree::import(CAKDTree *tree) {
+	_list += tree->list();
 }

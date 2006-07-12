@@ -8,6 +8,6 @@
 
 #include "context.h"
 
-CAContext::CAContext(CASheet *s, int x, int y) : CADrawable(x, y) {
+CAContext::CAContext(CASheet *s) {
 	_sheet = s;
 }
