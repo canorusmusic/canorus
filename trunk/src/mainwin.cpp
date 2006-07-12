@@ -97,6 +97,8 @@ void CAMainWin::on_actionSplit_horizontally_activated() {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 	}
+
+	_viewPortList.append(v);
 }
 
 void CAMainWin::on_actionSplit_vertically_activated() {
@@ -106,6 +108,8 @@ void CAMainWin::on_actionSplit_vertically_activated() {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 	}
+	
+	_viewPortList.append(v);
 }
 
 void CAMainWin::on_actionUnsplit_activated() {
@@ -121,6 +125,8 @@ void CAMainWin::on_actionNew_viewport_activated() {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 	}
+
+	_viewPortList.append(v);
 }
 
 void CAMainWin::on_actionNew_activated() {
