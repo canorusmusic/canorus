@@ -22,7 +22,7 @@ class CASheet {
 		QList<CAContext *>* contextList() { return &_contextList; }
 
 		void setName(const QString name) { _name = name; }
-		void addStaff();
+		CAStaff *addStaff();
 
 		void clear();
 		

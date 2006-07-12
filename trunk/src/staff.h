@@ -21,12 +21,11 @@ class CAVoice;
 
 class CAStaff : public CAContext {
 	public:
-		CAStaff(CASheet *s, int x, int y);
+		CAStaff(CASheet *s);
 		
 		inline int numberOfLines() { return _numberOfLines; }
 		inline void setNumberOfLines(int val) { _numberOfLines = val; }
 		void clear();
-		void draw(QPainter *, const CADrawSettings s);
 		
 	private:
 		QList<CAVoice *> _voiceList;

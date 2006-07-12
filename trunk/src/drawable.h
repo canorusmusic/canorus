@@ -10,6 +10,7 @@
 #define DRAWABLE_H_
 
 #include <QRect>
+#include <QColor>
 
 class QPainter;
 
@@ -20,7 +21,7 @@ typedef struct CADrawSettings {
 		int w;
 		int h;
 		//QPenStyle penStyle;
-		//QColor color;
+		QColor color;
 };
 
 class CADrawable {
@@ -34,7 +35,7 @@ class CADrawable {
 		int xCenter() { return _xPos + _xPosOffset + (_width)/2; }
 		int yCenter() { return _yPos + _yPosOffset + (_height)/2; }
 		const QRect bBox() { return QRect(_xPos + _xPosOffset, _yPos + _yPosOffset, _width, _height); }
-		bool visible() { return _visible; }
+		bool isVisible() { return _visible; }
 		
 		void setXPos(int xPos) { _xPos = xPos; }
 		void setYPos(int yPos) { _yPos = yPos; }

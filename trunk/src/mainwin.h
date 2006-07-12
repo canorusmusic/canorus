@@ -28,6 +28,8 @@
 
 #include "document.h"
 
+class CAViewPort;
+
 class CAMainWin: public QMainWindow
 {
 	Q_OBJECT
@@ -42,7 +44,15 @@ public:
 	//Sheet operations
 	////////////////////////////////////////////////////
 	void addSheet();
-	void clearSheets();
+	
+	/**
+	 * Delete all viewports and its contents.
+	 * Delete all signals.
+	 * Release all buttons and modes.
+	 * 
+	 * WARNING! This function delets the UI only (drawable elements). All the data classes should stay intact. Use _document.clear() in order to clear the data part as well.
+	 */
+	void clearUI();
 
 private slots:
 	////////////////////////////////////////////////////
@@ -64,9 +74,32 @@ private slots:
 	void on_actionUnsplit_activated();
 	void on_actionNew_viewport_activated();
 
+	////////////////////////////////////////////////////
+	//ViewPort actions
+	////////////////////////////////////////////////////
+	/**
+	 * Process the mouse events of the children viewports.
+	 * 
+	 * @param e Mouse event which gets processed.
+	 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
+	 * @param v Pointer to viewport where the event happened.
+	 */
+	void viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPort *v);
+	
+	/**
+	 * Process the wheel events of the children viewports.
+	 * 
+	 * @param e Wheel event which gets processed.
+	 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
+	 * @param v Pointer to viewport where the event happened.
+	 */
+	void viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *v);
+
 private:
 	void connectActions();	///Connect the menu and other actions with its appropriate slots
-#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))	
+#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))
+	QList<CAViewPort *> _viewPortList;
+	CAViewPort *_activeViewPort;	
     Ui::MainWindow oMainWin;
     CADocument _document;
 };

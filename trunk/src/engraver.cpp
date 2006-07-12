@@ -7,13 +7,16 @@
  */
 
 #include "engraver.h"
-#include "scrollwidget.h"
+#include "scoreviewport.h"
 #include "sheet.h"
+#include "drawablestaff.h"
 
-void CAEngraver::reposit(CASheet *s, CAScrollWidget *c) {
+void CAEngraver::reposit(CAScoreViewPort *v) {
 	int i;
+	CASheet *sheet = v->sheet();
 	
-	for (int i=0; i<s->contextList()->size(); i++) {
-		c->addElement((CADrawable*)s->contextList()->at(i));
+	int dy = 100;
+	for (int i=0; i < sheet->contextList()->size(); i++, dy+=200) {
+		v->addCElement(new CADrawableStaff( ((CAStaff*)(sheet->contextList()->at(i))), 0, dy));
 	}
 }

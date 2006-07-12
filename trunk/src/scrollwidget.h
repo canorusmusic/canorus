@@ -15,8 +15,6 @@
 
 #include "kdtree.h"
 
-#define DEFAULT_VIEWPORT_WIDTH 400
-#define DEFAULT_VIEWPORT_HEIGHT 400
 
 class CAViewPort;
 class CASheet;
@@ -32,25 +30,28 @@ class CAScrollWidget : public QFrame {
 		/**
 		 * The default constructor.
 		 * 
-		 * @param s Sheet which this scrollwidget represents 
+		 * @param v Pointer to the initial viewPort to be added to the layout.
 		 * @param p Parent widget.
 		 */
-		CAScrollWidget(CASheet *s, QWidget *p);
+		CAScrollWidget(CAViewPort *v, QWidget *p);
 		
 		/**
-		 * Return the associated CASheet.
-		 * 
-		 * @return The score sheet current scrollwidget represents
+		 * Clone the viewPort.
+		 *
+		 * @return Pointer to the new viewPort class.
 		 */
-		CASheet *sheet() { return _sheet; }
-		
+		CAViewPort *clone();
+
 		/**
-		 * Add a drawable element to the list.
+		 * This is an overloaded member function, provided for convenience.
 		 * 
-		 * @param elt The element to be added.
+		 * Clone the viewPort with a different parent widget.
+		 *
+		 * @param parent New parent of the cloned widget.
+		 * @return Pointer to the new viewPort class.
 		 */
-		void addElement(CADrawable *elt);
-		
+		CAViewPort *clone(QWidget *parent);
+
 		/**
 		 * Return the number of rows of viewports.
 		 * 
@@ -69,16 +70,25 @@ class CAScrollWidget : public QFrame {
 		 * Split the view horizontally.
 		 * 
 		 * @param v The viewport that should be splitted. If none given, split the last active one.
+		 * @return The new viewport added to the layout.
 		 */		
-		void splitHorizontally(CAViewPort *v = 0);
+		CAViewPort* splitHorizontally(CAViewPort *v = 0);
 
 		/**
 		 * Split the view vertically.
 		 * 
 		 * @param v The viewport that should be splitted. If none given, split the last active one.
+		 * @return The new viewport added to the layout.
 		 */		
-		void splitVertically(CAViewPort *v = 0);
+		CAViewPort* splitVertically(CAViewPort *v = 0);
 		
+		/**
+		 * Open a new viewport in a separated window.
+		 * 
+		 * @param v The viewport the new one should be copied from. If non given, a copy of the last active one is created.
+		 */
+		CAViewPort* newViewPort(CAViewPort *v = 0);
+
 		/**
 		 * Unsplit the views.
 		 * 
@@ -86,46 +96,7 @@ class CAScrollWidget : public QFrame {
 		 */				
 		void unsplit(CAViewPort *v = 0);
 		
-		/**
-		 * Open a new viewport in a separated window.
-		 * 
-		 * @param v The viewport the new one should be copied from. If non given, a copy of the last active one is created.
-		 */
-		void newViewPort(CAViewPort *v = 0);
-		
-	signals:
-		/**
-		 * The signal which gets emmitted when you click on an empty place.
-		 * 
-		 * @param e Mouse event which gets emmitted.
-		 */
-		void mousePressEvent(QMouseEvent *e);
-		
-		/**
-		 * The signal which gets emmitted when you use wheel on an empty place.
-		 * 
-		 * @param e Wheel event which gets emmitted.
-		 */
-		void wheelEvent(QWheelEvent *);
-
 	private slots:
-		/**
-		 * Process the mouse events of the children viewports.
-		 * 
-		 * @param e Mouse event which gets processed.
-		 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
-		 * @param v Pointer to viewport where the event happened.
-		 */
-		void viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPort *v);
-
-		/**
-		 * Process the wheel events of the children viewports.
-		 * 
-		 * @param e Wheel event which gets processed.
-		 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
-		 * @param v Pointer to viewport where the event happened.
-		 */
-		void viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *v);
 		
 		/**
 		 * Process the paint event.
