@@ -73,10 +73,13 @@ void CAMainWin::clearUI() {
 	for (int i=0; i<_viewPortList.size(); i++)
 		delete _viewPortList[i];
 
+	_viewPortList.clear();
+	
 	while (oMainWin.tabWidget->count()) {
 		delete _currentScrollWidget;
 		oMainWin.tabWidget->removeTab(oMainWin.tabWidget->currentIndex());
 	}
+
 }
 
 void CAMainWin::on_tabWidget_currentChanged(int idx) {
