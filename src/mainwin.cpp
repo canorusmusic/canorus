@@ -90,19 +90,28 @@ void CAMainWin::on_action_Fullscreen_toggled(bool checked) {
 }
 
 void CAMainWin::on_actionSplit_horizontally_activated() {
-	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->splitHorizontally();
+	CAScoreViewPort *v = (CAScoreViewPort *)_currentScrollWidget->splitHorizontally();
+	
+	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 }
 
 void CAMainWin::on_actionSplit_vertically_activated() {
-	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->splitVertically();
+	CAScoreViewPort *v = (CAScoreViewPort *)_currentScrollWidget->splitVertically();
+	
+	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 }
 
 void CAMainWin::on_actionUnsplit_activated() {
-	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->unsplit();
+	_currentScrollWidget->unsplit();
 }
 
 void CAMainWin::on_actionNew_viewport_activated() {
-	( (CAScrollWidget*)(oMainWin.tabWidget->currentWidget()) )->newViewPort();
+	CAScoreViewPort *v = (CAScoreViewPort *)_currentScrollWidget->newViewPort();
+
+	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 }
 
 void CAMainWin::on_actionNew_activated() {
