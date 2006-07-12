@@ -9,19 +9,30 @@
 #ifndef NOTE_H_
 #define NOTE_H_
 
-#include <QPainter>
-
 #include "muselement.h"
 #include "playable.h"
 
 class CANote :  public CAMusElement, public CAPlayable {
 	public:
-		CANote(int length, int x, int y);
-		void draw(QPainter *p, CADrawSettings s);
+		enum CANoteLength {
+			Brevis,
+			Whole,
+			Half,
+			Quarter,
+			Eighth,
+			Sixteenth,
+			ThirtySecondth,
+			SixtyFourth,
+			HundredTwentyEighth
+		};
+		
+		CANote(CANoteLength length);
 		CANote *clone();
+		
+		CANoteLength noteLength() { return _noteLength; }
 
 	private:
-		int _length;
+		CANoteLength _noteLength;
 };
 #endif /*NOTE_H_*/
 

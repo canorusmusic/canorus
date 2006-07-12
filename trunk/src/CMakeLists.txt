@@ -34,6 +34,7 @@ set(Canorus_Srcs mainwin.cpp
 	note.cpp
 	engraver.cpp
 	drawablestaff.cpp
+	drawablenote.cpp
 	scoreviewport.cpp
 	)
 

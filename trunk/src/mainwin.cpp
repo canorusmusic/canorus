@@ -87,17 +87,21 @@ void CAMainWin::on_action_Fullscreen_toggled(bool checked) {
 }
 
 void CAMainWin::on_actionSplit_horizontally_activated() {
-	CAScoreViewPort *v = (CAScoreViewPort *)_currentScrollWidget->splitHorizontally();
+	CAViewPort *v = (CAViewPort *)_currentScrollWidget->splitHorizontally();
 	
-	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
+		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+	}
 }
 
 void CAMainWin::on_actionSplit_vertically_activated() {
-	CAScoreViewPort *v = (CAScoreViewPort *)_currentScrollWidget->splitVertically();
+	CAViewPort *v = (CAViewPort *)_currentScrollWidget->splitVertically();
 	
-	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
+		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+	}
 }
 
 void CAMainWin::on_actionUnsplit_activated() {
@@ -107,10 +111,12 @@ void CAMainWin::on_actionUnsplit_activated() {
 }
 
 void CAMainWin::on_actionNew_viewport_activated() {
-	CAScoreViewPort *v = (CAScoreViewPort *)_currentScrollWidget->newViewPort();
-
-	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+	CAViewPort *v = (CAViewPort *)_currentScrollWidget->newViewPort();
+	
+	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
+		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+	}
 }
 
 void CAMainWin::on_actionNew_activated() {
@@ -133,27 +139,34 @@ void CAMainWin::on_actionNew_staff_activated() {
 	_activeViewPort->repaint();
 }
 
+void CAMainWin::rebuildScoreViewPorts(CASheet *sheet, bool repaint) {
+	for (int i=0; i<_viewPortList.size(); i++) {
+		((CAScoreViewPort*)(_viewPortList[i]))->checkScrollBars();
+		_viewPortList[i]->repaint();
+	}
+}
+
 void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
 	_activeViewPort = v;
 
-	switch (_currentMode) {
-		case SelectMode:
-//			v->select(coords.x, coords.y);
-			v->repaint();
-			break;
+	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
+		switch (_currentMode) {
+			case SelectMode:
+				if (e->modifiers()==Qt::ControlModifier) {
+					if ( ((CAScoreViewPort*)v)->removeMElement(coords.x(), coords.y()) )
+						rebuildScoreViewPorts(((CAScoreViewPort*)v)->sheet());
+				} else {
+					if ( ((CAScoreViewPort*)v)->selectMElement(coords.x(), coords.y()) )
+						((CAScoreViewPort*)v)->repaint();
+				}
+				break;
+			
+			case InsertMode:
+				if ( ((CAScoreViewPort*)v)->addNote(CANote::Quarter, coords.x(), coords.y()) )
+					rebuildScoreViewPorts(((CAScoreViewPort*)v)->sheet());
+				break;
+		}
 	}
-
-	if (e->modifiers()==Qt::ControlModifier) {
-		//_musElements.removeElement(coords.x(), coords.y());
-	} else {
-		//_musElements.addElement(new CANote(4, coords.x(), coords.y()));
-		//_musElements.addElement(new CAStaff(_sheet, 0, coords.y()));
-	}
-	
-/*	for (int i=0; i<_viewPortList.size(); i++) {
-		((CAScoreViewPort*)(_viewPortList[i]))->checkScrollBars();
-		_viewPortList[i]->repaint();
-	} */
 }
 
 void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *c) {

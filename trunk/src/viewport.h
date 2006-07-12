@@ -36,7 +36,7 @@ class CAViewPort : public QWidget {
 		~CAViewPort();
 		
 		/**
-		 * This enum holds different viewport types:
+		 * enum CAViewPortType holds different viewport types:
 		 * - ScoreViewPort - The main view of the score. All the music elements (staffs, notes, rests) are rendered to this viewport. 
 		 */
 		enum CAViewPortType {

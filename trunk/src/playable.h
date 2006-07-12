@@ -10,6 +10,9 @@
 #define PLAYABLE_H_
 
 class CAPlayable {
+	protected:
+		int _midiLength;
+		int _midiPitch;
 };
 
 #endif /*PLAYABLE_H_*/
