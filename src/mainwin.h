@@ -101,6 +101,11 @@ private slots:
 	 * @param v Pointer to viewport where the event happened.
 	 */
 	void viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *v);
+	
+	/**
+	 * Called when the tab is switched.
+	 */
+	void CAMainWin::on_tabWidget_currentChanged(int);
 
 private:
 	/**

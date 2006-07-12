@@ -36,6 +36,13 @@ class CAScrollWidget : public QFrame {
 		CAScrollWidget(CAViewPort *v, QWidget *p);
 		
 		/**
+		 * Return the last used active viewport.
+		 * 
+		 * @return Pointer to the last used CAViewPort.
+		 */
+		CAViewPort *lastUsedViewPort() { return _lastUsedViewPort; }
+		
+		/**
 		 * Clone the viewPort.
 		 *
 		 * @return Pointer to the new viewPort class.
