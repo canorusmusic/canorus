@@ -10,6 +10,8 @@
 #define SCOREVIEWPORT_H_
 
 #include <QList>
+#include <QPen>
+#include <QBrush>
 
 #include "viewport.h"
 #include "kdtree.h"
@@ -35,8 +37,21 @@ class CAScoreViewPort : public CAViewPort {
 		~CAScoreViewPort();
 		
 		////////////////////////////////////////////////
+		//General methods
+		////////////////////////////////////////////////
+		CAScoreViewPort *clone();
+		CAScoreViewPort *clone(QWidget *parent);
+		
+		////////////////////////////////////////////////
 		//Score opertaions
 		////////////////////////////////////////////////
+		/**
+		 * Return the pointer to the viewport's sheet.
+		 * 
+		 * @return Pointer to the sheet the viewport represents.
+		 */
+		CASheet *sheet() { return _sheet; }
+		
 		void addMElement(CADrawableMusElement *elt, bool select=false);
 		void addCElement(CADrawableContext *elt, bool select=false);
 		CANote *addNote(CANote::CANoteLength, int x, int y);
@@ -50,8 +65,10 @@ class CAScoreViewPort : public CAViewPort {
 		void importMElements(CAKDTree *elts);
 		void importCElements(CAKDTree *elts);
 		
-		CAScoreViewPort *clone();
-		CAScoreViewPort *clone(QWidget *parent);
+		/**
+		 * Synchronize the sheets music elements with the actual drawable ones and reposition them.
+		 */
+		void update();
 		
 		///////////////////////////////////////////////
 		//Widget properties
@@ -107,8 +124,19 @@ class CAScoreViewPort : public CAViewPort {
 		 */
 		char scrollBarsVisibility() { return _scrollBarsVisible;}
 		
+		/**
+		 * Set the behaviour of the scrollbars visibility.
+		 * CAViewPort::ScrollBarAlwaysVisible - scrollbars are always visible, no matter if the whole scene can be rendered on canvas or not
+		 * CAViewPort::ScrollBarAlwaysHidden - scrollbars are always hidden, no matter if the whole scene can be rendered on canvas or not
+		 * CAViewPort::ScrollBarShowIfNeeded - scrollbars are visible, if they are needed (the current viewport area is too small to render the whole scene), otherwise hidden. This is default behaviour.
+		 * 
+		 * @param status Scrollbars visibility behaviour: use CAViewPort::ScrollBarAlwaysVisible, CAViewPort::ScrollBarAlwaysHidden or CAViewPort::ScrollBarShowIfNeeded.
+		 */
+		void setScrollBarsVisibility(char status);
+		enum {ScrollBarAlwaysVisible, ScrollBarAlwaysHidden, ScrollBarShowIfNeeded};
+
 		////////////////////////////////////////////////
-		//View actions
+		//View and appearance actions and settings
 		////////////////////////////////////////////////
 		/**
 		 * Set the world X coordinate of the viewport.
@@ -145,13 +173,6 @@ class CAScoreViewPort : public CAViewPort {
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */
 		void setWorldHeight(int h, bool force=false);
-		
-		/**
-		 * Return the pointer to the viewport's sheet.
-		 * 
-		 * @return Pointer to the sheet the viewport represents.
-		 */
-		CASheet *sheet() { return _sheet; }
 		
 		/**
 		 * Return the X coordinate of top-left point of the viewport.
@@ -256,23 +277,27 @@ class CAScoreViewPort : public CAViewPort {
 		 * @param p QPoint of the zoom direction.
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */
-		void setZoom(float z, QPoint p, bool force = false) { setZoom(z, p.x(), p.y(), force); }
-
-		/**
-		 * Set the behaviour of the scrollbars visibility.
-		 * CAViewPort::ScrollBarAlwaysVisible - scrollbars are always visible, no matter if the whole scene can be rendered on canvas or not
-		 * CAViewPort::ScrollBarAlwaysHidden - scrollbars are always hidden, no matter if the whole scene can be rendered on canvas or not
-		 * CAViewPort::ScrollBarShowIfNeeded - scrollbars are visible, if they are needed (the current viewport area is too small to render the whole scene), otherwise hidden. This is default behaviour.
-		 * 
-		 * @param status Scrollbars visibility behaviour: use CAViewPort::ScrollBarAlwaysVisible, CAViewPort::ScrollBarAlwaysHidden or CAViewPort::ScrollBarShowIfNeeded.
-		 */
-		void setScrollBarsVisibility(char status);
-		enum {ScrollBarAlwaysVisible, ScrollBarAlwaysHidden, ScrollBarShowIfNeeded};
+		void setZoom(float z, QPoint p, bool force = false) { setZoom(z, p.x(), p.y(), force); }		
 		
 		/**
-		 * Synchronize the sheets music elements with the actual drawable ones and reposition them.
+		 * Draw the border with the given pen style, color, width and other pen settings.
+		 * Enable border.
+		 * 
+		 * @param pen QPen object used for drawing the ViewPort border.
 		 */
-		void update();
+		void setBorder(const QPen pen);
+		
+		/**
+		 * Fill the background with the given brush style and color.
+		 * 
+		 * @param pen QBrush object used for drawing the ViewPort background.
+		 */
+		void setBackground(const QBrush brush);
+		
+		/**
+		 * Disable border.
+		 */
+		void unsetBorder();
 		
 	signals:
 		/**
@@ -370,7 +395,7 @@ class CAScoreViewPort : public CAViewPort {
 		
 	private:
 		////////////////////////////////////////////////
-		//Basic properties
+		//General properties
 		////////////////////////////////////////////////
 		CAKDTree _drawableMList;	///The list of music elements stored in a tree for faster lookup and other operations. Every viewport has its own list of drawable elements and drawable objects themselves!
 		CAKDTree _drawableCList;	///The list of context drawable elements (staffs, lyrics etc.). Every viewport has its own list of drawable elements and drawable objects themselves!
@@ -383,11 +408,14 @@ class CAScoreViewPort : public CAViewPort {
 		float _zoom;	///Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
 		
 		////////////////////////////////////////////////
-		//Widgets
+		//Widgets and appearance
 		////////////////////////////////////////////////
 		QGridLayout *_layout;	///Grid layout for placing the scrollbars at the right and the bottom.
 		QWidget *_canvas;	///Virtual canvas which represents the size of the drawable area. All its signals are forwarded to CAViewPort.
 		QScrollBar *_hScrollBar, *_vScrollBar;	///Horizontal/vertical scrollbars
+		bool _drawBorder;	///Should the border be drawn or not
+		QPen _borderPen;	///Pen which the border is drawn by
+		QBrush _backgroundBrush;	///Brush which the background is drawn by
 
 		////////////////////////////////////////////////
 		//Widgets behaviour

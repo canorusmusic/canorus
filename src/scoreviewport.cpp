@@ -44,7 +44,8 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 
 	//setup the virtual canvas
 	_canvas = new QWidget(this);
-
+	_backgroundBrush = QBrush(QColor(255, 255, 240));
+	
 	//setup the scrollbars
 	_vScrollBar = new QScrollBar(Qt::Vertical, this);
 	_hScrollBar = new QScrollBar(Qt::Horizontal, this);
@@ -63,6 +64,7 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	//setup layout
 	_layout = new QGridLayout(this);
 	_layout->setMargin(0);
+	_drawBorder = false;
 	_layout->addWidget(_canvas, 0, 0);
 	_layout->addWidget(_vScrollBar, 0, 1);
 	_layout->addWidget(_hScrollBar, 1, 0);
@@ -326,9 +328,14 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	
 	QPainter p(this);
 	
-	//draw the background
-	p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), QBrush(QColor(255, 255, 240)));
+	if (_drawBorder) {
+		p.setPen(_borderPen);
+		p.drawRect(0,0,width()-1,height()-1);
+	}
 	
+	//draw the background
+	p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundBrush);
+
 	//draw contexts
 	int j = _drawableCList.size();
 	QList<CADrawable *>* l = _drawableCList.findInRange(_worldX, _worldY, _worldW, _worldH);
@@ -363,6 +370,21 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	_oldWorldW = _worldW; _oldWorldH = _worldH;
 	
 	delete l;	
+}
+
+void CAScoreViewPort::setBorder(const QPen pen) {
+	_layout->setMargin(pen.width());	
+	_borderPen = pen;
+	_drawBorder = true;
+}
+
+void CAScoreViewPort::setBackground(const QBrush brush) {
+	_backgroundBrush = brush;
+}
+
+void CAScoreViewPort::unsetBorder() {
+	_layout->setMargin(0);
+	_drawBorder = false;
 }
 
 void CAScoreViewPort::resizeEvent(QResizeEvent *e) {
