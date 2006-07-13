@@ -11,9 +11,11 @@
 
 #include "drawable.h"
 
+class CAContext;
+
 class CAMusElement {
 	public:
-		CAMusElement();
+		CAMusElement(CAContext *context, int time, int length=0);
 		
 		/**
 		 * enum CAMusElementType includes different types for describing the CAMusElement:
@@ -28,8 +30,9 @@ class CAMusElement {
 		 * - Slur - A music element which represents CASlur.
 		 * - Tie - A music element which represents CATie.
 		 * - PhrazingSlur - A music element which represents CAPhrazingSlur.
-		 * - Text - A music element which represents any arbitrary text sign.
+		 * - ExpressionMarking - A music element which represents any technical text markings about how the score should be played - CAExpressionMarking (eg. Legato)
 		 * - VolumeSign - A music element which represents any volue sign (forte, piano etc.).
+		 * - Text - A music element which represents any text notes and authors additions to the score. (eg. These 3 measures still need to be fixed)
 		 */
 		enum CAMusElementType {
 			Note = 1,
@@ -43,8 +46,9 @@ class CAMusElement {
 			Slur,
 			Tie,
 			PhrazingSlur,
-			Text,
-			VolumeSign
+			ExpressionMarking,
+			VolumeSign,
+			Text
 		};
 		
 		/**
@@ -54,9 +58,36 @@ class CAMusElement {
 		 * @return Music element type in CAMusElementType format.
 		 */
 		CAMusElementType musElementType() { return _musElementType; }
+		
+		/**
+		 * Return the CAContext which this music element belongs too.
+		 * 
+		 * @return Pointer to the CAContext which this music element belongs too.
+		 */
+		CAContext *context() { return _context; }
+		
+		int timeStart() { return _timeStart; }
+		int timeLength() { return _timeLength; }
+		
+		/**
+		 * Set the new start time in the score for this music element.
+		 * 
+		 * @param time The new time in absolute sample units.
+		 */
+		void setTimeStart(int time) { _timeStart = time; }
+		
+		/**
+		 * Set the new music element length in the score.
+		 * 
+		 * @param length The new length in absolue time sample units.
+		 */
+		void setTimeLength(int length) { _timeLength = length; }
 	
 	protected:
 		CAMusElementType _musElementType;	///Stores the type of the music element. See CAMusElement::enum CAMusElementType for details.
+		CAContext *_context;	///Pointer to the context which this music element belongs too.
+		int _timeStart;		//Where does this music element exist in time (start)
+		int _timeLength;	//How long is this music element in time 
 };
 
 #endif /*MUSELEMENT_H_*/

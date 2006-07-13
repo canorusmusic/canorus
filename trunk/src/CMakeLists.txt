@@ -38,6 +38,7 @@ set(Canorus_Srcs mainwin.cpp
 	scoreviewport.cpp
 	drawablecontext.cpp
 	drawablemuselement.cpp
+	clef.cpp
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)

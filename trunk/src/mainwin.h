@@ -39,6 +39,7 @@ enum CAMode {
 };
 
 class CAViewPort;
+class CAScoreViewPort;
 
 class CAMainWin: public QMainWindow
 {
@@ -51,9 +52,10 @@ public:
 	void newDocument();
 	
 	////////////////////////////////////////////////////
-	//Sheet operations
+	//Score operations
 	////////////////////////////////////////////////////
 	void addSheet();
+	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v);
 	
 	/**
 	 * Delete all viewports and its contents.
@@ -95,7 +97,7 @@ private slots:
 	 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
 	 * @param v Pointer to viewport where the event happened.
 	 */
-	void viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPort *v);
+	void viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *v);
 	
 	/**
 	 * Process the wheel events of the children viewports.
@@ -104,7 +106,7 @@ private slots:
 	 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
 	 * @param v Pointer to viewport where the event happened.
 	 */
-	void viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *v);
+	void viewPortWheelEvent(QWheelEvent *e, const QPoint coords, CAViewPort *v);
 	
 	/**
 	 * Called when the tab is switched.
@@ -133,7 +135,7 @@ private:
 	#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))
 
 	////////////////////////////////////////////////////
-	//Score operations
+	//Score properties
 	////////////////////////////////////////////////////
 	CAMusElement::CAMusElementType _insertMusElement;	///Current element to be added. 0, if in view mode, CAMusElementType, if in insert mode
 
