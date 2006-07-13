@@ -14,6 +14,8 @@
 CAStaff::CAStaff(CASheet *s) : CAContext(s) {
 	_contextType = CAContext::Staff;
 	_numberOfLines = 5;
+	
+	_voiceList << new CAVoice(this);
 }
 
 void CAStaff::clear() {
@@ -23,4 +25,13 @@ void CAStaff::clear() {
 	}
 	
 	_voiceList.clear();
+}
+
+CAClef* CAStaff::addClef(CAClef::CAClefType clefType, int timeStart) {
+	CAClef *clef = new CAClef(clefType, this, timeStart);
+	
+	for (int i=0; i<_voiceList.size(); i++)
+		_voiceList[i]->addClef(clef);
+	
+	return clef;
 }

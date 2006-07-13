@@ -30,6 +30,8 @@ class CADrawable {
 		virtual void draw(QPainter *p, const CADrawSettings s) = 0;
 		int xPos() { return _xPos + _xPosOffset; }
 		int yPos() { return _yPos + _yPosOffset; }
+		int xPosOrig() { return _xPos; }
+		int yPosOrig() { return _yPos; }
 		int width() { return _width; }
 		int height() { return _height; }
 		int xCenter() { return _xPos + _xPosOffset + (_width)/2; }

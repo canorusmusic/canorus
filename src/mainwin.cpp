@@ -38,6 +38,7 @@ using namespace std;
 #include "engraver.h"
 #include "scoreviewport.h"
 #include "staff.h"
+#include "clef.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
@@ -194,7 +195,7 @@ void CAMainWin::rebuildScoreViewPorts(CASheet *sheet, bool repaint) {
 	}
 }
 
-void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
+void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *v) {
 	_activeViewPort = v;
 
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
@@ -211,10 +212,29 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, QPoint coords, CAViewPor
 				break;
 			
 			case InsertMode:
-				if ( ((CAScoreViewPort*)v)->addNote(CANote::Quarter, coords.x(), coords.y()) )
-					rebuildScoreViewPorts(((CAScoreViewPort*)v)->sheet());
+				insertMusElementAt( coords, (CAScoreViewPort*)v );
 				break;
 		}
+	}
+}
+
+void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
+	int timeStart = v->calculateTime(coords.x(), coords.y());
+	CAContext *context = v->contextCollision(coords.x(), coords.y());
+	
+	switch (_insertMusElement) {
+		case CAMusElement::Clef:
+			if ( (!context) ||
+			    (context->contextType() != CAContext::Staff) )
+				return;
+			
+			CAStaff *staff = (CAStaff*)context;
+			
+			CAClef *clef = staff->addClef(CAClef::Treble, timeStart);
+			
+			rebuildScoreViewPorts(v->sheet(), true);
+			v->selectMElement(clef);
+			break;
 	}
 }
 

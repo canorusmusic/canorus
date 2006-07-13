@@ -12,13 +12,21 @@
 #include <QList>
 
 class CAMusElement;
+class CAStaff;
+class CAClef;
 
 class CAVoice {
 	public:
+		CAVoice(CAStaff *staff);
+		CAStaff *staff() { return _staff; }
 		void clear();
+		
+		void addClef(CAClef *clef);
 	
 	private:
 		QList<CAMusElement *> _musElementList;
+		CAStaff *_staff;	///Staff which this voice belongs to by default.
+		int _voiceNumber;	///Number of the voice.
 };
 
 #endif /*VOICE_H_*/

@@ -81,6 +81,19 @@ class CAKDTree {
 		QList<CADrawable *>* findInRange(QRect *area);
 
 		/**
+		 * These methods find the nearest element to the given coordinate and in the given direction.
+		 * 
+		 * @param x,y Coordinate
+		 * @param bool Should the lookup be view-based (default) - the nearest element is selected as it appears on the screen, or time-based - the nearest element is selected according to the nearest start/end time
+		 * @return Pointer to the CADrawable, if found, otherwise 0.
+		 */
+		CADrawable *findNearestLeft(int x, bool timeBased=false);
+		CADrawable *findNearestRight(int x, bool timeBased=false);
+		CADrawable *findNearestUp(int y);
+		CADrawable *findNearestDown(int y);
+		
+		
+		/**
 		 * Return the max X coordinate of the end of the most-right element.
 		 * This value is read from buffer, so the time complexity is O(1)!
 		 * 

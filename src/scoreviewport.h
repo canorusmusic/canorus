@@ -58,8 +58,23 @@ class CAScoreViewPort : public CAViewPort {
 		CANote *addNote(CANote::CANoteLength, int x, int y);
 		CAMusElement *removeMElement(int x, int y);
 		CAMusElement *selectMElement(int x, int y);
+		bool selectMElement(CAMusElement *elt);
 		CAContext *selectCElement(int x, int y);
-		bool selectContext(CAContext *context);
+		bool selectContext(CAContext *context);		///Returns true, if the context existed and was selected, otherwise false
+		
+		/**
+		 * Calculates the logical time from the given X and Y coordinates.
+		 * 
+		 * @return Logical time calculated from the given X and Y coordinates.
+		 */
+		int calculateTime(int x, int y);
+		
+		/**
+		 * If the given coordinates hit any of the contexts, return that context.
+		 * 
+		 * @return Pointer to the CAContext which collided with the given coordinates.
+		 */
+		CAContext *contextCollision(int x, int y);
 		
 		void clearMElements() { _drawableMList.clear(true); }
 		void clearCElements() { _drawableCList.clear(true); }

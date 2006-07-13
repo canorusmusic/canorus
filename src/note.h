@@ -12,6 +12,8 @@
 #include "muselement.h"
 #include "playable.h"
 
+class CAVoice;
+
 class CANote :  public CAMusElement, public CAPlayable {
 	public:
 		enum CANoteLength {
@@ -26,13 +28,15 @@ class CANote :  public CAMusElement, public CAPlayable {
 			HundredTwentyEighth
 		};
 		
-		CANote(CANoteLength length);
+		CANote(CANoteLength length, CAVoice *voice, int timeStart, int timeLength=0);
 		CANote *clone();
 		
 		CANoteLength noteLength() { return _noteLength; }
+		CAVoice *voice() { return _voice; }
 
 	private:
 		CANoteLength _noteLength;
+		CAVoice *_voice;
 };
 #endif /*NOTE_H_*/
 

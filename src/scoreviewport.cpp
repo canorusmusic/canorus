@@ -161,6 +161,18 @@ CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 	}
 }
 
+bool CAScoreViewPort::selectMElement(CAMusElement *elt) {
+	_musElementSelection.clear();
+	
+	for (int i=0; i<_drawableMList.size(); i++)
+		if (((CADrawableMusElement*)(_drawableMList.at(i)))->musElement() == elt) {
+			_musElementSelection << (CADrawableMusElement*)_drawableMList.at(i);
+			return true;
+		}
+	
+	return false;	
+}
+
 CANote* CAScoreViewPort::addNote(CANote::CANoteLength noteLength, int x, int y) {
 }
 
@@ -173,6 +185,26 @@ void CAScoreViewPort::importMElements(CAKDTree *elts) {
 
 void CAScoreViewPort::importCElements(CAKDTree *elts) {
 	_drawableCList.import(elts);
+}
+
+int CAScoreViewPort::calculateTime(int x, int y) {
+	CADrawableMusElement *left = (CADrawableMusElement *)_drawableMList.findNearestLeft(x, true);
+	CADrawableMusElement *right = (CADrawableMusElement *)_drawableMList.findNearestRight(x, true);
+	
+	if (left)	//the user clicked right of the element - return the nearest left element end time
+		return left->musElement()->timeStart() + left->musElement()->timeLength();
+	else if (right)	//the user clicked left of the element - return the nearest right element start time
+		return right->musElement()->timeStart();
+	else	//no elements found in the score at all - return 0
+		return 0;
+}
+
+CAContext *CAScoreViewPort::contextCollision(int x, int y) {
+	QList<CADrawable*> *l;
+	if ((l = _drawableCList.findInRange(x, y, 0, 0))->size() == 0)
+		return 0;
+	else
+		return ((CADrawableContext*)l->front())->context();
 }
 
 void CAScoreViewPort::update() {
