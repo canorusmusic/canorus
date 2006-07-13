@@ -26,6 +26,7 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPoint>
+#include <QKeyEvent>
 
 #include <iostream>
 
@@ -36,6 +37,7 @@ using namespace std;
 #include "scrollwidget.h"
 #include "engraver.h"
 #include "scoreviewport.h"
+#include "staff.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
@@ -102,6 +104,7 @@ void CAMainWin::on_actionSplit_horizontally_activated() {
 	}
 
 	_viewPortList.append(v);
+	setCurrentMode(_currentMode);	//updates the new viewport border settings
 }
 
 void CAMainWin::on_actionSplit_vertically_activated() {
@@ -113,6 +116,7 @@ void CAMainWin::on_actionSplit_vertically_activated() {
 	}
 	
 	_viewPortList.append(v);
+	setCurrentMode(_currentMode);	//updates the new viewport border settings
 }
 
 void CAMainWin::on_actionUnsplit_activated() {
@@ -130,6 +134,7 @@ void CAMainWin::on_actionNew_viewport_activated() {
 	}
 
 	_viewPortList.append(v);
+	setCurrentMode(_currentMode);	//updates the new viewport border settings
 }
 
 void CAMainWin::on_actionNew_activated() {
@@ -148,6 +153,37 @@ void CAMainWin::on_actionNew_staff_activated() {
 	CAStaff *staff = sheet->addStaff();
 	
 	rebuildScoreViewPorts(sheet);
+	
+	((CAScoreViewPort*)_activeViewPort)->selectContext(staff);
+	((CAScoreViewPort*)_activeViewPort)->repaint();
+}
+
+void CAMainWin::setCurrentMode(CAMode mode) {
+	_currentMode = mode;
+	
+	switch (mode) {
+		case SelectMode:
+			for (int i=0; i<_viewPortList.size(); i++) {
+				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort)
+					((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
+			}
+			break;
+		case InsertMode:
+			QPen p;
+			p.setColor(Qt::blue);
+			p.setWidth(3);
+			
+			for (int i=0; i<_viewPortList.size(); i++) {
+				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort)
+					((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
+			}
+			break;
+	}
+}
+
+void CAMainWin::on_action_Clef_activated() {
+	setCurrentMode(InsertMode);
+	_insertMusElement = CAMusElement::Clef;
 }
 
 void CAMainWin::rebuildScoreViewPorts(CASheet *sheet, bool repaint) {
@@ -210,4 +246,10 @@ void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *c)
 	}
 
 	v->repaint();
+}
+
+void CAMainWin::keyPressEvent(QKeyEvent *e) {
+	if (e->key() == Qt::Key_Escape) {
+		setCurrentMode(SelectMode);
+	}
 }
