@@ -111,6 +111,15 @@ class CAKDTree {
 		int size() { return _list.size(); }
 		
 		/**
+		 * Return the i-th element in the tree.
+		 * If the element doesn't exist (eg. index out of bounds), return 0.
+		 * 
+		 * @param i Index of the element.
+		 * @return Element from the tree with index i.
+		 */
+		CADrawable *at(int i) { return _list[i]; }
+		
+		/**
 		 * Import all the elements from the given tree.
 		 * 
 		 * @param tree The tree which all the elements are going to be imported from

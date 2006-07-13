@@ -24,6 +24,7 @@
 #include "muselement.h"
 #include "context.h"
 #include "engraver.h"
+#include "staff.h"
 
 CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(parent) {
 	_viewPortType = CAViewPort::ScoreViewPort;
@@ -112,6 +113,18 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 	_drawableCList.addElement(elt);
 	if (select)
 		_currentContext = elt;
+}
+
+bool CAScoreViewPort::selectContext(CAContext *context) {
+	for (int i=0; i<_drawableCList.size(); i++) {
+		CAContext *c=((CADrawableContext*)_drawableCList.at(i))->context();
+		if (c == context) {
+			_currentContext = (CADrawableContext*)_drawableCList.at(i);
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 CAContext* CAScoreViewPort::selectCElement(int x, int y) {

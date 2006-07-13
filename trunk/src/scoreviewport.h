@@ -28,6 +28,7 @@ class CADrawableContext;
 class CAMusElement;
 class CAContext;
 class CASheet;
+class CAStaff;
 
 class CAScoreViewPort : public CAViewPort {
 	Q_OBJECT
@@ -58,6 +59,7 @@ class CAScoreViewPort : public CAViewPort {
 		CAMusElement *removeMElement(int x, int y);
 		CAMusElement *selectMElement(int x, int y);
 		CAContext *selectCElement(int x, int y);
+		bool selectContext(CAContext *context);
 		
 		void clearMElements() { _drawableMList.clear(true); }
 		void clearCElements() { _drawableCList.clear(true); }

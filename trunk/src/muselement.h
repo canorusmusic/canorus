@@ -32,7 +32,7 @@ class CAMusElement {
 		 * - VolumeSign - A music element which represents any volue sign (forte, piano etc.).
 		 */
 		enum CAMusElementType {
-			Note,
+			Note = 1,
 			NoteBracket,
 			Chord,
 			Rest,

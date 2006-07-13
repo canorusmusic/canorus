@@ -27,6 +27,9 @@
 #include "ui_mainwin.h"
 
 #include "document.h"
+#include "muselement.h"
+
+class QKeyEvent;
 
 enum CAMode {
 	InsertMode,
@@ -71,6 +74,7 @@ private slots:
 	
 	//Insert menu
 	void on_actionNew_staff_activated();
+	void on_action_Clef_activated();
 	
 	//View menu
 	void on_action_Fullscreen_toggled(bool);
@@ -107,7 +111,32 @@ private slots:
 	 */
 	void on_tabWidget_currentChanged(int);
 
+private slots:
+	void keyPressEvent(QKeyEvent *);
+
 private:
+	////////////////////////////////////////////////////
+	//General properties
+	////////////////////////////////////////////////////
+    CADocument _document;	///Every main window has its own unique CADocument.
+	CAMode _currentMode;	///Every main window has its own current mode (view, insert, edit etc.). See enum CAMode.
+	
+	void setCurrentMode(CAMode mode);
+	CAMode currentMode() { return _currentMode; }
+
+	////////////////////////////////////////////////////
+	//User interface, widgets
+	////////////////////////////////////////////////////
+    Ui::MainWindow oMainWin;	///Main window widget representative
+	QList<CAViewPort *> _viewPortList;	///List of all available viewports for any sheet for this document
+	CAViewPort *_activeViewPort;	///Current active viewport	
+	#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))
+
+	////////////////////////////////////////////////////
+	//Score operations
+	////////////////////////////////////////////////////
+	CAMusElement::CAMusElementType _insertMusElement;	///Current element to be added. 0, if in view mode, CAMusElementType, if in insert mode
+
 	/**
 	 * This method is called when multiple viewports share the same logical source and a change has been made in the logical musElement list.
 	 * This method rebuilds the CADrawable elements on viewports from the logical list which was changed.
@@ -116,11 +145,4 @@ private:
 	 * @param repaint Should the viewports be repainted as well.
 	 */
 	void rebuildScoreViewPorts(CASheet *sheet, bool repaint=true);
-	
-	#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))
-	CAMode _currentMode;
-	QList<CAViewPort *> _viewPortList;
-	CAViewPort *_activeViewPort;	
-    Ui::MainWindow oMainWin;
-    CADocument _document;
 };

@@ -18,6 +18,8 @@ CAStaff *CASheet::addStaff() {
 	CAStaff *s = new CAStaff(this);
 	_contextList.append(s);
 	_staffList.append(s);
+	
+	return s;
 }
 
 void CASheet::clear() {
