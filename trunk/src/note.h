@@ -34,11 +34,18 @@ class CANote :  public CAMusElement, public CAPlayable {
 		CANoteLength noteLength() { return _noteLength; }
 		CAVoice *voice() { return _voice; }
 		int pitch() { return _pitch; }
+		int notePosition() { return _notePosition; }
 
 	private:
+		/**
+		 * Depending on the clef, calculate note position in the staff.
+		 */
+		void calculateNotePosition();
+	
 		CANoteLength _noteLength;
 		CAVoice *_voice;
 		int _pitch;	///note pitch in logical units. 0 = C,, , 1 = Sub-Contra D,, , 56 = c''''' etc.
+		int _notePosition;	///note location in the staff. 0 first line, 1 first space, -2 first ledger line below the staff
 };
 #endif /*NOTE_H_*/
 

@@ -23,23 +23,25 @@ class CAVoice {
 		void clear();
 		
 		/**
-		 * Insert the clef before the first element which startTime is equal or greater than the clef's one.
+		 * Insert the music element before the first element which startTime is equal or greater to the given element's one.
 		 * 
-		 * @param clef Pointer to CAClef to be inserted.
+		 * @param elt Pointer to CAMusElement to be inserted.
 		 */
-		void insertClef(CAClef *clef);
+		void insertMusElement(CAMusElement *elt);
 		
 		/**
-		 * Insert the clef right before the given CAMusElement.
+		 * Insert the CAMusElement right before the given CAMusElement.
 		 * 
-		 * @param clef Pointer to CAClef to be inserted.
-		 * @param eltAfter Pointer to CAMusElement the clef should be insered before. If eltAfter is 0, append the clef to the voice.
-		 * @return True, if element was found and clef was inserted/appended, otherwise false.
+		 * @param elt Pointer to CAMusElement to be inserted.
+		 * @param eltAfter Pointer to CAMusElement the given element should be inserted before. If eltAfter is 0, append the music element to the voice.
+		 * @return True, if eltAfter was found and the elt was inserted/appended, otherwise false.
 		 */
-		bool insertClefBefore(CAClef *clef, CAMusElement *eltAfter);
+		bool insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter);
 		
 		QList<CAMusElement *>* musElementList() { return &_musElementList; }
 		int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
+	
+		CAClef *getClef(CAMusElement *elt);
 	
 	private:
 		QList<CAMusElement *> _musElementList;

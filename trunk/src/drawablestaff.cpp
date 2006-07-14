@@ -7,22 +7,23 @@
  */
 
 #include <QPainter>
-
+#include <iostream>
 #include "drawablestaff.h"
+#include "drawableclef.h"
 #include "staff.h"
 #include "note.h"
 #include "clef.h"
 
-#define _lineSpace ((float)_height/staff()->numberOfLines())
+#define _lineSpace (staff()->numberOfLines()?(float)_height/(staff()->numberOfLines()-1):0)
 
 CADrawableStaff::CADrawableStaff(CAStaff *s, int x, int y) : CADrawableContext(s, x, y) {
 	_width = 0;
-	_height = 40;
+	_height = 35;
 }
 
 void CADrawableStaff::draw(QPainter *p, const CADrawSettings s) {
 	QPen pen;
-	pen.setWidth((int)(1*s.z));
+	pen.setWidth((int)(0.8*s.z));
 	pen.setCapStyle(Qt::RoundCap);
 	pen.setColor(s.color);
 	p->setPen(pen);
@@ -41,10 +42,9 @@ CADrawableStaff *CADrawableStaff::clone() {
 }
 
 int CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
-	return (int)( (yPos() + height() -
+	return (int)( yPos() + height() -
 	               //c' in logical pitch is 28
-	               ((note->pitch() - 28) - (clef?clef->c1():-2)) 
-	              )*(_lineSpace/2)
+	               ((note->pitch() - 28) + (clef?clef->c1():-2) + 0.5)*(_lineSpace/2)
 	            );
 }
 
@@ -54,4 +54,24 @@ int CADrawableStaff::calculateCenterYCoord(int y) {
 	newY = (float)((int)newY);	// "
 	
 	return (int)(yPos() - ((newY+1) * (_lineSpace/2)));
+}
+
+int CADrawableStaff::calculatePitch(int y, CAClef *clef) {
+	int yC1 = (int)(yPos() + 4*_lineSpace - (clef?clef->c1():-2)*(_lineSpace/2)); //Y coordinate of c1 of the current staff
+
+	//c' = 28
+	return (int)(28 - (y - yC1 - 1.5)/(_lineSpace/2));
+}
+
+void CADrawableStaff::addClef(CADrawableClef *clef) {
+	int i;
+	for (i=0; ((i<_drawableClefList.size()) && (clef->xPos() < _drawableClefList[i]->xPos())); i++);
+	_drawableClefList.insert(i, clef);
+}
+
+CAClef* CADrawableStaff::getClef(int x) {
+	int i;
+	for (i=0; ((i<_drawableClefList.size()) && (x > _drawableClefList[i]->xPos())); i++);
+	
+	return (--i<0?0:_drawableClefList[i]->clef());
 }

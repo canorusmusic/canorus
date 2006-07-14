@@ -24,18 +24,18 @@ void CAVoice::clear() {
 	_musElementList.clear();
 }
 
-void CAVoice::insertClef(CAClef *clef) {
+void CAVoice::insertMusElement(CAMusElement *elt) {
 	int i;
 	for (i=0;
-	     (i < _musElementList.size()) && (_musElementList[i]->timeStart() < clef->timeStart());
+	     (i < _musElementList.size()) && (_musElementList[i]->timeStart() < elt->timeStart());
 	     i++);
 	
-	_musElementList.insert(i, clef);
+	_musElementList.insert(i, elt);
 }
 
-bool CAVoice::insertClefBefore(CAClef *clef, CAMusElement *eltAfter) {
+bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter) {
 	if (!eltAfter) {
-		_musElementList << clef;
+		_musElementList << elt;
 		return true;
 	}
 	
@@ -44,6 +44,16 @@ bool CAVoice::insertClefBefore(CAClef *clef, CAMusElement *eltAfter) {
 	if (i==_musElementList.size())
 		return false;
 	
-	_musElementList.insert(i,clef);
+	_musElementList.insert(i, elt);
 	return true;
+}
+
+CAClef* CAVoice::getClef(CAMusElement *elt) {
+	CAClef* lastClef = 0;
+	for (int i=0; (i<_musElementList.size()) && (_musElementList[i] != elt); i++) {
+		if (_musElementList[i]->musElementType() == CAMusElement::Clef)
+			lastClef = (CAClef*)_musElementList[i];
+	}
+		
+	return lastClef;
 }

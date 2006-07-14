@@ -8,7 +8,7 @@
 
 #include <QList>
 #include <QMap>
-
+#include <iostream>
 #include "engraver.h"
 
 #include "scoreviewport.h"
@@ -50,7 +50,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	int streams = musStreamList.size();
 	int streamsIdx[streams]; for (int i=0; i<streams; i++) streamsIdx[i] = 0;
 	int streamsX[streams]; for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
-	CAClef *lastClef[streams];
+	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
 
 	int timeStart = 0;
 	bool done = false;

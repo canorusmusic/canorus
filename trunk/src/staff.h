@@ -19,6 +19,7 @@ class QPainter;
 class CASheet;
 class CAContext;
 class CAVoice;
+class CANote;
 
 class CAStaff : public CAContext {
 	public:
@@ -50,22 +51,27 @@ class CAStaff : public CAContext {
 		CAVoice *voiceAt(int i) { return _voiceList[i]; }
 		
 		/**
-		 * Add a clef to the staff at certain time and return the new clef pointer.
+		 * Insert a sign to the staff at certain time.
+		 * This method inserts the sign to all voices!
+		 * This is the difference between inserting a sign or a playable note - note is present in a single voice, sign in both.
 		 * 
-		 * @param clefType Type of the clef - see CAClef::CAClefType.
-		 * @param timeStart The logical time where clef is.
-		 * @return Pointer to the newly created clef.
+		 * @param sign Pointer to the already created CAMusElement object about to be added.
 		 */
-		CAClef *insertClef(CAClef::CAClefType clefType, int timeStart);
+		void insertSign(CAMusElement *sign);
 		
 		/**
-		 * Add a clef to the staff before certain element and return the new clef pointer.
+		 * Insert any sign (clef, siganutres, barline etc.) before the given music element.
+		 * This method inserts the sign to all voices!
+		 * This is the difference between inserting a sign or a playable note - note is present in a single voice, sign in both.
 		 * 
-		 * @param clefType Type of the clef - see CAClef::CAClefType.
-		 * @param eltAfter The music element before which the clef should be inserted. If eltAfter is 0, append the clef to the voices.
-		 * @return Pointer to the newly created clef.
+		 * @param sign Pointer to the already created CAMusElement object about to be added.
+		 * @param eltAfter The music element before which the sign should be inserted. The element should be present in all voices! If eltAfter is 0, append the sign to the voices.
+		 * @return True, if a sign was inserted/appended, false if the eltAfter wasn't found.
 		 */
-		CAClef *insertClefBefore(CAClef::CAClefType clefType, CAMusElement *eltAfter);
+		bool insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter);
+		
+		void insertNote(CANote *note);
+		bool insertNoteBefore(CANote *note, CAMusElement *eltAfter);
 		
 	private:
 		QList<CAVoice *> _voiceList;

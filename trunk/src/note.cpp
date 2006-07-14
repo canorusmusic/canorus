@@ -9,8 +9,10 @@
 #include "note.h"
 #include "voice.h"
 #include "staff.h"
-
+#include "clef.h"
+#include <iostream>
 CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, int timeStart, int timeLength) : CAMusElement(voice->staff(), timeLength) {
+	_musElementType = CAMusElement::Note;
 	_noteLength = length;
 	_pitch = pitch;
 
@@ -20,10 +22,18 @@ CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, int timeStart, in
 		_timeLength = length;	//TODO: Set the note length for every noteLengthType possibility (NoteLengthType can have arbitrary exact value)
 
 	_voice = voice;
+
+	calculateNotePosition();
 }
 
 CANote *CANote::clone() {
 	CANote *d = new CANote(_noteLength, _voice, _pitch, _timeStart);
 	
 	return d;
+}
+
+void CANote::calculateNotePosition() {
+	CAClef *clef = _voice->getClef(this);
+	
+	_notePosition = _pitch + clef->c1() - 28;
 }

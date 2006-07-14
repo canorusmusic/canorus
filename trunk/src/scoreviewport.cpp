@@ -20,6 +20,7 @@
 #include "scoreviewport.h"
 #include "drawable.h"
 #include "drawablecontext.h"
+#include "drawablestaff.h"
 #include "drawablenote.h"
 #include "muselement.h"
 #include "context.h"
@@ -64,7 +65,7 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	
 	//setup layout
 	_layout = new QGridLayout(this);
-	_layout->setMargin(0);
+	_layout->setMargin(2);
 	_drawBorder = false;
 	_layout->addWidget(_canvas, 0, 0);
 	_layout->addWidget(_vScrollBar, 0, 1);
@@ -107,6 +108,12 @@ void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 		_musElementSelection.clear();
 		_musElementSelection << elt;
 	}
+	
+	switch (elt->drawableMusElementType()) {
+		case CADrawableMusElement::DrawableClef:
+			((CADrawableStaff*)elt->drawableContext())->addClef((CADrawableClef*)elt);
+			break;
+	}
 }
 
 void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
@@ -116,6 +123,11 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 }
 
 bool CAScoreViewPort::selectContext(CAContext *context) {
+	if (!context) {
+		_currentContext = 0;
+		return false;
+	}
+	
 	for (int i=0; i<_drawableCList.size(); i++) {
 		CAContext *c=((CADrawableContext*)_drawableCList.at(i))->context();
 		if (c == context) {
@@ -127,7 +139,7 @@ bool CAScoreViewPort::selectContext(CAContext *context) {
 	return false;
 }
 
-CAContext* CAScoreViewPort::selectCElement(int x, int y) {
+CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 	QList<CADrawable *>* l = _drawableCList.findInRange(x,y);
 	
 	if (l->size()!=0) {
@@ -136,7 +148,7 @@ CAContext* CAScoreViewPort::selectCElement(int x, int y) {
 	
 	delete l;
 	
-	return (_currentContext?_currentContext->context():0);
+	return (_currentContext?_currentContext:0);
 }
 
 CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
@@ -440,7 +452,6 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 }
 
 void CAScoreViewPort::setBorder(const QPen pen) {
-	_layout->setMargin(pen.width());	
 	_borderPen = pen;
 	_drawBorder = true;
 }
@@ -450,7 +461,6 @@ void CAScoreViewPort::setBackground(const QBrush brush) {
 }
 
 void CAScoreViewPort::unsetBorder() {
-	_layout->setMargin(0);
 	_drawBorder = false;
 }
 
