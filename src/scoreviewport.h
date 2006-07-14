@@ -63,6 +63,26 @@ class CAScoreViewPort : public CAViewPort {
 		bool selectContext(CAContext *context);		///Returns true, if the context existed and was selected, otherwise false
 		
 		/**
+		 * Returns the nearest left element from the given position with the largest startTime.
+		 * 
+		 * @param x X coordinate in absolute world units.
+		 * @param y Y coordinate in absolute world units.
+		 * @param currentContextOnly Only look for the nearest right element in the current drawable context.
+		 * @return Pointer to the nearest left element from these world units.
+		 */
+		CAMusElement *nearestLeftElement(int x, int y, bool currentContextOnly=true);
+		
+		/**
+		 * Returns the nearest right element from the given position with the smallest startTime.
+		 * 
+		 * @param x X coordinate in absolute world units.
+		 * @param y Y coordinate in absolute world units.
+		 * @param currentContextOnly Only look for the nearest right element in the current drawable context.
+		 * @return Pointer to the nearest rightelement from these world units.
+		 */
+		CAMusElement *nearestRightElement(int x, int y, bool currentContextOnly=true);
+
+		/**
 		 * Calculates the logical time from the given X and Y coordinates.
 		 * 
 		 * @return Logical time calculated from the given X and Y coordinates.

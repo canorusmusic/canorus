@@ -219,8 +219,8 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 }
 
 void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
-	int timeStart = v->calculateTime(coords.x(), coords.y());
-	CAContext *context = v->contextCollision(coords.x(), coords.y());
+	CAContext *context = v->selectCElement(coords.x(), coords.y());
+	CAMusElement *right = v->nearestRightElement(coords.x(), coords.y());
 	
 	switch (_insertMusElement) {
 		case CAMusElement::Clef:
@@ -229,11 +229,11 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				return;
 			
 			CAStaff *staff = (CAStaff*)context;
-			
-			CAClef *clef = staff->addClef(CAClef::Treble, timeStart);
+			CAClef *clef = staff->insertClefBefore(CAClef::Treble, right);
 			
 			rebuildScoreViewPorts(v->sheet(), true);
 			v->selectMElement(clef);
+			v->repaint();
 			break;
 	}
 }

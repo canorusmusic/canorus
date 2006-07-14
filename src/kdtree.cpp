@@ -7,6 +7,7 @@
  */
 
 #include "drawable.h"
+#include "drawablemuselement.h"
 #include "kdtree.h"
 
 CAKDTree::CAKDTree() {
@@ -75,38 +76,59 @@ QList<CADrawable *>* CAKDTree::findInRange(QRect *rect) {
 	return findInRange(rect->x(), rect->y(), rect->width(), rect->height());
 }
 
-CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased) {
+CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *context) {
 	if (_list.isEmpty())
 		return 0;
 		
-	CADrawable *elt;
-	CADrawable *cur;
+	CADrawable *elt=0;
+	QList<CADrawable *>::const_iterator i;
 	if (!timeBased) {
-		for (int i=0; i<_list.size(); ++i, cur=_list[i])
-			if ( ((!elt) || ((cur->xPos()+cur->width()) > (elt->xPos()+elt->width()))) && ((cur->xPos()+cur->width()) < x) )
-				elt = cur;
+		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
+			if ( ((!elt) || (((*i)->xPos() + (*i)->width()) > (elt->xPos()+elt->width()))) &&
+			     (((*i)->xPos() + (*i)->width()) < x) &&
+			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context))
+			   ) {
+				elt = *i;
+			}
+		}
 	} else {
-		for (int i=0; i<_list.size(); ++i, cur=_list[i])
-			if ( ((!elt) || (cur->xPosOrig() > elt->xPosOrig())) && (cur->xPosOrig() < x) )
-				elt = cur;		
+		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
+			if ( ((!elt) || ((*i)->xPosOrig() > elt->xPosOrig())) &&
+			     ((*i)->xPosOrig() < x) &&
+			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context))			     
+			     ) {
+				elt = *i;
+			}
+		}
 	}
 	
 	return elt;
 }
 
-CADrawable* CAKDTree::findNearestRight(int x, bool timeBased) {
+CADrawable* CAKDTree::findNearestRight(int x, bool timeBased, CADrawableContext *context) {
 	if (_list.isEmpty())
 		return 0;
 		
-	CADrawable *elt;
+	CADrawable *elt=0;
+	QList<CADrawable *>::const_iterator i;
 	if (!timeBased) {
-		for (int i=0; i<_list.size(); i++)
-			if ( ((!elt) || (_list[i]->xPos() < elt->xPos())) && (_list[i]->xPos() > x) )
-				elt = _list[i];
+		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
+			if ( ((!elt) || ((*i)->xPos() < elt->xPos())) &&
+			     ((*i)->xPos() > x) &&
+			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context))			     
+			   ) {
+				elt = *i;
+			}
+		}
 	} else {
-		for (int i=0; i<_list.size(); i++)
-			if ( ((!elt) || (_list[i]->xPosOrig() < elt->xPosOrig())) && (_list[i]->xPosOrig() > x) )
-				elt = _list[i];
+		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
+			if ( ((!elt) || ((*i)->xPosOrig() < elt->xPosOrig())) &&
+			     ((*i)->xPosOrig() > x) &&
+			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context))			     
+			   ) {
+				elt = *i;
+			}
+		}
 	}
 	
 	
@@ -117,12 +139,13 @@ CADrawable* CAKDTree::findNearestUp(int y) {
 	if (_list.isEmpty())
 		return 0;
 		
-	CADrawable *elt;
-	CADrawable *cur;
-	for (int i=0; i<_list.size(); i++, cur=_list[i])
-		if ( ((!elt) || ((cur->yPos()+cur->height()) > (elt->yPos()+elt->height()))) && ((cur->yPos()+cur->height()) < y) )
-			elt = _list[i];
-	
+	CADrawable *elt=0;
+	QList<CADrawable *>::const_iterator i;
+	for (i = _list.constBegin(); i != _list.constEnd(); i++) {
+		if ( ((!elt) || (((*i)->yPos() + (*i)->height()) > (elt->yPos() + elt->height()))) && (((*i)->yPos()+ (*i)->height()) < y) ) {
+			elt = *i;
+		}
+	}
 	return elt;
 	
 }
@@ -131,10 +154,13 @@ CADrawable* CAKDTree::findNearestDown(int y) {
 	if (_list.isEmpty())
 		return 0;
 		
-	CADrawable *elt;
-	for (int i=0; i<_list.size(); i++)
-		if ( ((!elt) || (_list[i]->yPos() < elt->yPos())) && (_list[i]->yPos() > y) )
-			elt = _list[i];
+	CADrawable *elt=0;
+	QList<CADrawable *>::const_iterator i;
+	for (i = _list.constBegin(); i != _list.constEnd(); i++) {
+		if ( ((!elt) || ((*i)->yPos() < elt->yPos())) && ((*i)->yPos() > y) ) {
+			elt = *i;
+		}
+	}
 	
 	return elt;
 }

@@ -15,10 +15,12 @@ class CANote;
 
 class CADrawableNote : public CADrawableMusElement {
 	public:
-		CADrawableNote(CANote *note, int x, int y);
+		CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y);
 		void draw(QPainter *p, CADrawSettings s);
 		
-		inline CANote *note() { return (CANote*)_musElement; }
+		inline CANote* note() { return (CANote*)_musElement; }
+		
+		CADrawableNote *clone();
 };
 
 #endif /*DRAWABLENOTE_H_*/

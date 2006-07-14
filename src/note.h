@@ -28,15 +28,17 @@ class CANote :  public CAMusElement, public CAPlayable {
 			HundredTwentyEighth
 		};
 		
-		CANote(CANoteLength length, CAVoice *voice, int timeStart, int timeLength=0);
+		CANote(CANoteLength length, CAVoice *voice, int pitch, int timeStart, int timeLength=0);
 		CANote *clone();
 		
 		CANoteLength noteLength() { return _noteLength; }
 		CAVoice *voice() { return _voice; }
+		int pitch() { return _pitch; }
 
 	private:
 		CANoteLength _noteLength;
 		CAVoice *_voice;
+		int _pitch;	///note pitch in logical units. 0 = C,, , 1 = Sub-Contra D,, , 56 = c''''' etc.
 };
 #endif /*NOTE_H_*/
 

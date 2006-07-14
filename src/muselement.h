@@ -67,6 +67,7 @@ class CAMusElement {
 		CAContext *context() { return _context; }
 		
 		int timeStart() { return _timeStart; }
+		int timeEnd() { return _timeStart + _timeLength; }
 		int timeLength() { return _timeLength; }
 		
 		/**

@@ -10,8 +10,9 @@
 #include "voice.h"
 #include "staff.h"
 
-CANote::CANote(CANoteLength length, CAVoice *voice, int timeStart, int timeLength) : CAMusElement(voice->staff(), timeLength) {
+CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, int timeStart, int timeLength) : CAMusElement(voice->staff(), timeLength) {
 	_noteLength = length;
+	_pitch = pitch;
 
 	if (timeLength)
 		_timeLength = timeLength;
@@ -22,7 +23,7 @@ CANote::CANote(CANoteLength length, CAVoice *voice, int timeStart, int timeLengt
 }
 
 CANote *CANote::clone() {
-	CANote *d = new CANote(_noteLength, _voice, _timeStart);
+	CANote *d = new CANote(_noteLength, _voice, _pitch, _timeStart);
 	
 	return d;
 }

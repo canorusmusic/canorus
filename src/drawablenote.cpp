@@ -11,9 +11,14 @@
 #include "drawablenote.h"
 #include "note.h"
 
-CADrawableNote::CADrawableNote(CANote *note, int x, int y) : CADrawableMusElement(note, x, y) {
+CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y)
+ : CADrawableMusElement(note, drawableContext, x, y) {
+	_drawableMusElement = CADrawableMusElement::DrawableNote;
+	
 	_width = 9;
 	_height = 34;
+	_neededWidth = _width;
+	_neededHeight = _height;
 }
 
 void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
@@ -29,10 +34,14 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			QPen pen;
 			pen.setWidth((int)(1*s.z));
 			pen.setCapStyle(Qt::RoundCap);
+			pen.setColor(s.color);
 			p->setPen(pen);
 			p->drawLine((int)(s.x+w-0.5*s.z), (int)(s.y-1*s.z), (int)(s.x+w-0.5*s.z), s.y-(int)(QUARTER_STEM_LENGTH*s.z));
 			
 			break;
 		
 	}
+}
+
+CADrawableNote *CADrawableNote::clone() {
 }
