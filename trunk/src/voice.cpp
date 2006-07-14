@@ -12,8 +12,8 @@
 #include "clef.h"
 
 CAVoice::CAVoice(CAStaff *staff) {
-	_voiceNumber = 1;
 	_staff = staff;
+	_voiceNumber = this->staff()->voiceCount() + 1;
 }
 
 void CAVoice::clear() {
@@ -31,6 +31,8 @@ void CAVoice::insertMusElement(CAMusElement *elt) {
 	     i++);
 	
 	_musElementList.insert(i, elt);
+	
+	updateTimes(i);
 }
 
 bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter) {
@@ -45,6 +47,8 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter) 
 		return false;
 	
 	_musElementList.insert(i, elt);
+	
+	updateTimes(i);
 	return true;
 }
 
@@ -56,4 +60,11 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 	}
 		
 	return lastClef;
+}
+
+void CAVoice::updateTimes(int idx) {
+	int length = _musElementList[idx]->timeLength();
+	for (int i=idx+1; i<_musElementList.size(); i++) {
+		_musElementList[i]->setTimeStart(_musElementList[i]->timeStart() + length);
+	}
 }
