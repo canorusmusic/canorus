@@ -124,7 +124,7 @@ private:
 	CAMode _currentMode;	///Every main window has its own current mode (view, insert, edit etc.). See enum CAMode.
 	
 	void setCurrentMode(CAMode mode);
-	CAMode currentMode() { return _currentMode; }
+	inline CAMode currentMode() { return _currentMode; }
 
 	////////////////////////////////////////////////////
 	//User interface, widgets

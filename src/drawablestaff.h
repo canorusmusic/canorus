@@ -14,6 +14,7 @@
 class CAStaff;
 class CANote;
 class CAClef;
+class CADrawableClef;
 
 class CADrawableStaff : public CADrawableContext {
 	public:
@@ -36,6 +37,21 @@ class CADrawableStaff : public CADrawableContext {
 		 * @return Center of the nearest space/line of a staff, whichever is closer in absolute world units.
 		 */
 		int calculateCenterYCoord(int y);
+		
+		/**
+		 * Calculate the note pitch on the given clef and absolute world Y coordinate.
+		 * 
+		 * @param y Center Y coordinate of the note in absolute world units.
+		 * @param clef Pointer to the currently active CAClef.
+		 * @return Note pitch in logical units. 
+		 */
+		int calculatePitch(int y, CAClef *clef);
+		
+		void addClef(CADrawableClef *clef);
+		CAClef *getClef(int x);
+		
+	private:
+		QList<CADrawableClef *> _drawableClefList;	///List of all the drawable clefs. Used for fast look-up with the given key - X-coordinate usually.
 };
 
 #endif /*DRAWABLESTAFF_H_*/

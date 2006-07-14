@@ -33,12 +33,17 @@
 using namespace std;
 
 #include "mainwin.h"
-#include "sheet.h"
+
 #include "scrollwidget.h"
 #include "engraver.h"
 #include "scoreviewport.h"
+#include "drawablecontext.h"
+#include "drawablestaff.h"
+
+#include "sheet.h"
 #include "staff.h"
 #include "clef.h"
+#include "note.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
@@ -165,8 +170,10 @@ void CAMainWin::setCurrentMode(CAMode mode) {
 	switch (mode) {
 		case SelectMode:
 			for (int i=0; i<_viewPortList.size(); i++) {
-				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort)
+				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
 					((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
+					((CAScoreViewPort*)_viewPortList[i])->repaint();
+				}
 			}
 			break;
 		case InsertMode:
@@ -175,8 +182,10 @@ void CAMainWin::setCurrentMode(CAMode mode) {
 			p.setWidth(3);
 			
 			for (int i=0; i<_viewPortList.size(); i++) {
-				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort)
+				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
 					((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
+					((CAScoreViewPort*)_viewPortList[i])->repaint();
+				}
 			}
 			break;
 	}
@@ -219,20 +228,45 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 }
 
 void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
-	CAContext *context = v->selectCElement(coords.x(), coords.y());
+	CADrawableContext *context = v->selectCElement(coords.x(), coords.y());
 	CAMusElement *right = v->nearestRightElement(coords.x(), coords.y());
 	
+	CAStaff *staff=0;
+	CADrawableStaff *drawableStaff=0;
+	CAClef *clef=0;
+	CANote *note=0;
 	switch (_insertMusElement) {
 		case CAMusElement::Clef:
 			if ( (!context) ||
-			    (context->contextType() != CAContext::Staff) )
+			    (context->context()->contextType() != CAContext::Staff) )
 				return;
 			
-			CAStaff *staff = (CAStaff*)context;
-			CAClef *clef = staff->insertClefBefore(CAClef::Treble, right);
+			staff = (CAStaff*)context->context();
+			clef = new CAClef(CAClef::Treble, staff, (right?right->timeStart():staff->lastTimeEnd()));
+			staff->insertSignBefore(clef, right);
 			
 			rebuildScoreViewPorts(v->sheet(), true);
 			v->selectMElement(clef);
+			v->repaint();
+			break;
+			
+		case CAMusElement::Note:
+			if ( (!context) ||
+			     (context->context()->contextType() != CAContext::Staff) )
+				return;
+
+			drawableStaff = (CADrawableStaff*)context;
+			staff = drawableStaff->staff();
+			clef = drawableStaff->getClef(coords.x());
+			note = new CANote(CANote::Quarter,
+			                  staff->voiceAt(0),
+			                  drawableStaff->calculatePitch(coords.y(), clef),
+			                  (right?right->timeStart():staff->lastTimeEnd())
+			                 );
+			staff->insertNoteBefore(note, right);
+
+			rebuildScoreViewPorts(v->sheet(), true);
+			v->selectMElement(note);
 			v->repaint();
 			break;
 	}
@@ -269,7 +303,17 @@ void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *c)
 }
 
 void CAMainWin::keyPressEvent(QKeyEvent *e) {
-	if (e->key() == Qt::Key_Escape) {
-		setCurrentMode(SelectMode);
+	switch (e->key()) {
+		case Qt::Key_Escape:
+			if ((currentMode()==SelectMode) && (_activeViewPort) && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
+				((CAScoreViewPort*)_activeViewPort)->selectMElement(0);
+				((CAScoreViewPort*)_activeViewPort)->selectContext(0);
+			}
+			setCurrentMode(SelectMode);
+			break;
+		case Qt::Key_I:
+			_insertMusElement = CAMusElement::Note;
+			setCurrentMode(InsertMode);
+			break;
 	}
 }

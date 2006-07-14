@@ -21,6 +21,12 @@ class CADrawableNote : public CADrawableMusElement {
 		inline CANote* note() { return (CANote*)_musElement; }
 		
 		CADrawableNote *clone();
+		
+		void setDrawLedgerLine(bool line) { _drawLedgerLine = line; }
+		bool drawLedgerLine() { return _drawLedgerLine; }
+	
+	private:
+		bool _drawLedgerLine;
 };
 
 #endif /*DRAWABLENOTE_H_*/

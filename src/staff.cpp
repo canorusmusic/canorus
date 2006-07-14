@@ -11,6 +11,7 @@
 
 #include "voice.h"
 #include "staff.h"
+#include "note.h"
 
 CAStaff::CAStaff(CASheet *s) : CAContext(s) {
 	_contextType = CAContext::Staff;
@@ -37,22 +38,25 @@ void CAStaff::clear() {
 	_voiceList.clear();
 }
 
-CAClef* CAStaff::insertClef(CAClef::CAClefType clefType, int timeStart) {
-	CAClef *clef = new CAClef(clefType, this, timeStart);
-	
+void CAStaff::insertSign(CAMusElement *sign) {
 	for (int i=0; i<_voiceList.size(); i++)
-		_voiceList[i]->insertClef(clef);
-	
-	return clef;
+		_voiceList[i]->insertMusElement(sign);
 }
 
-CAClef *CAStaff::insertClefBefore(CAClef::CAClefType clefType, CAMusElement *eltAfter) {
-	CAClef *clef = new CAClef(clefType, this, (eltAfter?eltAfter->timeStart():lastTimeEnd()));
-	
+bool CAStaff::insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter) {
+	bool error = false;
 	for (int i=0; i<_voiceList.size(); i++) {
-		if (!_voiceList[i]->insertClefBefore(clef, eltAfter))
-			std::cerr << "Internal error: CAStaff::insertClefBefore() - eltAfter does not exist!" << std::endl;
+		if (!_voiceList[i]->insertMusElementBefore(sign, eltAfter))
+			error = true;
 	}
 	
-	return clef;
+	return (!error);
+}
+
+void CAStaff::insertNote(CANote *note) {
+	note->voice()->insertMusElement(note);
+}
+
+bool CAStaff::insertNoteBefore(CANote *note, CAMusElement *eltAfter) {
+	return note->voice()->insertMusElementBefore(note, eltAfter);
 }

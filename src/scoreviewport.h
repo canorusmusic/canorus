@@ -59,7 +59,7 @@ class CAScoreViewPort : public CAViewPort {
 		CAMusElement *removeMElement(int x, int y);
 		CAMusElement *selectMElement(int x, int y);
 		bool selectMElement(CAMusElement *elt);
-		CAContext *selectCElement(int x, int y);
+		CADrawableContext *selectCElement(int x, int y);
 		bool selectContext(CAContext *context);		///Returns true, if the context existed and was selected, otherwise false
 		
 		/**
