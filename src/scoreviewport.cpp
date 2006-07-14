@@ -20,6 +20,7 @@
 #include "scoreviewport.h"
 #include "drawable.h"
 #include "drawablecontext.h"
+#include "drawablemuselement.h"
 #include "drawablestaff.h"
 #include "drawablenote.h"
 #include "muselement.h"
@@ -163,7 +164,7 @@ CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 		}
 		
 		delete l;
-		
+
 		return ((CADrawableMusElement*)_musElementSelection.front())->musElement();
 	} else {
 		_musElementSelection.clear();

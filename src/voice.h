@@ -19,7 +19,7 @@ class CAClef;
 class CAVoice {
 	public:
 		CAVoice(CAStaff *staff);
-		CAStaff *staff() { return _staff; }
+		inline CAStaff *staff() { return _staff; }
 		void clear();
 		
 		/**
@@ -44,9 +44,10 @@ class CAVoice {
 		CAClef *getClef(CAMusElement *elt);
 	
 	private:
+		void updateTimes(int i);	///Update the musElements timeStarts, taking i-th element as the inserted element.
 		QList<CAMusElement *> _musElementList;
 		CAStaff *_staff;	///Staff which this voice belongs to by default.
-		int _voiceNumber;	///Number of the voice.
+		int _voiceNumber;	///Voice number starting at 1.
 };
 
 #endif /*VOICE_H_*/

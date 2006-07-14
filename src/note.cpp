@@ -11,7 +11,8 @@
 #include "staff.h"
 #include "clef.h"
 #include <iostream>
-CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, int timeStart, int timeLength) : CAMusElement(voice->staff(), timeLength) {
+CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, int timeStart, int timeLength)
+ : CAMusElement(voice->staff(), timeStart, timeLength) {
 	_musElementType = CAMusElement::Note;
 	_noteLength = length;
 	_pitch = pitch;
@@ -19,7 +20,7 @@ CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, int timeStart, in
 	if (timeLength)
 		_timeLength = timeLength;
 	else
-		_timeLength = length;	//TODO: Set the note length for every noteLengthType possibility (NoteLengthType can have arbitrary exact value)
+		_timeLength = 256;	//TODO: Set the note length for every noteLengthType possibility (NoteLengthType can have arbitrary exact value)
 
 	_voice = voice;
 
