@@ -52,13 +52,14 @@ class CAKDTree {
 		bool removeElement(CADrawable *elt);
 		
 		/**
-		 * Remove element at given world coordinates.
+		 * Remove element at given world coordinates and return the pointer to this element, if successful.
 		 * 
 		 * @param x X coordinate in absolute world units.
 		 * @param y Y coordinate in absolute world units.
-		 * @return True, if element existed and has been deleted, false otherwise.
+		 * @param autoDelete Delete the object as well, not only the pointer.
+		 * @return Pointer to the element, if element existed and has been deleted, 0 otherwise.
 		 */
-		bool removeElement(int x, int y);
+		CADrawable* removeElement(int x, int y, bool autoDelete=true);
 
 		/**
 		 * Return the list of elements present in the given rectangular area.

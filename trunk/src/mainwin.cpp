@@ -68,6 +68,7 @@ void CAMainWin::addSheet() {
 
 	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+	connect(v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	
 	_viewPortList.append(v);
 	
@@ -107,6 +108,7 @@ void CAMainWin::on_actionSplit_horizontally_activated() {
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	}
 
 	_viewPortList.append(v);
@@ -119,6 +121,7 @@ void CAMainWin::on_actionSplit_vertically_activated() {
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	}
 	
 	_viewPortList.append(v);
@@ -137,6 +140,7 @@ void CAMainWin::on_actionNew_viewport_activated() {
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
+		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	}
 
 	_viewPortList.append(v);
@@ -204,24 +208,28 @@ void CAMainWin::rebuildScoreViewPorts(CASheet *sheet, bool repaint) {
 	}
 }
 
-void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *v) {
-	_activeViewPort = v;
+void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *viewPort) {
+	_activeViewPort = viewPort;
 
-	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
+	if (viewPort->viewPortType() == CAViewPort::ScoreViewPort) {
+		CAScoreViewPort *v = (CAScoreViewPort*)viewPort;
 		switch (_currentMode) {
 			case SelectMode:
 				if (e->modifiers()==Qt::ControlModifier) {
-					if ( ((CAScoreViewPort*)v)->removeMElement(coords.x(), coords.y()) )
-						rebuildScoreViewPorts(((CAScoreViewPort*)v)->sheet());
+					CAMusElement *elt;
+					if ( elt = v->removeMElement(coords.x(), coords.y()) )
+						delete elt;
+						rebuildScoreViewPorts(v->sheet());
+						v->repaint();
 				} else {
-					if ( ((CAScoreViewPort*)v)->selectMElement(coords.x(), coords.y()) ||
-					     ((CAScoreViewPort*)v)->selectCElement(coords.x(), coords.y()) )
-						((CAScoreViewPort*)v)->repaint();
+					if ( v->selectMElement(coords.x(), coords.y()) ||
+					     v->selectCElement(coords.x(), coords.y()) )
+						v->repaint();
 				}
 				break;
 			
 			case InsertMode:
-				insertMusElementAt( coords, (CAScoreViewPort*)v );
+				insertMusElementAt( coords, v );
 				break;
 		}
 	}
@@ -258,7 +266,6 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			drawableStaff = (CADrawableStaff*)context;
 			staff = drawableStaff->staff();
 			clef = drawableStaff->getClef(coords.x());
-			std::cout << "lastTimeEnd=" << staff->lastTimeEnd() << std::endl;
 			note = new CANote(CANote::Quarter,
 			                  staff->voiceAt(0),
 			                  drawableStaff->calculatePitch(coords.y(), clef),
@@ -301,6 +308,10 @@ void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *c)
 	}
 
 	v->repaint();
+}
+
+void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
+	keyPressEvent(e);
 }
 
 void CAMainWin::keyPressEvent(QKeyEvent *e) {

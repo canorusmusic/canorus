@@ -79,7 +79,9 @@ CAViewPort* CAScrollWidget::newViewPort(CAViewPort *v) {
 
 	viewPort->show();
 	//set the _worldW, _worldH and update scrollbars etc. beside the size
-	viewPort->resize(v?v->width():DEFAULT_VIEWPORT_WIDTH, v?v->height():DEFAULT_VIEWPORT_HEIGHT);
+	viewPort->resize( ((v && (v->width() > DEFAULT_VIEWPORT_WIDTH))?v->width():DEFAULT_VIEWPORT_WIDTH),
+	                  ((v && (v->height() > DEFAULT_VIEWPORT_HEIGHT))?v->height():DEFAULT_VIEWPORT_HEIGHT)
+	                );
 	
 	return viewPort;
 }

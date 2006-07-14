@@ -55,8 +55,18 @@ class CAScoreViewPort : public CAViewPort {
 		
 		void addMElement(CADrawableMusElement *elt, bool select=false);
 		void addCElement(CADrawableContext *elt, bool select=false);
-		CANote *addNote(CANote::CANoteLength, int x, int y);
+		
+		/**
+		 * Remove the CADrawableMusElement at the given coordinates, if it exists.
+		 * Returns the pointer of the CAMusElement, if the element was found and deleted.
+		 * WARNING! This function only deletes the CADrawable part of the object. You still need to delete the data part (the pointer returned)!
+		 * 
+		 * @param x X coordinate in absolute world units.
+		 * @param y Y coordinate in absolute world units.
+		 * @return Pointer to the CAMusElement, which the drawable element was presenting.
+		 */
 		CAMusElement *removeMElement(int x, int y);
+		
 		CAMusElement *selectMElement(int x, int y);
 		bool selectMElement(CAMusElement *elt);
 		CADrawableContext *selectCElement(int x, int y);
@@ -342,14 +352,14 @@ class CAScoreViewPort : public CAViewPort {
 		 * 
 		 * @param e Mouse event which gets processed.
 		 */
-		void mousePressEvent(QMouseEvent *e);
+		void CAMousePressEvent(QMouseEvent *e);
 		
 		/**
 		 * Default wheel event signal automatically emmitted.
 		 * 
 		 * @param e Wheel event which gets processed.
 		 */		
-		void wheelEvent(QWheelEvent *);
+		void CAWheelEvent(QWheelEvent *);
 		
 		/**
 		 * This signal is emitted when mousePressEvent() is called. Parent class is usually connected to this event.
@@ -373,22 +383,40 @@ class CAScoreViewPort : public CAViewPort {
 		 */
 		void CAWheelEvent(QWheelEvent *e, QPoint p, CAViewPort *v);
 		
+		/**
+		 * This signal is emitted when keyPressEvent() is called. Parent class is usually connected to this event.
+		 * It adds another argument to the keyPressEvent() function - pointer to this viewport.
+		 * This is useful when a parent class wants to know which class the signal was emmitted by.
+		 * 
+		 * @param e Key event which gets processed.
+		 * @param v Pointer to this viewport (the viewport which emmitted the signal).
+		 */
+		void CAKeyPressEvent(QKeyEvent *e, CAViewPort *v);
+		
 	private slots:
 		/**
-		 * Process the mousePressEvent() signal.
+		 * Process the mousePressEvent().
 		 * A new signal is emitted: CAMouseEvent(), which usually gets processed by the parent class.
 		 * 
 		 * @param e Mouse event which gets forwarded.
 		 */
-		void processMousePressEvent(QMouseEvent *e);
+		void mousePressEvent(QMouseEvent *e);
 
 		/**
-		 * Process the wheelEvent() signal.
+		 * Process the wheelEvent().
 		 * A new signal is emitted: CAWheelEvent(), which usually gets processed by the parent class.
 		 * 
 		 * @param e Wheel event which gets forwarded.
 		 */
-		void processWheelEvent(QWheelEvent *e);
+		void wheelEvent(QWheelEvent *e);
+		
+		/**
+		 * Process the keyPressEvent().
+		 * A new signal is emitted: CAKeyPressEvent(), which usually gets processed by the parent class.
+		 * 
+		 * @param e Key event which gets forwarded.
+		 */
+		void keyPressEvent(QKeyEvent *e);
 		
 		/**
 		 * Process the Horizontal scroll bar event.
@@ -396,7 +424,7 @@ class CAScoreViewPort : public CAViewPort {
 		 * 
 		 * @param val Value the scrollbar changed its value to.
 		 */
-		void processHScrollBarEvent(int val);
+		void HScrollBarEvent(int val);
 
 		/**
 		 * Process the Vertical scroll bar event.
@@ -404,7 +432,7 @@ class CAScoreViewPort : public CAViewPort {
 		 * 
 		 * @param val Value the scrollbar changed its value to.
 		 */
-		void processVScrollBarEvent(int val);
+		void VScrollBarEvent(int val);
 		
 		/**
 		 * Called when user resizes the form.

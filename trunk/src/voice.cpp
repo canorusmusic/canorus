@@ -68,3 +68,22 @@ void CAVoice::updateTimes(int idx) {
 		_musElementList[i]->setTimeStart(_musElementList[i]->timeStart() + length);
 	}
 }
+
+void CAVoice::updateTimes(int idx, int length) {
+	for (int i=idx; i<_musElementList.size(); i++) {
+		_musElementList[i]->setTimeStart(_musElementList[i]->timeStart() - length);
+	}
+}
+
+bool CAVoice::removeElement(CAMusElement *elt) {
+	int idx;
+	if ((idx = _musElementList.indexOf(elt)) != -1) {	//if the search element is found
+		int length = _musElementList[idx]->timeLength();
+		_musElementList.removeAt(idx);					//remove it
+		if (idx < _musElementList.size())				//update the startTimes of elements behind it
+			updateTimes(idx, length);
+		return true;
+	} else {
+		return false;
+	}
+}

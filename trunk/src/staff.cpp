@@ -60,3 +60,12 @@ void CAStaff::insertNote(CANote *note) {
 bool CAStaff::insertNoteBefore(CANote *note, CAMusElement *eltAfter) {
 	return note->voice()->insertMusElementBefore(note, eltAfter);
 }
+
+bool CAStaff::removeMusElement(CAMusElement *elt) {
+	bool success = false;
+	for (int i=0; i<_voiceList.size(); i++)
+		if (_voiceList[i]->removeElement(elt))
+			success = true;
+	
+	return success;
+}
