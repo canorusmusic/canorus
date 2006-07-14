@@ -35,7 +35,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			//draw notehead
 			p->setFont(QFont("Emmentaler",(int)(19*s.z)));
 			s.y += (int)(QUARTER_STEM_LENGTH*s.z);
-			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
+			p->drawText(s.x,(int)(s.y - 0.0*s.z),QString(0xE125));
 
 			//draw stem
 			QPen pen;

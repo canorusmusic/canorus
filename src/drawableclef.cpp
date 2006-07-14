@@ -34,7 +34,7 @@ void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
 
 	switch (clef()->clefType()) {
 		case CAClef::Treble:
-			p->drawText(s.x, (int)(s.y + 45*s.z), QString(0xE195));
+			p->drawText(s.x, (int)(s.y + 42*s.z), QString(0xE195));
 			
 			break;
 	}

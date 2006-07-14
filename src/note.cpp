@@ -35,5 +35,5 @@ CANote *CANote::clone() {
 void CANote::calculateNotePosition() {
 	CAClef *clef = _voice->getClef(this);
 	
-	_notePosition = _pitch + clef->c1() - 28;
+	_notePosition = _pitch + (clef?clef->c1():-2) - 28;
 }
