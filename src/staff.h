@@ -70,6 +70,15 @@ class CAStaff : public CAContext {
 		 */
 		bool insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter);
 		
+		/**
+		 * Remove the given music element from all the voices.
+		 * Only remove music elements pointers! The object itself stays intact.
+		 * 
+		 * @param elt Pointer to the element to be removed.
+		 * @return True, if element was found and removed, false otherwise.
+		 */
+		bool removeMusElement(CAMusElement* elt);
+		
 		void insertNote(CANote *note);
 		bool insertNoteBefore(CANote *note, CAMusElement *eltAfter);
 		

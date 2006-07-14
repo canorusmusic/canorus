@@ -7,9 +7,17 @@
  */
 
 #include "muselement.h"
+#include "context.h"
+#include "staff.h"
 
 CAMusElement::CAMusElement(CAContext *context, int time, int length) {
 	_context = context;
 	_timeStart = time;
 	_timeLength = length;
+}
+
+CAMusElement::~CAMusElement() {
+	if (context()->contextType() == CAContext::Staff) {
+		((CAStaff*)context())->removeMusElement(this);
+	}
 }

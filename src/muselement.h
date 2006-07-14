@@ -16,6 +16,7 @@ class CAContext;
 class CAMusElement {
 	public:
 		CAMusElement(CAContext *context, int time, int length=0);
+		~CAMusElement();
 		
 		/**
 		 * enum CAMusElementType includes different types for describing the CAMusElement:

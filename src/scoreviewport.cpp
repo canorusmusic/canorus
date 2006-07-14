@@ -41,10 +41,6 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	
 	_currentContext = 0;
 	
-	//setup the mouse events and forward them to CAEventName events
-	connect(this, SIGNAL(mousePressEvent(QMouseEvent *)), this, SLOT(processMousePressEvent(QMouseEvent *)));
-	connect(this, SIGNAL(wheelEvent(QWheelEvent *)), this, SLOT(processWheelEvent(QWheelEvent *)));
-
 	//setup the virtual canvas
 	_canvas = new QWidget(this);
 	_backgroundBrush = QBrush(QColor(255, 255, 240));
@@ -61,8 +57,8 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	_scrollBarsVisible = ScrollBarShowIfNeeded;
 	_allowManualScroll = true;
 	
-	connect(_hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(processHScrollBarEvent(int)));
-	connect(_vScrollBar, SIGNAL(valueChanged(int)), this, SLOT(processVScrollBarEvent(int)));
+	connect(_hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(HScrollBarEvent(int)));
+	connect(_vScrollBar, SIGNAL(valueChanged(int)), this, SLOT(VScrollBarEvent(int)));
 	
 	//setup layout
 	_layout = new QGridLayout(this);
@@ -186,10 +182,15 @@ bool CAScoreViewPort::selectMElement(CAMusElement *elt) {
 	return false;	
 }
 
-CANote* CAScoreViewPort::addNote(CANote::CANoteLength noteLength, int x, int y) {
-}
-
 CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
+	CADrawableMusElement *elt = (CADrawableMusElement*)_drawableMList.removeElement(x,y,false);
+	if (elt) {
+		CAMusElement *mElt = elt->musElement();
+		delete elt;
+		return mElt;
+	}
+	
+	return 0;
 }
 
 void CAScoreViewPort::importMElements(CAKDTree *elts) {
@@ -511,12 +512,16 @@ void CAScoreViewPort::checkScrollBars() {
 	_checkScrollBarsDeadLock = false;
 }
 
-void CAScoreViewPort::processMousePressEvent(QMouseEvent *e) {
+void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 	emit CAMousePressEvent(e, QPoint((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY), this);
 }
 
-void CAScoreViewPort::processWheelEvent(QWheelEvent *e) {
+void CAScoreViewPort::wheelEvent(QWheelEvent *e) {
 	emit CAWheelEvent(e, QPoint((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY), this);	
+}
+
+void CAScoreViewPort::keyPressEvent(QKeyEvent *e) {
+	emit CAKeyPressEvent(e, this);
 }
 
 void CAScoreViewPort::setScrollBarsVisibility(char status) {
@@ -537,14 +542,14 @@ void CAScoreViewPort::setScrollBarsVisibility(char status) {
 	checkScrollBars();
 }
 
-void CAScoreViewPort::processHScrollBarEvent(int val) {
+void CAScoreViewPort::HScrollBarEvent(int val) {
 	if ((_allowManualScroll) && (!_hScrollBarDeadLock)) {
 		setWorldX(val);
 		repaint();
 	}
 }
 
-void CAScoreViewPort::processVScrollBarEvent(int val) {
+void CAScoreViewPort::VScrollBarEvent(int val) {
 	if ((_allowManualScroll) && (!_vScrollBarDeadLock)) {
 		setWorldY(val);
 		repaint();

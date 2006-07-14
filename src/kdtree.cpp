@@ -30,16 +30,21 @@ bool CAKDTree::removeElement(CADrawable *elt) {
 	return _list.removeAll(elt);
 }
 
-bool CAKDTree::removeElement(int x, int y) {
+CADrawable* CAKDTree::removeElement(int x, int y, bool autoDelete) {
+	CADrawable *elt;
 	for (int i=0; i<_list.size(); i++) {
 		if (_list.at(i)->bBox().contains(x,y)) {
+			elt = _list[i];
 			_list.removeAt(i);
+			if (autoDelete) delete elt;
+			
 			calculateMaxXY();
-			return true;
+			
+			return elt;
 		}
 	}
 	
-	return false;
+	return 0;
 }
 
 void CAKDTree::clear(bool autoDelete) {

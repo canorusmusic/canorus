@@ -88,7 +88,7 @@ private slots:
 	void on_actionNew_viewport_activated();
 
 	////////////////////////////////////////////////////
-	//ViewPort actions
+	//Process ViewPort signals
 	////////////////////////////////////////////////////
 	/**
 	 * Process the mouse events of the children viewports.
@@ -107,6 +107,14 @@ private slots:
 	 * @param v Pointer to viewport where the event happened.
 	 */
 	void viewPortWheelEvent(QWheelEvent *e, const QPoint coords, CAViewPort *v);
+	
+	/**
+	 * Process the key events of the children viewports.
+	 * 
+	 * @param e Key event which gets processed.
+	 * @param v Pointer to the viewport where the event happened.
+	 */
+	void viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v);
 	
 	/**
 	 * Called when the tab is switched.
