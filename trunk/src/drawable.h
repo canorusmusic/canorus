@@ -34,6 +34,8 @@ class CADrawable {
 		int yPosOrig() { return _yPos; }
 		int width() { return _width; }
 		int height() { return _height; }
+		int neededWidth() { return _neededWidth; }
+		int neededHeight() { return _neededHeight; }
 		int xCenter() { return _xPos + _xPosOffset + (_width)/2; }
 		int yCenter() { return _yPos + _yPosOffset + (_height)/2; }
 		const QRect bBox() { return QRect(_xPos + _xPosOffset, _yPos + _yPosOffset, _width, _height); }
@@ -56,6 +58,8 @@ class CADrawable {
 		int _yPosOffset;
 		int _width;
 		int _height;
+		int _neededWidth;
+		int _neededHeight;
 		bool _visible;
 };
 #endif /*DRAWABLE_H_*/

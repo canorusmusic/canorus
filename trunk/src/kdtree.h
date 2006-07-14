@@ -13,6 +13,7 @@
 #include <QRect>
 
 class CADrawable;
+class CADrawableContext;
 
 /*class Node {
 	public:
@@ -87,8 +88,8 @@ class CAKDTree {
 		 * @param bool Should the lookup be view-based (default) - the nearest element is selected as it appears on the screen, or time-based - the nearest element is selected according to the nearest start/end time
 		 * @return Pointer to the CADrawable, if found, otherwise 0.
 		 */
-		CADrawable *findNearestLeft(int x, bool timeBased=false);
-		CADrawable *findNearestRight(int x, bool timeBased=false);
+		CADrawable *findNearestLeft(int x, bool timeBased=false, CADrawableContext *context=0);
+		CADrawable *findNearestRight(int x, bool timeBased=false, CADrawableContext *context=0);
 		CADrawable *findNearestUp(int y);
 		CADrawable *findNearestDown(int y);
 		

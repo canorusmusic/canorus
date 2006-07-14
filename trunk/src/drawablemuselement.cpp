@@ -8,6 +8,8 @@
 
 #include "drawablemuselement.h"
 
-CADrawableMusElement::CADrawableMusElement(CAMusElement *m, int x, int y) : CADrawable(x, y) {
+CADrawableMusElement::CADrawableMusElement(CAMusElement *m, CADrawableContext *drawableContext, int x, int y)
+ : CADrawable(x, y) {
 	_musElement = m;
+	_drawableContext = drawableContext;
 }

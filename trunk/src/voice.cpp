@@ -24,11 +24,26 @@ void CAVoice::clear() {
 	_musElementList.clear();
 }
 
-void CAVoice::addClef(CAClef *clef) {
+void CAVoice::insertClef(CAClef *clef) {
 	int i;
 	for (i=0;
-	     (i < _musElementList.size()) && (_musElementList[i]->timeStart() > clef->timeStart());
+	     (i < _musElementList.size()) && (_musElementList[i]->timeStart() < clef->timeStart());
 	     i++);
 	
 	_musElementList.insert(i, clef);
+}
+
+bool CAVoice::insertClefBefore(CAClef *clef, CAMusElement *eltAfter) {
+	if (!eltAfter) {
+		_musElementList << clef;
+		return true;
+	}
+	
+	int i;
+	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != eltAfter); i++);
+	if (i==_musElementList.size())
+		return false;
+	
+	_musElementList.insert(i,clef);
+	return true;
 }

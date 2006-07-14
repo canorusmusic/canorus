@@ -10,7 +10,24 @@
 #include "staff.h"
 
 CAClef::CAClef(CAClefType type, CAStaff *staff, int time) : CAMusElement(staff, time) {
-	//_type = CAMusElement::Clef;
+	_musElementType = CAMusElement::Clef;
 	_clefType = type;
+	
+	switch (type) {
+		case Treble:
+			_c1 = -2;
+			break;
+		case Bass:
+			_c1 = 10;
+			break;
+		case Alto:
+			_c1 = 4;
+			break;
+		case Tenor:
+			_c1 = 6;
+			break;
+		case Soprano:
+			_c1 = 0;
+			break;
+	}
 }
-

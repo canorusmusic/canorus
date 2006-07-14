@@ -187,6 +187,18 @@ void CAScoreViewPort::importCElements(CAKDTree *elts) {
 	_drawableCList.import(elts);
 }
 
+CAMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool currentContext) {
+	CADrawableMusElement *elt;
+	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestLeft(x, true, _currentContext))?
+	         elt->musElement() : 0);	//if found, return its musElement() pointer, otherwise return 0
+}
+
+CAMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool currentContext) {
+	CADrawableMusElement *elt;
+	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestRight(x, true, _currentContext))?
+	         elt->musElement() : 0);	//if found, return its musElement() pointer, otherwise return 0
+}
+
 int CAScoreViewPort::calculateTime(int x, int y) {
 	CADrawableMusElement *left = (CADrawableMusElement *)_drawableMList.findNearestLeft(x, true);
 	CADrawableMusElement *right = (CADrawableMusElement *)_drawableMList.findNearestRight(x, true);
@@ -201,17 +213,27 @@ int CAScoreViewPort::calculateTime(int x, int y) {
 
 CAContext *CAScoreViewPort::contextCollision(int x, int y) {
 	QList<CADrawable*> *l;
-	if ((l = _drawableCList.findInRange(x, y, 0, 0))->size() == 0)
+	if ((l = _drawableCList.findInRange(x, y, 0, 0))->size() == 0) {
+		delete l;
 		return 0;
-	else
-		return ((CADrawableContext*)l->front())->context();
+	} else {
+		CAContext *context = ((CADrawableContext*)l->front())->context(); 
+		delete l;
+		return context;
+	}
 }
 
 void CAScoreViewPort::update() {
 	_drawableMList.clear(true);
+	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	//remember the index of last used context
 	_drawableCList.clear(true);
+	_musElementSelection.clear();
 	
 	CAEngraver::reposit(this);
+	if (contextIdx != -1)	//restore the last used context
+		_currentContext = (CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0);
+	else
+		_currentContext = 0;
 }
 
 /**

@@ -12,21 +12,26 @@
 #include "drawable.h"
 
 class CAMusElement;
+class CADrawableContext;
 
 class CADrawableMusElement : public CADrawable {
 	public:
-		CADrawableMusElement(CAMusElement *musElement, int x, int y);
+		CADrawableMusElement(CAMusElement *musElement, CADrawableContext *drawableContext, int x, int y);
 
 		enum CADrawableMusElementType {
-			
+			DrawableNote,
+			DrawableClef
 		};
 				
 		inline CAMusElement *musElement() { return _musElement; }
 		CADrawableMusElementType drawableMusElementType() { return _drawableMusElement; }
+		CADrawableContext *drawableContext() { return _drawableContext; }
 		
 	protected:
+		CADrawableMusElementType _drawableMusElement;	///CADrawableMusElement Type
+
+		CADrawableContext *_drawableContext;
 		CAMusElement *_musElement;
-		CADrawableMusElementType _drawableMusElement;
 };
 
 #endif /*DRAWABLEMUSELEMENT_H_*/

@@ -39,6 +39,7 @@ set(Canorus_Srcs mainwin.cpp
 	drawablecontext.cpp
 	drawablemuselement.cpp
 	clef.cpp
+	drawableclef.cpp
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)

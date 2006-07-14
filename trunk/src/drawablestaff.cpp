@@ -10,10 +10,14 @@
 
 #include "drawablestaff.h"
 #include "staff.h"
+#include "note.h"
+#include "clef.h"
+
+#define _lineSpace ((float)_height/staff()->numberOfLines())
 
 CADrawableStaff::CADrawableStaff(CAStaff *s, int x, int y) : CADrawableContext(s, x, y) {
 	_width = 0;
-	_height = 60;
+	_height = 40;
 }
 
 void CADrawableStaff::draw(QPainter *p, const CADrawSettings s) {
@@ -34,4 +38,20 @@ CADrawableStaff *CADrawableStaff::clone() {
 	CADrawableStaff *d = new CADrawableStaff(staff(), _xPos, _yPos);
 	
 	return d;
+}
+
+int CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
+	return (int)( (yPos() + height() -
+	               //c' in logical pitch is 28
+	               ((note->pitch() - 28) - (clef?clef->c1():-2)) 
+	              )*(_lineSpace/2)
+	            );
+}
+
+int CADrawableStaff::calculateCenterYCoord(int y) {
+	float newY = (yPos() - y) / (_lineSpace/2);
+	newY += 0.5;	//round
+	newY = (float)((int)newY);	// "
+	
+	return (int)(yPos() - ((newY+1) * (_lineSpace/2)));
 }
