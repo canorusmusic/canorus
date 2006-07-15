@@ -9,10 +9,26 @@
 #ifndef PLAYABLE_H_
 #define PLAYABLE_H_
 
-class CAPlayable {
+#include "muselement.h"
+
+class CAVoice;
+
+class CAPlayable : public CAMusElement {
+	public:
+		CAPlayable(CAVoice *voice, int timeStart, int timeLength);
+		inline unsigned char midiPitch() { return _midiPitch; }
+		inline int midiLength() { return _midiLength; }
+		void setMidiPitch(unsigned char pitch) { _midiPitch = pitch; }
+		void setMidiLength(int length) { _midiLength = length; }
+		CAVoice *voice() { return _voice; }
+
+		static int pitchToMidiPitch(int pitch, int acc);
+		static int midiPitchToPitch(int midiPitch);
+	
 	protected:
 		int _midiLength;
-		int _midiPitch;
+		unsigned char _midiPitch;
+		CAVoice *_voice;
 };
 
 #endif /*PLAYABLE_H_*/

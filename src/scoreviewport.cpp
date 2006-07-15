@@ -38,6 +38,7 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	_hScrollBarDeadLock = false;
 	_vScrollBarDeadLock = false;
 	_checkScrollBarsDeadLock = false;
+	_playing = false;
 	
 	_currentContext = 0;
 	
@@ -102,8 +103,8 @@ CAScoreViewPort *CAScoreViewPort::clone(QWidget *parent) {
 void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 	_drawableMList.addElement(elt);
 	if (select) {
-		_musElementSelection.clear();
-		_musElementSelection << elt;
+		_selection.clear();
+		_selection << elt;
 	}
 	
 	switch (elt->drawableMusElementType()) {
@@ -152,18 +153,18 @@ CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 	QList<CADrawable *>* l;
 	if ((l=_drawableMList.findInRange(x,y))->size() != 0) { //multiple elements can share the same coordinates
 		int idx;
-			_musElementSelection.clear();
-		if ( (_musElementSelection.size() != 1) || ((idx = l->indexOf(_musElementSelection.front())) == -1) ) {
-			_musElementSelection << (CADrawableMusElement*)l->at(0);	//if the previous selection was not a single element or if the new list doesn't contain the selection, add the first element in the available list to the selection
+			_selection.clear();
+		if ( (_selection.size() != 1) || ((idx = l->indexOf(_selection.front())) == -1) ) {
+			_selection << (CADrawableMusElement*)l->at(0);	//if the previous selection was not a single element or if the new list doesn't contain the selection, add the first element in the available list to the selection
 		} else {
-			_musElementSelection << (CADrawableMusElement*)l->at((++idx < l->size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
+			_selection << (CADrawableMusElement*)l->at((++idx < l->size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
 		}
 		
 		delete l;
 
-		return ((CADrawableMusElement*)_musElementSelection.front())->musElement();
+		return ((CADrawableMusElement*)_selection.front())->musElement();
 	} else {
-		_musElementSelection.clear();
+		_selection.clear();
 		delete l;
 		
 		return 0;
@@ -171,11 +172,11 @@ CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 }
 
 bool CAScoreViewPort::selectMElement(CAMusElement *elt) {
-	_musElementSelection.clear();
+	_selection.clear();
 	
 	for (int i=0; i<_drawableMList.size(); i++)
 		if (((CADrawableMusElement*)(_drawableMList.at(i)))->musElement() == elt) {
-			_musElementSelection << (CADrawableMusElement*)_drawableMList.at(i);
+			_selection << (CADrawableMusElement*)_drawableMList.at(i);
 			return true;
 		}
 	
@@ -241,7 +242,7 @@ void CAScoreViewPort::update() {
 	_drawableMList.clear(true);
 	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	//remember the index of last used context
 	_drawableCList.clear(true);
-	_musElementSelection.clear();
+	_selection.clear();
 	
 	CAEngraver::reposit(this);
 	if (contextIdx != -1)	//restore the last used context
@@ -441,7 +442,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		               (int)((l->at(i)->xPos() - _worldX) * _zoom),
 		               (int)((l->at(i)->yPos() - _worldY) * _zoom),
 		               drawableWidth(), drawableHeight(),
-		               (_musElementSelection.contains((CADrawableMusElement*)l->at(i))?Qt::red:Qt::black)
+		               (_selection.contains((CADrawableMusElement*)l->at(i))?Qt::red:Qt::black)
 		               };
 		l->at(i)->draw(&p, s);
 	}
@@ -554,4 +555,10 @@ void CAScoreViewPort::VScrollBarEvent(int val) {
 		setWorldY(val);
 		repaint();
 	}
+}
+
+CADrawableMusElement *CAScoreViewPort::find(CAMusElement *elt) {
+	for (int i=0; i<_drawableMList.size(); i++)
+		if (((CADrawableMusElement*)_drawableMList.at(i))->musElement()==elt)
+			return (CADrawableMusElement*)_drawableMList.at(i);
 }

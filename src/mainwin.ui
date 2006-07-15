@@ -356,14 +356,22 @@
     <addaction name="separator" />
     <addaction name="actionNew_viewport" />
    </widget>
-   <widget class="QMenu" name="menuFormat" >
+   <widget class="QMenu" name="menu_Insert" >
     <property name="title" >
-     <string>&amp;Format</string>
+     <string>&amp;Insert</string>
     </property>
-    <addaction name="action_Staff_properties" />
-    <addaction name="action_Voice_properties" />
-    <addaction name="action_Note_properties" />
-    <addaction name="action_Document_layout" />
+    <addaction name="actionNew_staff" />
+    <addaction name="action_Clef" />
+    <addaction name="action_Time_signature" />
+    <addaction name="action_Key_signature" />
+    <addaction name="separator" />
+    <addaction name="action_Special_barline" />
+    <addaction name="action_Expression_marks" />
+    <addaction name="actionC_hord" />
+    <addaction name="action_Pedal_markings" />
+    <addaction name="action_Octaviation" />
+    <addaction name="action_Instrument_change" />
+    <addaction name="action_Midi_instruction" />
    </widget>
    <widget class="QMenu" name="menu_Perspective" >
     <property name="title" >
@@ -381,6 +389,15 @@
     <addaction name="actionChord_perspective" />
     <addaction name="action_Figured_bass_perspective" />
     <addaction name="actionFigured_functions_perspective" />
+   </widget>
+   <widget class="QMenu" name="menuFormat" >
+    <property name="title" >
+     <string>&amp;Format</string>
+    </property>
+    <addaction name="action_Staff_properties" />
+    <addaction name="action_Voice_properties" />
+    <addaction name="action_Note_properties" />
+    <addaction name="action_Document_layout" />
    </widget>
    <widget class="QMenu" name="menuInsert" >
     <property name="title" >
@@ -448,23 +465,6 @@
     <addaction name="separator" />
     <addaction name="actionQuit" />
    </widget>
-   <widget class="QMenu" name="menu_Insert" >
-    <property name="title" >
-     <string>&amp;Insert</string>
-    </property>
-    <addaction name="actionNew_staff" />
-    <addaction name="action_Clef" />
-    <addaction name="action_Time_signature" />
-    <addaction name="action_Key_signature" />
-    <addaction name="separator" />
-    <addaction name="action_Special_barline" />
-    <addaction name="action_Expression_marks" />
-    <addaction name="actionC_hord" />
-    <addaction name="action_Pedal_markings" />
-    <addaction name="action_Octaviation" />
-    <addaction name="action_Instrument_change" />
-    <addaction name="action_Midi_instruction" />
-   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuInsert" />
@@ -500,6 +500,7 @@
    <addaction name="separator" />
    <addaction name="actionExport" />
    <addaction name="actionPrint" />
+   <addaction name="actionPlay" />
   </widget>
   <action name="actionQuit" >
    <property name="icon" >
@@ -998,6 +999,17 @@
   <action name="actionNew_staff" >
    <property name="text" >
     <string>New staff</string>
+   </property>
+  </action>
+  <action name="actionPlay" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/player_play.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Play</string>
    </property>
   </action>
  </widget>

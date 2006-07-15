@@ -34,6 +34,9 @@ using namespace std;
 
 #include "mainwin.h"
 
+#include "rtmididevice.h"
+#include "playback.h"
+
 #include "scrollwidget.h"
 #include "engraver.h"
 #include "scoreviewport.h"
@@ -51,8 +54,15 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 {
 	oMainWin.setupUi( this );
 
+	initMidi();
+	
 	_currentMode = SelectMode;
+	_playback = 0;
 	newDocument();
+}
+
+CAMainWin::~CAMainWin() {
+	delete _midiOut;
 }
 
 void CAMainWin::newDocument() {
@@ -112,7 +122,7 @@ void CAMainWin::on_actionSplit_horizontally_activated() {
 	}
 
 	_viewPortList.append(v);
-	setCurrentMode(_currentMode);	//updates the new viewport border settings
+	setMode(_currentMode);	//updates the new viewport border settings
 }
 
 void CAMainWin::on_actionSplit_vertically_activated() {
@@ -125,7 +135,7 @@ void CAMainWin::on_actionSplit_vertically_activated() {
 	}
 	
 	_viewPortList.append(v);
-	setCurrentMode(_currentMode);	//updates the new viewport border settings
+	setMode(_currentMode);	//updates the new viewport border settings
 }
 
 void CAMainWin::on_actionUnsplit_activated() {
@@ -144,7 +154,7 @@ void CAMainWin::on_actionNew_viewport_activated() {
 	}
 
 	_viewPortList.append(v);
-	setCurrentMode(_currentMode);	//updates the new viewport border settings
+	setMode(_currentMode);	//updates the new viewport border settings
 }
 
 void CAMainWin::on_actionNew_activated() {
@@ -168,25 +178,27 @@ void CAMainWin::on_actionNew_staff_activated() {
 	((CAScoreViewPort*)_activeViewPort)->repaint();
 }
 
-void CAMainWin::setCurrentMode(CAMode mode) {
+void CAMainWin::setMode(CAMode mode) {
 	_currentMode = mode;
 	
+	QPen p;
 	switch (mode) {
 		case SelectMode:
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
+					if (((CAScoreViewPort*)_viewPortList[i])->playing()) continue;
 					((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}
 			break;
 		case InsertMode:
-			QPen p;
 			p.setColor(Qt::blue);
 			p.setWidth(3);
 			
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
+					if (((CAScoreViewPort*)_viewPortList[i])->playing()) continue;
 					((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
@@ -196,7 +208,7 @@ void CAMainWin::setCurrentMode(CAMode mode) {
 }
 
 void CAMainWin::on_action_Clef_activated() {
-	setCurrentMode(InsertMode);
+	setMode(InsertMode);
 	_insertMusElement = CAMusElement::Clef;
 }
 
@@ -321,11 +333,31 @@ void CAMainWin::keyPressEvent(QKeyEvent *e) {
 				((CAScoreViewPort*)_activeViewPort)->selectMElement(0);
 				((CAScoreViewPort*)_activeViewPort)->selectContext(0);
 			}
-			setCurrentMode(SelectMode);
+			setMode(SelectMode);
 			break;
 		case Qt::Key_I:
 			_insertMusElement = CAMusElement::Note;
-			setCurrentMode(InsertMode);
+			setMode(InsertMode);
 			break;
+	}
+}
+
+void CAMainWin::initMidi() {
+	_midiOut = new CARtMidiDevice();
+}
+
+void CAMainWin::playbackFinished() {
+	_playback->disconnect();
+	delete _playback;
+	oMainWin.actionPlay->setChecked(false);
+}
+
+void CAMainWin::on_actionPlay_toggled(bool checked) {
+	if (checked && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
+		_playback = new CAPlayback((CAScoreViewPort*)_activeViewPort, _midiOut);
+		connect(_playback, SIGNAL(done()), this, SLOT(playbackFinished()));
+		_playback->start();
+	} else {
+		_playback->stop();
 	}
 }

@@ -14,6 +14,9 @@
 CAVoice::CAVoice(CAStaff *staff) {
 	_staff = staff;
 	_voiceNumber = this->staff()->voiceCount() + 1;
+	
+	_midiChannel = 0;
+	_midiProgram = 0;
 }
 
 void CAVoice::clear() {

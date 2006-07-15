@@ -30,12 +30,14 @@
 #include "muselement.h"
 
 class QKeyEvent;
+class CARtMidiDevice;
+class CAPlayback;
 
 enum CAMode {
 	InsertMode,
 	SelectMode,
 	ReadOnlyMode,
-	PlayMode
+	PlaybackMode
 };
 
 class CAViewPort;
@@ -47,7 +49,7 @@ class CAMainWin: public QMainWindow
 
 public:
 	CAMainWin(QMainWindow *oParent = 0);
-	~CAMainWin() {};
+	~CAMainWin();
 
 	void newDocument();
 	
@@ -65,6 +67,8 @@ public:
 	 * WARNING! This function delets the UI only (drawable elements). All the data classes should stay intact. Use _document.clear() in order to clear the data part as well.
 	 */
 	void clearUI();
+	
+	void initMidi();
 
 private slots:
 	////////////////////////////////////////////////////
@@ -80,6 +84,9 @@ private slots:
 	
 	//View menu
 	void on_action_Fullscreen_toggled(bool);
+	
+	//Playback menu
+	void on_actionPlay_toggled(bool);
 	
 	//Window menu
 	void on_actionSplit_horizontally_activated();
@@ -121,8 +128,10 @@ private slots:
 	 */
 	void on_tabWidget_currentChanged(int);
 
-private slots:
 	void keyPressEvent(QKeyEvent *);
+
+private:
+	void playbackFinished();	///Temporarily as we don't find better solution.
 
 private:
 	////////////////////////////////////////////////////
@@ -131,8 +140,10 @@ private:
     CADocument _document;	///Every main window has its own unique CADocument.
 	CAMode _currentMode;	///Every main window has its own current mode (view, insert, edit etc.). See enum CAMode.
 	
-	void setCurrentMode(CAMode mode);
+	void setMode(CAMode mode);
 	inline CAMode currentMode() { return _currentMode; }
+	CARtMidiDevice *_midiOut;
+	CAPlayback *_playback;
 
 	////////////////////////////////////////////////////
 	//User interface, widgets
