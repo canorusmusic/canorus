@@ -51,6 +51,12 @@ class CAVoice {
 		int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
 	
 		CAClef *getClef(CAMusElement *elt);
+		
+		void setMidiChannel(const unsigned char ch) { _midiChannel = ch; }
+		void setMidiProgram(const unsigned char program) { _midiProgram = program; }
+		
+		unsigned char midiChannel() { return _midiChannel; }
+		unsigned char midiProgram() { return _midiProgram; }
 	
 	private:
 		void updateTimes(int idx);	///Update the musElements timeStarts, taking idx-th element as the inserted element.
@@ -58,6 +64,12 @@ class CAVoice {
 		QList<CAMusElement *> _musElementList;
 		CAStaff *_staff;	///Staff which this voice belongs to by default.
 		int _voiceNumber;	///Voice number starting at 1.
+		
+		////////////////////////////////////////////////
+		//MIDI properties
+		////////////////////////////////////////////////
+		unsigned char _midiChannel;
+		unsigned char _midiProgram;
 };
 
 #endif /*VOICE_H_*/

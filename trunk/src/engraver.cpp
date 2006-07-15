@@ -66,9 +66,9 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		if (idx==streams) { done=true; continue; }
 
 		//go through all the streams and remember the time of the soonest element that will happen
-		timeStart = 0;	//reset the timeStart - the next one minimum will be set in the following loop
+		timeStart = -1;	//reset the timeStart - the next one minimum will be set in the following loop
 		for (int idx=0; idx < streams; idx++) {
-			if ( (musStreamList[idx]->size() > streamsIdx[idx]) && ((!timeStart) || (musStreamList[idx]->at(streamsIdx[idx])->timeStart() < timeStart)) )
+			if ( (musStreamList[idx]->size() > streamsIdx[idx]) && ((timeStart==-1) || (musStreamList[idx]->at(streamsIdx[idx])->timeStart() < timeStart)) )
 				timeStart = musStreamList[idx]->at(streamsIdx[idx])->timeStart();
 		}
 		//timeStart now holds the nearest next time we're going to draw
@@ -78,7 +78,6 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		CAMusElement *elt;
 		CADrawableContext *drawableContext;
 		for (int i=0; i < streams; i++) {
-			int a = streamsIdx[i];
 			//loop until the element has come, which has bigger timeStart
 			//multiple elements can have the same start time. eg. Clef + Key signature + Time signature + First note
 			while ( (musStreamList[i]->size() > streamsIdx[i]) &&

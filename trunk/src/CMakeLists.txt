@@ -5,7 +5,8 @@
 # created with the Qt4 designer
 # INCLUDE(AddFileDependencies)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -D__LINUX_ALSASEQ__")
+#SET(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -lasound")
 
 # This line adds the include path of the Qt
 # directory to the compiler include path
@@ -15,7 +16,7 @@ INCLUDE( ${QT_USE_FILE} )
 set(Canorus_UIs  mainwin.ui)
 
 # Define the MOC source files used by Canorus
-set(Canorus_MOCs mainwin.h scrollwidget.h viewport.h scoreviewport.h)
+set(Canorus_MOCs mainwin.h scrollwidget.h viewport.h scoreviewport.h playback.h)
 
 # Add all sources to Canorus_Srcs
 set(Canorus_Srcs mainwin.cpp
@@ -40,6 +41,9 @@ set(Canorus_Srcs mainwin.cpp
 	drawablemuselement.cpp
 	clef.cpp
 	drawableclef.cpp
+	rtmidi/RtMidi.cpp
+	rtmididevice.cpp
+	playback.cpp
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
@@ -70,8 +74,9 @@ QT4_WRAP_CPP( Canorus_MOC_Srcs ${Canorus_MOCs} )
 # All dependent libraries like RtMidi must be added here.
 # Attention: In contrast to Makefiles don't add "\" to separate lines
 add_executable(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs} 
-                        ${Canorus_MOC_Srcs} ${Canorus_Resrcs_Srcs})
+                        ${Canorus_MOC_Srcs} ${Canorus_Resrcs_Srcs}
+			)
 
 # Here the needed Qt Libraries are added to the link
 # command. Never remove that line :-)
-target_link_libraries( canorus ${QT_LIBRARIES} )
+target_link_libraries( canorus ${QT_LIBRARIES} "asound" )

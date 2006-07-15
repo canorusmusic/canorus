@@ -43,7 +43,7 @@ CADrawableStaff *CADrawableStaff::clone() {
 
 int CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
 	return (int)( yPos() + height() -
-	               //c' in logical pitch is 28
+	               //middle c in logical pitch is 28
 	               ((note->pitch() - 28) + (clef?clef->c1():-2) + 0.5)*(_lineSpace/2)
 	            );
 }
@@ -59,7 +59,7 @@ int CADrawableStaff::calculateCenterYCoord(int y) {
 int CADrawableStaff::calculatePitch(int y, CAClef *clef) {
 	int yC1 = (int)(yPos() + 4*_lineSpace - (clef?clef->c1():-2)*(_lineSpace/2)); //Y coordinate of c1 of the current staff
 
-	//c' = 28
+	//middle c = 28
 	return (int)(28 - (y - yC1 - 1.5)/(_lineSpace/2));
 }
 

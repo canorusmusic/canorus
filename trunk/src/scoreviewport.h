@@ -68,6 +68,14 @@ class CAScoreViewPort : public CAViewPort {
 		CAMusElement *removeMElement(int x, int y);
 		
 		CAMusElement *selectMElement(int x, int y);
+		
+		void addToSelection(CADrawableMusElement *elt) { _selection << elt; }
+		void addToSelection(QList<CADrawableMusElement*> *list) { _selection << *list; }
+		bool removeFromSelection(CADrawableMusElement *elt) { _selection.removeAll(elt); }
+		CADrawableMusElement *find(CAMusElement *elt);
+		void clearSelection() { _selection.clear(); }
+		inline QList<CADrawableMusElement*>* selection() { return &_selection; };
+		
 		bool selectMElement(CAMusElement *elt);
 		CADrawableContext *selectCElement(int x, int y);
 		bool selectContext(CAContext *context);		///Returns true, if the context existed and was selected, otherwise false
@@ -341,6 +349,9 @@ class CAScoreViewPort : public CAViewPort {
 		 */
 		void setBackground(const QBrush brush);
 		
+		void setPlaying(bool playing) { _playing = playing; }
+		bool playing() { return _playing; }
+		
 		/**
 		 * Disable border.
 		 */
@@ -456,7 +467,7 @@ class CAScoreViewPort : public CAViewPort {
 		 * @param elt Pointer to the element which we query.
 		 * @return True, if the given element is selected, false otherwise.
 		 */
-		bool isSelected(CADrawableMusElement *elt) { return (_musElementSelection.contains(elt)); }
+		bool isSelected(CADrawableMusElement *elt) { return (_selection.contains(elt)); }
 		
 	private:
 		////////////////////////////////////////////////
@@ -466,7 +477,7 @@ class CAScoreViewPort : public CAViewPort {
 		CAKDTree _drawableCList;	///The list of context drawable elements (staffs, lyrics etc.). Every viewport has its own list of drawable elements and drawable objects themselves!
 		CASheet *_sheet;	///Pointer to the CASheet which the viewport represents
 		
-		QList<CADrawableMusElement *> _musElementSelection;	///The set of elements being selected.
+		QList<CADrawableMusElement *> _selection;	///The set of elements being selected.
 		CADrawableContext *_currentContext;	///The pointer to the currently active context (staff, lyrics).
 		
 		int _worldX, _worldY, _worldW, _worldH;	///Absolute world coordinates of the area the viewport is currently showing.
@@ -492,6 +503,7 @@ class CAScoreViewPort : public CAViewPort {
 		//Internal properties
 		////////////////////////////////////////////////
 		int _oldWorldX, _oldWorldY, _oldWorldW, _oldWorldH;	///Old coordinates used before the repaint. This is needed so only the new part of the viewport gets repainted when panning.
+		bool _playing;	///Set to on, when in Playback mode
 		bool _holdRepaint;	///Dirty flag to prevent multiple repaintings.
 		bool _checkScrollBarsDeadLock;	///Dirty flag to prevent recursive checkScrollBars() calls.
 		bool _hScrollBarDeadLock;	///Dirty flag to prevent recursive scrollbar calls when its value is manually changed.
