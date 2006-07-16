@@ -98,13 +98,22 @@ private slots:
 	//Process ViewPort signals
 	////////////////////////////////////////////////////
 	/**
-	 * Process the mouse events of the children viewports.
+	 * Process the mouse press events of the children viewports.
 	 * 
 	 * @param e Mouse event which gets processed.
 	 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
 	 * @param v Pointer to viewport where the event happened.
 	 */
 	void viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *v);
+
+	/**
+	 * Process the mouse move events of the children viewports.
+	 * 
+	 * @param e Mouse event which gets processed.
+	 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
+	 * @param v Pointer to viewport where the event happened.
+	 */
+	void viewPortMouseMoveEvent(QMouseEvent *e, const QPoint coords, CAViewPort *v);
 	
 	/**
 	 * Process the wheel events of the children viewports.

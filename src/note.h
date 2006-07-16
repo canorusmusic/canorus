@@ -35,6 +35,8 @@ class CANote :  public CAPlayable {
 		int pitch() { return _pitch; }
 		int notePosition() { return _notePosition; }
 
+		static const QString generateNoteName(int pitch);
+
 	private:
 		/**
 		 * Depending on the clef, calculate note position in the staff.

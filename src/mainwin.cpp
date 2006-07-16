@@ -27,7 +27,7 @@
 #include <QWheelEvent>
 #include <QPoint>
 #include <QKeyEvent>
-
+#include <QString>
 #include <iostream>
 
 using namespace std;
@@ -75,8 +75,9 @@ void CAMainWin::newDocument() {
 void CAMainWin::addSheet() {
 	CASheet *s = _document.addSheet(QString("Sheet ") + QString::number(_document.sheetCount()+1));
 	CAScoreViewPort *v = new CAScoreViewPort(s, 0);
-
+	
 	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+	connect(v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
 	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 	connect(v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	
@@ -117,6 +118,7 @@ void CAMainWin::on_actionSplit_horizontally_activated() {
 	
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	}
@@ -130,6 +132,7 @@ void CAMainWin::on_actionSplit_vertically_activated() {
 	
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	}
@@ -149,6 +152,7 @@ void CAMainWin::on_actionNew_viewport_activated() {
 	
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
+		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	}
@@ -289,6 +293,26 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			v->selectMElement(note);
 			v->repaint();
 			break;
+	}
+}
+
+void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
+	if ((_currentMode == InsertMode) &&
+	    (_insertMusElement == CAMusElement::Note) &&
+	    (v->viewPortType()==CAViewPort::ScoreViewPort)
+	   ) {
+		CAScoreViewPort *c = (CAScoreViewPort*)v;
+		CADrawableStaff *s;
+		if (c->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff)
+			s = (CADrawableStaff*)c->currentContext(); 
+		else
+			return;
+		
+		//calculate the logical pitch out of absolute world coordinates and the current clef
+		int pitch = s->calculatePitch(coords.y(), s->getClef(coords.x()));
+		
+		//write into the main window's status bar the note pitch name
+		setStatusTip(CANote::generateNoteName(pitch));	//TODO: Status bar isn't updated always correctly - needs some wierd repaint events or something! MouseMove events are recognized well though. -Matevz
 	}
 }
 

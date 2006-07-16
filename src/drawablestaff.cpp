@@ -17,6 +17,7 @@
 #define _lineSpace (staff()->numberOfLines()?(float)_height/(staff()->numberOfLines()-1):0)
 
 CADrawableStaff::CADrawableStaff(CAStaff *s, int x, int y) : CADrawableContext(s, x, y) {
+	_drawableContextType = CADrawableContext::DrawableStaff;
 	_width = 0;
 	_height = 35;
 }
