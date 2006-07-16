@@ -120,6 +120,8 @@ class CAScoreViewPort : public CAViewPort {
 		void importMElements(CAKDTree *elts);
 		void importCElements(CAKDTree *elts);
 		
+		CADrawableContext *currentContext() { return _currentContext; }
+		
 		/**
 		 * Synchronize the sheets music elements with the actual drawable ones and reposition them.
 		 */
@@ -396,6 +398,17 @@ class CAScoreViewPort : public CAViewPort {
 		void CAMousePressEvent(QMouseEvent *e, QPoint p, CAViewPort *v);
 
 		/**
+		 * This signal is emitted when mouseMoveEvent() is called. Parent class is usually connected to this event.
+		 * It adds another argument to the mouseMoveEvent() function - pointer to this viewport.
+		 * This is useful when a parent class wants to know which class the signal was emmitted by.
+		 * 
+		 * @param e Mouse event which gets processed.
+		 * @param p Coordinates of the mouse cursor in absolute world values.
+		 * @param v Pointer to this viewport (the viewport which emmitted the signal).
+		 */
+		void CAMouseMoveEvent(QMouseEvent *e, QPoint p, CAViewPort *v);
+
+		/**
 		 * This signal is emitted when wheelEvent() is called. Parent class is usually connected to this event.
 		 * It adds another argument to the wheelEvent() function - pointer to this viewport.
 		 * This is useful when a parent class wants to know which class the signal was emmitted by.
@@ -419,11 +432,19 @@ class CAScoreViewPort : public CAViewPort {
 	private slots:
 		/**
 		 * Process the mousePressEvent().
-		 * A new signal is emitted: CAMouseEvent(), which usually gets processed by the parent class.
+		 * A new signal is emitted: CAMousePressEvent(), which usually gets processed by the parent class.
 		 * 
 		 * @param e Mouse event which gets forwarded.
 		 */
 		void mousePressEvent(QMouseEvent *e);
+
+		/**
+		 * Process the mouseMoveEvent().
+		 * A new signal is emitted: CAMouseMoveEvent(), which usually gets processed by the parent class.
+		 * 
+		 * @param e Mouse event which gets forwarded.
+		 */
+		void mouseMoveEvent(QMouseEvent *e);
 
 		/**
 		 * Process the wheelEvent().

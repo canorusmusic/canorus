@@ -41,3 +41,21 @@ void CANote::calculateNotePosition() {
 	
 	_notePosition = _pitch + (clef?clef->c1():-2) - 28;
 }
+
+const QString CANote::generateNoteName(int pitch) {
+	QString name;
+	
+	name = (char)((pitch+2)%7 + 'a');
+	if (pitch < 21)
+		name = name.toUpper();
+	
+	for (int i=0; i<(pitch-21)/7; i++)
+		name.append('\'');
+	
+	if (pitch<14)
+		name.append(',');
+	if (pitch<7)
+		name.append(',');
+	
+	return name;
+}

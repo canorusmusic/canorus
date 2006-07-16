@@ -41,9 +41,10 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	_playing = false;
 	
 	_currentContext = 0;
-	
 	//setup the virtual canvas
 	_canvas = new QWidget(this);
+	setMouseTracking(true);
+	_canvas->setMouseTracking(true);
 	_backgroundBrush = QBrush(QColor(255, 255, 240));
 	_repaintArea = 0;
 	
@@ -541,6 +542,10 @@ void CAScoreViewPort::checkScrollBars() {
 
 void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 	emit CAMousePressEvent(e, QPoint((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY), this);
+}
+
+void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
+	emit CAMouseMoveEvent(e, QPoint((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY), this);
 }
 
 void CAScoreViewPort::wheelEvent(QWheelEvent *e) {
