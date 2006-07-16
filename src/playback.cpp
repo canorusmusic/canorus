@@ -7,6 +7,7 @@
  */
 
 #include <QPen>
+#include <QRect>
 
 #include <vector>	//needed for RtMidi send message
 #include <iostream>
@@ -91,6 +92,7 @@ void CAPlayback::run() {
 		}
 		
 		CAPlayable *elt;
+		CADrawableMusElement *drawable;
 		//note off
 		for (int i=0; i<curPlaying.size(); i++) {
 			if (((elt = (CAPlayable*)curPlaying[i])->timeStart() + elt->timeLength()) == timeStart) {
@@ -99,9 +101,12 @@ void CAPlayback::run() {
 				message.push_back(127);
 				_midiDevice->send(&message);	//release note
 				message.clear();
-				_scoreViewPort->removeFromSelection(_scoreViewPort->find((CAMusElement*)elt));
 				curPlaying.removeAt(i);
 				
+				_scoreViewPort->removeFromSelection(drawable = _scoreViewPort->find((CAMusElement*)elt));
+				_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
+			    _scoreViewPort->repaint();
+			      	
 				i--;
 			}
 		}
@@ -125,14 +130,15 @@ void CAPlayback::run() {
 					message.push_back(127);
 					_midiDevice->send(&message);	//play note
 					message.clear();
-					_scoreViewPort->addToSelection(_scoreViewPort->find((CAMusElement*)elt));
 			      	curPlaying << elt;
+					
+					_scoreViewPort->addToSelection(drawable = _scoreViewPort->find((CAMusElement*)elt));
+					_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
+			      	_scoreViewPort->repaint();
 			      	
 			      	streamsIdx[i]++;
 			      }
 		}
-		
-		_scoreViewPort->repaint();
 		
 		int minLength = -1;
 		int delta;

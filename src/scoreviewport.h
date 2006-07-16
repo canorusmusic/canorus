@@ -349,9 +349,21 @@ class CAScoreViewPort : public CAViewPort {
 		 */
 		void setBackground(const QBrush brush);
 		
+		/**
+		 * Set playback mode.
+		 * 
+		 * @param playing Is the viewport playing the score.
+		 */
 		void setPlaying(bool playing) { _playing = playing; }
 		bool playing() { return _playing; }
 		
+		/**
+		 * Set the area to be repainted, not the whole widget.
+		 * 
+		 * @param area Pointer to the QRect of area to be repainted in absolute world units.
+		 */ 
+		void setRepaintArea(QRect *area) { _repaintArea = area; }
+		void clearRepaintArea() { if (_repaintArea) delete _repaintArea; _repaintArea=0; }
 		/**
 		 * Disable border.
 		 */
@@ -475,7 +487,7 @@ class CAScoreViewPort : public CAViewPort {
 		////////////////////////////////////////////////
 		CAKDTree _drawableMList;	///The list of music elements stored in a tree for faster lookup and other operations. Every viewport has its own list of drawable elements and drawable objects themselves!
 		CAKDTree _drawableCList;	///The list of context drawable elements (staffs, lyrics etc.). Every viewport has its own list of drawable elements and drawable objects themselves!
-		CASheet *_sheet;	///Pointer to the CASheet which the viewport represents
+		CASheet *_sheet;	///Pointer to the CASheet which the viewport represents.
 		
 		QList<CADrawableMusElement *> _selection;	///The set of elements being selected.
 		CADrawableContext *_currentContext;	///The pointer to the currently active context (staff, lyrics).
@@ -489,9 +501,10 @@ class CAScoreViewPort : public CAViewPort {
 		QGridLayout *_layout;	///Grid layout for placing the scrollbars at the right and the bottom.
 		QWidget *_canvas;	///Virtual canvas which represents the size of the drawable area. All its signals are forwarded to CAViewPort.
 		QScrollBar *_hScrollBar, *_vScrollBar;	///Horizontal/vertical scrollbars
-		bool _drawBorder;	///Should the border be drawn or not
-		QPen _borderPen;	///Pen which the border is drawn by
-		QBrush _backgroundBrush;	///Brush which the background is drawn by
+		bool _drawBorder;	///Should the border be drawn or not.
+		QPen _borderPen;	///Pen which the border is drawn by.
+		QBrush _backgroundBrush;	///Brush which the background is drawn by.
+		QRect *_repaintArea;	///Area to be repainted on paintEvent().
 
 		////////////////////////////////////////////////
 		//Widgets behaviour
