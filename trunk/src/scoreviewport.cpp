@@ -45,6 +45,7 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	//setup the virtual canvas
 	_canvas = new QWidget(this);
 	_backgroundBrush = QBrush(QColor(255, 255, 240));
+	_repaintArea = 0;
 	
 	//setup the scrollbars
 	_vScrollBar = new QScrollBar(Qt::Vertical, this);
@@ -409,6 +410,14 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		return;
 	
 	QPainter p(this);
+	if (_repaintArea) {
+		p.setClipping(true);
+		p.setClipRect(QRect((int)((_repaintArea->x() - _worldX)*_zoom),
+		                    (int)((_repaintArea->y() - _worldY)*_zoom),
+		                    (int)(_repaintArea->width()*_zoom),
+		                    (int)(_repaintArea->height()*_zoom)),
+		              Qt::UniteClip);
+	}
 	
 	if (_drawBorder) {
 		p.setPen(_borderPen);
@@ -416,11 +425,19 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	}
 	
 	//draw the background
-	p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundBrush);
+	if (_repaintArea)
+		p.fillRect((int)((_repaintArea->x() - _worldX)*_zoom), (int)((_repaintArea->y() - _worldY)*_zoom), (int)(_repaintArea->width()*_zoom), (int)(_repaintArea->height()*_zoom), _backgroundBrush);
+	else
+		p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundBrush);
 
+	QList<CADrawable *>* l;
 	//draw contexts
 	int j = _drawableCList.size();
-	QList<CADrawable *>* l = _drawableCList.findInRange(_worldX, _worldY, _worldW, _worldH);
+	if (_repaintArea)
+		l = _drawableCList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
+	else
+		l = _drawableCList.findInRange(_worldX, _worldY, _worldW, _worldH);
+
 	for (int i=0; i<l->size(); i++) {
 		CADrawSettings s = {
 	    	           _zoom,
@@ -435,7 +452,11 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	delete l;
 	
 	//draw music elements
-	l = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
+	if (_repaintArea)
+		l = _drawableMList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
+	else
+		l = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
+
 	for (int i=0; i<l->size(); i++) {
 		CADrawSettings s = {
 		               _zoom,
@@ -451,7 +472,12 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	_oldWorldX = _worldX; _oldWorldY = _worldY;
 	_oldWorldW = _worldW; _oldWorldH = _worldH;
 	
-	delete l;	
+	if (_repaintArea) {
+		delete _repaintArea;
+		_repaintArea = 0;
+		p.setClipping(false);
+	}
+	delete l;
 }
 
 void CAScoreViewPort::setBorder(const QPen pen) {
