@@ -5,8 +5,10 @@
 # created with the Qt4 designer
 # INCLUDE(AddFileDependencies)
 
+
+# Uncomment the 2nd line for M$ Windows and comment the Linux one:
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -D__LINUX_ALSASEQ__")
-#SET(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -lasound")
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -D__WINDOWS_MM__")
 
 # This line adds the include path of the Qt
 # directory to the compiler include path
@@ -79,4 +81,6 @@ add_executable(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs}
 
 # Here the needed Qt Libraries are added to the link
 # command. Never remove that line :-)
+# Uncomment the 2nd line for M$ Windows and comment the first Linux one:
 target_link_libraries( canorus ${QT_LIBRARIES} "asound" )
+#target_link_libraries( canorus ${QT_LIBRARIES} "winmm.lib" )
