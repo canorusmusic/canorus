@@ -53,7 +53,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
   : QMainWindow( oParent )
 {
 	oMainWin.setupUi( this );
-
+	
 	initMidi();
 	
 	_currentMode = SelectMode;
@@ -192,6 +192,7 @@ void CAMainWin::setMode(CAMode mode) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (((CAScoreViewPort*)_viewPortList[i])->playing()) continue;
 					((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
+					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(false);
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}
@@ -204,6 +205,7 @@ void CAMainWin::setMode(CAMode mode) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (((CAScoreViewPort*)_viewPortList[i])->playing()) continue;
 					((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
+					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(true);
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}
@@ -281,10 +283,9 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 
 			drawableStaff = (CADrawableStaff*)context;
 			staff = drawableStaff->staff();
-			clef = drawableStaff->getClef(coords.x());
 			note = new CANote(CANote::Quarter,
 			                  staff->voiceAt(0),
-			                  drawableStaff->calculatePitch(coords.y(), clef),
+			                  drawableStaff->calculatePitch(coords.x(), coords.y()),
 			                  (right?right->timeStart():staff->lastTimeEnd())
 			                 );
 			staff->insertNoteBefore(note, right);
@@ -303,16 +304,16 @@ void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort
 	   ) {
 		CAScoreViewPort *c = (CAScoreViewPort*)v;
 		CADrawableStaff *s;
-		if (c->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff)
+		if (c->currentContext()?(c->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0)
 			s = (CADrawableStaff*)c->currentContext(); 
 		else
 			return;
 		
 		//calculate the logical pitch out of absolute world coordinates and the current clef
-		int pitch = s->calculatePitch(coords.y(), s->getClef(coords.x()));
+		int pitch = s->calculatePitch(coords.x(), coords.y());
 		
 		//write into the main window's status bar the note pitch name
-		setStatusTip(CANote::generateNoteName(pitch));	//TODO: Status bar isn't updated always correctly - needs some wierd repaint events or something! MouseMove events are recognized well though. -Matevz
+		statusBar()->showMessage(CANote::generateNoteName(pitch));	//TODO: Status bar isn't updated always correctly - needs some wierd repaint events or something! MouseMove events are recognized well though. -Matevz
 	}
 }
 

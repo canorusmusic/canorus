@@ -15,18 +15,27 @@ class CANote;
 
 class CADrawableNote : public CADrawableMusElement {
 	public:
-		CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y);
+		/**
+		 * Y coordinate represents the center of the note!
+		 */
+		CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y, bool shadowNote = false);
+		
+		~CADrawableNote();
+		
 		void draw(QPainter *p, CADrawSettings s);
 		
 		inline CANote* note() { return (CANote*)_musElement; }
 		
 		CADrawableNote *clone();
 		
-		void setDrawLedgerLine(bool line) { _drawLedgerLine = line; }
-		bool drawLedgerLine() { return _drawLedgerLine; }
-	
+		void setDrawLedgerLines(bool ledgerLines) { _drawLedgerLines = ledgerLines; }
+		bool drawLedgerLines() { return _drawLedgerLines; }
+		void setYPos(int yPos);
+		void setDrawableContext(CADrawableContext *c) { _drawableContext = c; }
+		
 	private:
-		bool _drawLedgerLine;
+		bool _drawLedgerLines;
+		bool _shadowNote;	///Is the current note shadow note?
 };
 
 #endif /*DRAWABLENOTE_H_*/

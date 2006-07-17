@@ -27,6 +27,7 @@
 #include "context.h"
 #include "engraver.h"
 #include "staff.h"
+#include "note.h"
 
 CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(parent) {
 	_viewPortType = CAViewPort::ScoreViewPort;
@@ -39,6 +40,11 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	_vScrollBarDeadLock = false;
 	_checkScrollBarsDeadLock = false;
 	_playing = false;
+
+	//set the shadow note
+	_shadowNoteVisible = false;
+	_shadowNote = new CANote(CANote::Whole, 0, 0, 0);
+	_shadowDrawableNote = new CADrawableNote(_shadowNote, 0, 0, 0, true);
 	
 	_currentContext = 0;
 	//setup the virtual canvas
@@ -119,19 +125,19 @@ void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 	_drawableCList.addElement(elt);
 	if (select)
-		_currentContext = elt;
+		setCurrentContext(elt);
 }
 
 bool CAScoreViewPort::selectContext(CAContext *context) {
 	if (!context) {
-		_currentContext = 0;
+		setCurrentContext(0);
 		return false;
 	}
 	
 	for (int i=0; i<_drawableCList.size(); i++) {
-		CAContext *c=((CADrawableContext*)_drawableCList.at(i))->context();
+		CAContext *c = ((CADrawableContext*)_drawableCList.at(i))->context();
 		if (c == context) {
-			_currentContext = (CADrawableContext*)_drawableCList.at(i);
+			setCurrentContext((CADrawableContext*)_drawableCList.at(i));
 			return true;
 		}
 	}
@@ -139,11 +145,22 @@ bool CAScoreViewPort::selectContext(CAContext *context) {
 	return false;
 }
 
+void CAScoreViewPort::setCurrentContext(CADrawableContext *drawableContext) {
+	_currentContext = drawableContext;
+
+	if (_currentContext) {
+		_shadowDrawableNote->setDrawableContext(_currentContext);
+		if (_currentContext->drawableContextType() == CADrawableContext::DrawableStaff) {
+			_shadowNote->setVoice(((CADrawableStaff*)_currentContext)->staff()->voiceAt(0));
+		}
+	}
+}
+
 CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 	QList<CADrawable *>* l = _drawableCList.findInRange(x,y);
 	
 	if (l->size()!=0) {
-		_currentContext = (CADrawableContext*)l->front();
+		setCurrentContext((CADrawableContext*)l->front());
 	}
 	
 	delete l;
@@ -248,9 +265,9 @@ void CAScoreViewPort::update() {
 	
 	CAEngraver::reposit(this);
 	if (contextIdx != -1)	//restore the last used context
-		_currentContext = (CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0);
+		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
 	else
-		_currentContext = 0;
+		setCurrentContext(0);
 }
 
 /**
@@ -469,6 +486,18 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		l->at(i)->draw(&p, s);
 	}
 	
+	//draw shadow note
+	if (_shadowNoteVisible) {
+		CADrawSettings s = {
+		               _zoom,
+		               (int)((_shadowDrawableNote->xPos() - _worldX) * _zoom),
+		               (int)((_shadowDrawableNote->yPos() - _worldY) * _zoom),
+		               drawableWidth(), drawableHeight(),
+		               (Qt::gray)
+		               };
+		_shadowDrawableNote->draw(&p, s);
+	}
+	
 	//flush the oldWorld coordinates as they're needed for the first repaint only
 	_oldWorldX = _worldX; _oldWorldY = _worldY;
 	_oldWorldW = _worldW; _oldWorldH = _worldH;
@@ -545,7 +574,21 @@ void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 }
 
 void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
-	emit CAMouseMoveEvent(e, QPoint((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY), this);
+	QPoint coords((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY);
+	if (_shadowNoteVisible) {
+		if (_currentContext?(_currentContext->drawableContextType() == CADrawableContext::DrawableStaff):0) {
+			_shadowNote->setPitch(((CADrawableStaff*)_currentContext)->calculatePitch(
+				coords.x(),
+				coords.y()
+			));
+			_shadowDrawableNote->setXPos(coords.x());
+			_shadowDrawableNote->setYPos(((CADrawableStaff*)_currentContext)->calculateCenterYCoord(coords.y()));
+
+			repaint();
+		}
+	}
+	
+	emit CAMouseMoveEvent(e, coords, this);
 }
 
 void CAScoreViewPort::wheelEvent(QWheelEvent *e) {

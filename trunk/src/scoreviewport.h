@@ -25,6 +25,7 @@ class QWheelEvent;
 class CADrawable;
 class CADrawableMusElement;
 class CADrawableContext;
+class CADrawableNote;
 class CAMusElement;
 class CAContext;
 class CASheet;
@@ -121,6 +122,7 @@ class CAScoreViewPort : public CAViewPort {
 		void importCElements(CAKDTree *elts);
 		
 		CADrawableContext *currentContext() { return _currentContext; }
+		void setCurrentContext(CADrawableContext *);
 		
 		/**
 		 * Synchronize the sheets music elements with the actual drawable ones and reposition them.
@@ -366,10 +368,19 @@ class CAScoreViewPort : public CAViewPort {
 		 */ 
 		void setRepaintArea(QRect *area) { _repaintArea = area; }
 		void clearRepaintArea() { if (_repaintArea) delete _repaintArea; _repaintArea=0; }
+		
 		/**
 		 * Disable border.
 		 */
 		void unsetBorder();
+		
+		/**
+		 * Enable/Disable shadow note - a helper whole note which shows you the current pitch where you're about to place a note.
+		 * 
+		 * @param status Shadow note is visible or not.
+		 */ 
+		void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; }
+		bool shadowNoteVisible() { return _shadowNoteVisible; }
 		
 	signals:
 		/**
@@ -515,6 +526,10 @@ class CAScoreViewPort : public CAViewPort {
 		
 		int _worldX, _worldY, _worldW, _worldH;	///Absolute world coordinates of the area the viewport is currently showing.
 		float _zoom;	///Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
+		
+		bool _shadowNoteVisible;
+		CANote *_shadowNote;
+		CADrawableNote *_shadowDrawableNote;
 		
 		////////////////////////////////////////////////
 		//Widgets and appearance
