@@ -104,7 +104,7 @@ void CAPlayback::run() {
 				curPlaying.removeAt(i);
 				
 				_scoreViewPort->removeFromSelection(drawable = _scoreViewPort->find((CAMusElement*)elt));
-				_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
+				//_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
 			    _scoreViewPort->repaint();
 			      	
 				i--;
@@ -133,7 +133,7 @@ void CAPlayback::run() {
 			      	curPlaying << elt;
 					
 					_scoreViewPort->addToSelection(drawable = _scoreViewPort->find((CAMusElement*)elt));
-					_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
+					//_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
 			      	_scoreViewPort->repaint();
 			      	
 			      	streamsIdx[i]++;

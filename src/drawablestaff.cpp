@@ -45,23 +45,29 @@ CADrawableStaff *CADrawableStaff::clone() {
 int CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
 	return (int)( yPos() + height() -
 	               //middle c in logical pitch is 28
-	               ((note->pitch() - 28) + (clef?clef->c1():-2) + 0.5)*(_lineSpace/2)
+	               ((note->pitch() - 28) + (clef?clef->c1():-2) + 0.0)*(_lineSpace/2)
 	            );
 }
 
-int CADrawableStaff::calculateCenterYCoord(int y) {
-	float newY = (yPos() - y) / (_lineSpace/2);
-	newY += 0.5;	//round
-	newY = (float)((int)newY);	// "
-	
-	return (int)(yPos() - ((newY+1) * (_lineSpace/2)));
+int CADrawableStaff::calculateCenterYCoord(CANote *note, int x) {
+	CAClef *clef = getClef(x);
+	return calculateCenterYCoord(note, clef);
 }
 
-int CADrawableStaff::calculatePitch(int y, CAClef *clef) {
-	int yC1 = (int)(yPos() + 4*_lineSpace - (clef?clef->c1():-2)*(_lineSpace/2)); //Y coordinate of c1 of the current staff
+int CADrawableStaff::calculateCenterYCoord(int y) {
+	float newY = (y - yPos()) / (_lineSpace/2);
+	newY += 0.5*((y-yPos()<0)?-1:1);	//round
+	newY = (float)((int)newY);	// "
+
+	return (int)(yPos() + ((newY) * (_lineSpace/2)));
+}
+
+int CADrawableStaff::calculatePitch(int x, int y) {
+	CAClef *clef = getClef(x);
+	int yC1 = (int)(yPos() + height() - (clef?clef->c1():-2)*(_lineSpace/2)); //Y coordinate of c1 of the current staff
 
 	//middle c = 28
-	return (int)(28 - (y - yC1 - 1.5)/(_lineSpace/2));
+	return (int)(28 - (y - yC1)/(_lineSpace/2) + (((y-yC1)<0)?0.5:-0.5));	//TODO: Value not always synchronized with calculateCenterYCoord(int y)!
 }
 
 void CADrawableStaff::addClef(CADrawableClef *clef) {

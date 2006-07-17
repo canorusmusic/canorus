@@ -17,10 +17,11 @@ class CAPlayable : public CAMusElement {
 	public:
 		CAPlayable(CAVoice *voice, int timeStart, int timeLength);
 		inline unsigned char midiPitch() { return _midiPitch; }
-		inline int midiLength() { return _midiLength; }
 		void setMidiPitch(unsigned char pitch) { _midiPitch = pitch; }
+		inline int midiLength() { return _midiLength; }
 		void setMidiLength(int length) { _midiLength = length; }
 		CAVoice *voice() { return _voice; }
+		void setVoice(CAVoice *v) { _voice = v; }
 
 		static int pitchToMidiPitch(int pitch, int acc);
 		static int midiPitchToPitch(int midiPitch);

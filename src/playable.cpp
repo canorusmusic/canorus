@@ -11,7 +11,7 @@
 #include "staff.h"
 
 CAPlayable::CAPlayable(CAVoice *voice, int timeStart, int timeLength)
- : CAMusElement(voice->staff(), timeStart, timeLength) {
+ : CAMusElement(voice?voice->staff():0, timeStart, timeLength) {
 	_voice = voice;
 }
 

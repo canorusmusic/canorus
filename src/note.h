@@ -33,6 +33,7 @@ class CANote :  public CAPlayable {
 		
 		CANoteLength noteLength() { return _noteLength; }
 		int pitch() { return _pitch; }
+		void setPitch(int pitch) { _pitch = pitch; calculateNotePosition(); }
 		int notePosition() { return _notePosition; }
 
 		static const QString generateNoteName(int pitch);
