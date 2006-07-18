@@ -70,6 +70,7 @@ void CAMainWin::newDocument() {
 	clearUI();			//clear the UI part
 	
 	addSheet();			//add a new empty sheet
+	on_actionNew_staff_activated();	//add a new empty 5-line staff to the sheet
 }
 
 void CAMainWin::addSheet() {
@@ -193,6 +194,7 @@ void CAMainWin::setMode(CAMode mode) {
 					if (((CAScoreViewPort*)_viewPortList[i])->playing()) continue;
 					((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
 					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(false);
+					statusBar()->showMessage("");
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}
@@ -205,7 +207,8 @@ void CAMainWin::setMode(CAMode mode) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (((CAScoreViewPort*)_viewPortList[i])->playing()) continue;
 					((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
-					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(true);
+					if (_insertMusElement == CAMusElement::Note)
+						((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(true);
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}
@@ -313,7 +316,7 @@ void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort
 		int pitch = s->calculatePitch(coords.x(), coords.y());
 		
 		//write into the main window's status bar the note pitch name
-		statusBar()->showMessage(CANote::generateNoteName(pitch));	//TODO: Status bar isn't updated always correctly - needs some wierd repaint events or something! MouseMove events are recognized well though. -Matevz
+		statusBar()->showMessage(CANote::generateNoteName(pitch));
 	}
 }
 

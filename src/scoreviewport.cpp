@@ -581,6 +581,7 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 				coords.x(),
 				coords.y()
 			));
+
 			_shadowDrawableNote->setXPos(coords.x());
 			_shadowDrawableNote->setYPos(((CADrawableStaff*)_currentContext)->calculateCenterYCoord(coords.y()));
 
