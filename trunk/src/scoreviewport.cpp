@@ -43,8 +43,6 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 
 	//set the shadow note
 	_shadowNoteVisible = false;
-	_shadowNote = new CANote(CANote::Whole, 0, 0, 0);
-	_shadowDrawableNote = new CADrawableNote(_shadowNote, 0, 0, 0, true);
 	
 	_currentContext = 0;
 	//setup the virtual canvas
@@ -124,6 +122,14 @@ void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 
 void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 	_drawableCList.addElement(elt);
+	
+	if (elt->drawableContextType() == CADrawableContext::DrawableStaff) {
+		_shadowNote << new CANote(CANote::Whole, 0, 0, 0);
+		_shadowNote.back()->setVoice(((CADrawableStaff*)elt)->staff()->voiceAt(0));
+		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), 0, 0, 0, true);
+		_shadowDrawableNote.back()->setDrawableContext(elt);
+	}
+	
 	if (select)
 		setCurrentContext(elt);
 }
@@ -147,13 +153,6 @@ bool CAScoreViewPort::selectContext(CAContext *context) {
 
 void CAScoreViewPort::setCurrentContext(CADrawableContext *drawableContext) {
 	_currentContext = drawableContext;
-
-	if (_currentContext) {
-		_shadowDrawableNote->setDrawableContext(_currentContext);
-		if (_currentContext->drawableContextType() == CADrawableContext::DrawableStaff) {
-			_shadowNote->setVoice(((CADrawableStaff*)_currentContext)->staff()->voiceAt(0));
-		}
-	}
 }
 
 CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
@@ -258,11 +257,19 @@ CAContext *CAScoreViewPort::contextCollision(int x, int y) {
 }
 
 void CAScoreViewPort::update() {
+	//clear the shadow notes
+	for (int i=0; i<_shadowNote.size(); i++) {
+		delete _shadowNote[i];
+		delete _shadowDrawableNote[i];
+	}
+	_shadowNote.clear();
+	_shadowDrawableNote.clear();
+
 	_drawableMList.clear(true);
 	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	//remember the index of last used context
 	_drawableCList.clear(true);
 	_selection.clear();
-	
+		
 	CAEngraver::reposit(this);
 	if (contextIdx != -1)	//restore the last used context
 		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
@@ -289,6 +296,7 @@ void CAScoreViewPort::setWorldX(int x, bool force) {
 	_hScrollBarDeadLock = false;
 
 	checkScrollBars();
+	calculateShadowNoteCoords();
 }
 
 /**
@@ -310,6 +318,7 @@ void CAScoreViewPort::setWorldY(int y, bool force) {
 	_vScrollBarDeadLock = false;
 	
 	checkScrollBars();
+	calculateShadowNoteCoords();
 }
 
 /**
@@ -337,6 +346,7 @@ void CAScoreViewPort::setWorldWidth(int w, bool force) {
 	_zoom = ((float)drawableWidth() / _worldW);
 
 	checkScrollBars();
+	calculateShadowNoteCoords();
 }
 
 /**
@@ -364,6 +374,7 @@ void CAScoreViewPort::setWorldHeight(int h, bool force) {
 	_zoom = ((float)drawableHeight() / _worldH);
 
 	checkScrollBars();
+	calculateShadowNoteCoords();
 }
 
 /**
@@ -418,6 +429,7 @@ void CAScoreViewPort::setZoom(float z, int x, int y, bool force) {
 	}
 	
 	checkScrollBars();
+	calculateShadowNoteCoords();
 }
 
 /**
@@ -488,14 +500,16 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	
 	//draw shadow note
 	if (_shadowNoteVisible) {
-		CADrawSettings s = {
-		               _zoom,
-		               (int)((_shadowDrawableNote->xPos() - _worldX) * _zoom),
-		               (int)((_shadowDrawableNote->yPos() - _worldY) * _zoom),
-		               drawableWidth(), drawableHeight(),
-		               (Qt::gray)
-		               };
-		_shadowDrawableNote->draw(&p, s);
+		for (int i=0; i<_shadowDrawableNote.size(); i++) {
+			CADrawSettings s = {
+			               _zoom,
+			               (int)((_shadowDrawableNote[i]->xPos() - _worldX) * _zoom),
+			               (int)((_shadowDrawableNote[i]->yPos() - _worldY) * _zoom),
+			               drawableWidth(), drawableHeight(),
+			               (Qt::gray)
+			               };
+			_shadowDrawableNote[i]->draw(&p, s);
+		}
 	}
 	
 	//flush the oldWorld coordinates as they're needed for the first repaint only
@@ -569,31 +583,45 @@ void CAScoreViewPort::checkScrollBars() {
 	_checkScrollBarsDeadLock = false;
 }
 
+void CAScoreViewPort::calculateShadowNoteCoords() {
+	if (_currentContext?(_currentContext->drawableContextType() == CADrawableContext::DrawableStaff):0) {
+		int pitch = ((CADrawableStaff*)_currentContext)->calculatePitch(_xCursor, _yCursor);	//the current staff has the real pitch we need
+		for (int i=0; i<_drawableCList.size(); i++) {	//apply this pitch to all shadow notes in all staffs
+			if (((CADrawableContext*)_drawableCList.at(i))->drawableContextType() != CADrawableContext::DrawableStaff)
+				continue;
+					 
+			_shadowNote[i]->setPitch(pitch);
+			_shadowDrawableNote[i]->setXPos(_xCursor);
+			_shadowDrawableNote[i]->setYPos(((CADrawableStaff*)_drawableCList.at(i))->calculateCenterYCoord(pitch, _xCursor));
+		}
+	}
+}
+
 void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 	emit CAMousePressEvent(e, QPoint((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY), this);
 }
 
 void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 	QPoint coords((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY);
+	
+	_xCursor = coords.x();
+	_yCursor = coords.y();
+	
 	if (_shadowNoteVisible) {
-		if (_currentContext?(_currentContext->drawableContextType() == CADrawableContext::DrawableStaff):0) {
-			_shadowNote->setPitch(((CADrawableStaff*)_currentContext)->calculatePitch(
-				coords.x(),
-				coords.y()
-			));
-
-			_shadowDrawableNote->setXPos(coords.x());
-			_shadowDrawableNote->setYPos(((CADrawableStaff*)_currentContext)->calculateCenterYCoord(coords.y()));
-
-			repaint();
-		}
+		calculateShadowNoteCoords();
+		repaint();
 	}
 	
 	emit CAMouseMoveEvent(e, coords, this);
 }
 
 void CAScoreViewPort::wheelEvent(QWheelEvent *e) {
-	emit CAWheelEvent(e, QPoint((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY), this);	
+	QPoint coords((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY);
+	
+	emit CAWheelEvent(e, coords, this);	
+
+	_xCursor = (int)(e->x() / _zoom) + _worldX;	//TODO: _xCursor and _yCursor are still the old one. Somehow, _zoom level and _worldX/Y are not updated when emmiting CAWheel event. -Matevz 
+	_yCursor = (int)(e->y() / _zoom) + _worldY;
 }
 
 void CAScoreViewPort::keyPressEvent(QKeyEvent *e) {

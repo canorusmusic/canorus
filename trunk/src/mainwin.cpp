@@ -195,6 +195,7 @@ void CAMainWin::setMode(CAMode mode) {
 					((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
 					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(false);
 					statusBar()->showMessage("");
+					_insertMusElement = CAMusElement::None;
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}

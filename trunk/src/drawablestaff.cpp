@@ -42,16 +42,25 @@ CADrawableStaff *CADrawableStaff::clone() {
 	return d;
 }
 
-int CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
+int CADrawableStaff::calculateCenterYCoord(int pitch, CAClef *clef) {
 	return (int)( yPos() + height() -
 	               //middle c in logical pitch is 28
-	               ((note->pitch() - 28) + (clef?clef->c1():-2) + 0.0)*(_lineSpace/2)
+	               ((pitch - 28) + (clef?clef->c1():-2) + 0.0)*(_lineSpace/2)
 	            );
 }
 
 int CADrawableStaff::calculateCenterYCoord(CANote *note, int x) {
 	CAClef *clef = getClef(x);
-	return calculateCenterYCoord(note, clef);
+	return calculateCenterYCoord(note->pitch(), clef);
+}
+
+int CADrawableStaff::calculateCenterYCoord(int pitch, int x) {
+	CAClef *clef = getClef(x);
+	return calculateCenterYCoord(pitch, clef);
+}
+
+int CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
+	return calculateCenterYCoord(note->pitch(), clef);
 }
 
 int CADrawableStaff::calculateCenterYCoord(int y) {

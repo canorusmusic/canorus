@@ -30,7 +30,7 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 			_neededHeight = _height;
 			break;
 		case CANote::Whole:
-			_width = 10;
+			_width = 12;
 			_height = 3;
 			_yPos = y - _height/2;
 			_xPos = x - _width/2;
@@ -71,7 +71,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2);
 			p->drawText(s.x, (int)(s.y), QString(0xE123));
-			
+
 			break;
 	}
 	

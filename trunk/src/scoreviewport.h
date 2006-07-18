@@ -174,6 +174,11 @@ class CAScoreViewPort : public CAViewPort {
 		void checkScrollBars();
 		
 		/**
+		 * Calculate shadow notes coordinates
+		 */
+		void calculateShadowNoteCoords();
+		
+		/**
 		 * Return the scrollbars visibility behaviour.
 		 * CAViewPort::ScrollBarAlwaysVisible - scrollbars are always visible, no matter if the whole scene can be rendered on canvas or not
 		 * CAViewPort::ScrollBarAlwaysHidden - scrollbars are always hidden, no matter if the whole scene can be rendered on canvas or not
@@ -379,7 +384,7 @@ class CAScoreViewPort : public CAViewPort {
 		 * 
 		 * @param status Shadow note is visible or not.
 		 */ 
-		void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; }
+		void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; calculateShadowNoteCoords(); }
 		bool shadowNoteVisible() { return _shadowNoteVisible; }
 		
 	signals:
@@ -527,9 +532,9 @@ class CAScoreViewPort : public CAViewPort {
 		int _worldX, _worldY, _worldW, _worldH;	///Absolute world coordinates of the area the viewport is currently showing.
 		float _zoom;	///Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
 		
-		bool _shadowNoteVisible;
-		CANote *_shadowNote;
-		CADrawableNote *_shadowDrawableNote;
+		bool _shadowNoteVisible;	///Should the shadow notes be rendered or not
+		QList<CANote*> _shadowNote;	///List of all shadow notes - one shadow note per drawable staff
+		QList<CADrawableNote*> _shadowDrawableNote;	///List of drawable shadow notes
 		
 		////////////////////////////////////////////////
 		//Widgets and appearance
@@ -553,6 +558,7 @@ class CAScoreViewPort : public CAViewPort {
 		////////////////////////////////////////////////
 		int _oldWorldX, _oldWorldY, _oldWorldW, _oldWorldH;	///Old coordinates used before the repaint. This is needed so only the new part of the viewport gets repainted when panning.
 		bool _playing;	///Set to on, when in Playback mode
+		int _xCursor, _yCursor;	///Mouse cursor position in absolute world coords.
 		bool _holdRepaint;	///Dirty flag to prevent multiple repaintings.
 		bool _checkScrollBarsDeadLock;	///Dirty flag to prevent recursive checkScrollBars() calls.
 		bool _hScrollBarDeadLock;	///Dirty flag to prevent recursive scrollbar calls when its value is manually changed.
