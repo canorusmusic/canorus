@@ -139,7 +139,7 @@ private slots:
 
 	void keyPressEvent(QKeyEvent *);
 
-private:
+private slots:
 	void playbackFinished();	///Temporarily as we don't find better solution.
 
 private:
