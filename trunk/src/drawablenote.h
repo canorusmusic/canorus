@@ -30,6 +30,7 @@ class CADrawableNote : public CADrawableMusElement {
 		
 		void setDrawLedgerLines(bool ledgerLines) { _drawLedgerLines = ledgerLines; }
 		bool drawLedgerLines() { return _drawLedgerLines; }
+		void setXPos(int xPos);
 		void setYPos(int yPos);
 		void setDrawableContext(CADrawableContext *c) { _drawableContext = c; }
 		

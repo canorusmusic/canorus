@@ -64,10 +64,10 @@ int CADrawableStaff::calculateCenterYCoord(int y) {
 
 int CADrawableStaff::calculatePitch(int x, int y) {
 	CAClef *clef = getClef(x);
-	int yC1 = (int)(yPos() + height() - (clef?clef->c1():-2)*(_lineSpace/2)); //Y coordinate of c1 of the current staff
+	float yC1 = yPos() + height() - (clef?clef->c1():-2)*(_lineSpace/2); //Y coordinate of c1 of the current staff
 
 	//middle c = 28
-	return (int)(28 - (y - yC1)/(_lineSpace/2) + (((y-yC1)<0)?0.5:-0.5));	//TODO: Value not always synchronized with calculateCenterYCoord(int y)!
+	return (int)(28 - (y - yC1)/(_lineSpace/2) + 0.5);
 }
 
 void CADrawableStaff::addClef(CADrawableClef *clef) {

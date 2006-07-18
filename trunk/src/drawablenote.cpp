@@ -25,6 +25,7 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 			_width = 10;
 			_height = 26;
 			_yPos = y - QUARTER_YPOS_DELTA;	//values in constructor are the notehead center coords. yPos represents the top of the stem.
+			_xPos = x - _width/2;
 			_neededWidth = _width;
 			_neededHeight = _height;
 			break;
@@ -32,6 +33,7 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 			_width = 10;
 			_height = 3;
 			_yPos = y - _height/2;
+			_xPos = x - _width/2;
 			_neededWidth = _width;
 			_neededHeight = _height;
 			break;			
@@ -104,11 +106,22 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 CADrawableNote *CADrawableNote::clone() {
 	switch (note()->noteLength()) {
 		case CANote::Quarter:
-			return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + QUARTER_YPOS_DELTA);
+			return new CADrawableNote(note(), drawableContext(), _xPos + _width/2, _yPos + QUARTER_YPOS_DELTA);
 			break;
 		case CANote::Whole:
-			return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + _height/2);
+			return new CADrawableNote(note(), drawableContext(), _xPos + _width/2, _yPos + _height/2);
 			break;		
+	}
+}
+
+void CADrawableNote::setXPos(int xPos) {
+	switch (note()->noteLength()) {
+		case CANote::Quarter:
+			_xPos = xPos - _width/2;
+			break;
+		case CANote::Whole:
+			_xPos = xPos - _width/2;
+			break;
 	}
 }
 
@@ -121,5 +134,4 @@ void CADrawableNote::setYPos(int yPos) {
 			_yPos = yPos - _height/2;
 			break;
 	}
-	
 }
