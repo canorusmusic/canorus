@@ -14,7 +14,7 @@
 #include "note.h"
 
 #define QUARTER_STEM_LENGTH 22
-#define QUARTER_YPOS_DELTA 19
+#define QUARTER_YPOS_DELTA 21
 
 CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y, bool shadowNote)
  : CADrawableMusElement(note, drawableContext, x, y) {
