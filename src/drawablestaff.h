@@ -26,6 +26,17 @@ class CADrawableStaff : public CADrawableContext {
 		/**
 		 * Return the center Y coordinate of the given note in this staff.
 		 * 
+		 * @param pitch Note pitch which the following coordinates are being calculated for.
+		 * @param clef Corresponding clef.
+		 * @return Center of a space/line of a staff in absolute world units.
+		 */
+		int calculateCenterYCoord(int pitch, CAClef *clef);
+
+		/**
+		 * This is an overloaded member function, provided for convenience.
+		 * 
+		 * Return the center Y coordinate of the given note in this staff.
+		 * 
 		 * @param note Note which the following coordinates are being calculated.
 		 * @param clef Corresponding clef.
 		 * @return Center of a space/line of a staff in absolute world units.
@@ -33,7 +44,7 @@ class CADrawableStaff : public CADrawableContext {
 		int calculateCenterYCoord(CANote *note, CAClef *clef);
 		
 		/**
-		 * This member function is provided for convenience.
+		 * This is an overloaded member function, provided for convenience.
 		 * 
 		 * Return the center Y coordinate of the given note in this staff.
 		 * 
@@ -43,6 +54,17 @@ class CADrawableStaff : public CADrawableContext {
 		 */
 		int calculateCenterYCoord(CANote *note, int x);
 		
+		/**
+		 * This is an overloaded member function, provided for convenience.
+		 * 
+		 * Return the center Y coordinate of the given note in this staff.
+		 * 
+		 * @param pitch Note pitch which the following coordinates are being calculated for.
+		 * @param x X coordinate of the note.
+		 * @return Center of a space/line of a staff in absolute world units.
+		 */
+		int calculateCenterYCoord(int pitch, int x);
+
 		/**
 		 * Round the given Y coordinate to the nearest one so it fits a line or a space (ledger lines too, if needed) in a staff.
 		 * 

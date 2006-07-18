@@ -10,6 +10,8 @@
 #define PLAYABLE_H_
 
 #include "muselement.h"
+#include "voice.h"
+#include "staff.h"
 
 class CAVoice;
 
@@ -21,7 +23,7 @@ class CAPlayable : public CAMusElement {
 		inline int midiLength() { return _midiLength; }
 		void setMidiLength(int length) { _midiLength = length; }
 		CAVoice *voice() { return _voice; }
-		void setVoice(CAVoice *v) { _voice = v; }
+		void setVoice(CAVoice *v) { _voice = v; _context = v->staff(); }
 
 		static int pitchToMidiPitch(int pitch, int acc);
 		static int midiPitchToPitch(int midiPitch);
