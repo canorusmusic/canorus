@@ -377,14 +377,14 @@ void CAMainWin::initMidi() {
 
 void CAMainWin::playbackFinished() {
 	_playback->disconnect();
-	delete _playback;
+	//delete _playback;	//TODO: crashes on application close, if deleted! -Matevz
 	oMainWin.actionPlay->setChecked(false);
 }
 
 void CAMainWin::on_actionPlay_toggled(bool checked) {
 	if (checked && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
 		_playback = new CAPlayback((CAScoreViewPort*)_activeViewPort, _midiOut);
-		connect(_playback, SIGNAL(done()), this, SLOT(playbackFinished()));
+		connect(_playback, SIGNAL(finished()), this, SLOT(playbackFinished()));
 		_playback->start();
 	} else {
 		_playback->stop();
