@@ -21,6 +21,7 @@ class QGridLayout;
 class QScrollBar;
 class QMouseEvent;
 class QWheelEvent;
+class QTimer;
 
 class CADrawable;
 class CADrawableMusElement;
@@ -207,18 +208,20 @@ class CAScoreViewPort : public CAViewPort {
 		 * WARNING! Repaint is not done automatically!
 		 * 
 		 * @param x Top-left X coordinate of the new viewport area in absolute world units.
+		 * @param animate Use animated scroll.
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */
-		void setWorldX(int x, bool force=false);
+		void setWorldX(int x, bool animate=false, bool force=false);
 		
 		/**
 		 * Set the world Y coordinate of the viewport.
 		 * WARNING! Repaint is not done automatically!
 		 * 
 		 * @param y Top-left Y coordinate of the new viewport area in absolute world units.
+		 * @param animate Use animated scroll.
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */
-		void setWorldY(int y, bool force=false);
+		void setWorldY(int y, bool animate=false, bool force=false);
 
 		/**
 		 * Set the world width of the viewport.
@@ -281,9 +284,10 @@ class CAScoreViewPort : public CAViewPort {
 		 * @param y Top-left Y coordinate of the new viewport area in absolute world units.
 		 * @param w Width of the new viewport area in absolute world units.
 		 * @param h Height of the new viewport area in absolute world units.
+		 * @param animate Use animated scroll.
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */ 
-		void setWorldCoords(int x, int y, int w, int h, bool force=false);
+		void setWorldCoords(int x, int y, int w, int h, bool animate=false, bool force=false);
 		
 		/**
 		 * This is an overloaded member function, provided for convenience.
@@ -292,9 +296,10 @@ class CAScoreViewPort : public CAViewPort {
 		 * WARNING! Repaint is not done automatically!
 		 * 
 		 * @param r QRect of the new viewport area in absolute world units.
+		 * @param animate Use animated scroll.
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */ 
-		void setWorldCoords(QRect *r, bool force=false) { setWorldCoords(r->x(),r->y(),r->width(),r->height(), force); }
+		void setWorldCoords(QRect *r, bool animate=false, bool force=false) { setWorldCoords(r->x(),r->y(),r->width(),r->height(), force); }
 		
 		/**
 		 * This is an overloaded member function, provided for convenience.
@@ -304,9 +309,10 @@ class CAScoreViewPort : public CAViewPort {
 		 * 
 		 * @param x Top-left X coordinate of the new viewport area in absolute world units.
 		 * @param y Top-left Y coordinate of the new viewport area in absolute world units.
+		 * @param animate Use smooth animated scroll.
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */
-		void setWorldCoords(int x, int y, bool force=false);
+		void setWorldCoords(int x, int y, bool animate=false, bool force=false);
 		
 		/**
 		 * Set the world coordinates of the viewport, so the given coordinates are the center of the new viewport area.
@@ -316,9 +322,10 @@ class CAScoreViewPort : public CAViewPort {
 		 * 
 		 * @param x Center X coordinate of the new viewport area in absolute world units.
 		 * @param y Center Y coordinate of the new viewport area in absolute world units.
+		 * @param animate Use smooth animated scroll.
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */
-		void setCenterCoords(int x, int y, bool force=false);
+		void setCenterCoords(int x, int y, bool animate=false, bool force=false);
 		
 		/**
 		 * Zoom to the given level to given direction.
@@ -327,9 +334,10 @@ class CAScoreViewPort : public CAViewPort {
 		 * @param z Zoom level. (1.0 = 100%, 1.5 = 150% etc.)
 		 * @param x X coordinate of the point of the zoom direction. 
 		 * @param y Y coordinate of the point of the zoom direction.
+		 * @param anime Use smooth animated zoom.
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */
-		void setZoom(float z, int x=0, int y=0, bool force = false);
+		void setZoom(float z, int x=0, int y=0, bool animate=false, bool force = false);
 		
 		/**
 		 * This is an overloaded member function, provided for convenience.
@@ -339,9 +347,10 @@ class CAScoreViewPort : public CAViewPort {
 		 * 
 		 * @param z Zoom level. (1.0 = 100%, 1.5 = 150% etc.)
 		 * @param p QPoint of the zoom direction.
+		 * @param animate Use smooth animated zoom.
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */
-		void setZoom(float z, QPoint p, bool force = false) { setZoom(z, p.x(), p.y(), force); }		
+		void setZoom(float z, QPoint p,  bool animate=false, bool force = false) { setZoom(z, p.x(), p.y(), animate, force); }		
 		
 		/**
 		 * Draw the border with the given pen style, color, width and other pen settings.
@@ -522,6 +531,8 @@ class CAScoreViewPort : public CAViewPort {
 		
 		void enterEvent(QEvent *e);
 		
+		void on__animationTimer_timeout();
+		
 	private:
 		////////////////////////////////////////////////
 		//General properties
@@ -551,6 +562,16 @@ class CAScoreViewPort : public CAViewPort {
 		QPen _borderPen;	///Pen which the border is drawn by.
 		QBrush _backgroundBrush;	///Brush which the background is drawn by.
 		QRect *_repaintArea;	///Area to be repainted on paintEvent().
+		
+		////////////////////////////////////////////////
+		//Animation
+		////////////////////////////////////////////////
+		QTimer *_animationTimer;	///Timer used to animate scroll/zoom behaviour.
+		int _animationStep;
+		int _targetWorldX, _targetWorldY, _targetWorldW, _targetWorldH;	///Absolute world coordinates of the area the viewport is currently showing.
+		float _targetZoom;	///Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
+		
+		void startAnimationTimer();
 
 		////////////////////////////////////////////////
 		//Widgets behaviour

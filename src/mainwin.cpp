@@ -332,22 +332,22 @@ void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *c)
 	int val;
 	switch (e->modifiers()) {
 		case Qt::NoModifier:			//scroll horizontally
-			v->setWorldX( v->worldX() - (int)((0.5*e->delta()) / v->zoom()) );
+			v->setWorldX( v->worldX() - (int)((0.5*e->delta()) / v->zoom()), true );
 			break;
 		case Qt::AltModifier:			//scroll horizontally, fast
-			v->setWorldX( v->worldX() - (int)(e->delta() / v->zoom()) );
+			v->setWorldX( v->worldX() - (int)(e->delta() / v->zoom()), true );
 			break;
 		case Qt::ShiftModifier:			//scroll vertically
-			v->setWorldY( v->worldY() - (int)((0.5*e->delta()) / v->zoom()) );
+			v->setWorldY( v->worldY() - (int)((0.5*e->delta()) / v->zoom()), true );
 			break;
 		case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
-			v->setWorldY( v->worldY() - (int)(e->delta() / v->zoom()) );
+			v->setWorldY( v->worldY() - (int)(e->delta() / v->zoom()), true );
 			break;
 		case Qt::ControlModifier:		//zoom
 			if (e->delta() > 0)
-				v->setZoom( v->zoom()*1.1, coords.x(), coords.y() );
+				v->setZoom( v->zoom()*1.1, coords.x(), coords.y(), true );
 			else
-				v->setZoom( v->zoom()/1.1, coords.x(), coords.y() );
+				v->setZoom( v->zoom()/1.1, coords.x(), coords.y(), true );
 			
 			break;
 	}

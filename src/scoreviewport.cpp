@@ -14,6 +14,9 @@
 #include <QWheelEvent>
 #include <QPalette>
 #include <QColor>
+#include <QTimer>
+
+#include <math.h>	//neded for animated scrolls/zoom
 
 #include <iostream>
 
@@ -40,11 +43,16 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	_vScrollBarDeadLock = false;
 	_checkScrollBarsDeadLock = false;
 	_playing = false;
+	_currentContext = 0;
 
+	//setup animation stuff
+	_animationTimer = new QTimer();
+	_animationTimer->setInterval(50);
+	connect(_animationTimer, SIGNAL(timeout()), this, SLOT(on__animationTimer_timeout()));
+	
 	//set the shadow note
 	_shadowNoteVisible = false;
 	
-	_currentContext = 0;
 	//setup the virtual canvas
 	_canvas = new QWidget(this);
 	setMouseTracking(true);
@@ -83,9 +91,31 @@ CAScoreViewPort::~CAScoreViewPort() {
 	_drawableMList.clear(true);	//clears all the elements and delete its contents too as autoDelete is true
 	_drawableCList.clear(true);	//clears all the elements and delete its contents too as autoDelete is true
 	
+	_animationTimer->disconnect();
+	_animationTimer->stop();
+	delete _animationTimer;
+	
 	_hScrollBar->disconnect();
 	_vScrollBar->disconnect();
 	this->disconnect();
+}
+
+void CAScoreViewPort::on__animationTimer_timeout() {
+#define ANIMATION_STEPS 7
+	_animationStep++;
+	
+	float newZoom = _zoom + (_targetZoom - _zoom) * sqrt(((float)_animationStep)/ANIMATION_STEPS);
+	int newWorldX = (int)(_worldX + (_targetWorldX - _worldX) * sqrt(((float)_animationStep)/ANIMATION_STEPS));
+	int newWorldY = (int)(_worldY + (_targetWorldY - _worldY) * sqrt(((float)_animationStep)/ANIMATION_STEPS));
+	int newWorldW = (int)(drawableWidth() / newZoom);
+	int newWorldH = (int)(drawableHeight() / newZoom);
+	
+	setWorldCoords(newWorldX, newWorldY, newWorldW, newWorldH);
+	
+	if (_animationStep==ANIMATION_STEPS)
+		_animationTimer->stop();
+	
+	repaint();
 }
 
 CAScoreViewPort *CAScoreViewPort::clone() {
@@ -210,6 +240,7 @@ CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
 	if (elt) {
 		CAMusElement *mElt = elt->musElement();
 		delete elt;
+
 		return mElt;
 	}
 	
@@ -282,13 +313,14 @@ void CAScoreViewPort::update() {
 	else
 		setCurrentContext(0);
 	
+	checkScrollBars();
 	calculateShadowNoteCoords();
 }
 
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
-void CAScoreViewPort::setWorldX(int x, bool force) {
+void CAScoreViewPort::setWorldX(int x, bool animate, bool force) {
 	if (!force) {
 		int maxX = (_drawableMList.getMaxX() > _drawableCList.getMaxX())?_drawableMList.getMaxX() : _drawableCList.getMaxX();
 		if (x > maxX - _worldW)
@@ -297,6 +329,14 @@ void CAScoreViewPort::setWorldX(int x, bool force) {
 			x = 0;
 	}
 	
+	if (animate) {
+		_targetWorldX = x;
+		_targetWorldY = _worldY;
+		_targetZoom = _zoom;
+		startAnimationTimer();
+		return;
+	}
+
 	_oldWorldX = _worldX;
 	_worldX = x;
 	_hScrollBarDeadLock = true;
@@ -310,7 +350,7 @@ void CAScoreViewPort::setWorldX(int x, bool force) {
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
-void CAScoreViewPort::setWorldY(int y, bool force) {
+void CAScoreViewPort::setWorldY(int y, bool animate, bool force) {
 	if (!force) {
 		int maxY = (_drawableMList.getMaxY() > _drawableCList.getMaxY())?_drawableMList.getMaxY() : _drawableCList.getMaxY();
 		if (y > maxY - _worldH)
@@ -319,6 +359,14 @@ void CAScoreViewPort::setWorldY(int y, bool force) {
 			y = 0;
 	}
 	
+	if (animate) {
+		_targetWorldX = _worldX;
+		_targetWorldY = y;
+		_targetZoom = _zoom;
+		startAnimationTimer();
+		return;
+	}
+
 	_oldWorldY = _worldY;
 	_worldY = y;
 	_vScrollBarDeadLock = true;
@@ -388,36 +436,52 @@ void CAScoreViewPort::setWorldHeight(int h, bool force) {
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
-void CAScoreViewPort::setWorldCoords(int x, int y, int w, int h, bool force) {
-	setWorldX(x, force);
-	setWorldY(y, force);
+void CAScoreViewPort::setWorldCoords(int x, int y, int w, int h, bool animate, bool force) {
 	setWorldWidth(w, force);
 	setWorldHeight(h, force);
+	setWorldX(x, animate, force);
+	setWorldY(y, animate, force);
 }
 
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
-void CAScoreViewPort::setWorldCoords(int x, int y, bool force) {
-	setWorldX(x, force);
-	setWorldY(y, force);
+void CAScoreViewPort::setWorldCoords(int x, int y, bool animate, bool force) {
+	setWorldX(x, animate, force);
+	setWorldY(y, animate, force);
 }
 
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
-void CAScoreViewPort::setCenterCoords(int x, int y, bool force) {
-	setWorldX(x - (int)(0.5*_worldW), force);
-	setWorldY(y - (int)(0.5*_worldH), force);
+void CAScoreViewPort::setCenterCoords(int x, int y, bool animate, bool force) {
+	setWorldX(x - (int)(0.5*_worldW), animate, force);
+	setWorldY(y - (int)(0.5*_worldH), animate, force);
 }
 
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
-void CAScoreViewPort::setZoom(float z, int x, int y, bool force) {
+void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
 	bool zoomOut = false;
 	if (_zoom - z > 0.0)
 		zoomOut = true;
+
+	if (animate) {
+		if (!zoomOut) {
+			_targetWorldX = ( _worldX - (_worldW/2) + x ) / 2;
+			_targetWorldY = ( _worldY - (_worldH/2) + y ) / 2;
+			_targetZoom = z;
+			startAnimationTimer();
+			return;
+		} else {
+			_targetWorldX = (int)(1.5*_worldX + 0.25*_worldW - 0.5*x);
+			_targetWorldY = (int)(1.5*_worldY + 0.25*_worldH - 0.5*y);
+			_targetZoom = z;
+			startAnimationTimer();
+			return;
+		}
+	}
 
 	//set the world width - updates the zoom level zoom_ as well
 	setWorldWidth((int)(drawableWidth() / z));
@@ -684,3 +748,11 @@ void CAScoreViewPort::enterEvent(QEvent *e) {
 	_shadowNoteVisible = _shadowNoteVisibleOnLeave;
 	repaint();
 }
+
+void CAScoreViewPort::startAnimationTimer() {
+	_animationTimer->stop();
+	_animationStep = 0;
+	_animationTimer->start();
+	on__animationTimer_timeout();
+}
+
