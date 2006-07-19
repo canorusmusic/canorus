@@ -123,6 +123,9 @@ void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 	_drawableCList.addElement(elt);
 	
+	if (select)
+		setCurrentContext(elt);
+
 	if (elt->drawableContextType() == CADrawableContext::DrawableStaff) {
 		_shadowNote << new CANote(CANote::Whole, 0, 0, 0);
 		_shadowNote.back()->setVoice(((CADrawableStaff*)elt)->staff()->voiceAt(0));
@@ -130,8 +133,6 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 		_shadowDrawableNote.back()->setDrawableContext(elt);
 	}
 	
-	if (select)
-		setCurrentContext(elt);
 }
 
 bool CAScoreViewPort::selectContext(CAContext *context) {
@@ -182,11 +183,14 @@ CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 
 		return ((CADrawableMusElement*)_selection.front())->musElement();
 	} else {
-		_selection.clear();
+		if (_selection.size() != 0) {
+			_selection.clear();
+		}
 		delete l;
 		
 		return 0;
 	}
+	
 }
 
 bool CAScoreViewPort::selectMElement(CAMusElement *elt) {
@@ -213,11 +217,13 @@ CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
 }
 
 void CAScoreViewPort::importMElements(CAKDTree *elts) {
-	_drawableMList.import(elts);
+	for (int i=0; i<elts->size(); i++)
+		addMElement((CADrawableMusElement*)elts->at(i)->clone());
 }
 
 void CAScoreViewPort::importCElements(CAKDTree *elts) {
-	_drawableCList.import(elts);
+	for (int i=0; i<elts->size(); i++)
+		addCElement((CADrawableContext*)elts->at(i)->clone());
 }
 
 CAMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool currentContext) {
@@ -275,6 +281,8 @@ void CAScoreViewPort::update() {
 		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
 	else
 		setCurrentContext(0);
+	
+	calculateShadowNoteCoords();
 }
 
 /**
@@ -538,7 +546,7 @@ void CAScoreViewPort::unsetBorder() {
 }
 
 void CAScoreViewPort::resizeEvent(QResizeEvent *e) {
-	//ugly hack for rounding - always add 0.5, when cutting down to int, the effect is the same as it was rounded
+	//ugly hack for rounding - always add 0.5, when cutting down to int, the effect is the same as it was rounded for positive numbers
 	setWorldWidth( (int)(drawableWidth() / _zoom + 0.5) );
 	setWorldHeight( (int)(drawableHeight() / _zoom + 0.5) );
 	
@@ -589,7 +597,7 @@ void CAScoreViewPort::calculateShadowNoteCoords() {
 		for (int i=0; i<_drawableCList.size(); i++) {	//apply this pitch to all shadow notes in all staffs
 			if (((CADrawableContext*)_drawableCList.at(i))->drawableContextType() != CADrawableContext::DrawableStaff)
 				continue;
-					 
+				
 			_shadowNote[i]->setPitch(pitch);
 			_shadowDrawableNote[i]->setXPos(_xCursor);
 			_shadowDrawableNote[i]->setYPos(((CADrawableStaff*)_drawableCList.at(i))->calculateCenterYCoord(pitch, _xCursor));
@@ -664,4 +672,15 @@ CADrawableMusElement *CAScoreViewPort::find(CAMusElement *elt) {
 	for (int i=0; i<_drawableMList.size(); i++)
 		if (((CADrawableMusElement*)_drawableMList.at(i))->musElement()==elt)
 			return (CADrawableMusElement*)_drawableMList.at(i);
+}
+
+void CAScoreViewPort::leaveEvent(QEvent *e) {
+	_shadowNoteVisibleOnLeave = _shadowNoteVisible;
+	_shadowNoteVisible = false;
+	repaint();
+}
+		
+void CAScoreViewPort::enterEvent(QEvent *e) {
+	_shadowNoteVisible = _shadowNoteVisibleOnLeave;
+	repaint();
 }

@@ -65,12 +65,14 @@ CAViewPort* CAScrollWidget::unsplit(CAViewPort *v) {
 	_layout->removeWidget(v);
 	delete (v);
 	
-	_lastUsedViewPort = _viewPorts.back();
 	
-	if (_viewPorts.removeAll(v))
+	if (_viewPorts.removeAll(v)) {
+		_lastUsedViewPort = _viewPorts.back();
 		return v;
-	else
+	} else {
+		_lastUsedViewPort = _viewPorts.back();
 		return 0;
+	}
 }
 
 CAViewPort* CAScrollWidget::newViewPort(CAViewPort *v) {

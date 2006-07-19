@@ -36,8 +36,7 @@ class CAPlayback;
 enum CAMode {
 	InsertMode,
 	SelectMode,
-	ReadOnlyMode,
-	PlaybackMode
+	ReadOnlyMode
 };
 
 class CAViewPort;
@@ -159,8 +158,10 @@ private:
 	////////////////////////////////////////////////////
     Ui::MainWindow oMainWin;	///Main window widget representative
 	QList<CAViewPort *> _viewPortList;	///List of all available viewports for any sheet for this document
-	CAViewPort *_activeViewPort;	///Current active viewport	
+	CAViewPort *_activeViewPort;	///Current active viewport
 	#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))
+	CAViewPort *_playbackViewPort;	///Viewport needed to be updated when playback is active	
+	QTimer *_repaintTimer;	///Used when playback is active
 
 	////////////////////////////////////////////////////
 	//Score properties
