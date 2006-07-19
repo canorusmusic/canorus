@@ -233,22 +233,24 @@ void CAMainWin::rebuildScoreViewPorts(CASheet *sheet, bool repaint) {
 
 void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *viewPort) {
 	_activeViewPort = viewPort;
-
+	
 	if (viewPort->viewPortType() == CAViewPort::ScoreViewPort) {
 		CAScoreViewPort *v = (CAScoreViewPort*)viewPort;
+		
+		if (e->modifiers()==Qt::ControlModifier) {
+			CAMusElement *elt;
+			if ( elt = v->removeMElement(coords.x(), coords.y()) ) {
+				delete elt;
+				rebuildScoreViewPorts(v->sheet());
+				v->repaint();
+			}
+		}
+		
 		switch (_currentMode) {
 			case SelectMode:
-				if (e->modifiers()==Qt::ControlModifier) {
-					CAMusElement *elt;
-					if ( elt = v->removeMElement(coords.x(), coords.y()) )
-						delete elt;
-						rebuildScoreViewPorts(v->sheet());
-						v->repaint();
-				} else {
-					if ( v->selectMElement(coords.x(), coords.y()) ||
-					     v->selectCElement(coords.x(), coords.y()) )
-						v->repaint();
-				}
+				if ( v->selectMElement(coords.x(), coords.y()) ||
+				     v->selectCElement(coords.x(), coords.y()) )
+					v->repaint();
 				break;
 			
 			case InsertMode:
