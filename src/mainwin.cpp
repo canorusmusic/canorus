@@ -149,7 +149,7 @@ void CAMainWin::on_actionUnsplit_activated() {
 }
 
 void CAMainWin::on_actionNew_viewport_activated() {
-	CAViewPort *v = (CAViewPort *)_currentScrollWidget->newViewPort();
+	CAViewPort *v = _currentScrollWidget->newViewPort();
 	
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
@@ -191,8 +191,8 @@ void CAMainWin::setMode(CAMode mode) {
 		case SelectMode:
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (((CAScoreViewPort*)_viewPortList[i])->playing()) continue;
-					((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
+					if (!((CAScoreViewPort*)_viewPortList[i])->playing())
+						((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
 					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(false);
 					statusBar()->showMessage("");
 					_insertMusElement = CAMusElement::None;
@@ -206,13 +206,14 @@ void CAMainWin::setMode(CAMode mode) {
 			
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (((CAScoreViewPort*)_viewPortList[i])->playing()) continue;
-					((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
-					if (_insertMusElement == CAMusElement::Note)
-						((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(true);
+					if (!((CAScoreViewPort*)_viewPortList[i])->playing())
+						((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}
+
+			if (_insertMusElement == CAMusElement::Note)
+				((CAScoreViewPort*)_activeViewPort)->setShadowNoteVisible(true);
 			break;
 	}
 }
@@ -312,6 +313,9 @@ void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort
 			s = (CADrawableStaff*)c->currentContext(); 
 		else
 			return;
+
+		if (_insertMusElement == CAMusElement::Note)
+			c->setShadowNoteVisible(true);
 		
 		//calculate the logical pitch out of absolute world coordinates and the current clef
 		int pitch = s->calculatePitch(coords.x(), coords.y());
@@ -377,12 +381,24 @@ void CAMainWin::initMidi() {
 
 void CAMainWin::playbackFinished() {
 	_playback->disconnect();
-	//delete _playback;	//TODO: crashes on application close, if deleted! -Matevz
+	//delete _playback;	//TODO: crashes on application close, if deleted! Is this ok? -Matevz
 	oMainWin.actionPlay->setChecked(false);
+	
+	_repaintTimer->stop();
+	_repaintTimer->disconnect();
+	delete _repaintTimer;
+	
+	setMode(_currentMode);
 }
 
 void CAMainWin::on_actionPlay_toggled(bool checked) {
 	if (checked && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
+		_repaintTimer = new QTimer();
+		_repaintTimer->setInterval(100);
+		_repaintTimer->start();
+		connect(_repaintTimer, SIGNAL(timeout()), _activeViewPort, SLOT(repaint()));
+		_playbackViewPort = _activeViewPort;
+		
 		_playback = new CAPlayback((CAScoreViewPort*)_activeViewPort, _midiOut);
 		connect(_playback, SIGNAL(finished()), this, SLOT(playbackFinished()));
 		_playback->start();

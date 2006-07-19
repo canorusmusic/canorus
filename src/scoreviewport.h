@@ -384,7 +384,7 @@ class CAScoreViewPort : public CAViewPort {
 		 * 
 		 * @param status Shadow note is visible or not.
 		 */ 
-		void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; calculateShadowNoteCoords(); }
+		void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; _shadowNoteVisibleOnLeave = visible; calculateShadowNoteCoords(); }
 		bool shadowNoteVisible() { return _shadowNoteVisible; }
 		
 	signals:
@@ -518,6 +518,10 @@ class CAScoreViewPort : public CAViewPort {
 		 */
 		bool isSelected(CADrawableMusElement *elt) { return (_selection.contains(elt)); }
 		
+		void leaveEvent(QEvent *e);
+		
+		void enterEvent(QEvent *e);
+		
 	private:
 		////////////////////////////////////////////////
 		//General properties
@@ -533,6 +537,7 @@ class CAScoreViewPort : public CAViewPort {
 		float _zoom;	///Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
 		
 		bool _shadowNoteVisible;	///Should the shadow notes be rendered or not
+		bool _shadowNoteVisibleOnLeave;	///When you leave the viewport, shadow note is always turned off. This property holds the value, if shadow note was enabled before you left the viewport.
 		QList<CANote*> _shadowNote;	///List of all shadow notes - one shadow note per drawable staff
 		QList<CADrawableNote*> _shadowDrawableNote;	///List of drawable shadow notes
 		
