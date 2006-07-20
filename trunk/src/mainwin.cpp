@@ -59,6 +59,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_currentMode = SelectMode;
 	_playback = 0;
 	newDocument();
+	oMainWin.actionUnsplit->setEnabled(false);
 }
 
 CAMainWin::~CAMainWin() {
@@ -123,7 +124,10 @@ void CAMainWin::on_actionSplit_horizontally_activated() {
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	}
-
+	
+	oMainWin.actionSplit_horizontally->setEnabled(false);
+	oMainWin.actionSplit_vertically->setEnabled(false);
+	oMainWin.actionUnsplit->setEnabled(true);
 	_viewPortList.append(v);
 	setMode(_currentMode);	//updates the new viewport border settings
 }
@@ -138,6 +142,9 @@ void CAMainWin::on_actionSplit_vertically_activated() {
 		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	}
 	
+	oMainWin.actionSplit_horizontally->setEnabled(false);
+	oMainWin.actionSplit_vertically->setEnabled(false);
+	oMainWin.actionUnsplit->setEnabled(true);
 	_viewPortList.append(v);
 	setMode(_currentMode);	//updates the new viewport border settings
 }
@@ -146,6 +153,10 @@ void CAMainWin::on_actionUnsplit_activated() {
 	CAViewPort *v = _currentScrollWidget->unsplit();
 	if (v)
 		_viewPortList.removeAll(v);
+	
+	oMainWin.actionSplit_horizontally->setEnabled(true);
+	oMainWin.actionSplit_vertically->setEnabled(true);
+	oMainWin.actionUnsplit->setEnabled(false);
 }
 
 void CAMainWin::on_actionNew_viewport_activated() {
