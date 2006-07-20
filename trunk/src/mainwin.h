@@ -24,6 +24,8 @@
 /*									     */
 /*****************************************************************************/
 
+#include <QLCDNumber>
+
 #include "ui_mainwin.h"
 
 #include "document.h"
@@ -145,7 +147,7 @@ private:
 	////////////////////////////////////////////////////
 	//General properties
 	////////////////////////////////////////////////////
-    CADocument _document;	///Every main window has its own unique CADocument.
+	CADocument _document;	///Every main window has its own unique CADocument.
 	CAMode _currentMode;	///Every main window has its own current mode (view, insert, edit etc.). See enum CAMode.
 	
 	void setMode(CAMode mode);
@@ -156,12 +158,17 @@ private:
 	////////////////////////////////////////////////////
 	//User interface, widgets
 	////////////////////////////////////////////////////
-    Ui::MainWindow oMainWin;	///Main window widget representative
+	Ui::MainWindow moMainWin;	///Main window widget representative
 	QList<CAViewPort *> _viewPortList;	///List of all available viewports for any sheet for this document
 	CAViewPort *_activeViewPort;	///Current active viewport
-	#define _currentScrollWidget ((CAScrollWidget*)(oMainWin.tabWidget->currentWidget()))
+	#define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
 	CAViewPort *_playbackViewPort;	///Viewport needed to be updated when playback is active	
 	QTimer *_repaintTimer;	///Used when playback is active
+	QLCDNumber moVoiceNum;  ///LCD placed in Toolbar for showing current voice
+	////////////////////////////////////////////////////
+	//User interface, action objects from toolbars
+	////////////////////////////////////////////////////
+	QAction *mpoVoiceNumAction;  ///Voice number action
 
 	////////////////////////////////////////////////////
 	//Score properties

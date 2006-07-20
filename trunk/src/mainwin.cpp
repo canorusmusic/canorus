@@ -52,14 +52,15 @@ using namespace std;
 CAMainWin::CAMainWin(QMainWindow *oParent)
   : QMainWindow( oParent )
 {
-	oMainWin.setupUi( this );
+	moMainWin.setupUi( this );
+        mpoVoiceNumAction = moMainWin.mpoToolBar->addWidget( &moVoiceNum );
 	
 	initMidi();
 	
 	_currentMode = SelectMode;
 	_playback = 0;
 	newDocument();
-	oMainWin.actionUnsplit->setEnabled(false);
+	moMainWin.actionUnsplit->setEnabled(false);
 }
 
 CAMainWin::~CAMainWin() {
@@ -85,8 +86,8 @@ void CAMainWin::addSheet() {
 	
 	_viewPortList.append(v);
 	
-	oMainWin.tabWidget->addTab(new CAScrollWidget(v, 0), s->name());
-	oMainWin.tabWidget->setCurrentIndex(oMainWin.tabWidget->count()-1);
+	moMainWin.tabWidget->addTab(new CAScrollWidget(v, 0), s->name());
+	moMainWin.tabWidget->setCurrentIndex(moMainWin.tabWidget->count()-1);
 	
 	_activeViewPort = v;
 }
@@ -97,9 +98,9 @@ void CAMainWin::clearUI() {
 
 	_viewPortList.clear();
 	
-	while (oMainWin.tabWidget->count()) {
+	while (moMainWin.tabWidget->count()) {
 		delete _currentScrollWidget;
-		oMainWin.tabWidget->removeTab(oMainWin.tabWidget->currentIndex());
+		moMainWin.tabWidget->removeTab(moMainWin.tabWidget->currentIndex());
 	}
 
 }
@@ -125,9 +126,9 @@ void CAMainWin::on_actionSplit_horizontally_activated() {
 		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	}
 	
-	oMainWin.actionSplit_horizontally->setEnabled(false);
-	oMainWin.actionSplit_vertically->setEnabled(false);
-	oMainWin.actionUnsplit->setEnabled(true);
+	moMainWin.actionSplit_horizontally->setEnabled(false);
+	moMainWin.actionSplit_vertically->setEnabled(false);
+	moMainWin.actionUnsplit->setEnabled(true);
 	_viewPortList.append(v);
 	setMode(_currentMode);	//updates the new viewport border settings
 }
@@ -142,9 +143,9 @@ void CAMainWin::on_actionSplit_vertically_activated() {
 		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	}
 	
-	oMainWin.actionSplit_horizontally->setEnabled(false);
-	oMainWin.actionSplit_vertically->setEnabled(false);
-	oMainWin.actionUnsplit->setEnabled(true);
+	moMainWin.actionSplit_horizontally->setEnabled(false);
+	moMainWin.actionSplit_vertically->setEnabled(false);
+	moMainWin.actionUnsplit->setEnabled(true);
 	_viewPortList.append(v);
 	setMode(_currentMode);	//updates the new viewport border settings
 }
@@ -154,9 +155,9 @@ void CAMainWin::on_actionUnsplit_activated() {
 	if (v)
 		_viewPortList.removeAll(v);
 	
-	oMainWin.actionSplit_horizontally->setEnabled(true);
-	oMainWin.actionSplit_vertically->setEnabled(true);
-	oMainWin.actionUnsplit->setEnabled(false);
+	moMainWin.actionSplit_horizontally->setEnabled(true);
+	moMainWin.actionSplit_vertically->setEnabled(true);
+	moMainWin.actionUnsplit->setEnabled(false);
 }
 
 void CAMainWin::on_actionNew_viewport_activated() {
@@ -395,7 +396,7 @@ void CAMainWin::initMidi() {
 void CAMainWin::playbackFinished() {
 	_playback->disconnect();
 	//delete _playback;	//TODO: crashes on application close, if deleted! Is this ok? -Matevz
-	oMainWin.actionPlay->setChecked(false);
+	moMainWin.actionPlay->setChecked(false);
 	
 	_repaintTimer->stop();
 	_repaintTimer->disconnect();
