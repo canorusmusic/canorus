@@ -17,11 +17,11 @@
 #include "kdtree.h"
 #include "note.h"
 
-class QGridLayout;
 class QScrollBar;
 class QMouseEvent;
 class QWheelEvent;
 class QTimer;
+class QGridLayout;
 
 class CADrawable;
 class CADrawableMusElement;

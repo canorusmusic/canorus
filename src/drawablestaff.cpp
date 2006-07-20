@@ -89,5 +89,5 @@ CAClef* CADrawableStaff::getClef(int x) {
 	int i;
 	for (i=0; ((i<_drawableClefList.size()) && (x > _drawableClefList[i]->xPos())); i++);
 	
-	return (--i<0?0:_drawableClefList[i]->clef());
+	return ((--i<0)?0:_drawableClefList[i]->clef());
 }

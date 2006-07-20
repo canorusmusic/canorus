@@ -10,6 +10,8 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPushButton>
+#include <QSplitter>
+#include <QGridLayout>
 
 #include "viewport.h"
 #include "sheet.h"
@@ -18,12 +20,13 @@
 #include "staff.h"
 
 CAScrollWidget::CAScrollWidget(CAViewPort *v, QWidget *parent) : QFrame(parent) {
-	_layout = new QGridLayout(this);
-	_layout->setMargin(0);
+	_layout = new QGridLayout(this); _layout->setSpacing(0); _layout->setMargin(0);
+	_splitter = new QSplitter(this);
 
 	_viewPorts.append(_lastUsedViewPort = v);
 	
-	_layout->addWidget(_lastUsedViewPort, 0, 0);
+	_splitter->addWidget(_lastUsedViewPort);
+	_layout->addWidget(_splitter);
 }
 
 void CAScrollWidget::paintEvent(QPaintEvent *e) {
@@ -36,8 +39,9 @@ CAViewPort* CAScrollWidget::splitVertically(CAViewPort *v) {
 	if (!v) {
 		_viewPorts.append(_lastUsedViewPort = _lastUsedViewPort->clone());
 		
-		_layout->addWidget(_lastUsedViewPort, 0, _layout->columnCount(), _layout->rowCount(), 1);
-		_layout->update();
+		_splitter->setOrientation(Qt::Horizontal);
+		_splitter->addWidget(_lastUsedViewPort);
+		_splitter->update();
 		
 		return _lastUsedViewPort;
 	}
@@ -47,8 +51,9 @@ CAViewPort* CAScrollWidget::splitHorizontally(CAViewPort *v) {
 	if (!v) {
 		_viewPorts.append(_lastUsedViewPort = _lastUsedViewPort->clone());
 
-		_layout->addWidget(_lastUsedViewPort, _layout->rowCount(), 0, 1, _layout->columnCount());
-		_layout->update();
+		_splitter->setOrientation(Qt::Vertical);
+		_splitter->addWidget(_lastUsedViewPort);
+		_splitter->update();
 		
 		return _lastUsedViewPort;
 	}
@@ -62,7 +67,6 @@ CAViewPort* CAScrollWidget::unsplit(CAViewPort *v) {
 		v = _lastUsedViewPort;
 		
 	v->disconnect();	//disconnect all the signals
-	_layout->removeWidget(v);
 	delete (v);
 	
 	

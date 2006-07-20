@@ -11,13 +11,13 @@
 
 #include <QFrame>
 #include <QList>
-#include <QGridLayout>
 
 #include "kdtree.h"
 
-
 class CAViewPort;
 class CASheet;
+class QSplitter;
+class QGridLayout;
 
 /**
  * CAScrollWidget consists of viewports.
@@ -64,14 +64,14 @@ class CAScrollWidget : public QFrame {
 		 * 
 		 * @return Number of rows the viewports are arranged in.
 		 */
-		int viewPortsRows() { return _layout->rowCount(); }
+		//int viewPortsRows() { return _layout->rowCount(); }
 
 		/**
 		 * Return the number of columns of viewports.
 		 * 
 		 * @return Number of columns the viewports are arranged in.
 		 */
-		int viewPortsColumns() { return _layout->columnCount(); }
+		//int viewPortsColumns() { return _layout->columnCount(); }
 
 		/**
 		 * Split the view horizontally.
@@ -133,7 +133,8 @@ class CAScrollWidget : public QFrame {
 		//Widgets
 		////////////////////////////////////////////////
 		QList<CAViewPort *> _viewPorts;	///List of all docked active viewports (multiple viewports appear, when you use split view etc.). Undocked viewports (when triggered by Window->New viewport) are not stored.
-		QGridLayout *_layout;	///Layout of the viewports widgets
+		QSplitter *_splitter;	///Splitter for the viewports widgets (so the viewports can be resizable)
+		QGridLayout *_layout;	///Layout, so splitters can fill the whole widget area.
 		CAViewPort *_lastUsedViewPort;	///The last viewport user interacted with
 };
 #endif
