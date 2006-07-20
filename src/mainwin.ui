@@ -486,7 +486,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QToolBar" name="toolBar" >
+  <widget class="QToolBar" name="mpoToolBar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
