@@ -12,5 +12,8 @@
         <file>images/fileprint.png</file>
         <file>images/filesave.png</file>
         <file>images/player_play.png</file>
+        <file>images/cleftreble.png</file>
+        <file>images/n4.png</file>
+        <file>images/doubleflat.png</file>
     </qresource>
 </RCC>

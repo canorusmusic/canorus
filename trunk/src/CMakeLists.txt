@@ -46,6 +46,7 @@ set(Canorus_Srcs mainwin.cpp
 	rtmidi/RtMidi.cpp
 	rtmididevice.cpp
 	playback.cpp
+        toolbar.cpp
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)

@@ -34,6 +34,7 @@
 class QKeyEvent;
 class CARtMidiDevice;
 class CAPlayback;
+class CAToolBar;
 
 enum CAMode {
 	InsertMode,
@@ -94,6 +95,9 @@ private slots:
 	void on_actionSplit_vertically_activated();
 	void on_actionUnsplit_activated();
 	void on_actionNew_viewport_activated();
+
+	// Toolbar 
+	void on_moVoiceNum_clicked();
 
 	////////////////////////////////////////////////////
 	//Process ViewPort signals
@@ -159,6 +163,8 @@ private:
 	//User interface, widgets
 	////////////////////////////////////////////////////
 	Ui::MainWindow moMainWin;	///Main window widget representative
+        CAToolBar *mpoMEToolBar;
+
 	QList<CAViewPort *> _viewPortList;	///List of all available viewports for any sheet for this document
 	CAViewPort *_activeViewPort;	///Current active viewport
 	#define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
