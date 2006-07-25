@@ -85,6 +85,10 @@ void CADrawableStaff::addClef(CADrawableClef *clef) {
 	_drawableClefList.insert(i, clef);
 }
 
+bool CADrawableStaff::removeClef(CADrawableClef *clef) {
+	return _drawableClefList.removeAll(clef);
+}
+
 CAClef* CADrawableStaff::getClef(int x) {
 	int i;
 	for (i=0; ((i<_drawableClefList.size()) && (x > _drawableClefList[i]->xPos())); i++);

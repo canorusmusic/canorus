@@ -81,7 +81,8 @@ class CADrawableStaff : public CADrawableContext {
 		 */
 		int calculatePitch(int x, int y);
 		
-		void addClef(CADrawableClef *clef);
+		void addClef(CADrawableClef *clef);	//add the clef to the clef list for faster search of the current clef
+		bool removeClef(CADrawableClef *clef); //returns true, if clef deleted, false otherwise
 		CAClef *getClef(int x);
 		
 	private:

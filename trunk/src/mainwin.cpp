@@ -255,6 +255,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				delete elt;
 				rebuildScoreViewPorts(v->sheet());
 				v->repaint();
+				return;
 			}
 		}
 		

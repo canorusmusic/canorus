@@ -78,6 +78,7 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	//setup layout
 	_layout = new QGridLayout(this);
 	_layout->setMargin(2);
+	_layout->setSpacing(2);
 	_drawBorder = false;
 	_layout->addWidget(_canvas, 0, 0);
 	_layout->addWidget(_vScrollBar, 0, 1);
@@ -238,6 +239,9 @@ bool CAScoreViewPort::selectMElement(CAMusElement *elt) {
 CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
 	CADrawableMusElement *elt = (CADrawableMusElement*)_drawableMList.removeElement(x,y,false);
 	if (elt) {
+		if (elt->drawableMusElementType() == CADrawableMusElement::DrawableClef)
+			((CADrawableStaff*)elt->drawableContext())->removeClef((CADrawableClef*)elt);
+		
 		CAMusElement *mElt = elt->musElement();
 		delete elt;
 
@@ -395,14 +399,13 @@ void CAScoreViewPort::setWorldWidth(int w, bool force) {
 			
 		_hScrollBarDeadLock = true;
 		_hScrollBar->setMaximum(scrollMax);
-		_hScrollBar->setPageStep(_worldH);
+		_hScrollBar->setPageStep(_worldW);
 		_hScrollBarDeadLock = false;
 	}
 	
 	_zoom = ((float)drawableWidth() / _worldW);
 
 	checkScrollBars();
-	calculateShadowNoteCoords();
 }
 
 /**
@@ -430,33 +433,44 @@ void CAScoreViewPort::setWorldHeight(int h, bool force) {
 	_zoom = ((float)drawableHeight() / _worldH);
 
 	checkScrollBars();
-	calculateShadowNoteCoords();
 }
 
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
 void CAScoreViewPort::setWorldCoords(int x, int y, int w, int h, bool animate, bool force) {
+	_checkScrollBarsDeadLock = true;
 	setWorldWidth(w, force);
 	setWorldHeight(h, force);
 	setWorldX(x, animate, force);
 	setWorldY(y, animate, force);
+	_checkScrollBarsDeadLock = false;
+
+	checkScrollBars();
 }
 
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
 void CAScoreViewPort::setWorldCoords(int x, int y, bool animate, bool force) {
+	_checkScrollBarsDeadLock = true;
 	setWorldX(x, animate, force);
 	setWorldY(y, animate, force);
+	_checkScrollBarsDeadLock = false;
+	
+	checkScrollBars();
 }
 
 /**
  * WARNING: This method doesn't repaint the widget. You have to call repaint() manually.
  */
 void CAScoreViewPort::setCenterCoords(int x, int y, bool animate, bool force) {
+	_checkScrollBarsDeadLock = true;
 	setWorldX(x - (int)(0.5*_worldW), animate, force);
 	setWorldY(y - (int)(0.5*_worldH), animate, force);
+	_checkScrollBarsDeadLock = false;
+
+	checkScrollBars();
 }
 
 /**
@@ -512,19 +526,26 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		return;
 	
 	QPainter p(this);
+	if (_drawBorder) {
+		p.setPen(_borderPen);
+		p.drawRect(0,0,width()-1,height()-1);
+	}
+
+	p.setClipping(true);
 	if (_repaintArea) {
-		p.setClipping(true);
 		p.setClipRect(QRect((int)((_repaintArea->x() - _worldX)*_zoom),
 		                    (int)((_repaintArea->y() - _worldY)*_zoom),
 		                    (int)(_repaintArea->width()*_zoom),
 		                    (int)(_repaintArea->height()*_zoom)),
 		              Qt::UniteClip);
+	} else {
+		p.setClipRect(QRect(_canvas->x(),
+		                    _canvas->y(),
+		                    _canvas->width(),
+		                    _canvas->height()),
+		              Qt::UniteClip);
 	}
 	
-	if (_drawBorder) {
-		p.setPen(_borderPen);
-		p.drawRect(0,0,width()-1,height()-1);
-	}
 	
 	//draw the background
 	if (_repaintArea)
@@ -611,9 +632,7 @@ void CAScoreViewPort::unsetBorder() {
 
 void CAScoreViewPort::resizeEvent(QResizeEvent *e) {
 	//ugly hack for rounding - always add 0.5, when cutting down to int, the effect is the same as it was rounded for positive numbers
-	setWorldWidth( (int)(drawableWidth() / _zoom + 0.5) );
-	setWorldHeight( (int)(drawableHeight() / _zoom + 0.5) );
-	
+	setWorldCoords(_worldX, _worldY, (int)(drawableWidth() / _zoom + 0.5), (int)(drawableHeight() / _zoom + 0.5));	
 	//setWorld methods already check for scrollbars
 }
 
@@ -634,7 +653,7 @@ void CAScoreViewPort::checkScrollBars() {
 			_hScrollBar->hide();
 			change = true;
 		}
-		
+	
 	if ((((_drawableMList.getMaxY() > _drawableCList.getMaxY())?_drawableMList.getMaxY():_drawableCList.getMaxY()) - worldHeight() > 0) || (_vScrollBar->value()!=0)) { //if scrollbar is needed
 		if (!_vScrollBar->isVisible()) {
 			_vScrollBar->show();
@@ -650,7 +669,7 @@ void CAScoreViewPort::checkScrollBars() {
 		setWorldHeight((int)(drawableHeight() / _zoom));
 		setWorldWidth((int)(drawableWidth() / _zoom));
 	}
-
+	
 	_holdRepaint = false;
 	_checkScrollBarsDeadLock = false;
 }
