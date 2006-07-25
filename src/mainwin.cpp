@@ -33,6 +33,7 @@
 using namespace std;
 
 #include "mainwin.h"
+#include "toolbar.h"
 
 #include "rtmididevice.h"
 #include "playback.h"
@@ -54,9 +55,13 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 {
 	moMainWin.setupUi( this );
         mpoVoiceNumAction = moMainWin.mpoToolBar->addWidget( &moVoiceNum );
-	
+	QMetaObject::connectSlotsByName( this );
 	initMidi();
 	
+        mpoMEToolBar = new CAToolBar( this );
+        mpoMEToolBar->setOrientation(Qt::Vertical);
+        addToolBar(static_cast<Qt::ToolBarArea>(2), mpoMEToolBar);
+
 	_currentMode = SelectMode;
 	_playback = 0;
 	newDocument();
@@ -65,6 +70,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 
 CAMainWin::~CAMainWin() {
 	delete _midiOut;
+        delete mpoMEToolBar;
 }
 
 void CAMainWin::newDocument() {
@@ -420,4 +426,10 @@ void CAMainWin::on_actionPlay_toggled(bool checked) {
 	} else {
 		_playback->stop();
 	}
+}
+
+void CAMainWin::on_moVoiceNum_clicked()
+{
+  static int iVNum = 0;
+  moVoiceNum.setNumDigits( ++iVNum );
 }
