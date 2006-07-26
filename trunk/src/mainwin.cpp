@@ -64,6 +64,10 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 
 	_currentMode = SelectMode;
 	_playback = 0;
+	_animatedScroll = true;
+	_lockScrollPlayback = false;
+	moMainWin.actionAnimated_scroll->setChecked(true);
+	moMainWin.actionLock_scroll_playback->setChecked(false);
 	newDocument();
 	moMainWin.actionUnsplit->setEnabled(false);
 }
@@ -353,22 +357,22 @@ void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *c)
 	int val;
 	switch (e->modifiers()) {
 		case Qt::NoModifier:			//scroll horizontally
-			v->setWorldX( v->worldX() - (int)((0.5*e->delta()) / v->zoom()), true );
+			v->setWorldX( v->worldX() - (int)((0.5*e->delta()) / v->zoom()), _animatedScroll );
 			break;
 		case Qt::AltModifier:			//scroll horizontally, fast
-			v->setWorldX( v->worldX() - (int)(e->delta() / v->zoom()), true );
+			v->setWorldX( v->worldX() - (int)(e->delta() / v->zoom()), _animatedScroll );
 			break;
 		case Qt::ShiftModifier:			//scroll vertically
-			v->setWorldY( v->worldY() - (int)((0.5*e->delta()) / v->zoom()), true );
+			v->setWorldY( v->worldY() - (int)((0.5*e->delta()) / v->zoom()), _animatedScroll );
 			break;
 		case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
-			v->setWorldY( v->worldY() - (int)(e->delta() / v->zoom()), true );
+			v->setWorldY( v->worldY() - (int)(e->delta() / v->zoom()), _animatedScroll );
 			break;
 		case Qt::ControlModifier:		//zoom
 			if (e->delta() > 0)
-				v->setZoom( v->zoom()*1.1, coords.x(), coords.y(), true );
+				v->setZoom( v->zoom()*1.1, coords.x(), coords.y(), _animatedScroll );
 			else
-				v->setZoom( v->zoom()/1.1, coords.x(), coords.y(), true );
+				v->setZoom( v->zoom()/1.1, coords.x(), coords.y(), _animatedScroll );
 			
 			break;
 	}
@@ -406,8 +410,8 @@ void CAMainWin::playbackFinished() {
 	moMainWin.actionPlay->setChecked(false);
 	
 	_repaintTimer->stop();
-	_repaintTimer->disconnect();
-	delete _repaintTimer;
+	_repaintTimer->disconnect();	//TODO: crashes, if disconnected sometimes. -Matevz
+	delete _repaintTimer;			//TODO: crashes, if deleted. -Matevz
 	
 	setMode(_currentMode);
 }
@@ -417,6 +421,7 @@ void CAMainWin::on_actionPlay_toggled(bool checked) {
 		_repaintTimer = new QTimer();
 		_repaintTimer->setInterval(100);
 		_repaintTimer->start();
+		//connect(_repaintTimer, SIGNAL(timeout()), this, SLOT(on_repaintTimer_timeout()));
 		connect(_repaintTimer, SIGNAL(timeout()), _activeViewPort, SLOT(repaint()));
 		_playbackViewPort = _activeViewPort;
 		
@@ -426,6 +431,40 @@ void CAMainWin::on_actionPlay_toggled(bool checked) {
 	} else {
 		_playback->stop();
 	}
+}
+
+/*void CAMainWin::on_repaintTimer_timeout() {
+	if (_lockScrollPlayback && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort))
+		((CAScoreViewPort*)_activeViewPort)->zoomToSelection(_animatedScroll);
+	_activeViewPort->repaint();
+}*/
+
+void CAMainWin::on_actionAnimated_scroll_toggled(bool val) {
+	_animatedScroll = val;
+}
+
+void CAMainWin::on_actionLock_scroll_playback_toggled(bool val) {
+	_lockScrollPlayback = val;
+}
+
+void CAMainWin::on_actionZoom_to_selection_activated() {
+	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)
+		((CAScoreViewPort*)_activeViewPort)->zoomToSelection(_animatedScroll);
+}
+
+void CAMainWin::on_actionZoom_to_fit_activated() {
+	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)
+		((CAScoreViewPort*)_activeViewPort)->zoomToFit();
+}
+
+void CAMainWin::on_actionZoom_to_width_activated() {
+	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)
+		((CAScoreViewPort*)_activeViewPort)->zoomToWidth();
+}
+
+void CAMainWin::on_actionZoom_to_height_activated() {
+	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)
+		((CAScoreViewPort*)_activeViewPort)->zoomToHeight();
 }
 
 void CAMainWin::on_moVoiceNum_clicked()

@@ -86,6 +86,12 @@ private slots:
 	
 	//View menu
 	void on_action_Fullscreen_toggled(bool);
+	void on_actionAnimated_scroll_toggled(bool);
+	void on_actionLock_scroll_playback_toggled(bool);
+	void on_actionZoom_to_selection_activated();
+	void on_actionZoom_to_fit_activated();
+	void on_actionZoom_to_width_activated();
+	void on_actionZoom_to_height_activated();
 	
 	//Playback menu
 	void on_actionPlay_toggled(bool);
@@ -146,6 +152,7 @@ private slots:
 
 private slots:
 	void playbackFinished();	///Temporarily as we don't find better solution.
+	//void on_repaintTimer_timeout();	///Used for repaint events
 
 private:
 	////////////////////////////////////////////////////
@@ -167,10 +174,13 @@ private:
 
 	QList<CAViewPort *> _viewPortList;	///List of all available viewports for any sheet for this document
 	CAViewPort *_activeViewPort;	///Current active viewport
+	bool _animatedScroll;	///animate scroll/zoom
+	bool _lockScrollPlayback;	///Lock the scroll UI while playback
 	#define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
 	CAViewPort *_playbackViewPort;	///Viewport needed to be updated when playback is active	
 	QTimer *_repaintTimer;	///Used when playback is active
 	QLCDNumber moVoiceNum;  ///LCD placed in Toolbar for showing current voice
+
 	////////////////////////////////////////////////////
 	//User interface, action objects from toolbars
 	////////////////////////////////////////////////////
