@@ -356,23 +356,6 @@
     <addaction name="separator" />
     <addaction name="actionNew_viewport" />
    </widget>
-   <widget class="QMenu" name="menu_Insert" >
-    <property name="title" >
-     <string>&amp;Insert</string>
-    </property>
-    <addaction name="actionNew_staff" />
-    <addaction name="action_Clef" />
-    <addaction name="action_Time_signature" />
-    <addaction name="action_Key_signature" />
-    <addaction name="separator" />
-    <addaction name="action_Special_barline" />
-    <addaction name="action_Expression_marks" />
-    <addaction name="actionC_hord" />
-    <addaction name="action_Pedal_markings" />
-    <addaction name="action_Octaviation" />
-    <addaction name="action_Instrument_change" />
-    <addaction name="action_Midi_instruction" />
-   </widget>
    <widget class="QMenu" name="menu_Perspective" >
     <property name="title" >
      <string>&amp;Perspective</string>
@@ -398,32 +381,6 @@
     <addaction name="action_Voice_properties" />
     <addaction name="action_Note_properties" />
     <addaction name="action_Document_layout" />
-   </widget>
-   <widget class="QMenu" name="menuInsert" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <widget class="QMenu" name="menuZoom" >
-     <property name="title" >
-      <string>Zoom</string>
-     </property>
-     <addaction name="actionZoom_In" />
-     <addaction name="actionZoom_Out" />
-     <addaction name="actionZoom_100" />
-     <addaction name="actionZoom_page_width" />
-    </widget>
-    <addaction name="menuZoom" />
-    <addaction name="actionZoom_Level" />
-    <addaction name="separator" />
-    <addaction name="action_Read_pnly_mode" />
-    <addaction name="actionLyric_s_view" />
-    <addaction name="actionTime_grid" />
-    <addaction name="action_Time_ruler" />
-    <addaction name="action_Bar_ruler" />
-    <addaction name="separator" />
-    <addaction name="actionGoto_bar" />
-    <addaction name="actionStatus_bar" />
-    <addaction name="action_Fullscreen" />
    </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
@@ -464,6 +421,54 @@
     <addaction name="actionPrint" />
     <addaction name="separator" />
     <addaction name="actionQuit" />
+   </widget>
+   <widget class="QMenu" name="menu_Insert" >
+    <property name="title" >
+     <string>&amp;Insert</string>
+    </property>
+    <addaction name="actionNew_staff" />
+    <addaction name="action_Clef" />
+    <addaction name="action_Time_signature" />
+    <addaction name="action_Key_signature" />
+    <addaction name="separator" />
+    <addaction name="action_Special_barline" />
+    <addaction name="action_Expression_marks" />
+    <addaction name="actionC_hord" />
+    <addaction name="action_Pedal_markings" />
+    <addaction name="action_Octaviation" />
+    <addaction name="action_Instrument_change" />
+    <addaction name="action_Midi_instruction" />
+   </widget>
+   <widget class="QMenu" name="menuInsert" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="menuZoom" >
+     <property name="title" >
+      <string>Zoom</string>
+     </property>
+     <addaction name="actionZoom_In" />
+     <addaction name="actionZoom_Out" />
+     <addaction name="actionZoom_100" />
+     <addaction name="actionZoom_to_width" />
+     <addaction name="actionZoom_to_height" />
+     <addaction name="actionZoom_to_fit" />
+     <addaction name="actionZoom_to_selection" />
+    </widget>
+    <addaction name="menuZoom" />
+    <addaction name="actionZoom_Level" />
+    <addaction name="separator" />
+    <addaction name="actionAnimated_scroll" />
+    <addaction name="actionLock_scroll_playback" />
+    <addaction name="action_Read_pnly_mode" />
+    <addaction name="actionLyric_s_view" />
+    <addaction name="actionTime_grid" />
+    <addaction name="action_Time_ruler" />
+    <addaction name="action_Bar_ruler" />
+    <addaction name="separator" />
+    <addaction name="actionGoto_bar" />
+    <addaction name="actionStatus_bar" />
+    <addaction name="action_Fullscreen" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -707,9 +712,9 @@
     <string>Zoom &amp;100%</string>
    </property>
   </action>
-  <action name="actionZoom_page_width" >
+  <action name="actionZoom_to_width" >
    <property name="text" >
-    <string>Zoom &amp;page width</string>
+    <string>Zoom to &amp;page width</string>
    </property>
   </action>
   <action name="action_Read_pnly_mode" >
@@ -1010,6 +1015,43 @@
    </property>
    <property name="text" >
     <string>Play</string>
+   </property>
+  </action>
+  <action name="actionAnimated_scroll" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Animated scroll</string>
+   </property>
+  </action>
+  <action name="actionLock_scroll_playback" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Lock scroll while playback</string>
+   </property>
+  </action>
+  <action name="actionZoom_to_height" >
+   <property name="text" >
+    <string>Zoom to page &amp;height</string>
+   </property>
+  </action>
+  <action name="actionZoom_to_fit" >
+   <property name="text" >
+    <string>Zoom to &amp;fit</string>
+   </property>
+  </action>
+  <action name="actionZoom_to_selection" >
+   <property name="checkable" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>Zoom to selection</string>
    </property>
   </action>
  </widget>
