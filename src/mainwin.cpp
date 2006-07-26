@@ -55,7 +55,6 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 {
 	moMainWin.setupUi( this );
         mpoVoiceNumAction = moMainWin.mpoToolBar->addWidget( &moVoiceNum );
-	QMetaObject::connectSlotsByName( this );
 	initMidi();
 	
         mpoMEToolBar = new CAToolBar( this );
