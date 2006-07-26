@@ -299,7 +299,7 @@ class CAScoreViewPort : public CAViewPort {
 		 * @param animate Use animated scroll.
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */ 
-		void setWorldCoords(QRect *r, bool animate=false, bool force=false) { setWorldCoords(r->x(),r->y(),r->width(),r->height(), force); }
+		void setWorldCoords(const QRect r, bool animate=false, bool force=false) { setWorldCoords(r.x(),r.y(),r.width(),r.height(), animate, force); }
 		
 		/**
 		 * This is an overloaded member function, provided for convenience.
@@ -351,6 +351,11 @@ class CAScoreViewPort : public CAViewPort {
 		 * @param force Use the given world units despite their illegal values (like negative coordinates etc.).
 		 */
 		void setZoom(float z, QPoint p,  bool animate=false, bool force = false) { setZoom(z, p.x(), p.y(), animate, force); }		
+		
+		void zoomToSelection(bool animate=false, bool force=false);
+		void zoomToWidth(bool animate=false, bool force=false);
+		void zoomToHeight(bool animate=false, bool force=false);
+		void zoomToFit(bool animate=false, bool force=false);
 		
 		/**
 		 * Draw the border with the given pen style, color, width and other pen settings.
