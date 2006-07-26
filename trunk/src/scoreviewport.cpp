@@ -440,6 +440,20 @@ void CAScoreViewPort::setWorldHeight(int h, bool force) {
  */
 void CAScoreViewPort::setWorldCoords(int x, int y, int w, int h, bool animate, bool force) {
 	_checkScrollBarsDeadLock = true;
+
+	if (!drawableWidth() && !drawableHeight())
+		return;
+	
+	float scale = (float)drawableWidth() / drawableHeight();	//always keep the world rectangle area in the same scale as the actual width/height of the drawable canvas
+	if (h) {	//avoid division by zero
+		if ((float)w/h > scale)
+			h = (int)(w / scale);
+		else
+			w = (int)(h * scale);
+	} else
+		h = (int)(w / scale);
+		
+	
 	setWorldWidth(w, force);
 	setWorldHeight(h, force);
 	setWorldX(x, animate, force);
@@ -459,6 +473,45 @@ void CAScoreViewPort::setWorldCoords(int x, int y, bool animate, bool force) {
 	_checkScrollBarsDeadLock = false;
 	
 	checkScrollBars();
+}
+
+void CAScoreViewPort::zoomToSelection(bool animate, bool force) {
+	if (!_selection.size())
+		return;
+	
+	QRect rect;
+	
+	rect.setX(_selection[0]->xPos()); rect.setY(_selection[0]->yPos());
+	rect.setWidth(_selection[0]->width()); rect.setHeight(_selection[0]->height());
+	for (int i=1; i<_selection.size(); i++) {
+		if (_selection[i]->xPos() < rect.x())
+			rect.setX(_selection[i]->xPos());
+		if (_selection[i]->yPos() < rect.y())
+			rect.setY(_selection[i]->yPos());
+		if (_selection[i]->xPos() + _selection[i]->width() > rect.x() + rect.width())
+			rect.setWidth(_selection[i]->xPos() + _selection[i]->width() - rect.x());
+		if (_selection[i]->yPos() + _selection[i]->height() > rect.y() + rect.height())
+			rect.setHeight(_selection[i]->yPos() + _selection[i]->height() - rect.y());
+	}
+	
+	setWorldCoords(rect, animate, force);
+}
+
+void CAScoreViewPort::zoomToWidth(bool animate, bool force) {
+	int maxX = (_drawableCList.getMaxX()>_drawableMList.getMaxX())?_drawableCList.getMaxX():_drawableMList.getMaxX();
+	setWorldCoords(0,0,maxX,0,animate,force);
+}
+
+void CAScoreViewPort::zoomToHeight(bool animate, bool force) {
+	int maxY = (_drawableCList.getMaxY()>_drawableMList.getMaxY())?_drawableCList.getMaxY():_drawableMList.getMaxY();
+	setWorldCoords(0,0,0,maxY,animate,force);
+}
+
+void CAScoreViewPort::zoomToFit(bool animate, bool force) {
+	int maxX = ((_drawableCList.getMaxX() > _drawableMList.getMaxX())?_drawableCList.getMaxX():_drawableMList.getMaxX()); 
+	int maxY = ((_drawableCList.getMaxY() > _drawableMList.getMaxY())?_drawableCList.getMaxY():_drawableMList.getMaxY()); 
+	
+	setWorldCoords(0, 0, maxX, maxY, animate, force);
 }
 
 /**
@@ -774,4 +827,3 @@ void CAScoreViewPort::startAnimationTimer() {
 	_animationTimer->start();
 	on__animationTimer_timeout();
 }
-
