@@ -11,7 +11,7 @@
 
 #include <QString>
 
-#include "drawable.h"
+#include "drawable/drawable.h"
 
 class CASheet;
 

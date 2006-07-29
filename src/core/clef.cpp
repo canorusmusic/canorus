@@ -6,8 +6,8 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "clef.h"
-#include "staff.h"
+#include "core/clef.h"
+#include "core/staff.h"
 
 CAClef::CAClef(CAClefType type, CAStaff *staff, int time) : CAMusElement(staff, time) {
 	_musElementType = CAMusElement::Clef;
