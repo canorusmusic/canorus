@@ -37,8 +37,6 @@ void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
 	p->setPen(QPen(s.color));
 	p->setFont(font);
 	
-	p->drawLine(s.x,s.y,s.x+width()*s.z,s.y+height()*s.z);
-	
 	switch (clef()->clefType()) {
 		case CAClef::Treble:
 			p->drawText(s.x, (int)(s.y + 0.63*height()*s.z), QString(0xE195));
