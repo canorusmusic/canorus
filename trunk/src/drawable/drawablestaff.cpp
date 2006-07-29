@@ -8,11 +8,11 @@
 
 #include <QPainter>
 #include <iostream>
-#include "drawablestaff.h"
-#include "drawableclef.h"
-#include "staff.h"
-#include "note.h"
-#include "clef.h"
+#include "drawable/drawablestaff.h"
+#include "drawable/drawableclef.h"
+#include "core/staff.h"
+#include "core/note.h"
+#include "core/clef.h"
 
 #define _lineSpace (staff()->numberOfLines()?(float)_height/(staff()->numberOfLines()-1):0)
 

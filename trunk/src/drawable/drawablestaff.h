@@ -9,7 +9,7 @@
 #ifndef DRAWABLESTAFF_H_
 #define DRAWABLESTAFF_H_
 
-#include "drawablecontext.h"
+#include "drawable/drawablecontext.h"
 
 class CAStaff;
 class CANote;

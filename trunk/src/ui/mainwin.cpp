@@ -32,23 +32,23 @@
 
 using namespace std;
 
-#include "mainwin.h"
-#include "toolbar.h"
-#include "lcdnumber.h"
+#include "ui/mainwin.h"
+#include "widgets/toolbar.h"
+#include "widgets/lcdnumber.h"
 
-#include "rtmididevice.h"
-#include "playback.h"
+#include "interface/rtmididevice.h"
+#include "interface/playback.h"
 
-#include "scrollwidget.h"
-#include "engraver.h"
-#include "scoreviewport.h"
-#include "drawablecontext.h"
-#include "drawablestaff.h"
+#include "widgets/scrollwidget.h"
+#include "interface/engraver.h"
+#include "widgets/scoreviewport.h"
+#include "drawable/drawablecontext.h"
+#include "drawable/drawablestaff.h"
 
-#include "sheet.h"
-#include "staff.h"
-#include "clef.h"
-#include "note.h"
+#include "core/sheet.h"
+#include "core/staff.h"
+#include "core/clef.h"
+#include "core/note.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)

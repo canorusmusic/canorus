@@ -8,10 +8,10 @@
 
 #include <QPainter>
 #include <iostream>
-#include "drawablenote.h"
-#include "voice.h"
-#include "staff.h"
-#include "note.h"
+#include "drawable/drawablenote.h"
+#include "core/voice.h"
+#include "core/staff.h"
+#include "core/note.h"
 
 #define QUARTER_STEM_LENGTH 22
 #define QUARTER_YPOS_DELTA 21

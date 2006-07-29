@@ -20,17 +20,17 @@
 
 #include <iostream>
 
-#include "scoreviewport.h"
-#include "drawable.h"
-#include "drawablecontext.h"
-#include "drawablemuselement.h"
-#include "drawablestaff.h"
-#include "drawablenote.h"
-#include "muselement.h"
-#include "context.h"
-#include "engraver.h"
-#include "staff.h"
-#include "note.h"
+#include "widgets/scoreviewport.h"
+#include "drawable/drawable.h"
+#include "drawable/drawablecontext.h"
+#include "drawable/drawablemuselement.h"
+#include "drawable/drawablestaff.h"
+#include "drawable/drawablenote.h"
+#include "core/muselement.h"
+#include "core/context.h"
+#include "interface/engraver.h"
+#include "core/staff.h"
+#include "core/note.h"
 
 CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(parent) {
 	_viewPortType = CAViewPort::ScoreViewPort;
