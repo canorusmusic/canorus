@@ -22,15 +22,16 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 	
 	switch (note->noteLength()) {
 		case CANote::Quarter:
-			_width = 10;
+			_width = 11;
 			_height = 26;
 			_yPos = y - QUARTER_YPOS_DELTA;	//values in constructor are the notehead center coords. yPos represents the top of the stem.
 			_xPos = x - _width/2;
 			_neededWidth = _width;
 			_neededHeight = _height;
 			break;
+			
 		case CANote::Whole:
-			_width = 12;
+			_width = 16;
 			_height = 3;
 			_yPos = y - _height/2;
 			_xPos = x - _width/2;
@@ -48,22 +49,25 @@ CADrawableNote::~CADrawableNote() {
 }
 
 void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
+	QFont font("Emmentaler");
+	font.setPixelSize((int)(35*s.z));
+	
 	p->setPen(QPen(s.color));
-	p->setFont(QFont("Emmentaler",(int)(19*s.z)));
+	p->setFont(font);
 
 	QPen pen;
 	switch (note()->noteLength()) {
 		case CANote::Quarter:
 			//draw notehead
 			s.y += (int)(QUARTER_STEM_LENGTH*s.z);
-			p->drawText(s.x,(int)(s.y - 0.0*s.z),QString(0xE125));
+			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
 
 			//draw stem
 			pen.setWidth((int)(1.2*s.z));
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setColor(s.color);
 			p->setPen(pen);
-			p->drawLine((int)(s.x + (_width - 0.4)*s.z), (int)(s.y-1*s.z), (int)(s.x + (_width - 0.4)*s.z), s.y-(int)(QUARTER_STEM_LENGTH*s.z));
+			p->drawLine((int)(s.x + (_width - 0.2)*s.z), (int)(s.y-1*s.z), (int)(s.x + (_width - 0.2)*s.z), s.y-(int)(QUARTER_STEM_LENGTH*s.z));
 						
 			break;
 			

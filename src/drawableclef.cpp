@@ -6,10 +6,13 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include <iostream>
+
 #include <QFont>
 #include <QPainter>
 
 #include "drawableclef.h"
+#include "drawablecontext.h"
 
 #include "clef.h"
 
@@ -29,12 +32,16 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableContext *drawableCo
 }
 
 void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
+	QFont font("Emmentaler");
+	font.setPixelSize((int)(35*s.z));
 	p->setPen(QPen(s.color));
-	p->setFont(QFont("Emmentaler",(int)(20*s.z)));
-
+	p->setFont(font);
+	
+	p->drawLine(s.x,s.y,s.x+width()*s.z,s.y+height()*s.z);
+	
 	switch (clef()->clefType()) {
 		case CAClef::Treble:
-			p->drawText(s.x, (int)(s.y + 42*s.z), QString(0xE195));
+			p->drawText(s.x, (int)(s.y + 0.63*height()*s.z), QString(0xE195));
 			
 			break;
 	}

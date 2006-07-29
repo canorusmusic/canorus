@@ -19,7 +19,7 @@
 CADrawableStaff::CADrawableStaff(CAStaff *s, int x, int y) : CADrawableContext(s, x, y) {
 	_drawableContextType = CADrawableContext::DrawableStaff;
 	_width = 0;
-	_height = 35;
+	_height = 37;
 }
 
 void CADrawableStaff::draw(QPainter *p, const CADrawSettings s) {
