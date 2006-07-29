@@ -14,6 +14,7 @@ CAMusElement::CAMusElement(CAContext *context, int time, int length) {
 	_context = context;
 	_timeStart = time;
 	_timeLength = length;
+	_playable = false;
 }
 
 CAMusElement::~CAMusElement() {
