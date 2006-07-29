@@ -66,7 +66,7 @@ set(Canorus_Interface_Srcs
 	interface/rtmididevice.cpp
 	)
 
-set(Cannorus_RTMidi_Srcs
+set(Canorus_RTMidi_Srcs
 	rtmidi/RtMidi.cpp
 	)
 
@@ -77,6 +77,7 @@ set(Canorus_Srcs
 	${Canorus_Ui_Srcs}
 	${Canorus_Interface_Srcs}
 	${Canorus_RTMidi_Srcs}
+	${Canorus_Widget_Srcs}
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
