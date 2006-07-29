@@ -13,6 +13,7 @@
 CAPlayable::CAPlayable(CAVoice *voice, int timeStart, int timeLength)
  : CAMusElement(voice?voice->staff():0, timeStart, timeLength) {
 	_voice = voice;
+	_playable = true;
 }
 
 int CAPlayable::pitchToMidiPitch(int pitch, int acc) {

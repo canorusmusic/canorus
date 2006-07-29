@@ -85,12 +85,20 @@ class CAMusElement {
 		 * @param length The new length in absolue time sample units.
 		 */
 		void setTimeLength(int length) { _timeLength = length; }
+		
+		/**
+		 * Return, if the current element is playable or not.
+		 * 
+		 * @return True, if the current element inherits CAPlayable class, false otherwise.
+		 */
+		bool isPlayable() { return _playable; }
 	
 	protected:
 		CAMusElementType _musElementType;	///Stores the type of the music element. See CAMusElement::enum CAMusElementType for details.
 		CAContext *_context;	///Pointer to the context which this music element belongs too.
 		int _timeStart;		//Where does this music element exist in time (start)
-		int _timeLength;	//How long is this music element in time 
+		int _timeLength;	//How long is this music element in time
+		bool _playable;	//Is the current element playable 
 };
 
 #endif /*MUSELEMENT_H_*/
