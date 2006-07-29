@@ -6,9 +6,9 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "drawable.h"
-#include "drawablemuselement.h"
-#include "kdtree.h"
+#include "drawable/drawable.h"
+#include "drawable/drawablemuselement.h"
+#include "core/kdtree.h"
 
 CAKDTree::CAKDTree() {
 	_maxX = 0;

@@ -13,8 +13,8 @@
 
 class QPainter;
 
-#include "context.h"
-#include "clef.h"
+#include "core/context.h"
+#include "core/clef.h"
 
 class CASheet;
 class CAContext;

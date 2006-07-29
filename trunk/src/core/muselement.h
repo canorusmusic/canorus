@@ -9,7 +9,7 @@
 #ifndef MUSELEMENT_H_
 #define MUSELEMENT_H_
 
-#include "drawable.h"
+#include "drawable/drawable.h"
 
 class CAContext;
 
