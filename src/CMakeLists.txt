@@ -15,45 +15,75 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -D__LINUX_ALSASEQ__")
 INCLUDE( ${QT_USE_FILE} )
 
 # Define the UI source files used by Canorus
-set(Canorus_UIs  mainwin.ui)
+set(Canorus_UIs  ui/mainwin.ui)
 
 # Define the MOC source files used by Canorus
-set(Canorus_MOCs mainwin.h scrollwidget.h viewport.h scoreviewport.h playback.h)
+set(Canorus_MOCs ui/mainwin.h 
+	widgets/lcdnumber.h 
+	widgets/scrollwidget.h 
+	widgets/viewport.h 
+	widgets/scoreviewport.h 
+	interface/playback.h
+	)
 
 # Add all sources to Canorus_Srcs
-set(Canorus_Srcs mainwin.cpp
-	main.cpp
-	kdtree.cpp
-	scrollwidget.cpp
-	viewport.cpp
-	document.cpp
-	sheet.cpp
-	context.cpp
-	staff.cpp
-	voice.cpp
-	playable.cpp
-	drawable.cpp
-	muselement.cpp
-	note.cpp
-	engraver.cpp
-	drawablestaff.cpp
-	drawablenote.cpp
-	scoreviewport.cpp
-	drawablecontext.cpp
-	drawablemuselement.cpp
-	clef.cpp
-	drawableclef.cpp
+set(Canorus_Core_Srcs
+	core/clef.cpp
+	core/context.cpp
+	core/document.cpp
+	core/kdtree.cpp
+	core/muselement.cpp
+	core/note.cpp
+	core/playable.cpp
+	core/sheet.cpp
+	core/staff.cpp
+	core/voice.cpp
+	)
+
+set(Canorus_Widget_Srcs  
+	widgets/lcdnumber.cpp
+	widgets/scoreviewport.cpp
+	widgets/scrollwidget.cpp
+	widgets/toolbar.cpp
+	widgets/viewport.cpp
+	)
+
+set(Canorus_Ui_Srcs ui/mainwin.cpp
+	)
+
+set(Canorus_Drawable_Srcs
+	drawable/drawable.cpp
+	drawable/drawableclef.cpp
+	drawable/drawablecontext.cpp
+	drawable/drawablemuselement.cpp
+	drawable/drawablenote.cpp
+	drawable/drawablestaff.cpp
+	)
+
+set(Canorus_Interface_Srcs
+	interface/engraver.cpp
+	interface/playback.cpp
+	interface/rtmididevice.cpp
+	)
+
+set(Cannorus_RTMidi_Srcs
 	rtmidi/RtMidi.cpp
-	rtmididevice.cpp
-	playback.cpp
-	toolbar.cpp
+	)
+
+set(Canorus_Srcs 
+	main.cpp
+	${Canorus_Core_Srcs}
+	${Canorus_Drawable_Srcs}
+	${Canorus_Ui_Srcs}
+	${Canorus_Interface_Srcs}
+	${Canorus_RTMidi_Srcs}
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
-set(Canorus_Resrcs mainwin.qrc)
+set(Canorus_Resrcs ui/mainwin.qrc)
 
 # Add all the dependencies needed for the MainWindow
-# add_file_dependencies( mainwin.cpp ui_mainwin.h )
+# add_file_dependencies( ui/mainwin.cpp ui/ui_mainwin.h )
 
 # This scripts runs the resource compiler rcc.
 # The result of it is stored into Canorus_UIC_Resrcs_Srcs
