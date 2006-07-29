@@ -128,7 +128,7 @@ class CAScoreViewPort : public CAViewPort {
 		/**
 		 * Synchronize the sheets music elements with the actual drawable ones and reposition them.
 		 */
-		void update();
+		void rebuild();
 		
 		///////////////////////////////////////////////
 		//Widget properties

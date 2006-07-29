@@ -297,7 +297,7 @@ CAContext *CAScoreViewPort::contextCollision(int x, int y) {
 	}
 }
 
-void CAScoreViewPort::update() {
+void CAScoreViewPort::rebuild() {
 	//clear the shadow notes
 	for (int i=0; i<_shadowNote.size(); i++) {
 		delete _shadowNote[i];

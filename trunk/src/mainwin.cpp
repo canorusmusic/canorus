@@ -246,7 +246,7 @@ void CAMainWin::on_action_Clef_activated() {
 
 void CAMainWin::rebuildScoreViewPorts(CASheet *sheet, bool repaint) {
 	for (int i=0; i<_viewPortList.size(); i++) {
-		((CAScoreViewPort*)(_viewPortList[i]))->update();
+		((CAScoreViewPort*)(_viewPortList[i]))->rebuild();
 		((CAScoreViewPort*)(_viewPortList[i]))->checkScrollBars();
 		_viewPortList[i]->repaint();
 	}
