@@ -77,11 +77,46 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		//go through all the streams and check if the following element has this time
 		CAMusElement *elt;
 		CADrawableContext *drawableContext;
+		bool placedSymbol = false;	//used if waiting for notes to gather and a non-time-consuming
 		for (int i=0; i < streams; i++) {
-			//loop until the element has come, which has bigger timeStart
+			//loop until the first playable element
 			//multiple elements can have the same start time. eg. Clef + Key signature + Time signature + First note
 			while ( (musStreamList[i]->size() > streamsIdx[i]) &&
-			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart)
+			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
+			        (!elt->isPlayable())
+			      ) {
+				drawableContext = drawableContextMap[elt->context()];
+				switch ( elt->musElementType() ) {
+					case CAMusElement::Clef:
+						CADrawableClef *clef = new CADrawableClef(
+							(CAClef*)elt,
+							drawableContext,
+							streamsX[i],
+							drawableContext->yPos()
+						);
+						
+						v->addMElement(clef);
+						lastClef[i] = clef->clef();
+						
+						streamsX[i] += (clef->neededWidth() + MINIMUM_SPACE);
+						placedSymbol = true;
+						break;
+						
+				}
+				
+				streamsIdx[i] = streamsIdx[i] + 1;
+			}
+		}
+		
+		//Synchronize minimum X-es between the contexts - all the noteheads should be horizontally aligned.
+		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+		for (int i=0; i<streams; i++) streamsX[i] = maxX;
+		
+		for (int i=0; i < streams; i++) {
+			//loop until the element has come, which has bigger timeStart
+			while ( (musStreamList[i]->size() > streamsIdx[i]) &&
+			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
+			        (elt->isPlayable())
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
 				switch ( elt->musElementType() ) {
@@ -98,25 +133,13 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 
 						streamsX[i] += (note->neededWidth() + MINIMUM_SPACE);
 						break;
-						
-					case CAMusElement::Clef:
-						CADrawableClef *clef = new CADrawableClef(
-							(CAClef*)elt,
-							drawableContext,
-							streamsX[i],
-							drawableContext->yPos()
-						);
-						
-						v->addMElement(clef);
-						lastClef[i] = clef->clef();
-						
-						streamsX[i] += (clef->neededWidth() + MINIMUM_SPACE);
-						break;
-						
 				}
 				
 				streamsIdx[i] = streamsIdx[i] + 1;
 			}
 		}
+					
+						
+		
 	}
 }
