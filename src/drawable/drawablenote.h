@@ -9,7 +9,7 @@
 #ifndef DRAWABLENOTE_H_
 #define DRAWABLENOTE_H_
 
-#include "drawablemuselement.h"
+#include "drawable/drawablemuselement.h"
 
 class CANote;
 

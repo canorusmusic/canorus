@@ -13,11 +13,11 @@
 #include <QSplitter>
 #include <QGridLayout>
 
-#include "viewport.h"
-#include "sheet.h"
-#include "scrollwidget.h"
-#include "note.h"
-#include "staff.h"
+#include "widgets/viewport.h"
+#include "core/sheet.h"
+#include "widgets/scrollwidget.h"
+#include "core/note.h"
+#include "core/staff.h"
 
 CAScrollWidget::CAScrollWidget(CAViewPort *v, QWidget *parent) : QFrame(parent) {
 	_layout = new QGridLayout(this); _layout->setSpacing(0); _layout->setMargin(0);

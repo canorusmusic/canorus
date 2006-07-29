@@ -11,10 +11,10 @@
 #include <QFont>
 #include <QPainter>
 
-#include "drawableclef.h"
-#include "drawablecontext.h"
+#include "drawable/drawableclef.h"
+#include "drawable/drawablecontext.h"
 
-#include "clef.h"
+#include "core/clef.h"
 
 CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableContext *drawableContext, int x, int y)
  : CADrawableMusElement(musElement, drawableContext, x, y) {

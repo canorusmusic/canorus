@@ -12,7 +12,7 @@
 #include <QFrame>
 #include <QList>
 
-#include "kdtree.h"
+#include "core/kdtree.h"
 
 class CAViewPort;
 class CASheet;

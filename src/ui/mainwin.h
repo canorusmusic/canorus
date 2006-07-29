@@ -24,10 +24,10 @@
 /*									     */
 /*****************************************************************************/
 
-#include "ui_mainwin.h"
+#include "ui/ui_mainwin.h"
 
-#include "document.h"
-#include "muselement.h"
+#include "core/document.h"
+#include "core/muselement.h"
 
 class QKeyEvent;
 class CARtMidiDevice;

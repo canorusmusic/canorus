@@ -13,9 +13,9 @@
 #include <QPen>
 #include <QBrush>
 
-#include "viewport.h"
-#include "kdtree.h"
-#include "note.h"
+#include "widgets/viewport.h"
+#include "core/kdtree.h"
+#include "core/note.h"
 
 class QScrollBar;
 class QMouseEvent;

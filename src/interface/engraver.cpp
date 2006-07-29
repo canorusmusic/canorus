@@ -9,16 +9,16 @@
 #include <QList>
 #include <QMap>
 #include <iostream>
-#include "engraver.h"
+#include "interface/engraver.h"
 
-#include "scoreviewport.h"
-#include "drawablestaff.h"
-#include "drawableclef.h"
-#include "drawablenote.h"
+#include "widgets/scoreviewport.h"
+#include "drawable/drawablestaff.h"
+#include "drawable/drawableclef.h"
+#include "drawable/drawablenote.h"
 
-#include "sheet.h"
-#include "staff.h"
-#include "voice.h"
+#include "core/sheet.h"
+#include "core/staff.h"
+#include "core/voice.h"
 
 #define INITIAL_X_OFFSET 20
 #define MINIMUM_SPACE 10

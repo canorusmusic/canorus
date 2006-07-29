@@ -12,15 +12,15 @@
 #include <vector>	//needed for RtMidi send message
 #include <iostream>
 
-#include "playback.h"
-#include "mididevice.h"
-#include "scoreviewport.h"
-#include "sheet.h"
-#include "staff.h"
-#include "context.h"
-#include "drawablecontext.h"
-#include "drawablemuselement.h"
-#include "voice.h"
+#include "interface/playback.h"
+#include "interface/mididevice.h"
+#include "widgets/scoreviewport.h"
+#include "core/sheet.h"
+#include "core/staff.h"
+#include "core/context.h"
+#include "drawable/drawablecontext.h"
+#include "drawable/drawablemuselement.h"
+#include "core/voice.h"
 
 CAPlayback::CAPlayback(CAScoreViewPort *v, CAMidiDevice *m) {
 	_scoreViewPort = v;
