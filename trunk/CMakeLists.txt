@@ -32,6 +32,7 @@ find_package(Qt4 REQUIRED)
 
 # in the following lines all the requires include directories are added
 INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR})
+INCLUDE_DIRECTORIES( src )
 
 # Recurse into the "src" and "doc" subdirectories.  This does not actually
 # cause another cmake executable to run.  The same process will walk through
