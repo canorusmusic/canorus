@@ -163,7 +163,6 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), 0, 0, 0, true);
 		_shadowDrawableNote.back()->setDrawableContext(elt);
 	}
-	
 }
 
 bool CAScoreViewPort::selectContext(CAContext *context) {
@@ -187,7 +186,7 @@ void CAScoreViewPort::setCurrentContext(CADrawableContext *drawableContext) {
 	_currentContext = drawableContext;
 }
 
-CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
+CAContext* CAScoreViewPort::selectCElement(int x, int y) {
 	QList<CADrawable *>* l = _drawableCList.findInRange(x,y);
 	
 	if (l->size()!=0) {
@@ -196,11 +195,12 @@ CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 	
 	delete l;
 	
-	return (_currentContext?_currentContext:0);
+	return (_currentContext?_currentContext->context():0);
 }
 
 CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 	QList<CADrawable *>* l;
+	
 	if ((l=_drawableMList.findInRange(x,y))->size() != 0) { //multiple elements can share the same coordinates
 		int idx;
 			_selection.clear();
@@ -221,7 +221,6 @@ CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 		
 		return 0;
 	}
-	
 }
 
 bool CAScoreViewPort::selectMElement(CAMusElement *elt) {

@@ -22,20 +22,32 @@ CARtMidiDevice::CARtMidiDevice() {
 	catch (RtError &error) {
 		error.printMessage();
 	}
+}
 
+void CARtMidiDevice::openPort() {
 	// Check outputs.
 	int nPorts = _out->getPortCount();
 	if (nPorts > 0) {
 		try {
 			_out->openPort(DEFAULT_DEVICE_PORT);
-		}
-		catch (RtError &error) {
+		} catch (RtError &error) {
 			error.printMessage();
 		}
 	}
 }
 
+void CARtMidiDevice::closePort() {
+	// Check outputs.
+	try {
+		_out->closePort();
+	} catch (RtError &error) {
+		error.printMessage();
+	}
+}
+
+
 CARtMidiDevice::~CARtMidiDevice() {
+	closePort();
 	if (_out) delete _out;
 	if (_in) delete _in;
 }

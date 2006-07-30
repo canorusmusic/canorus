@@ -26,6 +26,7 @@ CAPlayback::CAPlayback(CAScoreViewPort *v, CAMidiDevice *m) {
 	_scoreViewPort = v;
 	_midiDevice = m;
 	_stop = false;
+	_currentTime = 0;
 }
 
 void CAPlayback::run() {
@@ -147,13 +148,13 @@ void CAPlayback::run() {
 				minLength = delta;
 		}
 		
+		_currentTime = timeStart;
 		msleep(minLength);
 	}
 	
 	_scoreViewPort->clearSelection();
 	_scoreViewPort->addToSelection(&oldSelection);
 	_scoreViewPort->unsetBorder();
-	//_scoreViewPort->repaint();
 	stop();
 }
 

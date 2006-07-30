@@ -288,7 +288,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 }
 
 void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
-	CADrawableContext *context = v->selectCElement(coords.x(), coords.y());
+	CAContext *context = v->selectCElement(coords.x(), coords.y());
 	CAMusElement *right = v->nearestRightElement(coords.x(), coords.y());
 	
 	CAStaff *staff=0;
@@ -298,10 +298,10 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 	switch (_insertMusElement) {
 		case CAMusElement::Clef:
 			if ( (!context) ||
-			    (context->context()->contextType() != CAContext::Staff) )
+			    (context->contextType() != CAContext::Staff) )
 				return;
 			
-			staff = (CAStaff*)context->context();
+			staff = (CAStaff*)context;
 			clef = new CAClef(CAClef::Treble, staff, (right?right->timeStart():staff->lastTimeEnd()));
 			staff->insertSignBefore(clef, right);
 			
@@ -312,7 +312,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			
 		case CAMusElement::Note:
 			if ( (!context) ||
-			     (context->context()->contextType() != CAContext::Staff) )
+			     (context->contextType() != CAContext::Staff) )
 				return;
 
 			drawableStaff = (CADrawableStaff*)context;
@@ -416,12 +416,14 @@ void CAMainWin::playbackFinished() {
 	_repaintTimer->stop();
 	_repaintTimer->disconnect();	//TODO: crashes, if disconnected sometimes. -Matevz
 	delete _repaintTimer;			//TODO: crashes, if deleted. -Matevz
+	_midiOut->closePort();
 	
 	setMode(_currentMode);
 }
 
 void CAMainWin::on_actionPlay_toggled(bool checked) {
 	if (checked && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
+		_midiOut->openPort();
 		_repaintTimer = new QTimer();
 		_repaintTimer->setInterval(100);
 		_repaintTimer->start();

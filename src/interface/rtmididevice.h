@@ -19,6 +19,8 @@ class CARtMidiDevice : public CAMidiDevice {
 		CARtMidiDevice();
 		~CARtMidiDevice();
 		void send(std::vector<unsigned char>* message);
+		void openPort();
+		void closePort();
 	
 	private:
 		RtMidiOut *_out;
