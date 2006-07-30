@@ -26,7 +26,14 @@ class CACanorusML : public QXmlDefaultHandler {
 		static void openDocument(QTextStream& in, CADocument *doc);
 	
 	private:
-		static const QString createMLVoice(CAVoice *v);	
+		static const QString createMLVoice(CAVoice *v);
+		
+		inline static const QString idn(int depth) {	///Append the number of tabs to the string
+			QString ret;
+			for (int i=0; i<depth; i++)
+				ret += "\t";
+			return ret;
+		} 
 };
 
 #endif /*CANORUSML_H_*/
