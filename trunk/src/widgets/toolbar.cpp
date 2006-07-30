@@ -21,8 +21,9 @@
  *                                                                           
  */
 
-#include <QtGui/QMenu>
-#include <QtGui/QToolButton>
+#include <QMenu>
+#include <QToolButton>
+#include <QComboBox>
 
 #include "toolbar.h"
 
@@ -54,7 +55,7 @@ void CAToolBar::initToolBar()
 	QIcon oCIcon(  QString::fromUtf8(":/menu/images/cleftreble.png") );
 	addToolMenu( "Clef", mpoClefMenu, &oCIcon, true );
 	QIcon oNIcon(  QString::fromUtf8(":/menu/images/n4.png") );
-	addToolMenu( "Note", mpoNoteMenu, &oNIcon, true );
+	addToolMenu( "Note", mpoNoteMenu, &oNIcon, false );
 	QIcon oDFIcon( QString::fromUtf8(":/menu/images/doubleflat.png") );
 	addToolMenu( "Key Signature", mpoKeysigMenu, &oDFIcon, true );
 	
@@ -75,18 +76,25 @@ void CAToolBar::initToolBar()
 void CAToolBar::addToolMenu( const QString oTitle, QMenu *poMenu,
                              const QIcon *poIcon, bool bToggle /* = false */ )
 {
+	// ToDo: Could be improved by calling addToolButton
 	QToolButton *poMenuButton = 0;
 	QAction     *poAction     = 0;
 	moToolTypes.append(CTB_Menu);
 	// Create new Toolbutton
 	poMenuButton = new QToolButton();
-	// Add it to the list of elements
+	// Add it to the list of elements for saving it later
 	if( poMenuButton )
 		moToolElements.append(poMenuButton);
 	// Update icon
 	poMenuButton->setIcon( *poIcon );
+	// Toggle button ?
+	poMenuButton->setCheckable( bToggle );
+	// Tooltip
+	poMenuButton->setToolTip( oTitle );
 	// Add action to the element
 	poAction = addWidget( poMenuButton );
+	// Save it in the action list
+	moToolActions.append( poAction );
 	// Associate menu with the button
 	poMenuButton->setMenu( poMenu );
 	poMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
@@ -100,9 +108,45 @@ void CAToolBar::addToolMenu( const QString oTitle, const QButtonGroup *poButtonG
 void CAToolBar::addToolButton( const QString oTitle, const QIcon *poIcon, 
                                bool bToggle /* = false */ )
 {
+	QToolButton *poMenuButton = 0;
+	QAction     *poAction     = 0;
+	moToolTypes.append(CTB_Button);
+	// Create new Toolbutton
+	poMenuButton = new QToolButton();
+	// Add it to the list of elements for saving it later
+	if( poMenuButton )
+		moToolElements.append(poMenuButton);
+	// Update icon
+	poMenuButton->setIcon( *poIcon );
+	// Toggle button ?
+	poMenuButton->setCheckable( bToggle );
+	// Tooltip
+	poMenuButton->setToolTip( oTitle );
+	// Add action to the element
+	poAction = addWidget( poMenuButton );
+	// Save it in the action list
+	moToolActions.append( poAction );
 }
 
-void CAToolBar::addComboBox( QString oTitle, QList<QString*> oItemList,
+void CAToolBar::addComboBox( QString oTitle, QStringList *poItemList,
                              int iIndex )
 {
+	QComboBox *poComboMenu = 0;
+	QAction   *poAction    = 0;
+	moToolTypes.append(CTB_Combobox);
+	// Create new Combobox Menu
+	poComboMenu = new QComboBox();
+	// Add it to the list of elements for saving it later
+	if( poComboMenu )
+		moToolElements.append(poComboMenu);
+	// Tooltip
+	poComboMenu->setToolTip( oTitle );
+	// Add action to the element
+	poAction = addWidget( poComboMenu );
+	// Save it in the action list
+	moToolActions.append( poAction );
+	// Add menu entries
+	for (int i = 0; i < poItemList->size(); ++i) 
+		poComboMenu->addItems( *poItemList );
+	poComboMenu->setCurrentIndex( iIndex );
 }

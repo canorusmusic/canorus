@@ -24,7 +24,7 @@
 #ifndef CNTOOLBAR_H
 #define CNTOOLBAR_H
 
-#include <QtGui/QToolBar>
+#include <QToolBar>
 
 class QMenu;
 class QToolButton;
@@ -32,8 +32,9 @@ class QAction;
 
 typedef enum
 {
-	CTB_Menu,
+	CTB_Menu        = 0,
 	CTB_Buttonmenu,
+	CTB_Button,
 	CTB_Combobox
 } CTB_Type;
 
@@ -91,10 +92,11 @@ public:
    * Add a combobox menu
    * 
    * @param oTitle       Combobox title
-   * @param iIndex       Index of the item to be displayed
+   * @param poItemList   List of combobox menu entries
+   * @param iIndex       Index of the menu entry to be displayed
    *
    */
-  void addComboBox( QString oTitle, QList<QString*> oItemList, int iIndex );
+  void addComboBox( QString oTitle, QStringList *poItemList, int iIndex );
 
 protected:
   /**
@@ -107,15 +109,9 @@ private:
 	QList<CTB_Type>	moToolTypes;
 	QList<QWidget*>	moToolElements;
 	QList<QAction*>	moToolActions;
-  QToolButton *mpoClefButton;
-  QToolButton *mpoNoteButton;
-  QToolButton *mpoKeysigButton;
   QMenu *mpoClefMenu;
   QMenu *mpoNoteMenu;
   QMenu *mpoKeysigMenu;
-  QAction *mpoClefAction;
-  QAction *mpoNoteAction;
-  QAction *mpoKeysigAction;
 };
 
 #endif /* CNTOOLBAR_H */
