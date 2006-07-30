@@ -33,9 +33,9 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	int dy = 50;
 	QMap<CAContext*, CADrawableContext *> drawableContextMap;
 	
-	for (int i=0; i < sheet->contextList()->size(); i++, dy+=200) {
-		if (sheet->contextList()->at(i)->contextType() == CAContext::Staff) {
-			CAStaff *staff = ((CAStaff*)(sheet->contextList()->at(i)));
+	for (int i=0; i < sheet->contextCount(); i++, dy+=200) {
+		if (sheet->contextAt(i)->contextType() == CAContext::Staff) {
+			CAStaff *staff = ((CAStaff*)(sheet->contextAt(i)));
 			drawableContextMap[staff] = new CADrawableStaff(staff, 0, dy);
 			v->addCElement(drawableContextMap[staff]);
 			

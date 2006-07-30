@@ -18,7 +18,6 @@ class CADocument {
 	public:
 		CADocument();
 		void clear();
-		CASheet *addSheet(const QString name);
 		
 		/**
 		 * Return the number of created sheets in the document.
@@ -27,6 +26,10 @@ class CADocument {
 		 */
 		int sheetCount() { return _sheetList.size(); }
 		
+		CASheet *sheetAt(int i) { return _sheetList[i]; }
+		
+		CASheet *addSheet(const QString name);
+
 		const QString title() { return _title; } 
 		const QString subTitle() { return _subTitle; } 
 		const QString composer() { return _composer; } 
@@ -49,7 +52,6 @@ class CADocument {
 		void setTimestamp(const QString timestamp) { _timestamp = timestamp; }
 		void setComments(const QString comments) { _comments = comments; }
 		
-	
 	private:
 		QList<CASheet *> _sheetList;	///List of all the sheets in the document
 		

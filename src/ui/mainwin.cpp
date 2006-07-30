@@ -30,6 +30,7 @@
 #include <QPoint>
 #include <QKeyEvent>
 #include <QString>
+#include <QTextStream>
 #include <iostream>
 
 using namespace std;
@@ -496,7 +497,8 @@ void CAMainWin::on_actionOpen_activated() {
 	QFile file(s);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		_fileName = s;
-		CACanorusML::openDocument(file, &_document);
+		QTextStream in(&file);
+		CACanorusML::openDocument(in, &_document);
 		file.close();
 	}               
 }
@@ -517,7 +519,8 @@ void CAMainWin::on_actionSave_activated() {
 	QFile file(s);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		_fileName = s;
-		CACanorusML::saveDocument(file, &_document);
+		QTextStream out(&file);
+		CACanorusML::saveDocument(out, &_document);
 		file.close();
 	}               
 }
@@ -535,7 +538,8 @@ void CAMainWin::on_actionSave_as_activated() {
 	QFile file(s);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		_fileName = s;
-		CACanorusML::saveDocument(file, &_document);
+		QTextStream out(&file);
+		CACanorusML::saveDocument(out, &_document);
 		file.close();
 	}
 }

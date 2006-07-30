@@ -47,9 +47,9 @@ void CAPlayback::run() {
 	oldSelection = *_scoreViewPort->selection();
 	_scoreViewPort->clearSelection();
 
-	for (int i=0; i < sheet->contextList()->size(); i++) {
-		if (sheet->contextList()->at(i)->contextType() == CAContext::Staff) {
-			CAStaff *staff = ((CAStaff*)(sheet->contextList()->at(i)));
+	for (int i=0; i < sheet->contextCount(); i++) {
+		if (sheet->contextAt(i)->contextType() == CAContext::Staff) {
+			CAStaff *staff = ((CAStaff*)(sheet->contextAt(i)));
 			//add all the voices lists to the common list
 			for (int j=0; j < staff->voiceCount(); j++) {
 				stream << staff->voiceAt(j)->musElementList();

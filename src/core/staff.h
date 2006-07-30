@@ -79,11 +79,15 @@ class CAStaff : public CAContext {
 		 */
 		bool removeMusElement(CAMusElement* elt);
 		
+		void setInstrumentName(QString name) { _instrumentName = name; }
+		QString instrumentName() { return _instrumentName; }
+		
 		void insertNote(CANote *note);
 		bool insertNoteBefore(CANote *note, CAMusElement *eltAfter);
 		
 	private:
 		QList<CAVoice *> _voiceList;
+		QString _instrumentName;
 		
 		int _numberOfLines;
 };
