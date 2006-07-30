@@ -99,9 +99,9 @@ class CAScoreViewPort : public CAViewPort {
 		 * 
 		 * @param x X coordinate in absolute world units.
 		 * @param y Y coordinate in absolute world units.
-		 * @return Pointer to the logical context element being selected or null, if there's no element at the given coordinates.
+		 * @return Pointer to the drawable context element being selected or null, if there's no element at the given coordinates.
 		 */
-		CAContext *selectCElement(int x, int y);
+		CADrawableContext *selectCElement(int x, int y);
 		
 		/**
 		 * Add the given drawable music element to the current selection.
