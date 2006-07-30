@@ -30,6 +30,13 @@ class QMenu;
 class QToolButton;
 class QAction;
 
+typedef enum
+{
+	CTB_Menu,
+	CTB_Buttonmenu,
+	CTB_Combobox
+} CTB_Type;
+
 class CAToolBar : public QToolBar
 {
 public:
@@ -48,6 +55,47 @@ public:
    */
   ~CAToolBar();
 
+  /**
+   * Add Tool button with a menu to the toolbar
+   * 
+   * @param oTitle    Toolbutton title
+   * @param poMenu    Menu at the side of the tool button (including icons)
+   * @param poIcon    Icon of the tool button
+   * @param bToggle   'true': tool button is a toggle button
+   *
+   */
+  void addToolMenu( const QString oTitle, QMenu *poMenu,
+                    const QIcon *poIcon, bool bToggle = false );
+  /**
+   * Add Tool button with a menu to the toolbar
+   * 
+   * @param oTitle        Toolbutton title
+   * @param poButtonGroup Button Group instead of normal menu (including icons)
+   * @param poIcon        Icon of the tool button
+   * @param bToggle       'true': tool button is a toggle button
+   *
+   */
+  void addToolMenu( const QString oTitle, const QButtonGroup *poButtonGroup, 
+                    const QIcon *poIcon, bool bToggle = false );
+  /**
+   * Add a Tool button
+   * 
+   * @param oTitle       Toolbutton title
+   * @param poIcon       Icon of the tool button
+   * @param bToggle      'true': tool button is a toggle button
+   *
+   */
+  void addToolButton( const QString oTitle, const QIcon *poIcon,
+                      bool bToggle = false );
+  /**
+   * Add a combobox menu
+   * 
+   * @param oTitle       Combobox title
+   * @param iIndex       Index of the item to be displayed
+   *
+   */
+  void addComboBox( QString oTitle, QList<QString*> oItemList, int iIndex );
+
 protected:
   /**
    * Initialize the toolbar
@@ -56,6 +104,9 @@ protected:
   void initToolBar();
 
 private:
+	QList<CTB_Type>	moToolTypes;
+	QList<QWidget*>	moToolElements;
+	QList<QAction*>	moToolActions;
   QToolButton *mpoClefButton;
   QToolButton *mpoNoteButton;
   QToolButton *mpoKeysigButton;

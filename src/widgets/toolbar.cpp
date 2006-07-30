@@ -47,38 +47,62 @@ CAToolBar::~CAToolBar()
 
 void CAToolBar::initToolBar()
 {
-  mpoClefButton = new QToolButton();
-  mpoNoteButton = new QToolButton();
-  mpoKeysigButton = new QToolButton();
-  mpoClefMenu   = new QMenu();
-  mpoNoteMenu   = new QMenu();
-  mpoKeysigMenu = new QMenu();
-  mpoClefButton->setIcon( QIcon(QString::fromUtf8(":/menu/images/cleftreble.png")) );
-  mpoNoteButton->setIcon( QIcon(QString::fromUtf8(":/menu/images/n4.png")) );
-  mpoKeysigButton->setIcon( QIcon(QString::fromUtf8(":/menu/images/doubleflat.png")) );
+	// Test Code for Toolbar
+	mpoClefMenu   = new QMenu();
+	mpoNoteMenu   = new QMenu();
+	mpoKeysigMenu = new QMenu(); 
+	QIcon oCIcon(  QString::fromUtf8(":/menu/images/cleftreble.png") );
+	addToolMenu( "Clef", mpoClefMenu, &oCIcon, true );
+	QIcon oNIcon(  QString::fromUtf8(":/menu/images/n4.png") );
+	addToolMenu( "Note", mpoNoteMenu, &oNIcon, true );
+	QIcon oDFIcon( QString::fromUtf8(":/menu/images/doubleflat.png") );
+	addToolMenu( "Key Signature", mpoKeysigMenu, &oDFIcon, true );
+	
+	// Add all the menu entries, either as text or icons
+	mpoClefMenu->addAction( "treble" );
+	mpoClefMenu->addAction( "alto" );
+	mpoClefMenu->addAction( "bass" );
+	mpoNoteMenu->addAction( "half" );
+	mpoNoteMenu->addAction( "quarter" );
+	mpoNoteMenu->addAction( "eigth" );
+	mpoKeysigMenu->addAction( "C" );
+	mpoKeysigMenu->addAction( "G" );
+	mpoKeysigMenu->addAction( "D" );
+	mpoKeysigMenu->addAction( "A" );
+	mpoKeysigMenu->addAction( "E" );
+}
 
-  mpoClefAction   = addWidget( mpoClefButton );
-  mpoNoteAction   = addWidget( mpoNoteButton );
-  mpoKeysigAction = addWidget( mpoKeysigButton );  
+void CAToolBar::addToolMenu( const QString oTitle, QMenu *poMenu,
+                             const QIcon *poIcon, bool bToggle /* = false */ )
+{
+	QToolButton *poMenuButton = 0;
+	QAction     *poAction     = 0;
+	moToolTypes.append(CTB_Menu);
+	// Create new Toolbutton
+	poMenuButton = new QToolButton();
+	// Add it to the list of elements
+	if( poMenuButton )
+		moToolElements.append(poMenuButton);
+	// Update icon
+	poMenuButton->setIcon( *poIcon );
+	// Add action to the element
+	poAction = addWidget( poMenuButton );
+	// Associate menu with the button
+	poMenuButton->setMenu( poMenu );
+	poMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
+}
 
-  // Add the menus
-  mpoClefButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mpoNoteButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mpoKeysigButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mpoClefButton->setMenu( mpoNoteMenu );
-  mpoNoteButton->setMenu( mpoClefMenu );
-  mpoKeysigButton->setMenu( mpoKeysigMenu );
+void CAToolBar::addToolMenu( const QString oTitle, const QButtonGroup *poButtonGroup, 
+                             const QIcon *oIcon, bool bToggle /* = false */ )
+{
+}
 
-  // Add all the menu entries, either as text or icons
-  mpoClefMenu->addAction( "treble" );
-  mpoClefMenu->addAction( "alto" );
-  mpoClefMenu->addAction( "bass" );
-  mpoNoteMenu->addAction( "half" );
-  mpoNoteMenu->addAction( "quarter" );
-  mpoNoteMenu->addAction( "eigth" );
-  mpoKeysigMenu->addAction( "C" );
-  mpoKeysigMenu->addAction( "G" );
-  mpoKeysigMenu->addAction( "D" );
-  mpoKeysigMenu->addAction( "A" );
-  mpoKeysigMenu->addAction( "E" );
+void CAToolBar::addToolButton( const QString oTitle, const QIcon *poIcon, 
+                               bool bToggle /* = false */ )
+{
+}
+
+void CAToolBar::addComboBox( QString oTitle, QList<QString*> oItemList,
+                             int iIndex )
+{
 }
