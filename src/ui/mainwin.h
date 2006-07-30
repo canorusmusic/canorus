@@ -19,12 +19,12 @@
 /*		Reinhard Katzmann, GERMANY			             */
 /*		reinhard@suamor.de					     */
 /*									     */
-/*		Matevž Jekovec, SLOVENIA			             */
+/*		Matevž Jekovec, SLOENIA                                     */
 /*		matevz.jekovec@guest.arnes.si				     */
 /*									     */
 /*****************************************************************************/
 
-#include "ui/ui_mainwin.h"
+#include "ui_mainwin.h"
 
 #include "core/document.h"
 #include "core/muselement.h"
