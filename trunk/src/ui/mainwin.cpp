@@ -515,6 +515,11 @@ void CAMainWin::on_actionSave_activated() {
 
 	if (s.isEmpty())
 		return;
+
+	//append the extension, if the last 4 characters don't already contain the dot
+	int i;
+	for (i=0; (i<4) && ((s.length()-i-1) > 0); i++) if (s[s.length()-i-1] == '.') break;
+	if (i==4) s.append(".xml");
 		
 	QFile file(s);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -534,6 +539,11 @@ void CAMainWin::on_actionSave_as_activated() {
 	
 	if (s.isEmpty())
 		return;
+	
+	//append the extension, if the last 4 characters don't already contain the dot
+	int i;
+	for (i=0; (i<4) && ((s.length()-i-1) > 0); i++) if (s[s.length()-i-1] == '.') break;
+	if (i==4) s.append(".xml");
 	
 	QFile file(s);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
