@@ -114,9 +114,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 						voiceString += ",";
 						delta -= 7;
 					}
-				}
-				
-				if (delta < -3) {	//add the needed amount of the apostrophes
+				} else if (delta < -3) {	//add the needed amount of the apostrophes
 					while (delta < 0) {
 						voiceString += "'";
 						delta += 7;
