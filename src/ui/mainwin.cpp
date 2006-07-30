@@ -1,25 +1,27 @@
 /*****************************************************************************/
-/*									     */
+/*                                                                           */
 /* This program is free software; you can redistribute it and/or modify it   */
 /* under the terms of the GNU General Public License as published by the     */ 
 /* Free Software Foundation; version 2 of the License.	                     */
-/*									     */
+/*                                                                           */
 /* This program is distributed in the hope that it will be useful, but       */
 /* WITHOUT ANY WARRANTY; without even the implied warranty of                */ 
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General  */
 /* Public License for more details.                                          */
-/*									     */
+/*                                                                           */
 /* You should have received a copy of the GNU General Public License along   */
 /* with this program; (See "LICENSE.GPL"). If not, write to the Free         */
 /* Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA        */
-/* 02111-1307, USA.				                             */
-/*									     */
+/* 02111-1307, USA.                                                          */
+/*                                                                           */
 /*---------------------------------------------------------------------------*/
-/*									     */
-/*		Reinhard Katzmann, GERMANY			             */
-/*		reinhard@suamor.de					     */
-/*									     */
-/*									     */
+/*                                                                           */
+/*      Reinhard Katzmann, GERMANY                                           */
+/*      reinhard@suamor.de                                                   */
+/*                                                                           */
+/*      Matevž Jekovec, SLOVENIA                                             */
+/*      matevz.jekovec@gmail.com                                             */
+/*                                                                           */
 /*****************************************************************************/
 
 #include <QtGui/QtGui>
@@ -49,6 +51,7 @@ using namespace std;
 #include "core/staff.h"
 #include "core/clef.h"
 #include "core/note.h"
+#include "core/canorusml.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
@@ -122,7 +125,8 @@ void CAMainWin::clearUI() {
 		delete _currentScrollWidget;
 		moMainWin.tabWidget->removeTab(moMainWin.tabWidget->currentIndex());
 	}
-
+	
+	_fileName = "";
 }
 
 void CAMainWin::on_tabWidget_currentChanged(int idx) {
@@ -477,6 +481,63 @@ void CAMainWin::on_actionZoom_to_width_activated() {
 void CAMainWin::on_actionZoom_to_height_activated() {
 	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)
 		((CAScoreViewPort*)_activeViewPort)->zoomToHeight();
+}
+
+void CAMainWin::on_actionOpen_activated() {
+	QString s = QFileDialog::getOpenFileName(
+	                this,
+	                "Choose a file to open",
+	                "",
+	                "Canorus document (*.xml)");
+
+	if (s.isEmpty())
+		return;
+
+	QFile file(s);
+	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		_fileName = s;
+		CACanorusML::openDocument(file, &_document);
+		file.close();
+	}               
+}
+
+void CAMainWin::on_actionSave_activated() {
+	QString s;
+	if (_fileName.isEmpty()) { 
+		s = QFileDialog::getSaveFileName(
+		                this,
+		                "Choose a file to save",
+		                "",
+		                "Canorus document (*.xml)");
+	}
+
+	if (s.isEmpty())
+		return;
+		
+	QFile file(s);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		_fileName = s;
+		CACanorusML::saveDocument(file, &_document);
+		file.close();
+	}               
+}
+
+void CAMainWin::on_actionSave_as_activated() {
+	QString s = QFileDialog::getSaveFileName(
+	                this,
+	                "Choose a file to save",
+	                "",
+	                "Canorus document (*.xml)");
+	
+	if (s.isEmpty())
+		return;
+	
+	QFile file(s);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		_fileName = s;
+		CACanorusML::saveDocument(file, &_document);
+		file.close();
+	}
 }
 
 void CAMainWin::sl_mpoVoiceNum_valChanged(int iVoice)
