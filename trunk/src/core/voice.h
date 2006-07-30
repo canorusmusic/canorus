@@ -47,23 +47,29 @@ class CAVoice {
 		 */
 		bool removeElement(CAMusElement *elt);
 		
-		QList<CAMusElement *>* musElementList() { return &_musElementList; }
+		int musElementCount() { return _musElementList.count(); }
+		CAMusElement *musElementAt(int i) { return _musElementList[i]; }
+		QList<CAMusElement*> *musElementList() { return &_musElementList; }	///Return the list of music elements
 		int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
 	
 		CAClef *getClef(CAMusElement *elt);
 		
-		void setMidiChannel(const unsigned char ch) { _midiChannel = ch; }
-		void setMidiProgram(const unsigned char program) { _midiProgram = program; }
-		
+		const QString name() { return _name; }
 		unsigned char midiChannel() { return _midiChannel; }
 		unsigned char midiProgram() { return _midiProgram; }
 	
+		void setName(const QString name) { _name = name; }
+		void setMidiChannel(const unsigned char ch) { _midiChannel = ch; }
+		void setMidiProgram(const unsigned char program) { _midiProgram = program; }
+		
 	private:
 		void updateTimes(int idx);	///Update the musElements timeStarts, taking idx-th element as the inserted element.
 		void updateTimes(int idx, int length);	///Update the musElements timeStarts from idx-th and on and substracting the length from every one. Called when an element is deleted and starTimes after it need to be updated.
 		QList<CAMusElement *> _musElementList;
 		CAStaff *_staff;	///Staff which this voice belongs to by default.
 		int _voiceNumber;	///Voice number starting at 1.
+		
+		QString _name;
 		
 		////////////////////////////////////////////////
 		//MIDI properties

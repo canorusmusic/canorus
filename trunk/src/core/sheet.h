@@ -10,6 +10,7 @@
 #define SHEET_H_
 
 #include <QString>
+#include <QList>
 
 class CAContext;
 class CAStaff;
@@ -19,7 +20,8 @@ class CASheet {
 		CASheet(const QString name);
 		
 		const QString name() { return _name; }
-		QList<CAContext *>* contextList() { return &_contextList; }
+		CAContext *contextAt(int i) { return _contextList[i]; }
+		int contextCount() { return _contextList.size(); }
 
 		void setName(const QString name) { _name = name; }
 		CAStaff *addStaff();

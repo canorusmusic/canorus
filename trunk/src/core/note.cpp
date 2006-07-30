@@ -59,3 +59,56 @@ const QString CANote::generateNoteName(int pitch) {
 	
 	return name;
 }
+
+const QString CANote::pitchString() {
+	QString name;
+	
+	name = (char)((_pitch+2)%7 + 'a');
+
+	for (int i=0; i < _acc; i++)
+		name += "is";	//append as many -is-es as necessary
+	
+	for (int i=0; i > _acc; i--) {
+		if ( ((name == "e") || (name == "a")) && (i==0) )
+			name += "s";	//for e and a, only append single -s the first time
+		else
+			name += "es";	//otherwise, append normally as many es-es as necessary
+	}
+	
+	return name;
+}
+
+const QString CANote::lengthString() {
+	QString length;
+	switch (_noteLength) {
+		case CANote::Brevis:
+			length = "0";
+			break;
+		case CANote::Whole:
+			length = "1";
+			break;
+		case CANote::Half:
+			length = "2";
+			break;
+		case CANote::Quarter:
+			length = "4";
+			break;
+		case CANote::Eighth:
+			length = "8";
+			break;
+		case CANote::Sixteenth:
+			length = "16";
+			break;
+		case CANote::ThirtySecondth:
+			length = "32";
+			break;
+		case CANote::SixtyFourth:
+			length = "64";
+			break;
+		case CANote::HundredTwentyEighth:
+			length = "128";
+			break;
+	}
+	
+	return length;
+}

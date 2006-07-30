@@ -6,21 +6,27 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include <QIODevice>
+
+#ifndef CANORUSML_H_
+#define CANORUSML_H_
+
+#include <QTextStream>
 #include <QtXml>
 
 #include "core/document.h"
 
-#ifndef CANORUSML_H_
-#define CANORUSML_H_
+class CAVoice;
 
 class CACanorusML : public QXmlDefaultHandler {
 	public:
 		CACanorusML();
 		~CACanorusML();
 		
-		static void saveDocument(QIODevice& out, CADocument *doc);
-		static void openDocument(QIODevice& in, CADocument *doc);	
+		static void saveDocument(QTextStream& out, CADocument *doc);
+		static void openDocument(QTextStream& in, CADocument *doc);
+	
+	private:
+		static const QString createMLVoice(CAVoice *v);	
 };
 
 #endif /*CANORUSML_H_*/
