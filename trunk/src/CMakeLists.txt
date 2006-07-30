@@ -38,6 +38,8 @@ set(Canorus_Core_Srcs
 	core/sheet.cpp
 	core/staff.cpp
 	core/voice.cpp
+	
+	core/canorusml.cpp
 	)
 
 set(Canorus_Widget_Srcs  

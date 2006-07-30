@@ -80,6 +80,9 @@ private slots:
 	//File menu
 	void on_actionNew_activated();
 	void on_actionNew_sheet_activated();
+	void on_actionOpen_activated();
+	void on_actionSave_activated();
+	void on_actionSave_as_activated();
 	
 	//Insert menu
 	void on_actionNew_staff_activated();
@@ -166,12 +169,13 @@ private:
 	inline CAMode currentMode() { return _currentMode; }
 	CARtMidiDevice *_midiOut;
 	CAPlayback *_playback;
+	QString _fileName;
 
 	////////////////////////////////////////////////////
 	//User interface, widgets
 	////////////////////////////////////////////////////
 	Ui::MainWindow moMainWin;	///Main window widget representative
-        CAToolBar *mpoMEToolBar;
+	CAToolBar *mpoMEToolBar;
 
 	QList<CAViewPort *> _viewPortList;	///List of all available viewports for any sheet for this document
 	CAViewPort *_activeViewPort;	///Current active viewport
