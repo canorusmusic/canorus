@@ -13,6 +13,11 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -D__LINUX_ALSASEQ__")
 # This line adds the include path of the Qt
 # directory to the compiler include path
 INCLUDE( ${QT_USE_FILE} )
+INCLUDE_DIRECTORIES( ${QT_QTXML_INCLUDE_DIR} )
+
+# This line adds the QtXML library to the Qt libraries
+# loaded when linking Canorus
+set( QT_USE_QTXML true )
 
 # Define the UI source files used by Canorus
 set(Canorus_UIs  ui/mainwin.ui)
@@ -116,5 +121,5 @@ add_executable(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs}
 # Here the needed Qt Libraries are added to the link
 # command. Never remove that line :-)
 # Uncomment the 2nd line for M$ Windows and comment the first Linux one:
-target_link_libraries( canorus ${QT_LIBRARIES} "asound" )
+target_link_libraries( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} "asound" )
 #target_link_libraries( canorus ${QT_LIBRARIES} "winmm.lib" )

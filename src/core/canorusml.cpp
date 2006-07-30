@@ -6,6 +6,8 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include "ui/mainwin.h"	//needed for program version global constant
+
 #include "core/canorusml.h"
 
 CACanorusML::CACanorusML() {
@@ -15,6 +17,7 @@ CACanorusML::~CACanorusML() {
 }
 
 void CACanorusML::saveDocument(QIODevice& out, CADocument *doc) {
+	
 }
 
 void CACanorusML::openDocument(QIODevice& in, CADocument *doc) {

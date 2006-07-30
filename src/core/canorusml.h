@@ -7,13 +7,14 @@
  */
 
 #include <QIODevice>
+#include <QtXml>
 
 #include "core/document.h"
 
 #ifndef CANORUSML_H_
 #define CANORUSML_H_
 
-class CACanorusML {
+class CACanorusML : public QXmlDefaultHandler {
 	public:
 		CACanorusML();
 		~CACanorusML();
