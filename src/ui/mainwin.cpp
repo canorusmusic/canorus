@@ -54,26 +54,32 @@ using namespace std;
 CAMainWin::CAMainWin(QMainWindow *oParent)
   : QMainWindow( oParent )
 {
+	//Initialize widgets
 	moMainWin.setupUi( this );
 	mpoVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" );
 	mpoVoiceNumAction = moMainWin.mpoToolBar->addWidget( mpoVoiceNum );
-        // Connect manually as the action cannot be created earlier
+	// Connect manually as the action cannot be created earlier
 	connect( mpoVoiceNum, SIGNAL( valChanged( int ) ), this,
-		 SLOT( sl_mpoVoiceNum_valChanged( int ) ) );
+	         SLOT( sl_mpoVoiceNum_valChanged( int ) ) );
+
+	moMainWin.actionAnimated_scroll->setChecked(true);
+	moMainWin.actionLock_scroll_playback->setChecked(false);
+	moMainWin.actionUnsplit->setEnabled(false);
+	
+	mpoMEToolBar = new CAToolBar( this );
+	mpoMEToolBar->setOrientation(Qt::Vertical);
+	addToolBar(static_cast<Qt::ToolBarArea>(2), mpoMEToolBar);
+	
+	//Initialize MIDI
 	initMidi();
 	
-        mpoMEToolBar = new CAToolBar( this );
-        mpoMEToolBar->setOrientation(Qt::Vertical);
-        addToolBar(static_cast<Qt::ToolBarArea>(2), mpoMEToolBar);
-
+	//Initialize the internal properties
 	_currentMode = SelectMode;
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
-	moMainWin.actionAnimated_scroll->setChecked(true);
-	moMainWin.actionLock_scroll_playback->setChecked(false);
+	
 	newDocument();
-	moMainWin.actionUnsplit->setEnabled(false);
 }
 
 CAMainWin::~CAMainWin() {
@@ -288,7 +294,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 }
 
 void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
-	CAContext *context = v->selectCElement(coords.x(), coords.y());
+	CADrawableContext *context = v->selectCElement(coords.x(), coords.y());
 	CAMusElement *right = v->nearestRightElement(coords.x(), coords.y());
 	
 	CAStaff *staff=0;
@@ -298,10 +304,10 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 	switch (_insertMusElement) {
 		case CAMusElement::Clef:
 			if ( (!context) ||
-			    (context->contextType() != CAContext::Staff) )
+			    (context->context()->contextType() != CAContext::Staff) )
 				return;
 			
-			staff = (CAStaff*)context;
+			staff = (CAStaff*)context->context();
 			clef = new CAClef(CAClef::Treble, staff, (right?right->timeStart():staff->lastTimeEnd()));
 			staff->insertSignBefore(clef, right);
 			
@@ -312,7 +318,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			
 		case CAMusElement::Note:
 			if ( (!context) ||
-			     (context->contextType() != CAContext::Staff) )
+			     (context->context()->contextType() != CAContext::Staff) )
 				return;
 
 			drawableStaff = (CADrawableStaff*)context;

@@ -186,7 +186,7 @@ void CAScoreViewPort::setCurrentContext(CADrawableContext *drawableContext) {
 	_currentContext = drawableContext;
 }
 
-CAContext* CAScoreViewPort::selectCElement(int x, int y) {
+CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 	QList<CADrawable *>* l = _drawableCList.findInRange(x,y);
 	
 	if (l->size()!=0) {
@@ -195,7 +195,7 @@ CAContext* CAScoreViewPort::selectCElement(int x, int y) {
 	
 	delete l;
 	
-	return (_currentContext?_currentContext->context():0);
+	return (_currentContext?_currentContext:0);
 }
 
 CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
