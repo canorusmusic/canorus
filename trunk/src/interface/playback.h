@@ -20,11 +20,13 @@ class CAPlayback : public QThread {
 		CAPlayback(CAScoreViewPort *v, CAMidiDevice *m);
 		void run();
 		void stop();
+		const int currentTime() { return _currentTime; }
 	
 	private:
 		CAScoreViewPort *_scoreViewPort;
 		bool _stop;
 		CAMidiDevice *_midiDevice;
+		int _currentTime;
 };
 
 #endif /*PLAYBACK_H_*/

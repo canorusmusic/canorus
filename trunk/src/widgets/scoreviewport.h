@@ -55,7 +55,20 @@ class CAScoreViewPort : public CAViewPort {
 		 */
 		CASheet *sheet() { return _sheet; }
 		
+		/**
+		 * Add a music element to the score viewport.
+		 * 
+		 * @param elt Pointer to the drawable music element to be added to the score.
+		 * @param select Should the newly added music element become selected, or not.
+		 */
 		void addMElement(CADrawableMusElement *elt, bool select=false);
+		
+		/**
+		 * Add a context element to the score viewport.
+		 * 
+		 * @param elt Pointer to the drawable context to be added to the score.
+		 * @param select Should the newly added music element become selected, or not.
+		 */
 		void addCElement(CADrawableContext *elt, bool select=false);
 		
 		/**
@@ -69,17 +82,77 @@ class CAScoreViewPort : public CAViewPort {
 		 */
 		CAMusElement *removeMElement(int x, int y);
 		
+		/**
+		 * Select the drawable music element at the given coordinates, if it exists.
+		 * If multiple elements exist at same coordinates, they are selected one by another if you click at the same coordinates multiple times.
+		 * If no elements are present at the coordinates, clear the selection.
+		 * 
+		 * @param x X coordinate in absolute world units.
+		 * @param y Y coordinate in absolute world units.
+		 * @return Pointer to the logical music element being selected or null, if there's no element at the given coordinates.
+		 */
 		CAMusElement *selectMElement(int x, int y);
+
+		/**
+		 * Select the drawable context element at the given coordinates, if it exists.
+		 * If no contexts are present at the coordinates, the selection is not touched.
+		 * 
+		 * @param x X coordinate in absolute world units.
+		 * @param y Y coordinate in absolute world units.
+		 * @return Pointer to the logical context element being selected or null, if there's no element at the given coordinates.
+		 */
+		CAContext *selectCElement(int x, int y);
 		
+		/**
+		 * Add the given drawable music element to the current selection.
+		 * 
+		 * @param elt Pointer to the drawable music element to be added to the selection.
+		 */
 		void addToSelection(CADrawableMusElement *elt) { _selection << elt; }
+		
+		/**
+		 * Add a list of drawable music elements to the current selection.
+		 * 
+		 * @param list Pointer to the QList which includes pointers to the drawable music elements to be added to the selection.
+		 */ 
 		void addToSelection(QList<CADrawableMusElement*> *list) { _selection << *list; }
+		
+		/**
+		 * Remove the given drawable music element from the selection, if it exists.
+		 * 
+		 * @param elt Pointer to the drawable music element to be removed from the selection.
+		 * @return True, if element existed in the selection and was removed, false otherwise.
+		 */
 		bool removeFromSelection(CADrawableMusElement *elt) { _selection.removeAll(elt); }
+		
+		/**
+		 * Return a drawable instance of the logical music element in the score viewport.
+		 * 
+		 * @param elt Pointer to the logical music element which the drawable element is searched
+		 * @return Pointer to the drawable instance of the given music element.
+		 */
 		CADrawableMusElement *find(CAMusElement *elt);
+		
+		/**
+		 * Clear the current selection.
+		 */
 		void clearSelection() { _selection.clear(); }
+		
+		/**
+		 * Return a list of the drawable music elements currently selected.
+		 * 
+		 * @return Pointer to the QList of drawable music elements currently selected.
+		 */
 		inline QList<CADrawableMusElement*>* selection() { return &_selection; };
 		
+		/**
+		 * Select the given music element.
+		 * If there are multiple drawable elements representing a single logical element, select the first one.
+		 * 
+		 * @return True, if element existed (and had its drawable instance) and was selected, false otherwise.
+		 */
 		bool selectMElement(CAMusElement *elt);
-		CADrawableContext *selectCElement(int x, int y);
+		
 		bool selectContext(CAContext *context);		///Returns true, if the context existed and was selected, otherwise false
 		
 		/**

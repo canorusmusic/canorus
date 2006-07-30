@@ -28,6 +28,8 @@
 
 #include "core/document.h"
 #include "core/muselement.h"
+#include "core/note.h"
+#include "core/clef.h"
 
 class QKeyEvent;
 class CARtMidiDevice;
@@ -186,9 +188,11 @@ private:
 	QAction *mpoVoiceNumAction;  ///Voice number action
 
 	////////////////////////////////////////////////////
-	//Score properties
+	//Insert element
 	////////////////////////////////////////////////////
 	CAMusElement::CAMusElementType _insertMusElement;	///Current element to be added. 0, if in view mode, CAMusElementType, if in insert mode
+	CANote::CANoteLength _insertNote;	///
+	CAClef::CAClefType _insertClef;	///
 
 	/**
 	 * This method is called when multiple viewports share the same logical source and a change has been made in the logical musElement list.
