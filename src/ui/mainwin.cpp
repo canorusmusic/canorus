@@ -87,7 +87,6 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_lockScrollPlayback = false;
 	
 	newDocument();
-	this->grabKeyboard();	//TODO: Otherwise keyPressEvent() doesn't get triggered for Key_Left, Key_Right!? -Matevz
 }
 
 CAMainWin::~CAMainWin() {
@@ -111,7 +110,9 @@ void CAMainWin::addSheet() {
 	connect(v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
 	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 	connect(v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
-	
+	v->setFocusPolicy(Qt::ClickFocus);
+	v->setFocus();
+
 	_viewPortList.append(v);
 	
 	moMainWin.tabWidget->addTab(new CAScrollWidget(v, 0), s->name());
@@ -153,6 +154,8 @@ void CAMainWin::on_actionSplit_horizontally_activated() {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
+		v->setFocusPolicy(Qt::ClickFocus);
+		v->setFocus();
 	}
 	
 	moMainWin.actionSplit_horizontally->setEnabled(false);
@@ -170,6 +173,8 @@ void CAMainWin::on_actionSplit_vertically_activated() {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
+		v->setFocusPolicy(Qt::ClickFocus);
+		v->setFocus();
 	}
 	
 	moMainWin.actionSplit_horizontally->setEnabled(false);
@@ -197,6 +202,8 @@ void CAMainWin::on_actionNew_viewport_activated() {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
+		v->setFocusPolicy(Qt::ClickFocus);
+		v->setFocus();
 	}
 
 	_viewPortList.append(v);
@@ -400,12 +407,11 @@ void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *c)
 }
 
 void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
-	keyPressEvent(e);
-}
-
-void CAMainWin::keyPressEvent(QKeyEvent *e) {
+	_activeViewPort = v;
+	
 	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort) {
 		switch (e->key()) {
+			//Cursor keys
 			case Qt::Key_Right:
 				//select next music element
 				((CAScoreViewPort*)_activeViewPort)->selectNextMusElement();
@@ -456,22 +462,24 @@ void CAMainWin::keyPressEvent(QKeyEvent *e) {
 				}
 				
 				break;
+			
+			//Mode keys
+			case Qt::Key_Escape:
+				if ((currentMode()==SelectMode) && (_activeViewPort) && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
+					((CAScoreViewPort*)_activeViewPort)->selectMElement(0);
+					((CAScoreViewPort*)_activeViewPort)->selectContext(0);
+				}
+				setMode(SelectMode);
+				break;
+			case Qt::Key_I:
+				_insertMusElement = CAMusElement::Note;
+				setMode(InsertMode);
+				break;
 		}
 	}
-	
-	switch (e->key()) {
-		case Qt::Key_Escape:
-			if ((currentMode()==SelectMode) && (_activeViewPort) && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
-				((CAScoreViewPort*)_activeViewPort)->selectMElement(0);
-				((CAScoreViewPort*)_activeViewPort)->selectContext(0);
-			}
-			setMode(SelectMode);
-			break;
-		case Qt::Key_I:
-			_insertMusElement = CAMusElement::Note;
-			setMode(InsertMode);
-			break;
-	}
+}
+
+void CAMainWin::keyPressEvent(QKeyEvent *e) {
 }
 
 void CAMainWin::initMidi() {
