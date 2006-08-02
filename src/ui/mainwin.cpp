@@ -41,12 +41,15 @@ using namespace std;
 
 #include "interface/rtmididevice.h"
 #include "interface/playback.h"
+#include "interface/engraver.h"
 
 #include "widgets/scrollwidget.h"
-#include "interface/engraver.h"
+#include "widgets/viewport.h"
 #include "widgets/scoreviewport.h"
 #include "drawable/drawablecontext.h"
 #include "drawable/drawablestaff.h"
+#include "drawable/drawablemuselement.h"
+#include "drawable/drawablenote.h"
 
 #include "core/sheet.h"
 #include "core/staff.h"
@@ -84,6 +87,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_lockScrollPlayback = false;
 	
 	newDocument();
+	this->grabKeyboard();	//TODO: Otherwise keyPressEvent() doesn't get triggered for Key_Left, Key_Right!? -Matevz
 }
 
 CAMainWin::~CAMainWin() {
@@ -400,6 +404,61 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 }
 
 void CAMainWin::keyPressEvent(QKeyEvent *e) {
+	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort) {
+		switch (e->key()) {
+			case Qt::Key_Right:
+				//select next music element
+				((CAScoreViewPort*)_activeViewPort)->selectNextMusElement();
+				_activeViewPort->repaint();
+				
+				break;
+			case Qt::Key_Left:
+				//select previous music element
+				((CAScoreViewPort*)_activeViewPort)->selectPrevMusElement();
+				_activeViewPort->repaint();
+				
+				break;
+			case Qt::Key_Up:
+				if (_currentMode == SelectMode) {	//select the upper music element
+					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
+					_activeViewPort->repaint();
+				} else if (_currentMode == InsertMode) {
+					if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
+						CADrawableMusElement *elt =
+						((CAScoreViewPort*)_activeViewPort)->selection()->back();
+						
+						//pitch note for one step higher
+						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
+							CANote *note = (CANote*)elt->musElement();
+							note->setPitch(note->pitch()+1);
+							rebuildScoreViewPorts(note->voice()->staff()->sheet());
+						}
+					}
+				}
+				
+				break;
+			case Qt::Key_Down:
+				if (_currentMode == SelectMode) {	//select the upper music element
+					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
+					_activeViewPort->repaint();
+				} else if (_currentMode == InsertMode) {
+					if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
+						CADrawableMusElement *elt =
+						((CAScoreViewPort*)_activeViewPort)->selection()->back();
+						
+						//pitch note for one step higher
+						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
+							CANote *note = (CANote*)elt->musElement();
+							note->setPitch(note->pitch()-1);
+							rebuildScoreViewPorts(note->voice()->staff()->sheet());
+						}
+					}
+				}
+				
+				break;
+		}
+	}
+	
 	switch (e->key()) {
 		case Qt::Key_Escape:
 			if ((currentMode()==SelectMode) && (_activeViewPort) && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {

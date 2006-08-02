@@ -165,7 +165,7 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 	}
 }
 
-bool CAScoreViewPort::selectContext(CAContext *context) {
+CADrawableContext *CAScoreViewPort::selectContext(CAContext *context) {
 	if (!context) {
 		setCurrentContext(0);
 		return false;
@@ -175,11 +175,11 @@ bool CAScoreViewPort::selectContext(CAContext *context) {
 		CAContext *c = ((CADrawableContext*)_drawableCList.at(i))->context();
 		if (c == context) {
 			setCurrentContext((CADrawableContext*)_drawableCList.at(i));
-			return true;
+			return (CADrawableContext*)_drawableCList.at(i);
 		}
 	}
 	
-	return false;
+	return 0;
 }
 
 void CAScoreViewPort::setCurrentContext(CADrawableContext *drawableContext) {
@@ -223,16 +223,16 @@ CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 	}
 }
 
-bool CAScoreViewPort::selectMElement(CAMusElement *elt) {
+CADrawableMusElement* CAScoreViewPort::selectMElement(CAMusElement *elt) {
 	_selection.clear();
 	
 	for (int i=0; i<_drawableMList.size(); i++)
 		if (((CADrawableMusElement*)(_drawableMList.at(i)))->musElement() == elt) {
 			_selection << (CADrawableMusElement*)_drawableMList.at(i);
-			return true;
+			return (CADrawableMusElement*)_drawableMList.at(i);
 		}
 	
-	return false;	
+	return 0;	
 }
 
 CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
@@ -305,16 +305,23 @@ void CAScoreViewPort::rebuild() {
 	_shadowNote.clear();
 	_shadowDrawableNote.clear();
 
+	QList<CAMusElement*> musElementSelection;
+	for (int i=0; i<_selection.size(); i++)
+		musElementSelection << _selection[i]->musElement();
+	
+	_selection.clear();
+
 	_drawableMList.clear(true);
 	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	//remember the index of last used context
 	_drawableCList.clear(true);
-	_selection.clear();
 		
 	CAEngraver::reposit(this);
 	if (contextIdx != -1)	//restore the last used context
 		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
 	else
 		setCurrentContext(0);
+	
+	addToSelection(musElementSelection);
 	
 	checkScrollBars();
 	calculateShadowNoteCoords();
@@ -825,4 +832,62 @@ void CAScoreViewPort::startAnimationTimer() {
 	_animationStep = 0;
 	_animationTimer->start();
 	on__animationTimer_timeout();
+}
+
+CADrawableMusElement *CAScoreViewPort::selectNextMusElement() {
+	if (_selection.isEmpty())
+		return 0;
+	
+	CAMusElement *musElement = _selection.back()->musElement();
+	musElement = musElement->context()->findNextMusElement(musElement);
+	if (!musElement)
+		return 0;
+	
+	return selectMElement(musElement);
+}
+
+CADrawableMusElement *CAScoreViewPort::selectPrevMusElement() {
+	if (_selection.isEmpty())
+		return 0;
+	
+	CAMusElement *musElement = _selection.front()->musElement();
+	musElement = musElement->context()->findPrevMusElement(musElement);
+	if (!musElement)
+		return 0;
+	
+	return selectMElement(musElement);
+}
+
+CADrawableMusElement *CAScoreViewPort::selectUpMusElement() {
+	///TODO: Still needs to be written. Currently, it only returns the currently selected element.
+	if (_selection.isEmpty())
+		return 0;
+	
+	return _selection.front();
+}
+
+CADrawableMusElement *CAScoreViewPort::selectDownMusElement() {
+	///TODO: Still needs to be written. Currently, it only returns the currently selected element.
+	if (_selection.isEmpty())
+		return 0;
+	
+	return _selection.front();
+}
+
+CADrawableMusElement *CAScoreViewPort::addToSelection(CAMusElement *elt) {
+	for (int i=0; i<_drawableMList.size(); i++) {
+		if (((CADrawableMusElement*)_drawableMList.at(i))->musElement() == elt)
+			_selection << (CADrawableMusElement*)_drawableMList.at(i);
+	}
+	
+	return _selection.back();
+}
+
+void CAScoreViewPort::addToSelection(QList<CAMusElement*> &elts) {
+	for (int i=0; i<_drawableMList.size(); i++) {
+		for (int j=0; j<elts.size(); j++) {
+			if (elts[j] == ((CADrawableMusElement*)_drawableMList.at(i))->musElement())
+				_selection << (CADrawableMusElement*)_drawableMList.at(i);
+		}
+	}
 }

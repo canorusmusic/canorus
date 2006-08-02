@@ -104,6 +104,50 @@ class CAScoreViewPort : public CAViewPort {
 		CADrawableContext *selectCElement(int x, int y);
 		
 		/**
+		 * Add the given music element to the selection.
+		 * Return a pointer to its drawable element or 0, if the music element is not part of this score viewport.
+		 * 
+		 * @param elt Pointer to the music element to be added to the selection.
+		 * @return Pointer to the CADrawableMusElement instance of the given logical music element.
+		 */
+		CADrawableMusElement *addToSelection(CAMusElement *elt);
+		
+		/**
+		 * Add the given list of music elements to the selection.
+		 * 
+		 * @param elt QList of the logical music elements to be added to the selection.
+		 */
+		void addToSelection(QList<CAMusElement *>& elts);
+		
+		/**
+		 * Select next music element.
+		 * 
+		 * @return Pointer to the newly selected drawable music element.
+		 */ 
+		CADrawableMusElement* selectNextMusElement();
+		
+		/**
+		 * Select previous music element.
+		 * 
+		 * @return Pointer to the newly selected drawable music element.
+		 */ 
+		CADrawableMusElement* selectPrevMusElement();
+
+		/**
+		 * Select the nearest music element upper from the current one.
+		 * 
+		 * @return Pointer to the newly selected drawable music element.
+		 */ 
+		CADrawableMusElement* selectUpMusElement();
+
+		/**
+		 * Select the nearest music element lower from the current one.
+		 * 
+		 * @return Pointer to the newly selected drawable music element.
+		 */ 
+		CADrawableMusElement* selectDownMusElement();
+
+		/**
 		 * Add the given drawable music element to the current selection.
 		 * 
 		 * @param elt Pointer to the drawable music element to be added to the selection.
@@ -149,11 +193,17 @@ class CAScoreViewPort : public CAViewPort {
 		 * Select the given music element.
 		 * If there are multiple drawable elements representing a single logical element, select the first one.
 		 * 
-		 * @return True, if element existed (and had its drawable instance) and was selected, false otherwise.
+		 * @return Pointer to the drawable instance of the given music element, 0 if the music element was not found.
 		 */
-		bool selectMElement(CAMusElement *elt);
+		CADrawableMusElement *selectMElement(CAMusElement *elt);
 		
-		bool selectContext(CAContext *context);		///Returns true, if the context existed and was selected, otherwise false
+		/**
+		 * Select the given context.
+		 * If there are multiple drawable elements representing a single logical element, select the first one.
+		 * 
+		 * @return Pointer to the drawable instance of the given context, 0 if the context was not found.
+		 */
+		CADrawableContext *selectContext(CAContext *context);		///Returns true, if the context existed and was selected, otherwise false
 		
 		/**
 		 * Returns the nearest left element from the given position with the largest startTime.
