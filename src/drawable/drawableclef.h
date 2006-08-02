@@ -12,6 +12,7 @@
 #define DRAWABLECLEF_H_
 
 class CAClef;
+class CADrawableStaff;
 
 class CADrawableClef : public CADrawableMusElement {
 	public:
@@ -22,7 +23,7 @@ class CADrawableClef : public CADrawableMusElement {
 		 * @param x X coordinate of the left-margin of the clef.
 		 * @param y Y coordinate of the top of the staff. (WARNING! Not top of the clef!)
 		 */
-		CADrawableClef(CAClef *clef, CADrawableContext *drawableContext, int x, int y);
+		CADrawableClef(CAClef *clef, CADrawableStaff *drawableStaff, int x, int y);
 		void draw(QPainter *p, CADrawSettings s);
 		CADrawableClef *clone();
 		inline CAClef *clef() { return (CAClef*)_musElement; }

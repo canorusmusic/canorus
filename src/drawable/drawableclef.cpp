@@ -12,12 +12,12 @@
 #include <QPainter>
 
 #include "drawable/drawableclef.h"
-#include "drawable/drawablecontext.h"
+#include "drawable/drawablestaff.h"
 
 #include "core/clef.h"
 
-CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableContext *drawableContext, int x, int y)
- : CADrawableMusElement(musElement, drawableContext, x, y) {
+CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaff, int x, int y)
+ : CADrawableMusElement(musElement, drawableStaff, x, y) {
 	_drawableMusElement = CADrawableMusElement::DrawableClef;
 	
 	switch (clef()->clefType()) {
@@ -46,5 +46,5 @@ void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
 }
 
 CADrawableClef* CADrawableClef::clone() {
-	return (new CADrawableClef(clef(), drawableContext(), xPos(), yPos()+15));
+	return (new CADrawableClef(clef(), (CADrawableStaff*)drawableContext(), xPos(), yPos()+15));
 }

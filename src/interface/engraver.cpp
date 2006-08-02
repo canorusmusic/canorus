@@ -86,22 +86,23 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			        (!elt->isPlayable())
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
-				switch ( elt->musElementType() ) {
-					case CAMusElement::Clef:
-						CADrawableClef *clef = new CADrawableClef(
-							(CAClef*)elt,
-							drawableContext,
-							streamsX[i],
-							drawableContext->yPos()
-						);
-						
-						v->addMElement(clef);
-						lastClef[i] = clef->clef();
-						
-						streamsX[i] += (clef->neededWidth() + MINIMUM_SPACE);
-						placedSymbol = true;
-						break;
-						
+				if (drawableContext->drawableContextType() == CADrawableContext::DrawableStaff) {
+					switch ( elt->musElementType() ) {
+						case CAMusElement::Clef:
+							CADrawableClef *clef = new CADrawableClef(
+								(CAClef*)elt,
+								(CADrawableStaff*)drawableContext,
+								streamsX[i],
+								drawableContext->yPos()
+							);
+							
+							v->addMElement(clef);
+							lastClef[i] = clef->clef();
+							
+							streamsX[i] += (clef->neededWidth() + MINIMUM_SPACE);
+							placedSymbol = true;
+							break;
+					}
 				}
 				
 				streamsIdx[i] = streamsIdx[i] + 1;
