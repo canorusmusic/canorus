@@ -69,3 +69,33 @@ bool CAStaff::removeMusElement(CAMusElement *elt) {
 	
 	return success;
 }
+
+CAMusElement *CAStaff::findNextMusElement(CAMusElement *elt) {
+	int idx;
+	
+	for (int i=0; i<_voiceList.size(); i++) {	//go through all the voices and check, if anyone of them includes the given element
+		if ((idx = _voiceList[i]->indexOf(elt)) != -1) {
+			if (++idx < _voiceList[i]->musElementCount())
+				return _voiceList[i]->musElementAt(idx); //return the pointer of the next element
+			else
+				return 0;	//or 0, if the element is the last one and doesn't have its right neighbour
+		}
+	}
+	
+	return 0;	//the element doesn't exist in any of the voices, return 0
+}
+
+CAMusElement *CAStaff::findPrevMusElement(CAMusElement *elt) {
+	int idx;
+	
+	for (int i=0; i<_voiceList.size(); i++) {	//go through all the voices and check, if anyone of them includes the given element
+		if ((idx = _voiceList[i]->indexOf(elt)) != -1) {
+			if (--idx > -1)
+				return _voiceList[i]->musElementAt(idx); //return the pointer of the previous element
+			else
+				return 0;	//or 0, if the element is the first one and doesn't have its left neighbour
+		}
+	}
+	
+	return 0;	//the element doesn't exist in any of the voices, return 0
+}

@@ -79,6 +79,9 @@ class CAStaff : public CAContext {
 		 */
 		bool removeMusElement(CAMusElement* elt);
 		
+		CAMusElement *findNextMusElement(CAMusElement *elt);
+		CAMusElement *findPrevMusElement(CAMusElement *elt);
+		
 		void setInstrumentName(QString name) { _instrumentName = name; }
 		QString instrumentName() { return _instrumentName; }
 		

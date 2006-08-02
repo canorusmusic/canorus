@@ -49,6 +49,8 @@ class CAVoice {
 		
 		int musElementCount() { return _musElementList.count(); }
 		CAMusElement *musElementAt(int i) { return _musElementList[i]; }
+		int indexOf(CAMusElement *elt) { return _musElementList.indexOf(elt); }
+		
 		QList<CAMusElement*> *musElementList() { return &_musElementList; }	///Return the list of music elements
 		int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
 	
