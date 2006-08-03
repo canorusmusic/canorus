@@ -25,6 +25,7 @@
 /*****************************************************************************/
 
 #include <QtGui/QtGui>
+#include <QSlider>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPoint>
@@ -50,10 +51,12 @@ using namespace std;
 #include "drawable/drawablestaff.h"
 #include "drawable/drawablemuselement.h"
 #include "drawable/drawablenote.h"
+#include "drawable/drawableaccidental.h"	//DEBUG
 
 #include "core/sheet.h"
 #include "core/staff.h"
 #include "core/clef.h"
+#include "core/keysignature.h"
 #include "core/note.h"
 #include "core/canorusml.h"
 
@@ -76,6 +79,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	mpoMEToolBar = new CAToolBar( this );
 	mpoMEToolBar->setOrientation(Qt::Vertical);
 	addToolBar(static_cast<Qt::ToolBarArea>(2), mpoMEToolBar);
+	
+	_slider = 0;
 	
 	//Initialize MIDI
 	initMidi();
@@ -332,6 +337,20 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			v->repaint();
 			break;
 			
+		case CAMusElement::KeySignature: {
+			if ( (!context) ||
+			    (context->context()->contextType() != CAContext::Staff) )
+				return;
+			
+			staff = (CAStaff*)context->context();
+			CAKeySignature *keySig = new CAKeySignature(CAKeySignature::Diatonic, _slider->value()-7, staff, (right?right->timeStart():staff->lastTimeEnd()));
+			staff->insertSignBefore(keySig, right);
+			
+			rebuildScoreViewPorts(v->sheet(), true);
+			v->selectMElement(keySig);
+			v->repaint();
+			break;
+		}
 		case CAMusElement::Note:
 			if ( (!context) ||
 			     (context->context()->contextType() != CAContext::Staff) )
@@ -470,6 +489,8 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 					((CAScoreViewPort*)_activeViewPort)->selectContext(0);
 				}
 				setMode(SelectMode);
+				if (_slider)
+					_slider->hide();
 				break;
 			case Qt::Key_I:
 				_insertMusElement = CAMusElement::Note;
@@ -624,4 +645,17 @@ void CAMainWin::on_actionSave_as_activated() {
 void CAMainWin::sl_mpoVoiceNum_valChanged(int iVoice)
 {
   printf("New voice number: %d\n",iVoice);
+}
+
+void CAMainWin::on_action_Key_signature_activated() {
+	if (!_slider) {
+		_slider = new QSlider(Qt::Horizontal, 0);
+		_slider->setMaximum(15);
+	}
+	
+	_slider->setValue(7);
+	_slider->show();
+	setMode(InsertMode);
+	_insertMusElement = CAMusElement::KeySignature;
+	
 }
