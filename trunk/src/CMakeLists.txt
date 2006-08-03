@@ -37,6 +37,7 @@ set(Canorus_MOCs ui/mainwin.h
 # Add all sources to Canorus_Srcs
 set(Canorus_Core_Srcs
 	core/clef.cpp
+	core/keysignature.cpp
 	core/context.cpp
 	core/document.cpp
 	core/kdtree.cpp
@@ -63,6 +64,8 @@ set(Canorus_Ui_Srcs ui/mainwin.cpp)
 set(Canorus_Drawable_Srcs
 	drawable/drawable.cpp
 	drawable/drawableclef.cpp
+	drawable/drawablekeysignature.cpp
+	drawable/drawableaccidental.cpp
 	drawable/drawablecontext.cpp
 	drawable/drawablemuselement.cpp
 	drawable/drawablenote.cpp

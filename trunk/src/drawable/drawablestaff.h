@@ -14,7 +14,9 @@
 class CAStaff;
 class CANote;
 class CAClef;
+class CAKeySignature;
 class CADrawableClef;
+class CADrawableKeySignature;
 
 class CADrawableStaff : public CADrawableContext {
 	public:
@@ -43,6 +45,24 @@ class CADrawableStaff : public CADrawableContext {
 		 */
 		int calculateCenterYCoord(CANote *note, CAClef *clef);
 		
+		/**
+		 * Calculates the highest possible Y coordinate of the given pitch in this drawable staff without ledger lines.
+		 * Useful for calculating the Y-coordinate of the sharp key signatures for every sharp.
+		 * 
+		 * @param pitch Pitch in logical units from 0 (C) to 6 (B)
+		 * @param x X coordinate of the note.
+		 */
+		int calculateHighestCenterYCoord(int pitch, int x);
+		
+		/**
+		 * Calculates the lowest possible Y coordinate of the given pitch in this drawable staff without ledger lines.
+		 * Useful for calculating the Y-coordinate of the sharp key signatures for every sharp.
+		 * 
+		 * @param pitch Pitch in logical units from 0 (C) to 6 (B)
+		 * @param x X coordinate of the note.
+		 */
+		int calculateLowestCenterYCoord(int pitch, int x);
+
 		/**
 		 * This is an overloaded member function, provided for convenience.
 		 * 
@@ -81,12 +101,16 @@ class CADrawableStaff : public CADrawableContext {
 		 */
 		int calculatePitch(int x, int y);
 		
-		void addClef(CADrawableClef *clef);	//add the clef to the clef list for faster search of the current clef
-		bool removeClef(CADrawableClef *clef); //returns true, if clef deleted, false otherwise
+		void addClef(CADrawableClef *clef);	///add the clef to the clef list for faster search of the current clef
+		void addKeySignature(CADrawableKeySignature *keySig);	///add the key signature to the key signature list for faster search of the current clef
+		bool removeClef(CADrawableClef *clef); ///return true, if clef deleted, false otherwise
+		bool removeKeySignature(CADrawableKeySignature *keySig); ///return true, if clef deleted, false otherwise
 		CAClef *getClef(int x);
+		CAKeySignature *getKeySignature(int x);
 		
 	private:
 		QList<CADrawableClef *> _drawableClefList;	///List of all the drawable clefs. Used for fast look-up with the given key - X-coordinate usually.
+		QList<CADrawableKeySignature *> _drawableKeySignatureList;	///List of all the drawable key signatures. Used for fast look-up with the given key - X-coordinate usually.
 };
 
 #endif /*DRAWABLESTAFF_H_*/

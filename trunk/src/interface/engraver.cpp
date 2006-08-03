@@ -15,10 +15,12 @@
 #include "drawable/drawablestaff.h"
 #include "drawable/drawableclef.h"
 #include "drawable/drawablenote.h"
+#include "drawable/drawablekeysignature.h"
 
 #include "core/sheet.h"
 #include "core/staff.h"
 #include "core/voice.h"
+#include "core/keysignature.h"
 
 #define INITIAL_X_OFFSET 20
 #define MINIMUM_SPACE 10
@@ -51,6 +53,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	int streamsIdx[streams]; for (int i=0; i<streams; i++) streamsIdx[i] = 0;
 	int streamsX[streams]; for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
 	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
+	CAKeySignature *lastKeySig[streams]; for (int i=0; i<streams; i++) lastKeySig[i] = 0;
 
 	int timeStart = 0;
 	bool done = false;
@@ -88,7 +91,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 				drawableContext = drawableContextMap[elt->context()];
 				if (drawableContext->drawableContextType() == CADrawableContext::DrawableStaff) {
 					switch ( elt->musElementType() ) {
-						case CAMusElement::Clef:
+						case CAMusElement::Clef: {
 							CADrawableClef *clef = new CADrawableClef(
 								(CAClef*)elt,
 								(CADrawableStaff*)drawableContext,
@@ -102,6 +105,22 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							streamsX[i] += (clef->neededWidth() + MINIMUM_SPACE);
 							placedSymbol = true;
 							break;
+						}
+						case CAMusElement::KeySignature: {
+							CADrawableKeySignature *keySig = new CADrawableKeySignature(
+								(CAKeySignature*)elt,
+								(CADrawableStaff*)drawableContext,
+								streamsX[i],
+								drawableContext->yPos()
+							);
+							
+							v->addMElement(keySig);
+							lastKeySig[i] = keySig->keySignature();
+							
+							streamsX[i] += (keySig->neededWidth() + MINIMUM_SPACE);
+							placedSymbol = true;
+							break;
+						}
 					}
 				}
 				

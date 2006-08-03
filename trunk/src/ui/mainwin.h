@@ -32,6 +32,7 @@
 #include "core/clef.h"
 
 class QKeyEvent;
+class QSlider;
 class CARtMidiDevice;
 class CAPlayback;
 class CAToolBar;
@@ -87,6 +88,7 @@ private slots:
 	//Insert menu
 	void on_actionNew_staff_activated();
 	void on_action_Clef_activated();
+	void on_action_Key_signature_activated();
 	
 	//View menu
 	void on_action_Fullscreen_toggled(bool);
@@ -159,6 +161,7 @@ private slots:
 	//void on_repaintTimer_timeout();	///Used for repaint events
 
 private:
+	QSlider *_slider;	//TODO: A quick solution to test the insert key signature feature. This will be replaced by a good toolbar/dialog solution of course. -Matevz
 	////////////////////////////////////////////////////
 	//General properties
 	////////////////////////////////////////////////////

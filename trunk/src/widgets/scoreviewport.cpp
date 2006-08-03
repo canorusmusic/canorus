@@ -148,6 +148,9 @@ void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 		case CADrawableMusElement::DrawableClef:
 			((CADrawableStaff*)elt->drawableContext())->addClef((CADrawableClef*)elt);
 			break;
+		case CADrawableMusElement::DrawableKeySignature:
+			((CADrawableStaff*)elt->drawableContext())->addKeySignature((CADrawableKeySignature*)elt);
+			break;
 	}
 }
 
@@ -240,7 +243,9 @@ CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
 	if (elt) {
 		if (elt->drawableMusElementType() == CADrawableMusElement::DrawableClef)
 			((CADrawableStaff*)elt->drawableContext())->removeClef((CADrawableClef*)elt);
-		
+		else if (elt->drawableMusElementType() == CADrawableMusElement::DrawableKeySignature)
+			((CADrawableStaff*)elt->drawableContext())->removeKeySignature((CADrawableKeySignature*)elt);
+				
 		CAMusElement *mElt = elt->musElement();
 		delete elt;
 

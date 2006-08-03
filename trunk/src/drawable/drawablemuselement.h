@@ -20,7 +20,9 @@ class CADrawableMusElement : public CADrawable {
 
 		enum CADrawableMusElementType {
 			DrawableNote,
-			DrawableClef
+			DrawableClef,
+			DrawableKeySignature,
+			DrawableAccidental
 		};
 				
 		inline CAMusElement *musElement() { return _musElement; }

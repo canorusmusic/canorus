@@ -10,9 +10,11 @@
 #include <iostream>
 #include "drawable/drawablestaff.h"
 #include "drawable/drawableclef.h"
+#include "drawable/drawablekeysignature.h"
 #include "core/staff.h"
 #include "core/note.h"
 #include "core/clef.h"
+#include "core/keysignature.h"
 
 #define _lineSpace (staff()->numberOfLines()?(float)_height/(staff()->numberOfLines()-1):0)
 
@@ -81,7 +83,7 @@ int CADrawableStaff::calculatePitch(int x, int y) {
 
 void CADrawableStaff::addClef(CADrawableClef *clef) {
 	int i;
-	for (i=0; ((i<_drawableClefList.size()) && (clef->xPos() < _drawableClefList[i]->xPos())); i++);
+	for (i=0; ((i<_drawableClefList.size()) && (clef->xPos() > _drawableClefList[i]->xPos())); i++);
 	_drawableClefList.insert(i, clef);
 }
 
@@ -94,4 +96,45 @@ CAClef* CADrawableStaff::getClef(int x) {
 	for (i=0; ((i<_drawableClefList.size()) && (x > _drawableClefList[i]->xPos())); i++);
 	
 	return ((--i<0)?0:_drawableClefList[i]->clef());
+}
+
+void CADrawableStaff::addKeySignature(CADrawableKeySignature *keySig) {
+	int i;
+	for (i=0; ((i<_drawableKeySignatureList.size()) && (keySig->xPos() > _drawableKeySignatureList[i]->xPos())); i++);
+	_drawableKeySignatureList.insert(i, keySig);
+}
+
+bool CADrawableStaff::removeKeySignature(CADrawableKeySignature *keySig) {
+	return _drawableKeySignatureList.removeAll(keySig);
+}
+
+CAKeySignature* CADrawableStaff::getKeySignature(int x) {
+	int i;
+	for (i=0; ((i<_drawableKeySignatureList.size()) && (x > _drawableKeySignatureList[i]->xPos())); i++);
+	
+	return ((--i<0)?0:_drawableKeySignatureList[i]->keySignature());
+}
+
+int CADrawableStaff::calculateHighestCenterYCoord(int pitch, int x) {
+	CAClef *clef = getClef(x);
+	
+	int line = clef?clef->c1():-2;
+	line -= 7;
+	
+	while ((line + pitch + 7) < (staff()->numberOfLines()*2))	//while the height still doesn't reach the upper ledger lines
+		line += 7;
+	
+	return (int)(yPos() + height() - (_lineSpace/2) * (line+pitch));
+}
+
+int CADrawableStaff::calculateLowestCenterYCoord(int pitch, int x) {
+	CAClef *clef = getClef(x);
+	
+	int line = clef?clef->c1():-2;
+	line += 7;
+	
+	while ((line + pitch - 7) > -2)	//while the depth still doesn't reach the lower ledger lines
+		line -= 7;
+	
+	return (int)(yPos() + height() - (_lineSpace/2) * (line+pitch));
 }
