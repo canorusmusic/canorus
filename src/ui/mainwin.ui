@@ -13,7 +13,10 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>MainWindow</string>
+   <string>Canorus - Score editor</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="mainwin.qrc" >:/menu/images/clogosm.png</iconset>
   </property>
   <property name="statusTip" >
    <string/>
@@ -314,7 +317,7 @@
      <x>0</x>
      <y>0</y>
      <width>823</width>
-     <height>36</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Script" >
@@ -481,16 +484,7 @@
    <addaction name="menuWindow" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>577</y>
-     <width>823</width>
-     <height>29</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="mpoToolBar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
