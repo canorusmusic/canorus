@@ -52,6 +52,7 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	
 	//set the shadow note
 	_shadowNoteVisible = false;
+	_shadowNoteVisibleOnLeave = false;
 	
 	//setup the virtual canvas
 	_canvas = new QWidget(this);

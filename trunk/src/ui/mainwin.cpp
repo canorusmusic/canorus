@@ -87,6 +87,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	
 	//Initialize the internal properties
 	_currentMode = SelectMode;
+	_insertMusElement = CAMusElement::None;
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
@@ -257,6 +258,9 @@ void CAMainWin::setMode(CAMode mode) {
 			p.setColor(Qt::blue);
 			p.setWidth(3);
 			
+			if (_insertMusElement == CAMusElement::Note)
+				((CAScoreViewPort*)_activeViewPort)->setShadowNoteVisible(true);
+
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (!((CAScoreViewPort*)_viewPortList[i])->playing())
@@ -265,8 +269,6 @@ void CAMainWin::setMode(CAMode mode) {
 				}
 			}
 
-			if (_insertMusElement == CAMusElement::Note)
-				((CAScoreViewPort*)_activeViewPort)->setShadowNoteVisible(true);
 			break;
 	}
 }
