@@ -28,6 +28,7 @@ class CAClef : public CAMusElement {
 		CAClef(CAClefType type, CAStaff *staff, int time);
 		
 		CAClefType clefType() { return _clefType; }
+		const QString clefTypeML();
 		const int c1() { return _c1; } 
 	
 	private:

@@ -31,3 +31,27 @@ CAClef::CAClef(CAClefType type, CAStaff *staff, int time) : CAMusElement(staff, 
 			break;
 	}
 }
+
+const QString CAClef::clefTypeML() {
+	QString type;
+	
+	switch (_clefType) {
+		case Treble:
+			type = "treble";
+			break;
+		case Bass:
+			type = "bass";
+			break;
+		case Alto:
+			type = "alto";
+			break;
+		case Tenor:
+			type = "tenor";
+			break;
+		case Soprano:
+			type = "soprano";
+			break;
+	}
+	
+	return type;
+}
