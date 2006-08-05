@@ -18,6 +18,7 @@
 #include "core/note.h"
 #include "core/clef.h"
 #include "core/muselement.h"
+#include "core/keysignature.h"
 
 CACanorusML::CACanorusML() {
 }
@@ -96,6 +97,15 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				voiceString += "<clef>";
 				voiceString += clef->clefTypeML();
 				voiceString += "</clef> ";
+			
+				break;
+			}
+			case CAMusElement::KeySignature: {
+				//CAKeySignature
+				CAKeySignature *key = (CAKeySignature*)v->musElementAt(i);
+				voiceString += QString("<key type=\"") + key->diatonicGenderML() + "\">";
+				voiceString += key->pitchML();
+				voiceString += "</key> ";
 			
 				break;
 			}

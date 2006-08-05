@@ -13,15 +13,14 @@ CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CAStaf
  : CAMusElement(staff, timeStart) {
  	_musElementType = CAMusElement::KeySignature;
  	_keySignatureType = type;
+	_diatonicGender = Major;
 
 	for (int i=0; i<7; i++)	//clean up the _accidentals array
 		_accidentals[i] = 0;
 
 	//generate the _accidentals array according to the given number of the accidentals
 	//eg. _accidentals[3] = -1; means flat on the 3rd note (counting from 0), this means this key signature has Fes instead of F.
-	int idx;
-	
-	idx = 3;
+	int idx = 3;
 	for (int i=0; i<accs; i++) {	//key signatures with sharps
 		_accidentals[idx] = 1;
 		idx = (idx+4)%7;	//the circle of fifths in positive direction - add a Fifth
@@ -39,7 +38,7 @@ CAKeySignature::~CAKeySignature() {
 }
 
 signed char CAKeySignature::numberOfAccidentals() {
-	signed char sum;
+	signed char sum=0;
 	for (int i=0; i<7; i++)
 		sum += _accidentals[i];
 	
@@ -62,19 +61,21 @@ const QString CAKeySignature::pitchML() {
 	
 	if (_diatonicGender == Minor) {
 		idx = (idx+5)%7;
+		ret = ('a' + idx);
 		if (accs>2)
-			ret = ('a' + idx) + QString("is");
+			ret = "is";
 		else if (accs==-6)
-			ret = ('a' + idx) + QString("s");	//es
+			ret = "s";	//es
 		else if (accs<-4)
-			ret = ('a' + idx) + QString("es");
+			ret = "es";
 	} else {
+		ret = ('A' + idx);
 		if (accs>5)
-			ret = ('A' + idx) + QString("is");
+			ret += "is";
 		else if (accs==-3)
-			ret = ('A' + idx) + QString("s");	//Es
+			ret += "s";	//Es
 		else if (accs<-3)
-			ret = ('A' + idx) + QString("es");	
+			ret += "es";	
 	}
 	
 	return ret;
