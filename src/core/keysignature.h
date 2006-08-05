@@ -16,13 +16,37 @@ class CAStaff;
 
 /**
  * CAKeySignature class represents a simple key signature sign.
- * Note that any other logic behind it (major, minor, scale type, moduses etc.) are handled by other classes.
+ * It also includes other logical information about the scale, for eg. Major/Minor, modes 
  */
 class CAKeySignature : public CAMusElement {
 	public:
 		enum CAKeySignatureType {
-			Diatonic,
+			Diatonic,	//marks the 7-level Major/Minor or modus scale
 			Custom
+		};
+		
+		enum CADiatonicGenderType {	///the lower tetrachord of the scale - scale gender
+			Major,
+			Minor
+		};
+		
+		enum CADiatonicShapeType {	///the upper tetrachord of the scale - scale shape
+			Natural,
+			Harmonic,
+			Melodic
+		};
+		
+		enum CAModusType {	///modus type
+			Ionian,
+			Dorian,
+			Phrygian,
+			Lydian,
+			Mixolydian,
+			Aeolian,
+			Locrian,
+			Hypodorian,
+			Hypolydian,
+			Hypophrygian
 		};
 
 		/**
@@ -38,11 +62,32 @@ class CAKeySignature : public CAMusElement {
 		
 		CAKeySignatureType keySignatureType() { return _keySignatureType; }
 		
+		CADiatonicGenderType diatonicGender() { return _diatonicGender; }
+		CADiatonicShapeType diatonicShape() { return _diatonicShape; }
+		CAModusType modus() { return _modus; }
+		
+		void setDiatonicGender(CADiatonicGenderType gender) { _diatonicGender = gender; }
+		void setDiatonicShape(CADiatonicShapeType shape) { _diatonicShape = shape; }
+		void setModus(CAModusType modus) { _modus = modus; }
+		
+		/**
+		 * Return the key signature pitch.
+		 * If the scale gender is major, the pitch is returned in upper-case, otherwise in lower.
+		 * eg. "E" for E-major (4 sharps), "ces" for ces-minor (7 flats), "B" for B-major (5 sharps).
+		 * 
+		 * @return Key signature's scale start pitch.
+		 */
+		const QString pitchML();
+		const QString diatonicGenderML();
+		
 		signed char numberOfAccidentals();
 		signed char *accidentals() { return _accidentals; }
 
 	private:
 		CAKeySignatureType _keySignatureType;
+		CAModusType _modus;
+		CADiatonicGenderType _diatonicGender;
+		CADiatonicShapeType _diatonicShape;
 		
 		signed char _accidentals[7];	///index numbers: [0..6] - C, D, E, F ... B with values: 0 - none, -1 - flat, +1 - sharp
 };
