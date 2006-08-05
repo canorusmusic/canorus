@@ -45,3 +45,50 @@ signed char CAKeySignature::numberOfAccidentals() {
 	
 	return sum;
 }
+
+const QString CAKeySignature::pitchML() {
+	QString ret;
+	
+	int i;
+	int idx=0;
+	
+	signed char accs = numberOfAccidentals();
+	for (i=3; i<accs; i++) {	//start with A and go upwards
+		idx = (idx+4)%7;
+	}
+	for (i=3; i>accs; i--) {	//start with A and go downwards
+		idx = (idx+3)%7;
+	}
+	
+	if (_diatonicGender == Minor) {
+		idx = (idx+5)%7;
+		if (accs>2)
+			ret = ('a' + idx) + QString("is");
+		else if (accs==-6)
+			ret = ('a' + idx) + QString("s");	//es
+		else if (accs<-4)
+			ret = ('a' + idx) + QString("es");
+	} else {
+		if (accs>5)
+			ret = ('A' + idx) + QString("is");
+		else if (accs==-3)
+			ret = ('A' + idx) + QString("s");	//Es
+		else if (accs<-3)
+			ret = ('A' + idx) + QString("es");	
+	}
+	
+	return ret;
+}
+
+const QString CAKeySignature::diatonicGenderML() {
+	switch (_diatonicGender) {
+		case Major:
+			return QString("major");
+			break;
+		case Minor:
+			return QString("minor");
+			break;
+	}
+	
+	return QString();
+}
