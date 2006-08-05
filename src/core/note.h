@@ -33,8 +33,8 @@ class CANote :  public CAPlayable {
 		
 		CANoteLength noteLength() { return _noteLength; }
 		int pitch() { return _pitch; }
-		const QString pitchString();	///Compose the note pitch name for the CanorusML format
-		const QString lengthString();	///Compose the note length for the CanorusML format
+		const QString pitchML();	///Compose the note pitch name for the CanorusML format
+		const QString lengthML();	///Compose the note length for the CanorusML format
 		void setPitch(int pitch) { _pitch = pitch; calculateNotePosition(); }
 		int notePosition() { return _notePosition; }
 

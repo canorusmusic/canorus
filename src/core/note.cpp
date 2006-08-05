@@ -60,7 +60,7 @@ const QString CANote::generateNoteName(int pitch) {
 	return name;
 }
 
-const QString CANote::pitchString() {
+const QString CANote::pitchML() {
 	QString name;
 	
 	name = (char)((_pitch+2)%7 + 'a');
@@ -78,7 +78,7 @@ const QString CANote::pitchString() {
 	return name;
 }
 
-const QString CANote::lengthString() {
+const QString CANote::lengthML() {
 	QString length;
 	switch (_noteLength) {
 		case CANote::Brevis:

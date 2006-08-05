@@ -94,11 +94,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				//CAClef
 				CAClef *clef = (CAClef*)v->musElementAt(i);
 				voiceString += "<clef>";
-				switch (clef->clefType()) {
-					case CAClef::Treble:
-						voiceString += "treble";
-						break;
-				}
+				voiceString += clef->clefTypeML();
 				voiceString += "</clef> ";
 			
 				break;
@@ -106,7 +102,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 			case CAMusElement::Note: {
 				//CANote
 				CANote *note = (CANote*)v->musElementAt(i);
-				voiceString += note->pitchString();
+				voiceString += note->pitchML();
 				
 				int delta = lastPitch - note->pitch();
 				if (delta > 3) {	//add the needed amount of the commas
@@ -121,12 +117,12 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 					}
 				}
 				
-				if (lastLength != note->lengthString())
-					voiceString += note->lengthString();
+				if (lastLength != note->lengthML())
+					voiceString += note->lengthML();
 				
 				voiceString += " ";
 				lastPitch = note->pitch();
-				lastLength = note->lengthString();
+				lastLength = note->lengthML();
 			}
 		}
 	}
