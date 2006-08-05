@@ -78,9 +78,35 @@ class CAKeySignature : public CAMusElement {
 		 * @return Key signature's scale start pitch.
 		 */
 		const QString pitchML();
+		
+		/**
+		 * Return the key signature gender major or minor.
+		 * 
+		 * @return "major" or "minor" if the scale gender is major or minor.
+		 */
 		const QString diatonicGenderML();
 		
+		/**
+		 * Count all the accidentals and return their sum.
+		 * Every sharp counts +1, every flat counts -1.
+		 * 
+		 * @return Sum of all the accidentals in the scale.
+		 */
 		signed char numberOfAccidentals();
+		
+		/**
+		 * Return the pointer to the array of accidentals for every level in the scale.
+		 * The levels can have the following values:
+		 * -  0: natural
+		 * - +1: sharp
+		 * - +2: double sharp
+		 * ...
+		 * - -1: flat
+		 * - -2: double flat
+		 * ...
+		 * 
+		 * @return Pointer to the array of levels in the scale.
+		 */ 
 		signed char *accidentals() { return _accidentals; }
 
 	private:
