@@ -111,7 +111,7 @@ void CAMainWin::newDocument() {
 void CAMainWin::addSheet() {
 	CASheet *s = _document.addSheet(QString("Sheet ") + QString::number(_document.sheetCount()+1));
 	CAScoreViewPort *v = new CAScoreViewPort(s, 0);
-	
+	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 	connect(v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
 	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
@@ -154,7 +154,7 @@ void CAMainWin::on_action_Fullscreen_toggled(bool checked) {
 
 void CAMainWin::on_actionSplit_horizontally_activated() {
 	CAViewPort *v = (CAViewPort *)_currentScrollWidget->splitHorizontally();
-	
+	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
@@ -173,7 +173,8 @@ void CAMainWin::on_actionSplit_horizontally_activated() {
 
 void CAMainWin::on_actionSplit_vertically_activated() {
 	CAViewPort *v = (CAViewPort *)_currentScrollWidget->splitVertically();
-	
+
+	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
@@ -202,7 +203,8 @@ void CAMainWin::on_actionUnsplit_activated() {
 
 void CAMainWin::on_actionNew_viewport_activated() {
 	CAViewPort *v = _currentScrollWidget->newViewPort();
-	
+
+	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
 		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
