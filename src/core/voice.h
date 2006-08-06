@@ -11,7 +11,8 @@
 
 #include <QList>
 
-#include "muselement.h"
+#include "core/muselement.h"
+#include "core/note.h"
 
 class CAStaff;
 class CAClef;
@@ -53,7 +54,9 @@ class CAVoice {
 		
 		QList<CAMusElement*> *musElementList() { return &_musElementList; }	///Return the list of music elements
 		int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
-	
+		int lastNotePitch();
+		CANote::CANoteLength lastNoteLength();
+		
 		CAClef *getClef(CAMusElement *elt);
 		
 		const QString name() { return _name; }

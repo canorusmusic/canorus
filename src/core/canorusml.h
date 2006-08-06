@@ -58,7 +58,7 @@ class CACanorusML : public QXmlDefaultHandler {
 		CAMainWin *_mainWin;	///Pointer to the main window of the application - needed to rebuild the UI
 		QString _errorMsg;	///The error message content, if the error happens
 		QStack<QString> _depth;	///Stack which represents the current depth of the document. It contains the tag names as the values.
-		void readMusElements(const QString string);	///Read music elements between the greater/lesser separators and add them to the document.
+		bool readMusElements(QString string);	///Read music elements between the greater/lesser separators and add them to the document.
 		
 		CASheet *_curSheet;
 		CAContext *_curContext;
@@ -68,6 +68,7 @@ class CACanorusML : public QXmlDefaultHandler {
 			//Temporary properties for each XML stanza
 			////////////////////////////////////////////
 			QString _cha;	///Current characters being read using characters() method between the greater/lesser separators.
+			//CAKeySignature
 			QString _diatonicGender;	///CAKeySignature::CADiatonicGenderType
 
 		////////////////////////////////////////////////

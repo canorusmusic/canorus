@@ -11,15 +11,15 @@
 #include "staff.h"
 #include "clef.h"
 #include <iostream>
-CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, int timeStart, int timeLength)
+CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int timeLength)
  : CAPlayable(voice, timeStart, timeLength) {
 	_musElementType = CAMusElement::Note;
 	_noteLength = length;
+	_accs = accs;
 
 	_pitch = pitch;
-	_acc = 0;
 	_midiLength = 256;
-	_midiPitch = CAPlayable::pitchToMidiPitch(pitch, _acc);
+	_midiPitch = CAPlayable::pitchToMidiPitch(pitch, _accs);
 
 	if (timeLength)
 		_timeLength = timeLength;
@@ -31,7 +31,7 @@ CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, int timeStart, in
 }
 
 CANote *CANote::clone() {
-	CANote *d = new CANote(_noteLength, _voice, _pitch, _timeStart);
+	CANote *d = new CANote(_noteLength, _voice, _pitch, _accs, _timeStart);
 	
 	return d;
 }
@@ -65,10 +65,10 @@ const QString CANote::pitchML() {
 	
 	name = (char)((_pitch+2)%7 + 'a');
 
-	for (int i=0; i < _acc; i++)
+	for (int i=0; i < _accs; i++)
 		name += "is";	//append as many -is-es as necessary
 	
-	for (int i=0; i > _acc; i--) {
+	for (int i=0; i > _accs; i--) {
 		if ( ((name == "e") || (name == "a")) && (i==0) )
 			name += "s";	//for e and a, only append single -s the first time
 		else

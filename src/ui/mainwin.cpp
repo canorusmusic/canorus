@@ -365,6 +365,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			note = new CANote(CANote::Quarter,
 			                  staff->voiceAt(0),
 			                  drawableStaff->calculatePitch(coords.x(), coords.y()),
+			                  0,
 			                  (right?right->timeStart():staff->lastTimeEnd())
 			                 );
 			staff->insertNoteBefore(note, right);
