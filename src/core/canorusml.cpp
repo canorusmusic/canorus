@@ -63,7 +63,7 @@ void CACanorusML::saveDocument(QTextStream& out, CADocument *doc) {
 				case CAContext::Staff:
 					//CAStaff
 					CAStaff *staff = (CAStaff*)c;
-					out << idn(depth++) << "<staff instrumentName=\"" << staff->instrumentName() << "\">\n";
+					out << idn(depth++) << "<staff name=\"" << staff->name() << "\">\n";
 					
 					for (int voiceIdx=0; voiceIdx < staff->voiceCount(); voiceIdx++) {
 						//CAVoice

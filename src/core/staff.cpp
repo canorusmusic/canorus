@@ -16,6 +16,7 @@
 CAStaff::CAStaff(CASheet *s, QString name) : CAContext(s, name) {
 	_contextType = CAContext::Staff;
 	_numberOfLines = 5;
+	_name = name;
 }
 
 int CAStaff::lastTimeEnd() {

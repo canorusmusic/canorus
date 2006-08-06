@@ -97,15 +97,15 @@ class CAStaff : public CAContext {
 		CAMusElement *findNextMusElement(CAMusElement *elt);
 		CAMusElement *findPrevMusElement(CAMusElement *elt);
 		
-		void setInstrumentName(QString name) { _instrumentName = name; }
-		QString instrumentName() { return _instrumentName; }
+		void setName(QString name) { _name = name; }
+		QString name() { return _name; }
 		
 		void insertNote(CANote *note);
 		bool insertNoteBefore(CANote *note, CAMusElement *eltAfter);
 		
 	private:
 		QList<CAVoice *> _voiceList;
-		QString _instrumentName;
+		QString _name;
 		
 		int _numberOfLines;
 };
