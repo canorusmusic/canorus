@@ -328,7 +328,6 @@ bool CACanorusML::readMusElements(QString string) {
 			}
 			
 			CANote *note = new CANote((CANote::CANoteLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeEnd());
-			std::cout << "added note which pitch " << note->pitch() << " and length " << note->noteLength() << std::endl;
 			_curVoice->insertMusElement(note);
 		}
 		
