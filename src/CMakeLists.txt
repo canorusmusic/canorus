@@ -31,6 +31,7 @@ set(Canorus_MOCs ui/mainwin.h
 	widgets/scrollwidget.h 
 	widgets/viewport.h 
 	widgets/scoreviewport.h 
+	widgets/sourceviewport.h
 	interface/playback.h
 	)
 
@@ -54,6 +55,7 @@ set(Canorus_Core_Srcs
 set(Canorus_Widget_Srcs  
 	widgets/lcdnumber.cpp
 	widgets/scoreviewport.cpp
+	widgets/sourceviewport.cpp
 	widgets/scrollwidget.cpp
 	widgets/toolbar.cpp
 	widgets/viewport.cpp

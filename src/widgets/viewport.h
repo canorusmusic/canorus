@@ -28,7 +28,7 @@ class CAViewPort : public QWidget {
 		 * @param parent The parent widget.
 		 * @param musElts Pointer to a KDTree of music elements
 		 */
-		CAViewPort(QWidget *parent);
+		CAViewPort(QWidget *parent=0);
 		
 		/**
 		 * Destructor.
@@ -40,7 +40,8 @@ class CAViewPort : public QWidget {
 		 * - ScoreViewPort - The main view of the score. All the music elements (staffs, notes, rests) are rendered to this viewport. 
 		 */
 		enum CAViewPortType {
-			ScoreViewPort
+			ScoreViewPort,
+			SourceViewPort
 		};
 		
 		/**
@@ -49,6 +50,8 @@ class CAViewPort : public QWidget {
 		 * @return Return the viewport's type in CAViewPortType type.
 		 */
 		CAViewPortType viewPortType() { return _viewPortType; }
+		
+		QWidget *parent() { return _parent; }
 		
 		/**
 		 * Clone the viewport.
@@ -66,6 +69,11 @@ class CAViewPort : public QWidget {
 		 * @return Pointer to the new viewPort class.
 		 */
 		virtual CAViewPort *clone(QWidget *parent) = 0;
+		
+		/**
+		 * Synchronize/Rebuild the UI part with the logical one.
+		 */
+		virtual void rebuild() = 0;
 		
 	protected:
 		////////////////////////////////////////////////

@@ -14,9 +14,11 @@
 #include <QtXml>
 
 #include "core/document.h"
-#include "core/voice.h"
+
+class QXmlInputSource;
 
 class CAVoice;
+class CAContext;
 class CAMainWin;
 
 /**
@@ -42,7 +44,7 @@ class CACanorusML : public QXmlDefaultHandler {
 		 * @param doc Pointer to the document where the elements should be added to.
 		 */
 		CACanorusML(CADocument *doc, CAMainWin *mainWin);
-		static void openDocument(QIODevice* in, CADocument *doc, CAMainWin *mainWin);
+		static void openDocument(QXmlInputSource* in, CADocument *doc, CAMainWin *mainWin);
 		bool startElement(const QString& namespaceURI, const QString& localName, const QString& qName,
 		                  const QXmlAttributes& attributes);
         bool endElement(const QString& namespaceURI, const QString& localName,

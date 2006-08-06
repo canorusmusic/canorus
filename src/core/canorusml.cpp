@@ -6,7 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include <QtXml>
+#include <QXmlInputSource>
 
 #include <iostream>	//DEBUG
 
@@ -90,7 +90,7 @@ void CACanorusML::saveDocument(QTextStream& out, CADocument *doc) {
 	out << idn(--depth) << "</document>\n";
 }
 
-void CACanorusML::openDocument(QIODevice* in, CADocument *doc, CAMainWin *mainWin) {
+void CACanorusML::openDocument(QXmlInputSource* in, CADocument *doc, CAMainWin *mainWin) {
 	QXmlSimpleReader reader;
 	CACanorusML *canHandler = new CACanorusML(doc, mainWin);
 	reader.setContentHandler(canHandler);
