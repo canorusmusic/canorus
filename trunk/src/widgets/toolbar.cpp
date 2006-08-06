@@ -23,6 +23,8 @@
 
 #include <QMenu>
 #include <QToolButton>
+#include <QButtonGroup>
+#include <QPushButton>
 #include <QComboBox>
 
 #include "toolbar.h"
@@ -49,20 +51,22 @@ CAToolBar::~CAToolBar()
 void CAToolBar::initToolBar()
 {
 	// Test Code for Toolbar
-	mpoClefMenu   = new QMenu();
+	mpoClefMenu   = new QButtonGroup();
 	mpoNoteMenu   = new QMenu();
 	mpoKeysigMenu = new QMenu(); 
-	QIcon oCIcon(  QString::fromUtf8(":/menu/images/cleftreble.png") );
-	addToolMenu( "Clef", mpoClefMenu, &oCIcon, true );
+	
+	QIcon oClefTrebleIcon(  QString::fromUtf8(":/menu/images/cleftreble.png") );
+	QIcon oClefBassIcon(  QString::fromUtf8(":/menu/images/clefbass.png") );
+	
+	addToolMenu( "Clef", mpoClefMenu, &oClefTrebleIcon, true );
 	QIcon oNIcon(  QString::fromUtf8(":/menu/images/n4.png") );
 	addToolMenu( "Note", mpoNoteMenu, &oNIcon, false );
 	QIcon oDFIcon( QString::fromUtf8(":/menu/images/doubleflat.png") );
 	addToolMenu( "Key Signature", mpoKeysigMenu, &oDFIcon, true );
 	
 	// Add all the menu entries, either as text or icons
-	mpoClefMenu->addAction( "treble" );
-	mpoClefMenu->addAction( "alto" );
-	mpoClefMenu->addAction( "bass" );
+	mpoClefMenu->addButton(new QPushButton(oClefTrebleIcon, "treble"));
+	mpoClefMenu->addButton(new QPushButton(oClefBassIcon, "bass"));
 	mpoNoteMenu->addAction( "half" );
 	mpoNoteMenu->addAction( "quarter" );
 	mpoNoteMenu->addAction( "eigth" );
