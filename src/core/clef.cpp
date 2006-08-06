@@ -16,18 +16,23 @@ CAClef::CAClef(CAClefType type, CAStaff *staff, int time) : CAMusElement(staff, 
 	switch (type) {
 		case Treble:
 			_c1 = -2;
+			_centerPitch = 32;
 			break;
 		case Bass:
 			_c1 = 10;
+			_centerPitch = 24;
 			break;
 		case Alto:
 			_c1 = 4;
+			_centerPitch = 28;
 			break;
 		case Tenor:
 			_c1 = 6;
+			_centerPitch = 28;
 			break;
 		case Soprano:
 			_c1 = 0;
+			_centerPitch = 28;
 			break;
 	}
 }
@@ -53,18 +58,23 @@ CAClef::CAClef(const QString type, CAStaff *staff, int time) : CAMusElement(staf
 	switch (clefType) {
 		case Treble:
 			_c1 = -2;
+			_centerPitch = 32;
 			break;
 		case Bass:
 			_c1 = 10;
+			_centerPitch = 24;
 			break;
 		case Alto:
 			_c1 = 4;
+			_centerPitch = 28;
 			break;
 		case Tenor:
 			_c1 = 6;
+			_centerPitch = 28;
 			break;
 		case Soprano:
 			_c1 = 0;
+			_centerPitch = 28;
 			break;
 	}	
 }
