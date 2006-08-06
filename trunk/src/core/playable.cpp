@@ -28,3 +28,7 @@ int CAPlayable::pitchToMidiPitch(int pitch, int acc) {
 int CAPlayable::midiPitchToPitch(int midiPitch) {
 	return 0; //TODO
 }
+
+void CAPlayable::setVoice(CAVoice *voice) {
+	_voice = voice; _context = voice->staff();
+}

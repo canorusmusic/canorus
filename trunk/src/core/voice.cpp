@@ -6,10 +6,10 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "muselement.h"
-#include "voice.h"
-#include "staff.h"
-#include "clef.h"
+#include "core/muselement.h"
+#include "core/voice.h"
+#include "core/staff.h"
+#include "core/clef.h"
 
 CAVoice::CAVoice(CAStaff *staff, const QString name) {
 	_staff = staff;
@@ -90,4 +90,24 @@ bool CAVoice::removeElement(CAMusElement *elt) {
 	} else {
 		return false;
 	}
+}
+
+int CAVoice::lastNotePitch() {
+	for (int i=_musElementList.size()-1; i>=0; i--) {
+		if (_musElementList[i]->musElementType()==CAMusElement::Note)
+			return (((CANote*)_musElementList[i])->pitch());
+		else if (_musElementList[i]->musElementType()==CAMusElement::Clef)
+			return (((CAClef*)_musElementList[i])->centerPitch());
+	}
+	
+	return -1;
+}
+
+CANote::CANoteLength CAVoice::lastNoteLength() {
+	for (int i=_musElementList.size()-1; i>=0; i--) {
+		if (_musElementList[i]->musElementType()==CAMusElement::Note)
+			return (((CANote*)_musElementList[i])->noteLength());
+	}
+	
+	return CANote::None;
 }
