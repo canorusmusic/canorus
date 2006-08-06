@@ -27,6 +27,7 @@
 #include <QToolBar>
 
 class QMenu;
+class QButtonGroup;
 class QToolButton;
 class QAction;
 
@@ -109,9 +110,9 @@ private:
 	QList<CTB_Type>	moToolTypes;
 	QList<QWidget*>	moToolElements;
 	QList<QAction*>	moToolActions;
-  QMenu *mpoClefMenu;
-  QMenu *mpoNoteMenu;
-  QMenu *mpoKeysigMenu;
+	QButtonGroup *mpoClefMenu;
+	QMenu *mpoNoteMenu;
+	QMenu *mpoKeysigMenu;
 };
 
 #endif /* CNTOOLBAR_H */

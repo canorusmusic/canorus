@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/menu" >
+        <file>images/clefbass.png</file>
         <file>images/cleftreble.png</file>
         <file>images/clogosm.png</file>
         <file>images/doubleflat.png</file>
