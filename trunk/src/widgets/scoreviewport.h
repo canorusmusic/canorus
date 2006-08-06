@@ -248,9 +248,6 @@ class CAScoreViewPort : public CAViewPort {
 		CADrawableContext *currentContext() { return _currentContext; }
 		void setCurrentContext(CADrawableContext *);
 		
-		/**
-		 * Synchronize the sheets music elements with the actual drawable ones and reposition them.
-		 */
 		void rebuild();
 		
 		///////////////////////////////////////////////

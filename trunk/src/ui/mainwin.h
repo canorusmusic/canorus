@@ -103,6 +103,9 @@ private slots:
 	//Playback menu
 	void on_actionPlay_toggled(bool);
 	
+	//Perspective menu
+	void on_actionSource_view_perspective_activated();
+	
 	//Window menu
 	void on_actionSplit_horizontally_activated();
 	void on_actionSplit_vertically_activated();
@@ -149,6 +152,8 @@ private slots:
 	 * @param v Pointer to the viewport where the event happened.
 	 */
 	void viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v);
+	
+	void sourceViewPortCommit(QString documentString);
 	
 	/**
 	 * Called when the tab is switched.
@@ -209,5 +214,5 @@ private:
 	 * @param sheet Pointer to the common CASheet viewports use.
 	 * @param repaint Should the viewports be repainted as well.
 	 */
-	void rebuildScoreViewPorts(CASheet *sheet=0, bool repaint=true);
+	void rebuildViewPorts(CASheet *sheet=0, bool repaint=true);
 };

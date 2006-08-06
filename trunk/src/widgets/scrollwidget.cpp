@@ -91,3 +91,11 @@ CAViewPort* CAScrollWidget::newViewPort(CAViewPort *v) {
 	
 	return viewPort;
 }
+
+void CAScrollWidget::addViewPort(CAViewPort *v) {
+	_viewPorts.append(_lastUsedViewPort = v);
+	
+	_splitter->setOrientation(Qt::Vertical);
+	_splitter->addWidget(_lastUsedViewPort);
+	_splitter->update();
+}

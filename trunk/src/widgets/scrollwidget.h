@@ -90,6 +90,13 @@ class CAScrollWidget : public QFrame {
 		CAViewPort* splitVertically(CAViewPort *v = 0);
 		
 		/**
+		 * Add the given viewport to the layout.
+		 * 
+		 * @param v Pointer to the viewport to be added to the current layout.
+		 */ 
+		void addViewPort(CAViewPort *v);
+		
+		/**
 		 * Open a new viewport in a separated window.
 		 * 
 		 * @param v The viewport the new one should be copied from. If non given, a copy of the last active one is created.
