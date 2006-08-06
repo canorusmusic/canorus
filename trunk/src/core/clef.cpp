@@ -32,6 +32,43 @@ CAClef::CAClef(CAClefType type, CAStaff *staff, int time) : CAMusElement(staff, 
 	}
 }
 
+CAClef::CAClef(const QString type, CAStaff *staff, int time) : CAMusElement(staff, time) {
+	CAClefType clefType;
+	if (type=="treble") {
+		clefType = Treble;
+	} else if (type=="bass") {
+		clefType = Bass;
+	} else if (type=="alto") {
+		clefType = Alto;
+	} else if (type=="tenor") {
+		clefType = Tenor;
+	} else if (type=="soprano") {
+		clefType = Soprano;
+	}
+	
+	//TODO: COPY&PASTE from the first constructor - is there any other way for eg. to call the first constructor from this one? -Matevz
+	_musElementType = CAMusElement::Clef;
+	_clefType = clefType;
+	
+	switch (clefType) {
+		case Treble:
+			_c1 = -2;
+			break;
+		case Bass:
+			_c1 = 10;
+			break;
+		case Alto:
+			_c1 = 4;
+			break;
+		case Tenor:
+			_c1 = 6;
+			break;
+		case Soprano:
+			_c1 = 0;
+			break;
+	}	
+}
+
 const QString CAClef::clefTypeML() {
 	QString type;
 	

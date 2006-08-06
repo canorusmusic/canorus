@@ -6,14 +6,69 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include <iostream>	//DEBUG
+
 #include "core/keysignature.h"
 #include "core/staff.h"
 
-CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CAStaff *staff, int timeStart)
+CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender, CAStaff *staff, int timeStart)
  : CAMusElement(staff, timeStart) {
  	_musElementType = CAMusElement::KeySignature;
  	_keySignatureType = type;
-	_diatonicGender = Major;
+	_diatonicGender = gender;
+
+	for (int i=0; i<7; i++)	//clean up the _accidentals array
+		_accidentals[i] = 0;
+
+	//generate the _accidentals array according to the given number of the accidentals
+	//eg. _accidentals[3] = -1; means flat on the 3rd note (counting from 0), this means this key signature has Fes instead of F.
+	int idx = 3;
+	for (int i=0; i<accs; i++) {	//key signatures with sharps
+		_accidentals[idx] = 1;
+		idx = (idx+4)%7;	//the circle of fifths in positive direction - add a Fifth
+	}
+	
+	idx = 6;
+	for (int i=0; i>accs; i--) {	//key signatures with flats
+		_accidentals[idx] = -1;
+		idx = (idx+3)%7;	//the circle of fifths in negative direction - add a Fourth
+	}
+}
+
+CAKeySignature::CAKeySignature(QString sPitch, QString sGender, CAStaff *staff, int timeStart)
+ : CAMusElement(staff, timeStart) {
+	CADiatonicGenderType gender = Major;
+	if (sGender.toUpper()=="MAJOR")
+		gender = Major;
+	else if (sGender.toUpper()=="MINOR")
+		gender = Minor;
+	else
+		gender = (sPitch.at(0).isLower()?Minor:Major);	//if no gender is defined, set the gender according to the pitch capitals
+	
+	signed char accs = 0;
+	int pitch = sPitch.toUpper()[0].toLatin1() - 'A';
+	
+	while (pitch!=0) {	//round the circle of fifths until 
+		pitch = (pitch+4)%7;
+		accs--;
+	}
+	
+	if (gender == Major)
+		accs += 3;	//we started with A-Major
+	//we don't need to add accidentals for the minor as it starts on a-minor, which has 0 accidentals
+	
+	while (sPitch.size()>1) {
+		if (sPitch.toUpper().endsWith("IS"))
+			accs += 7;
+		else if (sPitch.toUpper().endsWith("ES"))
+			accs -= 7;
+		sPitch.chop(2);
+	}
+	
+ 	//TODO: COPY&PASTE from the first constructor - is there any other way for eg. to call the first constructor from this one? -Matevz
+ 	_musElementType = CAMusElement::KeySignature;
+ 	_keySignatureType = Diatonic;
+	_diatonicGender = gender;
 
 	for (int i=0; i<7; i++)	//clean up the _accidentals array
 		_accidentals[i] = 0;

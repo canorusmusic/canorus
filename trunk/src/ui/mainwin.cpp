@@ -51,7 +51,7 @@ using namespace std;
 #include "drawable/drawablestaff.h"
 #include "drawable/drawablemuselement.h"
 #include "drawable/drawablenote.h"
-#include "drawable/drawableaccidental.h"	//DEBUG
+#include "drawable/drawableaccidental.h"	//DEBUG, this isn't needed though
 
 #include "core/sheet.h"
 #include "core/staff.h"
@@ -104,12 +104,11 @@ void CAMainWin::newDocument() {
 	_document.clear();	//clear the logical part
 	clearUI();			//clear the UI part
 	
-	addSheet();			//add a new empty sheet
+	addSheet(_document.addSheet(QString("Sheet ") + QString::number(_document.sheetCount()+1)));			//add a new empty sheet
 	on_actionNew_staff_activated();	//add a new empty 5-line staff to the sheet
 }
 
-void CAMainWin::addSheet() {
-	CASheet *s = _document.addSheet(QString("Sheet ") + QString::number(_document.sheetCount()+1));
+void CAMainWin::addSheet(CASheet *s) {
 	CAScoreViewPort *v = new CAScoreViewPort(s, 0);
 	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
@@ -223,7 +222,7 @@ void CAMainWin::on_actionNew_activated() {
 }
 
 void CAMainWin::on_actionNew_sheet_activated() {
-	addSheet();
+	addSheet(_document.addSheet(QString("Sheet ") + QString::number(_document.sheetCount()+1)));			//add a new empty sheet
 }
 
 void CAMainWin::on_actionNew_staff_activated() {
@@ -232,6 +231,7 @@ void CAMainWin::on_actionNew_staff_activated() {
 	
 	CASheet *sheet = ((CAScoreViewPort*)_activeViewPort)->sheet();
 	CAStaff *staff = sheet->addStaff();
+	staff->addVoice(new CAVoice(staff, QString("Voice ") + QString::number(staff->voiceCount())));
 	
 	rebuildScoreViewPorts(sheet);
 	
@@ -347,7 +347,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				return;
 			
 			staff = (CAStaff*)context->context();
-			CAKeySignature *keySig = new CAKeySignature(CAKeySignature::Diatonic, _slider->value()-7, staff, (right?right->timeStart():staff->lastTimeEnd()));
+			CAKeySignature *keySig = new CAKeySignature(CAKeySignature::Diatonic, _slider->value()-7, CAKeySignature::Major, staff, (right?right->timeStart():staff->lastTimeEnd()));
 			staff->insertSignBefore(keySig, right);
 			
 			rebuildScoreViewPorts(v->sheet(), true);
@@ -589,9 +589,13 @@ void CAMainWin::on_actionOpen_activated() {
 	QFile file(s);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		_fileName = s;
-		QTextStream in(&file);
-		CACanorusML::openDocument(in, &_document);
+		_document.clear();
+		clearUI();
+		
+		CACanorusML::openDocument(&file, &_document, this);
 		file.close();
+		rebuildScoreViewPorts();
+		moMainWin.tabWidget->setCurrentIndex(0);
 	}               
 }
 

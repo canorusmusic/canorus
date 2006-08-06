@@ -26,9 +26,11 @@ class CADocument {
 		 */
 		int sheetCount() { return _sheetList.size(); }
 		
+		CASheet *sheet(const QString name);	///Look up for the sheet with the given name
 		CASheet *sheetAt(int i) { return _sheetList[i]; }
 		
 		CASheet *addSheet(const QString name);
+		void addSheet(CASheet *sheet);
 
 		const QString title() { return _title; } 
 		const QString subTitle() { return _subTitle; } 

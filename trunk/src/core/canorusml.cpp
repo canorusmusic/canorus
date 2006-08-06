@@ -8,7 +8,9 @@
 
 #include <QtXml>
 
-#include "ui/mainwin.h"	//needed for program version global constant
+#include <iostream>	//DEBUG
+
+#include "ui/mainwin.h"
 
 #include "core/canorusml.h"
 #include "core/sheet.h"
@@ -20,7 +22,13 @@
 #include "core/muselement.h"
 #include "core/keysignature.h"
 
-CACanorusML::CACanorusML() {
+CACanorusML::CACanorusML(CADocument *doc, CAMainWin *mainWin) {
+	_document = doc;
+	_mainWin = mainWin;
+	
+	_curSheet = 0;
+	_curContext = 0;
+	_curVoice = 0;
 }
 
 CACanorusML::~CACanorusML() {
@@ -80,7 +88,13 @@ void CACanorusML::saveDocument(QTextStream& out, CADocument *doc) {
 	out << idn(--depth) << "</document>\n";
 }
 
-void CACanorusML::openDocument(QTextStream& in, CADocument *doc) {
+void CACanorusML::openDocument(QIODevice* in, CADocument *doc, CAMainWin *mainWin) {
+	QXmlSimpleReader reader;
+	CACanorusML *canHandler = new CACanorusML(doc, mainWin);
+	reader.setContentHandler(canHandler);
+	reader.parse(in);
+	
+	delete canHandler;
 }
 
 const QString CACanorusML::createMLVoice(CAVoice *v) {
@@ -138,4 +152,127 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 	}
 	
 	return voiceString;
+}
+
+bool CACanorusML::fatalError (const QXmlParseException & exception) {
+	qWarning() << "Fatal error on line" << exception.lineNumber()
+		<< ", column" << exception.columnNumber() << ":"
+		<< exception.message() << "\n\nParser message:\n" << _errorMsg;
+	
+	return false;
+}
+
+bool CACanorusML::startElement(const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes) {
+	if (!_document) {
+		_errorMsg = "The document doesn't exist yet!";
+		return false;
+	}
+
+	if (qName == "sheet") {
+		//CASheet
+		QString sheetName = attributes.value("name");
+		
+		if (!(_curSheet = _document->sheet(sheetName))) {	//if the document doesn't contain the sheet with the given name, create a new sheet and add it to the document. Otherwise, just set the current sheet to the found one and leave
+			if (sheetName.isEmpty())
+				sheetName = QString("Sheet") + " " + QString::number(_document->sheetCount()+1);
+			CASheet *sheet = new CASheet(sheetName, _document);
+			_curSheet = sheet;
+			_document->addSheet(sheet);
+			_mainWin->addSheet(sheet);
+		}
+	} else if (qName == "staff") {
+		//CAStaff
+		QString staffName = attributes.value("name");
+		if (!_curSheet) {
+			_errorMsg = "The sheet where to add the staff doesn't exist yet!";
+			return false;
+		}
+		
+		if (!(_curContext = _curSheet->context(staffName))) {	//if the sheet doesn't contain the staff with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
+			if (staffName.isEmpty())
+				staffName = QString("Staff") + " " + QString::number(_curSheet->staffCount()+1);
+			CAStaff *staff = new CAStaff(_curSheet, staffName);
+			_curContext = staff;
+			_curSheet->addContext(staff);
+		}
+	} else if (qName == "voice") {
+		//CAVoice
+		QString voiceName = attributes.value("name");
+		if (!_curContext) {
+			_errorMsg = "The context where the voice should be added doesn't exist yet!";
+			return false;
+		} else if (_curContext->contextType() != CAContext::Staff) {
+			_errorMsg = "The context type which will contain voice isn't staff!";
+			return false;
+		}
+		
+		if (!(_curVoice = ((CAStaff*)_curContext)->voice(voiceName))) {	//if the staff doesn't contain the voice with the given name, create a new voice and add it to the document. Otherwise, just set the current voice to the found one and leave
+			if (voiceName.isEmpty())
+				voiceName = QString("Voice") + " " + QString::number(((CAStaff*)_curContext)->voiceCount()+1);
+			CAVoice *voice = new CAVoice((CAStaff*)_curContext, voiceName);
+			_curVoice = voice;
+			((CAStaff*)_curContext)->addVoice(voice);
+		}
+	} else if (qName == "clef") {
+	} else if (qName == "key") {
+		_diatonicGender = attributes.value("type");
+	}
+	
+	_depth.push(qName);
+	return true;
+}
+
+bool CACanorusML::endElement(const QString& namespaceURI, const QString& localName, const QString& qName) {
+	if (!_document) {
+		_errorMsg = "The document doesn't exist yet!";
+		return false;
+	}
+
+	if (qName == "clef") {
+		//CAClef
+		if (!_curContext) {
+			_errorMsg = "No staffs exist yet to place a clef!";
+			return false;
+		} else if (_curContext->contextType()!=CAContext::Staff) {
+			_errorMsg = "The context where the clef should be added isn't a staff!";
+			return false;
+		} else if (((CAStaff*)_curContext)->voiceCount()==0) {
+			_errorMsg = "At least one voice should exist in order to add a clef!";
+			return false;
+		}
+
+		CAClef *clef = new CAClef(_cha, _curVoice->staff(), _curVoice->lastTimeEnd());
+		_curVoice->staff()->insertSign(clef);
+	} else if (qName == "key") {
+		//CAKeySignature
+		if (!_curContext) {
+			_errorMsg = "No staffs exist yet to place a key!";
+			return false;
+		} else if (_curContext->contextType()!=CAContext::Staff) {
+			_errorMsg = "The context where the key signature should be added isn't a staff!";
+			return false;
+		} else if (((CAStaff*)_curContext)->voiceCount()==0) {
+			_errorMsg = "At least one voice should exist in order to add a key signature!";
+			return false;
+		}
+		
+		CAKeySignature *keySig = new CAKeySignature(_cha, _diatonicGender, _curVoice->staff(), _curVoice->lastTimeEnd());
+		_diatonicGender="";
+		_cha="";
+		_curVoice->staff()->insertSign(keySig);
+	}
+	
+	_depth.pop();
+	return true;
+}
+
+bool CACanorusML::characters(const QString& ch) {
+	_cha = ch;
+	if (_depth.top()=="voice")
+		readMusElements(_cha);
+	
+	return true;
+}
+
+void CACanorusML::readMusElements(const QString string) {
 }

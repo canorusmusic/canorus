@@ -27,6 +27,13 @@ class CAClef : public CAMusElement {
 
 		CAClef(CAClefType type, CAStaff *staff, int time);
 		
+		/**
+		 * This is an overloaded member function provided for convenience.
+		 * 
+		 * Constructor using the ML arguments.
+		 */ 
+		CAClef(const QString type, CAStaff *staff, int time);
+		
 		CAClefType clefType() { return _clefType; }
 		const QString clefTypeML();
 		const int c1() { return _c1; } 
