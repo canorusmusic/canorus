@@ -231,7 +231,7 @@ void CAMainWin::on_actionNew_staff_activated() {
 	
 	CASheet *sheet = ((CAScoreViewPort*)_activeViewPort)->sheet();
 	CAStaff *staff = sheet->addStaff();
-	staff->addVoice(new CAVoice(staff, QString("Voice ") + QString::number(staff->voiceCount())));
+	staff->addVoice(new CAVoice(staff, QString("Voice ") + QString::number(staff->voiceCount()+1)));
 	
 	rebuildScoreViewPorts(sheet);
 	
