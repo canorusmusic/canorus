@@ -33,8 +33,21 @@ void CADocument::clear() {
 }
 
 CASheet *CADocument::addSheet(const QString name) {
-	CASheet *s = new CASheet(name);
+	CASheet *s = new CASheet(name, this);
 	_sheetList.append(s);
 	
 	return s;
+}
+
+void CADocument::addSheet(CASheet *sheet) {
+	_sheetList.append(sheet);
+}
+
+CASheet *CADocument::sheet(const QString name) {
+	for (int i=0; i<_sheetList.size(); i++) {
+		if (_sheetList[i]->name() == name)
+			return _sheetList[i];
+	}
+	
+	return 0;
 }

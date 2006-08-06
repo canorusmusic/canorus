@@ -18,7 +18,7 @@ class CAClef;
 
 class CAVoice {
 	public:
-		CAVoice(CAStaff *staff);
+		CAVoice(CAStaff *staff, const QString name);
 		inline CAStaff *staff() { return _staff; }
 		void clear();
 		

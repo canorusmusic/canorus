@@ -11,8 +11,9 @@
 #include "staff.h"
 #include "clef.h"
 
-CAVoice::CAVoice(CAStaff *staff) {
+CAVoice::CAVoice(CAStaff *staff, const QString name) {
 	_staff = staff;
+	_name = name;
 	_voiceNumber = this->staff()->voiceCount() + 1;
 	
 	_midiChannel = 0;
@@ -30,7 +31,7 @@ void CAVoice::clear() {
 void CAVoice::insertMusElement(CAMusElement *elt) {
 	int i;
 	for (i=0;
-	     (i < _musElementList.size()) && (_musElementList[i]->timeStart() < elt->timeStart());
+	     (i < _musElementList.size()) && (_musElementList[i]->timeStart() <= elt->timeStart());
 	     i++);
 	
 	_musElementList.insert(i, elt);

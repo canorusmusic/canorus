@@ -13,11 +13,9 @@
 #include "staff.h"
 #include "note.h"
 
-CAStaff::CAStaff(CASheet *s) : CAContext(s) {
+CAStaff::CAStaff(CASheet *s, QString name) : CAContext(s, name) {
 	_contextType = CAContext::Staff;
 	_numberOfLines = 5;
-	
-	_voiceList << new CAVoice(this);
 }
 
 int CAStaff::lastTimeEnd() {
@@ -98,4 +96,12 @@ CAMusElement *CAStaff::findPrevMusElement(CAMusElement *elt) {
 	}
 	
 	return 0;	//the element doesn't exist in any of the voices, return 0
+}
+
+CAVoice *CAStaff::voice(const QString name) {
+	for (int i=0; i<_voiceList.size(); i++)
+		if (_voiceList[i]->name() == name)
+			return _voiceList[i];
+	
+	return 0;
 }

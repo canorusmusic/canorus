@@ -37,6 +37,7 @@ class CARtMidiDevice;
 class CAPlayback;
 class CAToolBar;
 class CALCDNumber;
+class CASheet;
 
 enum CAMode {
 	InsertMode,
@@ -60,7 +61,7 @@ public:
 	////////////////////////////////////////////////////
 	//Score operations
 	////////////////////////////////////////////////////
-	void addSheet();
+	void addSheet(CASheet *s);
 	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v);
 	
 	/**
@@ -208,5 +209,5 @@ private:
 	 * @param sheet Pointer to the common CASheet viewports use.
 	 * @param repaint Should the viewports be repainted as well.
 	 */
-	void rebuildScoreViewPorts(CASheet *sheet, bool repaint=true);
+	void rebuildScoreViewPorts(CASheet *sheet=0, bool repaint=true);
 };

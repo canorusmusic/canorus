@@ -18,7 +18,7 @@ class CASheet;
 
 class CAContext {
 	public:
-		CAContext(CASheet *s);
+		CAContext(CASheet *s, const QString name);
 		
 		/**
 		 * enum CAContextType holds different CAContext types:
@@ -33,7 +33,9 @@ class CAContext {
 			Lyrics,
 			Dynamics
 		};
-
+		
+		const QString name() { return _name; } 
+		
 		/**
 		 * Set the Context's name.
 		 * 

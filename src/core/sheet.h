@@ -12,25 +12,34 @@
 #include <QString>
 #include <QList>
 
-class CAContext;
+#include "core/context.h"
+
+class CADocument;
 class CAStaff;
 
 class CASheet {
 	public:
-		CASheet(const QString name);
+		CASheet(const QString name, CADocument *doc);
 		
-		const QString name() { return _name; }
 		CAContext *contextAt(int i) { return _contextList[i]; }
-		int contextCount() { return _contextList.size(); }
-
-		void setName(const QString name) { _name = name; }
+		CAContext *context(const QString name);	///Look up for the context with the given name.
+		void addContext(CAContext *);
+		inline int contextCount() { return _contextList.size(); }
+		
 		CAStaff *addStaff();
+		inline int staffCount() { return _staffList.size(); }
+		CAStaff *staffAt(int i) { return _staffList[i]; }
+
+		inline CADocument *document() { return _document; }
+		inline const QString name() { return _name; }
+		inline void setName(const QString name) { _name = name; }
 
 		void clear();
 		
 	private:
 		QList<CAContext *> _contextList;	///List of all the contexts in the sheet (lyrics, staffs, tablatures, general-bas markings etc.)
 		QList<CAStaff *> _staffList;	///List of all the staffs only in the sheet
+		CADocument *_document;
 		
 		QString _name;
 };

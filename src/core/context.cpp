@@ -8,6 +8,7 @@
 
 #include "context.h"
 
-CAContext::CAContext(CASheet *s) {
+CAContext::CAContext(CASheet *s, const QString name) {
 	_sheet = s;
+	_name = name;
 }

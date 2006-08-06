@@ -57,7 +57,18 @@ class CAKeySignature : public CAMusElement {
 		 * @param type Key signature type. See CAKeySignature::CAKeySignatureType.
 		 * @param accs Number of accidentals for an ordinary diatonic key signature. 0 - C-Major, -1 - F-Major, +7 - Cis-Major
 		 */
-		CAKeySignature(CAKeySignatureType type, signed char accs, CAStaff *staff, int timeStart);
+		CAKeySignature(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender, CAStaff *staff, int timeStart);
+		
+		/**
+		 * This is an overloaded member function provided for convenience.
+		 * 
+		 * Constructor using the ML arguments.
+		 * 
+		 * @param pitch The pitch of the key signature. eg. E for E-Major
+		 * @param gender Gender of the key signature.
+		 */
+		CAKeySignature(QString pitch, QString gender, CAStaff *staff, int timeStart);
+		
 		~CAKeySignature();
 		
 		CAKeySignatureType keySignatureType() { return _keySignatureType; }

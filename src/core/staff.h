@@ -23,7 +23,7 @@ class CANote;
 
 class CAStaff : public CAContext {
 	public:
-		CAStaff(CASheet *s);
+		CAStaff(CASheet *s, const QString name);
 		
 		inline int numberOfLines() { return _numberOfLines; }
 		inline void setNumberOfLines(int val) { _numberOfLines = val; }
@@ -49,6 +49,21 @@ class CAStaff : public CAContext {
 		 * @return Pointer to the voice with the given index.
 		 */
 		CAVoice *voiceAt(int i) { return _voiceList[i]; }
+		
+		/**
+		 * Look up for the voice with the given name and return it.
+		 * 
+		 * @param name The name of the voice being looked for.
+		 * @return Pointer to the voice with the given name. If such a voice doesn't exist, return 0.
+		 */
+		CAVoice *voice(const QString name);
+		
+		/**
+		 * Add a voice to the voice list.
+		 * 
+		 * @param voice Voice to be added.
+		 */
+		void addVoice(CAVoice *voice) { _voiceList << voice; }
 		
 		/**
 		 * Insert a sign to the staff at certain time.
