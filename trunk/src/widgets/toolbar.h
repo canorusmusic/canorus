@@ -25,11 +25,14 @@
 #define CNTOOLBAR_H
 
 #include <QToolBar>
+#include <QMenu>
+#include <QToolButton>
 
-class QMenu;
+class QGroupBox;
 class QButtonGroup;
-class QToolButton;
+class QGridLayout;
 class QAction;
+class CAButtonMenu;
 
 typedef enum
 {
@@ -41,6 +44,7 @@ typedef enum
 
 class CAToolBar : public QToolBar
 {
+	Q_OBJECT
 public:
   /**
    * Constructs the toolbar
@@ -77,7 +81,7 @@ public:
    * @param bToggle       'true': tool button is a toggle button
    *
    */
-  void addToolMenu( const QString oTitle, const QButtonGroup *poButtonGroup, 
+  void addToolMenu( const QString oTitle, CAButtonMenu *poButtonMenu, 
                     const QIcon *poIcon, bool bToggle = false );
   /**
    * Add a Tool button
@@ -110,9 +114,37 @@ private:
 	QList<CTB_Type>	moToolTypes;
 	QList<QWidget*>	moToolElements;
 	QList<QAction*>	moToolActions;
-	QButtonGroup *mpoClefMenu;
-	QMenu *mpoNoteMenu;
+	CAButtonMenu *mpoClefMenu;
+	CAButtonMenu *mpoNoteMenu;
 	QMenu *mpoKeysigMenu;
+};
+
+// Button Group shown as Menu
+class CAButtonMenu : public QMenu
+{
+	Q_OBJECT
+public:
+	CAButtonMenu( QString oTitle, QWidget * poParent = 0 );
+	~CAButtonMenu();
+
+	void addButton( const QIcon &oIcon );
+	int  getNumIconsPerRow();
+	void setNumIconsPerRow( int iNumIconsRow );
+
+public slots:
+	void showButtons();
+
+protected:
+	QButtonGroup *mpoBGroup;
+	QGroupBox    *mpoBBox;
+	QGridLayout  *mpoMLayout;
+	QGridLayout  *mpoBLayout;
+	QList<QToolButton*> moButtons; 
+	int            miBXPos;         // x position of next button
+	int            miBYPos;         // y position of next button
+	int            miNumIconsRow;   // number of icons per row
+	int            miMargin;        // margin of layout
+	int            miSpace;         // space between buttons
 };
 
 #endif /* CNTOOLBAR_H */
