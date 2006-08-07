@@ -15,8 +15,23 @@ class CAStaff;
 
 class CABarline : public CAMusElement{
 	public:
-		CABarline(CAStaff *staff, int startTime);
+		enum CABarlineType {
+			Single,
+			Double,
+			End,
+			RepeatOpen,
+			RepeatClose,
+			Dotted
+		};
+		
+		CABarline(CABarlineType type, CAStaff *staff, int startTime);
+		
+		CABarlineType barlineType() { return _barlineType; }
+		
 		virtual ~CABarline();
+	
+	private:
+		CABarlineType _barlineType;
 };
 
 #endif /*BARLINE_H_*/
