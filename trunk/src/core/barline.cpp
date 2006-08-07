@@ -9,9 +9,10 @@
 #include "core/barline.h"
 #include "core/staff.h"
 
-CABarline::CABarline(CAStaff *staff, int startTime) 
+CABarline::CABarline(CABarlineType type, CAStaff *staff, int startTime) 
  : CAMusElement(staff, startTime) {
  	_musElementType = CAMusElement::Barline;
+ 	_barlineType = type;
 }
 
 CABarline::~CABarline() {
