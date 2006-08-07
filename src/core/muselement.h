@@ -41,7 +41,7 @@ class CAMusElement {
 			NoteBracket,
 			Chord,
 			Rest,
-			BarLine,
+			Barline,
 			Clef,
 			TimeSignature,
 			KeySignature,
