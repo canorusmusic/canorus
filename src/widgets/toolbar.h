@@ -109,6 +109,10 @@ protected:
    * 
    */
   void initToolBar();
+  
+protected slots:
+  void changeNoteMenuIcon( QAbstractButton *poButton );
+  void changeClefMenuIcon( QAbstractButton *poButton );
 
 private:
 	QList<CTB_Type>	moToolTypes;
@@ -133,7 +137,11 @@ public:
 
 public slots:
 	void showButtons();
+	void hideButtons( QAbstractButton *poButton );
 
+signals:
+    void buttonClicked( QAbstractButton *poButton );
+    
 protected:
 	QButtonGroup *mpoBGroup;
 	QGroupBox    *mpoBBox;

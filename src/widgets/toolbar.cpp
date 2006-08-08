@@ -58,29 +58,66 @@ void CAToolBar::initToolBar()
 	mpoNoteMenu   = new CAButtonMenu( tr("Select Note" ) );
 	mpoKeysigMenu = new QMenu(); 
 	
-	QIcon oClefTrebleIcon(  QString::fromUtf8(":/menu/images/cleftreble.png") );
-	QIcon oClefBassIcon(  QString::fromUtf8(":/menu/images/clefbass.png") );
+	QIcon oClefTrebleIcon( QString::fromUtf8(":/menu/images/cleftreble.png") );
+	QIcon oClefAltoIcon(   QString::fromUtf8(":/menu/images/clefalto.png") );
+	QIcon oClefBassIcon(   QString::fromUtf8(":/menu/images/clefbass.png") );
+	
+	QIcon oN0Icon(  QString::fromUtf8(":/menu/images/n0.png") );
+	QIcon oN1Icon(  QString::fromUtf8(":/menu/images/n1.png") );
+	QIcon oN2Icon(  QString::fromUtf8(":/menu/images/n2.png") );
+	QIcon oN4Icon(  QString::fromUtf8(":/menu/images/n4.png") );
+	QIcon oN8Icon(  QString::fromUtf8(":/menu/images/n8.png") );
+	QIcon oN16Icon(  QString::fromUtf8(":/menu/images/n16.png") );
+	QIcon oN32Icon(  QString::fromUtf8(":/menu/images/n32.png") );
+	QIcon oN64Icon(  QString::fromUtf8(":/menu/images/n64.png") );
 	
 	addToolMenu( "Clef", mpoClefMenu, &oClefTrebleIcon, true );
-	QIcon oNIcon(  QString::fromUtf8(":/menu/images/n4.png") );
-	addToolMenu( "Note", mpoNoteMenu, &oNIcon, false );
+	addToolMenu( "Note", mpoNoteMenu, &oN4Icon, false );
 	QIcon oDFIcon( QString::fromUtf8(":/menu/images/doubleflat.png") );
 	addToolMenu( "Key Signature", mpoKeysigMenu, &oDFIcon, true );
 	
 	// Add all the menu entries, either as text or icons
 	mpoClefMenu->addButton( oClefTrebleIcon );
+	mpoClefMenu->addButton( oClefAltoIcon );
 	mpoClefMenu->addButton( oClefBassIcon );
+	connect( mpoClefMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
+		     this, SLOT( changeClefMenuIcon( QAbstractButton * ) ) );
 	//mpoNoteMenu->addAction( "half" );
 	//mpoNoteMenu->addAction( "quarter" );
 	//mpoNoteMenu->addAction( "eigth" );
-	mpoNoteMenu->addButton( oNIcon );
-	mpoNoteMenu->addButton( oNIcon );
-	mpoNoteMenu->addButton( oNIcon );
+	printf("Adding 0\n"); fflush(stdout);
+	mpoNoteMenu->addButton( oN0Icon );
+	printf("Adding 1\n"); fflush(stdout);
+	mpoNoteMenu->addButton( oN1Icon );
+	printf("Adding 2\n"); fflush(stdout);
+	mpoNoteMenu->addButton( oN2Icon );
+	printf("Adding 4\n"); fflush(stdout);
+	mpoNoteMenu->addButton( oN4Icon );
+	printf("Adding 8\n"); fflush(stdout);
+	mpoNoteMenu->addButton( oN8Icon );
+	printf("Adding 16\n"); fflush(stdout);
+	mpoNoteMenu->addButton( oN16Icon );
+	printf("Adding 32\n"); fflush(stdout);
+	mpoNoteMenu->addButton( oN32Icon );
+	printf("Adding 64\n"); fflush(stdout);
+	mpoNoteMenu->addButton( oN64Icon );
+	connect( mpoNoteMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
+		     this, SLOT( changeNoteMenuIcon( QAbstractButton * ) ) );
 	mpoKeysigMenu->addAction( "C" );
 	mpoKeysigMenu->addAction( "G" );
 	mpoKeysigMenu->addAction( "D" );
 	mpoKeysigMenu->addAction( "A" );
 	mpoKeysigMenu->addAction( "E" );
+}
+
+void CAToolBar::changeNoteMenuIcon( QAbstractButton *poButton )
+{
+	((QToolButton *)(moToolElements[1]))->setIcon( poButton->icon() );
+}
+
+void CAToolBar::changeClefMenuIcon( QAbstractButton *poButton )
+{
+	((QToolButton *)(moToolElements[0]))->setIcon( poButton->icon() );
 }
 
 void CAToolBar::addToolMenu( const QString oTitle, QMenu *poMenu,
@@ -263,27 +300,31 @@ void CAButtonMenu::addButton( const QIcon &oIcon )
 	moButtons.append( poMButton );
 	// Add it to the abstract group
     mpoBGroup->addButton( moButtons.last() );
-    // Add it to the button menu layout
-    mpoBLayout->addWidget( poMButton, miBYPos, miBXPos, Qt::AlignLeft );
-    ++miBXPos;
+    // Connect Hide action to the button
+    connect( mpoBGroup, SIGNAL( buttonClicked( QAbstractButton * ) ), 
+             this, SLOT( hideButtons( QAbstractButton * ) ) );
     // Create menu that has miNumIconsRow buttons in each row
-    if( miBXPos > miNumIconsRow )
+    if( miBXPos >= miNumIconsRow )
     {
     	miBXPos = 0;
     	++miBYPos;
     }
-    if( miBXPos > 0 )
+    // Add it to the button menu layout
+    mpoBLayout->addWidget( poMButton, miBYPos, miBXPos, Qt::AlignLeft );
+    ++miBXPos;
+    if( miBYPos > 0 )
     {
-	    iXSize = miNumIconsRow * (miSpace+iIconSize);
+	    iXSize = miNumIconsRow * (miSpace+poMButton->width()/3);
 		iYSize = (miBYPos+1)   * (miSpace+poMButton->height());
     }
     else
     {
-	    iXSize = miBXPos * (miSpace+iIconSize);
-		iYSize = miBYPos * (miSpace+poMButton->height());
+	    iXSize = miBXPos * (miSpace+poMButton->width()/3);
+		iYSize = (miBYPos+1) * (miSpace+poMButton->height());
     }
-	//printf("MX: %d, SX: %d, MY: %d, SY: %d\n", iXMargin, iXSize, iYMargin, iYSize);
-	//fflush( stdout );
+	printf("XPos %d, MX: %d, SX: %d, YPos %d, MY: %d, SY: %d\n",
+	       miBXPos, iXMargin, iXSize, miBYPos, iYMargin, iYSize);
+	fflush( stdout );
 	setMinimumSize( iXMargin + iXSize, iYMargin + iYSize );
 }
 
@@ -294,4 +335,10 @@ void CAButtonMenu::showButtons()
 	//printf("Pos: %d, %d\n",pos().x(), pos().y() );
 	//fflush( stdout );
 	//move( iX, iY );
+}
+
+void CAButtonMenu::hideButtons( QAbstractButton *poButton )
+{
+	hide();
+	emit buttonClicked( poButton );
 }
