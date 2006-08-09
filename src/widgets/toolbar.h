@@ -46,81 +46,92 @@ class CAToolBar : public QToolBar
 {
 	Q_OBJECT
 public:
-  /**
-   * Constructs the toolbar
-   * 
-   * @param oTitle    Toolbar title
-   * @param poParent  parent widget
-   *
-   */
-  CAToolBar( const QString &oTitle, QWidget *poParent = 0 );
-  CAToolBar( QWidget *poParent = 0 );
-  /**
-   * Destructs the toolbar
-   * 
-   */
-  ~CAToolBar();
-
-  /**
-   * Add Tool button with a menu to the toolbar
-   * 
-   * @param oTitle    Toolbutton title
-   * @param poMenu    Menu at the side of the tool button (including icons)
-   * @param poIcon    Icon of the tool button
-   * @param bToggle   'true': tool button is a toggle button
-   *
-   */
-  void addToolMenu( const QString oTitle, QMenu *poMenu,
-                    const QIcon *poIcon, bool bToggle = false );
-  /**
-   * Add Tool button with a menu to the toolbar
-   * 
-   * @param oTitle        Toolbutton title
-   * @param poButtonGroup Button Group instead of normal menu (including icons)
-   * @param poIcon        Icon of the tool button
-   * @param bToggle       'true': tool button is a toggle button
-   *
-   */
-  void addToolMenu( const QString oTitle, CAButtonMenu *poButtonMenu, 
-                    const QIcon *poIcon, bool bToggle = false );
-  /**
-   * Add a Tool button
-   * 
-   * @param oTitle       Toolbutton title
-   * @param poIcon       Icon of the tool button
-   * @param bToggle      'true': tool button is a toggle button
-   *
-   */
-  void addToolButton( const QString oTitle, const QIcon *poIcon,
-                      bool bToggle = false );
-  /**
-   * Add a combobox menu
-   * 
-   * @param oTitle       Combobox title
-   * @param poItemList   List of combobox menu entries
-   * @param iIndex       Index of the menu entry to be displayed
-   *
-   */
-  void addComboBox( QString oTitle, QStringList *poItemList, int iIndex );
+	/**
+	 * Constructs the toolbar
+	 * 
+	 * @param oTitle    Toolbar title
+	 * @param poParent  parent widget
+	 *
+	 */
+	CAToolBar( const QString &oTitle, QWidget *poParent = 0 );
+	CAToolBar( QWidget *poParent = 0 );
+	/**
+	 * Destructs the toolbar
+	 * 
+	 */
+	~CAToolBar();
+	/**
+	 * Add Tool button with a menu to the toolbar
+	 * 
+	 * @param oTitle    Toolbutton title
+	 * @param poMenu    Menu at the side of the tool button (including icons)
+	 * @param poIcon    Icon of the tool button
+	 * @param bToggle   'true': tool button is a toggle button
+	 *
+	 */
+	void addToolMenu( const QString oTitle, QMenu *poMenu,
+	                  const QIcon *poIcon, bool bToggle = false );
+	/**
+	 * Add Tool button with a menu to the toolbar
+	 * 
+	 * @param oTitle        Toolbutton title
+	 * @param poButtonGroup Button Group instead of normal menu (including icons)
+	 * @param poIcon        Icon of the tool button
+	 * @param bToggle       'true': tool button is a toggle button
+	 *
+	 */
+	void addToolMenu( const QString oTitle, CAButtonMenu *poButtonMenu, 
+	                  const QIcon *poIcon, bool bToggle = false );
+	/**
+	 * Add a Tool button
+	 * 
+	 * @param oTitle       Toolbutton title
+	 * @param poIcon       Icon of the tool button
+	 * @param bToggle      'true': tool button is a toggle button
+	 *
+	 */
+	void addToolButton( const QString oTitle, const QIcon *poIcon,
+	                    bool bToggle = false );
+	/**
+	 * Add a combobox menu
+	 * 
+	 * @param oTitle       Combobox title
+	 * @param poItemList   List of combobox menu entries
+	 * @param iIndex       Index of the menu entry to be displayed
+	 *
+	 */
+	void addComboBox( QString oTitle, QStringList *poItemList, int iIndex );
 
 protected:
-  /**
-   * Initialize the toolbar
-   * 
-   */
-  void initToolBar();
+	/**
+	 * Initialize the toolbar
+	 * 
+	 */
+	void initToolBar();
   
 protected slots:
-  void changeNoteMenuIcon( QAbstractButton *poButton );
-  void changeClefMenuIcon( QAbstractButton *poButton );
+	/**
+	 * Change the icon of the note menu
+	 * 
+	 * @param poButton       Button with the needed icon for update
+	 *
+	 */
+	void changeNoteMenuIcon( QAbstractButton *poButton );
+	/**
+	 * Change the icon of the clef menu
+	 * 
+	 * @param poButton       Button with the needed icon for update
+	 *
+	 */
+	void changeClefMenuIcon( QAbstractButton *poButton );
 
 private:
-	QList<CTB_Type>	moToolTypes;
-	QList<QWidget*>	moToolElements;
-	QList<QAction*>	moToolActions;
-	CAButtonMenu *mpoClefMenu;
-	CAButtonMenu *mpoNoteMenu;
-	QMenu *mpoKeysigMenu;
+	QList<CTB_Type>	moToolTypes;	/// list with types of the toolbar elements
+	QList<QWidget*>	moToolElements; /// list with the toolbar elements themself
+	QList<QAction*>	moToolActions;  /// list with the actions of the toolbar elements
+	CAButtonMenu *mpoClefMenu;      /// menu for selection of a clef
+	CAButtonMenu *mpoNoteMenu;      /// menu for the selection of a note length
+	QMenu *mpoKeysigMenu;           /// menu for selection of a key signature
 };
 
 // Button Group shown as Menu
@@ -128,31 +139,74 @@ class CAButtonMenu : public QMenu
 {
 	Q_OBJECT
 public:
+	/**
+	 * Constructs the button menu
+	 * 
+	 * @param oTitle    button menu title
+	 * @param poParent  parent widget
+	 *
+	 */
 	CAButtonMenu( QString oTitle, QWidget * poParent = 0 );
+	/**
+	 * Destructs the button menu
+	 * 
+	 */
 	~CAButtonMenu();
 
+	/**
+	 * Add a Tool button to the menu
+	 * 
+	 * @param oIcon       Icon of the tool button
+	 *
+	 */
 	void addButton( const QIcon &oIcon );
+	/**
+	 * Return the number of icons per row
+	 * 
+	 * @return number of icons per row
+	 *
+	 */
 	int  getNumIconsPerRow();
+	/**
+	 * Set the number of icons per row
+	 * 
+	 * @param iNumIconsRow   number of icons per row
+	 *
+	 */	
 	void setNumIconsPerRow( int iNumIconsRow );
 
 public slots:
+	/**
+	 * Shows the button menu (connected to aboutToShow signal)
+	 * 
+	 */	
 	void showButtons();
+	/**
+	 * Hides the button menu (connected to buttonClicked signal)
+	 * 
+	 */	
 	void hideButtons( QAbstractButton *poButton );
 
 signals:
+	/**
+	 * Signal sent when buttons are hidden with the selected button
+	 * 
+	 * @param poButton   selected button from the button menu
+	 *
+	 */	
     void buttonClicked( QAbstractButton *poButton );
     
 protected:
-	QButtonGroup *mpoBGroup;
-	QGroupBox    *mpoBBox;
-	QGridLayout  *mpoMLayout;
-	QGridLayout  *mpoBLayout;
+	QButtonGroup *mpoBGroup;		/// Abstract group for the button actions
+	QGroupBox    *mpoBBox;			/// Group box containing title and buttons
+	QGridLayout  *mpoMLayout;       /// Layout for the group box
+	QGridLayout  *mpoBLayout;       /// Layout for the button menu
 	QList<QToolButton*> moButtons; 
-	int            miBXPos;         // x position of next button
-	int            miBYPos;         // y position of next button
-	int            miNumIconsRow;   // number of icons per row
-	int            miMargin;        // margin of layout
-	int            miSpace;         // space between buttons
+	int            miBXPos;         /// X position of next button
+	int            miBYPos;         /// Y position of next button
+	int            miNumIconsRow;   /// Number of icons per row
+	int            miSpace;         /// Space between buttons
+	int            miMargin;        /// Margin of layout
 };
 
 #endif /* CNTOOLBAR_H */
