@@ -29,7 +29,7 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 		case CAClef::Bass:
 			_width = 22;
 			_height = 26;
-			_yPos = y;
+			_yPos = y + 1;
 			break;
 		case CAClef::Alto:
 		case CAClef::Tenor:
