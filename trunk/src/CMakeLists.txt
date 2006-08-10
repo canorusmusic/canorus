@@ -32,6 +32,7 @@ set(Canorus_MOCs ui/mainwin.h
 	widgets/viewport.h 
 	widgets/scoreviewport.h 
 	widgets/sourceviewport.h
+	widgets/toolbar.h
 	interface/playback.h
 	)
 
