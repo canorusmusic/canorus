@@ -27,6 +27,7 @@
 #include <QToolBar>
 #include <QMenu>
 #include <QToolButton>
+#include <QHash>
 
 class QGroupBox;
 class QButtonGroup;
@@ -64,44 +65,58 @@ public:
 	 * Add Tool button with a menu to the toolbar
 	 * 
 	 * @param oTitle    Toolbutton title
+	 * @param oName        Unique name to identify the toolbar element
 	 * @param poMenu    Menu at the side of the tool button (including icons)
 	 * @param poIcon    Icon of the tool button
 	 * @param bToggle   'true': tool button is a toggle button
 	 *
 	 */
-	void addToolMenu( const QString oTitle, QMenu *poMenu,
+	void addToolMenu( const QString oTitle, QString oName, QMenu *poMenu,
 	                  const QIcon *poIcon, bool bToggle = false );
 	/**
 	 * Add Tool button with a menu to the toolbar
 	 * 
 	 * @param oTitle        Toolbutton title
+	 * @param oName        Unique name to identify the toolbar element
 	 * @param poButtonGroup Button Group instead of normal menu (including icons)
 	 * @param poIcon        Icon of the tool button
 	 * @param bToggle       'true': tool button is a toggle button
 	 *
 	 */
-	void addToolMenu( const QString oTitle, CAButtonMenu *poButtonMenu, 
+	void addToolMenu( const QString oTitle, QString oName, CAButtonMenu *poButtonMenu, 
 	                  const QIcon *poIcon, bool bToggle = false );
 	/**
 	 * Add a Tool button
 	 * 
 	 * @param oTitle       Toolbutton title
+	 * @param oName        Unique name to identify the toolbar element
 	 * @param poIcon       Icon of the tool button
 	 * @param bToggle      'true': tool button is a toggle button
 	 *
 	 */
-	void addToolButton( const QString oTitle, const QIcon *poIcon,
+	void addToolButton( const QString oTitle, QString oName, const QIcon *poIcon,
 	                    bool bToggle = false );
 	/**
 	 * Add a combobox menu
 	 * 
 	 * @param oTitle       Combobox title
+	 * @param oName        Unique name to identify the toolbar element
 	 * @param poItemList   List of combobox menu entries
 	 * @param iIndex       Index of the menu entry to be displayed
 	 *
 	 */
-	void addComboBox( QString oTitle, QStringList *poItemList, int iIndex );
+	void addComboBox( QString oTitle, QString oName, QStringList *poItemList, 
+	                  int iIndex );
 
+signals:
+	/**
+	 * Signal sent when buttons are hidden with the selected button
+	 * 
+	 * @param poButton   selected button from the button menu
+	 *
+	 */	
+    void buttonClicked( QAbstractButton *poButton );
+    
 protected:
 	/**
 	 * Initialize the toolbar
@@ -111,23 +126,17 @@ protected:
   
 protected slots:
 	/**
-	 * Change the icon of the note menu
+	 * Change the icon of a button menu
 	 * 
 	 * @param poButton       Button with the needed icon for update
 	 *
 	 */
-	void changeNoteMenuIcon( QAbstractButton *poButton );
-	/**
-	 * Change the icon of the clef menu
-	 * 
-	 * @param poButton       Button with the needed icon for update
-	 *
-	 */
-	void changeClefMenuIcon( QAbstractButton *poButton );
+	void changeMenuIcon( QAbstractButton *poButton );
 
 private:
 	QList<CTB_Type>	moToolTypes;	/// list with types of the toolbar elements
 	QList<QWidget*>	moToolElements; /// list with the toolbar elements themself
+	QHash<QString, int> moToolIDs;  /// hash of IDs to find the button icon to be shown
 	QList<QAction*>	moToolActions;  /// list with the actions of the toolbar elements
 	CAButtonMenu *mpoClefMenu;      /// menu for selection of a clef
 	CAButtonMenu *mpoNoteMenu;      /// menu for the selection of a note length
