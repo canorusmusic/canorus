@@ -29,8 +29,10 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QGridLayout>
+#include <QApplication>
+#include <QDesktopWidget>
 
-#include "widgets/toolbar.h"
+#include "toolbar.h"
 
 CAToolBar::CAToolBar( const QString &oTitle, QWidget *poParent /* = 0 */ )
   : QToolBar( oTitle, poParent )
@@ -71,38 +73,30 @@ void CAToolBar::initToolBar()
 	QIcon oN32Icon(  QString::fromUtf8(":/menu/images/n32.png") );
 	QIcon oN64Icon(  QString::fromUtf8(":/menu/images/n64.png") );
 	
-	addToolMenu( "Clef", mpoClefMenu, &oClefTrebleIcon, true );
-	addToolMenu( "Note", mpoNoteMenu, &oN4Icon, false );
+	addToolMenu( "Add Clef", "Clef", mpoClefMenu, &oClefTrebleIcon, true );
+	addToolMenu( "Change Note length", "Note", mpoNoteMenu, &oN4Icon, false );
 	QIcon oDFIcon( QString::fromUtf8(":/menu/images/doubleflat.png") );
-	addToolMenu( "Key Signature", mpoKeysigMenu, &oDFIcon, true );
+	addToolMenu( "Add Key Signature", "KeySig", mpoKeysigMenu, &oDFIcon, true );
 	
 	// Add all the menu entries, either as text or icons
 	mpoClefMenu->addButton( oClefTrebleIcon );
 	mpoClefMenu->addButton( oClefAltoIcon );
 	mpoClefMenu->addButton( oClefBassIcon );
 	connect( mpoClefMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
-		     this, SLOT( changeClefMenuIcon( QAbstractButton * ) ) );
+		     this, SLOT( changeMenuIcon( QAbstractButton * ) ) );
 	//mpoNoteMenu->addAction( "half" );
 	//mpoNoteMenu->addAction( "quarter" );
 	//mpoNoteMenu->addAction( "eigth" );
-	printf("Adding 0\n"); fflush(stdout);
 	mpoNoteMenu->addButton( oN0Icon );
-	printf("Adding 1\n"); fflush(stdout);
 	mpoNoteMenu->addButton( oN1Icon );
-	printf("Adding 2\n"); fflush(stdout);
 	mpoNoteMenu->addButton( oN2Icon );
-	printf("Adding 4\n"); fflush(stdout);
 	mpoNoteMenu->addButton( oN4Icon );
-	printf("Adding 8\n"); fflush(stdout);
 	mpoNoteMenu->addButton( oN8Icon );
-	printf("Adding 16\n"); fflush(stdout);
 	mpoNoteMenu->addButton( oN16Icon );
-	printf("Adding 32\n"); fflush(stdout);
 	mpoNoteMenu->addButton( oN32Icon );
-	printf("Adding 64\n"); fflush(stdout);
 	mpoNoteMenu->addButton( oN64Icon );
 	connect( mpoNoteMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
-		     this, SLOT( changeNoteMenuIcon( QAbstractButton * ) ) );
+		     this, SLOT( changeMenuIcon( QAbstractButton * ) ) );
 	mpoKeysigMenu->addAction( "C" );
 	mpoKeysigMenu->addAction( "G" );
 	mpoKeysigMenu->addAction( "D" );
@@ -110,17 +104,13 @@ void CAToolBar::initToolBar()
 	mpoKeysigMenu->addAction( "E" );
 }
 
-void CAToolBar::changeNoteMenuIcon( QAbstractButton *poButton )
+void CAToolBar::changeMenuIcon( QAbstractButton *poButton )
 {
-	((QToolButton *)(moToolElements[1]))->setIcon( poButton->icon() );
+	int iBMID = moToolIDs[poButton->objectName()];
+	((QToolButton *)(moToolElements[iBMID]))->setIcon( poButton->icon() );
 }
 
-void CAToolBar::changeClefMenuIcon( QAbstractButton *poButton )
-{
-	((QToolButton *)(moToolElements[0]))->setIcon( poButton->icon() );
-}
-
-void CAToolBar::addToolMenu( const QString oTitle, QMenu *poMenu,
+void CAToolBar::addToolMenu( const QString oTitle, QString oName, QMenu *poMenu,
                              const QIcon *poIcon, bool bToggle /* = false */ )
 {
 	// ToDo: Could be improved by calling addToolButton
@@ -131,23 +121,29 @@ void CAToolBar::addToolMenu( const QString oTitle, QMenu *poMenu,
 	poMenuButton = new QToolButton();
 	// Add it to the list of elements for saving it later
 	if( poMenuButton )
+	{
 		moToolElements.append(poMenuButton);
-	// Update icon
-	poMenuButton->setIcon( *poIcon );
-	// Toggle button ?
-	poMenuButton->setCheckable( bToggle );
-	// Tooltip
-	poMenuButton->setToolTip( oTitle );
-	// Add action to the element
-	poAction = addWidget( poMenuButton );
-	// Save it in the action list
-	moToolActions.append( poAction );
-	// Associate menu with the button
-	poMenuButton->setMenu( poMenu );
-	poMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
+		moToolIDs[oName] = moToolElements.size() - 1;
+		poMenuButton->setObjectName( oName );
+		poMenu->setObjectName( oName );
+		// Update icon
+		poMenuButton->setIcon( *poIcon );
+		// Toggle button ?
+		poMenuButton->setCheckable( bToggle );
+		// Tooltip
+		poMenuButton->setToolTip( oTitle );
+		// Add action to the element
+		poAction = addWidget( poMenuButton );
+		// Save it in the action list
+		moToolActions.append( poAction );
+		// Associate menu with the button
+		poMenuButton->setMenu( poMenu );
+		// Add menu grab
+		poMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
+	}
 }
 
-void CAToolBar::addToolMenu( const QString oTitle, CAButtonMenu *poButtonMenu, 
+void CAToolBar::addToolMenu( const QString oTitle, QString oName, CAButtonMenu *poButtonMenu, 
                              const QIcon *poIcon, bool bToggle /* = false */ )
 {
 	// ToDo: Could be improved by calling addToolButton
@@ -158,24 +154,30 @@ void CAToolBar::addToolMenu( const QString oTitle, CAButtonMenu *poButtonMenu,
 	poMenuButton = new QToolButton();
 	// Add it to the list of elements for saving it later
 	if( poMenuButton )
+	{
 		moToolElements.append(poMenuButton);
-	// Update icon
-	poMenuButton->setIcon( *poIcon );
-	// Toggle button ?
-	poMenuButton->setCheckable( bToggle );
-	// Tooltip
-	poMenuButton->setToolTip( oTitle );
-	// Add action to the element
-	poAction = addWidget( poMenuButton );
-	// Save it in the action list
-	moToolActions.append( poAction );
-	// Associate menu with the button
-	poMenuButton->setMenu( poButtonMenu );
-	poMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
+		moToolIDs[oName] = moToolElements.size() - 1;
+		poMenuButton->setObjectName( oName );
+		poButtonMenu->setObjectName( oName );
+		// Update icon
+		poMenuButton->setIcon( *poIcon );
+		// Toggle button ?
+		poMenuButton->setCheckable( bToggle );
+		// Tooltip
+		poMenuButton->setToolTip( oTitle );
+		// Add action to the element
+		poAction = addWidget( poMenuButton );
+		// Save it in the action list
+		moToolActions.append( poAction );
+		// Associate menu with the button
+		poMenuButton->setMenu( poButtonMenu );
+		// Add menu grab
+		poMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
+	}
 }
 
-void CAToolBar::addToolButton( const QString oTitle, const QIcon *poIcon, 
-                               bool bToggle /* = false */ )
+void CAToolBar::addToolButton( const QString oTitle, QString oName, 
+                               const QIcon *poIcon, bool bToggle /* = false */ )
 {
 	QToolButton *poMenuButton = 0;
 	QAction     *poAction     = 0;
@@ -184,21 +186,25 @@ void CAToolBar::addToolButton( const QString oTitle, const QIcon *poIcon,
 	poMenuButton = new QToolButton();
 	// Add it to the list of elements for saving it later
 	if( poMenuButton )
+	{
 		moToolElements.append(poMenuButton);
-	// Update icon
-	poMenuButton->setIcon( *poIcon );
-	// Toggle button ?
-	poMenuButton->setCheckable( bToggle );
-	// Tooltip
-	poMenuButton->setToolTip( oTitle );
-	// Add action to the element
-	poAction = addWidget( poMenuButton );
-	// Save it in the action list
-	moToolActions.append( poAction );
+		moToolIDs[oName] = moToolElements.size() - 1;
+		poMenuButton->setObjectName( oName );
+		// Update icon
+		poMenuButton->setIcon( *poIcon );
+		// Toggle button ?
+		poMenuButton->setCheckable( bToggle );
+		// Tooltip
+		poMenuButton->setToolTip( oTitle );
+		// Add action to the element
+		poAction = addWidget( poMenuButton );
+		// Save it in the action list
+		moToolActions.append( poAction );
+	}
 }
 
-void CAToolBar::addComboBox( QString oTitle, QStringList *poItemList,
-                             int iIndex )
+void CAToolBar::addComboBox( QString oTitle, QString oName, 
+                             QStringList *poItemList, int iIndex )
 {
 	QComboBox *poComboMenu = 0;
 	QAction   *poAction    = 0;
@@ -207,17 +213,21 @@ void CAToolBar::addComboBox( QString oTitle, QStringList *poItemList,
 	poComboMenu = new QComboBox();
 	// Add it to the list of elements for saving it later
 	if( poComboMenu )
+	{
 		moToolElements.append(poComboMenu);
-	// Tooltip
-	poComboMenu->setToolTip( oTitle );
-	// Add action to the element
-	poAction = addWidget( poComboMenu );
-	// Save it in the action list
-	moToolActions.append( poAction );
-	// Add menu entries
-	for (int i = 0; i < poItemList->size(); ++i) 
-		poComboMenu->addItems( *poItemList );
-	poComboMenu->setCurrentIndex( iIndex );
+		moToolIDs[oName] = moToolElements.size() - 1;
+		poComboMenu->setObjectName( oName );
+		// Tooltip
+		poComboMenu->setToolTip( oTitle );
+		// Add action to the element
+		poAction = addWidget( poComboMenu );
+		// Save it in the action list
+		moToolActions.append( poAction );
+		// Add menu entries
+		for (int i = 0; i < poItemList->size(); ++i) 
+			poComboMenu->addItems( *poItemList );
+		poComboMenu->setCurrentIndex( iIndex );
+	}
 }
 
 CAButtonMenu::CAButtonMenu( QString oTitle, QWidget * poParent /* = 0 */ ) 
@@ -289,6 +299,7 @@ void CAButtonMenu::addButton( const QIcon &oIcon )
 	poMButton->setIcon( oIcon );
 	poMButton->setIconSize( QSize(iIconSize, iIconSize) );
 	poMButton->setCheckable( true );
+	poMButton->setObjectName( objectName() );
 	if( miBXPos == 0 )
 	{
 		// Action for our button menu as icon or nothing will be seen
@@ -322,9 +333,9 @@ void CAButtonMenu::addButton( const QIcon &oIcon )
 	    iXSize = miBXPos * (miSpace+poMButton->width()/3);
 		iYSize = (miBYPos+1) * (miSpace+poMButton->height());
     }
-	printf("XPos %d, MX: %d, SX: %d, YPos %d, MY: %d, SY: %d\n",
-	       miBXPos, iXMargin, iXSize, miBYPos, iYMargin, iYSize);
-	fflush( stdout );
+	//printf("XPos %d, MX: %d, SX: %d, YPos %d, MY: %d, SY: %d\n",
+	//       miBXPos, iXMargin, iXSize, miBYPos, iYMargin, iYSize);
+	//fflush( stdout );
 	setMinimumSize( iXMargin + iXSize, iYMargin + iYSize );
 }
 
@@ -332,13 +343,18 @@ void CAButtonMenu::showButtons()
 { 
 	mpoBBox->show();
 	mpoBBox->updateGeometry();
-	//printf("Pos: %d, %d\n",pos().x(), pos().y() );
-	//fflush( stdout );
-	//move( iX, iY );
 }
 
 void CAButtonMenu::hideButtons( QAbstractButton *poButton )
 {
 	hide();
 	emit buttonClicked( poButton );
+	QDesktopWidget *poDesktop = QApplication::desktop();
+    int iDWidth = poDesktop->width();
+    int iDHeight = poDesktop->height();
+	if( pos().x() + minimumSize().width() > iDWidth )
+		move( pos().x() - minimumSize().width(), pos().y() );
+	printf("Pos: %d, %d, DW %d, BMW %d\n",
+	       pos().x(), pos().y(), iDWidth, minimumSize().width() );
+	fflush( stdout );
 }
