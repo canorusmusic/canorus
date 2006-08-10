@@ -30,7 +30,7 @@
 #include <QGroupBox>
 #include <QGridLayout>
 
-#include "toolbar.h"
+#include "widgets/toolbar.h"
 
 CAToolBar::CAToolBar( const QString &oTitle, QWidget *poParent /* = 0 */ )
   : QToolBar( oTitle, poParent )
