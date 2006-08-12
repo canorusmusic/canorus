@@ -278,7 +278,7 @@ void CAMainWin::on_actionSource_view_perspective_activated() {
 }
 
 void CAMainWin::on_actionNew_viewport_activated() {
-	CAViewPort *v = _currentScrollWidget->newViewPort();
+	CAViewPort *v = _currentScrollWidget->newViewPort(_activeViewPort);
 
 	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
