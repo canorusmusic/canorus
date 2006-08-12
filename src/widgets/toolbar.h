@@ -117,13 +117,6 @@ signals:
 	 */	
     void buttonClicked( QAbstractButton *poButton );
     
-protected:
-	/**
-	 * Initialize the toolbar
-	 * 
-	 */
-	void initToolBar();
-  
 protected slots:
 	/**
 	 * Change the icon of a button menu
@@ -138,9 +131,6 @@ private:
 	QList<QWidget*>	moToolElements; /// list with the toolbar elements themself
 	QHash<QString, int> moToolIDs;  /// hash of IDs to find the button icon to be shown
 	QList<QAction*>	moToolActions;  /// list with the actions of the toolbar elements
-	CAButtonMenu *mpoClefMenu;      /// menu for selection of a clef
-	CAButtonMenu *mpoNoteMenu;      /// menu for the selection of a note length
-	QMenu *mpoKeysigMenu;           /// menu for selection of a key signature
 };
 
 // Button Group shown as Menu

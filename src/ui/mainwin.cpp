@@ -82,6 +82,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	
 	mpoMEToolBar = new CAToolBar( this );
 	mpoMEToolBar->setOrientation(Qt::Vertical);
+	initToolBar();
 	addToolBar(static_cast<Qt::ToolBarArea>(2), mpoMEToolBar);
 	
 	_slider = 0;
@@ -99,9 +100,64 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	newDocument();
 }
 
-CAMainWin::~CAMainWin() {
+CAMainWin::~CAMainWin() 
+{
+	delete mpoClefMenu;
+	delete mpoNoteMenu;
+	delete mpoKeysigMenu;
 	delete _midiOut;
         delete mpoMEToolBar;
+}
+
+void CAMainWin::initToolBar()
+{
+	// Test Code for Toolbar
+	mpoClefMenu   = new CAButtonMenu( tr("Select Clef" ) );
+	mpoNoteMenu   = new CAButtonMenu( tr("Select Note" ) );
+	mpoKeysigMenu = new QMenu(); 
+	
+	QIcon oClefTrebleIcon( QString::fromUtf8(":/menu/images/cleftreble.png") );
+	QIcon oClefAltoIcon(   QString::fromUtf8(":/menu/images/clefalto.png") );
+	QIcon oClefBassIcon(   QString::fromUtf8(":/menu/images/clefbass.png") );
+	
+	QIcon oN0Icon(  QString::fromUtf8(":/menu/images/n0.png") );
+	QIcon oN1Icon(  QString::fromUtf8(":/menu/images/n1.png") );
+	QIcon oN2Icon(  QString::fromUtf8(":/menu/images/n2.png") );
+	QIcon oN4Icon(  QString::fromUtf8(":/menu/images/n4.png") );
+	QIcon oN8Icon(  QString::fromUtf8(":/menu/images/n8.png") );
+	QIcon oN16Icon(  QString::fromUtf8(":/menu/images/n16.png") );
+	QIcon oN32Icon(  QString::fromUtf8(":/menu/images/n32.png") );
+	QIcon oN64Icon(  QString::fromUtf8(":/menu/images/n64.png") );
+	
+	mpoMEToolBar->addToolMenu( "Add Clef", "Clef", mpoClefMenu, &oClefTrebleIcon, true );
+	mpoMEToolBar->addToolMenu( "Change Note length", "Note", mpoNoteMenu, &oN4Icon, false );
+	QIcon oDFIcon( QString::fromUtf8(":/menu/images/doubleflat.png") );
+	mpoMEToolBar->addToolMenu( "Add Key Signature", "KeySig", mpoKeysigMenu, &oDFIcon, true );
+	
+	// Add all the menu entries, either as text or icons
+	mpoClefMenu->addButton( oClefTrebleIcon );
+	mpoClefMenu->addButton( oClefAltoIcon );
+	mpoClefMenu->addButton( oClefBassIcon );
+	connect( mpoClefMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
+		     mpoMEToolBar, SLOT( changeMenuIcon( QAbstractButton * ) ) );
+	//mpoNoteMenu->addAction( "half" );
+	//mpoNoteMenu->addAction( "quarter" );
+	//mpoNoteMenu->addAction( "eigth" );
+	mpoNoteMenu->addButton( oN0Icon );
+	mpoNoteMenu->addButton( oN1Icon );
+	mpoNoteMenu->addButton( oN2Icon );
+	mpoNoteMenu->addButton( oN4Icon );
+	mpoNoteMenu->addButton( oN8Icon );
+	mpoNoteMenu->addButton( oN16Icon );
+	mpoNoteMenu->addButton( oN32Icon );
+	mpoNoteMenu->addButton( oN64Icon );
+	connect( mpoNoteMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
+		     mpoMEToolBar, SLOT( changeMenuIcon( QAbstractButton * ) ) );
+	mpoKeysigMenu->addAction( "C" );
+	mpoKeysigMenu->addAction( "G" );
+	mpoKeysigMenu->addAction( "D" );
+	mpoKeysigMenu->addAction( "A" );
+	mpoKeysigMenu->addAction( "E" );
 }
 
 void CAMainWin::newDocument() {
