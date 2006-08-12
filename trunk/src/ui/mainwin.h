@@ -24,6 +24,8 @@
 /*									     */
 /*****************************************************************************/
 
+#include <QObject>
+
 #include "ui_mainwin.h"
 
 #include "core/document.h"
@@ -36,6 +38,7 @@ class QSlider;
 class CARtMidiDevice;
 class CAPlayback;
 class CAToolBar;
+class CAButtonMenu;
 class CALCDNumber;
 class CASheet;
 
@@ -56,6 +59,7 @@ public:
 	CAMainWin(QMainWindow *oParent = 0);
 	~CAMainWin();
 
+	void initToolBar();
 	void newDocument();
 	
 	////////////////////////////////////////////////////
@@ -168,6 +172,7 @@ private slots:
 
 private:
 	QSlider *_slider;	//TODO: A quick solution to test the insert key signature feature. This will be replaced by a good toolbar/dialog solution of course. -Matevz
+	
 	////////////////////////////////////////////////////
 	//General properties
 	////////////////////////////////////////////////////
@@ -180,6 +185,13 @@ private:
 	CAPlayback *_playback;
 	QString _fileName;
 
+	////////////////////////////////////////////////////
+	//User interface, toolbar
+	////////////////////////////////////////////////////
+	CAButtonMenu *mpoClefMenu;      /// menu for selection of a clef
+	CAButtonMenu *mpoNoteMenu;      /// menu for the selection of a note length
+	QMenu *mpoKeysigMenu;           /// menu for selection of a key signature
+	
 	////////////////////////////////////////////////////
 	//User interface, widgets
 	////////////////////////////////////////////////////
