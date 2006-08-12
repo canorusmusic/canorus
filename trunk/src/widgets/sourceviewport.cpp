@@ -49,9 +49,15 @@ void CASourceViewPort::on_commit_clicked() {
 }
 
 CASourceViewPort *CASourceViewPort::clone() {
+	CASourceViewPort *v = new CASourceViewPort(_document, _parent);
+	
+	return v;
 }
 
 CASourceViewPort *CASourceViewPort::clone(QWidget *parent) {
+	CASourceViewPort *v = new CASourceViewPort(_document, parent);
+	
+	return v;
 }
 
 void CASourceViewPort::rebuild() {
