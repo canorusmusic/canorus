@@ -21,6 +21,7 @@
 #include "core/clef.h"
 #include "core/muselement.h"
 #include "core/keysignature.h"
+#include "core/barline.h"
 
 CACanorusML::CACanorusML(CADocument *doc, CAMainWin *mainWin) {
 	_document = doc;
@@ -124,6 +125,14 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				voiceString += key->pitchML();
 				voiceString += "</key> ";
 			
+				break;
+			}
+			case CAMusElement::Barline: {
+				//CABarline
+				CABarline *bar = (CABarline*)v->musElementAt(i);
+				if (bar->barlineType() == CABarline::Single)
+					voiceString += "| ";
+				
 				break;
 			}
 			case CAMusElement::Note: {
@@ -277,12 +286,12 @@ bool CACanorusML::characters(const QString& ch) {
 bool CACanorusML::readMusElements(QString string) {
 	string = string.simplified().toUpper();	//remove weirs whitespaces throughout the string and replace them by a single blank
 	while (string.size()) {
-		int idx2 = string.indexOf(QRegExp(" "), 1);	//find the index of the next note
+		int idx2 = string.indexOf(" ");	//find the index of the next note
 		if (idx2==-1)
 			idx2 = string.size();
 
 		//CANote
-		if (!QString(string[0]).section(QRegExp("[A-G]"),0).isEmpty()) {	//if the first char is [A-G] letter, it's always the note pitch
+		if (QString(string[0]).contains(QRegExp("[A-G]"))) {	//if the first char is [A-G] letter, it's always the note pitch
 			int curPitch;
 			int curLength;
 			signed char curAccs = 0;
@@ -329,6 +338,10 @@ bool CACanorusML::readMusElements(QString string) {
 			
 			CANote *note = new CANote((CANote::CANoteLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeEnd());
 			_curVoice->insertMusElement(note);
+		} else
+		//CABarline
+		if (string[0]=='|') {
+			_curVoice->insertMusElement(new CABarline(CABarline::Single, (CAStaff*)_curContext, _curVoice->lastTimeEnd()));
 		}
 		
 		string = string.remove(0, idx2+1);
