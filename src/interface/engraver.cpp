@@ -16,6 +16,7 @@
 #include "drawable/drawableclef.h"
 #include "drawable/drawablenote.h"
 #include "drawable/drawablekeysignature.h"
+#include "drawable/drawablebarline.h"
 
 #include "core/sheet.h"
 #include "core/staff.h"
@@ -89,7 +90,8 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			//multiple elements can have the same start time. eg. Clef + Key signature + Time signature + First note
 			while ( (musStreamList[i]->size() > streamsIdx[i]) &&
 			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
-			        (!elt->isPlayable())
+			        (!elt->isPlayable()) &&
+			        (elt->musElementType() != CAMusElement::Barline)	//barlines should be aligned
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
 				
@@ -135,10 +137,36 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			}
 		}
 		
-		//Synchronize minimum X-es between the contexts - all the noteheads should be horizontally aligned.
-		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
-		for (int i=0; i<streams; i++) streamsX[i] = maxX;
+		//Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
+		if (placedSymbol) {
+			for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+			for (int i=0; i<streams; i++) streamsX[i] = maxX;
+		}
 		
+		//place barlines
+		for (int i=0; i<streams; i++) {
+			if (!(musStreamList[i]->size() > streamsIdx[i]))
+				continue;
+			
+			if ((elt = musStreamList[i]->at(streamsIdx[i]))->musElementType() == CAMusElement::Barline) {
+				drawableContext = drawableContextMap[elt->context()];
+				CADrawableBarline *bar = new CADrawableBarline(
+					(CABarline*)elt,
+					(CADrawableStaff*)drawableContext,
+					streamsX[i],
+					drawableContext->yPos()
+				);
+				
+				v->addMElement(bar);
+				placedSymbol = true;
+				streamsX[i] += (bar->neededWidth() + MINIMUM_SPACE);
+				streamsIdx[i]++;
+			}
+		}
+		
+		if (placedSymbol)	//always start adding notes cleanly 
+			continue;
+			
 		for (int i=0; i < streams; i++) {
 			//loop until the element has come, which has bigger timeStart
 			while ( (musStreamList[i]->size() > streamsIdx[i]) &&

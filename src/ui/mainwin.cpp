@@ -63,6 +63,7 @@ using namespace std;
 #include "core/note.h"
 #include "core/canorusml.h"
 #include "core/voice.h"
+#include "core/barline.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
@@ -110,7 +111,7 @@ CAMainWin::~CAMainWin()
 	delete mpoNoteMenu;
 	delete mpoKeySigMenu;
 	delete _midiOut;
-        delete mpoMEToolBar;
+	delete mpoMEToolBar;
 }
 
 void CAMainWin::initToolBar()
@@ -530,6 +531,31 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				_activeViewPort->repaint();
 				
 				break;
+			case Qt::Key_B: {
+				//place a barline
+				CADrawableContext *drawableContext;
+				drawableContext = ((CAScoreViewPort*)v)->currentContext();
+				
+				if ( drawableContext->context()->contextType() != CAContext::Staff)
+					return;
+			
+				CAStaff *staff = (CAStaff*)drawableContext->context();
+				CAMusElement *right = 0;
+				if (!((CAScoreViewPort*)v)->selection()->isEmpty())
+					right = ((CAScoreViewPort*)v)->selection()->back()->musElement();
+					
+				CABarline *bar = new CABarline(
+					CABarline::Single,
+					staff,
+					(right?right->timeStart():staff->lastTimeEnd())
+				);
+				staff->insertSignAfter(bar, right);
+				
+				rebuildViewPorts(((CAScoreViewPort*)v)->sheet(), true);
+				((CAScoreViewPort*)v)->selectMElement(bar);
+				v->repaint();
+				break;
+			}
 			case Qt::Key_Up:
 				if (_currentMode == SelectMode) {	//select the upper music element
 					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
