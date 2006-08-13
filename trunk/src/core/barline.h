@@ -28,7 +28,7 @@ class CABarline : public CAMusElement{
 		
 		CABarlineType barlineType() { return _barlineType; }
 		
-		virtual ~CABarline();
+		~CABarline();
 	
 	private:
 		CABarlineType _barlineType;

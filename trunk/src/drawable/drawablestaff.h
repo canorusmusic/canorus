@@ -111,6 +111,7 @@ class CADrawableStaff : public CADrawableContext {
 	private:
 		QList<CADrawableClef *> _drawableClefList;	///List of all the drawable clefs. Used for fast look-up with the given key - X-coordinate usually.
 		QList<CADrawableKeySignature *> _drawableKeySignatureList;	///List of all the drawable key signatures. Used for fast look-up with the given key - X-coordinate usually.
+		static const float STAFFLINE_WIDTH = 0.8;	///Width of the staffs' lines
 };
 
 #endif /*DRAWABLESTAFF_H_*/

@@ -26,7 +26,7 @@ CADrawableStaff::CADrawableStaff(CAStaff *s, int x, int y) : CADrawableContext(s
 
 void CADrawableStaff::draw(QPainter *p, const CADrawSettings s) {
 	QPen pen;
-	pen.setWidth((int)(0.8*s.z));
+	pen.setWidth((int)(STAFFLINE_WIDTH*s.z));
 	pen.setCapStyle(Qt::RoundCap);
 	pen.setColor(s.color);
 	p->setPen(pen);
