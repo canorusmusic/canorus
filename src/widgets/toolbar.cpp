@@ -22,7 +22,6 @@
  */
 
 #include <QMenu>
-#include <QButtonGroup>
 #include <QPushButton>
 #include <QComboBox>
 #include <QButtonGroup>
@@ -51,21 +50,44 @@ CAToolBar::~CAToolBar()
 void CAToolBar::changeMenuIcon( QAbstractButton *poButton )
 {
 	int iBMID = moToolIDs[poButton->objectName()];
+	int iBID  = 0;
 	// Read the associated toolbar button from the list
-	QToolButton *poToolButton = (QToolButton *)(moToolElements[iBMID]);
+	QToolButton  *poToolButton = (QToolButton *)(moToolElements[iBMID]);
+	// Read corresponding menu
+	CAButtonMenu *poButtonMenu = (CAButtonMenu *)poToolButton->menu();
 	// Set the new icon from the selected button
 	poToolButton->setIcon( poButton->icon() );
+	// Set the buttons button ID as selected button ID
+	iBID = poButtonMenu->getButtonID( poButton );
+	printf("changeMenuIcon: BMID: %x/%s/%d ID %d\n", poButton, 
+	        poButton->objectName().toAscii().constData(), iBMID, iBID);
+	// Set the button ID as selected button element
+	moSelectedIDs[iBMID] = QVariant( iBID );
 	// Notify others about the new selection
 	emit buttonClicked( poToolButton );
 	emit actionTriggered( moToolActions[iBMID] );
+}
+
+void CAToolBar::menuEntryChanged( QAction *poAction )
+{
+	int iBMID = moToolIDs[poAction->objectName()];
+	// Set the Action text as selected menu item
+	moSelectedIDs[iBMID] = QVariant( poAction->text() );	
+	// Notify others about the new selection
+	emit actionTriggered( moToolActions[iBMID] );
+	connect( this, SIGNAL( menuElemSelected( bool ) ),
+		     moToolActions[iBMID], SIGNAL( toggled( bool ) ) );
+    emit menuElemSelected( moToolActions[iBMID]->isChecked() );
+	disconnect( this, SIGNAL( menuElemSelected( bool ) ),
+		        moToolActions[iBMID], SIGNAL( toggled( bool ) ) );
 }
 
 QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, QMenu *poMenu,
                                  const QIcon *poIcon, bool bToggle /* = false */ )
 {
 	// ToDo: Could be improved by calling addToolButton
-	QToolButton *poMenuButton = 0;
-	QAction     *poAction     = 0;
+	QToolButton  *poMenuButton = 0;
+	QAction      *poAction     = 0;
 	int          iSize        = moToolIDs.size();
 	moToolIDs[oName] = moToolElements.size();
 	// Check if name was unique (i.e. new hash inserted)
@@ -76,6 +98,7 @@ QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, QMenu *poM
 		fflush(stdout);
 		return 0;
 	}
+	moSelectedIDs.append( QVariant( QString() ) );
 	moToolTypes.append(CTB_Menu);
 	// Create new Toolbutton
 	poMenuButton = new QToolButton();
@@ -107,8 +130,8 @@ QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, QMenu *poM
 		connect( poAction, SIGNAL( toggled( bool ) ),
 			     poMenuButton, SLOT( setChecked( bool ) ) );
 		// Notify on change of menu entry
-		connect( poMenu, SIGNAL( triggered( QAction * ) ),
-			     this, SIGNAL( actionTriggered( QAction * ) ) );
+	    connect( poMenu, SIGNAL( triggered( QAction * ) ),
+	    		 this, SLOT( menuEntryChanged( QAction * ) ) );
 	}
 	return poAction;
 }
@@ -129,6 +152,7 @@ QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, CAButtonMe
 		fflush(stdout);
 		return 0;
 	}
+	moSelectedIDs.append( QVariant( 0 ) );
 	moToolTypes.append(CTB_Menu);
 	// Create new Toolbutton
 	poMenuButton = new QToolButton();
@@ -162,6 +186,8 @@ QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, CAButtonMe
 		// Notify on change of button
 		connect( poButtonMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
 			     this, SLOT( changeMenuIcon( QAbstractButton * ) ) );
+		connect( poButtonMenu, SIGNAL( buttonElemToggled( bool ) ),
+			     poMenuButton, SIGNAL( toggled( bool ) ) );
 	}
 	return poAction;
 }
@@ -225,6 +251,7 @@ QAction *CAToolBar::addComboBox( QString oTitle, QString oName,
 		fflush(stdout);
 		return 0;
 	}
+	moSelectedIDs.append( QVariant( 0 ) );
 	moToolTypes.append(CTB_Combobox);
 	// Create new Combobox Menu
 	poComboMenu = new QComboBox();
@@ -269,6 +296,40 @@ bool CAToolBar::setAction( QString oName, QAction *poAction )
 	else // Not found: Remove the wrongly inserted hash
 		moToolIDs.remove( oName );
 	return bRet;
+}
+
+QVariant CAToolBar::toolElemValue( QString oName )
+{
+	QVariant oVal( -1 );
+	
+	int iSize = moToolIDs.size();
+	int iBMID = moToolIDs[oName];
+	// Check if oName was found in the hash (i.e. not inserted)
+	if( iSize == moToolIDs.size() )
+	{
+		switch( moToolTypes[iBMID] )
+		{
+			case CTB_Menu:
+				oVal = moSelectedIDs[iBMID];
+				break;
+			case CTB_Buttonmenu:
+				oVal = moSelectedIDs[iBMID];
+				break;
+			case CTB_Button: // Nothing can be selected here
+				oVal = QVariant( 0 );
+				break;
+			case CTB_Combobox:
+			{
+				QComboBox *poComboMenu = (QComboBox *)moToolElements[iBMID];
+				oVal = QVariant( poComboMenu->currentIndex() );
+				//oVal = QVariant( poComboMenu->currentText() );
+			}
+			break;
+		}
+	}
+	else // Not found: Remove the wrongly inserted hash
+		moToolIDs.remove( oName );
+	return oVal;
 }
 
 CAButtonMenu::CAButtonMenu( QString oTitle, QWidget * poParent /* = 0 */ ) 
@@ -326,7 +387,7 @@ void CAButtonMenu::setNumIconsPerRow( int iNumIconsRow )
 	miNumIconsRow = iNumIconsRow;
 }
 
-void CAButtonMenu::addButton( const QIcon &oIcon )
+void CAButtonMenu::addButton( const QIcon &oIcon, int iButtonID )
 {
 	QToolButton *poMButton;
 	QFontMetrics oMetrics ( mpoBBox->font() );
@@ -340,7 +401,9 @@ void CAButtonMenu::addButton( const QIcon &oIcon )
 	poMButton->setIcon( oIcon );
 	poMButton->setIconSize( QSize(iIconSize, iIconSize) );
 	poMButton->setCheckable( true );
+	// Useful if you want to switch icons of an associated toolbar
 	poMButton->setObjectName( objectName() );
+	fflush( stdout );
 	if( miBXPos == 0 )
 	{
 		// Action for our button menu as icon or nothing will be seen
@@ -348,13 +411,13 @@ void CAButtonMenu::addButton( const QIcon &oIcon )
 		poAction->setVisible( true ); 
 		poMButton->setChecked( true );
 		setDefaultAction( poAction );
+	    // Connect Hide action to the button
+	    connect( mpoBGroup, SIGNAL( buttonClicked( QAbstractButton * ) ), 
+	             this, SLOT( hideButtons( QAbstractButton * ) ) );
 	}
 	moButtons.append( poMButton );
 	// Add it to the abstract group
-    mpoBGroup->addButton( moButtons.last() );
-    // Connect Hide action to the button
-    connect( mpoBGroup, SIGNAL( buttonClicked( QAbstractButton * ) ), 
-             this, SLOT( hideButtons( QAbstractButton * ) ) );
+    mpoBGroup->addButton( moButtons.last(), iButtonID );
     // Create menu that has miNumIconsRow buttons in each row
     if( miBXPos >= miNumIconsRow )
     {
@@ -401,4 +464,5 @@ void CAButtonMenu::hideButtons( QAbstractButton *poButton )
 {
 	hide();
 	emit buttonClicked( poButton );
+	emit buttonElemToggled( poButton->isChecked() );
 }

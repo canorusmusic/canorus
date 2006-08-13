@@ -98,6 +98,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	//Initialize the internal properties
 	_currentMode = SelectMode;
 	_insertMusElement = CAMusElement::None;
+	_insertNote       = CANote::Quarter;
+	_insertClef       = CAClef::Treble;
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
@@ -122,8 +124,8 @@ void CAMainWin::initToolBar()
 	mpoKeySigMenu = new QMenu(); 
 	
 	QIcon oClefTrebleIcon( QString::fromUtf8(":/menu/images/cleftreble.png") );
-	QIcon oClefAltoIcon(   QString::fromUtf8(":/menu/images/clefalto.png") );
 	QIcon oClefBassIcon(   QString::fromUtf8(":/menu/images/clefbass.png") );
+	QIcon oClefAltoIcon(   QString::fromUtf8(":/menu/images/clefalto.png") );
 	
 	QIcon oN0Icon(  QString::fromUtf8(":/menu/images/n0.png") );
 	QIcon oN1Icon(  QString::fromUtf8(":/menu/images/n1.png") );
@@ -145,17 +147,17 @@ void CAMainWin::initToolBar()
 	                                                "actionKeySigSelect", mpoKeySigMenu,
 	                                                &oDFIcon, true );	
 	// Add all the menu entries, either as text or icons
-	mpoClefMenu->addButton( oClefTrebleIcon );
-	mpoClefMenu->addButton( oClefAltoIcon );
-	mpoClefMenu->addButton( oClefBassIcon );
-	mpoNoteMenu->addButton( oN0Icon );
-	mpoNoteMenu->addButton( oN1Icon );
-	mpoNoteMenu->addButton( oN2Icon );
-	mpoNoteMenu->addButton( oN4Icon );
-	mpoNoteMenu->addButton( oN8Icon );
-	mpoNoteMenu->addButton( oN16Icon );
-	mpoNoteMenu->addButton( oN32Icon );
-	mpoNoteMenu->addButton( oN64Icon );
+	mpoClefMenu->addButton( oClefTrebleIcon, CAClef::Treble );
+	mpoClefMenu->addButton( oClefBassIcon, CAClef::Bass );
+	mpoClefMenu->addButton( oClefAltoIcon, CAClef::Alto );
+	mpoNoteMenu->addButton( oN0Icon, CANote::Breve );
+	mpoNoteMenu->addButton( oN1Icon, CANote::Whole );
+	mpoNoteMenu->addButton( oN2Icon, CANote::Half );
+	mpoNoteMenu->addButton( oN4Icon, CANote::Quarter );
+	mpoNoteMenu->addButton( oN8Icon, CANote::Eighth );
+	mpoNoteMenu->addButton( oN16Icon, CANote::Sixteenth );
+	mpoNoteMenu->addButton( oN32Icon, CANote::ThirtySecond );
+	mpoNoteMenu->addButton( oN64Icon, CANote::SixtyFourth );
 	mpoKeySigMenu->addAction( "C" );
 	mpoKeySigMenu->addAction( "G" );
 	mpoKeySigMenu->addAction( "D" );
@@ -416,7 +418,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				return;
 			
 			staff = (CAStaff*)context->context();
-			clef = new CAClef(CAClef::Treble, staff, (right?right->timeStart():staff->lastTimeEnd()));
+			clef = new CAClef(_insertClef, staff, (right?right->timeStart():staff->lastTimeEnd()));
 			staff->insertSignBefore(clef, right);
 			
 			rebuildViewPorts(v->sheet(), true);
@@ -445,7 +447,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 
 			drawableStaff = (CADrawableStaff*)context;
 			staff = drawableStaff->staff();
-			note = new CANote(CANote::Quarter,
+			note = new CANote(_insertNote,
 			                  staff->voiceAt(0),
 			                  drawableStaff->calculatePitch(coords.x(), coords.y()),
 			                  0,
@@ -768,14 +770,30 @@ void CAMainWin::sl_mpoVoiceNum_valChanged(int iVoice)
 
 void CAMainWin::on_actionNoteSelect_toggled(bool bOn)
 {
-	printf("Note Input switched: %d\n", bOn);
+	// Read currently selected entry from tool button menu
+	enum CANote::CANoteLength eElem = (CANote::CANoteLength)
+	  mpoMEToolBar->toolElemValue( mpoNoteMenu->objectName() ).toInt();
+	_insertMusElement = CAMusElement::Note;
+	// New note length type
+	_insertNote       = eElem;
+	printf("Note Input switched: On %d Note %d\n", bOn, eElem);
 	fflush( stdout );
+	if( bOn )
+		setMode(InsertMode);
 }
 
 void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 {
-	printf("Note Clef switched: %d\n", bOn);
+	// Read currently selected entry from tool button menu
+	enum CAClef::CAClefType eElem = (CAClef::CAClefType)
+	  mpoMEToolBar->toolElemValue( mpoClefMenu->objectName() ).toInt();
+	_insertMusElement = CAMusElement::Clef;
+	// New note length type
+	_insertClef       = eElem;
+	printf("Note Clef switched: On %d Clef %d\n", bOn, eElem);
 	fflush( stdout );
+	if( bOn )
+		on_action_Clef_activated();
 }
 	
 void CAMainWin::on_action_Key_signature_activated() {
