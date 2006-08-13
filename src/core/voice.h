@@ -40,6 +40,15 @@ class CAVoice {
 		bool insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter);
 		
 		/**
+		 * Insert the CAMusElement right after the given CAMusElement.
+		 * 
+		 * @param elt Pointer to CAMusElement to be inserted.
+		 * @param eltBefore Pointer to CAMusElement the given element should be inserted after. If eltBefore is 0, append the music element to the voice.
+		 * @return True, if eltAfter was found and the elt was inserted/appended, otherwise false.
+		 */
+		bool insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore);
+
+		/**
 		 * Remove the given music element from the voice.
 		 * This method doesn't delete its contents, but only the pointer.
 		 * 
