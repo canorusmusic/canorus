@@ -56,6 +56,23 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter) 
 	return true;
 }
 
+bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore) {
+	if (!eltBefore) {
+		_musElementList << elt;
+		return true;
+	}
+	
+	int i;
+	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != eltBefore); i++);
+	if (i==_musElementList.size())
+		return false;
+	
+	_musElementList.insert(i+1, elt);
+	
+	updateTimes(i);
+	return true;
+}
+
 CAClef* CAVoice::getClef(CAMusElement *elt) {
 	CAClef* lastClef = 0;
 	for (int i=0; (i<_musElementList.size()) && (_musElementList[i] != elt); i++) {

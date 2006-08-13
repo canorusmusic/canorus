@@ -86,6 +86,17 @@ class CAStaff : public CAContext {
 		bool insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter);
 		
 		/**
+		 * Insert any sign (clef, siganutres, barline etc.) after the given music element.
+		 * This method inserts the sign to all voices!
+		 * This is the difference between inserting a sign or a playable note - note is present in a single voice, sign in all the voices.
+		 * 
+		 * @param sign Pointer to the already created CAMusElement object about to be added.
+		 * @param eltBefore The music element after which the sign should be inserted. The element should be present in all voices! If eltBefore is 0, append the sign to the voices.
+		 * @return True, if a sign was inserted/appended, false if the eltAfter wasn't found.
+		 */
+		bool insertSignAfter(CAMusElement *sign, CAMusElement *eltBefore);
+
+		/**
 		 * Remove the given music element from all the voices.
 		 * Only remove music elements pointers! The object itself stays intact.
 		 * 

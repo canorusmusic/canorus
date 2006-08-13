@@ -52,6 +52,16 @@ bool CAStaff::insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter) {
 	return (!error);
 }
 
+bool CAStaff::insertSignAfter(CAMusElement *sign, CAMusElement *eltBefore) {
+	bool error = false;
+	for (int i=0; i<_voiceList.size(); i++) {
+		if (!_voiceList[i]->insertMusElementAfter(sign, eltBefore))
+			error = true;
+	}
+	
+	return (!error);
+}
+
 void CAStaff::insertNote(CANote *note) {
 	note->voice()->insertMusElement(note);
 }
