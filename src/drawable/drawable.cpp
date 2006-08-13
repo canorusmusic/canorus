@@ -15,4 +15,6 @@ CADrawable::CADrawable(int x, int y) {
 	_yPos = y;
 	_xPosOffset = 0;
 	_yPosOffset = 0;
+	_visible = true;
+	_selectable = true;
 }

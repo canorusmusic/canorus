@@ -40,6 +40,7 @@ class CADrawable {
 		int yCenter() { return _yPos + _yPosOffset + (_height)/2; }
 		const QRect bBox() { return QRect(_xPos + _xPosOffset, _yPos + _yPosOffset, _width, _height); }
 		bool isVisible() { return _visible; }
+		bool isSelectable() { return _selectable; }
 		
 		/**
 		 * Set X position of the drawable element.
@@ -92,6 +93,7 @@ class CADrawable {
 		int _neededWidth;
 		int _neededHeight;
 		bool _visible;
+		bool _selectable;	///Can the element be clicked on and is then selected
 };
 #endif /*DRAWABLE_H_*/
 
