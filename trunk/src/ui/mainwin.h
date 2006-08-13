@@ -191,27 +191,29 @@ private:
 	////////////////////////////////////////////////////
 	//User interface, toolbar
 	////////////////////////////////////////////////////
-	CAButtonMenu *mpoClefMenu;      /// menu for selection of a clef
-	CAButtonMenu *mpoNoteMenu;      /// menu for the selection of a note length
-	QMenu        *mpoKeySigMenu;    /// menu for selection of a key signature
-	QAction      *actionNoteSelect; /// Action for having a note length selected
-	QAction      *actionClefSelect; /// Action for having a clef selected
-	QAction      *actionKeySigSelect; /// Action for having a clef selected
+	CAToolBar    *mpoMEToolBar;
+	CAButtonMenu *mpoClefMenu;         /// Menu for selection of a clef
+	CAButtonMenu *mpoNoteMenu;         /// Menu for the selection of a note length
+	QMenu        *mpoKeySigMenu;       /// Menu for selection of a key signature
+	QAction      *actionNoteSelect;    /// Action for having a note length selected
+	QAction      *actionClefSelect;    /// Action for having a clef selected
+	QAction      *actionKeySigSelect;  /// Action for having a clef selected
 	
 	////////////////////////////////////////////////////
 	//User interface, widgets
 	////////////////////////////////////////////////////
 	Ui::MainWindow moMainWin;	///Main window widget representative
-	CAToolBar *mpoMEToolBar;
 
-	QList<CAViewPort *> _viewPortList;	///List of all available viewports for any sheet for this document
-	CAViewPort *_activeViewPort;	///Current active viewport
-	bool _animatedScroll;		///animate scroll/zoom
-	bool _lockScrollPlayback;	///Lock the scroll UI while playback
+	QList<CAViewPort *> _viewPortList;	/// List of all available viewports for any
+	                                    /// sheet for this document
+	CAViewPort *_activeViewPort;	    /// Current active viewport
+	bool _animatedScroll;		        /// animate scroll/zoom
+	bool _lockScrollPlayback;	        /// Lock the scroll UI while playback
 	#define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
-	CAViewPort *_playbackViewPort;	///Viewport needed to be updated when playback is active	
-	QTimer *_repaintTimer;	   ///Used when playback is active
-	CALCDNumber *mpoVoiceNum;  ///LCD placed in Toolbar for showing current voice
+	CAViewPort *_playbackViewPort;	    /// Viewport needed to be updated when playback
+	                                    /// is active	
+	QTimer *_repaintTimer;	            /// Used when playback is active
+	CALCDNumber *mpoVoiceNum;           /// LCD placed in Toolbar for showing current voice
 
 	////////////////////////////////////////////////////
 	//User interface, action objects from toolbars

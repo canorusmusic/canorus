@@ -28,9 +28,9 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QHash>
+#include <QButtonGroup>
 
 class QGroupBox;
-class QButtonGroup;
 class QGridLayout;
 class QAction;
 class CAButtonMenu;
@@ -118,6 +118,15 @@ public:
 	 */
 	bool setAction( QString oName, QAction *poAction );
 
+	/**
+	 * Returns the current value of a tool element
+	 * 
+	 * @param oName        Unique name to identify the toolbar element
+	 * @return             value of a tool element
+	 *
+	 */
+	 QVariant toolElemValue( QString oName );
+
 signals:
 	/**
 	 * Signal sent when buttons are hidden with the selected button
@@ -126,6 +135,13 @@ signals:
 	 *
 	 */	
     void buttonClicked( QAbstractButton *poButton );
+	/**
+	 * Signal sent when menu entry was selected
+	 * 
+	 * @param bChanged  'true': Tool button is activated
+	 * 
+	 */
+	void menuElemSelected( bool bChecked );
     
 protected slots:
 	/**
@@ -135,11 +151,13 @@ protected slots:
 	 *
 	 */
 	void changeMenuIcon( QAbstractButton *poButton );
-
+	void menuEntryChanged( QAction *poAction );
+	
 private:
 	QList<CTB_Type>	moToolTypes;	/// list with types of the toolbar elements
 	QList<QWidget*>	moToolElements; /// list with the toolbar elements themself
 	QHash<QString, int> moToolIDs;  /// hash of IDs to find the button icon to be shown
+	QList<QVariant> moSelectedIDs;  /// list of IDs of selected toolbar elements
 	QList<QAction*>	moToolActions;  /// list with the actions of the toolbar elements
 };
 
@@ -168,7 +186,7 @@ public:
 	 * @param oIcon       Icon of the tool button
 	 *
 	 */
-	void addButton( const QIcon &oIcon );
+	void addButton( const QIcon &oIcon, int iButtonID );
 	/**
 	 * Return the number of icons per row
 	 * 
@@ -176,6 +194,15 @@ public:
 	 *
 	 */
 	int  getNumIconsPerRow();
+	/**
+	 * Return the button ID of a button
+	 * 
+	 * @param poButton   button whose ID should be returned
+	 * @return           button ID of poButton
+	 *
+	 */
+	int  getButtonID( QAbstractButton *poButton )
+	{ return mpoBGroup->id( poButton ); }
 	/**
 	 * Set the number of icons per row
 	 * 
@@ -204,13 +231,21 @@ signals:
 	 *
 	 */	
     void buttonClicked( QAbstractButton *poButton );
-    
+	/**
+	 * Signal sent when state of tool button is changed
+	 * 
+	 * @param bChanged  'true': Tool button is activated
+	 * 
+	 */
+	void buttonElemToggled( bool bChecked );
+        
 protected:
 	QButtonGroup *mpoBGroup;		/// Abstract group for the button actions
 	QGroupBox    *mpoBBox;			/// Group box containing title and buttons
 	QGridLayout  *mpoMLayout;       /// Layout for the group box
 	QGridLayout  *mpoBLayout;       /// Layout for the button menu
 	QList<QToolButton*> moButtons; 
+	QHash<QString, int> moToolIDs;  /// hash of IDs of buttons
 	int            miBXPos;         /// X position of next button
 	int            miBYPos;         /// Y position of next button
 	int            miNumIconsRow;   /// Number of icons per row
