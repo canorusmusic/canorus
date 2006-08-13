@@ -81,7 +81,7 @@ const QString CANote::pitchML() {
 const QString CANote::lengthML() {
 	QString length;
 	switch (_noteLength) {
-		case CANote::Brevis:
+		case CANote::Breve:
 			length = "0";
 			break;
 		case CANote::Whole:
