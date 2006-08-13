@@ -103,6 +103,9 @@ QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, QMenu *poM
 		// Notify on toggle of Tool Button
 		connect( poMenuButton, SIGNAL( toggled( bool ) ),
 			     poAction, SIGNAL( toggled( bool ) ) );
+		// Notify on toggle of Action
+		connect( poAction, SIGNAL( toggled( bool ) ),
+			     poMenuButton, SLOT( setChecked( bool ) ) );
 		// Notify on change of menu entry
 		connect( poMenu, SIGNAL( triggered( QAction * ) ),
 			     this, SIGNAL( actionTriggered( QAction * ) ) );
@@ -153,6 +156,9 @@ QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, CAButtonMe
 		// Notify on toggle of Tool Button
 		connect( poMenuButton, SIGNAL( toggled( bool ) ),
 			     poAction, SIGNAL( toggled( bool ) ) );
+		// Notify on toggle of Action
+		connect( poAction, SIGNAL( toggled( bool ) ),
+			     poMenuButton, SLOT( setChecked( bool ) ) );
 		// Notify on change of button
 		connect( poButtonMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
 			     this, SLOT( changeMenuIcon( QAbstractButton * ) ) );
@@ -197,6 +203,9 @@ QAction *CAToolBar::addToolButton( const QString oTitle, QString oName,
 		// Notify on toggle of Tool Button
 		connect( poMenuButton, SIGNAL( toggled( bool ) ),
 			     poAction, SIGNAL( toggled( bool ) ) );
+		// Notify on toggle of Action
+		connect( poAction, SIGNAL( toggled( bool ) ),
+			     poMenuButton, SLOT( setChecked( bool ) ) );
 	}
 	return poAction;
 }
