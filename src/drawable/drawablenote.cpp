@@ -13,9 +13,6 @@
 #include "core/staff.h"
 #include "core/note.h"
 
-#define QUARTER_STEM_LENGTH 22
-#define QUARTER_YPOS_DELTA 21
-
 CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y, bool shadowNote)
  : CADrawableMusElement(note, drawableContext, x, y) {
 	_drawableMusElement = CADrawableMusElement::DrawableNote;
@@ -29,10 +26,28 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 			_neededWidth = _width;
 			_neededHeight = _height;
 			break;
+		
+		case CANote::Half:
+			_width = 11;
+			_height = 26;
+			_yPos = y - HALF_YPOS_DELTA;	//values in constructor are the notehead center coords. yPos represents the top of the stem.
+			_xPos = x - _width/2;
+			_neededWidth = _width;
+			_neededHeight = _height;
+			break;
 			
 		case CANote::Whole:
 			_width = 16;
-			_height = 3;
+			_height = 6;
+			_yPos = y - _height/2;
+			_xPos = x - _width/2;
+			_neededWidth = _width;
+			_neededHeight = _height;
+			break;			
+
+		case CANote::Breve:
+			_width = 18;
+			_height = 7;
 			_yPos = y - _height/2;
 			_xPos = x - _width/2;
 			_neededWidth = _width;
@@ -57,7 +72,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 
 	QPen pen;
 	switch (note()->noteLength()) {
-		case CANote::Quarter:
+		case CANote::Quarter: {
 			//draw notehead
 			s.y += (int)(QUARTER_STEM_LENGTH*s.z);
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
@@ -70,13 +85,35 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			p->drawLine((int)(s.x + (_width - 0.2)*s.z), (int)(s.y-1*s.z), (int)(s.x + (_width - 0.2)*s.z), s.y-(int)(QUARTER_STEM_LENGTH*s.z));
 						
 			break;
-			
-		case CANote::Whole:
+		}
+		case CANote::Half: {
+			//draw notehead
+			s.y += (int)(HALF_STEM_LENGTH*s.z);
+			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE124));
+
+			//draw stem
+			pen.setWidth((int)(1.3*s.z));
+			pen.setCapStyle(Qt::RoundCap);
+			pen.setColor(s.color);
+			p->setPen(pen);
+			p->drawLine((int)(s.x + (_width)*s.z), (int)(s.y-1*s.z), (int)(s.x + (_width)*s.z), s.y-(int)(QUARTER_STEM_LENGTH*s.z));
+						
+			break;
+		}
+		case CANote::Whole: {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2);
 			p->drawText(s.x, (int)(s.y), QString(0xE123));
 
 			break;
+		}
+		case CANote::Breve: {
+			//draw notehead
+			s.y += (int)((_height*s.z)/2);
+			p->drawText(s.x, (int)(s.y), QString(0xE122));
+
+			break;
+		}		
 	}
 	
 	//draw ledger lines
@@ -112,7 +149,13 @@ CADrawableNote *CADrawableNote::clone() {
 		case CANote::Quarter:
 			return new CADrawableNote(note(), drawableContext(), _xPos + _width/2, _yPos + QUARTER_YPOS_DELTA);
 			break;
+		case CANote::Half:
+			return new CADrawableNote(note(), drawableContext(), _xPos + _width/2, _yPos + QUARTER_YPOS_DELTA);
+			break;
 		case CANote::Whole:
+			return new CADrawableNote(note(), drawableContext(), _xPos + _width/2, _yPos + _height/2);
+			break;		
+		case CANote::Breve:
 			return new CADrawableNote(note(), drawableContext(), _xPos + _width/2, _yPos + _height/2);
 			break;		
 	}
@@ -123,7 +166,13 @@ void CADrawableNote::setXPos(int xPos) {
 		case CANote::Quarter:
 			_xPos = xPos - _width/2;
 			break;
+		case CANote::Half:
+			_xPos = xPos - _width/2;
+			break;
 		case CANote::Whole:
+			_xPos = xPos - _width/2;
+			break;
+		case CANote::Breve:
 			_xPos = xPos - _width/2;
 			break;
 	}
@@ -134,7 +183,13 @@ void CADrawableNote::setYPos(int yPos) {
 		case CANote::Quarter:
 			_yPos = yPos - QUARTER_YPOS_DELTA;
 			break;
+		case CANote::Half:
+			_yPos = yPos - QUARTER_YPOS_DELTA;
+			break;
 		case CANote::Whole:
+			_yPos = yPos - _height/2;
+			break;
+		case CANote::Breve:
 			_yPos = yPos - _height/2;
 			break;
 	}

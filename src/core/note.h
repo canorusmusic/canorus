@@ -24,7 +24,7 @@ class CANote : public CAPlayable {
 			Quarter = 4,
 			Eighth = 8,
 			Sixteenth = 16,
-			ThirtySecondth = 32,
+			ThirtySecond = 32,
 			SixtyFourth = 64,
 			HundredTwentyEighth = 128
 		};

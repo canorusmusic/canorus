@@ -18,14 +18,43 @@ CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, signed char accs,
 	_accs = accs;
 
 	_pitch = pitch;
-	_midiLength = 256;
 	_midiPitch = CAPlayable::pitchToMidiPitch(pitch, _accs);
 
 	if (timeLength)
 		_timeLength = timeLength;
-	else
-		_timeLength = 256;	//TODO: Set the note length for every noteLengthType possibility (NoteLengthType can have arbitrary exact value)
-
+	else {
+		switch (length) {
+			case CANote::HundredTwentyEighth:
+				_timeLength = 8;
+				break;
+			case CANote::SixtyFourth:
+				_timeLength = 16;
+				break;
+			case CANote::ThirtySecond:
+				_timeLength = 32;
+				break;
+			case CANote::Sixteenth:
+				_timeLength = 64;
+				break;
+			case CANote::Eighth:
+				_timeLength = 128;
+				break;
+			case CANote::Quarter:
+				_timeLength = 256;
+				break;
+			case CANote::Half:
+				_timeLength = 512;
+				break;
+			case CANote::Whole:
+				_timeLength = 1024;
+				break;
+			case CANote::Breve:
+				_timeLength = 2048;
+				break;
+		}
+	}
+	
+	_midiLength = _timeLength;
 
 	calculateNotePosition();
 }
@@ -99,7 +128,7 @@ const QString CANote::lengthML() {
 		case CANote::Sixteenth:
 			length = "16";
 			break;
-		case CANote::ThirtySecondth:
+		case CANote::ThirtySecond:
 			length = "32";
 			break;
 		case CANote::SixtyFourth:
