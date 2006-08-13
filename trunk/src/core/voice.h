@@ -48,6 +48,9 @@ class CAVoice {
 		 */
 		bool removeElement(CAMusElement *elt);
 		
+		int voiceNumber() { return _voiceNumber; }
+		void setVoiceNumber(int idx) { _voiceNumber = idx; }
+		
 		int musElementCount() { return _musElementList.count(); }
 		CAMusElement *musElementAt(int i) { return _musElementList[i]; }
 		int indexOf(CAMusElement *elt) { return _musElementList.indexOf(elt); }
