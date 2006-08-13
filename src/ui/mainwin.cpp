@@ -68,8 +68,17 @@ using namespace std;
 CAMainWin::CAMainWin(QMainWindow *oParent)
   : QMainWindow( oParent )
 {
+	mpoMEToolBar = new CAToolBar( this );
+	mpoMEToolBar->setOrientation(Qt::Vertical);
+	initToolBar();
+	addToolBar(static_cast<Qt::ToolBarArea>(2), mpoMEToolBar);
+	
 	//Initialize widgets
 	moMainWin.setupUi( this );
+	// Add a signal so if the menu action is used, the toolbar
+	// is notified to change it's state
+	mpoMEToolBar->setAction( actionClefSelect->objectName(), 
+	                         moMainWin.action_Clef );
 	mpoVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" );
 	mpoVoiceNumAction = moMainWin.mpoToolBar->addWidget( mpoVoiceNum );
 	// Connect manually as the action cannot be created earlier
@@ -79,11 +88,6 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	moMainWin.actionAnimated_scroll->setChecked(true);
 	moMainWin.actionLock_scroll_playback->setChecked(false);
 	moMainWin.actionUnsplit->setEnabled(false);
-	
-	mpoMEToolBar = new CAToolBar( this );
-	mpoMEToolBar->setOrientation(Qt::Vertical);
-	initToolBar();
-	addToolBar(static_cast<Qt::ToolBarArea>(2), mpoMEToolBar);
 	
 	_slider = 0;
 	
@@ -104,7 +108,7 @@ CAMainWin::~CAMainWin()
 {
 	delete mpoClefMenu;
 	delete mpoNoteMenu;
-	delete mpoKeysigMenu;
+	delete mpoKeySigMenu;
 	delete _midiOut;
         delete mpoMEToolBar;
 }
@@ -114,7 +118,7 @@ void CAMainWin::initToolBar()
 	// Test Code for Toolbar
 	mpoClefMenu   = new CAButtonMenu( tr("Select Clef" ) );
 	mpoNoteMenu   = new CAButtonMenu( tr("Select Note" ) );
-	mpoKeysigMenu = new QMenu(); 
+	mpoKeySigMenu = new QMenu(); 
 	
 	QIcon oClefTrebleIcon( QString::fromUtf8(":/menu/images/cleftreble.png") );
 	QIcon oClefAltoIcon(   QString::fromUtf8(":/menu/images/clefalto.png") );
@@ -129,20 +133,20 @@ void CAMainWin::initToolBar()
 	QIcon oN32Icon(  QString::fromUtf8(":/menu/images/n32.png") );
 	QIcon oN64Icon(  QString::fromUtf8(":/menu/images/n64.png") );
 	
-	mpoMEToolBar->addToolMenu( "Add Clef", "Clef", mpoClefMenu, &oClefTrebleIcon, true );
-	mpoMEToolBar->addToolMenu( "Change Note length", "Note", mpoNoteMenu, &oN4Icon, false );
+	actionClefSelect = mpoMEToolBar->addToolMenu( "Add Clef", "actionClefSelect",
+	                                              mpoClefMenu, 
+	                                              &oClefTrebleIcon, true );
+	actionNoteSelect = mpoMEToolBar->addToolMenu( "Change Note length",
+	                                              "actionNoteSelect", mpoNoteMenu,
+	                                              &oN4Icon, true );
 	QIcon oDFIcon( QString::fromUtf8(":/menu/images/doubleflat.png") );
-	mpoMEToolBar->addToolMenu( "Add Key Signature", "KeySig", mpoKeysigMenu, &oDFIcon, true );
-	
+	actionKeySigSelect = mpoMEToolBar->addToolMenu( "Add Key Signature",
+	                                                "actionKeySigSelect", mpoKeySigMenu,
+	                                                &oDFIcon, true );	
 	// Add all the menu entries, either as text or icons
 	mpoClefMenu->addButton( oClefTrebleIcon );
 	mpoClefMenu->addButton( oClefAltoIcon );
 	mpoClefMenu->addButton( oClefBassIcon );
-	connect( mpoClefMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
-		     mpoMEToolBar, SLOT( changeMenuIcon( QAbstractButton * ) ) );
-	//mpoNoteMenu->addAction( "half" );
-	//mpoNoteMenu->addAction( "quarter" );
-	//mpoNoteMenu->addAction( "eigth" );
 	mpoNoteMenu->addButton( oN0Icon );
 	mpoNoteMenu->addButton( oN1Icon );
 	mpoNoteMenu->addButton( oN2Icon );
@@ -151,13 +155,11 @@ void CAMainWin::initToolBar()
 	mpoNoteMenu->addButton( oN16Icon );
 	mpoNoteMenu->addButton( oN32Icon );
 	mpoNoteMenu->addButton( oN64Icon );
-	connect( mpoNoteMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
-		     mpoMEToolBar, SLOT( changeMenuIcon( QAbstractButton * ) ) );
-	mpoKeysigMenu->addAction( "C" );
-	mpoKeysigMenu->addAction( "G" );
-	mpoKeysigMenu->addAction( "D" );
-	mpoKeysigMenu->addAction( "A" );
-	mpoKeysigMenu->addAction( "E" );
+	mpoKeySigMenu->addAction( "C" );
+	mpoKeySigMenu->addAction( "G" );
+	mpoKeySigMenu->addAction( "D" );
+	mpoKeySigMenu->addAction( "A" );
+	mpoKeySigMenu->addAction( "E" );
 }
 
 void CAMainWin::newDocument() {
@@ -734,9 +736,22 @@ void CAMainWin::on_actionSave_as_activated() {
 
 void CAMainWin::sl_mpoVoiceNum_valChanged(int iVoice)
 {
-  printf("New voice number: %d\n",iVoice);
+	printf("New voice number: %d\n",iVoice);
+	fflush( stdout );
 }
 
+void CAMainWin::on_actionNoteSelect_toggled(bool bOn)
+{
+	printf("Note Input switched: %d\n", bOn);
+	fflush( stdout );
+}
+
+void CAMainWin::on_actionClefSelect_toggled(bool bOn)
+{
+	printf("Note Clef switched: %d\n", bOn);
+	fflush( stdout );
+}
+	
 void CAMainWin::on_action_Key_signature_activated() {
 	if (!_slider) {
 		_slider = new QSlider(Qt::Horizontal, 0);

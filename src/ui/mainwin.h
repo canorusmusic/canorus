@@ -118,6 +118,9 @@ private slots:
 
 	// Toolbar 
 	void sl_mpoVoiceNum_valChanged(int iVoice);
+	void on_actionNoteSelect_toggled(bool);
+	void on_actionClefSelect_toggled(bool);
+	
 
 	////////////////////////////////////////////////////
 	//Process ViewPort signals
@@ -190,7 +193,10 @@ private:
 	////////////////////////////////////////////////////
 	CAButtonMenu *mpoClefMenu;      /// menu for selection of a clef
 	CAButtonMenu *mpoNoteMenu;      /// menu for the selection of a note length
-	QMenu *mpoKeysigMenu;           /// menu for selection of a key signature
+	QMenu        *mpoKeySigMenu;    /// menu for selection of a key signature
+	QAction      *actionNoteSelect; /// Action for having a note length selected
+	QAction      *actionClefSelect; /// Action for having a clef selected
+	QAction      *actionKeySigSelect; /// Action for having a clef selected
 	
 	////////////////////////////////////////////////////
 	//User interface, widgets
