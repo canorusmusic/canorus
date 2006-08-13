@@ -18,7 +18,7 @@ class CANote : public CAPlayable {
 	public:
 		enum CANoteLength {
 			None = -1,
-			Brevis = 0,
+			Breve = 0,
 			Whole = 1,
 			Half = 2,
 			Quarter = 4,
