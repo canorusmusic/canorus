@@ -57,14 +57,25 @@ void CAToolBar::changeMenuIcon( QAbstractButton *poButton )
 	poToolButton->setIcon( poButton->icon() );
 	// Notify others about the new selection
 	emit buttonClicked( poToolButton );
+	emit actionTriggered( moToolActions[iBMID] );
 }
 
-void CAToolBar::addToolMenu( const QString oTitle, QString oName, QMenu *poMenu,
-                             const QIcon *poIcon, bool bToggle /* = false */ )
+QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, QMenu *poMenu,
+                                 const QIcon *poIcon, bool bToggle /* = false */ )
 {
 	// ToDo: Could be improved by calling addToolButton
 	QToolButton *poMenuButton = 0;
 	QAction     *poAction     = 0;
+	int          iSize        = moToolIDs.size();
+	moToolIDs[oName] = moToolElements.size();
+	// Check if name was unique (i.e. new hash inserted)
+	if( iSize == moToolIDs.size() )
+	{
+		printf("CATB-Error: ToolMenu name %s not unique!\n", 
+		       oName.toAscii().constData ());
+		fflush(stdout);
+		return 0;
+	}
 	moToolTypes.append(CTB_Menu);
 	// Create new Toolbutton
 	poMenuButton = new QToolButton();
@@ -72,7 +83,6 @@ void CAToolBar::addToolMenu( const QString oTitle, QString oName, QMenu *poMenu,
 	if( poMenuButton )
 	{
 		moToolElements.append(poMenuButton);
-		moToolIDs[oName] = moToolElements.size() - 1;
 		poMenuButton->setObjectName( oName );
 		poMenu->setObjectName( oName );
 		// Update icon
@@ -83,21 +93,39 @@ void CAToolBar::addToolMenu( const QString oTitle, QString oName, QMenu *poMenu,
 		poMenuButton->setToolTip( oTitle );
 		// Add action to the element
 		poAction = addWidget( poMenuButton );
+		poAction->setObjectName( oName );
 		// Save it in the action list
 		moToolActions.append( poAction );
 		// Associate menu with the button
 		poMenuButton->setMenu( poMenu );
 		// Add menu grab
 		poMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
+		// Notify on toggle of Tool Button
+		connect( poMenuButton, SIGNAL( toggled( bool ) ),
+			     poAction, SIGNAL( toggled( bool ) ) );
+		// Notify on change of menu entry
+		connect( poMenu, SIGNAL( triggered( QAction * ) ),
+			     this, SIGNAL( actionTriggered( QAction * ) ) );
 	}
+	return poAction;
 }
 
-void CAToolBar::addToolMenu( const QString oTitle, QString oName, CAButtonMenu *poButtonMenu, 
-                             const QIcon *poIcon, bool bToggle /* = false */ )
+QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, CAButtonMenu *poButtonMenu, 
+                                 const QIcon *poIcon, bool bToggle /* = false */ )
 {
 	// ToDo: Could be improved by calling addToolButton
 	QToolButton *poMenuButton = 0;
 	QAction     *poAction     = 0;
+	int          iSize        = moToolIDs.size();
+	moToolIDs[oName] = moToolElements.size();
+	// Check if name was unique (i.e. new hash inserted)
+	if( iSize == moToolIDs.size() )
+	{
+		printf("CATB-Error: ToolButtonMenu name %s not unique!\n", 
+		       oName.toAscii().constData ());
+		fflush(stdout);
+		return 0;
+	}
 	moToolTypes.append(CTB_Menu);
 	// Create new Toolbutton
 	poMenuButton = new QToolButton();
@@ -105,7 +133,6 @@ void CAToolBar::addToolMenu( const QString oTitle, QString oName, CAButtonMenu *
 	if( poMenuButton )
 	{
 		moToolElements.append(poMenuButton);
-		moToolIDs[oName] = moToolElements.size() - 1;
 		poMenuButton->setObjectName( oName );
 		poButtonMenu->setObjectName( oName );
 		// Update icon
@@ -116,20 +143,38 @@ void CAToolBar::addToolMenu( const QString oTitle, QString oName, CAButtonMenu *
 		poMenuButton->setToolTip( oTitle );
 		// Add action to the element
 		poAction = addWidget( poMenuButton );
+		poAction->setObjectName( oName );
 		// Save it in the action list
 		moToolActions.append( poAction );
 		// Associate menu with the button
 		poMenuButton->setMenu( poButtonMenu );
 		// Add menu grab
 		poMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
+		// Notify on toggle of Tool Button
+		connect( poMenuButton, SIGNAL( toggled( bool ) ),
+			     poAction, SIGNAL( toggled( bool ) ) );
+		// Notify on change of button
+		connect( poButtonMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
+			     this, SLOT( changeMenuIcon( QAbstractButton * ) ) );
 	}
+	return poAction;
 }
 
-void CAToolBar::addToolButton( const QString oTitle, QString oName, 
-                               const QIcon *poIcon, bool bToggle /* = false */ )
+QAction *CAToolBar::addToolButton( const QString oTitle, QString oName, 
+                                   const QIcon *poIcon, bool bToggle /* = false */ )
 {
 	QToolButton *poMenuButton = 0;
 	QAction     *poAction     = 0;
+	int          iSize        = moToolIDs.size();
+	moToolIDs[oName] = moToolElements.size();
+	// Check if name was unique (i.e. new hash inserted)
+	if( iSize == moToolIDs.size() )
+	{
+		printf("CATB-Error: ToolButton name %s not unique!\n", 
+		       oName.toAscii().constData());
+		fflush(stdout);
+		return 0;
+	}
 	moToolTypes.append(CTB_Button);
 	// Create new Toolbutton
 	poMenuButton = new QToolButton();
@@ -137,7 +182,6 @@ void CAToolBar::addToolButton( const QString oTitle, QString oName,
 	if( poMenuButton )
 	{
 		moToolElements.append(poMenuButton);
-		moToolIDs[oName] = moToolElements.size() - 1;
 		poMenuButton->setObjectName( oName );
 		// Update icon
 		poMenuButton->setIcon( *poIcon );
@@ -145,18 +189,33 @@ void CAToolBar::addToolButton( const QString oTitle, QString oName,
 		poMenuButton->setCheckable( bToggle );
 		// Tooltip
 		poMenuButton->setToolTip( oTitle );
+		poAction->setObjectName( oName );
 		// Add action to the element
 		poAction = addWidget( poMenuButton );
 		// Save it in the action list
 		moToolActions.append( poAction );
+		// Notify on toggle of Tool Button
+		connect( poMenuButton, SIGNAL( toggled( bool ) ),
+			     poAction, SIGNAL( toggled( bool ) ) );
 	}
+	return poAction;
 }
 
-void CAToolBar::addComboBox( QString oTitle, QString oName, 
-                             QStringList *poItemList, int iIndex )
+QAction *CAToolBar::addComboBox( QString oTitle, QString oName, 
+                                  QStringList *poItemList, int iIndex )
 {
 	QComboBox *poComboMenu = 0;
 	QAction   *poAction    = 0;
+	int          iSize        = moToolIDs.size();
+	moToolIDs[oName] = moToolElements.size();
+	// Check if name was unique (i.e. new hash inserted)
+	if( iSize == moToolIDs.size() )
+	{
+		printf("CATB-Error: ToolComboBox name %s not unique!\n",
+		       oName.toAscii().constData());
+		fflush(stdout);
+		return 0;
+	}
 	moToolTypes.append(CTB_Combobox);
 	// Create new Combobox Menu
 	poComboMenu = new QComboBox();
@@ -164,12 +223,12 @@ void CAToolBar::addComboBox( QString oTitle, QString oName,
 	if( poComboMenu )
 	{
 		moToolElements.append(poComboMenu);
-		moToolIDs[oName] = moToolElements.size() - 1;
 		poComboMenu->setObjectName( oName );
 		// Tooltip
 		poComboMenu->setToolTip( oTitle );
 		// Add action to the element
 		poAction = addWidget( poComboMenu );
+		poAction->setObjectName( oName );
 		// Save it in the action list
 		moToolActions.append( poAction );
 		// Add menu entries
@@ -177,6 +236,30 @@ void CAToolBar::addComboBox( QString oTitle, QString oName,
 			poComboMenu->addItems( *poItemList );
 		poComboMenu->setCurrentIndex( iIndex );
 	}
+	return poAction;
+}
+
+bool CAToolBar::setAction( QString oName, QAction *poAction )
+{
+	bool bRet  = false;
+	int  iSize = moToolIDs.size();
+	int iBMID = moToolIDs[oName];
+	// Check if oName was found in the hash (i.e. not inserted)
+	if( iSize == moToolIDs.size() )
+	{
+		// Trying to add a second Action to the ToolButtons gives the error:
+		// QToolButton: menu in setMenu() overriding actions set in addAction!
+		//moToolElements[iBMID]->addAction( poAction );
+		//poAction->setIcon( moToolActions[iBMID]->icon() );
+		connect( poAction, SIGNAL( toggled( bool ) ), moToolActions[iBMID],
+		         SIGNAL( toggled( bool ) ) );
+		connect( poAction, SIGNAL( triggered( bool ) ), moToolActions[iBMID],
+		         SIGNAL( toggled( bool ) ) );
+		bRet = true;
+	}
+	else // Not found: Remove the wrongly inserted hash
+		moToolIDs.remove( oName );
+	return bRet;
 }
 
 CAButtonMenu::CAButtonMenu( QString oTitle, QWidget * poParent /* = 0 */ ) 
@@ -290,6 +373,17 @@ void CAButtonMenu::addButton( const QIcon &oIcon )
 
 void CAButtonMenu::showButtons()
 { 
+	// This code should move the menu position to the left
+	// but it does not work, as QMenu sets it's own position
+	// after showButtons method call
+	/*QDesktopWidget *poDesktop = QApplication::desktop();
+    int iDWidth = poDesktop->width();
+    int iDHeight = poDesktop->height();
+	if( pos().x() + minimumSize().width() > iDWidth )
+		move( pos().x() - minimumSize().width(), pos().y() );*/
+	//printf("Pos: %d, %d, DW %d, BMW %d\n",
+	//       pos().x(), pos().y(), iDWidth, minimumSize().width() );
+	//fflush( stdout );
 	mpoBBox->show();
 	mpoBBox->updateGeometry();
 }
@@ -298,12 +392,4 @@ void CAButtonMenu::hideButtons( QAbstractButton *poButton )
 {
 	hide();
 	emit buttonClicked( poButton );
-	QDesktopWidget *poDesktop = QApplication::desktop();
-    int iDWidth = poDesktop->width();
-    int iDHeight = poDesktop->height();
-	if( pos().x() + minimumSize().width() > iDWidth )
-		move( pos().x() - minimumSize().width(), pos().y() );
-	printf("Pos: %d, %d, DW %d, BMW %d\n",
-	       pos().x(), pos().y(), iDWidth, minimumSize().width() );
-	fflush( stdout );
 }

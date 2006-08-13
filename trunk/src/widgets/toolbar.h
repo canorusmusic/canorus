@@ -71,8 +71,8 @@ public:
 	 * @param bToggle   'true': tool button is a toggle button
 	 *
 	 */
-	void addToolMenu( const QString oTitle, QString oName, QMenu *poMenu,
-	                  const QIcon *poIcon, bool bToggle = false );
+	QAction *addToolMenu( const QString oTitle, QString oName, QMenu *poMenu,
+	                      const QIcon *poIcon, bool bToggle = false );
 	/**
 	 * Add Tool button with a menu to the toolbar
 	 * 
@@ -83,8 +83,8 @@ public:
 	 * @param bToggle       'true': tool button is a toggle button
 	 *
 	 */
-	void addToolMenu( const QString oTitle, QString oName, CAButtonMenu *poButtonMenu, 
-	                  const QIcon *poIcon, bool bToggle = false );
+	QAction *addToolMenu( const QString oTitle, QString oName, CAButtonMenu *poButtonMenu, 
+	                      const QIcon *poIcon, bool bToggle = false );
 	/**
 	 * Add a Tool button
 	 * 
@@ -94,8 +94,8 @@ public:
 	 * @param bToggle      'true': tool button is a toggle button
 	 *
 	 */
-	void addToolButton( const QString oTitle, QString oName, const QIcon *poIcon,
-	                    bool bToggle = false );
+	QAction *addToolButton( const QString oTitle, QString oName, const QIcon *poIcon,
+	                        bool bToggle = false );
 	/**
 	 * Add a combobox menu
 	 * 
@@ -105,8 +105,18 @@ public:
 	 * @param iIndex       Index of the menu entry to be displayed
 	 *
 	 */
-	void addComboBox( QString oTitle, QString oName, QStringList *poItemList, 
-	                  int iIndex );
+	QAction *addComboBox( QString oTitle, QString oName, QStringList *poItemList, 
+	                      int iIndex );
+	                      
+	/**
+	 * Sets the action to a toolbar element
+	 * 
+	 * @param oName        Unique name to identify the toolbar element
+	 * @param poAction     additional action
+	 * @return             'true': Name was found in the list of toolbar elements
+	 *
+	 */
+	bool setAction( QString oName, QAction *poAction );
 
 signals:
 	/**
@@ -162,14 +172,14 @@ public:
 	/**
 	 * Return the number of icons per row
 	 * 
-	 * @return number of icons per row
+	 * @param iNumIconsRow   number of icons per row
 	 *
 	 */
 	int  getNumIconsPerRow();
 	/**
 	 * Set the number of icons per row
 	 * 
-	 * @param iNumIconsRow   number of icons per row
+	 * @return number of icons per row
 	 *
 	 */	
 	void setNumIconsPerRow( int iNumIconsRow );
