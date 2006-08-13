@@ -37,6 +37,10 @@ class CADrawableNote : public CADrawableMusElement {
 	private:
 		bool _drawLedgerLines;
 		bool _shadowNote;	///Is the current note shadow note?
+		static const int QUARTER_STEM_LENGTH = 22;
+		static const int HALF_STEM_LENGTH = 24;
+		static const int QUARTER_YPOS_DELTA = 21;
+		static const int HALF_YPOS_DELTA = 23;
 };
 
 #endif /*DRAWABLENOTE_H_*/
