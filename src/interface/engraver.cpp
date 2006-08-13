@@ -33,6 +33,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	QList<QList<CAMusElement*>*> musStreamList; 
 
 	int dy = 50;
+	QList<int> nonFirstVoiceIdxs;	//list of indexes of musStreamLists which the voices aren't the first voice. This is used later for determining should a sign be created or not (if it has been created in 1st voice already, don't recreate it in the other voices in th same staff).
 	QMap<CAContext*, CADrawableContext *> drawableContextMap;
 	
 	for (int i=0; i < sheet->contextCount(); i++, dy+=200) {
@@ -44,6 +45,8 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			//add all the voices lists to the common list
 			for (int j=0; j < staff->voiceCount(); j++) {
 				musStreamList << staff->voiceAt(j)->musElementList();
+				if (staff->voiceAt(j)->voiceNumber()!=1)
+					nonFirstVoiceIdxs << j;
 			}
 			
 		}
@@ -80,7 +83,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		//go through all the streams and check if the following element has this time
 		CAMusElement *elt;
 		CADrawableContext *drawableContext;
-		bool placedSymbol = false;	//used if waiting for notes to gather and a non-time-consuming
+		bool placedSymbol = false;	//used if waiting for notes to gather and a non-time-consuming symbol has been placed
 		for (int i=0; i < streams; i++) {
 			//loop until the first playable element
 			//multiple elements can have the same start time. eg. Clef + Key signature + Time signature + First note
@@ -89,7 +92,11 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			        (!elt->isPlayable())
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
-				if (drawableContext->drawableContextType() == CADrawableContext::DrawableStaff) {
+				
+				//place signs in first voices
+				if ( (drawableContext->drawableContextType() == CADrawableContext::DrawableStaff) &&
+				     (!nonFirstVoiceIdxs.contains(i)) )
+				 {
 					switch ( elt->musElementType() ) {
 						case CAMusElement::Clef: {
 							CADrawableClef *clef = new CADrawableClef(
