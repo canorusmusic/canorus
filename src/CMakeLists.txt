@@ -41,6 +41,7 @@ set(Canorus_Core_Srcs
 	core/barline.cpp
 	core/clef.cpp
 	core/keysignature.cpp
+	core/timesignature.cpp
 	core/context.cpp
 	core/document.cpp
 	core/kdtree.cpp
@@ -70,6 +71,7 @@ set(Canorus_Drawable_Srcs
 	drawable/drawablebarline.cpp
 	drawable/drawableclef.cpp
 	drawable/drawablekeysignature.cpp
+	drawable/drawabletimesignature.cpp
 	drawable/drawableaccidental.cpp
 	drawable/drawablecontext.cpp
 	drawable/drawablemuselement.cpp
