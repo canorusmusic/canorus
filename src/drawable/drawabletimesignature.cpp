@@ -84,7 +84,7 @@ void CADrawableTimeSignature::draw(QPainter *p, CADrawSettings s) {
 			QString curBeats = QString::number(timeSignature()->beats());
 			QString curBeat = QString::number(timeSignature()->beat());
 			int curX = s.x;
-			while (!curBeats.isEmpty() && !curBeat.isEmpty()) {
+			while (!curBeats.isEmpty() || !curBeat.isEmpty()) {
 				if (!curBeats.isEmpty())				
 					p->drawText(curX, (int)(s.y + 0.5*drawableContext()->height()*s.z), QString(curBeats[0]));
 				if (!curBeat.isEmpty())
