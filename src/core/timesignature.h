@@ -34,11 +34,13 @@ class CATimeSignature : public CAMusElement {
 		 * @param startTime Start time.
 		 */
 		CATimeSignature(int beats, int beat, CAStaff *staff, int startTime, CATimeSignatureType type = Classical);
+		CATimeSignature(QString MLString, CAStaff *staff, int startTime, CATimeSignatureType type = Classical);
 		~CATimeSignature();
 	
 		int beats() { return _beats; }
 		int beat() { return _beat; }
 		CATimeSignatureType timeSignatureType() { return _timeSignatureType; }
+		const QString timeSignatureML() { return (QString::number(_beats) + "/" + QString::number(_beat)); } 
 		
 	private:
 		int _beats;

@@ -21,6 +21,7 @@
 #include "core/clef.h"
 #include "core/muselement.h"
 #include "core/keysignature.h"
+#include "core/timesignature.h"
 #include "core/barline.h"
 
 CACanorusML::CACanorusML(CADocument *doc, CAMainWin *mainWin) {
@@ -105,7 +106,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 	int lastPitch = 28;
 	QString lastLength = "";
 	
-	for (int i=0; i<v->musElementCount(); i++) {
+	for (int i=0; i<v->musElementCount(); i++, voiceString += " ") {
 		//(CAMusElement)
 		switch (v->musElementAt(i)->musElementType()) {
 			case CAMusElement::Clef: {
@@ -113,7 +114,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				CAClef *clef = (CAClef*)v->musElementAt(i);
 				voiceString += "<clef>";
 				voiceString += clef->clefTypeML();
-				voiceString += "</clef> ";
+				voiceString += "</clef>";
 				
 				lastPitch = clef->centerPitch();
 				break;
@@ -123,7 +124,16 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				CAKeySignature *key = (CAKeySignature*)v->musElementAt(i);
 				voiceString += QString("<key type=\"") + key->diatonicGenderML() + "\">";
 				voiceString += key->pitchML();
-				voiceString += "</key> ";
+				voiceString += "</key>";
+			
+				break;
+			}
+			case CAMusElement::TimeSignature: {
+				//CATimeSignature
+				CATimeSignature *time = (CATimeSignature*)v->musElementAt(i);
+				voiceString += QString("<time>");
+				voiceString += time->timeSignatureML();
+				voiceString += "</time>";
 			
 				break;
 			}
@@ -131,7 +141,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				//CABarline
 				CABarline *bar = (CABarline*)v->musElementAt(i);
 				if (bar->barlineType() == CABarline::Single)
-					voiceString += "| ";
+					voiceString += "|";
 				
 				break;
 			}
@@ -153,13 +163,13 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				if (lastLength != note->lengthML())
 					voiceString += note->lengthML();
 				
-				voiceString += " ";
 				lastPitch = note->pitch();
 				lastLength = note->lengthML();
 			}
 		}
 	}
 	
+	voiceString.truncate(voiceString.length()-1);	//remove the trailing blank
 	return voiceString;
 }
 
@@ -223,6 +233,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 			((CAStaff*)_curContext)->addVoice(voice);
 		}
 	} else if (qName == "clef") {
+	} else if (qName == "time") {
 	} else if (qName == "key") {
 		_diatonicGender = attributes.value("type");
 	}
@@ -269,6 +280,21 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		_diatonicGender="";
 		_cha="";
 		_curVoice->staff()->insertSign(keySig);
+	} else if (qName == "time") {
+		//CATimeSignature
+		if (!_curContext) {
+			_errorMsg = "No staffs exist yet to place a time signature!";
+			return false;
+		} else if (_curContext->contextType()!=CAContext::Staff) {
+			_errorMsg = "The context where the time signature should be added isn't a staff!";
+			return false;
+		} else if (((CAStaff*)_curContext)->voiceCount()==0) {
+			_errorMsg = "At least one voice should exist in order to add a time signature!";
+			return false;
+		}
+
+		CATimeSignature *time = new CATimeSignature(_cha, _curVoice->staff(), _curVoice->lastTimeEnd());
+		_curVoice->staff()->insertSign(time);
 	}
 	
 	_depth.pop();
