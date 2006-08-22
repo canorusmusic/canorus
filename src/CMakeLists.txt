@@ -23,10 +23,14 @@ INCLUDE_DIRECTORIES( ${QT_QTTEST_INCLUDE_DIR} )
 set( QT_USE_QTXML true )
 
 # Define the UI source files used by Canorus
-set(Canorus_UIs  ui/mainwin.ui)
+set(Canorus_UIs  ui/mainwin.ui
+	ui/keysig.ui
+	)
 
 # Define the MOC source files used by Canorus
-set(Canorus_MOCs ui/mainwin.h 
+set(Canorus_MOCs ui/mainwin.h
+	ui/keysigpsp.h
+	widgets/keyoffs.h
 	widgets/lcdnumber.h 
 	widgets/scrollwidget.h 
 	widgets/viewport.h 
@@ -50,12 +54,12 @@ set(Canorus_Core_Srcs
 	core/playable.cpp
 	core/sheet.cpp
 	core/staff.cpp
-	core/voice.cpp
-	
+	core/voice.cpp	
 	core/canorusml.cpp
 	)
 
 set(Canorus_Widget_Srcs  
+	widgets/keyoffs.cpp
 	widgets/lcdnumber.cpp
 	widgets/scoreviewport.cpp
 	widgets/sourceviewport.cpp
@@ -64,7 +68,9 @@ set(Canorus_Widget_Srcs
 	widgets/viewport.cpp
 	)
 
-set(Canorus_Ui_Srcs ui/mainwin.cpp)
+set(Canorus_Ui_Srcs ui/mainwin.cpp
+	ui/keysigpsp.cpp
+	)
 
 set(Canorus_Drawable_Srcs
 	drawable/drawable.cpp

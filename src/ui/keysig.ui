@@ -1,0 +1,143 @@
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>KeySig</class>
+ <widget class="QWidget" name="KeySig" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>361</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="2" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QPushButton" name="mpoKeySigButton" >
+     <property name="text" >
+      <string>&amp;Add</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QPushButton" name="mpoRemoveButton" >
+     <property name="text" >
+      <string>Remove</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3" >
+    <widget class="QListWidget" name="mpoKeySigListWidget" >
+     <item>
+      <property name="text" >
+       <string>C Major; a minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>F Major; d minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>B flat Major; g minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>E flat Major; c minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>A flat Major; f minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>D flat Major; b flat minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>G flat Major; e flat minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>C flat Major; a flat minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>G Major; e minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>D Major; b minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>A Major; f sharp minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>E Major; c sharp minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>B Major; g sharp minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>F sharp Major; d sharp minor</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>C sharp Major; a sharp minor</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3" >
+    <widget class="QSlider" name="mpoKeySigSlider" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <pixmapfunction></pixmapfunction>
+ <resources/>
+ <connections/>
+</ui>

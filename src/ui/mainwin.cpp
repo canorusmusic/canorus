@@ -38,6 +38,8 @@
 using namespace std;
 
 #include "ui/mainwin.h"
+#include "ui/keysigpsp.h"
+
 #include "widgets/toolbar.h"
 #include "widgets/lcdnumber.h"
 
@@ -90,7 +92,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	moMainWin.actionLock_scroll_playback->setChecked(false);
 	moMainWin.actionUnsplit->setEnabled(false);
 	
-	_slider = 0;
+	mpoKeySigPSP = 0;
 	
 	//Initialize MIDI
 	initMidi();
@@ -432,7 +434,10 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				return;
 			
 			staff = (CAStaff*)context->context();
-			CAKeySignature *keySig = new CAKeySignature(CAKeySignature::Diatonic, _slider->value()-7, CAKeySignature::Major, staff, (right?right->timeStart():staff->lastTimeEnd()));
+			CAKeySignature *keySig = new CAKeySignature(CAKeySignature::Diatonic, 
+			                                            mpoKeySigPSP->getKeySignature()-7,
+			                                            CAKeySignature::Major, staff,
+			                                            (right?right->timeStart():staff->lastTimeEnd()));
 			staff->insertSignBefore(keySig, right);
 			
 			rebuildViewPorts(v->sheet(), true);
@@ -604,8 +609,8 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 					((CAScoreViewPort*)_activeViewPort)->selectContext(0);
 				}
 				setMode(SelectMode);
-				if (_slider)
-					_slider->hide();
+				if (mpoKeySigPSP)
+					mpoKeySigPSP->hide();
 				break;
 			case Qt::Key_I:
 				_insertMusElement = CAMusElement::Note;
@@ -797,13 +802,20 @@ void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 }
 	
 void CAMainWin::on_action_Key_signature_activated() {
-	if (!_slider) {
-		_slider = new QSlider(Qt::Horizontal, 0);
-		_slider->setMaximum(15);
+	if (!mpoKeySigPSP) {
+		mpoKeySigPSP = new CAKeySigPSP("Edit key signature", this);
+		addDockWidget( Qt::LeftDockWidgetArea, mpoKeySigPSP );
 	}
 	
-	_slider->setValue(7);
-	_slider->show();
+	mpoKeySigPSP->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
+	mpoKeySigPSP->setFocusPolicy(Qt::ClickFocus);
+	mpoKeySigPSP->setFocus();
+	mpoKeySigPSP->show();
+	
+	moMainWin.actionSplit_horizontally->setEnabled(false);
+	moMainWin.actionSplit_vertically->setEnabled(false);
+	moMainWin.actionUnsplit->setEnabled(true);
+	
 	setMode(InsertMode);
 	_insertMusElement = CAMusElement::KeySignature;
 	
