@@ -538,7 +538,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				CADrawableContext *drawableContext;
 				drawableContext = ((CAScoreViewPort*)v)->currentContext();
 				
-				if ( drawableContext->context()->contextType() != CAContext::Staff)
+				if ( (!drawableContext->context()) || (drawableContext->context()->contextType() != CAContext::Staff) )
 					return;
 			
 				CAStaff *staff = (CAStaff*)drawableContext->context();
