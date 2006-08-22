@@ -131,7 +131,10 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 			case CAMusElement::TimeSignature: {
 				//CATimeSignature
 				CATimeSignature *time = (CATimeSignature*)v->musElementAt(i);
-				voiceString += QString("<time>");
+				voiceString += QString("<time");
+				if (time->timeSignatureType() != CATimeSignature::Classical)
+					voiceString += QString(" type=\"") + time->timeSignatureTypeML() + QString("\"");
+				voiceString += QString(">");
 				voiceString += time->timeSignatureML();
 				voiceString += "</time>";
 			
@@ -234,7 +237,10 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		}
 	} else if (qName == "clef") {
 	} else if (qName == "time") {
+		//CATimeSignature
+		_timeSignatureType = attributes.value("type");
 	} else if (qName == "key") {
+		//CAKeySignature
 		_diatonicGender = attributes.value("type");
 	}
 	
@@ -293,7 +299,8 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 			return false;
 		}
 
-		CATimeSignature *time = new CATimeSignature(_cha, _curVoice->staff(), _curVoice->lastTimeEnd());
+		CATimeSignature *time = new CATimeSignature(_cha, _curVoice->staff(), _curVoice->lastTimeEnd(), _timeSignatureType);
+		
 		_curVoice->staff()->insertSign(time);
 	}
 	
