@@ -16,12 +16,14 @@
 #include "drawable/drawableclef.h"
 #include "drawable/drawablenote.h"
 #include "drawable/drawablekeysignature.h"
+#include "drawable/drawabletimesignature.h"
 #include "drawable/drawablebarline.h"
 
 #include "core/sheet.h"
 #include "core/staff.h"
 #include "core/voice.h"
 #include "core/keysignature.h"
+#include "core/timesignature.h"
 
 #define INITIAL_X_OFFSET 20
 #define MINIMUM_SPACE 10
@@ -58,6 +60,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	int streamsX[streams]; for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
 	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
 	CAKeySignature *lastKeySig[streams]; for (int i=0; i<streams; i++) lastKeySig[i] = 0;
+	CATimeSignature *lastTimeSig[streams]; for (int i=0; i<streams; i++) lastTimeSig[i] = 0;
 
 	int timeStart = 0;
 	bool done = false;
@@ -130,6 +133,21 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							placedSymbol = true;
 							break;
 						}
+						case CAMusElement::TimeSignature: {
+							CADrawableTimeSignature *timeSig = new CADrawableTimeSignature(
+								(CATimeSignature*)elt,
+								(CADrawableStaff*)drawableContext,
+								streamsX[i],
+								drawableContext->yPos()
+							);
+							
+							v->addMElement(timeSig);
+							lastTimeSig[i] = timeSig->timeSignature();
+							
+							streamsX[i] += (timeSig->neededWidth() + MINIMUM_SPACE);
+							placedSymbol = true;
+							break;
+						}
 					}
 				}
 				
@@ -193,8 +211,5 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 				streamsIdx[i] = streamsIdx[i] + 1;
 			}
 		}
-					
-						
-		
 	}
 }

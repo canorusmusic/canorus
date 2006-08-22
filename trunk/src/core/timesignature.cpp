@@ -18,5 +18,14 @@ CATimeSignature::CATimeSignature(int beats, int beat, CAStaff *staff, int startT
  	_timeSignatureType = type;
 }
 
+CATimeSignature::CATimeSignature(QString MLString, CAStaff *staff, int startTime, CATimeSignatureType type)
+ : CAMusElement(staff, startTime) {
+ 	_musElementType = CAMusElement::TimeSignature;
+ 	
+ 	_beats = MLString.mid(0, MLString.indexOf("/")).toInt();
+ 	_beat = MLString.mid(MLString.indexOf("/") + 1).toInt();
+ 	_timeSignatureType = type;
+}
+
 CATimeSignature::~CATimeSignature() {
 }

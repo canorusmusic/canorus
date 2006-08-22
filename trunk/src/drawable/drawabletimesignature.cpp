@@ -9,7 +9,7 @@
 #include <QString>
 #include <QFont>
 #include <QPainter>
-
+#include <iostream>
 #include "drawable/drawabletimesignature.h"
 #include "drawable/drawablestaff.h"
 
@@ -19,10 +19,28 @@ CADrawableTimeSignature::CADrawableTimeSignature(CATimeSignature *timeSig, CADra
  : CADrawableMusElement(timeSig, drawableStaff, x, y) {
  	_drawableMusElement = CADrawableMusElement::DrawableTimeSignature;
  	
- 	//determine the width - number of characters needed to draw the beat or beats (which one is bigger?) times the width of a single character
- 	_width = 25 + 27*((timeSignature()->beats()/10 > timeSignature()->beat()/10) ? timeSignature()->beats()/10 : timeSignature()->beat()/10);
- 	_height = drawableStaff->height();
  	
+ 	if ((timeSignature()->timeSignatureType() == CATimeSignature::Classical) && (timeSignature()->beat() == 4) && (timeSignature()->beats() == 4)) {
+ 		_width = 16;
+ 		_height = 20;
+ 		_yPos = (int)(drawableContext()->yCenter() - 0.5*_height + 0.5);
+ 	} else if ((timeSignature()->timeSignatureType() == CATimeSignature::Classical) && (timeSignature()->beat() == 2) && (timeSignature()->beats() == 2)) {
+ 		_width = 16;
+ 		_height = 24;
+ 		_yPos = (int)(drawableContext()->yCenter() - 0.5*_height + 0.5);
+ 	} else { //determine the width - number of characters needed to draw the beat and beats times the width of a single character
+ 		_width = 14;
+ 		QString beats = QString::number(timeSignature()->beats()).mid(1);	//cut-off the first character already
+ 		QString beat = QString::number(timeSignature()->beat()).mid(1);	//cut-off the first character already
+		while ((!beats.isEmpty()) || (!beat.isEmpty())) {
+ 			_width += 15;	//blank + number width
+ 			
+ 			beats = beats.mid(1);
+ 			beat = beat.mid(1);
+		}
+ 		_height = drawableStaff->height();
+ 	}
+ 
  	_neededWidth = _width;
  	_neededHeight = _height;
 }
@@ -32,7 +50,7 @@ CADrawableTimeSignature::~CADrawableTimeSignature() {
 
 void CADrawableTimeSignature::draw(QPainter *p, CADrawSettings s) {
 	QFont font("Emmentaler");
-	font.setPixelSize((int)(35*s.z));
+	font.setPixelSize((int)(37*s.z));
 	p->setPen(QPen(s.color));
 	p->setFont(font);
 	
@@ -64,24 +82,19 @@ void CADrawableTimeSignature::draw(QPainter *p, CADrawSettings s) {
 		case CATimeSignature::Number: {
 			//write the numbers one by one, first, the number of beats
 			QString curBeats = QString::number(timeSignature()->beats());
-			int curX = s.x;
-			while (!curBeats.isEmpty()) {
-				p->drawText(curX, (int)(s.y + 0.5*drawableContext()->height()*s.z), QString(curBeats[0]));
-				
-				curX+=27;
-				curBeats = curBeats.mid(1);	//trim-off the left-most character
-			}
-			
-			//and now the beat
 			QString curBeat = QString::number(timeSignature()->beat());
-			curX = s.x;
-			while (!curBeat.isEmpty()) {
-				p->drawText(curX, (int)(s.y + drawableContext()->height()*s.z), QString(curBeat[0]));
+			int curX = s.x;
+			while (!curBeats.isEmpty() && !curBeat.isEmpty()) {
+				if (!curBeats.isEmpty())				
+					p->drawText(curX, (int)(s.y + 0.5*drawableContext()->height()*s.z), QString(curBeats[0]));
+				if (!curBeat.isEmpty())
+					p->drawText(curX, (int)(s.y + drawableContext()->height()*s.z), QString(curBeat[0]));
 				
-				curX+=27;
+				curX += (int)(14*s.z + 0.5);
+				curBeats = curBeats.mid(1);	//trim-off the left-most character
 				curBeat = curBeat.mid(1);	//trim-off the left-most character
 			}
-			
+
 			break;
 		}
 	}
