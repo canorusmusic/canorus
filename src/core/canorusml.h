@@ -71,7 +71,9 @@ class CACanorusML : public QXmlDefaultHandler {
 			////////////////////////////////////////////
 			QString _cha;	///Current characters being read using characters() method between the greater/lesser separators.
 			//CAKeySignature
-			QString _diatonicGender;	///CAKeySignature::CADiatonicGenderType
+			QString _diatonicGender;	///CAKeySignature::CADiatonicGenderType (major, minor etc.)
+			//CATimeSignature
+			QString _timeSignatureType;	///CATimeSignature::CATimeSignatureType (Classical, Number, Neomensural etc.)
 
 		////////////////////////////////////////////////
 		//Writing XML
