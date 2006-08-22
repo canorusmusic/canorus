@@ -41,6 +41,7 @@ class CAToolBar;
 class CAButtonMenu;
 class CALCDNumber;
 class CASheet;
+class CAKeySigPSP;
 
 enum CAMode {
 	InsertMode,
@@ -173,9 +174,7 @@ private slots:
 	void playbackFinished();	///Temporarily as we don't find better solution.
 	//void on_repaintTimer_timeout();	///Used for repaint events
 
-private:
-	QSlider *_slider;	//TODO: A quick solution to test the insert key signature feature. This will be replaced by a good toolbar/dialog solution of course. -Matevz
-	
+private:	
 	////////////////////////////////////////////////////
 	//General properties
 	////////////////////////////////////////////////////
@@ -198,6 +197,7 @@ private:
 	QAction      *actionNoteSelect;    /// Action for having a note length selected
 	QAction      *actionClefSelect;    /// Action for having a clef selected
 	QAction      *actionKeySigSelect;  /// Action for having a clef selected
+	CAKeySigPSP  *mpoKeySigPSP;	       /// Key signature perspective
 	
 	////////////////////////////////////////////////////
 	//User interface, widgets
