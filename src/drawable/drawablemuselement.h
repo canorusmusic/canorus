@@ -22,6 +22,7 @@ class CADrawableMusElement : public CADrawable {
 			DrawableNote,
 			DrawableClef,
 			DrawableKeySignature,
+			DrawableTimeSignature,
 			DrawableBarline,
 			DrawableAccidental
 		};
