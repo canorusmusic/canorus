@@ -37,7 +37,7 @@ CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CADiat
 
 CAKeySignature::CAKeySignature(QString sPitch, QString sGender, CAStaff *staff, int timeStart)
  : CAMusElement(staff, timeStart) {
-	CADiatonicGenderType gender = Major;
+	CADiatonicGenderType gender;
 	if (sGender.toUpper()=="MAJOR")
 		gender = Major;
 	else if (sGender.toUpper()=="MINOR")
@@ -45,23 +45,23 @@ CAKeySignature::CAKeySignature(QString sPitch, QString sGender, CAStaff *staff, 
 	else
 		gender = (sPitch.at(0).isLower()?Minor:Major);	//if no gender is defined, set the gender according to the pitch capitals
 	
-	signed char accs = 0;
 	int pitch = sPitch.toUpper()[0].toLatin1() - 'A';
-	
-	while (pitch!=0) {	//round the circle of fifths until 
-		pitch = (pitch+4)%7;
-		accs--;
+
+	signed char accs = -1;
+	for (int i=5; i!=pitch; i=(i+1)%7)	{//calculate number of accidentals for Major key signatures. Start with F-Major (1 flat) and add 2 sharps mod 7 for every next level
+		accs = (accs+2)%7;	
 	}
-	
-	if (gender == Major)
-		accs += 3;	//we started with A-Major
-	//we don't need to add accidentals for the minor as it starts on a-minor, which has 0 accidentals
+	if (gender == Minor)
+		accs -= 3;	//Major->Minor transformation: Every same-name minor key sig has -3 accidentals of the major key signature
 	
 	while (sPitch.size()>1) {
 		if (sPitch.toUpper().endsWith("IS"))
 			accs += 7;
 		else if (sPitch.toUpper().endsWith("ES"))
 			accs -= 7;
+		else if (sPitch.toUpper().endsWith("AS"))
+			accs -= 7;
+		
 		sPitch.chop(2);
 	}
 	
