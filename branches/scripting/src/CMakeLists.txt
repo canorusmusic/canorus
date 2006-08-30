@@ -104,7 +104,20 @@ set(Canorus_Srcs
 	${Canorus_Interface_Srcs}
 	${Canorus_RTMidi_Srcs}
 	${Canorus_Widget_Srcs}
+	)
+
+set(Canorus_Swig_Interfaces 
 	scripting/context.i
+	scripting/document.i
+	scripting/sheet.i
+	scripting/muselement.i
+	)
+
+set(Canorus_Swig_Srcs
+	core/context.cpp
+	core/document.cpp
+	core/sheet.cpp
+	core/muselement.cpp
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
@@ -155,13 +168,14 @@ INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-SET(CMAKE_SWIG_FLAGS "-includeall" "-c++")
+#SET(CMAKE_SWIG_FLAGS "-includeall" "-c++")
+
+SET_SOURCE_FILES_PROPERTIES(${Canours_Swig_Interfaces} PROPERTIES CPLUSPLUS ON)
+SET_SOURCE_FILES_PROPERTIES(${Canorus_Swig_Interfaces} PROPERTIES SWIG_FLAGS "-includeall")
 
 SWIG_ADD_MODULE(ca ruby
-	scripting/document.i core/document.cpp
-	scripting/sheet.i core/sheet.cpp
-	scripting/context.i core/context.cpp
-	scripting/muselement.i core/muselement.cpp
+	${Canorus_Swig_Srcs}
+	${Canorus_Swig_Interfaces}
 )
 
 SWIG_LINK_LIBRARIES(ca ${RUBY_LIBRARIES})
