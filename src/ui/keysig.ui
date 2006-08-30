@@ -8,12 +8,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>307</width>
     <height>361</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Form</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset/>
   </property>
   <layout class="QGridLayout" >
    <property name="margin" >
@@ -22,6 +25,27 @@
    <property name="spacing" >
     <number>6</number>
    </property>
+   <item row="2" column="0" >
+    <widget class="QPushButton" name="mpoKeySigButton" >
+     <property name="text" >
+      <string>&amp;Add</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3" >
+    <widget class="QSlider" name="mpoKeySigSlider" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QPushButton" name="mpoRemoveButton" >
+     <property name="text" >
+      <string>Remove</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="1" >
     <spacer>
      <property name="orientation" >
@@ -35,109 +59,243 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="0" >
-    <widget class="QPushButton" name="mpoKeySigButton" >
-     <property name="text" >
-      <string>&amp;Add</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2" >
-    <widget class="QPushButton" name="mpoRemoveButton" >
-     <property name="text" >
-      <string>Remove</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0" colspan="3" >
-    <widget class="QListWidget" name="mpoKeySigListWidget" >
-     <item>
-      <property name="text" >
-       <string>C Major; a minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>F Major; d minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>B flat Major; g minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>E flat Major; c minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>A flat Major; f minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>D flat Major; b flat minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>G flat Major; e flat minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>C flat Major; a flat minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>G Major; e minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>D Major; b minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>A Major; f sharp minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>E Major; c sharp minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>B Major; g sharp minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>F sharp Major; d sharp minor</string>
-      </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>C sharp Major; a sharp minor</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="3" >
-    <widget class="QSlider" name="mpoKeySigSlider" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
+    <widget class="QTreeWidget" name="mpoKeySigListWidget" >
+     <property name="iconSize" >
+      <size>
+       <width>68</width>
+       <height>53</height>
+      </size>
      </property>
+     <column>
+      <property name="text" >
+       <string/>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Major</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Minor</string>
+      </property>
+     </column>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="text" >
+       <string>C</string>
+      </property>
+      <property name="text" >
+       <string>a</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/fmajdmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>F</string>
+      </property>
+      <property name="text" >
+       <string>d</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/bmajgmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>B</string>
+      </property>
+      <property name="text" >
+       <string>g</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/eflmajcmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>E flat</string>
+      </property>
+      <property name="text" >
+       <string>c</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/aflmajfmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>A flat</string>
+      </property>
+      <property name="text" >
+       <string>f</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/dflmajbflmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>D flat</string>
+      </property>
+      <property name="text" >
+       <string>b flat</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/gflmajeflmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>G flat</string>
+      </property>
+      <property name="text" >
+       <string>e flat</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/cflmajaflmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>C flat</string>
+      </property>
+      <property name="text" >
+       <string>a flat</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/gmajemin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>G</string>
+      </property>
+      <property name="text" >
+       <string>e</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/dmajbmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>D</string>
+      </property>
+      <property name="text" >
+       <string>b</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/amajfshmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>A</string>
+      </property>
+      <property name="text" >
+       <string>f sharp</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/emajcshmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>E</string>
+      </property>
+      <property name="text" >
+       <string>c sharp</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/bmajgshmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>B</string>
+      </property>
+      <property name="text" >
+       <string>g sharp</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/fshmajdshmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>F sharp</string>
+      </property>
+      <property name="text" >
+       <string>d sharp</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string/>
+      </property>
+      <property name="icon" >
+       <iconset resource="keysig.qrc" >:/keysig/images/cshmajashmin.png</iconset>
+      </property>
+      <property name="text" >
+       <string>C sharp</string>
+      </property>
+      <property name="text" >
+       <string>a sharp</string>
+      </property>
+     </item>
     </widget>
    </item>
   </layout>
  </widget>
  <pixmapfunction></pixmapfunction>
- <resources/>
+ <resources>
+  <include location="keysig.qrc" />
+ </resources>
  <connections/>
 </ui>

@@ -106,7 +106,7 @@ set(Canorus_Srcs
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
-set(Canorus_Resrcs ui/mainwin.qrc)
+set(Canorus_Resrcs ui/mainwin.qrc ui/keysig.qrc)
 
 # Add all the dependencies needed for the MainWindow
 # add_file_dependencies( ui/mainwin.cpp ui/ui_mainwin.h )
