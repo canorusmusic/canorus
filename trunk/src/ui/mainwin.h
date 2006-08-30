@@ -19,7 +19,7 @@
 /*		Reinhard Katzmann, GERMANY			             */
 /*		reinhard@suamor.de					     */
 /*									     */
-/*		Matevž Jekovec, SLOENIA                                     */
+/*		Matevž Jekovec, SLOVENIA                                     */
 /*		matevz.jekovec@guest.arnes.si				     */
 /*									     */
 /*****************************************************************************/
@@ -78,6 +78,15 @@ public:
 	 */
 	void clearUI();
 	
+	/**
+	 * This method is called when multiple viewports share the same logical source and a change has been made in the logical musElement list.
+	 * This method rebuilds the CADrawable elements on viewports from the logical list which was changed.
+	 * 
+	 * @param sheet Pointer to the common CASheet viewports use.
+	 * @param repaint Should the viewports be repainted as well.
+	 */
+	void rebuildViewPorts(CASheet *sheet=0, bool repaint=true);
+
 	void initMidi();
 
 private slots:
@@ -226,13 +235,4 @@ private:
 	CAMusElement::CAMusElementType _insertMusElement;	///Current element to be added. 0, if in view mode, CAMusElementType, if in insert mode
 	CANote::CANoteLength _insertNote;	///
 	CAClef::CAClefType _insertClef;	///
-
-	/**
-	 * This method is called when multiple viewports share the same logical source and a change has been made in the logical musElement list.
-	 * This method rebuilds the CADrawable elements on viewports from the logical list which was changed.
-	 * 
-	 * @param sheet Pointer to the common CASheet viewports use.
-	 * @param repaint Should the viewports be repainted as well.
-	 */
-	void rebuildViewPorts(CASheet *sheet=0, bool repaint=true);
 };
