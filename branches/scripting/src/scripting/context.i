@@ -6,7 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-%module Canorus
+%module Ca
 
 %{
 #include "core/context.h"
@@ -15,7 +15,7 @@
 /**
  * Swig implementation of CAContext.
  */
-%name(CAContext) class CAContext {
+class CAContext {
 	public:
 		CAContext(CASheet *s, const QString name);
 		

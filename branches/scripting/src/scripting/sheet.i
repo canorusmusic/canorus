@@ -6,7 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-%module Canorus
+%module Ca
 
 %{
 #include "core/sheet.h"
@@ -15,7 +15,7 @@
 /**
  * Swig implementation of CASheet.
  */
-%name(CASheet) class CASheet {
+class CASheet {
 	public:
 		CASheet(const QString name, CADocument *doc);
 		

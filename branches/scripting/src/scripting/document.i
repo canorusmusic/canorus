@@ -6,7 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-%module Canorus
+%module Ca
 
 %{
 #include "core/document.h"
@@ -15,7 +15,7 @@
 /**
  * Swig implementation of CADocument.
  */
-%name(CADocument) class CADocument {
+class CADocument {
 	public:
 		CADocument();
 		void clear();

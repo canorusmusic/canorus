@@ -6,7 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-%module Canorus
+%module Ca
 
 %{
 #include "core/muselement.h"
@@ -15,7 +15,7 @@
 /**
  * Swig implementation of CAMusElement.
  */
-%name(CAMusElement) class CAMusElement {
+class CAMusElement {
 	public:
 		CAMusElement(CAContext *context, int time, int length=0);
 		~CAMusElement();

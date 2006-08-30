@@ -13,7 +13,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -D__LINUX_ALSASEQ__")
 # This line adds the include path of the Qt
 # directory to the compiler include path
 INCLUDE( ${QT_USE_FILE} )
-# These two lines add additionally include pathes
+# These two lines add additional include paths
 # for xml and test includes
 INCLUDE_DIRECTORIES( ${QT_QTXML_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${QT_QTTEST_INCLUDE_DIR} )
@@ -68,7 +68,8 @@ set(Canorus_Widget_Srcs
 	widgets/viewport.cpp
 	)
 
-set(Canorus_Ui_Srcs ui/mainwin.cpp
+set(Canorus_Ui_Srcs
+	ui/mainwin.cpp
 	ui/keysigpsp.cpp
 	)
 
@@ -103,6 +104,7 @@ set(Canorus_Srcs
 	${Canorus_Interface_Srcs}
 	${Canorus_RTMidi_Srcs}
 	${Canorus_Widget_Srcs}
+	scripting/context.i
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
@@ -153,14 +155,14 @@ INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-SET(CMAKE_SWIG_FLAGS "-c++ -includeall")
+SET(CMAKE_SWIG_FLAGS "-includeall" "-c++")
 
-#SET_SOURCE_FILES_PROPERTIES(scripting/document.i PROPERTIES CPLUSPLUS ON)
-#SET_SOURCE_FILES_PROPERTIES(example.i PROPERTIES SWIG_FLAGS "-includeall")
-SWIG_ADD_MODULE(canorus ruby
+SWIG_ADD_MODULE(ca ruby
 	scripting/document.i core/document.cpp
 	scripting/sheet.i core/sheet.cpp
 	scripting/context.i core/context.cpp
 	scripting/muselement.i core/muselement.cpp
 )
-SWIG_LINK_LIBRARIES(canorus ${RUBY_LIBRARIES})
+
+SWIG_LINK_LIBRARIES(ca ${RUBY_LIBRARIES})
+
