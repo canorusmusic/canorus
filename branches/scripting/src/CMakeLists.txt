@@ -178,5 +178,5 @@ SWIG_ADD_MODULE(CanorusRuby ruby
 	${Canorus_Swig_Interfaces}
 )
 
-SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARIES})
+SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARIES} ${QT_LIBRARIES})
 
