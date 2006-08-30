@@ -106,19 +106,19 @@ set(Canorus_Srcs
 	${Canorus_Widget_Srcs}
 	)
 
-set(Canorus_Swig_Interfaces 
-	scripting/context.i
-	scripting/document.i
-	scripting/sheet.i
-	scripting/muselement.i
-	)
-
 set(Canorus_Swig_Srcs
 	core/context.cpp
 	core/document.cpp
 	core/sheet.cpp
 	core/muselement.cpp
 	)
+
+#set(Canorus_Swig_Interfaces	#doesn't work due to cmake bug?
+#	scripting/context.i
+#	scripting/document.i
+#	scripting/sheet.i
+#	scripting/muselement.cpp
+#	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
 set(Canorus_Resrcs ui/mainwin.qrc)
@@ -170,13 +170,24 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 #SET(CMAKE_SWIG_FLAGS "-includeall" "-c++")
 
-SET_SOURCE_FILES_PROPERTIES(${Canours_Swig_Interfaces} PROPERTIES CPLUSPLUS ON)
-SET_SOURCE_FILES_PROPERTIES(${Canorus_Swig_Interfaces} PROPERTIES SWIG_FLAGS "-includeall")
+#SET_SOURCE_FILES_PROPERTIES(${Canours_Swig_Interfaces} PROPERTIES CPLUSPLUS ON)	#doesn't work due to cmake bug?
+#SET_SOURCE_FILES_PROPERTIES(${Canorus_Swig_Interfaces} PROPERTIES SWIG_FLAGS "-includeall")
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/document.i PROPERTIES CPLUSPLUS ON)
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/document.i PROPERTIES SWIG_FLAGS "-includeall")
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/context.i PROPERTIES CPLUSPLUS ON)
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/context.i PROPERTIES SWIG_FLAGS "-includeall")
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/sheet.i PROPERTIES CPLUSPLUS ON)
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/sheet.i PROPERTIES SWIG_FLAGS "-includeall")
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/muselement.i PROPERTIES CPLUSPLUS ON)
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/muselement.i PROPERTIES SWIG_FLAGS "-includeall")
 
 SWIG_ADD_MODULE(CanorusRuby ruby
 	${Canorus_Swig_Srcs}
-	${Canorus_Swig_Interfaces}
+#	${Canorus_Swig_Interfaces}	#doesn't work due to cmake bug?
+	${CMAKE_CURRENT_SOURCE_DIR}/scripting/document.i
+	${CMAKE_CURRENT_SOURCE_DIR}/scripting/context.i
+	${CMAKE_CURRENT_SOURCE_DIR}/scripting/sheet.i
+	${CMAKE_CURRENT_SOURCE_DIR}/scripting/muselement.i
 )
 
 SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARIES} ${QT_LIBRARIES})
-
