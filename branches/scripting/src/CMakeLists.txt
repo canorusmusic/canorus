@@ -142,3 +142,25 @@ add_executable(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs}
 # Uncomment the 2nd line for M$ Windows and comment the first Linux one:
 target_link_libraries( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} "asound" )
 #target_link_libraries( canorus ${QT_LIBRARIES} "winmm.lib" )
+
+# SWIG
+FIND_PACKAGE(SWIG REQUIRED)
+FIND_PACKAGE(Ruby)	#Setup RUBY_INCLUDE_PATH and RUBY_LIBRARIES
+INCLUDE(${SWIG_USE_FILE})
+
+#FIND_PACKAGE(Ruby)
+INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
+SET(CMAKE_SWIG_FLAGS "-c++ -includeall")
+
+#SET_SOURCE_FILES_PROPERTIES(scripting/document.i PROPERTIES CPLUSPLUS ON)
+#SET_SOURCE_FILES_PROPERTIES(example.i PROPERTIES SWIG_FLAGS "-includeall")
+SWIG_ADD_MODULE(canorus ruby
+	scripting/document.i core/document.cpp
+	scripting/sheet.i core/sheet.cpp
+	scripting/context.i core/context.cpp
+	scripting/muselement.i core/muselement.cpp
+)
+SWIG_LINK_LIBRARIES(canorus ${RUBY_LIBRARIES})
