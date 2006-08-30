@@ -56,6 +56,10 @@ CAKeySigPSP::CAKeySigPSP( const QString & oTitle, QWidget * poParent /*  = 0 */,
 	moKeySigWidget.mpoKeySigListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 	// Default: C Major, a minor
 	moKeySigWidget.mpoKeySigSlider->setValue(7);
+	// Funktionality for adding/removing new key signatures is
+	// not needed at the moment, so hide the buttons
+	moKeySigWidget.mpoKeySigButton->hide();
+	moKeySigWidget.mpoRemoveButton->hide();
 	// Setup map for slider-list updates
 	moListSliderMap[KS_CMajamin]      = 0;
 	moListSliderMap[KS_FMajdmin]      = 1;
@@ -75,11 +79,11 @@ CAKeySigPSP::CAKeySigPSP( const QString & oTitle, QWidget * poParent /*  = 0 */,
 	// Setup signal/slots for slider-list updates
 	connect( moKeySigWidget.mpoKeySigSlider, SIGNAL( sliderMoved( int ) ),
 	         this, SLOT( newKSSliderPos( int ) ) );
-	connect( moKeySigWidget.mpoKeySigListWidget, SIGNAL( currentRowChanged( int ) ),
-	         this, SLOT( newKSListViewItem( int ) ) );
+	connect( moKeySigWidget.mpoKeySigListWidget, SIGNAL( itemClicked( QTreeWidgetItem*, int ) ),
+	         this, SLOT( newKSListViewItem( QTreeWidgetItem*, int ) ) );
 	// Default: C Major, a minor
 	moKeySigWidget.mpoKeySigListWidget->setCurrentItem(
-	moKeySigWidget.mpoKeySigListWidget->item( moListSliderMap[7] ) );
+	moKeySigWidget.mpoKeySigListWidget->topLevelItem( moListSliderMap[7] ) );
 }
 
 CAKeySigPSP::~CAKeySigPSP()
@@ -95,11 +99,13 @@ void CAKeySigPSP::newKSSliderPos( int iNewPos )
 {
 	// Select corresponding list item
 	moKeySigWidget.mpoKeySigListWidget->setCurrentItem(
-	moKeySigWidget.mpoKeySigListWidget->item( moListSliderMap[iNewPos] ) );
+	moKeySigWidget.mpoKeySigListWidget->topLevelItem( moListSliderMap[iNewPos] ) );
 }
 
-void CAKeySigPSP::newKSListViewItem( int iNewItem )
+void CAKeySigPSP::newKSListViewItem( QTreeWidgetItem *iNewItem, int)
 {
 	// Set corresponding slider position
-	moKeySigWidget.mpoKeySigSlider->setValue( moListSliderMap.find( iNewItem ).value() );
+	moKeySigWidget.mpoKeySigSlider->setValue( moListSliderMap.find( 
+          moKeySigWidget.mpoKeySigListWidget->indexOfTopLevelItem( 
+            iNewItem ) ).value() );
 }

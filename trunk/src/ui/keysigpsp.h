@@ -28,6 +28,8 @@
 
 #include "ui_keysig.h"
 
+class QTreeWidgetItem;
+
 // Key signature perspective
 class CAKeySigPSP : public QDockWidget
 {
@@ -63,14 +65,15 @@ protected slots:
 	/**
 	* Updates the slider when a new list box element is selected
 	* 
-	* @param  iNewPos      New position of slider
+	* @param  iNewItem       Selected item
+	* @param  iNewColumn     Selected column
 	*
 	*/
-	void newKSListViewItem( int iNewItem );
+	void newKSListViewItem( QTreeWidgetItem *iNewItem, int iNewColumn );
 	
 protected:
-	Ui::KeySig    moKeySigWidget;  /// Key signature perspective represantative
-	QMap<int,int> moListSliderMap; /// Mapping for ListBox elements to slider position 
+	Ui::KeySig       moKeySigWidget;  /// Key signature perspective represantative
+	QMap<int,int>    moListSliderMap; /// Mapping: ListBox elements to slider position
 };
 
 #endif /*KEYSIGPSP_H_*/
