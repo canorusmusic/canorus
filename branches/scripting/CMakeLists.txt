@@ -16,6 +16,8 @@ SET(CANORUS_BUILD_VERSION 0)
 SET(CANORUS_VERSION
 	"${CANORUS_MAJOR_VERSION}.${CANORUS_MINOR_VERSION}.${CANORUS_BUILD_VERSION}")
 
+SET(CMAKE_VERBOSE_MAKEFILE ON)
+
 #-----------------------------------------------------------------------------
 # Search for Qt4. We need the latest version of Qt
 set(QT_MIN_VERSION "4.1.0")
