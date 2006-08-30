@@ -6,7 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-%module Ca
+%module Document
 
 %{
 #include "core/document.h"
