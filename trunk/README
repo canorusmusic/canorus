@@ -43,6 +43,16 @@ I hope that the NO_DEFAULT_PATH options gets added to newer cmake releases.
 
 - Compile Canorus with the following command: "make"
 
+Installation
+============
+
+Install the fonts files in the directory fonts. I know of at least
+two methods:
+
+- Copy them to ~/.fonts (on *n*x based systems)
+- Install them with an install tool like kcontrol or drakfont.
+- Manual installation like described here: http://linux.org.mt/article/ttfonts
+
 Running the Canorus Prototype
 =============================
 
