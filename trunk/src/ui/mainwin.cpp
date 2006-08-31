@@ -832,3 +832,20 @@ void CAMainWin::sourceViewPortCommit(QString docString) {
 	on_actionSource_view_perspective_activated();
 	rebuildViewPorts();
 }
+
+void CAMainWin::on_actionAbout_Qt_activated()
+{
+	QMessageBox::aboutQt( this, "About Qt" );
+}
+
+void CAMainWin::on_actionAbout_Canorus_activated()
+{
+	QMessageBox::about ( this, "About Canorus",
+	"Canorus - The next generation music score editor\n\n\
+Version 0.0.2\n\
+(C) 2006 Canorus Development team. All rights reserved.\n\
+See the file AUTHORS for the list of Canorus developers\n\n\
+This program is licensed under the GNU General Public License (GPL).\n\
+See the file 'LICENSE.GPL' for details.\n\n\
+Homepage: http://canorus.berlios.de" );
+}
