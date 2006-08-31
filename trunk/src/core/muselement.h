@@ -9,7 +9,7 @@
 #ifndef MUSELEMENT_H_
 #define MUSELEMENT_H_
 
-#include "drawable/drawable.h"
+#include <QString>
 
 class CAContext;
 
@@ -71,6 +71,7 @@ class CAMusElement {
 		int timeStart() { return _timeStart; }
 		int timeEnd() { return _timeStart + _timeLength; }
 		int timeLength() { return _timeLength; }
+		QString name() { return _name; }
 		
 		/**
 		 * Set the new start time in the score for this music element.
@@ -92,13 +93,16 @@ class CAMusElement {
 		 * @return True, if the current element inherits CAPlayable class, false otherwise.
 		 */
 		bool isPlayable() { return _playable; }
+
+		void setName(const QString name) { _name = name; }
 	
 	protected:
 		CAMusElementType _musElementType;	///Stores the type of the music element. See CAMusElement::enum CAMusElementType for details.
 		CAContext *_context;	///Pointer to the context which this music element belongs too.
-		int _timeStart;		//Where does this music element exist in time (start)
-		int _timeLength;	//How long is this music element in time
-		bool _playable;	//Is the current element playable 
+		int _timeStart;		///Where does this music element exist in time (start)
+		int _timeLength;	///How long is this music element in time
+		bool _playable;	///Is the current element playable 
+		QString _name;	///Specific name of this music element (optional)
 };
 
 #endif /*MUSELEMENT_H_*/
