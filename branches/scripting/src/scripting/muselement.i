@@ -6,8 +6,6 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-%module MusElement
-
 %{
 #include "core/muselement.h"
 %}
@@ -15,6 +13,7 @@
 /**
  * Swig implementation of CAMusElement.
  */
+%rename(MusElement) CAMusElement;
 class CAMusElement {
 	public:
 		CAMusElement(CAContext *context, int time, int length=0);
@@ -94,4 +93,10 @@ class CAMusElement {
 		 * @return True, if the current element inherits CAPlayable class, false otherwise.
 		 */
 		bool isPlayable();
+                
+                %rename(qName) name;
+                const QString name();
+                %rename(name) c_strName;
+                const char* c_strName();
 };
+

@@ -32,16 +32,26 @@ class CADocument {
 		CASheet *addSheet(const QString name);
 		void addSheet(CASheet *sheet);
 
-		const QString title() { return _title; } 
+		const QString title() { return _title; }
+		const char* c_strTitle() { return _title.toStdString().c_str(); }
 		const QString subTitle() { return _subTitle; } 
+		const char* c_strSubTitle() { return _subTitle.toStdString().c_str(); }
 		const QString composer() { return _composer; } 
+		const char* c_strComposer() { return _composer.toStdString().c_str(); }
 		const QString arranger() { return _arranger; } 
+		const char* c_strArranger() { return _arranger.toStdString().c_str(); }
 		const QString poet() { return _poet; } 
+		const char* c_strPoet() { return _poet.toStdString().c_str(); }
 		const QString textTranslator() { return _textTranslator; } 
+		const char* c_strTextTranslator() { return _textTranslator.toStdString().c_str(); }
 		const QString dedication() { return _dedication; } 
+		const char* c_strDedication() { return _dedication.toStdString().c_str(); }
 		const QString copyright() { return _copyright; } 
+		const char* c_strCopyright() { return _copyright.toStdString().c_str(); }
 		const QString timestamp() { return _timestamp; } 
+		const char* c_strTimestamp() { return _timestamp.toStdString().c_str(); }
 		const QString comments() { return _comments; } 
+		const char* c_strComments() { return _comments.toStdString().c_str(); }
 		
 		void setTitle(const QString title) { _title = title; }
 		void setSubTitle(const QString subTitle) { _subTitle = subTitle; }

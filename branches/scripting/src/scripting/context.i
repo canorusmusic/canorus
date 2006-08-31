@@ -6,8 +6,6 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-%module Context
-
 %{
 #include "core/context.h"
 %}
@@ -15,9 +13,10 @@
 /**
  * Swig implementation of CAContext.
  */
+%rename(Context) CAContext;
 class CAContext {
 	public:
-		CAContext(CASheet *s, const QString name);
+		CAContext(CASheet *s, const char* name);
 		
 		/**
 		 * enum CAContextType holds different CAContext types:
@@ -33,14 +32,17 @@ class CAContext {
 			Dynamics
 		};
 		
+                %rename(qName) name;
 		const QString name();
+                %rename(name) c_strName;
+                const char* c_strName();
 		
 		/**
 		 * Set the Context's name.
 		 * 
 		 * @param name Context's name in QString format
 		 */
-		void setName(const QString name);
+		void setName(const char* name);
 		virtual void clear() = 0;
 		CAContextType contextType();
 		
@@ -67,3 +69,4 @@ class CAContext {
 		 */
 		CASheet *sheet();
 };
+

@@ -6,8 +6,6 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-%module Sheet
-
 %{
 #include "core/sheet.h"
 %}
@@ -15,12 +13,13 @@
 /**
  * Swig implementation of CASheet.
  */
+%rename(Sheet) CASheet;
 class CASheet {
 	public:
-		CASheet(const QString name, CADocument *doc);
+		CASheet(const char* name, CADocument *doc);
 		
 		CAContext *contextAt(int i);
-		CAContext *context(const QString name);	///Look up for the context with the given name.
+		CAContext *context(const char* name);	///Look up for the context with the given name.
 		void addContext(CAContext *);
 		inline int contextCount();
 		
@@ -29,8 +28,14 @@ class CASheet {
 		CAStaff *staffAt(int i);
 
 		CADocument *document();
+
+                %rename(qName) name;
 		const QString name();
-		void setName(const QString name);
+                %rename(name) c_strName;
+                const char* c_strName();
+
+		void setName(const char* name);
 
 		void clear();
 };
+

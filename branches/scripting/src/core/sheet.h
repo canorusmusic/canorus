@@ -32,6 +32,7 @@ class CASheet {
 
 		inline CADocument *document() { return _document; }
 		inline const QString name() { return _name; }
+		inline const char* c_strName() { return _name.toStdString().c_str(); }
 		inline void setName(const QString name) { _name = name; }
 
 		void clear();

@@ -9,6 +9,8 @@
 #ifndef TIMESIGNATURE_H_
 #define TIMESIGNATURE_H_
 
+#include <QString>
+
 #include "core/muselement.h"
 
 class CAStaff;
