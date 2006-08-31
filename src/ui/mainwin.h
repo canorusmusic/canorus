@@ -125,6 +125,10 @@ private slots:
 	void on_actionSplit_vertically_activated();
 	void on_actionUnsplit_activated();
 	void on_actionNew_viewport_activated();
+	
+	//Help menu
+	void on_actionAbout_Qt_activated();
+	void on_actionAbout_Canorus_activated();
 
 	// Toolbar 
 	void sl_mpoVoiceNum_valChanged(int iVoice);
