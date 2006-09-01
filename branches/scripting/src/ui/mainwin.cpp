@@ -67,6 +67,9 @@ using namespace std;
 #include "core/voice.h"
 #include "core/barline.h"
 
+#include "scripting/swigruby.h"
+#include <ruby.h>
+
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
   : QMainWindow( oParent )
@@ -303,6 +306,11 @@ void CAMainWin::on_actionNew_viewport_activated() {
 
 void CAMainWin::on_actionNew_activated() {
 	newDocument();
+
+	QList<VALUE> args;
+	args << (VALUE)&_document;
+	CASwigRuby::callFunction("newdocument","newDocument", args);
+	rebuildUI();
 }
 
 void CAMainWin::on_actionNew_sheet_activated() {
@@ -317,7 +325,7 @@ void CAMainWin::on_actionNew_staff_activated() {
 	CAStaff *staff = sheet->addStaff();
 	staff->addVoice(new CAVoice(staff, QString("Voice ") + QString::number(staff->voiceCount()+1)));
 	
-	rebuildViewPorts(sheet);
+	rebuildUI(sheet);
 	
 	((CAScoreViewPort*)_activeViewPort)->selectContext(staff);
 	((CAScoreViewPort*)_activeViewPort)->repaint();
@@ -364,14 +372,21 @@ void CAMainWin::on_action_Clef_activated() {
 	_insertMusElement = CAMusElement::Clef;
 }
 
-void CAMainWin::rebuildViewPorts(CASheet *sheet, bool repaint) {
+void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
+	if (!sheet) {
+		clearUI();
+		for (int i=0; i<_document.sheetCount(); i++)
+			addSheet(_document.sheetAt(i));
+	}
+
 	for (int i=0; i<_viewPortList.size(); i++) {
 		_viewPortList[i]->rebuild();
 		
 		if (_viewPortList[i]->viewPortType() == CAViewPort::ScoreViewPort)
 			((CAScoreViewPort*)(_viewPortList[i]))->checkScrollBars();
 			
-		_viewPortList[i]->repaint();
+		if (repaint)
+			_viewPortList[i]->repaint();
 	}
 }
 
@@ -385,7 +400,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 			CAMusElement *elt;
 			if ( elt = v->removeMElement(coords.x(), coords.y()) ) {
 				delete elt;
-				rebuildViewPorts(v->sheet());
+				rebuildUI(v->sheet());
 				v->repaint();
 				return;
 			}
@@ -423,7 +438,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			clef = new CAClef(_insertClef, staff, (right?right->timeStart():staff->lastTimeEnd()));
 			staff->insertSignBefore(clef, right);
 			
-			rebuildViewPorts(v->sheet(), true);
+			rebuildUI(v->sheet(), true);
 			v->selectMElement(clef);
 			v->repaint();
 			break;
@@ -440,7 +455,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			                                            (right?right->timeStart():staff->lastTimeEnd()));
 			staff->insertSignBefore(keySig, right);
 			
-			rebuildViewPorts(v->sheet(), true);
+			rebuildUI(v->sheet(), true);
 			v->selectMElement(keySig);
 			v->repaint();
 			break;
@@ -460,7 +475,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			                 );
 			staff->insertNoteBefore(note, right);
 
-			rebuildViewPorts(v->sheet(), true);
+			rebuildUI(v->sheet(), true);
 			v->selectMElement(note);
 			v->repaint();
 			break;
@@ -558,7 +573,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				);
 				staff->insertSignAfter(bar, right);
 				
-				rebuildViewPorts(((CAScoreViewPort*)v)->sheet(), true);
+				rebuildUI(((CAScoreViewPort*)v)->sheet(), true);
 				((CAScoreViewPort*)v)->selectMElement(bar);
 				v->repaint();
 				break;
@@ -576,7 +591,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 							CANote *note = (CANote*)elt->musElement();
 							note->setPitch(note->pitch()+1);
-							rebuildViewPorts(note->voice()->staff()->sheet());
+							rebuildUI(note->voice()->staff()->sheet());
 						}
 					}
 				}
@@ -595,7 +610,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 							CANote *note = (CANote*)elt->musElement();
 							note->setPitch(note->pitch()-1);
-							rebuildViewPorts(note->voice()->staff()->sheet());
+							rebuildUI(note->voice()->staff()->sheet());
 						}
 					}
 				}
@@ -711,7 +726,7 @@ void CAMainWin::on_actionOpen_activated() {
 		QXmlInputSource input(&file);
 		CACanorusML::openDocument(&input, &_document, this);
 		file.close();
-		rebuildViewPorts();
+		rebuildUI();
 		moMainWin.tabWidget->setCurrentIndex(0);
 	}               
 }
@@ -830,5 +845,5 @@ void CAMainWin::sourceViewPortCommit(QString docString) {
 	CACanorusML::openDocument(&input, &_document, this);
 	
 	on_actionSource_view_perspective_activated();
-	rebuildViewPorts();
+	rebuildUI();
 }

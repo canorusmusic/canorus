@@ -58,6 +58,10 @@ set(Canorus_Core_Srcs
 	core/canorusml.cpp
 	)
 
+set(Canorus_Scripting_Srcs	#sources meant for bridge c++<->scripting language
+	scripting/swigruby.cpp
+	)
+
 set(Canorus_Widget_Srcs  
 	widgets/keyoffs.cpp
 	widgets/lcdnumber.cpp
@@ -99,6 +103,7 @@ set(Canorus_RTMidi_Srcs
 set(Canorus_Srcs 
 	main.cpp
 	${Canorus_Core_Srcs}
+	${Canorus_Scripting_Srcs}
 	${Canorus_Drawable_Srcs}
 	${Canorus_Ui_Srcs}
 	${Canorus_Interface_Srcs}
@@ -112,13 +117,6 @@ set(Canorus_Swig_Srcs
 	core/sheet.cpp
 	core/muselement.cpp
 	)
-
-#set(Canorus_Swig_Interfaces	#doesn't work due to cmake bug?
-#	scripting/context.i
-#	scripting/document.i
-#	scripting/sheet.i
-#	scripting/muselement.cpp
-#	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
 set(Canorus_Resrcs ui/mainwin.qrc)
@@ -151,13 +149,6 @@ add_executable(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs}
                         ${Canorus_MOC_Srcs} ${Canorus_Resrcs_Srcs}
 			)
 
-# Here the needed Qt Libraries are added to the link
-# command. Never remove that line :-)
-# Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
-# Uncomment the 2nd line for M$ Windows and comment the first Linux one:
-target_link_libraries( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} "asound" )
-#target_link_libraries( canorus ${QT_LIBRARIES} "winmm.lib" )
-
 # SWIG
 FIND_PACKAGE(SWIG REQUIRED)
 FIND_PACKAGE(Ruby)	#Setup RUBY_INCLUDE_PATH and RUBY_LIBRARIES
@@ -170,27 +161,20 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 #SET(CMAKE_SWIG_FLAGS "-includeall" "-c++")
 
-#SET_SOURCE_FILES_PROPERTIES(${Canours_Swig_Interfaces} PROPERTIES CPLUSPLUS ON)	#doesn't work due to cmake bug?
-#SET_SOURCE_FILES_PROPERTIES(${Canorus_Swig_Interfaces} PROPERTIES SWIG_FLAGS "-includeall")
-#SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/document.i PROPERTIES CPLUSPLUS ON)
-#SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/document.i PROPERTIES SWIG_FLAGS "-includeall")
-#SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/context.i PROPERTIES CPLUSPLUS ON)
-#SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/context.i PROPERTIES SWIG_FLAGS "-includeall")
-#SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/sheet.i PROPERTIES CPLUSPLUS ON)
-#SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/sheet.i PROPERTIES SWIG_FLAGS "-includeall")
-#SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/muselement.i PROPERTIES CPLUSPLUS ON)
-#SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/muselement.i PROPERTIES SWIG_FLAGS "-includeall")
 SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES CPLUSPLUS ON)
 SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES SWIG_FLAGS "-includeall")
 
 SWIG_ADD_MODULE(CanorusRuby ruby
 	${Canorus_Swig_Srcs}
-#	${Canorus_Swig_Interfaces}	#doesn't work due to cmake bug?
-#	${CMAKE_CURRENT_SOURCE_DIR}/scripting/document.i
-#	${CMAKE_CURRENT_SOURCE_DIR}/scripting/context.i
-#	${CMAKE_CURRENT_SOURCE_DIR}/scripting/sheet.i
-#	${CMAKE_CURRENT_SOURCE_DIR}/scripting/muselement.i
 	${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
 )
 
 SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARIES} ${QT_LIBRARIES})
+
+# Here the needed Qt Libraries are added to the link
+# command. Never remove that line :-)
+# Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
+# Uncomment the 2nd line for M$ Windows and comment the first Linux one:
+target_link_libraries( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} "asound" "ruby1.8")
+#target_link_libraries( canorus ${QT_LIBRARIES} "winmm.lib" )
+
