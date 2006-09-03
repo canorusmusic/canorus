@@ -6,9 +6,9 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "muselement.h"
-#include "context.h"
-#include "staff.h"
+#include "core/muselement.h"
+#include "core/context.h"
+#include "core/staff.h"
 
 CAMusElement::CAMusElement(CAContext *context, int time, int length) {
 	_context = context;

@@ -6,10 +6,10 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "note.h"
-#include "voice.h"
-#include "staff.h"
-#include "clef.h"
+#include "core/note.h"
+#include "core/voice.h"
+#include "core/staff.h"
+#include "core/clef.h"
 #include <iostream>
 CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int timeLength)
  : CAPlayable(voice, timeStart, timeLength) {

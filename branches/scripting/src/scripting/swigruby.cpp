@@ -1,11 +1,19 @@
+/** @file scripting/swigruby.cpp
+ * 
+ * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+ * All Rights Reserved. See AUTHORS for a complete list of authors.
+ * 
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ */
+
 #include "scripting/swigruby.h"
-#include <iostream>
+#include <QCoreApplication>	//needed to determine the scripts path
+
+//defined in canorusruby.i
+extern "C" void Init_CanorusRuby();	///Loads 'CanorusRuby' module and initializes classes
 
 VALUE CASwigRuby::callFunction(QString module, QString function, QList<VALUE> args) {
-	ruby_init();
-	init();
-	
-	QString path = "/home/matevz/canorus/branches/scripting/src/";
+	QString path = QCoreApplication::applicationDirPath() + "/scripts/";	//this should be done on more dynamic way (probably different path when Canorus is installed?)
 	//require module (loads a method)
 	QString requireString = path + module;
 	rb_require(requireString.toStdString().c_str());
@@ -20,8 +28,6 @@ VALUE CASwigRuby::callFunction(QString module, QString function, QList<VALUE> ar
 }
 
 void CASwigRuby::init() {
-	QString path = "/home/matevz/canorus/branches/scripting/src/";
-	//standard CanorusRuby packet
-	QString requireString = path + "CanorusRuby";
-	rb_require(requireString.toStdString().c_str());
+	ruby_init();
+	Init_CanorusRuby();
 }

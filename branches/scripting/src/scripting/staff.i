@@ -1,4 +1,4 @@
-/** @file staff.h
+/** @file scripting/staff.i
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -6,28 +6,20 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#ifndef STAFF_H_
-#define STAFF_H_
+%{
+#include "core/staff.h"
+%}
 
-#include <QList>
-#include <QString>
-
-class QPainter;
-
-#include "core/context.h"
-#include "core/clef.h"
-
-class CASheet;
-class CAContext;
-class CAVoice;
-class CANote;
-
+/**
+ * Swig implementation of CAStaff.
+ */
+%rename(Staff) CAStaff;
 class CAStaff : public CAContext {
 	public:
 		CAStaff(CASheet *s, const QString name);
 		
-		inline int numberOfLines() { return _numberOfLines; }
-		inline void setNumberOfLines(int val) { _numberOfLines = val; }
+		inline int numberOfLines();
+		inline void setNumberOfLines(int val);
 		void clear();
 		
 		/**
@@ -42,14 +34,14 @@ class CAStaff : public CAContext {
 		 * 
 		 * @return Number of voices.
 		 */
-		int voiceCount() { return _voiceList.size(); }
+		int voiceCount();
 		
 		/**
 		 * Return voice with the specified index.
 		 * 
 		 * @return Pointer to the voice with the given index.
 		 */
-		CAVoice *voiceAt(int i) { return _voiceList[i]; }
+		CAVoice *voiceAt(int i);
 		
 		/**
 		 * Look up for the voice with the given name and return it.
@@ -114,12 +106,4 @@ class CAStaff : public CAContext {
 		
 		void insertNote(CANote *note);
 		bool insertNoteBefore(CANote *note, CAMusElement *eltAfter);
-		
-	private:
-		QList<CAVoice *> _voiceList;
-		QString _name;
-		
-		int _numberOfLines;
 };
-
-#endif /*STAFF_H_*/

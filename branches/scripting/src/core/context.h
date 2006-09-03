@@ -11,10 +11,8 @@
 
 #include <QString>
 
-#include "core/muselement.h"
-
 class CASheet;
-
+class CAMusElement;
 
 class CAContext {
 	public:

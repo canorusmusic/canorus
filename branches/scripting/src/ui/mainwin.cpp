@@ -68,7 +68,6 @@ using namespace std;
 #include "core/barline.h"
 
 #include "scripting/swigruby.h"
-#include <ruby.h>
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
@@ -108,6 +107,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
+	
+	CASwigRuby::init();
 	
 	newDocument();
 }
@@ -174,8 +175,10 @@ void CAMainWin::newDocument() {
 	_document.clear();	//clear the logical part
 	clearUI();			//clear the UI part
 	
-	addSheet(_document.addSheet(QString("Sheet ") + QString::number(_document.sheetCount()+1)));			//add a new empty sheet
-	on_actionNew_staff_activated();	//add a new empty 5-line staff to the sheet
+	QList<VALUE> args;
+	args << toRubyObject(&_document, CASwigRuby::Document);
+	CASwigRuby::callFunction("newdocument", "newDefaultDocument", args);
+	rebuildUI();
 }
 
 void CAMainWin::addSheet(CASheet *s) {
@@ -306,11 +309,6 @@ void CAMainWin::on_actionNew_viewport_activated() {
 
 void CAMainWin::on_actionNew_activated() {
 	newDocument();
-
-	QList<VALUE> args;
-	args << (VALUE)&_document;
-	CASwigRuby::callFunction("newdocument","newDocument", args);
-	rebuildUI();
 }
 
 void CAMainWin::on_actionNew_sheet_activated() {

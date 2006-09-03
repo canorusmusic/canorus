@@ -1,4 +1,4 @@
-/** @file document.i
+/** @file scripting/document.i
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -29,10 +29,9 @@ class CADocument {
 		CASheet *sheet(const QString name);	///Look up for the sheet with the given name
 		CASheet *sheetAt(int i);
 		
-		//TODO: Conflicting different parameters
+		//TODO: The same method with different parameters is somehow conflicting with each other. These should be merged somehow.
 		%rename(addSheetByName) addSheet;
 		CASheet *addSheet(const QString name);
-		
 		%rename(addSheet) addSheet;
 		void addSheet(CASheet *sheet);
                 

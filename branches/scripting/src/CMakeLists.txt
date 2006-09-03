@@ -60,6 +60,7 @@ set(Canorus_Core_Srcs
 
 set(Canorus_Scripting_Srcs	#sources meant for bridge c++<->scripting language
 	scripting/swigruby.cpp
+	scripting/canorusrubyRUBY_wrap.cxx	#TODO: This file isn't available on build time - swig generates it. If this fails, try to touch this file and rebuild. If you get undefined references then, touch scripting/canorusruby.i so swig will generate this file again and undefined references will be resolved.
 	)
 
 set(Canorus_Widget_Srcs  
@@ -116,6 +117,13 @@ set(Canorus_Swig_Srcs
 	core/document.cpp
 	core/sheet.cpp
 	core/muselement.cpp
+	core/staff.cpp
+	core/playable.cpp
+	core/note.cpp
+	core/timesignature.cpp
+	core/keysignature.cpp
+	core/clef.cpp
+	core/barline.cpp
 	)
 
 # Add all resources to Canorus_Resrcs ((icons, html files etc.)
@@ -142,12 +150,6 @@ QT4_WRAP_UI( Canorus_UIC_Srcs ${Canorus_UIs} )
 # add_executable line.
 QT4_WRAP_CPP( Canorus_MOC_Srcs ${Canorus_MOCs} )
 
-# This line tells cmake to create the Canorus program.
-# All dependent libraries like RtMidi must be added here.
-# Attention: In contrast to Makefiles don't add "\" to separate lines
-add_executable(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs} 
-                        ${Canorus_MOC_Srcs} ${Canorus_Resrcs_Srcs}
-			)
 
 # SWIG
 FIND_PACKAGE(SWIG REQUIRED)
@@ -159,8 +161,6 @@ INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-#SET(CMAKE_SWIG_FLAGS "-includeall" "-c++")
-
 SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES CPLUSPLUS ON)
 SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES SWIG_FLAGS "-includeall")
 
@@ -171,10 +171,17 @@ SWIG_ADD_MODULE(CanorusRuby ruby
 
 SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARIES} ${QT_LIBRARIES})
 
+# This line tells cmake to create the Canorus program.
+# All dependent libraries like RtMidi must be added here.
+# Attention: In contrast to Makefiles don't add "\" to separate lines
+add_executable(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs} 
+                        ${Canorus_MOC_Srcs} ${Canorus_Resrcs_Srcs}
+			)
+
 # Here the needed Qt Libraries are added to the link
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
 # Uncomment the 2nd line for M$ Windows and comment the first Linux one:
-target_link_libraries( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} "asound" "ruby1.8")
+target_link_libraries( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} ${RUBY_LIBRARIES} "asound" "ruby1.8")	#TODO: replace ruby1.8 with RUBY_LIBRARIES. Currently, RUBY_LIBRARIES is empty!? -Matevz
 #target_link_libraries( canorus ${QT_LIBRARIES} "winmm.lib" )
 

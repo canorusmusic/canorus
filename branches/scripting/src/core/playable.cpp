@@ -6,9 +6,9 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "playable.h"
-#include "voice.h"
-#include "staff.h"
+#include "core/playable.h"
+#include "core/voice.h"
+#include "core/staff.h"
 
 CAPlayable::CAPlayable(CAVoice *voice, int timeStart, int timeLength)
  : CAMusElement(voice?voice->staff():0, timeStart, timeLength) {
