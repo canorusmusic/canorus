@@ -11,8 +11,10 @@
 #include <QString>
 #include <QList>
 
+VALUE toRubyDocument(void *document);	//declared in .i file
+
 class CASwigRuby {
 	public:
 		static VALUE callFunction(QString module, QString function, QList<VALUE> args);
+		static void init();
 };
-

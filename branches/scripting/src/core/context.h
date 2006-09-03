@@ -35,7 +35,7 @@ class CAContext {
 		};
 		
 		const QString name() { return _name; } 
-		const char* c_strName() { return _name.toStdString().c_str(); }
+
 		/**
 		 * Set the Context's name.
 		 * 

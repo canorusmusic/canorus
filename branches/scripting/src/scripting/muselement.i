@@ -93,10 +93,7 @@ class CAMusElement {
 		 * @return True, if the current element inherits CAPlayable class, false otherwise.
 		 */
 		bool isPlayable();
-                
-                %rename(qName) name;
-                const QString name();
-                %rename(name) c_strName;
-                const char* c_strName();
+		        
+		const QString name();
 };
 

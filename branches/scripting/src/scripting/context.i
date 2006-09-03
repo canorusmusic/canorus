@@ -16,7 +16,7 @@
 %rename(Context) CAContext;
 class CAContext {
 	public:
-		CAContext(CASheet *s, const char* name);
+		CAContext(CASheet *s, const QString name);
 		
 		/**
 		 * enum CAContextType holds different CAContext types:
@@ -32,17 +32,14 @@ class CAContext {
 			Dynamics
 		};
 		
-                %rename(qName) name;
 		const QString name();
-                %rename(name) c_strName;
-                const char* c_strName();
 		
 		/**
 		 * Set the Context's name.
 		 * 
 		 * @param name Context's name in QString format
 		 */
-		void setName(const char* name);
+		void setName(const QString name);
 		virtual void clear() = 0;
 		CAContextType contextType();
 		
@@ -69,4 +66,3 @@ class CAContext {
 		 */
 		CASheet *sheet();
 };
-

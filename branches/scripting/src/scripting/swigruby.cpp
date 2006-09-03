@@ -3,12 +3,11 @@
 
 VALUE CASwigRuby::callFunction(QString module, QString function, QList<VALUE> args) {
 	ruby_init();
+	init();
 	
 	QString path = "/home/matevz/canorus/branches/scripting/src/";
 	//require module (loads a method)
-	QString requireString = path + "CanorusRuby";
-	rb_require(requireString.toStdString().c_str());
-	requireString = path + module;
+	QString requireString = path + module;
 	rb_require(requireString.toStdString().c_str());
 	
 	//call function
@@ -18,4 +17,11 @@ VALUE CASwigRuby::callFunction(QString module, QString function, QList<VALUE> ar
 		argsArray[i] = args[i];
 	
 	return rb_funcall2(recv, rb_intern(function.toStdString().c_str()), args.size(), argsArray);
+}
+
+void CASwigRuby::init() {
+	QString path = "/home/matevz/canorus/branches/scripting/src/";
+	//standard CanorusRuby packet
+	QString requireString = path + "CanorusRuby";
+	rb_require(requireString.toStdString().c_str());
 }

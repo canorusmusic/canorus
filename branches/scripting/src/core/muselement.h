@@ -72,7 +72,6 @@ class CAMusElement {
 		int timeEnd() { return _timeStart + _timeLength; }
 		int timeLength() { return _timeLength; }
 		const QString name() { return _name; }
-		const char* c_strName() { return _name.toStdString().c_str(); }
 		
 		/**
 		 * Set the new start time in the score for this music element.
