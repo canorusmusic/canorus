@@ -32,7 +32,7 @@ class CADocument {
 		CASheet *addSheet(const QString name);
 		void addSheet(CASheet *sheet);
 
-		const QString title() { return _title; } 
+		const QString title() { return _title; }
 		const QString subTitle() { return _subTitle; } 
 		const QString composer() { return _composer; } 
 		const QString arranger() { return _arranger; } 

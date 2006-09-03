@@ -9,9 +9,9 @@
 #include <QPainter>
 #include <iostream>
 
-#include "voice.h"
-#include "staff.h"
-#include "note.h"
+#include "core/voice.h"
+#include "core/staff.h"
+#include "core/note.h"
 
 CAStaff::CAStaff(CASheet *s, QString name) : CAContext(s, name) {
 	_contextType = CAContext::Staff;

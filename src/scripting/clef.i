@@ -1,4 +1,4 @@
-/** @file clef.h
+/** @file scripting/clef.i
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -6,15 +6,14 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#ifndef CLEF_H_
-#define CLEF_H_
+%{
+#include "core/clef.h"
+%}
 
-#include <QString>
-
-#include "muselement.h"
-
-class CAStaff;
-
+/**
+ * Swig implementation of CAClef.
+ */
+%rename(Clef) CAClef;
 class CAClef : public CAMusElement {
 	public:
 		enum CAClefType {
@@ -34,17 +33,10 @@ class CAClef : public CAMusElement {
 		 * 
 		 * Constructor using the ML arguments.
 		 */ 
-		CAClef(const QString type, CAStaff *staff, int time);
+		CAClef(const char* type, CAStaff *staff, int time); //TODO: Same constructors with above for Swig - changed QString to char*
 		
-		CAClefType clefType() { return _clefType; }
+		CAClefType clefType();
 		const QString clefTypeML();
-		const int c1() { return _c1; }
-		const int centerPitch() { return _centerPitch; }
-	
-	private:
-		CAClefType _clefType;
-		int _c1;	///Location of c'. 0 = 1st line, 1 = 1st space, -2 = 1st ledger line below staff
-		int _centerPitch;	///Location of the clef's beginning - f for bas clef, g' for treble clef, c for c-clefs etc.
+		const int c1();
+		const int centerPitch();
 };
-
-#endif /*CLEF_H_*/

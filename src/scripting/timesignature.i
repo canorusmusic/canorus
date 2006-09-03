@@ -1,4 +1,4 @@
-/** @file timesignature.h
+/** @file scripting/timesignature.i
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -6,15 +6,14 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#ifndef TIMESIGNATURE_H_
-#define TIMESIGNATURE_H_
+%{
+#include "core/timesignature.h"
+%}
 
-#include <QString>
-
-#include "core/muselement.h"
-
-class CAStaff;
-
+/**
+ * Swig implementation of CATimeSignature.
+ */
+%rename(TimeSignature) CATimeSignature;
 class CATimeSignature : public CAMusElement {
 	public:
 		enum CATimeSignatureType {
@@ -39,16 +38,9 @@ class CATimeSignature : public CAMusElement {
 		CATimeSignature(QString MLString, CAStaff *staff, int startTime, QString type = "classical");
 		~CATimeSignature();
 	
-		int beats() { return _beats; }
-		int beat() { return _beat; }
-		CATimeSignatureType timeSignatureType() { return _timeSignatureType; }
-		const QString timeSignatureML() { return (QString::number(_beats) + "/" + QString::number(_beat)); }
+		int beats();
+		int beat();
+		CATimeSignatureType timeSignatureType();
+		const QString timeSignatureML();
 		const QString timeSignatureTypeML(); 
-		
-	private:
-		int _beats;
-		int _beat;
-		CATimeSignatureType _timeSignatureType;
 };
-
-#endif /*TIMESIGNATURE_H_*/

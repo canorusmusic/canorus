@@ -1,4 +1,4 @@
-/** @file context.h
+/** @file scripting/context.i
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -6,14 +6,14 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#ifndef CONTEXT_H_
-#define CONTEXT_H_
+%{
+#include "core/context.h"
+%}
 
-#include <QString>
-
-class CASheet;
-class CAMusElement;
-
+/**
+ * Swig implementation of CAContext.
+ */
+%rename(Context) CAContext;
 class CAContext {
 	public:
 		CAContext(CASheet *s, const QString name);
@@ -32,16 +32,16 @@ class CAContext {
 			Dynamics
 		};
 		
-		const QString name() { return _name; } 
-
+		const QString name();
+		
 		/**
 		 * Set the Context's name.
 		 * 
 		 * @param name Context's name in QString format
 		 */
-		void setName(const QString name) { _name = name; }
+		void setName(const QString name);
 		virtual void clear() = 0;
-		CAContextType contextType() { return _contextType; }
+		CAContextType contextType();
 		
 		/**
 		 * Find the next music element to the given one and return its pointer.
@@ -64,12 +64,5 @@ class CAContext {
 		 * 
 		 * @return Pointer to the CASheet which this Context belongs to.
 		 */
-		CASheet *sheet() { return _sheet; }
-		
-	protected:
-		CASheet *_sheet;
-		QString _name;
-		CAContextType _contextType;
+		CASheet *sheet();
 };
-
-#endif /*CONTEXT_H_*/

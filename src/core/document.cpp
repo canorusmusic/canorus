@@ -6,10 +6,10 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "context.h"
-#include "staff.h"
-#include "sheet.h"
-#include "document.h"
+#include "core/context.h"
+#include "core/staff.h"
+#include "core/sheet.h"
+#include "core/document.h"
 
 CADocument::CADocument() {
 	

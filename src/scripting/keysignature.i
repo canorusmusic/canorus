@@ -1,4 +1,4 @@
-/** @file keysignature.h
+/** @file scripting/keysignature.i
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -6,19 +6,14 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#ifndef KEYSIGNATURE_H_
-#define KEYSIGNATURE_H_
-
-#include <QString>
-
-#include "core/muselement.h"
-
-class CAStaff;
+%{
+#include "core/keysignature.h"
+%}
 
 /**
- * CAKeySignature class represents a simple key signature sign.
- * It also includes other logical information about the scale, for eg. Major/Minor, modes 
+ * Swig implementation of CAKeySignature.
  */
+%rename(KeySignature) CAKeySignature;
 class CAKeySignature : public CAMusElement {
 	public:
 		enum CAKeySignatureType {
@@ -72,15 +67,15 @@ class CAKeySignature : public CAMusElement {
 		
 		~CAKeySignature();
 		
-		CAKeySignatureType keySignatureType() { return _keySignatureType; }
+		CAKeySignatureType keySignatureType();
 		
-		CADiatonicGenderType diatonicGender() { return _diatonicGender; }
-		CADiatonicShapeType diatonicShape() { return _diatonicShape; }
-		CAModusType modus() { return _modus; }
+		CADiatonicGenderType diatonicGender();
+		CADiatonicShapeType diatonicShape();
+		CAModusType modus();
 		
-		void setDiatonicGender(CADiatonicGenderType gender) { _diatonicGender = gender; }
-		void setDiatonicShape(CADiatonicShapeType shape) { _diatonicShape = shape; }
-		void setModus(CAModusType modus) { _modus = modus; }
+		void setDiatonicGender(CADiatonicGenderType gender);
+		void setDiatonicShape(CADiatonicShapeType shape);
+		void setModus(CAModusType modus);
 		
 		/**
 		 * Return the key signature pitch.
@@ -119,15 +114,5 @@ class CAKeySignature : public CAMusElement {
 		 * 
 		 * @return Pointer to the array of levels in the scale.
 		 */ 
-		signed char *accidentals() { return _accidentals; }
-
-	private:
-		CAKeySignatureType _keySignatureType;
-		CAModusType _modus;
-		CADiatonicGenderType _diatonicGender;
-		CADiatonicShapeType _diatonicShape;
-		
-		signed char _accidentals[7];	///index numbers: [0..6] - C, D, E, F ... B with values: 0 - none, -1 - flat, +1 - sharp
+		signed char *accidentals();
 };
-
-#endif /*KEYSIGNATURE_H_*/

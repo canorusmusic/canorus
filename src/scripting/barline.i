@@ -1,4 +1,4 @@
-/** @file core/barline.h
+/** @file scripting/barline.i
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -6,13 +6,14 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#ifndef BARLINE_H_
-#define BARLINE_H_
+%{
+#include "core/barline.h"
+%}
 
-#include "core/muselement.h"
-
-class CAStaff;
-
+/**
+ * Swig implementation of CABarline.
+ */
+%rename(Barline) CABarline;
 class CABarline : public CAMusElement{
 	public:
 		enum CABarlineType {
@@ -26,12 +27,7 @@ class CABarline : public CAMusElement{
 		
 		CABarline(CABarlineType type, CAStaff *staff, int startTime);
 		
-		CABarlineType barlineType() { return _barlineType; }
+		CABarlineType barlineType();
 		
 		~CABarline();
-	
-	private:
-		CABarlineType _barlineType;
 };
-
-#endif /*BARLINE_H_*/
