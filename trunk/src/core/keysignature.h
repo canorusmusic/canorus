@@ -9,6 +9,7 @@
 #ifndef KEYSIGNATURE_H_
 #define KEYSIGNATURE_H_
 
+#include <QString>
 
 #include "core/muselement.h"
 

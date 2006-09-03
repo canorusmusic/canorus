@@ -10,6 +10,7 @@
 #define STAFF_H_
 
 #include <QList>
+#include <QString>
 
 class QPainter;
 

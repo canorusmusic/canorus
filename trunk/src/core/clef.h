@@ -9,6 +9,8 @@
 #ifndef CLEF_H_
 #define CLEF_H_
 
+#include <QString>
+
 #include "muselement.h"
 
 class CAStaff;

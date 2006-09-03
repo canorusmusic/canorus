@@ -79,13 +79,16 @@ public:
 	void clearUI();
 	
 	/**
-	 * This method is called when multiple viewports share the same logical source and a change has been made in the logical musElement list.
-	 * This method rebuilds the CADrawable elements on viewports from the logical list which was changed.
+	 * Rebuild the UI from the data part.
+	 * 
+	 * This method is called eg. when multiple viewports share the same logical source and a change has been made in the logical musElement list.
+	 * This way, sheet argument is a pointer to the data sheet where the change occured and viewports showing the given sheet are updated (CAEngraver create CADrawable elements for every viewport).
+	 * If no sheet argument is passed, the whole UI is rebuilt from the data part. This is called for eg. on Open file after the data part has been read.
 	 * 
 	 * @param sheet Pointer to the common CASheet viewports use.
-	 * @param repaint Should the viewports be repainted as well.
+	 * @param repaint Should the viewports be repainted as well (sometimes we want just engraver to generate the drawable notes and wait for other events and then repaint once).
 	 */
-	void rebuildViewPorts(CASheet *sheet=0, bool repaint=true);
+	void rebuildUI(CASheet *sheet=0, bool repaint=true);
 
 	void initMidi();
 

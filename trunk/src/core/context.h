@@ -11,10 +11,8 @@
 
 #include <QString>
 
-#include "core/muselement.h"
-
 class CASheet;
-
+class CAMusElement;
 
 class CAContext {
 	public:
@@ -35,7 +33,7 @@ class CAContext {
 		};
 		
 		const QString name() { return _name; } 
-		
+
 		/**
 		 * Set the Context's name.
 		 * 

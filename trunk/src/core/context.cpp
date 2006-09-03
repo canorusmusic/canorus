@@ -6,7 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "context.h"
+#include "core/context.h"
 
 CAContext::CAContext(CASheet *s, const QString name) {
 	_sheet = s;
