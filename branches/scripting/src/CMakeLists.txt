@@ -5,10 +5,15 @@
 # created with the Qt4 designer
 # INCLUDE(AddFileDependencies)
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 
-# Uncomment the 2nd line for M$ Windows and comment the Linux one:
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -D__LINUX_ALSASEQ__")
-#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -D__WINDOWS_MM__")
+#RtMidi cross-platform definitions
+IF(UNIX)
+	ADD_DEFINITIONS(-D__LINUX_ALSASEQ__)
+ENDIF(UNIX)
+IF(WIN32 OR WIN64)
+	ADD_DEFINITIONS(-D__WINDOWS_MM__)
+ENDIF(WIN32 OR WIN64)
 
 # This line adds the include path of the Qt
 # directory to the compiler include path
@@ -111,7 +116,7 @@ set(Canorus_Srcs
 	${Canorus_Widget_Srcs}
 	)
 
-set(Canorus_Swig_Srcs
+set(Canorus_Swig_Srcs	#sources which Swig needs to build its Ruby module
 	core/context.cpp
 	core/document.cpp
 	core/sheet.cpp
@@ -125,7 +130,7 @@ set(Canorus_Swig_Srcs
 	core/barline.cpp
 	)
 
-# Add all resources to Canorus_Resrcs ((icons, html files etc.)
+# Add all resources to Canorus_Resrcs (icons, html files etc.)
 set(Canorus_Resrcs ui/mainwin.qrc)
 
 # Add all the dependencies needed for the MainWindow
@@ -165,7 +170,7 @@ SWIG_ADD_MODULE(CanorusRuby ruby
 	${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
 )
 
-SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARIES} ${QT_LIBRARIES})
+SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARY} ${QT_LIBRARIES})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -180,8 +185,15 @@ add_executable(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs}
 # Here the needed Qt Libraries are added to the link
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
-# Uncomment the 2nd line for M$ Windows and comment the first Linux one:
-target_link_libraries( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} ${RUBY_LIBRARIES} "asound" "ruby1.8" )	#TODO: replace ruby1.8 with RUBY_LIBRARIES. Currently, RUBY_LIBRARIES is empty!? -Matevz
-#target_link_libraries( canorus ${QT_LIBRARIES} "winmm.lib" )
+target_link_libraries( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} ${RUBY_LIBRARY} )
+
+#MIDI libraries:
+IF(UNIX)
+	TARGET_LINK_LIBRARIES(canorus "asound")
+ENDIF(UNIX)
+IF(WIN32 OR WIN64)
+	TARGET_LINK_LIBRARIES(canorus "winmm.lib")
+ENDIF(WIN32 OR WIN64)
+
 ADD_DEPENDENCIES(canorus CanorusRuby)
 
