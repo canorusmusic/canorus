@@ -246,9 +246,11 @@ CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
 			((CADrawableStaff*)elt->drawableContext())->removeClef((CADrawableClef*)elt);
 		else if (elt->drawableMusElementType() == CADrawableMusElement::DrawableKeySignature)
 			((CADrawableStaff*)elt->drawableContext())->removeKeySignature((CADrawableKeySignature*)elt);
+		else if (elt->drawableMusElementType() == CADrawableMusElement::DrawableTimeSignature)
+			((CADrawableStaff*)elt->drawableContext())->removeTimeSignature((CADrawableTimeSignature*)elt);
 				
 		CAMusElement *mElt = elt->musElement();
-		delete elt;
+		delete elt;	//delete drawable instance
 
 		return mElt;
 	}

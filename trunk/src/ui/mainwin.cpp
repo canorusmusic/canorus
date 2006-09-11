@@ -628,7 +628,18 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				}
 				
 				break;
-			
+				
+			case Qt::Key_Delete:
+				if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
+					CAMusElement *elt = ((CAScoreViewPort*)_activeViewPort)->selection()->back()->musElement();
+					if (elt->context()->contextType() == CAContext::Staff) {
+						((CAStaff*)elt->context())->removeMusElement(elt);
+						rebuildUI(((CAScoreViewPort*)_activeViewPort)->sheet());
+					}
+				}
+				
+				break;
+							
 			//Mode keys
 			case Qt::Key_Escape:
 				if ((currentMode()==SelectMode) && (_activeViewPort) && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {

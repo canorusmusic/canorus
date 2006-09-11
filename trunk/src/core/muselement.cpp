@@ -18,7 +18,4 @@ CAMusElement::CAMusElement(CAContext *context, int time, int length) {
 }
 
 CAMusElement::~CAMusElement() {
-	if (context()->contextType() == CAContext::Staff) {
-		((CAStaff*)context())->removeMusElement(this);
-	}
 }

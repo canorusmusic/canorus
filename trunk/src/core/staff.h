@@ -99,12 +99,12 @@ class CAStaff : public CAContext {
 
 		/**
 		 * Remove the given music element from all the voices.
-		 * Only remove music elements pointers! The object itself stays intact.
 		 * 
 		 * @param elt Pointer to the element to be removed.
+		 * @param cleanup Delete the object and free memory as well. This is the default behaviour. If false, only remove the reference but not the object itself.
 		 * @return True, if element was found and removed, false otherwise.
 		 */
-		bool removeMusElement(CAMusElement* elt);
+		bool removeMusElement(CAMusElement* elt, bool cleanup = true);
 		
 		CAMusElement *findNextMusElement(CAMusElement *elt);
 		CAMusElement *findPrevMusElement(CAMusElement *elt);
