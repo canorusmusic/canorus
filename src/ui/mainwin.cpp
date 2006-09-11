@@ -89,7 +89,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	// Connect manually as the action cannot be created earlier
 	connect( mpoVoiceNum, SIGNAL( valChanged( int ) ), this,
 	         SLOT( sl_mpoVoiceNum_valChanged( int ) ) );
-
+	mpoVoiceNum->setEnabled(false);	//current voice number gets enabled when staff is selected and gets disabled when staff is unselected. By default, it's disabled.
+	
 	moMainWin.actionAnimated_scroll->setChecked(true);
 	moMainWin.actionLock_scroll_playback->setChecked(false);
 	moMainWin.actionUnsplit->setEnabled(false);
@@ -211,6 +212,8 @@ void CAMainWin::clearUI() {
 	}
 	
 	_fileName = "";
+	
+	mpoVoiceNum->setEnabled(false);
 }
 
 void CAMainWin::on_tabWidget_currentChanged(int idx) {
@@ -408,6 +411,22 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 	if (viewPort->viewPortType() == CAViewPort::ScoreViewPort) {
 		CAScoreViewPort *v = (CAScoreViewPort*)viewPort;
 		
+		CADrawableContext *currentContext = v->currentContext();
+		
+		if ( v->selectMElement(coords.x(), coords.y()) ||
+		     v->selectCElement(coords.x(), coords.y()) ) {
+			
+			if (currentContext != v->currentContext()) {	//new context was selected
+				if (v->currentContext()->context()->contextType() == CAContext::Staff) {
+					mpoVoiceNum->setEnabled(true);
+					mpoVoiceNum->setRealValue(0);
+					mpoVoiceNum->setMax(((CAStaff*)v->currentContext()->context())->voiceCount());
+				} else
+					mpoVoiceNum->setEnabled(false);
+			}
+			v->repaint();
+		}
+
 		if (e->modifiers()==Qt::ControlModifier) {
 			CAMusElement *elt;
 			if ( elt = v->removeMElement(coords.x(), coords.y()) ) {
@@ -416,18 +435,16 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				return;
 			}
 		}
-		
+
 		switch (_currentMode) {
 			case SelectMode:
-			case EditMode:
-				if ( v->selectMElement(coords.x(), coords.y()) ||
-				     v->selectCElement(coords.x(), coords.y()) )
-					v->repaint();
+			case EditMode: {
 				break;
-			
-			case InsertMode:
+			}
+			case InsertMode: {
 				insertMusElementAt( coords, v );
 				break;
+			}
 		}
 	}
 }
@@ -476,11 +493,11 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			if ( (!context) ||
 			     (context->context()->contextType() != CAContext::Staff) )
 				return;
-
+			
 			drawableStaff = (CADrawableStaff*)context;
 			staff = drawableStaff->staff();
 			note = new CANote(_insertNote,
-			                  staff->voiceAt(0),
+			                  staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
 			                  drawableStaff->calculatePitch(coords.x(), coords.y()),
 			                  0,
 			                  (right?right->timeStart():staff->lastTimeEnd())
