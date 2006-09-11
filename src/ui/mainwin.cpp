@@ -332,9 +332,8 @@ void CAMainWin::on_actionNew_staff_activated() {
 void CAMainWin::setMode(CAMode mode) {
 	_currentMode = mode;
 	
-	QPen p;
 	switch (mode) {
-		case SelectMode:
+		case SelectMode: {
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (!((CAScoreViewPort*)_viewPortList[i])->playing())
@@ -346,7 +345,9 @@ void CAMainWin::setMode(CAMode mode) {
 				}
 			}
 			break;
-		case InsertMode:
+		}
+		case InsertMode: {
+			QPen p;
 			p.setColor(Qt::blue);
 			p.setWidth(3);
 			
@@ -362,7 +363,20 @@ void CAMainWin::setMode(CAMode mode) {
 			}
 
 			break;
-	}
+		}
+		case EditMode: {
+			QPen p;
+			p.setColor(Qt::red);
+			p.setWidth(3);
+			for (int i=0; i<_viewPortList.size(); i++) {
+				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
+					if (!((CAScoreViewPort*)_viewPortList[i])->playing())
+						((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
+					((CAScoreViewPort*)_viewPortList[i])->repaint();
+				}
+			}
+		}
+	}	//switch (mode)
 }
 
 void CAMainWin::on_action_Clef_activated() {
@@ -399,13 +413,13 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 			if ( elt = v->removeMElement(coords.x(), coords.y()) ) {
 				delete elt;
 				rebuildUI(v->sheet());
-				v->repaint();
 				return;
 			}
 		}
 		
 		switch (_currentMode) {
 			case SelectMode:
+			case EditMode:
 				if ( v->selectMElement(coords.x(), coords.y()) ||
 				     v->selectCElement(coords.x(), coords.y()) )
 					v->repaint();
@@ -580,10 +594,10 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				if (_currentMode == SelectMode) {	//select the upper music element
 					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
 					_activeViewPort->repaint();
-				} else if (_currentMode == InsertMode) {
+				} else if ((_currentMode == InsertMode) || (_currentMode == EditMode)) {
 					if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
 						CADrawableMusElement *elt =
-						((CAScoreViewPort*)_activeViewPort)->selection()->back();
+							((CAScoreViewPort*)_activeViewPort)->selection()->back();
 						
 						//pitch note for one step higher
 						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
@@ -599,10 +613,10 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				if (_currentMode == SelectMode) {	//select the upper music element
 					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
 					_activeViewPort->repaint();
-				} else if (_currentMode == InsertMode) {
+				} else if ((_currentMode == InsertMode) || (_currentMode == EditMode)) {
 					if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
 						CADrawableMusElement *elt =
-						((CAScoreViewPort*)_activeViewPort)->selection()->back();
+							((CAScoreViewPort*)_activeViewPort)->selection()->back();
 						
 						//pitch note for one step higher
 						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
@@ -628,6 +642,9 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 			case Qt::Key_I:
 				_insertMusElement = CAMusElement::Note;
 				setMode(InsertMode);
+				break;
+			case Qt::Key_E:
+				setMode(EditMode);
 				break;
 		}
 	}
