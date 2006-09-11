@@ -98,3 +98,18 @@ void CALCDNumber::mousePressEvent(QMouseEvent *poEvt) {
 				   break;
 	}
 }
+
+void CALCDNumber::wheelEvent(QWheelEvent *poEvt) {
+	int iNewVal;
+	if (poEvt->delta() < 0) {
+		iNewVal = getRealValue() + 1;
+		if (iNewVal > max_) return;
+		
+		setRealValue(iNewVal);
+	} else if (poEvt->delta() > 0) {
+		iNewVal = getRealValue() - 1;
+		if (iNewVal < min_) return;
+		
+		setRealValue(iNewVal);
+	}
+}
