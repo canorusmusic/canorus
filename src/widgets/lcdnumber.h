@@ -95,6 +95,13 @@ protected:
 	*
 	*/
 	virtual void mousePressEvent(QMouseEvent *poEvt); 
+	/**
+	* Event being performed when a wheel was moved
+	* 
+	* @param poEvt         Necessary information about the event
+	*
+	*/
+	virtual void wheelEvent(QWheelEvent *poEvt); 
 private:
 	int min_, max_;
 	QAction *numDisplay_;
