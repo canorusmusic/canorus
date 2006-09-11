@@ -11,10 +11,13 @@
 #include "drawable/drawablestaff.h"
 #include "drawable/drawableclef.h"
 #include "drawable/drawablekeysignature.h"
+#include "drawable/drawabletimesignature.h"
+
 #include "core/staff.h"
 #include "core/note.h"
 #include "core/clef.h"
 #include "core/keysignature.h"
+#include "core/timesignature.h"
 
 #define _lineSpace (staff()->numberOfLines()?(float)_height/(staff()->numberOfLines()-1):0)
 
@@ -113,6 +116,23 @@ CAKeySignature* CADrawableStaff::getKeySignature(int x) {
 	for (i=0; ((i<_drawableKeySignatureList.size()) && (x > _drawableKeySignatureList[i]->xPos())); i++);
 	
 	return ((--i<0)?0:_drawableKeySignatureList[i]->keySignature());
+}
+
+void CADrawableStaff::addTimeSignature(CADrawableTimeSignature *timeSig) {
+	int i;
+	for (i=0; ((i<_drawableTimeSignatureList.size()) && (timeSig->xPos() > _drawableTimeSignatureList[i]->xPos())); i++);
+	_drawableTimeSignatureList.insert(i, timeSig);
+}
+
+bool CADrawableStaff::removeTimeSignature(CADrawableTimeSignature *timeSig) {
+	return _drawableTimeSignatureList.removeAll(timeSig);
+}
+
+CATimeSignature* CADrawableStaff::getTimeSignature(int x) {
+	int i;
+	for (i=0; ((i<_drawableTimeSignatureList.size()) && (x > _drawableTimeSignatureList[i]->xPos())); i++);
+	
+	return ((--i<0)?0:_drawableTimeSignatureList[i]->timeSignature());
 }
 
 int CADrawableStaff::calculateHighestCenterYCoord(int pitch, int x) {
