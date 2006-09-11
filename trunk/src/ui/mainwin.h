@@ -46,6 +46,7 @@ class CAKeySigPSP;
 enum CAMode {
 	InsertMode,
 	SelectMode,
+	EditMode,
 	ReadOnlyMode
 };
 
