@@ -39,6 +39,29 @@ any other way currently.
 IMPORTANT: Do not run cmake again before clearing the cache files
 CMakeCache.txt and the directory CMakeFiles!
 
+If you get the error "swig not found" then you have the problem
+that FindSWIG.cmake does not match your system configuration. On
+my system swig files are in /usr/share/swig/1.3.x, so I needed to
+create a link to it from swig1.3:
+
+ln -s /usr/share/swig/1.3.[version] /usr/share/swig1.3
+
+Replace .[version] with the real version f.e. 1.3.27.
+
+If you get the error "... Please set the following variable ...
+RUBY_INCLUDE_PATH" then you need to point the FindRuby.cmake
+file to the correct include path on your system. I needed to
+modify the script directly:
+
+- RUBY_POSSIBLE_INCLUDE_PATHS /usr/lib/ruby1.8/i586-linux(-gnu)
+  (Attention, could be x86_64, i686, ... on some systems)
+- FIND_LIBRARY - NAMES "ruby" (instead of "ruby1.8)
+- FIND_PROGRAM - NAMES "ruby" (instead of "ruby1.8)
+
+Best is to tell the package maker of ruby/cmake/swig about these
+problems if they occur on your distribution. I won't adapt the Canorus
+cmake files to cover all the possible pathes of every distribution.
+
 I hope that the NO_DEFAULT_PATH options gets added to newer cmake releases.
 
 - Compile Canorus with the following command: "make"
