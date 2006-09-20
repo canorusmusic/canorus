@@ -8,9 +8,9 @@
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 
 #RtMidi cross-platform definitions
-IF(UNIX)
+IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux") #IF(LINUX) isn't supported by CMake yet
 	ADD_DEFINITIONS(-D__LINUX_ALSASEQ__)
-ENDIF(UNIX)
+ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 IF(APPLE)
 	ADD_DEFINITIONS(-D__MACOSX_CORE__)
 ENDIF(APPLE)
@@ -192,9 +192,9 @@ ADD_EXECUTABLE(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs}
 TARGET_LINK_LIBRARIES( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} ${RUBY_LIBRARY} )
 
 #MIDI libraries:
-IF(UNIX)
+IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 	TARGET_LINK_LIBRARIES(canorus "asound")
-ENDIF(UNIX)
+ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 IF(APPLE)
 	TARGET_LINK_LIBRARIES(canorus "-framework CoreMidi")
 	TARGET_LINK_LIBRARIES(canorus "-framework CoreAudio")
