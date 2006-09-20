@@ -11,6 +11,9 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 IF(UNIX)
 	ADD_DEFINITIONS(-D__LINUX_ALSASEQ__)
 ENDIF(UNIX)
+IF(APPLE)
+	ADD_DEFINITIONS(-D__MACOSX_CORE__)
+ENDIF(APPLE)
 IF(WIN32 OR WIN64)
 	ADD_DEFINITIONS(-D__WINDOWS_MM__)
 ENDIF(WIN32 OR WIN64)
@@ -178,7 +181,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 # This line tells cmake to create the Canorus program.
 # All dependent libraries like RtMidi must be added here.
 # Attention: In contrast to Makefiles don't add "\" to separate lines
-add_executable(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs} 
+ADD_EXECUTABLE(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs} 
                         ${Canorus_MOC_Srcs} ${Canorus_Resrcs_Srcs}
 			${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusrubyRUBY_wrap.cxx
 			)
@@ -186,15 +189,20 @@ add_executable(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs}
 # Here the needed Qt Libraries are added to the link
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
-target_link_libraries( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} ${RUBY_LIBRARY} )
+TARGET_LINK_LIBRARIES( canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} ${RUBY_LIBRARY} )
 
 #MIDI libraries:
 IF(UNIX)
 	TARGET_LINK_LIBRARIES(canorus "asound")
 ENDIF(UNIX)
+IF(APPLE)
+	TARGET_LINK_LIBRARIES(canorus "-framework CoreMidi")
+	TARGET_LINK_LIBRARIES(canorus "-framework CoreAudio")
+	TARGET_LINK_LIBRARIES(canorus "-framework CoreFoundation")
+ENDIF(APPLE)
 IF(WIN32 OR WIN64)
 	TARGET_LINK_LIBRARIES(canorus "winmm.lib")
 ENDIF(WIN32 OR WIN64)
 
-ADD_DEPENDENCIES(canorus CanorusRuby)
+ADD_DEPENDENCIES(canorus CanorusRuby) #build Ruby module first and then Canorus exe
 
