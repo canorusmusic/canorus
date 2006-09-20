@@ -128,6 +128,7 @@ set(Canorus_Swig_Srcs	#sources which Swig needs to build its Ruby module
 	core/keysignature.cpp
 	core/clef.cpp
 	core/barline.cpp
+	core/voice.cpp
 	)
 
 # Add all resources to Canorus_Resrcs (icons, html files etc.)
