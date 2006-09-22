@@ -268,16 +268,16 @@ void CAScoreViewPort::importCElements(CAKDTree *elts) {
 		addCElement((CADrawableContext*)elts->at(i)->clone());
 }
 
-CAMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool currentContext) {
+CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool currentContext) {
 	CADrawableMusElement *elt;
 	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestLeft(x, true, _currentContext))?
-	         elt->musElement() : 0);	//if found, return its musElement() pointer, otherwise return 0
+	         elt : 0);	//if found, return its musElement() pointer, otherwise return 0
 }
 
-CAMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool currentContext) {
+CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool currentContext) {
 	CADrawableMusElement *elt;
 	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestRight(x, true, _currentContext))?
-	         elt->musElement() : 0);	//if found, return its musElement() pointer, otherwise return 0
+	         elt : 0);	//if found, return its musElement() pointer, otherwise return 0
 }
 
 int CAScoreViewPort::calculateTime(int x, int y) {

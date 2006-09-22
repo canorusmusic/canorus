@@ -207,24 +207,26 @@ class CAScoreViewPort : public CAViewPort {
 		
 		/**
 		 * Returns the nearest left element from the given position with the largest startTime.
+		 * MusElement's left border is taken into account. 
 		 * 
 		 * @param x X coordinate in absolute world units.
 		 * @param y Y coordinate in absolute world units.
-		 * @param currentContextOnly Only look for the nearest right element in the current drawable context.
+		 * @param currentContextOnly Only look for the nearest element in the current drawable context.
 		 * @return Pointer to the nearest left element from these world units.
 		 */
-		CAMusElement *nearestLeftElement(int x, int y, bool currentContextOnly=true);
+		CADrawableMusElement *nearestLeftElement(int x, int y, bool currentContextOnly=true);
 		
 		/**
 		 * Returns the nearest right element from the given position with the smallest startTime.
+		 * MusElement's left border is taken into account. 
 		 * 
 		 * @param x X coordinate in absolute world units.
 		 * @param y Y coordinate in absolute world units.
 		 * @param currentContextOnly Only look for the nearest right element in the current drawable context.
 		 * @return Pointer to the nearest rightelement from these world units.
 		 */
-		CAMusElement *nearestRightElement(int x, int y, bool currentContextOnly=true);
-
+		CADrawableMusElement *nearestRightElement(int x, int y, bool currentContextOnly=true);
+		
 		/**
 		 * Calculates the logical time from the given X and Y coordinates.
 		 * 

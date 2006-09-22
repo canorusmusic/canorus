@@ -113,6 +113,23 @@ class CAStaff : public CAContext {
 		QString name() { return _name; }
 		
 		void insertNote(CANote *note);
+		
+		/**
+		 * Insert the given note to the already existing note and create a single-voice chord.
+		 * 
+		 * @param note Pointer to the note to be added.
+		 * @param referenceNote Pointer to the note which the given note should be added to.
+		 * @return True, if the reference note was found and a note was added, false otherwise.
+		 */
+		bool insertNoteToChord(CANote *note, CANote *referenceNote);
+		
+		/**
+		 * Insert the note before the given music element.
+		 * 
+		 * @param note Pointer to the note being added.
+		 * @param eltAfter Pointer to the next music element.
+		 * @return True, if the next element was found and note was added before it, false otherwise.
+		 */
 		bool insertNoteBefore(CANote *note, CAMusElement *eltAfter);
 		
 	private:

@@ -10,7 +10,7 @@
 #include "core/voice.h"
 #include "core/staff.h"
 #include "core/clef.h"
-#include <iostream>
+
 CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int timeLength)
  : CAPlayable(voice, timeStart, timeLength) {
 	_musElementType = CAMusElement::Note;
@@ -140,4 +140,18 @@ const QString CANote::lengthML() {
 	}
 	
 	return length;
+}
+
+bool CANote::isPartOfTheChord() {
+	int idx = _voice->indexOf(this);
+	
+	//is there a note with the same start time after ours?
+	if (idx+1<_voice->musElementCount() && _voice->musElementAt(idx+1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx+1)->timeStart()== _timeStart)
+		return true;
+	
+	//is there a note with the same start time before ours?
+	if (idx>0 && _voice->musElementAt(idx-1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx-1)->timeStart()== _timeStart)
+		return true;
+	
+	return false;
 }
