@@ -39,7 +39,7 @@ void CAVoice::insertMusElement(CAMusElement *elt) {
 	updateTimes(i);
 }
 
-bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter) {
+bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateT) {
 	if (!eltAfter) {
 		_musElementList << elt;
 		return true;
@@ -52,11 +52,13 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter) 
 	
 	_musElementList.insert(i, elt);
 	
-	updateTimes(i);
+	if (updateT)
+		updateTimes(i);
+	
 	return true;
 }
 
-bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore) {
+bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateT) {
 	if (!eltBefore) {
 		_musElementList << elt;
 		return true;
@@ -69,7 +71,9 @@ bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore) 
 	
 	_musElementList.insert(i+1, elt);
 	
-	updateTimes(i);
+	if (updateT)
+		updateTimes(i);
+	
 	return true;
 }
 
@@ -100,9 +104,12 @@ bool CAVoice::removeElement(CAMusElement *elt) {
 	int idx;
 	if ((idx = _musElementList.indexOf(elt)) != -1) {	//if the search element is found
 		int length = _musElementList[idx]->timeLength();
-		_musElementList.removeAt(idx);					//remove it
-		if (idx < _musElementList.size())				//update the startTimes of elements behind it
-			updateTimes(idx, length);
+		
+		//update the startTimes of elements behind it, but only if the note was not part of the chord
+		if (!(elt->musElementType()==CAMusElement::Note && ((CANote*)elt)->isPartOfTheChord())) 
+			updateTimes(idx+1, length);	//but only, if the removed note is not part of the chord
+		
+		_musElementList.removeAt(idx);					//remove the element from the music element list
 		return true;
 	} else {
 		return false;
@@ -127,4 +134,12 @@ CANote::CANoteLength CAVoice::lastNoteLength() {
 	}
 	
 	return CANote::None;
+}
+
+bool CAVoice::containsPitch(int pitch, int startTime) {
+	 for (int i=0; i<_musElementList.size(); i++)
+	 	if ( (_musElementList[i]->musElementType() == CAMusElement::Note) && (_musElementList[i]->timeStart() == startTime) && (((CANote*)_musElementList[i])->pitch() == pitch) )
+	 		return true;
+	 
+	 return false;
 }

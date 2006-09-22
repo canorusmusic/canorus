@@ -38,6 +38,11 @@ class CANote : public CAPlayable {
 		const QString lengthML();	///Compose the note length for the CanorusML format
 		void setPitch(int pitch) { _pitch = pitch; calculateNotePosition(); }
 		int notePosition() { return _notePosition; }
+		
+		/**
+		 * Return True, if the note is part of a chord, False otherwise.
+		 */
+		bool isPartOfTheChord();
 
 		static const QString generateNoteName(int pitch);
 

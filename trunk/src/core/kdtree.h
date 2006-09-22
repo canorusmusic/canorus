@@ -84,6 +84,7 @@ class CAKDTree {
 
 		/**
 		 * These methods find the nearest element to the given coordinate and in the given direction.
+		 * Left and Top borders are the borders which are taken into account.
 		 * 
 		 * @param x,y Coordinate
 		 * @param bool Should the lookup be view-based (default) - the nearest element is selected as it appears on the screen, or time-based - the nearest element is selected according to the nearest start/end time

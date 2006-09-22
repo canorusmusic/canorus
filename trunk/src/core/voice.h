@@ -35,18 +35,20 @@ class CAVoice {
 		 * 
 		 * @param elt Pointer to CAMusElement to be inserted.
 		 * @param eltAfter Pointer to CAMusElement the given element should be inserted before. If eltAfter is 0, append the music element to the voice.
+		 * @param updateTimes Should the following elements' start times be increased by the inserted note length. This is false when adding a note to a chord. 
 		 * @return True, if eltAfter was found and the elt was inserted/appended, otherwise false.
 		 */
-		bool insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter);
+		bool insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateTimes = true);
 		
 		/**
 		 * Insert the CAMusElement right after the given CAMusElement.
 		 * 
 		 * @param elt Pointer to CAMusElement to be inserted.
 		 * @param eltBefore Pointer to CAMusElement the given element should be inserted after. If eltBefore is 0, append the music element to the voice.
+		 * @param updateTimes Should the following elements' start times be increased by the inserted note length. This is false when adding a note to a chord.
 		 * @return True, if eltAfter was found and the elt was inserted/appended, otherwise false.
 		 */
-		bool insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore);
+		bool insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateTimes = true);
 
 		/**
 		 * Remove the given music element from the voice.
@@ -63,6 +65,17 @@ class CAVoice {
 		int musElementCount() { return _musElementList.count(); }
 		CAMusElement *musElementAt(int i) { return _musElementList[i]; }
 		int indexOf(CAMusElement *elt) { return _musElementList.indexOf(elt); }
+		bool contains(CAMusElement *elt) { return _musElementList.contains(elt); }
+		
+		/**
+		 * Return true, if this voice contains a note with the given pitch and the given startTime.
+		 * This is useful when inserting a note and there needs to be determined if a user is adding a note to a chord, but the note is already there.
+		 * 
+		 * @param pitch Note pitch (only the level, accidentals don't matter).
+		 * @param startTime Note start time.
+		 * @return True, if such a note was found, False otherwise.
+		 */
+		bool containsPitch(int pitch, int startTime);
 		
 		QList<CAMusElement*> *musElementList() { return &_musElementList; }	///Return the list of music elements
 		int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }

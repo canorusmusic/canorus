@@ -37,7 +37,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 
 	int dy = 50;
 	QList<int> nonFirstVoiceIdxs;	//list of indexes of musStreamLists which the voices aren't the first voice. This is used later for determining should a sign be created or not (if it has been created in 1st voice already, don't recreate it in the other voices in th same staff).
-	QMap<CAContext*, CADrawableContext *> drawableContextMap;
+	QMap<CAContext*, CADrawableContext*> drawableContextMap;
 	
 	for (int i=0; i < sheet->contextCount(); i++, dy+=200) {
 		if (sheet->contextAt(i)->contextType() == CAContext::Staff) {
@@ -91,7 +91,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		for (int i=0; i < streams; i++) {
 			//loop until the first playable element
 			//multiple elements can have the same start time. eg. Clef + Key signature + Time signature + First note
-			while ( (musStreamList[i]->size() > streamsIdx[i]) &&
+			while ( (streamsIdx[i] < musStreamList[i]->size()) &&
 			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (!elt->isPlayable()) &&
 			        (elt->musElementType() != CAMusElement::Barline)	//barlines should be aligned
@@ -178,7 +178,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 				v->addMElement(bar);
 				placedSymbol = true;
 				streamsX[i] += (bar->neededWidth() + MINIMUM_SPACE);
-				streamsIdx[i]++;
+				streamsIdx[i] = streamsIdx[i] + 1;
 			}
 		}
 		
@@ -187,14 +187,17 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			
 		for (int i=0; i < streams; i++) {
 			//loop until the element has come, which has bigger timeStart
-			while ( (musStreamList[i]->size() > streamsIdx[i]) &&
+			CADrawableNote *note = 0;
+			while ( (streamsIdx[i] < musStreamList[i]->size()) &&
 			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (elt->isPlayable())
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
+				bool b = elt->isPlayable();
+				int type = elt->musElementType();
+				
 				switch ( elt->musElementType() ) {
 					case CAMusElement::Note:
-						CADrawableNote *note;
 						note = new CADrawableNote(
 							(CANote*)elt,
 							drawableContext,
@@ -204,12 +207,14 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 
 						v->addMElement(note);
 
-						streamsX[i] += (note->neededWidth() + MINIMUM_SPACE);
 						break;
 				}
 				
 				streamsIdx[i] = streamsIdx[i] + 1;
 			}
+
+			if (note)
+				streamsX[i] += (note->neededWidth() + MINIMUM_SPACE);	//append the needed space for the last used note
 		}
 	}
 }
