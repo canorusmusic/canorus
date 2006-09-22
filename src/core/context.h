@@ -60,6 +60,15 @@ class CAContext {
 		virtual CAMusElement *findPrevMusElement(CAMusElement *elt) = 0;
 		
 		/**
+		 * Remove a music element from the context.
+		 * 
+		 * @param elt Pointer to the element to be removed.
+		 * @param cleanup Should the memory be freed as well or just remove a reference.
+		 * @return True, if element was found and removed, False otherwise.
+		 */
+		virtual bool removeMusElement(CAMusElement *elt, bool cleanup = true) = 0;
+		
+		/**
 		 * Return the CASheet which this Context belongs to.
 		 * 
 		 * @return Pointer to the CASheet which this Context belongs to.

@@ -430,12 +430,12 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 		if (e->modifiers()==Qt::ControlModifier) {
 			CAMusElement *elt;
 			if ( elt = v->removeMElement(coords.x(), coords.y()) ) {
-				delete elt;
+				elt->context()->removeMusElement(elt, true);	//free the memory as well!
 				rebuildUI(v->sheet());
 				return;
 			}
 		}
-
+			
 		switch (_currentMode) {
 			case SelectMode:
 			case EditMode: {
