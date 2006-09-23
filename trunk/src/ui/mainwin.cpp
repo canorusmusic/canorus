@@ -513,7 +513,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			                  0,
 			                  (left->musElement()->timeStart())
 			                 );
-				staff->insertNoteToChord(note, (CANote*)left->musElement());
+				staff->addNoteToChord(note, (CANote*)left->musElement());
 			} else {
 				//user clicked outside x borders of the note - add a new note
 				note = new CANote(_insertNote,

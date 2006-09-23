@@ -49,7 +49,17 @@ class CAVoice {
 		 * @return True, if eltAfter was found and the elt was inserted/appended, otherwise false.
 		 */
 		bool insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateTimes = true);
-
+		
+		/**
+		 * Add a note to an already existing chord or a single note and create a chord out of it.
+		 * Notes in a chord always need to be sorted by the pitch falling.
+		 * 
+		 * @param note Note to be added.
+		 * @param referenceNote Already existing chord or note.
+		 * @return True, if a referenceNote was found and a note was added, False otherwise.
+		 */
+		bool addNoteToChord(CANote *note, CANote *referenceNote);
+		
 		/**
 		 * Remove the given music element from the voice.
 		 * This method doesn't delete its contents, but only the pointer.
@@ -79,7 +89,17 @@ class CAVoice {
 		
 		QList<CAMusElement*> *musElementList() { return &_musElementList; }	///Return the list of music elements
 		int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
-		int lastNotePitch();
+		int lastTimeStart() { return (_musElementList.size()?_musElementList.back()->timeStart():0); }
+		
+		/**
+		 * Return the pitch of the last note in the voice (default) or of the first note in the last chord.
+		 * If there is a clef after the last notes, return the clef's center pitch.
+		 * 
+		 * @param inChord Return the pitch of the first note in the last chord.
+		 * @return Note pitch.
+		 */
+		int lastNotePitch(bool inChord=false);
+		
 		CANote::CANoteLength lastNoteLength();
 		
 		CAClef *getClef(CAMusElement *elt);

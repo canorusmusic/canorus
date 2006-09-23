@@ -39,6 +39,23 @@ void CAVoice::insertMusElement(CAMusElement *elt) {
 	updateTimes(i);
 }
 
+bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
+	int idx = _musElementList.indexOf(referenceNote);
+	
+	if (idx==-1)
+		return false;
+	
+	QList<CANote*> chord = referenceNote->chord();
+	idx = _musElementList.indexOf(chord.first());
+	
+	int i;
+	for (i=0; i<chord.size() && chord[i]->pitch() > note->pitch(); i++);
+	
+	_musElementList.insert(idx+i, note);
+
+	return true;
+}
+
 bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateT) {
 	if (!eltAfter) {
 		_musElementList << elt;
@@ -116,10 +133,22 @@ bool CAVoice::removeElement(CAMusElement *elt) {
 	}
 }
 
-int CAVoice::lastNotePitch() {
+int CAVoice::lastNotePitch(bool inChord) {
 	for (int i=_musElementList.size()-1; i>=0; i--) {
-		if (_musElementList[i]->musElementType()==CAMusElement::Note)
-			return (((CANote*)_musElementList[i])->pitch());
+		if (_musElementList[i]->musElementType()==CAMusElement::Note) {
+			if (!((CANote*)_musElementList[i])->isPartOfTheChord() || !inChord)	//the note is not part of the chord
+				return (((CANote*)_musElementList[i])->pitch());
+			else {
+				int chordTimeStart = _musElementList[i]->timeStart();	//
+				int j;
+				for (j=i;
+				     (j>=0 && _musElementList[j]->musElementType()==CAMusElement::Note && _musElementList[j]->timeStart()==chordTimeStart);
+				     j--);
+				
+				return (((CANote*)_musElementList[j+1])->pitch());
+			}
+				
+		}
 		else if (_musElementList[i]->musElementType()==CAMusElement::Clef)
 			return (((CAClef*)_musElementList[i])->centerPitch());
 	}

@@ -66,11 +66,8 @@ void CAStaff::insertNote(CANote *note) {
 	note->voice()->insertMusElement(note);
 }
 
-bool CAStaff::insertNoteToChord(CANote *note, CANote *referenceNote) {
-	if (note->pitch() > referenceNote->pitch())
-		return note->voice()->insertMusElementBefore(note, referenceNote, false);
-	else
-		return note->voice()->insertMusElementAfter(note, referenceNote, false);
+bool CAStaff::addNoteToChord(CANote *note, CANote *referenceNote) {
+	return note->voice()->addNoteToChord(note, referenceNote);
 }
 
 bool CAStaff::insertNoteBefore(CANote *note, CAMusElement *eltAfter) {
