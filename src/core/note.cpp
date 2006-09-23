@@ -106,6 +106,12 @@ const QString CANote::pitchML() {
 	
 	return name;
 }
+void CANote::setPitch(int pitch) {
+	_pitch = pitch;
+	_midiPitch = CAPlayable::pitchToMidiPitch(pitch, _accs);
+
+	calculateNotePosition();
+}
 
 const QString CANote::lengthML() {
 	QString length;
@@ -146,12 +152,49 @@ bool CANote::isPartOfTheChord() {
 	int idx = _voice->indexOf(this);
 	
 	//is there a note with the same start time after ours?
-	if (idx+1<_voice->musElementCount() && _voice->musElementAt(idx+1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx+1)->timeStart()== _timeStart)
+	if (idx+1<_voice->musElementCount() && _voice->musElementAt(idx+1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx+1)->timeStart()==_timeStart)
 		return true;
 	
 	//is there a note with the same start time before ours?
-	if (idx>0 && _voice->musElementAt(idx-1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx-1)->timeStart()== _timeStart)
+	if (idx>0 && _voice->musElementAt(idx-1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx-1)->timeStart()==_timeStart)
 		return true;
 	
 	return false;
+}
+
+bool CANote::isFirstInTheChord() {
+	int idx = _voice->indexOf(this);
+	
+	//is there a note with the same start time before ours?
+	if (idx>0 && _voice->musElementAt(idx-1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx-1)->timeStart()==_timeStart)
+		return false;
+	
+	return true;
+}
+
+bool CANote::isLastInTheChord() {
+	int idx = _voice->indexOf(this);
+	
+	//is there a note with the same start time after ours?
+	if (idx+1<_voice->musElementCount() && _voice->musElementAt(idx+1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx+1)->timeStart()==_timeStart)
+		return false;
+	
+	return true;
+}
+
+QList<CANote*> CANote::chord() {
+	QList<CANote*> list;
+	int idx = _voice->indexOf(this) - 1;
+	
+	while (idx>=0 &&
+	       _voice->musElementAt(idx)->musElementType()==CAMusElement::Note &&
+	       _voice->musElementAt(idx)->timeStart()==_timeStart)
+		idx--;
+	
+	for (idx+=1;
+	     (idx<_voice->musElementCount()) && (_voice->musElementAt(idx)->musElementType()==CAMusElement::Note) && (_voice->musElementAt(idx)->timeStart()==_timeStart);
+	     idx++)
+		list << (CANote*)_voice->musElementAt(idx);
+	
+	return list;
 }

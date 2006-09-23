@@ -103,8 +103,9 @@ void CACanorusML::openDocument(QXmlInputSource* in, CADocument *doc, CAMainWin *
 
 const QString CACanorusML::createMLVoice(CAVoice *v) {
 	QString voiceString;
-	int lastPitch = 28;
-	QString lastLength = "";
+	int lastNotePitch = 28;
+	int firstNotePitchInChord;
+	QString lastNoteLength = "";
 	
 	for (int i=0; i<v->musElementCount(); i++, voiceString += " ") {
 		//(CAMusElement)
@@ -116,7 +117,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				voiceString += clef->clefTypeML();
 				voiceString += "</clef>";
 				
-				lastPitch = clef->centerPitch();
+				lastNotePitch = clef->centerPitch();
 				break;
 			}
 			case CAMusElement::KeySignature: {
@@ -151,9 +152,14 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 			case CAMusElement::Note: {
 				//CANote
 				CANote *note = (CANote*)v->musElementAt(i);
+				if (note->isPartOfTheChord() && note->isFirstInTheChord()) {
+					voiceString += "<chord>";
+					firstNotePitchInChord=note->pitch();
+				}
+				
 				voiceString += note->pitchML();
 				
-				int delta = lastPitch - note->pitch();
+				int delta = lastNotePitch - note->pitch();
 				while (delta > 3) { //add the needed amount of the commas
 					voiceString += ",";
 					delta -= 7;
@@ -163,11 +169,16 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 					delta += 7;
 				}
 				
-				if (lastLength != note->lengthML())
+				if (lastNoteLength != note->lengthML())
 					voiceString += note->lengthML();
 				
-				lastPitch = note->pitch();
-				lastLength = note->lengthML();
+				lastNotePitch = note->pitch();
+				lastNoteLength = note->lengthML();
+				
+				if (note->isPartOfTheChord() && note->isLastInTheChord()) {
+					voiceString += "</chord>";
+					lastNotePitch = firstNotePitchInChord;
+				}
 			}
 		}
 	}
@@ -189,7 +200,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		_errorMsg = "The document doesn't exist yet!";
 		return false;
 	}
-
+	
 	if (qName == "sheet") {
 		//CASheet
 		QString sheetName = attributes.value("name");
@@ -235,8 +246,9 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 			_curVoice = voice;
 			((CAStaff*)_curContext)->addVoice(voice);
 		}
-	} else if (qName == "clef") {
-	} else if (qName == "time") {
+	} else if (qName == "chord") {}
+	else if (qName == "clef") {}
+	else if (qName == "time") {
 		//CATimeSignature
 		_timeSignatureType = attributes.value("type");
 	} else if (qName == "key") {
@@ -310,7 +322,7 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 
 bool CACanorusML::characters(const QString& ch) {
 	_cha = ch;
-	if (_depth.top()=="voice")
+	if (_depth.top()=="voice" || _depth.top()=="chord")
 		return readMusElements(_cha);
 	
 	return true;
@@ -318,11 +330,11 @@ bool CACanorusML::characters(const QString& ch) {
 
 bool CACanorusML::readMusElements(QString string) {
 	string = string.simplified().toUpper();	//remove weirs whitespaces throughout the string and replace them by a single blank
-	while (string.size()) {
+	for (int eltIdx=0; string.size(); eltIdx++) {
 		int idx2 = string.indexOf(" ");	//find the index of the next note
 		if (idx2==-1)
 			idx2 = string.size();
-
+		
 		//CANote
 		if (QString(string[0]).contains(QRegExp("[A-G]"))) {	//if the first char is [A-G] letter, it's always the note pitch
 			int curPitch;
@@ -330,13 +342,14 @@ bool CACanorusML::readMusElements(QString string) {
 			signed char curAccs = 0;
 
 			//determine pitch
+			bool inChord = ((_depth.last()!="chord") || (eltIdx==0));
 			curPitch = string[0].toLatin1() - 'A' + 5	//determine the 0-6 pitch from note name
-				- (((_curVoice->lastNotePitch()==-1)?28:_curVoice->lastNotePitch()) % 7);	//get the delta of the last note pitch. If there is not last note, take the 28 as default height (C1)
+				- (((_curVoice->lastNotePitch(inChord)==-1)?28:_curVoice->lastNotePitch(inChord)) % 7);	//get the delta of the last note pitch. If there is not last note, take the 28 as default height (C1)
 			while (curPitch<-3)	//normalize pitch - the max +/- interval is fourth
 				curPitch+=7;
 			while (curPitch>3)
 				curPitch-=7;
-			curPitch += (_curVoice->lastNotePitch()==-1)?28:_curVoice->lastNotePitch();
+			curPitch += (_curVoice->lastNotePitch(inChord)==-1)?28:_curVoice->lastNotePitch(inChord);
 		
 			//determine accidentals
 			while ((string.indexOf("IS") != -1) && (string.indexOf("IS") < idx2)) {
@@ -369,13 +382,18 @@ bool CACanorusML::readMusElements(QString string) {
 				curLength = string.mid(lIdx,idx2-lIdx).toInt();
 			}
 			
-			CANote *note = new CANote((CANote::CANoteLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeEnd());
+			CANote *note;
+			if (_depth.last()!="chord" || eltIdx==0) //the note is not part of the chord or is the first note in the chord
+				note = new CANote((CANote::CANoteLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeEnd());
+			else	//the note is part of the already built chord
+				note = new CANote((CANote::CANoteLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeStart());
+			
 			_curVoice->insertMusElement(note);
 		} else
-		//CABarline
-		if (string[0]=='|') {
-			_curVoice->insertMusElement(new CABarline(CABarline::Single, (CAStaff*)_curContext, _curVoice->lastTimeEnd()));
-		}
+			//CABarline
+			if (string[0]=='|') {
+				_curVoice->insertMusElement(new CABarline(CABarline::Single, (CAStaff*)_curContext, _curVoice->lastTimeEnd()));
+			}
 		
 		string = string.remove(0, idx2+1);
 	}

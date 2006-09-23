@@ -121,7 +121,7 @@ class CAStaff : public CAContext {
 		 * @param referenceNote Pointer to the note which the given note should be added to.
 		 * @return True, if the reference note was found and a note was added, false otherwise.
 		 */
-		bool insertNoteToChord(CANote *note, CANote *referenceNote);
+		bool addNoteToChord(CANote *note, CANote *referenceNote);
 		
 		/**
 		 * Insert the note before the given music element.
