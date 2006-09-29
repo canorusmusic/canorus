@@ -33,9 +33,10 @@ class CAStaff : public CAContext {
 		/**
 		 * Return the end of the last music element in the staff.
 		 * 
+		 * @param voice The voice which the time should be looking in. If none set, return the largest end time of all the voices.
 		 * @return End of the last music element in the staff.
 		 */
-		int lastTimeEnd();
+		int lastTimeEnd(CAVoice *voice=0);
 		
 		/**
 		 * Return the number of voices.
@@ -82,9 +83,10 @@ class CAStaff : public CAContext {
 		 * 
 		 * @param sign Pointer to the already created CAMusElement object about to be added.
 		 * @param eltAfter The music element before which the sign should be inserted. The element should be present in all voices! If eltAfter is 0, append the sign to the voices.
+		 * @param force If the eltBefore isn't found in certain voices, find a nearest time equivalent in the voice and place it before it.
 		 * @return True, if a sign was inserted/appended, false if the eltAfter wasn't found.
 		 */
-		bool insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter);
+		bool insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter, bool force=false);
 		
 		/**
 		 * Insert any sign (clef, siganutres, barline etc.) after the given music element.
@@ -93,9 +95,10 @@ class CAStaff : public CAContext {
 		 * 
 		 * @param sign Pointer to the already created CAMusElement object about to be added.
 		 * @param eltBefore The music element after which the sign should be inserted. The element should be present in all voices! If eltBefore is 0, append the sign to the voices.
+		 * @param force If the eltBefore isn't found in certain voices, find a nearest time equivalent in the voice and place it before it.
 		 * @return True, if a sign was inserted/appended, false if the eltAfter wasn't found.
 		 */
-		bool insertSignAfter(CAMusElement *sign, CAMusElement *eltBefore);
+		bool insertSignAfter(CAMusElement *sign, CAMusElement *eltBefore, bool force=false);
 
 		/**
 		 * Remove the given music element from all the voices.
@@ -109,28 +112,18 @@ class CAStaff : public CAContext {
 		CAMusElement *findNextMusElement(CAMusElement *elt);
 		CAMusElement *findPrevMusElement(CAMusElement *elt);
 		
+		/**
+		 * Return a list of pointers to actual music elements which have the given startTime and are of given type.
+		 * This searches the entire staff.
+		 * 
+		 * @param type Search for the music elements of the given type only.
+		 * @param startTime Search for the music elements with the given start time only.
+		 * @return List of pointers to music elements with the given startTime and type.
+		 */
+		QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
+		
 		void setName(QString name) { _name = name; }
 		QString name() { return _name; }
-		
-		void insertNote(CANote *note);
-		
-		/**
-		 * Insert the given note to the already existing note and create a single-voice chord.
-		 * 
-		 * @param note Pointer to the note to be added.
-		 * @param referenceNote Pointer to the note which the given note should be added to.
-		 * @return True, if the reference note was found and a note was added, false otherwise.
-		 */
-		bool addNoteToChord(CANote *note, CANote *referenceNote);
-		
-		/**
-		 * Insert the note before the given music element.
-		 * 
-		 * @param note Pointer to the note being added.
-		 * @param eltAfter Pointer to the next music element.
-		 * @return True, if the next element was found and note was added before it, false otherwise.
-		 */
-		bool insertNoteBefore(CANote *note, CAMusElement *eltAfter);
 		
 	private:
 		QList<CAVoice *> _voiceList;

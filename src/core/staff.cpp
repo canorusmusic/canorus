@@ -19,7 +19,10 @@ CAStaff::CAStaff(CASheet *s, QString name) : CAContext(s, name) {
 	_name = name;
 }
 
-int CAStaff::lastTimeEnd() {
+int CAStaff::lastTimeEnd(CAVoice *voice) {
+	if (voice)
+		return voice->lastTimeEnd();
+	
 	int maxTime = 0;
 	for (int i=0; i<_voiceList.size(); i++)
 		if (_voiceList[i]->lastTimeEnd() > maxTime)
@@ -42,36 +45,24 @@ void CAStaff::insertSign(CAMusElement *sign) {
 		_voiceList[i]->insertMusElement(sign);
 }
 
-bool CAStaff::insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter) {
+bool CAStaff::insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter, bool force) {
 	bool error = false;
 	for (int i=0; i<_voiceList.size(); i++) {
-		if (!_voiceList[i]->insertMusElementBefore(sign, eltAfter))
+		if (!_voiceList[i]->insertMusElementBefore(sign, eltAfter, true, force))
 			error = true;
 	}
 	
 	return (!error);
 }
 
-bool CAStaff::insertSignAfter(CAMusElement *sign, CAMusElement *eltBefore) {
+bool CAStaff::insertSignAfter(CAMusElement *sign, CAMusElement *eltBefore, bool force) {
 	bool error = false;
 	for (int i=0; i<_voiceList.size(); i++) {
-		if (!_voiceList[i]->insertMusElementAfter(sign, eltBefore))
+		if (!_voiceList[i]->insertMusElementAfter(sign, eltBefore, true, force))
 			error = true;
 	}
 	
 	return (!error);
-}
-
-void CAStaff::insertNote(CANote *note) {
-	note->voice()->insertMusElement(note);
-}
-
-bool CAStaff::addNoteToChord(CANote *note, CANote *referenceNote) {
-	return note->voice()->addNoteToChord(note, referenceNote);
-}
-
-bool CAStaff::insertNoteBefore(CANote *note, CAMusElement *eltAfter) {
-	return note->voice()->insertMusElementBefore(note, eltAfter);
 }
 
 bool CAStaff::removeMusElement(CAMusElement *elt, bool cleanup) {
@@ -122,4 +113,16 @@ CAVoice *CAStaff::voice(const QString name) {
 			return _voiceList[i];
 	
 	return 0;
+}
+
+QList<CAMusElement*> CAStaff::getEltByType(CAMusElement::CAMusElementType type, int startTime) {
+	QList<CAMusElement*> eltList;
+	
+	for (int i=0; i<_voiceList.size(); i++) {
+		QList<CAMusElement*> curList;
+		curList = _voiceList[i]->getEltByType(type, startTime);
+		eltList += curList;
+	}
+	
+	return eltList;	
 }

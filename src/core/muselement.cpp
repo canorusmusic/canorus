@@ -18,4 +18,5 @@ CAMusElement::CAMusElement(CAContext *context, int time, int length) {
 }
 
 CAMusElement::~CAMusElement() {
+	_context->removeMusElement(this, false);
 }

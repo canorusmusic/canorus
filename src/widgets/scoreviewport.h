@@ -217,6 +217,18 @@ class CAScoreViewPort : public CAViewPort {
 		CADrawableMusElement *nearestLeftElement(int x, int y, bool currentContextOnly=true);
 		
 		/**
+		 * Returns the nearest left element from the given position with the largest startTime in the given voice.
+		 * MusElement's left border is taken into account. 
+		 * 
+		 * @param x X coordinate in absolute world units.
+		 * @param y Y coordinate in absolute world units.
+		 * @param voice Pointer to the voice which its elements should be seeked. 
+		 * @param currentContextOnly Only look for the nearest left element in the current drawable context.
+		 * @return Pointer to the nearest leftelement from these world units.
+		 */
+		CADrawableMusElement *nearestLeftElement(int x, int y, CAVoice *voice);
+
+		/**
 		 * Returns the nearest right element from the given position with the smallest startTime.
 		 * MusElement's left border is taken into account. 
 		 * 
@@ -227,6 +239,18 @@ class CAScoreViewPort : public CAViewPort {
 		 */
 		CADrawableMusElement *nearestRightElement(int x, int y, bool currentContextOnly=true);
 		
+		/**
+		 * Returns the nearest right element from the given position with the smallest startTime in the given voice.
+		 * MusElement's left border is taken into account. 
+		 * 
+		 * @param x X coordinate in absolute world units.
+		 * @param y Y coordinate in absolute world units.
+		 * @param voice Pointer to the voice which its elements should be seeked. 
+		 * @param currentContextOnly Only look for the nearest right element in the current drawable context.
+		 * @return Pointer to the nearest rightelement from these world units.
+		 */
+		CADrawableMusElement *nearestRightElement(int x, int y, CAVoice *voice);
+
 		/**
 		 * Calculates the logical time from the given X and Y coordinates.
 		 * 

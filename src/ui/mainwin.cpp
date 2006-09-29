@@ -413,6 +413,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 		
 		CADrawableContext *currentContext = v->currentContext();
 		
+		v->selectCElement(coords.x(), coords.y());
 		if ( v->selectMElement(coords.x(), coords.y()) ||	//select a music element at the given location - select none, if there's none there
 		     v->selectCElement(coords.x(), coords.y()) ) {
 			//voice number widget
@@ -439,6 +440,13 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 		switch (_currentMode) {
 			case SelectMode:
 			case EditMode: {
+				if (!v->selection()->isEmpty()) {
+					CAMusElement *elt = v->selection()->front()->musElement();
+					std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd();
+					if (elt->isPlayable())
+						std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
+					std::cout << std::endl;
+				}
 				break;
 			}
 			case InsertMode: {
@@ -451,86 +459,86 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 
 void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 	CADrawableContext *context = v->selectCElement(coords.x(), coords.y());
-	CADrawableMusElement *right = v->nearestRightElement(coords.x(), coords.y());
 	
 	CAStaff *staff=0;
 	CADrawableStaff *drawableStaff=0;
-	CAClef *clef=0;
-	CANote *note=0;
+	CAMusElement *newElt=0;
+	bool success;
+	
+	if (!context)
+		return;
+	
 	switch (_insertMusElement) {
-		case CAMusElement::Clef:
-			if ( (!context) ||
-			    (context->context()->contextType() != CAContext::Staff) )
+		case CAMusElement::Clef: {
+			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
+			if ( (context->context()->contextType() != CAContext::Staff) )
 				return;
 			
 			staff = (CAStaff*)context->context();
-			clef = new CAClef(_insertClef, staff, (right?right->musElement()->timeStart():staff->lastTimeEnd()));
-			staff->insertSignBefore(clef, right?right->musElement():0);
-			
-			rebuildUI(v->sheet(), true);
-			v->selectMElement(clef);
-			v->repaint();
+			newElt = new CAClef(_insertClef, staff, (left?left->musElement()->timeEnd():0));
+			success = staff->insertSignAfter(newElt, left?left->musElement():0, true);
 			break;
-			
+		}
 		case CAMusElement::KeySignature: {
+			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
 			if ( (!context) ||
 			     (context->context()->contextType() != CAContext::Staff) )
 				return;
 			
 			staff = (CAStaff*)context->context();
-			CAKeySignature *keySig = new CAKeySignature(CAKeySignature::Diatonic, 
+			newElt = new CAKeySignature(CAKeySignature::Diatonic, 
 			                                            mpoKeySigPSP->getKeySignature()-7,
 			                                            CAKeySignature::Major, staff,
-			                                            (right?right->musElement()->timeStart():staff->lastTimeEnd()));
-			staff->insertSignBefore(keySig, right?right->musElement():0);
-			
-			rebuildUI(v->sheet(), true);
-			v->selectMElement(keySig);
-			v->repaint();
+			                                            (left?left->musElement()->timeEnd():0));
+			success = staff->insertSignAfter(newElt, left?left->musElement():0, true);
 			break;
 		}
 		case CAMusElement::Note: {
+			drawableStaff = (CADrawableStaff*)context;
+			staff = drawableStaff->staff();
+			CAVoice *voice = staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 );
+			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y(), voice);
+			
 			if ( (!context) ||
 			     (context->context()->contextType() != CAContext::Staff) )
 				return;
 			
 			//did a user click on the note or before/after it? In first case, add a note to a chord, in latter case, insert a new note.
-			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
 			CADrawableMusElement *followingNote;
-
-			drawableStaff = (CADrawableStaff*)context;
-			staff = drawableStaff->staff();
-			CAVoice *voice = staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 );
 			
 			if ( left && (left->musElement()->musElementType() == CAMusElement::Note) && (left->xPos() <= coords.x()) && (left->width() + left->xPos() >= coords.x()) ) {
 				//user clicked inside x borders of the note - add a note to the chord
 				if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart() ))
 					break;	//user clicked on an already placed note - return and do nothing
-
-				note = new CANote(_insertNote,
+				
+				newElt = new CANote(_insertNote,
 			                  voice,
 			                  drawableStaff->calculatePitch(coords.x(), coords.y()),
 			                  0,
 			                  (left->musElement()->timeStart())
 			                 );
-				staff->addNoteToChord(note, (CANote*)left->musElement());
+				voice->addNoteToChord((CANote*)newElt, (CANote*)left->musElement());
 			} else {
 				//user clicked outside x borders of the note - add a new note
-				note = new CANote(_insertNote,
+				newElt = new CANote(_insertNote,
 			                  staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
 			                  drawableStaff->calculatePitch(coords.x(), coords.y()),
 			                  0,
-			                  (right?right->musElement()->timeStart():staff->lastTimeEnd())
+			                  (left?left->musElement()->timeEnd():0)
 			                 );
-				staff->insertNoteBefore(note, right?right->musElement():0);
+				success = voice->insertMusElementAfter(newElt, left?left->musElement():0);
 			}
-
-			rebuildUI(v->sheet(), true);
-			v->selectMElement(note);
-			v->repaint();
 			break;
 		}
 	}
+	
+	if (success) {
+		rebuildUI(v->sheet(), true);
+		v->selectMElement(newElt);
+		v->repaint();
+	} else
+		delete newElt;
+	
 }
 
 void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
@@ -613,16 +621,16 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 					return;
 			
 				CAStaff *staff = (CAStaff*)drawableContext->context();
-				CAMusElement *right = 0;
+				CAMusElement *left = 0;
 				if (!((CAScoreViewPort*)v)->selection()->isEmpty())
-					right = ((CAScoreViewPort*)v)->selection()->back()->musElement();
+					left = ((CAScoreViewPort*)v)->selection()->back()->musElement();
 					
 				CABarline *bar = new CABarline(
 					CABarline::Single,
 					staff,
-					(right?right->timeStart():staff->lastTimeEnd())
+					(left?left->timeEnd():staff->lastTimeEnd())
 				);
-				staff->insertSignAfter(bar, right);
+				staff->insertSignAfter(bar, left, true);	//insert the barline in all the voices
 				
 				rebuildUI(((CAScoreViewPort*)v)->sheet(), true);
 				((CAScoreViewPort*)v)->selectMElement(bar);
@@ -686,6 +694,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 					((CAScoreViewPort*)_activeViewPort)->selectContext(0);
 				}
 				setMode(SelectMode);
+				mpoVoiceNum->setRealValue(0);
 				if (mpoKeySigPSP)
 					mpoKeySigPSP->hide();
 				break;
