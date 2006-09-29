@@ -8,7 +8,10 @@
 
 #include "drawable/drawable.h"
 #include "drawable/drawablemuselement.h"
+
 #include "core/kdtree.h"
+#include "core/muselement.h"
+#include "core/playable.h"
 
 CAKDTree::CAKDTree() {
 	_maxX = 0;
@@ -81,7 +84,7 @@ QList<CADrawable *>* CAKDTree::findInRange(QRect *rect) {
 	return findInRange(rect->x(), rect->y(), rect->width(), rect->height());
 }
 
-CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *context) {
+CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *context, CAVoice *voice) {
 	if (_list.isEmpty())
 		return 0;
 		
@@ -91,7 +94,12 @@ CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *
 		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
 			if ( ((!elt) || (((*i)->xPos() + (*i)->width()) > (elt->xPos()+elt->width()))) &&
 			     (((*i)->xPos() + (*i)->width()) < x) &&
-			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context))
+			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context)) &&
+			     ((!voice || !((CADrawableMusElement*)(*i))->musElement()->isPlayable()) || 
+			                  ( ((CADrawableMusElement*)(*i))->musElement()->isPlayable() &&
+			                    ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
+			                  )
+			     )
 			   ) {
 				elt = *i;
 			}
@@ -100,8 +108,13 @@ CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *
 		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
 			if ( ((!elt) || ((*i)->xPosOrig() > elt->xPosOrig())) &&
 			     ((*i)->xPosOrig() < x) &&
-			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context))			     
-			     ) {
+			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context)) &&
+			     ((!voice || !((CADrawableMusElement*)(*i))->musElement()->isPlayable()) || 
+			                  ( ((CADrawableMusElement*)(*i))->musElement()->isPlayable() &&
+			                    ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
+			                  )
+			     )
+			   ) {
 				elt = *i;
 			}
 		}
@@ -110,7 +123,7 @@ CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *
 	return elt;
 }
 
-CADrawable* CAKDTree::findNearestRight(int x, bool timeBased, CADrawableContext *context) {
+CADrawable* CAKDTree::findNearestRight(int x, bool timeBased, CADrawableContext *context, CAVoice *voice) {
 	if (_list.isEmpty())
 		return 0;
 		
@@ -120,7 +133,12 @@ CADrawable* CAKDTree::findNearestRight(int x, bool timeBased, CADrawableContext 
 		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
 			if ( ((!elt) || ((*i)->xPos() < elt->xPos())) &&
 			     ((*i)->xPos() > x) &&
-			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context))			     
+			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context)) &&
+			     ((!voice || !((CADrawableMusElement*)(*i))->musElement()->isPlayable()) || 
+			                  ( ((CADrawableMusElement*)(*i))->musElement()->isPlayable() &&
+			                    ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
+			                  )
+			     )
 			   ) {
 				elt = *i;
 			}
@@ -129,7 +147,12 @@ CADrawable* CAKDTree::findNearestRight(int x, bool timeBased, CADrawableContext 
 		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
 			if ( ((!elt) || ((*i)->xPosOrig() < elt->xPosOrig())) &&
 			     ((*i)->xPosOrig() > x) &&
-			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context))			     
+			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context)) &&
+			     ((!voice || !((CADrawableMusElement*)(*i))->musElement()->isPlayable()) || 
+			                  ( ((CADrawableMusElement*)(*i))->musElement()->isPlayable() &&
+			                    ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
+			                  )
+			     )
 			   ) {
 				elt = *i;
 			}

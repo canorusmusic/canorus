@@ -163,10 +163,15 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		
 		//place barlines
 		for (int i=0; i<streams; i++) {
-			if (!(musStreamList[i]->size() > streamsIdx[i]))
+			if (!(musStreamList[i]->size() > streamsIdx[i]))	//if the stream is already at the end, continue to the next stream
 				continue;
 			
 			if ((elt = musStreamList[i]->at(streamsIdx[i]))->musElementType() == CAMusElement::Barline) {
+				if (nonFirstVoiceIdxs.contains(i))	{ //if the current stream is non-first voice, continue, as the barlines are drawn from the first voice only
+					streamsIdx[i] = streamsIdx[i] + 1;
+					continue;
+				}
+				
 				drawableContext = drawableContextMap[elt->context()];
 				CADrawableBarline *bar = new CADrawableBarline(
 					(CABarline*)elt,

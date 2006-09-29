@@ -25,6 +25,7 @@ class CAVoice {
 		
 		/**
 		 * Insert the music element before the first element which startTime is equal or greater to the given element's one.
+		 * WARNING: If you're inserting signs like barlines, clefs, time signatures etc. use CAStaff::insertSign(), because the mentioned signs MUST be present in *all* voices. Use manually this method only if you know what you're doing. -Matevz
 		 * 
 		 * @param elt Pointer to CAMusElement to be inserted.
 		 */
@@ -32,23 +33,27 @@ class CAVoice {
 		
 		/**
 		 * Insert the CAMusElement right before the given CAMusElement.
+		 * WARNING: If you're inserting signs like barlines, clefs, time signatures etc. use CAStaff::insertSign(), because the mentioned signs MUST be present in *all* voices. Use manually this method only if you know what you're doing. -Matevz
 		 * 
 		 * @param elt Pointer to CAMusElement to be inserted.
 		 * @param eltAfter Pointer to CAMusElement the given element should be inserted before. If eltAfter is 0, append the music element to the voice.
 		 * @param updateTimes Should the following elements' start times be increased by the inserted note length. This is false when adding a note to a chord. 
+		 * @param force If the eltBefore isn't found in certain voices, find a nearest time equivalent in the voice and place it before it.
 		 * @return True, if eltAfter was found and the elt was inserted/appended, otherwise false.
 		 */
-		bool insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateTimes = true);
+		bool insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateTimes = true, bool force=false);
 		
 		/**
 		 * Insert the CAMusElement right after the given CAMusElement.
+		 * WARNING: If you're inserting signs like barlines, clefs, time signatures etc. use CAStaff::insertSign(), because the mentioned signs MUST be present in *all* voices. Use manually this method only if you know what you're doing. -Matevz
 		 * 
 		 * @param elt Pointer to CAMusElement to be inserted.
 		 * @param eltBefore Pointer to CAMusElement the given element should be inserted after. If eltBefore is 0, append the music element to the voice.
 		 * @param updateTimes Should the following elements' start times be increased by the inserted note length. This is false when adding a note to a chord.
+		 * @param force If the eltBefore isn't found in certain voices, find a nearest time equivalent in the voice and place it before it.
 		 * @return True, if eltAfter was found and the elt was inserted/appended, otherwise false.
 		 */
-		bool insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateTimes = true);
+		bool insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateTimes = true, bool force=false);
 		
 		/**
 		 * Add a note to an already existing chord or a single note and create a chord out of it.
@@ -70,12 +75,22 @@ class CAVoice {
 		bool removeElement(CAMusElement *elt);
 		
 		int voiceNumber() { return _voiceNumber; }
+		bool isFirstVoice() { return !_voiceNumber; }
 		void setVoiceNumber(int idx) { _voiceNumber = idx; }
 		
 		int musElementCount() { return _musElementList.count(); }
 		CAMusElement *musElementAt(int i) { return _musElementList[i]; }
 		int indexOf(CAMusElement *elt) { return _musElementList.indexOf(elt); }
 		bool contains(CAMusElement *elt) { return _musElementList.contains(elt); }
+		
+		/**
+		 * Return a list of pointers to actual music elements which have the given startTime and are of given type.
+		 * 
+		 * @param type Search for the music elements of the given type only.
+		 * @param startTime Search for the music elements with the given start time only.
+		 * @return List of pointers to music elements with the given startTime and type.
+		 */
+		QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
 		
 		/**
 		 * Return true, if this voice contains a note with the given pitch and the given startTime.

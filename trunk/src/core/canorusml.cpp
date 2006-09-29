@@ -105,6 +105,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 	QString voiceString;
 	int lastNotePitch = 28;
 	int firstNotePitchInChord;
+	int curStreamTime = 0;
 	QString lastNoteLength = "";
 	
 	for (int i=0; i<v->musElementCount(); i++, voiceString += " ") {
@@ -113,6 +114,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 			case CAMusElement::Clef: {
 				//CAClef
 				CAClef *clef = (CAClef*)v->musElementAt(i);
+				if (clef->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
 				voiceString += "<clef>";
 				voiceString += clef->clefTypeML();
 				voiceString += "</clef>";
@@ -123,6 +125,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 			case CAMusElement::KeySignature: {
 				//CAKeySignature
 				CAKeySignature *key = (CAKeySignature*)v->musElementAt(i);
+				if (key->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
 				voiceString += QString("<key type=\"") + key->diatonicGenderML() + "\">";
 				voiceString += key->pitchML();
 				voiceString += "</key>";
@@ -132,6 +135,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 			case CAMusElement::TimeSignature: {
 				//CATimeSignature
 				CATimeSignature *time = (CATimeSignature*)v->musElementAt(i);
+				if (time->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
 				voiceString += QString("<time");
 				if (time->timeSignatureType() != CATimeSignature::Classical)
 					voiceString += QString(" type=\"") + time->timeSignatureTypeML() + QString("\"");
@@ -144,6 +148,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 			case CAMusElement::Barline: {
 				//CABarline
 				CABarline *bar = (CABarline*)v->musElementAt(i);
+				if (bar->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
 				if (bar->barlineType() == CABarline::Single)
 					voiceString += "|";
 				
@@ -152,6 +157,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 			case CAMusElement::Note: {
 				//CANote
 				CANote *note = (CANote*)v->musElementAt(i);
+				if (note->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
 				if (note->isPartOfTheChord() && note->isFirstInTheChord()) {
 					voiceString += "<chord>";
 					firstNotePitchInChord=note->pitch();
@@ -179,6 +185,8 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 					voiceString += "</chord>";
 					lastNotePitch = firstNotePitchInChord;
 				}
+				
+				curStreamTime += note->timeLength();
 			}
 		}
 	}
@@ -278,9 +286,19 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 			_errorMsg = "At least one voice should exist in order to add a clef!";
 			return false;
 		}
-
-		CAClef *clef = new CAClef(_cha, _curVoice->staff(), _curVoice->lastTimeEnd());
-		_curVoice->staff()->insertSign(clef);
+		
+		//lookup an element with the same type at the same time
+		QList<CAMusElement*> foundElts;
+		if ( (foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Clef, _curVoice->lastTimeEnd())).isEmpty() ) {
+			//the element doesn't exist yet - add it
+			CAClef *clef = new CAClef(_cha, _curVoice->staff(), _curVoice->lastTimeEnd());
+			_curVoice->insertMusElement(clef);
+		} else {
+			//the element was found, insert only a reference to the current voice
+			int i;
+			for (i=0; i<foundElts.size() && !_curVoice->contains(foundElts[i]); i++);
+			_curVoice->insertMusElement(foundElts[i-1]);
+		}	
 	} else if (qName == "key") {
 		//CAKeySignature
 		if (!_curContext) {
@@ -294,10 +312,20 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 			return false;
 		}
 		
-		CAKeySignature *keySig = new CAKeySignature(_cha, _diatonicGender, _curVoice->staff(), _curVoice->lastTimeEnd());
+		//lookup an element with the same type at the same time
+		QList<CAMusElement*> foundElts;
+		if ( (foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::KeySignature, _curVoice->lastTimeEnd())).isEmpty() ) {
+			//the element doesn't exist yet - add it
+			CAKeySignature *keySig = new CAKeySignature(_cha, _diatonicGender, _curVoice->staff(), _curVoice->lastTimeEnd());
+			_curVoice->insertMusElement(keySig);
+		} else {
+			//the element was found, insert only a reference to the current voice
+			int i;
+			for (i=0; i<foundElts.size() && !_curVoice->contains(foundElts[i]); i++);
+			_curVoice->insertMusElement(foundElts[i-1]);
+		}
 		_diatonicGender="";
 		_cha="";
-		_curVoice->staff()->insertSign(keySig);
 	} else if (qName == "time") {
 		//CATimeSignature
 		if (!_curContext) {
@@ -310,10 +338,20 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 			_errorMsg = "At least one voice should exist in order to add a time signature!";
 			return false;
 		}
-
-		CATimeSignature *time = new CATimeSignature(_cha, _curVoice->staff(), _curVoice->lastTimeEnd(), _timeSignatureType);
 		
-		_curVoice->staff()->insertSign(time);
+		//lookup an element with the same type at the same time
+		QList<CAMusElement*> foundElts;
+		if ( (foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::TimeSignature, _curVoice->lastTimeEnd())).isEmpty() ) {
+			//the element doesn't exist yet - add it
+			CATimeSignature *time = new CATimeSignature(_cha, _curVoice->staff(), _curVoice->lastTimeEnd(), _timeSignatureType);
+			_curVoice->insertMusElement(time);
+		} else {
+			//the element was found, insert only a reference to the current voice
+			int i;
+			for (i=0; i<foundElts.size() && !_curVoice->contains(foundElts[i]); i++);
+			_curVoice->insertMusElement(foundElts[i-1]);
+		}
+		_cha="";
 	}
 	
 	_depth.pop();

@@ -56,7 +56,7 @@ bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 	return true;
 }
 
-bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateT) {
+bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateT, bool force) {
 	if (!eltAfter) {
 		_musElementList << elt;
 		return true;
@@ -65,7 +65,12 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, 
 	int i;
 	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != eltAfter); i++);
 	if (i==_musElementList.size())
-		return false;
+		if (!force)
+			return false;
+		else {
+			int endTime = eltAfter->timeEnd();
+			for (i=0; (i<_musElementList.size()) && (_musElementList[i]->timeStart() < endTime); i++);
+	}
 	
 	_musElementList.insert(i, elt);
 	
@@ -75,7 +80,7 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, 
 	return true;
 }
 
-bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateT) {
+bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateT, bool force) {
 	if (!eltBefore) {
 		_musElementList << elt;
 		return true;
@@ -84,12 +89,18 @@ bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, 
 	int i;
 	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != eltBefore); i++);
 	if (i==_musElementList.size())
-		return false;
-	
+		if (!force)
+			return false;
+		else {
+			int endTime = eltBefore->timeEnd();
+			for (i=0; (i<_musElementList.size()) && (_musElementList[i]->timeStart() < endTime); i++);
+			i--;
+	}
+			
 	_musElementList.insert(i+1, elt);
 	
 	if (updateT)
-		updateTimes(i);
+		updateTimes(i+1);
 	
 	return true;
 }
@@ -106,7 +117,15 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 
 void CAVoice::updateTimes(int idx) {
 	int length = _musElementList[idx]->timeLength();
-	for (int i=idx+1; i<_musElementList.size(); i++) {
+	
+	if (idx+1<_musElementList.size() && _musElementList[idx]->timeEnd()<=_musElementList[idx+1]->timeStart())
+		return;	//music element was inserted right before the next element, no overlapping was made
+	
+	//indent all the music elements after the given index's one.
+	//If the music elements aren't connected (previous's end time != next start time)
+	for (int i=idx+1; i<_musElementList.size() &&
+	                  (_musElementList[i-1]->timeEnd()==_musElementList[i]->timeStart() || _musElementList[i-1]->timeStart()==_musElementList[i]->timeStart())
+	     ; i++) {
 		_musElementList[i]->setTimeStart(_musElementList[i]->timeStart() + length);
 	}
 }
@@ -171,4 +190,19 @@ bool CAVoice::containsPitch(int pitch, int startTime) {
 	 		return true;
 	 
 	 return false;
+}
+
+QList<CAMusElement*> CAVoice::getEltByType(CAMusElement::CAMusElementType type, int startTime) {
+	QList<CAMusElement*> eltList;
+	
+	int i;
+	for (i=0; i < _musElementList.size() && _musElementList[i]->timeStart() < startTime; i++);	//seek to the start of the music elements with the given time
+	
+	while (i<_musElementList.size() && _musElementList[i]->timeStart()==startTime) {	//create a list of music elements with the given time
+		if (_musElementList[i]->musElementType() == type)
+			eltList << _musElementList[i];
+		i++;
+	}
+	
+	return eltList;
 }
