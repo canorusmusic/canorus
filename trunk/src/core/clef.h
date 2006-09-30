@@ -28,6 +28,7 @@ class CAClef : public CAMusElement {
 		};
 
 		CAClef(CAClefType type, CAStaff *staff, int time);
+		CAClef *clone();
 		
 		/**
 		 * This is an overloaded member function provided for convenience.
@@ -40,7 +41,7 @@ class CAClef : public CAMusElement {
 		const QString clefTypeML();
 		const int c1() { return _c1; }
 		const int centerPitch() { return _centerPitch; }
-	
+		
 	private:
 		CAClefType _clefType;
 		int _c1;	///Location of c'. 0 = 1st line, 1 = 1st space, -2 = 1st ledger line below staff

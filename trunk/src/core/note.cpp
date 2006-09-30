@@ -11,10 +11,10 @@
 #include "core/staff.h"
 #include "core/clef.h"
 
-CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int timeLength)
+CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int timeLength)
  : CAPlayable(voice, timeStart, timeLength) {
 	_musElementType = CAMusElement::Note;
-	_noteLength = length;
+	_playableLength = length;
 	_accs = accs;
 
 	_pitch = pitch;
@@ -24,31 +24,31 @@ CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, signed char accs,
 		_timeLength = timeLength;
 	else {
 		switch (length) {
-			case CANote::HundredTwentyEighth:
+			case CAPlayable::HundredTwentyEighth:
 				_timeLength = 8;
 				break;
-			case CANote::SixtyFourth:
+			case CAPlayable::SixtyFourth:
 				_timeLength = 16;
 				break;
-			case CANote::ThirtySecond:
+			case CAPlayable::ThirtySecond:
 				_timeLength = 32;
 				break;
-			case CANote::Sixteenth:
+			case CAPlayable::Sixteenth:
 				_timeLength = 64;
 				break;
-			case CANote::Eighth:
+			case CAPlayable::Eighth:
 				_timeLength = 128;
 				break;
-			case CANote::Quarter:
+			case CAPlayable::Quarter:
 				_timeLength = 256;
 				break;
-			case CANote::Half:
+			case CAPlayable::Half:
 				_timeLength = 512;
 				break;
-			case CANote::Whole:
+			case CAPlayable::Whole:
 				_timeLength = 1024;
 				break;
-			case CANote::Breve:
+			case CAPlayable::Breve:
 				_timeLength = 2048;
 				break;
 		}
@@ -60,7 +60,7 @@ CANote::CANote(CANoteLength length, CAVoice *voice, int pitch, signed char accs,
 }
 
 CANote *CANote::clone() {
-	CANote *d = new CANote(_noteLength, _voice, _pitch, _accs, _timeStart);
+	CANote *d = new CANote(_playableLength, _voice, _pitch, _accs, _timeStart);
 	
 	return d;
 }
@@ -115,32 +115,32 @@ void CANote::setPitch(int pitch) {
 
 const QString CANote::lengthML() {
 	QString length;
-	switch (_noteLength) {
-		case CANote::Breve:
+	switch (_playableLength) {
+		case CAPlayable::Breve:
 			length = "0";
 			break;
-		case CANote::Whole:
+		case CAPlayable::Whole:
 			length = "1";
 			break;
-		case CANote::Half:
+		case CAPlayable::Half:
 			length = "2";
 			break;
-		case CANote::Quarter:
+		case CAPlayable::Quarter:
 			length = "4";
 			break;
-		case CANote::Eighth:
+		case CAPlayable::Eighth:
 			length = "8";
 			break;
-		case CANote::Sixteenth:
+		case CAPlayable::Sixteenth:
 			length = "16";
 			break;
-		case CANote::ThirtySecond:
+		case CAPlayable::ThirtySecond:
 			length = "32";
 			break;
-		case CANote::SixtyFourth:
+		case CAPlayable::SixtyFourth:
 			length = "64";
 			break;
-		case CANote::HundredTwentyEighth:
+		case CAPlayable::HundredTwentyEighth:
 			length = "128";
 			break;
 	}

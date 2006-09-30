@@ -129,7 +129,8 @@ void CAPlayback::run() {
 					message.push_back(144 + elt->voice()->midiChannel());
 					message.push_back(elt->midiPitch());
 					message.push_back(127);
-					_midiDevice->send(&message);	//play note
+					if (elt->musElementType()!=CAMusElement::Rest)
+						_midiDevice->send(&message);	//play note
 					message.clear();
 			      	curPlaying << elt;
 					

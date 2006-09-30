@@ -18,7 +18,7 @@
 
 CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaff, int x, int y)
  : CADrawableMusElement(musElement, drawableStaff, x, y) {
-	_drawableMusElement = CADrawableMusElement::DrawableClef;
+	_drawableMusElementType = CADrawableMusElement::DrawableClef;
 	
 	switch (clef()->clefType()) {
 		case CAClef::Treble:

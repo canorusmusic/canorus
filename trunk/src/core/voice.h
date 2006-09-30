@@ -115,7 +115,7 @@ class CAVoice {
 		 */
 		int lastNotePitch(bool inChord=false);
 		
-		CANote::CANoteLength lastNoteLength();
+		CAPlayable::CAPlayableLength lastPlayableLength();
 		
 		CAClef *getClef(CAMusElement *elt);
 		

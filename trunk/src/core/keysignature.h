@@ -59,6 +59,7 @@ class CAKeySignature : public CAMusElement {
 		 * @param accs Number of accidentals for an ordinary diatonic key signature. 0 - C-Major, -1 - F-Major, +7 - Cis-Major
 		 */
 		CAKeySignature(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender, CAStaff *staff, int timeStart);
+		CAKeySignature *clone();
 		
 		/**
 		 * This is an overloaded member function provided for convenience.

@@ -15,6 +15,7 @@
 #include "drawable/drawablestaff.h"
 #include "drawable/drawableclef.h"
 #include "drawable/drawablenote.h"
+#include "drawable/drawablerest.h"
 #include "drawable/drawablekeysignature.h"
 #include "drawable/drawabletimesignature.h"
 #include "drawable/drawablebarline.h"
@@ -163,7 +164,8 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		
 		//place barlines
 		for (int i=0; i<streams; i++) {
-			if (!(musStreamList[i]->size() > streamsIdx[i]))	//if the stream is already at the end, continue to the next stream
+			if (!(musStreamList[i]->size() > streamsIdx[i]) ||	//if the stream is already at the end, continue to the next stream
+			    ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() != timeStart))
 				continue;
 			
 			if ((elt = musStreamList[i]->at(streamsIdx[i]))->musElementType() == CAMusElement::Barline) {
@@ -189,37 +191,46 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		
 		if (placedSymbol)	//always start adding notes cleanly 
 			continue;
-			
+		
 		for (int i=0; i < streams; i++) {
 			//loop until the element has come, which has bigger timeStart
-			CADrawableNote *note = 0;
+			CADrawableMusElement *newElt=0;
 			while ( (streamsIdx[i] < musStreamList[i]->size()) &&
 			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (elt->isPlayable())
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
-				bool b = elt->isPlayable();
-				int type = elt->musElementType();
 				
 				switch ( elt->musElementType() ) {
-					case CAMusElement::Note:
-						note = new CADrawableNote(
+					case CAMusElement::Note: {
+						newElt = new CADrawableNote(
 							(CANote*)elt,
 							drawableContext,
 							streamsX[i],
 							((CADrawableStaff*)drawableContext)->calculateCenterYCoord((CANote*)elt, lastClef[i])
 						);
 
-						v->addMElement(note);
-
+						v->addMElement(newElt);
 						break;
+					}
+					case CAMusElement::Rest: {
+						newElt = new CADrawableRest(
+							(CARest*)elt,
+							drawableContext,
+							streamsX[i],
+							drawableContext->yPos()
+						);
+
+						v->addMElement(newElt);
+						break;
+					}
 				}
 				
 				streamsIdx[i] = streamsIdx[i] + 1;
 			}
 
-			if (note)
-				streamsX[i] += (note->neededWidth() + MINIMUM_SPACE);	//append the needed space for the last used note
+			if (newElt)
+				streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);	//append the needed space for the last used note
 		}
 	}
 }

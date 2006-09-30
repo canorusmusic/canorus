@@ -26,6 +26,7 @@
 %include "scripting/playable.i"
 %include "scripting/staff.i"
 %include "scripting/note.i"
+%include "scripting/rest.i"
 %include "scripting/keysignature.i"
 %include "scripting/timesignature.i"
 %include "scripting/clef.i"

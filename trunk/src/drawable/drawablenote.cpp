@@ -15,10 +15,10 @@
 
 CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y, bool shadowNote)
  : CADrawableMusElement(note, drawableContext, x, y) {
-	_drawableMusElement = CADrawableMusElement::DrawableNote;
+	_drawableMusElementType = CADrawableMusElement::DrawableNote;
 	
-	switch (note->noteLength()) {
-		case CANote::Quarter:
+	switch (note->playableLength()) {
+		case CAPlayable::Quarter:
 			_width = 11;
 			_height = 26;
 			_yPos = y - QUARTER_YPOS_DELTA;	//values in constructor are the notehead center coords. yPos represents the top of the stem.
@@ -27,7 +27,7 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 			_neededHeight = _height;
 			break;
 		
-		case CANote::Half:
+		case CAPlayable::Half:
 			_width = 11;
 			_height = 26;
 			_yPos = y - HALF_YPOS_DELTA;	//values in constructor are the notehead center coords. yPos represents the top of the stem.
@@ -36,20 +36,20 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 			_neededHeight = _height;
 			break;
 			
-		case CANote::Whole:
+		case CAPlayable::Whole:
 			_width = 16;
-			_height = 6;
-			_yPos = y - _height/2;
-			_xPos = x - _width/2;
+			_height = 8;
+			_yPos = (int)(y - _height/2.0 + 0.5);
+			_xPos = (int)(x - _width/2.0 + 0.5);
 			_neededWidth = _width;
 			_neededHeight = _height;
 			break;			
 
-		case CANote::Breve:
-			_width = 18;
-			_height = 7;
-			_yPos = y - _height/2;
-			_xPos = x - _width/2;
+		case CAPlayable::Breve:
+			_width = 21;
+			_height = 8;
+			_yPos = (int)(y - _height/2.0 + 0.5);
+			_xPos = (int)(x - _width/2.0 + 0.5);
 			_neededWidth = _width;
 			_neededHeight = _height;
 			break;			
@@ -102,15 +102,15 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 		}
 		case CANote::Whole: {
 			//draw notehead
-			s.y += (int)((_height*s.z)/2);
+			s.y += (int)(((_height + 0.8)*s.z)/2 + 0.5);
 			p->drawText(s.x, (int)(s.y), QString(0xE123));
 
 			break;
 		}
 		case CANote::Breve: {
 			//draw notehead
-			s.y += (int)((_height*s.z)/2);
-			p->drawText(s.x, (int)(s.y), QString(0xE122));
+			s.y += (int)(((_height + 0.8)*s.z)/2 + 0.5);
+			p->drawText((int)(s.x + 2*s.z + 0.5), (int)(s.y), QString(0xE122));
 
 			break;
 		}		

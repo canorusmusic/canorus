@@ -80,6 +80,10 @@ CAClef::CAClef(const QString type, CAStaff *staff, int time) : CAMusElement(staf
 	}	
 }
 
+CAClef* CAClef::clone() {
+	return new CAClef(_clefType, (CAStaff*)_context, _timeStart);
+}
+
 const QString CAClef::clefTypeML() {
 	QString type;
 	

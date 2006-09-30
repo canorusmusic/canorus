@@ -241,6 +241,6 @@ private:
 	//Insert element
 	////////////////////////////////////////////////////
 	CAMusElement::CAMusElementType _insertMusElement;	///Current element to be added. 0, if in view mode, CAMusElementType, if in insert mode
-	CANote::CANoteLength _insertNote;	///
+	CAPlayable::CAPlayableLength _insertPlayableLength;	///
 	CAClef::CAClefType _insertClef;	///
 };

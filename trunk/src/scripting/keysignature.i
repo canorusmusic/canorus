@@ -64,6 +64,7 @@ class CAKeySignature : public CAMusElement {
 		 * @param gender Gender of the key signature.
 		 */
 		CAKeySignature(QString pitch, QString gender, CAStaff *staff, int timeStart);
+		CAKeySignature *clone();
 		
 		~CAKeySignature();
 		

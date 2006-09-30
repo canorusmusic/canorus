@@ -59,6 +59,7 @@ set(Canorus_Core_Srcs
 	core/kdtree.cpp
 	core/muselement.cpp
 	core/note.cpp
+	core/rest.cpp
 	core/playable.cpp
 	core/sheet.cpp
 	core/staff.cpp
@@ -95,6 +96,7 @@ set(Canorus_Drawable_Srcs
 	drawable/drawablecontext.cpp
 	drawable/drawablemuselement.cpp
 	drawable/drawablenote.cpp
+	drawable/drawablerest.cpp
 	drawable/drawablestaff.cpp
 	)
 
@@ -127,6 +129,7 @@ set(Canorus_Swig_Srcs	#sources which Swig needs to build its Ruby module
 	core/staff.cpp
 	core/playable.cpp
 	core/note.cpp
+	core/rest.cpp
 	core/timesignature.cpp
 	core/keysignature.cpp
 	core/clef.cpp

@@ -16,7 +16,7 @@
 
 CADrawableAccidental::CADrawableAccidental(signed char accs, CAMusElement *musElement, CADrawableContext *drawableContext, int x, int y)
  : CADrawableMusElement(musElement, drawableContext, x, y) {
- 	_drawableMusElement = CADrawableMusElement::DrawableAccidental;
+ 	_drawableMusElementType = CADrawableMusElement::DrawableAccidental;
  	
  	_centerX = x + _width/2;
  	_centerY = y;

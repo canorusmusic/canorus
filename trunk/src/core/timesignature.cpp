@@ -40,6 +40,10 @@ CATimeSignature::CATimeSignature(QString MLString, CAStaff *staff, int startTime
 CATimeSignature::~CATimeSignature() {
 }
 
+CATimeSignature *CATimeSignature::clone() {
+	return new CATimeSignature(_beats, _beat, (CAStaff*)_context, _timeStart, _timeSignatureType);
+}
+
 const QString CATimeSignature::timeSignatureTypeML() {
 	switch (_timeSignatureType) {
 		case Classical:

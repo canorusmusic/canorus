@@ -15,7 +15,7 @@
 
 CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawableStaff *drawableStaff, int x, int y)
  : CADrawableMusElement(keySig, drawableStaff, x, y) {
-	_drawableMusElement = CADrawableMusElement::DrawableKeySignature;
+	_drawableMusElementType = CADrawableMusElement::DrawableKeySignature;
 	
 	int newX = x;
  	if (keySig->keySignatureType() == CAKeySignature::Diatonic) {
