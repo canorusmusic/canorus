@@ -20,6 +20,7 @@ class CADrawableMusElement : public CADrawable {
 
 		enum CADrawableMusElementType {
 			DrawableNote,
+			DrawableRest,
 			DrawableClef,
 			DrawableKeySignature,
 			DrawableTimeSignature,
@@ -28,11 +29,11 @@ class CADrawableMusElement : public CADrawable {
 		};
 				
 		inline CAMusElement *musElement() { return _musElement; }
-		CADrawableMusElementType drawableMusElementType() { return _drawableMusElement; }
+		CADrawableMusElementType drawableMusElementType() { return _drawableMusElementType; }
 		CADrawableContext *drawableContext() { return _drawableContext; }
 		
 	protected:
-		CADrawableMusElementType _drawableMusElement;	///CADrawableMusElement Type
+		CADrawableMusElementType _drawableMusElementType;	///CADrawableMusElement Type
 
 		CADrawableContext *_drawableContext;
 		CAMusElement *_musElement;

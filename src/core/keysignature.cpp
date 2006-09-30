@@ -92,6 +92,10 @@ CAKeySignature::~CAKeySignature() {
 	
 }
 
+CAKeySignature* CAKeySignature::clone() {
+	return new CAKeySignature(_keySignatureType, numberOfAccidentals(), _diatonicGender, (CAStaff*)_context, _timeStart);
+}
+
 signed char CAKeySignature::numberOfAccidentals() {
 	signed char sum=0;
 	for (int i=0; i<7; i++)

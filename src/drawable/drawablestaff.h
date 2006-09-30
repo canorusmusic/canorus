@@ -10,8 +10,8 @@
 #define DRAWABLESTAFF_H_
 
 #include "drawable/drawablecontext.h"
+#include "core/staff.h"
 
-class CAStaff;
 class CANote;
 class CAClef;
 class CAKeySignature;
@@ -26,6 +26,8 @@ class CADrawableStaff : public CADrawableContext {
 		void draw(QPainter *, const CADrawSettings s);
 		CADrawableStaff *clone();
 		inline CAStaff *staff() { return (CAStaff*)_context; }
+		
+		inline float lineSpace() { return (staff()->numberOfLines()?(float)_height/(staff()->numberOfLines()-1):0); }
 		
 		/**
 		 * Return the center Y coordinate of the given note in this staff.

@@ -64,7 +64,7 @@ class CAVoice {
 		QList<CAMusElement*> *musElementList();	///Return the list of music elements
 		int lastTimeEnd();
 		int lastNotePitch();
-		CANote::CANoteLength lastNoteLength();
+		CAPlayable::CAPlayableLength lastPlayableLength();
 		
 		CAClef *getClef(CAMusElement *elt);
 		

@@ -16,7 +16,7 @@
 
 CADrawableBarline::CADrawableBarline(CABarline *m, CADrawableStaff *staff, int x, int y)
  : CADrawableMusElement(m, staff, x, y) {
- 	_drawableMusElement = CADrawableMusElement::DrawableBarline;
+ 	_drawableMusElementType = CADrawableMusElement::DrawableBarline;
  	
  	switch (m->barlineType()) {
  		case CABarline::Single:

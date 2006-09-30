@@ -18,6 +18,8 @@ class CAMusElement {
 		CAMusElement(CAContext *context, int time, int length=0);
 		~CAMusElement();
 		
+		virtual CAMusElement* clone()=0;
+		
 		/**
 		 * enum CAMusElementType includes different types for describing the CAMusElement:
 		 * - Note - A music element which represents CANote.
@@ -69,23 +71,27 @@ class CAMusElement {
 		CAContext *context() { return _context; }
 		
 		int timeStart() { return _timeStart; }
-		int timeEnd() { return _timeStart + _timeLength; }
-		int timeLength() { return _timeLength; }
-		const QString name() { return _name; }
-		
+
 		/**
 		 * Set the new start time in the score for this music element.
 		 * 
 		 * @param time The new time in absolute sample units.
 		 */
 		void setTimeStart(int time) { _timeStart = time; }
-		
+
+		int timeEnd() { return _timeStart + _timeLength; }
+
+		int timeLength() { return _timeLength; }
+
 		/**
 		 * Set the new music element length in the score.
 		 * 
 		 * @param length The new length in absolue time sample units.
 		 */
 		void setTimeLength(int length) { _timeLength = length; }
+
+		const QString name() { return _name; }
+		void setName(const QString name) { _name = name; }		
 		
 		/**
 		 * Return, if the current element is playable or not.
@@ -94,8 +100,6 @@ class CAMusElement {
 		 */
 		bool isPlayable() { return _playable; }
 
-		void setName(const QString name) { _name = name; }
-	
 	protected:
 		CAMusElementType _musElementType;	///Stores the type of the music element. See CAMusElement::enum CAMusElementType for details.
 		CAContext *_context;	///Pointer to the context which this music element belongs too.

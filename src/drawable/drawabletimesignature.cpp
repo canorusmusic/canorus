@@ -17,8 +17,7 @@
 
 CADrawableTimeSignature::CADrawableTimeSignature(CATimeSignature *timeSig, CADrawableStaff *drawableStaff, int x, int y)
  : CADrawableMusElement(timeSig, drawableStaff, x, y) {
- 	_drawableMusElement = CADrawableMusElement::DrawableTimeSignature;
- 	
+ 	_drawableMusElementType = CADrawableMusElement::DrawableTimeSignature;
  	
  	if ((timeSignature()->timeSignatureType() == CATimeSignature::Classical) && (timeSignature()->beat() == 4) && (timeSignature()->beats() == 4)) {
  		_width = 16;

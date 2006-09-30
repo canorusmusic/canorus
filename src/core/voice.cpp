@@ -50,9 +50,9 @@ bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 	
 	int i;
 	for (i=0; i<chord.size() && chord[i]->pitch() > note->pitch(); i++);
-	
-	_musElementList.insert(idx+i, note);
 
+	_musElementList.insert(idx+i, note);
+	
 	return true;
 }
 
@@ -70,9 +70,16 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, 
 		else {
 			int endTime = eltAfter->timeEnd();
 			for (i=0; (i<_musElementList.size()) && (_musElementList[i]->timeStart() < endTime); i++);
+		_musElementList.insert(i, elt);
+	} else {
+		if (_musElementList[i]->musElementType()==CAMusElement::Note &&	//a small check to see if a user wanted to insert an element after a chord, but selected a note in the middle of a chord (not the lowest one)
+		    ((CANote*)_musElementList[i])->isPartOfTheChord() &&
+		    eltAfter->timeStart()!=elt->timeStart() ) {
+			i = _musElementList.indexOf(((CANote*)_musElementList[i])->chord().front());
+		}
+		_musElementList.insert(i, elt);
 	}
 	
-	_musElementList.insert(i, elt);
 	
 	if (updateT)
 		updateTimes(i);
@@ -94,10 +101,16 @@ bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, 
 		else {
 			int endTime = eltBefore->timeEnd();
 			for (i=0; (i<_musElementList.size()) && (_musElementList[i]->timeStart() < endTime); i++);
-			i--;
+			_musElementList.insert(i, elt);
+	} else {
+		if (_musElementList[i]->musElementType()==CAMusElement::Note &&	//a small check to see if a user wanted to insert an element after a chord, but selected a note in the middle of a chord (not the lowest one)
+		    ((CANote*)_musElementList[i])->isPartOfTheChord() &&
+		    eltBefore->timeStart()!=elt->timeStart() ) {
+			i = _musElementList.indexOf(((CANote*)_musElementList[i])->chord().back());
+		}
+		
+		_musElementList.insert(i+1, elt);
 	}
-			
-	_musElementList.insert(i+1, elt);
 	
 	if (updateT)
 		updateTimes(i+1);
@@ -118,13 +131,10 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 void CAVoice::updateTimes(int idx) {
 	int length = _musElementList[idx]->timeLength();
 	
-	if (idx+1<_musElementList.size() && _musElementList[idx]->timeEnd()<=_musElementList[idx+1]->timeStart())
-		return;	//music element was inserted right before the next element, no overlapping was made
-	
 	//indent all the music elements after the given index's one.
 	//If the music elements aren't connected (previous's end time != next start time)
 	for (int i=idx+1; i<_musElementList.size() &&
-	                  (_musElementList[i-1]->timeEnd()==_musElementList[i]->timeStart() || _musElementList[i-1]->timeStart()==_musElementList[i]->timeStart())
+	                  (_musElementList[i-1]->timeEnd()==_musElementList[i]->timeStart()+length || _musElementList[i-1]->timeStart()==_musElementList[i]->timeStart()+length)
 	     ; i++) {
 		_musElementList[i]->setTimeStart(_musElementList[i]->timeStart() + length);
 	}
@@ -175,13 +185,13 @@ int CAVoice::lastNotePitch(bool inChord) {
 	return -1;
 }
 
-CANote::CANoteLength CAVoice::lastNoteLength() {
+CAPlayable::CAPlayableLength CAVoice::lastPlayableLength() {
 	for (int i=_musElementList.size()-1; i>=0; i--) {
-		if (_musElementList[i]->musElementType()==CAMusElement::Note)
-			return (((CANote*)_musElementList[i])->noteLength());
+		if (_musElementList[i]->isPlayable())
+			return (((CAPlayable*)_musElementList[i])->playableLength());
 	}
 	
-	return CANote::None;
+	return CAPlayable::None;
 }
 
 bool CAVoice::containsPitch(int pitch, int startTime) {

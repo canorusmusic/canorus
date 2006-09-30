@@ -63,6 +63,7 @@ using namespace std;
 #include "core/clef.h"
 #include "core/keysignature.h"
 #include "core/note.h"
+#include "core/rest.h"
 #include "core/canorusml.h"
 #include "core/voice.h"
 #include "core/barline.h"
@@ -103,8 +104,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	//Initialize the internal properties
 	_currentMode = SelectMode;
 	_insertMusElement = CAMusElement::None;
-	_insertNote       = CANote::Quarter;
-	_insertClef       = CAClef::Treble;
+	_insertPlayableLength = CAPlayable::Quarter;
+	_insertClef = CAClef::Treble;
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
@@ -450,7 +451,12 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				break;
 			}
 			case InsertMode: {
+				if (e->button()==Qt::RightButton && _insertMusElement==CAMusElement::Note)
+					_insertMusElement = CAMusElement::Rest;	//place a rest when using right mouse button and note insertion is selected
 				insertMusElementAt( coords, v );
+				if (_insertMusElement==CAMusElement::Rest)
+					_insertMusElement=CAMusElement::Note;
+				
 				break;
 			}
 		}
@@ -508,19 +514,21 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			
 			if ( left && (left->musElement()->musElementType() == CAMusElement::Note) && (left->xPos() <= coords.x()) && (left->width() + left->xPos() >= coords.x()) ) {
 				//user clicked inside x borders of the note - add a note to the chord
-				if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart() ))
-					break;	//user clicked on an already placed note - return and do nothing
+				if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart() ) ||
+				    ((CANote*)left->musElement())->noteLength()!=_insertPlayableLength
+				   )
+					break;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
 				
-				newElt = new CANote(_insertNote,
+				newElt = new CANote(_insertPlayableLength,
 			                  voice,
 			                  drawableStaff->calculatePitch(coords.x(), coords.y()),
 			                  0,
 			                  (left->musElement()->timeStart())
 			                 );
-				voice->addNoteToChord((CANote*)newElt, (CANote*)left->musElement());
+				success = voice->addNoteToChord((CANote*)newElt, (CANote*)left->musElement());
 			} else {
 				//user clicked outside x borders of the note - add a new note
-				newElt = new CANote(_insertNote,
+				newElt = new CANote(_insertPlayableLength,
 			                  staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
 			                  drawableStaff->calculatePitch(coords.x(), coords.y()),
 			                  0,
@@ -528,6 +536,25 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			                 );
 				success = voice->insertMusElementAfter(newElt, left?left->musElement():0);
 			}
+			break;
+		}
+		case CAMusElement::Rest: {
+			drawableStaff = (CADrawableStaff*)context;
+			staff = drawableStaff->staff();
+			CAVoice *voice = staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 );
+			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y(), voice);
+			
+			if ( (!context) ||
+			     (context->context()->contextType() != CAContext::Staff) )
+				return;
+			
+			newElt = new CARest(_insertPlayableLength,
+		                  staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
+		                  (left?left->musElement()->timeEnd():0),
+		                  CARest::Normal
+		                 );
+			success = voice->insertMusElementAfter(newElt, left?left->musElement():0);
+
 			break;
 		}
 	}
@@ -865,11 +892,11 @@ void CAMainWin::sl_mpoVoiceNum_valChanged(int iVoice)
 void CAMainWin::on_actionNoteSelect_toggled(bool bOn)
 {
 	// Read currently selected entry from tool button menu
-	enum CANote::CANoteLength eElem = (CANote::CANoteLength)
+	enum CAPlayable::CAPlayableLength eElem = (CAPlayable::CAPlayableLength)
 	  mpoMEToolBar->toolElemValue( mpoNoteMenu->objectName() ).toInt();
 	_insertMusElement = CAMusElement::Note;
 	// New note length type
-	_insertNote       = eElem;
+	_insertPlayableLength = eElem;
 	printf("Note Input switched: On %d Note %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )

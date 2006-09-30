@@ -13,13 +13,10 @@
 #include "drawable/drawablekeysignature.h"
 #include "drawable/drawabletimesignature.h"
 
-#include "core/staff.h"
 #include "core/note.h"
 #include "core/clef.h"
 #include "core/keysignature.h"
 #include "core/timesignature.h"
-
-#define _lineSpace (staff()->numberOfLines()?(float)_height/(staff()->numberOfLines()-1):0)
 
 CADrawableStaff::CADrawableStaff(CAStaff *s, int x, int y) : CADrawableContext(s, x, y) {
 	_drawableContextType = CADrawableContext::DrawableStaff;
@@ -50,7 +47,7 @@ CADrawableStaff *CADrawableStaff::clone() {
 int CADrawableStaff::calculateCenterYCoord(int pitch, CAClef *clef) {
 	return (int)( yPos() + height() -
 	               //middle c in logical pitch is 28
-	               ((pitch - 28) + (clef?clef->c1():-2) + 0.0)*(_lineSpace/2)
+	               ((pitch - 28) + (clef?clef->c1():-2) + 0.0)*(lineSpace()/2)
 	            );
 }
 
@@ -69,19 +66,19 @@ int CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
 }
 
 int CADrawableStaff::calculateCenterYCoord(int y) {
-	float newY = (y - yPos()) / (_lineSpace/2);
+	float newY = (y - yPos()) / (lineSpace()/2);
 	newY += 0.5*((y-yPos()<0)?-1:1);	//round
 	newY = (float)((int)newY);	// "
 
-	return (int)(yPos() + ((newY) * (_lineSpace/2)));
+	return (int)(yPos() + ((newY) * (lineSpace()/2)));
 }
 
 int CADrawableStaff::calculatePitch(int x, int y) {
 	CAClef *clef = getClef(x);
-	float yC1 = yPos() + height() - (clef?clef->c1():-2)*(_lineSpace/2); //Y coordinate of c1 of the current staff
+	float yC1 = yPos() + height() - (clef?clef->c1():-2)*(lineSpace()/2); //Y coordinate of c1 of the current staff
 
 	//middle c = 28
-	return (int)(28 - (y - yC1)/(_lineSpace/2) + 0.5);
+	return (int)(28 - (y - yC1)/(lineSpace()/2) + 0.5);
 }
 
 void CADrawableStaff::addClef(CADrawableClef *clef) {
@@ -144,7 +141,7 @@ int CADrawableStaff::calculateHighestCenterYCoord(int pitch, int x) {
 	while ((line + pitch + 7) < (staff()->numberOfLines()*2))	//while the height still doesn't reach the upper ledger lines
 		line += 7;
 	
-	return (int)(yPos() + height() - (_lineSpace/2) * (line+pitch));
+	return (int)(yPos() + height() - (lineSpace()/2) * (line+pitch));
 }
 
 int CADrawableStaff::calculateLowestCenterYCoord(int pitch, int x) {
@@ -156,5 +153,5 @@ int CADrawableStaff::calculateLowestCenterYCoord(int pitch, int x) {
 	while ((line + pitch - 7) > -2)	//while the depth still doesn't reach the lower ledger lines
 		line -= 7;
 	
-	return (int)(yPos() + height() - (_lineSpace/2) * (line+pitch));
+	return (int)(yPos() + height() - (lineSpace()/2) * (line+pitch));
 }

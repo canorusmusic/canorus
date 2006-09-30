@@ -27,13 +27,9 @@ class CAClef : public CAMusElement {
 		};
 
 		CAClef(CAClefType type, CAStaff *staff, int time);
+		CAClef *clone();
 		
-		/**
-		 * This is an overloaded member function provided for convenience.
-		 * 
-		 * Constructor using the ML arguments.
-		 */ 
-		CAClef(const char* type, CAStaff *staff, int time); //TODO: Same constructors with above for Swig - changed QString to char*
+		CAClef(QString type, CAStaff *staff, int time);
 		
 		CAClefType clefType();
 		const QString clefTypeML();

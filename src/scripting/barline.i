@@ -27,7 +27,8 @@ class CABarline : public CAMusElement{
 		
 		CABarline(CABarlineType type, CAStaff *staff, int startTime);
 		
-		CABarlineType barlineType();
-		
 		~CABarline();
+		
+		CABarlineType barlineType();
+		CABarline *clone();
 };

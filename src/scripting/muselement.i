@@ -17,6 +17,7 @@
 class CAMusElement {
 	public:
 		CAMusElement(CAContext *context, int time, int length=0);
+		virtual CAMusElement* clone()=0;
 		~CAMusElement();
 		
 		/**

@@ -1,4 +1,4 @@
-/** @file barline.cpp
+/** @file core/barline.cpp
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -16,4 +16,8 @@ CABarline::CABarline(CABarlineType type, CAStaff *staff, int startTime)
 }
 
 CABarline::~CABarline() {
+}
+
+CABarline* CABarline::clone() {
+	return new CABarline(_barlineType, (CAStaff*)_context, _timeStart);
 }

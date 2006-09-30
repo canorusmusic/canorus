@@ -18,6 +18,7 @@
 #include "core/staff.h"
 #include "core/voice.h"
 #include "core/note.h"
+#include "core/rest.h"
 #include "core/clef.h"
 #include "core/muselement.h"
 #include "core/keysignature.h"
@@ -106,7 +107,7 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 	int lastNotePitch = 28;
 	int firstNotePitchInChord;
 	int curStreamTime = 0;
-	QString lastNoteLength = "";
+	QString lastPlayableLength = "";
 	
 	for (int i=0; i<v->musElementCount(); i++, voiceString += " ") {
 		//(CAMusElement)
@@ -175,23 +176,44 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 					delta += 7;
 				}
 				
-				if (lastNoteLength != note->lengthML())
+				if (lastPlayableLength != note->lengthML())
 					voiceString += note->lengthML();
 				
 				lastNotePitch = note->pitch();
-				lastNoteLength = note->lengthML();
+				lastPlayableLength = note->lengthML();
 				
+				//finish the chord stanza if that's the last note of the chord
 				if (note->isPartOfTheChord() && note->isLastInTheChord()) {
 					voiceString += "</chord>";
 					lastNotePitch = firstNotePitchInChord;
 				}
 				
-				curStreamTime += note->timeLength();
+				//add to the stream time, if the note is not part of the chord or is the last one in the chord
+				if (!note->isPartOfTheChord() ||
+				    (note->isPartOfTheChord() && note->isLastInTheChord()) )
+					curStreamTime += note->timeLength();
+				
+				break;
+			}
+			case CAMusElement::Rest: {
+				//CARest
+				CARest *rest = (CARest*)v->musElementAt(i);
+				if (rest->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
+				
+				voiceString += rest->restTypeML();
+				
+				if (lastPlayableLength!=rest->lengthML())
+					voiceString += rest->lengthML();
+
+				lastPlayableLength = rest->lengthML();
+				curStreamTime += rest->timeLength();
+				
+				break;
 			}
 		}
 	}
 	
-	voiceString.truncate(voiceString.length()-1);	//remove the trailing blank
+	voiceString.truncate(voiceString.length()-1);	//remove the trailing blank at the end of the voice
 	return voiceString;
 }
 
@@ -369,12 +391,12 @@ bool CACanorusML::characters(const QString& ch) {
 bool CACanorusML::readMusElements(QString string) {
 	string = string.simplified().toUpper();	//remove weirs whitespaces throughout the string and replace them by a single blank
 	for (int eltIdx=0; string.size(); eltIdx++) {
-		int idx2 = string.indexOf(" ");	//find the index of the next note
+		int idx2 = string.indexOf(" ");	//find the index of the next music element
 		if (idx2==-1)
 			idx2 = string.size();
 		
-		//CANote
 		if (QString(string[0]).contains(QRegExp("[A-G]"))) {	//if the first char is [A-G] letter, it's always the note pitch
+			//CANote
 			int curPitch;
 			int curLength;
 			signed char curAccs = 0;
@@ -413,25 +435,37 @@ bool CACanorusML::readMusElements(QString string) {
 			//determine note length
 			int lIdx = string.indexOf(QRegExp("[0-9]"));
 			if ((lIdx == -1) || (lIdx > idx2)) {
-				curLength = _curVoice->lastNoteLength();
+				curLength = _curVoice->lastPlayableLength();
 				if (curLength==-1)
-					curLength=CANote::Quarter;
+					curLength=CAPlayable::Quarter;
 			} else {
 				curLength = string.mid(lIdx,idx2-lIdx).toInt();
 			}
 			
 			CANote *note;
 			if (_depth.last()!="chord" || eltIdx==0) //the note is not part of the chord or is the first note in the chord
-				note = new CANote((CANote::CANoteLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeEnd());
+				note = new CANote((CAPlayable::CAPlayableLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeEnd());
 			else	//the note is part of the already built chord
-				note = new CANote((CANote::CANoteLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeStart());
+				note = new CANote((CAPlayable::CAPlayableLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeStart());
 			
 			_curVoice->insertMusElement(note);
-		} else
+		} else if (string[0]=='R' || string[0]=='S') {
+			//CARest
+			int lIdx = string.indexOf(QRegExp("[0-9]"));
+			int length;
+			
+			if ((lIdx == -1) || (lIdx > idx2)) {
+				length = _curVoice->lastPlayableLength();
+				if (length==-1)
+					length=CAPlayable::Quarter;
+			} else
+				length = string.mid(lIdx,idx2-lIdx).toInt();
+
+			_curVoice->insertMusElement(new CARest((CAPlayable::CAPlayableLength)length, _curVoice, _curVoice->lastTimeEnd(), (string[0]=='R'?CARest::Normal:CARest::Hidden)));
+		} else if (string[0]=='|') {
 			//CABarline
-			if (string[0]=='|') {
-				_curVoice->insertMusElement(new CABarline(CABarline::Single, (CAStaff*)_curContext, _curVoice->lastTimeEnd()));
-			}
+			_curVoice->insertMusElement(new CABarline(CABarline::Single, (CAStaff*)_curContext, _curVoice->lastTimeEnd()));
+		}
 		
 		string = string.remove(0, idx2+1);
 	}
