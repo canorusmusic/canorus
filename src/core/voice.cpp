@@ -95,13 +95,14 @@ bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, 
 	
 	int i;
 	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != eltBefore); i++);
-	if (i==_musElementList.size())
+	if (i==_musElementList.size()) {
 		if (!force)
 			return false;
 		else {
 			int endTime = eltBefore->timeEnd();
 			for (i=0; (i<_musElementList.size()) && (_musElementList[i]->timeStart() < endTime); i++);
 			_musElementList.insert(i, elt);
+		}
 	} else {
 		if (_musElementList[i]->musElementType()==CAMusElement::Note &&	//a small check to see if a user wanted to insert an element after a chord, but selected a note in the middle of a chord (not the lowest one)
 		    ((CANote*)_musElementList[i])->isPartOfTheChord() &&
@@ -109,11 +110,11 @@ bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, 
 			i = _musElementList.indexOf(((CANote*)_musElementList[i])->chord().back());
 		}
 		
-		_musElementList.insert(i+1, elt);
+		_musElementList.insert(++i, elt);
 	}
 	
 	if (updateT)
-		updateTimes(i+1);
+		updateTimes(i);
 	
 	return true;
 }
