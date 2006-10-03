@@ -519,19 +519,21 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				   )
 					break;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
 				
+				int pitch;
 				newElt = new CANote(_insertPlayableLength,
 			                  voice,
-			                  drawableStaff->calculatePitch(coords.x(), coords.y()),
-			                  0,
+			                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
+			                  drawableStaff->getKeySignature(coords.x())->accidentals()[pitch%7],
 			                  (left->musElement()->timeStart())
 			                 );
 				success = voice->addNoteToChord((CANote*)newElt, (CANote*)left->musElement());
 			} else {
 				//user clicked outside x borders of the note - add a new note
+				int pitch;
 				newElt = new CANote(_insertPlayableLength,
 			                  staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
-			                  drawableStaff->calculatePitch(coords.x(), coords.y()),
-			                  0,
+			                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
+			                  drawableStaff->getKeySignature(coords.x())->accidentals()[pitch%7],
 			                  (left?left->musElement()->timeEnd():0)
 			                 );
 				success = voice->insertMusElementAfter(newElt, left?left->musElement():0);
