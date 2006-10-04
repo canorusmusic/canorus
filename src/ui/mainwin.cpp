@@ -512,6 +512,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			//did a user click on the note or before/after it? In first case, add a note to a chord, in latter case, insert a new note.
 			CADrawableMusElement *followingNote;
 			
+			CAKeySignature *keySig = drawableStaff->getKeySignature(coords.x());
+			
 			if ( left && (left->musElement()->musElementType() == CAMusElement::Note) && (left->xPos() <= coords.x()) && (left->width() + left->xPos() >= coords.x()) ) {
 				//user clicked inside x borders of the note - add a note to the chord
 				if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart() ) ||
@@ -523,7 +525,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				newElt = new CANote(_insertPlayableLength,
 			                  voice,
 			                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			                  drawableStaff->getKeySignature(coords.x())->accidentals()[pitch%7],
+			                  (keySig?keySig->accidentals()[pitch%7]:0),
 			                  (left->musElement()->timeStart())
 			                 );
 				success = voice->addNoteToChord((CANote*)newElt, (CANote*)left->musElement());
@@ -533,7 +535,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				newElt = new CANote(_insertPlayableLength,
 			                  staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
 			                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			                  drawableStaff->getKeySignature(coords.x())->accidentals()[pitch%7],
+			                  (keySig?keySig->accidentals()[pitch%7]:0),
 			                  (left?left->musElement()->timeEnd():0)
 			                 );
 				success = voice->insertMusElementAfter(newElt, left?left->musElement():0);
