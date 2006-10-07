@@ -50,4 +50,6 @@ class CANote : public CAPlayable {
 		QList<CANote*> chord();
 		
 		static const QString generateNoteName(int pitch);
+
+		int compare(CAMusElement *elt);
 };

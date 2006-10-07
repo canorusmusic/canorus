@@ -152,3 +152,17 @@ const QString CAKeySignature::diatonicGenderML() {
 	
 	return QString();
 }
+
+int CAKeySignature::compare(CAMusElement *elt) {
+	if (elt->musElementType()!=CAMusElement::KeySignature)
+		return -1;
+	
+	int diffs=0;
+	if (_keySignatureType!=((CAKeySignature*)elt)->keySignatureType()) diffs++;
+	else {
+		if (_diatonicGender!=((CAKeySignature*)elt)->diatonicGender()) diffs++;
+		if (numberOfAccidentals()!=((CAKeySignature*)elt)->numberOfAccidentals()) diffs++;
+	}
+	
+	return diffs;
+}

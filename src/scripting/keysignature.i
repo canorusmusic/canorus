@@ -116,4 +116,6 @@ class CAKeySignature : public CAMusElement {
 		 * @return Pointer to the array of levels in the scale.
 		 */ 
 		signed char *accidentals();
+
+		int compare(CAMusElement *elt);
 };

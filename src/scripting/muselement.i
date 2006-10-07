@@ -96,5 +96,6 @@ class CAMusElement {
 		bool isPlayable();
 		        
 		const QString name();
+		virtual int compare(CAMusElement *elt)=0;
 };
 

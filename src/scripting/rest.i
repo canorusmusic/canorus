@@ -30,4 +30,5 @@ class CARest : public CAPlayable {
 		const QString restTypeML();
 		
 		CARestType restType() { return _restType; }
+		int compare(CAMusElement *elt);
 };

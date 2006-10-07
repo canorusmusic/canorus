@@ -21,3 +21,13 @@ CABarline::~CABarline() {
 CABarline* CABarline::clone() {
 	return new CABarline(_barlineType, (CAStaff*)_context, _timeStart);
 }
+
+int CABarline::compare(CAMusElement *elt) {
+	if (elt->musElementType()!=CAMusElement::Barline)
+		return -1;
+	
+	int diffs=0;
+	if (_barlineType!=((CABarline*)elt)->barlineType()) diffs++;
+	
+	return diffs;
+}

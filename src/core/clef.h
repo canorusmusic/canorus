@@ -41,6 +41,7 @@ class CAClef : public CAMusElement {
 		const QString clefTypeML();
 		const int c1() { return _c1; }
 		const int centerPitch() { return _centerPitch; }
+		int compare(CAMusElement *elt);
 		
 	private:
 		CAClefType _clefType;

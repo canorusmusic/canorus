@@ -31,4 +31,5 @@ class CABarline : public CAMusElement{
 		
 		CABarlineType barlineType();
 		CABarline *clone();
+		int compare(CAMusElement *elt);
 };

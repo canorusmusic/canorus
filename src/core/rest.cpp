@@ -102,3 +102,14 @@ const QString CARest::lengthML() {
 	
 	return length;
 }
+
+int CARest::compare(CAMusElement *elt) {
+	if (elt->musElementType()!=CAMusElement::Rest)
+		return -1;
+	
+	int diffs=0;
+	if (_playableLength!=((CAPlayable*)elt)->playableLength()) diffs++;
+	if (timeLength()!=((CAPlayable*)elt)->timeLength()) diffs++;
+	
+	return diffs;
+}

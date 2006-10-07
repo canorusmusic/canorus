@@ -35,4 +35,5 @@ class CAClef : public CAMusElement {
 		const QString clefTypeML();
 		const int c1();
 		const int centerPitch();
+		int compare(CAMusElement *elt);
 };

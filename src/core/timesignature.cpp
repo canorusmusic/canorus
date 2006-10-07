@@ -63,3 +63,15 @@ const QString CATimeSignature::timeSignatureTypeML() {
 			break;		
 	}
 }
+
+int CATimeSignature::compare(CAMusElement *elt) {
+	if (elt->musElementType()!=CAMusElement::TimeSignature)
+		return -1;
+	
+	int diffs=0;
+	if (_timeSignatureType!=((CATimeSignature*)elt)->timeSignatureType()) diffs++;
+	if (_beat!=((CATimeSignature*)elt)->beat()) diffs++;
+	if (_beats!=((CATimeSignature*)elt)->beats()) diffs++;
+	
+	return diffs;
+}

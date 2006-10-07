@@ -30,6 +30,7 @@ class CABarline : public CAMusElement{
 		
 		CABarlineType barlineType() { return _barlineType; }
 		CABarline *clone();
+		int compare(CAMusElement* elt);
 	
 	private:
 		CABarlineType _barlineType;
