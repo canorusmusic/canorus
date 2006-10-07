@@ -295,7 +295,9 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		_errorMsg = "The document doesn't exist yet!";
 		return false;
 	}
-
+	
+	//Every voice *must* contain signs on their own (eg. a clef is placed in all voices, not just the first one).
+	//The following code finds a sign with the same properties at the same time in other voices. If such a sign exists, only place a pointer to this sign in the current voice. Otherwise, add a sign to all the voices read so far.
 	if (qName == "clef") {
 		//CAClef
 		if (!_curContext) {
@@ -310,17 +312,26 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		//lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts;
-		if ( (foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Clef, _curVoice->lastTimeEnd())).isEmpty() ) {
+		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Clef, _curVoice->lastTimeEnd());
+		CAMusElement *sign=0;
+		CAClef *clef = new CAClef(_cha, _curVoice->staff(), _curVoice->lastTimeEnd());
+		for (int i=0; i<foundElts.size(); i++) {
+			if (!foundElts[i]->compare(clef))	//element has exactly the same properties
+				if (!_curVoice->contains(foundElts[i]))	{ //element isn't present in the voice yet
+					sign = foundElts[i];
+					break;
+				}
+		}
+			
+		if (!sign) {
 			//the element doesn't exist yet - add it
-			CAClef *clef = new CAClef(_cha, _curVoice->staff(), _curVoice->lastTimeEnd());
-			_curVoice->insertMusElement(clef);
+			_curVoice->staff()->insertSignAfter(clef, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
 		} else {
 			//the element was found, insert only a reference to the current voice
-			int i;
-			for (i=0; i<foundElts.size() && !_curVoice->contains(foundElts[i]); i++);
-			_curVoice->insertMusElement(foundElts[i-1]);
-		}	
+			_curVoice->appendMusElement(sign);
+			delete clef;
+		}
+		_cha="";
 	} else if (qName == "key") {
 		//CAKeySignature
 		if (!_curContext) {
@@ -335,16 +346,24 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		//lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts;
-		if ( (foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::KeySignature, _curVoice->lastTimeEnd())).isEmpty() ) {
+		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::KeySignature, _curVoice->lastTimeEnd());
+		CAMusElement *sign=0;
+		CAKeySignature *key = new CAKeySignature(_cha, _diatonicGender, _curVoice->staff(), _curVoice->lastTimeEnd());
+		for (int i=0; i<foundElts.size(); i++) {
+			if (!foundElts[i]->compare(key))	//element has exactly the same properties
+				if (!_curVoice->contains(foundElts[i]))	{ //element isn't present in the voice yet
+					sign = foundElts[i];
+					break;
+				}
+		}
+			
+		if (!sign) {
 			//the element doesn't exist yet - add it
-			CAKeySignature *keySig = new CAKeySignature(_cha, _diatonicGender, _curVoice->staff(), _curVoice->lastTimeEnd());
-			_curVoice->insertMusElement(keySig);
+			_curVoice->staff()->insertSignAfter(key, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
 		} else {
 			//the element was found, insert only a reference to the current voice
-			int i;
-			for (i=0; i<foundElts.size() && !_curVoice->contains(foundElts[i]); i++);
-			_curVoice->insertMusElement(foundElts[i-1]);
+			_curVoice->appendMusElement(sign);
+			delete key;
 		}
 		_diatonicGender="";
 		_cha="";
@@ -362,16 +381,24 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		//lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts;
-		if ( (foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::TimeSignature, _curVoice->lastTimeEnd())).isEmpty() ) {
+		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::TimeSignature, _curVoice->lastTimeEnd());
+		CAMusElement *sign=0;
+		CATimeSignature *time = new CATimeSignature(_cha, _curVoice->staff(), _curVoice->lastTimeEnd(), _timeSignatureType);
+		for (int i=0; i<foundElts.size(); i++) {
+			if (!foundElts[i]->compare(time))	//element has exactly the same properties
+				if (!_curVoice->contains(foundElts[i]))	{ //element isn't present in the voice yet
+					sign = foundElts[i];
+					break;
+				}
+		}
+			
+		if (!sign) {
 			//the element doesn't exist yet - add it
-			CATimeSignature *time = new CATimeSignature(_cha, _curVoice->staff(), _curVoice->lastTimeEnd(), _timeSignatureType);
-			_curVoice->insertMusElement(time);
+			_curVoice->staff()->insertSignAfter(time, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
 		} else {
 			//the element was found, insert only a reference to the current voice
-			int i;
-			for (i=0; i<foundElts.size() && !_curVoice->contains(foundElts[i]); i++);
-			_curVoice->insertMusElement(foundElts[i-1]);
+			_curVoice->appendMusElement(sign);
+			delete time;
 		}
 		_cha="";
 	}

@@ -99,6 +99,14 @@ class CAMusElement {
 		 * @return True, if the current element inherits CAPlayable class, false otherwise.
 		 */
 		bool isPlayable() { return _playable; }
+		
+		/**
+		 * Compare the given music element with this one.
+		 * 
+		 * @param elt Pointer to the music element to compare with.
+		 * @return Return -1, if the music elements are of different types. Return 0 if the music elements match. Otherwise, return a number of attributes where music elements differ.
+		 */
+		virtual int compare(CAMusElement *elt) = 0;
 
 	protected:
 		CAMusElementType _musElementType;	///Stores the type of the music element. See CAMusElement::enum CAMusElementType for details.

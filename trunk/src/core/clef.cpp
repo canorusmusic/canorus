@@ -35,7 +35,6 @@ CAClef::CAClef(CAClefType type, CAStaff *staff, int time) : CAMusElement(staff, 
 			_centerPitch = 28;
 			break;
 	}
-	_playable = false;
 }
 
 CAClef::CAClef(const QString type, CAStaff *staff, int time) : CAMusElement(staff, time) {
@@ -106,4 +105,14 @@ const QString CAClef::clefTypeML() {
 	}
 	
 	return type;
+}
+
+int CAClef::compare(CAMusElement *elt) {
+	if (elt->musElementType()!=CAMusElement::Clef)
+		return -1;
+	
+	int diffs=0;
+	if (_clefType!=((CAClef*)elt)->clefType()) diffs++;
+		
+	return diffs;
 }

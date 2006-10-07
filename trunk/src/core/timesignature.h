@@ -46,6 +46,8 @@ class CATimeSignature : public CAMusElement {
 		const QString timeSignatureML() { return (QString::number(_beats) + "/" + QString::number(_beat)); }
 		const QString timeSignatureTypeML(); 
 		
+		int compare(CAMusElement *elt);
+		
 	private:
 		int _beats;
 		int _beat;

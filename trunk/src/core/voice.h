@@ -1,4 +1,4 @@
-/** @file voice.h
+/** @file core/voice.h
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -56,6 +56,14 @@ class CAVoice {
 		bool insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateTimes = true, bool force=false);
 		
 		/**
+		 * Add a music element to the end
+		 * 
+		 * @param elt Pointer to the music element to be added.
+		 * @return True, if music element as successfully added, False otherwise.
+		 */
+		bool appendMusElement(CAMusElement *elt) { return insertMusElementAfter(elt, 0, false, false); }
+		
+		/**
 		 * Add a note to an already existing chord or a single note and create a chord out of it.
 		 * Notes in a chord always need to be sorted by the pitch falling.
 		 * 
@@ -105,6 +113,7 @@ class CAVoice {
 		QList<CAMusElement*> *musElementList() { return &_musElementList; }	///Return the list of music elements
 		int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
 		int lastTimeStart() { return (_musElementList.size()?_musElementList.back()->timeStart():0); }
+		CAMusElement *lastMusElement() { return _musElementList.back(); }
 		
 		/**
 		 * Return the pitch of the last note in the voice (default) or of the first note in the last chord.

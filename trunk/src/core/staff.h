@@ -95,7 +95,7 @@ class CAStaff : public CAContext {
 		 * 
 		 * @param sign Pointer to the already created CAMusElement object about to be added.
 		 * @param eltBefore The music element after which the sign should be inserted. The element should be present in all voices! If eltBefore is 0, append the sign to the voices.
-		 * @param force If the eltBefore isn't found in certain voices, find a nearest time equivalent in the voice and place it before it.
+		 * @param force If the eltBefore isn't found in certain voices, find a nearest time equivalent in the voice and place it after it.
 		 * @return True, if a sign was inserted/appended, false if the eltAfter wasn't found.
 		 */
 		bool insertSignAfter(CAMusElement *sign, CAMusElement *eltBefore, bool force=false);

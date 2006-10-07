@@ -198,3 +198,18 @@ QList<CANote*> CANote::chord() {
 	
 	return list;
 }
+
+int CANote::compare(CAMusElement *elt) {
+	if (elt->musElementType()!=CAMusElement::Note)
+		return -1;
+	
+	int diffs=0;
+	if ((_pitch!=((CANote*)elt)->pitch()) ||
+	(_accs!=((CANote*)elt)->accs())) diffs++;
+	if (_playableLength!=((CAPlayable*)elt)->playableLength()) diffs++;
+	if (_midiPitch!=((CANote*)elt)->midiPitch()) diffs++;
+	if (_midiLength!=((CANote*)elt)->midiLength()) diffs++;
+	if (timeLength()!=((CANote*)elt)->timeLength()) diffs++;
+	
+	return diffs;
+}

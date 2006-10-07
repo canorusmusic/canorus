@@ -44,4 +44,5 @@ class CATimeSignature : public CAMusElement {
 		CATimeSignatureType timeSignatureType();
 		const QString timeSignatureML();
 		const QString timeSignatureTypeML(); 
+		int compare(CAMusElement *elt);
 };
