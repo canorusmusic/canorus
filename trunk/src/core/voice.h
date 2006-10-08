@@ -28,8 +28,9 @@ class CAVoice {
 		 * WARNING: If you're inserting signs like barlines, clefs, time signatures etc. use CAStaff::insertSign(), because the mentioned signs MUST be present in *all* voices. Use manually this method only if you know what you're doing. -Matevz
 		 * 
 		 * @param elt Pointer to CAMusElement to be inserted.
+		 * @param updateTimes Should the following elements' start times be increased by the inserted note length. This is false when adding a note to a chord.
 		 */
-		void insertMusElement(CAMusElement *elt);
+		void insertMusElement(CAMusElement *elt, bool updateTimes=true);
 		
 		/**
 		 * Insert the CAMusElement right before the given CAMusElement.
@@ -38,7 +39,7 @@ class CAVoice {
 		 * @param elt Pointer to CAMusElement to be inserted.
 		 * @param eltAfter Pointer to CAMusElement the given element should be inserted before. If eltAfter is 0, append the music element to the voice.
 		 * @param updateTimes Should the following elements' start times be increased by the inserted note length. This is false when adding a note to a chord. 
-		 * @param force If the eltBefore isn't found in certain voices, find a nearest time equivalent in the voice and place it before it.
+		 * @param force If the eltBefore isn't found, find a nearest time equivalent in the voice and place it before it.
 		 * @return True, if eltAfter was found and the elt was inserted/appended, otherwise false.
 		 */
 		bool insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateTimes = true, bool force=false);
@@ -50,7 +51,7 @@ class CAVoice {
 		 * @param elt Pointer to CAMusElement to be inserted.
 		 * @param eltBefore Pointer to CAMusElement the given element should be inserted after. If eltBefore is 0, append the music element to the voice.
 		 * @param updateTimes Should the following elements' start times be increased by the inserted note length. This is false when adding a note to a chord.
-		 * @param force If the eltBefore isn't found in certain voices, find a nearest time equivalent in the voice and place it before it.
+		 * @param force If the eltBefore isn't found, find a nearest time equivalent in the voice and place it before it.
 		 * @return True, if eltAfter was found and the elt was inserted/appended, otherwise false.
 		 */
 		bool insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateTimes = true, bool force=false);
@@ -114,6 +115,8 @@ class CAVoice {
 		int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
 		int lastTimeStart() { return (_musElementList.size()?_musElementList.back()->timeStart():0); }
 		CAMusElement *lastMusElement() { return _musElementList.back(); }
+		CAMusElement *eltBefore(CAMusElement *elt);
+		CAMusElement *eltAfter(CAMusElement *elt);
 		
 		/**
 		 * Return the pitch of the last note in the voice (default) or of the first note in the last chord.

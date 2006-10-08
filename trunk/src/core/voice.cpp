@@ -28,15 +28,16 @@ void CAVoice::clear() {
 	_musElementList.clear();
 }
 
-void CAVoice::insertMusElement(CAMusElement *elt) {
+void CAVoice::insertMusElement(CAMusElement *elt, bool updateT) {
 	int i;
 	for (i=0;
-	     (i < _musElementList.size()) && (_musElementList[i]->timeStart() <= elt->timeStart());
+	     (i < _musElementList.size()) && (_musElementList[i]->timeEnd() <= elt->timeStart());
 	     i++);
 	
 	_musElementList.insert(i, elt);
 	
-	updateTimes(i);
+	if (updateT)
+		updateTimes(i);
 }
 
 bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
@@ -70,7 +71,7 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, 
 		else {
 			int endTime = eltAfter->timeEnd();
 			for (i=0; (i<_musElementList.size()) && (_musElementList[i]->timeStart() < endTime); i++);
-		_musElementList.insert(i, elt);
+			_musElementList.insert(i, elt);
 	} else {
 		if (_musElementList[i]->musElementType()==CAMusElement::Note &&	//a small check to see if a user wanted to insert an element after a chord, but selected a note in the middle of a chord (not the lowest one)
 		    ((CANote*)_musElementList[i])->isPartOfTheChord() &&
@@ -216,4 +217,25 @@ QList<CAMusElement*> CAVoice::getEltByType(CAMusElement::CAMusElementType type, 
 	}
 	
 	return eltList;
+}
+
+CAMusElement *CAVoice::eltBefore(CAMusElement *elt) {
+	int idx = _musElementList.indexOf(elt);
+	
+	if (--idx<0) //if the element wasn't found or was the first element
+		return 0;
+	
+	return _musElementList[idx];
+}
+
+CAMusElement *CAVoice::eltAfter(CAMusElement *elt) {
+	int idx = _musElementList.indexOf(elt);
+	
+	if (idx==-1) //the element wasn't found
+		return 0;
+	
+	if (++idx==_musElementList.size())	//last element in the list
+		return 0;
+	
+	return _musElementList[idx];
 }

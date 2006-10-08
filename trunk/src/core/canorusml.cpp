@@ -99,6 +99,13 @@ void CACanorusML::openDocument(QXmlInputSource* in, CADocument *doc, CAMainWin *
 	reader.setContentHandler(canHandler);
 	reader.parse(in);
 	
+	//fix voice errors
+	for (int i=0; i<doc->sheetCount(); i++) {
+		for (int j=0; j<doc->sheetAt(i)->staffCount(); j++) {
+			doc->sheetAt(i)->staffAt(j)->fixVoiceErrors();
+		}
+	}
+	
 	delete canHandler;
 }
 
@@ -491,7 +498,26 @@ bool CACanorusML::readMusElements(QString string) {
 			_curVoice->insertMusElement(new CARest((CAPlayable::CAPlayableLength)length, _curVoice, _curVoice->lastTimeEnd(), (string[0]=='R'?CARest::Normal:CARest::Hidden)));
 		} else if (string[0]=='|') {
 			//CABarline
-			_curVoice->insertMusElement(new CABarline(CABarline::Single, (CAStaff*)_curContext, _curVoice->lastTimeEnd()));
+			//lookup an element with the same type at the same time
+			QList<CAMusElement*> foundElts = _curVoice->staff()->getEltByType(CAMusElement::Barline, _curVoice->lastTimeEnd());
+			CAMusElement *sign=0;
+			CABarline *bar = new CABarline(CABarline::Single, _curVoice->staff(), _curVoice->lastTimeEnd());
+			for (int i=0; i<foundElts.size(); i++) {
+				if (!foundElts[i]->compare(bar))	//element has exactly the same properties
+					if (!_curVoice->contains(foundElts[i]))	{ //element isn't present in the voice yet
+						sign = foundElts[i];
+						break;
+					}
+			}
+			
+			if (!sign) {
+				//the element doesn't exist yet - add it
+				_curVoice->staff()->insertSignAfter(bar, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
+			} else {
+				//the element was found, insert only a reference to the current voice
+				_curVoice->appendMusElement(sign);
+				delete bar;
+			}
 		}
 		
 		string = string.remove(0, idx2+1);

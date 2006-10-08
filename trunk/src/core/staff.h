@@ -122,6 +122,13 @@ class CAStaff : public CAContext {
 		 */
 		QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
 		
+		/**
+		 * Check and fix, if any of the voices include signs (key sigs, clefs etc.) which aren't present in other voices.
+		 * 
+		 * @return True, if everything is ok. False, if fixes were needed.
+		 */
+		bool fixVoiceErrors();
+		
 		void setName(QString name) { _name = name; }
 		QString name() { return _name; }
 		
