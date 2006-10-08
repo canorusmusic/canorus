@@ -120,7 +120,7 @@ int CADrawableStaff::getAccs(int x, int pitch) {
 	    _drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableKeySignature)
 		return (key?key->accidentals()[pitch%7]:0);
 	else //note before
-		return ((CANote*)_drawableMusElementList[i]->musElement())->accs();
+		return ((CANote*)_drawableMusElementList[i]->musElement())->accidentals();
 }
 
 void CADrawableStaff::addKeySignature(CADrawableKeySignature *keySig) {

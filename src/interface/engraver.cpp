@@ -19,6 +19,7 @@
 #include "drawable/drawablekeysignature.h"
 #include "drawable/drawabletimesignature.h"
 #include "drawable/drawablebarline.h"
+#include "drawable/drawableaccidental.h"
 
 #include "core/sheet.h"
 #include "core/staff.h"
@@ -192,6 +193,50 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		if (placedSymbol)	//always start adding notes cleanly 
 			continue;
 		
+		//place accidentals
+		int accMaxWidth=0;
+		CADrawableAccidental* noteAccs[streams];
+		for (int i=0; i < streams; i++) {
+			//loop until the element has come, which has bigger timeStart
+			CADrawableMusElement *newElt=0;
+			int oldStreamIdx = streamsIdx[i];
+			while ( (streamsIdx[i] < musStreamList[i]->size()) &&
+			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
+			        (elt->isPlayable())
+			      ) {
+				drawableContext = drawableContextMap[elt->context()];
+				
+				if (elt->musElementType()==CAMusElement::Note &&
+				    ((CADrawableStaff*)drawableContext)->getAccs(streamsX[i], ((CANote*)elt)->pitch()) != ((CANote*)elt)->accidentals()
+				   ) {
+						newElt = new CADrawableAccidental(
+							((CANote*)elt)->accidentals(),
+							0,	//do not set the logical part as it gets selected by score viewport otherwise
+							((CADrawableStaff*)drawableContext),
+							streamsX[i],
+							((CADrawableStaff*)drawableContext)->calculateCenterYCoord((CANote*)elt, lastClef[i])
+						);
+
+						v->addMElement(newElt);
+						noteAccs[i] = (CADrawableAccidental*)newElt;
+						if (newElt->neededWidth() > accMaxWidth)
+							accMaxWidth = newElt->neededWidth();
+				}
+				
+				streamsIdx[i] = streamsIdx[i] + 1;
+			}
+			streamsIdx[i] = oldStreamIdx;
+			
+			streamsX[i] += (accMaxWidth?accMaxWidth+1:0);	//append the needed space for the last used note
+		}
+		
+		//Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
+		if (placedSymbol) {
+			for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+			for (int i=0; i<streams; i++) streamsX[i] = maxX;
+		}
+		
+		//place noteheads
 		for (int i=0; i < streams; i++) {
 			//loop until the element has come, which has bigger timeStart
 			CADrawableMusElement *newElt=0;

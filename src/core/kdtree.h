@@ -71,7 +71,7 @@ class CAKDTree {
 		 * @param w Width of the area in absolute world units. If none given, the area is treated as a point.
 		 * @return Pointer to QList of the elements inside the given area.
 		 */
-		QList<CADrawable *>* findInRange(int x, int y, int w=0, int h=0);
+		QList<CADrawable *> findInRange(int x, int y, int w=0, int h=0);
 		
 		/**
 		 * This is an overloaded member function, provided for convenience.
@@ -81,7 +81,7 @@ class CAKDTree {
 		 * @param area QRect of the given area in absolute world units.
 		 * @return Pointer to QList of the elements inside the given area.
 		 */
-		QList<CADrawable *>* findInRange(QRect *area);
+		QList<CADrawable *> findInRange(QRect *area);
 
 		/**
 		 * These methods find the nearest element to the given coordinate and in the given direction.

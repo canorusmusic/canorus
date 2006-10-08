@@ -106,6 +106,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_insertMusElement = CAMusElement::None;
 	_insertPlayableLength = CAPlayable::Quarter;
 	_insertClef = CAClef::Treble;
+	_noteAccs = 0;
+	_noteExtraAccs = 0;
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
@@ -380,7 +382,7 @@ void CAMainWin::setMode(CAMode mode) {
 				}
 			}
 		}
-	}	//switch (mode)
+	}	//switch(mode)
 }
 
 void CAMainWin::on_action_Clef_activated() {
@@ -512,8 +514,6 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			//did a user click on the note or before/after it? In first case, add a note to a chord, in latter case, insert a new note.
 			CADrawableMusElement *followingNote;
 			
-			CAKeySignature *keySig = drawableStaff->getKeySignature(coords.x());
-			
 			if ( left && (left->musElement()->musElementType() == CAMusElement::Note) && (left->xPos() <= coords.x()) && (left->width() + left->xPos() >= coords.x()) ) {
 				//user clicked inside x borders of the note - add a note to the chord
 				if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart() ) ||
@@ -525,7 +525,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				newElt = new CANote(_insertPlayableLength,
 			                  voice,
 			                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			                  (keySig?keySig->accidentals()[pitch%7]:0),
+			                  _noteAccs,
 			                  (left->musElement()->timeStart())
 			                 );
 				success = voice->addNoteToChord((CANote*)newElt, (CANote*)left->musElement());
@@ -535,11 +535,12 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				newElt = new CANote(_insertPlayableLength,
 			                  staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
 			                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			                  (keySig?keySig->accidentals()[pitch%7]:0),
+			                  _noteAccs,
 			                  (left?left->musElement()->timeEnd():0)
 			                 );
 				success = voice->insertMusElementAfter(newElt, left?left->musElement():0);
 			}
+			if (success) { _noteExtraAccs=0; v->setDrawShadowNoteAccs(false); }
 			break;
 		}
 		case CAMusElement::Rest: {
@@ -584,14 +585,16 @@ void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort
 		else
 			return;
 
-		if (_insertMusElement == CAMusElement::Note)
+		if (_insertMusElement == CAMusElement::Note || _insertMusElement == CAMusElement::Rest)
 			c->setShadowNoteVisible(true);
 		
 		//calculate the logical pitch out of absolute world coordinates and the current clef
 		int pitch = s->calculatePitch(coords.x(), coords.y());
 		
 		//write into the main window's status bar the note pitch name
-		statusBar()->showMessage(CANote::generateNoteName(pitch, s->getAccs(coords.x(), pitch)));
+		_noteAccs = s->getAccs(coords.x(), pitch)+_noteExtraAccs;
+		statusBar()->showMessage(CANote::generateNoteName(pitch, _noteAccs));
+		((CAScoreViewPort*)v)->setShadowNoteAccs(_noteAccs);
 	}
 }
 
@@ -685,7 +688,6 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 						}
 					}
 				}
-				
 				break;
 			case Qt::Key_Down:
 				if (_currentMode == SelectMode) {	//select the upper music element
@@ -706,7 +708,45 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				}
 				
 				break;
-				
+			case Qt::Key_Plus: {
+				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
+					if (currentMode()==InsertMode) {
+						_noteExtraAccs++; _noteAccs++;
+						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(_noteExtraAccs!=0);
+						((CAScoreViewPort*)v)->setShadowNoteAccs(_noteAccs);
+						v->repaint();
+					} else if (currentMode()==EditMode) {
+						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
+							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
+							if (elt->musElementType()==CAMusElement::Note) {
+								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
+								v->rebuild();
+								v->repaint();
+							}
+						}
+					}
+				}
+				break;
+			}
+			case Qt::Key_Minus: {
+				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
+					if (currentMode()==InsertMode) {
+						_noteExtraAccs--; _noteAccs--;
+						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(_noteExtraAccs!=0);
+						((CAScoreViewPort*)v)->setShadowNoteAccs(_noteAccs);
+						v->repaint();
+					} else if (currentMode()==EditMode) {
+						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
+							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
+							if (elt->musElementType()==CAMusElement::Note)
+								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
+								v->rebuild();
+								v->repaint();
+						}
+					}
+				}
+				break;
+			}
 			case Qt::Key_Delete:
 				if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
 					CAMusElement *elt = ((CAScoreViewPort*)_activeViewPort)->selection()->back()->musElement();
@@ -721,8 +761,8 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 			//Mode keys
 			case Qt::Key_Escape:
 				if ((currentMode()==SelectMode) && (_activeViewPort) && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
-					((CAScoreViewPort*)_activeViewPort)->selectMElement(0);
-					((CAScoreViewPort*)_activeViewPort)->selectContext(0);
+					((CAScoreViewPort*)_activeViewPort)->clearMSelection();
+					((CAScoreViewPort*)_activeViewPort)->clearCSelection();
 				}
 				setMode(SelectMode);
 				mpoVoiceNum->setRealValue(0);

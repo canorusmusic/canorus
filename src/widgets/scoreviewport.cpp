@@ -26,6 +26,7 @@
 #include "drawable/drawablemuselement.h"
 #include "drawable/drawablestaff.h"
 #include "drawable/drawablenote.h"
+#include "drawable/drawableaccidental.h"
 #include "core/muselement.h"
 #include "core/context.h"
 #include "interface/engraver.h"
@@ -53,6 +54,8 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	//set the shadow note
 	_shadowNoteVisible = false;
 	_shadowNoteVisibleOnLeave = false;
+	_shadowNoteAccs = 0;
+	_drawShadowNoteAccs = false;
 	
 	//setup the virtual canvas
 	_canvas = new QWidget(this);
@@ -196,37 +199,35 @@ void CAScoreViewPort::setCurrentContext(CADrawableContext *drawableContext) {
 }
 
 CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
-	QList<CADrawable *>* l = _drawableCList.findInRange(x,y);
+	QList<CADrawable *> l = _drawableCList.findInRange(x,y);
 	
-	if (l->size()!=0) {
-		setCurrentContext((CADrawableContext*)l->front());
+	if (l.size()!=0) {
+		setCurrentContext((CADrawableContext*)l.front());
 	}
-	
-	delete l;
 	
 	return (_currentContext?_currentContext:0);
 }
 
 CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
-	QList<CADrawable *>* l;
+	QList<CADrawable *> l = _drawableMList.findInRange(x,y);
+	for (int i=0; i<l.size(); i++)
+		if (!((CADrawableMusElement*)l[i])->isSelectable())
+			l.removeAt(i);
 	
-	if ((l=_drawableMList.findInRange(x,y))->size() != 0) { //multiple elements can share the same coordinates
+	if (l.size() != 0) { //multiple elements can share the same coordinates
 		int idx;
 			_selection.clear();
-		if ( (_selection.size() != 1) || ((idx = l->indexOf(_selection.front())) == -1) ) {
-			_selection << (CADrawableMusElement*)l->at(0);	//if the previous selection was not a single element or if the new list doesn't contain the selection, add the first element in the available list to the selection
+		if ( (_selection.size() != 1) || ((idx = l.indexOf(_selection.front())) == -1) ) {
+			_selection << (CADrawableMusElement*)l.at(0);	//if the previous selection was not a single element or if the new list doesn't contain the selection, add the first element in the available list to the selection
 		} else {
-			_selection << (CADrawableMusElement*)l->at((++idx < l->size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
+			_selection << (CADrawableMusElement*)l.at((++idx < l.size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
 		}
 		
-		delete l;
-
 		return ((CADrawableMusElement*)_selection.front())->musElement();
 	} else {
 		if (_selection.size() != 0) {
 			_selection.clear();
 		}
-		delete l;
 		
 		return 0;
 	}
@@ -311,13 +312,11 @@ int CAScoreViewPort::calculateTime(int x, int y) {
 }
 
 CAContext *CAScoreViewPort::contextCollision(int x, int y) {
-	QList<CADrawable*> *l;
-	if ((l = _drawableCList.findInRange(x, y, 0, 0))->size() == 0) {
-		delete l;
+	QList<CADrawable*> l = _drawableCList.findInRange(x, y, 0, 0);
+	if (l.size() == 0) {
 		return 0;
 	} else {
-		CAContext *context = ((CADrawableContext*)l->front())->context(); 
-		delete l;
+		CAContext *context = ((CADrawableContext*)l.front())->context(); 
 		return context;
 	}
 }
@@ -638,7 +637,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	else
 		p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundBrush);
 
-	QList<CADrawable *>* l;
+	QList<CADrawable *> l;
 	//draw contexts
 	int j = _drawableCList.size();
 	if (_repaintArea)
@@ -646,34 +645,32 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	else
 		l = _drawableCList.findInRange(_worldX, _worldY, _worldW, _worldH);
 
-	for (int i=0; i<l->size(); i++) {
+	for (int i=0; i<l.size(); i++) {
 		CADrawSettings s = {
 	    	           _zoom,
-	        	       (int)((l->at(i)->xPos() - _worldX) * _zoom),
-		               (int)((l->at(i)->yPos() - _worldY) * _zoom),
+	        	       (int)((l[i]->xPos() - _worldX) * _zoom),
+		               (int)((l[i]->yPos() - _worldY) * _zoom),
 	            	   drawableWidth(), drawableHeight(),
-		               ((_currentContext == l->at(i))?Qt::blue:Qt::black)
+		               ((_currentContext == l[i])?Qt::blue:Qt::black)
 		};
-		l->at(i)->draw(&p, s);
+		l[i]->draw(&p, s);
 	}
 
-	delete l;
-	
 	//draw music elements
 	if (_repaintArea)
 		l = _drawableMList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
 	else
 		l = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
 
-	for (int i=0; i<l->size(); i++) {
+	for (int i=0; i<l.size(); i++) {
 		CADrawSettings s = {
 		               _zoom,
-		               (int)((l->at(i)->xPos() - _worldX) * _zoom),
-		               (int)((l->at(i)->yPos() - _worldY) * _zoom),
+		               (int)((l[i]->xPos() - _worldX) * _zoom),
+		               (int)((l[i]->yPos() - _worldY) * _zoom),
 		               drawableWidth(), drawableHeight(),
-		               (_selection.contains((CADrawableMusElement*)l->at(i))?Qt::red:Qt::black)
+		               (_selection.contains((CADrawableMusElement*)l[i])?Qt::red:Qt::black)
 		               };
-		l->at(i)->draw(&p, s);
+		l[i]->draw(&p, s);
 	}
 	
 	//draw shadow note
@@ -681,12 +678,18 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		for (int i=0; i<_shadowDrawableNote.size(); i++) {
 			CADrawSettings s = {
 			               _zoom,
-			               (int)((_shadowDrawableNote[i]->xPos() - _worldX) * _zoom),
-			               (int)((_shadowDrawableNote[i]->yPos() - _worldY) * _zoom),
+			               (int)((_shadowDrawableNote[i]->xPos() - _worldX - _shadowDrawableNote[i]->width()/2) * _zoom + 0.5),
+			               (int)((_shadowDrawableNote[i]->yPos() - _worldY) * _zoom + 0.5),
 			               drawableWidth(), drawableHeight(),
 			               (Qt::gray)
 			               };
 			_shadowDrawableNote[i]->draw(&p, s);
+			if (_drawShadowNoteAccs) {
+				CADrawableAccidental acc(_shadowNoteAccs, 0, 0, 0, _shadowDrawableNote[i]->yCenter());
+				s.x -= (int)((acc.width()+2)*_zoom + 0.5);
+				s.y = (int)((acc.yPos() - _worldY)*_zoom + 0.5);
+				acc.draw(&p, s);
+			}
 		}
 	}
 	
@@ -699,7 +702,6 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		_repaintArea = 0;
 		p.setClipping(false);
 	}
-	delete l;
 }
 
 void CAScoreViewPort::setBorder(const QPen pen) {
@@ -783,12 +785,12 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 	_xCursor = coords.x();
 	_yCursor = coords.y();
 	
+	emit CAMouseMoveEvent(e, coords, this);
+
 	if (_shadowNoteVisible) {
 		calculateShadowNoteCoords();
 		repaint();
 	}
-	
-	emit CAMouseMoveEvent(e, coords, this);
 }
 
 void CAScoreViewPort::wheelEvent(QWheelEvent *e) {

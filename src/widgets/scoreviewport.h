@@ -103,6 +103,9 @@ class CAScoreViewPort : public CAViewPort {
 		 */
 		CADrawableContext *selectCElement(int x, int y);
 		
+		void clearMSelection() { _selection.clear(); }
+		void clearCSelection() { _currentContext = 0; }
+		
 		/**
 		 * Add the given music element to the selection.
 		 * Return a pointer to its drawable element or 0, if the music element is not part of this score viewport.
@@ -546,6 +549,10 @@ class CAScoreViewPort : public CAViewPort {
 		 */ 
 		void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; _shadowNoteVisibleOnLeave = visible; calculateShadowNoteCoords(); }
 		bool shadowNoteVisible() { return _shadowNoteVisible; }
+		void setDrawShadowNoteAccs(bool draw) { _drawShadowNoteAccs = draw; }
+		bool drawShadowNoteAccs() { return _drawShadowNoteAccs; }
+		void setShadowNoteAccs(int accs) { _shadowNoteAccs = accs; }
+		int shadowNoteAccs() { return _shadowNoteAccs; }
 		
 	signals:
 		/**
@@ -700,6 +707,8 @@ class CAScoreViewPort : public CAViewPort {
 		
 		bool _shadowNoteVisible;	///Should the shadow notes be rendered or not
 		bool _shadowNoteVisibleOnLeave;	///When you leave the viewport, shadow note is always turned off. This property holds the value, if shadow note was enabled before you left the viewport.
+		int _shadowNoteAccs;	///Number of accidentals - 0 - natural, 1 - sharp, -1 flat
+		bool _drawShadowNoteAccs;	///Draw shadow note accs?
 		QList<CANote*> _shadowNote;	///List of all shadow notes - one shadow note per drawable staff
 		QList<CADrawableNote*> _shadowDrawableNote;	///List of drawable shadow notes
 		

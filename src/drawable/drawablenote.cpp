@@ -9,20 +9,22 @@
 #include <QPainter>
 #include <iostream>
 #include "drawable/drawablenote.h"
+#include "drawable/drawableaccidental.h"
 #include "core/voice.h"
 #include "core/staff.h"
 #include "core/note.h"
 
-CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y, bool shadowNote)
+CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y, bool shadowNote, CADrawableAccidental *drawableAcc)
  : CADrawableMusElement(note, drawableContext, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableNote;
+	_drawableAcc = drawableAcc;
 	
 	switch (note->playableLength()) {
 		case CAPlayable::Quarter:
 			_width = 11;
 			_height = 26;
 			_yPos = y - QUARTER_YPOS_DELTA;	//values in constructor are the notehead center coords. yPos represents the top of the stem.
-			_xPos = x - _width/2;
+			_xPos = x;
 			_neededWidth = _width;
 			_neededHeight = _height;
 			break;
@@ -31,7 +33,7 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 			_width = 11;
 			_height = 26;
 			_yPos = y - HALF_YPOS_DELTA;	//values in constructor are the notehead center coords. yPos represents the top of the stem.
-			_xPos = x - _width/2;
+			_xPos = x;
 			_neededWidth = _width;
 			_neededHeight = _height;
 			break;
@@ -40,7 +42,7 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 			_width = 16;
 			_height = 8;
 			_yPos = (int)(y - _height/2.0 + 0.5);
-			_xPos = (int)(x - _width/2.0 + 0.5);
+			_xPos = x;
 			_neededWidth = _width;
 			_neededHeight = _height;
 			break;			
@@ -49,7 +51,7 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 			_width = 21;
 			_height = 8;
 			_yPos = (int)(y - _height/2.0 + 0.5);
-			_xPos = (int)(x - _width/2.0 + 0.5);
+			_xPos = x;
 			_neededWidth = _width;
 			_neededHeight = _height;
 			break;			
@@ -147,16 +149,16 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 CADrawableNote *CADrawableNote::clone() {
 	switch (note()->noteLength()) {
 		case CANote::Quarter:
-			return new CADrawableNote(note(), drawableContext(), _xPos + _width/2, _yPos + QUARTER_YPOS_DELTA);
+			return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + QUARTER_YPOS_DELTA);
 			break;
 		case CANote::Half:
-			return new CADrawableNote(note(), drawableContext(), _xPos + _width/2, _yPos + QUARTER_YPOS_DELTA);
+			return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + QUARTER_YPOS_DELTA);
 			break;
 		case CANote::Whole:
-			return new CADrawableNote(note(), drawableContext(), _xPos + _width/2, _yPos + _height/2);
+			return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + _height/2);
 			break;		
 		case CANote::Breve:
-			return new CADrawableNote(note(), drawableContext(), _xPos + _width/2, _yPos + _height/2);
+			return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + _height/2);
 			break;		
 	}
 }
@@ -164,16 +166,16 @@ CADrawableNote *CADrawableNote::clone() {
 void CADrawableNote::setXPos(int xPos) {
 	switch (note()->noteLength()) {
 		case CANote::Quarter:
-			_xPos = xPos - _width/2;
+			_xPos = xPos;
 			break;
 		case CANote::Half:
-			_xPos = xPos - _width/2;
+			_xPos = xPos;
 			break;
 		case CANote::Whole:
-			_xPos = xPos - _width/2;
+			_xPos = xPos;
 			break;
 		case CANote::Breve:
-			_xPos = xPos - _width/2;
+			_xPos = xPos;
 			break;
 	}
 }
