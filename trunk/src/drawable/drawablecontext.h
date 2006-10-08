@@ -9,9 +9,12 @@
 #ifndef DRAWABLECONTEXT_H_
 #define DRAWABLECONTEXT_H_
 
+#include <QList>
+
 #include "drawable.h"
 
 class CAContext;
+class CADrawableMusElement;
 
 class CADrawableContext : public CADrawable {
 	public:
@@ -25,10 +28,13 @@ class CADrawableContext : public CADrawable {
 		CADrawableContext(CAContext *c, int x, int y);
 		inline CAContext *context() { return _context; }
 		CADrawableContextType drawableContextType() { return _drawableContextType; }
+		void addMElement(CADrawableMusElement *elt) { _drawableMusElementList << elt; }
+		int removeMElement(CADrawableMusElement *elt) { return _drawableMusElementList.removeAll(elt); }
 		
 	protected:
 		CADrawableContextType _drawableContextType;
 		CAContext *_context;
+		QList<CADrawableMusElement *> _drawableMusElementList;	///List of all the drawable musElements in this staff
 };
 
 #endif /*DRAWABLECONTEXT_H_*/

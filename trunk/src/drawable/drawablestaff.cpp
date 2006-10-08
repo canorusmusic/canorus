@@ -98,6 +98,31 @@ CAClef* CADrawableStaff::getClef(int x) {
 	return ((--i<0)?0:_drawableClefList[i]->clef());
 }
 
+int CADrawableStaff::getAccs(int x, int pitch) {
+	CAKeySignature *key = getKeySignature(x);
+	
+	//find nearest left element
+	int i; for (i=0; i<_drawableMusElementList.size() && _drawableMusElementList[i]->xPos() < x; i++); i--;
+	
+	while (i>=0 &&
+	       _drawableMusElementList[i]->drawableMusElementType() != CADrawableMusElement::DrawableBarline &&
+	       _drawableMusElementList[i]->drawableMusElementType() != CADrawableMusElement::DrawableKeySignature &&
+	       (!(_drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableNote && 
+	          ((CANote*)_drawableMusElementList[i]->musElement())->pitch() == pitch
+	         ))
+	      ) {	//go back while a barline, key signature or a note with accidental is found
+	      	i--;
+	}
+	
+	if (i==-1)
+		return 0;
+	if (_drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableBarline ||
+	    _drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableKeySignature)
+		return (key?key->accidentals()[pitch%7]:0);
+	else //note before
+		return ((CANote*)_drawableMusElementList[i]->musElement())->accs();
+}
+
 void CADrawableStaff::addKeySignature(CADrawableKeySignature *keySig) {
 	int i;
 	for (i=0; ((i<_drawableKeySignatureList.size()) && (keySig->xPos() > _drawableKeySignatureList[i]->xPos())); i++);

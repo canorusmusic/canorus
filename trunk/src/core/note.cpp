@@ -15,6 +15,7 @@ CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char a
  : CAPlayable(voice, timeStart, timeLength) {
 	_musElementType = CAMusElement::Note;
 	_playableLength = length;
+	_forceAccidentals = false;
 	_accs = accs;
 
 	_pitch = pitch;
@@ -71,10 +72,13 @@ void CANote::calculateNotePosition() {
 	_notePosition = _pitch + (clef?clef->c1():-2) - 28;
 }
 
-const QString CANote::generateNoteName(int pitch) {
+const QString CANote::generateNoteName(int pitch, int accs) {
 	QString name;
 	
 	name = (char)((pitch+2)%7 + 'a');
+	while (accs>0) { name += "is"; accs--; }
+	while (accs<0) { if (name!="e" && name!="a") name+="es"; else name+="s"; accs++; }
+	
 	if (pitch < 21)
 		name = name.toUpper();
 	

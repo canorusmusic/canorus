@@ -35,7 +35,7 @@ class CADrawableNote : public CADrawableMusElement {
 		void setDrawableContext(CADrawableContext *c) { _drawableContext = c; }
 		
 	private:
-		bool _drawLedgerLines;
+		bool _drawLedgerLines;	///Are the ledger lines drawn or not. True when ledger lines needed, False when the note is inside the staff 
 		bool _shadowNote;	///Is the current note shadow note?
 		static const int QUARTER_STEM_LENGTH = 22;
 		static const int HALF_STEM_LENGTH = 24;
