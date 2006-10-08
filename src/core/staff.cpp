@@ -126,3 +126,37 @@ QList<CAMusElement*> CAStaff::getEltByType(CAMusElement::CAMusElementType type, 
 	
 	return eltList;	
 }
+
+bool CAStaff::fixVoiceErrors() {
+	QList<CAMusElement *> signsNeeded;
+	QList<CAMusElement *> prevSignsNeeded;	//list of music elements before that sign in that voice
+	QList<CAMusElement *> signsIncluded[voiceCount()];
+	
+	for (int i=0; i<voiceCount(); i++) {
+		QList<CAMusElement*> *list = _voiceList[i]->musElementList();
+		for (int j=0; j<list->size(); j++) {
+			if (!list->at(j)->isPlayable()) {
+				signsIncluded[i] << list->at(j);	//add the current sign to voice's included list
+				if (!signsNeeded.contains(list->at(j))) {
+					signsNeeded << list->at(j);	//add the current sign to others voices needed list
+					prevSignsNeeded << _voiceList[i]->eltBefore(list->at(j));
+				}
+			}
+		}
+	}
+	
+	bool everythingIncluded = true;
+	for (int i=0; i<signsNeeded.size(); i++) {
+		for (int j=0; j<voiceCount(); j++) {
+			if (!signsIncluded[j].contains(signsNeeded[i])) {
+				everythingIncluded = false;
+				if (prevSignsNeeded[i] && (!prevSignsNeeded[i]->isPlayable()))
+					_voiceList[j]->insertMusElementAfter(signsNeeded[i], prevSignsNeeded[i]);
+				else
+					_voiceList[j]->insertMusElement(signsNeeded[i]);
+			}
+		}
+	}
+	
+	return everythingIncluded;
+}
