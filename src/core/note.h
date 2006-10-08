@@ -51,7 +51,10 @@ class CANote : public CAPlayable {
 		 */
 		QList<CANote*> chord();
 		
-		static const QString generateNoteName(int pitch);
+		bool forceAccidentals() { return _forceAccidentals; }
+		void setForceAccidentals(bool force) { _forceAccidentals = force; }
+		
+		static const QString generateNoteName(int pitch, int accs);
 		
 		int compare(CAMusElement* elt);
 
@@ -64,6 +67,7 @@ class CANote : public CAPlayable {
 		int _pitch;	///note pitch in logical units. 0 = C,, , 1 = Sub-Contra D,, , 56 = c''''' etc.
 		int _accs;	///note accidentals. 0 = neutral, 1 = sharp, -1 = flat etc.
 		int _notePosition;	///note location in the staff. 0 first line, 1 first space, -2 first ledger line below the staff
+		bool _forceAccidentals;	///always draw notes accidentals
 };
 #endif /*NOTE_H_*/
 

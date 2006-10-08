@@ -591,7 +591,7 @@ void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort
 		int pitch = s->calculatePitch(coords.x(), coords.y());
 		
 		//write into the main window's status bar the note pitch name
-		statusBar()->showMessage(CANote::generateNoteName(pitch));
+		statusBar()->showMessage(CANote::generateNoteName(pitch, s->getAccs(coords.x(), pitch)));
 	}
 }
 

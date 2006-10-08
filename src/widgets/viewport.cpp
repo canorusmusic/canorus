@@ -15,4 +15,3 @@ CAViewPort::CAViewPort(QWidget *p) : QWidget(p) {
 CAViewPort::~CAViewPort() {
 //	this->disconnect();
 }
-
