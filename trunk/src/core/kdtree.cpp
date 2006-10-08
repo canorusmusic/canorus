@@ -59,8 +59,8 @@ void CAKDTree::clear(bool autoDelete) {
 	_list.clear();
 }
 
-QList<CADrawable *>* CAKDTree::findInRange(int x, int y, int w, int h) {
-	QList<CADrawable *> *l = new QList<CADrawable *>();
+QList<CADrawable *> CAKDTree::findInRange(int x, int y, int w, int h) {
+	QList<CADrawable *> l;
 
 	for (int i=0; i<_list.size(); i++) {
 		if ( ((_list[i]->xPos() <= x+w) &&						//The object is normal and fits into the area
@@ -74,13 +74,13 @@ QList<CADrawable *>* CAKDTree::findInRange(int x, int y, int w, int h) {
 		     (_list[i]->xPos() <= x+h) &&
 		     (_list[i]->xPos() + _list[i]->width() >= x))
 		    )
-			*l << _list[i];
+			l << _list[i];
 	}
 
 	return l;	
 }
 
-QList<CADrawable *>* CAKDTree::findInRange(QRect *rect) {
+QList<CADrawable *> CAKDTree::findInRange(QRect *rect) {
 	return findInRange(rect->x(), rect->y(), rect->width(), rect->height());
 }
 
@@ -109,8 +109,9 @@ CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *
 			if ( ((!elt) || ((*i)->xPosOrig() > elt->xPosOrig())) &&
 			     ((*i)->xPosOrig() < x) &&
 			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context)) &&
-			     ((!voice || !((CADrawableMusElement*)(*i))->musElement()->isPlayable()) || 
-			                  ( ((CADrawableMusElement*)(*i))->musElement()->isPlayable() &&
+			     ((CADrawableMusElement*)*i)->musElement() &&
+			     (!voice || !((CADrawableMusElement*)*i)->musElement()->isPlayable() || 
+			                  ( ((CADrawableMusElement*)*i)->musElement()->isPlayable() &&
 			                    ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
 			                  )
 			     )

@@ -242,5 +242,7 @@ private:
 	////////////////////////////////////////////////////
 	CAMusElement::CAMusElementType _insertMusElement;	///Current element to be added. 0, if in view mode, CAMusElementType, if in insert mode
 	CAPlayable::CAPlayableLength _insertPlayableLength;	///Length of note/rest to be added
+	int _noteExtraAccs;	///Extra note accidentals for new notes which user adds/removes with +/- keys
+	int _noteAccs;	///Note accidentals at specific coordinates updated regularily
 	CAClef::CAClefType _insertClef;	///Type of the clef to be inserted
 };

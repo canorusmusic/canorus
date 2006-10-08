@@ -12,4 +12,5 @@ CADrawableMusElement::CADrawableMusElement(CAMusElement *m, CADrawableContext *d
  : CADrawable(x, y) {
 	_musElement = m;
 	_drawableContext = drawableContext;
+	_selectable = true;
 }

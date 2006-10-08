@@ -21,11 +21,11 @@ class CANote : public CAPlayable {
 		
 		CAPlayableLength noteLength() { return _playableLength; }
 		int pitch() { return _pitch; }
-		int accs() { return _accs; }
+		int accidentals() { return _accs; }
 		const QString pitchML();	///Compose the note pitch name for the CanorusML format
 		const QString lengthML();	///Compose the note length for the CanorusML format
 		void setPitch(int pitch);
-		void setAccs(int accs);
+		void setAccidentals(int accs) { _accs = accs; };
 		int notePosition() { return _notePosition; }
 		
 		/**

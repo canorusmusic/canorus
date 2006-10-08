@@ -19,12 +19,14 @@ class CANote : public CAPlayable {
 		CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int timeLength=0);
 		CANote *clone();
 		
-		CAPlayableLength noteLength() { return _playableLength; }
-		int pitch() { return _pitch; }
+		CAPlayableLength noteLength();
+		int pitch();
+		int accidentals();
 		const QString pitchML();	///Compose the note pitch name for the CanorusML format
 		const QString lengthML();	///Compose the note length for the CanorusML format
 		void setPitch(int pitch);
-		int notePosition() { return _notePosition; }
+		void setAccidentals(int accs);
+		int notePosition();
 		
 		/**
 		 * Return True, if the note is part of a chord, False otherwise.
@@ -49,7 +51,11 @@ class CANote : public CAPlayable {
 		 */
 		QList<CANote*> chord();
 		
+		bool forceAccidentals();
+		void setForceAccidentals(bool force);
+		
 		static const QString generateNoteName(int pitch, int accs);
+		
+		int compare(CAMusElement* elt);
 
-		int compare(CAMusElement *elt);
 };

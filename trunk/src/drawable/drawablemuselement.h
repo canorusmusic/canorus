@@ -31,12 +31,15 @@ class CADrawableMusElement : public CADrawable {
 		inline CAMusElement *musElement() { return _musElement; }
 		CADrawableMusElementType drawableMusElementType() { return _drawableMusElementType; }
 		CADrawableContext *drawableContext() { return _drawableContext; }
+		void setDrawableContext(CADrawableContext *context) { _drawableContext = context; }
+		bool isSelectable() { return _selectable; }
 		
 	protected:
 		CADrawableMusElementType _drawableMusElementType;	///CADrawableMusElement Type
 
 		CADrawableContext *_drawableContext;
 		CAMusElement *_musElement;
+		bool _selectable;
 };
 
 #endif /*DRAWABLEMUSELEMENT_H_*/
