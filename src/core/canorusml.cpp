@@ -423,7 +423,7 @@ bool CACanorusML::characters(const QString& ch) {
 }
 
 bool CACanorusML::readMusElements(QString string) {
-	string = string.simplified().toUpper();	//remove weirs whitespaces throughout the string and replace them by a single blank
+	string = string.simplified().toUpper();	//remove weird whitespaces throughout the string and replace them by a single blank
 	for (int eltIdx=0; string.size(); eltIdx++) {
 		int idx2 = string.indexOf(" ");	//find the index of the next music element
 		if (idx2==-1)
@@ -448,13 +448,15 @@ bool CACanorusML::readMusElements(QString string) {
 			//determine accidentals
 			while ((string.indexOf("IS") != -1) && (string.indexOf("IS") < idx2)) {
 				curAccs++;
-				string = string.remove(0, string.indexOf("IS") + 2);
-				idx2 -= 2;
+				int delta;
+				string = string.remove(0, delta = string.indexOf("IS") + 2);
+				idx2 -= delta;
 			}
 			while ((string.indexOf("ES") != -1) && (string.indexOf("ES") < idx2)) {
 				curAccs--;
-				string = string.remove(0, string.indexOf("ES") + 2);
-				idx2 -= 2;
+				int delta;
+				string = string.remove(0, delta = string.indexOf("ES") + 2);
+				idx2 -= delta;
 			}
 			
 			//add octave up/down
