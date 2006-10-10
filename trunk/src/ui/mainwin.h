@@ -50,6 +50,15 @@ enum CAMode {
 	ReadOnlyMode
 };
 
+enum CAFixedTimeSig {
+	TS_44,
+	TS_22,
+	TS_34,
+	TS_24,
+	TS_38,
+	TS_68
+};
+
 class CAViewPort;
 class CAScoreViewPort;
 
@@ -138,6 +147,7 @@ private slots:
 	void sl_mpoVoiceNum_valChanged(int iVoice);
 	void on_actionNoteSelect_toggled(bool);
 	void on_actionClefSelect_toggled(bool);
+	void on_actionTimeSigSelect_toggled(bool);
 	
 
 	////////////////////////////////////////////////////
@@ -208,13 +218,13 @@ private:
 	//User interface, toolbar
 	////////////////////////////////////////////////////
 	CAToolBar    *mpoMEToolBar;
-	CAButtonMenu *mpoClefMenu;         /// Menu for selection of a clef
-	CAButtonMenu *mpoNoteMenu;         /// Menu for the selection of a note length
-	QMenu        *mpoKeySigMenu;       /// Menu for selection of a key signature
-	QAction      *actionNoteSelect;    /// Action for having a note length selected
-	QAction      *actionClefSelect;    /// Action for having a clef selected
-	QAction      *actionKeySigSelect;  /// Action for having a clef selected
-	CAKeySigPSP  *mpoKeySigPSP;	       /// Key signature perspective
+	CAButtonMenu *mpoClefMenu;          /// Menu for selection of a clef
+	CAButtonMenu *mpoNoteMenu;          /// Menu for the selection of a note length
+	CAButtonMenu *mpoTimeSigMenu;       /// Menu for selection of a key signature
+	QAction      *actionNoteSelect;     /// Action for having a note length selected
+	QAction      *actionClefSelect;     /// Action for having a clef selected
+	QAction      *actionTimeSigSelect;  /// Action for having a clef selected
+	CAKeySigPSP  *mpoKeySigPSP;	    /// Key signature perspective
 	
 	////////////////////////////////////////////////////
 	//User interface, widgets
@@ -240,9 +250,10 @@ private:
 	////////////////////////////////////////////////////
 	//Insert element
 	////////////////////////////////////////////////////
-	CAMusElement::CAMusElementType _insertMusElement;	///Current element to be added. 0, if in view mode, CAMusElementType, if in insert mode
-	CAPlayable::CAPlayableLength _insertPlayableLength;	///Length of note/rest to be added
-	int _noteExtraAccs;	///Extra note accidentals for new notes which user adds/removes with +/- keys
-	int _noteAccs;	///Note accidentals at specific coordinates updated regularily
-	CAClef::CAClefType _insertClef;	///Type of the clef to be inserted
+	CAMusElement::CAMusElementType _insertMusElement;	/// Current element to be added. 0, if in view mode, CAMusElementType, if in insert mode
+	CAPlayable::CAPlayableLength _insertPlayableLength;	/// Length of note/rest to be added
+	int _noteExtraAccs;	/// Extra note accidentals for new notes which user adds/removes with +/- keys
+	int _noteAccs;	/// Note accidentals at specific coordinates updated regularily
+	int _aiBeats[2]; /// Time signature beats to be inserted
+	CAClef::CAClefType _insertClef;	/// Type of the clef to be inserted
 };

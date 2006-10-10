@@ -67,6 +67,7 @@ using namespace std;
 #include "core/canorusml.h"
 #include "core/voice.h"
 #include "core/barline.h"
+#include "core/timesignature.h"
 
 #include "scripting/swigruby.h"
 
@@ -105,6 +106,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_currentMode = SelectMode;
 	_insertMusElement = CAMusElement::None;
 	_insertPlayableLength = CAPlayable::Quarter;
+	_aiBeats[0] = 4;
+	_aiBeats[1] = 4;
 	_insertClef = CAClef::Treble;
 	_noteAccs = 0;
 	_noteExtraAccs = 0;
@@ -121,7 +124,7 @@ CAMainWin::~CAMainWin()
 {
 	delete mpoClefMenu;
 	delete mpoNoteMenu;
-	delete mpoKeySigMenu;
+	delete mpoTimeSigMenu;
 	delete _midiOut;
 	delete mpoMEToolBar;
 }
@@ -129,9 +132,10 @@ CAMainWin::~CAMainWin()
 void CAMainWin::initToolBar()
 {
 	// Test Code for Toolbar
-	mpoClefMenu   = new CAButtonMenu( tr("Select Clef" ) );
-	mpoNoteMenu   = new CAButtonMenu( tr("Select Note" ) );
-	mpoKeySigMenu = new QMenu(); 
+	mpoClefMenu    = new CAButtonMenu( tr("Select Clef" ) );
+	mpoNoteMenu    = new CAButtonMenu( tr("Select Note" ) );
+	mpoTimeSigMenu = new CAButtonMenu( tr("Select Time Signature" ) ); 
+	mpoTimeSigMenu->setNumIconsPerRow( 3 );
 	
 	QIcon oClefTrebleIcon( QString::fromUtf8(":/menu/images/cleftreble.png") );
 	QIcon oClefBassIcon(   QString::fromUtf8(":/menu/images/clefbass.png") );
@@ -145,6 +149,13 @@ void CAMainWin::initToolBar()
 	QIcon oN16Icon(  QString::fromUtf8(":/menu/images/n16.png") );
 	QIcon oN32Icon(  QString::fromUtf8(":/menu/images/n32.png") );
 	QIcon oN64Icon(  QString::fromUtf8(":/menu/images/n64.png") );
+
+	QIcon oTCIcon( QString::fromUtf8(":/menu/images/tsc.png") );
+	QIcon oTABIcon( QString::fromUtf8(":/menu/images/tsab.png") );
+	QIcon oT34Icon( QString::fromUtf8(":/menu/images/ts34.png") );
+	QIcon oT24Icon( QString::fromUtf8(":/menu/images/ts24.png") );
+	QIcon oT38Icon( QString::fromUtf8(":/menu/images/ts38.png") );
+	QIcon oT68Icon( QString::fromUtf8(":/menu/images/ts68.png") );
 	
 	actionClefSelect = mpoMEToolBar->addToolMenu( "Add Clef", "actionClefSelect",
 	                                              mpoClefMenu, 
@@ -152,10 +163,9 @@ void CAMainWin::initToolBar()
 	actionNoteSelect = mpoMEToolBar->addToolMenu( "Change Note length",
 	                                              "actionNoteSelect", mpoNoteMenu,
 	                                              &oN4Icon, true );
-	QIcon oDFIcon( QString::fromUtf8(":/menu/images/doubleflat.png") );
-	actionKeySigSelect = mpoMEToolBar->addToolMenu( "Add Key Signature",
-	                                                "actionKeySigSelect", mpoKeySigMenu,
-	                                                &oDFIcon, true );	
+	actionTimeSigSelect = mpoMEToolBar->addToolMenu( "Add Time Signature",
+	                                                "actionTimeSigSelect", mpoTimeSigMenu,
+	                                                &oTCIcon, true );
 	// Add all the menu entries, either as text or icons
 	mpoClefMenu->addButton( oClefTrebleIcon, CAClef::Treble );
 	mpoClefMenu->addButton( oClefBassIcon, CAClef::Bass );
@@ -168,11 +178,12 @@ void CAMainWin::initToolBar()
 	mpoNoteMenu->addButton( oN16Icon, CANote::Sixteenth );
 	mpoNoteMenu->addButton( oN32Icon, CANote::ThirtySecond );
 	mpoNoteMenu->addButton( oN64Icon, CANote::SixtyFourth );
-	mpoKeySigMenu->addAction( "C" );
-	mpoKeySigMenu->addAction( "G" );
-	mpoKeySigMenu->addAction( "D" );
-	mpoKeySigMenu->addAction( "A" );
-	mpoKeySigMenu->addAction( "E" );
+	mpoTimeSigMenu->addButton( oTCIcon, TS_44 );
+	mpoTimeSigMenu->addButton( oTABIcon, TS_22 );
+	mpoTimeSigMenu->addButton( oT34Icon, TS_34 );
+	mpoTimeSigMenu->addButton( oT24Icon, TS_24 );
+	mpoTimeSigMenu->addButton( oT38Icon, TS_38 );
+	mpoTimeSigMenu->addButton( oT68Icon, TS_68 );
 }
 
 void CAMainWin::newDocument() {
@@ -497,6 +508,19 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			newElt = new CAKeySignature(CAKeySignature::Diatonic, 
 			                                            mpoKeySigPSP->getKeySignature()-7,
 			                                            CAKeySignature::Major, staff,
+			                                            (left?left->musElement()->timeEnd():0));
+			success = staff->insertSignAfter(newElt, left?left->musElement():0, true);
+			break;
+		}
+		case CAMusElement::TimeSignature: {
+			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
+			if ( (!context) ||
+			     (context->context()->contextType() != CAContext::Staff) )
+				return;
+			
+			staff = (CAStaff*)context->context();
+			newElt = new CATimeSignature(_aiBeats[0], _aiBeats[1],
+			                                            staff,
 			                                            (left?left->musElement()->timeEnd():0));
 			success = staff->insertSignAfter(newElt, left?left->musElement():0, true);
 			break;
@@ -953,12 +977,55 @@ void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 	enum CAClef::CAClefType eElem = (CAClef::CAClefType)
 	  mpoMEToolBar->toolElemValue( mpoClefMenu->objectName() ).toInt();
 	_insertMusElement = CAMusElement::Clef;
-	// New note length type
+	// New clef type
 	_insertClef       = eElem;
 	printf("Note Clef switched: On %d Clef %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )
 		on_action_Clef_activated();
+}
+
+void CAMainWin::on_actionTimeSigSelect_toggled(bool bOn)
+{
+	// Read currently selected entry from tool button menu
+        enum CATimeSignature::CATimeSignatureType eBaseElem = CATimeSignature::Classical;
+        enum CAFixedTimeSig eElem = (CAFixedTimeSig)
+	  mpoMEToolBar->toolElemValue( mpoTimeSigMenu->objectName() ).toInt();
+
+	_insertMusElement = CAMusElement::TimeSignature;
+	// New (fixed) time signature
+	switch( eElem )
+	{
+		default:
+		case TS_44:
+		  _aiBeats[0] = 4;
+		  _aiBeats[1] = 4;
+		  break;
+		case TS_22:
+		  _aiBeats[0] = 2;
+		  _aiBeats[1] = 2;
+		  break;
+		case TS_34:
+		  _aiBeats[0] = 3;
+		  _aiBeats[1] = 4;
+		  break;
+		case TS_24:
+		  _aiBeats[0] = 2;
+		  _aiBeats[1] = 4;
+		  break;
+		case TS_38:
+		  _aiBeats[0] = 3;
+		  _aiBeats[1] = 8;
+		  break;
+		case TS_68:
+		  _aiBeats[0] = 6;
+		  _aiBeats[1] = 8;
+		  break;
+	}
+	printf("Note TimeSig switched: On %d TimeSig %d\n", bOn, eElem);
+	fflush( stdout );
+	if( bOn )
+		setMode(InsertMode);
 }
 	
 void CAMainWin::on_action_Key_signature_activated() {

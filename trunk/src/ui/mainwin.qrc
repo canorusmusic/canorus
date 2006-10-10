@@ -25,5 +25,11 @@
         <file>images/n32.png</file>
         <file>images/n64.png</file>
         <file>images/player_play.png</file>
+        <file>images/tsc.png</file>
+        <file>images/tsab.png</file>
+        <file>images/ts34.png</file>
+        <file>images/ts24.png</file>
+        <file>images/ts38.png</file>
+        <file>images/ts68.png</file>
     </qresource>
 </RCC>
