@@ -104,6 +104,8 @@ set(Canorus_Interface_Srcs
 	interface/engraver.cpp
 	interface/playback.cpp
 	interface/rtmididevice.cpp
+	interface/pluginmanager.cpp
+	interface/plugin.cpp
 	)
 
 set(Canorus_RTMidi_Srcs
