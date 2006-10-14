@@ -46,6 +46,7 @@ using namespace std;
 #include "interface/rtmididevice.h"
 #include "interface/playback.h"
 #include "interface/engraver.h"
+#include "interface/pluginmanager.h"
 
 #include "widgets/scrollwidget.h"
 #include "widgets/viewport.h"
@@ -116,6 +117,10 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_lockScrollPlayback = false;
 	
 	CASwigRuby::init();
+	//Initialize plugins subsystem
+	_pluginManager = new CAPluginManager(this);
+	_pluginManager->readPlugins();
+	_pluginManager->enablePlugins();
 	
 	newDocument();
 }
@@ -126,6 +131,7 @@ CAMainWin::~CAMainWin()
 	delete mpoNoteMenu;
 	delete mpoTimeSigMenu;
 	delete _midiOut;
+	delete _pluginManager;
 	delete mpoMEToolBar;
 }
 
@@ -192,7 +198,7 @@ void CAMainWin::newDocument() {
 	
 	QList<VALUE> args;
 	args << toRubyObject(&_document, CASwigRuby::Document);
-	CASwigRuby::callFunction("newdocument", "newDefaultDocument", args);
+	CASwigRuby::callFunction(QDir::current().absolutePath() + "/src/scripts/newdocument.rb", "newDefaultDocument", args);
 	rebuildUI();
 }
 
@@ -592,6 +598,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 		rebuildUI(v->sheet(), true);
 		v->selectMElement(newElt);
 		v->repaint();
+		_pluginManager->action("onScoreViewPortClick", &_document, 0, 0);
 	} else
 		delete newElt;
 	

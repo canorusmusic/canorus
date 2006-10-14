@@ -42,6 +42,7 @@ class CAButtonMenu;
 class CALCDNumber;
 class CASheet;
 class CAKeySigPSP;
+class CAPluginManager;
 
 enum CAMode {
 	InsertMode,
@@ -59,10 +60,13 @@ enum CAFixedTimeSig {
 	TS_68
 };
 
+class CAScrollWidget;
 class CAViewPort;
 class CAScoreViewPort;
 
-class CAMainWin: public QMainWindow
+#define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
+
+class CAMainWin : public QMainWindow
 {
 	Q_OBJECT
 
@@ -87,6 +91,8 @@ public:
 	 * WARNING! This function delets the UI only (drawable elements). All the data classes should stay intact. Use _document.clear() in order to clear the data part as well.
 	 */
 	void clearUI();
+	
+	CAScrollWidget* currentScrollWidget() { return _currentScrollWidget; }
 	
 	/**
 	 * Rebuild the UI from the data part.
@@ -211,6 +217,7 @@ private:
 	void setMode(CAMode mode);
 	inline CAMode currentMode() { return _currentMode; }
 	CARtMidiDevice *_midiOut;
+	CAPluginManager *_pluginManager;
 	CAPlayback *_playback;
 	QString _fileName;
 
@@ -236,7 +243,6 @@ private:
 	CAViewPort *_activeViewPort;	    /// Current active viewport
 	bool _animatedScroll;		        /// animate scroll/zoom
 	bool _lockScrollPlayback;	        /// Lock the scroll UI while playback
-	#define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
 	CAViewPort *_playbackViewPort;	    /// Viewport needed to be updated when playback
 	                                    /// is active	
 	QTimer *_repaintTimer;	            /// Used when playback is active

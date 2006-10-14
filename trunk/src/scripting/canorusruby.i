@@ -18,6 +18,36 @@
 	$1 = QString::fromUtf8(STR2CSTR($input));
 }
 
+/*//convert returned QList value to Ruby's List
+%typemap(out) const QList<T>, QList<T> {
+	VALUE arr = rb_ary_new2($1.size());
+	QList<T>::iterator i = $1.begin(), iend=$1.end();
+	for (; i!=iend; i++)
+		rb_ary_push(arr, Data_Wrap_Struct(c ## QList<T>.klass, 0, 0, *i));
+	$result = arr;
+}
+%typemap(out) const QList<T*>, QList<T*> {
+	VALUE arr = rb_ary_new2($1.size());
+	QList<T*>::iterator i = $1.begin(), iend=$1.end();
+	for (; i!=iend; i++)
+		rb_ary_push(arr, Data_Wrap_Struct(c ## QList<T*>.klass, 0, 0, *i));
+	$result = arr;
+}
+
+//convert Ruby's List to QList
+%typemap(in) const QList<T>, QList<T> {
+	Check_Type($input, T_ARRAY);
+	QList<T> *list = new QList<T>;
+	int len = RARRAY($input)->len;
+	for (int i=0; i!=len; i++) {
+		VALUE inst = rb_ary_entry($input, i);
+		T element = NULL;
+		Data_Get_Struct(inst, QList<T>, element);
+		list->push_back(element);
+	}
+	$1 = list;
+}*/
+
 %include "scripting/context.i"
 %include "scripting/document.i"
 %include "scripting/muselement.i"
@@ -41,6 +71,8 @@ extern "C"
 #endif
 SWIGEXPORT void Init_CanorusRuby(void);
 
+class QString;
+
 VALUE toRubyObject(void *object, CASwigRuby::CAClassType type) {
 	switch (type) {
 		case CASwigRuby::Document:
@@ -60,13 +92,13 @@ VALUE toRubyObject(void *object, CASwigRuby::CAClassType type) {
 			break;
 		/*case CASwigRuby::MusElement:	//CAMusElement is always abstract
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAMusElement, 0);
-			break;/*
+			break;*/
 		case CASwigRuby::Note:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CANote, 0);
 			break;
-		/*case CASwigRuby::Rest:	//not implemented yet
+		case CASwigRuby::Rest:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CARest, 0);
-			break;*/
+			break;
 		case CASwigRuby::KeySignature:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAKeySignature, 0);
 			break;
@@ -85,3 +117,4 @@ VALUE toRubyObject(void *object, CASwigRuby::CAClassType type) {
 	}
 }
 %}
+

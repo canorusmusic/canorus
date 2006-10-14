@@ -225,8 +225,8 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 }
 
 bool CACanorusML::fatalError (const QXmlParseException & exception) {
-	qWarning() << "Fatal error on line" << exception.lineNumber()
-		<< ", column" << exception.columnNumber() << ":"
+	qWarning() << "Fatal error on line " << exception.lineNumber()
+		<< ", column " << exception.columnNumber() << ": "
 		<< exception.message() << "\n\nParser message:\n" << _errorMsg;
 	
 	return false;
