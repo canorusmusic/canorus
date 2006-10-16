@@ -19,6 +19,10 @@ CAPluginManager::CAPluginManager(CAMainWin *mainWin) {
 }
 
 CAPluginManager::~CAPluginManager() {
+	disablePlugins();
+	for (int i=0; i<_pluginList.size(); i++) {
+		delete _pluginList[i];
+	}
 }
 
 void CAPluginManager::readPlugins() {
@@ -48,9 +52,19 @@ bool CAPluginManager::enablePlugins() {
 	return res;
 }
 
+bool CAPluginManager::disablePlugins() {
+	bool res = true;
+	for (int i=0; i<_pluginList.size(); i++) {
+		if (!disablePlugin(_pluginList[i]))
+			res=false;
+	}
+	
+	return res;
+}
+
 bool CAPluginManager::enablePlugin(CAPlugin *plugin) {
-	if (plugin->enabled())
-		return false;
+	if (plugin->isEnabled())
+		return true;
 	
 	QList<QString> actions = plugin->actionList();
 	for (int i=0; i<actions.size(); i++) {
@@ -62,11 +76,11 @@ bool CAPluginManager::enablePlugin(CAPlugin *plugin) {
 }
 
 bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
-	if (!plugin->enabled())
-		return false;
+	if (!plugin->isEnabled())
+		return true;
 	
-	plugin->setEnabled(false);
 	bool res = plugin->action("onExit", _mainWin);
+	plugin->setEnabled(false);
 
 	QList<QString> actions = plugin->actionList();
 	for (int i=0; i<actions.size(); i++) {	//QMultiHash doesn't support remove(key, value), we have to do this manually

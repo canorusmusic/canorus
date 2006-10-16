@@ -18,19 +18,12 @@
 	$1 = QString::fromUtf8(STR2CSTR($input));
 }
 
-/*//convert returned QList value to Ruby's List
-%typemap(out) const QList<T>, QList<T> {
+//convert returned QList value to Ruby's List
+%typemap(out) const QList<CANote*>, QList<CANote*> {
 	VALUE arr = rb_ary_new2($1.size());
-	QList<T>::iterator i = $1.begin(), iend=$1.end();
-	for (; i!=iend; i++)
-		rb_ary_push(arr, Data_Wrap_Struct(c ## QList<T>.klass, 0, 0, *i));
-	$result = arr;
-}
-%typemap(out) const QList<T*>, QList<T*> {
-	VALUE arr = rb_ary_new2($1.size());
-	QList<T*>::iterator i = $1.begin(), iend=$1.end();
-	for (; i!=iend; i++)
-		rb_ary_push(arr, Data_Wrap_Struct(c ## QList<T*>.klass, 0, 0, *i));
+	for (int i=0; i<$1.size(); i++)
+		rb_ary_push(arr, toRubyObject($1.at(i), CASwigRuby::Note));
+	
 	$result = arr;
 }
 
@@ -46,7 +39,7 @@
 		list->push_back(element);
 	}
 	$1 = list;
-}*/
+}
 
 %include "scripting/context.i"
 %include "scripting/document.i"
@@ -115,6 +108,9 @@ VALUE toRubyObject(void *object, CASwigRuby::CAClassType type) {
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CACanorusML, 0);
 			break;*/
 	}
+}
+
+VALUE toRubyArray(QList<CANote*> list) {
 }
 %}
 

@@ -112,6 +112,7 @@ private slots:
 	////////////////////////////////////////////////////
 	//Menu bar actions
 	////////////////////////////////////////////////////
+	void closeEvent(QCloseEvent *event);
 	//File menu
 	void on_actionNew_activated();
 	void on_actionNew_sheet_activated();

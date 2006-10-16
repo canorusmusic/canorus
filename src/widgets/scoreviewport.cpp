@@ -601,7 +601,8 @@ void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
 	checkScrollBars();
 	calculateShadowNoteCoords();
 }
-
+#include"core/document.h"
+#include"core/sheet.h"
 /**
  * WARNING! This method is called when the virtual _canvas gets resized as well!
  */

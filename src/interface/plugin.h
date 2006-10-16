@@ -48,7 +48,7 @@ class CAPlugin {
 		void addAction(QString onAction, QString lang, QString fileName, QString function, QList<QString> args);
 		
 		void setEnabled(bool enabled) { _enabled = enabled; }
-		bool enabled() { return _enabled; }
+		bool isEnabled() { return _enabled; }
 		
 		QString name() { return _name; }
 		QString author() { return _author; }

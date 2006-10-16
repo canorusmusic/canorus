@@ -130,6 +130,7 @@ class CAVoice {
 		CAPlayable::CAPlayableLength lastPlayableLength();
 		
 		CAClef *getClef(CAMusElement *elt);
+		QList<CANote*> getChord(int time);
 		
 		const QString name() { return _name; }
 		unsigned char midiChannel() { return _midiChannel; }
