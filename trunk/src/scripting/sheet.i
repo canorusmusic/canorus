@@ -30,6 +30,7 @@ class CASheet {
 		CADocument *document();
 
 		const QString name();
+		QList<CANote*> getChord(int time);
 
 		void setName(const QString name);
 

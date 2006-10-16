@@ -45,6 +45,14 @@ class CAPluginManager : public QXmlDefaultHandler {
 		bool enablePlugins();
 		
 		/**
+		 * Disable and deinitialize all plugins.
+		 * This method is called automatically on destructor.
+		 * 
+		 * @return True, if all the plugins were successfully loaded, False otherwise.
+		 */
+		bool disablePlugins();
+		
+		/**
 		 * Enable the plugin
 		 * 
 		 * @param plugin Pointer to plugin to be loaded.

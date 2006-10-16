@@ -239,3 +239,13 @@ CAMusElement *CAVoice::eltAfter(CAMusElement *elt) {
 	
 	return _musElementList[idx];
 }
+#include <iostream>
+QList<CANote*> CAVoice::getChord(int time) {
+	int i;
+	for (i=0; i<_musElementList.size() && (_musElementList[i]->timeEnd()<=time || _musElementList[i]->musElementType()!=CAMusElement::Note); i++);
+	if (i!=_musElementList.size()) {
+		return ((CANote*)_musElementList[i])->chord();
+	}
+	
+	return QList<CANote*>();
+}

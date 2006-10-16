@@ -40,6 +40,7 @@ class CAPlayable : public CAMusElement {
 		
 		CAVoice *voice() { return _voice; }
 		void setVoice(CAVoice *v);
+		CAStaff* staff() { return (CAStaff*)_context; }
 
 		static int pitchToMidiPitch(int pitch, int acc);
 		static int midiPitchToPitch(int midiPitch);

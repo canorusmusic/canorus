@@ -131,7 +131,6 @@ CAMainWin::~CAMainWin()
 	delete mpoNoteMenu;
 	delete mpoTimeSigMenu;
 	delete _midiOut;
-	delete _pluginManager;
 	delete mpoMEToolBar;
 }
 
@@ -479,6 +478,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				break;
 			}
 		}
+		_pluginManager->action("onScoreViewPortClick", &_document, 0, 0);
 	}
 }
 
@@ -598,7 +598,6 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 		rebuildUI(v->sheet(), true);
 		v->selectMElement(newElt);
 		v->repaint();
-		_pluginManager->action("onScoreViewPortClick", &_document, 0, 0);
 	} else
 		delete newElt;
 	
@@ -881,6 +880,10 @@ void CAMainWin::on_actionZoom_to_width_activated() {
 void CAMainWin::on_actionZoom_to_height_activated() {
 	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)
 		((CAScoreViewPort*)_activeViewPort)->zoomToHeight();
+}
+
+void CAMainWin::closeEvent(QCloseEvent *event) {	//TODO: Make the main window the main window of the application somehow - when it's closed, the destructor is also called. This way, this function will not be needed anymore. -Matevz
+	delete _pluginManager;
 }
 
 void CAMainWin::on_actionOpen_activated() {
