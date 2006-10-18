@@ -29,7 +29,7 @@ class CAPlayable : public CAMusElement {
 			HundredTwentyEighth = 128
 		};
 		
-		CAPlayable(CAVoice *voice, int timeStart, int timeLength);
+		CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, int dotted=0);
 		inline unsigned char midiPitch() { return _midiPitch; }
 		void setMidiPitch(unsigned char pitch) { _midiPitch = pitch; }
 		
@@ -41,6 +41,16 @@ class CAPlayable : public CAMusElement {
 		CAVoice *voice() { return _voice; }
 		void setVoice(CAVoice *v);
 		CAStaff* staff() { return (CAStaff*)_context; }
+		
+		inline int dotted() { return _dotted; }
+		
+		/**
+		 * Set the note or rest dotted and return the difference in timeLengths.
+		 * 
+		 * @param dotted Number of dots.
+		 * @return Difference in time lengths of the element before and now with the new number of dots.
+		 */
+		int setDotted(int dotted);
 
 		static int pitchToMidiPitch(int pitch, int acc);
 		static int midiPitchToPitch(int midiPitch);
@@ -48,6 +58,7 @@ class CAPlayable : public CAMusElement {
 	protected:
 		int _midiLength;
 		unsigned char _midiPitch;
+		int _dotted;
 		CAPlayableLength _playableLength;
 		CAVoice *_voice;
 };

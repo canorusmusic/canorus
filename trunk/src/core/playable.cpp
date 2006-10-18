@@ -10,10 +10,51 @@
 #include "core/voice.h"
 #include "core/staff.h"
 
-CAPlayable::CAPlayable(CAVoice *voice, int timeStart, int timeLength)
- : CAMusElement(voice?voice->staff():0, timeStart, timeLength) {
+CAPlayable::CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, int dotted)
+ : CAMusElement(voice?voice->staff():0, timeStart, 0) {
 	_voice = voice;
 	_playable = true;
+	_playableLength = length;
+	
+	switch (length) {
+		case CAPlayable::HundredTwentyEighth:
+			_timeLength = 8;
+			break;
+		case CAPlayable::SixtyFourth:
+			_timeLength = 16;
+			break;
+		case CAPlayable::ThirtySecond:
+			_timeLength = 32;
+			break;
+		case CAPlayable::Sixteenth:
+			_timeLength = 64;
+			break;
+		case CAPlayable::Eighth:
+			_timeLength = 128;
+			break;
+		case CAPlayable::Quarter:
+			_timeLength = 256;
+			break;
+		case CAPlayable::Half:
+			_timeLength = 512;
+			break;
+		case CAPlayable::Whole:
+			_timeLength = 1024;
+			break;
+		case CAPlayable::Breve:
+			_timeLength = 2048;
+			break;
+		default:				//This should never happen!
+			_timeLength = 0;
+			break;
+	}
+	
+	float factor = 1.0, delta=0.5;
+	for (int i=0; i<dotted; i++, factor+=delta, delta/=2);	//calculate the length factor out of number of dots
+	_timeLength = (int)(_timeLength*factor+0.5);	//increase the time length for the factor
+	
+	_midiLength = _timeLength;
+	_dotted = dotted;
 }
 
 int CAPlayable::pitchToMidiPitch(int pitch, int acc) {
@@ -31,4 +72,18 @@ int CAPlayable::midiPitchToPitch(int midiPitch) {
 
 void CAPlayable::setVoice(CAVoice *voice) {
 	_voice = voice; _context = voice->staff();
+}
+
+int CAPlayable::setDotted(int dotted) {
+	//calculate the original note length
+	float factor = 1.0, delta=0.5;
+	for (int i=0; i<_dotted; i++, factor+=delta, delta/=2);
+	int origLength = (int)(_timeLength / factor + 0.5);
+	
+	//calculate and set the new note length
+	factor = 1.0, delta=0.5;
+	for (int i=0; i<_dotted; i++, factor+=delta, delta/=2);	//calculate the length factor out of number of dots
+	_dotted = dotted;	
+
+	return (_timeLength - (_timeLength = (int)(origLength * factor + 0.5)))*-1;	//return delta of the new and old timeLengths, set the new timeLength
 }

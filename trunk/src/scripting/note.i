@@ -16,7 +16,7 @@
 %rename(Note) CANote;
 class CANote : public CAPlayable {
 	public:
-		CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int timeLength=0);
+		CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int dotted=0);
 		CANote *clone();
 		
 		CAPlayableLength noteLength();

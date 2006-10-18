@@ -11,57 +11,20 @@
 #include "core/staff.h"
 #include "core/clef.h"
 
-CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int timeLength)
- : CAPlayable(voice, timeStart, timeLength) {
+CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int dotted)
+ : CAPlayable(length, voice, timeStart, dotted) {
 	_musElementType = CAMusElement::Note;
-	_playableLength = length;
 	_forceAccidentals = false;
 	_accs = accs;
 
 	_pitch = pitch;
 	_midiPitch = CAPlayable::pitchToMidiPitch(pitch, _accs);
 
-	if (timeLength)
-		_timeLength = timeLength;
-	else {
-		switch (length) {
-			case CAPlayable::HundredTwentyEighth:
-				_timeLength = 8;
-				break;
-			case CAPlayable::SixtyFourth:
-				_timeLength = 16;
-				break;
-			case CAPlayable::ThirtySecond:
-				_timeLength = 32;
-				break;
-			case CAPlayable::Sixteenth:
-				_timeLength = 64;
-				break;
-			case CAPlayable::Eighth:
-				_timeLength = 128;
-				break;
-			case CAPlayable::Quarter:
-				_timeLength = 256;
-				break;
-			case CAPlayable::Half:
-				_timeLength = 512;
-				break;
-			case CAPlayable::Whole:
-				_timeLength = 1024;
-				break;
-			case CAPlayable::Breve:
-				_timeLength = 2048;
-				break;
-		}
-	}
-	
-	_midiLength = _timeLength;
-
 	calculateNotePosition();
 }
 
 CANote *CANote::clone() {
-	CANote *d = new CANote(_playableLength, _voice, _pitch, _accs, _timeStart);
+	CANote *d = new CANote(_playableLength, _voice, _pitch, _accs, _timeStart, _dotted);
 	
 	return d;
 }

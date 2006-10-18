@@ -21,7 +21,7 @@ class CARest : public CAPlayable {
 			Hidden
 		};
 		
-		CARest(CAPlayableLength length, CAVoice *voice, int timeStart, CARestType type, int timeLength=0);
+		CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart, int dotted=0);
 		CARest *clone();
 		
 		~CARest();

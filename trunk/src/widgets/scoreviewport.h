@@ -553,6 +553,7 @@ class CAScoreViewPort : public CAViewPort {
 		bool drawShadowNoteAccs() { return _drawShadowNoteAccs; }
 		void setShadowNoteAccs(int accs) { _shadowNoteAccs = accs; }
 		int shadowNoteAccs() { return _shadowNoteAccs; }
+		void setShadowNoteDotted(int dotted) { for (int i=0; i<_shadowNote.size(); i++) _shadowNote[i]->setDotted(dotted); }
 		
 	signals:
 		/**

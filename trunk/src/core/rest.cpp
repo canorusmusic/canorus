@@ -9,52 +9,17 @@
 #include "core/rest.h"
 #include "core/staff.h"
 
-CARest::CARest(CAPlayableLength length, CAVoice *voice, int timeStart, CARestType type, int timeLength) 
- : CAPlayable(voice, timeStart, timeLength) {
+CARest::CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart, int dotted) 
+ : CAPlayable(length, voice, timeStart, dotted) {
  	_musElementType = CAMusElement::Rest;
- 	_playableLength = length;
  	_restType = type;
- 	
- 	if (timeLength)
-		_timeLength = timeLength;
-	else {
-		switch (length) {
-			case CAPlayable::HundredTwentyEighth:
-				_timeLength = 8;
-				break;
-			case CAPlayable::SixtyFourth:
-				_timeLength = 16;
-				break;
-			case CAPlayable::ThirtySecond:
-				_timeLength = 32;
-				break;
-			case CAPlayable::Sixteenth:
-				_timeLength = 64;
-				break;
-			case CAPlayable::Eighth:
-				_timeLength = 128;
-				break;
-			case CAPlayable::Quarter:
-				_timeLength = 256;
-				break;
-			case CAPlayable::Half:
-				_timeLength = 512;
-				break;
-			case CAPlayable::Whole:
-				_timeLength = 1024;
-				break;
-			case CAPlayable::Breve:
-				_timeLength = 2048;
-				break;
-		}
-	}
 }
 
 CARest::~CARest() {
 }
 
 CARest *CARest::clone() {
-	return new CARest(_playableLength, _voice, _timeStart, _restType, _timeLength);
+	return new CARest(_restType, _playableLength, _voice, _timeStart, _dotted);
 }
 
 const QString CARest::restTypeML() {

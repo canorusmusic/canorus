@@ -17,7 +17,8 @@ class CADrawableAccidental;
 class CADrawableNote : public CADrawableMusElement {
 	public:
 		/**
-		 * Y coordinate represents the center of the note!
+		 * Y coordinate represents the center of the notehead.
+		 * X coordinate represents the left border of the notehead.
 		 */
 		CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y, bool shadowNote = false, CADrawableAccidental* acc=0);
 		
@@ -33,7 +34,6 @@ class CADrawableNote : public CADrawableMusElement {
 		bool drawLedgerLines() { return _drawLedgerLines; }
 		void setXPos(int xPos);
 		void setYPos(int yPos);
-		//void setDrawableContext(CADrawableContext *c) { _drawableContext = c; }
 		
 		void setDrawableAccidental(CADrawableAccidental *acc) { _drawableAcc = acc; }
 		CADrawableAccidental *drawableAccidental() { return _drawableAcc; }
@@ -42,6 +42,7 @@ class CADrawableNote : public CADrawableMusElement {
 		bool _drawLedgerLines;	///Are the ledger lines drawn or not. True when ledger lines needed, False when the note is inside the staff 
 		bool _shadowNote;	///Is the current note shadow note?
 		CADrawableAccidental *_drawableAcc;
+		int _noteHeadWidth;
 		static const int QUARTER_STEM_LENGTH = 22;
 		static const int HALF_STEM_LENGTH = 24;
 		static const int QUARTER_YPOS_DELTA = 21;

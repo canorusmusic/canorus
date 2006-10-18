@@ -107,11 +107,12 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_currentMode = SelectMode;
 	_insertMusElement = CAMusElement::None;
 	_insertPlayableLength = CAPlayable::Quarter;
-	_aiBeats[0] = 4;
-	_aiBeats[1] = 4;
+	_insertPlayableDotted = 0;
+	_insertTimeSigBeats = 4;
+	_insertTimeSigBeat = 4;
 	_insertClef = CAClef::Treble;
-	_noteAccs = 0;
-	_noteExtraAccs = 0;
+	_insertNoteAccs = 0;
+	_insertNoteExtraAccs = 0;
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
@@ -525,7 +526,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				return;
 			
 			staff = (CAStaff*)context->context();
-			newElt = new CATimeSignature(_aiBeats[0], _aiBeats[1],
+			newElt = new CATimeSignature(_insertTimeSigBeats, _insertTimeSigBeat,
 			                                            staff,
 			                                            (left?left->musElement()->timeEnd():0));
 			success = staff->insertSignAfter(newElt, left?left->musElement():0, true);
@@ -552,11 +553,12 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 					break;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
 				
 				int pitch;
-				newElt = new CANote(_insertPlayableLength,
+				newElt = new CANote(((CANote*)left->musElement())->playableLength(),
 			                  voice,
 			                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			                  _noteAccs,
-			                  (left->musElement()->timeStart())
+			                  _insertNoteAccs,
+			                  left->musElement()->timeStart(),
+			                  ((CANote*)left->musElement())->dotted()
 			                 );
 				success = voice->addNoteToChord((CANote*)newElt, (CANote*)left->musElement());
 			} else {
@@ -565,12 +567,13 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				newElt = new CANote(_insertPlayableLength,
 			                  staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
 			                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			                  _noteAccs,
-			                  (left?left->musElement()->timeEnd():0)
+			                  _insertNoteAccs,
+			                  (left?left->musElement()->timeEnd():0),
+			                  _insertPlayableDotted
 			                 );
 				success = voice->insertMusElementAfter(newElt, left?left->musElement():0);
 			}
-			if (success) { _noteExtraAccs=0; v->setDrawShadowNoteAccs(false); }
+			if (success) { _insertNoteExtraAccs=0; v->setDrawShadowNoteAccs(false); }
 			break;
 		}
 		case CAMusElement::Rest: {
@@ -583,11 +586,12 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			     (context->context()->contextType() != CAContext::Staff) )
 				return;
 			
-			newElt = new CARest(_insertPlayableLength,
-		                  staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
-		                  (left?left->musElement()->timeEnd():0),
-		                  CARest::Normal
-		                 );
+			newElt = new CARest(CARest::Normal,
+				_insertPlayableLength,
+				staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
+				(left?left->musElement()->timeEnd():0),
+				_insertPlayableDotted
+				);
 			success = voice->insertMusElementAfter(newElt, left?left->musElement():0);
 
 			break;
@@ -597,6 +601,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 	if (success) {
 		rebuildUI(v->sheet(), true);
 		v->selectMElement(newElt);
+		v->setShadowNoteDotted(_insertPlayableDotted);
 		v->repaint();
 	} else
 		delete newElt;
@@ -622,9 +627,9 @@ void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort
 		int pitch = s->calculatePitch(coords.x(), coords.y());
 		
 		//write into the main window's status bar the note pitch name
-		_noteAccs = s->getAccs(coords.x(), pitch)+_noteExtraAccs;
-		statusBar()->showMessage(CANote::generateNoteName(pitch, _noteAccs));
-		((CAScoreViewPort*)v)->setShadowNoteAccs(_noteAccs);
+		_insertNoteAccs = s->getAccs(coords.x(), pitch)+_insertNoteExtraAccs;
+		statusBar()->showMessage(CANote::generateNoteName(pitch, _insertNoteAccs));
+		((CAScoreViewPort*)v)->setShadowNoteAccs(_insertNoteAccs);
 	}
 }
 
@@ -663,19 +668,21 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 	
 	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort) {
 		switch (e->key()) {
-			//Cursor keys
-			case Qt::Key_Right:
+			//Music editing keys
+			case Qt::Key_Right: {
 				//select next music element
 				((CAScoreViewPort*)_activeViewPort)->selectNextMusElement();
 				_activeViewPort->repaint();
-				
 				break;
-			case Qt::Key_Left:
+			}
+			
+			case Qt::Key_Left: {
 				//select previous music element
 				((CAScoreViewPort*)_activeViewPort)->selectPrevMusElement();
 				_activeViewPort->repaint();
-				
 				break;
+			}
+			
 			case Qt::Key_B: {
 				//place a barline
 				CADrawableContext *drawableContext;
@@ -701,7 +708,8 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				v->repaint();
 				break;
 			}
-			case Qt::Key_Up:
+			
+			case Qt::Key_Up: {
 				if (_currentMode == SelectMode) {	//select the upper music element
 					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
 					_activeViewPort->repaint();
@@ -719,7 +727,9 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 					}
 				}
 				break;
-			case Qt::Key_Down:
+			}
+			
+			case Qt::Key_Down: {
 				if (_currentMode == SelectMode) {	//select the upper music element
 					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
 					_activeViewPort->repaint();
@@ -736,47 +746,78 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 						}
 					}
 				}
-				
 				break;
+			}
 			case Qt::Key_Plus: {
 				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (currentMode()==InsertMode) {
-						_noteExtraAccs++; _noteAccs++;
-						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(_noteExtraAccs!=0);
-						((CAScoreViewPort*)v)->setShadowNoteAccs(_noteAccs);
+						_insertNoteExtraAccs++; _insertNoteAccs++;
+						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(_insertNoteExtraAccs!=0);
+						((CAScoreViewPort*)v)->setShadowNoteAccs(_insertNoteAccs);
 						v->repaint();
 					} else if (currentMode()==EditMode) {
 						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
 							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
 							if (elt->musElementType()==CAMusElement::Note) {
 								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
-								v->rebuild();
-								v->repaint();
+								rebuildUI(((CANote*)elt)->voice()->staff()->sheet());
 							}
 						}
 					}
 				}
 				break;
 			}
+			
 			case Qt::Key_Minus: {
 				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (currentMode()==InsertMode) {
-						_noteExtraAccs--; _noteAccs--;
-						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(_noteExtraAccs!=0);
-						((CAScoreViewPort*)v)->setShadowNoteAccs(_noteAccs);
+						_insertNoteExtraAccs--; _insertNoteAccs--;
+						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(_insertNoteExtraAccs!=0);
+						((CAScoreViewPort*)v)->setShadowNoteAccs(_insertNoteAccs);
 						v->repaint();
 					} else if (currentMode()==EditMode) {
 						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
 							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
-							if (elt->musElementType()==CAMusElement::Note)
+							if (elt->musElementType()==CAMusElement::Note) {
 								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
-								v->rebuild();
-								v->repaint();
+								rebuildUI(((CANote*)elt)->voice()->staff()->sheet());
+							}
 						}
 					}
 				}
 				break;
 			}
+			
+			case Qt::Key_Period: {
+				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
+					if (currentMode()==InsertMode) {
+						_insertPlayableDotted = (_insertPlayableDotted+1)%4;
+						((CAScoreViewPort*)v)->setShadowNoteDotted(_insertPlayableDotted);
+						v->repaint();
+					} else if (currentMode()==EditMode) {
+						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
+							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
+							
+							if (elt->isPlayable()) {
+								int diff;
+								if (elt->musElementType()==CAMusElement::Note) {
+									int i;
+									for (i=0; i<((CANote*)elt)->chord().size(); i++) {
+										diff = ((CANote*)elt)->chord().at(i)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
+									}
+									elt = ((CANote*)elt)->chord().last();
+								} else if (elt->musElementType()==CAMusElement::Rest)
+									diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
+								 
+								((CAPlayable*)elt)->voice()->updateTimesAfter(elt, diff);
+								rebuildUI(((CANote*)elt)->voice()->staff()->sheet());
+							}
+						}
+					}
+				}
+				break;
+			}
+			
 			case Qt::Key_Delete:
 				if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
 					CAMusElement *elt = ((CAScoreViewPort*)_activeViewPort)->selection()->back()->musElement();
@@ -787,7 +828,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				}
 				
 				break;
-							
+			
 			//Mode keys
 			case Qt::Key_Escape:
 				if ((currentMode()==SelectMode) && (_activeViewPort) && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
@@ -1008,28 +1049,28 @@ void CAMainWin::on_actionTimeSigSelect_toggled(bool bOn)
 	{
 		default:
 		case TS_44:
-		  _aiBeats[0] = 4;
-		  _aiBeats[1] = 4;
+		  _insertTimeSigBeats = 4;
+		  _insertTimeSigBeat = 4;
 		  break;
 		case TS_22:
-		  _aiBeats[0] = 2;
-		  _aiBeats[1] = 2;
+		  _insertTimeSigBeats = 2;
+		  _insertTimeSigBeat = 2;
 		  break;
 		case TS_34:
-		  _aiBeats[0] = 3;
-		  _aiBeats[1] = 4;
+		  _insertTimeSigBeats = 3;
+		  _insertTimeSigBeat = 4;
 		  break;
 		case TS_24:
-		  _aiBeats[0] = 2;
-		  _aiBeats[1] = 4;
+		  _insertTimeSigBeats = 2;
+		  _insertTimeSigBeat = 4;
 		  break;
 		case TS_38:
-		  _aiBeats[0] = 3;
-		  _aiBeats[1] = 8;
+		  _insertTimeSigBeats = 3;
+		  _insertTimeSigBeat = 8;
 		  break;
 		case TS_68:
-		  _aiBeats[0] = 6;
-		  _aiBeats[1] = 8;
+		  _insertTimeSigBeats = 6;
+		  _insertTimeSigBeat = 8;
 		  break;
 	}
 	printf("Note TimeSig switched: On %d TimeSig %d\n", bOn, eElem);
