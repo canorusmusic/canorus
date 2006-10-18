@@ -130,21 +130,40 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 	return lastClef;
 }
 
-void CAVoice::updateTimes(int idx) {
-	int length = _musElementList[idx]->timeLength();
+bool CAVoice::updateTimes(CAMusElement *elt, int length) {
+	int idx;
+	if ((idx = _musElementList.indexOf(elt))!=-1) {
+		updateTimes(idx, length);
+		return true;
+	}
+		return false;
+}
+
+bool CAVoice::updateTimesAfter(CAMusElement *elt, int length) {
+	int idx;
+	if ((idx = _musElementList.indexOf(elt))!=-1) {
+		updateTimes(idx+1, length);
+		return true;
+	}
+		return false;
+}
+
+void CAVoice::updateTimes(int idx, int givenLength) {
+	if (idx >= _musElementList.size())
+		return;
+	
+	int length;
+	if (!givenLength)
+		length = _musElementList[idx++]->timeLength();
+	else
+		length = givenLength;
 	
 	//indent all the music elements after the given index's one.
 	//If the music elements aren't connected (previous's end time != next start time)
-	for (int i=idx+1; i<_musElementList.size() &&
-	                  (_musElementList[i-1]->timeEnd()==_musElementList[i]->timeStart()+length || _musElementList[i-1]->timeStart()==_musElementList[i]->timeStart()+length)
+	for (int i=idx; i<_musElementList.size() && (givenLength || 
+	                (_musElementList[i-1]->timeEnd()==_musElementList[i]->timeStart()+length || _musElementList[i-1]->timeStart()==_musElementList[i]->timeStart()+length))
 	     ; i++) {
 		_musElementList[i]->setTimeStart(_musElementList[i]->timeStart() + length);
-	}
-}
-
-void CAVoice::updateTimes(int idx, int length) {
-	for (int i=idx; i<_musElementList.size(); i++) {
-		_musElementList[i]->setTimeStart(_musElementList[i]->timeStart() - length);
 	}
 }
 
@@ -155,7 +174,7 @@ bool CAVoice::removeElement(CAMusElement *elt) {
 		
 		//update the startTimes of elements behind it, but only if the note was not part of the chord
 		if (!(elt->musElementType()==CAMusElement::Note && ((CANote*)elt)->isPartOfTheChord())) 
-			updateTimes(idx+1, length);	//but only, if the removed note is not part of the chord
+			updateTimes(idx+1, -1*length);	//but only, if the removed note is not part of the chord
 		
 		_musElementList.removeAt(idx);					//remove the element from the music element list
 		return true;
@@ -187,13 +206,13 @@ int CAVoice::lastNotePitch(bool inChord) {
 	return -1;
 }
 
-CAPlayable::CAPlayableLength CAVoice::lastPlayableLength() {
+CAPlayable* CAVoice::lastPlayableElt() {
 	for (int i=_musElementList.size()-1; i>=0; i--) {
 		if (_musElementList[i]->isPlayable())
-			return (((CAPlayable*)_musElementList[i])->playableLength());
+			return ((CAPlayable*)_musElementList[i]);
 	}
 	
-	return CAPlayable::None;
+	return 0;
 }
 
 bool CAVoice::containsPitch(int pitch, int startTime) {

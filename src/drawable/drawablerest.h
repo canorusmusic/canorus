@@ -22,6 +22,9 @@ class CADrawableRest : public CADrawableMusElement {
 		void draw(QPainter *p, CADrawSettings s);
 		
 		inline CARest* rest() { return (CARest*)_musElement; }
+	
+	private:
+		int _restWidth;	///Width of the rest itself without dots, ledger lines etc.
 };
 
 #endif /*DRAWABLEREST_H_*/

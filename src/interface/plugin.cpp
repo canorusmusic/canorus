@@ -93,8 +93,11 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 				else {
 					error = true;
 					break;
-				}				
+				}
 			}
+		} else
+		if (val=="CHORD") {
+			//TODO
 		}
 	}
 	

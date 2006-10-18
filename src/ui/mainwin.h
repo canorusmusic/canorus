@@ -259,8 +259,10 @@ private:
 	////////////////////////////////////////////////////
 	CAMusElement::CAMusElementType _insertMusElement;	/// Current element to be added. 0, if in view mode, CAMusElementType, if in insert mode
 	CAPlayable::CAPlayableLength _insertPlayableLength;	/// Length of note/rest to be added
-	int _noteExtraAccs;	/// Extra note accidentals for new notes which user adds/removes with +/- keys
-	int _noteAccs;	/// Note accidentals at specific coordinates updated regularily
-	int _aiBeats[2]; /// Time signature beats to be inserted
+	int _insertPlayableDotted;	/// Number of dots to be inserted for the note/rest
+	int _insertNoteExtraAccs;	/// Extra note accidentals for new notes which user adds/removes with +/- keys
+	int _insertNoteAccs;	/// Note accidentals at specific coordinates updated regularily when in insert mode
+	int _insertTimeSigBeats; /// Time signature number of beats to be inserted
+	int _insertTimeSigBeat; /// Time signature beat to be inserted
 	CAClef::CAClefType _insertClef;	/// Type of the clef to be inserted
 };

@@ -26,8 +26,6 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 			_height = 49;
 			_yPos = y;
 			_xPos = x;
-			_neededWidth = _width;
-			_neededHeight = _height;
 			break;
 			
 		case CAPlayable::SixtyFourth:
@@ -35,8 +33,6 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 			_height = 41;
 			_yPos = y;
 			_xPos = x;
-			_neededWidth = _width;
-			_neededHeight = _height;
 			break;
 		
 		case CAPlayable::ThirtySecond:
@@ -44,8 +40,6 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 			_height = 33;
 			_yPos = (int)(y + 2 + 0.5);
 			_xPos = x;
-			_neededWidth = _width;
-			_neededHeight = _height;
 			break;
 			
 		case CAPlayable::Sixteenth:
@@ -53,8 +47,6 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 			_height = 24;
 			_yPos = (int)(y + ((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);
 			_xPos = x;
-			_neededWidth = _width;
-			_neededHeight = _height;
 			break;
 			
 		case CAPlayable::Eighth:
@@ -62,8 +54,6 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 			_height = 17;
 			_yPos = (int)(y + ((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);
 			_xPos = x;
-			_neededWidth = _width;
-			_neededHeight = _height;
 			break;
 			
 		case CAPlayable::Quarter:
@@ -71,8 +61,6 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 			_height = 20;
 			_yPos = (int)(y + ((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);
 			_xPos = x;
-			_neededWidth = _width;
-			_neededHeight = _height;
 			break;
 		
 		case CAPlayable::Half:
@@ -80,8 +68,6 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 			_height = 5;
 			_yPos = (int)(y + 1.5*((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);	//values in constructor are the notehead center coords. yPos represents the top of the stem.
 			_xPos = x;
-			_neededWidth = _width;
-			_neededHeight = _height;
 			break;
 			
 		case CAPlayable::Whole:
@@ -89,8 +75,6 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 			_height = 5;
 			_yPos = (int)(y + ((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);	//values in constructor are the notehead center coords. yPos represents the top of the stem.
 			_xPos = x;
-			_neededWidth = _width;
-			_neededHeight = _height;
 			break;			
 
 		case CAPlayable::Breve:
@@ -98,10 +82,20 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 			_height = 9;
 			_yPos = (int)(y + ((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);
 			_xPos = x;
-			_neededWidth = _width;
-			_neededHeight = _height;
 			break;			
 	}
+	
+	_restWidth = _width;
+	
+	if (rest->dotted()) {
+		_width += 3;
+		for (int i=0; i<rest->dotted(); i++)
+			_width += 2;
+	}
+	
+	_neededWidth = _width;
+	_neededHeight = _height;
+
 }
 
 CADrawableRest::~CADrawableRest() {
@@ -156,4 +150,18 @@ void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
 			break;
 		}
 	}
+	
+	////////////////////////////////////////////////
+	//Draw Dots
+	////////////////////////////////////////////////
+	float delta=4*s.z;
+	for (int i=0; i<rest()->dotted(); i++) {
+		pen.setWidth((int)(2.7*s.z+0.5) + 1);
+		pen.setCapStyle(Qt::RoundCap);
+		pen.setColor(s.color);
+		p->setPen(pen);
+		p->drawPoint((int)(s.x + _restWidth*s.z + delta + 0.5), (int)(s.y + 0.3*_height*s.z + 0.5));
+		delta += 3*s.z;
+	}
+	
 }

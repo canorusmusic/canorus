@@ -127,7 +127,7 @@ class CAVoice {
 		 */
 		int lastNotePitch(bool inChord=false);
 		
-		CAPlayable::CAPlayableLength lastPlayableLength();
+		CAPlayable* lastPlayableElt();
 		
 		CAClef *getClef(CAMusElement *elt);
 		QList<CANote*> getChord(int time);
@@ -140,9 +140,38 @@ class CAVoice {
 		void setMidiChannel(const unsigned char ch) { _midiChannel = ch; }
 		void setMidiProgram(const unsigned char program) { _midiProgram = program; }
 		
+		/**
+		 * Update the musElements timeStarts from idx-th and on, adding the length from every one.
+		 * Called when an element is deleted or inserted and startTimes after it need to be updated.
+		 * If length is not set, take the element at idx as the inserted one and update times after it.
+		 * 
+		 * @param elt Element where the update should begin, if length is not 0. Or right after it, if length is 0.
+		 * @param length Length which should be substracted by the timeStarts.
+		 * @return True, if element was found and update was made, False otherwise.
+		 */
+		bool updateTimes(CAMusElement *elt, int length=0);
+		
+		/**
+		 * Update the musElements timeStarts from idx+1-th and on, adding the length from every one.
+		 * Called when an element is deleted or inserted and startTimes after it need to be updated.
+		 * If length is not set, take the element at idx as the inserted one and update times after it.
+		 * 
+		 * @param eltBefore The previous element of where the update should begin, if length is not 0. Or right after it, if length is 0.
+		 * @param length Length which should be substracted by the timeStarts.
+		 * @return True, if element was found and update was made, False otherwise.
+		 */
+		bool updateTimesAfter(CAMusElement *eltBefore, int length=0);
+		
 	private:
-		void updateTimes(int idx);	///Update the musElements timeStarts, taking idx-th element as the inserted element.
-		void updateTimes(int idx, int length);	///Update the musElements timeStarts from idx-th and on and substracting the length from every one. Called when an element is deleted and starTimes after it need to be updated.
+		/**
+		 * Update the musElements timeStarts from idx-th and on and adding the length from every one.
+		 * Called when an element is deleted or inserted and startTimes after it need to be updated.
+		 * If length is not set, take the element at idx as the inserted one and update times after it.
+		 * 
+		 * @param idx Index of the element where the update should begin. Or after it, if length is 0.
+		 * @param length Length which should be substracted by the timeStarts.
+		 */
+		void updateTimes(int idx, int length=0);
 		QList<CAMusElement *> _musElementList;
 		CAStaff *_staff;	///Staff which this voice belongs to by default.
 		int _voiceNumber;	///Voice number starting at 1.

@@ -29,7 +29,7 @@ class CAPlayable : public CAMusElement {
 			HundredTwentyEighth = 128
 		};
 		
-		CAPlayable(CAVoice *voice, int timeStart, int timeLength);
+		CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, int dotted=0);
 		inline unsigned char midiPitch() { return _midiPitch; }
 		void setMidiPitch(unsigned char pitch) { _midiPitch = pitch; }
 		
@@ -37,6 +37,9 @@ class CAPlayable : public CAMusElement {
 		void setMidiLength(int length) { _midiLength = length; }
 		
 		inline CAPlayableLength playableLength() { return _playableLength; }
+		
+		int dotted();
+		int setDotted(int dotted);
 		
 		CAVoice *voice() { return _voice; }
 		void setVoice(CAVoice *v);

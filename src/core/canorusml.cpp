@@ -114,7 +114,8 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 	int lastNotePitch = 28;
 	int firstNotePitchInChord;
 	int curStreamTime = 0;
-	QString lastPlayableLength = "";
+	QString lastPlayableLength;
+	int lastPlayableDotted=0;
 	
 	for (int i=0; i<v->musElementCount(); i++, voiceString += " ") {
 		//(CAMusElement)
@@ -183,11 +184,16 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 					delta += 7;
 				}
 				
-				if (lastPlayableLength != note->lengthML())
+				if (lastPlayableLength != note->lengthML() || lastPlayableDotted != note->dotted()) {
 					voiceString += note->lengthML();
+					for (int j=0; j<note->dotted(); j++)
+						voiceString += ".";
+				}
 				
+
 				lastNotePitch = note->pitch();
 				lastPlayableLength = note->lengthML();
+				lastPlayableDotted = note->dotted();
 				
 				//finish the chord stanza if that's the last note of the chord
 				if (note->isPartOfTheChord() && note->isLastInTheChord()) {
@@ -209,11 +215,15 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				
 				voiceString += rest->restTypeML();
 				
-				if (lastPlayableLength!=rest->lengthML())
+				if (lastPlayableLength!=rest->lengthML() || lastPlayableDotted!=rest->dotted()) {
 					voiceString += rest->lengthML();
-
+					for (int j=0; j<rest->dotted(); j++)
+						voiceString += ".";
+				}
+				
 				lastPlayableLength = rest->lengthML();
 				curStreamTime += rest->timeLength();
+				lastPlayableDotted = rest->dotted();
 				
 				break;
 			}
@@ -433,6 +443,7 @@ bool CACanorusML::readMusElements(QString string) {
 			//CANote
 			int curPitch;
 			int curLength;
+			int curDotted=0;
 			signed char curAccs = 0;
 
 			//determine pitch
@@ -470,34 +481,52 @@ bool CACanorusML::readMusElements(QString string) {
 			
 			//determine note length
 			int lIdx = string.indexOf(QRegExp("[0-9]"));
-			if ((lIdx == -1) || (lIdx > idx2)) {
-				curLength = _curVoice->lastPlayableLength();
+			if ((lIdx == -1) || (lIdx > idx2)) {	//no length written
+				curLength = _curVoice->lastPlayableElt()->playableLength();
+				curDotted = _curVoice->lastPlayableElt()->dotted();
 				if (curLength==-1)
 					curLength=CAPlayable::Quarter;
-			} else {
-				curLength = string.mid(lIdx,idx2-lIdx).toInt();
+			} else {								//length written
+				int d;
+				for (d = string.indexOf(".",lIdx); d!=-1 && d<idx2 && string[d]=='.'; d++)
+					curDotted++;
+				if (d<=0 || d>idx2)	//no dots were found
+					d=idx2;
+				else
+					d--;
+				curLength = string.mid(lIdx,d-lIdx).toInt();
 			}
 			
 			CANote *note;
 			if (_depth.last()!="chord" || eltIdx==0) //the note is not part of the chord or is the first note in the chord
-				note = new CANote((CAPlayable::CAPlayableLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeEnd());
+				note = new CANote((CAPlayable::CAPlayableLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeEnd(), curDotted);
 			else	//the note is part of the already built chord
-				note = new CANote((CAPlayable::CAPlayableLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeStart());
+				note = new CANote((CAPlayable::CAPlayableLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeStart(), curDotted);
 			
 			_curVoice->insertMusElement(note);
 		} else if (string[0]=='R' || string[0]=='S') {
 			//CARest
 			int lIdx = string.indexOf(QRegExp("[0-9]"));
-			int length;
+			CAPlayable::CAPlayableLength curLength;
+			int curDotted = 0;
 			
 			if ((lIdx == -1) || (lIdx > idx2)) {
-				length = _curVoice->lastPlayableLength();
-				if (length==-1)
-					length=CAPlayable::Quarter;
-			} else
-				length = string.mid(lIdx,idx2-lIdx).toInt();
+				curLength = _curVoice->lastPlayableElt()->playableLength();
+				curDotted = _curVoice->lastPlayableElt()->dotted();
+				if (curLength==-1)
+					curLength=CAPlayable::Quarter;
+			} else {
+				int d;
+				for (d = string.indexOf(".",lIdx); d!=-1 && d<idx2 && string[d]=='.'; d++)
+					curDotted++;
+				if (d<=0 || d>idx2)	//no dots were found
+					d=idx2;
+				else
+					d--;
+				curLength = (CAPlayable::CAPlayableLength)string.mid(lIdx,d-lIdx).toInt();
+			}
 
-			_curVoice->insertMusElement(new CARest((CAPlayable::CAPlayableLength)length, _curVoice, _curVoice->lastTimeEnd(), (string[0]=='R'?CARest::Normal:CARest::Hidden)));
+			_curVoice->insertMusElement(new CARest((string[0]=='R'?CARest::Normal:CARest::Hidden), curLength, _curVoice, _curVoice->lastTimeEnd(), curDotted));
 		} else if (string[0]=='|') {
 			//CABarline
 			//lookup an element with the same type at the same time
