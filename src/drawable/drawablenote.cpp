@@ -20,6 +20,11 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 	_drawableAcc = drawableAcc;
 	
 	switch (note->playableLength()) {
+		case CAPlayable::HundredTwentyEighth:
+		case CAPlayable::SixtyFourth:
+		case CAPlayable::ThirtySecond:
+		case CAPlayable::Sixteenth:
+		case CAPlayable::Eighth:
 		case CAPlayable::Quarter:
 			_width = 11;
 			_height = 9;
@@ -108,6 +113,97 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 	//Draw Noteheads
 	////////////////////////////////////////////////
 	switch (note()->noteLength()) {
+		case CANote::HundredTwentyEighth: {
+			//draw notehead
+			s.y += (int)((_height*s.z)/2 + 0.5);
+			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
+			s.x+=(int)(_noteHeadWidth*s.z+0.5);
+			
+			//draw stem
+			pen.setWidth((int)(1.2*s.z));
+			pen.setCapStyle(Qt::RoundCap);
+			pen.setColor(s.color);
+			p->setPen(pen);
+			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z));
+			
+			//draw flag
+			//TODO: Emmentaler font doesn't have 128th, 64th flag is drawn instead! Need to somehow compose the 128th flag? -Matevz
+			p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z),QString(0xE18A));
+			
+			break;
+		}
+		case CANote::SixtyFourth: {
+			//draw notehead
+			s.y += (int)((_height*s.z)/2 + 0.5);
+			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
+			s.x+=(int)(_noteHeadWidth*s.z+0.5);
+			
+			//draw stem
+			pen.setWidth((int)(1.2*s.z));
+			pen.setCapStyle(Qt::RoundCap);
+			pen.setColor(s.color);
+			p->setPen(pen);
+			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(SIXTYFOURTH_STEM_LENGTH*s.z));
+			
+			//draw flag
+			p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - SIXTYFOURTH_STEM_LENGTH*s.z),QString(0xE18A));
+			
+			break;
+		}
+		case CANote::ThirtySecond: {
+			//draw notehead
+			s.y += (int)((_height*s.z)/2 + 0.5);
+			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
+			s.x+=(int)(_noteHeadWidth*s.z+0.5);
+			
+			//draw stem
+			pen.setWidth((int)(1.2*s.z));
+			pen.setCapStyle(Qt::RoundCap);
+			pen.setColor(s.color);
+			p->setPen(pen);
+			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(THIRTYSECOND_STEM_LENGTH*s.z));
+			
+			//draw flag
+			p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - THIRTYSECOND_STEM_LENGTH*s.z),QString(0xE189));
+			
+			break;
+		}
+		case CANote::Sixteenth: {
+			//draw notehead
+			s.y += (int)((_height*s.z)/2 + 0.5);
+			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
+			s.x+=(int)(_noteHeadWidth*s.z+0.5);
+			
+			//draw stem
+			pen.setWidth((int)(1.2*s.z));
+			pen.setCapStyle(Qt::RoundCap);
+			pen.setColor(s.color);
+			p->setPen(pen);
+			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(SIXTEENTH_STEM_LENGTH*s.z));
+			
+			//draw flag
+			p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - SIXTEENTH_STEM_LENGTH*s.z),QString(0xE188));
+			
+			break;
+		}
+		case CANote::Eighth: {
+			//draw notehead
+			s.y += (int)((_height*s.z)/2 + 0.5);
+			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
+			s.x+=(int)(_noteHeadWidth*s.z+0.5);
+			
+			//draw stem
+			pen.setWidth((int)(1.2*s.z));
+			pen.setCapStyle(Qt::RoundCap);
+			pen.setColor(s.color);
+			p->setPen(pen);
+			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(EIGHTH_STEM_LENGTH*s.z));
+			
+			//draw flag
+			p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - EIGHTH_STEM_LENGTH*s.z),QString(0xE187));
+			
+			break;
+		}
 		case CANote::Quarter: {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2 + 0.5);
@@ -173,46 +269,20 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 }
 
 CADrawableNote *CADrawableNote::clone() {
-	switch (note()->noteLength()) {
-		case CANote::Quarter:
-			return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + _height/2);
-			break;
-		case CANote::Half:
-			return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + _height/2);
-			break;
-		case CANote::Whole:
-			return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + _height/2);
-			break;		
-		case CANote::Breve:
-			return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + _height/2);
-			break;		
-	}
+	return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + _height/2);
 }
 
 void CADrawableNote::setXPos(int xPos) {
-	switch (note()->noteLength()) {
-		case CANote::Quarter:
-			_xPos = xPos;
-			break;
-		case CANote::Half:
-			_xPos = xPos;
-			break;
-		case CANote::Whole:
-			_xPos = xPos;
-			break;
-		case CANote::Breve:
-			_xPos = xPos;
-			break;
-	}
+	_xPos = xPos;
 }
 
 void CADrawableNote::setYPos(int yPos) {
 	switch (note()->noteLength()) {
 		case CANote::Quarter:
-			_yPos = yPos - QUARTER_YPOS_DELTA;
+			_yPos = yPos - _height/2;
 			break;
 		case CANote::Half:
-			_yPos = yPos - QUARTER_YPOS_DELTA;
+			_yPos = yPos - _height/2;
 			break;
 		case CANote::Whole:
 			_yPos = yPos - _height/2;
