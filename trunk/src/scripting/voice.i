@@ -44,6 +44,8 @@ class CAVoice {
 		 * @return True, if eltAfter was found and the elt was inserted/appended, otherwise false.
 		 */
 		bool insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore);
+		bool appendMusElement(CAMusElement*);
+		bool prependMusElement(CAMusElement*);
 
 		/**
 		 * Remove the given music element from the voice.

@@ -547,9 +547,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			
 			if ( left && (left->musElement()->musElementType() == CAMusElement::Note) && (left->xPos() <= coords.x()) && (left->width() + left->xPos() >= coords.x()) ) {
 				//user clicked inside x borders of the note - add a note to the chord
-				if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart() ) ||
-				    ((CANote*)left->musElement())->noteLength()!=_insertPlayableLength
-				   )
+				if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart()))
 					break;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
 				
 				int pitch;
@@ -571,7 +569,10 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 			                  (left?left->musElement()->timeEnd():0),
 			                  _insertPlayableDotted
 			                 );
-				success = voice->insertMusElementAfter(newElt, left?left->musElement():0);
+			    if (left)	//left element exists
+					success = voice->insertMusElementAfter(newElt, left->musElement());
+				else		//left element doesn't exist, prepend the new music element
+					success = voice->prependMusElement(newElt);
 			}
 			if (success) { _insertNoteExtraAccs=0; v->setDrawShadowNoteAccs(false); }
 			break;

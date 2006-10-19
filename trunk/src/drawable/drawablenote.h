@@ -43,6 +43,11 @@ class CADrawableNote : public CADrawableMusElement {
 		bool _shadowNote;	///Is the current note shadow note?
 		CADrawableAccidental *_drawableAcc;
 		int _noteHeadWidth;
+		static const int HUNDREDTWENTYEIGHTH_STEM_LENGTH = 36;
+		static const int SIXTYFOURTH_STEM_LENGTH = 43;
+		static const int THIRTYSECOND_STEM_LENGTH = 35;
+		static const int SIXTEENTH_STEM_LENGTH = 28;
+		static const int EIGHTH_STEM_LENGTH = 26;
 		static const int QUARTER_STEM_LENGTH = 22;
 		static const int HALF_STEM_LENGTH = 24;
 		static const int QUARTER_YPOS_DELTA = 21;

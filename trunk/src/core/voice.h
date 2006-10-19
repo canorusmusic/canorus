@@ -64,6 +64,8 @@ class CAVoice {
 		 */
 		bool appendMusElement(CAMusElement *elt) { return insertMusElementAfter(elt, 0, false, false); }
 		
+		bool prependMusElement(CAMusElement *elt) { if (_musElementList.size()) return insertMusElementBefore(elt, _musElementList.front(), true, false); else return appendMusElement(elt); }
+		
 		/**
 		 * Add a note to an already existing chord or a single note and create a chord out of it.
 		 * Notes in a chord always need to be sorted by the pitch falling.
