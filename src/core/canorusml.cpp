@@ -503,7 +503,7 @@ bool CACanorusML::readMusElements(QString string) {
 			else	//the note is part of the already built chord
 				note = new CANote((CAPlayable::CAPlayableLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeStart(), curDotted);
 			
-			_curVoice->insertMusElement(note);
+			_curVoice->appendMusElement(note);
 		} else if (string[0]=='R' || string[0]=='S') {
 			//CARest
 			int lIdx = string.indexOf(QRegExp("[0-9]"));
@@ -526,7 +526,7 @@ bool CACanorusML::readMusElements(QString string) {
 				curLength = (CAPlayable::CAPlayableLength)string.mid(lIdx,d-lIdx).toInt();
 			}
 
-			_curVoice->insertMusElement(new CARest((string[0]=='R'?CARest::Normal:CARest::Hidden), curLength, _curVoice, _curVoice->lastTimeEnd(), curDotted));
+			_curVoice->appendMusElement(new CARest((string[0]=='R'?CARest::Normal:CARest::Hidden), curLength, _curVoice, _curVoice->lastTimeEnd(), curDotted));
 		} else if (string[0]=='|') {
 			//CABarline
 			//lookup an element with the same type at the same time
