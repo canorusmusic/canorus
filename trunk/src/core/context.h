@@ -28,6 +28,7 @@ class CAContext {
 		enum CAContextType {
 			Staff,
 			Tablature,
+			FunctionMarkingContext,
 			Lyrics,
 			Dynamics
 		};
