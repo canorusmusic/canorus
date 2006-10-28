@@ -1,4 +1,4 @@
-/** @file muselement.h
+/** @file core/muselement.h
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -41,7 +41,6 @@ class CAMusElement {
 			None = 0,
 			Note,
 			NoteBracket,
-			Chord,
 			Rest,
 			Barline,
 			Clef,
@@ -52,7 +51,8 @@ class CAMusElement {
 			PhrazingSlur,
 			ExpressionMarking,
 			VolumeSign,
-			Text
+			Text,
+			FunctionMarking
 		};
 		
 		/**
