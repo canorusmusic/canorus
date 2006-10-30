@@ -1,4 +1,4 @@
-/** @file drawable.cpp
+/** @file drawable/drawable.cpp
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -8,7 +8,7 @@
 
 #include <QPainter>
 
-#include "drawable.h"
+#include "drawable/drawable.h"
 
 CADrawable::CADrawable(int x, int y) {
 	_xPos = x;

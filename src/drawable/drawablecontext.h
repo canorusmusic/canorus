@@ -1,4 +1,4 @@
-/** @file drawablecontext.h
+/** @file drawable/drawablecontext.h
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -22,7 +22,8 @@ class CADrawableContext : public CADrawable {
 			DrawableStaff,
 			DrawableTablature,
 			DrawableLyrics,
-			DrawableDynamics
+			DrawableDynamics,
+			DrawableFunctionMarkingContext
 		};
 	
 		CADrawableContext(CAContext *c, int x, int y);
