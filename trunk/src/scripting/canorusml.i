@@ -6,4 +6,4 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-//Not implemented yet - too many Qt dependencies
+/* Not implemented yet - too many Qt dependencies */

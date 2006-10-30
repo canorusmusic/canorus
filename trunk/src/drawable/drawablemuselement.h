@@ -1,4 +1,4 @@
-/** @file drawablemuselement.h
+/** @file drawable/drawablemuselement.h
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -9,7 +9,7 @@
 #ifndef DRAWABLEMUSELEMENT_H_
 #define DRAWABLEMUSELEMENT_H_
 
-#include "drawable.h"
+#include "drawable/drawable.h"
 
 class CAMusElement;
 class CADrawableContext;
@@ -25,9 +25,10 @@ class CADrawableMusElement : public CADrawable {
 			DrawableKeySignature,
 			DrawableTimeSignature,
 			DrawableBarline,
-			DrawableAccidental
+			DrawableAccidental,
+			DrawableFunctionMarking
 		};
-				
+		
 		inline CAMusElement *musElement() { return _musElement; }
 		CADrawableMusElementType drawableMusElementType() { return _drawableMusElementType; }
 		CADrawableContext *drawableContext() { return _drawableContext; }
@@ -35,7 +36,7 @@ class CADrawableMusElement : public CADrawable {
 		bool isSelectable() { return _selectable; }
 		
 	protected:
-		CADrawableMusElementType _drawableMusElementType;	///CADrawableMusElement Type
+		CADrawableMusElementType _drawableMusElementType;	///CADrawableMusElement type
 
 		CADrawableContext *_drawableContext;
 		CAMusElement *_musElement;

@@ -41,7 +41,6 @@ class CAMusElement {
 			None = 0,
 			Note,
 			NoteBracket,
-			Chord,
 			Rest,
 			Barline,
 			Clef,
@@ -52,7 +51,8 @@ class CAMusElement {
 			PhrazingSlur,
 			ExpressionMarking,
 			VolumeSign,
-			Text
+			Text,
+			FunctionMarking
 		};
 		
 		/**

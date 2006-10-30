@@ -19,7 +19,7 @@ class CAFunctionMarkingContext;
 //TODO: Current translations are mostly made "by feeling". An English/Amercian composer or musicologist should translate attributes the best. -Matevz
 class CAFunctionMarking : public CAMusElement {
 	public:
-		enum CADegreeType {
+		enum CAFunctionType {
 			None=0,		//no degree
 			I=1,		//1st
 			II=2,		//2nd
@@ -31,34 +31,39 @@ class CAFunctionMarking : public CAMusElement {
 			T,			//Tonic
 			S,			//Subdominant
 			D,			//Dominant
-			N			//Napolitan
+			F,			//Phrygian (F for Frigio in Italian)
+			N,			//Napolitan
+			L			//Lidian
 		};
 		
-		CAFunctionMarking(CADegreeType degree, QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength);
+		CAFunctionMarking(CAFunctionType function, QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea=None, CAFunctionType tonicDegree=None, bool minor=false, bool ellipseSequence=false);
 		~CAFunctionMarking();
 		
-		CADegreeType degree() { return _degree; }
+		CAFunctionType function() { return _function; }
 		QString key() { return _key; }
-		CADegreeType chordArea() { return _chordArea; }
-		CADegreeType sideDegree() { return _chordArea; }
+		CAFunctionType chordArea() { return _chordArea; }
+		CAFunctionType tonicDegree() { return _tonicDegree; }
 		QList<int> alteredDegrees() { return _alteredDegrees; }
-		void setDegree(CADegreeType degree) { _degree = degree; }
+		void setFunction(CAFunctionType function) { _function = function; }
 		void setKey(QString key) { _key = key; }
-		void setChordArea(CADegreeType chordArea) { _chordArea = chordArea; }
-		void setSideDegree(CADegreeType sideDegree) { _sideDegree = sideDegree; }
+		void setChordArea(CAFunctionType chordArea) { _chordArea = chordArea; }
+		void setTonicDegree(CAFunctionType tonicDegree) { _tonicDegree = tonicDegree; }
 		void setAlteredDegrees(QList<int> degrees) { _alteredDegrees = degrees; }
 		void setMinor(bool minor) { _minor = minor; }
+		void setEllipse(bool ellipse) { _ellipseSequence = ellipse; }
 		
 		bool isSideDegree();
 		bool isMinor() { return _minor; }
-	
+		bool isPartOfEllipse() { return _ellipseSequence; }
+		
 	private:
-		CADegreeType _degree;		//degree of the function in the Key
-		QString _key;				//C for C-Major, g for g-minor, bes for b-flat-minor, Fis for F-sharp-Major etc.
-		CADegreeType _chordArea;	//side degrees have undetermined chord locations (eg. 6th can be treated as chord of Subdominant or Tonic)
-		CADegreeType _sideDegree;	//when doing jumps to familiar keys, chords on side degrees are made
-		QList<int> _alteredDegrees;	//degree of the chord which are altered according to the current key. These markings are usually written below the function name, eg. -3, -7 for German chord
-		bool _minor;				//should the function have a circle drawn?
+		CAFunctionType _function;		///function name
+		QString _key;					///C for C-Major, g for g-minor, bes for b-flat-minor, Fis for F-sharp-Major etc.
+		CAFunctionType _chordArea;		///side degrees have undetermined chord locations (eg. 6th can be treated as chord of Subdominant or Tonic)
+		CAFunctionType _tonicDegree;	///used when doing tonicization (see http://en.wikipedia.org/wiki/Tonicization). None, if the tonic degree should be hidden, degree, to be shown.
+		QList<int> _alteredDegrees;		///degree of the chord which are altered according to the current key. These markings are usually written below the function name, eg. -3, -7 for German chord
+		bool _minor;					///should the function have a circle drawn?
+		bool _ellipseSequence;			///function is part of ellipse?
 };
 
 #endif /*FUNCTIONMARKING_H_*/

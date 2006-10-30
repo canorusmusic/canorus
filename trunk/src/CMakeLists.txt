@@ -50,20 +50,26 @@ set(Canorus_MOCs ui/mainwin.h
 
 # Add all sources to Canorus_Srcs
 set(Canorus_Core_Srcs
+	core/document.cpp
+	core/sheet.cpp
+	core/kdtree.cpp
+	
+	core/context.cpp
+	core/staff.cpp
+	core/functionmarkingcontext.cpp
+	
+	core/muselement.cpp
+	core/voice.cpp	
 	core/barline.cpp
 	core/clef.cpp
 	core/keysignature.cpp
 	core/timesignature.cpp
-	core/context.cpp
-	core/document.cpp
-	core/kdtree.cpp
-	core/muselement.cpp
+	core/playable.cpp
 	core/note.cpp
 	core/rest.cpp
-	core/playable.cpp
-	core/sheet.cpp
-	core/staff.cpp
-	core/voice.cpp	
+	
+	core/functionmarking.cpp
+	
 	core/canorusml.cpp
 	)
 
@@ -88,16 +94,20 @@ set(Canorus_Ui_Srcs
 
 set(Canorus_Drawable_Srcs
 	drawable/drawable.cpp
-	drawable/drawablebarline.cpp
-	drawable/drawableclef.cpp
-	drawable/drawablekeysignature.cpp
-	drawable/drawabletimesignature.cpp
-	drawable/drawableaccidental.cpp
+
 	drawable/drawablecontext.cpp
+	drawable/drawablestaff.cpp
+	drawable/drawablefunctionmarkingcontext.cpp
+
 	drawable/drawablemuselement.cpp
 	drawable/drawablenote.cpp
 	drawable/drawablerest.cpp
-	drawable/drawablestaff.cpp
+	drawable/drawableaccidental.cpp
+	drawable/drawableclef.cpp
+	drawable/drawablekeysignature.cpp
+	drawable/drawabletimesignature.cpp
+	drawable/drawablebarline.cpp
+	drawable/drawablefunctionmarking.cpp
 	)
 
 set(Canorus_Interface_Srcs
