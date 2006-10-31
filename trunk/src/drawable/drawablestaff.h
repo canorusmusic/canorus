@@ -115,6 +115,8 @@ class CADrawableStaff : public CADrawableContext {
 		CAKeySignature *getKeySignature(int x);	///return pointer to the key signature on the given X-coordinate
 		CATimeSignature *getTimeSignature(int x);	///return pointer to the time signature on the given X-coordinate
 		int getAccs(int x, int pitch);	///return accidentals at the given X-coordinate and pitch. eg. -1 for one flat, 2 for two sharps. This is useful to determine the note's pitch to be placed in certain measure or part of the measure, if accidentals have been placed before.
+		void addMElement(CADrawableMusElement *elt);
+		int removeMElement(CADrawableMusElement* elt);
 		
 	private:
 		QList<CADrawableClef *> _drawableClefList;	///List of all the drawable clefs. Used for fast look-up with the given key - X-coordinate usually.

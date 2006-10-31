@@ -148,18 +148,6 @@ void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 		_selection << elt;
 	}
 	
-	switch (elt->drawableMusElementType()) {
-		case CADrawableMusElement::DrawableClef:
-			((CADrawableStaff*)elt->drawableContext())->addClef((CADrawableClef*)elt);
-			break;
-		case CADrawableMusElement::DrawableKeySignature:
-			((CADrawableStaff*)elt->drawableContext())->addKeySignature((CADrawableKeySignature*)elt);
-			break;
-		case CADrawableMusElement::DrawableTimeSignature:
-			((CADrawableStaff*)elt->drawableContext())->addTimeSignature((CADrawableTimeSignature*)elt);
-			break;
-	}
-	
 	elt->drawableContext()->addMElement(elt);
 }
 

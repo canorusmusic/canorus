@@ -291,6 +291,18 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							drawableContext->yPos()
 						);
 						
+						//set extender line and change the width of the previous function marking if needed
+						if (drawableContext->lastDrawableMusElement()!=0) {
+							CAFunctionMarking *prevElt = (CAFunctionMarking*)drawableContext->lastDrawableMusElement()->musElement();
+							QList<CANote*> chord = prevElt->context()->sheet()->getChord(prevElt->timeStart());
+							for (int i=0; i<chord.size(); i++) {
+								if (chord[i]->timeLength()<prevElt->timeLength()) {
+									((CADrawableFunctionMarking*)drawableContext->lastDrawableMusElement())->setExtenderLineVisible(true);
+									drawableContext->lastDrawableMusElement()->setWidth(newElt->xPos()-drawableContext->lastDrawableMusElement()->xPos()-5);
+								}
+							}
+						}
+						
 						v->addMElement(newElt);
 						break;
 					}
@@ -299,10 +311,6 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 				streamsIdx[i]++;
 			}
 			
-			//place function markings
-			if (elt->musElementType()==CAMusElement::FunctionMarking) {
-			}
-
 			if (newElt)
 				streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);	//append the needed space for the last used note
 		}
