@@ -32,12 +32,11 @@ int CAStaff::lastTimeEnd(CAVoice *voice) {
 }
 
 void CAStaff::clear() {
-	for (int i=0; i<_voiceList.size(); i++) {
-		_voiceList[i]->clear();
-		delete _voiceList[i];
+	while (_voiceList.size()) {
+		_voiceList.front()->clear();
+		delete _voiceList.front();
+		_voiceList.removeFirst();
 	}
-	
-	_voiceList.clear();
 }
 
 void CAStaff::insertSign(CAMusElement *sign) {
