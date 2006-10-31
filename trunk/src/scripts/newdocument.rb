@@ -1,7 +1,7 @@
 include CanorusRuby
 
+GC.disable
 def newDefaultDocument(document)
-	GC.disable
 	sheet1 = document.addSheetByName("Sheet 1")
 	
 	staff1 = sheet1.addStaff()

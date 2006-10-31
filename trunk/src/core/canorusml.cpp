@@ -99,7 +99,7 @@ void CACanorusML::openDocument(QXmlInputSource* in, CADocument *doc, CAMainWin *
 	reader.setContentHandler(canHandler);
 	reader.parse(in);
 	
-	//fix voice errors
+	//fix voice errors like shared voice elements not being present in both voices etc.
 	for (int i=0; i<doc->sheetCount(); i++) {
 		for (int j=0; j<doc->sheetAt(i)->staffCount(); j++) {
 			doc->sheetAt(i)->staffAt(j)->fixVoiceErrors();
