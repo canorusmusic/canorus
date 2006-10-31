@@ -21,11 +21,8 @@ CAVoice::CAVoice(CAStaff *staff, const QString name) {
 }
 
 void CAVoice::clear() {
-	for (int i=0; i<_musElementList.size(); i++) {
-		delete _musElementList[i];
-	}
-	
-	_musElementList.clear();
+	while (_musElementList.size())
+		delete _musElementList.front();
 }
 
 void CAVoice::insertMusElement(CAMusElement *elt, bool updateT) {

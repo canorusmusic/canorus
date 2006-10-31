@@ -1,6 +1,5 @@
 include CanorusRuby
 
-GC.disable
 def newDefaultDocument(document)
 	sheet1 = document.addSheetByName("Sheet 1")
 	
@@ -11,7 +10,7 @@ def newDefaultDocument(document)
 	staff1.addVoice(staff1voice2)
 	staff1.insertSign(Clef.new(Clef::Treble, staff1, 0))
 	staff1.insertSign(TimeSignature.new(4, 4, staff1, 0))
-
+	
 	staff2 = sheet1.addStaff()
 	staff2voice1 = Voice.new(staff2, "Staff2Voice1")
 	staff2.addVoice(staff2voice1)
