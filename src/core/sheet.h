@@ -31,7 +31,7 @@ class CASheet {
 		inline int staffCount() { return _staffList.size(); }
 		CAStaff *staffAt(int i) { return _staffList[i]; }
 		
-		QList<CANote*> getChord(int time);
+		QList<CANote*> getChord(int time);	///Return a list of notes (chord) at certain time slice
 
 		inline CADocument *document() { return _document; }
 		inline const QString name() { return _name; }

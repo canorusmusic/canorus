@@ -77,8 +77,8 @@ class CADrawable {
 		void setYPosAbsolute(int yPos) { _yPos = yPos; }
 		void setXPosOffset(int xPosOffset) { _xPosOffset = xPosOffset; }
 		void setYPosOffset(int yPosOffset) { _yPosOffset = yPosOffset; }
-		void setWidth(int width) { _width = width; }
-		void setHeight(int height) { _height = height; }
+		void setWidth(int width) { _neededWidth += (width - _width); _width = width; }
+		void setHeight(int height) { _neededHeight += (height - _height); _height = height; }
 		void setVisible(bool v) { _visible = v; }
 		
 		virtual CADrawable *clone() = 0;

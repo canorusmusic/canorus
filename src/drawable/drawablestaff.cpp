@@ -180,3 +180,35 @@ int CADrawableStaff::calculateLowestCenterYCoord(int pitch, int x) {
 	
 	return (int)(yPos() + height() - (lineSpace()/2) * (line+pitch));
 }
+
+void CADrawableStaff::addMElement(CADrawableMusElement *elt) {
+	switch (elt->drawableMusElementType()) {
+		case CADrawableMusElement::DrawableClef:
+			addClef((CADrawableClef*)elt);
+			break;
+		case CADrawableMusElement::DrawableKeySignature:
+			addKeySignature((CADrawableKeySignature*)elt);
+			break;
+		case CADrawableMusElement::DrawableTimeSignature:
+			addTimeSignature((CADrawableTimeSignature*)elt);
+			break;
+	}
+	
+	_drawableMusElementList << elt;
+}
+
+int CADrawableStaff::removeMElement(CADrawableMusElement *elt) {
+	switch (elt->drawableMusElementType()) {
+		case CADrawableMusElement::DrawableClef:
+			removeClef((CADrawableClef*)elt);
+			break;
+		case CADrawableMusElement::DrawableKeySignature:
+			removeKeySignature((CADrawableKeySignature*)elt);
+			break;
+		case CADrawableMusElement::DrawableTimeSignature:
+			removeTimeSignature((CADrawableTimeSignature*)elt);
+			break;
+	}
+	
+	return _drawableMusElementList.removeAll(elt);
+}

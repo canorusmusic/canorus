@@ -29,8 +29,9 @@ class CADrawableContext : public CADrawable {
 		CADrawableContext(CAContext *c, int x, int y);
 		inline CAContext *context() { return _context; }
 		CADrawableContextType drawableContextType() { return _drawableContextType; }
-		void addMElement(CADrawableMusElement *elt) { _drawableMusElementList << elt; }
-		int removeMElement(CADrawableMusElement *elt) { return _drawableMusElementList.removeAll(elt); }
+		virtual void addMElement(CADrawableMusElement *elt) { _drawableMusElementList << elt; }
+		virtual int removeMElement(CADrawableMusElement *elt) { return _drawableMusElementList.removeAll(elt); }
+		CADrawableMusElement *lastDrawableMusElement() { if (_drawableMusElementList.size()) return _drawableMusElementList.last(); else return 0; }
 		
 	protected:
 		CADrawableContextType _drawableContextType;

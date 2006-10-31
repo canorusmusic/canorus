@@ -18,8 +18,9 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
  	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarking;
  	
  	_extenderLine = false;
- 	_width=10;
+ 	_width=11;
  	_height=15;
+ 	_fontWidth = 10;
  	_neededWidth = _width;
  	_neededHeight = _height;
 }
@@ -51,6 +52,10 @@ void CADrawableFunctionMarking::draw(QPainter *p, const CADrawSettings s) {
 		case CAFunctionMarking::L: text="L"; break;
 	}
 	p->drawText(s.x, s.y+(int)(_height*s.z+0.5), text);
+	
+	if (_extenderLine)
+		p->drawLine(s.x + (int)(_fontWidth*s.z+0.5), s.y+(int)((_height/2.0)*s.z+0.5),
+		            s.x + (int)(_width*s.z+0.5), s.y+(int)((_height/2.0)*s.z+0.5));
 }
 
 CADrawableFunctionMarking *CADrawableFunctionMarking::clone() {
