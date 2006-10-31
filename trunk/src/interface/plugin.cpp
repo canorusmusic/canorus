@@ -72,7 +72,7 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 		} else
 		if (val=="SHEET") {
 			if (lang=="RUBY") {
-				if (mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
+				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
 					rubyArgs << toRubyObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigRuby::Sheet);
 				else {
 					error = true;

@@ -113,7 +113,4 @@ class CAStaff : public CAContext {
 		 * @return List of pointers to music elements with the given startTime and type.
 		 */
 		QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
-		
-		void setName(QString name);
-		QString name();
 };

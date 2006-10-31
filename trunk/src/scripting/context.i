@@ -29,7 +29,8 @@ class CAContext {
 			Staff,
 			Tablature,
 			Lyrics,
-			Dynamics
+			Dynamics,
+			FunctionMarkingContext
 		};
 		
 		const QString name();

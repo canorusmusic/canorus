@@ -1,4 +1,4 @@
-/** @file engraver.cpp
+/** @file interface/engraver.cpp
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -12,6 +12,7 @@
 #include "interface/engraver.h"
 
 #include "widgets/scoreviewport.h"
+
 #include "drawable/drawablestaff.h"
 #include "drawable/drawableclef.h"
 #include "drawable/drawablenote.h"
@@ -21,11 +22,18 @@
 #include "drawable/drawablebarline.h"
 #include "drawable/drawableaccidental.h"
 
+#include "drawable/drawablefunctionmarking.h"
+#include "drawable/drawablefunctionmarkingcontext.h"
+
 #include "core/sheet.h"
+
 #include "core/staff.h"
 #include "core/voice.h"
 #include "core/keysignature.h"
 #include "core/timesignature.h"
+
+#include "core/functionmarkingcontext.h"
+#include "core/functionmarking.h"
 
 #define INITIAL_X_OFFSET 20
 #define MINIMUM_SPACE 10
@@ -38,10 +46,10 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	QList<QList<CAMusElement*>*> musStreamList; 
 
 	int dy = 50;
-	QList<int> nonFirstVoiceIdxs;	//list of indexes of musStreamLists which the voices aren't the first voice. This is used later for determining should a sign be created or not (if it has been created in 1st voice already, don't recreate it in the other voices in th same staff).
+	QList<int> nonFirstVoiceIdxs;	//list of indexes of musStreamLists which the voices aren't the first voice. This is used later for determining should a sign be created or not (if it has been created in 1st voice already, don't recreate it in the other voices in the same staff).
 	QMap<CAContext*, CADrawableContext*> drawableContextMap;
 	
-	for (int i=0; i < sheet->contextCount(); i++, dy+=200) {
+	for (int i=0; i < sheet->contextCount(); i++, dy+=100) {
 		if (sheet->contextAt(i)->contextType() == CAContext::Staff) {
 			CAStaff *staff = ((CAStaff*)(sheet->contextAt(i)));
 			drawableContextMap[staff] = new CADrawableStaff(staff, 0, dy);
@@ -53,7 +61,12 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 				if (staff->voiceAt(j)->voiceNumber()!=1)
 					nonFirstVoiceIdxs << j;
 			}
-			
+		} else
+		if (sheet->contextAt(i)->contextType() == CAContext::FunctionMarkingContext) {
+			CAFunctionMarkingContext *fmContext = ((CAFunctionMarkingContext*)(sheet->contextAt(i)));
+			drawableContextMap[fmContext] = new CADrawableFunctionMarkingContext(fmContext, 0, dy);
+			v->addCElement(drawableContextMap[fmContext]);
+			musStreamList << (QList<CAMusElement*>*)fmContext->functionMarkingList();
 		}
 	}
 	
@@ -96,7 +109,8 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			while ( (streamsIdx[i] < musStreamList[i]->size()) &&
 			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (!elt->isPlayable()) &&
-			        (elt->musElementType() != CAMusElement::Barline)	//barlines should be aligned
+			        (elt->musElementType() != CAMusElement::Barline) &&	//barlines should be aligned
+			        (elt->musElementType() != CAMusElement::FunctionMarking)	//function markings should be placed along the noteheads
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
 				
@@ -242,7 +256,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			CADrawableMusElement *newElt=0;
 			while ( (streamsIdx[i] < musStreamList[i]->size()) &&
 			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
-			        (elt->isPlayable())
+			        ((elt->isPlayable() || (elt->musElementType()==CAMusElement::FunctionMarking)))
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
 				
@@ -269,9 +283,24 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						v->addMElement(newElt);
 						break;
 					}
+					case CAMusElement::FunctionMarking: {
+						newElt = new CADrawableFunctionMarking(
+							(CAFunctionMarking*)elt,
+							(CADrawableFunctionMarkingContext*)drawableContext,
+							streamsX[i],
+							drawableContext->yPos()
+						);
+						
+						v->addMElement(newElt);
+						break;
+					}
 				}
 				
-				streamsIdx[i] = streamsIdx[i] + 1;
+				streamsIdx[i]++;
+			}
+			
+			//place function markings
+			if (elt->musElementType()==CAMusElement::FunctionMarking) {
 			}
 
 			if (newElt)

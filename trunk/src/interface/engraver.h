@@ -1,4 +1,4 @@
-/** @file engraver.h
+/** @file interface/engraver.h
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -11,6 +11,10 @@
 
 class CAScoreViewPort;
 
+/**
+ * This class is a bridge between the data part of Canorus and the UI.
+ * Out of data CAMusElement* and CAContext* objects, it creates their CADrawable* instances.
+ */
 class CAEngraver {
 	public:
 		static void reposit(CAScoreViewPort *v);

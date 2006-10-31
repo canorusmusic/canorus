@@ -9,7 +9,7 @@
 #include "core/functionmarking.h"
 #include "core/functionmarkingcontext.h"
 
-CAFunctionMarking::CAFunctionMarking(CAFunctionType function, QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, CAFunctionType tonicDegree, bool minor, bool ellipseSequence)
+CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, CAFunctionType tonicDegree, bool minor, bool ellipseSequence)
  : CAMusElement(context, timeStart, timeLength) {
  	_musElementType = CAMusElement::FunctionMarking;
  	
@@ -35,4 +35,12 @@ bool CAFunctionMarking::isSideDegree() {
 		return true;
 	else
 		return false;
+}
+
+CAFunctionMarking *CAFunctionMarking::clone() {
+	return new CAFunctionMarking(function(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), chordArea(), tonicDegree(), isMinor(), isPartOfEllipse());
+}
+
+int CAFunctionMarking::compare(CAMusElement *func) {
+	return 0;	//TODO
 }
