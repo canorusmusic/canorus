@@ -202,8 +202,8 @@ void CAMainWin::newDocument() {
 	clearUI();			//clear the UI part
 	
 	QList<VALUE> args;
-	//args << toRubyObject(&_document, CASwigRuby::Document);
-	//CASwigRuby::callFunction(QDir::current().absolutePath() + "/src/scripts/newdocument.rb", "newDefaultDocument", args);
+	args << toRubyObject(&_document, CASwigRuby::Document);
+	CASwigRuby::callFunction(QDir::current().absolutePath() + "/src/scripts/newdocument.rb", "newDefaultDocument", args);
 	rebuildUI();
 }
 
@@ -1133,12 +1133,9 @@ This program is licensed under the GNU General Public License (GPL).\n\
 See the file 'LICENSE.GPL' for details.\n\n\
 Homepage: http://canorus.berlios.de" );
 }
-#include "core/functionmarking.h"
-#include "core/functionmarkingcontext.h"
+
 //TODO: This should be done by the plugin automatically. But since we're not able to export internal Qt classes to ruby, this must be done manually
 void CAMainWin::harmonyAnalysisActivated() {
 	_pluginManager->action("onHarmonyAnalysisClick", &_document, 0, 0);
-	//((CAScoreViewPort*)currentScrollWidget()->lastUsedViewPort())->sheet()->addContext(new CAFunctionMarkingContext(((CAScoreViewPort*)currentScrollWidget()->lastUsedViewPort())->sheet(),"test"));
-	//((CAFunctionMarkingContext*)((CAScoreViewPort*)currentScrollWidget()->lastUsedViewPort())->sheet()->contextAt(2))->addFunctionMarking(new CAFunctionMarking(CAFunctionMarking::T, "C", ((CAFunctionMarkingContext*)((CAScoreViewPort*)currentScrollWidget()->lastUsedViewPort())->sheet()->contextAt(2)), 0, 256));
 	rebuildUI();
 }
