@@ -24,7 +24,7 @@ CADrawableFunctionMarkingContext::~CADrawableFunctionMarkingContext() {
 }
 
 void CADrawableFunctionMarkingContext::draw(QPainter *p, const CADrawSettings s) {
-	p->fillRect(s.x, s.y, s.w, (int)(_height*s.z+0.5), QBrush(Qt::yellow));
+	p->fillRect(0, s.y, s.w, (int)(_height*s.z+0.5), QBrush(Qt::yellow));
 }
 
 CADrawableFunctionMarkingContext *CADrawableFunctionMarkingContext::clone() {
