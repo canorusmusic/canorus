@@ -207,8 +207,9 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		if (placedSymbol)	//always start adding notes cleanly 
 			continue;
 		
-		//place accidentals
-		int accMaxWidth=0;
+		//Place accidentals and key names of the function markings, if needed.
+		//These elements are so called Support elements. They can't be selected and they're not really connected usually to any logical element, but they're needed when drawing.
+		int maxWidth = 0;
 		CADrawableAccidental* noteAccs[streams];
 		for (int i=0; i < streams; i++) {
 			//loop until the element has come, which has bigger timeStart
@@ -216,7 +217,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			int oldStreamIdx = streamsIdx[i];
 			while ( (streamsIdx[i] < musStreamList[i]->size()) &&
 			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
-			        (elt->isPlayable())
+			        (elt->isPlayable() || elt->musElementType()==CAMusElement::FunctionMarking)
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
 				
@@ -233,22 +234,35 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 
 						v->addMElement(newElt);
 						noteAccs[i] = (CADrawableAccidental*)newElt;
-						if (newElt->neededWidth() > accMaxWidth)
-							accMaxWidth = newElt->neededWidth();
+						if (newElt->neededWidth() > maxWidth)
+							maxWidth = newElt->neededWidth();
+				} else
+				if (elt->musElementType()==CAMusElement::FunctionMarking &&
+				    (!drawableContext->lastDrawableMusElement() || ((CAFunctionMarking*)elt)->key()!=((CAFunctionMarking*)drawableContext->lastDrawableMusElement()->musElement())->key())
+				   ) {
+					//draw new function marking key, if it was changed or if it's the first function in the score
+					newElt = new CADrawableFunctionMarkingSupport(
+						CADrawableFunctionMarkingSupport::Key,
+						((CAFunctionMarking*)elt)->key(),
+						drawableContext,
+						streamsX[i],
+						drawableContext->yPos()
+					);
+					if (maxWidth < newElt->width())
+						maxWidth = newElt->width();
+					v->addMElement(newElt);
 				}
 				
-				streamsIdx[i] = streamsIdx[i] + 1;
+				streamsIdx[i]++;
 			}
 			streamsIdx[i] = oldStreamIdx;
 			
-			streamsX[i] += (accMaxWidth?accMaxWidth+1:0);	//append the needed space for the last used note
+			streamsX[i] += (maxWidth?maxWidth+1:0);	//append the needed space for the last used note
 		}
 		
 		//Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
-		if (placedSymbol) {
-			for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
-			for (int i=0; i<streams; i++) streamsX[i] = maxX;
-		}
+		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+		for (int i=0; i<streams; i++) streamsX[i] = maxX;
 		
 		//place noteheads
 		for (int i=0; i < streams; i++) {
@@ -292,7 +306,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						);
 						
 						//set extender line and change the width of the previous function marking if needed
-						if (drawableContext->lastDrawableMusElement()!=0) {
+						if (drawableContext->lastDrawableMusElement()!=0 && drawableContext->lastDrawableMusElement()->drawableMusElementType()==CADrawableMusElement::DrawableFunctionMarking) {
 							CAFunctionMarking *prevElt = (CAFunctionMarking*)drawableContext->lastDrawableMusElement()->musElement();
 							QList<CANote*> chord = prevElt->context()->sheet()->getChord(prevElt->timeStart());
 							for (int i=0; i<chord.size(); i++) {

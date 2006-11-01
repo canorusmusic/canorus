@@ -26,7 +26,7 @@ class CADrawableMusElement : public CADrawable {
 			DrawableTimeSignature,
 			DrawableBarline,
 			DrawableAccidental,
-			DrawableFunctionMarking
+			DrawableFunctionMarking, DrawableFunctionMarkingSupport
 		};
 		
 		inline CAMusElement *musElement() { return _musElement; }
