@@ -21,7 +21,7 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
  	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarking;
  	
  	_extenderLineVisible = false;
-	switch (functionMarking()->function()) {
+	switch (functionMarking()->function()) { //TODO: Width determination should be done automatically using QPainter::boundingRect() method
 		//character widths are calculated using FreeSans font, pixelSize 19
 		case CAFunctionMarking::I:		_text="I"; _width=5; break;
 		case CAFunctionMarking::II:		_text="II"; _width=10; break;
@@ -72,7 +72,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkingSupport;
 	_drawableFunctionMarkingSupportType = type;
 	_key = key;
-	_width = 0;
+	_width = 0;	//TODO: Width determination should be done automatically using QPainter::boundingRect() method
 	for (int i=0; i<key.size(); i++) {	//character widths are calculated using FreeSans font, pixelSize 17
 		if (key[i]=='C') _width+=12;
 		else if (key[i]=='D') _width+=12;
