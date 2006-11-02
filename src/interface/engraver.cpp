@@ -75,21 +75,23 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	int streamsX[streams]; for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
 	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
 	CAKeySignature *lastKeySig[streams]; for (int i=0; i<streams; i++) lastKeySig[i] = 0;
-	CATimeSignature *lastTimeSig[streams]; for (int i=0; i<streams; i++) lastTimeSig[i] = 0;
+	CATimeSignature *lastTimeSig[streams]; for (int i=0; i<streams; i++) lastTimeSig[i] = 0;	
 
 	int timeStart = 0;
 	bool done = false;
-	while (!done) {
+	while (!done) {	
 		//Synchronize minimum X-es between the contexts
 		int maxX = 0;
 		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
-		for (int i=0; i<streams; i++) streamsX[i] = maxX;
+		for (int i=0; i<streams; i++)
+			if (musStreamList[i]->last()->musElementType()!=CAMusElement::FunctionMarking)
+				streamsX[i] = maxX;
 		
 		//if all the indices are at the end of the streams, finish.
 		int idx;
 		for (idx=0; (idx < streams) && (streamsIdx[idx] == musStreamList[idx]->size()); idx++);
 		if (idx==streams) { done=true; continue; }
-
+		
 		//go through all the streams and remember the time of the soonest element that will happen
 		timeStart = -1;	//reset the timeStart - the next one minimum will be set in the following loop
 		for (int idx=0; idx < streams; idx++) {
@@ -97,7 +99,6 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 				timeStart = musStreamList[idx]->at(streamsIdx[idx])->timeStart();
 		}
 		//timeStart now holds the nearest next time we're going to draw
-		
 		
 		//go through all the streams and check if the following element has this time
 		CAMusElement *elt;
@@ -110,14 +111,13 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (!elt->isPlayable()) &&
 			        (elt->musElementType() != CAMusElement::Barline) &&	//barlines should be aligned
-			        (elt->musElementType() != CAMusElement::FunctionMarking)	//function markings should be placed along the noteheads
+			        (elt->musElementType() != CAMusElement::FunctionMarking)	//function markings are placed separately
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
 				
 				//place signs in first voices
 				if ( (drawableContext->drawableContextType() == CADrawableContext::DrawableStaff) &&
-				     (!nonFirstVoiceIdxs.contains(i)) )
-				 {
+				     (!nonFirstVoiceIdxs.contains(i)) ) {
 					switch ( elt->musElementType() ) {
 						case CAMusElement::Clef: {
 							CADrawableClef *clef = new CADrawableClef(
@@ -164,20 +164,47 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							placedSymbol = true;
 							break;
 						}
-					}
+					} /*SWITCH*/
+				} /*IF firstVoice*/
+				streamsIdx[i]++;
+			}
+		}
+		
+		//Draw function key name, if needed
+		QList<CADrawableFunctionMarkingSupport*> lastDFMKeyNames;
+		for (int i=0;
+		     (i<streams) &&
+		     (streamsIdx[i] < musStreamList[i]->size()) &&
+			 ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart);
+			 i++) {
+			CAMusElement *elt = musStreamList[i]->at(streamsIdx[i]);
+			if (elt->musElementType()==CAMusElement::FunctionMarking) {
+				drawableContext = drawableContextMap[elt->context()];
+				if (!drawableContext->lastDrawableMusElement() ||
+				    (drawableContext->lastDrawableMusElement()->drawableMusElementType()==CADrawableMusElement::DrawableFunctionMarking)
+				    && ((CAFunctionMarking*)elt)->key()!=((CAFunctionMarking*)drawableContext->lastDrawableMusElement()->musElement())->key()) {
+					//draw new function marking key, if it was changed or if it's the first function in the score
+					CADrawableFunctionMarkingSupport *support = new CADrawableFunctionMarkingSupport(
+						CADrawableFunctionMarkingSupport::Key,
+						((CAFunctionMarking*)elt)->key(),
+						drawableContext,
+						streamsX[i],
+					drawableContext->yPos()
+					);
+					streamsX[i] += (support->neededWidth());
+					v->addMElement(support);
+					lastDFMKeyNames << support;
 				}
-				
-				streamsIdx[i] = streamsIdx[i] + 1;
 			}
 		}
 		
 		//Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
-		if (placedSymbol) {
-			for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
-			for (int i=0; i<streams; i++) streamsX[i] = maxX;
-		}
+		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+		for (int i=0; i<streams; i++)
+			if (musStreamList[i]->last()->musElementType()!=CAMusElement::FunctionMarking)
+				streamsX[i] = maxX;
 		
-		//place barlines
+		//Place barlines
 		for (int i=0; i<streams; i++) {
 			if (!(musStreamList[i]->size() > streamsIdx[i]) ||	//if the stream is already at the end, continue to the next stream
 			    ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() != timeStart))
@@ -204,20 +231,19 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			}
 		}
 		
-		if (placedSymbol)	//always start adding notes cleanly 
-			continue;
-		
 		//Place accidentals and key names of the function markings, if needed.
 		//These elements are so called Support elements. They can't be selected and they're not really connected usually to any logical element, but they're needed when drawing.
 		int maxWidth = 0;
-		CADrawableAccidental* noteAccs[streams];
+		int maxAccidentalXEnd = 0;
+		//CADrawableAccidental* noteAccs[streams];
+		QList<CADrawableAccidental*> lastAccidentals; 
 		for (int i=0; i < streams; i++) {
 			//loop until the element has come, which has bigger timeStart
 			CADrawableMusElement *newElt=0;
 			int oldStreamIdx = streamsIdx[i];
 			while ( (streamsIdx[i] < musStreamList[i]->size()) &&
 			        ((elt = musStreamList[i]->at(streamsIdx[i]))->timeStart() == timeStart) &&
-			        (elt->isPlayable() || elt->musElementType()==CAMusElement::FunctionMarking)
+			        (elt->isPlayable())
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
 				
@@ -233,24 +259,11 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						);
 
 						v->addMElement(newElt);
-						noteAccs[i] = (CADrawableAccidental*)newElt;
+						lastAccidentals << (CADrawableAccidental*)newElt;
 						if (newElt->neededWidth() > maxWidth)
 							maxWidth = newElt->neededWidth();
-				} else
-				if (elt->musElementType()==CAMusElement::FunctionMarking &&
-				    (!drawableContext->lastDrawableMusElement() || ((CAFunctionMarking*)elt)->key()!=((CAFunctionMarking*)drawableContext->lastDrawableMusElement()->musElement())->key())
-				   ) {
-					//draw new function marking key, if it was changed or if it's the first function in the score
-					newElt = new CADrawableFunctionMarkingSupport(
-						CADrawableFunctionMarkingSupport::Key,
-						((CAFunctionMarking*)elt)->key(),
-						drawableContext,
-						streamsX[i],
-						drawableContext->yPos()
-					);
-					if (maxWidth < newElt->width())
-						maxWidth = newElt->width();
-					v->addMElement(newElt);
+						if (maxAccidentalXEnd < newElt->neededWidth()+newElt->xPos())
+							maxAccidentalXEnd = newElt->neededWidth()+newElt->xPos();
 				}
 				
 				streamsIdx[i]++;
@@ -263,6 +276,15 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		//Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
 		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
 		for (int i=0; i<streams; i++) streamsX[i] = maxX;
+		
+		//Align support elements (accidentals, function key names) to the right
+		for (int i=0; i<lastDFMKeyNames.size(); i++)
+			lastDFMKeyNames[i]->setXPos(maxX - lastDFMKeyNames[i]->neededWidth());
+		
+		int deltaXPos = maxX - maxAccidentalXEnd;
+		for (int i=0; i<lastAccidentals.size(); i++) {
+			lastAccidentals[i]->setXPos(lastAccidentals[i]->xPos()+deltaXPos-1);
+		}
 		
 		//place noteheads
 		for (int i=0; i < streams; i++) {
@@ -284,6 +306,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						);
 
 						v->addMElement(newElt);
+						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 						break;
 					}
 					case CAMusElement::Rest: {
@@ -295,6 +318,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						);
 
 						v->addMElement(newElt);
+						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 						break;
 					}
 					case CAMusElement::FunctionMarking: {
@@ -318,15 +342,13 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						}
 						
 						v->addMElement(newElt);
+						streamsX[i] += (newElt->neededWidth());
 						break;
 					}
 				}
 				
 				streamsIdx[i]++;
 			}
-			
-			if (newElt)
-				streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);	//append the needed space for the last used note
 		}
 	}
 }

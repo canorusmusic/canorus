@@ -21,7 +21,23 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
  	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarking;
  	
  	_extenderLineVisible = false;
- 	_width=11;
+	switch (functionMarking()->function()) {
+		//character widths are calculated using FreeSans font, pixelSize 19
+		case CAFunctionMarking::I:		_text="I"; _width=5; break;
+		case CAFunctionMarking::II:		_text="II"; _width=10; break;
+		case CAFunctionMarking::III:	_text="III"; _width=15; break;
+		case CAFunctionMarking::IV:		_text="IV"; _width=18; break;
+		case CAFunctionMarking::V:		_text="V"; _width=13; break;
+		case CAFunctionMarking::VI:		_text="VI"; _width=18; break;
+		case CAFunctionMarking::VII:	_text="VII"; _width=23; break;
+		case CAFunctionMarking::T:		_text="T"; _width=12; break;
+		case CAFunctionMarking::S:		_text="S"; _width=13; break;
+		case CAFunctionMarking::D:		_text="D"; _width=14; break;
+		case CAFunctionMarking::F:		_text="F"; _width=12; break;
+		case CAFunctionMarking::N:		_text="N"; _width=14; break;
+		case CAFunctionMarking::L:		_text="L"; _width=11; break;
+	}
+	
  	_height=15;
  	_fontWidth = 10;
  	_neededWidth = _width;
@@ -34,28 +50,10 @@ CADrawableFunctionMarking::~CADrawableFunctionMarking() {
 
 void CADrawableFunctionMarking::draw(QPainter *p, CADrawSettings s) {
 	QFont font("FreeSans");
-	font.setPixelSize((int)(19*s.z));
+	font.setPixelSize((int)(19*s.z)); //use pixelSize instead of size as we want fixed font size no matter on screen DPI
 	p->setPen(QPen(s.color));
 	p->setFont(font);
-	
-	QString text;
-	switch (functionMarking()->function()) {
-		case CAFunctionMarking::I: text="I"; break;
-		case CAFunctionMarking::II: text="II"; break;
-		case CAFunctionMarking::III: text="III"; break;
-		case CAFunctionMarking::IV: text="IV"; break;
-		case CAFunctionMarking::V: text="V"; break;
-		case CAFunctionMarking::VI: text="VI"; break;
-		case CAFunctionMarking::VII: text="VII"; break;
-		case CAFunctionMarking::T: text="T"; break;
-		case CAFunctionMarking::S: text="S"; break;
-		case CAFunctionMarking::D: text="D"; break;
-		case CAFunctionMarking::F: text="F"; break;
-		case CAFunctionMarking::N: text="N"; break;
-		case CAFunctionMarking::L: text="L"; break;
-	}
-	
-	p->drawText(s.x, s.y+(int)(_height*s.z+0.5), text);
+	p->drawText(s.x, s.y+(int)(_height*s.z+0.5), _text);
 	
 	if (_extenderLineVisible)
 		p->drawLine(s.x + (int)(_fontWidth*s.z+0.5), s.y+(int)((_height/2.0)*s.z+0.5),
@@ -74,7 +72,26 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkingSupport;
 	_drawableFunctionMarkingSupportType = type;
 	_key = key;
-	_width = key.size()*7 + 7;
+	_width = 0;
+	for (int i=0; i<key.size(); i++) {	//character widths are calculated using FreeSans font, pixelSize 17
+		if (key[i]=='C') _width+=12;
+		else if (key[i]=='D') _width+=12;
+		else if (key[i]=='E') _width+=11;
+		else if (key[i]=='F') _width+=10;
+		else if (key[i]=='G') _width+=13;
+		else if (key[i]=='A') _width+=11;
+		else if (key[i]=='B') _width+=11;
+		else if (key[i]=='c') _width+=9;
+		else if (key[i]=='d') _width+=9;
+		else if (key[i]=='e') _width+=9;
+		else if (key[i]=='f') _width+=5;
+		else if (key[i]=='g') _width+=9;
+		else if (key[i]=='a') _width+=9;
+		else if (key[i]=='b') _width+=9;
+		else if (key[i]=='i') _width+=5;
+		else if (key[i]=='s') _width+=9;
+	}
+	_width += 5;	//colon after the key name (:)
 	_height = 14;
 	_neededWidth = _width;
 	_neededHeight = _height;
@@ -83,7 +100,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 
 CADrawableFunctionMarkingSupport::~CADrawableFunctionMarkingSupport() {
 }
-		
+
 void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s) {
 	QFont font("FreeSans");
 	font.setPixelSize((int)(17*s.z));
