@@ -31,6 +31,7 @@ class CADrawableFunctionMarking : public CADrawableMusElement {
 	private:
 		bool _extenderLineVisible;		///Should the function draw a horizontal line until the end of the function
 		int _fontWidth;			///Width of the font itself - needed to determine where to start the extender line
+		QString _text;			///Function transformed to String which is rendered then
 };
 
 /**
