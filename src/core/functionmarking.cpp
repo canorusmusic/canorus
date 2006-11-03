@@ -39,7 +39,7 @@ bool CAFunctionMarking::isSideDegree() {
 }
 
 CAFunctionMarking *CAFunctionMarking::clone() {
-	return new CAFunctionMarking(function(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), chordArea(), tonicDegree(), isMinor(), isPartOfEllipse());
+	return new CAFunctionMarking(function(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isMinor(), isPartOfEllipse());
 }
 
 int CAFunctionMarking::compare(CAMusElement *func) {
