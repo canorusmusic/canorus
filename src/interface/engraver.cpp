@@ -189,7 +189,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						((CAFunctionMarking*)elt)->key(),
 						drawableContext,
 						streamsX[i],
-					drawableContext->yPos()
+						((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle)
 					);
 					streamsX[i] += (support->neededWidth());
 					v->addMElement(support);
@@ -322,11 +322,12 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						break;
 					}
 					case CAMusElement::FunctionMarking: {
+						CAFunctionMarking *function = (CAFunctionMarking*)elt;
 						newElt = new CADrawableFunctionMarking(
-							(CAFunctionMarking*)elt,
+							function,
 							(CADrawableFunctionMarkingContext*)drawableContext,
 							streamsX[i],
-							drawableContext->yPos()
+							((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle)
 						);
 						
 						//set extender line and change the width of the previous function marking if needed
@@ -342,6 +343,21 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						}
 						
 						v->addMElement(newElt);
+						
+						//draw chord area, if needed
+						if (function->chordArea()!=CAFunctionMarking::None) {
+							CADrawableFunctionMarkingSupport *chordArea = new CADrawableFunctionMarkingSupport(
+								CADrawableFunctionMarkingSupport::ChordArea,
+								function->chordArea(),
+								function->isChordAreaMinor(),
+								(CADrawableFunctionMarkingContext*)drawableContext,
+								streamsX[i],
+								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Lower)								
+							);
+							chordArea->setXPos((int)(newElt->xPos()-(chordArea->width()-newElt->width())/2.0 + 0.5));
+							v->addMElement(chordArea);
+						}
+						
 						streamsX[i] += (newElt->neededWidth());
 						break;
 					}

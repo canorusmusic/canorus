@@ -21,25 +21,50 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
  	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarking;
  	
  	_extenderLineVisible = false;
-	switch (functionMarking()->function()) { //TODO: Width determination should be done automatically using QPainter::boundingRect() method
-		//character widths are calculated using FreeSans font, pixelSize 19
-		case CAFunctionMarking::I:		_text="I"; _width=5; break;
-		case CAFunctionMarking::II:		_text="II"; _width=10; break;
-		case CAFunctionMarking::III:	_text="III"; _width=15; break;
-		case CAFunctionMarking::IV:		_text="IV"; _width=18; break;
-		case CAFunctionMarking::V:		_text="V"; _width=13; break;
-		case CAFunctionMarking::VI:		_text="VI"; _width=18; break;
-		case CAFunctionMarking::VII:	_text="VII"; _width=23; break;
-		case CAFunctionMarking::T:		_text="T"; _width=12; break;
-		case CAFunctionMarking::S:		_text="S"; _width=13; break;
-		case CAFunctionMarking::D:		_text="D"; _width=14; break;
-		case CAFunctionMarking::F:		_text="F"; _width=12; break;
-		case CAFunctionMarking::N:		_text="N"; _width=14; break;
-		case CAFunctionMarking::L:		_text="L"; _width=11; break;
+ 	if (functionMarking()->tonicDegree()==CAFunctionMarking::None)
+		switch (functionMarking()->function()) { //TODO: Width determination should be done automatically using QPainter::boundingRect() method
+			//character widths are calculated using FreeSans font, pixelSize 19
+			case CAFunctionMarking::I:		_text="I"; _width=5; break;
+			case CAFunctionMarking::II:		_text="II"; _width=10; break;
+			case CAFunctionMarking::III:	_text="III"; _width=15; break;
+			case CAFunctionMarking::IV:		_text="IV"; _width=18; break;
+			case CAFunctionMarking::V:		_text="V"; _width=13; break;
+			case CAFunctionMarking::VI:		_text="VI"; _width=18; break;
+			case CAFunctionMarking::VII:	_text="VII"; _width=23; break;
+			case CAFunctionMarking::T:		_text="T"; _width=12; break;
+			case CAFunctionMarking::S:		_text="S"; _width=13; break;
+			case CAFunctionMarking::D:		_text="D"; _width=14; break;
+			case CAFunctionMarking::F:		_text="F"; _width=12; break;
+			case CAFunctionMarking::N:		_text="N"; _width=14; break;
+			case CAFunctionMarking::L:		_text="L"; _width=11; break;
+		}
+	else
+		switch (functionMarking()->function()) { //TODO: Width determination should be done automatically using QPainter::boundingRect() method
+			//character widths are calculated using FreeSans font, pixelSize 17
+			case CAFunctionMarking::I:		_text="I"; _width=5; break;
+			case CAFunctionMarking::II:		_text="II"; _width=10; break;
+			case CAFunctionMarking::III:	_text="III"; _width=15; break;
+			case CAFunctionMarking::IV:		_text="IV"; _width=16; break;
+			case CAFunctionMarking::V:		_text="V"; _width=11; break;
+			case CAFunctionMarking::VI:		_text="VI"; _width=16; break;
+			case CAFunctionMarking::VII:	_text="VII"; _width=21; break;
+			case CAFunctionMarking::T:		_text="T"; _width=10; break;
+			case CAFunctionMarking::S:		_text="S"; _width=11; break;
+			case CAFunctionMarking::D:		_text="D"; _width=12; break;
+			case CAFunctionMarking::F:		_text="F"; _width=10; break;
+			case CAFunctionMarking::N:		_text="N"; _width=12; break;
+			case CAFunctionMarking::L:		_text="L"; _width=9; break;
+		}	
+	
+ 	_fontWidth = 10;
+	if (function->isMinor()) { //prepend a small circle
+		_text.prepend(QString(0x02DA));
+		_width+=6;
+		_fontWidth+=6;
+		_xPos -= 6;
 	}
 	
  	_height=15;
- 	_fontWidth = 10;
  	_neededWidth = _width;
  	_neededHeight = _height;
 }
@@ -61,7 +86,7 @@ void CADrawableFunctionMarking::draw(QPainter *p, CADrawSettings s) {
 }
 
 CADrawableFunctionMarking *CADrawableFunctionMarking::clone() {
-	return new CADrawableFunctionMarking(functionMarking(), drawableFunctionMarkingContext(), xPos(), yPos());
+	return new CADrawableFunctionMarking(functionMarking(), drawableFunctionMarkingContext(), ((CAFunctionMarking*)_musElement)->isMinor()?xPos()+6:xPos(), yPos());
 }
 
 ////////////////////////////////////////////////////
@@ -72,26 +97,52 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkingSupport;
 	_drawableFunctionMarkingSupportType = type;
 	_key = key;
-	_width = 0;	//TODO: Width determination should be done automatically using QPainter::boundingRect() method
-	for (int i=0; i<key.size(); i++) {	//character widths are calculated using FreeSans font, pixelSize 17
-		if (key[i]=='C') _width+=12;
-		else if (key[i]=='D') _width+=12;
-		else if (key[i]=='E') _width+=11;
-		else if (key[i]=='F') _width+=10;
-		else if (key[i]=='G') _width+=13;
-		else if (key[i]=='A') _width+=11;
-		else if (key[i]=='B') _width+=11;
-		else if (key[i]=='c') _width+=9;
-		else if (key[i]=='d') _width+=9;
-		else if (key[i]=='e') _width+=9;
-		else if (key[i]=='f') _width+=5;
-		else if (key[i]=='g') _width+=9;
-		else if (key[i]=='a') _width+=9;
-		else if (key[i]=='b') _width+=9;
-		else if (key[i]=='i') _width+=5;
-		else if (key[i]=='s') _width+=9;
+	
+	if (type==Key) {
+		_width = 0;	//TODO: Width determination should be done automatically using QPainter::boundingRect() method
+		for (int i=0; i<key.size(); i++) {	//character widths are calculated using FreeSans font, pixelSize 17
+			if (key[i]=='C') _width+=12;
+			else if (key[i]=='D') _width+=12;
+			else if (key[i]=='E') _width+=11;
+			else if (key[i]=='F') _width+=10;
+			else if (key[i]=='G') _width+=13;
+			else if (key[i]=='A') _width+=11;
+			else if (key[i]=='B') _width+=11;
+			else if (key[i]=='c') _width+=9;
+			else if (key[i]=='d') _width+=9;
+			else if (key[i]=='e') _width+=9;
+			else if (key[i]=='f') _width+=5;
+			else if (key[i]=='g') _width+=9;
+			else if (key[i]=='a') _width+=9;
+			else if (key[i]=='b') _width+=9;
+			else if (key[i]=='i') _width+=5;
+			else if (key[i]=='s') _width+=9;
+		}
+		_width += 5;	//colon after the key name (:)
+		_height = 14;
 	}
-	_width += 5;	//colon after the key name (:)
+	
+	_neededWidth = _width;
+	_neededHeight = _height;
+	_selectable = false;
+}
+
+CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType type, CAFunctionMarking::CAFunctionType chordArea, bool minor, CADrawableContext *c, int x, int y)
+ : CADrawableMusElement(0, c, x, y) {
+	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkingSupport;
+	_drawableFunctionMarkingSupportType = type;
+	_chordAreaMinor = minor;
+	_chordArea = chordArea;
+	
+	//character widths are calculated using FreeSans font, pixelSize 17
+	//TODO: Width determination should be done automatically using QPainter::boundingRect() method
+	if (chordArea==CAFunctionMarking::T) { _width=10; }
+	else if (chordArea==CAFunctionMarking::S) { _width=11; }
+	else if (chordArea==CAFunctionMarking::D) { _width=12; }
+	
+	_width += 12;	//paranthesis
+	if (_chordAreaMinor)
+		_width += 6;
 	_height = 14;
 	_neededWidth = _width;
 	_neededHeight = _height;
@@ -106,13 +157,33 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 	font.setPixelSize((int)(17*s.z));
 	p->setPen(QPen(s.color));
 	p->setFont(font);
-	p->drawText(s.x, s.y+(int)(_height*s.z+0.5), _key+":");
+	
+	switch (_drawableFunctionMarkingSupportType) {
+		case Key:
+			p->drawText(s.x, s.y+(int)(_height*s.z+0.5), _key+":");
+			break;
+		case ChordArea:
+			QString text;
+			switch (_chordArea) {
+				case CAFunctionMarking::T: text="T"; break;
+				case CAFunctionMarking::S: text="S"; break;
+				case CAFunctionMarking::D: text="D"; break;
+			}
+			if (_chordAreaMinor) {
+				text.prepend(QString(0x02DA));
+			}
+			p->drawText(s.x, s.y+(int)(_height*s.z+0.5), QString("(")+text+")");
+			break;			
+	}
 }
 
 CADrawableFunctionMarkingSupport *CADrawableFunctionMarkingSupport::clone() {
 	switch (_drawableFunctionMarkingSupportType) {
 		case Key:
 			return new CADrawableFunctionMarkingSupport(Key, _key, _drawableContext, _xPos, _yPos);
+			break;
+		case ChordArea:
+			return new CADrawableFunctionMarkingSupport(Key, _chordArea, _chordAreaMinor, _drawableContext, _xPos, _yPos);
 			break;
 	}
 }
