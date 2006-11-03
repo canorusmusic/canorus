@@ -34,7 +34,7 @@ class CAFunctionMarking : public CAMusElement {
 			L			//Lidian
 		};
 		//TODO: No default parameters implemented yet - problems with Swig's QString typemap something :( -Matevz
-		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, CAFunctionType tonicDegree, bool minor, bool ellipseSequence);
+		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool minor, bool ellipseSequence);
 		CAFunctionMarking *clone();
 		~CAFunctionMarking();
 		

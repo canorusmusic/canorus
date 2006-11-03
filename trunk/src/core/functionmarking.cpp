@@ -9,7 +9,7 @@
 #include "core/functionmarking.h"
 #include "core/functionmarkingcontext.h"
 
-CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, CAFunctionType tonicDegree, bool minor, bool ellipseSequence)
+CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool minor, bool ellipseSequence)
  : CAMusElement(context, timeStart, timeLength) {
  	_musElementType = CAMusElement::FunctionMarking;
  	
@@ -17,6 +17,7 @@ CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key,
  	_tonicDegree = tonicDegree;
  	_key = key;
 	_chordArea = chordArea;
+	_chordAreaMinor = chordAreaMinor;
 	_minor = minor;
 	_ellipseSequence = ellipseSequence;
 }
