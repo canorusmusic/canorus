@@ -180,9 +180,9 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			CAMusElement *elt = musStreamList[i]->at(streamsIdx[i]);
 			if (elt->musElementType()==CAMusElement::FunctionMarking) {
 				drawableContext = drawableContextMap[elt->context()];
-				if (!drawableContext->lastDrawableMusElement() ||
-				    (drawableContext->lastDrawableMusElement()->drawableMusElementType()==CADrawableMusElement::DrawableFunctionMarking)
-				    && ((CAFunctionMarking*)elt)->key()!=((CAFunctionMarking*)drawableContext->lastDrawableMusElement()->musElement())->key()) {
+				if (streamsIdx[i]-1<0 ||
+				    ((CAFunctionMarking*)musStreamList[i]->at(streamsIdx[i]-1))->key() != ((CAFunctionMarking*)elt)->key()
+				   ) {
 					//draw new function marking key, if it was changed or if it's the first function in the score
 					CADrawableFunctionMarkingSupport *support = new CADrawableFunctionMarkingSupport(
 						CADrawableFunctionMarkingSupport::Key,
