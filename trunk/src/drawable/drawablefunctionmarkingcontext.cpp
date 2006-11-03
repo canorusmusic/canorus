@@ -12,10 +12,12 @@
 #include "drawable/drawablefunctionmarkingcontext.h"
 #include "core/functionmarkingcontext.h"
 
-CADrawableFunctionMarkingContext::CADrawableFunctionMarkingContext(CAFunctionMarkingContext *context, int x, int y)
+CADrawableFunctionMarkingContext::CADrawableFunctionMarkingContext(CAFunctionMarkingContext *context, int x, int y, int numberOfLines)
  : CADrawableContext(context, x, y) {
  	_drawableContextType = CADrawableContext::DrawableFunctionMarkingContext;
  	
+ 	_numberOfLines = numberOfLines;
+ 	_currentLineIdx = 0;
  	_width = 0;
  	_height = 50;
 }
@@ -29,4 +31,17 @@ void CADrawableFunctionMarkingContext::draw(QPainter *p, const CADrawSettings s)
 
 CADrawableFunctionMarkingContext *CADrawableFunctionMarkingContext::clone() {
 	return new CADrawableFunctionMarkingContext((CAFunctionMarkingContext*)_context, xPos(), yPos());
+}
+
+int CADrawableFunctionMarkingContext::yPosLine(CAFunctionMarkingLine part) {
+	int yPos = _yPos;
+	for (int i=0; i<_currentLineIdx; i++) {
+		yPos += 60;	//height of a single line
+	}
+	if (part==Middle)
+		yPos += 15;
+	else if (part==Lower)
+		yPos += 30;
+	
+	return yPos;
 }

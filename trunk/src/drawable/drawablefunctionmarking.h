@@ -10,6 +10,7 @@
 #define DRAWABLEFUNCTIONMARKING_H_
 
 #include "drawable/drawablemuselement.h"
+#include "core/functionmarking.h"
 
 class CAFunctionMarking;
 class CADrawableFunctionMarkingContext;
@@ -50,14 +51,17 @@ class CADrawableFunctionMarkingSupport : public CADrawableMusElement {
 		};
 		//Key constructor
 		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, const QString key, CADrawableContext *c, int x, int y);
+		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, CAFunctionMarking::CAFunctionType chordArea, bool minor, CADrawableContext *c, int x, int y);
 		~CADrawableFunctionMarkingSupport();
 		
 		void draw(QPainter *p, const CADrawSettings s);
 		CADrawableFunctionMarkingSupport *clone();
 	
 	private:
-		QString _key;
 		CADrawableFunctionMarkingSupportType _drawableFunctionMarkingSupportType;
+		QString _key;
+		CAFunctionMarking::CAFunctionType _chordArea;
+		bool _chordAreaMinor;
 };
 
 #endif /*DRAWABLEFUNCTIONMARKING_H_*/
