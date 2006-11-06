@@ -306,7 +306,9 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						);
 
 						v->addMElement(newElt);
-						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
+						if (((CANote*)elt)->isLastInTheChord())	
+							streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
+						
 						break;
 					}
 					case CAMusElement::Rest: {
@@ -323,6 +325,20 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 					}
 					case CAMusElement::FunctionMarking: {
 						CAFunctionMarking *function = (CAFunctionMarking*)elt;
+						
+						//Make a new line, if parallel function present
+						if (streamsIdx[i]-1>=0 && musStreamList[i]->at(streamsIdx[i]-1)->timeStart()==musStreamList[i]->at(streamsIdx[i])->timeStart()) {
+							((CADrawableFunctionMarkingContext*)drawableContext)->nextLine();
+							CADrawableFunctionMarkingSupport *newKey = new CADrawableFunctionMarkingSupport(
+								CADrawableFunctionMarkingSupport::Key,
+								function->key(),
+								drawableContext,
+								streamsX[i],
+								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle)
+							);
+							newKey->setXPos(streamsX[i]-newKey->width()-2);
+							v->addMElement(newKey);
+						}
 						
 						newElt = new CADrawableFunctionMarking(
 							function,
@@ -385,13 +401,20 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						}
 						
 						//set extender line and change the width of the previous function marking if needed
-						if (drawableContext->lastDrawableMusElement()!=0 && drawableContext->lastDrawableMusElement()->drawableMusElementType()==CADrawableMusElement::DrawableFunctionMarking) {
-							CAFunctionMarking *prevElt = (CAFunctionMarking*)drawableContext->lastDrawableMusElement()->musElement();
+						if (streamsIdx[i]-1>=0 && musStreamList[i]->at(streamsIdx[i]-1)->timeStart()!=musStreamList[i]->at(streamsIdx[i])->timeStart()) {
+							CAFunctionMarking *prevElt = (CAFunctionMarking*)musStreamList[i]->at(streamsIdx[i]-1);
 							QList<CANote*> chord = prevElt->context()->sheet()->getChord(prevElt->timeStart());
 							for (int i=0; i<chord.size(); i++) {
 								if (chord[i]->timeLength()<prevElt->timeLength()) {
-									((CADrawableFunctionMarking*)drawableContext->lastDrawableMusElement())->setExtenderLineVisible(true);
-									drawableContext->lastDrawableMusElement()->setWidth(newElt->xPos()-drawableContext->lastDrawableMusElement()->xPos()-5);
+									if (prevElt->tonicDegree()==CAFunctionMarking::None) {
+										CADrawableFunctionMarking *prevDElt;
+										prevDElt = (CADrawableFunctionMarking*)drawableContext->findMElement(prevElt);
+										prevDElt->setExtenderLineVisible(true);
+										prevDElt->setWidth(newElt->xPos()-prevDElt->xPos());
+									} else {
+										tonicization->setExtenderLineVisible(true);
+										tonicization->setWidth(newElt->xPos()-tonicization->xPos());
+									}
 									break;
 								}
 							}
@@ -414,13 +437,16 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							v->addMElement(chordArea);
 						}
 						
-						streamsX[i] += (newElt->neededWidth());
+						if (streamsIdx[i]+1<musStreamList[i]->size() && musStreamList[i]->at(streamsIdx[i]+1)->timeStart()!=musStreamList[i]->at(streamsIdx[i])->timeStart())
+							streamsX[i] += (newElt->neededWidth());
+						
 						break;
 					}
 				}
 				
 				streamsIdx[i]++;
 			}
+			
 		}
 	}
 }
