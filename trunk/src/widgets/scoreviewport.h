@@ -1,4 +1,4 @@
-/** @file scoreviewport.h
+/** @file widgets/scoreviewport.h
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -174,6 +174,7 @@ class CAScoreViewPort : public CAViewPort {
 		
 		/**
 		 * Return a drawable instance of the logical music element in the score viewport.
+		 * OBSOLETE! Use CADrawableContext::findMElement() instead! -Matevz
 		 * 
 		 * @param elt Pointer to the logical music element which the drawable element is searched
 		 * @return Pointer to the drawable instance of the given music element.

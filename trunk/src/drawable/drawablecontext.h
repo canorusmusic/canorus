@@ -11,10 +11,10 @@
 
 #include <QList>
 
-#include "drawable.h"
+#include "drawable/drawable.h"
+#include "drawable/drawablemuselement.h"
 
 class CAContext;
-class CADrawableMusElement;
 
 class CADrawableContext : public CADrawable {
 	public:
@@ -32,6 +32,18 @@ class CADrawableContext : public CADrawable {
 		virtual void addMElement(CADrawableMusElement *elt) { _drawableMusElementList << elt; }
 		virtual int removeMElement(CADrawableMusElement *elt) { return _drawableMusElementList.removeAll(elt); }
 		CADrawableMusElement *lastDrawableMusElement() { if (_drawableMusElementList.size()) return _drawableMusElementList.last(); else return 0; }
+		
+		/**
+		 * Return the drawable instance of the given logical element.
+		 * 
+		 * @param elt Pointer to the music element which the drawing instance is being seeked.
+		 * @return Pointer to drawable instance of the given logical element.
+		 */ 
+		inline CADrawableMusElement *findMElement(CAMusElement* elt) {
+			for (int i=0; i<_drawableMusElementList.size(); i++)
+				if (_drawableMusElementList[i]->musElement()==elt)
+					return _drawableMusElementList[i];
+		}
 		
 	protected:
 		CADrawableContextType _drawableContextType;

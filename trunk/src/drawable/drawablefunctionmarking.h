@@ -45,23 +45,26 @@ class CADrawableFunctionMarkingSupport : public CADrawableMusElement {
 			Key,
 			Rectangle,
 			ChordArea,
-			TonicizationSingle,
-			TonicizationDouble,
+			Tonicization,	//Is straight below the function name
 			Ellipse
 		};
 		//Key constructor
 		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, const QString key, CADrawableContext *c, int x, int y);
-		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, CAFunctionMarking::CAFunctionType chordArea, bool minor, CADrawableContext *c, int x, int y);
+		//Rectangle, ChordArea, Tonicization, Ellipse constructor		
+		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, CADrawableFunctionMarking *function, CADrawableContext *c, int x, int y, CADrawableFunctionMarking *function2=0);
 		~CADrawableFunctionMarkingSupport();
 		
 		void draw(QPainter *p, const CADrawSettings s);
 		CADrawableFunctionMarkingSupport *clone();
+		
+		bool isExtenderLineVisible() { return _extenderLineVisible; }
+		void setExtenderLineVisible(bool visible) { _extenderLineVisible = visible; }
 	
 	private:
 		CADrawableFunctionMarkingSupportType _drawableFunctionMarkingSupportType;
 		QString _key;
-		CAFunctionMarking::CAFunctionType _chordArea;
-		bool _chordAreaMinor;
+		CADrawableFunctionMarking *_function1, *_function2;	//Tonicization's start/end functions
+		bool _extenderLineVisible;							//Extender line when tonicization used
 };
 
 #endif /*DRAWABLEFUNCTIONMARKING_H_*/

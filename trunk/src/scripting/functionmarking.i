@@ -26,16 +26,16 @@ class CAFunctionMarking : public CAMusElement {
 			V=5,		//5th
 			VI=6,		//6th
 			VII=7,		//7th
-			T,			//Tonic
-			S,			//Subdominant
-			D,			//Dominant
-			F,			//Phrygian (F for Frigio in Italian)
-			N,			//Napolitan
-			L			//Lidian
+			T=8,			//Tonic
+			S=9,			//Subdominant
+			D=10,			//Dominant
+			F=11,			//Phrygian (F for Frigio in Italian)
+			N=12,			//Napolitan
+			L=13			//Lidian
 		};
-		//TODO: No default parameters implemented yet - problems with Swig's QString typemap something :( -Matevz
-		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool minor, bool ellipseSequence);
-		CAFunctionMarking *clone();
+		
+		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, bool ellipseSequence);
+		CAFunctionMarking* clone();
 		~CAFunctionMarking();
 		
 		CAFunctionType function() { return _function; }
@@ -46,13 +46,18 @@ class CAFunctionMarking : public CAMusElement {
 		void setFunction(CAFunctionType function) { _function = function; }
 		void setKey(QString key) { _key = key; }
 		void setChordArea(CAFunctionType chordArea) { _chordArea = chordArea; }
+		void setChordAreaMinor(bool minor) { _chordAreaMinor = minor; }
 		void setTonicDegree(CAFunctionType tonicDegree) { _tonicDegree = tonicDegree; }
+		void setTonicDegreeMinor(CAFunctionType minor) { _tonicDegreeMinor = minor; }
 		void setAlteredDegrees(QList<int> degrees) { _alteredDegrees = degrees; }
 		void setMinor(bool minor) { _minor = minor; }
 		void setEllipse(bool ellipse) { _ellipseSequence = ellipse; }
 		
 		bool isSideDegree();
+		
 		bool isMinor() { return _minor; }
+		bool isChordAreaMinor() { return _chordAreaMinor; }
+		bool isTonicDegreeMinor() { return _tonicDegreeMinor; }
 		bool isPartOfEllipse() { return _ellipseSequence; }
 		
 		int compare(CAMusElement *function);

@@ -1133,7 +1133,8 @@ This program is licensed under the GNU General Public License (GPL).\n\
 See the file 'LICENSE.GPL' for details.\n\n\
 Homepage: http://canorus.berlios.de" );
 }
-
+#include "core/functionmarking.h"
+#include "core/functionmarkingcontext.h"
 //TODO: This should be done by the plugin automatically. But since we're not able to export internal Qt classes to ruby, this must be done manually
 void CAMainWin::harmonyAnalysisActivated() {
 	_pluginManager->action("onHarmonyAnalysisClick", &_document, 0, 0);

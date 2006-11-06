@@ -25,7 +25,7 @@ class CADrawableFunctionMarkingContext : public CADrawableContext {
 		int numberOfLines() { return _numberOfLines; }
 		
 		enum CAFunctionMarkingLine {
-			Upeer,	//used for function name in tonicization
+			Upper,	//used for function name in tonicization
 			Middle,	//used for general function names
 			Lower	//used for chord areas, ellipse sign etc.
 		};
