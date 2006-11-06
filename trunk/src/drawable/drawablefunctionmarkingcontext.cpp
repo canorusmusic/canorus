@@ -19,7 +19,7 @@ CADrawableFunctionMarkingContext::CADrawableFunctionMarkingContext(CAFunctionMar
  	_numberOfLines = numberOfLines;
  	_currentLineIdx = 0;
  	_width = 0;
- 	_height = 50;
+ 	_height = 45*numberOfLines - 10*(numberOfLines-1);
 }
 
 CADrawableFunctionMarkingContext::~CADrawableFunctionMarkingContext() {
@@ -36,7 +36,7 @@ CADrawableFunctionMarkingContext *CADrawableFunctionMarkingContext::clone() {
 int CADrawableFunctionMarkingContext::yPosLine(CAFunctionMarkingLine part) {
 	int yPos = _yPos;
 	for (int i=0; i<_currentLineIdx; i++) {
-		yPos += 60;	//height of a single line
+		yPos += 35;	//height of a single line
 	}
 	if (part==Middle)
 		yPos += 15;

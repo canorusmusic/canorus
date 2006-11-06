@@ -22,7 +22,7 @@ class CAFunctionMarkingContext : public CAContext {
 		void addFunctionMarking(CAFunctionMarking *marking);
 		QList<CAFunctionMarking*> *functionMarkingList() { return &_functionMarkingList; }
 		
-		bool containsNewFunctionMarking(int timeStart);
+		int countFunctionMarkings(int timeStart);
 		void clear();
 		CAMusElement *findNextMusElement(CAMusElement *elt);
 		CAMusElement *findPrevMusElement(CAMusElement *elt);

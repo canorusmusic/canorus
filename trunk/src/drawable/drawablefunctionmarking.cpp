@@ -261,10 +261,12 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 					s.y+(int)(_height*s.z+0.5),
 					text
 				);
-				p->drawLine(s.x, s.y, s.x + (int)(width()*s.z+0.5), s.y);
+				//draw line below side functions
+				p->drawLine(s.x, s.y, (int)(s.x + (_function2->xPos()+_function2->width()-_function1->xPos())*s.z+0.5), s.y);
 				
+				//draw extender line of the support function
 				if (_extenderLineVisible)
-					p->drawLine(s.x + p->boundingRect(0,0,0,0,0,text).width(), (int)(s.y+height()/2.0+0.5),
+					p->drawLine(s.x + (int)((_function2->xPos()+_function2->width()-_function1->xPos())*s.z/2.0 + p->boundingRect(0,0,0,0,0,text).width()/2.0+1*s.z), (int)(s.y+height()/2.0+0.5),
 								(int)(s.x + width()*s.z+0.5), (int)(s.y+height()/2.0+0.5));
 				
 			}

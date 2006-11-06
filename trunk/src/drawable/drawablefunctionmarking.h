@@ -44,7 +44,7 @@ class CADrawableFunctionMarkingSupport : public CADrawableMusElement {
 			Key,
 			Rectangle,
 			ChordArea,
-			Tonicization,	//Is straight below the function name
+			Tonicization,
 			Ellipse
 		};
 		//Key constructor
@@ -55,6 +55,7 @@ class CADrawableFunctionMarkingSupport : public CADrawableMusElement {
 		
 		void draw(QPainter *p, const CADrawSettings s);
 		CADrawableFunctionMarkingSupport *clone();
+		CADrawableFunctionMarkingSupportType drawableFunctionMarkingSupportType() { return _drawableFunctionMarkingSupportType; }
 		
 		bool isExtenderLineVisible() { return _extenderLineVisible; }
 		void setExtenderLineVisible(bool visible) { _extenderLineVisible = visible; }

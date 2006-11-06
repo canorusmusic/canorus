@@ -57,11 +57,13 @@ bool CAFunctionMarkingContext::removeMusElement(CAMusElement *elt, bool cleanup)
 	return _functionMarkingList.removeAll((CAFunctionMarking*)elt);
 }
 
-bool CAFunctionMarkingContext::containsNewFunctionMarking(int timeStart) {
+int CAFunctionMarkingContext::countFunctionMarkings(int timeStart) {
 	int i;
 	for (i=0; i<_functionMarkingList.size() && _functionMarkingList[i]->timeStart()>timeStart; i++);
-	if (i<_functionMarkingList.size() && _functionMarkingList[i]->timeStart()==timeStart)
-		return true;
-	else
-		return false;
+	if (i<_functionMarkingList.size() && _functionMarkingList[i]->timeStart()==timeStart) {
+		int count;
+		for (count=1; i<_functionMarkingList.size() && _functionMarkingList[i]->timeStart()==timeStart; count++, i++);
+		return count;
+	} else
+		return 0;
 }
