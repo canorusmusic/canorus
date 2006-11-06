@@ -56,11 +56,9 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
 			case CAFunctionMarking::L:		_text="L"; _width=9; break;
 		}	
 	
- 	_fontWidth = 10;
 	if (function->isMinor()) { //prepend a small circle
 		_text.prepend(QString(0x02DA));
 		_width+=6;
-		_fontWidth+=6;
 		_xPos -= 6;
 	}
 	
@@ -75,13 +73,17 @@ CADrawableFunctionMarking::~CADrawableFunctionMarking() {
 
 void CADrawableFunctionMarking::draw(QPainter *p, CADrawSettings s) {
 	QFont font("FreeSans");
-	font.setPixelSize((int)(19*s.z)); //use pixelSize instead of size as we want fixed font size no matter on screen DPI
+	if (functionMarking()->tonicDegree()==CAFunctionMarking::None)
+		font.setPixelSize((int)(19*s.z)); //use pixelSize instead of size as we want fixed font size no matter on screen DPI
+	else
+		font.setPixelSize((int)(17*s.z)); //use pixelSize instead of size as we want fixed font size no matter on screen DPI
+	
 	p->setPen(QPen(s.color));
 	p->setFont(font);
 	p->drawText(s.x, s.y+(int)(_height*s.z+0.5), _text);
 	
 	if (_extenderLineVisible)
-		p->drawLine(s.x + (int)(_fontWidth*s.z+0.5), s.y+(int)((_height/2.0)*s.z+0.5),
+		p->drawLine(s.x + (int)(p->boundingRect(0,0,0,0,0,_text).width()+1*s.z+0.5), s.y+(int)((_height/2.0)*s.z+0.5),
 		            s.x + (int)(_width*s.z+0.5), s.y+(int)((_height/2.0)*s.z+0.5));
 }
 
@@ -151,20 +153,19 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	} else if (type==Tonicization) {
 		//character widths are calculated using FreeSans font, pixelSize 19
 		//TODO: Width determination should be done automatically using QPainter::boundingRect() method
-		switch (f1->functionMarking()->tonicDegree()) {
-			case CAFunctionMarking::I:		_width+=5; break;
-			case CAFunctionMarking::II:		_width+=10; break;
-			case CAFunctionMarking::III:	_width+=15; break;
-			case CAFunctionMarking::IV:		_width+=16; break;
-			case CAFunctionMarking::V:		_width+=11; break;
-			case CAFunctionMarking::VI:		_width+=16; break;
-			case CAFunctionMarking::VII:	_width+=21; break;
-			case CAFunctionMarking::T:		_width+=10; break;
-			case CAFunctionMarking::S:		_width+=11; break;
-			case CAFunctionMarking::D:		_width+=12; break;
-		}
 		if (!f2) {
-			_width = (_width>f1->width()?_width:f1->width());	//single tonicization
+			switch (f1->functionMarking()->tonicDegree()) {
+				case CAFunctionMarking::I:		_width+=5; break;
+				case CAFunctionMarking::II:		_width+=10; break;
+				case CAFunctionMarking::III:	_width+=15; break;
+				case CAFunctionMarking::IV:		_width+=16; break;
+				case CAFunctionMarking::V:		_width+=11; break;
+				case CAFunctionMarking::VI:		_width+=16; break;
+				case CAFunctionMarking::VII:	_width+=21; break;
+				case CAFunctionMarking::T:		_width+=10; break;
+				case CAFunctionMarking::S:		_width+=11; break;
+				case CAFunctionMarking::D:		_width+=12; break;
+			}
 		} else {
 			_width = f2->xPos() + f2->width() - f1->xPos();		//multiple tonicization
 		}
@@ -175,8 +176,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 		_height = f2->yPos()+f2->height() - f1->yPos() + 6;
 		_yPos -= 3;
 	} else if (type==Ellipse) {
-		_width = (int)((f2->xPos()+f2->width()/2.0) - (f1->xPos()+f1->width()/2.0) + 0.5);
-		_xPos += (int)(f1->width()/2.0+0.5);
+		_width = f2->xPos()+f2->width()-f1->xPos();
 		_height = 14;
 	}
 	
@@ -252,7 +252,7 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 			if (!_function2) {	//tonicization is below a single function
 				p->drawText(s.x, s.y+(int)(_height*s.z+0.5), text);
 				if (_extenderLineVisible)
-					p->drawLine(s.x + p->boundingRect(0,0,0,0,0,"text").width(), (int)(s.y+height()/2.0+0.5),
+					p->drawLine(s.x + p->boundingRect(0,0,0,0,0,text).width(), (int)(s.y+height()/2.0+0.5),
 								(int)(s.x + width()*s.z+0.5), (int)(s.y+height()/2.0+0.5));
 			} else {
 				p->drawText(	//tonicization is below multiple functions
@@ -264,19 +264,19 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 				p->drawLine(s.x, s.y, s.x + (int)(width()*s.z+0.5), s.y);
 				
 				if (_extenderLineVisible)
-					p->drawLine(s.x + p->boundingRect(0,0,0,0,0,"text").width(), (int)(s.y+height()/2.0+0.5),
+					p->drawLine(s.x + p->boundingRect(0,0,0,0,0,text).width(), (int)(s.y+height()/2.0+0.5),
 								(int)(s.x + width()*s.z+0.5), (int)(s.y+height()/2.0+0.5));
 				
 			}
 			break;
 		case Ellipse:
 			//draw vertical lines
-			p->drawLine(s.x, s.y, s.x, (int)(s.y+height()*s.z/2.0+0.5));
-			p->drawLine((int)(s.x+width()*s.z/2.0+0.5), s.y, (int)(s.x+width()*s.z/2.0+0.5), (int)(s.y+height()*s.z/2.0+0.5));
-			p->drawLine(s.x, (int)(s.y+height()*s.z/2.0+0.5), (int)(s.x+width()*s.z/2.0 - 4 + 0.5), (int)(s.y+height()*s.z/2.0+0.5));
-			p->drawLine((int)(s.x+width()*s.z/2.0 + 4 + 0.5), (int)(s.y+height()*s.z/2.0+0.5), (int)(s.x+width()*s.z+0.5), (int)(s.y+height()*s.z/2.0+0.5));
+			p->drawLine(s.x, (int)(s.y+2*s.z+0.5), s.x, (int)(s.y+height()*s.z/2.0+0.5));	//left vertical line
+			p->drawLine((int)(s.x+width()*s.z+0.5), (int)(s.y+2*s.z+0.5), (int)(s.x+width()*s.z+0.5), (int)(s.y+height()*s.z/2.0+0.5));	//right vertical line
+			p->drawLine(s.x, (int)(s.y+height()*s.z/2.0+0.5), (int)(s.x+width()*s.z/2.0 - p->boundingRect(0,0,0,0,0,"E").width()/2.0 - 2*s.z + 0.5), (int)(s.y+height()*s.z/2.0+0.5));	//left horizontal line
+			p->drawLine((int)(s.x+width()*s.z/2.0 + p->boundingRect(0,0,0,0,0,"E").width()/2.0 + 2*s.z + 0.5), (int)(s.y+height()*s.z/2.0+0.5), (int)(s.x+width()*s.z+0.5), (int)(s.y+height()*s.z/2.0+0.5));	//right horizontal line
 			
-			p->drawText((int)(s.x+width()*s.z/2.0 - 2 + 0.5), (int)(s.y+3*s.z+0.5), "E");
+			p->drawText((int)(s.x+width()*s.z/2.0 - p->boundingRect(0,0,0,0,0,"E").width()/2.0 + 0.5), (int)(s.y+height()*s.z-1*s.z+0.5), "E");
 			
 			break;
 			
