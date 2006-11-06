@@ -9,12 +9,13 @@
 #include "core/functionmarking.h"
 #include "core/functionmarkingcontext.h"
 
-CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool minor, bool ellipseSequence)
+CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, bool ellipseSequence)
  : CAMusElement(context, timeStart, timeLength) {
  	_musElementType = CAMusElement::FunctionMarking;
  	
  	_function = function;
  	_tonicDegree = tonicDegree;
+ 	_tonicDegreeMinor = tonicDegreeMinor;
  	_key = key;
 	_chordArea = chordArea;
 	_chordAreaMinor = chordAreaMinor;
@@ -39,7 +40,7 @@ bool CAFunctionMarking::isSideDegree() {
 }
 
 CAFunctionMarking *CAFunctionMarking::clone() {
-	return new CAFunctionMarking(function(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isMinor(), isPartOfEllipse());
+	return new CAFunctionMarking(function(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), isMinor(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), isPartOfEllipse());
 }
 
 int CAFunctionMarking::compare(CAMusElement *func) {

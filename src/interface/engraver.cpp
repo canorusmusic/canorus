@@ -8,7 +8,7 @@
 
 #include <QList>
 #include <QMap>
-#include <iostream>
+#include <iostream>	//debug
 #include "interface/engraver.h"
 
 #include "widgets/scoreviewport.h"
@@ -323,12 +323,47 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 					}
 					case CAMusElement::FunctionMarking: {
 						CAFunctionMarking *function = (CAFunctionMarking*)elt;
+						
 						newElt = new CADrawableFunctionMarking(
 							function,
 							(CADrawableFunctionMarkingContext*)drawableContext,
 							streamsX[i],
-							((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle)
+							function->tonicDegree()?
+								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Upper):
+								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle)
 						);
+						
+						//tonicization
+						int j=streamsIdx[i]-1;
+						CADrawableFunctionMarkingSupport *tonicization=0;
+						if (j>=0 && ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()!=CAFunctionMarking::None
+							&& (function->tonicDegree()!=((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()) ) {
+							CAFunctionMarking::CAFunctionType type = ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree();
+							while (--j>=0 && ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()==((CAFunctionMarking*)musStreamList[i]->at(j+1))->tonicDegree());
+							CAFunctionMarking *tonicStart = (CAFunctionMarking*)musStreamList[i]->at(++j);
+							CADrawableFunctionMarking *left, *right=0;
+							left = (CADrawableFunctionMarking*)drawableContext->findMElement(tonicStart);
+							if (tonicStart!=(CAMusElement*)musStreamList[i]->at(streamsIdx[i]-1)) {
+								right = (CADrawableFunctionMarking*)drawableContext->findMElement((CAMusElement*)musStreamList[i]->at(streamsIdx[i]-1));
+								tonicization = new CADrawableFunctionMarkingSupport(
+									CADrawableFunctionMarkingSupport::Tonicization,
+									left,
+									(CADrawableFunctionMarkingContext*)drawableContext,
+									left->xPos(),
+									((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle),
+									right
+								);
+							} else {
+								tonicization = new CADrawableFunctionMarkingSupport(
+									CADrawableFunctionMarkingSupport::Tonicization,
+									left,
+									(CADrawableFunctionMarkingContext*)drawableContext,
+									left->xPos(),
+									((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle)
+								);
+								tonicization->setXPos((int)(left->xPos()+0.5*left->width()-0.5*tonicization->width()+0.5));	//align center
+							}
+						}
 						
 						//set extender line and change the width of the previous function marking if needed
 						if (drawableContext->lastDrawableMusElement()!=0 && drawableContext->lastDrawableMusElement()->drawableMusElementType()==CADrawableMusElement::DrawableFunctionMarking) {
@@ -338,18 +373,19 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 								if (chord[i]->timeLength()<prevElt->timeLength()) {
 									((CADrawableFunctionMarking*)drawableContext->lastDrawableMusElement())->setExtenderLineVisible(true);
 									drawableContext->lastDrawableMusElement()->setWidth(newElt->xPos()-drawableContext->lastDrawableMusElement()->xPos()-5);
+									break;
 								}
 							}
 						}
 						
 						v->addMElement(newElt);
+						if (tonicization) v->addMElement(tonicization);
 						
 						//draw chord area, if needed
 						if (function->chordArea()!=CAFunctionMarking::None) {
 							CADrawableFunctionMarkingSupport *chordArea = new CADrawableFunctionMarkingSupport(
 								CADrawableFunctionMarkingSupport::ChordArea,
-								function->chordArea(),
-								function->isChordAreaMinor(),
+								(CADrawableFunctionMarking*)newElt,
 								(CADrawableFunctionMarkingContext*)drawableContext,
 								streamsX[i],
 								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Lower)								

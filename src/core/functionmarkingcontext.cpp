@@ -29,20 +29,39 @@ void CAFunctionMarkingContext::addFunctionMarking(CAFunctionMarking *function) {
 	int i;
 	for (i=_functionMarkingList.size()-1; i>0 && _functionMarkingList[i]->timeStart()>function->timeStart(); i--);
 	_functionMarkingList.insert(i+1, function);
-	_functionMarkingHash.insert(function->timeStart(), function);
+	_functionMarkingHash.insertMulti(function->timeStart(), function);
 }
 
 CAMusElement *CAFunctionMarkingContext::findNextMusElement(CAMusElement *elt) {
+	int idx = _functionMarkingList.indexOf((CAFunctionMarking*)elt);
 	
+	if (++idx>=_functionMarkingList.size())
+		return 0;
+	else
+		return _functionMarkingList[idx];
 }
 
 CAMusElement *CAFunctionMarkingContext::findPrevMusElement(CAMusElement *elt) {
+	int idx = _functionMarkingList.indexOf((CAFunctionMarking*)elt);
 	
+	if (--idx<0)
+		return 0;
+	else
+		return _functionMarkingList[idx];	
 }
 
 bool CAFunctionMarkingContext::removeMusElement(CAMusElement *elt, bool cleanup) {
+	if (cleanup)
+		delete elt;
 	
+	return _functionMarkingList.removeAll((CAFunctionMarking*)elt);
 }
 
 bool CAFunctionMarkingContext::containsNewFunctionMarking(int timeStart) {
+	int i;
+	for (i=0; i<_functionMarkingList.size() && _functionMarkingList[i]->timeStart()>timeStart; i++);
+	if (i<_functionMarkingList.size() && _functionMarkingList[i]->timeStart()==timeStart)
+		return true;
+	else
+		return false;
 }
