@@ -333,27 +333,27 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle)
 						);
 						
-						//tonicization
-						int j=streamsIdx[i]-1;
+						//Place tonicization. The same tonicization is always placed from streamsIdx[i]-nth to streamsIdx[i]-1th element, where streamsIdx[i] is the current index. 
+						int j=streamsIdx[i]-1;	//index of the previous elt
 						CADrawableFunctionMarkingSupport *tonicization=0;
-						if (j>=0 && ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()!=CAFunctionMarking::None
-							&& (function->tonicDegree()!=((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()) ) {
+						if (j>=0 && ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()!=CAFunctionMarking::None	//place tonicization, if tonic degree is set...
+							&& (function->tonicDegree()!=((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()) ) {	//and it's not still the same
 							CAFunctionMarking::CAFunctionType type = ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree();
+							
+							//find the n-th element back
 							while (--j>=0 && ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()==((CAFunctionMarking*)musStreamList[i]->at(j+1))->tonicDegree());
 							CAFunctionMarking *tonicStart = (CAFunctionMarking*)musStreamList[i]->at(++j);
-							CADrawableFunctionMarking *left, *right=0;
-							left = (CADrawableFunctionMarking*)drawableContext->findMElement(tonicStart);
-							if (tonicStart!=(CAMusElement*)musStreamList[i]->at(streamsIdx[i]-1)) {
-								right = (CADrawableFunctionMarking*)drawableContext->findMElement((CAMusElement*)musStreamList[i]->at(streamsIdx[i]-1));
+							CADrawableFunctionMarking *left = (CADrawableFunctionMarking*)drawableContext->findMElement(tonicStart);
+							if (tonicStart!=(CAMusElement*)musStreamList[i]->at(streamsIdx[i]-1)) {	//tonicization isn't single (more than 1 tonic element)
 								tonicization = new CADrawableFunctionMarkingSupport(
 									CADrawableFunctionMarkingSupport::Tonicization,
 									left,
 									(CADrawableFunctionMarkingContext*)drawableContext,
 									left->xPos(),
 									((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle),
-									right
+									(CADrawableFunctionMarking*)drawableContext->findMElement((CAMusElement*)musStreamList[i]->at(streamsIdx[i]-1))
 								);
-							} else {
+							} else {																//tonicization is single (one tonic)
 								tonicization = new CADrawableFunctionMarkingSupport(
 									CADrawableFunctionMarkingSupport::Tonicization,
 									left,
@@ -363,6 +363,25 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 								);
 								tonicization->setXPos((int)(left->xPos()+0.5*left->width()-0.5*tonicization->width()+0.5));	//align center
 							}
+						}
+						
+						//Place ellipse
+						j=streamsIdx[i]-1;
+						CADrawableFunctionMarkingSupport *ellipse=0;
+						if (j>=0 && ((CAFunctionMarking*)musStreamList[i]->at(j))->isPartOfEllipse()	//place ellipse, if it has it
+							&& (!function->isPartOfEllipse()) ) {	//and it's not lasting anymore
+							//find the n-th element back
+							while (--j>=0 && ((CAFunctionMarking*)musStreamList[i]->at(j))->isPartOfEllipse());
+							CAFunctionMarking *ellipseStart = (CAFunctionMarking*)musStreamList[i]->at(++j);
+							CADrawableFunctionMarking *left = (CADrawableFunctionMarking*)drawableContext->findMElement(ellipseStart);
+							ellipse = new CADrawableFunctionMarkingSupport(
+								CADrawableFunctionMarkingSupport::Ellipse,
+								left,
+								(CADrawableFunctionMarkingContext*)drawableContext,
+								left->xPos(),
+								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Lower),
+								(CADrawableFunctionMarking*)drawableContext->findMElement((CAMusElement*)musStreamList[i]->at(streamsIdx[i]-1))
+							);
 						}
 						
 						//set extender line and change the width of the previous function marking if needed
@@ -380,6 +399,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						
 						v->addMElement(newElt);
 						if (tonicization) v->addMElement(tonicization);
+						if (ellipse) v->addMElement(ellipse);
 						
 						//draw chord area, if needed
 						if (function->chordArea()!=CAFunctionMarking::None) {
