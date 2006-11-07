@@ -59,12 +59,15 @@ class CADrawableFunctionMarkingSupport : public CADrawableMusElement {
 		
 		bool isExtenderLineVisible() { return _extenderLineVisible; }
 		void setExtenderLineVisible(bool visible) { _extenderLineVisible = visible; }
+		bool rectWider() { return _rectWider; }
+		void setRectWider(bool wider) { if (!_rectWider) { _rectWider = wider; _yPos -= 3; _height += 6; } }
 	
 	private:
 		CADrawableFunctionMarkingSupportType _drawableFunctionMarkingSupportType;
 		QString _key;
 		CADrawableFunctionMarking *_function1, *_function2;	//Tonicization's start/end functions
 		bool _extenderLineVisible;							//Extender line when tonicization used
+		bool _rectWider;									//Is rectangle wider in height. Default: false. Useful when doing a series of modulations where you don't know which rectangle belongs to which function. Every 2nd rectangle is then a bit higher than the others.
 };
 
 #endif /*DRAWABLEFUNCTIONMARKING_H_*/
