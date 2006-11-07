@@ -279,7 +279,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		
 		//Align support elements (accidentals, function key names) to the right
 		for (int i=0; i<lastDFMKeyNames.size(); i++)
-			lastDFMKeyNames[i]->setXPos(maxX - lastDFMKeyNames[i]->neededWidth());
+			lastDFMKeyNames[i]->setXPos(maxX - lastDFMKeyNames[i]->neededWidth() - 2);
 		
 		int deltaXPos = maxX - maxAccidentalXEnd;
 		for (int i=0; i<lastAccidentals.size(); i++) {
@@ -381,6 +381,90 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							}
 						}
 						
+						//Place horizontal modulation rectangle, if needed
+						j=streamsIdx[i]-1;
+						CADrawableFunctionMarkingSupport *hModulationRect=0;
+						if (j>=0 &&
+						    ((CAFunctionMarking*)musStreamList[i]->at(j))->key()!=function->key() &&
+						    ((CAFunctionMarking*)musStreamList[i]->at(j))->timeStart()!=function->timeStart()) {
+							CADrawableFunctionMarking *left = (CADrawableFunctionMarking*)drawableContext->findMElement(musStreamList[i]->at(j));
+							hModulationRect = new CADrawableFunctionMarkingSupport(
+								CADrawableFunctionMarkingSupport::Rectangle,
+								left,
+								(CADrawableFunctionMarkingContext*)drawableContext,
+								left->xPos(),
+								left->yPos(),
+								(CADrawableFunctionMarking*)newElt
+							);
+							if (streamsIdx[i]%2)
+								hModulationRect->setRectWider(true);	//make it wider, so it potentially doesn't overlap with other rectangles around
+						}
+						
+						//Place vertical modulation rectangle, if needed
+						//This must be done *before* the extender lines are placed!
+						j=streamsIdx[i]-1;
+						CADrawableFunctionMarkingSupport *vModulationRect=0;
+						while (--j>=0 &&
+						       ((CAFunctionMarking*)musStreamList[i]->at(j))->key()!=((CAFunctionMarking*)musStreamList[i]->at(j+1))->key() &&
+						       ((CAFunctionMarking*)musStreamList[i]->at(j))->timeStart()==((CAFunctionMarking*)musStreamList[i]->at(j+1))->timeStart()
+						      );
+						if (++j>=0 && j!=streamsIdx[i]-1) {
+							CADrawableFunctionMarking *left = (CADrawableFunctionMarking*)drawableContext->findMElement(musStreamList[i]->at(j));
+							vModulationRect = new CADrawableFunctionMarkingSupport(
+								CADrawableFunctionMarkingSupport::Rectangle,
+								left,
+								(CADrawableFunctionMarkingContext*)drawableContext,
+								left->xPos(),
+								left->yPos(),
+								(CADrawableFunctionMarking*)drawableContext->findMElement(musStreamList[i]->at(streamsIdx[i]-1))
+							);
+						}
+						
+						//Place horizontal chordarea rectangle, if element neighbours are of the same chordarea/function
+						j=streamsIdx[i]-1;
+						CADrawableFunctionMarkingSupport *hChordAreaRect=0;
+						if (j>=0 && //don't draw rectangle, if the current element would still be in the rectangle
+						    (((CAFunctionMarking*)musStreamList[i]->at(j))->key()==function->key() && ((CAFunctionMarking*)musStreamList[i]->at(j))->function()!=function->function() && ((CAFunctionMarking*)musStreamList[i]->at(j))->function()!=function->chordArea() && ((CAFunctionMarking*)musStreamList[i]->at(j))->chordArea()!=function->chordArea() ||
+						     ((CAFunctionMarking*)musStreamList[i]->at(j))->key()!=function->key() || j==musStreamList[i]->size()
+						    )
+						   ) {
+							while (--j>=0 &&
+							       ((CAFunctionMarking*)musStreamList[i]->at(j))->key()==((CAFunctionMarking*)musStreamList[i]->at(j+1))->key() &&
+							        (((CAFunctionMarking*)musStreamList[i]->at(j))->chordArea()==((CAFunctionMarking*)musStreamList[i]->at(j+1))->chordArea() ||
+							         ((CAFunctionMarking*)musStreamList[i]->at(j))->function()==((CAFunctionMarking*)musStreamList[i]->at(j+1))->chordArea() ||
+							         ((CAFunctionMarking*)musStreamList[i]->at(j))->chordArea()==((CAFunctionMarking*)musStreamList[i]->at(j+1))->function()
+							        )
+							      );
+							if (++j != streamsIdx[i]-1) {
+								CADrawableFunctionMarking *left = (CADrawableFunctionMarking*)drawableContext->findMElement(musStreamList[i]->at(j));
+								hChordAreaRect = new CADrawableFunctionMarkingSupport(
+									CADrawableFunctionMarkingSupport::Rectangle,
+									left,
+									(CADrawableFunctionMarkingContext*)drawableContext,
+									left->xPos(),
+									left->yPos(),
+									(CADrawableFunctionMarking*)drawableContext->findMElement(musStreamList[i]->at(streamsIdx[i]-1))
+								);
+							}
+						}
+						
+						//Place chordarea marking below in paranthesis, if no neighbours are of same chordarea
+						CADrawableFunctionMarkingSupport *chordArea=0;
+						j=streamsIdx[i];
+						if (function->chordArea()!=CAFunctionMarking::None &&
+						    (j-1>=0 && ((CAFunctionMarking*)musStreamList[i]->at(j-1))->key()==function->key() && ((CAFunctionMarking*)musStreamList[i]->at(j-1))->chordArea()!=function->chordArea() && ((CAFunctionMarking*)musStreamList[i]->at(j-1))->function()!=function->chordArea() && ((CAFunctionMarking*)musStreamList[i]->at(j-1))->chordArea()!=function->function()) &&
+						    (j+1<musStreamList[i]->size() && ((CAFunctionMarking*)musStreamList[i]->at(j+1))->key()==function->key() && ((CAFunctionMarking*)musStreamList[i]->at(j+1))->chordArea()!=function->chordArea() && ((CAFunctionMarking*)musStreamList[i]->at(j+1))->function()!=function->chordArea() && ((CAFunctionMarking*)musStreamList[i]->at(j+1))->chordArea()!=function->function() || j==musStreamList[i]->size())
+						   ) {
+							chordArea = new CADrawableFunctionMarkingSupport(
+								CADrawableFunctionMarkingSupport::ChordArea,
+								(CADrawableFunctionMarking*)newElt,
+								(CADrawableFunctionMarkingContext*)drawableContext,
+								streamsX[i],
+								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Lower)								
+							);
+							chordArea->setXPos((int)(newElt->xPos()-(chordArea->width()-newElt->width())/2.0 + 0.5));
+						}
+						
 						//Place ellipse
 						j=streamsIdx[i]-1;
 						CADrawableFunctionMarkingSupport *ellipse=0;
@@ -406,14 +490,23 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							QList<CANote*> chord = prevElt->context()->sheet()->getChord(prevElt->timeStart());
 							for (int i=0; i<chord.size(); i++) {
 								if (chord[i]->timeLength()<prevElt->timeLength()) {
+									int newX;
 									if (prevElt->tonicDegree()==CAFunctionMarking::None) {
 										CADrawableFunctionMarking *prevDElt;
 										prevDElt = (CADrawableFunctionMarking*)drawableContext->findMElement(prevElt);
 										prevDElt->setExtenderLineVisible(true);
-										prevDElt->setWidth(newElt->xPos()-prevDElt->xPos());
+										if (prevElt->key()==((CADrawableFunctionMarking*)newElt)->functionMarking()->key())
+											newX = newElt->xPos()-prevDElt->xPos();
+										else
+											newX = lastDFMKeyNames[i]->xPos()-prevDElt->xPos();										
+										prevDElt->setWidth(newX);
 									} else {
 										tonicization->setExtenderLineVisible(true);
-										tonicization->setWidth(newElt->xPos()-tonicization->xPos());
+										if (prevElt->key()==((CADrawableFunctionMarking*)newElt)->functionMarking()->key())
+											newX = newElt->xPos()-tonicization->xPos();
+										else
+											newX = lastDFMKeyNames[i]->xPos()-tonicization->xPos();
+										tonicization->setWidth(newX);
 									}
 									break;
 								}
@@ -423,19 +516,10 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						v->addMElement(newElt);
 						if (tonicization) v->addMElement(tonicization);
 						if (ellipse) v->addMElement(ellipse);
-						
-						//draw chord area, if needed
-						if (function->chordArea()!=CAFunctionMarking::None) {
-							CADrawableFunctionMarkingSupport *chordArea = new CADrawableFunctionMarkingSupport(
-								CADrawableFunctionMarkingSupport::ChordArea,
-								(CADrawableFunctionMarking*)newElt,
-								(CADrawableFunctionMarkingContext*)drawableContext,
-								streamsX[i],
-								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Lower)								
-							);
-							chordArea->setXPos((int)(newElt->xPos()-(chordArea->width()-newElt->width())/2.0 + 0.5));
-							v->addMElement(chordArea);
-						}
+						if (hModulationRect) v->addMElement(hModulationRect);
+						if (vModulationRect) v->addMElement(vModulationRect);
+						if (hChordAreaRect) v->addMElement(hChordAreaRect);
+						if (chordArea) v->addMElement(chordArea);
 						
 						if (streamsIdx[i]+1<musStreamList[i]->size() && musStreamList[i]->at(streamsIdx[i]+1)->timeStart()!=musStreamList[i]->at(streamsIdx[i])->timeStart())
 							streamsX[i] += (newElt->neededWidth());

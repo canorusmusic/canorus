@@ -137,6 +137,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	_function2 = f2;
 	_width=0;
 	_extenderLineVisible = false;
+	_rectWider = false;
 	
 	if (f1->functionMarking()->isTonicDegreeMinor()) {
 		_width+=6;
@@ -171,7 +172,11 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 		}
 		_height = 15;
 	} else if (type==Rectangle) {
-		_width = f2->xPos()+f2->width() - f1->xPos() + 6;
+		if (f2->xPos()+f2->width()-f1->xPos() < f1->xPos()+f1->width()-f2->xPos())
+			_width = f1->xPos()+f1->width()-f2->xPos() + 6;	//used for vertical modulation
+		else 
+			_width = f2->xPos()+f2->width()-f1->xPos() + 6;	//used for horizontal modulation/chordarea rectangle
+		
 		_xPos -= 3;
 		_height = f2->yPos()+f2->height() - f1->yPos() + 6;
 		_yPos -= 3;
@@ -283,7 +288,7 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 			break;
 			
 		case Rectangle:
-			p->drawRect(s.x, s.y, (int)(s.x+width()*s.z+0.5), (int)(s.y+height()*s.z+0.5));
+			p->drawRect(s.x, s.y, (int)(width()*s.z+0.5), (int)(height()*s.z+0.5));
 			break;
 	}
 }
