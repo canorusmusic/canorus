@@ -34,7 +34,8 @@ class CAFunctionMarking : public CAMusElement {
 			L=13			//Lidian
 		};
 		
-		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, bool ellipseSequence);
+		//addedDegrees and alteredDegrees are generated from alterations parameter
+		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence);
 		CAFunctionMarking* clone();
 		~CAFunctionMarking();
 		
@@ -43,6 +44,7 @@ class CAFunctionMarking : public CAMusElement {
 		CAFunctionType chordArea() { return _chordArea; }
 		CAFunctionType tonicDegree() { return _tonicDegree; }
 		QList<int> alteredDegrees() { return _alteredDegrees; }
+		QList<int> addedDegrees() { return _addedDegrees; }
 		void setFunction(CAFunctionType function) { _function = function; }
 		void setKey(QString key) { _key = key; }
 		void setChordArea(CAFunctionType chordArea) { _chordArea = chordArea; }
@@ -50,8 +52,10 @@ class CAFunctionMarking : public CAMusElement {
 		void setTonicDegree(CAFunctionType tonicDegree) { _tonicDegree = tonicDegree; }
 		void setTonicDegreeMinor(CAFunctionType minor) { _tonicDegreeMinor = minor; }
 		void setAlteredDegrees(QList<int> degrees) { _alteredDegrees = degrees; }
+		void setAddedDegrees(QList<int> degrees) { _addedDegrees = degrees; }
 		void setMinor(bool minor) { _minor = minor; }
 		void setEllipse(bool ellipse) { _ellipseSequence = ellipse; }
+		void setAlterations(const QString alterations);	///Read alterations and set alteredDegrees and addedDegrees
 		
 		bool isSideDegree();
 		

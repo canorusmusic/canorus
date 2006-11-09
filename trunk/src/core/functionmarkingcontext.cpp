@@ -34,6 +34,8 @@ void CAFunctionMarkingContext::addFunctionMarking(CAFunctionMarking *function) {
 
 CAMusElement *CAFunctionMarkingContext::findNextMusElement(CAMusElement *elt) {
 	int idx = _functionMarkingList.indexOf((CAFunctionMarking*)elt);
+	if (idx==-1)
+		return 0;
 	
 	if (++idx>=_functionMarkingList.size())
 		return 0;
@@ -43,6 +45,8 @@ CAMusElement *CAFunctionMarkingContext::findNextMusElement(CAMusElement *elt) {
 
 CAMusElement *CAFunctionMarkingContext::findPrevMusElement(CAMusElement *elt) {
 	int idx = _functionMarkingList.indexOf((CAFunctionMarking*)elt);
+	if (idx==-1)
+		return 0;
 	
 	if (--idx<0)
 		return 0;

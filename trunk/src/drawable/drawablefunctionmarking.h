@@ -45,12 +45,16 @@ class CADrawableFunctionMarkingSupport : public CADrawableMusElement {
 			Rectangle,
 			ChordArea,
 			Tonicization,
-			Ellipse
+			Ellipse,
+			Alterations
 		};
 		//Key constructor
 		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, const QString key, CADrawableContext *c, int x, int y);
 		//Rectangle, ChordArea, Tonicization, Ellipse constructor		
 		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, CADrawableFunctionMarking *function, CADrawableContext *c, int x, int y, CADrawableFunctionMarking *function2=0);
+		//Alterations consructor
+		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, CAFunctionMarking *function, CADrawableContext *c, int x, int y);
+		
 		~CADrawableFunctionMarkingSupport();
 		
 		void draw(QPainter *p, const CADrawSettings s);
