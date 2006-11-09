@@ -9,7 +9,7 @@
 #include "core/functionmarking.h"
 #include "core/functionmarkingcontext.h"
 
-CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, bool ellipseSequence)
+CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence)
  : CAMusElement(context, timeStart, timeLength) {
  	_musElementType = CAMusElement::FunctionMarking;
  	
@@ -21,6 +21,8 @@ CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key,
 	_chordAreaMinor = chordAreaMinor;
 	_minor = minor;
 	_ellipseSequence = ellipseSequence;
+	
+	setAlterations(alterations);
 }
 
 CAFunctionMarking::~CAFunctionMarking() {
@@ -40,9 +42,55 @@ bool CAFunctionMarking::isSideDegree() {
 }
 
 CAFunctionMarking *CAFunctionMarking::clone() {
-	return new CAFunctionMarking(function(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), isMinor(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), isPartOfEllipse());
+	CAFunctionMarking *newElt;
+	newElt = new CAFunctionMarking(function(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), isMinor(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
+	newElt->setAlteredDegrees(_alteredDegrees);
+	newElt->setAddedDegrees(_addedDegrees);
+	
+	return newElt;
 }
 
 int CAFunctionMarking::compare(CAMusElement *func) {
 	return 0;	//TODO
+}
+
+void CAFunctionMarking::setAlterations(const QString alterations) {
+	if (alterations.isEmpty())
+		return;
+	
+	int i=0;	//index of the first character that belongs to the degree
+	int rightIdx;
+	
+	//added degrees:
+	_addedDegrees.clear();
+	while (i<alterations.size() && alterations[i]!='+' && alterations[i]!='-') {
+		if (alterations.indexOf('+',i+1)==-1)
+			rightIdx = alterations.indexOf('-',i+1);
+		else if (alterations.indexOf('-',i+1)==-1)
+			rightIdx = alterations.indexOf('+',i+1);
+		else
+			rightIdx = alterations.indexOf('+',i+1)<alterations.indexOf('-',i+1)?alterations.indexOf('+',i+1):alterations.indexOf('-',i+1);
+		
+		QString curDegree = alterations.mid(i, rightIdx-i+1);
+		curDegree.insert(0, curDegree[curDegree.size()-1]);	//move the last + or - before the string
+		curDegree.chop(1);
+		_addedDegrees << curDegree.toInt();
+		i=rightIdx+1;
+	}
+	
+	//altered degrees:
+	_alteredDegrees.clear();
+	while (i<alterations.size()) {
+		if (alterations.indexOf('+',i+1)==-1 && alterations.indexOf('-',i+1)!=-1)
+			rightIdx = alterations.indexOf('-',i+1);
+		else if (alterations.indexOf('-',i+1)==-1 && alterations.indexOf('+',i+1)!=-1)
+			rightIdx = alterations.indexOf('+',i+1);
+		else if (alterations.indexOf('-',i+1)!=-1 && alterations.indexOf('+',i+1)!=-1)
+			rightIdx = alterations.indexOf('+',i+1)<alterations.indexOf('-',i+1)?alterations.indexOf('+',i+1):alterations.indexOf('-',i+1);
+		else
+			rightIdx = alterations.size();
+		
+		_alteredDegrees << alterations.mid(i, rightIdx-i).toInt();
+		i=rightIdx;
+	}
 }

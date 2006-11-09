@@ -36,7 +36,8 @@ class CAFunctionMarking : public CAMusElement {
 			L=13			//Lidian
 		};
 		
-		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea=None, bool chordAreaMinor=false, CAFunctionType tonicDegree=None, bool tonicDegreeMinor=false, bool ellipseSequence=false);
+		//addedDegrees and alteredDegrees are generated from alterations parameter
+		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea=None, bool chordAreaMinor=false, CAFunctionType tonicDegree=None, bool tonicDegreeMinor=false, const QString alterations="", bool ellipseSequence=false);
 		CAFunctionMarking* clone();
 		~CAFunctionMarking();
 		
@@ -45,6 +46,7 @@ class CAFunctionMarking : public CAMusElement {
 		CAFunctionType chordArea() { return _chordArea; }
 		CAFunctionType tonicDegree() { return _tonicDegree; }
 		QList<int> alteredDegrees() { return _alteredDegrees; }
+		QList<int> addedDegrees() { return _addedDegrees; }
 		void setFunction(CAFunctionType function) { _function = function; }
 		void setKey(QString key) { _key = key; }
 		void setChordArea(CAFunctionType chordArea) { _chordArea = chordArea; }
@@ -52,8 +54,10 @@ class CAFunctionMarking : public CAMusElement {
 		void setTonicDegree(CAFunctionType tonicDegree) { _tonicDegree = tonicDegree; }
 		void setTonicDegreeMinor(CAFunctionType minor) { _tonicDegreeMinor = minor; }
 		void setAlteredDegrees(QList<int> degrees) { _alteredDegrees = degrees; }
+		void setAddedDegrees(QList<int> degrees) { _addedDegrees = degrees; }
 		void setMinor(bool minor) { _minor = minor; }
 		void setEllipse(bool ellipse) { _ellipseSequence = ellipse; }
+		void setAlterations(const QString alterations);	///Read alterations and set alteredDegrees and addedDegrees
 		
 		bool isSideDegree();
 		
@@ -72,6 +76,7 @@ class CAFunctionMarking : public CAMusElement {
 		CAFunctionType _tonicDegree;	///used when doing tonicization (see http://en.wikipedia.org/wiki/Tonicization). None, if the tonic degree should be hidden, degree, to be shown.
 		bool _tonicDegreeMinor;			///is tonic degree minor?
 		QList<int> _alteredDegrees;		///degree of the chord which are altered according to the current key. These markings are usually written below the function name, eg. -3, -7 for German chord
+		QList<int> _addedDegrees;		///degrees of the chord which are added to or substracted from the basic. eg. sixte ajoutée in cadence
 		bool _minor;					///should the function have a circle drawn?
 		bool _ellipseSequence;			///function is part of ellipse?
 };
