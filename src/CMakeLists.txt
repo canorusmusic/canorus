@@ -16,22 +16,24 @@ IF(SWIG_FOUND)
 	SET(USE_SWIG True)
 	MESSAGE("SWIG found, using scripting extensions!")
 ENDIF(SWIG_FOUND)
-	
-FIND_PACKAGE(Ruby QUIET)	#Setup RUBY_INCLUDE_PATH and RUBY_LIBRARIES
+
+FIND_PACKAGE(Ruby)	#Setup RUBY_INCLUDE_PATH and RUBY_LIBRARIES
 IF(RUBY_INCLUDE_PATH)
 	MESSAGE("Ruby Library and Development files found. Ruby extensions enabled.")
 	MESSAGE(${RUBY_INCLUDE_PATH})
 	SET(USE_RUBY True)
 ELSE(RUBY_INCLUDE_PATH)
-	MESSAGE("Ruby Library or Development files *not* found. Ruby extensions disabled.")
+	MESSAGE("Ruby Library or Development files *not* found. Ruby extensions disabled."
+	        "If you don't intend to use Ruby, pass -DRUBY_LIBRARY=none parameter to cmake.")
 ENDIF(RUBY_INCLUDE_PATH)
 
-FIND_PACKAGE(PythonLibs QUIET)
+FIND_PACKAGE(PythonLibs)
 IF(PYTHON_INCLUDE_PATH)
 	MESSAGE("Python Library and Development files found. Python extensions enabled.")
 	SET(USE_PYTHON True)
 ELSE(PYTHON_INCLUDE_PATH)
-	MESSAGE("Python Library or Development files *not* found. Python extensions disabled.")
+	MESSAGE("Python Library or Development files *not* found. Python extensions disabled."
+		"If you don't intend to use Python, pass -DPYTHON_LIBRARY=none parameter to cmake.")
 ENDIF(PYTHON_INCLUDE_PATH)
 
 ###################
@@ -46,10 +48,10 @@ SET(Canorus_UIs  ui/mainwin.ui
 SET(Canorus_MOCs ui/mainwin.h	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	ui/keysigpsp.h
 	widgets/keyoffs.h
-	widgets/lcdnumber.h 
-	widgets/scrollwidget.h 
-	widgets/viewport.h 
-	widgets/scoreviewport.h 
+	widgets/lcdnumber.h
+	widgets/scrollwidget.h
+	widgets/viewport.h
+	widgets/scoreviewport.h
 	widgets/sourceviewport.h
 	widgets/toolbar.h
 	interface/playback.h
@@ -59,13 +61,13 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/document.cpp
 	core/sheet.cpp
 	core/kdtree.cpp
-	
+
 	core/context.cpp
 	core/staff.cpp
 	core/functionmarkingcontext.cpp
-	
+
 	core/muselement.cpp
-	core/voice.cpp	
+	core/voice.cpp
 	core/barline.cpp
 	core/clef.cpp
 	core/keysignature.cpp
@@ -73,9 +75,9 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/playable.cpp
 	core/note.cpp
 	core/rest.cpp
-	
+
 	core/functionmarking.cpp
-	
+
 	core/canorusml.cpp
 )
 
@@ -230,7 +232,7 @@ SET(Canorus_Resrcs ui/mainwin.qrc ui/keysig.qrc)
 # add_file_dependencies( ui/mainwin.cpp ui/ui_mainwin.h )
 
 # This scripts runs the resource compiler rcc.
-# The result of it is stored into Canorus_UIC_Resrcs_Srcs
+# The result of it is stored into Canorus_Resrcs_Srcs
 # variable. This has to be included later in the
 # add_executable line.
 QT4_ADD_RESOURCES( Canorus_Resrcs_Srcs ${Canorus_Resrcs} )
@@ -300,10 +302,10 @@ IF(USE_RUBY)
 	INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES CPLUSPLUS ON)
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES SWIG_FLAGS "-includeall")
-	
+
 	SET(CANORUS_RUBY_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusrubyRUBY_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_RUBY_WRAP_CXX} PROPERTIES GENERATED TRUE)
-	
+
 	SWIG_ADD_MODULE(CanorusRuby ruby
 		${Canorus_Swig_Srcs}
 		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
@@ -315,10 +317,10 @@ IF(USE_PYTHON)
 	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i PROPERTIES CPLUSPLUS ON)
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i PROPERTIES SWIG_FLAGS "-includeall")
-	
+
 	SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspythonPYTHON_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES GENERATED TRUE)
-	
+
 	SWIG_ADD_MODULE(CanorusPython python
 		${Canorus_Swig_Srcs}
 		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i
@@ -329,7 +331,7 @@ ENDIF(USE_PYTHON)
 # This line tells cmake to create the Canorus program.
 # All dependent libraries like RtMidi must be added here.
 # Attention: In contrast to Makefiles don't add "\" to separate lines
-ADD_EXECUTABLE(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs} 
+ADD_EXECUTABLE(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs}
                        ${Canorus_MOC_Srcs} ${Canorus_Resrcs_Srcs}
                        ${CANORUS_RUBY_WRAP_CXX}
                        ${CANORUS_PYTHON_WRAP_CXX}
