@@ -66,6 +66,20 @@ class CAScoreViewPort;
 
 #define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
 
+/**
+ * Find a filename in the
+ * 1) passed as an argument to exe
+ * 2) user's config file
+ * 3) current dir
+ * 4) exe dir
+ * 5) DEFAULT_DATA_DIR set by compiler
+ * 
+ * @param relativePath Relative path to the file
+ * 
+ * @return Absolute path of the file
+ */
+QString locateResource(const QString relativePath);
+
 class CAMainWin : public QMainWindow
 {
 	Q_OBJECT

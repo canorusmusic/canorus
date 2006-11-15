@@ -33,6 +33,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QXmlInputSource>
+#include <QCoreApplication>
 #include <iostream>
 
 using namespace std;
@@ -72,6 +73,32 @@ using namespace std;
 
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
+
+QString locateResource(const QString fileName) {
+	//TODO: Config file implementation
+	//TODO: Application path argument
+	QString curPath;
+	
+	//Try current working directory
+	curPath = QDir::currentPath() + "/" + fileName;
+	if (QFile(curPath).exists())
+		return curPath;
+	
+	//Try application exe directory
+	curPath = QCoreApplication::applicationDirPath() + "/" + fileName;
+	if (QFile(curPath).exists())
+		return curPath;
+	
+#ifdef DEFAULT_DATA_DIR
+	//Try compiler defined DEFAULT_DATA_DIR constant (useful for Linux OSes). DEFAULT_DATA_DIR already includes leading slash!
+	curPath = QString(DEFAULT_DATA_DIR) + fileName;
+	if (QFile(curPath).exists())
+		return curPath;
+	
+#endif
+	//Else, if file not found, return empty string
+	return QString("");
+}
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
@@ -210,7 +237,7 @@ void CAMainWin::newDocument() {
 #ifdef USE_RUBY	
 	QList<VALUE> args;
 	args << toRubyObject(&_document, CASwigRuby::Document);
-	CASwigRuby::callFunction(QDir::current().absolutePath() + "/src/scripts/newdocument.rb", "newDefaultDocument", args);
+	CASwigRuby::callFunction(locateResource("scripts/newdocument.rb"), "newDefaultDocument", args);
 #endif
 	rebuildUI();
 }

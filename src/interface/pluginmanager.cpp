@@ -8,6 +8,7 @@
 
 #include "interface/pluginmanager.h"
 #include "interface/plugin.h"
+#include "ui/mainwin.h"	//needed for locateResource()
 #include <iostream>
 #include <QDir>
 #include <QFile>
@@ -26,7 +27,7 @@ CAPluginManager::~CAPluginManager() {
 }
 
 void CAPluginManager::readPlugins() {
-	QDir pluginsDir("src/plugins");
+	QDir pluginsDir(locateResource("plugins"));
 	
 	for (int i=0; i<pluginsDir.count(); i++) {
 		QXmlSimpleReader reader;
