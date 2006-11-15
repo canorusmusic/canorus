@@ -81,17 +81,17 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	bool done = false;
 	CADrawableFunctionMarkingSupport *lastDFMTonicizations[streams]; for (int i=0; i<streams; i++) lastDFMTonicizations[i]=0;
 	while (!done) {	
-		//Synchronize minimum X-es between the contexts
-		int maxX = 0;
-		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
-		for (int i=0; i<streams; i++)
-			if (musStreamList[i]->last()->musElementType()!=CAMusElement::FunctionMarking)
-				streamsX[i] = maxX;
-		
 		//if all the indices are at the end of the streams, finish.
 		int idx;
 		for (idx=0; (idx < streams) && (streamsIdx[idx] == musStreamList[idx]->size()); idx++);
 		if (idx==streams) { done=true; continue; }
+		
+		//Synchronize minimum X-es between the contexts
+		int maxX = 0;		
+		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+		for (int i=0; i<streams; i++)
+			if (musStreamList[i]->last()->musElementType()!=CAMusElement::FunctionMarking)
+				streamsX[i] = maxX;
 		
 		//go through all the streams and remember the time of the soonest element that will happen
 		timeStart = -1;	//reset the timeStart - the next one minimum will be set in the following loop
