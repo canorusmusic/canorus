@@ -15,4 +15,7 @@ CASwigPython::CASwigPython() {
 CASwigPython::~CASwigPython() {
 }
 
+void CASwigPython::init() {
+}
+
 #endif

@@ -50,7 +50,7 @@ class CADrawableFunctionMarkingSupport : public CADrawableMusElement {
 		};
 		//Key constructor
 		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, const QString key, CADrawableContext *c, int x, int y);
-		//Rectangle, ChordArea, Tonicization, Ellipse constructor		
+		//Rectangle, ChordArea, Tonicization, Ellipse constructor
 		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, CADrawableFunctionMarking *function, CADrawableContext *c, int x, int y, CADrawableFunctionMarking *function2=0);
 		//Alterations consructor
 		CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, CAFunctionMarking *function, CADrawableContext *c, int x, int y);

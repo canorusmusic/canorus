@@ -71,6 +71,7 @@ using namespace std;
 #include "core/timesignature.h"
 
 #include "scripting/swigruby.h"
+#include "scripting/swigpython.h"
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)

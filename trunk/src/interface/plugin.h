@@ -79,7 +79,7 @@ class CAPlugin {
 		QString _author;
 		QString _version;
 		QString _date;
-		QString _dirName;	///ABSOLUTE Name of directory where the plugin should be extracted to - plugin only stores the relative one, Canorus changes it to absolute one
+		QString _dirName;	///ABSOLUTE Name of directory where the plugin is located - plugin only stores the relative one, Canorus changes it to absolute one
 		QString _homeUrl;
 		QString _updateUrl;
 		bool _enabled;
