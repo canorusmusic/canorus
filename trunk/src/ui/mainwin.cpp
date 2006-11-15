@@ -347,7 +347,7 @@ void CAMainWin::on_actionNew_activated() {
 }
 
 void CAMainWin::on_actionNew_sheet_activated() {
-	addSheet(_document.addSheet(QString("Sheet ") + QString::number(_document.sheetCount()+1)));			//add a new empty sheet
+	addSheet(_document.addSheet(tr("Sheet %1").arg(QString::number(_document.sheetCount()+1))));			//add a new empty sheet
 }
 
 void CAMainWin::on_actionNew_staff_activated() {
@@ -356,7 +356,7 @@ void CAMainWin::on_actionNew_staff_activated() {
 	
 	CASheet *sheet = ((CAScoreViewPort*)_activeViewPort)->sheet();
 	CAStaff *staff = sheet->addStaff();
-	staff->addVoice(new CAVoice(staff, QString("Voice ") + QString::number(staff->voiceCount()+1)));
+	staff->addVoice(new CAVoice( staff, tr("Voice %i").arg(QString::number(1)) ));
 	
 	rebuildUI(sheet);
 	
@@ -943,7 +943,7 @@ void CAMainWin::closeEvent(QCloseEvent *event) {	//TODO: Make the main window th
 void CAMainWin::on_actionOpen_activated() {
 	QString s = QFileDialog::getOpenFileName(
 	                this,
-	                "Choose a file to open",
+	                tr("Choose a file to open"),
 	                "",
 	                "Canorus document (*.xml)");
 
@@ -969,7 +969,7 @@ void CAMainWin::on_actionSave_activated() {
 	if (_fileName.isEmpty()) { 
 		s = QFileDialog::getSaveFileName(
 		                this,
-		                "Choose a file to save",
+		                tr("Choose a file to save"),
 		                "",
 		                "Canorus document (*.xml)");
 	}
@@ -994,7 +994,7 @@ void CAMainWin::on_actionSave_activated() {
 void CAMainWin::on_actionSave_as_activated() {
 	QString s = QFileDialog::getSaveFileName(
 	                this,
-	                "Choose a file to save",
+	                tr("Choose a file to save"),
 	                "",
 	                "Canorus document (*.xml)");
 	
@@ -1094,7 +1094,7 @@ void CAMainWin::on_actionTimeSigSelect_toggled(bool bOn)
 	
 void CAMainWin::on_action_Key_signature_activated() {
 	if (!mpoKeySigPSP) {
-		mpoKeySigPSP = new CAKeySigPSP("Edit key signature", this);
+		mpoKeySigPSP = new CAKeySigPSP(tr("Edit key signature"), this);
 		addDockWidget( Qt::LeftDockWidgetArea, mpoKeySigPSP );
 	}
 	
@@ -1126,19 +1126,19 @@ void CAMainWin::sourceViewPortCommit(QString docString) {
 
 void CAMainWin::on_actionAbout_Qt_activated()
 {
-	QMessageBox::aboutQt( this, "About Qt" );
+	QMessageBox::aboutQt( this, tr("About Qt") );
 }
 
 void CAMainWin::on_actionAbout_Canorus_activated()
 {
-	QMessageBox::about ( this, "About Canorus",
-	"Canorus - The next generation music score editor\n\n\
+	QMessageBox::about ( this, tr("About Canorus"),
+	tr("Canorus - The next generation music score editor\n\n\
 Version 0.0.2\n\
 (C) 2006 Canorus Development team. All rights reserved.\n\
 See the file AUTHORS for the list of Canorus developers\n\n\
 This program is licensed under the GNU General Public License (GPL).\n\
 See the file 'LICENSE.GPL' for details.\n\n\
-Homepage: http://canorus.berlios.de" );
+Homepage: http://canorus.berlios.de") );
 }
 
 //TODO: This should be done by the plugin automatically. But since we're not able to export internal Qt classes to ruby, this must be done manually
