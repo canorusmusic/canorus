@@ -1,7 +1,7 @@
 # The name of our project is "Canorus".  CMakeLists files in this project can
 # refer to the root source directory of the project as ${CANORUS_SOURCE_DIR}
 # and to the root binary directory of the project as ${CANORUS_BINARY_DIR}.
-project (Canorus)
+PROJECT(Canorus)
 
 # Don't build anything unless the version of CMake is high enough.
 # The matching ELSE/ENDIF should be the last lines in the file.
@@ -16,9 +16,22 @@ SET(CANORUS_BUILD_VERSION 0)
 SET(CANORUS_VERSION
 	"${CANORUS_MAJOR_VERSION}.${CANORUS_MINOR_VERSION}.${CANORUS_BUILD_VERSION}")
 
+# Set default install path - this is /usr/local in *nix environments or C:\Program files\Canorus under M$ Windows.
+IF(WIN32 OR WIN64)
+	SET(CMAKE_INSTALL_PREFIX "C:\\Program files\\Canorus\\")
+	SET(CANORUS_INSTALL_DATA_DIR "")
+	SET(CANORUS_INSTALL_BIN_DIR "")
+	SET(CANORUS_INSTALL_LIB_DIR "")
+ELSE (WIN32 OR WIN64)
+	SET(CMAKE_INSTALL_PREFIX "/usr/local/")
+	SET(CANORUS_INSTALL_DATA_DIR "share/canorus/")
+	SET(CANORUS_INSTALL_BIN_DIR "bin/")
+	SET(CANORUS_INSTALL_LIB_DIR "lib/")
+ENDIF(WIN32 OR WIN64)
+
 #-----------------------------------------------------------------------------
 # Search for Qt4. We need the latest version of Qt
-set(QT_MIN_VERSION "4.1.0")
+SET(QT_MIN_VERSION "4.1.0")
 
 # Either remove the below line and set it to the path of
 # your qmake executable or modify the FindQt4.cmake program
@@ -28,17 +41,17 @@ set(QT_MIN_VERSION "4.1.0")
 #set(QT_QMAKE_EXECUTABLE "/usr/lib/qt4/bin/qmake")
 
 # this line includes FindQt4.cmake, which searches the Qt library and headers
-find_package(Qt4 REQUIRED)
+FIND_PACKAGE(Qt4 REQUIRED)
 
 # in the following lines all the requires include directories are added
 INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR})
-INCLUDE_DIRECTORIES( src )
+INCLUDE_DIRECTORIES(src)
 
 # Recurse into the "src" and "doc" subdirectories.  This does not actually
 # cause another cmake executable to run.  The same process will walk through
 # the project's entire directory structure.
-add_subdirectory (src)
-add_subdirectory (doc)
+ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(doc)
 
 ELSE("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" GREATER 2.2)
   MESSAGE(SEND_ERROR

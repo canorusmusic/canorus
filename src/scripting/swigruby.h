@@ -6,6 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#ifdef USE_RUBY
 #include <ruby.h>
 
 #include <QString>
@@ -51,3 +52,5 @@ class CASwigRuby {
  * @return Pointer to the Ruby object in Ruby's VALUE format.
  */
 VALUE toRubyObject(void *object, CASwigRuby::CAClassType type);	//defined in canorusruby.i file
+
+#endif
