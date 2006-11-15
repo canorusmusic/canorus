@@ -116,8 +116,13 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
-	
+
+#ifdef USE_RUBY	
 	CASwigRuby::init();
+#endif
+#ifdef USE_PYTHON
+	CASwigPython::init();
+#endif
 	//Initialize plugins subsystem
 	_pluginManager = new CAPluginManager(this);
 	_pluginManager->readPlugins();
@@ -200,10 +205,12 @@ void CAMainWin::initToolBar()
 void CAMainWin::newDocument() {
 	_document.clear();	//clear the logical part
 	clearUI();			//clear the UI part
-	
+
+#ifdef USE_RUBY	
 	QList<VALUE> args;
 	args << toRubyObject(&_document, CASwigRuby::Document);
 	CASwigRuby::callFunction(QDir::current().absolutePath() + "/src/scripts/newdocument.rb", "newDefaultDocument", args);
+#endif
 	rebuildUI();
 }
 
@@ -1133,8 +1140,7 @@ This program is licensed under the GNU General Public License (GPL).\n\
 See the file 'LICENSE.GPL' for details.\n\n\
 Homepage: http://canorus.berlios.de" );
 }
-#include "core/functionmarking.h"
-#include "core/functionmarkingcontext.h"
+
 //TODO: This should be done by the plugin automatically. But since we're not able to export internal Qt classes to ruby, this must be done manually
 void CAMainWin::harmonyAnalysisActivated() {
 	_pluginManager->action("onHarmonyAnalysisClick", &_document, 0, 0);

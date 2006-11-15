@@ -56,21 +56,28 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 	QString fileName = vals[i++];
 	QString functionName = vals[i++];
 	
+#ifdef USE_RUBY
 	QList<VALUE> rubyArgs;
+#endif
 	bool error=false;
 	for (; i<vals.size(); i++) {
 		QString val=vals[i].toUpper();
 		if (val=="COORDS") {
+#ifdef USE_RUBY
 			if (lang=="RUBY") {
 				//TODO: Convert C++ Qt's QPoint -> Ruby Qt's QPoint
 			}
+#endif
 		} else
 		if (val=="DOCUMENT") {
+#ifdef USE_RUBY
 			if (lang=="RUBY") {
 				rubyArgs << toRubyObject(document, CASwigRuby::Document);
 			}
+#endif
 		} else
 		if (val=="SHEET") {
+#ifdef USE_RUBY
 			if (lang=="RUBY") {
 				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
 					rubyArgs << toRubyObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigRuby::Sheet);
@@ -79,8 +86,10 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 					break;
 				}
 			}
+#endif
 		} else
 		if (val=="NOTE") {
+#ifdef USE_RUBY
 			if (lang=="RUBY") {
 				if (mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
 					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentScrollWidget()->lastUsedViewPort());
@@ -95,6 +104,7 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 					break;
 				}
 			}
+#endif
 		} else
 		if (val=="CHORD") {
 			//TODO
@@ -102,9 +112,11 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 	}
 	
 	if (!error) {
+#ifdef USE_RUBY
 		if (lang=="RUBY") {
 			error = (!CASwigRuby::callFunction(_dirName + "/" + fileName, functionName, rubyArgs));
 		}
+#endif
 	}
 	
 	return (!error);

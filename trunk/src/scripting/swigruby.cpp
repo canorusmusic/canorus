@@ -6,9 +6,10 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#ifdef USE_RUBY
 #include "scripting/swigruby.h"
 #include <QCoreApplication>	//needed to determine the scripts path
-#include<iostream>
+
 //defined in canorusruby.i
 extern "C" void Init_CanorusRuby();	///Loads 'CanorusRuby' module and initializes classes
 
@@ -29,3 +30,5 @@ void CASwigRuby::init() {
 	ruby_init();
 	Init_CanorusRuby();
 }
+
+#endif
