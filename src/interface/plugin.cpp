@@ -111,6 +111,14 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 		}
 	}
 	
+	if (actionName=="onInit") {
+#ifdef USE_RUBY
+		if (lang=="RUBY") {
+			rb_eval_string((QString("$: << '") + _dirName + "'").toStdString().c_str());	//add the plugin path to its default one for the first time
+		}
+#endif
+	}
+	
 	if (!error) {
 #ifdef USE_RUBY
 		if (lang=="RUBY") {

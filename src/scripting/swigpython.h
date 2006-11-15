@@ -14,6 +14,7 @@ class CASwigPython {
 	public:
 		CASwigPython();
 		~CASwigPython();
+		static void init();
 };
 
 #endif /*SWIGPYTHON_H_*/

@@ -38,6 +38,7 @@ void CAPluginManager::readPlugins() {
 		QXmlInputSource in(file);
 		reader.setContentHandler(this);
 		reader.parse(in);
+		_curPlugin->setDirName(pluginsDir.absolutePath() + "/" + pluginsDir[i]);	//use absolute path again because we want slashes/backslashes to be unified
 		_curPlugin = 0;
 	}
 }
@@ -151,9 +152,6 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 		} else
 		if (qName == "version") {
 			_curPlugin->setVersion(_curChars);
-			if (!_curPlugin->name().isEmpty()) {
-				_curPlugin->setDirName(QDir::current().absolutePath() + "/src/plugins/" + _curPlugin->name().toLower() + "-" + _curPlugin->version());
-			}
 		} else
 		if (qName == "homeUrl") {
 			_curPlugin->setHomeUrl(_curChars);

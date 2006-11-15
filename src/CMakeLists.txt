@@ -20,10 +20,9 @@ ENDIF(SWIG_FOUND)
 FIND_PACKAGE(Ruby)	#Setup RUBY_INCLUDE_PATH and RUBY_LIBRARIES
 IF(RUBY_INCLUDE_PATH)
 	MESSAGE("Ruby Library and Development files found. Ruby extensions enabled.")
-	MESSAGE(${RUBY_INCLUDE_PATH})
 	SET(USE_RUBY True)
 ELSE(RUBY_INCLUDE_PATH)
-	MESSAGE("Ruby Library or Development files *not* found. Ruby extensions disabled."
+	MESSAGE("Ruby Library and Development files *not* found. Ruby extensions disabled.\n"
 	        "If you don't intend to use Ruby, pass -DRUBY_LIBRARY=none parameter to cmake.")
 ENDIF(RUBY_INCLUDE_PATH)
 
@@ -32,7 +31,7 @@ IF(PYTHON_INCLUDE_PATH)
 	MESSAGE("Python Library and Development files found. Python extensions enabled.")
 	SET(USE_PYTHON True)
 ELSE(PYTHON_INCLUDE_PATH)
-	MESSAGE("Python Library or Development files *not* found. Python extensions disabled."
+	MESSAGE("Python Library and Development files *not* found. Python extensions disabled.\n"
 		"If you don't intend to use Python, pass -DPYTHON_LIBRARY=none parameter to cmake.")
 ENDIF(PYTHON_INCLUDE_PATH)
 
@@ -235,19 +234,19 @@ SET(Canorus_Resrcs ui/mainwin.qrc ui/keysig.qrc)
 # The result of it is stored into Canorus_Resrcs_Srcs
 # variable. This has to be included later in the
 # add_executable line.
-QT4_ADD_RESOURCES( Canorus_Resrcs_Srcs ${Canorus_Resrcs} )
+QT4_ADD_RESOURCES(Canorus_Resrcs_Srcs ${Canorus_Resrcs})
 
 # This scripts runs the user interface compiler uic.
 # The result of it is stored into Canorus_UIC_Srcs
 # variable. This has to be included later in the
 # add_executable line.
-QT4_WRAP_UI( Canorus_UIC_Srcs ${Canorus_UIs} )
+QT4_WRAP_UI(Canorus_UIC_Srcs ${Canorus_UIs})
 
 # This script runs the meta object compiler moc.
 # The result of it is stored into Canorus_MOC_Srcs
 # variable. This has to be included later in the
 # add_executable line.
-QT4_WRAP_CPP( Canorus_MOC_Srcs ${Canorus_MOCs} )
+QT4_WRAP_CPP(Canorus_MOC_Srcs ${Canorus_MOCs})
 
 #########################
 # Compiler Define flags #
@@ -321,7 +320,7 @@ IF(USE_PYTHON)
 	SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspythonPYTHON_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES GENERATED TRUE)
 
-	SWIG_ADD_MODULE(CanorusPython python
+	SWIG_ADD_MODULE(CanorusPython python 		# Warning! CMake renames CanorusPython automatically to _CanorusPython
 		${Canorus_Swig_Srcs}
 		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i
 	)
@@ -340,7 +339,7 @@ IF(USE_RUBY)
 	ADD_DEPENDENCIES(canorus CanorusRuby) # Build scripting modules first and then Canorus exe
 ENDIF(USE_RUBY)
 IF(USE_PYTHON)
-	ADD_DEPENDENCIES(canorus CanorusPython) # Build scripting modules first and then Canorus exe
+	ADD_DEPENDENCIES(canorus _CanorusPython) # Build scripting modules first and then Canorus exe
 ENDIF(USE_PYTHON)
 
 # Here the needed Qt Libraries are added to the link
@@ -374,7 +373,7 @@ IF(USE_RUBY)
 	INSTALL(TARGETS CanorusRuby LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}${CANORUS_INSTALL_LIB_DIR})
 ENDIF(USE_RUBY)
 IF(USE_PYTHON)
-	INSTALL(TARGETS CanorusPython LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}${CANORUS_INSTALL_LIB_DIR})
+	INSTALL(TARGETS _CanorusPython LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}${CANORUS_INSTALL_LIB_DIR})
 ENDIF(USE_PYTHON)
 
 # Install scripts

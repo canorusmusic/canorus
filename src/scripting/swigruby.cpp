@@ -8,14 +8,14 @@
 
 #ifdef USE_RUBY
 #include "scripting/swigruby.h"
-#include <QCoreApplication>	//needed to determine the scripts path
+#include <QDir>
 
 //defined in canorusruby.i
 extern "C" void Init_CanorusRuby();	///Loads 'CanorusRuby' module and initializes classes
 
 VALUE CASwigRuby::callFunction(QString fileName, QString function, QList<VALUE> args) {
 	//require module (loads a method)
-	rb_require(fileName.toStdString().c_str());
+	rb_require(QDir::convertSeparators(fileName).toStdString().c_str());
 	
 	//call function
 	VALUE recv = 0;
