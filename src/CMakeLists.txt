@@ -24,6 +24,7 @@ IF(RUBY_INCLUDE_PATH)
 ELSE(RUBY_INCLUDE_PATH)
 	MESSAGE("Ruby Library and Development files *not* found. Ruby extensions disabled.\n"
 	        "If you don't intend to use Ruby, pass -DRUBY_LIBRARY=none parameter to cmake.")
+	SET(RUBY_LIBRARY "")
 ENDIF(RUBY_INCLUDE_PATH)
 
 FIND_PACKAGE(PythonLibs)
@@ -33,6 +34,7 @@ IF(PYTHON_INCLUDE_PATH)
 ELSE(PYTHON_INCLUDE_PATH)
 	MESSAGE("Python Library and Development files *not* found. Python extensions disabled.\n"
 		"If you don't intend to use Python, pass -DPYTHON_LIBRARY=none parameter to cmake.")
+	SET(PYTHON_LIBRARY "")
 ENDIF(PYTHON_INCLUDE_PATH)
 
 ###################
