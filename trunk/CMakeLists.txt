@@ -8,6 +8,14 @@ PROJECT(Canorus)
 # QT4 Support: Requires a very recent version (2.3.4 from March/April 2006)
 IF("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" GREATER 2.2)
 
+# Set MingW bin dir, if MingW present
+IF(MINGW)
+	STRING(REGEX REPLACE "([^ ]+)/.*" "\\1" MINGW_BIN_DIR "${CMAKE_CXX_COMPILER}")
+ENDIF(MINGW)
+
+# Set Qt4 bin dir to find QtCore4.dll and other libs to install
+STRING(REGEX REPLACE "([^ ]+)/.*" "\\1" QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}")
+
 #-----------------------------------------------------------------------------
 # Canorus version number.  An even minor number corresponds to releases.
 SET(CANORUS_MAJOR_VERSION 0)
@@ -19,7 +27,7 @@ SET(CANORUS_VERSION
 # Set default install path - this is /usr/local in *nix environments or C:\Program files\Canorus under M$ Windows.
 # WARNING: Leading slash should be added - this is for easier concatenation of the strings due to slash/backslash issues
 IF(WIN32 OR WIN64)
-	SET(CMAKE_INSTALL_PREFIX "C:\\Program files\\Canorus\\")
+	SET(CMAKE_INSTALL_PREFIX "C:/Program files/Canorus/")
 	SET(CANORUS_INSTALL_DATA_DIR "")
 	SET(CANORUS_INSTALL_BIN_DIR "")
 	SET(CANORUS_INSTALL_LIB_DIR "")
