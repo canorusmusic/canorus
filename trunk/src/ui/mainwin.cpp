@@ -24,7 +24,12 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#include <QtGui/QtGui>
+//#include <Python.h> must be called before standard headers inclusion. See http://docs.python.org/api/includes.html
+#ifdef USE_PYTHON
+	#include <Python.h>
+#endif
+
+#include <QtGui>
 #include <QSlider>
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -234,10 +239,10 @@ void CAMainWin::newDocument() {
 	_document.clear();	//clear the logical part
 	clearUI();			//clear the UI part
 
-#ifdef USE_RUBY	
-	QList<VALUE> args;
-	args << toRubyObject(&_document, CASwigRuby::Document);
-	CASwigRuby::callFunction(locateResource("scripts/newdocument.rb"), "newDefaultDocument", args);
+#ifdef USE_PYTHON
+	QList<PyObject*> argsPython;
+	argsPython << CASwigPython::toPythonObject(&_document, CASwigPython::Document);
+	CASwigPython::callFunction(locateResource("scripts/newdocument.py"), "newDefaultDocument", argsPython);
 #endif
 	rebuildUI();
 }
