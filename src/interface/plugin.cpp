@@ -72,7 +72,7 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 		if (val=="DOCUMENT") {
 #ifdef USE_RUBY
 			if (lang=="RUBY") {
-				rubyArgs << toRubyObject(document, CASwigRuby::Document);
+				rubyArgs << CASwigRuby::toRubyObject(document, CASwigRuby::Document);
 			}
 #endif
 		} else
@@ -80,7 +80,7 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 #ifdef USE_RUBY
 			if (lang=="RUBY") {
 				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
-					rubyArgs << toRubyObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigRuby::Sheet);
+					rubyArgs << CASwigRuby::toRubyObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigRuby::Sheet);
 				else {
 					error = true;
 					break;
@@ -97,7 +97,7 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 						error=true;
 						break;
 					}
-					rubyArgs << toRubyObject(v->selection()->front()->musElement(), CASwigRuby::Note);
+					rubyArgs << CASwigRuby::toRubyObject(v->selection()->front()->musElement(), CASwigRuby::Note);
 				}
 				else {
 					error = true;

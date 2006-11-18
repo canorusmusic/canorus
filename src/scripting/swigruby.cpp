@@ -10,8 +10,13 @@
 #include "scripting/swigruby.h"
 #include <QDir>
 
-//defined in canorusruby.i
-extern "C" void Init_CanorusRuby();	///Loads 'CanorusRuby' module and initializes classes
+//defined in SWIG wrapper class
+extern "C" void Init_CanorusRuby();	///Load 'CanorusRuby' module and initialize classes
+
+void CASwigRuby::init() {
+	ruby_init();
+	Init_CanorusRuby();
+}
 
 VALUE CASwigRuby::callFunction(QString fileName, QString function, QList<VALUE> args) {
 	//require module (loads a method)
@@ -24,11 +29,6 @@ VALUE CASwigRuby::callFunction(QString fileName, QString function, QList<VALUE> 
 		argsArray[i] = args[i];
 	
 	return rb_funcall2(recv, rb_intern(function.toStdString().c_str()), args.size(), argsArray);
-}
-
-void CASwigRuby::init() {
-	ruby_init();
-	Init_CanorusRuby();
 }
 
 #endif

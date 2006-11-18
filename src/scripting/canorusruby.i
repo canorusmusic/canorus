@@ -22,7 +22,7 @@
 %typemap(out) const QList<CANote*>, QList<CANote*> {
 	VALUE arr = rb_ary_new2($1.size());
 	for (int i=0; i<$1.size(); i++)
-		rb_ary_push(arr, toRubyObject($1.at(i), CASwigRuby::Note));
+		rb_ary_push(arr, CASwigRuby::toRubyObject($1.at(i), CASwigRuby::Note));
 	
 	$result = arr;
 }
@@ -68,7 +68,7 @@ SWIGEXPORT void Init_CanorusRuby(void);
 
 class QString;
 
-VALUE toRubyObject(void *object, CASwigRuby::CAClassType type) {
+VALUE CASwigRuby::toRubyObject(void *object, CASwigRuby::CAClassType type) {
 	switch (type) {
 		case CASwigRuby::Document:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CADocument, 0);
@@ -84,6 +84,9 @@ VALUE toRubyObject(void *object, CASwigRuby::CAClassType type) {
 			break;
 		case CASwigRuby::Voice:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAVoice, 0);
+			break;
+		case CASwigRuby::FunctionMarkingContext:
+			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarkingContext, 0);
 			break;
 		/*case CASwigRuby::MusElement:	//CAMusElement is always abstract
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAMusElement, 0);
@@ -106,13 +109,13 @@ VALUE toRubyObject(void *object, CASwigRuby::CAClassType type) {
 		case CASwigRuby::Barline:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CABarline, 0);
 			break;
+		case CASwigRuby::FunctionMarking:
+			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarking, 0);
+			break;
 		/*case CASwigRuby::CanorusML:	//not implemented yet
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CACanorusML, 0);
 			break;*/
 	}
-}
-
-VALUE toRubyArray(QList<CANote*> list) {
 }
 %}
 

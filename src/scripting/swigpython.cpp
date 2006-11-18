@@ -8,14 +8,60 @@
 
 #ifdef USE_PYTHON
 #include "scripting/swigpython.h"
+#include <QDir>
 
-CASwigPython::CASwigPython() {
-}
-
-CASwigPython::~CASwigPython() {
-}
+//defined in SWIG wrapper class
+extern "C" void init_CanorusPython();	///Load 'CanorusPython' module and initialize classes
+QString locateResource(QString);
 
 void CASwigPython::init() {
+	Py_Initialize();
+	init_CanorusPython();
+	PyRun_SimpleString("import sys");
+	PyRun_SimpleString((QString("sys.path.append('")+locateResource("scripts")+"')").toStdString().c_str());
+}
+
+PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args) {
+	//Prepare arguments
+	QString listMask = "(";
+	for (int i=0; i<args.size(); i++)
+		listMask += "O";
+	listMask += ")";
+	
+	PyObject *list[args.size()];
+	for (int i=0; i<args.size(); i++)
+		list[i] = args[i];
+	
+	PyObject *pyArgs = Py_BuildValue((char*)listMask.toStdString().c_str(), *list);
+	
+	//Add module path to system path, if initializing the plugin for the first time
+	if (function=="onInit") {
+		QString path = fileName.left(fileName.lastIndexOf("/"));
+		PyRun_SimpleString((QString("sys.path.append('")+path+"')").toStdString().c_str());
+	}
+	
+	//Load module, if not yet
+	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
+	moduleName = moduleName.remove(0, moduleName.lastIndexOf("/")+1);
+	PyObject *pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
+	
+	//Get function object
+	PyObject *pyFunction = PyObject_GetAttrString(pyModule, (char*)function.toStdString().c_str());
+	
+	//Call the actual function
+	PyObject *ret;
+	if (args.size())
+		ret = PyEval_CallObject(pyFunction, pyArgs);
+	else
+		ret = PyEval_CallObject(pyFunction, NULL);
+	
+	Py_DECREF(pyFunction);
+	Py_DECREF(pyModule);
+	Py_DECREF(pyArgs);
+	for (int i=0; i<args.size(); i++)
+		Py_DECREF(args[i]);
+	
+	return ret;
 }
 
 #endif
