@@ -13,12 +13,12 @@
 %typemap(out) const QString {
 	$result = Py_BuildValue("s", $1.toUtf8().data());
 }
-
+%{
+#include <iostream>
+%}
 //convert Python's String to QString in UTF8 encoding
 %typemap(in) const QString {
-	const char *s;
-	PyArg_ParseTuple($input, "s", &s);
-	$1 = QString::fromUtf8(s);
+	$1 = QString::fromUtf8(PyString_AsString($input));
 }
 
 %include "scripting/context.i"
