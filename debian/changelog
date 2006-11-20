@@ -1,0 +1,6 @@
+canorus (0.0.99-0.1ubuntu1) edgy; urgency=low
+
+  * initial .deb package
+
+ -- Matevz <matevz@mojazver>  Mon, 20 Nov 2006 01:18:27 +0100
+
