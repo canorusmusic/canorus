@@ -1,4 +1,4 @@
-canorus (0.0.99-0.1ubuntu1) edgy; urgency=low
+canorus (0.0.99svn-0.1ubuntu1) edgy; urgency=low
 
   * initial .deb package
 
