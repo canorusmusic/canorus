@@ -85,3 +85,7 @@ Settings
 ========
 The settings are stored in the $HOME/.config/Canorus directory.
 (Recent file list, current menu/perspective settings, options).
+
+Windows users
+=============
+See nsis/Readme.txt for details about building Canorus under Microsoft Windows.
