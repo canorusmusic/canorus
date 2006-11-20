@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Canorus
+GenericName=Music score editor
+GenericName[sl]=Program za pisanje not
+Comment=A free next-generation cross-platform music score editor!
+Comment[sl]=Prost program za pisanje not naslednje generacije!
+Exec=canorus
+Icon=canorus
+Terminal=false
+Type=Application
+Categories=Application;AudioVideo;
+StartupNotify=true
+MimeType=application/x-notes

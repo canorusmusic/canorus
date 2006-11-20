@@ -1,0 +1,27 @@
+Source: canorus
+Section: sound
+Priority: optional
+Maintainer: Matevz Jekovec <matevz.jekovec@gmail.com>
+Build-Depends: g++, make, cmake (>=2.4), python2.4-dev, ruby1.8-dev, libqt4-dev
+Standards-Version: 3.7.2
+
+Package: canorus
+Section: sound
+Priority: optional
+Architecture: i386
+Essential: no
+Depends: libqt4-core, libqt4-gui, python2.4, ruby1.8
+Recommends: lilypond (>=2.8)
+Suggests: timidity | fluidsynth
+Description: Free cross-platform music score editor
+ Canorus is a free next generation cross-platform music score editor
+ written in Qt4. It is a sequel of the well-known music score editor
+ for Linux, NoteEdit.
+ .
+ Canorus supports Python and Ruby scripting languages for plugins, a
+ fast and straight-forward user interface, source view of the score,
+ a number of import and export filters for LilyPond, MusicXML,
+ NoteEdit and others.
+ .
+ Homepage: http://canorus.berlios.de
+
