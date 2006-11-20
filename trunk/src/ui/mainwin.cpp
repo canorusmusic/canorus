@@ -96,7 +96,7 @@ QString locateResource(const QString fileName) {
 	
 #ifdef DEFAULT_DATA_DIR
 	//Try compiler defined DEFAULT_DATA_DIR constant (useful for Linux OSes). DEFAULT_DATA_DIR already includes leading slash!
-	curPath = QString(DEFAULT_DATA_DIR) + fileName;
+	curPath = QString(DEFAULT_DATA_DIR) + "/" + fileName;
 	if (QFile(curPath).exists())
 		return curPath;
 	
