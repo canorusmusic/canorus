@@ -27,15 +27,19 @@ SET(CANORUS_VERSION
 # Set default install path - this is /usr/local in *nix environments or C:\Program files\Canorus under M$ Windows.
 # WARNING: Leading slash should be added - this is for easier concatenation of the strings due to slash/backslash issues
 IF(WIN32 OR WIN64)
-	SET(CMAKE_INSTALL_PREFIX "C:/Program files/Canorus/")
+	IF (NOT CMAKE_INSTALL_PREFIX)
+		SET(CMAKE_INSTALL_PREFIX "C:/Program files/Canorus")
+	ENDIF (NOT CMAKE_INSTALL_PREFIX)
 	SET(CANORUS_INSTALL_DATA_DIR "")
 	SET(CANORUS_INSTALL_BIN_DIR "")
 	SET(CANORUS_INSTALL_LIB_DIR "")
 ELSE (WIN32 OR WIN64)
-	SET(CMAKE_INSTALL_PREFIX "/usr/local/")
-	SET(CANORUS_INSTALL_DATA_DIR "share/canorus/")
-	SET(CANORUS_INSTALL_BIN_DIR "bin/")
-	SET(CANORUS_INSTALL_LIB_DIR "lib/")
+	IF (NOT CMAKE_INSTALL_PREFIX)
+		SET(CMAKE_INSTALL_PREFIX "/usr/local")
+	ENDIF (NOT CMAKE_INSTALL_PREFIX)
+	SET(CANORUS_INSTALL_DATA_DIR "share/canorus")
+	SET(CANORUS_INSTALL_BIN_DIR "bin")
+	SET(CANORUS_INSTALL_LIB_DIR "lib")
 ENDIF(WIN32 OR WIN64)
 
 #-----------------------------------------------------------------------------
