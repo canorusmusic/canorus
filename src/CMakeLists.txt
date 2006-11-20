@@ -220,6 +220,15 @@ SET(Canorus_Images	# Images on buttons, splash etc.
 	ui/images/fmajdmin.png
 )
 
+SET(Canorus_Fonts	# Music fonts needed by Canorus
+	fonts/CenturySchL-BoldItal.otf	# Century family needed for numbers and signs
+	fonts/CenturySchL-Bold.otf
+	fonts/CenturySchL-Ital.otf
+	fonts/CenturySchL-Roma.otf
+	fonts/emmentaler-14.otf		# emmentaler needed for notes, rests, clefs etc.
+	fonts/FreeSans.ttf		# FreeSans needed for function markings
+)
+
 ################
 # Qt4 settings #
 ###############
@@ -385,8 +394,11 @@ ENDIF(USE_PYTHON)
 
 # Install scripts
 INSTALL(FILES ${Canorus_Scripts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/scripts")
-# Install icons, images etc.
+# Install data - icons, images, sounds etc.
 INSTALL(FILES ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/images")
+# Install fonts
+INSTALL(FILES ${Canorus_Fonts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_FONTS_DIR}")
+
 
 IF(WIN32 OR WIN64)
 	# Install Qt libs
