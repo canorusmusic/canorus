@@ -26,7 +26,7 @@
 
 //#include <Python.h> must be called before standard headers inclusion. See http://docs.python.org/api/includes.html
 #ifdef USE_PYTHON
-	#include <Python.h>
+#include <Python.h>
 #endif
 
 #include <QtGui>
@@ -39,12 +39,14 @@
 #include <QTextStream>
 #include <QXmlInputSource>
 #include <QCoreApplication>
+#include <QSettings>
 #include <iostream>
 
 using namespace std;
 
 #include "ui/mainwin.h"
 #include "ui/keysigpsp.h"
+#include "ui/midisetupdialog.h"
 
 #include "widgets/toolbar.h"
 #include "widgets/lcdnumber.h"
@@ -107,8 +109,16 @@ QString locateResource(const QString fileName) {
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
-  : QMainWindow( oParent )
+	: QMainWindow( oParent )
 {
+	//Init main application properties
+	QCoreApplication::setOrganizationName("Canorus");
+	QCoreApplication::setOrganizationDomain("canorus.org");
+	QCoreApplication::setApplicationName("Canorus");
+	
+	_settings = new QSettings();	// open canorus config file in order to load needed settings
+	
+	//Add main music insertion toolbar
 	mpoMEToolBar = new CAToolBar( this );
 	mpoMEToolBar->setOrientation(Qt::Vertical);
 	initToolBar();
@@ -133,7 +143,9 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	
 	mpoKeySigPSP = 0;
 	
-	//Initialize MIDI
+	//Initialize playback
+	_defaultRtMidiOutPort = -1;
+	_defaultRtMidiInPort = -1;
 	initMidi();
 	
 	//Initialize the internal properties
@@ -174,7 +186,7 @@ CAMainWin::~CAMainWin()
 	delete mpoClefMenu;
 	delete mpoNoteMenu;
 	delete mpoTimeSigMenu;
-	delete _midiOut;
+	delete _midi;
 	delete mpoMEToolBar;
 }
 
@@ -901,7 +913,20 @@ void CAMainWin::keyPressEvent(QKeyEvent *e) {
 }
 
 void CAMainWin::initMidi() {
-	_midiOut = new CARtMidiDevice();
+	_midi = new CARtMidiDevice();
+	
+	if (_settings->contains("rtmidi/defaultoutputport") && _settings->contains("rtmidi/defaultinputport")) {
+		_defaultRtMidiInPort = _settings->value("rtmidi/defaultinputport").toInt();
+		if (_defaultRtMidiInPort >= _midi->getInputPorts().count())
+			_defaultRtMidiInPort = -1;
+
+		_defaultRtMidiOutPort = _settings->value("rtmidi/defaultoutputport").toInt();
+		if (_defaultRtMidiOutPort >= _midi->getOutputPorts().count())
+			_defaultRtMidiOutPort = -1;
+			
+	} else {
+		on_actionMIDI_Setup_activated();
+	}
 }
 
 void CAMainWin::playbackFinished() {
@@ -912,22 +937,22 @@ void CAMainWin::playbackFinished() {
 	_repaintTimer->stop();
 	_repaintTimer->disconnect();	//TODO: crashes, if disconnected sometimes. -Matevz
 	delete _repaintTimer;			//TODO: crashes, if deleted. -Matevz
-	_midiOut->closePort();
+	_midi->closeOutputPort();
 	
 	setMode(_currentMode);
 }
 
 void CAMainWin::on_actionPlay_toggled(bool checked) {
 	if (checked && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
-		_midiOut->openPort();
+		_midi->openOutputPort(_defaultRtMidiOutPort);
 		_repaintTimer = new QTimer();
 		_repaintTimer->setInterval(100);
 		_repaintTimer->start();
-		//connect(_repaintTimer, SIGNAL(timeout()), this, SLOT(on_repaintTimer_timeout())); //TODO: timeout is connected directly to repaint() currently
+		//connect(_repaintTimer, SIGNAL(timeout()), this, SLOT(on_repaintTimer_timeout())); //TODO: timeout is connected directly to repaint() directly. This should be optimized in the future -Matevz
 		connect(_repaintTimer, SIGNAL(timeout()), _activeViewPort, SLOT(repaint()));
 		_playbackViewPort = _activeViewPort;
 		
-		_playback = new CAPlayback((CAScoreViewPort*)_activeViewPort, _midiOut);
+		_playback = new CAPlayback((CAScoreViewPort*)_activeViewPort, _midi);
 		connect(_playback, SIGNAL(finished()), this, SLOT(playbackFinished()));
 		_playback->start();
 	} else {
@@ -1178,4 +1203,10 @@ Homepage: http://canorus.berlios.de") );
 void CAMainWin::harmonyAnalysisActivated() {
 	_pluginManager->action("onHarmonyAnalysisClick", &_document, 0, 0);
 	rebuildUI();
+}
+
+void CAMainWin::on_actionMIDI_Setup_activated() {
+	CAMidiSetupDialog(this, _midi->getInputPorts(), _midi->getOutputPorts(), &_defaultRtMidiInPort, &_defaultRtMidiOutPort);
+	_settings->setValue("rtmidi/defaultoutputport", _defaultRtMidiOutPort);
+	_settings->setValue("rtmidi/defaultinputport", _defaultRtMidiInPort);
 }
