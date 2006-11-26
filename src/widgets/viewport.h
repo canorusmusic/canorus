@@ -1,4 +1,4 @@
-/** @file viewport.h
+/** @file widgets/viewport.h
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.

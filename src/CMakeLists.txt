@@ -41,13 +41,16 @@ ENDIF(PYTHON_INCLUDE_PATH)
 # List of sources #
 ###################
 # Define the UI source files used by Canorus
-SET(Canorus_UIs  ui/mainwin.ui
+SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compiled
+	ui/mainwin.ui
 	ui/keysig.ui
+	ui/midisetupdialog.ui
 )
 
 # Define the MOC source files used by Canorus
 SET(Canorus_MOCs ui/mainwin.h	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	ui/keysigpsp.h
+	ui/midisetupdialog.h
 	widgets/keyoffs.h
 	widgets/lcdnumber.h
 	widgets/scrollwidget.h
@@ -97,9 +100,10 @@ SET(Canorus_Widget_Srcs  	# Sources for all the widgets present in Canorus
 	widgets/viewport.cpp
 )
 
-SET(Canorus_Ui_Srcs		# Larger UI entities like main window or different perspectives
+SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
 	ui/mainwin.cpp
 	ui/keysigpsp.cpp
+	ui/midisetupdialog.cpp
 )
 
 SET(Canorus_Drawable_Srcs	# Drawable instances of the data
@@ -270,18 +274,18 @@ ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 IF(APPLE)
 	ADD_DEFINITIONS(-D__MACOSX_CORE__)
 ENDIF(APPLE)
-IF(WIN32 OR WIN64)
+IF(MINGW)
 	ADD_DEFINITIONS(-D__WINDOWS_MM__)
-ENDIF(WIN32 OR WIN64)
+ENDIF(MINGW)
 
 # Define default data dir, if under POSIX systems.
-IF(NOT WIN32 AND NOT WIN64)
+IF(NOT MINGW)
 	IF (NOT DEFAULT_DATA_DIR)
 		ADD_DEFINITIONS("-DDEFAULT_DATA_DIR=\\\"${CMAKE_INSTALL_PREFIX}${CANORUS_INSTALL_DATA_DIR}/\\\"")
 	ELSE (NOT DEFAULT_DATA_DIR)
 		ADD_DEFINITIONS("-DDEFAULT_DATA_DIR=\\\"${DEFAULT_DATA_DIR}/\\\"")
 	ENDIF (NOT DEFAULT_DATA_DIR)
-ENDIF(NOT WIN32 AND NOT WIN64)
+ENDIF(NOT MINGW)
 
 # Define Scripting parameters
 IF(USE_SWIG)
@@ -374,9 +378,9 @@ IF(APPLE)
 	TARGET_LINK_LIBRARIES(canorus "-framework CoreAudio")
 	TARGET_LINK_LIBRARIES(canorus "-framework CoreFoundation")
 ENDIF(APPLE)
-IF(WIN32 OR WIN64)
+IF(MINGW)
 	TARGET_LINK_LIBRARIES(canorus "winmm.lib")
-ENDIF(WIN32 OR WIN64)
+ENDIF(MINGW)
 
 ################
 # Installation #
@@ -400,7 +404,7 @@ INSTALL(FILES ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_I
 INSTALL(FILES ${Canorus_Fonts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_FONTS_DIR}")
 
 
-IF(WIN32 OR WIN64)
+IF(MINGW)
 	# Install Qt libs
 	INSTALL(FILES ${QT_BIN_DIR}/QtCore4.dll ${QT_BIN_DIR}/QtGui4.dll ${QT_BIN_DIR}/QtSvg4.dll ${QT_BIN_DIR}/QtXml4.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR})
 	
@@ -418,4 +422,4 @@ IF(WIN32 OR WIN64)
 	IF(USE_RUBY)
 		INSTALL(FILES ${RUBY_LIBRARY} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR})
 	ENDIF(USE_RUBY)
-ENDIF(WIN32 OR WIN64)
+ENDIF(MINGW)

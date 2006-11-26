@@ -35,7 +35,9 @@
 
 class QKeyEvent;
 class QSlider;
-class CARtMidiDevice;
+class QSettings;
+
+class CAMidiDevice;
 class CAPlayback;
 class CAToolBar;
 class CAButtonMenu;
@@ -134,6 +136,9 @@ private slots:
 	void on_actionSave_activated();
 	void on_actionSave_as_activated();
 	
+	//Edit menu
+	void on_actionMIDI_Setup_activated();
+	
 	//Insert menu
 	void on_actionNew_staff_activated();
 	void on_action_Clef_activated();
@@ -227,19 +232,32 @@ private:
 	//General properties
 	////////////////////////////////////////////////////
 	CADocument _document;	///Every main window has its own unique CADocument.
+	QString _fileName;
 	CAMode _currentMode;	///Every main window has its own current mode (view, insert, edit etc.). See enum CAMode.
 	
 	void setMode(CAMode mode);
 	inline CAMode currentMode() { return _currentMode; }
-	CARtMidiDevice *_midiOut;
-	CAPluginManager *_pluginManager;
+	
+	QSettings *_settings;	/// Settings class which operates with the Canorus config file. It's initialized in constructor.
+	inline QSettings *settings() { return _settings; }
+	
+	////////////////////////////////////////////////////
+	//Playback
+	////////////////////////////////////////////////////
 	CAPlayback *_playback;
-	QString _fileName;
+	CAMidiDevice *_midi;
+	int _defaultRtMidiOutPort;	//-1 disabled, 0+ port number
+	int _defaultRtMidiInPort;	//-1 disabled, 0+ port number
+	
+	////////////////////////////////////////////////////
+	//Plugins, scripts
+	////////////////////////////////////////////////////
+	CAPluginManager *_pluginManager;
 
 	////////////////////////////////////////////////////
 	//User interface, toolbar
 	////////////////////////////////////////////////////
-	CAToolBar    *mpoMEToolBar;
+	CAToolBar    *mpoMEToolBar;			/// Toolbar that contains clef/note/timesig buttons
 	CAButtonMenu *mpoClefMenu;          /// Menu for selection of a clef
 	CAButtonMenu *mpoNoteMenu;          /// Menu for the selection of a note length
 	CAButtonMenu *mpoTimeSigMenu;       /// Menu for selection of a key signature

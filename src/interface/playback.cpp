@@ -8,8 +8,8 @@
 
 #include <QPen>
 #include <QRect>
+#include <QVector>	//needed for RtMidi send message
 
-#include <vector>	//needed for RtMidi send message
 #include <iostream>
 
 #include "interface/playback.h"
@@ -41,7 +41,7 @@ void CAPlayback::run() {
 	
 	//list of all the music element lists (ie. streams) taken from all the contexts
 	QList<QList<CAMusElement*>*> stream; 
-	std::vector<unsigned char> message;	//midi 3-byte message sent to midi device
+	QVector<unsigned char> message;	//midi 3-byte message sent to midi device
 
 	QList<CADrawableMusElement *> oldSelection;
 	oldSelection = *_scoreViewPort->selection();
@@ -53,14 +53,14 @@ void CAPlayback::run() {
 			//add all the voices lists to the common list
 			for (int j=0; j < staff->voiceCount(); j++) {
 				stream << staff->voiceAt(j)->musElementList();
-				message.push_back(192 + staff->voiceAt(j)->midiChannel());
-				message.push_back(staff->voiceAt(j)->midiProgram());
-				_midiDevice->send(&message);	//change program
+				message << (192 + staff->voiceAt(j)->midiChannel());
+				message << (staff->voiceAt(j)->midiProgram());
+				_midiDevice->send(message);	//change program
 				message.clear();				
-				message.push_back(176 + staff->voiceAt(j)->midiChannel());
-				message.push_back(7);
-				message.push_back(100);
-				_midiDevice->send(&message);	//set volume
+				message << (176 + staff->voiceAt(j)->midiChannel());
+				message << (7);
+				message << (100);
+				_midiDevice->send(message);	//set volume
 				message.clear();				
 			}
 			
@@ -97,10 +97,10 @@ void CAPlayback::run() {
 		//note off
 		for (int i=0; i<curPlaying.size(); i++) {
 			if (((elt = (CAPlayable*)curPlaying[i])->timeStart() + elt->timeLength()) == timeStart) {
-				message.push_back(128 + elt->voice()->midiChannel());
-				message.push_back(elt->midiPitch());
-				message.push_back(127);
-				_midiDevice->send(&message);	//release note
+				message << (128 + elt->voice()->midiChannel());
+				message << (elt->midiPitch());
+				message << (127);
+				_midiDevice->send(message);	//release note
 				message.clear();
 				curPlaying.removeAt(i);
 				
@@ -126,11 +126,11 @@ void CAPlayback::run() {
 			while ( (stream[i]->size() > streamsIdx[i]) &&
 			        ((elt = (CAPlayable*)stream[i]->at(streamsIdx[i]))->timeStart() == timeStart)
 			      ) {
-					message.push_back(144 + elt->voice()->midiChannel());
-					message.push_back(elt->midiPitch());
-					message.push_back(127);
+					message << (144 + elt->voice()->midiChannel());
+					message << (elt->midiPitch());
+					message << (127);
 					if (elt->musElementType()!=CAMusElement::Rest)
-						_midiDevice->send(&message);	//play note
+						_midiDevice->send(message);	//play note
 					message.clear();
 			      	curPlaying << elt;
 					
