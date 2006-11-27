@@ -48,7 +48,7 @@ InstallDir $PROGRAMFILES\Canorus
 CRCCheck on
 XPStyle on
 ShowInstDetails show
-VIProductVersion ${VERSION}
+VIProductVersion 0.0.0.0
 VIAddVersionKey ProductName Canorus
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
