@@ -107,13 +107,12 @@ SectionEnd
 
 Section "Fonts"
     StrCpy $FONT_DIR $FONTS
-#    TODO: All .ttf and .otf file should be found and installed automatically
     !insertmacro InstallTTFFont 'canorus\FreeSans.ttf'
-    !insertmacro InstallTTFFont 'canorus\CenturySchL-Bold.otf'
-    !insertmacro InstallTTFFont 'canorus\CenturySchL-BoldItal.otf'
-    !insertmacro InstallTTFFont 'canorus\CenturySchL-Ital.otf'
-    !insertmacro InstallTTFFont 'canorus\CenturySchL-Roma.otf'
-    !insertmacro InstallTTFFont 'canorus\emmentaler-14.otf'
+    !insertmacro InstallTTFFont 'canorus\CenturySchL-Bold.ttf'
+    !insertmacro InstallTTFFont 'canorus\CenturySchL-BoldItal.ttf'
+    !insertmacro InstallTTFFont 'canorus\CenturySchL-Ital.ttf'
+    !insertmacro InstallTTFFont 'canorus\CenturySchL-Roma.ttf'
+    !insertmacro InstallTTFFont 'canorus\Emmentaler-14.ttf'
     SendMessage ${HWND_BROADCAST} ${WM_FONTCHANGE} 0 0 /TIMEOUT=5000
 SectionEnd
 
