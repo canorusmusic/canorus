@@ -4,7 +4,7 @@
 Name Canorus
 # Defines
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 0.1.0svn
+!define VERSION 0.1.0
 !define COMPANY "Matevž Jekovec, Canorus development team"
 !define URL http://canorus.berlios.de
 
@@ -43,7 +43,7 @@ Var StartMenuGroup
 !insertmacro MUI_LANGUAGE English
 
 # Installer attributes
-OutFile canorus-0.0.99svn-setup.exe
+OutFile canorus-0.1.0-setup.exe
 InstallDir $PROGRAMFILES\Canorus
 CRCCheck on
 XPStyle on
