@@ -1,0 +1,36 @@
+  C++ developers for Qt4-based music score editor called Canorus
+  ==============================================================
+
+This document is intended for developers interested in the project.
+
+Canorus, the successor to the music score editor NoteEdit is looking
+for developers wanting to join the project. The project is hosted on
+berlios and provides SVN access to the sources as well as a Wiki for
+project discussions.
+
+Canorus is the next generation music score editor (multiple viewports
+of the same score, scripting support, score source view, fast and
+intuitive UI, free software and cross-platform) . Technically it is
+based on Qt4, uses CMake as project management tool, swig for scripting
+/ macros integration (primary script languages are ruby and python) and
+the cross platform rtmidi library for the MIDI playback.
+
+Canorus is searching for developers with experience in the fields C++,
+Ruby, Qt4, XML, Parsing, User Interfaces, Music Composition and Theory,
+Translators, Score Editing Unit Tests.
+
+Some of the tasks are:
+- Add several UI parts (either via Ruby or in the core) like Settings,
+several different property perspectives, Lyrics, Import / Export
+- Development of a robust test engine for the user interface and
+its core (could be done via scripting)
+- Import parsers for ABC Music, Lilypond, MusicXML, MUP (& NoteEdit),
+MusiXTeX, PMX, MIDI etc.
+- Export for several formats like the above
+- Recording and replay of macros
+- Multi-Level Undo/Redo (for different perspectives) 
+
+Homepage: http://canorus.berlios.de
+
+Contact: Via the development mailing list, see
+         http://canorus.berlios.de/contact.html

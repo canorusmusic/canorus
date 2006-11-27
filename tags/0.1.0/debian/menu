@@ -1,0 +1,8 @@
+?package(canorus):\
+	needs="X11"\
+	section="Apps/Sound"\
+	longtitle="Music score editor"\
+	hints="Sound"\
+	title="Canorus"\
+	icon="/usr/share/icons/canorus.png"\
+	command="/usr/bin/canorus"
