@@ -43,12 +43,12 @@ Var StartMenuGroup
 !insertmacro MUI_LANGUAGE English
 
 # Installer attributes
-OutFile canorus-0.0.99svn-setup.exe
+OutFile canorus_${VERSION}_x86.exe
 InstallDir $PROGRAMFILES\Canorus
 CRCCheck on
 XPStyle on
 ShowInstDetails show
-VIProductVersion 0.0.99.0
+VIProductVersion ${VERSION}
 VIAddVersionKey ProductName Canorus
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
