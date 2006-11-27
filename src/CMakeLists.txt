@@ -225,11 +225,11 @@ SET(Canorus_Images	# Images on buttons, splash etc.
 )
 
 SET(Canorus_Fonts	# Music fonts needed by Canorus
-	fonts/CenturySchL-BoldItal.otf	# Century family needed for numbers and signs
-	fonts/CenturySchL-Bold.otf
-	fonts/CenturySchL-Ital.otf
-	fonts/CenturySchL-Roma.otf
-	fonts/emmentaler-14.otf		# emmentaler needed for notes, rests, clefs etc.
+	fonts/CenturySchL-BoldItal.ttf	# Century family needed for numbers and signs
+	fonts/CenturySchL-Bold.ttf
+	fonts/CenturySchL-Ital.ttf
+	fonts/CenturySchL-Roma.ttf
+	fonts/emmentaler-14.ttf		# emmentaler needed for notes, rests, clefs etc.
 	fonts/FreeSans.ttf		# FreeSans needed for function markings
 )
 
