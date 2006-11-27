@@ -6,12 +6,12 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "interface/plugin.h"
-
 #ifdef USE_SWIG
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
 #endif
+
+#include "interface/plugin.h"
 
 #include "ui/mainwin.h"
 #include "widgets/scrollwidget.h"
