@@ -18,7 +18,7 @@
 	$1 = QString::fromUtf8(STR2CSTR($input));
 }
 
-//convert returned QList value to Ruby's List
+//convert returned QList value to Ruby's array
 %typemap(out) const QList<CANote*>, QList<CANote*> {
 	VALUE arr = rb_ary_new2($1.size());
 	for (int i=0; i<$1.size(); i++)

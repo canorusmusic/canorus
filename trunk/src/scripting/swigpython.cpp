@@ -21,8 +21,9 @@ void CASwigPython::init() {
 	PyRun_SimpleString((QString("sys.path.append('")+locateResource("scripts")+"')").toStdString().c_str());
 }
 
+//WARNING! You have to add path of the plugin to Python path before, manually!
 PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args) {
-	//Prepare arguments
+	// Prepare arguments
 	QString listMask = "(";
 	for (int i=0; i<args.size(); i++)
 		listMask += "O";
@@ -34,21 +35,15 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	
 	PyObject *pyArgs = Py_BuildValue((char*)listMask.toStdString().c_str(), *list);
 	
-	//Add module path to system path, if initializing the plugin for the first time
-	if (function=="onInit") {
-		QString path = fileName.left(fileName.lastIndexOf("/"));
-		PyRun_SimpleString((QString("sys.path.append('")+path+"')").toStdString().c_str());
-	}
-	
-	//Load module, if not yet
+	// Load module, if not yet
 	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
 	moduleName = moduleName.remove(0, moduleName.lastIndexOf("/")+1);
 	PyObject *pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
 	
-	//Get function object
+	// Get function object
 	PyObject *pyFunction = PyObject_GetAttrString(pyModule, (char*)function.toStdString().c_str());
 	
-	//Call the actual function
+	// Call the actual function
 	PyObject *ret;
 	if (args.size())
 		ret = PyEval_CallObject(pyFunction, pyArgs);

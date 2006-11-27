@@ -7,7 +7,12 @@
  */
 
 #include "interface/plugin.h"
+
+#ifdef USE_SWIG
 #include "scripting/swigruby.h"
+#include "scripting/swigpython.h"
+#endif
+
 #include "ui/mainwin.h"
 #include "widgets/scrollwidget.h"
 #include "widgets/viewport.h"
@@ -59,20 +64,21 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 #ifdef USE_RUBY
 	QList<VALUE> rubyArgs;
 #endif
+#ifdef USE_PYTHON
+	QList<PyObject*> pythonArgs;
+#endif
 	bool error=false;
 	for (; i<vals.size(); i++) {
 		QString val=vals[i].toUpper();
-		if (val=="COORDS") {
-#ifdef USE_RUBY
-			if (lang=="RUBY") {
-				//TODO: Convert C++ Qt's QPoint -> Ruby Qt's QPoint
-			}
-#endif
-		} else
 		if (val=="DOCUMENT") {
 #ifdef USE_RUBY
 			if (lang=="RUBY") {
 				rubyArgs << CASwigRuby::toRubyObject(document, CASwigRuby::Document);
+			}
+#endif
+#ifdef USE_PYTHON
+			if (lang=="PYTHON") {
+				pythonArgs << CASwigPython::toPythonObject(document, CASwigPython::Document);
 			}
 #endif
 		} else
@@ -81,6 +87,16 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 			if (lang=="RUBY") {
 				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
 					rubyArgs << CASwigRuby::toRubyObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigRuby::Sheet);
+				else {
+					error = true;
+					break;
+				}
+			}
+#endif
+#ifdef USE_PYTHON
+			if (lang=="PYTHON") {
+				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
+					pythonArgs << CASwigPython::toPythonObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigPython::Sheet);
 				else {
 					error = true;
 					break;
@@ -105,6 +121,22 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 				}
 			}
 #endif
+#ifdef USE_PYTHON
+			if (lang=="PYTHON") {
+				if (mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
+					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentScrollWidget()->lastUsedViewPort());
+					if (!v->selection()->size() || v->selection()->front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
+						error=true;
+						break;
+					}
+					pythonArgs << CASwigPython::toPythonObject(v->selection()->front()->musElement(), CASwigPython::Note);
+				}
+				else {
+					error = true;
+					break;
+				}
+			}
+#endif
 		} else
 		if (val=="CHORD") {
 			//TODO
@@ -112,9 +144,15 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 	}
 	
 	if (actionName=="onInit") {
+		//add the plugin's path for the first time, so scripting languages can find their modules
 #ifdef USE_RUBY
 		if (lang=="RUBY") {
-			rb_eval_string((QString("$: << '") + _dirName + "'").toStdString().c_str());	//add the plugin path to its default one for the first time
+			rb_eval_string((QString("$: << '") + _dirName + "'").toStdString().c_str());
+		}
+#endif
+#ifdef USE_PYTHON
+		if (lang=="PYTHON") {
+			PyRun_SimpleString((QString("sys.path.append('")+_dirName+"')").toStdString().c_str());
 		}
 #endif
 	}
@@ -123,6 +161,11 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 #ifdef USE_RUBY
 		if (lang=="RUBY") {
 			error = (!CASwigRuby::callFunction(_dirName + "/" + fileName, functionName, rubyArgs));
+		}
+#endif
+#ifdef USE_PYTHON
+		if (lang=="PYTHON") {
+			error = (!CASwigPython::callFunction(_dirName + "/" + fileName, functionName, pythonArgs));
 		}
 #endif
 	}
