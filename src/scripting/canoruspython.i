@@ -19,6 +19,15 @@
 	$1 = QString::fromUtf8(PyString_AsString($input));
 }
 
+//convert returned QList value to Python's list
+%typemap(out) const QList<CANote*>, QList<CANote*> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Note));
+	
+	$result = list;
+}
+
 %include "scripting/context.i"
 %include "scripting/document.i"
 %include "scripting/muselement.i"
