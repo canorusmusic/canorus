@@ -229,7 +229,7 @@ SET(Canorus_Fonts	# Music fonts needed by Canorus
 	fonts/CenturySchL-Bold.ttf
 	fonts/CenturySchL-Ital.ttf
 	fonts/CenturySchL-Roma.ttf
-	fonts/emmentaler-14.ttf		# emmentaler needed for notes, rests, clefs etc.
+	fonts/Emmentaler-14.ttf		# emmentaler needed for notes, rests, clefs etc.
 	fonts/FreeSans.ttf		# FreeSans needed for function markings
 )
 
