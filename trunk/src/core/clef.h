@@ -45,8 +45,8 @@ class CAClef : public CAMusElement {
 		
 	private:
 		CAClefType _clefType;
-		int _c1;	///Location of c'. 0 = 1st line, 1 = 1st space, -2 = 1st ledger line below staff
-		int _centerPitch;	///Location of the clef's beginning - f for bas clef, g' for treble clef, c for c-clefs etc.
+		int _c1;			/// Location of c': 0 = 1st line, 1 = 1st space, -2 = 1st ledger line below staff (ie. C1 in treble clef)
+		int _centerPitch;	/// Location of the clef's beginning - f for bass clef, g' for treble clef, c' for c-clefs etc.
 };
 
 #endif /*CLEF_H_*/
