@@ -116,8 +116,15 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	QCoreApplication::setOrganizationDomain("canorus.org");
 	QCoreApplication::setApplicationName("Canorus");
 	
-	_settings = new QSettings();	// open canorus config file in order to load needed settings
-	
+	// Open canorus config file in order to load needed settings
+	// Open file is always an INI file in user's home directory.
+	// No native formats are used (Windows registry etc.) - this is provided for easier transition of settings between the platforms. 
+#ifdef Q_WS_WIN	// M$ is of course an exception
+	_settings = new QSettings(QDir::homePath()+"/Application Data/Canorus/canorus.ini", QSettings::IniFormat);
+#else	// POSIX systems use the same config file path
+	_settings = new QSettings(QDir::homePath()+"/.config/Canorus/canorus.ini", QSettings::IniFormat);
+#endif
+		
 	//Add main music insertion toolbar
 	mpoMEToolBar = new CAToolBar( this );
 	mpoMEToolBar->setOrientation(Qt::Vertical);
