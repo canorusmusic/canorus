@@ -12,30 +12,30 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 #######################
 # The following lines detect scripting environments (SWIG, Ruby, Python etc.)
 FIND_PACKAGE(SWIG QUIET)
-IF(SWIG_FOUND)
+IF(SWIG_FOUND AND NOT NO_SWIG)
 	SET(USE_SWIG True)
-	MESSAGE("SWIG found, using scripting extensions!")
-ENDIF(SWIG_FOUND)
+	MESSAGE("SWIG found, using scripting extensions.")
+ELSE(SWIG_FOUND AND NOT NO_SWIG)
+	MESSAGE("SWIG *not* found, disabling SWIG!")
+ENDIF(SWIG_FOUND AND NOT NO_SWIG)
 
 FIND_PACKAGE(Ruby)	#Setup RUBY_INCLUDE_PATH and RUBY_LIBRARIES
-IF(RUBY_INCLUDE_PATH)
+IF(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
 	MESSAGE("Ruby Library and Development files found. Ruby extensions enabled.")
 	SET(USE_RUBY True)
-ELSE(RUBY_INCLUDE_PATH)
-	MESSAGE("Ruby Library and Development files *not* found. Ruby extensions disabled.\n"
-	        "If you don't intend to use Ruby, pass -DRUBY_LIBRARY=none parameter to cmake.")
+ELSE(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
+	MESSAGE("Ruby Library and Development files *not* found. Ruby extensions disabled!")
 	SET(RUBY_LIBRARY "")
-ENDIF(RUBY_INCLUDE_PATH)
+ENDIF(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
 
 FIND_PACKAGE(PythonLibs)
-IF(PYTHON_INCLUDE_PATH)
+IF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 	MESSAGE("Python Library and Development files found. Python extensions enabled.")
 	SET(USE_PYTHON True)
-ELSE(PYTHON_INCLUDE_PATH)
-	MESSAGE("Python Library and Development files *not* found. Python extensions disabled.\n"
-	        "If you don't intend to use Python, pass -DPYTHON_LIBRARY=none parameter to cmake.")
+ELSE(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
+	MESSAGE("Python Library and Development files *not* found. Python extensions disabled!")
 	SET(PYTHON_LIBRARY "")
-ENDIF(PYTHON_INCLUDE_PATH)
+ENDIF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 
 ###################
 # List of sources #
