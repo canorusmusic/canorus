@@ -8,6 +8,7 @@
 
 #ifdef USE_RUBY
 #include "scripting/swigruby.h"
+#include <QFile>
 #include <QDir>
 
 //defined in SWIG wrapper class
@@ -19,6 +20,9 @@ void CASwigRuby::init() {
 }
 
 VALUE CASwigRuby::callFunction(QString fileName, QString function, QList<VALUE> args) {
+	if (!QFile::exists(fileName))
+		return 0;
+	
 	//require module (loads a method)
 	rb_require(QDir::convertSeparators(fileName).toStdString().c_str());
 	
