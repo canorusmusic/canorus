@@ -51,6 +51,8 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 		return false;
 	
 	QList<QString> vals = _actionMap[actionName];
+	if (!vals.size())	//action not found
+		return false;
 	//vals[0] - type
 	//vals[1] - file name
 	//vals[2] - function name

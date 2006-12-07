@@ -83,15 +83,17 @@ bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
 	
 	bool res = plugin->action("onExit", _mainWin);
 	plugin->setEnabled(false);
-
+	
+	// remove plugin specific actions from generic plugins actions list
 	QList<QString> actions = plugin->actionList();
-	for (int i=0; i<actions.size(); i++) {	//QMultiHash doesn't support remove(key, value), we have to do this manually
+	for (int i=0; i<actions.size(); i++) {	//QMultiHash doesn't support remove(key, value) or remove(value), only remove(key) - we have to do this manually now
 		QList<CAPlugin*> plugList;
-		CAPlugin *val;
-		while ((val = _actionMap.take(actions[i])) != plugin) {
-			plugList << val;
+		while (CAPlugin *val = _actionMap.take(actions[i])) {
+			if (val != plugin) {	// while val exists and != plugin
+				plugList << val;	// remember deleted values which don't belong to the disabled plugin
+			}
 		}
-		for (int j=0; j<plugList.size(); i++)
+		for (int j=0; j<plugList.size(); i++)	// restore the hash - add deleted non-disabled actions of the other plugins back to the hash
 			_actionMap.insertMulti(actions[i], plugList[j]);
 	}
 	
