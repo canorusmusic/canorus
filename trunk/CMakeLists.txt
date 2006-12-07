@@ -8,6 +8,15 @@ PROJECT(Canorus)
 # QT4 Support: Requires a very recent version (2.3.4 from March/April 2006)
 IF("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" GREATER 2.2)
 
+# Enable make uninstall rule
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+  IMMEDIATE @ONLY)
+
+ADD_CUSTOM_TARGET(uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
+
 # Set MingW bin dir, if MingW present
 IF(MINGW)
 	STRING(REGEX REPLACE "([^ ]+)/.*" "\\1" MINGW_BIN_DIR "${CMAKE_CXX_COMPILER}")
