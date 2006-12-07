@@ -8,7 +8,7 @@
 
 #ifdef USE_PYTHON
 #include "scripting/swigpython.h"
-#include <QDir>
+#include <QFile>
 
 //defined in SWIG wrapper class
 extern "C" void init_CanorusPython();	///Load 'CanorusPython' module and initialize classes
@@ -23,6 +23,9 @@ void CASwigPython::init() {
 
 //WARNING! You have to add path of the plugin to Python path before, manually!
 PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args) {
+	if (!QFile::exists(fileName))
+		return 0;
+	
 	// Prepare arguments
 	QString listMask = "(";
 	for (int i=0; i<args.size(); i++)
