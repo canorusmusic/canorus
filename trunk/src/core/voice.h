@@ -132,7 +132,7 @@ class CAVoice {
 		CAPlayable* lastPlayableElt();
 		
 		CAClef *getClef(CAMusElement *elt);
-		QList<CANote*> getChord(int time);
+		QList<CAPlayable*> getChord(int time);	/// Return a list of notes or a rest in the given time slice (chord)
 		
 		const QString name() { return _name; }
 		unsigned char midiChannel() { return _midiChannel; }

@@ -10,6 +10,9 @@
 #include "core/voice.h"
 #include "core/staff.h"
 #include "core/clef.h"
+#include "core/note.h"
+#include "core/rest.h"
+#include "core/playable.h"
 
 CAVoice::CAVoice(CAStaff *staff, const QString name) {
 	_staff = staff;
@@ -255,13 +258,26 @@ CAMusElement *CAVoice::eltAfter(CAMusElement *elt) {
 	
 	return _musElementList[idx];
 }
-#include <iostream>
-QList<CANote*> CAVoice::getChord(int time) {
+
+QList<CAPlayable*> CAVoice::getChord(int time) {
 	int i;
-	for (i=0; i<_musElementList.size() && (_musElementList[i]->timeEnd()<=time || _musElementList[i]->musElementType()!=CAMusElement::Note); i++);
+	for (i=0; i<_musElementList.size() && (_musElementList[i]->timeEnd()<=time || !_musElementList[i]->isPlayable()); i++);
 	if (i!=_musElementList.size()) {
-		return ((CANote*)_musElementList[i])->chord();
+		if (_musElementList[i]->musElementType()==CAMusElement::Note) {	// music element is a note
+			//TODO: Casting QList<CANote*> to QList<CAPlayable*> doesn't work?! :(
+			//=> Do the conversion manually. This is slow. -Matevz
+			QList<CANote*> list = ((CANote*)_musElementList[i])->chord();
+			QList<CAPlayable*> ret;
+			for (int i=0; i<list.size(); i++)
+				ret << list[i];
+			return ret;
+		}
+		else {	// music element is a rest
+			QList<CAPlayable*> ret;
+			ret << (CARest*)_musElementList[i];
+			return ret;
+		}
 	}
 	
-	return QList<CANote*>();
+	return QList<CAPlayable*>();
 }

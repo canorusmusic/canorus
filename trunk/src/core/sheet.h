@@ -16,7 +16,7 @@
 
 class CADocument;
 class CAStaff;
-class CANote;
+class CAPlayable;
 
 class CASheet {
 	public:
@@ -31,7 +31,7 @@ class CASheet {
 		inline int staffCount() { return _staffList.size(); }
 		CAStaff *staffAt(int i) { return _staffList[i]; }
 		
-		QList<CANote*> getChord(int time);	///Return a list of notes (chord) at certain time slice
+		QList<CAPlayable*> getChord(int time);	///Return a list of notes and rests (chord) for all the voices at certain time slice
 
 		inline CADocument *document() { return _document; }
 		inline const QString name() { return _name; }
