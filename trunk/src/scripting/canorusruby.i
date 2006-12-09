@@ -8,17 +8,17 @@
 
 %module CanorusRuby
 
-//convert returned QString value to Ruby's String format in UTF8 encoding
+// convert returned QString value to Ruby's String format in UTF8 encoding
 %typemap(out) const QString {
 	$result = rb_str_new2($1.toUtf8().data());
 }
 
-//convert Ruby's String to QString in UTF8 encoding
+// convert Ruby's String to QString in UTF8 encoding
 %typemap(in) const QString {
 	$1 = QString::fromUtf8(STR2CSTR($input));
 }
 
-//convert returned QList value to Ruby's array
+// convert returned QList value to Ruby's array
 %typemap(out) const QList<CANote*>, QList<CANote*> {
 	VALUE arr = rb_ary_new2($1.size());
 	for (int i=0; i<$1.size(); i++)
@@ -26,8 +26,16 @@
 	
 	$result = arr;
 }
+%typemap(out) const QList<CAPlayable*>, QList<CAPlayable*> {
+	VALUE arr = rb_ary_new2($1.size());
+	for (int i=0; i<$1.size(); i++)
+		rb_ary_push(arr, CASwigRuby::toRubyObject($1.at(i), CASwigRuby::Playable));
+	
+	$result = arr;
+}
 
-//convert Ruby's List to QList
+// convert Ruby's List to QList
+// I found no generic way of doing this yet... -Matevz
 %typemap(in) const QList<T>, QList<T> {
 	Check_Type($input, T_ARRAY);
 	QList<T> *list = new QList<T>;
@@ -91,6 +99,9 @@ VALUE CASwigRuby::toRubyObject(void *object, CASwigRuby::CAClassType type) {
 		/*case CASwigRuby::MusElement:	//CAMusElement is always abstract
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAMusElement, 0);
 			break;*/
+		case CASwigRuby::Playable:
+			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAPlayable, 0);
+			break;
 		case CASwigRuby::Note:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CANote, 0);
 			break;

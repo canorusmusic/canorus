@@ -25,6 +25,7 @@ class CASwigRuby {
 			Voice,
 			FunctionMarkingContext,
 			MusElement,
+			Playable,
 			Note,
 			Rest,
 			KeySignature,

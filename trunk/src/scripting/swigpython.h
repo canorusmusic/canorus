@@ -25,6 +25,7 @@ class CASwigPython {
 			Voice,
 			FunctionMarkingContext,
 			MusElement,
+			Playable,
 			Note,
 			Rest,
 			KeySignature,
