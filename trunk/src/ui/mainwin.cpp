@@ -1208,7 +1208,7 @@ Homepage: http://canorus.berlios.de") );
 
 //TODO: This should be done by the plugin automatically. But since we're not able to export internal Qt classes to ruby, this must be done manually
 void CAMainWin::harmonyAnalysisActivated() {
-	_pluginManager->action("onHarmonyAnalysisClick", &_document, 0, 0);
+	_pluginManager->action("onHarmonyAnalysisActivated", &_document, 0, 0);
 	rebuildUI();
 }
 
