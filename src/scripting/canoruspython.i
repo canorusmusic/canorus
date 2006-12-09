@@ -30,8 +30,12 @@
 }
 %typemap(out) const QList<CAPlayable*>, QList<CAPlayable*> {
 	PyObject *list = PyList_New(0);
-	for (int i=0; i<$1.size(); i++)
-		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Playable));
+	for (int i=0; i<$1.size(); i++) {
+		if ($1.at(i)->musElementType() == CAMusElement::Note)
+			PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Note));
+		else
+			PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Rest));			
+	}
 	
 	$result = list;
 }
