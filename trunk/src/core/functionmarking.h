@@ -20,7 +20,7 @@ class CAFunctionMarkingContext;
 class CAFunctionMarking : public CAMusElement {
 	public:
 		enum CAFunctionType {
-			None=0,		//no degree
+			Undefined=0,//no degree - extend the previous one
 			I=1,		//1st
 			II=2,		//2nd
 			III=3,		//3rd
@@ -37,7 +37,7 @@ class CAFunctionMarking : public CAMusElement {
 		};
 		
 		//addedDegrees and alteredDegrees are generated from alterations parameter
-		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea=None, bool chordAreaMinor=false, CAFunctionType tonicDegree=None, bool tonicDegreeMinor=false, const QString alterations="", bool ellipseSequence=false);
+		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea=Undefined, bool chordAreaMinor=false, CAFunctionType tonicDegree=Undefined, bool tonicDegreeMinor=false, const QString alterations="", bool ellipseSequence=false);
 		CAFunctionMarking* clone();
 		~CAFunctionMarking();
 		

@@ -18,7 +18,7 @@
 class CAFunctionMarking : public CAMusElement {
 	public:
 		enum CAFunctionType {
-			None=0,		//no degree
+			Undefined=0,		//no degree
 			I=1,		//1st
 			II=2,		//2nd
 			III=3,		//3rd
