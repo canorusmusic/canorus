@@ -9,21 +9,29 @@
 %module CanorusPython
 %module(directors="1") CanorusPython
 
-//convert returned QString value to Python's String format in UTF8 encoding
+// convert returned QString value to Python's String format in UTF8 encoding
 %typemap(out) const QString {
 	$result = Py_BuildValue("s", $1.toUtf8().data());
 }
 
-//convert Python's String to QString in UTF8 encoding
+// convert Python's String to QString in UTF8 encoding
 %typemap(in) const QString {
 	$1 = QString::fromUtf8(PyString_AsString($input));
 }
 
-//convert returned QList value to Python's list
+// convert returned QList value to Python's list
+// I found no generic way of doing this yet... -Matevz
 %typemap(out) const QList<CANote*>, QList<CANote*> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
 		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Note));
+	
+	$result = list;
+}
+%typemap(out) const QList<CAPlayable*>, QList<CAPlayable*> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Playable));
 	
 	$result = list;
 }
@@ -78,6 +86,9 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 		/*case CASwigPython::MusElement:	//CAMusElement is always abstract
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAMusElement, 0);
 			break;*/
+		case CASwigPython::Playable:
+			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAPlayable, 0);
+			break;
 		case CASwigPython::Note:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CANote, 0);
 			break;
