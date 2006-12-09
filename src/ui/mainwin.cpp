@@ -1198,15 +1198,15 @@ void CAMainWin::on_actionAbout_Canorus_activated()
 {
 	QMessageBox::about ( this, tr("About Canorus"),
 	tr("Canorus - The next generation music score editor\n\n\
-Version 0.0.2\n\
+Version %1\n\
 (C) 2006 Canorus Development team. All rights reserved.\n\
 See the file AUTHORS for the list of Canorus developers\n\n\
 This program is licensed under the GNU General Public License (GPL).\n\
-See the file 'LICENSE.GPL' for details.\n\n\
-Homepage: http://canorus.berlios.de") );
+See the file LICENSE.GPL for details.\n\n\
+Homepage: http://canorus.berlios.de").arg(CANORUS_VERSION) );
 }
 
-//TODO: This should be done by the plugin automatically. But since we're not able to export internal Qt classes to ruby, this must be done manually
+//TODO: This should be done by the plugin automatically. But since we're not able to export internal Qt classes to scripting languages yet, this must be done manually
 void CAMainWin::harmonyAnalysisActivated() {
 	_pluginManager->action("onHarmonyAnalysisActivated", &_document, 0, 0);
 	rebuildUI();

@@ -26,12 +26,9 @@ ENDIF(MINGW)
 STRING(REGEX REPLACE "([^ ]+)/.*" "\\1" QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}")
 
 #-----------------------------------------------------------------------------
-# Canorus version number.  An even minor number corresponds to releases.
-SET(CANORUS_MAJOR_VERSION 0)
-SET(CANORUS_MINOR_VERSION 1)
-SET(CANORUS_BUILD_VERSION 0)
-SET(CANORUS_VERSION
-	"${CANORUS_MAJOR_VERSION}.${CANORUS_MINOR_VERSION}.${CANORUS_BUILD_VERSION}")
+# Canorus version number.
+FILE(READ VERSION CANORUS_VERSION)
+STRING(REGEX REPLACE "\n" "" CANORUS_VERSION "${CANORUS_VERSION}") # get rid of the newline at the end
 
 # Set default install path - this is /usr/local in *nix environments or C:\Program files\Canorus under M$ Windows.
 # WARNING: Leading slash should be added - this is for easier concatenation of the strings due to slash/backslash issues
@@ -82,3 +79,6 @@ ELSE("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" GREATER 2.2)
           "This version of CMake is too old to build Canorus.  "
           "Please upgrade to CMake to at least 2.3.4")
 ENDIF("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" GREATER 2.2)
+
+# Install README, VERSION, LICENSE.GPL and other raw txt files
+INSTALL(FILES AUTHORS DEVELOPERS LICENSE.GPL NEWS README VERSION DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}")
