@@ -157,7 +157,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	
 	//Initialize the internal properties
 	_currentMode = SelectMode;
-	_insertMusElement = CAMusElement::None;
+	_insertMusElement = CAMusElement::Undefined;
 	_insertPlayableLength = CAPlayable::Quarter;
 	_insertPlayableDotted = 0;
 	_insertTimeSigBeats = 4;
@@ -427,7 +427,7 @@ void CAMainWin::setMode(CAMode mode) {
 						((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
 					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(false);
 					statusBar()->showMessage("");
-					_insertMusElement = CAMusElement::None;
+					_insertMusElement = CAMusElement::Undefined;
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}

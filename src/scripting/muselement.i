@@ -38,7 +38,7 @@ class CAMusElement {
 		 * - Text - A music element which represents any text notes and authors additions to the score. (eg. These 3 measures still need to be fixed)
 		 */
 		enum CAMusElementType {
-			None = 0,
+			Undefined = 0,
 			Note,
 			NoteBracket,
 			Rest,

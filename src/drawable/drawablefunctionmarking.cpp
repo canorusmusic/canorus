@@ -21,7 +21,7 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
  	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarking;
  	
  	_extenderLineVisible = false;
- 	if (functionMarking()->tonicDegree()==CAFunctionMarking::None)
+ 	if (functionMarking()->tonicDegree()==CAFunctionMarking::Undefined)
 		switch (functionMarking()->function()) { //TODO: Width determination should be done automatically using QPainter::boundingRect() method
 			//character widths are calculated using FreeSans font, pixelSize 19
 			case CAFunctionMarking::I:		_text="I"; _width=5; break;
@@ -73,7 +73,7 @@ CADrawableFunctionMarking::~CADrawableFunctionMarking() {
 
 void CADrawableFunctionMarking::draw(QPainter *p, CADrawSettings s) {
 	QFont font("FreeSans");
-	if (functionMarking()->tonicDegree()==CAFunctionMarking::None)
+	if (functionMarking()->tonicDegree()==CAFunctionMarking::Undefined)
 		font.setPixelSize((int)(19*s.z)); //use pixelSize instead of size as we want fixed font size no matter on screen DPI
 	else
 		font.setPixelSize((int)(17*s.z)); //use pixelSize instead of size as we want fixed font size no matter on screen DPI
@@ -205,7 +205,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	
 	_height=function->addedDegrees().size()*13 + function->alteredDegrees().size()*8;
 	
-	if (function->function()==CAFunctionMarking::None)	//paranthesis needed as well
+	if (function->function()==CAFunctionMarking::Undefined)	//paranthesis needed as well
 		_width=9+(int)(0.6*_height+0.5);
 	else
 		_width=6;
@@ -213,7 +213,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	
 	_neededWidth = _width;
 	_neededHeight = _height;
-	if (function->function()==CAFunctionMarking::None)
+	if (function->function()==CAFunctionMarking::Undefined)
 		_selectable = true;	//alterations can be selected, if they're independent
 	else
 		_selectable = false;
@@ -328,7 +328,7 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 			CAFunctionMarking *f1 = (CAFunctionMarking*)(_musElement);
 			int curX = s.x, curY = s.y;
 			
-			if (f1->function()==CAFunctionMarking::None)
+			if (f1->function()==CAFunctionMarking::Undefined)
 				curX+=(int)(0.3*_height*s.z+0.5);	//make space for left paranthesis, if needed
 			//draw added degrees
 			for (int i=0; i<f1->addedDegrees().size(); i++) {
@@ -347,7 +347,7 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 			}
 			
 			//draw paranthesis, if needed
-			if (f1->function()==CAFunctionMarking::None) {
+			if (f1->function()==CAFunctionMarking::Undefined) {
 				curX-=(int)(0.3*_height*s.z+0.5);
 				font.setPixelSize((int)(_height*s.z+0.5));
 				p->setFont(font);

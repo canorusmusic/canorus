@@ -17,7 +17,7 @@
 class CAPlayable : public CAMusElement {
 	public:
 		enum CAPlayableLength {
-			None = -1,
+			Undefined = -1,
 			Breve = 0,
 			Whole = 1,
 			Half = 2,
