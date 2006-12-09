@@ -48,8 +48,8 @@ CAContext *CASheet::context(const QString name) {
 	return 0;
 }
 
-QList<CANote*> CASheet::getChord(int time) {
-	QList<CANote*> chordList;
+QList<CAPlayable*> CASheet::getChord(int time) {
+	QList<CAPlayable*> chordList;
 	for (int i=0; i<_staffList.size(); i++) {
 		for (int j=0; j<_staffList[i]->voiceCount(); j++) {
 			chordList << _staffList[i]->voiceAt(j)->getChord(time);

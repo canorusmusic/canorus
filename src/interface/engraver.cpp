@@ -530,7 +530,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						if (newElt && streamsIdx[i]-1>=0 && musStreamList[i]->at(streamsIdx[i]-1)->timeStart()!=musStreamList[i]->at(streamsIdx[i])->timeStart()) {
 							CAFunctionMarking *prevElt;
 							for (int j=1; (prevElt=(CAFunctionMarking*)musStreamList[i]->at(streamsIdx[i]-j))->function()==CAFunctionMarking::None; j++);	//get the first real function (skip alterations)
-							QList<CANote*> chord = prevElt->context()->sheet()->getChord(prevElt->timeStart());
+							QList<CAPlayable*> chord = prevElt->context()->sheet()->getChord(prevElt->timeStart());
 							for (int i=0; i<chord.size(); i++) {
 								if (chord[i]->timeLength()<prevElt->timeLength()) {
 									int newX;
