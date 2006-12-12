@@ -63,7 +63,12 @@
 #ifdef __cplusplus
 extern "C"
 #endif
+
+#ifdef Q_WS_MAC
+SWIGEXPORT(void) Init_CanorusPython(void);
+#else
 SWIGEXPORT void Init_CanorusPython(void);
+#endif
 
 class QString;
 
