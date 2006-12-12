@@ -11,6 +11,29 @@
 
 CAClef::CAClef(CAClefType type, CAStaff *staff, int time) : CAMusElement(staff, time) {
 	_musElementType = CAMusElement::Clef;
+	setClefType(type);
+}
+
+CAClef::CAClef(const QString type, CAStaff *staff, int time) : CAMusElement(staff, time) {
+	_musElementType = CAMusElement::Clef;
+	
+	CAClefType clefType;
+	if (type=="treble") {
+		clefType = Treble;
+	} else if (type=="bass") {
+		clefType = Bass;
+	} else if (type=="alto") {
+		clefType = Alto;
+	} else if (type=="tenor") {
+		clefType = Tenor;
+	} else if (type=="soprano") {
+		clefType = Soprano;
+	}
+	
+	setClefType(clefType);
+}
+
+void CAClef::setClefType(CAClefType type) {
 	_clefType = type;
 	
 	switch (type) {
@@ -35,48 +58,6 @@ CAClef::CAClef(CAClefType type, CAStaff *staff, int time) : CAMusElement(staff, 
 			_centerPitch = 28;
 			break;
 	}
-}
-
-CAClef::CAClef(const QString type, CAStaff *staff, int time) : CAMusElement(staff, time) {
-	CAClefType clefType;
-	if (type=="treble") {
-		clefType = Treble;
-	} else if (type=="bass") {
-		clefType = Bass;
-	} else if (type=="alto") {
-		clefType = Alto;
-	} else if (type=="tenor") {
-		clefType = Tenor;
-	} else if (type=="soprano") {
-		clefType = Soprano;
-	}
-	
-	//TODO: COPY&PASTE from the first constructor - is there any other way for eg. to call the first constructor from this one? -Matevz
-	_musElementType = CAMusElement::Clef;
-	_clefType = clefType;
-	
-	switch (clefType) {
-		case Treble:
-			_c1 = -2;
-			_centerPitch = 32;
-			break;
-		case Bass:
-			_c1 = 10;
-			_centerPitch = 24;
-			break;
-		case Alto:
-			_c1 = 4;
-			_centerPitch = 28;
-			break;
-		case Tenor:
-			_c1 = 6;
-			_centerPitch = 28;
-			break;
-		case Soprano:
-			_c1 = 0;
-			_centerPitch = 28;
-			break;
-	}	
 }
 
 CAClef* CAClef::clone() {

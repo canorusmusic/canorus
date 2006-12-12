@@ -43,6 +43,8 @@ class CAClef : public CAMusElement {
 		const int centerPitch() { return _centerPitch; }
 		int compare(CAMusElement *elt);
 		
+		void setClefType(CAClefType type);
+		
 	private:
 		CAClefType _clefType;
 		int _c1;			/// Location of c': 0 = 1st line, 1 = 1st space, -2 = 1st ledger line below staff (ie. C1 in treble clef)
