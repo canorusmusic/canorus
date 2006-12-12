@@ -36,4 +36,7 @@ class CAClef : public CAMusElement {
 		const int c1();
 		const int centerPitch();
 		int compare(CAMusElement *elt);
+		
+		void setClefType(CAClefType type);
+		
 };

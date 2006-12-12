@@ -22,22 +22,22 @@ class CAStaff;
 class CAKeySignature : public CAMusElement {
 	public:
 		enum CAKeySignatureType {
-			Diatonic,	//marks the 7-level Major/Minor or modus scale
+			Diatonic,	// Marks the 7-level Major/Minor or modus scale
 			Custom
 		};
 		
-		enum CADiatonicGenderType {	///the lower tetrachord of the scale - scale gender
+		enum CADiatonicGenderType {	/// The lower tetrachord of the scale - scale gender
 			Major,
 			Minor
 		};
 		
-		enum CADiatonicShapeType {	///the upper tetrachord of the scale - scale shape
+		enum CADiatonicShapeType {	/// The upper tetrachord of the scale - scale shape
 			Natural,
 			Harmonic,
 			Melodic
 		};
 		
-		enum CAModusType {	///modus type
+		enum CAModusType {	/// Modus type
 			Ionian,
 			Dorian,
 			Phrygian,
@@ -74,12 +74,14 @@ class CAKeySignature : public CAMusElement {
 		~CAKeySignature();
 		
 		CAKeySignatureType keySignatureType() { return _keySignatureType; }
+		void setKeySignatureType(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender);	/// TODO: Diatonic currently only
 		
+		/****************************
+		 * Diatonic keys properties *
+		 ****************************/
 		CADiatonicGenderType diatonicGender() { return _diatonicGender; }
 		CADiatonicShapeType diatonicShape() { return _diatonicShape; }
-		CAModusType modus() { return _modus; }
-		
-		void setDiatonicGender(CADiatonicGenderType gender) { _diatonicGender = gender; }
+		CAModusType modus() { return _modus; }		
 		void setDiatonicShape(CADiatonicShapeType shape) { _diatonicShape = shape; }
 		void setModus(CAModusType modus) { _modus = modus; }
 		

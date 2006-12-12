@@ -1,3 +1,11 @@
-Reinhard Katzmann <reinhard@suamor.de>            -- project manager
-Matevž Jekovec <matevz.jekovec@guest.arnes.si>   -- project manager and composer
-Georg Rudolph <georg.rudolph@schwaben.de>         -- developer and tester
+Main developers:
+Matevž Jekovec <matevz.jekovec@gmail.com>
+  core features and UI, Windows port, Debian/Ubuntu packages, cmake, Wiki site
+Reinhard Katzmann <reinhard@suamor.de>
+  Qt4 GUI maestro, cmake, programming patterns
+
+Contributors:
+Georg Rudolph <georg.rudolph@schwaben.de>
+  lots of ideas, tester and bughunter, LilyPond
+Erlend Aasland <>
+  MacOSX port, small fixes and improvements
