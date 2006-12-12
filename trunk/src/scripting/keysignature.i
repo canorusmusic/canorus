@@ -69,12 +69,12 @@ class CAKeySignature : public CAMusElement {
 		~CAKeySignature();
 		
 		CAKeySignatureType keySignatureType();
+		void setKeySignatureType(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender);	/// TODO: Diatonic currently only
 		
 		CADiatonicGenderType diatonicGender();
 		CADiatonicShapeType diatonicShape();
 		CAModusType modus();
 		
-		void setDiatonicGender(CADiatonicGenderType gender);
 		void setDiatonicShape(CADiatonicShapeType shape);
 		void setModus(CAModusType modus);
 		

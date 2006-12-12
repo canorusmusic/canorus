@@ -6,53 +6,35 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include <iostream>	//DEBUG
-
 #include "core/keysignature.h"
 #include "core/staff.h"
 
 CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender, CAStaff *staff, int timeStart)
  : CAMusElement(staff, timeStart) {
  	_musElementType = CAMusElement::KeySignature;
- 	_keySignatureType = type;
-	_diatonicGender = gender;
-
-	for (int i=0; i<7; i++)	//clean up the _accidentals array
-		_accidentals[i] = 0;
-
-	//generate the _accidentals array according to the given number of the accidentals
-	//eg. _accidentals[3] = -1; means flat on the 3rd note (counting from 0), this means this key signature has Fes instead of F.
-	int idx = 3;
-	for (int i=0; i<accs; i++) {	//key signatures with sharps
-		_accidentals[idx] = 1;
-		idx = (idx+4)%7;	//the circle of fifths in positive direction - add a Fifth
-	}
-	
-	idx = 6;
-	for (int i=0; i>accs; i--) {	//key signatures with flats
-		_accidentals[idx] = -1;
-		idx = (idx+3)%7;	//the circle of fifths in negative direction - add a Fourth
-	}
+ 	
+ 	setKeySignatureType(type, accs, gender);
 }
 
 CAKeySignature::CAKeySignature(QString sPitch, QString sGender, CAStaff *staff, int timeStart)
  : CAMusElement(staff, timeStart) {
+ 	_musElementType = CAMusElement::KeySignature;
 	CADiatonicGenderType gender;
 	if (sGender.toUpper()=="MAJOR")
 		gender = Major;
 	else if (sGender.toUpper()=="MINOR")
 		gender = Minor;
 	else
-		gender = (sPitch.at(0).isLower()?Minor:Major);	//if no gender is defined, set the gender according to the pitch capitals
+		gender = (sPitch.at(0).isLower()?Minor:Major);	// if no gender is defined, set the gender according to the pitch capitals
 	
 	int pitch = sPitch.toUpper()[0].toLatin1() - 'A';
 
 	signed char accs = -1;
-	for (int i=5; i!=pitch; i=(i+1)%7)	{//calculate number of accidentals for Major key signatures. Start with F-Major (1 flat) and add 2 sharps mod 7 for every next level
+	for (int i=5; i!=pitch; i=(i+1)%7)	// calculate number of accidentals for Major key signatures. Start with F-Major (1 flat) and add 2 sharps mod 7 for every next level
 		accs = (accs+2)%7;	
-	}
+	
 	if (gender == Minor)
-		accs -= 3;	//Major->Minor transformation: Every same-name minor key sig has -3 accidentals of the major key signature
+		accs -= 3;	// Major->Minor transformation: Every same-name minor key sig has -3 accidentals of the major key signature
 	
 	while (sPitch.size()>1) {
 		if (sPitch.toUpper().endsWith("IS"))
@@ -62,34 +44,38 @@ CAKeySignature::CAKeySignature(QString sPitch, QString sGender, CAStaff *staff, 
 		else if (sPitch.toUpper().endsWith("AS"))
 			accs -= 7;
 		
-		sPitch.chop(2);
+		sPitch.chop(2);	// shorten the end of the pitch for 2 chars
 	}
 	
- 	//TODO: COPY&PASTE from the first constructor - is there any other way for eg. to call the first constructor from this one? -Matevz
- 	_musElementType = CAMusElement::KeySignature;
- 	_keySignatureType = Diatonic;
-	_diatonicGender = gender;
+	setKeySignatureType(Diatonic, accs, gender);
+}
 
-	for (int i=0; i<7; i++)	//clean up the _accidentals array
-		_accidentals[i] = 0;
-
-	//generate the _accidentals array according to the given number of the accidentals
-	//eg. _accidentals[3] = -1; means flat on the 3rd note (counting from 0), this means this key signature has Fes instead of F.
-	int idx = 3;
-	for (int i=0; i<accs; i++) {	//key signatures with sharps
-		_accidentals[idx] = 1;
-		idx = (idx+4)%7;	//the circle of fifths in positive direction - add a Fifth
-	}
-	
-	idx = 6;
-	for (int i=0; i>accs; i--) {	//key signatures with flats
-		_accidentals[idx] = -1;
-		idx = (idx+3)%7;	//the circle of fifths in negative direction - add a Fourth
+void CAKeySignature::setKeySignatureType(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender) {
+ 	_keySignatureType = type;
+ 	
+ 	if (type == Diatonic) {
+		_diatonicGender = gender;
+		
+		for (int i=0; i<7; i++)	// clean up the _accidentals array
+			_accidentals[i] = 0;
+		
+		// generate the _accidentals array according to the given number of the accidentals
+		// eg. _accidentals[3] = -1; means flat on the 3rd note (counting from 0), this means this key signature has Fes instead of F.
+		int idx = 3;
+		for (int i=0; i<accs; i++) {	// key signatures with sharps
+			_accidentals[idx] = 1;
+			idx = (idx+4)%7;	// the circle of fifths in positive direction - add a Fifth
+		}
+		
+		idx = 6;
+		for (int i=0; i>accs; i--) {	// key signatures with flats
+			_accidentals[idx] = -1;
+			idx = (idx+3)%7;	// the circle of fifths in negative direction - add a Fourth
+		}
 	}
 }
 
 CAKeySignature::~CAKeySignature() {
-	
 }
 
 CAKeySignature* CAKeySignature::clone() {
