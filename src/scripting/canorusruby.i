@@ -72,7 +72,11 @@
 #ifdef __cplusplus
 extern "C"
 #endif
+#ifdef Q_WS_MAC
+SWIGEXPORT(void) Init_CanorusRuby(void);
+#else
 SWIGEXPORT void Init_CanorusRuby(void);
+#endif
 
 class QString;
 
