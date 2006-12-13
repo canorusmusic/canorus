@@ -24,11 +24,7 @@ class CADrawableBarline : public CADrawableMusElement {
 		inline CABarline *barline() { return (CABarline*)_musElement; }
 		
 	private:
-#ifdef Q_WS_MAC
-#define BARLINE_WIDTH 1.5
-#else
-		static const float BARLINE_WIDTH = 1.5;
-#endif
+		static const float BARLINE_WIDTH;
 };
 
 #endif /*DRAWABLEBARLINE_H_*/
