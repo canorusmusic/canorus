@@ -16,17 +16,26 @@
 %rename(Note) CANote;
 class CANote : public CAPlayable {
 	public:
+		enum CAStemDirection {
+			Neutral,	// Up if under the middle line, down if above the middle line
+			Up,
+			Down,
+			Prefered		// Use the voice's prefered direction
+		};
+		
 		CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int dotted=0);
 		CANote *clone();
 		
-		CAPlayableLength noteLength();
-		int pitch();
-		int accidentals();
-		const QString pitchML();	///Compose the note pitch name for the CanorusML format
-		const QString lengthML();	///Compose the note length for the CanorusML format
+		CAPlayableLength noteLength() { return _playableLength; }
+		int pitch() { return _pitch; }
+		int accidentals() { return _accs; }
+		CAStemDirection stemDirection() { return _stemDirection; }
+		const QString pitchML();	/// Compose the note pitch name for the CanorusML format
+		const QString lengthML();	/// Compose the note length for the CanorusML format
 		void setPitch(int pitch);
-		void setAccidentals(int accs);
-		int notePosition();
+		void setAccidentals(int accs) { _accs = accs; };
+		void setStemDirection(CAStemDirection direction) { _stemDirection = direction; }
+		int notePosition() { return _notePosition; }
 		
 		/**
 		 * Return True, if the note is part of a chord, False otherwise.
@@ -51,11 +60,10 @@ class CANote : public CAPlayable {
 		 */
 		QList<CANote*> chord();
 		
-		bool forceAccidentals();
-		void setForceAccidentals(bool force);
+		bool forceAccidentals() { return _forceAccidentals; }
+		void setForceAccidentals(bool force) { _forceAccidentals = force; }
 		
 		static const QString generateNoteName(int pitch, int accs);
 		
 		int compare(CAMusElement* elt);
-
 };

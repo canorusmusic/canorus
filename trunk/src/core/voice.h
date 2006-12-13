@@ -20,6 +20,7 @@ class CAClef;
 class CAVoice {
 	public:
 		CAVoice(CAStaff *staff, const QString name);
+		~CAVoice();
 		inline CAStaff *staff() { return _staff; }
 		void clear();
 		
@@ -120,6 +121,9 @@ class CAVoice {
 		CAMusElement *eltBefore(CAMusElement *elt);
 		CAMusElement *eltAfter(CAMusElement *elt);
 		
+		CANote::CAStemDirection stemDirection() { return _stemDirection; }
+		void setStemDirection(CANote::CAStemDirection direction) { _stemDirection = direction; }
+		
 		/**
 		 * Return the pitch of the last note in the voice (default) or of the first note in the last chord.
 		 * If there is a clef after the last notes, return the clef's center pitch.
@@ -175,8 +179,9 @@ class CAVoice {
 		 */
 		void updateTimes(int idx, int length=0);
 		QList<CAMusElement *> _musElementList;
-		CAStaff *_staff;	///Staff which this voice belongs to by default.
-		int _voiceNumber;	///Voice number starting at 1.
+		CAStaff *_staff;	/// Staff which this voice belongs to by default.
+		int _voiceNumber;	/// Voice number starting at 1.
+		CANote::CAStemDirection _stemDirection;	/// Prefered direction of stems for the notes inside the voice. This should be Neutral, if the voice is alone, Up, if the voice is the first voice, Down, if not. Prefered is not used here. 
 		
 		QString _name;
 		

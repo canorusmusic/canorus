@@ -1,4 +1,4 @@
-/** @file drawablenote.cpp
+/** @file drawable/drawablenote.cpp
  * 
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -12,12 +12,32 @@
 #include "drawable/drawableaccidental.h"
 #include "core/voice.h"
 #include "core/staff.h"
-#include "core/note.h"
 
 CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y, bool shadowNote, CADrawableAccidental *drawableAcc)
  : CADrawableMusElement(note, drawableContext, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableNote;
 	_drawableAcc = drawableAcc;
+	
+	switch (note->stemDirection()) {
+		case CANote::StemUp:
+		case CANote::StemDown:
+			_stemDirection = note->stemDirection();
+			break;
+		
+		case CANote::StemNeutral:
+			if (note->staff() && note->notePosition() <= note->staff()->numberOfLines()/2)
+				_stemDirection = CANote::StemDown;
+			else
+				_stemDirection = CANote::StemUp;
+			break;
+		
+		case CANote::StemPrefered:
+			if (note->voice())
+				_stemDirection = note->voice()->stemDirection();
+			else
+				_stemDirection = CANote::StemUp;
+			break;
+	}
 	
 	switch (note->playableLength()) {
 		case CAPlayable::HundredTwentyEighth:
@@ -117,18 +137,22 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2 + 0.5);
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
-			s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			
-			//draw stem
+			//draw stem and flag
+			//TODO: Emmentaler font doesn't have 128th, 64th flag is drawn instead! Need to somehow compose the 128th flag? -Matevz
 			pen.setWidth((int)(1.2*s.z));
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setColor(s.color);
 			p->setPen(pen);
-			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z));
-			
-			//draw flag
-			//TODO: Emmentaler font doesn't have 128th, 64th flag is drawn instead! Need to somehow compose the 128th flag? -Matevz
-			p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z),QString(0xE18A));
+			if (_stemDirection == CANote::StemUp) {
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z));
+				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z),QString(0xE18A));
+			} else {
+				s.x+=(int)(0.6*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z));
+				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (HUNDREDTWENTYEIGHTH_STEM_LENGTH+5)*s.z),QString(0xE190));
+			}
 			
 			break;
 		}
@@ -138,15 +162,20 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
 			s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			
-			//draw stem
+			//draw stem and flag
 			pen.setWidth((int)(1.2*s.z));
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setColor(s.color);
 			p->setPen(pen);
-			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(SIXTYFOURTH_STEM_LENGTH*s.z));
-			
-			//draw flag
-			p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - SIXTYFOURTH_STEM_LENGTH*s.z),QString(0xE18A));
+			if (_stemDirection == CANote::StemUp) {
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z));
+				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z),QString(0xE18A));
+			} else {
+				s.x+=(int)(0.6*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z));
+				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (HUNDREDTWENTYEIGHTH_STEM_LENGTH+5)*s.z),QString(0xE190));
+			}
 			
 			break;
 		}
@@ -154,17 +183,22 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2 + 0.5);
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
-			s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			
-			//draw stem
+			//draw stem and flag
+			//TODO: Emmentaler font doesn't have 128th, 64th flag is drawn instead! Need to somehow compose the 128th flag? -Matevz
 			pen.setWidth((int)(1.2*s.z));
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setColor(s.color);
 			p->setPen(pen);
-			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(THIRTYSECOND_STEM_LENGTH*s.z));
-			
-			//draw flag
-			p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - THIRTYSECOND_STEM_LENGTH*s.z),QString(0xE189));
+			if (_stemDirection == CANote::StemUp) {
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(THIRTYSECOND_STEM_LENGTH*s.z));
+				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - THIRTYSECOND_STEM_LENGTH*s.z),QString(0xE189));
+			} else {
+				s.x+=(int)(0.6*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(THIRTYSECOND_STEM_LENGTH*s.z));
+				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (THIRTYSECOND_STEM_LENGTH+5)*s.z),QString(0xE18F));
+			}
 			
 			break;
 		}
@@ -172,17 +206,21 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2 + 0.5);
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
-			s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			
-			//draw stem
+			//draw stem and flag
 			pen.setWidth((int)(1.2*s.z));
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setColor(s.color);
 			p->setPen(pen);
-			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(SIXTEENTH_STEM_LENGTH*s.z));
-			
-			//draw flag
-			p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - SIXTEENTH_STEM_LENGTH*s.z),QString(0xE188));
+			if (_stemDirection == CANote::StemUp) {
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(SIXTEENTH_STEM_LENGTH*s.z));
+				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - SIXTEENTH_STEM_LENGTH*s.z),QString(0xE188));
+			} else {
+				s.x+=(int)(0.6*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(SIXTEENTH_STEM_LENGTH*s.z));
+				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (SIXTEENTH_STEM_LENGTH+5)*s.z),QString(0xE18E));
+			}
 			
 			break;
 		}
@@ -190,17 +228,21 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2 + 0.5);
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
-			s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			
-			//draw stem
+			//draw stem and flag
 			pen.setWidth((int)(1.2*s.z));
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setColor(s.color);
 			p->setPen(pen);
-			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(EIGHTH_STEM_LENGTH*s.z));
-			
-			//draw flag
-			p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - EIGHTH_STEM_LENGTH*s.z),QString(0xE187));
+			if (_stemDirection == CANote::StemUp) {
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(EIGHTH_STEM_LENGTH*s.z));
+				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - EIGHTH_STEM_LENGTH*s.z),QString(0xE187));
+			} else {
+				s.x+=(int)(0.6*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(EIGHTH_STEM_LENGTH*s.z));
+				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (EIGHTH_STEM_LENGTH+5)*s.z),QString(0xE18B));
+			}
 			
 			break;
 		}
@@ -208,30 +250,40 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2 + 0.5);
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
-			s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			
 			//draw stem
 			pen.setWidth((int)(1.2*s.z));
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setColor(s.color);
 			p->setPen(pen);
-			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(QUARTER_STEM_LENGTH*s.z));
-
+			if (_stemDirection == CANote::StemUp) {
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(QUARTER_STEM_LENGTH*s.z));
+			} else {
+				s.x+=(int)(0.6*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(QUARTER_STEM_LENGTH*s.z));
+			}
+			
 			break;
 		}
 		case CANote::Half: {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2 + 0.5);
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE124));
-			s.x+=(int)(_noteHeadWidth*s.z+0.5);
-
+			
 			//draw stem
 			pen.setWidth((int)(1.3*s.z));
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setColor(s.color);
 			p->setPen(pen);
-			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(QUARTER_STEM_LENGTH*s.z));
-			
+			if (_stemDirection == CANote::StemUp) {
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(HALF_STEM_LENGTH*s.z));
+			} else {
+				s.x+=(int)(0.6*s.z+0.5);
+				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(HALF_STEM_LENGTH*s.z));
+			}
+
 			break;
 		}
 		case CANote::Whole: {
