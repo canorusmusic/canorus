@@ -14,6 +14,8 @@
 
 #include "core/barline.h"
 
+const float CADrawableBarline::BARLINE_WIDTH = 1.5;
+
 CADrawableBarline::CADrawableBarline(CABarline *m, CADrawableStaff *staff, int x, int y)
  : CADrawableMusElement(m, staff, x, y) {
  	_drawableMusElementType = CADrawableMusElement::DrawableBarline;

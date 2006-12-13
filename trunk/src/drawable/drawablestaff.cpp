@@ -18,6 +18,8 @@
 #include "core/keysignature.h"
 #include "core/timesignature.h"
 
+const float CADrawableStaff::STAFFLINE_WIDTH = 0.8;
+
 CADrawableStaff::CADrawableStaff(CAStaff *s, int x, int y) : CADrawableContext(s, x, y) {
 	_drawableContextType = CADrawableContext::DrawableStaff;
 	_width = 0;
