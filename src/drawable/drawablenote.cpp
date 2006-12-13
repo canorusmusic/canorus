@@ -25,18 +25,28 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 			break;
 		
 		case CANote::StemNeutral:
-			if (note->staff() && note->notePosition() <= note->staff()->numberOfLines()/2)
-				_stemDirection = CANote::StemDown;
-			else
+			if (note->staff() && note->notePosition() < note->staff()->numberOfLines())	// position from 0 to half of the number of lines - where position has step of 2 per line
 				_stemDirection = CANote::StemUp;
+			else
+				_stemDirection = CANote::StemDown;
 			break;
 		
 		case CANote::StemPrefered:
-			if (note->voice())
-				_stemDirection = note->voice()->stemDirection();
-			else
-				_stemDirection = CANote::StemUp;
-			break;
+			if (!note->voice()) { _stemDirection = CANote::StemUp; break; }
+			
+			switch (note->voice()->stemDirection()) {
+				case CANote::StemUp:
+				case CANote::StemDown:
+					_stemDirection = note->voice()->stemDirection();
+					break;
+				
+				case CANote::StemNeutral:
+					if (note->staff() && note->notePosition() < note->staff()->numberOfLines())	// position from 0 to half of the number of lines - where position has step of 2 per line
+						_stemDirection = CANote::StemUp;
+					else
+						_stemDirection = CANote::StemDown;
+					break;
+			}
 	}
 	
 	switch (note->playableLength()) {
