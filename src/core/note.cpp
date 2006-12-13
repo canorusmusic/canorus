@@ -16,6 +16,7 @@ CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char a
 	_musElementType = CAMusElement::Note;
 	_forceAccidentals = false;
 	_accs = accs;
+	_stemDirection = StemPrefered;
 
 	_pitch = pitch;
 	_midiPitch = CAPlayable::pitchToMidiPitch(pitch, _accs);

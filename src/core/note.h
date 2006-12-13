@@ -16,16 +16,25 @@ class CAVoice;
 
 class CANote : public CAPlayable {
 	public:
+		enum CAStemDirection {
+			StemNeutral,	// Up if under the middle line, down if above the middle line
+			StemUp,
+			StemDown,
+			StemPrefered	// Use the voice's prefered direction
+		};
+		
 		CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int dotted=0);
 		CANote *clone();
 		
 		CAPlayableLength noteLength() { return _playableLength; }
 		int pitch() { return _pitch; }
 		int accidentals() { return _accs; }
-		const QString pitchML();	///Compose the note pitch name for the CanorusML format
-		const QString lengthML();	///Compose the note length for the CanorusML format
+		CAStemDirection stemDirection() { return _stemDirection; }
+		const QString pitchML();	/// Compose the note pitch name for the CanorusML format
+		const QString lengthML();	/// Compose the note length for the CanorusML format
 		void setPitch(int pitch);
 		void setAccidentals(int accs) { _accs = accs; };
+		void setStemDirection(CAStemDirection direction) { _stemDirection = direction; }
 		int notePosition() { return _notePosition; }
 		
 		/**
@@ -64,10 +73,11 @@ class CANote : public CAPlayable {
 		 */
 		void calculateNotePosition();
 	
-		int _pitch;	///note pitch in logical units. 0 = C,, , 1 = Sub-Contra D,, , 56 = c''''' etc.
-		int _accs;	///note accidentals. 0 = neutral, 1 = sharp, -1 = flat etc.
-		int _notePosition;	///note location in the staff. 0 first line, 1 first space, -2 first ledger line below the staff
-		bool _forceAccidentals;	///always draw notes accidentals
+		int _pitch;	/// Note pitch in logical units. 0 = C,, , 1 = Sub-Contra D,, , 56 = c''''' etc.
+		int _accs;	/// Note accidentals. 0 = neutral, 1 = sharp, -1 = flat etc.
+		CAStemDirection _stemDirection;	/// Direction of the note's stem, if any. See CAStemDirection.
+		int _notePosition;	/// Note location in the staff. 0 first line, 1 first space, -2 first ledger line below the staff
+		bool _forceAccidentals;	/// Always draw notes accidentals.
 };
 #endif /*NOTE_H_*/
 

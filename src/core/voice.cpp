@@ -18,9 +18,20 @@ CAVoice::CAVoice(CAStaff *staff, const QString name) {
 	_staff = staff;
 	_name = name;
 	_voiceNumber = this->staff()->voiceCount() + 1;
+	if (_voiceNumber == 1)
+		_stemDirection = CANote::StemNeutral;
+	else {
+		this->staff()->voiceAt(0)->setStemDirection(CANote::StemUp);
+		_stemDirection = CANote::StemDown;
+	}
 	
 	_midiChannel = 0;
 	_midiProgram = 0;
+}
+
+CAVoice::~CAVoice() {
+	if (_voiceNumber==2)
+		this->staff()->voiceAt(0)->setStemDirection(CANote::StemNeutral);
 }
 
 void CAVoice::clear() {
