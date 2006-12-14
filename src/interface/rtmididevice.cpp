@@ -85,7 +85,7 @@ void CARtMidiDevice::closeInputPort() {
 QMap<int, QString> CARtMidiDevice::getOutputPorts() {
 	QMap<int, QString> outPorts;
 	try {
-		for (int i=0; i<_out->getPortCount(); i++)
+		for (int i=0; _out && i<_out->getPortCount(); i++)
 			outPorts.insert(i, QString::fromStdString(_out->getPortName(i)));
 	} catch (RtError &error) {
 		error.printMessage();
@@ -97,7 +97,7 @@ QMap<int, QString> CARtMidiDevice::getOutputPorts() {
 QMap<int, QString> CARtMidiDevice::getInputPorts() {
 	QMap<int, QString> inPorts;
 	try {
-		for (int i=0; i<_in->getPortCount(); i++)
+		for (int i=0; _in && i<_in->getPortCount(); i++)
 			inPorts.insert(i, QString::fromStdString(_in->getPortName(i)));
 	} catch (RtError &error) {
 		error.printMessage();
