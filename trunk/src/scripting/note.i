@@ -17,10 +17,10 @@
 class CANote : public CAPlayable {
 	public:
 		enum CAStemDirection {
-			Neutral,	// Up if under the middle line, down if above the middle line
-			Up,
-			Down,
-			Prefered		// Use the voice's prefered direction
+			StemNeutral,	// Up if under the middle line, down if above the middle line
+			StemUp,
+			StemDown,
+			StemPrefered		// Use the voice's prefered direction
 		};
 		
 		CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int dotted=0);
