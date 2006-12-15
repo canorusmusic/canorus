@@ -30,7 +30,9 @@ class CANote : public CAPlayable {
 		int pitch() { return _pitch; }
 		int accidentals() { return _accs; }
 		CAStemDirection stemDirection() { return _stemDirection; }
+		/** OBSOLETE */
 		const QString pitchML();	/// Compose the note pitch name for the CanorusML format
+		/** OBSOLETE */
 		const QString lengthML();	/// Compose the note length for the CanorusML format
 		void setPitch(int pitch);
 		void setAccidentals(int accs) { _accs = accs; };
@@ -63,7 +65,9 @@ class CANote : public CAPlayable {
 		bool forceAccidentals() { return _forceAccidentals; }
 		void setForceAccidentals(bool force) { _forceAccidentals = force; }
 		
-		static const QString generateNoteName(int pitch, int accs);
+		static const QString generateNoteName(int pitch, int accs);		// Used for showing the note pitch status bar
+		static const QString stemDirectionToString(CAStemDirection);	// From StemDirection to String
+		static CAStemDirection stemDirectionFromString(const QString);	// From String to StemDirection
 		
 		int compare(CAMusElement* elt);
 

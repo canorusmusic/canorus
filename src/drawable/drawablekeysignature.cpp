@@ -18,7 +18,7 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 	_drawableMusElementType = CADrawableMusElement::DrawableKeySignature;
 	
 	int newX = x;
- 	if (keySig->keySignatureType() == CAKeySignature::Diatonic) {
+ 	if (keySig->keySignatureType() == CAKeySignature::MajorMinor) {
  		int idx, minY=y, maxY=y;
  		
  		CAKeySignature *prevKeySig = drawableStaff->getKeySignature(x);

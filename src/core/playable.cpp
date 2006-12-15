@@ -87,3 +87,64 @@ int CAPlayable::setDotted(int dotted) {
 
 	return (_timeLength - (_timeLength = (int)(origLength * factor + 0.5)))*-1;	//return delta of the new and old timeLengths, set the new timeLength
 }
+
+CAPlayable::CAPlayableLength CAPlayable::playableLengthFromString(const QString length) {
+	if (length=="undefined") {
+		return Undefined;
+	} else
+	if (length=="breve") {
+		return Breve;
+	} else
+	if (length=="whole") {
+		return Whole;
+	} else
+	if (length=="half") {
+		return Half;
+	} else
+	if (length=="quarter") {
+		return Quarter;
+	} else
+	if (length=="eighth") {
+		return Eighth;
+	} else
+	if (length=="sixteenth") {
+		return Sixteenth;
+	} else
+	if (length=="thirty-second") {
+		return ThirtySecond;
+	} else
+	if (length=="sixty-fourth") {
+		return SixtyFourth;
+	} else
+	if (length=="hundred-twenty-eighth") {
+		return HundredTwentyEighth;
+	} else
+		return Undefined;
+}
+
+const QString CAPlayable::playableLengthToString(CAPlayableLength length) {
+	switch (length) {
+		case Undefined:
+			return "undefined";
+		case Breve:
+			return "breve";
+		case Whole:
+			return "whole";
+		case Half:
+			return "half";
+		case Quarter:
+			return "quarter";
+		case Eighth:
+			return "eighth";
+		case Sixteenth:
+			return "sixteenth";
+		case ThirtySecond:
+			return "thirty-second";
+		case SixtyFourth:
+			return "sixty-fourth";
+		case HundredTwentyEighth:
+			return "hundred-twenty-eighth";
+		default:
+			return "";
+	}
+}

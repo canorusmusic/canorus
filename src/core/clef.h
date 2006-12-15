@@ -31,6 +31,7 @@ class CAClef : public CAMusElement {
 		CAClef *clone();
 		
 		/**
+		 * OBSOLETE
 		 * This is an overloaded member function provided for convenience.
 		 * 
 		 * Constructor using the ML arguments.
@@ -38,12 +39,16 @@ class CAClef : public CAMusElement {
 		CAClef(const QString type, CAStaff *staff, int time);
 		
 		CAClefType clefType() { return _clefType; }
+		/** OBSOLETE */
 		const QString clefTypeML();
 		const int c1() { return _c1; }
 		const int centerPitch() { return _centerPitch; }
 		int compare(CAMusElement *elt);
 		
 		void setClefType(CAClefType type);
+		
+		static const QString clefTypeToString(CAClefType);
+		static CAClefType clefTypeFromString(const QString);
 		
 	private:
 		CAClefType _clefType;

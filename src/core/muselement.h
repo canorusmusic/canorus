@@ -16,7 +16,7 @@ class CAContext;
 class CAMusElement {
 	public:
 		CAMusElement(CAContext *context, int time, int length=0);
-		~CAMusElement();
+		virtual ~CAMusElement();
 		
 		virtual CAMusElement* clone()=0;
 		
@@ -102,6 +102,7 @@ class CAMusElement {
 		
 		/**
 		 * Compare the given music element with this one.
+		 * This is used when music element is present in both voices at the same time. If comparison is correct, then the objects are merged internally inside a staff.
 		 * 
 		 * @param elt Pointer to the music element to compare with.
 		 * @return Return -1, if the music elements are of different types. Return 0 if the music elements match. Otherwise, return a number of attributes where music elements differ.

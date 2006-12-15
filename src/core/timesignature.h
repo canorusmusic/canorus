@@ -36,6 +36,8 @@ class CATimeSignature : public CAMusElement {
 		 * @param startTime Start time.
 		 */
 		CATimeSignature(int beats, int beat, CAStaff *staff, int startTime, CATimeSignatureType type = Classical);
+		
+		/** OBSOLETE */
 		CATimeSignature(QString MLString, CAStaff *staff, int startTime, QString type = "classical");
 		CATimeSignature *clone();
 		~CATimeSignature();
@@ -43,8 +45,14 @@ class CATimeSignature : public CAMusElement {
 		int beats() { return _beats; }
 		int beat() { return _beat; }
 		CATimeSignatureType timeSignatureType() { return _timeSignatureType; }
+		
+		/** OBSOLETE */
 		const QString timeSignatureML() { return (QString::number(_beats) + "/" + QString::number(_beat)); }
+		/** OBSOLETE */
 		const QString timeSignatureTypeML(); 
+		
+		static const QString timeSignatureTypeToString(CATimeSignatureType);
+		static CATimeSignatureType timeSignatureTypeFromString(const QString);
 		
 		int compare(CAMusElement *elt);
 		

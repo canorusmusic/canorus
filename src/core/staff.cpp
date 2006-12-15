@@ -13,9 +13,9 @@
 #include "core/staff.h"
 #include "core/note.h"
 
-CAStaff::CAStaff(CASheet *s, QString name) : CAContext(s, name) {
+CAStaff::CAStaff(CASheet *s, QString name, int numberOfLines) : CAContext(s, name) {
 	_contextType = CAContext::Staff;
-	_numberOfLines = 5;
+	_numberOfLines = numberOfLines;
 	_name = name;
 }
 

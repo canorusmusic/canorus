@@ -14,6 +14,7 @@ CAClef::CAClef(CAClefType type, CAStaff *staff, int time) : CAMusElement(staff, 
 	setClefType(type);
 }
 
+/** OBSOLETE */
 CAClef::CAClef(const QString type, CAStaff *staff, int time) : CAMusElement(staff, time) {
 	_musElementType = CAMusElement::Clef;
 	
@@ -96,4 +97,28 @@ int CAClef::compare(CAMusElement *elt) {
 	if (_clefType!=((CAClef*)elt)->clefType()) diffs++;
 		
 	return diffs;
+}
+
+const QString CAClef::clefTypeToString(CAClefType type) {
+	switch (type) {
+		case Treble: return "treble";
+		case Bass: return "bass";
+		case Alto: return "alto";
+		case Tenor: return "tenor";
+		case Soprano: return "soprano";
+		case PercussionHigh: return "percussion-high";
+		case PercussionLow: return "percussion-low";
+		default: return "";
+	}
+}
+
+CAClef::CAClefType CAClef::clefTypeFromString(const QString type) {
+	if (type=="treble") return Treble; else
+	if (type=="bass") return Bass; else
+	if (type=="alto") return Alto; else
+	if (type=="tenor") return Tenor; else
+	if (type=="soprano") return Soprano; else
+	if (type=="percussion-high") return PercussionHigh; else
+	if (type=="percussion-low") return PercussionLow;
+	else return Treble;
 }

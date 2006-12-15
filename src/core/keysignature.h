@@ -22,22 +22,23 @@ class CAStaff;
 class CAKeySignature : public CAMusElement {
 	public:
 		enum CAKeySignatureType {
-			Diatonic,	// Marks the 7-level Major/Minor or modus scale
+			MajorMinor,	// Marks the 7-level Major/Minor
+			Modus,
 			Custom
 		};
 		
-		enum CADiatonicGenderType {	/// The lower tetrachord of the scale - scale gender
+		enum CAMajorMinorGender {	/// The lower tetrachord of the scale - scale gender
 			Major,
 			Minor
 		};
 		
-		enum CADiatonicShapeType {	/// The upper tetrachord of the scale - scale shape
+		enum CAMajorMinorShape {	/// The upper tetrachord of the scale - scale shape
 			Natural,
 			Harmonic,
 			Melodic
 		};
 		
-		enum CAModusType {	/// Modus type
+		enum CAModus {	/// Modus type
 			Ionian,
 			Dorian,
 			Phrygian,
@@ -58,7 +59,7 @@ class CAKeySignature : public CAMusElement {
 		 * @param type Key signature type. See CAKeySignature::CAKeySignatureType.
 		 * @param accs Number of accidentals for an ordinary diatonic key signature. 0 - C-Major, -1 - F-Major, +7 - Cis-Major
 		 */
-		CAKeySignature(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender, CAStaff *staff, int timeStart);
+		CAKeySignature(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender, CAStaff *staff, int timeStart);
 		CAKeySignature *clone();
 		
 		/**
@@ -69,21 +70,23 @@ class CAKeySignature : public CAMusElement {
 		 * @param pitch The pitch of the key signature. eg. E for E-Major
 		 * @param gender Gender of the key signature.
 		 */
+		/** OBSOLETE */
 		CAKeySignature(QString pitch, QString gender, CAStaff *staff, int timeStart);
 		
 		~CAKeySignature();
 		
 		CAKeySignatureType keySignatureType() { return _keySignatureType; }
-		void setKeySignatureType(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender);	/// TODO: Diatonic currently only
+		void setKeySignatureType(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender);	/// TODO: Non major-minor types
 		
 		/****************************
 		 * Diatonic keys properties *
 		 ****************************/
-		CADiatonicGenderType diatonicGender() { return _diatonicGender; }
-		CADiatonicShapeType diatonicShape() { return _diatonicShape; }
-		CAModusType modus() { return _modus; }		
-		void setDiatonicShape(CADiatonicShapeType shape) { _diatonicShape = shape; }
-		void setModus(CAModusType modus) { _modus = modus; }
+		CAMajorMinorGender majorMinorGender() { return _majorMinorGender; }
+		CAMajorMinorShape majorMinorShape() { return _majorMinorShape; }
+		CAModus modus() { return _modus; }
+		void setMajorMinorGender(CAMajorMinorGender gender) { _majorMinorGender = gender; }
+		void setMajorMinorShape(CAMajorMinorShape shape) { _majorMinorShape = shape; }
+		void setModus(CAModus modus) { _modus = modus; }
 		
 		/**
 		 * Return the key signature pitch.
@@ -92,6 +95,7 @@ class CAKeySignature : public CAMusElement {
 		 * 
 		 * @return Key signature's scale start pitch.
 		 */
+		/** OBSOLETE */
 		const QString pitchML();
 		
 		/**
@@ -99,7 +103,8 @@ class CAKeySignature : public CAMusElement {
 		 * 
 		 * @return "major" or "minor" if the scale gender is major or minor.
 		 */
-		const QString diatonicGenderML();
+		/** OBSOLETE */
+		const QString majorMinorGenderML();
 		
 		/**
 		 * Count all the accidentals and return their sum.
@@ -125,14 +130,22 @@ class CAKeySignature : public CAMusElement {
 		signed char *accidentals() { return _accidentals; }
 		
 		int compare(CAMusElement* elt);
+		
+		static const QString keySignatureTypeToString(CAKeySignatureType);
+		static CAKeySignatureType keySignatureTypeFromString(const QString);
+		static const QString majorMinorGenderToString(CAMajorMinorGender);
+		static CAMajorMinorGender majorMinorGenderFromString(const QString);
+		static const QString modusToString(CAModus);
+		static CAModus modusFromString(const QString);
+		/// TODO: MajorMinorShapeTo/FromString
 
 	private:
 		CAKeySignatureType _keySignatureType;
-		CAModusType _modus;
-		CADiatonicGenderType _diatonicGender;
-		CADiatonicShapeType _diatonicShape;
+		CAModus _modus;
+		CAMajorMinorGender _majorMinorGender;
+		CAMajorMinorShape _majorMinorShape;
 		
-		signed char _accidentals[7];	///index numbers: [0..6] - C, D, E, F ... B with values: 0 - none, -1 - flat, +1 - sharp
+		signed char _accidentals[7];	/// Index numbers: [0..6] - C, D, E, F ... B with values: 0 - none, -1 - flat, +1 - sharp
 };
 
 #endif /*KEYSIGNATURE_H_*/

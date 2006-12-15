@@ -44,23 +44,19 @@ CATimeSignature *CATimeSignature::clone() {
 	return new CATimeSignature(_beats, _beat, (CAStaff*)_context, _timeStart, _timeSignatureType);
 }
 
+/** OBSOLETE */
 const QString CATimeSignature::timeSignatureTypeML() {
 	switch (_timeSignatureType) {
 		case Classical:
 			return QString("classical");
-			break;
 		case Number:
 			return QString("number");
-			break;
 		case Mensural:
 			return QString("mensural");
-			break;
 		case Neomensural:
 			return QString("neomensural");
-			break;
 		case Baroque:
 			return QString("baroque");
-			break;		
 	}
 }
 
@@ -74,4 +70,30 @@ int CATimeSignature::compare(CAMusElement *elt) {
 	if (_beats!=((CATimeSignature*)elt)->beats()) diffs++;
 	
 	return diffs;
+}
+
+const QString CATimeSignature::timeSignatureTypeToString(CATimeSignatureType type) {
+	switch (type) {
+		case Classical:
+			return "classical";
+		case Number:
+			return "number";
+		case Mensural:
+			return "mensural";
+		case Neomensural:
+			return "neomensural";
+		case Baroque:
+			return "baroque";
+		default:
+			return "";
+	}
+}
+
+CATimeSignature::CATimeSignatureType CATimeSignature::timeSignatureTypeFromString(const QString type) {
+	if (type=="classical") return Classical; else
+	if (type=="number") return Number; else
+	if (type=="mensural") return Mensural; else
+	if (type=="neomensural") return Neomensural; else
+	if (type=="baroque") return Baroque;
+	else return Classical;
 }

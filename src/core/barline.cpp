@@ -31,3 +31,25 @@ int CABarline::compare(CAMusElement *elt) {
 	
 	return diffs;
 }
+
+const QString CABarline::barlineTypeToString(CABarlineType type) {
+	switch (type) {
+		case Single: return "single";
+		case Double: return "double";
+		case End: return "end";
+		case RepeatOpen: return "repeat-open";
+		case RepeatClose: return "repeat-close";
+		case Dotted: return "dotted";
+		default: return "";
+	}
+}
+
+CABarline::CABarlineType CABarline::barlineTypeFromString(const QString type) {
+	if (type=="single") return Single; else
+	if (type=="double") return Double; else
+	if (type=="end") return End; else
+	if (type=="repeat-open") return RepeatOpen; else
+	if (type=="repeat-close") return RepeatClose; else
+	if (type=="dotted") return Dotted;
+	else return Single;	
+}

@@ -9,17 +9,18 @@
 #include "core/keysignature.h"
 #include "core/staff.h"
 
-CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender, CAStaff *staff, int timeStart)
+CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender, CAStaff *staff, int timeStart)
  : CAMusElement(staff, timeStart) {
  	_musElementType = CAMusElement::KeySignature;
  	
  	setKeySignatureType(type, accs, gender);
 }
 
+/** OBSOLETE */
 CAKeySignature::CAKeySignature(QString sPitch, QString sGender, CAStaff *staff, int timeStart)
  : CAMusElement(staff, timeStart) {
  	_musElementType = CAMusElement::KeySignature;
-	CADiatonicGenderType gender;
+	CAMajorMinorGender gender;
 	if (sGender.toUpper()=="MAJOR")
 		gender = Major;
 	else if (sGender.toUpper()=="MINOR")
@@ -47,14 +48,14 @@ CAKeySignature::CAKeySignature(QString sPitch, QString sGender, CAStaff *staff, 
 		sPitch.chop(2);	// shorten the end of the pitch for 2 chars
 	}
 	
-	setKeySignatureType(Diatonic, accs, gender);
+	setKeySignatureType(MajorMinor, accs, gender);
 }
 
-void CAKeySignature::setKeySignatureType(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender) {
+void CAKeySignature::setKeySignatureType(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender) {
  	_keySignatureType = type;
  	
- 	if (type == Diatonic) {
-		_diatonicGender = gender;
+ 	if (type == MajorMinor) {
+		_majorMinorGender = gender;
 		
 		for (int i=0; i<7; i++)	// clean up the _accidentals array
 			_accidentals[i] = 0;
@@ -79,7 +80,7 @@ CAKeySignature::~CAKeySignature() {
 }
 
 CAKeySignature* CAKeySignature::clone() {
-	return new CAKeySignature(_keySignatureType, numberOfAccidentals(), _diatonicGender, (CAStaff*)_context, _timeStart);
+	return new CAKeySignature(_keySignatureType, numberOfAccidentals(), _majorMinorGender, (CAStaff*)_context, _timeStart);
 }
 
 signed char CAKeySignature::numberOfAccidentals() {
@@ -104,7 +105,7 @@ const QString CAKeySignature::pitchML() {
 		idx = (idx+3)%7;
 	}
 	
-	if (_diatonicGender == Minor) {
+	if (_majorMinorGender == Minor) {
 		idx = (idx+5)%7;
 		ret = ('a' + idx);
 		if (accs>2)
@@ -126,14 +127,10 @@ const QString CAKeySignature::pitchML() {
 	return ret;
 }
 
-const QString CAKeySignature::diatonicGenderML() {
-	switch (_diatonicGender) {
-		case Major:
-			return QString("major");
-			break;
-		case Minor:
-			return QString("minor");
-			break;
+const QString CAKeySignature::majorMinorGenderML() {
+	switch (_majorMinorGender) {
+		case Major: return QString("major");
+		case Minor: return QString("minor");
 	}
 	
 	return QString();
@@ -146,9 +143,75 @@ int CAKeySignature::compare(CAMusElement *elt) {
 	int diffs=0;
 	if (_keySignatureType!=((CAKeySignature*)elt)->keySignatureType()) diffs++;
 	else {
-		if (_diatonicGender!=((CAKeySignature*)elt)->diatonicGender()) diffs++;
+		if (_majorMinorGender!=((CAKeySignature*)elt)->majorMinorGender()) diffs++;
 		if (numberOfAccidentals()!=((CAKeySignature*)elt)->numberOfAccidentals()) diffs++;
 	}
 	
 	return diffs;
+}
+
+const QString CAKeySignature::keySignatureTypeToString(CAKeySignatureType type) {
+	switch (type) {
+		case MajorMinor: return "major-minor";
+		case Modus: return "modus";
+		case Custom: return "custom";
+		default: return "";
+	} 
+}
+
+CAKeySignature::CAKeySignatureType CAKeySignature::keySignatureTypeFromString(const QString type) {
+	if (type=="major-minor") {
+		return MajorMinor;
+	} else
+	if (type=="modus") {
+		return Modus;
+	} else
+	if (type=="custom") {
+		return Custom;
+	} else
+		return Custom;
+}
+
+const QString CAKeySignature::majorMinorGenderToString(CAMajorMinorGender gender) {
+	switch (gender) {
+		case Major: return "major";
+		case Minor: return "minor";
+		default: return "";
+	}
+}
+
+CAKeySignature::CAMajorMinorGender CAKeySignature::majorMinorGenderFromString(const QString gender) {
+	if (gender=="major") return Major; else
+	if (gender=="minor") return Minor;
+	else return Major;
+}
+
+const QString CAKeySignature::modusToString(CAModus modus) {
+	switch (modus) {
+		case Ionian: return "ionian";
+		case Dorian: return "dorian";
+		case Phrygian: return "phrygian";
+		case Lydian: return "lydian";
+		case Mixolydian: return "mixolydian";
+		case Aeolian: return "aeolian";
+		case Locrian: return "locrian";
+		case Hypodorian: return "hypodorian";
+		case Hypolydian: return "hypolydian";
+		case Hypophrygian: return "hypophrygian";
+		default: return "";
+	}
+}
+
+CAKeySignature::CAModus CAKeySignature::modusFromString(const QString modus) {
+	if (modus=="ionian") return Ionian; else
+	if (modus=="dorian") return Dorian; else
+	if (modus=="phrygian") return Phrygian; else
+	if (modus=="lydian") return Lydian; else
+	if (modus=="mixolydian") return Mixolydian; else
+	if (modus=="aeolian") return Aeolian; else
+	if (modus=="locrian") return Locrian;
+	if (modus=="hypodorian") return Hypodorian; else
+	if (modus=="hypolydian") return Hypolydian; else
+	if (modus=="hypophrygian") return Hypophrygian;
+	else return Ionian;
 }
