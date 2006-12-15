@@ -172,7 +172,7 @@ void CACanorusML::writeVoice(QDomElement& dVoice, CAVoice* voice) {
 			case CAMusElement::Barline: {
 				CABarline *barline = (CABarline*)curElt;
 				QDomElement dBarline = dDoc.createElement("barline"); dVoice.appendChild(dBarline);
-				dBarline.setAttribute("barlineType", CABarline::barlineTypeToString(barline->barlineType()));
+				dBarline.setAttribute("barline-type", CABarline::barlineTypeToString(barline->barlineType()));
 				dBarline.setAttribute("time-start", barline->timeStart());
 				break;
 			}
