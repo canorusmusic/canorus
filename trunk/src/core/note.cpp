@@ -181,3 +181,34 @@ int CANote::compare(CAMusElement *elt) {
 	
 	return diffs;
 }
+
+const QString CANote::stemDirectionToString(CANote::CAStemDirection dir) {
+	switch (dir) {
+		case CANote::StemUp:
+			return "stem-up";
+		case CANote::StemDown:
+			return "stem-down";
+		case CANote::StemNeutral:
+			return "stem-neutral";
+		case CANote::StemPrefered:
+			return "stem-prefered";
+		default:
+			return "";
+	}
+}
+
+CANote::CAStemDirection CANote::stemDirectionFromString(const QString dir) {
+	if (dir=="stem-up") {
+		return CANote::StemUp;
+	} else
+	if (dir=="stem-down") {
+		return CANote::StemDown;
+	} else
+	if (dir=="stem-neutral") {
+		return CANote::StemNeutral;
+	} else
+	if (dir=="stem-prefered") {
+		return CANote::StemPrefered;
+	} else
+		return CANote::StemPrefered;
+}

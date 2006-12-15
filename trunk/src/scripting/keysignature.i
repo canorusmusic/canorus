@@ -17,22 +17,23 @@
 class CAKeySignature : public CAMusElement {
 	public:
 		enum CAKeySignatureType {
-			Diatonic,	//marks the 7-level Major/Minor or modus scale
+			MajorMinor,	// Marks the 7-level Major/Minor
+			Modus,
 			Custom
 		};
 		
-		enum CADiatonicGenderType {	///the lower tetrachord of the scale - scale gender
+		enum CAMajorMinorGender {	/// The lower tetrachord of the scale - scale gender
 			Major,
 			Minor
 		};
 		
-		enum CADiatonicShapeType {	///the upper tetrachord of the scale - scale shape
+		enum CAMajorMinorShape {	/// The upper tetrachord of the scale - scale shape
 			Natural,
 			Harmonic,
 			Melodic
 		};
 		
-		enum CAModusType {	///modus type
+		enum CAModus {	/// Modus type
 			Ionian,
 			Dorian,
 			Phrygian,
@@ -53,7 +54,8 @@ class CAKeySignature : public CAMusElement {
 		 * @param type Key signature type. See CAKeySignature::CAKeySignatureType.
 		 * @param accs Number of accidentals for an ordinary diatonic key signature. 0 - C-Major, -1 - F-Major, +7 - Cis-Major
 		 */
-		CAKeySignature(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender, CAStaff *staff, int timeStart);
+		CAKeySignature(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender, CAStaff *staff, int timeStart);
+		CAKeySignature *clone();
 		
 		/**
 		 * This is an overloaded member function provided for convenience.
@@ -64,19 +66,21 @@ class CAKeySignature : public CAMusElement {
 		 * @param gender Gender of the key signature.
 		 */
 		CAKeySignature(QString pitch, QString gender, CAStaff *staff, int timeStart);
-		CAKeySignature *clone();
 		
 		~CAKeySignature();
 		
-		CAKeySignatureType keySignatureType();
-		void setKeySignatureType(CAKeySignatureType type, signed char accs, CADiatonicGenderType gender);	/// TODO: Diatonic currently only
+		CAKeySignatureType keySignatureType() { return _keySignatureType; }
+		void setKeySignatureType(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender);	/// TODO: Non major-minor types
 		
-		CADiatonicGenderType diatonicGender();
-		CADiatonicShapeType diatonicShape();
-		CAModusType modus();
-		
-		void setDiatonicShape(CADiatonicShapeType shape);
-		void setModus(CAModusType modus);
+		/****************************
+		 * Diatonic keys properties *
+		 ****************************/
+		CAMajorMinorGender majorMinorGender() { return _majorMinorGender; }
+		CAMajorMinorShape majorMinorShape() { return _majorMinorShape; }
+		CAModus modus() { return _modus; }
+		void setMajorMinorGender(CAMajorMinorGender gender) { _majorMinorGender = gender; }				
+		void setMajorMinorShape(CAMajorMinorShape shape) { _majorMinorShape = shape; }
+		void setModus(CAModus modus) { _modus = modus; }
 		
 		/**
 		 * Return the key signature pitch.
@@ -92,7 +96,7 @@ class CAKeySignature : public CAMusElement {
 		 * 
 		 * @return "major" or "minor" if the scale gender is major or minor.
 		 */
-		const QString diatonicGenderML();
+		const QString majorMinorGenderML();
 		
 		/**
 		 * Count all the accidentals and return their sum.
@@ -115,7 +119,14 @@ class CAKeySignature : public CAMusElement {
 		 * 
 		 * @return Pointer to the array of levels in the scale.
 		 */ 
-		signed char *accidentals();
-
-		int compare(CAMusElement *elt);
+		signed char *accidentals() { return _accidentals; }
+		
+		int compare(CAMusElement* elt);
+		
+		static const QString keySignatureTypeToString(CAKeySignatureType);
+		static CAKeySignatureType keySignatureTypeFromString(const QString);
+		static const QString majorMinorGenderToString(CAMajorMinorGender);
+		static CAMajorMinorGender majorMinorGenderFromString(const QString);
+		static const QString modusToString(CAModus);
+		static CAModus modusFromString(const QString);
 };

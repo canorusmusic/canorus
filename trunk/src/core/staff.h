@@ -24,7 +24,7 @@ class CANote;
 
 class CAStaff : public CAContext {
 	public:
-		CAStaff(CASheet *s, const QString name);
+		CAStaff(CASheet *s, const QString name, int numberOfLines=5);
 		
 		inline int numberOfLines() { return _numberOfLines; }
 		inline void setNumberOfLines(int val) { _numberOfLines = val; }

@@ -576,7 +576,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
 				return;
 			
 			staff = (CAStaff*)context->context();
-			newElt = new CAKeySignature(CAKeySignature::Diatonic, 
+			newElt = new CAKeySignature(CAKeySignature::MajorMinor, 
 			                                            mpoKeySigPSP->getKeySignature()-7,
 			                                            CAKeySignature::Major, staff,
 			                                            (left?left->musElement()->timeEnd():0));
@@ -1022,7 +1022,10 @@ void CAMainWin::on_actionOpen_activated() {
 		clearUI();
 		
 		QXmlInputSource input(&file);
-		CACanorusML::openDocument(&input, &_document, this);
+		CADocument *openedDoc = CACanorusML::openDocument(&input, this);
+		if (openedDoc)
+			_document = *openedDoc;
+		
 		file.close();
 		rebuildUI();
 		moMainWin.tabWidget->setCurrentIndex(0);
@@ -1183,7 +1186,7 @@ void CAMainWin::sourceViewPortCommit(QString docString) {
 	
 	QXmlInputSource input;
 	input.setData(docString);
-	CACanorusML::openDocument(&input, &_document, this);
+	_document = *CACanorusML::openDocument(&input, this);
 	
 	on_actionSource_view_perspective_activated();
 	rebuildUI();

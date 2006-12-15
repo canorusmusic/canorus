@@ -16,7 +16,7 @@
 %rename(Staff) CAStaff;
 class CAStaff : public CAContext {
 	public:
-		CAStaff(CASheet *s, const QString name);
+		CAStaff(CASheet *s, const QString name, int numberOfLines);
 		
 		inline int numberOfLines();
 		inline void setNumberOfLines(int val);

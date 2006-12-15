@@ -78,3 +78,18 @@ int CARest::compare(CAMusElement *elt) {
 	
 	return diffs;
 }
+
+const QString CARest::restTypeToString(CARestType type) {
+	switch (type) {
+		case Normal: return "normal";
+		case Hidden: return "hidden";
+		default: return "";
+	}
+}
+
+CARest::CARestType CARest::restTypeFromString(const QString type) {
+	if (type=="hidden") {
+		return Hidden;
+	} else
+		return Normal;
+}

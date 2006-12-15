@@ -31,6 +31,9 @@ class CABarline : public CAMusElement{
 		CABarlineType barlineType() { return _barlineType; }
 		CABarline *clone();
 		int compare(CAMusElement* elt);
+		
+		static const QString barlineTypeToString(CABarlineType);
+		static CABarlineType barlineTypeFromString(const QString);
 	
 	private:
 		CABarlineType _barlineType;

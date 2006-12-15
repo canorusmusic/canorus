@@ -54,6 +54,8 @@ class CAPlayable : public CAMusElement {
 
 		static int pitchToMidiPitch(int pitch, int acc);
 		static int midiPitchToPitch(int midiPitch);
+		static const QString playableLengthToString(CAPlayableLength length);
+		static CAPlayableLength playableLengthFromString(const QString length);
 	
 	protected:
 		int _midiLength;

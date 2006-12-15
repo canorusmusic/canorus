@@ -25,12 +25,17 @@ class CARest : public CAPlayable {
 		
 		~CARest();
 
+		/** OBSOLETE */
 		const QString lengthML();
+		/** OBSOLETE */
 		const QString restTypeML();
 		
 		CARestType restType() { return _restType; }
 		
 		int compare(CAMusElement *elt);
+		
+		static const QString restTypeToString(CARestType);
+		static CARestType restTypeFromString(const QString);
 	
 	private:
 		CARestType _restType;
