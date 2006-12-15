@@ -369,7 +369,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 			if (voiceName.isEmpty())
 				voiceName = QString("Voice") + " " + QString::number(((CAStaff*)_curContext)->voiceCount()+1);
 			_curVoice = new CAVoice((CAStaff*)_curContext, voiceName);
-			if (!attributes.value("stemDirection").isEmpty())
+			if (!attributes.value("stem-direction").isEmpty())
 				_curVoice->setStemDirection(CANote::stemDirectionFromString(attributes.value("stem-direction")));
 			((CAStaff*)_curContext)->addVoice(_curVoice);
 		}
