@@ -158,10 +158,12 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z));
 				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z),QString(0xE18A));
+				s.x+=(int)(6*s.z+0.5);	// additional X-offset for dots
 			} else {
 				s.x+=(int)(0.6*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z));
 				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (HUNDREDTWENTYEIGHTH_STEM_LENGTH+5)*s.z),QString(0xE190));
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			}
 			
 			break;
@@ -170,7 +172,6 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2 + 0.5);
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
-			s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			
 			//draw stem and flag
 			pen.setWidth((int)(1.2*s.z));
@@ -181,10 +182,12 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z));
 				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z),QString(0xE18A));
+				s.x+=(int)(6*s.z+0.5);	// additional X-offset for dots
 			} else {
 				s.x+=(int)(0.6*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(HUNDREDTWENTYEIGHTH_STEM_LENGTH*s.z));
 				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (HUNDREDTWENTYEIGHTH_STEM_LENGTH+5)*s.z),QString(0xE190));
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			}
 			
 			break;
@@ -195,7 +198,6 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
 			
 			//draw stem and flag
-			//TODO: Emmentaler font doesn't have 128th, 64th flag is drawn instead! Need to somehow compose the 128th flag? -Matevz
 			pen.setWidth((int)(1.2*s.z));
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setColor(s.color);
@@ -204,10 +206,12 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(THIRTYSECOND_STEM_LENGTH*s.z));
 				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - THIRTYSECOND_STEM_LENGTH*s.z),QString(0xE189));
+				s.x+=(int)(6*s.z+0.5);	// additional X-offset for dots
 			} else {
 				s.x+=(int)(0.6*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(THIRTYSECOND_STEM_LENGTH*s.z));
 				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (THIRTYSECOND_STEM_LENGTH+5)*s.z),QString(0xE18F));
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			}
 			
 			break;
@@ -226,10 +230,12 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(SIXTEENTH_STEM_LENGTH*s.z));
 				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - SIXTEENTH_STEM_LENGTH*s.z),QString(0xE188));
+				s.x+=(int)(6*s.z+0.5);	// additional X-offset for dots
 			} else {
 				s.x+=(int)(0.6*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(SIXTEENTH_STEM_LENGTH*s.z));
 				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (SIXTEENTH_STEM_LENGTH+5)*s.z),QString(0xE18E));
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			}
 			
 			break;
@@ -248,10 +254,12 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(EIGHTH_STEM_LENGTH*s.z));
 				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - EIGHTH_STEM_LENGTH*s.z),QString(0xE187));
+				s.x+=(int)(6*s.z+0.5);	// additional X-offset for dots
 			} else {
 				s.x+=(int)(0.6*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(EIGHTH_STEM_LENGTH*s.z));
 				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (EIGHTH_STEM_LENGTH+5)*s.z),QString(0xE18B));
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			}
 			
 			break;
@@ -272,6 +280,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			} else {
 				s.x+=(int)(0.6*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(QUARTER_STEM_LENGTH*s.z));
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			}
 			
 			break;
@@ -292,6 +301,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			} else {
 				s.x+=(int)(0.6*s.z+0.5);
 				p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(HALF_STEM_LENGTH*s.z));
+				s.x+=(int)(_noteHeadWidth*s.z+0.5);
 			}
 
 			break;
