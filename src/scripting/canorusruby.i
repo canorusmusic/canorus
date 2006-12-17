@@ -69,15 +69,6 @@
 %{	//toRubyObject() function
 #include "scripting/swigruby.h"	//needed for CAClassType
 
-#ifdef __cplusplus
-extern "C"
-#endif
-#ifdef Q_WS_MAC
-SWIGEXPORT(void) Init_CanorusRuby(void);
-#else
-SWIGEXPORT void Init_CanorusRuby(void);
-#endif
-
 class QString;
 
 VALUE CASwigRuby::toRubyObject(void *object, CASwigRuby::CAClassType type) {

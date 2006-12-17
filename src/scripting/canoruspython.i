@@ -64,12 +64,6 @@
 extern "C"
 #endif
 
-#ifdef Q_WS_MAC
-SWIGEXPORT(void) Init_CanorusPython(void);
-#else
-SWIGEXPORT void Init_CanorusPython(void);
-#endif
-
 class QString;
 
 PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType type) {
