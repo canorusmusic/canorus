@@ -29,7 +29,7 @@ bool CARtMidiDevice::openOutputPort(int port) {
 	if (port==-1)
 		return false;
 	
-	if (_out->getPortCount() > port) {	// check outputs
+	if (_out && _out->getPortCount() > port) {	// check outputs
 		try {
 			_out->openPort(port);
 		} catch (RtError &error) {
@@ -48,7 +48,7 @@ bool CARtMidiDevice::openInputPort(int port) {
 	if (port==-1)
 		return false;
 	
-	if (_in->getPortCount() > port) {	// check outputs
+	if (_in && _in->getPortCount() > port) {	// check outputs
 		try {
 			_in->openPort(port);
 		} catch (RtError &error) {
@@ -66,7 +66,8 @@ bool CARtMidiDevice::openInputPort(int port) {
 
 void CARtMidiDevice::closeOutputPort() {
 	try {
-		_out->closePort();
+		if (_outOpen)
+			_out->closePort();
 	} catch (RtError &error) {
 		error.printMessage();
 	}
@@ -75,7 +76,8 @@ void CARtMidiDevice::closeOutputPort() {
 
 void CARtMidiDevice::closeInputPort() {
 	try {
-		_in->closePort();
+		if (_inOpen)
+			_in->closePort();
 	} catch (RtError &error) {
 		error.printMessage();
 	}
@@ -109,8 +111,10 @@ QMap<int, QString> CARtMidiDevice::getInputPorts() {
 CARtMidiDevice::~CARtMidiDevice() {
 	closeOutputPort();
 	closeInputPort();
-	if (_out) delete _out;
-	if (_in) delete _in;
+	if (_out)
+		delete _out;
+	if (_in)
+		delete _in;
 }
 
 void CARtMidiDevice::send(QVector<unsigned char> message) {
