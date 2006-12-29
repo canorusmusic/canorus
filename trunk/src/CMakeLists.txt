@@ -44,12 +44,14 @@ ENDIF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compiled
 	ui/mainwin.ui
 	ui/keysig.ui
+	ui/timesig.ui
 	ui/midisetupdialog.ui
 )
 
 # Define the MOC source files used by Canorus
 SET(Canorus_MOCs ui/mainwin.h	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	ui/keysigpsp.h
+	ui/timesigpsp.h
 	ui/midisetupdialog.h
 	widgets/keyoffs.h
 	widgets/lcdnumber.h
@@ -71,6 +73,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/functionmarkingcontext.cpp
 
 	core/muselement.cpp
+	core/muselementfactory.cpp
 	core/voice.cpp
 	core/barline.cpp
 	core/clef.cpp
@@ -103,6 +106,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all the widgets present in Canorus
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
 	ui/mainwin.cpp
 	ui/keysigpsp.cpp
+	ui/timesigpsp.cpp
 	ui/midisetupdialog.cpp
 )
 
@@ -152,6 +156,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Ruby module.
 	core/document.cpp
 	core/sheet.cpp
 	core/muselement.cpp
+	core/muselementfactory.cpp
 	core/staff.cpp
 	core/playable.cpp
 	core/note.cpp
