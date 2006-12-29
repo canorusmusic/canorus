@@ -142,8 +142,8 @@ signals:
 	 * 
 	 */
 	void menuElemSelected( bool bChecked );
-    
-protected slots:
+
+public slots:
 	/**
 	 * Change the icon of a button menu
 	 * 
@@ -151,6 +151,8 @@ protected slots:
 	 *
 	 */
 	void changeMenuIcon( QAbstractButton *poButton );
+    
+protected slots:
 	void menuEntryChanged( QAction *poAction );
 	
 private:
@@ -203,6 +205,15 @@ public:
 	 */
 	int  getButtonID( QAbstractButton *poButton )
 	{ return mpoBGroup->id( poButton ); }
+	/**
+	 * Return the button corresponding to a button ID
+	 * 
+	 * @param iButtonID  ID whose button should be returned
+	 * @return           button
+	 *
+	 */
+	QAbstractButton *getButton( int iButtonID )
+	{ return mpoBGroup->button( iButtonID ); }
 	/**
 	 * Set the number of icons per row
 	 * 
