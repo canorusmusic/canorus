@@ -465,6 +465,8 @@ void CAMainWin::setMode(CAMode mode) {
 void CAMainWin::on_action_Clef_activated() {
 	setMode(InsertMode);
 	mpoMEFactory->setMusElementType( CAMusElement::Clef );
+	actionNoteSelect->setChecked( false );
+	actionTimeSigSelect->setChecked( false );
 }
 
 void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
@@ -883,6 +885,26 @@ void CAMainWin::initMidi() {
 	}
 }
 
+void CAMainWin::setKeySigPSPVisible( bool bVisible )
+{
+	if (!mpoKeySigPSP) {
+		mpoKeySigPSP = new CAKeySigPSP(tr("Edit key signature"), this);
+		addDockWidget( Qt::LeftDockWidgetArea, mpoKeySigPSP );
+	}
+	mpoKeySigPSP->setVisible( bVisible );
+}	
+
+void CAMainWin::setTimeSigPSPVisible( bool bVisible )
+{
+	if (!mpoTimeSigPSP) {
+		mpoTimeSigPSP = new CATimeSigPSP("Edit time signature", this);
+		addDockWidget( Qt::LeftDockWidgetArea, mpoTimeSigPSP );
+		connect( mpoTimeSigPSP, SIGNAL( timeSigChanged( int, int ) ),
+                         this, SLOT( sl_mpoTimeSig_valChanged( int, int ) ) );
+	}
+	mpoTimeSigPSP->setVisible( bVisible );
+}	
+
 void CAMainWin::playbackFinished() {
 	_playback->disconnect();
 	//delete _playback;	//TODO: crashes on application close, if deleted! Is this ok? -Matevz
@@ -1038,6 +1060,12 @@ void CAMainWin::sl_mpoVoiceNum_valChanged(int iVoice)
 
 void CAMainWin::sl_mpoTimeSig_valChanged(int iBeats, int iBeat)
 {
+	mpoMEFactory->setMusElementType( CAMusElement::TimeSignature );
+	mpoMEFactory->setTimeSigBeats( iBeats );
+	mpoMEFactory->setTimeSigBeat( iBeat );
+	CAFixedTimeSig eElem = mpoTimeSigPSP->getTimeSignatureFixed();
+	if( eElem != TS_UNKNOWN )
+		mpoMEToolBar->changeMenuIcon( mpoTimeSigMenu->getButton( (int)eElem ) );
 	printf("Time signature new values: %d, %d\n",iBeats, iBeat);
 	fflush( stdout );
 }
@@ -1053,7 +1081,11 @@ void CAMainWin::on_actionNoteSelect_toggled(bool bOn)
 	printf("Note Input switched: On %d Note %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )
+	{
 		setMode(InsertMode);
+		actionClefSelect->setChecked( false );
+		actionTimeSigSelect->setChecked( false );	
+	}
 }
 
 void CAMainWin::on_actionClefSelect_toggled(bool bOn)
@@ -1067,21 +1099,25 @@ void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 	printf("Note Clef switched: On %d Clef %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )
+	{
 		on_action_Clef_activated();
+		actionNoteSelect->setChecked( false );
+		actionTimeSigSelect->setChecked( false );	
+	}
 }
 
 void CAMainWin::on_actionTimeSigSelect_toggled(bool bOn)
 {
 	int iTimeSigBeats = 4;
 	int iTimeSigBeat  = 4;
-	// Make sure perspective is active
-	on_action_Time_signature_activated();
 	// Read currently selected entry from tool button menu
         enum CATimeSignature::CATimeSignatureType eBaseElem = CATimeSignature::Classical;
         enum CAFixedTimeSig eElem = (CAFixedTimeSig)
 	  mpoMEToolBar->toolElemValue( mpoTimeSigMenu->objectName() ).toInt();
 
 	mpoMEFactory->setMusElementType( CAMusElement::TimeSignature );
+	// Make sure perspective is active
+	setTimeSigPSPVisible( true );
 	// New (fixed) time signature
 	switch( eElem )
 	{
@@ -1120,19 +1156,18 @@ void CAMainWin::on_actionTimeSigSelect_toggled(bool bOn)
 	printf("Note TimeSig switched: On %d TimeSig %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )
+	{
+		actionNoteSelect->setChecked( false );
+		actionClefSelect->setChecked( false );
 		setMode(InsertMode);
+	}
 }
 	
 void CAMainWin::on_action_Key_signature_activated() {
-	if (!mpoKeySigPSP) {
-		mpoKeySigPSP = new CAKeySigPSP(tr("Edit key signature"), this);
-		addDockWidget( Qt::LeftDockWidgetArea, mpoKeySigPSP );
-	}
-	
+	setKeySigPSPVisible( true );
 	mpoKeySigPSP->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	mpoKeySigPSP->setFocusPolicy(Qt::ClickFocus);
 	mpoKeySigPSP->setFocus();
-	mpoKeySigPSP->show();
 	
 	moMainWin.actionSplit_horizontally->setEnabled(false);
 	moMainWin.actionSplit_vertically->setEnabled(false);
@@ -1140,21 +1175,16 @@ void CAMainWin::on_action_Key_signature_activated() {
 	
 	setMode(InsertMode);
 	mpoMEFactory->setMusElementType( CAMusElement::KeySignature );
-	
+	actionNoteSelect->setChecked( false );
+	actionTimeSigSelect->setChecked( false );	
 }
 
 void CAMainWin::on_action_Time_signature_activated() {
-	if (!mpoTimeSigPSP) {
-		mpoTimeSigPSP = new CATimeSigPSP("Edit time signature", this);
-		addDockWidget( Qt::LeftDockWidgetArea, mpoTimeSigPSP );
-		connect( mpoTimeSigPSP, SIGNAL( timeSigChanged( int, int ) ),
-                         this, SLOT( sl_mpoTimeSig_valChanged( int, int ) ) );
-	}
+	setTimeSigPSPVisible( true );
 	
 	mpoTimeSigPSP->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	mpoTimeSigPSP->setFocusPolicy(Qt::ClickFocus);
 	mpoTimeSigPSP->setFocus();
-	mpoTimeSigPSP->show();
 	
 	moMainWin.actionSplit_horizontally->setEnabled(false);
 	moMainWin.actionSplit_vertically->setEnabled(false);
@@ -1166,7 +1196,8 @@ void CAMainWin::on_action_Time_signature_activated() {
 	CAFixedTimeSig eElem = mpoTimeSigPSP->getTimeSignatureFixed();
 	if( eElem != TS_UNKNOWN )
 		mpoMEToolBar->changeMenuIcon( mpoTimeSigMenu->getButton( (int)eElem ) );
-
+	actionNoteSelect->setChecked( false );
+	actionClefSelect->setChecked( false );
 }
 
 void CAMainWin::sourceViewPortCommit(QString docString) {

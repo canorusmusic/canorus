@@ -117,6 +117,20 @@ public:
 
 	void initMidi();
 
+	/**
+	 * Activate the key signature perspective and show/hide it.
+	 * 
+	 * @param bVisible 'true': Show key signature perspective
+	 */
+	void setKeySigPSPVisible( bool bVisible );
+
+	/**
+	 * Activate the time signature perspective and show/hide it.
+	 * 
+	 * @param bVisible 'true': Show time signature perspective
+	 */
+	void setTimeSigPSPVisible( bool bVisible );
+	
 private slots:
 	////////////////////////////////////////////////////
 	//Menu bar actions
