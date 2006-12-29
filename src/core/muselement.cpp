@@ -15,8 +15,11 @@ CAMusElement::CAMusElement(CAContext *context, int time, int length) {
 	_timeStart = time;
 	_timeLength = length;
 	_playable = false;
+	_musElementType = CAMusElement::Undefined;
 }
 
 CAMusElement::~CAMusElement() {
-	_context->removeMusElement(this, false);	//needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
+	//needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
+	if( _context )
+		_context->removeMusElement(this, false);
 }
