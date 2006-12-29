@@ -100,6 +100,8 @@ void CAKeySigPSP::newKSSliderPos( int iNewPos )
 	// Select corresponding list item
 	moKeySigWidget.mpoKeySigListWidget->setCurrentItem(
 	moKeySigWidget.mpoKeySigListWidget->topLevelItem( moListSliderMap[iNewPos] ) );
+	// Key signature was changed -> allow to update score view
+	emit keySigChanged( moKeySigWidget.mpoKeySigSlider->value() );
 }
 
 void CAKeySigPSP::newKSListViewItem( QTreeWidgetItem *iNewItem, int)
@@ -108,4 +110,7 @@ void CAKeySigPSP::newKSListViewItem( QTreeWidgetItem *iNewItem, int)
 	moKeySigWidget.mpoKeySigSlider->setValue( moListSliderMap.find( 
           moKeySigWidget.mpoKeySigListWidget->indexOfTopLevelItem( 
             iNewItem ) ).value() );
+
+	// Key signature was changed -> allow to update score view
+	emit keySigChanged( moKeySigWidget.mpoKeySigSlider->value() );
 }
