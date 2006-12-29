@@ -44,7 +44,12 @@ class CAButtonMenu;
 class CALCDNumber;
 class CASheet;
 class CAKeySigPSP;
+class CATimeSigPSP;
 class CAPluginManager;
+class CAScrollWidget;
+class CAViewPort;
+class CAScoreViewPort;
+class CAMusElementFactory;
 
 enum CAMode {
 	InsertMode,
@@ -52,19 +57,6 @@ enum CAMode {
 	EditMode,
 	ReadOnlyMode
 };
-
-enum CAFixedTimeSig {
-	TS_44,
-	TS_22,
-	TS_34,
-	TS_24,
-	TS_38,
-	TS_68
-};
-
-class CAScrollWidget;
-class CAViewPort;
-class CAScoreViewPort;
 
 #define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
 
@@ -93,12 +85,13 @@ public:
 	void initToolBar();
 	void newDocument();
 	
-	////////////////////////////////////////////////////
-	//Score operations
-	////////////////////////////////////////////////////
+	/**
+	* Adds a sheet to the document.
+	*/
 	void addSheet(CASheet *s);
-	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v);
-	
+
+	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMusElement &roMusElement );
+
 	/**
 	 * Delete all viewports and its contents.
 	 * Delete all signals.
@@ -143,7 +136,8 @@ private slots:
 	void on_actionNew_staff_activated();
 	void on_action_Clef_activated();
 	void on_action_Key_signature_activated();
-	
+	void on_action_Time_signature_activated();
+
 	//View menu
 	void on_action_Fullscreen_toggled(bool);
 	void on_actionAnimated_scroll_toggled(bool);
@@ -171,6 +165,7 @@ private slots:
 
 	// Toolbar 
 	void sl_mpoVoiceNum_valChanged(int iVoice);
+	void sl_mpoTimeSig_valChanged(int iBeats, int iBeat);
 	void on_actionNoteSelect_toggled(bool);
 	void on_actionClefSelect_toggled(bool);
 	void on_actionTimeSigSelect_toggled(bool);
@@ -265,12 +260,14 @@ private:
 	QAction      *actionClefSelect;     /// Action for having a clef selected
 	QAction      *actionTimeSigSelect;  /// Action for having a clef selected
 	CAKeySigPSP  *mpoKeySigPSP;	    /// Key signature perspective
+	CATimeSigPSP *mpoTimeSigPSP;        /// Time signature perspective
 	
 	////////////////////////////////////////////////////
 	//User interface, widgets
 	////////////////////////////////////////////////////
 	Ui::MainWindow moMainWin;	///Main window widget representative
 
+	CAMusElementFactory *mpoMEFactory;  /// Factory for creating/configuring music elements
 	QList<CAViewPort *> _viewPortList;	/// List of all available viewports for any
 	                                    /// sheet for this document
 	CAViewPort *_activeViewPort;	    /// Current active viewport
@@ -285,16 +282,4 @@ private:
 	//User interface, action objects from toolbars
 	////////////////////////////////////////////////////
 	QAction *mpoVoiceNumAction;  ///Voice number action
-
-	////////////////////////////////////////////////////
-	//Insert element
-	////////////////////////////////////////////////////
-	CAMusElement::CAMusElementType _insertMusElement;	/// Current element to be added. 0, if in view mode, CAMusElementType, if in insert mode
-	CAPlayable::CAPlayableLength _insertPlayableLength;	/// Length of note/rest to be added
-	int _insertPlayableDotted;	/// Number of dots to be inserted for the note/rest
-	int _insertNoteExtraAccs;	/// Extra note accidentals for new notes which user adds/removes with +/- keys
-	int _insertNoteAccs;	/// Note accidentals at specific coordinates updated regularily when in insert mode
-	int _insertTimeSigBeats; /// Time signature number of beats to be inserted
-	int _insertTimeSigBeat; /// Time signature beat to be inserted
-	CAClef::CAClefType _insertClef;	/// Type of the clef to be inserted
 };
