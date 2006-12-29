@@ -61,6 +61,7 @@ void CAToolBar::changeMenuIcon( QAbstractButton *poButton )
 	iBID = poButtonMenu->getButtonID( poButton );
 	printf("changeMenuIcon: BMID: %x/%s/%d ID %d\n", poButton, 
 	        poButton->objectName().toAscii().constData(), iBMID, iBID);
+	fflush(stdout);
 	// Set the button ID as selected button element
 	moSelectedIDs[iBMID] = QVariant( iBID );
 	// Notify others about the new selection
@@ -403,7 +404,6 @@ void CAButtonMenu::addButton( const QIcon &oIcon, int iButtonID )
 	poMButton->setCheckable( true );
 	// Useful if you want to switch icons of an associated toolbar
 	poMButton->setObjectName( objectName() );
-	fflush( stdout );
 	if( miBXPos == 0 )
 	{
 		// Action for our button menu as icon or nothing will be seen
