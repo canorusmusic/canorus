@@ -13,7 +13,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Form</string>
+   <string>Edit key signature</string>
   </property>
   <property name="windowIcon" >
    <iconset/>
