@@ -54,6 +54,9 @@ public:
 	*/
 	int getKeySignature();
 	
+signals:
+        void keySigChanged( int iKeySignature );
+
 protected slots:
 	/**
 	* Updates the list box when the slider is moved
