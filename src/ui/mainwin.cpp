@@ -46,6 +46,7 @@ using namespace std;
 
 #include "ui/mainwin.h"
 #include "ui/keysigpsp.h"
+#include "ui/timesigpsp.h"
 #include "ui/midisetupdialog.h"
 
 #include "widgets/toolbar.h"
@@ -77,6 +78,7 @@ using namespace std;
 #include "core/voice.h"
 #include "core/barline.h"
 #include "core/timesignature.h"
+#include "core/muselementfactory.h"
 
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
@@ -148,7 +150,9 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	moMainWin.actionLock_scroll_playback->setChecked(false);
 	moMainWin.actionUnsplit->setEnabled(false);
 	
-	mpoKeySigPSP = 0;
+	mpoKeySigPSP  = 0;
+	mpoTimeSigPSP = 0;
+	mpoMEFactory = new CAMusElementFactory();
 	
 	//Initialize playback
 	_defaultRtMidiOutPort = -1;
@@ -157,14 +161,6 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	
 	//Initialize the internal properties
 	_currentMode = SelectMode;
-	_insertMusElement = CAMusElement::Undefined;
-	_insertPlayableLength = CAPlayable::Quarter;
-	_insertPlayableDotted = 0;
-	_insertTimeSigBeats = 4;
-	_insertTimeSigBeat = 4;
-	_insertClef = CAClef::Treble;
-	_insertNoteAccs = 0;
-	_insertNoteExtraAccs = 0;
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
@@ -427,7 +423,7 @@ void CAMainWin::setMode(CAMode mode) {
 						((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
 					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(false);
 					statusBar()->showMessage("");
-					_insertMusElement = CAMusElement::Undefined;
+					mpoMEFactory->setMusElementType( CAMusElement::Undefined );
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}
@@ -438,7 +434,7 @@ void CAMainWin::setMode(CAMode mode) {
 			p.setColor(Qt::blue);
 			p.setWidth(3);
 			
-			if (_insertMusElement == CAMusElement::Note)
+			if (mpoMEFactory->musElementType() == CAMusElement::Note)
 				((CAScoreViewPort*)_activeViewPort)->setShadowNoteVisible(true);
 
 			for (int i=0; i<_viewPortList.size(); i++) {
@@ -468,7 +464,7 @@ void CAMainWin::setMode(CAMode mode) {
 
 void CAMainWin::on_action_Clef_activated() {
 	setMode(InsertMode);
-	_insertMusElement = CAMusElement::Clef;
+	mpoMEFactory->setMusElementType( CAMusElement::Clef );
 }
 
 void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
@@ -534,12 +530,12 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				break;
 			}
 			case InsertMode: {
-				if (e->button()==Qt::RightButton && _insertMusElement==CAMusElement::Note)
-					_insertMusElement = CAMusElement::Rest;	//place a rest when using right mouse button and note insertion is selected
-				insertMusElementAt( coords, v );
-				if (_insertMusElement==CAMusElement::Rest)
-					_insertMusElement=CAMusElement::Note;
-				
+				if (e->button()==Qt::RightButton && mpoMEFactory->musElementType()==CAMusElement::Note)
+					//place a rest when using right mouse button and note insertion is selected
+					mpoMEFactory->setMusElementType( CAMusElement::Rest );
+				insertMusElementAt( coords, v, *mpoMEFactory->getMusElement() );
+				if (mpoMEFactory->musElementType()==CAMusElement::Rest)
+					mpoMEFactory->setMusElementType( CAMusElement::Note );
 				break;
 			}
 		}
@@ -547,135 +543,84 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 	}
 }
 
-void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort* v) {
+void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMusElement &roMusElement )
+{
 	CADrawableContext *context = v->selectCElement(coords.x(), coords.y());
 	
 	CAStaff *staff=0;
 	CADrawableStaff *drawableStaff=0;
-	CAMusElement *newElt=0;
 	bool success;
+	int iPlayableDotted = 0;
 	
 	if (!context)
 		return;
 	
-	switch (_insertMusElement) {
+	switch ( roMusElement.musElementType() ) {
 		case CAMusElement::Clef: {
 			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
-			if ( (context->context()->contextType() != CAContext::Staff) )
-				return;
-			
-			staff = (CAStaff*)context->context();
-			newElt = new CAClef(_insertClef, staff, (left?left->musElement()->timeEnd():0));
-			success = staff->insertSignAfter(newElt, left?left->musElement():0, true);
+			success = mpoMEFactory->configureClef( context, left );
 			break;
 		}
 		case CAMusElement::KeySignature: {
 			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
-			if ( (!context) ||
-			     (context->context()->contextType() != CAContext::Staff) )
-				return;
-			
-			staff = (CAStaff*)context->context();
-			newElt = new CAKeySignature(CAKeySignature::MajorMinor, 
-			                                            mpoKeySigPSP->getKeySignature()-7,
-			                                            CAKeySignature::Major, staff,
-			                                            (left?left->musElement()->timeEnd():0));
-			success = staff->insertSignAfter(newElt, left?left->musElement():0, true);
+			success = mpoMEFactory->configureKeySignature( mpoKeySigPSP->getKeySignature()-7,
+			                                               context, left );
 			break;
 		}
-		case CAMusElement::TimeSignature: {
+		case CAMusElement::TimeSignature: { // ToDo: Move TimeSigPSP code
 			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
-			if ( (!context) ||
-			     (context->context()->contextType() != CAContext::Staff) )
-				return;
-			
-			staff = (CAStaff*)context->context();
-			newElt = new CATimeSignature(_insertTimeSigBeats, _insertTimeSigBeat,
-			                                            staff,
-			                                            (left?left->musElement()->timeEnd():0));
-			success = staff->insertSignAfter(newElt, left?left->musElement():0, true);
+			if( mpoTimeSigPSP ) // Change via perspective as well
+			{
+				int iTimeSigBeats, iTimeSigBeat;
+				mpoTimeSigPSP->getTimeSignature( iTimeSigBeats, iTimeSigBeat );
+				mpoMEFactory->setTimeSigBeats( iTimeSigBeats );
+				mpoMEFactory->setTimeSigBeat( iTimeSigBeat );
+			}
+			success = mpoMEFactory->configureTimeSignature( context, left );
 			break;
 		}
-		case CAMusElement::Note: {
+		case CAMusElement::Note: { // Do we really need to do all that here??
+			int iVoiceNum = mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1;
 			drawableStaff = (CADrawableStaff*)context;
 			staff = drawableStaff->staff();
-			CAVoice *voice = staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 );
+			CAVoice *voice = staff->voiceAt( iVoiceNum );
 			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y(), voice);
-			
-			if ( (!context) ||
-			     (context->context()->contextType() != CAContext::Staff) )
-				return;
-			
-			//did a user click on the note or before/after it? In first case, add a note to a chord, in latter case, insert a new note.
-			CADrawableMusElement *followingNote;
-			
-			if ( left && (left->musElement()->musElementType() == CAMusElement::Note) && (left->xPos() <= coords.x()) && (left->width() + left->xPos() >= coords.x()) ) {
-				//user clicked inside x borders of the note - add a note to the chord
-				if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart()))
-					break;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
-				
-				int pitch;
-				newElt = new CANote(((CANote*)left->musElement())->playableLength(),
-			                  voice,
-			                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			                  _insertNoteAccs,
-			                  left->musElement()->timeStart(),
-			                  ((CANote*)left->musElement())->dotted()
-			                 );
-				success = voice->addNoteToChord((CANote*)newElt, (CANote*)left->musElement());
-			} else {
-				//user clicked outside x borders of the note - add a new note
-				int pitch;
-				newElt = new CANote(_insertPlayableLength,
-			                  staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
-			                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			                  _insertNoteAccs,
-			                  (left?left->musElement()->timeEnd():0),
-			                  _insertPlayableDotted
-			                 );
-			    if (left)	//left element exists
-					success = voice->insertMusElementAfter(newElt, left->musElement());
-				else		//left element doesn't exist, prepend the new music element
-					success = voice->prependMusElement(newElt);
+			success = mpoMEFactory->configureNote( voice, coords, context, left );
+			if (success) { 
+				mpoMEFactory->setNoteExtraAccs( 0 );
+				v->setDrawShadowNoteAccs(false); 
+				iPlayableDotted = ((CAPlayable *)(mpoMEFactory->getMusElement()))->dotted();
 			}
-			if (success) { _insertNoteExtraAccs=0; v->setDrawShadowNoteAccs(false); }
 			break;
 		}
 		case CAMusElement::Rest: {
+			int iVoiceNum = mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1;
 			drawableStaff = (CADrawableStaff*)context;
 			staff = drawableStaff->staff();
-			CAVoice *voice = staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 );
+			CAVoice *voice = staff->voiceAt( iVoiceNum );
 			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y(), voice);
-			
-			if ( (!context) ||
-			     (context->context()->contextType() != CAContext::Staff) )
-				return;
-			
-			newElt = new CARest(CARest::Normal,
-				_insertPlayableLength,
-				staff->voiceAt( mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1 ),
-				(left?left->musElement()->timeEnd():0),
-				_insertPlayableDotted
-				);
-			success = voice->insertMusElementAfter(newElt, left?left->musElement():0);
-
+			success = mpoMEFactory->configureRest( voice, coords, context, left );
+			if (success)
+				iPlayableDotted = ((CAPlayable *)(mpoMEFactory->getMusElement()))->dotted();
 			break;
 		}
 	}
 	
 	if (success) {
 		rebuildUI(v->sheet(), true);
-		v->selectMElement(newElt);
-		v->setShadowNoteDotted(_insertPlayableDotted);
+		v->selectMElement( mpoMEFactory->getMusElement() );
+		v->setShadowNoteDotted(iPlayableDotted);
 		v->repaint();
 	} else
-		delete newElt;
-	
+	  {
+		mpoMEFactory->removeMusElem( true );
+		mpoMEFactory->createMusElem(); // Factory always must have a valid element
+	  }
 }
 
 void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
 	if ((_currentMode == InsertMode) &&
-	    (_insertMusElement == CAMusElement::Note) &&
+	    (mpoMEFactory->musElementType() == CAMusElement::Note) &&
 	    (v->viewPortType()==CAViewPort::ScoreViewPort)
 	   ) {
 		CAScoreViewPort *c = (CAScoreViewPort*)v;
@@ -685,16 +630,18 @@ void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort
 		else
 			return;
 
-		if (_insertMusElement == CAMusElement::Note || _insertMusElement == CAMusElement::Rest)
+		if (mpoMEFactory->musElementType() == CAMusElement::Note || 
+                    mpoMEFactory->musElementType() == CAMusElement::Rest)
 			c->setShadowNoteVisible(true);
 		
 		//calculate the logical pitch out of absolute world coordinates and the current clef
 		int pitch = s->calculatePitch(coords.x(), coords.y());
 		
 		//write into the main window's status bar the note pitch name
-		_insertNoteAccs = s->getAccs(coords.x(), pitch)+_insertNoteExtraAccs;
-		statusBar()->showMessage(CANote::generateNoteName(pitch, _insertNoteAccs));
-		((CAScoreViewPort*)v)->setShadowNoteAccs(_insertNoteAccs);
+		int iNoteAccs = s->getAccs(coords.x(), pitch)+mpoMEFactory->noteExtraAccs();
+		mpoMEFactory->setNoteAccs( iNoteAccs );
+		statusBar()->showMessage(CANote::generateNoteName(pitch, iNoteAccs));
+		((CAScoreViewPort*)v)->setShadowNoteAccs(iNoteAccs);
 	}
 }
 
@@ -816,9 +763,9 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 			case Qt::Key_Plus: {
 				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (currentMode()==InsertMode) {
-						_insertNoteExtraAccs++; _insertNoteAccs++;
-						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(_insertNoteExtraAccs!=0);
-						((CAScoreViewPort*)v)->setShadowNoteAccs(_insertNoteAccs);
+						mpoMEFactory->addNoteExtraAccs(1); mpoMEFactory->addNoteAccs(1);
+						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(mpoMEFactory->noteExtraAccs()!=0);
+						((CAScoreViewPort*)v)->setShadowNoteAccs(mpoMEFactory->noteAccs());
 						v->repaint();
 					} else if (currentMode()==EditMode) {
 						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
@@ -836,9 +783,9 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 			case Qt::Key_Minus: {
 				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (currentMode()==InsertMode) {
-						_insertNoteExtraAccs--; _insertNoteAccs--;
-						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(_insertNoteExtraAccs!=0);
-						((CAScoreViewPort*)v)->setShadowNoteAccs(_insertNoteAccs);
+						mpoMEFactory->subNoteExtraAccs(1); mpoMEFactory->subNoteAccs(1);
+						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(mpoMEFactory->noteExtraAccs()!=0);
+						((CAScoreViewPort*)v)->setShadowNoteAccs(mpoMEFactory->noteAccs());
 						v->repaint();
 					} else if (currentMode()==EditMode) {
 						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
@@ -856,8 +803,8 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 			case Qt::Key_Period: {
 				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (currentMode()==InsertMode) {
-						_insertPlayableDotted = (_insertPlayableDotted+1)%4;
-						((CAScoreViewPort*)v)->setShadowNoteDotted(_insertPlayableDotted);
+						mpoMEFactory->addPlayableDotted( 1 );
+						((CAScoreViewPort*)v)->setShadowNoteDotted(mpoMEFactory->playableDotted());
 						v->repaint();
 					} else if (currentMode()==EditMode) {
 						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
@@ -906,7 +853,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 					mpoKeySigPSP->hide();
 				break;
 			case Qt::Key_I:
-				_insertMusElement = CAMusElement::Note;
+				mpoMEFactory->setMusElementType( CAMusElement::Note );
 				setMode(InsertMode);
 				break;
 			case Qt::Key_E:
@@ -1089,14 +1036,20 @@ void CAMainWin::sl_mpoVoiceNum_valChanged(int iVoice)
 	fflush( stdout );
 }
 
+void CAMainWin::sl_mpoTimeSig_valChanged(int iBeats, int iBeat)
+{
+	printf("Time signature new values: %d, %d\n",iBeats, iBeat);
+	fflush( stdout );
+}
+
 void CAMainWin::on_actionNoteSelect_toggled(bool bOn)
 {
 	// Read currently selected entry from tool button menu
 	enum CAPlayable::CAPlayableLength eElem = (CAPlayable::CAPlayableLength)
 	  mpoMEToolBar->toolElemValue( mpoNoteMenu->objectName() ).toInt();
-	_insertMusElement = CAMusElement::Note;
+	mpoMEFactory->setMusElementType( CAMusElement::Note );
 	// New note length type
-	_insertPlayableLength = eElem;
+	mpoMEFactory->setPlayableLength( eElem );
 	printf("Note Input switched: On %d Note %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )
@@ -1108,9 +1061,9 @@ void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 	// Read currently selected entry from tool button menu
 	enum CAClef::CAClefType eElem = (CAClef::CAClefType)
 	  mpoMEToolBar->toolElemValue( mpoClefMenu->objectName() ).toInt();
-	_insertMusElement = CAMusElement::Clef;
+	mpoMEFactory->setMusElementType( CAMusElement::Clef );
 	// New clef type
-	_insertClef       = eElem;
+	mpoMEFactory->setClef( eElem );
 	printf("Note Clef switched: On %d Clef %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )
@@ -1119,41 +1072,51 @@ void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 
 void CAMainWin::on_actionTimeSigSelect_toggled(bool bOn)
 {
+	int iTimeSigBeats = 4;
+	int iTimeSigBeat  = 4;
+	// Make sure perspective is active
+	on_action_Time_signature_activated();
 	// Read currently selected entry from tool button menu
         enum CATimeSignature::CATimeSignatureType eBaseElem = CATimeSignature::Classical;
         enum CAFixedTimeSig eElem = (CAFixedTimeSig)
 	  mpoMEToolBar->toolElemValue( mpoTimeSigMenu->objectName() ).toInt();
 
-	_insertMusElement = CAMusElement::TimeSignature;
+	mpoMEFactory->setMusElementType( CAMusElement::TimeSignature );
 	// New (fixed) time signature
 	switch( eElem )
 	{
 		default:
 		case TS_44:
-		  _insertTimeSigBeats = 4;
-		  _insertTimeSigBeat = 4;
+		  iTimeSigBeats = 4;
+		  iTimeSigBeat = 4;
 		  break;
 		case TS_22:
-		  _insertTimeSigBeats = 2;
-		  _insertTimeSigBeat = 2;
+		  iTimeSigBeats = 2;
+		  iTimeSigBeat = 2;
 		  break;
 		case TS_34:
-		  _insertTimeSigBeats = 3;
-		  _insertTimeSigBeat = 4;
+		  iTimeSigBeats = 3;
+		  iTimeSigBeat = 4;
 		  break;
 		case TS_24:
-		  _insertTimeSigBeats = 2;
-		  _insertTimeSigBeat = 4;
+		  iTimeSigBeats = 2;
+		  iTimeSigBeat = 4;
 		  break;
 		case TS_38:
-		  _insertTimeSigBeats = 3;
-		  _insertTimeSigBeat = 8;
+		  iTimeSigBeats = 3;
+		  iTimeSigBeat = 8;
 		  break;
 		case TS_68:
-		  _insertTimeSigBeats = 6;
-		  _insertTimeSigBeat = 8;
+		  iTimeSigBeats = 6;
+		  iTimeSigBeat = 8;
+		  break;
+		case TS_UNKNOWN:
 		  break;
 	}
+	// Update Time signature perspective
+	mpoTimeSigPSP->setTimeSignature( iTimeSigBeats, iTimeSigBeat );
+	mpoMEFactory->setTimeSigBeats( iTimeSigBeats );
+	mpoMEFactory->setTimeSigBeat( iTimeSigBeat );
 	printf("Note TimeSig switched: On %d TimeSig %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )
@@ -1176,8 +1139,34 @@ void CAMainWin::on_action_Key_signature_activated() {
 	moMainWin.actionUnsplit->setEnabled(true);
 	
 	setMode(InsertMode);
-	_insertMusElement = CAMusElement::KeySignature;
+	mpoMEFactory->setMusElementType( CAMusElement::KeySignature );
 	
+}
+
+void CAMainWin::on_action_Time_signature_activated() {
+	if (!mpoTimeSigPSP) {
+		mpoTimeSigPSP = new CATimeSigPSP("Edit time signature", this);
+		addDockWidget( Qt::LeftDockWidgetArea, mpoTimeSigPSP );
+		connect( mpoTimeSigPSP, SIGNAL( timeSigChanged( int, int ) ),
+                         this, SLOT( sl_mpoTimeSig_valChanged( int, int ) ) );
+	}
+	
+	mpoTimeSigPSP->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
+	mpoTimeSigPSP->setFocusPolicy(Qt::ClickFocus);
+	mpoTimeSigPSP->setFocus();
+	mpoTimeSigPSP->show();
+	
+	moMainWin.actionSplit_horizontally->setEnabled(false);
+	moMainWin.actionSplit_vertically->setEnabled(false);
+	moMainWin.actionUnsplit->setEnabled(true);
+	
+	setMode(InsertMode);
+	mpoMEFactory->setMusElementType( CAMusElement::TimeSignature );
+	// Update toolbar if possible
+	CAFixedTimeSig eElem = mpoTimeSigPSP->getTimeSignatureFixed();
+	if( eElem != TS_UNKNOWN )
+		mpoMEToolBar->changeMenuIcon( mpoTimeSigMenu->getButton( (int)eElem ) );
+
 }
 
 void CAMainWin::sourceViewPortCommit(QString docString) {
