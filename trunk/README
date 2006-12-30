@@ -62,6 +62,15 @@ Best is to tell the package maker of ruby/cmake/swig about these
 problems if they occur on your distribution. I won't adapt the Canorus
 cmake files to cover all the possible pathes of every distribution.
 
+If you get the following error:
+"libpython.a: undefined reference to openpty"
+your system requires the util library to be included to the
+Canorus link libaries. To do this edit src/CMakeFile.txt file
+and search for the line containing TARGET_LINK_LIBRARIES.
+Add " util" as last library to the line f.e. like this:
+
+- TARGET_LINK_LIBRARIES(canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} ${RUBY_LIBRARY} ${PYTHON_LIBRARY} util)
+
 I hope that the NO_DEFAULT_PATH options gets added to newer cmake releases.
 
 - Compile Canorus with the following command: "make"
