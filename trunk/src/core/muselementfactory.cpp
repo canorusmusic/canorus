@@ -76,6 +76,7 @@ CAMusElementFactory::CAMusElementFactory()
 	_eClef = CAClef::Treble;
 	_iNoteAccs = 0;
 	_iNoteExtraAccs = 0;
+	createMusElem();
 }
 
 CAMusElementFactory::~CAMusElementFactory()
