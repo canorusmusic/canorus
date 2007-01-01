@@ -142,6 +142,7 @@ private slots:
 	void on_actionOpen_activated();
 	void on_actionSave_activated();
 	void on_actionSave_as_activated();
+	void on_actionExport_activated();
 	
 	//Edit menu
 	void on_actionMIDI_Setup_activated();
