@@ -18,6 +18,16 @@
 0.1.0
 
 - Third technical preview release
-- Scripting support für python
+- Python scripting support
 - Official windows support (MacOS-X was confirmed to compile too)
-- Simple config file (mainly for Midi Settings)
+- MIDI setup dialog
+- Canorus's settings are now stored (mainly for Midi Setup)
+- Plugins subsystem
+- Rest insertion
+- Added FunctionMarking support
+- Converted .otf fonts to .ttf
+- Fixed some crashes
+- Windows compilation support using MINGW compiler
+- debian/rules added to create .deb packages for Debian-based
+Linux
+- nsis setup added to create Nullsoft Windows installer
