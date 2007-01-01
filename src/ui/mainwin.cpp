@@ -1052,6 +1052,32 @@ void CAMainWin::on_actionSave_as_activated() {
 	}
 }
 
+void CAMainWin::on_actionExport_activated() {
+	
+	QFileDialog *fd = new QFileDialog(this);
+	fd->setFileMode(QFileDialog::AnyFile);
+	fd->setFilter( "Lilypond document (*.ly)" );
+	fd->setDefaultSuffix( "ly" );
+	fd->setDirectory( QDir::current() );
+	QStringList fileNames;
+	if (fd->exec())
+		fileNames = fd->selectedFiles();
+	QString s = fileNames[0];
+	delete fd;
+
+	if (s.isEmpty())
+		return;
+
+	QFile file(s);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		
+		//QTextStream out(&file);
+		//CALilyExport::saveDocument(out, &_document);
+		file.close();
+	}               
+}
+
+
 void CAMainWin::sl_mpoVoiceNum_valChanged(int iVoice)
 {
 	printf("New voice number: %d\n",iVoice);
