@@ -6,3 +6,18 @@
 
 - First officially released version
 - Prototype with several working features
+
+0.0.5
+
+- Second technical preview release
+- Scripting support (currently only ruby supported) via swig
+- Support of musical element (like rests, notes with flags, time signature)
+- New plugin architecture (still work in progress). A plugin can be
+  requested via Canorus ML; it currently requires ruby-qt4 to be installed.
+
+0.1.0
+
+- Third technical preview release
+- Scripting support für python
+- Official windows support (MacOS-X was confirmed to compile too)
+- Simple config file (mainly for Midi Settings)
