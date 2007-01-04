@@ -90,7 +90,8 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		int maxX = 0;		
 		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
 		for (int i=0; i<streams; i++)
-			if (musStreamList[i]->last()->musElementType()!=CAMusElement::FunctionMarking)
+			if (musStreamList[i]->size() &&
+			    musStreamList[i]->last()->musElementType()!=CAMusElement::FunctionMarking)
 				streamsX[i] = maxX;
 		
 		//go through all the streams and remember the time of the soonest element that will happen
@@ -202,7 +203,8 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 		//Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
 		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
 		for (int i=0; i<streams; i++)
-			if (musStreamList[i]->last()->musElementType()!=CAMusElement::FunctionMarking)
+			if (musStreamList[i]->size() &&
+			    musStreamList[i]->last()->musElementType()!=CAMusElement::FunctionMarking)
 				streamsX[i] = maxX;
 		
 		//Place barlines
