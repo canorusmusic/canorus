@@ -1060,14 +1060,19 @@ void CAMainWin::on_actionExport_activated() {
 	fd->setDefaultSuffix( "ly" );
 	fd->setDirectory( QDir::current() );
 	QStringList fileNames;
-	if (fd->exec())
+	int ffound = fd->exec();
+	if (ffound)
 		fileNames = fd->selectedFiles();
-	QString s = fileNames[0];
 	delete fd;
+	if (!ffound)
+		return;
+
+	QString s = fileNames[0];
 
 	if (s.isEmpty())
 		return;
 
+	//std::cout <<   "  Resultierender Filename: " << s.toStdString() << endl;
 	QFile file(s);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		
