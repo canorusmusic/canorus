@@ -522,24 +522,6 @@
      <height>38</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_Script" >
-    <property name="title" >
-     <string>&amp;Script</string>
-    </property>
-    <addaction name="action_Record_script" />
-    <addaction name="action_Play_script" />
-    <addaction name="action_Edit_script" />
-   </widget>
-   <widget class="QMenu" name="menuTools" >
-    <property name="title" >
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="action_Enable_external_MIDI_mode" />
-    <addaction name="actionTranspose" />
-    <addaction name="actionNote_count" />
-    <addaction name="separator" />
-    <addaction name="actionSettings" />
-   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>&amp;Help</string>
@@ -550,16 +532,6 @@
     <addaction name="separator" />
     <addaction name="actionAbout_Canorus" />
     <addaction name="actionAbout_Qt" />
-   </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>Window</string>
-    </property>
-    <addaction name="actionSplit_horizontally" />
-    <addaction name="actionSplit_vertically" />
-    <addaction name="actionUnsplit" />
-    <addaction name="separator" />
-    <addaction name="actionNew_viewport" />
    </widget>
    <widget class="QMenu" name="menuFormat" >
     <property name="title" >
@@ -594,7 +566,87 @@
     <addaction name="separator" />
     <addaction name="actionQuit" />
    </widget>
+   <widget class="QMenu" name="menuPerspective" >
+    <property name="title" >
+     <string>&amp;Perspective</string>
+    </property>
+    <addaction name="action_Select_perspective" />
+    <addaction name="actionEdit_perspective" />
+    <addaction name="action_Insert_perspective" />
+    <addaction name="action_Replace_perspective" />
+    <addaction name="separator" />
+    <addaction name="action_Layout_perspective" />
+    <addaction name="actionSource_view_perspective" />
+    <addaction name="separator" />
+    <addaction name="actionLyrics_perspective" />
+    <addaction name="actionChord_perspective" />
+    <addaction name="action_Figured_bass_perspective" />
+    <addaction name="actionFigured_functions_perspective" />
+   </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="action_Undo" />
+    <addaction name="action_Redo" />
+    <addaction name="separator" />
+    <addaction name="actionC_ut" />
+    <addaction name="action_Copy" />
+    <addaction name="action_Paste" />
+    <addaction name="actionPaste_special" />
+    <addaction name="actionPaste_as_new_sheet" />
+    <addaction name="separator" />
+    <addaction name="actionSelect_all" />
+    <addaction name="actionInvert_Selection" />
+    <addaction name="separator" />
+    <addaction name="actionMIDI_Setup" />
+   </widget>
+   <widget class="QMenu" name="menuWindow" >
+    <property name="title" >
+     <string>Window</string>
+    </property>
+    <addaction name="actionSplit_horizontally" />
+    <addaction name="actionSplit_vertically" />
+    <addaction name="actionUnsplit" />
+    <addaction name="separator" />
+    <addaction name="actionNew_viewport" />
+   </widget>
+   <widget class="QMenu" name="menuTools" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="action_Enable_external_MIDI_mode" />
+    <addaction name="actionTranspose" />
+    <addaction name="actionNote_count" />
+    <addaction name="separator" />
+    <addaction name="actionSettings" />
+   </widget>
+   <widget class="QMenu" name="menuScript" >
+    <property name="title" >
+     <string>&amp;Script</string>
+    </property>
+    <addaction name="action_Record_script" />
+    <addaction name="action_Play_script" />
+    <addaction name="action_Edit_script" />
+   </widget>
    <widget class="QMenu" name="menuInsert" >
+    <property name="title" >
+     <string>&amp;Insert</string>
+    </property>
+    <addaction name="actionNew_staff" />
+    <addaction name="action_Clef" />
+    <addaction name="action_Time_signature" />
+    <addaction name="action_Key_signature" />
+    <addaction name="separator" />
+    <addaction name="action_Special_barline" />
+    <addaction name="action_Expression_marks" />
+    <addaction name="actionC_hord" />
+    <addaction name="action_Pedal_markings" />
+    <addaction name="action_Octaviation" />
+    <addaction name="action_Instrument_change" />
+    <addaction name="action_Midi_instruction" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
     <property name="title" >
      <string>&amp;View</string>
     </property>
@@ -625,65 +677,13 @@
     <addaction name="actionStatus_bar" />
     <addaction name="action_Fullscreen" />
    </widget>
-   <widget class="QMenu" name="menu_Perspective" >
-    <property name="title" >
-     <string>&amp;Perspective</string>
-    </property>
-    <addaction name="action_Select_perspective" />
-    <addaction name="actionEdit_perspective" />
-    <addaction name="action_Insert_perspective" />
-    <addaction name="action_Replace_perspective" />
-    <addaction name="separator" />
-    <addaction name="action_Layout_perspective" />
-    <addaction name="actionSource_view_perspective" />
-    <addaction name="separator" />
-    <addaction name="actionLyrics_perspective" />
-    <addaction name="actionChord_perspective" />
-    <addaction name="action_Figured_bass_perspective" />
-    <addaction name="actionFigured_functions_perspective" />
-   </widget>
-   <widget class="QMenu" name="menu_Insert" >
-    <property name="title" >
-     <string>&amp;Insert</string>
-    </property>
-    <addaction name="actionNew_staff" />
-    <addaction name="action_Clef" />
-    <addaction name="action_Time_signature" />
-    <addaction name="action_Key_signature" />
-    <addaction name="separator" />
-    <addaction name="action_Special_barline" />
-    <addaction name="action_Expression_marks" />
-    <addaction name="actionC_hord" />
-    <addaction name="action_Pedal_markings" />
-    <addaction name="action_Octaviation" />
-    <addaction name="action_Instrument_change" />
-    <addaction name="action_Midi_instruction" />
-   </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="action_Undo" />
-    <addaction name="action_Redo" />
-    <addaction name="separator" />
-    <addaction name="actionC_ut" />
-    <addaction name="action_Copy" />
-    <addaction name="action_Paste" />
-    <addaction name="actionPaste_special" />
-    <addaction name="actionPaste_as_new_sheet" />
-    <addaction name="separator" />
-    <addaction name="actionSelect_all" />
-    <addaction name="actionInvert_Selection" />
-    <addaction name="separator" />
-    <addaction name="actionMIDI_Setup" />
-   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
+   <addaction name="menuView" />
    <addaction name="menuInsert" />
-   <addaction name="menu_Insert" />
-   <addaction name="menu_Perspective" />
+   <addaction name="menuPerspective" />
    <addaction name="menuFormat" />
-   <addaction name="menu_Script" />
+   <addaction name="menuScript" />
    <addaction name="menuTools" />
    <addaction name="menuWindow" />
    <addaction name="menuHelp" />
