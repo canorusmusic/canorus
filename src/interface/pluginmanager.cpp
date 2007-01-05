@@ -156,6 +156,7 @@ bool CAPluginManager::startElement(const QString& namespaceURI, const QString& l
 			_curActionOnAction.clear();
 			_curActionParentMenu.clear();
 			_curActionParentToolbar.clear();
+			_curActionRefresh = false;
 		} else
 		if (qName == "menu") {
 			_curMenuTitle.clear();
@@ -212,6 +213,7 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			action->setExportFilters(_curActionExportFilter);
 			action->setImportFilters(_curActionImportFilter);
 			action->setTexts(_curActionText);
+			action->setRefresh(_curActionRefresh);
 			
 			if (!_curActionParentToolbar.isEmpty());
 				// TODO: add action to toolbar
@@ -282,6 +284,9 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 		} else
 		if (qName == "import-filter") {
 			_curActionImportFilter[_curActionLocale] = _curChars;
+		} else
+		if (qName == "refresh") {
+			_curActionRefresh = true;
 		} else
 		// menu level
 		if (qName == "title") {

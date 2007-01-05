@@ -184,17 +184,20 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 	if (!error) {
 #ifdef USE_RUBY
 		if (action->lang()=="ruby") {
-			return (!CASwigRuby::callFunction(_dirName + "/" + action->filename(), action->function(), rubyArgs));
+			error = (!CASwigRuby::callFunction(_dirName + "/" + action->filename(), action->function(), rubyArgs));
 		}
 #endif
 #ifdef USE_PYTHON
 		if (action->lang()=="python") {
-			return (!CASwigPython::callFunction(_dirName + "/" + action->filename(), action->function(), pythonArgs));
+			error = (!CASwigPython::callFunction(_dirName + "/" + action->filename(), action->function(), pythonArgs));
 		}
 #endif
 	}
 	
-	return false;
+	if (action->refresh())
+		mainWin->rebuildUI();
+	
+	return (!error);
 }
 
 void CAPlugin::addAction(CAPluginAction *action) {

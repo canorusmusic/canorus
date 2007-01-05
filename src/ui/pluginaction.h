@@ -37,6 +37,7 @@ class CAPluginAction : public QAction {
 		QString localImportFilter() { if (_importFilter.contains(QLocale::system().name())) return exportFilter(QLocale::system().name()); else return importFilter(""); }
 		inline QString localeText(QString lang) { return _text[lang]; }
 		QString localText() { if (_text.contains(QLocale::system().name())) return localeText(QLocale::system().name()); else return localeText(""); }
+		bool refresh() { return _refresh; }
 		
 		void setPlugin(CAPlugin *plugin) { _plugin = plugin; }
 		void setName(QString name) { _name = name; }
@@ -52,6 +53,7 @@ class CAPluginAction : public QAction {
 		void setImportFilters(QHash< QString, QString > f) { _importFilter = f; }
 		void setLocaleText(QString lang, QString value) { _text[lang] = value; 	this->setText(localText()); } 
 		void setTexts(QHash< QString, QString > t) { _text = t;	this->setText(localText()); }
+		void setRefresh(bool refresh) { _refresh = refresh; }
 		
 	private:
 		CAPlugin *_plugin;                     /// Pointer to the plugin which this action belongs to
@@ -64,6 +66,7 @@ class CAPluginAction : public QAction {
 		QHash<QString, QString> _exportFilter; /// Text written in export dialog's filter
 		QHash<QString, QString> _importFilter; /// Text written in import dialog's filter
 		QHash<QString, QString> _text;         /// Text written on a menu item or the toolbar button
+		bool _refresh;                         /// Should the UI be rebuilt when calling the action.
 	
 	private slots:
 		void triggeredSlot(bool);              /// Connected to triggered(), calls plugin->callAction()
