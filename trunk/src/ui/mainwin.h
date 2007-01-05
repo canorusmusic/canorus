@@ -25,6 +25,7 @@
 /*****************************************************************************/
 
 #include <QObject>
+#include <QFileDialog>
 
 #include "ui_mainwin.h"
 
@@ -130,6 +131,9 @@ public:
 	 * @param bVisible 'true': Show time signature perspective
 	 */
 	void setTimeSigPSPVisible( bool bVisible );
+	
+	QFileDialog *exportDialog() { return _exportDialog; }
+	QFileDialog *importDialog() { return _importDialog; }
 	
 private slots:
 	////////////////////////////////////////////////////
@@ -274,7 +278,7 @@ private:
 	QAction      *actionNoteSelect;     /// Action for having a note length selected
 	QAction      *actionClefSelect;     /// Action for having a clef selected
 	QAction      *actionTimeSigSelect;  /// Action for having a clef selected
-	CAKeySigPSP  *mpoKeySigPSP;	    /// Key signature perspective
+	CAKeySigPSP  *mpoKeySigPSP;	        /// Key signature perspective
 	CATimeSigPSP *mpoTimeSigPSP;        /// Time signature perspective
 	
 	////////////////////////////////////////////////////
@@ -292,7 +296,13 @@ private:
 	                                    /// is active	
 	QTimer *_repaintTimer;	            /// Used when playback is active
 	CALCDNumber *mpoVoiceNum;           /// LCD placed in Toolbar for showing current voice
-
+	
+	////////////////////////////////////////////////////
+	//User interface, dialogs, windows
+	////////////////////////////////////////////////////
+	QFileDialog *_exportDialog;
+	QFileDialog *_importDialog;
+	
 	////////////////////////////////////////////////////
 	//User interface, action objects from toolbars
 	////////////////////////////////////////////////////

@@ -12,10 +12,12 @@
 #include <QString>
 #include <QMultiHash>
 #include <QXmlDefaultHandler>
+#include <QStack>
 
 class CAMainWin;
 class CADocument;
 class CAPlugin;
+class CAPluginAction;
 
 class QEvent;
 class QPoint;
@@ -69,11 +71,34 @@ class CAPluginManager : public QXmlDefaultHandler {
 		bool disablePlugin(CAPlugin* plugin);
 		
 		/**
-		 * Call plugins actions.
+		 * Gather all the plugins actions having the given onAction value and call them.
+		 * This method is usually triggered automatically by Canorus signals (like mouseClick on score viewport).
 		 * 
-		 * @param val Name of the action.
+		 * @param onAction onAction name value.
 		 */
-		void action(QString val, CADocument *document, QEvent *evt, QPoint *coords);
+		void action(QString onAction, CADocument *document, QEvent *evt, QPoint *coords);
+		
+		/**
+		 * Find the appropriate action having the given export filter and call it.
+		 * 
+		 * @param filter Action's filter in export dialog.
+		 * @param document Pointer to the current document.
+		 * @param evt Pointer to the Mouse/Key/Wheel event, if it happened.
+		 * @param coords Pointer to the coords in absolute world units, if a click on ScoreViewPort happened.
+		 */
+		void exportAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords);
+		bool exportActionExists(QString action) { return _exportFilterMap.contains(action); }
+		
+		/**
+		 * Find the appropriate action having the given import filter and call it.
+		 * 
+		 * @param filter Action's filter in import dialog.
+		 * @param document Pointer to the current document.
+		 * @param evt Pointer to the Mouse/Key/Wheel event, if it happened.
+		 * @param coords Pointer to the coords in absolute world units, if a click on ScoreViewPort happened.
+		 */
+		void importAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords);
+		bool importActionExists(QString action) { return _importFilterMap.contains(action); }
 		
 		/**
 		 * Decompress the .zip containing the plugin to plugins directory and load it.
@@ -99,13 +124,32 @@ class CAPluginManager : public QXmlDefaultHandler {
 		bool characters(const QString& ch);
 		
 	private:
-		QList<CAPlugin*> _pluginList;	///List of all the plugins installed
-		QMultiHash<QString, CAPlugin*> _actionMap;	///List of all plugins loaded accessed by their actions for faster lookup
+		QList<CAPlugin*> _pluginList;                     /// List of all the plugins installed
+		QMultiHash<QString, CAPlugin* > _actionMap;        /// List of all plugins loaded accessable by their actions for faster lookup
+		QHash<QString, CAPluginAction* > _exportFilterMap; /// List of all plugins loaded accessable by their export filter for faster lookup
+		QHash<QString, CAPluginAction* > _importFilterMap; /// List of all plugins loaded accessable by their import filter for faster lookup
 		CAMainWin *_mainWin;
+		QString _curChars;
+		QStack<QString> _tree;						      /// Hierarchy backtrack of the current node
 		
 		CAPlugin *_curPlugin;
-		QString _curChars;
-		QString _curLang;
+		QString _curPluginCanorusVersion;
+		QString _curPluginLocale;
+		
+			// <action> tag:
+			QHash<QString, QString> _curActionText;     /// List of actions LOCALE texts
+			QString _curActionName;
+			QString _curActionLocale;                   /// Temporary lang
+			QString _curActionOnAction;
+			QHash<QString,QString> _curActionExportFilter, _curActionImportFilter;
+			QString _curActionParentMenu, _curActionParentToolbar;
+			QString _curActionLang, _curActionFunction, _curActionFilename;
+			QList<QString> _curActionArgs;
+		
+			// <menu> tag:
+			QString _curMenuName;
+			QHash<QString, QString> _curMenuTitle;      /// List of menus LOCALE titles			
+			QString _curMenuLocale;                     /// Temporary lang
 };
 
 #endif /*PLUGINMANAGER_H_*/

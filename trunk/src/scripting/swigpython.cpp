@@ -20,7 +20,7 @@ void CASwigPython::init() {
 	PyRun_SimpleString("import sys");
 	PyRun_SimpleString((QString("sys.path.append('")+locateResource("scripts")+"')").toStdString().c_str());
 }
-
+#include<iostream>
 //WARNING! You have to add path of the plugin to Python path before, manually!
 PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args) {
 	if (!QFile::exists(fileName))

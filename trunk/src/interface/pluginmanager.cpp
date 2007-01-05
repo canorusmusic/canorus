@@ -1,6 +1,6 @@
 /** @file interface/pluginmanager.cpp
  * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+ * Copyright (c) 2006, 2007 Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -17,6 +17,7 @@
 CAPluginManager::CAPluginManager(CAMainWin *mainWin) {
 	_mainWin = mainWin;
 	_curPlugin=0;
+	_curPluginCanorusVersion = CANORUS_VERSION;
 }
 
 CAPluginManager::~CAPluginManager() {
@@ -86,7 +87,7 @@ bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
 	
 	// remove plugin specific actions from generic plugins actions list
 	QList<QString> actions = plugin->actionList();
-	for (int i=0; i<actions.size(); i++) {	//QMultiHash doesn't support remove(key, value) or remove(value), only remove(key) - we have to do this manually now
+	for (int i=0; i<actions.size(); i++) {	// QMultiHash doesn't support remove(key, value) or remove(value), only remove(key) - we have to do this manually now
 		QList<CAPlugin*> plugList;
 		while (CAPlugin *val = _actionMap.take(actions[i])) {
 			if (val != plugin) {	// while val exists and != plugin
@@ -121,27 +122,45 @@ bool CAPluginManager::removePlugin(CAPlugin *plugin) {
 }
 
 bool CAPluginManager::startElement(const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes) {
-	if (qName=="plugin") {
+	_tree.push(qName);
+	
+	if (qName == "plugin") {
 		_curPlugin = new CAPlugin();
 		_pluginList << _curPlugin;
 	}
 	
 	if (_curPlugin) {
-		if (qName=="name") {
-			_curLang = attributes.value("lang");
+		if (qName == "description") {
+			_curPluginLocale = attributes.value("lang");
 		} else
-		if (qName=="action") {
-			QString onAction = attributes.value("onAction");
-			QString lang = attributes.value("lang");
-			QString fileName = attributes.value("fileName");
-			QString function = attributes.value("function");
-			
-			//read the function arguments arg1, arg2, arg3 etc. until argN is empty
-			QList<QString> args;
-			for (int i=1; attributes.value(QString("arg")+QString::number(i))!=""; i++)
-				args << attributes.value(QString("arg")+QString::number(i));
-			
-			_curPlugin->addAction(onAction, lang, fileName, function, args);
+		if (qName == "text") {
+			_curActionLocale = attributes.value("lang");
+		} else
+		if (qName == "title") {
+			_curMenuLocale = attributes.value("lang");
+		} else
+		if (qName == "export-filter") {
+		} else
+		if (qName == "import-filter") {
+		} else
+		if (qName == "action") {
+			_curActionLang = "python"; _curActionFunction.clear(); _curActionFilename.clear();
+			_curActionArgs.clear();
+			_curActionText.clear();
+			_curActionLocale.clear();
+			_curActionName.clear();
+			_curActionExportFilter.clear();
+			_curActionImportFilter.clear();
+			_curActionOnAction.clear();
+			_curActionParentMenu.clear();
+			_curActionParentToolbar.clear();
+		} else
+		if (qName == "menu") {
+			_curMenuTitle.clear();
+			_curMenuName.clear();
+			_curMenuLocale.clear();
+		} else
+		if (qName == "toolbar") {
 		}
 	}
 	
@@ -149,19 +168,99 @@ bool CAPluginManager::startElement(const QString& namespaceURI, const QString& l
 }
 
 bool CAPluginManager::endElement(const QString& namespaceURI, const QString& localName, const QString& qName) {
+	_tree.pop();
+	
 	if (_curPlugin) {
+		// top-level tags
+		if (qName == "canorus-version") {
+			_curPluginCanorusVersion = _curChars;
+		} else
 		if (qName == "name") {
-			_curPlugin->setName(_curChars, _curLang);
+			if (_tree.back()=="plugin")
+				_curPlugin->setName(_curChars);
+			else if (_tree.back()=="action")
+				_curActionName = _curChars;
+			else if (_tree.back()=="menu")
+				_curMenuName = _curChars;
 		} else
 		if (qName == "version") {
 			_curPlugin->setVersion(_curChars);
 		} else
-		if (qName == "homeUrl") {
+		if (qName == "author") {
+			_curPlugin->setAuthor(_curChars);
+		} else
+		if (qName == "home-url") {
 			_curPlugin->setHomeUrl(_curChars);
 		} else
-		if (qName == "updateUrl") {
+		if (qName == "update-url") {
 			_curPlugin->setUpdateUrl(_curChars);
-		}
+		} else
+		if (qName == "description") {
+			_curPlugin->setDescription(_curChars, _curPluginLocale);
+		} else
+		if (qName == "action") {
+			CAPluginAction *action = new CAPluginAction(_curPlugin, _curActionName, _curActionLang, _curActionFunction, _curActionArgs, _curActionFilename);
+			action->setOnAction(_curActionOnAction);
+			action->setExportFilters(_curActionExportFilter);
+			action->setImportFilters(_curActionImportFilter);
+			action->setTexts(_curActionText);
+			
+			if (!_curActionParentMenu.isEmpty());
+				// add action ()to menu
+			if (!_curActionParentToolbar.isEmpty());
+				// add action to toolbar
+			
+			// Add import and export filters to the generic list for faster lookup
+			QList<QString> filters;
+			filters = _curActionExportFilter.values();
+			for (int i=0; i<filters.size(); i++) {
+				_exportFilterMap[filters[i]] = action;
+				_mainWin->exportDialog()->setFilters(_mainWin->exportDialog()->filters() << filters[i]);
+			}
+			
+			filters = _curActionImportFilter.values();
+			for (int i=0; i<filters.size(); i++) {
+				_importFilterMap[filters[i]] = action;
+				_mainWin->importDialog()->setFilters(_mainWin->importDialog()->filters() << filters[i]);
+			}
+			
+			_curPlugin->addAction(action);
+		} else
+		if (qName == "menu") {
+			// add menu to main window
+		} else
+		// action level
+		if (qName == "on-action") {
+			_curActionOnAction = _curChars;
+		} else
+		if (qName == "lang") {
+			if (_tree.back()=="action")
+				_curActionLocale = _curChars;
+			else if (_tree.back()=="menu")
+				_curMenuLocale = _curChars;				
+		} else
+		if (qName == "function") {
+			_curActionFunction = _curChars;
+		} else
+		if (qName == "filename") {
+			_curActionFilename = _curChars;
+		} else
+		if (qName == "text") {
+			_curActionText[_curActionLocale] = _curChars;
+		} else
+		if (qName == "args") {
+			_curActionArgs << _curChars;
+		} else
+		if (qName == "export-filter") {
+			_curActionExportFilter[_curActionLocale] = _curChars;
+		} else
+		if (qName == "import-filter") {
+			_curActionImportFilter[_curActionLocale] = _curChars;
+		} else
+		// menu level
+		if (qName == "title") {
+			_curMenuTitle[_curMenuLocale] = _curChars;
+		}		
 	}
 	
 	return true;
@@ -174,4 +273,11 @@ bool CAPluginManager::fatalError(const QXmlParseException& exception) {
 bool CAPluginManager::characters(const QString& ch) {
 	_curChars = ch;
 	return true;
+}
+
+void CAPluginManager::exportAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords) {
+	_exportFilterMap[filter]->plugin()->callAction(_exportFilterMap[filter], _mainWin, document, evt, coords);
+}
+
+void CAPluginManager::importAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords) {
 }
