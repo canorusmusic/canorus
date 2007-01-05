@@ -86,7 +86,7 @@ class CAPluginManager : public QXmlDefaultHandler {
 		 * @param evt Pointer to the Mouse/Key/Wheel event, if it happened.
 		 * @param coords Pointer to the coords in absolute world units, if a click on ScoreViewPort happened.
 		 */
-		void exportAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords);
+		void exportAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords, QString filename);
 		bool exportActionExists(QString action) { return _exportFilterMap.contains(action); }
 		
 		/**
@@ -97,7 +97,7 @@ class CAPluginManager : public QXmlDefaultHandler {
 		 * @param evt Pointer to the Mouse/Key/Wheel event, if it happened.
 		 * @param coords Pointer to the coords in absolute world units, if a click on ScoreViewPort happened.
 		 */
-		void importAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords);
+		void importAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords, QString filename);
 		bool importActionExists(QString action) { return _importFilterMap.contains(action); }
 		
 		/**
@@ -124,22 +124,22 @@ class CAPluginManager : public QXmlDefaultHandler {
 		bool characters(const QString& ch);
 		
 	private:
-		QList<CAPlugin*> _pluginList;                     /// List of all the plugins installed
+		QList<CAPlugin*> _pluginList;                      /// List of all the plugins installed
 		QMultiHash<QString, CAPlugin* > _actionMap;        /// List of all plugins loaded accessable by their actions for faster lookup
 		QHash<QString, CAPluginAction* > _exportFilterMap; /// List of all plugins loaded accessable by their export filter for faster lookup
 		QHash<QString, CAPluginAction* > _importFilterMap; /// List of all plugins loaded accessable by their import filter for faster lookup
 		CAMainWin *_mainWin;
 		QString _curChars;
-		QStack<QString> _tree;						      /// Hierarchy backtrack of the current node
+		QStack<QString> _tree;						       /// Hierarchy backtrack of the current node
 		
 		CAPlugin *_curPlugin;
 		QString _curPluginCanorusVersion;
 		QString _curPluginLocale;
 		
 			// <action> tag:
-			QHash<QString, QString> _curActionText;     /// List of actions LOCALE texts
+			QHash<QString, QString> _curActionText;        /// List of actions LOCALE texts
 			QString _curActionName;
-			QString _curActionLocale;                   /// Temporary lang
+			QString _curActionLocale;                      /// Temporary lang
 			QString _curActionOnAction;
 			QHash<QString,QString> _curActionExportFilter, _curActionImportFilter;
 			QString _curActionParentMenu, _curActionParentToolbar;
@@ -148,8 +148,9 @@ class CAPluginManager : public QXmlDefaultHandler {
 		
 			// <menu> tag:
 			QString _curMenuName;
-			QHash<QString, QString> _curMenuTitle;      /// List of menus LOCALE titles			
-			QString _curMenuLocale;                     /// Temporary lang
+			QHash<QString, QString> _curMenuTitle;         /// List of menus LOCALE titles			
+			QString _curMenuLocale;                        /// Temporary lang
+			QString _curMenuParentMenu;                    /// Parent menu of the menu
 };
 
 #endif /*PLUGINMANAGER_H_*/

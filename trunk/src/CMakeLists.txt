@@ -53,6 +53,7 @@ SET(Canorus_MOCs ui/mainwin.h	# List of classes which Qt needs to produce MOCs f
 	ui/keysigpsp.h
 	ui/timesigpsp.h
 	ui/midisetupdialog.h
+	ui/pluginaction.h
 	widgets/keyoffs.h
 	widgets/lcdnumber.h
 	widgets/scrollwidget.h
@@ -108,6 +109,7 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/keysigpsp.cpp
 	ui/timesigpsp.cpp
 	ui/midisetupdialog.cpp
+	ui/pluginaction.cpp
 )
 
 SET(Canorus_Drawable_Srcs	# Drawable instances of the data

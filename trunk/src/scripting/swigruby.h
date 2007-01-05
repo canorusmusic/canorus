@@ -18,6 +18,10 @@
 class CASwigRuby {
 	public:
 		enum CAClassType {
+			//Qt objects
+			String,
+			
+			//Canorus objects
 			Document,
 			Sheet,
 			Context,

@@ -1075,18 +1075,44 @@ void CAMainWin::on_actionExport_activated() {
 		return;
 	
 	if (_pluginManager->exportActionExists(_exportDialog->selectedFilter()))
-		_pluginManager->exportAction(_exportDialog->selectedFilter(), &_document, 0, 0);
+		_pluginManager->exportAction(_exportDialog->selectedFilter(), &_document, 0, 0, s);
 	else {
 		QFile file(s);
 		if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 			QTextStream out(&file);
 			// TODO: call appropriate built-in export function here
-			// eg. CALilyExport::saveDocument(out, &_document);
+			// eg. CALilyExport::exportDocument(out, &_document);
 			file.close();
 		}
 	}              
 }
 
+void CAMainWin::on_actionImport_activated() {
+	QStringList fileNames;
+	int ffound = _importDialog->exec();
+	if (ffound)
+		fileNames = _importDialog->selectedFiles();
+	
+	if (!ffound)
+		return;
+	
+	QString s = fileNames[0];
+	
+	if (s.isEmpty())
+		return;
+	
+	if (_pluginManager->importActionExists(_exportDialog->selectedFilter()))
+		_pluginManager->importAction(_exportDialog->selectedFilter(), &_document, 0, 0, fileNames[0]);
+	else {
+		QFile file(s);
+		if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+			QTextStream in(&file);
+			// TODO: call appropriate built-in import function here
+			// eg. CALilyExport::importDocument(in, &_document);
+			file.close();
+		}
+	}              
+}
 
 void CAMainWin::sl_mpoVoiceNum_valChanged(int iVoice)
 {

@@ -12,6 +12,7 @@
 #endif
 
 #include "interface/plugin.h"
+#include "ui/pluginaction.h"
 
 #include "ui/mainwin.h"
 #include "widgets/scrollwidget.h"
@@ -47,6 +48,10 @@ CAPlugin::~CAPlugin() {
 	QList<CAPluginAction*> pluginActions = _actionMap.values();
 	for (int i=0; i<pluginActions.size(); i++)
 		delete pluginActions[i];
+	
+	QList<QMenu*> menus = _menuMap.values();
+	for (int i=0; i<menus.size(); i++)
+		delete menus[i];
 }
 
 bool CAPlugin::action(QString onAction, CAMainWin *mainWin, CADocument *document, QEvent *evt, QPoint *coords) {
@@ -64,7 +69,7 @@ bool CAPlugin::action(QString onAction, CAMainWin *mainWin, CADocument *document
 	return (!error);
 }
 
-bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument *document, QEvent *evt, QPoint *coords) {
+bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument *document, QEvent *evt, QPoint *coords, QString filename) {
 	bool error=false;
 #ifdef USE_RUBY
 	QList<VALUE> rubyArgs;
@@ -147,6 +152,18 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		} else
 		if (val=="chord") {
 			//TODO
+		} else
+		if (val=="export-filename" || val=="import-filename") {
+#ifdef USE_RUBY
+			if (action->lang()=="ruby") {
+				rubyArgs << CASwigRuby::toRubyObject(&filename, CASwigRuby::String);
+			}
+#endif
+#ifdef USE_PYTHON
+			if (action->lang()=="python") {
+				pythonArgs << CASwigPython::toPythonObject(&filename, CASwigPython::String);
+			}
+#endif
 		}
 	}
 	
@@ -182,13 +199,4 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 
 void CAPlugin::addAction(CAPluginAction *action) {
 	_actionMap.insertMulti(action->onAction(), action);
-}
-
-CAPluginAction::CAPluginAction(CAPlugin *plugin, QString name, QString lang, QString function, QList<QString> args, QString filename) {
-	_plugin = plugin;
-	_name = name;
-	_lang = lang;
-	_function = function;
-	_filename = filename;
-	_args = args;
 }
