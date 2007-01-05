@@ -240,9 +240,11 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			
 			_curPlugin->addMenu(_curMenuName, menu);
 			if (_curMenuParentMenu.isEmpty())
-				_mainWin->menuBar()->addMenu(menu);                  // no parent menu set, add it to the top-level mainwindow's menu
+				// no parent menu set, add it to the top-level mainwindow's menu before the Help menu
+				_mainWin->menuBar()->insertMenu(_mainWin->menuBar()->actions().last(), menu);
 			else
-				_curPlugin->menu(_curMenuParentMenu)->addMenu(menu); // parent menu set, find it and add a new submenu to it
+				// parent menu set, find it and add a new submenu to it
+				_curPlugin->menu(_curMenuParentMenu)->addMenu(menu);
 		} else
 		// action level
 		if (qName == "on-action") {
