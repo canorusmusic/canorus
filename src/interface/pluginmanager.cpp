@@ -203,13 +203,16 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 		} else
 		if (qName == "action") {
 			CAPluginAction *action = new CAPluginAction(_curPlugin, _curActionName, _curActionLang, _curActionFunction, _curActionArgs, _curActionFilename);
+			if (!_curActionParentMenu.isEmpty()) {
+				action->setParent(_mainWin);
+				_curPlugin->menu(_curActionParentMenu)->addAction(action);
+			}
+			
 			action->setOnAction(_curActionOnAction);
 			action->setExportFilters(_curActionExportFilter);
 			action->setImportFilters(_curActionImportFilter);
 			action->setTexts(_curActionText);
 			
-			if (!_curActionParentMenu.isEmpty())
-				_curPlugin->menu(_curActionParentMenu)->addAction(action);
 			if (!_curActionParentToolbar.isEmpty());
 				// TODO: add action to toolbar
 			
@@ -230,7 +233,16 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			_curPlugin->addAction(action);
 		} else
 		if (qName == "menu") {
-			QMenu *menu = new QMenu(0);
+			QMenu *menu;
+			if (_curMenuParentMenu.isEmpty()) {
+				// no parent menu set, add it to the top-level mainwindow's menu before the Help menu
+				menu = new QMenu(_mainWin->menuBar());
+				_mainWin->menuBar()->insertMenu(_mainWin->menuBar()->actions().last(), menu);
+			} else {
+				// parent menu set, find it and add a new submenu to it
+				menu = new QMenu(_curPlugin->menu(_curMenuParentMenu));
+				_curPlugin->menu(_curMenuParentMenu)->addMenu(menu);
+			}
 			menu->setObjectName(_curMenuName);
 			
 			if (_curMenuTitle.contains(QLocale::system().name()))
@@ -239,12 +251,6 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 				menu->setTitle( _curMenuTitle[""] );
 			
 			_curPlugin->addMenu(_curMenuName, menu);
-			if (_curMenuParentMenu.isEmpty())
-				// no parent menu set, add it to the top-level mainwindow's menu before the Help menu
-				_mainWin->menuBar()->insertMenu(_mainWin->menuBar()->actions().last(), menu);
-			else
-				// parent menu set, find it and add a new submenu to it
-				_curPlugin->menu(_curMenuParentMenu)->addMenu(menu);
 		} else
 		// action level
 		if (qName == "on-action") {

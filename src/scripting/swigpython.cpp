@@ -13,12 +13,21 @@
 //defined in SWIG wrapper class
 extern "C" void init_CanorusPython();	///Load 'CanorusPython' module and initialize classes
 QString locateResource(QString);
+QString locateResourceDirectory(QString);
 
 void CASwigPython::init() {
 	Py_Initialize();
 	init_CanorusPython();
 	PyRun_SimpleString("import sys");
+	// add path to scripts to Scripting path
 	PyRun_SimpleString((QString("sys.path.append('")+locateResource("scripts")+"')").toStdString().c_str());
+	// add path to CanorusPython modules to Scripting path
+	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("CanorusPython.py")+"')").toStdString().c_str());
+#ifdef Q_WS_WIN
+	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("_CanorusPython.dll")+"')").toStdString().c_str());
+#else
+	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("_CanorusPython.so")+"')").toStdString().c_str());
+#endif
 }
 #include<iostream>
 //WARNING! You have to add path of the plugin to Python path before, manually!

@@ -190,7 +190,6 @@ private slots:
 	void on_actionNoteSelect_toggled(bool);
 	void on_actionClefSelect_toggled(bool);
 	void on_actionTimeSigSelect_toggled(bool);
-	void harmonyAnalysisActivated();	//TODO: This should do plugin externally automatically
 
 	////////////////////////////////////////////////////
 	//Process ViewPort signals
