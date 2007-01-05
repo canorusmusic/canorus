@@ -143,6 +143,7 @@ class CAPluginManager : public QXmlDefaultHandler {
 			QString _curActionOnAction;
 			QHash<QString,QString> _curActionExportFilter, _curActionImportFilter;
 			QString _curActionParentMenu, _curActionParentToolbar;
+			bool _curActionRefresh;
 			QString _curActionLang, _curActionFunction, _curActionFilename;
 			QList<QString> _curActionArgs;
 		

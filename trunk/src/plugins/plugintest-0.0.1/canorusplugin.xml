@@ -42,5 +42,6 @@
 		<filename>analysis.py</filename>
 		<function>analyse</function>
 		<args>sheet</args>
+		<refresh/>
 	</action>
 </plugin>
