@@ -109,6 +109,11 @@ QString locateResource(const QString fileName) {
 	return QString("");
 }
 
+QString locateResourceDirectory(const QString fileName) {
+	QString path = locateResource(fileName);
+	return path.left(path.lastIndexOf("/"));
+}
+
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
 	: QMainWindow( oParent )
@@ -183,11 +188,6 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_pluginManager = new CAPluginManager(this);
 	_pluginManager->readPlugins();
 	_pluginManager->enablePlugins();
-	
-	// Add harmony analysis menu manually
-	// TODO: This should eventually become a separate plugin, but as we cannot export Qt's internal classes to Ruby yet, this is done internally
-	QAction *m = moMainWin.menuTools->addAction(tr("Harmony analysis"));
-	connect(m, SIGNAL(activated()), this, SLOT(harmonyAnalysisActivated()));
 	
 	newDocument();
 }
@@ -1289,12 +1289,6 @@ See the file AUTHORS for the list of Canorus developers\n\n\
 This program is licensed under the GNU General Public License (GPL).\n\
 See the file LICENSE.GPL for details.\n\n\
 Homepage: http://www.canorus.org").arg(CANORUS_VERSION) );
-}
-
-//TODO: This should be done by the plugin automatically. But since we're not able to export internal Qt classes to scripting languages yet, this must be done manually
-void CAMainWin::harmonyAnalysisActivated() {
-	_pluginManager->action("onHarmonyAnalysisActivated", &_document, 0, 0);
-	rebuildUI();
 }
 
 void CAMainWin::on_actionMIDI_Setup_activated() {

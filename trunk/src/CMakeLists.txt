@@ -153,12 +153,11 @@ SET(Canorus_Srcs
 	${Canorus_Widget_Srcs}
 )
 
-SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Ruby module.
+SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module.
 	core/context.cpp
 	core/document.cpp
 	core/sheet.cpp
 	core/muselement.cpp
-	core/muselementfactory.cpp
 	core/staff.cpp
 	core/playable.cpp
 	core/note.cpp
