@@ -44,49 +44,54 @@ CAPlugin::CAPlugin(QString name, QString author, QString version, QString date, 
 }
 
 CAPlugin::~CAPlugin() {
+	QList<CAPluginAction*> pluginActions = _actionMap.values();
+	for (int i=0; i<pluginActions.size(); i++)
+		delete pluginActions[i];
 }
 
-bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *document, QEvent *evt, QPoint *coords) {
+bool CAPlugin::action(QString onAction, CAMainWin *mainWin, CADocument *document, QEvent *evt, QPoint *coords) {
 	if (!_enabled)
 		return false;
 	
-	QList<QString> vals = _actionMap[actionName];
-	if (!vals.size())	//action not found
+	QList<CAPluginAction*> actionList = _actionMap.values(onAction);
+	if (!actionList.size())	// action not found
 		return false;
-	//vals[0] - type
-	//vals[1] - file name
-	//vals[2] - function name
-	//vals[3+] - arguments
 	
-	int i=0;
-	QString lang = vals[i++].toUpper();
-	QString fileName = vals[i++];
-	QString functionName = vals[i++];
+	bool error = false;
+	for (int i=0; i<actionList.size(); i++)
+		error |= (!callAction(actionList[i], mainWin, document, evt, coords));
 	
+	return (!error);
+}
+
+bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument *document, QEvent *evt, QPoint *coords) {
+	bool error=false;
 #ifdef USE_RUBY
 	QList<VALUE> rubyArgs;
 #endif
 #ifdef USE_PYTHON
 	QList<PyObject*> pythonArgs;
 #endif
-	bool error=false;
-	for (; i<vals.size(); i++) {
-		QString val=vals[i].toUpper();
-		if (val=="DOCUMENT") {
+	
+	// Convert arguments to its needed scripting language types
+	QList<QString> args = action->args();
+	for (int i=0; i<args.size(); i++) {
+		QString val=args[i];
+		if (val=="document") {
 #ifdef USE_RUBY
-			if (lang=="RUBY") {
+			if (action->lang()=="ruby") {
 				rubyArgs << CASwigRuby::toRubyObject(document, CASwigRuby::Document);
 			}
 #endif
 #ifdef USE_PYTHON
-			if (lang=="PYTHON") {
+			if (action->lang()=="python") {
 				pythonArgs << CASwigPython::toPythonObject(document, CASwigPython::Document);
 			}
 #endif
 		} else
-		if (val=="SHEET") {
+		if (val=="sheet") {
 #ifdef USE_RUBY
-			if (lang=="RUBY") {
+			if (action->lang()=="ruby") {
 				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
 					rubyArgs << CASwigRuby::toRubyObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigRuby::Sheet);
 				else {
@@ -96,7 +101,7 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 			}
 #endif
 #ifdef USE_PYTHON
-			if (lang=="PYTHON") {
+			if (action->lang()=="python") {
 				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
 					pythonArgs << CASwigPython::toPythonObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigPython::Sheet);
 				else {
@@ -106,9 +111,9 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 			}
 #endif
 		} else
-		if (val=="NOTE") {
+		if (val=="note") {
 #ifdef USE_RUBY
-			if (lang=="RUBY") {
+			if (action->lang()=="ruby") {
 				if (mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
 					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentScrollWidget()->lastUsedViewPort());
 					if (!v->selection()->size() || v->selection()->front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
@@ -124,7 +129,7 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 			}
 #endif
 #ifdef USE_PYTHON
-			if (lang=="PYTHON") {
+			if (action->lang()=="python") {
 				if (mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
 					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentScrollWidget()->lastUsedViewPort());
 					if (!v->selection()->size() || v->selection()->front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
@@ -140,20 +145,20 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 			}
 #endif
 		} else
-		if (val=="CHORD") {
+		if (val=="chord") {
 			//TODO
 		}
 	}
 	
-	if (actionName=="onInit") {
+	if (action->onAction()=="onInit") {
 		//add the plugin's path for the first time, so scripting languages can find their modules
 #ifdef USE_RUBY
-		if (lang=="RUBY") {
+		if (action->lang()=="ruby") {
 			rb_eval_string((QString("$: << '") + _dirName + "'").toStdString().c_str());
 		}
 #endif
 #ifdef USE_PYTHON
-		if (lang=="PYTHON") {
+		if (action->lang()=="python") {
 			PyRun_SimpleString((QString("sys.path.append('")+_dirName+"')").toStdString().c_str());
 		}
 #endif
@@ -161,26 +166,29 @@ bool CAPlugin::action(QString actionName, CAMainWin *mainWin, CADocument *docume
 	
 	if (!error) {
 #ifdef USE_RUBY
-		if (lang=="RUBY") {
-			error = (!CASwigRuby::callFunction(_dirName + "/" + fileName, functionName, rubyArgs));
+		if (action->lang()=="ruby") {
+			return (!CASwigRuby::callFunction(_dirName + "/" + action->filename(), action->function(), rubyArgs));
 		}
 #endif
 #ifdef USE_PYTHON
-		if (lang=="PYTHON") {
-			error = (!CASwigPython::callFunction(_dirName + "/" + fileName, functionName, pythonArgs));
+		if (action->lang()=="python") {
+			return (!CASwigPython::callFunction(_dirName + "/" + action->filename(), action->function(), pythonArgs));
 		}
 #endif
 	}
 	
-	return (!error);
+	return false;
 }
 
-void CAPlugin::addAction(QString actionName, QString type, QString fileName, QString function, QList<QString> args) {
-	QList<QString> vals;
-	vals << type;
-	vals << fileName;
-	vals << function;
-	vals << args;
-	
-	_actionMap.insert(actionName, vals);
+void CAPlugin::addAction(CAPluginAction *action) {
+	_actionMap.insertMulti(action->onAction(), action);
+}
+
+CAPluginAction::CAPluginAction(CAPlugin *plugin, QString name, QString lang, QString function, QList<QString> args, QString filename) {
+	_plugin = plugin;
+	_name = name;
+	_lang = lang;
+	_function = function;
+	_filename = filename;
+	_args = args;
 }

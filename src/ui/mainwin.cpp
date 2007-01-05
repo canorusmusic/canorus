@@ -113,7 +113,7 @@ QString locateResource(const QString fileName) {
 CAMainWin::CAMainWin(QMainWindow *oParent)
 	: QMainWindow( oParent )
 {
-	//Init main application properties
+	// Init main application properties
 	QCoreApplication::setOrganizationName("Canorus");
 	QCoreApplication::setOrganizationDomain("canorus.org");
 	QCoreApplication::setApplicationName("Canorus");
@@ -127,13 +127,13 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_settings = new QSettings(QDir::homePath()+"/.config/Canorus/canorus.ini", QSettings::IniFormat);
 #endif
 		
-	//Add main music insertion toolbar
+	// Add main music insertion toolbar
 	mpoMEToolBar = new CAToolBar( this );
 	mpoMEToolBar->setOrientation(Qt::Vertical);
 	initToolBar();
 	addToolBar(static_cast<Qt::ToolBarArea>(2), mpoMEToolBar);
 	
-	//Initialize widgets
+	// Initialize widgets
 	moMainWin.setupUi( this );
 	// Add a signal so if the menu action is used, the toolbar
 	// is notified to change it's state
@@ -154,30 +154,38 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	mpoTimeSigPSP = 0;
 	mpoMEFactory = new CAMusElementFactory();
 	
-	//Initialize playback
-	_defaultRtMidiOutPort = -1;
-	_defaultRtMidiInPort = -1;
-	initMidi();
+	// Initialize import/export dialogs
+	_exportDialog = new QFileDialog(this);
+	_exportDialog->setFileMode(QFileDialog::AnyFile);
+	_exportDialog->setDirectory( QDir::current() );
+	_importDialog = new QFileDialog(this);
+	_importDialog->setFileMode(QFileDialog::ExistingFile);
+	_importDialog->setDirectory( QDir::current() );
 	
-	//Initialize the internal properties
+	// Initialize internal UI properties
 	_currentMode = SelectMode;
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
-
+	
+	// Initialize playback
+	_defaultRtMidiOutPort = -1;
+	_defaultRtMidiInPort = -1;
+	initMidi();
+	
+	// Initialize scripting and plugins subsystem
 #ifdef USE_RUBY	
 	CASwigRuby::init();
 #endif
 #ifdef USE_PYTHON
 	CASwigPython::init();
 #endif
-	//Initialize plugins subsystem
 	_pluginManager = new CAPluginManager(this);
 	_pluginManager->readPlugins();
 	_pluginManager->enablePlugins();
 	
-	//Add harmony analysis menu manually
-	//TODO: This should eventually become a separate plugin, but as we cannot export Qt's internal classes to Ruby yet, this is done internally
+	// Add harmony analysis menu manually
+	// TODO: This should eventually become a separate plugin, but as we cannot export Qt's internal classes to Ruby yet, this is done internally
 	QAction *m = moMainWin.menuTools->addAction(tr("Harmony analysis"));
 	connect(m, SIGNAL(activated()), this, SLOT(harmonyAnalysisActivated()));
 	
@@ -404,7 +412,7 @@ void CAMainWin::on_actionNew_staff_activated() {
 	
 	CASheet *sheet = ((CAScoreViewPort*)_activeViewPort)->sheet();
 	CAStaff *staff = sheet->addStaff();
-	staff->addVoice(new CAVoice( staff, tr("Voice %i").arg(QString::number(1)) ));
+	staff->addVoice(new CAVoice( staff, tr("Voice %1").arg(QString::number(1)) ));
 	
 	rebuildUI(sheet);
 	
@@ -979,7 +987,7 @@ void CAMainWin::on_actionOpen_activated() {
 	                this,
 	                tr("Choose a file to open"),
 	                "",
-	                "Canorus document (*.xml)");
+	                tr("Canorus document (*.xml)"));
 
 	if (s.isEmpty())
 		return;
@@ -1008,7 +1016,7 @@ void CAMainWin::on_actionSave_activated() {
 		                this,
 		                tr("Choose a file to save"),
 		                "",
-		                "Canorus document (*.xml)");
+		                tr("Canorus document (*.xml)"));
 	}
 
 	if (s.isEmpty())
@@ -1033,7 +1041,7 @@ void CAMainWin::on_actionSave_as_activated() {
 	                this,
 	                tr("Choose a file to save"),
 	                "",
-	                "Canorus document (*.xml)");
+	                tr("Canorus document (*.xml)"));
 	
 	if (s.isEmpty())
 		return;
@@ -1053,33 +1061,30 @@ void CAMainWin::on_actionSave_as_activated() {
 }
 
 void CAMainWin::on_actionExport_activated() {
-	
-	QFileDialog *fd = new QFileDialog(this);
-	fd->setFileMode(QFileDialog::AnyFile);
-	fd->setFilter( "Lilypond document (*.ly)" );
-	fd->setDefaultSuffix( "ly" );
-	fd->setDirectory( QDir::current() );
 	QStringList fileNames;
-	int ffound = fd->exec();
+	int ffound = _exportDialog->exec();
 	if (ffound)
-		fileNames = fd->selectedFiles();
-	delete fd;
+		fileNames = _exportDialog->selectedFiles();
+	
 	if (!ffound)
 		return;
-
+	
 	QString s = fileNames[0];
-
+	
 	if (s.isEmpty())
 		return;
-
-	//std::cout <<   "  Resultierender Filename: " << s.toStdString() << endl;
-	QFile file(s);
-	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-		
-		//QTextStream out(&file);
-		//CALilyExport::saveDocument(out, &_document);
-		file.close();
-	}               
+	
+	if (_pluginManager->exportActionExists(_exportDialog->selectedFilter()))
+		_pluginManager->exportAction(_exportDialog->selectedFilter(), &_document, 0, 0);
+	else {
+		QFile file(s);
+		if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+			QTextStream out(&file);
+			// TODO: call appropriate built-in export function here
+			// eg. CALilyExport::saveDocument(out, &_document);
+			file.close();
+		}
+	}              
 }
 
 
@@ -1253,11 +1258,11 @@ void CAMainWin::on_actionAbout_Canorus_activated()
 	QMessageBox::about ( this, tr("About Canorus"),
 	tr("Canorus - The next generation music score editor\n\n\
 Version %1\n\
-(C) 2006 Canorus Development team. All rights reserved.\n\
+(C) 2006, 2007 Canorus Development team. All rights reserved.\n\
 See the file AUTHORS for the list of Canorus developers\n\n\
 This program is licensed under the GNU General Public License (GPL).\n\
 See the file LICENSE.GPL for details.\n\n\
-Homepage: http://canorus.berlios.de").arg(CANORUS_VERSION) );
+Homepage: http://www.canorus.org").arg(CANORUS_VERSION) );
 }
 
 //TODO: This should be done by the plugin automatically. But since we're not able to export internal Qt classes to scripting languages yet, this must be done manually
