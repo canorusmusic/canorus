@@ -9,10 +9,12 @@
 #include "interface/pluginmanager.h"
 #include "interface/plugin.h"
 #include "ui/mainwin.h"	//needed for locateResource()
+#include "ui/pluginaction.h"
 #include <iostream>
 #include <QDir>
 #include <QFile>
 #include <QXmlInputSource>
+#include <QMenu>
 
 CAPluginManager::CAPluginManager(CAMainWin *mainWin) {
 	_mainWin = mainWin;
@@ -159,6 +161,7 @@ bool CAPluginManager::startElement(const QString& namespaceURI, const QString& l
 			_curMenuTitle.clear();
 			_curMenuName.clear();
 			_curMenuLocale.clear();
+			_curMenuParentMenu.clear();
 		} else
 		if (qName == "toolbar") {
 		}
@@ -205,10 +208,10 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			action->setImportFilters(_curActionImportFilter);
 			action->setTexts(_curActionText);
 			
-			if (!_curActionParentMenu.isEmpty());
-				// add action ()to menu
+			if (!_curActionParentMenu.isEmpty())
+				_curPlugin->menu(_curActionParentMenu)->addAction(action);
 			if (!_curActionParentToolbar.isEmpty());
-				// add action to toolbar
+				// TODO: add action to toolbar
 			
 			// Add import and export filters to the generic list for faster lookup
 			QList<QString> filters;
@@ -227,7 +230,19 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			_curPlugin->addAction(action);
 		} else
 		if (qName == "menu") {
-			// add menu to main window
+			QMenu *menu = new QMenu(0);
+			menu->setObjectName(_curMenuName);
+			
+			if (_curMenuTitle.contains(QLocale::system().name()))
+				menu->setTitle( _curMenuTitle[QLocale::system().name() ]);
+			else
+				menu->setTitle( _curMenuTitle[""] );
+			
+			_curPlugin->addMenu(_curMenuName, menu);
+			if (_curMenuParentMenu.isEmpty())
+				_mainWin->menuBar()->addMenu(menu);                  // no parent menu set, add it to the top-level mainwindow's menu
+			else
+				_curPlugin->menu(_curMenuParentMenu)->addMenu(menu); // parent menu set, find it and add a new submenu to it
 		} else
 		// action level
 		if (qName == "on-action") {
@@ -251,6 +266,9 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 		if (qName == "args") {
 			_curActionArgs << _curChars;
 		} else
+		if (qName == "parent-menu") {
+			_curActionParentMenu = _curChars;
+		} else
 		if (qName == "export-filter") {
 			_curActionExportFilter[_curActionLocale] = _curChars;
 		} else
@@ -260,7 +278,7 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 		// menu level
 		if (qName == "title") {
 			_curMenuTitle[_curMenuLocale] = _curChars;
-		}		
+		}
 	}
 	
 	return true;
@@ -275,9 +293,10 @@ bool CAPluginManager::characters(const QString& ch) {
 	return true;
 }
 
-void CAPluginManager::exportAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords) {
-	_exportFilterMap[filter]->plugin()->callAction(_exportFilterMap[filter], _mainWin, document, evt, coords);
+void CAPluginManager::exportAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords, QString filename) {
+	_exportFilterMap[filter]->plugin()->callAction(_exportFilterMap[filter], _mainWin, document, evt, coords, filename);
 }
 
-void CAPluginManager::importAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords) {
+void CAPluginManager::importAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords, QString filename) {
+	_importFilterMap[filter]->plugin()->callAction(_importFilterMap[filter], _mainWin, document, evt, coords, filename);
 }

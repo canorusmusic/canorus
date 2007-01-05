@@ -68,6 +68,9 @@ class QString;
 
 PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType type) {
 	switch (type) {
+		case CASwigPython::String:
+			return Py_BuildValue("s", ((QString*)object)->toUtf8().data());
+			break;
 		case CASwigPython::Document:
 			return SWIG_NewPointerObj(object, SWIGTYPE_p_CADocument, 0);
 			break;

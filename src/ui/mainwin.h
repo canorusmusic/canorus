@@ -134,6 +134,7 @@ public:
 	
 	QFileDialog *exportDialog() { return _exportDialog; }
 	QFileDialog *importDialog() { return _importDialog; }
+	CADocument *curDocument() { return &_document; }
 	
 private slots:
 	////////////////////////////////////////////////////
@@ -147,6 +148,7 @@ private slots:
 	void on_actionSave_activated();
 	void on_actionSave_as_activated();
 	void on_actionExport_activated();
+	void on_actionImport_activated();
 	
 	//Edit menu
 	void on_actionMIDI_Setup_activated();
