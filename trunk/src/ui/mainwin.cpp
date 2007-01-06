@@ -1183,7 +1183,7 @@ void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 	fflush( stdout );
 	if( bOn )
 	{
-		on_action_Clef_activated();
+		on_action_Clef_triggered();
 		actionNoteSelect->setChecked( false );
 		actionTimeSigSelect->setChecked( false );	
 	}
