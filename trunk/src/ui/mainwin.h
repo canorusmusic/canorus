@@ -142,47 +142,47 @@ private slots:
 	////////////////////////////////////////////////////
 	void closeEvent(QCloseEvent *event);
 	//File menu
-	void on_actionNew_activated();
-	void on_actionNew_sheet_activated();
-	void on_actionOpen_activated();
-	void on_actionSave_activated();
-	void on_actionSave_as_activated();
-	void on_actionExport_activated();
-	void on_actionImport_activated();
+	void on_actionNew_triggered();
+	void on_actionNew_sheet_triggered();
+	void on_actionOpen_triggered();
+	void on_actionSave_triggered();
+	void on_actionSave_as_triggered();
+	void on_actionExport_triggered();
+	void on_actionImport_triggered();
 	
 	//Edit menu
-	void on_actionMIDI_Setup_activated();
+	void on_actionMIDI_Setup_triggered();
 	
 	//Insert menu
-	void on_actionNew_staff_activated();
-	void on_action_Clef_activated();
-	void on_action_Key_signature_activated();
-	void on_action_Time_signature_activated();
+	void on_actionNew_staff_triggered();
+	void on_action_Clef_triggered();
+	void on_action_Key_signature_triggered();
+	void on_action_Time_signature_triggered();
 
 	//View menu
 	void on_action_Fullscreen_toggled(bool);
 	void on_actionAnimated_scroll_toggled(bool);
 	void on_actionLock_scroll_playback_toggled(bool);
-	void on_actionZoom_to_selection_activated();
-	void on_actionZoom_to_fit_activated();
-	void on_actionZoom_to_width_activated();
-	void on_actionZoom_to_height_activated();
+	void on_actionZoom_to_selection_triggered();
+	void on_actionZoom_to_fit_triggered();
+	void on_actionZoom_to_width_triggered();
+	void on_actionZoom_to_height_triggered();
 	
 	//Playback menu
 	void on_actionPlay_toggled(bool);
 	
 	//Perspective menu
-	void on_actionSource_view_perspective_activated();
+	void on_actionSource_view_perspective_triggered();
 	
 	//Window menu
-	void on_actionSplit_horizontally_activated();
-	void on_actionSplit_vertically_activated();
-	void on_actionUnsplit_activated();
-	void on_actionNew_viewport_activated();
+	void on_actionSplit_horizontally_triggered();
+	void on_actionSplit_vertically_triggered();
+	void on_actionUnsplit_triggered();
+	void on_actionNew_viewport_triggered();
 	
 	//Help menu
-	void on_actionAbout_Qt_activated();
-	void on_actionAbout_Canorus_activated();
+	void on_actionAbout_Qt_triggered();
+	void on_actionAbout_Canorus_triggered();
 
 	// Toolbar 
 	void sl_mpoVoiceNum_valChanged(int iVoice);
@@ -276,6 +276,7 @@ private:
 	CAButtonMenu *mpoClefMenu;          /// Menu for selection of a clef
 	CAButtonMenu *mpoNoteMenu;          /// Menu for the selection of a note length
 	CAButtonMenu *mpoTimeSigMenu;       /// Menu for selection of a key signature
+	QActionGroup *mpoMEGroup;           /// Group for mutual exclusive selection of music elements
 	QAction      *actionNoteSelect;     /// Action for having a note length selected
 	QAction      *actionClefSelect;     /// Action for having a clef selected
 	QAction      *actionTimeSigSelect;  /// Action for having a clef selected
