@@ -144,6 +144,18 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	// is notified to change it's state
 	mpoMEToolBar->setAction( actionClefSelect->objectName(), 
 	                         moMainWin.action_Clef );
+	/*mpoMEToolBar->setAction( actionNoteSelect->objectName(), 
+	                         actionClefSelect );
+	mpoMEToolBar->setAction( actionNoteSelect->objectName(), 
+	                         actionTimeSigSelect );
+	mpoMEToolBar->setAction( actionClefSelect->objectName(), 
+	                         actionNoteSelect );
+	mpoMEToolBar->setAction( actionClefSelect->objectName(), 
+	                         actionTimeSigSelect );
+	mpoMEToolBar->setAction( actionTimeSigSelect->objectName(), 
+	                         actionClefSelect );
+	mpoMEToolBar->setAction( actionTimeSigSelect->objectName(), 
+	                         actionNoteSelect );*/
 	mpoVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" );
 	mpoVoiceNumAction = moMainWin.mpoToolBar->addWidget( mpoVoiceNum );
 	// Connect manually as the action cannot be created earlier
@@ -238,6 +250,12 @@ void CAMainWin::initToolBar()
 	actionTimeSigSelect = mpoMEToolBar->addToolMenu( "Add Time Signature",
 	                                                "actionTimeSigSelect", mpoTimeSigMenu,
 	                                                &oTCIcon, true );
+	                                                
+	mpoMEGroup = new QActionGroup( this );
+	mpoMEGroup->addAction( actionClefSelect );
+	mpoMEGroup->addAction( actionNoteSelect );
+	mpoMEGroup->addAction( actionTimeSigSelect );
+	
 	// Add all the menu entries, either as text or icons
 	mpoClefMenu->addButton( oClefTrebleIcon, CAClef::Treble );
 	mpoClefMenu->addButton( oClefBassIcon, CAClef::Bass );
@@ -315,7 +333,7 @@ void CAMainWin::on_action_Fullscreen_toggled(bool checked) {
 		this->showNormal();
 }
 
-void CAMainWin::on_actionSplit_horizontally_activated() {
+void CAMainWin::on_actionSplit_horizontally_triggered() {
 	CAViewPort *v = (CAViewPort *)_currentScrollWidget->splitHorizontally();
 	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
@@ -334,7 +352,7 @@ void CAMainWin::on_actionSplit_horizontally_activated() {
 	setMode(_currentMode);	//updates the new viewport border settings
 }
 
-void CAMainWin::on_actionSplit_vertically_activated() {
+void CAMainWin::on_actionSplit_vertically_triggered() {
 	CAViewPort *v = (CAViewPort *)_currentScrollWidget->splitVertically();
 
 	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
@@ -354,7 +372,7 @@ void CAMainWin::on_actionSplit_vertically_activated() {
 	setMode(_currentMode);	//updates the new viewport border settings
 }
 
-void CAMainWin::on_actionUnsplit_activated() {
+void CAMainWin::on_actionUnsplit_triggered() {
 	CAViewPort *v = _currentScrollWidget->unsplit();
 	if (v)
 		_viewPortList.removeAll(v);
@@ -364,7 +382,7 @@ void CAMainWin::on_actionUnsplit_activated() {
 	moMainWin.actionUnsplit->setEnabled(false);
 }
 
-void CAMainWin::on_actionSource_view_perspective_activated() {
+void CAMainWin::on_actionSource_view_perspective_triggered() {
 	CASourceViewPort *v = new CASourceViewPort(&_document, _activeViewPort->parent());
 	_currentScrollWidget->addViewPort(v);
 	
@@ -381,7 +399,7 @@ void CAMainWin::on_actionSource_view_perspective_activated() {
 	setMode(_currentMode);	//updates the new viewport border settings
 }
 
-void CAMainWin::on_actionNew_viewport_activated() {
+void CAMainWin::on_actionNew_viewport_triggered() {
 	CAViewPort *v = _currentScrollWidget->newViewPort(_activeViewPort);
 
 	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
@@ -398,15 +416,15 @@ void CAMainWin::on_actionNew_viewport_activated() {
 	setMode(_currentMode);	//updates the new viewport border settings
 }
 
-void CAMainWin::on_actionNew_activated() {
+void CAMainWin::on_actionNew_triggered() {
 	newDocument();
 }
 
-void CAMainWin::on_actionNew_sheet_activated() {
+void CAMainWin::on_actionNew_sheet_triggered() {
 	addSheet(_document.addSheet(tr("Sheet %1").arg(QString::number(_document.sheetCount()+1))));			//add a new empty sheet
 }
 
-void CAMainWin::on_actionNew_staff_activated() {
+void CAMainWin::on_actionNew_staff_triggered() {
 	if (_activeViewPort->viewPortType() != CAViewPort::ScoreViewPort)
 		return;
 	
@@ -470,7 +488,7 @@ void CAMainWin::setMode(CAMode mode) {
 	}	//switch(mode)
 }
 
-void CAMainWin::on_action_Clef_activated() {
+void CAMainWin::on_action_Clef_triggered() {
 	setMode(InsertMode);
 	mpoMEFactory->setMusElementType( CAMusElement::Clef );
 	actionNoteSelect->setChecked( false );
@@ -889,7 +907,7 @@ void CAMainWin::initMidi() {
 			_defaultRtMidiOutPort = -1;
 			
 	} else {
-		on_actionMIDI_Setup_activated();
+		on_actionMIDI_Setup_triggered();
 	}
 }
 
@@ -958,22 +976,22 @@ void CAMainWin::on_actionLock_scroll_playback_toggled(bool val) {
 	_lockScrollPlayback = val;
 }
 
-void CAMainWin::on_actionZoom_to_selection_activated() {
+void CAMainWin::on_actionZoom_to_selection_triggered() {
 	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)
 		((CAScoreViewPort*)_activeViewPort)->zoomToSelection(_animatedScroll);
 }
 
-void CAMainWin::on_actionZoom_to_fit_activated() {
+void CAMainWin::on_actionZoom_to_fit_triggered() {
 	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)
 		((CAScoreViewPort*)_activeViewPort)->zoomToFit();
 }
 
-void CAMainWin::on_actionZoom_to_width_activated() {
+void CAMainWin::on_actionZoom_to_width_triggered() {
 	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)
 		((CAScoreViewPort*)_activeViewPort)->zoomToWidth();
 }
 
-void CAMainWin::on_actionZoom_to_height_activated() {
+void CAMainWin::on_actionZoom_to_height_triggered() {
 	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)
 		((CAScoreViewPort*)_activeViewPort)->zoomToHeight();
 }
@@ -982,7 +1000,7 @@ void CAMainWin::closeEvent(QCloseEvent *event) {	//TODO: Make the main window th
 	delete _pluginManager;
 }
 
-void CAMainWin::on_actionOpen_activated() {
+void CAMainWin::on_actionOpen_triggered() {
 	QString s = QFileDialog::getOpenFileName(
 	                this,
 	                tr("Choose a file to open"),
@@ -1009,7 +1027,7 @@ void CAMainWin::on_actionOpen_activated() {
 	}               
 }
 
-void CAMainWin::on_actionSave_activated() {
+void CAMainWin::on_actionSave_triggered() {
 	QString s;
 	if (_fileName.isEmpty()) { 
 		s = QFileDialog::getSaveFileName(
@@ -1036,7 +1054,7 @@ void CAMainWin::on_actionSave_activated() {
 	}               
 }
 
-void CAMainWin::on_actionSave_as_activated() {
+void CAMainWin::on_actionSave_as_triggered() {
 	QString s = QFileDialog::getSaveFileName(
 	                this,
 	                tr("Choose a file to save"),
@@ -1060,7 +1078,7 @@ void CAMainWin::on_actionSave_as_activated() {
 	}
 }
 
-void CAMainWin::on_actionExport_activated() {
+void CAMainWin::on_actionExport_triggered() {
 	QStringList fileNames;
 	int ffound = _exportDialog->exec();
 	if (ffound)
@@ -1087,7 +1105,7 @@ void CAMainWin::on_actionExport_activated() {
 	}              
 }
 
-void CAMainWin::on_actionImport_activated() {
+void CAMainWin::on_actionImport_triggered() {
 	QStringList fileNames;
 	int ffound = _importDialog->exec();
 	if (ffound)
@@ -1134,6 +1152,7 @@ void CAMainWin::sl_mpoTimeSig_valChanged(int iBeats, int iBeat)
 
 void CAMainWin::on_actionNoteSelect_toggled(bool bOn)
 {
+	actionNoteSelect->blockSignals( true );
 	// Read currently selected entry from tool button menu
 	enum CAPlayable::CAPlayableLength eElem = (CAPlayable::CAPlayableLength)
 	  mpoMEToolBar->toolElemValue( mpoNoteMenu->objectName() ).toInt();
@@ -1148,10 +1167,12 @@ void CAMainWin::on_actionNoteSelect_toggled(bool bOn)
 		actionClefSelect->setChecked( false );
 		actionTimeSigSelect->setChecked( false );	
 	}
+	actionNoteSelect->blockSignals( false );
 }
 
 void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 {
+	actionClefSelect->blockSignals( true );
 	// Read currently selected entry from tool button menu
 	enum CAClef::CAClefType eElem = (CAClef::CAClefType)
 	  mpoMEToolBar->toolElemValue( mpoClefMenu->objectName() ).toInt();
@@ -1166,10 +1187,12 @@ void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 		actionNoteSelect->setChecked( false );
 		actionTimeSigSelect->setChecked( false );	
 	}
+	actionClefSelect->blockSignals( false );
 }
 
 void CAMainWin::on_actionTimeSigSelect_toggled(bool bOn)
 {
+	actionTimeSigSelect->blockSignals( true );
 	int iTimeSigBeats = 4;
 	int iTimeSigBeat  = 4;
 	// Read currently selected entry from tool button menu
@@ -1223,9 +1246,10 @@ void CAMainWin::on_actionTimeSigSelect_toggled(bool bOn)
 		actionClefSelect->setChecked( false );
 		setMode(InsertMode);
 	}
+	actionTimeSigSelect->blockSignals( false );
 }
 	
-void CAMainWin::on_action_Key_signature_activated() {
+void CAMainWin::on_action_Key_signature_triggered() {
 	setKeySigPSPVisible( true );
 	mpoKeySigPSP->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	mpoKeySigPSP->setFocusPolicy(Qt::ClickFocus);
@@ -1241,7 +1265,7 @@ void CAMainWin::on_action_Key_signature_activated() {
 	actionTimeSigSelect->setChecked( false );	
 }
 
-void CAMainWin::on_action_Time_signature_activated() {
+void CAMainWin::on_action_Time_signature_triggered() {
 	setTimeSigPSPVisible( true );
 	
 	mpoTimeSigPSP->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
@@ -1270,16 +1294,16 @@ void CAMainWin::sourceViewPortCommit(QString docString) {
 	input.setData(docString);
 	_document = *CACanorusML::openDocument(&input, this);
 	
-	on_actionSource_view_perspective_activated();
+	on_actionSource_view_perspective_triggered();
 	rebuildUI();
 }
 
-void CAMainWin::on_actionAbout_Qt_activated()
+void CAMainWin::on_actionAbout_Qt_triggered()
 {
 	QMessageBox::aboutQt( this, tr("About Qt") );
 }
 
-void CAMainWin::on_actionAbout_Canorus_activated()
+void CAMainWin::on_actionAbout_Canorus_triggered()
 {
 	QMessageBox::about ( this, tr("About Canorus"),
 	tr("Canorus - The next generation music score editor\n\n\
@@ -1291,7 +1315,7 @@ See the file LICENSE.GPL for details.\n\n\
 Homepage: http://www.canorus.org").arg(CANORUS_VERSION) );
 }
 
-void CAMainWin::on_actionMIDI_Setup_activated() {
+void CAMainWin::on_actionMIDI_Setup_triggered() {
 	CAMidiSetupDialog(this, _midi->getInputPorts(), _midi->getOutputPorts(), &_defaultRtMidiInPort, &_defaultRtMidiOutPort);
 	_settings->setValue("rtmidi/defaultoutputport", _defaultRtMidiOutPort);
 	_settings->setValue("rtmidi/defaultinputport", _defaultRtMidiInPort);
