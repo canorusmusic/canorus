@@ -1089,9 +1089,6 @@ void CAMainWin::on_actionExport_triggered() {
 	
 	QString s = fileNames[0];
 	
-	if (s.isEmpty())
-		return;
-	
 	if (_pluginManager->exportActionExists(_exportDialog->selectedFilter()))
 		_pluginManager->exportAction(_exportDialog->selectedFilter(), &_document, 0, 0, s);
 	else {
@@ -1115,9 +1112,6 @@ void CAMainWin::on_actionImport_triggered() {
 		return;
 	
 	QString s = fileNames[0];
-	
-	if (s.isEmpty())
-		return;
 	
 	if (_pluginManager->importActionExists(_exportDialog->selectedFilter()))
 		_pluginManager->importAction(_exportDialog->selectedFilter(), &_document, 0, 0, fileNames[0]);
