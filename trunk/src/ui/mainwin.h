@@ -172,7 +172,7 @@ private slots:
 	void on_actionPlay_toggled(bool);
 	
 	//Perspective menu
-	void on_actionSource_view_perspective_triggered();
+	void on_actionSource_view_perspective_toggled(bool);
 	
 	//Window menu
 	void on_actionSplit_horizontally_triggered();
@@ -309,4 +309,6 @@ private:
 	//User interface, action objects from toolbars
 	////////////////////////////////////////////////////
 	QAction *mpoVoiceNumAction;  ///Voice number action
+	
+	void doUnsplit(CAViewPort*);
 };
