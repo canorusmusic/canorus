@@ -5,7 +5,10 @@ Reinhard Katzmann <reinhard@suamor.de>
   Qt4 GUI maestro, cmake, programming patterns
 
 Contributors:
-Georg Rudolph <georg.rudolph@schwaben.de>
-  lots of ideas, tester and bughunter, LilyPond
 Erlend Aasland <erlenda@gmail.com>
   MacOSX port, small compatibility fixes and improvements
+Itay Perl <itay.perl@gmail.com>
+  UI bugfixing
+Georg Rudolph <georg.rudolph@schwaben.de>
+  lots of ideas, tester and bughunter, LilyPond
+
