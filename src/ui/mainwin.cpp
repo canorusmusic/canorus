@@ -144,18 +144,6 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	// is notified to change it's state
 	mpoMEToolBar->setAction( actionClefSelect->objectName(), 
 	                         moMainWin.action_Clef );
-	/*mpoMEToolBar->setAction( actionNoteSelect->objectName(), 
-	                         actionClefSelect );
-	mpoMEToolBar->setAction( actionNoteSelect->objectName(), 
-	                         actionTimeSigSelect );
-	mpoMEToolBar->setAction( actionClefSelect->objectName(), 
-	                         actionNoteSelect );
-	mpoMEToolBar->setAction( actionClefSelect->objectName(), 
-	                         actionTimeSigSelect );
-	mpoMEToolBar->setAction( actionTimeSigSelect->objectName(), 
-	                         actionClefSelect );
-	mpoMEToolBar->setAction( actionTimeSigSelect->objectName(), 
-	                         actionNoteSelect );*/
 	mpoVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" );
 	mpoVoiceNumAction = moMainWin.mpoToolBar->addWidget( mpoVoiceNum );
 	// Connect manually as the action cannot be created earlier
@@ -255,6 +243,7 @@ void CAMainWin::initToolBar()
 	mpoMEGroup->addAction( actionClefSelect );
 	mpoMEGroup->addAction( actionNoteSelect );
 	mpoMEGroup->addAction( actionTimeSigSelect );
+	mpoMEGroup->setExclusive( true );
 	
 	// Add all the menu entries, either as text or icons
 	mpoClefMenu->addButton( oClefTrebleIcon, CAClef::Treble );
@@ -372,17 +361,33 @@ void CAMainWin::on_actionSplit_vertically_triggered() {
 	setMode(_currentMode);	//updates the new viewport border settings
 }
 
-void CAMainWin::on_actionUnsplit_triggered() {
-	CAViewPort *v = _currentScrollWidget->unsplit();
+void CAMainWin::doUnsplit(CAViewPort *v = 0)
+{
+	v = _currentScrollWidget->unsplit(v);
 	if (v)
 		_viewPortList.removeAll(v);
 	
 	moMainWin.actionSplit_horizontally->setEnabled(true);
 	moMainWin.actionSplit_vertically->setEnabled(true);
 	moMainWin.actionUnsplit->setEnabled(false);
+	_activeViewPort = _viewPortList.back();
 }
 
-void CAMainWin::on_actionSource_view_perspective_triggered() {
+void CAMainWin::on_actionUnsplit_triggered() {
+	doUnsplit();
+	moMainWin.actionSource_view_perspective->setChecked(false);
+}
+
+void CAMainWin::on_actionSource_view_perspective_toggled(bool status) {
+	if(!status)
+	{
+		for(QList<CAViewPort*>::iterator i = _viewPortList.begin(); i < _viewPortList.end(); i++)
+		{
+			if((*i)->viewPortType() == CAViewPort::SourceViewPort)
+				doUnsplit(*i);
+		}
+		return;
+	}
 	CASourceViewPort *v = new CASourceViewPort(&_document, _activeViewPort->parent());
 	_currentScrollWidget->addViewPort(v);
 	
@@ -491,8 +496,6 @@ void CAMainWin::setMode(CAMode mode) {
 void CAMainWin::on_action_Clef_triggered() {
 	setMode(InsertMode);
 	mpoMEFactory->setMusElementType( CAMusElement::Clef );
-	actionNoteSelect->setChecked( false );
-	actionTimeSigSelect->setChecked( false );
 }
 
 void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
@@ -1146,7 +1149,6 @@ void CAMainWin::sl_mpoTimeSig_valChanged(int iBeats, int iBeat)
 
 void CAMainWin::on_actionNoteSelect_toggled(bool bOn)
 {
-	actionNoteSelect->blockSignals( true );
 	// Read currently selected entry from tool button menu
 	enum CAPlayable::CAPlayableLength eElem = (CAPlayable::CAPlayableLength)
 	  mpoMEToolBar->toolElemValue( mpoNoteMenu->objectName() ).toInt();
@@ -1156,17 +1158,11 @@ void CAMainWin::on_actionNoteSelect_toggled(bool bOn)
 	printf("Note Input switched: On %d Note %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )
-	{
 		setMode(InsertMode);
-		actionClefSelect->setChecked( false );
-		actionTimeSigSelect->setChecked( false );	
-	}
-	actionNoteSelect->blockSignals( false );
 }
 
 void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 {
-	actionClefSelect->blockSignals( true );
 	// Read currently selected entry from tool button menu
 	enum CAClef::CAClefType eElem = (CAClef::CAClefType)
 	  mpoMEToolBar->toolElemValue( mpoClefMenu->objectName() ).toInt();
@@ -1176,17 +1172,11 @@ void CAMainWin::on_actionClefSelect_toggled(bool bOn)
 	printf("Note Clef switched: On %d Clef %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )
-	{
 		on_action_Clef_triggered();
-		actionNoteSelect->setChecked( false );
-		actionTimeSigSelect->setChecked( false );	
-	}
-	actionClefSelect->blockSignals( false );
 }
 
 void CAMainWin::on_actionTimeSigSelect_toggled(bool bOn)
 {
-	actionTimeSigSelect->blockSignals( true );
 	int iTimeSigBeats = 4;
 	int iTimeSigBeat  = 4;
 	// Read currently selected entry from tool button menu
@@ -1235,12 +1225,7 @@ void CAMainWin::on_actionTimeSigSelect_toggled(bool bOn)
 	printf("Note TimeSig switched: On %d TimeSig %d\n", bOn, eElem);
 	fflush( stdout );
 	if( bOn )
-	{
-		actionNoteSelect->setChecked( false );
-		actionClefSelect->setChecked( false );
 		setMode(InsertMode);
-	}
-	actionTimeSigSelect->blockSignals( false );
 }
 	
 void CAMainWin::on_action_Key_signature_triggered() {
@@ -1288,8 +1273,8 @@ void CAMainWin::sourceViewPortCommit(QString docString) {
 	input.setData(docString);
 	_document = *CACanorusML::openDocument(&input, this);
 	
-	on_actionSource_view_perspective_triggered();
 	rebuildUI();
+	on_actionSource_view_perspective_toggled(1);
 }
 
 void CAMainWin::on_actionAbout_Qt_triggered()
