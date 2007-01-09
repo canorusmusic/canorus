@@ -33,7 +33,7 @@ class CAViewPort : public QWidget {
 		/**
 		 * Destructor.
 		 */
-		~CAViewPort();
+		virtual ~CAViewPort();
 		
 		/**
 		 * enum CAViewPortType holds different viewport types:
