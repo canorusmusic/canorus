@@ -21,7 +21,7 @@ class CADrawableFunctionMarking : public CADrawableMusElement {
 		~CADrawableFunctionMarking();
 		
 		void draw(QPainter *p, const CADrawSettings s);
-		CADrawableFunctionMarking *clone();
+		CADrawableFunctionMarking *clone(CADrawableContext* newContext = 0);
 		
 		inline CAFunctionMarking *functionMarking() { return (CAFunctionMarking*)_musElement; };
 		inline CADrawableFunctionMarkingContext *drawableFunctionMarkingContext() { return (CADrawableFunctionMarkingContext*)_drawableContext; };
@@ -58,7 +58,7 @@ class CADrawableFunctionMarkingSupport : public CADrawableMusElement {
 		~CADrawableFunctionMarkingSupport();
 		
 		void draw(QPainter *p, const CADrawSettings s);
-		CADrawableFunctionMarkingSupport *clone();
+		CADrawableFunctionMarkingSupport *clone(CADrawableContext* newContext = 0);
 		CADrawableFunctionMarkingSupportType drawableFunctionMarkingSupportType() { return _drawableFunctionMarkingSupportType; }
 		
 		bool isExtenderLineVisible() { return _extenderLineVisible; }

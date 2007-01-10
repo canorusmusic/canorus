@@ -25,7 +25,7 @@ class CADrawableClef : public CADrawableMusElement {
 		 */
 		CADrawableClef(CAClef *clef, CADrawableStaff *drawableStaff, int x, int y);
 		void draw(QPainter *p, CADrawSettings s);
-		CADrawableClef *clone();
+		CADrawableClef *clone(CADrawableContext* newContext = 0);
 		inline CAClef *clef() { return (CAClef*)_musElement; }
 };
 

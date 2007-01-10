@@ -20,7 +20,7 @@ class CADrawableBarline : public CADrawableMusElement {
 		~CADrawableBarline();
 		
 		void draw(QPainter *p, CADrawSettings s);
-		CADrawableBarline *clone();
+		CADrawableBarline *clone(CADrawableContext* newContext = 0);
 		inline CABarline *barline() { return (CABarline*)_musElement; }
 		
 	private:

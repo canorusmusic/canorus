@@ -340,8 +340,8 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 	s.x += (int)(delta+0.5);
 }
 
-CADrawableNote *CADrawableNote::clone() {
-	return new CADrawableNote(note(), drawableContext(), _xPos, _yPos + _height/2);
+CADrawableNote *CADrawableNote::clone(CADrawableContext* newContext) {
+	return new CADrawableNote(note(), (newContext)?newContext:_drawableContext, _xPos, _yPos + _height/2);
 }
 
 void CADrawableNote::setXPos(int xPos) {

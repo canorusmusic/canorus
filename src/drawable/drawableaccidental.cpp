@@ -82,6 +82,6 @@ void CADrawableAccidental::draw(QPainter *p, CADrawSettings s) {
 	}
 }
 
-CADrawableAccidental *CADrawableAccidental::clone() {
-	return new CADrawableAccidental(_accs, _musElement, _drawableContext, _centerX, _centerY); 
+CADrawableAccidental *CADrawableAccidental::clone(CADrawableContext* newContext) {
+	return new CADrawableAccidental(_accs, _musElement, (newContext)?newContext:_drawableContext, _centerX, _centerY); 
 }

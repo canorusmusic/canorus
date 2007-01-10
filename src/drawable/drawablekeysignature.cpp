@@ -125,6 +125,6 @@ void CADrawableKeySignature::draw(QPainter *p, CADrawSettings s) {
 	}
 }
 
-CADrawableKeySignature* CADrawableKeySignature::clone() {
-	return (new CADrawableKeySignature(keySignature(), (CADrawableStaff*)drawableContext(), xPos(), _drawableContext->yPos()));
+CADrawableKeySignature* CADrawableKeySignature::clone(CADrawableContext* newContext) {
+	return (new CADrawableKeySignature(keySignature(), (CADrawableStaff*)((newContext)?newContext:_drawableContext), xPos(), _drawableContext->yPos()));
 }

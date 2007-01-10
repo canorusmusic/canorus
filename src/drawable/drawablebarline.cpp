@@ -45,6 +45,6 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 	            (int)(s.x + (BARLINE_WIDTH*s.z)/2 + 0.5), (int)(s.y + height()*s.z + 0.5));
 }
 
-CADrawableBarline* CADrawableBarline::clone() {
-	return new CADrawableBarline((CABarline*)_musElement, (CADrawableStaff*)_drawableContext, _xPos, _yPos);
+CADrawableBarline* CADrawableBarline::clone(CADrawableContext* newContext) {
+	return new CADrawableBarline((CABarline*)_musElement, (CADrawableStaff*)((newContext)?newContext:_drawableContext), _xPos, _yPos);
 }

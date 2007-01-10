@@ -99,6 +99,6 @@ void CADrawableTimeSignature::draw(QPainter *p, CADrawSettings s) {
 	}
 }
 
-CADrawableTimeSignature* CADrawableTimeSignature::clone() {
-	return (new CADrawableTimeSignature(timeSignature(), (CADrawableStaff*)drawableContext(), xPos(), _drawableContext->yPos()));
+CADrawableTimeSignature* CADrawableTimeSignature::clone(CADrawableContext* newContext) {
+	return (new CADrawableTimeSignature(timeSignature(), (CADrawableStaff*)((newContext)?newContext:_drawableContext), xPos(), _drawableContext->yPos()));
 }

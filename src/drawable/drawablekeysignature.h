@@ -26,7 +26,7 @@ class CADrawableKeySignature : public CADrawableMusElement {
 		~CADrawableKeySignature();
 		
 		void draw(QPainter *p, CADrawSettings s);
-		CADrawableKeySignature *clone();
+		CADrawableKeySignature *clone(CADrawableContext* newContext = 0);
 		inline CAKeySignature *keySignature() { return (CAKeySignature*)_musElement; }
 	
 	private:

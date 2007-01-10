@@ -18,7 +18,6 @@
 CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
  : CAViewPort(parent) {
  	_viewPortType = CAViewPort::SourceViewPort;
- 	
  	_document = doc;
  	
 	_layout = new QGridLayout(this);
