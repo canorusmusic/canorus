@@ -86,6 +86,6 @@ void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
 	}
 }
 
-CADrawableClef* CADrawableClef::clone() {
-	return (new CADrawableClef(clef(), (CADrawableStaff*)drawableContext(), xPos(), _drawableContext->yPos()));
+CADrawableClef* CADrawableClef::clone(CADrawableContext* newContext) {
+	return (new CADrawableClef(clef(), (CADrawableStaff*)((newContext)?newContext:_drawableContext), xPos(), _drawableContext->yPos()));
 }

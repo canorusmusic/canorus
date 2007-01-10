@@ -29,7 +29,7 @@ class CADrawableNote : public CADrawableMusElement {
 		
 		inline CANote* note() { return (CANote*)_musElement; }
 		
-		CADrawableNote *clone();
+		CADrawableNote *clone(CADrawableContext* newContext = 0);
 		
 		void setDrawLedgerLines(bool ledgerLines) { _drawLedgerLines = ledgerLines; }
 		bool drawLedgerLines() { return _drawLedgerLines; }

@@ -32,6 +32,7 @@ class CADrawableContext : public CADrawable {
 		virtual void addMElement(CADrawableMusElement *elt) { _drawableMusElementList << elt; }
 		virtual int removeMElement(CADrawableMusElement *elt) { return _drawableMusElementList.removeAll(elt); }
 		CADrawableMusElement *lastDrawableMusElement() { if (_drawableMusElementList.size()) return _drawableMusElementList.last(); else return 0; }
+		virtual CADrawableContext* clone() = 0;
 		
 		/**
 		 * Return the drawable instance of the given logical element.

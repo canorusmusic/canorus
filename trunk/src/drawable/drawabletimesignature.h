@@ -19,7 +19,7 @@ class CADrawableTimeSignature : public CADrawableMusElement {
 		CADrawableTimeSignature(CATimeSignature *timeSig, CADrawableStaff *drawableStaff, int x, int y); /// y coordinate is a top of the staff
 		~CADrawableTimeSignature();
 		void draw(QPainter *p, CADrawSettings s);
-		CADrawableTimeSignature *clone();
+		CADrawableTimeSignature *clone(CADrawableContext* newContext = 0);
 		inline CATimeSignature *timeSignature() { return (CATimeSignature*)_musElement; }
 };
 

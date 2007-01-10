@@ -16,7 +16,7 @@ class CARest;
 class CADrawableRest : public CADrawableMusElement {
 	public:
 		CADrawableRest(CARest *rest, CADrawableContext *drawableContext, int x, int y);
-		CADrawableRest *clone();
+		CADrawableRest *clone(CADrawableContext* newContext = 0);
 		~CADrawableRest();
 		
 		void draw(QPainter *p, CADrawSettings s);

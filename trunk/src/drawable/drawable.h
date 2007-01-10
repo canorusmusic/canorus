@@ -26,6 +26,11 @@ typedef struct CADrawSettings {
 
 class CADrawable {
 	public:
+		enum CADrawableType {
+			DrawableMusElement,
+			DrawableContext
+		};
+		
 		CADrawable(int x, int y);	///x and y position of an element in absolute world units
 		virtual void draw(QPainter *p, const CADrawSettings s) = 0;
 		int xPos() { return _xPos + _xPosOffset; }
@@ -41,6 +46,7 @@ class CADrawable {
 		const QRect bBox() { return QRect(_xPos + _xPosOffset, _yPos + _yPosOffset, _width, _height); }
 		bool isVisible() { return _visible; }
 		bool isSelectable() { return _selectable; }
+		CADrawableType drawableType() { return _drawableType; }
 		
 		/**
 		 * Set X position of the drawable element.
@@ -81,9 +87,10 @@ class CADrawable {
 		void setHeight(int height) { _neededHeight += (height - _height); _height = height; }
 		void setVisible(bool v) { _visible = v; }
 		
-		virtual CADrawable *clone() = 0;
+		virtual CADrawable *clone();
 		
 	protected:
+		CADrawableType _drawableType; //DrawableMusElement or DrawableContext.
 		int _xPos;
 		int _yPos;
 		int _xPosOffset;

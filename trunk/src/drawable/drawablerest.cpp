@@ -101,7 +101,8 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 CADrawableRest::~CADrawableRest() {
 }
 
-CADrawableRest *CADrawableRest::clone() {
+CADrawableRest *CADrawableRest::clone(CADrawableContext* newContext) {
+	return new CADrawableRest(rest(), (newContext)?newContext:_drawableContext, _xPos, _yPos);
 }
 
 void CADrawableRest::draw(QPainter *p, CADrawSettings s) {

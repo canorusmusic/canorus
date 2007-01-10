@@ -272,6 +272,7 @@ class CAScoreViewPort : public CAViewPort {
 		void clearMElements() { _drawableMList.clear(true); }
 		void clearCElements() { _drawableCList.clear(true); }
 		
+		void importElements(CAKDTree *drawableMList, CAKDTree *drawableCList);
 		void importMElements(CAKDTree *elts);
 		void importCElements(CAKDTree *elts);
 		

@@ -25,7 +25,7 @@ class CADrawableAccidental : public CADrawableMusElement {
 		CADrawableAccidental(signed char accs, CAMusElement *musElement, CADrawableContext *drawableContext, int x, int y);
 		~CADrawableAccidental();
 		void draw(QPainter *p, CADrawSettings s);
-		CADrawableAccidental *clone();
+		CADrawableAccidental *clone(CADrawableContext* newContext = 0);
 	
 	private:
 		signed char _accs;

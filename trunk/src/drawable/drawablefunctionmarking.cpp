@@ -87,8 +87,8 @@ void CADrawableFunctionMarking::draw(QPainter *p, CADrawSettings s) {
 		            s.x + (int)(_width*s.z+0.5), s.y+(int)((_height/2.0)*s.z+0.5));
 }
 
-CADrawableFunctionMarking *CADrawableFunctionMarking::clone() {
-	return new CADrawableFunctionMarking(functionMarking(), drawableFunctionMarkingContext(), ((CAFunctionMarking*)_musElement)->isMinor()?xPos()+6:xPos(), yPos());
+CADrawableFunctionMarking *CADrawableFunctionMarking::clone(CADrawableContext* newContext) {
+	return new CADrawableFunctionMarking(functionMarking(), (newContext)?(CADrawableFunctionMarkingContext*)newContext:drawableFunctionMarkingContext(), ((CAFunctionMarking*)_musElement)->isMinor()?xPos()+6:xPos(), yPos());
 }
 
 ////////////////////////////////////////////////////
@@ -357,20 +357,20 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 	}
 }
 
-CADrawableFunctionMarkingSupport *CADrawableFunctionMarkingSupport::clone() {
+CADrawableFunctionMarkingSupport *CADrawableFunctionMarkingSupport::clone(CADrawableContext* newContext) {
 	switch (_drawableFunctionMarkingSupportType) {
 		case Key:
-			return new CADrawableFunctionMarkingSupport(Key, _key, _drawableContext, _xPos, _yPos);
+			return new CADrawableFunctionMarkingSupport(Key, _key, (newContext)?newContext:_drawableContext, _xPos, _yPos);
 			break;
 		case ChordArea:
 		case Tonicization:
-			return new CADrawableFunctionMarkingSupport(_drawableFunctionMarkingSupportType, _function1, _drawableContext, _xPos, _yPos, _function2);
+			return new CADrawableFunctionMarkingSupport(_drawableFunctionMarkingSupportType, _function1, (newContext)?newContext:_drawableContext, _xPos, _yPos, _function2);
 			break;
 		case Ellipse:
-			return new CADrawableFunctionMarkingSupport(Ellipse, _function1, _drawableContext, (int)(_xPos - _function1->width()/2.0+0.5), _yPos, _function2);
+			return new CADrawableFunctionMarkingSupport(Ellipse, _function1, (newContext)?newContext:_drawableContext, (int)(_xPos - _function1->width()/2.0+0.5), _yPos, _function2);
 		case Rectangle:
-			return new CADrawableFunctionMarkingSupport(Rectangle, _function1, _drawableContext, _xPos+3, _yPos+3, _function2);
+			return new CADrawableFunctionMarkingSupport(Rectangle, _function1, (newContext)?newContext:_drawableContext, _xPos+3, _yPos+3, _function2);
 		case Alterations:
-			return new CADrawableFunctionMarkingSupport(Alterations, (CAFunctionMarking*)(_musElement), _drawableContext, _xPos, _yPos);
+			return new CADrawableFunctionMarkingSupport(Alterations, (CAFunctionMarking*)(_musElement), (newContext)?newContext:_drawableContext, _xPos, _yPos);
 	}
 }

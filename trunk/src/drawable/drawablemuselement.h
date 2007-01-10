@@ -34,6 +34,7 @@ class CADrawableMusElement : public CADrawable {
 		CADrawableContext *drawableContext() { return _drawableContext; }
 		void setDrawableContext(CADrawableContext *context) { _drawableContext = context; }
 		bool isSelectable() { return _selectable; }
+		virtual CADrawableMusElement* clone(CADrawableContext* newContext = 0) = 0;
 		
 	protected:
 		CADrawableMusElementType _drawableMusElementType;	///CADrawableMusElement type

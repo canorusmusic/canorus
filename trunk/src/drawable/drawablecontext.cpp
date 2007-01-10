@@ -9,5 +9,6 @@
 #include "drawable/drawablecontext.h"
 
 CADrawableContext::CADrawableContext(CAContext *c, int x, int y) : CADrawable(x, y) {
+	_drawableType = CADrawable::DrawableContext;
 	_context = c;
 }
