@@ -3,12 +3,12 @@ Matevž Jekovec <matevz.jekovec@gmail.com>
   core features and UI, Windows port, Debian/Ubuntu packages, cmake, Wiki site
 Reinhard Katzmann <reinhard@suamor.de>
   Qt4 GUI maestro, cmake, programming patterns
+Itay Perl <itay.perl@gmail.com>
+  UI bugfixing, GUI
 
 Contributors:
 Erlend Aasland <erlenda@gmail.com>
   MacOSX port, small compatibility fixes and improvements
-Itay Perl <itay.perl@gmail.com>
-  UI bugfixing
 Georg Rudolph <georg.rudolph@schwaben.de>
   lots of ideas, tester and bughunter, LilyPond
 
