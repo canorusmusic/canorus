@@ -38,6 +38,7 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	
 	_sheet = sheet;
 	_worldX = _worldY = 0;
+	_worldW = _worldH = 0;
 	_zoom = 1.0;
 	_holdRepaint = false;
 	_hScrollBarDeadLock = false;
