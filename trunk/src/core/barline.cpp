@@ -1,20 +1,37 @@
-/** @file core/barline.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+/* 
+ * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
 
 #include "core/barline.h"
 #include "core/staff.h"
 
+/*!
+	\class CABarline
+	
+	\brief Music element which represents a barline in the score.
+	
+	This class represents any type of barlines in the score.
+	Barline type is defined in _barlineType.
+	
+	\sa CAMusElement
+*/
+
+/*!
+	Creates a barline of type \a type, its parent \a staff and \a startTime.
+	\a timeLength of a barline is always 0.
+*/
 CABarline::CABarline(CABarlineType type, CAStaff *staff, int startTime) 
  : CAMusElement(staff, startTime) {
- 	_musElementType = CAMusElement::Barline;
- 	_barlineType = type;
+	_musElementType = CAMusElement::Barline;
+	_barlineType = type;
 }
 
+/*!
+	Destroys the barline.
+*/
 CABarline::~CABarline() {
 }
 
@@ -32,6 +49,11 @@ int CABarline::compare(CAMusElement *elt) {
 	return diffs;
 }
 
+/*!
+	Converts the given barline's \a type to QString.
+	
+	\sa CABarlineType, barlineTypeFromString()
+*/
 const QString CABarline::barlineTypeToString(CABarlineType type) {
 	switch (type) {
 		case Single: return "single";
@@ -44,6 +66,11 @@ const QString CABarline::barlineTypeToString(CABarlineType type) {
 	}
 }
 
+/*!
+	Converts the barline's \a type in QString to CABarlineType.
+	
+	\sa CABarlineType, barlineTypeToString()
+*/
 CABarline::CABarlineType CABarline::barlineTypeFromString(const QString type) {
 	if (type=="single") return Single; else
 	if (type=="double") return Double; else

@@ -98,7 +98,7 @@ void CAPlayback::run() {
 		for (int i=0; i<curPlaying.size(); i++) {
 			if (((elt = (CAPlayable*)curPlaying[i])->timeStart() + elt->timeLength()) == timeStart) {
 				message << (128 + elt->voice()->midiChannel());
-				message << (elt->midiPitch());
+				message << (static_cast<CANote*>(elt)->midiPitch());
 				message << (127);
 				_midiDevice->send(message);	//release note
 				message.clear();
@@ -127,7 +127,7 @@ void CAPlayback::run() {
 			        ((elt = (CAPlayable*)stream[i]->at(streamsIdx[i]))->timeStart() == timeStart)
 			      ) {
 					message << (144 + elt->voice()->midiChannel());
-					message << (elt->midiPitch());
+					message << (static_cast<CANote*>(elt)->midiPitch());
 					message << (127);
 					if (elt->musElementType()!=CAMusElement::Rest)
 						_midiDevice->send(message);	//play note

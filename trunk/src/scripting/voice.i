@@ -163,5 +163,5 @@ class CAVoice {
 		 * @param length Length which should be substracted by the timeStarts.
 		 * @return True, if element was found and update was made, False otherwise.
 		 */
-		bool updateTimesAfter(CAMusElement *eltBefore, int length=0);
+		bool updateTimesAfter(CAMusElement *eltBefore, int length);
 };

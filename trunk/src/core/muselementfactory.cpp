@@ -1,5 +1,4 @@
-/** @file muselementfactory.cpp
- *
+/*
  * This program is free software; you can redistribute it and/or modify it   
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; version 2 of the License.                       
@@ -34,7 +33,9 @@
 // For comparing undefined music elements
 #define UNDEFNUM 36720165
 
-// Class for undefined music elements, not to be known outside of this class
+/*!
+	Class for undefined music elements, not to be known outside of this class
+*/
 class CAUndefMusElem : public CAMusElement
 {
 public:
@@ -67,6 +68,23 @@ private:
 	int miUndefined;
 };
 
+/*!
+	\class CAMusElementFactory
+	\brief creation, removal, configuration of music elements
+	
+	This class is used when creating a new music element, settings its values, but not having it
+	placed inside the score (eg. music element still in the GUI, but user didn't clicked on the score
+	to place it yet).
+	
+	The factory can contain only a single music element in "construction".
+	
+	\sa CAMainWin, CAMusElement
+*/
+
+
+/*!
+	Creates an empty, defeault music elements factory.
+*/
 CAMusElementFactory::CAMusElementFactory()
 {
 	_ePlayableLength = CAPlayable::Quarter;
@@ -79,11 +97,17 @@ CAMusElementFactory::CAMusElementFactory()
 	createMusElem();
 }
 
+/*!
+	Destroys the music elements factory.
+*/
 CAMusElementFactory::~CAMusElementFactory()
 {
 	removeMusElem();
 }
 
+/*!
+	Creates a placebo music element (type: undefined)
+*/
 CAMusElement *CAMusElementFactory::createMusElem()
 {
 	mpoMusElement = new CAUndefMusElem( 0, 0, 0 );
@@ -91,6 +115,10 @@ CAMusElement *CAMusElementFactory::createMusElem()
 	return mpoMusElement;
 }
 
+/*!
+	Removes the current music element.
+	Destroys the music element, if \a bReallyRemove is true (default is false).
+*/
 void CAMusElementFactory::removeMusElem( bool bReallyRemove /* = false */ )
 {
 	CAUndefMusElem oUMElem( 0, 0, 0 );
@@ -100,6 +128,10 @@ void CAMusElementFactory::removeMusElem( bool bReallyRemove /* = false */ )
 	mpoMusElement = 0;
 }
 
+/*!
+	Configures music element \a roMusElement by cloning it and moving it to the factory.
+	Destroys the original.
+*/
 void CAMusElementFactory::configureMusElem( CAMusElement &roMusElement )
 {
 	if( mpoMusElement )
@@ -107,6 +139,9 @@ void CAMusElementFactory::configureMusElem( CAMusElement &roMusElement )
 	mpoMusElement = roMusElement.clone();
 }
 
+/*!
+	Configures a new clef music element in \a context and right next to the \a left element.
+*/
 bool CAMusElementFactory::configureClef( CADrawableContext *context, 
                                          CADrawableMusElement *left )
 {
@@ -122,6 +157,9 @@ bool CAMusElementFactory::configureClef( CADrawableContext *context,
 	return bSuccess;
 }
 
+/*!
+	Configures a new key signature music element with \a iKeySignature accidentals, \a context and right next to the \a left element.
+*/
 bool CAMusElementFactory::configureKeySignature( int iKeySignature,
                                                  CADrawableContext *context, 
                                                  CADrawableMusElement *left )
@@ -141,6 +179,9 @@ bool CAMusElementFactory::configureKeySignature( int iKeySignature,
 	return bSuccess;
 }
 
+/*!
+	Configures a new time signature music element with \a context and right next to the \a left element.
+*/
 bool CAMusElementFactory::configureTimeSignature( CADrawableContext *context, 
                                                   CADrawableMusElement *left )
 {
@@ -158,6 +199,15 @@ bool CAMusElementFactory::configureTimeSignature( CADrawableContext *context,
 	return bSuccess;
 }
 
+/*!
+	Configures new note music element.
+	
+	\param iVoiceNum        voice number where new note is inserted
+	\param voice            voice where new note is inserted
+	\param coords           mouse position where the new note is inserted
+	\param context          context within the new note is inserted
+	\param left             music element left of new note
+*/
 bool CAMusElementFactory::configureNote( CAVoice *voice,
                                          const QPoint coords,
                                          CADrawableContext *context,
@@ -204,6 +254,14 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 	return bSuccess;
 }
 
+/*!
+	Configures a new rest music element.
+	
+	\param voice      voice where new rest is inserted
+	\param coords     mouse position where the new rest is inserted
+	\param context    context within the new rest is inserted
+	\param left       music element left of new rest
+*/
 bool CAMusElementFactory::configureRest( CAVoice *voice,
                                          const QPoint coords,
                                          CADrawableContext *context,
@@ -235,3 +293,60 @@ void CAMusElementFactory::setMusElementType( CAMusElement::CAMusElementType eMET
 	CAUndefMusElem *poUnDefElem = (CAUndefMusElem *)createMusElem();
 	poUnDefElem->setMusElementType( eMEType );
 };
+
+/*!
+	\fn CAMusElementFactory::getMusElement()
+	Reads the current music element and returns its pointer.
+*/
+
+/*!
+	\fn CAMusElementFactory::musElementType()
+	Returns the current music element type.
+*/
+
+/*!
+	\fn CAMusElementFactory::setMusElementType(CAMusElement::CAMusElementType eMEType)
+	Sets the new current music element type \a eMEType, does not create a new element of this type!
+*/
+
+/*!
+	\var CAMusElementFactory::mpoMusElement
+	Newly created music element itself.
+
+	\sa getMusElement()
+*/
+
+/*!
+	\var CAMusElementFactory::_ePlayableLength
+	Length of note/rest to be added.
+*/
+
+/*!
+	\var CAMusElementFactory::_iPlayableDotted
+	Number of dots to be inserted for the note/rest.
+*/
+
+/*!
+	\var CAMusElementFactory::_iNoteExtraAccs
+	Extra note accidentals for new notes which user adds/removes with +/- keys.
+*/
+
+/*!
+	\var CAMusElementFactory::_iNoteAccs
+	Note accidentals at specific coordinates updated regularily when in insert mode.
+*/
+
+/*!
+	\var CAMusElementFactory::_iTimeSigBeats
+	Time signature number of beats to be inserted.
+*/
+
+/*!
+	\var CAMusElementFactory::_iTimeSigBeat
+	Time signature beat to be inserted.
+*/
+
+/*!
+	\var CAMusElementFactory::_eClef
+	Type of the clef to be inserted.
+*/

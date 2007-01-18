@@ -1,13 +1,25 @@
-/** @file core/functionmarking.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+/* 
+ * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
 
 #include "core/functionmarking.h"
 #include "core/functionmarkingcontext.h"
+
+/*!
+	\class CAFunctionMarking
+	\brief Represents a function marking in the score
+	
+	Function markings are used to describe a harmony flow of the score.
+	Current implementation uses a standard European-German nomenclature of harmony.
+	
+	\todo Current translations of terms are mostly done "by heart". An English/Amercian
+	composer or musicologist should translate attributes the best. -Matevz
+	
+	\sa CADrawableFunctionMarking, CAFunctionMarkingContext
+*/
 
 CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence)
  : CAMusElement(context, timeStart, timeLength) {
@@ -51,9 +63,15 @@ CAFunctionMarking *CAFunctionMarking::clone() {
 }
 
 int CAFunctionMarking::compare(CAMusElement *func) {
-	return 0;	//TODO
+	return 0;	//! \todo Comparation of various function markings still needs to be done.
 }
 
+/*!
+	Reads \a alterations and sets alteredDegrees and addedDegrees.
+	Sixte ajoutee and other added degrees have +/- sign after the number.
+	Stable alterations have +/- sign before the number.
+	\a alterations consists first of added degrees and then altered degrees.
+*/
 void CAFunctionMarking::setAlterations(const QString alterations) {
 	if (alterations.isEmpty())
 		return;
@@ -72,13 +90,13 @@ void CAFunctionMarking::setAlterations(const QString alterations) {
 			rightIdx = alterations.indexOf('+',i+1)<alterations.indexOf('-',i+1)?alterations.indexOf('+',i+1):alterations.indexOf('-',i+1);
 		
 		QString curDegree = alterations.mid(i, rightIdx-i+1);
-		curDegree.insert(0, curDegree[curDegree.size()-1]);	//move the last + or - before the string
+		curDegree.insert(0, curDegree[curDegree.size()-1]);	// move the last + or - before the string
 		curDegree.chop(1);
 		_addedDegrees << curDegree.toInt();
 		i=rightIdx+1;
 	}
 	
-	//altered degrees:
+	// altered degrees:
 	_alteredDegrees.clear();
 	while (i<alterations.size()) {
 		if (alterations.indexOf('+',i+1)==-1 && alterations.indexOf('-',i+1)!=-1)

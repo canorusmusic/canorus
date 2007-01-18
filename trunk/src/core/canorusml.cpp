@@ -1,9 +1,8 @@
-/** @file canorusml.cpp
- * 
+/*
  * Copyright (c) 2006, Matevž Jekovec, Georg Rudolph, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ *
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
 
 #include <QXmlInputSource>
@@ -26,6 +25,25 @@
 #include "core/timesignature.h"
 #include "core/barline.h"
 
+/*!
+	\class CACanorusML
+	\brief Class used for writing/opening a Canorus document.
+	
+	This class is used for saving and opening a native Canorus document stored in
+	CanorusML format. The class inherits QXmlDefaultHandler and the class itself is
+	an XML parser.
+	
+	For writing or opening the document, simply use the static methods saveDocument()
+	and openDocument(). saveDocument() doesn't need XML parser, so only the static
+	method is used. openDocument() needs an XML parser and creates a new CACanorusML
+	class and use it as a parser.
+	
+	\sa CADocument
+*/
+
+/*!
+	Creates a CanorusML parser class
+*/
 CACanorusML::CACanorusML(CAMainWin *mainWin) {
 	_mainWin = mainWin;
 	
@@ -42,12 +60,21 @@ CACanorusML::CACanorusML(CAMainWin *mainWin) {
 	_curRest = 0;
 }
 
+/*!
+	Destroys parser.
+*/
 CACanorusML::~CACanorusML() {
 }
 
+/*!
+	Saves the document.
+	It uses DOM object internally for writing the XML output.
+	
+	\sa openDocument()
+*/
 void CACanorusML::saveDocument(QTextStream& out, CADocument *doc) {
 	int depth = 0;
-
+	
 	// CADocument
 	QDomDocument dDoc("canorusml");
 	
@@ -68,7 +95,7 @@ void CACanorusML::saveDocument(QTextStream& out, CADocument *doc) {
 		dDocument.setAttribute("title", doc->title());
 	if (!doc->composer().isEmpty())
 		dDocument.setAttribute("composer", doc->composer());
-		
+	
 	for (int sheetIdx=0; sheetIdx < doc->sheetCount(); sheetIdx++) {
 		// CASheet
 		QDomElement dSheet = dDoc.createElement("sheet"); dDocument.appendChild(dSheet);
@@ -95,17 +122,24 @@ void CACanorusML::saveDocument(QTextStream& out, CADocument *doc) {
 						dVoice.setAttribute("midi-program", v->midiProgram());
 						dVoice.setAttribute("stem-direction", CANote::stemDirectionToString(v->stemDirection()));
 						
-						CACanorusML::writeVoice(dVoice, v);						
+						CACanorusML::writeVoice(dVoice, v);
 					}
 					
 					break;
 			}
-		}		
+		}
 	}
 	
 	out << dDoc.toString();
 }
 
+/*!
+	Used for writing the voice node in XML output.
+	It uses DOM object internally for writing the XML output.
+	This method is usually called by saveDocument().
+	
+	\sa saveDocument()
+*/
 void CACanorusML::writeVoice(QDomElement& dVoice, CAVoice* voice) {
 	QDomDocument dDoc = dVoice.ownerDocument();
 	for (int i=0; i<voice->musElementCount(); i++) {
@@ -154,7 +188,7 @@ void CACanorusML::writeVoice(QDomElement& dVoice, CAVoice* voice) {
 					if (key->keySignatureType()==CAKeySignature::Modus) {
 						dKey.setAttribute("modus", CAKeySignature::modusToString(key->modus()));
 					}
-					// TODO: Custom accidentals
+					//! \todo Custom accidentals in key signature saving -Matevz
 				}
 				
 				dKey.setAttribute("time-start", key->timeStart());
@@ -180,6 +214,17 @@ void CACanorusML::writeVoice(QDomElement& dVoice, CAVoice* voice) {
 	}
 }
 
+/*!
+	Opens a CanorusML source \a in and creates a document out of it.
+	\a mainWin is needed for any UI settings stored in the file (the last viewports
+	positions, current sheet etc.).
+	CACanorusML uses SAX parser for reading.
+	
+	\todo It would probably be better for us to use DOM parser for reading as well in the
+	future. -Matevz
+	
+	\sa saveDocument()
+*/
 CADocument* CACanorusML::openDocument(QXmlInputSource* in, CAMainWin *mainWin) {
 	QXmlSimpleReader reader;
 	CACanorusML *canHandler = new CACanorusML(mainWin);
@@ -191,7 +236,13 @@ CADocument* CACanorusML::openDocument(QXmlInputSource* in, CAMainWin *mainWin) {
 	return doc;
 }
 
-/** DEPRECATED - should be moved to LilyPond parser */
+/*!
+	Creates a non-XML human readable list of music elements (similar to LilyPond) for the
+	given voice in QString format and returns it.
+	
+	\deprecated New CanorusML format is completely XML. This should be moved to LilyPond
+	parser or something. -Matevz
+*/
 const QString CACanorusML::createMLVoice(CAVoice *v) {
 	QString voiceString;
 	int lastNotePitch = 28;
@@ -201,12 +252,12 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 	int lastPlayableDotted=0;
 	
 	for (int i=0; i<v->musElementCount(); i++, voiceString += " ") {
-		//(CAMusElement)
+		// (CAMusElement)
 		switch (v->musElementAt(i)->musElementType()) {
 			case CAMusElement::Clef: {
-				//CAClef
+				// CAClef
 				CAClef *clef = (CAClef*)v->musElementAt(i);
-				if (clef->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
+				if (clef->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				voiceString += "<clef>";
 				voiceString += clef->clefTypeML();
 				voiceString += "</clef>";
@@ -215,41 +266,41 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				break;
 			}
 			case CAMusElement::KeySignature: {
-				//CAKeySignature
+				// CAKeySignature
 				CAKeySignature *key = (CAKeySignature*)v->musElementAt(i);
-				if (key->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
+				if (key->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				voiceString += QString("<key type=\"") + key->majorMinorGenderML() + "\">";
 				voiceString += key->pitchML();
 				voiceString += "</key>";
-			
+				
 				break;
 			}
 			case CAMusElement::TimeSignature: {
-				//CATimeSignature
+				// CATimeSignature
 				CATimeSignature *time = (CATimeSignature*)v->musElementAt(i);
-				if (time->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
+				if (time->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				voiceString += QString("<time");
 				if (time->timeSignatureType() != CATimeSignature::Classical)
 					voiceString += QString(" type=\"") + time->timeSignatureTypeML() + QString("\"");
 				voiceString += QString(">");
 				voiceString += time->timeSignatureML();
 				voiceString += "</time>";
-			
+				
 				break;
 			}
 			case CAMusElement::Barline: {
-				//CABarline
+				// CABarline
 				CABarline *bar = (CABarline*)v->musElementAt(i);
-				if (bar->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
+				if (bar->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				if (bar->barlineType() == CABarline::Single)
 					voiceString += "|";
 				
 				break;
 			}
 			case CAMusElement::Note: {
-				//CANote
+				// CANote
 				CANote *note = (CANote*)v->musElementAt(i);
-				if (note->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
+				if (note->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				if (note->isPartOfTheChord() && note->isFirstInTheChord()) {
 					voiceString += "<chord>";
 					firstNotePitchInChord=note->pitch();
@@ -258,11 +309,11 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				voiceString += note->pitchML();
 				
 				int delta = lastNotePitch - note->pitch();
-				while (delta > 3) { //add the needed amount of the commas
+				while (delta > 3) { // add the needed amount of the commas
 					voiceString += ",";
 					delta -= 7;
 				}
-				while (delta < -3) { //add the needed amount of the apostrophes
+				while (delta < -3) { // add the needed amount of the apostrophes
 					voiceString += "'";
 					delta += 7;
 				}
@@ -273,18 +324,17 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 						voiceString += ".";
 				}
 				
-
 				lastNotePitch = note->pitch();
 				lastPlayableLength = note->lengthML();
 				lastPlayableDotted = note->dotted();
 				
-				//finish the chord stanza if that's the last note of the chord
+				// finish the chord stanza if that's the last note of the chord
 				if (note->isPartOfTheChord() && note->isLastInTheChord()) {
 					voiceString += "</chord>";
 					lastNotePitch = firstNotePitchInChord;
 				}
 				
-				//add to the stream time, if the note is not part of the chord or is the last one in the chord
+				// add to the stream time, if the note is not part of the chord or is the last one in the chord
 				if (!note->isPartOfTheChord() ||
 				    (note->isPartOfTheChord() && note->isLastInTheChord()) )
 					curStreamTime += note->timeLength();
@@ -292,9 +342,9 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 				break;
 			}
 			case CAMusElement::Rest: {
-				//CARest
+				// CARest
 				CARest *rest = (CARest*)v->musElementAt(i);
-				if (rest->timeStart()!=curStreamTime) break;	//TODO: If the time isn't the same, insert hidden rests to fill the needed time
+				if (rest->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				
 				voiceString += rest->restTypeML();
 				
@@ -313,10 +363,15 @@ const QString CACanorusML::createMLVoice(CAVoice *v) {
 		}
 	}
 	
-	voiceString.truncate(voiceString.length()-1);	//remove the trailing blank at the end of the voice
+	voiceString.truncate(voiceString.length()-1);	// remove the trailing blank at the end of the voice
 	return voiceString;
 }
 
+/*!
+	This method should be called when a critical error occurs while parsing the XML source.
+	
+	\sa startElement(), endElement()
+*/
 bool CACanorusML::fatalError (const QXmlParseException & exception) {
 	qWarning() << "Fatal error on line " << exception.lineNumber()
 		<< ", column " << exception.columnNumber() << ": "
@@ -325,12 +380,22 @@ bool CACanorusML::fatalError (const QXmlParseException & exception) {
 	return false;
 }
 
+/*!
+	This function is called automatically by Qt SAX parser while reading the CanorusML
+	source. This function is called when a new node is opened. It already reads node
+	attributes.
+	
+	The function returns true, if the node was successfully recognized and parsed;
+	otherwise false.
+	
+	\sa endElement()
+*/
 bool CACanorusML::startElement(const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes) {
 	if (qName == "document") {
 		// CADocument
 		_document = new CADocument();
 	} else if (qName == "sheet") {
-		// CASheet	
+		// CASheet
 		QString sheetName = attributes.value("name");
 		if (!(_curSheet = _document->sheet(sheetName))) {	//if the document doesn't contain the sheet with the given name, create a new sheet and add it to the document. Otherwise, just set the current sheet to the found one and leave
 			if (sheetName.isEmpty())
@@ -338,7 +403,6 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 			_curSheet = new CASheet(sheetName, _document);
 			
 			_document->addSheet(_curSheet);
-			_mainWin->addSheet(_curSheet);
 		}
 	} else if (qName == "staff") {
 		// CAStaff
@@ -429,11 +493,22 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		                      attributes.value("dotted").toInt()
 		                     );
 	}
-	
+
 	_depth.push(qName);
 	return true;
 }
 
+/*!
+	This function is called automatically by Qt SAX parser while reading the CanorusML
+	source. This function is called when a node has been closed (</nodeName>). Attributes
+	for closed notes are usually not set in CanorusML format. That's why we need to store
+	local node attributes (set when the node is opened) each time.
+	
+	The function returns true, if the node was successfully recognized and parsed;
+	otherwise false.
+	
+	\sa startElement()
+*/
 bool CACanorusML::endElement(const QString& namespaceURI, const QString& localName, const QString& qName) {
 	if (qName == "canorus-version") {
 		// version of Canorus which saved the document
@@ -447,7 +522,7 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 	} else if (qName == "sheet") {
 		// CASheet
-		_curSheet = 0;			
+		_curSheet = 0;
 	} else if (qName == "staff") {
 		// CAStaff
 		_curContext = 0;
@@ -455,32 +530,32 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		// CAVoice
 		_curVoice = 0;
 	}
-	//Every voice *must* contain signs on their own (eg. a clef is placed in all voices, not just the first one).
-	//The following code finds a sign with the same properties at the same time in other voices. If such a sign exists, only place a pointer to this sign in the current voice. Otherwise, add a sign to all the voices read so far.
+	// Every voice *must* contain signs on their own (eg. a clef is placed in all voices, not just the first one).
+	// The following code finds a sign with the same properties at the same time in other voices. If such a sign exists, only place a pointer to this sign in the current voice. Otherwise, add a sign to all the voices read so far.
 	else if (qName == "clef") {
 		// CAClef
 		if (!_curContext || !_curVoice || _curContext->contextType()!=CAContext::Staff) {
 			return false;
 		}
 		
-		//lookup an element with the same type at the same time
+		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Clef, _curVoice->lastTimeEnd());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
-			if (!foundElts[i]->compare(_curClef))	//element has exactly the same properties
-				if (!_curVoice->contains(foundElts[i]))	{ //element isn't present in the voice yet
+			if (!foundElts[i]->compare(_curClef))	// element has exactly the same properties
+				if (!_curVoice->contains(foundElts[i]))	{ // element isn't present in the voice yet
 					sign = foundElts[i];
 					break;
 				}
 		}
-			
+		
 		if (!sign) {
-			//the element doesn't exist yet - add it
+			// the element doesn't exist yet - add it
 			_curVoice->staff()->insertSignAfter(_curClef, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
 		} else {
 			//the element was found, insert only a reference to the current voice
 			_curVoice->appendMusElement(sign);
-			delete _curClef; _curClef = 0; 
+			delete _curClef; _curClef = 0;
 		}
 	} else if (qName == "key-signature") {
 		// CAKeySignature
@@ -488,22 +563,22 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 			return false;
 		}
 		
-		//lookup an element with the same type at the same time
+		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::KeySignature, _curVoice->lastTimeEnd());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
-			if (!foundElts[i]->compare(_curKeySig))	//element has exactly the same properties
-				if (!_curVoice->contains(foundElts[i]))	{ //element isn't present in the voice yet
+			if (!foundElts[i]->compare(_curKeySig))	// element has exactly the same properties
+				if (!_curVoice->contains(foundElts[i]))	{ // element isn't present in the voice yet
 					sign = foundElts[i];
 					break;
 				}
 		}
 		
 		if (!sign) {
-			//the element doesn't exist yet - add it
+			// the element doesn't exist yet - add it
 			_curVoice->staff()->insertSignAfter(_curKeySig, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
 		} else {
-			//the element was found, insert only a reference to the current voice
+			// the element was found, insert only a reference to the current voice
 			_curVoice->appendMusElement(sign);
 			delete _curKeySig; _curKeySig = 0;
 		}
@@ -513,7 +588,7 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 			return false;
 		}
 		
-		//lookup an element with the same type at the same time
+		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::TimeSignature, _curVoice->lastTimeEnd());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
@@ -523,12 +598,12 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 					break;
 				}
 		}
-			
+		
 		if (!sign) {
-			//the element doesn't exist yet - add it
+			// the element doesn't exist yet - add it
 			_curVoice->staff()->insertSignAfter(_curTimeSig, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
 		} else {
-			//the element was found, insert only a reference to the current voice
+			// the element was found, insert only a reference to the current voice
 			_curVoice->appendMusElement(sign);
 			delete _curTimeSig; _curTimeSig = 0;
 		}
@@ -538,7 +613,7 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 			return false;
 		}
 		
-		//lookup an element with the same type at the same time
+		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Barline, _curVoice->lastTimeEnd());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
@@ -548,12 +623,12 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 					break;
 				}
 		}
-			
+		
 		if (!sign) {
-			//the element doesn't exist yet - add it
+			// the element doesn't exist yet - add it
 			_curVoice->staff()->insertSignAfter(_curBarline, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
 		} else {
-			//the element was found, insert only a reference to the current voice
+			// the element was found, insert only a reference to the current voice
 			_curVoice->appendMusElement(sign);
 			delete _curBarline; _curBarline = 0;
 		}
@@ -564,7 +639,7 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 	} else if (qName == "rest") {
 		// CARest
 		_curVoice->appendMusElement(_curRest);
-		_curRest = 0;		
+		_curRest = 0;
 	}
 	
 	_cha="";
@@ -572,27 +647,45 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 	return true;
 }
 
+/*!
+	Stores the characters between the greater-lesser signs while parsing the XML file.
+	This is usually needed for getting the property values stored not as node attributes,
+	but between greater-lesser signs.
+	
+	eg.
+	\code
+		<length>127</length>
+	\endcode
+	Would set _cha value to "127".
+	
+	\sa startElement(), endElement()
+*/
 bool CACanorusML::characters(const QString& ch) {
 	_cha = ch;
 	
 	return true;
 }
 
+/*!
+	Reads voice music elements written by createMLVoice().
+	
+	\sa createMLVoice()
+*/
 bool CACanorusML::readMusElements(QString string) {
-	string = string.simplified().toUpper();	//remove weird whitespaces throughout the string and replace them by a single blank
+	string = string.simplified().toUpper();	// remove weird whitespaces throughout the string and replace them by a single blank
 	for (int eltIdx=0; string.size(); eltIdx++) {
-		int idx2 = string.indexOf(" ");	//find the index of the next music element
+		int idx2 = string.indexOf(" ");	// find the index of the next music element
 		if (idx2==-1)
 			idx2 = string.size();
 		
-		if (QString(string[0]).contains(QRegExp("[A-G]"))) {	//if the first char is [A-G] letter, it's always the note pitch
-			//CANote
+		if (QString(string[0]).contains(QRegExp("[A-G]"))) {	// if the first char is [A-G] letter, it's always the note pitch
+			// CANote
 			int curPitch;
 			int curLength;
 			int curDotted=0;
 			signed char curAccs = 0;
-
-			//determine pitch
+			
+			// determine pitch
 			bool inChord = ((_depth.last()!="chord") || (eltIdx==0));
 			curPitch = string[0].toLatin1() - 'A' + 5	//determine the 0-6 pitch from note name
 				- (((_curVoice->lastNotePitch(inChord)==-1)?28:_curVoice->lastNotePitch(inChord)) % 7);	//get the delta of the last note pitch. If there is not last note, take the 28 as default height (C1)
@@ -601,8 +694,8 @@ bool CACanorusML::readMusElements(QString string) {
 			while (curPitch>3)
 				curPitch-=7;
 			curPitch += (_curVoice->lastNotePitch(inChord)==-1)?28:_curVoice->lastNotePitch(inChord);
-		
-			//determine accidentals
+			
+			// determine accidentals
 			while ((string.indexOf("IS") != -1) && (string.indexOf("IS") < idx2)) {
 				curAccs++;
 				int delta;
@@ -616,7 +709,7 @@ bool CACanorusML::readMusElements(QString string) {
 				idx2 -= delta;
 			}
 			
-			//add octave up/down
+			// add octave up/down
 			for (int i=0; i<idx2; i++) {
 				if (string[i]=='\'') {
 					curPitch+=7;
@@ -625,7 +718,7 @@ bool CACanorusML::readMusElements(QString string) {
 				}
 			}
 			
-			//determine note length
+			// determine note length
 			int lIdx = string.indexOf(QRegExp("[0-9]"));
 			if ((lIdx == -1) || (lIdx > idx2)) {	//no length written
 				curLength = _curVoice->lastPlayableElt()->playableLength();
@@ -644,14 +737,14 @@ bool CACanorusML::readMusElements(QString string) {
 			}
 			
 			CANote *note;
-			if (_depth.last()!="chord" || eltIdx==0) //the note is not part of the chord or is the first note in the chord
+			if (_depth.last()!="chord" || eltIdx==0) // the note is not part of the chord or is the first note in the chord
 				note = new CANote((CAPlayable::CAPlayableLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeEnd(), curDotted);
-			else	//the note is part of the already built chord
+			else	// the note is part of the already built chord
 				note = new CANote((CAPlayable::CAPlayableLength)curLength, _curVoice, curPitch, curAccs, _curVoice->lastTimeStart(), curDotted);
 			
 			_curVoice->appendMusElement(note);
 		} else if (string[0]=='R' || string[0]=='S') {
-			//CARest
+			// CARest
 			int lIdx = string.indexOf(QRegExp("[0-9]"));
 			CAPlayable::CAPlayableLength curLength;
 			int curDotted = 0;
@@ -671,11 +764,11 @@ bool CACanorusML::readMusElements(QString string) {
 					d--;
 				curLength = (CAPlayable::CAPlayableLength)string.mid(lIdx,d-lIdx).toInt();
 			}
-
+			
 			_curVoice->appendMusElement(new CARest((string[0]=='R'?CARest::Normal:CARest::Hidden), curLength, _curVoice, _curVoice->lastTimeEnd(), curDotted));
 		} else if (string[0]=='|') {
-			//CABarline
-			//lookup an element with the same type at the same time
+			// CABarline
+			// lookup an element with the same type at the same time
 			QList<CAMusElement*> foundElts = _curVoice->staff()->getEltByType(CAMusElement::Barline, _curVoice->lastTimeEnd());
 			CAMusElement *sign=0;
 			CABarline *bar = new CABarline(CABarline::Single, _curVoice->staff(), _curVoice->lastTimeEnd());
@@ -688,10 +781,10 @@ bool CACanorusML::readMusElements(QString string) {
 			}
 			
 			if (!sign) {
-				//the element doesn't exist yet - add it
+				// the element doesn't exist yet - add it
 				_curVoice->staff()->insertSignAfter(bar, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
 			} else {
-				//the element was found, insert only a reference to the current voice
+				// the element was found, insert only a reference to the current voice
 				_curVoice->appendMusElement(sign);
 				delete bar;
 			}
@@ -702,3 +795,64 @@ bool CACanorusML::readMusElements(QString string) {
 	
 	return true;
 }
+
+/*!
+	Appends the number of tabs to the string.
+	
+	\deprecated Qt's DOM object used for the new CanorusML format does this automatically.
+*/
+const QString CACanorusML::idn(int depth) {
+	QString ret;
+	for (int i=0; i<depth; i++)
+		ret += "\t";
+	return ret;
+}
+
+/*!
+	\fn CACanorusML::document()
+	Returns the newly created document when reading the XML file.
+*/
+
+/*!
+	\var CACanorusML::_cha
+	Current characters being read using characters() method between the greater/lesser
+	separators in XML file.
+	
+	\sa characters()
+*/
+
+/*!
+	\var CACanorusML::_depth
+	Stack which represents the current depth of the document while SAX parsing. It contains
+	the tag names as the values.
+	
+	\sa startElement(), endElement()
+*/
+
+/*!
+	\var CACanorusML::_errorMsg
+	The error message content stored as QString, if the error happens.
+	
+	\sa fatalError()
+*/
+
+/*!
+	\var CACanorusML::_version
+	Document program version - which Canorus did save the file.
+	
+	\sa startElement(), endElement()
+*/
+
+/*!
+	\var CACanorusML::_mainWin
+	Pointer to the main window of the application - needed to rebuild the UI.
+	
+	\sa CAMainWin
+*/
+
+/*!
+	\var CACanorusML::_document
+	Pointer to the document being read.
+	
+	\sa CADocument
+*/

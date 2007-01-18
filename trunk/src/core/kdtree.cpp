@@ -1,9 +1,8 @@
-/** @file kdtree.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+/* 
+ * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICNESE.GPL for details.
  */
 
 #include "drawable/drawable.h"
@@ -13,11 +12,31 @@
 #include "core/muselement.h"
 #include "core/playable.h"
 
+/*!
+	\class CAKDTree
+	kd-tree is usually used for description of the music elements on the canvas.
+	It's used for fast insertion/lookup of a list of elements in the given region.
+	Each canvas has its own kd-tree of drawable elements. One for contexts and the other for music
+	elements.
+	
+	See http://en.wikipedia.org/wiki/Kd_tree
+	
+	\todo Currently, an ordinary vector is used. No tree structure present yet, so all the operations are slow - O(n).
+	
+	\sa CAScoreViewPort, CADrawable
+*/
+
+/*!
+	The default constructor.
+*/
 CAKDTree::CAKDTree() {
 	_maxX = 0;
 	_maxY = 0;
 }
 
+/*!
+	Adds a drawable element \a elt to the tree.
+*/
 void CAKDTree::addElement(CADrawable *elt) {
 	_list << elt;
 	
@@ -27,12 +46,21 @@ void CAKDTree::addElement(CADrawable *elt) {
 		_maxY = elt->yPos() + elt->height();		
 }
 
+/*!
+	Removes the given element \a elt from the tree.
+	Returns true, if the given element was found and deleted; otherwise false.
+*/
 bool CAKDTree::removeElement(CADrawable *elt) {
 	delete elt;
 
 	return _list.removeAll(elt);
 }
 
+/*!
+	Removes the first element at the given \a x and \a y absolute world coordinates and returns the
+	pointer to this element, if successful. Destroys element, if \a autoDelete is true.
+	Returns pointer to the deleted element or null, if no element found at the given coordinates.
+*/
 CADrawable* CAKDTree::removeElement(int x, int y, bool autoDelete) {
 	CADrawable *elt;
 	for (int i=0; i<_list.size(); i++) {
@@ -50,6 +78,10 @@ CADrawable* CAKDTree::removeElement(int x, int y, bool autoDelete) {
 	return 0;
 }
 
+/*!
+	Removes all elements from the tree.
+	Also destroys the elements if \a autoDelete is true.
+*/
 void CAKDTree::clear(bool autoDelete) {
 	if (autoDelete) {
 		for (int i=0; i<_list.size(); i++)
@@ -59,6 +91,9 @@ void CAKDTree::clear(bool autoDelete) {
 	_list.clear();
 }
 
+/*!
+	Returns the list of elements present in the given rectangular area or an empty list if none found.
+*/
 QList<CADrawable *> CAKDTree::findInRange(int x, int y, int w, int h) {
 	QList<CADrawable *> l;
 
@@ -80,10 +115,22 @@ QList<CADrawable *> CAKDTree::findInRange(int x, int y, int w, int h) {
 	return l;	
 }
 
+/*!
+	This function is provided for convenience.
+	Returns the list of elements present in the given rectangular area or an empty list if none found.
+*/
 QList<CADrawable *> CAKDTree::findInRange(QRect *rect) {
 	return findInRange(rect->x(), rect->y(), rect->width(), rect->height());
 }
 
+/*!
+	Finds the nearest left element to the given coordinate and returns a pointer to it or 0 if none
+	found. Left element border is taken into account.
+	
+	If \a timeBased is false (default), the lookup should be view-based - the nearest element is
+	selected as it appears on the screen. If \a timeBased if true, the nearest element is selected
+	according to the nearest start/end time.
+*/
 CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *context, CAVoice *voice) {
 	if (_list.isEmpty())
 		return 0;
@@ -124,6 +171,14 @@ CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *
 	return elt;
 }
 
+/*!
+	Finds the nearest right element to the given coordinate and returns a pointer to it or 0 if none
+	found. Left element border is taken into account.
+	
+	If \a timeBased is false (default), the lookup should be view-based - the nearest element is
+	selected as it appears on the screen. If \a timeBased if true, the nearest element is selected
+	according to the nearest start/end time.
+*/
 CADrawable* CAKDTree::findNearestRight(int x, bool timeBased, CADrawableContext *context, CAVoice *voice) {
 	if (_list.isEmpty())
 		return 0;
@@ -164,6 +219,14 @@ CADrawable* CAKDTree::findNearestRight(int x, bool timeBased, CADrawableContext 
 	return elt;
 }
 
+/*!
+	Finds the nearest upper element to the given coordinate and returns a pointer to it or 0 if none
+	found. Top element border is taken into account.
+	
+	If \a timeBased is false (default), the lookup should be view-based - the nearest element is
+	selected as it appears on the screen. If \a timeBased if true, the nearest element is selected
+	according to the nearest start/end time.
+*/
 CADrawable* CAKDTree::findNearestUp(int y) {
 	if (_list.isEmpty())
 		return 0;
@@ -179,6 +242,14 @@ CADrawable* CAKDTree::findNearestUp(int y) {
 	
 }
 
+/*!
+	Finds the nearest lower element to the given coordinate and returns a pointer to it or 0 if none
+	found. Top element border is taken into account.
+	
+	If \a timeBased is false (default), the lookup should be view-based - the nearest element is
+	selected as it appears on the screen. If \a timeBased if true, the nearest element is selected
+	according to the nearest start/end time.
+*/
 CADrawable* CAKDTree::findNearestDown(int y) {
 	if (_list.isEmpty())
 		return 0;
@@ -194,14 +265,27 @@ CADrawable* CAKDTree::findNearestDown(int y) {
 	return elt;
 }
 
+/*!
+	Returns the max X coordinate of the end of the most-right element.
+	This value is read from buffer, so the calculation time is constant.
+*/
 int CAKDTree::getMaxX() {
 	return _maxX;
 }
 
+/*!
+	Returns the max Y coordinate of the end of the most-bottom element.
+	This value is read from buffer, so the calculation time is constant.
+*/
 int CAKDTree::getMaxY() {
 	return _maxY;
 }
 
+/*!
+	Used internally for the maxX and maxY properties to update.
+	Calculates the largest X and Y coordinates among all ends of elements and store it locally.
+	This operation takes O(n) time complexity where n is number of elements in the tree.
+*/
 void CAKDTree::calculateMaxXY() {
 	_maxX = 0;
 	_maxY = 0;
@@ -213,9 +297,29 @@ void CAKDTree::calculateMaxXY() {
 	}
 }
 
+/*!
+	Imports all the elements from the given \a tree.
+	It actually merges the given tree with this one.
+*/
 void CAKDTree::import(CAKDTree *tree) {
 	for (int i=0; i<tree->list().size(); i++)
 		_list += tree->list().at(i)->clone();
 	
 	calculateMaxXY();
 }
+
+/*!
+	\fn CAKDTree::size()
+	Returns the number of elements currently in the tree.
+*/
+
+/*!
+	\fn CAKDTree:at(int i)
+	Returns the element with index \a i in the tree.
+	If the element doesn't exist (eg. index out of bounds), returns 0.
+*/
+
+/*!
+	\fn CAKDTree:list()
+	Returns the pointer to the list of all the elements.
+*/

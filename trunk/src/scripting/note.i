@@ -66,4 +66,8 @@ class CANote : public CAPlayable {
 		static const QString generateNoteName(int pitch, int accs);
 		
 		int compare(CAMusElement* elt);
+		static int pitchToMidiPitch(int pitch, int acc);
+		static int midiPitchToPitch(int midiPitch);
+		inline unsigned char midiPitch() { return _midiPitch; }
+		void setMidiPitch(unsigned char pitch) { _midiPitch = pitch; }
 };
