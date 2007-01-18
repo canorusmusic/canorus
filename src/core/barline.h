@@ -1,10 +1,10 @@
-/** @file core/barline.h
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+/* 
+ * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
+
 
 #ifndef BARLINE_H_
 #define BARLINE_H_
@@ -14,29 +14,28 @@
 class CAStaff;
 
 class CABarline : public CAMusElement{
-	public:
-		enum CABarlineType {
-			Single,
-			Double,
-			End,
-			RepeatOpen,
-			RepeatClose,
-			Dotted
-		};
-		
-		CABarline(CABarlineType type, CAStaff *staff, int startTime);
-		
-		~CABarline();
-		
-		CABarlineType barlineType() { return _barlineType; }
-		CABarline *clone();
-		int compare(CAMusElement* elt);
-		
-		static const QString barlineTypeToString(CABarlineType);
-		static CABarlineType barlineTypeFromString(const QString);
+public:
+	enum CABarlineType {
+		Single,
+		Double,
+		End,
+		RepeatOpen,
+		RepeatClose,
+		Dotted
+	};
 	
-	private:
-		CABarlineType _barlineType;
+	CABarline(CABarlineType type, CAStaff *staff, int startTime);		
+	virtual ~CABarline();
+	
+	CABarline *clone();
+	int compare(CAMusElement* elt);
+	
+	CABarlineType barlineType() { return _barlineType; }		
+	
+	static const QString barlineTypeToString(CABarlineType);
+	static CABarlineType barlineTypeFromString(const QString);
+	
+private:
+	CABarlineType _barlineType;
 };
-
 #endif /*BARLINE_H_*/

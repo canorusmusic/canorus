@@ -28,7 +28,7 @@ class CAStaff : public CAContext {
 		 * @param voice The voice which the time should be looking in. If none set, return the largest end time of all the voices.
 		 * @return End of the last music element in the staff.
 		 */
-		int lastTimeEnd(CAVoice *voice=0);
+		int lastTimeEnd();
 		
 		/**
 		 * Return the number of voices.

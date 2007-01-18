@@ -1,14 +1,34 @@
-/** @file keysignature.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+/* 
+ * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
 
 #include "core/keysignature.h"
 #include "core/staff.h"
 
+/*!
+	\class CAKeySignature
+	\brief Represents a key signature sign in the staff
+	
+	CAKeySignature represents a key signature sign (prefixed accidentals) in the staff.
+	It also includes other logical information about the scale, for eg. Major/Minor or modes
+	
+	\todo MajorMinorShapeTo/FromString
+	\todo Currently, only diatonic key signatures can be made (the ones in circle of fifths).
+*/
+
+/*!
+	Creates a new key signature of type \a type, number of accidentals \a accs, specified \a gender,
+	parent \a staff and \a timeStart.
+	
+	Number of accidentals is a signed number, positive for sharps, negative for flats.
+	eg.
+		- 0 - C-Major
+		- -1 - F-Major
+		- +7 - Cis-Major etc.	
+*/
 CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender, CAStaff *staff, int timeStart)
  : CAMusElement(staff, timeStart) {
  	_musElementType = CAMusElement::KeySignature;
@@ -16,7 +36,50 @@ CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CAMajo
  	setKeySignatureType(type, accs, gender);
 }
 
-/** OBSOLETE */
+/*!
+	\enum CAKeySignature::CAKeySignatureType
+	Type of the key signature:
+		- MajorMinor
+			Standard diatonic scale found by circle of fifths
+		- Modus
+			One of the moduses found in middle-age
+		- Custom
+			Custom scale. Modern scales, harmony of fourths, local scales
+*/
+
+/*!
+	\enum CAKeySignature::CAMajorMinorGender
+	The lower tetrachord of the scale - gender:
+		- Major
+		- Minor
+*/
+
+/*!
+	\enum CAKeySignature::CAMajorMinorShape
+	The upper tetrachord of the scale - shape:
+		- Natural
+		- Harmonic
+		- Melodic
+*/
+
+/*!
+	\enum CAKeySignature::CAModus
+	Modus types:
+		- Ionian
+		- Dorian
+		- Phrygian
+		- Lydian
+		- Mixolydian
+		- Aeolian
+		- Locrian
+		- Hypodorian
+		- Hypolydian
+		- Hypophrygian
+*/
+
+/*! \deprecated New CanorusML is XML based. It uses keySignatureTypeFromString() and others and the
+	default constructor
+*/
 CAKeySignature::CAKeySignature(QString sPitch, QString sGender, CAStaff *staff, int timeStart)
  : CAMusElement(staff, timeStart) {
  	_musElementType = CAMusElement::KeySignature;
@@ -51,6 +114,9 @@ CAKeySignature::CAKeySignature(QString sPitch, QString sGender, CAStaff *staff, 
 	setKeySignatureType(MajorMinor, accs, gender);
 }
 
+/*!
+	\todo Implement non major-minor types
+*/
 void CAKeySignature::setKeySignatureType(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender) {
  	_keySignatureType = type;
  	
@@ -83,6 +149,12 @@ CAKeySignature* CAKeySignature::clone() {
 	return new CAKeySignature(_keySignatureType, numberOfAccidentals(), _majorMinorGender, (CAStaff*)_context, _timeStart);
 }
 
+/*!
+	Counts all the accidentals and returns their sum.
+	Every sharp counts +1, every flat counts -1.
+	
+	\sa _accidentals, accidentals()
+*/
 signed char CAKeySignature::numberOfAccidentals() {
 	signed char sum=0;
 	for (int i=0; i<7; i++)
@@ -91,6 +163,13 @@ signed char CAKeySignature::numberOfAccidentals() {
 	return sum;
 }
 
+/*!
+	Returns the key signature pitch.
+	If the scale gender is major, the pitch is returned in upper-case, otherwise in lower.
+	eg. "E" for E-major (4 sharps), "ces" for ces-minor (7 flats), "B" for B-major (5 sharps).
+	
+	\deprecated This isn't used by CanorusML anymore. Should be part of LilyPond parser
+*/
 const QString CAKeySignature::pitchML() {
 	QString ret;
 	
@@ -127,6 +206,11 @@ const QString CAKeySignature::pitchML() {
 	return ret;
 }
 
+/*!
+	Returns the key signature gender "major" or "minor".
+	
+	\deprecated Should be moved to LilyPond parser. Use majorMinorGenderToString() instead
+*/
 const QString CAKeySignature::majorMinorGenderML() {
 	switch (_majorMinorGender) {
 		case Major: return QString("major");
@@ -215,3 +299,27 @@ CAKeySignature::CAModus CAKeySignature::modusFromString(const QString modus) {
 	if (modus=="hypophrygian") return Hypophrygian;
 	else return Ionian;
 }
+
+/*!
+	\fn CAKeySignature::accidentals()
+	Returns the array of accidentals for every level in the scale.
+	
+	The levels can have the following values:
+		- 0 - natural
+		- 1 - sharp
+		- 2 - double sharp
+		- ...
+		- -1 - flat
+		- -2 - double flat
+		- ...
+*/ 
+
+/*!
+	\var CAKeySignature::_accidentals
+	Accidentals configuration for each level.
+	
+	Indexes: [0..6] - C, D, E, F ... B
+	Values: 0 - none, -1 - flat, +1 - sharp
+	
+	\sa accidentals(), numberOfAccidentals()
+*/

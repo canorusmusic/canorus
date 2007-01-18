@@ -1,9 +1,8 @@
-/** @file core/functionmarkingcontext.h
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+/* 
+ * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
 
 #ifndef FUNCTIONMARKINGCONTEXT_H_
@@ -19,22 +18,21 @@ class CASheet;
 class CAFunctionMarking;
 
 class CAFunctionMarkingContext : public CAContext {
-	public:
-		CAFunctionMarkingContext(CASheet *sheet, const QString name);
-		~CAFunctionMarkingContext();
-		
-		void addFunctionMarking(CAFunctionMarking *marking);
-		QList<CAFunctionMarking*> *functionMarkingList() { return &_functionMarkingList; }
-		
-		int countFunctionMarkings(int timeStart);
-		void clear();
-		CAMusElement *findNextMusElement(CAMusElement *elt);
-		CAMusElement *findPrevMusElement(CAMusElement *elt);
-		bool removeMusElement(CAMusElement *elt, bool cleanup = true);
+public:
+	CAFunctionMarkingContext(CASheet *sheet, const QString name);
+	~CAFunctionMarkingContext();
 	
-	private:
-		QList<CAFunctionMarking*> _functionMarkingList;				///List of all the function markings sorted by timeStart
-		QMultiHash<int,CAFunctionMarking*> _functionMarkingHash;	///Map of all the function markings in certain time slice - used by containsNewFunctionMarking() 
+	void addFunctionMarking(CAFunctionMarking *marking);
+	QList<CAFunctionMarking*> *functionMarkingList() { return &_functionMarkingList; }
+	
+	int countFunctionMarkings(int timeStart);
+	void clear();
+	CAMusElement *findNextMusElement(CAMusElement *elt);
+	CAMusElement *findPrevMusElement(CAMusElement *elt);
+	bool removeMusElement(CAMusElement *elt, bool cleanup = true);
+	
+private:
+	QList<CAFunctionMarking*> _functionMarkingList;
+	QMultiHash<int,CAFunctionMarking*> _functionMarkingHash;
 };
-
-#endif /*FUNCTIONMARKINGCONTEXT_H_*/
+#endif /* FUNCTIONMARKINGCONTEXT_H_*/

@@ -1,9 +1,8 @@
-/** @file core/sheet.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+/* 
+ * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
 
 #include "core/document.h"
@@ -12,6 +11,22 @@
 #include "core/sheet.h"
 #include "core/voice.h"
 
+/*!
+	\class CASheet
+	\brief Represents a single sheet of paper in the document
+	
+	CASheet represents a sheet of paper for the composer. The idea was taken out from
+	spreadsheet applications. Each sheet is usually in its own tab.
+	
+	CASheet parent is CADocument and CASheet includes various contexts CAContext, let it
+	be staffs, lyrics, function markings etc.
+	
+	\sa CADocument, CAContext
+*/
+
+/*!
+	Creats a new sheet named \a name with parent document \a doc.
+*/
 CASheet::CASheet(const QString name, CADocument *doc) {
 	_name = name;
 	_document = doc;
@@ -48,6 +63,10 @@ CAContext *CASheet::context(const QString name) {
 	return 0;
 }
 
+/*!
+	Returns a list of notes and rests (chord) for all the voices in time slice \a time.
+	This is useful for determination of the harmony at certain point in time.
+*/
 QList<CAPlayable*> CASheet::getChord(int time) {
 	QList<CAPlayable*> chordList;
 	for (int i=0; i<_staffList.size(); i++) {
@@ -58,3 +77,35 @@ QList<CAPlayable*> CASheet::getChord(int time) {
 	
 	return chordList;
 }
+
+/*!
+	\fn CAContext::context(const QString name)
+	Looks up for the context with the given name.
+	
+	\sa contextAt(), _contextList
+*/
+
+/*!
+	\fn CAContext::contextAt(int i)
+	Return the context with index \a i counting from 0.
+	
+	\sa context(), _contextList
+*/
+
+/*!
+	\var CAContext::_contextList
+	List of all the contexts in the sheet (lyrics, staffs, tablatures, general-bas
+	markings etc.).
+	
+	\sa context(), contextAt(), contextCount(), _staffList
+*/
+
+/*!
+	\var CAContext::_staffList
+	List of all the staffs in the sheet. Staff lookups are usually much more often than
+	other contexts.
+	
+	All the staffs are contexts and are part of _contextList as well!
+	
+	\sa addStaff(), staffCount(), staffAt(), _contextList
+*/

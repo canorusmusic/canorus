@@ -28,6 +28,7 @@ class CASheet {
 		CAStaff *staffAt(int i);
 
 		CADocument *document();
+                void setDocument(CADocument*);
 
 		const QString name();
 		QList<CAPlayable*> getChord(int time);

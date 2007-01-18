@@ -1,9 +1,8 @@
-/** @file timesignature.h
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+/* 
+ * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
 
 #ifndef TIMESIGNATURE_H_
@@ -18,38 +17,29 @@ class CAStaff;
 class CATimeSignature : public CAMusElement {
 	public:
 		enum CATimeSignatureType {
-			Classical,	///Ordinary numbers, C for 4/4, C| for 2/2
-			Number,		///Force to always show numbers!
+			Classical,	// Ordinary numbers, C for 4/4, C| for 2/2
+			Number,		// Force to always show numbers!
 			Mensural,
 			Neomensural,
 			Baroque
 		};
 		
-		/**
-		 * Create a time signature with a beat beat and number of beats beats.
-		 * 
-		 * eg. 3/4 time signature should be called new CATimeSignature(3, 4, staff, startTime);
-		 * 
-		 * @param beats Number of beats in the measure (nominator).
-		 * @param beat The measure beat (denominator).
-		 * @param staff Pointer to the staff which this time signature belongs to.
-		 * @param startTime Start time.
-		 */
 		CATimeSignature(int beats, int beat, CAStaff *staff, int startTime, CATimeSignatureType type = Classical);
 		
-		/** OBSOLETE */
-		CATimeSignature(QString MLString, CAStaff *staff, int startTime, QString type = "classical");
+		CATimeSignature(QString MLString, CAStaff *staff, int startTime, QString type = "classical"); // Deprecated
 		CATimeSignature *clone();
 		~CATimeSignature();
 	
 		int beats() { return _beats; }
+		void setBeats(int beats) { _beats = beats; }
+		
 		int beat() { return _beat; }
+		void setBeat(int beat) { _beat = beat; }
+		
 		CATimeSignatureType timeSignatureType() { return _timeSignatureType; }
 		
-		/** OBSOLETE */
-		const QString timeSignatureML() { return (QString::number(_beats) + "/" + QString::number(_beat)); }
-		/** OBSOLETE */
-		const QString timeSignatureTypeML(); 
+		const QString timeSignatureML();  // Deprecated
+		const QString timeSignatureTypeML(); // Deprecated
 		
 		static const QString timeSignatureTypeToString(CATimeSignatureType);
 		static CATimeSignatureType timeSignatureTypeFromString(const QString);
@@ -61,5 +51,4 @@ class CATimeSignature : public CAMusElement {
 		int _beat;
 		CATimeSignatureType _timeSignatureType;
 };
-
 #endif /*TIMESIGNATURE_H_*/

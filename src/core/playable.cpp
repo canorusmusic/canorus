@@ -1,19 +1,37 @@
-/** @file interface/playable.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+/* 
+ * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
 
 #include "core/playable.h"
 #include "core/voice.h"
 #include "core/staff.h"
 
+/*!
+	\class CAPlayable
+	\brief Playable instances of music elements.
+	
+	CAPlayable class represents a base class for all the music elements which are
+	playable (_timeLength property is greater than 0). It brings other properties
+	like the music length (whole, half, quarter etc.), number of dots and instead
+	of contexts, playable elements voices for their parent objects.
+	
+	Notes and rests inherit this class.
+	
+	\sa CAMusElement, CAPlayableType
+*/
+
+/*!
+	Creates a new playable element with playable length \a length, \a voice, \a timeStart
+	and number of dots \a dotted.
+	
+	\sa CAPlayableLength, CAVoice, CAMusElement
+*/
 CAPlayable::CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, int dotted)
  : CAMusElement(voice?voice->staff():0, timeStart, 0) {
 	_voice = voice;
-	_playable = true;
 	_playableLength = length;
 	
 	switch (length) {
@@ -44,43 +62,42 @@ CAPlayable::CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, i
 		case CAPlayable::Breve:
 			_timeLength = 2048;
 			break;
-		default:				//This should never happen!
+		default:				// This should never happen!
 			_timeLength = 0;
 			break;
 	}
 	
 	float factor = 1.0, delta=0.5;
-	for (int i=0; i<dotted; i++, factor+=delta, delta/=2);	//calculate the length factor out of number of dots
-	_timeLength = (int)(_timeLength*factor+0.5);	//increase the time length for the factor
+	for (int i=0; i<dotted; i++, factor+=delta, delta/=2);	// calculate the length factor out of number of dots
+	_timeLength = (int)(_timeLength*factor+0.5);	// increase the time length for the factor
 	
 	_midiLength = _timeLength;
 	_dotted = dotted;
 }
 
-int CAPlayable::pitchToMidiPitch(int pitch, int acc) {
-	float step = (float)12/7;
-	
-	//+0.3 - rounding factor for 7/12 that exactly underlays every tone in octave
-	//+0.5 - casting to int cut-off the decimal part, not round it. In order to round it - add 0.5
-	//+12 - our logical pitch starts at Sub-contra C, midi counting starts one octave lower
-	return (int)(pitch * step + 0.3 + 0.5 + 12) + acc;
-}
-
-int CAPlayable::midiPitchToPitch(int midiPitch) {
-	return 0; //TODO
+/*!
+	Destroys the playable element.
+*/
+CAPlayable::~CAPlayable() {
 }
 
 void CAPlayable::setVoice(CAVoice *voice) {
 	_voice = voice; _context = voice->staff();
 }
 
+/*!
+	Sets the playable element having \a dotted dots and returns the difference of the previous
+	and new time lengths in absolute time units.
+	
+	\sa dotted()
+*/
 int CAPlayable::setDotted(int dotted) {
-	//calculate the original note length
+	// calculate the original note length
 	float factor = 1.0, delta=0.5;
 	for (int i=0; i<_dotted; i++, factor+=delta, delta/=2);
 	int origLength = (int)(_timeLength / factor + 0.5);
 	
-	//calculate and set the new note length
+	// calculate and set the new note length
 	factor = 1.0, delta=0.5;
 	for (int i=0; i<_dotted; i++, factor+=delta, delta/=2);	//calculate the length factor out of number of dots
 	_dotted = dotted;	
