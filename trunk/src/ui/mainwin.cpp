@@ -199,6 +199,7 @@ CAMainWin::~CAMainWin()
 	delete mpoTimeSigMenu;
 	delete _midi;
 	delete mpoMEToolBar;
+	delete _settings;
 }
 
 void CAMainWin::initToolBar()

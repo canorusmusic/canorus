@@ -37,13 +37,17 @@ void CAPluginManager::readPlugins() {
 		QFile *file = new QFile(pluginsDir.absolutePath() + "/" + pluginsDir[i] + "/canorusplugin.xml");
 		file->open(QIODevice::ReadOnly);
 		if (!file->isOpen())
+		{
+			delete file;
 			continue;
+		}
 		
 		QXmlInputSource in(file);
 		reader.setContentHandler(this);
 		reader.parse(in);
 		_curPlugin->setDirName(pluginsDir.absolutePath() + "/" + pluginsDir[i]);	//use absolute path again because we want slashes/backslashes to be unified
 		_curPlugin = 0;
+		delete file;
 	}
 }
 
