@@ -27,6 +27,8 @@ class CAMidiDevice {
 			RtMidiDevice
 		};
 		
+		virtual ~CAMidiDevice() {};
+		
 		CAMidiDeviceType midiDeviceType() { return _midiDeviceType; };
 		
 		virtual QMap<int, QString> getOutputPorts() = 0;
