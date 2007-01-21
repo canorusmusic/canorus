@@ -607,7 +607,8 @@
     </property>
     <addaction name="actionSplit_horizontally" />
     <addaction name="actionSplit_vertically" />
-    <addaction name="actionUnsplit" />
+    <addaction name="actionClose_current_view" />
+    <addaction name="actionUnsplit_all" />
     <addaction name="separator" />
     <addaction name="actionNew_viewport" />
    </widget>
@@ -1184,9 +1185,14 @@
     <string>Split vertically</string>
    </property>
   </action>
-  <action name="actionUnsplit" >
+  <action name="actionClose_current_view">
    <property name="text" >
-    <string>Unsplit</string>
+    <string>Close current view</string>
+   </property>
+  </action>
+  <action name="actionUnsplit_all" >
+   <property name="text" >
+    <string>Unsplit All</string>
    </property>
   </action>
   <action name="actionNew_viewport" >
