@@ -43,6 +43,7 @@ public:
 		Locrian,
 		Hypodorian,
 		Hypolydian,
+		Hypomixolydian,
 		Hypophrygian
 	};
 	

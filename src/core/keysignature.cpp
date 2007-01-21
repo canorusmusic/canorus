@@ -74,6 +74,7 @@ CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CAMajo
 		- Locrian
 		- Hypodorian
 		- Hypolydian
+		- Hypomixolydian
 		- Hypophrygian
 */
 
@@ -281,6 +282,7 @@ const QString CAKeySignature::modusToString(CAModus modus) {
 		case Locrian: return "locrian";
 		case Hypodorian: return "hypodorian";
 		case Hypolydian: return "hypolydian";
+		case Hypomixolydian: return "hypomixolydian";
 		case Hypophrygian: return "hypophrygian";
 		default: return "";
 	}
@@ -293,9 +295,10 @@ CAKeySignature::CAModus CAKeySignature::modusFromString(const QString modus) {
 	if (modus=="lydian") return Lydian; else
 	if (modus=="mixolydian") return Mixolydian; else
 	if (modus=="aeolian") return Aeolian; else
-	if (modus=="locrian") return Locrian;
+	if (modus=="locrian") return Locrian; else
 	if (modus=="hypodorian") return Hypodorian; else
 	if (modus=="hypolydian") return Hypolydian; else
+	if (modus=="hypomixolydian") return Hypomixolydian; else
 	if (modus=="hypophrygian") return Hypophrygian;
 	else return Ionian;
 }
