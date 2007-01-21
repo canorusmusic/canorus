@@ -43,6 +43,7 @@ class CAKeySignature : public CAMusElement {
 			Locrian,
 			Hypodorian,
 			Hypolydian,
+			Hypomixolydian,
 			Hypophrygian
 		};
 
