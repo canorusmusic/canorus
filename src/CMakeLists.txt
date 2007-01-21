@@ -61,6 +61,7 @@ SET(Canorus_MOCs ui/mainwin.h	# List of classes which Qt needs to produce MOCs f
 	widgets/scoreviewport.h
 	widgets/sourceviewport.h
 	widgets/toolbar.h
+	widgets/multisplitter.h
 	interface/playback.h
 )
 
@@ -102,6 +103,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all the widgets present in Canorus
 	widgets/scrollwidget.cpp
 	widgets/toolbar.cpp
 	widgets/viewport.cpp
+	widgets/multisplitter.cpp
 )
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files

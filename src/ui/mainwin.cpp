@@ -153,7 +153,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	
 	moMainWin.actionAnimated_scroll->setChecked(true);
 	moMainWin.actionLock_scroll_playback->setChecked(false);
-	moMainWin.actionUnsplit->setEnabled(false);
+	moMainWin.actionUnsplit_all->setEnabled(false);
+	moMainWin.actionClose_current_view->setEnabled(false);
 	
 	mpoKeySigPSP  = 0;
 	mpoTimeSigPSP = 0;
@@ -297,9 +298,11 @@ void CAMainWin::addSheet(CASheet *s) {
 }
 
 void CAMainWin::clearUI() {
+	if(_viewPortList.size() > 1)
+		on_actionUnsplit_all_triggered();
 	for (int i=0; i<_viewPortList.size(); i++)
 		delete _viewPortList[i];
-
+	
 	_viewPortList.clear();
 	
 	while (moMainWin.tabWidget->count()) {
@@ -325,6 +328,9 @@ void CAMainWin::on_action_Fullscreen_toggled(bool checked) {
 
 void CAMainWin::on_actionSplit_horizontally_triggered() {
 	CAViewPort *v = (CAViewPort *)_currentScrollWidget->splitHorizontally();
+	if(!v)
+		return;
+	
 	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
@@ -335,16 +341,17 @@ void CAMainWin::on_actionSplit_horizontally_triggered() {
 		v->setFocus();
 	}
 	
-	moMainWin.actionSplit_horizontally->setEnabled(false);
-	moMainWin.actionSplit_vertically->setEnabled(false);
-	moMainWin.actionUnsplit->setEnabled(true);
+	moMainWin.actionUnsplit_all->setEnabled(true);
+	moMainWin.actionClose_current_view->setEnabled(true);
 	_viewPortList.append(v);
 	setMode(_currentMode);	//updates the new viewport border settings
 }
 
 void CAMainWin::on_actionSplit_vertically_triggered() {
 	CAViewPort *v = (CAViewPort *)_currentScrollWidget->splitVertically();
-
+	if(!v)
+		return;
+	
 	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
 		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
@@ -355,28 +362,41 @@ void CAMainWin::on_actionSplit_vertically_triggered() {
 		v->setFocus();
 	}
 	
-	moMainWin.actionSplit_horizontally->setEnabled(false);
-	moMainWin.actionSplit_vertically->setEnabled(false);
-	moMainWin.actionUnsplit->setEnabled(true);
+	moMainWin.actionUnsplit_all->setEnabled(true);
+	moMainWin.actionClose_current_view->setEnabled(true);
 	_viewPortList.append(v);
 	setMode(_currentMode);	//updates the new viewport border settings
 }
 
-void CAMainWin::doUnsplit(CAViewPort *v = 0)
-{
+void CAMainWin::doUnsplit(CAViewPort *v) {
+	CAViewPort::CAViewPortType vpt = v?v->viewPortType():_currentScrollWidget->lastUsedDockedViewPort()->viewPortType();
 	v = _currentScrollWidget->unsplit(v);
-	if (v)
-		_viewPortList.removeAll(v);
+	if (!v) return;
 	
-	moMainWin.actionSplit_horizontally->setEnabled(true);
-	moMainWin.actionSplit_vertically->setEnabled(true);
-	moMainWin.actionUnsplit->setEnabled(false);
-	_activeViewPort = _viewPortList.back();
+	_viewPortList.removeAll(v);
+	
+	if(_currentScrollWidget->dockedViewPortsList().size() == 1)
+	{
+		moMainWin.actionClose_current_view->setEnabled(false);
+		moMainWin.actionUnsplit_all->setEnabled(false);
+	}
+	if(vpt == CAViewPort::SourceViewPort)
+		moMainWin.actionSource_view_perspective->setChecked(false);
+	_activeViewPort = _currentScrollWidget->dockedViewPortsList().back();
 }
 
-void CAMainWin::on_actionUnsplit_triggered() {
-	doUnsplit();
+void CAMainWin::on_actionUnsplit_all_triggered() {
+	QList<CAViewPort*> dockedViewPorts = _currentScrollWidget->unsplitAll();
+	for(QList<CAViewPort*>::iterator i = dockedViewPorts.begin(); i < dockedViewPorts.end(); i++)
+		_viewPortList.removeAll(*i);
+	moMainWin.actionClose_current_view->setEnabled(false);
+	moMainWin.actionUnsplit_all->setEnabled(false);
 	moMainWin.actionSource_view_perspective->setChecked(false);
+	_activeViewPort = _currentScrollWidget->dockedViewPortsList().back();
+}
+
+void CAMainWin::on_actionClose_current_view_triggered() {
+	doUnsplit();
 }
 
 void CAMainWin::on_actionSource_view_perspective_toggled(bool status) {
@@ -398,9 +418,8 @@ void CAMainWin::on_actionSource_view_perspective_toggled(bool status) {
 	v->setFocusPolicy(Qt::ClickFocus);
 	v->setFocus();
 	
-	moMainWin.actionSplit_horizontally->setEnabled(false);
-	moMainWin.actionSplit_vertically->setEnabled(false);
-	moMainWin.actionUnsplit->setEnabled(true);
+	moMainWin.actionUnsplit_all->setEnabled(true);
+	moMainWin.actionClose_current_view->setEnabled(true);
 	_viewPortList.append(v);
 	setMode(_currentMode);	//updates the new viewport border settings
 }
@@ -519,6 +538,7 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 
 void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *viewPort) {
 	_activeViewPort = viewPort;
+	_currentScrollWidget->setLastUsedViewPort(_activeViewPort);
 	
 	if (viewPort->viewPortType() == CAViewPort::ScoreViewPort) {
 		CAScoreViewPort *v = (CAScoreViewPort*)viewPort;
@@ -1001,6 +1021,7 @@ void CAMainWin::on_actionZoom_to_height_triggered() {
 }
 
 void CAMainWin::closeEvent(QCloseEvent *event) {	//TODO: Make the main window the main window of the application somehow - when it's closed, the destructor is also called. This way, this function will not be needed anymore. -Matevz
+	clearUI();
 	delete _pluginManager;
 }
 
@@ -1237,7 +1258,8 @@ void CAMainWin::on_action_Key_signature_triggered() {
 	
 	moMainWin.actionSplit_horizontally->setEnabled(false);
 	moMainWin.actionSplit_vertically->setEnabled(false);
-	moMainWin.actionUnsplit->setEnabled(true);
+	moMainWin.actionUnsplit_all->setEnabled(true);
+	moMainWin.actionClose_current_view->setEnabled(true);
 	
 	setMode(InsertMode);
 	mpoMEFactory->setMusElementType( CAMusElement::KeySignature );
@@ -1254,7 +1276,8 @@ void CAMainWin::on_action_Time_signature_triggered() {
 	
 	moMainWin.actionSplit_horizontally->setEnabled(false);
 	moMainWin.actionSplit_vertically->setEnabled(false);
-	moMainWin.actionUnsplit->setEnabled(true);
+	moMainWin.actionUnsplit_all->setEnabled(true);
+	moMainWin.actionClose_current_view->setEnabled(true);
 	
 	setMode(InsertMode);
 	mpoMEFactory->setMusElementType( CAMusElement::TimeSignature );

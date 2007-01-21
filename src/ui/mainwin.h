@@ -177,7 +177,8 @@ private slots:
 	//Window menu
 	void on_actionSplit_horizontally_triggered();
 	void on_actionSplit_vertically_triggered();
-	void on_actionUnsplit_triggered();
+	void on_actionUnsplit_all_triggered();
+	void on_actionClose_current_view_triggered();
 	void on_actionNew_viewport_triggered();
 	
 	//Help menu
@@ -310,5 +311,5 @@ private:
 	////////////////////////////////////////////////////
 	QAction *mpoVoiceNumAction;  ///Voice number action
 	
-	void doUnsplit(CAViewPort*);
+	void doUnsplit(CAViewPort *v = 0);
 };

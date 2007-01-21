@@ -13,10 +13,10 @@
 #include <QList>
 
 #include "core/kdtree.h"
+#include "widgets/multisplitter.h"
 
 class CAViewPort;
 class CASheet;
-class QSplitter;
 class QGridLayout;
 
 /**
@@ -34,6 +34,11 @@ class CAScrollWidget : public QFrame {
 		 * @param p Parent widget.
 		 */
 		CAScrollWidget(CAViewPort *v, QWidget *p);
+		
+		/**
+		 * The default destructor.
+		 */
+		~CAScrollWidget();
 		
 		/**
 		 * Return the last used active viewport.
@@ -112,6 +117,11 @@ class CAScrollWidget : public QFrame {
 		 */				
 		CAViewPort* unsplit(CAViewPort *v = 0);
 		
+		QList<CAViewPort*> unsplitAll();
+		
+		inline const QList<CAViewPort*>& dockedViewPortsList() { return _viewPorts; }
+		
+		inline CAViewPort* lastUsedDockedViewPort() { return _lastUsedViewPort; }
 	private slots:
 		
 		/**
@@ -140,9 +150,11 @@ class CAScrollWidget : public QFrame {
 		//Widgets
 		////////////////////////////////////////////////
 		QList<CAViewPort *> _viewPorts;	///List of all docked active viewports (multiple viewports appear, when you use split view etc.). Undocked viewports (when triggered by Window->New viewport) are not stored.
-		QSplitter *_splitter;	///Splitter for the viewports widgets (so the viewports can be resizable)
+		CAMultiSplitter *_splitter;	///Splitter for the viewports widgets (so the viewports can be resizable)
 		QGridLayout *_layout;	///Layout, so splitters can fill the whole widget area.
 		CAViewPort *_lastUsedViewPort;	///The last viewport user interacted with
+		void setLastUsedViewPort(CAViewPort *v); ///update the last used viewport.
+		friend class CAMainWin;
 };
 #endif
 

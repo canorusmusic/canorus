@@ -26,7 +26,6 @@ class CAViewPort : public QWidget {
 		 * The default constructor.
 		 * 
 		 * @param parent The parent widget.
-		 * @param musElts Pointer to a KDTree of music elements
 		 */
 		CAViewPort(QWidget *parent=0);
 		
