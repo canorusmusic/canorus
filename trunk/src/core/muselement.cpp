@@ -8,6 +8,7 @@
 #include "core/muselement.h"
 #include "core/context.h"
 #include "core/staff.h"
+#include "core/playable.h"
 
 /*!
 	\class CAMusElement
@@ -47,6 +48,18 @@ CAMusElement::~CAMusElement() {
 	// needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
 	if( _context )
 		_context->removeMusElement(this, false);
+}
+
+/*!
+	Returns true, if the current element is playable; otherwise false.
+	Playable elements are music elements with _timeLength variable greater
+	than 0 (notes, rests). They inherit CAPlayable.
+	
+	\sa _timeLength, CAPlayable
+*/
+bool CAMusElement::isPlayable()
+{
+	return dynamic_cast<CAPlayable*>(this);
 }
 
 /*!
@@ -136,15 +149,6 @@ CAMusElement::~CAMusElement() {
 	Sets the name of the music element to \a name.
 	
 	\sa _name, name()
-*/
-
-/*!
-	\fn CAMusElement::isPlayable()
-	Returns true, if the current element is playable; otherwise false.
-	Playable elements are music elements with _timeLength variable greater
-	than 0 (notes, rests). They inherit CAPlayable.
-	
-	\sa _timeLength, CAPlayable
 */
 	
 /*!

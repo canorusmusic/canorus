@@ -8,8 +8,6 @@
 #ifndef MUSELEMENT_H_
 #define MUSELEMENT_H_
 
-//#include "core/playable.h"	// used by isPlayable()
-
 #include <QString>
 
 class CAContext;
@@ -56,7 +54,7 @@ public:
 	inline const QString name() { return _name; }
 	inline void setName(const QString name) { _name = name; }		
 	
-	bool isPlayable() { return true;}//(dynamic_cast<CAPlayable*>(this)); }
+	bool isPlayable();
 	
 protected:
 	CAMusElementType _musElementType;
