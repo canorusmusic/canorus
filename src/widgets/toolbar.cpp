@@ -109,30 +109,26 @@ QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, QMenu *poM
 		moToolElements.append(poMenuButton);
 		poMenuButton->setObjectName( oName );
 		poMenu->setObjectName( oName );
-		// Update icon
-		poMenuButton->setIcon( *poIcon );
-		// Toggle button ?
-		poMenuButton->setCheckable( bToggle );
 		// Tooltip
 		poMenuButton->setToolTip( oTitle );
 		// Add action to the element
 		poAction = addWidget( poMenuButton );
+		poAction = poMenu->menuAction();
 		poAction->setObjectName( oName );
+		// Toggle button ?
+		poAction->setCheckable( bToggle );
+		// Update icon
+		poAction->setIcon( *poIcon );
 		// Save it in the action list
 		moToolActions.append( poAction );
 		// Associate menu with the button
 		poMenuButton->setMenu( poMenu );
 		// Add menu grab
 		poMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
-		// Notify on toggle of Tool Button
-		connect( poMenuButton, SIGNAL( toggled( bool ) ),
-			     poAction, SIGNAL( toggled( bool ) ) );
-		// Notify on toggle of Action
-		connect( poAction, SIGNAL( toggled( bool ) ),
-			     poMenuButton, SLOT( setChecked( bool ) ) );
 		// Notify on change of menu entry
 	    connect( poMenu, SIGNAL( triggered( QAction * ) ),
 	    		 this, SLOT( menuEntryChanged( QAction * ) ) );
+		poMenuButton->setDefaultAction( poAction );
 	}
 	return poAction;
 }
@@ -142,7 +138,7 @@ QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, CAButtonMe
 {
 	// ToDo: Could be improved by calling addToolButton
 	QToolButton *poMenuButton = 0;
-	QAction     *poAction     = 0;
+	QAction     *poAction     = 0, *poToolAction = 0;
 	int          iSize        = moToolIDs.size();
 	moToolIDs[oName] = moToolElements.size();
 	// Check if name was unique (i.e. new hash inserted)
@@ -163,32 +159,32 @@ QAction *CAToolBar::addToolMenu( const QString oTitle, QString oName, CAButtonMe
 		moToolElements.append(poMenuButton);
 		poMenuButton->setObjectName( oName );
 		poButtonMenu->setObjectName( oName );
-		// Update icon
-		poMenuButton->setIcon( *poIcon );
-		// Toggle button ?
-		poMenuButton->setCheckable( bToggle );
 		// Tooltip
 		poMenuButton->setToolTip( oTitle );
 		// Add action to the element
 		poAction = addWidget( poMenuButton );
+		poAction = poButtonMenu->menuAction();
 		poAction->setObjectName( oName );
+		// Toggle button ?
+		poAction->setCheckable( bToggle );
+		// Update icon
+		poAction->setIcon( *poIcon );
 		// Save it in the action list
 		moToolActions.append( poAction );
 		// Associate menu with the button
 		poMenuButton->setMenu( poButtonMenu );
 		// Add menu grab
 		poMenuButton->setPopupMode( QToolButton::MenuButtonPopup );
-		// Notify on toggle of Tool Button
-		connect( poMenuButton, SIGNAL( toggled( bool ) ),
-			     poAction, SIGNAL( toggled( bool ) ) );
-		// Notify on toggle of Action
-		connect( poAction, SIGNAL( toggled( bool ) ),
-			     poMenuButton, SLOT( setChecked( bool ) ) );
 		// Notify on change of button
 		connect( poButtonMenu, SIGNAL( buttonClicked( QAbstractButton * ) ),
 			     this, SLOT( changeMenuIcon( QAbstractButton * ) ) );
 		connect( poButtonMenu, SIGNAL( buttonElemToggled( bool ) ),
 			     poMenuButton, SIGNAL( toggled( bool ) ) );
+		// Notify on change of menu entry
+	    connect( poButtonMenu, SIGNAL( triggered( QAction * ) ),
+	    		 this, SLOT( menuEntryChanged( QAction * ) ) );
+		poAction->setChecked( false );
+		poMenuButton->setDefaultAction( poAction );
 	}
 	return poAction;
 }
@@ -228,10 +224,10 @@ QAction *CAToolBar::addToolButton( const QString oTitle, QString oName,
 		// Save it in the action list
 		moToolActions.append( poAction );
 		// Notify on toggle of Tool Button
-		connect( poMenuButton, SIGNAL( toggled( bool ) ),
+		connect( poMenuButton, SIGNAL( clicked( bool ) ),
 			     poAction, SIGNAL( toggled( bool ) ) );
 		// Notify on toggle of Action
-		connect( poAction, SIGNAL( toggled( bool ) ),
+		connect( poAction, SIGNAL( triggered( bool ) ),
 			     poMenuButton, SLOT( setChecked( bool ) ) );
 	}
 	return poAction;
@@ -437,27 +433,33 @@ void CAButtonMenu::addButton( const QIcon &oIcon, int iButtonID )
 	    iXSize = miBXPos * (miSpace+poMButton->width()/3);
 		iYSize = (miBYPos+1) * (miSpace+poMButton->height());
     }
-	//printf("XPos %d, MX: %d, SX: %d, YPos %d, MY: %d, SY: %d\n",
-	//       miBXPos, iXMargin, iXSize, miBYPos, iYMargin, iYSize);
-	//fflush( stdout );
+	printf("XPos %d, MX: %d, SX: %d, YPos %d, MY: %d, SY: %d\n",
+	       miBXPos, iXMargin, iXSize, miBYPos, iYMargin, iYSize);
+	fflush( stdout );
 	setMinimumSize( iXMargin + iXSize, iYMargin + iYSize );
 }
 
 void CAButtonMenu::showButtons()
 { 
+	QWidget *poPW = mpoBBox->parentWidget();
 	// This code should move the menu position to the left
 	// but it does not work, as QMenu sets it's own position
 	// after showButtons method call
-	/*QDesktopWidget *poDesktop = QApplication::desktop();
-    int iDWidth = poDesktop->width();
-    int iDHeight = poDesktop->height();
-	if( pos().x() + minimumSize().width() > iDWidth )
-		move( pos().x() - minimumSize().width(), pos().y() );*/
-	//printf("Pos: %d, %d, DW %d, BMW %d\n",
-	//       pos().x(), pos().y(), iDWidth, minimumSize().width() );
-	//fflush( stdout );
-	mpoBBox->show();
-	mpoBBox->updateGeometry();
+	if( poPW )
+	{
+		QDesktopWidget *poDesktop = QApplication::desktop();
+	    int iDWidth = poDesktop->width();
+	    int iDHeight = poDesktop->height();
+		/*if( poPW->pos().x() + poPW->width() > iDWidth )
+			poPW->move( pos().x() - poPW->width(), poPW->pos().y() );
+		printf("1 Pos: %d, %d, DW %d, BMW %d, Box x %d y %d w %d h %d\n",
+		       poPW->pos().x(), poPW->pos().y(), iDWidth, poPW->width(),
+		       mpoBBox->x(), mpoBBox->y(), mpoBBox->width(), mpoBBox->height() );
+		fflush( stdout );*/
+		poPW->show();
+		poPW->updateGeometry();
+	}
+	//mpoBBox->updateGeometry();
 }
 
 void CAButtonMenu::hideButtons( QAbstractButton *poButton )
