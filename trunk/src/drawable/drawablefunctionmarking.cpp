@@ -37,6 +37,7 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
 			case CAFunctionMarking::F:		_text="F"; _width=12; break;
 			case CAFunctionMarking::N:		_text="N"; _width=14; break;
 			case CAFunctionMarking::L:		_text="L"; _width=11; break;
+			case CAFunctionMarking::K:		_text="K"; _width=12; break;
 		}
 	else
 		switch (functionMarking()->function()) { //TODO: Width determination should be done automatically using QPainter::boundingRect() method
@@ -54,6 +55,7 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
 			case CAFunctionMarking::F:		_text="F"; _width=10; break;
 			case CAFunctionMarking::N:		_text="N"; _width=12; break;
 			case CAFunctionMarking::L:		_text="L"; _width=9; break;
+			case CAFunctionMarking::K:		_text="K"; _width=10; break;
 		}	
 	
 	if (function->isMinor()) { //prepend a small circle
@@ -253,7 +255,7 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 	
 	//fill in the text values for functions
  	if (_drawableFunctionMarkingSupportType==Tonicization || _drawableFunctionMarkingSupportType==ChordArea) {
-		switch (type) { //TODO: Width determination should be done automatically using QPainter::boundingRect() method
+		switch (type) {
 			//character widths are calculated using FreeSans font, pixelSize 19
 			case CAFunctionMarking::I:		text="I"; break;
 			case CAFunctionMarking::II:		text="II"; break;
@@ -268,6 +270,7 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 			case CAFunctionMarking::F:		text="F"; break;
 			case CAFunctionMarking::N:		text="N"; break;
 			case CAFunctionMarking::L:		text="L"; break;
+			case CAFunctionMarking::K:		text="K"; break;
 		}
 		
 		if (minor)

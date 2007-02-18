@@ -31,7 +31,8 @@ public:
 		D=10,		// Dominant
 		F=11,		// Phrygian (F for Frigio in Italian)
 		N=12,		// Napolitan
-		L=13		// Lidian
+		L=13,		// Lidian
+		K=14		// Cadenze chord (see http://en.wikipedia.org/wiki/Cadence_%28music%29)
 	};
 	
 	// addedDegrees and alteredDegrees are generated from alterations parameter
