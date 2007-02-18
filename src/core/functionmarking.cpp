@@ -112,3 +112,39 @@ void CAFunctionMarking::setAlterations(const QString alterations) {
 		i=rightIdx;
 	}
 }
+
+/*!
+	\enum CAFunctionMarking::CAFunctionType
+	Name of the function (tonic, subdominant, etc.), its chord area or the tonic degree.
+	Possible names are:
+	- Undefined
+		no degree - extend the previous one
+	- I
+		1st (usually never used)
+	- II
+		2nd
+	- III
+		3rd
+	- IV
+		4th (no subdominant leading tone in minor key)
+	- V
+		5th (no dominant leading tone in minor key)
+	- VI
+		6th
+	- VII
+		7th
+	- T
+		Tonic
+	- S
+		Subdominant
+	- D
+		Dominant
+	- F
+		Phrygian (F for Frigio in Italian)
+	- N
+		Napolitan
+	- L
+		Lidian
+	- K
+		Cadenze chord (see http://en.wikipedia.org/wiki/Cadence_%28music%29). K stands for "kadenze" in German. This is standard nomenclature.
+*/
