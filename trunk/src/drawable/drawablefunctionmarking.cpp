@@ -21,8 +21,14 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
  	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarking;
  	
  	_extenderLineVisible = false;
- 	if (functionMarking()->tonicDegree()==CAFunctionMarking::Undefined)
-		switch (functionMarking()->function()) { //TODO: Width determination should be done automatically using QPainter::boundingRect() method
+ 	CAMusElement *prevMusElt;
+ 	// function marking is stable
+ 	if (// tonic degree is tonic
+ 	    functionMarking()->tonicDegree()==CAFunctionMarking::T &&
+ 		// and the function marking is not part of the ellipse
+ 		(!functionMarking()->isPartOfEllipse())
+ 	)
+		switch (functionMarking()->function()) { /// \todo Width determination should be done automatically using QPainter::boundingRect() method
 			//character widths are calculated using FreeSans font, pixelSize 19
 			case CAFunctionMarking::I:		_text="I"; _width=5; break;
 			case CAFunctionMarking::II:		_text="II"; _width=10; break;
@@ -40,7 +46,8 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
 			case CAFunctionMarking::K:		_text="K"; _width=12; break;
 		}
 	else
-		switch (functionMarking()->function()) { //TODO: Width determination should be done automatically using QPainter::boundingRect() method
+	// function marking is not stable - its tonic degree is not Tonic
+		switch (functionMarking()->function()) { /// \todo Width determination should be done automatically using QPainter::boundingRect() method
 			//character widths are calculated using FreeSans font, pixelSize 17
 			case CAFunctionMarking::I:		_text="I"; _width=5; break;
 			case CAFunctionMarking::II:		_text="II"; _width=10; break;
@@ -75,7 +82,7 @@ CADrawableFunctionMarking::~CADrawableFunctionMarking() {
 
 void CADrawableFunctionMarking::draw(QPainter *p, CADrawSettings s) {
 	QFont font("FreeSans");
-	if (functionMarking()->tonicDegree()==CAFunctionMarking::Undefined)
+	if (functionMarking()->tonicDegree()==CAFunctionMarking::T)
 		font.setPixelSize((int)(19*s.z)); //use pixelSize instead of size as we want fixed font size no matter on screen DPI
 	else
 		font.setPixelSize((int)(17*s.z)); //use pixelSize instead of size as we want fixed font size no matter on screen DPI
@@ -105,7 +112,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	_function1=0; _function2=0;
 	
 	if (type==Key) {
-		_width = 0;	//TODO: Width determination should be done automatically using QPainter::boundingRect() method
+		_width = 0;	/// \todo Width determination should be done automatically using QPainter::boundingRect() method
 		for (int i=0; i<key.size(); i++) {	//character widths are calculated using FreeSans font, pixelSize 17
 			if (key[i]=='C') _width+=12;
 			else if (key[i]=='D') _width+=12;
@@ -148,7 +155,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	}
 	if (type==ChordArea) {
 		//character widths are calculated using FreeSans font, pixelSize 17
-		//TODO: Width determination should be done automatically using QPainter::boundingRect() method
+		/// \todo Width determination should be done automatically using QPainter::boundingRect() method
 		if (f1->functionMarking()->chordArea()==CAFunctionMarking::T) { _width=10; }
 		else if (f1->functionMarking()->chordArea()==CAFunctionMarking::S) { _width=11; }
 		else if (f1->functionMarking()->chordArea()==CAFunctionMarking::D) { _width=12; }
@@ -157,7 +164,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 		_height = 14;
 	} else if (type==Tonicization) {
 		//character widths are calculated using FreeSans font, pixelSize 19
-		//TODO: Width determination should be done automatically using QPainter::boundingRect() method
+		/// \todo Width determination should be done automatically using QPainter::boundingRect() method
 		if (!f2) {
 			switch (f1->functionMarking()->tonicDegree()) {
 				case CAFunctionMarking::I:		_width+=5; break;

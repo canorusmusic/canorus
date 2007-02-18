@@ -72,7 +72,7 @@ private:
 	QString _key;					/// C for C-Major, g for g-minor, bes for b-flat-minor, Fis for F-sharp-Major etc.
 	CAFunctionType _chordArea;		/// Side degrees have undetermined chord locations (eg. 6th can be treated as chord of Subdominant or Tonic)
 	bool _chordAreaMinor;			/// Is chord area minor?
-	CAFunctionType _tonicDegree;	/// Used when doing tonicization (see http://en.wikipedia.org/wiki/Tonicization). None, if the tonic degree should be hidden, degree, to be shown.
+	CAFunctionType _tonicDegree;	/// Used when doing tonicization (see http://en.wikipedia.org/wiki/Tonicization). This value is always set if the function name is set.
 	bool _tonicDegreeMinor;			/// Is tonic degree minor?
 	QList<int> _alteredDegrees;		/// Degree of the chord which are altered according to the current key. These markings are usually written below the function name, eg. -3, -7 for German chord
 	QList<int> _addedDegrees;		/// Degrees of the chord which are added to or substracted from the basic. eg. sixte ajoutée in cadence

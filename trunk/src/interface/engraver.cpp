@@ -349,9 +349,9 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 								function,
 								(CADrawableFunctionMarkingContext*)drawableContext,
 								streamsX[i],
-								function->tonicDegree()?
-									((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Upper):
-									((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle)
+								(function->tonicDegree()==CAFunctionMarking::T && (!function->isPartOfEllipse()))?
+									((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle):
+									((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Upper)
 							);
 						
 						//Place alterations
@@ -375,8 +375,15 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						int j=streamsIdx[i]-1;	//index of the previous elt
 						CADrawableFunctionMarkingSupport *tonicization=0;
 						for (; j>=0 && ((CAFunctionMarking*)musStreamList[i]->at(j))->function()==CAFunctionMarking::Undefined; j--);	//ignore any alterations back there
-						if (j>=0 && ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()!=CAFunctionMarking::Undefined	//place tonicization, if tonic degree is set...
-							&& (function->tonicDegree()!=((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree() || function->key()!=((CAFunctionMarking*)musStreamList[i]->at(j))->key()) ) {	//and it's not still the same
+						if (j>=0 && (
+						    //place tonicization, if tonic degree is not default
+						    ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()!=CAFunctionMarking::T &&
+						    ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree()!=CAFunctionMarking::Undefined
+							//and it's not still the same
+							&& (function->tonicDegree()!=((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree() || function->key()!=((CAFunctionMarking*)musStreamList[i]->at(j))->key())
+						    //always place tonicization, if ellipse is present
+						    || ((CAFunctionMarking*)musStreamList[i]->at(j))->isPartOfEllipse()
+						)) {
 							CAFunctionMarking::CAFunctionType type = ((CAFunctionMarking*)musStreamList[i]->at(j))->tonicDegree();
 							CAFunctionMarking *right = (CAFunctionMarking*)musStreamList[i]->at(j);
 							
@@ -479,7 +486,9 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						//Place chordarea marking below in paranthesis, if no neighbours are of same chordarea
 						CADrawableFunctionMarkingSupport *chordArea=0;
 						j=streamsIdx[i];
-						if (newElt && function->chordArea()!=CAFunctionMarking::Undefined &&
+						if (newElt &&
+						    function->chordArea()!=CAFunctionMarking::Undefined &&
+						    function->chordArea()!=function->function() && // chord area is the same as function name - don't draw chordarea then 
 						    (j-1<0 ||
 						     (((CAFunctionMarking*)musStreamList[i]->at(j-1))->key()==function->key() &&
 						      ((CAFunctionMarking*)musStreamList[i]->at(j-1))->chordArea()!=function->chordArea() &&
@@ -536,7 +545,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							for (int i=0; i<chord.size(); i++) {
 								if (chord[i]->timeLength()<prevElt->timeLength()) {
 									int newX;
-									if (prevElt->tonicDegree()==CAFunctionMarking::Undefined) {
+									if (prevElt->tonicDegree()==CAFunctionMarking::T && (!prevElt->isPartOfEllipse())) {
 										CADrawableFunctionMarking *prevDElt;
 										prevDElt = (CADrawableFunctionMarking*)drawableContext->findMElement(prevElt);
 										prevDElt->setExtenderLineVisible(true);
