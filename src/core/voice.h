@@ -41,6 +41,7 @@ public:
 	
 	int musElementCount() { return _musElementList.count(); }
 	CAMusElement *musElementAt(int i) { return _musElementList[i]; }
+	QList<CANote*> noteList();
 	int indexOf(CAMusElement *elt) { return _musElementList.indexOf(elt); }
 	bool contains(CAMusElement *elt) { return _musElementList.contains(elt); }
 	

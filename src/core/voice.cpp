@@ -481,6 +481,18 @@ bool CAVoice::prependMusElement(CAMusElement *elt) {
 }
 
 /*!
+	Returns a list of all notes in the voice.
+*/
+QList<CANote*> CAVoice::noteList() {
+	QList<CANote*> list;
+	for (int i=0; i<_musElementList.size(); i++)
+		if (_musElementList[i]->musElementType()==CAMusElement::Note)
+			list << ((CANote*)_musElementList[i]);
+	
+	return list;
+}
+
+/*!
 	\var CAVoice::_voiceNumber
 	Prefered direction of stems for the notes inside the voice. This should be Neutral, if the voice is alone, Up, if the voice is the first voice, Down, if not. Prefered is not used here.
 
