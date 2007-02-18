@@ -1,16 +1,16 @@
 <plugin>
 	<canorus-version>0.2.0</canorus-version>
 	<name>plugintest</name>
-	<description>Plugintest - Harmony analysis tools</description>
+	<description>Plugintest</description>
 	<version>0.0.1</version>
 	<author>Canorus team</author>
-	<description lang="sl_SI">Orodja za analizo harmonije</description>
+	<description lang="sl_SI">Testni vtičnik</description>
 
-	<home-url>http://harmonia.berlios.de</home-url>
-	<update-url>http://www.canorus.org/harmonia/harmoniaUpdate.xml</update-url>
+	<home-url>http://www.canorus.org</home-url>
+	<update-url>http://</update-url>
 
 	<action>
-		<name>haInit</name>
+		<name>pluginTestInit</name>
 		<on-action>onInit</on-action>
 		<lang>python</lang>
 		<filename>init.py</filename>
@@ -18,9 +18,9 @@
 	</action>
 
 	<action>
-		<name>haExportFunctionMarkings</name>
-		<export-filter>Harmonia function markings (*.ha)</export-filter>
-		<export-filter lang="sl_SI">Harmonia dokument funkcijskih označb (*.ha)</export-filter>
+		<name>pluginTestExportFunctionMarkings</name>
+		<export-filter>Plugin test files (*.test)</export-filter>
+		<export-filter lang="sl_SI">Testni vtičnik (*.test)</export-filter>
 		<lang>python</lang>
 		<filename>export.py</filename>
 		<function>export</function>
@@ -28,16 +28,16 @@
 	</action>
 	
 	<menu>
-		<name>haHarmonyAnalysisMenu</name>
-		<title>Harmony analysis</title>
-		<title lang="sl_SI">Harmonska analiza</title>
+		<name>pluginTestHarmonyAnalysisMenu</name>
+		<title>Plugin test</title>
+		<title lang="sl_SI">Testni vtičnik</title>
 	</menu>
 	
 	<action>
-		<parent-menu>haHarmonyAnalysisMenu</parent-menu>
-		<name>haAnalyseScore</name>
-		<text>Analyse current sheet</text>
-		<text lang="sl_SI">Analiziraj trenutni list</text>
+		<parent-menu>pluginTestHarmonyAnalysisMenu</parent-menu>
+		<name>pluginTestAnalyseScore</name>
+		<text>Plugin test analyse</text>
+		<text lang="sl_SI">Testno analiziraj trenutni list</text>
 		<lang>python</lang>
 		<filename>analysis.py</filename>
 		<function>analyse</function>
