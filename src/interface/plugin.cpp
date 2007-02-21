@@ -82,6 +82,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 	QList<QString> args = action->args();
 	for (int i=0; i<args.size(); i++) {
 		QString val=args[i];
+		
+		// Currently selected document
 		if (val=="document") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
@@ -94,6 +96,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 			}
 #endif
 		} else
+		
+		// Currently selected sheet
 		if (val=="sheet") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
@@ -116,6 +120,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 			}
 #endif
 		} else
+		
+		// Currently selected note
 		if (val=="note") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
@@ -153,6 +159,22 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="chord") {
 			//TODO
 		} else
+		
+		// Directory of the plugin
+		if (val=="pluginDir") {
+#ifdef USE_RUBY
+			if (action->lang()=="ruby") {
+				rubyArgs << CASwigRuby::toRubyObject(new QString(dirName()), CASwigRuby::String);
+			}
+#endif
+#ifdef USE_PYTHON
+			if (action->lang()=="python") {
+				pythonArgs << CASwigPython::toPythonObject(new QString(dirName()), CASwigPython::String);
+			}
+#endif	
+		}
+		
+		// File name selected in export/import dialogs
 		if (val=="export-filename" || val=="import-filename") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
@@ -167,16 +189,16 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		}
 	}
 	
+	//add the plugin's path for the first time, so scripting languages can find their modules
 	if (action->onAction()=="onInit") {
-		//add the plugin's path for the first time, so scripting languages can find their modules
 #ifdef USE_RUBY
 		if (action->lang()=="ruby") {
-			rb_eval_string((QString("$: << '") + _dirName + "'").toStdString().c_str());
+			rb_eval_string((QString("$: << '") + dirName() + "'").toStdString().c_str());
 		}
 #endif
 #ifdef USE_PYTHON
 		if (action->lang()=="python") {
-			PyRun_SimpleString((QString("sys.path.append('")+_dirName+"')").toStdString().c_str());
+			PyRun_SimpleString((QString("sys.path.append('")+dirName()+"')").toStdString().c_str());
 		}
 #endif
 	}
