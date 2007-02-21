@@ -100,7 +100,7 @@ bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
 				plugList << val;	// remember deleted values which don't belong to the disabled plugin
 			}
 		}
-		for (int j=0; j<plugList.size(); i++)	// restore the hash - add deleted non-disabled actions of the other plugins back to the hash
+		for (int j=0; j<plugList.size(); j++)	// restore the hash - add deleted non-disabled actions of the other plugins back to the hash
 			_actionMap.insertMulti(actions[i], plugList[j]);
 	}
 	
