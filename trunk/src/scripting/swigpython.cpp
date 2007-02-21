@@ -29,23 +29,28 @@ void CASwigPython::init() {
 	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("_CanorusPython.so")+"')").toStdString().c_str());
 #endif
 }
-#include<iostream>
-//WARNING! You have to add path of the plugin to Python path before, manually!
+
+//WARNING! You have to add path of the plugin to Python path before, manually! This is usually done by CAPlugin::callAction("onInit")
 PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args) {
 	if (!QFile::exists(fileName))
 		return 0;
 	
-	// Prepare arguments
-	QString listMask = "(";
-	for (int i=0; i<args.size(); i++)
-		listMask += "O";
-	listMask += ")";
-	
-	PyObject *list[args.size()];
-	for (int i=0; i<args.size(); i++)
-		list[i] = args[i];
-	
-	PyObject *pyArgs = Py_BuildValue((char*)listMask.toStdString().c_str(), *list);
+	///\todo A very ugly hack which supports up to 4 arguments to be passed to Py_BuildValue. If anyone knows how to pass a custom number of arguments (eg. array) to variadic C functions, let me know! -Matevz
+	PyObject *pyArgs;
+	switch (args.size()) {
+	case 1:
+		pyArgs = Py_BuildValue("(O)", args[0]);
+		break;
+	case 2:
+		pyArgs = Py_BuildValue("(OO)", args[0], args[1]);
+		break;
+	case 3:
+		pyArgs = Py_BuildValue("(OOO)", args[0], args[1], args[2]);
+		break;
+	case 4:
+		pyArgs = Py_BuildValue("(OOOO)", args[0], args[1], args[2], args[3]);
+		break;
+	}
 	
 	// Load module, if not yet
 	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
@@ -64,7 +69,7 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	
 	Py_DECREF(pyFunction);
 	Py_DECREF(pyModule);
-	Py_DECREF(pyArgs);
+//	Py_DECREF(pyArgs); /// \todo Crashes if uncommented?!
 	for (int i=0; i<args.size(); i++)
 		Py_DECREF(args[i]);
 	
