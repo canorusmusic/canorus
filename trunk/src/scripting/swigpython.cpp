@@ -10,6 +10,8 @@
 #include "scripting/swigpython.h"
 #include <QFile>
 
+#include <iostream> // used for reporting errors in scripts
+
 //defined in SWIG wrapper class
 extern "C" void init_CanorusPython();	///Load 'CanorusPython' module and initialize classes
 QString locateResource(QString);
@@ -23,6 +25,7 @@ void CASwigPython::init() {
 	PyRun_SimpleString((QString("sys.path.append('")+locateResource("scripts")+"')").toStdString().c_str());
 	// add path to CanorusPython modules to Scripting path
 	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("CanorusPython.py")+"')").toStdString().c_str());
+	//PyRun_SimpleString("import CanorusPython");	
 #ifdef Q_WS_WIN
 	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("_CanorusPython.dll")+"')").toStdString().c_str());
 #else
@@ -56,9 +59,11 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
 	moduleName = moduleName.remove(0, moduleName.lastIndexOf("/")+1);
 	PyObject *pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
+	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
 	
 	// Get function object
 	PyObject *pyFunction = PyObject_GetAttrString(pyModule, (char*)function.toStdString().c_str());
+	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
 	
 	// Call the actual function
 	PyObject *ret;
@@ -66,6 +71,7 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 		ret = PyEval_CallObject(pyFunction, pyArgs);
 	else
 		ret = PyEval_CallObject(pyFunction, NULL);
+	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
 	
 	Py_DECREF(pyFunction);
 	Py_DECREF(pyModule);
