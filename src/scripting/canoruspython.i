@@ -72,7 +72,7 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 			return Py_BuildValue("s", ((QString*)object)->toUtf8().data());
 			break;
 		case CASwigPython::Document:
-			return SWIG_NewPointerObj(object, SWIGTYPE_p_CADocument, 0);
+			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CADocument, 0);
 			break;
 		case CASwigPython::Sheet:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CASheet, 0);
