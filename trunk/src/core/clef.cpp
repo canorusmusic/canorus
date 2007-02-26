@@ -28,33 +28,6 @@ CAClef::CAClef(CAClefType type, CAStaff *staff, int time) : CAMusElement(staff, 
 }
 
 /*!
-	Creates a new clef with parent \a staff and start time \a time.
-	Type is determined from the QString.
-	This constructor is usually called when opening a document.
-	
-	\deprecated New CanorusML format uses default constructor and clefTypeFromString()
-	for conversion.
-*/
-CAClef::CAClef(const QString type, CAStaff *staff, int time) : CAMusElement(staff, time) {
-	_musElementType = CAMusElement::Clef;
-	
-	CAClefType clefType;
-	if (type=="treble") {
-		clefType = Treble;
-	} else if (type=="bass") {
-		clefType = Bass;
-	} else if (type=="alto") {
-		clefType = Alto;
-	} else if (type=="tenor") {
-		clefType = Tenor;
-	} else if (type=="soprano") {
-		clefType = Soprano;
-	}
-	
-	setClefType(clefType);
-}
-
-/*!
 	Sets the clef type to \a type and update _c1 and _centerPitch.
 	
 	\sa CAClefType, _clefType
@@ -88,36 +61,6 @@ void CAClef::setClefType(CAClefType type) {
 
 CAClef* CAClef::clone() {
 	return new CAClef(_clefType, (CAStaff*)_context, _timeStart);
-}
-
-/*!
-	Returns a human readable type of the clef.
-	
-	\deprecated New CanorusML format stores clef type using clefTypeToString(). This
-	should be used by LilyPond parser. -Matevz
-*/
-const QString CAClef::clefTypeML() {
-	QString type;
-	
-	switch (_clefType) {
-		case Treble:
-			type = "treble";
-			break;
-		case Bass:
-			type = "bass";
-			break;
-		case Alto:
-			type = "alto";
-			break;
-		case Tenor:
-			type = "tenor";
-			break;
-		case Soprano:
-			type = "soprano";
-			break;
-	}
-	
-	return type;
 }
 
 int CAClef::compare(CAMusElement *elt) {

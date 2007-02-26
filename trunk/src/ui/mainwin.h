@@ -50,6 +50,7 @@ class CAPluginManager;
 class CAScrollWidget;
 class CAViewPort;
 class CAScoreViewPort;
+class CASourceViewPort;
 class CAMusElementFactory;
 
 enum CAMode {
@@ -167,6 +168,7 @@ private slots:
 	void on_actionZoom_to_fit_triggered();
 	void on_actionZoom_to_width_triggered();
 	void on_actionZoom_to_height_triggered();
+	void on_actionVoice_in_LilyPond_source_toggled(bool);
 	
 	//Playback menu
 	void on_actionPlay_toggled(bool);
@@ -230,7 +232,7 @@ private slots:
 	 */
 	void viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v);
 	
-	void sourceViewPortCommit(QString documentString);
+	void sourceViewPortCommit(CASourceViewPort*, QString inputString);
 	
 	/**
 	 * Called when the tab is switched.

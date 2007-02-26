@@ -23,6 +23,7 @@ public:
 	};
 	
 	enum CAMajorMinorGender {
+		Undefined=-1,
 		Major,
 		Minor
 	};
@@ -51,8 +52,6 @@ public:
 	~CAKeySignature();
 	CAKeySignature *clone();
 	
-	CAKeySignature(QString pitch, QString gender, CAStaff *staff, int timeStart); // Deprecated
-	
 	CAKeySignatureType keySignatureType() { return _keySignatureType; }
 	void setKeySignatureType(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender);	
 	
@@ -66,8 +65,6 @@ public:
 	void setMajorMinorShape(CAMajorMinorShape shape) { _majorMinorShape = shape; }
 	void setModus(CAModus modus) { _modus = modus; }
 	
-	const QString pitchML(); // Deprecated
-	const QString majorMinorGenderML(); // Deprecated
 	signed char numberOfAccidentals();
 	signed char *accidentals() { return _accidentals; }
 	

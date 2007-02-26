@@ -26,7 +26,6 @@ class CATimeSignature : public CAMusElement {
 		
 		CATimeSignature(int beats, int beat, CAStaff *staff, int startTime, CATimeSignatureType type = Classical);
 		
-		CATimeSignature(QString MLString, CAStaff *staff, int startTime, QString type = "classical"); // Deprecated
 		CATimeSignature *clone();
 		~CATimeSignature();
 	

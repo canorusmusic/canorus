@@ -83,9 +83,12 @@ using namespace std;
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
 
+#include "export/lilypondexport.h"
+#include "import/lilypondimport.h"
+
 QString locateResource(const QString fileName) {
-	//TODO: Config file implementation
-	//TODO: Application path argument
+	//! \todo Config file implementation
+	//! \todo Application path argument
 	QString curPath;
 	
 	//Try current working directory
@@ -408,20 +411,21 @@ void CAMainWin::on_actionSource_view_perspective_toggled(bool status) {
 				doUnsplit(*i);
 		}
 		return;
+	} else {
+		CASourceViewPort *v = new CASourceViewPort(&_document, _activeViewPort->parent());
+		_currentScrollWidget->addViewPort(v);
+		
+		connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
+		
+		v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
+		v->setFocusPolicy(Qt::ClickFocus);
+		v->setFocus();
+		
+		moMainWin.actionUnsplit_all->setEnabled(true);
+		moMainWin.actionClose_current_view->setEnabled(true);
+		_viewPortList.append(v);
+		setMode(_currentMode);	//updates the new viewport border settings
 	}
-	CASourceViewPort *v = new CASourceViewPort(&_document, _activeViewPort->parent());
-	_currentScrollWidget->addViewPort(v);
-	
-	connect(v, SIGNAL(CACommit(QString)), this, SLOT(sourceViewPortCommit(QString)));
-	
-	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
-	v->setFocusPolicy(Qt::ClickFocus);
-	v->setFocus();
-	
-	moMainWin.actionUnsplit_all->setEnabled(true);
-	moMainWin.actionClose_current_view->setEnabled(true);
-	_viewPortList.append(v);
-	setMode(_currentMode);	//updates the new viewport border settings
 }
 
 void CAMainWin::on_actionNew_viewport_triggered() {
@@ -1074,7 +1078,7 @@ void CAMainWin::on_actionSave_triggered() {
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		_fileName = s;
 		QTextStream out(&file);
-		CACanorusML::saveDocument(out, &_document);
+		CACanorusML::saveDocument(&_document, out);
 		file.close();
 	}               
 }
@@ -1098,7 +1102,7 @@ void CAMainWin::on_actionSave_as_triggered() {
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		_fileName = s;
 		QTextStream out(&file);
-		CACanorusML::saveDocument(out, &_document);
+		CACanorusML::saveDocument(&_document, out);
 		file.close();
 	}
 }
@@ -1289,16 +1293,26 @@ void CAMainWin::on_action_Time_signature_triggered() {
 	actionClefSelect->setChecked( false );
 }
 
-void CAMainWin::sourceViewPortCommit(QString docString) {
-	_document.clear();
-	clearUI();
-	
-	QXmlInputSource input;
-	input.setData(docString);
-	_document = *CACanorusML::openDocument(&input, this);
+void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
+	if (v->document()) {
+		_document.clear();
+		clearUI();
+		
+		QXmlInputSource input;
+		input.setData(inputString);
+		_document = *CACanorusML::openDocument(&input, this);
+		
+		on_actionSource_view_perspective_toggled(false);
+	} else
+	if (v->voice()) {
+		v->voice()->clear();
+		
+		CALilyPondImport(inputString, v->voice());
+		
+		on_actionVoice_in_LilyPond_source_toggled(false);
+	}
 	
 	rebuildUI();
-	on_actionSource_view_perspective_toggled(1);
 }
 
 void CAMainWin::on_actionAbout_Qt_triggered()
@@ -1322,4 +1336,36 @@ void CAMainWin::on_actionMIDI_Setup_triggered() {
 	CAMidiSetupDialog(this, _midi->getInputPorts(), _midi->getOutputPorts(), &_defaultRtMidiInPort, &_defaultRtMidiOutPort);
 	_settings->setValue("rtmidi/defaultoutputport", _defaultRtMidiOutPort);
 	_settings->setValue("rtmidi/defaultinputport", _defaultRtMidiInPort);
+}
+
+void CAMainWin::on_actionVoice_in_LilyPond_source_toggled(bool checked) {
+	if(!checked)
+	{
+		for(QList<CAViewPort*>::iterator i = _viewPortList.begin(); i < _viewPortList.end(); i++)
+		{
+			if((*i)->viewPortType() == CAViewPort::SourceViewPort)
+				doUnsplit(*i);
+		}
+		return;
+	} else
+	if ( (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort) &&
+	     (static_cast<CAScoreViewPort*>(_activeViewPort)->currentContext()) &&
+	     (static_cast<CAScoreViewPort*>(_activeViewPort)->currentContext()->context()->contextType()==CAContext::Staff) ) {
+		CAStaff *staff = static_cast<CAStaff*>(static_cast<CAScoreViewPort*>(_activeViewPort)->currentContext()->context());
+		int voiceNum = mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1;
+		CAVoice *voice = staff->voiceAt( voiceNum );
+		CASourceViewPort *v = new CASourceViewPort(voice, _activeViewPort->parent());
+		_currentScrollWidget->addViewPort(v);
+		
+		connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
+		
+		v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
+		v->setFocusPolicy(Qt::ClickFocus);
+		v->setFocus();
+		
+		moMainWin.actionUnsplit_all->setEnabled(true);
+		moMainWin.actionClose_current_view->setEnabled(true);
+		_viewPortList.append(v);
+		setMode(_currentMode);	//updates the new viewport border settings
+	}
 }

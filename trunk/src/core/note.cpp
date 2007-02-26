@@ -103,31 +103,6 @@ const QString CANote::generateNoteName(int pitch, int accs) {
 }
 
 /*!
-	Composes the note pitch name for the CanorusML format.
-	
-	\deprecated CanorusML was rewritten to a complete XML structure.
-	No conversion to human-readable pitches is needed anymore. This
-	function could be used for parsing LilyPond for example though. -Matevz
-*/
-const QString CANote::pitchML() {
-	QString name;
-	
-	name = (char)((_pitch+2)%7 + 'a');
-	
-	for (int i=0; i < _accs; i++)
-		name += "is";	//append as many -is-es as necessary
-	
-	for (int i=0; i > _accs; i--) {
-		if ( ((name == "e") || (name == "a")) && (i==0) )
-			name += "s";	//for e and a, only append single -s the first time
-		else
-			name += "es";	//otherwise, append normally as many es-es as necessary
-	}
-	
-	return name;
-}
-
-/*!
 	Sets the note pitch to \a pitch.
 	
 	\sa _pitch
@@ -137,48 +112,6 @@ void CANote::setPitch(int pitch) {
 	_midiPitch = CANote::pitchToMidiPitch(pitch, _accs);
 	
 	calculateNotePosition();
-}
-
-/*!
-	Composes the note length for the CanorusML format.
-	
-	\deprecated CanorusML was rewritten to a complete XML structure.
-	No conversion to human-readable lengths is needed anymore. This
-	function could be used for parsing LilyPond for example though. -Matevz
-*/
-const QString CANote::lengthML() {
-	QString length;
-	switch (_playableLength) {
-		case CAPlayable::Breve:
-			length = "0";
-			break;
-		case CAPlayable::Whole:
-			length = "1";
-			break;
-		case CAPlayable::Half:
-			length = "2";
-			break;
-		case CAPlayable::Quarter:
-			length = "4";
-			break;
-		case CAPlayable::Eighth:
-			length = "8";
-			break;
-		case CAPlayable::Sixteenth:
-			length = "16";
-			break;
-		case CAPlayable::ThirtySecond:
-			length = "32";
-			break;
-		case CAPlayable::SixtyFourth:
-			length = "64";
-			break;
-		case CAPlayable::HundredTwentyEighth:
-			length = "128";
-			break;
-	}
-	
-	return length;
 }
 
 /*!

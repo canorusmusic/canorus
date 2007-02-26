@@ -519,7 +519,7 @@
      <x>0</x>
      <y>0</y>
      <width>943</width>
-     <height>38</height>
+     <height>36</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -565,23 +565,6 @@
     <addaction name="actionPrint" />
     <addaction name="separator" />
     <addaction name="actionQuit" />
-   </widget>
-   <widget class="QMenu" name="menuPerspective" >
-    <property name="title" >
-     <string>&amp;Perspective</string>
-    </property>
-    <addaction name="action_Select_perspective" />
-    <addaction name="actionEdit_perspective" />
-    <addaction name="action_Insert_perspective" />
-    <addaction name="action_Replace_perspective" />
-    <addaction name="separator" />
-    <addaction name="action_Layout_perspective" />
-    <addaction name="actionSource_view_perspective" />
-    <addaction name="separator" />
-    <addaction name="actionLyrics_perspective" />
-    <addaction name="actionChord_perspective" />
-    <addaction name="action_Figured_bass_perspective" />
-    <addaction name="actionFigured_functions_perspective" />
    </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
@@ -630,23 +613,6 @@
     <addaction name="action_Play_script" />
     <addaction name="action_Edit_script" />
    </widget>
-   <widget class="QMenu" name="menuInsert" >
-    <property name="title" >
-     <string>&amp;Insert</string>
-    </property>
-    <addaction name="actionNew_staff" />
-    <addaction name="action_Clef" />
-    <addaction name="action_Time_signature" />
-    <addaction name="action_Key_signature" />
-    <addaction name="separator" />
-    <addaction name="action_Special_barline" />
-    <addaction name="action_Expression_marks" />
-    <addaction name="actionC_hord" />
-    <addaction name="action_Pedal_markings" />
-    <addaction name="action_Octaviation" />
-    <addaction name="action_Instrument_change" />
-    <addaction name="action_Midi_instruction" />
-   </widget>
    <widget class="QMenu" name="menuView" >
     <property name="title" >
      <string>&amp;View</string>
@@ -677,6 +643,41 @@
     <addaction name="actionGoto_bar" />
     <addaction name="actionStatus_bar" />
     <addaction name="action_Fullscreen" />
+    <addaction name="actionVoice_in_LilyPond_source" />
+   </widget>
+   <widget class="QMenu" name="menuInsert" >
+    <property name="title" >
+     <string>&amp;Insert</string>
+    </property>
+    <addaction name="actionNew_staff" />
+    <addaction name="action_Clef" />
+    <addaction name="action_Time_signature" />
+    <addaction name="action_Key_signature" />
+    <addaction name="separator" />
+    <addaction name="action_Special_barline" />
+    <addaction name="action_Expression_marks" />
+    <addaction name="actionC_hord" />
+    <addaction name="action_Pedal_markings" />
+    <addaction name="action_Octaviation" />
+    <addaction name="action_Instrument_change" />
+    <addaction name="action_Midi_instruction" />
+   </widget>
+   <widget class="QMenu" name="menuPerspective" >
+    <property name="title" >
+     <string>&amp;Perspective</string>
+    </property>
+    <addaction name="action_Select_perspective" />
+    <addaction name="actionEdit_perspective" />
+    <addaction name="action_Insert_perspective" />
+    <addaction name="action_Replace_perspective" />
+    <addaction name="separator" />
+    <addaction name="action_Layout_perspective" />
+    <addaction name="actionSource_view_perspective" />
+    <addaction name="separator" />
+    <addaction name="actionLyrics_perspective" />
+    <addaction name="actionChord_perspective" />
+    <addaction name="action_Figured_bass_perspective" />
+    <addaction name="actionFigured_functions_perspective" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -1185,7 +1186,7 @@
     <string>Split vertically</string>
    </property>
   </action>
-  <action name="actionClose_current_view">
+  <action name="actionClose_current_view" >
    <property name="text" >
     <string>Close current view</string>
    </property>
@@ -1261,6 +1262,14 @@
   <action name="actionMIDI_Setup" >
    <property name="text" >
     <string>MIDI Setup...</string>
+   </property>
+  </action>
+  <action name="actionVoice_in_LilyPond_source" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Voice in LilyPond source</string>
    </property>
   </action>
  </widget>

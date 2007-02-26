@@ -17,6 +17,7 @@
 class CARest : public CAPlayable {
 	public:
 		enum CARestType {
+			Undefined=-1,
 			Normal,
 			Hidden
 		};
@@ -25,9 +26,6 @@ class CARest : public CAPlayable {
 		CARest *clone();
 		
 		~CARest();
-
-		const QString lengthML();
-		const QString restTypeML();
 		
 		CARestType restType() { return _restType; }
 		int compare(CAMusElement *elt);

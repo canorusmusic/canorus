@@ -10,13 +10,14 @@
 
 #include <QString>
 
-#include "muselement.h"
+#include "core/muselement.h"
 
 class CAStaff;
 
 class CAClef : public CAMusElement {
 public:
 	enum CAClefType {
+		Undefined=-1,
 		Treble,
 		Bass,
 		Alto,
@@ -32,7 +33,6 @@ public:
 	CAClef(const QString type, CAStaff *staff, int time);
 	
 	CAClefType clefType() { return _clefType; }
-	const QString clefTypeML(); // Deprecated
 	const int c1() { return _c1; }
 	const int centerPitch() { return _centerPitch; }
 	int compare(CAMusElement *elt);
