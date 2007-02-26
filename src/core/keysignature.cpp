@@ -78,43 +78,6 @@ CAKeySignature::CAKeySignature(CAKeySignatureType type, signed char accs, CAMajo
 		- Hypophrygian
 */
 
-/*! \deprecated New CanorusML is XML based. It uses keySignatureTypeFromString() and others and the
-	default constructor
-*/
-CAKeySignature::CAKeySignature(QString sPitch, QString sGender, CAStaff *staff, int timeStart)
- : CAMusElement(staff, timeStart) {
- 	_musElementType = CAMusElement::KeySignature;
-	CAMajorMinorGender gender;
-	if (sGender.toUpper()=="MAJOR")
-		gender = Major;
-	else if (sGender.toUpper()=="MINOR")
-		gender = Minor;
-	else
-		gender = (sPitch.at(0).isLower()?Minor:Major);	// if no gender is defined, set the gender according to the pitch capitals
-	
-	int pitch = sPitch.toUpper()[0].toLatin1() - 'A';
-
-	signed char accs = -1;
-	for (int i=5; i!=pitch; i=(i+1)%7)	// calculate number of accidentals for Major key signatures. Start with F-Major (1 flat) and add 2 sharps mod 7 for every next level
-		accs = (accs+2)%7;	
-	
-	if (gender == Minor)
-		accs -= 3;	// Major->Minor transformation: Every same-name minor key sig has -3 accidentals of the major key signature
-	
-	while (sPitch.size()>1) {
-		if (sPitch.toUpper().endsWith("IS"))
-			accs += 7;
-		else if (sPitch.toUpper().endsWith("ES"))
-			accs -= 7;
-		else if (sPitch.toUpper().endsWith("AS"))
-			accs -= 7;
-		
-		sPitch.chop(2);	// shorten the end of the pitch for 2 chars
-	}
-	
-	setKeySignatureType(MajorMinor, accs, gender);
-}
-
 /*!
 	\todo Implement non major-minor types
 */
@@ -162,63 +125,6 @@ signed char CAKeySignature::numberOfAccidentals() {
 		sum += _accidentals[i];
 	
 	return sum;
-}
-
-/*!
-	Returns the key signature pitch.
-	If the scale gender is major, the pitch is returned in upper-case, otherwise in lower.
-	eg. "E" for E-major (4 sharps), "ces" for ces-minor (7 flats), "B" for B-major (5 sharps).
-	
-	\deprecated This isn't used by CanorusML anymore. Should be part of LilyPond parser
-*/
-const QString CAKeySignature::pitchML() {
-	QString ret;
-	
-	int i;
-	int idx=0;
-	
-	signed char accs = numberOfAccidentals();
-	for (i=3; i<accs; i++) {	//start with A and go upwards
-		idx = (idx+4)%7;
-	}
-	for (i=3; i>accs; i--) {	//start with A and go downwards
-		idx = (idx+3)%7;
-	}
-	
-	if (_majorMinorGender == Minor) {
-		idx = (idx+5)%7;
-		ret = ('a' + idx);
-		if (accs>2)
-			ret = "is";
-		else if (accs==-6)
-			ret = "s";	//es
-		else if (accs<-4)
-			ret = "es";
-	} else {
-		ret = ('A' + idx);
-		if (accs>5)
-			ret += "is";
-		else if (accs==-3)
-			ret += "s";	//Es
-		else if (accs<-3)
-			ret += "es";	
-	}
-	
-	return ret;
-}
-
-/*!
-	Returns the key signature gender "major" or "minor".
-	
-	\deprecated Should be moved to LilyPond parser. Use majorMinorGenderToString() instead
-*/
-const QString CAKeySignature::majorMinorGenderML() {
-	switch (_majorMinorGender) {
-		case Major: return QString("major");
-		case Minor: return QString("minor");
-	}
-	
-	return QString();
 }
 
 int CAKeySignature::compare(CAMusElement *elt) {

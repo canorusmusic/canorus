@@ -57,30 +57,6 @@ CATimeSignature::CATimeSignature(int beats, int beat, CAStaff *staff, int startT
  	_timeSignatureType = type;
 }
 
-/*!
-	Creates a time signature out of ML string.
-	
-	\deprecated New file format parser uses timeSignatureTypeFromString() and the default constructor.
-*/
-CATimeSignature::CATimeSignature(QString MLString, CAStaff *staff, int startTime, QString type)
- : CAMusElement(staff, startTime) {
- 	_musElementType = CAMusElement::TimeSignature;
- 	
- 	_beats = MLString.mid(0, MLString.indexOf("/")).toInt();
- 	_beat = MLString.mid(MLString.indexOf("/") + 1).toInt();
- 	
- 	if (type=="number") 
- 		_timeSignatureType = Number;
- 	else if (type=="mensural") 
- 		_timeSignatureType = Mensural;
- 	else if (type=="neomensural") 
- 		_timeSignatureType = Neomensural;
- 	else if (type=="baroque") 
- 		_timeSignatureType = Baroque;
- 	else
- 		_timeSignatureType = Classical;
-}
-
 CATimeSignature::~CATimeSignature() {
 }
 

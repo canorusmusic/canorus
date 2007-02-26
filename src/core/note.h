@@ -36,9 +36,6 @@ public:
 	CAStemDirection stemDirection() { return _stemDirection; }
 	void setStemDirection(CAStemDirection direction) { _stemDirection = direction; }
 	
-	const QString pitchML();
-	const QString lengthML();
-	
 	int notePosition() { return _notePosition; }
 	
 	inline unsigned char midiPitch() { return _midiPitch; }

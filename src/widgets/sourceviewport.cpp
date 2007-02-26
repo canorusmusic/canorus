@@ -14,12 +14,30 @@
 #include "core/canorusml.h"
 #include "widgets/sourceviewport.h"
 #include "core/document.h"
+#include "core/voice.h"
+
+#include "export/lilypondexport.h"
+#include "import/lilypondimport.h"
 
 CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
  : CAViewPort(parent) {
  	_viewPortType = CAViewPort::SourceViewPort;
  	_document = doc;
+ 	_voice = 0;
  	
+ 	setupUI();
+}
+
+CASourceViewPort::CASourceViewPort(CAVoice *voice, QWidget *parent)
+ : CAViewPort(parent) {
+ 	_viewPortType = CAViewPort::SourceViewPort;
+ 	_document = 0;
+ 	_voice = voice;
+ 	
+ 	setupUI();
+}
+
+void CASourceViewPort::setupUI() {
 	_layout = new QGridLayout(this);
 	_layout->addWidget(_textEdit = new QTextEdit(0));
 	_layout->addWidget(_commit = new QPushButton("Commit changes"));
@@ -44,17 +62,25 @@ CASourceViewPort::~CASourceViewPort() {
 }
 
 void CASourceViewPort::on_commit_clicked() {
-	emit CACommit(_textEdit->toPlainText());
+	emit CACommit(this, _textEdit->toPlainText());
 }
 
 CASourceViewPort *CASourceViewPort::clone() {
-	CASourceViewPort *v = new CASourceViewPort(_document, _parent);
+	CASourceViewPort *v;
+	if (_document)
+		v = new CASourceViewPort(_document, _parent);
+	else if (_voice)
+		v = new CASourceViewPort(_voice, _parent);
 	
 	return v;
 }
 
 CASourceViewPort *CASourceViewPort::clone(QWidget *parent) {
-	CASourceViewPort *v = new CASourceViewPort(_document, parent);
+	CASourceViewPort *v;
+	if (_document)
+		v = new CASourceViewPort(_document, parent);
+	else if (_voice)
+		v = new CASourceViewPort(_voice, parent);
 	
 	return v;
 }
@@ -64,7 +90,15 @@ void CASourceViewPort::rebuild() {
 	
 	QString *value = new QString();
 	QTextStream stream(value);
-	CACanorusML::saveDocument(stream, _document);
+	
+	// CanorusML
+	if (document()) {
+		CACanorusML::saveDocument(document(), stream);
+	} else
+	// LilyPond
+	if (voice()) {
+		CALilyPondExport(voice(), &stream);
+	}
 	
 	_textEdit->insertPlainText(*value);
 	

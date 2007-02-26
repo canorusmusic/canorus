@@ -15,6 +15,7 @@ class CAStaff;
 class CARest : public CAPlayable {
 public:
 	enum CARestType {
+		Undefined=-1,
 		Normal,
 		Hidden
 	};
@@ -23,9 +24,6 @@ public:
 	CARest *clone();
 	
 	~CARest();
-	
-	const QString lengthML();   // Deprecated
-	const QString restTypeML(); // Deprecated
 	
 	CARestType restType() { return _restType; }
 	

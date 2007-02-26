@@ -140,6 +140,14 @@ SET(Canorus_Interface_Srcs	# Classes which glue the UI and Data part of the MVC 
 	interface/plugin.cpp
 )
 
+SET(Canorus_Export_Srcs     # Classes for exporting Canorus data to various file formats
+	export/lilypondexport.cpp
+)
+
+SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus data
+	import/lilypondimport.cpp
+)
+
 SET(Canorus_RtMidi_Srcs		# RtMIDI library
 	rtmidi/RtMidi.cpp
 )
@@ -151,6 +159,8 @@ SET(Canorus_Srcs
 	${Canorus_Drawable_Srcs}
 	${Canorus_Ui_Srcs}
 	${Canorus_Interface_Srcs}
+	${Canorus_Export_Srcs}
+	${Canorus_Import_Srcs}
 	${Canorus_RtMidi_Srcs}
 	${Canorus_Widget_Srcs}
 )
@@ -295,6 +305,11 @@ IF(NOT MINGW)
 	ENDIF (NOT DEFAULT_DATA_DIR)
 ENDIF(NOT MINGW)
 
+IF(APPLE)
+	SET(MACOSX_BUNDLE_INFO_STRING "Free music score editor")
+	SET(MACOSX_BUNDLE_ICON_FILE canorus.icns) # \todo Copy this file to Applications/canorus.app/Resources when the package is created
+ENDIF(APPLE)
+
 # Define Canorus version
 ADD_DEFINITIONS("-DCANORUS_VERSION=\\\"${CANORUS_VERSION}\\\"")
 
@@ -366,6 +381,7 @@ ADD_EXECUTABLE(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs}
                        ${Canorus_MOC_Srcs} ${Canorus_Resrcs_Srcs}
                        ${CANORUS_RUBY_WRAP_CXX}
                        ${CANORUS_PYTHON_WRAP_CXX}
+                       ${MACOSX_BUNDLE}	# Works only under Apple - adds the application description, icon etc.
 )
 IF(USE_RUBY)
 	ADD_DEPENDENCIES(canorus CanorusRuby) # Build scripting modules first and then Canorus exe

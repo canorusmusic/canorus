@@ -47,13 +47,12 @@ public:
 	////////////////////////////////////////////////
 	// Writing XML
 	////////////////////////////////////////////////
-	static void saveDocument(QTextStream& out, CADocument *doc);
+	static void saveDocument(CADocument *doc, QTextStream& out);
 	
 private:
 	////////////////////////////////////////////////
 	// Reading XML
 	////////////////////////////////////////////////
-	bool readMusElements(QString string);	// Deprecated
 	
 	CADocument     *_document;
 	CAMainWin      *_mainWin;
@@ -81,8 +80,5 @@ private:
 	// Writing XML
 	////////////////////////////////////////////////
 	static void writeVoice(QDomElement &dVoice, CAVoice* voice);
-	
-	static const QString createMLVoice(CAVoice *v); // Deprecated
-	inline static const QString idn(int depth);     // Deprecated
 };
 #endif /* CANORUSML_H_*/

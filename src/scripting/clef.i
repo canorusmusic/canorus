@@ -17,6 +17,7 @@
 class CAClef : public CAMusElement {
 	public:
 		enum CAClefType {
+			Undefined=-1,
 			Treble,
 			Bass,
 			Alto,
@@ -29,10 +30,7 @@ class CAClef : public CAMusElement {
 		CAClef(CAClefType type, CAStaff *staff, int time);
 		CAClef *clone();
 		
-		CAClef(QString type, CAStaff *staff, int time);
-		
 		CAClefType clefType();
-		const QString clefTypeML();
 		const int c1();
 		const int centerPitch();
 		int compare(CAMusElement *elt);
