@@ -1295,8 +1295,8 @@ void CAMainWin::on_action_Time_signature_triggered() {
 
 void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 	if (v->document()) {
-		_document.clear();
 		clearUI();
+		_document.clear();
 		
 		QXmlInputSource input;
 		input.setData(inputString);
