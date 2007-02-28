@@ -17,7 +17,6 @@
 class CAKeySignature : public CAMusElement {
 	public:
 		enum CAKeySignatureType {
-			Undefined=-1,
 			MajorMinor,
 			Modus,
 			Custom
@@ -30,14 +29,12 @@ class CAKeySignature : public CAMusElement {
 		};
 		
 		enum CAMajorMinorShape {
-			Undefined=-1,
 			Natural,
 			Harmonic,
 			Melodic
 		};
 		
 		enum CAModus {
-			Undefined=-1,
 			Ionian,
 			Dorian,
 			Phrygian,
