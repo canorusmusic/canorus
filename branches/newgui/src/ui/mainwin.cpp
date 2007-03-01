@@ -32,10 +32,10 @@ using namespace std;
 #include "widgets/toolbar.h"
 #include "widgets/lcdnumber.h"
 
-#include "interface/rtmididevice.h"
 #include "interface/playback.h"
 #include "interface/engraver.h"
 #include "interface/pluginmanager.h"
+#include "interface/mididevice.h"
 
 #include "widgets/scrollwidget.h"
 #include "widgets/viewport.h"
@@ -115,23 +115,12 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
 	
-	// Initialize playback
-	_defaultRtMidiOutPort = -1;
-	_defaultRtMidiInPort = -1;
-	initMidi();
+	_pluginManager = new CAPluginManager(this); // \todo Plugins should be read only once and only integrated into every main window
 	
-	// Initialize scripting and plugins subsystem
-#ifdef USE_RUBY	
-	CASwigRuby::init();
-#endif
-#ifdef USE_PYTHON
-	CASwigPython::init();
-#endif
-	_pluginManager = new CAPluginManager(this);
 	_pluginManager->readPlugins();
 	_pluginManager->enablePlugins();
 	
-	newDocument();
+	setDocument(0);
 }
 
 CAMainWin::~CAMainWin() 
@@ -139,7 +128,6 @@ CAMainWin::~CAMainWin()
 	delete mpoClefMenu;
 	delete mpoNoteMenu;
 	delete mpoTimeSigMenu;
-	delete _midi;
 	delete mpoMEToolBar;
 }
 
@@ -208,14 +196,17 @@ void CAMainWin::initToolBar()
 }
 
 void CAMainWin::newDocument() {
-	_document.clear();	//clear the logical part
-	clearUI();			//clear the UI part
+	delete document();	// clear the logical part
+	clearUI();			// clear the UI part
 
+	setDocument(new CADocument());
+	
 #ifdef USE_PYTHON
 	QList<PyObject*> argsPython;
-	argsPython << CASwigPython::toPythonObject(&_document, CASwigPython::Document);
+	argsPython << CASwigPython::toPythonObject(document(), CASwigPython::Document);
 	CASwigPython::callFunction(CACanorus::locateResource("scripts/newdocument.py"), "newDefaultDocument", argsPython);
 #endif
+	
 	rebuildUI();
 }
 
@@ -228,7 +219,7 @@ void CAMainWin::addSheet(CASheet *s) {
 	connect(v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
 	v->setFocusPolicy(Qt::ClickFocus);
 	v->setFocus();
-
+	
 	_viewPortList.append(v);
 	
 	moMainWin.tabWidget->addTab(new CAScrollWidget(v, 0), s->name());
@@ -249,8 +240,6 @@ void CAMainWin::clearUI() {
 		delete _currentScrollWidget;
 		moMainWin.tabWidget->removeTab(moMainWin.tabWidget->currentIndex());
 	}
-	
-	_fileName = "";
 	
 	mpoVoiceNum->setEnabled(false);
 }
@@ -349,7 +338,7 @@ void CAMainWin::on_actionSource_view_perspective_toggled(bool status) {
 		}
 		return;
 	} else {
-		CASourceViewPort *v = new CASourceViewPort(&_document, _activeViewPort->parent());
+		CASourceViewPort *v = new CASourceViewPort(document(), _activeViewPort->parent());
 		_currentScrollWidget->addViewPort(v);
 		
 		connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
@@ -387,7 +376,8 @@ void CAMainWin::on_actionNew_triggered() {
 }
 
 void CAMainWin::on_actionNew_sheet_triggered() {
-	addSheet(_document.addSheet(tr("Sheet %1").arg(QString::number(_document.sheetCount()+1))));			//add a new empty sheet
+	//add a new empty sheet
+	addSheet(document()->addSheet(tr("Sheet %1").arg(QString::number(document()->sheetCount()+1))));
 }
 
 void CAMainWin::on_actionNew_staff_triggered() {
@@ -462,8 +452,8 @@ void CAMainWin::on_action_Clef_triggered() {
 void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	if (!sheet) {
 		clearUI();
-		for (int i=0; i<_document.sheetCount(); i++)
-			addSheet(_document.sheetAt(i));
+		for (int i=0; i<document()->sheetCount(); i++)
+			addSheet(document()->sheetAt(i));
 	}
 
 	for (int i=0; i<_viewPortList.size(); i++) {
@@ -532,7 +522,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				break;
 			}
 		}
-		_pluginManager->action("onScoreViewPortClick", &_document, 0, 0);
+		_pluginManager->action("onScoreViewPortClick", document(), 0, 0);
 	}
 }
 
@@ -859,24 +849,6 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 void CAMainWin::keyPressEvent(QKeyEvent *e) {
 }
 
-void CAMainWin::initMidi() {
-	_midi = new CARtMidiDevice();
-	
-	if (CACanorus::settings()->contains("rtmidi/defaultoutputport") &&
-	    CACanorus::settings()->contains("rtmidi/defaultinputport") ) {
-		_defaultRtMidiInPort = CACanorus::settings()->value("rtmidi/defaultinputport").toInt();
-		if (_defaultRtMidiInPort >= _midi->getInputPorts().count())
-			_defaultRtMidiInPort = -1;
-
-		_defaultRtMidiOutPort = CACanorus::settings()->value("rtmidi/defaultoutputport").toInt();
-		if (_defaultRtMidiOutPort >= _midi->getOutputPorts().count())
-			_defaultRtMidiOutPort = -1;
-			
-	} else {
-		on_actionMIDI_Setup_triggered();
-	}
-}
-
 void CAMainWin::setKeySigPSPVisible( bool bVisible )
 {
 	if (!mpoKeySigPSP) {
@@ -905,14 +877,14 @@ void CAMainWin::playbackFinished() {
 	_repaintTimer->stop();
 	_repaintTimer->disconnect();	//TODO: crashes, if disconnected sometimes. -Matevz
 	delete _repaintTimer;			//TODO: crashes, if deleted. -Matevz
-	_midi->closeOutputPort();
+	CACanorus::midiDevice()->closeOutputPort();
 	
 	setMode(_currentMode);
 }
 
 void CAMainWin::on_actionPlay_toggled(bool checked) {
 	if (checked && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
-		_midi->openOutputPort(_defaultRtMidiOutPort);
+		CACanorus::midiDevice()->openOutputPort(CACanorus::midiOutPort());
 		_repaintTimer = new QTimer();
 		_repaintTimer->setInterval(100);
 		_repaintTimer->start();
@@ -920,7 +892,7 @@ void CAMainWin::on_actionPlay_toggled(bool checked) {
 		connect(_repaintTimer, SIGNAL(timeout()), _activeViewPort, SLOT(repaint()));
 		_playbackViewPort = _activeViewPort;
 		
-		_playback = new CAPlayback((CAScoreViewPort*)_activeViewPort, _midi);
+		_playback = new CAPlayback((CAScoreViewPort*)_activeViewPort, CACanorus::midiDevice());
 		connect(_playback, SIGNAL(finished()), this, SLOT(playbackFinished()));
 		_playback->start();
 	} else {
@@ -964,7 +936,6 @@ void CAMainWin::on_actionZoom_to_height_triggered() {
 
 void CAMainWin::closeEvent(QCloseEvent *event) {	//TODO: Make the main window the main window of the application somehow - when it's closed, the destructor is also called. This way, this function will not be needed anymore. -Matevz
 	clearUI();
-	delete _pluginManager;
 }
 
 void CAMainWin::on_actionOpen_triggered() {
@@ -982,22 +953,9 @@ void CAMainWin::on_actionOpen_triggered() {
 
 void CAMainWin::on_actionSave_triggered() {
 	QString s;
-	if (_fileName.isEmpty()) { 
-		s = QFileDialog::getSaveFileName(
-		                this,
-		                tr("Choose a file to save"),
-		                "",
-		                tr("Canorus document (*.xml)"));
-	}
-
-	if (s.isEmpty())
-		return;
-
-	//append the extension, if the last 4 characters don't already contain the dot
-	int i;
-	for (i=0; (i<4) && ((s.length()-i-1) > 0); i++) if (s[s.length()-i-1] == '.') break;
-	if (i==4) s.append(".xml");
-	
+	if (document() && (s=document()->fileName()).isEmpty())
+		on_actionSave_as_triggered();
+		
 	saveDocument(s);
 }
 
@@ -1026,15 +984,15 @@ void CAMainWin::on_actionSave_as_triggered() {
 bool CAMainWin::openDocument(QString fileName) {
 	QFile file(fileName);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		_fileName = fileName;
 		clearUI();
-		_document.clear();
+		delete document();
 		
 		QXmlInputSource input(&file);
 		CADocument *openedDoc = CACanorusML::openDocument(&input, this);
 		if (openedDoc)
-			_document = *openedDoc;
+			setDocument(openedDoc);
 		
+		openedDoc->setFileName(fileName);
 		file.close();
 		rebuildUI();
 		moMainWin.tabWidget->setCurrentIndex(0);
@@ -1050,9 +1008,9 @@ bool CAMainWin::openDocument(QString fileName) {
 bool CAMainWin::saveDocument(QString fileName) {
 	QFile file(fileName);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-		_fileName = fileName;
 		QTextStream out(&file);
-		CACanorusML::saveDocument(&_document, out);
+		CACanorusML::saveDocument(document(), out);
+		document()->setFileName(fileName);
 		file.close();
 		
 		return true;
@@ -1072,7 +1030,7 @@ void CAMainWin::on_actionExport_triggered() {
 	QString s = fileNames[0];
 	
 	if (_pluginManager->exportActionExists(_exportDialog->selectedFilter()))
-		_pluginManager->exportAction(_exportDialog->selectedFilter(), &_document, 0, 0, s);
+		_pluginManager->exportAction(_exportDialog->selectedFilter(), document(), 0, 0, s);
 	else {
 		QFile file(s);
 		if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -1096,7 +1054,7 @@ void CAMainWin::on_actionImport_triggered() {
 	QString s = fileNames[0];
 	
 	if (_pluginManager->importActionExists(_exportDialog->selectedFilter()))
-		_pluginManager->importAction(_exportDialog->selectedFilter(), &_document, 0, 0, fileNames[0]);
+		_pluginManager->importAction(_exportDialog->selectedFilter(), document(), 0, 0, fileNames[0]);
 	else {
 		QFile file(s);
 		if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -1249,11 +1207,11 @@ void CAMainWin::on_action_Time_signature_triggered() {
 void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 	if (v->document()) {
 		clearUI();
-		_document.clear();
+		delete document();
 		
 		QXmlInputSource input;
 		input.setData(inputString);
-		_document = *CACanorusML::openDocument(&input, this);
+		setDocument(CACanorusML::openDocument(&input, this));
 		
 		on_actionSource_view_perspective_toggled(false);
 	} else
@@ -1286,9 +1244,7 @@ Homepage: http://www.canorus.org").arg(CANORUS_VERSION) );
 }
 
 void CAMainWin::on_actionMIDI_Setup_triggered() {
-	CAMidiSetupDialog(this, _midi->getInputPorts(), _midi->getOutputPorts(), &_defaultRtMidiInPort, &_defaultRtMidiOutPort);
-	CACanorus::settings()->setValue("rtmidi/defaultoutputport", _defaultRtMidiOutPort);
-	CACanorus::settings()->setValue("rtmidi/defaultinputport", _defaultRtMidiInPort);
+	CAMidiSetupDialog(this);
 }
 
 void CAMainWin::on_actionVoice_in_LilyPond_source_toggled(bool checked) {

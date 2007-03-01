@@ -12,13 +12,24 @@
 #include <QSettings>
 
 #include "core/canorus.h"
+#include "interface/rtmididevice.h"
+#include "ui/midisetupdialog.h"
 
 // define private static members
 QList<CAMainWin*> CACanorus::_mainWinList;
 QSettings *CACanorus::_settings;
+CAMidiDevice *CACanorus::_midiDevice;
+int CACanorus::_midiOutPort;
+int CACanorus::_midiInPort;
 
 /*!
-	Locates a resource named fileName and returns its absolute path.
+	Locates a resource named fileName (relative path) and returns its absolute path of the file
+	if found in the following order:
+		- passed path as an argument to exe
+		- path in user's config file
+		- current dir
+		- exe dir
+		- DEFAULT_DATA_DIR set by compiler
 	
 	\sa locateResourceDir()
 */
@@ -87,13 +98,34 @@ void CACanorus::initSettings() {
 }
 
 /*!
-	Parses the given command line arguments to application.
-	This function sets any settings passed in command line.
-	It also creates a new main window and opens a file if a file is passed in the command line.
+	Initializes scripting and plugins subsystem.
 */
-void CACanorus::parseAppArguments(int argc, char *argv[]) {
+void CACanorus::initScripting() {
+#ifdef USE_RUBY	
+	CASwigRuby::init();
+#endif
+#ifdef USE_PYTHON
+	CASwigPython::init();
+#endif
+}
+
+/*!
+	Parses the switches and settings command line arguments to application.
+	This function sets any settings passed in command line.
+	
+	\sa parseOpenFileArguments()
+*/
+void CACanorus::parseSettingsArguments(int argc, char *argv[]) {
+
+}
+
+/*!
+	This function parses any arguments which doesn't look like switch or a setting.
+	It creates a new main window and opens a file if a file is passed in the command line.
+*/
+void CACanorus::parseOpenFileArguments(int argc, char *argv[]) {
 	for (int i=1; i<argc; i++) {
-		if (argv[i][0]!='-') {
+		if (argv[i][0]!='-') { /// automatically treat any argument which doesn't start with '-' to be a file name - \todo
 			// passed is not the switch but a file name
 			QString fileName = CACanorus::locateResource(argv[i]);
 			if (fileName.isEmpty())
@@ -103,5 +135,45 @@ void CACanorus::parseAppArguments(int argc, char *argv[]) {
 			CACanorus::addMainWin(mainWin);
 			mainWin->openDocument(fileName);
 		}
+	}
+}
+
+/*!
+	\fn int CACanorus::mainWinCount()
+	
+	Returns the number of all main windows.
+*/
+
+/*!
+	Returns number of main windows which have the given document opened.
+*/
+int CACanorus::mainWinCount(CADocument *doc) {
+	int count=0;
+	for (int i=0; i<_mainWinList.size(); i++)
+		if (_mainWinList[i]->document()==doc)
+			count++;
+	
+	return count;
+}
+
+/*!
+	Creates MIDI device and loads port numbers. If no port number settings are stored in the config
+	file, it brings up the MIDI setup dialog.
+*/
+void CACanorus::initMidi() {
+	setMidiDevice(new CARtMidiDevice());
+	
+	if (CACanorus::settings()->contains("rtmidi/defaultoutputport") &&
+	    CACanorus::settings()->contains("rtmidi/defaultinputport") ) {
+		setMidiInPort(CACanorus::settings()->value("rtmidi/defaultinputport").toInt());
+		if (midiInPort() >= midiDevice()->getInputPorts().count())
+			setMidiInPort(-1);
+
+		setMidiOutPort(CACanorus::settings()->value("rtmidi/defaultoutputport").toInt());
+		if (midiOutPort() >= midiDevice()->getOutputPorts().count())
+			setMidiOutPort(-1);
+			
+	} else {
+		CAMidiSetupDialog(0);
 	}
 }

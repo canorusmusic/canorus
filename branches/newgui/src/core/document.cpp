@@ -117,3 +117,12 @@ CASheet *CADocument::sheet(const QString name) {
 	
 	\sa sheet(), sheetAt(), sheetCount()
 */
+
+/*!
+	\fn CADocument::fileName()
+	Returns the absolute path of the file the document has been saved to or empty
+	string if document hasn't been saved yet.
+	Document's file name property is not saved to a file.
+	
+	\sa setFileName()
+*/

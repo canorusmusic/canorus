@@ -22,7 +22,7 @@
 class QKeyEvent;
 class QSlider;
 
-class CAMidiDevice;
+class CAPluginManager;
 class CAPlayback;
 class CAToolBar;
 class CAButtonMenu;
@@ -30,7 +30,6 @@ class CALCDNumber;
 class CASheet;
 class CAKeySigPSP;
 class CATimeSigPSP;
-class CAPluginManager;
 class CAScrollWidget;
 class CAViewPort;
 class CAScoreViewPort;
@@ -46,19 +45,6 @@ enum CAMode {
 
 #define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
 
-/**
- * Find a filename in the
- * 1) passed as an argument to exe
- * 2) user's config file
- * 3) current dir
- * 4) exe dir
- * 5) DEFAULT_DATA_DIR set by compiler
- * 
- * @param relativePath Relative path to the file
- * 
- * @return Absolute path of the file
- */
-QString locateResource(const QString relativePath);
 
 class CAMainWin : public QMainWindow
 {
@@ -101,8 +87,6 @@ public:
 	 */
 	void rebuildUI(CASheet *sheet=0, bool repaint=true);
 
-	void initMidi();
-
 	/**
 	 * Activate the key signature perspective and show/hide it.
 	 * 
@@ -120,9 +104,11 @@ public:
 	bool openDocument(QString fileName);
 	bool saveDocument(QString fileName);
 	
-	QFileDialog *exportDialog() { return _exportDialog; }
-	QFileDialog *importDialog() { return _importDialog; }
-	CADocument *curDocument() { return &_document; }
+	inline QFileDialog *exportDialog() { return _exportDialog; }
+	inline QFileDialog *importDialog() { return _importDialog; }
+	
+	inline CADocument *document() { return _document; }
+	inline void setDocument(CADocument *document) { _document = document; }
 	
 private slots:
 	////////////////////////////////////////////////////
@@ -236,8 +222,7 @@ private:
 	////////////////////////////////////////////////////
 	//General properties
 	////////////////////////////////////////////////////
-	CADocument _document;	///Every main window has its own unique CADocument.
-	QString _fileName;
+	CADocument *_document;	///Pointer to the main window's document.
 	CAMode _currentMode;	///Every main window has its own current mode (view, insert, edit etc.). See enum CAMode.
 	
 	void setMode(CAMode mode);
@@ -247,15 +232,7 @@ private:
 	//Playback
 	////////////////////////////////////////////////////
 	CAPlayback *_playback;
-	CAMidiDevice *_midi;
-	int _defaultRtMidiOutPort;	//-1 disabled, 0+ port number
-	int _defaultRtMidiInPort;	//-1 disabled, 0+ port number
 	
-	////////////////////////////////////////////////////
-	//Plugins, scripts
-	////////////////////////////////////////////////////
-	CAPluginManager *_pluginManager;
-
 	////////////////////////////////////////////////////
 	//User interface, toolbar
 	////////////////////////////////////////////////////
@@ -296,6 +273,11 @@ private:
 	//User interface, action objects from toolbars
 	////////////////////////////////////////////////////
 	QAction *mpoVoiceNumAction;  ///Voice number action
+	
+	////////////////////////////////////////////////////
+	//Plugins, scripts
+	////////////////////////////////////////////////////
+	CAPluginManager *_pluginManager;	
 	
 	void doUnsplit(CAViewPort *v = 0);
 };

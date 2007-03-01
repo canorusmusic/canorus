@@ -37,6 +37,7 @@ public:
 	const QString copyright() { return _copyright; }
 	const QString timestamp() { return _timestamp; }
 	const QString comments() { return _comments; }
+	const QString fileName() { return _fileName; }
 	
 	void setTitle(const QString title) { _title = title; }
 	void setSubTitle(const QString subTitle) { _subTitle = subTitle; }
@@ -48,6 +49,7 @@ public:
 	void setCopyright(const QString copyright) { _copyright = copyright; }
 	void setTimestamp(const QString timestamp) { _timestamp = timestamp; }
 	void setComments(const QString comments) { _comments = comments; }
+	void setFileName(const QString fileName) { _fileName = fileName; } // not saved!
 	
 private:
 	QList<CASheet *> _sheetList;
@@ -62,5 +64,6 @@ private:
 	QString _copyright;
 	QString _timestamp;
 	QString _comments;
+	QString _fileName;
 };
 #endif /* DOCUMENT_H_*/

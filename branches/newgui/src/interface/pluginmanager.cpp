@@ -20,7 +20,7 @@
 CAPluginManager::CAPluginManager(CAMainWin *mainWin) {
 	_mainWin = mainWin;
 	_curPlugin=0;
-	_curPluginCanorusVersion = CANORUS_VERSION;
+	_curPluginCanorusVersion = CANORUS_VERSION; /// \todo This should be read from the descriptor file as well
 }
 
 CAPluginManager::~CAPluginManager() {

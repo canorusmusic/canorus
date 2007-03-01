@@ -20,15 +20,27 @@ int main(int argc, char *argv[]) {
 	// Set main application properties
 	CACanorus::initMain();
 	
+	// Parse switch and settings command line arguments
+	CACanorus::parseSettingsArguments(argc, argv);
+	
 	// Load config file
 	CACanorus::initSettings();
 	
-	// Parse command line arguments - creates a main window of a document to open if passed in command line
-	CACanorus::parseAppArguments(argc, argv);
+	// Create MIDI device
+	CACanorus::initMidi();
+	
+	// Enable scripting and plugins subsystem
+	CACanorus::initScripting();
+	
+	// Creates a main window of a document to open if passed in command line
+	CACanorus::parseOpenFileArguments(argc, argv);
 	
 	// If no file to open is passed in command line, create a new default main window. It's shown automatically by CACanorus::addMainWin().
-	if (!CACanorus::mainWinCount())
-		CACanorus::addMainWin(new CAMainWin());
+	if (!CACanorus::mainWinCount()) {
+		CAMainWin *mainWin = new CAMainWin();
+		CACanorus::addMainWin(mainWin);
+		mainWin->newDocument();
+	}
 	
 	return mainApp.exec();
 }
