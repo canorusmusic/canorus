@@ -1,28 +1,10 @@
-/*****************************************************************************/
-/*                                                                           */
-/* This program is free software; you can redistribute it and/or modify it   */
-/* under the terms of the GNU General Public License as published by the     */ 
-/* Free Software Foundation; version 2 of the License.	                     */
-/*                                                                           */
-/* This program is distributed in the hope that it will be useful, but       */
-/* WITHOUT ANY WARRANTY; without even the implied warranty of                */ 
-/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General  */
-/* Public License for more details.                                          */
-/*                                                                           */
-/* You should have received a copy of the GNU General Public License along   */
-/* with this program; (See "LICENSE.GPL"). If not, write to the Free         */
-/* Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA        */
-/* 02111-1307, USA.                                                          */
-/*                                                                           */
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*      Reinhard Katzmann, GERMANY                                           */
-/*      reinhard@suamor.de                                                   */
-/*                                                                           */
-/*      Matevž Jekovec, SLOVENIA                                             */
-/*      matevz.jekovec@gmail.com                                             */
-/*                                                                           */
-/*****************************************************************************/
+/** \file ui/mainwin.cpp
+ * 
+ * Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+ * All Rights Reserved. See AUTHORS for a complete list of authors.
+ * 
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ */
 
 //#include <Python.h> must be called before standard headers inclusion. See http://docs.python.org/api/includes.html
 #ifdef USE_PYTHON
@@ -38,8 +20,6 @@
 #include <QString>
 #include <QTextStream>
 #include <QXmlInputSource>
-#include <QCoreApplication>
-#include <QSettings>
 #include <iostream>
 
 using namespace std;
@@ -68,6 +48,7 @@ using namespace std;
 #include "drawable/drawablenote.h"
 #include "drawable/drawableaccidental.h"	//DEBUG, this isn't needed though
 
+#include "core/canorus.h"
 #include "core/sheet.h"
 #include "core/staff.h"
 #include "core/clef.h"
@@ -86,55 +67,12 @@ using namespace std;
 #include "export/lilypondexport.h"
 #include "import/lilypondimport.h"
 
-QString locateResource(const QString fileName) {
-	//! \todo Config file implementation
-	//! \todo Application path argument
-	QString curPath;
-	
-	//Try current working directory
-	curPath = QDir::currentPath() + "/" + fileName;
-	if (QFile(curPath).exists())
-		return curPath;
-	
-	//Try application exe directory
-	curPath = QCoreApplication::applicationDirPath() + "/" + fileName;
-	if (QFile(curPath).exists())
-		return curPath;
-	
-#ifdef DEFAULT_DATA_DIR
-	//Try compiler defined DEFAULT_DATA_DIR constant (useful for Linux OSes). DEFAULT_DATA_DIR already includes leading slash!
-	curPath = QString(DEFAULT_DATA_DIR) + "/" + fileName;
-	if (QFile(curPath).exists())
-		return curPath;
-	
-#endif
-	//Else, if file not found, return empty string
-	return QString("");
-}
 
-QString locateResourceDirectory(const QString fileName) {
-	QString path = locateResource(fileName);
-	return path.left(path.lastIndexOf("/"));
-}
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
 	: QMainWindow( oParent )
 {
-	// Init main application properties
-	QCoreApplication::setOrganizationName("Canorus");
-	QCoreApplication::setOrganizationDomain("canorus.org");
-	QCoreApplication::setApplicationName("Canorus");
-	
-	// Open canorus config file in order to load needed settings
-	// Open file is always an INI file in user's home directory.
-	// No native formats are used (Windows registry etc.) - this is provided for easier transition of settings between the platforms. 
-#ifdef Q_WS_WIN	// M$ is of course an exception
-	_settings = new QSettings(QDir::homePath()+"/Application Data/Canorus/canorus.ini", QSettings::IniFormat);
-#else	// POSIX systems use the same config file path
-	_settings = new QSettings(QDir::homePath()+"/.config/Canorus/canorus.ini", QSettings::IniFormat);
-#endif
-		
 	// Add main music insertion toolbar
 	mpoMEToolBar = new CAToolBar( this );
 	mpoMEToolBar->setOrientation(Qt::Vertical);
@@ -203,7 +141,6 @@ CAMainWin::~CAMainWin()
 	delete mpoTimeSigMenu;
 	delete _midi;
 	delete mpoMEToolBar;
-	delete _settings;
 }
 
 void CAMainWin::initToolBar()
@@ -277,7 +214,7 @@ void CAMainWin::newDocument() {
 #ifdef USE_PYTHON
 	QList<PyObject*> argsPython;
 	argsPython << CASwigPython::toPythonObject(&_document, CASwigPython::Document);
-	CASwigPython::callFunction(locateResource("scripts/newdocument.py"), "newDefaultDocument", argsPython);
+	CASwigPython::callFunction(CACanorus::locateResource("scripts/newdocument.py"), "newDefaultDocument", argsPython);
 #endif
 	rebuildUI();
 }
@@ -925,12 +862,13 @@ void CAMainWin::keyPressEvent(QKeyEvent *e) {
 void CAMainWin::initMidi() {
 	_midi = new CARtMidiDevice();
 	
-	if (_settings->contains("rtmidi/defaultoutputport") && _settings->contains("rtmidi/defaultinputport")) {
-		_defaultRtMidiInPort = _settings->value("rtmidi/defaultinputport").toInt();
+	if (CACanorus::settings()->contains("rtmidi/defaultoutputport") &&
+	    CACanorus::settings()->contains("rtmidi/defaultinputport") ) {
+		_defaultRtMidiInPort = CACanorus::settings()->value("rtmidi/defaultinputport").toInt();
 		if (_defaultRtMidiInPort >= _midi->getInputPorts().count())
 			_defaultRtMidiInPort = -1;
 
-		_defaultRtMidiOutPort = _settings->value("rtmidi/defaultoutputport").toInt();
+		_defaultRtMidiOutPort = CACanorus::settings()->value("rtmidi/defaultoutputport").toInt();
 		if (_defaultRtMidiOutPort >= _midi->getOutputPorts().count())
 			_defaultRtMidiOutPort = -1;
 			
@@ -1038,22 +976,8 @@ void CAMainWin::on_actionOpen_triggered() {
 
 	if (s.isEmpty())
 		return;
-
-	QFile file(s);
-	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		_fileName = s;
-		_document.clear();
-		clearUI();
-		
-		QXmlInputSource input(&file);
-		CADocument *openedDoc = CACanorusML::openDocument(&input, this);
-		if (openedDoc)
-			_document = *openedDoc;
-		
-		file.close();
-		rebuildUI();
-		moMainWin.tabWidget->setCurrentIndex(0);
-	}               
+	
+	openDocument(s); 
 }
 
 void CAMainWin::on_actionSave_triggered() {
@@ -1073,14 +997,8 @@ void CAMainWin::on_actionSave_triggered() {
 	int i;
 	for (i=0; (i<4) && ((s.length()-i-1) > 0); i++) if (s[s.length()-i-1] == '.') break;
 	if (i==4) s.append(".xml");
-		
-	QFile file(s);
-	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-		_fileName = s;
-		QTextStream out(&file);
-		CACanorusML::saveDocument(&_document, out);
-		file.close();
-	}               
+	
+	saveDocument(s);
 }
 
 void CAMainWin::on_actionSave_as_triggered() {
@@ -1098,13 +1016,48 @@ void CAMainWin::on_actionSave_as_triggered() {
 	for (i=0; (i<4) && ((s.length()-i-1) > 0); i++) if (s[s.length()-i-1] == '.') break;
 	if (i==4) s.append(".xml");
 	
-	QFile file(s);
+	saveDocument(s);
+}
+
+/*!
+	Opens a document with the given absolute fileName.
+	Previous document will be lost.
+*/
+bool CAMainWin::openDocument(QString fileName) {
+	QFile file(fileName);
+	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		_fileName = fileName;
+		clearUI();
+		_document.clear();
+		
+		QXmlInputSource input(&file);
+		CADocument *openedDoc = CACanorusML::openDocument(&input, this);
+		if (openedDoc)
+			_document = *openedDoc;
+		
+		file.close();
+		rebuildUI();
+		moMainWin.tabWidget->setCurrentIndex(0);
+		
+		return true;
+	} else
+		return false;
+}
+
+/*!
+	Saves the current document to a given absolute fileName.
+*/
+bool CAMainWin::saveDocument(QString fileName) {
+	QFile file(fileName);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-		_fileName = s;
+		_fileName = fileName;
 		QTextStream out(&file);
 		CACanorusML::saveDocument(&_document, out);
 		file.close();
-	}
+		
+		return true;
+	} else
+		return false;
 }
 
 void CAMainWin::on_actionExport_triggered() {
@@ -1128,7 +1081,7 @@ void CAMainWin::on_actionExport_triggered() {
 			// eg. CALilyExport::exportDocument(out, &_document);
 			file.close();
 		}
-	}              
+	}
 }
 
 void CAMainWin::on_actionImport_triggered() {
@@ -1334,8 +1287,8 @@ Homepage: http://www.canorus.org").arg(CANORUS_VERSION) );
 
 void CAMainWin::on_actionMIDI_Setup_triggered() {
 	CAMidiSetupDialog(this, _midi->getInputPorts(), _midi->getOutputPorts(), &_defaultRtMidiInPort, &_defaultRtMidiOutPort);
-	_settings->setValue("rtmidi/defaultoutputport", _defaultRtMidiOutPort);
-	_settings->setValue("rtmidi/defaultinputport", _defaultRtMidiInPort);
+	CACanorus::settings()->setValue("rtmidi/defaultoutputport", _defaultRtMidiOutPort);
+	CACanorus::settings()->setValue("rtmidi/defaultinputport", _defaultRtMidiInPort);
 }
 
 void CAMainWin::on_actionVoice_in_LilyPond_source_toggled(bool checked) {

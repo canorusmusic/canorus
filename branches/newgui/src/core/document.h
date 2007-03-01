@@ -16,7 +16,7 @@ class CASheet;
 class CADocument {
 public:
 	CADocument();
-	~CADocument();
+	virtual ~CADocument();
 	void clear();
 	
 	int sheetCount() { return _sheetList.size(); }

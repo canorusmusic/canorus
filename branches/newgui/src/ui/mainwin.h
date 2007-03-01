@@ -1,28 +1,13 @@
-/*****************************************************************************/
-/*									     */
-/* This program is free software; you can redistribute it and/or modify it   */
-/* under the terms of the GNU General Public License as published by the     */ 
-/* Free Software Foundation; version 2 of the License.	                     */
-/*									     */
-/* This program is distributed in the hope that it will be useful, but       */
-/* WITHOUT ANY WARRANTY; without even the implied warranty of                */ 
-/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General  */
-/* Public License for more details.                                          */
-/*									     */
-/* You should have received a copy of the GNU General Public License along   */
-/* with this program; (See "LICENSE.GPL"). If not, write to the Free         */
-/* Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA        */
-/* 02111-1307, USA.				                             */
-/*									     */
-/*---------------------------------------------------------------------------*/
-/*									     */
-/*		Reinhard Katzmann, GERMANY			             */
-/*		reinhard@suamor.de					     */
-/*									     */
-/*		Matevž Jekovec, SLOVENIA                                     */
-/*		matevz.jekovec@guest.arnes.si				     */
-/*									     */
-/*****************************************************************************/
+/** \file ui/mainwin.h
+ * 
+ * Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+ * All Rights Reserved. See AUTHORS for a complete list of authors.
+ * 
+ * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+ */
+
+#ifndef MAINWIN_H_
+#define MAINWIN_H_
 
 #include <QObject>
 #include <QFileDialog>
@@ -36,7 +21,6 @@
 
 class QKeyEvent;
 class QSlider;
-class QSettings;
 
 class CAMidiDevice;
 class CAPlayback;
@@ -132,6 +116,9 @@ public:
 	 * @param bVisible 'true': Show time signature perspective
 	 */
 	void setTimeSigPSPVisible( bool bVisible );
+	
+	bool openDocument(QString fileName);
+	bool saveDocument(QString fileName);
 	
 	QFileDialog *exportDialog() { return _exportDialog; }
 	QFileDialog *importDialog() { return _importDialog; }
@@ -256,9 +243,6 @@ private:
 	void setMode(CAMode mode);
 	inline CAMode currentMode() { return _currentMode; }
 	
-	QSettings *_settings;	/// Settings class which operates with the Canorus config file. It's initialized in constructor.
-	inline QSettings *settings() { return _settings; }
-	
 	////////////////////////////////////////////////////
 	//Playback
 	////////////////////////////////////////////////////
@@ -315,3 +299,4 @@ private:
 	
 	void doUnsplit(CAViewPort *v = 0);
 };
+#endif /* CANORUS_H_*/

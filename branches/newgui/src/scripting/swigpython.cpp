@@ -6,6 +6,8 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include "core/canorus.h"
+
 #ifdef USE_PYTHON
 #include "scripting/swigpython.h"
 #include <QFile>
@@ -22,14 +24,14 @@ void CASwigPython::init() {
 	init_CanorusPython();
 	PyRun_SimpleString("import sys");
 	// add path to scripts to Scripting path
-	PyRun_SimpleString((QString("sys.path.append('")+locateResource("scripts")+"')").toStdString().c_str());
+	PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResource("scripts")+"')").toStdString().c_str());
 	// add path to CanorusPython modules to Scripting path
-	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("CanorusPython.py")+"')").toStdString().c_str());
+	PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("CanorusPython.py")+"')").toStdString().c_str());
 	//PyRun_SimpleString("import CanorusPython");	
 #ifdef Q_WS_WIN
-	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("_CanorusPython.dll")+"')").toStdString().c_str());
+	PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("_CanorusPython.dll")+"')").toStdString().c_str());
 #else
-	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("_CanorusPython.so")+"')").toStdString().c_str());
+	PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("_CanorusPython.so")+"')").toStdString().c_str());
 #endif
 }
 

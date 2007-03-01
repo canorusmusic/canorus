@@ -66,6 +66,7 @@ SET(Canorus_MOCs ui/mainwin.h	# List of classes which Qt needs to produce MOCs f
 )
 
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
+	core/canorus.cpp # main class
 	core/document.cpp
 	core/sheet.cpp
 	core/kdtree.cpp

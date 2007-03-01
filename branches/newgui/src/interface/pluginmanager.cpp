@@ -6,6 +6,7 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include "core/canorus.h"
 #include "interface/pluginmanager.h"
 #include "interface/plugin.h"
 #include "ui/mainwin.h"	//needed for locateResource()
@@ -30,7 +31,7 @@ CAPluginManager::~CAPluginManager() {
 }
 
 void CAPluginManager::readPlugins() {
-	QDir pluginsDir(locateResource("plugins"));
+	QDir pluginsDir(CACanorus::locateResource("plugins"));
 	
 	for (int i=0; i<pluginsDir.count(); i++) {
 		QXmlSimpleReader reader;
