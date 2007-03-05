@@ -7,25 +7,24 @@
  */
 
 #ifdef USE_RUBY
+#include "core/canorus.h"
 #include "scripting/swigruby.h"
 #include <QFile>
 #include <QDir>
 
 //defined in SWIG wrapper class
 extern "C" void Init_CanorusRuby();	///Load 'CanorusRuby' module and initialize classes
-QString locateResource(QString);
-QString locateResourceDirectory(QString);
 
 void CASwigRuby::init() {
 	ruby_init();
 	Init_CanorusRuby();
 	// add path to scripts to Scripting path
-	rb_eval_string((QString("$: << '") + locateResource("scripts").at(0) + "'").toStdString().c_str());
+	rb_eval_string((QString("$: << '") + CACanorus::locateResource("scripts").at(0) + "'").toStdString().c_str());
 	// add path to CanorusRuby module to Scripting path
 #ifdef Q_WS_WIN
-	rb_eval_string((QString("$: << '") + locateResourceDirectory("CanorusRuby.dll").at(0) + "'").toStdString().c_str());
+	rb_eval_string((QString("$: << '") + CACanorus::locateResourceDirectory("CanorusRuby.dll").at(0) + "'").toStdString().c_str());
 #else
-	rb_eval_string((QString("$: << '") + locateResourceDirectory("CanorusRuby.so").at(0) + "'").toStdString().c_str());
+	rb_eval_string((QString("$: << '") + CACanorus::locateResourceDirectory("CanorusRuby.so").at(0) + "'").toStdString().c_str());
 #endif
 }
 

@@ -8,8 +8,9 @@
 
 #include <QApplication>
 
-#include "ui/mainwin.h"
+// Python.h needs to be loaded first!
 #include "core/canorus.h"
+#include "ui/mainwin.h"
 #include "interface/pluginmanager.h"
 
 /*!

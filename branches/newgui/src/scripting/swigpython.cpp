@@ -6,18 +6,16 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "core/canorus.h"
-
 #ifdef USE_PYTHON
 #include "scripting/swigpython.h"
 #include <QFile>
+
+#include "core/canorus.h"
 
 #include <iostream> // used for reporting errors in scripts
 
 //defined in SWIG wrapper class
 extern "C" void init_CanorusPython();	///Load 'CanorusPython' module and initialize classes
-QString locateResource(QString);
-QString locateResourceDirectory(QString);
 
 void CASwigPython::init() {
 	Py_Initialize();

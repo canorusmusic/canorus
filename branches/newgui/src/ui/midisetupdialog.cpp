@@ -8,8 +8,9 @@
 
 #include <QSettings>
 
-#include "ui/midisetupdialog.h"
+// Python.h needs to be loaded first!
 #include "core/canorus.h"
+#include "ui/midisetupdialog.h"
 #include "interface/mididevice.h"
 
 CAMidiSetupDialog::CAMidiSetupDialog(QWidget *parent) : QDialog(parent) {

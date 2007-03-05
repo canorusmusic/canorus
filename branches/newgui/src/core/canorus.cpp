@@ -6,12 +6,14 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+// Python.h needs to be loaded first!
+#include "core/canorus.h"
+
 #include <QFile>
 #include <QDir>
 #include <QCoreApplication>
 #include <QSettings>
 
-#include "core/canorus.h"
 #include "interface/rtmididevice.h"
 #include "ui/midisetupdialog.h"
 #include "scripting/swigpython.h"

@@ -9,10 +9,11 @@
 #ifndef CANORUS_H_
 #define CANORUS_H_
 
+// Python.h needs to be loaded first!
+#include "ui/mainwin.h"
+
 #include <QString>
 #include <QList>
-
-#include "ui/mainwin.h"
 
 class QSettings;
 class CAMidiDevice;
