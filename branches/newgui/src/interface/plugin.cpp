@@ -102,8 +102,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="sheet") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
-				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
-					rubyArgs << CASwigRuby::toRubyObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigRuby::Sheet);
+				if (mainWin->currentViewPortContainer() && mainWin->currentViewPortContainer()->lastUsedViewPort() && mainWin->currentViewPortContainer()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
+					rubyArgs << CASwigRuby::toRubyObject(((CAScoreViewPort*)mainWin->currentViewPortContainer()->lastUsedViewPort())->sheet(), CASwigRuby::Sheet);
 				else {
 					error = true;
 					break;
@@ -126,8 +126,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="note") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
-				if (mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
-					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentScrollWidget()->lastUsedViewPort());
+				if (mainWin->currentViewPortContainer()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
+					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentViewPortContainer()->lastUsedViewPort());
 					if (!v->selection()->size() || v->selection()->front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
 						error=true;
 						break;

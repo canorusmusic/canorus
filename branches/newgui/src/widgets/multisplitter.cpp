@@ -129,10 +129,6 @@ void CAMultiSplitter::removeWidget(QWidget *w, bool autoDelete)
 }
 
 /*!
-	\enum CAMultiSplitter::CADirection Represents the direction of splitting.
-*/
- 
-/*!
 	\fn CAMultiSplitter::main()
 	\brief Returns the main splitter.
 */
