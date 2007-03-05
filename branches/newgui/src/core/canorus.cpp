@@ -204,7 +204,19 @@ void CACanorus::rebuildUI(CADocument *document, CASheet *sheet) {
 }
 
 /*!
-	\fn CACanorus::addMainWin(CAMainWin *window, bool show=true)
+	Finds and returns a list of main windows containing the given document.
+*/
+QList<CAMainWin*> CACanorus::findMainWin(CADocument *document) {
+	QList<CAMainWin*> mainWinList;
+	for (int i=0; i<mainWinCount(); i++)
+		if (mainWinAt(i)->document()==document)
+			mainWinList << mainWinAt(i);
+	
+	return mainWinList;
+}
+
+/*!
+	\fn void CACanorus::addMainWin(CAMainWin *window, bool show=true)
 	
 	Adds an already created main window to main window list and shows it (default) if \i show is set.
 	

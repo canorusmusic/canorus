@@ -37,8 +37,8 @@ using namespace std;
 #include "interface/pluginmanager.h"
 #include "interface/mididevice.h"
 
-#include "widgets/scrollwidget.h"
 #include "widgets/viewport.h"
+#include "widgets/viewportcontainer.h"
 #include "widgets/scoreviewport.h"
 #include "widgets/sourceviewport.h"
 
@@ -229,7 +229,7 @@ void CAMainWin::addSheet(CASheet *s) {
 	
 	_viewPortList.append(v);
 	
-	moMainWin.tabWidget->addTab(new CAScrollWidget(v, 0), s->name());
+	moMainWin.tabWidget->addTab(new CAViewPortContainer(v, 0), s->name());
 	moMainWin.tabWidget->setCurrentIndex(moMainWin.tabWidget->count()-1);
 	
 	_activeViewPort = v;
@@ -244,7 +244,7 @@ void CAMainWin::clearUI() {
 	_viewPortList.clear();
 	
 	while (moMainWin.tabWidget->count()) {
-		delete _currentScrollWidget;
+		delete _currentViewPortContainer;
 		moMainWin.tabWidget->removeTab(moMainWin.tabWidget->currentIndex());
 	}
 	
@@ -252,7 +252,7 @@ void CAMainWin::clearUI() {
 }
 
 void CAMainWin::on_tabWidget_currentChanged(int idx) {
-	_activeViewPort = _currentScrollWidget->lastUsedViewPort();
+	_activeViewPort = _currentViewPortContainer->lastUsedViewPort();
 }
 
 void CAMainWin::on_action_Fullscreen_toggled(bool checked) {
@@ -263,7 +263,7 @@ void CAMainWin::on_action_Fullscreen_toggled(bool checked) {
 }
 
 void CAMainWin::on_actionSplit_horizontally_triggered() {
-	CAViewPort *v = (CAViewPort *)_currentScrollWidget->splitHorizontally();
+	CAViewPort *v = (CAViewPort *)_currentViewPortContainer->splitHorizontally();
 	if(!v)
 		return;
 	
@@ -284,7 +284,7 @@ void CAMainWin::on_actionSplit_horizontally_triggered() {
 }
 
 void CAMainWin::on_actionSplit_vertically_triggered() {
-	CAViewPort *v = (CAViewPort *)_currentScrollWidget->splitVertically();
+	CAViewPort *v = (CAViewPort *)_currentViewPortContainer->splitVertically();
 	if(!v)
 		return;
 	
@@ -305,30 +305,30 @@ void CAMainWin::on_actionSplit_vertically_triggered() {
 }
 
 void CAMainWin::doUnsplit(CAViewPort *v) {
-	CAViewPort::CAViewPortType vpt = v?v->viewPortType():_currentScrollWidget->lastUsedDockedViewPort()->viewPortType();
-	v = _currentScrollWidget->unsplit(v);
+	CAViewPort::CAViewPortType vpt = v?v->viewPortType():_currentViewPortContainer->lastUsedDockedViewPort()->viewPortType();
+	v = _currentViewPortContainer->unsplit(v);
 	if (!v) return;
 	
 	_viewPortList.removeAll(v);
 	
-	if(_currentScrollWidget->dockedViewPortsList().size() == 1)
+	if(_currentViewPortContainer->dockedViewPortsList().size() == 1)
 	{
 		moMainWin.actionClose_current_view->setEnabled(false);
 		moMainWin.actionUnsplit_all->setEnabled(false);
 	}
 	if(vpt == CAViewPort::SourceViewPort)
 		moMainWin.actionSource_view_perspective->setChecked(false);
-	_activeViewPort = _currentScrollWidget->dockedViewPortsList().back();
+	_activeViewPort = _currentViewPortContainer->dockedViewPortsList().back();
 }
 
 void CAMainWin::on_actionUnsplit_all_triggered() {
-	QList<CAViewPort*> dockedViewPorts = _currentScrollWidget->unsplitAll();
+	QList<CAViewPort*> dockedViewPorts = _currentViewPortContainer->unsplitAll();
 	for(QList<CAViewPort*>::iterator i = dockedViewPorts.begin(); i < dockedViewPorts.end(); i++)
 		_viewPortList.removeAll(*i);
 	moMainWin.actionClose_current_view->setEnabled(false);
 	moMainWin.actionUnsplit_all->setEnabled(false);
 	moMainWin.actionSource_view_perspective->setChecked(false);
-	_activeViewPort = _currentScrollWidget->dockedViewPortsList().back();
+	_activeViewPort = _currentViewPortContainer->dockedViewPortsList().back();
 }
 
 void CAMainWin::on_actionClose_current_view_triggered() {
@@ -346,7 +346,7 @@ void CAMainWin::on_actionSource_view_perspective_toggled(bool status) {
 		return;
 	} else {
 		CASourceViewPort *v = new CASourceViewPort(document(), _activeViewPort->parent());
-		_currentScrollWidget->addViewPort(v);
+		_currentViewPortContainer->addViewPort(v);
 		
 		connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
 		
@@ -362,7 +362,7 @@ void CAMainWin::on_actionSource_view_perspective_toggled(bool status) {
 }
 
 void CAMainWin::on_actionNew_viewport_triggered() {
-	CAViewPort *v = _currentScrollWidget->newViewPort(_activeViewPort);
+	CAViewPort *v = _currentViewPortContainer->newViewPort(_activeViewPort);
 
 	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
@@ -490,7 +490,7 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 
 void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *viewPort) {
 	_activeViewPort = viewPort;
-	_currentScrollWidget->setLastUsedViewPort(_activeViewPort);
+	_currentViewPortContainer->setLastUsedViewPort(_activeViewPort);
 	
 	if (viewPort->viewPortType() == CAViewPort::ScoreViewPort) {
 		CAScoreViewPort *v = (CAScoreViewPort*)viewPort;
@@ -1286,7 +1286,7 @@ void CAMainWin::on_actionVoice_in_LilyPond_source_toggled(bool checked) {
 		int voiceNum = mpoVoiceNum->getRealValue()-1<0?0:mpoVoiceNum->getRealValue()-1;
 		CAVoice *voice = staff->voiceAt( voiceNum );
 		CASourceViewPort *v = new CASourceViewPort(voice, _activeViewPort->parent());
-		_currentScrollWidget->addViewPort(v);
+		_currentViewPortContainer->addViewPort(v);
 		
 		connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
 		

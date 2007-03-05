@@ -16,7 +16,7 @@
 #include "ui/pluginaction.h"
 
 #include "ui/mainwin.h"
-#include "widgets/scrollwidget.h"
+#include "widgets/viewportcontainer.h"
 #include "widgets/viewport.h"
 #include "widgets/scoreviewport.h"
 #include "drawable/drawablemuselement.h"
@@ -112,8 +112,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #endif
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
-				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
-					pythonArgs << CASwigPython::toPythonObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigPython::Sheet);
+				if (mainWin->currentViewPortContainer() && mainWin->currentViewPortContainer()->lastUsedViewPort() && mainWin->currentViewPortContainer()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
+					pythonArgs << CASwigPython::toPythonObject(static_cast<CAScoreViewPort*>(mainWin->currentViewPortContainer()->lastUsedViewPort())->sheet(), CASwigPython::Sheet);
 				else {
 					error = true;
 					break;
@@ -142,8 +142,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #endif
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
-				if (mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
-					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentScrollWidget()->lastUsedViewPort());
+				if (mainWin->currentViewPortContainer()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
+					CAScoreViewPort *v = static_cast<CAScoreViewPort*>(mainWin->currentViewPortContainer()->lastUsedViewPort());
 					if (!v->selection()->size() || v->selection()->front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
 						error=true;
 						break;

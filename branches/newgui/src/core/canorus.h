@@ -32,6 +32,7 @@ public:
 	
 	inline static int mainWinCount() { return _mainWinList.size(); }
 	static int mainWinCount(CADocument *);
+	static QList<CAMainWin*> findMainWin(CADocument* document);
 	inline static CAMainWin* mainWinAt(int idx) { return _mainWinList[idx]; }
 	inline static void removeMainWin(CAMainWin *w) { _mainWinList.removeAll(w); }
 	inline static void addMainWin(CAMainWin *w, bool show=true) { _mainWinList << w; if (show) w->show(); }

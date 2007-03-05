@@ -17,8 +17,8 @@
 
 /*!
 	\brief Creates a multi-splitter object.
-	@param first Pointer to the first widget to display. This widget is inserted into the main splitter.
-	@param parent Pointer to the parent widget.
+	\param first Pointer to the first widget to display. This widget is inserted into the main splitter.
+	\param parent Pointer to the parent widget.
 */
 CAMultiSplitter::CAMultiSplitter(QWidget *first, QWidget *parent)
 	: QWidget(parent)
@@ -41,10 +41,10 @@ CAMultiSplitter::~CAMultiSplitter()
 /*!
 	\brief Adds a widget to the multi-splitter. 
 	The function adds a widget to the multi-splitter and places it after the last used widget.
-	@param w The widget to insert.
-	@param dir The splitting direction.
+	\param w The widget to insert.
+	\param dir The splitting direction.
 */
-void CAMultiSplitter::addWidget(QWidget *w, CA::Direction dir)
+void CAMultiSplitter::addWidget(QWidget *w, Qt::Orientation dir)
 {
 	if(!w) return;
 	QSplitter *addTo = 0;
@@ -64,7 +64,7 @@ void CAMultiSplitter::addWidget(QWidget *w, CA::Direction dir)
 		addTo = _splitterList.back();
 	}
 	
-	Qt::Orientation o = (dir == CA::Vertical)?Qt::Horizontal:Qt::Vertical;
+	Qt::Orientation o = (dir == Qt::Vertical)?Qt::Horizontal:Qt::Vertical;
 	
 	if(addTo->count() == 1) 
 	{
@@ -92,8 +92,8 @@ void CAMultiSplitter::addWidget(QWidget *w, CA::Direction dir)
 
 /*!
 	\brief Removes a widget from the multi-splitter.
-	@param w The widget to remove
-	@param autoDelete If set to true (default), the widget is deleted.
+	\param w The widget to remove
+	\param autoDelete If set to true (default), the widget is deleted.
 */
 void CAMultiSplitter::removeWidget(QWidget *w, bool autoDelete)
 {
@@ -129,7 +129,7 @@ void CAMultiSplitter::removeWidget(QWidget *w, bool autoDelete)
 }
 
 /*!
-	\enum CA::Direction Represents the direction of splitting.
+	\enum CAMultiSplitter::CADirection Represents the direction of splitting.
 */
  
 /*!
@@ -140,7 +140,7 @@ void CAMultiSplitter::removeWidget(QWidget *w, bool autoDelete)
 /*!
 	\fn CAMultiSplitter::setLastUsedWidget(QWidget *v) 
 	\brief Set the last used widget.
-	@param v The last used widget.
+	\param v The last used widget.
 */
 
 /*!

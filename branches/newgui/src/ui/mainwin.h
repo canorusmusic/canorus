@@ -30,7 +30,7 @@ class CALCDNumber;
 class CASheet;
 class CAKeySigPSP;
 class CATimeSigPSP;
-class CAScrollWidget;
+class CAViewPortContainer;
 class CAViewPort;
 class CAScoreViewPort;
 class CASourceViewPort;
@@ -43,7 +43,7 @@ enum CAMode {
 	ReadOnlyMode
 };
 
-#define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
+#define _currentViewPortContainer ((CAViewPortContainer*)(moMainWin.tabWidget->currentWidget()))
 
 
 class CAMainWin : public QMainWindow
@@ -73,7 +73,7 @@ public:
 	 */
 	void clearUI();
 	
-	CAScrollWidget* currentScrollWidget() { return _currentScrollWidget; }
+	CAViewPortContainer* currentViewPortContainer() { return _currentViewPortContainer; }
 	
 	/**
 	 * Rebuild the UI from the data part.
