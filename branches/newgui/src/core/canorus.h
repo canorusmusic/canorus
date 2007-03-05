@@ -45,6 +45,8 @@ public:
 	inline static void setMidiInPort(int in) { _midiInPort = in; }
 	inline static void setMidiOutPort(int out) { _midiOutPort = out; }
 	
+	static void rebuildUI(CADocument *document=0, CASheet *sheet=0);
+	
 private:
 	static QList<CAMainWin*> _mainWinList;
 	static QSettings *_settings;

@@ -123,6 +123,10 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 
 CAMainWin::~CAMainWin() 
 {
+	CACanorus::removeMainWin(this);
+	if (!CACanorus::mainWinCount(document()))
+		delete document();
+	
 	delete mpoClefMenu;
 	delete mpoNoteMenu;
 	delete mpoTimeSigMenu;
@@ -194,8 +198,12 @@ void CAMainWin::initToolBar()
 }
 
 void CAMainWin::newDocument() {
-	delete document();	// clear the logical part
-	clearUI();			// clear the UI part
+	// clear the logical part
+	if (CACanorus::mainWinCount(document()))
+		delete document();
+	
+	// clear the UI part
+	clearUI();
 
 	setDocument(new CADocument());
 	
@@ -205,6 +213,7 @@ void CAMainWin::newDocument() {
 	CASwigPython::callFunction(CACanorus::locateResource("scripts/newdocument.py").at(0), "newDefaultDocument", argsPython);
 #endif
 	
+	// call local rebuild only because no other main windows share the new document
 	rebuildUI();
 }
 
@@ -369,6 +378,16 @@ void CAMainWin::on_actionNew_viewport_triggered() {
 	setMode(_currentMode);	//updates the new viewport border settings
 }
 
+/*!
+	Creates a new main window sharing the current document.
+*/
+void CAMainWin::on_actionNew_window_triggered() {
+	CAMainWin *newMainWin = new CAMainWin();
+	newMainWin->setDocument(document());
+	newMainWin->rebuildUI();
+	CACanorus::addMainWin(newMainWin);
+}
+
 void CAMainWin::on_actionNew_triggered() {
 	newDocument();
 }
@@ -386,7 +405,7 @@ void CAMainWin::on_actionNew_staff_triggered() {
 	CAStaff *staff = sheet->addStaff();
 	staff->addVoice(new CAVoice( staff, tr("Voice %1").arg(QString::number(1)) ));
 	
-	rebuildUI(sheet);
+	CACanorus::rebuildUI(document(), sheet);
 	
 	((CAScoreViewPort*)_activeViewPort)->selectContext(staff);
 	((CAScoreViewPort*)_activeViewPort)->repaint();
@@ -455,10 +474,14 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	}
 
 	for (int i=0; i<_viewPortList.size(); i++) {
+		if (sheet && _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort &&
+		    static_cast<CAScoreViewPort*>(_viewPortList[i])->sheet()!=sheet)
+			continue;
+		
 		_viewPortList[i]->rebuild();
 		
 		if (_viewPortList[i]->viewPortType() == CAViewPort::ScoreViewPort)
-			((CAScoreViewPort*)(_viewPortList[i]))->checkScrollBars();
+			static_cast<CAScoreViewPort*>(_viewPortList[i])->checkScrollBars();
 			
 		if (repaint)
 			_viewPortList[i]->repaint();
@@ -493,7 +516,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 			CAMusElement *elt;
 			if ( elt = v->removeMElement(coords.x(), coords.y()) ) {
 				elt->context()->removeMusElement(elt, true);	//free the memory as well!
-				rebuildUI(v->sheet());
+				CACanorus::rebuildUI(document(), v->sheet());
 				return;
 			}
 		}
@@ -588,7 +611,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMu
 	}
 	
 	if (success) {
-		rebuildUI(v->sheet(), true);
+		CACanorus::rebuildUI(document(), v->sheet());
 		v->selectMElement( mpoMEFactory->getMusElement() );
 		v->setShadowNoteDotted(iPlayableDotted);
 		v->repaint();
@@ -696,7 +719,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				);
 				staff->insertSignAfter(bar, left, true);	//insert the barline in all the voices
 				
-				rebuildUI(((CAScoreViewPort*)v)->sheet(), true);
+				CACanorus::rebuildUI(document(), ((CAScoreViewPort*)v)->sheet());
 				((CAScoreViewPort*)v)->selectMElement(bar);
 				v->repaint();
 				break;
@@ -715,7 +738,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 							CANote *note = (CANote*)elt->musElement();
 							note->setPitch(note->pitch()+1);
-							rebuildUI(note->voice()->staff()->sheet());
+							CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
 						}
 					}
 				}
@@ -735,7 +758,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 							CANote *note = (CANote*)elt->musElement();
 							note->setPitch(note->pitch()-1);
-							rebuildUI(note->voice()->staff()->sheet());
+							CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
 						}
 					}
 				}
@@ -753,7 +776,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
 							if (elt->musElementType()==CAMusElement::Note) {
 								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
-								rebuildUI(((CANote*)elt)->voice()->staff()->sheet());
+								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 							}
 						}
 					}
@@ -773,7 +796,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
 							if (elt->musElementType()==CAMusElement::Note) {
 								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
-								rebuildUI(((CANote*)elt)->voice()->staff()->sheet());
+								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 							}
 						}
 					}
@@ -803,7 +826,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 									diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
 								 
 								((CAPlayable*)elt)->voice()->updateTimesAfter(elt, diff);
-								rebuildUI(((CANote*)elt)->voice()->staff()->sheet());
+								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 							}
 						}
 					}
@@ -816,7 +839,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 					CAMusElement *elt = ((CAScoreViewPort*)_activeViewPort)->selection()->back()->musElement();
 					if (elt->context()->contextType() == CAContext::Staff) {
 						((CAStaff*)elt->context())->removeMusElement(elt);
-						rebuildUI(((CAScoreViewPort*)_activeViewPort)->sheet());
+						CACanorus::rebuildUI(document(), ((CAScoreViewPort*)_activeViewPort)->sheet());
 					}
 				}
 				
@@ -983,7 +1006,8 @@ bool CAMainWin::openDocument(QString fileName) {
 	QFile file(fileName);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		clearUI();
-		delete document();
+		if (CACanorus::mainWinCount(document())==1)
+			delete document();
 		
 		QXmlInputSource input(&file);
 		CADocument *openedDoc = CACanorusML::openDocument(&input, this);
@@ -992,7 +1016,7 @@ bool CAMainWin::openDocument(QString fileName) {
 		
 		openedDoc->setFileName(fileName);
 		file.close();
-		rebuildUI();
+		rebuildUI(); // local rebuild only
 		moMainWin.tabWidget->setCurrentIndex(0);
 		
 		return true;
@@ -1221,7 +1245,7 @@ void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 		on_actionVoice_in_LilyPond_source_toggled(false);
 	}
 	
-	rebuildUI();
+	CACanorus::rebuildUI(document());
 }
 
 void CAMainWin::on_actionAbout_Qt_triggered()

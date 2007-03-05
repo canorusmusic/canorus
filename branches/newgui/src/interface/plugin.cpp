@@ -7,6 +7,7 @@
  */
 
 #ifdef USE_SWIG
+#include "core/canorus.h"
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
 #endif
@@ -217,7 +218,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 	}
 	
 	if (action->refresh())
-		mainWin->rebuildUI();
+		CACanorus::rebuildUI(document);
 	
 	return (!error);
 }

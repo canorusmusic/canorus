@@ -188,6 +188,22 @@ void CACanorus::initMidi() {
 }
 
 /*!
+	Rebuilds main windows with the given \a document and its viewports showing the given \a sheet.
+	Rebuilds all viewports if no sheet is given.
+	Rebuilds all main windows if no document is given.
+	
+	\sa CAMainWin::rebuildUI()
+*/
+void CACanorus::rebuildUI(CADocument *document, CASheet *sheet) {
+	for (int i=0; i<mainWinCount(); i++) {
+		if (document && mainWinAt(i)->document()==document) {
+			mainWinAt(i)->rebuildUI(sheet);
+		} else
+			mainWinAt(i)->rebuildUI();
+	}
+}
+
+/*!
 	\fn CACanorus::addMainWin(CAMainWin *window, bool show=true)
 	
 	Adds an already created main window to main window list and shows it (default) if \i show is set.

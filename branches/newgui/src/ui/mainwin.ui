@@ -56,17 +56,6 @@
      <height>36</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionCanorus_handbook" />
-    <addaction name="actionWhat_s_this" />
-    <addaction name="actionTip_of_the_day" />
-    <addaction name="separator" />
-    <addaction name="actionAbout_Canorus" />
-    <addaction name="actionAbout_Qt" />
-   </widget>
    <widget class="QMenu" name="menuFormat" >
     <property name="title" >
      <string>&amp;Format</string>
@@ -117,17 +106,6 @@
     <addaction name="actionInvert_Selection" />
     <addaction name="separator" />
     <addaction name="actionMIDI_Setup" />
-   </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>Window</string>
-    </property>
-    <addaction name="actionSplit_horizontally" />
-    <addaction name="actionSplit_vertically" />
-    <addaction name="actionClose_current_view" />
-    <addaction name="actionUnsplit_all" />
-    <addaction name="separator" />
-    <addaction name="actionNew_viewport" />
    </widget>
    <widget class="QMenu" name="menuTools" >
     <property name="title" >
@@ -212,6 +190,29 @@
     <addaction name="actionChord_perspective" />
     <addaction name="action_Figured_bass_perspective" />
     <addaction name="actionFigured_functions_perspective" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionCanorus_handbook" />
+    <addaction name="actionWhat_s_this" />
+    <addaction name="actionTip_of_the_day" />
+    <addaction name="separator" />
+    <addaction name="actionAbout_Canorus" />
+    <addaction name="actionAbout_Qt" />
+   </widget>
+   <widget class="QMenu" name="menuWindow" >
+    <property name="title" >
+     <string>Window</string>
+    </property>
+    <addaction name="actionSplit_horizontally" />
+    <addaction name="actionSplit_vertically" />
+    <addaction name="actionClose_current_view" />
+    <addaction name="actionUnsplit_all" />
+    <addaction name="separator" />
+    <addaction name="actionNew_viewport" />
+    <addaction name="actionNew_window" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
@@ -804,6 +805,11 @@
    </property>
    <property name="text" >
     <string>Voice in LilyPond source</string>
+   </property>
+  </action>
+  <action name="actionNew_window" >
+   <property name="text" >
+    <string>New window</string>
    </property>
   </action>
  </widget>

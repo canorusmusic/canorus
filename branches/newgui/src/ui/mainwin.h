@@ -155,6 +155,7 @@ private slots:
 	void on_actionUnsplit_all_triggered();
 	void on_actionClose_current_view_triggered();
 	void on_actionNew_viewport_triggered();
+	void on_actionNew_window_triggered();
 	
 	//Help menu
 	void on_actionAbout_Qt_triggered();
