@@ -87,6 +87,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	                         moMainWin.action_Clef );
 	mpoVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" );
 	mpoVoiceNumAction = moMainWin.mpoToolBar->addWidget( mpoVoiceNum );
+	
 	// Connect manually as the action cannot be created earlier
 	connect( mpoVoiceNum, SIGNAL( valChanged( int ) ), this,
 	         SLOT( sl_mpoVoiceNum_valChanged( int ) ) );
@@ -115,10 +116,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
 	
-	_pluginManager = new CAPluginManager(this); // \todo Plugins should be read only once and only integrated into every main window
-	
-	_pluginManager->readPlugins();
-	_pluginManager->enablePlugins();
+	CAPluginManager::enablePlugins(this);
 	
 	setDocument(0);
 }
@@ -204,7 +202,7 @@ void CAMainWin::newDocument() {
 #ifdef USE_PYTHON
 	QList<PyObject*> argsPython;
 	argsPython << CASwigPython::toPythonObject(document(), CASwigPython::Document);
-	CASwigPython::callFunction(CACanorus::locateResource("scripts/newdocument.py"), "newDefaultDocument", argsPython);
+	CASwigPython::callFunction(CACanorus::locateResource("scripts/newdocument.py").at(0), "newDefaultDocument", argsPython);
 #endif
 	
 	rebuildUI();
@@ -522,7 +520,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				break;
 			}
 		}
-		_pluginManager->action("onScoreViewPortClick", document(), 0, 0);
+		CAPluginManager::action("onScoreViewPortClick", document(), 0, 0, this);
 	}
 }
 
@@ -1029,8 +1027,8 @@ void CAMainWin::on_actionExport_triggered() {
 	
 	QString s = fileNames[0];
 	
-	if (_pluginManager->exportActionExists(_exportDialog->selectedFilter()))
-		_pluginManager->exportAction(_exportDialog->selectedFilter(), document(), 0, 0, s);
+	if (CAPluginManager::exportFilterExists(_exportDialog->selectedFilter()))
+		CAPluginManager::exportAction(_exportDialog->selectedFilter(), document(), s);
 	else {
 		QFile file(s);
 		if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -1053,8 +1051,8 @@ void CAMainWin::on_actionImport_triggered() {
 	
 	QString s = fileNames[0];
 	
-	if (_pluginManager->importActionExists(_exportDialog->selectedFilter()))
-		_pluginManager->importAction(_exportDialog->selectedFilter(), document(), 0, 0, fileNames[0]);
+	if (CAPluginManager::importFilterExists(_exportDialog->selectedFilter()))
+		CAPluginManager::importAction(_exportDialog->selectedFilter(), document(), fileNames[0]);
 	else {
 		QFile file(s);
 		if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {

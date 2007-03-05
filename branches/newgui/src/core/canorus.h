@@ -13,8 +13,6 @@
 #include <QList>
 
 #include "ui/mainwin.h"
-#include "scripting/swigruby.h"
-#include "scripting/swigpython.h"
 
 class QSettings;
 class CAMidiDevice;
@@ -28,8 +26,8 @@ public:
 	static void initScripting();
 	static void parseOpenFileArguments(int argc, char *argv[]);
 	
-	static QString locateResource(const QString fileName);
-	static QString locateResourceDir(const QString fileName);	
+	static QList<QString> locateResource(const QString fileName);
+	static QList<QString> locateResourceDir(const QString fileName);	
 	
 	inline static int mainWinCount() { return _mainWinList.size(); }
 	static int mainWinCount(CADocument *);

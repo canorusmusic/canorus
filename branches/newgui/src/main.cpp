@@ -6,9 +6,11 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include <QApplication>
+
 #include "ui/mainwin.h"
 #include "core/canorus.h"
-#include <QApplication>
+#include "interface/pluginmanager.h"
 
 /*!
 	Main function. This is the first function called when Canorus is run.
@@ -31,6 +33,9 @@ int main(int argc, char *argv[]) {
 	
 	// Enable scripting and plugins subsystem
 	CACanorus::initScripting();
+	
+	// Finds all the plugins
+	CAPluginManager::readPlugins();
 	
 	// Creates a main window of a document to open if passed in command line
 	CACanorus::parseOpenFileArguments(argc, argv);

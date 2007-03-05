@@ -20,12 +20,12 @@ void CASwigRuby::init() {
 	ruby_init();
 	Init_CanorusRuby();
 	// add path to scripts to Scripting path
-	rb_eval_string((QString("$: << '") + locateResource("scripts") + "'").toStdString().c_str());
+	rb_eval_string((QString("$: << '") + locateResource("scripts").at(0) + "'").toStdString().c_str());
 	// add path to CanorusRuby module to Scripting path
 #ifdef Q_WS_WIN
-	rb_eval_string((QString("$: << '") + locateResourceDirectory("CanorusRuby.dll") + "'").toStdString().c_str());
+	rb_eval_string((QString("$: << '") + locateResourceDirectory("CanorusRuby.dll").at(0) + "'").toStdString().c_str());
 #else
-	rb_eval_string((QString("$: << '") + locateResourceDirectory("CanorusRuby.so") + "'").toStdString().c_str());
+	rb_eval_string((QString("$: << '") + locateResourceDirectory("CanorusRuby.so").at(0) + "'").toStdString().c_str());
 #endif
 }
 

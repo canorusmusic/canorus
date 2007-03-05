@@ -14,6 +14,8 @@
 #include "core/canorus.h"
 #include "interface/rtmididevice.h"
 #include "ui/midisetupdialog.h"
+#include "scripting/swigpython.h"
+#include "scripting/swigruby.h"
 
 // define private static members
 QList<CAMainWin*> CACanorus::_mainWinList;
@@ -33,7 +35,8 @@ int CACanorus::_midiInPort;
 	
 	\sa locateResourceDir()
 */
-QString CACanorus::locateResource(const QString fileName) {
+QList<QString> CACanorus::locateResource(const QString fileName) {
+	QList<QString> paths;
 	//! \todo Config file implementation
 	//! \todo Application path argument
 	QString curPath;
@@ -41,22 +44,23 @@ QString CACanorus::locateResource(const QString fileName) {
 	// Try current working directory
 	curPath = QDir::currentPath() + "/" + fileName;
 	if (QFile(curPath).exists())
-		return curPath;
+		paths << curPath;
 	
 	// Try application exe directory
 	curPath = QCoreApplication::applicationDirPath() + "/" + fileName;
 	if (QFile(curPath).exists())
-		return curPath;
+		paths << curPath;
 	
 #ifdef DEFAULT_DATA_DIR
 	// Try compiler defined DEFAULT_DATA_DIR constant (useful for Linux OSes)
 	curPath = QString(DEFAULT_DATA_DIR) + "/" + fileName;
 	if (QFile(curPath).exists())
-		return curPath;
+		paths << curPath;
 	
 #endif
-	// Else, if file not found, return empty string
-	return QString("");
+	
+	// Remove duplicates. Is there a faster way to do this?
+	return paths.toSet().toList();
 }
 
 /*!
@@ -64,12 +68,13 @@ QString CACanorus::locateResource(const QString fileName) {
 	
 	\sa locateResource()
 */
-QString CACanorus::locateResourceDir(const QString fileName) {
-	QString path = CACanorus::locateResource(fileName);
-	if (!path.isEmpty())
-		return path.left(path.lastIndexOf("/"));
-	else
-		return "";
+QList<QString> CACanorus::locateResourceDir(const QString fileName) {
+	QList<QString> paths = CACanorus::locateResource(fileName);
+	for (int i=0; i<paths.size(); i++)
+		paths[i] = paths[i].left(paths[i].lastIndexOf("/"));
+	
+	// Remove duplicates. Is there a faster way to do this?
+	return paths.toSet().toList();
 }
 
 /*!
@@ -127,7 +132,9 @@ void CACanorus::parseOpenFileArguments(int argc, char *argv[]) {
 	for (int i=1; i<argc; i++) {
 		if (argv[i][0]!='-') { /// automatically treat any argument which doesn't start with '-' to be a file name - \todo
 			// passed is not the switch but a file name
-			QString fileName = CACanorus::locateResource(argv[i]);
+			if (!CACanorus::locateResource(argv[i]).size())
+				continue;
+			QString fileName = CACanorus::locateResource(argv[i]).at(0);
 			if (fileName.isEmpty())
 				continue;
 			
@@ -177,3 +184,11 @@ void CACanorus::initMidi() {
 		CAMidiSetupDialog(0);
 	}
 }
+
+/*!
+	\fn CACanorus::addMainWin(CAMainWin *window, bool show=true)
+	
+	Adds an already created main window to main window list and shows it (default) if \i show is set.
+	
+	\sa removeMainWin(), mainWinAt()
+*/

@@ -54,7 +54,7 @@ class CAPlugin {
 		bool callAction(CAPluginAction *action, CAMainWin *mainWin=0, CADocument *document=0, QEvent *evt=0, QPoint *coords=0, QString filename="");
 		
 		/**
-		 * Add an action to the plugin.
+		 * Adds an action to the plugin, if the actionName&action aren't present yet.
 		 * 
 		 * @param onAction Name of the Canorus's action the plugin reacts on.
 		 * @param lang Type of the action (ruby, python, library etc.).
