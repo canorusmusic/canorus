@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="-57 -512 1000 1000"
+   id="svg10296"
+   sodipodi:version="0.32"
+   inkscape:version="0.43"
+   width="210mm"
+   height="297mm"
+   sodipodi:docname="r32.svg"
+   sodipodi:docbase="/home/matevz/apps/canorus/branches/matevz/src/fonts">
+  <metadata
+     id="metadata10305">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs10303">
+    <linearGradient
+       id="linearGradient12932">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop12934" />
+      <stop
+         style="stop-color:#646464;stop-opacity:1;"
+         offset="1"
+         id="stop12936" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient12932"
+       id="linearGradient12938"
+       x1="-56.241436"
+       y1="-28.480667"
+       x2="325"
+       y2="-28.480667"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient12932"
+       id="linearGradient12940"
+       gradientUnits="userSpaceOnUse"
+       x1="-56.241436"
+       y1="-28.480667"
+       x2="325"
+       y2="-28.480667" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="978"
+     inkscape:window-width="1400"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="2.0103948"
+     inkscape:cx="104.08674"
+     inkscape:cy="21.929113"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:current-layer="svg10296" />
+  <g
+     transform="matrix(0.168628,0,0,-0.168628,8.782745,605.0593)"
+     id="g11182"
+     style="fill:#000000;fill-opacity:0.39215686"
+     inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/r32.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
+    <path
+       d="M 139,453 C 154,457 169,455 183,448 C 196,441 206,431 211,417 C 212,413 214,404 216,395 C 221,371 224,366 232,361 C 239,358 244,358 250,362 C 258,367 273,385 286,407 C 290,412 293,418 294,419 C 297,422 304,425 309,425 C 313,425 321,422 323,418 L 325,415 L 219,-42 C 139,-385 112,-501 110,-502 C 103,-507 89,-512 80,-512 C 70,-512 56,-507 49,-502 C 47,-500 50,-490 90,-337 L 134,-174 C 133,-174 128,-176 120,-178 C 73,-194 32,-200 7,-193 C -17,-187 -38,-171 -48,-151 C -55,-139 -57,-131 -56,-116 C -56,-105 -56,-103 -53,-95 C -49,-83 -45,-76 -36,-67 C -25,-56 -13,-49 3,-46 C 34,-40 64,-56 74,-83 C 75,-87 77,-96 79,-105 C 84,-129 87,-134 95,-139 C 102,-142 107,-142 114,-138 C 125,-132 146,-104 157,-82 C 159,-77 166,-55 180,0 L 200,75 C 199,75 192,73 183,70 C 148,59 126,55 100,55 C 79,55 72,56 57,64 C 35,74 21,91 14,113 C 12,119 12,123 12,134 C 12,145 12,147 15,155 C 19,167 23,174 32,183 C 43,194 55,201 71,204 C 102,210 132,194 142,167 C 143,163 145,154 147,145 C 152,121 155,116 163,111 C 172,107 179,109 189,117 C 199,126 214,147 222,163 C 225,170 229,182 246,247 C 257,289 266,323 266,324 C 266,324 259,323 251,320 C 217,309 195,305 170,305 C 148,305 142,306 126,314 C 104,324 90,341 83,363 C 81,369 81,373 81,384 C 81,395 81,397 84,405 C 88,417 92,424 101,433 C 112,444 124,451 139,453 z "
+       id="path11184"
+       style="fill:#000000;fill-opacity:0.39215686" />
+  </g>
+  <rect
+     style="opacity:1;fill:none;fill-opacity:0.39215686;fill-rule:nonzero;stroke:none;stroke-width:1.99100006;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect10307"
+     width="172.02116"
+     height="172.02116"
+     x="-57"
+     y="523.1217"
+     inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/r32.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90" />
+  <g
+     transform="matrix(0.168628,0,0,-0.168628,6.527763,601.8697)"
+     id="g10298"
+     style="fill:url(#linearGradient12938);fill-opacity:1"
+     inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/r32.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
+    <path
+       d="M 139,453 C 154,457 169,455 183,448 C 196,441 206,431 211,417 C 212,413 214,404 216,395 C 221,371 224,366 232,361 C 239,358 244,358 250,362 C 258,367 273,385 286,407 C 290,412 293,418 294,419 C 297,422 304,425 309,425 C 313,425 321,422 323,418 L 325,415 L 219,-42 C 139,-385 112,-501 110,-502 C 103,-507 89,-512 80,-512 C 70,-512 56,-507 49,-502 C 47,-500 50,-490 90,-337 L 134,-174 C 133,-174 128,-176 120,-178 C 73,-194 32,-200 7,-193 C -17,-187 -38,-171 -48,-151 C -55,-139 -57,-131 -56,-116 C -56,-105 -56,-103 -53,-95 C -49,-83 -45,-76 -36,-67 C -25,-56 -13,-49 3,-46 C 34,-40 64,-56 74,-83 C 75,-87 77,-96 79,-105 C 84,-129 87,-134 95,-139 C 102,-142 107,-142 114,-138 C 125,-132 146,-104 157,-82 C 159,-77 166,-55 180,0 L 200,75 C 199,75 192,73 183,70 C 148,59 126,55 100,55 C 79,55 72,56 57,64 C 35,74 21,91 14,113 C 12,119 12,123 12,134 C 12,145 12,147 15,155 C 19,167 23,174 32,183 C 43,194 55,201 71,204 C 102,210 132,194 142,167 C 143,163 145,154 147,145 C 152,121 155,116 163,111 C 172,107 179,109 189,117 C 199,126 214,147 222,163 C 225,170 229,182 246,247 C 257,289 266,323 266,324 C 266,324 259,323 251,320 C 217,309 195,305 170,305 C 148,305 142,306 126,314 C 104,324 90,341 83,363 C 81,369 81,373 81,384 C 81,395 81,397 84,405 C 88,417 92,424 101,433 C 112,444 124,451 139,453 z "
+       id="path10300"
+       style="fill:url(#linearGradient12940);fill-opacity:1" />
+  </g>
+</svg>

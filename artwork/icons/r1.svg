@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="-156 -200 1000 1000"
+   id="svg1373"
+   sodipodi:version="0.32"
+   inkscape:version="0.43"
+   width="210mm"
+   height="297mm"
+   sodipodi:docname="r1.svg"
+   sodipodi:docbase="/home/matevz/apps/canorus/branches/matevz/src/fonts"
+   inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/r1.png"
+   inkscape:export-xdpi="120.95"
+   inkscape:export-ydpi="120.95">
+  <metadata
+     id="metadata1382">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs1380">
+    <linearGradient
+       id="linearGradient4913">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop4915" />
+      <stop
+         style="stop-color:#646464;stop-opacity:1;"
+         offset="1"
+         id="stop4917" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4913"
+       id="linearGradient4919"
+       x1="-156"
+       y1="-63"
+       x2="532"
+       y2="-63"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4913"
+       id="linearGradient5794"
+       gradientUnits="userSpaceOnUse"
+       x1="-156"
+       y1="-63"
+       x2="532"
+       y2="-63" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="978"
+     inkscape:window-width="1400"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="2.0103948"
+     inkscape:cx="107.29301"
+     inkscape:cy="100.72333"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:current-layer="svg1373"
+     showguides="true"
+     inkscape:guide-bbox="true" />
+  <rect
+     style="opacity:1;fill-opacity:0.66161613;fill-rule:nonzero;stroke:none;stroke-width:1.99100006;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;fill:none"
+     id="rect1384"
+     width="172.02116"
+     height="172.02116"
+     x="-156"
+     y="835.1217"
+     inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/r1.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90" />
+  <g
+     transform="matrix(0.213971,0,0,-0.213971,-108.9769,922.9434)"
+     id="g3163"
+     style="fill:#000000;fill-opacity:0.39215686"
+     inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/r1.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
+    <path
+       d="M -137,28 L -131,30 L 188,30 L 507,30 L 513,28 C 524,24 532,12 532,0 C 532,-12 524,-24 513,-28 C 507,-30 506,-30 441,-30 L 375,-30 L 375,-88 C 375,-152 375,-150 369,-154 C 366,-156 362,-156 188,-156 C 13,-156 9,-156 6,-154 C 0,-150 0,-152 0,-88 L 0,-30 L -65,-30 C -130,-30 -131,-30 -137,-28 C -148,-24 -156,-12 -156,0 C -156,12 -148,24 -137,28 z "
+       id="path3165"
+       style="fill:#000000;fill-opacity:0.39215686" />
+  </g>
+  <g
+     transform="matrix(0.213971,0,0,-0.213971,-112.3061,919.8807)"
+     id="g1375"
+     style="fill:url(#linearGradient4919);fill-opacity:1"
+     inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/r1.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
+    <path
+       d="M -137,28 L -131,30 L 188,30 L 507,30 L 513,28 C 524,24 532,12 532,0 C 532,-12 524,-24 513,-28 C 507,-30 506,-30 441,-30 L 375,-30 L 375,-88 C 375,-152 375,-150 369,-154 C 366,-156 362,-156 188,-156 C 13,-156 9,-156 6,-154 C 0,-150 0,-152 0,-88 L 0,-30 L -65,-30 C -130,-30 -131,-30 -137,-28 C -148,-24 -156,-12 -156,0 C -156,12 -148,24 -137,28 z "
+       id="path1377"
+       style="fill:url(#linearGradient5794);fill-opacity:1" />
+  </g>
+</svg>
