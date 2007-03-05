@@ -167,9 +167,13 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_exportDialog = new QFileDialog(this);
 	_exportDialog->setFileMode(QFileDialog::AnyFile);
 	_exportDialog->setDirectory( QDir::current() );
+	_exportDialog->setAcceptMode( QFileDialog::AcceptSave );
+	_exportDialog->setFilter(LILYPOND_FILTER); // add LilyPond filter defined in mainwin.h
+	
 	_importDialog = new QFileDialog(this);
 	_importDialog->setFileMode(QFileDialog::ExistingFile);
 	_importDialog->setDirectory( QDir::current() );
+	_importDialog->setAcceptMode( QFileDialog::AcceptOpen );
 	
 	// Initialize internal UI properties
 	_currentMode = SelectMode;
@@ -1124,8 +1128,12 @@ void CAMainWin::on_actionExport_triggered() {
 		QFile file(s);
 		if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 			QTextStream out(&file);
-			// TODO: call appropriate built-in export function here
-			// eg. CALilyExport::exportDocument(out, &_document);
+			
+			// LilyPond
+			if (_exportDialog->selectedFilter()==LILYPOND_FILTER) {
+				CALilyPondExport(&_document, &out);
+			}
+			
 			file.close();
 		}
 	}              
@@ -1142,8 +1150,8 @@ void CAMainWin::on_actionImport_triggered() {
 	
 	QString s = fileNames[0];
 	
-	if (_pluginManager->importActionExists(_exportDialog->selectedFilter()))
-		_pluginManager->importAction(_exportDialog->selectedFilter(), &_document, 0, 0, fileNames[0]);
+	if (_pluginManager->importActionExists(_importDialog->selectedFilter()))
+		_pluginManager->importAction(_importDialog->selectedFilter(), &_document, 0, 0, fileNames[0]);
 	else {
 		QFile file(s);
 		if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {

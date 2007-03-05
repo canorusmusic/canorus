@@ -17,20 +17,34 @@
 #include "core/barline.h"
 #include "core/note.h"
 #include "core/rest.h"
+#include "core/document.h"
 
 class CALilyPondExport {
 public:
 	// Export voice constructor
 	CALilyPondExport(CAVoice *voice, QTextStream *out);
+
+	// Export document constructor
+	CALilyPondExport(CADocument *doc, QTextStream *out);
 	
 	///////////////////////////
 	// Polling export status //
 	///////////////////////////
-	inline CAVoice *curVoice() { return _curVoice; } // Setter method is private!
 
+	// Setter methods are private!
+	inline CAVoice *curVoice() { return _curVoice; }
+	inline CASheet *curSheet() { return _curSheet; }
+	inline CAStaff *curStaff() { return _curStaff; }
+	inline int curIndentLevel() { return _curIndentLevel; }
+	
 private:
 	void exportVoice(CAVoice *voice);
+	void exportSheet(CASheet *sheet);
+	void exportDocument(CADocument *doc);
+	void exportStaffVoices(CAStaff *staff);
+	void exportScoreBlock(CASheet *sheet);
 	int writeRelativeIntro();
+
 	
 	////////////////////
 	// Helper methods //
@@ -46,11 +60,20 @@ private:
 		return relativePitchToString(note->pitch(), note->accidentals(), prevPitch);
 	}
 	const QString relativePitchToString(int pitch, signed char accs, int prevPitch);
+	void spellNumbers( QString &s );
+	
+	void indent();
+	inline void indentMore() { ++_curIndentLevel; }
+	inline void indentLess() { --_curIndentLevel; }
 	
 	///////////////////////////
 	// Getter/Setter methods //
 	///////////////////////////
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }
+	inline void setCurSheet(CASheet *sheet) { _curSheet = sheet; }
+	inline void setCurStaff(CAStaff *staff) { _curStaff = staff; }
+	inline void setIndentLevel( int level) { _curIndentLevel = level; }
+
 	inline QTextStream& out() { return *_out; }
 	
 	/////////////
@@ -58,6 +81,9 @@ private:
 	/////////////
 	QTextStream *_out;
 	CAVoice *_curVoice;
+	CASheet *_curSheet;
+	CAStaff *_curStaff;
+	int _curIndentLevel;
 };
 
 #endif /* LILYPONDEXPORT_H_*/
