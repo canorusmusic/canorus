@@ -61,6 +61,7 @@ enum CAMode {
 };
 
 #define _currentScrollWidget ((CAScrollWidget*)(moMainWin.tabWidget->currentWidget()))
+#define LILYPOND_FILTER tr("LilyPond document (*.ly)")
 
 /**
  * Find a filename in the

@@ -61,7 +61,7 @@ void CALilyPondImport::addError(QString description, int curLine, int curChar) {
 
 bool CALilyPondImport::importVoice(CAVoice *voice) {
 	setCurVoice(voice);
-	CAPitch prevPitch = { 28, 0 };
+	CAPitch prevPitch = { 21, 0 };
 	CALength prevLength = { CAPlayable::Quarter, 0 };
 	bool chordCreated=false;
 	
@@ -74,7 +74,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 				continue;
 			}
 			
-			prevPitch = relativePitchFromLilyPond(notePitch, 28);
+			prevPitch = relativePitchFromLilyPond(notePitch, 21);
 		} else
 		if (curElt=="{") {
 			// start of the voice
