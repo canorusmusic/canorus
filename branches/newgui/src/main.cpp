@@ -13,12 +13,24 @@
 #include "ui/mainwin.h"
 #include "interface/pluginmanager.h"
 
+#ifdef Q_WS_X11
+#include <signal.h>
+void catch_int(int)
+{
+	qApp->quit();
+}	
+#endif
+
 /*!
 	Main function. This is the first function called when Canorus is run.
 	It initializes CACanorus class and creates the main window.
 */
 int main(int argc, char *argv[]) {
 	QApplication mainApp(argc, argv);
+	
+#ifdef Q_WS_X11
+	signal(SIGINT, catch_int);
+#endif
 	
 	// Set main application properties
 	CACanorus::initMain();
