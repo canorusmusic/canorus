@@ -15,8 +15,8 @@
    sodipodi:version="0.32"
    inkscape:version="0.45"
    version="1.0"
-   sodipodi:docbase="/home/matevz/canorus/artwork/icons"
-   sodipodi:docname="voice.svg"
+   sodipodi:docbase=""
+   sodipodi:docname="voiceremove.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:modified="true">
   <defs
@@ -40,9 +40,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="128.09371"
-     inkscape:cy="23.929741"
+     inkscape:zoom="1.4"
+     inkscape:cx="323.21237"
+     inkscape:cy="-109.54742"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      height="128px"
@@ -113,13 +113,12 @@
        transform="matrix(0.9326317,0,0,1.0060544,3.4780313,-1.8450105)"
        sodipodi:nodetypes="csc" />
     <image
-       xlink:href="/usr/share/icons/crystalsvg/128x128/apps/package_settings.png"
-       sodipodi:absref="/usr/share/icons/crystalsvg/128x128/apps/package_settings.png"
-       width="64.865463"
-       height="64.865463"
-       id="image8756"
-       x="-66.272842"
-       y="0.61292714"
-       transform="scale(-1,1)" />
+       xlink:href="remove.png"
+       sodipodi:absref="remove.png"
+       width="70.728432"
+       height="70.728432"
+       id="image4308"
+       x="2.5165043"
+       y="2.7322083" />
   </g>
 </svg>
