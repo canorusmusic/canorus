@@ -1,13 +1,13 @@
 <ui version="4.0" >
- <author>Reinhard Katzmann</author>
+ <author>Reinhard Katzmann, Matevž Jekovec</author>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>943</width>
-    <height>613</height>
+    <width>905</width>
+    <height>660</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -19,7 +19,7 @@
   <property name="statusTip" >
    <string/>
   </property>
-  <widget class="QWidget" name="centralwidget" >
+  <widget class="QWidget" name="centralWidget" >
    <layout class="QGridLayout" >
     <property name="margin" >
      <number>6</number>
@@ -47,155 +47,20 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar" >
+  <widget class="QMenuBar" name="menuBarWidget" >
    <property name="geometry" >
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>943</width>
+     <width>905</width>
      <height>36</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFormat" >
-    <property name="title" >
-     <string>&amp;Format</string>
-    </property>
-    <addaction name="action_Staff_properties" />
-    <addaction name="action_Voice_properties" />
-    <addaction name="action_Note_properties" />
-    <addaction name="action_Document_layout" />
-   </widget>
-   <widget class="QMenu" name="menuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionNew" />
-    <addaction name="actionNew_sheet" />
-    <addaction name="actionNew_document_wizard" />
-    <addaction name="separator" />
-    <addaction name="actionOpen" />
-    <addaction name="actionOpen_Recent" />
-    <addaction name="separator" />
-    <addaction name="actionSave" />
-    <addaction name="actionSave_as" />
-    <addaction name="actionClose" />
-    <addaction name="separator" />
-    <addaction name="actionImport" />
-    <addaction name="actionExport" />
-    <addaction name="separator" />
-    <addaction name="actionDocument_properties" />
-    <addaction name="actionPrint_preview" />
-    <addaction name="actionPrint" />
-    <addaction name="separator" />
-    <addaction name="actionQuit" />
-   </widget>
-   <widget class="QMenu" name="menuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="action_Undo" />
-    <addaction name="action_Redo" />
-    <addaction name="separator" />
-    <addaction name="actionC_ut" />
-    <addaction name="action_Copy" />
-    <addaction name="action_Paste" />
-    <addaction name="actionPaste_special" />
-    <addaction name="actionPaste_as_new_sheet" />
-    <addaction name="separator" />
-    <addaction name="actionSelect_all" />
-    <addaction name="actionInvert_Selection" />
-    <addaction name="separator" />
-    <addaction name="actionMIDI_Setup" />
-   </widget>
-   <widget class="QMenu" name="menuTools" >
-    <property name="title" >
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="action_Enable_external_MIDI_mode" />
-    <addaction name="actionTranspose" />
-    <addaction name="actionNote_count" />
-    <addaction name="separator" />
-    <addaction name="actionSettings" />
-   </widget>
-   <widget class="QMenu" name="menuScript" >
-    <property name="title" >
-     <string>&amp;Script</string>
-    </property>
-    <addaction name="action_Record_script" />
-    <addaction name="action_Play_script" />
-    <addaction name="action_Edit_script" />
-   </widget>
-   <widget class="QMenu" name="menuView" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <widget class="QMenu" name="menuZoom" >
-     <property name="title" >
-      <string>Zoom</string>
-     </property>
-     <addaction name="actionZoom_In" />
-     <addaction name="actionZoom_Out" />
-     <addaction name="actionZoom_100" />
-     <addaction name="actionZoom_to_width" />
-     <addaction name="actionZoom_to_height" />
-     <addaction name="actionZoom_to_fit" />
-     <addaction name="actionZoom_to_selection" />
-    </widget>
-    <addaction name="menuZoom" />
-    <addaction name="actionZoom_Level" />
-    <addaction name="separator" />
-    <addaction name="actionAnimated_scroll" />
-    <addaction name="actionLock_scroll_playback" />
-    <addaction name="action_Read_pnly_mode" />
-    <addaction name="actionLyric_s_view" />
-    <addaction name="actionTime_grid" />
-    <addaction name="action_Time_ruler" />
-    <addaction name="action_Bar_ruler" />
-    <addaction name="separator" />
-    <addaction name="actionGoto_bar" />
-    <addaction name="actionStatus_bar" />
-    <addaction name="action_Fullscreen" />
-    <addaction name="actionVoice_in_LilyPond_source" />
-   </widget>
-   <widget class="QMenu" name="menuInsert" >
-    <property name="title" >
-     <string>&amp;Insert</string>
-    </property>
-    <addaction name="actionNew_staff" />
-    <addaction name="action_Clef" />
-    <addaction name="action_Time_signature" />
-    <addaction name="action_Key_signature" />
-    <addaction name="separator" />
-    <addaction name="action_Special_barline" />
-    <addaction name="action_Expression_marks" />
-    <addaction name="actionC_hord" />
-    <addaction name="action_Pedal_markings" />
-    <addaction name="action_Octaviation" />
-    <addaction name="action_Instrument_change" />
-    <addaction name="action_Midi_instruction" />
-   </widget>
-   <widget class="QMenu" name="menuPerspective" >
-    <property name="title" >
-     <string>&amp;Perspective</string>
-    </property>
-    <addaction name="action_Select_perspective" />
-    <addaction name="actionEdit_perspective" />
-    <addaction name="action_Insert_perspective" />
-    <addaction name="action_Replace_perspective" />
-    <addaction name="separator" />
-    <addaction name="action_Layout_perspective" />
-    <addaction name="actionSource_view_perspective" />
-    <addaction name="separator" />
-    <addaction name="actionLyrics_perspective" />
-    <addaction name="actionChord_perspective" />
-    <addaction name="action_Figured_bass_perspective" />
-    <addaction name="actionFigured_functions_perspective" />
-   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>&amp;Help</string>
     </property>
-    <addaction name="actionCanorus_handbook" />
+    <addaction name="actionUsers_guide" />
     <addaction name="actionWhat_s_this" />
     <addaction name="actionTip_of_the_day" />
     <addaction name="separator" />
@@ -206,27 +71,117 @@
     <property name="title" >
      <string>Window</string>
     </property>
+    <addaction name="actionNew_viewport" />
+    <addaction name="actionNew_window" />
+    <addaction name="separator" />
     <addaction name="actionSplit_horizontally" />
     <addaction name="actionSplit_vertically" />
     <addaction name="actionClose_current_view" />
     <addaction name="actionUnsplit_all" />
+   </widget>
+   <widget class="QMenu" name="menuEdit" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
     <addaction name="separator" />
-    <addaction name="actionNew_viewport" />
-    <addaction name="actionNew_window" />
+    <addaction name="actionCut" />
+    <addaction name="actionCopy" />
+    <addaction name="actionPaste" />
+    <addaction name="separator" />
+    <addaction name="actionSelect_all" />
+    <addaction name="actionInvert_Selection" />
+    <addaction name="separator" />
+    <addaction name="actionProperties" />
+   </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionNew" />
+    <addaction name="actionNew_document_wizard" />
+    <addaction name="actionOpen" />
+    <addaction name="actionSave" />
+    <addaction name="actionSave_as" />
+    <addaction name="actionClose" />
+    <addaction name="separator" />
+    <addaction name="actionDocument_properties" />
+    <addaction name="separator" />
+    <addaction name="actionImport" />
+    <addaction name="actionExport" />
+    <addaction name="separator" />
+    <addaction name="actionPrint_preview" />
+    <addaction name="actionPrint" />
+    <addaction name="separator" />
+    <addaction name="actionQuit" />
+   </widget>
+   <widget class="QMenu" name="menuTools" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="actionGoto_bar" />
+    <addaction name="actionTranspose" />
+    <addaction name="actionNote_count" />
+    <addaction name="separator" />
+    <addaction name="actionSettings" />
+   </widget>
+   <widget class="QMenu" name="menuInsert" >
+    <property name="title" >
+     <string>&amp;Insert</string>
+    </property>
+    <addaction name="actionNew_sheet" />
+    <addaction name="actionNew_staff" />
+    <addaction name="actionNew_voice" />
+    <addaction name="separator" />
+    <addaction name="actionInsert_clef" />
+    <addaction name="actionInsert_time_signature" />
+    <addaction name="actionInsert_key_signature" />
+    <addaction name="actionInsert_barline" />
+   </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="menuZoom" >
+     <property name="title" >
+      <string>Zoom</string>
+     </property>
+     <addaction name="actionZoom_to_width" />
+     <addaction name="actionZoom_to_height" />
+     <addaction name="actionZoom_to_fit" />
+     <addaction name="actionZoom_to_selection" />
+     <addaction name="separator" />
+     <addaction name="actionCustom_zoom" />
+    </widget>
+    <widget class="QMenu" name="menuSource_view" >
+     <property name="title" >
+      <string>Source view</string>
+     </property>
+     <addaction name="actionLilyPond_source" />
+     <addaction name="actionCanorusML_source" />
+    </widget>
+    <addaction name="menuZoom" />
+    <addaction name="separator" />
+    <addaction name="actionAnimated_scroll" />
+    <addaction name="actionLock_scroll_playback" />
+    <addaction name="separator" />
+    <addaction name="actionScore_view" />
+    <addaction name="menuSource_view" />
+    <addaction name="separator" />
+    <addaction name="actionStatus_bar" />
+    <addaction name="actionFullscreen" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
    <addaction name="menuView" />
    <addaction name="menuInsert" />
-   <addaction name="menuPerspective" />
-   <addaction name="menuFormat" />
-   <addaction name="menuScript" />
    <addaction name="menuTools" />
    <addaction name="menuWindow" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
-  <widget class="QToolBar" name="mpoToolBar" >
+  <widget class="QStatusBar" name="statusBarWidget" />
+  <widget class="QToolBar" name="standardToolBar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -236,11 +191,42 @@
    <addaction name="actionNew" />
    <addaction name="actionOpen" />
    <addaction name="actionSave" />
-   <addaction name="actionQuit" />
    <addaction name="separator" />
+   <addaction name="actionExport_to_pdf" />
+   <addaction name="actionPrint_directly" />
+   <addaction name="separator" />
+   <addaction name="actionPlay_from_selection" />
+  </widget>
+  <widget class="QToolBar" name="fileToolBar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="actionNew" />
+   <addaction name="actionNew_document_wizard" />
+   <addaction name="actionOpen" />
+   <addaction name="actionSave" />
+   <addaction name="actionSave_as" />
+   <addaction name="actionImport" />
    <addaction name="actionExport" />
+   <addaction name="actionClose" />
+  </widget>
+  <widget class="QToolBar" name="printToolBar" >
+   <property name="enabled" >
+    <bool>true</bool>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="actionPrint_preview" />
+   <addaction name="actionPrint_directly" />
    <addaction name="actionPrint" />
-   <addaction name="actionPlay" />
+   <addaction name="actionExport_to_pdf" />
   </widget>
   <action name="actionQuit" >
    <property name="icon" >
@@ -262,11 +248,6 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+N</string>
-   </property>
-  </action>
-  <action name="actionNew_document_wizard" >
-   <property name="text" >
-    <string>New document &amp;wizard...</string>
    </property>
   </action>
   <action name="actionOpen" >
@@ -301,12 +282,10 @@
     <string>&amp;Close</string>
    </property>
   </action>
-  <action name="actionDocument_properties" >
-   <property name="text" >
-    <string>&amp;Document properties...</string>
-   </property>
-  </action>
   <action name="actionImport" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>&amp;Import...</string>
    </property>
@@ -323,11 +302,17 @@
    </property>
   </action>
   <action name="actionPrint_preview" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Print pre&amp;view...</string>
    </property>
   </action>
   <action name="actionPrint" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/fileprint.png</iconset>
    </property>
@@ -338,12 +323,10 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionOpen_Recent" >
-   <property name="text" >
-    <string>Open Recent</string>
+  <action name="actionUndo" >
+   <property name="enabled" >
+    <bool>false</bool>
    </property>
-  </action>
-  <action name="action_Undo" >
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/editundo.png</iconset>
    </property>
@@ -354,7 +337,7 @@
     <string>Ctrl+Z</string>
    </property>
   </action>
-  <action name="action_Redo" >
+  <action name="actionRedo" >
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/editredo.png</iconset>
    </property>
@@ -365,7 +348,10 @@
     <string>Ctrl+Y</string>
    </property>
   </action>
-  <action name="action_Copy" >
+  <action name="actionCopy" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/editcopy.png</iconset>
    </property>
@@ -376,7 +362,10 @@
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="actionC_ut" >
+  <action name="actionCut" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/editcut.png</iconset>
    </property>
@@ -387,7 +376,10 @@
     <string>Ctrl+X</string>
    </property>
   </action>
-  <action name="action_Paste" >
+  <action name="actionPaste" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/editpaste.png</iconset>
    </property>
@@ -398,17 +390,10 @@
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="actionPaste_special" >
-   <property name="text" >
-    <string>Paste &amp;special...</string>
-   </property>
-  </action>
-  <action name="actionPaste_as_new_sheet" >
-   <property name="text" >
-    <string>Paste as &amp;new sheet</string>
-   </property>
-  </action>
   <action name="actionSelect_all" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Select &amp;all</string>
    </property>
@@ -417,6 +402,9 @@
    </property>
   </action>
   <action name="actionInvert_Selection" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Invert Selection</string>
    </property>
@@ -442,44 +430,14 @@
     <string>Ctrl+-</string>
    </property>
   </action>
-  <action name="actionZoom_100" >
-   <property name="text" >
-    <string>Zoom &amp;100%</string>
-   </property>
-  </action>
   <action name="actionZoom_to_width" >
    <property name="text" >
-    <string>Zoom to &amp;page width</string>
-   </property>
-  </action>
-  <action name="action_Read_pnly_mode" >
-   <property name="text" >
-    <string>&amp;Read-only mode</string>
-   </property>
-  </action>
-  <action name="actionLyric_s_view" >
-   <property name="text" >
-    <string>Lyric&amp;s view</string>
-   </property>
-  </action>
-  <action name="actionTime_grid" >
-   <property name="text" >
-    <string>Time &amp;grid</string>
-   </property>
-  </action>
-  <action name="action_Time_ruler" >
-   <property name="text" >
-    <string>&amp;Time ruler</string>
-   </property>
-  </action>
-  <action name="action_Bar_ruler" >
-   <property name="text" >
-    <string>&amp;Bar ruler</string>
+    <string>Fit to width</string>
    </property>
   </action>
   <action name="actionGoto_bar" >
    <property name="text" >
-    <string>G&amp;oto bar...</string>
+    <string>Find bar...</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+G</string>
@@ -496,7 +454,7 @@
     <string>St&amp;atus bar</string>
    </property>
   </action>
-  <action name="action_Fullscreen" >
+  <action name="actionFullscreen" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -504,168 +462,24 @@
     <string>&amp;Fullscreen</string>
    </property>
   </action>
-  <action name="action_Clef" >
+  <action name="actionInsert_clef" >
    <property name="text" >
     <string>&amp;Clef...</string>
    </property>
   </action>
-  <action name="action_Time_signature" >
+  <action name="actionInsert_time_signature" >
    <property name="text" >
     <string>&amp;Time signature...</string>
    </property>
   </action>
-  <action name="action_Key_signature" >
+  <action name="actionInsert_key_signature" >
    <property name="text" >
     <string>&amp;Key signature...</string>
    </property>
   </action>
-  <action name="action_Special_barline" >
+  <action name="actionInsert_barline" >
    <property name="text" >
-    <string>&amp;Special barline...</string>
-   </property>
-  </action>
-  <action name="action_Expression_marks" >
-   <property name="text" >
-    <string>&amp;Expression marks...</string>
-   </property>
-  </action>
-  <action name="actionC_hord" >
-   <property name="text" >
-    <string>C&amp;hord...</string>
-   </property>
-  </action>
-  <action name="action_Pedal_markings" >
-   <property name="text" >
-    <string>&amp;Pedal markings...</string>
-   </property>
-  </action>
-  <action name="action_Octaviation" >
-   <property name="text" >
-    <string>&amp;Octaviation...</string>
-   </property>
-  </action>
-  <action name="action_Instrument_change" >
-   <property name="text" >
-    <string>&amp;Instrument change...</string>
-   </property>
-  </action>
-  <action name="action_Midi_instruction" >
-   <property name="text" >
-    <string>&amp;Midi instruction...</string>
-   </property>
-  </action>
-  <action name="action_Select_perspective" >
-   <property name="text" >
-    <string>&amp;Select perspective</string>
-   </property>
-  </action>
-  <action name="actionEdit_perspective" >
-   <property name="text" >
-    <string>&amp;Edit perspective</string>
-   </property>
-  </action>
-  <action name="action_Insert_perspective" >
-   <property name="text" >
-    <string>&amp;Insert perspective</string>
-   </property>
-  </action>
-  <action name="action_Replace_perspective" >
-   <property name="text" >
-    <string>&amp;Replace perspective</string>
-   </property>
-  </action>
-  <action name="action_Layout_perspective" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>&amp;Layout perspective</string>
-   </property>
-  </action>
-  <action name="actionLyrics_perspective" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>L&amp;yrics perspective</string>
-   </property>
-  </action>
-  <action name="actionChord_perspective" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>&amp;Chord perspective</string>
-   </property>
-  </action>
-  <action name="actionSource_view_perspective" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Source &amp;view perspective</string>
-   </property>
-  </action>
-  <action name="action_Figured_bass_perspective" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Figured &amp;bass perspective</string>
-   </property>
-  </action>
-  <action name="actionFigured_functions_perspective" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Figured &amp;functions perspective</string>
-   </property>
-  </action>
-  <action name="action_Staff_properties" >
-   <property name="text" >
-    <string>&amp;Staff properties...</string>
-   </property>
-  </action>
-  <action name="action_Voice_properties" >
-   <property name="text" >
-    <string>&amp;Voice properties...</string>
-   </property>
-  </action>
-  <action name="action_Note_properties" >
-   <property name="text" >
-    <string>&amp;Note properties...</string>
-   </property>
-  </action>
-  <action name="action_Document_layout" >
-   <property name="text" >
-    <string>&amp;Document layout...</string>
-   </property>
-  </action>
-  <action name="action_Record_script" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>&amp;Record script</string>
-   </property>
-  </action>
-  <action name="action_Play_script" >
-   <property name="text" >
-    <string>&amp;Play script...</string>
-   </property>
-  </action>
-  <action name="action_Edit_script" >
-   <property name="text" >
-    <string>&amp;Edit script...</string>
-   </property>
-  </action>
-  <action name="action_Enable_external_MIDI_mode" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>&amp;Enable external MIDI mode</string>
+    <string>Barline...</string>
    </property>
   </action>
   <action name="actionTranspose" >
@@ -683,9 +497,9 @@
     <string>&amp;Settings...</string>
    </property>
   </action>
-  <action name="actionCanorus_handbook" >
+  <action name="actionUsers_guide" >
    <property name="text" >
-    <string>Canorus &amp;handbook...</string>
+    <string>User's guide...</string>
    </property>
   </action>
   <action name="actionWhat_s_this" >
@@ -695,7 +509,7 @@
   </action>
   <action name="actionTip_of_the_day" >
    <property name="checkable" >
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text" >
     <string>Tip of the &amp;day</string>
@@ -713,12 +527,12 @@
   </action>
   <action name="actionSplit_horizontally" >
    <property name="text" >
-    <string>Split horizontally</string>
+    <string>Split view horizontally</string>
    </property>
   </action>
   <action name="actionSplit_vertically" >
    <property name="text" >
-    <string>Split vertically</string>
+    <string>Split view vertically</string>
    </property>
   </action>
   <action name="actionClose_current_view" >
@@ -733,7 +547,7 @@
   </action>
   <action name="actionNew_viewport" >
    <property name="text" >
-    <string>New viewport</string>
+    <string>New view</string>
    </property>
   </action>
   <action name="actionNew_sheet" >
@@ -743,10 +557,10 @@
   </action>
   <action name="actionNew_staff" >
    <property name="text" >
-    <string>New staff</string>
+    <string>New context...</string>
    </property>
   </action>
-  <action name="actionPlay" >
+  <action name="actionPlay_from_selection" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -754,7 +568,7 @@
     <iconset resource="mainwin.qrc" >:/menu/images/player_play.png</iconset>
    </property>
    <property name="text" >
-    <string>Play</string>
+    <string>Play from selection</string>
    </property>
   </action>
   <action name="actionAnimated_scroll" >
@@ -778,12 +592,12 @@
   </action>
   <action name="actionZoom_to_height" >
    <property name="text" >
-    <string>Zoom to page &amp;height</string>
+    <string>Fit to &amp;height</string>
    </property>
   </action>
   <action name="actionZoom_to_fit" >
    <property name="text" >
-    <string>Zoom to &amp;fit</string>
+    <string>Best &amp;fit</string>
    </property>
   </action>
   <action name="actionZoom_to_selection" >
@@ -791,25 +605,62 @@
     <bool>false</bool>
    </property>
    <property name="text" >
-    <string>Zoom to selection</string>
-   </property>
-  </action>
-  <action name="actionMIDI_Setup" >
-   <property name="text" >
-    <string>MIDI Setup...</string>
-   </property>
-  </action>
-  <action name="actionVoice_in_LilyPond_source" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Voice in LilyPond source</string>
+    <string>Fit to selection</string>
    </property>
   </action>
   <action name="actionNew_window" >
    <property name="text" >
     <string>New window</string>
+   </property>
+  </action>
+  <action name="actionCustom_zoom" >
+   <property name="text" >
+    <string>Custom...</string>
+   </property>
+  </action>
+  <action name="actionScore_view" >
+   <property name="text" >
+    <string>Score view</string>
+   </property>
+  </action>
+  <action name="actionLilyPond_source" >
+   <property name="text" >
+    <string>LilyPond source</string>
+   </property>
+  </action>
+  <action name="actionCanorusML_source" >
+   <property name="text" >
+    <string>CanorusML source</string>
+   </property>
+  </action>
+  <action name="actionNew_voice" >
+   <property name="text" >
+    <string>New voice</string>
+   </property>
+  </action>
+  <action name="actionProperties" >
+   <property name="text" >
+    <string>Properties...</string>
+   </property>
+  </action>
+  <action name="actionDocument_properties" >
+   <property name="text" >
+    <string>Document properties...</string>
+   </property>
+  </action>
+  <action name="actionPrint_directly" >
+   <property name="text" >
+    <string>Print directly</string>
+   </property>
+  </action>
+  <action name="actionExport_to_pdf" >
+   <property name="text" >
+    <string>Export to PDF</string>
+   </property>
+  </action>
+  <action name="actionNew_document_wizard" >
+   <property name="text" >
+    <string>New document &amp;wizard...</string>
    </property>
   </action>
  </widget>

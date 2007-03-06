@@ -22,8 +22,6 @@
 #include <QXmlInputSource>
 #include <iostream>
 
-using namespace std;
-
 #include "ui/mainwin.h"
 #include "ui/keysigpsp.h"
 #include "ui/timesigpsp.h"
@@ -67,40 +65,30 @@ using namespace std;
 #include "export/lilypondexport.h"
 #include "import/lilypondimport.h"
 
-
+/*!
+	\class CAMainWin
+	\brief Canorus main window
+	Class CAMainWin represents Canorus main window.
+	The core layout is generated using the Qt designer's ui/mainwin.ui file.
+	Other widgets (specific toolbars, viewports, plugin menus) are generated manually in-code.
+	
+	Canorus supports multiple main windows pointing to the same document or separated document.
+	
+	Canorus uses multiple inheritance approach. See
+	http://doc.trolltech.com/4.2/designer-using-a-component.html#the-multiple-inheritance-approach
+	Class members having _ prefix are private properties created in CAMainWin.
+	Private class members without _ prefix are pure GUI objects created in Qt designer or manually. 
+	
+	\sa CAViewPort, CACanorus
+*/
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent)
 	: QMainWindow( oParent )
 {
-	// Add main music insertion toolbar
-	mpoMEToolBar = new CAToolBar( this );
-	mpoMEToolBar->setOrientation(Qt::Vertical);
-	initToolBar();
-	addToolBar(static_cast<Qt::ToolBarArea>(2), mpoMEToolBar);
-	
 	// Initialize widgets
-	moMainWin.setupUi( this );
-	// Add a signal so if the menu action is used, the toolbar
-	// is notified to change it's state
-	mpoMEToolBar->setAction( actionClefSelect->objectName(), 
-	                         moMainWin.action_Clef );
-	mpoVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" );
-	mpoVoiceNumAction = moMainWin.mpoToolBar->addWidget( mpoVoiceNum );
-	
-	// Connect manually as the action cannot be created earlier
-	connect( mpoVoiceNum, SIGNAL( valChanged( int ) ), this,
-	         SLOT( sl_mpoVoiceNum_valChanged( int ) ) );
-	mpoVoiceNum->setEnabled(false);	//current voice number gets enabled when staff is selected and gets disabled when staff is unselected. By default, it's disabled.
-	
-	moMainWin.actionAnimated_scroll->setChecked(true);
-	moMainWin.actionLock_scroll_playback->setChecked(false);
-	moMainWin.actionUnsplit_all->setEnabled(false);
-	moMainWin.actionClose_current_view->setEnabled(false);
-	
-	mpoKeySigPSP  = 0;
-	mpoTimeSigPSP = 0;
-	mpoMEFactory = new CAMusElementFactory();
+	setupUi( this );
+	setupCustomUi();
 	
 	// Initialize import/export dialogs
 	_exportDialog = new QFileDialog(this);
@@ -109,9 +97,9 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_importDialog = new QFileDialog(this);
 	_importDialog->setFileMode(QFileDialog::ExistingFile);
 	_importDialog->setDirectory( QDir::current() );
-	
+		
 	// Initialize internal UI properties
-	_currentMode = SelectMode;
+	_mode = SelectMode;
 	_playback = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
@@ -133,8 +121,45 @@ CAMainWin::~CAMainWin()
 	delete mpoMEToolBar;
 }
 
-void CAMainWin::initToolBar()
-{
+/*!
+	Creates more complex widgets and layouts that cannot be created using Qt Designer.
+*/
+void CAMainWin::setupCustomUi() {
+	// Add main music insertion toolbar
+	mpoMEToolBar = new CAToolBar( this );
+	mpoMEToolBar->setOrientation(Qt::Vertical);
+	addToolBar(static_cast<Qt::ToolBarArea>(2), mpoMEToolBar);
+	
+	mpoVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" );
+	// Connect manually as the action cannot be created earlier
+	connect( mpoVoiceNum, SIGNAL( valChanged( int ) ), this,
+	         SLOT( sl_mpoVoiceNum_valChanged( int ) ) );
+	mpoVoiceNum->setEnabled(false);	//current voice number gets enabled when staff is selected and gets disabled when staff is unselected. By default, it's disabled.
+	
+	actionAnimated_scroll->setChecked(true);
+	actionLock_scroll_playback->setChecked(false);
+	actionUnsplit_all->setEnabled(false);
+	actionClose_current_view->setEnabled(false);
+	
+	mpoKeySigPSP  = 0;
+	mpoTimeSigPSP = 0;
+	mpoMEFactory = new CAMusElementFactory();
+	
+	initToolBars();
+	
+	// Add a signal so if the menu action is used, the toolbar
+	// is notified to change it's state
+	mpoMEToolBar->setAction( actionClefSelect->objectName(), 
+	                         actionInsert_clef );
+}
+
+/*!
+	Adds more complex widgets to toolbars which cannot be done in Qt Designer.
+*/
+void CAMainWin::initToolBars() {
+	// standardToolBar
+	mpoVoiceNumAction = standardToolBar->addWidget( mpoVoiceNum );
+	
 	// Test Code for Toolbar
 	mpoClefMenu    = new CAButtonMenu( tr("Select Clef" ) );
 	mpoNoteMenu    = new CAButtonMenu( tr("Select Note" ) );
@@ -217,6 +242,9 @@ void CAMainWin::newDocument() {
 	rebuildUI();
 }
 
+/*!
+	Adds an already created \a sheet to the document.
+*/
 void CAMainWin::addSheet(CASheet *s) {
 	CAScoreViewPort *v = new CAScoreViewPort(s, 0);
 	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
@@ -229,12 +257,20 @@ void CAMainWin::addSheet(CASheet *s) {
 	
 	_viewPortList.append(v);
 	
-	moMainWin.tabWidget->addTab(new CAViewPortContainer(v, 0), s->name());
-	moMainWin.tabWidget->setCurrentIndex(moMainWin.tabWidget->count()-1);
+	tabWidget->addTab(new CAViewPortContainer(v, 0), s->name());
+	tabWidget->setCurrentIndex(tabWidget->count()-1);
 	
 	_activeViewPort = v;
 }
 
+/*!
+	Deletes all viewports (and their drawable content), disconnects all signals and resets all
+	buttons and modes.
+	
+	This function deletes the current main window's GUI only (drawable elements). All the data
+	classes (staffs, notes, rests) should stay intact. Use delete document() to free the data
+	part of Canorus as well.
+*/
 void CAMainWin::clearUI() {
 	if(_viewPortList.size() > 1)
 		on_actionUnsplit_all_triggered();
@@ -243,14 +279,17 @@ void CAMainWin::clearUI() {
 	
 	_viewPortList.clear();
 	
-	while (moMainWin.tabWidget->count()) {
+	while (tabWidget->count()) {
 		delete _currentViewPortContainer;
-		moMainWin.tabWidget->removeTab(moMainWin.tabWidget->currentIndex());
+		tabWidget->removeTab(tabWidget->currentIndex());
 	}
 	
 	mpoVoiceNum->setEnabled(false);
 }
 
+/*!
+	Called when the current sheet is switched in the tab widget.
+*/
 void CAMainWin::on_tabWidget_currentChanged(int idx) {
 	_activeViewPort = _currentViewPortContainer->lastUsedViewPort();
 }
@@ -277,10 +316,10 @@ void CAMainWin::on_actionSplit_horizontally_triggered() {
 		v->setFocus();
 	}
 	
-	moMainWin.actionUnsplit_all->setEnabled(true);
-	moMainWin.actionClose_current_view->setEnabled(true);
+	actionUnsplit_all->setEnabled(true);
+	actionClose_current_view->setEnabled(true);
 	_viewPortList.append(v);
-	setMode(_currentMode);	//updates the new viewport border settings
+	setMode(_mode);	// updates the new viewport border settings
 }
 
 void CAMainWin::on_actionSplit_vertically_triggered() {
@@ -298,10 +337,10 @@ void CAMainWin::on_actionSplit_vertically_triggered() {
 		v->setFocus();
 	}
 	
-	moMainWin.actionUnsplit_all->setEnabled(true);
-	moMainWin.actionClose_current_view->setEnabled(true);
+	actionUnsplit_all->setEnabled(true);
+	actionClose_current_view->setEnabled(true);
 	_viewPortList.append(v);
-	setMode(_currentMode);	//updates the new viewport border settings
+	setMode(_mode);	// updates the new viewport border settings
 }
 
 void CAMainWin::doUnsplit(CAViewPort *v) {
@@ -313,11 +352,9 @@ void CAMainWin::doUnsplit(CAViewPort *v) {
 	
 	if(_currentViewPortContainer->dockedViewPortsList().size() == 1)
 	{
-		moMainWin.actionClose_current_view->setEnabled(false);
-		moMainWin.actionUnsplit_all->setEnabled(false);
+		actionClose_current_view->setEnabled(false);
+		actionUnsplit_all->setEnabled(false);
 	}
-	if(vpt == CAViewPort::SourceViewPort)
-		moMainWin.actionSource_view_perspective->setChecked(false);
 	_activeViewPort = _currentViewPortContainer->dockedViewPortsList().back();
 }
 
@@ -325,9 +362,8 @@ void CAMainWin::on_actionUnsplit_all_triggered() {
 	QList<CAViewPort*> dockedViewPorts = _currentViewPortContainer->unsplitAll();
 	for(QList<CAViewPort*>::iterator i = dockedViewPorts.begin(); i < dockedViewPorts.end(); i++)
 		_viewPortList.removeAll(*i);
-	moMainWin.actionClose_current_view->setEnabled(false);
-	moMainWin.actionUnsplit_all->setEnabled(false);
-	moMainWin.actionSource_view_perspective->setChecked(false);
+	actionClose_current_view->setEnabled(false);
+	actionUnsplit_all->setEnabled(false);
 	_activeViewPort = _currentViewPortContainer->dockedViewPortsList().back();
 }
 
@@ -354,10 +390,10 @@ void CAMainWin::on_actionSource_view_perspective_toggled(bool status) {
 		v->setFocusPolicy(Qt::ClickFocus);
 		v->setFocus();
 		
-		moMainWin.actionUnsplit_all->setEnabled(true);
-		moMainWin.actionClose_current_view->setEnabled(true);
+		actionUnsplit_all->setEnabled(true);
+		actionClose_current_view->setEnabled(true);
 		_viewPortList.append(v);
-		setMode(_currentMode);	//updates the new viewport border settings
+		setMode(_mode);	// updates the new viewport border settings
 	}
 }
 
@@ -375,7 +411,7 @@ void CAMainWin::on_actionNew_viewport_triggered() {
 	}
 
 	_viewPortList.append(v);
-	setMode(_currentMode);	//updates the new viewport border settings
+	setMode(_mode);	// updates the new viewport border settings
 }
 
 /*!
@@ -393,7 +429,7 @@ void CAMainWin::on_actionNew_triggered() {
 }
 
 void CAMainWin::on_actionNew_sheet_triggered() {
-	//add a new empty sheet
+	// add a new empty sheet
 	addSheet(document()->addSheet(tr("Sheet %1").arg(QString::number(document()->sheetCount()+1))));
 }
 
@@ -412,7 +448,7 @@ void CAMainWin::on_actionNew_staff_triggered() {
 }
 
 void CAMainWin::setMode(CAMode mode) {
-	_currentMode = mode;
+	_mode = mode;
 	
 	switch (mode) {
 		case SelectMode: {
@@ -466,6 +502,22 @@ void CAMainWin::on_action_Clef_triggered() {
 	mpoMEFactory->setMusElementType( CAMusElement::Clef );
 }
 
+/*!
+	Rebuild the GUI from data.
+	
+	This method is called eg. when multiple viewports share the same data and a change has been made (eg. a
+	note pitch has changed). ViewPorts content is repositioned and redrawn (CAEngraver creates CADrawable
+	elements for every viewport).
+	
+	\a sheet argument is a pointer to the data sheet where the change occured. This way only viewports showing
+	the given sheet are updated which speeds up the process.
+	If no \a sheet argument is passed, the whole UI is rebuilt from the data part. This is called for eg. upon
+	Opening file after the data part has been read or when creating a new document.
+	
+	If \a repaint is True (default) the rebuilt viewports are also repainted. If False, viewports content is
+	only created but not yet drawn. This is useful when multiple operations which could potentially change the
+	content are to happen and we want to actually draw it only at the end.
+*/
 void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	if (!sheet) {
 		clearUI();
@@ -488,6 +540,12 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	}
 }
 
+/*!
+	Processes the mouse press event \a e with coordinates \a coords of the viewport \a v.
+	Any action happened in any of the viewports are always linked to its main window slots.
+	
+	\sa CAScoreViewPort::mousePressEvent(), viewPortMouseMoveEvent(), viewPortWheelEvent(), viewPortKeyPressEvent()
+*/
 void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *viewPort) {
 	_activeViewPort = viewPort;
 	_currentViewPortContainer->setLastUsedViewPort(_activeViewPort);
@@ -498,10 +556,10 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 		CADrawableContext *currentContext = v->currentContext();
 		
 		v->selectCElement(coords.x(), coords.y());
-		if ( v->selectMElement(coords.x(), coords.y()) ||	//select a music element at the given location - select none, if there's none there
+		if ( v->selectMElement(coords.x(), coords.y()) ||	// select a music element at the given location - select none, if there's none there
 		     v->selectCElement(coords.x(), coords.y()) ) {
-			//voice number widget
-			if (currentContext != v->currentContext()) {	//new context was selected
+			// voice number widget
+			if (currentContext != v->currentContext()) {	// new context was selected
 				if (v->currentContext()->context()->contextType() == CAContext::Staff) {
 					mpoVoiceNum->setEnabled(true);
 					mpoVoiceNum->setRealValue(0);
@@ -521,11 +579,12 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 			}
 		}
 			
-		switch (_currentMode) {
+		switch (_mode) {
 			case SelectMode:
 			case EditMode: {
 				if (!v->selection()->isEmpty()) {
 					CAMusElement *elt = v->selection()->front()->musElement();
+					// debug
 					std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd();
 					if (elt->isPlayable())
 						std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
@@ -547,8 +606,276 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 	}
 }
 
-void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMusElement &roMusElement )
-{
+/*!
+	Processes the mouse move event \a e with coordinates \a coords of the viewport \a v.
+	Any action happened in any of the viewports are always linked to its main window slots.
+	
+	\sa CAScoreViewPort::mouseMoveEvent(), viewPortMousePressEvent(), viewPortWheelEvent(), viewPortKeyPressEvent()
+*/
+void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
+	if ((mode() == InsertMode) &&
+	    (mpoMEFactory->musElementType() == CAMusElement::Note) &&
+	    (v->viewPortType()==CAViewPort::ScoreViewPort)
+	   ) {
+		CAScoreViewPort *c = (CAScoreViewPort*)v;
+		CADrawableStaff *s;
+		if (c->currentContext()?(c->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0)
+			s = (CADrawableStaff*)c->currentContext(); 
+		else
+			return;
+
+		if (mpoMEFactory->musElementType() == CAMusElement::Note || 
+                    mpoMEFactory->musElementType() == CAMusElement::Rest)
+			c->setShadowNoteVisible(true);
+		
+		//calculate the logical pitch out of absolute world coordinates and the current clef
+		int pitch = s->calculatePitch(coords.x(), coords.y());
+		
+		//write into the main window's status bar the note pitch name
+		int iNoteAccs = s->getAccs(coords.x(), pitch)+mpoMEFactory->noteExtraAccs();
+		mpoMEFactory->setNoteAccs( iNoteAccs );
+		statusBar()->showMessage(CANote::generateNoteName(pitch, iNoteAccs));
+		((CAScoreViewPort*)v)->setShadowNoteAccs(iNoteAccs);
+	}
+}
+
+/*!
+	Processes the mouse wheel event \a e with coordinates \a coords of the viewport \a v.
+	Any action happened in any of the viewports are always linked to its main window slots.
+	
+	\sa CAScoreViewPort::wheelEvent(), viewPortMousePressEvent(), viewPortMouseMoveEvent(), viewPortKeyPressEvent()
+*/
+void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *v) {
+	_activeViewPort = v;
+	if (v->viewPortType()==CAViewPort::ScoreViewPort) {
+		CAScoreViewPort *sv = static_cast<CAScoreViewPort*>(v);
+		
+		int val;
+		switch (e->modifiers()) {
+			case Qt::NoModifier:			//scroll horizontally
+				sv->setWorldX( sv->worldX() - (int)((0.5*e->delta()) / sv->zoom()), _animatedScroll );
+				break;
+			case Qt::AltModifier:			//scroll horizontally, fast
+				sv->setWorldX( sv->worldX() - (int)(e->delta() / sv->zoom()), _animatedScroll );
+				break;
+			case Qt::ShiftModifier:			//scroll vertically
+				sv->setWorldY( sv->worldY() - (int)((0.5*e->delta()) / sv->zoom()), _animatedScroll );
+				break;
+			case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
+				sv->setWorldY( sv->worldY() - (int)(e->delta() / sv->zoom()), _animatedScroll );
+				break;
+			case Qt::ControlModifier:		//zoom
+				if (e->delta() > 0)
+					sv->setZoom( sv->zoom()*1.1, coords.x(), coords.y(), _animatedScroll );
+				else
+					sv->setZoom( sv->zoom()/1.1, coords.x(), coords.y(), _animatedScroll );
+				
+				break;
+		}
+		
+		v->repaint();
+	}
+}
+
+/*!
+	Processes the key press event \a e of the viewport \a v.
+	Any action happened in any of the viewports are always linked to its main window slots.
+	
+	\sa CAScoreViewPort::keyPressEvent(), viewPortMousePressEvent(), viewPortMouseMoveEvent(), viewPortWheelEvent()
+*/
+void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
+	_activeViewPort = v;
+	
+	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort) {
+		switch (e->key()) {
+			//Music editing keys
+			case Qt::Key_Right: {
+				//select next music element
+				((CAScoreViewPort*)_activeViewPort)->selectNextMusElement();
+				_activeViewPort->repaint();
+				break;
+			}
+			
+			case Qt::Key_Left: {
+				//select previous music element
+				((CAScoreViewPort*)_activeViewPort)->selectPrevMusElement();
+				_activeViewPort->repaint();
+				break;
+			}
+			
+			case Qt::Key_B: {
+				//place a barline
+				CADrawableContext *drawableContext;
+				drawableContext = ((CAScoreViewPort*)v)->currentContext();
+				
+				if ( (!drawableContext) || (drawableContext->context()->contextType() != CAContext::Staff) )
+					return;
+			
+				CAStaff *staff = (CAStaff*)drawableContext->context();
+				CAMusElement *left = 0;
+				if (!((CAScoreViewPort*)v)->selection()->isEmpty())
+					left = ((CAScoreViewPort*)v)->selection()->back()->musElement();
+					
+				CABarline *bar = new CABarline(
+					CABarline::Single,
+					staff,
+					(left?left->timeEnd():staff->lastTimeEnd())
+				);
+				staff->insertSignAfter(bar, left, true);	//insert the barline in all the voices
+				
+				CACanorus::rebuildUI(document(), ((CAScoreViewPort*)v)->sheet());
+				((CAScoreViewPort*)v)->selectMElement(bar);
+				v->repaint();
+				break;
+			}
+			
+			case Qt::Key_Up: {
+				if (mode() == SelectMode) {	//select the upper music element
+					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
+					_activeViewPort->repaint();
+				} else if ((mode() == InsertMode) || (mode() == EditMode)) {
+					if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
+						CADrawableMusElement *elt =
+							((CAScoreViewPort*)_activeViewPort)->selection()->back();
+						
+						//pitch note for one step higher
+						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
+							CANote *note = (CANote*)elt->musElement();
+							note->setPitch(note->pitch()+1);
+							CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
+						}
+					}
+				}
+				break;
+			}
+			
+			case Qt::Key_Down: {
+				if (mode() == SelectMode) {	//select the upper music element
+					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
+					_activeViewPort->repaint();
+				} else if ((mode() == InsertMode) || (mode() == EditMode)) {
+					if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
+						CADrawableMusElement *elt =
+							((CAScoreViewPort*)_activeViewPort)->selection()->back();
+						
+						//pitch note for one step higher
+						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
+							CANote *note = (CANote*)elt->musElement();
+							note->setPitch(note->pitch()-1);
+							CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
+						}
+					}
+				}
+				break;
+			}
+			case Qt::Key_Plus: {
+				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
+					if (mode()==InsertMode) {
+						mpoMEFactory->addNoteExtraAccs(1); mpoMEFactory->addNoteAccs(1);
+						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(mpoMEFactory->noteExtraAccs()!=0);
+						((CAScoreViewPort*)v)->setShadowNoteAccs(mpoMEFactory->noteAccs());
+						v->repaint();
+					} else if (mode()==EditMode) {
+						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
+							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
+							if (elt->musElementType()==CAMusElement::Note) {
+								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
+								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
+							}
+						}
+					}
+				}
+				break;
+			}
+			
+			case Qt::Key_Minus: {
+				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
+					if (mode()==InsertMode) {
+						mpoMEFactory->subNoteExtraAccs(1); mpoMEFactory->subNoteAccs(1);
+						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(mpoMEFactory->noteExtraAccs()!=0);
+						((CAScoreViewPort*)v)->setShadowNoteAccs(mpoMEFactory->noteAccs());
+						v->repaint();
+					} else if (mode()==EditMode) {
+						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
+							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
+							if (elt->musElementType()==CAMusElement::Note) {
+								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
+								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
+							}
+						}
+					}
+				}
+				break;
+			}
+			
+			case Qt::Key_Period: {
+				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
+					if (mode()==InsertMode) {
+						mpoMEFactory->addPlayableDotted( 1 );
+						((CAScoreViewPort*)v)->setShadowNoteDotted(mpoMEFactory->playableDotted());
+						v->repaint();
+					} else if (mode()==EditMode) {
+						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
+							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
+							
+							if (elt->isPlayable()) {
+								int diff;
+								if (elt->musElementType()==CAMusElement::Note) {
+									int i;
+									for (i=0; i<((CANote*)elt)->chord().size(); i++) {
+										diff = ((CANote*)elt)->chord().at(i)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
+									}
+									elt = ((CANote*)elt)->chord().last();
+								} else if (elt->musElementType()==CAMusElement::Rest)
+									diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
+								 
+								((CAPlayable*)elt)->voice()->updateTimesAfter(elt, diff);
+								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
+							}
+						}
+					}
+				}
+				break;
+			}
+			
+			case Qt::Key_Delete:
+				if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
+					CAMusElement *elt = ((CAScoreViewPort*)_activeViewPort)->selection()->back()->musElement();
+					if (elt->context()->contextType() == CAContext::Staff) {
+						((CAStaff*)elt->context())->removeMusElement(elt);
+						CACanorus::rebuildUI(document(), ((CAScoreViewPort*)_activeViewPort)->sheet());
+					}
+				}
+				
+				break;
+			
+			//Mode keys
+			case Qt::Key_Escape:
+				if ((mode()==SelectMode) && (_activeViewPort) && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
+					((CAScoreViewPort*)_activeViewPort)->clearMSelection();
+					((CAScoreViewPort*)_activeViewPort)->clearCSelection();
+				}
+				setMode(SelectMode);
+				mpoVoiceNum->setRealValue(0);
+				if (mpoKeySigPSP)
+					mpoKeySigPSP->hide();
+				break;
+			case Qt::Key_I:
+				mpoMEFactory->setMusElementType( CAMusElement::Note );
+				setMode(InsertMode);
+				break;
+			case Qt::Key_E:
+				setMode(EditMode);
+				break;
+		}
+	}
+}
+
+/*!
+	This method places the already created music element (directly or via CAMusElementFactory) to the staff or
+	voice, dependent on the music element type and the viewport coordinates.
+*/
+void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMusElement &roMusElement ) {
 	CADrawableContext *context = v->selectCElement(coords.x(), coords.y());
 	
 	CAStaff *staff=0;
@@ -571,7 +898,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMu
 			                                               context, left );
 			break;
 		}
-		case CAMusElement::TimeSignature: { // ToDo: Move TimeSigPSP code
+		case CAMusElement::TimeSignature: { /// \todo Move TimeSigPSP code
 			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
 			if( mpoTimeSigPSP ) // Change via perspective as well
 			{
@@ -622,251 +949,11 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMu
 	  }
 }
 
-void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
-	if ((_currentMode == InsertMode) &&
-	    (mpoMEFactory->musElementType() == CAMusElement::Note) &&
-	    (v->viewPortType()==CAViewPort::ScoreViewPort)
-	   ) {
-		CAScoreViewPort *c = (CAScoreViewPort*)v;
-		CADrawableStaff *s;
-		if (c->currentContext()?(c->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0)
-			s = (CADrawableStaff*)c->currentContext(); 
-		else
-			return;
-
-		if (mpoMEFactory->musElementType() == CAMusElement::Note || 
-                    mpoMEFactory->musElementType() == CAMusElement::Rest)
-			c->setShadowNoteVisible(true);
-		
-		//calculate the logical pitch out of absolute world coordinates and the current clef
-		int pitch = s->calculatePitch(coords.x(), coords.y());
-		
-		//write into the main window's status bar the note pitch name
-		int iNoteAccs = s->getAccs(coords.x(), pitch)+mpoMEFactory->noteExtraAccs();
-		mpoMEFactory->setNoteAccs( iNoteAccs );
-		statusBar()->showMessage(CANote::generateNoteName(pitch, iNoteAccs));
-		((CAScoreViewPort*)v)->setShadowNoteAccs(iNoteAccs);
-	}
-}
-
-void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *c) {
-	_activeViewPort = c;
-	CAScoreViewPort *v = (CAScoreViewPort*) c;
-
-	int val;
-	switch (e->modifiers()) {
-		case Qt::NoModifier:			//scroll horizontally
-			v->setWorldX( v->worldX() - (int)((0.5*e->delta()) / v->zoom()), _animatedScroll );
-			break;
-		case Qt::AltModifier:			//scroll horizontally, fast
-			v->setWorldX( v->worldX() - (int)(e->delta() / v->zoom()), _animatedScroll );
-			break;
-		case Qt::ShiftModifier:			//scroll vertically
-			v->setWorldY( v->worldY() - (int)((0.5*e->delta()) / v->zoom()), _animatedScroll );
-			break;
-		case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
-			v->setWorldY( v->worldY() - (int)(e->delta() / v->zoom()), _animatedScroll );
-			break;
-		case Qt::ControlModifier:		//zoom
-			if (e->delta() > 0)
-				v->setZoom( v->zoom()*1.1, coords.x(), coords.y(), _animatedScroll );
-			else
-				v->setZoom( v->zoom()/1.1, coords.x(), coords.y(), _animatedScroll );
-			
-			break;
-	}
-
-	v->repaint();
-}
-
-void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
-	_activeViewPort = v;
+/*!
+	Main window's key press event.
 	
-	if (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort) {
-		switch (e->key()) {
-			//Music editing keys
-			case Qt::Key_Right: {
-				//select next music element
-				((CAScoreViewPort*)_activeViewPort)->selectNextMusElement();
-				_activeViewPort->repaint();
-				break;
-			}
-			
-			case Qt::Key_Left: {
-				//select previous music element
-				((CAScoreViewPort*)_activeViewPort)->selectPrevMusElement();
-				_activeViewPort->repaint();
-				break;
-			}
-			
-			case Qt::Key_B: {
-				//place a barline
-				CADrawableContext *drawableContext;
-				drawableContext = ((CAScoreViewPort*)v)->currentContext();
-				
-				if ( (!drawableContext) || (drawableContext->context()->contextType() != CAContext::Staff) )
-					return;
-			
-				CAStaff *staff = (CAStaff*)drawableContext->context();
-				CAMusElement *left = 0;
-				if (!((CAScoreViewPort*)v)->selection()->isEmpty())
-					left = ((CAScoreViewPort*)v)->selection()->back()->musElement();
-					
-				CABarline *bar = new CABarline(
-					CABarline::Single,
-					staff,
-					(left?left->timeEnd():staff->lastTimeEnd())
-				);
-				staff->insertSignAfter(bar, left, true);	//insert the barline in all the voices
-				
-				CACanorus::rebuildUI(document(), ((CAScoreViewPort*)v)->sheet());
-				((CAScoreViewPort*)v)->selectMElement(bar);
-				v->repaint();
-				break;
-			}
-			
-			case Qt::Key_Up: {
-				if (_currentMode == SelectMode) {	//select the upper music element
-					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
-					_activeViewPort->repaint();
-				} else if ((_currentMode == InsertMode) || (_currentMode == EditMode)) {
-					if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
-						CADrawableMusElement *elt =
-							((CAScoreViewPort*)_activeViewPort)->selection()->back();
-						
-						//pitch note for one step higher
-						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
-							CANote *note = (CANote*)elt->musElement();
-							note->setPitch(note->pitch()+1);
-							CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
-						}
-					}
-				}
-				break;
-			}
-			
-			case Qt::Key_Down: {
-				if (_currentMode == SelectMode) {	//select the upper music element
-					((CAScoreViewPort*)_activeViewPort)->selectUpMusElement();
-					_activeViewPort->repaint();
-				} else if ((_currentMode == InsertMode) || (_currentMode == EditMode)) {
-					if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
-						CADrawableMusElement *elt =
-							((CAScoreViewPort*)_activeViewPort)->selection()->back();
-						
-						//pitch note for one step higher
-						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
-							CANote *note = (CANote*)elt->musElement();
-							note->setPitch(note->pitch()-1);
-							CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
-						}
-					}
-				}
-				break;
-			}
-			case Qt::Key_Plus: {
-				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (currentMode()==InsertMode) {
-						mpoMEFactory->addNoteExtraAccs(1); mpoMEFactory->addNoteAccs(1);
-						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(mpoMEFactory->noteExtraAccs()!=0);
-						((CAScoreViewPort*)v)->setShadowNoteAccs(mpoMEFactory->noteAccs());
-						v->repaint();
-					} else if (currentMode()==EditMode) {
-						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
-							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
-							if (elt->musElementType()==CAMusElement::Note) {
-								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
-								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
-							}
-						}
-					}
-				}
-				break;
-			}
-			
-			case Qt::Key_Minus: {
-				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (currentMode()==InsertMode) {
-						mpoMEFactory->subNoteExtraAccs(1); mpoMEFactory->subNoteAccs(1);
-						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(mpoMEFactory->noteExtraAccs()!=0);
-						((CAScoreViewPort*)v)->setShadowNoteAccs(mpoMEFactory->noteAccs());
-						v->repaint();
-					} else if (currentMode()==EditMode) {
-						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
-							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
-							if (elt->musElementType()==CAMusElement::Note) {
-								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
-								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
-							}
-						}
-					}
-				}
-				break;
-			}
-			
-			case Qt::Key_Period: {
-				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (currentMode()==InsertMode) {
-						mpoMEFactory->addPlayableDotted( 1 );
-						((CAScoreViewPort*)v)->setShadowNoteDotted(mpoMEFactory->playableDotted());
-						v->repaint();
-					} else if (currentMode()==EditMode) {
-						if (!((CAScoreViewPort*)v)->selection()->isEmpty()) {
-							CAMusElement *elt = ((CAScoreViewPort*)v)->selection()->front()->musElement();
-							
-							if (elt->isPlayable()) {
-								int diff;
-								if (elt->musElementType()==CAMusElement::Note) {
-									int i;
-									for (i=0; i<((CANote*)elt)->chord().size(); i++) {
-										diff = ((CANote*)elt)->chord().at(i)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
-									}
-									elt = ((CANote*)elt)->chord().last();
-								} else if (elt->musElementType()==CAMusElement::Rest)
-									diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
-								 
-								((CAPlayable*)elt)->voice()->updateTimesAfter(elt, diff);
-								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
-							}
-						}
-					}
-				}
-				break;
-			}
-			
-			case Qt::Key_Delete:
-				if (!((CAScoreViewPort*)_activeViewPort)->selection()->isEmpty()) {
-					CAMusElement *elt = ((CAScoreViewPort*)_activeViewPort)->selection()->back()->musElement();
-					if (elt->context()->contextType() == CAContext::Staff) {
-						((CAStaff*)elt->context())->removeMusElement(elt);
-						CACanorus::rebuildUI(document(), ((CAScoreViewPort*)_activeViewPort)->sheet());
-					}
-				}
-				
-				break;
-			
-			//Mode keys
-			case Qt::Key_Escape:
-				if ((currentMode()==SelectMode) && (_activeViewPort) && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
-					((CAScoreViewPort*)_activeViewPort)->clearMSelection();
-					((CAScoreViewPort*)_activeViewPort)->clearCSelection();
-				}
-				setMode(SelectMode);
-				mpoVoiceNum->setRealValue(0);
-				if (mpoKeySigPSP)
-					mpoKeySigPSP->hide();
-				break;
-			case Qt::Key_I:
-				mpoMEFactory->setMusElementType( CAMusElement::Note );
-				setMode(InsertMode);
-				break;
-			case Qt::Key_E:
-				setMode(EditMode);
-				break;
-		}
-	}
-}
-
+	\sa viewPortKeyPressEvent()
+*/
 void CAMainWin::keyPressEvent(QKeyEvent *e) {
 }
 
@@ -890,19 +977,26 @@ void CAMainWin::setTimeSigPSPVisible( bool bVisible )
 	mpoTimeSigPSP->setVisible( bVisible );
 }	
 
+/*!
+	Called when playback is finished or interrupted by the user.
+	It stops the playback, closes ports etc.
+*/
 void CAMainWin::playbackFinished() {
 	_playback->disconnect();
-	//delete _playback;	//TODO: crashes on application close, if deleted! Is this ok? -Matevz
-	moMainWin.actionPlay->setChecked(false);
+	//delete _playback;	/// \todo crashes on application close, if deleted! Is this ok? -Matevz
+	actionPlay_from_selection->setChecked(false);
 	
 	_repaintTimer->stop();
-	_repaintTimer->disconnect();	//TODO: crashes, if disconnected sometimes. -Matevz
-	delete _repaintTimer;			//TODO: crashes, if deleted. -Matevz
+	_repaintTimer->disconnect();	/// \todo crashes, if disconnected sometimes. -Matevz
+	delete _repaintTimer;			/// \todo crashes, if deleted. -Matevz
 	CACanorus::midiDevice()->closeOutputPort();
 	
-	setMode(_currentMode);
+	setMode(_mode);
 }
 
+/*!
+	Connected with the play button which starts the playback.
+*/
 void CAMainWin::on_actionPlay_toggled(bool checked) {
 	if (checked && (_activeViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
 		CACanorus::midiDevice()->openOutputPort(CACanorus::midiOutPort());
@@ -990,7 +1084,7 @@ void CAMainWin::on_actionSave_as_triggered() {
 	if (s.isEmpty())
 		return;
 	
-	//append the extension, if the last 4 characters don't already contain the dot
+	// append the extension, if the last 4 characters don't already contain the dot
 	int i;
 	for (i=0; (i<4) && ((s.length()-i-1) > 0); i++) if (s[s.length()-i-1] == '.') break;
 	if (i==4) s.append(".xml");
@@ -1017,7 +1111,7 @@ bool CAMainWin::openDocument(QString fileName) {
 		openedDoc->setFileName(fileName);
 		file.close();
 		rebuildUI(); // local rebuild only
-		moMainWin.tabWidget->setCurrentIndex(0);
+		tabWidget->setCurrentIndex(0);
 		
 		return true;
 	} else
@@ -1040,6 +1134,9 @@ bool CAMainWin::saveDocument(QString fileName) {
 		return false;
 }
 
+/*!
+	Called when File->Export is clicked.
+*/
 void CAMainWin::on_actionExport_triggered() {
 	QStringList fileNames;
 	int ffound = _exportDialog->exec();
@@ -1064,6 +1161,9 @@ void CAMainWin::on_actionExport_triggered() {
 	}
 }
 
+/*!
+	Called when File->Import is clicked.
+*/
 void CAMainWin::on_actionImport_triggered() {
 	QStringList fileNames;
 	int ffound = _importDialog->exec();
@@ -1193,10 +1293,10 @@ void CAMainWin::on_action_Key_signature_triggered() {
 	mpoKeySigPSP->setFocusPolicy(Qt::ClickFocus);
 	mpoKeySigPSP->setFocus();
 	
-	moMainWin.actionSplit_horizontally->setEnabled(false);
-	moMainWin.actionSplit_vertically->setEnabled(false);
-	moMainWin.actionUnsplit_all->setEnabled(true);
-	moMainWin.actionClose_current_view->setEnabled(true);
+	actionSplit_horizontally->setEnabled(false);
+	actionSplit_vertically->setEnabled(false);
+	actionUnsplit_all->setEnabled(true);
+	actionClose_current_view->setEnabled(true);
 	
 	setMode(InsertMode);
 	mpoMEFactory->setMusElementType( CAMusElement::KeySignature );
@@ -1211,10 +1311,10 @@ void CAMainWin::on_action_Time_signature_triggered() {
 	mpoTimeSigPSP->setFocusPolicy(Qt::ClickFocus);
 	mpoTimeSigPSP->setFocus();
 	
-	moMainWin.actionSplit_horizontally->setEnabled(false);
-	moMainWin.actionSplit_vertically->setEnabled(false);
-	moMainWin.actionUnsplit_all->setEnabled(true);
-	moMainWin.actionClose_current_view->setEnabled(true);
+	actionSplit_horizontally->setEnabled(false);
+	actionSplit_vertically->setEnabled(false);
+	actionUnsplit_all->setEnabled(true);
+	actionClose_current_view->setEnabled(true);
 	
 	setMode(InsertMode);
 	mpoMEFactory->setMusElementType( CAMusElement::TimeSignature );
@@ -1294,9 +1394,51 @@ void CAMainWin::on_actionVoice_in_LilyPond_source_toggled(bool checked) {
 		v->setFocusPolicy(Qt::ClickFocus);
 		v->setFocus();
 		
-		moMainWin.actionUnsplit_all->setEnabled(true);
-		moMainWin.actionClose_current_view->setEnabled(true);
+		actionUnsplit_all->setEnabled(true);
+		actionClose_current_view->setEnabled(true);
 		_viewPortList.append(v);
-		setMode(_currentMode);	//updates the new viewport border settings
+		setMode(_mode);	// updates the new viewport border settings
 	}
 }
+
+/*!
+	\var CADocument *CAMainWin::_document
+	Pointer to the main window's document it represents.
+	Null if no document opened.
+	
+	\sa document()
+*/
+
+/*!
+	\var CAMode CAMainWin::_mode
+	Main window's current mode (Select mode, Edit mode, Playback mode, Insert mode etc.).
+	
+	\sa CAMode, mode(), setMode()
+*/
+
+/*!
+	\var QList<CAViewPort*> CAMainWin::_viewPortList
+	List of all available viewports for any sheet in this main window.
+*/
+
+/*!
+	\var CAViewPort* CACanorus::_activeViewPort
+	Currently active viewport. Only one viewport per main window can be active.
+*/
+
+/*! \var bool CACanorus::_animatedScroll
+	Animates mouse scroll/zoom. This gives a better user experience but slows down things.
+*/
+/*! \var bool CACanorus::_lockScrollPlayback
+	If True, locks the scroll UI while playback.
+	If False, user can scroll freely.
+*/
+
+/*! \var CAViewPort* CAMainWin::_playbackViewPort
+	Viewport needed to be updated when playback is active.
+*/
+
+/*!	\var QTimer* CACanorus::_repaintTimer
+	Used when playback is active to repaint the playback viewport.
+	\todo Viewport should be repainted only when needed, not constantly as now. This should result in much less resource hunger.
+*/

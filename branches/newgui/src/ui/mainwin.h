@@ -19,6 +19,8 @@
 #include "core/note.h"
 #include "core/clef.h"
 
+#include "widgets/viewportcontainer.h"
+
 class QKeyEvent;
 class QSlider;
 
@@ -30,23 +32,22 @@ class CALCDNumber;
 class CASheet;
 class CAKeySigPSP;
 class CATimeSigPSP;
-class CAViewPortContainer;
 class CAViewPort;
 class CAScoreViewPort;
 class CASourceViewPort;
 class CAMusElementFactory;
 
 enum CAMode {
+	NoDocumentMode,
 	InsertMode,
 	SelectMode,
 	EditMode,
 	ReadOnlyMode
 };
 
-#define _currentViewPortContainer ((CAViewPortContainer*)(moMainWin.tabWidget->currentWidget()))
+#define _currentViewPortContainer static_cast<CAViewPortContainer*>(tabWidget->currentWidget())
 
-
-class CAMainWin : public QMainWindow
+class CAMainWin : public QMainWindow, private Ui::MainWindow
 {
 	Q_OBJECT
 
@@ -54,37 +55,17 @@ public:
 	CAMainWin(QMainWindow *oParent = 0);
 	~CAMainWin();
 
-	void initToolBar();
+	
 	void newDocument();
 	
-	/**
-	* Adds a sheet to the document.
-	*/
 	void addSheet(CASheet *s);
 
 	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMusElement &roMusElement );
 
-	/**
-	 * Delete all viewports and its contents.
-	 * Delete all signals.
-	 * Release all buttons and modes.
-	 * 
-	 * WARNING! This function delets the UI only (drawable elements). All the data classes should stay intact. Use _document.clear() in order to clear the data part as well.
-	 */
 	void clearUI();
 	
 	CAViewPortContainer* currentViewPortContainer() { return _currentViewPortContainer; }
 	
-	/**
-	 * Rebuild the UI from the data part.
-	 * 
-	 * This method is called eg. when multiple viewports share the same logical source and a change has been made in the logical musElement list.
-	 * This way, sheet argument is a pointer to the data sheet where the change occured and viewports showing the given sheet are updated (CAEngraver create CADrawable elements for every viewport).
-	 * If no sheet argument is passed, the whole UI is rebuilt from the data part. This is called for eg. on Open file after the data part has been read.
-	 * 
-	 * @param sheet Pointer to the common CASheet viewports use.
-	 * @param repaint Should the viewports be repainted as well (sometimes we want just engraver to generate the drawable notes and wait for other events and then repaint once).
-	 */
 	void rebuildUI(CASheet *sheet=0, bool repaint=true);
 
 	/**
@@ -111,11 +92,11 @@ public:
 	inline void setDocument(CADocument *document) { _document = document; }
 	
 private slots:
-	////////////////////////////////////////////////////
-	//Menu bar actions
-	////////////////////////////////////////////////////
+	//////////////////////
+	// Menu bar actions //
+	//////////////////////
 	void closeEvent(QCloseEvent *event);
-	//File menu
+	// File menu
 	void on_actionNew_triggered();
 	void on_actionNew_sheet_triggered();
 	void on_actionOpen_triggered();
@@ -124,10 +105,10 @@ private slots:
 	void on_actionExport_triggered();
 	void on_actionImport_triggered();
 	
-	//Edit menu
+	// Edit menu
 	void on_actionMIDI_Setup_triggered();
 	
-	//Insert menu
+	// Insert menu
 	void on_actionNew_staff_triggered();
 	void on_action_Clef_triggered();
 	void on_action_Key_signature_triggered();
@@ -143,13 +124,13 @@ private slots:
 	void on_actionZoom_to_height_triggered();
 	void on_actionVoice_in_LilyPond_source_toggled(bool);
 	
-	//Playback menu
+	// Playback menu
 	void on_actionPlay_toggled(bool);
 	
-	//Perspective menu
+	// Perspective menu
 	void on_actionSource_view_perspective_toggled(bool);
 	
-	//Window menu
+	// Window menu
 	void on_actionSplit_horizontally_triggered();
 	void on_actionSplit_vertically_triggered();
 	void on_actionUnsplit_all_triggered();
@@ -157,10 +138,13 @@ private slots:
 	void on_actionNew_viewport_triggered();
 	void on_actionNew_window_triggered();
 	
-	//Help menu
+	// Help menu
 	void on_actionAbout_Qt_triggered();
 	void on_actionAbout_Canorus_triggered();
-
+	
+	/////////////////////
+	// Toolbar actions //
+	/////////////////////
 	// Toolbar 
 	void sl_mpoVoiceNum_valChanged(int iVoice);
 	void sl_mpoTimeSig_valChanged(int iBeats, int iBeat);
@@ -168,113 +152,72 @@ private slots:
 	void on_actionClefSelect_toggled(bool);
 	void on_actionTimeSigSelect_toggled(bool);
 
-	////////////////////////////////////////////////////
-	//Process ViewPort signals
-	////////////////////////////////////////////////////
-	/**
-	 * Process the mouse press events of the children viewports.
-	 * 
-	 * @param e Mouse event which gets processed.
-	 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
-	 * @param v Pointer to viewport where the event happened.
-	 */
+	//////////////////////////////
+	// Process ViewPort signals //
+	//////////////////////////////
 	void viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *v);
-
-	/**
-	 * Process the mouse move events of the children viewports.
-	 * 
-	 * @param e Mouse event which gets processed.
-	 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
-	 * @param v Pointer to viewport where the event happened.
-	 */
 	void viewPortMouseMoveEvent(QMouseEvent *e, const QPoint coords, CAViewPort *v);
-	
-	/**
-	 * Process the wheel events of the children viewports.
-	 * 
-	 * @param e Wheel event which gets processed.
-	 * @param coords Absolute world coordinates where the mouse cursor was at time of the event.
-	 * @param v Pointer to viewport where the event happened.
-	 */
 	void viewPortWheelEvent(QWheelEvent *e, const QPoint coords, CAViewPort *v);
-	
-	/**
-	 * Process the key events of the children viewports.
-	 * 
-	 * @param e Key event which gets processed.
-	 * @param v Pointer to the viewport where the event happened.
-	 */
 	void viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v);
-	
 	void sourceViewPortCommit(CASourceViewPort*, QString inputString);
 	
-	/**
-	 * Called when the tab is switched.
-	 */
 	void on_tabWidget_currentChanged(int);
 
 	void keyPressEvent(QKeyEvent *);
 
 private slots:
-	void playbackFinished();	///Temporarily as we don't find better solution.
+	void playbackFinished();
 	//void on_repaintTimer_timeout();	///Used for repaint events
 
 private:	
-	////////////////////////////////////////////////////
-	//General properties
-	////////////////////////////////////////////////////
-	CADocument *_document;	///Pointer to the main window's document.
-	CAMode _currentMode;	///Every main window has its own current mode (view, insert, edit etc.). See enum CAMode.
+	////////////////////////////////////
+	// General properties and methods //
+	////////////////////////////////////
+	CADocument *_document;
+	CAMode _mode;
 	
 	void setMode(CAMode mode);
-	inline CAMode currentMode() { return _currentMode; }
+	inline CAMode mode() { return _mode; }
 	
-	////////////////////////////////////////////////////
-	//Playback
-	////////////////////////////////////////////////////
+	void doUnsplit(CAViewPort *v = 0);
+	
+	QList<CAViewPort *> _viewPortList;
+	CAViewPort *_activeViewPort;
+	bool _animatedScroll;
+	bool _lockScrollPlayback;
+	CAViewPort *_playbackViewPort;
+	QTimer *_repaintTimer;
+	
 	CAPlayback *_playback;
 	
-	////////////////////////////////////////////////////
-	//User interface, toolbar
-	////////////////////////////////////////////////////
+	/////////////////////////
+	// Pure user interface //
+	/////////////////////////
+	void setupCustomUi();
+	void initToolBars();
+	
+	// Toolbars
 	CAToolBar    *mpoMEToolBar;			/// Toolbar that contains clef/note/timesig buttons
 	CAButtonMenu *mpoClefMenu;          /// Menu for selection of a clef
 	CAButtonMenu *mpoNoteMenu;          /// Menu for the selection of a note length
 	CAButtonMenu *mpoTimeSigMenu;       /// Menu for selection of a key signature
+	
+	// Action groups, Actions
 	QActionGroup *mpoMEGroup;           /// Group for mutual exclusive selection of music elements
+	QAction      *mpoVoiceNumAction;    /// Voice number action
 	QAction      *actionNoteSelect;     /// Action for having a note length selected
 	QAction      *actionClefSelect;     /// Action for having a clef selected
 	QAction      *actionTimeSigSelect;  /// Action for having a clef selected
+	
 	CAKeySigPSP  *mpoKeySigPSP;	        /// Key signature perspective
 	CATimeSigPSP *mpoTimeSigPSP;        /// Time signature perspective
 	
-	////////////////////////////////////////////////////
-	//User interface, widgets
-	////////////////////////////////////////////////////
-	Ui::MainWindow moMainWin;	///Main window widget representative
-
+	// Widgets
 	CAMusElementFactory *mpoMEFactory;  /// Factory for creating/configuring music elements
-	QList<CAViewPort *> _viewPortList;	/// List of all available viewports for any
-	                                    /// sheet for this document
-	CAViewPort *_activeViewPort;	    /// Current active viewport
-	bool _animatedScroll;		        /// animate scroll/zoom
-	bool _lockScrollPlayback;	        /// Lock the scroll UI while playback
-	CAViewPort *_playbackViewPort;	    /// Viewport needed to be updated when playback
-	                                    /// is active	
-	QTimer *_repaintTimer;	            /// Used when playback is active
 	CALCDNumber *mpoVoiceNum;           /// LCD placed in Toolbar for showing current voice
 	
-	////////////////////////////////////////////////////
-	//User interface, dialogs, windows
-	////////////////////////////////////////////////////
+	// Dialogs, Windows
 	QFileDialog *_exportDialog;
 	QFileDialog *_importDialog;
-	
-	////////////////////////////////////////////////////
-	//User interface, action objects from toolbars
-	////////////////////////////////////////////////////
-	QAction *mpoVoiceNumAction;  ///Voice number action
-	
-	void doUnsplit(CAViewPort *v = 0);
 };
 #endif /* CANORUS_H_*/
