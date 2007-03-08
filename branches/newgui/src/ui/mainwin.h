@@ -23,11 +23,14 @@
 
 class QKeyEvent;
 class QSlider;
+class QSpinBox;
+class QToolBar;
+class QLabel;
+class QLineEdit;
+class QComboBox;
 
-class CAPluginManager;
 class CAPlayback;
-class CAToolBar;
-class CAButtonMenu;
+class CAMenuToolButton;
 class CALCDNumber;
 class CASheet;
 class CAKeySigPSP;
@@ -45,9 +48,7 @@ enum CAMode {
 	ReadOnlyMode
 };
 
-#define _currentViewPortContainer static_cast<CAViewPortContainer*>(tabWidget->currentWidget())
-
-class CAMainWin : public QMainWindow, private Ui::MainWindow
+class CAMainWin : public QMainWindow, private Ui::uiMainWindow
 {
 	Q_OBJECT
 
@@ -55,117 +56,98 @@ public:
 	CAMainWin(QMainWindow *oParent = 0);
 	~CAMainWin();
 
+	void clearUI();
+	void rebuildUI(CASheet *sheet=0, bool repaint=true);
 	
-	void newDocument();
-	
+	void newDocument();	
 	void addSheet(CASheet *s);
-
 	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMusElement &roMusElement );
 
-	void clearUI();
-	
-	CAViewPortContainer* currentViewPortContainer() { return _currentViewPortContainer; }
-	
-	void rebuildUI(CASheet *sheet=0, bool repaint=true);
-
-	/**
-	 * Activate the key signature perspective and show/hide it.
-	 * 
-	 * @param bVisible 'true': Show key signature perspective
-	 */
-	void setKeySigPSPVisible( bool bVisible );
-
-	/**
-	 * Activate the time signature perspective and show/hide it.
-	 * 
-	 * @param bVisible 'true': Show time signature perspective
-	 */
-	void setTimeSigPSPVisible( bool bVisible );
-	
 	bool openDocument(QString fileName);
 	bool saveDocument(QString fileName);
 	
-	inline QFileDialog *exportDialog() { return _exportDialog; }
-	inline QFileDialog *importDialog() { return _importDialog; }
-	
+	inline CAMode mode() { return _mode; }
+	inline QFileDialog *exportDialog() { return uiExportDialog; }
+	inline QFileDialog *importDialog() { return uiImportDialog; }	
+	inline CAViewPort *currentViewPort() { return _currentViewPort; }
+	inline CAViewPortContainer *currentViewPortContainer() { return _currentViewPortContainer; }
 	inline CADocument *document() { return _document; }
+	
 	inline void setDocument(CADocument *document) { _document = document; }
 	
 private slots:
-	//////////////////////
-	// Menu bar actions //
-	//////////////////////
+	///////////////////////////
+	// ToolBar/Menus actions //
+	///////////////////////////
 	void closeEvent(QCloseEvent *event);
-	// File menu
-	void on_actionNew_triggered();
-	void on_actionNew_sheet_triggered();
-	void on_actionOpen_triggered();
-	void on_actionSave_triggered();
-	void on_actionSave_as_triggered();
-	void on_actionExport_triggered();
-	void on_actionImport_triggered();
+	// File
+	void on_uiNewDocument_triggered();
+	void on_uiOpenDocument_triggered();
+	void on_uiSaveDocument_triggered();
+	void on_uiSaveDocumentAs_triggered();
+	void on_uiExportDocument_triggered();
+	void on_uiImportDocument_triggered();
 	
-	// Edit menu
-	void on_actionMIDI_Setup_triggered();
+	// Edit
+	void on_uiMIDISetup_triggered();
 	
-	// Insert menu
-	void on_actionNew_staff_triggered();
-	void on_action_Clef_triggered();
-	void on_action_Key_signature_triggered();
-	void on_action_Time_signature_triggered();
-
-	//View menu
-	void on_action_Fullscreen_toggled(bool);
-	void on_actionAnimated_scroll_toggled(bool);
-	void on_actionLock_scroll_playback_toggled(bool);
-	void on_actionZoom_to_selection_triggered();
-	void on_actionZoom_to_fit_triggered();
-	void on_actionZoom_to_width_triggered();
-	void on_actionZoom_to_height_triggered();
-	void on_actionVoice_in_LilyPond_source_toggled(bool);
+	// Insert
+	void on_uiNewSheet_triggered();
+	void on_uiNewContext_toggled(bool);      // menu
+	void on_uiContextType_toggled(bool, int);
+	void on_uiNewVoice_triggered();
+	void on_uiInsertClef_toggled(bool);      // menu
+	void on_uiClefType_toggled(bool, int);
+	void on_uiInsertKeySignature_toggled(bool); // menu
+	void on_uiInsertTimeSignature_toggled(bool); // menu
+	void on_uiTimeSigType_toggled(bool, int);
+	void on_uiBarlineType_toggled(bool, int);
+	void on_uiInsertPlayable_toggled(bool);  // menu
 	
-	// Playback menu
-	void on_actionPlay_toggled(bool);
+	// View
+	void on_uiFullscreen_toggled(bool);
+	void on_uiAnimatedScroll_toggled(bool);
+	void on_uiLockScrollPlayback_toggled(bool);
+	void on_uiZoomToSelection_triggered();
+	void on_uiZoomToFit_triggered();
+	void on_uiZoomToWidth_triggered();
+	void on_uiZoomToHeight_triggered();
+	void on_uiViewLilyPondSource_triggered();
+	void on_uiViewCanorusMLSource_triggered();
 	
-	// Perspective menu
-	void on_actionSource_view_perspective_toggled(bool);
+	// Playback
+	void on_uiPlayFromSelection_toggled(bool);
 	
-	// Window menu
-	void on_actionSplit_horizontally_triggered();
-	void on_actionSplit_vertically_triggered();
-	void on_actionUnsplit_all_triggered();
-	void on_actionClose_current_view_triggered();
-	void on_actionNew_viewport_triggered();
-	void on_actionNew_window_triggered();
+	// Playable
+	void on_uiPlayableLength_toggled(bool, int);
 	
-	// Help menu
-	void on_actionAbout_Qt_triggered();
-	void on_actionAbout_Canorus_triggered();
+	// Voice
+	void on_uiVoiceNum_valChanged(int);
 	
-	/////////////////////
-	// Toolbar actions //
-	/////////////////////
-	// Toolbar 
-	void sl_mpoVoiceNum_valChanged(int iVoice);
-	void sl_mpoTimeSig_valChanged(int iBeats, int iBeat);
-	void on_actionNoteSelect_toggled(bool);
-	void on_actionClefSelect_toggled(bool);
-	void on_actionTimeSigSelect_toggled(bool);
-
-	//////////////////////////////
-	// Process ViewPort signals //
-	//////////////////////////////
+	// Window
+	void on_uiSplitHorizontally_triggered();
+	void on_uiSplitVertically_triggered();
+	void on_uiUnsplitAll_triggered();
+	void on_uiCloseCurrentView_triggered();
+	void on_uiNewViewport_triggered();
+	void on_uiNewWindow_triggered();
+	
+	// Help
+	void on_uiAboutCanorus_triggered();
+	void on_uiAboutQt_triggered();
+	
+	//////////////////////////////////
+	// Handle other widgets signals //
+	//////////////////////////////////
+	void keyPressEvent(QKeyEvent *);
+	void on_uiTabWidget_currentChanged(int);
+	
 	void viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *v);
 	void viewPortMouseMoveEvent(QMouseEvent *e, const QPoint coords, CAViewPort *v);
 	void viewPortWheelEvent(QWheelEvent *e, const QPoint coords, CAViewPort *v);
 	void viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v);
 	void sourceViewPortCommit(CASourceViewPort*, QString inputString);
 	
-	void on_tabWidget_currentChanged(int);
-
-	void keyPressEvent(QKeyEvent *);
-
-private slots:
 	void playbackFinished();
 	//void on_repaintTimer_timeout();	///Used for repaint events
 
@@ -176,48 +158,89 @@ private:
 	CADocument *_document;
 	CAMode _mode;
 	
-	void setMode(CAMode mode);
-	inline CAMode mode() { return _mode; }
-	
 	void doUnsplit(CAViewPort *v = 0);
 	
+	void setMode(CAMode mode);
+	inline void setCurrentViewPort( CAViewPort *viewPort ) { _currentViewPort = viewPort; }
+	inline void setCurrentViewPortContainer( CAViewPortContainer *vpc )
+		{ _currentViewPortContainer = vpc; }
+	
+	CAViewPortContainer *_currentViewPortContainer;
+	QList<CAViewPortContainer *>_viewPortContainerList;
+	
 	QList<CAViewPort *> _viewPortList;
-	CAViewPort *_activeViewPort;
+	CAViewPort *_currentViewPort;
 	bool _animatedScroll;
 	bool _lockScrollPlayback;
 	CAViewPort *_playbackViewPort;
 	QTimer *_repaintTimer;
 	
 	CAPlayback *_playback;
+	CAMusElementFactory *_musElementFactory;
 	
-	/////////////////////////
-	// Pure user interface //
-	/////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	// Pure user interface - widgets that weren't created by Qt Designer yet //
+	///////////////////////////////////////////////////////////////////////////
 	void setupCustomUi();
-	void initToolBars();
-	
-	// Toolbars
-	CAToolBar    *mpoMEToolBar;			/// Toolbar that contains clef/note/timesig buttons
-	CAButtonMenu *mpoClefMenu;          /// Menu for selection of a clef
-	CAButtonMenu *mpoNoteMenu;          /// Menu for the selection of a note length
-	CAButtonMenu *mpoTimeSigMenu;       /// Menu for selection of a key signature
-	
-	// Action groups, Actions
-	QActionGroup *mpoMEGroup;           /// Group for mutual exclusive selection of music elements
-	QAction      *mpoVoiceNumAction;    /// Voice number action
-	QAction      *actionNoteSelect;     /// Action for having a note length selected
-	QAction      *actionClefSelect;     /// Action for having a clef selected
-	QAction      *actionTimeSigSelect;  /// Action for having a clef selected
-	
-	CAKeySigPSP  *mpoKeySigPSP;	        /// Key signature perspective
-	CATimeSigPSP *mpoTimeSigPSP;        /// Time signature perspective
-	
-	// Widgets
-	CAMusElementFactory *mpoMEFactory;  /// Factory for creating/configuring music elements
-	CALCDNumber *mpoVoiceNum;           /// LCD placed in Toolbar for showing current voice
 	
 	// Dialogs, Windows
-	QFileDialog *_exportDialog;
-	QFileDialog *_importDialog;
+	QFileDialog *uiExportDialog;
+	QFileDialog *uiImportDialog;
+	
+		/////////////////////
+		// Toolbar section //
+		/////////////////////
+		// Insert toolbar
+		QToolBar     *uiInsertToolBar;
+		QActionGroup *uiInsertGroup;           // Group for mutual exclusive selection of music elements
+			// QAction       *uiInsertNewSheet; // made by Qt Designer
+			CAMenuToolButton *uiContextType;
+			
+			// QAction       *uiInsertPlayable;  // made by Qt Designer
+			CAMenuToolButton *uiClefType;
+			// QAction       *uiInsertKeySig;  // made by Qt Designer
+			CAMenuToolButton *uiTimeSigType;  // made by Qt Designer
+			CAMenuToolButton *uiBarlineType;
+			// QAction       *uiInsertFM;  // made by Qt Designer
+		
+		QToolBar *uiVoiceToolBar;
+			// QAction       *uiNewVoice;  // made by Qt Designer
+			CALCDNumber      *uiVoiceNum;
+			QLineEdit        *uiVoiceName;
+			QAction          *uiRemoveVoice;
+			CAMenuToolButton *uiVoiceStemDirection;
+			QAction          *uiVoiceProperties;
+			
+		QToolBar *uiPlayableToolBar; // note and rest properties are merged for the time being
+			// Note properties
+			CAMenuToolButton *uiPlayableLength;
+			QLabel           *uiPlayableDotted;
+			CAMenuToolButton *uiNoteAccs;
+			QAction          *uiNoteAccsVisible;
+			CAMenuToolButton *uiNoteStemDirection;
+			// Rest properties
+			// CAMenuToolButton *uiPlayableLength; // same as note properties
+			// QLabel        *uiPlayableDotted; // same as note properties
+			QAction          *uiHiddenRest;
+			QAction          *uiRestWholeBar;
+		
+		QToolBar *uiKeySigToolBar;
+			CAKeySigPSP  *uiKeySigPSP;	            // Key signature perspective
+			QSpinBox     *uiKeySigNumberOfAccs;
+			QComboBox    *uiKeySigGender;
+		
+		QToolBar *uiTimeSigToolBar;
+			QSpinBox         *uiTimeSigBeats;
+			QLabel           *uiTimeSigSlash;
+			QSpinBox         *uiTimeSigBeat;
+			CAMenuToolButton *uiTimeSigStyle;
+		
+		QToolBar *uiFMToolBar; // function marking tool bar
+			CAMenuToolButton  *uiFMType;
+			CAMenuToolButton  *uiFMChordArea;
+			CAMenuToolButton  *uiFMTonicDegree;
+			//QSpinBox        *uiKeySigNumberOfAccs; // defined in uiKeySigToolBar
+			//QComboBox       *uiKeySigGender; // defined in uiKeySigToolBar
+			QAction           *uiFMEllipse;
 };
-#endif /* CANORUS_H_*/
+#endif /* CANORUS_H_ */

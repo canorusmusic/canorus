@@ -183,7 +183,7 @@ void CACanorus::initMidi() {
 			setMidiOutPort(-1);
 			
 	} else {
-		CAMidiSetupDialog(0);
+		CAMidiSetupDialog();
 	}
 }
 

@@ -1,7 +1,7 @@
 <ui version="4.0" >
  <author>Reinhard Katzmann, Matevž Jekovec</author>
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow" >
+ <class>uiMainWindow</class>
+ <widget class="QMainWindow" name="uiMainWindow" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -19,7 +19,7 @@
   <property name="statusTip" >
    <string/>
   </property>
-  <widget class="QWidget" name="centralWidget" >
+  <widget class="QWidget" name="uiCentralWidget" >
    <layout class="QGridLayout" >
     <property name="margin" >
      <number>6</number>
@@ -28,7 +28,7 @@
      <number>4</number>
     </property>
     <item row="0" column="0" >
-     <widget class="QTabWidget" name="tabWidget" >
+     <widget class="QTabWidget" name="uiTabWidget" >
       <property name="sizePolicy" >
        <sizepolicy>
         <hsizetype>7</hsizetype>
@@ -47,7 +47,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menuBarWidget" >
+  <widget class="QMenuBar" name="uiMenuBar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
@@ -56,164 +56,166 @@
      <height>36</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionUsers_guide" />
-    <addaction name="actionWhat_s_this" />
-    <addaction name="actionTip_of_the_day" />
-    <addaction name="separator" />
-    <addaction name="actionAbout_Canorus" />
-    <addaction name="actionAbout_Qt" />
-   </widget>
-   <widget class="QMenu" name="menuWindow" >
-    <property name="title" >
-     <string>Window</string>
-    </property>
-    <addaction name="actionNew_viewport" />
-    <addaction name="actionNew_window" />
-    <addaction name="separator" />
-    <addaction name="actionSplit_horizontally" />
-    <addaction name="actionSplit_vertically" />
-    <addaction name="actionClose_current_view" />
-    <addaction name="actionUnsplit_all" />
-   </widget>
-   <widget class="QMenu" name="menuEdit" >
+   <widget class="QMenu" name="uiMenuEdit" >
     <property name="title" >
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionUndo" />
-    <addaction name="actionRedo" />
+    <addaction name="uiUndo" />
+    <addaction name="uiRedo" />
     <addaction name="separator" />
-    <addaction name="actionCut" />
-    <addaction name="actionCopy" />
-    <addaction name="actionPaste" />
+    <addaction name="uiCut" />
+    <addaction name="uiCopy" />
+    <addaction name="uiPaste" />
     <addaction name="separator" />
-    <addaction name="actionSelect_all" />
-    <addaction name="actionInvert_Selection" />
+    <addaction name="uiSelectAll" />
+    <addaction name="uiInvertSelection" />
     <addaction name="separator" />
-    <addaction name="actionProperties" />
+    <addaction name="uiProperties" />
    </widget>
-   <widget class="QMenu" name="menuFile" >
+   <widget class="QMenu" name="uiMenuFile" >
     <property name="title" >
      <string>&amp;File</string>
     </property>
-    <addaction name="actionNew" />
-    <addaction name="actionNew_document_wizard" />
-    <addaction name="actionOpen" />
-    <addaction name="actionSave" />
-    <addaction name="actionSave_as" />
-    <addaction name="actionClose" />
+    <addaction name="uiNewDocument" />
+    <addaction name="uiNewDocumentWizard" />
+    <addaction name="uiOpenDocument" />
+    <addaction name="uiSaveDocument" />
+    <addaction name="uiSaveDocumentAs" />
+    <addaction name="uiCloseDocument" />
     <addaction name="separator" />
-    <addaction name="actionDocument_properties" />
+    <addaction name="uiDocumentProperties" />
     <addaction name="separator" />
-    <addaction name="actionImport" />
-    <addaction name="actionExport" />
+    <addaction name="uiImportDocument" />
+    <addaction name="uiExportDocument" />
     <addaction name="separator" />
-    <addaction name="actionPrint_preview" />
-    <addaction name="actionPrint" />
+    <addaction name="uiPrintPreview" />
+    <addaction name="uiPrint" />
     <addaction name="separator" />
-    <addaction name="actionQuit" />
+    <addaction name="uiQuit" />
    </widget>
-   <widget class="QMenu" name="menuTools" >
+   <widget class="QMenu" name="uiMenuHelp" >
     <property name="title" >
-     <string>&amp;Tools</string>
+     <string>&amp;Help</string>
     </property>
-    <addaction name="actionGoto_bar" />
-    <addaction name="actionTranspose" />
-    <addaction name="actionNote_count" />
+    <addaction name="uiUsersGuide" />
+    <addaction name="uiWhatsThis" />
+    <addaction name="uiTipOfTheDay" />
     <addaction name="separator" />
-    <addaction name="actionSettings" />
+    <addaction name="uiAboutCanorus" />
+    <addaction name="uiAboutQt" />
    </widget>
-   <widget class="QMenu" name="menuInsert" >
+   <widget class="QMenu" name="uiMenuWindow" >
     <property name="title" >
-     <string>&amp;Insert</string>
+     <string>Window</string>
     </property>
-    <addaction name="actionNew_sheet" />
-    <addaction name="actionNew_staff" />
-    <addaction name="actionNew_voice" />
+    <addaction name="uiNewViewport" />
+    <addaction name="uiNewWindow" />
     <addaction name="separator" />
-    <addaction name="actionInsert_clef" />
-    <addaction name="actionInsert_time_signature" />
-    <addaction name="actionInsert_key_signature" />
-    <addaction name="actionInsert_barline" />
+    <addaction name="uiSplitHorizontally" />
+    <addaction name="uiSplitVertically" />
+    <addaction name="uiCloseCurrentView" />
+    <addaction name="uiUnsplitAll" />
    </widget>
-   <widget class="QMenu" name="menuView" >
+   <widget class="QMenu" name="uiMenuView" >
     <property name="title" >
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuZoom" >
-     <property name="title" >
-      <string>Zoom</string>
-     </property>
-     <addaction name="actionZoom_to_width" />
-     <addaction name="actionZoom_to_height" />
-     <addaction name="actionZoom_to_fit" />
-     <addaction name="actionZoom_to_selection" />
-     <addaction name="separator" />
-     <addaction name="actionCustom_zoom" />
-    </widget>
-    <widget class="QMenu" name="menuSource_view" >
+    <widget class="QMenu" name="uiMenuSourceView" >
      <property name="title" >
       <string>Source view</string>
      </property>
-     <addaction name="actionLilyPond_source" />
-     <addaction name="actionCanorusML_source" />
+     <addaction name="uiLilyPondSource" />
+     <addaction name="uiCanorusMLSource" />
     </widget>
-    <addaction name="menuZoom" />
+    <widget class="QMenu" name="uiMenuZoom" >
+     <property name="title" >
+      <string>Zoom</string>
+     </property>
+     <addaction name="uiZoomToWidth" />
+     <addaction name="uiZoomToHeight" />
+     <addaction name="uiZoomToFit" />
+     <addaction name="uiZoomToSelection" />
+     <addaction name="separator" />
+     <addaction name="uiCustomZoom" />
+    </widget>
     <addaction name="separator" />
-    <addaction name="actionAnimated_scroll" />
-    <addaction name="actionLock_scroll_playback" />
+    <addaction name="uiMenuZoom" />
+    <addaction name="uiAnimatedScroll" />
+    <addaction name="uiLockScrollPlayback" />
     <addaction name="separator" />
-    <addaction name="actionScore_view" />
-    <addaction name="menuSource_view" />
+    <addaction name="uiScoreView" />
+    <addaction name="uiMenuSourceView" />
     <addaction name="separator" />
-    <addaction name="actionStatus_bar" />
-    <addaction name="actionFullscreen" />
+    <addaction name="uiShowStatusBar" />
+    <addaction name="uiFullscreen" />
    </widget>
-   <addaction name="menuFile" />
-   <addaction name="menuEdit" />
-   <addaction name="menuView" />
-   <addaction name="menuInsert" />
-   <addaction name="menuTools" />
-   <addaction name="menuWindow" />
-   <addaction name="menuHelp" />
+   <widget class="QMenu" name="uiMenuTools" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="uiGotoBar" />
+    <addaction name="uiTranspose" />
+    <addaction name="uiNoteCount" />
+    <addaction name="separator" />
+    <addaction name="uiSettings" />
+   </widget>
+   <widget class="QMenu" name="uiMenuInsert" >
+    <property name="title" >
+     <string>&amp;Insert</string>
+    </property>
+    <addaction name="uiNewSheet" />
+    <addaction name="uiNewContext" />
+    <addaction name="uiNewVoice" />
+    <addaction name="separator" />
+    <addaction name="uiInsertPlayable" />
+    <addaction name="uiInsertClef" />
+    <addaction name="uiInsertKeySig" />
+    <addaction name="uiInsertTimeSig" />
+    <addaction name="uiInsertBarline" />
+    <addaction name="uiInsertFM" />
+   </widget>
+   <addaction name="uiMenuFile" />
+   <addaction name="uiMenuEdit" />
+   <addaction name="uiMenuView" />
+   <addaction name="uiMenuInsert" />
+   <addaction name="uiMenuTools" />
+   <addaction name="uiMenuWindow" />
+   <addaction name="uiMenuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusBarWidget" />
-  <widget class="QToolBar" name="standardToolBar" >
+  <widget class="QStatusBar" name="uiStatusBarWidget" />
+  <widget class="QToolBar" name="uiStandardToolBar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="actionNew" />
-   <addaction name="actionOpen" />
-   <addaction name="actionSave" />
+   <addaction name="uiNewDocument" />
+   <addaction name="uiOpenDocument" />
+   <addaction name="uiSaveDocument" />
    <addaction name="separator" />
-   <addaction name="actionExport_to_pdf" />
-   <addaction name="actionPrint_directly" />
+   <addaction name="uiExportToPdf" />
+   <addaction name="uiPrintDirectly" />
    <addaction name="separator" />
-   <addaction name="actionPlay_from_selection" />
+   <addaction name="uiPlayFromSelection" />
   </widget>
-  <widget class="QToolBar" name="fileToolBar" >
+  <widget class="QToolBar" name="uiFileToolBar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="actionNew" />
-   <addaction name="actionNew_document_wizard" />
-   <addaction name="actionOpen" />
-   <addaction name="actionSave" />
-   <addaction name="actionSave_as" />
-   <addaction name="actionImport" />
-   <addaction name="actionExport" />
-   <addaction name="actionClose" />
+   <addaction name="uiNewDocument" />
+   <addaction name="uiNewDocumentWizard" />
+   <addaction name="uiOpenDocument" />
+   <addaction name="uiSaveDocument" />
+   <addaction name="uiSaveDocumentAs" />
+   <addaction name="uiImportDocument" />
+   <addaction name="uiExportDocument" />
+   <addaction name="uiCloseDocument" />
   </widget>
-  <widget class="QToolBar" name="printToolBar" >
+  <widget class="QToolBar" name="uiPrintToolBar" >
    <property name="enabled" >
     <bool>true</bool>
    </property>
@@ -223,12 +225,12 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="actionPrint_preview" />
-   <addaction name="actionPrint_directly" />
-   <addaction name="actionPrint" />
-   <addaction name="actionExport_to_pdf" />
+   <addaction name="uiPrint" />
+   <addaction name="uiPrintDirectly" />
+   <addaction name="uiPrintPreview" />
+   <addaction name="uiExportToPdf" />
   </widget>
-  <action name="actionQuit" >
+  <action name="uiQuit" >
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/exit.png</iconset>
    </property>
@@ -239,7 +241,7 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="actionNew" >
+  <action name="uiNewDocument" >
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/filenew.png</iconset>
    </property>
@@ -250,7 +252,7 @@
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionOpen" >
+  <action name="uiOpenDocument" >
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/fileopen.png</iconset>
    </property>
@@ -261,7 +263,7 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionSave" >
+  <action name="uiSaveDocument" >
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/filesave.png</iconset>
    </property>
@@ -272,27 +274,36 @@
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionSave_as" >
+  <action name="uiSaveDocumentAs" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/filesaveas.png</iconset>
+   </property>
    <property name="text" >
     <string>Save &amp;as...</string>
    </property>
   </action>
-  <action name="actionClose" >
+  <action name="uiCloseDocument" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/fileclose.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Close</string>
    </property>
   </action>
-  <action name="actionImport" >
+  <action name="uiImportDocument" >
    <property name="enabled" >
     <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Import...</string>
    </property>
   </action>
-  <action name="actionExport" >
+  <action name="uiExportDocument" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/exportlilypond.png</iconset>
+    <iconset resource="mainwin.qrc" >:/menu/images/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Export...</string>
@@ -301,15 +312,18 @@
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="actionPrint_preview" >
+  <action name="uiPrintPreview" >
    <property name="enabled" >
     <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/fileprintpreview.png</iconset>
    </property>
    <property name="text" >
     <string>Print pre&amp;view...</string>
    </property>
   </action>
-  <action name="actionPrint" >
+  <action name="uiPrint" >
    <property name="enabled" >
     <bool>false</bool>
    </property>
@@ -323,7 +337,7 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionUndo" >
+  <action name="uiUndo" >
    <property name="enabled" >
     <bool>false</bool>
    </property>
@@ -337,7 +351,10 @@
     <string>Ctrl+Z</string>
    </property>
   </action>
-  <action name="actionRedo" >
+  <action name="uiRedo" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/editredo.png</iconset>
    </property>
@@ -348,7 +365,7 @@
     <string>Ctrl+Y</string>
    </property>
   </action>
-  <action name="actionCopy" >
+  <action name="uiCopy" >
    <property name="enabled" >
     <bool>false</bool>
    </property>
@@ -362,7 +379,7 @@
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="actionCut" >
+  <action name="uiCut" >
    <property name="enabled" >
     <bool>false</bool>
    </property>
@@ -376,7 +393,7 @@
     <string>Ctrl+X</string>
    </property>
   </action>
-  <action name="actionPaste" >
+  <action name="uiPaste" >
    <property name="enabled" >
     <bool>false</bool>
    </property>
@@ -390,7 +407,7 @@
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="actionSelect_all" >
+  <action name="uiSelectAll" >
    <property name="enabled" >
     <bool>false</bool>
    </property>
@@ -401,7 +418,7 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="actionInvert_Selection" >
+  <action name="uiInvertSelection" >
    <property name="enabled" >
     <bool>false</bool>
    </property>
@@ -430,12 +447,12 @@
     <string>Ctrl+-</string>
    </property>
   </action>
-  <action name="actionZoom_to_width" >
+  <action name="uiZoomToWidth" >
    <property name="text" >
     <string>Fit to width</string>
    </property>
   </action>
-  <action name="actionGoto_bar" >
+  <action name="uiGotoBar" >
    <property name="text" >
     <string>Find bar...</string>
    </property>
@@ -443,7 +460,7 @@
     <string>Ctrl+G</string>
    </property>
   </action>
-  <action name="actionStatus_bar" >
+  <action name="uiShowStatusBar" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -454,7 +471,7 @@
     <string>St&amp;atus bar</string>
    </property>
   </action>
-  <action name="actionFullscreen" >
+  <action name="uiFullscreen" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -462,52 +479,59 @@
     <string>&amp;Fullscreen</string>
    </property>
   </action>
-  <action name="actionInsert_clef" >
-   <property name="text" >
-    <string>&amp;Clef...</string>
+  <action name="uiInsertTimeSig" >
+   <property name="checkable" >
+    <bool>true</bool>
    </property>
-  </action>
-  <action name="actionInsert_time_signature" >
    <property name="text" >
     <string>&amp;Time signature...</string>
    </property>
   </action>
-  <action name="actionInsert_key_signature" >
+  <action name="uiInsertKeySig" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>&amp;Key signature...</string>
    </property>
   </action>
-  <action name="actionInsert_barline" >
+  <action name="uiInsertBarline" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>Barline...</string>
    </property>
   </action>
-  <action name="actionTranspose" >
+  <action name="uiTranspose" >
    <property name="text" >
     <string>&amp;Transpose...</string>
    </property>
   </action>
-  <action name="actionNote_count" >
+  <action name="uiNoteCount" >
    <property name="text" >
     <string>Note &amp;count...</string>
    </property>
   </action>
-  <action name="actionSettings" >
+  <action name="uiSettings" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/settings.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Settings...</string>
    </property>
   </action>
-  <action name="actionUsers_guide" >
+  <action name="uiUsersGuide" >
    <property name="text" >
     <string>User's guide...</string>
    </property>
   </action>
-  <action name="actionWhat_s_this" >
+  <action name="uiWhatsThis" >
    <property name="text" >
     <string>What's &amp;this</string>
    </property>
   </action>
-  <action name="actionTip_of_the_day" >
+  <action name="uiTipOfTheDay" >
    <property name="checkable" >
     <bool>false</bool>
    </property>
@@ -515,52 +539,64 @@
     <string>Tip of the &amp;day</string>
    </property>
   </action>
-  <action name="actionAbout_Canorus" >
+  <action name="uiAboutCanorus" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/clogosm.png</iconset>
+   </property>
    <property name="text" >
     <string>About &amp;Canorus...</string>
    </property>
   </action>
-  <action name="actionAbout_Qt" >
+  <action name="uiAboutQt" >
    <property name="text" >
     <string>About &amp;Qt...</string>
    </property>
   </action>
-  <action name="actionSplit_horizontally" >
+  <action name="uiSplitHorizontally" >
    <property name="text" >
     <string>Split view horizontally</string>
    </property>
   </action>
-  <action name="actionSplit_vertically" >
+  <action name="uiSplitVertically" >
    <property name="text" >
     <string>Split view vertically</string>
    </property>
   </action>
-  <action name="actionClose_current_view" >
+  <action name="uiCloseCurrentView" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Close current view</string>
    </property>
   </action>
-  <action name="actionUnsplit_all" >
+  <action name="uiUnsplitAll" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Unsplit All</string>
    </property>
   </action>
-  <action name="actionNew_viewport" >
+  <action name="uiNewViewport" >
    <property name="text" >
     <string>New view</string>
    </property>
   </action>
-  <action name="actionNew_sheet" >
+  <action name="uiNewSheet" >
    <property name="text" >
     <string>New sheet</string>
    </property>
   </action>
-  <action name="actionNew_staff" >
+  <action name="uiNewContext" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>New context...</string>
    </property>
   </action>
-  <action name="actionPlay_from_selection" >
+  <action name="uiPlayFromSelection" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -571,7 +607,7 @@
     <string>Play from selection</string>
    </property>
   </action>
-  <action name="actionAnimated_scroll" >
+  <action name="uiAnimatedScroll" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -582,7 +618,7 @@
     <string>Animated scroll</string>
    </property>
   </action>
-  <action name="actionLock_scroll_playback" >
+  <action name="uiLockScrollPlayback" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -590,77 +626,122 @@
     <string>Lock scroll while playback</string>
    </property>
   </action>
-  <action name="actionZoom_to_height" >
+  <action name="uiZoomToHeight" >
    <property name="text" >
     <string>Fit to &amp;height</string>
    </property>
   </action>
-  <action name="actionZoom_to_fit" >
+  <action name="uiZoomToFit" >
    <property name="text" >
     <string>Best &amp;fit</string>
    </property>
   </action>
-  <action name="actionZoom_to_selection" >
-   <property name="checkable" >
-    <bool>false</bool>
-   </property>
+  <action name="uiZoomToSelection" >
    <property name="text" >
     <string>Fit to selection</string>
    </property>
   </action>
-  <action name="actionNew_window" >
+  <action name="uiNewWindow" >
    <property name="text" >
     <string>New window</string>
    </property>
   </action>
-  <action name="actionCustom_zoom" >
+  <action name="uiCustomZoom" >
    <property name="text" >
     <string>Custom...</string>
    </property>
   </action>
-  <action name="actionScore_view" >
+  <action name="uiScoreView" >
    <property name="text" >
     <string>Score view</string>
    </property>
   </action>
-  <action name="actionLilyPond_source" >
+  <action name="uiLilyPondSource" >
    <property name="text" >
     <string>LilyPond source</string>
    </property>
   </action>
-  <action name="actionCanorusML_source" >
+  <action name="uiCanorusMLSource" >
    <property name="text" >
     <string>CanorusML source</string>
    </property>
   </action>
-  <action name="actionNew_voice" >
+  <action name="uiNewVoice" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/voicenew.png</iconset>
+   </property>
    <property name="text" >
     <string>New voice</string>
    </property>
   </action>
-  <action name="actionProperties" >
+  <action name="uiProperties" >
    <property name="text" >
     <string>Properties...</string>
    </property>
   </action>
-  <action name="actionDocument_properties" >
+  <action name="uiDocumentProperties" >
    <property name="text" >
     <string>Document properties...</string>
    </property>
   </action>
-  <action name="actionPrint_directly" >
+  <action name="uiPrintDirectly" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/filequickprint.png</iconset>
+   </property>
    <property name="text" >
     <string>Print directly</string>
    </property>
+   <property name="visible" >
+    <bool>false</bool>
+   </property>
   </action>
-  <action name="actionExport_to_pdf" >
+  <action name="uiExportToPdf" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/pdf.png</iconset>
+   </property>
    <property name="text" >
     <string>Export to PDF</string>
    </property>
+   <property name="visible" >
+    <bool>false</bool>
+   </property>
   </action>
-  <action name="actionNew_document_wizard" >
+  <action name="uiNewDocumentWizard" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/filenewwizard.png</iconset>
+   </property>
    <property name="text" >
     <string>New document &amp;wizard...</string>
+   </property>
+  </action>
+  <action name="uiInsertPlayable" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Playable...</string>
+   </property>
+  </action>
+  <action name="uiInsertFM" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Function marking...</string>
+   </property>
+  </action>
+  <action name="uiInsertClef" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Clef...</string>
    </property>
   </action>
  </widget>
@@ -669,9 +750,9 @@
  </resources>
  <connections>
   <connection>
-   <sender>actionQuit</sender>
+   <sender>uiQuit</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>uiMainWindow</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel" >

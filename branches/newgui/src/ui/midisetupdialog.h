@@ -25,7 +25,7 @@ class CAMidiSetupDialog : public QDialog {
 	Q_OBJECT
 	
 public:
-	CAMidiSetupDialog(QWidget *parent);
+	CAMidiSetupDialog(QWidget *parent=0);
 	~CAMidiSetupDialog();
 
 public slots:
