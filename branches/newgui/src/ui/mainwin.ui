@@ -56,6 +56,54 @@
      <height>36</height>
     </rect>
    </property>
+   <widget class="QMenu" name="uiMenuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="uiUsersGuide" />
+    <addaction name="uiWhatsThis" />
+    <addaction name="uiTipOfTheDay" />
+    <addaction name="separator" />
+    <addaction name="uiAboutCanorus" />
+    <addaction name="uiAboutQt" />
+   </widget>
+   <widget class="QMenu" name="uiMenuWindow" >
+    <property name="title" >
+     <string>Window</string>
+    </property>
+    <addaction name="uiNewViewport" />
+    <addaction name="uiNewWindow" />
+    <addaction name="separator" />
+    <addaction name="uiSplitHorizontally" />
+    <addaction name="uiSplitVertically" />
+    <addaction name="uiCloseCurrentView" />
+    <addaction name="uiUnsplitAll" />
+   </widget>
+   <widget class="QMenu" name="uiMenuTools" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="uiGotoBar" />
+    <addaction name="uiTranspose" />
+    <addaction name="uiNoteCount" />
+    <addaction name="separator" />
+    <addaction name="uiSettings" />
+   </widget>
+   <widget class="QMenu" name="uiMenuInsert" >
+    <property name="title" >
+     <string>&amp;Insert</string>
+    </property>
+    <addaction name="uiNewSheet" />
+    <addaction name="uiNewContext" />
+    <addaction name="uiNewVoice" />
+    <addaction name="separator" />
+    <addaction name="uiInsertPlayable" />
+    <addaction name="uiInsertClef" />
+    <addaction name="uiInsertKeySig" />
+    <addaction name="uiInsertTimeSig" />
+    <addaction name="uiInsertBarline" />
+    <addaction name="uiInsertFM" />
+   </widget>
    <widget class="QMenu" name="uiMenuEdit" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -93,29 +141,6 @@
     <addaction name="separator" />
     <addaction name="uiQuit" />
    </widget>
-   <widget class="QMenu" name="uiMenuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="uiUsersGuide" />
-    <addaction name="uiWhatsThis" />
-    <addaction name="uiTipOfTheDay" />
-    <addaction name="separator" />
-    <addaction name="uiAboutCanorus" />
-    <addaction name="uiAboutQt" />
-   </widget>
-   <widget class="QMenu" name="uiMenuWindow" >
-    <property name="title" >
-     <string>Window</string>
-    </property>
-    <addaction name="uiNewViewport" />
-    <addaction name="uiNewWindow" />
-    <addaction name="separator" />
-    <addaction name="uiSplitHorizontally" />
-    <addaction name="uiSplitVertically" />
-    <addaction name="uiCloseCurrentView" />
-    <addaction name="uiUnsplitAll" />
-   </widget>
    <widget class="QMenu" name="uiMenuView" >
     <property name="title" >
      <string>&amp;View</string>
@@ -148,31 +173,6 @@
     <addaction name="separator" />
     <addaction name="uiShowStatusBar" />
     <addaction name="uiFullscreen" />
-   </widget>
-   <widget class="QMenu" name="uiMenuTools" >
-    <property name="title" >
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="uiGotoBar" />
-    <addaction name="uiTranspose" />
-    <addaction name="uiNoteCount" />
-    <addaction name="separator" />
-    <addaction name="uiSettings" />
-   </widget>
-   <widget class="QMenu" name="uiMenuInsert" >
-    <property name="title" >
-     <string>&amp;Insert</string>
-    </property>
-    <addaction name="uiNewSheet" />
-    <addaction name="uiNewContext" />
-    <addaction name="uiNewVoice" />
-    <addaction name="separator" />
-    <addaction name="uiInsertPlayable" />
-    <addaction name="uiInsertClef" />
-    <addaction name="uiInsertKeySig" />
-    <addaction name="uiInsertTimeSig" />
-    <addaction name="uiInsertBarline" />
-    <addaction name="uiInsertFM" />
    </widget>
    <addaction name="uiMenuFile" />
    <addaction name="uiMenuEdit" />

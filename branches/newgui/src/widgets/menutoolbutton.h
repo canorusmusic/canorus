@@ -37,11 +37,11 @@ public:
 	inline void setLayoutMargin(int margin) { _layoutMargin = margin; }
 	inline void setMargin(int margin) { _margin = margin; }
 	inline void setNumIconsPerRow( int numIconsRow )  { _numIconsRow = numIconsRow; }
-	inline void setCurrentId(int id) { _currentId = id; }
+	inline void setCurrentId(int id) { _currentId = id; setIcon(_buttonGroup->button(id)->icon()); }
 	
 public slots:
 	void showButtons();
-	void hideButtons( QAbstractButton *button );
+	void hideButtons( QAbstractButton *button=0 );
 	
 private slots:
 	void handleTriggered( QAction * );
@@ -52,7 +52,7 @@ signals:
 protected:
 	QButtonGroup       *_buttonGroup;     // Abstract group for the button actions
 	QGroupBox          *_groupBox;        // Group box containing title and buttons
-	QGridLayout        *_groupLayout;     // Layout for the group box
+	QGridLayout        *_boxLayout;       // Layout for the group box
 	QGridLayout        *_menuLayout;      // Layout for the button menu
 	QList<QToolButton*> _buttonList;      // List of created buttons in button box
 	QHash<QString, int> _buttonIds;       // hash of IDs of buttons
@@ -63,5 +63,6 @@ protected:
 	int                 _spacing;         // Space between buttons
 	int                 _margin;          // Margin around the buttons
 	int                 _layoutMargin;    // Margin of layout
+	QMenu              *_menu;            // Backend widget which signal is connected to this slot
 };
 #endif /* MENUTOOLBUTTON_H_ */

@@ -139,23 +139,26 @@ void CAMainWin::setupCustomUi() {
 	
 	// Toolbars
 	uiInsertToolBar = new QToolBar( this );
-		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ) ));
+		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 2, this ));
 		uiInsertToolBar->addSeparator();
 		uiInsertToolBar->addAction( uiInsertPlayable );
-		uiInsertToolBar->addWidget(uiClefType = new CAMenuToolButton( tr("Select Clef") ));
+		uiInsertToolBar->addWidget(uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this ));
 			uiClefType->addButton( QIcon(":/menu/images/cleftreble.png"), CAClef::Treble );
 			uiClefType->addButton( QIcon(":/menu/images/clefbass.png"), CAClef::Bass );
 			uiClefType->addButton( QIcon(":/menu/images/clefalto.png"), CAClef::Alto );
+			uiClefType->setCurrentId( CAClef::Treble );
 			connect( uiClefType, SIGNAL( toggled(bool, int) ), this, SLOT( on_uiClefType_toggled(bool, int) ) );
-		uiInsertToolBar->addWidget(uiTimeSigType = new CAMenuToolButton( tr("Select Time Signature" ), 3 ));
+		uiInsertToolBar->addWidget(uiTimeSigType = new CAMenuToolButton( tr("Select Time Signature" ), 3, this ));
 			uiTimeSigType->addButton( QIcon(":/menu/images/tsc.png"), TS_44 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/tsab.png"), TS_22 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts34.png"), TS_34 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts24.png"), TS_24 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts38.png"), TS_38 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts68.png"), TS_68 );
-		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ) ));
+			uiTimeSigType->setCurrentId( TS_44 );
+		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 5, this ));
 			uiBarlineType->addButton( QIcon(":/menu/images/delete.png"), 0 );
+			uiTimeSigType->setCurrentId( 0 );			
 		uiInsertToolBar->addAction( uiInsertFM );
 		addToolBar(Qt::TopToolBarArea, uiInsertToolBar);
 	
@@ -167,7 +170,7 @@ void CAMainWin::setupCustomUi() {
 		addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
 		
 	uiPlayableToolBar = new QToolBar( this );
-		uiPlayableToolBar->addWidget(uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 3 ));
+		uiPlayableToolBar->addWidget(uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this ));
 			uiPlayableLength->addButton( QIcon(":/menu/images/n0.png"), CANote::Breve );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n1.png"), CANote::Whole );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n2.png"), CANote::Half );
@@ -176,6 +179,7 @@ void CAMainWin::setupCustomUi() {
 			uiPlayableLength->addButton( QIcon(":/menu/images/n16.png"), CANote::Sixteenth );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n32.png"), CANote::ThirtySecond );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n64.png"), CANote::SixtyFourth );
+		addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
 	uiKeySigPSP  = 0;
 	

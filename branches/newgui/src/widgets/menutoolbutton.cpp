@@ -6,6 +6,9 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
+#include <QApplication>
+#include <QDesktopWidget>
+
 #include "widgets/menutoolbutton.h"
 
 /*!
@@ -35,7 +38,8 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	setSpacing( 4 );
 	setLayoutMargin( 5 );
 	setMargin(0);
-	setCurrentId( 0 );
+	setCheckable( true );
+	setNumIconsPerRow( numIconsRow );
 	
 	// Size policy: Expanding / Expanding
     QSizePolicy boxSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -44,32 +48,37 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
     QSizePolicy widgetSizePolicy = sizePolicy();
     boxSizePolicy.setHeightForWidth( widgetSizePolicy.hasHeightForWidth() );
     
-	// Abstract group for mutual exclusive toggle
-	_buttonGroup = new QButtonGroup( this );
-    
-	// Layout for visual group box
-	_groupLayout = new QGridLayout( 0 );
-	_groupLayout->setSpacing( 0 );
-    _groupLayout->setMargin( 0 );
-    setSizePolicy( boxSizePolicy );
-    
     // Visual group box for the button menu
-	_groupBox = new QGroupBox( title, this );
-	_groupBox->setFlat( true );
+	_groupBox = new QGroupBox( title, parent );
+	_groupBox->hide();
     boxSizePolicy.setHeightForWidth( _groupBox->sizePolicy().hasHeightForWidth() );
     _groupBox->setSizePolicy( boxSizePolicy );
 	_groupBox->setBackgroundRole( QPalette::Button );
 	_groupBox->setAutoFillBackground( true );
     
-	// Layout for button menu
-	_menuLayout = new QGridLayout( _groupBox );
-	_menuLayout->setSpacing( spacing() );
-    _menuLayout->setMargin( layoutMargin() );
+	// Layout for visual group box
+	_boxLayout = new QGridLayout( 0 );
+	_boxLayout->setSpacing( spacing() );
+    _boxLayout->setMargin( layoutMargin() );
+    setSizePolicy( boxSizePolicy );
     
-	// We only show the button menu when it is time to do it
-	connect( this, SIGNAL(aboutToShow()), this, SLOT(showButtons()) );
+	// Abstract group for mutual exclusive toggle
+	_buttonGroup = new QButtonGroup( _groupBox );
+	
+	setMenu( _menu = new QMenu(this) );
+	setPopupMode( QToolButton::MenuButtonPopup );
+	connect( _menu, SIGNAL(aboutToShow()), this, SLOT(showButtons()) );
+	connect( _menu, SIGNAL(aboutToHide()), this, SLOT(hideButtons()) );
+	connect( _groupBox, SIGNAL( buttonClicked( QAbstractButton * ) ), 
+             this, SLOT( hideButtons( QAbstractButton * ) ) );
 	connect( this, SIGNAL(triggered(QAction*)), this, SLOT(handleTriggered(QAction*)) );
-	// Actual positions of the buttons in the button menu layout
+	
+	// Action for our button menu as icon or nothing will be seen
+	QAction *action = new QAction(this);
+	action->setVisible( true ); 
+	setDefaultAction( action );
+    
+	// Actual positions of the buttons in the button menu layout */
 	_buttonXPos = _buttonYPos = 0;
 }
 
@@ -102,17 +111,6 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId ) {
 	button->setCheckable( true );
 	// Useful if you want to switch icons of an associated toolbar
 	button->setObjectName( objectName() );
-	if( _buttonXPos == 0 )
-	{
-		// Action for our button menu as icon or nothing will be seen
-		QAction *action = new QAction(this);
-		action->setVisible( true ); 
-		button->setChecked( true );
-		setDefaultAction( action );
-	    // Connect Hide action to the button
-	    connect( _buttonGroup, SIGNAL( buttonClicked( QAbstractButton * ) ), 
-	             this, SLOT( hideButtons( QAbstractButton * ) ) );
-	}
 	_buttonList << button;
 	
 	// Add it to the abstract group
@@ -126,7 +124,7 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId ) {
     }
     
     // Add it to the button menu layout
-    _groupLayout->addWidget( button, _buttonYPos, _buttonXPos, Qt::AlignLeft );
+    _boxLayout->addWidget( button, _buttonYPos, _buttonXPos, Qt::AlignLeft );
     _buttonXPos++;
     if( _buttonYPos > 0 ) {
 	    xSize = numIconsPerRow() * (_spacing+button->width()/3);
@@ -141,26 +139,26 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId ) {
 	Shows the button menu (connected to aboutToShow signal).
 */	
 void CAMenuToolButton::showButtons() { 
-	//QWidget *poPW = mpoBBox->parentWidget();
+	QWidget *parent = _groupBox->parentWidget();
 	
 	// This code should move the menu position to the left
 	// but it does not work, as QMenu sets it's own position
 	// after showButtons method call
-/*	if( poPW )
+	if( parent )
 	{
-		QDesktopWidget *poDesktop = QApplication::desktop();
-	    int iDWidth = poDesktop->width();
-	    int iDHeight = poDesktop->height(); */
-		/*if( poPW->pos().x() + poPW->width() > iDWidth )
-			poPW->move( pos().x() - poPW->width(), poPW->pos().y() );
+		QDesktopWidget *desktop = QApplication::desktop();
+	    int desktopWidth = desktop->width();
+	    int desktopHeight = desktop->height();
+		if( parent->pos().x() + parent->width() > desktopWidth )
+			parent->move( pos().x() - parent->width(), parent->pos().y() );
 		printf("1 Pos: %d, %d, DW %d, BMW %d, Box x %d y %d w %d h %d\n",
-		       poPW->pos().x(), poPW->pos().y(), iDWidth, poPW->width(),
-		       mpoBBox->x(), mpoBBox->y(), mpoBBox->width(), mpoBBox->height() );
-		fflush( stdout );*/
-/*		poPW->show();
-		poPW->updateGeometry();
-	} */
-	//mpoBBox->updateGeometry();
+		       parent->pos().x(), parent->pos().y(), desktopWidth, parent->width(),
+		       _groupBox->x(), _groupBox->y(), _groupBox->width(), _groupBox->height() );
+		fflush( stdout );
+		parent->show();
+		parent->updateGeometry();
+	}
+	_groupBox->updateGeometry();
 	_groupBox->show();
 }
 
@@ -169,10 +167,12 @@ void CAMenuToolButton::showButtons() {
 */	
 void CAMenuToolButton::hideButtons( QAbstractButton *button ) {
 	_groupBox->hide();
-	setIcon(button->icon());
-	setChecked( true );
-	setCurrentId( _buttonGroup->id(button) );
-	emit toggled( isChecked(), _buttonGroup->id(button) );
+	if (button) {
+		setIcon(button->icon());
+		setChecked( true );
+		setCurrentId( _buttonGroup->id(button) );
+		emit toggled( true, _buttonGroup->id(button) );
+	}
 }
 
 /*!
