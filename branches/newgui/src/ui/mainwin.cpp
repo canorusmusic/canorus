@@ -138,7 +138,7 @@ void CAMainWin::setupCustomUi() {
 	uiFileToolBar->hide();
 	
 	// Toolbars
-	uiInsertToolBar = new QToolBar( this );
+	uiInsertToolBar = new QToolBar( tr("Insert ToolBar"), this );
 		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 2, this ));
 		uiInsertToolBar->addSeparator();
 		uiInsertToolBar->addAction( uiInsertPlayable );
@@ -158,18 +158,18 @@ void CAMainWin::setupCustomUi() {
 			uiTimeSigType->setCurrentId( TS_44 );
 		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 5, this ));
 			uiBarlineType->addButton( QIcon(":/menu/images/delete.png"), 0 );
-			uiTimeSigType->setCurrentId( 0 );			
+			uiBarlineType->setCurrentId( 0 );
 		uiInsertToolBar->addAction( uiInsertFM );
 		addToolBar(Qt::TopToolBarArea, uiInsertToolBar);
 	
-	uiVoiceToolBar = new QToolBar( this );
+	uiVoiceToolBar = new QToolBar( tr("Voice ToolBar"), this );
 		uiVoiceToolBar->addWidget( uiVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" ) );
 		connect( uiVoiceNum, SIGNAL( valChanged( int ) ), this,
 		         SLOT(on_uiVoiceNum_valChanged( int ) ) );
 		uiVoiceNum->setEnabled(false);	//current voice number gets enabled when staff is selected and gets disabled when staff is unselected. By default, it's disabled.
 		addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
 		
-	uiPlayableToolBar = new QToolBar( this );
+	uiPlayableToolBar = new QToolBar( tr("Playable ToolBar"), this );
 		uiPlayableToolBar->addWidget(uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this ));
 			uiPlayableLength->addButton( QIcon(":/menu/images/n0.png"), CANote::Breve );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n1.png"), CANote::Whole );
@@ -199,6 +199,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->setExclusive( true );
 	
 	uiInsertToolBar->show();
+	uiPlayableToolBar->hide();
 }
 
 void CAMainWin::newDocument() {

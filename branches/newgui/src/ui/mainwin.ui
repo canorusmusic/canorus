@@ -89,21 +89,6 @@
     <addaction name="separator" />
     <addaction name="uiSettings" />
    </widget>
-   <widget class="QMenu" name="uiMenuInsert" >
-    <property name="title" >
-     <string>&amp;Insert</string>
-    </property>
-    <addaction name="uiNewSheet" />
-    <addaction name="uiNewContext" />
-    <addaction name="uiNewVoice" />
-    <addaction name="separator" />
-    <addaction name="uiInsertPlayable" />
-    <addaction name="uiInsertClef" />
-    <addaction name="uiInsertKeySig" />
-    <addaction name="uiInsertTimeSig" />
-    <addaction name="uiInsertBarline" />
-    <addaction name="uiInsertFM" />
-   </widget>
    <widget class="QMenu" name="uiMenuEdit" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -173,6 +158,21 @@
     <addaction name="separator" />
     <addaction name="uiShowStatusBar" />
     <addaction name="uiFullscreen" />
+   </widget>
+   <widget class="QMenu" name="uiMenuInsert" >
+    <property name="title" >
+     <string>&amp;Insert</string>
+    </property>
+    <addaction name="uiNewSheet" />
+    <addaction name="uiNewContext" />
+    <addaction name="uiNewVoice" />
+    <addaction name="separator" />
+    <addaction name="uiInsertPlayable" />
+    <addaction name="uiInsertClef" />
+    <addaction name="uiInsertKeySig" />
+    <addaction name="uiInsertTimeSig" />
+    <addaction name="uiInsertBarline" />
+    <addaction name="uiInsertFM" />
    </widget>
    <addaction name="uiMenuFile" />
    <addaction name="uiMenuEdit" />
@@ -483,6 +483,9 @@
    <property name="checkable" >
     <bool>true</bool>
    </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/tsc.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Time signature...</string>
    </property>
@@ -724,6 +727,9 @@
    <property name="checkable" >
     <bool>true</bool>
    </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/insertplayable.png</iconset>
+   </property>
    <property name="text" >
     <string>Playable...</string>
    </property>
@@ -739,6 +745,9 @@
   <action name="uiInsertClef" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/clefbass.png</iconset>
    </property>
    <property name="text" >
     <string>Clef...</string>

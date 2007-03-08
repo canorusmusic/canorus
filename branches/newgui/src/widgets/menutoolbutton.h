@@ -37,7 +37,7 @@ public:
 	inline void setLayoutMargin(int margin) { _layoutMargin = margin; }
 	inline void setMargin(int margin) { _margin = margin; }
 	inline void setNumIconsPerRow( int numIconsRow )  { _numIconsRow = numIconsRow; }
-	inline void setCurrentId(int id) { _currentId = id; setIcon(_buttonGroup->button(id)->icon()); }
+	inline void setCurrentId(int id) { _currentId = id; defaultAction()->setIcon(_buttonGroup->button(id)->icon()); }
 	
 public slots:
 	void showButtons();

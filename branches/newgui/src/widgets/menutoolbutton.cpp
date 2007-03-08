@@ -37,7 +37,7 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
  : QToolButton( parent ) {
 	setSpacing( 4 );
 	setLayoutMargin( 5 );
-	setMargin(0);
+	setMargin( 0 );
 	setCheckable( true );
 	setNumIconsPerRow( numIconsRow );
 	
@@ -57,7 +57,7 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	_groupBox->setAutoFillBackground( true );
     
 	// Layout for visual group box
-	_boxLayout = new QGridLayout( 0 );
+	_boxLayout = new QGridLayout( _groupBox );
 	_boxLayout->setSpacing( spacing() );
     _boxLayout->setMargin( layoutMargin() );
     setSizePolicy( boxSizePolicy );
@@ -75,6 +75,7 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	
 	// Action for our button menu as icon or nothing will be seen
 	QAction *action = new QAction(this);
+	action->setCheckable( true );
 	action->setVisible( true ); 
 	setDefaultAction( action );
     
@@ -132,7 +133,7 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId ) {
     	xSize = _buttonXPos * (_spacing+button->width()/3);
     }
 	ySize = (_buttonYPos+1) * (_spacing+button->height());
-	setMinimumSize( xMargin + xSize, yMargin + ySize );
+	_groupBox->setMinimumSize( xMargin + xSize, yMargin + ySize );
 }
 
 /*!
@@ -164,7 +165,7 @@ void CAMenuToolButton::showButtons() {
 
 /*!
 	Hides the button menu and emits the triggered() signal.
-*/	
+*/
 void CAMenuToolButton::hideButtons( QAbstractButton *button ) {
 	_groupBox->hide();
 	if (button) {
