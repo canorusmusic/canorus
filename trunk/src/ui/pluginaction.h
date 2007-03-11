@@ -72,6 +72,6 @@ private slots:
 	
 signals:
 	void triggered(QAction*, bool);        /// When the action is triggered, this signal is emitted
-}
+};
 
 #endif /* PLUGINACTION_H_ */
