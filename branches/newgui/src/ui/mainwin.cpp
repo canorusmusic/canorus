@@ -139,6 +139,8 @@ void CAMainWin::setupCustomUi() {
 	
 	// Toolbars
 	uiInsertToolBar = new QToolBar( tr("Insert ToolBar"), this );
+		uiInsertToolBar->addAction( uiSelectMode = new QAction( QIcon(":/menu/images/arrow.png"), tr("Select mode"), this ) );
+		uiInsertToolBar->addSeparator();		
 		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 2, this ));
 		uiInsertToolBar->addSeparator();
 		uiInsertToolBar->addAction( uiInsertPlayable );
@@ -179,15 +181,16 @@ void CAMainWin::setupCustomUi() {
 			uiPlayableLength->addButton( QIcon(":/menu/images/n16.png"), CANote::Sixteenth );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n32.png"), CANote::ThirtySecond );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n64.png"), CANote::SixtyFourth );
+			uiPlayableLength->setCurrentId( CANote::Quarter );
 		addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
 	uiKeySigPSP  = 0;
 	
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
+	uiInsertGroup->addAction( uiSelectMode );
 	uiInsertGroup->addAction( uiNewContext );
 	uiInsertGroup->addAction( uiInsertPlayable );
-	uiInsertGroup->addAction( uiPlayableLength->defaultAction() );
 	uiInsertGroup->addAction( uiInsertClef );
 	uiInsertGroup->addAction( uiClefType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertTimeSig );

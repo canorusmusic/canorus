@@ -8,7 +8,7 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
-
+#include <iostream> // debug
 #include "widgets/menutoolbutton.h"
 
 /*!
@@ -69,8 +69,8 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	setPopupMode( QToolButton::MenuButtonPopup );
 	connect( _menu, SIGNAL(aboutToShow()), this, SLOT(showButtons()) );
 	connect( _menu, SIGNAL(aboutToHide()), this, SLOT(hideButtons()) );
-	connect( _groupBox, SIGNAL( buttonClicked( QAbstractButton * ) ), 
-             this, SLOT( hideButtons( QAbstractButton * ) ) );
+	connect( _buttonGroup, SIGNAL(buttonClicked( int )), 
+             this, SLOT( hideButtons( int ) ) );
 	connect( this, SIGNAL(triggered(QAction*)), this, SLOT(handleTriggered(QAction*)) );
 	
 	// Action for our button menu as icon or nothing will be seen
@@ -78,8 +78,9 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	action->setCheckable( true );
 	action->setVisible( true ); 
 	setDefaultAction( action );
+	connect(action, SIGNAL(toggled(bool)), this, SLOT(handleToggled(bool)));
     
-	// Actual positions of the buttons in the button menu layout */
+	// Actual positions of the buttons in the button menu layout
 	_buttonXPos = _buttonYPos = 0;
 }
 
@@ -139,48 +140,47 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId ) {
 /*!
 	Shows the button menu (connected to aboutToShow signal).
 */	
-void CAMenuToolButton::showButtons() { 
-	QWidget *parent = _groupBox->parentWidget();
+void CAMenuToolButton::showButtons() {
+	int x, y;
+	QDesktopWidget *desktop = QApplication::desktop();
+	if (pos().x() + _groupBox->width() > desktop->width())
+		x = desktop->width()-_groupBox->width();
+	else
+		x = pos().x();
+
+	if (pos().y() + _groupBox->height() > desktop->height())
+		y = desktop->height()-_groupBox->height();
+	else
+		y = pos().y();
 	
-	// This code should move the menu position to the left
-	// but it does not work, as QMenu sets it's own position
-	// after showButtons method call
-	if( parent )
-	{
-		QDesktopWidget *desktop = QApplication::desktop();
-	    int desktopWidth = desktop->width();
-	    int desktopHeight = desktop->height();
-		if( parent->pos().x() + parent->width() > desktopWidth )
-			parent->move( pos().x() - parent->width(), parent->pos().y() );
-		printf("1 Pos: %d, %d, DW %d, BMW %d, Box x %d y %d w %d h %d\n",
-		       parent->pos().x(), parent->pos().y(), desktopWidth, parent->width(),
-		       _groupBox->x(), _groupBox->y(), _groupBox->width(), _groupBox->height() );
-		fflush( stdout );
-		parent->show();
-		parent->updateGeometry();
-	}
+	_groupBox->setGeometry( x, y, _groupBox->width(), _groupBox->height() );
 	_groupBox->updateGeometry();
 	_groupBox->show();
 }
 
 /*!
-	Hides the button menu and emits the triggered() signal.
+	Hides the buttons menu, changes the current id and emits the toggled() signal.
 */
-void CAMenuToolButton::hideButtons( QAbstractButton *button ) {
-	_groupBox->hide();
-	if (button) {
-		setIcon(button->icon());
-		setChecked( true );
-		setCurrentId( _buttonGroup->id(button) );
-		emit toggled( true, _buttonGroup->id(button) );
+void CAMenuToolButton::hideButtons( int id ) {
+	if (_buttonGroup->button(id)) {
+		setCurrentId( id );
+		click();
 	}
+	hideButtons();
 }
 
 /*!
-	Emits triggered( bool, int ) signal.
+	Hides the buttons menu only.
 */
-void CAMenuToolButton::handleTriggered( QAction *action ) {
-	emit toggled( isChecked(), currentId() );
+void CAMenuToolButton::hideButtons() {
+	_groupBox->hide();
+}
+
+/*!
+	Emits toggled( bool, int ) signal.
+*/
+void CAMenuToolButton::handleToggled( bool checked ) {
+	emit toggled( checked, currentId() );
 }
 
 /*!

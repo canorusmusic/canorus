@@ -41,13 +41,14 @@ public:
 	
 public slots:
 	void showButtons();
-	void hideButtons( QAbstractButton *button=0 );
+	void hideButtons( int buttonId );
+	void hideButtons();
 	
-private slots:
-	void handleTriggered( QAction * );
-
 signals:
-    void toggled( bool checked, int id );
+	void toggled( bool checked, int id );
+
+private slots:
+	void handleToggled(bool checked);
 	
 protected:
 	QButtonGroup       *_buttonGroup;     // Abstract group for the button actions

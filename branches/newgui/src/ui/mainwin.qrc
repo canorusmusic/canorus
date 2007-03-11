@@ -2,6 +2,7 @@
     <qresource prefix="/menu" >
         <file>images/aflmajfmin.png</file>
         <file>images/amajfshmin.png</file>
+        <file>images/arrow.png</file>
         <file>images/bmajgmin.png</file>
         <file>images/bmajgshmin.png</file>
         <file>images/cflmajaflmin.png</file>
