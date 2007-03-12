@@ -119,7 +119,7 @@ CAMainWin::~CAMainWin()  {
 	delete uiImportDialog; delete uiExportDialog;
 	delete uiInsertToolBar; delete uiInsertGroup; delete uiContextType; delete uiClefType; delete uiBarlineType;
 	delete uiVoiceToolBar; delete uiVoiceNum; delete uiVoiceName; delete uiRemoveVoice; delete uiVoiceStemDirection; delete uiVoiceProperties;
-	delete uiPlayableToolBar; delete uiPlayableLength; delete uiPlayableDotted; delete uiNoteAccs; delete uiNoteAccsVisible; delete uiNoteStemDirection; delete uiHiddenRest; delete uiRestWholeBar;
+	delete uiPlayableToolBar; delete uiPlayableLength; delete uiPlayableDotted; delete uiNoteAccs; delete uiNoteStemDirection; delete uiHiddenRest;
 	delete uiKeySigToolBar; delete uiKeySigPSP; delete uiKeySigNumberOfAccs; delete uiKeySigGender;
 	delete uiTimeSigToolBar; delete uiTimeSigBeats; delete uiTimeSigSlash; delete uiTimeSigBeat; delete uiTimeSigStyle;
 	delete uiFMToolBar; delete uiFMType; delete uiFMChordArea; delete uiFMTonicDegree; delete uiFMEllipse;
@@ -143,6 +143,9 @@ void CAMainWin::setupCustomUi() {
 		uiInsertToolBar->addAction( uiSelectMode );
 		uiInsertToolBar->addSeparator();		
 		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 2, this ));
+			uiContextType->addButton( QIcon(":/menu/images/newstaff.png"), CAContext::Staff );
+			uiContextType->addButton( QIcon(":/menu/images/newfmcontext.png"), CAContext::FunctionMarkingContext );
+			uiContextType->setCurrentId( CAContext::Staff );
 		uiInsertToolBar->addSeparator();
 		uiInsertToolBar->addAction( uiInsertPlayable );
 		uiInsertToolBar->addWidget(uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this ));
@@ -166,14 +169,24 @@ void CAMainWin::setupCustomUi() {
 		addToolBar(Qt::TopToolBarArea, uiInsertToolBar);
 	
 	uiVoiceToolBar = new QToolBar( tr("Voice ToolBar"), this );
+		uiVoiceToolBar->addAction( uiNewVoice );
 		uiVoiceToolBar->addWidget( uiVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" ) );
 		connect( uiVoiceNum, SIGNAL( valChanged( int ) ), this,
 		         SLOT(on_uiVoiceNum_valChanged( int ) ) );
 		uiVoiceNum->setEnabled(false);	//current voice number gets enabled when staff is selected and gets disabled when staff is unselected. By default, it's disabled.
+		uiVoiceToolBar->addWidget( uiVoiceName = new QLineEdit( this ) );
+		uiVoiceToolBar->addAction( uiRemoveVoice );
+		uiVoiceToolBar->addWidget(uiVoiceStemDirection = new CAMenuToolButton( tr("Select Voice Stem Direction" ), 3, this ));
+			uiVoiceStemDirection->setCheckable(false);
+			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral );
+			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemup.png"), CANote::StemUp );
+			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemdown.png"), CANote::StemDown );
+		uiVoiceToolBar->addAction( uiVoiceProperties );
 		addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
 		
 	uiPlayableToolBar = new QToolBar( tr("Playable ToolBar"), this );
 		uiPlayableToolBar->addWidget(uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this ));
+			uiPlayableLength->setCheckable(false);
 			uiPlayableLength->addButton( QIcon(":/menu/images/n0.png"), CANote::Breve );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n1.png"), CANote::Whole );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n2.png"), CANote::Half );
@@ -183,6 +196,16 @@ void CAMainWin::setupCustomUi() {
 			uiPlayableLength->addButton( QIcon(":/menu/images/n32.png"), CANote::ThirtySecond );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n64.png"), CANote::SixtyFourth );
 			uiPlayableLength->setCurrentId( CANote::Quarter );
+		uiPlayableToolBar->addWidget( uiPlayableDotted = new QLabel( " .. ", this ) );
+		uiPlayableToolBar->addAction( uiAccsVisible );
+		uiPlayableToolBar->addWidget(uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this ));
+			uiNoteStemDirection->setCheckable(false);
+			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral );
+			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemup.png"), CANote::StemUp );
+			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemdown.png"), CANote::StemDown );
+			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemvoice.png"), CANote::StemPrefered );
+			uiPlayableLength->setCheckable(false);
+		uiPlayableToolBar->addAction( uiHiddenRest );
 		addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
 	uiKeySigPSP  = 0;
@@ -191,7 +214,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup = new QActionGroup( this );
 	uiInsertGroup->addAction( uiSelectMode );
 	uiInsertGroup->addAction( uiNewContext );
-	//uiInsertGroup->addAction( uiContextType->defaultAction() );
+	uiInsertGroup->addAction( uiContextType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertPlayable );
 	uiInsertGroup->addAction( uiInsertClef );
 	uiInsertGroup->addAction( uiClefType->defaultAction() );

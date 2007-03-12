@@ -208,22 +208,21 @@ private:
 			// QAction       *uiNewVoice;  // made by Qt Designer
 			CALCDNumber      *uiVoiceNum;
 			QLineEdit        *uiVoiceName;
-			QAction          *uiRemoveVoice;
+			// QAction       *uiRemoveVoice; // made by Qt Designer
 			CAMenuToolButton *uiVoiceStemDirection;
-			QAction          *uiVoiceProperties;
+			// QAction       *uiVoiceProperties; // made by Qt Designer
 			
 		QToolBar *uiPlayableToolBar; // note and rest properties are merged for the time being
 			// Note properties
 			CAMenuToolButton *uiPlayableLength;
 			QLabel           *uiPlayableDotted;
 			CAMenuToolButton *uiNoteAccs;
-			QAction          *uiNoteAccsVisible;
+			// QAction       *uiNoteAccsVisible;
 			CAMenuToolButton *uiNoteStemDirection;
 			// Rest properties
 			// CAMenuToolButton *uiPlayableLength; // same as note properties
 			// QLabel        *uiPlayableDotted; // same as note properties
-			QAction          *uiHiddenRest;
-			QAction          *uiRestWholeBar;
+			// QAction          *uiHiddenRest; // made by Qt Designer
 		
 		QToolBar *uiKeySigToolBar;
 			CAKeySigPSP  *uiKeySigPSP;	            // Key signature perspective

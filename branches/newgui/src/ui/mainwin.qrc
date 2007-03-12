@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/menu" >
+        <file>images/accsvisible.png</file>
         <file>images/aflmajfmin.png</file>
         <file>images/amajfshmin.png</file>
         <file>images/arrow.png</file>
@@ -39,8 +40,11 @@
         <file>images/flat.png</file>
         <file>images/fmajdmin.png</file>
         <file>images/fshmajdshmin.png</file>
+        <file>images/fullscreen.png</file>
         <file>images/gflmajeflmin.png</file>
         <file>images/gmajemin.png</file>
+        <file>images/hiddenrest.png</file>
+        <file>images/insertfm.png</file>
         <file>images/insertplayable.png</file>
         <file>images/n0.png</file>
         <file>images/n1.png</file>
@@ -51,6 +55,12 @@
         <file>images/n64.png</file>
         <file>images/n8.png</file>
         <file>images/neutral.png</file>
+        <file>images/newfmcontext.png</file>
+        <file>images/newstaff.png</file>
+        <file>images/notestemdown.png</file>
+        <file>images/notestemneutral.png</file>
+        <file>images/notestemup.png</file>
+        <file>images/notestemvoice.png</file>
         <file>images/pdf.png</file>
         <file>images/pedal.png</file>
         <file>images/player_pause.png</file>

@@ -79,16 +79,6 @@
     <addaction name="uiCloseCurrentView" />
     <addaction name="uiUnsplitAll" />
    </widget>
-   <widget class="QMenu" name="uiMenuTools" >
-    <property name="title" >
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="uiGotoBar" />
-    <addaction name="uiTranspose" />
-    <addaction name="uiNoteCount" />
-    <addaction name="separator" />
-    <addaction name="uiSettings" />
-   </widget>
    <widget class="QMenu" name="uiMenuEdit" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -173,6 +163,16 @@
     <addaction name="uiInsertTimeSig" />
     <addaction name="uiInsertBarline" />
     <addaction name="uiInsertFM" />
+   </widget>
+   <widget class="QMenu" name="uiMenuTools" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="uiGotoBar" />
+    <addaction name="uiTranspose" />
+    <addaction name="uiNoteCount" />
+    <addaction name="separator" />
+    <addaction name="uiSettings" />
    </widget>
    <addaction name="uiMenuFile" />
    <addaction name="uiMenuEdit" />
@@ -331,6 +331,9 @@
    <property name="text" >
     <string>Print pre&amp;view...</string>
    </property>
+   <property name="visible" >
+    <bool>true</bool>
+   </property>
   </action>
   <action name="uiPrint" >
    <property name="enabled" >
@@ -435,27 +438,6 @@
     <string>Invert Selection</string>
    </property>
   </action>
-  <action name="actionZoom_Level" >
-   <property name="text" >
-    <string>Zoom &amp;Level...</string>
-   </property>
-  </action>
-  <action name="actionZoom_In" >
-   <property name="text" >
-    <string>Zoom &amp;In</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl++</string>
-   </property>
-  </action>
-  <action name="actionZoom_Out" >
-   <property name="text" >
-    <string>Zoom &amp;Out</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+-</string>
-   </property>
-  </action>
   <action name="uiZoomToWidth" >
    <property name="text" >
     <string>Fit to width</string>
@@ -483,6 +465,9 @@
   <action name="uiFullscreen" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/fullscreen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Fullscreen</string>
@@ -604,6 +589,9 @@
    <property name="checkable" >
     <bool>true</bool>
    </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/newstaff.png</iconset>
+   </property>
    <property name="text" >
     <string>New context...</string>
    </property>
@@ -707,7 +695,7 @@
     <string>Print directly</string>
    </property>
    <property name="visible" >
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="uiExportToPdf" >
@@ -721,7 +709,7 @@
     <string>Export to PDF</string>
    </property>
    <property name="visible" >
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="uiNewDocumentWizard" >
@@ -746,6 +734,9 @@
   <action name="uiInsertFM" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/insertfm.png</iconset>
    </property>
    <property name="text" >
     <string>Function marking...</string>
@@ -774,6 +765,44 @@
    </property>
    <property name="text" >
     <string>Select mode</string>
+   </property>
+  </action>
+  <action name="uiRemoveVoice" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/voiceremove.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Remove Voice</string>
+   </property>
+  </action>
+  <action name="uiVoiceProperties" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/voiceproperties.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Voice Properties</string>
+   </property>
+  </action>
+  <action name="uiAccsVisible" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/accsvisible.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Accidentals Visible</string>
+   </property>
+  </action>
+  <action name="uiHiddenRest" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/hiddenrest.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Hidden Rest</string>
    </property>
   </action>
  </widget>
