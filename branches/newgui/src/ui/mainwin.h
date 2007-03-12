@@ -193,7 +193,7 @@ private:
 		// Insert toolbar
 		QToolBar     *uiInsertToolBar;
 		QActionGroup *uiInsertGroup;           // Group for mutual exclusive selection of music elements
-			QAction          *uiSelectMode;
+			// QAction       *uiSelectMode; // made by Qt Designer
 			// QAction       *uiInsertNewSheet; // made by Qt Designer
 			CAMenuToolButton *uiContextType;
 			

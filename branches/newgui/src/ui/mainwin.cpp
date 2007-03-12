@@ -136,10 +136,11 @@ void CAMainWin::setupCustomUi() {
 	/// \todo When Qt Designer have support for setting the visibility property, do this in Qt Designer already! -Matevz
 	uiPrintToolBar->hide();
 	uiFileToolBar->hide();
+	uiStandardToolBar->updateGeometry();
 	
 	// Toolbars
 	uiInsertToolBar = new QToolBar( tr("Insert ToolBar"), this );
-		uiInsertToolBar->addAction( uiSelectMode = new QAction( QIcon(":/menu/images/arrow.png"), tr("Select mode"), this ) );
+		uiInsertToolBar->addAction( uiSelectMode );
 		uiInsertToolBar->addSeparator();		
 		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 2, this ));
 		uiInsertToolBar->addSeparator();
@@ -190,6 +191,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup = new QActionGroup( this );
 	uiInsertGroup->addAction( uiSelectMode );
 	uiInsertGroup->addAction( uiNewContext );
+	//uiInsertGroup->addAction( uiContextType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertPlayable );
 	uiInsertGroup->addAction( uiInsertClef );
 	uiInsertGroup->addAction( uiClefType->defaultAction() );

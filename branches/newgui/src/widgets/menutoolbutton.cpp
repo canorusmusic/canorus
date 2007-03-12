@@ -68,10 +68,9 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	setMenu( _menu = new QMenu(this) );
 	setPopupMode( QToolButton::MenuButtonPopup );
 	connect( _menu, SIGNAL(aboutToShow()), this, SLOT(showButtons()) );
+	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 
+	         this, SLOT( hideButtons( int ) ) );
 	connect( _menu, SIGNAL(aboutToHide()), this, SLOT(hideButtons()) );
-	connect( _buttonGroup, SIGNAL(buttonClicked( int )), 
-             this, SLOT( hideButtons( int ) ) );
-	connect( this, SIGNAL(triggered(QAction*)), this, SLOT(handleTriggered(QAction*)) );
 	
 	// Action for our button menu as icon or nothing will be seen
 	QAction *action = new QAction(this);
@@ -139,22 +138,27 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId ) {
 
 /*!
 	Shows the button menu (connected to aboutToShow signal).
+	\todo If the whole buttonBox cannot be drawn on the screen, move it somehow so it can be.
+	\todo A small bug appears when showing/hiding the tool menu.
+	\warning Coordinates of groupBox are calculated according to its parent (main window) and not this parent.
 */	
 void CAMenuToolButton::showButtons() {
-	int x, y;
+	// Show the group box in the lower-left corner of the toolbutton
 	QDesktopWidget *desktop = QApplication::desktop();
-	if (pos().x() + _groupBox->width() > desktop->width())
-		x = desktop->width()-_groupBox->width();
-	else
-		x = pos().x();
-
-	if (pos().y() + _groupBox->height() > desktop->height())
-		y = desktop->height()-_groupBox->height();
-	else
-		y = pos().y();
+	int x, y;
+	QPoint globalPos = mapToGlobal(QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
 	
-	_groupBox->setGeometry( x, y, _groupBox->width(), _groupBox->height() );
-	_groupBox->updateGeometry();
+	if (globalPos.x() + _groupBox->width() > desktop->width())
+		x = 0;
+	else
+		x = _groupBox->mapFromGlobal(globalPos).x();
+
+	if (globalPos.y() + height() + _groupBox->height() > desktop->height())
+		y = 0;
+	else
+		y = _groupBox->mapFromGlobal(globalPos).y() + height();
+	
+	_groupBox->move(x,y);
 	_groupBox->show();
 }
 
