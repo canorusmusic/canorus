@@ -162,11 +162,16 @@ void CAMainWin::setupCustomUi() {
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts38.png"), TS_38 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts68.png"), TS_68 );
 			uiTimeSigType->setCurrentId( TS_44 );
-		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 5, this ));
-			uiBarlineType->addButton( QIcon(":/menu/images/delete.png"), 0 );
-			uiBarlineType->setCurrentId( 0 );
+		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 3, this ));
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinesingle.png"), CABarline::Single );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinedouble.png"), CABarline::Double );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlineend.png"), CABarline::End );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatopen.png"), CABarline::RepeatOpen );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatclose.png"), CABarline::RepeatClose );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinedotted.png"), CABarline::Dotted );
+			uiBarlineType->setCurrentId( CABarline::Single );
 		uiInsertToolBar->addAction( uiInsertFM );
-		addToolBar(Qt::TopToolBarArea, uiInsertToolBar);
+		addToolBar(Qt::LeftToolBarArea, uiInsertToolBar);
 	
 	uiVoiceToolBar = new QToolBar( tr("Voice ToolBar"), this );
 		uiVoiceToolBar->addAction( uiNewVoice );
@@ -228,6 +233,7 @@ void CAMainWin::setupCustomUi() {
 	
 	uiInsertToolBar->show();
 	uiPlayableToolBar->hide();
+	uiVoiceToolBar->hide();
 }
 
 void CAMainWin::newDocument() {
@@ -572,10 +578,11 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				if (v->currentContext()->context()->contextType() == CAContext::Staff) {
 					uiVoiceNum->setEnabled(true);
 					uiVoiceNum->setRealValue(0);
-					uiVoiceNum->setMax(((CAStaff*)v->currentContext()->context())->voiceCount());
+					uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
 				} else
 					uiVoiceNum->setEnabled(false);
 			}
+			updateVoiceToolBar();
 			v->repaint();
 		}
 
@@ -1375,6 +1382,39 @@ void CAMainWin::on_uiViewLilyPondSource_triggered() {
 		uiCloseCurrentView->setEnabled(true);
 		_viewPortList << v;
 		setMode(mode());	// updates the new viewport border settings
+	}
+}
+
+/*!
+	Shows/Hides the Voice properties tool bar according to the currently selected context and updates its properties.
+*/
+void CAMainWin::updateVoiceToolBar() {
+	if (_currentViewPort->viewPortType() == CAViewPort::ScoreViewPort &&
+		static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext() &&
+		static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff
+	   ) {
+		CAStaff *staff = static_cast<CAStaff*>(static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->context());
+		if (staff->voiceCount()) {
+			int voiceNr = uiVoiceNum->getRealValue();
+			if (voiceNr) {
+				CAVoice *curVoice = staff->voiceAt(voiceNr-1);
+				uiVoiceName->setText(curVoice->name());
+				uiVoiceName->setEnabled(true);
+				uiRemoveVoice->setEnabled(true);
+				uiVoiceStemDirection->setCurrentId( curVoice->stemDirection() );
+				uiVoiceStemDirection->setEnabled(true);
+				uiVoiceProperties->setEnabled(true);
+			} else {
+				uiVoiceName->setEnabled(false);
+				uiRemoveVoice->setEnabled(false);
+				uiVoiceStemDirection->setEnabled(false);
+				uiVoiceProperties->setEnabled(false);
+			}
+		}
+		
+		uiVoiceToolBar->show();
+	} else {
+		uiVoiceToolBar->hide();
 	}
 }
 

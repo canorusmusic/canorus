@@ -182,6 +182,7 @@ private:
 	// Pure user interface - widgets that weren't created by Qt Designer yet //
 	///////////////////////////////////////////////////////////////////////////
 	void setupCustomUi();
+	void updateVoiceToolBar();
 	
 	// Dialogs, Windows
 	QFileDialog *uiExportDialog;

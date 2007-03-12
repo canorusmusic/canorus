@@ -148,15 +148,15 @@ void CAMenuToolButton::showButtons() {
 	int x, y;
 	QPoint globalPos = mapToGlobal(QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
 	
-	if (globalPos.x() + _groupBox->width() > desktop->width())
+	if (globalPos.x() + width() + _groupBox->width() > desktop->width())
 		x = 0;
 	else
-		x = _groupBox->mapFromGlobal(globalPos).x();
+		x = _groupBox->mapFromGlobal(globalPos).x() + width();
 
-	if (globalPos.y() + height() + _groupBox->height() > desktop->height())
+	if (globalPos.y() + _groupBox->height() > desktop->height())
 		y = 0;
 	else
-		y = _groupBox->mapFromGlobal(globalPos).y() + height();
+		y = _groupBox->mapFromGlobal(globalPos).y();
 	
 	_groupBox->move(x,y);
 	_groupBox->show();
