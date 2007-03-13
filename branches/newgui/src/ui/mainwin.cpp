@@ -199,6 +199,7 @@ void CAMainWin::setupCustomUi() {
 		
 	uiPlayableToolBar = new QToolBar( tr("Playable ToolBar"), this );
 		uiPlayableToolBar->addWidget(uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this ));
+			connect( uiPlayableLength, SIGNAL(toggled(bool, int)), this, SLOT(on_uiPlayableLength_toggled(bool, int)) );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n0.png"), CANote::Breve );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n1.png"), CANote::Whole );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n2.png"), CANote::Half );
@@ -217,6 +218,7 @@ void CAMainWin::setupCustomUi() {
 			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemdown.png"), CANote::StemDown );
 			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemvoice.png"), CANote::StemPrefered );
 			uiNoteStemDirection->defaultAction()->setCheckable(false);
+			uiNoteStemDirection->setCurrentId( CANote::StemPrefered );
 		uiPlayableToolBar->addAction( uiHiddenRest );
 		addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
@@ -238,9 +240,9 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->addAction( uiInsertFM );
 	uiInsertGroup->setExclusive( true );
 	
-	uiInsertToolBar->show();
-	uiContextToolBar->hide();
 	uiPlayableToolBar->hide();
+	uiInsertToolBar->hide();
+	uiContextToolBar->hide();
 	uiVoiceToolBar->hide();
 }
 
@@ -262,6 +264,7 @@ void CAMainWin::newDocument() {
 	
 	// call local rebuild only because no other main windows share the new document
 	rebuildUI();
+	updateToolBars();
 }
 
 /*!
@@ -471,6 +474,7 @@ void CAMainWin::setMode(CAMode mode) {
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}
+			uiInsertToolBar->show();
 			break;
 		}
 		case InsertMode: {
@@ -502,6 +506,7 @@ void CAMainWin::setMode(CAMode mode) {
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}
+			uiInsertToolBar->hide();
 		}
 	}	//switch(mode)
 	currentViewPort()->setFocus();
@@ -530,24 +535,30 @@ void CAMainWin::on_uiInsertClef_toggled(bool) {
 	content are to happen and we want to actually draw it only at the end.
 */
 void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
-	if (!sheet) {
-		clearUI();
-		for (int i=0; i<document()->sheetCount(); i++)
-			addSheet(document()->sheetAt(i));
-	}
-
-	for (int i=0; i<_viewPortList.size(); i++) {
-		if (sheet && _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort &&
-		    static_cast<CAScoreViewPort*>(_viewPortList[i])->sheet()!=sheet)
-			continue;
+	if (document()) {
+		uiInsertToolBar->show();
+		if (!sheet) {
+			clearUI();
+			for (int i=0; i<document()->sheetCount(); i++)
+				addSheet(document()->sheetAt(i));
+		}
 		
-		_viewPortList[i]->rebuild();
-		
-		if (_viewPortList[i]->viewPortType() == CAViewPort::ScoreViewPort)
-			static_cast<CAScoreViewPort*>(_viewPortList[i])->checkScrollBars();
+		for (int i=0; i<_viewPortList.size(); i++) {
+			if (sheet && _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort &&
+			    static_cast<CAScoreViewPort*>(_viewPortList[i])->sheet()!=sheet)
+				continue;
 			
-		if (repaint)
-			_viewPortList[i]->repaint();
+			_viewPortList[i]->rebuild();
+			
+			if (_viewPortList[i]->viewPortType() == CAViewPort::ScoreViewPort)
+				static_cast<CAScoreViewPort*>(_viewPortList[i])->checkScrollBars();
+				
+			if (repaint)
+				_viewPortList[i]->repaint();
+		}
+	} else {
+		clearUI();
+		uiInsertToolBar->hide();
 	}
 }
 
@@ -578,11 +589,13 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 			}
 			updateContextToolBar();
 			updateVoiceToolBar();
+			updateInsertToolBar();
 			v->repaint();
 		} else
 		if (currentContext != v->currentContext()) { // no context selected
 			updateContextToolBar();
 			updateVoiceToolBar();
+			updateInsertToolBar();
 			v->repaint();
 		}
 		
@@ -609,6 +622,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				break;
 			}
 			case InsertMode: {
+				// Insert context
 				if (uiContextType->isChecked()) {
 					// Add new Context
 					CAContext* newContext;
@@ -627,16 +641,22 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					updateContextToolBar(); updateVoiceToolBar(); 
 					uiSelectMode->toggle();
 					v->repaint();
-				} else
+					break;
+				}
+				
+				// Insert music element
 				if (uiInsertPlayable->isChecked()) {
 					// Add Note/Rest
 					if (e->button()==Qt::RightButton && _musElementFactory->musElementType()==CAMusElement::Note)
 						// place a rest when using right mouse button and note insertion is selected
 						_musElementFactory->setMusElementType( CAMusElement::Rest );
-					insertMusElementAt( coords, v, *_musElementFactory->getMusElement() );
-					if (_musElementFactory->musElementType()==CAMusElement::Rest)
-						_musElementFactory->setMusElementType( CAMusElement::Note );
 				}
+				
+				insertMusElementAt( coords, v, *_musElementFactory->getMusElement() );
+				
+				if (_musElementFactory->musElementType()==CAMusElement::Rest)
+					_musElementFactory->setMusElementType( CAMusElement::Note );
+				
 				break;
 			}
 		}
@@ -1244,9 +1264,15 @@ void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
 	if (checked) {
 		uiContextToolBar->hide();
 		uiPlayableToolBar->show();
+		if (!uiVoiceNum->getRealValue())
+			uiVoiceNum->setRealValue( 1 ); // select the first voice if none selected
+		
+		setMode(InsertMode);
+		_musElementFactory->setMusElementType( CAMusElement::Note );
 	} else {
 		uiPlayableToolBar->hide();
 		updateContextToolBar();
+		setMode(SelectMode);
 	}
 }
 
@@ -1255,13 +1281,8 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 	enum CAPlayable::CAPlayableLength length =
 		static_cast<CAPlayable::CAPlayableLength>(buttonId);
 		
-	_musElementFactory->setMusElementType( CAMusElement::Note );
-	
 	// New note length type
 	_musElementFactory->setPlayableLength( length );
-	std::cout << "Note Input switched: On " << checked << " Note " << buttonId << std::endl;
-	if( checked )
-		setMode( InsertMode );
 }
 
 void CAMainWin::on_uiClefType_toggled(bool checked, int buttonId) {
@@ -1411,12 +1432,22 @@ void CAMainWin::on_uiViewLilyPondSource_triggered() {
 }
 
 /*!
+	Updates all the toolbars according to the current state of the main window.
+*/
+void CAMainWin::updateToolBars() {
+	updateInsertToolBar();
+	updateContextToolBar();
+	updateVoiceToolBar();
+}
+
+/*!
 	Shows/Hides the Voice properties tool bar according to the currently selected context and updates its properties.
 */
 void CAMainWin::updateVoiceToolBar() {
-	if (currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort &&
-		static_cast<CAScoreViewPort*>(currentViewPort())->currentContext() &&
-		static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff
+	if ( currentViewPort() &&
+	     currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort &&
+	     static_cast<CAScoreViewPort*>(currentViewPort())->currentContext() &&
+	     static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff
 	   ) {
 		CAStaff *staff = static_cast<CAStaff*>(static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->context());
 		uiNewVoice->setEnabled(true);
@@ -1449,16 +1480,17 @@ void CAMainWin::updateVoiceToolBar() {
 	Shows/Hides context tool bar according to the selected context (if any) and hides/shows specific actions in the toolbar for the current context.
 */
 void CAMainWin::updateContextToolBar() {
-	if ( currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort &&
+	if ( currentViewPort() &&
+	     currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort &&
 		 static_cast<CAScoreViewPort*>(currentViewPort())->currentContext() ) {
 		CAContext *context = static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->context();
 		switch (context->contextType()) {
 			case CAContext::Staff:
 				uiStaffNumberOfLines->setValue(static_cast<CAStaff*>(context)->numberOfLines());
-				uiStaffNumberOfLines->show();
+				uiStaffNumberOfLines->setVisible(true);
 				break;
 			case CAContext::FunctionMarkingContext:
-				uiStaffNumberOfLines->hide();
+				uiStaffNumberOfLines->setVisible(false);
 				break;
 		}
 		uiContextName->setText(context->name());
@@ -1467,6 +1499,45 @@ void CAMainWin::updateContextToolBar() {
 			uiContextToolBar->show();
 	} else
 		uiContextToolBar->hide();
+}
+
+/*!
+	Shows/Hides music elements which cannot be placed in the selected context.
+*/
+void CAMainWin::updateInsertToolBar() {
+	if ( currentViewPort() &&
+	     currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort &&
+		 static_cast<CAScoreViewPort*>(currentViewPort())->currentContext() ) {
+		CAContext *context = static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->context();
+		switch (context->contextType()) {
+			case CAContext::Staff:
+				// staff selected
+				uiInsertPlayable->setVisible(true);
+				uiClefType->setVisible(true);
+				uiInsertKeySig->setVisible(true);
+				uiInsertTimeSig->setVisible(true);
+				uiBarlineType->setVisible(true);
+				uiInsertFM->setVisible(false);
+				break;
+			case CAContext::FunctionMarkingContext:
+				// function marking context selected
+				uiInsertPlayable->setVisible(false);
+				uiClefType->setVisible(false);
+				uiInsertKeySig->setVisible(false);
+				uiInsertTimeSig->setVisible(false);
+				uiBarlineType->setVisible(false);
+				uiInsertFM->setVisible(true);
+				break;
+		}
+	} else {
+		// no contexts selected
+		uiInsertPlayable->setVisible(false);
+		uiClefType->setVisible(false);
+		uiInsertKeySig->setVisible(false);
+		uiInsertTimeSig->setVisible(false);
+		uiBarlineType->setVisible(false);
+		uiInsertFM->setVisible(false);
+	}
 }
 
 /*!

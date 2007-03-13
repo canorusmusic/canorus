@@ -184,8 +184,10 @@ private:
 	///////////////////////////////////////////////////////////////////////////
 	void setupCustomUi();
 	void initScoreViewPort(CAScoreViewPort*);
+	void updateToolBars();
 	void updateVoiceToolBar();
 	void updateContextToolBar();
+	void updateInsertToolBar();
 	
 	// Dialogs, Windows
 	QFileDialog *uiExportDialog;

@@ -78,6 +78,7 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	action->setVisible( true ); 
 	setDefaultAction( action );
 	connect(action, SIGNAL(toggled(bool)), this, SLOT(handleToggled(bool)));
+	connect(action, SIGNAL(triggered()), this, SLOT(handleTriggered()));
     
 	// Actual positions of the buttons in the button menu layout
 	_buttonXPos = _buttonYPos = 0;
@@ -169,9 +170,10 @@ void CAMenuToolButton::showButtons() {
 void CAMenuToolButton::hideButtons( int id ) {
 	if (_buttonGroup->button(id)) {
 		setCurrentId( id );
-		click();
+		setChecked(true);
 	}
 	hideButtons();
+	handleToggled(true);
 }
 
 /*!
@@ -183,13 +185,24 @@ void CAMenuToolButton::hideButtons() {
 
 /*!
 	Emits toggled( bool, int ) signal.
+	
+	\sa handleTriggered()
 */
 void CAMenuToolButton::handleToggled( bool checked ) {
 	emit toggled( checked, currentId() );
 }
 
 /*!
-	\fn void CAButtonMenu::triggered( bool checked, int id )
+	Emits toggled( bool, int ) signal.
+	
+	\sa handleToggled()
+*/
+void CAMenuToolButton::handleTriggered() {
+	emit toggled( false, currentId() );
+}
+
+/*!
+	\fn void CAButtonMenu::toggled( bool checked, int id )
 	
 	Signal sent when the button is clicked or an element is selected and changed.
 */	

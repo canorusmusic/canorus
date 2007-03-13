@@ -49,6 +49,7 @@ signals:
 
 private slots:
 	void handleToggled(bool checked);
+	void handleTriggered();
 	
 protected:
 	QButtonGroup       *_buttonGroup;     // Abstract group for the button actions
