@@ -7,11 +7,15 @@
  */
 
 #include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 
 // Python.h needs to be loaded first!
 #include "core/canorus.h"
 #include "ui/mainwin.h"
 #include "interface/pluginmanager.h"
+
+#include <iostream>
 
 #ifdef Q_WS_X11
 #include <signal.h>
@@ -40,6 +44,15 @@ int main(int argc, char *argv[]) {
 	
 	// Load config file
 	CACanorus::initSettings();
+	
+	// Load system translation if found
+	QList<QString> translationLocations =
+		CACanorus::locateResource(QString("lang/") + QLocale::system().name() + ".qm");
+	QTranslator translator;
+	if (translationLocations.size()) {
+		translator.load(translationLocations[0]);
+		mainApp.installTranslator(&translator);
+	}
 	
 	// Create MIDI device
 	CACanorus::initMidi();

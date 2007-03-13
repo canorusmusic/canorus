@@ -146,6 +146,7 @@ void CAMenuToolButton::showButtons() {
 	// Show the group box in the lower-left corner of the toolbutton
 	QDesktopWidget *desktop = QApplication::desktop();
 	int x, y;
+	_groupBox->move(0,0);	// reset groupBox position, otherwise the positions translations get messed up. -ikjasa
 	QPoint globalPos = mapToGlobal(QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
 	
 	if (globalPos.x() + width() + _groupBox->width() > desktop->width())

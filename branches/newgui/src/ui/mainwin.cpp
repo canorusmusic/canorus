@@ -567,17 +567,16 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 		CADrawableContext *currentContext = v->currentContext();
 		
 		v->selectCElement(coords.x(), coords.y());
-		updateContextToolBar();
 		if ( v->selectMElement(coords.x(), coords.y()) ||	// select a music element at the given location - select none, if there's none there
 		     v->currentContext() ) {
 			// voice number widget
 			if (currentContext != v->currentContext()) {	// new context was selected
-				updateContextToolBar();
 				if (v->currentContext()->context()->contextType() == CAContext::Staff) {
 					uiVoiceNum->setRealValue(0);
 					uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
 				}
 			}
+			updateContextToolBar();
 			updateVoiceToolBar();
 			v->repaint();
 		} else
@@ -615,17 +614,18 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					CAContext* newContext;
 					switch(uiContextType->currentId()) {
 					case CAContext::Staff:
-						v->sheet()->addContext(newContext = new CAStaff(v->sheet(), tr("Staff %1").arg(v->sheet()->staffCount())));
+						v->sheet()->addContext(newContext = new CAStaff(v->sheet(), tr("Staff %1").arg(v->sheet()->staffCount()+1)));
 						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), tr("Voice %1").arg(1)));
 						break;
 					case CAContext::FunctionMarkingContext:
-						v->sheet()->addContext(newContext = new CAFunctionMarkingContext(v->sheet(), tr("Function marking context %1").arg(v->sheet()->contextCount())));
+						v->sheet()->addContext(newContext = new CAFunctionMarkingContext(v->sheet(), tr("Function marking context %1").arg(v->sheet()->contextCount()+1)));
 						break;
 					}
 					CACanorus::rebuildUI(document(), v->sheet());
 					
 					v->selectContext(newContext);
 					updateContextToolBar(); updateVoiceToolBar(); 
+					uiSelectMode->toggle();
 					v->repaint();
 				} else
 				if (uiInsertPlayable->isChecked()) {
@@ -1241,10 +1241,13 @@ void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
 }*/
 
 void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
-	if (checked)
+	if (checked) {
+		uiContextToolBar->hide();
 		uiPlayableToolBar->show();
-	else
+	} else {
 		uiPlayableToolBar->hide();
+		updateContextToolBar();
+	}
 }
 
 void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
@@ -1459,7 +1462,9 @@ void CAMainWin::updateContextToolBar() {
 				break;
 		}
 		uiContextName->setText(context->name());
-		//uiContextToolBar->show(); // context toolbar should be hidden for now
+		
+		if (!uiInsertPlayable->isChecked())
+			uiContextToolBar->show();
 	} else
 		uiContextToolBar->hide();
 }

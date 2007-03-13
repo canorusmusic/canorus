@@ -18,7 +18,7 @@
 #include "ui/midisetupdialog.h"
 #include "scripting/swigpython.h"
 #include "scripting/swigruby.h"
-
+#include <iostream>
 // define private static members
 QList<CAMainWin*> CACanorus::_mainWinList;
 QSettings *CACanorus::_settings;
@@ -61,6 +61,8 @@ QList<QString> CACanorus::locateResource(const QString fileName) {
 	
 #endif
 	
+	if (paths.isEmpty())
+		std::cout << fileName.toStdString().c_str() << std::endl;
 	// Remove duplicates. Is there a faster way to do this?
 	return paths.toSet().toList();
 }
@@ -137,8 +139,6 @@ void CACanorus::parseOpenFileArguments(int argc, char *argv[]) {
 			if (!CACanorus::locateResource(argv[i]).size())
 				continue;
 			QString fileName = CACanorus::locateResource(argv[i]).at(0);
-			if (fileName.isEmpty())
-				continue;
 			
 			CAMainWin *mainWin = new CAMainWin();
 			CACanorus::addMainWin(mainWin);
