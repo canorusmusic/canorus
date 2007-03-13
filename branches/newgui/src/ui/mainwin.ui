@@ -149,6 +149,16 @@
     <addaction name="uiShowStatusBar" />
     <addaction name="uiFullscreen" />
    </widget>
+   <widget class="QMenu" name="uiMenuTools" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="uiGotoBar" />
+    <addaction name="uiTranspose" />
+    <addaction name="uiNoteCount" />
+    <addaction name="separator" />
+    <addaction name="uiSettings" />
+   </widget>
    <widget class="QMenu" name="uiMenuInsert" >
     <property name="title" >
      <string>&amp;Insert</string>
@@ -163,16 +173,6 @@
     <addaction name="uiInsertTimeSig" />
     <addaction name="uiInsertBarline" />
     <addaction name="uiInsertFM" />
-   </widget>
-   <widget class="QMenu" name="uiMenuTools" >
-    <property name="title" >
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="uiGotoBar" />
-    <addaction name="uiTranspose" />
-    <addaction name="uiNoteCount" />
-    <addaction name="separator" />
-    <addaction name="uiSettings" />
    </widget>
    <addaction name="uiMenuFile" />
    <addaction name="uiMenuEdit" />
@@ -590,7 +590,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/newstaff.png</iconset>
+    <iconset resource="mainwin.qrc" >:/menu/images/contextnew.png</iconset>
    </property>
    <property name="text" >
     <string>New context...</string>
@@ -803,6 +803,22 @@
    </property>
    <property name="text" >
     <string>Hidden Rest</string>
+   </property>
+  </action>
+  <action name="uiContextRemove" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/contextremove.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Remove Context</string>
+   </property>
+  </action>
+  <action name="uiContextProperties" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/contextproperties.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Context Properties</string>
    </property>
   </action>
  </widget>

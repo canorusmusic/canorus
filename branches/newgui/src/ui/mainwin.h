@@ -185,6 +185,7 @@ private:
 	void setupCustomUi();
 	void initScoreViewPort(CAScoreViewPort*);
 	void updateVoiceToolBar();
+	void updateContextToolBar();
 	
 	// Dialogs, Windows
 	QFileDialog *uiExportDialog;
@@ -195,7 +196,7 @@ private:
 		/////////////////////
 		// Insert toolbar
 		QToolBar     *uiInsertToolBar;
-		QActionGroup *uiInsertGroup;           // Group for mutual exclusive selection of music elements
+			QActionGroup *uiInsertGroup;           // Group for mutual exclusive selection of music elements
 			// QAction       *uiSelectMode; // made by Qt Designer
 			// QAction       *uiInsertNewSheet; // made by Qt Designer
 			CAMenuToolButton *uiContextType;
@@ -206,6 +207,12 @@ private:
 			CAMenuToolButton *uiTimeSigType;  // made by Qt Designer
 			CAMenuToolButton *uiBarlineType;
 			// QAction       *uiInsertFM;  // made by Qt Designer
+		
+		QToolBar *uiContextToolBar;
+			QLineEdit        *uiContextName;
+			QSpinBox         *uiStaffNumberOfLines;
+			//QAction          *uiRemoveContext; // made by Qt Designer
+			//QAction          *uiContextProperties; // made by Qt Designer
 		
 		QToolBar *uiVoiceToolBar;
 			// QAction       *uiNewVoice;  // made by Qt Designer

@@ -276,7 +276,7 @@ class CAScoreViewPort : public CAViewPort {
 		void importMElements(CAKDTree *elts);
 		void importCElements(CAKDTree *elts);
 		
-		CADrawableContext *currentContext() { return _currentContext; }
+		inline CADrawableContext *currentContext() { return _currentContext; }
 		void setCurrentContext(CADrawableContext *);
 		
 		void rebuild();

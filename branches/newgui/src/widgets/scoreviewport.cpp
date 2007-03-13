@@ -190,9 +190,10 @@ CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 	
 	if (l.size()!=0) {
 		setCurrentContext((CADrawableContext*)l.front());
-	}
+	} else
+		setCurrentContext(0);
 	
-	return (_currentContext?_currentContext:0);
+	return currentContext();
 }
 
 CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {

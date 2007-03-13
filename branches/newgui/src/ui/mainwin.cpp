@@ -175,6 +175,14 @@ void CAMainWin::setupCustomUi() {
 		uiInsertToolBar->addAction( uiInsertFM );
 		addToolBar(Qt::LeftToolBarArea, uiInsertToolBar);
 	
+	uiContextToolBar = new QToolBar( tr("Context ToolBar"), this );
+		uiContextToolBar->addWidget( uiContextName = new QLineEdit(this) );
+		uiContextToolBar->addWidget( uiStaffNumberOfLines = new QSpinBox(this) );
+			uiStaffNumberOfLines->hide();
+		uiContextToolBar->addAction( uiContextRemove );
+		uiContextToolBar->addAction( uiContextProperties );
+		addToolBar(Qt::TopToolBarArea, uiContextToolBar);
+	
 	uiVoiceToolBar = new QToolBar( tr("Voice ToolBar"), this );
 		uiVoiceToolBar->addAction( uiNewVoice );
 		uiVoiceToolBar->addWidget( uiVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" ) );
@@ -231,6 +239,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->setExclusive( true );
 	
 	uiInsertToolBar->show();
+	uiContextToolBar->hide();
 	uiPlayableToolBar->hide();
 	uiVoiceToolBar->hide();
 }
@@ -558,10 +567,12 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 		CADrawableContext *currentContext = v->currentContext();
 		
 		v->selectCElement(coords.x(), coords.y());
+		updateContextToolBar();
 		if ( v->selectMElement(coords.x(), coords.y()) ||	// select a music element at the given location - select none, if there's none there
-		     v->selectCElement(coords.x(), coords.y()) ) {
+		     v->currentContext() ) {
 			// voice number widget
 			if (currentContext != v->currentContext()) {	// new context was selected
+				updateContextToolBar();
 				if (v->currentContext()->context()->contextType() == CAContext::Staff) {
 					uiVoiceNum->setRealValue(0);
 					uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
@@ -569,8 +580,13 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 			}
 			updateVoiceToolBar();
 			v->repaint();
+		} else
+		if (currentContext != v->currentContext()) { // no context selected
+			updateContextToolBar();
+			updateVoiceToolBar();
+			v->repaint();
 		}
-
+		
 		if (e->modifiers()==Qt::ControlModifier) {
 			CAMusElement *elt;
 			if ( elt = v->removeMElement(coords.x(), coords.y()) ) {
@@ -609,6 +625,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					CACanorus::rebuildUI(document(), v->sheet());
 					
 					v->selectContext(newContext);
+					updateContextToolBar(); updateVoiceToolBar(); 
 					v->repaint();
 				} else
 				if (uiInsertPlayable->isChecked()) {
@@ -1394,11 +1411,12 @@ void CAMainWin::on_uiViewLilyPondSource_triggered() {
 	Shows/Hides the Voice properties tool bar according to the currently selected context and updates its properties.
 */
 void CAMainWin::updateVoiceToolBar() {
-	if (_currentViewPort->viewPortType() == CAViewPort::ScoreViewPort &&
-		static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext() &&
-		static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff
+	if (currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort &&
+		static_cast<CAScoreViewPort*>(currentViewPort())->currentContext() &&
+		static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff
 	   ) {
 		CAStaff *staff = static_cast<CAStaff*>(static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->context());
+		uiNewVoice->setEnabled(true);
 		if (staff->voiceCount()) {
 			int voiceNr = uiVoiceNum->getRealValue();
 			if (voiceNr) {
@@ -1419,8 +1437,31 @@ void CAMainWin::updateVoiceToolBar() {
 		
 		uiVoiceToolBar->show();
 	} else {
+		uiNewVoice->setEnabled(false);
 		uiVoiceToolBar->hide();
 	}
+}
+
+/*!
+	Shows/Hides context tool bar according to the selected context (if any) and hides/shows specific actions in the toolbar for the current context.
+*/
+void CAMainWin::updateContextToolBar() {
+	if ( currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort &&
+		 static_cast<CAScoreViewPort*>(currentViewPort())->currentContext() ) {
+		CAContext *context = static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->context();
+		switch (context->contextType()) {
+			case CAContext::Staff:
+				uiStaffNumberOfLines->setValue(static_cast<CAStaff*>(context)->numberOfLines());
+				uiStaffNumberOfLines->show();
+				break;
+			case CAContext::FunctionMarkingContext:
+				uiStaffNumberOfLines->hide();
+				break;
+		}
+		uiContextName->setText(context->name());
+		//uiContextToolBar->show(); // context toolbar should be hidden for now
+	} else
+		uiContextToolBar->hide();
 }
 
 /*!
