@@ -49,6 +49,7 @@
 #include "core/canorus.h"
 #include "core/sheet.h"
 #include "core/staff.h"
+#include "core/functionmarkingcontext.h"
 #include "core/clef.h"
 #include "core/keysignature.h"
 #include "core/note.h"
@@ -143,6 +144,7 @@ void CAMainWin::setupCustomUi() {
 		uiInsertToolBar->addAction( uiSelectMode );
 		uiInsertToolBar->addSeparator();		
 		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 2, this ));
+			connect(uiContextType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiContextType_toggled(bool, int)));
 			uiContextType->addButton( QIcon(":/menu/images/newstaff.png"), CAContext::Staff );
 			uiContextType->addButton( QIcon(":/menu/images/newfmcontext.png"), CAContext::FunctionMarkingContext );
 			uiContextType->setCurrentId( CAContext::Staff );
@@ -176,22 +178,19 @@ void CAMainWin::setupCustomUi() {
 	uiVoiceToolBar = new QToolBar( tr("Voice ToolBar"), this );
 		uiVoiceToolBar->addAction( uiNewVoice );
 		uiVoiceToolBar->addWidget( uiVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" ) );
-		connect( uiVoiceNum, SIGNAL( valChanged( int ) ), this,
-		         SLOT(on_uiVoiceNum_valChanged( int ) ) );
-		uiVoiceNum->setEnabled(false);	//current voice number gets enabled when staff is selected and gets disabled when staff is unselected. By default, it's disabled.
+			connect( uiVoiceNum, SIGNAL( valChanged( int ) ), this, SLOT(on_uiVoiceNum_valChanged( int ) ) );
 		uiVoiceToolBar->addWidget( uiVoiceName = new QLineEdit( this ) );
 		uiVoiceToolBar->addAction( uiRemoveVoice );
 		uiVoiceToolBar->addWidget(uiVoiceStemDirection = new CAMenuToolButton( tr("Select Voice Stem Direction" ), 3, this ));
-			uiVoiceStemDirection->setCheckable(false);
 			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral );
 			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemup.png"), CANote::StemUp );
 			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemdown.png"), CANote::StemDown );
+			uiVoiceStemDirection->defaultAction()->setCheckable(false);
 		uiVoiceToolBar->addAction( uiVoiceProperties );
 		addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
 		
 	uiPlayableToolBar = new QToolBar( tr("Playable ToolBar"), this );
 		uiPlayableToolBar->addWidget(uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this ));
-			uiPlayableLength->setCheckable(false);
 			uiPlayableLength->addButton( QIcon(":/menu/images/n0.png"), CANote::Breve );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n1.png"), CANote::Whole );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n2.png"), CANote::Half );
@@ -200,16 +199,16 @@ void CAMainWin::setupCustomUi() {
 			uiPlayableLength->addButton( QIcon(":/menu/images/n16.png"), CANote::Sixteenth );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n32.png"), CANote::ThirtySecond );
 			uiPlayableLength->addButton( QIcon(":/menu/images/n64.png"), CANote::SixtyFourth );
+			uiPlayableLength->defaultAction()->setCheckable(false);
 			uiPlayableLength->setCurrentId( CANote::Quarter );
 		uiPlayableToolBar->addWidget( uiPlayableDotted = new QLabel( " .. ", this ) );
 		uiPlayableToolBar->addAction( uiAccsVisible );
 		uiPlayableToolBar->addWidget(uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this ));
-			uiNoteStemDirection->setCheckable(false);
 			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral );
 			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemup.png"), CANote::StemUp );
 			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemdown.png"), CANote::StemDown );
 			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemvoice.png"), CANote::StemPrefered );
-			uiPlayableLength->setCheckable(false);
+			uiNoteStemDirection->defaultAction()->setCheckable(false);
 		uiPlayableToolBar->addAction( uiHiddenRest );
 		addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
@@ -262,13 +261,7 @@ void CAMainWin::newDocument() {
 */
 void CAMainWin::addSheet(CASheet *s) {
 	CAScoreViewPort *v = new CAScoreViewPort(s, 0);
-	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
-	connect(v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-	connect(v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
-	connect(v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
-	connect(v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
-	v->setFocusPolicy(Qt::ClickFocus);
-	v->setFocus();
+	initScoreViewPort(v);
 	
 	_viewPortList << v;
 	
@@ -302,8 +295,6 @@ void CAMainWin::clearUI() {
 		delete _currentViewPortContainer;
 		uiTabWidget->removeTab(uiTabWidget->currentIndex());
 	}
-	
-	uiVoiceNum->setEnabled(false);
 }
 
 /*!
@@ -326,15 +317,8 @@ void CAMainWin::on_uiSplitHorizontally_triggered() {
 	if(!v)
 		return;
 	
-	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
-	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
-		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
-		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
-		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
-		v->setFocusPolicy(Qt::ClickFocus);
-		v->setFocus();
-	}
+	if (v->viewPortType() == CAViewPort::ScoreViewPort)
+		initScoreViewPort(static_cast<CAScoreViewPort*>(v));
 	
 	uiUnsplitAll->setEnabled(true);
 	uiCloseCurrentView->setEnabled(true);
@@ -347,15 +331,8 @@ void CAMainWin::on_uiSplitVertically_triggered() {
 	if(!v)
 		return;
 	
-	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
-	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
-		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
-		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
-		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
-		v->setFocusPolicy(Qt::ClickFocus);
-		v->setFocus();
-	}
+	if (v->viewPortType() == CAViewPort::ScoreViewPort)
+		initScoreViewPort(static_cast<CAScoreViewPort*>(v));
 	
 	uiUnsplitAll->setEnabled(true);
 	uiCloseCurrentView->setEnabled(true);
@@ -410,18 +387,32 @@ void CAMainWin::on_uiViewCanorusMLSource_triggered() {
 void CAMainWin::on_uiNewViewport_triggered() {
 	CAViewPort *v = _currentViewPortContainer->newViewPort(_currentViewPort);
 
-	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
-	if (v->viewPortType() == CAViewPort::ScoreViewPort) {
-		connect((CAScoreViewPort*)v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)));
-		connect((CAScoreViewPort*)v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)));
-		connect((CAScoreViewPort*)v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)), this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)));
-		connect((CAScoreViewPort*)v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)), this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)));
-		v->setFocusPolicy(Qt::ClickFocus);
-		v->setFocus();
-	}
+	if (v->viewPortType() == CAViewPort::ScoreViewPort)
+		initScoreViewPort(static_cast<CAScoreViewPort*>(v));
 
 	_viewPortList << v;
 	setMode(_mode);	// updates the new viewport border settings
+}
+
+/*!
+	Initializes the newly created score viewport.
+	Connects its signals to slots.
+	Sets the icon, focus policy and sets the focus.
+*/
+void CAMainWin::initScoreViewPort(CAScoreViewPort *v) {
+	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
+	
+	connect( v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)),
+	         this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)) );
+	connect( v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)),
+	        this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)) );
+	connect( v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)),
+	        this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)) );
+	connect( v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)),
+	        this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)) );
+	
+	v->setFocusPolicy(Qt::ClickFocus);
+	v->setFocus();
 }
 
 /*!
@@ -447,18 +438,13 @@ void CAMainWin::on_uiNewVoice_triggered() {
 }
 
 void CAMainWin::on_uiContextType_toggled(bool checked, int buttonId) {
-	std::cout << "uiContextType_toggled" << std::endl;
-/*	if (_currentViewPort->viewPortType() != CAViewPort::ScoreViewPort)
-		return;
-	
-	CASheet *sheet = ((CAScoreViewPort*)_currentViewPort)->sheet();
-	CAStaff *staff = sheet->addStaff();
-	staff->addVoice(new CAVoice( staff, tr("Voice %1").arg(QString::number(1)) ));
-	
-	CACanorus::rebuildUI(document(), sheet);
-	
-	((CAScoreViewPort*)_currentViewPort)->selectContext(staff);
-	((CAScoreViewPort*)_currentViewPort)->repaint(); */
+	if (checked)
+		setMode(InsertMode);
+}
+
+void CAMainWin::on_uiSelectMode_toggled(bool checked) {
+	if (checked)
+		setMode(SelectMode);
 }
 
 void CAMainWin::setMode(CAMode mode) {
@@ -509,6 +495,7 @@ void CAMainWin::setMode(CAMode mode) {
 			}
 		}
 	}	//switch(mode)
+	currentViewPort()->setFocus();
 }
 
 void CAMainWin::on_uiInsertClef_toggled(bool) {
@@ -576,11 +563,9 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 			// voice number widget
 			if (currentContext != v->currentContext()) {	// new context was selected
 				if (v->currentContext()->context()->contextType() == CAContext::Staff) {
-					uiVoiceNum->setEnabled(true);
 					uiVoiceNum->setRealValue(0);
 					uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
-				} else
-					uiVoiceNum->setEnabled(false);
+				}
 			}
 			updateVoiceToolBar();
 			v->repaint();
@@ -609,12 +594,32 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				break;
 			}
 			case InsertMode: {
-				if (e->button()==Qt::RightButton && _musElementFactory->musElementType()==CAMusElement::Note)
-					//place a rest when using right mouse button and note insertion is selected
-					_musElementFactory->setMusElementType( CAMusElement::Rest );
-				insertMusElementAt( coords, v, *_musElementFactory->getMusElement() );
-				if (_musElementFactory->musElementType()==CAMusElement::Rest)
-					_musElementFactory->setMusElementType( CAMusElement::Note );
+				if (uiContextType->isChecked()) {
+					// Add new Context
+					CAContext* newContext;
+					switch(uiContextType->currentId()) {
+					case CAContext::Staff:
+						v->sheet()->addContext(newContext = new CAStaff(v->sheet(), tr("Staff %1").arg(v->sheet()->staffCount())));
+						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), tr("Voice %1").arg(1)));
+						break;
+					case CAContext::FunctionMarkingContext:
+						v->sheet()->addContext(newContext = new CAFunctionMarkingContext(v->sheet(), tr("Function marking context %1").arg(v->sheet()->contextCount())));
+						break;
+					}
+					CACanorus::rebuildUI(document(), v->sheet());
+					
+					v->selectContext(newContext);
+					v->repaint();
+				} else
+				if (uiInsertPlayable->isChecked()) {
+					// Add Note/Rest
+					if (e->button()==Qt::RightButton && _musElementFactory->musElementType()==CAMusElement::Note)
+						// place a rest when using right mouse button and note insertion is selected
+						_musElementFactory->setMusElementType( CAMusElement::Rest );
+					insertMusElementAt( coords, v, *_musElementFactory->getMusElement() );
+					if (_musElementFactory->musElementType()==CAMusElement::Rest)
+						_musElementFactory->setMusElementType( CAMusElement::Note );
+				}
 				break;
 			}
 		}
@@ -871,7 +876,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 					((CAScoreViewPort*)_currentViewPort)->clearMSelection();
 					((CAScoreViewPort*)_currentViewPort)->clearCSelection();
 				}
-				setMode(SelectMode);
+				uiSelectMode->toggle();
 				uiVoiceNum->setRealValue(0);
 				if (uiKeySigPSP)
 					uiKeySigPSP->hide();
@@ -1203,7 +1208,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 }
 
 void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
-	std::cout << "New voice number:" << voiceNr << std::endl;
+	updateVoiceToolBar();
 }
 
 /*void CAMainWin::sl_mpoTimeSig_valChanged(int iBeats, int iBeat)

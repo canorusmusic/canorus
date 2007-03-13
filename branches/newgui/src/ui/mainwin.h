@@ -92,6 +92,7 @@ private slots:
 	void on_uiMIDISetup_triggered();
 	
 	// Insert
+	void on_uiSelectMode_toggled(bool);
 	void on_uiNewSheet_triggered();
 	void on_uiNewContext_toggled(bool);      // menu
 	void on_uiContextType_toggled(bool, int);
@@ -182,6 +183,7 @@ private:
 	// Pure user interface - widgets that weren't created by Qt Designer yet //
 	///////////////////////////////////////////////////////////////////////////
 	void setupCustomUi();
+	void initScoreViewPort(CAScoreViewPort*);
 	void updateVoiceToolBar();
 	
 	// Dialogs, Windows
