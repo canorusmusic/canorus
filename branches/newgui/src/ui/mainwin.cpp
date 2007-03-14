@@ -96,7 +96,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
 	uiImportDialog = new QFileDialog(this);
 	uiImportDialog->setFileMode(QFileDialog::ExistingFile);
 	uiImportDialog->setDirectory( QDir::current() );
-		
+	
 	// Initialize internal UI properties
 	_mode = SelectMode;
 	_playback = 0;
@@ -106,7 +106,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
 	// Create plugins menus and toolbars in this main window
 	CAPluginManager::enablePlugins(this);
 	
-	setDocument(NULL);
+	setDocument( 0 );
 }
 
 CAMainWin::~CAMainWin()  {
@@ -574,6 +574,9 @@ void CAMainWin::on_uiSelectMode_toggled(bool checked) {
 		setMode(SelectMode);
 }
 
+/*!
+	Sets the current mode and updates the GUI and toolbars.
+*/
 void CAMainWin::setMode(CAMode mode) {
 	_mode = mode;
 	
@@ -694,8 +697,8 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	\sa CAScoreViewPort::mousePressEvent(), viewPortMouseMoveEvent(), viewPortWheelEvent(), viewPortKeyPressEvent()
 */
 void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *viewPort) {
-	_currentViewPort = viewPort;
-	_currentViewPortContainer->setLastUsedViewPort(_currentViewPort);
+	setCurrentViewPort( viewPort );
+	_currentViewPortContainer->setLastUsedViewPort( currentViewPort() );
 	
 	if (viewPort->viewPortType() == CAViewPort::ScoreViewPort) {
 		CAScoreViewPort *v = (CAScoreViewPort*)viewPort;
@@ -728,7 +731,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				return;
 			}
 		}
-			
+		
 		switch (_mode) {
 			case SelectMode:
 			case EditMode: {
@@ -739,6 +742,8 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					if (elt->isPlayable()) {
 						std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
 						std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
+						if (elt->musElementType()==CAMusElement::Note)
+							std::cout << ", pitch=" << ((CANote*)elt)->pitch();
 					}
 					std::cout << std::endl;
 				}
@@ -1718,53 +1723,57 @@ void CAMainWin::updateContextToolBar() {
 	Shows/Hides music elements which cannot be placed in the selected context.
 */
 void CAMainWin::updateInsertToolBar() {
-	if (mode()==EditMode)
-		uiInsertToolBar->hide();
-	else {
-		uiInsertToolBar->show();
-		CAContext *context = currentContext();
-		if (context) {
-			switch (context->contextType()) {
-				case CAContext::Staff:
-					// staff selected
-					uiInsertPlayable->setVisible(true);
-					uiInsertClef->setVisible(true); // menu
-					uiInsertBarline->setVisible(true); // menu
-					uiClefType->setVisible(true);
-					uiInsertKeySig->setVisible(true);
-					uiInsertTimeSig->setVisible(true);
-					uiBarlineType->setVisible(true);
-					uiInsertFM->setVisible(false);
-					break;
-				case CAContext::FunctionMarkingContext:
-					// function marking context selected
-					uiInsertPlayable->setVisible(false);
-					uiInsertClef->setVisible(false); // menu
-					uiInsertBarline->setVisible(false); // menu
-					uiClefType->setVisible(false);
-					uiInsertKeySig->setVisible(false);
-					uiInsertTimeSig->setVisible(false);
-					uiBarlineType->setVisible(false);
-					uiInsertFM->setVisible(true);
-					break;
-			}
-		} else {
-			// no contexts selected
-			uiInsertPlayable->setVisible(false);
-			uiInsertClef->setVisible(false); // menu
-			uiInsertBarline->setVisible(false); // menu
-			uiClefType->setVisible(false);
-			uiInsertKeySig->setVisible(false);
-			uiInsertTimeSig->setVisible(false);
-			uiBarlineType->setVisible(false);
-			uiInsertFM->setVisible(false);
-		}
-	}
-	
 	if (currentSheet()) {
 		uiNewContext->setVisible(true);
-	} else
-		uiNewContext->setVisible(false);	
+		if (mode()==EditMode)
+			uiInsertToolBar->hide();
+		else {
+			uiInsertToolBar->show();
+			CAContext *context = currentContext();
+			if (context) {
+				switch (context->contextType()) {
+					case CAContext::Staff:
+						// staff selected
+						uiInsertPlayable->setVisible(true);
+						uiInsertClef->setVisible(true); // menu
+						uiInsertBarline->setVisible(true); // menu
+						uiClefType->setVisible(true);
+						uiTimeSigType->setVisible(true);
+						uiInsertKeySig->setVisible(true);
+						uiInsertTimeSig->setVisible(true);
+						uiBarlineType->setVisible(true);
+						uiInsertFM->setVisible(false);
+						break;
+					case CAContext::FunctionMarkingContext:
+						// function marking context selected
+						uiInsertPlayable->setVisible(false);
+						uiInsertClef->setVisible(false); // menu
+						uiInsertBarline->setVisible(false); // menu
+						uiClefType->setVisible(false);
+						uiTimeSigType->setVisible(false);
+						uiInsertKeySig->setVisible(false);
+						uiInsertTimeSig->setVisible(false);
+						uiBarlineType->setVisible(false);
+						uiInsertFM->setVisible(true);
+						break;
+				}
+			} else {
+				// no contexts selected
+				uiInsertPlayable->setVisible(false);
+				uiInsertClef->setVisible(false); // menu
+				uiInsertBarline->setVisible(false); // menu
+				uiClefType->setVisible(false);
+				uiTimeSigType->setVisible(false);
+				uiInsertKeySig->setVisible(false);
+				uiInsertTimeSig->setVisible(false);
+				uiBarlineType->setVisible(false);
+				uiInsertFM->setVisible(false);
+			}
+		}	
+	} else {
+		uiInsertToolBar->hide();
+		uiNewContext->setVisible(false);
+	}	
 }
 
 /*!

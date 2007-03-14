@@ -43,7 +43,8 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	CASheet *sheet = v->sheet();
 	
 	//list of all the music element lists (ie. streams) taken from all the contexts
-	QList<QList<CAMusElement*>*> musStreamList; 
+	QList<QList<CAMusElement*>*> musStreamList; // streams music elements
+	QList<CAContext*> contexts; // which context does the stream belong to
 
 	int dy = 50;
 	QList<int> nonFirstVoiceIdxs;	//list of indexes of musStreamLists which the voices aren't the first voice. This is used later for determining should a sign be created or not (if it has been created in 1st voice already, don't recreate it in the other voices in the same staff).
@@ -58,8 +59,9 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			//add all the voices lists to the common list
 			for (int j=0; j < staff->voiceCount(); j++) {
 				musStreamList << staff->voiceAt(j)->musElementList();
+				contexts << staff;
 				if (staff->voiceAt(j)->voiceNumber()!=1)
-					nonFirstVoiceIdxs << j;
+					nonFirstVoiceIdxs << musStreamList.size()-1;
 			}
 		} else
 		if (sheet->contextAt(i)->contextType() == CAContext::FunctionMarkingContext) {
@@ -67,6 +69,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			drawableContextMap[fmContext] = new CADrawableFunctionMarkingContext(fmContext, 0, dy);
 			v->addCElement(drawableContextMap[fmContext]);
 			musStreamList << (QList<CAMusElement*>*)fmContext->functionMarkingList();
+			contexts << fmContext;
 		}
 	}
 	
@@ -130,7 +133,11 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							);
 							
 							v->addMElement(clef);
-							lastClef[i] = clef->clef();
+							
+							// set the last clefs in all voices in the same staff
+							for (int j=0; j<contexts.size(); j++)
+								if (contexts[j]==contexts[i])
+									lastClef[j] = clef->clef();
 							
 							streamsX[i] += (clef->neededWidth() + MINIMUM_SPACE);
 							placedSymbol = true;
@@ -145,7 +152,11 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							);
 							
 							v->addMElement(keySig);
-							lastKeySig[i] = keySig->keySignature();
+							
+							// set the last key sigs in all voices in the same staff
+							for (int j=0; j<contexts.size(); j++)
+								if (contexts[j]==contexts[i])
+									lastKeySig[j] = keySig->keySignature();
 							
 							streamsX[i] += (keySig->neededWidth() + MINIMUM_SPACE);
 							placedSymbol = true;
@@ -160,7 +171,11 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							);
 							
 							v->addMElement(timeSig);
-							lastTimeSig[i] = timeSig->timeSignature();
+							
+							// set the last time signatures in all voices in the same staff
+							for (int j=0; j<contexts.size(); j++)
+								if (contexts[j]==contexts[i])
+									lastTimeSig[j] = timeSig->timeSignature();
 							
 							streamsX[i] += (timeSig->neededWidth() + MINIMUM_SPACE);
 							placedSymbol = true;
@@ -307,7 +322,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							streamsX[i],
 							((CADrawableStaff*)drawableContext)->calculateCenterYCoord((CANote*)elt, lastClef[i])
 						);
-
+						
 						v->addMElement(newElt);
 						if (((CANote*)elt)->isLastInTheChord())	
 							streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);

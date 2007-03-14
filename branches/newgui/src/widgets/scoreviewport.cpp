@@ -155,7 +155,7 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 	
 	if (select)
 		setCurrentContext(elt);
-
+	
 	if (elt->drawableContextType() == CADrawableContext::DrawableStaff) {
 		_shadowNote << new CANote(CANote::Whole, 0, 0, 0, 0);
 		_shadowNote.back()->setVoice(((CADrawableStaff*)elt)->staff()->voiceAt(0));
@@ -773,13 +773,12 @@ void CAScoreViewPort::checkScrollBars() {
 void CAScoreViewPort::calculateShadowNoteCoords() {
 	if (_currentContext?(_currentContext->drawableContextType() == CADrawableContext::DrawableStaff):0) {
 		int pitch = ((CADrawableStaff*)_currentContext)->calculatePitch(_xCursor, _yCursor);	//the current staff has the real pitch we need
-		for (int i=0; i<_drawableCList.size(); i++) {	//apply this pitch to all shadow notes in all staffs
-			if (((CADrawableContext*)_drawableCList.at(i))->drawableContextType() != CADrawableContext::DrawableStaff)
-				continue;
-				
+		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
 			_shadowNote[i]->setPitch(pitch);
 			_shadowDrawableNote[i]->setXPos(_xCursor);
-			_shadowDrawableNote[i]->setYPos(((CADrawableStaff*)_drawableCList.at(i))->calculateCenterYCoord(pitch, _xCursor));
+			_shadowDrawableNote[i]->setYPos(
+				static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext())->calculateCenterYCoord(pitch, _xCursor)
+			);
 		}
 	}
 }
