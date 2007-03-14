@@ -1,7 +1,7 @@
 import _CanorusPython
 
 def newDefaultDocument(document):
-	sheet1 = _CanorusPython.Document_addSheetByName(document, 'Sheet 1')
+	sheet1 = _CanorusPython.Document_addSheetByName(document, 'Sheet1')
 	
 	staff1 = _CanorusPython.Sheet_addStaff(sheet1)
 	staff1voice1 = _CanorusPython.new_Voice(staff1, 'Staff1Voice1')

@@ -25,6 +25,7 @@ CAFunctionMarkingContext::CAFunctionMarkingContext(CASheet *sheet, const QString
 }
 
 CAFunctionMarkingContext::~CAFunctionMarkingContext() {
+	clear();
 }
 
 void CAFunctionMarkingContext::clear() {

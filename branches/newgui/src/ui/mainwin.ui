@@ -776,6 +776,9 @@
    </property>
   </action>
   <action name="uiVoiceProperties" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/voiceproperties.png</iconset>
    </property>
@@ -805,7 +808,7 @@
     <string>Hidden Rest</string>
    </property>
   </action>
-  <action name="uiContextRemove" >
+  <action name="uiRemoveContext" >
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/contextremove.png</iconset>
    </property>
@@ -814,6 +817,9 @@
    </property>
   </action>
   <action name="uiContextProperties" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/contextproperties.png</iconset>
    </property>

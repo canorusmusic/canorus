@@ -211,6 +211,7 @@ CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 			_selection << (CADrawableMusElement*)l.at((++idx < l.size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
 		}
 		
+		setCurrentContext(((CADrawableMusElement*)_selection.front())->drawableContext());
 		return ((CADrawableMusElement*)_selection.front())->musElement();
 	} else {
 		if (_selection.size() != 0) {

@@ -21,6 +21,7 @@ class CASheet {
 		CAContext *contextAt(int i);
 		CAContext *context(const QString name);	///Look up for the context with the given name.
 		void addContext(CAContext *);
+		void removeContext(CAContext* c);
 		inline int contextCount();
 		
 		CAStaff *addStaff();

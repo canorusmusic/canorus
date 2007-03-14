@@ -177,9 +177,10 @@ void CAMainWin::setupCustomUi() {
 	
 	uiContextToolBar = new QToolBar( tr("Context ToolBar"), this );
 		uiContextToolBar->addWidget( uiContextName = new QLineEdit(this) );
+			connect( uiContextName, SIGNAL(returnPressed()), this, SLOT(on_uiContextName_returnPressed()));
 		uiContextToolBar->addWidget( uiStaffNumberOfLines = new QSpinBox(this) );
 			uiStaffNumberOfLines->hide();
-		uiContextToolBar->addAction( uiContextRemove );
+		uiContextToolBar->addAction( uiRemoveContext );
 		uiContextToolBar->addAction( uiContextProperties );
 		addToolBar(Qt::TopToolBarArea, uiContextToolBar);
 	
@@ -188,6 +189,7 @@ void CAMainWin::setupCustomUi() {
 		uiVoiceToolBar->addWidget( uiVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" ) );
 			connect( uiVoiceNum, SIGNAL( valChanged( int ) ), this, SLOT(on_uiVoiceNum_valChanged( int ) ) );
 		uiVoiceToolBar->addWidget( uiVoiceName = new QLineEdit( this ) );
+			connect( uiVoiceName, SIGNAL(returnPressed()), this, SLOT(on_uiVoiceName_returnPressed()));			
 		uiVoiceToolBar->addAction( uiRemoveVoice );
 		uiVoiceToolBar->addWidget(uiVoiceStemDirection = new CAMenuToolButton( tr("Select Voice Stem Direction" ), 3, this ));
 			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral );
@@ -428,6 +430,33 @@ void CAMainWin::initScoreViewPort(CAScoreViewPort *v) {
 }
 
 /*!
+	Returns the currently selected context in the current view port or 0 if no contexts are selected.
+*/
+CAContext *CAMainWin::currentContext() {
+	if ( currentViewPort() &&
+	     (currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort) &&
+	     (static_cast<CAScoreViewPort*>(currentViewPort())->currentContext())
+	   ) {
+		return static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->context();
+	} else
+		return 0;
+}
+
+/*!
+	Returns the pointer to the currently active voice or 0, if All voices are selected or the current context is not a staff at all.
+*/
+CAVoice *CAMainWin::currentVoice() {
+	CAStaff *staff = dynamic_cast<CAStaff*>(currentContext());
+	if (staff) {
+		if ( uiVoiceNum->getRealValue() &&
+		     uiVoiceNum->getRealValue() <= staff->voiceCount())
+			return staff->voiceAt( uiVoiceNum->getRealValue() - 1); 
+	}
+	
+	return 0;
+}
+
+/*!
 	Creates a new main window sharing the current document.
 */
 void CAMainWin::on_uiNewWindow_triggered() {
@@ -443,10 +472,63 @@ void CAMainWin::on_uiNewDocument_triggered() {
 
 void CAMainWin::on_uiNewSheet_triggered() {
 	// add a new empty sheet
-	addSheet(document()->addSheet(tr("Sheet %1").arg(QString::number(document()->sheetCount()+1))));
+	addSheet(document()->addSheet(tr("Sheet%1").arg(QString::number(document()->sheetCount()+1))));
 }
 
+/*!
+	Adds a new voice to the staff.
+*/
 void CAMainWin::on_uiNewVoice_triggered() {
+	CAStaff *staff = dynamic_cast<CAStaff*>(currentContext());
+	if (staff)
+		staff->addVoice(new CAVoice(staff, staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 )));
+	
+	uiVoiceNum->setMax(staff->voiceCount());
+	uiVoiceNum->setRealValue( staff->voiceCount() );
+}
+
+/*!
+	Removes the current voice from the staff and deletes its contents.
+*/
+void CAMainWin::on_uiRemoveVoice_triggered() {
+	CAVoice *voice = currentVoice();
+	if (voice) {
+		int ret = QMessageBox::warning(
+			this, tr("Canorus"),
+			tr("Are you sure do you want to delete voice\n%1 and all its notes?").arg(voice->name()),
+			QMessageBox::Yes | QMessageBox::No,
+			QMessageBox::No);
+		
+		if (ret == QMessageBox::Yes) {
+			voice->clear();
+			voice->staff()->removeVoice(voice);
+			uiVoiceNum->setMax( voice->staff()->voiceCount() );
+			uiVoiceNum->setRealValue( voice->staff()->voiceCount() );
+			CACanorus::rebuildUI(document(), currentSheet());
+			delete voice;
+		}
+	}
+}
+
+/*!
+	Removes the current context from the sheet and all its contents.
+*/
+void CAMainWin::on_uiRemoveContext_triggered() {
+	CAContext *context = currentContext();
+	if (context) {
+		int ret = QMessageBox::warning(
+			this, tr("Canorus"),
+			tr("Are you sure do you want to delete context\n%1 and all its contents?").arg(context->name()),
+			QMessageBox::Yes | QMessageBox::No,
+			QMessageBox::No);
+		
+		if (ret == QMessageBox::Yes) {
+			CASheet *sheet = context->sheet();
+			sheet->removeContext(context);
+			CACanorus::rebuildUI(document(), currentSheet());
+			delete context;
+		}
+	}
 }
 
 void CAMainWin::on_uiContextType_toggled(bool checked, int buttonId) {
@@ -614,9 +696,11 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				if (!v->selection()->isEmpty()) {
 					CAMusElement *elt = v->selection()->front()->musElement();
 					// debug
-					std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd();
-					if (elt->isPlayable())
+					std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", context=" << elt->context();
+					if (elt->isPlayable()) {
 						std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
+						std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
+					}
 					std::cout << std::endl;
 				}
 				break;
@@ -628,8 +712,8 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					CAContext* newContext;
 					switch(uiContextType->currentId()) {
 					case CAContext::Staff:
-						v->sheet()->addContext(newContext = new CAStaff(v->sheet(), tr("Staff %1").arg(v->sheet()->staffCount()+1)));
-						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), tr("Voice %1").arg(1)));
+						v->sheet()->addContext(newContext = new CAStaff(v->sheet(), tr("Staff%1").arg(v->sheet()->staffCount()+1)));
+						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), newContext->name() + tr("Voice%1").arg(1)));
 						break;
 					case CAContext::FunctionMarkingContext:
 						v->sheet()->addContext(newContext = new CAFunctionMarkingContext(v->sheet(), tr("Function marking context %1").arg(v->sheet()->contextCount()+1)));
@@ -638,6 +722,10 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					CACanorus::rebuildUI(document(), v->sheet());
 					
 					v->selectContext(newContext);
+					if (newContext->contextType()==CAContext::Staff) {
+						uiVoiceNum->setMax( 1 );
+						uiVoiceNum->setRealValue( 0 );
+					}
 					updateContextToolBar(); updateVoiceToolBar(); 
 					uiSelectMode->toggle();
 					v->repaint();
@@ -1244,8 +1332,20 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	}              
 }
 
+/*!
+	Called when a user changes the current voice number.
+*/
 void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
 	updateVoiceToolBar();
+}
+
+/*!
+	Gets the current voice and sets its name.
+*/
+void CAMainWin::on_uiVoiceName_returnPressed() {
+	CAVoice *voice = currentVoice();
+	if (voice)
+		voice->setName(uiVoiceName->text());
 }
 
 /*void CAMainWin::sl_mpoTimeSig_valChanged(int iBeats, int iBeat)
@@ -1404,14 +1504,14 @@ See the file LICENSE.GPL for details.\n\n\
 Homepage: http://www.canorus.org").arg(CANORUS_VERSION) );
 }
 
-void CAMainWin::on_uiMIDISetup_triggered() {
+void CAMainWin::on_uiSettings_triggered() {
 	CAMidiSetupDialog(this);
 }
 
 void CAMainWin::on_uiViewLilyPondSource_triggered() {
-	if ( (currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort) &&
-	     (static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()) &&
-	     (static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->context()->contextType()==CAContext::Staff) ) {
+	CAContext *context = currentContext();
+	if ( context &&
+	     context->contextType()==CAContext::Staff ) {
 		CAStaff *staff = static_cast<CAStaff*>(static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->context());
 		int voiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
 		CAVoice *voice = staff->voiceAt( voiceNum );
@@ -1432,6 +1532,15 @@ void CAMainWin::on_uiViewLilyPondSource_triggered() {
 }
 
 /*!
+	Sets the current context name.
+*/
+void CAMainWin::on_uiContextName_returnPressed() {
+	CAContext *context = currentContext();
+	if (context)
+		context->setName(uiContextName->text());
+}
+
+/*!
 	Updates all the toolbars according to the current state of the main window.
 */
 void CAMainWin::updateToolBars() {
@@ -1444,12 +1553,9 @@ void CAMainWin::updateToolBars() {
 	Shows/Hides the Voice properties tool bar according to the currently selected context and updates its properties.
 */
 void CAMainWin::updateVoiceToolBar() {
-	if ( currentViewPort() &&
-	     currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort &&
-	     static_cast<CAScoreViewPort*>(currentViewPort())->currentContext() &&
-	     static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff
-	   ) {
-		CAStaff *staff = static_cast<CAStaff*>(static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->context());
+	CAContext *context = currentContext();
+	if ( context && context->contextType() == CAContext::Staff ) {
+		CAStaff *staff = static_cast<CAStaff*>(context);
 		uiNewVoice->setEnabled(true);
 		if (staff->voiceCount()) {
 			int voiceNr = uiVoiceNum->getRealValue();
@@ -1480,10 +1586,8 @@ void CAMainWin::updateVoiceToolBar() {
 	Shows/Hides context tool bar according to the selected context (if any) and hides/shows specific actions in the toolbar for the current context.
 */
 void CAMainWin::updateContextToolBar() {
-	if ( currentViewPort() &&
-	     currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort &&
-		 static_cast<CAScoreViewPort*>(currentViewPort())->currentContext() ) {
-		CAContext *context = static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->context();
+	CAContext *context = currentContext();
+	if (context) {
 		switch (context->contextType()) {
 			case CAContext::Staff:
 				uiStaffNumberOfLines->setValue(static_cast<CAStaff*>(context)->numberOfLines());
@@ -1505,10 +1609,8 @@ void CAMainWin::updateContextToolBar() {
 	Shows/Hides music elements which cannot be placed in the selected context.
 */
 void CAMainWin::updateInsertToolBar() {
-	if ( currentViewPort() &&
-	     currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort &&
-		 static_cast<CAScoreViewPort*>(currentViewPort())->currentContext() ) {
-		CAContext *context = static_cast<CAScoreViewPort*>(_currentViewPort)->currentContext()->context();
+	CAContext *context = currentContext();
+	if (context) {
 		switch (context->contextType()) {
 			case CAContext::Staff:
 				// staff selected

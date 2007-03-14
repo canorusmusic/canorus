@@ -20,6 +20,7 @@
 #include "core/clef.h"
 
 #include "widgets/viewportcontainer.h"
+#include "widgets/scoreviewport.h"
 
 class QKeyEvent;
 class QSlider;
@@ -35,7 +36,6 @@ class CALCDNumber;
 class CASheet;
 class CAKeySigPSP;
 class CATimeSigPSP;
-class CAViewPort;
 class CAScoreViewPort;
 class CASourceViewPort;
 class CAMusElementFactory;
@@ -70,6 +70,12 @@ public:
 	inline QFileDialog *exportDialog() { return uiExportDialog; }
 	inline QFileDialog *importDialog() { return uiImportDialog; }	
 	inline CAViewPort *currentViewPort() { return _currentViewPort; }
+	inline CASheet *currentSheet() {
+		if (currentViewPort() && currentViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
+			return static_cast<CAScoreViewPort*>(currentViewPort())->sheet();
+	}
+	CAContext *currentContext();
+	CAVoice   *currentVoice();
 	inline CAViewPortContainer *currentViewPortContainer() { return _currentViewPortContainer; }
 	inline CADocument *document() { return _document; }
 	
@@ -89,14 +95,12 @@ private slots:
 	void on_uiImportDocument_triggered();
 	
 	// Edit
-	void on_uiMIDISetup_triggered();
 	
 	// Insert
 	void on_uiSelectMode_toggled(bool);
 	void on_uiNewSheet_triggered();
 	void on_uiNewContext_toggled(bool);      // menu
 	void on_uiContextType_toggled(bool, int);
-	void on_uiNewVoice_triggered();
 	void on_uiInsertClef_toggled(bool);      // menu
 	void on_uiClefType_toggled(bool, int);
 	void on_uiInsertKeySignature_toggled(bool); // menu
@@ -116,14 +120,24 @@ private slots:
 	void on_uiViewLilyPondSource_triggered();
 	void on_uiViewCanorusMLSource_triggered();
 	
+	// Context
+	void on_uiContextName_returnPressed();
+	void on_uiRemoveContext_triggered();
+	
 	// Playback
 	void on_uiPlayFromSelection_toggled(bool);
 	
 	// Playable
 	void on_uiPlayableLength_toggled(bool, int);
 	
+	// Tools
+	void on_uiSettings_triggered();
+	
 	// Voice
+	void on_uiNewVoice_triggered();
 	void on_uiVoiceNum_valChanged(int);
+	void on_uiVoiceName_returnPressed();
+	void on_uiRemoveVoice_triggered();
 	
 	// Window
 	void on_uiSplitHorizontally_triggered();

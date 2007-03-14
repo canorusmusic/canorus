@@ -51,6 +51,7 @@ class CAStaff : public CAContext {
 		 * @return Pointer to the voice with the given name. If such a voice doesn't exist, return 0.
 		 */
 		CAVoice *voice(const QString name);
+		void removeVoice(CAVoice *voice);
 		
 		/**
 		 * Add a voice to the voice list.

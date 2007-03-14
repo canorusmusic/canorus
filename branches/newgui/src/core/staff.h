@@ -24,13 +24,15 @@ class CANote;
 class CAStaff : public CAContext {
 public:
 	CAStaff(CASheet *s, const QString name, int numberOfLines=5);
+	~CAStaff();
 	
 	inline int numberOfLines() { return _numberOfLines; }
 	inline void setNumberOfLines(int val) { _numberOfLines = val; }
 	void clear();
 	
-	int voiceCount() { return _voiceList.size(); }
-	CAVoice *voiceAt(int i) { return _voiceList[i]; }
+	inline int voiceCount() { return _voiceList.size(); }
+	inline CAVoice *voiceAt(int i) { return _voiceList[i]; }
+	inline void removeVoice(CAVoice *voice) { _voiceList.removeAll(voice); }
 	CAVoice *voice(const QString name);
 	
 	void addVoice(CAVoice *voice);
