@@ -329,6 +329,9 @@ void CAMainWin::clearUI() {
 		delete _currentViewPortContainer;
 		uiTabWidget->removeTab(uiTabWidget->currentIndex());
 	}
+	
+	setCurrentViewPort( 0 );
+	setCurrentViewPortContainer( 0 );
 }
 
 /*!
@@ -467,7 +470,7 @@ CAContext *CAMainWin::currentContext() {
 	Returns the pointer to the currently active voice or 0, if All voices are selected or the current context is not a staff at all.
 */
 CAVoice *CAMainWin::currentVoice() {
-	CAStaff *staff = dynamic_cast<CAStaff*>(currentContext());
+	CAStaff *staff = currentStaff();
 	if (staff) {
 		if ( uiVoiceNum->getRealValue() &&
 		     uiVoiceNum->getRealValue() <= staff->voiceCount())
@@ -500,7 +503,7 @@ void CAMainWin::on_uiNewSheet_triggered() {
 	Adds a new voice to the staff.
 */
 void CAMainWin::on_uiNewVoice_triggered() {
-	CAStaff *staff = dynamic_cast<CAStaff*>(currentContext());
+	CAStaff *staff = currentStaff();
 	if (staff)
 		staff->addVoice(new CAVoice(staff, staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 )));
 	
@@ -1597,7 +1600,7 @@ void CAMainWin::on_uiContextName_returnPressed() {
 	Sets the number of lines in the staff.
 */
 void CAMainWin::on_uiStaffNumberOfLines_valueChanged(int lines) {
-	CAStaff *staff = dynamic_cast<CAStaff*>(currentContext());
+	CAStaff *staff = currentStaff();
 	if (staff) {
 		staff->setNumberOfLines(lines);
 		CACanorus::rebuildUI(document(), currentSheet());
@@ -1757,6 +1760,11 @@ void CAMainWin::updateInsertToolBar() {
 			uiInsertFM->setVisible(false);
 		}
 	}
+	
+	if (currentSheet()) {
+		uiNewContext->setVisible(true);
+	} else
+		uiNewContext->setVisible(false);	
 }
 
 /*!

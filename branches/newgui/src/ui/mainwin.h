@@ -70,11 +70,24 @@ public:
 	inline QFileDialog *exportDialog() { return uiExportDialog; }
 	inline QFileDialog *importDialog() { return uiImportDialog; }	
 	inline CAViewPort *currentViewPort() { return _currentViewPort; }
-	inline CAScoreViewPort *currentScoreViewPort() { return dynamic_cast<CAScoreViewPort*>(_currentViewPort); }
+	
+	inline CAScoreViewPort *currentScoreViewPort() {
+		if (_currentViewPort) return dynamic_cast<CAScoreViewPort*>(_currentViewPort);
+		else return 0;
+	}
+	
 	inline CASheet *currentSheet() {
 		if (currentViewPort() && currentViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
 			return static_cast<CAScoreViewPort*>(currentViewPort())->sheet();
+		else return 0;
 	}
+	
+	inline CAStaff *currentStaff() {
+		CAContext *context = currentContext();
+		if (context && context->contextType()==CAContext::Staff) return static_cast<CAStaff*>(context);
+		else return 0;
+	}
+	
 	CAContext *currentContext();
 	CAVoice   *currentVoice();
 	inline CAViewPortContainer *currentViewPortContainer() { return _currentViewPortContainer; }
