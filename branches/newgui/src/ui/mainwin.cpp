@@ -175,6 +175,14 @@ void CAMainWin::setupCustomUi() {
 		uiInsertToolBar->addAction( uiInsertFM );
 		addToolBar(Qt::LeftToolBarArea, uiInsertToolBar);
 	
+	uiSheetToolBar = new QToolBar( tr("Sheet ToolBar"), this );
+		uiSheetToolBar->addAction( uiNewSheet );
+		uiSheetToolBar->addWidget( uiSheetName = new QLineEdit(this) );
+			connect( uiSheetName, SIGNAL(returnPressed()), this, SLOT(on_uiSheetName_returnPressed()) );
+		uiSheetToolBar->addAction( uiRemoveSheet );
+		uiSheetToolBar->addAction( uiSheetProperties );
+		addToolBar(Qt::TopToolBarArea, uiSheetToolBar);
+	
 	uiContextToolBar = new QToolBar( tr("Context ToolBar"), this );
 		uiContextToolBar->addWidget( uiContextName = new QLineEdit(this) );
 			connect( uiContextName, SIGNAL(returnPressed()), this, SLOT(on_uiContextName_returnPressed()));
@@ -253,10 +261,10 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->addAction( uiInsertFM );
 	uiInsertGroup->setExclusive( true );
 	
-	uiPlayableToolBar->hide();
 	uiInsertToolBar->hide();
+	uiSheetToolBar->hide();
 	uiContextToolBar->hide();
-	uiVoiceToolBar->hide();
+	uiPlayableToolBar->hide();
 }
 
 void CAMainWin::newDocument() {
@@ -296,8 +304,9 @@ void CAMainWin::addSheet(CASheet *s) {
 	uiTabWidget->addTab(vpc, s->name());
 	uiTabWidget->setCurrentIndex(uiTabWidget->count()-1);
 	
-	_currentViewPortContainer = vpc;
-	_currentViewPort = v;
+	setCurrentViewPortContainer(vpc);
+	setCurrentViewPort(v);
+	updateToolBars();
 }
 
 /*!
@@ -328,6 +337,7 @@ void CAMainWin::clearUI() {
 void CAMainWin::on_uiTabWidget_currentChanged(int idx) {
 	_currentViewPortContainer = static_cast<CAViewPortContainer*>(uiTabWidget->currentWidget());
 	_currentViewPort = _currentViewPortContainer->lastUsedViewPort();
+	updateToolBars();
 }
 
 void CAMainWin::on_uiFullscreen_toggled(bool checked) {
@@ -504,6 +514,15 @@ void CAMainWin::on_uiNewVoice_triggered() {
 void CAMainWin::on_uiRemoveVoice_triggered() {
 	CAVoice *voice = currentVoice();
 	if (voice) {
+		// Last voice cannot be deleted
+		if (voice->staff()->voiceCount()==1) {
+			int ret = QMessageBox::critical(
+				this, tr("Canorus"),
+				tr("Cannot delete the last voice in the staff!")
+			);
+			return;
+		}
+		
 		int ret = QMessageBox::warning(
 			this, tr("Canorus"),
 			tr("Are you sure do you want to delete voice\n%1 and all its notes?").arg(voice->name()),
@@ -661,8 +680,8 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 		}
 	} else {
 		clearUI();
-		uiInsertToolBar->hide();
 	}
+	updateToolBars();
 }
 
 /*!
@@ -690,15 +709,11 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
 				}
 			}
-			updateContextToolBar();
-			updateVoiceToolBar();
-			updateInsertToolBar();
 			v->repaint();
 		} else
 		if (currentContext != v->currentContext()) { // no context selected
-			updateContextToolBar();
-			updateVoiceToolBar();
-			updateInsertToolBar();
+			if ( mode()==InsertMode ) // If in insert mode, stay in the current context
+				v->setCurrentContext( currentContext );
 			v->repaint();
 		}
 		
@@ -715,7 +730,6 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 			case SelectMode:
 			case EditMode: {
 				if (v->selection().size()) {
-					updatePlayableToolBar();
 					CAMusElement *elt = v->selection().front()->musElement();
 					// debug
 					std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", context=" << elt->context();
@@ -748,7 +762,6 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 						uiVoiceNum->setMax( 1 );
 						uiVoiceNum->setRealValue( 0 );
 					}
-					updateContextToolBar(); updateVoiceToolBar(); 
 					uiSelectMode->toggle();
 					v->repaint();
 					break;
@@ -772,6 +785,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 		}
 		CAPluginManager::action("onScoreViewPortClick", document(), 0, 0, this);
 	}
+	updateToolBars();
 }
 
 /*!
@@ -1045,7 +1059,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 	voice, dependent on the music element type and the viewport coordinates.
 */
 void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMusElement &roMusElement ) {
-	CADrawableContext *context = v->selectCElement(coords.x(), coords.y());
+	CADrawableContext *context = v->currentContext();
 	
 	CAStaff *staff=0;
 	CADrawableStaff *drawableStaff=0;
@@ -1555,6 +1569,22 @@ void CAMainWin::on_uiViewLilyPondSource_triggered() {
 }
 
 /*!
+	Removes the sheet, all its contents and rebuilds the GUI.
+*/
+void CAMainWin::on_uiRemoveSheet_triggered() {
+	document()->removeSheet(currentSheet());
+	CACanorus::rebuildUI(document());
+}
+
+void CAMainWin::on_uiSheetName_returnPressed() {
+	CASheet *sheet = currentSheet();
+	if (sheet) {
+		sheet->setName( uiSheetName->text() );
+		uiTabWidget->setTabText(uiTabWidget->currentIndex(), sheet->name());
+	}
+}
+
+/*!
 	Sets the current context name.
 */
 void CAMainWin::on_uiContextName_returnPressed() {
@@ -1606,9 +1636,23 @@ void CAMainWin::on_uiNoteStemDirection_toggled(bool checked, int id) {
 */
 void CAMainWin::updateToolBars() {
 	updateInsertToolBar();
+	updateSheetToolBar();
 	updateContextToolBar();
 	updateVoiceToolBar();
 	updatePlayableToolBar();
+}
+
+/*!
+	Shows sheet tool bar if nothing selected. Otherwise hides it.
+*/
+void CAMainWin::updateSheetToolBar() {
+	CAScoreViewPort *v = currentScoreViewPort();
+	if (v && v->selection().isEmpty() && (!v->currentContext())) {
+		if (v->sheet())
+			uiSheetName->setText(v->sheet()->name());
+		uiSheetToolBar->show();
+	} else
+		uiSheetToolBar->hide();
 }
 
 /*!

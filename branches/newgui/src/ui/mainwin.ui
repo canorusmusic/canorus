@@ -581,6 +581,9 @@
    </property>
   </action>
   <action name="uiNewSheet" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/sheetnew.png</iconset>
+   </property>
    <property name="text" >
     <string>New sheet</string>
    </property>
@@ -825,6 +828,25 @@
    </property>
    <property name="text" >
     <string>Context Properties</string>
+   </property>
+  </action>
+  <action name="uiRemoveSheet" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/sheetremove.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Remove Sheet</string>
+   </property>
+  </action>
+  <action name="uiSheetProperties" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/sheetproperties.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Sheet Properties</string>
    </property>
   </action>
  </widget>

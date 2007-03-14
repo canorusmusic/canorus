@@ -94,8 +94,8 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 }
 
 CAScoreViewPort::~CAScoreViewPort() {
-	_drawableMList.clear(true);	//clears all the elements and delete its contents too as autoDelete is true
-	_drawableCList.clear(true);	//clears all the elements and delete its contents too as autoDelete is true
+	_drawableMList.clear(true);	//clears all the elements and delete its drawable contents too as autoDelete is true
+	_drawableCList.clear(true);	//clears all the elements and delete its drawable contents too as autoDelete is true
 	
 	_animationTimer->disconnect();
 	_animationTimer->stop();

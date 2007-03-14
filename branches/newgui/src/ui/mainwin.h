@@ -101,6 +101,7 @@ private slots:
 	void on_uiSelectMode_toggled(bool);
 	void on_uiNewSheet_triggered();
 	void on_uiNewContext_toggled(bool);      // menu
+	void on_uiNewVoice_triggered();
 	void on_uiContextType_toggled(bool, int);
 	void on_uiInsertClef_toggled(bool);      // menu
 	void on_uiClefType_toggled(bool, int);
@@ -121,6 +122,10 @@ private slots:
 	void on_uiViewLilyPondSource_triggered();
 	void on_uiViewCanorusMLSource_triggered();
 	
+	// Sheet
+	void on_uiRemoveSheet_triggered();
+	void on_uiSheetName_returnPressed();
+	
 	// Context
 	void on_uiContextName_returnPressed();
 	void on_uiStaffNumberOfLines_valueChanged(int);
@@ -137,7 +142,6 @@ private slots:
 	void on_uiSettings_triggered();
 	
 	// Voice
-	void on_uiNewVoice_triggered();
 	void on_uiVoiceNum_valChanged(int);
 	void on_uiVoiceName_returnPressed();
 	void on_uiRemoveVoice_triggered();
@@ -203,8 +207,9 @@ private:
 	void setupCustomUi();
 	void initScoreViewPort(CAScoreViewPort*);
 	void updateToolBars();
-	void updateVoiceToolBar();
+	void updateSheetToolBar();
 	void updateContextToolBar();
+	void updateVoiceToolBar();
 	void updateInsertToolBar();
 	void updatePlayableToolBar();
 	
@@ -219,7 +224,7 @@ private:
 		QToolBar     *uiInsertToolBar;
 			QActionGroup *uiInsertGroup;           // Group for mutual exclusive selection of music elements
 			// QAction       *uiSelectMode; // made by Qt Designer
-			// QAction       *uiInsertNewSheet; // made by Qt Designer
+			// QAction       *uiNewSheet; // made by Qt Designer
 			CAMenuToolButton *uiContextType;
 			
 			// QAction       *uiInsertPlayable;  // made by Qt Designer
@@ -229,6 +234,11 @@ private:
 			CAMenuToolButton *uiBarlineType;
 			// QAction       *uiInsertFM;  // made by Qt Designer
 		
+		QToolBar *uiSheetToolBar;
+			// QAction        *uiNewSheet; // made by Qt Designer
+			QLineEdit         *uiSheetName;
+			// QAction        *uiRemoveSheet; // made by Qt Designer
+			// QAction        *uiSheetProperties; // made by Qt Designer
 		QToolBar *uiContextToolBar;
 			QLineEdit        *uiContextName;
 			QSpinBox         *uiStaffNumberOfLines;
