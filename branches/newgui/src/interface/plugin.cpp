@@ -79,6 +79,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 	QList<PyObject*> pythonArgs;
 #endif
 	
+	bool rebuildDocument = false;
+	
 	// Convert arguments to its needed scripting language types
 	QList<QString> args = action->args();
 	for (int i=0; i<args.size(); i++) {
@@ -86,6 +88,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		
 		// Currently selected document
 		if (val=="document") {
+			rebuildDocument = true;
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
 				rubyArgs << CASwigRuby::toRubyObject(document, CASwigRuby::Document);
@@ -128,11 +131,11 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 			if (action->lang()=="ruby") {
 				if (mainWin->currentViewPortContainer()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
 					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentViewPortContainer()->lastUsedViewPort());
-					if (!v->selection()->size() || v->selection()->front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
+					if (!v->selection().size() || v->selection().front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
 						error=true;
 						break;
 					}
-					rubyArgs << CASwigRuby::toRubyObject(v->selection()->front()->musElement(), CASwigRuby::Note);
+					rubyArgs << CASwigRuby::toRubyObject(v->selection().front()->musElement(), CASwigRuby::Note);
 				}
 				else {
 					error = true;
@@ -144,11 +147,11 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 			if (action->lang()=="python") {
 				if (mainWin->currentViewPortContainer()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
 					CAScoreViewPort *v = static_cast<CAScoreViewPort*>(mainWin->currentViewPortContainer()->lastUsedViewPort());
-					if (!v->selection()->size() || v->selection()->front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
+					if (!v->selection().size() || v->selection().front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
 						error=true;
 						break;
 					}
-					pythonArgs << CASwigPython::toPythonObject(v->selection()->front()->musElement(), CASwigPython::Note);
+					pythonArgs << CASwigPython::toPythonObject(v->selection().front()->musElement(), CASwigPython::Note);
 				}
 				else {
 					error = true;
@@ -217,8 +220,12 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #endif
 	}
 	
-	if (action->refresh())
-		CACanorus::rebuildUI(document);
+	if (action->refresh()) {
+		if (rebuildDocument)
+			CACanorus::rebuildUI(document);
+		else
+			CACanorus::rebuildUI(document, mainWin->currentSheet());
+	}
 	
 	return (!error);
 }

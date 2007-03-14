@@ -44,7 +44,7 @@ void CAPlayback::run() {
 	QVector<unsigned char> message;	//midi 3-byte message sent to midi device
 
 	QList<CADrawableMusElement *> oldSelection;
-	oldSelection = *_scoreViewPort->selection();
+	oldSelection = _scoreViewPort->selection();
 	_scoreViewPort->clearSelection();
 
 	for (int i=0; i < sheet->contextCount(); i++) {

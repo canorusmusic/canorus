@@ -342,12 +342,13 @@ void CAScoreViewPort::rebuild() {
 		musElementSelection << _selection[i]->musElement();
 	
 	_selection.clear();
-
+	
 	_drawableMList.clear(true);
 	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	//remember the index of last used context
 	_drawableCList.clear(true);
 		
 	CAEngraver::reposit(this);
+	
 	if (contextIdx != -1)	//restore the last used context
 		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
 	else

@@ -70,6 +70,7 @@ public:
 	inline QFileDialog *exportDialog() { return uiExportDialog; }
 	inline QFileDialog *importDialog() { return uiImportDialog; }	
 	inline CAViewPort *currentViewPort() { return _currentViewPort; }
+	inline CAScoreViewPort *currentScoreViewPort() { return dynamic_cast<CAScoreViewPort*>(_currentViewPort); }
 	inline CASheet *currentSheet() {
 		if (currentViewPort() && currentViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
 			return static_cast<CAScoreViewPort*>(currentViewPort())->sheet();
@@ -122,6 +123,7 @@ private slots:
 	
 	// Context
 	void on_uiContextName_returnPressed();
+	void on_uiStaffNumberOfLines_valueChanged(int);
 	void on_uiRemoveContext_triggered();
 	
 	// Playback
@@ -129,6 +131,7 @@ private slots:
 	
 	// Playable
 	void on_uiPlayableLength_toggled(bool, int);
+	void on_uiNoteStemDirection_toggled(bool, int);
 	
 	// Tools
 	void on_uiSettings_triggered();
@@ -138,6 +141,7 @@ private slots:
 	void on_uiVoiceNum_valChanged(int);
 	void on_uiVoiceName_returnPressed();
 	void on_uiRemoveVoice_triggered();
+	void on_uiVoiceStemDirection_toggled(bool, int);
 	
 	// Window
 	void on_uiSplitHorizontally_triggered();
@@ -202,6 +206,7 @@ private:
 	void updateVoiceToolBar();
 	void updateContextToolBar();
 	void updateInsertToolBar();
+	void updatePlayableToolBar();
 	
 	// Dialogs, Windows
 	QFileDialog *uiExportDialog;

@@ -88,7 +88,9 @@ private:
 CAMusElementFactory::CAMusElementFactory()
 {
 	_ePlayableLength = CAPlayable::Quarter;
+	_eNoteStemDirection = CANote::StemPrefered;
 	_iPlayableDotted = 0;
+	_eRestType = CARest::Normal;
 	_iTimeSigBeats = 4;
 	_iTimeSigBeat = 4;
 	_eClef = CAClef::Treble;
@@ -245,6 +247,7 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 			          (left?left->musElement()->timeEnd():0),
 			          _iPlayableDotted
 			       );
+			static_cast<CANote*>(mpoMusElement)->setStemDirection( _eNoteStemDirection );
 			if (left)	//left element exists
 				bSuccess = voice->insertMusElementAfter(mpoMusElement, left->musElement());
 			else		//left element doesn't exist, prepend the new music element
@@ -273,7 +276,7 @@ bool CAMusElementFactory::configureRest( CAVoice *voice,
 	if ( (context) &&
 	     (context->context()->contextType() == CAContext::Staff) )
 	{
-		mpoMusElement = new CARest(CARest::Normal,
+		mpoMusElement = new CARest(restType(),
 				_ePlayableLength,
 				voice,
 				(left?left->musElement()->timeEnd():0),

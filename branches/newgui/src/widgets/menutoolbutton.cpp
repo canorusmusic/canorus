@@ -8,6 +8,9 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QWheelEvent>
+#include <QMainWindow>
+#include <QToolBar>
 #include <iostream> // debug
 #include "widgets/menutoolbutton.h"
 
@@ -139,26 +142,47 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId ) {
 
 /*!
 	Shows the button menu (connected to aboutToShow signal).
-	\todo If the whole buttonBox cannot be drawn on the screen, move it somehow so it can be.
-	\todo A small bug appears when showing/hiding the tool menu.
-	\warning Coordinates of groupBox are calculated according to its parent (main window) and not this parent.
+	
+	\warning Coordinates of groupBox are calculated according to its parent (main window) and not this parent (QToolBar).
 */	
 void CAMenuToolButton::showButtons() {
-	// Show the group box in the lower-left corner of the toolbutton
-	QDesktopWidget *desktop = QApplication::desktop();
-	int x, y;
-	_groupBox->move(0,0);	// reset groupBox position, otherwise the positions translations get messed up. -ikjasa
-	QPoint globalPos = mapToGlobal(QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
-	
-	if (globalPos.x() + width() + _groupBox->width() > desktop->width())
-		x = 0;
-	else
-		x = _groupBox->mapFromGlobal(globalPos).x() + width();
-
-	if (globalPos.y() + _groupBox->height() > desktop->height())
-		y = 0;
-	else
-		y = _groupBox->mapFromGlobal(globalPos).y();
+	QMainWindow *mainWin = dynamic_cast<QMainWindow*>(_groupBox->parent());
+	QToolBar *toolBar = dynamic_cast<QToolBar*>(parent());
+	int x=0, y=0;
+	if (mainWin && toolBar) {
+		_groupBox->move(0,0);	// reset groupBox position, otherwise the positions translations get messed up. -ikjasa
+		QPoint topLeft = mapTo(mainWin, QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
+		
+		// Set buttons box coordinates which fit on the main window
+		if (mainWin->toolBarArea(toolBar) == Qt::LeftToolBarArea) {
+			if (topLeft.x() + width() + _groupBox->width() > mainWin->width()) x = mainWin->width() - _groupBox->width();
+			else x = topLeft.x() + width();
+			
+			if (topLeft.y() + _groupBox->height() > mainWin->height()) y = mainWin->height() - _groupBox->height();
+			else y = topLeft.y();
+		} else
+		if (mainWin->toolBarArea(toolBar) == Qt::TopToolBarArea) {
+			if (topLeft.x() + _groupBox->width() > mainWin->width()) x = mainWin->width() - _groupBox->width();
+			else x = topLeft.x();
+			
+			if (topLeft.y() + height() + _groupBox->height() > mainWin->height()) y = mainWin->height() - _groupBox->height();
+			else y = topLeft.y() + height();
+		} else
+		if (mainWin->toolBarArea(toolBar) == Qt::RightToolBarArea) {
+			if (topLeft.x() - width() - _groupBox->width() < 0) x = 0;
+			else x = topLeft.x() - _groupBox->width();
+			
+			if (topLeft.y() + _groupBox->height() > mainWin->height()) y = mainWin->height() - _groupBox->height();
+			else y = topLeft.y();
+		} else
+		if (mainWin->toolBarArea(toolBar) == Qt::BottomToolBarArea) {
+			if (topLeft.x() + _groupBox->width() > mainWin->width()) x = mainWin->width() - _groupBox->width();
+			else x = topLeft.x();
+			
+			if (topLeft.y() - _groupBox->height() < 0) y = 0;
+			else y = topLeft.y() - _groupBox->height();
+		}
+	}
 	
 	_groupBox->move(x,y);
 	_groupBox->show();
@@ -191,6 +215,24 @@ void CAMenuToolButton::hideButtons() {
 */
 void CAMenuToolButton::handleToggled( bool checked ) {
 	emit toggled( checked, currentId() );
+}
+
+/*!
+	Cycle through properties using the mouse wheel.
+*/
+void CAMenuToolButton::wheelEvent( QWheelEvent *event ) {
+	QList<QAbstractButton*> buttonList = _buttonGroup->buttons();
+	QAbstractButton *button = _buttonGroup->button(currentId());
+	int newIdx = buttonList.indexOf(button) + (event->delta()>0?-1:1);
+	
+	if (newIdx == buttonList.size())
+		newIdx = 0;
+	else if (newIdx == -1)
+		newIdx = buttonList.size()-1;
+	
+	setCurrentId( _buttonGroup->id(buttonList[newIdx]) );
+	click();
+	setChecked(true);
 }
 
 /*!

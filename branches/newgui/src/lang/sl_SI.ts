@@ -33,62 +33,62 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="187"/>
+        <location filename="../ui/mainwin.cpp" line="190"/>
         <source>Voice ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="194"/>
+        <location filename="../ui/mainwin.cpp" line="199"/>
         <source>Select Voice Stem Direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="202"/>
+        <location filename="../ui/mainwin.cpp" line="209"/>
         <source>Playable ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="203"/>
+        <location filename="../ui/mainwin.cpp" line="210"/>
         <source>Select Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="217"/>
+        <location filename="../ui/mainwin.cpp" line="226"/>
         <source>Select Note Stem Direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="719"/>
+        <location filename="../ui/mainwin.cpp" line="741"/>
         <source>Function marking context %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1203"/>
+        <location filename="../ui/mainwin.cpp" line="1226"/>
         <source>Choose a file to open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1226"/>
+        <location filename="../ui/mainwin.cpp" line="1249"/>
         <source>Canorus document (*.xml)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1224"/>
+        <location filename="../ui/mainwin.cpp" line="1247"/>
         <source>Choose a file to save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1492"/>
+        <location filename="../ui/mainwin.cpp" line="1515"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1497"/>
+        <location filename="../ui/mainwin.cpp" line="1520"/>
         <source>About Canorus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1504"/>
+        <location filename="../ui/mainwin.cpp" line="1527"/>
         <source>Canorus - The next generation music score editor
 
 Version %1
@@ -102,35 +102,75 @@ Homepage: http://www.canorus.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="715"/>
+        <location filename="../ui/mainwin.cpp" line="737"/>
         <source>Staff%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="716"/>
+        <location filename="../ui/mainwin.cpp" line="738"/>
         <source>Voice%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="475"/>
+        <location filename="../ui/mainwin.cpp" line="486"/>
         <source>Sheet%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="520"/>
+        <location filename="../ui/mainwin.cpp" line="531"/>
         <source>Canorus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="498"/>
+        <location filename="../ui/mainwin.cpp" line="509"/>
         <source>Are you sure do you want to delete voice
 %1 and all its notes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="521"/>
+        <location filename="../ui/mainwin.cpp" line="532"/>
         <source>Are you sure do you want to delete context
 %1 and all its contents?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="181"/>
+        <source>Context name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="184"/>
+        <source>Number of lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="193"/>
+        <source>Current Voice number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="196"/>
+        <source>Voice name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="201"/>
+        <source>Voice stem direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="212"/>
+        <source>Playable length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="224"/>
+        <source>Number of dots</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="228"/>
+        <source>Note stem direction</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

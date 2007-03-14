@@ -67,6 +67,8 @@ public:
 	
 	void setMusElementType( CAMusElement::CAMusElementType eMEType );
 	
+	inline CAPlayable::CAPlayableLength playableLength() { return _ePlayableLength; }
+	
 	inline void setPlayableLength( CAPlayable::CAPlayableLength ePlayableLength )
 	{ _ePlayableLength = ePlayableLength; };
 	
@@ -74,6 +76,11 @@ public:
 	
 	inline void setPlayableDotted( int iPlaybleDotted )
 	{ _iPlayableDotted = iPlaybleDotted; };
+	
+	inline CANote::CAStemDirection noteStemDirection() { return _eNoteStemDirection; }
+	
+	inline void setNoteStemDirection( CANote::CAStemDirection eDir )
+	{ _eNoteStemDirection = eDir; }
 	
 	inline void addPlayableDotted( int iAdd )
 	{ _iPlayableDotted = (_iPlayableDotted+iAdd)%4; };
@@ -100,6 +107,11 @@ public:
 	inline void subNoteExtraAccs( int iSub )
 	{ _iNoteExtraAccs -= iSub; };
 	
+	inline CARest::CARestType restType() { return _eRestType; }
+	
+	inline void setRestType(CARest::CARestType eType)
+	{ _eRestType = eType; }
+	
 	inline void setTimeSigBeats( int iTimeSigBeats )
 	{ _iTimeSigBeats = iTimeSigBeats; };
 	
@@ -115,9 +127,11 @@ private:
 	// Element creation parameters //
 	/////////////////////////////////
 	CAPlayable::CAPlayableLength _ePlayableLength; // Length of note/rest to be added
+	CANote::CAStemDirection _eNoteStemDirection; // Note stem direction to be inserted
 	int _iPlayableDotted;	   // Number of dots to be inserted for the note/rest
 	int _iNoteExtraAccs;	   // Extra note accidentals for new notes which user adds/removes with +/- keys
 	int _iNoteAccs;	         // Note accidentals at specific coordinates updated regularily when in insert mode
+	CARest::CARestType _eRestType; // Hidden/Normal rest
 	int _iTimeSigBeats;      // Time signature number of beats to be inserted
 	int _iTimeSigBeat;       // Time signature beat to be inserted
 	CAClef::CAClefType _eClef; // Type of the clef to be inserted

@@ -52,6 +52,8 @@ private slots:
 	void handleTriggered();
 	
 protected:
+	void wheelEvent(QWheelEvent*);
+	
 	QButtonGroup       *_buttonGroup;     // Abstract group for the button actions
 	QGroupBox          *_groupBox;        // Group box containing title and buttons
 	QGridLayout        *_boxLayout;       // Layout for the group box
