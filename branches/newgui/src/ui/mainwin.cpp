@@ -1615,6 +1615,8 @@ void CAMainWin::updateInsertToolBar() {
 			case CAContext::Staff:
 				// staff selected
 				uiInsertPlayable->setVisible(true);
+				uiInsertClef->setVisible(true); // menu
+				uiInsertBarline->setVisible(true); // menu
 				uiClefType->setVisible(true);
 				uiInsertKeySig->setVisible(true);
 				uiInsertTimeSig->setVisible(true);
@@ -1624,6 +1626,8 @@ void CAMainWin::updateInsertToolBar() {
 			case CAContext::FunctionMarkingContext:
 				// function marking context selected
 				uiInsertPlayable->setVisible(false);
+				uiInsertClef->setVisible(false); // menu
+				uiInsertBarline->setVisible(false); // menu
 				uiClefType->setVisible(false);
 				uiInsertKeySig->setVisible(false);
 				uiInsertTimeSig->setVisible(false);
@@ -1634,6 +1638,8 @@ void CAMainWin::updateInsertToolBar() {
 	} else {
 		// no contexts selected
 		uiInsertPlayable->setVisible(false);
+		uiInsertClef->setVisible(false); // menu
+		uiInsertBarline->setVisible(false); // menu
 		uiClefType->setVisible(false);
 		uiInsertKeySig->setVisible(false);
 		uiInsertTimeSig->setVisible(false);

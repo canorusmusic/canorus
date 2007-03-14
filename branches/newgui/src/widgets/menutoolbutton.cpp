@@ -170,7 +170,8 @@ void CAMenuToolButton::showButtons() {
 void CAMenuToolButton::hideButtons( int id ) {
 	if (_buttonGroup->button(id)) {
 		setCurrentId( id );
-		setChecked(true);
+		click(); // needed to disable other exclusive button group buttons
+		setChecked(true); // always be checked
 	}
 	hideButtons();
 	handleToggled(true);
