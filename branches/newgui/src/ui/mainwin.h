@@ -306,4 +306,4 @@ private:
 			//QComboBox       *uiKeySigGender; // defined in uiKeySigToolBar
 			QAction           *uiFMEllipse;
 };
-#endif /* CANORUS_H_ */
+#endif /* MAINWIN_H_ */

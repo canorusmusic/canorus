@@ -150,7 +150,7 @@ void CAMenuToolButton::showButtons() {
 	QToolBar *toolBar = dynamic_cast<QToolBar*>(parent());
 	int x=0, y=0;
 	if (mainWin && toolBar) {
-		_groupBox->move(0,0);	// reset groupBox position, otherwise the positions translations get messed up. -ikjasa
+		_groupBox->move(0,0);	// reset groupBox position, otherwise the positions translations get messed up. -Itay
 		QPoint topLeft = mapTo(mainWin, QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
 		
 		// Set buttons box coordinates which fit on the main window

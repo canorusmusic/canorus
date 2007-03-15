@@ -296,9 +296,6 @@ void CAMainWin::newDocument() {
 	if (CACanorus::mainWinCount(document()))
 		delete document();
 	
-	// clear the UI part
-	clearUI();
-
 	setDocument(new CADocument());
 	
 #ifdef USE_PYTHON
@@ -349,10 +346,13 @@ void CAMainWin::clearUI() {
 	
 	_viewPortList.clear();
 	
+	// Must disconnect to prevent on_uiTabWidget_currentChanged() - causes a crash and is unnecessary. -Itay
+	disconnect(uiTabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_uiTabWidget_currentChanged(int)));
 	while (uiTabWidget->count()) {
-		delete _currentViewPortContainer;
+		delete uiTabWidget->currentWidget();
 		uiTabWidget->removeTab(uiTabWidget->currentIndex());
 	}
+	connect(uiTabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_uiTabWidget_currentChanged(int))); // reconnect it.
 	
 	setCurrentViewPort( 0 );
 	setCurrentViewPortContainer( 0 );
@@ -1309,7 +1309,6 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 bool CAMainWin::openDocument(QString fileName) {
 	QFile file(fileName);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		clearUI();
 		if (CACanorus::mainWinCount(document())==1)
 			delete document();
 		
@@ -1577,7 +1576,6 @@ void CAMainWin::on_uiNewContext_toggled(bool) {
 
 void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 	if (v->document()) {
-		clearUI();
 		delete document();
 		
 		QXmlInputSource input;
