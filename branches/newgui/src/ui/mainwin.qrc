@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/menu" >
         <file>images/accsvisible.png</file>
-        <file>images/aflmajfmin.png</file>
-        <file>images/amajfshmin.png</file>
         <file>images/arrow.png</file>
         <file>images/barlinedotted.png</file>
         <file>images/barlinedouble.png</file>
@@ -10,9 +8,6 @@
         <file>images/barlinerepeatclose.png</file>
         <file>images/barlinerepeatopen.png</file>
         <file>images/barlinesingle.png</file>
-        <file>images/bmajgmin.png</file>
-        <file>images/bmajgshmin.png</file>
-        <file>images/cflmajaflmin.png</file>
         <file>images/clefalto.png</file>
         <file>images/clefbass.png</file>
         <file>images/cleftreble.png</file>
@@ -20,10 +15,7 @@
         <file>images/contextnew.png</file>
         <file>images/contextproperties.png</file>
         <file>images/contextremove.png</file>
-        <file>images/cshmajashmin.png</file>
         <file>images/delete.png</file>
-        <file>images/dflmajbflmin.png</file>
-        <file>images/dmajbmin.png</file>
         <file>images/doubleflat.png</file>
         <file>images/doublesharp.png</file>
         <file>images/edit_add.png</file>
@@ -33,7 +25,6 @@
         <file>images/editpaste.png</file>
         <file>images/editredo.png</file>
         <file>images/editundo.png</file>
-        <file>images/eflmajcmin.png</file>
         <file>images/emajcshmin.png</file>
         <file>images/exit.png</file>
         <file>images/fermata.png</file>
@@ -47,14 +38,11 @@
         <file>images/filesave.png</file>
         <file>images/filesaveas.png</file>
         <file>images/flat.png</file>
-        <file>images/fmajdmin.png</file>
-        <file>images/fshmajdshmin.png</file>
         <file>images/fullscreen.png</file>
-        <file>images/gflmajeflmin.png</file>
-        <file>images/gmajemin.png</file>
         <file>images/hiddenrest.png</file>
         <file>images/insertfm.png</file>
         <file>images/insertplayable.png</file>
+        <file>images/keysig.png</file>
         <file>images/n0.png</file>
         <file>images/n1.png</file>
         <file>images/n16.png</file>
@@ -96,6 +84,7 @@
         <file>images/ts68.png</file>
         <file>images/tsab.png</file>
         <file>images/tsc.png</file>
+        <file>images/tscustom.png</file>
         <file>images/voice.png</file>
         <file>images/voicenew.png</file>
         <file>images/voiceproperties.png</file>

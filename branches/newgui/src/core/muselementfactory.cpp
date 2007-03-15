@@ -93,9 +93,11 @@ CAMusElementFactory::CAMusElementFactory()
 	_eRestType = CARest::Normal;
 	_iTimeSigBeats = 4;
 	_iTimeSigBeat = 4;
+	_iKeySigNumberOfAccs = 0;
 	_eClef = CAClef::Treble;
 	_iNoteAccs = 0;
 	_iNoteExtraAccs = 0;
+	_eBarlineType = CABarline::Single;
 	createMusElem();
 }
 
@@ -162,8 +164,7 @@ bool CAMusElementFactory::configureClef( CADrawableContext *context,
 /*!
 	Configures a new key signature music element with \a iKeySignature accidentals, \a context and right next to the \a left element.
 */
-bool CAMusElementFactory::configureKeySignature( int iKeySignature,
-                                                 CADrawableContext *context, 
+bool CAMusElementFactory::configureKeySignature( CADrawableContext *context, 
                                                  CADrawableMusElement *left )
 {
 	bool bSuccess = false;
@@ -173,7 +174,7 @@ bool CAMusElementFactory::configureKeySignature( int iKeySignature,
 	{		
 		CAStaff *staff = (CAStaff*)context->context();
 		mpoMusElement = new CAKeySignature(CAKeySignature::MajorMinor, 
-			                           iKeySignature,
+			                           _iKeySigNumberOfAccs,
 			                           CAKeySignature::Major, staff,
 			                           (left?left->musElement()->timeEnd():0));
 		bSuccess = staff->insertSignAfter(mpoMusElement, left?left->musElement():0, true);
@@ -194,6 +195,26 @@ bool CAMusElementFactory::configureTimeSignature( CADrawableContext *context,
 	{
 		CAStaff *staff = (CAStaff*)context->context();
 		mpoMusElement = new CATimeSignature( _iTimeSigBeats, _iTimeSigBeat,
+			                             staff,
+			                             (left?left->musElement()->timeEnd():0));
+		bSuccess = staff->insertSignAfter(mpoMusElement, left?left->musElement():0, true);
+	}
+	return bSuccess;
+}
+
+/*!
+	Configures a new barline with \a context and right next to the \a left element.
+*/
+bool CAMusElementFactory::configureBarline( CADrawableContext *context, 
+                                                  CADrawableMusElement *left )
+{
+	bool bSuccess = false;
+	removeMusElem();
+	if ( (context) &&
+	     (context->context()->contextType() == CAContext::Staff) )
+	{
+		CAStaff *staff = (CAStaff*)context->context();
+		mpoMusElement = new CABarline( _eBarlineType,
 			                             staff,
 			                             (left?left->musElement()->timeEnd():0));
 		bSuccess = staff->insertSignAfter(mpoMusElement, left?left->musElement():0, true);

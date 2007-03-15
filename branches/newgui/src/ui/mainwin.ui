@@ -116,6 +116,16 @@
     <addaction name="separator" />
     <addaction name="uiQuit" />
    </widget>
+   <widget class="QMenu" name="uiMenuTools" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="uiGotoBar" />
+    <addaction name="uiTranspose" />
+    <addaction name="uiNoteCount" />
+    <addaction name="separator" />
+    <addaction name="uiSettings" />
+   </widget>
    <widget class="QMenu" name="uiMenuView" >
     <property name="title" >
      <string>&amp;View</string>
@@ -148,16 +158,6 @@
     <addaction name="separator" />
     <addaction name="uiShowStatusBar" />
     <addaction name="uiFullscreen" />
-   </widget>
-   <widget class="QMenu" name="uiMenuTools" >
-    <property name="title" >
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="uiGotoBar" />
-    <addaction name="uiTranspose" />
-    <addaction name="uiNoteCount" />
-    <addaction name="separator" />
-    <addaction name="uiSettings" />
    </widget>
    <widget class="QMenu" name="uiMenuInsert" >
     <property name="title" >
@@ -488,6 +488,9 @@
    <property name="checkable" >
     <bool>true</bool>
    </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/keysig.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Key signature...</string>
    </property>
@@ -495,6 +498,9 @@
   <action name="uiInsertBarline" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/barlinedouble.png</iconset>
    </property>
    <property name="text" >
     <string>Barline...</string>

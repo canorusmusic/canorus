@@ -121,8 +121,8 @@ CAMainWin::~CAMainWin()  {
 	delete uiInsertToolBar; delete uiInsertGroup; delete uiContextType; delete uiClefType; delete uiBarlineType;
 	delete uiVoiceToolBar; delete uiVoiceNum; delete uiVoiceName; delete uiRemoveVoice; delete uiVoiceStemDirection; delete uiVoiceProperties;
 	delete uiPlayableToolBar; delete uiPlayableLength; delete uiPlayableDotted; delete uiNoteAccs; delete uiNoteStemDirection; delete uiHiddenRest;
-	delete uiKeySigToolBar; delete uiKeySigPSP; delete uiKeySigNumberOfAccs; delete uiKeySigGender;
-	delete uiTimeSigToolBar; delete uiTimeSigBeats; delete uiTimeSigSlash; delete uiTimeSigBeat; delete uiTimeSigStyle;
+	delete uiKeySigToolBar; delete uiKeySigNumberOfAccs;
+	delete uiTimeSigToolBar; delete uiTimeSigBeats; delete uiTimeSigSlash; delete uiTimeSigBeat;
 	delete uiFMToolBar; delete uiFMType; delete uiFMChordArea; delete uiFMTonicDegree; delete uiFMEllipse;
 }
 
@@ -156,15 +156,19 @@ void CAMainWin::setupCustomUi() {
 			uiClefType->addButton( QIcon(":/menu/images/clefalto.png"), CAClef::Alto );
 			uiClefType->setCurrentId( CAClef::Treble );
 			connect( uiClefType, SIGNAL( toggled(bool, int) ), this, SLOT( on_uiClefType_toggled(bool, int) ) );
+		uiInsertToolBar->addAction( uiInsertKeySig );
 		uiInsertToolBar->addWidget(uiTimeSigType = new CAMenuToolButton( tr("Select Time Signature" ), 3, this ));
+			connect( uiTimeSigType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiTimeSigType_toggled(bool, int)) );
 			uiTimeSigType->addButton( QIcon(":/menu/images/tsc.png"), TS_44 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/tsab.png"), TS_22 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts34.png"), TS_34 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts24.png"), TS_24 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts38.png"), TS_38 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts68.png"), TS_68 );
+			uiTimeSigType->addButton( QIcon(":/menu/images/tscustom.png"), TS_CUSTOM );			
 			uiTimeSigType->setCurrentId( TS_44 );
 		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 3, this ));
+			connect( uiBarlineType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiBarlineType_toggled(bool, int)) );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinesingle.png"), CABarline::Single );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinedouble.png"), CABarline::Double );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlineend.png"), CABarline::End );
@@ -243,7 +247,25 @@ void CAMainWin::setupCustomUi() {
 		uiPlayableToolBar->addAction( uiHiddenRest );
 		addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
-	uiKeySigPSP  = 0;
+	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
+		uiKeySigToolBar->addWidget( uiKeySigNumberOfAccs = new QSpinBox(this) );
+		uiKeySigNumberOfAccs->setToolTip( tr("Number of Accidentals") );
+		uiKeySigNumberOfAccs->setRange( -7, 7 );
+		uiKeySigNumberOfAccs->setValue( 0 );
+		connect( uiKeySigNumberOfAccs, SIGNAL(valueChanged(int)), this, SLOT(on_uiKeySigNumberOfAccs_valChanged(int)) );
+		addToolBar(Qt::TopToolBarArea, uiKeySigToolBar);
+	
+	uiTimeSigToolBar = new QToolBar( tr("Time Signature ToolBar"), this );
+		uiTimeSigToolBar->addWidget( uiTimeSigBeats = new QSpinBox(this) );
+		uiTimeSigBeats->setValue( 4 );
+		uiTimeSigBeats->setToolTip( tr("Number of beats") );
+		connect( uiTimeSigBeats, SIGNAL(valueChanged(int)), this, SLOT(on_uiTimeSigBeats_valChanged(int)) );
+		uiTimeSigToolBar->addWidget( uiTimeSigSlash = new QLabel( "/", this ) );
+		uiTimeSigToolBar->addWidget( uiTimeSigBeat = new QSpinBox(this) );
+		uiTimeSigBeat->setValue( 4 );
+		uiTimeSigBeat->setToolTip( tr("Beat") );
+		connect( uiTimeSigBeat, SIGNAL(valueChanged(int)), this, SLOT(on_uiTimeSigBeat_valChanged(int)) );
+		addToolBar(Qt::TopToolBarArea, uiTimeSigToolBar);
 	
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
@@ -265,6 +287,8 @@ void CAMainWin::setupCustomUi() {
 	uiSheetToolBar->hide();
 	uiContextToolBar->hide();
 	uiPlayableToolBar->hide();
+	uiTimeSigToolBar->hide();
+	uiKeySigToolBar->hide();
 }
 
 void CAMainWin::newDocument() {
@@ -1047,8 +1071,8 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				}
 				uiSelectMode->toggle();
 				uiVoiceNum->setRealValue(0);
-				if (uiKeySigPSP)
-					uiKeySigPSP->hide();
+				//if (uiKeySigPSP)
+				//	uiKeySigPSP->hide();
 				break;
 			case Qt::Key_I:
 				_musElementFactory->setMusElementType( CAMusElement::Note );
@@ -1085,22 +1109,19 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMu
 		}
 		case CAMusElement::KeySignature: {
 			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
-			success = _musElementFactory->configureKeySignature(uiKeySigPSP->getKeySignature()-7,
-			                                               context, left );
+			success = _musElementFactory->configureKeySignature( context, left );
 			break;
 		}
-/*		case CAMusElement::TimeSignature: { /// \todo Move TimeSigPSP code
+		case CAMusElement::TimeSignature: {
 			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
-			if( mpoTimeSigPSP ) // Change via perspective as well
-			{
-				int iTimeSigBeats, iTimeSigBeat;
-				_uiTimeSigPSP->getTimeSignature( iTimeSigBeats, iTimeSigBeat );
-				_musElementFactory->setTimeSigBeats( iTimeSigBeats );
-				_musElementFactory->setTimeSigBeat( iTimeSigBeat );
-			}
 			success = _musElementFactory->configureTimeSignature( context, left );
 			break;
-		} */
+		}
+		case CAMusElement::Barline: {
+			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
+			success = _musElementFactory->configureBarline( context, left );
+			break;
+		}
 		case CAMusElement::Note: { // Do we really need to do all that here??
 			int iVoiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
 			drawableStaff = (CADrawableStaff*)context;
@@ -1385,6 +1406,24 @@ void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
 }
 
 /*!
+	Changes the number of accidentals.
+*/
+void CAMainWin::on_uiKeySigNumberOfAccs_valChanged(int accs) {
+	if (mode()==InsertMode)
+		_musElementFactory->setKeySigNumberOfAccs( accs );
+	else if ( mode()==EditMode ) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if ( v && v->selection().size() ) {
+			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
+			if ( keySig ) {
+				keySig->setKeySignatureType( CAKeySignature::MajorMinor, accs, CAKeySignature::Major );
+				CACanorus::rebuildUI(document(), currentSheet());
+			}
+		}
+	}
+}
+
+/*!
 	Gets the current voice and sets its name.
 */
 void CAMainWin::on_uiVoiceName_returnPressed() {
@@ -1408,16 +1447,10 @@ void CAMainWin::on_uiVoiceName_returnPressed() {
 void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
 	if (checked) {
 		setMode(InsertMode);
-		uiContextToolBar->hide();
-		updatePlayableToolBar();
 		if (!uiVoiceNum->getRealValue())
 			uiVoiceNum->setRealValue( 1 ); // select the first voice if none selected
 		
 		_musElementFactory->setMusElementType( CAMusElement::Note );
-	} else {
-		updatePlayableToolBar();
-		updateContextToolBar();
-		setMode(SelectMode);
 	}
 }
 
@@ -1439,74 +1472,104 @@ void CAMainWin::on_uiClefType_toggled(bool checked, int buttonId) {
 	
 	// New clef type
 	_musElementFactory->setClef( clefType );
-	std::cout << "Clef Input switched: On " << checked << " Clef " << buttonId << std::endl;
+	
 	if ( checked )
 		setMode( InsertMode );
 }
 
-void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
-/*	int iTimeSigBeats = 4;
-	int iTimeSigBeat  = 4;
-	// Read currently selected entry from tool button menu
-        enum CATimeSignature::CATimeSignatureType eBaseElem = CATimeSignature::Classical;
-        enum CAFixedTimeSig eElem = (CAFixedTimeSig)
-	  mpoMEToolBar->toolElemValue( mpoTimeSigMenu->objectName() ).toInt();
-
-	_musElementFactory->setMusElementType( CAMusElement::TimeSignature );
-	// Make sure perspective is active
-	setTimeSigPSPVisible( true );
-	// New (fixed) time signature
-	switch( eElem )
-	{
-		default:
-		case TS_44:
-		  iTimeSigBeats = 4;
-		  iTimeSigBeat = 4;
-		  break;
-		case TS_22:
-		  iTimeSigBeats = 2;
-		  iTimeSigBeat = 2;
-		  break;
-		case TS_34:
-		  iTimeSigBeats = 3;
-		  iTimeSigBeat = 4;
-		  break;
-		case TS_24:
-		  iTimeSigBeats = 2;
-		  iTimeSigBeat = 4;
-		  break;
-		case TS_38:
-		  iTimeSigBeats = 3;
-		  iTimeSigBeat = 8;
-		  break;
-		case TS_68:
-		  iTimeSigBeats = 6;
-		  iTimeSigBeat = 8;
-		  break;
-		case TS_UNKNOWN:
-		  break;
+void CAMainWin::on_uiTimeSigBeats_valChanged(int beats) {
+	if (mode()==InsertMode) {
+		_musElementFactory->setTimeSigBeats( beats );
+		uiTimeSigType->setCurrentId( TS_CUSTOM );
+	} else if ( mode()==EditMode ) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if ( v && v->selection().size() ) {
+			CATimeSignature *timeSig = dynamic_cast<CATimeSignature*>(v->selection().at(0)->musElement());
+			if ( timeSig ) {
+				timeSig->setBeats( beats );
+				CACanorus::rebuildUI(document(), currentSheet());
+			}
+		}
 	}
-	// Update Time signature perspective
-	mpoTimeSigPSP->setTimeSignature( iTimeSigBeats, iTimeSigBeat );
-	_musElementFactory->setTimeSigBeats( iTimeSigBeats );
-	_musElementFactory->setTimeSigBeat( iTimeSigBeat );
-	printf("Note TimeSig switched: On %d TimeSig %d\n", bOn, eElem);
-	fflush( stdout );
-	if( bOn )
-		setMode(InsertMode); */
-	std::cout << "uiInsertTimeSig_triggered()" << std::endl;
-	_musElementFactory->setMusElementType( CAMusElement::KeySignature );
 }
 
-void CAMainWin::on_uiInsertTimeSignature_toggled(bool) {
-	std::cout << "uiInsertTimeSig_triggered()" << std::endl;
-	_musElementFactory->setMusElementType( CAMusElement::TimeSignature );
+void CAMainWin::on_uiTimeSigBeat_valChanged(int beat) {
+	if (mode()==InsertMode) {
+		_musElementFactory->setTimeSigBeat( beat );
+		uiTimeSigType->setCurrentId( TS_CUSTOM );
+	} else if ( mode()==EditMode ) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if ( v && v->selection().size() ) {
+			CATimeSignature *timeSig = dynamic_cast<CATimeSignature*>(v->selection().at(0)->musElement());
+			if ( timeSig ) {
+				timeSig->setBeat( beat );
+				CACanorus::rebuildUI(document(), currentSheet());
+			}
+		}
+	}
 }
 
-void CAMainWin::on_uiInsertKeySignature_toggled(bool) {
+void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
+	if (checked) {
+		setMode(InsertMode);
+		
+		// Read currently selected entry from tool button menu
+		CAFixedTimeSig type = static_cast<CAFixedTimeSig>(buttonId);
+		
+		// New (fixed) time signature
+		switch( type ) {
+			case TS_44:
+			  uiTimeSigBeats->setValue( 4 );
+			  uiTimeSigBeat->setValue( 4 );
+			  break;
+			case TS_22:
+			  uiTimeSigBeats->setValue( 2 );
+			  uiTimeSigBeat->setValue( 2 );
+			  break;
+			case TS_34:
+			  uiTimeSigBeats->setValue( 3 );
+			  uiTimeSigBeat->setValue( 4 );
+			  break;
+			case TS_24:
+			  uiTimeSigBeats->setValue( 2 );
+			  uiTimeSigBeat->setValue( 4 );
+			  break;
+			case TS_38:
+			  uiTimeSigBeats->setValue( 3 );
+			  uiTimeSigBeat->setValue( 8 );
+			  break;
+			case TS_68:
+			  uiTimeSigBeats->setValue( 6 );
+			  uiTimeSigBeat->setValue( 8 );
+			  break;
+			case TS_UNKNOWN:
+			  break;
+		}
+		_musElementFactory->setTimeSigBeats( uiTimeSigBeats->value() );
+		_musElementFactory->setTimeSigBeat( uiTimeSigBeat->value() );
+		_musElementFactory->setMusElementType( CAMusElement::TimeSignature );
+	}
+}
+
+void CAMainWin::on_uiInsertTimeSig_toggled(bool checked) {
+	if (checked) {
+		setMode(InsertMode);
+		_musElementFactory->setMusElementType( CAMusElement::TimeSignature );
+	}
+}
+
+void CAMainWin::on_uiInsertKeySig_toggled(bool checked) {
+	if (checked) {
+		setMode(InsertMode);
+		_musElementFactory->setMusElementType( CAMusElement::KeySignature );
+	}
 }
 
 void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
+	if (checked) {
+		setMode(InsertMode);
+		_musElementFactory->setMusElementType( CAMusElement::Barline );
+	}
 }
 
 void CAMainWin::on_uiNewContext_toggled(bool) {
@@ -1648,6 +1711,8 @@ void CAMainWin::updateToolBars() {
 	updateContextToolBar();
 	updateVoiceToolBar();
 	updatePlayableToolBar();
+	updateKeySigToolBar();
+	updateTimeSigToolBar();
 }
 
 /*!
@@ -1808,6 +1873,50 @@ void CAMainWin::updatePlayableToolBar() {
 		}
 	} else
 		uiPlayableToolBar->hide();
+}
+
+/*!
+	Shows/Hides the time signature properties tool bar according to the current state.
+*/
+void CAMainWin::updateTimeSigToolBar() {
+	if (uiTimeSigType->isChecked() && mode()==InsertMode) {
+		uiTimeSigBeats->setValue( _musElementFactory->timeSigBeats() );
+		uiTimeSigBeat->setValue( _musElementFactory->timeSigBeat() );
+		uiTimeSigToolBar->show();
+	} else if (mode()==EditMode) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if (v && v->selection().size()) {
+			CATimeSignature *timeSig = dynamic_cast<CATimeSignature*>(v->selection().at(0)->musElement());
+			if (timeSig) {
+				uiTimeSigBeats->setValue( timeSig->beats() );
+				uiTimeSigBeat->setValue( timeSig->beat() );
+				uiTimeSigToolBar->show();
+			} else
+				uiTimeSigToolBar->hide();
+		}	
+	} else
+		uiTimeSigToolBar->hide();
+}
+
+/*!
+	Shows/Hides the key signature properties tool bar according to the current state.
+*/
+void CAMainWin::updateKeySigToolBar() {
+	if (uiInsertKeySig->isChecked() && mode()==InsertMode) {
+		uiKeySigNumberOfAccs->setValue( _musElementFactory->keySigNumberOfAccs() );
+		uiKeySigToolBar->show();
+	} else if (mode()==EditMode) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if (v && v->selection().size()) {
+			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
+			if (keySig) {
+				uiKeySigNumberOfAccs->setValue( keySig->numberOfAccidentals() );
+				uiKeySigToolBar->show();
+			} else
+				uiKeySigToolBar->hide();
+		}	
+	} else
+		uiKeySigToolBar->hide();
 }
 
 /*!

@@ -38,6 +38,7 @@ enum CAFixedTimeSig {
 	TS_24,
 	TS_38,
 	TS_68,
+	TS_CUSTOM,
 	TS_UNKNOWN
 };
 

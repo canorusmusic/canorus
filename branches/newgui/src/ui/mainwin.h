@@ -118,8 +118,8 @@ private slots:
 	void on_uiContextType_toggled(bool, int);
 	void on_uiInsertClef_toggled(bool);      // menu
 	void on_uiClefType_toggled(bool, int);
-	void on_uiInsertKeySignature_toggled(bool); // menu
-	void on_uiInsertTimeSignature_toggled(bool); // menu
+	void on_uiInsertKeySig_toggled(bool); // menu
+	void on_uiInsertTimeSig_toggled(bool); // menu
 	void on_uiTimeSigType_toggled(bool, int);
 	void on_uiBarlineType_toggled(bool, int);
 	void on_uiInsertPlayable_toggled(bool);  // menu
@@ -150,6 +150,13 @@ private slots:
 	// Playable
 	void on_uiPlayableLength_toggled(bool, int);
 	void on_uiNoteStemDirection_toggled(bool, int);
+	
+	// Key Signature
+	void on_uiKeySigNumberOfAccs_valChanged(int);
+	
+	// Time Signature
+	void on_uiTimeSigBeats_valChanged(int);
+	void on_uiTimeSigBeat_valChanged(int);
 	
 	// Tools
 	void on_uiSettings_triggered();
@@ -225,6 +232,8 @@ private:
 	void updateVoiceToolBar();
 	void updateInsertToolBar();
 	void updatePlayableToolBar();
+	void updateKeySigToolBar();
+	void updateTimeSigToolBar();
 	
 	// Dialogs, Windows
 	QFileDialog *uiExportDialog;
@@ -279,15 +288,15 @@ private:
 			// QAction          *uiHiddenRest; // made by Qt Designer
 		
 		QToolBar *uiKeySigToolBar;
-			CAKeySigPSP  *uiKeySigPSP;	            // Key signature perspective
+			// CAKeySigPSP  *uiKeySigPSP;	            /// Key signature perspective. \todo Reimplement it.
 			QSpinBox     *uiKeySigNumberOfAccs;
-			QComboBox    *uiKeySigGender;
+			// QComboBox    *uiKeySigGender;
 		
 		QToolBar *uiTimeSigToolBar;
 			QSpinBox         *uiTimeSigBeats;
 			QLabel           *uiTimeSigSlash;
 			QSpinBox         *uiTimeSigBeat;
-			CAMenuToolButton *uiTimeSigStyle;
+			// CAMenuToolButton *uiTimeSigStyle; /// \todo Implement it. -Matevz
 		
 		QToolBar *uiFMToolBar; // function marking tool bar
 			CAMenuToolButton  *uiFMType;
