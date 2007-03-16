@@ -31,8 +31,6 @@ CAViewPortContainer::CAViewPortContainer(CAViewPort *v, QWidget *parent) : QFram
 CAViewPortContainer::~CAViewPortContainer()
 {
 	delete _splitter;
-	if(_layout->count()) //means that the widget in the layout wasn't the main splitter => there's an active source viewport with a container. See addViewPort()
-		delete _layout->takeAt(0); //delete this container and its only child - the source viewport.
 	delete _layout;
 }
 
@@ -80,11 +78,6 @@ CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
 			_splitter->removeWidget(v);
 		else
 			return 0; //do nothing if this is the only score viewport.
-	}
-	else
-	{
-		v->disconnect();
-		delete v;
 	}
 	
 	if (_viewPorts.removeAll(v))
@@ -140,7 +133,7 @@ void CAViewPortContainer::addViewPort(CAViewPort *v) {
 			_layout->addWidget(container);
 		} else
 			//There was once a source viewport, so there's already a container.
-			dynamic_cast<QSplitter*>(_layout->itemAt(0)->widget())->addWidget(v);
+			static_cast<QSplitter*>(_layout->itemAt(0)->widget())->addWidget(v);
 	}
 }
 

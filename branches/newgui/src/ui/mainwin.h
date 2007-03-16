@@ -70,15 +70,16 @@ public:
 	inline QFileDialog *exportDialog() { return uiExportDialog; }
 	inline QFileDialog *importDialog() { return uiImportDialog; }	
 	inline CAViewPort *currentViewPort() { return _currentViewPort; }
+	inline void removeViewPort(CAViewPort* v) { _viewPortList.removeAll(v); }
 	
 	inline CAScoreViewPort *currentScoreViewPort() {
-		if (_currentViewPort) return dynamic_cast<CAScoreViewPort*>(_currentViewPort);
+		if (currentViewPort()) return dynamic_cast<CAScoreViewPort*>(currentViewPort());
 		else return 0;
 	}
 	
 	inline CASheet *currentSheet() {
-		if (currentViewPort() && currentViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
-			return static_cast<CAScoreViewPort*>(currentViewPort())->sheet();
+		CAScoreViewPort *v = currentScoreViewPort();
+		if (v) return v->sheet();
 		else return 0;
 	}
 	
@@ -105,6 +106,7 @@ private slots:
 	void on_uiOpenDocument_triggered();
 	void on_uiSaveDocument_triggered();
 	void on_uiSaveDocumentAs_triggered();
+	void on_uiCloseDocument_triggered();
 	void on_uiExportDocument_triggered();
 	void on_uiImportDocument_triggered();
 	

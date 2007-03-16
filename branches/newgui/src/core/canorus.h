@@ -35,6 +35,7 @@ public:
 	static QList<CAMainWin*> findMainWin(CADocument* document);
 	inline static CAMainWin* mainWinAt(int idx) { return _mainWinList[idx]; }
 	inline static void removeMainWin(CAMainWin *w) { _mainWinList.removeAll(w); }
+	inline static void removeViewPort(CAViewPort *v) { for (int i=0; i<mainWinCount(); i++) _mainWinList[i]->removeViewPort(v); }
 	inline static void addMainWin(CAMainWin *w, bool show=true) { _mainWinList << w; if (show) w->show(); }
 	
 	inline static QSettings *settings() { return _settings; }

@@ -19,7 +19,7 @@ public:
 	CAMultiSplitter(QWidget *first, QWidget *parent = 0);
 	~CAMultiSplitter();
 	void addWidget(QWidget *w, Qt::Orientation dir);
-	void removeWidget(QWidget *w, bool autoDelete = true);
+	void removeWidget(QWidget *w, bool autoDelete = false);
 	inline QSplitter *main() { return  _splitterList.first(); }
 	inline int widgetCount() { return _wCount; }
 	inline QWidget* lastUsedWidget() { return _lastUsedWidget; }

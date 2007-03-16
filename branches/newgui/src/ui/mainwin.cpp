@@ -341,29 +341,29 @@ void CAMainWin::addSheet(CASheet *s) {
 void CAMainWin::clearUI() {
 	if(_viewPortList.size() > 1)
 		on_uiUnsplitAll_triggered();
-	for (int i=0; i<_viewPortList.size(); i++)
-		delete _viewPortList[i];
 	
-	_viewPortList.clear();
-	
-	// Must disconnect to prevent on_uiTabWidget_currentChanged() - causes a crash and is unnecessary. -Itay
-	disconnect(uiTabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_uiTabWidget_currentChanged(int)));
+	// Delete all view port containers
 	while (uiTabWidget->count()) {
-		delete uiTabWidget->currentWidget();
-		uiTabWidget->removeTab(uiTabWidget->currentIndex());
+		CAViewPortContainer *vpc = currentViewPortContainer();
+		uiTabWidget->removeTab(uiTabWidget->count()-1);
+		delete vpc;
 	}
 	connect(uiTabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_uiTabWidget_currentChanged(int))); // reconnect it.
 	
+	// Delete all viewports
+	for (int i=0; i<_viewPortList.size(); i++)
+		delete _viewPortList[i];
+	_viewPortList.clear();
 	setCurrentViewPort( 0 );
-	setCurrentViewPortContainer( 0 );
 }
 
 /*!
 	Called when the current sheet is switched in the tab widget.
+	\warning This method is only called when the index of the selected tab changes. If you remove the current tab and the next selected tab gets the same index, this slot isn't called!
 */
 void CAMainWin::on_uiTabWidget_currentChanged(int idx) {
-	_currentViewPortContainer = static_cast<CAViewPortContainer*>(uiTabWidget->currentWidget());
-	_currentViewPort = _currentViewPortContainer->lastUsedViewPort();
+	setCurrentViewPortContainer( static_cast<CAViewPortContainer*>(uiTabWidget->currentWidget()) );
+	setCurrentViewPort( _currentViewPortContainer->lastUsedViewPort() );
 	updateToolBars();
 }
 
@@ -428,6 +428,14 @@ void CAMainWin::on_uiUnsplitAll_triggered() {
 
 void CAMainWin::on_uiCloseCurrentView_triggered() {
 	doUnsplit();
+}
+
+void CAMainWin::on_uiCloseDocument_triggered() {
+	if ( CACanorus::mainWinCount(document()) == 1 ) {
+			delete document();
+	}
+	setDocument( 0 );
+	rebuildUI();
 }
 
 void CAMainWin::on_uiViewCanorusMLSource_triggered() {
@@ -520,7 +528,8 @@ void CAMainWin::on_uiNewDocument_triggered() {
 
 void CAMainWin::on_uiNewSheet_triggered() {
 	// add a new empty sheet
-	addSheet(document()->addSheet(tr("Sheet%1").arg(QString::number(document()->sheetCount()+1))));
+	document()->addSheet(tr("Sheet%1").arg(QString::number(document()->sheetCount()+1)));
+	CACanorus::rebuildUI(document());
 }
 
 /*!
@@ -1641,8 +1650,12 @@ void CAMainWin::on_uiViewLilyPondSource_triggered() {
 	Removes the sheet, all its contents and rebuilds the GUI.
 */
 void CAMainWin::on_uiRemoveSheet_triggered() {
-	document()->removeSheet(currentSheet());
-	CACanorus::rebuildUI(document());
+	CASheet *sheet = currentSheet();
+	if (sheet) {
+		document()->removeSheet(currentSheet());
+		CACanorus::rebuildUI(document());
+		delete sheet;
+	}
 }
 
 void CAMainWin::on_uiSheetName_returnPressed() {

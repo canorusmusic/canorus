@@ -121,7 +121,7 @@ void CAMultiSplitter::removeWidget(QWidget *w, bool autoDelete)
 		// The size of the splitter should be 1.
 		QWidget* pSplitterToWidget = _splitterList[idx];
 		_splitterList.removeAll((QSplitter*)pSplitterToWidget);
-		QWidget *newV = dynamic_cast<QSplitter*>(pSplitterToWidget)->widget(0); // get the only widget.
+		QWidget *newV = static_cast<QSplitter*>(pSplitterToWidget)->widget(0); // get the only widget.
 		newV->setParent(pSplitterToWidget->parentWidget());
 		delete pSplitterToWidget;
 		pSplitterToWidget = newV;
