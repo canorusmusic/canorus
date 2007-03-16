@@ -10,26 +10,33 @@
 #include "scripting/swigpython.h"
 #include <QFile>
 
+#include "core/canorus.h"
+
 #include <iostream> // used for reporting errors in scripts
 
 //defined in SWIG wrapper class
 extern "C" void init_CanorusPython();	///Load 'CanorusPython' module and initialize classes
-QString locateResource(QString);
-QString locateResourceDirectory(QString);
 
 void CASwigPython::init() {
 	Py_Initialize();
 	init_CanorusPython();
 	PyRun_SimpleString("import sys");
+	
 	// add path to scripts to Scripting path
-	PyRun_SimpleString((QString("sys.path.append('")+locateResource("scripts")+"')").toStdString().c_str());
+	if (CACanorus::locateResource("scripts").size())
+		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResource("scripts").at(0)+"')").toStdString().c_str());
+	
 	// add path to CanorusPython modules to Scripting path
-	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("CanorusPython.py")+"')").toStdString().c_str());
+	if (CACanorus::locateResource("CanorusPython.py").size())
+		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("CanorusPython.py").at(0)+"')").toStdString().c_str());
+	
 	//PyRun_SimpleString("import CanorusPython");	
 #ifdef Q_WS_WIN
-	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("_CanorusPython.dll")+"')").toStdString().c_str());
+	if (CACanorus::locateResource("_CanorusPython.dll").size())
+		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("_CanorusPython.dll").at(0)+"')").toStdString().c_str());
 #else
-	PyRun_SimpleString((QString("sys.path.append('")+locateResourceDirectory("_CanorusPython.so")+"')").toStdString().c_str());
+	if (CACanorus::locateResource("_CanorusPython.so").size())
+		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("_CanorusPython.so").at(0)+"')").toStdString().c_str());
 #endif
 }
 

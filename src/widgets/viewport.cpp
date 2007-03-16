@@ -7,11 +7,12 @@
  */
 
 #include "widgets/viewport.h"
+#include "core/canorus.h"
 
 CAViewPort::CAViewPort(QWidget *p) : QWidget(p) {
 	_parent = p;
 }
 
 CAViewPort::~CAViewPort() {
-//	this->disconnect();
+	CACanorus::removeViewPort(this);
 }

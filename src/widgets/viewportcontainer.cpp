@@ -12,14 +12,14 @@
 #include <QPushButton>
 #include <QGridLayout>
 
+#include "widgets/viewportcontainer.h"
 #include "widgets/viewport.h"
-#include "widgets/scrollwidget.h"
 #include "widgets/multisplitter.h"
 #include "core/sheet.h"
 #include "core/note.h"
 #include "core/staff.h"
 
-CAScrollWidget::CAScrollWidget(CAViewPort *v, QWidget *parent) : QFrame(parent) {
+CAViewPortContainer::CAViewPortContainer(CAViewPort *v, QWidget *parent) : QFrame(parent) {
 	_layout = new QGridLayout(this); _layout->setSpacing(0); _layout->setMargin(0);
 	_splitter = new CAMultiSplitter(v, this);
 	
@@ -28,45 +28,43 @@ CAScrollWidget::CAScrollWidget(CAViewPort *v, QWidget *parent) : QFrame(parent) 
 	_layout->addWidget(_splitter->main());
 }
 
-CAScrollWidget::~CAScrollWidget()
+CAViewPortContainer::~CAViewPortContainer()
 {
 	delete _splitter;
-	if(_layout->count()) //means that the widget in the layout wasn't the main splitter => there's an active source viewport with a container. See addViewPort()
-		delete _layout->takeAt(0); //delete this container and its only child - the source viewport.
 	delete _layout;
 }
 
-void CAScrollWidget::paintEvent(QPaintEvent *e) {
+void CAViewPortContainer::paintEvent(QPaintEvent *e) {
 }
 
-void CAScrollWidget::resizeEvent(QResizeEvent *) {
+void CAViewPortContainer::resizeEvent(QResizeEvent *) {
 }
 
-CAViewPort* CAScrollWidget::splitVertically(CAViewPort *v) {
+CAViewPort* CAViewPortContainer::splitVertically(CAViewPort *v) {
 	if(v) return 0;
 	if(_lastUsedViewPort->viewPortType() == CAViewPort::ScoreViewPort)
 		v = _lastUsedViewPort;
 	else
 		v = (CAViewPort*)_splitter->lastUsedWidget();
 	_viewPorts.append(_lastUsedViewPort = v->clone());
-	_splitter->addWidget(_lastUsedViewPort, CA::Vertical);
+	_splitter->addWidget(_lastUsedViewPort, Qt::Vertical);
 	
 	return _lastUsedViewPort;
 }
 
-CAViewPort* CAScrollWidget::splitHorizontally(CAViewPort *v) {
+CAViewPort* CAViewPortContainer::splitHorizontally(CAViewPort *v) {
 	if(v) return 0;
 	if(_lastUsedViewPort->viewPortType() == CAViewPort::ScoreViewPort)
 		v = _lastUsedViewPort;
 	else
 		v = (CAViewPort*)_splitter->lastUsedWidget(); 
 	_viewPorts.append(_lastUsedViewPort = v->clone());
-	_splitter->addWidget(_lastUsedViewPort, CA::Horizontal);
+	_splitter->addWidget(_lastUsedViewPort, Qt::Horizontal);
 	
 	return _lastUsedViewPort;
 }
 
-CAViewPort* CAScrollWidget::unsplit(CAViewPort *v) {
+CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
 	CAViewPort* rv = 0;
 	if (_viewPorts.size() <= 1)
 		return 0;
@@ -81,11 +79,6 @@ CAViewPort* CAScrollWidget::unsplit(CAViewPort *v) {
 		else
 			return 0; //do nothing if this is the only score viewport.
 	}
-	else
-	{
-		v->disconnect();
-		delete v;
-	}
 	
 	if (_viewPorts.removeAll(v))
 		rv = v;
@@ -95,7 +88,7 @@ CAViewPort* CAScrollWidget::unsplit(CAViewPort *v) {
 	return rv;
 }
 
-QList<CAViewPort*> CAScrollWidget::unsplitAll() {
+QList<CAViewPort*> CAViewPortContainer::unsplitAll() {
 	QList<CAViewPort*> list;
 	while(_splitter->widgetCount() > 1)
 		list << unsplit();
@@ -110,7 +103,7 @@ QList<CAViewPort*> CAScrollWidget::unsplitAll() {
 	return list;
 }
 
-CAViewPort* CAScrollWidget::newViewPort(CAViewPort *v) {
+CAViewPort* CAViewPortContainer::newViewPort(CAViewPort *v) {
 	CAViewPort* viewPort = v?v->clone(0):_lastUsedViewPort->clone(0);
 	
 	//set the _worldW, _worldH and update scrollbars etc. beside the size
@@ -121,7 +114,7 @@ CAViewPort* CAScrollWidget::newViewPort(CAViewPort *v) {
 	return viewPort;
 }
 
-void CAScrollWidget::addViewPort(CAViewPort *v) {
+void CAViewPortContainer::addViewPort(CAViewPort *v) {
 	_viewPorts.append(_lastUsedViewPort = v);
 	
 	//usually used for source viewports.
@@ -140,11 +133,11 @@ void CAScrollWidget::addViewPort(CAViewPort *v) {
 			_layout->addWidget(container);
 		} else
 			//There was once a source viewport, so there's already a container.
-			dynamic_cast<QSplitter*>(_layout->itemAt(0)->widget())->addWidget(v);
+			static_cast<QSplitter*>(_layout->itemAt(0)->widget())->addWidget(v);
 	}
 }
 
-void CAScrollWidget::setLastUsedViewPort(CAViewPort* v)
+void CAViewPortContainer::setLastUsedViewPort(CAViewPort* v)
 {
 	if(_viewPorts.contains(v))
 	{

@@ -12,9 +12,9 @@
 #include <QList>
 
 #include "core/context.h"
+#include "core/staff.h"
 
 class CADocument;
-class CAStaff;
 class CAPlayable;
 
 class CASheet {
@@ -24,6 +24,7 @@ public:
 	CAContext *contextAt(int i) { return _contextList[i]; }
 	CAContext *context(const QString name);	
 	void addContext(CAContext *);
+	inline void removeContext(CAContext* c) { _contextList.removeAll(c); _staffList.removeAll(static_cast<CAStaff*>(c)); }
 	inline int contextCount() { return _contextList.size(); }
 	
 	CAStaff *addStaff();

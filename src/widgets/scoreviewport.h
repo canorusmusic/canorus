@@ -189,9 +189,9 @@ class CAScoreViewPort : public CAViewPort {
 		/**
 		 * Return a list of the drawable music elements currently selected.
 		 * 
-		 * @return Pointer to the QList of drawable music elements currently selected.
+		 * @return QList of drawable music elements currently selected.
 		 */
-		inline QList<CADrawableMusElement*>* selection() { return &_selection; };
+		inline QList<CADrawableMusElement*> selection() { return _selection; };
 		
 		/**
 		 * Select the given music element.
@@ -276,7 +276,7 @@ class CAScoreViewPort : public CAViewPort {
 		void importMElements(CAKDTree *elts);
 		void importCElements(CAKDTree *elts);
 		
-		CADrawableContext *currentContext() { return _currentContext; }
+		inline CADrawableContext *currentContext() { return _currentContext; }
 		void setCurrentContext(CADrawableContext *);
 		
 		void rebuild();
@@ -419,6 +419,11 @@ class CAScoreViewPort : public CAViewPort {
 		 * @return Height of the drawable viewport in absolute world units.
 		 */
 		const int worldHeight() { return _worldH; }
+		
+		/*!
+			Returns the world coordinates in a rectangle
+		*/
+		const QRect worldCoords() { return QRect(worldX(), worldY(), worldWidth(), worldHeight()); }
 
 		/**
 		 * Return the zoom level of the viewport.

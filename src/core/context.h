@@ -16,6 +16,7 @@ class CAMusElement;
 class CAContext {
 public:
 	CAContext(CASheet *s, const QString name);
+	virtual ~CAContext();
 	
 	enum CAContextType {
 		Staff,

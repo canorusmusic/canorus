@@ -42,6 +42,6 @@ void CAPluginAction::triggeredSlot(bool on) {
 	while (dynamic_cast<CAMainWin*>(curObject)==0 && curObject!=0) // find the parent which is mainwindow
 		curObject = curObject->parent();
 	
-	_plugin->callAction(this, (CAMainWin*)curObject, ((CAMainWin*)curObject)->curDocument(), 0, 0);
+	_plugin->callAction(this, (CAMainWin*)curObject, ((CAMainWin*)curObject)->document(), 0, 0);
 }
 

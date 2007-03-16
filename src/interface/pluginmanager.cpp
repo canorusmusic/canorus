@@ -6,61 +6,129 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#include "core/canorus.h"
 #include "interface/pluginmanager.h"
 #include "interface/plugin.h"
-#include "ui/mainwin.h"	//needed for locateResource()
 #include "ui/pluginaction.h"
-#include <iostream>
+
 #include <QDir>
 #include <QFile>
 #include <QXmlInputSource>
 #include <QMenu>
 
-CAPluginManager::CAPluginManager(CAMainWin *mainWin) {
+// define static members
+QList<CAPlugin*> CAPluginManager::_pluginList;
+QMultiHash<QString, CAPlugin* > CAPluginManager::_actionMap;
+QHash<QString, CAPluginAction* > CAPluginManager::_exportFilterMap;
+QHash<QString, CAPluginAction* > CAPluginManager::_importFilterMap;
+
+/*!
+	\class CAPluginManager
+	
+	This class is the backend for loading, unloading, installing, removing and executing plugins.
+	It's consists of two parts:
+		- Static members
+			Used globally to read, install/remove and enable/disable plugins.
+		- Non-static members
+			Inherits the QXml facilities and is used for parsing the plugin's descriptor file.
+	
+	A plugin is installed or uninstalled using installPlugin() or removePlugin() methods. installMethod()
+	unpacks the compressed plugin into default user's plugins directory. removePlugin() deletes the plugin
+	directory from the disk.
+	
+	After plugins are installed readPlugins() method should be called. This creates a list of available plugin
+	objects and stores their location paths.
+	
+	To parse plugins descriptor files and enable plugins, call enablePlugins() to enable plugins marked as
+	auto-load in Canorus config file or enablePlugin() to load a specific plugin. These methods use Qt's XML
+	facilities to parse plugins descriptor files and use the non-static part of the class. They also require
+	an already created main window as the parser creates menu structures, toolbars and other elements
+	the plugin might offer.
+	
+ 	An action (eg. when a user moves mouse in score viewport) is triggered by calling action() method and
+ 	pass the action type (eg. "onMouseMove") and other parameters. actionExport() and actionImport() are
+ 	separated and are called when Canorus user wants to export/import a document.
+ 	
+ 	\todo Frontend window for plugin manipulation.
+ 	
+ 	\sa CAPlugin, CAPluginManagerWin
+*/
+
+/*!
+	Used if parsing plugin's descriptor file.
+	It uses the given \a mainWin in order to create new menus and toolbars the plugin might include.
+	If the plugin has already been created (eg. using the same plugin in multiple main windows)
+	\a plugin is the existing plugin.
+*/
+CAPluginManager::CAPluginManager(CAMainWin *mainWin, CAPlugin *plugin) {
 	_mainWin = mainWin;
-	_curPlugin=0;
-	_curPluginCanorusVersion = CANORUS_VERSION;
+	_curPlugin=plugin;
+	_curPluginCanorusVersion = CANORUS_VERSION; /// \todo This should be read from the descriptor file as well
 }
 
 CAPluginManager::~CAPluginManager() {
-	disablePlugins();
-	for (int i=0; i<_pluginList.size(); i++) {
-		delete _pluginList[i];
-	}
 }
 
-void CAPluginManager::readPlugins() {
-	QDir pluginsDir(locateResource("plugins"));
+/*!
+	Reads the system and user's plugins directories and adds all the plugins to the internal plugins list.
+	\warning This function doesn't enable or initialize any of the plugins - use enablePlugins() for this.
 	
-	for (int i=0; i<pluginsDir.count(); i++) {
+	\sa enablePlugin(), enablePlugins()
+*/
+void CAPluginManager::readPlugins() {
+	QList<QString> pluginsPaths = CACanorus::locateResource("plugins");
+	QList<QString> pluginPaths;
+	
+	// search the plugins paths and creates a list of directories for each plugin
+	for (int i=0; i<pluginsPaths.size(); i++) {
+		QDir curDir(pluginsPaths[i]);
+		for (int j=0; j<curDir.count(); j++) {
+			pluginPaths << curDir.absolutePath() + "/" + curDir[j];
+		}
+	}
+	
+	for (int i=0; i<pluginPaths.size(); i++) {		
 		QXmlSimpleReader reader;
-		QFile *file = new QFile(pluginsDir.absolutePath() + "/" + pluginsDir[i] + "/canorusplugin.xml");
+		QFile *file = new QFile(pluginPaths[i] + "/canorusplugin.xml");
 		file->open(QIODevice::ReadOnly);
-		if (!file->isOpen())
-		{
+		
+		// test if the descriptor file can be opened
+		if (!file->isOpen()) {
 			delete file;
 			continue;
 		}
 		
-		QXmlInputSource in(file);
-		reader.setContentHandler(this);
-		reader.parse(in);
-		_curPlugin->setDirName(pluginsDir.absolutePath() + "/" + pluginsDir[i]);	//use absolute path again because we want slashes/backslashes to be unified
-		_curPlugin = 0;
 		delete file;
+		CAPlugin *plugin = new CAPlugin();
+		plugin->setDirName(pluginPaths[i]);
+		_pluginList << plugin;
 	}
 }
 
-bool CAPluginManager::enablePlugins() {
+/*!
+	Enables and initializes all plugins, which are marked as auto-load in Canorus config file.
+	Returns true if all the plugins were successfully loaded, otherwise False.
+	\todo auto-load not yet implemented. It currently enables all the plugins.
+	
+	\sa enablePlugin(), disablePlugins()
+*/
+bool CAPluginManager::enablePlugins(CAMainWin *mainWin) {
 	bool res = true;
 	for (int i=0; i<_pluginList.size(); i++) {
-		if (!enablePlugin(_pluginList[i]))
+		if (!enablePlugin(_pluginList[i], mainWin))
 			res=false;
 	}
 	
 	return res;
 }
 
+/*!
+	Disable and deinitializes all plugins.
+	
+	Return True, if all the plugins were successfully loaded, otherwise False.
+	
+	\sa disablePlugin(), enablePlugins()
+*/
 bool CAPluginManager::disablePlugins() {
 	bool res = true;
 	for (int i=0; i<_pluginList.size(); i++) {
@@ -71,24 +139,53 @@ bool CAPluginManager::disablePlugins() {
 	return res;
 }
 
-bool CAPluginManager::enablePlugin(CAPlugin *plugin) {
+/*!
+	Enables the plugin \a plugin and initializes it (action "onInit").
+	
+	Returns True, if the plugin was loaded successfully, otherwise False.
+	
+	\sa disablePlugin()
+*/
+bool CAPluginManager::enablePlugin(CAPlugin *plugin, CAMainWin *mainWin) {
+	QFile *file = new QFile(plugin->dirName() + "/canorusplugin.xml");
+	file->open(QIODevice::ReadOnly);
+	QXmlInputSource in(file);
+	
+	QXmlSimpleReader reader;
+	reader.setContentHandler(new CAPluginManager(mainWin, plugin));
+	reader.parse(in);
+	delete file;
+	
 	if (plugin->isEnabled())
+		// plugin was enabled before
 		return true;
 	
+	// plugin wasn't enabled before, add its actions to local list
 	QList<QString> actions = plugin->actionList();
 	for (int i=0; i<actions.size(); i++) {
 		_actionMap.insertMulti(actions[i], plugin);
 	}
 	
 	plugin->setEnabled(true);
-	return plugin->action("onInit", _mainWin);
+	return plugin->action("onInit", mainWin);
 }
 
+/*!
+	Deinitializes the given \a plugin and remove any menus, toolbars and other GUI elements the plugin might
+	have created from all the main windows.
+	Plugin is unloaded, but still remains on the list - it's only disabled.
+	
+	Returns True, if plugin was unloaded successfully, otherwise False.
+*/
 bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
 	if (!plugin->isEnabled())
 		return true;
 	
-	bool res = plugin->action("onExit", _mainWin);
+	bool res = true;
+	for (int i=0; i<CACanorus::mainWinCount(); i++)
+		if (!plugin->action("onExit", CACanorus::mainWinAt(i)))
+			res = false;
+	
 	plugin->setEnabled(false);
 	
 	// remove plugin specific actions from generic plugins actions list
@@ -107,18 +204,22 @@ bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
 	return res;
 }
 
-void CAPluginManager::action(QString val, CADocument *document, QEvent *evt, QPoint *coords) {
-	QList<CAPlugin*> list = _actionMap.values(val);
+/*!
+	Extracts the plugin package at \a path to user's plugins directory.
 	
-	for (int i=0; i<list.size(); i++) {
-		list[i]->action(val, _mainWin, document, evt, coords);
-	}
-}
-
+	Returns True, if plugin was installed and loaded successfully, otherwise False.
+	
+	\sa removePlugin()
+*/
 bool CAPluginManager::installPlugin(QString path) {
-	//TODO - zlib needed
+	/// \todo zlib needed
 }
 
+/*!
+	Disables and deletes the directory containing the given \a plugin.
+	
+	\sa installPlugin(), disablePlugin()
+*/
 bool CAPluginManager::removePlugin(CAPlugin *plugin) {
 	disablePlugin(plugin);
 	bool res = QFile::remove(plugin->dirName());
@@ -131,8 +232,6 @@ bool CAPluginManager::startElement(const QString& namespaceURI, const QString& l
 	_tree.push(qName);
 	
 	if (qName == "plugin") {
-		_curPlugin = new CAPlugin();
-		_pluginList << _curPlugin;
 	}
 	
 	if (_curPlugin) {
@@ -310,10 +409,97 @@ bool CAPluginManager::characters(const QString& ch) {
 	return true;
 }
 
-void CAPluginManager::exportAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords, QString filename) {
-	_exportFilterMap[filter]->plugin()->callAction(_exportFilterMap[filter], _mainWin, document, evt, coords, filename);
+/*!
+	\fn bool CACanorus::exportFilterExists(const QString filter)
+	
+	Returns True if a plugin with the given filter in export dialog exists.
+	Returns False if a plugin with such a filter doesn't exist. Internal LilyPond export code is usually
+	used instead.
+	
+	\sa importFilterExists(const QString filter)
+*/
+
+/*!
+	Finds the appropriate action having the given export \a filter and calls it using the given \a document and
+	\a fileName. 
+	
+	\sa importAction()
+ */
+void CAPluginManager::exportAction(QString filter, CADocument *document, QString filename) {
+	_exportFilterMap[filter]->plugin()->callAction(_exportFilterMap[filter], 0, document, 0, 0, filename);
 }
 
-void CAPluginManager::importAction(QString filter, CADocument *document, QEvent *evt, QPoint *coords, QString filename) {
-	_importFilterMap[filter]->plugin()->callAction(_importFilterMap[filter], _mainWin, document, evt, coords, filename);
+/*!
+	\fn bool CACanorus::importFilterExists(const QString filter)
+	
+	Returns True if a plugin with the given filter in import dialog exists.
+	Returns False if a plugin with such a filter doesn't exist. Internal LilyPond import code is usually
+	used instead.
+	
+	\sa exportFilterExists(const QString filter)
+*/
+
+/*!
+	Finds the appropriate action having the given import \a filter and calls it using the given \a document and
+	\a fileName. The given \a document should already be created before calling this method.
+	
+	\sa exportAction()
+*/
+void CAPluginManager::importAction(QString filter, CADocument *document, QString filename) {
+	_importFilterMap[filter]->plugin()->callAction(_importFilterMap[filter], 0, document, 0, 0, filename);
 }
+
+/*!
+	Gathers all the plugins actions having the given \a val <action> <name> tag in its descriptor file and
+	calls them.
+	This method is usually triggered automatically by Canorus signals (like mouseClick on score viewport or
+	a menu action).
+	
+	\sa importAction(), exportAction()
+*/
+void CAPluginManager::action(QString val, CADocument *document, QEvent *evt, QPoint *coords, CAMainWin *mainWin) {
+	QList<CAPlugin*> list = _actionMap.values(val);
+	
+	for (int i=0; i<list.size(); i++) {
+		list[i]->action(val, mainWin, document, evt, coords);
+	}
+}
+
+/*!
+	\var CACanorus::_pluginList
+	
+	List of both enabled and disabled plugins installed.
+*/
+
+/*!
+	\var CACanorus::_actionMap
+	
+	Map of all the plugins actions names and actual plugins.
+	This is used for faster (constant time) plugin look-up when running a specific action.
+	
+	\sa _exportActionMap, _importActionMap
+*/
+
+/*!
+	\var CACanorus::_exportActionMap
+	
+	Map of all the plugins export actions names and actual plugins.
+	This is used for faster (constant time) plugin look-up when running a specific action.
+	
+	\sa _actionMap, _importActionMap
+*/
+
+/*!
+	\var CACanorus::_importActionMap
+	
+	Map of all the plugins import actions names and actual plugins.
+	This is used for faster (constant time) plugin look-up when running a specific action.
+	
+	\sa _actionMap, _exportActionMap
+*/
+
+/*!
+	\var CACanorus::_depth
+	
+	Hierarchy track of the current node.
+*/

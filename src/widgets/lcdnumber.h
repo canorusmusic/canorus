@@ -26,6 +26,7 @@
 #define NUMBERDISPLAY_H
 
 #include <QLCDNumber> 
+#include <QContextMenuEvent>
 
 class QAction;
 
@@ -102,6 +103,14 @@ protected:
 	*
 	*/
 	virtual void wheelEvent(QWheelEvent *poEvt); 
+	
+	/*!
+	 * Overrides QMainWindow::contextMenuEvent() to prevent showing the context menu when the LCD widget is right-clicked (in a toolbar).
+	 * 
+	 * \param poEvt	Pointer to event info.
+	 * 
+	 */
+	virtual inline void contextMenuEvent(QContextMenuEvent *poEvt) { }
 private:
 	int min_, max_;
 	QAction *numDisplay_;

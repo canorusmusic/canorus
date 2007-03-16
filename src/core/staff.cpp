@@ -36,6 +36,10 @@ CAStaff::CAStaff(CASheet *s, QString name, int numberOfLines) : CAContext(s, nam
 	_name = name;
 }
 
+CAStaff::~CAStaff() {
+	clear();
+}
+
 /*!
 	Returns the end of the last music element in the staff.
 	

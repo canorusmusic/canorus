@@ -20,10 +20,10 @@ class CASheet;
 class QGridLayout;
 
 /**
- * CAScrollWidget consists of viewports.
+ * CAViewPortContainer consists of viewports.
  * It is the central widget that represents CASheet object.
  */
-class CAScrollWidget : public QFrame {
+class CAViewPortContainer : public QFrame {
 	Q_OBJECT
 
 	public:
@@ -33,12 +33,12 @@ class CAScrollWidget : public QFrame {
 		 * @param v Pointer to the initial viewPort to be added to the layout.
 		 * @param p Parent widget.
 		 */
-		CAScrollWidget(CAViewPort *v, QWidget *p);
+		CAViewPortContainer(CAViewPort *v, QWidget *p);
 		
 		/**
 		 * The default destructor.
 		 */
-		~CAScrollWidget();
+		~CAViewPortContainer();
 		
 		/**
 		 * Return the last used active viewport.

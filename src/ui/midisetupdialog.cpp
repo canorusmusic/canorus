@@ -6,33 +6,34 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "ui/midisetupdialog.h"
+#include <QSettings>
 
-CAMidiSetupDialog::CAMidiSetupDialog(QWidget *parent, QMap<int, QString> inPorts, QMap<int, QString> outPorts, int *in, int *out)
-	: QDialog(parent)
-{
-	_inPorts = inPorts;
-	_outPorts = outPorts;
-	_in = in;
-	_out = out;
+// Python.h needs to be loaded first!
+#include "core/canorus.h"
+#include "ui/midisetupdialog.h"
+#include "interface/mididevice.h"
+
+CAMidiSetupDialog::CAMidiSetupDialog(QWidget *parent) : QDialog(parent) {
+	_inPorts = CACanorus::midiDevice()->getInputPorts();
+	_outPorts = CACanorus::midiDevice()->getOutputPorts();
 	
 	_dialog.setupUi(this);
 	_dialog.midi_in_list->addItem(tr("None"));
-	for (int i=0; i<inPorts.values().size(); i++) {
-		_dialog.midi_in_list->addItem(inPorts.values().at(i));
-		if (*_in==inPorts.keys().at(i))
+	for (int i=0; i<_inPorts.values().size(); i++) {
+		_dialog.midi_in_list->addItem(_inPorts.values().at(i));
+		if (CACanorus::midiInPort()==_inPorts.keys().at(i))
 			_dialog.midi_in_list->setCurrentItem(_dialog.midi_in_list->item(i+1));	//select the previous device
 	}
-	if (*_in==-1)
+	if (CACanorus::midiInPort()==-1)
 		_dialog.midi_in_list->setCurrentItem(_dialog.midi_in_list->item(0));		//select the previous device
 	
 	_dialog.midi_out_list->addItem(tr("None"));
-	for (int i=0; i<outPorts.values().size(); i++) {
-		_dialog.midi_out_list->addItem(outPorts.values().at(i));
-		if (*_out==outPorts.keys().at(i))
+	for (int i=0; i<_outPorts.values().size(); i++) {
+		_dialog.midi_out_list->addItem(_outPorts.values().at(i));
+		if (CACanorus::midiOutPort()==_outPorts.keys().at(i))
 			_dialog.midi_out_list->setCurrentItem(_dialog.midi_out_list->item(i+1));	//select the previous device
 	}
-	if (*_out==-1)
+	if (CACanorus::midiOutPort()==-1)
 		_dialog.midi_out_list->setCurrentItem(_dialog.midi_out_list->item(0));			//select the previous device
 	
 	exec();
@@ -43,14 +44,17 @@ CAMidiSetupDialog::~CAMidiSetupDialog() {
 
 void CAMidiSetupDialog::accept() {
 	if (_dialog.midi_in_list->currentIndex().row()==0)
-		*_in = -1;
+		CACanorus::setMidiInPort(-1);
 	else
-		*_in = _inPorts.keys().at(_dialog.midi_in_list->currentIndex().row()-1);
+		CACanorus::setMidiInPort(_inPorts.keys().at(_dialog.midi_in_list->currentIndex().row()-1));
 	
 	if (_dialog.midi_out_list->currentIndex().row()==0)
-		*_out = -1;
+		CACanorus::setMidiOutPort(-1);
 	else
-		*_out = _outPorts.keys().at(_dialog.midi_out_list->currentIndex().row()-1);
+		CACanorus::setMidiOutPort(_outPorts.keys().at(_dialog.midi_out_list->currentIndex().row()-1));
+	
+	CACanorus::settings()->setValue("rtmidi/defaultoutputport", CACanorus::midiOutPort());
+	CACanorus::settings()->setValue("rtmidi/defaultinputport", CACanorus::midiInPort());
 	
 	hide();
 }

@@ -25,7 +25,7 @@ class CAMidiSetupDialog : public QDialog {
 	Q_OBJECT
 	
 public:
-	CAMidiSetupDialog(QWidget *parent, QMap<int, QString> inPorts, QMap<int, QString> outPorts, int *in, int *out);
+	CAMidiSetupDialog(QWidget *parent=0);
 	~CAMidiSetupDialog();
 
 public slots:
@@ -34,10 +34,7 @@ public slots:
 	
 private:
 	Ui::MidiSetupDialog _dialog;
-	int *_in;
-	int *_out;
 	QMap<int, QString> _inPorts;
 	QMap<int, QString> _outPorts;
 };
-
 #endif /*MIDISETUPDIALOG_H_*/
