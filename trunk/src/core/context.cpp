@@ -29,6 +29,9 @@ CAContext::CAContext(CASheet *s, const QString name) {
 	_name = name;
 }
 
+CAContext::~CAContext() {
+}
+
 /*!
 	\enum CAContext::CAContextType
 	This enum holds different CAContext types:

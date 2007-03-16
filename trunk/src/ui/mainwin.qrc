@@ -1,35 +1,95 @@
 <RCC>
     <qresource prefix="/menu" >
+        <file>images/accsvisible.png</file>
+        <file>images/arrow.png</file>
+        <file>images/barlinedotted.png</file>
+        <file>images/barlinedouble.png</file>
+        <file>images/barlineend.png</file>
+        <file>images/barlinerepeatclose.png</file>
+        <file>images/barlinerepeatopen.png</file>
+        <file>images/barlinesingle.png</file>
+        <file>images/canorusmlsource.png</file>
+        <file>images/clefalto.png</file>
         <file>images/clefbass.png</file>
         <file>images/cleftreble.png</file>
-        <file>images/clefalto.png</file>
         <file>images/clogosm.png</file>
+        <file>images/contextnew.png</file>
+        <file>images/contextproperties.png</file>
+        <file>images/contextremove.png</file>
+        <file>images/delete.png</file>
         <file>images/doubleflat.png</file>
+        <file>images/doublesharp.png</file>
+        <file>images/edit_add.png</file>
+        <file>images/edit_remove.png</file>
         <file>images/editcopy.png</file>
         <file>images/editcut.png</file>
         <file>images/editpaste.png</file>
         <file>images/editredo.png</file>
         <file>images/editundo.png</file>
+        <file>images/emajcshmin.png</file>
         <file>images/exit.png</file>
-        <file>images/exportlilypond.png</file>
+        <file>images/fermata.png</file>
+        <file>images/fileclose.png</file>
         <file>images/filenew.png</file>
+        <file>images/filenewwizard.png</file>
         <file>images/fileopen.png</file>
         <file>images/fileprint.png</file>
+        <file>images/fileprintpreview.png</file>
+        <file>images/filequickprint.png</file>
         <file>images/filesave.png</file>
+        <file>images/filesaveas.png</file>
+        <file>images/flat.png</file>
+        <file>images/fullscreen.png</file>
+        <file>images/hiddenrest.png</file>
+        <file>images/insertfm.png</file>
+        <file>images/insertplayable.png</file>
+        <file>images/keysig.png</file>
+        <file>images/lilypondsource.png</file>
         <file>images/n0.png</file>
         <file>images/n1.png</file>
-        <file>images/n2.png</file>
-        <file>images/n4.png</file>
-        <file>images/n8.png</file>
         <file>images/n16.png</file>
+        <file>images/n2.png</file>
         <file>images/n32.png</file>
+        <file>images/n4.png</file>
         <file>images/n64.png</file>
+        <file>images/n8.png</file>
+        <file>images/neutral.png</file>
+        <file>images/newfmcontext.png</file>
+        <file>images/newstaff.png</file>
+        <file>images/notestemdown.png</file>
+        <file>images/notestemneutral.png</file>
+        <file>images/notestemup.png</file>
+        <file>images/notestemvoice.png</file>
+        <file>images/pdf.png</file>
+        <file>images/pedal.png</file>
+        <file>images/player_pause.png</file>
         <file>images/player_play.png</file>
-        <file>images/tsc.png</file>
-        <file>images/tsab.png</file>
-        <file>images/ts34.png</file>
+        <file>images/player_stop.png</file>
+        <file>images/r0.png</file>
+        <file>images/r1.png</file>
+        <file>images/r128.png</file>
+        <file>images/r16.png</file>
+        <file>images/r2.png</file>
+        <file>images/r32.png</file>
+        <file>images/r4.png</file>
+        <file>images/r64.png</file>
+        <file>images/r8.png</file>
+        <file>images/settings.png</file>
+        <file>images/sharp.png</file>
+        <file>images/sheetnew.png</file>
+        <file>images/sheetproperties.png</file>
+        <file>images/sheetremove.png</file>
+        <file>images/star.png</file>
         <file>images/ts24.png</file>
+        <file>images/ts34.png</file>
         <file>images/ts38.png</file>
         <file>images/ts68.png</file>
+        <file>images/tsab.png</file>
+        <file>images/tsc.png</file>
+        <file>images/tscustom.png</file>
+        <file>images/voice.png</file>
+        <file>images/voicenew.png</file>
+        <file>images/voiceproperties.png</file>
+        <file>images/voiceremove.png</file>
     </qresource>
 </RCC>

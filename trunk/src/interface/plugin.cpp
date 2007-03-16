@@ -7,6 +7,7 @@
  */
 
 #ifdef USE_SWIG
+#include "core/canorus.h"
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
 #endif
@@ -15,7 +16,7 @@
 #include "ui/pluginaction.h"
 
 #include "ui/mainwin.h"
-#include "widgets/scrollwidget.h"
+#include "widgets/viewportcontainer.h"
 #include "widgets/viewport.h"
 #include "widgets/scoreviewport.h"
 #include "drawable/drawablemuselement.h"
@@ -78,6 +79,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 	QList<PyObject*> pythonArgs;
 #endif
 	
+	bool rebuildDocument = false;
+	
 	// Convert arguments to its needed scripting language types
 	QList<QString> args = action->args();
 	for (int i=0; i<args.size(); i++) {
@@ -85,6 +88,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		
 		// Currently selected document
 		if (val=="document") {
+			rebuildDocument = true;
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
 				rubyArgs << CASwigRuby::toRubyObject(document, CASwigRuby::Document);
@@ -101,8 +105,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="sheet") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
-				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
-					rubyArgs << CASwigRuby::toRubyObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigRuby::Sheet);
+				if (mainWin->currentViewPortContainer() && mainWin->currentViewPortContainer()->lastUsedViewPort() && mainWin->currentViewPortContainer()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
+					rubyArgs << CASwigRuby::toRubyObject(((CAScoreViewPort*)mainWin->currentViewPortContainer()->lastUsedViewPort())->sheet(), CASwigRuby::Sheet);
 				else {
 					error = true;
 					break;
@@ -111,8 +115,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #endif
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
-				if (mainWin->currentScrollWidget() && mainWin->currentScrollWidget()->lastUsedViewPort() && mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
-					pythonArgs << CASwigPython::toPythonObject(((CAScoreViewPort*)mainWin->currentScrollWidget()->lastUsedViewPort())->sheet(), CASwigPython::Sheet);
+				if (mainWin->currentViewPortContainer() && mainWin->currentViewPortContainer()->lastUsedViewPort() && mainWin->currentViewPortContainer()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort)
+					pythonArgs << CASwigPython::toPythonObject(static_cast<CAScoreViewPort*>(mainWin->currentViewPortContainer()->lastUsedViewPort())->sheet(), CASwigPython::Sheet);
 				else {
 					error = true;
 					break;
@@ -125,13 +129,13 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="note") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
-				if (mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
-					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentScrollWidget()->lastUsedViewPort());
-					if (!v->selection()->size() || v->selection()->front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
+				if (mainWin->currentViewPortContainer()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
+					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentViewPortContainer()->lastUsedViewPort());
+					if (!v->selection().size() || v->selection().front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
 						error=true;
 						break;
 					}
-					rubyArgs << CASwigRuby::toRubyObject(v->selection()->front()->musElement(), CASwigRuby::Note);
+					rubyArgs << CASwigRuby::toRubyObject(v->selection().front()->musElement(), CASwigRuby::Note);
 				}
 				else {
 					error = true;
@@ -141,13 +145,13 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #endif
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
-				if (mainWin->currentScrollWidget()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
-					CAScoreViewPort *v = (CAScoreViewPort*)(mainWin->currentScrollWidget()->lastUsedViewPort());
-					if (!v->selection()->size() || v->selection()->front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
+				if (mainWin->currentViewPortContainer()->lastUsedViewPort()->viewPortType()==CAViewPort::ScoreViewPort) {
+					CAScoreViewPort *v = static_cast<CAScoreViewPort*>(mainWin->currentViewPortContainer()->lastUsedViewPort());
+					if (!v->selection().size() || v->selection().front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
 						error=true;
 						break;
 					}
-					pythonArgs << CASwigPython::toPythonObject(v->selection()->front()->musElement(), CASwigPython::Note);
+					pythonArgs << CASwigPython::toPythonObject(v->selection().front()->musElement(), CASwigPython::Note);
 				}
 				else {
 					error = true;
@@ -216,12 +220,17 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #endif
 	}
 	
-	if (action->refresh())
-		mainWin->rebuildUI();
+	if (action->refresh()) {
+		if (rebuildDocument)
+			CACanorus::rebuildUI(document);
+		else
+			CACanorus::rebuildUI(document, mainWin->currentSheet());
+	}
 	
 	return (!error);
 }
 
 void CAPlugin::addAction(CAPluginAction *action) {
-	_actionMap.insertMulti(action->onAction(), action);
+	if (!_actionMap.values(action->onAction()).contains(action))
+		_actionMap.insertMulti(action->onAction(), action);
 }

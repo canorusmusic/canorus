@@ -5,6 +5,8 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
 
+#include <QObject>
+
 #include "core/document.h"
 #include "core/context.h"
 #include "core/staff.h"
@@ -39,7 +41,7 @@ void CASheet::addContext(CAContext *c) {
 }
 
 CAStaff *CASheet::addStaff() {
-	CAStaff *s = new CAStaff(this, QString("Staff ") + QString::number(staffCount()+1));
+	CAStaff *s = new CAStaff(this, QObject::tr("Staff%1").arg(staffCount()+1));
 	_contextList.append(s);
 	_staffList.append(s);
 	

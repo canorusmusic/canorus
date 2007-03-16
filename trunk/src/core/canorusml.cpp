@@ -268,7 +268,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		QString sheetName = attributes.value("name");
 		if (!(_curSheet = _document->sheet(sheetName))) {	//if the document doesn't contain the sheet with the given name, create a new sheet and add it to the document. Otherwise, just set the current sheet to the found one and leave
 			if (sheetName.isEmpty())
-				sheetName = QString("Sheet") + " " + QString::number(_document->sheetCount()+1);
+				sheetName = QObject::tr("Sheet%1").arg(_document->sheetCount()+1);
 			_curSheet = new CASheet(sheetName, _document);
 			
 			_document->addSheet(_curSheet);
@@ -283,7 +283,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		
 		if (!(_curContext = _curSheet->context(staffName))) {	//if the sheet doesn't contain the staff with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
 			if (staffName.isEmpty())
-				staffName = QString("Staff") + " " + QString::number(_curSheet->staffCount()+1);
+				staffName = QObject::tr("Staff%1").arg(_curSheet->staffCount()+1);
 			_curContext = new CAStaff(_curSheet, staffName, attributes.value("number-of-lines").toInt());
 		}
 		_curSheet->addContext(_curContext);
@@ -300,7 +300,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		
 		if (!(_curVoice = ((CAStaff*)_curContext)->voice(voiceName))) {	//if the staff doesn't contain the voice with the given name, create a new voice and add it to the document. Otherwise, just set the current voice to the found one and leave
 			if (voiceName.isEmpty())
-				voiceName = QString("Voice") + " " + QString::number(((CAStaff*)_curContext)->voiceCount()+1);
+				voiceName = QObject::tr("Voice%1").arg(((CAStaff*)_curContext)->voiceCount()+1);
 			_curVoice = new CAVoice((CAStaff*)_curContext, voiceName);
 			if (!attributes.value("stem-direction").isEmpty())
 				_curVoice->setStemDirection(CANote::stemDirectionFromString(attributes.value("stem-direction")));
@@ -408,7 +408,7 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		// lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Clef, _curVoice->lastTimeEnd());
+		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Clef, _curClef->timeStart());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curClef))	// element has exactly the same properties
@@ -433,7 +433,7 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		// lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::KeySignature, _curVoice->lastTimeEnd());
+		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::KeySignature, _curKeySig->timeStart());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curKeySig))	// element has exactly the same properties
@@ -458,7 +458,7 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		// lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::TimeSignature, _curVoice->lastTimeEnd());
+		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::TimeSignature, _curTimeSig->timeStart());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curTimeSig))	//element has exactly the same properties
@@ -483,7 +483,7 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		// lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Barline, _curVoice->lastTimeEnd());
+		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Barline, _curBarline->timeStart());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curBarline))	//element has exactly the same properties

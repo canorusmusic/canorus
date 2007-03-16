@@ -60,7 +60,7 @@ void CAVoice::clear() {
 	while (_musElementList.size()) {
 		// deletes an element only if it's not present in other voices or we're deleting the last voice
 		if (_musElementList.front()->isPlayable() || staff()->voiceCount()==1)
-			delete _musElementList.front();
+			delete _musElementList.front(); // CAMusElement's destructor removes it from the list
 		else
 			_musElementList.removeFirst();
 	}

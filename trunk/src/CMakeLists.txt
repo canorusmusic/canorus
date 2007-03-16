@@ -56,16 +56,17 @@ SET(Canorus_MOCs ui/mainwin.h	# List of classes which Qt needs to produce MOCs f
 	ui/pluginaction.h
 	widgets/keyoffs.h
 	widgets/lcdnumber.h
-	widgets/scrollwidget.h
 	widgets/viewport.h
+	widgets/viewportcontainer.h
 	widgets/scoreviewport.h
 	widgets/sourceviewport.h
-	widgets/toolbar.h
+	widgets/menutoolbutton.h
 	widgets/multisplitter.h
 	interface/playback.h
 )
 
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
+	core/canorus.cpp # main class
 	core/document.cpp
 	core/sheet.cpp
 	core/kdtree.cpp
@@ -100,9 +101,9 @@ SET(Canorus_Widget_Srcs  	# Sources for all the widgets present in Canorus
 	widgets/lcdnumber.cpp
 	widgets/scoreviewport.cpp
 	widgets/sourceviewport.cpp
-	widgets/scrollwidget.cpp
-	widgets/toolbar.cpp
+	widgets/menutoolbutton.cpp
 	widgets/viewport.cpp
+	widgets/viewportcontainer.cpp
 	widgets/multisplitter.cpp
 )
 
@@ -184,62 +185,24 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 )
 
 SET(Canorus_Scripts	# Official scripts shipped with Canorus.
-#	scripts/newdocument.rb
 	scripts/newdocument.py
 )
 
-SET(Canorus_Images	# Images on buttons, splash etc.
-	ui/images/edit_add.png
-	ui/images/clogosm.png
-	ui/images/tsab.png
-	ui/images/exportpdf.png
-	ui/images/editredo.png
-	ui/images/edit_remove.png
-	ui/images/player_play.png
-	ui/images/bmajgshmin.png
-	ui/images/amajfshmin.png
-	ui/images/bmajgmin.png
-	ui/images/editundo.png
-	ui/images/aflmajfmin.png
-	ui/images/editcut.png
-	ui/images/exportlilypond.png
-	ui/images/filenew.png
-	ui/images/filesave.png
-	ui/images/player_stop.png
-	ui/images/ts24.png
-	ui/images/emajcshmin.png
-	ui/images/ts34.png
-	ui/images/ts38.png
-	ui/images/eflmajcmin.png
-	ui/images/ts68.png
-	ui/images/dmajbmin.png
-	ui/images/n0.png
-	ui/images/n1.png
-	ui/images/n2.png
-	ui/images/n4.png
-	ui/images/n8.png
-	ui/images/tsc.png
-	ui/images/cleftreble.png
-	ui/images/gmajemin.png
-	ui/images/n16.png
-	ui/images/editcopy.png
-	ui/images/fileprint.png
-	ui/images/n32.png
-	ui/images/clefbass.png
-	ui/images/doubleflat.png
-	ui/images/delete.png
-	ui/images/clefalto.png
-	ui/images/cshmajashmin.png
-	ui/images/n64.png
-	ui/images/editpaste.png
-	ui/images/fshmajdshmin.png
-	ui/images/fileopen.png
-	ui/images/cflmajaflmin.png
-	ui/images/player_pause.png
-	ui/images/dflmajbflmin.png
-	ui/images/gflmajeflmin.png
-	ui/images/exit.png
-	ui/images/fmajdmin.png
+# Not needed for now
+#SET(Canorus_Images	# Images on buttons, splash etc.
+#	ui/images/*.png
+#)
+
+SET(Canorus_Translation_Srcs
+	lang/sl_SI.ts
+	lang/de_DE.ts
+	lang/he_IL.ts
+)
+
+SET(Canorus_Translation_Bins
+	lang/sl_SI.qm
+	lang/de_DE.qm
+	lang/he_IL.qm
 )
 
 SET(Canorus_Fonts	# Music fonts needed by Canorus
@@ -410,6 +373,22 @@ IF(MINGW)
 	TARGET_LINK_LIBRARIES(canorus "winmm.lib")
 ENDIF(MINGW)
 
+###############
+# Translation #
+###############
+ADD_CUSTOM_COMMAND(
+	TARGET canorus
+	PRE_BUILD
+	COMMAND ${QT_BINARY_DIR}/lupdate
+	ARGS ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs}
+)
+ADD_CUSTOM_COMMAND(
+	TARGET canorus
+	PRE_BUILD
+	COMMAND ${QT_BINARY_DIR}/lrelease
+	ARGS ${Canorus_Translation_Srcs}
+)
+
 ################
 # Installation #
 ################
@@ -419,16 +398,21 @@ INSTALL(TARGETS canorus
 )
 IF(USE_RUBY)
 	INSTALL(TARGETS CanorusRuby LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_LIB_DIR})
+	INSTALL(TARGETS CanorusRuby LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR})
 ENDIF(USE_RUBY)
 IF(USE_PYTHON)
 	INSTALL(TARGETS _CanorusPython LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_LIB_DIR})
 	INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/CanorusPython.py DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_LIB_DIR})
+	INSTALL(TARGETS _CanorusPython LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR})
+	INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/CanorusPython.py DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR})
 ENDIF(USE_PYTHON)
 
 # Install scripts
 INSTALL(FILES ${Canorus_Scripts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/scripts")
 # Install data - icons, images, sounds etc.
-INSTALL(FILES ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/images")
+#INSTALL(FILES ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/images")
+# Install translations
+INSTALL(FILES ${Canorus_Translation_Bins} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/lang")
 # Install fonts
 INSTALL(FILES ${Canorus_Fonts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_FONTS_DIR}")
 

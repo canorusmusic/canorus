@@ -94,8 +94,8 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 }
 
 CAScoreViewPort::~CAScoreViewPort() {
-	_drawableMList.clear(true);	//clears all the elements and delete its contents too as autoDelete is true
-	_drawableCList.clear(true);	//clears all the elements and delete its contents too as autoDelete is true
+	_drawableMList.clear(true);	//clears all the elements and delete its drawable contents too as autoDelete is true
+	_drawableCList.clear(true);	//clears all the elements and delete its drawable contents too as autoDelete is true
 	
 	_animationTimer->disconnect();
 	_animationTimer->stop();
@@ -155,7 +155,7 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 	
 	if (select)
 		setCurrentContext(elt);
-
+	
 	if (elt->drawableContextType() == CADrawableContext::DrawableStaff) {
 		_shadowNote << new CANote(CANote::Whole, 0, 0, 0, 0);
 		_shadowNote.back()->setVoice(((CADrawableStaff*)elt)->staff()->voiceAt(0));
@@ -190,9 +190,10 @@ CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 	
 	if (l.size()!=0) {
 		setCurrentContext((CADrawableContext*)l.front());
-	}
+	} else
+		setCurrentContext(0);
 	
-	return (_currentContext?_currentContext:0);
+	return currentContext();
 }
 
 CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
@@ -210,6 +211,7 @@ CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 			_selection << (CADrawableMusElement*)l.at((++idx < l.size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
 		}
 		
+		setCurrentContext(((CADrawableMusElement*)_selection.front())->drawableContext());
 		return ((CADrawableMusElement*)_selection.front())->musElement();
 	} else {
 		if (_selection.size() != 0) {
@@ -340,12 +342,13 @@ void CAScoreViewPort::rebuild() {
 		musElementSelection << _selection[i]->musElement();
 	
 	_selection.clear();
-
+	
 	_drawableMList.clear(true);
 	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	//remember the index of last used context
 	_drawableCList.clear(true);
 		
 	CAEngraver::reposit(this);
+	
 	if (contextIdx != -1)	//restore the last used context
 		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
 	else
@@ -770,13 +773,12 @@ void CAScoreViewPort::checkScrollBars() {
 void CAScoreViewPort::calculateShadowNoteCoords() {
 	if (_currentContext?(_currentContext->drawableContextType() == CADrawableContext::DrawableStaff):0) {
 		int pitch = ((CADrawableStaff*)_currentContext)->calculatePitch(_xCursor, _yCursor);	//the current staff has the real pitch we need
-		for (int i=0; i<_drawableCList.size(); i++) {	//apply this pitch to all shadow notes in all staffs
-			if (((CADrawableContext*)_drawableCList.at(i))->drawableContextType() != CADrawableContext::DrawableStaff)
-				continue;
-				
+		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
 			_shadowNote[i]->setPitch(pitch);
 			_shadowDrawableNote[i]->setXPos(_xCursor);
-			_shadowDrawableNote[i]->setYPos(((CADrawableStaff*)_drawableCList.at(i))->calculateCenterYCoord(pitch, _xCursor));
+			_shadowDrawableNote[i]->setYPos(
+				static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext())->calculateCenterYCoord(pitch, _xCursor)
+			);
 		}
 	}
 }
