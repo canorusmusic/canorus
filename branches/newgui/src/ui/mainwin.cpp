@@ -344,11 +344,10 @@ void CAMainWin::clearUI() {
 	
 	// Delete all view port containers
 	while (uiTabWidget->count()) {
-		CAViewPortContainer *vpc = currentViewPortContainer();
-		uiTabWidget->removeTab(uiTabWidget->count()-1);
+		CAViewPortContainer *vpc = static_cast<CAViewPortContainer*>(uiTabWidget->currentWidget());
+		uiTabWidget->removeTab( 0 );
 		delete vpc;
 	}
-	connect(uiTabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_uiTabWidget_currentChanged(int))); // reconnect it.
 	
 	// Delete all viewports
 	for (int i=0; i<_viewPortList.size(); i++)
@@ -363,7 +362,9 @@ void CAMainWin::clearUI() {
 */
 void CAMainWin::on_uiTabWidget_currentChanged(int idx) {
 	setCurrentViewPortContainer( static_cast<CAViewPortContainer*>(uiTabWidget->currentWidget()) );
-	setCurrentViewPort( _currentViewPortContainer->lastUsedViewPort() );
+	if (currentViewPortContainer())
+		setCurrentViewPort( _currentViewPortContainer->lastUsedViewPort() );
+	
 	updateToolBars();
 }
 
@@ -438,9 +439,9 @@ void CAMainWin::on_uiCloseDocument_triggered() {
 	rebuildUI();
 }
 
-void CAMainWin::on_uiViewCanorusMLSource_triggered() {
-	CASourceViewPort *v = new CASourceViewPort(document(), _currentViewPort->parent());
-	_currentViewPortContainer->addViewPort(v);
+void CAMainWin::on_uiCanorusMLSource_triggered() {
+	CASourceViewPort *v = new CASourceViewPort(document(), currentViewPort()->parent());
+	currentViewPortContainer()->addViewPort(v);
 	
 	connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
 	
@@ -1596,7 +1597,7 @@ void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 		
 		CALilyPondImport(inputString, v->voice());
 		
-		on_uiViewLilyPondSource_triggered();
+		on_uiLilyPondSource_triggered();
 	}
 	
 	CACanorus::rebuildUI(document());
@@ -1623,7 +1624,7 @@ void CAMainWin::on_uiSettings_triggered() {
 	CAMidiSetupDialog(this);
 }
 
-void CAMainWin::on_uiViewLilyPondSource_triggered() {
+void CAMainWin::on_uiLilyPondSource_triggered() {
 	CAContext *context = currentContext();
 	if ( context &&
 	     context->contextType()==CAContext::Staff ) {

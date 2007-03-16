@@ -134,8 +134,8 @@ private slots:
 	void on_uiZoomToFit_triggered();
 	void on_uiZoomToWidth_triggered();
 	void on_uiZoomToHeight_triggered();
-	void on_uiViewLilyPondSource_triggered();
-	void on_uiViewCanorusMLSource_triggered();
+	void on_uiLilyPondSource_triggered();
+	void on_uiCanorusMLSource_triggered();
 	
 	// Sheet
 	void on_uiRemoveSheet_triggered();

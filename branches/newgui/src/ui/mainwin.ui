@@ -116,49 +116,6 @@
     <addaction name="separator" />
     <addaction name="uiQuit" />
    </widget>
-   <widget class="QMenu" name="uiMenuTools" >
-    <property name="title" >
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="uiGotoBar" />
-    <addaction name="uiTranspose" />
-    <addaction name="uiNoteCount" />
-    <addaction name="separator" />
-    <addaction name="uiSettings" />
-   </widget>
-   <widget class="QMenu" name="uiMenuView" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <widget class="QMenu" name="uiMenuSourceView" >
-     <property name="title" >
-      <string>Source view</string>
-     </property>
-     <addaction name="uiLilyPondSource" />
-     <addaction name="uiCanorusMLSource" />
-    </widget>
-    <widget class="QMenu" name="uiMenuZoom" >
-     <property name="title" >
-      <string>Zoom</string>
-     </property>
-     <addaction name="uiZoomToWidth" />
-     <addaction name="uiZoomToHeight" />
-     <addaction name="uiZoomToFit" />
-     <addaction name="uiZoomToSelection" />
-     <addaction name="separator" />
-     <addaction name="uiCustomZoom" />
-    </widget>
-    <addaction name="separator" />
-    <addaction name="uiMenuZoom" />
-    <addaction name="uiAnimatedScroll" />
-    <addaction name="uiLockScrollPlayback" />
-    <addaction name="separator" />
-    <addaction name="uiScoreView" />
-    <addaction name="uiMenuSourceView" />
-    <addaction name="separator" />
-    <addaction name="uiShowStatusBar" />
-    <addaction name="uiFullscreen" />
-   </widget>
    <widget class="QMenu" name="uiMenuInsert" >
     <property name="title" >
      <string>&amp;Insert</string>
@@ -173,6 +130,49 @@
     <addaction name="uiInsertTimeSig" />
     <addaction name="uiInsertBarline" />
     <addaction name="uiInsertFM" />
+   </widget>
+   <widget class="QMenu" name="uiMenuTools" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="uiGotoBar" />
+    <addaction name="uiTranspose" />
+    <addaction name="uiNoteCount" />
+    <addaction name="separator" />
+    <addaction name="uiSettings" />
+   </widget>
+   <widget class="QMenu" name="uiMenuView" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="uiMenuZoom" >
+     <property name="title" >
+      <string>Zoom</string>
+     </property>
+     <addaction name="uiZoomToWidth" />
+     <addaction name="uiZoomToHeight" />
+     <addaction name="uiZoomToFit" />
+     <addaction name="uiZoomToSelection" />
+     <addaction name="separator" />
+     <addaction name="uiCustomZoom" />
+    </widget>
+    <widget class="QMenu" name="uiMenuSourceView" >
+     <property name="title" >
+      <string>Source view</string>
+     </property>
+     <addaction name="uiLilyPondSource" />
+     <addaction name="uiCanorusMLSource" />
+    </widget>
+    <addaction name="separator" />
+    <addaction name="uiMenuZoom" />
+    <addaction name="uiAnimatedScroll" />
+    <addaction name="uiLockScrollPlayback" />
+    <addaction name="separator" />
+    <addaction name="uiScoreView" />
+    <addaction name="uiMenuSourceView" />
+    <addaction name="separator" />
+    <addaction name="uiShowStatusBar" />
+    <addaction name="uiFullscreen" />
    </widget>
    <addaction name="uiMenuFile" />
    <addaction name="uiMenuEdit" />
@@ -666,11 +666,17 @@
    </property>
   </action>
   <action name="uiLilyPondSource" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/lilypondsource.png</iconset>
+   </property>
    <property name="text" >
     <string>LilyPond source</string>
    </property>
   </action>
   <action name="uiCanorusMLSource" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/canorusmlsource.png</iconset>
+   </property>
    <property name="text" >
     <string>CanorusML source</string>
    </property>
