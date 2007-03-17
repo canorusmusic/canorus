@@ -7,9 +7,10 @@
  */
 
 #ifdef USE_SWIG
+// Python.h, which swigpython.h includes, must be included before any other headers
+#include "scripting/swigpython.h"
 #include "core/canorus.h"
 #include "scripting/swigruby.h"
-#include "scripting/swigpython.h"
 #endif
 
 #include "interface/plugin.h"
