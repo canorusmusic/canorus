@@ -7,6 +7,8 @@
  */
 
 // Python.h needs to be loaded first!
+#include "scripting/swigpython.h"
+
 #include "core/canorus.h"
 
 #include <QFile>
@@ -16,7 +18,6 @@
 
 #include "interface/rtmididevice.h"
 #include "ui/midisetupdialog.h"
-#include "scripting/swigpython.h"
 #include "scripting/swigruby.h"
 #include <iostream>
 // define private static members
