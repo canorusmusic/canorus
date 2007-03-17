@@ -144,10 +144,11 @@ void CAMainWin::setupCustomUi() {
 		uiInsertToolBar->addAction( uiSelectMode );
 		uiInsertToolBar->addSeparator();		
 		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 2, this ));
-			connect(uiContextType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiContextType_toggled(bool, int)));
 			uiContextType->addButton( QIcon(":/menu/images/newstaff.png"), CAContext::Staff );
 			uiContextType->addButton( QIcon(":/menu/images/newfmcontext.png"), CAContext::FunctionMarkingContext );
 			uiContextType->setCurrentId( CAContext::Staff );
+			connect( uiContextType, SIGNAL( toggled(bool, int) ), this, SLOT( on_uiContextType_toggled(bool, int) ) );
+			connect( uiNewContext, SIGNAL( triggered() ), uiContextType, SLOT( click() ) );
 		uiInsertToolBar->addSeparator();
 		uiInsertToolBar->addAction( uiInsertPlayable );
 		uiInsertToolBar->addWidget(uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this ));
@@ -156,9 +157,9 @@ void CAMainWin::setupCustomUi() {
 			uiClefType->addButton( QIcon(":/menu/images/clefalto.png"), CAClef::Alto );
 			uiClefType->setCurrentId( CAClef::Treble );
 			connect( uiClefType, SIGNAL( toggled(bool, int) ), this, SLOT( on_uiClefType_toggled(bool, int) ) );
+			connect( uiInsertClef, SIGNAL( triggered() ), uiClefType, SLOT( click() ) );
 		uiInsertToolBar->addAction( uiInsertKeySig );
 		uiInsertToolBar->addWidget(uiTimeSigType = new CAMenuToolButton( tr("Select Time Signature" ), 3, this ));
-			connect( uiTimeSigType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiTimeSigType_toggled(bool, int)) );
 			uiTimeSigType->addButton( QIcon(":/menu/images/tsc.png"), TS_44 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/tsab.png"), TS_22 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts34.png"), TS_34 );
@@ -167,8 +168,9 @@ void CAMainWin::setupCustomUi() {
 			uiTimeSigType->addButton( QIcon(":/menu/images/ts68.png"), TS_68 );
 			uiTimeSigType->addButton( QIcon(":/menu/images/tscustom.png"), TS_CUSTOM );			
 			uiTimeSigType->setCurrentId( TS_44 );
+			connect( uiTimeSigType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiTimeSigType_toggled(bool, int)) );
+			connect( uiInsertTimeSig, SIGNAL(triggered()), uiTimeSigType, SLOT(click()));
 		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 3, this ));
-			connect( uiBarlineType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiBarlineType_toggled(bool, int)) );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinesingle.png"), CABarline::Single );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinedouble.png"), CABarline::Double );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlineend.png"), CABarline::End );
@@ -176,23 +178,25 @@ void CAMainWin::setupCustomUi() {
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatclose.png"), CABarline::RepeatClose );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinedotted.png"), CABarline::Dotted );
 			uiBarlineType->setCurrentId( CABarline::Single );
+			connect( uiBarlineType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiBarlineType_toggled(bool, int)) );
+			connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
 		uiInsertToolBar->addAction( uiInsertFM );
 		addToolBar(Qt::LeftToolBarArea, uiInsertToolBar);
 	
 	uiSheetToolBar = new QToolBar( tr("Sheet ToolBar"), this );
 		uiSheetToolBar->addAction( uiNewSheet );
 		uiSheetToolBar->addWidget( uiSheetName = new QLineEdit(this) );
-			connect( uiSheetName, SIGNAL(returnPressed()), this, SLOT(on_uiSheetName_returnPressed()) );
+			connect( uiSheetName, SIGNAL( returnPressed() ), this, SLOT( on_uiSheetName_returnPressed() ) );
 		uiSheetToolBar->addAction( uiRemoveSheet );
 		uiSheetToolBar->addAction( uiSheetProperties );
 		addToolBar(Qt::TopToolBarArea, uiSheetToolBar);
 	
 	uiContextToolBar = new QToolBar( tr("Context ToolBar"), this );
 		uiContextToolBar->addWidget( uiContextName = new QLineEdit(this) );
-			connect( uiContextName, SIGNAL(returnPressed()), this, SLOT(on_uiContextName_returnPressed()));
+			connect( uiContextName, SIGNAL( returnPressed() ), this, SLOT( on_uiContextName_returnPressed() ) );
 			uiContextName->setToolTip(tr("Context name"));
 		uiContextToolBar->addWidget( uiStaffNumberOfLines = new QSpinBox(this) );
-			connect( uiStaffNumberOfLines, SIGNAL(valueChanged(int)), this, SLOT(on_uiStaffNumberOfLines_valueChanged(int)));
+			connect( uiStaffNumberOfLines, SIGNAL(valueChanged(int)), this, SLOT(on_uiStaffNumberOfLines_valueChanged(int)) );
 			uiStaffNumberOfLines->setToolTip(tr("Number of lines"));
 			uiStaffNumberOfLines->hide();
 		uiContextToolBar->addAction( uiRemoveContext );
@@ -206,10 +210,10 @@ void CAMainWin::setupCustomUi() {
 			connect( uiVoiceNum, SIGNAL( valChanged( int ) ), this, SLOT(on_uiVoiceNum_valChanged( int ) ) );
 		uiVoiceToolBar->addWidget( uiVoiceName = new QLineEdit( this ) );
 			uiVoiceName->setToolTip(tr("Voice name"));
-			connect( uiVoiceName, SIGNAL(returnPressed()), this, SLOT(on_uiVoiceName_returnPressed()));			
+			connect( uiVoiceName, SIGNAL(returnPressed()), this, SLOT(on_uiVoiceName_returnPressed()) );			
 		uiVoiceToolBar->addAction( uiRemoveVoice );
 		uiVoiceToolBar->addWidget(uiVoiceStemDirection = new CAMenuToolButton( tr("Select Voice Stem Direction" ), 3, this ));
-			connect( uiVoiceStemDirection, SIGNAL(toggled(bool, int)), this, SLOT(on_uiVoiceStemDirection_toggled(bool, int)));
+			connect( uiVoiceStemDirection, SIGNAL(toggled(bool, int)), this, SLOT(on_uiVoiceStemDirection_toggled(bool, int)) );
 			uiVoiceStemDirection->setToolTip(tr("Voice stem direction"));
 			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral );
 			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemup.png"), CANote::StemUp );
@@ -236,7 +240,7 @@ void CAMainWin::setupCustomUi() {
 			uiPlayableDotted->setToolTip(tr("Number of dots"));
 		uiPlayableToolBar->addAction( uiAccsVisible );
 		uiPlayableToolBar->addWidget(uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this ));
-			connect( uiNoteStemDirection, SIGNAL(toggled(bool, int)), this, SLOT(on_uiNoteStemDirection_toggled(bool, int)));
+			connect( uiNoteStemDirection, SIGNAL(toggled(bool, int)), this, SLOT(on_uiNoteStemDirection_toggled(bool, int)) );
 			uiVoiceStemDirection->setToolTip(tr("Note stem direction"));		
 			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral );
 			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemup.png"), CANote::StemUp );
@@ -439,6 +443,9 @@ void CAMainWin::on_uiCloseDocument_triggered() {
 	rebuildUI();
 }
 
+/*!
+	Shows the current score in CanorusML syntax in a new or the current viewport.
+*/
 void CAMainWin::on_uiCanorusMLSource_triggered() {
 	CASourceViewPort *v = new CASourceViewPort(document(), currentViewPort()->parent());
 	currentViewPortContainer()->addViewPort(v);
@@ -661,12 +668,6 @@ void CAMainWin::setMode(CAMode mode) {
 	}	//switch(mode)
 	updateToolBars();
 	currentViewPort()->setFocus();
-}
-
-void CAMainWin::on_uiInsertClef_toggled(bool) {
-	std::cout << "uiInsertClef_triggered" << std::endl;
-	setMode(InsertMode);
-	_musElementFactory->setMusElementType( CAMusElement::Clef );
 }
 
 /*!
@@ -1179,24 +1180,6 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMu
 void CAMainWin::keyPressEvent(QKeyEvent *e) {
 }
 
-/*void CAMainWin::setKeySigPSPVisible( bool bVisible ) {
-	if (!uiKeySigPSP) {
-		uiKeySigPSP = new CAKeySigPSP(tr("Edit key signature"), this);
-		addDockWidget( Qt::LeftDockWidgetArea, mpoKeySigPSP );
-	}
-	uiKeySigPSP->setVisible( bVisible );
-}*/	
-
-/*void CAMainWin::setTimeSigPSPVisible( bool bVisible ) {
-	if (!mpoTimeSigPSP) {
-		mpoTimeSigPSP = new CATimeSigPSP("Edit time signature", this);
-		addDockWidget( Qt::LeftDockWidgetArea, mpoTimeSigPSP );
-		connect( mpoTimeSigPSP, SIGNAL( timeSigChanged( int, int ) ),
-                         this, SLOT( sl_mpoTimeSig_valChanged( int, int ) ) );
-	}
-	mpoTimeSigPSP->setVisible( bVisible );
-}	*/
-
 /*!
 	Called when playback is finished or interrupted by the user.
 	It stops the playback, closes ports etc.
@@ -1581,9 +1564,6 @@ void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 	}
 }
 
-void CAMainWin::on_uiNewContext_toggled(bool) {
-}
-
 void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 	if (v->document()) {
 		delete document();
@@ -1596,8 +1576,6 @@ void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 		v->voice()->clear();
 		
 		CALilyPondImport(inputString, v->voice());
-		
-		on_uiLilyPondSource_triggered();
 	}
 	
 	CACanorus::rebuildUI(document());
