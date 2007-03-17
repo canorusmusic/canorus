@@ -61,6 +61,7 @@ const QString CABarline::barlineTypeToString(CABarlineType type) {
 		case End: return "end";
 		case RepeatOpen: return "repeat-open";
 		case RepeatClose: return "repeat-close";
+		case RepeatCloseOpen: return "repeat-close-open";
 		case Dotted: return "dotted";
 		default: return "";
 	}
@@ -77,6 +78,7 @@ CABarline::CABarlineType CABarline::barlineTypeFromString(const QString type) {
 	if (type=="end") return End; else
 	if (type=="repeat-open") return RepeatOpen; else
 	if (type=="repeat-close") return RepeatClose; else
+	if (type=="repeat-close-open") return RepeatCloseOpen; else
 	if (type=="dotted") return Dotted;
 	else return Single;	
 }

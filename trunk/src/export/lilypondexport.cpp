@@ -73,6 +73,8 @@ void CALilyPondExport::exportVoice(CAVoice *v) {
 				if (bar->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				if (bar->barlineType() == CABarline::Single)
 					out() << "|";
+				else
+					out() << "\\bar \"" << barlineTypeToLilyPond(bar->barlineType()) << "\"";
 				
 				break;
 			}
@@ -345,6 +347,35 @@ const QString CALilyPondExport::restTypeToLilyPond(CARest::CARestType type) {
 			break;
 		case CARest::Hidden:
 			return "s";
+			break;
+	}
+}
+
+/*!
+	Converts the barline type to LilyPond syntax.
+*/
+const QString CALilyPondExport::barlineTypeToLilyPond(CABarline::CABarlineType type) {
+	switch (type) {
+		case CABarline::Single:
+			return "|";
+			break;
+		case CABarline::Double:
+			return "||";
+			break;
+		case CABarline::End:
+			return "|.";
+			break;
+		case CABarline::RepeatOpen:
+			return "|:";
+			break;
+		case CABarline::RepeatClose:
+			return ":|";
+			break;
+		case CABarline::RepeatCloseOpen:
+			return ":|:";
+			break;
+		case CABarline::Dotted:
+			return ":";
 			break;
 	}
 }
