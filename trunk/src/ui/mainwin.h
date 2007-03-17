@@ -34,8 +34,6 @@ class CAPlayback;
 class CAMenuToolButton;
 class CALCDNumber;
 class CASheet;
-class CAKeySigPSP;
-class CATimeSigPSP;
 class CAScoreViewPort;
 class CASourceViewPort;
 class CAMusElementFactory;
@@ -119,7 +117,6 @@ private slots:
 	void on_uiContextType_toggled(bool, int);
 	void on_uiClefType_toggled(bool, int);
 	void on_uiInsertKeySig_toggled(bool);
-	void on_uiInsertTimeSig_toggled(bool);
 	void on_uiTimeSigType_toggled(bool, int);
 	void on_uiBarlineType_toggled(bool, int);
 	void on_uiInsertPlayable_toggled(bool);
