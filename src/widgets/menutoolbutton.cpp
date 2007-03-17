@@ -194,11 +194,12 @@ void CAMenuToolButton::showButtons() {
 void CAMenuToolButton::hideButtons( int id ) {
 	if (_buttonGroup->button(id)) {
 		setCurrentId( id );
-		click(); // needed to disable other exclusive button group buttons
-		setChecked(true); // always be checked
+		if (isChecked())
+			emit toggled( true, id ); // if already on and in any button group
+		click(); // trigger any button groups
+		setChecked(true); // turn it on if it can turn off
 	}
 	hideButtons();
-	handleToggled(true);
 }
 
 /*!
@@ -231,8 +232,10 @@ void CAMenuToolButton::wheelEvent( QWheelEvent *event ) {
 		newIdx = buttonList.size()-1;
 	
 	setCurrentId( _buttonGroup->id(buttonList[newIdx]) );
-	click();
-	setChecked(true);
+	if (isChecked())
+		emit toggled( true, currentId() ); // if already on and in any button group
+	click(); // trigger any button groups
+	setChecked(true); // turn it on if it can turn off
 }
 
 /*!

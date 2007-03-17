@@ -1424,18 +1424,6 @@ void CAMainWin::on_uiVoiceName_returnPressed() {
 		voice->setName(uiVoiceName->text());
 }
 
-/*void CAMainWin::sl_mpoTimeSig_valChanged(int iBeats, int iBeat)
-{
-	_musElementFactory->setMusElementType( CAMusElement::TimeSignature );
-	_musElementFactory->setTimeSigBeats( iBeats );
-	_musElementFactory->setTimeSigBeat( iBeat );
-	CAFixedTimeSig eElem = mpoTimeSigPSP->getTimeSignatureFixed();
-	if( eElem != TS_UNKNOWN )
-		mpoMEToolBar->changeMenuIcon( mpoTimeSigMenu->getButton( (int)eElem ) );
-	printf("Time signature new values: %d, %d\n",iBeats, iBeat);
-	fflush( stdout );
-}*/
-
 void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
 	if (checked) {
 		setMode(InsertMode);
@@ -1543,13 +1531,6 @@ void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 	}
 }
 
-void CAMainWin::on_uiInsertTimeSig_toggled(bool checked) {
-	if (checked) {
-		setMode(InsertMode);
-		_musElementFactory->setMusElementType( CAMusElement::TimeSignature );
-	}
-}
-
 void CAMainWin::on_uiInsertKeySig_toggled(bool checked) {
 	if (checked) {
 		setMode(InsertMode);
@@ -1561,6 +1542,7 @@ void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 	if (checked) {
 		setMode(InsertMode);
 		_musElementFactory->setMusElementType( CAMusElement::Barline );
+		_musElementFactory->setBarlineType( static_cast<CABarline::CABarlineType>(buttonId) );
 	}
 }
 

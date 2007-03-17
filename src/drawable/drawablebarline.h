@@ -24,7 +24,12 @@ class CADrawableBarline : public CADrawableMusElement {
 		inline CABarline *barline() { return (CABarline*)_musElement; }
 		
 	private:
+		static const float SPACE_BETWEEN_BARLINES;
+		
 		static const float BARLINE_WIDTH;
+		static const float BOLD_BARLINE_WIDTH;
+		static const float REPEAT_DOTS_WIDTH;
+		static const float DOTTED_BARLINE_WIDTH;
 };
 
 #endif /*DRAWABLEBARLINE_H_*/
