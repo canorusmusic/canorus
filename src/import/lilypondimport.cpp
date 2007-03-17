@@ -70,7 +70,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			// initial \relative notePitch
 			QString notePitch = parseNextElement();
 			if (!isNote(notePitch)) {
-				addError(QObject::tr("\\relative doesn't include pitch."));
+				addError("\\relative doesn't include pitch.");
 				continue;
 			}
 			
@@ -142,7 +142,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			CABarline::CABarlineType type = barlineTypeFromLilyPond(peekNextElement());
 			
 			if (type==CABarline::Undefined) {
-				addError(QObject::tr("Error while parsing barline type. Barline type %1 unknown.").arg(typeString));
+				addError(QString("Error while parsing barline type. Barline type %1 unknown.").arg(typeString));
 			}
 			
 			// remove clef type from the input
@@ -165,7 +165,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			CAClef::CAClefType type = clefTypeFromLilyPond(peekNextElement());
 			
 			if (type==CAClef::Undefined) {
-				addError(QObject::tr("Error while parsing clef type. Clef type %1 unknown.").arg(typeString));
+				addError(QString("Error while parsing clef type. Clef type %1 unknown.").arg(typeString));
 			}
 			
 			// remove clef type from the input
@@ -186,7 +186,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			// pitch
 			QString keyString = peekNextElement();
 			if (!isNote(keyString)) {
-				addError(QObject::tr("Error while parsing key signature. Key pitch %1 unknown.").arg(keyString));
+				addError(QString("Error while parsing key signature. Key pitch %1 unknown.").arg(keyString));
 				continue;
 			}
 			parseNextElement(); // remove pitch
@@ -195,7 +195,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			QString genderString = peekNextElement();
 			CAKeySignature::CAMajorMinorGender gender = keySigGenderFromLilyPond(genderString);
 			if (gender==CAKeySignature::Undefined) {
-				addError(QObject::tr("Error while parsing key signature gender. Gender %1 unknown.").arg(genderString));
+				addError(QString("Error while parsing key signature gender. Gender %1 unknown.").arg(genderString));
 				continue;
 			}
 			parseNextElement();
@@ -217,7 +217,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			QString timeString = peekNextElement();
 			// time signature should have beats/beat format
 			if (timeString.indexOf(QRegExp("\\d+/\\d+")) == -1) {
-				addError(QObject::tr("Invalid time signature beats format %1. Beat and number of beats should be written <beats>/<beat>.").arg(timeString));
+				addError(QString("Invalid time signature beats format %1. Beat and number of beats should be written <beats>/<beat>.").arg(timeString));
 				continue;
 			}
 			CATime time = timeSigFromLilyPond(timeString);

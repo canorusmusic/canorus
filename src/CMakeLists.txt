@@ -50,8 +50,8 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 
 # Define the MOC source files used by Canorus
 SET(Canorus_MOCs ui/mainwin.h	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
-	ui/keysigpsp.h
-	ui/timesigpsp.h
+#	ui/keysigpsp.h  # obsolete
+#	ui/timesigpsp.h # obsolete
 	ui/midisetupdialog.h
 	ui/pluginaction.h
 	widgets/keyoffs.h
@@ -109,8 +109,8 @@ SET(Canorus_Widget_Srcs  	# Sources for all the widgets present in Canorus
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
 	ui/mainwin.cpp
-	ui/keysigpsp.cpp
-	ui/timesigpsp.cpp
+#	ui/keysigpsp.cpp  # obsolete
+#	ui/timesigpsp.cpp # obsolete
 	ui/midisetupdialog.cpp
 	ui/pluginaction.cpp
 )
@@ -380,7 +380,7 @@ ADD_CUSTOM_COMMAND(
 	TARGET canorus
 	PRE_BUILD
 	COMMAND ${QT_BINARY_DIR}/lupdate
-	ARGS ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs}
+	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs}
 )
 ADD_CUSTOM_COMMAND(
 	TARGET canorus
@@ -410,7 +410,7 @@ ENDIF(USE_PYTHON)
 # Install scripts
 INSTALL(FILES ${Canorus_Scripts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/scripts")
 # Install data - icons, images, sounds etc.
-#INSTALL(FILES ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/images")
+#INSTALL(FILES ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/images") # all images are currently included in exe
 # Install translations
 INSTALL(FILES ${Canorus_Translation_Bins} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/lang")
 # Install fonts
