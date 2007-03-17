@@ -93,9 +93,13 @@ CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
 	uiExportDialog = new QFileDialog(this);
 	uiExportDialog->setFileMode(QFileDialog::AnyFile);
 	uiExportDialog->setDirectory( QDir::current() );
+	uiExportDialog->setAcceptMode( QFileDialog::AcceptSave );
+	uiExportDialog->setFilter( LILYPOND_FILTER ); // add LilyPond filter defined in mainwin.h
+  	
 	uiImportDialog = new QFileDialog(this);
-	uiImportDialog->setFileMode(QFileDialog::ExistingFile);
+	uiImportDialog->setFileMode( QFileDialog::ExistingFile );
 	uiImportDialog->setDirectory( QDir::current() );
+	uiImportDialog->setAcceptMode( QFileDialog::AcceptOpen );
 	
 	// Initialize internal UI properties
 	_mode = SelectMode;
@@ -170,13 +174,14 @@ void CAMainWin::setupCustomUi() {
 			uiTimeSigType->setCurrentId( TS_44 );
 			connect( uiTimeSigType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiTimeSigType_toggled(bool, int)) );
 			connect( uiInsertTimeSig, SIGNAL(triggered()), uiTimeSigType, SLOT(click()));
-		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 3, this ));
+		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 4, this ));
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinesingle.png"), CABarline::Single );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinedouble.png"), CABarline::Double );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlineend.png"), CABarline::End );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinedotted.png"), CABarline::Dotted );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatopen.png"), CABarline::RepeatOpen );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatclose.png"), CABarline::RepeatClose );
-			uiBarlineType->addButton( QIcon(":/menu/images/barlinedotted.png"), CABarline::Dotted );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatcloseopen.png"), CABarline::RepeatCloseOpen );
 			uiBarlineType->setCurrentId( CABarline::Single );
 			connect( uiBarlineType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiBarlineType_toggled(bool, int)) );
 			connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
@@ -1356,8 +1361,12 @@ void CAMainWin::on_uiExportDocument_triggered() {
 		QFile file(s);
 		if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 			QTextStream out(&file);
-			// TODO: call appropriate built-in export function here
-			// eg. CALilyExport::exportDocument(out, &_document);
+			
+			if (exportDialog()->selectedFilter() == LILYPOND_FILTER) {
+				// LilyPond
+				CALilyPondExport(document(), &out);
+			}
+  	 		
 			file.close();
 		}
 	}
@@ -1383,8 +1392,8 @@ void CAMainWin::on_uiImportDocument_triggered() {
 		QFile file(s);
 		if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 			QTextStream in(&file);
-			// TODO: call appropriate built-in import function here
-			// eg. CALilyExport::importDocument(in, &_document);
+			/// \todo Call appropriate built-in import function here
+			/// eg. CALilyImport::importDocument(in, document());
 			file.close();
 		}
 	}              

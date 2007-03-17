@@ -77,6 +77,7 @@ private:
 	bool isRest(const QString elt);
 	CARest::CARestType restTypeFromLilyPond(const QString rest);
 	CAClef::CAClefType clefTypeFromLilyPond(const QString clef);
+	CABarline::CABarlineType barlineTypeFromLilyPond(const QString bar);
 	signed char keySigAccsFromLilyPond(QString keySig, CAKeySignature::CAMajorMinorGender gender);
 	CAKeySignature::CAMajorMinorGender keySigGenderFromLilyPond(QString gender);
 	CATime timeSigFromLilyPond(QString time);

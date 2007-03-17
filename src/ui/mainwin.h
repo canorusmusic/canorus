@@ -46,6 +46,8 @@ enum CAMode {
 	ReadOnlyMode
 };
 
+#define LILYPOND_FILTER tr("LilyPond document (*.ly)")
+
 class CAMainWin : public QMainWindow, private Ui::uiMainWindow
 {
 	Q_OBJECT

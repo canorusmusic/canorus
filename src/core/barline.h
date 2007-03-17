@@ -16,11 +16,13 @@ class CAStaff;
 class CABarline : public CAMusElement{
 public:
 	enum CABarlineType {
+		Undefined = -1,
 		Single,
 		Double,
 		End,
 		RepeatOpen,
 		RepeatClose,
+		RepeatCloseOpen,
 		Dotted
 	};
 	

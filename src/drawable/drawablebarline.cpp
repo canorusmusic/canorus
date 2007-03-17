@@ -27,22 +27,25 @@ CADrawableBarline::CADrawableBarline(CABarline *m, CADrawableStaff *staff, int x
  	
  	switch (m->barlineType()) {
  		case CABarline::Single:
- 			_width = (int)( BARLINE_WIDTH + SPACE_BETWEEN_BARLINES );
+ 			_width = (int)( BARLINE_WIDTH );
  			break;
  		case CABarline::Double:
- 			_width = (int)( 2*(BARLINE_WIDTH + SPACE_BETWEEN_BARLINES) );
+ 			_width = (int)( 2*BARLINE_WIDTH + SPACE_BETWEEN_BARLINES );
  			break;
  		case CABarline::End:
- 			_width = (int)( BARLINE_WIDTH + 2*SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH );
+ 			_width = (int)( BARLINE_WIDTH + SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH );
  			break;
  		case CABarline::RepeatOpen:
- 			_width = (int)( BARLINE_WIDTH + 2*SPACE_BETWEEN_BARLINES + REPEAT_DOTS_WIDTH );
+ 			_width = (int)( BOLD_BARLINE_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH + REPEAT_DOTS_WIDTH );
  			break;
  		case CABarline::RepeatClose:
- 			_width = (int)( REPEAT_DOTS_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH );
+ 			_width = (int)( REPEAT_DOTS_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH + BOLD_BARLINE_WIDTH );
+ 			break;
+ 		case CABarline::RepeatCloseOpen:
+ 			_width = (int)( 2*REPEAT_DOTS_WIDTH + 3*SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH + 2*BARLINE_WIDTH);
  			break;
  		case CABarline::Dotted:
- 			_width = (int)( DOTTED_BARLINE_WIDTH + SPACE_BETWEEN_BARLINES );
+ 			_width = (int)( DOTTED_BARLINE_WIDTH );
  			break;
  	}
 	
@@ -62,12 +65,14 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 	
 	switch (barline()->barlineType()) {
 		case CABarline::Single:
+			// draw single barline
 			pen.setWidth((int)(BARLINE_WIDTH*s.z));
 			p->setPen(pen);
 			p->drawLine((int)(s.x + 0.5), s.y,
 			            (int)(s.x + 0.5), (int)(s.y + height()*s.z + 0.5));
 			break;
 		case CABarline::Double:
+			// draw double barline
 			pen.setWidth((int)(BARLINE_WIDTH*s.z));
 			p->setPen(pen);
 			p->drawLine((int)(s.x + 0.5), s.y,
@@ -88,17 +93,24 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 			            (int)(s.x + BARLINE_WIDTH*s.z + SPACE_BETWEEN_BARLINES*s.z + 0.5), (int)(s.y + height()*s.z + 0.5));
 			break;
 		case CABarline::RepeatOpen:
-			pen.setWidth((int)(BARLINE_WIDTH*s.z));
+			pen.setWidth((int)(BOLD_BARLINE_WIDTH*s.z));
 			p->setPen(pen);
-			// draw barline
+			// draw bold barline
 			p->drawLine( (int)(s.x + 0.5), s.y,
 			             (int)(s.x + 0.5), (int)(s.y + height()*s.z + 0.5));
+			s.x += (int)((BOLD_BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES + BARLINE_WIDTH/2)*s.z + 0.5);			
+			// draw single barline
+			pen.setWidth((int)(BARLINE_WIDTH*s.z));
+			p->setPen(pen);
+			p->drawLine((int)(s.x + 0.5), s.y,
+			            (int)(s.x + 0.5), (int)(s.y + height()*s.z + 0.5));
+			s.x += (int)((BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES)*s.z + 0.5);			
 			// draw upper dot
-			p->drawEllipse( (int)(s.x + BARLINE_WIDTH*s.z + SPACE_BETWEEN_BARLINES*s.z + 0.5),
+			p->drawEllipse( (int)(s.x + 0.5),
 			                (int)(s.y + 4*SPACE_BETWEEN_BARLINES*s.z + 0.5),
 			                (int)(REPEAT_DOTS_WIDTH*s.z), (int)(REPEAT_DOTS_WIDTH*s.z) );
 			// draw lower dot
-			p->drawEllipse( (int)(s.x + BARLINE_WIDTH*s.z + SPACE_BETWEEN_BARLINES*s.z + 0.5),
+			p->drawEllipse( (int)(s.x + 0.5),
 			                (int)(s.y + (height()-REPEAT_DOTS_WIDTH-4*SPACE_BETWEEN_BARLINES)*s.z + 0.5),
 			                (int)(REPEAT_DOTS_WIDTH*s.z), (int)(REPEAT_DOTS_WIDTH*s.z) );
 			break;
@@ -113,9 +125,54 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 			p->drawEllipse( (int)(s.x + 0.5),
 			                (int)(s.y + (height()-REPEAT_DOTS_WIDTH-4*SPACE_BETWEEN_BARLINES)*s.z + 0.5),
 			                (int)(REPEAT_DOTS_WIDTH*s.z), (int)(REPEAT_DOTS_WIDTH*s.z) );
-			// draw barline
-			p->drawLine( (int)(s.x + REPEAT_DOTS_WIDTH*s.z + SPACE_BETWEEN_BARLINES*s.z + 0.5), s.y,
-			             (int)(s.x + REPEAT_DOTS_WIDTH*s.z + SPACE_BETWEEN_BARLINES*s.z + 0.5), (int)(s.y + height()*s.z + 0.5));
+			s.x += (int)((REPEAT_DOTS_WIDTH + SPACE_BETWEEN_BARLINES + BARLINE_WIDTH/2)*s.z + 0.5);			
+			// draw single barline
+			p->drawLine((int)(s.x + 0.5), s.y,
+			            (int)(s.x + 0.5), (int)(s.y + height()*s.z + 0.5));
+			s.x += (int)((BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH/2)*s.z + 0.5);			
+			// draw bold barline
+			pen.setWidth((int)(BOLD_BARLINE_WIDTH*s.z));
+			p->setPen(pen);
+			p->drawLine( (int)(s.x + 0.5), s.y,
+			             (int)(s.x + 0.5), (int)(s.y + height()*s.z + 0.5));
+			break;
+		case CABarline::RepeatCloseOpen:
+			pen.setWidth((int)(BARLINE_WIDTH*s.z));
+			p->setPen(pen);
+			// draw upper dot
+			p->drawEllipse( (int)(s.x + 0.5),
+			                (int)(s.y + 4*SPACE_BETWEEN_BARLINES*s.z + 0.5),
+			                (int)(REPEAT_DOTS_WIDTH*s.z), (int)(REPEAT_DOTS_WIDTH*s.z) );
+			// draw lower dot
+			p->drawEllipse( (int)(s.x + 0.5),
+			                (int)(s.y + (height()-REPEAT_DOTS_WIDTH-4*SPACE_BETWEEN_BARLINES)*s.z + 0.5),
+			                (int)(REPEAT_DOTS_WIDTH*s.z), (int)(REPEAT_DOTS_WIDTH*s.z) );
+			s.x += (int)((REPEAT_DOTS_WIDTH + SPACE_BETWEEN_BARLINES + BARLINE_WIDTH/2)*s.z + 0.5);			
+			// draw single barline
+			p->drawLine((int)(s.x + 0.5), s.y,
+			            (int)(s.x + 0.5), (int)(s.y + height()*s.z + 0.5));
+			s.x += (int)((BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH/2)*s.z + 0.5);			
+			// draw bold barline
+			pen.setWidth((int)(BOLD_BARLINE_WIDTH*s.z));
+			p->setPen(pen);
+			p->drawLine( (int)(s.x + 0.5), s.y,
+			             (int)(s.x + 0.5), (int)(s.y + height()*s.z + 0.5));
+			s.x += (int)((BOLD_BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES + BARLINE_WIDTH/2)*s.z + 0.5);			
+			pen.setWidth((int)(BARLINE_WIDTH*s.z));
+			p->setPen(pen);
+			// draw single barline
+			p->drawLine((int)(s.x + 0.5), s.y,
+			            (int)(s.x + 0.5), (int)(s.y + height()*s.z + 0.5));
+			s.x += (int)((BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES)*s.z + 0.5);			
+			// draw upper dot
+			p->drawEllipse( (int)(s.x + 0.5),
+			                (int)(s.y + 4*SPACE_BETWEEN_BARLINES*s.z + 0.5),
+			                (int)(REPEAT_DOTS_WIDTH*s.z), (int)(REPEAT_DOTS_WIDTH*s.z) );
+			// draw lower dot
+			p->drawEllipse( (int)(s.x + 0.5),
+			                (int)(s.y + (height()-REPEAT_DOTS_WIDTH-4*SPACE_BETWEEN_BARLINES)*s.z + 0.5),
+			                (int)(REPEAT_DOTS_WIDTH*s.z), (int)(REPEAT_DOTS_WIDTH*s.z) );
+			
 			break;
 		case CABarline::Dotted:
 			pen.setStyle( Qt::DotLine );

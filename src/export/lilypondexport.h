@@ -55,6 +55,7 @@ private:
 	const QString playableLengthToLilyPond(CAPlayable::CAPlayableLength length, int dotted);
 	const QString notePitchToLilyPond(int pitch, signed char accs);
 	const QString restTypeToLilyPond(CARest::CARestType type);
+	const QString barlineTypeToLilyPond(CABarline::CABarlineType type);
 	
 	inline const QString relativePitchToString(CANote* note, int prevPitch) {
 		return relativePitchToString(note->pitch(), note->accidentals(), prevPitch);

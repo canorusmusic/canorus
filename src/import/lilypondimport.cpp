@@ -124,9 +124,32 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			curVoice()->appendMusElement(new CARest(type, prevLength.length, curVoice(), curVoice()->lastTimeEnd(), prevLength.dotted));
 		} else
 		if (curElt=="|") {
-			// CABarline
+			// CABarline::Single
 			// lookup an element with the same type at the same time
 			CABarline *bar = new CABarline(CABarline::Single, curVoice()->staff(), curVoice()->lastTimeEnd());
+			CABarline *sharedBar = static_cast<CABarline*>(findSharedElement(bar));
+
+			if (!sharedBar) {
+				curVoice()->staff()->insertSignAfter(bar, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
+			} else {
+				curVoice()->appendMusElement(sharedBar);
+				delete bar;
+			}
+		} else
+		if (curElt=="\\bar") {
+			// CABarline
+			QString typeString = peekNextElement();
+			CABarline::CABarlineType type = barlineTypeFromLilyPond(peekNextElement());
+			
+			if (type==CABarline::Undefined) {
+				addError(QObject::tr("Error while parsing barline type. Barline type %1 unknown.").arg(typeString));
+			}
+			
+			// remove clef type from the input
+			parseNextElement();
+			
+			// lookup an element with the same type at the same time
+			CABarline *bar = new CABarline(type, curVoice()->staff(), curVoice()->lastTimeEnd());
 			CABarline *sharedBar = static_cast<CABarline*>(findSharedElement(bar));
 
 			if (!sharedBar) {
@@ -398,7 +421,7 @@ CARest::CARestType CALilyPondImport::restTypeFromLilyPond(const QString elt) {
 }
 
 /*!
-	Genarates clef type from the LilyPond syntax for the given clef.
+	Genarates clef type from the LilyPond syntax for the given clef from format "clefType".
 */
 CAClef::CAClefType CALilyPondImport::clefTypeFromLilyPond(const QString constClef) {
 	// remove any quotes/double quotes
@@ -414,6 +437,9 @@ CAClef::CAClefType CALilyPondImport::clefTypeFromLilyPond(const QString constCle
 	return CAClef::Undefined;
 }
 
+/*!
+	Returns the number and type of accidentals for the given key signature.
+*/
 signed char CALilyPondImport::keySigAccsFromLilyPond(QString keySig, CAKeySignature::CAMajorMinorGender gender) {
 	int pitch;
 	if (gender==CAKeySignature::Major)
@@ -432,6 +458,9 @@ signed char CALilyPondImport::keySigAccsFromLilyPond(QString keySig, CAKeySignat
 	return accs;
 }
 
+/*!
+	Returns the key signature gender from format \\genderType.
+*/
 CAKeySignature::CAMajorMinorGender CALilyPondImport::keySigGenderFromLilyPond(QString gender) {
 	if (gender=="\\major")
 		return CAKeySignature::Major;
@@ -441,6 +470,9 @@ CAKeySignature::CAMajorMinorGender CALilyPondImport::keySigGenderFromLilyPond(QS
 		return CAKeySignature::Undefined;
 }
 
+/*!
+	Returns the time signature beat and beats in beats/beat format.
+*/
 CALilyPondImport::CATime CALilyPondImport::timeSigFromLilyPond(QString timeSig) {
 	int beats=0, beat=0;
 	
@@ -449,4 +481,22 @@ CALilyPondImport::CATime CALilyPondImport::timeSigFromLilyPond(QString timeSig) 
 	
 	CATime time = { beats, beat };
 	return time;
+}
+
+/*!
+	Genarates barline type from the LilyPond syntax for the given barline from format "barlineType".
+*/
+CABarline::CABarlineType CALilyPondImport::barlineTypeFromLilyPond(QString constBarline) {
+	// remove any quotes/double quotes
+	QString barline(constBarline);
+	barline.remove(QRegExp("[\"']"));
+	
+	if (barline=="|") return CABarline::Single; else
+	if (barline=="||") return CABarline::Double; else
+	if (barline=="|.") return CABarline::End; else
+	if (barline=="|:") return CABarline::RepeatOpen; else
+	if (barline==":|") return CABarline::RepeatClose; else
+	if (barline==":|:") return CABarline::RepeatCloseOpen; else
+	if (barline==":") return CABarline::Dotted; else
+	return CABarline::Undefined;
 }
