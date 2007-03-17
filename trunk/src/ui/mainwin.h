@@ -115,16 +115,14 @@ private slots:
 	// Insert
 	void on_uiSelectMode_toggled(bool);
 	void on_uiNewSheet_triggered();
-	void on_uiNewContext_toggled(bool);      // menu
 	void on_uiNewVoice_triggered();
 	void on_uiContextType_toggled(bool, int);
-	void on_uiInsertClef_toggled(bool);      // menu
 	void on_uiClefType_toggled(bool, int);
-	void on_uiInsertKeySig_toggled(bool); // menu
-	void on_uiInsertTimeSig_toggled(bool); // menu
+	void on_uiInsertKeySig_toggled(bool);
+	void on_uiInsertTimeSig_toggled(bool);
 	void on_uiTimeSigType_toggled(bool, int);
 	void on_uiBarlineType_toggled(bool, int);
-	void on_uiInsertPlayable_toggled(bool);  // menu
+	void on_uiInsertPlayable_toggled(bool);
 	
 	// View
 	void on_uiFullscreen_toggled(bool);
