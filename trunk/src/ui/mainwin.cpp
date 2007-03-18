@@ -1471,7 +1471,20 @@ void CAMainWin::on_uiClefType_toggled(bool checked, int buttonId) {
 void CAMainWin::on_uiTimeSigBeats_valChanged(int beats) {
 	if (mode()==InsertMode) {
 		_musElementFactory->setTimeSigBeats( beats );
-		uiTimeSigType->setCurrentId( TS_CUSTOM );
+		if (uiTimeSigBeats->value()==4 && uiTimeSigBeat->value()==4)
+			uiTimeSigType->setCurrentId( TS_44 );
+		else if (uiTimeSigBeats->value()==3 && uiTimeSigBeat->value()==4)
+			uiTimeSigType->setCurrentId( TS_34 );
+		else if (uiTimeSigBeats->value()==2 && uiTimeSigBeat->value()==4)
+			uiTimeSigType->setCurrentId( TS_24 );
+		else if (uiTimeSigBeats->value()==2 && uiTimeSigBeat->value()==2)
+			uiTimeSigType->setCurrentId( TS_22 );
+		else if (uiTimeSigBeats->value()==3 && uiTimeSigBeat->value()==8)
+			uiTimeSigType->setCurrentId( TS_38 );
+		else if (uiTimeSigBeats->value()==6 && uiTimeSigBeat->value()==8)
+			uiTimeSigType->setCurrentId( TS_68 );
+		else
+			uiTimeSigType->setCurrentId( TS_CUSTOM );
 	} else if ( mode()==EditMode ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if ( v && v->selection().size() ) {
@@ -1487,7 +1500,20 @@ void CAMainWin::on_uiTimeSigBeats_valChanged(int beats) {
 void CAMainWin::on_uiTimeSigBeat_valChanged(int beat) {
 	if (mode()==InsertMode) {
 		_musElementFactory->setTimeSigBeat( beat );
-		uiTimeSigType->setCurrentId( TS_CUSTOM );
+		if (uiTimeSigBeats->value()==4 && uiTimeSigBeat->value()==4)
+			uiTimeSigType->setCurrentId( TS_44 );
+		else if (uiTimeSigBeats->value()==3 && uiTimeSigBeat->value()==4)
+			uiTimeSigType->setCurrentId( TS_34 );
+		else if (uiTimeSigBeats->value()==2 && uiTimeSigBeat->value()==4)
+			uiTimeSigType->setCurrentId( TS_24 );
+		else if (uiTimeSigBeats->value()==2 && uiTimeSigBeat->value()==2)
+			uiTimeSigType->setCurrentId( TS_22 );
+		else if (uiTimeSigBeats->value()==3 && uiTimeSigBeat->value()==8)
+			uiTimeSigType->setCurrentId( TS_38 );
+		else if (uiTimeSigBeats->value()==6 && uiTimeSigBeat->value()==8)
+			uiTimeSigType->setCurrentId( TS_68 );
+		else
+			uiTimeSigType->setCurrentId( TS_CUSTOM );
 	} else if ( mode()==EditMode ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if ( v && v->selection().size() ) {
