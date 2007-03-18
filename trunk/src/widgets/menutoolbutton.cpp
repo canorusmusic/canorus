@@ -73,7 +73,10 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	connect( _menu, SIGNAL(aboutToShow()), this, SLOT(showButtons()) );
 	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 
 	         this, SLOT( hideButtons( int ) ) );
+#ifndef Q_WS_MAC
+	/// \todo Button menu hides before its buttonPressed() is emitted on Mac
 	connect( _menu, SIGNAL(aboutToHide()), this, SLOT(hideButtons()) );
+#endif
 	
 	// Action for our button menu as icon or nothing will be seen
 	QAction *action = new QAction(this);
