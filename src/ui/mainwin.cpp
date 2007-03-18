@@ -266,11 +266,13 @@ void CAMainWin::setupCustomUi() {
 	
 	uiTimeSigToolBar = new QToolBar( tr("Time Signature ToolBar"), this );
 		uiTimeSigToolBar->addWidget( uiTimeSigBeats = new QSpinBox(this) );
+		uiTimeSigBeats->setMinimum( 1 );
 		uiTimeSigBeats->setValue( 4 );
 		uiTimeSigBeats->setToolTip( tr("Number of beats") );
 		connect( uiTimeSigBeats, SIGNAL(valueChanged(int)), this, SLOT(on_uiTimeSigBeats_valChanged(int)) );
 		uiTimeSigToolBar->addWidget( uiTimeSigSlash = new QLabel( "/", this ) );
 		uiTimeSigToolBar->addWidget( uiTimeSigBeat = new QSpinBox(this) );
+		uiTimeSigBeat->setMinimum( 1 );
 		uiTimeSigBeat->setValue( 4 );
 		uiTimeSigBeat->setToolTip( tr("Beat") );
 		connect( uiTimeSigBeat, SIGNAL(valueChanged(int)), this, SLOT(on_uiTimeSigBeat_valChanged(int)) );
