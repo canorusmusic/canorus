@@ -53,7 +53,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="247"/>
+        <location filename="../ui/mainwin.cpp" line="245"/>
         <source>Select Note Stem Direction</source>
         <translation type="unfinished"></translation>
     </message>
@@ -78,17 +78,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1577"/>
+        <location filename="../ui/mainwin.cpp" line="1603"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1582"/>
+        <location filename="../ui/mainwin.cpp" line="1608"/>
         <source>About Canorus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1589"/>
+        <location filename="../ui/mainwin.cpp" line="1615"/>
         <source>Canorus - The next generation music score editor
 
 Version %1
@@ -164,12 +164,7 @@ Homepage: http://www.canorus.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="245"/>
-        <source>Number of dots</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="249"/>
+        <location filename="../ui/mainwin.cpp" line="247"/>
         <source>Note stem direction</source>
         <translation type="unfinished"></translation>
     </message>
@@ -184,22 +179,22 @@ Homepage: http://www.canorus.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="259"/>
+        <location filename="../ui/mainwin.cpp" line="257"/>
         <source>Key Signature ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="261"/>
+        <location filename="../ui/mainwin.cpp" line="259"/>
         <source>Number of Accidentals</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="267"/>
+        <location filename="../ui/mainwin.cpp" line="265"/>
         <source>Time Signature ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="270"/>
+        <location filename="../ui/mainwin.cpp" line="269"/>
         <source>Number of beats</source>
         <translation type="unfinished"></translation>
     </message>
@@ -467,473 +462,473 @@ Homepage: http://www.canorus.org</source>
 <context>
     <name>uiMainWindow</name>
     <message>
-        <location filename="../ui_mainwin.h" line="508"/>
+        <location filename="../ui_mainwin.h" line="518"/>
         <source>Canorus - Score editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="510"/>
+        <location filename="../ui_mainwin.h" line="520"/>
         <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="511"/>
+        <location filename="../ui_mainwin.h" line="521"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="512"/>
+        <location filename="../ui_mainwin.h" line="522"/>
         <source>&amp;New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="513"/>
+        <location filename="../ui_mainwin.h" line="523"/>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="514"/>
+        <location filename="../ui_mainwin.h" line="524"/>
         <source>&amp;Open...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="515"/>
+        <location filename="../ui_mainwin.h" line="525"/>
         <source>Ctrl+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="516"/>
+        <location filename="../ui_mainwin.h" line="526"/>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="517"/>
+        <location filename="../ui_mainwin.h" line="527"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="518"/>
+        <location filename="../ui_mainwin.h" line="528"/>
         <source>Save &amp;as...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="519"/>
+        <location filename="../ui_mainwin.h" line="529"/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="520"/>
+        <location filename="../ui_mainwin.h" line="530"/>
         <source>&amp;Import...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="521"/>
+        <location filename="../ui_mainwin.h" line="531"/>
         <source>&amp;Export...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="522"/>
+        <location filename="../ui_mainwin.h" line="532"/>
         <source>Ctrl+E</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="523"/>
+        <location filename="../ui_mainwin.h" line="533"/>
         <source>Print pre&amp;view...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="524"/>
+        <location filename="../ui_mainwin.h" line="534"/>
         <source>&amp;Print...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="525"/>
+        <location filename="../ui_mainwin.h" line="535"/>
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="526"/>
+        <location filename="../ui_mainwin.h" line="536"/>
         <source>&amp;Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="527"/>
+        <location filename="../ui_mainwin.h" line="537"/>
         <source>Ctrl+Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="528"/>
+        <location filename="../ui_mainwin.h" line="538"/>
         <source>&amp;Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="529"/>
+        <location filename="../ui_mainwin.h" line="539"/>
         <source>Ctrl+Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="530"/>
+        <location filename="../ui_mainwin.h" line="540"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="531"/>
+        <location filename="../ui_mainwin.h" line="541"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="532"/>
+        <location filename="../ui_mainwin.h" line="542"/>
         <source>C&amp;ut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="533"/>
+        <location filename="../ui_mainwin.h" line="543"/>
         <source>Ctrl+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="534"/>
+        <location filename="../ui_mainwin.h" line="544"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="535"/>
+        <location filename="../ui_mainwin.h" line="545"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="536"/>
+        <location filename="../ui_mainwin.h" line="546"/>
         <source>Select &amp;all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="537"/>
+        <location filename="../ui_mainwin.h" line="547"/>
         <source>Ctrl+A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="538"/>
+        <location filename="../ui_mainwin.h" line="548"/>
         <source>Invert Selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="539"/>
+        <location filename="../ui_mainwin.h" line="549"/>
         <source>Fit to width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="540"/>
-        <source>Find bar...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="541"/>
+        <location filename="../ui_mainwin.h" line="551"/>
         <source>Ctrl+G</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="542"/>
+        <location filename="../ui_mainwin.h" line="552"/>
         <source>St&amp;atus bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="543"/>
+        <location filename="../ui_mainwin.h" line="553"/>
         <source>&amp;Fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="544"/>
+        <location filename="../ui_mainwin.h" line="554"/>
         <source>&amp;Time signature...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="545"/>
+        <location filename="../ui_mainwin.h" line="555"/>
         <source>&amp;Key signature...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="546"/>
+        <location filename="../ui_mainwin.h" line="556"/>
         <source>Barline...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="547"/>
+        <location filename="../ui_mainwin.h" line="600"/>
         <source>&amp;Transpose...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="548"/>
+        <location filename="../ui_mainwin.h" line="557"/>
         <source>Note &amp;count...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="549"/>
+        <location filename="../ui_mainwin.h" line="558"/>
         <source>&amp;Settings...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="550"/>
+        <location filename="../ui_mainwin.h" line="559"/>
         <source>User&apos;s guide...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="551"/>
+        <location filename="../ui_mainwin.h" line="560"/>
         <source>What&apos;s &amp;this</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="552"/>
+        <location filename="../ui_mainwin.h" line="561"/>
         <source>Tip of the &amp;day</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="553"/>
+        <location filename="../ui_mainwin.h" line="562"/>
         <source>About &amp;Canorus...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="554"/>
+        <location filename="../ui_mainwin.h" line="563"/>
         <source>About &amp;Qt...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="555"/>
+        <location filename="../ui_mainwin.h" line="564"/>
         <source>Split view horizontally</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="556"/>
+        <location filename="../ui_mainwin.h" line="565"/>
         <source>Split view vertically</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="557"/>
+        <location filename="../ui_mainwin.h" line="566"/>
         <source>Close current view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="558"/>
+        <location filename="../ui_mainwin.h" line="567"/>
         <source>Unsplit All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="559"/>
+        <location filename="../ui_mainwin.h" line="568"/>
         <source>New view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="560"/>
+        <location filename="../ui_mainwin.h" line="569"/>
         <source>New sheet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="561"/>
+        <location filename="../ui_mainwin.h" line="570"/>
         <source>New context...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="562"/>
+        <location filename="../ui_mainwin.h" line="571"/>
         <source>Play from selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="563"/>
+        <location filename="../ui_mainwin.h" line="572"/>
         <source>Animated scroll</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="564"/>
+        <location filename="../ui_mainwin.h" line="573"/>
         <source>Lock scroll while playback</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="565"/>
+        <location filename="../ui_mainwin.h" line="574"/>
         <source>Fit to &amp;height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="566"/>
+        <location filename="../ui_mainwin.h" line="575"/>
         <source>Best &amp;fit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="567"/>
+        <location filename="../ui_mainwin.h" line="576"/>
         <source>Fit to selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="568"/>
+        <location filename="../ui_mainwin.h" line="577"/>
         <source>New window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="569"/>
+        <location filename="../ui_mainwin.h" line="578"/>
         <source>Custom...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="570"/>
+        <location filename="../ui_mainwin.h" line="579"/>
         <source>Score view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="571"/>
+        <location filename="../ui_mainwin.h" line="580"/>
         <source>LilyPond source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="572"/>
+        <location filename="../ui_mainwin.h" line="581"/>
         <source>CanorusML source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="573"/>
+        <location filename="../ui_mainwin.h" line="582"/>
         <source>New voice</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="574"/>
+        <location filename="../ui_mainwin.h" line="583"/>
         <source>Properties...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="575"/>
+        <location filename="../ui_mainwin.h" line="584"/>
         <source>Document properties...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="576"/>
+        <location filename="../ui_mainwin.h" line="585"/>
         <source>Print directly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="577"/>
+        <location filename="../ui_mainwin.h" line="586"/>
         <source>Export to PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="578"/>
+        <location filename="../ui_mainwin.h" line="587"/>
         <source>New document &amp;wizard...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="579"/>
+        <location filename="../ui_mainwin.h" line="588"/>
         <source>Playable...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="580"/>
+        <location filename="../ui_mainwin.h" line="589"/>
         <source>Function marking...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="581"/>
+        <location filename="../ui_mainwin.h" line="590"/>
         <source>Clef...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="582"/>
+        <location filename="../ui_mainwin.h" line="591"/>
         <source>Select mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="583"/>
+        <location filename="../ui_mainwin.h" line="592"/>
         <source>Remove Voice</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="584"/>
+        <location filename="../ui_mainwin.h" line="593"/>
         <source>Voice Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="585"/>
+        <location filename="../ui_mainwin.h" line="594"/>
         <source>Accidentals Visible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="586"/>
+        <location filename="../ui_mainwin.h" line="595"/>
         <source>Hidden Rest</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="587"/>
+        <location filename="../ui_mainwin.h" line="596"/>
         <source>Remove Context</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="588"/>
+        <location filename="../ui_mainwin.h" line="597"/>
         <source>Context Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="591"/>
+        <location filename="../ui_mainwin.h" line="609"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="592"/>
+        <location filename="../ui_mainwin.h" line="608"/>
         <source>Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="593"/>
+        <location filename="../ui_mainwin.h" line="602"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="594"/>
+        <location filename="../ui_mainwin.h" line="601"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="597"/>
+        <location filename="../ui_mainwin.h" line="603"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="599"/>
+        <location filename="../ui_mainwin.h" line="605"/>
         <source>Source view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="598"/>
+        <location filename="../ui_mainwin.h" line="604"/>
         <source>Zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="596"/>
+        <location filename="../ui_mainwin.h" line="607"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="595"/>
+        <location filename="../ui_mainwin.h" line="606"/>
         <source>&amp;Insert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="600"/>
+        <location filename="../ui_mainwin.h" line="610"/>
         <source>Standard ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="601"/>
+        <location filename="../ui_mainwin.h" line="611"/>
         <source>File ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="602"/>
+        <location filename="../ui_mainwin.h" line="612"/>
         <source>Print ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="589"/>
+        <location filename="../ui_mainwin.h" line="598"/>
         <source>Remove Sheet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_mainwin.h" line="590"/>
+        <location filename="../ui_mainwin.h" line="599"/>
         <source>Sheet Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui_mainwin.h" line="550"/>
+        <source>Goto bar...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

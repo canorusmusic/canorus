@@ -56,45 +56,6 @@
      <height>36</height>
     </rect>
    </property>
-   <widget class="QMenu" name="uiMenuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="uiUsersGuide" />
-    <addaction name="uiWhatsThis" />
-    <addaction name="uiTipOfTheDay" />
-    <addaction name="separator" />
-    <addaction name="uiAboutCanorus" />
-    <addaction name="uiAboutQt" />
-   </widget>
-   <widget class="QMenu" name="uiMenuWindow" >
-    <property name="title" >
-     <string>Window</string>
-    </property>
-    <addaction name="uiNewViewport" />
-    <addaction name="uiNewWindow" />
-    <addaction name="separator" />
-    <addaction name="uiSplitHorizontally" />
-    <addaction name="uiSplitVertically" />
-    <addaction name="uiCloseCurrentView" />
-    <addaction name="uiUnsplitAll" />
-   </widget>
-   <widget class="QMenu" name="uiMenuEdit" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="uiUndo" />
-    <addaction name="uiRedo" />
-    <addaction name="separator" />
-    <addaction name="uiCut" />
-    <addaction name="uiCopy" />
-    <addaction name="uiPaste" />
-    <addaction name="separator" />
-    <addaction name="uiSelectAll" />
-    <addaction name="uiInvertSelection" />
-    <addaction name="separator" />
-    <addaction name="uiProperties" />
-   </widget>
    <widget class="QMenu" name="uiMenuFile" >
     <property name="title" >
      <string>&amp;File</string>
@@ -116,30 +77,21 @@
     <addaction name="separator" />
     <addaction name="uiQuit" />
    </widget>
-   <widget class="QMenu" name="uiMenuInsert" >
+   <widget class="QMenu" name="uiMenuEdit" >
     <property name="title" >
-     <string>&amp;Insert</string>
+     <string>&amp;Edit</string>
     </property>
-    <addaction name="uiNewSheet" />
-    <addaction name="uiNewContext" />
-    <addaction name="uiNewVoice" />
+    <addaction name="uiUndo" />
+    <addaction name="uiRedo" />
     <addaction name="separator" />
-    <addaction name="uiInsertPlayable" />
-    <addaction name="uiInsertClef" />
-    <addaction name="uiInsertKeySig" />
-    <addaction name="uiInsertTimeSig" />
-    <addaction name="uiInsertBarline" />
-    <addaction name="uiInsertFM" />
-   </widget>
-   <widget class="QMenu" name="uiMenuTools" >
-    <property name="title" >
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="uiGotoBar" />
-    <addaction name="uiTranspose" />
-    <addaction name="uiNoteCount" />
+    <addaction name="uiCut" />
+    <addaction name="uiCopy" />
+    <addaction name="uiPaste" />
     <addaction name="separator" />
-    <addaction name="uiSettings" />
+    <addaction name="uiSelectAll" />
+    <addaction name="uiInvertSelection" />
+    <addaction name="separator" />
+    <addaction name="uiProperties" />
    </widget>
    <widget class="QMenu" name="uiMenuView" >
     <property name="title" >
@@ -173,6 +125,54 @@
     <addaction name="separator" />
     <addaction name="uiShowStatusBar" />
     <addaction name="uiFullscreen" />
+   </widget>
+   <widget class="QMenu" name="uiMenuInsert" >
+    <property name="title" >
+     <string>&amp;Insert</string>
+    </property>
+    <addaction name="uiNewSheet" />
+    <addaction name="uiNewContext" />
+    <addaction name="uiNewVoice" />
+    <addaction name="separator" />
+    <addaction name="uiInsertPlayable" />
+    <addaction name="uiInsertClef" />
+    <addaction name="uiInsertKeySig" />
+    <addaction name="uiInsertTimeSig" />
+    <addaction name="uiInsertBarline" />
+    <addaction name="uiInsertFM" />
+   </widget>
+   <widget class="QMenu" name="uiMenuTools" >
+    <property name="title" >
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="uiGotoBar" />
+    <addaction name="uiTranspose" />
+    <addaction name="uiNoteCount" />
+    <addaction name="separator" />
+    <addaction name="uiSettings" />
+   </widget>
+   <widget class="QMenu" name="uiMenuWindow" >
+    <property name="title" >
+     <string>Window</string>
+    </property>
+    <addaction name="uiNewViewport" />
+    <addaction name="uiNewWindow" />
+    <addaction name="separator" />
+    <addaction name="uiSplitHorizontally" />
+    <addaction name="uiSplitVertically" />
+    <addaction name="uiCloseCurrentView" />
+    <addaction name="uiUnsplitAll" />
+   </widget>
+   <widget class="QMenu" name="uiMenuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="uiUsersGuide" />
+    <addaction name="uiWhatsThis" />
+    <addaction name="uiTipOfTheDay" />
+    <addaction name="separator" />
+    <addaction name="uiAboutCanorus" />
+    <addaction name="uiAboutQt" />
    </widget>
    <addaction name="uiMenuFile" />
    <addaction name="uiMenuEdit" />
@@ -444,8 +444,11 @@
    </property>
   </action>
   <action name="uiGotoBar" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
-    <string>Find bar...</string>
+    <string>Goto bar...</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+G</string>
@@ -506,12 +509,10 @@
     <string>Barline...</string>
    </property>
   </action>
-  <action name="uiTranspose" >
-   <property name="text" >
-    <string>&amp;Transpose...</string>
-   </property>
-  </action>
   <action name="uiNoteCount" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Note &amp;count...</string>
    </property>
@@ -525,17 +526,26 @@
    </property>
   </action>
   <action name="uiUsersGuide" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>User's guide...</string>
    </property>
   </action>
   <action name="uiWhatsThis" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>What's &amp;this</string>
    </property>
   </action>
   <action name="uiTipOfTheDay" >
    <property name="checkable" >
+    <bool>false</bool>
+   </property>
+   <property name="enabled" >
     <bool>false</bool>
    </property>
    <property name="text" >
@@ -551,6 +561,9 @@
    </property>
   </action>
   <action name="uiAboutQt" >
+   <property name="icon" >
+    <iconset resource="mainwin.qrc" >:/menu/images/qtlogo.png</iconset>
+   </property>
    <property name="text" >
     <string>About &amp;Qt...</string>
    </property>
@@ -690,11 +703,17 @@
    </property>
   </action>
   <action name="uiProperties" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Properties...</string>
    </property>
   </action>
   <action name="uiDocumentProperties" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Document properties...</string>
    </property>
@@ -749,6 +768,9 @@
   <action name="uiInsertFM" >
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="enabled" >
+    <bool>false</bool>
    </property>
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/insertfm.png</iconset>
@@ -859,6 +881,14 @@
    </property>
    <property name="text" >
     <string>Sheet Properties</string>
+   </property>
+  </action>
+  <action name="uiTranspose" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Transpose...</string>
    </property>
   </action>
  </widget>
