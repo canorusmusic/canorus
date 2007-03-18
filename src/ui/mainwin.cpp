@@ -124,7 +124,7 @@ CAMainWin::~CAMainWin()  {
 	delete uiImportDialog; delete uiExportDialog;
 	delete uiInsertToolBar; delete uiInsertGroup; delete uiContextType; delete uiClefType; delete uiBarlineType;
 	delete uiVoiceToolBar; delete uiVoiceNum; delete uiVoiceName; delete uiRemoveVoice; delete uiVoiceStemDirection; delete uiVoiceProperties;
-	delete uiPlayableToolBar; delete uiPlayableLength; delete uiPlayableDotted; delete uiNoteAccs; delete uiNoteStemDirection; delete uiHiddenRest;
+	delete uiPlayableToolBar; delete uiPlayableLength; delete uiNoteAccs; delete uiNoteStemDirection; delete uiHiddenRest;
 	delete uiKeySigToolBar; delete uiKeySigNumberOfAccs;
 	delete uiTimeSigToolBar; delete uiTimeSigBeats; delete uiTimeSigSlash; delete uiTimeSigBeat;
 	delete uiFMToolBar; delete uiFMType; delete uiFMChordArea; delete uiFMTonicDegree; delete uiFMEllipse;
@@ -241,8 +241,6 @@ void CAMainWin::setupCustomUi() {
 			uiPlayableLength->addButton( QIcon(":/menu/images/n64.png"), CANote::SixtyFourth );
 			uiPlayableLength->defaultAction()->setCheckable(false);
 			uiPlayableLength->setCurrentId( CANote::Quarter );
-		uiPlayableToolBar->addWidget( uiPlayableDotted = new QLabel( " .. ", this ) );
-			uiPlayableDotted->setToolTip(tr("Number of dots"));
 		uiPlayableToolBar->addAction( uiAccsVisible );
 		uiPlayableToolBar->addWidget(uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this ));
 			connect( uiNoteStemDirection, SIGNAL(toggled(bool, int)), this, SLOT(on_uiNoteStemDirection_toggled(bool, int)) );
@@ -1857,7 +1855,6 @@ void CAMainWin::updatePlayableToolBar() {
 	if (uiInsertPlayable->isChecked() && mode()==InsertMode) {
 		uiPlayableLength->defaultAction()->setEnabled(true);
 		uiPlayableLength->setCurrentId( _musElementFactory->playableLength() );
-		uiPlayableDotted->setText( "0" ); //QString(_musElementFactory->playableDotted()) );
 		uiNoteStemDirection->setCurrentId( _musElementFactory->noteStemDirection() );
 		uiHiddenRest->setChecked(_musElementFactory->restType()==CARest::Hidden);
 		uiPlayableToolBar->show();
@@ -1868,7 +1865,6 @@ void CAMainWin::updatePlayableToolBar() {
 			if (playable) {
 				uiPlayableLength->defaultAction()->setEnabled(false);
 				uiPlayableLength->setCurrentId( playable->playableLength() );
-				uiPlayableDotted->setText( "0" ); //QString(playable->dotted()) );
 				if (playable->musElementType()==CAMusElement::Note) {
 					CANote *note = static_cast<CANote*>(playable);
 					uiNoteStemDirection->setCurrentId( note->stemDirection() );

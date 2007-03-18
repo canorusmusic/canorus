@@ -277,7 +277,6 @@ private:
 		QToolBar *uiPlayableToolBar; // note and rest properties are merged for the time being
 			// Note properties
 			CAMenuToolButton *uiPlayableLength;
-			QLabel           *uiPlayableDotted;
 			CAMenuToolButton *uiNoteAccs;
 			// QAction       *uiNoteAccsVisible;
 			CAMenuToolButton *uiNoteStemDirection;
