@@ -1276,28 +1276,32 @@ void CAMainWin::on_uiOpenDocument_triggered() {
 
 void CAMainWin::on_uiSaveDocument_triggered() {
 	QString s;
-	if (document() && (s=document()->fileName()).isEmpty())
-		on_uiSaveDocumentAs_triggered();
-		
-	saveDocument(s);
+	if (document()) {
+		if ((s=document()->fileName()).isEmpty())
+			on_uiSaveDocumentAs_triggered();
+		else
+			saveDocument(s);
+	}
 }
 
 void CAMainWin::on_uiSaveDocumentAs_triggered() {
-	QString s = QFileDialog::getSaveFileName(
-	                this,
-	                tr("Choose a file to save"),
-	                "",
-	                tr("Canorus document (*.xml)"));
-	
-	if (s.isEmpty())
-		return;
-	
-	// append the extension, if the last 4 characters don't already contain the dot
-	int i;
-	for (i=0; (i<4) && ((s.length()-i-1) > 0); i++) if (s[s.length()-i-1] == '.') break;
-	if (i==4) s.append(".xml");
-	
-	saveDocument(s);
+	if (document()) {
+		QString s = QFileDialog::getSaveFileName(
+		                this,
+		                tr("Choose a file to save"),
+		                "",
+		                tr("Canorus document (*.xml)"));
+		
+		if (s.isEmpty())
+			return;
+		
+		// append the extension, if the last 4 characters don't already contain the dot
+		int i;
+		for (i=0; (i<4) && ((s.length()-i-1) > 0); i++) if (s[s.length()-i-1] == '.') break;
+		if (i==4) s.append(".xml");
+		
+		saveDocument(s);
+	}
 }
 
 /*!
