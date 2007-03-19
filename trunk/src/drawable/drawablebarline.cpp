@@ -183,6 +183,8 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 			             (int)(s.x + 0.5), (int)(s.y + height()*s.z + 0.5) );
 			break;		
 	}
+	
+	p->setBrush(QBrush(s.color, Qt::NoBrush)); // reset the painter's brush
 }
 
 CADrawableBarline* CADrawableBarline::clone(CADrawableContext* newContext) {
