@@ -66,6 +66,8 @@
 #include "export/lilypondexport.h"
 #include "import/lilypondimport.h"
 
+const QString CAMainWin::LILYPOND_FILTER = tr("LilyPond document (*.ly)");
+
 /*!
 	\class CAMainWin
 	\brief Canorus main window
