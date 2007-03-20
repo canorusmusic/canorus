@@ -1,0 +1,16 @@
+Main developers:
+Matevž Jekovec <matevz.jekovec@gmail.com>
+  core features and UI, Windows port, Debian/Ubuntu packages, cmake, Wiki site
+Reinhard Katzmann <reinhard@suamor.de>
+  Qt4 GUI maestro, cmake, programming patterns
+Itay Perl <itay.perl@gmail.com>
+  UI bugfixing, GUI
+Sam Hernandez <merphant@yahoo.com>
+  LilyPond export, build fixes
+
+Contributors:
+Erlend Aasland <erlenda@gmail.com>
+  MacOSX port, small compatibility fixes and improvements
+Georg Rudolph <georg.rudolph@schwaben.de>
+  lots of ideas, tester and bughunter, LilyPond
+

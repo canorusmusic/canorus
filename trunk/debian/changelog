@@ -1,13 +1,19 @@
+canorus (0.2.5svn-1ubuntu1) edgy; urgency=low
+
+  * new upstream release
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 20 Mar 2007 04:34:07 +0100
+
 canorus (0.1.0svn-1ubuntu1) edgy; urgency=low
 
   * new upstream release
   * tested on fresh Ubuntu Edgy, works great
 
- -- Matevz <matevz@mojazver>  Mon, 27 Nov 2006 15:37:27 +0100
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Mon, 27 Nov 2006 15:37:27 +0100
 
 canorus (0.0.99svn-0.1ubuntu1) edgy; urgency=low
 
   * initial .deb package
 
- -- Matevz <matevz@mojazver>  Mon, 20 Nov 2006 01:18:27 +0100
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Mon, 20 Nov 2006 01:18:27 +0100
 
