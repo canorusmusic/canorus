@@ -1,4 +1,4 @@
-/** \file ui/mainwin.h
+/*! \file ui/mainwin.h
  * 
  * Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -11,6 +11,7 @@
 
 #include <QObject>
 #include <QFileDialog>
+#include <QHash>
 
 #include "ui_mainwin.h"
 
@@ -130,6 +131,7 @@ private slots:
 	void on_uiZoomToFit_triggered();
 	void on_uiZoomToWidth_triggered();
 	void on_uiZoomToHeight_triggered();
+	void on_uiScoreView_triggered();
 	void on_uiLilyPondSource_triggered();
 	void on_uiCanorusMLSource_triggered();
 	
@@ -210,6 +212,7 @@ private:
 	QList<CAViewPortContainer *>_viewPortContainerList;
 	
 	QList<CAViewPort *> _viewPortList;
+	QHash<CAViewPortContainer*, CASheet*> _sheetMap;
 	CAViewPort *_currentViewPort;
 	bool _animatedScroll;
 	bool _lockScrollPlayback;
@@ -223,7 +226,7 @@ private:
 	// Pure user interface - widgets that weren't created by Qt Designer yet //
 	///////////////////////////////////////////////////////////////////////////
 	void setupCustomUi();
-	void initScoreViewPort(CAScoreViewPort*);
+	void initViewPort(CAViewPort*);
 	void updateToolBars();
 	void updateSheetToolBar();
 	void updateContextToolBar();
