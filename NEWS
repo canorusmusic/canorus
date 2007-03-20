@@ -1,22 +1,22 @@
-0.0.1
-
-- Skipped this version, should have been released as early prototype
-
-0.0.2
-
-- First officially released version
-- Prototype with several working features
-
-0.0.5
-
-- Second technical preview release
-- Scripting support (currently only ruby supported) via swig
-- Support of musical element (like rests, notes with flags, time signature)
-- New plugin architecture (still work in progress). A plugin can be
-  requested via Canorus ML; it currently requires ruby-qt4 to be installed.
+0.2.5
+=====
+- New Doxygen documentation.
+- Initial work on MacOSX port.
+- Improved function marking rendering
+- Scripting engine now offers integration with Canorus menu, import/export
+  dialogs and keyboard and mouse events.
+- New completely XML CanorusML format.
+- LilyPond document export support.
+- LilyPond voice import/export support.
+- Rewritten GUI. Now supports multiple main windows. Added lots of icons.
+- Translations support. Current translations: English, Slovenian.
+- Majority of the code rewritten so we have a more robust foundation now for
+  future development.
+- Lots of warnings, crashes, bugfixes and memory leaks fixed in MIDI, GUI and
+  Scripting engine.
 
 0.1.0
-
+=====
 - Third technical preview release
 - Python scripting support
 - Official windows support (MacOS-X was confirmed to compile too)
@@ -31,3 +31,21 @@
 - debian/rules added to create .deb packages for Debian-based
 Linux
 - nsis setup added to create Nullsoft Windows installer
+
+0.0.5
+=====
+- Second technical preview release
+- Scripting support (currently only ruby supported) via swig
+- Support of musical element (like rests, notes with flags, time signature)
+- New plugin architecture (still work in progress). A plugin can be
+  requested via Canorus ML; it currently requires ruby-qt4 to be installed.
+
+0.0.2
+=====
+- First officially released version
+- Prototype with several working features
+
+0.0.1
+=====
+- Skipped this version, should have been released as early prototype
+
