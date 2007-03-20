@@ -95,14 +95,14 @@ int CAPlayable::setDotted(int dotted) {
 	// calculate the original note length
 	float factor = 1.0, delta=0.5;
 	for (int i=0; i<_dotted; i++, factor+=delta, delta/=2);
-	int origLength = (int)(_timeLength / factor + 0.5);
+	int origLength = (int)(_timeLength / factor);
 	
 	// calculate and set the new note length
+	_dotted = dotted;	
 	factor = 1.0, delta=0.5;
 	for (int i=0; i<_dotted; i++, factor+=delta, delta/=2);	//calculate the length factor out of number of dots
-	_dotted = dotted;	
 
-	return (_timeLength - (_timeLength = (int)(origLength * factor + 0.5)))*-1;	//return delta of the new and old timeLengths, set the new timeLength
+	return (_timeLength - (_timeLength = (int)(origLength * factor)))*-1;	//return delta of the new and old timeLengths, set the new timeLength
 }
 
 CAPlayable::CAPlayableLength CAPlayable::playableLengthFromString(const QString length) {
