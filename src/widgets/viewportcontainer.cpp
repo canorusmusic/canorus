@@ -52,6 +52,7 @@ CAViewPortContainer::~CAViewPortContainer() {
 
 /*!
 	Splits the given viewport \a v vertically or the last used viewport if none given.
+	Vertical split uses horizontal splitter.
 	Returns the newly created viewport.
 */		
 CAViewPort* CAViewPortContainer::splitVertically(CAViewPort *v) {
@@ -60,13 +61,13 @@ CAViewPort* CAViewPortContainer::splitVertically(CAViewPort *v) {
 	if ( v ) {
 		QSplitter *splitter = _viewPortMap[v];
 		CAViewPort *newViewPort = v->clone();
-		if ( splitter->orientation()==Qt::Vertical ) {
+		if ( splitter->orientation()==Qt::Horizontal ) {
 			addViewPort( newViewPort, splitter );
 		} else if ( splitter->count()==1 ) {
-			splitter->setOrientation( Qt::Vertical );
+			splitter->setOrientation( Qt::Horizontal );
 			addViewPort( newViewPort, splitter );
 		} else {
-			QSplitter *newSplitter = new QSplitter( Qt::Vertical, 0 );
+			QSplitter *newSplitter = new QSplitter( Qt::Horizontal, 0 );
 			int idx = splitter->indexOf(v);
 			addViewPort( v, newSplitter);
 			addViewPort( newViewPort, newSplitter);
@@ -81,6 +82,7 @@ CAViewPort* CAViewPortContainer::splitVertically(CAViewPort *v) {
 
 /*!
 	Splits the given viewport \a v horizontally or the last used viewport if none given.
+	Horizontal split uses vertical splitter.
 	Returns the newly created viewport.
 */		
 CAViewPort* CAViewPortContainer::splitHorizontally(CAViewPort *v) {
@@ -89,13 +91,13 @@ CAViewPort* CAViewPortContainer::splitHorizontally(CAViewPort *v) {
 	if ( v ) {
 		QSplitter *splitter = _viewPortMap[v];
 		CAViewPort *newViewPort = v->clone();
-		if (splitter->orientation()==Qt::Horizontal) {
+		if ( splitter->orientation()==Qt::Vertical ) {
 			addViewPort( newViewPort, splitter );
 		} else if (splitter->count()==1) {
-			splitter->setOrientation( Qt::Horizontal );
+			splitter->setOrientation( Qt::Vertical );
 			addViewPort( newViewPort, splitter );
 		} else {
-			QSplitter *newSplitter = new QSplitter( Qt::Horizontal, 0 );
+			QSplitter *newSplitter = new QSplitter( Qt::Vertical, 0 );
 			int idx = splitter->indexOf(v);
 			addViewPort( v, newSplitter);
 			addViewPort( newViewPort, newSplitter);
