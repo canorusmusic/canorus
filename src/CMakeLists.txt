@@ -335,6 +335,18 @@ IF(USE_PYTHON)
 	SWIG_LINK_LIBRARIES(CanorusPython ${PYTHON_LIBRARY} ${QT_LIBRARIES})
 ENDIF(USE_PYTHON)
 
+# Adds Canorus resource file under Windows (Canorus icon etc.).
+IF(MINGW)
+	# CMake currently doesn't support windres yet. Add command manually
+	ADD_CUSTOM_COMMAND(
+		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/canorusrc.obj
+		COMMAND windres.exe
+		-i canorusrc.rc
+		-o canorusrc.obj
+	)
+	SET(Canorus_Srcs ${Canorus_Srcs} canorusrc.obj)
+ENDIF(MINGW)
+	
 # This line tells cmake to create the Canorus program.
 # All dependent libraries like RtMidi must be added here.
 # Attention: In contrast to Makefiles don't add "\" to separate lines

@@ -73,8 +73,8 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	connect( _menu, SIGNAL(aboutToShow()), this, SLOT(showButtons()) );
 	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 
 	         this, SLOT( hideButtons( int ) ) );
-#ifndef Q_WS_MAC
-	/// \todo Button menu hides before its buttonPressed() is emitted on Mac
+#ifdef Q_WS_X11
+	/// \todo Button menu hides before its buttonPressed() is emitted on Mac and Windows
 	connect( _menu, SIGNAL(aboutToHide()), this, SLOT(hideButtons()) );
 #endif
 	
