@@ -65,6 +65,10 @@ void CASourceViewPort::on_commit_clicked() {
 	emit CACommit(this, _textEdit->toPlainText());
 }
 
+void CASourceViewPort::mousePressEvent(QMouseEvent *e) {
+	emit CAMousePressEvent( e, QPoint(0,0), this);
+}
+
 CASourceViewPort *CASourceViewPort::clone() {
 	CASourceViewPort *v;
 	if (_document)

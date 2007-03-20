@@ -40,6 +40,7 @@ private slots:
 	void rebuild();
 	
 private:
+	void mousePressEvent( QMouseEvent* );
 	void setupUI();
 	
 	////////////////////////////////////////////////

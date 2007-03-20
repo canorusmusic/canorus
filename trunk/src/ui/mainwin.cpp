@@ -326,18 +326,17 @@ void CAMainWin::newDocument() {
 */
 void CAMainWin::addSheet(CASheet *s) {
 	CAScoreViewPort *v = new CAScoreViewPort(s, 0);
-	initScoreViewPort(v);
+	initViewPort( v );
 	
-	_viewPortList << v;
-	
-	CAViewPortContainer *vpc = new CAViewPortContainer(v, 0);
+	CAViewPortContainer *vpc = new CAViewPortContainer( 0 );
+	vpc->addViewPort( v );
 	_viewPortContainerList << vpc;
+	_sheetMap[vpc] = s;
 	
 	uiTabWidget->addTab(vpc, s->name());
 	uiTabWidget->setCurrentIndex(uiTabWidget->count()-1);
+	setCurrentViewPortContainer( vpc );
 	
-	setCurrentViewPortContainer(vpc);
-	setCurrentViewPort(v);
 	updateToolBars();
 }
 
@@ -364,6 +363,7 @@ void CAMainWin::clearUI() {
 	for (int i=0; i<_viewPortList.size(); i++)
 		delete _viewPortList[i];
 	_viewPortList.clear();
+	_sheetMap.clear();
 	setCurrentViewPort( 0 );
 }
 
@@ -374,7 +374,7 @@ void CAMainWin::clearUI() {
 void CAMainWin::on_uiTabWidget_currentChanged(int idx) {
 	setCurrentViewPortContainer( static_cast<CAViewPortContainer*>(uiTabWidget->currentWidget()) );
 	if (currentViewPortContainer())
-		setCurrentViewPort( _currentViewPortContainer->lastUsedViewPort() );
+		setCurrentViewPort( currentViewPortContainer()->currentViewPort() );
 	
 	updateToolBars();
 }
@@ -387,59 +387,55 @@ void CAMainWin::on_uiFullscreen_toggled(bool checked) {
 }
 
 void CAMainWin::on_uiSplitHorizontally_triggered() {
-	CAViewPort *v = static_cast<CAViewPort*>(_currentViewPortContainer->splitHorizontally());
+	CAViewPort *v = currentViewPortContainer()->splitHorizontally();
 	if(!v)
 		return;
 	
-	if (v->viewPortType() == CAViewPort::ScoreViewPort)
-		initScoreViewPort(static_cast<CAScoreViewPort*>(v));
+	initViewPort( v );
 	
 	uiUnsplitAll->setEnabled(true);
 	uiCloseCurrentView->setEnabled(true);
-	_viewPortList << v;
-	setMode(_mode);	// updates the new viewport border settings
 }
 
 void CAMainWin::on_uiSplitVertically_triggered() {
-	CAViewPort *v = static_cast<CAViewPort*>(_currentViewPortContainer->splitVertically());
+	CAViewPort *v = currentViewPortContainer()->splitVertically();
 	if(!v)
 		return;
 	
-	if (v->viewPortType() == CAViewPort::ScoreViewPort)
-		initScoreViewPort(static_cast<CAScoreViewPort*>(v));
+	initViewPort( v );
 	
 	uiUnsplitAll->setEnabled(true);
 	uiCloseCurrentView->setEnabled(true);
-	_viewPortList << v;
-	setMode(_mode);	// updates the new viewport border settings
 }
 
 void CAMainWin::doUnsplit(CAViewPort *v) {
-	CAViewPort::CAViewPortType vpt = v?v->viewPortType():_currentViewPortContainer->lastUsedDockedViewPort()->viewPortType();
-	v = _currentViewPortContainer->unsplit(v);
+	v = currentViewPortContainer()->unsplit(v);
 	if (!v) return;
 	
 	_viewPortList.removeAll(v);
 	
-	if(_currentViewPortContainer->dockedViewPortsList().size() == 1)
+	if (currentViewPortContainer()->viewPortList().size() == 1)
 	{
 		uiCloseCurrentView->setEnabled(false);
 		uiUnsplitAll->setEnabled(false);
 	}
-	_currentViewPort = _currentViewPortContainer->dockedViewPortsList().back();
+	setCurrentViewPort( currentViewPortContainer()->currentViewPort() );
 }
 
 void CAMainWin::on_uiUnsplitAll_triggered() {
-	QList<CAViewPort*> dockedViewPorts = _currentViewPortContainer->unsplitAll();
+	QList<CAViewPort*> dockedViewPorts = currentViewPortContainer()->unsplitAll();
 	for(QList<CAViewPort*>::iterator i = dockedViewPorts.begin(); i < dockedViewPorts.end(); i++)
 		_viewPortList.removeAll(*i);
 	uiCloseCurrentView->setEnabled(false);
 	uiUnsplitAll->setEnabled(false);
-	_currentViewPort = _currentViewPortContainer->dockedViewPortsList().back();
+	setCurrentViewPort( currentViewPortContainer()->currentViewPort() );
 }
 
 void CAMainWin::on_uiCloseCurrentView_triggered() {
-	doUnsplit();
+	if (currentViewPortContainer()->contains( currentViewPort() )) {
+		doUnsplit();
+	} else
+		delete currentViewPort();
 }
 
 void CAMainWin::on_uiCloseDocument_triggered() {
@@ -455,36 +451,29 @@ void CAMainWin::on_uiCloseDocument_triggered() {
 */
 void CAMainWin::on_uiCanorusMLSource_triggered() {
 	CASourceViewPort *v = new CASourceViewPort(document(), currentViewPort()->parent());
-	currentViewPortContainer()->addViewPort(v);
+	initViewPort( v );
+	currentViewPortContainer()->addViewPort( v );
 	
 	connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
 	
-	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
-	v->setFocusPolicy(Qt::ClickFocus);
-	v->setFocus();
-	
 	uiUnsplitAll->setEnabled(true);
 	uiCloseCurrentView->setEnabled(true);
-	_viewPortList << v;
-	setMode(_mode);	// updates the new viewport border settings
 }
 
 void CAMainWin::on_uiNewViewport_triggered() {
-	CAViewPort *v = _currentViewPortContainer->newViewPort(_currentViewPort);
-
-	if (v->viewPortType() == CAViewPort::ScoreViewPort)
-		initScoreViewPort(static_cast<CAScoreViewPort*>(v));
-
-	_viewPortList << v;
-	setMode(_mode);	// updates the new viewport border settings
+	CAViewPort *v = currentViewPort()->clone( 0 );
+	initViewPort( v );
 }
 
 /*!
-	Initializes the newly created score viewport.
-	Connects its signals to slots.
-	Sets the icon, focus policy and sets the focus.
+	Links the newly created viewport with the main window:
+		- Adds the viewport to the viewport list
+		- Connects its signals to main windows' slots.
+		- Sets the icon, focus policy and sets the focus.
+		- Sets the currentViewPort but not currentViewPortContainer
 */
-void CAMainWin::initScoreViewPort(CAScoreViewPort *v) {
+void CAMainWin::initViewPort(CAViewPort *v) {
+	_viewPortList << v;
 	v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
 	
 	connect( v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)),
@@ -498,6 +487,8 @@ void CAMainWin::initScoreViewPort(CAScoreViewPort *v) {
 	
 	v->setFocusPolicy(Qt::ClickFocus);
 	v->setFocus();
+	setCurrentViewPort(v);
+	setMode(mode());	// updates the new viewport border settings	
 }
 
 /*!
@@ -740,7 +731,7 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 */
 void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *viewPort) {
 	setCurrentViewPort( viewPort );
-	_currentViewPortContainer->setLastUsedViewPort( currentViewPort() );
+	_currentViewPortContainer->setCurrentViewPort( currentViewPort() );
 	
 	if (viewPort->viewPortType() == CAViewPort::ScoreViewPort) {
 		CAScoreViewPort *v = (CAScoreViewPort*)viewPort;
@@ -1632,19 +1623,31 @@ void CAMainWin::on_uiLilyPondSource_triggered() {
 		CAStaff *staff = static_cast<CAStaff*>(static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->context());
 		int voiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
 		CAVoice *voice = staff->voiceAt( voiceNum );
-		CASourceViewPort *v = new CASourceViewPort(voice, currentViewPort()->parent());
-		currentViewPortContainer()->addViewPort(v);
+		CASourceViewPort *v = new CASourceViewPort(voice, 0);
+		initViewPort( v );
+		currentViewPortContainer()->addViewPort( v );
 		
 		connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
 		
-		v->setWindowIcon(QIcon(QString::fromUtf8(":/menu/images/clogosm.png")));
-		v->setFocusPolicy(Qt::ClickFocus);
-		v->setFocus();
+		uiUnsplitAll->setEnabled(true);
+		uiCloseCurrentView->setEnabled(true);
+	}
+}
+
+/*!
+	Adds a new score viewport to default viewport container.
+*/
+void CAMainWin::on_uiScoreView_triggered() {
+	CASheet* s = _sheetMap[currentViewPortContainer()];
+	
+	if ( currentViewPortContainer() && s ) {
+		CAScoreViewPort *v = new CAScoreViewPort(s, 0);
+		initViewPort( v );
+		currentViewPortContainer()->addViewPort( v );
+		v->rebuild();
 		
 		uiUnsplitAll->setEnabled(true);
 		uiCloseCurrentView->setEnabled(true);
-		_viewPortList << v;
-		setMode(mode());	// updates the new viewport border settings
 	}
 }
 

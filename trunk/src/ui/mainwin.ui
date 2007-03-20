@@ -56,27 +56,6 @@
      <height>36</height>
     </rect>
    </property>
-   <widget class="QMenu" name="uiMenuFile" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="uiNewDocument" />
-    <addaction name="uiNewDocumentWizard" />
-    <addaction name="uiOpenDocument" />
-    <addaction name="uiSaveDocument" />
-    <addaction name="uiSaveDocumentAs" />
-    <addaction name="uiCloseDocument" />
-    <addaction name="separator" />
-    <addaction name="uiDocumentProperties" />
-    <addaction name="separator" />
-    <addaction name="uiImportDocument" />
-    <addaction name="uiExportDocument" />
-    <addaction name="separator" />
-    <addaction name="uiPrintPreview" />
-    <addaction name="uiPrint" />
-    <addaction name="separator" />
-    <addaction name="uiQuit" />
-   </widget>
    <widget class="QMenu" name="uiMenuEdit" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -173,6 +152,27 @@
     <addaction name="separator" />
     <addaction name="uiAboutCanorus" />
     <addaction name="uiAboutQt" />
+   </widget>
+   <widget class="QMenu" name="uiMenuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="uiNewDocument" />
+    <addaction name="uiNewDocumentWizard" />
+    <addaction name="uiOpenDocument" />
+    <addaction name="uiSaveDocument" />
+    <addaction name="uiSaveDocumentAs" />
+    <addaction name="uiCloseDocument" />
+    <addaction name="separator" />
+    <addaction name="uiDocumentProperties" />
+    <addaction name="separator" />
+    <addaction name="uiImportDocument" />
+    <addaction name="uiExportDocument" />
+    <addaction name="separator" />
+    <addaction name="uiPrintPreview" />
+    <addaction name="uiPrint" />
+    <addaction name="separator" />
+    <addaction name="uiQuit" />
    </widget>
    <addaction name="uiMenuFile" />
    <addaction name="uiMenuEdit" />
@@ -747,6 +747,9 @@
    </property>
   </action>
   <action name="uiNewDocumentWizard" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="mainwin.qrc" >:/menu/images/filenewwizard.png</iconset>
    </property>
