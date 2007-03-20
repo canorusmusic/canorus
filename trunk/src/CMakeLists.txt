@@ -338,9 +338,14 @@ ENDIF(USE_PYTHON)
 # Adds Canorus resource file under Windows (Canorus icon etc.).
 IF(MINGW)
 	# CMake currently doesn't support windres yet. Add command manually
+	FIND_PROGRAM(
+		WINDRES_PROGRAM windres.exe PATHS
+		"[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\MinGW;InstallLocation]/bin"
+		c:/MinGW/bin /MinGW/bin
+	)
 	ADD_CUSTOM_COMMAND(
 		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/canorusrc.obj
-		COMMAND windres.exe
+		COMMAND ${WINDRES_PROGRAM}
 		-i canorusrc.rc
 		-o canorusrc.obj
 	)
