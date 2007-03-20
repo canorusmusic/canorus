@@ -6,7 +6,7 @@ Name Canorus
 !define REGKEY "SOFTWARE\$(^Name)"
 !define VERSION 0.2.5svn
 !define COMPANY "Matevž Jekovec, Canorus development team"
-!define URL http://canorus.berlios.de
+!define URL http://www.canorus.org
 
 # MUI defines
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico"
