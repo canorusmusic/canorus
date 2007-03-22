@@ -131,6 +131,7 @@ CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
 			int i;
 			for ( i=0; s->widget(i)==v; i++ ); // find the viewport which should be moved to its parent
 			s->widget(i)->setParent( static_cast<QWidget*>(s->parent()) );
+			_viewPortMap[static_cast<CAViewPort*>(s->widget(i))] = static_cast<QSplitter*>(s->parent());
 			
 			delete s; // delete the splitter and the viewport
 			removeViewPort(v);

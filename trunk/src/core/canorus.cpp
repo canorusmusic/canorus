@@ -62,8 +62,6 @@ QList<QString> CACanorus::locateResource(const QString fileName) {
 	
 #endif
 	
-	if (paths.isEmpty())
-		std::cout << fileName.toStdString().c_str() << std::endl;
 	// Remove duplicates. Is there a faster way to do this?
 	return paths.toSet().toList();
 }
