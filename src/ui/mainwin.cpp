@@ -1882,6 +1882,7 @@ void CAMainWin::updatePlayableToolBar() {
 					uiHiddenRest->setChecked(rest->restType()==CARest::Hidden);
 				}
 				uiPlayableToolBar->show();
+				uiVoiceNum->setRealValue( playable->voice()->voiceNumber() );
 			} else
 				uiPlayableToolBar->hide();
 		}
