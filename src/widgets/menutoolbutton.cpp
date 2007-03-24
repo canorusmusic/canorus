@@ -45,7 +45,7 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	setNumIconsPerRow( numIconsRow );
 	
 	// Size policy: Expanding / Expanding
-    QSizePolicy boxSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    QSizePolicy boxSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     boxSizePolicy.setHorizontalStretch( 0 );
     boxSizePolicy.setVerticalStretch( 0 );
     QSizePolicy widgetSizePolicy = sizePolicy();
