@@ -44,6 +44,11 @@ QList<QString> CACanorus::locateResource(const QString fileName) {
 	//! \todo Application path argument
 	QString curPath;
 	
+	// Try absolute path
+	curPath = fileName;
+	if (QFile(curPath).exists())
+		paths << curPath;
+	
 	// Try current working directory
 	curPath = QDir::currentPath() + "/" + fileName;
 	if (QFile(curPath).exists())
