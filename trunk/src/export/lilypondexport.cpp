@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Matevž Jekovec, Canorus development team
+ * Copyrigh t(c) 2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  *
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -8,6 +8,7 @@
 #include <QRegExp>
 #include <QList>
 #include <QFileInfo>
+#include <QTextStream>
 
 #include "export/lilypondexport.h"
 
@@ -395,7 +396,7 @@ const QString CALilyPondExport::barlineTypeToLilyPond(CABarline::CABarlineType t
 void CALilyPondExport::exportDocument(CADocument *doc)
 {
 	if ( doc->sheetCount() < 1 ) {
-		//TODO: raise an error
+		//TODO: no sheets, raise an error
 		return;	
 	}
 
@@ -422,6 +423,7 @@ void CALilyPondExport::exportSheet(CASheet *sheet)
 
 	// Export voices as Lilypond variables: \StaffOneVoiceOne = \relative c { ... }
 	for ( int s = 0; s < sheet->staffCount(); ++s ) {
+		setCurStaffIndex( s );
 		exportStaffVoices( sheet->staffAt( s ) );
 	}
 
@@ -440,14 +442,35 @@ void CALilyPondExport::exportStaffVoices(CAStaff *staff)
 	for ( int v = 0; v < staff->voiceCount(); ++v ) {
 		setCurVoice( staff->voiceAt( v ) );
 
+		// Print Canorus voice name as a comment to help with debugging/tweaking
+		QString canorusVoiceName( curVoice()->name() );
+		out() << "\n % " << canorusVoiceName << "\n";
+		
 		// Write out the voice name and the equals sign
-		QString curVoiceName( curVoice()->name() );
-		spellNumbers( curVoiceName );
-		out() << "\n" << curVoiceName << " = ";
+		// Variable name is staff index and voice index
+		QString voiceName;
+		voiceVariableName( voiceName, curStaffIndex(), v );
+		out() << voiceName << " = ";
 
 		exportVoice( curVoice() );
 		out() << "\n"; // exportVoice doesn't put endline at the end
 	}
+}
+
+
+/*!
+	Modify \a name to contain a string "StaffXVoiceY" where
+	X and Y are spelled-out versions of \a staffNum and \a voiceNum, respectively.
+	This is for generating names of Lilypond variables from Canorus staff and voices indices,
+	since Lilypond variable names must contain only alphabetical characters.
+	
+	Example: voiceVariableName( name, 1, 2 );
+	--> name is "StaffOneVoiceTwo"
+*/
+void CALilyPondExport::voiceVariableName( QString &name, int staffNum, int voiceNum )
+{
+	QTextStream( &name ) << "Staff" << staffNum << "Voice" << voiceNum ;
+	spellNumbers( name );
 }
 
 	
@@ -510,15 +533,26 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet )
 
 			// Output voices
 			for( int v = 0; v < voiceCount; ++v ) {
+
+				// Print Canorus voice name as a comment to aid with debugging etc.
 				QString curVoiceName( curStaff()->voiceAt( v )->name() );
-				// curVoiceLilyCommand is "\voiceOne", "\voiceTwo", etc. to get proper stem directions
-				QString curVoiceLilyCommand;
-				curVoiceLilyCommand.setNum( v + 1 );
-				curVoiceLilyCommand = "\\voice" + curVoiceLilyCommand;
-				spellNumbers(curVoiceLilyCommand );
-				spellNumbers( curVoiceName );
 				indent();
-				out() <<  "\\new Voice { " + curVoiceLilyCommand + " \\" + curVoiceName + " }\n" ;
+				out() << "% " + curVoiceName + "\n";
+
+				// curVoiceLilyCommand is "\voiceOne", "\voiceTwo", etc. to get proper stem directions
+				// Only use this if there is more than one voice.
+				QString curVoiceLilyCommand;
+				if ( voiceCount > 1 ) {
+					curVoiceLilyCommand.setNum( v + 1 );
+					curVoiceLilyCommand = "\\voice" + curVoiceLilyCommand;
+					spellNumbers(curVoiceLilyCommand );
+				}
+
+				// Print Lily variable name
+				QString voiceName;
+				voiceVariableName( voiceName, s, v );
+				indent();
+				out() <<  "\\new Voice { " + curVoiceLilyCommand + " \\" + voiceName + " }\n" ;
 			}
 			indentLess();
 

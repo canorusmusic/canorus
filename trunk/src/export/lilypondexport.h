@@ -35,6 +35,7 @@ public:
 	inline CAVoice *curVoice() { return _curVoice; }
 	inline CASheet *curSheet() { return _curSheet; }
 	inline CAStaff *curStaff() { return _curStaff; }
+	inline int curStaffIndex() { return _curStaffIndex; }
 	inline int curIndentLevel() { return _curIndentLevel; }
 	
 private:
@@ -61,6 +62,7 @@ private:
 		return relativePitchToString(note->pitch(), note->accidentals(), prevPitch);
 	}
 	const QString relativePitchToString(int pitch, signed char accs, int prevPitch);
+	void voiceVariableName( QString &name, int staffNum, int voiceNum );
 	void spellNumbers( QString &s );
 	
 	void indent();
@@ -73,6 +75,7 @@ private:
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }
 	inline void setCurSheet(CASheet *sheet) { _curSheet = sheet; }
 	inline void setCurStaff(CAStaff *staff) { _curStaff = staff; }
+	inline void setCurStaffIndex(int s) { _curStaffIndex = s; }
 	inline void setIndentLevel( int level) { _curIndentLevel = level; }
 
 	inline QTextStream& out() { return *_out; }
@@ -84,6 +87,7 @@ private:
 	CAVoice *_curVoice;
 	CASheet *_curSheet;
 	CAStaff *_curStaff;
+	int _curStaffIndex;
 	int _curIndentLevel;
 };
 
