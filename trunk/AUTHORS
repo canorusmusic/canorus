@@ -1,7 +1,7 @@
 Main developers:
 Matevž Jekovec <matevz.jekovec@gmail.com>
   core features and UI, Windows port, Debian/Ubuntu packages, cmake, Wiki site
-Reinhard Katzmann <reinhard@suamor.de>
+Reinhard Katzmann <suamor@web.de>
   Qt4 GUI maestro, cmake, programming patterns
 Itay Perl <itay.perl@gmail.com>
   UI bugfixing, GUI
