@@ -652,6 +652,8 @@ class CAScoreViewPort : public CAViewPort {
 		QList<CADrawableMusElement *> _selection;	///The set of elements being selected.
 		CADrawableContext *_currentContext;	///The pointer to the currently active context (staff, lyrics).
 		
+		int getMaxXExtended(CAKDTree v) { return v.getMaxX() + 100; } ///Make the viewable World a little bigger (stuffed) to make inserting at the end easy
+
 		int _worldX, _worldY, _worldW, _worldH;	///Absolute world coordinates of the area the viewport is currently showing.
 		float _zoom;	///Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
 		
