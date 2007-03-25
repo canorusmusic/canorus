@@ -365,7 +365,7 @@ void CAScoreViewPort::rebuild() {
  */
 void CAScoreViewPort::setWorldX(int x, bool animate, bool force) {
 	if (!force) {
-		int maxX = (_drawableMList.getMaxX() > _drawableCList.getMaxX())?_drawableMList.getMaxX() : _drawableCList.getMaxX();
+		int maxX = (getMaxXExtended(_drawableMList) > getMaxXExtended(_drawableCList))?getMaxXExtended(_drawableMList) : getMaxXExtended(_drawableCList);
 		if (x > maxX - _worldW)
 			x = maxX - _worldW;
 		if (x < 0)
@@ -432,7 +432,7 @@ void CAScoreViewPort::setWorldWidth(int w, bool force) {
 	_worldW = w;
 	
 	int scrollMax;
-	if ((scrollMax = ((_drawableMList.getMaxX() > _drawableCList.getMaxX())?_drawableMList.getMaxX():_drawableCList.getMaxX()) - _worldW) >= 0) {
+	if ((scrollMax = ((getMaxXExtended(_drawableMList) > getMaxXExtended(_drawableCList))?getMaxXExtended(_drawableMList):getMaxXExtended(_drawableCList)) - _worldW) >= 0) {
 		if (scrollMax < _worldX)	//if you resize the widget at a large zoom level and if the getMax border has been reached
 			setWorldX(scrollMax);	//scroll the view away from the border
 			
@@ -537,7 +537,7 @@ void CAScoreViewPort::zoomToSelection(bool animate, bool force) {
 }
 
 void CAScoreViewPort::zoomToWidth(bool animate, bool force) {
-	int maxX = (_drawableCList.getMaxX()>_drawableMList.getMaxX())?_drawableCList.getMaxX():_drawableMList.getMaxX();
+	int maxX = (getMaxXExtended(_drawableCList)>getMaxXExtended(_drawableMList))?getMaxXExtended(_drawableCList):getMaxXExtended(_drawableMList);
 	setWorldCoords(0,0,maxX,0,animate,force);
 }
 
@@ -547,7 +547,7 @@ void CAScoreViewPort::zoomToHeight(bool animate, bool force) {
 }
 
 void CAScoreViewPort::zoomToFit(bool animate, bool force) {
-	int maxX = ((_drawableCList.getMaxX() > _drawableMList.getMaxX())?_drawableCList.getMaxX():_drawableMList.getMaxX()); 
+	int maxX = ((getMaxXExtended(_drawableCList) > getMaxXExtended(_drawableMList))?getMaxXExtended(_drawableCList):getMaxXExtended(_drawableMList)); 
 	int maxY = ((_drawableCList.getMaxY() > _drawableMList.getMaxY())?_drawableCList.getMaxY():_drawableMList.getMaxY()); 
 	
 	setWorldCoords(0, 0, maxX, maxY, animate, force);
@@ -739,7 +739,7 @@ void CAScoreViewPort::checkScrollBars() {
 	bool change = false;
 	_holdRepaint = true;	//disable repaint until the scrollbar values are set
 	_checkScrollBarsDeadLock = true;	//disable any further method calls until the method is over
-	if ((((_drawableMList.getMaxX() > _drawableCList.getMaxX())?_drawableMList.getMaxX():_drawableCList.getMaxX()) - worldWidth() > 0) || (_hScrollBar->value()!=0)) { //if scrollbar is needed
+	if ((((getMaxXExtended(_drawableMList) > getMaxXExtended(_drawableCList))?getMaxXExtended(_drawableMList):getMaxXExtended(_drawableCList)) - worldWidth() > 0) || (_hScrollBar->value()!=0)) { //if scrollbar is needed
 		if (!_hScrollBar->isVisible()) {
 			_hScrollBar->show();
 			change = true;
