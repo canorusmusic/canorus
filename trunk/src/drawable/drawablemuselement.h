@@ -1,5 +1,4 @@
-/** @file drawable/drawablemuselement.h
- * 
+/*!
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
@@ -26,6 +25,7 @@ class CADrawableMusElement : public CADrawable {
 			DrawableTimeSignature,
 			DrawableBarline,
 			DrawableAccidental,
+			DrawableSlur,
 			DrawableFunctionMarking, DrawableFunctionMarkingSupport
 		};
 		
@@ -44,4 +44,4 @@ class CADrawableMusElement : public CADrawable {
 		bool _selectable;
 };
 
-#endif /*DRAWABLEMUSELEMENT_H_*/
+#endif /* DRAWABLEMUSELEMENT_H_ */

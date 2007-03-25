@@ -20,7 +20,7 @@ typedef struct CADrawSettings {
 		int y;
 		int w;
 		int h;
-		//QPenStyle penStyle;
+		// QPenStyle penStyle;
 		QColor color;
 };
 
@@ -31,7 +31,7 @@ class CADrawable {
 			DrawableContext
 		};
 		
-		CADrawable(int x, int y);	///x and y position of an element in absolute world units
+		CADrawable(int x, int y);	/// x and y position of an element in absolute world units
 		virtual void draw(QPainter *p, const CADrawSettings s) = 0;
 		int xPos() { return _xPos + _xPosOffset; }
 		int yPos() { return _yPos + _yPosOffset; }
@@ -90,7 +90,9 @@ class CADrawable {
 		virtual CADrawable *clone();
 		
 	protected:
-		CADrawableType _drawableType; //DrawableMusElement or DrawableContext.
+		inline void setNeededWidth(int width) { _neededWidth = width; }
+		inline void setNeededHeight(int height) { _neededHeight = height; }
+		CADrawableType _drawableType; // DrawableMusElement or DrawableContext.
 		int _xPos;
 		int _yPos;
 		int _xPosOffset;
@@ -100,7 +102,7 @@ class CADrawable {
 		int _neededWidth;
 		int _neededHeight;
 		bool _visible;
-		bool _selectable;	///Can the element be clicked on and is then selected
+		bool _selectable;	/// Can the element be clicked on and is then selected
 };
-#endif /*DRAWABLE_H_*/
+#endif /* DRAWABLE_H_ */
 

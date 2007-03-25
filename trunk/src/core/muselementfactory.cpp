@@ -28,6 +28,7 @@
 #include "core/timesignature.h"
 #include "core/voice.h"
 #include "core/rest.h"
+#include "core/slur.h"
 #include "core/muselementfactory.h"
 
 // For comparing undefined music elements
@@ -98,6 +99,8 @@ CAMusElementFactory::CAMusElementFactory()
 	_iNoteAccs = 0;
 	_iNoteExtraAccs = 0;
 	_eBarlineType = CABarline::Single;
+	_eSlurType = CASlur::Tie;
+	
 	createMusElem();
 }
 
@@ -146,17 +149,14 @@ void CAMusElementFactory::configureMusElem( CAMusElement &roMusElement )
 /*!
 	Configures a new clef music element in \a context and right next to the \a left element.
 */
-bool CAMusElementFactory::configureClef( CADrawableContext *context, 
-                                         CADrawableMusElement *left )
+bool CAMusElementFactory::configureClef( CAStaff *staff, 
+                                         CAMusElement *left )
 {
 	bool bSuccess = false;
 	removeMusElem();
-	if ( (context) && 
-	     (context->context()->contextType() == CAContext::Staff) )
-	{
-		CAStaff *staff = (CAStaff*)context->context();
-		mpoMusElement = new CAClef(_eClef, staff, (left?left->musElement()->timeEnd():0));
-		bSuccess = staff->insertSignAfter(mpoMusElement, left?left->musElement():0, true);
+	if ( staff ) {
+		mpoMusElement = new CAClef(_eClef, staff, (left?left->timeEnd():0));
+		bSuccess = staff->insertSignAfter(mpoMusElement, left, true);
 	}
 	return bSuccess;
 }
@@ -164,20 +164,17 @@ bool CAMusElementFactory::configureClef( CADrawableContext *context,
 /*!
 	Configures a new key signature music element with \a iKeySignature accidentals, \a context and right next to the \a left element.
 */
-bool CAMusElementFactory::configureKeySignature( CADrawableContext *context, 
-                                                 CADrawableMusElement *left )
+bool CAMusElementFactory::configureKeySignature( CAStaff *staff, 
+                                                 CAMusElement *left )
 {
 	bool bSuccess = false;
 	removeMusElem();
-	if ( (context) &&
-	     (context->context()->contextType() == CAContext::Staff) )
-	{		
-		CAStaff *staff = (CAStaff*)context->context();
+	if (staff) {		
 		mpoMusElement = new CAKeySignature(CAKeySignature::MajorMinor, 
 			                           _iKeySigNumberOfAccs,
 			                           CAKeySignature::Major, staff,
-			                           (left?left->musElement()->timeEnd():0));
-		bSuccess = staff->insertSignAfter(mpoMusElement, left?left->musElement():0, true);
+			                           (left?left->timeEnd():0));
+		bSuccess = staff->insertSignAfter(mpoMusElement, left, true);
 	}
 	return bSuccess;
 }
@@ -185,19 +182,16 @@ bool CAMusElementFactory::configureKeySignature( CADrawableContext *context,
 /*!
 	Configures a new time signature music element with \a context and right next to the \a left element.
 */
-bool CAMusElementFactory::configureTimeSignature( CADrawableContext *context, 
-                                                  CADrawableMusElement *left )
+bool CAMusElementFactory::configureTimeSignature( CAStaff *staff, 
+                                                  CAMusElement *left )
 {
 	bool bSuccess = false;
 	removeMusElem();
-	if ( (context) &&
-	     (context->context()->contextType() == CAContext::Staff) )
-	{
-		CAStaff *staff = (CAStaff*)context->context();
+	if (staff) {
 		mpoMusElement = new CATimeSignature( _iTimeSigBeats, _iTimeSigBeat,
 			                             staff,
-			                             (left?left->musElement()->timeEnd():0));
-		bSuccess = staff->insertSignAfter(mpoMusElement, left?left->musElement():0, true);
+			                             (left?left->timeEnd():0));
+		bSuccess = staff->insertSignAfter(mpoMusElement, left, true);
 	}
 	return bSuccess;
 }
@@ -205,19 +199,16 @@ bool CAMusElementFactory::configureTimeSignature( CADrawableContext *context,
 /*!
 	Configures a new barline with \a context and right next to the \a left element.
 */
-bool CAMusElementFactory::configureBarline( CADrawableContext *context, 
-                                                  CADrawableMusElement *left )
+bool CAMusElementFactory::configureBarline( CAStaff *staff, 
+                                            CAMusElement *left )
 {
 	bool bSuccess = false;
 	removeMusElem();
-	if ( (context) &&
-	     (context->context()->contextType() == CAContext::Staff) )
-	{
-		CAStaff *staff = (CAStaff*)context->context();
+	if (staff) {
 		mpoMusElement = new CABarline( _eBarlineType,
 			                             staff,
-			                             (left?left->musElement()->timeEnd():0));
-		bSuccess = staff->insertSignAfter(mpoMusElement, left?left->musElement():0, true);
+			                             (left?left->timeEnd():0));
+		bSuccess = staff->insertSignAfter(mpoMusElement, left, true);
 	}
 	return bSuccess;
 }
@@ -233,15 +224,12 @@ bool CAMusElementFactory::configureBarline( CADrawableContext *context,
 */
 bool CAMusElementFactory::configureNote( CAVoice *voice,
                                          const QPoint coords,
-                                         CADrawableContext *context,
+                                         CADrawableStaff *drawableStaff,
                                          CADrawableMusElement *left )
 {
 	bool bSuccess = false;
-        CADrawableStaff *drawableStaff = (CADrawableStaff *)context;
 	removeMusElem();
-	if ( (context) &&
-	     (context->context()->contextType() == CAContext::Staff) )
-	{
+	if ( drawableStaff ) {
 		//did a user click on the note or before/after it? In first case, add a note to a chord, in latter case, insert a new note.
 		CADrawableMusElement *followingNote;			
 		if ( left && (left->musElement()->musElementType() == CAMusElement::Note) && (left->xPos() <= coords.x()) && (left->width() + left->xPos() >= coords.x()) ) {
@@ -273,37 +261,54 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 				bSuccess = voice->insertMusElementAfter(mpoMusElement, left->musElement());
 			else		//left element doesn't exist, prepend the new music element
 				bSuccess = voice->prependMusElement(mpoMusElement);
-			}
+		}
 	}
+	
+	if (bSuccess)
+		static_cast<CANote*>(mpoMusElement)->updateTies();
+	
 	return bSuccess;
+}
+
+bool CAMusElementFactory::configureSlur( CAStaff *staff,
+                                         CANote *noteStart, CANote *noteEnd )
+{
+	CASlur *slur = new CASlur( slurType(), noteStart->determineSlurDirection(), staff, noteStart, noteEnd );
+	
+	switch (slurType()) {
+		case CASlur::Tie:
+			noteStart->setTieStart( slur );
+			if (noteEnd) noteEnd->setTieEnd( slur );
+			break;
+		case CASlur::Slur:
+			noteStart->setSlurStart( slur );
+			if (noteEnd) noteEnd->setSlurEnd( slur );
+			break;
+		case CASlur::PhrasingSlur:
+			noteStart->setPhrasingSlurStart( slur );
+			if (noteEnd) noteEnd->setPhrasingSlurEnd( slur );
+			break;
+	}
+	mpoMusElement = slur;
 }
 
 /*!
 	Configures a new rest music element.
 	
 	\param voice      voice where new rest is inserted
-	\param coords     mouse position where the new rest is inserted
-	\param context    context within the new rest is inserted
 	\param left       music element left of new rest
 */
-bool CAMusElementFactory::configureRest( CAVoice *voice,
-                                         const QPoint coords,
-                                         CADrawableContext *context,
-                                         CADrawableMusElement *left )
-{
+bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *left ) {
 	bool bSuccess = false;
-        CADrawableStaff *drawableStaff = (CADrawableStaff *)context;
 	removeMusElem();
-	if ( (context) &&
-	     (context->context()->contextType() == CAContext::Staff) )
-	{
+	if ( voice ) {
 		mpoMusElement = new CARest(restType(),
 				_ePlayableLength,
 				voice,
-				(left?left->musElement()->timeEnd():0),
+				(left?left->timeEnd():0),
 				_iPlayableDotted
 				);
-		bSuccess = voice->insertMusElementAfter(mpoMusElement, left?left->musElement():0);
+		bSuccess = voice->insertMusElementAfter(mpoMusElement, left);
 	}
 	return bSuccess;
 }

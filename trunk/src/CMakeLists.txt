@@ -83,6 +83,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/timesignature.cpp
 	core/playable.cpp
 	core/note.cpp
+	core/slur.cpp
 	core/rest.cpp
 
 	core/functionmarking.cpp
@@ -122,6 +123,7 @@ SET(Canorus_Drawable_Srcs	# Drawable instances of the data
 
 	drawable/drawablemuselement.cpp
 	drawable/drawablenote.cpp
+	drawable/drawableslur.cpp
 	drawable/drawablerest.cpp
 	drawable/drawableaccidental.cpp
 	drawable/drawableclef.cpp

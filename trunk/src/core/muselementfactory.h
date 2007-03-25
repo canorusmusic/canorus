@@ -42,28 +42,30 @@ public:
 	
 	inline CAMusElement *getMusElement() { return mpoMusElement; };
 	
-	bool configureClef( CADrawableContext *context, 
-	                    CADrawableMusElement *left );
+	bool configureClef( CAStaff *staff, 
+	                    CAMusElement *left );
 	
-	bool configureKeySignature( CADrawableContext *context, 
-	                            CADrawableMusElement *left );
+	bool configureKeySignature( CAStaff *staff, 
+	                            CAMusElement *left );
 	
-	bool configureTimeSignature( CADrawableContext *context, 
-	                             CADrawableMusElement *left );
+	bool configureTimeSignature( CAStaff *staff, 
+	                             CAMusElement *left );
 	
-	bool configureBarline( CADrawableContext *context, 
-	                             CADrawableMusElement *left );
+	bool configureBarline( CAStaff *staff, 
+	                       CAMusElement *left );
 	
 	bool configureRest( CAVoice *voice,
-	                    const QPoint coords,
-	                    CADrawableContext *context, 
-	                    CADrawableMusElement *left );
+	                    CAMusElement *left );
 	
 	
 	bool configureNote( CAVoice *voice,
 	                    const QPoint coords,
-	                    CADrawableContext *context, 
-	                    CADrawableMusElement *left );
+	                    CADrawableStaff *staff,  // needed because of the note collision determination
+	                    CADrawableMusElement *left // needed because of the note collision determination
+	                  );
+	
+	bool configureSlur( CAStaff *staff,
+	                    CANote *noteStart, CANote *noteEnd );
 	
 	inline CAMusElement::CAMusElementType musElementType()
 	{ return mpoMusElement->musElementType(); };
@@ -135,6 +137,9 @@ public:
 	inline void setBarlineType( CABarline::CABarlineType type)
 	{ _eBarlineType = type; }
 	
+	inline CASlur::CASlurType slurType() { return _eSlurType; }
+	inline void setSlurType( CASlur::CASlurType type ) { _eSlurType = type; }
+	
 private:
 	CAMusElement *mpoMusElement;     // newly created music element itself
 	/////////////////////////////////
@@ -142,6 +147,7 @@ private:
 	/////////////////////////////////
 	CAPlayable::CAPlayableLength _ePlayableLength; // Length of note/rest to be added
 	CANote::CAStemDirection _eNoteStemDirection; // Note stem direction to be inserted
+	CASlur::CASlurType _eSlurType;  // Slur type to be placed
 	int _iPlayableDotted;	   // Number of dots to be inserted for the note/rest
 	int _iNoteExtraAccs;	   // Extra note accidentals for new notes which user adds/removes with +/- keys
 	int _iNoteAccs;	         // Note accidentals at specific coordinates updated regularily when in insert mode

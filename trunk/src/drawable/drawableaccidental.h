@@ -1,5 +1,4 @@
-/** @file drawableaccidental.h
- * 
+/*!
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
@@ -32,4 +31,4 @@ class CADrawableAccidental : public CADrawableMusElement {
 		int _centerX, _centerY;	//easier to do clone(), otherwise not needed
 };
 
-#endif /*DRAWABLEACCIDENTAL_H_*/
+#endif /* DRAWABLEACCIDENTAL_H_ */

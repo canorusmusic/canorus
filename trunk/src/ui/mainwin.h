@@ -122,6 +122,7 @@ private slots:
 	void on_uiTimeSigType_toggled(bool, int);
 	void on_uiBarlineType_toggled(bool, int);
 	void on_uiInsertPlayable_toggled(bool);
+	void on_uiSlurType_toggled(bool, int);
 	
 	// View
 	void on_uiFullscreen_toggled(bool);
@@ -280,7 +281,8 @@ private:
 			// Note properties
 			CAMenuToolButton *uiPlayableLength;
 			CAMenuToolButton *uiNoteAccs;
-			// QAction       *uiNoteAccsVisible;
+			CAMenuToolButton *uiSlurType;
+			// QAction       *uiNoteAccsVisible; // made by Qt Designer
 			CAMenuToolButton *uiNoteStemDirection;
 			// Rest properties
 			// CAMenuToolButton *uiPlayableLength; // same as note properties

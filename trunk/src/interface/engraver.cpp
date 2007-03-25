@@ -16,6 +16,7 @@
 #include "drawable/drawablestaff.h"
 #include "drawable/drawableclef.h"
 #include "drawable/drawablenote.h"
+#include "drawable/drawableslur.h"
 #include "drawable/drawablerest.h"
 #include "drawable/drawablekeysignature.h"
 #include "drawable/drawabletimesignature.h"
@@ -322,6 +323,41 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							streamsX[i],
 							((CADrawableStaff*)drawableContext)->calculateCenterYCoord((CANote*)elt, lastClef[i])
 						);
+						
+						// Create Slur
+						if ( static_cast<CADrawableNote*>(newElt)->note()->tieStart() ) {
+							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->tieStart()->slurDirection();
+							CADrawableSlur *tie=0;
+							if (dir==CASlur::SlurUp) {
+								tie = new CADrawableSlur(
+									static_cast<CADrawableNote*>(newElt)->note()->tieStart(), drawableContext,
+									newElt->xPos()+newElt->width(), newElt->yPos(),
+									newElt->xPos() + 20, newElt->yPos() - 10,
+									newElt->xPos() + 40, newElt->yPos()								
+								);
+							} else
+							if (dir==CASlur::SlurDown) {
+								tie = new CADrawableSlur(
+									static_cast<CADrawableNote*>(newElt)->note()->tieStart(), drawableContext,
+									newElt->xPos()+newElt->width(), newElt->yPos() + newElt->height(),
+									newElt->xPos() + 20, newElt->yPos() + newElt->height() + 10,
+									newElt->xPos() + 40, newElt->yPos()	+ newElt->height()							
+								);
+							}
+							v->addMElement(tie);
+						}
+						if ( static_cast<CADrawableNote*>(newElt)->note()->tieEnd() ) {
+							// Set the slur coordinates for the second note
+							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->find(static_cast<CADrawableNote*>(newElt)->note()->tieEnd()));
+							dSlur->setWidth( newElt->xPos() - dSlur->xPos() );
+							dSlur->setXMid( dSlur->xPos() + dSlur->width()/2 );
+							if ( dSlur->slur()->slurDirection()==CASlur::SlurUp ) {
+								dSlur->setY2( newElt->yPos() );
+							} else
+							if ( dSlur->slur()->slurDirection()==CASlur::SlurDown ) {
+								dSlur->setY2( newElt->yPos() + newElt->height() );
+							}
+						}
 						
 						v->addMElement(newElt);
 						if (((CANote*)elt)->isLastInTheChord())	
