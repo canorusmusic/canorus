@@ -60,8 +60,9 @@ public:
 	CAClef *getClef(CAMusElement *elt);
 	QList<CAPlayable*> getChord(int time);
 	
+	void updateSlurDirections();
 	CANote::CAStemDirection stemDirection() { return _stemDirection; }
-	void setStemDirection(CANote::CAStemDirection direction) { _stemDirection = direction; }
+	void setStemDirection(CANote::CAStemDirection direction);
 	
 	const QString name() { return _name; }
 	void setName(const QString name) { _name = name; }

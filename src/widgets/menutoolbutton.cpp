@@ -70,6 +70,8 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	
 	setMenu( _menu = new QMenu(this) );
 	setPopupMode( QToolButton::MenuButtonPopup );
+	setToolTip( title );
+	
 	connect( _menu, SIGNAL(aboutToShow()), this, SLOT(showButtons()) );
 	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 
 	         this, SLOT( hideButtons( int ) ) );
@@ -103,7 +105,7 @@ CAMenuToolButton::~CAMenuToolButton() {
 /*!
 	Adds a Tool button to the menu with the given \a icon and \a buttonId.
 */
-void CAMenuToolButton::addButton( const QIcon icon, int buttonId ) {
+void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString toolTip ) {
 	QToolButton *button;
 	QFontMetrics metrics ( _groupBox->font() );
 	int iconSize = 24,          // Size of Icon
@@ -117,6 +119,7 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId ) {
 	button->setIcon( icon );
 	button->setIconSize( QSize(iconSize, iconSize) );
 	button->setCheckable( true );
+	button->setToolTip(toolTip);
 	// Useful if you want to switch icons of an associated toolbar
 	button->setObjectName( objectName() );
 	_buttonList << button;
@@ -248,6 +251,22 @@ void CAMenuToolButton::wheelEvent( QWheelEvent *event ) {
 */
 void CAMenuToolButton::handleTriggered() {
 	emit toggled( false, currentId() );
+}
+
+/*!
+	Sets the currently selected item by passing the item index.
+	The current icon of the button is changed to the item ones.
+	The current tool tip is also changed.
+	
+	Does not change the current item, if the item is not part of the button box.
+*/ 
+void CAMenuToolButton::setCurrentId(int id) {
+	if ( !_buttonGroup->button(id) )
+		return;
+	
+	_currentId = id;
+	defaultAction()->setIcon( _buttonGroup->button(id)->icon() );
+	defaultAction()->setToolTip( _buttonGroup->button(id)->toolTip() );
 }
 
 /*!

@@ -22,7 +22,7 @@ public:
 	CAMenuToolButton( QString title, int numIconsRow = 4, QWidget * parent = 0 );
 	~CAMenuToolButton();
 
-	void addButton( const QIcon icon, int buttonId );
+	void addButton( const QIcon icon, int buttonId, const QString toolTip="" );
 	inline QAbstractButton *getButton( int buttonId ) { return _buttonGroup->button( buttonId ); }
 
 	inline QList<QToolButton*> buttonList() { return _buttonList; }
@@ -37,7 +37,7 @@ public:
 	inline void setLayoutMargin(int margin) { _layoutMargin = margin; }
 	inline void setMargin(int margin) { _margin = margin; }
 	inline void setNumIconsPerRow( int numIconsRow )  { _numIconsRow = numIconsRow; }
-	inline void setCurrentId(int id) { _currentId = id; defaultAction()->setIcon(_buttonGroup->button(id)->icon()); }
+	void setCurrentId(int id);
 	
 public slots:
 	void showButtons();

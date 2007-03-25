@@ -60,6 +60,20 @@ class CANote : public CAPlayable {
 		
 		bool forceAccidentals() { return _forceAccidentals; }
 		void setForceAccidentals(bool force) { _forceAccidentals = force; }
+			inline CASlur *tieStart() { return _tieStart; }
+			
+	inline CASlur *tieEnd() { return _tieEnd; }
+	inline CASlur *slurStart() { return _slurStart; }
+	inline CASlur *slurEnd() { return _slurEnd; }
+	inline CASlur *phrasingSlurStart() { return _phrasingSlurStart; }
+	inline CASlur *phrasingSlurEnd() { return _phrasingSlurEnd; }
+	
+	inline void setTieStart( CASlur *tieStart ) { _tieStart = tieStart; }
+	inline void setTieEnd( CASlur *tieEnd ) { _tieEnd = tieEnd; }
+	inline void setSlurStart( CASlur *slurStart ) { _slurStart = slurStart; }
+	inline void setSlurEnd( CASlur *slurEnd ) { _slurEnd = slurEnd; }
+	inline void setPhrasingSlurStart( CASlur *pSlurStart ) { _phrasingSlurStart = pSlurStart; }
+	inline void setPhrasingSlurEnd( CASlur *pSlurEnd ) { _phrasingSlurEnd = pSlurEnd; }
 		
 		static const QString generateNoteName(int pitch, int accs);
 		

@@ -34,7 +34,23 @@ CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char a
 	_pitch = pitch;
 	_midiPitch = CANote::pitchToMidiPitch(pitch, _accs);
 	
+	setTieStart( 0 );
+	setSlurStart( 0 );
+	setPhrasingSlurStart( 0 );
+	setTieEnd( 0 );
+	setSlurEnd( 0 );
+	setPhrasingSlurEnd( 0 );
+
 	calculateNotePosition();
+}
+
+CANote::~CANote() {
+	if ( tieStart() ) delete tieStart();
+	if ( tieEnd() ) tieEnd()->setNoteEnd( 0 );
+	if ( slurStart() ) delete slurStart();
+	if ( slurEnd() ) slurEnd()->setNoteEnd( 0 );
+	if ( phrasingSlurStart() ) delete phrasingSlurStart();
+	if ( phrasingSlurEnd() ) phrasingSlurEnd()->setNoteEnd( 0 );
 }
 
 /*!
@@ -112,6 +128,8 @@ void CANote::setPitch(int pitch) {
 	_midiPitch = CANote::pitchToMidiPitch(pitch, _accs);
 	
 	calculateNotePosition();
+	updateTies();
+	updateSlurDirections();
 }
 
 /*!
@@ -194,6 +212,76 @@ int CANote::compare(CAMusElement *elt) {
 }
 
 /*!
+	Sets the stem direction and update tie, slur and phrasing slur direction.
+*/
+void CANote::setStemDirection( CAStemDirection dir ) {
+	_stemDirection = dir;
+	updateSlurDirections();
+}
+
+/*!
+	Looks at the stem direction and changes the slur direction if needed.
+*/
+void CANote::updateSlurDirections() {
+	CASlur::CASlurDirection dir = determineSlurDirection();
+	if (tieStart())
+		tieStart()->setSlurDirection( dir );
+	if (slurStart())
+		slurStart()->setSlurDirection( dir );
+	if (phrasingSlurStart())
+		phrasingSlurStart()->setSlurDirection( dir );
+}
+
+/*!
+	Looks at the tieStart() and tieEnd() ties and unties the note and tie if the
+	previous/next note pitch differs.
+*/
+void CANote::updateTies() {
+	// break the tie, if needed
+	if ( tieStart() && tieStart()->noteEnd() &&
+	     pitch()!=tieStart()->noteEnd()->pitch() ) {
+		// break the tie, if the first note isn't the same pitch
+		tieStart()->noteEnd()->setTieEnd( 0 );
+		tieStart()->setNoteEnd( 0 );
+	}
+	if ( tieEnd() && tieEnd()->noteStart() &&
+	     pitch()!=tieEnd()->noteStart()->pitch() ) {
+		// break the tie, if the next note isn't the same pitch
+		tieEnd()->setNoteEnd( 0 );
+		setTieEnd( 0 );
+	}
+	
+	// fix/create a tie, if needed
+	QList<CANote*> noteList = voice()->noteList();
+	
+	// checks a tie of the potential left note
+	CANote *leftNote = 0;
+	for (int i=0; i<noteList.count() && noteList[i]->timeEnd()<=timeStart(); i++) { // get the left note
+		if ( noteList[i]->timeEnd()==timeStart() && noteList[i]->pitch()==pitch() ) {
+			leftNote = noteList[i];
+			break;
+		}
+	}
+	if ( leftNote && leftNote->tieStart() ) {
+		leftNote->tieStart()->setNoteEnd( this );
+		setTieEnd( leftNote->tieStart() );
+	}
+	
+	// checks a tie of the potential right note
+	CANote *rightNote = 0;
+	for (int i=0; i<noteList.count() && noteList[i]->timeStart()<=timeEnd(); i++) { // get the right note
+		if ( noteList[i]->timeStart()==timeEnd() && noteList[i]->pitch()==pitch() ) {
+			rightNote = noteList[i];
+			break;
+		}
+	}
+	if ( rightNote && tieStart() ) {
+		rightNote->setTieEnd( tieStart() );
+		tieStart()->setNoteEnd( rightNote );
+	}	
+}
+
+/*!
 	Converts stem direction CAStemDirection to QString.
 	This is usually used when saving the score.
 	
@@ -260,6 +348,60 @@ int CANote::pitchToMidiPitch(int pitch, int acc) {
 */
 int CANote::midiPitchToPitch(int midiPitch) {
 	return 0;
+}
+
+/*!
+	Determines the actual stem direction. Always returns stem up or stem down.
+*/
+CANote::CAStemDirection CANote::determineStemDirection() {
+	switch ( stemDirection() ) {
+		case StemUp:
+		case StemDown:
+			return stemDirection();
+			break;
+		
+		case StemNeutral:
+			if ( staff() && notePosition() < staff()->numberOfLines() )	// position from 0 to half of the number of lines - where position has step of 2 per line
+				return StemUp;
+			else
+				return StemDown;
+			break;
+		
+		case StemPrefered:
+			if (!voice()) { return StemUp; }
+			
+			switch ( voice()->stemDirection() ) {
+				case StemUp:
+				case StemDown:
+					return voice()->stemDirection();
+					break;
+				
+				case StemNeutral:
+					if ( staff() && notePosition() < staff()->numberOfLines() )	// position from 0 to half of the number of lines - where position has step of 2 per line
+						return StemUp;
+					else
+						return StemDown;
+					break;
+			}
+			break;
+	}
+}
+
+/*!
+	Determines the right slur direction of the note.
+	Slur should be on the other side of the stem, if the stem direction is neutral
+	or on the same side if the stem direction is set strictly to up and down (or prefered).
+*/
+CASlur::CASlurDirection CANote::determineSlurDirection() {
+	CAStemDirection dir = determineStemDirection();
+	
+	if ( stemDirection()==StemNeutral || (stemDirection()==StemPrefered && voice() && voice()->stemDirection()==StemNeutral) ) {
+		if (dir==StemUp) return CASlur::SlurDown;
+		else return CASlur::SlurUp;
+	} else {
+		if (dir==StemUp) return CASlur::SlurUp;
+		else return CASlur::SlurDown;
+	}
 }
 
 /*!

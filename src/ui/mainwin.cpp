@@ -53,6 +53,7 @@
 #include "core/clef.h"
 #include "core/keysignature.h"
 #include "core/note.h"
+#include "core/slur.h"
 #include "core/rest.h"
 #include "core/canorusml.h"
 #include "core/voice.h"
@@ -124,7 +125,7 @@ CAMainWin::~CAMainWin()  {
 	
 	// clear UI
 	delete uiImportDialog; delete uiExportDialog;
-	delete uiInsertToolBar; delete uiInsertGroup; delete uiContextType; delete uiClefType; delete uiBarlineType;
+	delete uiInsertToolBar; delete uiInsertGroup; delete uiContextType; delete uiSlurType; delete uiClefType; delete uiBarlineType;
 	delete uiVoiceToolBar; delete uiVoiceNum; delete uiVoiceName; delete uiRemoveVoice; delete uiVoiceStemDirection; delete uiVoiceProperties;
 	delete uiPlayableToolBar; delete uiPlayableLength; delete uiNoteAccs; delete uiNoteStemDirection; delete uiHiddenRest;
 	delete uiKeySigToolBar; delete uiKeySigNumberOfAccs;
@@ -157,10 +158,16 @@ void CAMainWin::setupCustomUi() {
 			connect( uiNewContext, SIGNAL( triggered() ), uiContextType, SLOT( click() ) );
 		uiInsertToolBar->addSeparator();
 		uiInsertToolBar->addAction( uiInsertPlayable );
+		uiInsertToolBar->addWidget( uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this ) );
+			uiSlurType->addButton( QIcon(":/menu/images/tie.png"), CASlur::Tie, tr("Tie") );
+			uiSlurType->addButton( QIcon(":/menu/images/slur.png"), CASlur::Slur, tr("Slur") );
+			uiSlurType->addButton( QIcon(":/menu/images/phrasingslur.png"), CASlur::PhrasingSlur, tr("Phrasing Slur") );
+			uiSlurType->setCurrentId( CASlur::Tie );
+			connect( uiSlurType, SIGNAL(toggled(bool, int)), this, SLOT( on_uiSlurType_toggled(bool, int) ) );
 		uiInsertToolBar->addWidget(uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this ));
-			uiClefType->addButton( QIcon(":/menu/images/cleftreble.png"), CAClef::Treble );
-			uiClefType->addButton( QIcon(":/menu/images/clefbass.png"), CAClef::Bass );
-			uiClefType->addButton( QIcon(":/menu/images/clefalto.png"), CAClef::Alto );
+			uiClefType->addButton( QIcon(":/menu/images/cleftreble.png"), CAClef::Treble, tr("Treble Clef") );
+			uiClefType->addButton( QIcon(":/menu/images/clefbass.png"), CAClef::Bass, tr("Bass Clef") );
+			uiClefType->addButton( QIcon(":/menu/images/clefalto.png"), CAClef::Alto, tr("Alto Clef") );
 			uiClefType->setCurrentId( CAClef::Treble );
 			connect( uiClefType, SIGNAL( toggled(bool, int) ), this, SLOT( on_uiClefType_toggled(bool, int) ) );
 			connect( uiInsertClef, SIGNAL( triggered() ), uiClefType, SLOT( click() ) );
@@ -177,13 +184,13 @@ void CAMainWin::setupCustomUi() {
 			connect( uiTimeSigType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiTimeSigType_toggled(bool, int)) );
 			connect( uiInsertTimeSig, SIGNAL(triggered()), uiTimeSigType, SLOT(click()));
 		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 4, this ));
-			uiBarlineType->addButton( QIcon(":/menu/images/barlinesingle.png"), CABarline::Single );
-			uiBarlineType->addButton( QIcon(":/menu/images/barlinedouble.png"), CABarline::Double );
-			uiBarlineType->addButton( QIcon(":/menu/images/barlineend.png"), CABarline::End );
-			uiBarlineType->addButton( QIcon(":/menu/images/barlinedotted.png"), CABarline::Dotted );
-			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatopen.png"), CABarline::RepeatOpen );
-			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatclose.png"), CABarline::RepeatClose );
-			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatcloseopen.png"), CABarline::RepeatCloseOpen );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinesingle.png"), CABarline::Single, tr("Single Barline") );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinedouble.png"), CABarline::Double, tr("Double Barline") );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlineend.png"), CABarline::End, tr("End Barline") );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinedotted.png"), CABarline::Dotted, tr("Dotted Barline") );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatopen.png"), CABarline::RepeatOpen, tr("Repeat Open") );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatclose.png"), CABarline::RepeatClose, tr("Repeat Closed") );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatcloseopen.png"), CABarline::RepeatCloseOpen, tr("Repeat Open-Closed") );
 			uiBarlineType->setCurrentId( CABarline::Single );
 			connect( uiBarlineType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiBarlineType_toggled(bool, int)) );
 			connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
@@ -284,6 +291,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->addAction( uiNewContext );
 	uiInsertGroup->addAction( uiContextType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertPlayable );
+	uiInsertGroup->addAction( uiSlurType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertClef );
 	uiInsertGroup->addAction( uiClefType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertTimeSig );
@@ -757,6 +765,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 		}
 		
 		if (e->modifiers()==Qt::ControlModifier) {
+			// Remove music element
 			CAMusElement *elt;
 			if ( elt = v->removeMElement(coords.x(), coords.y()) ) {
 				elt->context()->removeMusElement(elt, true);	//free the memory as well!
@@ -806,8 +815,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					uiSelectMode->toggle();
 					v->repaint();
 					break;
-				}
-				
+				} else
 				// Insert music element
 				if (uiInsertPlayable->isChecked()) {
 					// Add Note/Rest
@@ -827,6 +835,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 		CAPluginManager::action("onScoreViewPortClick", document(), 0, 0, this);
 	}
 	updateToolBars();
+	viewPort->repaint();
 }
 
 /*!
@@ -948,7 +957,6 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				
 				CACanorus::rebuildUI(document(), ((CAScoreViewPort*)v)->sheet());
 				((CAScoreViewPort*)v)->selectMElement(bar);
-				v->repaint();
 				break;
 			}
 			
@@ -991,6 +999,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				}
 				break;
 			}
+			
 			case Qt::Key_Plus: {
 				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (mode()==InsertMode) {
@@ -1100,45 +1109,59 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 	voice, dependent on the music element type and the viewport coordinates.
 */
 void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMusElement &roMusElement ) {
-	CADrawableContext *context = v->currentContext();
+	CADrawableContext *drawableContext = v->currentContext();
 	
 	CAStaff *staff=0;
-	CADrawableStaff *drawableStaff=0;
-	bool success;
+	CADrawableStaff *drawableStaff = 0;
+	if (drawableContext) {
+		drawableStaff = dynamic_cast<CADrawableStaff*>(drawableContext);
+		staff = dynamic_cast<CAStaff*>(drawableContext->context());
+	}
+	
+	CADrawableMusElement *drawableLeft = v->nearestLeftElement(coords.x(), coords.y());
+	
+	CAMusElement *left=0;
+	if ( drawableLeft )
+		left = drawableLeft->musElement();
+	
+	bool success=false;;
 	int iPlayableDotted = 0;
 	
-	if (!context)
+	if (!drawableContext)
 		return;
 	
 	switch ( roMusElement.musElementType() ) {
 		case CAMusElement::Clef: {
-			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
-			success = _musElementFactory->configureClef( context, left );
+			if (staff)
+				success = _musElementFactory->configureClef( staff , left );
 			break;
 		}
 		case CAMusElement::KeySignature: {
-			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
-			success = _musElementFactory->configureKeySignature( context, left );
+			if ( staff )
+				success = _musElementFactory->configureKeySignature( staff, left );
 			break;
 		}
 		case CAMusElement::TimeSignature: {
-			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
-			success = _musElementFactory->configureTimeSignature( context, left );
+			if ( staff )
+				success = _musElementFactory->configureTimeSignature( staff, left );
 			break;
 		}
 		case CAMusElement::Barline: {
-			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y());
-			success = _musElementFactory->configureBarline( context, left );
+			if ( staff )
+				success = _musElementFactory->configureBarline( staff, left );
 			break;
 		}
 		case CAMusElement::Note: { // Do we really need to do all that here??
 			int iVoiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
-			drawableStaff = (CADrawableStaff*)context;
-			staff = drawableStaff->staff();
-			CAVoice *voice = staff->voiceAt( iVoiceNum );
+			CAVoice *voice = 0;
+			
+			if ( staff )
+				voice = staff->voiceAt( iVoiceNum );
+			
 			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y(), voice);
-			success = _musElementFactory->configureNote( voice, coords, context, left );
-			if (success) { 
+			if ( voice && drawableStaff )
+				success = _musElementFactory->configureNote( voice, coords, drawableStaff, left );
+			if (success) {
 				_musElementFactory->setNoteExtraAccs( 0 );
 				v->setDrawShadowNoteAccs(false); 
 				iPlayableDotted = ((CAPlayable *)(_musElementFactory->getMusElement()))->dotted();
@@ -1147,13 +1170,39 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMu
 		}
 		case CAMusElement::Rest: {
 			int iVoiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
-			drawableStaff = (CADrawableStaff*)context;
-			staff = drawableStaff->staff();
-			CAVoice *voice = staff->voiceAt( iVoiceNum );
-			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y(), voice);
-			success = _musElementFactory->configureRest( voice, coords, context, left );
+			CAVoice *voice = 0;
+			if (staff)
+				voice = staff->voiceAt( iVoiceNum );
+			if (voice)
+				success = _musElementFactory->configureRest( voice, left );
 			if (success)
 				iPlayableDotted = ((CAPlayable *)(_musElementFactory->getMusElement()))->dotted();
+			break;
+		}
+		case CAMusElement::Slur: {
+			// Insert tie, slur or phrasing slur
+			if ( currentScoreViewPort()->selection().size() ) { // start note has to always be selected
+				CANote *noteStart = static_cast<CANote*>(currentScoreViewPort()->selection().at(0)->musElement());
+				CANote *noteEnd = 0;
+				QList<CANote*> noteList = noteStart->voice()->noteList();
+				
+				if (_musElementFactory->slurType()==CASlur::Tie) {
+					if ( noteStart->tieStart() ) {
+						break; // return, if the tie already exists
+					} else {
+						// create a new tie
+						for (int i=0; i<noteList.count() && noteList[i]->timeStart()<=noteStart->timeEnd(); i++) {
+							if ( noteList[i]->timeStart()==noteStart->timeEnd() && noteList[i]->pitch()==noteStart->pitch() ) {
+								noteEnd = noteList[i];
+								break;
+							}
+						}
+					}
+				}
+				
+				if ( staff && noteStart )
+					success = _musElementFactory->configureSlur( staff, noteStart, noteEnd );
+			}
 			break;
 		}
 	}
@@ -1162,7 +1211,6 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMu
 		CACanorus::rebuildUI(document(), v->sheet());
 		v->selectMElement( _musElementFactory->getMusElement() );
 		v->setShadowNoteDotted(iPlayableDotted);
-		v->repaint();
 	} else
 	  {
 		_musElementFactory->removeMusElem( true );
@@ -1432,26 +1480,40 @@ void CAMainWin::on_uiVoiceName_returnPressed() {
 
 void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
 	if (checked) {
-		setMode(InsertMode);
 		if (!uiVoiceNum->getRealValue())
 			uiVoiceNum->setRealValue( 1 ); // select the first voice if none selected
 		
 		_musElementFactory->setMusElementType( CAMusElement::Note );
+		setMode(InsertMode);
 	}
 }
 
 void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 	// Read currently selected entry from tool button menu
-	enum CAPlayable::CAPlayableLength length =
+	CAPlayable::CAPlayableLength length =
 		static_cast<CAPlayable::CAPlayableLength>(buttonId);
 		
 	// New note length type
 	_musElementFactory->setPlayableLength( length );
 }
 
+void CAMainWin::on_uiSlurType_toggled( bool checked, int buttonId ) {
+	// Read currently selected entry from tool button menu
+	CASlur::CASlurType slurType =
+		static_cast<CASlur::CASlurType>(buttonId);
+		
+	_musElementFactory->setMusElementType( CAMusElement::Slur );
+	
+	// New clef type
+	_musElementFactory->setSlurType( slurType );
+	
+	if ( checked )
+		setMode( InsertMode );
+}
+
 void CAMainWin::on_uiClefType_toggled(bool checked, int buttonId) {
 	// Read currently selected entry from tool button menu
-	enum CAClef::CAClefType clefType =
+	CAClef::CAClefType clefType =
 		static_cast<CAClef::CAClefType>(buttonId);
 		
 	_musElementFactory->setMusElementType( CAMusElement::Clef );
@@ -1565,8 +1627,8 @@ void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 
 void CAMainWin::on_uiInsertKeySig_toggled(bool checked) {
 	if (checked) {
-		setMode(InsertMode);
 		_musElementFactory->setMusElementType( CAMusElement::KeySignature );
+		setMode(InsertMode);
 	}
 }
 
@@ -1580,19 +1642,22 @@ void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 
 void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 	if (v->document()) {
+		// CanorusML document source
 		delete document();
 		
 		QXmlInputSource input;
 		input.setData(inputString);
 		setDocument(CACanorusML::openDocument(&input, this));
+		CACanorus::rebuildUI(document());
 	} else
 	if (v->voice()) {
+		// LilyPond voice source
 		v->voice()->clear();
 		
 		CALilyPondImport(inputString, v->voice());
+		CACanorus::rebuildUI(document(), v->voice()->staff()->sheet());
 	}
 	
-	CACanorus::rebuildUI(document());
 }
 
 void CAMainWin::on_uiAboutQt_triggered()
@@ -1816,6 +1881,7 @@ void CAMainWin::updateInsertToolBar() {
 					case CAContext::Staff:
 						// staff selected
 						uiInsertPlayable->setVisible(true);
+						uiSlurType->setVisible(true);
 						uiInsertClef->setVisible(true); // menu
 						uiInsertBarline->setVisible(true); // menu
 						uiClefType->setVisible(true);
@@ -1828,6 +1894,7 @@ void CAMainWin::updateInsertToolBar() {
 					case CAContext::FunctionMarkingContext:
 						// function marking context selected
 						uiInsertPlayable->setVisible(false);
+						uiSlurType->setVisible(false);
 						uiInsertClef->setVisible(false); // menu
 						uiInsertBarline->setVisible(false); // menu
 						uiClefType->setVisible(false);
@@ -1841,6 +1908,7 @@ void CAMainWin::updateInsertToolBar() {
 			} else {
 				// no contexts selected
 				uiInsertPlayable->setVisible(false);
+				uiSlurType->setVisible(false);
 				uiInsertClef->setVisible(false); // menu
 				uiInsertBarline->setVisible(false); // menu
 				uiClefType->setVisible(false);
@@ -1861,11 +1929,11 @@ void CAMainWin::updateInsertToolBar() {
 	Show/Hides the playable tool bar and its properties according to the current state.
 */
 void CAMainWin::updatePlayableToolBar() {
-	if (uiInsertPlayable->isChecked() && mode()==InsertMode) {
+	if ( uiInsertPlayable->isChecked() && mode()==InsertMode ) {
 		uiPlayableLength->defaultAction()->setEnabled(true);
 		uiPlayableLength->setCurrentId( _musElementFactory->playableLength() );
 		uiNoteStemDirection->setCurrentId( _musElementFactory->noteStemDirection() );
-		uiHiddenRest->setChecked(_musElementFactory->restType()==CARest::Hidden);
+		uiHiddenRest->setChecked( _musElementFactory->restType()==CARest::Hidden );
 		uiPlayableToolBar->show();
 	} else if (mode()==EditMode) {
 		CAScoreViewPort *v = currentScoreViewPort();

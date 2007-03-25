@@ -54,6 +54,7 @@
 %include "scripting/clef.i"
 %include "scripting/barline.i"
 %include "scripting/canorusml.i"
+%include "scripting/slur.i"
 %include "scripting/functionmarking.i"
 %include "scripting/functionmarkingcontext.i"
 

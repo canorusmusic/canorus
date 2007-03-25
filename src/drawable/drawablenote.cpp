@@ -13,43 +13,14 @@
 #include "core/voice.h"
 #include "core/staff.h"
 
-CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y, bool shadowNote, CADrawableAccidental *drawableAcc)
- : CADrawableMusElement(note, drawableContext, x, y) {
+CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, int x, int y, bool shadowNote, CADrawableAccidental *drawableAcc)
+ : CADrawableMusElement(n, drawableContext, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableNote;
 	_drawableAcc = drawableAcc;
 	
-	switch (note->stemDirection()) {
-		case CANote::StemUp:
-		case CANote::StemDown:
-			_stemDirection = note->stemDirection();
-			break;
-		
-		case CANote::StemNeutral:
-			if (note->staff() && note->notePosition() < note->staff()->numberOfLines())	// position from 0 to half of the number of lines - where position has step of 2 per line
-				_stemDirection = CANote::StemUp;
-			else
-				_stemDirection = CANote::StemDown;
-			break;
-		
-		case CANote::StemPrefered:
-			if (!note->voice()) { _stemDirection = CANote::StemUp; break; }
-			
-			switch (note->voice()->stemDirection()) {
-				case CANote::StemUp:
-				case CANote::StemDown:
-					_stemDirection = note->voice()->stemDirection();
-					break;
-				
-				case CANote::StemNeutral:
-					if (note->staff() && note->notePosition() < note->staff()->numberOfLines())	// position from 0 to half of the number of lines - where position has step of 2 per line
-						_stemDirection = CANote::StemUp;
-					else
-						_stemDirection = CANote::StemDown;
-					break;
-			}
-	}
+	_stemDirection = note()->determineStemDirection();
 	
-	switch (note->playableLength()) {
+	switch (n->playableLength()) {
 		case CAPlayable::HundredTwentyEighth:
 		case CAPlayable::SixtyFourth:
 		case CAPlayable::ThirtySecond:
@@ -86,9 +57,9 @@ CADrawableNote::CADrawableNote(CANote *note, CADrawableContext *drawableContext,
 	
 	_noteHeadWidth = _width;
 	
-	if (note->dotted()) {
+	if (n->dotted()) {
 		_width += 3;
-		for (int i=0; i<note->dotted(); i++)
+		for (int i=0; i<n->dotted(); i++)
 			_width += 2;
 	}
 	
