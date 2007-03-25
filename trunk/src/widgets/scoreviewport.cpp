@@ -33,6 +33,15 @@
 #include "core/staff.h"
 #include "core/note.h"
 
+const int CAScoreViewPort::RIGHT_EXTRA_SPACE = 100;	// Gives ~10% space after the music
+
+///Make the viewable World a little bigger to make inserting at the end easy
+int CAScoreViewPort::getMaxXExtended(CAKDTree v)
+{
+	return v.getMaxX() + RIGHT_EXTRA_SPACE;
+}
+
+
 CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(parent) {
 	_viewPortType = CAViewPort::ScoreViewPort;
 	
