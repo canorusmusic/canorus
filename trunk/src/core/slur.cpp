@@ -38,6 +38,7 @@
 */
 CASlur::CASlur( CASlurType type, CASlurDirection dir, CAContext *c, CANote *noteStart, CANote *noteEnd )
  : CAMusElement( c, noteStart->timeStart(), 0 ) {
+ 	setMusElementType( CAMusElement::Slur );
 	setSlurDirection( dir );
 	setSlurType( type );
 	

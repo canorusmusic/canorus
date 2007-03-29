@@ -156,6 +156,10 @@ void CACanorusML::writeVoice(QDomElement& dVoice, CAVoice* voice) {
 				dNote.setAttribute("time-start", note->timeStart());
 				dNote.setAttribute("time-length", note->timeLength());
 				dNote.setAttribute("dotted", note->dotted());
+				if ( note->tieStart() )
+					dNote.setAttribute("tie-start", note->tieStart()?true:false);
+				if ( note->tieEnd() )
+					dNote.setAttribute("tie-end", note->tieEnd()?true:false);
 				break;
 			}
 			case CAMusElement::Rest: {
@@ -353,6 +357,10 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		                     );
 		if (!attributes.value("stem-direction").isEmpty())
 			_curNote->setStemDirection(CANote::stemDirectionFromString(attributes.value("stem-direction")));
+		if (!attributes.value("tie-start").isEmpty())
+			_curNote->setTieStart( new CASlur( CASlur::Tie, _curNote->determineSlurDirection(), _curNote->staff(), _curNote, 0 ) );
+		if (!attributes.value("tie-end").isEmpty())
+			_curNote->updateTies();
 	} else if (qName == "rest") {
 		// CARest
 		_curRest = new CARest(CARest::restTypeFromString(attributes.value("rest-type")),

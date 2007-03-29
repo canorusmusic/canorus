@@ -60,7 +60,7 @@ public:
 	
 	void newDocument();	
 	void addSheet(CASheet *s);
-	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMusElement &roMusElement );
+	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v);
 
 	bool openDocument(QString fileName);
 	bool saveDocument(QString fileName);
