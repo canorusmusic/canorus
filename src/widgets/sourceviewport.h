@@ -1,5 +1,4 @@
-/** @file widgets/sourceviewport.h
- * 
+/*!
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
@@ -43,19 +42,19 @@ private:
 	void mousePressEvent( QMouseEvent* );
 	void setupUI();
 	
-	////////////////////////////////////////////////
-	//Widgets
-	////////////////////////////////////////////////
+	/////////////
+	// Widgets //
+	/////////////
 	QTextEdit *_textEdit;
 	QPushButton *_commit;
 	QPushButton *_revert;
 	QGridLayout *_layout;
 	
-	////////////////////////////////////////////////
-	//Properties
-	////////////////////////////////////////////////
+	////////////////
+	// Properties //
+	////////////////
 	CADocument *_document;
 	CAVoice *_voice;
 };
 
-#endif /*SOURCEVIEWPORT_H_*/
+#endif /* SOURCEVIEWPORT_H_ */
