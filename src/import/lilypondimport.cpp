@@ -12,6 +12,7 @@
 #include "import/lilypondimport.h"
 #include "core/note.h"
 #include "core/playable.h"
+#include "core/slur.h"
 
 /*!
 	Delimiters which separate various music elements in LilyPond syntax. These are new lines, tabs, blanks etc.
@@ -93,6 +94,16 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			popDepth();
 			chordCreated=false;
 		} else
+		if (curElt=="~") {
+			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
+				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement());
+				note->setTieStart(
+					new CASlur( CASlur::Tie, note->determineSlurDirection(), note->staff(), note, 0 )
+				);
+			} else {
+				addError(QString("Tie symbol must be right after the note. Tie ignored."));
+			}
+		} else
 		if (isNote(curElt)) {
 			// CANote
 			prevPitch = relativePitchFromLilyPond(curElt, prevPitch.pitch);
@@ -111,6 +122,13 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 				note = new CANote(prevLength.length, curVoice(), prevPitch.pitch, prevPitch.accs, curVoice()->lastTimeStart(), prevLength.dotted);
 			}
 			
+			// add tie
+			if ( curElt.contains("~") )
+				note->setTieStart(
+					new CASlur( CASlur::Tie, note->determineSlurDirection(), note->staff(), note, 0 )
+				);
+			
+			note->updateTies(); // close any opened ties if present
 			curVoice()->appendMusElement(note);
 		} else
 		if (isRest(curElt)) {
@@ -401,6 +419,8 @@ CALilyPondImport::CALength CALilyPondImport::playableLengthFromLilyPond(const QS
 		     i!=-1 && i<elt.size() && elt[i]=='.';
 		     i++, ret.dotted++);
 		
+		if (dStart == -1)
+			dStart = elt.indexOf(QRegExp("[\\D]"), start);
 		if (dStart == -1)
 			dStart = elt.size();
 		

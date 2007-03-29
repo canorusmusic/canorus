@@ -100,6 +100,7 @@ CAMusElementFactory::CAMusElementFactory()
 	_iNoteExtraAccs = 0;
 	_eBarlineType = CABarline::Single;
 	_eSlurType = CASlur::Tie;
+	_slurStyle = CASlur::SlurSolid;
 	
 	createMusElem();
 }
@@ -273,23 +274,31 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 bool CAMusElementFactory::configureSlur( CAStaff *staff,
                                          CANote *noteStart, CANote *noteEnd )
 {
+	bool success=false;
+	removeMusElem();
 	CASlur *slur = new CASlur( slurType(), noteStart->determineSlurDirection(), staff, noteStart, noteEnd );
 	
 	switch (slurType()) {
 		case CASlur::Tie:
 			noteStart->setTieStart( slur );
 			if (noteEnd) noteEnd->setTieEnd( slur );
+			success=true;
 			break;
 		case CASlur::Slur:
 			noteStart->setSlurStart( slur );
 			if (noteEnd) noteEnd->setSlurEnd( slur );
+			success=true;
 			break;
 		case CASlur::PhrasingSlur:
 			noteStart->setPhrasingSlurStart( slur );
 			if (noteEnd) noteEnd->setPhrasingSlurEnd( slur );
+			success=true;
 			break;
 	}
+	slur->setSlurStyle( slurStyle() );
 	mpoMusElement = slur;
+	
+	return success;
 }
 
 /*!

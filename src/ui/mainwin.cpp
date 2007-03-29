@@ -824,7 +824,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 						_musElementFactory->setMusElementType( CAMusElement::Rest );
 				}
 				
-				insertMusElementAt( coords, v, *_musElementFactory->getMusElement() );
+				insertMusElementAt( coords, v );
 				
 				if (_musElementFactory->musElementType()==CAMusElement::Rest)
 					_musElementFactory->setMusElementType( CAMusElement::Note );
@@ -1105,10 +1105,10 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 }
 
 /*!
-	This method places the already created music element (directly or via CAMusElementFactory) to the staff or
+	This method places the currently prepared music element in CAMusElementFactory to the staff or
 	voice, dependent on the music element type and the viewport coordinates.
 */
-void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMusElement &roMusElement ) {
+void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	CADrawableContext *drawableContext = v->currentContext();
 	
 	CAStaff *staff=0;
@@ -1130,7 +1130,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMu
 	if (!drawableContext)
 		return;
 	
-	switch ( roMusElement.musElementType() ) {
+	switch ( _musElementFactory->musElementType() ) {
 		case CAMusElement::Clef: {
 			if (staff)
 				success = _musElementFactory->configureClef( staff , left );
@@ -1188,7 +1188,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMu
 				
 				if (_musElementFactory->slurType()==CASlur::Tie) {
 					if ( noteStart->tieStart() ) {
-						break; // return, if the tie already exists
+						return; // return, if the tie already exists
 					} else {
 						// create a new tie
 						for (int i=0; i<noteList.count() && noteList[i]->timeStart()<=noteStart->timeEnd(); i++) {
@@ -1211,11 +1211,11 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v, CAMu
 		CACanorus::rebuildUI(document(), v->sheet());
 		v->selectMElement( _musElementFactory->getMusElement() );
 		v->setShadowNoteDotted(iPlayableDotted);
-	} else
-	  {
+	} else {
 		_musElementFactory->removeMusElem( true );
 		_musElementFactory->createMusElem(); // Factory always must have a valid element
-	  }
+		_musElementFactory->setNoteExtraAccs( 0 );
+	}
 }
 
 /*!
@@ -1498,31 +1498,33 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 }
 
 void CAMainWin::on_uiSlurType_toggled( bool checked, int buttonId ) {
-	// Read currently selected entry from tool button menu
-	CASlur::CASlurType slurType =
-		static_cast<CASlur::CASlurType>(buttonId);
+	if ( checked ) {
+		// Read currently selected entry from tool button menu
+		CASlur::CASlurType slurType =
+			static_cast<CASlur::CASlurType>(buttonId);
+			
+		_musElementFactory->setMusElementType( CAMusElement::Slur );
 		
-	_musElementFactory->setMusElementType( CAMusElement::Slur );
-	
-	// New clef type
-	_musElementFactory->setSlurType( slurType );
-	
-	if ( checked )
+		// New clef type
+		_musElementFactory->setSlurType( slurType );
+		
 		setMode( InsertMode );
+	}
 }
 
 void CAMainWin::on_uiClefType_toggled(bool checked, int buttonId) {
-	// Read currently selected entry from tool button menu
-	CAClef::CAClefType clefType =
-		static_cast<CAClef::CAClefType>(buttonId);
+	if ( checked ) {
+		// Read currently selected entry from tool button menu
+		CAClef::CAClefType clefType =
+			static_cast<CAClef::CAClefType>(buttonId);
+			
+		_musElementFactory->setMusElementType( CAMusElement::Clef );
 		
-	_musElementFactory->setMusElementType( CAMusElement::Clef );
-	
-	// New clef type
-	_musElementFactory->setClef( clefType );
-	
-	if ( checked )
+		// New clef type
+		_musElementFactory->setClef( clefType );
+		
 		setMode( InsertMode );
+	}
 }
 
 void CAMainWin::on_uiTimeSigBeats_valChanged(int beats) {

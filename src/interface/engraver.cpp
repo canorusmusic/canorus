@@ -332,7 +332,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 								tie = new CADrawableSlur(
 									static_cast<CADrawableNote*>(newElt)->note()->tieStart(), drawableContext,
 									newElt->xPos()+newElt->width(), newElt->yPos(),
-									newElt->xPos() + 20, newElt->yPos() - 10,
+									newElt->xPos() + 20, newElt->yPos() - 5,
 									newElt->xPos() + 40, newElt->yPos()								
 								);
 							} else
@@ -340,7 +340,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 								tie = new CADrawableSlur(
 									static_cast<CADrawableNote*>(newElt)->note()->tieStart(), drawableContext,
 									newElt->xPos()+newElt->width(), newElt->yPos() + newElt->height(),
-									newElt->xPos() + 20, newElt->yPos() + newElt->height() + 10,
+									newElt->xPos() + 20, newElt->yPos() + newElt->height() + 5,
 									newElt->xPos() + 40, newElt->yPos()	+ newElt->height()							
 								);
 							}

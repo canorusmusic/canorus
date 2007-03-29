@@ -35,13 +35,13 @@ void CAPlayback::run() {
 	p.setWidth(3);
 	
 	_scoreViewPort->setBorder(p);
-	_scoreViewPort->setPlaying(true);	//set the deadlock for borders
+	_scoreViewPort->setPlaying(true);	// set the deadlock for borders
 	
 	CASheet *sheet = _scoreViewPort->sheet();
 	
-	//list of all the music element lists (ie. streams) taken from all the contexts
+	// list of all the music element lists (ie. streams) taken from all the contexts
 	QList<QList<CAMusElement*>*> stream; 
-	QVector<unsigned char> message;	//midi 3-byte message sent to midi device
+	QVector<unsigned char> message;	// midi 3-byte message sent to midi device
 
 	QList<CADrawableMusElement *> oldSelection;
 	oldSelection = _scoreViewPort->selection();
@@ -50,18 +50,20 @@ void CAPlayback::run() {
 	for (int i=0; i < sheet->contextCount(); i++) {
 		if (sheet->contextAt(i)->contextType() == CAContext::Staff) {
 			CAStaff *staff = ((CAStaff*)(sheet->contextAt(i)));
-			//add all the voices lists to the common list
+			// add all the voices lists to the common list stream
 			for (int j=0; j < staff->voiceCount(); j++) {
 				stream << staff->voiceAt(j)->musElementList();
-				message << (192 + staff->voiceAt(j)->midiChannel());
+				
+				message << (192 + staff->voiceAt(j)->midiChannel()); // change program
 				message << (staff->voiceAt(j)->midiProgram());
-				_midiDevice->send(message);	//change program
-				message.clear();				
-				message << (176 + staff->voiceAt(j)->midiChannel());
+				_midiDevice->send(message);
+				message.clear();
+				
+				message << (176 + staff->voiceAt(j)->midiChannel()); // set volume
 				message << (7);
 				message << (100);
-				_midiDevice->send(message);	//set volume
-				message.clear();				
+				_midiDevice->send(message);
+				message.clear();
 			}
 			
 		}
@@ -72,7 +74,7 @@ void CAPlayback::run() {
 	int streamsIdx[streams]; for (int i=0; i<streams; i++) streamsIdx[i] = 0;
 	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
 	
-	QList<CAPlayable *> curPlaying;	//list of currently playing notes
+	QList<CANote *> curPlaying;	//list of currently playing notes
 	
 	bool done;
 	int timeStart;
@@ -92,19 +94,21 @@ void CAPlayback::run() {
 				timeStart = stream[i]->at(streamsIdx[i])->timeStart();
 		}
 		
-		CAPlayable *elt;
+		CANote *note;
 		CADrawableMusElement *drawable;
-		//note off
+		// note off
 		for (int i=0; i<curPlaying.size(); i++) {
-			if (((elt = (CAPlayable*)curPlaying[i])->timeStart() + elt->timeLength()) == timeStart) {
-				message << (128 + elt->voice()->midiChannel());
-				message << (static_cast<CANote*>(elt)->midiPitch());
+			if ( ((note = curPlaying[i])->timeStart() + note->timeLength() == timeStart) ) {
+				message << (128 + note->voice()->midiChannel()); // note off
+				message << (note->midiPitch());
 				message << (127);
-				_midiDevice->send(message);	//release note
+				if (! (note->tieStart() && note->tieStart()->noteEnd()) )
+					_midiDevice->send(message);
 				message.clear();
 				curPlaying.removeAt(i);
 				
-				_scoreViewPort->removeFromSelection(drawable = _scoreViewPort->find((CAMusElement*)elt));
+				_scoreViewPort->removeFromSelection(drawable = _scoreViewPort->find(note));
+				
 				//_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
 			    //_scoreViewPort->repaint();
 			      	
@@ -121,25 +125,27 @@ void CAPlayback::run() {
 		
 		if (done || _stop) break;
 
-		//note on
+		// note on
 		for (int i=0; i<streams; i++) {
 			while ( (stream[i]->size() > streamsIdx[i]) &&
-			        ((elt = (CAPlayable*)stream[i]->at(streamsIdx[i]))->timeStart() == timeStart)
+			        stream[i]->at(streamsIdx[i])->musElementType()==CAMusElement::Note &&
+			        ((note = static_cast<CANote*>(stream[i]->at(streamsIdx[i])))->timeStart() == timeStart)
 			      ) {
-					message << (144 + elt->voice()->midiChannel());
-					message << (static_cast<CANote*>(elt)->midiPitch());
-					message << (127);
-					if (elt->musElementType()!=CAMusElement::Rest)
-						_midiDevice->send(message);	//play note
-					message.clear();
-			      	curPlaying << elt;
-					
-					_scoreViewPort->addToSelection(drawable = _scoreViewPort->find((CAMusElement*)elt));
-					//_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
-			      	//_scoreViewPort->repaint();
-			      	
-			      	streamsIdx[i]++;
-			      }
+				message << (144 + note->voice()->midiChannel()); // note on
+				message << (note->midiPitch());
+				message << (127);
+				if ( note->musElementType()!=CAMusElement::Rest && !note->tieEnd() )
+					_midiDevice->send(message);
+				message.clear();
+				curPlaying << note;
+				
+				_scoreViewPort->addToSelection( drawable = _scoreViewPort->find( note ) );
+				
+				//_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
+				//_scoreViewPort->repaint();
+				
+				streamsIdx[i]++;
+			}
 		}
 		
 		int minLength = -1;

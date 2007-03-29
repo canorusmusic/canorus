@@ -57,6 +57,8 @@ public:
 	bool isPlayable();
 	
 protected:
+	inline void setMusElementType( CAMusElementType type ) { _musElementType = type; }
+	
 	CAMusElementType _musElementType;
 	CAContext *_context;
 	int _timeStart;

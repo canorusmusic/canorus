@@ -140,6 +140,9 @@ public:
 	inline CASlur::CASlurType slurType() { return _eSlurType; }
 	inline void setSlurType( CASlur::CASlurType type ) { _eSlurType = type; }
 	
+	inline CASlur::CASlurStyle slurStyle() { return _slurStyle; }
+	inline void setSlurStyle( CASlur::CASlurStyle style ) { _slurStyle = style; }
+	
 private:
 	CAMusElement *mpoMusElement;     // newly created music element itself
 	/////////////////////////////////
@@ -157,5 +160,6 @@ private:
 	int _iTimeSigBeat;       // Time signature beat to be inserted
 	CAClef::CAClefType _eClef; // Type of the clef to be inserted
 	CABarline::CABarlineType _eBarlineType; // Type of the barline
+	CASlur::CASlurStyle _slurStyle; // Style of the slur (solid, dotted)
 };
 #endif // MUSELEMENTFACTORY_H_

@@ -95,6 +95,9 @@ void CALilyPondExport::exportVoice(CAVoice *v) {
 					out() << playableLengthToLilyPond(note->playableLength(), note->dotted());
 				}
 				
+				if (note->tieStart())
+					out() << "~";
+				
 				lastNotePitch = note->pitch();
 				lastPlayableLength = note->playableLength();
 				lastPlayableDotted = note->dotted();
