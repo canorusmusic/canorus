@@ -1,6 +1,5 @@
-/** @file widgets/sourceviewport.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
+/*! 
+ * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -10,7 +9,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QTextStream>
-#include <iostream>	//DEBUG
+
 #include "core/canorusml.h"
 #include "widgets/sourceviewport.h"
 #include "core/document.h"
@@ -19,6 +18,21 @@
 #include "export/lilypondexport.h"
 #include "import/lilypondimport.h"
 
+/*!
+	\class CASourceViewPort
+	\brief Widget that shows the current score source in various syntax
+	
+	This widget is a viewport which shows in the main text area the syntax of the current score (or voice, staff).
+	It includes 2 buttons for committing the changes to the score and reverting any changes back from the score.
+	
+	\sa CAScoreViewPort
+*/
+
+/*!
+	Constructor for CanorusML syntax - requires the whole document.
+	
+	\todo This should be merged in the future with other formats.
+*/
 CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
  : CAViewPort(parent) {
  	_viewPortType = CAViewPort::SourceViewPort;
@@ -28,6 +42,11 @@ CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
  	setupUI();
 }
 
+/*!
+	Constructor for LilyPond syntax - requires the current voice.
+	
+	\todo This should be merged in the future with other formats.
+*/
 CASourceViewPort::CASourceViewPort(CAVoice *voice, QWidget *parent)
  : CAViewPort(parent) {
  	_viewPortType = CAViewPort::SourceViewPort;
@@ -89,6 +108,9 @@ CASourceViewPort *CASourceViewPort::clone(QWidget *parent) {
 	return v;
 }
 
+/*!
+	Generates the score source from the current score and fill the text area with it.
+*/ 
 void CASourceViewPort::rebuild() {
 	_textEdit->clear();
 	
