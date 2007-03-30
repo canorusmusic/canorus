@@ -137,7 +137,7 @@ bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 */
 bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateT, bool force) {
 	if (!eltAfter || !_musElementList.size()) {
-		_musElementList.push_front(elt);
+		_musElementList << elt;
 		return true;
 	}
 	
@@ -181,7 +181,7 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, 
 */
 bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateT, bool force) {
 	if (!eltBefore || !_musElementList.size()) {
-		_musElementList << elt;
+		_musElementList.push_front(elt);
 		return true;
 	}
 	
