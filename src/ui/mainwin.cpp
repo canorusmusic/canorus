@@ -1,5 +1,4 @@
-/** \file ui/mainwin.cpp
- * 
+/*! 
  * Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
@@ -311,7 +310,10 @@ void CAMainWin::setupCustomUi() {
 }
 
 void CAMainWin::newDocument() {
-	// clear the logical part
+	// clear GUI before clearing the data part!
+	clearUI();
+	
+	// clear the data part
 	if (CACanorus::mainWinCount(document()))
 		delete document();
 	
@@ -373,6 +375,7 @@ void CAMainWin::clearUI() {
 	_viewPortList.clear();
 	_sheetMap.clear();
 	setCurrentViewPort( 0 );
+	uiSelectMode->trigger(); // select mode
 }
 
 /*!
@@ -671,9 +674,10 @@ void CAMainWin::setMode(CAMode mode) {
 				}
 			}
 		}
-	}	//switch(mode)
+	}	// switch (mode)
 	updateToolBars();
-	currentViewPort()->setFocus();
+	if ( currentViewPort() )
+		currentViewPort()->setFocus();
 }
 
 /*!
@@ -1240,7 +1244,7 @@ void CAMainWin::playbackFinished() {
 	delete _repaintTimer;			/// \todo crashes, if deleted. -Matevz
 	CACanorus::midiDevice()->closeOutputPort();
 	
-	setMode(_mode);
+	setMode( mode() );
 }
 
 /*!
@@ -1484,7 +1488,7 @@ void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
 			uiVoiceNum->setRealValue( 1 ); // select the first voice if none selected
 		
 		_musElementFactory->setMusElementType( CAMusElement::Note );
-		setMode(InsertMode);
+		setMode( InsertMode );
 	}
 }
 
@@ -1587,7 +1591,7 @@ void CAMainWin::on_uiTimeSigBeat_valChanged(int beat) {
 
 void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 	if (checked) {
-		setMode(InsertMode);
+		setMode( InsertMode );
 		
 		// Read currently selected entry from tool button menu
 		CAFixedTimeSig type = static_cast<CAFixedTimeSig>(buttonId);
@@ -1630,13 +1634,13 @@ void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 void CAMainWin::on_uiInsertKeySig_toggled(bool checked) {
 	if (checked) {
 		_musElementFactory->setMusElementType( CAMusElement::KeySignature );
-		setMode(InsertMode);
+		setMode( InsertMode );
 	}
 }
 
 void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 	if (checked) {
-		setMode(InsertMode);
+		setMode( InsertMode );
 		_musElementFactory->setMusElementType( CAMusElement::Barline );
 		_musElementFactory->setBarlineType( static_cast<CABarline::CABarlineType>(buttonId) );
 	}
@@ -1645,7 +1649,10 @@ void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 	if (v->document()) {
 		// CanorusML document source
-		delete document();
+		
+		clearUI(); 	// clear GUI before clearing the data part!
+		if ( document() )
+			delete document();
 		
 		QXmlInputSource input;
 		input.setData(inputString);
@@ -1654,7 +1661,7 @@ void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 	} else
 	if (v->voice()) {
 		// LilyPond voice source
-		v->voice()->clear();
+		v->voice()->clear(); // clearUI is not needed, because only voice content is changed
 		
 		CALilyPondImport(inputString, v->voice());
 		CACanorus::rebuildUI(document(), v->voice()->staff()->sheet());

@@ -1,5 +1,4 @@
-/*! \file ui/mainwin.h
- * 
+/*!
  * Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 

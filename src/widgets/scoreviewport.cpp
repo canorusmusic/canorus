@@ -557,7 +557,7 @@ void CAScoreViewPort::zoomToHeight(bool animate, bool force) {
 }
 
 void CAScoreViewPort::zoomToFit(bool animate, bool force) {
-	int maxX = ((getMaxXExtended(_drawableCList) > getMaxXExtended(_drawableMList))?getMaxXExtended(_drawableCList):getMaxXExtended(_drawableMList)); 
+	int maxX = ((_drawableCList.getMaxX() > _drawableMList.getMaxX())?_drawableCList.getMaxX():_drawableMList.getMaxX()); 
 	int maxY = ((_drawableCList.getMaxY() > _drawableMList.getMaxY())?_drawableCList.getMaxY():_drawableMList.getMaxY()); 
 	
 	setWorldCoords(0, 0, maxX, maxY, animate, force);
