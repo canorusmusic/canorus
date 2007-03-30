@@ -93,6 +93,12 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			// end of the chord
 			popDepth();
 			chordCreated=false;
+			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
+				prevPitch.pitch = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0)->pitch();
+				prevPitch.accs = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0)->accidentals();
+			} else {
+				addError(QString("Chord should be finished with a note."));
+			}
 		} else
 		if (curElt=="~") {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
@@ -101,7 +107,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 					new CASlur( CASlur::Tie, note->determineSlurDirection(), note->staff(), note, 0 )
 				);
 			} else {
-				addError(QString("Tie symbol must be right after the note. Tie ignored."));
+				addError(QString("Tie symbol must be right after the note and not %1. Tie ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
 			}
 		} else
 		if (isNote(curElt)) {
