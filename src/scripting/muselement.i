@@ -40,15 +40,12 @@ class CAMusElement {
 		enum CAMusElementType {
 			Undefined = 0,
 			Note,
-			NoteBracket,
 			Rest,
 			Barline,
 			Clef,
 			TimeSignature,
 			KeySignature,
 			Slur,
-			Tie,
-			PhrazingSlur,
 			ExpressionMarking,
 			VolumeSign,
 			Text,
@@ -97,5 +94,8 @@ class CAMusElement {
 		        
 		const QString name();
 		virtual int compare(CAMusElement *elt)=0;
+		
+	static const QString musElementTypeToString(CAMusElementType);
+	static CAMusElementType musElementTypeFromString(const QString);
 };
 

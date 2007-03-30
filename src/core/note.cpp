@@ -185,11 +185,11 @@ QList<CANote*> CANote::chord() {
 	
 	while (idx>=0 &&
 	       _voice->musElementAt(idx)->musElementType()==CAMusElement::Note &&
-	       _voice->musElementAt(idx)->timeStart()==_timeStart)
+	       _voice->musElementAt(idx)->timeStart()==timeStart())
 		idx--;
 	
-	for (idx+=1;
-	     (idx<_voice->musElementCount()) && (_voice->musElementAt(idx)->musElementType()==CAMusElement::Note) && (_voice->musElementAt(idx)->timeStart()==_timeStart);
+	for (idx++;
+	     (idx<_voice->musElementCount()) && (_voice->musElementAt(idx)->musElementType()==CAMusElement::Note) && (_voice->musElementAt(idx)->timeStart()==timeStart());
 	     idx++)
 		list << (CANote*)_voice->musElementAt(idx);
 	

@@ -639,7 +639,7 @@ void CAMainWin::setMode(CAMode mode) {
 					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(false);
 					statusBar()->showMessage("");
 					_musElementFactory->setMusElementType( CAMusElement::Undefined );
-					((CAScoreViewPort*)_viewPortList[i])->repaint();
+					_viewPortList[i]->repaint();
 				}
 			}
 			break;
@@ -649,8 +649,8 @@ void CAMainWin::setMode(CAMode mode) {
 			p.setColor(Qt::blue);
 			p.setWidth(3);
 			
-			if (_musElementFactory->musElementType() == CAMusElement::Note)
-				((CAScoreViewPort*)_currentViewPort)->setShadowNoteVisible(true);
+			if ( _musElementFactory->musElementType() == CAMusElement::Note && currentScoreViewPort() )
+				currentScoreViewPort()->setShadowNoteVisible(true);
 
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
@@ -1661,12 +1661,14 @@ void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 	} else
 	if (v->voice()) {
 		// LilyPond voice source
+		
 		v->voice()->clear(); // clearUI is not needed, because only voice content is changed
 		
 		CALilyPondImport(inputString, v->voice());
 		CACanorus::rebuildUI(document(), v->voice()->staff()->sheet());
 	}
 	
+	setCurrentViewPort( v );
 }
 
 void CAMainWin::on_uiAboutQt_triggered()

@@ -19,15 +19,12 @@ public:
 	enum CAMusElementType {
 		Undefined = 0,
 		Note,
-		NoteBracket,
 		Rest,
 		Barline,
 		Clef,
 		TimeSignature,
 		KeySignature,
 		Slur,
-		Tie,
-		PhrazingSlur,
 		ExpressionMarking,
 		VolumeSign,
 		Text,
@@ -55,6 +52,9 @@ public:
 	inline void setName(const QString name) { _name = name; }		
 	
 	bool isPlayable();
+	
+	static const QString musElementTypeToString(CAMusElementType);
+	static CAMusElementType musElementTypeFromString(const QString);
 	
 protected:
 	inline void setMusElementType( CAMusElementType type ) { _musElementType = type; }

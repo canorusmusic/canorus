@@ -63,6 +63,48 @@ bool CAMusElement::isPlayable()
 }
 
 /*!
+	Converts a music element \a type to QString.
+	
+	\sa CAMusElementType, musElementTypeFromString()
+*/
+const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementType type) {
+	switch ( type ) {
+		case (Undefined): return "undefined"; break;
+		case (Note): return "note"; break;
+		case (Rest): return "rest"; break;
+		case (Barline): return "barline"; break;
+		case (Clef): return "clef"; break;
+		case (TimeSignature): return "time-signature"; break;
+		case (KeySignature): return "key-signature"; break;
+		case (Slur): return "slur"; break;
+		case (ExpressionMarking): return "expression-marking"; break;
+		case (VolumeSign): return "volume-sign"; break;
+		case (Text): return "text"; break;
+		case (FunctionMarking): return "function-marking"; break;
+	}
+}
+
+/*!
+	Converts QString \a type to music element type.
+	
+	\sa CAMusElementType, musElementTypeToString()
+*/
+CAMusElement::CAMusElementType CAMusElement::musElementTypeFromString(const QString type) {
+	if ( type=="undefined" ) return Undefined; else
+	if ( type=="note" ) return Note; else
+	if ( type=="rest" ) return Rest; else
+	if ( type=="barline" ) return Barline; else
+	if ( type=="clef" ) return Clef; else
+	if ( type=="time-signature" ) return TimeSignature; else
+	if ( type=="key-signature" ) return KeySignature; else
+	if ( type=="slur" ) return Slur; else
+	if ( type=="expression-marking" ) return ExpressionMarking; else
+	if ( type=="volume-sign" ) return VolumeSign; else
+	if ( type=="text" ) return Text; else
+	if ( type=="function-marking" ) return FunctionMarking;
+}
+
+/*!
 	\enum CAMusElement::CAMusElementType
 	
 	Includes different types for describing the CAMusElement:

@@ -67,21 +67,22 @@ void CAVoice::clear() {
 }
 
 /*!
-	Inserts the music element \a elt before the first element which startTime is equal
-	or greater to the given \a elt one. Updates start times for elements after it, if
+	Inserts the music element \a elt after the last element which startTime is lesser
+	or equal to the given \a elt one. Updates start times for elements after it, if
 	\a updateT is set. This is false when adding a note to a chord; otherwise true.
+	If such an element doesn't exist, appends a music element.
 	
-	\warning If you're inserting signs like barlines, clefs, time signatures and other
-	non-playable signs use CAStaff::insertSign(), because the mentioned signs MUST be
-	present in *all* voices. Use manually this method only if you know what you're
-	doing.
+	\warning If you're inserting shared signs like barlines, clefs, time signatures and other
+	non-playable signs use this method indirectly by calling CAStaff::insertSign(), because
+	the mentioned signs MUST be present in *all* voices. Use manually this method only if you
+	know what you're doing or you're inserting playable non-shared elements.
 	
 	\sa insertMusElementBefore(), insertMusElementAfter()
 */
 void CAVoice::insertMusElement(CAMusElement *elt, bool updateT) {
 	int i;
 	for (i=0;
-	     (i < _musElementList.size()) && (_musElementList[i]->timeEnd() <= elt->timeStart());
+	     (i < _musElementList.size()) && (_musElementList[i]->timeStart() <= elt->timeStart());
 	     i++);
 	
 	_musElementList.insert(i, elt);
@@ -93,12 +94,9 @@ void CAVoice::insertMusElement(CAMusElement *elt, bool updateT) {
 /*!
 	Adds a \a note to an already existing \a referenceNote chord or a single note and
 	creates a chord out of it.
-	Notes in a chord always needs to be sorted by the pitch falling.
+	Notes in a chord always needs to be sorted by the pitch rising.
 	Chord in Canorus isn't its own structure but simply a list of notes sharing the
 	same start time.
-	
-	\todo Might be better for pitches to be sorted bottom-up. The chord is read that
-	way by a human. -Matevz
 	
 	Returns true, if a referenceNote was found and a note was added; otherwise false.
 	
@@ -114,7 +112,7 @@ bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 	idx = _musElementList.indexOf(chord.first());
 	
 	int i;
-	for (i=0; i<chord.size() && chord[i]->pitch() > note->pitch(); i++);
+	for (i=0; i<chord.size() && chord[i]->pitch() < note->pitch(); i++);
 	
 	_musElementList.insert(idx+i, note);
 	
@@ -127,10 +125,10 @@ bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 	\a updateTimes is true. If \a force is set, it finds the nearest element with
 	larger start time of the given element and inserts the given element before it.
 	
-	\warning If you're inserting signs like barlines, clefs, time signatures and other
-	non-playable signs use CAStaff::insertSign(), because the mentioned signs MUST be
-	present in *all* voices. Use manually this method only if you know what you're
-	doing.
+	\warning If you're inserting shared signs like barlines, clefs, time signatures and other
+	non-playable signs use this method indirectly by calling CAStaff::insertSign(), because
+	the mentioned signs MUST be present in *all* voices. Use manually this method only if you
+	know what you're doing or you're inserting playable non-shared elements.
 	
 	Returns true, if \a eltAfter was found and the elt was inserted/appended; otherwise
 	false.
@@ -171,10 +169,10 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, 
 	\a updateTimes is true. If \a force is set, it finds the nearest element with
 	smaller start time of the given element and inserts the given element after it.
 	
-	\warning If you're inserting signs like barlines, clefs, time signatures and other
-	non-playable signs use CAStaff::insertSign(), because the mentioned signs MUST be
-	present in *all* voices. Use manually this method only if you know what you're
-	doing.
+	\warning If you're inserting shared signs like barlines, clefs, time signatures and other
+	non-playable signs use this method indirectly by calling CAStaff::insertSign(), because
+	the mentioned signs MUST be present in *all* voices. Use manually this method only if you
+	know what you're doing or you're inserting playable non-shared elements.
 	
 	Returns true, if \a eltBefore was found and the elt was inserted/appended;
 	otherwise false.
@@ -465,7 +463,7 @@ QList<CAPlayable*> CAVoice::getChord(int time) {
 	Returns true, if the element was successfully added; false otherwise.
 */
 bool CAVoice::appendMusElement(CAMusElement *elt) {
-	return insertMusElementAfter(elt, 0, false, false);
+	return insertMusElementBefore(elt, 0, false, false);
 }
 
 /*!
@@ -474,10 +472,7 @@ bool CAVoice::appendMusElement(CAMusElement *elt) {
 	Returns true, if the element was successfully added; false otherwise.
 */
 bool CAVoice::prependMusElement(CAMusElement *elt) {
-	if (_musElementList.size())
-		return insertMusElementBefore(elt, _musElementList.front(), true, false);
-	else
-		return appendMusElement(elt);
+	return insertMusElementAfter(elt, 0, true, false);
 }
 
 /*!

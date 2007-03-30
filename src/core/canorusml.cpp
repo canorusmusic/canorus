@@ -427,8 +427,8 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		if (!sign) {
-			// the element doesn't exist yet - add it
-			_curVoice->staff()->insertSignAfter(_curClef, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
+			// the element doesn't exist yet - add it to all the voices
+			_curVoice->staff()->insertSign( _curClef );
 		} else {
 			//the element was found, insert only a reference to the current voice
 			_curVoice->appendMusElement(sign);
@@ -452,8 +452,8 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		if (!sign) {
-			// the element doesn't exist yet - add it
-			_curVoice->staff()->insertSignAfter(_curKeySig, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
+			// the element doesn't exist yet - add it to all the voices
+			_curVoice->staff()->insertSign( _curKeySig );
 		} else {
 			// the element was found, insert only a reference to the current voice
 			_curVoice->appendMusElement(sign);
@@ -477,8 +477,8 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		if (!sign) {
-			// the element doesn't exist yet - add it
-			_curVoice->staff()->insertSignAfter(_curTimeSig, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
+			// the element doesn't exist yet - add it to all the voices
+			_curVoice->staff()->insertSign( _curTimeSig );
 		} else {
 			// the element was found, insert only a reference to the current voice
 			_curVoice->appendMusElement(sign);
@@ -502,8 +502,8 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 		
 		if (!sign) {
-			// the element doesn't exist yet - add it
-			_curVoice->staff()->insertSignAfter(_curBarline, _curVoice->musElementCount()?_curVoice->lastMusElement():0, true);
+			// the element doesn't exist yet - add it to all the voices
+			_curVoice->staff()->insertSign( _curBarline );
 		} else {
 			// the element was found, insert only a reference to the current voice
 			_curVoice->appendMusElement(sign);
@@ -511,11 +511,11 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 	} else if (qName == "note") {
 		// CANote
-		_curVoice->appendMusElement(_curNote);
+		_curVoice->appendMusElement( _curNote );
 		_curNote = 0;
 	} else if (qName == "rest") {
 		// CARest
-		_curVoice->appendMusElement(_curRest);
+		_curVoice->appendMusElement( _curRest );
 		_curRest = 0;
 	}
 	
