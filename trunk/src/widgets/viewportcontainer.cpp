@@ -128,10 +128,9 @@ CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
 		if ( s == this && s->count()==1 ) // don't remove the last viewport from the top splitter
 			return 0;
 		else if ( s != this && s->count()==2 ) { // remove the splitter as well
-			int i;
-			for ( i=0; s->widget(i)==v; i++ ); // find the viewport which should be moved to its parent
-			s->widget(i)->setParent( static_cast<QWidget*>(s->parent()) );
-			_viewPortMap[static_cast<CAViewPort*>(s->widget(i))] = static_cast<QSplitter*>(s->parent());
+			CAViewPort* other = static_cast<CAViewPort*>(s->widget( 1 - s->indexOf( v ) )); // Find the other viewport
+			other->setParent( s->parentWidget() );
+			_viewPortMap[other] = static_cast<QSplitter*>(s->parent());
 			
 			delete s; // delete the splitter and the viewport
 			removeViewPort(v);
