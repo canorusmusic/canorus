@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2310"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   width="16"
+   height="16"
+   version="1.0"
+   sodipodi:docbase="/home/matevz/canorus/artwork/icons/non-scalable"
+   sodipodi:docname="lilypond.ico"
+   sodipodi:modified="true">
+  <metadata
+     id="metadata2315">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs2313" />
+  <sodipodi:namedview
+     inkscape:window-height="591"
+     inkscape:window-width="827"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="4.1763494"
+     inkscape:cx="20.409532"
+     inkscape:cy="0.85955693"
+     inkscape:window-x="224"
+     inkscape:window-y="245"
+     inkscape:current-layer="svg2310" />
+  <image
+     xlink:href="lilypond.ico"
+     sodipodi:absref="/home/matevz/canorus/artwork/icons/non-scalable/lilypond.ico"
+     width="14.648813"
+     height="14.648813"
+     id="image2317"
+     x="1.0118325"
+     y="0.67497063" />
+  <text
+     xml:space="preserve"
+     style="font-size:18.70645523px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Courier New"
+     x="-1.2893903"
+     y="13.596971"
+     id="text2319"><tspan
+       sodipodi:role="line"
+       id="tspan2321"
+       x="-1.2893903"
+       y="13.596971">\</tspan></text>
+</svg>
