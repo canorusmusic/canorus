@@ -29,7 +29,7 @@ CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char a
 	_musElementType = CAMusElement::Note;
 	_forceAccidentals = false;
 	_accs = accs;
-	_stemDirection = StemPrefered;
+	_stemDirection = StemPreferred;
 	
 	_pitch = pitch;
 	_midiPitch = CANote::pitchToMidiPitch(pitch, _accs);
@@ -68,8 +68,8 @@ CANote::~CANote() {
 			Always up.
 		- StemDown
 			Always down.
-		- StemPrefered
-			Use the voice's prefered direction.
+		- StemPreferred
+			Use the voice's preferred direction.
 */
 
 CANote *CANote::clone() {
@@ -129,7 +129,6 @@ void CANote::setPitch(int pitch) {
 	
 	calculateNotePosition();
 	updateTies();
-	updateSlurDirections();
 }
 
 /*!
@@ -216,20 +215,6 @@ int CANote::compare(CAMusElement *elt) {
 */
 void CANote::setStemDirection( CAStemDirection dir ) {
 	_stemDirection = dir;
-	updateSlurDirections();
-}
-
-/*!
-	Looks at the stem direction and changes the slur direction if needed.
-*/
-void CANote::updateSlurDirections() {
-	CASlur::CASlurDirection dir = determineSlurDirection();
-	if (tieStart())
-		tieStart()->setSlurDirection( dir );
-	if (slurStart())
-		slurStart()->setSlurDirection( dir );
-	if (phrasingSlurStart())
-		phrasingSlurStart()->setSlurDirection( dir );
 }
 
 /*!
@@ -295,8 +280,8 @@ const QString CANote::stemDirectionToString(CANote::CAStemDirection dir) {
 			return "stem-down";
 		case CANote::StemNeutral:
 			return "stem-neutral";
-		case CANote::StemPrefered:
-			return "stem-prefered";
+		case CANote::StemPreferred:
+			return "stem-preferred";
 		default:
 			return "";
 	}
@@ -318,10 +303,10 @@ CANote::CAStemDirection CANote::stemDirectionFromString(const QString dir) {
 	if (dir=="stem-neutral") {
 		return CANote::StemNeutral;
 	} else
-	if (dir=="stem-prefered") {
-		return CANote::StemPrefered;
+	if (dir=="stem-preferred") {
+		return CANote::StemPreferred;
 	} else
-		return CANote::StemPrefered;
+		return CANote::StemPreferred;
 }
 
 /*!
@@ -367,7 +352,7 @@ CANote::CAStemDirection CANote::determineStemDirection() {
 				return StemDown;
 			break;
 		
-		case StemPrefered:
+		case StemPreferred:
 			if (!voice()) { return StemUp; }
 			
 			switch ( voice()->stemDirection() ) {
@@ -390,12 +375,12 @@ CANote::CAStemDirection CANote::determineStemDirection() {
 /*!
 	Determines the right slur direction of the note.
 	Slur should be on the other side of the stem, if the stem direction is neutral
-	or on the same side if the stem direction is set strictly to up and down (or prefered).
+	or on the same side if the stem direction is set strictly to up and down (or preferred).
 */
 CASlur::CASlurDirection CANote::determineSlurDirection() {
 	CAStemDirection dir = determineStemDirection();
 	
-	if ( stemDirection()==StemNeutral || (stemDirection()==StemPrefered && voice() && voice()->stemDirection()==StemNeutral) ) {
+	if ( stemDirection()==StemNeutral || (stemDirection()==StemPreferred && voice() && voice()->stemDirection()==StemNeutral) ) {
 		if (dir==StemUp) return CASlur::SlurDown;
 		else return CASlur::SlurUp;
 	} else {

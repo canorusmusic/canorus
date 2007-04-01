@@ -1,4 +1,4 @@
-/* 
+/*!
  * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
@@ -8,6 +8,8 @@
 #ifndef SLUR_H_
 #define SLUR_H_
 
+#include <QString>
+
 #include "core/muselement.h"
 
 class CANote;
@@ -16,18 +18,21 @@ class CASlur : public CAMusElement {
 public:
 	enum CASlurDirection {
 		SlurUp,
-		SlurDown
+		SlurDown,
+		SlurNeutral,
+		SlurPreferred
 	};
 	
 	enum CASlurStyle {
+		Undefined = 0,
 		SlurSolid,
 		SlurDotted
 	};
 	
 	enum CASlurType {
-		Tie,
-		Slur,
-		PhrasingSlur
+		TieType,
+		SlurType,
+		PhrasingSlurType
 	};
 	
 	CASlur( CASlurType, CASlurDirection, CAContext *c, CANote *noteStart, CANote *noteEnd=0 );
@@ -46,6 +51,12 @@ public:
 	inline void setNoteStart( CANote *noteStart ) { _noteStart = noteStart; }
 	inline void setNoteEnd( CANote *noteEnd ) { _noteEnd = noteEnd; }
 	inline void setSlurStyle( CASlurStyle slurStyle ) { _slurStyle = slurStyle; }
+	
+	static const QString slurStyleToString( CASlurStyle style );
+	static CASlurStyle slurStyleFromString( const QString style );
+	
+	static const QString slurDirectionToString( CASlurDirection dir );
+	static CASlurDirection slurDirectionFromString( const QString dir );	
 	
 private:
 	inline void setSlurType( CASlurType type ) { _slurType = type; }

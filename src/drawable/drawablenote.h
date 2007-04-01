@@ -43,7 +43,7 @@ class CADrawableNote : public CADrawableMusElement {
 		bool _drawLedgerLines;	///Are the ledger lines drawn or not. True when ledger lines needed, False when the note is inside the staff 
 		bool _shadowNote;	///Is the current note shadow note?
 		CADrawableAccidental *_drawableAcc;
-		CANote::CAStemDirection _stemDirection;	/// This value is StemUp or StemDown only, no StemPrefered or StemNeutral present. We generate this on CADrawableNote constructor.
+		CANote::CAStemDirection _stemDirection;	/// This value is StemUp or StemDown only, no StemPreferred or StemNeutral present. We generate this on CADrawableNote constructor.
 		int _noteHeadWidth;
 		static const int HUNDREDTWENTYEIGHTH_STEM_LENGTH = 36;
 		static const int SIXTYFOURTH_STEM_LENGTH = 43;

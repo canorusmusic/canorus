@@ -1,4 +1,4 @@
-/* 
+/*!
  * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  * 
@@ -31,6 +31,10 @@
 			Slur high point above the left and right points.
 		- SlurDown
 			Slur high point below the left and right points.
+		- SlurNeutral
+			Slur on the oposite side of the stem.
+		- SlurPreferred
+			Slur direction determined by CANote::determineSlurDirection() (default)
 */
 
 /*!
@@ -53,15 +57,15 @@ CASlur::CASlur( CASlurType type, CASlurDirection dir, CAContext *c, CANote *note
 
 CASlur::~CASlur() {
 	switch (slurType()) {
-		case Tie:
+		case TieType:
 			if ( noteStart() ) noteStart()->setTieStart( 0 );
 			if ( noteEnd() ) noteEnd()->setTieEnd( 0 );
 			break;
-		case Slur:
+		case SlurType:
 			if ( noteStart() ) noteStart()->setSlurStart( 0 );
 			if ( noteEnd() ) noteEnd()->setSlurEnd( 0 );
 			break;
-		case PhrasingSlur:
+		case PhrasingSlurType:
 			if ( noteStart() ) noteStart()->setPhrasingSlurStart( 0 );
 			if ( noteEnd() ) noteEnd()->setPhrasingSlurEnd( 0 );
 			break;
@@ -79,4 +83,58 @@ int CASlur::compare( CAMusElement *elt ) {
 	if ( slurDirection() != static_cast<CASlur*>(elt)->slurDirection() ) diffs++;
 	
 	return diffs;
+}
+
+const QString CASlur::slurStyleToString( CASlur::CASlurStyle style ) {
+	switch (style) {
+		case SlurSolid:
+			return "slur-solid";
+			break;
+		case SlurDotted:
+			return "slur-dotted";
+			break;
+	}
+	
+	return "";
+}
+
+CASlur::CASlurStyle CASlur::slurStyleFromString( const QString style ) {
+	if ( style=="slur-solid" )
+		return SlurSolid;
+	else if ( style == "slur-dotted" )
+		return SlurDotted;
+	
+	return Undefined;
+}
+
+const QString CASlur::slurDirectionToString( CASlur::CASlurDirection dir ) {
+	switch (dir) {
+		case SlurUp:
+			return "slur-up";
+			break;
+		case SlurDown:
+			return "slur-down";
+			break;
+		case SlurNeutral:
+			return "slur-neutral";
+			break;
+		case SlurPreferred:
+			return "slur-preferred";
+			break;
+	}
+	
+	return "";
+}
+
+CASlur::CASlurDirection CASlur::slurDirectionFromString( const QString dir ) {
+	if ( dir=="slur-up" )
+		return SlurUp;
+	else if ( dir == "slur-down" )
+		return SlurDown;
+	else if ( dir == "slur-neutral" )
+		return SlurNeutral;
+	else if ( dir == "slur-pereferred" )
+		return SlurPreferred;
+	
+	return SlurPreferred;
 }

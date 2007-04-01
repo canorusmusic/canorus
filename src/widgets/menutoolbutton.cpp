@@ -70,7 +70,6 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	
 	setMenu( _menu = new QMenu(this) );
 	setPopupMode( QToolButton::MenuButtonPopup );
-	setToolTip( title );
 	
 	connect( _menu, SIGNAL(aboutToShow()), this, SLOT(showButtons()) );
 	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 

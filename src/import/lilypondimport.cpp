@@ -104,7 +104,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
 				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement());
 				note->setTieStart(
-					new CASlur( CASlur::Tie, note->determineSlurDirection(), note->staff(), note, 0 )
+					new CASlur( CASlur::TieType, CASlur::SlurPreferred, note->staff(), note, 0 )
 				);
 			} else {
 				addError(QString("Tie symbol must be right after the note and not %1. Tie ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
@@ -131,7 +131,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			// add tie
 			if ( curElt.contains("~") )
 				note->setTieStart(
-					new CASlur( CASlur::Tie, note->determineSlurDirection(), note->staff(), note, 0 )
+					new CASlur( CASlur::TieType, CASlur::SlurPreferred, note->staff(), note, 0 )
 				);
 			
 			note->updateTies(); // close any opened ties if present

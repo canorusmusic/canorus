@@ -327,6 +327,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						// Create Slur
 						if ( static_cast<CADrawableNote*>(newElt)->note()->tieStart() ) {
 							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->tieStart()->slurDirection();
+							if ( dir==CASlur::SlurPreferred ) dir = static_cast<CADrawableNote*>(newElt)->note()->determineSlurDirection();
 							CADrawableSlur *tie=0;
 							if (dir==CASlur::SlurUp) {
 								tie = new CADrawableSlur(

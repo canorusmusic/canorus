@@ -13,82 +13,82 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="160"/>
+        <location filename="../ui/mainwin.cpp" line="166"/>
         <source>Select Clef</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="168"/>
+        <location filename="../ui/mainwin.cpp" line="174"/>
         <source>Select Time Signature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="179"/>
+        <location filename="../ui/mainwin.cpp" line="185"/>
         <source>Select Barline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="201"/>
+        <location filename="../ui/mainwin.cpp" line="207"/>
         <source>Context ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="213"/>
+        <location filename="../ui/mainwin.cpp" line="219"/>
         <source>Voice ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="222"/>
+        <location filename="../ui/mainwin.cpp" line="228"/>
         <source>Select Voice Stem Direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="232"/>
+        <location filename="../ui/mainwin.cpp" line="238"/>
         <source>Playable ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="233"/>
+        <location filename="../ui/mainwin.cpp" line="239"/>
         <source>Select Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="247"/>
+        <location filename="../ui/mainwin.cpp" line="253"/>
         <source>Select Note Stem Direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="796"/>
+        <location filename="../ui/mainwin.cpp" line="810"/>
         <source>Function marking context %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1260"/>
+        <location filename="../ui/mainwin.cpp" line="1313"/>
         <source>Choose a file to open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1286"/>
+        <location filename="../ui/mainwin.cpp" line="1339"/>
         <source>Canorus document (*.xml)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1284"/>
+        <location filename="../ui/mainwin.cpp" line="1337"/>
         <source>Choose a file to save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1600"/>
+        <location filename="../ui/mainwin.cpp" line="1677"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1605"/>
+        <location filename="../ui/mainwin.cpp" line="1682"/>
         <source>About Canorus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1612"/>
+        <location filename="../ui/mainwin.cpp" line="1689"/>
         <source>Canorus - The next generation music score editor
 
 Version %1
@@ -102,110 +102,265 @@ Homepage: http://www.canorus.org</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="792"/>
+        <location filename="../ui/mainwin.cpp" line="806"/>
         <source>Staff%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="793"/>
+        <location filename="../ui/mainwin.cpp" line="807"/>
         <source>Voice%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="537"/>
+        <location filename="../ui/mainwin.cpp" line="548"/>
         <source>Sheet%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="592"/>
+        <location filename="../ui/mainwin.cpp" line="604"/>
         <source>Canorus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="570"/>
+        <location filename="../ui/mainwin.cpp" line="582"/>
         <source>Are you sure do you want to delete voice
 %1 and all its notes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="593"/>
+        <location filename="../ui/mainwin.cpp" line="605"/>
         <source>Are you sure do you want to delete context
 %1 and all its contents?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="204"/>
+        <location filename="../ui/mainwin.cpp" line="210"/>
         <source>Context name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="207"/>
+        <location filename="../ui/mainwin.cpp" line="213"/>
         <source>Number of lines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="216"/>
+        <location filename="../ui/mainwin.cpp" line="222"/>
         <source>Current Voice number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="219"/>
+        <location filename="../ui/mainwin.cpp" line="225"/>
         <source>Voice name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="224"/>
+        <location filename="../ui/mainwin.cpp" line="230"/>
         <source>Voice stem direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="235"/>
+        <location filename="../ui/mainwin.cpp" line="241"/>
         <source>Playable length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="249"/>
+        <location filename="../ui/mainwin.cpp" line="255"/>
         <source>Note stem direction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="193"/>
+        <location filename="../ui/mainwin.cpp" line="199"/>
         <source>Sheet ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="564"/>
+        <location filename="../ui/mainwin.cpp" line="576"/>
         <source>Cannot delete the last voice in the staff!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="259"/>
+        <location filename="../ui/mainwin.cpp" line="265"/>
         <source>Key Signature ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="261"/>
+        <location filename="../ui/mainwin.cpp" line="267"/>
         <source>Number of Accidentals</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="267"/>
+        <location filename="../ui/mainwin.cpp" line="273"/>
         <source>Time Signature ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="271"/>
+        <location filename="../ui/mainwin.cpp" line="277"/>
         <source>Number of beats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="277"/>
+        <location filename="../ui/mainwin.cpp" line="283"/>
         <source>Beat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="69"/>
         <source>LilyPond document (*.ly)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="160"/>
+        <source>Select Slur Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="167"/>
+        <source>Treble Clef</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="168"/>
+        <source>Bass Clef</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="169"/>
+        <source>Alto Clef</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="161"/>
+        <source>Tie</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="162"/>
+        <source>Slur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="163"/>
+        <source>Phrasing Slur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="186"/>
+        <source>Single Barline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="187"/>
+        <source>Double Barline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="188"/>
+        <source>End Barline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="189"/>
+        <source>Dotted Barline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="190"/>
+        <source>Repeat Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="191"/>
+        <source>Repeat Closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="242"/>
+        <source>Breve Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="243"/>
+        <source>Whole Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="244"/>
+        <source>Half Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="245"/>
+        <source>Quarter Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="246"/>
+        <source>Eighth Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="247"/>
+        <source>Sixteenth Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="248"/>
+        <source>ThirtySecond Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="249"/>
+        <source>SixtyFourth Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="231"/>
+        <source>Voice Stems Neutral</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="232"/>
+        <source>Voice Stems Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="233"/>
+        <source>Voice Stems Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="256"/>
+        <source>Note Stem Neutral</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="257"/>
+        <source>Note Stem Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="258"/>
+        <source>Note Stem Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="259"/>
+        <source>Note Stem Preferred</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="192"/>
+        <source>Repeat Closed-Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="153"/>
+        <source>New staff</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="154"/>
+        <source>New function marking context</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -411,27 +566,27 @@ Homepage: http://www.canorus.org</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../import/lilypondimport.cpp" line="48"/>
+        <location filename="../import/lilypondimport.cpp" line="49"/>
         <source>Import error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../import/lilypondimport.cpp" line="56"/>
+        <location filename="../import/lilypondimport.cpp" line="57"/>
         <source>&lt;i&gt;Fatal error, line %1, char %2:&lt;/i&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../core/canorusml.cpp" line="286"/>
+        <location filename="../core/canorusml.cpp" line="292"/>
         <source>Staff%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../core/canorusml.cpp" line="271"/>
+        <location filename="../core/canorusml.cpp" line="277"/>
         <source>Sheet%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../core/canorusml.cpp" line="303"/>
+        <location filename="../core/canorusml.cpp" line="309"/>
         <source>Voice%1</source>
         <translation type="unfinished"></translation>
     </message>
