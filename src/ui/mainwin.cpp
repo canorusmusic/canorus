@@ -87,9 +87,18 @@ const QString CAMainWin::LILYPOND_FILTER = tr("LilyPond document (*.ly)");
 
 // Constructor
 CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
+	// Locate resources (images, icons)
+	QString currentPath = QDir::currentPath();
+	
+	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
+	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
+		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
+		
+	QDir::setCurrent( resourcesLocations[0] ); /// \todo Button and menu icons by default look at the current working directory as their resource path only. QResource::addSearchPath() doesn't work for external icons. Any other ideas? -Matevz
 	// Initialize widgets
 	setupUi( this );
 	setupCustomUi();
+	QDir::setCurrent( currentPath );
 	
 	// Initialize import/export dialogs
 	uiExportDialog = new QFileDialog(this);

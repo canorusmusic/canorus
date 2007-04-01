@@ -11,7 +11,7 @@
 
 #include "core/canorus.h"
 
-#include <QFile>
+#include <QFileInfo>
 #include <QDir>
 #include <QCoreApplication>
 #include <QSettings>
@@ -46,24 +46,24 @@ QList<QString> CACanorus::locateResource(const QString fileName) {
 	
 	// Try absolute path
 	curPath = fileName;
-	if (QFile(curPath).exists())
-		paths << curPath;
+	if (QFileInfo(curPath).exists())
+		paths << QFileInfo(curPath).absoluteFilePath();
 	
 	// Try current working directory
 	curPath = QDir::currentPath() + "/" + fileName;
-	if (QFile(curPath).exists())
-		paths << curPath;
+	if (QFileInfo(curPath).exists())
+		paths << QFileInfo(curPath).absoluteFilePath();
 	
 	// Try application exe directory
 	curPath = QCoreApplication::applicationDirPath() + "/" + fileName;
-	if (QFile(curPath).exists())
-		paths << curPath;
+	if (QFileInfo(curPath).exists())
+		paths << QFileInfo(curPath).absoluteFilePath();
 	
 #ifdef DEFAULT_DATA_DIR
 	// Try compiler defined DEFAULT_DATA_DIR constant (useful for Linux OSes)
 	curPath = QString(DEFAULT_DATA_DIR) + "/" + fileName;
-	if (QFile(curPath).exists())
-		paths << curPath;
+	if (QFileInfo(curPath).exists())
+		paths << QFileInfo(curPath).absoluteFilePath();
 	
 #endif
 	
