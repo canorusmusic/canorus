@@ -151,15 +151,17 @@ void CACanorusML::writeVoice(QDomElement& dVoice, CAVoice* voice) {
 				dNote.setAttribute("playable-length", CAPlayable::playableLengthToString(note->playableLength()));
 				dNote.setAttribute("pitch", note->pitch());
 				dNote.setAttribute("accs", note->accidentals());
-				if (note->stemDirection()!=CANote::StemPrefered)
+				if (note->stemDirection()!=CANote::StemPreferred)
 					dNote.setAttribute("stem-direction", CANote::stemDirectionToString(note->stemDirection()));
 				dNote.setAttribute("time-start", note->timeStart());
 				dNote.setAttribute("time-length", note->timeLength());
 				dNote.setAttribute("dotted", note->dotted());
-				if ( note->tieStart() )
-					dNote.setAttribute("tie-start", note->tieStart()?true:false);
-				if ( note->tieEnd() )
-					dNote.setAttribute("tie-end", note->tieEnd()?true:false);
+				
+				if ( note->tieStart() ) {
+					QDomElement dTie = dDoc.createElement("tie"); dNote.appendChild( dTie );
+					dTie.setAttribute("slur-style", CASlur::slurStyleToString( note->tieStart()->slurStyle() ));
+					dTie.setAttribute("slur-direction", CASlur::slurDirectionToString( note->tieStart()->slurDirection() ));
+				}
 				break;
 			}
 			case CAMusElement::Rest: {
@@ -357,10 +359,14 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		                     );
 		if (!attributes.value("stem-direction").isEmpty())
 			_curNote->setStemDirection(CANote::stemDirectionFromString(attributes.value("stem-direction")));
-		if (!attributes.value("tie-start").isEmpty())
-			_curNote->setTieStart( new CASlur( CASlur::Tie, _curNote->determineSlurDirection(), _curNote->staff(), _curNote, 0 ) );
-		if (!attributes.value("tie-end").isEmpty())
-			_curNote->updateTies();
+		
+	} else if (qName == "tie") {
+		_curNote->setTieStart( new CASlur( CASlur::TieType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 ) );
+		if (!attributes.value("slur-style").isEmpty())
+			_curNote->tieStart()->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
+		if (!attributes.value("slur-direction").isEmpty())
+			_curNote->tieStart()->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
+		
 	} else if (qName == "rest") {
 		// CARest
 		_curRest = new CARest(CARest::restTypeFromString(attributes.value("rest-type")),
@@ -512,7 +518,10 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 	} else if (qName == "note") {
 		// CANote
 		_curVoice->appendMusElement( _curNote );
+		_curNote->updateTies();
 		_curNote = 0;
+	} else if (qName == "tie") {
+		// CASlur - tie
 	} else if (qName == "rest") {
 		// CARest
 		_curVoice->appendMusElement( _curRest );

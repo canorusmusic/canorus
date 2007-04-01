@@ -89,7 +89,7 @@ private:
 CAMusElementFactory::CAMusElementFactory()
 {
 	_ePlayableLength = CAPlayable::Quarter;
-	_eNoteStemDirection = CANote::StemPrefered;
+	_eNoteStemDirection = CANote::StemPreferred;
 	_iPlayableDotted = 0;
 	_eRestType = CARest::Normal;
 	_iTimeSigBeats = 4;
@@ -99,7 +99,7 @@ CAMusElementFactory::CAMusElementFactory()
 	_iNoteAccs = 0;
 	_iNoteExtraAccs = 0;
 	_eBarlineType = CABarline::Single;
-	_eSlurType = CASlur::Tie;
+	_eSlurType = CASlur::TieType;
 	_slurStyle = CASlur::SlurSolid;
 	
 	createMusElem();
@@ -276,20 +276,20 @@ bool CAMusElementFactory::configureSlur( CAStaff *staff,
 {
 	bool success=false;
 	removeMusElem();
-	CASlur *slur = new CASlur( slurType(), noteStart->determineSlurDirection(), staff, noteStart, noteEnd );
+	CASlur *slur = new CASlur( slurType(), CASlur::SlurPreferred, staff, noteStart, noteEnd );
 	
 	switch (slurType()) {
-		case CASlur::Tie:
+		case CASlur::TieType:
 			noteStart->setTieStart( slur );
 			if (noteEnd) noteEnd->setTieEnd( slur );
 			success=true;
 			break;
-		case CASlur::Slur:
+		case CASlur::SlurType:
 			noteStart->setSlurStart( slur );
 			if (noteEnd) noteEnd->setSlurEnd( slur );
 			success=true;
 			break;
-		case CASlur::PhrasingSlur:
+		case CASlur::PhrasingSlurType:
 			noteStart->setPhrasingSlurStart( slur );
 			if (noteEnd) noteEnd->setPhrasingSlurEnd( slur );
 			success=true;

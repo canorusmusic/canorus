@@ -20,7 +20,7 @@ class CANote : public CAPlayable {
 			StemNeutral,	// Up if under the middle line, down if above the middle line
 			StemUp,
 			StemDown,
-			StemPrefered		// Use the voice's prefered direction
+			StemPreferred		// Use the voice's prefered direction
 		};
 		
 		CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int dotted=0);

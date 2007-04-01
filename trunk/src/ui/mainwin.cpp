@@ -150,18 +150,18 @@ void CAMainWin::setupCustomUi() {
 		uiInsertToolBar->addAction( uiSelectMode );
 		uiInsertToolBar->addSeparator();		
 		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 2, this ));
-			uiContextType->addButton( QIcon(":/menu/images/newstaff.png"), CAContext::Staff );
-			uiContextType->addButton( QIcon(":/menu/images/newfmcontext.png"), CAContext::FunctionMarkingContext );
+			uiContextType->addButton( QIcon(":/menu/images/newstaff.png"), CAContext::Staff, tr("New staff") );
+			uiContextType->addButton( QIcon(":/menu/images/newfmcontext.png"), CAContext::FunctionMarkingContext, tr("New function marking context") );
 			uiContextType->setCurrentId( CAContext::Staff );
 			connect( uiContextType, SIGNAL( toggled(bool, int) ), this, SLOT( on_uiContextType_toggled(bool, int) ) );
 			connect( uiNewContext, SIGNAL( triggered() ), uiContextType, SLOT( click() ) );
 		uiInsertToolBar->addSeparator();
 		uiInsertToolBar->addAction( uiInsertPlayable );
 		uiInsertToolBar->addWidget( uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this ) );
-			uiSlurType->addButton( QIcon(":/menu/images/tie.png"), CASlur::Tie, tr("Tie") );
-			uiSlurType->addButton( QIcon(":/menu/images/slur.png"), CASlur::Slur, tr("Slur") );
-			uiSlurType->addButton( QIcon(":/menu/images/phrasingslur.png"), CASlur::PhrasingSlur, tr("Phrasing Slur") );
-			uiSlurType->setCurrentId( CASlur::Tie );
+			uiSlurType->addButton( QIcon(":/menu/images/tie.png"), CASlur::TieType, tr("Tie") );
+			uiSlurType->addButton( QIcon(":/menu/images/slur.png"), CASlur::SlurType, tr("Slur") );
+			uiSlurType->addButton( QIcon(":/menu/images/phrasingslur.png"), CASlur::PhrasingSlurType, tr("Phrasing Slur") );
+			uiSlurType->setCurrentId( CASlur::TieType );
 			connect( uiSlurType, SIGNAL(toggled(bool, int)), this, SLOT( on_uiSlurType_toggled(bool, int) ) );
 		uiInsertToolBar->addWidget(uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this ));
 			uiClefType->addButton( QIcon(":/menu/images/cleftreble.png"), CAClef::Treble, tr("Treble Clef") );
@@ -189,7 +189,7 @@ void CAMainWin::setupCustomUi() {
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinedotted.png"), CABarline::Dotted, tr("Dotted Barline") );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatopen.png"), CABarline::RepeatOpen, tr("Repeat Open") );
 			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatclose.png"), CABarline::RepeatClose, tr("Repeat Closed") );
-			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatcloseopen.png"), CABarline::RepeatCloseOpen, tr("Repeat Open-Closed") );
+			uiBarlineType->addButton( QIcon(":/menu/images/barlinerepeatcloseopen.png"), CABarline::RepeatCloseOpen, tr("Repeat Closed-Open") );
 			uiBarlineType->setCurrentId( CABarline::Single );
 			connect( uiBarlineType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiBarlineType_toggled(bool, int)) );
 			connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
@@ -228,9 +228,9 @@ void CAMainWin::setupCustomUi() {
 		uiVoiceToolBar->addWidget(uiVoiceStemDirection = new CAMenuToolButton( tr("Select Voice Stem Direction" ), 3, this ));
 			connect( uiVoiceStemDirection, SIGNAL(toggled(bool, int)), this, SLOT(on_uiVoiceStemDirection_toggled(bool, int)) );
 			uiVoiceStemDirection->setToolTip(tr("Voice stem direction"));
-			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral );
-			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemup.png"), CANote::StemUp );
-			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemdown.png"), CANote::StemDown );
+			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral, tr("Voice Stems Neutral") );
+			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemup.png"), CANote::StemUp, tr("Voice Stems Up") );
+			uiVoiceStemDirection->addButton( QIcon(":/menu/images/notestemdown.png"), CANote::StemDown, tr("Voice Stems Down") );
 			uiVoiceStemDirection->defaultAction()->setCheckable(false);
 		uiVoiceToolBar->addAction( uiVoiceProperties );
 		addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
@@ -239,26 +239,26 @@ void CAMainWin::setupCustomUi() {
 		uiPlayableToolBar->addWidget(uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this ));
 			connect( uiPlayableLength, SIGNAL(toggled(bool, int)), this, SLOT(on_uiPlayableLength_toggled(bool, int)) );
 			uiPlayableLength->setToolTip(tr("Playable length"));
-			uiPlayableLength->addButton( QIcon(":/menu/images/n0.png"), CANote::Breve );
-			uiPlayableLength->addButton( QIcon(":/menu/images/n1.png"), CANote::Whole );
-			uiPlayableLength->addButton( QIcon(":/menu/images/n2.png"), CANote::Half );
-			uiPlayableLength->addButton( QIcon(":/menu/images/n4.png"), CANote::Quarter );
-			uiPlayableLength->addButton( QIcon(":/menu/images/n8.png"), CANote::Eighth );
-			uiPlayableLength->addButton( QIcon(":/menu/images/n16.png"), CANote::Sixteenth );
-			uiPlayableLength->addButton( QIcon(":/menu/images/n32.png"), CANote::ThirtySecond );
-			uiPlayableLength->addButton( QIcon(":/menu/images/n64.png"), CANote::SixtyFourth );
+			uiPlayableLength->addButton( QIcon(":/menu/images/n0.png"), CANote::Breve, tr("Breve Length") );
+			uiPlayableLength->addButton( QIcon(":/menu/images/n1.png"), CANote::Whole, tr("Whole Length") );
+			uiPlayableLength->addButton( QIcon(":/menu/images/n2.png"), CANote::Half, tr("Half Length") );
+			uiPlayableLength->addButton( QIcon(":/menu/images/n4.png"), CANote::Quarter, tr("Quarter Length") );
+			uiPlayableLength->addButton( QIcon(":/menu/images/n8.png"), CANote::Eighth, tr("Eighth Length") );
+			uiPlayableLength->addButton( QIcon(":/menu/images/n16.png"), CANote::Sixteenth, tr("Sixteenth Length") );
+			uiPlayableLength->addButton( QIcon(":/menu/images/n32.png"), CANote::ThirtySecond, tr("ThirtySecond Length") );
+			uiPlayableLength->addButton( QIcon(":/menu/images/n64.png"), CANote::SixtyFourth, tr("SixtyFourth Length") );
 			uiPlayableLength->defaultAction()->setCheckable(false);
 			uiPlayableLength->setCurrentId( CANote::Quarter );
 		uiPlayableToolBar->addAction( uiAccsVisible );
 		uiPlayableToolBar->addWidget(uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this ));
 			connect( uiNoteStemDirection, SIGNAL(toggled(bool, int)), this, SLOT(on_uiNoteStemDirection_toggled(bool, int)) );
 			uiVoiceStemDirection->setToolTip(tr("Note stem direction"));		
-			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral );
-			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemup.png"), CANote::StemUp );
-			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemdown.png"), CANote::StemDown );
-			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemvoice.png"), CANote::StemPrefered );
+			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemneutral.png"), CANote::StemNeutral, tr("Note Stem Neutral") );
+			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemup.png"), CANote::StemUp, tr("Note Stem Up") );
+			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemdown.png"), CANote::StemDown, tr("Note Stem Down") );
+			uiNoteStemDirection->addButton( QIcon(":/menu/images/notestemvoice.png"), CANote::StemPreferred, tr("Note Stem Preferred") );
 			uiNoteStemDirection->defaultAction()->setCheckable(false);
-			uiNoteStemDirection->setCurrentId( CANote::StemPrefered );
+			uiNoteStemDirection->setCurrentId( CANote::StemPreferred );
 		uiPlayableToolBar->addAction( uiHiddenRest );
 		addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
@@ -559,6 +559,7 @@ void CAMainWin::on_uiNewVoice_triggered() {
 	
 	uiVoiceNum->setMax(staff->voiceCount());
 	uiVoiceNum->setRealValue( staff->voiceCount() );
+	CACanorus::rebuildUI(document(), currentSheet());
 }
 
 /*!
@@ -1190,7 +1191,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				CANote *noteEnd = 0;
 				QList<CANote*> noteList = noteStart->voice()->noteList();
 				
-				if (_musElementFactory->slurType()==CASlur::Tie) {
+				if (_musElementFactory->slurType()==CASlur::TieType) {
 					if ( noteStart->tieStart() ) {
 						return; // return, if the tie already exists
 					} else {

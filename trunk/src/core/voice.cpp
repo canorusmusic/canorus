@@ -492,21 +492,11 @@ QList<CANote*> CAVoice::noteList() {
 */
 void CAVoice::setStemDirection(CANote::CAStemDirection direction) {
 	_stemDirection = direction;
-	updateSlurDirections();
-}
-
-/*!
-	Updates slur directions of all the notes in the voice.
-*/
-void CAVoice::updateSlurDirections() {
-	for (int i=0; i<_musElementList.size(); i++)
-		if (_musElementList[i]->musElementType()==CAMusElement::Note)
-			static_cast<CANote*>(_musElementList[i])->updateSlurDirections();
 }
 
 /*!
 	\var CAVoice::_voiceNumber
-	Prefered direction of stems for the notes inside the voice. This should be Neutral, if the voice is alone, Up, if the voice is the first voice, Down, if not. Prefered is not used here.
+	Preferred direction of stems for the notes inside the voice. This should be Neutral, if the voice is alone, Up, if the voice is the first voice, Down, if not. Preferred is not used here.
 
 	\sa CANote::CAStemDirection
 */

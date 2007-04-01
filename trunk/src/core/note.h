@@ -20,7 +20,7 @@ public:
 		StemNeutral,
 		StemUp,
 		StemDown,
-		StemPrefered // voice's direction
+		StemPreferred // voice's direction
 	};
 	
 	CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int dotted=0);
@@ -61,7 +61,6 @@ public:
 	inline void setPhrasingSlurStart( CASlur *pSlurStart ) { _phrasingSlurStart = pSlurStart; }
 	inline void setPhrasingSlurEnd( CASlur *pSlurEnd ) { _phrasingSlurEnd = pSlurEnd; }
 	
-	void updateSlurDirections();
 	void updateTies();
 	
 	bool isPartOfTheChord();
