@@ -112,39 +112,58 @@ CAViewPort* CAViewPortContainer::splitHorizontally(CAViewPort *v) {
 
 /*!
 	Unsplits the views so the given viewport \a v is removed.
-	If no viewports are given, remove the last active one.
-	Returns the pointer to the viewport which was removed. If none was removed (ie. the given viewport was not found or there are no viewports left) returns 0.
-	The deleted viewport is also deleted.
+	If no viewport is given, removes the last active one.
+	The removed viewport is also deleted.
+	
+	\return The pointer to the viewport which was removed. If none was removed (ie. the given viewport was not found or there are no viewports left) returns 0.
 	
 	\todo The viewport should not be deleted, but only removed from the splitter. However, splitter doesn't provide any removeWidget() analog to addWidget() methods. Any way to do this? -Matevz
 */				
 CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
-	if (!v)
-		v = currentViewPort();
+	if (!v && !(v = currentViewPort()))
+		return 0;
 	
-	if (v) {
-		QSplitter *s = _viewPortMap[v];
-		
-		if ( s == this && s->count()==1 ) // don't remove the last viewport from the top splitter
-			return 0;
-		else if ( s != this && s->count()==2 ) { // remove the splitter as well
-			CAViewPort* other = static_cast<CAViewPort*>(s->widget( 1 - s->indexOf( v ) )); // Find the other viewport
-			other->setParent( s->parentWidget() );
-			_viewPortMap[other] = static_cast<QSplitter*>(s->parent());
+	QSplitter *s = _viewPortMap[v];
+	switch( s->count() )
+	{
+		case 1:
+			// if (s==this). otherwise it'd never get here.
+			return 0; 
+		case 2:
+		{
+			QWidget* other = s->widget( 1 - s->indexOf( v ) ); // find the other viewport
+			CAViewPort* otherViewPort = dynamic_cast<CAViewPort*>(other);
+			if( s != this)
+			{
+				other->setParent( s->parentWidget() );
+				if(otherViewPort)
+					_viewPortMap[otherViewPort] = static_cast<QSplitter*>(s->parent());	
 			
-			delete s; // delete the splitter and the viewport
-			removeViewPort(v);
-			return v;
-		} else {
+				delete s; // delete the splitter and the viewport
+				removeViewPort(v);
+				return v;
+			} else if( !otherViewPort )
+			{
+				// the following is needed to prevent the situation where a splitter is the only child of the viewport container - it causes some problems. -Itay
+				QSplitter *sp = static_cast<QSplitter*>(other);
+				setOrientation(sp->orientation());
+				while(sp->count()) {
+					CAViewPort* viewport = dynamic_cast<CAViewPort*>(sp->widget(0));
+					sp->widget(0)->setParent( this );
+					if(viewport)
+						_viewPortMap[viewport] = this;
+				}
+				delete sp; //delete the splitter after moving the view ports.
+			} 
+		}
+		// falls through only if s == this
+		default:
 			delete v; // removes and deletes viewport from the splitter
 			removeViewPort(v);
 			return v;
-		}
 	}
-	
-	return 0;
 }
-
+	
 /*!
 	Unsplits all the viewports except the last active one.
 */
