@@ -442,7 +442,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 
 /*!
 	This function is called automatically by Qt SAX parser while reading the CanorusML
-	source. This function is called when a node has been closed (</nodeName>). Attributes
+	source. This function is called when a node has been closed (\</nodeName\>). Attributes
 	for closed notes are usually not set in CanorusML format. That's why we need to store
 	local node attributes (set when the node is opened) each time.
 	
