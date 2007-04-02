@@ -6,16 +6,19 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    viewBox="-8 -382 1000 1000"
    id="svg47407"
    sodipodi:version="0.32"
-   inkscape:version="0.43"
-   width="210mm"
-   height="297mm"
+   inkscape:version="0.45"
+   width="128"
+   height="128"
    sodipodi:docname="neutral.svg"
-   sodipodi:docbase="/home/matevz/apps/canorus/branches/matevz/src/fonts">
+   sodipodi:docbase="/home/matevz/canorus/artwork/images"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   version="1.0">
   <metadata
      id="metadata47416">
     <rdf:RDF>
@@ -49,6 +52,33 @@
        x2="174.55556"
        y2="0.21421814"
        gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient49170"
+       id="linearGradient9650"
+       gradientUnits="userSpaceOnUse"
+       x1="-8"
+       y1="0.21421814"
+       x2="174.55556"
+       y2="0.21421814" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient49170"
+       id="linearGradient9658"
+       gradientUnits="userSpaceOnUse"
+       x1="-8"
+       y1="0.21421814"
+       x2="174.55556"
+       y2="0.21421814" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient49170"
+       id="linearGradient9660"
+       gradientUnits="userSpaceOnUse"
+       x1="-8"
+       y1="0.21421814"
+       x2="174.55556"
+       y2="0.21421814" />
   </defs>
   <sodipodi:namedview
      inkscape:window-height="978"
@@ -62,41 +92,37 @@
      inkscape:zoom="2.0103948"
      inkscape:cx="67.101551"
      inkscape:cy="17.535716"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:current-layer="svg47407" />
+     inkscape:window-x="192"
+     inkscape:window-y="140"
+     inkscape:current-layer="svg47407"
+     width="128px"
+     height="128px" />
   <g
-     transform="matrix(0.215212,0,0,-0.215212,63.65439,740.2915)"
-     id="g48293"
-     style="fill:#000000;fill-opacity:0.39215686"
-     inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/neutral.png"
-     inkscape:export-xdpi="90"
-     inkscape:export-ydpi="90">
-    <path
-       d="M 8,381 C 16,383 30,381 37,379 C 41,377 45,376 45,375 C 46,374 46,346 45,279 C 44,227 44,184 44,183 C 44,183 67,188 95,195 C 123,201 147,206 149,206 C 152,206 159,203 162,200 C 167,194 167,212 171,-92 C 175,-368 175,-374 174,-376 C 165,-382 143,-383 131,-379 C 127,-378 123,-376 122,-376 C 121,-374 121,-371 122,-279 C 123,-227 123,-184 123,-183 C 123,-183 100,-188 72,-195 C 44,-201 20,-206 18,-206 C 11,-206 3,-199 1,-192 C 0,-188 -8,333 -8,361 L -7,375 L -2,378 C 2,379 6,381 8,381 z M 128,83 C 128,98 128,110 127,110 C 127,110 107,105 84,100 L 42,91 L 42,82 C 42,77 41,32 40,-18 C 40,-68 39,-109 39,-110 C 39,-110 124,-91 125,-91 C 125,-91 125,-57 126,-17 C 126,23 127,69 128,83 z "
-       id="path48295"
-       style="fill:#000000;fill-opacity:0.39215686" />
+     id="g9652"
+     transform="matrix(5.6526948,0,0,5.6526948,1703.1757,-4023.0711)">
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/neutral.png"
+       style="fill:#000000;fill-opacity:0.39215686"
+       id="g48293"
+       transform="matrix(0.215212,0,0,-0.215212,-230.47826,733.60667)">
+      <path
+         style="fill:#000000;fill-opacity:0.39215686"
+         id="path48295"
+         d="M 8,381 C 16,383 30,381 37,379 C 41,377 45,376 45,375 C 46,374 46,346 45,279 C 44,227 44,184 44,183 C 44,183 67,188 95,195 C 123,201 147,206 149,206 C 152,206 159,203 162,200 C 167,194 167,212 171,-92 C 175,-368 175,-374 174,-376 C 165,-382 143,-383 131,-379 C 127,-378 123,-376 122,-376 C 121,-374 121,-371 122,-279 C 123,-227 123,-184 123,-183 C 123,-183 100,-188 72,-195 C 44,-201 20,-206 18,-206 C 11,-206 3,-199 1,-192 C 0,-188 -8,333 -8,361 L -7,375 L -2,378 C 2,379 6,381 8,381 z M 128,83 C 128,98 128,110 127,110 C 127,110 107,105 84,100 L 42,91 L 42,82 C 42,77 41,32 40,-18 C 40,-68 39,-109 39,-110 C 39,-110 124,-91 125,-91 C 125,-91 125,-57 126,-17 C 126,23 127,69 128,83 z " />
+    </g>
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/neutral.png"
+       style="fill:url(#linearGradient9658);fill-opacity:1"
+       id="g47409"
+       transform="matrix(0.215212,0,0,-0.215212,-233.89686,731.65257)">
+      <path
+         style="fill:url(#linearGradient9660);fill-opacity:1"
+         id="path47411"
+         d="M 8,381 C 16,383 30,381 37,379 C 41,377 45,376 45,375 C 46,374 46,346 45,279 C 44,227 44,184 44,183 C 44,183 67,188 95,195 C 123,201 147,206 149,206 C 152,206 159,203 162,200 C 167,194 167,212 171,-92 C 175,-368 175,-374 174,-376 C 165,-382 143,-383 131,-379 C 127,-378 123,-376 122,-376 C 121,-374 121,-371 122,-279 C 123,-227 123,-184 123,-183 C 123,-183 100,-188 72,-195 C 44,-201 20,-206 18,-206 C 11,-206 3,-199 1,-192 C 0,-188 -8,333 -8,361 L -7,375 L -2,378 C 2,379 6,381 8,381 z M 128,83 C 128,98 128,110 127,110 C 127,110 107,105 84,100 L 42,91 L 42,82 C 42,77 41,32 40,-18 C 40,-68 39,-109 39,-110 C 39,-110 124,-91 125,-91 C 125,-91 125,-57 126,-17 C 126,23 127,69 128,83 z " />
+    </g>
   </g>
-  <g
-     transform="matrix(0.215212,0,0,-0.215212,60.23579,738.3374)"
-     id="g47409"
-     style="fill-opacity:1.0;fill:url(#linearGradient49176)"
-     inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/neutral.png"
-     inkscape:export-xdpi="90"
-     inkscape:export-ydpi="90">
-    <path
-       d="M 8,381 C 16,383 30,381 37,379 C 41,377 45,376 45,375 C 46,374 46,346 45,279 C 44,227 44,184 44,183 C 44,183 67,188 95,195 C 123,201 147,206 149,206 C 152,206 159,203 162,200 C 167,194 167,212 171,-92 C 175,-368 175,-374 174,-376 C 165,-382 143,-383 131,-379 C 127,-378 123,-376 122,-376 C 121,-374 121,-371 122,-279 C 123,-227 123,-184 123,-183 C 123,-183 100,-188 72,-195 C 44,-201 20,-206 18,-206 C 11,-206 3,-199 1,-192 C 0,-188 -8,333 -8,361 L -7,375 L -2,378 C 2,379 6,381 8,381 z M 128,83 C 128,98 128,110 127,110 C 127,110 107,105 84,100 L 42,91 L 42,82 C 42,77 41,32 40,-18 C 40,-68 39,-109 39,-110 C 39,-110 124,-91 125,-91 C 125,-91 125,-57 126,-17 C 126,23 127,69 128,83 z "
-       id="path47411"
-       style="fill:url(#linearGradient49176);fill-opacity:1.0" />
-  </g>
-  <rect
-     style="opacity:1;fill:none;fill-opacity:0.39215686;fill-rule:nonzero;stroke:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-     id="rect47418"
-     width="172.02116"
-     height="172.02116"
-     x="-8"
-     y="653.1217"
-     inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/neutral.png"
-     inkscape:export-xdpi="90"
-     inkscape:export-ydpi="90" />
 </svg>
