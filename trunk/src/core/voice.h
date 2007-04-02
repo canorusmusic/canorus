@@ -49,7 +49,7 @@ public:
 	
 	bool containsPitch(int pitch, int startTime);
 	
-	QList<CAMusElement*> *musElementList() { return &_musElementList; }
+	QList<CAMusElement*> musElementList() { return _musElementList; }
 	int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
 	int lastTimeStart() { return (_musElementList.size()?_musElementList.back()->timeStart():0); }
 	CAMusElement *lastMusElement() { return _musElementList.back(); }

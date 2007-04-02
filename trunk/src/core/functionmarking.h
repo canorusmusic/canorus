@@ -67,6 +67,9 @@ public:
 	
 	int compare(CAMusElement *function);
 	
+	static const QString functionTypeToString(CAFunctionType);
+	static CAFunctionType functionTypeFromString(const QString);
+	
 private:
 	CAFunctionType _function;		/// Function name
 	QString _key;					/// C for C-Major, g for g-minor, bes for b-flat-minor, Fis for F-sharp-Major etc.

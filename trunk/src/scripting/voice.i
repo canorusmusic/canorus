@@ -89,7 +89,7 @@ class CAVoice {
 		
 		int musElementCount() { return _musElementList.count(); }
 		CAMusElement *musElementAt(int i) { return _musElementList[i]; }
-                QList<CANote*> noteList();
+		QList<CANote*> noteList();
 		int indexOf(CAMusElement *elt) { return _musElementList.indexOf(elt); }
 		bool contains(CAMusElement *elt) { return _musElementList.contains(elt); }
 		
@@ -112,7 +112,7 @@ class CAVoice {
 		 */
 		bool containsPitch(int pitch, int startTime);
 		
-		QList<CAMusElement*> *musElementList() { return &_musElementList; }	///Return the list of music elements
+		QList<CAMusElement*> musElementList() { return _musElementList; }	///Return the list of music elements
 		int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
 		int lastTimeStart() { return (_musElementList.size()?_musElementList.back()->timeStart():0); }
 		CAMusElement *lastMusElement() { return _musElementList.back(); }

@@ -40,7 +40,7 @@ void CAPlayback::run() {
 	CASheet *sheet = _scoreViewPort->sheet();
 	
 	// list of all the music element lists (ie. streams) taken from all the contexts
-	QList<QList<CAMusElement*>*> stream; 
+	QList< QList<CAMusElement*> > stream; 
 	QVector<unsigned char> message;	// midi 3-byte message sent to midi device
 
 	QList<CADrawableMusElement *> oldSelection;
@@ -81,17 +81,17 @@ void CAPlayback::run() {
 	while (true) {
 		timeStart = -1;
 		for (int i=0; i<streams; i++) {
-			while ( (streamsIdx[i] < stream[i]->size()) &&
-			        ((stream[i]->at(streamsIdx[i])->musElementType() != CAMusElement::Note) &&
-			        (stream[i]->at(streamsIdx[i])->musElementType() != CAMusElement::Rest))
+			while ( (streamsIdx[i] < stream[i].size()) &&
+			        ((stream[i].at(streamsIdx[i])->musElementType() != CAMusElement::Note) &&
+			        (stream[i].at(streamsIdx[i])->musElementType() != CAMusElement::Rest))
 			      )
 				streamsIdx[i]++;
 			
-			if (streamsIdx[i] == stream[i]->size())
+			if (streamsIdx[i] == stream[i].size())
 				continue;
 			
-			if ( (timeStart > stream[i]->at(streamsIdx[i])->timeStart()) || (timeStart == -1) )
-				timeStart = stream[i]->at(streamsIdx[i])->timeStart();
+			if ( (timeStart > stream[i].at(streamsIdx[i])->timeStart()) || (timeStart == -1) )
+				timeStart = stream[i].at(streamsIdx[i])->timeStart();
 		}
 		
 		CANote *note;
@@ -118,7 +118,7 @@ void CAPlayback::run() {
 		
 		done = true;
 		for (int i=0; i<streams; i++)
-			if (stream[i]->size() != streamsIdx[i]) {
+			if (stream[i].size() != streamsIdx[i]) {
 				done = false;
 				break;
 			}
@@ -127,9 +127,9 @@ void CAPlayback::run() {
 
 		// note on
 		for (int i=0; i<streams; i++) {
-			while ( (stream[i]->size() > streamsIdx[i]) &&
-			        stream[i]->at(streamsIdx[i])->musElementType()==CAMusElement::Note &&
-			        ((note = static_cast<CANote*>(stream[i]->at(streamsIdx[i])))->timeStart() == timeStart)
+			while ( (stream[i].size() > streamsIdx[i]) &&
+			        stream[i].at(streamsIdx[i])->musElementType()==CAMusElement::Note &&
+			        ((note = static_cast<CANote*>(stream[i].at(streamsIdx[i])))->timeStart() == timeStart)
 			      ) {
 				message << (144 + note->voice()->midiChannel()); // note on
 				message << (note->midiPitch());

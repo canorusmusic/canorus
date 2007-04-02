@@ -113,6 +113,48 @@ void CAFunctionMarking::setAlterations(const QString alterations) {
 	}
 }
 
+const QString CAFunctionMarking::functionTypeToString(CAFunctionMarking::CAFunctionType type) {
+	switch (type) {
+		case T:         return "T"; break;
+		case S:         return "S"; break;
+		case D:         return "D"; break;
+		case I:         return "I";	break;
+		case II:        return "II"; break;
+		case III:       return "III"; break;
+		case IV:        return "IV"; break;
+		case V:         return "V"; break;
+		case VI:        return "VI"; break;
+		case VII:       return "VII"; break;
+		case N:         return "N";	break;
+		case F:         return "F"; break;
+		case L:         return "L"; break;
+		case K:         return "K"; break;
+		case Undefined: return "undefined"; break;	
+	}
+	
+	return "undefined";
+}
+
+CAFunctionMarking::CAFunctionType CAFunctionMarking::functionTypeFromString(const QString type) {
+	if (type=="T") return T; else
+	if (type=="S") return S; else
+	if (type=="D") return D; else
+	if (type=="I") return I; else
+	if (type=="II") return II; else
+	if (type=="III") return III; else
+	if (type=="IV") return IV; else
+	if (type=="V") return V; else
+	if (type=="VI") return VI; else
+	if (type=="VII") return VII; else
+	if (type=="N") return N; else
+	if (type=="L") return L; else
+	if (type=="F") return F; else
+	if (type=="K") return K; else
+	if (type=="undefined") return Undefined;
+	
+	return Undefined;
+}
+
 /*!
 	\enum CAFunctionMarking::CAFunctionType
 	Name of the function (tonic, subdominant, etc.), its chord area or the tonic degree.
