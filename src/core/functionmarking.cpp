@@ -21,7 +21,7 @@
 	\sa CADrawableFunctionMarking, CAFunctionMarkingContext
 */
 
-CAFunctionMarking::CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence)
+CAFunctionMarking::CAFunctionMarking(CAFunctionType function, bool minor, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence)
  : CAMusElement(context, timeStart, timeLength) {
  	_musElementType = CAMusElement::FunctionMarking;
  	
@@ -55,7 +55,7 @@ bool CAFunctionMarking::isSideDegree() {
 
 CAFunctionMarking *CAFunctionMarking::clone() {
 	CAFunctionMarking *newElt;
-	newElt = new CAFunctionMarking(function(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), isMinor(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
+	newElt = new CAFunctionMarking(function(), isMinor(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
 	newElt->setAlteredDegrees(_alteredDegrees);
 	newElt->setAddedDegrees(_addedDegrees);
 	

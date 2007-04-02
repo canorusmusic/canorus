@@ -15,21 +15,14 @@
  *                                                                           
  *---------------------------------------------------------------------------
  *                                                                           
- * Copyright (c) 2006, Reinhard Katzmann, Canorus development team           
+ * Copyright (c) 2006, Reinhard Katzmann, Matevž Jekovec, Canorus development team           
  * All Rights Reserved. See AUTHORS for a complete list of authors.          
  *                                                                           
  */
 
-#include "drawable/drawablecontext.h"
-#include "drawable/drawablestaff.h"
-#include "core/staff.h"
-#include "core/muselement.h"
-#include "core/keysignature.h"
-#include "core/timesignature.h"
-#include "core/voice.h"
-#include "core/rest.h"
-#include "core/slur.h"
 #include "core/muselementfactory.h"
+
+#include "core/functionmarkingcontext.h"
 
 // For comparing undefined music elements
 #define UNDEFNUM 36720165
@@ -101,6 +94,14 @@ CAMusElementFactory::CAMusElementFactory()
 	_eBarlineType = CABarline::Single;
 	_eSlurType = CASlur::TieType;
 	_slurStyle = CASlur::SlurSolid;
+
+	_fmFunction = CAFunctionMarking::T; // Name of the function
+	_fmChordArea = CAFunctionMarking::Undefined; // Chord area of the function
+	_fmTonicDegree = CAFunctionMarking::T; // Tonic degree of the function
+	_fmFunctionMinor = false;
+	_fmChordAreaMinor = false;
+	_fmTonicDegreeMinor = false;
+	_fmEllipse = false;
 	
 	createMusElem();
 }
@@ -320,6 +321,26 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *left ) {
 		bSuccess = voice->insertMusElementAfter(mpoMusElement, left);
 	}
 	return bSuccess;
+}
+
+bool CAMusElementFactory::configureFunctionMarking( CAFunctionMarkingContext *fmc, int timeStart, int timeLength ) {
+	removeMusElem();
+	CAFunctionMarking *fm = new CAFunctionMarking(
+		fmFunction(), isFMFunctionMinor(),
+		"C", /// \todo
+		fmc, timeStart, timeLength,
+		fmChordArea(), isFMChordAreaMinor(),
+		fmTonicDegree(), isFMTonicDegreeMinor(),
+		"", /// \todo
+		isFMEllipse()
+	);
+	
+	fmc->addFunctionMarking(fm);
+	
+	mpoMusElement = fm;
+	
+	return true;
+	
 }
 
 void CAMusElementFactory::setMusElementType( CAMusElement::CAMusElementType eMEType )

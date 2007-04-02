@@ -15,7 +15,7 @@
  *                                                                           
  *---------------------------------------------------------------------------
  *                                                                           
- * Copyright (c) 2006, Reinhard Katzmann, Canorus development team           
+ * Copyright (c) 2006, Reinhard Katzmann, Matevž Jekovec, Canorus development team           
  * All Rights Reserved. See AUTHORS for a complete list of authors.          
  *                                                                           
  */
@@ -25,6 +25,18 @@
 #ifndef MUSELEMENTFACTORY_H_
 #define MUSELEMENTFACTORY_H_
 #include "core/barline.h"
+
+#include "drawable/drawablecontext.h"
+#include "drawable/drawablestaff.h"
+
+#include "core/staff.h"
+#include "core/muselement.h"
+#include "core/keysignature.h"
+#include "core/timesignature.h"
+#include "core/voice.h"
+#include "core/rest.h"
+#include "core/slur.h"
+#include "core/functionmarking.h"
 
 class CAMusElement;
 
@@ -66,6 +78,9 @@ public:
 	
 	bool configureSlur( CAStaff *staff,
 	                    CANote *noteStart, CANote *noteEnd );
+	
+	bool configureFunctionMarking( CAFunctionMarkingContext *fmc,
+	                               int timeStart, int timeLength );
 	
 	inline CAMusElement::CAMusElementType musElementType()
 	{ return mpoMusElement->musElementType(); };
@@ -143,6 +158,27 @@ public:
 	inline CASlur::CASlurStyle slurStyle() { return _slurStyle; }
 	inline void setSlurStyle( CASlur::CASlurStyle style ) { _slurStyle = style; }
 	
+	inline CAFunctionMarking::CAFunctionType fmFunction() { return _fmFunction; }
+	inline void setFMFunction( CAFunctionMarking::CAFunctionType f ) { _fmFunction = f; }
+	
+	inline CAFunctionMarking::CAFunctionType fmChordArea() { return _fmChordArea; }
+	inline void setFMChordArea( CAFunctionMarking::CAFunctionType c ) { _fmChordArea = c; }
+	
+	inline CAFunctionMarking::CAFunctionType fmTonicDegree() { return _fmTonicDegree; }
+	inline void setFMTonicDegree( CAFunctionMarking::CAFunctionType td ) { _fmTonicDegree = td; }
+	
+	inline bool isFMFunctionMinor() { return _fmFunctionMinor; }
+	inline void setFMFunctionMinor( bool m ) { _fmFunctionMinor = m; }
+	
+	inline bool isFMTonicDegreeMinor() { return _fmTonicDegreeMinor; }
+	inline void setFMTonicDegreeMinor( bool m ) { _fmTonicDegreeMinor = m; }
+	
+	inline bool isFMChordAreaMinor() { return _fmChordAreaMinor; }
+	inline void setFMChordAreaMinor( bool m ) { _fmChordAreaMinor = m; }
+	
+	inline bool isFMEllipse() { return _fmEllipse; }
+	inline void setFMEllipse( bool e ) { _fmEllipse = e; }	
+	
 private:
 	CAMusElement *mpoMusElement;     // newly created music element itself
 	/////////////////////////////////
@@ -161,5 +197,13 @@ private:
 	CAClef::CAClefType _eClef; // Type of the clef to be inserted
 	CABarline::CABarlineType _eBarlineType; // Type of the barline
 	CASlur::CASlurStyle _slurStyle; // Style of the slur (solid, dotted)
+	
+	CAFunctionMarking::CAFunctionType _fmFunction; // Name of the function
+	CAFunctionMarking::CAFunctionType _fmChordArea; // Chord area of the function
+	CAFunctionMarking::CAFunctionType _fmTonicDegree; // Tonic degree of the function
+	bool _fmFunctionMinor;
+	bool _fmChordAreaMinor;
+	bool _fmTonicDegreeMinor;
+	bool _fmEllipse;
 };
 #endif // MUSELEMENTFACTORY_H_

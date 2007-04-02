@@ -294,7 +294,7 @@ void CAScoreViewPort::importCElements(CAKDTree *elts) {
 
 CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool currentContext) {
 	CADrawableMusElement *elt;
-	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestLeft(x, true, _currentContext))?
+	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestLeft(x, true, currentContext?_currentContext:0))?
 	         elt : 0);
 }
 
@@ -306,7 +306,7 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice 
 
 CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool currentContext) {
 	CADrawableMusElement *elt;
-	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestRight(x, true, _currentContext))?
+	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestRight(x, true, currentContext?_currentContext:0))?
 	         elt : 0);
 }
 

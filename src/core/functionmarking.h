@@ -36,7 +36,7 @@ public:
 	};
 	
 	// addedDegrees and alteredDegrees are generated from alterations parameter
-	CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea=Undefined, bool chordAreaMinor=false, CAFunctionType tonicDegree=Undefined, bool tonicDegreeMinor=false, const QString alterations="", bool ellipseSequence=false);
+	CAFunctionMarking(CAFunctionType function, bool minor, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea=Undefined, bool chordAreaMinor=false, CAFunctionType tonicDegree=Undefined, bool tonicDegreeMinor=false, const QString alterations="", bool ellipseSequence=false);
 	CAFunctionMarking* clone();
 	~CAFunctionMarking();
 	

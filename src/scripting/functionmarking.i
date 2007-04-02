@@ -36,7 +36,7 @@ class CAFunctionMarking : public CAMusElement {
 		};
 		
 		//addedDegrees and alteredDegrees are generated from alterations parameter
-		CAFunctionMarking(CAFunctionType function, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, bool minor, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence);
+		CAFunctionMarking(CAFunctionType function, bool minor, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence);
 		CAFunctionMarking* clone();
 		~CAFunctionMarking();
 		
