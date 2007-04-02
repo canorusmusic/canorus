@@ -201,7 +201,8 @@ void CAMenuToolButton::hideButtons( int id ) {
 		setCurrentId( id );
 		if (isChecked())
 			emit toggled( true, id ); // if already on and in any button group
-		click(); // trigger any button groups
+		else
+			click(); // trigger any button groups
 		setChecked(true); // turn it on if it can turn off
 	}
 	hideButtons();
@@ -239,7 +240,8 @@ void CAMenuToolButton::wheelEvent( QWheelEvent *event ) {
 	setCurrentId( _buttonGroup->id(buttonList[newIdx]) );
 	if (isChecked())
 		emit toggled( true, currentId() ); // if already on and in any button group
-	click(); // trigger any button groups
+	else
+		click(); // trigger any button groups
 	setChecked(true); // turn it on if it can turn off
 }
 
@@ -249,7 +251,8 @@ void CAMenuToolButton::wheelEvent( QWheelEvent *event ) {
 	\sa handleToggled()
 */
 void CAMenuToolButton::handleTriggered() {
-	emit toggled( false, currentId() );
+	if (!defaultAction()->isCheckable())
+		emit toggled( false, currentId() );
 }
 
 /*!

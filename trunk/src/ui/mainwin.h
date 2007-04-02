@@ -122,6 +122,7 @@ private slots:
 	void on_uiBarlineType_toggled(bool, int);
 	void on_uiInsertPlayable_toggled(bool);
 	void on_uiSlurType_toggled(bool, int);
+	void on_uiInsertFM_toggled(bool);
 	
 	// View
 	void on_uiFullscreen_toggled(bool);
@@ -157,6 +158,12 @@ private slots:
 	// Time Signature
 	void on_uiTimeSigBeats_valChanged(int);
 	void on_uiTimeSigBeat_valChanged(int);
+	
+	// Function marking
+	void on_uiFMFunction_toggled(bool, int);
+	void on_uiFMChordArea_toggled(bool, int);
+	void on_uiFMTonicDegree_toggled(bool, int);
+	void on_uiFMEllipse_toggled(bool);
 	
 	// Tools
 	void on_uiSettings_triggered();
@@ -235,6 +242,7 @@ private:
 	void updatePlayableToolBar();
 	void updateKeySigToolBar();
 	void updateTimeSigToolBar();
+	void updateFMToolBar();
 	
 	// Dialogs, Windows
 	QFileDialog *uiExportDialog;
@@ -300,11 +308,11 @@ private:
 			// CAMenuToolButton *uiTimeSigStyle; /// \todo Implement it. -Matevz
 		
 		QToolBar *uiFMToolBar; // function marking tool bar
-			CAMenuToolButton  *uiFMType;
+			CAMenuToolButton  *uiFMFunction;
 			CAMenuToolButton  *uiFMChordArea;
 			CAMenuToolButton  *uiFMTonicDegree;
 			//QSpinBox        *uiKeySigNumberOfAccs; // defined in uiKeySigToolBar
 			//QComboBox       *uiKeySigGender; // defined in uiKeySigToolBar
-			QAction           *uiFMEllipse;
+			//QAction         *uiFMEllipse; // made by Qt Designer
 };
 #endif /* MAINWIN_H_ */

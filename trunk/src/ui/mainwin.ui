@@ -773,7 +773,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled" >
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon" >
     <iconset>images/insertfm.svg</iconset>
@@ -892,6 +892,17 @@
    </property>
    <property name="text" >
     <string>&amp;Transpose...</string>
+   </property>
+  </action>
+  <action name="uiFMEllipse" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset>images/fme.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Ellipse</string>
    </property>
   </action>
  </widget>
