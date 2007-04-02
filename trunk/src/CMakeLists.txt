@@ -222,7 +222,7 @@ SET(Canorus_Fonts	# Music fonts needed by Canorus
 SET(QT_USE_QTXML True)
 
 # Add all resources to Canorus_Resrcs (icons, html files etc.)
-SET(Canorus_Resrcs ui/mainwin.qrc ui/keysig.qrc)
+SET(Canorus_Resrcs ui/keysig.qrc)
 
 # Add all the dependencies needed for the MainWindow
 # add_file_dependencies( ui/mainwin.cpp ui/ui_mainwin.h )
