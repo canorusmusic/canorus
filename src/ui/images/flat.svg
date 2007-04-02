@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="-30 -200 1000 1000"
+   id="svg20889"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   width="128"
+   height="128"
+   sodipodi:docname="flat.svg"
+   sodipodi:docbase="/home/matevz/canorus/artwork/images"
+   inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/flat.png"
+   inkscape:export-xdpi="120.95"
+   inkscape:export-ydpi="120.95"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   version="1.0">
+  <metadata
+     id="metadata20898">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs20896">
+    <linearGradient
+       id="linearGradient22652">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop22654" />
+      <stop
+         style="stop-color:#646464;stop-opacity:1;"
+         offset="1"
+         id="stop22656" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient22652"
+       id="linearGradient22658"
+       x1="-30"
+       y1="145"
+       x2="200.09399"
+       y2="145"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient22652"
+       id="linearGradient22660"
+       gradientUnits="userSpaceOnUse"
+       x1="-30"
+       y1="145"
+       x2="200.09399"
+       y2="145" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient22652"
+       id="linearGradient5329"
+       gradientUnits="userSpaceOnUse"
+       x1="-30"
+       y1="145"
+       x2="200.09399"
+       y2="145" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient22652"
+       id="linearGradient5331"
+       gradientUnits="userSpaceOnUse"
+       x1="-30"
+       y1="145"
+       x2="200.09399"
+       y2="145" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="978"
+     inkscape:window-width="1400"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="2.0103948"
+     inkscape:cx="20.873295"
+     inkscape:cy="51.760346"
+     inkscape:window-x="192"
+     inkscape:window-y="140"
+     inkscape:current-layer="svg20889"
+     width="128px"
+     height="128px" />
+  <g
+     id="g5323"
+     transform="matrix(5.6489455,0,0,5.6489455,136.14277,-4903.5235)">
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/flat.png"
+       style="fill:#000000;fill-opacity:0.39215686"
+       id="g20902"
+       transform="matrix(0.261038,0,0,-0.261038,42.72413,960.4302)">
+      <path
+         style="fill:#000000;fill-opacity:0.39215686"
+         id="path20904"
+         d="M -15,456 C -11,457 -4,458 0,458 C 12,458 30,452 30,448 C 30,447 28,377 27,291 C 25,205 23,130 23,123 L 23,111 L 30,117 C 40,125 45,128 56,133 C 73,142 91,147 111,148 C 128,148 140,145 155,137 C 162,133 174,120 180,112 C 194,92 201,64 200,39 C 198,9 186,-16 159,-44 C 144,-58 134,-66 100,-93 C 65,-120 56,-127 45,-142 C 33,-158 29,-162 23,-166 C 18,-168 16,-168 10,-168 C 3,-168 2,-168 -3,-165 C -9,-162 -14,-155 -15,-149 C -17,-144 -18,-95 -23,132 C -26,283 -29,416 -30,428 L -30,450 L -26,452 C -24,453 -19,455 -15,456 z M 96,99 C 85,104 69,102 58,95 C 48,88 39,73 35,57 C 31,41 29,-53 32,-81 C 33,-90 35,-97 35,-98 C 36,-100 76,-61 90,-44 C 113,-15 124,13 123,43 C 121,70 111,91 96,99 z " />
+    </g>
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/flat.png"
+       style="fill:url(#linearGradient5329);fill-opacity:1"
+       id="g20891"
+       transform="matrix(0.261038,0,0,-0.261038,39.33159,957.5699)">
+      <path
+         style="fill:url(#linearGradient5331);fill-opacity:1"
+         id="path20893"
+         d="M -15,456 C -11,457 -4,458 0,458 C 12,458 30,452 30,448 C 30,447 28,377 27,291 C 25,205 23,130 23,123 L 23,111 L 30,117 C 40,125 45,128 56,133 C 73,142 91,147 111,148 C 128,148 140,145 155,137 C 162,133 174,120 180,112 C 194,92 201,64 200,39 C 198,9 186,-16 159,-44 C 144,-58 134,-66 100,-93 C 65,-120 56,-127 45,-142 C 33,-158 29,-162 23,-166 C 18,-168 16,-168 10,-168 C 3,-168 2,-168 -3,-165 C -9,-162 -14,-155 -15,-149 C -17,-144 -18,-95 -23,132 C -26,283 -29,416 -30,428 L -30,450 L -26,452 C -24,453 -19,455 -15,456 z M 96,99 C 85,104 69,102 58,95 C 48,88 39,73 35,57 C 31,41 29,-53 32,-81 C 33,-90 35,-97 35,-98 C 36,-100 76,-61 90,-44 C 113,-15 124,13 123,43 C 121,70 111,91 96,99 z " />
+    </g>
+  </g>
+</svg>

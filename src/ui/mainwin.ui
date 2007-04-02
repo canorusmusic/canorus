@@ -14,7 +14,7 @@
    <string>Canorus - Score editor</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="mainwin.qrc" >:/menu/images/clogosm.png</iconset>
+   <iconset>images/clogosm.png</iconset>
   </property>
   <property name="statusTip" >
    <string/>
@@ -241,7 +241,7 @@
   </widget>
   <action name="uiQuit" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/exit.png</iconset>
+    <iconset>images/exit.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Quit</string>
@@ -252,7 +252,7 @@
   </action>
   <action name="uiNewDocument" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/filenew.png</iconset>
+    <iconset>images/filenew.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;New</string>
@@ -263,7 +263,7 @@
   </action>
   <action name="uiOpenDocument" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/fileopen.png</iconset>
+    <iconset>images/fileopen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open...</string>
@@ -274,7 +274,7 @@
   </action>
   <action name="uiSaveDocument" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/filesave.png</iconset>
+    <iconset>images/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Save</string>
@@ -285,7 +285,7 @@
   </action>
   <action name="uiSaveDocumentAs" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/filesaveas.png</iconset>
+    <iconset>images/filesaveas.png</iconset>
    </property>
    <property name="text" >
     <string>Save &amp;as...</string>
@@ -293,7 +293,7 @@
   </action>
   <action name="uiCloseDocument" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/fileclose.png</iconset>
+    <iconset>images/fileclose.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Close</string>
@@ -304,7 +304,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/filesave.png</iconset>
+    <iconset>images/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Import...</string>
@@ -312,7 +312,7 @@
   </action>
   <action name="uiExportDocument" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/filesave.png</iconset>
+    <iconset>images/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Export...</string>
@@ -326,7 +326,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/fileprintpreview.png</iconset>
+    <iconset>images/fileprintpreview.png</iconset>
    </property>
    <property name="text" >
     <string>Print pre&amp;view...</string>
@@ -340,7 +340,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/fileprint.png</iconset>
+    <iconset>images/fileprint.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Print...</string>
@@ -354,7 +354,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/editundo.png</iconset>
+    <iconset>images/editundo.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Undo</string>
@@ -368,7 +368,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/editredo.png</iconset>
+    <iconset>images/editredo.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Redo</string>
@@ -382,7 +382,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/editcopy.png</iconset>
+    <iconset>images/editcopy.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Copy</string>
@@ -396,7 +396,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/editcut.png</iconset>
+    <iconset>images/editcut.png</iconset>
    </property>
    <property name="text" >
     <string>C&amp;ut</string>
@@ -410,7 +410,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/editpaste.png</iconset>
+    <iconset>images/editpaste.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Paste</string>
@@ -470,7 +470,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/fullscreen.png</iconset>
+    <iconset>images/fullscreen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Fullscreen</string>
@@ -481,7 +481,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/tsc.png</iconset>
+    <iconset>images/tsc.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Time signature...</string>
@@ -492,7 +492,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/keysig.png</iconset>
+    <iconset>images/keysig.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Key signature...</string>
@@ -503,7 +503,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/barlinedouble.png</iconset>
+    <iconset>images/barlinesingle.svg</iconset>
    </property>
    <property name="text" >
     <string>Barline...</string>
@@ -519,7 +519,7 @@
   </action>
   <action name="uiSettings" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/settings.png</iconset>
+    <iconset>images/settings.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Settings...</string>
@@ -554,7 +554,7 @@
   </action>
   <action name="uiAboutCanorus" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/clogosm.png</iconset>
+    <iconset>images/clogosm.png</iconset>
    </property>
    <property name="text" >
     <string>About &amp;Canorus...</string>
@@ -562,7 +562,7 @@
   </action>
   <action name="uiAboutQt" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/qtlogo.png</iconset>
+    <iconset>images/qtlogo.png</iconset>
    </property>
    <property name="text" >
     <string>About &amp;Qt...</string>
@@ -601,7 +601,7 @@
   </action>
   <action name="uiNewSheet" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/sheetnew.png</iconset>
+    <iconset>images/sheetnew.svg</iconset>
    </property>
    <property name="text" >
     <string>New sheet</string>
@@ -612,7 +612,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/contextnew.png</iconset>
+    <iconset>images/staffnew.svg</iconset>
    </property>
    <property name="text" >
     <string>New context...</string>
@@ -623,7 +623,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/player_play.png</iconset>
+    <iconset>images/player_play.png</iconset>
    </property>
    <property name="text" >
     <string>Play from selection</string>
@@ -680,7 +680,7 @@
   </action>
   <action name="uiLilyPondSource" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/lilypondsource.png</iconset>
+    <iconset>images/lilypondsource.svg</iconset>
    </property>
    <property name="text" >
     <string>LilyPond source</string>
@@ -688,7 +688,7 @@
   </action>
   <action name="uiCanorusMLSource" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/canorusmlsource.png</iconset>
+    <iconset>images/canorusmlsource.svg</iconset>
    </property>
    <property name="text" >
     <string>CanorusML source</string>
@@ -696,7 +696,7 @@
   </action>
   <action name="uiNewVoice" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/voicenew.png</iconset>
+    <iconset>images/voicenew.svg</iconset>
    </property>
    <property name="text" >
     <string>New voice</string>
@@ -723,7 +723,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/filequickprint.png</iconset>
+    <iconset>images/filequickprint.png</iconset>
    </property>
    <property name="text" >
     <string>Print directly</string>
@@ -737,7 +737,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/pdf.png</iconset>
+    <iconset>images/pdf.png</iconset>
    </property>
    <property name="text" >
     <string>Export to PDF</string>
@@ -751,7 +751,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/filenewwizard.png</iconset>
+    <iconset>images/filenewwizard.png</iconset>
    </property>
    <property name="text" >
     <string>New document &amp;wizard...</string>
@@ -762,7 +762,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/insertplayable.png</iconset>
+    <iconset>images/insertplayable.svg</iconset>
    </property>
    <property name="text" >
     <string>Playable...</string>
@@ -776,7 +776,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/insertfm.png</iconset>
+    <iconset>images/insertfm.svg</iconset>
    </property>
    <property name="text" >
     <string>Function marking...</string>
@@ -787,7 +787,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/clefbass.png</iconset>
+    <iconset>images/clefbass.svg</iconset>
    </property>
    <property name="text" >
     <string>Clef...</string>
@@ -801,7 +801,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/arrow.png</iconset>
+    <iconset>images/arrow.svg</iconset>
    </property>
    <property name="text" >
     <string>Select mode</string>
@@ -809,7 +809,7 @@
   </action>
   <action name="uiRemoveVoice" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/voiceremove.png</iconset>
+    <iconset>images/voiceremove.svg</iconset>
    </property>
    <property name="text" >
     <string>Remove Voice</string>
@@ -820,7 +820,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/voiceproperties.png</iconset>
+    <iconset>images/voiceproperties.svg</iconset>
    </property>
    <property name="text" >
     <string>Voice Properties</string>
@@ -831,7 +831,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/accsvisible.png</iconset>
+    <iconset>images/accsvisible.svg</iconset>
    </property>
    <property name="text" >
     <string>Accidentals Visible</string>
@@ -842,7 +842,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/hiddenrest.png</iconset>
+    <iconset>images/hiddenrest.svg</iconset>
    </property>
    <property name="text" >
     <string>Hidden Rest</string>
@@ -850,7 +850,7 @@
   </action>
   <action name="uiRemoveContext" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/contextremove.png</iconset>
+    <iconset>images/contextremove.svg</iconset>
    </property>
    <property name="text" >
     <string>Remove Context</string>
@@ -861,7 +861,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/contextproperties.png</iconset>
+    <iconset>images/contextproperties.svg</iconset>
    </property>
    <property name="text" >
     <string>Context Properties</string>
@@ -869,7 +869,7 @@
   </action>
   <action name="uiRemoveSheet" >
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/sheetremove.png</iconset>
+    <iconset>images/sheetremove.svg</iconset>
    </property>
    <property name="text" >
     <string>Remove Sheet</string>
@@ -880,7 +880,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="mainwin.qrc" >:/menu/images/sheetproperties.png</iconset>
+    <iconset>images/sheetproperties.svg</iconset>
    </property>
    <property name="text" >
     <string>Sheet Properties</string>
@@ -895,9 +895,7 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="mainwin.qrc" />
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>uiQuit</sender>
