@@ -188,10 +188,7 @@ SET(Canorus_Scripts	# Official scripts shipped with Canorus.
 	scripts/newdocument.py
 )
 
-# Not needed for now
-#SET(Canorus_Images	# Images on buttons, splash etc.
-#	ui/images/*.png
-#)
+FILE(GLOB Canorus_Images "ui/images/*.png" "ui/images/*.svg")
 
 SET(Canorus_Translation_Srcs
 	lang/sl_SI.ts
@@ -427,7 +424,7 @@ ENDIF(USE_PYTHON)
 # Install scripts
 INSTALL(FILES ${Canorus_Scripts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/scripts")
 # Install data - icons, images, sounds etc.
-#INSTALL(FILES ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/images") # all images are currently included in exe
+INSTALL(FILES ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/images") # all images are currently included in exe
 # Install translations
 INSTALL(FILES ${Canorus_Translation_Bins} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/lang")
 # Install fonts
