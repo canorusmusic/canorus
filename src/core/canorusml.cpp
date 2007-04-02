@@ -25,6 +25,9 @@
 #include "core/timesignature.h"
 #include "core/barline.h"
 
+#include "core/functionmarkingcontext.h"
+#include "core/functionmarking.h"
+
 /*!
 	\class CACanorusML
 	\brief Class used for writing/opening a Canorus document.
@@ -106,9 +109,9 @@ void CACanorusML::saveDocument(CADocument *doc, QTextStream& out) {
 			CAContext *c = doc->sheetAt(sheetIdx)->contextAt(contextIdx);
 			
 			switch (c->contextType()) {
-				case CAContext::Staff:
+				case CAContext::Staff: {
 					// CAStaff
-					CAStaff *staff = (CAStaff*)c;
+					CAStaff *staff = static_cast<CAStaff*>(c);
 					QDomElement dStaff = dDoc.createElement("staff"); dSheet.appendChild(dStaff);
 					dStaff.setAttribute("name", staff->name());
 					dStaff.setAttribute("number-of-lines", staff->numberOfLines());
@@ -126,6 +129,30 @@ void CACanorusML::saveDocument(CADocument *doc, QTextStream& out) {
 					}
 					
 					break;
+				}
+				case CAContext::FunctionMarkingContext: {
+					// CAFunctionMarkingContext
+					CAFunctionMarkingContext *fmc = static_cast<CAFunctionMarkingContext*>(c);
+					QDomElement dFmc = dDoc.createElement("function-marking-context"); dSheet.appendChild(dFmc);
+					dFmc.setAttribute("name", fmc->name());
+					
+					QList<CAFunctionMarking*> elts = fmc->functionMarkingList();
+					for (int i=0; i<elts.size(); i++) {
+						QDomElement dFm = dDoc.createElement("function-marking"); dFmc.appendChild(dFm);
+						dFm.setAttribute( "time-start", elts[i]->timeStart() );
+						dFm.setAttribute( "time-length", elts[i]->timeLength() );						
+						dFm.setAttribute( "function", CAFunctionMarking::functionTypeToString(elts[i]->function()) );
+						dFm.setAttribute( "minor", elts[i]->isMinor() );
+						dFm.setAttribute( "chord-area", CAFunctionMarking::functionTypeToString(elts[i]->chordArea()) );
+						dFm.setAttribute( "chord-area-minor", elts[i]->isChordAreaMinor() );
+						dFm.setAttribute( "tonic-degree", CAFunctionMarking::functionTypeToString(elts[i]->tonicDegree()) );
+						dFm.setAttribute( "tonic-degree-minor", elts[i]->isTonicDegreeMinor() );
+						dFm.setAttribute( "key", elts[i]->key() );
+						//dFm.setAttribute( "altered-degrees", elts[i]->alteredDegrees() );
+						//dFm.setAttribute( "added-degrees", elts[i]->addedDegrees() );
+						dFm.setAttribute( "ellipse", elts[i]->isPartOfEllipse() );
+					}
+				}
 			}
 		}
 	}
@@ -293,6 +320,20 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 			_curContext = new CAStaff(_curSheet, staffName, attributes.value("number-of-lines").toInt());
 		}
 		_curSheet->addContext(_curContext);
+	} else if (qName == "function-marking-context") {
+		// CAFunctionMarkingContext
+		QString fmcName = attributes.value("name");
+		if (!_curSheet) {
+			_errorMsg = "The sheet where to add the function marking context doesn't exist yet!";
+			return false;
+		}
+		
+		if (!(_curContext = _curSheet->context(fmcName))) {	//if the sheet doesn't contain the context with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
+			if (fmcName.isEmpty())
+				fmcName = QObject::tr("Function Marking Context %1").arg(_curSheet->contextCount()+1);
+			_curContext = new CAFunctionMarkingContext(_curSheet, fmcName);
+		}
+		_curSheet->addContext(_curContext);
 	} else if (qName == "voice") {
 		// CAVoice
 		QString voiceName = attributes.value("name");
@@ -375,6 +416,24 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		                      attributes.value("time-start").toInt(),
 		                      attributes.value("dotted").toInt()
 		                     );
+	} else if (qName == "function-marking") {
+		// CAFunctionMarking
+		static_cast<CAFunctionMarkingContext*>(_curContext)->addFunctionMarking(
+			new CAFunctionMarking(
+				CAFunctionMarking::functionTypeFromString(attributes.value("function")),
+				(attributes.value("minor")=="1"?true:false),
+				(attributes.value("key").isEmpty()?"C":attributes.value("key")),
+				static_cast<CAFunctionMarkingContext*>(_curContext),
+				attributes.value("time-start").toInt(),
+				attributes.value("time-length").toInt(),
+				CAFunctionMarking::functionTypeFromString(attributes.value("chord-area")),
+				(attributes.value("chord-area-minor")=="1"?true:false),
+				CAFunctionMarking::functionTypeFromString(attributes.value("tonic-degree")),
+				(attributes.value("tonic-degree-minor")=="1"?true:false),
+				"",
+				(attributes.value("ellipse")=="1"?true:false)
+			)
+		);
 	}
 
 	_depth.push(qName);

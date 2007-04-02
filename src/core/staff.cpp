@@ -225,13 +225,13 @@ bool CAStaff::fixVoiceErrors() {
 	QList<CAMusElement *> signsIncluded[voiceCount()];
 	
 	for (int i=0; i<voiceCount(); i++) {
-		QList<CAMusElement*> *list = _voiceList[i]->musElementList();
-		for (int j=0; j<list->size(); j++) {
-			if (!list->at(j)->isPlayable()) {
-				signsIncluded[i] << list->at(j);	//add the current sign to voice's included list
-				if (!signsNeeded.contains(list->at(j))) {
-					signsNeeded << list->at(j);	//add the current sign to others voices needed list
-					prevSignsNeeded << _voiceList[i]->eltBefore(list->at(j));
+		QList<CAMusElement*> list = _voiceList[i]->musElementList();
+		for (int j=0; j<list.size(); j++) {
+			if (!list[j]->isPlayable()) {
+				signsIncluded[i] << list[j];	//add the current sign to voice's included list
+				if (!signsNeeded.contains(list[j])) {
+					signsNeeded << list[j];	//add the current sign to others voices needed list
+					prevSignsNeeded << _voiceList[i]->eltBefore(list[j]);
 				}
 			}
 		}

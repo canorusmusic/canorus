@@ -22,10 +22,11 @@ public:
 	CAFunctionMarkingContext(CASheet *sheet, const QString name);
 	~CAFunctionMarkingContext();
 	
+	int functionMarkingCount(int timeStart=0);
+	inline CAFunctionMarking *functionMarkingAt(int idx) { return _functionMarkingList[idx]; }
 	void addFunctionMarking(CAFunctionMarking *marking);
-	QList<CAFunctionMarking*> *functionMarkingList() { return &_functionMarkingList; }
-	
-	int countFunctionMarkings(int timeStart);
+	inline QList<CAFunctionMarking*> functionMarkingList() { return _functionMarkingList; }
+		
 	void clear();
 	CAMusElement *findNextMusElement(CAMusElement *elt);
 	CAMusElement *findPrevMusElement(CAMusElement *elt);

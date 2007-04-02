@@ -19,10 +19,10 @@ class CAFunctionMarkingContext : public CAContext {
 		CAFunctionMarkingContext(CASheet *sheet, const QString name);
 		~CAFunctionMarkingContext();
 		
+		int functionMarkingCount(int timeStart);
 		void addFunctionMarking(CAFunctionMarking *marking);
-		QList<CAFunctionMarking*> *functionMarkingList() { return &_functionMarkingList; }
+		QList<CAFunctionMarking*> functionMarkingList() { return _functionMarkingList; }		
 		
-		int countFunctionMarkings(int timeStart);
 		void clear();
 		CAMusElement *findNextMusElement(CAMusElement *elt);
 		CAMusElement *findPrevMusElement(CAMusElement *elt);

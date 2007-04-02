@@ -79,7 +79,7 @@ bool CAFunctionMarkingContext::removeMusElement(CAMusElement *elt, bool cleanup)
 /*!
 	Returns number of function markings with the given \a timeStart.
 */
-int CAFunctionMarkingContext::countFunctionMarkings(int timeStart) {
+int CAFunctionMarkingContext::functionMarkingCount(int timeStart) {
 	int i;
 	for (i=0; i<_functionMarkingList.size() && _functionMarkingList[i]->timeStart()>timeStart; i++);
 	if (i<_functionMarkingList.size() && _functionMarkingList[i]->timeStart()==timeStart) {
