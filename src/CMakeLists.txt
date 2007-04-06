@@ -182,6 +182,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/voice.cpp
 	core/functionmarking.cpp
 	core/functionmarkingcontext.cpp
+	core/slur.cpp
 )
 
 SET(Canorus_Scripts	# Official scripts shipped with Canorus.
