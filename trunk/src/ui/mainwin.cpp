@@ -1135,6 +1135,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 			}
 			
 			case Qt::Key_Delete:
+			case Qt::Key_Backspace:
 				if (currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
 					CAMusElement *elt = currentScoreViewPort()->selection().back()->musElement();
 					elt->context()->removeMusElement(elt);
