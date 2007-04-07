@@ -30,7 +30,10 @@ STRING(REGEX REPLACE "([^ ]+)/.*" "\\1" QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}")
 FILE(READ VERSION CANORUS_VERSION)
 STRING(REGEX REPLACE "\n" "" CANORUS_VERSION "${CANORUS_VERSION}") # get rid of the newline at the end
 
-# Set default install path - this is /usr/local in *nix environments or C:\Program files\Canorus under M$ Windows.
+# Set default install path:
+# In *nix environments this is /usr/local 
+# Under M$ Windows this is C:\Program files\Canorus 
+# On Mac OS X it is /Applications for the .app and /Library/Fonts for the fonts, but see note below
 # WARNING: Leading slash should be added - this is for easier concatenation of the strings due to slash/backslash issues
 IF(MINGW)
 	IF (NOT CMAKE_INSTALL_PREFIX)
@@ -40,6 +43,25 @@ IF(MINGW)
 	SET(CANORUS_INSTALL_BIN_DIR "")
 	SET(CANORUS_INSTALL_LIB_DIR "")
 	SET(CANORUS_INSTALL_FONTS_DIR "")
+
+ELSEIF(APPLE)
+	# This is where OSX-specific resources and scripts live.
+	SET(CANORUS_OSX_DIR ${CMAKE_CURRENT_BINARY_DIR}/macosx)
+
+	# "make install" will always install to macosx/package-contents,
+	# regardless of any -DCMAKE_INSTALL_PREFIX=foo
+	# To install locally, build a package and use the OSX installer
+	# TODO: integrate packaging script into CMake so we can just do "make install"
+	# or similar and have it install and link the libraries properly
+	SET(CMAKE_INSTALL_PREFIX "${CANORUS_OSX_DIR}/package-contents")
+
+	SET(CANORUS_INSTALL_FONTS_DIR "Library/Fonts") 
+	SET(CANORUS_OSX_APP_DIR	"Applications/Canorus.app/Contents")
+	
+	SET(CANORUS_INSTALL_BIN_DIR ${CANORUS_OSX_APP_DIR}/MacOS)
+	SET(CANORUS_INSTALL_DATA_DIR ${CANORUS_OSX_APP_DIR}/Resources)
+	SET(CANORUS_INSTALL_LIB_DIR ${CANORUS_OSX_APP_DIR}/Resources/lib)
+
 ELSE (MINGW)
 	IF (NOT CMAKE_INSTALL_PREFIX)
 		SET(CMAKE_INSTALL_PREFIX "/usr/local")

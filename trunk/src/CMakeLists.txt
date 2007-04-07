@@ -7,6 +7,11 @@
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 
+# Build universal binaries on Mac
+IF(APPLE)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386")
+ENDIF(APPLE)
+
 #######################
 # Scripting detection #
 #######################
@@ -211,6 +216,19 @@ SET(Canorus_Fonts	# Music fonts needed by Canorus
 	fonts/Emmentaler-14.ttf		# emmentaler needed for notes, rests, clefs etc.
 	fonts/FreeSans.ttf		# FreeSans needed for function markings
 )
+
+IF(APPLE)
+	SET(Canorus_OSX_Icon ${CANORUS_OSX_DIR}/files/canorus.icns)
+	SET(Canorus_OSX_Info ${CANORUS_OSX_DIR}/files/Info.plist)
+
+	SET(Canorus_OSX_Qt_libs
+		${QT_QTCORE_LIBRARY}/Versions/4/QtCore
+		${QT_QTGUI_LIBRARY}/Versions/4/QtGui
+		${QT_QTXML_LIBRARY}/Versions/4/QtXml
+		${QT_QTSVG_LIBRARY}/Versions/4/QtSvg
+		)
+ENDIF(APPLE)
+
 
 ################
 # Qt4 settings #
@@ -450,3 +468,20 @@ IF(MINGW)
 		INSTALL(FILES ${RUBY_LIBRARY} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR})
 	ENDIF(USE_RUBY)
 ENDIF(MINGW)
+
+IF(APPLE)
+	# Install icon & Info.plist
+	INSTALL(FILES ${Canorus_OSX_Icon} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR})
+	INSTALL(FILES ${Canorus_OSX_Info} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_OSX_APP_DIR})
+
+	# Install Qt libs
+	INSTALL(PROGRAMS ${Canorus_OSX_Qt_libs} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_LIB_DIR})
+
+	# Make a list of source libraries so the packaging script knows which symbols to change
+	SET(OSX_installed_libs_file ${CANORUS_OSX_DIR}/OSX_installed_libs.txt)
+	SET(OSX_installed_libs ${Canorus_OSX_Qt_libs})
+	FILE(WRITE ${OSX_installed_libs_file} "")
+	FOREACH(file ${OSX_installed_libs})
+		FILE(APPEND ${OSX_installed_libs_file} "${file}\n")
+	ENDFOREACH(file)
+ENDIF(APPLE)
