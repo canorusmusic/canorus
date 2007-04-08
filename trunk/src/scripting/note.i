@@ -61,6 +61,8 @@ class CANote : public CAPlayable {
 		bool forceAccidentals() { return _forceAccidentals; }
 		void setForceAccidentals(bool force) { _forceAccidentals = force; }
 			inline CASlur *tieStart() { return _tieStart; }
+	CAStemDirection         actualStemDirection();
+	CASlur::CASlurDirection actualSlurDirection();
 			
 	inline CASlur *tieEnd() { return _tieEnd; }
 	inline CASlur *slurStart() { return _slurStart; }

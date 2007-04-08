@@ -18,7 +18,7 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, in
 	_drawableMusElementType = CADrawableMusElement::DrawableNote;
 	_drawableAcc = drawableAcc;
 	
-	_stemDirection = note()->determineStemDirection();
+	_stemDirection = note()->actualStemDirection();
 	
 	switch (n->playableLength()) {
 		case CAPlayable::HundredTwentyEighth:
