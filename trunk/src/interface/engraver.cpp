@@ -351,7 +351,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						}
 						if ( static_cast<CADrawableNote*>(newElt)->note()->tieEnd() ) {
 							// Set the slur coordinates for the second note
-							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->find(static_cast<CADrawableNote*>(newElt)->note()->tieEnd()));
+							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tieEnd()));
 							dSlur->setWidth( newElt->xPos() - dSlur->xPos() );
 							dSlur->setXMid( dSlur->xPos() + dSlur->width()/2 );
 							if ( dSlur->slur()->slurDirection()==CASlur::SlurUp ) {
