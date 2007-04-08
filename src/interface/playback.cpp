@@ -107,7 +107,7 @@ void CAPlayback::run() {
 				message.clear();
 				curPlaying.removeAt(i);
 				
-				_scoreViewPort->removeFromSelection(drawable = _scoreViewPort->find(note));
+				_scoreViewPort->removeFromSelection(drawable = _scoreViewPort->findMElement(note));
 				
 				//_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
 			    //_scoreViewPort->repaint();
@@ -139,7 +139,7 @@ void CAPlayback::run() {
 				message.clear();
 				curPlaying << note;
 				
-				_scoreViewPort->addToSelection( drawable = _scoreViewPort->find( note ) );
+				_scoreViewPort->addToSelection( drawable = _scoreViewPort->findMElement( note ) );
 				
 				//_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
 				//_scoreViewPort->repaint();
@@ -160,7 +160,7 @@ void CAPlayback::run() {
 	}
 	
 	_scoreViewPort->clearSelection();
-	_scoreViewPort->addToSelection(&oldSelection);
+	_scoreViewPort->addToSelection( oldSelection );
 	_scoreViewPort->unsetBorder();
 	stop();
 }
