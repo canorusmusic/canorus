@@ -51,8 +51,8 @@ public:
 	inline CASlur *phrasingSlurStart() { return _phrasingSlurStart; }
 	inline CASlur *phrasingSlurEnd() { return _phrasingSlurEnd; }
 	
-	CAStemDirection         determineStemDirection();
-	CASlur::CASlurDirection determineSlurDirection();
+	CAStemDirection         actualStemDirection();
+	CASlur::CASlurDirection actualSlurDirection();
 	
 	inline void setTieStart( CASlur *tieStart ) { _tieStart = tieStart; }
 	inline void setTieEnd( CASlur *tieEnd ) { _tieEnd = tieEnd; }

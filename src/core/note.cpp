@@ -318,10 +318,9 @@ CANote::CAStemDirection CANote::stemDirectionFromString(const QString dir) {
 int CANote::pitchToMidiPitch(int pitch, int acc) {
 	float step = (float)12/7;
 	
-	// +0.3 - rounding factor for 7/12 that exactly underlays every tone in octave
-	// +0.5 - casting to int cut-off the decimal part, not round it. In order to round it - add 0.5
+	// +0.3 - rounding factor for 7/12 that exactly underlays every tone in octave, if rounded
 	// +12 - our logical pitch starts at Sub-contra C, midi counting starts one octave lower
-	return (int)(pitch * step + 0.3 + 0.5 + 12) + acc;
+	return qRound(pitch*step + 0.3 + 12) + acc;
 }
 
 /*!
@@ -336,9 +335,9 @@ int CANote::midiPitchToPitch(int midiPitch) {
 }
 
 /*!
-	Determines the actual stem direction. Always returns stem up or stem down.
+	Returns the actual stem direction (the one which is drawn). Always returns stem up or stem down.
 */
-CANote::CAStemDirection CANote::determineStemDirection() {
+CANote::CAStemDirection CANote::actualStemDirection() {
 	switch ( stemDirection() ) {
 		case StemUp:
 		case StemDown:
@@ -377,8 +376,8 @@ CANote::CAStemDirection CANote::determineStemDirection() {
 	Slur should be on the other side of the stem, if the stem direction is neutral
 	or on the same side if the stem direction is set strictly to up and down (or preferred).
 */
-CASlur::CASlurDirection CANote::determineSlurDirection() {
-	CAStemDirection dir = determineStemDirection();
+CASlur::CASlurDirection CANote::actualSlurDirection() {
+	CAStemDirection dir = actualStemDirection();
 	
 	if ( stemDirection()==StemNeutral || (stemDirection()==StemPreferred && voice() && voice()->stemDirection()==StemNeutral) ) {
 		if (dir==StemUp) return CASlur::SlurDown;
