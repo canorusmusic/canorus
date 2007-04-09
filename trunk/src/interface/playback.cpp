@@ -102,7 +102,7 @@ void CAPlayback::run() {
 				message << (128 + note->voice()->midiChannel()); // note off
 				message << (note->midiPitch());
 				message << (127);
-				if ((note->musElementType()==CAMusElement::Rest ) ||		// first because rest has no tie
+				if ((note->musElementType()!=CAMusElement::Rest ) &&		// first because rest has no tie
 						! (note->tieStart() && note->tieStart()->noteEnd()) )
 					_midiDevice->send(message);
 				message.clear();
@@ -136,8 +136,7 @@ void CAPlayback::run() {
 				message << (144 + note->voice()->midiChannel()); // note on
 				message << (note->midiPitch());
 				message << (127);
-				if ( note->musElementType()==CAMusElement::Rest ||							// first, because rest has no tieEnd
-						note->musElementType()!=CAMusElement::Rest && !note->tieEnd() )
+				if ( note->musElementType()!=CAMusElement::Rest && !note->tieEnd() )
 					_midiDevice->send(message);
 				message.clear();
 				curPlaying << note;
