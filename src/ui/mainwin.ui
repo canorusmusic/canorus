@@ -72,54 +72,6 @@
     <addaction name="separator" />
     <addaction name="uiProperties" />
    </widget>
-   <widget class="QMenu" name="uiMenuView" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <widget class="QMenu" name="uiMenuZoom" >
-     <property name="title" >
-      <string>Zoom</string>
-     </property>
-     <addaction name="uiZoomToWidth" />
-     <addaction name="uiZoomToHeight" />
-     <addaction name="uiZoomToFit" />
-     <addaction name="uiZoomToSelection" />
-     <addaction name="separator" />
-     <addaction name="uiCustomZoom" />
-    </widget>
-    <widget class="QMenu" name="uiMenuSourceView" >
-     <property name="title" >
-      <string>Source view</string>
-     </property>
-     <addaction name="uiLilyPondSource" />
-     <addaction name="uiCanorusMLSource" />
-    </widget>
-    <addaction name="separator" />
-    <addaction name="uiMenuZoom" />
-    <addaction name="uiAnimatedScroll" />
-    <addaction name="uiLockScrollPlayback" />
-    <addaction name="separator" />
-    <addaction name="uiScoreView" />
-    <addaction name="uiMenuSourceView" />
-    <addaction name="separator" />
-    <addaction name="uiShowStatusBar" />
-    <addaction name="uiFullscreen" />
-   </widget>
-   <widget class="QMenu" name="uiMenuInsert" >
-    <property name="title" >
-     <string>&amp;Insert</string>
-    </property>
-    <addaction name="uiNewSheet" />
-    <addaction name="uiNewContext" />
-    <addaction name="uiNewVoice" />
-    <addaction name="separator" />
-    <addaction name="uiInsertPlayable" />
-    <addaction name="uiInsertClef" />
-    <addaction name="uiInsertKeySig" />
-    <addaction name="uiInsertTimeSig" />
-    <addaction name="uiInsertBarline" />
-    <addaction name="uiInsertFM" />
-   </widget>
    <widget class="QMenu" name="uiMenuTools" >
     <property name="title" >
      <string>&amp;Tools</string>
@@ -173,6 +125,55 @@
     <addaction name="uiPrint" />
     <addaction name="separator" />
     <addaction name="uiQuit" />
+   </widget>
+   <widget class="QMenu" name="uiMenuView" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="uiMenuZoom" >
+     <property name="title" >
+      <string>Zoom</string>
+     </property>
+     <addaction name="uiZoomToWidth" />
+     <addaction name="uiZoomToHeight" />
+     <addaction name="uiZoomToFit" />
+     <addaction name="uiZoomToSelection" />
+     <addaction name="separator" />
+     <addaction name="uiCustomZoom" />
+    </widget>
+    <widget class="QMenu" name="uiMenuSourceView" >
+     <property name="title" >
+      <string>Source view</string>
+     </property>
+     <addaction name="uiLilyPondSource" />
+     <addaction name="uiCanorusMLSource" />
+    </widget>
+    <addaction name="separator" />
+    <addaction name="uiMenuZoom" />
+    <addaction name="uiAnimatedScroll" />
+    <addaction name="uiLockScrollPlayback" />
+    <addaction name="separator" />
+    <addaction name="uiScoreView" />
+    <addaction name="uiMenuSourceView" />
+    <addaction name="separator" />
+    <addaction name="uiShowStatusBar" />
+    <addaction name="uiFullscreen" />
+   </widget>
+   <widget class="QMenu" name="uiMenuInsert" >
+    <property name="title" >
+     <string>&amp;Insert</string>
+    </property>
+    <addaction name="uiNewSheet" />
+    <addaction name="uiNewContext" />
+    <addaction name="uiNewVoice" />
+    <addaction name="separator" />
+    <addaction name="uiInsertPlayable" />
+    <addaction name="uiInsertClef" />
+    <addaction name="uiInsertKeySig" />
+    <addaction name="uiInsertTimeSig" />
+    <addaction name="uiInsertBarline" />
+    <addaction name="uiInsertSyllable" />
+    <addaction name="uiInsertFM" />
    </widget>
    <addaction name="uiMenuFile" />
    <addaction name="uiMenuEdit" />
@@ -903,6 +904,17 @@
    </property>
    <property name="text" >
     <string>Ellipse</string>
+   </property>
+  </action>
+  <action name="uiInsertSyllable" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset>images/syllable.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Insert syllable</string>
    </property>
   </action>
  </widget>

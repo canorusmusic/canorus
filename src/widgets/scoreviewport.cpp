@@ -38,6 +38,27 @@ const int CAScoreViewPort::RIGHT_EXTRA_SPACE = 100;	// Gives some space after th
 const int CAScoreViewPort::BOTTOM_EXTRA_SPACE = 30; // Gives some space after the music so you're able to insert new contexts below the last context
 const int CAScoreViewPort::ANIMATION_STEPS = 7;
 
+/*!
+	\class CAScoreViewPort
+	Widget for rendering the score.
+	
+	This class represents the widget capable of rendering the score. It is usually used as a central widget in the main window, but might be used
+	for example, in a list of possible harmonization or improvization solutions, score layout window and more as an independent widget or only as
+	a drawable content on a button.
+	
+	Score viewport consists of a virtual workspace full of drawable elements which represent the abstract music elements or contexts. Every drawable
+	element has its absolute X, Y, Width and Height geometry properties. Score viewport also shows usually a small part of the whole workspace
+	(depending on scroll bars values and a zoom level). When drawable elements are drawn, their CADrawable::draw() methods are called with the
+	viewports X and Y coordinates, zoom level, pen color and other properties needed to correctly draw an element to the score viewport's canvas.
+	
+	Note that this widget is only capable of correctly rendering the drawable elements. No Control part of the MVC model is implemented here. The
+	viewport logic is implemented outside of this class (usually main window). Score viewport only provides various signals to communicate with
+	outer world. However, this class provides various modes (eg. drawing the shadow notes when inserting music elements, coloring only one voice,
+	hiding certain staffs, animating the scroll etc.) the controller might use.
+	
+	This widget also provides horizontal and vertical scrollbars (see _hScrollBar and _vScrollBar).
+*/
+
 CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(parent) {
 	_viewPortType = CAViewPort::ScoreViewPort;
 	

@@ -27,10 +27,8 @@ class CAContext {
 		 */
 		enum CAContextType {
 			Staff,
-			Tablature,
-			Lyrics,
-			Dynamics,
-			FunctionMarkingContext
+			FunctionMarkingContext,
+			LyricsContext
 		};
 		
 		const QString name();

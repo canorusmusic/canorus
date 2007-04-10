@@ -122,6 +122,7 @@ private slots:
 	void on_uiBarlineType_toggled(bool, int);
 	void on_uiInsertPlayable_toggled(bool);
 	void on_uiSlurType_toggled(bool, int);
+	void on_uiInsertSyllable_toggled(bool);
 	void on_uiInsertFM_toggled(bool);
 	
 	// View
@@ -158,6 +159,9 @@ private slots:
 	// Time Signature
 	void on_uiTimeSigBeats_valChanged(int);
 	void on_uiTimeSigBeat_valChanged(int);
+	
+	// Lyrics
+	void on_syllableEdit_textEdited(const QString);
 	
 	// Function marking
 	void on_uiFMFunction_toggled(bool, int);
@@ -263,6 +267,7 @@ private:
 			// QAction       *uiInsertKeySig;  // made by Qt Designer
 			CAMenuToolButton *uiTimeSigType;  // made by Qt Designer
 			CAMenuToolButton *uiBarlineType;
+			// QAction       *uiInsertSyllable;  // made by Qt Designer
 			// QAction       *uiInsertFM;  // made by Qt Designer
 		
 		QToolBar *uiSheetToolBar;

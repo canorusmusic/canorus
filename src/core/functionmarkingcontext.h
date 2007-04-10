@@ -34,6 +34,6 @@ public:
 	
 private:
 	QList<CAFunctionMarking*> _functionMarkingList;
-	QMultiHash<int,CAFunctionMarking*> _functionMarkingHash;
+	QMultiHash<int,CAFunctionMarking*> _functionMarkingHash; // map of timeStart:functionMarking for faster look-up
 };
 #endif /* FUNCTIONMARKINGCONTEXT_H_*/
