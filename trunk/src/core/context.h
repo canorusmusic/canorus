@@ -1,9 +1,9 @@
-/* 
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #ifndef CONTEXT_H_
 #define CONTEXT_H_
@@ -20,10 +20,8 @@ public:
 	
 	enum CAContextType {
 		Staff,
-		Tablature,
 		FunctionMarkingContext,
-		Lyrics,
-		Dynamics
+		LyricsContext
 	};
 	
 	const QString name() { return _name; } 
@@ -40,6 +38,8 @@ public:
 	virtual bool removeMusElement(CAMusElement *elt, bool cleanup = true) = 0;
 	
 protected:
+	void setContextType( CAContextType t ) { _contextType = t; }
+	
 	CASheet *_sheet;
 	QString _name;
 	CAContextType _contextType;

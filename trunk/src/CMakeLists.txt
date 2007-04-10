@@ -54,7 +54,8 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 )
 
 # Define the MOC source files used by Canorus
-SET(Canorus_MOCs ui/mainwin.h	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
+SET(Canorus_MOCs
+	ui/mainwin.h	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 #	ui/keysigpsp.h  # obsolete
 #	ui/timesigpsp.h # obsolete
 	ui/midisetupdialog.h
@@ -70,14 +71,16 @@ SET(Canorus_MOCs ui/mainwin.h	# List of classes which Qt needs to produce MOCs f
 )
 
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
-	core/canorus.cpp # main class
+	core/canorus.cpp
+	core/kdtree.cpp
+	core/canorusml.cpp
+
 	core/document.cpp
 	core/sheet.cpp
-	core/kdtree.cpp
-
 	core/context.cpp
 	core/staff.cpp
 	core/functionmarkingcontext.cpp
+	core/lyricscontext.cpp
 
 	core/muselement.cpp
 	core/muselementfactory.cpp
@@ -91,9 +94,9 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/slur.cpp
 	core/rest.cpp
 
+	core/syllable.cpp
+	
 	core/functionmarking.cpp
-
-	core/canorusml.cpp
 )
 
 SET(Canorus_Scripting_Srcs	# Sources meant for bridging C++<->scripting language
@@ -124,6 +127,7 @@ SET(Canorus_Drawable_Srcs	# Drawable instances of the data
 
 	drawable/drawablecontext.cpp
 	drawable/drawablestaff.cpp
+	drawable/drawablelyricscontext.cpp
 	drawable/drawablefunctionmarkingcontext.cpp
 
 	drawable/drawablemuselement.cpp
@@ -135,6 +139,7 @@ SET(Canorus_Drawable_Srcs	# Drawable instances of the data
 	drawable/drawablekeysignature.cpp
 	drawable/drawabletimesignature.cpp
 	drawable/drawablebarline.cpp
+	drawable/drawablesyllable.cpp
 	drawable/drawablefunctionmarking.cpp
 )
 
@@ -172,22 +177,28 @@ SET(Canorus_Srcs
 )
 
 SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module.
-	core/context.cpp
 	core/document.cpp
 	core/sheet.cpp
-	core/muselement.cpp
+	core/context.cpp
 	core/staff.cpp
+	core/lyricscontext.cpp
+	core/functionmarkingcontext.cpp
+
+	core/muselement.cpp
+	core/muselementfactory.cpp
+	core/voice.cpp
+	core/barline.cpp
+	core/clef.cpp
+	core/keysignature.cpp
+	core/timesignature.cpp
 	core/playable.cpp
 	core/note.cpp
-	core/rest.cpp
-	core/timesignature.cpp
-	core/keysignature.cpp
-	core/clef.cpp
-	core/barline.cpp
-	core/voice.cpp
-	core/functionmarking.cpp
-	core/functionmarkingcontext.cpp
 	core/slur.cpp
+	core/rest.cpp
+
+	core/syllable.cpp
+	
+	core/functionmarking.cpp
 )
 
 SET(Canorus_Scripts	# Official scripts shipped with Canorus.

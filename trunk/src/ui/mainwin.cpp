@@ -49,6 +49,7 @@
 #include "core/sheet.h"
 #include "core/staff.h"
 #include "core/functionmarkingcontext.h"
+#include "core/lyricscontext.h"
 #include "core/clef.h"
 #include "core/keysignature.h"
 #include "core/note.h"
@@ -58,8 +59,9 @@
 #include "core/voice.h"
 #include "core/barline.h"
 #include "core/timesignature.h"
-#include "core/muselementfactory.h"
+#include "core/syllable.h"
 #include "core/functionmarking.h"
+#include "core/muselementfactory.h"
 
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
@@ -159,9 +161,10 @@ void CAMainWin::setupCustomUi() {
 	uiInsertToolBar = new QToolBar( tr("Insert ToolBar"), this );
 		uiInsertToolBar->addAction( uiSelectMode );
 		uiInsertToolBar->addSeparator();		
-		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 2, this ));
-			uiContextType->addButton( QIcon("images/staffnew.svg"), CAContext::Staff, tr("New staff") );
-			uiContextType->addButton( QIcon("images/fmcontextnew.svg"), CAContext::FunctionMarkingContext, tr("New function marking context") );
+		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 3, this ));
+			uiContextType->addButton( QIcon("images/staffnew.svg"), CAContext::Staff, tr("New Staff") );
+			uiContextType->addButton( QIcon("images/lyricscontextnew.svg"), CAContext::LyricsContext, tr("New Lyrics context") );
+			uiContextType->addButton( QIcon("images/fmcontextnew.svg"), CAContext::FunctionMarkingContext, tr("New Function Marking context") );
 			uiContextType->setCurrentId( CAContext::Staff );
 			connect( uiContextType, SIGNAL( toggled(bool, int) ), this, SLOT( on_uiContextType_toggled(bool, int) ) );
 			connect( uiNewContext, SIGNAL( triggered() ), uiContextType, SLOT( click() ) );
@@ -203,6 +206,7 @@ void CAMainWin::setupCustomUi() {
 			uiBarlineType->setCurrentId( CABarline::Single );
 			connect( uiBarlineType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiBarlineType_toggled(bool, int)) );
 			connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
+		uiInsertToolBar->addAction( uiInsertSyllable );
 		uiInsertToolBar->addAction( uiInsertFM );
 		addToolBar(Qt::LeftToolBarArea, uiInsertToolBar);
 	
@@ -351,6 +355,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->addAction( uiInsertKeySig );
 	uiInsertGroup->addAction( uiInsertBarline );
 	uiInsertGroup->addAction( uiBarlineType->defaultAction() );
+	uiInsertGroup->addAction( uiInsertSyllable );
 	uiInsertGroup->addAction( uiInsertFM );
 	uiInsertGroup->setExclusive( true );
 	
@@ -865,6 +870,9 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 						v->sheet()->addContext(newContext = new CAStaff(v->sheet(), tr("Staff%1").arg(v->sheet()->staffCount()+1)));
 						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), newContext->name() + tr("Voice%1").arg(1)));
 						break;
+					case CAContext::LyricsContext:
+						v->sheet()->addContext(newContext = new CALyricsContext(v->sheet(), tr("Lyrics Context %1").arg(v->sheet()->contextCount()+1)));
+						break;
 					case CAContext::FunctionMarkingContext:
 						v->sheet()->addContext(newContext = new CAFunctionMarkingContext(v->sheet(), tr("Function marking context %1").arg(v->sheet()->contextCount()+1)));
 						break;
@@ -878,6 +886,16 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					}
 					uiSelectMode->toggle();
 					v->repaint();
+					break;
+				} else
+				// Insert Syllable
+				if (uiInsertSyllable->isChecked()) {
+					QLineEdit *edit = new QLineEdit(v);
+					connect(edit, SIGNAL(textEdited(const QString)), this, SLOT(on_syllableEdit_textEdited(const QString)));
+					edit->setFocus();
+					edit->move(coords);
+					edit->show();
+					
 					break;
 				} else
 				// Insert music element
@@ -1569,6 +1587,12 @@ void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
 	}
 }
 
+void CAMainWin::on_uiInsertSyllable_toggled( bool checked ) {
+	if (checked) {
+		setMode( InsertMode );
+	}
+}
+
 void CAMainWin::on_uiInsertFM_toggled(bool checked) {
 	if (checked) {
 		_musElementFactory->setMusElementType( CAMusElement::FunctionMarking );
@@ -1583,6 +1607,15 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 		
 	// New note length type
 	_musElementFactory->setPlayableLength( length );
+}
+
+/*!
+	Function called when user types the text of the syllable.
+	It jumps and creates the next syllable when space is pressed.
+*/
+void CAMainWin::on_syllableEdit_textEdited(const QString text) {
+	if ( text.right(1)==" " )
+		std::cout << "new syllable" << std::endl;
 }
 
 void CAMainWin::on_uiFMFunction_toggled(bool checked, int buttonId) {
@@ -2027,6 +2060,7 @@ void CAMainWin::updateInsertToolBar() {
 						uiInsertTimeSig->setVisible(true);
 						uiBarlineType->setVisible(true);
 						uiInsertFM->setVisible(false);
+						uiInsertSyllable->setVisible(false);
 						break;
 					case CAContext::FunctionMarkingContext:
 						// function marking context selected
@@ -2040,6 +2074,21 @@ void CAMainWin::updateInsertToolBar() {
 						uiInsertTimeSig->setVisible(false);
 						uiBarlineType->setVisible(false);
 						uiInsertFM->setVisible(true);
+						uiInsertSyllable->setVisible(false);
+						break;
+					case CAContext::LyricsContext:
+						// lyrics context selected
+						uiInsertPlayable->setVisible(false);
+						uiSlurType->setVisible(false);
+						uiInsertClef->setVisible(false); // menu
+						uiInsertBarline->setVisible(false); // menu
+						uiClefType->setVisible(false);
+						uiTimeSigType->setVisible(false);
+						uiInsertKeySig->setVisible(false);
+						uiInsertTimeSig->setVisible(false);
+						uiBarlineType->setVisible(false);
+						uiInsertFM->setVisible(false);
+						uiInsertSyllable->setVisible(true);
 						break;
 				}
 			} else {
@@ -2054,6 +2103,7 @@ void CAMainWin::updateInsertToolBar() {
 				uiInsertTimeSig->setVisible(false);
 				uiBarlineType->setVisible(false);
 				uiInsertFM->setVisible(false);
+				uiInsertSyllable->setVisible(false);
 			}
 		}	
 	} else {

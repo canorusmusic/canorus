@@ -20,23 +20,6 @@ class CAMusElement {
 		virtual CAMusElement* clone()=0;
 		~CAMusElement();
 		
-		/**
-		 * enum CAMusElementType includes different types for describing the CAMusElement:
-		 * - Note - A music element which represents CANote.
-		 * - NoteBracket - A music element which represents CANoteBracket (the bracket which connects the stems).
-		 * - Chord - A virtual music element which represents CAChord.
-		 * - Rest - A music element which represents CARest.
-		 * - BarLine - A music elemnet which represents CABarLine.
-		 * - Clef - A music element which represents CAClef.
-		 * - TimeSignature - A music element which represents CATimeSignature.
-		 * - KeySignature - A music element which represents CAKeySignature.
-		 * - Slur - A music element which represents CASlur.
-		 * - Tie - A music element which represents CATie.
-		 * - PhrazingSlur - A music element which represents CAPhrazingSlur.
-		 * - ExpressionMarking - A music element which represents any technical text markings about how the score should be played - CAExpressionMarking (eg. Legato)
-		 * - VolumeSign - A music element which represents any volue sign (forte, piano etc.).
-		 * - Text - A music element which represents any text notes and authors additions to the score. (eg. These 3 measures still need to be fixed)
-		 */
 		enum CAMusElementType {
 			Undefined = 0,
 			Note,
@@ -46,9 +29,7 @@ class CAMusElement {
 			TimeSignature,
 			KeySignature,
 			Slur,
-			ExpressionMarking,
-			VolumeSign,
-			Text,
+			Syllable,
 			FunctionMarking
 		};
 		

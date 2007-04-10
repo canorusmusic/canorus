@@ -1,9 +1,9 @@
-/* 
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #ifndef MUSELEMENT_H_
 #define MUSELEMENT_H_
@@ -25,13 +25,11 @@ public:
 		TimeSignature,
 		KeySignature,
 		Slur,
-		ExpressionMarking,
-		VolumeSign,
-		Text,
+		Syllable,
 		FunctionMarking
 	};
 	
-	CAMusElement(CAContext *context, int time, int length=0);
+	CAMusElement(CAContext *context, int timeStart, int timeLength=0);
 	virtual ~CAMusElement();
 	
 	virtual CAMusElement* clone()=0;		
@@ -65,4 +63,4 @@ protected:
 	int _timeLength; 
 	QString _name;
 };
-#endif /* MUSELEMENT_H_*/
+#endif /* MUSELEMENT_H_ */

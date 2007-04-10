@@ -23,8 +23,10 @@
 #include "drawable/drawablebarline.h"
 #include "drawable/drawableaccidental.h"
 
-#include "drawable/drawablefunctionmarking.h"
+#include "drawable/drawablelyricscontext.h"
+
 #include "drawable/drawablefunctionmarkingcontext.h"
+#include "drawable/drawablefunctionmarking.h"
 
 #include "core/sheet.h"
 
@@ -32,6 +34,8 @@
 #include "core/voice.h"
 #include "core/keysignature.h"
 #include "core/timesignature.h"
+
+#include "core/lyricscontext.h"
 
 #include "core/functionmarkingcontext.h"
 #include "core/functionmarking.h"
@@ -53,7 +57,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	
 	for (int i=0; i < sheet->contextCount(); i++, dy+=100) {
 		if (sheet->contextAt(i)->contextType() == CAContext::Staff) {
-			CAStaff *staff = ((CAStaff*)(sheet->contextAt(i)));
+			CAStaff *staff = static_cast<CAStaff*>(sheet->contextAt(i));
 			drawableContextMap[staff] = new CADrawableStaff(staff, 0, dy);
 			v->addCElement(drawableContextMap[staff]);
 			
@@ -66,13 +70,19 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			}
 		} else
 		if (sheet->contextAt(i)->contextType() == CAContext::FunctionMarkingContext) {
-			CAFunctionMarkingContext *fmContext = ((CAFunctionMarkingContext*)(sheet->contextAt(i)));
+			CAFunctionMarkingContext *fmContext = static_cast<CAFunctionMarkingContext*>(sheet->contextAt(i));
 			drawableContextMap[fmContext] = new CADrawableFunctionMarkingContext(fmContext, 0, dy);
 			v->addCElement(drawableContextMap[fmContext]);
 			QList<CAFunctionMarking*> fmList = fmContext->functionMarkingList();
 			QList<CAMusElement*> musList; for (int i=0; i<fmList.size(); i++) musList << fmList[i];
 			musStreamList << musList;
 			contexts << fmContext;
+		} else
+		if (sheet->contextAt(i)->contextType() == CAContext::LyricsContext) {
+			CALyricsContext *lyricsContext = static_cast<CALyricsContext*>(sheet->contextAt(i));
+			drawableContextMap[lyricsContext] = new CADrawableLyricsContext(lyricsContext, 0, dy);
+			v->addCElement(drawableContextMap[lyricsContext]);
+			contexts << lyricsContext;
 		}
 	}
 	

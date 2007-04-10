@@ -15,8 +15,6 @@ class CADrawableContext;
 
 class CADrawableMusElement : public CADrawable {
 	public:
-		CADrawableMusElement(CAMusElement *musElement, CADrawableContext *drawableContext, int x, int y);
-
 		enum CADrawableMusElementType {
 			DrawableNote,
 			DrawableRest,
@@ -26,19 +24,22 @@ class CADrawableMusElement : public CADrawable {
 			DrawableBarline,
 			DrawableAccidental,
 			DrawableSlur,
-			DrawableFunctionMarking, DrawableFunctionMarkingSupport
+			DrawableFunctionMarking, DrawableFunctionMarkingSupport,
+			DrawableSyllable
 		};
 		
-		inline CAMusElement *musElement() { return _musElement; }
+		CADrawableMusElement(CAMusElement *musElement, CADrawableContext *drawableContext, int x, int y);
+
 		CADrawableMusElementType drawableMusElementType() { return _drawableMusElementType; }
+		inline CAMusElement *musElement() { return _musElement; }
 		CADrawableContext *drawableContext() { return _drawableContext; }
 		void setDrawableContext(CADrawableContext *context) { _drawableContext = context; }
-		bool isSelectable() { return _selectable; }
 		virtual CADrawableMusElement* clone(CADrawableContext* newContext = 0) = 0;
 		
 	protected:
-		CADrawableMusElementType _drawableMusElementType;	///CADrawableMusElement type
-
+		void setDrawableMusElementType( CADrawableMusElementType t ) { _drawableMusElementType = t; }
+		
+		CADrawableMusElementType _drawableMusElementType;	// CADrawableMusElement type
 		CADrawableContext *_drawableContext;
 		CAMusElement *_musElement;
 		bool _selectable;

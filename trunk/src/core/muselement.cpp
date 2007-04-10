@@ -77,10 +77,8 @@ const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementTyp
 		case (TimeSignature): return "time-signature"; break;
 		case (KeySignature): return "key-signature"; break;
 		case (Slur): return "slur"; break;
-		case (ExpressionMarking): return "expression-marking"; break;
-		case (VolumeSign): return "volume-sign"; break;
-		case (Text): return "text"; break;
 		case (FunctionMarking): return "function-marking"; break;
+		case (Syllable): return "syllable"; break;
 	}
 }
 
@@ -98,10 +96,8 @@ CAMusElement::CAMusElementType CAMusElement::musElementTypeFromString(const QStr
 	if ( type=="time-signature" ) return TimeSignature; else
 	if ( type=="key-signature" ) return KeySignature; else
 	if ( type=="slur" ) return Slur; else
-	if ( type=="expression-marking" ) return ExpressionMarking; else
-	if ( type=="volume-sign" ) return VolumeSign; else
-	if ( type=="text" ) return Text; else
 	if ( type=="function-marking" ) return FunctionMarking;
+	if ( type=="syllable" ) return Syllable;
 }
 
 /*!
