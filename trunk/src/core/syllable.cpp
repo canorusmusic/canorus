@@ -6,7 +6,6 @@
 */
 
 #include "core/syllable.h"
-#include "core/lyricscontext.h"
 
 CASyllable::CASyllable( QString text, int stanzaNumber, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice)
  : CAMusElement(context, timeStart, timeLength) {
@@ -20,4 +19,15 @@ CASyllable::CASyllable( QString text, int stanzaNumber, bool hyphen, bool melism
 }
 
 CASyllable::~CASyllable() {
+}
+
+CAMusElement* CASyllable::clone() {
+	return new CASyllable( text(), stanzaNumber(), hyphenStart(), melismaStart(), lyricsContext(), timeStart(), timeLength(), voice() );
+}
+
+int CASyllable::compare(CAMusElement* c) {
+	if ( c->musElementType()==CAMusElement::Syllable )
+		return 0;
+	else
+		return 1;
 }

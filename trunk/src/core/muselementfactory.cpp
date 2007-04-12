@@ -1,4 +1,4 @@
-/*
+/*!
  * This program is free software; you can redistribute it and/or modify it   
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; version 2 of the License.                       
@@ -352,6 +352,16 @@ void CAMusElementFactory::setMusElementType( CAMusElement::CAMusElementType eMET
 	CAUndefMusElem *poUnDefElem = (CAUndefMusElem *)createMusElem();
 	poUnDefElem->setMusElementType( eMEType );
 };
+
+/*!
+	Creates a new lyrcis syllable.
+	text, timeStart and timeLength are set before.
+	\a context is a lyrics context the syllable should be added to.
+	Returns True, if syllable was successfully created and added to the context.
+*/
+bool CAMusElementFactory::configureSyllable( QString text, int stanzaNumber, bool hyphen, bool melisma, CAVoice *voice, CALyricsContext *context ) {
+	context->addSyllable( new CASyllable( text, stanzaNumber, hyphen, melisma, context, timeStart(), timeLength(), voice ) );
+}
 
 /*!
 	\fn CAMusElementFactory::getMusElement()
