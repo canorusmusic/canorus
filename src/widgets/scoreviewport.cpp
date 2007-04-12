@@ -14,6 +14,7 @@
 #include <QPalette>
 #include <QColor>
 #include <QTimer>
+#include <QLineEdit>
 
 #include <math.h>	// neded for square root in animated scrolls/zoom
 
@@ -73,30 +74,31 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	_playing = false;
 	_currentContext = 0;
 
-	//setup animation stuff
+	// init animation stuff
 	_animationTimer = new QTimer();
 	_animationTimer->setInterval(50);
 	connect(_animationTimer, SIGNAL(timeout()), this, SLOT(on__animationTimer_timeout()));
 	
-	//set the shadow note
+	// init helpers
 	_shadowNoteVisible = false;
 	_shadowNoteVisibleOnLeave = false;
 	_shadowNoteAccs = 0;
 	_drawShadowNoteAccs = false;
+	setSyllableEdit( 0 );
 	
-	//setup the virtual canvas
+	// init virtual canvas
 	_canvas = new QWidget(this);
 	setMouseTracking(true);
 	_canvas->setMouseTracking(true);
 	_backgroundBrush = QBrush(QColor(255, 255, 240));
 	_repaintArea = 0;
 	
-	//setup the scrollbars
+	// init scrollbars
 	_vScrollBar = new QScrollBar(Qt::Vertical, this);
 	_hScrollBar = new QScrollBar(Qt::Horizontal, this);
 	_vScrollBar->setMinimum(0);
 	_hScrollBar->setMinimum(0);
-	_vScrollBar->setTracking(true); //trigger valueChanged() when dragging the slider, not only releasing it
+	_vScrollBar->setTracking(true); // trigger valueChanged() when dragging the slider, not only releasing it
 	_hScrollBar->setTracking(true);
 	_vScrollBar->hide();
 	_hScrollBar->hide();
@@ -106,7 +108,7 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	connect(_hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(HScrollBarEvent(int)));
 	connect(_vScrollBar, SIGNAL(valueChanged(int)), this, SLOT(VScrollBarEvent(int)));
 	
-	// setup layout
+	// init layout
 	_layout = new QGridLayout(this);
 	_layout->setMargin(2);
 	_layout->setSpacing(2);
@@ -358,10 +360,11 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool cur
 /*!
 	Returns a pointer to the nearest drawable music element left of the current coordinates with the
 	largest startTime in the given voice.
+	Drawable elements left borders are taken into account. 
 */
 CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice *voice) {
 	CADrawableMusElement *elt;
-	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestLeft(x, true, _currentContext, voice))?
+	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestLeft(x, true, 0, voice))?
 	         elt : 0);
 }
 
@@ -379,11 +382,28 @@ CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool cu
 /*!
 	Returns a pointer to the nearest drawable music element right of the current coordinates with the
 	largest startTime in the given voice.
+	Drawable elements left borders are taken into account. 
 */
 CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, CAVoice *voice) {
 	CADrawableMusElement *elt;
-	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestRight(x, true, _currentContext, voice))?
+	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestRight(x, true, 0, voice))?
 	         elt : 0);
+}
+
+/*!
+	Returns a pointer to the nearest upper drawable context from the given coordinates.
+	\todo Also look at X coordinate
+*/
+CADrawableContext *CAScoreViewPort::nearestUpContext(int x, int y) {
+	return static_cast<CADrawableContext*>(_drawableCList.findNearestUp(y));
+}
+
+/*!
+	Returns a pointer to the nearest upper drawable context from the given coordinates.
+	\todo Also look at X coordinate
+*/
+CADrawableContext *CAScoreViewPort::nearestDownContext(int x, int y) {
+	return static_cast<CADrawableContext*>(_drawableCList.findNearestDown(y));
 }
 
 /*!
@@ -443,7 +463,7 @@ void CAScoreViewPort::rebuild() {
 	addToSelection(musElementSelection);
 	
 	checkScrollBars();
-	calculateShadowNoteCoords();
+	updateHelpers();
 }
 
 /*!
@@ -476,7 +496,7 @@ void CAScoreViewPort::setWorldX(int x, bool animate, bool force) {
 	_hScrollBarDeadLock = false;
 
 	checkScrollBars();
-	calculateShadowNoteCoords();
+	updateHelpers();
 }
 
 /*!
@@ -509,7 +529,7 @@ void CAScoreViewPort::setWorldY(int y, bool animate, bool force) {
 	_vScrollBarDeadLock = false;
 	
 	checkScrollBars();
-	calculateShadowNoteCoords();
+	updateHelpers();
 }
 
 /*!
@@ -721,7 +741,7 @@ void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
 	}
 	
 	checkScrollBars();
-	calculateShadowNoteCoords();
+	updateHelpers();
 }
 
 /*!
@@ -766,20 +786,21 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	}
 	
 	
-	//draw the background
+	// draw the background
 	if (_repaintArea)
 		p.fillRect((int)((_repaintArea->x() - _worldX)*_zoom), (int)((_repaintArea->y() - _worldY)*_zoom), (int)(_repaintArea->width()*_zoom), (int)(_repaintArea->height()*_zoom), _backgroundBrush);
 	else
 		p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundBrush);
 
 	QList<CADrawable *> l;
-	//draw contexts
+	
+	// draw contexts
 	int j = _drawableCList.size();
 	if (_repaintArea)
 		l = _drawableCList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
 	else
 		l = _drawableCList.findInRange(_worldX, _worldY, _worldW, _worldH);
-
+	
 	for (int i=0; i<l.size(); i++) {
 		CADrawSettings s = {
 	    	           _zoom,
@@ -791,7 +812,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		l[i]->draw(&p, s);
 	}
 
-	//draw music elements
+	// draw music elements
 	if (_repaintArea)
 		l = _drawableMList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
 	else
@@ -808,7 +829,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		l[i]->draw(&p, s);
 	}
 	
-	//draw shadow note
+	// draw shadow note
 	if (_shadowNoteVisible) {
 		for (int i=0; i<_shadowDrawableNote.size(); i++) {
 			CADrawSettings s = {
@@ -828,7 +849,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		}
 	}
 	
-	//flush the oldWorld coordinates as they're needed for the first repaint only
+	// flush the oldWorld coordinates as they're needed for the first repaint only
 	_oldWorldX = _worldX; _oldWorldY = _worldY;
 	_oldWorldW = _worldW; _oldWorldH = _worldH;
 	
@@ -836,6 +857,30 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		delete _repaintArea;
 		_repaintArea = 0;
 		p.setClipping(false);
+	}
+}
+
+void CAScoreViewPort::updateHelpers() {
+	if (currentContext()?(currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0) {
+		int pitch = ((CADrawableStaff*)currentContext())->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
+		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
+			_shadowNote[i]->setPitch(pitch);
+			_shadowDrawableNote[i]->setXPos(_xCursor);
+			_shadowDrawableNote[i]->setYPos(
+				static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext())->calculateCenterYCoord(pitch, _xCursor)
+			);
+		}
+	}
+	
+	if (syllableEdit()) {
+		syllableEdit()->setFont( QFont("Century Schoolbook L", qRound(zoom()*14)) );
+		syllableEdit()->setGeometry(
+			qRound( (syllableEditGeometry().x()-worldX())*zoom() ),
+			qRound( (syllableEditGeometry().y()-worldY())*zoom() ),
+			qRound( syllableEditGeometry().width()*zoom() ),
+			qRound( syllableEditGeometry().height()*zoom() )
+		);
+		syllableEdit()->show();
 	}
 }
 
@@ -915,27 +960,11 @@ void CAScoreViewPort::checkScrollBars() {
 }
 
 /*!
-	Updates the shadow notes coordinates depending on the _xCursor and _yCursor coordiantes.
-*/
-void CAScoreViewPort::calculateShadowNoteCoords() {
-	if (_currentContext?(_currentContext->drawableContextType() == CADrawableContext::DrawableStaff):0) {
-		int pitch = ((CADrawableStaff*)_currentContext)->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
-		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
-			_shadowNote[i]->setPitch(pitch);
-			_shadowDrawableNote[i]->setXPos(_xCursor);
-			_shadowDrawableNote[i]->setYPos(
-				static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext())->calculateCenterYCoord(pitch, _xCursor)
-			);
-		}
-	}
-}
-
-/*!
 	Processes the mousePressEvent().
 	A new signal is emitted: CAMousePressEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
-	emit CAMousePressEvent(e, QPoint((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY), this);
+	emit CAMousePressEvent(e, QPoint(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY), this);
 }
 
 /*!
@@ -951,7 +980,7 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 	emit CAMouseMoveEvent(e, coords, this);
 
 	if (_shadowNoteVisible) {
-		calculateShadowNoteCoords();
+		updateHelpers();
 		repaint();
 	}
 }
@@ -1144,6 +1173,25 @@ CADrawableContext *CAScoreViewPort::findCElement(CAContext *context) {
 	for (int i=0; i<_drawableCList.size(); i++)
 		if (static_cast<CADrawableContext*>(_drawableCList.at(i))->context()==context)
 			return static_cast<CADrawableContext*>(_drawableCList.at(i));
+}
+
+/*!
+	Create a QLineEdit for editing or creating a lyrics syllable.
+*/
+QLineEdit *CAScoreViewPort::createSyllableEdit( QRect geometry ) {
+	setSyllableEdit( new QLineEdit( _canvas ) );
+	setSyllableEditGeometry( geometry );
+	updateHelpers();
+	
+	return syllableEdit();
+}
+
+/*!
+	Removes and deletes the line edit for creating a lyrics syllable.
+*/
+void CAScoreViewPort::removeSyllableEdit(QLineEdit *e) {
+	delete syllableEdit();
+	setSyllableEdit( 0 );
 }
 	
 /*!

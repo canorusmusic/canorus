@@ -1,9 +1,9 @@
 /*! 
- * Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+	Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 //#include <Python.h> must be called before standard headers inclusion. See http://docs.python.org/api/includes.html
 #ifdef USE_PYTHON
@@ -41,6 +41,7 @@
 
 #include "drawable/drawablecontext.h"
 #include "drawable/drawablestaff.h"
+#include "drawable/drawablelyricscontext.h"
 #include "drawable/drawablemuselement.h"
 #include "drawable/drawablenote.h"
 #include "drawable/drawableaccidental.h"	//DEBUG, this isn't needed though
@@ -801,7 +802,7 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 }
 
 /*!
-	Processes the mouse press event \a e with coordinates \a coords of the viewport \a v.
+	Processes the mouse press event \a e with world coordinates \a coords of the viewport \a v.
 	Any action happened in any of the viewports are always linked to its main window slots.
 	
 	\sa CAScoreViewPort::mousePressEvent(), viewPortMouseMoveEvent(), viewPortWheelEvent(), viewPortKeyPressEvent()
@@ -811,7 +812,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 	_currentViewPortContainer->setCurrentViewPort( currentViewPort() );
 	
 	if (viewPort->viewPortType() == CAViewPort::ScoreViewPort) {
-		CAScoreViewPort *v = (CAScoreViewPort*)viewPort;
+		CAScoreViewPort *v = static_cast<CAScoreViewPort*>(viewPort);
 		
 		CADrawableContext *currentContext = v->currentContext();
 		
@@ -864,18 +865,27 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				// Insert context
 				if (uiContextType->isChecked()) {
 					// Add new Context
-					CAContext* newContext;
+					CAContext *newContext;
+					CADrawableContext *dupContext = v->nearestUpContext(coords.x(), coords.y());
 					switch(uiContextType->currentId()) {
-					case CAContext::Staff:
-						v->sheet()->addContext(newContext = new CAStaff(v->sheet(), tr("Staff%1").arg(v->sheet()->staffCount()+1)));
-						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), newContext->name() + tr("Voice%1").arg(1)));
-						break;
-					case CAContext::LyricsContext:
-						v->sheet()->addContext(newContext = new CALyricsContext(v->sheet(), tr("Lyrics Context %1").arg(v->sheet()->contextCount()+1)));
-						break;
-					case CAContext::FunctionMarkingContext:
-						v->sheet()->addContext(newContext = new CAFunctionMarkingContext(v->sheet(), tr("Function marking context %1").arg(v->sheet()->contextCount()+1)));
-						break;
+						case CAContext::Staff: {
+							v->sheet()->insertContextAfter(dupContext?dupContext->context():0, newContext = new CAStaff(v->sheet(), tr("Staff%1").arg(v->sheet()->staffCount()+1)));
+							static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), newContext->name() + tr("Voice%1").arg(1)));
+							break;
+						}
+						case CAContext::LyricsContext: {
+							if (dupContext && dupContext->context()->contextType()==CAContext::Staff)
+								v->sheet()->insertContextAfter(dupContext->context(), newContext = new CALyricsContext(
+									static_cast<CAStaff*>(dupContext->context())->voiceAt(0),
+									v->sheet(),
+									tr("LyricsContext%1").arg(v->sheet()->contextCount()+1))
+								);
+							break;
+						}
+						case CAContext::FunctionMarkingContext: {
+							v->sheet()->insertContextAfter(dupContext?dupContext->context():0, newContext = new CAFunctionMarkingContext(v->sheet(), tr("FunctionMarkingContext%1").arg(v->sheet()->contextCount()+1)));
+							break;
+						}
 					}
 					CACanorus::rebuildUI(document(), v->sheet());
 					
@@ -889,12 +899,27 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					break;
 				} else
 				// Insert Syllable
-				if (uiInsertSyllable->isChecked()) {
-					QLineEdit *edit = new QLineEdit(v);
+				if (uiInsertSyllable->isChecked() && v->currentContext()->context()->contextType()==CAContext::LyricsContext) {
+					int timeStart = 0;
+					int timeLength = 256;
+					CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(v->currentContext());
+					int xPos=0, yPos=dlc->yPos(), width=100, height=dlc->height();
+					
+					CADrawableMusElement *dLeft = v->nearestLeftElement( coords.x(), coords.y(), dlc->lyricsContext()->associatedVoice() );
+					CADrawableMusElement *dRight = v->nearestRightElement( coords.x(), coords.y(), dlc->lyricsContext()->associatedVoice() );
+					if ( dLeft && dLeft->musElement()->musElementType()==CAMusElement::Note ) {
+						xPos = dLeft->xPos();
+						timeStart = dLeft->musElement()->timeStart();
+						timeLength = dLeft->musElement()->timeLength();
+					} else
+						break;
+					
+					if ( dRight )
+						width = dRight->xPos() - dLeft->xPos();
+					
+					QLineEdit *edit = v->createSyllableEdit(QRect(xPos, yPos, width, height));
 					connect(edit, SIGNAL(textEdited(const QString)), this, SLOT(on_syllableEdit_textEdited(const QString)));
 					edit->setFocus();
-					edit->move(coords);
-					edit->show();
 					
 					break;
 				} else

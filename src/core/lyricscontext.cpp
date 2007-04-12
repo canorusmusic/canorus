@@ -7,9 +7,10 @@
 
 #include "core/lyricscontext.h"
 
-CALyricsContext::CALyricsContext(CASheet *s, const QString name)
+CALyricsContext::CALyricsContext(CAVoice *v, CASheet *s, const QString name)
  : CAContext(s, name) {
 	setContextType( LyricsContext );
+	setAssociatedVoice( v );
 }
 
 CALyricsContext::~CALyricsContext() {
@@ -24,5 +25,12 @@ CAMusElement* CALyricsContext::findNextMusElement(CAMusElement*) {
 CAMusElement* CALyricsContext::findPrevMusElement(CAMusElement*) {
 }
 
-bool CALyricsContext::removeMusElement(CAMusElement*, bool) {
+bool CALyricsContext::removeMusElement(CAMusElement* elt, bool autodelete) {
+	if ( _syllableList.contains(static_cast<CASyllable*>(elt)) ) {
+		_syllableList.removeAll(static_cast<CASyllable*>(elt));
+		if (autodelete) delete elt;
+		return true;
+	}
+	
+	return false;
 }

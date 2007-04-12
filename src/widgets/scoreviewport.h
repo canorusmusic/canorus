@@ -22,6 +22,7 @@ class QMouseEvent;
 class QWheelEvent;
 class QTimer;
 class QGridLayout;
+class QLineEdit;
 
 class CADrawable;
 class CADrawableMusElement;
@@ -99,6 +100,9 @@ public:
 	CADrawableMusElement *nearestRightElement(int x, int y, bool currentContextOnly=true);
 	CADrawableMusElement *nearestRightElement(int x, int y, CAVoice *voice);
 	
+	CADrawableContext *nearestUpContext(int x, int y);
+	CADrawableContext *nearestDownContext(int x, int y);
+	
 	int calculateTime(int x, int y);
 	
 	CAContext *contextCollision(int x, int y);
@@ -110,8 +114,6 @@ public:
 	inline bool manualScroll() { return _allowManualScroll; }
 	
 	void checkScrollBars();
-	
-	void calculateShadowNoteCoords();
 	
 	inline CAScrollBarVisibility isScrollBarVisible() { return _scrollBarVisible;}
 	void setScrollBarVisible(CAScrollBarVisibility status);
@@ -135,7 +137,6 @@ public:
 	inline const QRect worldCoords() { return QRect(worldX(), worldY(), worldWidth(), worldHeight()); }
 
 	inline const float zoom() { return _zoom; }
-
 		
 	void setWorldCoords(const QRect r, bool animate=false, bool force=false);
 	void setWorldCoords(int x, int y, int w, int h, bool animate=false, bool force=false)  { setWorldCoords( QRect(x,y,w,h), animate, force); }
@@ -161,7 +162,7 @@ public:
 	inline void clearRepaintArea() { if (_repaintArea) delete _repaintArea; _repaintArea=0; }
 	
 	inline bool shadowNoteVisible() { return _shadowNoteVisible; }
-	inline void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; _shadowNoteVisibleOnLeave = visible; calculateShadowNoteCoords(); }
+	inline void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; _shadowNoteVisibleOnLeave = visible; updateHelpers(); }
 	
 	inline bool drawShadowNoteAccs() { return _drawShadowNoteAccs; }
 	inline void setDrawShadowNoteAccs(bool draw) { _drawShadowNoteAccs = draw; }
@@ -170,6 +171,11 @@ public:
 	inline void setShadowNoteAccs(int accs) { _shadowNoteAccs = accs; }
 	
 	inline void setShadowNoteDotted(int dotted) { for (int i=0; i<_shadowNote.size(); i++) _shadowNote[i]->setDotted(dotted); }
+	
+	QLineEdit *createSyllableEdit( QRect geometry );
+	void removeSyllableEdit(QLineEdit *);
+	
+	void updateHelpers(); // method for updating shadow notes, syllable edits and other post-engrave elements coordinates and sizes when zoom level is changed etc.
 	
 private slots:
 	void mousePressEvent(QMouseEvent *e);
@@ -249,6 +255,15 @@ private:
 	/////////////////////////
 	int _oldWorldX, _oldWorldY, _oldWorldW, _oldWorldH; // Old coordinates used before the repaint. This is needed so only the new part of the viewport gets repainted when panning.
 	bool _playing;                                      // Set to on, when in Playback mode
+	
+	// QLineEdit for editing or creating a lyrics syllable
+	QLineEdit *_syllableEdit;
+	inline QLineEdit *syllableEdit() { return _syllableEdit; }
+	inline void setSyllableEdit( QLineEdit *e ) { _syllableEdit = e; }
+	QRect _syllableEditGeometry;
+	inline QRect syllableEditGeometry() { return _syllableEditGeometry; }
+	inline void setSyllableEditGeometry( const QRect r ) { _syllableEditGeometry = r; }
+	
 	int _xCursor, _yCursor;                             // Mouse cursor position in absolute world coords.
 	bool _holdRepaint;                                  // Flag to prevent multiple repaintings.
 	bool _checkScrollBarsDeadLock;                      // Flag to prevent recursive checkScrollBars() calls.

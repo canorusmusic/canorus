@@ -11,6 +11,7 @@
 #include "core/kdtree.h"
 #include "core/muselement.h"
 #include "core/playable.h"
+#include "core/voice.h"
 
 /*!
 	\class CAKDTree
@@ -125,7 +126,7 @@ QList<CADrawable *> CAKDTree::findInRange(QRect *rect) {
 
 /*!
 	Finds the nearest left element to the given coordinate and returns a pointer to it or 0 if none
-	found. Left element border is taken into account.
+	found. Left elements borders are taken into account.
 	
 	If \a timeBased is false (default), the lookup should be view-based - the nearest element is
 	selected as it appears on the screen. If \a timeBased if true, the nearest element is selected
@@ -137,43 +138,28 @@ CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *
 		
 	CADrawable *elt=0;
 	QList<CADrawable *>::const_iterator i;
-	if (!timeBased) {
-		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
-			if ( ((!elt) || (((*i)->xPos() + (*i)->width()) > (elt->xPos()+elt->width()))) &&
-			     (((*i)->xPos() + (*i)->width()) < x) &&
-			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context)) &&
-			     ((!voice || !((CADrawableMusElement*)(*i))->musElement()->isPlayable()) || 
-			                  ( ((CADrawableMusElement*)(*i))->musElement()->isPlayable() &&
-			                    ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
-			                  )
-			     )
-			   ) {
-				elt = *i;
-			}
-		}
-	} else {
-		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
-			if ( ((!elt) || ((*i)->xPosOrig() > elt->xPosOrig())) &&
-			     ((*i)->xPosOrig() < x) &&
-			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context)) &&
-			     ((CADrawableMusElement*)*i)->musElement() &&
-			     (!voice || !((CADrawableMusElement*)*i)->musElement()->isPlayable() || 
-			                  ( ((CADrawableMusElement*)*i)->musElement()->isPlayable() &&
-			                    ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
-			                  )
-			     )
-			   ) {
-				elt = *i;
-			}
+	for (i = _list.constBegin(); i != _list.constEnd(); i++) {
+		if ( ( !elt || (timeBased?(*i)->xPosOrig():(*i)->xPos()) > (timeBased?elt->xPosOrig():elt->xPos()) ) && // element's X is lesser than the already found element's X
+		     ( ( timeBased?(*i)->xPosOrig():(*i)->xPos() ) < x) && // element's X is lesser than the given X
+		     ( !context  || ((CADrawableMusElement*)(*i))->drawableContext() == context ) && // compare contexts
+		     ( !voice || // compare voices
+		         !((CADrawableMusElement*)(*i))->musElement()->isPlayable() && // if the element isn't playable, see if it has the same context as the voice
+		         ((CADrawableMusElement*)(*i))->musElement()->context() == voice->staff()
+		         || 
+		         ((CADrawableMusElement*)(*i))->musElement()->isPlayable() && // if the element is playable, see if it has the exactly same voice
+		         ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
+		     )
+		   ) {
+			elt = *i;
 		}
 	}
-	
+		
 	return elt;
 }
 
 /*!
 	Finds the nearest right element to the given coordinate and returns a pointer to it or 0 if none
-	found. Left element border is taken into account.
+	found. Left elements borders are taken into account.
 	
 	If \a timeBased is false (default), the lookup should be view-based - the nearest element is
 	selected as it appears on the screen. If \a timeBased if true, the nearest element is selected
@@ -185,36 +171,21 @@ CADrawable* CAKDTree::findNearestRight(int x, bool timeBased, CADrawableContext 
 		
 	CADrawable *elt=0;
 	QList<CADrawable *>::const_iterator i;
-	if (!timeBased) {
-		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
-			if ( ((!elt) || ((*i)->xPos() < elt->xPos())) &&
-			     ((*i)->xPos() > x) &&
-			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context)) &&
-			     ((!voice || !((CADrawableMusElement*)(*i))->musElement()->isPlayable()) || 
-			                  ( ((CADrawableMusElement*)(*i))->musElement()->isPlayable() &&
-			                    ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
-			                  )
-			     )
-			   ) {
-				elt = *i;
-			}
-		}
-	} else {
-		for (i = _list.constBegin(); i != _list.constEnd(); i++) {
-			if ( ((!elt) || ((*i)->xPosOrig() < elt->xPosOrig())) &&
-			     ((*i)->xPosOrig() > x) &&
-			     ((!context) || (((CADrawableMusElement*)(*i))->drawableContext() == context)) &&
-			     ((!voice || !((CADrawableMusElement*)(*i))->musElement()->isPlayable()) || 
-			                  ( ((CADrawableMusElement*)(*i))->musElement()->isPlayable() &&
-			                    ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
-			                  )
-			     )
-			   ) {
-				elt = *i;
-			}
+	for (i = _list.constBegin(); i != _list.constEnd(); i++) {
+		if ( ( !elt || (timeBased?(*i)->xPosOrig():(*i)->xPos()) < (timeBased?elt->xPosOrig():elt->xPos()) ) && // element's X is lesser than the already found element's X
+		     ( ( timeBased?(*i)->xPosOrig():(*i)->xPos() ) > x) && // element's X is lesser than the given X
+		     ( !context  || ((CADrawableMusElement*)(*i))->drawableContext() == context ) && // compare contexts
+		     ( !voice || // compare voices
+		         !((CADrawableMusElement*)(*i))->musElement()->isPlayable() && // if the element isn't playable, see if it has the same context as the voice
+		         ((CADrawableMusElement*)(*i))->musElement()->context() == voice->staff()
+		         || 
+		         ((CADrawableMusElement*)(*i))->musElement()->isPlayable() && // if the element is playable, see if it has the exactly same voice
+		         ((CAPlayable*)((CADrawableMusElement*)(*i))->musElement())->voice() == voice
+		     )
+		   ) {
+			elt = *i;
 		}
 	}
-	
 	
 	return elt;
 }
