@@ -73,7 +73,7 @@ bool CAFunctionMarkingContext::removeMusElement(CAMusElement *elt, bool cleanup)
 	if (cleanup)
 		delete elt;
 	
-	return _functionMarkingList.removeAll((CAFunctionMarking*)elt);
+	return _functionMarkingList.removeAll(static_cast<CAFunctionMarking*>(elt));
 }
 
 /*!

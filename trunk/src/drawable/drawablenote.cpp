@@ -81,22 +81,20 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 	p->setFont(font);
 
 	QPen pen;
-
-	////////////////////////////////////////////////
-	//Draw ledger lines
-	////////////////////////////////////////////////
+	
+	// Draw ledger lines
 	if ( _drawLedgerLines &&
 	     note() && note()->voice() && note()->voice()->staff() &&
-	     ( (note()->notePosition() <= -2) ||	//note is below the staff
-	       (note()->notePosition() >= note()->voice()->staff()->numberOfLines()*2)	//note is above the staff
+	     ( (note()->notePosition() <= -2) ||	// note is below the staff
+	       (note()->notePosition() >= note()->voice()->staff()->numberOfLines()*2)	// note is above the staff
 	     )
 	   ) {
-	   	int direction = (note()->notePosition() > 0 ? 1 : -1);	//1 falling, -1 rising
-	   	int ledgerDist = (int)(9.0*s.z);	//distance between the ledger lines - notehead height
+	   	int direction = (note()->notePosition() > 0 ? 1 : -1);	// 1 falling, -1 rising
+	   	int ledgerDist = qRound(9.0*s.z);	// distance between the ledger lines - notehead height
 	   	
-	   	//draw ledger lines in direction from the notehead to staff
-	   	int y = (int)(s.y + ((_height*s.z)/2 + 0.5));	//initial y
-	   	if ((note()->notePosition() % 2) != 0)	//if the note is not on the ledger line, shift the ledger line by half space
+	   	// draw ledger lines in direction from the notehead to staff
+	   	int y = (int)(s.y + ((height()*s.z)/2 + 0.5));	// initial y
+	   	if ((note()->notePosition() % 2) != 0)	// if the note is not on the ledger line, shift the ledger line by half space
 	   		y += (ledgerDist/2)*direction;
 
 		QPen pen(s.color);
@@ -110,17 +108,15 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			p->drawLine((int)(s.x - 4*s.z), (int)(y), (int)(s.x + (_noteHeadWidth + 4)*s.z), (int)(y));
 	}
 	
-	////////////////////////////////////////////////
-	//Draw Noteheads
-	////////////////////////////////////////////////
+	// Draw Noteheads
 	switch (note()->noteLength()) {
 		case CANote::HundredTwentyEighth: {
 			//draw notehead
 			s.y += (int)((_height*s.z)/2 + 0.5);
 			p->drawText(s.x,(int)(s.y - 0.1*s.z),QString(0xE125));
 			
-			//draw stem and flag
-			//TODO: Emmentaler font doesn't have 128th, 64th flag is drawn instead! Need to somehow compose the 128th flag? -Matevz
+			// draw stem and flag
+			/// \todo Emmentaler font doesn't have 128th, 64th flag is drawn instead! Need to somehow compose the 128th flag? -Matevz
 			pen.setWidth((int)(1.2*s.z));
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setColor(s.color);
@@ -295,9 +291,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 		}
 	}
 	
-	////////////////////////////////////////////////
-	//Draw Dots
-	////////////////////////////////////////////////
+	// Draw Dots
 	float delta=4*s.z;
 	for (int i=0; i<note()->dotted(); i++) {
 		pen.setWidth((int)(2.7*s.z+0.5) + 1);

@@ -180,6 +180,8 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, 
 bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateT, bool force) {
 	if (!eltBefore || !_musElementList.size()) {
 		_musElementList.push_front(elt);
+		if (updateT)
+			updateTimes(0);
 		return true;
 	}
 	
@@ -215,7 +217,8 @@ bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, 
 */
 CAClef* CAVoice::getClef(CAMusElement *elt) {
 	CAClef* lastClef = 0;
-	for (int i=0; (i<_musElementList.size()) && (_musElementList[i] != elt); i++) {
+	int i;
+	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != elt); i++) {
 		if (_musElementList[i]->musElementType() == CAMusElement::Clef)
 			lastClef = (CAClef*)_musElementList[i];
 	}

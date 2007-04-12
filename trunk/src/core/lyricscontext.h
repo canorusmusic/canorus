@@ -12,19 +12,25 @@
 
 #include <QList>
 
-class CASyllable;
+#include "core/syllable.h"
+
+class CAVoice;
 
 class CALyricsContext : public CAContext {
 public:
-	CALyricsContext(CASheet *s, const QString name);
+	CALyricsContext(CAVoice *v, CASheet *s, const QString name);
 	~CALyricsContext();
 	void clear();
 	CAMusElement* findNextMusElement(CAMusElement*);
 	CAMusElement* findPrevMusElement(CAMusElement*);
 	bool removeMusElement(CAMusElement*, bool);
+	
+	inline CAVoice *associatedVoice() { return _associatedVoice; }
+	inline void setAssociatedVoice( CAVoice *v ) { _associatedVoice = v; }
 
 private:
 	QList<CASyllable*> _syllableList;
+	CAVoice *_associatedVoice;
 };
 
 #endif /* LYRICSCONTEXT_H_ */

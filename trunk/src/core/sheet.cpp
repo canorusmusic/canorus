@@ -40,6 +40,20 @@ void CASheet::addContext(CAContext *c) {
 		_staffList.append((CAStaff*)c);
 }
 
+void CASheet::insertContextAfter(CAContext *after, CAContext *c) {
+	int idx = _contextList.indexOf(after);
+	_contextList.insert(idx+1, c);
+	if (c->contextType() == CAContext::Staff) {
+		for (; idx>0 && _contextList[idx]->contextType()!=CAContext::Staff; idx--);
+		if (idx>=0) {
+			idx = _staffList.indexOf(static_cast<CAStaff*>(_contextList[idx]));
+			_staffList.insert(idx+1, static_cast<CAStaff*>(c));
+		} else {
+			_staffList.prepend(static_cast<CAStaff*>(c));
+		}
+	}
+}
+
 CAStaff *CASheet::addStaff() {
 	CAStaff *s = new CAStaff(this, QObject::tr("Staff%1").arg(staffCount()+1));
 	_contextList.append(s);

@@ -56,4 +56,4 @@ class CADrawableNote : public CADrawableMusElement {
 		static const int HALF_YPOS_DELTA = 23;
 };
 
-#endif /*DRAWABLENOTE_H_*/
+#endif /* DRAWABLENOTE_H_ */

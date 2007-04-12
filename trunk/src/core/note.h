@@ -39,7 +39,7 @@ public:
 	CAStemDirection stemDirection() { return _stemDirection; }
 	void setStemDirection(CAStemDirection direction);
 	
-	int notePosition() { return _notePosition; }
+	inline int notePosition() { return _notePosition; }
 	
 	inline unsigned char midiPitch() { return _midiPitch; }
 	void setMidiPitch(unsigned char pitch) { _midiPitch = pitch; }

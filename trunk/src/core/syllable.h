@@ -35,7 +35,7 @@ private:
 	bool _hyphenStart, _melismaStart;
 	QString _text;
 	int _stanzaNumber;
-	CAVoice *_voice; // associated voice
+	CAVoice *_voice; // associated voice, 0 if preferred
 };
 
 #endif /* SYLLABLE_H_ */
