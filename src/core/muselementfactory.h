@@ -37,6 +37,8 @@
 #include "core/rest.h"
 #include "core/slur.h"
 #include "core/functionmarking.h"
+#include "core/lyricscontext.h"
+#include "core/syllable.h"
 
 class CAMusElement;
 
@@ -82,10 +84,24 @@ public:
 	bool configureFunctionMarking( CAFunctionMarkingContext *fmc,
 	                               int timeStart, int timeLength );
 	
+	bool configureSyllable( QString text,
+	                        int stanzaNumber,
+	                        bool hyphen,
+	                        bool melisma,
+	                        CAVoice *voice,
+	                        CALyricsContext *context
+	                      );
+	
 	inline CAMusElement::CAMusElementType musElementType()
 	{ return mpoMusElement->musElementType(); };
 	
 	void setMusElementType( CAMusElement::CAMusElementType eMEType );
+	
+	inline void setTimeStart(int timeStart) { _timeStart = timeStart; }
+	inline int timeStart() { return _timeStart; }
+	
+	inline void setTimeLength(int timeLength) { _timeLength = timeLength; }
+	inline int timeLength() { return _timeLength; }
 	
 	inline CAPlayable::CAPlayableLength playableLength() { return _ePlayableLength; }
 	
@@ -179,11 +195,18 @@ public:
 	inline bool isFMEllipse() { return _fmEllipse; }
 	inline void setFMEllipse( bool e ) { _fmEllipse = e; }	
 	
+	inline QString syllableText() { return _syllableText; }
+	inline void setSyllableText( QString text ) { _syllableText = text; }
+	
 private:
 	CAMusElement *mpoMusElement;     // newly created music element itself
 	/////////////////////////////////
 	// Element creation parameters //
 	/////////////////////////////////
+	int _timeStart;
+	int _timeLength;
+	
+	// Staff music elements
 	CAPlayable::CAPlayableLength _ePlayableLength; // Length of note/rest to be added
 	CANote::CAStemDirection _eNoteStemDirection; // Note stem direction to be inserted
 	CASlur::CASlurType _eSlurType;  // Slur type to be placed
@@ -198,6 +221,7 @@ private:
 	CABarline::CABarlineType _eBarlineType; // Type of the barline
 	CASlur::CASlurStyle _slurStyle; // Style of the slur (solid, dotted)
 	
+	// Function Marking
 	CAFunctionMarking::CAFunctionType _fmFunction; // Name of the function
 	CAFunctionMarking::CAFunctionType _fmChordArea; // Chord area of the function
 	CAFunctionMarking::CAFunctionType _fmTonicDegree; // Tonic degree of the function
@@ -205,5 +229,8 @@ private:
 	bool _fmChordAreaMinor;
 	bool _fmTonicDegreeMinor;
 	bool _fmEllipse;
+	
+	// Lyrics
+	QString _syllableText;
 };
 #endif // MUSELEMENTFACTORY_H_

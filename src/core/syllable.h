@@ -9,6 +9,7 @@
 #define SYLLABLE_H_
 
 #include "core/muselement.h"
+#include "core/lyricscontext.h"
 
 #include <QString>
 
@@ -30,7 +31,12 @@ public:
 	inline void setVoice(CAVoice* v) { _voice = v; }
 	inline int stanzaNumber() { return _stanzaNumber; }
 	inline void setStanzaNumber(int n) { _stanzaNumber = n; }
-
+	
+	inline CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(_context); }
+	
+	CAMusElement* clone();
+	int compare(CAMusElement*);
+	
 private:
 	bool _hyphenStart, _melismaStart;
 	QString _text;

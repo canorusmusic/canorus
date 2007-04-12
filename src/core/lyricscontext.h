@@ -11,9 +11,9 @@
 #include "core/context.h"
 
 #include <QList>
+#include <QHash>
 
-#include "core/syllable.h"
-
+class CASyllable;
 class CAVoice;
 
 class CALyricsContext : public CAContext {
@@ -27,9 +27,10 @@ public:
 	
 	inline CAVoice *associatedVoice() { return _associatedVoice; }
 	inline void setAssociatedVoice( CAVoice *v ) { _associatedVoice = v; }
+	bool addSyllable( CASyllable* );
 
 private:
-	QList<CASyllable*> _syllableList;
+	QHash< int, QList<CASyllable*> > _syllableList;
 	CAVoice *_associatedVoice;
 };
 
