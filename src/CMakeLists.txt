@@ -199,6 +199,10 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/syllable.cpp
 	
 	core/functionmarking.cpp
+
+	drawable/drawablestaff.cpp
+	drawable/drawablecontext.cpp
+	drawable/drawable.cpp
 )
 
 SET(Canorus_Scripts	# Official scripts shipped with Canorus.
@@ -488,9 +492,18 @@ IF(APPLE)
 	# Install Qt libs
 	INSTALL(PROGRAMS ${Canorus_OSX_Qt_libs} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_LIB_DIR})
 
+	# Install Python libs
+	IF(USE_PYTHON)
+		# OSX build requires a "framework" build of Python
+		# in CMakeCache.txt PYTHON_LIBRARY is not a file but '-framework Python'
+		SET(OSX_PYTHON_LIB /Library/Frameworks/Python.framework/Versions/Current/Python)		
+		INSTALL(FILES ${OSX_PYTHON_LIB} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_LIB_DIR})
+	ENDIF(USE_PYTHON)
+
 	# Make a list of source libraries so the packaging script knows which symbols to change
+	# Bundle Qt libs and Python with the .app, OSX comes with the correct version of Ruby already installed
 	SET(OSX_installed_libs_file ${CANORUS_OSX_DIR}/OSX_installed_libs.txt)
-	SET(OSX_installed_libs ${Canorus_OSX_Qt_libs})
+	SET(OSX_installed_libs ${Canorus_OSX_Qt_libs} ${OSX_PYTHON_LIB})
 	FILE(WRITE ${OSX_installed_libs_file} "")
 	FOREACH(file ${OSX_installed_libs})
 		FILE(APPEND ${OSX_installed_libs_file} "${file}\n")
