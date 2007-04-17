@@ -23,6 +23,7 @@
 #include "drawable/drawableaccidental.h"
 
 #include "drawable/drawablelyricscontext.h"
+#include "drawable/drawablesyllable.h"
 
 #include "drawable/drawablefunctionmarkingcontext.h"
 #include "drawable/drawablefunctionmarking.h"
@@ -35,6 +36,7 @@
 #include "core/timesignature.h"
 
 #include "core/lyricscontext.h"
+#include "core/syllable.h"
 
 #include "core/functionmarkingcontext.h"
 #include "core/functionmarking.h"
@@ -81,6 +83,8 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			CALyricsContext *lyricsContext = static_cast<CALyricsContext*>(sheet->contextAt(i));
 			drawableContextMap[lyricsContext] = new CADrawableLyricsContext(lyricsContext, 0, dy);
 			v->addCElement(drawableContextMap[lyricsContext]);
+			QList<CAMusElement*> syllableList = lyricsContext->musElementList();
+			musStreamList << syllableList;
 			contexts << lyricsContext;
 		}
 	}
@@ -128,7 +132,8 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			        ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (!elt->isPlayable()) &&
 			        (elt->musElementType() != CAMusElement::Barline) &&	//barlines should be aligned
-			        (elt->musElementType() != CAMusElement::FunctionMarking)	//function markings are placed separately
+			        (elt->musElementType() != CAMusElement::FunctionMarking) &&	//function markings are placed separately
+			        (elt->musElementType() != CAMusElement::Syllable)	//syllables are placed separately
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
 				
@@ -316,12 +321,15 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 			lastAccidentals[i]->setXPos(lastAccidentals[i]->xPos()+deltaXPos-1);
 		}
 		
-		//Place noteheads and other elements aligned to noteheads
+		// Place noteheads and other elements aligned to noteheads
 		for (int i=0; i < streams; i++) {
-			//loop until the element has come, which has bigger timeStart
+			// loop until the element has come, which has bigger timeStart
 			while ( (streamsIdx[i] < musStreamList[i].size()) &&
 			        ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() == timeStart) &&
-			        ((elt->isPlayable() || (elt->musElementType()==CAMusElement::FunctionMarking)))
+			        (elt->isPlayable() ||
+			         elt->musElementType()==CAMusElement::FunctionMarking ||
+			         elt->musElementType()==CAMusElement::Syllable
+			        )
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
 				CADrawableMusElement *newElt=0;
@@ -651,6 +659,18 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 						if (newElt && streamsIdx[i]+1<musStreamList[i].size() && musStreamList[i].at(streamsIdx[i]+1)->timeStart()!=musStreamList[i].at(streamsIdx[i])->timeStart())
 							streamsX[i] += (newElt->neededWidth());
 						
+						break;
+					}
+					case CAMusElement::Syllable: {
+						newElt = new CADrawableSyllable(
+							static_cast<CASyllable*>(elt),
+							static_cast<CADrawableLyricsContext*>(drawableContext),
+							streamsX[i],
+							drawableContext->yPos()
+						);
+
+						v->addMElement(newElt);
+						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 						break;
 					}
 				}

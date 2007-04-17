@@ -15,14 +15,17 @@
 CADrawableSyllable::CADrawableSyllable( CASyllable* s, CADrawableLyricsContext* c, int x, int y )
  : CADrawableMusElement(s, c, x, y) {
 	setDrawableMusElementType( DrawableSyllable );
+	setWidth( syllable()->text().size() * 4 );
+	setHeight( 15 );
 }
 
 CADrawableSyllable::~CADrawableSyllable() {
 }
 
 void CADrawableSyllable::draw(QPainter *p, const CADrawSettings s) {
-	p->setFont( QFont("Century Schoolbook L", qRound(s.z*14)) );
-	p->drawText( s.x, s.y, syllable()->text() );
+	p->setPen(QPen(s.color));
+	p->setFont( QFont("Century Schoolbook L", qRound(s.z*12)) );
+	p->drawText( s.x, s.y+qRound(height()*s.z), syllable()->text().replace("_", " ") );
 }
 
 CADrawableSyllable *CADrawableSyllable::clone(CADrawableContext *c) {

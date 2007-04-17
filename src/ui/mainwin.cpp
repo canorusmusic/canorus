@@ -44,7 +44,6 @@
 #include "drawable/drawablelyricscontext.h"
 #include "drawable/drawablemuselement.h"
 #include "drawable/drawablenote.h"
-#include "drawable/drawableaccidental.h"	//DEBUG, this isn't needed though
 
 #include "core/canorus.h"
 #include "core/sheet.h"
@@ -914,6 +913,9 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					} else
 						break;
 					
+					musElementFactory()->setTimeStart( timeStart );
+					musElementFactory()->setTimeLength( timeLength );
+					
 					if ( dRight )
 						width = dRight->xPos() - dLeft->xPos();
 					
@@ -1639,8 +1641,28 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 	It jumps and creates the next syllable when space is pressed.
 */
 void CAMainWin::on_syllableEdit_textEdited(const QString text) {
-	if ( text.right(1)==" " )
-		std::cout << "new syllable" << std::endl;
+	bool success = false;
+	if ( text.right(1)==" " ) {
+		QString syllableText = text;
+		bool hyphen = false;
+		if (syllableText.right(2)=="- ") { hyphen = true; syllableText[syllableText.size()-2] = ' '; }
+		
+		bool melisma = false;
+		if (syllableText.right(2)=="_ ") { melisma = true; syllableText[syllableText.size()-2] = ' '; }
+		
+		int stanzaNumber = 1; /// \todo GUI for syllable stanza number
+		CAVoice *voice = 0; /// \todo GUI for syllable specific associated voice - current is the default lyrics context's one
+		syllableText = syllableText.simplified();
+		
+		CALyricsContext *context = static_cast<CALyricsContext*>(currentScoreViewPort()->currentContext()->context());
+		
+		success = musElementFactory()->configureSyllable( syllableText, stanzaNumber, hyphen, melisma, voice, context);
+	}
+	
+	if ( success ) {
+		currentScoreViewPort()->removeSyllableEdit();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
 }
 
 void CAMainWin::on_uiFMFunction_toggled(bool checked, int buttonId) {

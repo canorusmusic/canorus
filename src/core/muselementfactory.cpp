@@ -81,6 +81,9 @@ private:
 */
 CAMusElementFactory::CAMusElementFactory()
 {
+	setTimeStart( 0 );
+	setTimeLength( 256 );
+	
 	_ePlayableLength = CAPlayable::Quarter;
 	_eNoteStemDirection = CANote::StemPreferred;
 	_iPlayableDotted = 0;

@@ -28,9 +28,10 @@ public:
 	inline CAVoice *associatedVoice() { return _associatedVoice; }
 	inline void setAssociatedVoice( CAVoice *v ) { _associatedVoice = v; }
 	bool addSyllable( CASyllable* );
+	QList<CAMusElement*> musElementList();
 
 private:
-	QHash< int, QList<CASyllable*> > _syllableList;
+	QHash< int, QList<CASyllable*> > _syllableMap;
 	CAVoice *_associatedVoice;
 };
 
