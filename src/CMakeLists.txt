@@ -185,7 +185,6 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/functionmarkingcontext.cpp
 
 	core/muselement.cpp
-	core/muselementfactory.cpp
 	core/voice.cpp
 	core/barline.cpp
 	core/clef.cpp
@@ -199,13 +198,6 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/syllable.cpp
 	
 	core/functionmarking.cpp
-
-	# These are included for now to fix bug #10879 on OSX 
-	# FIXME: use extern or similar to elminate the need to include these files. 
-	# -Sam 2007.04.15
-	drawable/drawablestaff.cpp
-	drawable/drawablecontext.cpp
-	drawable/drawable.cpp
 )
 
 SET(Canorus_Scripts	# Official scripts shipped with Canorus.
