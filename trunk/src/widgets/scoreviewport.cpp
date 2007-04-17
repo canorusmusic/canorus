@@ -74,6 +74,13 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	_playing = false;
 	_currentContext = 0;
 
+	// init virtual canvas
+	_canvas = new QWidget(this);
+	setMouseTracking(true);
+	_canvas->setMouseTracking(true);
+	_backgroundBrush = QBrush(QColor(255, 255, 240));
+	_repaintArea = 0;
+	
 	// init animation stuff
 	_animationTimer = new QTimer();
 	_animationTimer->setInterval(50);
@@ -85,13 +92,8 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	_shadowNoteAccs = 0;
 	_drawShadowNoteAccs = false;
 	setSyllableEdit( 0 );
-	
-	// init virtual canvas
-	_canvas = new QWidget(this);
-	setMouseTracking(true);
-	_canvas->setMouseTracking(true);
-	_backgroundBrush = QBrush(QColor(255, 255, 240));
-	_repaintArea = 0;
+	setSyllableEdit( new QLineEdit( _canvas ) );
+	setSyllableEditVisible( false );
 	
 	// init scrollbars
 	_vScrollBar = new QScrollBar(Qt::Vertical, this);
@@ -872,8 +874,8 @@ void CAScoreViewPort::updateHelpers() {
 		}
 	}
 	
-	if (syllableEdit()) {
-		syllableEdit()->setFont( QFont("Century Schoolbook L", qRound(zoom()*14)) );
+	if ( syllableEditVisible() ) {
+		syllableEdit()->setFont( QFont("Century Schoolbook L", qRound(zoom()*(12-2))) );
 		syllableEdit()->setGeometry(
 			qRound( (syllableEditGeometry().x()-worldX())*zoom() ),
 			qRound( (syllableEditGeometry().y()-worldY())*zoom() ),
@@ -881,6 +883,8 @@ void CAScoreViewPort::updateHelpers() {
 			qRound( syllableEditGeometry().height()*zoom() )
 		);
 		syllableEdit()->show();
+	} else {
+		syllableEdit()->hide();
 	}
 }
 
@@ -1179,9 +1183,10 @@ CADrawableContext *CAScoreViewPort::findCElement(CAContext *context) {
 	Create a QLineEdit for editing or creating a lyrics syllable.
 */
 QLineEdit *CAScoreViewPort::createSyllableEdit( QRect geometry ) {
-	setSyllableEdit( new QLineEdit( _canvas ) );
+	setSyllableEditVisible( true );
+	
 	setSyllableEditGeometry( geometry );
-	updateHelpers();
+	updateHelpers(); // show it
 	
 	return syllableEdit();
 }
@@ -1189,9 +1194,10 @@ QLineEdit *CAScoreViewPort::createSyllableEdit( QRect geometry ) {
 /*!
 	Removes and deletes the line edit for creating a lyrics syllable.
 */
-void CAScoreViewPort::removeSyllableEdit(QLineEdit *e) {
-	delete syllableEdit();
-	setSyllableEdit( 0 );
+void CAScoreViewPort::removeSyllableEdit() {
+	setSyllableEditVisible( false ); // don't delete it, ju
+	syllableEdit()->setText("");
+	updateHelpers();
 }
 	
 /*!

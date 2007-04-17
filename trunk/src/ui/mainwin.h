@@ -232,6 +232,7 @@ private:
 	
 	CAPlayback *_playback;
 	CAMusElementFactory *_musElementFactory;
+	inline CAMusElementFactory *musElementFactory() { return _musElementFactory; }
 	
 	///////////////////////////////////////////////////////////////////////////
 	// Pure user interface - widgets that weren't created by Qt Designer yet //

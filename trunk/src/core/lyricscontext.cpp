@@ -29,10 +29,10 @@ CAMusElement* CALyricsContext::findPrevMusElement(CAMusElement*) {
 bool CALyricsContext::removeMusElement(CAMusElement* elt, bool autodelete) {
 	if ( elt &&
 	     elt->musElementType()==CAMusElement::Syllable &&
-	     _syllableList.contains(static_cast<CASyllable*>(elt)->stanzaNumber()) &&
-	     _syllableList[static_cast<CASyllable*>(elt)->stanzaNumber()].contains(static_cast<CASyllable*>(elt))
+	     _syllableMap.contains(static_cast<CASyllable*>(elt)->stanzaNumber()) &&
+	     _syllableMap[static_cast<CASyllable*>(elt)->stanzaNumber()].contains(static_cast<CASyllable*>(elt))
 	    ) {
-		_syllableList[static_cast<CASyllable*>(elt)->stanzaNumber()].removeAll(static_cast<CASyllable*>(elt));
+		_syllableMap[static_cast<CASyllable*>(elt)->stanzaNumber()].removeAll(static_cast<CASyllable*>(elt));
 		if (autodelete)
 			delete elt;
 		return true;
@@ -48,6 +48,25 @@ bool CALyricsContext::removeMusElement(CAMusElement* elt, bool autodelete) {
 	\sa _syllableList
 */
 bool CALyricsContext::addSyllable( CASyllable *syllable ) {
+	if (_syllableMap.contains(syllable->stanzaNumber())) {
+		int i;
+		for (i=0; i<_syllableMap[syllable->stanzaNumber()].size() && _syllableMap[syllable->stanzaNumber()][i]->timeStart() < syllable->timeStart(); i++);
+		_syllableMap[syllable->stanzaNumber()].insert(i, syllable);
+	} else {
+		_syllableMap[syllable->stanzaNumber()] = QList<CASyllable*>();
+		_syllableMap[syllable->stanzaNumber()] << syllable;
+	}
+}
+
+QList<CAMusElement*> CALyricsContext::musElementList() {
+	QList< QList<CASyllable*> > list = _syllableMap.values();
+	QList<CAMusElement*> retList;
+	
+	for (int i=0; i<list.size(); i++)
+		for (int j=0; j<list[i].size(); j++)
+			retList << list[i][j];
+	
+	return retList;
 }
 
 /*!
