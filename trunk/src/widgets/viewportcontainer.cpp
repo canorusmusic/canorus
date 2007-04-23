@@ -43,8 +43,6 @@ CAViewPortContainer::CAViewPortContainer( QWidget *parent )
 /*!
 	Removes all the viewports and finally destroys container.
 	\warning This destructor also deletes the viewports!
-	
-	\todo It would be better for destructor to not delete viewports but QSplitter does that automatically. Any way to not destroy the viewports? -Matevz
 */
 CAViewPortContainer::~CAViewPortContainer() {
 	// automatically deletes all the children including the splitters
@@ -113,11 +111,8 @@ CAViewPort* CAViewPortContainer::splitHorizontally(CAViewPort *v) {
 /*!
 	Unsplits the views so the given viewport \a v is removed.
 	If no viewport is given, removes the last active one.
-	The removed viewport is also deleted.
 	
 	\return The pointer to the viewport which was removed. If none was removed (ie. the given viewport was not found or there are no viewports left) returns 0.
-	
-	\todo The viewport should not be deleted, but only removed from the splitter. However, splitter doesn't provide any removeWidget() analog to addWidget() methods. Any way to do this? -Matevz
 */				
 CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
 	if (!v && !(v = currentViewPort()))
@@ -138,8 +133,8 @@ CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
 				other->setParent( s->parentWidget() );
 				if(otherViewPort)
 					_viewPortMap[otherViewPort] = static_cast<QSplitter*>(s->parent());	
-			
-				delete s; // delete the splitter and the viewport
+				v->setParent(0); // remove the viewport from the splitter
+				delete s; // delete the splitter
 				removeViewPort(v);
 				return v;
 			} else if( !otherViewPort )
@@ -158,7 +153,7 @@ CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
 		}
 		// falls through only if s == this
 		default:
-			delete v; // removes and deletes viewport from the splitter
+			v->setParent(0); // remove the viewport from the splitter
 			removeViewPort(v);
 			return v;
 	}

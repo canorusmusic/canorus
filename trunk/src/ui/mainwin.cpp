@@ -429,8 +429,8 @@ void CAMainWin::clearUI() {
 	}
 	
 	// Delete all viewports
-	for (int i=0; i<_viewPortList.size(); i++)
-		delete _viewPortList[i];
+	while(!_viewPortList.isEmpty())
+		delete _viewPortList.takeFirst();
 	_viewPortList.clear();
 	_sheetMap.clear();
 	setCurrentViewPort( 0 );
@@ -482,8 +482,6 @@ void CAMainWin::doUnsplit(CAViewPort *v) {
 	v = currentViewPortContainer()->unsplit(v);
 	if (!v) return;
 	
-	_viewPortList.removeAll(v);
-	
 	if (currentViewPortContainer()->viewPortList().size() == 1)
 	{
 		uiCloseCurrentView->setEnabled(false);
@@ -493,9 +491,7 @@ void CAMainWin::doUnsplit(CAViewPort *v) {
 }
 
 void CAMainWin::on_uiUnsplitAll_triggered() {
-	QList<CAViewPort*> dockedViewPorts = currentViewPortContainer()->unsplitAll();
-	for(QList<CAViewPort*>::iterator i = dockedViewPorts.begin(); i < dockedViewPorts.end(); i++)
-		_viewPortList.removeAll(*i);
+	currentViewPortContainer()->unsplitAll();
 	uiCloseCurrentView->setEnabled(false);
 	uiUnsplitAll->setEnabled(false);
 	setCurrentViewPort( currentViewPortContainer()->currentViewPort() );
@@ -1938,8 +1934,11 @@ void CAMainWin::on_uiScoreView_triggered() {
 void CAMainWin::on_uiRemoveSheet_triggered() {
 	CASheet *sheet = currentSheet();
 	if (sheet) {
+		int idx = uiTabWidget->currentIndex();
 		document()->removeSheet(currentSheet());
 		CACanorus::rebuildUI(document());
+		if(idx < uiTabWidget->count())
+			uiTabWidget->setCurrentIndex(idx);
 		delete sheet;
 	}
 }

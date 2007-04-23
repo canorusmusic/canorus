@@ -19,7 +19,7 @@
 
 #ifdef Q_WS_X11
 #include <signal.h>
-void catch_int(int)
+void catch_sig(int)
 {
 	qApp->quit();
 }	
@@ -33,7 +33,8 @@ int main(int argc, char *argv[]) {
 	QApplication mainApp(argc, argv);
 	
 #ifdef Q_WS_X11
-	signal(SIGINT, catch_int);
+	signal(SIGINT, catch_sig);
+	signal(SIGQUIT, catch_sig);
 #endif
 	
 	// Set main application properties
