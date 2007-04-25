@@ -529,6 +529,8 @@ void CAMainWin::on_uiCanorusMLSource_triggered() {
 void CAMainWin::on_uiNewViewport_triggered() {
 	CAViewPort *v = currentViewPort()->clone( 0 );
 	initViewPort( v );
+	v->setGeometry( v->x(), v->y(), 400, 400 );
+	v->show();
 }
 
 /*!
@@ -1062,6 +1064,7 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 				
 				CACanorus::rebuildUI(document(), ((CAScoreViewPort*)v)->sheet());
 				((CAScoreViewPort*)v)->selectMElement(bar);
+				v->repaint();
 				break;
 			}
 			
@@ -1571,6 +1574,17 @@ void CAMainWin::on_uiImportDocument_triggered() {
 */
 void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
 	updateVoiceToolBar();
+	if ( currentScoreViewPort() ) {
+		if ( voiceNr &&
+		     currentScoreViewPort()->currentContext() &&
+		     currentScoreViewPort()->currentContext()->context()->contextType() == CAContext::Staff
+		   )
+			currentScoreViewPort()->setSelectedVoice( static_cast<CAStaff*>(currentScoreViewPort()->currentContext()->context())->voiceAt(voiceNr-1) );
+		else
+			currentScoreViewPort()->setSelectedVoice(0);
+		
+		currentScoreViewPort()->repaint();
+	}
 }
 
 /*!

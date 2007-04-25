@@ -161,8 +161,11 @@ public:
 	inline void setRepaintArea(QRect *area) { _repaintArea = area; }
 	inline void clearRepaintArea() { if (_repaintArea) delete _repaintArea; _repaintArea=0; }
 	
+	inline CAVoice *selectedVoice() { return _selectedVoice; }
+	inline void setSelectedVoice( CAVoice *selectedVoice ) { _selectedVoice = selectedVoice; }
+	
 	inline bool shadowNoteVisible() { return _shadowNoteVisible; }
-	inline void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; _shadowNoteVisibleOnLeave = visible; updateHelpers(); }
+	inline void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; setShadowNoteVisibleOnLeave(visible); }
 	
 	inline bool drawShadowNoteAccs() { return _drawShadowNoteAccs; }
 	inline void setDrawShadowNoteAccs(bool draw) { _drawShadowNoteAccs = draw; }
@@ -215,8 +218,13 @@ private:
 	int _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the viewport is currently showing.
 	float _zoom;                            // Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
 	
+	CAVoice *_selectedVoice;        // Voice to be drawn normal colors, others are shaded
 	bool _shadowNoteVisible;        // Should the shadow notes be rendered or not
+	
 	bool _shadowNoteVisibleOnLeave; // When you leave the viewport, shadow note is always turned off. This property holds the value, if shadow note was enabled before you left the viewport.
+	inline bool shadowNoteVisibleOnLeave() { return _shadowNoteVisibleOnLeave; }
+	inline void setShadowNoteVisibleOnLeave( bool v ) { _shadowNoteVisibleOnLeave = v; }
+	
 	int _shadowNoteAccs;            // Number of accidentals - 0 - natural, 1 - sharp, -1 flat
 	bool _drawShadowNoteAccs;       // Draw shadow note accs?
 	QList<CANote*> _shadowNote;     // List of all shadow notes - one shadow note per drawable staff

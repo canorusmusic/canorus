@@ -7,7 +7,7 @@
 
 #include <QPen>
 #include <QRect>
-#include <QVector>	//needed for RtMidi send message
+#include <QVector>	// needed for RtMidi send message
 
 #include <iostream>
 
