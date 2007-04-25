@@ -152,6 +152,7 @@ private slots:
 	// Playable
 	void on_uiPlayableLength_toggled(bool, int);
 	void on_uiNoteStemDirection_toggled(bool, int);
+	void on_uiHiddenRest_toggled( bool checked );
 	
 	// Key Signature
 	void on_uiKeySigNumberOfAccs_valChanged(int);
