@@ -34,6 +34,7 @@
 #include "core/note.h"
 #include "core/document.h"
 #include "core/sheet.h"
+#include "core/voice.h"
 
 const int CAScoreViewPort::RIGHT_EXTRA_SPACE = 100;	// Gives some space after the music so you're able to insert music elements after the last element
 const int CAScoreViewPort::BOTTOM_EXTRA_SPACE = 30; // Gives some space after the music so you're able to insert new contexts below the last context
@@ -87,10 +88,11 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	connect(_animationTimer, SIGNAL(timeout()), this, SLOT(on__animationTimer_timeout()));
 	
 	// init helpers
-	_shadowNoteVisible = false;
-	_shadowNoteVisibleOnLeave = false;
-	_shadowNoteAccs = 0;
-	_drawShadowNoteAccs = false;
+	setSelectedVoice( 0 );
+	setShadowNoteVisible( false );
+	setShadowNoteVisibleOnLeave( false );
+	setShadowNoteAccs( 0 );
+	setDrawShadowNoteAccs( false );
 	setSyllableEdit( 0 );
 	setSyllableEdit( new QLineEdit( _canvas ) );
 	setSyllableEditVisible( false );
@@ -821,12 +823,27 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		l = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
 
 	for (int i=0; i<l.size(); i++) {
+		QColor color;
+		CAMusElement *elt = static_cast<CADrawableMusElement*>(l[i])->musElement();
+		if ( _selection.contains(static_cast<CADrawableMusElement*>(l[i])))
+			color = Qt::red;
+		else
+		if ( selectedVoice() &&
+		     (elt->isPlayable() && static_cast<CAPlayable*>(elt)->voice()==selectedVoice() ||
+		      (!elt->isPlayable() && elt->context()==selectedVoice()->staff())
+		     ) ||
+		     (!selectedVoice())
+		   )
+			color=Qt::black;
+		else
+			color=Qt::gray;
+		
 		CADrawSettings s = {
 		               _zoom,
 		               (int)((l[i]->xPos() - _worldX) * _zoom),
 		               (int)((l[i]->yPos() - _worldY) * _zoom),
 		               drawableWidth(), drawableHeight(),
-		               (_selection.contains((CADrawableMusElement*)l[i])?Qt::red:Qt::black)
+		               color
 		               };
 		l[i]->draw(&p, s);
 	}
