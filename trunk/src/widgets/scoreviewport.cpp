@@ -830,17 +830,17 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 			color = Qt::red;
 		else
 		if ( selectedVoice() &&
-		     (elt->isPlayable() && static_cast<CAPlayable*>(elt)->voice()==selectedVoice() ||
+		     (elt && elt->isPlayable() && static_cast<CAPlayable*>(elt)->voice()==selectedVoice() ||
 		      (!elt->isPlayable() && elt->context()==selectedVoice()->staff())
 		     ) ||
 		     (!selectedVoice())
 		   ) {
-			if ( elt->musElementType()==CAMusElement::Rest &&
+			if ( elt && elt->musElementType()==CAMusElement::Rest &&
 			     static_cast<CAPlayable*>(elt)->voice()==selectedVoice() &&
 			     static_cast<CARest*>(elt)->restType()==CARest::Hidden
 			   ) {
 			   	color = Qt::green;
-			} else if ( elt->musElementType()==CAMusElement::Rest &&
+			} else if ( elt && elt->musElementType()==CAMusElement::Rest &&
 			            static_cast<CARest*>(elt)->restType()==CARest::Hidden
 			          ) {
 			   	color = QColor(0,0,0,0); // transparent color
@@ -848,7 +848,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 				color=Qt::black;
 			}
 		} else {
-			if ( elt->musElementType()==CAMusElement::Rest &&
+			if ( elt && elt->musElementType()==CAMusElement::Rest &&
 			     static_cast<CARest*>(elt)->restType()==CARest::Hidden
 			   ) {
 			   	color = QColor(0,0,0,0); // transparent color
