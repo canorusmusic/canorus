@@ -143,6 +143,7 @@ CADrawable* CAKDTree::findNearestLeft(int x, bool timeBased, CADrawableContext *
 		     ( ( timeBased?(*i)->xPosOrig():(*i)->xPos() ) < x) && // element's X is lesser than the given X
 		     ( !context  || ((CADrawableMusElement*)(*i))->drawableContext() == context ) && // compare contexts
 		     ( !voice || // compare voices
+		       !((CADrawableMusElement*)(*i))->musElement() ||
 		         !((CADrawableMusElement*)(*i))->musElement()->isPlayable() && // if the element isn't playable, see if it has the same context as the voice
 		         ((CADrawableMusElement*)(*i))->musElement()->context() == voice->staff()
 		         || 
@@ -176,6 +177,7 @@ CADrawable* CAKDTree::findNearestRight(int x, bool timeBased, CADrawableContext 
 		     ( ( timeBased?(*i)->xPosOrig():(*i)->xPos() ) > x) && // element's X is lesser than the given X
 		     ( !context  || ((CADrawableMusElement*)(*i))->drawableContext() == context ) && // compare contexts
 		     ( !voice || // compare voices
+		       !((CADrawableMusElement*)(*i))->musElement() ||
 		         !((CADrawableMusElement*)(*i))->musElement()->isPlayable() && // if the element isn't playable, see if it has the same context as the voice
 		         ((CADrawableMusElement*)(*i))->musElement()->context() == voice->staff()
 		         || 
