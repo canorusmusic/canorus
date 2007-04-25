@@ -26,6 +26,7 @@ public:
 	~CARest();
 	
 	CARestType restType() { return _restType; }
+	void setRestType( CARestType type ) { _restType = type; }
 	
 	int compare(CAMusElement *elt);
 	

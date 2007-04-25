@@ -456,6 +456,20 @@ void CAMainWin::on_uiFullscreen_toggled(bool checked) {
 		this->showNormal();
 }
 
+void CAMainWin::on_uiHiddenRest_toggled( bool checked ) {
+	if ( mode()==InsertMode )
+		_musElementFactory->setRestType( checked ? CARest::Hidden : CARest::Normal );
+	else if (mode()==SelectMode || mode()==EditMode) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if ( v && v->selection().size() ) {
+			CARest *rest = dynamic_cast<CARest*>(v->selection().at(0)->musElement());
+			if ( rest ) {
+				rest->setRestType( checked ? CARest::Hidden : CARest::Normal );
+				CACanorus::rebuildUI( document(), currentSheet() );
+			}
+		}
+	}}
+
 void CAMainWin::on_uiSplitHorizontally_triggered() {
 	CAViewPort *v = currentViewPortContainer()->splitHorizontally();
 	if(!v)
@@ -2180,6 +2194,7 @@ void CAMainWin::updatePlayableToolBar() {
 		uiPlayableLength->defaultAction()->setEnabled(true);
 		uiPlayableLength->setCurrentId( _musElementFactory->playableLength() );
 		uiNoteStemDirection->setCurrentId( _musElementFactory->noteStemDirection() );
+		uiHiddenRest->setEnabled(true);
 		uiHiddenRest->setChecked( _musElementFactory->restType()==CARest::Hidden );
 		uiPlayableToolBar->show();
 	} else if (mode()==EditMode) {
@@ -2192,14 +2207,18 @@ void CAMainWin::updatePlayableToolBar() {
 				if (playable->musElementType()==CAMusElement::Note) {
 					CANote *note = static_cast<CANote*>(playable);
 					uiNoteStemDirection->setCurrentId( note->stemDirection() );
+					uiHiddenRest->setEnabled(false);
 				} else if (playable->musElementType()==CAMusElement::Rest) {
 					CARest *rest = static_cast<CARest*>(playable);
+					uiHiddenRest->setEnabled(true);
 					uiHiddenRest->setChecked(rest->restType()==CARest::Hidden);
 				}
 				uiPlayableToolBar->show();
 				uiVoiceNum->setRealValue( playable->voice()->voiceNumber() );
-			} else
+			} else {
 				uiPlayableToolBar->hide();
+				uiHiddenRest->setEnabled(false);
+			}
 		}
 	} else
 		uiPlayableToolBar->hide();

@@ -32,6 +32,7 @@
 #include "interface/engraver.h"
 #include "core/staff.h"
 #include "core/note.h"
+#include "core/rest.h"
 #include "core/document.h"
 #include "core/sheet.h"
 #include "core/voice.h"
@@ -833,10 +834,28 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		      (!elt->isPlayable() && elt->context()==selectedVoice()->staff())
 		     ) ||
 		     (!selectedVoice())
-		   )
-			color=Qt::black;
-		else
-			color=Qt::gray;
+		   ) {
+			if ( elt->musElementType()==CAMusElement::Rest &&
+			     static_cast<CAPlayable*>(elt)->voice()==selectedVoice() &&
+			     static_cast<CARest*>(elt)->restType()==CARest::Hidden
+			   ) {
+			   	color = Qt::green;
+			} else if ( elt->musElementType()==CAMusElement::Rest &&
+			            static_cast<CARest*>(elt)->restType()==CARest::Hidden
+			          ) {
+			   	color = QColor(0,0,0,0); // transparent color
+			} else {
+				color=Qt::black;
+			}
+		} else {
+			if ( elt->musElementType()==CAMusElement::Rest &&
+			     static_cast<CARest*>(elt)->restType()==CARest::Hidden
+			   ) {
+			   	color = QColor(0,0,0,0); // transparent color
+			} else {
+				color=Qt::gray;
+			}
+		}
 		
 		CADrawSettings s = {
 		               _zoom,
