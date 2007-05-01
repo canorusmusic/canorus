@@ -343,7 +343,6 @@ bool CAMusElementFactory::configureFunctionMarking( CAFunctionMarkingContext *fm
 	mpoMusElement = fm;
 	
 	return true;
-	
 }
 
 void CAMusElementFactory::setMusElementType( CAMusElement::CAMusElementType eMEType )
@@ -362,8 +361,12 @@ void CAMusElementFactory::setMusElementType( CAMusElement::CAMusElementType eMET
 	\a context is a lyrics context the syllable should be added to.
 	Returns True, if syllable was successfully created and added to the context.
 */
-bool CAMusElementFactory::configureSyllable( QString text, int stanzaNumber, bool hyphen, bool melisma, CAVoice *voice, CALyricsContext *context ) {
-	context->addSyllable( new CASyllable( text, stanzaNumber, hyphen, melisma, context, timeStart(), timeLength(), voice ) );
+bool CAMusElementFactory::configureSyllable( QString text, bool hyphen, bool melisma, CAVoice *voice, CALyricsContext *context ) {
+	CASyllable *syllable = new CASyllable( text, hyphen, melisma, context, timeStart(), timeLength(), voice );
+	context->addSyllable( syllable );
+	mpoMusElement = syllable;
+	
+	return true;
 }
 
 /*!

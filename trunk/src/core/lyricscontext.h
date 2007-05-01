@@ -18,7 +18,7 @@ class CAVoice;
 
 class CALyricsContext : public CAContext {
 public:
-	CALyricsContext(CAVoice *v, CASheet *s, const QString name);
+	CALyricsContext(int stanzaNumber, CAVoice *v, CASheet *s, const QString name);
 	~CALyricsContext();
 	void clear();
 	CAMusElement* findNextMusElement(CAMusElement*);
@@ -28,11 +28,21 @@ public:
 	inline CAVoice *associatedVoice() { return _associatedVoice; }
 	inline void setAssociatedVoice( CAVoice *v ) { _associatedVoice = v; }
 	bool addSyllable( CASyllable* );
+	bool removeSyllableAtTimeStart( int timeStart, bool autoDelete );
+	void repositSyllables();
 	QList<CAMusElement*> musElementList();
+	CASyllable* syllableAt( int timeStart ) { return _syllableMap[timeStart]; }
+	
+	inline int stanzaNumber() { return _stanzaNumber; }
+	inline void setStanzaNumber( int sn ) { _stanzaNumber = sn; }
+	inline QString customStanzaName() { return _customStanzaName; }
+	inline void setCustomStanzaName( QString name ) { _customStanzaName = name; }
 
 private:
-	QHash< int, QList<CASyllable*> > _syllableMap;
+	QHash< int, CASyllable* > _syllableMap;
 	CAVoice *_associatedVoice;
+	int _stanzaNumber;
+	QString _customStanzaName;
 };
 
 #endif /* LYRICSCONTEXT_H_ */

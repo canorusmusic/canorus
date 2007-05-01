@@ -95,6 +95,17 @@ QList<CAPlayable*> CASheet::getChord(int time) {
 }
 
 /*!
+	Returns the list of all the voices in the sheets staffs.
+*/
+QList<CAVoice*> CASheet::voiceList() {
+	QList<CAVoice*> list;
+	for (int i=0; i<staffCount(); i++)
+		list << staffAt(i)->voiceList();
+	
+	return list;
+}
+
+/*!
 	\fn CAContext::context(const QString name)
 	Looks up for the context with the given name.
 	

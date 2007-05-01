@@ -226,6 +226,15 @@ void CAMainWin::setupCustomUi() {
 			connect( uiStaffNumberOfLines, SIGNAL(valueChanged(int)), this, SLOT(on_uiStaffNumberOfLines_valueChanged(int)) );
 			uiStaffNumberOfLines->setToolTip(tr("Number of lines"));
 			uiStaffNumberOfLines->hide();
+		uiContextToolBar->addWidget( uiStanzaNumber = new QSpinBox(this) );
+			connect( uiStanzaNumber, SIGNAL(valueChanged(int)), this, SLOT(on_uiStanzaNumber_valueChanged(int)) );
+			uiStanzaNumber->setToolTip(tr("Stanza number"));
+			uiStanzaNumber->hide();
+		uiContextToolBar->addWidget( uiAssociatedVoice = new QComboBox(this) );
+			// Warning! disconnect and reconnect is also done in updateContextToolBar()!
+			connect( uiAssociatedVoice, SIGNAL(currentIndexChanged(int)), this, SLOT(on_uiAssociatedVoice_currentIndexChanged(int)) );
+			uiAssociatedVoice->setToolTip(tr("Associated voice"));
+			uiAssociatedVoice->hide();
 		uiContextToolBar->addAction( uiRemoveContext );
 		uiContextToolBar->addAction( uiContextProperties );
 		addToolBar(Qt::TopToolBarArea, uiContextToolBar);
@@ -572,6 +581,10 @@ void CAMainWin::initViewPort(CAViewPort *v) {
 	connect( v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)),
 	        this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)) );
 	
+	if (v->viewPortType()==CAViewPort::ScoreViewPort) {
+		connect( static_cast<CAScoreViewPort*>(v)->syllableEdit(), SIGNAL(CAKeyPressEvent(QKeyEvent*, CASyllableEdit*)), this, SLOT(on_syllableEdit_keyPressEvent(QKeyEvent*, CASyllableEdit*)));
+	}
+	
 	v->setFocusPolicy(Qt::ClickFocus);
 	v->setFocus();
 	setCurrentViewPort(v);
@@ -716,6 +729,7 @@ void CAMainWin::setMode(CAMode mode) {
 					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(false);
 					statusBar()->showMessage("");
 					_musElementFactory->setMusElementType( CAMusElement::Undefined );
+					uiVoiceNum->setRealValue( 0 );
 					_viewPortList[i]->repaint();
 				}
 			}
@@ -758,7 +772,7 @@ void CAMainWin::setMode(CAMode mode) {
 }
 
 /*!
-	Rebuild the GUI from data.
+	Rebuilds the GUI from data.
 	
 	This method is called eg. when multiple viewports share the same data and a change has been made (eg. a
 	note pitch has changed). ViewPorts content is repositioned and redrawn (CAEngraver creates CADrawable
@@ -774,6 +788,9 @@ void CAMainWin::setMode(CAMode mode) {
 	content are to happen and we want to actually draw it only at the end.
 */
 void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
+	if (rebuildUILock()) return;
+	
+	setRebuildUILock( true );
 	if (document()) {
 		// save the current state of viewports
 		QList<QRect> worldCoordsList;
@@ -810,6 +827,7 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 		clearUI();
 	}
 	updateToolBars();
+	setRebuildUILock( false );
 }
 
 /*!
@@ -855,13 +873,16 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 			}
 		}
 		
-		switch (_mode) {
+		switch ( mode() ) {
 			case SelectMode:
 			case EditMode: {
+				if (v->currentContext())
+					std::cout << "drawableContext: " << v->currentContext() << std::endl;
+				
 				if (v->selection().size()) {
 					CAMusElement *elt = v->selection().front()->musElement();
 					// debug
-					std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", context=" << elt->context();
+					std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", dContext = " << v->selection().front()->drawableContext() << ", context=" << elt->context();
 					if (elt->isPlayable()) {
 						std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
 						std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
@@ -880,21 +901,36 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					CADrawableContext *dupContext = v->nearestUpContext(coords.x(), coords.y());
 					switch(uiContextType->currentId()) {
 						case CAContext::Staff: {
-							v->sheet()->insertContextAfter(dupContext?dupContext->context():0, newContext = new CAStaff(v->sheet(), tr("Staff%1").arg(v->sheet()->staffCount()+1)));
+							v->sheet()->insertContextAfter(
+								dupContext?dupContext->context():0,
+								newContext = new CAStaff(
+									v->sheet(),
+									tr("Staff%1").arg(v->sheet()->staffCount()+1)
+								)
+							);
 							static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), newContext->name() + tr("Voice%1").arg(1)));
 							break;
 						}
 						case CAContext::LyricsContext: {
-							if (dupContext && dupContext->context()->contextType()==CAContext::Staff)
-								v->sheet()->insertContextAfter(dupContext->context(), newContext = new CALyricsContext(
-									static_cast<CAStaff*>(dupContext->context())->voiceAt(0),
+							v->sheet()->insertContextAfter(
+								dupContext?dupContext->context():0,
+								newContext = new CALyricsContext(
+									1,
+									(v->sheet()->voiceList().size()?v->sheet()->voiceList().at(0):0),
 									v->sheet(),
-									tr("LyricsContext%1").arg(v->sheet()->contextCount()+1))
-								);
+									tr("LyricsContext%1").arg(v->sheet()->contextCount()+1)
+								)
+							);
 							break;
 						}
 						case CAContext::FunctionMarkingContext: {
-							v->sheet()->insertContextAfter(dupContext?dupContext->context():0, newContext = new CAFunctionMarkingContext(v->sheet(), tr("FunctionMarkingContext%1").arg(v->sheet()->contextCount()+1)));
+							v->sheet()->insertContextAfter(
+								dupContext?dupContext->context():0,
+								newContext = new CAFunctionMarkingContext(
+									v->sheet(),
+									tr("FunctionMarkingContext%1").arg(v->sheet()->contextCount()+1)
+								)
+							);
 							break;
 						}
 					}
@@ -911,28 +947,20 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				} else
 				// Insert Syllable
 				if (uiInsertSyllable->isChecked() && v->currentContext()->context()->contextType()==CAContext::LyricsContext) {
-					int timeStart = 0;
-					int timeLength = 256;
+					int timeStart = 0, timeLength = 256;
 					CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(v->currentContext());
-					int xPos=0, yPos=dlc->yPos(), width=100, height=dlc->height();
-					
 					CADrawableMusElement *dLeft = v->nearestLeftElement( coords.x(), coords.y(), dlc->lyricsContext()->associatedVoice() );
-					CADrawableMusElement *dRight = v->nearestRightElement( coords.x(), coords.y(), dlc->lyricsContext()->associatedVoice() );
-					if ( dLeft && dLeft->musElement()->musElementType()==CAMusElement::Note ) {
-						xPos = dLeft->xPos();
+					
+					if ( dLeft && dLeft->musElement() && dLeft->musElement()->musElementType()==CAMusElement::Note ) {
 						timeStart = dLeft->musElement()->timeStart();
 						timeLength = dLeft->musElement()->timeLength();
 					} else
-						break;
+						break;	// return, if user didn't click below the note
 					
 					musElementFactory()->setTimeStart( timeStart );
 					musElementFactory()->setTimeLength( timeLength );
 					
-					if ( dRight )
-						width = dRight->xPos() - dLeft->xPos();
-					
-					QLineEdit *edit = v->createSyllableEdit(QRect(xPos, yPos, width, height));
-					connect(edit, SIGNAL(textEdited(const QString)), this, SLOT(on_syllableEdit_textEdited(const QString)));
+					CASyllableEdit *edit = v->createSyllableEdit( static_cast<CANote*>(dLeft->musElement()), dlc->lyricsContext() );
 					edit->setFocus();
 					
 					break;
@@ -1661,31 +1689,78 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 }
 
 /*!
-	Function called when user types the text of the syllable.
-	It jumps and creates the next syllable when space is pressed.
+	Function called when user types the text of the syllable or hits control keys.
+	
+	The following behaviour possible:
+		- alphanumeric keys are pressed - writes text
+		- spacebar is pressed - creates the current syllable and jumps to the next syllable
+		- return is pressed - creates the current syllable and hides the syllable edit widget
+		- left key is pressed - if cursorPosition()==0, jumps to the previous syllable
+		- right key is pressed - if cursorPosition()==length(), same as spacebar
+		- escape key is pressed - hides the syllable edit and cancels any changes to syllable
+	
 */
-void CAMainWin::on_syllableEdit_textEdited(const QString text) {
-	bool success = false;
-	if ( text.right(1)==" " ) {
-		QString syllableText = text;
-		bool hyphen = false;
-		if (syllableText.right(2)=="- ") { hyphen = true; syllableText[syllableText.size()-2] = ' '; }
+void CAMainWin::on_syllableEdit_keyPressEvent(QKeyEvent *e, CASyllableEdit *syllableEdit) {
+	if (!currentScoreViewPort()) return;
+	
+	CAScoreViewPort *v = currentScoreViewPort();
+	CADrawableContext *dContext = v->currentContext();
+	if (!dContext || !dContext->context() || dContext->context()->contextType()!=CAContext::LyricsContext)
+		return;
+	
+	CASyllable *syllable;
+	if (mode()==EditMode)
+		syllable = static_cast<CASyllable*>(static_cast<CADrawableMusElement*>(v->selection().at(0))->musElement());
+	
+	QString text = syllableEdit->text().simplified(); // remove any trailing whitespaces
 		
-		bool melisma = false;
-		if (syllableText.right(2)=="_ ") { melisma = true; syllableText[syllableText.size()-2] = ' '; }
+	bool hyphen = false;
+	if (text.right(1)=="-") { hyphen = true; text.chop(1); }
 		
-		int stanzaNumber = 1; /// \todo GUI for syllable stanza number
-		CAVoice *voice = 0; /// \todo GUI for syllable specific associated voice - current is the default lyrics context's one
-		syllableText = syllableText.simplified();
+	bool melisma = false;
+	if (text.right(1)=="_") { melisma = true; text.chop(1); }
 		
-		CALyricsContext *context = static_cast<CALyricsContext*>(currentScoreViewPort()->currentContext()->context());
+	CAVoice *voice = 0; /// \todo GUI for syllable specific associated voice - current is the default lyrics context's one
 		
-		success = musElementFactory()->configureSyllable( syllableText, stanzaNumber, hyphen, melisma, voice, context);
+	CALyricsContext *context = static_cast<CALyricsContext*>(dContext->context());
+	
+	// create or edit syllable
+	if ( e->key()==Qt::Key_Space  ||
+	     e->key()==Qt::Key_Return ||
+	     e->key()==Qt::Key_Right && syllableEdit->cursorPosition()==text.size()-1 ||
+	     e->key()==Qt::Key_Left && syllableEdit->cursorPosition()==0 ) {
+		if (mode()==InsertMode) {
+			musElementFactory()->configureSyllable( text, hyphen, melisma, voice, context);
+			syllable = static_cast<CASyllable*>(musElementFactory()->getMusElement());
+		} else if (mode()==EditMode) { // edit mode
+			syllable->setText(text);
+			syllable->setHyphenStart(hyphen);
+			syllable->setMelismaStart(melisma);
+		}
+		
+		v->removeSyllableEdit();
+		CAVoice *voice = (syllable->voice()?syllable->voice():context->associatedVoice());
+		CANote *nextNote = 0;
+		if (syllable) {
+			if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right) // next right note
+				nextNote = voice->findNextNote( syllable->timeStart() );
+			else  if (e->key()==Qt::Key_Left)                       // next left note
+				nextNote = voice->findPrevNote( syllable->timeStart() );
+			
+			musElementFactory()->setTimeStart(nextNote?nextNote->timeStart():0);
+			musElementFactory()->setTimeLength(nextNote?nextNote->timeLength():0);
+			
+			CACanorus::rebuildUI( document(), currentSheet() );
+			if (nextNote) {
+				v->createSyllableEdit( nextNote, syllable->lyricsContext() );
+				v->syllableEdit()->setFocus();
+			}
+		}
 	}
 	
-	if ( success ) {
-		currentScoreViewPort()->removeSyllableEdit();
-		CACanorus::rebuildUI( document(), currentSheet() );
+	// escape key - cancel
+	if (e->key()==Qt::Key_Escape) {
+		v->removeSyllableEdit();
 	}
 }
 
@@ -1999,6 +2074,24 @@ void CAMainWin::on_uiStaffNumberOfLines_valueChanged(int lines) {
 	}
 }
 
+/*!
+	Sets the stanza number of the current lyrics context.
+*/
+void CAMainWin::on_uiStanzaNumber_valueChanged(int stanzaNumber) {
+	if (currentContext() && currentContext()->contextType()==CAContext::LyricsContext)
+		static_cast<CALyricsContext*>(currentContext())->setStanzaNumber( stanzaNumber );
+}
+
+/*!
+	Sets the associated voice of the current lyrics context.
+*/
+void CAMainWin::on_uiAssociatedVoice_currentIndexChanged(int idx) {
+	if (idx != -1 && currentContext() && currentContext()->contextType()==CAContext::LyricsContext) {
+		static_cast<CALyricsContext*>(currentContext())->setAssociatedVoice( currentSheet()->voiceList().at( idx ) );
+		CACanorus::rebuildUI( document(), currentSheet() ); // needs a rebuild if lyrics contexts are to be moved
+	}
+}
+
 void CAMainWin::on_uiVoiceStemDirection_toggled(bool checked, int direction) {
 	CAVoice *voice = currentVoice();
 	if (voice) {
@@ -2093,13 +2186,36 @@ void CAMainWin::updateContextToolBar() {
 	CAContext *context = currentContext();
 	if (mode()==SelectMode && context) {
 		switch (context->contextType()) {
-			case CAContext::Staff:
+			case CAContext::Staff: {
 				uiStaffNumberOfLines->setValue(static_cast<CAStaff*>(context)->numberOfLines());
 				uiStaffNumberOfLines->setVisible(true);
+				uiStanzaNumber->setVisible(false);
+				uiAssociatedVoice->setVisible(false);
 				break;
-			case CAContext::FunctionMarkingContext:
+			}
+			case CAContext::LyricsContext: {
+				CALyricsContext *c = static_cast<CALyricsContext*>(context);				
+				uiStanzaNumber->setValue(c->stanzaNumber());
+				uiStanzaNumber->setVisible(true);
+				
+				uiAssociatedVoice->disconnect(); // avoid recursive rebuilds in widget's slot
+				uiAssociatedVoice->clear();
+				QList<CAVoice*> voiceList = currentSheet()->voiceList();
+				int idx = voiceList.indexOf( c->associatedVoice() );
+				for (int i=0; i<voiceList.count(); i++) uiAssociatedVoice->addItem(voiceList[i]->name());
+				connect( uiAssociatedVoice, SIGNAL(currentIndexChanged(int)), this, SLOT(on_uiAssociatedVoice_currentIndexChanged(int)) );
+				uiAssociatedVoice->setCurrentIndex( idx );
+				uiAssociatedVoice->setVisible(true);
+				
 				uiStaffNumberOfLines->setVisible(false);
 				break;
+			}
+			case CAContext::FunctionMarkingContext: {
+				uiStanzaNumber->setVisible(false);
+				uiAssociatedVoice->setVisible(false);
+				uiStaffNumberOfLines->setVisible(false);
+				break;
+			}
 		}
 		uiContextName->setText(context->name());
 		
@@ -2399,4 +2515,9 @@ void CAMainWin::updateFMToolBar() {
 /*!
 	\var CAMusElementFactory *CACanorus::_musElementFactory
 	Factory for creating/configuring music elements before actually placing them.
+*/
+
+/*!
+	\var bool CAMainWin::_rebuildUILock
+	Lock to avoid recursive rebuilds of the GUI viewports.
 */

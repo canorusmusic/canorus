@@ -491,6 +491,46 @@ QList<CANote*> CAVoice::noteList() {
 }
 
 /*!
+	Returns a pointer to the next note with the higher timeStart than the given one.
+	Returns 0, if the such a note doesn't exist.
+*/
+CANote *CAVoice::findNextNote( int timeStart ) {
+	CANote *n = 0;
+	int i;
+	for (i=0;
+	     i<_musElementList.size() &&
+	     	(_musElementList[i]->musElementType()!=CAMusElement::Note ||
+	     	 _musElementList[i]->timeStart()<=timeStart
+	     	);
+	     i++);
+	
+	if (i<_musElementList.size())
+		return static_cast<CANote*>(_musElementList[i]);
+	else
+		return 0;
+}
+
+/*!
+	Returns a pointer to the previous note with the lower timeStart than the given one.
+	Returns 0, if the such a note doesn't exist.
+*/
+CANote *CAVoice::findPrevNote( int timeStart ) {
+	CANote *n = 0;
+	int i;
+	for (i=_musElementList.size()-1;
+	     i>-1 &&
+	     	(_musElementList[i]->musElementType()!=CAMusElement::Note ||
+	     	 _musElementList[i]->timeStart()>=timeStart
+	     	);
+	     i--);
+	
+	if (i>-1)
+		return static_cast<CANote*>(_musElementList[i]);
+	else
+		return 0;
+}
+
+/*!
 	Sets the stem direction and update slur directions in all the notes in the voice.
 */
 void CAVoice::setStemDirection(CANote::CAStemDirection direction) {

@@ -33,6 +33,7 @@ public:
 	inline int voiceCount() { return _voiceList.size(); }
 	inline CAVoice *voiceAt(int i) { return _voiceList[i]; }
 	inline void removeVoice(CAVoice *voice) { _voiceList.removeAll(voice); }
+	inline QList<CAVoice*> voiceList() { return _voiceList; }
 	CAVoice *voice(const QString name);
 	
 	void addVoice(CAVoice *voice);
