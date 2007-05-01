@@ -1739,7 +1739,7 @@ void CAMainWin::on_syllableEdit_keyPressEvent(QKeyEvent *e, CASyllableEdit *syll
 		}
 		
 		v->removeSyllableEdit();
-		CAVoice *voice = (syllable->voice()?syllable->voice():context->associatedVoice());
+		CAVoice *voice = (syllable->associatedVoice()?syllable->associatedVoice():context->associatedVoice());
 		CANote *nextNote = 0;
 		if (syllable) {
 			if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right) // next right note

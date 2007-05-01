@@ -107,7 +107,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
 	CAKeySignature *lastKeySig[streams]; for (int i=0; i<streams; i++) lastKeySig[i] = 0;
 	CATimeSignature *lastTimeSig[streams]; for (int i=0; i<streams; i++) lastTimeSig[i] = 0;	
-
+	
 	int timeStart = 0;
 	bool done = false;
 	CADrawableFunctionMarkingSupport *lastDFMTonicizations[streams]; for (int i=0; i<streams; i++) lastDFMTonicizations[i]=0;

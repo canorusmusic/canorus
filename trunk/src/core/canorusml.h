@@ -8,6 +8,7 @@
 #ifndef CANORUSML_H_
 #define CANORUSML_H_
 
+#include <QHash>
 #include <QTextStream>
 #include <QtXml>
 
@@ -24,6 +25,8 @@ class CANote;
 class CARest;
 class CAContext;
 class CAMainWin;
+class CALyricsContext;
+class CASyllable;
 
 class CACanorusML : public QXmlDefaultHandler {
 public:
@@ -70,6 +73,8 @@ private:
 	CABarline       *_curBarline;
 	CANote          *_curNote;
 	CARest          *_curRest;
+	QHash<CALyricsContext*, int> _lcMap;      // lyrics context associated voice indices
+	QHash<CASyllable*, int>     _syllableMap; // syllable associated voice indices
 	
 		////////////////////////////////////////////
 		// Temporary properties for each XML stanza
