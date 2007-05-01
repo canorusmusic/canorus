@@ -27,14 +27,14 @@ CASyllable::CASyllable( QString text, bool hyphen, bool melisma, CALyricsContext
 	setText( text );
 	setHyphenStart( hyphen );
 	setMelismaStart( melisma );
-	setVoice( voice );
+	setAssociatedVoice( voice );
 }
 
 CASyllable::~CASyllable() {
 }
 
 CAMusElement* CASyllable::clone() {
-	return new CASyllable( text(), hyphenStart(), melismaStart(), lyricsContext(), timeStart(), timeLength(), voice() );
+	return new CASyllable( text(), hyphenStart(), melismaStart(), lyricsContext(), timeStart(), timeLength(), associatedVoice() );
 }
 
 int CASyllable::compare(CAMusElement* c) {

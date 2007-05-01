@@ -25,6 +25,9 @@
 #include "core/timesignature.h"
 #include "core/barline.h"
 
+#include "core/lyricscontext.h"
+#include "core/syllable.h"
+
 #include "core/functionmarkingcontext.h"
 #include "core/functionmarking.h"
 
@@ -126,6 +129,29 @@ void CACanorusML::saveDocument(CADocument *doc, QTextStream& out) {
 						dVoice.setAttribute("stem-direction", CANote::stemDirectionToString(v->stemDirection()));
 						
 						CACanorusML::writeVoice(dVoice, v);
+					}
+					
+					break;
+				}
+				case CAContext::LyricsContext: {
+					// CALyricsContext
+					CALyricsContext *lc = static_cast<CALyricsContext*>(c);
+					QDomElement dlc = dDoc.createElement("lyrics-context"); dSheet.appendChild(dlc);
+					dlc.setAttribute("name", lc->name());
+					dlc.setAttribute("stanza-number", lc->stanzaNumber());
+					dlc.setAttribute("associated-voice-idx", doc->sheetAt(sheetIdx)->voiceList().indexOf(lc->associatedVoice()));
+					
+					QList<CASyllable*> syllables = lc->syllableList();
+					for (int i=0; i<syllables.size(); i++) {
+						QDomElement s = dDoc.createElement("syllable"); dlc.appendChild(s);
+						s.setAttribute( "time-start", syllables[i]->timeStart() );
+						s.setAttribute( "time-length", syllables[i]->timeLength() );
+						s.setAttribute( "text", syllables[i]->text() );
+						s.setAttribute( "hyphen", syllables[i]->hyphenStart() );
+						s.setAttribute( "melisma", syllables[i]->melismaStart() );
+						
+						if (syllables[i]->associatedVoice())
+							s.setAttribute( "associated-voice-idx", doc->sheetAt(sheetIdx)->voiceList().indexOf(syllables[i]->associatedVoice()) );
 					}
 					
 					break;
@@ -320,6 +346,24 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 			_curContext = new CAStaff(_curSheet, staffName, attributes.value("number-of-lines").toInt());
 		}
 		_curSheet->addContext(_curContext);
+	} else if (qName == "lyrics-context") {
+		// CALyricsContext
+		QString lcName = attributes.value("name");
+		if (!_curSheet) {
+			_errorMsg = "The sheet where to add the lyrics context doesn't exist yet!";
+			return false;
+		}
+		
+		if (!(_curContext = _curSheet->context(lcName))) {	//if the sheet doesn't contain the context with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
+			if (lcName.isEmpty())
+				lcName = QObject::tr("Lyrics Context %1").arg(_curSheet->contextCount()+1);
+			_curContext = new CALyricsContext(attributes.value("stanza-number").toInt(), 0, _curSheet, lcName);
+			
+			// voices are not neccesseraly completely read - store indices of the voices internally and then assign them at the end
+			if (!attributes.value("associated-voice-idx").isEmpty())
+				_lcMap[static_cast<CALyricsContext*>(_curContext)] = attributes.value("associated-voice-idx").toInt();
+		}
+		_curSheet->addContext(_curContext);
 	} else if (qName == "function-marking-context") {
 		// CAFunctionMarkingContext
 		QString fmcName = attributes.value("name");
@@ -416,6 +460,20 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		                      attributes.value("time-start").toInt(),
 		                      attributes.value("dotted").toInt()
 		                     );
+	} else if (qName == "syllable") {
+		// CASyllable
+		CASyllable *s = new CASyllable(
+			attributes.value("text"),
+			attributes.value("hyphen")=="1",
+			attributes.value("melisma")=="1",
+			static_cast<CALyricsContext*>(_curContext),
+			attributes.value("time-start").toInt(),
+			attributes.value("time-length").toInt()
+		);
+		
+		static_cast<CALyricsContext*>(_curContext)->addSyllable(s);
+		if (!attributes.value("associated-voice-idx").isEmpty())
+			_syllableMap[s] = attributes.value("associated-voice-idx").toInt();
 	} else if (qName == "function-marking") {
 		// CAFunctionMarking
 		static_cast<CAFunctionMarkingContext*>(_curContext)->addFunctionMarking(
@@ -464,7 +522,18 @@ bool CACanorusML::endElement(const QString& namespaceURI, const QString& localNa
 		}
 	} else if (qName == "sheet") {
 		// CASheet
-		_curSheet = 0;
+		QList<CAVoice*> voices = _curSheet->voiceList();
+		QList<CALyricsContext*> lcs = _lcMap.keys();
+		for (int i=0; i<lcs.size(); i++) // assign voices from voice indices
+			lcs.at(i)->setAssociatedVoice( voices.at(_lcMap[lcs[i]]) );
+		
+		QList<CASyllable*> syllables = _syllableMap.keys();
+		for (int i=0; i<syllables.size(); i++) // assign voices from voice indices
+			syllables.at(i)->setAssociatedVoice( voices.at(_syllableMap[syllables[i]]) );
+		
+		_lcMap.clear();
+		_syllableMap.clear();
+		_curSheet = 0;		
 	} else if (qName == "staff") {
 		// CAStaff
 		_curContext = 0;

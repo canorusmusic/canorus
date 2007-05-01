@@ -32,6 +32,7 @@ public:
 	void repositSyllables();
 	QList<CAMusElement*> musElementList();
 	CASyllable* syllableAt( int timeStart ) { return _syllableMap[timeStart]; }
+	inline QList<CASyllable*> syllableList() { return _syllableMap.values(); }
 	
 	inline int stanzaNumber() { return _stanzaNumber; }
 	inline void setStanzaNumber( int sn ) { _stanzaNumber = sn; }

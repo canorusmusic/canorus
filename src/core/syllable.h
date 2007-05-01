@@ -27,8 +27,8 @@ public:
 	inline void setMelismaStart(bool m) { _melismaStart = m; }
 	inline QString text() { return _text; }
 	inline void setText(QString text) { _text = text; }
-	inline CAVoice *voice() { return _voice; }
-	inline void setVoice(CAVoice* v) { _voice = v; }
+	inline CAVoice *associatedVoice() { return _associatedVoice; }
+	inline void setAssociatedVoice(CAVoice* v) { _associatedVoice = v; }
 	
 	inline CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(_context); }
 	
@@ -38,7 +38,7 @@ public:
 private:
 	bool _hyphenStart, _melismaStart;
 	QString _text;
-	CAVoice *_voice; // associated voice, 0 if preferred
+	CAVoice *_associatedVoice; // associated voice, 0 if preferred
 };
 
 #endif /* SYLLABLE_H_ */
