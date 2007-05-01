@@ -7,15 +7,26 @@
 
 #include "drawable/drawablelyricscontext.h"
 #include "core/lyricscontext.h"
+#include "drawable/drawablesyllable.h"
 
 #include <QPainter>
 #include <QBrush>
 
+/*!
+	Vertical space between the top edge of the lyrics context and the top border of the lyrcs text.
+*/
+const float CADrawableLyricsContext::DEFAULT_TEXT_VERTICAL_SPACING = 3;
+
+/*!
+	Drawable instance of the lyrics context.
+	
+	\sa CALyricsContext
+*/
 CADrawableLyricsContext::CADrawableLyricsContext(CALyricsContext *c, int x, int y)
  : CADrawableContext(c, x, y) {
 	setDrawableContextType( DrawableLyricsContext );
 	setWidth( 0 );
- 	setHeight( 40 );
+ 	setHeight( qRound(CADrawableSyllable::DEFAULT_TEXT_SIZE + 2*DEFAULT_TEXT_VERTICAL_SPACING) );
 }
 
 CADrawableLyricsContext::~CADrawableLyricsContext() {

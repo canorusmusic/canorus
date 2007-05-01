@@ -14,7 +14,6 @@
 #include <QPalette>
 #include <QColor>
 #include <QTimer>
-#include <QLineEdit>
 
 #include <math.h>	// neded for square root in animated scrolls/zoom
 
@@ -23,23 +22,52 @@
 #include "widgets/scoreviewport.h"
 #include "drawable/drawable.h"
 #include "drawable/drawablecontext.h"
+#include "drawable/drawablelyricscontext.h" // syllable edit creation
 #include "drawable/drawablemuselement.h"
 #include "drawable/drawablestaff.h"
 #include "drawable/drawablenote.h"
 #include "drawable/drawableaccidental.h"
-#include "core/muselement.h"
-#include "core/context.h"
+
 #include "interface/engraver.h"
-#include "core/staff.h"
-#include "core/note.h"
-#include "core/rest.h"
 #include "core/document.h"
 #include "core/sheet.h"
+#include "core/context.h"
+#include "core/muselement.h"
+#include "core/staff.h"
 #include "core/voice.h"
+#include "core/note.h"
+#include "core/rest.h"
+#include "core/lyricscontext.h"
 
 const int CAScoreViewPort::RIGHT_EXTRA_SPACE = 100;	// Gives some space after the music so you're able to insert music elements after the last element
 const int CAScoreViewPort::BOTTOM_EXTRA_SPACE = 30; // Gives some space after the music so you're able to insert new contexts below the last context
 const int CAScoreViewPort::ANIMATION_STEPS = 7;
+
+/*!
+	\class CASyllableEdit
+	\brief A syllable edit widget based on QLineEdit
+	
+	This widget is an extended QLineEdit with custom actions on keypress events - caught and determined by the main window
+	then. A new signal CAKeyPressEvent() was introduced for this.
+	
+	Widget is usually used for editing the lyrics syllables. When left/right cursors are hit at the beginning/end of the
+	line, the next syllable in the score should be selected. This isn't possible to achieve with standard QLineEdit as we
+	need to control KeyPressEvent.
+*/
+	
+CASyllableEdit::CASyllableEdit( QWidget *parent )
+ : QLineEdit(parent) {
+}
+
+void CASyllableEdit::keyPressEvent( QKeyEvent *e ) {
+	int oldCurPos = cursorPosition();
+	QLineEdit::keyPressEvent(e); // call parent's keyPressEvent()
+	
+	if ((e->key()==Qt::Key_Left || e->key()==Qt::Key_Right) && cursorPosition()!=oldCurPos)
+		return;
+	
+	emit CAKeyPressEvent(e, this);
+}
 
 /*!
 	\class CAScoreViewPort
@@ -95,7 +123,7 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	setShadowNoteAccs( 0 );
 	setDrawShadowNoteAccs( false );
 	setSyllableEdit( 0 );
-	setSyllableEdit( new QLineEdit( _canvas ) );
+	setSyllableEdit( new CASyllableEdit( _canvas ) );
 	setSyllableEditVisible( false );
 	
 	// init scrollbars
@@ -831,7 +859,8 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		else
 		if ( selectedVoice() &&
 		     (elt && elt->isPlayable() && static_cast<CAPlayable*>(elt)->voice()==selectedVoice() ||
-		      (!elt->isPlayable() && elt->context()==selectedVoice()->staff())
+		      (!elt->isPlayable() && elt->context()==selectedVoice()->staff()) ||
+		      elt->context()!=selectedVoice()->staff()
 		     ) ||
 		     (!selectedVoice())
 		   ) {
@@ -1216,15 +1245,40 @@ CADrawableContext *CAScoreViewPort::findCElement(CAContext *context) {
 }
 
 /*!
-	Create a QLineEdit for editing or creating a lyrics syllable.
+	Creates a CASyllableEdit widget for editing or creating a lyrics syllable with the exact given coordinates.
+	This function is usually called, if no associated notes are actually present and the syllable edit widget geometry
+	is calculated before somewhere else.
+	
+	\sa createSyllableEdit( CANote *note, CADrawableLyricsContext *dContext )
 */
-QLineEdit *CAScoreViewPort::createSyllableEdit( QRect geometry ) {
+CASyllableEdit *CAScoreViewPort::createSyllableEdit( QRect geometry ) {
 	setSyllableEditVisible( true );
 	
 	setSyllableEditGeometry( geometry );
 	updateHelpers(); // show it
 	
 	return syllableEdit();
+}
+
+/*!
+	Creates a CASyllableEdit widget for editing or creating a lyrics syllable for the givne \a note and the syllable
+	in drawable lyrics context \a dlc. This function automatically places the widget so that it fits nicely
+	right below or above the note which the syllables are written for.
+	
+	\sa createSyllableEdit( QRect geometry )
+*/
+CASyllableEdit *CAScoreViewPort::createSyllableEdit( CANote *note, CALyricsContext *lc ) {
+	CADrawableMusElement *dNote = findMElement(note);
+	CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(findCElement(lc));
+	if (!note || !dlc || !dNote) return 0;
+	
+	int xPos=dNote->xPos(), yPos=dlc->yPos(), width=100, height=dlc->height();
+	
+	CADrawableMusElement *dRight = nearestRightElement( dNote->xPos(), dNote->yPos(), dlc->lyricsContext()->associatedVoice() );
+	if (dRight)
+		width = dRight->xPos() - dNote->xPos();
+	
+	return createSyllableEdit( QRect(xPos, yPos, width, height) );
 }
 
 /*!

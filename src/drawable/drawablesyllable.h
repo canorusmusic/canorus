@@ -21,7 +21,12 @@ public:
 	void draw(QPainter *p, const CADrawSettings s);
 	CADrawableSyllable *clone(CADrawableContext *c=0);
 	
-	CASyllable *syllable() { return static_cast<CASyllable*>(musElement()); }	
+	CASyllable *syllable() { return static_cast<CASyllable*>(musElement()); }
+
+	static const float DEFAULT_TEXT_SIZE;
+	
+private:
+	inline const QString textToDrawableText( QString in ) { return in.replace("_", " "); }
 };
 
 #endif /* DRAWABLESYLLABLE_H_ */

@@ -85,7 +85,6 @@ public:
 	                               int timeStart, int timeLength );
 	
 	bool configureSyllable( QString text,
-	                        int stanzaNumber,
 	                        bool hyphen,
 	                        bool melisma,
 	                        CAVoice *voice,

@@ -30,8 +30,10 @@ public:
 	
 	CAStaff *addStaff();
 	inline int staffCount() { return _staffList.size(); }
-	CAStaff *staffAt(int i) { return _staffList[i]; }
+	inline CAStaff *staffAt(int i) { return _staffList[i]; }
+	inline QList<CAStaff*> staffList() { return _staffList; }
 	
+	QList<CAVoice*> voiceList();
 	QList<CAPlayable*> getChord(int time);	// Returns a list of notes and rests (chord) for all the voices in certain time slice
 	
 	inline CADocument *document() { return _document; }

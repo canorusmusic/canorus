@@ -7,12 +7,24 @@
 
 #include "core/syllable.h"
 
-CASyllable::CASyllable( QString text, int stanzaNumber, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice)
+/*!
+	\class CASyllable
+	\brief Text under the note
+	
+	This class represents each text part below or under every note. It doesn't neccessarily consists only of the one
+	syllable in the meaning of the word, but it usually does. Syllable is part of CALyricsContext.
+	
+	Every syllable can finish with a hyphen (a horizontal dash line), with melisma (a horizontal
+	underscore line) or without line at the end of the word.
+	
+	\todo Each syllable can have a custom associated voice, if set.
+*/
+
+CASyllable::CASyllable( QString text, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice)
  : CAMusElement(context, timeStart, timeLength) {
 	setMusElementType( Syllable );
 	
 	setText( text );
-	setStanzaNumber( stanzaNumber );
 	setHyphenStart( hyphen );
 	setMelismaStart( melisma );
 	setVoice( voice );
@@ -22,7 +34,7 @@ CASyllable::~CASyllable() {
 }
 
 CAMusElement* CASyllable::clone() {
-	return new CASyllable( text(), stanzaNumber(), hyphenStart(), melismaStart(), lyricsContext(), timeStart(), timeLength(), voice() );
+	return new CASyllable( text(), hyphenStart(), melismaStart(), lyricsContext(), timeStart(), timeLength(), voice() );
 }
 
 int CASyllable::compare(CAMusElement* c) {

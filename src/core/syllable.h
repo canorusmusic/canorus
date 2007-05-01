@@ -18,7 +18,7 @@ class CAVoice;
 
 class CASyllable : public CAMusElement {
 public:
-	CASyllable(QString text, int stanzaNumber, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice=0);
+	CASyllable(QString text, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice=0);
 	~CASyllable();
 	
 	inline bool hyphenStart() { return _hyphenStart; }
@@ -29,8 +29,6 @@ public:
 	inline void setText(QString text) { _text = text; }
 	inline CAVoice *voice() { return _voice; }
 	inline void setVoice(CAVoice* v) { _voice = v; }
-	inline int stanzaNumber() { return _stanzaNumber; }
-	inline void setStanzaNumber(int n) { _stanzaNumber = n; }
 	
 	inline CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(_context); }
 	
@@ -40,7 +38,6 @@ public:
 private:
 	bool _hyphenStart, _melismaStart;
 	QString _text;
-	int _stanzaNumber;
 	CAVoice *_voice; // associated voice, 0 if preferred
 };
 

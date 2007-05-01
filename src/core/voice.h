@@ -41,9 +41,12 @@ public:
 	
 	int musElementCount() { return _musElementList.count(); }
 	CAMusElement *musElementAt(int i) { return _musElementList[i]; }
-	QList<CANote*> noteList();
 	int indexOf(CAMusElement *elt) { return _musElementList.indexOf(elt); }
 	bool contains(CAMusElement *elt) { return _musElementList.contains(elt); }
+	
+	QList<CANote*> noteList();
+	CANote *findNextNote(int timeStart);
+	CANote *findPrevNote(int timeStart);
 	
 	QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
 	

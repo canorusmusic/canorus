@@ -56,6 +56,7 @@ public:
 
 	void clearUI();
 	void rebuildUI(CASheet *sheet=0, bool repaint=true);
+	inline bool rebuildUILock() { return _rebuildUILock; }
 	
 	void newDocument();	
 	void addSheet(CASheet *s);
@@ -143,8 +144,10 @@ private slots:
 	
 	// Context
 	void on_uiContextName_returnPressed();
-	void on_uiStaffNumberOfLines_valueChanged(int);
 	void on_uiRemoveContext_triggered();
+	void on_uiStaffNumberOfLines_valueChanged(int);
+	void on_uiStanzaNumber_valueChanged(int);
+	void on_uiAssociatedVoice_currentIndexChanged(int);
 	
 	// Playback
 	void on_uiPlayFromSelection_toggled(bool);
@@ -162,7 +165,7 @@ private slots:
 	void on_uiTimeSigBeat_valChanged(int);
 	
 	// Lyrics
-	void on_syllableEdit_textEdited(const QString);
+	void on_syllableEdit_keyPressEvent(QKeyEvent *, CASyllableEdit*);
 	
 	// Function marking
 	void on_uiFMFunction_toggled(bool, int);
@@ -230,6 +233,8 @@ private:
 	bool _lockScrollPlayback;
 	CAViewPort *_playbackViewPort;
 	QTimer *_repaintTimer;
+	bool _rebuildUILock;
+	inline void setRebuildUILock(bool l) { _rebuildUILock = l; }
 	
 	CAPlayback *_playback;
 	CAMusElementFactory *_musElementFactory;
@@ -277,11 +282,18 @@ private:
 			QLineEdit         *uiSheetName;
 			// QAction        *uiRemoveSheet; // made by Qt Designer
 			// QAction        *uiSheetProperties; // made by Qt Designer
+			
 		QToolBar *uiContextToolBar;
+			// CAContext
 			QLineEdit        *uiContextName;
-			QSpinBox         *uiStaffNumberOfLines;
 			//QAction          *uiRemoveContext; // made by Qt Designer
 			//QAction          *uiContextProperties; // made by Qt Designer
+			// CAStaff
+			QSpinBox         *uiStaffNumberOfLines;
+			// CALyricsContext
+			QSpinBox         *uiStanzaNumber;
+			QComboBox        *uiAssociatedVoice;
+			// CAFunctionMarkingContext
 		
 		QToolBar *uiVoiceToolBar;
 			// QAction       *uiNewVoice;  // made by Qt Designer

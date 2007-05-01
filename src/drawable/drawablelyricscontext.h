@@ -22,6 +22,8 @@ public:
 	void draw(QPainter *p, const CADrawSettings s);
 	
 	CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(context()); }
+	
+	static const float DEFAULT_TEXT_VERTICAL_SPACING;
 };
 
 #endif /* DRAWABLELYRICSCONTEXT_H_ */

@@ -51,25 +51,25 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 			break;		
 	}
 
-	_neededWidth = _width;
-	_neededHeight = _height;
+	setNeededWidth( width() );
+	setNeededHeight( height() );
 }
 
 void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
 	QFont font("Emmentaler");
-	font.setPixelSize((int)(35*s.z));
+	font.setPixelSize(qRound(35*s.z));
 	p->setPen(QPen(s.color));
 	p->setFont(font);
 	
 	/*
-	 * Clef emmentaler glyphs: The first one is a normal clef (at the beginning of the system) and the other one is a smaller clef (at the center of the system)
-	 * - 0xE191: C-clef
-	 * - 0xE192: C-clef small
-	 * - 0xE193: F-clef
-	 * - 0xE194: F-clef small
-	 * - 0xE195: G-clef
-	 * - 0xE196: G-clef small
-	 */
+		Clef emmentaler glyphs: The first one is a normal clef (at the beginning of the system) and the other one is a smaller clef (at the center of the system)
+		- 0xE191: C-clef
+		- 0xE192: C-clef small
+		- 0xE193: F-clef
+		- 0xE194: F-clef small
+		- 0xE195: G-clef
+		- 0xE196: G-clef small
+	*/
 	
 	switch (clef()->clefType()) {
 		case CAClef::Treble:

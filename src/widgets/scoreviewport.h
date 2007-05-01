@@ -12,6 +12,7 @@
 #include <QPen>
 #include <QBrush>
 #include <QRect>
+#include <QLineEdit>
 
 #include "widgets/viewport.h"
 #include "core/kdtree.h"
@@ -22,7 +23,6 @@ class QMouseEvent;
 class QWheelEvent;
 class QTimer;
 class QGridLayout;
-class QLineEdit;
 
 class CADrawable;
 class CADrawableMusElement;
@@ -32,6 +32,20 @@ class CAMusElement;
 class CAContext;
 class CASheet;
 class CAStaff;
+class CALyricsContext;
+
+class CASyllableEdit : public QLineEdit {
+Q_OBJECT
+
+public:
+	CASyllableEdit( QWidget *parent=0 );
+	
+signals:
+	void CAKeyPressEvent( QKeyEvent *, CASyllableEdit * );
+	
+public slots:
+	void keyPressEvent( QKeyEvent * );
+};
 
 class CAScoreViewPort : public CAViewPort {
 Q_OBJECT
@@ -175,7 +189,9 @@ public:
 	
 	inline void setShadowNoteDotted(int dotted) { for (int i=0; i<_shadowNote.size(); i++) _shadowNote[i]->setDotted(dotted); }
 	
-	QLineEdit *createSyllableEdit( QRect geometry );
+	CASyllableEdit *createSyllableEdit( QRect geometry );
+	CASyllableEdit *createSyllableEdit( CANote *, CALyricsContext * );
+	inline CASyllableEdit *syllableEdit() { return _syllableEdit; }
 	void removeSyllableEdit();
 	
 	void updateHelpers(); // method for updating shadow notes, syllable edits and other post-engrave elements coordinates and sizes when zoom level is changed etc.
@@ -265,9 +281,8 @@ private:
 	bool _playing;                                      // Set to on, when in Playback mode
 	
 	// QLineEdit for editing or creating a lyrics syllable
-	QLineEdit *_syllableEdit;
-	inline QLineEdit *syllableEdit() { return _syllableEdit; }
-	inline void setSyllableEdit( QLineEdit *e ) { _syllableEdit = e; }
+	CASyllableEdit *_syllableEdit;
+	inline void setSyllableEdit( CASyllableEdit *e ) { _syllableEdit = e; }
 	QRect _syllableEditGeometry;
 	inline QRect syllableEditGeometry() { return _syllableEditGeometry; }
 	inline void setSyllableEditGeometry( const QRect r ) { _syllableEditGeometry = r; }

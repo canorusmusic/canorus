@@ -11,12 +11,23 @@
 #include "core/lyricscontext.h"
 
 #include <QPainter>
+#include <QFont>
+#include <QFontMetrics>
+
+const float CADrawableSyllable::DEFAULT_TEXT_SIZE = 16;
 
 CADrawableSyllable::CADrawableSyllable( CASyllable* s, CADrawableLyricsContext* c, int x, int y )
  : CADrawableMusElement(s, c, x, y) {
 	setDrawableMusElementType( DrawableSyllable );
-	setWidth( syllable()->text().size() * 4 );
-	setHeight( 15 );
+	QFont font("Century Schoolbook L");
+	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
+	QFontMetrics fm(font);
+	
+	setWidth( fm.width( textToDrawableText(s->text()) ) );
+	setHeight( qRound(DEFAULT_TEXT_SIZE) );
+	
+	setNeededWidth( width() );
+	setNeededHeight( height() );
 }
 
 CADrawableSyllable::~CADrawableSyllable() {
@@ -24,8 +35,10 @@ CADrawableSyllable::~CADrawableSyllable() {
 
 void CADrawableSyllable::draw(QPainter *p, const CADrawSettings s) {
 	p->setPen(QPen(s.color));
-	p->setFont( QFont("Century Schoolbook L", qRound(s.z*12)) );
-	p->drawText( s.x, s.y+qRound(height()*s.z), syllable()->text().replace("_", " ") );
+	QFont font("Century Schoolbook L");
+	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
+	p->setFont( font );
+	p->drawText( s.x, s.y+qRound(height()*s.z), textToDrawableText( syllable()->text() ) );
 }
 
 CADrawableSyllable *CADrawableSyllable::clone(CADrawableContext *c) {
