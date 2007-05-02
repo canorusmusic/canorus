@@ -81,9 +81,6 @@ private:
 */
 CAMusElementFactory::CAMusElementFactory()
 {
-	setTimeStart( 0 );
-	setTimeLength( 256 );
-	
 	_ePlayableLength = CAPlayable::Quarter;
 	_eNoteStemDirection = CANote::StemPreferred;
 	_iPlayableDotted = 0;
@@ -235,10 +232,10 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 	bool bSuccess = false;
 	removeMusElem();
 	if ( drawableStaff ) {
-		//did a user click on the note or before/after it? In first case, add a note to a chord, in latter case, insert a new note.
+		// did a user click on the note or before/after it? In first case, add a note to a chord, in latter case, insert a new note.
 		CADrawableMusElement *followingNote;			
 		if ( left && (left->musElement()->musElementType() == CAMusElement::Note) && (left->xPos() <= coords.x()) && (left->width() + left->xPos() >= coords.x()) ) {
-			//user clicked inside x borders of the note - add a note to the chord
+			// user clicked inside x borders of the note - add a note to the chord
 			if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart()))
 				return false;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
 				
@@ -252,7 +249,7 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 			        );
 			bSuccess = voice->addNoteToChord((CANote*)mpoMusElement, (CANote*)left->musElement());
 		} else {
-			//user clicked outside x borders of the note - add a new note
+			// user clicked outside x borders of the note - add a new note
 			int pitch;
 			mpoMusElement = new CANote(_ePlayableLength,
 			          voice,
@@ -261,11 +258,25 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 			          (left?left->musElement()->timeEnd():0),
 			          _iPlayableDotted
 			       );
+			// add an empty syllable or reposit syllables
 			static_cast<CANote*>(mpoMusElement)->setStemDirection( _eNoteStemDirection );
 			if (left)	//left element exists
 				bSuccess = voice->insertMusElementAfter(mpoMusElement, left->musElement());
 			else		//left element doesn't exist, prepend the new music element
 				bSuccess = voice->prependMusElement(mpoMusElement);
+			
+			// adds empty syllables, if syllable below the note doesn't exist or repositions the syllables, if it exists
+			if (voice->lastNote()==mpoMusElement) {
+				for (int i=0; i<voice->lyricsContextList().size(); i++) {
+					voice->lyricsContextList().at(i)->repositSyllables(); // adds an empty syllable or assigns the already placed at the end if it exists
+				}
+			} else {
+				for (int i=0; i<voice->lyricsContextList().size(); i++) {
+					voice->lyricsContextList().at(i)->addEmptySyllable(
+						mpoMusElement->timeStart(), mpoMusElement->timeLength()
+					);
+				}
+			}
 		}
 	}
 	
@@ -354,20 +365,6 @@ void CAMusElementFactory::setMusElementType( CAMusElement::CAMusElementType eMET
 	CAUndefMusElem *poUnDefElem = (CAUndefMusElem *)createMusElem();
 	poUnDefElem->setMusElementType( eMEType );
 };
-
-/*!
-	Creates a new lyrcis syllable.
-	text, timeStart and timeLength are set before.
-	\a context is a lyrics context the syllable should be added to.
-	Returns True, if syllable was successfully created and added to the context.
-*/
-bool CAMusElementFactory::configureSyllable( QString text, bool hyphen, bool melisma, CAVoice *voice, CALyricsContext *context ) {
-	CASyllable *syllable = new CASyllable( text, hyphen, melisma, context, timeStart(), timeLength(), voice );
-	context->addSyllable( syllable );
-	mpoMusElement = syllable;
-	
-	return true;
-}
 
 /*!
 	\fn CAMusElementFactory::getMusElement()
