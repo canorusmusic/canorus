@@ -38,6 +38,7 @@
 #include "core/note.h"
 #include "core/rest.h"
 #include "core/lyricscontext.h"
+#include "core/syllable.h"
 
 const int CAScoreViewPort::RIGHT_EXTRA_SPACE = 100;	// Gives some space after the music so you're able to insert music elements after the last element
 const int CAScoreViewPort::BOTTOM_EXTRA_SPACE = 30; // Gives some space after the music so you're able to insert new contexts below the last context
@@ -56,14 +57,17 @@ const int CAScoreViewPort::ANIMATION_STEPS = 7;
 */
 	
 CASyllableEdit::CASyllableEdit( QWidget *parent )
- : QLineEdit(parent) {
+ : QLineEdit( parent ) {
+}
+
+CASyllableEdit::~CASyllableEdit() {
 }
 
 void CASyllableEdit::keyPressEvent( QKeyEvent *e ) {
 	int oldCurPos = cursorPosition();
 	QLineEdit::keyPressEvent(e); // call parent's keyPressEvent()
 	
-	if ((e->key()==Qt::Key_Left || e->key()==Qt::Key_Right) && cursorPosition()!=oldCurPos)
+	if ((e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace || e->key()==Qt::Key_Right) && cursorPosition()!=oldCurPos)
 		return;
 	
 	emit CAKeyPressEvent(e, this);
@@ -122,7 +126,6 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	setShadowNoteVisibleOnLeave( false );
 	setShadowNoteAccs( 0 );
 	setDrawShadowNoteAccs( false );
-	setSyllableEdit( 0 );
 	setSyllableEdit( new CASyllableEdit( _canvas ) );
 	setSyllableEditVisible( false );
 	
@@ -1245,49 +1248,45 @@ CADrawableContext *CAScoreViewPort::findCElement(CAContext *context) {
 }
 
 /*!
-	Creates a CASyllableEdit widget for editing or creating a lyrics syllable with the exact given coordinates.
-	This function is usually called, if no associated notes are actually present and the syllable edit widget geometry
-	is calculated before somewhere else.
-	
-	\sa createSyllableEdit( CANote *note, CADrawableLyricsContext *dContext )
-*/
-CASyllableEdit *CAScoreViewPort::createSyllableEdit( QRect geometry ) {
-	setSyllableEditVisible( true );
-	
-	setSyllableEditGeometry( geometry );
-	updateHelpers(); // show it
-	
-	return syllableEdit();
-}
-
-/*!
-	Creates a CASyllableEdit widget for editing or creating a lyrics syllable for the givne \a note and the syllable
-	in drawable lyrics context \a dlc. This function automatically places the widget so that it fits nicely
-	right below or above the note which the syllables are written for.
+	Creates a CASyllableEdit widget over the existing drawable syllable \a dMusElt.
+	Returns the pointer to the created widget.
 	
 	\sa createSyllableEdit( QRect geometry )
 */
-CASyllableEdit *CAScoreViewPort::createSyllableEdit( CANote *note, CALyricsContext *lc ) {
-	CADrawableMusElement *dNote = findMElement(note);
-	CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(findCElement(lc));
-	if (!note || !dlc || !dNote) return 0;
+CASyllableEdit *CAScoreViewPort::createSyllableEdit( CADrawableMusElement *dMusElt ) {
+	if (!dMusElt || dMusElt->drawableMusElementType()!=CADrawableMusElement::DrawableSyllable)
+		return 0;
 	
-	int xPos=dNote->xPos(), yPos=dlc->yPos(), width=100, height=dlc->height();
+	CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(dMusElt->drawableContext());
+	CASyllable *syllable = static_cast<CASyllable*>(dMusElt->musElement());
+	if (!dlc || !syllable) return 0;
 	
-	CADrawableMusElement *dRight = nearestRightElement( dNote->xPos(), dNote->yPos(), dlc->lyricsContext()->associatedVoice() );
+	int xPos=dMusElt->xPos(), yPos=dlc->yPos(), width=100, height=dlc->height();
+	
+	CADrawableMusElement *dRight = nearestRightElement( dMusElt->xPos(), dMusElt->yPos(), dlc->lyricsContext()->associatedVoice() );
 	if (dRight)
-		width = dRight->xPos() - dNote->xPos();
+		width = dRight->xPos() - dMusElt->xPos();
 	
-	return createSyllableEdit( QRect(xPos, yPos, width, height) );
+	QString text = syllable->text();
+	if (syllable->hyphenStart()) text+="-";
+	else if (syllable->melismaStart()) text+="_";
+	syllableEdit()->setText(text);
+	setSyllableEditVisible( true );
+	setSyllableEditGeometry( QRect(xPos-2, yPos, width+2, height) );
+	updateHelpers(); // show it
+	syllableEdit()->setFocus();
+	
+	return syllableEdit();
 }
 
 /*!
 	Removes and deletes the line edit for creating a lyrics syllable.
 */
 void CAScoreViewPort::removeSyllableEdit() {
-	setSyllableEditVisible( false ); // don't delete it, ju
-	syllableEdit()->setText("");
+	setSyllableEditVisible( false ); // don't delete it, just hide it!
 	updateHelpers();
+	syllableEdit()->setText("");
+	this->setFocus();
 }
 	
 /*!

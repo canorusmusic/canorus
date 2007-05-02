@@ -33,6 +33,23 @@ CASyllable::CASyllable( QString text, bool hyphen, bool melisma, CALyricsContext
 CASyllable::~CASyllable() {
 }
 
+/*!
+	Clears the text and sets the default hyphen and melisma settings.
+	This function is usually called when directly deleting the syllable - it shouldn't be actually removed, but only its
+	text set to empty.
+*/
+void CASyllable::clear() {
+	setText("");
+	CASyllable *prev = static_cast<CASyllable*>(lyricsContext()->findPrevMusElement(this));
+	if (prev) {
+		setHyphenStart( prev->hyphenStart() );
+		setMelismaStart( prev->melismaStart() );
+	} else {
+		setHyphenStart( false );
+		setMelismaStart( false );
+	}
+}
+
 CAMusElement* CASyllable::clone() {
 	return new CASyllable( text(), hyphenStart(), melismaStart(), lyricsContext(), timeStart(), timeLength(), associatedVoice() );
 }

@@ -84,23 +84,10 @@ public:
 	bool configureFunctionMarking( CAFunctionMarkingContext *fmc,
 	                               int timeStart, int timeLength );
 	
-	bool configureSyllable( QString text,
-	                        bool hyphen,
-	                        bool melisma,
-	                        CAVoice *voice,
-	                        CALyricsContext *context
-	                      );
-	
 	inline CAMusElement::CAMusElementType musElementType()
 	{ return mpoMusElement->musElementType(); };
 	
 	void setMusElementType( CAMusElement::CAMusElementType eMEType );
-	
-	inline void setTimeStart(int timeStart) { _timeStart = timeStart; }
-	inline int timeStart() { return _timeStart; }
-	
-	inline void setTimeLength(int timeLength) { _timeLength = timeLength; }
-	inline int timeLength() { return _timeLength; }
 	
 	inline CAPlayable::CAPlayableLength playableLength() { return _ePlayableLength; }
 	
@@ -202,8 +189,6 @@ private:
 	/////////////////////////////////
 	// Element creation parameters //
 	/////////////////////////////////
-	int _timeStart;
-	int _timeLength;
 	
 	// Staff music elements
 	CAPlayable::CAPlayableLength _ePlayableLength; // Length of note/rest to be added

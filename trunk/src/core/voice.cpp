@@ -362,7 +362,21 @@ int CAVoice::lastNotePitch(bool inChord) {
 CAPlayable* CAVoice::lastPlayableElt() {
 	for (int i=_musElementList.size()-1; i>=0; i--) {
 		if (_musElementList[i]->isPlayable())
-			return ((CAPlayable*)_musElementList[i]);
+			return static_cast<CAPlayable*>(_musElementList[i]);
+	}
+	
+	return 0;
+}
+
+/*!
+	Returns the note in the voice.
+	
+	\sa lastNotePitch()
+*/
+CANote* CAVoice::lastNote() {
+	for (int i=_musElementList.size()-1; i>=0; i--) {
+		if (_musElementList[i]->musElementType()==CAMusElement::Note)
+			return static_cast<CANote*>(_musElementList[i]);
 	}
 	
 	return 0;

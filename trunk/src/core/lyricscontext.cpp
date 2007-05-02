@@ -7,6 +7,7 @@
 
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
+#include "core/voice.h"
 
 /*!
 	\class CALyricsContext
@@ -27,14 +28,45 @@ CALyricsContext::CALyricsContext(int stanzaNumber, CAVoice *v, CASheet *s, const
  : CAContext(s, name) {
 	setContextType( LyricsContext );
 	
+	_associatedVoice=0;
 	setAssociatedVoice( v );
 	setStanzaNumber(stanzaNumber);
+	
+	repositSyllables();
 }
 
 CALyricsContext::~CALyricsContext() {
 }
 
 void CALyricsContext::clear() {
+}
+
+/*!
+	Keeps the content and order of the syllables, but changes startTimes and lengths according to the notes in associatedVoice.
+	This function is usually called when associatedVoice is changed or the whole lyricsContext is initialized for the first time.
+	If the notes and syllables aren't synchronized (too little syllables for notes) it adds empty syllables.
+*/
+void CALyricsContext::repositSyllables() {
+	if (associatedVoice()) {
+		QList<CANote*> noteList = associatedVoice()->noteList();
+		int i,j;
+		for (i=0, j=0; i<noteList.size() && j<_syllableList.size(); i++) {
+			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart())
+				continue;
+			_syllableList[j]->setTimeStart( noteList[i]->timeStart() );
+			_syllableList[j]->setTimeLength( noteList[i]->timeLength() );
+			j++;
+		}
+		for (; j<_syllableList.size() && j>0; j++) { // add syllables at the end, if too much of them exist
+			_syllableList[j]->setTimeStart(_syllableList[j-1]->timeStart()+_syllableList[j-1]->timeLength());
+			_syllableList[j]->setTimeLength( 256 );
+		}
+		for (; i<noteList.size(); i++) {             // add empty syllables at the end, if missing
+			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart())
+				continue;
+			addEmptySyllable( noteList[i]->timeStart(), noteList[i]->timeLength() );
+		}
+	}
 }
 
 CAMusElement* CALyricsContext::findNextMusElement(CAMusElement* elt) {
@@ -83,7 +115,7 @@ bool CALyricsContext::removeMusElement(CAMusElement* elt, bool autodelete) {
 	
 	Returns True if the syllable was found and removed; False otherwise.
 */
-bool CALyricsContext::removeSyllableAtTimeStart( int timeStart, bool autoDelete ) {
+CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart, bool autoDelete ) {
 	int i;
 	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()!=timeStart; i++);
 	if (i<_syllableList.size()) {
@@ -97,27 +129,41 @@ bool CALyricsContext::removeSyllableAtTimeStart( int timeStart, bool autoDelete 
 		if (autoDelete)
 			delete syllable;
 		
-		return true;
+		return syllable;
 	} else {
-		return false;
+		return 0;
 	}
 }
 
 /*!
 	Adds a syllable to the context.
-	Syllables are always sorted by their startTimes (stored in QHash).
+	Syllables are always sorted by their startTimes.
+	Updates startTimes, if needed (syllable inserted in the middle);
 	
 	\sa _syllableList
 */
 bool CALyricsContext::addSyllable( CASyllable *syllable ) {
 	int i;
 	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<syllable->timeStart(); i++);
-	if (i < _syllableList.size() && _syllableList[i]->timeStart()==syllable->timeStart()) {
-		return false;
-	} else {
-		_syllableList.insert(i, syllable);
-		return true;
-	}
+	_syllableList.insert(i, syllable);
+	for (i++; i<_syllableList.size(); i++)
+		_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() + syllable->timeLength() );
+	
+	return true;
+}
+
+/*!
+	Adds an empty syllable to the context.
+	This is useful when initializing the lyrics context or inserting a new note.
+*/
+bool CALyricsContext::addEmptySyllable( int timeStart, int timeLength ) {
+	int i;
+	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<timeStart; i++);
+	_syllableList.insert(i, (new CASyllable( "", (i>0?_syllableList[i-1]->hyphenStart():false), (i>0?_syllableList[i-1]->melismaStart():false), this, timeStart, timeLength )));
+	for (i++; i<_syllableList.size(); i++)
+		_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() + timeLength );
+	
+	return true;
 }
 
 QList<CAMusElement*> CALyricsContext::musElementList() {
@@ -126,4 +172,13 @@ QList<CAMusElement*> CALyricsContext::musElementList() {
 		musEltList << _syllableList[i];
 	
 	return musEltList;
+}
+
+CASyllable *CALyricsContext::syllableAtTimeStart( int timeStart ) {
+	int i;
+	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()!=timeStart; i++);
+	if (i<_syllableList.size())
+		return _syllableList[i];
+	else
+		return 0;
 }

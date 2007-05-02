@@ -761,13 +761,23 @@ void CAMainWin::setMode(CAMode mode) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
 					if (!((CAScoreViewPort*)_viewPortList[i])->playing())
 						((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
+					
+					if (currentScoreViewPort()->selection().size() &&
+					    currentScoreViewPort()->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable
+					   ) {
+						currentScoreViewPort()->createSyllableEdit(currentScoreViewPort()->selection().front());
+					} else {
+						currentScoreViewPort()->removeSyllableEdit();
+					}
+					
 					((CAScoreViewPort*)_viewPortList[i])->repaint();
 				}
 			}
 		}
 	}	// switch (mode)
 	updateToolBars();
-	if ( currentViewPort() )
+	if ( currentScoreViewPort() && !currentScoreViewPort()->syllableEditVisible() ||
+	     !currentScoreViewPort() && currentViewPort() )
 		currentViewPort()->setFocus();
 }
 
@@ -863,16 +873,6 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 			v->repaint();
 		}
 		
-		if (e->modifiers()==Qt::ControlModifier) {
-			// Remove music element
-			CAMusElement *elt;
-			if ( elt = v->removeMElement(coords.x(), coords.y()) ) {
-				elt->context()->removeMusElement(elt, true);	//free the memory as well!
-				CACanorus::rebuildUI(document(), v->sheet());
-				return;
-			}
-		}
-		
 		switch ( mode() ) {
 			case SelectMode:
 			case EditMode: {
@@ -891,6 +891,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 					}
 					std::cout << std::endl;
 				}
+				
 				break;
 			}
 			case InsertMode: {
@@ -949,19 +950,8 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 				if (uiInsertSyllable->isChecked() && v->currentContext()->context()->contextType()==CAContext::LyricsContext) {
 					int timeStart = 0, timeLength = 256;
 					CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(v->currentContext());
-					CADrawableMusElement *dLeft = v->nearestLeftElement( coords.x(), coords.y(), dlc->lyricsContext()->associatedVoice() );
-					
-					if ( dLeft && dLeft->musElement() && dLeft->musElement()->musElementType()==CAMusElement::Note ) {
-						timeStart = dLeft->musElement()->timeStart();
-						timeLength = dLeft->musElement()->timeLength();
-					} else
-						break;	// return, if user didn't click below the note
-					
-					musElementFactory()->setTimeStart( timeStart );
-					musElementFactory()->setTimeLength( timeLength );
-					
-					CASyllableEdit *edit = v->createSyllableEdit( static_cast<CANote*>(dLeft->musElement()), dlc->lyricsContext() );
-					edit->setFocus();
+					if ( v->selection().size() && v->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable)
+						v->createSyllableEdit( v->selection().front() );
 					
 					break;
 				} else
@@ -983,7 +973,7 @@ void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAV
 		}
 		CAPluginManager::action("onScoreViewPortClick", document(), 0, 0, this);
 	}
-	updateToolBars();
+	setMode(mode());
 	viewPort->repaint();
 }
 
@@ -1224,7 +1214,26 @@ void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
 			case Qt::Key_Backspace:
 				if (currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
 					CAMusElement *elt = currentScoreViewPort()->selection().back()->musElement();
-					elt->context()->removeMusElement(elt);
+					if (elt->musElementType()==CAMusElement::Note) {
+						CANote *note = static_cast<CANote*>(elt);
+						if (!note->isPartOfTheChord()) {
+							for (int i=0; i<note->voice()->lyricsContextList().size(); i++) {
+								note->voice()->lyricsContextList().at(i)->removeSyllableAtTimeStart(note->timeStart());
+							}
+							elt->context()->removeMusElement(elt);
+						}
+					} else if (elt->musElementType()==CAMusElement::Syllable) {
+						if (e->modifiers()==Qt::ShiftModifier) {
+							CALyricsContext *lc = static_cast<CALyricsContext*>(elt->context()); 
+							elt->context()->removeMusElement(elt);  // actually removes the syllable if SHIFT is pressed
+							lc->repositSyllables();
+						} else {
+							static_cast<CASyllable*>(elt)->clear(); // only clears syllable's text
+						}
+					} else {
+						elt->context()->removeMusElement(elt);
+					}
+					
 					CACanorus::rebuildUI(document(), currentScoreViewPort()->sheet());
 				}
 				
@@ -1708,9 +1717,11 @@ void CAMainWin::on_syllableEdit_keyPressEvent(QKeyEvent *e, CASyllableEdit *syll
 	if (!dContext || !dContext->context() || dContext->context()->contextType()!=CAContext::LyricsContext)
 		return;
 	
-	CASyllable *syllable;
-	if (mode()==EditMode)
-		syllable = static_cast<CASyllable*>(static_cast<CADrawableMusElement*>(v->selection().at(0))->musElement());
+	CASyllable *syllable=0;
+	if ( v->selection().size() && v->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable )
+		syllable = static_cast<CASyllable*>(v->selection().front()->musElement());
+	
+	if (!syllable) v->removeSyllableEdit();
 	
 	QString text = syllableEdit->text().simplified(); // remove any trailing whitespaces
 		
@@ -1727,33 +1738,26 @@ void CAMainWin::on_syllableEdit_keyPressEvent(QKeyEvent *e, CASyllableEdit *syll
 	// create or edit syllable
 	if ( e->key()==Qt::Key_Space  ||
 	     e->key()==Qt::Key_Return ||
-	     e->key()==Qt::Key_Right && syllableEdit->cursorPosition()==text.size()-1 ||
-	     e->key()==Qt::Key_Left && syllableEdit->cursorPosition()==0 ) {
-		if (mode()==InsertMode) {
-			musElementFactory()->configureSyllable( text, hyphen, melisma, voice, context);
-			syllable = static_cast<CASyllable*>(musElementFactory()->getMusElement());
-		} else if (mode()==EditMode) { // edit mode
-			syllable->setText(text);
-			syllable->setHyphenStart(hyphen);
-			syllable->setMelismaStart(melisma);
-		}
+	     e->key()==Qt::Key_Right && syllableEdit->cursorPosition()==syllableEdit->text().size() ||
+	     (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && syllableEdit->cursorPosition()==0 ) {
+		syllable->setText(text);
+		syllable->setHyphenStart(hyphen);
+		syllable->setMelismaStart(melisma);
 		
 		v->removeSyllableEdit();
+		
 		CAVoice *voice = (syllable->associatedVoice()?syllable->associatedVoice():context->associatedVoice());
-		CANote *nextNote = 0;
+		CAMusElement *nextSyllable = 0;
 		if (syllable) {
 			if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) // next right note
-				nextNote = voice->findNextNote( syllable->timeStart() );
-			else  if (e->key()==Qt::Key_Left)                       // next left note
-				nextNote = voice->findPrevNote( syllable->timeStart() );
-			
-			musElementFactory()->setTimeStart(nextNote?nextNote->timeStart():0);
-			musElementFactory()->setTimeLength(nextNote?nextNote->timeLength():0);
+				nextSyllable = syllable->lyricsContext()->findNextMusElement(syllable);
+			else  if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace)                    // next left note
+				nextSyllable = syllable->lyricsContext()->findPrevMusElement(syllable);
 			
 			CACanorus::rebuildUI( document(), currentSheet() );
-			if (nextNote) {
-				v->createSyllableEdit( nextNote, syllable->lyricsContext() );
-				v->syllableEdit()->setFocus();
+			if (nextSyllable) {
+				CADrawableMusElement *dNextSyllable = v->selectMElement(nextSyllable);
+				v->createSyllableEdit( dNextSyllable );
 			}
 		}
 	}

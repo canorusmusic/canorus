@@ -39,6 +39,7 @@ Q_OBJECT
 
 public:
 	CASyllableEdit( QWidget *parent=0 );
+	~CASyllableEdit();
 	
 signals:
 	void CAKeyPressEvent( QKeyEvent *, CASyllableEdit * );
@@ -189,10 +190,10 @@ public:
 	
 	inline void setShadowNoteDotted(int dotted) { for (int i=0; i<_shadowNote.size(); i++) _shadowNote[i]->setDotted(dotted); }
 	
-	CASyllableEdit *createSyllableEdit( QRect geometry );
-	CASyllableEdit *createSyllableEdit( CANote *, CALyricsContext * );
+	CASyllableEdit *createSyllableEdit( CADrawableMusElement *syllable );
 	inline CASyllableEdit *syllableEdit() { return _syllableEdit; }
 	void removeSyllableEdit();
+	inline bool syllableEditVisible() { return _syllableEditVisible; }
 	
 	void updateHelpers(); // method for updating shadow notes, syllable edits and other post-engrave elements coordinates and sizes when zoom level is changed etc.
 	
@@ -287,7 +288,6 @@ private:
 	inline QRect syllableEditGeometry() { return _syllableEditGeometry; }
 	inline void setSyllableEditGeometry( const QRect r ) { _syllableEditGeometry = r; }
 	bool _syllableEditVisible;
-	inline bool syllableEditVisible() { return _syllableEditVisible; }
 	inline void setSyllableEditVisible(bool v) { _syllableEditVisible = v; }
 	
 	int _xCursor, _yCursor;                             // Mouse cursor position in absolute world coords.

@@ -15,6 +15,7 @@
 
 class CAStaff;
 class CAClef;
+class CALyricsContext;
 
 class CAVoice {
 public:
@@ -60,6 +61,7 @@ public:
 	CAMusElement *eltAfter(CAMusElement *elt);
 	int lastNotePitch(bool inChord=false);
 	CAPlayable* lastPlayableElt();
+	CANote*     lastNote();
 	CAClef *getClef(CAMusElement *elt);
 	QList<CAPlayable*> getChord(int time);
 	
@@ -76,6 +78,10 @@ public:
 	unsigned char midiProgram() { return _midiProgram; }
 	void setMidiProgram(const unsigned char program) { _midiProgram = program; }
 	
+	inline QList<CALyricsContext*> lyricsContextList() { return _lyricsContextList; }
+	inline void addLyricsContext( CALyricsContext *lc ) { _lyricsContextList << lc; }
+	inline bool removeLyricsContext( CALyricsContext *lc ) { return _lyricsContextList.removeAll(lc); }
+	
 	bool updateTimes(CAMusElement *elt, int length=0);
 	bool updateTimesAfter(CAMusElement *eltBefore, int length);
 	
@@ -85,6 +91,7 @@ private:
 	CAStaff *_staff; // parent staff
 	int _voiceNumber;
 	CANote::CAStemDirection _stemDirection;
+	QList<CALyricsContext*> _lyricsContextList;
 	
 	QString _name;
 	

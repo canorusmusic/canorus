@@ -13,13 +13,13 @@
 
 #include <QString>
 
-class CALyricsContext;
 class CAVoice;
 
 class CASyllable : public CAMusElement {
 public:
 	CASyllable(QString text, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice=0);
 	~CASyllable();
+	void clear();
 	
 	inline bool hyphenStart() { return _hyphenStart; }
 	inline void setHyphenStart(bool h) { _hyphenStart = h; }
