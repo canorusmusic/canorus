@@ -620,7 +620,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							);
 						}
 						
-						//set extender line and change the width of the previous function marking if needed
+						// set extender line and change the width of the previous function marking if needed
 						if (newElt && streamsIdx[i]-1>=0 && musStreamList[i].at(streamsIdx[i]-1)->timeStart()!=musStreamList[i].at(streamsIdx[i])->timeStart()) {
 							CAFunctionMarking *prevElt;
 							for (int j=1; (prevElt=(CAFunctionMarking*)musStreamList[i].at(streamsIdx[i]-j))->function()==CAFunctionMarking::Undefined; j++);	//get the first real function (skip alterations)
@@ -680,7 +680,13 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 							streamsX[i],
 							drawableContext->yPos() + qRound(CADrawableLyricsContext::DEFAULT_TEXT_VERTICAL_SPACING)
 						);
-
+						
+						CAMusElement *prevSyllable = drawableContext->context()->findPrevMusElement(elt);
+						CADrawableMusElement *prevDSyllable = v->findMElement(prevSyllable);
+						if (prevDSyllable) {
+							prevDSyllable->setWidth( newElt->xPos() - prevDSyllable->xPos() );
+						}
+						
 						v->addMElement(newElt);
 						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 						break;

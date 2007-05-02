@@ -23,24 +23,24 @@ public:
 	void clear();
 	CAMusElement* findNextMusElement(CAMusElement*);
 	CAMusElement* findPrevMusElement(CAMusElement*);
+	QList<CAMusElement*> musElementList();
 	bool removeMusElement(CAMusElement*, bool);
+		
+	bool addSyllable( CASyllable* );
+	bool removeSyllableAtTimeStart( int timeStart, bool autoDelete );
+	CASyllable* syllableAt( int idx ) { return _syllableList[idx]; }
+	inline QList<CASyllable*> syllableList() { return _syllableList; }
+	inline int syllableCount() { return _syllableList.size(); }
 	
 	inline CAVoice *associatedVoice() { return _associatedVoice; }
 	inline void setAssociatedVoice( CAVoice *v ) { _associatedVoice = v; }
-	bool addSyllable( CASyllable* );
-	bool removeSyllableAtTimeStart( int timeStart, bool autoDelete );
-	void repositSyllables();
-	QList<CAMusElement*> musElementList();
-	CASyllable* syllableAt( int timeStart ) { return _syllableMap[timeStart]; }
-	inline QList<CASyllable*> syllableList() { return _syllableMap.values(); }
-	
 	inline int stanzaNumber() { return _stanzaNumber; }
 	inline void setStanzaNumber( int sn ) { _stanzaNumber = sn; }
 	inline QString customStanzaName() { return _customStanzaName; }
 	inline void setCustomStanzaName( QString name ) { _customStanzaName = name; }
 
 private:
-	QHash< int, CASyllable* > _syllableMap;
+	QList< CASyllable* > _syllableList;
 	CAVoice *_associatedVoice;
 	int _stanzaNumber;
 	QString _customStanzaName;
