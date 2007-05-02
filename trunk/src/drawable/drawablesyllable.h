@@ -24,6 +24,7 @@ public:
 	CASyllable *syllable() { return static_cast<CASyllable*>(musElement()); }
 
 	static const float DEFAULT_TEXT_SIZE;
+	static const float DEFAULT_DASH_LENGTH;
 	
 private:
 	inline const QString textToDrawableText( QString in ) { return in.replace("_", " "); }

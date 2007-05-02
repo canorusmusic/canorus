@@ -15,6 +15,7 @@
 #include <QFontMetrics>
 
 const float CADrawableSyllable::DEFAULT_TEXT_SIZE = 16;
+const float CADrawableSyllable::DEFAULT_DASH_LENGTH = 5;
 
 CADrawableSyllable::CADrawableSyllable( CASyllable* s, CADrawableLyricsContext* c, int x, int y )
  : CADrawableMusElement(s, c, x, y) {
@@ -22,8 +23,8 @@ CADrawableSyllable::CADrawableSyllable( CASyllable* s, CADrawableLyricsContext* 
 	QFont font("Century Schoolbook L");
 	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
 	QFontMetrics fm(font);
-	
-	setWidth( fm.width( textToDrawableText(s->text()) ) );
+	int textWidth = fm.width( textToDrawableText(s->text()) );
+	setWidth( textWidth < 7 ? 7 : textWidth ); // set minimum text width at lest 8 points
 	setHeight( qRound(DEFAULT_TEXT_SIZE) );
 	
 	setNeededWidth( width() );
@@ -34,11 +35,24 @@ CADrawableSyllable::~CADrawableSyllable() {
 }
 
 void CADrawableSyllable::draw(QPainter *p, const CADrawSettings s) {
-	p->setPen(QPen(s.color));
+	QPen pen(s.color);
+	pen.setWidth( qRound(1.2*s.z) );
+	pen.setCapStyle( Qt::RoundCap );
+	p->setPen( pen );
 	QFont font("Century Schoolbook L");
 	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
 	p->setFont( font );
 	p->drawText( s.x, s.y+qRound(height()*s.z), textToDrawableText( syllable()->text() ) );
+	
+	int textWidth = QFontMetrics(font).width( textToDrawableText(syllable()->text()) );
+	if ( syllable()->hyphenStart() && (width()*s.z - textWidth) > qRound(DEFAULT_DASH_LENGTH*s.z) ) {
+		p->drawLine( qRound(s.x + width()*s.z*0.5 + 0.5*textWidth - 0.5*s.z*DEFAULT_DASH_LENGTH), s.y + qRound(height()*s.z*0.7),
+		             qRound(s.x + width()*s.z*0.5 + 0.5*textWidth + 0.5*s.z*DEFAULT_DASH_LENGTH), s.y + qRound(height()*s.z*0.7));
+	} else
+	if ( syllable()->melismaStart() && (width()*s.z - textWidth) > qRound(DEFAULT_DASH_LENGTH*s.z) ) {
+		p->drawLine( qRound(s.x + textWidth), s.y + qRound(height()*s.z),
+		             qRound(s.x + width()*s.z), s.y + qRound(height()*s.z));
+	}
 }
 
 CADrawableSyllable *CADrawableSyllable::clone(CADrawableContext *c) {

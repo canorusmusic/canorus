@@ -37,27 +37,43 @@ CALyricsContext::~CALyricsContext() {
 void CALyricsContext::clear() {
 }
 
-CAMusElement* CALyricsContext::findNextMusElement(CAMusElement*) {
+CAMusElement* CALyricsContext::findNextMusElement(CAMusElement* elt) {
+	if (elt->musElementType()!=CAMusElement::Syllable)
+		return 0;
+	
+	int i = _syllableList.indexOf(static_cast<CASyllable*>(elt));
+	if (i!=-1 && ++i<_syllableList.size())
+		return _syllableList[i];
+	else
+		return 0;
 }
 
-CAMusElement* CALyricsContext::findPrevMusElement(CAMusElement*) {
+CAMusElement* CALyricsContext::findPrevMusElement(CAMusElement* elt) {
+	if (elt->musElementType()!=CAMusElement::Syllable)
+		return 0;
+	
+	int i = _syllableList.indexOf(static_cast<CASyllable*>(elt));
+	if (i!=-1 && --i>-1)
+		return _syllableList[i];
+	else
+		return 0;
 }
 
 /*!
 	Removes the given syllable from the list.
 */
 bool CALyricsContext::removeMusElement(CAMusElement* elt, bool autodelete) {
-	if ( elt &&
-	     elt->musElementType()==CAMusElement::Syllable &&
-	     _syllableMap.contains(elt->timeStart())
-	    ) {
-		_syllableMap.remove(elt->timeStart());
-		if (autodelete)
-			delete elt;
-		return true;
-	} else {
+	if (elt->musElementType()!=CAMusElement::Syllable)
 		return false;
-	} 
+	
+	
+	bool success=false;
+	success = _syllableList.removeAll(static_cast<CASyllable*>(elt));
+	
+	if (autodelete)
+		delete elt;
+	
+	return success;
 }
 
 /*!
@@ -68,27 +84,15 @@ bool CALyricsContext::removeMusElement(CAMusElement* elt, bool autodelete) {
 	Returns True if the syllable was found and removed; False otherwise.
 */
 bool CALyricsContext::removeSyllableAtTimeStart( int timeStart, bool autoDelete ) {
-	if ( _syllableMap.contains(timeStart) ) {
-		CASyllable *syllable = _syllableMap[timeStart];
-		_syllableMap.remove(timeStart);
+	int i;
+	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()!=timeStart; i++);
+	if (i<_syllableList.size()) {
+		CASyllable *syllable = _syllableList[i];
+		_syllableList.removeAt(i);
 		
 		// update times
-		QList<int> timeStarts = _syllableMap.keys();
-		while (timeStarts.size()) {
-			int minIdx=0;
-			for (int i=1; i<timeStarts.size(); i++)
-				if (timeStarts[i] < timeStarts[minIdx])
-					minIdx = i;
-			
-			if (timeStarts[minIdx] > syllable->timeStart()) {
-				CASyllable *curSyllable = _syllableMap[timeStarts[minIdx]];
-				curSyllable->setTimeStart( curSyllable->timeStart() - syllable->timeLength() );
-				_syllableMap.remove(timeStarts[minIdx]);
-				_syllableMap[curSyllable->timeStart()] = curSyllable;
-			}
-			
-			timeStarts.removeAt(minIdx);
-		}
+		for (; i<_syllableList.size(); i++)
+			_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() - syllable->timeLength() );
 		
 		if (autoDelete)
 			delete syllable;
@@ -106,30 +110,20 @@ bool CALyricsContext::removeSyllableAtTimeStart( int timeStart, bool autoDelete 
 	\sa _syllableList
 */
 bool CALyricsContext::addSyllable( CASyllable *syllable ) {
-	if (syllable) {
-		_syllableMap[syllable->timeStart()] = syllable;
-		return true;
-	} else
+	int i;
+	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<syllable->timeStart(); i++);
+	if (i < _syllableList.size() && _syllableList[i]->timeStart()==syllable->timeStart()) {
 		return false;
+	} else {
+		_syllableList.insert(i, syllable);
+		return true;
+	}
 }
 
 QList<CAMusElement*> CALyricsContext::musElementList() {
-	QList<CASyllable*> list = _syllableMap.values();
 	QList<CAMusElement*> musEltList;
-	for (int i=0; i<list.size(); i++)
-		musEltList << list[i];
+	for (int i=0; i<_syllableList.size(); i++)
+		musEltList << _syllableList[i];
 	
 	return musEltList;
 }
-
-/*!
-	\fn CALyricsContext::syllableAt( int timeStart )
-	
-	Returns the syllable with the given \a timeStart. Only one syllable per stanza can have this time.
-*/
-
-/*!
-	\var CALyricsContext::_syllableMap
-	
-	Map of timeStart : syllable.
-*/
