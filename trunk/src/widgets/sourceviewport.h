@@ -16,6 +16,7 @@ class QGridLayout;
 
 class CADocument;
 class CAVoice;
+class CALyricsContext;
 
 class CASourceViewPort : public CAViewPort {
 	Q_OBJECT
@@ -23,6 +24,7 @@ class CASourceViewPort : public CAViewPort {
 public:
 	CASourceViewPort(CADocument *doc, QWidget *parent=0);
 	CASourceViewPort(CAVoice *voice, QWidget *parent=0);
+	CASourceViewPort(CALyricsContext *lc, QWidget *parent=0);
 	virtual ~CASourceViewPort();
 	
 	CASourceViewPort *clone();
@@ -30,6 +32,7 @@ public:
 	
 	inline CADocument *document() { return _document; };
 	inline CAVoice *voice() { return _voice; }
+	inline CALyricsContext *lyricsContext() { return _lyricsContext; }
 	
 signals:
 	void CACommit(CASourceViewPort *v, QString documentString);
@@ -55,6 +58,7 @@ private:
 	////////////////
 	CADocument *_document;
 	CAVoice *_voice;
+	CALyricsContext *_lyricsContext;
 };
 
 #endif /* SOURCEVIEWPORT_H_ */

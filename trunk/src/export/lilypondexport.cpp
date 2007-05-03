@@ -35,7 +35,9 @@ void CALilyPondExport::exportVoice(CAVoice *v) {
 	lastNotePitch = writeRelativeIntro();
 	
 	// start of the voice block
-	out() << "{ ";
+	out() << "{\n";
+	indentMore();
+	indent();
 	
 	for (int i=0; i<v->musElementCount(); i++, out() << " ") { // append blank after each element
 		// (CAMusElement)
@@ -136,18 +138,62 @@ void CALilyPondExport::exportVoice(CAVoice *v) {
 	}
 	
 	// end of the voice block
-	out() << "}";
+	indentLess();
+	indent();
+	out() << "\n}";
 }
 
 /*!
-	Constructor for voice export. Called when viewing a single voice source.
+	Exports the lyrics in form:
+	SopranoLyricsOne = {
+		My bu -- ny is o -- ver the o -- cean __ My bu -- ny.
+	}
+*/
+void CALilyPondExport::exportLyricsContext( CALyricsContext *lc ) {
+	// Print Canorus voice name as a comment to help with debugging/tweaking
+	indent();
+	out() << "\n% " << lc->name() << "\n";
+	QString name = lc->name();
+	spellNumbers(name);
+	out() << name << " = \\lyricmode {\n";
+	indentMore();
+	
+	indent();
+	exportSyllables(lc);
+	
+	indentLess();
+	out() << "\n}\n";
+}
+
+/*!
+	Exports the syllables only without the SopranoLyircsOne = {} frame.
+*/
+void CALilyPondExport::exportSyllables( CALyricsContext *lc ) {
+	for (int i=0; i<lc->syllableCount(); i++) {
+		if (i>0) out() << " "; // space between syllables
+		out() << syllableToLilyPond(lc->syllableAt(i));
+	}
+}
+
+/*!
+	Constructor for voice export. Called when viewing a single voice source in Lily syntax.
 	Exports a voice to LilyPond syntax using the given text stream.
 */
 CALilyPondExport::CALilyPondExport(CAVoice *voice, QTextStream *out) {
 	_out = out;
+	setIndentLevel( 0 );
 	exportVoice(voice);
 }
 
+/*!
+	Constructor for lyrics context export. Called when viewing a lyrics source in Lily syntax.
+	Exports this lyrics context to LilyPond syntax using the given text stream.
+*/
+CALilyPondExport::CALilyPondExport(CALyricsContext *lc, QTextStream *out) {
+	_out = out;
+	setIndentLevel( 0 );
+	exportSyllables(lc);
+}
 
 /*!
 	Constructor for document export. Called when exporting a document to a .ly file.
@@ -156,6 +202,7 @@ CALilyPondExport::CALilyPondExport(CAVoice *voice, QTextStream *out) {
 CALilyPondExport::CALilyPondExport(CADocument *doc, QTextStream *out)
 {
 	_out = out;
+	setIndentLevel( 0 );
 	exportDocument( doc );
 }
 
@@ -384,17 +431,18 @@ const QString CALilyPondExport::barlineTypeToLilyPond(CABarline::CABarlineType t
 	}
 }
 
-/*!
-	Reads voice music elements in LilyPond syntax.
-	The given voice should already be created, (optionally) cleared and assigned to a staff.
+const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
+	QString ret = (s->text().isEmpty()?"_":s->text());
+	if (s->hyphenStart())
+		ret += " --";
+	else if (s->melismaStart())
+		ret += " __";
 	
-	\sa exportVoice()
-*/
-
-
+	return ret;
+}
 
 /*!
-	Exports the current document to Lilypond syntax as a complete .ly file
+	Exports the current document to Lilypond syntax as a complete .ly file.
 */
 void CALilyPondExport::exportDocument(CADocument *doc)
 {
@@ -409,8 +457,6 @@ void CALilyPondExport::exportDocument(CADocument *doc)
 	// Version of Lilypond syntax being generated.
 	out() << "\\version \"2.10.0\"\n";
 
-	setIndentLevel( 0 );
-
 	// For now only export the first sheet of the document
 	setCurSheet( doc->sheetAt( 0 ) );
 	exportSheet( curSheet() );
@@ -418,16 +464,23 @@ void CALilyPondExport::exportDocument(CADocument *doc)
 
 
 /*!
-	Exports the current sheet to Lilypond syntax
+	Exports the current sheet to Lilypond syntax.
 */
 void CALilyPondExport::exportSheet(CASheet *sheet)
 {
 	setCurSheet( sheet );
 
 	// Export voices as Lilypond variables: \StaffOneVoiceOne = \relative c { ... }
-	for ( int s = 0; s < sheet->staffCount(); ++s ) {
-		setCurStaffIndex( s );
-		exportStaffVoices( sheet->staffAt( s ) );
+	for ( int c = 0; c < sheet->contextCount(); ++c ) {
+		setCurContextIndex( c );
+		switch (sheet->contextAt(c)->contextType()) {
+			case CAContext::Staff:
+				exportStaffVoices( static_cast<CAStaff*>(sheet->contextAt( c )) );
+				break;
+			case CAContext::LyricsContext:
+				exportLyricsContext( static_cast<CALyricsContext*>(sheet->contextAt( c )) );
+				break;			
+		}
 	}
 
 	exportScoreBlock( sheet );
@@ -446,13 +499,13 @@ void CALilyPondExport::exportStaffVoices(CAStaff *staff)
 		setCurVoice( staff->voiceAt( v ) );
 
 		// Print Canorus voice name as a comment to help with debugging/tweaking
-		QString canorusVoiceName( curVoice()->name() );
-		out() << "\n % " << canorusVoiceName << "\n";
+		indent();
+		out() << "\n% " << curVoice()->name() << "\n";
 		
 		// Write out the voice name and the equals sign
 		// Variable name is staff index and voice index
 		QString voiceName;
-		voiceVariableName( voiceName, curStaffIndex(), v );
+		voiceVariableName( voiceName, curContextIndex(), v );
 		out() << voiceName << " = ";
 
 		exportVoice( curVoice() );
@@ -472,7 +525,7 @@ void CALilyPondExport::exportStaffVoices(CAStaff *staff)
 */
 void CALilyPondExport::voiceVariableName( QString &name, int staffNum, int voiceNum )
 {
-	QTextStream( &name ) << "Staff" << staffNum << "Voice" << voiceNum ;
+	QTextStream( &name ) << "Context" << staffNum << "Voice" << voiceNum ;
 	spellNumbers( name );
 }
 
@@ -505,75 +558,118 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet )
 {
 	out() << "\n\\score {\n";
 	indentMore();
-	int staffCount = sheet->staffCount();	
-	if ( staffCount < 1 ) {
-		out() << "% No staves. This should probably raise an error.";
+	int contextCount = sheet->contextCount();	
+	if ( contextCount < 1 ) {
+		out() << "% No Contexts. This should probably raise an error.\n";
 	}
 	else {
-		// Do multiple staves in parallel with simultaneous << ... >>
-		if ( staffCount > 1 ) {
+		// Do multiple contexts in parallel with simultaneous << ... >>
+		if ( contextCount > 1 ) {
 			indent();
 			out() <<  "<<\n" ;
 			indentMore();
 		}
-
+		
 		// Output each staff
-		for( int s = 0; s < staffCount; ++s )
-		{
-			setCurStaff( sheet->staffAt( s ) );
-
-			indent();
-			out() <<  "\\new Staff {\n" ;
-			indentMore();
-
-			// More than one voice? Add simultaneous symbol
-			int voiceCount = curStaff()->voiceCount();
-			if ( voiceCount > 1 ) {
-				indent();
-				out() <<  "<<\n" ;
-				indentMore();
-			}
-
-			// Output voices
-			for( int v = 0; v < voiceCount; ++v ) {
-
-				// Print Canorus voice name as a comment to aid with debugging etc.
-				QString curVoiceName( curStaff()->voiceAt( v )->name() );
-				indent();
-				out() << "% " + curVoiceName + "\n";
-
-				// curVoiceLilyCommand is "\voiceOne", "\voiceTwo", etc. to get proper stem directions
-				// Only use this if there is more than one voice.
-				QString curVoiceLilyCommand;
-				if ( voiceCount > 1 ) {
-					curVoiceLilyCommand.setNum( v + 1 );
-					curVoiceLilyCommand = "\\voice" + curVoiceLilyCommand;
-					spellNumbers(curVoiceLilyCommand );
+		for( int c = 0; c < contextCount; ++c ) {
+			setCurContext( sheet->contextAt( c ) );
+			
+			switch (curContext()->contextType()) {
+				case CAContext::Staff: {
+					CAStaff *s = static_cast<CAStaff*>(curContext());
+					
+					indent();
+					out() <<  "\\new Staff {\n" ;
+					indentMore();
+					
+					// More than one voice? Add simultaneous symbol
+					int voiceCount = s->voiceCount();
+					if ( voiceCount > 1 ) {
+						indent();
+						out() <<  "<<\n" ;
+						indentMore();
+					}
+					
+					// Output voices
+					for( int v = 0; v < voiceCount; ++v ) {
+						
+						// Print Canorus voice name as a comment to aid with debugging etc.
+						QString curVoiceName( s->voiceAt( v )->name() );
+						indent();
+						out() << "% " << curVoiceName << "\n";
+						
+						// curVoiceLilyCommand is "\voiceOne", "\voiceTwo", etc. to get proper stem directions
+						// Only use this if there is more than one voice.
+						QString curVoiceLilyCommand;
+						if ( voiceCount > 1 ) {
+							curVoiceLilyCommand.setNum( v + 1 );
+							curVoiceLilyCommand = "\\voice" + curVoiceLilyCommand;
+							spellNumbers( curVoiceLilyCommand );
+						}
+						
+						// Print Lily variable name
+						QString voiceName;
+						voiceVariableName( voiceName, c, v );
+						indent();
+						out() <<  "\\new Voice = \"" << voiceName << "Virtual\" { " << curVoiceLilyCommand << " \\" << voiceName << " }\n" ;
+					}
+					indentLess();
+					
+					// End simultaneous voice
+					if ( voiceCount > 1 ) {
+						indent();
+						out() <<  ">>\n" ;
+						indentLess();
+					}
+					
+					// End \new Staff {
+					indent();
+					out() <<  "}\n" ;
+					
+					break;
 				}
-
-				// Print Lily variable name
+				case CAContext::LyricsContext: { // only position the lyrics contexts. Voice assignment at the end of the score block!
+					CALyricsContext *lc = static_cast<CALyricsContext*>(curContext());
+					QString lcName = lc->name();
+					spellNumbers( lcName );
+					
+					indent();
+					out() << "% " << lc->name() << "\n";
+					indent();
+					out() << "\\new Lyrics = \"" << lcName << "Virtual\"\n";
+					
+					break;
+				}
+			}
+			
+		} // for(contexts)
+		
+		// After positioning the lyrics contexts, set their associated voices!
+		indent();
+		out() << "\n";
+		indent();
+		out() << "% Voice assignment:\n";
+		for (int i=0; i<contextCount; i++) {
+			CALyricsContext *lc;
+			if (lc = dynamic_cast<CALyricsContext*>(sheet->contextAt( i ))) {
+				QString lcName = lc->name();
+				spellNumbers(lcName);
+				
 				QString voiceName;
-				voiceVariableName( voiceName, s, v );
+				voiceVariableName(
+					voiceName,
+					curSheet()->contextList().indexOf(lc->associatedVoice()->staff()),
+					lc->associatedVoice()->staff()->voiceList().indexOf(lc->associatedVoice())
+				);
+				
 				indent();
-				out() <<  "\\new Voice { " + curVoiceLilyCommand + " \\" + voiceName + " }\n" ;
+				out() << "\\context Lyrics = \"" << lcName << "Virtual\" { \\lyricsto \"" << voiceName << "Virtual\" \\" << lcName << " }\n";
 			}
-			indentLess();
-
-			// End simultaneuous voice
-			if ( voiceCount > 1 ) {
-				indent();
-				out() <<  ">>\n" ;
-				indentLess();
-			}
-
-			// End \new Staff {
-			indent();
-			out() <<  "}\n" ;
 		}
-
-		// End simultaneous Staff
+		
+		// End simultaneous contexts
 		indentLess();
-		if ( staffCount > 1 ) {
+		if ( contextCount > 1 ) {
 			indent();
 			out() << ">>\n";
 			indentLess();

@@ -18,34 +18,37 @@
 #include "core/note.h"
 #include "core/rest.h"
 #include "core/document.h"
+#include "core/lyricscontext.h"
+#include "core/syllable.h"
 
 class CALilyPondExport {
 public:
+	// Export the whole document constructor
+	CALilyPondExport(CADocument *doc, QTextStream *out);
 	// Export voice constructor
 	CALilyPondExport(CAVoice *voice, QTextStream *out);
-
-	// Export document constructor
-	CALilyPondExport(CADocument *doc, QTextStream *out);
+	// Export lyrics context constructor
+	CALilyPondExport(CALyricsContext *lc, QTextStream *out);
 	
 	///////////////////////////
 	// Polling export status //
 	///////////////////////////
-
 	// Setter methods are private!
 	inline CAVoice *curVoice() { return _curVoice; }
 	inline CASheet *curSheet() { return _curSheet; }
-	inline CAStaff *curStaff() { return _curStaff; }
-	inline int curStaffIndex() { return _curStaffIndex; }
+	inline CAContext *curContext() { return _curContext; }
+	inline int curContextIndex() { return _curContextIndex; }
 	inline int curIndentLevel() { return _curIndentLevel; }
 	
 private:
-	void exportVoice(CAVoice *voice);
-	void exportSheet(CASheet *sheet);
 	void exportDocument(CADocument *doc);
-	void exportStaffVoices(CAStaff *staff);
+	void exportSheet(CASheet *sheet);
 	void exportScoreBlock(CASheet *sheet);
+	void exportStaffVoices(CAStaff *staff);
+	void exportVoice(CAVoice *voice);
+	void exportLyricsContext(CALyricsContext *lc);
+	void exportSyllables(CALyricsContext* lc);
 	int writeRelativeIntro();
-
 	
 	////////////////////
 	// Helper methods //
@@ -57,6 +60,7 @@ private:
 	const QString notePitchToLilyPond(int pitch, signed char accs);
 	const QString restTypeToLilyPond(CARest::CARestType type);
 	const QString barlineTypeToLilyPond(CABarline::CABarlineType type);
+	const QString syllableToLilyPond( CASyllable *s );
 	
 	inline const QString relativePitchToString(CANote* note, int prevPitch) {
 		return relativePitchToString(note->pitch(), note->accidentals(), prevPitch);
@@ -74,8 +78,8 @@ private:
 	///////////////////////////
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }
 	inline void setCurSheet(CASheet *sheet) { _curSheet = sheet; }
-	inline void setCurStaff(CAStaff *staff) { _curStaff = staff; }
-	inline void setCurStaffIndex(int s) { _curStaffIndex = s; }
+	inline void setCurContext(CAContext *context) { _curContext = context; }
+	inline void setCurContextIndex(int c) { _curContextIndex = c; }
 	inline void setIndentLevel( int level) { _curIndentLevel = level; }
 
 	inline QTextStream& out() { return *_out; }
@@ -86,8 +90,8 @@ private:
 	QTextStream *_out;
 	CAVoice *_curVoice;
 	CASheet *_curSheet;
-	CAStaff *_curStaff;
-	int _curStaffIndex;
+	CAContext *_curContext;
+	int _curContextIndex;
 	int _curIndentLevel;
 };
 
