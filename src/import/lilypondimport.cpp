@@ -50,6 +50,18 @@ CALilyPondImport::CALilyPondImport(QString& in, CAVoice *voice) {
 	}
 }
 
+CALilyPondImport::CALilyPondImport(QString& in, CALyricsContext *lc) {
+	_in = in;
+	_curLine = _curChar = 0;
+	
+	importLyricsContext(lc);
+	QString messages;
+	if (_errors.size()) {
+		for (int i=0; i<_errors.size(); i++) messages += _errors[i];
+		QMessageBox::critical(0, QObject::tr("Import error"), messages);
+	}
+}
+
 CALilyPondImport::~CALilyPondImport() {
 }
 
@@ -260,6 +272,25 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 	}
 	
 	return true;
+}
+
+bool CALilyPondImport::importLyricsContext( CALyricsContext *lc ) {
+	CASyllable *lastSyllable = 0;
+	for (QString curElt = parseNextElement(); (!in().isEmpty() || !curElt.isEmpty() ); curElt = parseNextElement()) {
+		QString text = curElt;
+		if (curElt == "_")
+			text = "";
+		
+		if (lastSyllable && text=="--") {
+			lastSyllable->setHyphenStart(true);
+		} else
+		if (lastSyllable && text=="__") {
+			lastSyllable->setMelismaStart(true);
+		} else {
+			lc->addSyllable(lastSyllable = new CASyllable( text, false, false, lc, 0, 0 ));
+		}
+	}
+	lc->repositSyllables(); // sets syllables timeStarts and timeLengths
 }
 
 /*!

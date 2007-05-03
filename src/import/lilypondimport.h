@@ -17,11 +17,16 @@
 #include "core/clef.h"
 #include "core/timesignature.h"
 #include "core/barline.h"
+#include "core/lyricscontext.h"
+#include "core/syllable.h"
 
 class CALilyPondImport {
 public:
 	// Import voice
 	CALilyPondImport(QString& in, CAVoice *voice);
+	// Import lyrics context
+	CALilyPondImport(QString& in, CALyricsContext *lc);
+	
 	virtual ~CALilyPondImport();
 	
 	int curLine() { return _curLine; }
@@ -57,8 +62,10 @@ private:
 		Chord
 	};
 	
-	// Do the actual import on the current voice and input string
+	// Do the actual import of the current voice and input string
 	bool importVoice(CAVoice *voice);
+	// Do the actual import of the current lyricsc context and input string
+	bool importLyricsContext(CALyricsContext *lc);
 	
 	inline CAVoice *curVoice() { return _curVoice; }
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }

@@ -39,6 +39,7 @@ CALyricsContext::~CALyricsContext() {
 }
 
 void CALyricsContext::clear() {
+	_syllableList.clear();
 }
 
 /*!
@@ -144,7 +145,7 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart, bool auto
 */
 bool CALyricsContext::addSyllable( CASyllable *syllable ) {
 	int i;
-	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<syllable->timeStart(); i++);
+	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<=syllable->timeStart(); i++);
 	_syllableList.insert(i, syllable);
 	for (i++; i<_syllableList.size(); i++)
 		_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() + syllable->timeLength() );
@@ -158,7 +159,7 @@ bool CALyricsContext::addSyllable( CASyllable *syllable ) {
 */
 bool CALyricsContext::addEmptySyllable( int timeStart, int timeLength ) {
 	int i;
-	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<timeStart; i++);
+	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<=timeStart; i++);
 	_syllableList.insert(i, (new CASyllable( "", (i>0?_syllableList[i-1]->hyphenStart():false), (i>0?_syllableList[i-1]->melismaStart():false), this, timeStart, timeLength )));
 	for (i++; i<_syllableList.size(); i++)
 		_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() + timeLength );

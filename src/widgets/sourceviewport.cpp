@@ -38,6 +38,7 @@ CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
  	_viewPortType = CAViewPort::SourceViewPort;
  	_document = doc;
  	_voice = 0;
+  	_lyricsContext = 0;
  	
  	setupUI();
 }
@@ -52,6 +53,22 @@ CASourceViewPort::CASourceViewPort(CAVoice *voice, QWidget *parent)
  	_viewPortType = CAViewPort::SourceViewPort;
  	_document = 0;
  	_voice = voice;
+ 	_lyricsContext = 0;
+ 	
+ 	setupUI();
+}
+
+/*!
+	Constructor for LilyPond syntax - requires the current lyrics context to show the lyrics.
+	
+	\todo This should be merged in the future with other formats.
+*/
+CASourceViewPort::CASourceViewPort(CALyricsContext *lc, QWidget *parent)
+ : CAViewPort(parent) {
+ 	_viewPortType = CAViewPort::SourceViewPort;
+ 	_document = 0;
+ 	_voice = 0;
+  	_lyricsContext = lc;
  	
  	setupUI();
 }
@@ -124,6 +141,9 @@ void CASourceViewPort::rebuild() {
 	// LilyPond
 	if (voice()) {
 		CALilyPondExport(voice(), &stream);
+	} else
+	if (lyricsContext()) {
+		CALilyPondExport(lyricsContext(), &stream);
 	}
 	
 	_textEdit->insertPlainText(*value);

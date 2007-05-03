@@ -1975,6 +1975,14 @@ void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 		CALilyPondImport(inputString, v->voice());
 		CACanorus::rebuildUI(document(), v->voice()->staff()->sheet());
 	}
+	if (v->lyricsContext()) {
+		// LilyPond lyrics source
+		
+		v->lyricsContext()->clear(); // clearUI is not needed, because only voice content is changed
+		
+		CALilyPondImport(inputString, v->lyricsContext());
+		CACanorus::rebuildUI(document(), v->lyricsContext()->sheet());
+	}
 	
 	setCurrentViewPort( v );
 }
@@ -2002,15 +2010,20 @@ void CAMainWin::on_uiSettings_triggered() {
 
 void CAMainWin::on_uiLilyPondSource_triggered() {
 	CAContext *context = currentContext();
-	if ( context &&
-	     context->contextType()==CAContext::Staff ) {
-		CAStaff *staff = static_cast<CAStaff*>(static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->context());
-		int voiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
-		CAVoice *voice = staff->voiceAt( voiceNum );
-		CASourceViewPort *v = new CASourceViewPort(voice, 0);
+	if ( context ) {
+		CASourceViewPort *v=0;
+		if (context->contextType()==CAContext::Staff) {
+			CAStaff *staff = static_cast<CAStaff*>(static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->context());
+			int voiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
+			CAVoice *voice = staff->voiceAt( voiceNum );
+			v = new CASourceViewPort(voice, 0);
+		} else
+		if (context->contextType()==CAContext::LyricsContext) {
+			v = new CASourceViewPort(static_cast<CALyricsContext*>(context), 0);
+		}
+		
 		initViewPort( v );
 		currentViewPortContainer()->addViewPort( v );
-		
 		connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
 		
 		uiUnsplitAll->setEnabled(true);
