@@ -36,6 +36,8 @@ CALyricsContext::CALyricsContext(int stanzaNumber, CAVoice *v, CASheet *s, const
 }
 
 CALyricsContext::~CALyricsContext() {
+	if (associatedVoice())
+		associatedVoice()->removeLyricsContext(this);
 }
 
 void CALyricsContext::clear() {

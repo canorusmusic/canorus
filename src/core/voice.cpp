@@ -12,6 +12,7 @@
 #include "core/note.h"
 #include "core/rest.h"
 #include "core/playable.h"
+#include "core/lyricscontext.h"
 
 /*!
 	\class CAVoice
@@ -51,6 +52,9 @@ CAVoice::~CAVoice() {
 	clear();
 	if (_voiceNumber==2)
 		staff()->voiceAt(0)->setStemDirection(CANote::StemNeutral);
+	
+	for (int i=0; i<lyricsContextList().size(); i++)
+		lyricsContextList().at(i)->setAssociatedVoice( 0 );
 }
 
 /*!

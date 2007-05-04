@@ -673,12 +673,13 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 			QMessageBox::No);
 		
 		if (ret == QMessageBox::Yes) {
+			currentScoreViewPort()->clearSelection();
 			voice->clear();
 			voice->staff()->removeVoice(voice);
+			delete voice;
 			uiVoiceNum->setMax( voice->staff()->voiceCount() );
 			uiVoiceNum->setRealValue( voice->staff()->voiceCount() );
 			CACanorus::rebuildUI(document(), currentSheet());
-			delete voice;
 		}
 	}
 }
