@@ -19,11 +19,13 @@ ADD_CUSTOM_TARGET(uninstall
 
 # Set MingW bin dir, if MingW present
 IF(MINGW)
-	STRING(REGEX REPLACE "([^ ]+)/.*" "\\1" MINGW_BIN_DIR "${CMAKE_CXX_COMPILER}")
+	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" MINGW_BIN_DIR_TMP "${CMAKE_CXX_COMPILER}")
+	STRING(REGEX REPLACE "\\\\" "/" MINGW_BIN_DIR "${MINGW_BIN_DIR_TMP}") # Replace back slashes to slashes
 ENDIF(MINGW)
 
 # Set Qt4 bin dir to find QtCore4.dll and other libs to install
-STRING(REGEX REPLACE "([^ ]+)/.*" "\\1" QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}")
+STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" QT_BIN_DIR_TMP "${QT_QMAKE_EXECUTABLE}")
+STRING(REGEX REPLACE "\\\\" "/" QT_BIN_DIR "${QT_BIN_DIR_TMP}")  # Replace back slashes to slashes
 
 #-----------------------------------------------------------------------------
 # Canorus version number.
