@@ -200,6 +200,7 @@ public:
 private slots:
 	void mousePressEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);
+	void mouseReleaseEvent(QMouseEvent *e);
 	void wheelEvent(QWheelEvent *e);		
 	void keyPressEvent(QKeyEvent *e);
 	
@@ -212,6 +213,13 @@ private slots:
 	void enterEvent(QEvent *e);
 	void on__animationTimer_timeout();
 	
+signals:
+	void CAMousePressEvent(QMouseEvent *e, QPoint p, CAScoreViewPort *v);
+	void CAMouseReleaseEvent(QMouseEvent *e, QPoint p, CAScoreViewPort *v);
+	void CAMouseMoveEvent(QMouseEvent *e, QPoint p, CAScoreViewPort *v);
+	void CAWheelEvent(QWheelEvent *e, QPoint p, CAScoreViewPort *v);
+	void CAKeyPressEvent(QKeyEvent *e, CAScoreViewPort *v);
+
 private:
 	inline void clearMElements() { _drawableMList.clear(true); }
 	inline void clearCElements() { _drawableCList.clear(true); }

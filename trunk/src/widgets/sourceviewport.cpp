@@ -1,9 +1,9 @@
 /*! 
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #include <QTextEdit>
 #include <QGridLayout>
@@ -35,7 +35,7 @@
 */
 CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
  : CAViewPort(parent) {
- 	_viewPortType = CAViewPort::SourceViewPort;
+ 	setViewPortType( SourceViewPort );
  	_document = doc;
  	_voice = 0;
   	_lyricsContext = 0;
@@ -98,11 +98,7 @@ CASourceViewPort::~CASourceViewPort() {
 }
 
 void CASourceViewPort::on_commit_clicked() {
-	emit CACommit(this, _textEdit->toPlainText());
-}
-
-void CASourceViewPort::mousePressEvent(QMouseEvent *e) {
-	emit CAMousePressEvent( e, QPoint(0,0), this);
+	emit CACommit( _textEdit->toPlainText(), this );
 }
 
 CASourceViewPort *CASourceViewPort::clone() {
