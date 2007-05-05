@@ -1,9 +1,9 @@
 /*!
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #ifndef SOURCEVIEWPORT_H_
 #define SOURCEVIEWPORT_H_
@@ -35,14 +35,15 @@ public:
 	inline CALyricsContext *lyricsContext() { return _lyricsContext; }
 	
 signals:
-	void CACommit(CASourceViewPort *v, QString documentString);
-
-private slots:
-	void on_commit_clicked();
+	void CACommit( QString documentString, CASourceViewPort *v );
+	
+public slots:
 	void rebuild();
 	
+private slots:
+	void on_commit_clicked();
+	
 private:
-	void mousePressEvent( QMouseEvent* );
 	void setupUI();
 	
 	/////////////

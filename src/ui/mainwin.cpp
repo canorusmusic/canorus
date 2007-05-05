@@ -543,8 +543,6 @@ void CAMainWin::on_uiCanorusMLSource_triggered() {
 	initViewPort( v );
 	currentViewPortContainer()->addViewPort( v );
 	
-	connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
-	
 	uiUnsplitAll->setEnabled(true);
 	uiCloseCurrentView->setEnabled(true);
 }
@@ -572,17 +570,23 @@ void CAMainWin::initViewPort(CAViewPort *v) {
 	if ( paths.size() )
 		v->setWindowIcon(QIcon( paths[0] ));
 	
-	connect( v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)),
-	         this, SLOT(viewPortMousePressEvent(QMouseEvent *, QPoint, CAViewPort *)) );
-	connect( v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)),
-	        this, SLOT(viewPortMouseMoveEvent(QMouseEvent *, QPoint, CAViewPort *)) );
-	connect( v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAViewPort *)),
-	        this, SLOT(viewPortWheelEvent(QWheelEvent *, QPoint, CAViewPort *)) );
-	connect( v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAViewPort *)),
-	        this, SLOT(viewPortKeyPressEvent(QKeyEvent *, CAViewPort *)) );
-	
-	if (v->viewPortType()==CAViewPort::ScoreViewPort) {
-		connect( static_cast<CAScoreViewPort*>(v)->syllableEdit(), SIGNAL(CAKeyPressEvent(QKeyEvent*, CASyllableEdit*)), this, SLOT(on_syllableEdit_keyPressEvent(QKeyEvent*, CASyllableEdit*)));
+	switch (v->viewPortType()) {
+		case CAViewPort::ScoreViewPort: {
+			connect( v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAScoreViewPort *)),
+			         this, SLOT(scoreViewPortMousePress(QMouseEvent *, QPoint, CAScoreViewPort *)) );
+			connect( v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAScoreViewPort *)),
+			         this, SLOT(scoreViewPortMouseMove(QMouseEvent *, QPoint, CAScoreViewPort *)) );
+			connect( v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAScoreViewPort *)),
+			         this, SLOT(scoreViewPortWheel(QWheelEvent *, QPoint, CAScoreViewPort *)) );
+			connect( v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAScoreViewPort *)),
+			         this, SLOT(scoreViewPortKeyPress(QKeyEvent *, CAScoreViewPort *)) );
+			connect( static_cast<CAScoreViewPort*>(v)->syllableEdit(), SIGNAL(CAKeyPressEvent(QKeyEvent*, CASyllableEdit*)),
+			         this, SLOT(on_syllableEdit_keyPressEvent(QKeyEvent*, CASyllableEdit*)) );
+			break;
+		}
+		case CAViewPort::SourceViewPort: {
+			connect(v, SIGNAL(CACommit(QString, CASourceViewPort*)), this, SLOT(sourceViewPortCommit(QString, CASourceViewPort*)));
+		}
 	}
 	
 	v->setFocusPolicy(Qt::ClickFocus);
@@ -842,424 +846,411 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 }
 
 /*!
-	Processes the mouse press event \a e with world coordinates \a coords of the viewport \a v.
+	Processes the mouse press event \a e with world coordinates \a coords of the score viewport \a v.
 	Any action happened in any of the viewports are always linked to its main window slots.
 	
-	\sa CAScoreViewPort::mousePressEvent(), viewPortMouseMoveEvent(), viewPortWheelEvent(), viewPortKeyPressEvent()
+	\sa CAScoreViewPort::mousePressEvent(), scoreViewPortMouseMove(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
-void CAMainWin::viewPortMousePressEvent(QMouseEvent *e, const QPoint coords, CAViewPort *viewPort) {
+void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAScoreViewPort *viewPort) {
 	setCurrentViewPort( viewPort );
 	_currentViewPortContainer->setCurrentViewPort( currentViewPort() );
 	
-	if (viewPort->viewPortType() == CAViewPort::ScoreViewPort) {
-		CAScoreViewPort *v = static_cast<CAScoreViewPort*>(viewPort);
-		
-		CADrawableContext *currentContext = v->currentContext();
-		
-		v->selectCElement(coords.x(), coords.y());
-		if ( v->selectMElement(coords.x(), coords.y()) ||	// select a music element at the given location - select none, if there's none there
-		     v->currentContext() ) {
-			// voice number widget
-			if (currentContext != v->currentContext()) {	// new context was selected
-				if (v->currentContext()->context()->contextType() == CAContext::Staff) {
-					uiVoiceNum->setRealValue(0);
-					uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
-				}
-			}
-			v->repaint();
-		} else
-		if (currentContext != v->currentContext()) { // no context selected
-			if ( mode()==InsertMode ) // If in insert mode, stay in the current context
-				v->setCurrentContext( currentContext );
-			v->repaint();
-		}
-		
-		switch ( mode() ) {
-			case SelectMode:
-			case EditMode: {
-				if (v->currentContext())
-					std::cout << "drawableContext: " << v->currentContext() << std::endl;
-				
-				if (v->selection().size()) {
-					CAMusElement *elt = v->selection().front()->musElement();
-					// debug
-					std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", dContext = " << v->selection().front()->drawableContext() << ", context=" << elt->context();
-					if (elt->isPlayable()) {
-						std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
-						std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
-						if (elt->musElementType()==CAMusElement::Note)
-							std::cout << ", pitch=" << ((CANote*)elt)->pitch();
-					}
-					std::cout << std::endl;
-				}
-				
-				break;
-			}
-			case InsertMode: {
-				// Insert context
-				if (uiContextType->isChecked()) {
-					// Add new Context
-					CAContext *newContext;
-					CADrawableContext *dupContext = v->nearestUpContext(coords.x(), coords.y());
-					switch(uiContextType->currentId()) {
-						case CAContext::Staff: {
-							v->sheet()->insertContextAfter(
-								dupContext?dupContext->context():0,
-								newContext = new CAStaff(
-									v->sheet(),
-									tr("Staff%1").arg(v->sheet()->staffCount()+1)
-								)
-							);
-							static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), newContext->name() + tr("Voice%1").arg(1)));
-							break;
-						}
-						case CAContext::LyricsContext: {
-							v->sheet()->insertContextAfter(
-								dupContext?dupContext->context():0,
-								newContext = new CALyricsContext(
-									1,
-									(v->sheet()->voiceList().size()?v->sheet()->voiceList().at(0):0),
-									v->sheet(),
-									tr("LyricsContext%1").arg(v->sheet()->contextCount()+1)
-								)
-							);
-							break;
-						}
-						case CAContext::FunctionMarkingContext: {
-							v->sheet()->insertContextAfter(
-								dupContext?dupContext->context():0,
-								newContext = new CAFunctionMarkingContext(
-									v->sheet(),
-									tr("FunctionMarkingContext%1").arg(v->sheet()->contextCount()+1)
-								)
-							);
-							break;
-						}
-					}
-					CACanorus::rebuildUI(document(), v->sheet());
-					
-					v->selectContext(newContext);
-					if (newContext->contextType()==CAContext::Staff) {
-						uiVoiceNum->setMax( 1 );
-						uiVoiceNum->setRealValue( 0 );
-					}
-					uiSelectMode->toggle();
-					v->repaint();
-					break;
-				} else
-				// Insert Syllable
-				if (uiInsertSyllable->isChecked() && v->currentContext()->context()->contextType()==CAContext::LyricsContext) {
-					int timeStart = 0, timeLength = 256;
-					CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(v->currentContext());
-					if ( v->selection().size() && v->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable)
-						v->createSyllableEdit( v->selection().front() );
-					
-					break;
-				} else
-				// Insert music element
-				if (uiInsertPlayable->isChecked()) {
-					// Add Note/Rest
-					if (e->button()==Qt::RightButton && _musElementFactory->musElementType()==CAMusElement::Note)
-						// place a rest when using right mouse button and note insertion is selected
-						_musElementFactory->setMusElementType( CAMusElement::Rest );
-				}
-				
-				insertMusElementAt( coords, v );
-				
-				if (_musElementFactory->musElementType()==CAMusElement::Rest)
-					_musElementFactory->setMusElementType( CAMusElement::Note );
-				
-				break;
+	CAScoreViewPort *v = static_cast<CAScoreViewPort*>(viewPort);
+	
+	CADrawableContext *currentContext = v->currentContext();
+	
+	v->selectCElement(coords.x(), coords.y());
+	if ( v->selectMElement(coords.x(), coords.y()) ||	// select a music element at the given location - select none, if there's none there
+	     v->currentContext() ) {
+		// voice number widget
+		if (currentContext != v->currentContext()) {	// new context was selected
+			if (v->currentContext()->context()->contextType() == CAContext::Staff) {
+				uiVoiceNum->setRealValue(0);
+				uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
 			}
 		}
-		CAPluginManager::action("onScoreViewPortClick", document(), 0, 0, this);
+		v->repaint();
+	} else
+	if (currentContext != v->currentContext()) { // no context selected
+		if ( mode()==InsertMode ) // If in insert mode, stay in the current context
+			v->setCurrentContext( currentContext );
+		v->repaint();
 	}
+	
+	switch ( mode() ) {
+		case SelectMode:
+		case EditMode: {
+			if (v->currentContext())
+				std::cout << "drawableContext: " << v->currentContext() << std::endl;
+			
+			if (v->selection().size()) {
+				CAMusElement *elt = v->selection().front()->musElement();
+				// debug
+				std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", dContext = " << v->selection().front()->drawableContext() << ", context=" << elt->context();
+				if (elt->isPlayable()) {
+					std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
+					std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
+					if (elt->musElementType()==CAMusElement::Note)
+						std::cout << ", pitch=" << ((CANote*)elt)->pitch();
+				}
+				std::cout << std::endl;
+			}
+			
+			break;
+		}
+		case InsertMode: {
+			// Insert context
+			if (uiContextType->isChecked()) {
+				// Add new Context
+				CAContext *newContext;
+				CADrawableContext *dupContext = v->nearestUpContext(coords.x(), coords.y());
+				switch(uiContextType->currentId()) {
+					case CAContext::Staff: {
+						v->sheet()->insertContextAfter(
+							dupContext?dupContext->context():0,
+							newContext = new CAStaff(
+								v->sheet(),
+								tr("Staff%1").arg(v->sheet()->staffCount()+1)
+							)
+						);
+						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), newContext->name() + tr("Voice%1").arg(1)));
+						break;
+					}
+					case CAContext::LyricsContext: {
+						v->sheet()->insertContextAfter(
+							dupContext?dupContext->context():0,
+							newContext = new CALyricsContext(
+								1,
+								(v->sheet()->voiceList().size()?v->sheet()->voiceList().at(0):0),
+								v->sheet(),
+								tr("LyricsContext%1").arg(v->sheet()->contextCount()+1)
+							)
+						);
+						break;
+					}
+					case CAContext::FunctionMarkingContext: {
+						v->sheet()->insertContextAfter(
+							dupContext?dupContext->context():0,
+							newContext = new CAFunctionMarkingContext(
+								v->sheet(),
+								tr("FunctionMarkingContext%1").arg(v->sheet()->contextCount()+1)
+							)
+						);
+						break;
+					}
+				}
+				CACanorus::rebuildUI(document(), v->sheet());
+				
+				v->selectContext(newContext);
+				if (newContext->contextType()==CAContext::Staff) {
+					uiVoiceNum->setMax( 1 );
+					uiVoiceNum->setRealValue( 0 );
+				}
+				uiSelectMode->toggle();
+				v->repaint();
+				break;
+			} else
+			// Insert Syllable
+			if (uiInsertSyllable->isChecked() && v->currentContext()->context()->contextType()==CAContext::LyricsContext) {
+				int timeStart = 0, timeLength = 256;
+				CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(v->currentContext());
+				if ( v->selection().size() && v->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable)
+					v->createSyllableEdit( v->selection().front() );
+				
+				break;
+			} else
+			// Insert music element
+			if (uiInsertPlayable->isChecked()) {
+				// Add Note/Rest
+				if (e->button()==Qt::RightButton && _musElementFactory->musElementType()==CAMusElement::Note)
+					// place a rest when using right mouse button and note insertion is selected
+					_musElementFactory->setMusElementType( CAMusElement::Rest );
+			}
+			
+			insertMusElementAt( coords, v );
+			
+			if (_musElementFactory->musElementType()==CAMusElement::Rest)
+				_musElementFactory->setMusElementType( CAMusElement::Note );
+			
+			break;
+		}
+	}
+	
+	CAPluginManager::action("onScoreViewPortClick", document(), 0, 0, this);
+	
 	setMode(mode());
 	viewPort->repaint();
 }
 
 /*!
-	Processes the mouse move event \a e with coordinates \a coords of the viewport \a v.
+	Processes the mouse move event \a e with coordinates \a coords of the score viewport \a v.
 	Any action happened in any of the viewports are always linked to its main window slots.
 	
-	\sa CAScoreViewPort::mouseMoveEvent(), viewPortMousePressEvent(), viewPortWheelEvent(), viewPortKeyPressEvent()
+	\sa CAScoreViewPort::mouseMoveEvent(), scoreViewPortMousePress(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
-void CAMainWin::viewPortMouseMoveEvent(QMouseEvent *e, QPoint coords, CAViewPort *v) {
-	if ((mode() == InsertMode) &&
-	    (_musElementFactory->musElementType() == CAMusElement::Note) &&
-	    (v->viewPortType()==CAViewPort::ScoreViewPort)
-	   ) {
-		CAScoreViewPort *c = (CAScoreViewPort*)v;
+void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreViewPort *c) {
+	if ( (mode() == InsertMode) && (musElementFactory()->musElementType() == CAMusElement::Note) ) {
 		CADrawableStaff *s;
 		if (c->currentContext()?(c->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0)
 			s = (CADrawableStaff*)c->currentContext(); 
 		else
 			return;
 
-		if (_musElementFactory->musElementType() == CAMusElement::Note || 
-                    _musElementFactory->musElementType() == CAMusElement::Rest)
+		if ( musElementFactory()->musElementType() == CAMusElement::Note || 
+             musElementFactory()->musElementType() == CAMusElement::Rest) {
 			c->setShadowNoteVisible(true);
-		
-		//calculate the logical pitch out of absolute world coordinates and the current clef
+        }
+        
+		// calculate the musical pitch out of absolute world coordinates and the current clef
 		int pitch = s->calculatePitch(coords.x(), coords.y());
 		
-		//write into the main window's status bar the note pitch name
+		// write into the main window's status bar the note pitch name
 		int iNoteAccs = s->getAccs(coords.x(), pitch)+_musElementFactory->noteExtraAccs();
 		_musElementFactory->setNoteAccs( iNoteAccs );
 		statusBar()->showMessage(CANote::generateNoteName(pitch, iNoteAccs));
-		((CAScoreViewPort*)v)->setShadowNoteAccs(iNoteAccs);
+		c->setShadowNoteAccs(iNoteAccs);
 	}
 }
 
 /*!
-	Processes the mouse wheel event \a e with coordinates \a coords of the viewport \a v.
+	Processes the mouse wheel event \a e with coordinates \a coords of the score viewport \a v.
 	Any action happened in any of the viewports are always linked to its main window slots.
 	
-	\sa CAScoreViewPort::wheelEvent(), viewPortMousePressEvent(), viewPortMouseMoveEvent(), viewPortKeyPressEvent()
+	\sa CAScoreViewPort::wheelEvent(), scoreViewPortMousePress(), scoreViewPortMouseMove(), scoreViewPortKeyPress()
 */
-void CAMainWin::viewPortWheelEvent(QWheelEvent *e, QPoint coords, CAViewPort *v) {
-	_currentViewPort = v;
-	if (v->viewPortType()==CAViewPort::ScoreViewPort) {
-		CAScoreViewPort *sv = static_cast<CAScoreViewPort*>(v);
-		
-		int val;
-		switch (e->modifiers()) {
-			case Qt::NoModifier:			//scroll horizontally
-				sv->setWorldX( sv->worldX() - (int)((0.5*e->delta()) / sv->zoom()), _animatedScroll );
-				break;
-			case Qt::AltModifier:			//scroll horizontally, fast
-				sv->setWorldX( sv->worldX() - (int)(e->delta() / sv->zoom()), _animatedScroll );
-				break;
-			case Qt::ShiftModifier:			//scroll vertically
-				sv->setWorldY( sv->worldY() - (int)((0.5*e->delta()) / sv->zoom()), _animatedScroll );
-				break;
-			case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
-				sv->setWorldY( sv->worldY() - (int)(e->delta() / sv->zoom()), _animatedScroll );
-				break;
-			case Qt::ControlModifier:		//zoom
-				if (e->delta() > 0)
-					sv->setZoom( sv->zoom()*1.1, coords.x(), coords.y(), _animatedScroll );
-				else
-					sv->setZoom( sv->zoom()/1.1, coords.x(), coords.y(), _animatedScroll );
-				
-				break;
+void CAMainWin::scoreViewPortWheel(QWheelEvent *e, QPoint coords, CAScoreViewPort *sv) {
+	setCurrentViewPort( sv );
+	
+	int val;
+	switch (e->modifiers()) {
+		case Qt::NoModifier:			//scroll horizontally
+			sv->setWorldX( sv->worldX() - (int)((0.5*e->delta()) / sv->zoom()), _animatedScroll );
+			break;
+		case Qt::AltModifier:			//scroll horizontally, fast
+			sv->setWorldX( sv->worldX() - (int)(e->delta() / sv->zoom()), _animatedScroll );
+			break;
+		case Qt::ShiftModifier:			//scroll vertically
+			sv->setWorldY( sv->worldY() - (int)((0.5*e->delta()) / sv->zoom()), _animatedScroll );
+			break;
+		case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
+			sv->setWorldY( sv->worldY() - (int)(e->delta() / sv->zoom()), _animatedScroll );
+			break;
+		case Qt::ControlModifier:		//zoom
+			if (e->delta() > 0)
+				sv->setZoom( sv->zoom()*1.1, coords.x(), coords.y(), _animatedScroll );
+			else
+				sv->setZoom( sv->zoom()/1.1, coords.x(), coords.y(), _animatedScroll );
+			
+			break;
+	}
+	
+	sv->repaint();
+}
+
+/*!
+	Processes the key press event \a e of the score viewport \a v.
+	Any action happened in any of the viewports are always linked to its main window slots.
+	
+	\sa CAScoreViewPort::keyPressEvent(), scoreViewPortMousePress(), scoreViewPortMouseMove(), scoreViewPortWheel()
+*/
+void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
+	setCurrentViewPort( v );
+	
+	switch (e->key()) {
+		//Music editing keys
+		case Qt::Key_Right: {
+			//select next music element
+			v->selectNextMusElement();
+			v->repaint();
+			break;
 		}
 		
-		v->repaint();
-	}
-}
-
-/*!
-	Processes the key press event \a e of the viewport \a v.
-	Any action happened in any of the viewports are always linked to its main window slots.
-	
-	\sa CAScoreViewPort::keyPressEvent(), viewPortMousePressEvent(), viewPortMouseMoveEvent(), viewPortWheelEvent()
-*/
-void CAMainWin::viewPortKeyPressEvent(QKeyEvent *e, CAViewPort *v) {
-	_currentViewPort = v;
-	
-	if (_currentViewPort->viewPortType() == CAViewPort::ScoreViewPort) {
-		switch (e->key()) {
-			//Music editing keys
-			case Qt::Key_Right: {
-				//select next music element
-				((CAScoreViewPort*)_currentViewPort)->selectNextMusElement();
-				_currentViewPort->repaint();
-				break;
-			}
+		case Qt::Key_Left: {
+			//select previous music element
+			v->selectPrevMusElement();
+			v->repaint();
+			break;
+		}
+		
+		case Qt::Key_B: {
+			//place a barline
+			CADrawableContext *drawableContext;
+			drawableContext = v->currentContext();
 			
-			case Qt::Key_Left: {
-				//select previous music element
-				((CAScoreViewPort*)_currentViewPort)->selectPrevMusElement();
-				_currentViewPort->repaint();
-				break;
-			}
-			
-			case Qt::Key_B: {
-				//place a barline
-				CADrawableContext *drawableContext;
-				drawableContext = ((CAScoreViewPort*)v)->currentContext();
+			if ( (!drawableContext) || (drawableContext->context()->contextType() != CAContext::Staff) )
+				return;
+		
+			CAStaff *staff = (CAStaff*)drawableContext->context();
+			CAMusElement *left = 0;
+			if (!v->selection().isEmpty())
+				left = v->selection().back()->musElement();
 				
-				if ( (!drawableContext) || (drawableContext->context()->contextType() != CAContext::Staff) )
-					return;
+			CABarline *bar = new CABarline(
+				CABarline::Single,
+				staff,
+				(left?left->timeEnd():staff->lastTimeEnd())
+			);
+			staff->insertSignAfter(bar, left, true);	//insert the barline in all the voices
 			
-				CAStaff *staff = (CAStaff*)drawableContext->context();
-				CAMusElement *left = 0;
-				if (!((CAScoreViewPort*)v)->selection().isEmpty())
-					left = ((CAScoreViewPort*)v)->selection().back()->musElement();
-					
-				CABarline *bar = new CABarline(
-					CABarline::Single,
-					staff,
-					(left?left->timeEnd():staff->lastTimeEnd())
-				);
-				staff->insertSignAfter(bar, left, true);	//insert the barline in all the voices
-				
-				CACanorus::rebuildUI(document(), ((CAScoreViewPort*)v)->sheet());
-				((CAScoreViewPort*)v)->selectMElement(bar);
+			CACanorus::rebuildUI(document(), v->sheet());
+			v->selectMElement(bar);
+			v->repaint();
+			break;
+		}
+		
+		case Qt::Key_Up: {
+			if (mode() == SelectMode) {	//select the upper music element
+				v->selectUpMusElement();
 				v->repaint();
-				break;
-			}
-			
-			case Qt::Key_Up: {
-				if (mode() == SelectMode) {	//select the upper music element
-					((CAScoreViewPort*)_currentViewPort)->selectUpMusElement();
-					_currentViewPort->repaint();
-				} else if ((mode() == InsertMode) || (mode() == EditMode)) {
-					if (!((CAScoreViewPort*)_currentViewPort)->selection().isEmpty()) {
-						CADrawableMusElement *elt =
-							((CAScoreViewPort*)_currentViewPort)->selection().back();
-						
-						//pitch note for one step higher
-						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
-							CANote *note = (CANote*)elt->musElement();
-							note->setPitch(note->pitch()+1);
-							CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
-						}
+			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
+				if (!v->selection().isEmpty()) {
+					CADrawableMusElement *elt =
+						v->selection().back();
+					
+					//pitch note for one step higher
+					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
+						CANote *note = (CANote*)elt->musElement();
+						note->setPitch(note->pitch()+1);
+						CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
 					}
 				}
-				break;
 			}
-			
-			case Qt::Key_Down: {
-				if (mode() == SelectMode) {	//select the upper music element
-					((CAScoreViewPort*)_currentViewPort)->selectUpMusElement();
-					_currentViewPort->repaint();
-				} else if ((mode() == InsertMode) || (mode() == EditMode)) {
-					if (!((CAScoreViewPort*)_currentViewPort)->selection().isEmpty()) {
-						CADrawableMusElement *elt =
-							((CAScoreViewPort*)_currentViewPort)->selection().back();
-						
-						//pitch note for one step higher
-						if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
-							CANote *note = (CANote*)elt->musElement();
-							note->setPitch(note->pitch()-1);
-							CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
-						}
+			break;
+		}
+		
+		case Qt::Key_Down: {
+			if (mode() == SelectMode) {	//select the upper music element
+				v->selectUpMusElement();
+				v->repaint();
+			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
+				if (!v->selection().isEmpty()) {
+					CADrawableMusElement *elt =
+						v->selection().back();
+					
+					//pitch note for one step higher
+					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
+						CANote *note = (CANote*)elt->musElement();
+						note->setPitch(note->pitch()-1);
+						CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
 					}
 				}
-				break;
 			}
-			
-			case Qt::Key_Plus: {
-				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (mode()==InsertMode) {
-						_musElementFactory->addNoteExtraAccs(1); _musElementFactory->addNoteAccs(1);
-						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(_musElementFactory->noteExtraAccs()!=0);
-						((CAScoreViewPort*)v)->setShadowNoteAccs(_musElementFactory->noteAccs());
-						v->repaint();
-					} else if (mode()==EditMode) {
-						if (!((CAScoreViewPort*)v)->selection().isEmpty()) {
-							CAMusElement *elt = ((CAScoreViewPort*)v)->selection().front()->musElement();
-							if (elt->musElementType()==CAMusElement::Note) {
-								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
-								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
-							}
-						}
-					}
-				}
-				break;
-			}
-			
-			case Qt::Key_Minus: {
-				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (mode()==InsertMode) {
-						_musElementFactory->subNoteExtraAccs(1); _musElementFactory->subNoteAccs(1);
-						((CAScoreViewPort*)v)->setDrawShadowNoteAccs(_musElementFactory->noteExtraAccs()!=0);
-						((CAScoreViewPort*)v)->setShadowNoteAccs(_musElementFactory->noteAccs());
-						v->repaint();
-					} else if (mode()==EditMode) {
-						if (!((CAScoreViewPort*)v)->selection().isEmpty()) {
-							CAMusElement *elt = ((CAScoreViewPort*)v)->selection().front()->musElement();
-							if (elt->musElementType()==CAMusElement::Note) {
-								((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
-								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
-							}
-						}
-					}
-				}
-				break;
-			}
-			
-			case Qt::Key_Period: {
-				if (v->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (mode()==InsertMode) {
-						_musElementFactory->addPlayableDotted( 1 );
-						((CAScoreViewPort*)v)->setShadowNoteDotted(_musElementFactory->playableDotted());
-						v->repaint();
-					} else if (mode()==EditMode) {
-						if (!((CAScoreViewPort*)v)->selection().isEmpty()) {
-							CAMusElement *elt = ((CAScoreViewPort*)v)->selection().front()->musElement();
-							
-							if (elt->isPlayable()) {
-								int diff;
-								if (elt->musElementType()==CAMusElement::Note) {
-									int i;
-									for (i=0; i<((CANote*)elt)->chord().size(); i++) {
-										diff = ((CANote*)elt)->chord().at(i)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
-									}
-									elt = ((CANote*)elt)->chord().last();
-								} else if (elt->musElementType()==CAMusElement::Rest)
-									diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
-								 
-								((CAPlayable*)elt)->voice()->updateTimesAfter(elt, diff);
-								CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
-							}
-						}
-					}
-				}
-				break;
-			}
-			
-			case Qt::Key_Delete:
-			case Qt::Key_Backspace:
-				if (currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
-					CAMusElement *elt = currentScoreViewPort()->selection().back()->musElement();
+			break;
+		}
+		
+		case Qt::Key_Plus: {
+			if (mode()==InsertMode) {
+				musElementFactory()->addNoteExtraAccs(1); musElementFactory()->addNoteAccs(1);
+				v->setDrawShadowNoteAccs(musElementFactory()->noteExtraAccs()!=0);
+				v->setShadowNoteAccs(musElementFactory()->noteAccs());
+				v->repaint();
+			} else if (mode()==EditMode) {
+				if (!v->selection().isEmpty()) {
+					CAMusElement *elt = v->selection().front()->musElement();
 					if (elt->musElementType()==CAMusElement::Note) {
-						CANote *note = static_cast<CANote*>(elt);
-						if (!note->isPartOfTheChord()) {
-							for (int i=0; i<note->voice()->lyricsContextList().size(); i++) {
-								note->voice()->lyricsContextList().at(i)->removeSyllableAtTimeStart(note->timeStart());
+						((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
+						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
+					}
+				}
+			}
+			break;
+		}
+		
+		case Qt::Key_Minus: {
+			if (mode()==InsertMode) {
+				musElementFactory()->subNoteExtraAccs(1); musElementFactory()->subNoteAccs(1);
+				v->setDrawShadowNoteAccs(musElementFactory()->noteExtraAccs()!=0);
+				v->setShadowNoteAccs(musElementFactory()->noteAccs());
+				v->repaint();
+			} else if (mode()==EditMode) {
+				if (!v->selection().isEmpty()) {
+					CAMusElement *elt = v->selection().front()->musElement();
+					if (elt->musElementType()==CAMusElement::Note) {
+						((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
+						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
+					}
+				}
+			}
+			break;
+		}
+		
+		case Qt::Key_Period: {
+			if (mode()==InsertMode) {
+				_musElementFactory->addPlayableDotted( 1 );
+				((CAScoreViewPort*)v)->setShadowNoteDotted(_musElementFactory->playableDotted());
+				v->repaint();
+			} else if (mode()==EditMode) {
+				if (!((CAScoreViewPort*)v)->selection().isEmpty()) {
+					CAMusElement *elt = ((CAScoreViewPort*)v)->selection().front()->musElement();
+					
+					if (elt->isPlayable()) {
+						int diff;
+						if (elt->musElementType()==CAMusElement::Note) {
+							int i;
+							for (i=0; i<((CANote*)elt)->chord().size(); i++) {
+								diff = ((CANote*)elt)->chord().at(i)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
 							}
-							elt->context()->removeMusElement(elt);
+							elt = ((CANote*)elt)->chord().last();
+						} else if (elt->musElementType()==CAMusElement::Rest)
+							diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
+						 
+						((CAPlayable*)elt)->voice()->updateTimesAfter(elt, diff);
+						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
+					}
+				}
+			}
+			break;
+		}
+		
+		case Qt::Key_Delete:
+		case Qt::Key_Backspace:
+			if ( v->selection().size()) {
+				CAMusElement *elt = v->selection().back()->musElement();
+				if (elt->musElementType()==CAMusElement::Note) {
+					CANote *note = static_cast<CANote*>(elt);
+					if (!note->isPartOfTheChord()) {
+						for (int i=0; i<note->voice()->lyricsContextList().size(); i++) {
+							note->voice()->lyricsContextList().at(i)->removeSyllableAtTimeStart(note->timeStart());
 						}
-					} else if (elt->musElementType()==CAMusElement::Syllable) {
-						if (e->modifiers()==Qt::ShiftModifier) {
-							CALyricsContext *lc = static_cast<CALyricsContext*>(elt->context()); 
-							elt->context()->removeMusElement(elt);  // actually removes the syllable if SHIFT is pressed
-							lc->repositSyllables();
-						} else {
-							static_cast<CASyllable*>(elt)->clear(); // only clears syllable's text
-						}
-					} else {
 						elt->context()->removeMusElement(elt);
 					}
-					
-					CACanorus::rebuildUI(document(), currentScoreViewPort()->sheet());
+				} else if (elt->musElementType()==CAMusElement::Syllable) {
+					if (e->modifiers()==Qt::ShiftModifier) {
+						CALyricsContext *lc = static_cast<CALyricsContext*>(elt->context()); 
+						elt->context()->removeMusElement(elt);  // actually removes the syllable if SHIFT is pressed
+						lc->repositSyllables();
+					} else {
+						static_cast<CASyllable*>(elt)->clear(); // only clears syllable's text
+					}
+				} else {
+					elt->context()->removeMusElement(elt);
 				}
 				
-				break;
+				CACanorus::rebuildUI(document(), v->sheet());
+			}
 			
-			//Mode keys
-			case Qt::Key_Escape:
-				if ((mode()==SelectMode) && (_currentViewPort) && (_currentViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
-					((CAScoreViewPort*)_currentViewPort)->clearMSelection();
-					((CAScoreViewPort*)_currentViewPort)->clearCSelection();
-				}
-				uiSelectMode->toggle();
-				uiVoiceNum->setRealValue(0);
-				//if (uiKeySigPSP)
-				//	uiKeySigPSP->hide();
-				break;
-			case Qt::Key_I:
-				_musElementFactory->setMusElementType( CAMusElement::Note );
-				setMode(InsertMode);
-				break;
-			case Qt::Key_E:
-				setMode(EditMode);
-				break;
-		}
+			break;
+		
+		//Mode keys
+		case Qt::Key_Escape:
+			if (mode()==SelectMode) {
+				v->clearMSelection();
+				v->clearCSelection();
+			}
+			uiSelectMode->toggle();
+			uiVoiceNum->setRealValue(0);
+			//if (uiKeySigPSP)
+			//	uiKeySigPSP->hide();
+			break;
+		case Qt::Key_I:
+			musElementFactory()->setMusElementType( CAMusElement::Note );
+			setMode(InsertMode);
+			break;
+		case Qt::Key_E:
+			setMode(EditMode);
+			break;
 	}
+	
 	updateToolBars();
 }
 
@@ -1955,7 +1946,10 @@ void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 	}
 }
 
-void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
+/*!
+	Called when a user clicks "Commit" button in source viewport.
+*/
+void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 	if (v->document()) {
 		// CanorusML document source
 		
@@ -1975,7 +1969,7 @@ void CAMainWin::sourceViewPortCommit(CASourceViewPort *v, QString inputString) {
 		
 		CALilyPondImport(inputString, v->voice());
 		CACanorus::rebuildUI(document(), v->voice()->staff()->sheet());
-	}
+	} else
 	if (v->lyricsContext()) {
 		// LilyPond lyrics source
 		

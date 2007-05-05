@@ -95,7 +95,7 @@ void CASyllableEdit::keyPressEvent( QKeyEvent *e ) {
 */
 
 CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(parent) {
-	_viewPortType = CAViewPort::ScoreViewPort;
+	setViewPortType( ScoreViewPort );
 	
 	_sheet = sheet;
 	_worldX = _worldY = 0;
@@ -1040,6 +1040,14 @@ void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 }
 
 /*!
+	Processes the mouseReleaseEvent().
+	A new signal is emitted: CAMouseReleaseEvent(), which usually gets processed by the parent class then.
+*/
+void CAScoreViewPort::mouseReleaseEvent(QMouseEvent *e) {
+	emit CAMouseReleaseEvent(e, QPoint(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY), this);
+}
+
+/*!
 	Processes the mouseMoveEvent().
 	A new signal is emitted: CAMouseMoveEvent(), which usually gets processed by the parent class then.
 */
@@ -1365,4 +1373,67 @@ int CAScoreViewPort::getMaxYExtended(CAKDTree &v) {
 	Disables and deletes the area to be repainted.
 	
 	\sa setRepaintArea()
+*/
+
+/*!
+	\fn void CAScoreViewPort::CAMousePressEvent(QMouseEvent *e, QPoint p, CAScoreViewPort *v)
+	
+	This signal is emitted when mousePressEvent() is called. Parent class is usually connected to this event.
+	It adds another two arguments to the mousePressEvent() function - pointer to this viewport and coordinates
+	in world coordinates where user used the mouse.
+	This is useful when a parent class wants to know which class the signal was emmitted by.
+	
+	\param e Mouse event which gets processed.
+	\param p Coordinates of the mouse cursor in absolute world values.
+	\param v Pointer to this viewport (the viewport which emmitted the signal).
+*/
+
+/*!
+	\fn void CAScoreViewPort::CAMouseMoveEvent(QMouseEvent *e, QPoint p, CAScoreViewPort *v)
+	
+	This signal is emitted when mouseMoveEvent() is called. Parent class is usually connected to this event.
+	It adds another two arguments to the mouseMoveEvent() function - pointer to this viewport and coordinates
+	in world coordinates where user used the mouse.
+	This is useful when a parent class wants to know which class the signal was emmitted by.
+	
+	\param e Mouse event which gets processed.
+	\param p Coordinates of the mouse cursor in absolute world values.
+	\param v Pointer to this viewport (the viewport which emmitted the signal).
+*/
+
+/*!
+	\fn void CAScoreViewPort::CAMouseReleaseEvent(QMouseEvent *e, QPoint p, CAScoreViewPort *v)
+	
+	This signal is emitted when mouseReleaseEvent() is called. Parent class is usually connected to this event.
+	It adds another two arguments to the mouseReleaseEvent() function - pointer to this score viewport and coordinates
+	in world coordinates where user used the mouse.
+	This is useful when a parent class wants to know which class the signal was emmitted by.
+	
+	\param e Mouse event which gets processed.
+	\param p Coordinates of the mouse cursor in absolute world values.
+	\param v Pointer to this viewport (the viewport which emmitted the signal).
+*/
+
+/*!
+	\fn void CAScoreViewPort::CAWheelEvent(QWheelEvent *e, QPoint p, CAScoreViewPort *v)
+	
+	This signal is emitted when wheelEvent() is called. Parent class is usually connected to this event.
+	It adds another two arguments to the wheelEvent() function - pointer to this score viewport and coordinates
+	in world coordinates where user used the mouse.
+	This is useful when a parent class wants to know which class the signal was emmitted by.
+	
+	\param e Wheel event which gets processed.
+	\param p Coordinates of the mouse cursor in absolute world values.
+	\param v Pointer to this viewport (the viewport which emmitted the signal).
+*/
+
+/*!
+	\fn void CAScoreViewPort::CAKeyPressEvent(QKeyEvent *e, CAScoreViewPort *v)
+	
+	This signal is emitted when keyPressEvent() is called. Parent class is usually connected to this event.
+	It adds another two arguments to the wheelEvent() function - pointer to this score viewport.
+	This is useful when a parent class wants to know which class the signal was emmitted by.
+	
+	\param e Wheel event which gets processed.
+	\param v Pointer to this viewport (the viewport which emmitted the signal).
 */
