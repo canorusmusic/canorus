@@ -989,7 +989,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 	\sa CAScoreViewPort::mouseMoveEvent(), scoreViewPortMousePress(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
 void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreViewPort *c) {
-	if ( (mode() == InsertMode) && (musElementFactory()->musElementType() == CAMusElement::Note) ) {
+	if ( (mode() == InsertMode && musElementFactory()->musElementType() == CAMusElement::Note) ) {
 		CADrawableStaff *s;
 		if (c->currentContext()?(c->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0)
 			s = (CADrawableStaff*)c->currentContext(); 
@@ -1009,6 +1009,9 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreVie
 		_musElementFactory->setNoteAccs( iNoteAccs );
 		statusBar()->showMessage(CANote::generateNoteName(pitch, iNoteAccs));
 		c->setShadowNoteAccs(iNoteAccs);
+	} else
+	if ( mode()==SelectMode ) { // multiple selection
+		
 	}
 }
 

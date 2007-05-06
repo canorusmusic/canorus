@@ -68,10 +68,10 @@ protected:
 	int _yPos;
 	int _xPosOffset;
 	int _yPosOffset;
-	int _width;
-	int _height;
-	int _neededWidth;
-	int _neededHeight;
+	int _width;        // Element's width as it appears on the screen
+	int _height;       // Element's height as it appears on the screen
+	int _neededWidth;  // Minimum width the next element should be placed next to it by engraver
+	int _neededHeight; // Minimum height the next element should be placed next to it by engraver
 	bool _visible;
 	bool _selectable;	// Can the element be clicked on and is then selected
 };
