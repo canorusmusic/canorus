@@ -72,7 +72,6 @@ SET(Canorus_MOCs
 
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/canorus.cpp
-	core/kdtree.cpp
 	core/canorusml.cpp
 
 	core/document.cpp

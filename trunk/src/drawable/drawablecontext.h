@@ -26,7 +26,11 @@ public:
 	CADrawableContext(CAContext *c, int x, int y);
 	inline CAContext *context() { return _context; }
 	CADrawableContextType drawableContextType() { return _drawableContextType; }
-	virtual void addMElement(CADrawableMusElement *elt) { _drawableMusElementList << elt; }
+	inline virtual void addMElement(CADrawableMusElement *elt) {
+		int i;
+		for (i=_drawableMusElementList.size()-1; (i>=0) && _drawableMusElementList[i]->xPos()>elt->xPos(); i--);
+		_drawableMusElementList.insert( ++i, elt);
+	}
 	virtual int removeMElement(CADrawableMusElement *elt) { return _drawableMusElementList.removeAll(elt); }
 	CADrawableMusElement *lastDrawableMusElement() { if (_drawableMusElementList.size()) return _drawableMusElementList.last(); else return 0; }
 	virtual CADrawableContext* clone() = 0;
@@ -37,12 +41,14 @@ public:
 				return _drawableMusElementList[i];
 	}
 	
+	QList<CADrawableMusElement*> findInRange( int x1, int x2 );
+	
 protected:
 	void setDrawableContextType( CADrawableContextType type ) { _drawableContextType = type; }
 	
 	CADrawableContextType _drawableContextType;
 	CAContext *_context;
-	QList<CADrawableMusElement *> _drawableMusElementList;	// List of all the drawable musElements in this staff
+	QList<CADrawableMusElement *> _drawableMusElementList;	// List of all the drawable musElements in this context sorted by their left borders
 };
 
 #endif /* DRAWABLECONTEXT_H_ */

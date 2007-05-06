@@ -74,9 +74,9 @@ public:
 	void addCElement(CADrawableContext *elt, bool select=false);
 	CAMusElement *removeMElement(int x, int y);
 	
-	void importElements(CAKDTree *drawableMList, CAKDTree *drawableCList);
-	void importMElements(CAKDTree *elts);
-	void importCElements(CAKDTree *elts);
+	void importElements(CAKDTree<CADrawableMusElement*> *drawableMList, CAKDTree<CADrawableContext*> *drawableCList);
+	void importMElements(CAKDTree<CADrawableMusElement*> *elts);
+	void importCElements(CAKDTree<CADrawableContext*> *elts);
 	
 	///////////////
 	// Selection //
@@ -86,6 +86,7 @@ public:
 	CADrawableContext    *selectCElement(int x, int y);
 	CADrawableMusElement *selectMElement(CAMusElement *elt);
 	CADrawableContext    *selectContext(CAContext *context);
+	inline QPoint         lastMousePressCoords() { return _lastMousePressCoords; }
 	
 	inline CADrawableContext *currentContext() { return _currentContext; }
 	inline void setCurrentContext(CADrawableContext *c) { _currentContext = c; }
@@ -108,12 +109,13 @@ public:
 	/////////////////////////////////////////////////////////////////////
 	// Music elements and contexts query, space calculation and access //
 	/////////////////////////////////////////////////////////////////////
-	CADrawableMusElement *findMElement(CAMusElement*);
-	CADrawableContext    *findCElement(CAContext*);
-	CADrawableMusElement *nearestLeftElement(int x, int y, bool currentContextOnly=true);
-	CADrawableMusElement *nearestLeftElement(int x, int y, CAVoice *voice);
-	CADrawableMusElement *nearestRightElement(int x, int y, bool currentContextOnly=true);
-	CADrawableMusElement *nearestRightElement(int x, int y, CAVoice *voice);
+	CADrawableMusElement     *findMElement(CAMusElement*);
+	CADrawableContext        *findCElement(CAContext*);
+	QList<CADrawableContext*> findContextsInRegion(QRect &reg);
+	CADrawableMusElement     *nearestLeftElement(int x, int y, bool currentContextOnly=true);
+	CADrawableMusElement     *nearestLeftElement(int x, int y, CAVoice *voice);
+	CADrawableMusElement     *nearestRightElement(int x, int y, bool currentContextOnly=true);
+	CADrawableMusElement     *nearestRightElement(int x, int y, CAVoice *voice);
 	
 	CADrawableContext *nearestUpContext(int x, int y);
 	CADrawableContext *nearestDownContext(int x, int y);
@@ -228,19 +230,21 @@ private:
 	////////////////////////
 	// General properties //
 	////////////////////////
-	CAKDTree _drawableMList; // The list of music elements stored in a tree for faster lookup and other operations. Every viewport has its own list of drawable elements and drawable objects themselves!
-	CAKDTree _drawableCList; // The list of context drawable elements (staffs, lyrics etc.). Every viewport has its own list of drawable elements and drawable objects themselves!
-	CASheet *_sheet;         // Pointer to the CASheet which the viewport represents.
+	CAKDTree<CADrawableMusElement*> _drawableMList;  // The list of music elements stored in a tree for faster lookup and other operations. Every viewport has its own list of drawable elements and drawable objects themselves!
+	CAKDTree<CADrawableContext*>    _drawableCList;  // The list of context drawable elements (staffs, lyrics etc.). Every viewport has its own list of drawable elements and drawable objects themselves!
+	CASheet                        *_sheet;          // Pointer to the CASheet which the viewport represents.
 	
-	QList<CADrawableMusElement *> _selection; // The set of elements being selected.
-	CADrawableContext *_currentContext;       // The pointer to the currently active context (staff, lyrics).
+	QList<CADrawableMusElement *>   _selection;      // The set of elements being selected.
+	CADrawableContext              *_currentContext; // The pointer to the currently active context (staff, lyrics).
 	
-	static const int RIGHT_EXTRA_SPACE;	 // Extra space at the right end to insert new music
-	static const int BOTTOM_EXTRA_SPACE; // Extra space at the bottom end to insert new music
-	int getMaxXExtended(CAKDTree &v);     // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
-	int getMaxYExtended(CAKDTree &v);     // Make the viewable World a little bigger (stuffed) to make inserting below easies
+	static const int RIGHT_EXTRA_SPACE;	  // Extra space at the right end to insert new music
+	static const int BOTTOM_EXTRA_SPACE;  // Extra space at the bottom end to insert new music
+	template <typename T> int getMaxXExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
+	template <typename T> int getMaxYExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting below easies
 	
 	int _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the viewport is currently showing.
+	QPoint _lastMousePressCoords;           // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
+	inline void setLastMousePressCoords( QPoint p ) { _lastMousePressCoords = p; }
 	float _zoom;                            // Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
 	
 	CAVoice *_selectedVoice;        // Voice to be drawn normal colors, others are shaded

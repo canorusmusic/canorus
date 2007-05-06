@@ -266,10 +266,10 @@ CADrawableContext *CAScoreViewPort::selectContext(CAContext *context) {
 	If no elements are present at the coordinates, clear the selection.
 */
 CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
-	QList<CADrawable *> l = _drawableCList.findInRange(x,y);
+	QList<CADrawableContext*> l = _drawableCList.findInRange(x,y);
 	
 	if (l.size()!=0) {
-		setCurrentContext((CADrawableContext*)l.front());
+		setCurrentContext(l.front());
 	} else
 		setCurrentContext(0);
 	
@@ -283,9 +283,9 @@ CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 	If no elements are present at the coordinates, clear the selection.
 */
 CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
-	QList<CADrawable *> l = _drawableMList.findInRange(x,y);
+	QList<CADrawableMusElement *> l = _drawableMList.findInRange(x,y);
 	for (int i=0; i<l.size(); i++)
-		if (!((CADrawableMusElement*)l[i])->isSelectable())
+		if (!(l[i])->isSelectable())
 			l.removeAt(i);
 	
 	if (l.size() != 0) { //multiple elements can share the same coordinates
@@ -298,8 +298,8 @@ CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
 			_selection << (CADrawableMusElement*)l.at((++idx < l.size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
 		}
 		
-		setCurrentContext(((CADrawableMusElement*)_selection.front())->drawableContext());
-		return ((CADrawableMusElement*)_selection.front())->musElement();
+		setCurrentContext(_selection.front()->drawableContext());
+		return (_selection.front())->musElement();
 	} else {
 		if (_selection.size() != 0) {
 			_selection.clear();
@@ -335,7 +335,7 @@ CADrawableMusElement* CAScoreViewPort::selectMElement(CAMusElement *elt) {
 	\warning This function only deletes the CADrawable part of the object. You still need to delete the abstract part (the pointer returned)!
 */
 CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
-	CADrawableMusElement *elt = (CADrawableMusElement*)_drawableMList.removeElement(x,y,false);
+	CADrawableMusElement *elt = _drawableMList.removeElement(x,y,false);
 	if (elt) {
 		if (elt->drawableMusElementType() == CADrawableMusElement::DrawableClef)
 			((CADrawableStaff*)elt->drawableContext())->removeClef((CADrawableClef*)elt);
@@ -354,7 +354,7 @@ CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
 	return 0;
 }
 
-void CAScoreViewPort::importElements(CAKDTree *drawableMList, CAKDTree *drawableCList)
+void CAScoreViewPort::importElements(CAKDTree<CADrawableMusElement*> *drawableMList, CAKDTree<CADrawableContext*> *drawableCList)
 {
 	for (int i=0; i<drawableCList->size(); i++)
 		addCElement(((CADrawableContext*)drawableCList->at(i))->clone());
@@ -372,12 +372,12 @@ void CAScoreViewPort::importElements(CAKDTree *drawableMList, CAKDTree *drawable
 	}
 }
 
-void CAScoreViewPort::importMElements(CAKDTree *elts) {
+void CAScoreViewPort::importMElements(CAKDTree<CADrawableMusElement*> *elts) {
 	for (int i=0; i<elts->size(); i++)
 		addMElement((CADrawableMusElement*)elts->at(i)->clone());
 }
 
-void CAScoreViewPort::importCElements(CAKDTree *elts) {
+void CAScoreViewPort::importCElements(CAKDTree<CADrawableContext*> *elts) {
 	for (int i=0; i<elts->size(); i++)
 		addCElement((CADrawableContext*)elts->at(i)->clone());
 }
@@ -389,7 +389,7 @@ void CAScoreViewPort::importCElements(CAKDTree *elts) {
 */
 CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool currentContext) {
 	CADrawableMusElement *elt;
-	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestLeft(x, true, currentContext?_currentContext:0))?
+	return ( (elt = _drawableMList.findNearestLeft(x, true, currentContext?_currentContext:0))?
 	         elt : 0);
 }
 
@@ -400,7 +400,7 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool cur
 */
 CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice *voice) {
 	CADrawableMusElement *elt;
-	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestLeft(x, true, 0, voice))?
+	return ( (elt = _drawableMList.findNearestLeft(x, true, 0, voice))?
 	         elt : 0);
 }
 
@@ -411,7 +411,7 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice 
 */
 CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool currentContext) {
 	CADrawableMusElement *elt;
-	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestRight(x, true, currentContext?_currentContext:0))?
+	return ( (elt = _drawableMList.findNearestRight(x, true, currentContext?_currentContext:0))?
 	         elt : 0);
 }
 
@@ -422,7 +422,7 @@ CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool cu
 */
 CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, CAVoice *voice) {
 	CADrawableMusElement *elt;
-	return ( (elt = (CADrawableMusElement*)_drawableMList.findNearestRight(x, true, 0, voice))?
+	return ( (elt = _drawableMList.findNearestRight(x, true, 0, voice))?
 	         elt : 0);
 }
 
@@ -446,8 +446,8 @@ CADrawableContext *CAScoreViewPort::nearestDownContext(int x, int y) {
 	Calculates the logical time at the given coordinates \a x and \a y.
 */
 int CAScoreViewPort::calculateTime(int x, int y) {
-	CADrawableMusElement *left = (CADrawableMusElement *)_drawableMList.findNearestLeft(x, true);
-	CADrawableMusElement *right = (CADrawableMusElement *)_drawableMList.findNearestRight(x, true);
+	CADrawableMusElement *left = _drawableMList.findNearestLeft(x, true);
+	CADrawableMusElement *right = _drawableMList.findNearestRight(x, true);
 	
 	if (left)	//the user clicked right of the element - return the nearest left element end time
 		return left->musElement()->timeStart() + left->musElement()->timeLength();
@@ -461,11 +461,11 @@ int CAScoreViewPort::calculateTime(int x, int y) {
 	If the given coordinates hit any of the contexts, returns that context.
 */
 CAContext *CAScoreViewPort::contextCollision(int x, int y) {
-	QList<CADrawable*> l = _drawableCList.findInRange(x, y, 0, 0);
+	QList<CADrawableContext*> l = _drawableCList.findInRange(x, y, 0, 0);
 	if (l.size() == 0) {
 		return 0;
 	} else {
-		CAContext *context = ((CADrawableContext*)l.front())->context(); 
+		CAContext *context = l.front()->context(); 
 		return context;
 	}
 }
@@ -827,37 +827,37 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		p.fillRect((int)((_repaintArea->x() - _worldX)*_zoom), (int)((_repaintArea->y() - _worldY)*_zoom), (int)(_repaintArea->width()*_zoom), (int)(_repaintArea->height()*_zoom), _backgroundBrush);
 	else
 		p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundBrush);
-
-	QList<CADrawable *> l;
 	
 	// draw contexts
+	QList<CADrawableContext*> cList;
 	int j = _drawableCList.size();
 	if (_repaintArea)
-		l = _drawableCList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
+		cList = _drawableCList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
 	else
-		l = _drawableCList.findInRange(_worldX, _worldY, _worldW, _worldH);
+		cList = _drawableCList.findInRange(_worldX, _worldY, _worldW, _worldH);
 	
-	for (int i=0; i<l.size(); i++) {
+	for (int i=0; i<cList.size(); i++) {
 		CADrawSettings s = {
 	    	           _zoom,
-	        	       (int)((l[i]->xPos() - _worldX) * _zoom),
-		               (int)((l[i]->yPos() - _worldY) * _zoom),
+	        	       (int)((cList[i]->xPos() - _worldX) * _zoom),
+		               (int)((cList[i]->yPos() - _worldY) * _zoom),
 	            	   drawableWidth(), drawableHeight(),
-		               ((_currentContext == l[i])?Qt::blue:Qt::black)
+		               ((_currentContext == cList[i])?Qt::blue:Qt::black)
 		};
-		l[i]->draw(&p, s);
+		cList[i]->draw(&p, s);
 	}
 
 	// draw music elements
+	QList<CADrawableMusElement*> mList;
 	if (_repaintArea)
-		l = _drawableMList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
+		mList = _drawableMList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
 	else
-		l = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
+		mList = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
 
-	for (int i=0; i<l.size(); i++) {
+	for (int i=0; i<mList.size(); i++) {
 		QColor color;
-		CAMusElement *elt = static_cast<CADrawableMusElement*>(l[i])->musElement();
-		if ( _selection.contains(static_cast<CADrawableMusElement*>(l[i])))
+		CAMusElement *elt = static_cast<CADrawableMusElement*>(mList[i])->musElement();
+		if ( _selection.contains(static_cast<CADrawableMusElement*>(mList[i])))
 			color = Qt::red;
 		else
 		if ( selectedVoice() &&
@@ -891,12 +891,12 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		
 		CADrawSettings s = {
 		               _zoom,
-		               (int)((l[i]->xPos() - _worldX) * _zoom),
-		               (int)((l[i]->yPos() - _worldY) * _zoom),
+		               (int)((mList[i]->xPos() - _worldX) * _zoom),
+		               (int)((mList[i]->yPos() - _worldY) * _zoom),
 		               drawableWidth(), drawableHeight(),
 		               color
 		               };
-		l[i]->draw(&p, s);
+		mList[i]->draw(&p, s);
 	}
 	
 	// draw shadow note
@@ -1036,7 +1036,9 @@ void CAScoreViewPort::checkScrollBars() {
 	A new signal is emitted: CAMousePressEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
-	emit CAMousePressEvent(e, QPoint(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY), this);
+	QPoint p(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY);
+	setLastMousePressCoords(p);
+	emit CAMousePressEvent(e, p, this);
 }
 
 /*!
@@ -1300,15 +1302,28 @@ void CAScoreViewPort::removeSyllableEdit() {
 /*!
 	Returns the maximum X of the viewable World a little bigger to make insertion at the end easy.
 */
-int CAScoreViewPort::getMaxXExtended(CAKDTree &v) {
+template <typename T>
+int CAScoreViewPort::getMaxXExtended(CAKDTree<T> &v) {
 	return v.getMaxX() + RIGHT_EXTRA_SPACE;
 }
 
 /*!
 	Returns the maximum Y of the viewable World a little bigger to make insertion at the end easy.
 */
-int CAScoreViewPort::getMaxYExtended(CAKDTree &v) {
+template <typename T>
+int CAScoreViewPort::getMaxYExtended(CAKDTree<T> &v) {
 	return v.getMaxY() + BOTTOM_EXTRA_SPACE;
+}
+
+/*!
+	Returns a list of drawable contexts the current score viewport includes between
+	the vertical coordinates \a y1 and \a y2.
+	The context is in a list already if only part of the context is touched by the region.
+	That is the first returned context's top border is smaller than \a y1 and the last returned context's
+	bottom border is larger than \a x2.
+*/
+QList<CADrawableContext*> CAScoreViewPort::findContextsInRegion( QRect &region ) {
+	return _drawableCList.findInRange(region);
 }
 
 /*!
