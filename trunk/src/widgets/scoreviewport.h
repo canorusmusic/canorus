@@ -94,7 +94,11 @@ public:
 	inline void clearSelection() { _selection.clear(); }
 	inline bool removeFromSelection(CADrawableMusElement *elt) { return _selection.removeAll(elt); }
 	
-	inline void           addToSelection(CADrawableMusElement *elt) { _selection << elt; }
+	inline void           addToSelection(CADrawableMusElement *elt) {
+		int i;
+		for (i=0; i<_selection.size() && _selection[i]->xPos() < elt->xPos(); i++);
+		_selection.insert( i, elt );
+	}
 	inline void           addToSelection(const QList<CADrawableMusElement*> list) { _selection << list; }
 	CADrawableMusElement *addToSelection(CAMusElement *elt);
 	void                  addToSelection(const QList<CAMusElement *> elts);

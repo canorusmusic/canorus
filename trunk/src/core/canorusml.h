@@ -27,6 +27,7 @@ class CAContext;
 class CAMainWin;
 class CALyricsContext;
 class CASyllable;
+class CASlur;
 
 class CACanorusML : public QXmlDefaultHandler {
 public:
@@ -73,6 +74,9 @@ private:
 	CABarline       *_curBarline;
 	CANote          *_curNote;
 	CARest          *_curRest;
+	CASlur          *_curTie;
+	CASlur          *_curSlur;
+	CASlur          *_curPhrasingSlur;
 	QHash<CALyricsContext*, int> _lcMap;      // lyrics context associated voice indices
 	QHash<CASyllable*, int>     _syllableMap; // syllable associated voice indices
 	

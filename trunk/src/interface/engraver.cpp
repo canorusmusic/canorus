@@ -367,10 +367,11 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							((CADrawableStaff*)drawableContext)->calculateCenterYCoord((CANote*)elt, lastClef[i])
 						);
 						
-						// Create Slur
+						// Create Ties
 						if ( static_cast<CADrawableNote*>(newElt)->note()->tieStart() ) {
 							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->tieStart()->slurDirection();
-							if ( dir==CASlur::SlurPreferred ) dir = static_cast<CADrawableNote*>(newElt)->note()->actualSlurDirection();
+							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
+								dir = static_cast<CADrawableNote*>(newElt)->note()->actualSlurDirection();
 							CADrawableSlur *tie=0;
 							if (dir==CASlur::SlurUp) {
 								tie = new CADrawableSlur(
@@ -392,14 +393,104 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						}
 						if ( static_cast<CADrawableNote*>(newElt)->note()->tieEnd() ) {
 							// Set the slur coordinates for the second note
+							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->tieEnd()->slurDirection();
+							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
+								dir = static_cast<CADrawableNote*>(newElt)->note()->tieEnd()->noteStart()->actualSlurDirection();
 							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tieEnd()));
 							dSlur->setWidth( newElt->xPos() - dSlur->xPos() );
 							dSlur->setXMid( dSlur->xPos() + dSlur->width()/2 );
-							if ( dSlur->slur()->slurDirection()==CASlur::SlurUp ) {
+							if ( dir==CASlur::SlurUp ) {
 								dSlur->setY2( newElt->yPos() );
+								dSlur->setYMid( qMin( newElt->yPos(), dSlur->y1() ) - 2 );
 							} else
-							if ( dSlur->slur()->slurDirection()==CASlur::SlurDown ) {
+							if ( dir==CASlur::SlurDown ) {
 								dSlur->setY2( newElt->yPos() + newElt->height() );
+								dSlur->setYMid( qMax( newElt->yPos(), dSlur->y1() ) + 2 );
+							}
+
+						}
+						
+						// Create Slurs
+						if ( static_cast<CADrawableNote*>(newElt)->note()->slurStart() ) {
+							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->slurStart()->slurDirection();
+							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
+								dir = static_cast<CADrawableNote*>(newElt)->note()->actualSlurDirection();
+							CADrawableSlur *slur=0;
+							if (dir==CASlur::SlurUp) {
+								slur = new CADrawableSlur(
+									static_cast<CADrawableNote*>(newElt)->note()->slurStart(), drawableContext,
+									newElt->xPos()+newElt->width(), newElt->yPos(),
+									newElt->xPos() + 20, newElt->yPos() - 9,
+									newElt->xPos() + 40, newElt->yPos()								
+								);
+							} else
+							if (dir==CASlur::SlurDown) {
+								slur = new CADrawableSlur(
+									static_cast<CADrawableNote*>(newElt)->note()->slurStart(), drawableContext,
+									newElt->xPos()+newElt->width(), newElt->yPos() + newElt->height(),
+									newElt->xPos() + 20, newElt->yPos() + newElt->height() + 9,
+									newElt->xPos() + 40, newElt->yPos()	+ newElt->height()							
+								);
+							}
+							v->addMElement(slur);
+						}
+						if ( static_cast<CADrawableNote*>(newElt)->note()->slurEnd() ) {
+							// Set the slur coordinates for the second note
+							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->slurEnd()->slurDirection();
+							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
+								dir = static_cast<CADrawableNote*>(newElt)->note()->slurEnd()->noteStart()->actualSlurDirection();
+							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->slurEnd()));
+							dSlur->setWidth( newElt->xPos() - dSlur->xPos() );
+							dSlur->setXMid( dSlur->xPos() + dSlur->width()/2 );
+							if ( dir==CASlur::SlurUp ) {
+								dSlur->setY2( newElt->yPos() );
+								dSlur->setYMid( qMin( newElt->yPos(), dSlur->y1() ) - 2 );
+							} else
+							if ( dir==CASlur::SlurDown ) {
+								dSlur->setY2( newElt->yPos() + newElt->height() );
+								dSlur->setYMid( qMax( newElt->yPos(), dSlur->y1() ) + 2 );
+							}
+						}
+						
+						// Create Phrasing Slurs
+						if ( static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurStart() ) {
+							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurStart()->slurDirection();
+							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral)
+								dir = static_cast<CADrawableNote*>(newElt)->note()->actualSlurDirection();
+							CADrawableSlur *phrasingSlur=0;
+							if (dir==CASlur::SlurUp) {
+								phrasingSlur = new CADrawableSlur(
+									static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurStart(), drawableContext,
+									newElt->xPos()+newElt->width(), newElt->yPos(),
+									newElt->xPos() + 20, newElt->yPos() - 12,
+									newElt->xPos() + 40, newElt->yPos()								
+								);
+							} else
+							if (dir==CASlur::SlurDown) {
+								phrasingSlur = new CADrawableSlur(
+									static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurStart(), drawableContext,
+									newElt->xPos()+newElt->width(), newElt->yPos() + newElt->height(),
+									newElt->xPos() + 20, newElt->yPos() + newElt->height() + 12,
+									newElt->xPos() + 40, newElt->yPos()	+ newElt->height()							
+								);
+							}
+							v->addMElement(phrasingSlur);
+						}
+						if ( static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd() ) {
+							// Set the slur coordinates for the second note
+							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd()->slurDirection();
+							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
+								dir = static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd()->noteStart()->actualSlurDirection();
+							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd()));
+							dSlur->setWidth( newElt->xPos() - dSlur->xPos() );
+							dSlur->setXMid( dSlur->xPos() + dSlur->width()/2 );
+							if ( dir==CASlur::SlurUp ) {
+								dSlur->setY2( newElt->yPos() );
+								dSlur->setYMid( qMin( newElt->yPos(), dSlur->y1() ) - 2 );
+							} else
+							if ( dir==CASlur::SlurDown ) {
+								dSlur->setY2( newElt->yPos() + newElt->height() );
+								dSlur->setYMid( qMax( newElt->yPos(), dSlur->y1() ) + 2 );
 							}
 						}
 						

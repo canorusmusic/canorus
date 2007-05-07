@@ -10,6 +10,7 @@
 
 CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, int x1, int y1, int xMid, int yMid, int x2, int y2  )
  : CADrawableMusElement( slur, c, x1, 0) {
+ 	setDrawableMusElementType( DrawableSlur );
 	setWidth( x2 - x1 );
 	setYPos( min( y1, y2, yMid ) );
 	setHeight( max( y1, y2, yMid ) - yPos() );
