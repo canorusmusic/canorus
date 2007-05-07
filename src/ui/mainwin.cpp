@@ -171,11 +171,12 @@ void CAMainWin::setupCustomUi() {
 		uiInsertToolBar->addSeparator();
 		uiInsertToolBar->addAction( uiInsertPlayable );
 		uiInsertToolBar->addWidget( uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this ) );
+			connect( uiSlurType, SIGNAL(toggled(bool, int)), this, SLOT( on_uiSlurType_toggled(bool, int) ) );
 			uiSlurType->addButton( QIcon("images/tie.svg"), CASlur::TieType, tr("Tie") );
 			uiSlurType->addButton( QIcon("images/slur.svg"), CASlur::SlurType, tr("Slur") );
 			uiSlurType->addButton( QIcon("images/phrasingslur.svg"), CASlur::PhrasingSlurType, tr("Phrasing Slur") );
 			uiSlurType->setCurrentId( CASlur::TieType );
-			connect( uiSlurType, SIGNAL(toggled(bool, int)), this, SLOT( on_uiSlurType_toggled(bool, int) ) );
+			uiSlurType->defaultAction()->setCheckable(false);
 		uiInsertToolBar->addWidget(uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this ));
 			uiClefType->addButton( QIcon("images/cleftreble.svg"), CAClef::Treble, tr("Treble Clef") );
 			uiClefType->addButton( QIcon("images/clefbass.svg"), CAClef::Bass, tr("Bass Clef") );
@@ -1030,7 +1031,7 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreVie
 		c->setShadowNoteAccs(iNoteAccs);
 		c->repaint();
 	} else
-	if ( mode()==SelectMode && e->buttons()==Qt::LeftButton ) { // multiple selection
+	if ( mode()!=InsertMode  && e->buttons()==Qt::LeftButton ) { // multiple selection
 		c->clearSelectionRegionList();
 		int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
 		    w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
@@ -1041,6 +1042,10 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreVie
 		QList<CADrawableContext*> dcList = c->findContextsInRegion( selectionRect );
 		for (int i=0; i<dcList.size(); i++) {
 			QList<CADrawableMusElement*> musEltList = dcList[i]->findInRange( selectionRect.x(), selectionRect.x() + selectionRect.width() );
+			for (int j=0; j<musEltList.size(); j++)
+				if (musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
+					musEltList.removeAt(j--);
+			
 			if (musEltList.size()) {
 				c->addSelectionRegion( QRect(musEltList.front()->xPos(), dcList[i]->yPos(),
 				                             musEltList.back()->xPos()+musEltList.back()->width()-musEltList.front()->xPos(), dcList[i]->height()) );
@@ -1283,10 +1288,20 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				for (int i=0; i<v->selection().size(); i++)
 					musElemSet << v->selection().at(i)->musElement();
 				
+				// cleans up the set - removes empty elements and elements which get deleted automatically (eg. slurs)
+				for (QSet<CAMusElement*>::iterator i=musElemSet.begin(); i!=musElemSet.end();) {
+					if (!(*i))
+						i = musElemSet.erase(i);
+					else if ((*i)->musElementType()==CAMusElement::Slur && musElemSet.contains(static_cast<CASlur*>(*i)->noteStart()))
+						i = musElemSet.erase(i);
+					else if ((*i)->musElementType()==CAMusElement::Slur && musElemSet.contains(static_cast<CASlur*>(*i)->noteEnd()))
+						i = musElemSet.erase(i);
+					else
+						i++;
+				}
+				
 				for (QSet<CAMusElement*>::const_iterator i=musElemSet.constBegin(); i!=musElemSet.constEnd(); i++) {
-					if (!(*i)) {
-						continue;
-					} else if ((*i)->musElementType()==CAMusElement::Note) {
+					if ((*i)->musElementType()==CAMusElement::Note) {
 						CANote *note = static_cast<CANote*>(*i);
 						if (!note->isPartOfTheChord()) {
 							for (int j=0; j<note->voice()->lyricsContextList().size(); j++) {
@@ -1355,7 +1370,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	if ( drawableLeft )
 		left = drawableLeft->musElement();
 	
-	bool success=false;;
+	bool success=false;
+	bool repaint=false;
 	int iPlayableDotted = 0;
 	
 	if (!drawableContext)
@@ -1391,7 +1407,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			
 			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y(), voice);
 			if ( voice && drawableStaff )
-				success = _musElementFactory->configureNote( voice, coords, drawableStaff, left );
+				success = musElementFactory()->configureNote( voice, coords, drawableStaff, left );
 			if (success) {
 				_musElementFactory->setNoteExtraAccs( 0 );
 				v->setDrawShadowNoteAccs(false); 
@@ -1412,14 +1428,16 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 		}
 		case CAMusElement::Slur: {
 			// Insert tie, slur or phrasing slur
-			if ( currentScoreViewPort()->selection().size() ) { // start note has to always be selected
-				CANote *noteStart = static_cast<CANote*>(currentScoreViewPort()->selection().at(0)->musElement());
-				CANote *noteEnd = 0;
-				QList<CANote*> noteList = noteStart->voice()->noteList();
+			if ( v->selection().size() ) { // start note has to always be selected
+				CANote *noteStart = (currentScoreViewPort()->selection().front()->musElement()?dynamic_cast<CANote*>(currentScoreViewPort()->selection().front()->musElement()):0);
+				CANote *noteEnd = (currentScoreViewPort()->selection().back()->musElement()?dynamic_cast<CANote*>(currentScoreViewPort()->selection().back()->musElement()):0);
 				
-				if (_musElementFactory->slurType()==CASlur::TieType) {
+				if ( noteStart && musElementFactory()->slurType()==CASlur::TieType ) {
+					noteEnd = 0; // find a fresh next note
+					QList<CANote*> noteList = noteStart->voice()->noteList();
+					
 					if ( noteStart->tieStart() ) {
-						return; // return, if the tie already exists
+						break; // return, if the tie already exists
 					} else {
 						// create a new tie
 						for (int i=0; i<noteList.count() && noteList[i]->timeStart()<=noteStart->timeEnd(); i++) {
@@ -1429,10 +1447,23 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 							}
 						}
 					}
+					success = musElementFactory()->configureSlur( staff, noteStart, noteEnd );
+				} else
+				if ( noteStart && noteEnd && noteStart != noteEnd && (musElementFactory()->slurType()==CASlur::SlurType || musElementFactory()->slurType()==CASlur::PhrasingSlurType) ) {
+					QList<CANote*> noteList = noteStart->voice()->noteList();
+					int end = noteList.indexOf(noteEnd);
+					for (int i=noteList.indexOf(noteStart); i<=end; i++)
+						if ( musElementFactory()->slurType()==CASlur::SlurType && (noteList[i]->slurStart() || noteList[i]->slurEnd()) ||
+						     musElementFactory()->slurType()==CASlur::PhrasingSlurType && (noteList[i]->phrasingSlurStart() || noteList[i]->phrasingSlurEnd()) )
+							return;
+					
+					if (musElementFactory()->slurType()==CASlur::SlurType && (noteStart->slurStart() || noteEnd->slurEnd()) ||
+					    musElementFactory()->slurType()==CASlur::PhrasingSlurType && (noteStart->phrasingSlurStart() || noteEnd->phrasingSlurEnd()))
+						break; // return, if the slur already exist
+					success = musElementFactory()->configureSlur( staff, noteStart, noteEnd );
 				}
 				
-				if ( staff && noteStart )
-					success = _musElementFactory->configureSlur( staff, noteStart, noteEnd );
+				if (success) repaint=true;
 			}
 			break;
 		}
@@ -1461,10 +1492,12 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 		v->selectMElement( _musElementFactory->getMusElement() );
 		v->setShadowNoteDotted(iPlayableDotted);
 	} else {
-		_musElementFactory->removeMusElem( true );
-		_musElementFactory->createMusElem(); // Factory always must have a valid element
-		_musElementFactory->setNoteExtraAccs( 0 );
+		musElementFactory()->removeMusElem( true );
+		musElementFactory()->createMusElem(); // Factory always must have a valid element
+		musElementFactory()->setNoteExtraAccs( 0 );
 	}
+	if (repaint)
+		v->repaint();
 }
 
 /*!
@@ -1883,18 +1916,16 @@ void CAMainWin::on_uiFMEllipse_toggled(bool checked) {
 
 
 void CAMainWin::on_uiSlurType_toggled( bool checked, int buttonId ) {
-	if ( checked ) {
-		// Read currently selected entry from tool button menu
-		CASlur::CASlurType slurType =
-			static_cast<CASlur::CASlurType>(buttonId);
-			
-		_musElementFactory->setMusElementType( CAMusElement::Slur );
+	// Read currently selected entry from tool button menu
+	CASlur::CASlurType slurType =
+		static_cast<CASlur::CASlurType>(buttonId);
 		
-		// New clef type
-		_musElementFactory->setSlurType( slurType );
-		
-		setMode( InsertMode );
-	}
+	_musElementFactory->setMusElementType( CAMusElement::Slur );
+	
+	// New clef type
+	_musElementFactory->setSlurType( slurType );
+	
+	insertMusElementAt( QPoint(0,0), currentScoreViewPort() ); // inserts a slur or tie and quits the insert mode
 }
 
 void CAMainWin::on_uiClefType_toggled(bool checked, int buttonId) {

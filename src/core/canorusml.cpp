@@ -1,9 +1,9 @@
-/*
- * Copyright (c) 2006, Matevž Jekovec, Georg Rudolph, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- *
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Georg Rudolph, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #include <QXmlInputSource>
 #include <QDomDocument>
@@ -64,6 +64,9 @@ CACanorusML::CACanorusML(CAMainWin *mainWin) {
 	_curBarline = 0;
 	_curNote = 0;
 	_curRest = 0;
+	_curTie = 0;
+	_curSlur = 0;
+	_curPhrasingSlur = 0;
 }
 
 /*!
@@ -215,6 +218,23 @@ void CACanorusML::writeVoice(QDomElement& dVoice, CAVoice* voice) {
 					dTie.setAttribute("slur-style", CASlur::slurStyleToString( note->tieStart()->slurStyle() ));
 					dTie.setAttribute("slur-direction", CASlur::slurDirectionToString( note->tieStart()->slurDirection() ));
 				}
+				if ( note->slurStart() ) {
+					QDomElement dSlur = dDoc.createElement("slur-start"); dNote.appendChild( dSlur );
+					dSlur.setAttribute("slur-style", CASlur::slurStyleToString( note->slurStart()->slurStyle() ));
+					dSlur.setAttribute("slur-direction", CASlur::slurDirectionToString( note->slurStart()->slurDirection() ));
+				}
+				if ( note->slurEnd() ) {
+					QDomElement dSlur = dDoc.createElement("slur-end"); dNote.appendChild( dSlur );
+				}
+				if ( note->phrasingSlurStart() ) {
+					QDomElement dPhrasingSlur = dDoc.createElement("phrasing-slur-start"); dNote.appendChild( dPhrasingSlur );
+					dPhrasingSlur.setAttribute("slur-style", CASlur::slurStyleToString( note->phrasingSlurStart()->slurStyle() ));
+					dPhrasingSlur.setAttribute("slur-direction", CASlur::slurDirectionToString( note->phrasingSlurStart()->slurDirection() ));
+				}
+				if ( note->phrasingSlurEnd() ) {
+					QDomElement dPhrasingSlur = dDoc.createElement("phrasing-slur-end"); dNote.appendChild( dPhrasingSlur );
+				}
+				
 				break;
 			}
 			case CAMusElement::Rest: {
@@ -442,16 +462,44 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		                      attributes.value("time-start").toInt(),
 		                      attributes.value("dotted").toInt()
 		                     );
-		if (!attributes.value("stem-direction").isEmpty())
+		if (!attributes.value("stem-direction").isEmpty()) {
 			_curNote->setStemDirection(CANote::stemDirectionFromString(attributes.value("stem-direction")));
+		}
 		
-	} else if (qName == "tie") {
-		_curNote->setTieStart( new CASlur( CASlur::TieType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 ) );
-		if (!attributes.value("slur-style").isEmpty())
-			_curNote->tieStart()->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
-		if (!attributes.value("slur-direction").isEmpty())
-			_curNote->tieStart()->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
-		
+		} else if (qName == "tie") {
+			_curTie = new CASlur( CASlur::TieType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
+			_curNote->setTieStart( _curTie );
+			if (!attributes.value("slur-style").isEmpty())
+				_curTie->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
+			if (!attributes.value("slur-direction").isEmpty())
+				_curTie->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
+			
+		} else if (qName == "slur-start") {
+			_curSlur = new CASlur( CASlur::SlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
+			_curNote->setSlurStart( _curSlur );
+			if (!attributes.value("slur-style").isEmpty())
+				_curSlur->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
+			if (!attributes.value("slur-direction").isEmpty())
+				_curSlur->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
+			
+		} else if (qName == "slur-end") {
+			_curNote->setSlurEnd( _curSlur );
+			_curSlur->setNoteEnd( _curNote );
+			_curSlur = 0;
+	
+		} else if (qName == "phrasing-slur-start") {
+			_curPhrasingSlur = new CASlur( CASlur::PhrasingSlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
+			_curNote->setPhrasingSlurStart( _curPhrasingSlur );
+			if (!attributes.value("slur-style").isEmpty())
+				_curPhrasingSlur->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
+			if (!attributes.value("slur-direction").isEmpty())
+				_curPhrasingSlur->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
+			
+		} else if (qName == "phrasing-slur-end") {
+			_curNote->setPhrasingSlurEnd( _curPhrasingSlur );
+			_curPhrasingSlur->setNoteEnd( _curNote );
+			_curPhrasingSlur = 0;
+			
 	} else if (qName == "rest") {
 		// CARest
 		_curRest = new CARest(CARest::restTypeFromString(attributes.value("rest-type")),

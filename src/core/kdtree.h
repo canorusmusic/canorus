@@ -159,14 +159,14 @@ QList<T> CAKDTree<T>::findInRange(int x, int y, int w, int h) {
 	QList<T> l;
 
 	for (int i=0; i<_list.size(); i++) {
-		if ( ((static_cast<CADrawable*>(_list[i])->xPos() <= x+w) &&						// The object is normal and fits into the area
+		if ( ((static_cast<CADrawable*>(_list[i])->xPos() <= x+w) &&                       // The object is normal and fits into the area
 		      (static_cast<CADrawable*>(_list[i])->yPos() <= y+h) &&
 		      (static_cast<CADrawable*>(_list[i])->xPos() + static_cast<CADrawable*>(_list[i])->width() >= x) &&
 		      (static_cast<CADrawable*>(_list[i])->yPos() + static_cast<CADrawable*>(_list[i])->height() >= y)) ||
-		     ((static_cast<CADrawable*>(_list[i])->width() == 0) &&						// The object is unlimited in width (eg. contexts)
+		     ((static_cast<CADrawable*>(_list[i])->width() == 0) &&                        // The object is unlimited in width (eg. contexts)
 		      (static_cast<CADrawable*>(_list[i])->yPos() <= y+h) &&
 		      (static_cast<CADrawable*>(_list[i])->yPos() + static_cast<CADrawable*>(_list[i])->height() >= y)) ||
-		     ((static_cast<CADrawable*>(_list[i])->height() == 0) &&						// The object is unlimited in height (eg. helper lines)
+		     ((static_cast<CADrawable*>(_list[i])->height() == 0) &&                       // The object is unlimited in height (eg. helper lines)
 		      (static_cast<CADrawable*>(_list[i])->xPos() <= x+h) &&
 		      (static_cast<CADrawable*>(_list[i])->xPos() + _list[i]->width() >= x))
 		    )
