@@ -317,7 +317,23 @@ bool CAVoice::removeElement(CAMusElement *elt) {
 	if ((idx = _musElementList.indexOf(elt)) != -1) {	//if the search element is found
 		int length = _musElementList[idx]->timeLength();
 		
-		//update the startTimes of elements behind it, but only if the note was not part of the chord
+		if (elt->musElementType()==CAMusElement::Note) {
+			CANote *n = static_cast<CANote*>(elt);
+			if (n->isPartOfTheChord() && n->isFirstInTheChord()) {
+				CANote *prevNote = n->chord().at(1);
+				prevNote->setSlurStart( n->slurStart() );
+				prevNote->setSlurEnd( n->slurEnd() );
+				prevNote->setPhrasingSlurStart( n->phrasingSlurStart() );
+				prevNote->setPhrasingSlurEnd( n->phrasingSlurEnd() );
+			} else if (!(n->isPartOfTheChord())) {
+				if ( n->slurStart() ) delete n->slurStart();
+				if ( n->slurEnd() ) delete n->slurEnd();
+				if ( n->phrasingSlurStart() ) delete n->phrasingSlurStart();
+				if ( n->phrasingSlurEnd() ) delete n->phrasingSlurEnd();
+			}
+		}
+		
+		// update the startTimes of elements behind it, but only if the note was not part of the chord
 		if (!(elt->musElementType()==CAMusElement::Note && ((CANote*)elt)->isPartOfTheChord()))
 			updateTimes(idx+1, -1*length);	//but only, if the removed note is not part of the chord
 		

@@ -1307,8 +1307,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 							for (int j=0; j<note->voice()->lyricsContextList().size(); j++) {
 								note->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(note->timeStart());
 							}
-							(*i)->context()->removeMusElement(*i);
 						}
+						(*i)->context()->removeMusElement(*i);
 					} else if ((*i)->musElementType()==CAMusElement::Syllable) {
 						if (e->modifiers()==Qt::ShiftModifier) {
 							CALyricsContext *lc = static_cast<CALyricsContext*>((*i)->context()); 
@@ -1450,6 +1450,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 					success = musElementFactory()->configureSlur( staff, noteStart, noteEnd );
 				} else
 				if ( noteStart && noteEnd && noteStart != noteEnd && (musElementFactory()->slurType()==CASlur::SlurType || musElementFactory()->slurType()==CASlur::PhrasingSlurType) ) {
+					if (noteStart->isPartOfTheChord()) noteStart = noteStart->chord().at(0);
+					if (noteEnd->isPartOfTheChord()) noteEnd = noteEnd->chord().at(0);
 					QList<CANote*> noteList = noteStart->voice()->noteList();
 					int end = noteList.indexOf(noteEnd);
 					for (int i=noteList.indexOf(noteStart); i<=end; i++)

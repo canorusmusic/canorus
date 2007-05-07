@@ -47,10 +47,7 @@ CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char a
 CANote::~CANote() {
 	if ( tieStart() ) delete tieStart();      // slurs destructor also disconnects itself from the notes
 	if ( tieEnd() ) tieEnd()->setNoteEnd( 0 );
-	if ( slurStart() ) delete slurStart();
-	if ( slurEnd() ) delete slurEnd();
-	if ( phrasingSlurStart() ) delete phrasingSlurStart();
-	if ( phrasingSlurEnd() ) delete phrasingSlurEnd();
+	// other slurs are removed or moved in CAVoice::removeElement()
 }
 
 /*!
