@@ -576,6 +576,8 @@ void CAMainWin::initViewPort(CAViewPort *v) {
 			         this, SLOT(scoreViewPortMousePress(QMouseEvent *, QPoint, CAScoreViewPort *)) );
 			connect( v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAScoreViewPort *)),
 			         this, SLOT(scoreViewPortMouseMove(QMouseEvent *, QPoint, CAScoreViewPort *)) );
+			connect( v, SIGNAL(CAMouseReleaseEvent(QMouseEvent *, QPoint, CAScoreViewPort *)),
+			         this, SLOT(scoreViewPortMouseRelease(QMouseEvent *, QPoint, CAScoreViewPort *)) );
 			connect( v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAScoreViewPort *)),
 			         this, SLOT(scoreViewPortWheel(QWheelEvent *, QPoint, CAScoreViewPort *)) );
 			connect( v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAScoreViewPort *)),
@@ -678,11 +680,9 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 		
 		if (ret == QMessageBox::Yes) {
 			currentScoreViewPort()->clearSelection();
-			voice->clear();
-			voice->staff()->removeVoice(voice);
+			uiVoiceNum->setMax( voice->staff()->voiceCount()-1 );
+			uiVoiceNum->setRealValue( voice->staff()->voiceCount()-1 );
 			delete voice;
-			uiVoiceNum->setMax( voice->staff()->voiceCount() );
-			uiVoiceNum->setRealValue( voice->staff()->voiceCount() );
 			CACanorus::rebuildUI(document(), currentSheet());
 		}
 	}
@@ -851,40 +851,59 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	
 	\sa CAScoreViewPort::mousePressEvent(), scoreViewPortMouseMove(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
-void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAScoreViewPort *viewPort) {
-	setCurrentViewPort( viewPort );
-	_currentViewPortContainer->setCurrentViewPort( currentViewPort() );
+void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAScoreViewPort *v) {
+	setCurrentViewPort( v );
+	currentViewPortContainer()->setCurrentViewPort( currentViewPort() );
 	
-	CAScoreViewPort *v = static_cast<CAScoreViewPort*>(viewPort);
-	
-	CADrawableContext *currentContext = v->currentContext();
-	
+	CADrawableContext *prevContext = v->currentContext();
 	v->selectCElement(coords.x(), coords.y());
-	if ( v->selectMElement(coords.x(), coords.y()) ||	// select a music element at the given location - select none, if there's none there
-	     v->currentContext() ) {
+		
+	QList<CADrawableMusElement*> l = v->musElementsAt( coords.x(), coords.y() );
+	int idx=-1;
+	
+	if (l.size() > 0) { // multiple elements can share the same coordinates
+		if ( (v->selection().size() > 0) && (!v->selection().contains(l.front())) ) {
+			if (e->modifiers()!=Qt::ShiftModifier)
+				v->clearSelection();
+			v->addToSelection(l[0]);      // if the previous selection was not a single element or if the new list doesn't contain the selection set the first element in the available list to the selection
+		} else {
+			if (e->modifiers()==Qt::ShiftModifier && v->selection().size()) {
+				v->removeFromSelection(l[0]); // shift used on an already selected element - toggle selection
+			} else {
+				idx = (v->selection().size()?l.indexOf(v->selection().front()):-1);
+				v->clearSelection();
+				v->addToSelection(l[((++idx < l.size()) ? idx : 0)]); // if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
+			}
+		}
+	} else if (e->modifiers()==Qt::NoModifier) { // no elements at that coordinates
+		v->clearSelection();
+	}
+	
+	if ( v->currentContext() ) {
 		// voice number widget
-		if (currentContext != v->currentContext()) {	// new context was selected
+		if (prevContext != v->currentContext()) {	// new context was selected
 			if (v->currentContext()->context()->contextType() == CAContext::Staff) {
 				uiVoiceNum->setRealValue(0);
 				uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
 			}
 		}
-		v->repaint();
 	} else
-	if (currentContext != v->currentContext()) { // no context selected
+	if (prevContext != v->currentContext()) { // no context selected
 		if ( mode()==InsertMode ) // If in insert mode, stay in the current context
-			v->setCurrentContext( currentContext );
-		v->repaint();
+			v->setCurrentContext( prevContext );
 	}
 	
 	switch ( mode() ) {
 		case SelectMode:
 		case EditMode: {
+			v->clearSelectionRegionList();
 			if (v->currentContext())
 				std::cout << "drawableContext: " << v->currentContext() << std::endl;
 			
 			if (v->selection().size()) {
 				CAMusElement *elt = v->selection().front()->musElement();
+				if (!elt) break;
+				
 				// debug
 				std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", dContext = " << v->selection().front()->drawableContext() << ", context=" << elt->context();
 				if (elt->isPlayable()) {
@@ -978,8 +997,8 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 	
 	CAPluginManager::action("onScoreViewPortClick", document(), 0, 0, this);
 	
-	setMode(mode());
-	viewPort->repaint();
+	updateToolBars();
+	v->repaint();
 }
 
 /*!
@@ -1009,9 +1028,61 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreVie
 		_musElementFactory->setNoteAccs( iNoteAccs );
 		statusBar()->showMessage(CANote::generateNoteName(pitch, iNoteAccs));
 		c->setShadowNoteAccs(iNoteAccs);
+		c->repaint();
 	} else
-	if ( mode()==SelectMode ) { // multiple selection
+	if ( mode()==SelectMode && e->buttons()==Qt::LeftButton ) { // multiple selection
+		c->clearSelectionRegionList();
+		int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
+		    w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
+		if (w<0) { x+=w; w*=(-1); } // user selected from right to left
+		if (h<0) { y+=h; h*=(-1); } // user selected from bottom to top
+		QRect selectionRect( x, y, w, h );
 		
+		QList<CADrawableContext*> dcList = c->findContextsInRegion( selectionRect );
+		for (int i=0; i<dcList.size(); i++) {
+			QList<CADrawableMusElement*> musEltList = dcList[i]->findInRange( selectionRect.x(), selectionRect.x() + selectionRect.width() );
+			if (musEltList.size()) {
+				c->addSelectionRegion( QRect(musEltList.front()->xPos(), dcList[i]->yPos(),
+				                             musEltList.back()->xPos()+musEltList.back()->width()-musEltList.front()->xPos(), dcList[i]->height()) );
+			}
+		}
+		c->repaint();
+	}
+}
+
+/*!
+	Processes the mouse move event \a e with coordinates \a coords of the score viewport \a v.
+	Any action happened in any of the viewports are always linked to its main window slots.
+	
+	\sa CAScoreViewPort::mouseReleaseEvent(), scoreViewPortMousePress(), scoreViewPortMouseMove(), scoreViewPortWheel(), scoreViewPortKeyPress()
+*/
+void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords, CAScoreViewPort *c) {
+	if ( mode() == SelectMode  && c->lastMousePressCoords()!=coords ) {
+		c->clearSelectionRegionList();
+		
+		if (e->modifiers()==Qt::NoModifier)
+			c->clearSelection();
+		
+		int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
+		    w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
+		if (w<0) { x+=w; w*=(-1); } // user selected from right to left
+		if (h<0) { y+=h; h*=(-1); } // user selected from bottom to top
+		QRect selectionRect( x, y, w, h );
+		
+		QList<CADrawableContext*> dcList = c->findContextsInRegion( selectionRect );
+		for (int i=0; i<dcList.size(); i++) {
+			QList<CADrawableMusElement*> musEltList = dcList[i]->findInRange( selectionRect.x(), selectionRect.x() + selectionRect.width() );
+			if (c->selectedVoice() && dcList[i]->context()!=c->selectedVoice()->staff())
+				continue;
+			
+			for (int j=0; j<musEltList.size(); j++)
+				if (c->selectedVoice() && musEltList[j]->musElement()->isPlayable() && static_cast<CAPlayable*>(musEltList[j]->musElement())->voice()!=c->selectedVoice() ||
+				    (!musEltList[j]->isSelectable())
+				)
+					musEltList.removeAt(j--);
+			c->addToSelection(musEltList);
+		}
+		c->repaint();
 	}
 }
 
@@ -1207,26 +1278,33 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		
 		case Qt::Key_Delete:
 		case Qt::Key_Backspace:
-			if ( v->selection().size()) {
-				CAMusElement *elt = v->selection().back()->musElement();
-				if (elt->musElementType()==CAMusElement::Note) {
-					CANote *note = static_cast<CANote*>(elt);
-					if (!note->isPartOfTheChord()) {
-						for (int i=0; i<note->voice()->lyricsContextList().size(); i++) {
-							note->voice()->lyricsContextList().at(i)->removeSyllableAtTimeStart(note->timeStart());
+			if ( v->selection().size() ) {
+				QSet<CAMusElement*> musElemSet;
+				for (int i=0; i<v->selection().size(); i++)
+					musElemSet << v->selection().at(i)->musElement();
+				
+				for (QSet<CAMusElement*>::const_iterator i=musElemSet.constBegin(); i!=musElemSet.constEnd(); i++) {
+					if (!(*i)) {
+						continue;
+					} else if ((*i)->musElementType()==CAMusElement::Note) {
+						CANote *note = static_cast<CANote*>(*i);
+						if (!note->isPartOfTheChord()) {
+							for (int j=0; j<note->voice()->lyricsContextList().size(); j++) {
+								note->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(note->timeStart());
+							}
+							(*i)->context()->removeMusElement(*i);
 						}
-						elt->context()->removeMusElement(elt);
-					}
-				} else if (elt->musElementType()==CAMusElement::Syllable) {
-					if (e->modifiers()==Qt::ShiftModifier) {
-						CALyricsContext *lc = static_cast<CALyricsContext*>(elt->context()); 
-						elt->context()->removeMusElement(elt);  // actually removes the syllable if SHIFT is pressed
-						lc->repositSyllables();
+					} else if ((*i)->musElementType()==CAMusElement::Syllable) {
+						if (e->modifiers()==Qt::ShiftModifier) {
+							CALyricsContext *lc = static_cast<CALyricsContext*>((*i)->context()); 
+							(*i)->context()->removeMusElement(*i);  // actually removes the syllable if SHIFT is pressed
+							lc->repositSyllables();
+						} else {
+							static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
+						}
 					} else {
-						static_cast<CASyllable*>(elt)->clear(); // only clears syllable's text
+						(*i)->context()->removeMusElement(*i);
 					}
-				} else {
-					elt->context()->removeMusElement(elt);
 				}
 				
 				CACanorus::rebuildUI(document(), v->sheet());
@@ -1237,11 +1315,11 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		//Mode keys
 		case Qt::Key_Escape:
 			if (mode()==SelectMode) {
-				v->clearMSelection();
-				v->clearCSelection();
+				v->clearSelection();
+				v->setCurrentContext( 0 );
 			}
 			uiSelectMode->toggle();
-			uiVoiceNum->setRealValue(0);
+			uiVoiceNum->setRealValue( 0 );
 			//if (uiKeySigPSP)
 			//	uiKeySigPSP->hide();
 			break;

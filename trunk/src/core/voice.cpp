@@ -55,6 +55,8 @@ CAVoice::~CAVoice() {
 	
 	for (int i=0; i<lyricsContextList().size(); i++)
 		lyricsContextList().at(i)->setAssociatedVoice( 0 );
+	
+	staff()->removeVoice(this);
 }
 
 /*!

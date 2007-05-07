@@ -41,10 +41,22 @@
 #include "core/functionmarkingcontext.h"
 #include "core/functionmarking.h"
 
-#define INITIAL_X_OFFSET 20
-#define MINIMUM_SPACE 10
+#define INITIAL_X_OFFSET 20 // space between the left border and the first music element
+#define MINIMUM_SPACE 10    // minimum space between the music elements
 
-void CAEngraver::reposit(CAScoreViewPort *v) {
+/*!
+	\class CAEngraver
+	\brief Class for correctly placing the abstract notes to the score canvas.
+	
+	This class is a bridge between the data part of Canorus and the UI.
+	Out of data CAMusElement* and CAContext* objects, it creates their CADrawable* instances.
+*/
+
+/*!
+	Repositions the notes in the abstract sheet of the given score viewport \a v so they fit nicely.
+	This function doesn't clear the viewport, but only adds the elements.
+*/
+void CAEngraver::reposit( CAScoreViewPort *v ) {
 	int i;
 	CASheet *sheet = v->sheet();
 	
@@ -299,7 +311,7 @@ void CAEngraver::reposit(CAScoreViewPort *v) {
 				   ) {
 						newElt = new CADrawableAccidental(
 							((CANote*)elt)->accidentals(),
-							0,	//do not set the logical part as it gets selected by score viewport otherwise
+							0,
 							((CADrawableStaff*)drawableContext),
 							streamsX[i],
 							((CADrawableStaff*)drawableContext)->calculateCenterYCoord((CANote*)elt, lastClef[i])

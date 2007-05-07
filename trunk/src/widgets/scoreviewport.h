@@ -82,19 +82,17 @@ public:
 	// Selection //
 	///////////////
 	inline QList<CADrawableMusElement*> selection() { return _selection; };
-	CAMusElement         *selectMElement(int x, int y);
-	CADrawableContext    *selectCElement(int x, int y);
-	CADrawableMusElement *selectMElement(CAMusElement *elt);
-	CADrawableContext    *selectContext(CAContext *context);
-	inline QPoint         lastMousePressCoords() { return _lastMousePressCoords; }
+	QList<CADrawableMusElement*>        musElementsAt(int x, int y);
+	CADrawableContext                  *selectCElement(int x, int y);
+	CADrawableMusElement               *selectMElement(CAMusElement *elt);
+	CADrawableContext                  *selectContext(CAContext *context);
+	inline QPoint                       lastMousePressCoords() { return _lastMousePressCoords; }
 	
 	inline CADrawableContext *currentContext() { return _currentContext; }
 	inline void setCurrentContext(CADrawableContext *c) { _currentContext = c; }
 	
-	inline void clearSelection() { clearMSelection(); clearCSelection(); }
-	inline void clearMSelection() { _selection.clear(); }
-	inline void clearCSelection() { _currentContext = 0; }
-	inline bool removeFromSelection(CADrawableMusElement *elt) { _selection.removeAll(elt); }
+	inline void clearSelection() { _selection.clear(); }
+	inline bool removeFromSelection(CADrawableMusElement *elt) { return _selection.removeAll(elt); }
 	
 	inline void           addToSelection(CADrawableMusElement *elt) { _selection << elt; }
 	inline void           addToSelection(const QList<CADrawableMusElement*> list) { _selection << list; }
@@ -105,6 +103,11 @@ public:
 	CADrawableMusElement* selectPrevMusElement();
 	CADrawableMusElement* selectUpMusElement();
 	CADrawableMusElement* selectDownMusElement();
+	
+	inline const QList<QRect> &selectionRegionList() const { return _selectionRegionList; }
+	inline void addSelectionRegion(QRect r) { _selectionRegionList << r; }
+	inline void removeSelectionRegion(QRect r) { _selectionRegionList.removeAll(r); }
+	inline void clearSelectionRegionList() { _selectionRegionList.clear(); }
 	
 	/////////////////////////////////////////////////////////////////////
 	// Music elements and contexts query, space calculation and access //
@@ -248,6 +251,11 @@ private:
 	float _zoom;                            // Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
 	
 	CAVoice *_selectedVoice;        // Voice to be drawn normal colors, others are shaded
+	
+	/////////////
+	// Helpers //
+	/////////////
+	// Shadow note
 	bool _shadowNoteVisible;        // Should the shadow notes be rendered or not
 	
 	bool _shadowNoteVisibleOnLeave; // When you leave the viewport, shadow note is always turned off. This property holds the value, if shadow note was enabled before you left the viewport.
@@ -258,6 +266,19 @@ private:
 	bool _drawShadowNoteAccs;       // Draw shadow note accs?
 	QList<CANote*> _shadowNote;     // List of all shadow notes - one shadow note per drawable staff
 	QList<CADrawableNote*> _shadowDrawableNote;	// List of drawable shadow notes
+	
+	// QLineEdit for editing or creating a lyrics syllable
+	CASyllableEdit *_syllableEdit;
+	inline void setSyllableEdit( CASyllableEdit *e ) { _syllableEdit = e; }
+	QRect _syllableEditGeometry;
+	inline QRect syllableEditGeometry() { return _syllableEditGeometry; }
+	inline void setSyllableEditGeometry( const QRect r ) { _syllableEditGeometry = r; }
+	bool _syllableEditVisible;
+	inline void setSyllableEditVisible(bool v) { _syllableEditVisible = v; }
+	
+	// Selection regions
+	QList<QRect> _selectionRegionList;
+	void drawSelectionRegion( QPainter *p, CADrawSettings s );
 	
 	////////////////////////////
 	// Widgets and appearance //
@@ -292,15 +313,6 @@ private:
 	/////////////////////////
 	int _oldWorldX, _oldWorldY, _oldWorldW, _oldWorldH; // Old coordinates used before the repaint. This is needed so only the new part of the viewport gets repainted when panning.
 	bool _playing;                                      // Set to on, when in Playback mode
-	
-	// QLineEdit for editing or creating a lyrics syllable
-	CASyllableEdit *_syllableEdit;
-	inline void setSyllableEdit( CASyllableEdit *e ) { _syllableEdit = e; }
-	QRect _syllableEditGeometry;
-	inline QRect syllableEditGeometry() { return _syllableEditGeometry; }
-	inline void setSyllableEditGeometry( const QRect r ) { _syllableEditGeometry = r; }
-	bool _syllableEditVisible;
-	inline void setSyllableEditVisible(bool v) { _syllableEditVisible = v; }
 	
 	int _xCursor, _yCursor;                             // Mouse cursor position in absolute world coords.
 	bool _holdRepaint;                                  // Flag to prevent multiple repaintings.

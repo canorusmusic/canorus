@@ -16,7 +16,7 @@
 CADrawableAccidental::CADrawableAccidental(signed char accs, CAMusElement *musElement, CADrawableContext *drawableContext, int x, int y)
  : CADrawableMusElement(musElement, drawableContext, x, y) {
  	_drawableMusElementType = CADrawableMusElement::DrawableAccidental;
- 	_selectable = false;
+ 	setSelectable( false );
  	
  	_width = 8;
  	_height = 14;

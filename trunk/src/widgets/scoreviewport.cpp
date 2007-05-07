@@ -277,36 +277,17 @@ CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 }
 
 /*!
-	Selects a drawable music element at the given coordinates, if it exists.
-	Returns a pointer to its abstract music element.
+	Returns a list of pointer to the drawable music elements at the given coordinates.
 	If multiple elements exist at the same coordinates, they are selected one by another if you click at the same coordinates multiple times.
 	If no elements are present at the coordinates, clear the selection.
 */
-CAMusElement* CAScoreViewPort::selectMElement(int x, int y) {
+QList<CADrawableMusElement*> CAScoreViewPort::musElementsAt(int x, int y) {
 	QList<CADrawableMusElement *> l = _drawableMList.findInRange(x,y);
 	for (int i=0; i<l.size(); i++)
 		if (!(l[i])->isSelectable())
-			l.removeAt(i);
+			l.removeAt(i--);
 	
-	if (l.size() != 0) { //multiple elements can share the same coordinates
-		int idx;
-		if ( (_selection.size() != 1) || ((idx = l.indexOf(_selection.front())) == -1) ) {
-			_selection.clear();
-			_selection << (CADrawableMusElement*)l.at(0);	//if the previous selection was not a single element or if the new list doesn't contain the selection, add the first element in the available list to the selection
-		} else {
-			_selection.clear();
-			_selection << (CADrawableMusElement*)l.at((++idx < l.size()) ? idx : 0); //if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
-		}
-		
-		setCurrentContext(_selection.front()->drawableContext());
-		return (_selection.front())->musElement();
-	} else {
-		if (_selection.size() != 0) {
-			_selection.clear();
-		}
-		
-		return 0;
-	}
+	return l;
 }
 
 /*!
@@ -800,6 +781,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	if (_holdRepaint)
 		return;
 	
+	// draw the border
 	QPainter p(this);
 	if (_drawBorder) {
 		p.setPen(_borderPen);
@@ -808,10 +790,10 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 
 	p.setClipping(true);
 	if (_repaintArea) {
-		p.setClipRect(QRect((int)((_repaintArea->x() - _worldX)*_zoom),
-		                    (int)((_repaintArea->y() - _worldY)*_zoom),
-		                    (int)(_repaintArea->width()*_zoom),
-		                    (int)(_repaintArea->height()*_zoom)),
+		p.setClipRect(QRect(qRound((_repaintArea->x() - _worldX)*_zoom),
+		                    qRound((_repaintArea->y() - _worldY)*_zoom),
+		                    qRound(_repaintArea->width()*_zoom),
+		                    qRound(_repaintArea->height()*_zoom)),
 		              Qt::UniteClip);
 	} else {
 		p.setClipRect(QRect(_canvas->x(),
@@ -824,7 +806,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	
 	// draw the background
 	if (_repaintArea)
-		p.fillRect((int)((_repaintArea->x() - _worldX)*_zoom), (int)((_repaintArea->y() - _worldY)*_zoom), (int)(_repaintArea->width()*_zoom), (int)(_repaintArea->height()*_zoom), _backgroundBrush);
+		p.fillRect(qRound((_repaintArea->x() - _worldX)*_zoom), qRound((_repaintArea->y() - _worldY)*_zoom), qRound(_repaintArea->width()*_zoom), qRound(_repaintArea->height()*_zoom), _backgroundBrush);
 	else
 		p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundBrush);
 	
@@ -839,8 +821,8 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	for (int i=0; i<cList.size(); i++) {
 		CADrawSettings s = {
 	    	           _zoom,
-	        	       (int)((cList[i]->xPos() - _worldX) * _zoom),
-		               (int)((cList[i]->yPos() - _worldY) * _zoom),
+	        	       qRound((cList[i]->xPos() - _worldX) * _zoom),
+		               qRound((cList[i]->yPos() - _worldY) * _zoom),
 	            	   drawableWidth(), drawableHeight(),
 		               ((_currentContext == cList[i])?Qt::blue:Qt::black)
 		};
@@ -856,14 +838,16 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 
 	for (int i=0; i<mList.size(); i++) {
 		QColor color;
-		CAMusElement *elt = static_cast<CADrawableMusElement*>(mList[i])->musElement();
-		if ( _selection.contains(static_cast<CADrawableMusElement*>(mList[i])))
+		CAMusElement *elt = mList[i]->musElement();
+		if ( _selection.contains(mList[i]))
 			color = Qt::red;
 		else
 		if ( selectedVoice() &&
-		     (elt && elt->isPlayable() && static_cast<CAPlayable*>(elt)->voice()==selectedVoice() ||
-		      (!elt->isPlayable() && elt->context()==selectedVoice()->staff()) ||
-		      elt->context()!=selectedVoice()->staff()
+		     (elt &&
+		      (elt->isPlayable() && static_cast<CAPlayable*>(elt)->voice()==selectedVoice() ||
+		       (!elt->isPlayable() && elt->context()==selectedVoice()->staff()) ||
+		       elt->context()!=selectedVoice()->staff()) ||
+		      !elt && mList[i]->drawableContext()->context()==selectedVoice()->staff()
 		     ) ||
 		     (!selectedVoice())
 		   ) {
@@ -891,12 +875,25 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		
 		CADrawSettings s = {
 		               _zoom,
-		               (int)((mList[i]->xPos() - _worldX) * _zoom),
-		               (int)((mList[i]->yPos() - _worldY) * _zoom),
+		               qRound((mList[i]->xPos() - _worldX) * _zoom),
+		               qRound((mList[i]->yPos() - _worldY) * _zoom),
 		               drawableWidth(), drawableHeight(),
 		               color
 		               };
 		mList[i]->draw(&p, s);
+	}
+	
+	// draw selection regions
+	for (int i=0; i<selectionRegionList().size(); i++) {
+		CADrawSettings c = {
+			_zoom,
+			qRound( (selectionRegionList().at(i).x() - _worldX) * _zoom),
+			qRound( (selectionRegionList().at(i).y() - _worldY) * _zoom),
+			qRound( selectionRegionList().at(i).width() * _zoom),
+			qRound( selectionRegionList().at(i).height() * _zoom),
+			QColor( 255, 0, 80, 70 )
+		};
+		drawSelectionRegion( &p, c );
 	}
 	
 	// draw shadow note
@@ -904,16 +901,16 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		for (int i=0; i<_shadowDrawableNote.size(); i++) {
 			CADrawSettings s = {
 			               _zoom,
-			               (int)((_shadowDrawableNote[i]->xPos() - _worldX - _shadowDrawableNote[i]->width()/2) * _zoom + 0.5),
-			               (int)((_shadowDrawableNote[i]->yPos() - _worldY) * _zoom + 0.5),
+			               qRound((_shadowDrawableNote[i]->xPos() - _worldX - _shadowDrawableNote[i]->width()/2) * _zoom),
+			               qRound((_shadowDrawableNote[i]->yPos() - _worldY) * _zoom),
 			               drawableWidth(), drawableHeight(),
 			               (Qt::gray)
 			               };
 			_shadowDrawableNote[i]->draw(&p, s);
 			if (_drawShadowNoteAccs) {
 				CADrawableAccidental acc(_shadowNoteAccs, 0, 0, 0, _shadowDrawableNote[i]->yCenter());
-				s.x -= (int)((acc.width()+2)*_zoom + 0.5);
-				s.y = (int)((acc.yPos() - _worldY)*_zoom + 0.5);
+				s.x -= qRound((acc.width()+2)*_zoom);
+				s.y = qRound((acc.yPos() - _worldY)*_zoom);
 				acc.draw(&p, s);
 			}
 		}
@@ -931,6 +928,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 }
 
 void CAScoreViewPort::updateHelpers() {
+	// Shadow notes
 	if (currentContext()?(currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0) {
 		int pitch = ((CADrawableStaff*)currentContext())->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
 		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
@@ -942,6 +940,7 @@ void CAScoreViewPort::updateHelpers() {
 		}
 	}
 	
+	// Syllable edit
 	if ( syllableEditVisible() ) {
 		syllableEdit()->setFont( QFont("Century Schoolbook L", qRound(zoom()*(12-2))) );
 		syllableEdit()->setGeometry(
@@ -954,6 +953,10 @@ void CAScoreViewPort::updateHelpers() {
 	} else {
 		syllableEdit()->hide();
 	}
+}
+
+void CAScoreViewPort::drawSelectionRegion( QPainter *p, CADrawSettings s ) {
+	p->fillRect(s.x, s.y, s.w, s.h, QBrush(s.color));
 }
 
 /*!
@@ -1063,7 +1066,6 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 
 	if (_shadowNoteVisible) {
 		updateHelpers();
-		repaint();
 	}
 }
 

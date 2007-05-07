@@ -202,6 +202,7 @@ private slots:
 	
 	void scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAScoreViewPort *v);
 	void scoreViewPortMouseMove(QMouseEvent *e, const QPoint coords, CAScoreViewPort *v);
+	void scoreViewPortMouseRelease(QMouseEvent *e, const QPoint coords, CAScoreViewPort *v);
 	void scoreViewPortWheel(QWheelEvent *e, const QPoint coords, CAScoreViewPort *v);
 	void scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v);
 	void sourceViewPortCommit(QString inputString, CASourceViewPort*);

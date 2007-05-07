@@ -13,7 +13,7 @@
 
 class QPainter;
 
-typedef struct CADrawSettings {
+struct CADrawSettings {
 		float z;
 		int x;
 		int y;
