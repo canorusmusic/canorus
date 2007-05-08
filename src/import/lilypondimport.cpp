@@ -40,7 +40,7 @@ const QRegExp CALilyPondImport::DELIMITERS =
 
 CALilyPondImport::CALilyPondImport(QString& in, CAVoice *voice) {
 	_in = in;
-	_curLine = _curChar = 0;
+	initLilyPondImport();
 	
 	importVoice(voice);
 	QString messages;
@@ -52,7 +52,7 @@ CALilyPondImport::CALilyPondImport(QString& in, CAVoice *voice) {
 
 CALilyPondImport::CALilyPondImport(QString& in, CALyricsContext *lc) {
 	_in = in;
-	_curLine = _curChar = 0;
+	initLilyPondImport();
 	
 	importLyricsContext(lc);
 	QString messages;
@@ -63,6 +63,11 @@ CALilyPondImport::CALilyPondImport(QString& in, CALyricsContext *lc) {
 }
 
 CALilyPondImport::~CALilyPondImport() {
+}
+
+void CALilyPondImport::initLilyPondImport() {
+	_curLine = _curChar = 0;
+	_curSlur = 0; _curPhrasingSlur = 0;
 }
 
 void CALilyPondImport::addError(QString description, int curLine, int curChar) {
@@ -77,9 +82,13 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 	CAPitch prevPitch = { 21, 0 };
 	CALength prevLength = { CAPlayable::Quarter, 0 };
 	bool chordCreated=false;
+	bool changed=false;
 	
-	for (QString curElt = parseNextElement(); (!in().isEmpty()); curElt = parseNextElement()) {
-		if (curElt=="\\relative") {
+	for (QString curElt = parseNextElement();
+	     (!in().isEmpty());
+	     curElt = ((curElt.size() && changed)?curElt:parseNextElement())) { // go to next element, if current one is empty or not changed
+	    changed=true; // changed is default to true and false, if none of if clauses were found
+		if (curElt.startsWith("\\relative")) {
 			// initial \relative notePitch
 			QString notePitch = parseNextElement();
 			if (!isNote(notePitch)) {
@@ -88,20 +97,24 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			}
 			
 			prevPitch = relativePitchFromLilyPond(notePitch, 21);
+			curElt.remove(0,9);
 		} else
-		if (curElt=="{") {
+		if (curElt.startsWith("{")) {
 			// start of the voice
 			pushDepth(Voice);
+			curElt.remove(0,1);			
 		} else
-		if (curElt=="}") {
+		if (curElt.startsWith("}")) {
 			// end of the voice
 			popDepth();
+			curElt.remove(0,1);
 		} else
-		if (curElt=="<") {
+		if (curElt.startsWith("<")) {
 			// start of the chord
 			pushDepth(Chord);
+			curElt.remove(0,1);
 		} else
-		if (curElt==">") {
+		if (curElt.startsWith(">")) {
 			// end of the chord
 			popDepth();
 			chordCreated=false;
@@ -111,8 +124,9 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			} else {
 				addError(QString("Chord should be finished with a note."));
 			}
+			curElt.remove(0,1);
 		} else
-		if (curElt=="~") {
+		if (curElt.startsWith("~")) {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
 				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement());
 				note->setTieStart(
@@ -121,11 +135,54 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			} else {
 				addError(QString("Tie symbol must be right after the note and not %1. Tie ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
 			}
+			curElt.remove(0,1);
+		} else
+		if (curElt.startsWith("(")) {
+			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
+				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0);
+				_curSlur = new CASlur( CASlur::SlurType, CASlur::SlurPreferred, note->staff(), note, 0 );
+				note->setSlurStart(_curSlur);
+			} else {
+				addError(QString("Slur symbol must be right after the note and not %1. Slur ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
+			}
+			curElt.remove(0,1);
+		} else
+		if (curElt.startsWith(")")) {
+			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
+				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0);
+				note->setSlurEnd(_curSlur);
+				_curSlur->setNoteEnd(note);
+				_curSlur=0;
+			} else {
+				addError(QString("Slur symbol must be right after the note and not %1. Slur ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
+			}
+			curElt.remove(0,1);
+		} else
+		if (curElt.startsWith("\\(")) {
+			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
+				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0);
+				_curPhrasingSlur = new CASlur( CASlur::PhrasingSlurType, CASlur::SlurPreferred, note->staff(), note, 0 );
+				note->setPhrasingSlurStart(_curPhrasingSlur);
+			} else {
+				addError(QString("Phrasing slur symbol must be right after the note and not %1. Phrasing slur ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
+			}
+			curElt.remove(0,2);
+		} else
+		if (curElt.startsWith("\\)")) {
+			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
+				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0);
+				note->setPhrasingSlurEnd(_curPhrasingSlur);
+				_curPhrasingSlur->setNoteEnd(note);
+				_curPhrasingSlur=0;
+			} else {
+				addError(QString("Phrasing slur symbol must be right after the note and not %1. Phrasing slur ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
+			}
+			curElt.remove(0,2);
 		} else
 		if (isNote(curElt)) {
 			// CANote
-			prevPitch = relativePitchFromLilyPond(curElt, prevPitch.pitch);
-			CALength length = playableLengthFromLilyPond(curElt);
+			prevPitch = relativePitchFromLilyPond(curElt, prevPitch.pitch, true);
+			CALength length = playableLengthFromLilyPond(curElt, true);
 			if (length.length!=CAPlayable::Undefined) // length may not be set
 				prevLength = length;
 			
@@ -140,26 +197,19 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 				note = new CANote(prevLength.length, curVoice(), prevPitch.pitch, prevPitch.accs, curVoice()->lastTimeStart(), prevLength.dotted);
 			}
 			
-			// add tie
-			if ( curElt.contains("~") )
-				note->setTieStart(
-					new CASlur( CASlur::TieType, CASlur::SlurPreferred, note->staff(), note, 0 )
-				);
-			
 			note->updateTies(); // close any opened ties if present
 			curVoice()->appendMusElement(note);
 		} else
 		if (isRest(curElt)) {
 			// CARest
-			CALength length = playableLengthFromLilyPond(curElt);
+			CARest::CARestType type = restTypeFromLilyPond(curElt);
+			CALength length = playableLengthFromLilyPond(curElt, true);
 			if (length.length!=CAPlayable::Undefined) // length may not be set
 				prevLength = length;
-			
-			CARest::CARestType type = restTypeFromLilyPond(curElt);
-			
+						
 			curVoice()->appendMusElement(new CARest(type, prevLength.length, curVoice(), curVoice()->lastTimeEnd(), prevLength.dotted));
 		} else
-		if (curElt=="|") {
+		if (curElt.startsWith("|")) {
 			// CABarline::Single
 			// lookup an element with the same type at the same time
 			CABarline *bar = new CABarline(CABarline::Single, curVoice()->staff(), curVoice()->lastTimeEnd());
@@ -171,8 +221,9 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 				curVoice()->appendMusElement(sharedBar);
 				delete bar;
 			}
+			curElt.remove(0,1);
 		} else
-		if (curElt=="\\bar") {
+		if (curElt.startsWith("\\bar")) {
 			// CABarline
 			QString typeString = peekNextElement();
 			CABarline::CABarlineType type = barlineTypeFromLilyPond(peekNextElement());
@@ -194,8 +245,9 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 				curVoice()->appendMusElement(sharedBar);
 				delete bar;
 			}
+			curElt.remove(0,4);
 		} else
-		if (curElt=="\\clef") {
+		if (curElt.startsWith("\\clef")) {
 			// CAClef
 			QString typeString = peekNextElement();
 			CAClef::CAClefType type = clefTypeFromLilyPond(peekNextElement());
@@ -215,7 +267,8 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			} else {
 				curVoice()->appendMusElement(sharedClef);
 				delete clef;
-			}			
+			}
+			curElt.remove(0,5);
 		} else
 		if (curElt=="\\key") {
 			// CAKeySignature
@@ -247,8 +300,9 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 				curVoice()->appendMusElement(sharedKeySig);
 				delete keySig;
 			}
+			curElt.remove(0,4);
 		} else
-		if (curElt=="\\time") {
+		if (curElt.startsWith("\\time")) {
 			// CATimeSignature
 			QString timeString = peekNextElement();
 			// time signature should have beats/beat format
@@ -268,7 +322,9 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 				curVoice()->appendMusElement(sharedTimeSig);
 				delete timeSig;
 			}
-		}
+			curElt.remove(0,5);
+		} else
+			changed=false;
 	}
 	
 	return true;
@@ -399,7 +455,7 @@ bool CALilyPondImport::isRest(const QString elt) {
 	
 	\sa playableLengthFromLilyPond()
 */
-CALilyPondImport::CAPitch CALilyPondImport::relativePitchFromLilyPond(const QString constNName, int prevPitch) {
+CALilyPondImport::CAPitch CALilyPondImport::relativePitchFromLilyPond(QString& constNName, int prevPitch, bool parse) {
 	QString noteName = constNName;
 	
 	// determine pitch
@@ -416,20 +472,32 @@ CALilyPondImport::CAPitch CALilyPondImport::relativePitchFromLilyPond(const QStr
 	while (noteName.indexOf("is") != -1) {
 		curAccs++;
 		noteName.remove(0, noteName.indexOf("is") + 2);
+		if (parse)
+			constNName.remove(0, noteName.indexOf("is") + 2);
 	}
 	while ((noteName.indexOf("es") != -1) || (noteName.indexOf("as") != -1)) {
 		curAccs--;
 		noteName.remove(0, ((noteName.indexOf("es")==-1) ? noteName.indexOf("as")+2 : noteName.indexOf("es")+2));
+		if (parse)
+			constNName.remove(0, ((noteName.indexOf("es")==-1) ? noteName.indexOf("as")+2 : noteName.indexOf("es")+2));
 	}
+	if (!curAccs && parse)
+		constNName.remove(0, 1);
 	
 	// add octave up/down
 	for (int i=0; i<noteName.size(); i++) {
 		if (noteName[i]=='\'') {
 			curPitch+=7;
+			if (parse)
+				constNName.remove(0,1);
 		} else if (noteName[i]==',') {
 			curPitch-=7;
+			if (parse)
+				constNName.remove(0,1);
 		}
 	}
+	
+	
 	
 	CAPitch ret = {curPitch, curAccs};
 	return ret;
@@ -438,10 +506,11 @@ CALilyPondImport::CAPitch CALilyPondImport::relativePitchFromLilyPond(const QStr
 /*!
 	Generates playable lentgth and number of dots from the note/rest string in LilyPond syntax.
 	If the playable element doesn't include length, { CAPlayable::CAPlayableLength::Undefined, 0 } is returned.
+	This function also shortens the given string for the playable length, if \a parse is True.
 	
 	\sa relativePitchFromString()
 */
-CALilyPondImport::CALength CALilyPondImport::playableLengthFromLilyPond(const QString elt) {
+CALilyPondImport::CALength CALilyPondImport::playableLengthFromLilyPond(QString& elt, bool parse) {
 	CALength ret = { CAPlayable::Undefined, 0 };
 	
 	// index of the first number
@@ -462,7 +531,10 @@ CALilyPondImport::CALength CALilyPondImport::playableLengthFromLilyPond(const QS
 			dStart = elt.size();
 		
 		ret.length = static_cast<CAPlayable::CAPlayableLength>(elt.mid(start, dStart-start).toInt());
+		if (parse)
+			elt.remove(start, dStart-start+ret.dotted);
 	}
+	
 	
 	return ret;
 }
