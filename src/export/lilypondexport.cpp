@@ -670,11 +670,17 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet )
 		} // for(contexts)
 		
 		// After positioning the lyrics contexts, set their associated voices!
-		indent();
-		out() << "\n";
-		indent();
-		out() << "% Voice assignment:\n";
 		for (int i=0; i<contextCount; i++) {
+			if (i==0) {
+				indent();
+				out() << "\n";
+				indent();
+				out() << "% Voice assignment:\n";
+				indent();
+				 // needed for automatic treating of slurs as melisma for lyrics - multiple syllables below the slured notes are allowed in Canorus, but not recommended
+				 out() << "\\set Score.melismaBusyProperties = #'()\n";
+			}
+			
 			CALyricsContext *lc;
 			if (lc = dynamic_cast<CALyricsContext*>(sheet->contextAt( i ))) {
 				QString lcName = lc->name();
