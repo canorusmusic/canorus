@@ -23,21 +23,29 @@ public:
 	void draw(QPainter *p, const CADrawSettings s);
 	CADrawableSlur *clone(CADrawableContext* newContext = 0);
 	
-	int xMid() { return _xMid; }
-	int yMid() { return _yMid; }
-	int y1() { return _y1; }
-	int y2() { return _y2; }
-	inline void setXMid( int xMid ) { _xMid = xMid; }
-	inline void setYMid( int yMid ) { _yMid = yMid; }
-	inline void setY1( int y1 ) { _y1 = y1; }
-	inline void setY2( int y2 ) { _y2 = y2; }
+	inline int x1() { return _x1; }
+	inline int y1() { return _y1; }
+	inline int xMid() { return _xMid; }
+	inline int yMid() { return _yMid; }
+	inline int x2() { return _x2; }
+	inline int y2() { return _y2; }
+	inline void setX1(int x1) { _x1 = x1; updateGeometry(); }
+	inline void setY1( int y1 ) { _y1 = y1; updateGeometry(); }
+	inline void setXMid( int xMid ) { _xMid = xMid; updateGeometry(); }
+	inline void setYMid( int yMid ) { _yMid = yMid; updateGeometry(); }
+	inline void setX2(int x2) { _x2 = x2; updateGeometry(); }
+	inline void setY2( int y2 ) { _y2 = y2; updateGeometry(); }
 	
 private:
+	void updateGeometry();
+	
 	int min(int, int, int);
 	int max(int, int, int);
+	int _x1;
 	int _y1;
 	int _xMid;
 	int _yMid;
+	int _x2;
 	int _y2;
 };
 

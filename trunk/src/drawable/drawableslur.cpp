@@ -11,15 +11,15 @@
 CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, int x1, int y1, int xMid, int yMid, int x2, int y2  )
  : CADrawableMusElement( slur, c, x1, 0) {
  	setDrawableMusElementType( DrawableSlur );
-	setWidth( x2 - x1 );
-	setYPos( min( y1, y2, yMid ) );
-	setHeight( max( y1, y2, yMid ) - yPos() );
-	
-	setY1( y1 );
+ 	setX1( x1 );
+ 	setY1( y1 );
 	setXMid( xMid );
 	setYMid( yMid );
-	setY2( y2 );
-	
+ 	setX2( x2 );
+ 	setY2( y2 );
+ 	
+ 	updateGeometry(); // sets width, height, xPos, yPos
+ 	
 	setNeededWidth( width() );
 	setNeededHeight( height() );
 }
@@ -27,13 +27,21 @@ CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, int x1, int 
 CADrawableSlur::~CADrawableSlur() {
 }
 
+void CADrawableSlur::updateGeometry() {
+	setXPos( min(x1(), xMid(), x2()) );
+	setWidth( max(x1(), xMid(), x2()) - xPos() );
+	
+	setYPos( min(y1(), yMid(), y2()) );
+	setHeight( max(y1(), yMid(), y2()) - yPos() );
+}
+
 /*!
 	Returns the minimum of all the three integers given.
 */
 int CADrawableSlur::min(int x, int y, int z) {
-	if ( x <= y && y <= z )
+	if ( x <= y && x <= z )
 		return x;
-	else if ( y <= x && x <= z )
+	else if ( y <= x && y <= z )
 		return y;
 	else
 		return z;
@@ -43,9 +51,9 @@ int CADrawableSlur::min(int x, int y, int z) {
 	Returns the maximum of all the three integers given.
 */
 int CADrawableSlur::max(int x, int y, int z) {
-	if ( x >= y && y >= z )
+	if ( x >= y && x >= z )
 		return x;
-	else if ( y >= x && x >= z )
+	else if ( y >= x && y >= z )
 		return y;
 	else
 		return z;
