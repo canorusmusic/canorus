@@ -2236,13 +2236,16 @@ void CAMainWin::on_uiNoteStemDirection_toggled(bool checked, int id) {
 		_musElementFactory->setNoteStemDirection( direction );
 	else if (mode()==SelectMode || mode()==EditMode) {
 		CAScoreViewPort *v = currentScoreViewPort();
-		if ( v && v->selection().size() ) {
-			CANote *note = dynamic_cast<CANote*>(v->selection().at(0)->musElement());
+		bool changed=false;
+		for (int i=0; v && i<v->selection().size(); i++) {
+			CANote *note = dynamic_cast<CANote*>(v->selection().at(i)->musElement());
 			if ( note ) {
 				note->setStemDirection( direction );
-				CACanorus::rebuildUI(document(), currentSheet());
+				changed=true;
 			}
 		}
+		if (changed)
+			CACanorus::rebuildUI(document(), currentSheet());
 	}
 }
 

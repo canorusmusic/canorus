@@ -228,7 +228,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 			}
 		}
 		
-		//Draw function key name, if needed
+		// Draw function key name, if needed
 		QList<CADrawableFunctionMarkingSupport*> lastDFMKeyNames;
 		for (int i=0;
 		     (i<streams) &&
@@ -397,15 +397,15 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
 								dir = static_cast<CADrawableNote*>(newElt)->note()->tieEnd()->noteStart()->actualSlurDirection();
 							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tieEnd()));
-							dSlur->setWidth( newElt->xPos() - dSlur->xPos() );
-							dSlur->setXMid( dSlur->xPos() + dSlur->width()/2 );
+							dSlur->setX2( newElt->xPos() );
+							dSlur->setXMid( qRound(0.5*dSlur->xPos() + 0.5*newElt->xPos()) );
 							if ( dir==CASlur::SlurUp ) {
 								dSlur->setY2( newElt->yPos() );
-								dSlur->setYMid( qMin( newElt->yPos(), dSlur->y1() ) - 2 );
+								dSlur->setYMid( qMin( dSlur->y2(), dSlur->y1() ) - 5 );
 							} else
 							if ( dir==CASlur::SlurDown ) {
 								dSlur->setY2( newElt->yPos() + newElt->height() );
-								dSlur->setYMid( qMax( newElt->yPos(), dSlur->y1() ) + 2 );
+								dSlur->setYMid( qMax( dSlur->y2(), dSlur->y1() ) + 5 );
 							}
 
 						}
@@ -420,7 +420,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 								slur = new CADrawableSlur(
 									static_cast<CADrawableNote*>(newElt)->note()->slurStart(), drawableContext,
 									newElt->xPos()+newElt->width(), newElt->yPos(),
-									newElt->xPos() + 20, newElt->yPos() - 9,
+									newElt->xPos() + 20, newElt->yPos() - 15,
 									newElt->xPos() + 40, newElt->yPos()								
 								);
 							} else
@@ -428,7 +428,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 								slur = new CADrawableSlur(
 									static_cast<CADrawableNote*>(newElt)->note()->slurStart(), drawableContext,
 									newElt->xPos()+newElt->width(), newElt->yPos() + newElt->height(),
-									newElt->xPos() + 20, newElt->yPos() + newElt->height() + 9,
+									newElt->xPos() + 20, newElt->yPos() + newElt->height() + 15,
 									newElt->xPos() + 40, newElt->yPos()	+ newElt->height()							
 								);
 							}
@@ -440,15 +440,15 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
 								dir = static_cast<CADrawableNote*>(newElt)->note()->slurEnd()->noteStart()->actualSlurDirection();
 							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->slurEnd()));
-							dSlur->setWidth( newElt->xPos() - dSlur->xPos() );
-							dSlur->setXMid( dSlur->xPos() + dSlur->width()/2 );
+							dSlur->setX2( newElt->xPos() );
+							dSlur->setXMid( qRound(0.5*dSlur->xPos() + 0.5*newElt->xPos()) );
 							if ( dir==CASlur::SlurUp ) {
 								dSlur->setY2( newElt->yPos() );
-								dSlur->setYMid( qMin( newElt->yPos(), dSlur->y1() ) - 2 );
+								dSlur->setYMid( qMin( dSlur->y2(), dSlur->y1() ) - 15 );
 							} else
 							if ( dir==CASlur::SlurDown ) {
 								dSlur->setY2( newElt->yPos() + newElt->height() );
-								dSlur->setYMid( qMax( newElt->yPos(), dSlur->y1() ) + 2 );
+								dSlur->setYMid( qMax( dSlur->y2(), dSlur->y1() ) + 15 );
 							}
 						}
 						
@@ -462,7 +462,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 								phrasingSlur = new CADrawableSlur(
 									static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurStart(), drawableContext,
 									newElt->xPos()+newElt->width(), newElt->yPos(),
-									newElt->xPos() + 20, newElt->yPos() - 12,
+									newElt->xPos() + 20, newElt->yPos() - 19,
 									newElt->xPos() + 40, newElt->yPos()								
 								);
 							} else
@@ -470,7 +470,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 								phrasingSlur = new CADrawableSlur(
 									static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurStart(), drawableContext,
 									newElt->xPos()+newElt->width(), newElt->yPos() + newElt->height(),
-									newElt->xPos() + 20, newElt->yPos() + newElt->height() + 12,
+									newElt->xPos() + 20, newElt->yPos() + newElt->height() + 19,
 									newElt->xPos() + 40, newElt->yPos()	+ newElt->height()							
 								);
 							}
@@ -482,15 +482,15 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
 								dir = static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd()->noteStart()->actualSlurDirection();
 							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd()));
-							dSlur->setWidth( newElt->xPos() - dSlur->xPos() );
-							dSlur->setXMid( dSlur->xPos() + dSlur->width()/2 );
+							dSlur->setX2( newElt->xPos() );
+							dSlur->setXMid( qRound(0.5*dSlur->xPos() + 0.5*newElt->xPos()) );
 							if ( dir==CASlur::SlurUp ) {
 								dSlur->setY2( newElt->yPos() );
-								dSlur->setYMid( qMin( newElt->yPos(), dSlur->y1() ) - 2 );
+								dSlur->setYMid( qMin( dSlur->y2(), dSlur->y1() ) - 19 );
 							} else
 							if ( dir==CASlur::SlurDown ) {
 								dSlur->setY2( newElt->yPos() + newElt->height() );
-								dSlur->setYMid( qMax( newElt->yPos(), dSlur->y1() ) + 2 );
+								dSlur->setYMid( qMax( dSlur->y2(), dSlur->y1() ) + 19 );
 							}
 						}
 						
