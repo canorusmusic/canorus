@@ -22,16 +22,12 @@ CADrawableContext::CADrawableContext(CAContext *c, int x, int y) : CADrawable(x,
 QList<CADrawableMusElement*> CADrawableContext::findInRange( int x1, int x2 ) {
 	int i;
 	QList<CADrawableMusElement*> list;
-	for (i=0;
-	     i<_drawableMusElementList.size() &&
-	      x1 > (_drawableMusElementList[i]->xPos() + _drawableMusElementList[i]->width());
-	     i++);
-	
-	if (i==_drawableMusElementList.size()) return list;
-	
-	for (;
-	     i<_drawableMusElementList.size() && x2 > _drawableMusElementList[i]->xPos();
-	     list << _drawableMusElementList[i], i++);
-	
+	for (int i=0; i<_drawableMusElementList.size(); i++) {
+		if ( static_cast<CADrawable*>(_drawableMusElementList[i])->xPos() <= x2 &&                       // The object is normal and fits into the area
+		     static_cast<CADrawable*>(_drawableMusElementList[i])->xPos() + static_cast<CADrawable*>(_drawableMusElementList[i])->width() >= x1
+		    ) {
+			list << _drawableMusElementList[i];
+		}
+	}
 	return list;
 }
