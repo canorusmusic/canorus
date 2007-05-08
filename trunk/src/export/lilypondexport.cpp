@@ -26,7 +26,6 @@ void CALilyPondExport::exportVoice(CAVoice *v) {
 	setCurVoice(v);
 	
 	int lastNotePitch;   // initialized by writeRelativeIntro()
-	int firstNotePitchInChord;
 	int curStreamTime = 0;
 	CAPlayable::CAPlayableLength lastPlayableLength;
 	int lastPlayableDotted=0;
@@ -87,13 +86,12 @@ void CALilyPondExport::exportVoice(CAVoice *v) {
 				if (note->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				if (note->isPartOfTheChord() && note->isFirstInTheChord()) {
 					out() << "<";
-					firstNotePitchInChord=note->pitch();
 				}
 				
 				// write the note name
 				out() << relativePitchToString(note->pitch(), note->accidentals(), lastNotePitch);
 				
-				if (lastPlayableLength != note->playableLength() || lastPlayableDotted != note->dotted()) {
+				if (!note->isPartOfTheChord() && lastPlayableLength != note->playableLength() || lastPlayableDotted != note->dotted()) {
 					out() << playableLengthToLilyPond(note->playableLength(), note->dotted());
 				}
 				
@@ -101,13 +99,40 @@ void CALilyPondExport::exportVoice(CAVoice *v) {
 					out() << "~";
 				
 				lastNotePitch = note->pitch();
-				lastPlayableLength = note->playableLength();
-				lastPlayableDotted = note->dotted();
+				if (!note->isPartOfTheChord())
+					lastPlayableLength = note->playableLength();
+				if (!note->isPartOfTheChord())
+					lastPlayableDotted = note->dotted();
 				
 				// finish the chord stanza if that's the last note of the chord
 				if (note->isPartOfTheChord() && note->isLastInTheChord()) {
 					out() << ">";
-					lastNotePitch = firstNotePitchInChord;
+					
+					if ( lastPlayableLength != note->playableLength() || lastPlayableDotted != note->dotted() ) {
+						out() << playableLengthToLilyPond(note->playableLength(), note->dotted());
+					}
+					
+					lastNotePitch = note->chord().at(0)->pitch();
+					lastPlayableLength = note->playableLength();
+					lastPlayableDotted = note->dotted();
+				}
+				
+				// place slurs and phrasing slurs
+				if (!note->isPartOfTheChord() && note->slurStart() ||
+				    note->isPartOfTheChord() && note->isLastInTheChord() && note->chord().at(0)->slurStart() ) {
+					out() << "(";
+				}
+				if (!note->isPartOfTheChord() && note->slurEnd() ||
+				    note->isPartOfTheChord() && note->isLastInTheChord() && note->chord().at(0)->slurEnd() ) {
+					out() << ")";
+				}
+				if (!note->isPartOfTheChord() && note->phrasingSlurStart() ||
+				    note->isPartOfTheChord() && note->isLastInTheChord() && note->chord().at(0)->phrasingSlurStart() ) {
+					out() << "\\(";
+				}
+				if (!note->isPartOfTheChord() && note->phrasingSlurEnd() ||
+				    note->isPartOfTheChord() && note->isLastInTheChord() && note->chord().at(0)->phrasingSlurEnd() ) {
+					out() << "\\)";
 				}
 				
 				// add to the stream time, if the note is not part of the chord or is the last one in the chord

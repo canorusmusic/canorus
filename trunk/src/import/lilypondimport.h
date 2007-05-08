@@ -67,6 +67,8 @@ private:
 	// Do the actual import of the current lyricsc context and input string
 	bool importLyricsContext(CALyricsContext *lc);
 	
+	void initLilyPondImport();
+	
 	inline CAVoice *curVoice() { return _curVoice; }
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }
 	
@@ -77,10 +79,10 @@ private:
 	//////////////////////
 	// Helper functions //
 	//////////////////////
-	CALength playableLengthFromLilyPond(const QString playableElt);
+	CALength playableLengthFromLilyPond(QString &playableElt, bool parse=false);
 	
 	bool isNote(const QString elt);
-	CAPitch relativePitchFromLilyPond(const QString note, int prevPitch);
+	CAPitch relativePitchFromLilyPond(QString &note, int prevPitch, bool parse=false);
 	bool isRest(const QString elt);
 	CARest::CARestType restTypeFromLilyPond(const QString rest);
 	CAClef::CAClefType clefTypeFromLilyPond(const QString clef);
@@ -102,6 +104,8 @@ private:
 	// Attributes
 	QString _in;
 	CAVoice *_curVoice;
+	CASlur *_curSlur;
+	CASlur *_curPhrasingSlur;
 	QStack<CALilyPondDepth> _depth;
 	int _curLine, _curChar;
 	QList<QString> _errors;
