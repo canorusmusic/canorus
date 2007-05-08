@@ -898,14 +898,14 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 		case SelectMode:
 		case EditMode: {
 			v->clearSelectionRegionList();
-			if (v->currentContext())
-				std::cout << "drawableContext: " << v->currentContext() << std::endl;
 			
 			if (v->selection().size()) {
-				CAMusElement *elt = v->selection().front()->musElement();
+				CADrawableMusElement *dElt = v->selection().front();
+				CAMusElement *elt = dElt->musElement();
 				if (!elt) break;
 				
 				// debug
+				std::cout << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << std::endl;
 				std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", dContext = " << v->selection().front()->drawableContext() << ", context=" << elt->context();
 				if (elt->isPlayable()) {
 					std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
@@ -1062,7 +1062,7 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreVie
 	\sa CAScoreViewPort::mouseReleaseEvent(), scoreViewPortMousePress(), scoreViewPortMouseMove(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
 void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords, CAScoreViewPort *c) {
-	if ( mode() == SelectMode  && c->lastMousePressCoords()!=coords ) {
+	if ( mode() != InsertMode  && c->lastMousePressCoords()!=coords ) { // area was selected
 		c->clearSelectionRegionList();
 		
 		if (e->modifiers()==Qt::NoModifier)
@@ -1082,7 +1082,8 @@ void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords, CAScore
 			
 			for (int j=0; j<musEltList.size(); j++)
 				if (c->selectedVoice() && musEltList[j]->musElement()->isPlayable() && static_cast<CAPlayable*>(musEltList[j]->musElement())->voice()!=c->selectedVoice() ||
-				    (!musEltList[j]->isSelectable())
+				    (!musEltList[j]->isSelectable()) ||
+				    (musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
 				)
 					musEltList.removeAt(j--);
 			c->addToSelection(musEltList);

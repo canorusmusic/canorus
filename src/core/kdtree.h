@@ -149,7 +149,7 @@ void CAKDTree<T>::clear(bool autoDelete) {
 	
 	_list.clear();
 }
-
+#include <iostream>
 /*!
 	Returns the list of elements present in the given rectangular area or an empty list if none found.
 	Element is in the list, if the region only touches it - not neccessarily fits the whole in the region.
@@ -167,10 +167,11 @@ QList<T> CAKDTree<T>::findInRange(int x, int y, int w, int h) {
 		      (static_cast<CADrawable*>(_list[i])->yPos() <= y+h) &&
 		      (static_cast<CADrawable*>(_list[i])->yPos() + static_cast<CADrawable*>(_list[i])->height() >= y)) ||
 		     ((static_cast<CADrawable*>(_list[i])->height() == 0) &&                       // The object is unlimited in height (eg. helper lines)
-		      (static_cast<CADrawable*>(_list[i])->xPos() <= x+h) &&
-		      (static_cast<CADrawable*>(_list[i])->xPos() + _list[i]->width() >= x))
-		    )
+		      (static_cast<CADrawable*>(_list[i])->xPos() <= x+w) &&
+		      (static_cast<CADrawable*>(_list[i])->xPos() + static_cast<CADrawable*>(_list[i])->width() >= x))
+		    ) {
 			l << _list[i];
+		}
 	}
 
 	return l;	
