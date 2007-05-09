@@ -57,8 +57,7 @@ int CAStaff::lastTimeEnd() {
 void CAStaff::clear() {
 	while (_voiceList.size()) {
 		_voiceList.front()->clear();
-		delete _voiceList.front();
-		_voiceList.removeFirst();
+		delete _voiceList.front(); //CAVoice's destructor removes the voice from the list.
 	}
 }
 
