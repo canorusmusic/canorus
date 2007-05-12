@@ -387,7 +387,7 @@ void CAMainWin::newDocument() {
 	clearUI();
 	
 	// clear the data part
-	if (CACanorus::mainWinCount(document()))
+	if (CACanorus::mainWinCount(document()) == 1)
 		delete document();
 	
 	setDocument(new CADocument());
@@ -2148,7 +2148,6 @@ void CAMainWin::on_uiLilyPondSource_triggered() {
 		
 		initViewPort( v );
 		currentViewPortContainer()->addViewPort( v );
-		connect(v, SIGNAL(CACommit(CASourceViewPort*, QString)), this, SLOT(sourceViewPortCommit(CASourceViewPort*, QString)));
 		
 		uiUnsplitAll->setEnabled(true);
 		uiCloseCurrentView->setEnabled(true);
