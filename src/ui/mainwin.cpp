@@ -544,7 +544,7 @@ void CAMainWin::on_uiCloseDocument_triggered() {
 	Shows the current score in CanorusML syntax in a new or the current viewport.
 */
 void CAMainWin::on_uiCanorusMLSource_triggered() {
-	CASourceViewPort *v = new CASourceViewPort(document(), currentViewPort()->parent());
+	CASourceViewPort *v = new CASourceViewPort(document(), static_cast<QWidget*>(currentViewPort()->parent()));
 	initViewPort( v );
 	currentViewPortContainer()->addViewPort( v );
 	
@@ -555,8 +555,8 @@ void CAMainWin::on_uiCanorusMLSource_triggered() {
 void CAMainWin::on_uiNewViewport_triggered() {
 	CAViewPort *v = currentViewPort()->clone( 0 );
 	initViewPort( v );
-	v->setGeometry( v->x(), v->y(), 400, 400 );
 	v->show();
+	v->setGeometry(v->x(), v->y(), CAViewPort::DEFAULT_VIEWPORT_WIDTH, CAViewPort::DEFAULT_VIEWPORT_HEIGHT);
 }
 
 /*!

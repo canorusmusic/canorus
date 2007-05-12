@@ -10,9 +10,6 @@
 
 #include <QWidget>
 
-#define DEFAULT_VIEWPORT_WIDTH 400
-#define DEFAULT_VIEWPORT_HEIGHT 400
-
 class CAViewPort : public QWidget {
 Q_OBJECT
 
@@ -27,12 +24,14 @@ public:
 	};
 	
 	inline CAViewPortType viewPortType() { return _viewPortType; }
-	inline QWidget *parent() { return _parent; }
 	
 	virtual CAViewPort *clone() = 0;
 	virtual CAViewPort *clone(QWidget *parent) = 0;
 	
 	virtual void rebuild() = 0;
+	
+	static const int DEFAULT_VIEWPORT_WIDTH;
+	static const int DEFAULT_VIEWPORT_HEIGHT;
 	
 private slots:
 	virtual void mousePressEvent(QMouseEvent *e);
@@ -55,10 +54,5 @@ protected:
 	// General properties //
 	////////////////////////
 	CAViewPortType _viewPortType;
-	
-	/////////////
-	// Widgets //
-	/////////////
-	QWidget *_parent;	// pointer to the parent widget		
 };
 #endif

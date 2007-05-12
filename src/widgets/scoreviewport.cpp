@@ -107,7 +107,13 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	_checkScrollBarsDeadLock = false;
 	_playing = false;
 	_currentContext = 0;
-
+	
+	// init layout
+	_layout = new QGridLayout(this);
+	_layout->setMargin(2);
+	_layout->setSpacing(2);
+	_drawBorder = false;
+	
 	// init virtual canvas
 	_canvas = new QWidget(this);
 	setMouseTracking(true);
@@ -144,11 +150,7 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	connect(_hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(HScrollBarEvent(int)));
 	connect(_vScrollBar, SIGNAL(valueChanged(int)), this, SLOT(VScrollBarEvent(int)));
 	
-	// init layout
-	_layout = new QGridLayout(this);
-	_layout->setMargin(2);
-	_layout->setSpacing(2);
-	_drawBorder = false;
+	// connect layout and widgets
 	_layout->addWidget(_canvas, 0, 0);
 	_layout->addWidget(_vScrollBar, 0, 1);
 	_layout->addWidget(_hScrollBar, 1, 0);
@@ -188,7 +190,7 @@ void CAScoreViewPort::on__animationTimer_timeout() {
 }
 
 CAScoreViewPort *CAScoreViewPort::clone() {
-	CAScoreViewPort *v = new CAScoreViewPort(_sheet, _parent);
+	CAScoreViewPort *v = new CAScoreViewPort(_sheet, static_cast<QWidget*>(parent()));
 	
 	v->importElements(&_drawableMList, &_drawableCList);
 	

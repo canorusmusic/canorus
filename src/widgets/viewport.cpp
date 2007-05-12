@@ -8,6 +8,9 @@
 #include "widgets/viewport.h"
 #include "core/canorus.h"
 
+const int CAViewPort::DEFAULT_VIEWPORT_WIDTH = 600;
+const int CAViewPort::DEFAULT_VIEWPORT_HEIGHT = 400;
+
 /*!
 	\class CAViewPort
 	\brief Base class for various viewports
@@ -20,8 +23,9 @@
 	The default constructor.
 	Creates a widget with the parent widget \a p.
 */
-CAViewPort::CAViewPort(QWidget *p) : QWidget(p) {
-	_parent = p;
+CAViewPort::CAViewPort(QWidget *p)
+ : QWidget(p) {
+ 	setGeometry( 0, 0, 0, 0 );
 }
 
 /*!

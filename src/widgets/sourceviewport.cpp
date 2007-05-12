@@ -104,9 +104,9 @@ void CASourceViewPort::on_commit_clicked() {
 CASourceViewPort *CASourceViewPort::clone() {
 	CASourceViewPort *v;
 	if (_document)
-		v = new CASourceViewPort(_document, _parent);
+		v = new CASourceViewPort(_document, static_cast<QWidget*>(parent()));
 	else if (_voice)
-		v = new CASourceViewPort(_voice, _parent);
+		v = new CASourceViewPort(_voice, static_cast<QWidget*>(parent()));
 	
 	return v;
 }
