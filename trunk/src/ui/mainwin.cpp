@@ -387,7 +387,7 @@ void CAMainWin::newDocument() {
 	clearUI();
 	
 	// clear the data part
-	if (CACanorus::mainWinCount(document()) == 1)
+	if ( document() && (CACanorus::mainWinCount(document()) == 1) ) 
 		delete document();
 	
 	setDocument(new CADocument());
@@ -884,18 +884,14 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 		v->clearSelection();
 	}
 	
-	if ( v->currentContext() ) {
-		// voice number widget
-		if (prevContext != v->currentContext()) {	// new context was selected
-			if (v->currentContext()->context()->contextType() == CAContext::Staff) {
-				uiVoiceNum->setRealValue(0);
-				uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
-			}
+	// voice number widget
+	if ( v->currentContext() && prevContext != v->currentContext() && mode()!=InsertMode) {	// new context was selected
+		if (v->currentContext()->context()->contextType() == CAContext::Staff) {
+			uiVoiceNum->setRealValue(0);
+			uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
 		}
-	} else
-	if (prevContext != v->currentContext()) { // no context selected
-		if ( mode()==InsertMode ) // If in insert mode, stay in the current context
-			v->setCurrentContext( prevContext );
+	} else if ( prevContext != v->currentContext() && mode()==InsertMode ) { // but insert mode is active and context should remain the same
+		v->setCurrentContext( prevContext );
 	}
 	
 	switch ( mode() ) {
@@ -919,6 +915,8 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				}
 				std::cout << std::endl;
 			}
+			
+			setMode( mode() );
 			
 			break;
 		}
@@ -975,11 +973,14 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				break;
 			} else
 			// Insert Syllable
-			if (uiInsertSyllable->isChecked() && v->currentContext()->context()->contextType()==CAContext::LyricsContext) {
-				int timeStart = 0, timeLength = 256;
-				CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(v->currentContext());
-				if ( v->selection().size() && v->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable)
+			if (uiInsertSyllable->isChecked()) {
+				if ( v->currentContext()->context()->contextType()==CAContext::LyricsContext && v->selection().size() && v->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable ) {
+					int timeStart = 0, timeLength = 256;
+					CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(v->currentContext());
 					v->createSyllableEdit( v->selection().front() );
+				} else {
+					v->removeSyllableEdit();
+				}
 				
 				break;
 			} else
@@ -1310,7 +1311,9 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						CANote *note = static_cast<CANote*>(*i);
 						if (!note->isPartOfTheChord()) {
 							for (int j=0; j<note->voice()->lyricsContextList().size(); j++) {
-								note->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(note->timeStart());
+								CASyllable *removedSyllable =
+									note->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(note->timeStart());
+								musElemSet.remove(removedSyllable);
 							}
 						}
 						(*i)->context()->removeMusElement(*i);
@@ -1332,7 +1335,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			
 			break;
 		
-		//Mode keys
+		// Mode keys
 		case Qt::Key_Escape:
 			if (mode()==SelectMode) {
 				v->clearSelection();
@@ -1644,18 +1647,19 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 bool CAMainWin::openDocument(QString fileName) {
 	QFile file(fileName);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		if (CACanorus::mainWinCount(document())==1)
-			delete document();
-		
 		QXmlInputSource input(&file);
 		CADocument *openedDoc = CACanorusML::openDocument(&input, this);
-		if (openedDoc)
+		if (openedDoc) {
+			if (CACanorus::mainWinCount(document())==1)
+				delete document();
+			
 			setDocument(openedDoc);
+			openedDoc->setFileName(fileName);
+			rebuildUI(); // local rebuild only
+			uiTabWidget->setCurrentIndex(0);
+		}
 		
-		openedDoc->setFileName(fileName);
 		file.close();
-		rebuildUI(); // local rebuild only
-		uiTabWidget->setCurrentIndex(0);
 		
 		return true;
 	} else
