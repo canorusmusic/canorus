@@ -30,6 +30,7 @@
 #include "interface/engraver.h"
 #include "interface/pluginmanager.h"
 #include "interface/mididevice.h"
+#include "interface/rtmididevice.h"
 
 #include "widgets/menutoolbutton.h"
 #include "widgets/lcdnumber.h"
@@ -123,6 +124,9 @@ CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
 	
 	// Create plugins menus and toolbars in this main window
 	CAPluginManager::enablePlugins(this);
+	
+	// Connects MIDI IN callback function to a local slot
+	connect( CACanorus::midiDevice(), SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(on_midiInEvent( QVector<unsigned char> )) );
 	
 	setDocument( 0 );
 }
@@ -1532,16 +1536,19 @@ void CAMainWin::playbackFinished() {
 	Connected with the play button which starts the playback.
 */
 void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
-	if (checked && (_currentViewPort->viewPortType() == CAViewPort::ScoreViewPort)) {
+	if (checked && currentScoreViewPort()) {
 		CACanorus::midiDevice()->openOutputPort(CACanorus::midiOutPort());
 		_repaintTimer = new QTimer();
 		_repaintTimer->setInterval(100);
 		_repaintTimer->start();
 		//connect(_repaintTimer, SIGNAL(timeout()), this, SLOT(on_repaintTimer_timeout())); //TODO: timeout is connected directly to repaint() directly. This should be optimized in the future -Matevz
 		connect(_repaintTimer, SIGNAL(timeout()), _currentViewPort, SLOT(repaint()));
-		_playbackViewPort = _currentViewPort;
+		_playbackViewPort = currentViewPort();
 		
-		_playback = new CAPlayback((CAScoreViewPort*)_currentViewPort, CACanorus::midiDevice());
+		_playback = new CAPlayback(currentScoreViewPort(), CACanorus::midiDevice());
+		if ( currentScoreViewPort()->selection().size() && currentScoreViewPort()->selection().at(0)->musElement() )
+			_playback->setInitTimeStart( currentScoreViewPort()->selection().at(0)->musElement()->timeStart() );
+		
 		connect(_playback, SIGNAL(finished()), this, SLOT(playbackFinished()));
 		_playback->start();
 	} else {
@@ -1669,6 +1676,13 @@ bool CAMainWin::saveDocument(QString fileName) {
 		return true;
 	} else
 		return false;
+}
+
+void CAMainWin::on_midiInEvent( QVector<unsigned char> m) {
+	std::cout << "MidiInEvent: ";
+	for (int i=0; i<m.size(); i++)
+		std::cout << m[i] << " ";
+	std::cout << std::endl;
 }
 
 /*!

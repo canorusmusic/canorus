@@ -156,6 +156,7 @@ private slots:
 	void on_uiPlayableLength_toggled(bool, int);
 	void on_uiNoteStemDirection_toggled(bool, int);
 	void on_uiHiddenRest_toggled( bool checked );
+	void on_midiInEvent( QVector<unsigned char> message );
 	
 	// Key Signature
 	void on_uiKeySigNumberOfAccs_valChanged(int);

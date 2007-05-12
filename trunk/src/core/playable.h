@@ -31,9 +31,6 @@ public:
 	CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, int dotted=0);
 	virtual ~CAPlayable();
 	
-	inline int midiLength() { return _midiLength; }
-	void setMidiLength(int length) { _midiLength = length; }
-	
 	inline CAPlayableLength playableLength() { return _playableLength; }
 	
 	CAVoice *voice() { return _voice; }
@@ -48,7 +45,6 @@ public:
 	static CAPlayableLength playableLengthFromString(const QString length);
 	
 protected:
-	int _midiLength;
 	int _dotted;
 	CAPlayableLength _playableLength;
 	CAVoice *_voice;

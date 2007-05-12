@@ -32,9 +32,6 @@ class CAPlayable : public CAMusElement {
 		CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, int dotted=0);
 		~CAPlayable();
 		
-		inline int midiLength() { return _midiLength; }
-		void setMidiLength(int length) { _midiLength = length; }
-		
 		inline CAPlayableLength playableLength() { return _playableLength; }
 		
 		int dotted();

@@ -1,13 +1,30 @@
-/** @file interface/rtmididevice.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
+
+#include <QVector>
 
 #include "interface/rtmididevice.h"
 #include "rtmidi/RtMidi.h"
+
+/*!
+	\class CARtMidiDevice
+	\brief Canorus wrapper for RtMidi library
+	CARtMidiDevice is a Canorus wrapper class for a cross-platform MIDI library
+	RtMidi written by Gary P. Scavone (http://www.music.mcgill.ca/~gary/rtmidi/).
+	
+	Usage:
+	1) When created, Input and Output MIDI devices get initialized.
+	2) Call getOutputPorts() and getInputPorts() to retreive a map of portNumber/portName.
+	3) Call openOutputPort(port) and/or openInputPort(port) to open an Output/Input port.
+	4) Send MIDI events (for midi output) using send(QVector<unsigned char>).
+	
+	\todo Callback function implementation for retreiving MIDI-IN events. This should
+	      probably be done by using Qt's signal-slot implementation. -Matevz
+*/ 
 
 CARtMidiDevice::CARtMidiDevice() {
 	_midiDeviceType = RtMidiDevice;
@@ -55,13 +72,20 @@ bool CARtMidiDevice::openInputPort(int port) {
 			error.printMessage();
 			return false;	// error when opening the port
 		}
-		//TODO: Assign a CARtMidiDevice's signal function to RtMidi's callback function here
+		//_in->setCallback( &midiInCallback ); // sets the callback function \todo Compile errors :( -M
 		_inOpen=true;
 		return true;	// port opened successfully
 	} else {
 		std::cerr << "CARtMidiDevice::openInputPort(): Port number " << port << " doesn't exist!" << std::endl;
 		return false;	// wrong port number specified
 	}
+}
+
+/*!
+	Callback function which gets called by RtMidi automatically when an information on MidiIn device has come.
+*/
+void CARtMidiDevice::midiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData ) {
+	emit midiInEvent( QVector<unsigned char>::fromStdVector(*message) );
 }
 
 void CARtMidiDevice::closeOutputPort() {

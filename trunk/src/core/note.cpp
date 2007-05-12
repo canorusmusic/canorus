@@ -201,7 +201,6 @@ int CANote::compare(CAMusElement *elt) {
 	(_accs!=((CANote*)elt)->accidentals())) diffs++;
 	if (_playableLength!=((CAPlayable*)elt)->playableLength()) diffs++;
 	if (_midiPitch!=((CANote*)elt)->midiPitch()) diffs++;
-	if (_midiLength!=((CANote*)elt)->midiLength()) diffs++;
 	if (timeLength()!=((CANote*)elt)->timeLength()) diffs++;
 	
 	return diffs;
