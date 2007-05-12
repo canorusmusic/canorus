@@ -68,6 +68,7 @@ SET(Canorus_MOCs
 	widgets/sourceviewport.h
 	widgets/menutoolbutton.h
 	interface/playback.h
+	interface/mididevice.h
 )
 
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model

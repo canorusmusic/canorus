@@ -71,7 +71,6 @@ CAPlayable::CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, i
 	for (int i=0; i<dotted; i++, factor+=delta, delta/=2);	// calculate the length factor out of number of dots
 	_timeLength = (int)(_timeLength*factor+0.5);	// increase the time length for the factor
 	
-	_midiLength = _timeLength;
 	_dotted = dotted;
 }
 
