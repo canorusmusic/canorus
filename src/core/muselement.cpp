@@ -59,7 +59,7 @@ CAMusElement::~CAMusElement() {
 */
 bool CAMusElement::isPlayable()
 {
-	return dynamic_cast<CAPlayable*>(this);
+	return (musElementType()==Note || musElementType()==Rest);//dynamic_cast<CAPlayable*>(this);
 }
 
 /*!

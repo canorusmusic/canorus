@@ -161,7 +161,7 @@ bool CALyricsContext::addSyllable( CASyllable *syllable ) {
 */
 bool CALyricsContext::addEmptySyllable( int timeStart, int timeLength ) {
 	int i;
-	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<=timeStart; i++);
+	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<timeStart; i++);
 	_syllableList.insert(i, (new CASyllable( "", (i>0?_syllableList[i-1]->hyphenStart():false), (i>0?_syllableList[i-1]->melismaStart():false), this, timeStart, timeLength )));
 	for (i++; i<_syllableList.size(); i++)
 		_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() + timeLength );
