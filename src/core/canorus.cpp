@@ -202,7 +202,7 @@ void CACanorus::rebuildUI(CADocument *document, CASheet *sheet) {
 	for (int i=0; i<mainWinCount(); i++) {
 		if (document && mainWinAt(i)->document()==document) {
 			mainWinAt(i)->rebuildUI(sheet);
-		} else
+		} else if(!document)
 			mainWinAt(i)->rebuildUI();
 	}
 }
