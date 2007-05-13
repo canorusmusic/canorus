@@ -104,6 +104,9 @@ CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
 	setupCustomUi();
 	QDir::setCurrent( currentPath );
 	
+	// Explicitly initialize this so it isn't true sometimes
+	setRebuildUILock( false );
+	
 	// Initialize import/export dialogs
 	uiExportDialog = new QFileDialog(this);
 	uiExportDialog->setFileMode(QFileDialog::AnyFile);
