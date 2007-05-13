@@ -223,7 +223,14 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 	This function also remembers any special signs like open repeat barlines.
 */
 void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
-	for (int j=streamIdx(i); j<streamAt(i).size() && streamAt(i).at(j)->timeStart() <= curTime(i); streamIdx(i) = j++) {
+	for (int j=streamIdx(i);
+	     j<streamAt(i).size() &&
+	     streamAt(i).at(j)->timeStart() <= curTime(i) &&
+	     (streamAt(i).at(j)->timeStart() != curTime(i) ||
+	      !(streamAt(i).at(j)->musElementType()==CAMusElement::Note) ||
+	      (static_cast<CANote*>(streamAt(i).at(j))->isFirstInTheChord())
+	     );
+	     streamIdx(i) = j++) {
 		if ( streamAt(i).at(j)->musElementType()==CAMusElement::Barline &&
 		     static_cast<CABarline*>(streamAt(i).at(j))->barlineType()==CABarline::RepeatOpen
 		   ) {
