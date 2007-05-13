@@ -1,10 +1,9 @@
-/** \file core/canorus.h
- * 
- * Copyright (c) 2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*! 
+	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 // Python.h needs to be loaded first!
 #include "scripting/swigpython.h"
@@ -19,7 +18,7 @@
 #include "interface/rtmididevice.h"
 #include "ui/midisetupdialog.h"
 #include "scripting/swigruby.h"
-#include <iostream>
+
 // define private static members
 QList<CAMainWin*> CACanorus::_mainWinList;
 QSettings *CACanorus::_settings;

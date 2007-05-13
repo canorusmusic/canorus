@@ -1,10 +1,9 @@
-/** @file scripting/swigpython.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #ifdef USE_PYTHON
 #include "scripting/swigpython.h"
@@ -14,8 +13,8 @@
 
 #include <iostream> // used for reporting errors in scripts
 
-//defined in SWIG wrapper class
-extern "C" void init_CanorusPython();	///Load 'CanorusPython' module and initialize classes
+/// Load 'CanorusPython' module and initialize classes - defined in SWIG wrapper class
+extern "C" void init_CanorusPython();
 
 void CASwigPython::init() {
 	Py_Initialize();

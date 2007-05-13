@@ -1,10 +1,9 @@
-/** @file scripting/swigruby.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #ifdef USE_RUBY
 #include "core/canorus.h"
@@ -12,8 +11,8 @@
 #include <QFile>
 #include <QDir>
 
-//defined in SWIG wrapper class
-extern "C" void Init_CanorusRuby();	///Load 'CanorusRuby' module and initialize classes
+/// Load 'CanorusRuby' module and initialize classes - defined in SWIG wrapper class
+extern "C" void Init_CanorusRuby();	
 
 void CASwigRuby::init() {
 	ruby_init();
@@ -35,10 +34,10 @@ VALUE CASwigRuby::callFunction(QString fileName, QString function, QList<VALUE> 
 	if (!QFile::exists(fileName))
 		return 0;
 	
-	//require module (loads a method)
+	// require module (loads a method)
 	rb_require(QDir::convertSeparators(fileName).toStdString().c_str());
 	
-	//call function
+	// call function
 	VALUE recv = 0;
 	VALUE argsArray[args.size()];
 	for (int i=0; i<args.size(); i++)
