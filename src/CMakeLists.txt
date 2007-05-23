@@ -243,9 +243,10 @@ ENDIF(APPLE)
 ################
 # Qt4 settings #
 ###############
-# This line adds the QtXML library to the Qt libraries
+# This line adds the QtXML and QtSVG libraries to the Qt libraries
 # loaded when linking Canorus
 SET(QT_USE_QTXML True)
+SET(QT_USE_QTSVG True)
 
 # Add all resources to Canorus_Resrcs (icons, html files etc.)
 SET(Canorus_Resrcs ui/keysig.qrc)
@@ -323,11 +324,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 # directory to the compiler include path
 INCLUDE(${QT_USE_FILE})
 
-# These two lines add additional include paths
-# for xml and test includes
-INCLUDE_DIRECTORIES(${QT_QTXML_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(${QT_QTTEST_INCLUDE_DIR})
-
 IF(USE_SWIG)
 	INCLUDE(${SWIG_USE_FILE})
 	SET(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR})
@@ -399,7 +395,7 @@ ENDIF(USE_PYTHON)
 # Here the needed Qt Libraries are added to the link
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
-TARGET_LINK_LIBRARIES(canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} ${RUBY_LIBRARY} ${PYTHON_LIBRARY})
+TARGET_LINK_LIBRARIES(canorus ${QT_LIBRARIES} ${RUBY_LIBRARY} ${PYTHON_LIBRARY})
 
 ############################
 # RtMIDI Library additions #

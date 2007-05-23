@@ -90,7 +90,6 @@ SET(QT_MIN_VERSION "4.2.0")
 FIND_PACKAGE(Qt4 REQUIRED)
 
 # in the following lines all the requires include directories are added
-INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(src)
 
 # Recurse into the "src" and "doc" subdirectories.  This does not actually
