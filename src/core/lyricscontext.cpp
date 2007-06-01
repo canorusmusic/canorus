@@ -54,7 +54,7 @@ void CALyricsContext::repositSyllables() {
 		QList<CANote*> noteList = associatedVoice()->noteList();
 		int i,j;
 		for (i=0, j=0; i<noteList.size() && j<_syllableList.size(); i++) {
-			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart())
+			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart()) // chord
 				continue;
 			_syllableList[j]->setTimeStart( noteList[i]->timeStart() );
 			_syllableList[j]->setTimeLength( noteList[i]->timeLength() );

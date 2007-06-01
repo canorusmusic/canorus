@@ -345,7 +345,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 			lastAccidentals[i]->setXPos(lastAccidentals[i]->xPos()+deltaXPos-1);
 		}
 		
-		// Place noteheads and other elements aligned to noteheads
+		// Place noteheads and other elements aligned to noteheads (syllables, function markings)
 		for (int i=0; i < streams; i++) {
 			// loop until the element has come, which has bigger timeStart
 			while ( (streamsIdx[i] < musStreamList[i].size()) &&
@@ -498,6 +498,24 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						if (((CANote*)elt)->isLastInTheChord())	
 							streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 						
+						break;
+					}
+					case CAMusElement::Syllable: {
+						newElt = new CADrawableSyllable(
+							static_cast<CASyllable*>(elt),
+							static_cast<CADrawableLyricsContext*>(drawableContext),
+							streamsX[i],
+							drawableContext->yPos() + qRound(CADrawableLyricsContext::DEFAULT_TEXT_VERTICAL_SPACING)
+						);
+						
+						CAMusElement *prevSyllable = drawableContext->context()->findPrevMusElement(elt);
+						CADrawableMusElement *prevDSyllable = (prevSyllable?v->findMElement(prevSyllable):0);
+						if (prevDSyllable) {
+							prevDSyllable->setWidth( newElt->xPos() - prevDSyllable->xPos() );
+						}
+						
+						v->addMElement(newElt);
+						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 						break;
 					}
 					case CAMusElement::Rest: {
@@ -774,24 +792,6 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						if (newElt && streamsIdx[i]+1<musStreamList[i].size() && musStreamList[i].at(streamsIdx[i]+1)->timeStart()!=musStreamList[i].at(streamsIdx[i])->timeStart())
 							streamsX[i] += (newElt->neededWidth());
 						
-						break;
-					}
-					case CAMusElement::Syllable: {
-						newElt = new CADrawableSyllable(
-							static_cast<CASyllable*>(elt),
-							static_cast<CADrawableLyricsContext*>(drawableContext),
-							streamsX[i],
-							drawableContext->yPos() + qRound(CADrawableLyricsContext::DEFAULT_TEXT_VERTICAL_SPACING)
-						);
-						
-						CAMusElement *prevSyllable = drawableContext->context()->findPrevMusElement(elt);
-						CADrawableMusElement *prevDSyllable = v->findMElement(prevSyllable);
-						if (prevDSyllable) {
-							prevDSyllable->setWidth( newElt->xPos() - prevDSyllable->xPos() );
-						}
-						
-						v->addMElement(newElt);
-						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 						break;
 					}
 				}
