@@ -260,9 +260,9 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 			       );
 			// add an empty syllable or reposit syllables
 			static_cast<CANote*>(mpoMusElement)->setStemDirection( _eNoteStemDirection );
-			if (left)	//left element exists
+			if (left)	// left element exists
 				bSuccess = voice->insertMusElementAfter(mpoMusElement, left->musElement());
-			else		//left element doesn't exist, prepend the new music element
+			else		// left element doesn't exist, prepend the new music element
 				bSuccess = voice->prependMusElement(mpoMusElement);
 			
 			// adds empty syllables, if syllable below the note doesn't exist or repositions the syllables, if it exists
