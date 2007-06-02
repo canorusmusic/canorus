@@ -1,9 +1,9 @@
-/*
- * Copyright (c) 2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- *
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #include <QMessageBox>
 
@@ -147,7 +147,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			}
 			curElt.remove(0,1);
 		} else
-		if (curElt.startsWith(")")) {
+		if ( curElt.startsWith(")") && _curSlur ) {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
 				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0);
 				note->setSlurEnd(_curSlur);
@@ -168,7 +168,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			}
 			curElt.remove(0,2);
 		} else
-		if (curElt.startsWith("\\)")) {
+		if ( curElt.startsWith("\\)") && _curPhrasingSlur ) {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
 				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0);
 				note->setPhrasingSlurEnd(_curPhrasingSlur);
@@ -202,7 +202,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 		} else
 		if (isRest(curElt)) {
 			// CARest
-			CARest::CARestType type = restTypeFromLilyPond(curElt);
+			CARest::CARestType type = restTypeFromLilyPond(curElt, true);
 			CALength length = playableLengthFromLilyPond(curElt, true);
 			if (length.length!=CAPlayable::Undefined) // length may not be set
 				prevLength = length;
@@ -535,18 +535,23 @@ CALilyPondImport::CALength CALilyPondImport::playableLengthFromLilyPond(QString&
 			elt.remove(start, dStart-start+ret.dotted);
 	}
 	
-	
 	return ret;
 }
 
 /*!
 	Genarates rest type from the LilyPond syntax for the given rest.
+	This function also shortens the given string for the rest type, if \a parse is True.
 */
-CARest::CARestType CALilyPondImport::restTypeFromLilyPond(const QString elt) {
+CARest::CARestType CALilyPondImport::restTypeFromLilyPond( QString& elt, bool parse ) {
+	CARest::CARestType t = CARest::Normal;
+	
 	if (elt[0]=='r' || elt[0]=='R')
-		return CARest::Normal;
+		t = CARest::Normal;
 	else
-		return CARest::Hidden;
+		t = CARest::Hidden;
+	
+	if (parse)
+		elt.remove( 0, 1 );
 }
 
 /*!
@@ -570,19 +575,15 @@ CAClef::CAClefType CALilyPondImport::clefTypeFromLilyPond(const QString constCle
 	Returns the number and type of accidentals for the given key signature.
 */
 signed char CALilyPondImport::keySigAccsFromLilyPond(QString keySig, CAKeySignature::CAMajorMinorGender gender) {
-	int pitch;
-	if (gender==CAKeySignature::Major)
-		pitch = keySig[0].toLatin1()-'a' - 2;
-	else if (gender==CAKeySignature::Minor)
-		pitch = keySig[0].toLatin1()-'a';
-	
-	signed char accs = (pitch*2)%7 * (pitch<0?(-1):1);
-	if (keySig[0]=='f') accs -= 7;
+	signed char accs = static_cast<signed char>( ((keySig[0].toAscii() - 'a') * 2 + 4) % 7 - 4 );
 	
 	QString key(keySig);
 	accs -= 7*keySig.count("as");
 	accs -= 7*keySig.count("es");
 	accs += 7*keySig.count("is");
+	
+	if (gender==CAKeySignature::Major)
+		accs += 3;
 	
 	return accs;
 }
