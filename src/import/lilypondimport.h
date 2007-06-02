@@ -84,7 +84,7 @@ private:
 	bool isNote(const QString elt);
 	CAPitch relativePitchFromLilyPond(QString &note, int prevPitch, bool parse=false);
 	bool isRest(const QString elt);
-	CARest::CARestType restTypeFromLilyPond(const QString rest);
+	CARest::CARestType restTypeFromLilyPond(QString& rest, bool parse=false);
 	CAClef::CAClefType clefTypeFromLilyPond(const QString clef);
 	CABarline::CABarlineType barlineTypeFromLilyPond(const QString bar);
 	signed char keySigAccsFromLilyPond(QString keySig, CAKeySignature::CAMajorMinorGender gender);

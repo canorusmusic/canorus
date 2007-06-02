@@ -1,9 +1,9 @@
-/*
- * Copyrigh t(c) 2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- *
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #include <QRegExp>
 #include <QList>
@@ -328,10 +328,16 @@ const QString CALilyPondExport::keySignaturePitchToLilyPond(signed char numberOf
 	
 	signed char accs = 0;
 	
-	if (numberOfAccs>5)
-		accs = 1;
-	else if (numberOfAccs<-1)
-		accs = -1;
+	if (
+		numberOfAccs>5 && gender==CAKeySignature::Major ||
+		numberOfAccs>2 && gender==CAKeySignature::Minor
+	   )
+		accs = numberOfAccs/7 + 1;
+	else if (
+		numberOfAccs<-1 && gender==CAKeySignature::Major ||
+		numberOfAccs<-4 && gender==CAKeySignature::Minor
+	   )
+		accs = numberOfAccs/7 - 1;
 	
 	return notePitchToLilyPond(pitch, accs);
 }
