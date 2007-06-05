@@ -33,6 +33,7 @@ Var StartMenuGroup
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE ..\LICENSE.GPL
+!insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -48,6 +49,7 @@ InstallDir $PROGRAMFILES\Canorus
 CRCCheck on
 XPStyle on
 ShowInstDetails show
+RequestExecutionLevel admin
 VIProductVersion 0.0.0.0
 VIAddVersionKey ProductName Canorus
 VIAddVersionKey ProductVersion "${VERSION}"
@@ -100,9 +102,9 @@ done${UNSECTION_ID}:
 
 # Uninstaller sections
 Section /o un.Main UNSEC0000
-    Delete /REBOOTOK $INSTDIR\QtXml4.dll
-    Delete /REBOOTOK $SMPROGRAMS\$StartMenuGroup\Canorus.lnk
     DeleteRegValue HKLM "${REGKEY}\Components" Main
+	
+    RmDir /r /REBOOTOK $INSTDIR
 SectionEnd
 
 Section "Fonts"
@@ -118,14 +120,11 @@ SectionEnd
 
 Section un.post UNSEC0001
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
-    Delete /REBOOTOK $INSTDIR\uninstall.exe
     DeleteRegValue HKLM "${REGKEY}" StartMenuGroup
     DeleteRegValue HKLM "${REGKEY}" Path
     DeleteRegKey /IfEmpty HKLM "${REGKEY}\Components"
     DeleteRegKey /IfEmpty HKLM "${REGKEY}"
-    RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup
-    RmDir /REBOOTOK $INSTDIR
+    RmDir /r /REBOOTOK $SMPROGRAMS\$StartMenuGroup
 SectionEnd
 
 # Installer functions
