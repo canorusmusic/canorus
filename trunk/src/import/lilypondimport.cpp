@@ -473,13 +473,13 @@ CALilyPondImport::CAPitch CALilyPondImport::relativePitchFromLilyPond(QString& c
 		curAccs++;
 		noteName.remove(0, noteName.indexOf("is") + 2);
 		if (parse)
-			constNName.remove(0, noteName.indexOf("is") + 2);
+			constNName.remove(0, constNName.indexOf("is") + 2);
 	}
 	while ((noteName.indexOf("es") != -1) || (noteName.indexOf("as") != -1)) {
 		curAccs--;
-		noteName.remove(0, ((noteName.indexOf("es")==-1) ? noteName.indexOf("as")+2 : noteName.indexOf("es")+2));
+		noteName.remove(0, ((noteName.indexOf("es")==-1) ? (noteName.indexOf("as")+2) : (noteName.indexOf("es")+2)) );
 		if (parse)
-			constNName.remove(0, ((noteName.indexOf("es")==-1) ? noteName.indexOf("as")+2 : noteName.indexOf("es")+2));
+			constNName.remove(0, ((constNName.indexOf("es")==-1) ? (constNName.indexOf("as")+2) : (constNName.indexOf("es")+2)) );
 	}
 	if (!curAccs && parse)
 		constNName.remove(0, 1);
@@ -552,6 +552,8 @@ CARest::CARestType CALilyPondImport::restTypeFromLilyPond( QString& elt, bool pa
 	
 	if (parse)
 		elt.remove( 0, 1 );
+	
+	return t;
 }
 
 /*!
