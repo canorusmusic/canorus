@@ -893,7 +893,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 			uiVoiceNum->setRealValue(0);
 			uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
 		}
-	} else if ( prevContext != v->currentContext() && mode()==InsertMode ) { // but insert mode is active and context should remain the same
+	} else if ( prevContext != v->currentContext() && uiInsertPlayable->isChecked() ) { // but insert playable mode is active and context should remain the same
 		v->setCurrentContext( prevContext );
 	}
 	
