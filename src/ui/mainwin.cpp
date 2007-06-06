@@ -1504,6 +1504,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 		CACanorus::rebuildUI(document(), v->sheet());
 		v->selectMElement( _musElementFactory->getMusElement() );
 		v->setShadowNoteDotted(iPlayableDotted);
+		musElementFactory()->cloneMusElem(); // Clones the current musElement so it doesn't conflict with the added musElement
 	} else {
 		musElementFactory()->removeMusElem( true );
 		musElementFactory()->createMusElem(); // Factory always must have a valid element
