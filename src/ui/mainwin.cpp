@@ -1422,7 +1422,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			if (success) {
 				_musElementFactory->setNoteExtraAccs( 0 );
 				v->setDrawShadowNoteAccs(false); 
-				iPlayableDotted = ((CAPlayable *)(_musElementFactory->getMusElement()))->dotted();
+				iPlayableDotted = ((CAPlayable *)(_musElementFactory->musElement()))->dotted();
 			}
 			break;
 		}
@@ -1434,7 +1434,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			if (voice)
 				success = _musElementFactory->configureRest( voice, left );
 			if (success)
-				iPlayableDotted = ((CAPlayable *)(_musElementFactory->getMusElement()))->dotted();
+				iPlayableDotted = ((CAPlayable *)(_musElementFactory->musElement()))->dotted();
 			break;
 		}
 		case CAMusElement::Slur: {
@@ -1502,7 +1502,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	
 	if (success) {
 		CACanorus::rebuildUI(document(), v->sheet());
-		v->selectMElement( _musElementFactory->getMusElement() );
+		v->selectMElement( _musElementFactory->musElement() );
 		v->setShadowNoteDotted(iPlayableDotted);
 		musElementFactory()->cloneMusElem(); // Clones the current musElement so it doesn't conflict with the added musElement
 	} else {

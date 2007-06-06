@@ -367,7 +367,7 @@ void CAMusElementFactory::setMusElementType( CAMusElement::CAMusElementType eMET
 };
 
 /*!
-	\fn CAMusElementFactory::getMusElement()
+	\fn CAMusElementFactory::musElement()
 	Reads the current music element and returns its pointer.
 */
 
@@ -385,7 +385,7 @@ void CAMusElementFactory::setMusElementType( CAMusElement::CAMusElementType eMET
 	\var CAMusElementFactory::mpoMusElement
 	Newly created music element itself.
 
-	\sa getMusElement()
+	\sa musElement()
 */
 
 /*!
