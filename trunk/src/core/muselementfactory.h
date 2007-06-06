@@ -56,6 +56,8 @@ public:
 	
 	inline CAMusElement *getMusElement() { return mpoMusElement; };
 	
+	inline void cloneMusElem() { mpoMusElement = mpoMusElement->clone(); }
+	
 	bool configureClef( CAStaff *staff, 
 	                    CAMusElement *left );
 	
