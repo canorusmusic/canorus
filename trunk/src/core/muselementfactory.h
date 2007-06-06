@@ -54,7 +54,7 @@ public:
 	
 	void configureMusElem( CAMusElement &roMusElement );
 	
-	inline CAMusElement *getMusElement() { return mpoMusElement; };
+	inline CAMusElement *musElement() { return mpoMusElement; };
 	
 	inline void cloneMusElem() { mpoMusElement = mpoMusElement->clone(); }
 	
