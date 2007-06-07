@@ -107,9 +107,9 @@ void CACanorusML::saveDocument(CADocument *doc, QTextStream& out) {
 	if (!doc->composer().isEmpty())
 		dDocument.setAttribute("composer", doc->composer());
 	
-	dDocument.setAttribute("date-created", doc->dateCreated().toString(Qt::ISODate) );
-	dDocument.setAttribute("date-last-modified", doc->dateLastModified().toString(Qt::ISODate) );
-	dDocument.setAttribute("time-edited", doc->timeEdited().toString(Qt::ISODate) );
+	dDocument.setAttribute( "date-created", doc->dateCreated().toString(Qt::ISODate) );
+	dDocument.setAttribute( "date-last-modified", doc->dateLastModified().toString(Qt::ISODate) );
+	dDocument.setAttribute( "time-edited", doc->timeEdited() );
 	
 	for (int sheetIdx=0; sheetIdx < doc->sheetCount(); sheetIdx++) {
 		// CASheet
@@ -353,7 +353,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		
 		_document->setDateCreated( QDateTime::fromString( attributes.value("date-created"), Qt::ISODate ) );
 		_document->setDateLastModified( QDateTime::fromString( attributes.value("date-last-modified"), Qt::ISODate ) );
-		_document->setTimeEdited( QTime::fromString( attributes.value("time-edited"), Qt::ISODate ) );
+		_document->setTimeEdited( attributes.value("time-edited").toUInt() );
 		
 	} else if (qName == "sheet") {
 		// CASheet

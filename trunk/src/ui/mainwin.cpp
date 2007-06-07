@@ -403,7 +403,7 @@ void CAMainWin::newDocument() {
 #ifdef USE_PYTHON
 	QList<PyObject*> argsPython;
 	argsPython << CASwigPython::toPythonObject(document(), CASwigPython::Document);
-//	CASwigPython::callFunction(CACanorus::locateResource("scripts/newdocument.py").at(0), "newDefaultDocument", argsPython);
+	CASwigPython::callFunction(CACanorus::locateResource("scripts/newdocument.py").at(0), "newDefaultDocument", argsPython);
 #endif
 	
 	// call local rebuild only because no other main windows share the new document
@@ -1700,7 +1700,7 @@ bool CAMainWin::saveDocument(QString fileName) {
 	QFile file(fileName);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		QTextStream out(&file);
-		document()->setTimeEdited(document()->timeEdited().addMSecs( _timeEditedTime.elapsed() ) );
+		document()->setTimeEdited( document()->timeEdited() + _timeEditedTime.elapsed()/1000 );
 		document()->setDateLastModified( QDateTime::currentDateTime() );
 		CACanorusML::saveDocument(document(), out);
 		document()->setFileName(fileName);
