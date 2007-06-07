@@ -36,6 +36,7 @@ public:
 	inline static void removeMainWin(CAMainWin *w) { _mainWinList.removeAll(w); }
 	inline static void removeViewPort(CAViewPort *v) { for (int i=0; i<mainWinCount(); i++) _mainWinList[i]->removeViewPort(v); }
 	inline static void addMainWin(CAMainWin *w, bool show=true) { _mainWinList << w; if (show) w->show(); }
+	inline static void restartTimeEditedTimes(CADocument *doc) { for (int i=0; i<mainWinCount(); i++) if (mainWinAt(i)->document()==doc) mainWinAt(i)->restartTimeEditedTime(); }
 	
 	inline static QSettings *settings() { return _settings; }
 	inline static CAMidiDevice *midiDevice() { return _midiDevice; }

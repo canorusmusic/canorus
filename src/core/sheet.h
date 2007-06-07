@@ -20,6 +20,8 @@ class CAPlayable;
 class CASheet {
 public:
 	CASheet(const QString name, CADocument *doc);
+	CASheet *clone( CADocument *doc );
+	inline CASheet *clone() { return clone( document() ); }
 	
 	CAContext *contextAt(int i) { return _contextList[i]; }
 	CAContext *context(const QString name);

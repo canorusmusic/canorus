@@ -10,6 +10,8 @@
 
 #include <QObject>
 #include <QFileDialog>
+#include <QTime>
+#include <QTimer>
 #include <QHash>
 
 #include "ui_mainwin.h"
@@ -61,7 +63,8 @@ public:
 	void newDocument();	
 	void addSheet(CASheet *s);
 	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v);
-
+	void restartTimeEditedTime() { _timeEditedTime.restart(); };
+	
 	bool openDocument(QString fileName);
 	bool saveDocument(QString fileName);
 	
@@ -208,9 +211,11 @@ private slots:
 	void scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v);
 	void sourceViewPortCommit(QString inputString, CASourceViewPort*);
 	
+	void on_timeEditedTimer_timeout();
+	
 	void playbackFinished();
 	//void on_repaintTimer_timeout();	///Used for repaint events
-
+	
 private:	
 	////////////////////////////////////
 	// General properties and methods //
@@ -239,6 +244,8 @@ private:
 	inline void setRebuildUILock(bool l) { _rebuildUILock = l; }
 	
 	CAPlayback *_playback;
+	QTimer _timeEditedTimer;
+	QTime  _timeEditedTime;
 	CAMusElementFactory *_musElementFactory;
 	inline CAMusElementFactory *musElementFactory() { return _musElementFactory; }
 	

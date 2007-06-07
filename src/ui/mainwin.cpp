@@ -131,6 +131,10 @@ CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
 	// Connects MIDI IN callback function to a local slot
 	connect( CACanorus::midiDevice(), SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(on_midiInEvent( QVector<unsigned char> )) );
 	
+	// Connect QTimer so it increases the local document edited time every second
+	connect( &_timeEditedTimer, SIGNAL(timeout()), this, SLOT(on_timeEditedTimer_timeout()) );
+	_timeEditedTimer.start(1000);
+	
 	setDocument( 0 );
 }
 
@@ -394,11 +398,12 @@ void CAMainWin::newDocument() {
 		delete document();
 	
 	setDocument(new CADocument());
+	restartTimeEditedTime();
 	
 #ifdef USE_PYTHON
 	QList<PyObject*> argsPython;
 	argsPython << CASwigPython::toPythonObject(document(), CASwigPython::Document);
-	CASwigPython::callFunction(CACanorus::locateResource("scripts/newdocument.py").at(0), "newDefaultDocument", argsPython);
+//	CASwigPython::callFunction(CACanorus::locateResource("scripts/newdocument.py").at(0), "newDefaultDocument", argsPython);
 #endif
 	
 	// call local rebuild only because no other main windows share the new document
@@ -657,8 +662,17 @@ void CAMainWin::on_uiNewSheet_triggered() {
 */
 void CAMainWin::on_uiNewVoice_triggered() {
 	CAStaff *staff = currentStaff();
+	int voiceNumber = staff->voiceCount()+1;
+	CANote::CAStemDirection stemDirection;
+	if ( voiceNumber == 1 )
+		stemDirection = CANote::StemNeutral;
+	else {
+		staff->voiceAt(0)->setStemDirection( CANote::StemUp );
+		stemDirection = CANote::StemDown;
+	}
+	
 	if (staff)
-		staff->addVoice(new CAVoice(staff, staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 )));
+		staff->addVoice(new CAVoice(staff, staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 ), voiceNumber, stemDirection));
 	
 	uiVoiceNum->setMax(staff->voiceCount());
 	uiVoiceNum->setRealValue( staff->voiceCount() );
@@ -938,7 +952,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 								tr("Staff%1").arg(v->sheet()->staffCount()+1)
 							)
 						);
-						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), newContext->name() + tr("Voice%1").arg(1)));
+						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), newContext->name() + tr("Voice%1").arg(1), 1, CANote::StemNeutral));
 						break;
 					}
 					case CAContext::LyricsContext: {
@@ -1523,6 +1537,14 @@ void CAMainWin::keyPressEvent(QKeyEvent *e) {
 }
 
 /*!
+	Called every second when timeEditedTimer has timeout.
+	Increases the locally stored time the document is being edited.
+*/
+void CAMainWin::on_timeEditedTimer_timeout() {
+	_timeEditedTime.addSecs(1);
+}
+
+/*!
 	Called when playback is finished or interrupted by the user.
 	It stops the playback, closes ports etc.
 */
@@ -1663,6 +1685,7 @@ bool CAMainWin::openDocument(QString fileName) {
 			uiTabWidget->setCurrentIndex(0);
 		}
 		
+		CACanorus::restartTimeEditedTimes( document() );
 		file.close();
 		
 		return true;
@@ -1677,9 +1700,13 @@ bool CAMainWin::saveDocument(QString fileName) {
 	QFile file(fileName);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		QTextStream out(&file);
+		document()->setTimeEdited(document()->timeEdited().addMSecs( _timeEditedTime.elapsed() ) );
+		document()->setDateLastModified( QDateTime::currentDateTime() );
 		CACanorusML::saveDocument(document(), out);
 		document()->setFileName(fileName);
 		file.close();
+		
+		CACanorus::restartTimeEditedTimes( document() );
 		
 		return true;
 	} else

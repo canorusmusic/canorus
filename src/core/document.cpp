@@ -27,6 +27,31 @@
 	\sa addSheet()
 */
 CADocument::CADocument() {
+	setDateCreated( QDateTime::currentDateTime() );
+}
+
+/*!
+	Clones this document and all its sheets and returns a pointer to its clone.
+*/
+CADocument *CADocument::clone() {
+	CADocument *newDocument = new CADocument();
+	
+	// set properties
+	newDocument->setTitle( title() );
+	newDocument->setSubTitle( subTitle() );
+	newDocument->setComposer( composer() );
+	newDocument->setArranger( arranger() );
+	newDocument->setPoet( poet() );
+	newDocument->setCopyright( copyright() );
+	newDocument->setDateCreated( dateCreated() );
+	newDocument->setDateLastModified( dateLastModified() );
+	newDocument->setTimeEdited( timeEdited() );
+	newDocument->setComments( comments() );
+	
+	for (int i=0; i<sheetCount(); i++)
+		newDocument->addSheet(sheetAt(i)->clone());
+	
+	return newDocument;
 }
 
 /*!
@@ -48,7 +73,9 @@ void CADocument::clear() {
 	_arranger.clear();
 	_poet.clear();
 	_copyright.clear();
-	_timestamp.clear();
+	_dateCreated = QDateTime::currentDateTime();
+	_dateLastModified = QDateTime::currentDateTime();
+	_timeEdited.restart();
 	_comments.clear();
 	
 	for (int i=0; i<_sheetList.size(); i++) {

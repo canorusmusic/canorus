@@ -1,15 +1,17 @@
-/*
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- *
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #ifndef DOCUMENT_H_
 #define DOCUMENT_H_
 
 #include <QList>
 #include <QString>
+#include <QDateTime>
+#include <QTime>
 
 class CASheet;
 
@@ -17,6 +19,7 @@ class CADocument {
 public:
 	CADocument();
 	virtual ~CADocument();
+	CADocument *clone();
 	void clear();
 	
 	int sheetCount() { return _sheetList.size(); }
@@ -36,7 +39,9 @@ public:
 	const QString textTranslator() { return _textTranslator; }
 	const QString dedication() { return _dedication; }
 	const QString copyright() { return _copyright; }
-	const QString timestamp() { return _timestamp; }
+	const QDateTime dateCreated() { return _dateCreated; }
+	const QDateTime dateLastModified() { return _dateLastModified; }
+	const QTime timeEdited() { return _timeEdited; }
 	const QString comments() { return _comments; }
 	const QString fileName() { return _fileName; }
 	
@@ -48,7 +53,9 @@ public:
 	void setTextTranslator(const QString textTranslator) { _textTranslator = textTranslator; }
 	void setDedication(const QString dedication) { _dedication = dedication; }
 	void setCopyright(const QString copyright) { _copyright = copyright; }
-	void setTimestamp(const QString timestamp) { _timestamp = timestamp; }
+	void setDateCreated(const QDateTime dateCreated) { _dateCreated = dateCreated; }
+	void setDateLastModified(const QDateTime dateLastModified) { _dateLastModified = dateLastModified; }
+	void setTimeEdited(const QTime timeEdited) { _timeEdited = timeEdited; }
 	void setComments(const QString comments) { _comments = comments; }
 	void setFileName(const QString fileName) { _fileName = fileName; } // not saved!
 	
@@ -63,8 +70,10 @@ private:
 	QString _textTranslator;
 	QString _dedication;
 	QString _copyright;
-	QString _timestamp;
+	QDateTime _dateLastModified;
+	QDateTime _dateCreated;
+	QTime _timeEdited;
 	QString _comments;
 	QString _fileName;
 };
-#endif /* DOCUMENT_H_*/
+#endif /* DOCUMENT_H_ */
