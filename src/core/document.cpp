@@ -75,7 +75,7 @@ void CADocument::clear() {
 	_copyright.clear();
 	_dateCreated = QDateTime::currentDateTime();
 	_dateLastModified = QDateTime::currentDateTime();
-	_timeEdited.restart();
+	_timeEdited = 0;
 	_comments.clear();
 	
 	for (int i=0; i<_sheetList.size(); i++) {

@@ -46,7 +46,7 @@ class CADocument {
 	const QString copyright() { return _copyright; }
 	const QDateTime dateCreated() { return _dateCreated; }
 	const QDateTime dateLastModified() { return _dateLastModified; }
-	const QTime timeEdited() { return _timeEdited; }
+	const unsigned int timeEdited() { return _timeEdited; }
 	const QString comments() { return _comments; }
 	const QString fileName() { return _fileName; }
 	
@@ -60,7 +60,7 @@ class CADocument {
 	void setCopyright(const QString copyright) { _copyright = copyright; }
 	void setDateCreated(const QDateTime dateCreated) { _dateCreated = dateCreated; }
 	void setDateLastModified(const QDateTime dateLastModified) { _dateLastModified = dateLastModified; }
-	void setTimeEdited(const QTime timeEdited) { _timeEdited = timeEdited; }
+	void setTimeEdited(const unsigned int timeEdited) { _timeEdited = timeEdited; }
 	void setComments(const QString comments) { _comments = comments; }
 	void setFileName(const QString fileName) { _fileName = fileName; } // not saved!
 };
