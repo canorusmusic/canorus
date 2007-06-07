@@ -25,18 +25,13 @@
 */
 
 /*!
-	Creates a new voice named \a name in parent \a staff.
+	Creates a new voice named \a name, in \a staff, \a voiceNumber and \a stemDirection of notes stems.
 */
-CAVoice::CAVoice(CAStaff *staff, const QString name) {
+CAVoice::CAVoice(CAStaff *staff, const QString name, int voiceNumber, CANote::CAStemDirection stemDirection) {
 	_staff = staff;
 	_name = name;
-	_voiceNumber = this->staff()->voiceCount() + 1;
-	if (_voiceNumber == 1)
-		_stemDirection = CANote::StemNeutral;
-	else {
-		this->staff()->voiceAt(0)->setStemDirection(CANote::StemUp);
-		_stemDirection = CANote::StemDown;
-	}
+	_voiceNumber = voiceNumber;
+	_stemDirection = stemDirection;
 	
 	_midiChannel = 0;
 	_midiProgram = 0;
@@ -58,6 +53,16 @@ CAVoice::~CAVoice() {
 	
 	staff()->removeVoice(this);
 }
+
+/*!
+	Clones the current voice including all the music elements.
+	Sets the voice staff to \a newStaff. If none given, use the original staff.
+*/
+/*CAVoice *CAVoice::clone( CAStaff* newStaff ) {
+	CAVoice *newVoice = new CAVoice( (newStaff?newStaff:staff()), name(), voiceNumber(), stemDirection() );
+	
+	return newVoice;
+}*/
 
 /*!
 	Destroys all non-shared music elements held by the voice.

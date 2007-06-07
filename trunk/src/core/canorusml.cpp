@@ -7,6 +7,8 @@
 
 #include <QXmlInputSource>
 #include <QDomDocument>
+#include <QDateTime>
+#include <QTime>
 
 #include <iostream>	//DEBUG
 
@@ -104,6 +106,10 @@ void CACanorusML::saveDocument(CADocument *doc, QTextStream& out) {
 		dDocument.setAttribute("title", doc->title());
 	if (!doc->composer().isEmpty())
 		dDocument.setAttribute("composer", doc->composer());
+	
+	dDocument.setAttribute("date-created", doc->dateCreated().toString(Qt::ISODate) );
+	dDocument.setAttribute("date-last-modified", doc->dateLastModified().toString(Qt::ISODate) );
+	dDocument.setAttribute("time-edited", doc->timeEdited().toString(Qt::ISODate) );
 	
 	for (int sheetIdx=0; sheetIdx < doc->sheetCount(); sheetIdx++) {
 		// CASheet
@@ -342,6 +348,13 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 	if (qName == "document") {
 		// CADocument
 		_document = new CADocument();
+		_document->setTitle( attributes.value("title") );
+		_document->setComposer( attributes.value("composer") );
+		
+		_document->setDateCreated( QDateTime::fromString( attributes.value("date-created"), Qt::ISODate ) );
+		_document->setDateLastModified( QDateTime::fromString( attributes.value("date-last-modified"), Qt::ISODate ) );
+		_document->setTimeEdited( QTime::fromString( attributes.value("time-edited"), Qt::ISODate ) );
+		
 	} else if (qName == "sheet") {
 		// CASheet
 		QString sheetName = attributes.value("name");
@@ -402,20 +415,26 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		// CAVoice
 		QString voiceName = attributes.value("name");
 		if (!_curContext) {
-			_errorMsg = "The context where the voice should be added doesn't exist yet!";
+			_errorMsg = "The context where the voice " + voiceName + " should be added doesn't exist yet!";
 			return false;
 		} else if (_curContext->contextType() != CAContext::Staff) {
-			_errorMsg = "The context type which will contain voice isn't staff!";
+			_errorMsg = "The context type which contains voice " + voiceName + " isn't staff!";
 			return false;
 		}
 		
-		if (!(_curVoice = ((CAStaff*)_curContext)->voice(voiceName))) {	//if the staff doesn't contain the voice with the given name, create a new voice and add it to the document. Otherwise, just set the current voice to the found one and leave
+		CAStaff *staff = static_cast<CAStaff*>(_curContext);
+		if (!(_curVoice = staff->voice(voiceName))) {	//if the staff doesn't contain the voice with the given name, create a new voice and add it to the document. Otherwise, just set the current voice to the found one and leave
+			int voiceNumber = staff->voiceCount()+1;
+			
 			if (voiceName.isEmpty())
-				voiceName = QObject::tr("Voice%1").arg(((CAStaff*)_curContext)->voiceCount()+1);
-			_curVoice = new CAVoice((CAStaff*)_curContext, voiceName);
+				voiceName = QObject::tr("Voice%1").arg( voiceNumber );
+			
+			CANote::CAStemDirection stemDir = CANote::StemNeutral;
 			if (!attributes.value("stem-direction").isEmpty())
-				_curVoice->setStemDirection(CANote::stemDirectionFromString(attributes.value("stem-direction")));
-			((CAStaff*)_curContext)->addVoice(_curVoice);
+				stemDir = CANote::stemDirectionFromString(attributes.value("stem-direction"));
+			
+			_curVoice = new CAVoice( staff, voiceName, voiceNumber, stemDir );
+			staff->addVoice( _curVoice );
 		}
 	}
 	else if (qName == "clef") {

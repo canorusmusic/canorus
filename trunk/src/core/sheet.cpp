@@ -1,9 +1,9 @@
-/* 
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #include <QObject>
 
@@ -32,6 +32,16 @@
 CASheet::CASheet(const QString name, CADocument *doc) {
 	_name = name;
 	_document = doc;
+}
+
+/*!
+	Clones the current sheet with all its content.
+	If a new parent document \a doc is given, it also sets the document. 
+*/
+CASheet *CASheet::clone( CADocument *doc ) {
+	CASheet *newSheet = new CASheet( name(), doc );
+	
+	return newSheet;
 }
 
 void CASheet::addContext(CAContext *c) {

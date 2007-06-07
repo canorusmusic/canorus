@@ -16,8 +16,9 @@
 %rename(Voice) CAVoice;
 class CAVoice {
 	public:
-		CAVoice(CAStaff *staff, const QString name);
+		CAVoice(CAStaff *staff, const QString name, int voiceNumber, CANote::CAStemDirection sd);
 		~CAVoice();
+//		CAVoice *clone(CAStaff *newStaff=0);
 		inline CAStaff *staff() { return _staff; }
 		void clear();
 		

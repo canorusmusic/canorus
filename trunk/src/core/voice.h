@@ -19,7 +19,7 @@ class CALyricsContext;
 
 class CAVoice {
 public:
-	CAVoice(CAStaff *staff, const QString name);
+	CAVoice(CAStaff *staff, const QString name, int voiceNumber, CANote::CAStemDirection stemDirection);
 	~CAVoice();
 	inline CAStaff *staff() { return _staff; }
 	inline void setStaff(CAStaff *staff) { _staff = staff; }
