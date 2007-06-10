@@ -21,10 +21,11 @@ public:
 	CADocument *clone();
 	void clear();
 	
+	QList<CASheet*> sheetList() { return _sheetList; }
 	int sheetCount() { return _sheetList.size(); }
-	
 	CASheet *sheet(const QString name);
 	CASheet *sheetAt(int i) { return _sheetList[i]; }
+	void setSheetAt(int i, CASheet *newSheet) { _sheetList[i]=newSheet; }
 	
 	CASheet *addSheet(const QString name);
 	void addSheet(CASheet *sheet);

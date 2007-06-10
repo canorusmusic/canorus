@@ -20,8 +20,8 @@
  *                                                                           
  */
 
+#include "core/canorus.h"
 #include "core/muselementfactory.h"
-
 #include "core/functionmarkingcontext.h"
 
 // For comparing undefined music elements

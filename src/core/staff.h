@@ -29,6 +29,7 @@ public:
 	inline int numberOfLines() { return _numberOfLines; }
 	inline void setNumberOfLines(int val) { _numberOfLines = val; }
 	void clear();
+	CAStaff *clone( CASheet *s );
 	
 	inline int voiceCount() { return _voiceList.size(); }
 	inline CAVoice *voiceAt(int i) { return _voiceList[i]; }

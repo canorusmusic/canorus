@@ -57,7 +57,8 @@ public:
 	~CAMainWin();
 
 	void clearUI();
-	void rebuildUI(CASheet *sheet=0, bool repaint=true);
+	void rebuildUI(CASheet *sheet, bool repaint=true);
+	void rebuildUI(bool repaint=true);
 	inline bool rebuildUILock() { return _rebuildUILock; }
 	
 	void newDocument();	
@@ -73,6 +74,7 @@ public:
 	inline QFileDialog *importDialog() { return uiImportDialog; }	
 	inline CAViewPort *currentViewPort() { return _currentViewPort; }
 	inline void removeViewPort(CAViewPort* v) { _viewPortList.removeAll(v); }
+	inline QList<CAViewPort*> viewPortList() { return _viewPortList; }
 	
 	inline CAScoreViewPort *currentScoreViewPort() {
 		if (currentViewPort()) return dynamic_cast<CAScoreViewPort*>(currentViewPort());
@@ -114,6 +116,8 @@ private slots:
 	void on_uiImportDocument_triggered();
 	
 	// Edit
+	void on_uiUndo_triggered();
+	void on_uiRedo_triggered();
 	
 	// Insert
 	void on_uiSelectMode_toggled(bool);
@@ -254,6 +258,7 @@ private:
 	///////////////////////////////////////////////////////////////////////////
 	void setupCustomUi();
 	void initViewPort(CAViewPort*);
+	void updateUndoRedoButtons();
 	void updateToolBars();
 	void updateSheetToolBar();
 	void updateContextToolBar();

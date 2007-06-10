@@ -1,9 +1,9 @@
-/* 
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #include "core/context.h"
 
@@ -100,4 +100,11 @@ CAContext::~CAContext() {
 	Sets the context's parent sheet to \a sheet.
 	
 	\sa sheet(), _sheet
+*/
+
+/*!
+	\fn CAContext::clone( CASheet *s )
+	Clones the current context with the given parent sheet \a s.
+	
+	\sa CAMusElement::clone(), CADocument::clone()
 */

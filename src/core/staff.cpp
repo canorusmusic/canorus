@@ -1,9 +1,9 @@
-/* 
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #include <QPainter>
 #include <iostream>
@@ -38,6 +38,100 @@ CAStaff::CAStaff(CASheet *s, QString name, int numberOfLines) : CAContext(s, nam
 
 CAStaff::~CAStaff() {
 	clear();
+}
+
+CAStaff *CAStaff::clone( CASheet *s ) {
+	CAStaff *newStaff = new CAStaff( s, name(), numberOfLines() );
+	
+	// create empty voices
+	for (int i=0; i<voiceCount(); i++) {
+		newStaff->addVoice( new CAVoice( newStaff,
+		                                 voiceAt(i)->name(),
+		                                 voiceAt(i)->voiceNumber(),
+		                                 voiceAt(i)->stemDirection()
+		                               ) );
+	}
+	
+	int eltIdx[voiceCount()]; for (int i=0; i<voiceCount(); i++) eltIdx[i]=0;
+	CASlur *curTie[voiceCount()]; for (int i=0; i<voiceCount(); i++) curTie[i]=0;
+	CASlur *curSlur[voiceCount()]; for (int i=0; i<voiceCount(); i++) curSlur[i]=0;
+	CASlur *curPhrasingSlur[voiceCount()]; for (int i=0; i<voiceCount(); i++) curPhrasingSlur[i]=0;
+	
+	bool done=false;
+	while (!done) {
+		// append playable elements
+		for (int i=0; i<voiceCount(); i++) {
+			while ( eltIdx[i]<voiceAt(i)->musElementCount() && voiceAt(i)->musElementAt(eltIdx[i])->isPlayable() ) {
+				CAPlayable *newElt = static_cast<CAPlayable*>(voiceAt(i)->musElementAt(eltIdx[i])->clone());
+				newElt->setVoice( newStaff->voiceAt(i) );
+				newElt->setContext( newStaff );
+				newStaff->voiceAt(i)->appendMusElement( newElt );
+				
+				// check tie
+				if ( newElt->musElementType()==CAMusElement::Note &&
+				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->tieStart() ) {
+					curTie[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->tieStart()->clone();
+					curTie[i]->setContext( newStaff );
+					curTie[i]->setNoteStart( static_cast<CANote*>(newElt) );
+				}
+				if ( newElt->musElementType()==CAMusElement::Note &&
+				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->tieEnd() ) {
+					curTie[i]->setNoteEnd( static_cast<CANote*>(newElt) );
+					curTie[i] = 0;
+				}
+
+				// check slur
+				if ( newElt->musElementType()==CAMusElement::Note &&
+				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurStart() ) {
+					curTie[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurStart()->clone();
+					curTie[i]->setContext( newStaff );
+					curTie[i]->setNoteStart( static_cast<CANote*>(newElt) );
+				}
+				if ( newElt->musElementType()==CAMusElement::Note &&
+				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurEnd() ) {
+					curTie[i]->setNoteEnd( static_cast<CANote*>(newElt) );
+					curTie[i] = 0;
+				}
+				 
+				// check phrasing slur
+				if ( newElt->musElementType()==CAMusElement::Note &&
+				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->phrasingSlurStart() ) {
+					curTie[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->phrasingSlurStart()->clone();
+					curTie[i]->setContext( newStaff );
+					curTie[i]->setNoteStart( static_cast<CANote*>(newElt) );
+				}
+				if ( newElt->musElementType()==CAMusElement::Note &&
+				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->phrasingSlurEnd() ) {
+					curTie[i]->setNoteEnd( static_cast<CANote*>(newElt) );
+					curTie[i] = 0;
+				}
+				
+				eltIdx[i]++;
+			}
+		}
+		
+		// append non-playable elements (shared by all voices - only create clone of the first voice element and append it to all)
+		while ( eltIdx[0]<voiceAt(0)->musElementCount() && !voiceAt(0)->musElementAt(eltIdx[0])->isPlayable() ) {
+			CAMusElement *newElt = voiceAt(0)->musElementAt(eltIdx[0])->clone();
+			newElt->setContext( newStaff );
+			
+			for (int i=0; i<voiceCount(); i++) {
+				newStaff->voiceAt(i)->appendMusElement( newElt );
+				eltIdx[i]++;
+			}
+		}
+		
+		// check if we're at the end
+		done = true;
+		for (int i=0; i<voiceCount(); i++) {
+			if (eltIdx[i]<voiceAt(i)->musElementCount()) {
+				done = false;
+				break;
+			}
+		}
+	}
+	
+	return newStaff;
 }
 
 /*!

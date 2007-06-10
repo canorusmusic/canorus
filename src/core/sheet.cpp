@@ -5,6 +5,7 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
+#include <QHash>
 #include <QObject>
 
 #include "core/document.h"
@@ -12,6 +13,7 @@
 #include "core/staff.h"
 #include "core/sheet.h"
 #include "core/voice.h"
+#include "core/lyricscontext.h"
 
 /*!
 	\class CASheet
@@ -40,6 +42,29 @@ CASheet::CASheet(const QString name, CADocument *doc) {
 */
 CASheet *CASheet::clone( CADocument *doc ) {
 	CASheet *newSheet = new CASheet( name(), doc );
+	
+	QHash< CAContext*, CAContext* > contextMap; // map between oldContexts<->cloned contexts
+	QHash< CAVoice*, CAVoice* > voiceMap; // map between oldVoices<->cloned voices
+	
+	// create clones of contexts
+	for (int i=0; i<contextCount(); i++) {
+		CAContext *newContext = contextAt(i)->clone( newSheet );
+		if ( newContext->contextType()==CAContext::Staff ) {
+			for (int j=0; j<static_cast<CAStaff*>(contextAt(i))->voiceCount(); j++) {
+				voiceMap[ static_cast<CAStaff*>(contextAt(i))->voiceAt(j) ] = static_cast<CAStaff*>(newContext)->voiceAt(j);
+			}
+		}
+		contextMap[contextAt(i)] = newContext;
+		newSheet->addContext( newContext );
+	}
+	
+	// assign contexts between each other (like associated voice of lyrics context etc.)
+	for (int i=0; i<contextCount(); i++) {
+		if ( newSheet->contextAt(i)->contextType()==CAContext::LyricsContext )
+			static_cast<CALyricsContext*>(newSheet->contextAt(i))->setAssociatedVoice(
+				voiceMap[ static_cast<CALyricsContext*>(newSheet->contextAt(i))->associatedVoice() ]
+			);
+	}
 	
 	return newSheet;
 }

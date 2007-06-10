@@ -36,6 +36,7 @@
 CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
  : CAViewPort(parent) {
  	setViewPortType( SourceViewPort );
+ 	setSourceViewPortType( CanorusML );
  	_document = doc;
  	_voice = 0;
   	_lyricsContext = 0;
@@ -50,7 +51,8 @@ CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
 */
 CASourceViewPort::CASourceViewPort(CAVoice *voice, QWidget *parent)
  : CAViewPort(parent) {
- 	_viewPortType = CAViewPort::SourceViewPort;
+ 	setViewPortType( SourceViewPort );
+ 	setSourceViewPortType( LilyPond );
  	_document = 0;
  	_voice = voice;
  	_lyricsContext = 0;
@@ -65,7 +67,8 @@ CASourceViewPort::CASourceViewPort(CAVoice *voice, QWidget *parent)
 */
 CASourceViewPort::CASourceViewPort(CALyricsContext *lc, QWidget *parent)
  : CAViewPort(parent) {
- 	_viewPortType = CAViewPort::SourceViewPort;
+ 	setViewPortType( SourceViewPort );
+  	setSourceViewPortType( LilyPond );
  	_document = 0;
  	_voice = 0;
   	_lyricsContext = lc;
@@ -103,20 +106,24 @@ void CASourceViewPort::on_commit_clicked() {
 
 CASourceViewPort *CASourceViewPort::clone() {
 	CASourceViewPort *v;
-	if (_document)
-		v = new CASourceViewPort(_document, static_cast<QWidget*>(parent()));
-	else if (_voice)
-		v = new CASourceViewPort(_voice, static_cast<QWidget*>(parent()));
+	if ( document() )
+		v = new CASourceViewPort( document(), static_cast<QWidget*>(parent()) );
+	else if ( voice() )
+		v = new CASourceViewPort( voice(), static_cast<QWidget*>(parent()) );
+	else if ( lyricsContext() )
+		v = new CASourceViewPort( lyricsContext(), static_cast<QWidget*>(parent()) );
 	
 	return v;
 }
 
 CASourceViewPort *CASourceViewPort::clone(QWidget *parent) {
 	CASourceViewPort *v;
-	if (_document)
-		v = new CASourceViewPort(_document, parent);
-	else if (_voice)
-		v = new CASourceViewPort(_voice, parent);
+	if ( document() )
+		v = new CASourceViewPort( document(), parent );
+	else if ( voice() )
+		v = new CASourceViewPort( voice(), parent );
+	else if ( lyricsContext() )
+		v = new CASourceViewPort( lyricsContext(), parent );
 	
 	return v;
 }

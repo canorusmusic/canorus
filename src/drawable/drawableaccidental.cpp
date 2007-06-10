@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -13,6 +13,15 @@
 #include "drawable/drawablecontext.h"
 #include "drawable/drawableclef.h"
 
+/*!
+	Default constructor.
+	
+	\param accs Type of the accidental: 0 - natural, -1 - flat, +1 - sharp, -2 doubleflat, +2 - cross etc.
+	\param musElement Pointer to the according musElement which the accidental represents (usually a CANote or CAKeySignature).
+	\param drawableContext Pointer to the according drawable context which the accidental belongs to (usually CADrawableStaff or CADrawableFiguredBass).
+	\param x Left X-coordinate of the accidental.
+	\param y Center Y-coordinate of the accidental.
+*/
 CADrawableAccidental::CADrawableAccidental(signed char accs, CAMusElement *musElement, CADrawableContext *drawableContext, int x, int y)
  : CADrawableMusElement(musElement, drawableContext, x, y) {
  	setDrawableMusElementType( DrawableAccidental );
@@ -56,12 +65,12 @@ void CADrawableAccidental::draw(QPainter *p, CADrawSettings s) {
 	p->setPen(QPen(s.color));
 	p->setFont(font);
 	
-	//Glyph unicode numbers for accidentals:
-	//e10e - Emmentaler sharp
-	//e112 - Emmentaler flat
-	//e111 - Emmentaler natural
-	//e116 - Emmentaler cross
-	//e114 - Emmentaler double flat
+	// Glyph unicode numbers for accidentals (in hex):
+	//  - 0xe10e - Emmentaler sharp
+	//  - 0xe112 - Emmentaler flat
+	//  - 0xe111 - Emmentaler natural
+	//  - 0xe116 - Emmentaler cross
+	//  - 0xe114 - Emmentaler double flat
 	switch (_accs) {
 		case 0:
 			p->drawText(s.x, s.y + (int)(_height/2*s.z), QString(0xE111));

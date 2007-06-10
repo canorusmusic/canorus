@@ -97,7 +97,7 @@ void CASyllableEdit::keyPressEvent( QKeyEvent *e ) {
 CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(parent) {
 	setViewPortType( ScoreViewPort );
 	
-	_sheet = sheet;
+	setSheet( sheet );
 	_worldX = _worldY = 0;
 	_worldW = _worldH = 0;
 	_zoom = 1.0;
@@ -454,7 +454,7 @@ CAContext *CAScoreViewPort::contextCollision(int x, int y) {
 }
 
 void CAScoreViewPort::rebuild() {
-	//clear the shadow notes
+	// clear the shadow notes
 	for (int i=0; i<_shadowNote.size(); i++) {
 		delete _shadowNote[i];
 		delete _shadowDrawableNote[i];
@@ -469,12 +469,12 @@ void CAScoreViewPort::rebuild() {
 	_selection.clear();
 	
 	_drawableMList.clear(true);
-	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	//remember the index of last used context
+	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	// remember the index of last used context
 	_drawableCList.clear(true);
 		
 	CAEngraver::reposit(this);
 	
-	if (contextIdx != -1)	//restore the last used context
+	if (contextIdx != -1)	// restore the last used context
 		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
 	else
 		setCurrentContext(0);
@@ -841,9 +841,10 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	for (int i=0; i<mList.size(); i++) {
 		QColor color;
 		CAMusElement *elt = mList[i]->musElement();
-		if ( _selection.contains(mList[i]))
+		
+		if ( _selection.contains(mList[i])) {
 			color = Qt::red;
-		else
+		} else
 		if ( selectedVoice() &&
 		     (elt &&
 		      (elt->isPlayable() && static_cast<CAPlayable*>(elt)->voice()==selectedVoice() ||

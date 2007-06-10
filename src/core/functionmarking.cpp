@@ -63,7 +63,7 @@ CAFunctionMarking *CAFunctionMarking::clone() {
 }
 
 int CAFunctionMarking::compare(CAMusElement *func) {
-	return 0;	//! \todo Comparation of various function markings still needs to be done.
+	return 0;	//! \todo Comparison of various function markings still needs to be done.
 }
 
 /*!
