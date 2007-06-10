@@ -18,6 +18,7 @@
 #include "interface/rtmididevice.h"
 #include "ui/midisetupdialog.h"
 #include "scripting/swigruby.h"
+#include "core/sheet.h"
 
 // define private static members
 QList<CAMainWin*> CACanorus::_mainWinList;
@@ -25,6 +26,10 @@ QSettings *CACanorus::_settings;
 CAMidiDevice *CACanorus::_midiDevice;
 int CACanorus::_midiOutPort;
 int CACanorus::_midiInPort;
+QHash< CADocument*, QUndoStack* > CACanorus::_undoStack;
+CAUndoCommand *CACanorus::_undoCommand;
+QHash< QUndoStack*, CAUndoCommand* > CACanorus::_lastUndoCommand;
+QHash< CAUndoCommand*, CAUndoCommand* > CACanorus::_prevUndoCommands;
 
 /*!
 	Locates a resource named fileName (relative path) and returns its absolute path of the file
@@ -59,7 +64,7 @@ QList<QString> CACanorus::locateResource(const QString fileName) {
 		paths << QFileInfo(curPath).absoluteFilePath();
 	
 #ifdef DEFAULT_DATA_DIR
-	// Try compiler defined DEFAULT_DATA_DIR constant (useful for Linux OSes)
+	// Try compiler defined DEFAULT_DATA_DIR constant (useful on Unix OSes)
 	curPath = QString(DEFAULT_DATA_DIR) + "/" + fileName;
 	if (QFileInfo(curPath).exists())
 		paths << QFileInfo(curPath).absoluteFilePath();
@@ -88,6 +93,8 @@ QList<QString> CACanorus::locateResourceDir(const QString fileName) {
 	Initializes application properties like application name, home page etc.
 */
 void CACanorus::initMain() {
+	_undoCommand = 0;
+	
 	// Init main application properties
 	QCoreApplication::setOrganizationName("Canorus");
 	QCoreApplication::setOrganizationDomain("canorus.org");
@@ -186,24 +193,36 @@ void CACanorus::initMidi() {
 			setMidiOutPort(-1);
 			
 	} else {
+		setMidiInPort(-1);
+		setMidiOutPort(-1);
 		CAMidiSetupDialog();
 	}
 }
 
 /*!
 	Rebuilds main windows with the given \a document and its viewports showing the given \a sheet.
-	Rebuilds all viewports if no sheet is given.
-	Rebuilds all main windows if no document is given.
+	Rebuilds all viewports if no sheet is null.
 	
-	\sa CAMainWin::rebuildUI()
+	\sa rebuildUI(CADocument*), CAMainWin::rebuildUI()
 */
-void CACanorus::rebuildUI(CADocument *document, CASheet *sheet) {
-	for (int i=0; i<mainWinCount(); i++) {
-		if (document && mainWinAt(i)->document()==document) {
+void CACanorus::rebuildUI( CADocument *document, CASheet *sheet ) {
+	for (int i=0; i<mainWinCount(); i++)
+		if ( mainWinAt(i)->document()==document )
 			mainWinAt(i)->rebuildUI(sheet);
-		} else if (!document) {
+}
+
+/*!
+	Rebuilds main windows with the given \a document.
+	Rebuilds all main windows, if \a document is not given or null.
+	
+	\sa rebuildUI(CADocument*, CASheet*), CAMainWin::rebuildUI()
+*/
+void CACanorus::rebuildUI( CADocument *document ) {
+	for (int i=0; i<mainWinCount(); i++) {
+		if ( document && mainWinAt(i)->document()==document ) {
 			mainWinAt(i)->rebuildUI();
-		}
+		} else if ( !document )
+			mainWinAt(i)->rebuildUI();
 	}
 }
 
@@ -217,6 +236,97 @@ QList<CAMainWin*> CACanorus::findMainWin(CADocument *document) {
 			mainWinList << mainWinAt(i);
 	
 	return mainWinList;
+}
+
+/*!
+	Deletes the undoStack object for the given document.
+	This should be called at the end where no main windows are pointing to the given document anymore.
+*/
+void CACanorus::deleteUndoStack( CADocument *doc ) {
+	clearUndoCommand();
+	QUndoStack *stack = undoStack(doc);
+	_lastUndoCommand.remove(stack);
+	delete stack;
+	removeUndoStack( doc );
+}
+
+/*!
+	Call this to add an undo state (created by createUndoCommand()) to the stack.
+	
+	\warning This function is not thread-safe. createUndoCommand() and pushUndoCommand() should be called from the same thread.
+*/
+void CACanorus::pushUndoCommand() {
+	if (!_undoCommand)
+		return;
+	
+	CADocument *d = (_undoCommand->getRedoDocument()?_undoCommand->getRedoDocument():_undoCommand->getRedoSheet()->document());
+	_undoStack[d]->push( _undoCommand ); // push the command on stack and delete commands after it if any (also updated lastUndoCommand hash needed later)
+	CAUndoCommand *lastUndoCommand = _lastUndoCommand[_undoStack[d]];
+	
+	if (lastUndoCommand) {
+		if (_undoCommand->getRedoSheet() && lastUndoCommand->getRedoSheet())
+			lastUndoCommand->setRedoSheet( _undoCommand->getUndoSheet() );
+		else
+		if (_undoCommand->getRedoDocument() && lastUndoCommand->getRedoSheet())
+			lastUndoCommand->setRedoSheet( _undoCommand->getUndoDocument()->sheetAt(_undoCommand->getRedoDocument()->sheetList().indexOf( lastUndoCommand->getRedoSheet()) ));
+		else
+		if (_undoCommand->getRedoDocument() && lastUndoCommand->getRedoDocument())
+			lastUndoCommand->setRedoDocument( _undoCommand->getUndoDocument() );
+		_prevUndoCommands[_undoCommand] = lastUndoCommand;
+	}
+	
+	_lastUndoCommand[ undoStack(d) ] = _undoCommand;
+	_undoCommand=0;
+}
+
+/*!
+	This function is called when Undo commands are deleted and updates the _lastUndoCommand
+	which holds the last command after which the undo command will be added by pushUndoCommand().
+*/
+void CACanorus::updateLastUndoCommand( CAUndoCommand *c ) {
+	if (!_prevUndoCommands.contains(c))
+		return;
+	
+	CADocument *doc = (c->getUndoDocument()?c->getUndoDocument():c->getUndoSheet()->document());
+	_lastUndoCommand[ undoStack(doc) ] = _prevUndoCommands[c];
+	_prevUndoCommands.remove(c);
+}
+
+/*!
+	Destroys the undo command if decided not to be put on the stack.
+	Does nothing if undo command is null.
+*/
+void CACanorus::clearUndoCommand() {
+	if ( _undoCommand ) {
+		_undoCommand->setUndoSheet(0); _undoCommand->setRedoSheet(0);
+		_undoCommand->setUndoDocument(0); _undoCommand->setRedoDocument(0);
+		delete _undoCommand;
+		_undoCommand = 0;
+	}
+}
+
+/*!
+	Creates an undo command which is later put on the stack.
+	This function is usually called when making changes to the sheet in the score -
+	all changes ranging from creation/removal/editing of music elements and contexts to changing sheet properties. 
+	
+	\warning This function is not thread-safe. createUndoCommand() and pushUndoCommand() should be called from the same thread.
+*/
+void CACanorus::createUndoCommand( CASheet *s, QString text ) {
+	clearUndoCommand();
+	_undoCommand = new CAUndoCommand( s, text );
+}
+
+/*!
+	Creates an undo command which is later put on the stack.
+	This function is usually called when making changes to the document in the score -
+	all changes ranging from creation/removal of sheets and editing document properties.
+	
+	\warning This function is not thread-safe. createUndoCommand() and pushUndoCommand() should be called from the same thread.
+*/
+void CACanorus::createUndoCommand( CADocument *d, QString text ) {
+	clearUndoCommand();
+	_undoCommand = new CAUndoCommand( d, text );
 }
 
 /*!

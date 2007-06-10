@@ -1,10 +1,9 @@
-/** @file ui/pluginaction.h
- * 
- * Copyright (c) 2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #ifndef PLUGINACTION_H_
 #define PLUGINACTION_H_
@@ -13,11 +12,11 @@
 
 #include "interface/plugin.h"
 
-/**
- * CAPluginAction class represents each <action> stanza found in Canorus Plugin descriptor XML file.
- * Every action has its unique name, scripting language, function, its arguments and filename.
- * Optional properties are Canorus internal action which it reacts on, export filter, menu/toolbar text.
- */
+/*!
+	CAPluginAction class represents each <action> stanza found in Canorus Plugin descriptor XML file.
+	Every action has its unique name, scripting language, function, its arguments and filename.
+	Optional properties are Canorus internal action which it reacts on, export filter, menu/toolbar text.
+*/
 class CAPluginAction : public QAction {
 	Q_OBJECT
 public:

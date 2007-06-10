@@ -74,6 +74,7 @@ SET(Canorus_MOCs
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/canorus.cpp
 	core/canorusml.cpp
+	core/undocommand.cpp
 
 	core/document.cpp
 	core/sheet.cpp

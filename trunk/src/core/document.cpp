@@ -49,7 +49,7 @@ CADocument *CADocument::clone() {
 	newDocument->setComments( comments() );
 	
 	for (int i=0; i<sheetCount(); i++)
-		newDocument->addSheet(sheetAt(i)->clone());
+		newDocument->addSheet( sheetAt(i)->clone() );
 	
 	return newDocument;
 }

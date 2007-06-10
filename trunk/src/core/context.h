@@ -17,6 +17,7 @@ class CAContext {
 public:
 	CAContext(CASheet *s, const QString name);
 	virtual ~CAContext();
+	virtual CAContext* clone( CASheet* ) = 0;
 	
 	enum CAContextType {
 		Staff,
@@ -44,4 +45,4 @@ protected:
 	QString _name;
 	CAContextType _contextType;
 };
-#endif /*CONTEXT_H_*/
+#endif /* CONTEXT_H_ */

@@ -140,8 +140,10 @@ CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
 
 CAMainWin::~CAMainWin()  {
 	CACanorus::removeMainWin(this);
-	if (!CACanorus::mainWinCount(document()))
+	if (!CACanorus::mainWinCount(document())) {
+		CACanorus::deleteUndoStack(document()); // delete undo stack when the last document deleted
 		delete document();
+	}
 	
 	delete _playback;
 	
@@ -394,10 +396,13 @@ void CAMainWin::newDocument() {
 	clearUI();
 	
 	// clear the data part
-	if ( document() && (CACanorus::mainWinCount(document()) == 1) ) 
+	if ( document() && (CACanorus::mainWinCount(document()) == 1) ) {
+		CACanorus::deleteUndoStack( document() ); 
 		delete document();
+	}
 	
 	setDocument(new CADocument());
+	CACanorus::setUndoStack( document(), new QUndoStack() );
 	restartTimeEditedTime();
 	
 #ifdef USE_PYTHON
@@ -651,9 +656,58 @@ void CAMainWin::on_uiNewDocument_triggered() {
 	newDocument();
 }
 
+void CAMainWin::on_uiUndo_triggered() {
+	if ( document() && CACanorus::undoStack( document() )->canUndo() ) {
+		CADocument *oldDocument = document();
+		CACanorus::undoStack( document() )->undo();
+		if ( oldDocument==document() ) {
+			// only sheet was undone
+			CACanorus::rebuildUI( document(), 0 );
+		} else {
+			// the whole document changed
+			CACanorus::rebuildUI( document() );
+		}
+	}
+}
+
+void CAMainWin::on_uiRedo_triggered() {
+	if ( document() && CACanorus::undoStack( document() )->canRedo() ) {
+		CADocument *oldDocument = document();
+		CACanorus::undoStack( document() )->redo();
+		if ( oldDocument==document() ) {
+			// only sheet was undone
+			CACanorus::rebuildUI( document(), 0 );
+		} else {
+			// the whole document changed
+			CACanorus::rebuildUI( document() );
+		}
+	}
+}
+
+/*!
+	Enables or Disabled undo/redo buttons if there are undo/redo commands on the undo stack.
+	
+	\sa CACanorus::undoStack()
+*/
+void CAMainWin::updateUndoRedoButtons() {
+	if ( CACanorus::undoStack( document() )->canUndo() )
+		uiUndo->setEnabled(true);
+	else
+		uiUndo->setEnabled(false);
+		
+	if ( CACanorus::undoStack( document() )->canRedo() )
+		uiRedo->setEnabled(true);
+	else
+		uiRedo->setEnabled(false);
+}
+
+/*!
+	Adds a new empty sheet.
+*/
 void CAMainWin::on_uiNewSheet_triggered() {
-	// add a new empty sheet
+	CACanorus::createUndoCommand( document(), tr("new sheet", "undo") );
 	document()->addSheet(tr("Sheet%1").arg(QString::number(document()->sheetCount()+1)));
+	CACanorus::pushUndoCommand();
 	CACanorus::rebuildUI(document());
 }
 
@@ -671,9 +725,11 @@ void CAMainWin::on_uiNewVoice_triggered() {
 		stemDirection = CANote::StemDown;
 	}
 	
+	CACanorus::createUndoCommand( staff->sheet(), tr("new voice", "undo") );
 	if (staff)
 		staff->addVoice(new CAVoice(staff, staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 ), voiceNumber, stemDirection));
 	
+	CACanorus::pushUndoCommand();
 	uiVoiceNum->setMax(staff->voiceCount());
 	uiVoiceNum->setRealValue( staff->voiceCount() );
 	CACanorus::rebuildUI(document(), currentSheet());
@@ -701,10 +757,12 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 			QMessageBox::No);
 		
 		if (ret == QMessageBox::Yes) {
+			CACanorus::createUndoCommand( voice->staff()->sheet(), tr("voice removal", "undo") );
 			currentScoreViewPort()->clearSelection();
 			uiVoiceNum->setMax( voice->staff()->voiceCount()-1 );
 			uiVoiceNum->setRealValue( voice->staff()->voiceCount()-1 );
 			delete voice;
+			CACanorus::pushUndoCommand();
 			CACanorus::rebuildUI(document(), currentSheet());
 		}
 	}
@@ -723,8 +781,10 @@ void CAMainWin::on_uiRemoveContext_triggered() {
 			QMessageBox::No);
 		
 		if (ret == QMessageBox::Yes) {
+			CACanorus::createUndoCommand( context->sheet(), tr("context removal", "undo") );
 			CASheet *sheet = context->sheet();
 			sheet->removeContext(context);
+			CACanorus::pushUndoCommand();			
 			CACanorus::rebuildUI(document(), currentSheet());
 			delete context;
 		}
@@ -797,7 +857,7 @@ void CAMainWin::setMode(CAMode mode) {
 						currentScoreViewPort()->removeSyllableEdit();
 					}
 					
-					((CAScoreViewPort*)_viewPortList[i])->repaint();
+					_viewPortList[i]->repaint();
 				}
 			}
 		}
@@ -812,13 +872,13 @@ void CAMainWin::setMode(CAMode mode) {
 	Rebuilds the GUI from data.
 	
 	This method is called eg. when multiple viewports share the same data and a change has been made (eg. a
-	note pitch has changed). ViewPorts content is repositioned and redrawn (CAEngraver creates CADrawable
-	elements for every viewport).
+	note pitch has changed or a new element added). ViewPorts content is repositioned and redrawn (CAEngraver
+	creates CADrawable elements for every score viewport, sources are updated in source viewports etc.).
 	
 	\a sheet argument is a pointer to the data sheet where the change occured. This way only viewports showing
 	the given sheet are updated which speeds up the process.
-	If no \a sheet argument is passed, the whole UI is rebuilt from the data part. This is called for eg. upon
-	Opening file after the data part has been read or when creating a new document.
+	If \a sheet argument is null, all viewports are rebuilt, but the viewports contents, number and locations
+	remain the same.
 	
 	If \a repaint is True (default) the rebuilt viewports are also repainted. If False, viewports content is
 	only created but not yet drawn. This is useful when multiple operations which could potentially change the
@@ -829,29 +889,63 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	
 	setRebuildUILock( true );
 	if (document()) {
+		for (int i=0; i<_viewPortList.size(); i++) {
+			if (sheet && _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort &&
+			    static_cast<CAScoreViewPort*>(_viewPortList[i])->sheet()!=sheet)
+				continue;
+			
+			_viewPortList[i]->rebuild();
+			
+			if (_viewPortList[i]->viewPortType() == CAViewPort::ScoreViewPort)
+				static_cast<CAScoreViewPort*>(_viewPortList[i])->checkScrollBars();
+				
+			if (repaint)
+				_viewPortList[i]->repaint();
+		}
+	} else {
+		clearUI();
+	}
+	updateToolBars();
+	setRebuildUILock( false );
+}
+
+/*!
+	Rebuilds the GUI from data.
+	
+	This method is called eg. when multiple viewports share the same data and a change has been made (eg. a
+	note pitch has changed or a new element added). ViewPorts content is repositioned and redrawn (CAEngraver
+	creates CADrawable elements for every score viewport, sources are updated in source viewports etc.).
+	
+	This method in comparison to CAMainWin::rebuildUI(CASheet *s, bool repaint) rebuilds the whole GUI from
+	scratch and creates new viewports for the sheets. This method is called for example when a new document
+	is created or opened.
+	
+	If \a repaint is True (default) the rebuilt viewports are also repainted. If False, viewports content is
+	only created but not yet drawn. This is useful when multiple operations which could potentially change the
+	content are to happen and we want to actually draw it only at the end.
+*/
+void CAMainWin::rebuildUI(bool repaint) {
+	if (rebuildUILock()) return;
+	
+	setRebuildUILock( true );
+	if (document()) {
 		// save the current state of viewports
 		QList<QRect> worldCoordsList;
 		for (int i=0; i<_viewPortList.size(); i++)
 			if (_viewPortList[i]->viewPortType() == CAViewPort::ScoreViewPort)
 				worldCoordsList << static_cast<CAScoreViewPort*>(_viewPortList[i])->worldCoords();
 		 
-		if (!sheet) {
-			clearUI();
-			for (int i=0; i<document()->sheetCount(); i++) {
-				addSheet(document()->sheetAt(i));
-				
-				// restore the current state of viewports
-				if ( _viewPortList[i]->viewPortType() == CAViewPort::ScoreViewPort &&
-				     i < worldCoordsList.size() )
-					static_cast<CAScoreViewPort*>(_viewPortList[i])->setWorldCoords(worldCoordsList[i]);
-			}
+		clearUI();
+		for (int i=0; i<document()->sheetCount(); i++) {
+			addSheet(document()->sheetAt(i));
+			
+			// restore the current state of viewports
+			if ( _viewPortList[i]->viewPortType() == CAViewPort::ScoreViewPort &&
+			     i < worldCoordsList.size() )
+				static_cast<CAScoreViewPort*>(_viewPortList[i])->setWorldCoords(worldCoordsList[i]);
 		}
 		
 		for (int i=0; i<_viewPortList.size(); i++) {
-			if (sheet && _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort &&
-			    static_cast<CAScoreViewPort*>(_viewPortList[i])->sheet()!=sheet)
-				continue;
-			
 			_viewPortList[i]->rebuild();
 			
 			if (_viewPortList[i]->viewPortType() == CAViewPort::ScoreViewPort)
@@ -945,6 +1039,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				CADrawableContext *dupContext = v->nearestUpContext(coords.x(), coords.y());
 				switch(uiContextType->currentId()) {
 					case CAContext::Staff: {
+						CACanorus::createUndoCommand( v->sheet(), tr("new staff", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CAStaff(
@@ -956,6 +1051,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						break;
 					}
 					case CAContext::LyricsContext: {
+						CACanorus::createUndoCommand( v->sheet(), tr("new lyrics context", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CALyricsContext(
@@ -968,6 +1064,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						break;
 					}
 					case CAContext::FunctionMarkingContext: {
+						CACanorus::createUndoCommand( v->sheet(), tr("new function marking context", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CAFunctionMarkingContext(
@@ -978,6 +1075,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						break;
 					}
 				}
+				CACanorus::pushUndoCommand();
 				CACanorus::rebuildUI(document(), v->sheet());
 				
 				v->selectContext(newContext);
@@ -1307,6 +1405,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		case Qt::Key_Delete:
 		case Qt::Key_Backspace:
 			if ( v->selection().size() ) {
+				CACanorus::createUndoCommand( v->sheet(), tr("deletion of elements", "undo") );
+				
 				QSet<CAMusElement*> musElemSet;
 				for (int i=0; i<v->selection().size(); i++)
 					musElemSet << v->selection().at(i)->musElement();
@@ -1345,8 +1445,9 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					} else {
 						(*i)->context()->removeMusElement(*i);
 					}
-				}
-				
+				}			
+				CACanorus::pushUndoCommand();
+				v->clearSelection();
 				CACanorus::rebuildUI(document(), v->sheet());
 			}
 			
@@ -1401,6 +1502,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	
 	if (!drawableContext)
 		return;
+	
+	CACanorus::createUndoCommand( currentSheet(), tr("insertion of music element", "undo") );
 	
 	switch ( _musElementFactory->musElementType() ) {
 		case CAMusElement::Clef: {
@@ -1515,6 +1618,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	}
 	
 	if (success) {
+		CACanorus::pushUndoCommand();
 		CACanorus::rebuildUI(document(), v->sheet());
 		v->selectMElement( _musElementFactory->musElement() );
 		v->setShadowNoteDotted(iPlayableDotted);
@@ -1676,10 +1780,13 @@ bool CAMainWin::openDocument(QString fileName) {
 		QXmlInputSource input(&file);
 		CADocument *openedDoc = CACanorusML::openDocument(&input, this);
 		if (openedDoc) {
-			if (CACanorus::mainWinCount(document())==1)
+			if (CACanorus::mainWinCount(document())==1) {
+				CACanorus::deleteUndoStack( document() ); 
 				delete document();
+			}
 			
 			setDocument(openedDoc);
+			CACanorus::setUndoStack( document(), new QUndoStack() );
 			openedDoc->setFileName(fileName);
 			rebuildUI(); // local rebuild only
 			uiTabWidget->setCurrentIndex(0);
@@ -2212,8 +2319,10 @@ void CAMainWin::on_uiScoreView_triggered() {
 void CAMainWin::on_uiRemoveSheet_triggered() {
 	CASheet *sheet = currentSheet();
 	if (sheet) {
+		CACanorus::createUndoCommand( document(), tr("deletion of the sheet", "undo") );
 		int idx = uiTabWidget->currentIndex();
 		document()->removeSheet(currentSheet());
+		CACanorus::pushUndoCommand();
 		CACanorus::rebuildUI(document());
 		if(idx < uiTabWidget->count())
 			uiTabWidget->setCurrentIndex(idx);
@@ -2309,6 +2418,7 @@ void CAMainWin::updateToolBars() {
 	updateKeySigToolBar();
 	updateTimeSigToolBar();
 	updateFMToolBar();
+	updateUndoRedoButtons();
 }
 
 /*!

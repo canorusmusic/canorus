@@ -201,6 +201,9 @@
    <addaction name="uiExportToPdf" />
    <addaction name="uiPrintDirectly" />
    <addaction name="separator" />
+   <addaction name="uiUndo" />
+   <addaction name="uiRedo" />
+   <addaction name="separator" />
    <addaction name="uiPlayFromSelection" />
   </widget>
   <widget class="QToolBar" name="uiFileToolBar" >

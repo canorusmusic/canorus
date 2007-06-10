@@ -21,6 +21,11 @@ class CALyricsContext;
 class CASourceViewPort : public CAViewPort {
 	Q_OBJECT
 	
+	enum CASourceViewPortType {
+		LilyPond,
+		CanorusML
+	};
+	
 public:
 	CASourceViewPort(CADocument *doc, QWidget *parent=0);
 	CASourceViewPort(CAVoice *voice, QWidget *parent=0);
@@ -30,9 +35,15 @@ public:
 	CASourceViewPort *clone();
 	CASourceViewPort *clone(QWidget *parent);
 	
+	inline CASourceViewPortType sourceViewPortType() { return _sourceViewPortType; }
+	inline void setSourceViewPortType( CASourceViewPortType t ) { _sourceViewPortType = t; }
+	
 	inline CADocument *document() { return _document; };
 	inline CAVoice *voice() { return _voice; }
 	inline CALyricsContext *lyricsContext() { return _lyricsContext; }
+	inline void setDocument( CADocument *doc ) { _document = doc; }
+	inline void setVoice( CAVoice *voice ) { _voice = voice; }
+	inline void setLyricsContext( CALyricsContext *c ) { _lyricsContext = c; }
 	
 signals:
 	void CACommit( QString documentString, CASourceViewPort *v );
@@ -57,6 +68,7 @@ private:
 	////////////////
 	// Properties //
 	////////////////
+	CASourceViewPortType _sourceViewPortType;
 	CADocument *_document;
 	CAVoice *_voice;
 	CALyricsContext *_lyricsContext;

@@ -1,9 +1,9 @@
-/* 
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #include "core/functionmarkingcontext.h"
 #include "core/functionmarking.h"
@@ -28,6 +28,18 @@ CAFunctionMarkingContext::~CAFunctionMarkingContext() {
 	clear();
 }
 
+CAFunctionMarkingContext *CAFunctionMarkingContext::clone( CASheet *s ) {
+	CAFunctionMarkingContext *newFmc = new CAFunctionMarkingContext( s, name() );
+	
+	for (int i=0; i<_functionMarkingList.size(); i++) {
+		CAFunctionMarking *newFm = _functionMarkingList[i]->clone();
+		newFm->setContext( newFmc );
+		newFmc->addFunctionMarking( newFm );
+	}
+	
+	return newFmc;
+}
+
 void CAFunctionMarkingContext::clear() {
 	for (int i=0; i<_functionMarkingList.size(); i++)
 		delete _functionMarkingList[i];
@@ -44,7 +56,6 @@ void CAFunctionMarkingContext::addFunctionMarking(CAFunctionMarking *function) {
 	for (i=_functionMarkingList.size()-1; i>0 && _functionMarkingList[i]->timeStart()>function->timeStart(); i--);
 	_functionMarkingList.insert(i+1, function);
 	_functionMarkingHash.insertMulti(function->timeStart(), function);
-	function->setContext(this);
 }
 
 CAMusElement *CAFunctionMarkingContext::findNextMusElement(CAMusElement *elt) {

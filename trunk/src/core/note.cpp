@@ -71,6 +71,7 @@ CANote::~CANote() {
 
 CANote *CANote::clone() {
 	CANote *d = new CANote(_playableLength, _voice, _pitch, _accs, _timeStart, _dotted);
+	d->setStemDirection( stemDirection() );
 	
 	return d;
 }

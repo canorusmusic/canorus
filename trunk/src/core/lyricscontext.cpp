@@ -44,6 +44,18 @@ void CALyricsContext::clear() {
 	_syllableList.clear();
 }
 
+CALyricsContext *CALyricsContext::clone( CASheet *s ) {
+	CALyricsContext *newLc = new CALyricsContext( stanzaNumber(), associatedVoice(), s, name() );
+	
+	for (int i=0; i<_syllableList.size(); i++) {
+		CASyllable *newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone());
+		newSyllable->setContext( newLc );
+		newLc->addSyllable( newSyllable );
+	}
+	
+	return newLc;
+}
+
 /*!
 	Keeps the content and order of the syllables, but changes startTimes and lengths according to the notes in associatedVoice.
 	This function is usually called when associatedVoice is changed or the whole lyricsContext is initialized for the first time.

@@ -21,6 +21,8 @@ public:
 	CALyricsContext(int stanzaNumber, CAVoice *v, CASheet *s, const QString name);
 	~CALyricsContext();
 	void clear();
+	CALyricsContext *clone( CASheet *s );
+	
 	void initSyllables();
 	void repositSyllables();
 	

@@ -1,10 +1,9 @@
-/** @file drawable/drawablefunctionmarking.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #include <QPainter>
 #include <QFont>
@@ -13,9 +12,9 @@
 #include "drawable/drawablefunctionmarkingcontext.h"
 #include "core/functionmarking.h"
 
-////////////////////////////////////////////////////
-// class CADrawableFunctionMarking
-////////////////////////////////////////////////////
+/////////////////////////////////////
+// class CADrawableFunctionMarking //
+/////////////////////////////////////
 CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function, CADrawableFunctionMarkingContext *context, int x, int y)
  : CADrawableMusElement(function, context, x, y) {
  	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarking;
@@ -100,9 +99,9 @@ CADrawableFunctionMarking *CADrawableFunctionMarking::clone(CADrawableContext* n
 	return new CADrawableFunctionMarking(functionMarking(), (newContext)?(CADrawableFunctionMarkingContext*)newContext:drawableFunctionMarkingContext(), ((CAFunctionMarking*)_musElement)->isMinor()?xPos()+6:xPos(), yPos());
 }
 
-////////////////////////////////////////////////////
-// class CADrawableFunctionMarkingSupport
-////////////////////////////////////////////////////
+////////////////////////////////////////////
+// class CADrawableFunctionMarkingSupport //
+////////////////////////////////////////////
 //KeyName constructor
 CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType type, const QString key, CADrawableContext *c, int x, int y)
  : CADrawableMusElement(0, c, x, y) {	//support functions point to no music element
