@@ -62,7 +62,7 @@ public:
 	// Basic methods //
 	///////////////////
 	CAScoreViewPort(CASheet *sheet, QWidget *parent);
-	~CAScoreViewPort();
+	virtual ~CAScoreViewPort();
 	CAScoreViewPort *clone();
 	CAScoreViewPort *clone(QWidget *parent);
 	inline CASheet  *sheet() { return _sheet; }
