@@ -2383,6 +2383,7 @@ void CAMainWin::on_uiSheetName_returnPressed() {
 	if (sheet) {
 		CACanorus::createUndoCommand( document(), tr("change sheet name", "undo") );
 		CACanorus::pushUndoCommand();
+		updateUndoRedoButtons();
 		sheet->setName( uiSheetName->text() );
 		uiTabWidget->setTabText(uiTabWidget->currentIndex(), sheet->name());
 	}
@@ -2396,6 +2397,7 @@ void CAMainWin::on_uiContextName_returnPressed() {
 	if (context) {
 		CACanorus::createUndoCommand( document(), tr("change context name", "undo") );
 		CACanorus::pushUndoCommand();
+		updateUndoRedoButtons();
 		context->setName(uiContextName->text());
 	}
 }
@@ -2407,7 +2409,8 @@ void CAMainWin::on_uiStaffNumberOfLines_valueChanged(int lines) {
 	CAStaff *staff = currentStaff();
 	if (staff) {
 		CACanorus::createUndoCommand( document(), tr("change number of staff lines", "undo") );
-		CACanorus::pushUndoCommand();
+		if (staff->numberOfLines()!=lines)
+			CACanorus::pushUndoCommand();
 		staff->setNumberOfLines(lines);
 		CACanorus::rebuildUI(document(), currentSheet());
 	}
@@ -2419,7 +2422,8 @@ void CAMainWin::on_uiStaffNumberOfLines_valueChanged(int lines) {
 void CAMainWin::on_uiStanzaNumber_valueChanged(int stanzaNumber) {
 	if (currentContext() && currentContext()->contextType()==CAContext::LyricsContext) {
 		CACanorus::createUndoCommand( document(), tr("change stanza number", "undo") );
-		CACanorus::pushUndoCommand();
+		if (static_cast<CALyricsContext*>(currentContext())->stanzaNumber()!=stanzaNumber)
+			CACanorus::pushUndoCommand();
 		static_cast<CALyricsContext*>(currentContext())->setStanzaNumber( stanzaNumber );
 	}
 }
@@ -2430,7 +2434,8 @@ void CAMainWin::on_uiStanzaNumber_valueChanged(int stanzaNumber) {
 void CAMainWin::on_uiAssociatedVoice_currentIndexChanged(int idx) {
 	if (idx != -1 && currentContext() && currentContext()->contextType()==CAContext::LyricsContext) {
 		CACanorus::createUndoCommand( document(), tr("change associated voice", "undo") );
-		CACanorus::pushUndoCommand();
+		if (static_cast<CALyricsContext*>(currentContext())->associatedVoice()!=currentSheet()->voiceList().at( idx ))
+			CACanorus::pushUndoCommand();
 		static_cast<CALyricsContext*>(currentContext())->setAssociatedVoice( currentSheet()->voiceList().at( idx ) );
 		CACanorus::rebuildUI( document(), currentSheet() ); // needs a rebuild if lyrics contexts are to be moved
 	}
@@ -2440,6 +2445,8 @@ void CAMainWin::on_uiVoiceStemDirection_toggled(bool checked, int direction) {
 	CAVoice *voice = currentVoice();
 	if (voice) {
 		CACanorus::createUndoCommand( document(), tr("change voice stem direction", "undo") );
+		if (voice->stemDirection()!=static_cast<CANote::CAStemDirection>(direction))
+			CACanorus::pushUndoCommand();
 		CACanorus::pushUndoCommand();
 		voice->setStemDirection(static_cast<CANote::CAStemDirection>(direction));
 		CACanorus::rebuildUI(document(), currentSheet());
