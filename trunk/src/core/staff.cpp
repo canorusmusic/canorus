@@ -73,37 +73,43 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 					curTie[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->tieStart()->clone();
 					curTie[i]->setContext( newStaff );
 					curTie[i]->setNoteStart( static_cast<CANote*>(newElt) );
+					static_cast<CANote*>(newElt)->setTieStart(curTie[i]);
 				}
 				if ( newElt->musElementType()==CAMusElement::Note &&
 				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->tieEnd() ) {
 					curTie[i]->setNoteEnd( static_cast<CANote*>(newElt) );
+					static_cast<CANote*>(newElt)->setTieEnd(curTie[i]);
 					curTie[i] = 0;
 				}
 
 				// check slur
 				if ( newElt->musElementType()==CAMusElement::Note &&
 				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurStart() ) {
-					curTie[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurStart()->clone();
-					curTie[i]->setContext( newStaff );
-					curTie[i]->setNoteStart( static_cast<CANote*>(newElt) );
+					curSlur[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurStart()->clone();
+					curSlur[i]->setContext( newStaff );
+					curSlur[i]->setNoteStart( static_cast<CANote*>(newElt) );
+					static_cast<CANote*>(newElt)->setSlurStart(curSlur[i]);
 				}
 				if ( newElt->musElementType()==CAMusElement::Note &&
 				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurEnd() ) {
-					curTie[i]->setNoteEnd( static_cast<CANote*>(newElt) );
-					curTie[i] = 0;
+					curSlur[i]->setNoteEnd( static_cast<CANote*>(newElt) );
+					static_cast<CANote*>(newElt)->setSlurEnd(curSlur[i]);
+					curSlur[i] = 0;
 				}
 				 
 				// check phrasing slur
 				if ( newElt->musElementType()==CAMusElement::Note &&
 				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->phrasingSlurStart() ) {
-					curTie[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->phrasingSlurStart()->clone();
-					curTie[i]->setContext( newStaff );
-					curTie[i]->setNoteStart( static_cast<CANote*>(newElt) );
+					curPhrasingSlur[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->phrasingSlurStart()->clone();
+					curPhrasingSlur[i]->setContext( newStaff );
+					curPhrasingSlur[i]->setNoteStart( static_cast<CANote*>(newElt) );
+					static_cast<CANote*>(newElt)->setPhrasingSlurStart(curPhrasingSlur[i]);					
 				}
 				if ( newElt->musElementType()==CAMusElement::Note &&
 				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->phrasingSlurEnd() ) {
-					curTie[i]->setNoteEnd( static_cast<CANote*>(newElt) );
-					curTie[i] = 0;
+					curPhrasingSlur[i]->setNoteEnd( static_cast<CANote*>(newElt) );
+					static_cast<CANote*>(newElt)->setPhrasingSlurEnd(curPhrasingSlur[i]);					
+					curPhrasingSlur[i] = 0;
 				}
 				
 				eltIdx[i]++;

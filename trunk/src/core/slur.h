@@ -35,7 +35,7 @@ public:
 		PhrasingSlurType
 	};
 	
-	CASlur( CASlurType, CASlurDirection, CAContext *c, CANote *noteStart, CANote *noteEnd=0 );
+	CASlur( CASlurType, CASlurDirection, CAContext *c, CANote *noteStart, CANote *noteEnd=0, CASlurStyle style=SlurSolid );
 	virtual ~CASlur();
 	
 	CASlur *clone();

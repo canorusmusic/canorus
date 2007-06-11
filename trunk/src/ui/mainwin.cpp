@@ -417,8 +417,8 @@ void CAMainWin::newDocument() {
 }
 
 /*!
-	Adds an already created \a sheet to the document.
 	This adds a tab to tabWidget and creates a single score viewport of the sheet.
+	It does not add the sheet to the document.
 */
 void CAMainWin::addSheet(CASheet *s) {
 	CAScoreViewPort *v = new CAScoreViewPort(s, 0);
@@ -1271,6 +1271,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			if (!v->selection().isEmpty())
 				left = v->selection().back()->musElement();
 				
+			CACanorus::createUndoCommand( document(), tr("insert barline", "undo") );
 			CABarline *bar = new CABarline(
 				CABarline::Single,
 				staff,
@@ -1278,6 +1279,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			);
 			staff->insertSignAfter(bar, left, true);	//insert the barline in all the voices
 			
+			CACanorus::pushUndoCommand();
 			CACanorus::rebuildUI(document(), v->sheet());
 			v->selectMElement(bar);
 			v->repaint();
@@ -1293,10 +1295,12 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					CADrawableMusElement *elt =
 						v->selection().back();
 					
-					//pitch note for one step higher
+					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
+						CACanorus::createUndoCommand( document(), tr("rise note", "undo") );
 						CANote *note = (CANote*)elt->musElement();
 						note->setPitch(note->pitch()+1);
+						CACanorus::pushUndoCommand();
 						CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
 					}
 				}
@@ -1313,10 +1317,12 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					CADrawableMusElement *elt =
 						v->selection().back();
 					
-					//pitch note for one step higher
+					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 						CANote *note = (CANote*)elt->musElement();
+						CACanorus::createUndoCommand( document(), tr("lower note", "undo") );
 						note->setPitch(note->pitch()-1);
+						CACanorus::pushUndoCommand();
 						CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
 					}
 				}
@@ -1334,7 +1340,9 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				if (!v->selection().isEmpty()) {
 					CAMusElement *elt = v->selection().front()->musElement();
 					if (elt->musElementType()==CAMusElement::Note) {
+						CACanorus::createUndoCommand( document(), tr("add sharp", "undo") );
 						((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
+						CACanorus::pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
 				}
@@ -1352,7 +1360,9 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				if (!v->selection().isEmpty()) {
 					CAMusElement *elt = v->selection().front()->musElement();
 					if (elt->musElementType()==CAMusElement::Note) {
+						CACanorus::createUndoCommand( document(), tr("add flat", "undo") );
 						((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
+						CACanorus::pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
 				}
@@ -1367,6 +1377,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				v->repaint();
 			} else if (mode()==EditMode) {
 				if (!((CAScoreViewPort*)v)->selection().isEmpty()) {
+					CACanorus::createUndoCommand( document(), tr("set dotted", "undo") );
 					CAMusElement *elt = ((CAScoreViewPort*)v)->selection().front()->musElement();
 					
 					if (elt->isPlayable()) {
@@ -1381,6 +1392,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 							diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
 						 
 						((CAPlayable*)elt)->voice()->updateTimesAfter(elt, diff);
+						CACanorus::pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
 				}
@@ -1898,9 +1910,11 @@ void CAMainWin::on_uiKeySigNumberOfAccs_valChanged(int accs) {
 	else if ( mode()==EditMode ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if ( v && v->selection().size() ) {
+			CACanorus::createUndoCommand( document(), tr("change number of accidentals", "undo") );		
 			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
 			if ( keySig ) {
 				keySig->setKeySignatureType( CAKeySignature::MajorMinor, accs, CAKeySignature::Major );
+				CACanorus::pushUndoCommand();
 				CACanorus::rebuildUI(document(), currentSheet());
 			}
 		}
@@ -1912,8 +1926,11 @@ void CAMainWin::on_uiKeySigNumberOfAccs_valChanged(int accs) {
 */
 void CAMainWin::on_uiVoiceName_returnPressed() {
 	CAVoice *voice = currentVoice();
-	if (voice)
+	if (voice) {
+		CACanorus::createUndoCommand( document(), tr("change voice name", "undo") );
+		CACanorus::pushUndoCommand();
 		voice->setName(uiVoiceName->text());
+	}
 }
 
 void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
@@ -1991,6 +2008,7 @@ void CAMainWin::on_syllableEdit_keyPressEvent(QKeyEvent *e, CASyllableEdit *syll
 	     e->key()==Qt::Key_Return ||
 	     e->key()==Qt::Key_Right && syllableEdit->cursorPosition()==syllableEdit->text().size() ||
 	     (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && syllableEdit->cursorPosition()==0 ) {
+		CACanorus::createUndoCommand( document(), tr("lyrics edit", "undo") );	     
 		syllable->setText(text);
 		syllable->setHyphenStart(hyphen);
 		syllable->setMelismaStart(melisma);
@@ -2005,6 +2023,7 @@ void CAMainWin::on_syllableEdit_keyPressEvent(QKeyEvent *e, CASyllableEdit *syll
 			else  if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace)                    // next left note
 				nextSyllable = syllable->lyricsContext()->findPrevMusElement(syllable);
 			
+			CACanorus::pushUndoCommand();
 			CACanorus::rebuildUI( document(), currentSheet() );
 			if (nextSyllable) {
 				CADrawableMusElement *dNextSyllable = v->selectMElement(nextSyllable);
@@ -2209,6 +2228,7 @@ void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 	if (v->document()) {
 		// CanorusML document source
+		CACanorus::createUndoCommand( document(), tr("commit CanorusML source", "undo") );
 		
 		clearUI(); 	// clear GUI before clearing the data part!
 		if ( document() )
@@ -2216,22 +2236,27 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		
 		QXmlInputSource input;
 		input.setData(inputString);
+		CACanorus::pushUndoCommand();
 		setDocument(CACanorusML::openDocument(&input, this));
 		CACanorus::rebuildUI(document());
 	} else
 	if (v->voice()) {
 		// LilyPond voice source
+		CACanorus::createUndoCommand( document(), tr("commit LilyPond source", "undo") );
 		
 		v->voice()->clear(); // clearUI is not needed, because only voice content is changed
 		
+		CACanorus::pushUndoCommand();
 		CALilyPondImport(inputString, v->voice());
 		CACanorus::rebuildUI(document(), v->voice()->staff()->sheet());
 	} else
 	if (v->lyricsContext()) {
 		// LilyPond lyrics source
+		CACanorus::createUndoCommand( document(), tr("commit LilyPond source", "undo") );
 		
 		v->lyricsContext()->clear(); // clearUI is not needed, because only voice content is changed
 		
+		CACanorus::pushUndoCommand();
 		CALilyPondImport(inputString, v->lyricsContext());
 		CACanorus::rebuildUI(document(), v->lyricsContext()->sheet());
 	}
@@ -2306,19 +2331,58 @@ void CAMainWin::on_uiRemoveSheet_triggered() {
 	CASheet *sheet = currentSheet();
 	if (sheet) {
 		CACanorus::createUndoCommand( document(), tr("deletion of the sheet", "undo") );
-		int idx = uiTabWidget->currentIndex();
-		document()->removeSheet(currentSheet());
 		CACanorus::pushUndoCommand();
-		CACanorus::rebuildUI(document());
-		if(idx < uiTabWidget->count())
-			uiTabWidget->setCurrentIndex(idx);
+		document()->removeSheet(currentSheet());
+		removeSheet(sheet);
 		delete sheet;
+	}
+}
+
+/*!
+	Removes the sheet from the GUI and deletes the viewports and viewport containers and tabs
+	pointing to the given \a sheet.
+*/
+void CAMainWin::removeSheet( CASheet *sheet ) {
+	CAViewPortContainer *vpc = _sheetMap.key(sheet);
+	_sheetMap.remove(vpc);
+	
+	// remove tab
+	int idx = uiTabWidget->indexOf(vpc);
+	uiTabWidget->removeTab( idx );
+	delete vpc;
+	if (idx < uiTabWidget->count())
+		uiTabWidget->setCurrentIndex(idx);
+	setCurrentViewPortContainer( static_cast<CAViewPortContainer*>(uiTabWidget->currentWidget()) );
+	setCurrentViewPort( static_cast<CAViewPortContainer*>(uiTabWidget->currentWidget())?static_cast<CAViewPortContainer*>(uiTabWidget->currentWidget())->currentViewPort():0 );
+	
+	// remove other viewports pointing to the sheet
+	QList<CAViewPort*> vpl = viewPortList();
+	for (int i=0; i<vpl.size(); i++) {
+		switch (vpl[i]->viewPortType()) {
+			case CAViewPort::ScoreViewPort: {
+				if (static_cast<CAScoreViewPort*>(vpl[i])->sheet()==sheet)
+					delete vpl[i];
+				break;
+			}
+			case CAViewPort::SourceViewPort: {
+				CASourceViewPort *sv = static_cast<CASourceViewPort*>(vpl[i]);
+				if (sv->voice() && sv->voice()->staff()->sheet()==sheet)
+					delete vpl[i];
+				else
+				if (sv->lyricsContext() && sv->lyricsContext()->sheet()==sheet)
+					delete vpl[i];
+				
+				break;
+			}
+		}
 	}
 }
 
 void CAMainWin::on_uiSheetName_returnPressed() {
 	CASheet *sheet = currentSheet();
 	if (sheet) {
+		CACanorus::createUndoCommand( document(), tr("change sheet name", "undo") );
+		CACanorus::pushUndoCommand();
 		sheet->setName( uiSheetName->text() );
 		uiTabWidget->setTabText(uiTabWidget->currentIndex(), sheet->name());
 	}
@@ -2329,8 +2393,11 @@ void CAMainWin::on_uiSheetName_returnPressed() {
 */
 void CAMainWin::on_uiContextName_returnPressed() {
 	CAContext *context = currentContext();
-	if (context)
+	if (context) {
+		CACanorus::createUndoCommand( document(), tr("change context name", "undo") );
+		CACanorus::pushUndoCommand();
 		context->setName(uiContextName->text());
+	}
 }
 
 /*!
@@ -2339,6 +2406,8 @@ void CAMainWin::on_uiContextName_returnPressed() {
 void CAMainWin::on_uiStaffNumberOfLines_valueChanged(int lines) {
 	CAStaff *staff = currentStaff();
 	if (staff) {
+		CACanorus::createUndoCommand( document(), tr("change number of staff lines", "undo") );
+		CACanorus::pushUndoCommand();
 		staff->setNumberOfLines(lines);
 		CACanorus::rebuildUI(document(), currentSheet());
 	}
@@ -2348,8 +2417,11 @@ void CAMainWin::on_uiStaffNumberOfLines_valueChanged(int lines) {
 	Sets the stanza number of the current lyrics context.
 */
 void CAMainWin::on_uiStanzaNumber_valueChanged(int stanzaNumber) {
-	if (currentContext() && currentContext()->contextType()==CAContext::LyricsContext)
+	if (currentContext() && currentContext()->contextType()==CAContext::LyricsContext) {
+		CACanorus::createUndoCommand( document(), tr("change stanza number", "undo") );
+		CACanorus::pushUndoCommand();
 		static_cast<CALyricsContext*>(currentContext())->setStanzaNumber( stanzaNumber );
+	}
 }
 
 /*!
@@ -2357,6 +2429,8 @@ void CAMainWin::on_uiStanzaNumber_valueChanged(int stanzaNumber) {
 */
 void CAMainWin::on_uiAssociatedVoice_currentIndexChanged(int idx) {
 	if (idx != -1 && currentContext() && currentContext()->contextType()==CAContext::LyricsContext) {
+		CACanorus::createUndoCommand( document(), tr("change associated voice", "undo") );
+		CACanorus::pushUndoCommand();
 		static_cast<CALyricsContext*>(currentContext())->setAssociatedVoice( currentSheet()->voiceList().at( idx ) );
 		CACanorus::rebuildUI( document(), currentSheet() ); // needs a rebuild if lyrics contexts are to be moved
 	}
@@ -2365,6 +2439,8 @@ void CAMainWin::on_uiAssociatedVoice_currentIndexChanged(int idx) {
 void CAMainWin::on_uiVoiceStemDirection_toggled(bool checked, int direction) {
 	CAVoice *voice = currentVoice();
 	if (voice) {
+		CACanorus::createUndoCommand( document(), tr("change voice stem direction", "undo") );
+		CACanorus::pushUndoCommand();
 		voice->setStemDirection(static_cast<CANote::CAStemDirection>(direction));
 		CACanorus::rebuildUI(document(), currentSheet());
 	}
@@ -2378,6 +2454,7 @@ void CAMainWin::on_uiNoteStemDirection_toggled(bool checked, int id) {
 	if (mode()==InsertMode)
 		_musElementFactory->setNoteStemDirection( direction );
 	else if (mode()==SelectMode || mode()==EditMode) {
+		CACanorus::createUndoCommand( document(), tr("change note stem direction", "undo") );
 		CAScoreViewPort *v = currentScoreViewPort();
 		bool changed=false;
 		for (int i=0; v && i<v->selection().size(); i++) {
@@ -2387,8 +2464,10 @@ void CAMainWin::on_uiNoteStemDirection_toggled(bool checked, int id) {
 				changed=true;
 			}
 		}
-		if (changed)
+		if (changed) {
+			CACanorus::pushUndoCommand();
 			CACanorus::rebuildUI(document(), currentSheet());
+		}
 	}
 }
 

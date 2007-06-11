@@ -40,11 +40,12 @@
 /*!
 	Default constructor.
 */
-CASlur::CASlur( CASlurType type, CASlurDirection dir, CAContext *c, CANote *noteStart, CANote *noteEnd )
+CASlur::CASlur( CASlurType type, CASlurDirection dir, CAContext *c, CANote *noteStart, CANote *noteEnd, CASlurStyle style )
  : CAMusElement( c, noteStart->timeStart(), 0 ) {
  	setMusElementType( CAMusElement::Slur );
 	setSlurDirection( dir );
 	setSlurType( type );
+	setSlurStyle( style );
 	
 	setNoteStart( noteStart );
 	setNoteEnd( noteEnd );
@@ -73,7 +74,7 @@ CASlur::~CASlur() {
 }
 
 CASlur *CASlur::clone() {
-	return new CASlur( slurType(), slurDirection(), context(), noteStart(), noteEnd() );
+	return new CASlur( slurType(), slurDirection(), context(), noteStart(), noteEnd(), slurStyle() );
 }
 
 int CASlur::compare( CAMusElement *elt ) {
