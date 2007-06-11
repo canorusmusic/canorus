@@ -28,6 +28,7 @@
 */
 CADocument::CADocument() {
 	setDateCreated( QDateTime::currentDateTime() );
+	setTimeEdited(0);
 }
 
 /*!
@@ -47,6 +48,7 @@ CADocument *CADocument::clone() {
 	newDocument->setDateLastModified( dateLastModified() );
 	newDocument->setTimeEdited( timeEdited() );
 	newDocument->setComments( comments() );
+	newDocument->setFileName( fileName() );
 	
 	for (int i=0; i<sheetCount(); i++)
 		newDocument->addSheet( sheetAt(i)->clone() );

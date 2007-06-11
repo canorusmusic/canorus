@@ -63,6 +63,7 @@ public:
 	
 	void newDocument();	
 	void addSheet(CASheet *s);
+	void removeSheet(CASheet *s);
 	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v);
 	void restartTimeEditedTime() { _timeEditedTime.restart(); };
 	
