@@ -45,9 +45,8 @@ public:
 	inline static bool containsUndoStack( CADocument *d ) { return _undoStack.contains(d); }
 	inline static void setUndoStack( CADocument *d, QUndoStack *s ) { _undoStack[d]=s; }
 	inline static QUndoStack *undoStack( CADocument* d ) { return _undoStack[d]; }
-	inline static void removeUndoStack( CADocument *d ) { _lastUndoCommand.remove(_undoStack[d]); _undoStack.remove(d); }
+	inline static void removeUndoStack( CADocument *d ) { _undoStack.remove(d); }
 	static void deleteUndoStack( CADocument *doc );
-	static void createUndoCommand( CASheet *s, QString text );
 	static void createUndoCommand( CADocument *d, QString text );
 	static void pushUndoCommand();
 	inline static CAUndoCommand *lastUndoCommand( CADocument *d ) { return static_cast<CAUndoCommand*>(_lastUndoCommand[_undoStack[d]]); }

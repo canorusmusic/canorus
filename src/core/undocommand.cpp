@@ -30,130 +30,105 @@
 	Usage of undo/redo:
 	1) Create undo stack when creating/opening a new document by calling CACanorus::createUndoStack()
 	2) Before each action (insertion, removal, editing of elements), call CACanorus::createUndoCommand() and
-	   pass the appropriate structure needed to be saved for that action.
+	   pass the current document to be saved for that action.
 	3) If the action was successful, commit the command by calling CACanorus::pushUndoCommand().
 	4) For undo/redo, simply call CACanorus::undoStack()->undo().
 	5) When closing the document, also destroy the undo stack (which also destroys all its commands) by
 	   calling CACanorus::deleteUndoStack().
 */
 
-CAUndoCommand::CAUndoCommand( CASheet *sheet, QString text )
- : QUndoCommand( text ) {
-	setUndoSheet( sheet->clone() );
-	setRedoSheet( sheet );
-	
-	setUndoDocument( 0 );
-	setRedoDocument( 0 );
-}
-
 CAUndoCommand::CAUndoCommand( CADocument *document, QString text )
  : QUndoCommand( text ) {
-	setUndoSheet( 0 );
-	setRedoSheet( 0 );
-	
 	setUndoDocument( document->clone() );
 	setRedoDocument( document );
 }
 
 CAUndoCommand::~CAUndoCommand() {
+	std::cout << "destruction of undoCommand, undoDoc=" << getUndoDocument() << ",redoDoc=" << getRedoDocument() << std::endl;
 	CACanorus::updateLastUndoCommand( this );
-	
-	if ( getUndoSheet() && (getUndoSheet()->document()->sheetList().indexOf(getUndoSheet())==-1) )
-		delete getUndoSheet();
-	
-	// delete also undoSheet, if the last on the stack
-	if ( getRedoSheet() && !(CACanorus::undoStack(getRedoSheet()->document())->count()) &&
-	     (getRedoSheet()->document()->sheetList().indexOf(getRedoSheet())==-1) )
-		delete getRedoSheet();
 	
 	if ( getUndoDocument() && (!CACanorus::mainWinCount(getUndoDocument())) )
 		delete getUndoDocument();
-
-	// delete also undoDocument, if the last on the stack
-	if ( getRedoDocument() && (!CACanorus::undoStack(getRedoDocument())->count()) &&
-	    (!CACanorus::mainWinCount(getRedoDocument())) )
+	
+	// delete also redoDocument, if the last on the stack
+	if ( getRedoDocument() && (!CACanorus::mainWinCount(getRedoDocument())) &&
+	     (
+	       CACanorus::undoStack(getUndoDocument()) && (!CACanorus::undoStack(getUndoDocument())->count()) ||
+	       CACanorus::undoStack(getRedoDocument()) && (!CACanorus::undoStack(getRedoDocument())->count())
+	     )
+	   )
 		delete getRedoDocument();
 }
 
 void CAUndoCommand::undo() {
-	if ( getRedoSheet() ) {
-		CAUndoCommand::undoSheet( getRedoSheet(), getUndoSheet() );
-	} else if ( getRedoDocument() ) {
-		CAUndoCommand::undoDocument( getRedoDocument(), getUndoDocument() );
-	}
+	CAUndoCommand::undoDocument( getRedoDocument(), getUndoDocument() );
 }
 
 void CAUndoCommand::redo() {
-	if ( getRedoSheet() ) {
-		CAUndoCommand::undoSheet( getUndoSheet(), getRedoSheet() );
-	} else if ( getRedoDocument() ) {
-		CAUndoCommand::undoDocument( getUndoDocument(), getRedoDocument() );
-	}
+	CAUndoCommand::undoDocument( getUndoDocument(), getRedoDocument() );
 }
 
-void CAUndoCommand::undoSheet( CASheet *current, CASheet *newSheet ) {
-	CADocument *doc = current->document();
-	// set document's sheet to point to cloned sheet
-	for (int i=0; i<doc->sheetCount(); i++) {
-		if (doc->sheetAt(i)==current) {
-			doc->setSheetAt(i, newSheet);
-			break;
-		}
-	}
-	
-	// update viewports to point to the new sheet and its sub-elements (contexts, voices etc.)
-	QList<CAMainWin*> mainWinList = CACanorus::findMainWin( doc );
-	for (int i=0; i<mainWinList.size(); i++) {
-		QList<CAViewPort*> viewPortList = mainWinList[i]->viewPortList();
-		for (int j=0; j<viewPortList.size(); j++) {
-			switch (viewPortList[j]->viewPortType()) {
-				case CAViewPort::ScoreViewPort:
-					if (static_cast<CAScoreViewPort*>(viewPortList[j])->sheet()==current)
-						static_cast<CAScoreViewPort*>(viewPortList[j])->setSheet( newSheet );
-					break;
-				case CAViewPort::SourceViewPort: {
-					CASourceViewPort *sv = static_cast<CASourceViewPort*>(viewPortList[j]);
-					if ( sv->voice() &&
-					     sv->voice()->staff()->sheet()==current ) {
-						if (current->voiceList().indexOf(sv->voice()) < newSheet->voiceList().size())
-							// set the new voice
-							sv->setVoice( newSheet->voiceList().at(current->voiceList().indexOf(sv->voice())) );
-						else
-							// or close the viewport if not available
-							delete sv;
-					}
-					if ( sv->lyricsContext() &&
-					     sv->lyricsContext()->sheet()==current ) {
-						if (current->contextList().indexOf(sv->lyricsContext()) < newSheet->contextList().size() &&
-						    newSheet->contextList().at(current->contextList().indexOf(sv->lyricsContext()))->contextType()==CAContext::LyricsContext )
-							// set the new lyrics context
-							sv->setLyricsContext( static_cast<CALyricsContext*>(newSheet->contextList().at(current->contextList().indexOf(sv->lyricsContext()))) );
-						else
-							// or close the viewport if not available
-							delete sv;
-					}
-					
-					break;
-				}
-			}
-		}
-	}
-	
-}
-
+/*!
+	Creates the actual undo (switches the pointers of the document) and updates the GUI.
+	The updating GUI part is quite complicated as it has to update all viewports showing
+	the right structure and sub-structure (eg. voice with the same index in the new document).
+*/
 void CAUndoCommand::undoDocument( CADocument *current, CADocument *newDocument ) {
+	std::cout << "current=" << current << ",newDocument=" << newDocument << std::endl;
+	QHash< CASheet*, CASheet* > sheetMap;       // map old->new sheets
+	QHash< CAContext*, CAContext* > contextMap; // map old->new contexts
+	QHash< CAVoice*, CAVoice* > voiceMap;       // map old->new voices
+	
+	for (int i=0; i<newDocument->sheetCount() && i<current->sheetCount(); i++) {
+		sheetMap[current->sheetAt(i)] = newDocument->sheetAt(i);
+		for (int j=0; j<newDocument->sheetAt(i)->contextCount() && j<current->sheetAt(i)->contextCount(); j++) {
+			contextMap[current->sheetAt(i)->contextAt(j)] = newDocument->sheetAt(i)->contextAt(j);
+		}
+		for (int j=0; j<newDocument->sheetAt(i)->voiceCount() && j<current->sheetAt(i)->voiceCount(); j++) {
+			voiceMap[current->sheetAt(i)->voiceAt(j)] = newDocument->sheetAt(i)->voiceAt(j);
+		}
+	}
+	
 	QList<CAMainWin*> mainWinList = CACanorus::findMainWin( current );
 	for (int i=0; i<mainWinList.size(); i++) {
 		QList<CAViewPort*> viewPortList = mainWinList[i]->viewPortList();
 		for (int j=0; j<viewPortList.size(); j++) {
 			switch (viewPortList[j]->viewPortType()) {
-				case CAViewPort::ScoreViewPort:
+				case CAViewPort::ScoreViewPort: {
+					CAScoreViewPort *sv = static_cast<CAScoreViewPort*>(viewPortList[j]);
+					if ( sheetMap.contains(sv->sheet()) )
+						sv->setSheet( sheetMap[sv->sheet()] );
+					else
+						delete viewPortList[j];
+					
 					break;
+				}
 				case CAViewPort::SourceViewPort: {
 					CASourceViewPort *sv = static_cast<CASourceViewPort*>(viewPortList[j]);
-					if ( sv->document() &&
-					     sv->document()==current ) {
-						sv->setDocument( newDocument );
+					if ( sv->voice() ) {
+						if (voiceMap.contains(sv->voice()))
+							// set the new voice
+							sv->setVoice( voiceMap[sv->voice()] );
+						else
+							// or close the viewport if not available
+							delete sv;
+					}
+					if ( sv->lyricsContext() ) {
+						if ( contextMap.contains(sv->lyricsContext()) &&
+						     contextMap[sv->lyricsContext()]->contextType()==CAContext::LyricsContext )
+							// set the new lyrics context
+							sv->setLyricsContext( static_cast<CALyricsContext*>( contextMap[sv->lyricsContext()] ) );
+						else
+							// or close the viewport if not available
+							delete sv;
+					}
+					if ( sv->document() ) {
+						if (sv->document()==current)
+							// set the new document
+							sv->setDocument( newDocument );
+						else
+							// or close the viewport if not available
+							delete sv;
 					}
 					break;
 				}

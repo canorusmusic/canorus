@@ -245,8 +245,14 @@ QList<CAMainWin*> CACanorus::findMainWin(CADocument *document) {
 void CACanorus::deleteUndoStack( CADocument *doc ) {
 	clearUndoCommand();
 	QUndoStack *stack = undoStack(doc);
-	_lastUndoCommand.remove(stack);
 	delete stack;
+	
+	// clear lastUndo commands and prevUndoCommands
+	QList<CAUndoCommand*> prevCommandKeys = _lastUndoCommand.values();
+	_lastUndoCommand.remove(stack);
+	for (int i=0; i<prevCommandKeys.size(); i++)
+		_prevUndoCommands.remove(prevCommandKeys[i]);
+	
 	removeUndoStack( doc );
 }
 
@@ -259,17 +265,12 @@ void CACanorus::pushUndoCommand() {
 	if (!_undoCommand)
 		return;
 	
-	CADocument *d = (_undoCommand->getRedoDocument()?_undoCommand->getRedoDocument():_undoCommand->getRedoSheet()->document());
-	_undoStack[d]->push( _undoCommand ); // push the command on stack and delete commands after it if any (also updated lastUndoCommand hash needed later)
-	CAUndoCommand *lastUndoCommand = _lastUndoCommand[_undoStack[d]];
+	CADocument *d = _undoCommand->getRedoDocument();
+	undoStack(d)->push( _undoCommand ); // push the command on stack and delete commands after it if any (also updated lastUndoCommand hash needed later)
+	QUndoStack *s = undoStack(d);
+	CAUndoCommand *lastUndoCommand = _lastUndoCommand[ undoStack(d) ];
 	
 	if (lastUndoCommand) {
-		if (_undoCommand->getRedoSheet() && lastUndoCommand->getRedoSheet())
-			lastUndoCommand->setRedoSheet( _undoCommand->getUndoSheet() );
-		else
-		if (_undoCommand->getRedoDocument() && lastUndoCommand->getRedoSheet())
-			lastUndoCommand->setRedoSheet( _undoCommand->getUndoDocument()->sheetAt(_undoCommand->getRedoDocument()->sheetList().indexOf( lastUndoCommand->getRedoSheet()) ));
-		else
 		if (_undoCommand->getRedoDocument() && lastUndoCommand->getRedoDocument())
 			lastUndoCommand->setRedoDocument( _undoCommand->getUndoDocument() );
 		_prevUndoCommands[_undoCommand] = lastUndoCommand;
@@ -287,7 +288,7 @@ void CACanorus::updateLastUndoCommand( CAUndoCommand *c ) {
 	if (!_prevUndoCommands.contains(c))
 		return;
 	
-	CADocument *doc = (c->getUndoDocument()?c->getUndoDocument():c->getUndoSheet()->document());
+	CADocument *doc = c->getUndoDocument();
 	_lastUndoCommand[ undoStack(doc) ] = _prevUndoCommands[c];
 	_prevUndoCommands.remove(c);
 }
@@ -298,23 +299,10 @@ void CACanorus::updateLastUndoCommand( CAUndoCommand *c ) {
 */
 void CACanorus::clearUndoCommand() {
 	if ( _undoCommand ) {
-		_undoCommand->setUndoSheet(0); _undoCommand->setRedoSheet(0);
 		_undoCommand->setUndoDocument(0); _undoCommand->setRedoDocument(0);
 		delete _undoCommand;
 		_undoCommand = 0;
 	}
-}
-
-/*!
-	Creates an undo command which is later put on the stack.
-	This function is usually called when making changes to the sheet in the score -
-	all changes ranging from creation/removal/editing of music elements and contexts to changing sheet properties. 
-	
-	\warning This function is not thread-safe. createUndoCommand() and pushUndoCommand() should be called from the same thread.
-*/
-void CACanorus::createUndoCommand( CASheet *s, QString text ) {
-	clearUndoCommand();
-	_undoCommand = new CAUndoCommand( s, text );
 }
 
 /*!

@@ -658,29 +658,15 @@ void CAMainWin::on_uiNewDocument_triggered() {
 
 void CAMainWin::on_uiUndo_triggered() {
 	if ( document() && CACanorus::undoStack( document() )->canUndo() ) {
-		CADocument *oldDocument = document();
 		CACanorus::undoStack( document() )->undo();
-		if ( oldDocument==document() ) {
-			// only sheet was undone
-			CACanorus::rebuildUI( document(), 0 );
-		} else {
-			// the whole document changed
-			CACanorus::rebuildUI( document() );
-		}
+		CACanorus::rebuildUI( document(), 0 );
 	}
 }
 
 void CAMainWin::on_uiRedo_triggered() {
 	if ( document() && CACanorus::undoStack( document() )->canRedo() ) {
-		CADocument *oldDocument = document();
 		CACanorus::undoStack( document() )->redo();
-		if ( oldDocument==document() ) {
-			// only sheet was undone
-			CACanorus::rebuildUI( document(), 0 );
-		} else {
-			// the whole document changed
-			CACanorus::rebuildUI( document() );
-		}
+		CACanorus::rebuildUI( document(), 0 );
 	}
 }
 
@@ -725,7 +711,7 @@ void CAMainWin::on_uiNewVoice_triggered() {
 		stemDirection = CANote::StemDown;
 	}
 	
-	CACanorus::createUndoCommand( staff->sheet(), tr("new voice", "undo") );
+	CACanorus::createUndoCommand( document(), tr("new voice", "undo") );
 	if (staff)
 		staff->addVoice(new CAVoice(staff, staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 ), voiceNumber, stemDirection));
 	
@@ -757,7 +743,7 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 			QMessageBox::No);
 		
 		if (ret == QMessageBox::Yes) {
-			CACanorus::createUndoCommand( voice->staff()->sheet(), tr("voice removal", "undo") );
+			CACanorus::createUndoCommand( document(), tr("voice removal", "undo") );
 			currentScoreViewPort()->clearSelection();
 			uiVoiceNum->setMax( voice->staff()->voiceCount()-1 );
 			uiVoiceNum->setRealValue( voice->staff()->voiceCount()-1 );
@@ -781,7 +767,7 @@ void CAMainWin::on_uiRemoveContext_triggered() {
 			QMessageBox::No);
 		
 		if (ret == QMessageBox::Yes) {
-			CACanorus::createUndoCommand( context->sheet(), tr("context removal", "undo") );
+			CACanorus::createUndoCommand( document(), tr("context removal", "undo") );
 			CASheet *sheet = context->sheet();
 			sheet->removeContext(context);
 			CACanorus::pushUndoCommand();			
@@ -1039,7 +1025,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				CADrawableContext *dupContext = v->nearestUpContext(coords.x(), coords.y());
 				switch(uiContextType->currentId()) {
 					case CAContext::Staff: {
-						CACanorus::createUndoCommand( v->sheet(), tr("new staff", "undo"));
+						CACanorus::createUndoCommand( document(), tr("new staff", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CAStaff(
@@ -1051,7 +1037,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						break;
 					}
 					case CAContext::LyricsContext: {
-						CACanorus::createUndoCommand( v->sheet(), tr("new lyrics context", "undo"));
+						CACanorus::createUndoCommand( document(), tr("new lyrics context", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CALyricsContext(
@@ -1064,7 +1050,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						break;
 					}
 					case CAContext::FunctionMarkingContext: {
-						CACanorus::createUndoCommand( v->sheet(), tr("new function marking context", "undo"));
+						CACanorus::createUndoCommand( document(), tr("new function marking context", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CAFunctionMarkingContext(
@@ -1405,7 +1391,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		case Qt::Key_Delete:
 		case Qt::Key_Backspace:
 			if ( v->selection().size() ) {
-				CACanorus::createUndoCommand( v->sheet(), tr("deletion of elements", "undo") );
+				CACanorus::createUndoCommand( document(), tr("deletion of elements", "undo") );
 				
 				QSet<CAMusElement*> musElemSet;
 				for (int i=0; i<v->selection().size(); i++)
@@ -1503,7 +1489,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	if (!drawableContext)
 		return;
 	
-	CACanorus::createUndoCommand( currentSheet(), tr("insertion of music element", "undo") );
+	CACanorus::createUndoCommand( document(), tr("insertion of music element", "undo") );
 	
 	switch ( _musElementFactory->musElementType() ) {
 		case CAMusElement::Clef: {
