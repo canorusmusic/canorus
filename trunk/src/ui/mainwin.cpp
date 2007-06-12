@@ -661,6 +661,7 @@ void CAMainWin::on_uiUndo_triggered() {
 	if ( document() && CACanorus::undoStack( document() )->canUndo() ) {
 		CACanorus::undoStack( document() )->undo();
 		CACanorus::rebuildUI( document(), 0 );
+		on_uiVoiceNum_valChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
 	}
 }
 
@@ -668,6 +669,7 @@ void CAMainWin::on_uiRedo_triggered() {
 	if ( document() && CACanorus::undoStack( document() )->canRedo() ) {
 		CACanorus::undoStack( document() )->redo();
 		CACanorus::rebuildUI( document(), 0 );
+		on_uiVoiceNum_valChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
 	}
 }
 
@@ -717,9 +719,8 @@ void CAMainWin::on_uiNewVoice_triggered() {
 		staff->addVoice(new CAVoice(staff, staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 ), voiceNumber, stemDirection));
 	
 	CACanorus::pushUndoCommand();
-	uiVoiceNum->setMax(staff->voiceCount());
-	uiVoiceNum->setRealValue( staff->voiceCount() );
 	CACanorus::rebuildUI(document(), currentSheet());
+	uiVoiceNum->setRealValue( staff->voiceCount() );
 }
 
 /*!
@@ -746,9 +747,8 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 		if (ret == QMessageBox::Yes) {
 			CACanorus::createUndoCommand( document(), tr("voice removal", "undo") );
 			currentScoreViewPort()->clearSelection();
-			uiVoiceNum->setMax( voice->staff()->voiceCount()-1 );
 			uiVoiceNum->setRealValue( voice->staff()->voiceCount()-1 );
-			delete voice;
+			delete voice; // also removes voice from the staff
 			CACanorus::pushUndoCommand();
 			CACanorus::rebuildUI(document(), currentSheet());
 		}
@@ -1013,8 +1013,6 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				}
 				std::cout << std::endl;
 			}
-			
-			setMode( mode() );
 			
 			break;
 		}
@@ -2516,9 +2514,10 @@ void CAMainWin::updateVoiceToolBar() {
 		CAStaff *staff = static_cast<CAStaff*>(context);
 		uiNewVoice->setEnabled(true);
 		if (staff->voiceCount()) {
+			uiVoiceNum->setMax(staff->voiceCount());
 			int voiceNr = uiVoiceNum->getRealValue();
 			if (voiceNr) {
-				CAVoice *curVoice = staff->voiceAt(voiceNr-1);
+				CAVoice *curVoice = (voiceNr<=staff->voiceCount()?staff->voiceAt(voiceNr-1):staff->voiceAt(0));
 				uiVoiceName->setText(curVoice->name());
 				uiVoiceName->setEnabled(true);
 				uiRemoveVoice->setEnabled(true);
