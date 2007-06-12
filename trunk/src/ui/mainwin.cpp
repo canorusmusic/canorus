@@ -547,6 +547,7 @@ void CAMainWin::on_uiCloseCurrentView_triggered() {
 
 void CAMainWin::on_uiCloseDocument_triggered() {
 	if ( CACanorus::mainWinCount(document()) == 1 ) {
+			CACanorus::deleteUndoStack( document() ); 
 			delete document();
 	}
 	setDocument( 0 );
@@ -676,12 +677,12 @@ void CAMainWin::on_uiRedo_triggered() {
 	\sa CACanorus::undoStack()
 */
 void CAMainWin::updateUndoRedoButtons() {
-	if ( CACanorus::undoStack( document() )->canUndo() )
+	if ( CACanorus::undoStack( document() ) && CACanorus::undoStack( document() )->canUndo() )
 		uiUndo->setEnabled(true);
 	else
 		uiUndo->setEnabled(false);
-		
-	if ( CACanorus::undoStack( document() )->canRedo() )
+	
+	if ( CACanorus::undoStack( document() ) && CACanorus::undoStack( document() )->canRedo() )
 		uiRedo->setEnabled(true);
 	else
 		uiRedo->setEnabled(false);
