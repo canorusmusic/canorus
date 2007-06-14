@@ -2079,16 +2079,22 @@ void CAMainWin::on_uiFMEllipse_toggled(bool checked) {
 
 
 void CAMainWin::on_uiSlurType_toggled( bool checked, int buttonId ) {
+	// remember previous muselement type so we can return to previous state after
+	CAMusElement::CAMusElementType prevMusEltType =
+		musElementFactory()->musElementType();
+	
 	// Read currently selected entry from tool button menu
 	CASlur::CASlurType slurType =
 		static_cast<CASlur::CASlurType>(buttonId);
-		
-	_musElementFactory->setMusElementType( CAMusElement::Slur );
+	
+	musElementFactory()->setMusElementType( CAMusElement::Slur );
 	
 	// New clef type
 	_musElementFactory->setSlurType( slurType );
 	
 	insertMusElementAt( QPoint(0,0), currentScoreViewPort() ); // inserts a slur or tie and quits the insert mode
+	
+	musElementFactory()->setMusElementType( prevMusEltType );
 }
 
 void CAMainWin::on_uiClefType_toggled(bool checked, int buttonId) {
