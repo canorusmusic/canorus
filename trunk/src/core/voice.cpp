@@ -13,6 +13,7 @@
 #include "core/rest.h"
 #include "core/playable.h"
 #include "core/lyricscontext.h"
+#include "core/slur.h"
 
 /*!
 	\class CAVoice
@@ -152,6 +153,11 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, 
 	
 	int i;
 	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != eltAfter); i++);
+	
+	// if element wasn't found and the element before is slur
+	if ( eltAfter->musElementType()==CAMusElement::Slur && i==_musElementList.size() )
+		for (i=0; (i<_musElementList.size() && _musElementList[i] != static_cast<CASlur*>(eltAfter)->noteStart()); i++);
+	
 	if (i==_musElementList.size())
 		if (!force)
 			return false;
@@ -198,6 +204,11 @@ bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, 
 	
 	int i;
 	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != eltBefore); i++);
+	
+	// if element wasn't found and the element before is slur
+	if ( eltBefore->musElementType()==CAMusElement::Slur && i==_musElementList.size() )
+		for (i=0; (i<_musElementList.size() && _musElementList[i] != static_cast<CASlur*>(eltBefore)->noteStart()); i++);
+	
 	if (i==_musElementList.size()) {
 		if (!force)
 			return false;
