@@ -1869,6 +1869,15 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	
 	QString s = fileNames[0];
 	
+	// clear existing document
+	if ( document() && (CACanorus::mainWinCount(document()) == 1) ) {
+		CACanorus::deleteUndoStack( document() ); 
+		delete document();
+	}
+	
+	setDocument(new CADocument());
+	CACanorus::setUndoStack( document(), new QUndoStack() );
+	
 	if (CAPluginManager::importFilterExists(uiImportDialog->selectedFilter()))
 		CAPluginManager::importAction(uiImportDialog->selectedFilter(), document(), fileNames[0]);
 	else {
