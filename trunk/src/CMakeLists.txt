@@ -313,6 +313,7 @@ IF(USE_RUBY)
 ENDIF(USE_RUBY)
 IF(USE_PYTHON)
 	ADD_DEFINITIONS(-DUSE_PYTHON)
+	ADD_DEFINITIONS(-DSWIG_PYTHON_SILENT_MEMLEAK) # don't output memory leak warnings when creating new elements - we still use them in Canorus later and destroy them there!
 ENDIF(USE_PYTHON)
 
 ####################################

@@ -99,8 +99,9 @@ CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
 		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
 		
 	QDir::setCurrent( resourcesLocations[0] ); /// \todo Button and menu icons by default look at the current working directory as their resource path only. QResource::addSearchPath() doesn't work for external icons. Any other ideas? -Matevz
-	// Initialize widgets
-	setupUi( this );
+	// Create the GUI (actions, toolbars, menus etc.)
+	createCustomActions();
+	setupUi( this ); // initialize elements created by Qt Designer
 	setupCustomUi();
 	QDir::setCurrent( currentPath );
 
@@ -129,10 +130,11 @@ CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
 	CAPluginManager::enablePlugins(this);
 	
 	// Connects MIDI IN callback function to a local slot
-	connect( CACanorus::midiDevice(), SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(on_midiInEvent( QVector<unsigned char> )) );
+	connect( CACanorus::midiDevice(), SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(onMidiInEvent( QVector<unsigned char> )) );
 	
 	// Connect QTimer so it increases the local document edited time every second
-	connect( &_timeEditedTimer, SIGNAL(timeout()), this, SLOT(on_timeEditedTimer_timeout()) );
+	restartTimeEditedTime();
+	connect( &_timeEditedTimer, SIGNAL(timeout()), this, SLOT(onTimeEditedTimerTimeout()) );
 	_timeEditedTimer.start(1000);
 	
 	setDocument( 0 );
@@ -157,6 +159,173 @@ CAMainWin::~CAMainWin()  {
 	delete uiFMToolBar; delete uiFMFunction; delete uiFMChordArea; delete uiFMTonicDegree; delete uiFMEllipse;
 }
 
+void CAMainWin::createCustomActions() {
+	// Toolbars
+	uiInsertToolBar = new QToolBar( tr("Insert ToolBar"), this );
+	uiContextType = new CAMenuToolButton( tr("Select Context" ), 3, this );
+		uiContextType->setObjectName( "uiContextType" );
+		uiContextType->addButton( QIcon("images/staffnew.svg"), CAContext::Staff, tr("New Staff") );
+		uiContextType->addButton( QIcon("images/lyricscontextnew.svg"), CAContext::LyricsContext, tr("New Lyrics context") );
+		uiContextType->addButton( QIcon("images/fmcontextnew.svg"), CAContext::FunctionMarkingContext, tr("New Function Marking context") );
+		uiContextType->setCurrentId( CAContext::Staff );
+	uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this );
+		uiSlurType->setObjectName( "uiSlurType" );
+		uiSlurType->addButton( QIcon("images/tie.svg"), CASlur::TieType, tr("Tie") );
+		uiSlurType->addButton( QIcon("images/slur.svg"), CASlur::SlurType, tr("Slur") );
+		uiSlurType->addButton( QIcon("images/phrasingslur.svg"), CASlur::PhrasingSlurType, tr("Phrasing Slur") );
+		uiSlurType->setCurrentId( CASlur::TieType );
+		uiSlurType->defaultAction()->setCheckable(false);
+	uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this );
+		uiClefType->setObjectName( "uiClefType" );
+		uiClefType->addButton( QIcon("images/cleftreble.svg"), CAClef::Treble, tr("Treble Clef") );
+		uiClefType->addButton( QIcon("images/clefbass.svg"), CAClef::Bass, tr("Bass Clef") );
+		uiClefType->addButton( QIcon("images/clefalto.svg"), CAClef::Alto, tr("Alto Clef") );
+		uiClefType->setCurrentId( CAClef::Treble );
+	uiTimeSigType = new CAMenuToolButton( tr("Select Time Signature" ), 3, this );
+		uiTimeSigType->setObjectName( "uiTimeSigType" );
+		uiTimeSigType->addButton( QIcon("images/tsc.svg"), TS_44 );
+		uiTimeSigType->addButton( QIcon("images/tsab.svg"), TS_22 );
+		uiTimeSigType->addButton( QIcon("images/ts34.svg"), TS_34 );
+		uiTimeSigType->addButton( QIcon("images/ts24.svg"), TS_24 );
+		uiTimeSigType->addButton( QIcon("images/ts38.svg"), TS_38 );
+		uiTimeSigType->addButton( QIcon("images/ts68.svg"), TS_68 );
+		uiTimeSigType->addButton( QIcon("images/tscustom.svg"), TS_CUSTOM );			
+		uiTimeSigType->setCurrentId( TS_44 );
+	uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 4, this ));
+		uiBarlineType->setObjectName( "uiBarlineType" );
+		uiBarlineType->addButton( QIcon("images/barlinesingle.svg"), CABarline::Single, tr("Single Barline") );
+		uiBarlineType->addButton( QIcon("images/barlinedouble.svg"), CABarline::Double, tr("Double Barline") );
+		uiBarlineType->addButton( QIcon("images/barlineend.svg"), CABarline::End, tr("End Barline") );
+		uiBarlineType->addButton( QIcon("images/barlinedotted.svg"), CABarline::Dotted, tr("Dotted Barline") );
+		uiBarlineType->addButton( QIcon("images/barlinerepeatopen.svg"), CABarline::RepeatOpen, tr("Repeat Open") );
+		uiBarlineType->addButton( QIcon("images/barlinerepeatclose.svg"), CABarline::RepeatClose, tr("Repeat Closed") );
+		uiBarlineType->addButton( QIcon("images/barlinerepeatcloseopen.svg"), CABarline::RepeatCloseOpen, tr("Repeat Closed-Open") );
+		uiBarlineType->setCurrentId( CABarline::Single );
+	
+	uiSheetToolBar = new QToolBar( tr("Sheet ToolBar"), this );
+	uiSheetName = new QLineEdit(this);
+	uiSheetName->setObjectName( "uiSheetName" );
+	
+	uiContextToolBar = new QToolBar( tr("Context ToolBar"), this );
+	uiContextName = new QLineEdit(this);
+		uiContextName->setObjectName( "uiContextName" );
+		uiContextName->setToolTip(tr("Context name"));
+	uiStaffNumberOfLines = new QSpinBox(this);
+		uiStaffNumberOfLines->setObjectName( "uiStaffNumberOfLines" );
+		uiStaffNumberOfLines->setToolTip(tr("Number of lines"));
+		uiStaffNumberOfLines->hide();
+	uiStanzaNumber = new QSpinBox(this);
+		uiStanzaNumber->setObjectName( "uiStanzaNumber" );
+		uiStanzaNumber->setToolTip(tr("Stanza number"));
+		uiStanzaNumber->hide();
+	uiAssociatedVoice = new QComboBox(this);
+		// Warning! disconnect and reconnect is also done in updateContextToolBar()!
+		uiAssociatedVoice->setObjectName( "uiAssociatedVoice" );
+		uiAssociatedVoice->setToolTip(tr("Associated voice"));
+		uiAssociatedVoice->hide();
+	
+	uiVoiceToolBar = new QToolBar( tr("Voice ToolBar"), this );
+	uiVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" );
+		uiVoiceNum->setObjectName( "uiVoiceNum" );
+		uiVoiceNum->setToolTip(tr("Current Voice number"));
+	uiVoiceName = new QLineEdit( this );
+		uiVoiceName->setObjectName( "uiVoiceName" );
+		uiVoiceName->setToolTip(tr("Voice name"));
+	uiVoiceStemDirection = new CAMenuToolButton( tr("Select Voice Stem Direction" ), 3, this );
+		uiVoiceStemDirection->setObjectName( "uiVoiceStemDirection" );
+		uiVoiceStemDirection->setToolTip(tr("Voice stem direction"));
+		uiVoiceStemDirection->addButton( QIcon("images/notestemneutral.svg"), CANote::StemNeutral, tr("Voice Stems Neutral") );
+		uiVoiceStemDirection->addButton( QIcon("images/notestemup.svg"), CANote::StemUp, tr("Voice Stems Up") );
+		uiVoiceStemDirection->addButton( QIcon("images/notestemdown.svg"), CANote::StemDown, tr("Voice Stems Down") );
+		uiVoiceStemDirection->defaultAction()->setCheckable(false);
+	
+	uiPlayableToolBar = new QToolBar( tr("Playable ToolBar"), this );
+	uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this );
+		uiPlayableLength->setObjectName( "uiPlayableLength" );
+		uiPlayableLength->setToolTip(tr("Playable length"));
+		uiPlayableLength->addButton( QIcon("images/n0.svg"), CANote::Breve, tr("Breve Length") );
+		uiPlayableLength->addButton( QIcon("images/n1.svg"), CANote::Whole, tr("Whole Length") );
+		uiPlayableLength->addButton( QIcon("images/n2.svg"), CANote::Half, tr("Half Length") );
+		uiPlayableLength->addButton( QIcon("images/n4.svg"), CANote::Quarter, tr("Quarter Length") );
+		uiPlayableLength->addButton( QIcon("images/n8.svg"), CANote::Eighth, tr("Eighth Length") );
+		uiPlayableLength->addButton( QIcon("images/n16.svg"), CANote::Sixteenth, tr("Sixteenth Length") );
+		uiPlayableLength->addButton( QIcon("images/n32.svg"), CANote::ThirtySecond, tr("ThirtySecond Length") );
+		uiPlayableLength->addButton( QIcon("images/n64.svg"), CANote::SixtyFourth, tr("SixtyFourth Length") );
+		uiPlayableLength->defaultAction()->setCheckable(false);
+		uiPlayableLength->setCurrentId( CANote::Quarter );
+	uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this );
+		uiNoteStemDirection->setObjectName( "uiNoteStemDirection" );
+		uiNoteStemDirection->setToolTip(tr("Note stem direction"));		
+		uiNoteStemDirection->addButton( QIcon("images/notestemneutral.svg"), CANote::StemNeutral, tr("Note Stem Neutral") );
+		uiNoteStemDirection->addButton( QIcon("images/notestemup.svg"), CANote::StemUp, tr("Note Stem Up") );
+		uiNoteStemDirection->addButton( QIcon("images/notestemdown.svg"), CANote::StemDown, tr("Note Stem Down") );
+		uiNoteStemDirection->addButton( QIcon("images/notestemvoice.svg"), CANote::StemPreferred, tr("Note Stem Preferred") );
+		uiNoteStemDirection->defaultAction()->setCheckable(false);
+		uiNoteStemDirection->setCurrentId( CANote::StemPreferred );
+	
+	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
+	uiKeySigNumberOfAccs = new QSpinBox(this);
+		uiKeySigNumberOfAccs->setObjectName( "uiKeySigNumberOfAccs" );
+		uiKeySigNumberOfAccs->setToolTip( tr("Number of Accidentals") );
+		uiKeySigNumberOfAccs->setRange( -7, 7 );
+		uiKeySigNumberOfAccs->setValue( 0 );
+	
+	uiTimeSigToolBar = new QToolBar( tr("Time Signature ToolBar"), this );
+	uiTimeSigBeats = new QSpinBox(this);
+		uiTimeSigBeats->setObjectName( "uiTimeSigBeats" );
+		uiTimeSigBeats->setMinimum( 1 );
+		uiTimeSigBeats->setValue( 4 );
+		uiTimeSigBeats->setToolTip( tr("Number of beats") );
+		uiTimeSigSlash = new QLabel( "/", this );
+		uiTimeSigSlash->setObjectName( "uiTimeSigSlash" );
+		uiTimeSigBeat = new QSpinBox(this);
+		uiTimeSigBeat->setObjectName( "uiTimeSigBeat" );
+		uiTimeSigBeat->setMinimum( 1 );
+		uiTimeSigBeat->setValue( 4 );
+		uiTimeSigBeat->setToolTip( tr("Beat") );
+	
+	uiFMToolBar = new QToolBar( tr("Function marking ToolBar"), this );
+	uiFMFunction = new CAMenuToolButton( tr("Select Function Name"), 8, this );
+		uiFMFunction->setObjectName( "uiFMFunction" );
+		uiFMFunction->addButton( QIcon("images/fmt.svg"), CAFunctionMarking::T, tr("Tonic") );
+		uiFMFunction->addButton( QIcon("images/fms.svg"), CAFunctionMarking::S, tr("Subdominant") );
+		uiFMFunction->addButton( QIcon("images/fmd.svg"), CAFunctionMarking::D, tr("Dominant") );
+		uiFMFunction->addButton( QIcon("images/fmii.svg"), CAFunctionMarking::II, tr("II") );
+		uiFMFunction->addButton( QIcon("images/fmiii.svg"), CAFunctionMarking::III, tr("III") );
+		uiFMFunction->addButton( QIcon("images/fmvi.svg"), CAFunctionMarking::VI, tr("VI") );
+		uiFMFunction->addButton( QIcon("images/fmvii.svg"), CAFunctionMarking::VII, tr("VII") );
+		uiFMFunction->addButton( QIcon("images/fmk.svg"), CAFunctionMarking::K, tr("Cadenze") );
+		uiFMFunction->addButton( QIcon("images/fmot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
+		uiFMFunction->addButton( QIcon("images/fmos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
+		uiFMFunction->addButton( QIcon("images/fmn.svg"), CAFunctionMarking::N, tr("Napolitan") );
+		uiFMFunction->addButton( QIcon("images/fmf.svg"), CAFunctionMarking::F, tr("Phrygian") );
+		uiFMFunction->addButton( QIcon("images/fml.svg"), CAFunctionMarking::L, tr("Lydian") );
+		uiFMFunction->addButton( QIcon("images/fmiv.svg"), CAFunctionMarking::IV, tr("IV") );
+		uiFMFunction->addButton( QIcon("images/fmv.svg"), CAFunctionMarking::V, tr("V") );
+		uiFMFunction->setCurrentId( CAFunctionMarking::T );
+	uiFMChordArea = new CAMenuToolButton( tr("Select Chord Area"), 3, this );
+		uiFMChordArea->setObjectName( "uiFMChordArea" );
+		uiFMChordArea->addButton( QIcon("images/fmpt.svg"), CAFunctionMarking::T, tr("Tonic") );
+		uiFMChordArea->addButton( QIcon("images/fmps.svg"), CAFunctionMarking::S, tr("Subdominant") );
+		uiFMChordArea->addButton( QIcon("images/fmpd.svg"), CAFunctionMarking::D, tr("Dominant") );
+		uiFMChordArea->addButton( QIcon("images/fmpot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
+		uiFMChordArea->addButton( QIcon("images/fmpos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
+		uiFMChordArea->setCurrentId( CAFunctionMarking::T );
+	uiFMTonicDegree = new CAMenuToolButton( tr("Select Tonic Degree"), 7, this );
+		uiFMTonicDegree->setObjectName( "uiFMTonicDegree" );
+		uiFMTonicDegree->defaultAction()->setCheckable( false );
+		uiFMTonicDegree->addButton( QIcon("images/fmt.svg"), CAFunctionMarking::T, tr("Tonic") );
+		uiFMTonicDegree->addButton( QIcon("images/fmot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
+		uiFMTonicDegree->addButton( QIcon("images/fmii.svg"), CAFunctionMarking::II, tr("II") );
+		uiFMTonicDegree->addButton( QIcon("images/fmiii.svg"), CAFunctionMarking::III, tr("III") );
+		uiFMTonicDegree->addButton( QIcon("images/fms.svg"), CAFunctionMarking::S, tr("Subdominant") );
+		uiFMTonicDegree->addButton( QIcon("images/fmos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
+		uiFMTonicDegree->addButton( QIcon("images/fmd.svg"), CAFunctionMarking::D, tr("Dominant") );
+		uiFMTonicDegree->addButton( QIcon("images/fmvi.svg"), CAFunctionMarking::VI, tr("VI") );
+		uiFMTonicDegree->addButton( QIcon("images/fmvii.svg"), CAFunctionMarking::VII, tr("VII") );
+		uiFMTonicDegree->setCurrentId( CAFunctionMarking::T );
+}
+
 /*!
 	Creates more complex widgets and layouts that cannot be created using Qt Designer (like adding
 	custom toolbars to main window, button boxes etc.).
@@ -170,199 +339,72 @@ void CAMainWin::setupCustomUi() {
 	uiFileToolBar->hide();
 	uiStandardToolBar->updateGeometry();
 	
-	// Toolbars
-	uiInsertToolBar = new QToolBar( tr("Insert ToolBar"), this );
-		uiInsertToolBar->addAction( uiSelectMode );
-		uiInsertToolBar->addSeparator();		
-		uiInsertToolBar->addWidget( uiContextType = new CAMenuToolButton( tr("Select Context" ), 3, this ));
-			uiContextType->addButton( QIcon("images/staffnew.svg"), CAContext::Staff, tr("New Staff") );
-			uiContextType->addButton( QIcon("images/lyricscontextnew.svg"), CAContext::LyricsContext, tr("New Lyrics context") );
-			uiContextType->addButton( QIcon("images/fmcontextnew.svg"), CAContext::FunctionMarkingContext, tr("New Function Marking context") );
-			uiContextType->setCurrentId( CAContext::Staff );
-			connect( uiContextType, SIGNAL( toggled(bool, int) ), this, SLOT( on_uiContextType_toggled(bool, int) ) );
-			connect( uiNewContext, SIGNAL( triggered() ), uiContextType, SLOT( click() ) );
-		uiInsertToolBar->addSeparator();
-		uiInsertToolBar->addAction( uiInsertPlayable );
-		uiInsertToolBar->addWidget( uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this ) );
-			connect( uiSlurType, SIGNAL(toggled(bool, int)), this, SLOT( on_uiSlurType_toggled(bool, int) ) );
-			uiSlurType->addButton( QIcon("images/tie.svg"), CASlur::TieType, tr("Tie") );
-			uiSlurType->addButton( QIcon("images/slur.svg"), CASlur::SlurType, tr("Slur") );
-			uiSlurType->addButton( QIcon("images/phrasingslur.svg"), CASlur::PhrasingSlurType, tr("Phrasing Slur") );
-			uiSlurType->setCurrentId( CASlur::TieType );
-			uiSlurType->defaultAction()->setCheckable(false);
-		uiInsertToolBar->addWidget(uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this ));
-			uiClefType->addButton( QIcon("images/cleftreble.svg"), CAClef::Treble, tr("Treble Clef") );
-			uiClefType->addButton( QIcon("images/clefbass.svg"), CAClef::Bass, tr("Bass Clef") );
-			uiClefType->addButton( QIcon("images/clefalto.svg"), CAClef::Alto, tr("Alto Clef") );
-			uiClefType->setCurrentId( CAClef::Treble );
-			connect( uiClefType, SIGNAL( toggled(bool, int) ), this, SLOT( on_uiClefType_toggled(bool, int) ) );
-			connect( uiInsertClef, SIGNAL( triggered() ), uiClefType, SLOT( click() ) );
-		uiInsertToolBar->addAction( uiInsertKeySig );
-		uiInsertToolBar->addWidget(uiTimeSigType = new CAMenuToolButton( tr("Select Time Signature" ), 3, this ));
-			uiTimeSigType->addButton( QIcon("images/tsc.svg"), TS_44 );
-			uiTimeSigType->addButton( QIcon("images/tsab.svg"), TS_22 );
-			uiTimeSigType->addButton( QIcon("images/ts34.svg"), TS_34 );
-			uiTimeSigType->addButton( QIcon("images/ts24.svg"), TS_24 );
-			uiTimeSigType->addButton( QIcon("images/ts38.svg"), TS_38 );
-			uiTimeSigType->addButton( QIcon("images/ts68.svg"), TS_68 );
-			uiTimeSigType->addButton( QIcon("images/tscustom.svg"), TS_CUSTOM );			
-			uiTimeSigType->setCurrentId( TS_44 );
-			connect( uiTimeSigType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiTimeSigType_toggled(bool, int)) );
-			connect( uiInsertTimeSig, SIGNAL(triggered()), uiTimeSigType, SLOT(click()));
-		uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 4, this ));
-			uiBarlineType->addButton( QIcon("images/barlinesingle.svg"), CABarline::Single, tr("Single Barline") );
-			uiBarlineType->addButton( QIcon("images/barlinedouble.svg"), CABarline::Double, tr("Double Barline") );
-			uiBarlineType->addButton( QIcon("images/barlineend.svg"), CABarline::End, tr("End Barline") );
-			uiBarlineType->addButton( QIcon("images/barlinedotted.svg"), CABarline::Dotted, tr("Dotted Barline") );
-			uiBarlineType->addButton( QIcon("images/barlinerepeatopen.svg"), CABarline::RepeatOpen, tr("Repeat Open") );
-			uiBarlineType->addButton( QIcon("images/barlinerepeatclose.svg"), CABarline::RepeatClose, tr("Repeat Closed") );
-			uiBarlineType->addButton( QIcon("images/barlinerepeatcloseopen.svg"), CABarline::RepeatCloseOpen, tr("Repeat Closed-Open") );
-			uiBarlineType->setCurrentId( CABarline::Single );
-			connect( uiBarlineType, SIGNAL(toggled(bool, int)), this, SLOT(on_uiBarlineType_toggled(bool, int)) );
-			connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
-		uiInsertToolBar->addAction( uiInsertSyllable );
-		uiInsertToolBar->addAction( uiInsertFM );
-		addToolBar(Qt::LeftToolBarArea, uiInsertToolBar);
+	// Insert Toolbar
+	uiInsertToolBar->addAction( uiSelectMode );
+	uiInsertToolBar->addSeparator();		
+	uiInsertToolBar->addWidget( uiContextType );
+	connect( uiNewContext, SIGNAL( triggered() ), uiContextType, SLOT( click() ) );
+	uiInsertToolBar->addSeparator();
+	uiInsertToolBar->addAction( uiInsertPlayable );
+	uiInsertToolBar->addWidget( uiSlurType );
+	uiInsertToolBar->addWidget( uiClefType );
+	connect( uiInsertClef, SIGNAL( triggered() ), uiClefType, SLOT( click() ) );
+	uiInsertToolBar->addAction( uiInsertKeySig );
+	uiInsertToolBar->addWidget( uiTimeSigType );
+	connect( uiInsertTimeSig, SIGNAL(triggered()), uiTimeSigType, SLOT(click()));
+	uiInsertToolBar->addWidget( uiBarlineType );
+	connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
+	uiInsertToolBar->addAction( uiInsertSyllable );
+	uiInsertToolBar->addAction( uiInsertFM );
+	addToolBar(Qt::LeftToolBarArea, uiInsertToolBar);
 	
-	uiSheetToolBar = new QToolBar( tr("Sheet ToolBar"), this );
-		uiSheetToolBar->addAction( uiNewSheet );
-		uiSheetToolBar->addWidget( uiSheetName = new QLineEdit(this) );
-			connect( uiSheetName, SIGNAL( returnPressed() ), this, SLOT( on_uiSheetName_returnPressed() ) );
-		uiSheetToolBar->addAction( uiRemoveSheet );
-		uiSheetToolBar->addAction( uiSheetProperties );
-		addToolBar(Qt::TopToolBarArea, uiSheetToolBar);
+	// Sheet Toolbar
+	uiSheetToolBar->addAction( uiNewSheet );
+	uiSheetToolBar->addWidget( uiSheetName );
+	uiSheetToolBar->addAction( uiRemoveSheet );
+	uiSheetToolBar->addAction( uiSheetProperties );
+	addToolBar(Qt::TopToolBarArea, uiSheetToolBar);
 	
-	uiContextToolBar = new QToolBar( tr("Context ToolBar"), this );
-		uiContextToolBar->addWidget( uiContextName = new QLineEdit(this) );
-			connect( uiContextName, SIGNAL( returnPressed() ), this, SLOT( on_uiContextName_returnPressed() ) );
-			uiContextName->setToolTip(tr("Context name"));
-		uiContextToolBar->addWidget( uiStaffNumberOfLines = new QSpinBox(this) );
-			connect( uiStaffNumberOfLines, SIGNAL(valueChanged(int)), this, SLOT(on_uiStaffNumberOfLines_valueChanged(int)) );
-			uiStaffNumberOfLines->setToolTip(tr("Number of lines"));
-			uiStaffNumberOfLines->hide();
-		uiContextToolBar->addWidget( uiStanzaNumber = new QSpinBox(this) );
-			connect( uiStanzaNumber, SIGNAL(valueChanged(int)), this, SLOT(on_uiStanzaNumber_valueChanged(int)) );
-			uiStanzaNumber->setToolTip(tr("Stanza number"));
-			uiStanzaNumber->hide();
-		uiContextToolBar->addWidget( uiAssociatedVoice = new QComboBox(this) );
-			// Warning! disconnect and reconnect is also done in updateContextToolBar()!
-			connect( uiAssociatedVoice, SIGNAL(currentIndexChanged(int)), this, SLOT(on_uiAssociatedVoice_currentIndexChanged(int)) );
-			uiAssociatedVoice->setToolTip(tr("Associated voice"));
-			uiAssociatedVoice->hide();
-		uiContextToolBar->addAction( uiRemoveContext );
-		uiContextToolBar->addAction( uiContextProperties );
-		addToolBar(Qt::TopToolBarArea, uiContextToolBar);
+	// Context Toolbar
+	uiContextToolBar->addWidget( uiContextName );
+	uiContextToolBar->addWidget( uiStaffNumberOfLines );
+	uiContextToolBar->addWidget( uiStanzaNumber );
+	uiContextToolBar->addWidget( uiAssociatedVoice );
+	uiContextToolBar->addAction( uiRemoveContext );
+	uiContextToolBar->addAction( uiContextProperties );
+	addToolBar(Qt::TopToolBarArea, uiContextToolBar);
 	
-	uiVoiceToolBar = new QToolBar( tr("Voice ToolBar"), this );
-		uiVoiceToolBar->addAction( uiNewVoice );
-		uiVoiceToolBar->addWidget( uiVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" ) );
-			uiVoiceNum->setToolTip(tr("Current Voice number"));
-			connect( uiVoiceNum, SIGNAL( valChanged( int ) ), this, SLOT(on_uiVoiceNum_valChanged( int ) ) );
-		uiVoiceToolBar->addWidget( uiVoiceName = new QLineEdit( this ) );
-			uiVoiceName->setToolTip(tr("Voice name"));
-			connect( uiVoiceName, SIGNAL(returnPressed()), this, SLOT(on_uiVoiceName_returnPressed()) );			
-		uiVoiceToolBar->addAction( uiRemoveVoice );
-		uiVoiceToolBar->addWidget(uiVoiceStemDirection = new CAMenuToolButton( tr("Select Voice Stem Direction" ), 3, this ));
-			connect( uiVoiceStemDirection, SIGNAL(toggled(bool, int)), this, SLOT(on_uiVoiceStemDirection_toggled(bool, int)) );
-			uiVoiceStemDirection->setToolTip(tr("Voice stem direction"));
-			uiVoiceStemDirection->addButton( QIcon("images/notestemneutral.svg"), CANote::StemNeutral, tr("Voice Stems Neutral") );
-			uiVoiceStemDirection->addButton( QIcon("images/notestemup.svg"), CANote::StemUp, tr("Voice Stems Up") );
-			uiVoiceStemDirection->addButton( QIcon("images/notestemdown.svg"), CANote::StemDown, tr("Voice Stems Down") );
-			uiVoiceStemDirection->defaultAction()->setCheckable(false);
-		uiVoiceToolBar->addAction( uiVoiceProperties );
-		addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
-		
-	uiPlayableToolBar = new QToolBar( tr("Playable ToolBar"), this );
-		uiPlayableToolBar->addWidget(uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this ));
-			connect( uiPlayableLength, SIGNAL(toggled(bool, int)), this, SLOT(on_uiPlayableLength_toggled(bool, int)) );
-			uiPlayableLength->setToolTip(tr("Playable length"));
-			uiPlayableLength->addButton( QIcon("images/n0.svg"), CANote::Breve, tr("Breve Length") );
-			uiPlayableLength->addButton( QIcon("images/n1.svg"), CANote::Whole, tr("Whole Length") );
-			uiPlayableLength->addButton( QIcon("images/n2.svg"), CANote::Half, tr("Half Length") );
-			uiPlayableLength->addButton( QIcon("images/n4.svg"), CANote::Quarter, tr("Quarter Length") );
-			uiPlayableLength->addButton( QIcon("images/n8.svg"), CANote::Eighth, tr("Eighth Length") );
-			uiPlayableLength->addButton( QIcon("images/n16.svg"), CANote::Sixteenth, tr("Sixteenth Length") );
-			uiPlayableLength->addButton( QIcon("images/n32.svg"), CANote::ThirtySecond, tr("ThirtySecond Length") );
-			uiPlayableLength->addButton( QIcon("images/n64.svg"), CANote::SixtyFourth, tr("SixtyFourth Length") );
-			uiPlayableLength->defaultAction()->setCheckable(false);
-			uiPlayableLength->setCurrentId( CANote::Quarter );
-		uiPlayableToolBar->addAction( uiAccsVisible );
-		uiPlayableToolBar->addWidget(uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this ));
-			connect( uiNoteStemDirection, SIGNAL(toggled(bool, int)), this, SLOT(on_uiNoteStemDirection_toggled(bool, int)) );
-			uiNoteStemDirection->setToolTip(tr("Note stem direction"));		
-			uiNoteStemDirection->addButton( QIcon("images/notestemneutral.svg"), CANote::StemNeutral, tr("Note Stem Neutral") );
-			uiNoteStemDirection->addButton( QIcon("images/notestemup.svg"), CANote::StemUp, tr("Note Stem Up") );
-			uiNoteStemDirection->addButton( QIcon("images/notestemdown.svg"), CANote::StemDown, tr("Note Stem Down") );
-			uiNoteStemDirection->addButton( QIcon("images/notestemvoice.svg"), CANote::StemPreferred, tr("Note Stem Preferred") );
-			uiNoteStemDirection->defaultAction()->setCheckable(false);
-			uiNoteStemDirection->setCurrentId( CANote::StemPreferred );
-		uiPlayableToolBar->addAction( uiHiddenRest );
-		addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
+	// Voice Toolbar
+	uiVoiceToolBar->addAction( uiNewVoice );
+	uiVoiceToolBar->addWidget( uiVoiceNum );
+	uiVoiceToolBar->addWidget( uiVoiceName );
+	uiVoiceToolBar->addAction( uiRemoveVoice );
+	uiVoiceToolBar->addWidget( uiVoiceStemDirection );
+	uiVoiceToolBar->addAction( uiVoiceProperties );
+	addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
 	
-	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
-		uiKeySigToolBar->addWidget( uiKeySigNumberOfAccs = new QSpinBox(this) );
-		uiKeySigNumberOfAccs->setToolTip( tr("Number of Accidentals") );
-		uiKeySigNumberOfAccs->setRange( -7, 7 );
-		uiKeySigNumberOfAccs->setValue( 0 );
-		connect( uiKeySigNumberOfAccs, SIGNAL(valueChanged(int)), this, SLOT(on_uiKeySigNumberOfAccs_valChanged(int)) );
-		addToolBar(Qt::TopToolBarArea, uiKeySigToolBar);
+	// Playable Toolbar
+	uiPlayableToolBar->addWidget( uiPlayableLength );
+	uiPlayableToolBar->addAction( uiAccsVisible );
+	uiPlayableToolBar->addWidget(uiNoteStemDirection );
+	uiPlayableToolBar->addAction( uiHiddenRest );
+	addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
-	uiTimeSigToolBar = new QToolBar( tr("Time Signature ToolBar"), this );
-		uiTimeSigToolBar->addWidget( uiTimeSigBeats = new QSpinBox(this) );
-		uiTimeSigBeats->setMinimum( 1 );
-		uiTimeSigBeats->setValue( 4 );
-		uiTimeSigBeats->setToolTip( tr("Number of beats") );
-		connect( uiTimeSigBeats, SIGNAL(valueChanged(int)), this, SLOT(on_uiTimeSigBeats_valChanged(int)) );
-		uiTimeSigToolBar->addWidget( uiTimeSigSlash = new QLabel( "/", this ) );
-		uiTimeSigToolBar->addWidget( uiTimeSigBeat = new QSpinBox(this) );
-		uiTimeSigBeat->setMinimum( 1 );
-		uiTimeSigBeat->setValue( 4 );
-		uiTimeSigBeat->setToolTip( tr("Beat") );
-		connect( uiTimeSigBeat, SIGNAL(valueChanged(int)), this, SLOT(on_uiTimeSigBeat_valChanged(int)) );
-		addToolBar(Qt::TopToolBarArea, uiTimeSigToolBar);
+	// KeySig Toolbar
+	uiKeySigToolBar->addWidget( uiKeySigNumberOfAccs );
+	addToolBar(Qt::TopToolBarArea, uiKeySigToolBar);
 	
-	uiFMToolBar = new QToolBar( tr("Function marking ToolBar"), this );
-		uiFMToolBar->addWidget( uiFMFunction = new CAMenuToolButton( tr("Select Function Name"), 8, this ) );
-			connect( uiFMFunction, SIGNAL(toggled(bool, int)), this, SLOT(on_uiFMFunction_toggled(bool, int)) );
-			uiFMFunction->addButton( QIcon("images/fmt.svg"), CAFunctionMarking::T, tr("Tonic") );
-			uiFMFunction->addButton( QIcon("images/fms.svg"), CAFunctionMarking::S, tr("Subdominant") );
-			uiFMFunction->addButton( QIcon("images/fmd.svg"), CAFunctionMarking::D, tr("Dominant") );
-			uiFMFunction->addButton( QIcon("images/fmii.svg"), CAFunctionMarking::II, tr("II") );
-			uiFMFunction->addButton( QIcon("images/fmiii.svg"), CAFunctionMarking::III, tr("III") );
-			uiFMFunction->addButton( QIcon("images/fmvi.svg"), CAFunctionMarking::VI, tr("VI") );
-			uiFMFunction->addButton( QIcon("images/fmvii.svg"), CAFunctionMarking::VII, tr("VII") );
-			uiFMFunction->addButton( QIcon("images/fmk.svg"), CAFunctionMarking::K, tr("Cadenze") );
-			uiFMFunction->addButton( QIcon("images/fmot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
-			uiFMFunction->addButton( QIcon("images/fmos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
-			uiFMFunction->addButton( QIcon("images/fmn.svg"), CAFunctionMarking::N, tr("Napolitan") );
-			uiFMFunction->addButton( QIcon("images/fmf.svg"), CAFunctionMarking::F, tr("Phrygian") );
-			uiFMFunction->addButton( QIcon("images/fml.svg"), CAFunctionMarking::L, tr("Lydian") );
-			uiFMFunction->addButton( QIcon("images/fmiv.svg"), CAFunctionMarking::IV, tr("IV") );
-			uiFMFunction->addButton( QIcon("images/fmv.svg"), CAFunctionMarking::V, tr("V") );
-			uiFMFunction->setCurrentId( CAFunctionMarking::T );
-		uiFMToolBar->addWidget( uiFMChordArea = new CAMenuToolButton( tr("Select Chord Area"), 3, this ) );
-			connect( uiFMChordArea, SIGNAL(toggled(bool, int)), this, SLOT(on_uiFMChordArea_toggled(bool, int)) );
-			uiFMChordArea->addButton( QIcon("images/fmpt.svg"), CAFunctionMarking::T, tr("Tonic") );
-			uiFMChordArea->addButton( QIcon("images/fmps.svg"), CAFunctionMarking::S, tr("Subdominant") );
-			uiFMChordArea->addButton( QIcon("images/fmpd.svg"), CAFunctionMarking::D, tr("Dominant") );
-			uiFMChordArea->addButton( QIcon("images/fmpot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
-			uiFMChordArea->addButton( QIcon("images/fmpos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
-			uiFMChordArea->setCurrentId( CAFunctionMarking::T );
-		uiFMToolBar->addWidget( uiFMTonicDegree = new CAMenuToolButton( tr("Select Tonic Degree"), 7, this ) );
-			uiFMTonicDegree->defaultAction()->setCheckable( false );
-			connect( uiFMTonicDegree, SIGNAL(toggled(bool, int)), this, SLOT(on_uiFMTonicDegree_toggled(bool, int)) );
-			uiFMTonicDegree->addButton( QIcon("images/fmt.svg"), CAFunctionMarking::T, tr("Tonic") );
-			uiFMTonicDegree->addButton( QIcon("images/fmot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
-			uiFMTonicDegree->addButton( QIcon("images/fmii.svg"), CAFunctionMarking::II, tr("II") );
-			uiFMTonicDegree->addButton( QIcon("images/fmiii.svg"), CAFunctionMarking::III, tr("III") );
-			uiFMTonicDegree->addButton( QIcon("images/fms.svg"), CAFunctionMarking::S, tr("Subdominant") );
-			uiFMTonicDegree->addButton( QIcon("images/fmos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
-			uiFMTonicDegree->addButton( QIcon("images/fmd.svg"), CAFunctionMarking::D, tr("Dominant") );
-			uiFMTonicDegree->addButton( QIcon("images/fmvi.svg"), CAFunctionMarking::VI, tr("VI") );
-			uiFMTonicDegree->addButton( QIcon("images/fmvii.svg"), CAFunctionMarking::VII, tr("VII") );
-			uiFMTonicDegree->setCurrentId( CAFunctionMarking::T );
-		uiFMToolBar->addAction( uiFMEllipse );
-		addToolBar(Qt::TopToolBarArea, uiFMToolBar);
+	// TimeSig Toolbar
+	uiTimeSigToolBar->addWidget( uiTimeSigBeats );
+	uiTimeSigToolBar->addWidget( uiTimeSigSlash );
+	uiTimeSigToolBar->addWidget( uiTimeSigBeat );
+	addToolBar(Qt::TopToolBarArea, uiTimeSigToolBar);
+	
+	// Function marking Toolbar
+	uiFMToolBar->addWidget( uiFMFunction );
+	uiFMToolBar->addWidget( uiFMChordArea );
+	uiFMToolBar->addWidget( uiFMTonicDegree );
+	addToolBar(Qt::TopToolBarArea, uiFMToolBar);
 	
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
@@ -602,7 +644,7 @@ void CAMainWin::initViewPort(CAViewPort *v) {
 			connect( v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAScoreViewPort *)),
 			         this, SLOT(scoreViewPortKeyPress(QKeyEvent *, CAScoreViewPort *)) );
 			connect( static_cast<CAScoreViewPort*>(v)->syllableEdit(), SIGNAL(CAKeyPressEvent(QKeyEvent*, CASyllableEdit*)),
-			         this, SLOT(on_syllableEdit_keyPressEvent(QKeyEvent*, CASyllableEdit*)) );
+			         this, SLOT(onSyllableEditKeyPressEvent(QKeyEvent*, CASyllableEdit*)) );
 			break;
 		}
 		case CAViewPort::SourceViewPort: {
@@ -661,7 +703,7 @@ void CAMainWin::on_uiUndo_triggered() {
 	if ( document() && CACanorus::undoStack( document() )->canUndo() ) {
 		CACanorus::undoStack( document() )->undo();
 		CACanorus::rebuildUI( document(), 0 );
-		on_uiVoiceNum_valChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
+		onUiVoiceNumValChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
 	}
 }
 
@@ -669,7 +711,7 @@ void CAMainWin::on_uiRedo_triggered() {
 	if ( document() && CACanorus::undoStack( document() )->canRedo() ) {
 		CACanorus::undoStack( document() )->redo();
 		CACanorus::rebuildUI( document(), 0 );
-		on_uiVoiceNum_valChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
+		onUiVoiceNumValChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
 	}
 }
 
@@ -1641,8 +1683,8 @@ void CAMainWin::keyPressEvent(QKeyEvent *e) {
 	Called every second when timeEditedTimer has timeout.
 	Increases the locally stored time the document is being edited.
 */
-void CAMainWin::on_timeEditedTimer_timeout() {
-	_timeEditedTime.addSecs(1);
+void CAMainWin::onTimeEditedTimerTimeout() {
+	_timeEditedTime++;
 }
 
 /*!
@@ -1804,7 +1846,7 @@ bool CAMainWin::saveDocument(QString fileName) {
 	QFile file(fileName);
 	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		QTextStream out(&file);
-		document()->setTimeEdited( document()->timeEdited() + _timeEditedTime.elapsed()/1000 );
+		document()->setTimeEdited( document()->timeEdited() + _timeEditedTime );
 		document()->setDateLastModified( QDateTime::currentDateTime() );
 		CACanorusML::saveDocument(document(), out);
 		document()->setFileName(fileName);
@@ -1817,7 +1859,7 @@ bool CAMainWin::saveDocument(QString fileName) {
 		return false;
 }
 
-void CAMainWin::on_midiInEvent( QVector<unsigned char> m) {
+void CAMainWin::onMidiInEvent( QVector<unsigned char> m) {
 	std::cout << "MidiInEvent: ";
 	for (int i=0; i<m.size(); i++)
 		std::cout << m[i] << " ";
@@ -1894,7 +1936,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 /*!
 	Called when a user changes the current voice number.
 */
-void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
+void CAMainWin::onUiVoiceNumValChanged(int voiceNr) {
 	updateVoiceToolBar();
 	if ( currentScoreViewPort() ) {
 		if ( voiceNr &&
@@ -1912,7 +1954,7 @@ void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
 /*!
 	Changes the number of accidentals.
 */
-void CAMainWin::on_uiKeySigNumberOfAccs_valChanged(int accs) {
+void CAMainWin::on_uiKeySigNumberOfAccs_valueChanged(int accs) {
 	if (mode()==InsertMode)
 		_musElementFactory->setKeySigNumberOfAccs( accs );
 	else if ( mode()==EditMode ) {
@@ -1985,7 +2027,7 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 		- escape key is pressed - hides the syllable edit and cancels any changes to syllable
 	
 */
-void CAMainWin::on_syllableEdit_keyPressEvent(QKeyEvent *e, CASyllableEdit *syllableEdit) {
+void CAMainWin::onSyllableEditKeyPressEvent(QKeyEvent *e, CASyllableEdit *syllableEdit) {
 	if (!currentScoreViewPort()) return;
 	
 	CAScoreViewPort *v = currentScoreViewPort();
@@ -2121,7 +2163,7 @@ void CAMainWin::on_uiClefType_toggled(bool checked, int buttonId) {
 	}
 }
 
-void CAMainWin::on_uiTimeSigBeats_valChanged(int beats) {
+void CAMainWin::on_uiTimeSigBeats_valueChanged(int beats) {
 	if (mode()==InsertMode) {
 		_musElementFactory->setTimeSigBeats( beats );
 		if (uiTimeSigBeats->value()==4 && uiTimeSigBeat->value()==4)
@@ -2150,7 +2192,7 @@ void CAMainWin::on_uiTimeSigBeats_valChanged(int beats) {
 	}
 }
 
-void CAMainWin::on_uiTimeSigBeat_valChanged(int beat) {
+void CAMainWin::on_uiTimeSigBeat_valueChanged(int beat) {
 	if (mode()==InsertMode) {
 		_musElementFactory->setTimeSigBeat( beat );
 		if (uiTimeSigBeats->value()==4 && uiTimeSigBeat->value()==4)

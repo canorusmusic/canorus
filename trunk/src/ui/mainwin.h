@@ -65,7 +65,7 @@ public:
 	void addSheet(CASheet *s);
 	void removeSheet(CASheet *s);
 	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v);
-	void restartTimeEditedTime() { _timeEditedTime.restart(); };
+	void restartTimeEditedTime() { _timeEditedTime = 0; };
 	
 	bool openDocument(QString fileName);
 	bool saveDocument(QString fileName);
@@ -164,17 +164,17 @@ private slots:
 	void on_uiPlayableLength_toggled(bool, int);
 	void on_uiNoteStemDirection_toggled(bool, int);
 	void on_uiHiddenRest_toggled( bool checked );
-	void on_midiInEvent( QVector<unsigned char> message );
+	void onMidiInEvent( QVector<unsigned char> message );
 	
 	// Key Signature
-	void on_uiKeySigNumberOfAccs_valChanged(int);
+	void on_uiKeySigNumberOfAccs_valueChanged(int);
 	
 	// Time Signature
-	void on_uiTimeSigBeats_valChanged(int);
-	void on_uiTimeSigBeat_valChanged(int);
+	void on_uiTimeSigBeats_valueChanged(int);
+	void on_uiTimeSigBeat_valueChanged(int);
 	
 	// Lyrics
-	void on_syllableEdit_keyPressEvent(QKeyEvent *, CASyllableEdit*);
+	void onSyllableEditKeyPressEvent(QKeyEvent *, CASyllableEdit*);
 	
 	// Function marking
 	void on_uiFMFunction_toggled(bool, int);
@@ -186,7 +186,7 @@ private slots:
 	void on_uiSettings_triggered();
 	
 	// Voice
-	void on_uiVoiceNum_valChanged(int);
+	void onUiVoiceNumValChanged(int);
 	void on_uiVoiceName_returnPressed();
 	void on_uiRemoveVoice_triggered();
 	void on_uiVoiceStemDirection_toggled(bool, int);
@@ -216,7 +216,7 @@ private slots:
 	void scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v);
 	void sourceViewPortCommit(QString inputString, CASourceViewPort*);
 	
-	void on_timeEditedTimer_timeout();
+	void onTimeEditedTimerTimeout();
 	
 	void playbackFinished();
 	//void on_repaintTimer_timeout();	///Used for repaint events
@@ -250,13 +250,14 @@ private:
 	
 	CAPlayback *_playback;
 	QTimer _timeEditedTimer;
-	QTime  _timeEditedTime;
+	unsigned int  _timeEditedTime;
 	CAMusElementFactory *_musElementFactory;
 	inline CAMusElementFactory *musElementFactory() { return _musElementFactory; }
 	
 	///////////////////////////////////////////////////////////////////////////
 	// Pure user interface - widgets that weren't created by Qt Designer yet //
 	///////////////////////////////////////////////////////////////////////////
+	void createCustomActions();
 	void setupCustomUi();
 	void initViewPort(CAViewPort*);
 	void updateUndoRedoButtons();
