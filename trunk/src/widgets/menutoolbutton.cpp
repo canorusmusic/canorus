@@ -11,8 +11,11 @@
 #include <QWheelEvent>
 #include <QMainWindow>
 #include <QToolBar>
-#include <iostream> // debug
+#include <QStyle>
+#include <QStyleOptionToolButton>
+
 #include "widgets/menutoolbutton.h"
+#include "ui/mainwin.h"
 
 /*!
 	\class CAMenuToolButton
@@ -43,6 +46,7 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	setMargin( 0 );
 	setCheckable( true );
 	setNumIconsPerRow( numIconsRow );
+	setMainWin( parent?dynamic_cast<CAMainWin*>(parent):0 );
 	
 	// Size policy: Expanding / Expanding
     QSizePolicy boxSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
@@ -52,7 +56,8 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
     boxSizePolicy.setHeightForWidth( widgetSizePolicy.hasHeightForWidth() );
     
     // Visual group box for the button menu
-	_groupBox = new QGroupBox( title, parent );
+	_groupBox = new QGroupBox( title, 0 );
+	_groupBox->setWindowFlags(Qt::Popup);
 	_groupBox->hide();
     boxSizePolicy.setHeightForWidth( _groupBox->sizePolicy().hasHeightForWidth() );
     _groupBox->setSizePolicy( boxSizePolicy );
@@ -68,16 +73,10 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	// Abstract group for mutual exclusive toggle
 	_buttonGroup = new QButtonGroup( _groupBox );
 	
-	setMenu( _menu = new QMenu(this) );
 	setPopupMode( QToolButton::MenuButtonPopup );
 	
-	connect( _menu, SIGNAL(aboutToShow()), this, SLOT(showButtons()) );
 	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 
 	         this, SLOT( hideButtons( int ) ) );
-#ifdef Q_WS_X11
-	/// \todo Button menu hides before its buttonPressed() is emitted on Mac and Windows
-	connect( _menu, SIGNAL(aboutToHide()), this, SLOT(hideButtons()) );
-#endif
 	
 	// Action for our button menu as icon or nothing will be seen
 	QAction *action = new QAction(this);
@@ -99,6 +98,23 @@ CAMenuToolButton::~CAMenuToolButton() {
 		delete _buttonList[i];
 	delete _buttonGroup;
 	delete _groupBox;
+}
+
+/*!
+	This function is overriden here in order to show buttons when clicked on the arrow.
+*/
+void CAMenuToolButton::mousePressEvent( QMouseEvent *e ) {
+	QStyleOptionToolButton opt;
+    opt.init(this);	
+	opt.subControls |= QStyle::SC_ToolButtonMenu;
+	opt.features |= QStyleOptionToolButton::Menu;
+    
+	QRect popupr = style()->subControlRect(QStyle::CC_ToolButton, &opt,
+	                                       QStyle::SC_ToolButtonMenu, this);
+	if (popupr.isValid() && popupr.contains(e->pos())) {
+		showButtons();
+	}
+	QToolButton::mousePressEvent(e);
 }
 
 /*!
@@ -151,37 +167,36 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString 
 	\warning Coordinates of groupBox are calculated according to its parent (main window) and not this parent (QToolBar).
 */	
 void CAMenuToolButton::showButtons() {
-	QMainWindow *mainWin = dynamic_cast<QMainWindow*>(_groupBox->parent());
 	QToolBar *toolBar = dynamic_cast<QToolBar*>(parent());
 	int x=0, y=0;
-	if (mainWin && toolBar) {
+	if (mainWin() && toolBar) {
 		_groupBox->move(0,0);	// reset groupBox position, otherwise the positions translations get messed up. -Itay
-		QPoint topLeft = mapTo(mainWin, QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
+		QPoint topLeft = mapToGlobal(QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
 		
 		// Set buttons box coordinates which fit on the main window
-		if (mainWin->toolBarArea(toolBar) == Qt::LeftToolBarArea) {
-			if (topLeft.x() + width() + _groupBox->width() > mainWin->width()) x = mainWin->width() - _groupBox->width();
+		if (mainWin()->toolBarArea(toolBar) == Qt::LeftToolBarArea) {
+			if (topLeft.x() + width() + _groupBox->width() > mainWin()->width()) x = mainWin()->width() - _groupBox->width();
 			else x = topLeft.x() + width();
 			
-			if (topLeft.y() + _groupBox->height() > mainWin->height()) y = mainWin->height() - _groupBox->height();
+			if (topLeft.y() + _groupBox->height() > mainWin()->height()) y = mainWin()->height() - _groupBox->height();
 			else y = topLeft.y();
 		} else
-		if (mainWin->toolBarArea(toolBar) == Qt::TopToolBarArea) {
-			if (topLeft.x() + _groupBox->width() > mainWin->width()) x = mainWin->width() - _groupBox->width();
+		if (mainWin()->toolBarArea(toolBar) == Qt::TopToolBarArea) {
+			if (topLeft.x() + _groupBox->width() > mainWin()->width()) x = mainWin()->width() - _groupBox->width();
 			else x = topLeft.x();
 			
-			if (topLeft.y() + height() + _groupBox->height() > mainWin->height()) y = mainWin->height() - _groupBox->height();
+			if (topLeft.y() + height() + _groupBox->height() > mainWin()->height()) y = mainWin()->height() - _groupBox->height();
 			else y = topLeft.y() + height();
 		} else
-		if (mainWin->toolBarArea(toolBar) == Qt::RightToolBarArea) {
+		if (mainWin()->toolBarArea(toolBar) == Qt::RightToolBarArea) {
 			if (topLeft.x() - width() - _groupBox->width() < 0) x = 0;
 			else x = topLeft.x() - _groupBox->width();
 			
-			if (topLeft.y() + _groupBox->height() > mainWin->height()) y = mainWin->height() - _groupBox->height();
+			if (topLeft.y() + _groupBox->height() > mainWin()->height()) y = mainWin()->height() - _groupBox->height();
 			else y = topLeft.y();
 		} else
-		if (mainWin->toolBarArea(toolBar) == Qt::BottomToolBarArea) {
-			if (topLeft.x() + _groupBox->width() > mainWin->width()) x = mainWin->width() - _groupBox->width();
+		if (mainWin()->toolBarArea(toolBar) == Qt::BottomToolBarArea) {
+			if (topLeft.x() + _groupBox->width() > mainWin()->width()) x = mainWin()->width() - _groupBox->width();
 			else x = topLeft.x();
 			
 			if (topLeft.y() - _groupBox->height() < 0) y = 0;
@@ -197,7 +212,7 @@ void CAMenuToolButton::showButtons() {
 	Hides the buttons menu, changes the current id and emits the toggled() signal.
 */
 void CAMenuToolButton::hideButtons( int id ) {
-	if (_buttonGroup->button(id)) {
+	if ( _buttonGroup->button(id) ) {
 		setCurrentId( id );
 		if (isChecked())
 			emit toggled( true, id ); // if already on and in any button group
@@ -263,12 +278,16 @@ void CAMenuToolButton::handleTriggered() {
 	Does not change the current item, if the item is not part of the button box.
 */ 
 void CAMenuToolButton::setCurrentId(int id) {
+	if (_buttonGroup->button(_currentId))
+		_buttonGroup->button(_currentId)->setChecked(false);
+	
+	_currentId = id;
+	
 	if ( !_buttonGroup->button(id) )
 		return;
 	
-	_currentId = id;
+	_buttonGroup->button(id)->setChecked(true);
 	defaultAction()->setIcon( _buttonGroup->button(id)->icon() );
-	defaultAction()->setToolTip( _buttonGroup->button(id)->toolTip() );
 }
 
 /*!
