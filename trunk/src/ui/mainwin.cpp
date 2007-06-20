@@ -463,6 +463,10 @@ void CAMainWin::newDocument() {
 	
 	// call local rebuild only because no other main windows share the new document
 	rebuildUI();
+	
+	// select the first context automatically
+	if ( document()->sheetCount() && document()->sheetAt(0)->contextCount() )
+		currentScoreViewPort()->selectContext( document()->sheetAt(0)->contextAt(0) );
 	updateToolBars();
 }
 
@@ -1839,6 +1843,11 @@ bool CAMainWin::openDocument(QString fileName) {
 			openedDoc->setFileName(fileName);
 			rebuildUI(); // local rebuild only
 			uiTabWidget->setCurrentIndex(0);
+			
+			// select the first context automatically
+			if ( document() && document()->sheetCount() && document()->sheetAt(0)->contextCount() )
+				currentScoreViewPort()->selectContext( document()->sheetAt(0)->contextAt(0) );
+			updateToolBars();
 		}
 		
 		CACanorus::restartTimeEditedTimes( document() );
@@ -1940,7 +1949,12 @@ void CAMainWin::on_uiImportDocument_triggered() {
 			/// eg. CALilyImport::importDocument(in, document());
 			file.close();
 		}
-	}              
+	}
+	              
+	// select the first context automatically
+	if ( document() && document()->sheetCount() && document()->sheetAt(0)->contextCount() )
+		currentScoreViewPort()->selectContext( document()->sheetAt(0)->contextAt(0) );
+	updateToolBars();
 }
 
 /*!
