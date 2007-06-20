@@ -16,6 +16,8 @@
 #include <QGridLayout>
 #include <QHash>
 
+class CAMainWin;
+
 class CAMenuToolButton : public QToolButton {
 	Q_OBJECT
 public:
@@ -53,7 +55,11 @@ private slots:
 	
 protected:
 	void wheelEvent(QWheelEvent*);
+	inline CAMainWin *mainWin() { return _mainWin; }
+	inline void setMainWin( CAMainWin *m ) { _mainWin = m; }
+	void mousePressEvent( QMouseEvent* );
 	
+	CAMainWin          *_mainWin;         // Pointer to the main window for toolbar location polling etc.
 	QButtonGroup       *_buttonGroup;     // Abstract group for the button actions
 	QGroupBox          *_groupBox;        // Group box containing title and buttons
 	QGridLayout        *_boxLayout;       // Layout for the group box

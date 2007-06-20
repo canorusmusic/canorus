@@ -167,12 +167,14 @@ void CAMainWin::createCustomActions() {
 		uiContextType->addButton( QIcon("images/staffnew.svg"), CAContext::Staff, tr("New Staff") );
 		uiContextType->addButton( QIcon("images/lyricscontextnew.svg"), CAContext::LyricsContext, tr("New Lyrics context") );
 		uiContextType->addButton( QIcon("images/fmcontextnew.svg"), CAContext::FunctionMarkingContext, tr("New Function Marking context") );
+		uiContextType->defaultAction()->setToolTip(tr("Insert new context"));
 		uiContextType->setCurrentId( CAContext::Staff );
 	uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this );
 		uiSlurType->setObjectName( "uiSlurType" );
 		uiSlurType->addButton( QIcon("images/tie.svg"), CASlur::TieType, tr("Tie") );
 		uiSlurType->addButton( QIcon("images/slur.svg"), CASlur::SlurType, tr("Slur") );
 		uiSlurType->addButton( QIcon("images/phrasingslur.svg"), CASlur::PhrasingSlurType, tr("Phrasing Slur") );
+		uiSlurType->defaultAction()->setToolTip(tr("Insert new slur"));
 		uiSlurType->setCurrentId( CASlur::TieType );
 		uiSlurType->defaultAction()->setCheckable(false);
 	uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this );
@@ -180,6 +182,7 @@ void CAMainWin::createCustomActions() {
 		uiClefType->addButton( QIcon("images/cleftreble.svg"), CAClef::Treble, tr("Treble Clef") );
 		uiClefType->addButton( QIcon("images/clefbass.svg"), CAClef::Bass, tr("Bass Clef") );
 		uiClefType->addButton( QIcon("images/clefalto.svg"), CAClef::Alto, tr("Alto Clef") );
+		uiClefType->defaultAction()->setToolTip(tr("Insert new clef"));
 		uiClefType->setCurrentId( CAClef::Treble );
 	uiTimeSigType = new CAMenuToolButton( tr("Select Time Signature" ), 3, this );
 		uiTimeSigType->setObjectName( "uiTimeSigType" );
@@ -190,6 +193,7 @@ void CAMainWin::createCustomActions() {
 		uiTimeSigType->addButton( QIcon("images/ts38.svg"), TS_38 );
 		uiTimeSigType->addButton( QIcon("images/ts68.svg"), TS_68 );
 		uiTimeSigType->addButton( QIcon("images/tscustom.svg"), TS_CUSTOM );			
+		uiTimeSigType->defaultAction()->setToolTip(tr("Insert new time signature"));
 		uiTimeSigType->setCurrentId( TS_44 );
 	uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 4, this ));
 		uiBarlineType->setObjectName( "uiBarlineType" );
@@ -200,6 +204,7 @@ void CAMainWin::createCustomActions() {
 		uiBarlineType->addButton( QIcon("images/barlinerepeatopen.svg"), CABarline::RepeatOpen, tr("Repeat Open") );
 		uiBarlineType->addButton( QIcon("images/barlinerepeatclose.svg"), CABarline::RepeatClose, tr("Repeat Closed") );
 		uiBarlineType->addButton( QIcon("images/barlinerepeatcloseopen.svg"), CABarline::RepeatCloseOpen, tr("Repeat Closed-Open") );
+		uiBarlineType->defaultAction()->setToolTip(tr("Insert new barline"));
 		uiBarlineType->setCurrentId( CABarline::Single );
 	
 	uiSheetToolBar = new QToolBar( tr("Sheet ToolBar"), this );
@@ -233,16 +238,15 @@ void CAMainWin::createCustomActions() {
 		uiVoiceName->setToolTip(tr("Voice name"));
 	uiVoiceStemDirection = new CAMenuToolButton( tr("Select Voice Stem Direction" ), 3, this );
 		uiVoiceStemDirection->setObjectName( "uiVoiceStemDirection" );
-		uiVoiceStemDirection->setToolTip(tr("Voice stem direction"));
 		uiVoiceStemDirection->addButton( QIcon("images/notestemneutral.svg"), CANote::StemNeutral, tr("Voice Stems Neutral") );
 		uiVoiceStemDirection->addButton( QIcon("images/notestemup.svg"), CANote::StemUp, tr("Voice Stems Up") );
 		uiVoiceStemDirection->addButton( QIcon("images/notestemdown.svg"), CANote::StemDown, tr("Voice Stems Down") );
+		uiVoiceStemDirection->defaultAction()->setToolTip(tr("Voice stem direction"));
 		uiVoiceStemDirection->defaultAction()->setCheckable(false);
 	
 	uiPlayableToolBar = new QToolBar( tr("Playable ToolBar"), this );
 	uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this );
 		uiPlayableLength->setObjectName( "uiPlayableLength" );
-		uiPlayableLength->setToolTip(tr("Playable length"));
 		uiPlayableLength->addButton( QIcon("images/n0.svg"), CANote::Breve, tr("Breve Length") );
 		uiPlayableLength->addButton( QIcon("images/n1.svg"), CANote::Whole, tr("Whole Length") );
 		uiPlayableLength->addButton( QIcon("images/n2.svg"), CANote::Half, tr("Half Length") );
@@ -251,15 +255,16 @@ void CAMainWin::createCustomActions() {
 		uiPlayableLength->addButton( QIcon("images/n16.svg"), CANote::Sixteenth, tr("Sixteenth Length") );
 		uiPlayableLength->addButton( QIcon("images/n32.svg"), CANote::ThirtySecond, tr("ThirtySecond Length") );
 		uiPlayableLength->addButton( QIcon("images/n64.svg"), CANote::SixtyFourth, tr("SixtyFourth Length") );
+		uiPlayableLength->defaultAction()->setToolTip(tr("Playable length"));
 		uiPlayableLength->defaultAction()->setCheckable(false);
 		uiPlayableLength->setCurrentId( CANote::Quarter );
 	uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this );
 		uiNoteStemDirection->setObjectName( "uiNoteStemDirection" );
-		uiNoteStemDirection->setToolTip(tr("Note stem direction"));		
 		uiNoteStemDirection->addButton( QIcon("images/notestemneutral.svg"), CANote::StemNeutral, tr("Note Stem Neutral") );
 		uiNoteStemDirection->addButton( QIcon("images/notestemup.svg"), CANote::StemUp, tr("Note Stem Up") );
 		uiNoteStemDirection->addButton( QIcon("images/notestemdown.svg"), CANote::StemDown, tr("Note Stem Down") );
 		uiNoteStemDirection->addButton( QIcon("images/notestemvoice.svg"), CANote::StemPreferred, tr("Note Stem Preferred") );
+		uiNoteStemDirection->defaultAction()->setToolTip(tr("Note stem direction"));		
 		uiNoteStemDirection->defaultAction()->setCheckable(false);
 		uiNoteStemDirection->setCurrentId( CANote::StemPreferred );
 	
@@ -302,6 +307,7 @@ void CAMainWin::createCustomActions() {
 		uiFMFunction->addButton( QIcon("images/fml.svg"), CAFunctionMarking::L, tr("Lydian") );
 		uiFMFunction->addButton( QIcon("images/fmiv.svg"), CAFunctionMarking::IV, tr("IV") );
 		uiFMFunction->addButton( QIcon("images/fmv.svg"), CAFunctionMarking::V, tr("V") );
+		uiFMFunction->defaultAction()->setToolTip( tr("Function marking") );
 		uiFMFunction->setCurrentId( CAFunctionMarking::T );
 	uiFMChordArea = new CAMenuToolButton( tr("Select Chord Area"), 3, this );
 		uiFMChordArea->setObjectName( "uiFMChordArea" );
@@ -310,6 +316,7 @@ void CAMainWin::createCustomActions() {
 		uiFMChordArea->addButton( QIcon("images/fmpd.svg"), CAFunctionMarking::D, tr("Dominant") );
 		uiFMChordArea->addButton( QIcon("images/fmpot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
 		uiFMChordArea->addButton( QIcon("images/fmpos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
+		uiFMFunction->defaultAction()->setToolTip( tr("Function marking chord area") );
 		uiFMChordArea->setCurrentId( CAFunctionMarking::T );
 	uiFMTonicDegree = new CAMenuToolButton( tr("Select Tonic Degree"), 7, this );
 		uiFMTonicDegree->setObjectName( "uiFMTonicDegree" );
@@ -323,6 +330,7 @@ void CAMainWin::createCustomActions() {
 		uiFMTonicDegree->addButton( QIcon("images/fmd.svg"), CAFunctionMarking::D, tr("Dominant") );
 		uiFMTonicDegree->addButton( QIcon("images/fmvi.svg"), CAFunctionMarking::VI, tr("VI") );
 		uiFMTonicDegree->addButton( QIcon("images/fmvii.svg"), CAFunctionMarking::VII, tr("VII") );
+		uiFMFunction->defaultAction()->setToolTip( tr("Function marking tonic degree") );
 		uiFMTonicDegree->setCurrentId( CAFunctionMarking::T );
 }
 
@@ -839,10 +847,12 @@ void CAMainWin::setMode(CAMode mode) {
 	switch (mode) {
 		case SelectMode: {
 			for (int i=0; i<_viewPortList.size(); i++) {
-				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (!((CAScoreViewPort*)_viewPortList[i])->playing())
-						((CAScoreViewPort*)_viewPortList[i])->unsetBorder();
-					((CAScoreViewPort*)_viewPortList[i])->setShadowNoteVisible(false);
+				if ( currentScoreViewPort() ) {
+					if (!currentScoreViewPort()->playing())
+						currentScoreViewPort()->unsetBorder();
+					currentScoreViewPort()->setShadowNoteVisible(false);
+					if (currentScoreViewPort()->syllableEditVisible())
+						currentScoreViewPort()->removeSyllableEdit();
 					statusBar()->showMessage("");
 					_musElementFactory->setMusElementType( CAMusElement::Undefined );
 					uiVoiceNum->setRealValue( 0 );
