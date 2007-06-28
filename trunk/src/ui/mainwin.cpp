@@ -1006,7 +1006,7 @@ void CAMainWin::rebuildUI(bool repaint) {
 
 /*!
 	Processes the mouse press event \a e with world coordinates \a coords of the score viewport \a v.
-	Any action happened in any of the viewports are always linked to its main window slots.
+	Any action happened in any of the viewports are always linked to these main window slots.
 	
 	\sa CAScoreViewPort::mousePressEvent(), scoreViewPortMouseMove(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
@@ -1018,28 +1018,33 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 	v->selectCElement(coords.x(), coords.y());
 		
 	QList<CADrawableMusElement*> l = v->musElementsAt( coords.x(), coords.y() );
+	CADrawableMusElement *newlySelectedElement=0;
 	int idx=-1;
 	
 	if (l.size() > 0) { // multiple elements can share the same coordinates
 		if ( (v->selection().size() > 0) && (!v->selection().contains(l.front())) ) {
 			if (e->modifiers()!=Qt::ShiftModifier)
 				v->clearSelection();
-			v->addToSelection(l[0]);      // if the previous selection was not a single element or if the new list doesn't contain the selection set the first element in the available list to the selection
+			v->addToSelection( newlySelectedElement = l[0] );      // if the previous selection was not a single element or if the new list doesn't contain the selection set the first element in the available list to the selection
 		} else {
 			if (e->modifiers()==Qt::ShiftModifier && v->selection().size()) {
 				v->removeFromSelection(l[0]); // shift used on an already selected element - toggle selection
 			} else {
 				idx = (v->selection().size()?l.indexOf(v->selection().front()):-1);
 				v->clearSelection();
-				v->addToSelection(l[((++idx < l.size()) ? idx : 0)]); // if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
+				v->addToSelection( newlySelectedElement = l[((++idx < l.size()) ? idx : 0)] ); // if there are two or more elements with the same coordinates, select the next one (behind it). This way, you can click multiple times on the same place and you'll always select the other element.
 			}
 		}
 	} else if (e->modifiers()==Qt::NoModifier) { // no elements at that coordinates
 		v->clearSelection();
 	}
 	
-	// voice number widget
+	// always select the context the current element belongs to
+	if ( newlySelectedElement && mode()!=InsertMode )
+		v->setCurrentContext( newlySelectedElement->drawableContext() );
+	
 	if ( v->currentContext() && prevContext != v->currentContext() && mode()!=InsertMode) {	// new context was selected
+		// voice number widget
 		if (v->currentContext()->context()->contextType() == CAContext::Staff) {
 			uiVoiceNum->setRealValue(0);
 			uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
