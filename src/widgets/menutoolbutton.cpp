@@ -1,5 +1,4 @@
-/*! \file widgets/buttonmenu.cpp
-	
+/*!
 	Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
@@ -169,8 +168,9 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString 
 void CAMenuToolButton::showButtons() {
 	QToolBar *toolBar = dynamic_cast<QToolBar*>(parent());
 	int x=0, y=0;
+	_groupBox->show();
+	
 	if (mainWin() && toolBar) {
-		_groupBox->move(0,0);	// reset groupBox position, otherwise the positions translations get messed up. -Itay
 		QPoint topLeft = mapToGlobal(QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
 		
 		// Set buttons box coordinates which fit on the main window
@@ -205,7 +205,6 @@ void CAMenuToolButton::showButtons() {
 	}
 	
 	_groupBox->move(x,y);
-	_groupBox->show();
 }
 
 /*!
