@@ -1,5 +1,4 @@
-/*! \file widgets/buttonmenu.h
-	
+/*!
 	Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
@@ -12,7 +11,6 @@
 #include <QToolButton>
 #include <QButtonGroup>
 #include <QGroupBox>
-#include <QMenu>
 #include <QGridLayout>
 #include <QHash>
 
@@ -73,6 +71,5 @@ protected:
 	int                 _spacing;         // Space between buttons
 	int                 _margin;          // Margin around the buttons
 	int                 _layoutMargin;    // Margin of layout
-	QMenu              *_menu;            // Backend widget which signal is connected to this slot
 };
 #endif /* MENUTOOLBUTTON_H_ */

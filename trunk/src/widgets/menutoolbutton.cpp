@@ -27,8 +27,6 @@
 	
 	The class primarily consists of 4 elements:
 		- the base class QToolButton with enabled side menu
-		- QMenu
-			Needed for QToolButton::setMenu() and to catch aboutToShow() signal.
 		- QButtonGroup
 			The backend list of buttons and their Ids (QGroupBox doesn't support button Ids)
 		- QGroupBox
@@ -56,7 +54,7 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
     
     // Visual group box for the button menu
 	_groupBox = new QGroupBox( title, 0 );
-	_groupBox->setWindowFlags(Qt::Popup);
+	_groupBox->setWindowFlags( Qt::FramelessWindowHint );
 	_groupBox->hide();
     boxSizePolicy.setHeightForWidth( _groupBox->sizePolicy().hasHeightForWidth() );
     _groupBox->setSizePolicy( boxSizePolicy );
@@ -168,6 +166,7 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString 
 void CAMenuToolButton::showButtons() {
 	QToolBar *toolBar = dynamic_cast<QToolBar*>(parent());
 	int x=0, y=0;
+	_groupBox->hide();
 	_groupBox->show();
 	
 	if (mainWin() && toolBar) {
