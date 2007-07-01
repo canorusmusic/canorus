@@ -233,6 +233,7 @@ void CAMainWin::createCustomActions() {
 	uiVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" );
 		uiVoiceNum->setObjectName( "uiVoiceNum" );
 		uiVoiceNum->setToolTip(tr("Current Voice number"));
+		connect( uiVoiceNum, SIGNAL(valChanged( int )), this, SLOT(onUiVoiceNumValChanged( int )) );
 	uiVoiceName = new QLineEdit( this );
 		uiVoiceName->setObjectName( "uiVoiceName" );
 		uiVoiceName->setToolTip(tr("Voice name"));
