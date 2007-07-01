@@ -53,6 +53,8 @@
 %include "scripting/timesignature.i"
 %include "scripting/clef.i"
 %include "scripting/barline.i"
+%include "scripting/lyricscontext.i"
+%include "scripting/syllable.i"
 %include "scripting/canorusml.i"
 %include "scripting/slur.i"
 %include "scripting/functionmarking.i"

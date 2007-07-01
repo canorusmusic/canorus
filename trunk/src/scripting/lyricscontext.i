@@ -1,21 +1,18 @@
-/*!
+/*! 
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
-	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#ifndef LYRICSCONTEXT_H_
-#define LYRICSCONTEXT_H_
+%{
+#include "core/lyricscontext.h"
+%}
 
-#include "core/context.h"
-#include "core/voice.h"
-
-#include <QList>
-#include <QHash>
-
-class CASyllable;
-
+/**
+ * Swig implementation of CALyricsContext.
+ */
+%rename(LyricsContext) CALyricsContext;
 class CALyricsContext : public CAContext {
 public:
 	CALyricsContext(int stanzaNumber, CAVoice *v, CASheet *s, const QString name);
@@ -51,12 +48,4 @@ public:
 	inline void setStanzaNumber( int sn ) { _stanzaNumber = sn; }
 	inline QString customStanzaName() { return _customStanzaName; }
 	inline void setCustomStanzaName( QString name ) { _customStanzaName = name; }
-
-private:
-	QList< CASyllable* > _syllableList;
-	CAVoice *_associatedVoice;
-	int _stanzaNumber;
-	QString _customStanzaName;
 };
-
-#endif /* LYRICSCONTEXT_H_ */
