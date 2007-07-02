@@ -305,7 +305,7 @@
   </action>
   <action name="uiImportDocument" >
    <property name="enabled" >
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon" >
     <iconset>images/filesave.png</iconset>
