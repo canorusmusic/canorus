@@ -1136,7 +1136,9 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 			} else
 			// Insert Syllable
 			if (uiInsertSyllable->isChecked()) {
-				if ( v->currentContext()->context()->contextType()==CAContext::LyricsContext && v->selection().size() && v->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable ) {
+				if ( v->currentContext() && v->currentContext()->context() &&
+					 v->currentContext()->context()->contextType()==CAContext::LyricsContext && v->selection().size() &&
+					 v->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable ) {
 					int timeStart = 0, timeLength = 256;
 					CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(v->currentContext());
 					v->createSyllableEdit( v->selection().front() );
