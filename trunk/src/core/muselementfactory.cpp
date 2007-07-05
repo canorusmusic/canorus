@@ -1,66 +1,15 @@
 /*!
- * This program is free software; you can redistribute it and/or modify it   
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; version 2 of the License.                       
- *                                                                           
- * This program is distributed in the hope that it will be useful, but       
- * WITHOUT ANY WARRANTY; without even the implied warranty of               
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General  
- * Public License for more details.                                          
- *                                                                           
- * You should have received a copy of the GNU General Public License along   
- * with this program; (See "LICENSE.GPL"). If not, write to the Free         
- * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA        
- * 02111-1307, USA.                                                          
- *                                                                           
- *---------------------------------------------------------------------------
- *                                                                           
- * Copyright (c) 2006, Reinhard Katzmann, Matevž Jekovec, Canorus development team           
- * All Rights Reserved. See AUTHORS for a complete list of authors.          
- *                                                                           
- */
+	Copyright (c) 2006, Reinhard Katzmann, Canorus development team
+	              2007, Matevž Jekovec, Canorus development team
+	
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #include "core/canorus.h"
 #include "core/muselementfactory.h"
 #include "core/functionmarkingcontext.h"
-
-// For comparing undefined music elements
-#define UNDEFNUM 36720165
-
-/*!
-	Class for undefined music elements, not to be known outside of this class
-*/
-class CAUndefMusElem : public CAMusElement
-{
-public:
-	CAUndefMusElem(CAContext *poContext, int iTime, int iLength=0) : CAMusElement( poContext, iTime, iLength )
-	{ mpoContext = poContext; miTime = iTime; miLength = iLength; miUndefined = 0; };
-	virtual ~CAUndefMusElem() { miUndefined = 0; };
-	
-	CAUndefMusElem* clone() 
-	{ return new CAUndefMusElem( mpoContext, miTime, miLength); };
-	int compare(CAMusElement *elt) 
-	{
-		int iRet = -1;
-		if (elt->musElementType()==CAMusElement::Undefined)
-			iRet = 0;
-		if( ((CAUndefMusElem *)elt)->undefined() != UNDEFNUM )
-			iRet = 1;
-		//printf( "Undef: %d, %d\n",((CAUndefMusElem *)elt)->undefined(), miUndefined ); fflush( stdout );
-		return iRet;
-	};
-
-	void setMusElementType( CAMusElement::CAMusElementType eMEType )
-	{ _musElementType = eMEType; miUndefined = UNDEFNUM; };
-
-	inline int undefined() { return miUndefined; };
-
-private:
-	CAContext *mpoContext;
-	int miTime;
-	int miLength;
-	int miUndefined;
-};
 
 /*!
 	\class CAMusElementFactory
@@ -70,7 +19,22 @@ private:
 	placed inside the score (eg. music element still in the GUI, but user didn't clicked on the score
 	to place it yet).
 	
-	The factory can contain only a single music element in "construction".
+	The factory contains the methods to set properties of all the available music elements ranging from
+	playable elements to slurs and lyrics. The actual music element is created and added to the scene
+	when one of the configure functions are called. These functions return True, if the element was
+	successfully created or False otherwise.
+	
+	This class should be typically used in the following order:
+	  1) User selects a music element to place. CAMusElementFactory::setMusElementType() is called.
+	  2) GUI for music element properties is updated according to the current factory values.
+	  3) User sets music element properties he wants (eg. number of accidentals in key signature).
+	     CAMusElementFactory::setSomeMusicElementProperty( music element property value ) is called
+	     (eg. CAMusElementFactory::setKeySigNumberOfAccs(3) for A-Major/fis-minor).
+	  4) User places the music element. CAMusElementFactory::configureSomeMusicElement()
+	     (eg. CAMusElementFactory::configureKeySignature(currentStaff, prevElement)).
+	  5) If the configure function returns True, the GUI is refreshed and the note is drawn.
+	
+	Changing the properties of already placed elements (eg. in edit mode) is done without using the factory.
 	
 	\sa CAMainWin, CAMusElement
 */
@@ -79,8 +43,7 @@ private:
 /*!
 	Creates an empty, defeault music elements factory.
 */
-CAMusElementFactory::CAMusElementFactory()
-{
+CAMusElementFactory::CAMusElementFactory() {
 	_ePlayableLength = CAPlayable::Quarter;
 	_eNoteStemDirection = CANote::StemPreferred;
 	_iPlayableDotted = 0;
@@ -102,50 +65,25 @@ CAMusElementFactory::CAMusElementFactory()
 	_fmChordAreaMinor = false;
 	_fmTonicDegreeMinor = false;
 	_fmEllipse = false;
-	
-	createMusElem();
+	mpoMusElement = 0;
+	_musElementType = CAMusElement::Undefined;
 }
 
 /*!
 	Destroys the music elements factory.
 */
-CAMusElementFactory::~CAMusElementFactory()
-{
-	removeMusElem();
-}
-
-/*!
-	Creates a placebo music element (type: undefined)
-*/
-CAMusElement *CAMusElementFactory::createMusElem()
-{
-	mpoMusElement = new CAUndefMusElem( 0, 0, 0 );
-	((CAUndefMusElem *)mpoMusElement)->setMusElementType( CAMusElement::Undefined );
-	return mpoMusElement;
+CAMusElementFactory::~CAMusElementFactory() {
 }
 
 /*!
 	Removes the current music element.
 	Destroys the music element, if \a bReallyRemove is true (default is false).
 */
-void CAMusElementFactory::removeMusElem( bool bReallyRemove /* = false */ )
-{
-	CAUndefMusElem oUMElem( 0, 0, 0 );
-	if( mpoMusElement && 
-	    ( bReallyRemove || oUMElem.compare( mpoMusElement ) <= 0 ) )
+void CAMusElementFactory::removeMusElem( bool bReallyRemove /* = false */ ) {
+	if( mpoMusElement && bReallyRemove )
 		delete mpoMusElement;
+	
 	mpoMusElement = 0;
-}
-
-/*!
-	Configures music element \a roMusElement by cloning it and moving it to the factory.
-	Destroys the original.
-*/
-void CAMusElementFactory::configureMusElem( CAMusElement &roMusElement )
-{
-	if( mpoMusElement )
-		delete mpoMusElement;
-	mpoMusElement = roMusElement.clone();
 }
 
 /*!
@@ -154,13 +92,14 @@ void CAMusElementFactory::configureMusElem( CAMusElement &roMusElement )
 bool CAMusElementFactory::configureClef( CAStaff *staff, 
                                          CAMusElement *left )
 {
-	bool bSuccess = false;
-	removeMusElem();
+	bool success = false;
 	if ( staff ) {
 		mpoMusElement = new CAClef(_eClef, staff, (left?left->timeEnd():0));
-		bSuccess = staff->insertSignAfter(mpoMusElement, left, true);
+		success = staff->insertSignAfter(mpoMusElement, left, true);
+		if (!success)
+			removeMusElem( true );
 	}
-	return bSuccess;
+	return success;
 }
 
 /*!
@@ -169,16 +108,17 @@ bool CAMusElementFactory::configureClef( CAStaff *staff,
 bool CAMusElementFactory::configureKeySignature( CAStaff *staff, 
                                                  CAMusElement *left )
 {
-	bool bSuccess = false;
-	removeMusElem();
+	bool success = false;
 	if (staff) {		
 		mpoMusElement = new CAKeySignature(CAKeySignature::MajorMinor, 
 			                           _iKeySigNumberOfAccs,
 			                           CAKeySignature::Major, staff,
 			                           (left?left->timeEnd():0));
-		bSuccess = staff->insertSignAfter(mpoMusElement, left, true);
+		success = staff->insertSignAfter(mpoMusElement, left, true);
+		if (!success)
+			removeMusElem( true );
 	}
-	return bSuccess;
+	return success;
 }
 
 /*!
@@ -187,15 +127,16 @@ bool CAMusElementFactory::configureKeySignature( CAStaff *staff,
 bool CAMusElementFactory::configureTimeSignature( CAStaff *staff, 
                                                   CAMusElement *left )
 {
-	bool bSuccess = false;
-	removeMusElem();
+	bool success = false;
 	if (staff) {
 		mpoMusElement = new CATimeSignature( _iTimeSigBeats, _iTimeSigBeat,
 			                             staff,
 			                             (left?left->timeEnd():0));
-		bSuccess = staff->insertSignAfter(mpoMusElement, left, true);
+		success = staff->insertSignAfter(mpoMusElement, left, true);
+		if (!success)
+			removeMusElem( true );
 	}
-	return bSuccess;
+	return success;
 }
 
 /*!
@@ -204,15 +145,16 @@ bool CAMusElementFactory::configureTimeSignature( CAStaff *staff,
 bool CAMusElementFactory::configureBarline( CAStaff *staff, 
                                             CAMusElement *left )
 {
-	bool bSuccess = false;
-	removeMusElem();
+	bool success = false;
 	if (staff) {
 		mpoMusElement = new CABarline( _eBarlineType,
 			                             staff,
 			                             (left?left->timeEnd():0));
-		bSuccess = staff->insertSignAfter(mpoMusElement, left, true);
+		success = staff->insertSignAfter(mpoMusElement, left, true);
+		if (!success)
+			removeMusElem( true );
 	}
-	return bSuccess;
+	return success;
 }
 
 /*!
@@ -243,7 +185,7 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 			mpoMusElement = new CANote(((CANote*)left->musElement())->playableLength(),
 		                  voice,
 		                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			          _iNoteExtraAccs,
+			          _iNoteAccs,
 			          left->musElement()->timeStart(),
 			          ((CANote*)left->musElement())->dotted()
 			        );
@@ -254,7 +196,7 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 			mpoMusElement = new CANote(_ePlayableLength,
 			          voice,
 			          pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			          _iNoteExtraAccs,
+			          _iNoteAccs,
 			          (left?left->musElement()->timeEnd():0),
 			          _iPlayableDotted
 			       );
@@ -282,17 +224,24 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 	
 	if (bSuccess)
 		static_cast<CANote*>(mpoMusElement)->updateTies();
+	else
+		removeMusElem( true );
 	
 	return bSuccess;
 }
 
+/*!
+	Configures the new tie, slur or phrasing slur for the notes \a noteStart and \a noteEnd.
+*/
 bool CAMusElementFactory::configureSlur( CAStaff *staff,
                                          CANote *noteStart, CANote *noteEnd )
 {
 	bool success=false;
 	removeMusElem();
 	CASlur *slur = new CASlur( slurType(), CASlur::SlurPreferred, staff, noteStart, noteEnd );
+	mpoMusElement = slur;
 	
+	slur->setSlurStyle( slurStyle() );
 	switch (slurType()) {
 		case CASlur::TieType:
 			noteStart->setTieStart( slur );
@@ -310,8 +259,9 @@ bool CAMusElementFactory::configureSlur( CAStaff *staff,
 			success=true;
 			break;
 	}
-	slur->setSlurStyle( slurStyle() );
-	mpoMusElement = slur;
+	
+	if (!success)
+		removeMusElem( true );
 	
 	return success;
 }
@@ -323,8 +273,7 @@ bool CAMusElementFactory::configureSlur( CAStaff *staff,
 	\param left       music element left of new rest
 */
 bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *left ) {
-	bool bSuccess = false;
-	removeMusElem();
+	bool success = false;
 	if ( voice ) {
 		mpoMusElement = new CARest(restType(),
 				_ePlayableLength,
@@ -332,39 +281,29 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *left ) {
 				(left?left->timeEnd():0),
 				_iPlayableDotted
 				);
-		bSuccess = voice->insertMusElementAfter(mpoMusElement, left);
+		success = voice->insertMusElementAfter(mpoMusElement, left);
+		if (!success)
+			removeMusElem(true);
 	}
-	return bSuccess;
+	return success;
 }
 
 bool CAMusElementFactory::configureFunctionMarking( CAFunctionMarkingContext *fmc, int timeStart, int timeLength ) {
-	removeMusElem();
 	CAFunctionMarking *fm = new CAFunctionMarking(
 		fmFunction(), isFMFunctionMinor(),
-		"C", /// \todo
+		"C", /// \todo Function marking Key signature
 		fmc, timeStart, timeLength,
 		fmChordArea(), isFMChordAreaMinor(),
 		fmTonicDegree(), isFMTonicDegreeMinor(),
-		"", /// \todo
+		"", /// \todo Function marking altered/added degrees
 		isFMEllipse()
 	);
 	
 	fmc->addFunctionMarking(fm);
-	
 	mpoMusElement = fm;
 	
 	return true;
 }
-
-void CAMusElementFactory::setMusElementType( CAMusElement::CAMusElementType eMEType )
-{
-	CAUndefMusElem oUMElem( 0, 0, 0 );
-	// Check if music element is undefined
-	removeMusElem();
-	// We create now an instance of our CAUndefMusElem class
-	CAUndefMusElem *poUnDefElem = (CAUndefMusElem *)createMusElem();
-	poUnDefElem->setMusElementType( eMEType );
-};
 
 /*!
 	\fn CAMusElementFactory::musElement()
