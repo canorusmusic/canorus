@@ -62,9 +62,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 		// append playable elements
 		for (int i=0; i<voiceCount(); i++) {
 			while ( eltIdx[i]<voiceAt(i)->musElementCount() && voiceAt(i)->musElementAt(eltIdx[i])->isPlayable() ) {
-				CAPlayable *newElt = static_cast<CAPlayable*>(voiceAt(i)->musElementAt(eltIdx[i])->clone());
-				newElt->setVoice( newStaff->voiceAt(i) );
-				newElt->setContext( newStaff );
+				CAPlayable *newElt = static_cast<CAPlayable*>(voiceAt(i)->musElementAt(eltIdx[i]))->clone( newStaff->voiceAt(i) );
 				newStaff->voiceAt(i)->appendMusElement( newElt );
 				
 				// check tie

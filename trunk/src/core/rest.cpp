@@ -33,8 +33,8 @@ CARest::CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int tim
 CARest::~CARest() {
 }
 
-CARest *CARest::clone() {
-	return new CARest(_restType, _playableLength, _voice, _timeStart, _dotted);
+CARest *CARest::clone( CAVoice *voice ) {
+	return new CARest(_restType, _playableLength, voice, _timeStart, _dotted);
 }
 
 int CARest::compare(CAMusElement *elt) {

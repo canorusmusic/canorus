@@ -933,9 +933,11 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 void CAScoreViewPort::updateHelpers() {
 	// Shadow notes
 	if (currentContext()?(currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0) {
-		int pitch = ((CADrawableStaff*)currentContext())->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
+		int pitch = (static_cast<CADrawableStaff*>(currentContext()))->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
 		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
+			CAClef *clef = (static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext()))->getClef( _xCursor );
 			_shadowNote[i]->setPitch(pitch);
+			_shadowNote[i]->setNotePosition( pitch + (clef?clef->c1():-2) - 28 );
 			_shadowDrawableNote[i]->setXPos(_xCursor);
 			_shadowDrawableNote[i]->setYPos(
 				static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext())->calculateCenterYCoord(pitch, _xCursor)

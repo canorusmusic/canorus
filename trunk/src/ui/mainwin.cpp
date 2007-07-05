@@ -350,7 +350,8 @@ void CAMainWin::setupCustomUi() {
 	
 	// Insert Toolbar
 	uiInsertToolBar->addAction( uiSelectMode );
-	uiInsertToolBar->addSeparator();		
+	uiInsertToolBar->addAction( uiEditMode );
+	uiInsertToolBar->addSeparator();
 	uiInsertToolBar->addWidget( uiContextType );
 	connect( uiNewContext, SIGNAL( triggered() ), uiContextType, SLOT( click() ) );
 	uiInsertToolBar->addSeparator();
@@ -418,6 +419,7 @@ void CAMainWin::setupCustomUi() {
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
 	uiInsertGroup->addAction( uiSelectMode );
+	uiInsertGroup->addAction( uiEditMode );
 	uiInsertGroup->addAction( uiNewContext );
 	uiInsertGroup->addAction( uiContextType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertPlayable );
@@ -835,12 +837,17 @@ void CAMainWin::on_uiRemoveContext_triggered() {
 
 void CAMainWin::on_uiContextType_toggled(bool checked, int buttonId) {
 	if (checked)
-		setMode(InsertMode);
+		setMode( InsertMode );
 }
 
 void CAMainWin::on_uiSelectMode_toggled(bool checked) {
 	if (checked)
-		setMode(SelectMode);
+		setMode( SelectMode );
+}
+
+void CAMainWin::on_uiEditMode_toggled(bool checked) {
+	if (checked)
+		setMode( EditMode );
 }
 
 /*!
@@ -873,6 +880,8 @@ void CAMainWin::setMode(CAMode mode) {
 			
 			if ( musElementFactory()->musElementType() == CAMusElement::Note && currentScoreViewPort() )
 				currentScoreViewPort()->setShadowNoteVisible(true);
+			else
+				currentScoreViewPort()->setShadowNoteVisible(false); /// \todo Set other mouse cursors
 
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
@@ -1354,9 +1363,9 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				v->selectUpMusElement();
 				v->repaint();
 			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
-				if (!v->selection().isEmpty()) {
-					CADrawableMusElement *elt =
-						v->selection().back();
+				bool rebuild=false;
+				for (int i=0; i<v->selection().size(); i++) {
+					CADrawableMusElement *elt = v->selection().at(i);
 					
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
@@ -1364,9 +1373,11 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						CANote *note = (CANote*)elt->musElement();
 						note->setPitch(note->pitch()+1);
 						CACanorus::pushUndoCommand();
-						CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
+						rebuild = true;
 					}
 				}
+				if (rebuild)
+					CACanorus::rebuildUI(document(), currentSheet());
 			}
 			break;
 		}
@@ -1376,9 +1387,9 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				v->selectUpMusElement();
 				v->repaint();
 			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
-				if (!v->selection().isEmpty()) {
-					CADrawableMusElement *elt =
-						v->selection().back();
+				bool rebuild = false;
+				for (int i=0; i<v->selection().size(); i++) {
+					CADrawableMusElement *elt = v->selection().at(i);
 					
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
@@ -1386,9 +1397,10 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						CACanorus::createUndoCommand( document(), tr("lower note", "undo") );
 						note->setPitch(note->pitch()-1);
 						CACanorus::pushUndoCommand();
-						CACanorus::rebuildUI(document(), note->voice()->staff()->sheet());
+						rebuild = true;
 					}
 				}
+				CACanorus::rebuildUI(document(), currentSheet());
 			}
 			break;
 		}
@@ -1520,8 +1532,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				v->clearSelection();
 				v->setCurrentContext( 0 );
 			}
-			uiSelectMode->toggle();
 			uiVoiceNum->setRealValue( 0 );
+			setMode(SelectMode);
 			break;
 		case Qt::Key_I:
 			musElementFactory()->setMusElementType( CAMusElement::Note );
@@ -2244,8 +2256,6 @@ void CAMainWin::on_uiTimeSigBeat_valueChanged(int beat) {
 
 void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 	if (checked) {
-		setMode( InsertMode );
-		
 		// Read currently selected entry from tool button menu
 		CAFixedTimeSig type = static_cast<CAFixedTimeSig>(buttonId);
 		
@@ -2281,6 +2291,8 @@ void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 		musElementFactory()->setTimeSigBeats( uiTimeSigBeats->value() );
 		musElementFactory()->setTimeSigBeat( uiTimeSigBeat->value() );
 		musElementFactory()->setMusElementType( CAMusElement::TimeSignature );
+		
+		setMode( InsertMode );		
 	}
 }
 
@@ -2293,9 +2305,9 @@ void CAMainWin::on_uiInsertKeySig_toggled(bool checked) {
 
 void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 	if (checked) {
-		setMode( InsertMode );
 		musElementFactory()->setMusElementType( CAMusElement::Barline );
 		musElementFactory()->setBarlineType( static_cast<CABarline::CABarlineType>(buttonId) );
+		setMode( InsertMode );
 	}
 }
 
@@ -2669,9 +2681,9 @@ void CAMainWin::updateContextToolBar() {
 void CAMainWin::updateInsertToolBar() {
 	if (currentSheet()) {
 		uiNewContext->setVisible(true);
-		if (mode()==EditMode)
-			uiInsertToolBar->hide();
-		else {
+		if (mode()==EditMode) {
+			uiInsertToolBar->show();
+		} else {
 			uiInsertToolBar->show();
 			CAContext *context = currentContext();
 			if (context) {

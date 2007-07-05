@@ -73,8 +73,8 @@ CANote::~CANote() {
 	Clones the note with same pitch, voice, timeStart and other properties.
 	Does *not* create clones of ties, slurs and phrasing slurs!
 */
-CANote *CANote::clone() {
-	CANote *d = new CANote(_playableLength, _voice, _pitch, _accs, _timeStart, _dotted);
+CANote *CANote::clone( CAVoice *voice ) {
+	CANote *d = new CANote(_playableLength, voice, _pitch, _accs, _timeStart, _dotted);
 	d->setStemDirection( stemDirection() );
 	
 	return d;
