@@ -413,7 +413,7 @@ ADD_CUSTOM_COMMAND(
 	TARGET canorus
 	PRE_BUILD
 	COMMAND ${QT_BINARY_DIR}/lupdate
-	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs}
+	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
 ADD_CUSTOM_COMMAND(
 	TARGET canorus
