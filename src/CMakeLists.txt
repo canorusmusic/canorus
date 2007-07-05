@@ -207,17 +207,9 @@ SET(Canorus_Scripts	# Official scripts shipped with Canorus.
 
 FILE(GLOB Canorus_Images "ui/images/*.png" "ui/images/*.svg")
 
-SET(Canorus_Translation_Srcs
-	lang/sl_SI.ts
-	lang/de_DE.ts
-	lang/he_IL.ts
-)
-
-SET(Canorus_Translation_Bins
-	lang/sl_SI.qm
-	lang/de_DE.qm
-	lang/he_IL.qm
-)
+# Set translation files
+FILE(GLOB Canorus_Translation_Srcs "lang/*.ts") # lang/*.ts -> Canorus_Translation_Srcs
+STRING(REGEX REPLACE ".ts" ".qm" Canorus_Translation_Bins "${Canorus_Translation_Srcs}") # Set Canorus_Translation_Bins to same values as Canorus_Translation_Srcs with different extensions
 
 SET(Canorus_Fonts	# Music fonts needed by Canorus
 	fonts/CenturySchL-BoldItal.ttf	# Century family needed for numbers and signs
