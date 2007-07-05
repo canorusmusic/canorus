@@ -920,6 +920,17 @@
     <string>Insert syllable</string>
    </property>
   </action>
+  <action name="uiEditMode" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset>images/editmode.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Edit mode</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>

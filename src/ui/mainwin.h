@@ -122,6 +122,7 @@ private slots:
 	
 	// Insert
 	void on_uiSelectMode_toggled(bool);
+	void on_uiEditMode_toggled(bool);
 	void on_uiNewSheet_triggered();
 	void on_uiNewVoice_triggered();
 	void on_uiContextType_toggled(bool, int);

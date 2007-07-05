@@ -12,6 +12,12 @@
 #include "core/voice.h"
 #include "core/staff.h"
 
+/*!
+	Default constructor.
+	
+	\param x coordinate represents the left border of the notehead.
+	\param y coordinate represents the center of the notehead.
+*/
 CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, int x, int y, bool shadowNote, CADrawableAccidental *drawableAcc)
  : CADrawableMusElement(n, drawableContext, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableNote;

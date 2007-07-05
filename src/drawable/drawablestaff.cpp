@@ -1,10 +1,9 @@
-/** @file drawablestaff.h
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #include <QPainter>
 #include <iostream>
@@ -70,17 +69,17 @@ int CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
 int CADrawableStaff::calculateCenterYCoord(int y) {
 	float newY = (y - yPos()) / (lineSpace()/2);
 	newY += 0.5*((y-yPos()<0)?-1:1);	//round
-	newY = (float)((int)newY);	// "
-
+	newY = (float)((int)newY);
+	
 	return (int)(yPos() + ((newY) * (lineSpace()/2)));
 }
 
 int CADrawableStaff::calculatePitch(int x, int y) {
 	CAClef *clef = getClef(x);
-	float yC1 = yPos() + height() - (clef?clef->c1():-2)*(lineSpace()/2); //Y coordinate of c1 of the current staff
-
-	//middle c = 28
-	return (int)(28 - (y - yC1)/(lineSpace()/2) + 0.5);
+	float yC1 = yPos() + height() - (clef?clef->c1():-2)*(lineSpace()/2); // Y coordinate of c1 of the current staff
+	
+	// middle c = 28
+	return qRound( 28 - (y - yC1)/(lineSpace()/2.0) );
 }
 
 void CADrawableStaff::addClef(CADrawableClef *clef) {

@@ -16,10 +16,6 @@ class CADrawableAccidental;
 
 class CADrawableNote : public CADrawableMusElement {
 	public:
-		/**
-		 * Y coordinate represents the center of the notehead.
-		 * X coordinate represents the left border of the notehead.
-		 */
 		CADrawableNote(CANote *note, CADrawableContext *drawableContext, int x, int y, bool shadowNote = false, CADrawableAccidental* acc=0);
 		
 		~CADrawableNote();

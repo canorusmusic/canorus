@@ -21,7 +21,8 @@ public:
 	};
 	
 	CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart, int dotted=0);
-	CARest *clone();
+	CARest *clone( CAVoice *voice );
+	inline CARest *clone() { return clone( voice() ); }
 	
 	~CARest();
 	

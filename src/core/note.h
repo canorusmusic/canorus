@@ -24,7 +24,8 @@ public:
 	};
 	
 	CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int dotted=0);
-	CANote *clone();
+	CANote *clone( CAVoice *voice );
+	inline CANote *clone() { return clone( voice() ); }
 	
 	virtual ~CANote();
 	
@@ -40,6 +41,7 @@ public:
 	void setStemDirection(CAStemDirection direction);
 	
 	inline int notePosition() { return _notePosition; }
+	inline void setNotePosition( int notePosition ) { _notePosition = notePosition; }
 	
 	inline unsigned char midiPitch() { return _midiPitch; }
 	void setMidiPitch(unsigned char pitch) { _midiPitch = pitch; }
