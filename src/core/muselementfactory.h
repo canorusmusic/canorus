@@ -1,26 +1,11 @@
-/*
- * This program is free software; you can redistribute it and/or modify it   
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; version 2 of the License.                       
- *                                                                           
- * This program is distributed in the hope that it will be useful, but       
- * WITHOUT ANY WARRANTY; without even the implied warranty of               
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General  
- * Public License for more details.                                          
- *                                                                           
- * You should have received a copy of the GNU General Public License along   
- * with this program; (See "LICENSE.GPL"). If not, write to the Free         
- * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA        
- * 02111-1307, USA.                                                          
- *                                                                           
- *---------------------------------------------------------------------------
- *                                                                           
- * Copyright (c) 2006, Reinhard Katzmann, Matevž Jekovec, Canorus development team           
- * All Rights Reserved. See AUTHORS for a complete list of authors.          
- *                                                                           
- */
-
-// Music element factory (creation, removal, configuration)
+/*!
+	Copyright (c) 2006, Reinhard Katzmann, Canorus development team
+	              2007, Matevž Jekovec, Canorus development team
+	
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #ifndef MUSELEMENTFACTORY_H_
 #define MUSELEMENTFACTORY_H_
@@ -42,8 +27,7 @@
 
 class CAMusElement;
 
-class CAMusElementFactory
-{
+class CAMusElementFactory {
 public:
 	CAMusElementFactory();
 	~CAMusElementFactory();
@@ -86,10 +70,8 @@ public:
 	bool configureFunctionMarking( CAFunctionMarkingContext *fmc,
 	                               int timeStart, int timeLength );
 	
-	inline CAMusElement::CAMusElementType musElementType()
-	{ return mpoMusElement->musElementType(); };
-	
-	void setMusElementType( CAMusElement::CAMusElementType eMEType );
+	inline CAMusElement::CAMusElementType musElementType() { return _musElementType; }
+	void setMusElementType( CAMusElement::CAMusElementType eMEType ) { _musElementType = eMEType; } 
 	
 	inline CAPlayable::CAPlayableLength playableLength() { return _ePlayableLength; }
 	
@@ -183,40 +165,36 @@ public:
 	inline bool isFMEllipse() { return _fmEllipse; }
 	inline void setFMEllipse( bool e ) { _fmEllipse = e; }	
 	
-	inline QString syllableText() { return _syllableText; }
-	inline void setSyllableText( QString text ) { _syllableText = text; }
-	
 private:
-	CAMusElement *mpoMusElement;     // newly created music element itself
+	CAMusElement *mpoMusElement;                    // Newly created music element itself
+	
 	/////////////////////////////////
 	// Element creation parameters //
 	/////////////////////////////////
+	CAMusElement::CAMusElementType _musElementType; // Music element type
 	
 	// Staff music elements
 	CAPlayable::CAPlayableLength _ePlayableLength; // Length of note/rest to be added
-	CANote::CAStemDirection _eNoteStemDirection; // Note stem direction to be inserted
-	CASlur::CASlurType _eSlurType;  // Slur type to be placed
-	int _iPlayableDotted;	   // Number of dots to be inserted for the note/rest
-	int _iNoteExtraAccs;	   // Extra note accidentals for new notes which user adds/removes with +/- keys
-	int _iNoteAccs;	         // Note accidentals at specific coordinates updated regularily when in insert mode
-	CARest::CARestType _eRestType; // Hidden/Normal rest
-	int _iKeySigNumberOfAccs; // Key signature number of accidentals
-	int _iTimeSigBeats;      // Time signature number of beats to be inserted
-	int _iTimeSigBeat;       // Time signature beat to be inserted
-	CAClef::CAClefType _eClef; // Type of the clef to be inserted
-	CABarline::CABarlineType _eBarlineType; // Type of the barline
-	CASlur::CASlurStyle _slurStyle; // Style of the slur (solid, dotted)
+	CANote::CAStemDirection _eNoteStemDirection;   // Note stem direction to be inserted
+	CASlur::CASlurType _eSlurType;                 // Slur type to be placed
+	int _iPlayableDotted;                          // Number of dots to be inserted for the note/rest
+	int _iNoteExtraAccs;                           // Extra note accidentals for new notes which user adds/removes with +/- keys
+	int _iNoteAccs;                                // Note accidentals at specific coordinates updated regularily when in insert mode
+	CARest::CARestType _eRestType;                 // Hidden/Normal rest
+	int _iKeySigNumberOfAccs;                      // Key signature number of accidentals
+	int _iTimeSigBeats;                            // Time signature number of beats to be inserted
+	int _iTimeSigBeat;                             // Time signature beat to be inserted
+	CAClef::CAClefType _eClef;                     // Type of the clef to be inserted
+	CABarline::CABarlineType _eBarlineType;        // Type of the barline
+	CASlur::CASlurStyle _slurStyle;                // Style of the slur (solid, dotted)
 	
 	// Function Marking
-	CAFunctionMarking::CAFunctionType _fmFunction; // Name of the function
-	CAFunctionMarking::CAFunctionType _fmChordArea; // Chord area of the function
+	CAFunctionMarking::CAFunctionType _fmFunction;    // Name of the function
+	CAFunctionMarking::CAFunctionType _fmChordArea;   // Chord area of the function
 	CAFunctionMarking::CAFunctionType _fmTonicDegree; // Tonic degree of the function
 	bool _fmFunctionMinor;
 	bool _fmChordAreaMinor;
 	bool _fmTonicDegreeMinor;
 	bool _fmEllipse;
-	
-	// Lyrics
-	QString _syllableText;
 };
 #endif // MUSELEMENTFACTORY_H_
