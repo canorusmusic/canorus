@@ -13,7 +13,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QCoreApplication>
-#include <QSettings>
+#include "core/settings.h"
 
 #include "interface/rtmididevice.h"
 #include "ui/midisetupdialog.h"
@@ -22,10 +22,8 @@
 
 // define private static members
 QList<CAMainWin*> CACanorus::_mainWinList;
-QSettings *CACanorus::_settings;
+CASettings *CACanorus::_settings;
 CAMidiDevice *CACanorus::_midiDevice;
-int CACanorus::_midiOutPort;
-int CACanorus::_midiInPort;
 QHash< CADocument*, QUndoStack* > CACanorus::_undoStack;
 CAUndoCommand *CACanorus::_undoCommand;
 QHash< QUndoStack*, CAUndoCommand* > CACanorus::_lastUndoCommand;
@@ -99,6 +97,7 @@ void CACanorus::initMain() {
 	QCoreApplication::setOrganizationName("Canorus");
 	QCoreApplication::setOrganizationDomain("canorus.org");
 	QCoreApplication::setApplicationName("Canorus");
+	setMidiDevice( new CARtMidiDevice() );
 }
 
 /*!
@@ -110,10 +109,15 @@ void CACanorus::initMain() {
 */
 void CACanorus::initSettings() {
 #ifdef Q_WS_WIN	// M$ is of course an exception
-	_settings = new QSettings(QDir::homePath()+"/Application Data/Canorus/canorus.ini", QSettings::IniFormat);
+	_settings = new CASettings(QDir::homePath()+"/Application Data/Canorus/canorus.ini", QSettings::IniFormat);
 #else	// POSIX systems use the same config file path
-	_settings = new QSettings(QDir::homePath()+"/.config/Canorus/canorus.ini", QSettings::IniFormat);
-#endif		
+	_settings = new CASettings(QDir::homePath()+"/.config/Canorus/canorus.ini", QSettings::IniFormat);
+#endif
+	
+	bool showSettingsWin = settings()->readSettings();
+	
+	if (showSettingsWin)
+		CAMidiSetupDialog();
 }
 
 /*!
@@ -173,30 +177,6 @@ int CACanorus::mainWinCount(CADocument *doc) {
 			count++;
 	
 	return count;
-}
-
-/*!
-	Creates MIDI device and loads port numbers. If no port number settings are stored in the config
-	file, it brings up the MIDI setup dialog.
-*/
-void CACanorus::initMidi() {
-	setMidiDevice(new CARtMidiDevice());
-	
-	if (CACanorus::settings()->contains("rtmidi/defaultoutputport") &&
-	    CACanorus::settings()->contains("rtmidi/defaultinputport") ) {
-		setMidiInPort(CACanorus::settings()->value("rtmidi/defaultinputport").toInt());
-		if (midiInPort() >= midiDevice()->getInputPorts().count())
-			setMidiInPort(-1);
-
-		setMidiOutPort(CACanorus::settings()->value("rtmidi/defaultoutputport").toInt());
-		if (midiOutPort() >= midiDevice()->getOutputPorts().count())
-			setMidiOutPort(-1);
-			
-	} else {
-		setMidiInPort(-1);
-		setMidiOutPort(-1);
-		CAMidiSetupDialog();
-	}
 }
 
 /*!

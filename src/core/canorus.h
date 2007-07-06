@@ -16,7 +16,7 @@
 #include <QList>
 #include <QUndoStack>
 
-class QSettings;
+class CASettings;
 class CAMidiDevice;
 class CADocument;
 
@@ -25,7 +25,6 @@ public:
 	static void initMain();
 	static void initSettings();
 	static void parseSettingsArguments(int argc, char *argv[]);
-	static void initMidi();
 	static void initScripting();
 	static void parseOpenFileArguments(int argc, char *argv[]);
 	
@@ -52,14 +51,9 @@ public:
 	inline static CAUndoCommand *lastUndoCommand( CADocument *d ) { return static_cast<CAUndoCommand*>(_lastUndoCommand[_undoStack[d]]); }
 	static void updateLastUndoCommand( CAUndoCommand *c );
 	
-	inline static QSettings *settings() { return _settings; }
+	inline static CASettings *settings() { return _settings; }
 	inline static CAMidiDevice *midiDevice() { return _midiDevice; }
 	inline static void setMidiDevice(CAMidiDevice *d) { _midiDevice = d; }
-	inline static int midiInPort() { return _midiInPort; }
-	inline static int midiOutPort() { return _midiOutPort; }
-	
-	inline static void setMidiInPort(int in) { _midiInPort = in; }
-	inline static void setMidiOutPort(int out) { _midiOutPort = out; }	
 	
 	static void rebuildUI( CADocument *document, CASheet *sheet );
 	static void rebuildUI( CADocument *document=0 );
@@ -73,13 +67,11 @@ private:
 	static CAUndoCommand *_undoCommand; // current undo command created to be put on the undo stack
 	
 	static QList<CAMainWin*> _mainWinList;
-	static QSettings *_settings;
+	static CASettings *_settings;
 	
 	/////////////////////
 	// Playback output //
 	/////////////////////
 	static CAMidiDevice *_midiDevice;
-	static int _midiOutPort; // -1 disabled, 0+ port number
-	static int _midiInPort;  // -1 disabled, 0+ port number
 };
 #endif /* CANORUS_H_*/
