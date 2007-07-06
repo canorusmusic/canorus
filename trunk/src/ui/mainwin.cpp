@@ -46,6 +46,7 @@
 #include "drawable/drawablemuselement.h"
 #include "drawable/drawablenote.h"
 
+#include "core/settings.h"
 #include "core/canorus.h"
 #include "core/sheet.h"
 #include "core/staff.h"
@@ -1732,7 +1733,7 @@ void CAMainWin::playbackFinished() {
 */
 void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
 	if (checked && currentScoreViewPort()) {
-		CACanorus::midiDevice()->openOutputPort(CACanorus::midiOutPort());
+		CACanorus::midiDevice()->openOutputPort( CACanorus::settings()->midiOutPort() );
 		_repaintTimer = new QTimer();
 		_repaintTimer->setInterval(100);
 		_repaintTimer->start();

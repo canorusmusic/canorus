@@ -54,9 +54,6 @@ int main(int argc, char *argv[]) {
 		mainApp.installTranslator(&translator);
 	}
 	
-	// Create MIDI device
-	CACanorus::initMidi();
-	
 	// Enable scripting and plugins subsystem
 	CACanorus::initScripting();
 	
