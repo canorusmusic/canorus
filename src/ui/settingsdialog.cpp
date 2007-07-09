@@ -64,7 +64,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiPreviewScoreViewPort->setSheet( _previewSheet );
 	uiPreviewScoreViewPort->setScrollBarVisible( CAScoreViewPort::ScrollBarAlwaysHidden );
 	uiPreviewScoreViewPort->rebuild();
-	uiPreviewScoreViewPort->setZoom(0.7, 0, 0, false, false);
+	uiPreviewScoreViewPort->setZoom(0.6, 0, 0, false, false);
 	uiPreviewScoreViewPort->setCurrentContext( uiPreviewScoreViewPort->findCElement( _previewSheet->staffAt(0) ) );
 	uiPreviewScoreViewPort->addSelectionRegion( QRect(50, 40, 70, 90) );
 	uiPreviewScoreViewPort->addToSelection( _previewSheet->staffAt(0)->voiceAt(0)->musElementAt(1) );
@@ -153,7 +153,7 @@ void CASettingsDialog::buildPreviewSheet() {
 }
 
 void CASettingsDialog::on_uiBackgroundColor_clicked(bool) {
-	QColor c = QColorDialog::getColor( uiBackgroundColor->palette().color(QPalette::Window), this );
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiBackgroundColor->palette().color(QPalette::Window).rgba(), 0, this ));
 	if (c.isValid()) {
 		uiBackgroundColor->setPalette( QPalette(c) );
 		uiPreviewScoreViewPort->setBackgroundColor(c);
@@ -168,7 +168,7 @@ void CASettingsDialog::on_uiBackgroundRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiForegroundColor_clicked(bool) {
-	QColor c = QColorDialog::getColor( uiForegroundColor->palette().color(QPalette::Window), this );
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiForegroundColor->palette().color(QPalette::Window).rgba(), 0, this ));
 	if (c.isValid()) {
 		uiForegroundColor->setPalette( QPalette(c) );
 		uiPreviewScoreViewPort->setForegroundColor(c);
@@ -183,7 +183,7 @@ void CASettingsDialog::on_uiForegroundRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiSelectionColor_clicked(bool) {
-	QColor c = QColorDialog::getColor( uiSelectionColor->palette().color(QPalette::Window), this );
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiSelectionColor->palette().color(QPalette::Window).rgba(), 0, this ));
 	if (c.isValid()) {
 		uiSelectionColor->setPalette( QPalette(c) );
 		uiPreviewScoreViewPort->setSelectionColor(c);
@@ -198,7 +198,7 @@ void CASettingsDialog::on_uiSelectionRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiSelectionAreaColor_clicked(bool) {
-	QColor c = QColorDialog::getColor( uiSelectionAreaColor->palette().color(QPalette::Window), this );
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiSelectionAreaColor->palette().color(QPalette::Window).rgba(), 0, this ));
 	if (c.isValid()) {
 		uiSelectionAreaColor->setPalette( QPalette(c) );
 		uiPreviewScoreViewPort->setSelectionAreaColor(c);
@@ -213,7 +213,7 @@ void CASettingsDialog::on_uiSelectionAreaRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiSelectedContextColor_clicked(bool) {
-	QColor c = QColorDialog::getColor( uiSelectedContextColor->palette().color(QPalette::Window), this );
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiSelectedContextColor->palette().color(QPalette::Window).rgba(), 0, this ));
 	if (c.isValid()) {
 		uiSelectedContextColor->setPalette( QPalette(c) );
 		uiPreviewScoreViewPort->setSelectedContextColor(c);
@@ -228,7 +228,7 @@ void CASettingsDialog::on_uiSelectedContextRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiHiddenElementsColor_clicked(bool) {
-	QColor c = QColorDialog::getColor( uiHiddenElementsColor->palette().color(QPalette::Window), this );
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiHiddenElementsColor->palette().color(QPalette::Window).rgba(), 0, this ));
 	if (c.isValid()) {
 		uiHiddenElementsColor->setPalette( QPalette(c) );
 		uiPreviewScoreViewPort->setHiddenElementsColor(c);
@@ -243,7 +243,7 @@ void CASettingsDialog::on_uiHiddenElementsRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiDisabledElementsColor_clicked(bool) {
-	QColor c = QColorDialog::getColor( uiDisabledElementsColor->palette().color(QPalette::Window), this );
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiDisabledElementsColor->palette().color(QPalette::Window).rgba(), 0, this ));
 	if (c.isValid()) {
 		uiDisabledElementsColor->setPalette( QPalette(c) );
 		uiPreviewScoreViewPort->setDisabledElementsColor(c);
