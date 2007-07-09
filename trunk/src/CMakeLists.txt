@@ -48,9 +48,9 @@ ENDIF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 # Define the UI source files used by Canorus
 SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compiled
 	ui/mainwin.ui
-	ui/keysig.ui
-	ui/timesig.ui
-	ui/midisetupdialog.ui
+#	ui/keysig.ui
+#	ui/timesig.ui
+	ui/settingsdialog.ui
 )
 
 # Define the MOC source files used by Canorus
@@ -58,7 +58,7 @@ SET(Canorus_MOCs
 	ui/mainwin.h	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 #	ui/keysigpsp.h  # obsolete
 #	ui/timesigpsp.h # obsolete
-	ui/midisetupdialog.h
+	ui/settingsdialog.h
 	ui/pluginaction.h
 	widgets/keyoffs.h
 	widgets/lcdnumber.h
@@ -120,7 +120,7 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/mainwin.cpp
 #	ui/keysigpsp.cpp  # obsolete
 #	ui/timesigpsp.cpp # obsolete
-	ui/midisetupdialog.cpp
+	ui/settingsdialog.cpp
 	ui/pluginaction.cpp
 )
 

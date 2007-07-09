@@ -24,7 +24,7 @@
 #include "ui/mainwin.h"
 #include "ui/keysigpsp.h"
 #include "ui/timesigpsp.h"
-#include "ui/midisetupdialog.h"
+#include "ui/settingsdialog.h"
 
 #include "interface/playback.h"
 #include "interface/engraver.h"
@@ -1534,14 +1534,13 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				v->setCurrentContext( 0 );
 			}
 			uiVoiceNum->setRealValue( 0 );
-			setMode(SelectMode);
+			uiSelectMode->trigger();
 			break;
 		case Qt::Key_I:
-			musElementFactory()->setMusElementType( CAMusElement::Note );
-			setMode( InsertMode );
+			uiInsertPlayable->trigger();
 			break;
 		case Qt::Key_E:
-			setMode( EditMode );
+			uiEditMode->trigger();
 			break;
 	}
 	
@@ -2091,7 +2090,9 @@ void CAMainWin::onSyllableEditKeyPressEvent(QKeyEvent *e, CASyllableEdit *syllab
 	if ( e->key()==Qt::Key_Space  ||
 	     e->key()==Qt::Key_Return ||
 	     e->key()==Qt::Key_Right && syllableEdit->cursorPosition()==syllableEdit->text().size() ||
-	     (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && syllableEdit->cursorPosition()==0 ) {
+	     (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && syllableEdit->cursorPosition()==0 || 
+	     CACanorus::settings()->finaleLyricsBehaviour() && e->key()==Qt::Key_Minus
+	   ) {
 		CACanorus::createUndoCommand( document(), tr("lyrics edit", "undo") );	     
 		syllable->setText(text);
 		syllable->setHyphenStart(hyphen);
@@ -2106,6 +2107,10 @@ void CAMainWin::onSyllableEditKeyPressEvent(QKeyEvent *e, CASyllableEdit *syllab
 				nextSyllable = syllable->lyricsContext()->findNextMusElement(syllable);
 			else  if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace)                    // next left note
 				nextSyllable = syllable->lyricsContext()->findPrevMusElement(syllable);
+			else if (e->key()==Qt::Key_Minus) {
+				syllable->setHyphenStart(true);
+				nextSyllable = syllable->lyricsContext()->findNextMusElement(syllable);
+			}
 			
 			CACanorus::pushUndoCommand();
 			CACanorus::rebuildUI( document(), currentSheet() );
@@ -2359,9 +2364,8 @@ void CAMainWin::on_uiAboutQt_triggered()
 	QMessageBox::aboutQt( this, tr("About Qt") );
 }
 
-void CAMainWin::on_uiAboutCanorus_triggered()
-{
-	QMessageBox::about ( this, tr("About Canorus"),
+void CAMainWin::on_uiAboutCanorus_triggered() {
+	QMessageBox::about( this, tr("About Canorus"),
 	tr("Canorus - The next generation music score editor\n\n\
 Version %1\n\
 (C) 2006, 2007 Canorus Development team. All rights reserved.\n\
@@ -2372,7 +2376,8 @@ Homepage: http://www.canorus.org").arg(CANORUS_VERSION) );
 }
 
 void CAMainWin::on_uiSettings_triggered() {
-	CAMidiSetupDialog(this);
+	CASettingsDialog( CASettingsDialog::EditorSettings, this );
+	CACanorus::rebuildUI();
 }
 
 void CAMainWin::on_uiLilyPondSource_triggered() {
@@ -2636,6 +2641,9 @@ void CAMainWin::updateVoiceToolBar() {
 void CAMainWin::updateContextToolBar() {
 	CAContext *context = currentContext();
 	if (mode()==SelectMode && context) {
+		if (!uiInsertPlayable->isChecked())
+			uiContextToolBar->show();
+		
 		switch (context->contextType()) {
 			case CAContext::Staff: {
 				uiStaffNumberOfLines->setValue(static_cast<CAStaff*>(context)->numberOfLines());
@@ -2669,9 +2677,6 @@ void CAMainWin::updateContextToolBar() {
 			}
 		}
 		uiContextName->setText(context->name());
-		
-		if (!uiInsertPlayable->isChecked())
-			uiContextToolBar->show();
 	} else
 		uiContextToolBar->hide();
 }
