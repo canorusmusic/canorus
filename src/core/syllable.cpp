@@ -40,14 +40,8 @@ CASyllable::~CASyllable() {
 */
 void CASyllable::clear() {
 	setText("");
-	CASyllable *prev = static_cast<CASyllable*>(lyricsContext()->findPrevMusElement(this));
-	if (prev) {
-		setHyphenStart( prev->hyphenStart() );
-		setMelismaStart( prev->melismaStart() );
-	} else {
-		setHyphenStart( false );
-		setMelismaStart( false );
-	}
+	setHyphenStart( false );
+	setMelismaStart( false );
 }
 
 CAMusElement* CASyllable::clone() {

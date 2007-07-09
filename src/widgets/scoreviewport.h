@@ -61,7 +61,8 @@ public:
 	///////////////////
 	// Basic methods //
 	///////////////////
-	CAScoreViewPort(CASheet *sheet, QWidget *parent);
+	CAScoreViewPort(QWidget *parent=0);
+	CAScoreViewPort(CASheet *sheet, QWidget *parent=0);
 	virtual ~CAScoreViewPort();
 	CAScoreViewPort *clone();
 	CAScoreViewPort *clone(QWidget *parent);
@@ -177,8 +178,22 @@ public:
 	void zoomToFit(bool animate=false, bool force=false);
 	
 	void setBorder(const QPen pen);
-	void setBackground(const QBrush brush);
 	void unsetBorder();
+	inline QPen border() { return _borderPen; }
+	inline QColor backgroundColor() { return _backgroundColor; }
+	inline void setBackgroundColor( const QColor c ) { _backgroundColor = c; }
+	inline QColor foregroundColor() { return _foregroundColor; }
+	inline void setForegroundColor( const QColor c ) { _foregroundColor = c; }
+	inline QColor selectionColor() { return _selectionColor; }
+	inline void setSelectionColor( const QColor c ) { _selectionColor = c; }
+	inline QColor selectionAreaColor() { return _selectionAreaColor; }
+	inline void setSelectionAreaColor( const QColor c ) { _selectionAreaColor = c; }
+	inline QColor selectedContextColor() { return _selectedContextColor; }
+	inline void setSelectedContextColor( const QColor c ) { _selectedContextColor = c; }
+	inline QColor hiddenElementsColor() { return _hiddenElementsColor; }
+	inline void setHiddenElementsColor( const QColor c ) { _hiddenElementsColor = c; }
+	inline QColor disabledElementsColor() { return _disabledElementsColor; }
+	inline void setDisabledElementsColor( const QColor c ) { _disabledElementsColor = c; }
 	
 	inline bool playing() { return _playing; }
 	inline void setPlaying(bool playing) { _playing = playing; }
@@ -231,9 +246,17 @@ signals:
 	void CAKeyPressEvent(QKeyEvent *e, CAScoreViewPort *v);
 
 private:
+	void initScoreViewPort( CASheet *s );
 	inline void clearMElements() { _drawableMList.clear(true); }
 	inline void clearCElements() { _drawableCList.clear(true); }
 	inline bool isSelected(CADrawableMusElement *elt) { return (_selection.contains(elt)); }
+	
+	//////////////////
+	// Core Widgets //
+	//////////////////
+	QGridLayout *_layout;    // Grid layout for placing the scrollbars at the right and the bottom.
+	QWidget *_canvas;        // Virtual canvas which represents the size of the drawable area. All its signals are forwarded to CAViewPort.
+	QScrollBar *_hScrollBar, *_vScrollBar; // Horizontal/vertical scrollbars
 	
 	////////////////////////
 	// General properties //
@@ -285,16 +308,19 @@ private:
 	QList<QRect> _selectionRegionList;
 	void drawSelectionRegion( QPainter *p, CADrawSettings s );
 	
-	////////////////////////////
-	// Widgets and appearance //
-	////////////////////////////
-	QGridLayout *_layout;    // Grid layout for placing the scrollbars at the right and the bottom.
-	QWidget *_canvas;        // Virtual canvas which represents the size of the drawable area. All its signals are forwarded to CAViewPort.
-	QScrollBar *_hScrollBar, *_vScrollBar; // Horizontal/vertical scrollbars
-	bool _drawBorder;        // Should the border be drawn or not.
-	QPen _borderPen;         // Pen which the border is drawn by.
-	QBrush _backgroundBrush; // Brush which the background is drawn by.
-	QRect *_repaintArea;     // Area to be repainted on paintEvent().
+	////////////////
+	// Appearance //
+	////////////////
+	bool _drawBorder;              // Should the border be drawn or not.
+	QRect *_repaintArea;           // Area to be repainted on paintEvent().
+	QPen _borderPen;               // Pen which the border is drawn by.
+	QColor _backgroundColor;       // Color which the background is filled.
+	QColor _foregroundColor;       // Color which the music elements are painted.
+	QColor _selectionColor;        // Color which the selected music elements are painted.
+	QColor _selectionAreaColor;    // Color which the selection area background is filled.
+	QColor _selectedContextColor;  // Color which the current context is painted.
+	QColor _disabledElementsColor; // Color which the elements in non-selected voice are painted.
+	QColor _hiddenElementsColor;   // Color which the invisible elements are painted in current-voice-only mode.
 	
 	///////////////
 	// Animation //

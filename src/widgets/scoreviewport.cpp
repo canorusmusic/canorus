@@ -39,6 +39,8 @@
 #include "core/rest.h"
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
+#include "core/canorus.h"
+#include "core/settings.h"
 
 const int CAScoreViewPort::RIGHT_EXTRA_SPACE = 100;	// Gives some space after the music so you're able to insert music elements after the last element
 const int CAScoreViewPort::BOTTOM_EXTRA_SPACE = 30; // Gives some space after the music so you're able to insert new contexts below the last context
@@ -94,7 +96,17 @@ void CASyllableEdit::keyPressEvent( QKeyEvent *e ) {
 	This widget also provides horizontal and vertical scrollbars (see _hScrollBar and _vScrollBar).
 */
 
-CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(parent) {
+CAScoreViewPort::CAScoreViewPort( CASheet *sheet, QWidget *parent )
+ : CAViewPort(parent) {
+	initScoreViewPort( sheet );
+}
+
+CAScoreViewPort::CAScoreViewPort( QWidget *parent )
+ : CAViewPort(parent) {
+	initScoreViewPort( 0 );	
+}
+
+void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	setViewPortType( ScoreViewPort );
 	
 	setSheet( sheet );
@@ -118,7 +130,6 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	_canvas = new QWidget(this);
 	setMouseTracking(true);
 	_canvas->setMouseTracking(true);
-	_backgroundBrush = QBrush(QColor(255, 255, 240));
 	_repaintArea = 0;
 	
 	// init animation stuff
@@ -157,6 +168,13 @@ CAScoreViewPort::CAScoreViewPort(CASheet *sheet, QWidget *parent) : CAViewPort(p
 	
 	_oldWorldW = 0; _oldWorldH = 0;
 	
+	setBackgroundColor( CACanorus::settings()->backgroundColor() );
+	setForegroundColor( CACanorus::settings()->foregroundColor() );
+	setSelectionColor( CACanorus::settings()->selectionColor() );
+	setSelectionAreaColor( CACanorus::settings()->selectionAreaColor() );
+	setSelectedContextColor( CACanorus::settings()->selectedContextColor() );
+	setHiddenElementsColor( CACanorus::settings()->hiddenElementsColor() );
+	setDisabledElementsColor( CACanorus::settings()->disabledElementsColor() );
 }
 
 CAScoreViewPort::~CAScoreViewPort() {
@@ -808,9 +826,9 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	
 	// draw the background
 	if (_repaintArea)
-		p.fillRect(qRound((_repaintArea->x() - _worldX)*_zoom), qRound((_repaintArea->y() - _worldY)*_zoom), qRound(_repaintArea->width()*_zoom), qRound(_repaintArea->height()*_zoom), _backgroundBrush);
+		p.fillRect(qRound((_repaintArea->x() - _worldX)*_zoom), qRound((_repaintArea->y() - _worldY)*_zoom), qRound(_repaintArea->width()*_zoom), qRound(_repaintArea->height()*_zoom), _backgroundColor);
 	else
-		p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundBrush);
+		p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundColor);
 	
 	// draw contexts
 	QList<CADrawableContext*> cList;
@@ -826,7 +844,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	        	       qRound((cList[i]->xPos() - _worldX) * _zoom),
 		               qRound((cList[i]->yPos() - _worldY) * _zoom),
 	            	   drawableWidth(), drawableHeight(),
-		               ((_currentContext == cList[i])?Qt::blue:Qt::black)
+		               ((_currentContext == cList[i])?selectedContextColor():foregroundColor())
 		};
 		cList[i]->draw(&p, s);
 	}
@@ -843,7 +861,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		CAMusElement *elt = mList[i]->musElement();
 		
 		if ( _selection.contains(mList[i])) {
-			color = Qt::red;
+			color = selectionColor();
 		} else
 		if ( selectedVoice() &&
 		     (elt &&
@@ -858,13 +876,13 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 			     static_cast<CAPlayable*>(elt)->voice()==selectedVoice() &&
 			     static_cast<CARest*>(elt)->restType()==CARest::Hidden
 			   ) {
-			   	color = Qt::green;
+			   	color = hiddenElementsColor();
 			} else if ( elt && elt->musElementType()==CAMusElement::Rest &&
 			            static_cast<CARest*>(elt)->restType()==CARest::Hidden
 			          ) {
 			   	color = QColor(0,0,0,0); // transparent color
 			} else {
-				color=Qt::black;
+				color = foregroundColor();
 			}
 		} else {
 			if ( elt && elt->musElementType()==CAMusElement::Rest &&
@@ -872,7 +890,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 			   ) {
 			   	color = QColor(0,0,0,0); // transparent color
 			} else {
-				color=Qt::gray;
+				color = disabledElementsColor();
 			}
 		}
 		
@@ -894,7 +912,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 			qRound( (selectionRegionList().at(i).y() - _worldY) * _zoom),
 			qRound( selectionRegionList().at(i).width() * _zoom),
 			qRound( selectionRegionList().at(i).height() * _zoom),
-			QColor( 255, 0, 80, 70 )
+			selectionAreaColor()
 		};
 		drawSelectionRegion( &p, c );
 	}
@@ -907,7 +925,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 			               qRound((_shadowDrawableNote[i]->xPos() - _worldX - _shadowDrawableNote[i]->width()/2) * _zoom),
 			               qRound((_shadowDrawableNote[i]->yPos() - _worldY) * _zoom),
 			               drawableWidth(), drawableHeight(),
-			               (Qt::gray)
+			               disabledElementsColor()
 			               };
 			_shadowDrawableNote[i]->draw(&p, s);
 			if (_drawShadowNoteAccs) {
@@ -971,13 +989,6 @@ void CAScoreViewPort::drawSelectionRegion( QPainter *p, CADrawSettings s ) {
 void CAScoreViewPort::setBorder(const QPen pen) {
 	_borderPen = pen;
 	_drawBorder = true;
-}
-
-/*!
-	Fills the background with the given brush style and color.
-*/
-void CAScoreViewPort::setBackground(const QBrush brush) {
-	_backgroundBrush = brush;
 }
 
 /*!

@@ -1,0 +1,725 @@
+<ui version="4.0" >
+ <class>uiSettingsDialog</class>
+ <widget class="QDialog" name="uiSettingsDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>669</width>
+    <height>551</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Settings</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>2</x>
+     <y>12</y>
+     <width>661</width>
+     <height>531</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" >
+    <property name="margin" >
+     <number>0</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QListWidget" name="uiSettingsList" >
+        <property name="maximumSize" >
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="iconSize" >
+         <size>
+          <width>80</width>
+          <height>80</height>
+         </size>
+        </property>
+        <property name="textElideMode" >
+         <enum>Qt::ElideMiddle</enum>
+        </property>
+        <property name="movement" >
+         <enum>QListView::Static</enum>
+        </property>
+        <property name="flow" >
+         <enum>QListView::TopToBottom</enum>
+        </property>
+        <property name="isWrapping" stdset="0" >
+         <bool>false</bool>
+        </property>
+        <property name="spacing" >
+         <number>5</number>
+        </property>
+        <property name="viewMode" >
+         <enum>QListView::IconMode</enum>
+        </property>
+        <property name="uniformItemSizes" >
+         <bool>false</bool>
+        </property>
+        <property name="wordWrap" >
+         <bool>false</bool>
+        </property>
+        <property name="currentRow" >
+         <number>-1</number>
+        </property>
+        <item>
+         <property name="text" >
+          <string>Editor</string>
+         </property>
+         <property name="icon" >
+          <iconset>images/editorsettings.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Appearance</string>
+         </property>
+         <property name="icon" >
+          <iconset>images/colorsettings.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Load/Save</string>
+         </property>
+         <property name="icon" >
+          <iconset>images/floppy.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Playback</string>
+         </property>
+         <property name="icon" >
+          <iconset>images/midisetup.svg</iconset>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="uiPageNameLabel" >
+          <property name="font" >
+           <font>
+            <weight>50</weight>
+            <italic>true</italic>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="frameShape" >
+           <enum>QFrame::Box</enum>
+          </property>
+          <property name="frameShadow" >
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="text" >
+           <string>Current page name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QStackedWidget" name="uiStackedWidget" >
+          <property name="frameShape" >
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow" >
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="currentIndex" >
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="editorSettings" >
+           <widget class="QCheckBox" name="uiFinaleLyricsCheckBox" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>431</width>
+              <height>29</height>
+             </rect>
+            </property>
+            <property name="toolTip" >
+             <string>When making hyphen, immediately jump to the next syllable without hitting space bar key.</string>
+            </property>
+            <property name="text" >
+             <string>Use Finale/Sibelius lyrics behaviour</string>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="appearanceSettings" >
+           <widget class="QWidget" name="layoutWidget" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>431</width>
+              <height>290</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>0</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="uiBackgroundLabel" >
+                 <property name="toolTip" >
+                  <string>Color which the background is filled.</string>
+                 </property>
+                 <property name="text" >
+                  <string>Background color</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiBackgroundColor" >
+                 <property name="text" >
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiBackgroundRevert" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>30</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="icon" >
+                  <iconset>images/revert.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="uiForegroundLabel" >
+                 <property name="toolTip" >
+                  <string>Color which the music elements are painted.</string>
+                 </property>
+                 <property name="text" >
+                  <string>Foreground color</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiForegroundColor" >
+                 <property name="text" >
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiForegroundRevert" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>30</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="icon" >
+                  <iconset>images/revert.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="uiSelectionLabel" >
+                 <property name="toolTip" >
+                  <string>Color which the selected music elements are painted.</string>
+                 </property>
+                 <property name="text" >
+                  <string>Selected elements</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiSelectionColor" >
+                 <property name="text" >
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiSelectionRevert" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>30</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="icon" >
+                  <iconset>images/revert.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="uiSelectedContextLabel" >
+                 <property name="toolTip" >
+                  <string>Color which the current context is painted.</string>
+                 </property>
+                 <property name="text" >
+                  <string>Selected context</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiSelectedContextColor" >
+                 <property name="text" >
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiSelectedContextRevert" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>30</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="icon" >
+                  <iconset>images/revert.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="uiSelectionAreaLabel" >
+                 <property name="toolTip" >
+                  <string>Color which the selection area background is filled.</string>
+                 </property>
+                 <property name="text" >
+                  <string>Selection area</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiSelectionAreaColor" >
+                 <property name="text" >
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiSelectionAreaRevert" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>30</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="icon" >
+                  <iconset>images/revert.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="uiHiddenElementsLabel" >
+                 <property name="toolTip" >
+                  <string>Color which the invisible elements are painted in current-voice-only mode.</string>
+                 </property>
+                 <property name="text" >
+                  <string>Hidden elements</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiHiddenElementsColor" >
+                 <property name="text" >
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiHiddenElementsRevert" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>30</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="icon" >
+                  <iconset>images/revert.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="uiDisabledElements" >
+                 <property name="toolTip" >
+                  <string>Color which the elements in non-selected voice are painted.</string>
+                 </property>
+                 <property name="text" >
+                  <string>Disabled elements</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiDisabledElementsColor" >
+                 <property name="text" >
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="uiDisabledElementsRevert" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>30</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="icon" >
+                  <iconset>images/revert.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QLabel" name="uiPreviewLabel" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>310</y>
+              <width>84</width>
+              <height>24</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Preview:</string>
+            </property>
+           </widget>
+           <widget class="CAScoreViewPort" native="1" name="uiPreviewScoreViewPort" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>330</y>
+              <width>431</width>
+              <height>111</height>
+             </rect>
+            </property>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="loadSaveSettings" >
+           <widget class="QComboBox" name="uiDefaultLoadComboBox" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>120</y>
+              <width>431</width>
+              <height>29</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QLabel" name="uiDefaultLoadLabel" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>90</y>
+              <width>431</width>
+              <height>24</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Default file format for loading:</string>
+            </property>
+           </widget>
+           <widget class="QComboBox" name="uiDefaultSaveComboBox" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>40</y>
+              <width>431</width>
+              <height>29</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QLabel" name="uiDefaultSaveLabel" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>431</width>
+              <height>24</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Default file format for saving:</string>
+            </property>
+           </widget>
+           <widget class="QWidget" name="layoutWidget" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>170</y>
+              <width>296</width>
+              <height>33</height>
+             </rect>
+            </property>
+            <layout class="QHBoxLayout" >
+             <property name="margin" >
+              <number>0</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="uiAutoSaveLabel" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>5</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text" >
+                <string comment="Auto save every %n minutes." >Auto save every</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="uiAutoSaveSpinBox" >
+               <property name="toolTip" >
+                <string>Automatically save document every specified number of ellapsed minutes. 0 to disable auto save.</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="uiAutoSaveLabel_2" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>5</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text" >
+                <string comment="Auto save every %n minutes." >minutes.</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="midiSettings" >
+           <widget class="QWidget" name="layoutWidget" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>431</width>
+              <height>431</height>
+             </rect>
+            </property>
+            <layout class="QHBoxLayout" >
+             <property name="margin" >
+              <number>0</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item>
+              <layout class="QVBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="uiMidiInLabel" >
+                 <property name="text" >
+                  <string>MIDI IN devices:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QListWidget" name="uiMidiInList" />
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line" >
+               <property name="orientation" >
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" >
+               <property name="margin" >
+                <number>0</number>
+               </property>
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="uiMidiOutLabel" >
+                 <property name="text" >
+                  <string>MIDI OUT devices:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QListWidget" name="uiMidiOutList" />
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QDialogButtonBox" name="uiButtonBox" >
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons" >
+       <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CAScoreViewPort</class>
+   <extends>QWidget</extends>
+   <header>widgets/scoreviewport.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>uiButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>uiSettingsDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>249</x>
+     <y>541</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uiButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>uiSettingsDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>317</x>
+     <y>541</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
