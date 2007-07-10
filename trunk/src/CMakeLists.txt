@@ -49,7 +49,7 @@ ENDIF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compiled
 	ui/mainwin.ui
 #	ui/keysig.ui
-#	ui/timesig.ui
+	ui/timesig.ui
 	ui/settingsdialog.ui
 )
 

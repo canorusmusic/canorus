@@ -22,7 +22,7 @@
 #include <iostream>
 
 #include "ui/mainwin.h"
-#include "ui/keysigpsp.h"
+//#include "ui/keysigpsp.h"
 #include "ui/timesigpsp.h"
 #include "ui/settingsdialog.h"
 
@@ -71,7 +71,55 @@
 #include "export/lilypondexport.h"
 #include "import/lilypondimport.h"
 
-const QString CAMainWin::LILYPOND_FILTER = tr("LilyPond document (*.ly)");
+const QString CAFileFormats::CANORUSML_FILTER = QObject::tr("Canorus document (*.xml)");
+const QString CAFileFormats::LILYPOND_FILTER  = QObject::tr("LilyPond document (*.ly)");
+const QString CAFileFormats::MUSICXML_FILTER  = QObject::tr("MusicXML document (*.xml)");	
+const QString CAFileFormats::NOTEEDIT_FILTER  = QObject::tr("NoteEdit document (*.not)");	
+const QString CAFileFormats::ABCMUSIC_FILTER  = QObject::tr("ABC music document (*.abc)");	
+const QString CAFileFormats::FINALE_FILTER    = QObject::tr("Finale document (*.mus)");	
+const QString CAFileFormats::SIBELIUS_FILTER  = QObject::tr("Sibelius document (*.sib)");	
+const QString CAFileFormats::CAPELLA_FILTER   = QObject::tr("Capella document (*.cap)");	
+const QString CAFileFormats::MIDI_FILTER      = QObject::tr("Midi file (*.mid, *.midi)");	
+
+QFileDialog *CAMainWin::uiOpenDialog = 0;
+QFileDialog *CAMainWin::uiSaveDialog = 0;
+QFileDialog *CAMainWin::uiImportDialog = 0;
+QFileDialog *CAMainWin::uiExportDialog = 0;
+
+/*!
+	\class CAFileFormats
+	\brief File formats supported by Canorus
+	This class contains the filters shown in file dialogs (eg. when opening/saving a document) and its internal
+	enumeration values used when storing settings.
+*/
+
+/*!
+	Converts the file format enumeration to filter as string.
+*/
+const QString CAFileFormats::getFilter( const CAFileFormats::CAFileFormatType t ) {
+	switch (t) {
+		case CanorusML:
+			return CANORUSML_FILTER;
+		case LilyPond:
+			return LILYPOND_FILTER;
+		case MusicXML:
+			return MUSICXML_FILTER;
+	}
+}
+
+/*!
+	Converts the file format filter string to enumeration appropriate for storing in config file.
+*/
+const CAFileFormats::CAFileFormatType CAFileFormats::getType( const QString t ) {
+	if (t==CANORUSML_FILTER)
+		return CanorusML;
+	else
+	if (t==LILYPOND_FILTER)
+		return LilyPond;
+	else
+	if (t==MUSICXML_FILTER)
+		return MusicXML;
+}
 
 /*!
 	\class CAMainWin
@@ -109,18 +157,6 @@ CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
 	// Explicitly initialize this so it isn't true sometimes
 	setRebuildUILock( false );
 	
-	// Initialize import/export dialogs
-	uiExportDialog = new QFileDialog(this);
-	uiExportDialog->setFileMode(QFileDialog::AnyFile);
-	uiExportDialog->setDirectory( QDir::current() );
-	uiExportDialog->setAcceptMode( QFileDialog::AcceptSave );
-	uiExportDialog->setFilter( LILYPOND_FILTER ); // add LilyPond filter defined in mainwin.h
-  	
-	uiImportDialog = new QFileDialog(this);
-	uiImportDialog->setFileMode( QFileDialog::ExistingFile );
-	uiImportDialog->setDirectory( QDir::current() );
-	uiImportDialog->setAcceptMode( QFileDialog::AcceptOpen );
-	
 	// Initialize internal UI properties
 	_mode = SelectMode;
 	_playback = 0;
@@ -151,7 +187,6 @@ CAMainWin::~CAMainWin()  {
 	delete _playback;
 	
 	// clear UI
-	delete uiImportDialog; delete uiExportDialog;
 	delete uiInsertToolBar; delete uiInsertGroup; delete uiContextType; delete uiSlurType; delete uiClefType; delete uiBarlineType;
 	delete uiVoiceToolBar; delete uiVoiceNum; delete uiVoiceName; delete uiRemoveVoice; delete uiVoiceStemDirection; delete uiVoiceProperties;
 	delete uiPlayableToolBar; delete uiPlayableLength; delete uiNoteAccs; delete uiNoteStemDirection; delete uiHiddenRest;
@@ -1790,16 +1825,9 @@ void CAMainWin::closeEvent(QCloseEvent *event) {	//TODO: Make the main window th
 }
 
 void CAMainWin::on_uiOpenDocument_triggered() {
-	QString s = QFileDialog::getOpenFileName(
-	                this,
-	                tr("Choose a file to open"),
-	                "",
-	                tr("Canorus document (*.xml)"));
-
-	if (s.isEmpty())
-		return;
-	
-	openDocument(s); 
+	if ( CAMainWin::uiOpenDialog->exec() && CAMainWin::uiOpenDialog->selectedFiles().size() ) {
+		openDocument(CAMainWin::uiOpenDialog->selectedFiles().at(0));
+	}
 }
 
 void CAMainWin::on_uiSaveDocument_triggered() {
@@ -1813,16 +1841,10 @@ void CAMainWin::on_uiSaveDocument_triggered() {
 }
 
 void CAMainWin::on_uiSaveDocumentAs_triggered() {
-	if (document()) {
-		QString s = QFileDialog::getSaveFileName(
-		                this,
-		                tr("Choose a file to save"),
-		                "",
-		                tr("Canorus document (*.xml)"));
-		
-		if (s.isEmpty())
-			return;
-		
+	if ( document() &&
+	     CAMainWin::uiSaveDialog->exec() && CAMainWin::uiSaveDialog->selectedFiles().size()
+	   ) {
+		QString s = CAMainWin::uiSaveDialog->selectedFiles().at(0);
 		// append the extension, if the last 4 characters don't already contain the dot
 		int i;
 		for (i=0; (i<4) && ((s.length()-i-1) > 0); i++) if (s[s.length()-i-1] == '.') break;
@@ -1915,7 +1937,7 @@ void CAMainWin::on_uiExportDocument_triggered() {
 		if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 			QTextStream out(&file);
 			
-			if (exportDialog()->selectedFilter() == LILYPOND_FILTER) {
+			if (exportDialog()->selectedFilter() == CAFileFormats::LILYPOND_FILTER) {
 				// LilyPond
 				CALilyPondExport(document(), &out);
 			}

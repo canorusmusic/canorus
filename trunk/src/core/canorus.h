@@ -10,6 +10,7 @@
 
 // Python.h needs to be loaded first!
 #include "ui/mainwin.h"
+#include "ui/settingsdialog.h"
 #include "core/undocommand.h"
 
 #include <QString>
@@ -23,7 +24,8 @@ class CADocument;
 class CACanorus {
 public:
 	static void initMain();
-	static void initSettings();
+	static CASettingsDialog::CASettingsPage initSettings();
+	static void initCommonGUI();
 	static void parseSettingsArguments(int argc, char *argv[]);
 	static void initScripting();
 	static void parseOpenFileArguments(int argc, char *argv[]);

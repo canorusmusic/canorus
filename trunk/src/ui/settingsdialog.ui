@@ -148,7 +148,7 @@
            <enum>QFrame::Plain</enum>
           </property>
           <property name="currentIndex" >
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="editorSettings" >
            <widget class="QCheckBox" name="uiFinaleLyricsCheckBox" >
@@ -205,6 +205,12 @@
                </item>
                <item>
                 <widget class="QPushButton" name="uiBackgroundColor" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>80</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text" >
                   <string/>
                  </property>
@@ -245,6 +251,12 @@
                </item>
                <item>
                 <widget class="QPushButton" name="uiForegroundColor" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>80</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text" >
                   <string/>
                  </property>
@@ -285,6 +297,12 @@
                </item>
                <item>
                 <widget class="QPushButton" name="uiSelectionColor" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>80</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text" >
                   <string/>
                  </property>
@@ -325,6 +343,12 @@
                </item>
                <item>
                 <widget class="QPushButton" name="uiSelectedContextColor" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>80</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text" >
                   <string/>
                  </property>
@@ -365,6 +389,12 @@
                </item>
                <item>
                 <widget class="QPushButton" name="uiSelectionAreaColor" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>80</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text" >
                   <string/>
                  </property>
@@ -405,6 +435,12 @@
                </item>
                <item>
                 <widget class="QPushButton" name="uiHiddenElementsColor" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>80</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text" >
                   <string/>
                  </property>
@@ -445,6 +481,12 @@
                </item>
                <item>
                 <widget class="QPushButton" name="uiDisabledElementsColor" >
+                 <property name="maximumSize" >
+                  <size>
+                   <width>80</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text" >
                   <string/>
                  </property>
@@ -492,7 +534,7 @@
            </widget>
           </widget>
           <widget class="QWidget" name="loadSaveSettings" >
-           <widget class="QComboBox" name="uiDefaultLoadComboBox" >
+           <widget class="QComboBox" name="uiDefaultSaveComboBox" >
             <property name="geometry" >
              <rect>
               <x>10</x>
@@ -502,30 +544,54 @@
              </rect>
             </property>
            </widget>
-           <widget class="QLabel" name="uiDefaultLoadLabel" >
-            <property name="geometry" >
-             <rect>
-              <x>10</x>
-              <y>90</y>
-              <width>431</width>
-              <height>24</height>
-             </rect>
-            </property>
-            <property name="text" >
-             <string>Default file format for loading:</string>
-            </property>
-           </widget>
-           <widget class="QComboBox" name="uiDefaultSaveComboBox" >
+           <widget class="QWidget" name="layoutWidget" >
             <property name="geometry" >
              <rect>
               <x>10</x>
               <y>40</y>
               <width>431</width>
-              <height>29</height>
+              <height>36</height>
              </rect>
             </property>
+            <layout class="QHBoxLayout" >
+             <property name="margin" >
+              <number>0</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item>
+              <widget class="QLineEdit" name="uiDocumentsDirectory" />
+             </item>
+             <item>
+              <widget class="QPushButton" name="uiDocumentsDirectoryBrowse" >
+               <property name="maximumSize" >
+                <size>
+                 <width>30</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text" >
+                <string>...</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="uiDocumentsDirectoryRevert" >
+               <property name="maximumSize" >
+                <size>
+                 <width>30</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="icon" >
+                <iconset>images/revert.svg</iconset>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
-           <widget class="QLabel" name="uiDefaultSaveLabel" >
+           <widget class="QLabel" name="uiDocumentsDirectoryLabel" >
             <property name="geometry" >
              <rect>
               <x>10</x>
@@ -535,14 +601,14 @@
              </rect>
             </property>
             <property name="text" >
-             <string>Default file format for saving:</string>
+             <string>Default documents location:</string>
             </property>
            </widget>
            <widget class="QWidget" name="layoutWidget" >
             <property name="geometry" >
              <rect>
               <x>10</x>
-              <y>170</y>
+              <y>160</y>
               <width>296</width>
               <height>33</height>
              </rect>
@@ -556,14 +622,6 @@
              </property>
              <item>
               <widget class="QLabel" name="uiAutoSaveLabel" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>5</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
                <property name="text" >
                 <string comment="Auto save every %n minutes." >Auto save every</string>
                </property>
@@ -578,20 +636,25 @@
              </item>
              <item>
               <widget class="QLabel" name="uiAutoSaveLabel_2" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>5</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
                <property name="text" >
                 <string comment="Auto save every %n minutes." >minutes.</string>
                </property>
               </widget>
              </item>
             </layout>
+           </widget>
+           <widget class="QLabel" name="uiDefaultSaveLabel" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>90</y>
+              <width>431</width>
+              <height>24</height>
+             </rect>
+            </property>
+            <property name="text" >
+             <string>Default file format for saving:</string>
+            </property>
            </widget>
           </widget>
           <widget class="QWidget" name="midiSettings" >

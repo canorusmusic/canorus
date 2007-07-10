@@ -40,12 +40,35 @@ class CAScoreViewPort;
 class CASourceViewPort;
 class CAMusElementFactory;
 
-enum CAMode {
-	NoDocumentMode,
-	InsertMode,
-	SelectMode,
-	EditMode,
-	ReadOnlyMode
+class CAFileFormats {
+public:
+	enum CAFileFormatType {
+		CanorusML  = 0,
+		LilyPond   = 1,
+		MusicXML   = 2,
+		ABCMusic   = 3,
+		NoteEdit   = 4,
+		MUP        = 5,
+		Finale     = 6,
+		Sibelius   = 7,
+		Noteworthy = 8,
+		Igor       = 9,
+		Capella    = 10,
+		Midi       = 11
+	};
+	
+	static const QString LILYPOND_FILTER;
+	static const QString CANORUSML_FILTER;
+	static const QString MUSICXML_FILTER;
+	static const QString NOTEEDIT_FILTER;
+	static const QString ABCMUSIC_FILTER;
+	static const QString FINALE_FILTER;
+	static const QString SIBELIUS_FILTER;
+	static const QString CAPELLA_FILTER;
+	static const QString MIDI_FILTER;
+	
+	static const QString getFilter( const CAFileFormatType );
+	static const CAFileFormatType getType( const QString );
 };
 
 class CAMainWin : public QMainWindow, private Ui::uiMainWindow
@@ -53,6 +76,14 @@ class CAMainWin : public QMainWindow, private Ui::uiMainWindow
 	Q_OBJECT
 
 public:
+	enum CAMode {
+		NoDocumentMode,
+		InsertMode,
+		SelectMode,
+		EditMode,
+		ReadOnlyMode
+	};
+
 	CAMainWin(QMainWindow *oParent = 0);
 	~CAMainWin();
 
@@ -100,7 +131,12 @@ public:
 	inline CADocument *document() { return _document; }
 	
 	inline void setDocument(CADocument *document) { _document = document; }
-	static const QString LILYPOND_FILTER;
+	
+	// Dialogs, Windows
+	static QFileDialog *uiSaveDialog;
+	static QFileDialog *uiOpenDialog;
+	static QFileDialog *uiExportDialog;
+	static QFileDialog *uiImportDialog;
 	
 private slots:
 	///////////////////////////
@@ -271,10 +307,6 @@ private:
 	void updateKeySigToolBar();
 	void updateTimeSigToolBar();
 	void updateFMToolBar();
-	
-	// Dialogs, Windows
-	QFileDialog *uiExportDialog;
-	QFileDialog *uiImportDialog;
 	
 		/////////////////////
 		// Toolbar section //

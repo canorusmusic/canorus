@@ -100,6 +100,30 @@ void CACanorus::initMain() {
 	setMidiDevice( new CARtMidiDevice() );
 }
 
+void CACanorus::initCommonGUI() {
+	// Initialize main window's load/save/import/export dialogs
+	CAMainWin::uiSaveDialog = new QFileDialog(0, QObject::tr("Choose a file to save"), settings()->documentsDirectory().absolutePath());
+	CAMainWin::uiSaveDialog->setFileMode(QFileDialog::AnyFile);
+	CAMainWin::uiSaveDialog->setAcceptMode( QFileDialog::AcceptSave );
+	CAMainWin::uiSaveDialog->setFilter( CAFileFormats::CANORUSML_FILTER );
+	CAMainWin::uiSaveDialog->selectFilter( CAFileFormats::getFilter( settings()->defaultSaveFormat() ) );
+	
+	CAMainWin::uiOpenDialog = new QFileDialog(0, QObject::tr("Choose a file to open"), settings()->documentsDirectory().absolutePath());
+	CAMainWin::uiOpenDialog->setFileMode( QFileDialog::ExistingFile );
+	CAMainWin::uiOpenDialog->setAcceptMode( QFileDialog::AcceptOpen );
+	CAMainWin::uiOpenDialog->setFilter( CAFileFormats::CANORUSML_FILTER );
+	
+	CAMainWin::uiExportDialog = new QFileDialog(0, QObject::tr("Choose a file to export"), settings()->documentsDirectory().absolutePath());
+	CAMainWin::uiExportDialog->setFileMode(QFileDialog::AnyFile);
+	CAMainWin::uiExportDialog->setAcceptMode( QFileDialog::AcceptSave );
+	CAMainWin::uiExportDialog->setFilter( CAFileFormats::LILYPOND_FILTER );
+  	
+	CAMainWin::uiImportDialog = new QFileDialog(0, QObject::tr("Choose a file to import"), settings()->documentsDirectory().absolutePath());
+	CAMainWin::uiImportDialog->setFileMode( QFileDialog::ExistingFile );
+	CAMainWin::uiImportDialog->setAcceptMode( QFileDialog::AcceptOpen );
+}
+
+
 /*!
 	Opens Canorus config file and loads the settings.
 	Config file is always INI file in user's home directory.
@@ -107,17 +131,14 @@ void CACanorus::initMain() {
 	
 	\sa settings() 
 */
-void CACanorus::initSettings() {
+CASettingsDialog::CASettingsPage CACanorus::initSettings() {
 #ifdef Q_WS_WIN	// M$ is of course an exception
 	_settings = new CASettings(QDir::homePath()+"/Application Data/Canorus/canorus.ini", QSettings::IniFormat);
 #else	// POSIX systems use the same config file path
 	_settings = new CASettings(QDir::homePath()+"/.config/Canorus/canorus.ini", QSettings::IniFormat);
 #endif
 	
-	CASettingsDialog::CASettingsPage settingsPage = settings()->readSettings();
-	
-	if ( settingsPage != CASettingsDialog::UndefinedSettings )
-		CASettingsDialog( settingsPage, 0 );
+	return _settings->readSettings();
 }
 
 /*!

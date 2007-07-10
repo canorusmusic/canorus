@@ -35,6 +35,9 @@ private slots:
 	void on_uiButtonBox_clicked( QAbstractButton* );
 	void on_uiSettingsList_currentItemChanged( QListWidgetItem*, QListWidgetItem* );
 	
+	void on_uiDocumentsDirectoryBrowse_clicked(bool);
+	void on_uiDocumentsDirectoryRevert_clicked(bool);
+	
 	void on_uiBackgroundColor_clicked(bool);
 	void on_uiBackgroundRevert_clicked(bool);
 	void on_uiForegroundColor_clicked(bool);
