@@ -71,6 +71,14 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiPreviewScoreViewPort->repaint();
 	
 	// Loading Saving Page
+	uiDocumentsDirectory->setText( CACanorus::settings()->documentsDirectory().absolutePath() );
+	
+	uiDefaultSaveComboBox->addItems( CAMainWin::uiSaveDialog->filters() );
+	uiDefaultSaveComboBox->setCurrentIndex(
+		uiDefaultSaveComboBox->findText(
+			CAFileFormats::getFilter(CACanorus::settings()->defaultSaveFormat())
+		)
+	);
 	
 	// Playback Page
 	_midiInPorts = CACanorus::midiDevice()->getInputPorts();
@@ -119,6 +127,15 @@ void CASettingsDialog::applySettings() {
 	// Editor Page
 	CACanorus::settings()->setFinaleLyricsBehaviour( uiFinaleLyricsCheckBox->isChecked() );
 	
+	// Saving/Loading Page
+	CACanorus::settings()->setDocumentsDirectory( uiDocumentsDirectory->text() );
+	CAMainWin::uiOpenDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
+	CAMainWin::uiSaveDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
+	CAMainWin::uiImportDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
+	CAMainWin::uiExportDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
+	CACanorus::settings()->setDefaultSaveFormat( CAFileFormats::getType( uiDefaultSaveComboBox->currentText() ) );
+	CAMainWin::uiSaveDialog->selectFilter( uiDefaultSaveComboBox->currentText() );
+	
 	// Appearance Page
 	CACanorus::settings()->setBackgroundColor( uiBackgroundColor->palette().color(QPalette::Window) );
 	CACanorus::settings()->setForegroundColor( uiForegroundColor->palette().color(QPalette::Window) );
@@ -150,6 +167,16 @@ void CASettingsDialog::buildPreviewSheet() {
 	_previewSheet->staffAt(0)->voiceAt(0)->appendMusElement( new CATimeSignature( 2, 2, _previewSheet->staffAt(0), 0 ) );
 	_previewSheet->addStaff();
 	_previewSheet->staffAt(1)->addVoice( new CAVoice( _previewSheet->staffAt(0), "", 1, CANote::StemUp ) );
+}
+
+void CASettingsDialog::on_uiDocumentsDirectoryBrowse_clicked(bool) {
+	QString dir = QFileDialog::getExistingDirectory(this, tr("Choose default documents directory"));
+	if (dir.size())
+		uiDocumentsDirectory->setText( dir );
+}
+
+void CASettingsDialog::on_uiDocumentsDirectoryRevert_clicked(bool) {
+	uiDocumentsDirectory->setText( CASettings::DEFAULT_DOCUMENTS_DIRECTORY.absolutePath() );
 }
 
 void CASettingsDialog::on_uiBackgroundColor_clicked(bool) {

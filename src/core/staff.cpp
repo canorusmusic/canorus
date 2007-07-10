@@ -115,7 +115,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 		}
 		
 		// append non-playable elements (shared by all voices - only create clone of the first voice element and append it to all)
-		while ( eltIdx[0]<voiceAt(0)->musElementCount() && !voiceAt(0)->musElementAt(eltIdx[0])->isPlayable() ) {
+		if ( eltIdx[0]<voiceAt(0)->musElementCount() ) {
 			CAMusElement *newElt = voiceAt(0)->musElementAt(eltIdx[0])->clone();
 			newElt->setContext( newStaff );
 			

@@ -11,6 +11,8 @@
 
 // Define default settings
 const bool CASettings::DEFAULT_FINALE_LYRICS_BEHAVIOUR = false;
+const QDir CASettings::DEFAULT_DOCUMENTS_DIRECTORY = QDir::home();
+const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFormats::CanorusML;
 const QColor CASettings::DEFAULT_BACKGROUND_COLOR = QColor(255, 255, 240);
 const QColor CASettings::DEFAULT_FOREGROUND_COLOR = Qt::black;
 const QColor CASettings::DEFAULT_SELECTION_COLOR = Qt::red;
@@ -34,6 +36,8 @@ CASettings::~CASettings() {
 */
 void CASettings::writeSettings() {
 	setValue( "editor/finalelyricsbehaviour", finaleLyricsBehaviour() );
+	setValue( "files/documentsdirectory", documentsDirectory().absolutePath() );
+	setValue( "files/defaultsaveformat", defaultSaveFormat() );
 	setValue( "appearance/backgroundcolor", backgroundColor() );
 	setValue( "appearance/foregroundcolor", foregroundColor() );
 	setValue( "appearance/selectioncolor", selectionColor() );
@@ -59,6 +63,17 @@ CASettingsDialog::CASettingsPage CASettings::readSettings() {
 		setFinaleLyricsBehaviour( value("editor/finalelyricsbehaviour").toBool() );
 	else
 		setFinaleLyricsBehaviour( DEFAULT_FINALE_LYRICS_BEHAVIOUR );
+	
+	// Saving/Loading settings
+	if ( contains("files/documentsdirectory") )
+		setDocumentsDirectory( value("files/documentsdirectory").toString() );
+	else
+		setDocumentsDirectory( DEFAULT_DOCUMENTS_DIRECTORY );
+	
+	if ( contains("files/defaultsaveformat") )
+		setDefaultSaveFormat( static_cast<CAFileFormats::CAFileFormatType>(value("files/defaultsaveformat").toInt()) );
+	else
+		setDefaultSaveFormat( DEFAULT_SAVE_FORMAT );
 	
 	// Appearance settings
 	if ( contains("appearance/backgroundcolor") )
@@ -100,7 +115,7 @@ CASettingsDialog::CASettingsPage CASettings::readSettings() {
 	if ( contains("rtmidi/midiinport") &&
 	     value("rtmidi/midiinport").toInt() < CACanorus::midiDevice()->getInputPorts().count()
 	   ) {
-		setMidiInPort( value("rtmidi/defaultinputport").toInt() );	
+		setMidiInPort( value("rtmidi/midiinport").toInt() );	
 	} else {
 		setMidiInPort( DEFAULT_MIDI_IN_PORT );
 		settingsPage = CASettingsDialog::PlaybackSettings;
@@ -109,7 +124,7 @@ CASettingsDialog::CASettingsPage CASettings::readSettings() {
 	if ( contains("rtmidi/midioutport") &&
 	     value("rtmidi/midioutport").toInt() < CACanorus::midiDevice()->getOutputPorts().count()
 	   ) {
-		setMidiOutPort( value("rtmidi/defaultoutputport").toInt() );	
+		setMidiOutPort( value("rtmidi/midioutport").toInt() );	
 	} else {
 		setMidiOutPort( DEFAULT_MIDI_OUT_PORT );
 		settingsPage = CASettingsDialog::PlaybackSettings;

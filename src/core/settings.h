@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QColor>
 #include "ui/settingsdialog.h"
+#include "ui/mainwin.h"
 
 class CASettings : public QSettings {
 public:
@@ -21,6 +22,8 @@ public:
 	void writeSettings();
 	
 	inline bool finaleLyricsBehaviour() { return _finaleLyricsBehaviour; }
+	inline QDir documentsDirectory() { return _documentsDirectory; }
+	inline CAFileFormats::CAFileFormatType defaultSaveFormat() { return _defaultSaveFormat; }
 	inline QColor backgroundColor() { return _backgroundColor; }
 	inline QColor foregroundColor() { return _foregroundColor; }
 	inline QColor selectionColor() { return _selectionColor; }
@@ -32,6 +35,8 @@ public:
 	inline int midiOutPort() { return _midiOutPort; }
 	
 	inline void setFinaleLyricsBehaviour( bool b ) { _finaleLyricsBehaviour = b; }
+	inline void setDocumentsDirectory( QDir d ) { _documentsDirectory = d; }
+	inline void setDefaultSaveFormat( CAFileFormats::CAFileFormatType t ) { _defaultSaveFormat = t; }
 	inline void setBackgroundColor( QColor backgroundColor ) { _backgroundColor = backgroundColor; }
 	inline void setForegroundColor( QColor foregroundColor ) { _foregroundColor = foregroundColor; }
 	inline void setSelectionColor( QColor selectionColor ) { _selectionColor = selectionColor; }
@@ -43,6 +48,8 @@ public:
 	inline void setMidiOutPort( int out ) { _midiOutPort = out; }
 	
 	static const bool DEFAULT_FINALE_LYRICS_BEHAVIOUR;
+	static const QDir DEFAULT_DOCUMENTS_DIRECTORY;
+	static const CAFileFormats::CAFileFormatType DEFAULT_SAVE_FORMAT;
 	static const QColor DEFAULT_BACKGROUND_COLOR;
 	static const QColor DEFAULT_FOREGROUND_COLOR;
 	static const QColor DEFAULT_SELECTION_COLOR;
@@ -56,6 +63,12 @@ private:
 	// Editor settings //
 	/////////////////////
 	bool _finaleLyricsBehaviour;
+	
+	/////////////////////////////
+	// Loading/Saving settings //
+	/////////////////////////////
+	QDir _documentsDirectory;
+	CAFileFormats::CAFileFormatType _defaultSaveFormat;
 	
 	/////////////////////////
 	// Appearance settings //

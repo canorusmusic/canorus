@@ -12,6 +12,7 @@
 // Python.h needs to be loaded first!
 #include "core/canorus.h"
 #include "ui/mainwin.h"
+#include "ui/settingsdialog.h"
 #include "interface/pluginmanager.h"
 
 #include <iostream>
@@ -43,7 +44,11 @@ int main(int argc, char *argv[]) {
 	CACanorus::parseSettingsArguments(argc, argv);
 	
 	// Load config file
-	CACanorus::initSettings();
+	CASettingsDialog::CASettingsPage showSettingsPage = 
+		CACanorus::initSettings();
+	
+	// Init dialogs etc.
+	CACanorus::initCommonGUI();
 	
 	// Load system translation if found
 	QList<QString> translationLocations =
@@ -69,6 +74,10 @@ int main(int argc, char *argv[]) {
 		CACanorus::addMainWin(mainWin);
 		mainWin->newDocument();
 	}
+	
+	// Show settings dialog, if needed (eg. MIDI setup when running Canorus for the first time)
+	if ( showSettingsPage != CASettingsDialog::UndefinedSettings )
+		CASettingsDialog( showSettingsPage, CACanorus::mainWinAt(0) );
 	
 	return mainApp.exec();
 }
