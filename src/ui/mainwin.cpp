@@ -104,6 +104,8 @@ const QString CAFileFormats::getFilter( const CAFileFormats::CAFileFormatType t 
 			return LILYPOND_FILTER;
 		case MusicXML:
 			return MUSICXML_FILTER;
+		default:
+			return CANORUSML_FILTER;
 	}
 }
 
@@ -119,6 +121,8 @@ const CAFileFormats::CAFileFormatType CAFileFormats::getType( const QString t ) 
 	else
 	if (t==MUSICXML_FILTER)
 		return MusicXML;
+	else
+		return CanorusML;
 }
 
 /*!
