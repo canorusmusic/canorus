@@ -1,13 +1,11 @@
-/** @file scripting/canoruspython.i
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 %module CanorusPython
-%module(directors="1") CanorusPython
 
 // convert returned QString value to Python's String format in UTF8 encoding
 %typemap(out) const QString {
@@ -119,9 +117,12 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 		case CASwigPython::FunctionMarking:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarking, 0);
 			break;
-		/*case CASwigPython::CanorusML:	//not implemented yet
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CACanorusML, 0);
-			break;*/
+		case CASwigPython::LyricsContext:
+			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CALyricsContext, 0);
+			break;			
+		case CASwigPython::Syllable:
+			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CASyllable, 0);
+			break;
 	}
 }
 
