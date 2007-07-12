@@ -27,7 +27,7 @@ public:
 	CASheet *sheetAt(int i) { return _sheetList[i]; }
 	void setSheetAt(int i, CASheet *newSheet) { _sheetList[i]=newSheet; }
 	
-	CASheet *addSheet(const QString name);
+	CASheet *addSheetByName(const QString name);
 	void addSheet(CASheet *sheet);
 	inline void removeSheet(CASheet *sheet) { _sheetList.removeAll(sheet); }
 	

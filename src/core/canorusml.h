@@ -11,6 +11,7 @@
 #include <QHash>
 #include <QTextStream>
 #include <QtXml>
+#include <QXmlDefaultHandler>
 
 #include "core/document.h"
 
@@ -24,7 +25,6 @@ class CAClef;
 class CANote;
 class CARest;
 class CAContext;
-class CAMainWin;
 class CALyricsContext;
 class CASyllable;
 class CASlur;
@@ -36,8 +36,8 @@ public:
 	////////////////////////////////////////////////
 	// Reading XML
 	////////////////////////////////////////////////
-	CACanorusML(CAMainWin *mainWin);
-	static CADocument* openDocument(QXmlInputSource* in, CAMainWin *mainWin);
+	CACanorusML();
+	static CADocument* openDocument(QXmlInputSource* in);
 	
 	bool startElement(const QString& namespaceURI, const QString& localName, const QString& qName,
 	                  const QXmlAttributes& attributes);
@@ -59,7 +59,6 @@ private:
 	////////////////////////////////////////////////
 	
 	CADocument     *_document;
-	CAMainWin      *_mainWin;
 	QString         _version;
 	QString         _errorMsg;
 	QStack<QString> _depth;

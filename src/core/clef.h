@@ -30,8 +30,6 @@ public:
 	CAClef(CAClefType type, CAStaff *staff, int time);
 	CAClef *clone();
 	
-	CAClef(const QString type, CAStaff *staff, int time);
-	
 	CAClefType clefType() { return _clefType; }
 	const int c1() { return _c1; }
 	const int centerPitch() { return _centerPitch; }

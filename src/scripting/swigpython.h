@@ -1,10 +1,9 @@
-/** @file scripting/swigpython.h
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #ifdef USE_PYTHON
 #ifndef SWIGPYTHON_H_
@@ -36,7 +35,9 @@ class CASwigPython {
 			TimeSignature,
 			Clef,
 			Barline,
-			FunctionMarking
+			FunctionMarking,
+			LyricsContext,
+			Syllable
 		};
 		
 		static void init();	///Initializes Python and loads base 'CanorusPython' module. Call this before any other Python operations! Call this before calling toPythonObject() or any other conversation functions as well!

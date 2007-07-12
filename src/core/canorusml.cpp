@@ -12,7 +12,7 @@
 
 #include <iostream>	//DEBUG
 
-#include "ui/mainwin.h"
+//#include "ui/mainwin.h"
 
 #include "core/canorusml.h"
 #include "core/sheet.h"
@@ -52,9 +52,7 @@
 /*!
 	Creates a CanorusML parser class
 */
-CACanorusML::CACanorusML(CAMainWin *mainWin) {
-	_mainWin = mainWin;
-	
+CACanorusML::CACanorusML() {
 	_document = 0;
 	_curSheet = 0;
 	_curContext = 0;
@@ -310,9 +308,9 @@ void CACanorusML::writeVoice(QDomElement& dVoice, CAVoice* voice) {
 	
 	\sa saveDocument()
 */
-CADocument* CACanorusML::openDocument(QXmlInputSource* in, CAMainWin *mainWin) {
+CADocument* CACanorusML::openDocument(QXmlInputSource* in) {
 	QXmlSimpleReader reader;
-	CACanorusML *canHandler = new CACanorusML(mainWin);
+	CACanorusML *canHandler = new CACanorusML();
 	reader.setContentHandler(canHandler);
 	reader.parse(in);
 	
@@ -780,13 +778,6 @@ bool CACanorusML::characters(const QString& ch) {
 	Document program version - which Canorus did save the file.
 	
 	\sa startElement(), endElement()
-*/
-
-/*!
-	\var CACanorusML::_mainWin
-	Pointer to the main window of the application - needed to rebuild the UI.
-	
-	\sa CAMainWin
 */
 
 /*!

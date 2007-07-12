@@ -36,7 +36,9 @@ class CASwigRuby {
 			TimeSignature,
 			Clef,
 			Barline,
-			FunctionMarking
+			FunctionMarking,
+			LyricsContext,
+			Syllable			
 		};
 		
 		static void init();	///Initializes Ruby and loads base 'CanorusRuby' module. Call this before any other Ruby operations! Call this before calling toRubyObject() or any other conversation functions as well!

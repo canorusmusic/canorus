@@ -93,7 +93,7 @@ void CADocument::clear() {
 	
 	\sa addSheet(CASheet *sheet), sheet(), sheetAt(), _sheetList
 */
-CASheet *CADocument::addSheet(const QString name) {
+CASheet *CADocument::addSheetByName(const QString name) {
 	CASheet *s = new CASheet(name, this);
 	_sheetList << s;
 	

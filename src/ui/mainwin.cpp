@@ -792,7 +792,7 @@ void CAMainWin::updateUndoRedoButtons() {
 */
 void CAMainWin::on_uiNewSheet_triggered() {
 	CACanorus::createUndoCommand( document(), tr("new sheet", "undo") );
-	document()->addSheet(tr("Sheet%1").arg(QString::number(document()->sheetCount()+1)));
+	document()->addSheetByName( tr("Sheet%1").arg(QString::number(document()->sheetCount()+1)) );
 	CACanorus::pushUndoCommand();
 	CACanorus::rebuildUI(document());
 }
@@ -1866,7 +1866,7 @@ bool CAMainWin::openDocument(QString fileName) {
 	QFile file(fileName);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		QXmlInputSource input(&file);
-		CADocument *openedDoc = CACanorusML::openDocument(&input, this);
+		CADocument *openedDoc = CACanorusML::openDocument(&input);
 		if (openedDoc) {
 			if (CACanorus::mainWinCount(document())==1) {
 				CACanorus::deleteUndoStack( document() ); 
@@ -2358,7 +2358,7 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		QXmlInputSource input;
 		input.setData(inputString);
 		CACanorus::pushUndoCommand();
-		setDocument(CACanorusML::openDocument(&input, this));
+		setDocument(CACanorusML::openDocument(&input));
 		CACanorus::rebuildUI(document());
 	} else
 	if (v->voice()) {
