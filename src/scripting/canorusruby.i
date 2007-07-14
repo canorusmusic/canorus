@@ -7,6 +7,13 @@
 
 %module CanorusRuby
 
+// We don't have typemaps defined for custom types yet so we disable strongly typed languages by this, but make things easier for us.
+// This is used to enable default arguments support :)
+%feature("compactdefaultargs");
+
+%feature("ref")   ""
+%feature("unref") ""
+
 // convert returned QString value to Ruby's String format in UTF8 encoding
 %typemap(out) const QString {
 	$result = rb_str_new2($1.toUtf8().data());

@@ -7,6 +7,21 @@
 
 %module CanorusPython
 
+// We don't have typemaps defined for custom types yet so we disable strongly typed languages by
+// this, but make things much easier for us.
+// In practice, it turned out this is used to enable default arguments support :)
+%feature("compactdefaultargs");
+
+%feature("ref")   ""
+%feature("unref") "
+	if (markedObjects.removeAll($this))
+		delete $this;
+"
+
+%{
+#include <iostream>
+%}
+
 // convert returned QString value to Python's String format in UTF8 encoding
 %typemap(out) const QString {
 	$result = Py_BuildValue("s", $1.toUtf8().data());
@@ -38,6 +53,8 @@
 	$result = list;
 }
 
+void markDelete( PyObject* ); // function used to delete Canorus objects inside Python
+
 %include "scripting/context.i"
 %include "scripting/document.i"
 %include "scripting/muselement.i"
@@ -61,9 +78,12 @@
 %{	//toPythonObject() function
 #include "scripting/swigpython.h"	//needed for CAClassType
 
-#ifdef __cplusplus
-extern "C"
-#endif
+#include <QList>
+QList<void*> markedObjects = QList<void*>(); // define markedObjects
+
+void markDelete( PyObject* object ) {
+	markedObjects << SWIG_Python_GetSwigThis(object)->ptr;
+}
 
 class QString;
 

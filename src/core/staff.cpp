@@ -30,7 +30,7 @@
 	\warning By default, no voices are created where music elements can be put. Use addVoice() to
 	append a new voice.
 */
-CAStaff::CAStaff(CASheet *s, QString name, int numberOfLines) : CAContext(s, name) {
+CAStaff::CAStaff(CASheet *s, const QString name, int numberOfLines) : CAContext(s, name) {
 	_contextType = CAContext::Staff;
 	_numberOfLines = numberOfLines;
 	_name = name;
