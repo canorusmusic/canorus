@@ -17,10 +17,10 @@
 class CASwigPython {
 	public:
 		enum CAClassType {
-			//Qt objects
+			// Qt objects
 			String,
 			
-			//Canorus objects
+			// Canorus objects
 			Document,
 			Sheet,
 			Context,
@@ -40,27 +40,9 @@ class CASwigPython {
 			Syllable
 		};
 		
-		static void init();	///Initializes Python and loads base 'CanorusPython' module. Call this before any other Python operations! Call this before calling toPythonObject() or any other conversation functions as well!
-		
-		/**
-	 	 * Call an external Ruby function in the given module with the list of arguments and return its Ruby value.
-	 	 * 
-	 	 * @param fileName Absolute path to the filename of the script
-	 	 * @param function Function or method name.
-	 	 * @param args List of arguments in Python's PyObject pointer format. Use toPythonObject() to convert C++ classes to Python objects.
-	 	 * @return Python's function return value in PyObject pointerformat.
-	 	 */
+		static void init();
 		static PyObject *callFunction(QString fileName, QString function, QList<PyObject*> args);
-		
-		/**
- 		 * Python uses different objects than C++. They are actually wrappers around the original ones, but still share different memory and structure.
- 		 * Use this function to create a Ruby object out of the C++ one.
- 		 * 
- 		 * @param object Pointer to the C++ object which the Python object should be derived from.
- 		 * @param objectType See CAClassType. C++ doesn't support figuring out the object type from the raw pointer - you have to pass its class type as well.
- 		 * @return Pointer to the Python object.
- 		 */
-		static PyObject *toPythonObject(void *object, CAClassType type);	//defined in scripting/canoruspython.i file
+		static PyObject *toPythonObject(void *object, CAClassType type);	// defined in scripting/canoruspython.i
 };
 
 #endif /*SWIGPYTHON_H_*/

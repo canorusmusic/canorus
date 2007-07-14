@@ -16,6 +16,11 @@
 /// Load 'CanorusPython' module and initialize classes - defined in SWIG wrapper class
 extern "C" void init_CanorusPython();
 
+/*!
+	Initializes Python and loads base 'CanorusPython' module. Call this before any other
+	Python operations! Call this before calling toPythonObject() or any other conversation
+	functions as well!
+*/
 void CASwigPython::init() {
 	Py_Initialize();
 	init_CanorusPython();
@@ -29,7 +34,6 @@ void CASwigPython::init() {
 	if (CACanorus::locateResource("CanorusPython.py").size())
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("CanorusPython.py").at(0)+"')").toStdString().c_str());
 	
-	//PyRun_SimpleString("import CanorusPython");	
 #ifdef Q_WS_WIN
 	if (CACanorus::locateResource("_CanorusPython.dll").size())
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("_CanorusPython.dll").at(0)+"')").toStdString().c_str());
@@ -37,9 +41,21 @@ void CASwigPython::init() {
 	if (CACanorus::locateResource("_CanorusPython.so").size())
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("_CanorusPython.so").at(0)+"')").toStdString().c_str());
 #endif
+	
+	PyRun_SimpleString("import CanorusPython");
 }
 
-//WARNING! You have to add path of the plugin to Python path before, manually! This is usually done by CAPlugin::callAction("onInit")
+
+/*!
+	Calls an external Python function in the given module with the list of arguments and return the Python object the function returned.
+	
+	
+	\param fileName Absolute path to the filename of the script
+	\param function Function or method name.
+	\param args List of arguments in Python's PyObject pointer format. Use toPythonObject() to convert C++ classes to Python objects.
+	
+	\warning You have to add path of the plugin to Python path before, manually! This is usually done by CAPlugin::callAction("onInit").
+*/
 PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args) {
 	if (!QFile::exists(fileName))
 		return 0;
@@ -87,5 +103,14 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	
 	return ret;
 }
+
+
+/*
+	\function static PyObject* CASwigPython::toPythonObject(void *object, CAClassType type)
+	
+	Python uses its wrapper classes over C++ objects. Use this function to create a Python wrapper object out of the C++ one of type \a type.
+	See CAClassType for details on the types.
+*/
+
 
 #endif
