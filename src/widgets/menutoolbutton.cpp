@@ -10,6 +10,7 @@
 #include <QWheelEvent>
 #include <QMainWindow>
 #include <QToolBar>
+#include <QWidgetAction>
 #include <QStyle>
 #include <QStyleOptionToolButton>
 
@@ -75,13 +76,7 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 
 	         this, SLOT( hideButtons( int ) ) );
 	
-	// Action for our button menu as icon or nothing will be seen
-	QAction *action = new QAction(this);
-	action->setCheckable( true );
-	action->setVisible( true ); 
-	setDefaultAction( action );
-	connect(action, SIGNAL(toggled(bool)), this, SLOT(handleToggled(bool)));
-	connect(action, SIGNAL(triggered()), this, SLOT(handleTriggered()));
+	QToolButton::setDefaultAction( 0 );
     
 	// Actual positions of the buttons in the button menu layout
 	_buttonXPos = _buttonYPos = 0;
@@ -98,6 +93,22 @@ CAMenuToolButton::~CAMenuToolButton() {
 }
 
 /*!
+	Sets the new default action \a a and connects some signals to custom slots made
+	by CAMenuToolButton. Also calls QToolButton::setDefaultAction().
+*/
+void CAMenuToolButton::setDefaultAction( QAction *a ) {
+	if ( defaultAction() ) {
+		disconnect( defaultAction(), SIGNAL(toggled(bool)), this, SLOT(handleToggled(bool)) );
+		disconnect( defaultAction(), SIGNAL(triggered()), this, SLOT(handleTriggered()) );
+	}
+	
+	connect( a, SIGNAL(toggled(bool)), this, SLOT(handleToggled(bool)) );
+	connect( a, SIGNAL(triggered()), this, SLOT(handleTriggered()) );
+	a->setCheckable( true );
+	QToolButton::setDefaultAction( a );
+}
+
+/*!
 	This function is overriden here in order to show buttons when clicked on the arrow.
 */
 void CAMenuToolButton::mousePressEvent( QMouseEvent *e ) {
@@ -109,7 +120,11 @@ void CAMenuToolButton::mousePressEvent( QMouseEvent *e ) {
 	QRect popupr = style()->subControlRect(QStyle::CC_ToolButton, &opt,
 	                                       QStyle::SC_ToolButtonMenu, this);
 	if (popupr.isValid() && popupr.contains(e->pos())) {
-		showButtons();
+		if ( !_groupBox->isVisible() ) {
+			showButtons();
+		} else {
+			hideButtons();
+		}
 	}
 	QToolButton::mousePressEvent(e);
 }
@@ -166,10 +181,10 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString 
 void CAMenuToolButton::showButtons() {
 	QToolBar *toolBar = dynamic_cast<QToolBar*>(parent());
 	int x=0, y=0;
-	_groupBox->hide();
+	_groupBox->hide(); // hide/reshow if the button box widget is behind the main window
 	_groupBox->show();
 	
-	if (mainWin() && toolBar) {
+	if ( mainWin() && toolBar ) {
 		QPoint topLeft = mapToGlobal(QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
 		
 		// Set buttons box coordinates which fit on the main window
@@ -285,7 +300,8 @@ void CAMenuToolButton::setCurrentId(int id) {
 		return;
 	
 	_buttonGroup->button(id)->setChecked(true);
-	defaultAction()->setIcon( _buttonGroup->button(id)->icon() );
+	if ( defaultAction() )
+		defaultAction()->setIcon( _buttonGroup->button(id)->icon() );
 }
 
 /*!
