@@ -39,6 +39,8 @@ public:
 	inline void setNumIconsPerRow( int numIconsRow )  { _numIconsRow = numIconsRow; }
 	void setCurrentId(int id);
 	
+	void setDefaultAction( QAction* );
+	
 public slots:
 	void showButtons();
 	void hideButtons( int buttonId );
@@ -48,7 +50,7 @@ signals:
 	void toggled( bool checked, int id );
 
 private slots:
-	void handleToggled(bool checked);
+	void handleToggled( bool checked );
 	void handleTriggered();
 	
 protected:

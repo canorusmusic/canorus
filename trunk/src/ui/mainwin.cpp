@@ -191,7 +191,7 @@ CAMainWin::~CAMainWin()  {
 	delete _playback;
 	
 	// clear UI
-	delete uiInsertToolBar; delete uiInsertGroup; delete uiContextType; delete uiSlurType; delete uiClefType; delete uiBarlineType;
+	delete uiInsertToolBar; delete uiInsertGroup; delete uiContextType; delete uiSlurType; delete uiClefType; delete uiTimeSigType; delete uiBarlineType;
 	delete uiVoiceToolBar; delete uiVoiceNum; delete uiVoiceName; delete uiRemoveVoice; delete uiVoiceStemDirection; delete uiVoiceProperties;
 	delete uiPlayableToolBar; delete uiPlayableLength; delete uiNoteAccs; delete uiNoteStemDirection; delete uiHiddenRest;
 	delete uiKeySigToolBar; delete uiKeySigNumberOfAccs;
@@ -207,23 +207,16 @@ void CAMainWin::createCustomActions() {
 		uiContextType->addButton( QIcon("images/staffnew.svg"), CAContext::Staff, tr("New Staff") );
 		uiContextType->addButton( QIcon("images/lyricscontextnew.svg"), CAContext::LyricsContext, tr("New Lyrics context") );
 		uiContextType->addButton( QIcon("images/fmcontextnew.svg"), CAContext::FunctionMarkingContext, tr("New Function Marking context") );
-		uiContextType->defaultAction()->setToolTip(tr("Insert new context"));
-		uiContextType->setCurrentId( CAContext::Staff );
 	uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this );
 		uiSlurType->setObjectName( "uiSlurType" );
 		uiSlurType->addButton( QIcon("images/tie.svg"), CASlur::TieType, tr("Tie") );
 		uiSlurType->addButton( QIcon("images/slur.svg"), CASlur::SlurType, tr("Slur") );
 		uiSlurType->addButton( QIcon("images/phrasingslur.svg"), CASlur::PhrasingSlurType, tr("Phrasing Slur") );
-		uiSlurType->defaultAction()->setToolTip(tr("Insert new slur"));
-		uiSlurType->setCurrentId( CASlur::TieType );
-		uiSlurType->defaultAction()->setCheckable(false);
 	uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this );
 		uiClefType->setObjectName( "uiClefType" );
 		uiClefType->addButton( QIcon("images/cleftreble.svg"), CAClef::Treble, tr("Treble Clef") );
 		uiClefType->addButton( QIcon("images/clefbass.svg"), CAClef::Bass, tr("Bass Clef") );
 		uiClefType->addButton( QIcon("images/clefalto.svg"), CAClef::Alto, tr("Alto Clef") );
-		uiClefType->defaultAction()->setToolTip(tr("Insert new clef"));
-		uiClefType->setCurrentId( CAClef::Treble );
 	uiTimeSigType = new CAMenuToolButton( tr("Select Time Signature" ), 3, this );
 		uiTimeSigType->setObjectName( "uiTimeSigType" );
 		uiTimeSigType->addButton( QIcon("images/tsc.svg"), TS_44 );
@@ -233,9 +226,7 @@ void CAMainWin::createCustomActions() {
 		uiTimeSigType->addButton( QIcon("images/ts38.svg"), TS_38 );
 		uiTimeSigType->addButton( QIcon("images/ts68.svg"), TS_68 );
 		uiTimeSigType->addButton( QIcon("images/tscustom.svg"), TS_CUSTOM );			
-		uiTimeSigType->defaultAction()->setToolTip(tr("Insert new time signature"));
-		uiTimeSigType->setCurrentId( TS_44 );
-	uiInsertToolBar->addWidget( uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 4, this ));
+	uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 4, this );
 		uiBarlineType->setObjectName( "uiBarlineType" );
 		uiBarlineType->addButton( QIcon("images/barlinesingle.svg"), CABarline::Single, tr("Single Barline") );
 		uiBarlineType->addButton( QIcon("images/barlinedouble.svg"), CABarline::Double, tr("Double Barline") );
@@ -244,8 +235,6 @@ void CAMainWin::createCustomActions() {
 		uiBarlineType->addButton( QIcon("images/barlinerepeatopen.svg"), CABarline::RepeatOpen, tr("Repeat Open") );
 		uiBarlineType->addButton( QIcon("images/barlinerepeatclose.svg"), CABarline::RepeatClose, tr("Repeat Closed") );
 		uiBarlineType->addButton( QIcon("images/barlinerepeatcloseopen.svg"), CABarline::RepeatCloseOpen, tr("Repeat Closed-Open") );
-		uiBarlineType->defaultAction()->setToolTip(tr("Insert new barline"));
-		uiBarlineType->setCurrentId( CABarline::Single );
 	
 	uiSheetToolBar = new QToolBar( tr("Sheet ToolBar"), this );
 	uiSheetName = new QLineEdit(this);
@@ -282,8 +271,6 @@ void CAMainWin::createCustomActions() {
 		uiVoiceStemDirection->addButton( QIcon("images/notestemneutral.svg"), CANote::StemNeutral, tr("Voice Stems Neutral") );
 		uiVoiceStemDirection->addButton( QIcon("images/notestemup.svg"), CANote::StemUp, tr("Voice Stems Up") );
 		uiVoiceStemDirection->addButton( QIcon("images/notestemdown.svg"), CANote::StemDown, tr("Voice Stems Down") );
-		uiVoiceStemDirection->defaultAction()->setToolTip(tr("Voice stem direction"));
-		uiVoiceStemDirection->defaultAction()->setCheckable(false);
 	
 	uiPlayableToolBar = new QToolBar( tr("Playable ToolBar"), this );
 	uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this );
@@ -296,8 +283,6 @@ void CAMainWin::createCustomActions() {
 		uiPlayableLength->addButton( QIcon("images/n16.svg"), CANote::Sixteenth, tr("Sixteenth Length") );
 		uiPlayableLength->addButton( QIcon("images/n32.svg"), CANote::ThirtySecond, tr("ThirtySecond Length") );
 		uiPlayableLength->addButton( QIcon("images/n64.svg"), CANote::SixtyFourth, tr("SixtyFourth Length") );
-		uiPlayableLength->defaultAction()->setToolTip(tr("Playable length"));
-		uiPlayableLength->defaultAction()->setCheckable(false);
 		uiPlayableLength->setCurrentId( CANote::Quarter );
 	uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this );
 		uiNoteStemDirection->setObjectName( "uiNoteStemDirection" );
@@ -305,9 +290,6 @@ void CAMainWin::createCustomActions() {
 		uiNoteStemDirection->addButton( QIcon("images/notestemup.svg"), CANote::StemUp, tr("Note Stem Up") );
 		uiNoteStemDirection->addButton( QIcon("images/notestemdown.svg"), CANote::StemDown, tr("Note Stem Down") );
 		uiNoteStemDirection->addButton( QIcon("images/notestemvoice.svg"), CANote::StemPreferred, tr("Note Stem Preferred") );
-		uiNoteStemDirection->defaultAction()->setToolTip(tr("Note stem direction"));		
-		uiNoteStemDirection->defaultAction()->setCheckable(false);
-		uiNoteStemDirection->setCurrentId( CANote::StemPreferred );
 	
 	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
 	uiKeySigNumberOfAccs = new QSpinBox(this);
@@ -348,8 +330,6 @@ void CAMainWin::createCustomActions() {
 		uiFMFunction->addButton( QIcon("images/fml.svg"), CAFunctionMarking::L, tr("Lydian") );
 		uiFMFunction->addButton( QIcon("images/fmiv.svg"), CAFunctionMarking::IV, tr("IV") );
 		uiFMFunction->addButton( QIcon("images/fmv.svg"), CAFunctionMarking::V, tr("V") );
-		uiFMFunction->defaultAction()->setToolTip( tr("Function marking") );
-		uiFMFunction->setCurrentId( CAFunctionMarking::T );
 	uiFMChordArea = new CAMenuToolButton( tr("Select Chord Area"), 3, this );
 		uiFMChordArea->setObjectName( "uiFMChordArea" );
 		uiFMChordArea->addButton( QIcon("images/fmpt.svg"), CAFunctionMarking::T, tr("Tonic") );
@@ -357,11 +337,8 @@ void CAMainWin::createCustomActions() {
 		uiFMChordArea->addButton( QIcon("images/fmpd.svg"), CAFunctionMarking::D, tr("Dominant") );
 		uiFMChordArea->addButton( QIcon("images/fmpot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
 		uiFMChordArea->addButton( QIcon("images/fmpos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
-		uiFMFunction->defaultAction()->setToolTip( tr("Function marking chord area") );
-		uiFMChordArea->setCurrentId( CAFunctionMarking::T );
 	uiFMTonicDegree = new CAMenuToolButton( tr("Select Tonic Degree"), 7, this );
 		uiFMTonicDegree->setObjectName( "uiFMTonicDegree" );
-		uiFMTonicDegree->defaultAction()->setCheckable( false );
 		uiFMTonicDegree->addButton( QIcon("images/fmt.svg"), CAFunctionMarking::T, tr("Tonic") );
 		uiFMTonicDegree->addButton( QIcon("images/fmot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
 		uiFMTonicDegree->addButton( QIcon("images/fmii.svg"), CAFunctionMarking::II, tr("II") );
@@ -371,8 +348,6 @@ void CAMainWin::createCustomActions() {
 		uiFMTonicDegree->addButton( QIcon("images/fmd.svg"), CAFunctionMarking::D, tr("Dominant") );
 		uiFMTonicDegree->addButton( QIcon("images/fmvi.svg"), CAFunctionMarking::VI, tr("VI") );
 		uiFMTonicDegree->addButton( QIcon("images/fmvii.svg"), CAFunctionMarking::VII, tr("VII") );
-		uiFMFunction->defaultAction()->setToolTip( tr("Function marking tonic degree") );
-		uiFMTonicDegree->setCurrentId( CAFunctionMarking::T );
 }
 
 /*!
@@ -392,17 +367,28 @@ void CAMainWin::setupCustomUi() {
 	uiInsertToolBar->addAction( uiSelectMode );
 	uiInsertToolBar->addAction( uiEditMode );
 	uiInsertToolBar->addSeparator();
-	uiInsertToolBar->addWidget( uiContextType );
+	uiContextType->setDefaultAction( uiInsertToolBar->addWidget( uiContextType ) );
+	uiContextType->defaultAction()->setToolTip(tr("Insert new context"));
+	uiContextType->setCurrentId( CAContext::Staff );
 	connect( uiNewContext, SIGNAL( triggered() ), uiContextType, SLOT( click() ) );
 	uiInsertToolBar->addSeparator();
 	uiInsertToolBar->addAction( uiInsertPlayable );
-	uiInsertToolBar->addWidget( uiSlurType );
-	uiInsertToolBar->addWidget( uiClefType );
+	uiSlurType->setDefaultAction( uiInsertToolBar->addWidget( uiSlurType ) );
+	uiSlurType->defaultAction()->setToolTip(tr("Insert new slur"));
+	uiSlurType->setCurrentId( CASlur::TieType );
+	uiSlurType->defaultAction()->setCheckable(false);
+	uiClefType->setDefaultAction( uiInsertToolBar->addWidget( uiClefType ) );
+	uiClefType->defaultAction()->setToolTip(tr("Insert new clef"));
+	uiClefType->setCurrentId( CAClef::Treble );
 	connect( uiInsertClef, SIGNAL( triggered() ), uiClefType, SLOT( click() ) );
 	uiInsertToolBar->addAction( uiInsertKeySig );
-	uiInsertToolBar->addWidget( uiTimeSigType );
+	uiTimeSigType->setDefaultAction( uiInsertToolBar->addWidget( uiTimeSigType ) );
+	uiTimeSigType->defaultAction()->setToolTip(tr("Insert new time signature"));
+	uiTimeSigType->setCurrentId( TS_44 );
 	connect( uiInsertTimeSig, SIGNAL( triggered() ), uiTimeSigType, SLOT( click() ) );
-	uiInsertToolBar->addWidget( uiBarlineType );
+	uiBarlineType->setDefaultAction( uiInsertToolBar->addWidget( uiBarlineType ) );
+	uiBarlineType->defaultAction()->setToolTip(tr("Insert new barline"));
+	uiBarlineType->setCurrentId( CABarline::Single );
 	connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
 	uiInsertToolBar->addAction( uiInsertSyllable );
 	uiInsertToolBar->addAction( uiInsertFM );
@@ -429,14 +415,21 @@ void CAMainWin::setupCustomUi() {
 	uiVoiceToolBar->addWidget( uiVoiceNum );
 	uiVoiceToolBar->addWidget( uiVoiceName );
 	uiVoiceToolBar->addAction( uiRemoveVoice );
-	uiVoiceToolBar->addWidget( uiVoiceStemDirection );
+	uiVoiceStemDirection->setDefaultAction( uiVoiceToolBar->addWidget( uiVoiceStemDirection ) );
+	uiVoiceStemDirection->defaultAction()->setToolTip(tr("Voice stem direction"));
+	uiVoiceStemDirection->defaultAction()->setCheckable(false);
 	uiVoiceToolBar->addAction( uiVoiceProperties );
 	addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
 	
 	// Playable Toolbar
-	uiPlayableToolBar->addWidget( uiPlayableLength );
+	uiPlayableLength->setDefaultAction( uiPlayableToolBar->addWidget( uiPlayableLength ) );
+	uiPlayableLength->defaultAction()->setToolTip(tr("Playable length"));
+	uiPlayableLength->defaultAction()->setCheckable(false);
 	uiPlayableToolBar->addAction( uiAccsVisible );
-	uiPlayableToolBar->addWidget(uiNoteStemDirection );
+	uiNoteStemDirection->setDefaultAction( uiPlayableToolBar->addWidget(uiNoteStemDirection ) );
+	uiNoteStemDirection->defaultAction()->setToolTip(tr("Note stem direction"));		
+	uiNoteStemDirection->defaultAction()->setCheckable(false);
+	uiNoteStemDirection->setCurrentId( CANote::StemPreferred );
 	uiPlayableToolBar->addAction( uiHiddenRest );
 	addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
@@ -451,9 +444,16 @@ void CAMainWin::setupCustomUi() {
 	addToolBar(Qt::TopToolBarArea, uiTimeSigToolBar);
 	
 	// Function marking Toolbar
-	uiFMToolBar->addWidget( uiFMFunction );
-	uiFMToolBar->addWidget( uiFMChordArea );
-	uiFMToolBar->addWidget( uiFMTonicDegree );
+	uiFMFunction->setDefaultAction( uiFMToolBar->addWidget( uiFMFunction ) );
+	uiFMFunction->defaultAction()->setToolTip( tr("Function marking") );
+	uiFMFunction->setCurrentId( CAFunctionMarking::T );
+	uiFMChordArea->setDefaultAction( uiFMToolBar->addWidget( uiFMChordArea ) );
+	uiFMChordArea->defaultAction()->setToolTip( tr("Function marking chord area") );
+	uiFMChordArea->setCurrentId( CAFunctionMarking::T );
+	uiFMTonicDegree->setDefaultAction( uiFMToolBar->addWidget( uiFMTonicDegree ) );
+	uiFMTonicDegree->defaultAction()->setCheckable( false );
+	uiFMTonicDegree->defaultAction()->setToolTip( tr("Function marking tonic degree") );
+	uiFMTonicDegree->setCurrentId( CAFunctionMarking::T );
 	addToolBar(Qt::TopToolBarArea, uiFMToolBar);
 	
 	// Mutual exclusive groups
@@ -2324,7 +2324,7 @@ void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 		musElementFactory()->setTimeSigBeat( uiTimeSigBeat->value() );
 		musElementFactory()->setMusElementType( CAMusElement::TimeSignature );
 		
-		setMode( InsertMode );		
+		setMode( InsertMode );
 	}
 }
 
@@ -2711,7 +2711,7 @@ void CAMainWin::updateContextToolBar() {
 	Shows/Hides music elements which cannot be placed in the selected context.
 */
 void CAMainWin::updateInsertToolBar() {
-	if (currentSheet()) {
+	if ( currentSheet() ) {
 		uiNewContext->setVisible(true);
 		if (mode()==EditMode) {
 			uiInsertToolBar->show();
@@ -2723,42 +2723,42 @@ void CAMainWin::updateInsertToolBar() {
 					case CAContext::Staff:
 						// staff selected
 						uiInsertPlayable->setVisible(true);
-						uiSlurType->setVisible(true);
+						uiSlurType->defaultAction()->setVisible(true);
 						uiInsertClef->setVisible(true); // menu
 						uiInsertBarline->setVisible(true); // menu
-						uiClefType->setVisible(true);
-						uiTimeSigType->setVisible(true);
+						uiClefType->defaultAction()->setVisible(true);
+						uiTimeSigType->defaultAction()->setVisible(true);
 						uiInsertKeySig->setVisible(true);
 						uiInsertTimeSig->setVisible(true);
-						uiBarlineType->setVisible(true);
+						uiBarlineType->defaultAction()->setVisible(true);
 						uiInsertFM->setVisible(false);
 						uiInsertSyllable->setVisible(false);
 						break;
 					case CAContext::FunctionMarkingContext:
 						// function marking context selected
 						uiInsertPlayable->setVisible(false);
-						uiSlurType->setVisible(false);
+						uiSlurType->defaultAction()->setVisible(false);
 						uiInsertClef->setVisible(false); // menu
 						uiInsertBarline->setVisible(false); // menu
-						uiClefType->setVisible(false);
-						uiTimeSigType->setVisible(false);
+						uiClefType->defaultAction()->setVisible(false);
+						uiTimeSigType->defaultAction()->setVisible(false);
 						uiInsertKeySig->setVisible(false);
 						uiInsertTimeSig->setVisible(false);
-						uiBarlineType->setVisible(false);
+						uiBarlineType->defaultAction()->setVisible(false);
 						uiInsertFM->setVisible(true);
 						uiInsertSyllable->setVisible(false);
 						break;
 					case CAContext::LyricsContext:
 						// lyrics context selected
 						uiInsertPlayable->setVisible(false);
-						uiSlurType->setVisible(false);
+						uiSlurType->defaultAction()->setVisible(false);
 						uiInsertClef->setVisible(false); // menu
 						uiInsertBarline->setVisible(false); // menu
-						uiClefType->setVisible(false);
-						uiTimeSigType->setVisible(false);
+						uiClefType->defaultAction()->setVisible(false);
+						uiTimeSigType->defaultAction()->setVisible(false);
 						uiInsertKeySig->setVisible(false);
 						uiInsertTimeSig->setVisible(false);
-						uiBarlineType->setVisible(false);
+						uiBarlineType->defaultAction()->setVisible(false);
 						uiInsertFM->setVisible(false);
 						uiInsertSyllable->setVisible(true);
 						break;
@@ -2766,22 +2766,23 @@ void CAMainWin::updateInsertToolBar() {
 			} else {
 				// no contexts selected
 				uiInsertPlayable->setVisible(false);
-				uiSlurType->setVisible(false);
+				uiSlurType->defaultAction()->setVisible(false);
 				uiInsertClef->setVisible(false); // menu
 				uiInsertBarline->setVisible(false); // menu
-				uiClefType->setVisible(false);
-				uiTimeSigType->setVisible(false);
+				uiClefType->defaultAction()->setVisible(false);
+				uiTimeSigType->defaultAction()->setVisible(false);
 				uiInsertKeySig->setVisible(false);
 				uiInsertTimeSig->setVisible(false);
-				uiBarlineType->setVisible(false);
+				uiBarlineType->defaultAction()->setVisible(false);
 				uiInsertFM->setVisible(false);
 				uiInsertSyllable->setVisible(false);
 			}
-		}	
+		}
+	
 	} else {
 		uiInsertToolBar->hide();
 		uiNewContext->setVisible(false);
-	}	
+	}
 }
 
 /*!
