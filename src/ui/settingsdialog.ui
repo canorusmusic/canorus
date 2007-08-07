@@ -157,7 +157,7 @@
            <enum>QFrame::Plain</enum>
           </property>
           <property name="currentIndex" >
-           <number>1</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="editorSettings" >
            <widget class="QCheckBox" name="uiFinaleLyricsCheckBox" >
@@ -767,7 +767,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QLabel" name="uiAutoSaveLabel" >
+              <widget class="QLabel" name="uiAutoRecoveryLabel" >
                <property name="sizePolicy" >
                 <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
                  <horstretch>0</horstretch>
@@ -775,12 +775,12 @@
                 </sizepolicy>
                </property>
                <property name="text" >
-                <string comment="Auto save every %n minutes." >Auto save every</string>
+                <string comment="Auto save every %n minutes." >Recovery saving interval in minutes</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="uiAutoSaveSpinBox" >
+              <widget class="QSpinBox" name="uiAutoRecoverySpinBox" >
                <property name="maximumSize" >
                 <size>
                  <width>70</width>
@@ -793,11 +793,17 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="uiAutoSaveLabel_2" >
-               <property name="text" >
-                <string comment="Auto save every %n minutes." >minutes.</string>
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Horizontal</enum>
                </property>
-              </widget>
+               <property name="sizeHint" >
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </widget>

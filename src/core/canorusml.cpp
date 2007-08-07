@@ -76,6 +76,23 @@ CACanorusML::~CACanorusML() {
 }
 
 /*!
+	Saves the given \a document to the \a fileName.
+	
+	This method is provided for convenience.
+*/
+bool CACanorusML::saveDocumentToFile( CADocument *document, const QString fileName ) {
+	QFile file(fileName);
+	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		QTextStream out(&file);
+		saveDocument( document, out );
+		file.close();
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/*!
 	Saves the document.
 	It uses DOM object internally for writing the XML output.
 	

@@ -28,6 +28,7 @@
 */
 CADocument::CADocument() {
 	setDateCreated( QDateTime::currentDateTime() );
+	setDateLastModified( QDateTime::currentDateTime() );
 	setTimeEdited(0);
 }
 

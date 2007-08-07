@@ -7,7 +7,6 @@
 
 // Python.h needs to be loaded first!
 #include "scripting/swigpython.h"
-
 #include "core/canorus.h"
 
 #include <QFileInfo>
@@ -23,6 +22,8 @@
 // define private static members
 QList<CAMainWin*> CACanorus::_mainWinList;
 CASettings *CACanorus::_settings;
+QString CACanorus::_settingsPath;
+CAAutoRecovery *CACanorus::_autoRecovery;
 CAMidiDevice *CACanorus::_midiDevice;
 QHash< CADocument*, QUndoStack* > CACanorus::_undoStack;
 CAUndoCommand *CACanorus::_undoCommand;
@@ -92,12 +93,13 @@ QList<QString> CACanorus::locateResourceDir(const QString fileName) {
 */
 void CACanorus::initMain() {
 	_undoCommand = 0;
+	_autoRecovery = 0;
 	
 	// Init main application properties
 	QCoreApplication::setOrganizationName("Canorus");
 	QCoreApplication::setOrganizationDomain("canorus.org");
 	QCoreApplication::setApplicationName("Canorus");
-	setMidiDevice( new CARtMidiDevice() );
+	setMidiDevice( new CARtMidiDevice() );	
 }
 
 void CACanorus::initCommonGUI() {
@@ -133,10 +135,12 @@ void CACanorus::initCommonGUI() {
 */
 CASettingsDialog::CASettingsPage CACanorus::initSettings() {
 #ifdef Q_WS_WIN	// M$ is of course an exception
-	_settings = new CASettings(QDir::homePath()+"/Application Data/Canorus/canorus.ini", QSettings::IniFormat);
+	_settingsPath = QDir::homePath()+"/Application Data/Canorus";
 #else	// POSIX systems use the same config file path
-	_settings = new CASettings(QDir::homePath()+"/.config/Canorus/canorus.ini", QSettings::IniFormat);
+	_settingsPath = QDir::homePath()+"/.config/Canorus";
 #endif
+	
+	_settings = new CASettings( settingsPath()+"/canorus.ini", QSettings::IniFormat );
 	
 	return _settings->readSettings();
 }
@@ -151,6 +155,25 @@ void CACanorus::initScripting() {
 #ifdef USE_PYTHON
 	CASwigPython::init();
 #endif
+}
+
+/*!
+	Initializes recovery saving.
+*/
+void CACanorus::initAutoRecovery() {
+	_autoRecovery = new CAAutoRecovery();
+}
+
+/*!
+	Adds and initializes already created main window to main window list and shows it (default) if \a show is set.
+	
+	\sa removeMainWin(), mainWinAt()
+*/
+void CACanorus::addMainWin( CAMainWin *w, bool show ) {
+	_mainWinList << w;
+	
+	if (show)
+		w->show();
 }
 
 /*!
@@ -317,11 +340,3 @@ void CACanorus::createUndoCommand( CADocument *d, QString text ) {
 	clearUndoCommand();
 	_undoCommand = new CAUndoCommand( d, text );
 }
-
-/*!
-	\fn void CACanorus::addMainWin(CAMainWin *window, bool show=true)
-	
-	Adds an already created main window to main window list and shows it (default) if \i show is set.
-	
-	\sa removeMainWin(), mainWinAt()
-*/

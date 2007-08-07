@@ -80,6 +80,8 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 		)
 	);
 	
+	uiAutoRecoverySpinBox->setValue( CACanorus::settings()->autoRecoveryInterval() );
+	
 	// Playback Page
 	_midiInPorts = CACanorus::midiDevice()->getInputPorts();
 	_midiOutPorts = CACanorus::midiDevice()->getOutputPorts();
@@ -135,6 +137,8 @@ void CASettingsDialog::applySettings() {
 	CAMainWin::uiExportDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
 	CACanorus::settings()->setDefaultSaveFormat( CAFileFormats::getType( uiDefaultSaveComboBox->currentText() ) );
 	CAMainWin::uiSaveDialog->selectFilter( uiDefaultSaveComboBox->currentText() );
+	CACanorus::settings()->setAutoRecoveryInterval( uiAutoRecoverySpinBox->value() );
+	CACanorus::autoRecovery()->updateTimer();
 	
 	// Appearance Page
 	CACanorus::settings()->setBackgroundColor( uiBackgroundColor->palette().color(QPalette::Window) );

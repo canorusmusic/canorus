@@ -98,8 +98,8 @@ public:
 	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v);
 	void restartTimeEditedTime() { _timeEditedTime = 0; };
 	
-	bool openDocument(QString fileName);
-	bool saveDocument(QString fileName);
+	CADocument *openDocument( QString fileName );
+	bool saveDocument( QString fileName );
 	
 	inline CAMode mode() { return _mode; }
 	inline QFileDialog *exportDialog() { return uiExportDialog; }

@@ -65,6 +65,12 @@ int main(int argc, char *argv[]) {
 	// Finds all the plugins
 	CAPluginManager::readPlugins();
 	
+	// Initialize autosave
+	CACanorus::initAutoRecovery();
+	
+	// Check for any crashed Canorus sessions and open the recovery files
+	CACanorus::autoRecovery()->openRecovery();
+	
 	// Creates a main window of a document to open if passed in command line
 	CACanorus::parseOpenFileArguments(argc, argv);
 	
@@ -79,5 +85,6 @@ int main(int argc, char *argv[]) {
 	if ( showSettingsPage != CASettingsDialog::UndefinedSettings )
 		CASettingsDialog( showSettingsPage, CACanorus::mainWinAt(0) );
 	
+	QObject::connect( &mainApp, SIGNAL(lastWindowClosed()), CACanorus::autoRecovery(), SLOT(cleanupRecovery()) );  
 	return mainApp.exec();
 }
