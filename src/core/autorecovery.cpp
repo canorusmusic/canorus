@@ -94,6 +94,7 @@ void CAAutoRecovery::openRecovery() {
 		CAMainWin *mainWin = new CAMainWin();
 		CACanorus::addMainWin( mainWin );
 		CADocument *document = mainWin->openDocument( CACanorus::settingsPath()+"/recovery"+QString::number(i) );
+		document->setFileName("");
 		documents.append( tr("- Document %1 last modified on %2.").arg(document->title()).arg(document->dateLastModified().toString()) );
 	}
 	
