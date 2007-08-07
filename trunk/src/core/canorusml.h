@@ -1,9 +1,9 @@
-/*
- * Copyright (c) 2006-2007, Matevž Jekovec, Georg Rudolph, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- *
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Georg Rudolph, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #ifndef CANORUSML_H_
 #define CANORUSML_H_
@@ -33,9 +33,9 @@ class CACanorusML : public QXmlDefaultHandler {
 public:
 	~CACanorusML();
 	
-	////////////////////////////////////////////////
-	// Reading XML
-	////////////////////////////////////////////////
+	/////////////////
+	// Reading XML //
+	/////////////////
 	CACanorusML();
 	static CADocument* openDocument(QXmlInputSource* in);
 	
@@ -48,15 +48,16 @@ public:
 	
 	inline CADocument *document() { return _document; }
 	
-	////////////////////////////////////////////////
-	// Writing XML
-	////////////////////////////////////////////////
-	static void saveDocument(CADocument *doc, QTextStream& out);
+	/////////////////
+	// Writing XML //
+	/////////////////
+	static void saveDocument( CADocument *doc, QTextStream& out );
+	static bool saveDocumentToFile( CADocument *doc, const QString fileName );
 	
 private:
-	////////////////////////////////////////////////
-	// Reading XML
-	////////////////////////////////////////////////
+	/////////////////
+	// Reading XML //
+	/////////////////
 	
 	CADocument     *_document;
 	QString         _version;
@@ -79,14 +80,14 @@ private:
 	QHash<CALyricsContext*, int> _lcMap;      // lyrics context associated voice indices
 	QHash<CASyllable*, int>     _syllableMap; // syllable associated voice indices
 	
-		////////////////////////////////////////////
-		// Temporary properties for each XML stanza
-		////////////////////////////////////////////
+		//////////////////////////////////////////////
+		// Temporary properties for each XML stanza //
+		//////////////////////////////////////////////
 		QString _cha;
 	
-	////////////////////////////////////////////////
-	// Writing XML
-	////////////////////////////////////////////////
+	/////////////////
+	// Writing XML //
+	/////////////////
 	static void writeVoice(QDomElement &dVoice, CAVoice* voice);
 };
 #endif /* CANORUSML_H_*/

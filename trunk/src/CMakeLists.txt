@@ -55,6 +55,7 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 
 # Define the MOC source files used by Canorus
 SET(Canorus_MOCs
+	core/autorecovery.h
 	ui/mainwin.h	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 #	ui/keysigpsp.h  # obsolete
 #	ui/timesigpsp.h # obsolete
@@ -76,14 +77,15 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/settings.cpp
 	core/canorusml.cpp
 	core/undocommand.cpp
-
+	core/autorecovery.cpp
+	
 	core/document.cpp
 	core/sheet.cpp
 	core/context.cpp
 	core/staff.cpp
 	core/functionmarkingcontext.cpp
 	core/lyricscontext.cpp
-
+	
 	core/muselement.cpp
 	core/muselementfactory.cpp
 	core/voice.cpp
@@ -95,7 +97,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/note.cpp
 	core/slur.cpp
 	core/rest.cpp
-
+	
 	core/syllable.cpp
 	
 	core/functionmarking.cpp

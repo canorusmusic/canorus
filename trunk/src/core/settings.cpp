@@ -13,6 +13,7 @@
 const bool CASettings::DEFAULT_FINALE_LYRICS_BEHAVIOUR = false;
 const QDir CASettings::DEFAULT_DOCUMENTS_DIRECTORY = QDir::home();
 const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFormats::CanorusML;
+const int CASettings::DEFAULT_AUTO_RECOVERY_INTERVAL = 1;
 const QColor CASettings::DEFAULT_BACKGROUND_COLOR = QColor(255, 255, 240);
 const QColor CASettings::DEFAULT_FOREGROUND_COLOR = Qt::black;
 const QColor CASettings::DEFAULT_SELECTION_COLOR = Qt::red;
@@ -38,6 +39,7 @@ void CASettings::writeSettings() {
 	setValue( "editor/finalelyricsbehaviour", finaleLyricsBehaviour() );
 	setValue( "files/documentsdirectory", documentsDirectory().absolutePath() );
 	setValue( "files/defaultsaveformat", defaultSaveFormat() );
+	setValue( "files/autorecoveryinterval", autoRecoveryInterval() );
 	setValue( "appearance/backgroundcolor", backgroundColor() );
 	setValue( "appearance/foregroundcolor", foregroundColor() );
 	setValue( "appearance/selectioncolor", selectionColor() );
@@ -74,6 +76,11 @@ CASettingsDialog::CASettingsPage CASettings::readSettings() {
 		setDefaultSaveFormat( static_cast<CAFileFormats::CAFileFormatType>(value("files/defaultsaveformat").toInt()) );
 	else
 		setDefaultSaveFormat( DEFAULT_SAVE_FORMAT );
+	
+	if ( contains("files/autorecoveryinterval") )
+		setAutoRecoveryInterval( value("files/autorecoveryinterval").toInt() );
+	else
+		setAutoRecoveryInterval( DEFAULT_AUTO_RECOVERY_INTERVAL );
 	
 	// Appearance settings
 	if ( contains("appearance/backgroundcolor") )

@@ -12,6 +12,7 @@
 #include "ui/mainwin.h"
 #include "ui/settingsdialog.h"
 #include "core/undocommand.h"
+#include "core/autorecovery.h"
 
 #include <QString>
 #include <QList>
@@ -28,6 +29,7 @@ public:
 	static void initCommonGUI();
 	static void parseSettingsArguments(int argc, char *argv[]);
 	static void initScripting();
+	static void initAutoRecovery();
 	static void parseOpenFileArguments(int argc, char *argv[]);
 	
 	static QList<QString> locateResource(const QString fileName);
@@ -39,7 +41,7 @@ public:
 	inline static CAMainWin* mainWinAt(int idx) { return _mainWinList[idx]; }
 	inline static void removeMainWin(CAMainWin *w) { _mainWinList.removeAll(w); }
 	inline static void removeViewPort(CAViewPort *v) { for (int i=0; i<mainWinCount(); i++) _mainWinList[i]->removeViewPort(v); }
-	inline static void addMainWin(CAMainWin *w, bool show=true) { _mainWinList << w; if (show) w->show(); }
+	static void addMainWin(CAMainWin *w, bool show=true);
 	inline static void restartTimeEditedTimes(CADocument *doc) { for (int i=0; i<mainWinCount(); i++) if (mainWinAt(i)->document()==doc) mainWinAt(i)->restartTimeEditedTime(); }
 	
 	// Undo
@@ -54,6 +56,8 @@ public:
 	static void updateLastUndoCommand( CAUndoCommand *c );
 	
 	inline static CASettings *settings() { return _settings; }
+	inline static CAAutoRecovery *autoRecovery() { return _autoRecovery; }
+	inline static QString settingsPath() { return _settingsPath; }
 	inline static CAMidiDevice *midiDevice() { return _midiDevice; }
 	inline static void setMidiDevice(CAMidiDevice *d) { _midiDevice = d; }
 	
@@ -61,6 +65,10 @@ public:
 	static void rebuildUI( CADocument *document=0 );
 	
 private:
+	static QList<CAMainWin*> _mainWinList;
+	static CASettings *_settings;
+	static QString _settingsPath;
+	
 	// Undo
 	static void clearUndoCommand();
 	static QHash< CADocument*, QUndoStack* > _undoStack;
@@ -68,12 +76,10 @@ private:
 	static QHash< CAUndoCommand*, CAUndoCommand* > _prevUndoCommands; // These two hashes are here to find the topmost commands when relinking.
 	static CAUndoCommand *_undoCommand; // current undo command created to be put on the undo stack
 	
-	static QList<CAMainWin*> _mainWinList;
-	static CASettings *_settings;
-	
-	/////////////////////
-	// Playback output //
-	/////////////////////
+	// Playback output
 	static CAMidiDevice *_midiDevice;
+	
+	// Auto recovery
+	static CAAutoRecovery *_autoRecovery;
 };
-#endif /* CANORUS_H_*/
+#endif /* CANORUS_H_ */

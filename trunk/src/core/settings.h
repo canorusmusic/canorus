@@ -24,6 +24,7 @@ public:
 	inline bool finaleLyricsBehaviour() { return _finaleLyricsBehaviour; }
 	inline QDir documentsDirectory() { return _documentsDirectory; }
 	inline CAFileFormats::CAFileFormatType defaultSaveFormat() { return _defaultSaveFormat; }
+	inline int autoRecoveryInterval() { return _autoRecoveryInterval; }
 	inline QColor backgroundColor() { return _backgroundColor; }
 	inline QColor foregroundColor() { return _foregroundColor; }
 	inline QColor selectionColor() { return _selectionColor; }
@@ -37,6 +38,7 @@ public:
 	inline void setFinaleLyricsBehaviour( bool b ) { _finaleLyricsBehaviour = b; }
 	inline void setDocumentsDirectory( QDir d ) { _documentsDirectory = d; }
 	inline void setDefaultSaveFormat( CAFileFormats::CAFileFormatType t ) { _defaultSaveFormat = t; }
+	inline void setAutoRecoveryInterval( int interval ) { _autoRecoveryInterval = interval; };
 	inline void setBackgroundColor( QColor backgroundColor ) { _backgroundColor = backgroundColor; }
 	inline void setForegroundColor( QColor foregroundColor ) { _foregroundColor = foregroundColor; }
 	inline void setSelectionColor( QColor selectionColor ) { _selectionColor = selectionColor; }
@@ -50,6 +52,7 @@ public:
 	static const bool DEFAULT_FINALE_LYRICS_BEHAVIOUR;
 	static const QDir DEFAULT_DOCUMENTS_DIRECTORY;
 	static const CAFileFormats::CAFileFormatType DEFAULT_SAVE_FORMAT;
+	static const int DEFAULT_AUTO_RECOVERY_INTERVAL;
 	static const QColor DEFAULT_BACKGROUND_COLOR;
 	static const QColor DEFAULT_FOREGROUND_COLOR;
 	static const QColor DEFAULT_SELECTION_COLOR;
@@ -57,6 +60,8 @@ public:
 	static const QColor DEFAULT_SELECTED_CONTEXT_COLOR;
 	static const QColor DEFAULT_HIDDEN_ELEMENTS_COLOR;
 	static const QColor DEFAULT_DISABLED_ELEMENTS_COLOR;
+	static const int DEFAULT_MIDI_IN_PORT;
+	static const int DEFAULT_MIDI_OUT_PORT;
 	
 private:
 	/////////////////////
@@ -67,8 +72,9 @@ private:
 	/////////////////////////////
 	// Loading/Saving settings //
 	/////////////////////////////
-	QDir _documentsDirectory;
+	QDir _documentsDirectory; // location of directory automatically opened when File->Open is selected
 	CAFileFormats::CAFileFormatType _defaultSaveFormat;
+	int _autoRecoveryInterval; // auto recovery interval in minutes
 	
 	/////////////////////////
 	// Appearance settings //
@@ -85,11 +91,7 @@ private:
 	// Playback settings //
 	///////////////////////
 	int _midiOutPort; // -1 disabled, 0+ port number
-	static const int DEFAULT_MIDI_IN_PORT;
-	
 	int _midiInPort;  // -1 disabled, 0+ port number
-	static const int DEFAULT_MIDI_OUT_PORT;
-	
 };
 
 #endif /* SETTINGS_H_ */

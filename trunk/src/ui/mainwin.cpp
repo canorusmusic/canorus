@@ -143,7 +143,10 @@ const CAFileFormats::CAFileFormatType CAFileFormats::getType( const QString t ) 
 */
 
 // Constructor
-CAMainWin::CAMainWin(QMainWindow *oParent) : QMainWindow( oParent ) {
+CAMainWin::CAMainWin(QMainWindow *oParent)
+ : QMainWindow( oParent ) {
+	setAttribute( Qt::WA_DeleteOnClose );
+	
 	// Locate resources (images, icons)
 	QString currentPath = QDir::currentPath();
 	
@@ -191,12 +194,14 @@ CAMainWin::~CAMainWin()  {
 	delete _playback;
 	
 	// clear UI
-	delete uiInsertToolBar; delete uiInsertGroup; delete uiContextType; delete uiSlurType; delete uiClefType; delete uiTimeSigType; delete uiBarlineType;
-	delete uiVoiceToolBar; delete uiVoiceNum; delete uiVoiceName; delete uiRemoveVoice; delete uiVoiceStemDirection; delete uiVoiceProperties;
-	delete uiPlayableToolBar; delete uiPlayableLength; delete uiNoteAccs; delete uiNoteStemDirection; delete uiHiddenRest;
-	delete uiKeySigToolBar; delete uiKeySigNumberOfAccs;
-	delete uiTimeSigToolBar; delete uiTimeSigBeats; delete uiTimeSigSlash; delete uiTimeSigBeat;
-	delete uiFMToolBar; delete uiFMFunction; delete uiFMChordArea; delete uiFMTonicDegree; delete uiFMEllipse;
+	delete uiInsertToolBar; // also deletes content of the toolbars
+	delete uiInsertGroup;
+	
+	delete uiVoiceToolBar;
+	delete uiPlayableToolBar;
+	delete uiKeySigToolBar;
+	delete uiTimeSigToolBar;
+	delete uiFMToolBar;
 }
 
 void CAMainWin::createCustomActions() {
@@ -1861,8 +1866,10 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 /*!
 	Opens a document with the given absolute fileName.
 	Previous document will be lost.
+	
+	Returns pointer to the opened document or null if opening the document failed.
 */
-bool CAMainWin::openDocument(QString fileName) {
+CADocument *CAMainWin::openDocument(QString fileName) {
 	QFile file(fileName);
 	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		QXmlInputSource input(&file);
@@ -1888,29 +1895,31 @@ bool CAMainWin::openDocument(QString fileName) {
 		CACanorus::restartTimeEditedTimes( document() );
 		file.close();
 		
-		return true;
-	} else
-		return false;
+		return openedDoc;
+	} else {
+		return 0;
+	}
 }
 
 /*!
-	Saves the current document to a given absolute fileName.
+	Saves the current document to a given absolute \a fileName.
+	This function is usually called when the filename was entered and save document dialog
+	successfully closed.
+	If \a recovery is False (default), it changes the timeEdit, fileName and some other document
+	properties before saving it.
+	
+	Returns True, if the save was complete; False otherwise.
 */
-bool CAMainWin::saveDocument(QString fileName) {
-	QFile file(fileName);
-	if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-		QTextStream out(&file);
-		document()->setTimeEdited( document()->timeEdited() + _timeEditedTime );
-		document()->setDateLastModified( QDateTime::currentDateTime() );
-		CACanorusML::saveDocument(document(), out);
+bool CAMainWin::saveDocument( QString fileName ) {
+	bool ret;
+	document()->setTimeEdited( document()->timeEdited() + _timeEditedTime );
+	document()->setDateLastModified( QDateTime::currentDateTime() );
+	CACanorus::restartTimeEditedTimes( document() );
+	
+	if (ret = CACanorusML::saveDocumentToFile( document(), fileName ))
 		document()->setFileName(fileName);
-		file.close();
-		
-		CACanorus::restartTimeEditedTimes( document() );
-		
-		return true;
-	} else
-		return false;
+	
+	return ret;
 }
 
 void CAMainWin::onMidiInEvent( QVector<unsigned char> m) {
@@ -2724,6 +2733,7 @@ void CAMainWin::updateInsertToolBar() {
 						// staff selected
 						uiInsertPlayable->setVisible(true);
 						uiSlurType->defaultAction()->setVisible(true);
+						uiSlurType->setVisible(true); // \todo This is needed in order for actions to hide?! -Matevz
 						uiInsertClef->setVisible(true); // menu
 						uiInsertBarline->setVisible(true); // menu
 						uiClefType->defaultAction()->setVisible(true);
@@ -2767,6 +2777,7 @@ void CAMainWin::updateInsertToolBar() {
 				// no contexts selected
 				uiInsertPlayable->setVisible(false);
 				uiSlurType->defaultAction()->setVisible(false);
+				uiSlurType->setVisible(false); // \todo This is needed in order for actions to hide?! -Matevz
 				uiInsertClef->setVisible(false); // menu
 				uiInsertBarline->setVisible(false); // menu
 				uiClefType->defaultAction()->setVisible(false);
