@@ -21,18 +21,28 @@
   </property>
   <widget class="QWidget" name="uiCentralWidget" >
    <layout class="QGridLayout" >
-    <property name="margin" >
+    <property name="leftMargin" >
      <number>6</number>
     </property>
-    <property name="spacing" >
+    <property name="topMargin" >
+     <number>6</number>
+    </property>
+    <property name="rightMargin" >
+     <number>6</number>
+    </property>
+    <property name="bottomMargin" >
+     <number>6</number>
+    </property>
+    <property name="horizontalSpacing" >
+     <number>4</number>
+    </property>
+    <property name="verticalSpacing" >
      <number>4</number>
     </property>
     <item row="0" column="0" >
      <widget class="QTabWidget" name="uiTabWidget" >
       <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>7</vsizetype>
+       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -192,7 +202,10 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="uiNewDocument" />
    <addaction name="uiOpenDocument" />
@@ -214,7 +227,10 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="uiNewDocument" />
    <addaction name="uiNewDocumentWizard" />
@@ -236,7 +252,10 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="uiPrint" />
    <addaction name="uiPrintDirectly" />
@@ -382,9 +401,6 @@
    </property>
   </action>
   <action name="uiCopy" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="icon" >
     <iconset>images/editcopy.png</iconset>
    </property>
@@ -396,9 +412,6 @@
    </property>
   </action>
   <action name="uiCut" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="icon" >
     <iconset>images/editcut.png</iconset>
    </property>
@@ -410,9 +423,6 @@
    </property>
   </action>
   <action name="uiPaste" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="icon" >
     <iconset>images/editpaste.png</iconset>
    </property>

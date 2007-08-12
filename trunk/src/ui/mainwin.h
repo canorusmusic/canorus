@@ -95,8 +95,11 @@ public:
 	void newDocument();	
 	void addSheet(CASheet *s);
 	void removeSheet(CASheet *s);
-	void insertMusElementAt(const QPoint coords, CAScoreViewPort *v);
+	void insertMusElementAt( const QPoint coords, CAScoreViewPort *v );
 	void restartTimeEditedTime() { _timeEditedTime = 0; };
+	void deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool undo );
+	void copySelection( CAScoreViewPort *v );
+	void pasteAt( const QPoint coords, CAScoreViewPort *v );
 	
 	CADocument *openDocument( QString fileName );
 	bool saveDocument( QString fileName );
@@ -155,6 +158,9 @@ private slots:
 	// Edit
 	void on_uiUndo_triggered();
 	void on_uiRedo_triggered();
+	void on_uiCopy_triggered();
+	void on_uiCut_triggered();
+	void on_uiPaste_triggered();
 	
 	// Insert
 	void on_uiSelectMode_toggled(bool);

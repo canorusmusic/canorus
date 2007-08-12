@@ -12,5 +12,5 @@ def newDefaultDocument(document):
 	staff2 = sheet1.addStaff()
 	staff2.addVoice( Voice(staff2, 'Staff2Voice1', 1, Note.StemUp) )
 	staff2.addVoice( Voice(staff2, 'Staff2Voice2', 2, Note.StemUp) )
-	staff2.insertSign( Clef( Clef.Treble, staff2, 0 ) )
+	staff2.insertSign( Clef( Clef.Bass, staff2, 0 ) )
 	staff2.insertSign( TimeSignature( 4, 4, staff2, 0 ) )
