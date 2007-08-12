@@ -64,12 +64,20 @@
 #include "core/syllable.h"
 #include "core/functionmarking.h"
 #include "core/muselementfactory.h"
+#include "core/mimedata.h"
 
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
 
 #include "export/lilypondexport.h"
 #include "import/lilypondimport.h"
+
+/*!
+	\class CAFileFormats
+	\brief File formats supported by Canorus
+	This class contains the filters shown in file dialogs (eg. when opening/saving a document) and its internal
+	enumeration values used when storing settings for default or last used filter.
+*/
 
 const QString CAFileFormats::CANORUSML_FILTER = QObject::tr("Canorus document (*.xml)");
 const QString CAFileFormats::LILYPOND_FILTER  = QObject::tr("LilyPond document (*.ly)");
@@ -81,17 +89,6 @@ const QString CAFileFormats::SIBELIUS_FILTER  = QObject::tr("Sibelius document (
 const QString CAFileFormats::CAPELLA_FILTER   = QObject::tr("Capella document (*.cap)");	
 const QString CAFileFormats::MIDI_FILTER      = QObject::tr("Midi file (*.mid, *.midi)");	
 
-QFileDialog *CAMainWin::uiOpenDialog = 0;
-QFileDialog *CAMainWin::uiSaveDialog = 0;
-QFileDialog *CAMainWin::uiImportDialog = 0;
-QFileDialog *CAMainWin::uiExportDialog = 0;
-
-/*!
-	\class CAFileFormats
-	\brief File formats supported by Canorus
-	This class contains the filters shown in file dialogs (eg. when opening/saving a document) and its internal
-	enumeration values used when storing settings.
-*/
 
 /*!
 	Converts the file format enumeration to filter as string.
@@ -142,7 +139,15 @@ const CAFileFormats::CAFileFormatType CAFileFormats::getType( const QString t ) 
 	\sa CAViewPort, CACanorus
 */
 
-// Constructor
+QFileDialog *CAMainWin::uiOpenDialog = 0;
+QFileDialog *CAMainWin::uiSaveDialog = 0;
+QFileDialog *CAMainWin::uiImportDialog = 0;
+QFileDialog *CAMainWin::uiExportDialog = 0;
+
+/*!
+	Default constructor.
+	Creates Canorus main window with parent \a oParent. Parent is usually null.
+*/
 CAMainWin::CAMainWin(QMainWindow *oParent)
  : QMainWindow( oParent ) {
 	setAttribute( Qt::WA_DeleteOnClose );
@@ -1522,53 +1527,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		
 		case Qt::Key_Delete:
 		case Qt::Key_Backspace:
-			if ( v->selection().size() ) {
-				CACanorus::createUndoCommand( document(), tr("deletion of elements", "undo") );
-				
-				QSet<CAMusElement*> musElemSet;
-				for (int i=0; i<v->selection().size(); i++)
-					musElemSet << v->selection().at(i)->musElement();
-				
-				// cleans up the set - removes empty elements and elements which get deleted automatically (eg. slurs)
-				for (QSet<CAMusElement*>::iterator i=musElemSet.begin(); i!=musElemSet.end();) {
-					if (!(*i))
-						i = musElemSet.erase(i);
-					else if ((*i)->musElementType()==CAMusElement::Slur && musElemSet.contains(static_cast<CASlur*>(*i)->noteStart()))
-						i = musElemSet.erase(i);
-					else if ((*i)->musElementType()==CAMusElement::Slur && musElemSet.contains(static_cast<CASlur*>(*i)->noteEnd()))
-						i = musElemSet.erase(i);
-					else
-						i++;
-				}
-				
-				for (QSet<CAMusElement*>::const_iterator i=musElemSet.constBegin(); i!=musElemSet.constEnd(); i++) {
-					if ((*i)->musElementType()==CAMusElement::Note) {
-						CANote *note = static_cast<CANote*>(*i);
-						if (!note->isPartOfTheChord()) {
-							for (int j=0; j<note->voice()->lyricsContextList().size(); j++) {
-								CASyllable *removedSyllable =
-									note->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(note->timeStart());
-								musElemSet.remove(removedSyllable);
-							}
-						}
-						(*i)->context()->removeMusElement(*i);
-					} else if ((*i)->musElementType()==CAMusElement::Syllable) {
-						if (e->modifiers()==Qt::ShiftModifier) {
-							CALyricsContext *lc = static_cast<CALyricsContext*>((*i)->context()); 
-							(*i)->context()->removeMusElement(*i);  // actually removes the syllable if SHIFT is pressed
-							lc->repositSyllables();
-						} else {
-							static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
-						}
-					} else {
-						(*i)->context()->removeMusElement(*i);
-					}
-				}			
-				CACanorus::pushUndoCommand();
-				v->clearSelection();
-				CACanorus::rebuildUI(document(), v->sheet());
-			}
-			
+			deleteSelection( v, e->modifiers()==Qt::ShiftModifier, true );
 			break;
 		
 		// Mode keys
@@ -2957,6 +2916,141 @@ void CAMainWin::updateFMToolBar() {
 		}	
 	} else
 		uiFMToolBar->hide();
+}
+
+/*!
+	Action on Edit->Copy.
+*/
+void CAMainWin::on_uiCopy_triggered() {
+	if ( currentScoreViewPort() ) {
+		copySelection( currentScoreViewPort() );
+	}
+}
+
+/*!
+	Action on Edit->Cut.
+*/
+void CAMainWin::on_uiCut_triggered() {
+	if ( currentScoreViewPort() ) {
+		CACanorus::createUndoCommand( document(), tr("cut", "undo") );
+		copySelection( currentScoreViewPort() );
+		deleteSelection( currentScoreViewPort(), false, false ); // and don't make undo as we already make it
+	}	
+}
+
+/*!
+	Action on Edit->Paste.
+*/
+void CAMainWin::on_uiPaste_triggered() {
+	if ( currentScoreViewPort() ) {
+		CACanorus::createUndoCommand( document(), tr("paste", "undo") );		
+		pasteAt( currentScoreViewPort()->lastMousePressCoords(), currentScoreViewPort() );
+	}
+}
+
+/*!
+	Backend for Edit->Copy.
+*/
+void CAMainWin::copySelection( CAScoreViewPort *v ) {
+	if ( v->selection().size() ) {
+		QList<CAMusElement*> list;
+		
+		for (int i=0; i<v->selection().size(); i++) {
+			if (v->selection().at(i)->musElement() && !list.contains( v->selection().at(i)->musElement())) {
+				list << v->selection().at(i)->musElement();
+			}
+		}
+		
+		QApplication::clipboard()->setMimeData( new CAMimeData(list) );
+	}
+}
+
+/*!
+	Backend for Delete.
+*/
+void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool doUndo ) {
+	if ( v->selection().size() ) {
+		if (doUndo)
+			CACanorus::createUndoCommand( document(), tr("deletion of elements", "undo") );
+		
+		QSet<CAMusElement*> musElemSet;
+		for (int i=0; i<v->selection().size(); i++)
+			musElemSet << v->selection().at(i)->musElement();
+		
+		// cleans up the set - removes empty elements and elements which get deleted automatically (eg. slurs, if both notes are deleted)
+		for (QSet<CAMusElement*>::iterator i=musElemSet.begin(); i!=musElemSet.end();) {
+			if (!(*i))
+				i = musElemSet.erase(i);
+			else if ((*i)->musElementType()==CAMusElement::Slur && musElemSet.contains(static_cast<CASlur*>(*i)->noteStart()))
+				i = musElemSet.erase(i);
+			else if ((*i)->musElementType()==CAMusElement::Slur && musElemSet.contains(static_cast<CASlur*>(*i)->noteEnd()))
+				i = musElemSet.erase(i);
+			else
+				i++;
+		}
+		
+		for (QSet<CAMusElement*>::const_iterator i=musElemSet.constBegin(); i!=musElemSet.constEnd(); i++) {
+			if ((*i)->musElementType()==CAMusElement::Note) {
+				CANote *note = static_cast<CANote*>(*i);
+				if (!note->isPartOfTheChord()) {
+					for (int j=0; j<note->voice()->lyricsContextList().size(); j++) {
+						CASyllable *removedSyllable =
+							note->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(note->timeStart());
+						musElemSet.remove(removedSyllable);
+					}
+				}
+				(*i)->context()->removeMusElement(*i);
+			} else if ((*i)->musElementType()==CAMusElement::Syllable) {
+				if ( deleteSyllable ) {
+					CALyricsContext *lc = static_cast<CALyricsContext*>((*i)->context()); 
+					(*i)->context()->removeMusElement(*i);  // actually removes the syllable if SHIFT is pressed
+					lc->repositSyllables();
+				} else {
+					static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
+				}
+			} else {
+				(*i)->context()->removeMusElement(*i);
+			}
+		}			
+		CACanorus::pushUndoCommand();
+		v->clearSelection();
+		CACanorus::rebuildUI(document(), v->sheet());
+	}	
+}
+
+/*!
+	Backend for Edit->Paste.
+*/
+void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
+	if ( QApplication::clipboard()->mimeData() &&
+	     QApplication::clipboard()->mimeData()->hasFormat(CAMimeData::CANORUS_MIME_TYPE) &&
+	     v->currentContext() &&
+	     v->currentContext()->drawableContextType()==CADrawableContext::DrawableStaff ) {
+		CAStaff *staff = static_cast<CAStaff*>( v->currentContext()->context() ); 
+		CAVoice *voice = staff->voiceAt( uiVoiceNum->getRealValue() ? uiVoiceNum->getRealValue()-1 : uiVoiceNum->getRealValue() );
+		CADrawableMusElement *drawableLeft = v->nearestLeftElement(coords.x(), coords.y());
+		CAMusElement *left = 0;
+		if (drawableLeft)
+			left = drawableLeft->musElement();
+		
+		QList<CAMusElement*> eltList = static_cast<const CAMimeData*>(QApplication::clipboard()->mimeData())->musElements();
+		for ( int i=0; i<eltList.size(); i++ ) {
+			CAMusElement *newElt;
+			if ( eltList[i]->isPlayable() ) {
+				newElt = static_cast<CAPlayable*>(eltList[i])->clone(voice);
+				newElt->setTimeStart(left?left->timeEnd():0);
+				voice->insertMusElementAfter( newElt, left );
+			} else {
+				newElt = eltList[i]->clone();
+				newElt->setTimeStart(left?left->timeEnd():0);
+				staff->insertSignAfter( newElt, left );
+			}
+			left = eltList[i];
+		}
+		
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+	
 }
 
 /*!
