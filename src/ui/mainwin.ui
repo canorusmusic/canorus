@@ -216,6 +216,9 @@
    <addaction name="separator" />
    <addaction name="uiUndo" />
    <addaction name="uiRedo" />
+   <addaction name="uiCut" />
+   <addaction name="uiCopy" />
+   <addaction name="uiPaste" />
    <addaction name="separator" />
    <addaction name="uiPlayFromSelection" />
   </widget>

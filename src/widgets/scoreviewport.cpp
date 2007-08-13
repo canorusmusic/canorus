@@ -235,6 +235,7 @@ void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 	}
 	
 	elt->drawableContext()->addMElement(elt);
+	emit selectionChanged();
 }
 
 /*!
@@ -324,9 +325,11 @@ CADrawableMusElement* CAScoreViewPort::selectMElement(CAMusElement *elt) {
 	for (int i=0; i<_drawableMList.size(); i++)
 		if (((CADrawableMusElement*)(_drawableMList.at(i)))->musElement() == elt) {
 			_selection << (CADrawableMusElement*)_drawableMList.at(i);
+			emit selectionChanged();
 			return (CADrawableMusElement*)_drawableMList.at(i);
 		}
 	
+	emit selectionChanged();
 	return 0;	
 }
 
@@ -1238,6 +1241,7 @@ CADrawableMusElement *CAScoreViewPort::addToSelection(CAMusElement *elt) {
 			_selection << (CADrawableMusElement*)_drawableMList.at(i);
 	}
 	
+	emit selectionChanged();
 	return _selection.back();
 }
 
@@ -1251,6 +1255,7 @@ void CAScoreViewPort::addToSelection(const QList<CAMusElement*> elts) {
 				_selection << (CADrawableMusElement*)_drawableMList.at(i);
 		}
 	}
+	emit selectionChanged();
 }
 
 /*!
