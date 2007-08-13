@@ -710,6 +710,8 @@ void CAMainWin::initViewPort(CAViewPort *v) {
 			         this, SLOT(scoreViewPortKeyPress(QKeyEvent *, CAScoreViewPort *)) );
 			connect( static_cast<CAScoreViewPort*>(v)->syllableEdit(), SIGNAL(CAKeyPressEvent(QKeyEvent*, CASyllableEdit*)),
 			         this, SLOT(onSyllableEditKeyPressEvent(QKeyEvent*, CASyllableEdit*)) );
+			connect( v, SIGNAL(selectionChanged()),
+			         this, SLOT(onScoreViewPortSelectionChanged()) );
 			break;
 		}
 		case CAViewPort::SourceViewPort: {
@@ -1703,6 +1705,19 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	\sa viewPortKeyPressEvent()
 */
 void CAMainWin::keyPressEvent(QKeyEvent *e) {
+}
+
+/*!
+	Called when selection in score viewports is changed.
+*/
+void CAMainWin::onScoreViewPortSelectionChanged() {
+	if (static_cast<CAScoreViewPort*>(sender())->selection().size()) {
+		uiCopy->setEnabled(true);
+		uiCut->setEnabled(true);
+	} else {
+		uiCopy->setEnabled(false);
+		uiCut->setEnabled(false);		
+	}
 }
 
 /*!
@@ -2943,7 +2958,6 @@ void CAMainWin::on_uiCut_triggered() {
 */
 void CAMainWin::on_uiPaste_triggered() {
 	if ( currentScoreViewPort() ) {
-		CACanorus::createUndoCommand( document(), tr("paste", "undo") );		
 		pasteAt( currentScoreViewPort()->lastMousePressCoords(), currentScoreViewPort() );
 	}
 }
@@ -3023,12 +3037,14 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool d
 */
 void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 	if ( QApplication::clipboard()->mimeData() &&
-	     QApplication::clipboard()->mimeData()->hasFormat(CAMimeData::CANORUS_MIME_TYPE) &&
+	     dynamic_cast<const CAMimeData*>(QApplication::clipboard()->mimeData()) &&
 	     v->currentContext() &&
 	     v->currentContext()->drawableContextType()==CADrawableContext::DrawableStaff ) {
+		CACanorus::createUndoCommand( document(), tr("paste", "undo") );
+		
 		CAStaff *staff = static_cast<CAStaff*>( v->currentContext()->context() ); 
 		CAVoice *voice = staff->voiceAt( uiVoiceNum->getRealValue() ? uiVoiceNum->getRealValue()-1 : uiVoiceNum->getRealValue() );
-		CADrawableMusElement *drawableLeft = v->nearestLeftElement(coords.x(), coords.y());
+		CADrawableMusElement *drawableLeft = v->nearestLeftElement(coords.x(), coords.y(), voice);
 		CAMusElement *left = 0;
 		if (drawableLeft)
 			left = drawableLeft->musElement();
@@ -3045,12 +3061,11 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 				newElt->setTimeStart(left?left->timeEnd():0);
 				staff->insertSignAfter( newElt, left );
 			}
-			left = eltList[i];
+			left = newElt;
 		}
 		
 		CACanorus::rebuildUI( document(), currentSheet() );
 	}
-	
 }
 
 /*!

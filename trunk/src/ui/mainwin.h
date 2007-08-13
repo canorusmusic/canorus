@@ -262,6 +262,7 @@ private slots:
 	void onTimeEditedTimerTimeout();
 	
 	void playbackFinished();
+	void onScoreViewPortSelectionChanged();
 	//void on_repaintTimer_timeout();	///Used for repaint events
 	
 private:	

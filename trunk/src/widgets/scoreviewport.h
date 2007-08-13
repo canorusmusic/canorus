@@ -93,15 +93,16 @@ public:
 	inline CADrawableContext *currentContext() { return _currentContext; }
 	inline void setCurrentContext(CADrawableContext *c) { _currentContext = c; }
 	
-	inline void clearSelection() { _selection.clear(); }
-	inline bool removeFromSelection(CADrawableMusElement *elt) { return _selection.removeAll(elt); }
+	inline void clearSelection() { _selection.clear(); emit selectionChanged(); }
+	inline bool removeFromSelection(CADrawableMusElement *elt) { return _selection.removeAll(elt); emit selectionChanged(); }
 	
 	inline void           addToSelection(CADrawableMusElement *elt) {
 		int i;
 		for (i=0; i<_selection.size() && _selection[i]->xPos() < elt->xPos(); i++);
 		_selection.insert( i, elt );
+		emit selectionChanged();
 	}
-	inline void           addToSelection(const QList<CADrawableMusElement*> list) { _selection << list; }
+	inline void           addToSelection(const QList<CADrawableMusElement*> list) { _selection << list; emit selectionChanged(); }
 	CADrawableMusElement *addToSelection(CAMusElement *elt);
 	void                  addToSelection(const QList<CAMusElement *> elts);
 	
@@ -244,6 +245,7 @@ signals:
 	void CAMouseMoveEvent(QMouseEvent *e, QPoint p, CAScoreViewPort *v);
 	void CAWheelEvent(QWheelEvent *e, QPoint p, CAScoreViewPort *v);
 	void CAKeyPressEvent(QKeyEvent *e, CAScoreViewPort *v);
+	void selectionChanged();
 
 private:
 	void initScoreViewPort( CASheet *s );
