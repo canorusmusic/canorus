@@ -28,13 +28,13 @@ CAMimeData::CAMimeData( QList<CAMusElement*> list )
 CAMimeData::~CAMimeData() {
 }
 
-QStringList CAMimeData::formats() {
+QStringList CAMimeData::formats() const {
 	QStringList curFormats = QMimeData::formats();
 	if ( hasMusElements() )
 		curFormats << CANORUS_MIME_TYPE;
 	return curFormats;
 }
 
-bool CAMimeData::hasFormat(const QString format) {
+bool CAMimeData::hasFormat(const QString format) const {
 	return formats().contains( format );
 }
