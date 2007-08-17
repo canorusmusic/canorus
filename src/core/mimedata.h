@@ -20,12 +20,12 @@ public:
 	CAMimeData( QList<CAMusElement*> list );
 	virtual ~CAMimeData();
 	
-	bool hasFormat(const QString);
-	QStringList formats();
+	bool hasFormat(const QString) const;
+	QStringList formats() const;
 	
 	inline void setMusElements( QList<CAMusElement*> musElements ) { _musElements = musElements; }
-	inline QList<CAMusElement*> musElements() { return _musElements; }
-	inline bool hasMusElements() { return _musElements.size(); }
+	inline QList<CAMusElement*> musElements() const { return _musElements; }
+	inline bool hasMusElements() const { return _musElements.size(); }
 	
 	static const QString CANORUS_MIME_TYPE;
 private:
