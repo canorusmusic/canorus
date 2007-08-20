@@ -1,9 +1,9 @@
-/*
- * Copyright (c) 2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- *
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #ifndef LILYPONDEXPORT_H_
 #define LILYPONDEXPORT_H_
@@ -81,7 +81,7 @@ private:
 	inline void setCurContext(CAContext *context) { _curContext = context; }
 	inline void setCurContextIndex(int c) { _curContextIndex = c; }
 	inline void setIndentLevel( int level) { _curIndentLevel = level; }
-
+	
 	inline QTextStream& out() { return *_out; }
 	
 	/////////////
