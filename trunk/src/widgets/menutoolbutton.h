@@ -39,16 +39,10 @@ public:
 	inline void setNumIconsPerRow( int numIconsRow )  { _numIconsRow = numIconsRow; }
 	void setCurrentId(int id);
 	
-	void setDefaultAction( QAction* );
-	
 public slots:
 	void showButtons();
 	void hideButtons( int buttonId );
 	void hideButtons();
-	
-private slots:
-	void handleToggled( bool checked );
-	void handleTriggered();
 	
 private:
 	void wheelEvent(QWheelEvent*);

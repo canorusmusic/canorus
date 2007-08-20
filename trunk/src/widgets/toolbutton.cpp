@@ -52,3 +52,38 @@ void CAToolButton::mousePressEvent( QMouseEvent *e ) {
 	}
 	QToolButton::mousePressEvent(e);
 }
+
+/*!
+	Emits toggled( bool, int ) signal.
+	
+	\sa handleToggled()
+*/
+void CAToolButton::handleTriggered() {
+	if (!defaultAction()->isCheckable())
+		emit toggled( false, currentId() );
+}
+
+/*!
+	Emits toggled( bool, int ) signal.
+	
+	\sa handleTriggered()
+*/
+void CAToolButton::handleToggled( bool checked ) {
+	emit toggled( checked, currentId() );
+}
+
+/*!
+	Sets the new default action \a a and connects some signals to custom slots made
+	by CAMenuToolButton. Also calls QToolButton::setDefaultAction().
+*/
+void CAToolButton::setDefaultAction( QAction *a ) {
+	if ( defaultAction() ) {
+		disconnect( defaultAction(), SIGNAL(toggled(bool)), this, SLOT(handleToggled(bool)) );
+		disconnect( defaultAction(), SIGNAL(triggered()), this, SLOT(handleTriggered()) );
+	}
+	
+	connect( a, SIGNAL(toggled(bool)), this, SLOT(handleToggled(bool)) );
+	connect( a, SIGNAL(triggered()), this, SLOT(handleTriggered()) );
+	a->setCheckable( true );
+	QToolButton::setDefaultAction( a );
+}

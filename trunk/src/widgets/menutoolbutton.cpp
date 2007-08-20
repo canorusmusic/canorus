@@ -87,21 +87,6 @@ CAMenuToolButton::~CAMenuToolButton() {
 	delete _groupBox;
 }
 
-/*!
-	Sets the new default action \a a and connects some signals to custom slots made
-	by CAMenuToolButton. Also calls QToolButton::setDefaultAction().
-*/
-void CAMenuToolButton::setDefaultAction( QAction *a ) {
-	if ( defaultAction() ) {
-		disconnect( defaultAction(), SIGNAL(toggled(bool)), this, SLOT(handleToggled(bool)) );
-		disconnect( defaultAction(), SIGNAL(triggered()), this, SLOT(handleTriggered()) );
-	}
-	
-	connect( a, SIGNAL(toggled(bool)), this, SLOT(handleToggled(bool)) );
-	connect( a, SIGNAL(triggered()), this, SLOT(handleTriggered()) );
-	a->setCheckable( true );
-	QToolButton::setDefaultAction( a );
-}
 
 
 /*!
@@ -219,15 +204,6 @@ void CAMenuToolButton::hideButtons() {
 }
 
 /*!
-	Emits toggled( bool, int ) signal.
-	
-	\sa handleTriggered()
-*/
-void CAMenuToolButton::handleToggled( bool checked ) {
-	emit toggled( checked, currentId() );
-}
-
-/*!
 	Cycle through properties using the mouse wheel.
 */
 void CAMenuToolButton::wheelEvent( QWheelEvent *event ) {
@@ -246,16 +222,6 @@ void CAMenuToolButton::wheelEvent( QWheelEvent *event ) {
 	else
 		click(); // trigger any button groups
 	setChecked(true); // turn it on if it can turn off
-}
-
-/*!
-	Emits toggled( bool, int ) signal.
-	
-	\sa handleToggled()
-*/
-void CAMenuToolButton::handleTriggered() {
-	if (!defaultAction()->isCheckable())
-		emit toggled( false, currentId() );
 }
 
 /*!
