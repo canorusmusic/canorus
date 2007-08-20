@@ -34,6 +34,7 @@ class QComboBox;
 
 class CAPlayback;
 class CAMenuToolButton;
+class CAKeySigToolButton;
 class CALCDNumber;
 class CASheet;
 class CAScoreViewPort;
@@ -210,7 +211,7 @@ private slots:
 	void onMidiInEvent( QVector<unsigned char> message );
 	
 	// Key Signature
-	void on_uiKeySigNumberOfAccs_valueChanged(int);
+	void on_uiKeySigNumberOfAccs_toggled( bool, int );
 	
 	// Time Signature
 	void on_uiTimeSigBeats_valueChanged(int);
@@ -373,7 +374,7 @@ private:
 		
 		QToolBar *uiKeySigToolBar;
 			// CAKeySigPSP  *uiKeySigPSP;	            /// Key signature perspective. \todo Reimplement it.
-			QSpinBox     *uiKeySigNumberOfAccs;
+			CAKeySigToolButton *uiKeySigNumberOfAccs;
 			// QComboBox    *uiKeySigGender;
 		
 		QToolBar *uiTimeSigToolBar;

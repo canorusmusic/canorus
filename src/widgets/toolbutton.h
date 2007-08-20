@@ -21,11 +21,16 @@ public:
 	inline int currentId() { return _currentId; }
 	virtual void setCurrentId(int id) { _currentId = id; }
 	virtual bool buttonsVisible() = 0; // Is the popup widget visible or not
-	
+	void setDefaultAction( QAction* );
+
 public slots:
 	virtual void showButtons()=0;
 	virtual void hideButtons( int buttonId )=0;
 	virtual void hideButtons()=0;
+	
+private slots:
+	void handleToggled( bool checked );
+	void handleTriggered();
 	
 signals:
 	void toggled( bool checked, int id );
@@ -40,4 +45,4 @@ protected:
 	int                 _currentId;       // current ID of the button
 };
 
-#endif /*TOOLBUTTON_H_*/
+#endif /* TOOLBUTTON_H_ */

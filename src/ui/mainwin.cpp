@@ -33,6 +33,7 @@
 #include "interface/rtmididevice.h"
 
 #include "widgets/menutoolbutton.h"
+#include "widgets/keysigtoolbutton.h"
 #include "widgets/lcdnumber.h"
 
 #include "widgets/viewport.h"
@@ -302,11 +303,8 @@ void CAMainWin::createCustomActions() {
 		uiNoteStemDirection->addButton( QIcon("images/notestemvoice.svg"), CANote::StemPreferred, tr("Note Stem Preferred") );
 	
 	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
-	uiKeySigNumberOfAccs = new QSpinBox(this);
-		uiKeySigNumberOfAccs->setObjectName( "uiKeySigNumberOfAccs" );
-		uiKeySigNumberOfAccs->setToolTip( tr("Number of Accidentals") );
-		uiKeySigNumberOfAccs->setRange( -7, 7 );
-		uiKeySigNumberOfAccs->setValue( 0 );
+	uiKeySigNumberOfAccs = new CAKeySigToolButton( tr("Select Key Signature"), this);
+		uiKeySigNumberOfAccs->setCurrentId( 0 );
 	
 	uiTimeSigToolBar = new QToolBar( tr("Time Signature ToolBar"), this );
 	uiTimeSigBeats = new QSpinBox(this);
@@ -1999,7 +1997,7 @@ void CAMainWin::onUiVoiceNumValChanged(int voiceNr) {
 /*!
 	Changes the number of accidentals.
 */
-void CAMainWin::on_uiKeySigNumberOfAccs_valueChanged(int accs) {
+void CAMainWin::on_uiKeySigNumberOfAccs_toggled( bool checked, int accs ) {
 	if (mode()==InsertMode)
 		musElementFactory()->setKeySigNumberOfAccs( accs );
 	else if ( mode()==EditMode ) {
@@ -2839,14 +2837,14 @@ void CAMainWin::updateTimeSigToolBar() {
 */
 void CAMainWin::updateKeySigToolBar() {
 	if (uiInsertKeySig->isChecked() && mode()==InsertMode) {
-		uiKeySigNumberOfAccs->setValue( musElementFactory()->keySigNumberOfAccs() );
+		//uiKeySigNumberOfAccs->setValue( musElementFactory()->keySigNumberOfAccs() );
 		uiKeySigToolBar->show();
 	} else if (mode()==EditMode) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
 			if (keySig) {
-				uiKeySigNumberOfAccs->setValue( keySig->numberOfAccidentals() );
+				//uiKeySigNumberOfAccs->setValue( keySig->numberOfAccidentals() );
 				uiKeySigToolBar->show();
 			} else
 				uiKeySigToolBar->hide();
