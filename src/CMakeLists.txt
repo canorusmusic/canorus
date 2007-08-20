@@ -67,6 +67,7 @@ SET(Canorus_MOCs
 	widgets/viewportcontainer.h
 	widgets/scoreviewport.h
 	widgets/sourceviewport.h
+	widgets/toolbutton.h
 	widgets/menutoolbutton.h
 	interface/playback.h
 	interface/mididevice.h
@@ -114,6 +115,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all the widgets present in Canorus
 	widgets/lcdnumber.cpp
 	widgets/scoreviewport.cpp
 	widgets/sourceviewport.cpp
+	widgets/toolbutton.cpp
 	widgets/menutoolbutton.cpp
 	widgets/viewport.cpp
 	widgets/viewportcontainer.cpp
