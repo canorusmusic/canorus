@@ -11,22 +11,20 @@
 #include <QMainWindow>
 #include <QToolBar>
 #include <QWidgetAction>
-#include <QStyle>
-#include <QStyleOptionToolButton>
 
 #include "widgets/menutoolbutton.h"
 #include "ui/mainwin.h"
 
 /*!
 	\class CAMenuToolButton
-	\brief Tool button with a menu at the side
+	\brief Tool button with a menu at the side and a button box when clicked on
 	
 	This widget looks like a button with a small dropdown arrow at the side which opens a
 	button group box of various elements. User can add buttons by calling
 	addButton(QIcon icon, int Id). When the element is selected, the action's icon is
 	switched to the selected element's and a signal toggled(bool checked, int id) is emitted.
 	
-	The class primarily consists of 4 elements:
+	The class primarily consists of 3 elements:
 		- the base class QToolButton with enabled side menu
 		- QButtonGroup
 			The backend list of buttons and their Ids (QGroupBox doesn't support button Ids)
@@ -38,13 +36,12 @@
 	Constructs the button menu with the given \a title and \a parent.
 */
 CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * parent) 
- : QToolButton( parent ) {
+ : CAToolButton( parent ) {
 	setSpacing( 4 );
 	setLayoutMargin( 5 );
 	setMargin( 0 );
 	setCheckable( true );
 	setNumIconsPerRow( numIconsRow );
-	setMainWin( parent?dynamic_cast<CAMainWin*>(parent):0 );
 	
 	// Size policy: Expanding / Expanding
     QSizePolicy boxSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
@@ -70,8 +67,6 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
     
 	// Abstract group for mutual exclusive toggle
 	_buttonGroup = new QButtonGroup( _groupBox );
-	
-	setPopupMode( QToolButton::MenuButtonPopup );
 	
 	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 
 	         this, SLOT( hideButtons( int ) ) );
@@ -108,26 +103,6 @@ void CAMenuToolButton::setDefaultAction( QAction *a ) {
 	QToolButton::setDefaultAction( a );
 }
 
-/*!
-	This function is overriden here in order to show buttons when clicked on the arrow.
-*/
-void CAMenuToolButton::mousePressEvent( QMouseEvent *e ) {
-	QStyleOptionToolButton opt;
-    opt.init(this);	
-	opt.subControls |= QStyle::SC_ToolButtonMenu;
-	opt.features |= QStyleOptionToolButton::Menu;
-    
-	QRect popupr = style()->subControlRect(QStyle::CC_ToolButton, &opt,
-	                                       QStyle::SC_ToolButtonMenu, this);
-	if (popupr.isValid() && popupr.contains(e->pos())) {
-		if ( !_groupBox->isVisible() ) {
-			showButtons();
-		} else {
-			hideButtons();
-		}
-	}
-	QToolButton::mousePressEvent(e);
-}
 
 /*!
 	Adds a Tool button to the menu with the given \a icon and \a buttonId.
@@ -289,12 +264,12 @@ void CAMenuToolButton::handleTriggered() {
 	The current tool tip is also changed.
 	
 	Does not change the current item, if the item is not part of the button box.
-*/ 
+*/
 void CAMenuToolButton::setCurrentId(int id) {
-	if (_buttonGroup->button(_currentId))
-		_buttonGroup->button(_currentId)->setChecked(false);
+	if (_buttonGroup->button( currentId() ))
+		_buttonGroup->button( currentId() )->setChecked(false);
 	
-	_currentId = id;
+	CAToolButton::setCurrentId(id);
 	
 	if ( !_buttonGroup->button(id) )
 		return;
@@ -308,4 +283,4 @@ void CAMenuToolButton::setCurrentId(int id) {
 	\fn void CAButtonMenu::toggled( bool checked, int id )
 	
 	Signal sent when the button is clicked or an element is selected and changed.
-*/	
+*/
