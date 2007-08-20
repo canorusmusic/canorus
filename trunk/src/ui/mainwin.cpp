@@ -716,6 +716,7 @@ void CAMainWin::initViewPort(CAViewPort *v) {
 		}
 		case CAViewPort::SourceViewPort: {
 			connect(v, SIGNAL(CACommit(QString, CASourceViewPort*)), this, SLOT(sourceViewPortCommit(QString, CASourceViewPort*)));
+			break;
 		}
 	}
 	
@@ -954,15 +955,17 @@ void CAMainWin::setMode(CAMode mode) {
 					if (!((CAScoreViewPort*)_viewPortList[i])->playing())
 						((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
 					
-					if (currentScoreViewPort()->selection().size() &&
-					    currentScoreViewPort()->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable
-					   ) {
-						currentScoreViewPort()->createSyllableEdit(currentScoreViewPort()->selection().front());
-					} else {
-						currentScoreViewPort()->removeSyllableEdit();
-					}
-					
 					_viewPortList[i]->repaint();
+				}
+			}
+			
+			if (currentScoreViewPort()) {
+				if (currentScoreViewPort()->selection().size() &&
+				    currentScoreViewPort()->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable
+				) {
+					currentScoreViewPort()->createSyllableEdit(currentScoreViewPort()->selection().front());
+				} else {
+					currentScoreViewPort()->removeSyllableEdit();
 				}
 			}
 		}
@@ -3058,6 +3061,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 				voice->insertMusElementAfter( newElt, left );
 			} else {
 				newElt = eltList[i]->clone();
+				newElt->setContext( staff );
 				newElt->setTimeStart(left?left->timeEnd():0);
 				staff->insertSignAfter( newElt, left );
 			}

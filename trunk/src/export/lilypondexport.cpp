@@ -18,6 +18,48 @@
 #include "core/voice.h"
 
 /*!
+	\class CALilyPondExport
+	\brief LilyPond export filter
+	This class is used to export the document or parts of the document to LilyPond syntax.
+	The most common use is to simply call one of the constructors
+	\code
+	CALilyPondExport( myDocument, &textStream );
+	\endcode
+	
+	\a textStream is usually the file stream or the content of the score source view widget.
+	
+	\sa CALilyPondImport
+/*!
+	Constructor for voice export. Called when viewing a single voice source in Lily syntax.
+	Exports a voice to LilyPond syntax using the given text stream.
+*/
+CALilyPondExport::CALilyPondExport( CAVoice *voice, QTextStream *out ) {
+	_out = out;
+	setIndentLevel( 0 );
+	exportVoice(voice);
+}
+
+/*!
+	Constructor for lyrics context export. Called when viewing a lyrics source in Lily syntax.
+	Exports this lyrics context to LilyPond syntax using the given text stream.
+*/
+CALilyPondExport::CALilyPondExport( CALyricsContext *lc, QTextStream *out ) {
+	_out = out;
+	setIndentLevel( 0 );
+	exportSyllables(lc);
+}
+
+/*!
+	Constructor for document export. Called when exporting a document to a .ly file.
+	Exports a document to LilyPond syntax using the given text stream.
+*/
+CALilyPondExport::CALilyPondExport( CADocument *doc, QTextStream *out ) {
+	_out = out;
+	setIndentLevel( 0 );
+	exportDocument( doc );
+}
+
+/*!
 	Exports the given voice music elements to LilyPond syntax.
 	
 	\sa CALilypondImport
@@ -199,38 +241,6 @@ void CALilyPondExport::exportSyllables( CALyricsContext *lc ) {
 		out() << syllableToLilyPond(lc->syllableAt(i));
 	}
 }
-
-/*!
-	Constructor for voice export. Called when viewing a single voice source in Lily syntax.
-	Exports a voice to LilyPond syntax using the given text stream.
-*/
-CALilyPondExport::CALilyPondExport(CAVoice *voice, QTextStream *out) {
-	_out = out;
-	setIndentLevel( 0 );
-	exportVoice(voice);
-}
-
-/*!
-	Constructor for lyrics context export. Called when viewing a lyrics source in Lily syntax.
-	Exports this lyrics context to LilyPond syntax using the given text stream.
-*/
-CALilyPondExport::CALilyPondExport(CALyricsContext *lc, QTextStream *out) {
-	_out = out;
-	setIndentLevel( 0 );
-	exportSyllables(lc);
-}
-
-/*!
-	Constructor for document export. Called when exporting a document to a .ly file.
-	Exports a document to LilyPond syntax using the given text stream.
-*/
-CALilyPondExport::CALilyPondExport(CADocument *doc, QTextStream *out)
-{
-	_out = out;
-	setIndentLevel( 0 );
-	exportDocument( doc );
-}
-
 
 /*!
 	Writes the voice's \relative note intro and returns the note pitch for the current voice.
