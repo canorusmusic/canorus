@@ -21,7 +21,7 @@ public:
 	inline int currentId() { return _currentId; }
 	virtual void setCurrentId(int id) { _currentId = id; }
 	virtual bool buttonsVisible() = 0; // Is the popup widget visible or not
-	void setDefaultAction( QAction* );
+	virtual void setDefaultAction( QAction* );
 
 public slots:
 	virtual void showButtons()=0;

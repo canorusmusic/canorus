@@ -12,6 +12,7 @@
 
 #include <QtGui>
 #include <QSlider>
+#include <QComboBox>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPoint>
@@ -33,7 +34,7 @@
 #include "interface/rtmididevice.h"
 
 #include "widgets/menutoolbutton.h"
-#include "widgets/keysigtoolbutton.h"
+#include "widgets/undotoolbutton.h"
 #include "widgets/lcdnumber.h"
 
 #include "widgets/viewport.h"
@@ -212,6 +213,11 @@ CAMainWin::~CAMainWin()  {
 
 void CAMainWin::createCustomActions() {
 	// Toolbars
+	uiUndo = new CAUndoToolButton( CACanorus::undoStack( document() ), QIcon("images/editundo.png"), this );
+	uiUndo->setObjectName( "uiUndo" );
+	uiRedo = new CAUndoToolButton( CACanorus::undoStack( document() ), QIcon("images/editredo.png"), this );
+	uiRedo->setObjectName( "uiRedo" );
+	
 	uiInsertToolBar = new QToolBar( tr("Insert ToolBar"), this );
 	uiContextType = new CAMenuToolButton( tr("Select Context" ), 3, this );
 		uiContextType->setObjectName( "uiContextType" );
@@ -303,8 +309,8 @@ void CAMainWin::createCustomActions() {
 		uiNoteStemDirection->addButton( QIcon("images/notestemvoice.svg"), CANote::StemPreferred, tr("Note Stem Preferred") );
 	
 	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
-	uiKeySigNumberOfAccs = new CAKeySigToolButton( tr("Select Key Signature"), this);
-		uiKeySigNumberOfAccs->setCurrentId( 0 );
+	uiKeySig = new QComboBox( this);
+		uiKeySig->addItem( QIcon("images/n0.svg"), tr("a minor") );
 	
 	uiTimeSigToolBar = new QToolBar( tr("Time Signature ToolBar"), this );
 	uiTimeSigBeats = new QSpinBox(this);
@@ -365,6 +371,10 @@ void CAMainWin::createCustomActions() {
 void CAMainWin::setupCustomUi() {
 	_musElementFactory = new CAMusElementFactory();
 	
+	// Standard Toolbar
+	uiUndo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiUndo ) );
+	uiRedo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiRedo ) );
+
 	// Hide the specialized pre-created toolbars in Qt designer.
 	/// \todo When Qt Designer have support for setting the visibility property, do this in Qt Designer already! -Matevz
 	uiPrintToolBar->hide();
@@ -442,7 +452,7 @@ void CAMainWin::setupCustomUi() {
 	addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
 	// KeySig Toolbar
-	uiKeySigToolBar->addWidget( uiKeySigNumberOfAccs );
+	uiKeySigToolBar->addWidget( uiKeySig );
 	addToolBar(Qt::TopToolBarArea, uiKeySigToolBar);
 	
 	// TimeSig Toolbar
@@ -765,7 +775,7 @@ void CAMainWin::on_uiNewDocument_triggered() {
 	newDocument();
 }
 
-void CAMainWin::on_uiUndo_triggered() {
+void CAMainWin::on_uiUndo_toggled( bool checked, int num ) {
 	if ( document() && CACanorus::undoStack( document() )->canUndo() ) {
 		CACanorus::undoStack( document() )->undo();
 		CACanorus::rebuildUI( document(), 0 );
@@ -773,7 +783,7 @@ void CAMainWin::on_uiUndo_triggered() {
 	}
 }
 
-void CAMainWin::on_uiRedo_triggered() {
+void CAMainWin::on_uiRedo_toggled( bool checked, int num ) {
 	if ( document() && CACanorus::undoStack( document() )->canRedo() ) {
 		CACanorus::undoStack( document() )->redo();
 		CACanorus::rebuildUI( document(), 0 );
@@ -1997,7 +2007,7 @@ void CAMainWin::onUiVoiceNumValChanged(int voiceNr) {
 /*!
 	Changes the number of accidentals.
 */
-void CAMainWin::on_uiKeySigNumberOfAccs_toggled( bool checked, int accs ) {
+void CAMainWin::on_uiKeySig_toggled( bool checked, int accs ) {
 	if (mode()==InsertMode)
 		musElementFactory()->setKeySigNumberOfAccs( accs );
 	else if ( mode()==EditMode ) {
