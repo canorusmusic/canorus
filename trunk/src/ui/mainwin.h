@@ -34,7 +34,7 @@ class QComboBox;
 
 class CAPlayback;
 class CAMenuToolButton;
-class CAKeySigToolButton;
+class CAUndoToolButton;
 class CALCDNumber;
 class CASheet;
 class CAScoreViewPort;
@@ -157,8 +157,8 @@ private slots:
 	void on_uiImportDocument_triggered();
 	
 	// Edit
-	void on_uiUndo_triggered();
-	void on_uiRedo_triggered();
+	void on_uiUndo_toggled(bool, int);
+	void on_uiRedo_toggled(bool, int);
 	void on_uiCopy_triggered();
 	void on_uiCut_triggered();
 	void on_uiPaste_triggered();
@@ -211,7 +211,7 @@ private slots:
 	void onMidiInEvent( QVector<unsigned char> message );
 	
 	// Key Signature
-	void on_uiKeySigNumberOfAccs_toggled( bool, int );
+	void on_uiKeySig_toggled( bool, int );
 	
 	// Time Signature
 	void on_uiTimeSigBeats_valueChanged(int);
@@ -319,6 +319,11 @@ private:
 		/////////////////////
 		// Toolbar section //
 		/////////////////////
+		// Standard toolbar
+		//QToolBar	*uiStandardToolBar;
+			CAUndoToolButton	*uiUndo;
+			CAUndoToolButton	*uiRedo;
+		
 		// Insert toolbar
 		QToolBar     *uiInsertToolBar;
 			QActionGroup *uiInsertGroup;           // Group for mutual exclusive selection of music elements
@@ -374,7 +379,7 @@ private:
 		
 		QToolBar *uiKeySigToolBar;
 			// CAKeySigPSP  *uiKeySigPSP;	            /// Key signature perspective. \todo Reimplement it.
-			CAKeySigToolButton *uiKeySigNumberOfAccs;
+			QComboBox *uiKeySig;
 			// QComboBox    *uiKeySigGender;
 		
 		QToolBar *uiTimeSigToolBar;

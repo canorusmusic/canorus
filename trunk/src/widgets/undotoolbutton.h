@@ -10,13 +10,18 @@
 
 #include "widgets/toolbutton.h"
 
-class CAKeySigToolButton : public CAToolButton {
+#include <QUndoView>
+
+class QUndoStack;
+
+class CAUndoToolButton : public CAToolButton {
 	Q_OBJECT
 public:
-	CAKeySigToolButton( QString title, QWidget *parent );
-	~CAKeySigToolButton();
-	bool buttonsVisible() { return _keySigsList->isVisible(); }
+	CAUndoToolButton( QUndoStack*, QIcon icon, QWidget *parent );
+	~CAUndoToolButton();
+	bool buttonsVisible() { return _undoView->isVisible(); }
 	void setCurrentId(int id);
+	void setDefaultAction( QAction* );
 	
 public slots:
 	void showButtons();
@@ -27,7 +32,8 @@ protected:
 	void wheelEvent(QWheelEvent*);
 	
 private:
-	QWidget *_keySigsList;
+	QUndoView *_undoView;
+	QIcon _icon;
 };
 
 #endif /* KEYSIGTOOLBUTTON_H_ */

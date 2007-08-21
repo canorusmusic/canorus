@@ -69,7 +69,7 @@ SET(Canorus_MOCs
 	widgets/sourceviewport.h
 	widgets/toolbutton.h
 	widgets/menutoolbutton.h
-	widgets/keysigtoolbutton.h
+	widgets/undotoolbutton.h
 	interface/playback.h
 	interface/mididevice.h
 )
@@ -118,7 +118,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all the widgets present in Canorus
 	widgets/sourceviewport.cpp
 	widgets/toolbutton.cpp
 	widgets/menutoolbutton.cpp
-	widgets/keysigtoolbutton.cpp
+	widgets/undotoolbutton.cpp
 	widgets/viewport.cpp
 	widgets/viewportcontainer.cpp
 )
