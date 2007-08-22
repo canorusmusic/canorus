@@ -68,6 +68,9 @@ int main(int argc, char *argv[]) {
 	// Initialize autosave
 	CACanorus::initAutoRecovery();
 	
+	// Initialize undo/redo stacks
+	CACanorus::initUndo();
+	
 	// Check for any crashed Canorus sessions and open the recovery files
 	CACanorus::autoRecovery()->openRecovery();
 	

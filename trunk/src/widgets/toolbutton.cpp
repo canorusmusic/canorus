@@ -87,3 +87,53 @@ void CAToolButton::setDefaultAction( QAction *a ) {
 	a->setCheckable( true );
 	QToolButton::setDefaultAction( a );
 }
+
+/*!
+	This function returns the absolute top-left coordinate where the popup menu or whichever
+	widget should appear when the users clicks on the button.
+	
+	The problem is that the popup widget should be completely visible in whichever part of
+	the screen the toolbutton is located. Popup widget should also always stick to one corner
+	of the toolbutton.
+	
+	Parameter \a size is the width and height needed for the whole widget to appear.
+*/
+QPoint CAToolButton::calculateTopLeft( QSize size ) {
+	int x=0, y=0;
+	QToolBar *toolBar = dynamic_cast<QToolBar*>(parent());
+	if ( mainWin() && toolBar ) {
+		QPoint topLeft = mapToGlobal(QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
+		
+		// Set buttons box coordinates which fit on the main window
+		if (mainWin()->toolBarArea(toolBar) == Qt::LeftToolBarArea) {
+			if (topLeft.x() + width() + size.width() > mainWin()->width()) x = mainWin()->width() - size.width();
+			else x = topLeft.x() + width();
+			
+			if (topLeft.y() + size.height() > mainWin()->height()) y = mainWin()->height() - size.height();
+			else y = topLeft.y();
+		} else
+		if (mainWin()->toolBarArea(toolBar) == Qt::TopToolBarArea) {
+			if (topLeft.x() + size.width() > mainWin()->width()) x = mainWin()->width() - size.width();
+			else x = topLeft.x();
+			
+			if (topLeft.y() + height() + size.height() > mainWin()->height()) y = mainWin()->height() - size.height();
+			else y = topLeft.y() + height();
+		} else
+		if (mainWin()->toolBarArea(toolBar) == Qt::RightToolBarArea) {
+			if (topLeft.x() - width() - size.width() < 0) x = 0;
+			else x = topLeft.x() - size.width();
+			
+			if (topLeft.y() + size.height() > mainWin()->height()) y = mainWin()->height() - size.height();
+			else y = topLeft.y();
+		} else
+		if (mainWin()->toolBarArea(toolBar) == Qt::BottomToolBarArea) {
+			if (topLeft.x() + size.width() > mainWin()->width()) x = mainWin()->width() - size.width();
+			else x = topLeft.x();
+			
+			if (topLeft.y() - size.height() < 0) y = 0;
+			else y = topLeft.y() - size.height();
+		}
+	}
+	
+	return QPoint(x,y);
+}

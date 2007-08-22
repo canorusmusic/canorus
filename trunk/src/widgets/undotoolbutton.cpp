@@ -7,42 +7,71 @@
 
 #include "widgets/undotoolbutton.h"
 
+#include "core/canorus.h"
+#include "core/undo.h"
+#include "core/undocommand.h"
+
 #include <QWheelEvent>
 #include <QAction>
 
-CAUndoToolButton::CAUndoToolButton( QUndoStack *undoStack, QIcon icon, QWidget *parent )
+CAUndoToolButton::CAUndoToolButton( QIcon icon, CAUndoToolButtonType type, QWidget *parent )
  : CAToolButton( parent )
 {
 	setCheckable( false );
 	setIcon(icon);
 	
 	_icon = icon;
-	_undoView = new QUndoView( undoStack );
+	setCurrentId(0);
+	setUndoType( type );
+	_listWidget = new QListWidget();
+	_listWidget->setWindowFlags( Qt::FramelessWindowHint );
+	connect( _listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onListWidgetItemClicked(QListWidgetItem*)) );
 }
 
 CAUndoToolButton::~CAUndoToolButton() {
-	delete _undoView;
-	setDefaultAction(0);
-}
-
-void CAUndoToolButton::setCurrentId( int id ) {
-	CAToolButton::setCurrentId( id );
+	delete _listWidget;
 }
 
 void CAUndoToolButton::wheelEvent( QWheelEvent *e ) {
-	
+	// do nothing!
+}
+
+void CAUndoToolButton::onListWidgetItemClicked( QListWidgetItem *item ) {
+	hideButtons();
+	emit toggled( false, _listWidget->row(item) );
 }
 
 void CAUndoToolButton::showButtons() {
-	_undoView->show();
+	_listWidget->hide(); // hide/reshow if the button box widget is behind the main window
+	_listWidget->clear();
+	
+	if ( mainWin() ) {
+		QList<CAUndoCommand*> *stack = CACanorus::undo()->undoStack(mainWin()->document());
+		if ( undoType()==Undo ) {
+			for (int i = CACanorus::undo()->undoIndex(mainWin()->document()), delta=0;
+			     i >= 0 && delta<20; /// \todo This should be set to maxUndo steps
+			     i--, delta++)
+				_listWidget->addItem( stack->at(i)->text() );
+		} else
+		if ( undoType()==Redo ) {
+			for (int i = CACanorus::undo()->undoIndex(mainWin()->document())+1, delta=0;
+			     i < stack->size() && delta<20; /// \todo This should be set to maxUndo steps
+			     i++, delta++)
+				_listWidget->addItem( stack->at(i)->text() );
+		}
+	}
+	
+	_listWidget->show();
+	
+	_listWidget->move( calculateTopLeft( _listWidget->size() ) );
 }
 
 void CAUndoToolButton::hideButtons( int buttonId ) {
-	_undoView->hide();
+	_listWidget->hide();
 }
 
 void CAUndoToolButton::hideButtons() {
-	_undoView->hide();
+	_listWidget->hide();
 }
 
 void CAUndoToolButton::setDefaultAction( QAction *action ) {

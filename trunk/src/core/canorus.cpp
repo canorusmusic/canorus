@@ -18,6 +18,7 @@
 #include "scripting/swigruby.h"
 #include "core/sheet.h"
 #include "core/settings.h"
+#include "core/undo.h"
 
 // define private static members
 QList<CAMainWin*> CACanorus::_mainWinList;
@@ -25,10 +26,7 @@ CASettings *CACanorus::_settings;
 QString CACanorus::_settingsPath;
 CAAutoRecovery *CACanorus::_autoRecovery;
 CAMidiDevice *CACanorus::_midiDevice;
-QHash< CADocument*, QUndoStack* > CACanorus::_undoStack;
-CAUndoCommand *CACanorus::_undoCommand;
-QHash< QUndoStack*, CAUndoCommand* > CACanorus::_lastUndoCommand;
-QHash< CAUndoCommand*, CAUndoCommand* > CACanorus::_prevUndoCommands;
+CAUndo *CACanorus::_undo;
 
 /*!
 	Locates a resource named fileName (relative path) and returns its absolute path of the file
@@ -92,7 +90,6 @@ QList<QString> CACanorus::locateResourceDir(const QString fileName) {
 	Initializes application properties like application name, home page etc.
 */
 void CACanorus::initMain() {
-	_undoCommand = 0;
 	_autoRecovery = 0;
 	
 	// Init main application properties
@@ -162,6 +159,10 @@ void CACanorus::initScripting() {
 */
 void CACanorus::initAutoRecovery() {
 	_autoRecovery = new CAAutoRecovery();
+}
+
+void CACanorus::initUndo() {
+	_undo = new CAUndo();
 }
 
 /*!
@@ -260,83 +261,4 @@ QList<CAMainWin*> CACanorus::findMainWin(CADocument *document) {
 			mainWinList << mainWinAt(i);
 	
 	return mainWinList;
-}
-
-/*!
-	Deletes the undoStack object for the given document.
-	This should be called at the end where no main windows are pointing to the given document anymore.
-*/
-void CACanorus::deleteUndoStack( CADocument *doc ) {
-	clearUndoCommand();
-	QUndoStack *stack = undoStack(doc);
-	delete stack;
-	
-	// clear lastUndo commands and prevUndoCommands
-	QList<CAUndoCommand*> prevCommandKeys = _lastUndoCommand.values();
-	_lastUndoCommand.remove(stack);
-	for (int i=0; i<prevCommandKeys.size(); i++)
-		_prevUndoCommands.remove(prevCommandKeys[i]);
-	
-	removeUndoStack( doc );
-}
-
-/*!
-	Call this to add an undo state (created by createUndoCommand()) to the stack.
-	
-	\warning This function is not thread-safe. createUndoCommand() and pushUndoCommand() should be called from the same thread.
-*/
-void CACanorus::pushUndoCommand() {
-	if (!_undoCommand)
-		return;
-	
-	CADocument *d = _undoCommand->getRedoDocument();
-	undoStack(d)->push( _undoCommand ); // push the command on stack and delete commands after it if any (also updated lastUndoCommand hash needed later)
-	QUndoStack *s = undoStack(d);
-	CAUndoCommand *lastUndoCommand = _lastUndoCommand[ undoStack(d) ];
-	
-	if (lastUndoCommand) {
-		if (_undoCommand->getRedoDocument() && lastUndoCommand->getRedoDocument())
-			lastUndoCommand->setRedoDocument( _undoCommand->getUndoDocument() );
-		_prevUndoCommands[_undoCommand] = lastUndoCommand;
-	}
-	
-	_lastUndoCommand[ undoStack(d) ] = _undoCommand;
-	_undoCommand=0;
-}
-
-/*!
-	This function is called when Undo commands are deleted and updates the _lastUndoCommand
-	which holds the last command after which the undo command will be added by pushUndoCommand().
-*/
-void CACanorus::updateLastUndoCommand( CAUndoCommand *c ) {
-	if (!_prevUndoCommands.contains(c))
-		return;
-	
-	CADocument *doc = c->getUndoDocument();
-	_lastUndoCommand[ undoStack(doc) ] = _prevUndoCommands[c];
-	_prevUndoCommands.remove(c);
-}
-
-/*!
-	Destroys the undo command if decided not to be put on the stack.
-	Does nothing if undo command is null.
-*/
-void CACanorus::clearUndoCommand() {
-	if ( _undoCommand ) {
-		_undoCommand->setUndoDocument(0); _undoCommand->setRedoDocument(0);
-		delete _undoCommand;
-		_undoCommand = 0;
-	}
-}
-
-/*!
-	Creates an undo command which is later put on the stack.
-	This function is usually called when making changes to the document in the score -
-	all changes ranging from creation/removal of sheets and editing document properties.
-	
-	\warning This function is not thread-safe. createUndoCommand() and pushUndoCommand() should be called from the same thread.
-*/
-void CACanorus::createUndoCommand( CADocument *d, QString text ) {
-	clearUndoCommand();
-	_undoCommand = new CAUndoCommand( d, text );
 }

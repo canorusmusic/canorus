@@ -11,16 +11,17 @@
 // Python.h needs to be loaded first!
 #include "ui/mainwin.h"
 #include "ui/settingsdialog.h"
-#include "core/undocommand.h"
 #include "core/autorecovery.h"
 
 #include <QString>
 #include <QList>
 #include <QUndoStack>
+#include <QHash>
 
 class CASettings;
 class CAMidiDevice;
 class CADocument;
+class CAUndo;
 
 class CACanorus {
 public:
@@ -30,6 +31,7 @@ public:
 	static void parseSettingsArguments(int argc, char *argv[]);
 	static void initScripting();
 	static void initAutoRecovery();
+	static void initUndo();
 	static void parseOpenFileArguments(int argc, char *argv[]);
 	
 	static QList<QString> locateResource(const QString fileName);
@@ -44,16 +46,7 @@ public:
 	static void addMainWin(CAMainWin *w, bool show=true);
 	inline static void restartTimeEditedTimes(CADocument *doc) { for (int i=0; i<mainWinCount(); i++) if (mainWinAt(i)->document()==doc) mainWinAt(i)->restartTimeEditedTime(); }
 	
-	// Undo
-	inline static bool containsUndoStack( CADocument *d ) { return _undoStack.contains(d); }
-	inline static void setUndoStack( CADocument *d, QUndoStack *s ) { _undoStack[d]=s; }
-	inline static QUndoStack *undoStack( CADocument* d ) { return _undoStack[d]; }
-	inline static void removeUndoStack( CADocument *d ) { _undoStack.remove(d); }
-	static void deleteUndoStack( CADocument *doc );
-	static void createUndoCommand( CADocument *d, QString text );
-	static void pushUndoCommand();
-	inline static CAUndoCommand *lastUndoCommand( CADocument *d ) { return static_cast<CAUndoCommand*>(_lastUndoCommand[_undoStack[d]]); }
-	static void updateLastUndoCommand( CAUndoCommand *c );
+	inline static CAUndo *undo() { return _undo; }
 	
 	inline static CASettings *settings() { return _settings; }
 	inline static CAAutoRecovery *autoRecovery() { return _autoRecovery; }
@@ -68,13 +61,7 @@ private:
 	static QList<CAMainWin*> _mainWinList;
 	static CASettings *_settings;
 	static QString _settingsPath;
-	
-	// Undo
-	static void clearUndoCommand();
-	static QHash< CADocument*, QUndoStack* > _undoStack;
-	static QHash< QUndoStack*, CAUndoCommand* > _lastUndoCommand;     // We need to relink the commands when pushing them, but there is no function in QUndoStack to get the topmost command on the stack.
-	static QHash< CAUndoCommand*, CAUndoCommand* > _prevUndoCommands; // These two hashes are here to find the topmost commands when relinking.
-	static CAUndoCommand *_undoCommand; // current undo command created to be put on the undo stack
+	static CAUndo *_undo;
 	
 	// Playback output
 	static CAMidiDevice *_midiDevice;
