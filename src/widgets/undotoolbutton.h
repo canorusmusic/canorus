@@ -5,35 +5,44 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#ifndef KEYSIGTOOLBUTTON_H_
-#define KEYSIGTOOLBUTTON_H_
+#ifndef UNDOTOOLBUTTON_H_
+#define UNDOTOOLBUTTON_H_
 
 #include "widgets/toolbutton.h"
 
-#include <QUndoView>
+#include <QListWidget>
 
 class QUndoStack;
 
 class CAUndoToolButton : public CAToolButton {
 	Q_OBJECT
 public:
-	CAUndoToolButton( QUndoStack*, QIcon icon, QWidget *parent );
+	enum CAUndoToolButtonType {
+		Undo,
+		Redo
+	};
+	
+	CAUndoToolButton( QIcon icon, CAUndoToolButtonType t, QWidget *parent );
 	~CAUndoToolButton();
-	bool buttonsVisible() { return _undoView->isVisible(); }
-	void setCurrentId(int id);
+	bool buttonsVisible() { return _listWidget->isVisible(); }
 	void setDefaultAction( QAction* );
+	
+	inline CAUndoToolButtonType undoType() { return _type; }
+	inline void setUndoType( CAUndoToolButtonType type ) { _type = type; }
 	
 public slots:
 	void showButtons();
 	void hideButtons( int buttonId );
 	void hideButtons();
+	void onListWidgetItemClicked( QListWidgetItem* );
 	
 protected:
 	void wheelEvent(QWheelEvent*);
 	
 private:
-	QUndoView *_undoView;
-	QIcon _icon;
+	QListWidget         *_listWidget;
+	CAUndoToolButtonType _type;
+	QIcon                _icon;
 };
 
-#endif /* KEYSIGTOOLBUTTON_H_ */
+#endif /* UNDOTOOLBUTTON_H_ */

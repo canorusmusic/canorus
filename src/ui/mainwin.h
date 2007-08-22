@@ -211,7 +211,7 @@ private slots:
 	void onMidiInEvent( QVector<unsigned char> message );
 	
 	// Key Signature
-	void on_uiKeySig_toggled( bool, int );
+	void on_uiKeySig_currentIndexChanged( int );
 	
 	// Time Signature
 	void on_uiTimeSigBeats_valueChanged(int);

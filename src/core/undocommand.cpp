@@ -5,6 +5,7 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
+#include "core/undo.h"
 #include "core/undocommand.h"
 #include "core/canorus.h"
 #include "core/sheet.h"
@@ -16,30 +17,25 @@
 
 /*!
 	\class CAUndoCommand
-	\brief Undo/Redo functionality
+	\brief Internal Undo/Redo command
 	
-	This class introduces undo and redo functionality for Canorus.
+	This class implements undo and redo action.
 	
-	It inherits QUndoCommand and is usually stored inside QUndoStack.
+	It inherits QUndoCommand and is usually stored inside QUndoStack or a list.
 	
-	Create this class by passing it a pointer to a sheet or document which the state should be saved for
-	the future use. When called undo() or redo() (usually called by QUndoStack) all the documents and
+	Create this object by passing it a pointer to a document which the state should be saved for
+	the future use. When called undo() or redo() (usually called by CAUndo class) all the documents and
 	sheets currently opened are updated pointing to the previous (undone) or next (redone) states of the
 	structures.
 	
-	Usage of undo/redo:
-	1) Create undo stack when creating/opening a new document by calling CACanorus::createUndoStack()
-	2) Before each action (insertion, removal, editing of elements), call CACanorus::createUndoCommand() and
-	   pass the current document to be saved for that action.
-	3) If the action was successful, commit the command by calling CACanorus::pushUndoCommand().
-	4) For undo/redo, simply call CACanorus::undoStack()->undo().
-	5) When closing the document, also destroy the undo stack (which also destroys all its commands) by
-	   calling CACanorus::deleteUndoStack().
+	\warning You should never directly access this class. Use CAUndo instead.
+	
+	\sa CAUndo
 */
 
 /*!
 	Creates a new undo command.
-	Internally, it clones the given document and set it as an undo document.
+	Internally, it clones the given document and sets it as an undo document.
 	The redo document is directly the passed document.
 	When having multiple undo commands, you should take care of relinking the previous undo commmand's redo
 	document to next command's undo document. This is usually done when pushing the command onto the stack.
@@ -51,17 +47,13 @@ CAUndoCommand::CAUndoCommand( CADocument *document, QString text )
 }
 
 CAUndoCommand::~CAUndoCommand() {
-	CACanorus::updateLastUndoCommand( this );
-	
 	if ( getUndoDocument() && (!CACanorus::mainWinCount(getUndoDocument())) )
 		delete getUndoDocument();
 	
 	// delete also redoDocument, if the last on the stack
-	if ( getRedoDocument() && (!CACanorus::mainWinCount(getRedoDocument())) &&
-	     (
-	       CACanorus::undoStack(getUndoDocument()) && (!CACanorus::undoStack(getUndoDocument())->count()) ||
-	       CACanorus::undoStack(getRedoDocument()) && (!CACanorus::undoStack(getRedoDocument())->count())
-	     )
+	if ( getRedoDocument() && !CACanorus::mainWinCount(getRedoDocument()) &&
+	     CACanorus::undo()->undoStack(getRedoDocument()) &&
+	     CACanorus::undo()->undoStack(getRedoDocument())->indexOf(this)==CACanorus::undo()->undoStack(getRedoDocument())->count()-1
 	   )
 		delete getRedoDocument();
 }
@@ -146,11 +138,6 @@ void CAUndoCommand::undoDocument( CADocument *current, CADocument *newDocument )
 			
 			mainWinList[i]->setDocument( newDocument );
 		}
-	}
-	
-	if (mainWinList.size()) {
-		CACanorus::setUndoStack( newDocument, CACanorus::undoStack(current) );
-		CACanorus::removeUndoStack( current );
 	}
 	
 	if (rebuildNeeded)

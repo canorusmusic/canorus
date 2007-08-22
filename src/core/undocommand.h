@@ -5,8 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-#ifndef UNDO_H_
-#define UNDO_H_
+#ifndef UNDOCOMMAND_H_
+#define UNDOCOMMAND_H_
 
 #include <QUndoCommand>
 
@@ -32,4 +32,4 @@ private:
 	CADocument *_redoDocument;
 };
 
-#endif /* UNDO_H_ */
+#endif /* UNDOCOMMAND_H_ */

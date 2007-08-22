@@ -139,46 +139,10 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString 
 	\warning Coordinates of groupBox are calculated according to its parent (main window) and not this parent (QToolBar).
 */	
 void CAMenuToolButton::showButtons() {
-	QToolBar *toolBar = dynamic_cast<QToolBar*>(parent());
-	int x=0, y=0;
-	_groupBox->hide(); // hide/reshow if the button box widget is behind the main window
+	_groupBox->hide(); // always hide it, if the button box widget is behind the main window
 	_groupBox->show();
 	
-	if ( mainWin() && toolBar ) {
-		QPoint topLeft = mapToGlobal(QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
-		
-		// Set buttons box coordinates which fit on the main window
-		if (mainWin()->toolBarArea(toolBar) == Qt::LeftToolBarArea) {
-			if (topLeft.x() + width() + _groupBox->width() > mainWin()->width()) x = mainWin()->width() - _groupBox->width();
-			else x = topLeft.x() + width();
-			
-			if (topLeft.y() + _groupBox->height() > mainWin()->height()) y = mainWin()->height() - _groupBox->height();
-			else y = topLeft.y();
-		} else
-		if (mainWin()->toolBarArea(toolBar) == Qt::TopToolBarArea) {
-			if (topLeft.x() + _groupBox->width() > mainWin()->width()) x = mainWin()->width() - _groupBox->width();
-			else x = topLeft.x();
-			
-			if (topLeft.y() + height() + _groupBox->height() > mainWin()->height()) y = mainWin()->height() - _groupBox->height();
-			else y = topLeft.y() + height();
-		} else
-		if (mainWin()->toolBarArea(toolBar) == Qt::RightToolBarArea) {
-			if (topLeft.x() - width() - _groupBox->width() < 0) x = 0;
-			else x = topLeft.x() - _groupBox->width();
-			
-			if (topLeft.y() + _groupBox->height() > mainWin()->height()) y = mainWin()->height() - _groupBox->height();
-			else y = topLeft.y();
-		} else
-		if (mainWin()->toolBarArea(toolBar) == Qt::BottomToolBarArea) {
-			if (topLeft.x() + _groupBox->width() > mainWin()->width()) x = mainWin()->width() - _groupBox->width();
-			else x = topLeft.x();
-			
-			if (topLeft.y() - _groupBox->height() < 0) y = 0;
-			else y = topLeft.y() - _groupBox->height();
-		}
-	}
-	
-	_groupBox->move(x,y);
+	_groupBox->move( calculateTopLeft( _groupBox->size() ) );
 }
 
 /*!

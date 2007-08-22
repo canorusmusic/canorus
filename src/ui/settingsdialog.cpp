@@ -88,7 +88,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	
 	uiMidiInList->addItem( tr("None") );
 	for ( int i=0; i<_midiInPorts.values().size(); i++ ) {
-		uiMidiInList->addItem( _midiInPorts.values().at(i) );
+		uiMidiInList->addItem( _midiInPorts.value(i) );
 		if ( CACanorus::settings()->midiInPort()==_midiInPorts.keys().at(i) )
 			uiMidiInList->setCurrentItem( uiMidiInList->item(i+1) );               // select the previous device
 	}
@@ -97,7 +97,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	
 	uiMidiOutList->addItem( tr("None") );
 	for ( int i=0; i<_midiOutPorts.values().size(); i++ ) {
-		uiMidiOutList->addItem( _midiOutPorts.values().at(i) );
+		uiMidiOutList->addItem( _midiOutPorts.value(i) );
 		if ( CACanorus::settings()->midiOutPort()==_midiOutPorts.keys().at(i) )
 			uiMidiOutList->setCurrentItem( uiMidiOutList->item(i+1) );             // select the previous device
 	}

@@ -79,6 +79,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/settings.cpp
 	core/canorusml.cpp
 	core/undocommand.cpp
+	core/undo.cpp
 	core/autorecovery.cpp
 	core/mimedata.cpp
 	

@@ -67,6 +67,7 @@
 #include "core/functionmarking.h"
 #include "core/muselementfactory.h"
 #include "core/mimedata.h"
+#include "core/undo.h"
 
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
@@ -83,14 +84,13 @@
 
 const QString CAFileFormats::CANORUSML_FILTER = QObject::tr("Canorus document (*.xml)");
 const QString CAFileFormats::LILYPOND_FILTER  = QObject::tr("LilyPond document (*.ly)");
-const QString CAFileFormats::MUSICXML_FILTER  = QObject::tr("MusicXML document (*.xml)");	
-const QString CAFileFormats::NOTEEDIT_FILTER  = QObject::tr("NoteEdit document (*.not)");	
-const QString CAFileFormats::ABCMUSIC_FILTER  = QObject::tr("ABC music document (*.abc)");	
-const QString CAFileFormats::FINALE_FILTER    = QObject::tr("Finale document (*.mus)");	
-const QString CAFileFormats::SIBELIUS_FILTER  = QObject::tr("Sibelius document (*.sib)");	
-const QString CAFileFormats::CAPELLA_FILTER   = QObject::tr("Capella document (*.cap)");	
-const QString CAFileFormats::MIDI_FILTER      = QObject::tr("Midi file (*.mid, *.midi)");	
-
+const QString CAFileFormats::MUSICXML_FILTER  = QObject::tr("MusicXML document (*.xml)");
+const QString CAFileFormats::NOTEEDIT_FILTER  = QObject::tr("NoteEdit document (*.not)");
+const QString CAFileFormats::ABCMUSIC_FILTER  = QObject::tr("ABC music document (*.abc)");
+const QString CAFileFormats::FINALE_FILTER    = QObject::tr("Finale document (*.mus)");
+const QString CAFileFormats::SIBELIUS_FILTER  = QObject::tr("Sibelius document (*.sib)");
+const QString CAFileFormats::CAPELLA_FILTER   = QObject::tr("Capella document (*.cap)");
+const QString CAFileFormats::MIDI_FILTER      = QObject::tr("Midi file (*.mid, *.midi)");
 
 /*!
 	Converts the file format enumeration to filter as string.
@@ -192,12 +192,12 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 }
 
 CAMainWin::~CAMainWin()  {
-	CACanorus::removeMainWin(this);
 	if (!CACanorus::mainWinCount(document())) {
-		CACanorus::deleteUndoStack(document()); // delete undo stack when the last document deleted
+		CACanorus::undo()->removeUndoStack(document()); // delete undo stack when the last document deleted
 		delete document();
 	}
 	
+	CACanorus::removeMainWin(this); // must be called *after* CACanorus::deleteUndoStack()
 	delete _playback;
 	
 	// clear UI
@@ -213,9 +213,9 @@ CAMainWin::~CAMainWin()  {
 
 void CAMainWin::createCustomActions() {
 	// Toolbars
-	uiUndo = new CAUndoToolButton( CACanorus::undoStack( document() ), QIcon("images/editundo.png"), this );
+	uiUndo = new CAUndoToolButton( QIcon("images/editundo.png"), CAUndoToolButton::Undo, this );
 	uiUndo->setObjectName( "uiUndo" );
-	uiRedo = new CAUndoToolButton( CACanorus::undoStack( document() ), QIcon("images/editredo.png"), this );
+	uiRedo = new CAUndoToolButton( QIcon("images/editredo.png"), CAUndoToolButton::Redo, this );
 	uiRedo->setObjectName( "uiRedo" );
 	
 	uiInsertToolBar = new QToolBar( tr("Insert ToolBar"), this );
@@ -309,7 +309,8 @@ void CAMainWin::createCustomActions() {
 		uiNoteStemDirection->addButton( QIcon("images/notestemvoice.svg"), CANote::StemPreferred, tr("Note Stem Preferred") );
 	
 	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
-	uiKeySig = new QComboBox( this);
+	uiKeySig = new QComboBox( this );
+		uiKeySig->setObjectName("uiKeySig");
 		uiKeySig->addItem( QIcon("images/n0.svg"), tr("a minor") );
 	
 	uiTimeSigToolBar = new QToolBar( tr("Time Signature ToolBar"), this );
@@ -374,7 +375,7 @@ void CAMainWin::setupCustomUi() {
 	// Standard Toolbar
 	uiUndo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiUndo ) );
 	uiRedo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiRedo ) );
-
+	
 	// Hide the specialized pre-created toolbars in Qt designer.
 	/// \todo When Qt Designer have support for setting the visibility property, do this in Qt Designer already! -Matevz
 	uiPrintToolBar->hide();
@@ -508,12 +509,12 @@ void CAMainWin::newDocument() {
 	
 	// clear the data part
 	if ( document() && (CACanorus::mainWinCount(document()) == 1) ) {
-		CACanorus::deleteUndoStack( document() ); 
+		CACanorus::undo()->deleteUndoStack( document() ); 
 		delete document();
 	}
 	
 	setDocument(new CADocument());
-	CACanorus::setUndoStack( document(), new QUndoStack() );
+	CACanorus::undo()->createUndoStack( document() );
 	restartTimeEditedTime();
 	
 #ifdef USE_PYTHON
@@ -662,8 +663,8 @@ void CAMainWin::on_uiCloseCurrentView_triggered() {
 
 void CAMainWin::on_uiCloseDocument_triggered() {
 	if ( CACanorus::mainWinCount(document()) == 1 ) {
-			CACanorus::deleteUndoStack( document() ); 
-			delete document();
+		CACanorus::undo()->deleteUndoStack( document() ); 
+		delete document();
 	}
 	setDocument( 0 );
 	rebuildUI();
@@ -775,20 +776,24 @@ void CAMainWin::on_uiNewDocument_triggered() {
 	newDocument();
 }
 
-void CAMainWin::on_uiUndo_toggled( bool checked, int num ) {
-	if ( document() && CACanorus::undoStack( document() )->canUndo() ) {
-		CACanorus::undoStack( document() )->undo();
-		CACanorus::rebuildUI( document(), 0 );
-		onUiVoiceNumValChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
+void CAMainWin::on_uiUndo_toggled( bool checked, int row ) {
+	if ( document() ) {
+		for (int i=0; i<=row; i++) {
+			CACanorus::undo()->undo( document() );
+		}
 	}
+	CACanorus::rebuildUI( document(), 0 );
+	onUiVoiceNumValChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
 }
 
-void CAMainWin::on_uiRedo_toggled( bool checked, int num ) {
-	if ( document() && CACanorus::undoStack( document() )->canRedo() ) {
-		CACanorus::undoStack( document() )->redo();
-		CACanorus::rebuildUI( document(), 0 );
-		onUiVoiceNumValChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
+void CAMainWin::on_uiRedo_toggled( bool checked, int row ) {
+	if ( document() ) {
+		for (int i=0; i<=row; i++) {
+			CACanorus::undo()->redo( document() );
+		}
 	}
+	CACanorus::rebuildUI( document(), 0 );
+	onUiVoiceNumValChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
 }
 
 /*!
@@ -797,12 +802,12 @@ void CAMainWin::on_uiRedo_toggled( bool checked, int num ) {
 	\sa CACanorus::undoStack()
 */
 void CAMainWin::updateUndoRedoButtons() {
-	if ( CACanorus::undoStack( document() ) && CACanorus::undoStack( document() )->canUndo() )
+	if ( CACanorus::undo()->canUndo( document() ) )
 		uiUndo->setEnabled(true);
 	else
 		uiUndo->setEnabled(false);
 	
-	if ( CACanorus::undoStack( document() ) && CACanorus::undoStack( document() )->canRedo() )
+	if ( CACanorus::undo()->canRedo( document() ) )
 		uiRedo->setEnabled(true);
 	else
 		uiRedo->setEnabled(false);
@@ -812,9 +817,9 @@ void CAMainWin::updateUndoRedoButtons() {
 	Adds a new empty sheet.
 */
 void CAMainWin::on_uiNewSheet_triggered() {
-	CACanorus::createUndoCommand( document(), tr("new sheet", "undo") );
+	CACanorus::undo()->createUndoCommand( document(), tr("new sheet", "undo") );
 	document()->addSheetByName( tr("Sheet%1").arg(QString::number(document()->sheetCount()+1)) );
-	CACanorus::pushUndoCommand();
+	CACanorus::undo()->pushUndoCommand();
 	CACanorus::rebuildUI(document());
 }
 
@@ -832,11 +837,11 @@ void CAMainWin::on_uiNewVoice_triggered() {
 		stemDirection = CANote::StemDown;
 	}
 	
-	CACanorus::createUndoCommand( document(), tr("new voice", "undo") );
+	CACanorus::undo()->createUndoCommand( document(), tr("new voice", "undo") );
 	if (staff)
 		staff->addVoice(new CAVoice(staff, staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 ), voiceNumber, stemDirection));
 	
-	CACanorus::pushUndoCommand();
+	CACanorus::undo()->pushUndoCommand();
 	CACanorus::rebuildUI(document(), currentSheet());
 	uiVoiceNum->setRealValue( staff->voiceCount() );
 }
@@ -863,11 +868,11 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 			QMessageBox::No);
 		
 		if (ret == QMessageBox::Yes) {
-			CACanorus::createUndoCommand( document(), tr("voice removal", "undo") );
+			CACanorus::undo()->createUndoCommand( document(), tr("voice removal", "undo") );
 			currentScoreViewPort()->clearSelection();
 			uiVoiceNum->setRealValue( voice->staff()->voiceCount()-1 );
 			delete voice; // also removes voice from the staff
-			CACanorus::pushUndoCommand();
+			CACanorus::undo()->pushUndoCommand();
 			CACanorus::rebuildUI(document(), currentSheet());
 		}
 	}
@@ -886,10 +891,10 @@ void CAMainWin::on_uiRemoveContext_triggered() {
 			QMessageBox::No);
 		
 		if (ret == QMessageBox::Yes) {
-			CACanorus::createUndoCommand( document(), tr("context removal", "undo") );
+			CACanorus::undo()->createUndoCommand( document(), tr("context removal", "undo") );
 			CASheet *sheet = context->sheet();
 			sheet->removeContext(context);
-			CACanorus::pushUndoCommand();			
+			CACanorus::undo()->pushUndoCommand();			
 			CACanorus::rebuildUI(document(), currentSheet());
 			delete context;
 		}
@@ -1158,7 +1163,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				CADrawableContext *dupContext = v->nearestUpContext(coords.x(), coords.y());
 				switch(uiContextType->currentId()) {
 					case CAContext::Staff: {
-						CACanorus::createUndoCommand( document(), tr("new staff", "undo"));
+						CACanorus::undo()->createUndoCommand( document(), tr("new staff", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CAStaff(
@@ -1170,7 +1175,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						break;
 					}
 					case CAContext::LyricsContext: {
-						CACanorus::createUndoCommand( document(), tr("new lyrics context", "undo"));
+						CACanorus::undo()->createUndoCommand( document(), tr("new lyrics context", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CALyricsContext(
@@ -1183,7 +1188,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						break;
 					}
 					case CAContext::FunctionMarkingContext: {
-						CACanorus::createUndoCommand( document(), tr("new function marking context", "undo"));
+						CACanorus::undo()->createUndoCommand( document(), tr("new function marking context", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CAFunctionMarkingContext(
@@ -1194,7 +1199,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						break;
 					}
 				}
-				CACanorus::pushUndoCommand();
+				CACanorus::undo()->pushUndoCommand();
 				CACanorus::rebuildUI(document(), v->sheet());
 				
 				v->selectContext(newContext);
@@ -1406,7 +1411,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			if (!v->selection().isEmpty())
 				left = v->selection().back()->musElement();
 				
-			CACanorus::createUndoCommand( document(), tr("insert barline", "undo") );
+			CACanorus::undo()->createUndoCommand( document(), tr("insert barline", "undo") );
 			CABarline *bar = new CABarline(
 				CABarline::Single,
 				staff,
@@ -1414,7 +1419,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			);
 			staff->insertSignAfter(bar, left, true);	//insert the barline in all the voices
 			
-			CACanorus::pushUndoCommand();
+			CACanorus::undo()->pushUndoCommand();
 			CACanorus::rebuildUI(document(), v->sheet());
 			v->selectMElement(bar);
 			v->repaint();
@@ -1427,15 +1432,17 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				v->repaint();
 			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
 				bool rebuild=false;
+				if (v->selection().size())
+					CACanorus::undo()->createUndoCommand( document(), tr("rise note", "undo") );
+				
 				for (int i=0; i<v->selection().size(); i++) {
 					CADrawableMusElement *elt = v->selection().at(i);
 					
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
-						CACanorus::createUndoCommand( document(), tr("rise note", "undo") );
 						CANote *note = (CANote*)elt->musElement();
 						note->setPitch(note->pitch()+1);
-						CACanorus::pushUndoCommand();
+						CACanorus::undo()->pushUndoCommand();
 						rebuild = true;
 					}
 				}
@@ -1451,15 +1458,17 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				v->repaint();
 			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
 				bool rebuild = false;
+				if (v->selection().size())
+					CACanorus::undo()->createUndoCommand( document(), tr("lower note", "undo") );
+				
 				for (int i=0; i<v->selection().size(); i++) {
 					CADrawableMusElement *elt = v->selection().at(i);
 					
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 						CANote *note = (CANote*)elt->musElement();
-						CACanorus::createUndoCommand( document(), tr("lower note", "undo") );
 						note->setPitch(note->pitch()-1);
-						CACanorus::pushUndoCommand();
+						CACanorus::undo()->pushUndoCommand();
 						rebuild = true;
 					}
 				}
@@ -1478,9 +1487,9 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				if (!v->selection().isEmpty()) {
 					CAMusElement *elt = v->selection().front()->musElement();
 					if (elt->musElementType()==CAMusElement::Note) {
-						CACanorus::createUndoCommand( document(), tr("add sharp", "undo") );
+						CACanorus::undo()->createUndoCommand( document(), tr("add sharp", "undo") );
 						((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
-						CACanorus::pushUndoCommand();
+						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
 				}
@@ -1498,9 +1507,9 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				if (!v->selection().isEmpty()) {
 					CAMusElement *elt = v->selection().front()->musElement();
 					if (elt->musElementType()==CAMusElement::Note) {
-						CACanorus::createUndoCommand( document(), tr("add flat", "undo") );
+						CACanorus::undo()->createUndoCommand( document(), tr("add flat", "undo") );
 						((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
-						CACanorus::pushUndoCommand();
+						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
 				}
@@ -1515,7 +1524,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				v->repaint();
 			} else if (mode()==EditMode) {
 				if (!((CAScoreViewPort*)v)->selection().isEmpty()) {
-					CACanorus::createUndoCommand( document(), tr("set dotted", "undo") );
+					CACanorus::undo()->createUndoCommand( document(), tr("set dotted", "undo") );
 					CAMusElement *elt = ((CAScoreViewPort*)v)->selection().front()->musElement();
 					
 					if (elt->isPlayable()) {
@@ -1530,7 +1539,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 							diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
 						 
 						((CAPlayable*)elt)->voice()->updateTimesAfter(elt, diff);
-						CACanorus::pushUndoCommand();
+						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
 				}
@@ -1588,7 +1597,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	if (!drawableContext)
 		return;
 	
-	CACanorus::createUndoCommand( document(), tr("insertion of music element", "undo") );
+	CACanorus::undo()->createUndoCommand( document(), tr("insertion of music element", "undo") );
 	
 	switch ( musElementFactory()->musElementType() ) {
 		case CAMusElement::Clef: {
@@ -1703,7 +1712,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	}
 	
 	if (success) {
-		CACanorus::pushUndoCommand();
+		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI(document(), v->sheet());
 		v->selectMElement( musElementFactory()->musElement() );
 		musElementFactory()->cloneMusElem(); // Clones the current musElement so it doesn't conflict with the added musElement
@@ -1861,12 +1870,13 @@ CADocument *CAMainWin::openDocument(QString fileName) {
 		CADocument *openedDoc = CACanorusML::openDocument(&input);
 		if (openedDoc) {
 			if (CACanorus::mainWinCount(document())==1) {
-				CACanorus::deleteUndoStack( document() ); 
+				CACanorus::undo()->deleteUndoStack( document() ); 
 				delete document();
 			}
 			
 			setDocument(openedDoc);
-			CACanorus::setUndoStack( document(), new QUndoStack() );
+			CACanorus::undo()->createUndoStack( document() );
+			
 			openedDoc->setFileName(fileName);
 			rebuildUI(); // local rebuild only
 			uiTabWidget->setCurrentIndex(0);
@@ -1961,12 +1971,12 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	
 	// clear existing document
 	if ( document() && (CACanorus::mainWinCount(document()) == 1) ) {
-		CACanorus::deleteUndoStack( document() ); 
+		CACanorus::undo()->deleteUndoStack( document() ); 
 		delete document();
 	}
 	
 	setDocument(new CADocument());
-	CACanorus::setUndoStack( document(), new QUndoStack() );
+	CACanorus::undo()->createUndoStack( document() );
 	
 	if (CAPluginManager::importFilterExists(uiImportDialog->selectedFilter()))
 		CAPluginManager::importAction(uiImportDialog->selectedFilter(), document(), fileNames[0]);
@@ -2007,17 +2017,17 @@ void CAMainWin::onUiVoiceNumValChanged(int voiceNr) {
 /*!
 	Changes the number of accidentals.
 */
-void CAMainWin::on_uiKeySig_toggled( bool checked, int accs ) {
+void CAMainWin::on_uiKeySig_currentIndexChanged( int accs ) {
 	if (mode()==InsertMode)
 		musElementFactory()->setKeySigNumberOfAccs( accs );
 	else if ( mode()==EditMode ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if ( v && v->selection().size() ) {
-			CACanorus::createUndoCommand( document(), tr("change number of accidentals", "undo") );		
+			CACanorus::undo()->createUndoCommand( document(), tr("change number of accidentals", "undo") );		
 			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
 			if ( keySig ) {
 				keySig->setKeySignatureType( CAKeySignature::MajorMinor, accs, CAKeySignature::Major );
-				CACanorus::pushUndoCommand();
+				CACanorus::undo()->pushUndoCommand();
 				CACanorus::rebuildUI(document(), currentSheet());
 			}
 		}
@@ -2030,8 +2040,8 @@ void CAMainWin::on_uiKeySig_toggled( bool checked, int accs ) {
 void CAMainWin::on_uiVoiceName_returnPressed() {
 	CAVoice *voice = currentVoice();
 	if (voice) {
-		CACanorus::createUndoCommand( document(), tr("change voice name", "undo") );
-		CACanorus::pushUndoCommand();
+		CACanorus::undo()->createUndoCommand( document(), tr("change voice name", "undo") );
+		CACanorus::undo()->pushUndoCommand();
 		voice->setName(uiVoiceName->text());
 	}
 }
@@ -2113,7 +2123,7 @@ void CAMainWin::onSyllableEditKeyPressEvent(QKeyEvent *e, CASyllableEdit *syllab
 	     (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && syllableEdit->cursorPosition()==0 || 
 	     CACanorus::settings()->finaleLyricsBehaviour() && e->key()==Qt::Key_Minus
 	   ) {
-		CACanorus::createUndoCommand( document(), tr("lyrics edit", "undo") );	     
+		CACanorus::undo()->createUndoCommand( document(), tr("lyrics edit", "undo") );	     
 		syllable->setText(text);
 		syllable->setHyphenStart(hyphen);
 		syllable->setMelismaStart(melisma);
@@ -2132,7 +2142,7 @@ void CAMainWin::onSyllableEditKeyPressEvent(QKeyEvent *e, CASyllableEdit *syllab
 				nextSyllable = syllable->lyricsContext()->findNextMusElement(syllable);
 			}
 			
-			CACanorus::pushUndoCommand();
+			CACanorus::undo()->pushUndoCommand();
 			CACanorus::rebuildUI( document(), currentSheet() );
 			if (nextSyllable) {
 				CADrawableMusElement *dNextSyllable = v->selectMElement(nextSyllable);
@@ -2343,7 +2353,7 @@ void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 	if (v->document()) {
 		// CanorusML document source
-		CACanorus::createUndoCommand( document(), tr("commit CanorusML source", "undo") );
+		CACanorus::undo()->createUndoCommand( document(), tr("commit CanorusML source", "undo") );
 		
 		clearUI(); 	// clear GUI before clearing the data part!
 		if ( document() )
@@ -2351,27 +2361,27 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		
 		QXmlInputSource input;
 		input.setData(inputString);
-		CACanorus::pushUndoCommand();
+		CACanorus::undo()->pushUndoCommand();
 		setDocument(CACanorusML::openDocument(&input));
 		CACanorus::rebuildUI(document());
 	} else
 	if (v->voice()) {
 		// LilyPond voice source
-		CACanorus::createUndoCommand( document(), tr("commit LilyPond source", "undo") );
+		CACanorus::undo()->createUndoCommand( document(), tr("commit LilyPond source", "undo") );
 		
 		v->voice()->clear(); // clearUI is not needed, because only voice content is changed
 		
-		CACanorus::pushUndoCommand();
+		CACanorus::undo()->pushUndoCommand();
 		CALilyPondImport(inputString, v->voice());
 		CACanorus::rebuildUI(document(), v->voice()->staff()->sheet());
 	} else
 	if (v->lyricsContext()) {
 		// LilyPond lyrics source
-		CACanorus::createUndoCommand( document(), tr("commit LilyPond source", "undo") );
+		CACanorus::undo()->createUndoCommand( document(), tr("commit LilyPond source", "undo") );
 		
 		v->lyricsContext()->clear(); // clearUI is not needed, because only voice content is changed
 		
-		CACanorus::pushUndoCommand();
+		CACanorus::undo()->pushUndoCommand();
 		CALilyPondImport(inputString, v->lyricsContext());
 		CACanorus::rebuildUI(document(), v->lyricsContext()->sheet());
 	}
@@ -2445,8 +2455,8 @@ void CAMainWin::on_uiScoreView_triggered() {
 void CAMainWin::on_uiRemoveSheet_triggered() {
 	CASheet *sheet = currentSheet();
 	if (sheet) {
-		CACanorus::createUndoCommand( document(), tr("deletion of the sheet", "undo") );
-		CACanorus::pushUndoCommand();
+		CACanorus::undo()->createUndoCommand( document(), tr("deletion of the sheet", "undo") );
+		CACanorus::undo()->pushUndoCommand();
 		document()->removeSheet(currentSheet());
 		removeSheet(sheet);
 		delete sheet;
@@ -2496,8 +2506,8 @@ void CAMainWin::removeSheet( CASheet *sheet ) {
 void CAMainWin::on_uiSheetName_returnPressed() {
 	CASheet *sheet = currentSheet();
 	if (sheet) {
-		CACanorus::createUndoCommand( document(), tr("change sheet name", "undo") );
-		CACanorus::pushUndoCommand();
+		CACanorus::undo()->createUndoCommand( document(), tr("change sheet name", "undo") );
+		CACanorus::undo()->pushUndoCommand();
 		updateUndoRedoButtons();
 		sheet->setName( uiSheetName->text() );
 		uiTabWidget->setTabText(uiTabWidget->currentIndex(), sheet->name());
@@ -2510,8 +2520,8 @@ void CAMainWin::on_uiSheetName_returnPressed() {
 void CAMainWin::on_uiContextName_returnPressed() {
 	CAContext *context = currentContext();
 	if (context) {
-		CACanorus::createUndoCommand( document(), tr("change context name", "undo") );
-		CACanorus::pushUndoCommand();
+		CACanorus::undo()->createUndoCommand( document(), tr("change context name", "undo") );
+		CACanorus::undo()->pushUndoCommand();
 		updateUndoRedoButtons();
 		context->setName(uiContextName->text());
 	}
@@ -2523,9 +2533,9 @@ void CAMainWin::on_uiContextName_returnPressed() {
 void CAMainWin::on_uiStaffNumberOfLines_valueChanged(int lines) {
 	CAStaff *staff = currentStaff();
 	if (staff) {
-		CACanorus::createUndoCommand( document(), tr("change number of staff lines", "undo") );
+		CACanorus::undo()->createUndoCommand( document(), tr("change number of staff lines", "undo") );
 		if (staff->numberOfLines()!=lines)
-			CACanorus::pushUndoCommand();
+			CACanorus::undo()->pushUndoCommand();
 		staff->setNumberOfLines(lines);
 		CACanorus::rebuildUI(document(), currentSheet());
 	}
@@ -2536,9 +2546,9 @@ void CAMainWin::on_uiStaffNumberOfLines_valueChanged(int lines) {
 */
 void CAMainWin::on_uiStanzaNumber_valueChanged(int stanzaNumber) {
 	if (currentContext() && currentContext()->contextType()==CAContext::LyricsContext) {
-		CACanorus::createUndoCommand( document(), tr("change stanza number", "undo") );
+		CACanorus::undo()->createUndoCommand( document(), tr("change stanza number", "undo") );
 		if (static_cast<CALyricsContext*>(currentContext())->stanzaNumber()!=stanzaNumber)
-			CACanorus::pushUndoCommand();
+			CACanorus::undo()->pushUndoCommand();
 		static_cast<CALyricsContext*>(currentContext())->setStanzaNumber( stanzaNumber );
 	}
 }
@@ -2548,9 +2558,9 @@ void CAMainWin::on_uiStanzaNumber_valueChanged(int stanzaNumber) {
 */
 void CAMainWin::on_uiAssociatedVoice_currentIndexChanged(int idx) {
 	if (idx != -1 && currentContext() && currentContext()->contextType()==CAContext::LyricsContext) {
-		CACanorus::createUndoCommand( document(), tr("change associated voice", "undo") );
+		CACanorus::undo()->createUndoCommand( document(), tr("change associated voice", "undo") );
 		if (static_cast<CALyricsContext*>(currentContext())->associatedVoice()!=currentSheet()->voiceList().at( idx ))
-			CACanorus::pushUndoCommand();
+			CACanorus::undo()->pushUndoCommand();
 		static_cast<CALyricsContext*>(currentContext())->setAssociatedVoice( currentSheet()->voiceList().at( idx ) );
 		CACanorus::rebuildUI( document(), currentSheet() ); // needs a rebuild if lyrics contexts are to be moved
 	}
@@ -2559,10 +2569,10 @@ void CAMainWin::on_uiAssociatedVoice_currentIndexChanged(int idx) {
 void CAMainWin::on_uiVoiceStemDirection_toggled(bool checked, int direction) {
 	CAVoice *voice = currentVoice();
 	if (voice) {
-		CACanorus::createUndoCommand( document(), tr("change voice stem direction", "undo") );
+		CACanorus::undo()->createUndoCommand( document(), tr("change voice stem direction", "undo") );
 		if (voice->stemDirection()!=static_cast<CANote::CAStemDirection>(direction))
-			CACanorus::pushUndoCommand();
-		CACanorus::pushUndoCommand();
+			CACanorus::undo()->pushUndoCommand();
+		CACanorus::undo()->pushUndoCommand();
 		voice->setStemDirection(static_cast<CANote::CAStemDirection>(direction));
 		CACanorus::rebuildUI(document(), currentSheet());
 	}
@@ -2576,7 +2586,7 @@ void CAMainWin::on_uiNoteStemDirection_toggled(bool checked, int id) {
 	if (mode()==InsertMode)
 		musElementFactory()->setNoteStemDirection( direction );
 	else if (mode()==SelectMode || mode()==EditMode) {
-		CACanorus::createUndoCommand( document(), tr("change note stem direction", "undo") );
+		CACanorus::undo()->createUndoCommand( document(), tr("change note stem direction", "undo") );
 		CAScoreViewPort *v = currentScoreViewPort();
 		bool changed=false;
 		for (int i=0; v && i<v->selection().size(); i++) {
@@ -2587,7 +2597,7 @@ void CAMainWin::on_uiNoteStemDirection_toggled(bool checked, int id) {
 			}
 		}
 		if (changed) {
-			CACanorus::pushUndoCommand();
+			CACanorus::undo()->pushUndoCommand();
 			CACanorus::rebuildUI(document(), currentSheet());
 		}
 	}
@@ -2958,7 +2968,7 @@ void CAMainWin::on_uiCopy_triggered() {
 */
 void CAMainWin::on_uiCut_triggered() {
 	if ( currentScoreViewPort() ) {
-		CACanorus::createUndoCommand( document(), tr("cut", "undo") );
+		CACanorus::undo()->createUndoCommand( document(), tr("cut", "undo") );
 		copySelection( currentScoreViewPort() );
 		deleteSelection( currentScoreViewPort(), false, false ); // and don't make undo as we already make it
 	}	
@@ -2996,7 +3006,7 @@ void CAMainWin::copySelection( CAScoreViewPort *v ) {
 void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool doUndo ) {
 	if ( v->selection().size() ) {
 		if (doUndo)
-			CACanorus::createUndoCommand( document(), tr("deletion of elements", "undo") );
+			CACanorus::undo()->createUndoCommand( document(), tr("deletion of elements", "undo") );
 		
 		QSet<CAMusElement*> musElemSet;
 		for (int i=0; i<v->selection().size(); i++)
@@ -3037,7 +3047,7 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool d
 				(*i)->context()->removeMusElement(*i);
 			}
 		}			
-		CACanorus::pushUndoCommand();
+		CACanorus::undo()->pushUndoCommand();
 		v->clearSelection();
 		CACanorus::rebuildUI(document(), v->sheet());
 	}	
@@ -3051,7 +3061,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 	     dynamic_cast<const CAMimeData*>(QApplication::clipboard()->mimeData()) &&
 	     v->currentContext() &&
 	     v->currentContext()->drawableContextType()==CADrawableContext::DrawableStaff ) {
-		CACanorus::createUndoCommand( document(), tr("paste", "undo") );
+		CACanorus::undo()->createUndoCommand( document(), tr("paste", "undo") );
 		
 		CAStaff *staff = static_cast<CAStaff*>( v->currentContext()->context() ); 
 		CAVoice *voice = staff->voiceAt( uiVoiceNum->getRealValue() ? uiVoiceNum->getRealValue()-1 : uiVoiceNum->getRealValue() );
