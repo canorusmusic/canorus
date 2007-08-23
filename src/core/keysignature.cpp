@@ -141,6 +141,83 @@ int CAKeySignature::compare(CAMusElement *elt) {
 	return diffs;
 }
 
+/*!
+	Generates the name of the key signature.
+	eg. -3 accidentals & major => "Es"
+	    +6 accidentals & minor => "dis"
+*/
+const QString CAKeySignature::keySignatureToString( signed char numberOfAccs, CAMajorMinorGender gender ) {
+	// calculate key signature pitch from number of accidentals
+	int pitch = ((4*numberOfAccs) % 7) + ((numberOfAccs < 0) ? 7 : 0);
+	
+	if (gender==CAKeySignature::Minor)	// find the parallel minor key
+		pitch = (pitch + 5) % 7;
+	
+	signed char accs = 0;
+	
+	if (numberOfAccs>5 && gender==CAKeySignature::Major)
+		accs = (numberOfAccs-5)/7+1;
+	else
+	if (numberOfAccs>2 && gender==CAKeySignature::Minor)
+		accs = (numberOfAccs-2)/7 + 1;
+	else
+	if (numberOfAccs<-1 && gender==CAKeySignature::Major)
+		accs = (numberOfAccs+1)/7-1;
+	else
+	if (numberOfAccs<-4 && gender==CAKeySignature::Minor)
+		accs = (numberOfAccs+4)/7 - 1;
+	
+	QString name;
+	
+	name = (char)((pitch+2)%7 + 'a');
+	
+	for (int i=0; i < accs; i++)
+		name += "is";	// append as many -is-es as necessary
+	
+	for (int i=0; i > accs; i--) {
+		if ( (name == "e") || (name == "a") )
+			name += "s";	// for pitches E and A, only append single -s the first time
+		else if (name[0]=='a')
+			name += "as";	// for pitch A, append -as instead of -es
+		else
+			name += "es";	// otherwise, append normally as many es-es as necessary
+	}
+	
+	if (gender==CAKeySignature::Major)
+		name[0] = name[0].toUpper();
+	
+	return name;
+}
+
+/*!
+	Reads number of accidentals from the key signature given as \a keySig.
+*/
+signed char CAKeySignature::keySigAccsFromString( QString keySig ) {
+	CAMajorMinorGender gender = keySigGenderFromString(keySig);
+	keySig[0] = keySig[0].toLower();
+	signed char accs = static_cast<signed char>( ((keySig[0].toAscii() - 'a') * 2 + 4) % 7 - 4 );
+	
+	QString key(keySig);
+	accs -= 7*keySig.count("as");
+	accs -= 7*keySig.count("es");
+	accs += 7*keySig.count("is");
+	
+	if (gender==CAKeySignature::Major)
+		accs += 3;
+	
+	return accs;
+}
+
+/*!
+	Reads the gender from the key signature given as \a keySig.
+*/
+CAKeySignature::CAMajorMinorGender CAKeySignature::keySigGenderFromString( const QString keySig ) {
+	if (keySig[0].isUpper())
+		return CAKeySignature::Major;
+	else
+		return CAKeySignature::Minor;
+}
+
 const QString CAKeySignature::keySignatureTypeToString(CAKeySignatureType type) {
 	switch (type) {
 		case MajorMinor: return "major-minor";

@@ -338,16 +338,17 @@ const QString CALilyPondExport::keySignaturePitchToLilyPond(signed char numberOf
 	
 	signed char accs = 0;
 	
-	if (
-		numberOfAccs>5 && gender==CAKeySignature::Major ||
-		numberOfAccs>2 && gender==CAKeySignature::Minor
-	   )
-		accs = numberOfAccs/7 + 1;
-	else if (
-		numberOfAccs<-1 && gender==CAKeySignature::Major ||
-		numberOfAccs<-4 && gender==CAKeySignature::Minor
-	   )
-		accs = numberOfAccs/7 - 1;
+	if (numberOfAccs>5 && gender==CAKeySignature::Major)
+		accs = (numberOfAccs-5)/7+1;
+	else
+	if (numberOfAccs>2 && gender==CAKeySignature::Minor)
+		accs = (numberOfAccs-2)/7 + 1;
+	else
+	if (numberOfAccs<-1 && gender==CAKeySignature::Major)
+		accs = (numberOfAccs+1)/7-1;
+	else
+	if (numberOfAccs<-4 && gender==CAKeySignature::Minor)
+		accs = (numberOfAccs+4)/7 - 1;
 	
 	return notePitchToLilyPond(pitch, accs);
 }

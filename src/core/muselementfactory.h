@@ -104,6 +104,8 @@ public:
 	
 	inline int keySigNumberOfAccs() { return _iKeySigNumberOfAccs; }
 	inline void setKeySigNumberOfAccs(int accs) { _iKeySigNumberOfAccs = accs; }
+	inline CAKeySignature::CAMajorMinorGender keySigGender() { return _eKeySigGender; }
+	inline void setKeySigGender( CAKeySignature::CAMajorMinorGender g ) { _eKeySigGender = g; }
 	
 	inline int  noteExtraAccs() { return _iNoteExtraAccs; };
 	
@@ -182,6 +184,7 @@ private:
 	int _iNoteAccs;                                // Note accidentals at specific coordinates updated regularily when in insert mode
 	CARest::CARestType _eRestType;                 // Hidden/Normal rest
 	int _iKeySigNumberOfAccs;                      // Key signature number of accidentals
+	CAKeySignature::CAMajorMinorGender _eKeySigGender; // Major/Minor gender of the key signature
 	int _iTimeSigBeats;                            // Time signature number of beats to be inserted
 	int _iTimeSigBeat;                             // Time signature beat to be inserted
 	CAClef::CAClefType _eClef;                     // Type of the clef to be inserted
