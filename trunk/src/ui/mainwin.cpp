@@ -20,6 +20,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QXmlInputSource>
+#include <QComboBox>
 #include <iostream>
 
 #include "ui/mainwin.h"
@@ -311,7 +312,36 @@ void CAMainWin::createCustomActions() {
 	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
 	uiKeySig = new QComboBox( this );
 		uiKeySig->setObjectName("uiKeySig");
-		uiKeySig->addItem( QIcon("images/n0.svg"), tr("a minor") );
+		uiKeySig->addItem( QIcon("images/accs-7.svg"), tr("C-flat major") );
+		uiKeySig->addItem( QIcon("images/accs-7.svg"), tr("a-flat minor") );
+		uiKeySig->addItem( QIcon("images/accs-6.svg"), tr("G-flat major") );
+		uiKeySig->addItem( QIcon("images/accs-6.svg"), tr("e-flat minor") );
+		uiKeySig->addItem( QIcon("images/accs-5.svg"), tr("D-flat major") );
+		uiKeySig->addItem( QIcon("images/accs-5.svg"), tr("b-fat minor") );
+		uiKeySig->addItem( QIcon("images/accs-4.svg"), tr("A-flat major") );
+		uiKeySig->addItem( QIcon("images/accs-4.svg"), tr("f minor") );
+		uiKeySig->addItem( QIcon("images/accs-3.svg"), tr("E-flat major") );
+		uiKeySig->addItem( QIcon("images/accs-3.svg"), tr("c minor") );
+		uiKeySig->addItem( QIcon("images/accs-2.svg"), tr("B-flat major") );
+		uiKeySig->addItem( QIcon("images/accs-2.svg"), tr("g minor") );
+		uiKeySig->addItem( QIcon("images/accs-1.svg"), tr("F major") );
+		uiKeySig->addItem( QIcon("images/accs-1.svg"), tr("d minor") );
+		uiKeySig->addItem( QIcon("images/accs0.svg"), tr("C major") );
+		uiKeySig->addItem( QIcon("images/accs0.svg"), tr("a minor") );
+		uiKeySig->addItem( QIcon("images/accs1.svg"), tr("G major") );
+		uiKeySig->addItem( QIcon("images/accs1.svg"), tr("e minor") );
+		uiKeySig->addItem( QIcon("images/accs2.svg"), tr("D major") );
+		uiKeySig->addItem( QIcon("images/accs2.svg"), tr("b minor") );
+		uiKeySig->addItem( QIcon("images/accs3.svg"), tr("A major") );
+		uiKeySig->addItem( QIcon("images/accs3.svg"), tr("f-sharp minor") );
+		uiKeySig->addItem( QIcon("images/accs4.svg"), tr("E major") );
+		uiKeySig->addItem( QIcon("images/accs4.svg"), tr("c-sharp minor") );
+		uiKeySig->addItem( QIcon("images/accs5.svg"), tr("B major") );
+		uiKeySig->addItem( QIcon("images/accs5.svg"), tr("g-sharp minor") );
+		uiKeySig->addItem( QIcon("images/accs6.svg"), tr("F-sharp major") );
+		uiKeySig->addItem( QIcon("images/accs6.svg"), tr("d-sharp minor") );
+		uiKeySig->addItem( QIcon("images/accs7.svg"), tr("C-sharp major") );
+		uiKeySig->addItem( QIcon("images/accs7.svg"), tr("a-sharp minor") );
 	
 	uiTimeSigToolBar = new QToolBar( tr("Time Signature ToolBar"), this );
 	uiTimeSigBeats = new QSpinBox(this);
@@ -363,6 +393,38 @@ void CAMainWin::createCustomActions() {
 		uiFMTonicDegree->addButton( QIcon("images/fmd.svg"), CAFunctionMarking::D, tr("Dominant") );
 		uiFMTonicDegree->addButton( QIcon("images/fmvi.svg"), CAFunctionMarking::VI, tr("VI") );
 		uiFMTonicDegree->addButton( QIcon("images/fmvii.svg"), CAFunctionMarking::VII, tr("VII") );
+	uiFMKeySig = new QComboBox( this );
+		uiFMKeySig->setObjectName("uiFMKeySig");
+		uiFMKeySig->addItem( QIcon("images/accs-7.svg"), tr("C-flat major") );
+		uiFMKeySig->addItem( QIcon("images/accs-7.svg"), tr("a-flat minor") );
+		uiFMKeySig->addItem( QIcon("images/accs-6.svg"), tr("G-flat major") );
+		uiFMKeySig->addItem( QIcon("images/accs-6.svg"), tr("e-flat minor") );
+		uiFMKeySig->addItem( QIcon("images/accs-5.svg"), tr("D-flat major") );
+		uiFMKeySig->addItem( QIcon("images/accs-5.svg"), tr("b-fat minor") );
+		uiFMKeySig->addItem( QIcon("images/accs-4.svg"), tr("A-flat major") );
+		uiFMKeySig->addItem( QIcon("images/accs-4.svg"), tr("f minor") );
+		uiFMKeySig->addItem( QIcon("images/accs-3.svg"), tr("E-flat major") );
+		uiFMKeySig->addItem( QIcon("images/accs-3.svg"), tr("c minor") );
+		uiFMKeySig->addItem( QIcon("images/accs-2.svg"), tr("B-flat major") );
+		uiFMKeySig->addItem( QIcon("images/accs-2.svg"), tr("g minor") );
+		uiFMKeySig->addItem( QIcon("images/accs-1.svg"), tr("F major") );
+		uiFMKeySig->addItem( QIcon("images/accs-1.svg"), tr("d minor") );
+		uiFMKeySig->addItem( QIcon("images/accs0.svg"), tr("C major") );
+		uiFMKeySig->addItem( QIcon("images/accs0.svg"), tr("a minor") );
+		uiFMKeySig->addItem( QIcon("images/accs1.svg"), tr("G major") );
+		uiFMKeySig->addItem( QIcon("images/accs1.svg"), tr("e minor") );
+		uiFMKeySig->addItem( QIcon("images/accs2.svg"), tr("D major") );
+		uiFMKeySig->addItem( QIcon("images/accs2.svg"), tr("b minor") );
+		uiFMKeySig->addItem( QIcon("images/accs3.svg"), tr("A major") );
+		uiFMKeySig->addItem( QIcon("images/accs3.svg"), tr("f-sharp minor") );
+		uiFMKeySig->addItem( QIcon("images/accs4.svg"), tr("E major") );
+		uiFMKeySig->addItem( QIcon("images/accs4.svg"), tr("c-sharp minor") );
+		uiFMKeySig->addItem( QIcon("images/accs5.svg"), tr("B major") );
+		uiFMKeySig->addItem( QIcon("images/accs5.svg"), tr("g-sharp minor") );
+		uiFMKeySig->addItem( QIcon("images/accs6.svg"), tr("F-sharp major") );
+		uiFMKeySig->addItem( QIcon("images/accs6.svg"), tr("d-sharp minor") );
+		uiFMKeySig->addItem( QIcon("images/accs7.svg"), tr("C-sharp major") );
+		uiFMKeySig->addItem( QIcon("images/accs7.svg"), tr("a-sharp minor") );
 }
 
 /*!
@@ -473,6 +535,8 @@ void CAMainWin::setupCustomUi() {
 	uiFMTonicDegree->defaultAction()->setCheckable( false );
 	uiFMTonicDegree->defaultAction()->setToolTip( tr("Function marking tonic degree") );
 	uiFMTonicDegree->setCurrentId( CAFunctionMarking::T );
+	uiFMToolBar->addWidget( uiFMKeySig );
+	connect( uiFMKeySig, SIGNAL( currentIndexChanged(int) ), this, SLOT( on_uiKeySig_currentIndexChanged(int) ) );
 	addToolBar(Qt::TopToolBarArea, uiFMToolBar);
 	
 	// Mutual exclusive groups
@@ -2017,16 +2081,28 @@ void CAMainWin::onUiVoiceNumValChanged(int voiceNr) {
 /*!
 	Changes the number of accidentals.
 */
-void CAMainWin::on_uiKeySig_currentIndexChanged( int accs ) {
-	if (mode()==InsertMode)
+void CAMainWin::on_uiKeySig_currentIndexChanged( int row ) {
+	signed char accs = qRound((row-14.5) / 2);
+	CAKeySignature::CAMajorMinorGender gender = (row%2)==0 ? CAKeySignature::Major : CAKeySignature::Minor;
+	
+	if (mode()==InsertMode) {
 		musElementFactory()->setKeySigNumberOfAccs( accs );
-	else if ( mode()==EditMode ) {
+		musElementFactory()->setKeySigGender( gender );
+	} else if ( mode()==EditMode ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if ( v && v->selection().size() ) {
 			CACanorus::undo()->createUndoCommand( document(), tr("change number of accidentals", "undo") );		
 			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
+			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>(v->selection().at(0)->musElement());
+			
 			if ( keySig ) {
-				keySig->setKeySignatureType( CAKeySignature::MajorMinor, accs, CAKeySignature::Major );
+				keySig->setKeySignatureType( CAKeySignature::MajorMinor, accs, gender );
+				CACanorus::undo()->pushUndoCommand();
+				CACanorus::rebuildUI(document(), currentSheet());
+			}
+			
+			if ( fm ) {
+				fm->setKey( CAKeySignature::keySignatureToString( accs, gender ) );
 				CACanorus::undo()->pushUndoCommand();
 				CACanorus::rebuildUI(document(), currentSheet());
 			}
@@ -2857,14 +2933,14 @@ void CAMainWin::updateTimeSigToolBar() {
 */
 void CAMainWin::updateKeySigToolBar() {
 	if (uiInsertKeySig->isChecked() && mode()==InsertMode) {
-		//uiKeySigNumberOfAccs->setValue( musElementFactory()->keySigNumberOfAccs() );
+		uiKeySig->setCurrentIndex((musElementFactory()->keySigNumberOfAccs()+7)*2 + ((musElementFactory()->keySigGender()==CAKeySignature::Minor)?1:0) );
 		uiKeySigToolBar->show();
 	} else if (mode()==EditMode) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
 			if (keySig) {
-				//uiKeySigNumberOfAccs->setValue( keySig->numberOfAccidentals() );
+				uiKeySig->setCurrentIndex((keySig->numberOfAccidentals()+7)*2 + ((keySig->majorMinorGender()==CAKeySignature::Minor)?1:0) );
 				uiKeySigToolBar->show();
 			} else
 				uiKeySigToolBar->hide();
@@ -2909,6 +2985,8 @@ void CAMainWin::updateFMToolBar() {
 			uiFMEllipse->trigger();
 		}
 		
+		uiFMKeySig->setCurrentIndex((musElementFactory()->keySigNumberOfAccs()+7)*2 + ((musElementFactory()->keySigGender()==CAKeySignature::Minor)?1:0) );
+		
 		uiFMToolBar->show();
 	} else if (mode()==EditMode) {
 		CAScoreViewPort *v = currentScoreViewPort();
@@ -2945,6 +3023,11 @@ void CAMainWin::updateFMToolBar() {
 					uiFMEllipse->setChecked( true );
 					uiFMEllipse->trigger();
 				}
+				
+				signed char accs = CAKeySignature::keySigAccsFromString(fm->key());
+				CAKeySignature::CAMajorMinorGender gender = CAKeySignature::keySigGenderFromString(fm->key());
+				
+				uiFMKeySig->setCurrentIndex((accs+7)*2 + ((gender==CAKeySignature::Minor)?1:0) );
 				
 				uiFMToolBar->show();
 			} else

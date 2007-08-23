@@ -392,6 +392,7 @@ private:
 			CAMenuToolButton  *uiFMFunction;
 			CAMenuToolButton  *uiFMChordArea;
 			CAMenuToolButton  *uiFMTonicDegree;
+			QComboBox         *uiFMKeySig;
 			//QSpinBox        *uiKeySigNumberOfAccs; // defined in uiKeySigToolBar
 			//QComboBox       *uiKeySigGender; // defined in uiKeySigToolBar
 			//QAction         *uiFMEllipse; // made by Qt Designer

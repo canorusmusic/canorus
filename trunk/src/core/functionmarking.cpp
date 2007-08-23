@@ -1,9 +1,9 @@
-/* 
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #include "core/functionmarking.h"
 #include "core/functionmarkingcontext.h"
@@ -24,7 +24,6 @@
 CAFunctionMarking::CAFunctionMarking(CAFunctionType function, bool minor, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence)
  : CAMusElement(context, timeStart, timeLength) {
  	_musElementType = CAMusElement::FunctionMarking;
- 	
  	_function = function;
  	_tonicDegree = tonicDegree;
  	_tonicDegreeMinor = tonicDegreeMinor;

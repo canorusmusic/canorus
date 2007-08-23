@@ -70,6 +70,9 @@ public:
 	
 	int compare(CAMusElement* elt);
 	
+	static const QString keySignatureToString( signed char numberOfAccs, CAMajorMinorGender gender );
+	static signed char keySigAccsFromString( QString );
+	static CAKeySignature::CAMajorMinorGender keySigGenderFromString( const QString );
 	static const QString keySignatureTypeToString(CAKeySignatureType);
 	static CAKeySignatureType keySignatureTypeFromString(const QString);
 	static const QString majorMinorGenderToString(CAMajorMinorGender);
@@ -85,4 +88,4 @@ private:
 	
 	signed char _accidentals[7];	// Accidentals configuration for each level
 };
-#endif /*KEYSIGNATURE_H_*/
+#endif /* KEYSIGNATURE_H_ */

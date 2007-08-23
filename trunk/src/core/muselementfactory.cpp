@@ -51,6 +51,7 @@ CAMusElementFactory::CAMusElementFactory() {
 	_iTimeSigBeats = 4;
 	_iTimeSigBeat = 4;
 	_iKeySigNumberOfAccs = 0;
+	_eKeySigGender = CAKeySignature::Major;
 	_eClef = CAClef::Treble;
 	_iNoteAccs = 0;
 	_iNoteExtraAccs = 0;
@@ -112,7 +113,7 @@ bool CAMusElementFactory::configureKeySignature( CAStaff *staff,
 	if (staff) {		
 		mpoMusElement = new CAKeySignature(CAKeySignature::MajorMinor, 
 			                           _iKeySigNumberOfAccs,
-			                           CAKeySignature::Major, staff,
+			                           _eKeySigGender, staff,
 			                           (left?left->timeEnd():0));
 		success = staff->insertSignAfter(mpoMusElement, left, true);
 		if (!success)
@@ -291,7 +292,7 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *left ) {
 bool CAMusElementFactory::configureFunctionMarking( CAFunctionMarkingContext *fmc, int timeStart, int timeLength ) {
 	CAFunctionMarking *fm = new CAFunctionMarking(
 		fmFunction(), isFMFunctionMinor(),
-		"C", /// \todo Function marking Key signature
+		CAKeySignature::keySignatureToString( _iKeySigNumberOfAccs, _eKeySigGender ),
 		fmc, timeStart, timeLength,
 		fmChordArea(), isFMChordAreaMinor(),
 		fmTonicDegree(), isFMTonicDegreeMinor(),
