@@ -317,7 +317,7 @@ void CAMainWin::createCustomActions() {
 		uiKeySig->addItem( QIcon("images/accs-6.svg"), tr("G-flat major") );
 		uiKeySig->addItem( QIcon("images/accs-6.svg"), tr("e-flat minor") );
 		uiKeySig->addItem( QIcon("images/accs-5.svg"), tr("D-flat major") );
-		uiKeySig->addItem( QIcon("images/accs-5.svg"), tr("b-fat minor") );
+		uiKeySig->addItem( QIcon("images/accs-5.svg"), tr("b-flat minor") );
 		uiKeySig->addItem( QIcon("images/accs-4.svg"), tr("A-flat major") );
 		uiKeySig->addItem( QIcon("images/accs-4.svg"), tr("f minor") );
 		uiKeySig->addItem( QIcon("images/accs-3.svg"), tr("E-flat major") );
@@ -400,7 +400,7 @@ void CAMainWin::createCustomActions() {
 		uiFMKeySig->addItem( QIcon("images/accs-6.svg"), tr("G-flat major") );
 		uiFMKeySig->addItem( QIcon("images/accs-6.svg"), tr("e-flat minor") );
 		uiFMKeySig->addItem( QIcon("images/accs-5.svg"), tr("D-flat major") );
-		uiFMKeySig->addItem( QIcon("images/accs-5.svg"), tr("b-fat minor") );
+		uiFMKeySig->addItem( QIcon("images/accs-5.svg"), tr("b-flat minor") );
 		uiFMKeySig->addItem( QIcon("images/accs-4.svg"), tr("A-flat major") );
 		uiFMKeySig->addItem( QIcon("images/accs-4.svg"), tr("f minor") );
 		uiFMKeySig->addItem( QIcon("images/accs-3.svg"), tr("E-flat major") );
