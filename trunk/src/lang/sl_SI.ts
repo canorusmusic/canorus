@@ -165,10 +165,6 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Orodjarna za tonalitete</translation>
     </message>
     <message>
-        <source>Number of Accidentals</source>
-        <translation>Število predznakov</translation>
-    </message>
-    <message>
         <source>Time Signature ToolBar</source>
         <translation>Orodjarna za taktovske načine</translation>
     </message>
@@ -581,6 +577,126 @@ Domača stran: http://www.canorus.org</translation>
         <source>paste</source>
         <comment>undo</comment>
         <translation>prilepi</translation>
+    </message>
+    <message>
+        <source>C-flat major</source>
+        <translation>Ces-Dur</translation>
+    </message>
+    <message>
+        <source>a-flat minor</source>
+        <translation>as-mol</translation>
+    </message>
+    <message>
+        <source>G-flat major</source>
+        <translation>Ges-Dur</translation>
+    </message>
+    <message>
+        <source>e-flat minor</source>
+        <translation>es-mol</translation>
+    </message>
+    <message>
+        <source>D-flat major</source>
+        <translation>Des-Dur</translation>
+    </message>
+    <message>
+        <source>A-flat major</source>
+        <translation>As-Dur</translation>
+    </message>
+    <message>
+        <source>f minor</source>
+        <translation>f-mol</translation>
+    </message>
+    <message>
+        <source>E-flat major</source>
+        <translation>Es-Dur</translation>
+    </message>
+    <message>
+        <source>c minor</source>
+        <translation>c-mol</translation>
+    </message>
+    <message>
+        <source>B-flat major</source>
+        <translation>B-Dur</translation>
+    </message>
+    <message>
+        <source>g minor</source>
+        <translation>g-mol</translation>
+    </message>
+    <message>
+        <source>F major</source>
+        <translation>F-Dur</translation>
+    </message>
+    <message>
+        <source>d minor</source>
+        <translation>d-mol</translation>
+    </message>
+    <message>
+        <source>C major</source>
+        <translation>C-Dur</translation>
+    </message>
+    <message>
+        <source>G major</source>
+        <translation>G-Dur</translation>
+    </message>
+    <message>
+        <source>e minor</source>
+        <translation>e-mol</translation>
+    </message>
+    <message>
+        <source>D major</source>
+        <translation>D-Dur</translation>
+    </message>
+    <message>
+        <source>b minor</source>
+        <translation>h-mol</translation>
+    </message>
+    <message>
+        <source>A major</source>
+        <translation>A-Dur</translation>
+    </message>
+    <message>
+        <source>f-sharp minor</source>
+        <translation>fis-mol</translation>
+    </message>
+    <message>
+        <source>E major</source>
+        <translation>E-Dur</translation>
+    </message>
+    <message>
+        <source>c-sharp minor</source>
+        <translation>cis-mol</translation>
+    </message>
+    <message>
+        <source>B major</source>
+        <translation>H-Dur</translation>
+    </message>
+    <message>
+        <source>g-sharp minor</source>
+        <translation>gis-mol</translation>
+    </message>
+    <message>
+        <source>F-sharp major</source>
+        <translation>Fis-Dur</translation>
+    </message>
+    <message>
+        <source>d-sharp minor</source>
+        <translation>dis-mol</translation>
+    </message>
+    <message>
+        <source>C-sharp major</source>
+        <translation>Cis-Dur</translation>
+    </message>
+    <message>
+        <source>a-sharp minor</source>
+        <translation>ais-mol</translation>
+    </message>
+    <message>
+        <source>a minor</source>
+        <translation>a-mol</translation>
+    </message>
+    <message>
+        <source>b-flat minor</source>
+        <translation>b-mol</translation>
     </message>
 </context>
 <context>
