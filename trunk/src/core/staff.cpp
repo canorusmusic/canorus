@@ -45,11 +45,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 	
 	// create empty voices
 	for (int i=0; i<voiceCount(); i++) {
-		newStaff->addVoice( new CAVoice( newStaff,
-		                                 voiceAt(i)->name(),
-		                                 voiceAt(i)->voiceNumber(),
-		                                 voiceAt(i)->stemDirection()
-		                               ) );
+		newStaff->addVoice( voiceAt(i)->clone(newStaff) );
 	}
 	
 	int eltIdx[voiceCount()]; for (int i=0; i<voiceCount(); i++) eltIdx[i]=0;

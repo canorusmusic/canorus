@@ -14,6 +14,7 @@
 #include "core/playable.h"
 #include "core/lyricscontext.h"
 #include "core/slur.h"
+#include "interface/mididevice.h"
 
 /*!
 	\class CAVoice
@@ -34,7 +35,7 @@ CAVoice::CAVoice(CAStaff *staff, const QString name, int voiceNumber, CANote::CA
 	_voiceNumber = voiceNumber;
 	_stemDirection = stemDirection;
 	
-	_midiChannel = 0;
+	_midiChannel = (staff ? CAMidiDevice::freeMidiChannel( staff->sheet() ) : 0);
 	_midiProgram = 0;
 }
 
@@ -55,15 +56,26 @@ CAVoice::~CAVoice() {
 	staff()->removeVoice(this);
 }
 
+
 /*!
 	Clones the current voice including all the music elements.
 	Sets the voice staff to \a newStaff. If none given, use the original staff.
 */
-/*CAVoice *CAVoice::clone( CAStaff* newStaff ) {
-	CAVoice *newVoice = new CAVoice( (newStaff?newStaff:staff()), name(), voiceNumber(), stemDirection() );
+CAVoice *CAVoice::clone( CAStaff* newStaff ) {
+	CAVoice *newVoice = new CAVoice( newStaff, name(), voiceNumber(), stemDirection() );
+	newVoice->setMidiChannel( midiChannel() );
+	newVoice->setMidiProgram( midiProgram() );
 	
 	return newVoice;
-}*/
+}
+
+/*!
+	Clones the voice.
+	This method is provided for convenience.
+*/
+CAVoice *CAVoice::clone() {
+	return clone( staff() );
+}
 
 /*!
 	Destroys all non-shared music elements held by the voice.

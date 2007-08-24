@@ -8,25 +8,22 @@
 #ifndef MIDIDEVICE_H_
 #define MIDIDEVICE_H_
 
+#include <QStringList>
 #include <QVector>
 #include <QMap>
 #include <QString>
 #include <QObject>
 
-/*!
-	This class should represent Canorus<->MIDI bridge.
-	Any MIDI wrapper class should extend this class. Canorus is aware only of this class.
-	
-	eg. In theory RtMidi is only one of the MIDI libraries implemented.
-	If, in future, we decide to implement any other MIDI libraries, CAMidiDevice should
-	mask the change and the core application shouldn't change at all.
-*/
+class CASheet;
+
 class CAMidiDevice : public QObject {
-	Q_OBJECT
 public:
 	enum CAMidiDeviceType {
 		RtMidiDevice
 	};
+	
+	static const QStringList GM_INSTRUMENTS;
+	static unsigned char freeMidiChannel( CASheet* );
 	
 	virtual ~CAMidiDevice() {};
 	
@@ -41,9 +38,9 @@ public:
 	virtual void closeInputPort() = 0;
 	virtual void send(QVector<unsigned char> message) = 0;
 	
-signals:
+/*signals:
 	void midiInEvent( QVector<unsigned char> message );
-	
+*/
 protected:
 	inline void setMidiDeviceType( CAMidiDeviceType t ) { _midiDeviceType = t; }
 	CAMidiDeviceType _midiDeviceType;

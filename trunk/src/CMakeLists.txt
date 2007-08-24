@@ -66,8 +66,7 @@ SET(Canorus_MOCs
 	widgets/toolbutton.h
 	widgets/menutoolbutton.h
 	widgets/undotoolbutton.h
-	interface/playback.h
-	interface/mididevice.h
+#	interface/mididevice.h # Signals not implemented yet for MIDI IN, Q_OBJECT and MOC not needed then
 )
 
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
@@ -151,6 +150,7 @@ SET(Canorus_Interface_Srcs	# Classes which glue the UI and Data part of the MVC 
 	interface/engraver.cpp
 	interface/playback.cpp
 	interface/rtmididevice.cpp
+	interface/mididevice.cpp
 	interface/pluginmanager.cpp
 	interface/plugin.cpp
 )
@@ -203,6 +203,11 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/syllable.cpp
 	
 	core/functionmarking.cpp
+	
+	${Canorus_RtMidi_Srcs}
+	interface/rtmididevice.cpp
+	interface/mididevice.cpp
+	interface/playback.cpp
 )
 
 SET(Canorus_Scripts	# Official scripts shipped with Canorus.
@@ -399,14 +404,36 @@ TARGET_LINK_LIBRARIES(canorus ${QT_LIBRARIES} ${RUBY_LIBRARY} ${PYTHON_LIBRARY})
 ############################
 IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 	TARGET_LINK_LIBRARIES(canorus "asound")
+	IF(USE_PYTHON)
+		TARGET_LINK_LIBRARIES(_CanorusPython "asound")
+	ENDIF(USE_PYTHON)
+	IF(USE_RUBY)
+		TARGET_LINK_LIBRARIES(CanorusRuby "asound")
+	ENDIF(USE_RUBY)
 ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 IF(APPLE)
 	TARGET_LINK_LIBRARIES(canorus "-framework CoreMidi")
 	TARGET_LINK_LIBRARIES(canorus "-framework CoreAudio")
 	TARGET_LINK_LIBRARIES(canorus "-framework CoreFoundation")
+	IF(USE_PYTHON)
+		TARGET_LINK_LIBRARIES(_CanorusPython "-framework CoreMidi")
+		TARGET_LINK_LIBRARIES(_CanorusPython "-framework CoreAudio")
+		TARGET_LINK_LIBRARIES(_CanorusPython "-framework CoreFoundation")
+	ENDIF(USE_PYTHON)
+	IF(USE_RUBY)
+		TARGET_LINK_LIBRARIES(CanorusRuby "-framework CoreMidi")
+		TARGET_LINK_LIBRARIES(CanorusRuby "-framework CoreAudio")
+		TARGET_LINK_LIBRARIES(CanorusRuby "-framework CoreFoundation")
+	ENDIF(USE_RUBY)
 ENDIF(APPLE)
 IF(MINGW)
 	TARGET_LINK_LIBRARIES(canorus "winmm.lib")
+	IF(USE_PYTHON)
+		TARGET_LINK_LIBRARIES(_CanorusPython "winmm.lib")
+	ENDIF(USE_PYTHON)
+	IF(USE_RUBY)
+		TARGET_LINK_LIBRARIES(CanorusRuby "winmm.lib")
+	ENDIF(USE_RUBY)
 ENDIF(MINGW)
 
 ###############
