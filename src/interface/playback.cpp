@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -30,14 +30,25 @@
 	one of the playback devices (usually CAMidiDevice).
 	
 	To use the playback capabilities:
-	1) Create CAPlayback object passing it the current score viewport (played notes will be painted red) and the midi device.
-	2) Optionally configure it (setInitTimeStart() to start playback from the specific time. Default 0).
-	3) Call myPlaybackObject->run(). This will start playing in a new thread.
-	4) Call myPlaybackObject->stop() to stop the playback. Playback will also stops automatically when finished.
+	1) Create one of the CAMidiDevices (eg. CARtMidiDevice) and configure it (open output/input port).
+	2) Create CAPlayback object passing it the current score viewport (played notes will be painted red) or only
+	   the sheet (usually used in scripting environment) and the midi device.
+	3) Optionally configure playback (setInitTimeStart() to start playback from the specific time. Default 0).
+	4) Call myPlaybackObject->run(). This will start playing in a new thread.
+	5) Call myPlaybackObject->stop() to stop the playback. Playback will also stops automatically when finished.
 */
 
 CAPlayback::CAPlayback(CAScoreViewPort *v, CAMidiDevice *m) {
 	setScoreViewPort( v );
+	setMidiDevice( m );
+	setSheet( v->sheet() );
+	_stop = false;
+	setInitTimeStart( 0 );
+}
+
+CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
+	setScoreViewPort( 0 );
+	setSheet( s );
 	setMidiDevice( m );
 	_stop = false;
 	setInitTimeStart( 0 );
@@ -53,23 +64,12 @@ CAPlayback::~CAPlayback() {
 }
 
 void CAPlayback::run() {
-	QPen p;
-	p.setColor(Qt::green);
-	p.setWidth(3);
-	
-	scoreViewPort()->setBorder(p);
-	scoreViewPort()->setPlaying(true);	// set the deadlock for borders
-	
 	// list of all the music element lists (ie. streams) taken from all the contexts
 	QList< QList<CAMusElement*> > stream; 
 	QVector<unsigned char> message;	// midi 3-byte message sent to midi device
-
-	QList<CADrawableMusElement *> oldSelection;
-	oldSelection = scoreViewPort()->selection();
-	scoreViewPort()->clearSelection();
-	
+		
 	// initializes all the streams, indices, repeat barlines etc.
-	initStreams( scoreViewPort()->sheet() );
+	initStreams( sheet() );
 	
 	if ( !streamCount() )
 		stop();
@@ -95,10 +95,6 @@ void CAPlayback::run() {
 						midiDevice()->send(message);
 					message.clear();
 				}
-				scoreViewPort()->removeFromSelection( scoreViewPort()->findMElement(_curPlaying[i]) );
-				//_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
-			    //_scoreViewPort->repaint();
-				
 				_curPlaying.removeAt(i--);				
 			}
 		}
@@ -123,11 +119,6 @@ void CAPlayback::run() {
 					message.clear();
 				}
 				_curPlaying << static_cast<CAPlayable*>(streamAt(i).at(streamIdx(i)));
-				
-				scoreViewPort()->addToSelection( scoreViewPort()->findMElement( streamAt(i).at(streamIdx(i)) ) );
-
-				//_scoreViewPort->setRepaintArea(new QRect(drawable->xPos(), drawable->yPos(), drawable->width(), drawable->height()));			      	
-				//_scoreViewPort->repaint();
 				
 				int delta;
 				if ( (delta = streamAt(i).at(streamIdx(i))->timeStart() + streamAt(i).at(streamIdx(i))->timeLength() - _curTime[i]) < minLength
@@ -161,10 +152,7 @@ void CAPlayback::run() {
 		}
 	}
 	
-	
-	scoreViewPort()->clearSelection();
-	scoreViewPort()->addToSelection( oldSelection );
-	scoreViewPort()->unsetBorder();
+	_curPlaying.clear();
 	stop();
 }
 
@@ -172,7 +160,6 @@ void CAPlayback::run() {
 	The nice and the right way to stop the playback.
 */
 void CAPlayback::stop() {
-	scoreViewPort()->setPlaying(false);
 	_stop = true;
 }
 

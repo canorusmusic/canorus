@@ -1,5 +1,5 @@
 /*! 
-	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -18,9 +18,9 @@ class CAMusElement;
 class CAPlayable;
 
 class CAPlayback : public QThread {
-	Q_OBJECT
 public:
-	CAPlayback(CAScoreViewPort *v, CAMidiDevice *m);
+	CAPlayback(CAScoreViewPort*, CAMidiDevice *);
+	CAPlayback(CASheet*, CAMidiDevice *);
 	~CAPlayback();
 	
 	void run();
@@ -30,7 +30,10 @@ public:
 	inline void setInitTimeStart(int t) { _initTimeStart = t; }
 	inline CAMidiDevice *midiDevice() { return _midiDevice; }
 	inline CAScoreViewPort *scoreViewPort() { return _scoreViewPort; }
-
+	inline CASheet *sheet() { return _sheet; }
+	inline void setSheet( CASheet *s ) { _sheet = s; }
+	inline QList<CAPlayable*>& curPlaying() { return _curPlaying; }
+	
 private:
 	void initStreams( CASheet *sheet );
 	void loopUntilPlayable( int i, bool ignoreRepeats=false );
@@ -44,6 +47,8 @@ private:
 	
 	CAScoreViewPort *_scoreViewPort;
 	inline void setScoreViewPort( CAScoreViewPort *v ) { _scoreViewPort = v; }
+	
+	CASheet *_sheet;
 	
 	CAMidiDevice *_midiDevice;
 	inline void setMidiDevice( CAMidiDevice *d ) { _midiDevice = d; }

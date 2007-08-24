@@ -230,8 +230,9 @@ private slots:
 	void on_uiSettings_triggered();
 	
 	// Voice
-	void onUiVoiceNumValChanged(int);
+	void on_uiVoiceNum_valChanged(int);
 	void on_uiVoiceName_returnPressed();
+	void on_uiVoiceInstrument_currentIndexChanged(int);
 	void on_uiRemoveVoice_triggered();
 	void on_uiVoiceStemDirection_toggled(bool, int);
 	
@@ -264,7 +265,7 @@ private slots:
 	
 	void playbackFinished();
 	void onScoreViewPortSelectionChanged();
-	//void on_repaintTimer_timeout();	///Used for repaint events
+	void onRepaintTimerTimeout();
 	
 private:	
 	////////////////////////////////////
@@ -289,6 +290,7 @@ private:
 	bool _animatedScroll;
 	bool _lockScrollPlayback;
 	CAViewPort *_playbackViewPort;
+	QList<CADrawableMusElement*> _prePlaybackSelection;
 	QTimer *_repaintTimer;
 	bool _rebuildUILock;
 	inline void setRebuildUILock(bool l) { _rebuildUILock = l; }
@@ -361,6 +363,7 @@ private:
 			// QAction       *uiNewVoice;  // made by Qt Designer
 			CALCDNumber      *uiVoiceNum;
 			QLineEdit        *uiVoiceName;
+			QComboBox        *uiVoiceInstrument;
 			// QAction       *uiRemoveVoice; // made by Qt Designer
 			CAMenuToolButton *uiVoiceStemDirection;
 			// QAction       *uiVoiceProperties; // made by Qt Designer

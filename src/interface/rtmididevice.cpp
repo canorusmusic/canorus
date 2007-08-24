@@ -85,7 +85,7 @@ bool CARtMidiDevice::openInputPort(int port) {
 	Callback function which gets called by RtMidi automatically when an information on MidiIn device has come.
 */
 void CARtMidiDevice::midiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData ) {
-	emit midiInEvent( QVector<unsigned char>::fromStdVector(*message) );
+	//emit midiInEvent( QVector<unsigned char>::fromStdVector(*message) );
 }
 
 void CARtMidiDevice::closeOutputPort() {

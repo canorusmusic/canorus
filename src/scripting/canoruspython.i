@@ -75,6 +75,10 @@ void markDelete( PyObject* ); // function used to delete Canorus objects inside 
 %include "scripting/functionmarking.i"
 %include "scripting/functionmarkingcontext.i"
 
+%include "scripting/playback.i"
+%include "scripting/mididevice.i"
+%include "scripting/rtmididevice.i"
+
 %{	//toPythonObject() function
 #include "scripting/swigpython.h"	//needed for CAClassType
 

@@ -38,6 +38,7 @@ public:
 	/////////////////
 	CACanorusML();
 	static CADocument* openDocument(QXmlInputSource* in);
+	static CADocument* openDocumentFromFile( const QString fileName );
 	
 	bool startElement(const QString& namespaceURI, const QString& localName, const QString& qName,
 	                  const QXmlAttributes& attributes);

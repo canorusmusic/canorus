@@ -84,6 +84,9 @@ public:
 	bool updateTimes(CAMusElement *elt, int length=0);
 	bool updateTimesAfter(CAMusElement *eltBefore, int length);
 	
+	CAVoice *clone();
+	CAVoice *clone( CAStaff *newStaff );
+	
 private:
 	void updateTimes(int idx, int length=0);
 	QList<CAMusElement *> _musElementList;

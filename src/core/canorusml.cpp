@@ -76,6 +76,23 @@ CACanorusML::~CACanorusML() {
 }
 
 /*!
+	Opens the document specified by the file name directly.
+	
+	This method is provided for convenience.
+*/
+CADocument *CACanorusML::openDocumentFromFile( const QString fileName ) {
+	QFile file(fileName);
+	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		QXmlInputSource in(&file);
+		CADocument *doc = openDocument(&in);
+		file.close();
+		return doc;
+	} else {
+		return 0;
+	}
+}
+
+/*!
 	Saves the given \a document to the \a fileName.
 	
 	This method is provided for convenience.

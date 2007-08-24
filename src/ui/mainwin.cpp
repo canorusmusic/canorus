@@ -181,8 +181,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	// Create plugins menus and toolbars in this main window
 	CAPluginManager::enablePlugins(this);
 	
-	// Connects MIDI IN callback function to a local slot
-	connect( CACanorus::midiDevice(), SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(onMidiInEvent( QVector<unsigned char> )) );
+	// Connects MIDI IN callback function to a local slot. Not implemented yet.
+	//connect( CACanorus::midiDevice(), SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(onMidiInEvent( QVector<unsigned char> )) );
 	
 	// Connect QTimer so it increases the local document edited time every second
 	restartTimeEditedTime();
@@ -277,10 +277,14 @@ void CAMainWin::createCustomActions() {
 		uiAssociatedVoice->hide();
 	
 	uiVoiceToolBar = new QToolBar( tr("Voice ToolBar"), this );
-	uiVoiceNum = new CALCDNumber( 0, 20, 0, "Voice number" );
+	uiVoiceNum = new CALCDNumber( 0, 20, this, "Voice number" );
 		uiVoiceNum->setObjectName( "uiVoiceNum" );
 		uiVoiceNum->setToolTip(tr("Current Voice number"));
-		connect( uiVoiceNum, SIGNAL(valChanged( int )), this, SLOT(onUiVoiceNumValChanged( int )) );
+		//connect( uiVoiceNum, SIGNAL(valChanged( int )), this, SLOT(onUiVoiceNumValChanged( int )) );
+	uiVoiceInstrument = new QComboBox( this );
+		uiVoiceInstrument->setObjectName("uiVoiceInstrument");
+		uiVoiceInstrument->setToolTip(tr("Voice instrument"));
+		uiVoiceInstrument->addItems(CAMidiDevice::GM_INSTRUMENTS);
 	uiVoiceName = new QLineEdit( this );
 		uiVoiceName->setObjectName( "uiVoiceName" );
 		uiVoiceName->setToolTip(tr("Voice name"));
@@ -501,6 +505,7 @@ void CAMainWin::setupCustomUi() {
 	uiVoiceToolBar->addAction( uiNewVoice );
 	uiVoiceToolBar->addWidget( uiVoiceNum );
 	uiVoiceToolBar->addWidget( uiVoiceName );
+	uiVoiceToolBar->addWidget( uiVoiceInstrument );
 	uiVoiceToolBar->addAction( uiRemoveVoice );
 	uiVoiceStemDirection->setDefaultAction( uiVoiceToolBar->addWidget( uiVoiceStemDirection ) );
 	uiVoiceStemDirection->defaultAction()->setToolTip(tr("Voice stem direction"));
@@ -853,7 +858,7 @@ void CAMainWin::on_uiUndo_toggled( bool checked, int row ) {
 		}
 	}
 	CACanorus::rebuildUI( document(), 0 );
-	onUiVoiceNumValChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
+	on_uiVoiceNum_valChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
 }
 
 void CAMainWin::on_uiRedo_toggled( bool checked, int row ) {
@@ -863,7 +868,7 @@ void CAMainWin::on_uiRedo_toggled( bool checked, int row ) {
 		}
 	}
 	CACanorus::rebuildUI( document(), 0 );
-	onUiVoiceNumValChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
+	on_uiVoiceNum_valChanged( uiVoiceNum->getRealValue() ); // updates current voice in score viewport
 }
 
 /*!
@@ -1826,12 +1831,18 @@ void CAMainWin::playbackFinished() {
 	_playback->disconnect();
 	//delete _playback;	/// \todo crashes on application close, if deleted! Is this ok? -Matevz
 	uiPlayFromSelection->setChecked(false);
-	
+	static_cast<CAScoreViewPort*>(_playbackViewPort)->setPlaying(false);
+
 	_repaintTimer->stop();
 	_repaintTimer->disconnect();	/// \todo crashes, if disconnected sometimes. -Matevz
 	delete _repaintTimer;			/// \todo crashes, if deleted. -Matevz
 	CACanorus::midiDevice()->closeOutputPort();
 	
+	static_cast<CAScoreViewPort*>(_playbackViewPort)->clearSelection();
+	static_cast<CAScoreViewPort*>(_playbackViewPort)->addToSelection( _prePlaybackSelection );
+	static_cast<CAScoreViewPort*>(_playbackViewPort)->unsetBorder();
+	_prePlaybackSelection.clear();
+
 	setMode( mode() );
 }
 
@@ -1845,25 +1856,43 @@ void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
 		_repaintTimer->setInterval(100);
 		_repaintTimer->start();
 		//connect(_repaintTimer, SIGNAL(timeout()), this, SLOT(on_repaintTimer_timeout())); //TODO: timeout is connected directly to repaint() directly. This should be optimized in the future -Matevz
-		connect(_repaintTimer, SIGNAL(timeout()), _currentViewPort, SLOT(repaint()));
-		_playbackViewPort = currentViewPort();
+		connect( _repaintTimer, SIGNAL(timeout()), this, SLOT( onRepaintTimerTimeout() ) );
 		
 		_playback = new CAPlayback(currentScoreViewPort(), CACanorus::midiDevice());
 		if ( currentScoreViewPort()->selection().size() && currentScoreViewPort()->selection().at(0)->musElement() )
 			_playback->setInitTimeStart( currentScoreViewPort()->selection().at(0)->musElement()->timeStart() );
 		
 		connect(_playback, SIGNAL(finished()), this, SLOT(playbackFinished()));
+		
+		QPen p;
+		p.setColor(Qt::green);
+		p.setWidth(3);
+		
+		_playbackViewPort = currentViewPort();
+		currentScoreViewPort()->setBorder(p);
+		currentScoreViewPort()->setPlaying(true);	// set the deadlock for borders
+		
+		// Remember old selection
+		_prePlaybackSelection = currentScoreViewPort()->selection();
+		currentScoreViewPort()->clearSelection();
+		
 		_playback->start();
 	} else {
 		_playback->stop();
 	}
 }
 
-/*void CAMainWin::on_repaintTimer_timeout() { //TODO: timeout is connected directly to repaint() currently
-	if (_lockScrollPlayback && (_currentViewPort->viewPortType() == CAViewPort::ScoreViewPort))
-		((CAScoreViewPort*)_currentViewPort)->zoomToSelection(_animatedScroll);
-	_currentViewPort->repaint();
-}*/
+/*!
+	Called every few miliseconds during playback to repaint score viewport as the GUI can
+	only be repainted from the main thread.
+*/
+void CAMainWin::onRepaintTimerTimeout() {
+	CAScoreViewPort *sv = static_cast<CAScoreViewPort*>(_playbackViewPort);
+	sv->clearSelection();
+	for (int i=0; i<_playback->curPlaying().size(); i++)
+		sv->addToSelection( static_cast<CAMusElement*>(_playback->curPlaying().at(i)) );
+	sv->repaint();
+}
 
 void CAMainWin::on_uiAnimatedScroll_toggled(bool val) {
 	_animatedScroll = val;
@@ -1934,36 +1963,29 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 	Returns pointer to the opened document or null if opening the document failed.
 */
 CADocument *CAMainWin::openDocument(QString fileName) {
-	QFile file(fileName);
-	if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		QXmlInputSource input(&file);
-		CADocument *openedDoc = CACanorusML::openDocument(&input);
-		if (openedDoc) {
-			if (CACanorus::mainWinCount(document())==1) {
-				CACanorus::undo()->deleteUndoStack( document() ); 
-				delete document();
-			}
-			
-			setDocument(openedDoc);
-			CACanorus::undo()->createUndoStack( document() );
-			
-			openedDoc->setFileName(fileName);
-			rebuildUI(); // local rebuild only
-			uiTabWidget->setCurrentIndex(0);
-			
-			// select the first context automatically
-			if ( document() && document()->sheetCount() && document()->sheetAt(0)->contextCount() )
-				currentScoreViewPort()->selectContext( document()->sheetAt(0)->contextAt(0) );
-			updateToolBars();
+	CADocument *openedDoc = CACanorusML::openDocumentFromFile(fileName);
+	if (openedDoc) {
+		if (CACanorus::mainWinCount(document())==1) {
+			CACanorus::undo()->deleteUndoStack( document() ); 
+			delete document();
 		}
 		
-		CACanorus::restartTimeEditedTimes( document() );
-		file.close();
+		setDocument(openedDoc);
+		CACanorus::undo()->createUndoStack( document() );
+		
+		openedDoc->setFileName(fileName);
+		rebuildUI(); // local rebuild only
+		uiTabWidget->setCurrentIndex(0);
+		
+		// select the first context automatically
+		if ( document() && document()->sheetCount() && document()->sheetAt(0)->contextCount() )
+			currentScoreViewPort()->selectContext( document()->sheetAt(0)->contextAt(0) );
+		updateToolBars();
 		
 		return openedDoc;
-	} else {
-		return 0;
 	}
+	
+	return 0;
 }
 
 /*!
@@ -2069,7 +2091,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 /*!
 	Called when a user changes the current voice number.
 */
-void CAMainWin::onUiVoiceNumValChanged(int voiceNr) {
+void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
 	updateVoiceToolBar();
 	if ( currentScoreViewPort() ) {
 		if ( voiceNr &&
@@ -2126,6 +2148,16 @@ void CAMainWin::on_uiVoiceName_returnPressed() {
 		CACanorus::undo()->pushUndoCommand();
 		voice->setName(uiVoiceName->text());
 	}
+}
+
+/*!
+	Changes voice instrument.
+*/
+void CAMainWin::on_uiVoiceInstrument_currentIndexChanged( int index ) {
+	if ( !currentVoice() || index < 0 )
+		return;
+	
+	currentVoice()->setMidiProgram( (unsigned char)index );
 }
 
 void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
@@ -2728,12 +2760,15 @@ void CAMainWin::updateVoiceToolBar() {
 				CAVoice *curVoice = (voiceNr<=staff->voiceCount()?staff->voiceAt(voiceNr-1):staff->voiceAt(0));
 				uiVoiceName->setText(curVoice->name());
 				uiVoiceName->setEnabled(true);
+				uiVoiceInstrument->setEnabled(true);
+					uiVoiceInstrument->setCurrentIndex( currentVoice()->midiProgram() );
 				uiRemoveVoice->setEnabled(true);
 				uiVoiceStemDirection->setCurrentId( curVoice->stemDirection() );
 				uiVoiceStemDirection->setEnabled(true);
 //				uiVoiceProperties->setEnabled(true);
 			} else {
 				uiVoiceName->setEnabled(false);
+				uiVoiceInstrument->setEnabled(false);
 				uiRemoveVoice->setEnabled(false);
 				uiVoiceStemDirection->setEnabled(false);
 				uiVoiceProperties->setEnabled(false);
