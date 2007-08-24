@@ -6,6 +6,7 @@
 */
 
 #include "core/mimedata.h"
+#include "core/muselement.h"
 
 /*!
 	Subclass of QMimeData which incorporates list of Music elements for
@@ -26,6 +27,8 @@ CAMimeData::CAMimeData( QList<CAMusElement*> list )
 }
 
 CAMimeData::~CAMimeData() {
+	for (int i=0 ;i<musElements().size(); i++)
+		delete musElements().at(i);
 }
 
 QStringList CAMimeData::formats() const {

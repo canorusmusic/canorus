@@ -157,7 +157,7 @@
            <enum>QFrame::Plain</enum>
           </property>
           <property name="currentIndex" >
-           <number>2</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="editorSettings" >
            <widget class="QCheckBox" name="uiFinaleLyricsCheckBox" >
@@ -775,7 +775,7 @@
                 </sizepolicy>
                </property>
                <property name="text" >
-                <string comment="Auto save every %n minutes." >Recovery saving interval in minutes</string>
+                <string comment="Auto save every %n minutes." >Recovery saving interval in minutes:</string>
                </property>
               </widget>
              </item>
@@ -788,7 +788,7 @@
                 </size>
                </property>
                <property name="toolTip" >
-                <string>Automatically save document every specified number of ellapsed minutes. 0 to disable auto save.</string>
+                <string>Automatically make recovery documents every specified number of ellapsed minutes. 0 to disable recovery saving.</string>
                </property>
               </widget>
              </item>
