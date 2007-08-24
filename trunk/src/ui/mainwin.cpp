@@ -24,8 +24,6 @@
 #include <iostream>
 
 #include "ui/mainwin.h"
-//#include "ui/keysigpsp.h"
-#include "ui/timesigpsp.h"
 #include "ui/settingsdialog.h"
 
 #include "interface/playback.h"
@@ -237,13 +235,13 @@ void CAMainWin::createCustomActions() {
 		uiClefType->addButton( QIcon("images/clefalto.svg"), CAClef::Alto, tr("Alto Clef") );
 	uiTimeSigType = new CAMenuToolButton( tr("Select Time Signature" ), 3, this );
 		uiTimeSigType->setObjectName( "uiTimeSigType" );
-		uiTimeSigType->addButton( QIcon("images/tsc.svg"), TS_44 );
-		uiTimeSigType->addButton( QIcon("images/tsab.svg"), TS_22 );
-		uiTimeSigType->addButton( QIcon("images/ts34.svg"), TS_34 );
-		uiTimeSigType->addButton( QIcon("images/ts24.svg"), TS_24 );
-		uiTimeSigType->addButton( QIcon("images/ts38.svg"), TS_38 );
-		uiTimeSigType->addButton( QIcon("images/ts68.svg"), TS_68 );
-		uiTimeSigType->addButton( QIcon("images/tscustom.svg"), TS_CUSTOM );			
+		uiTimeSigType->addButton( QIcon("images/tsc.svg"), 44 );
+		uiTimeSigType->addButton( QIcon("images/tsab.svg"), 22 );
+		uiTimeSigType->addButton( QIcon("images/ts34.svg"), 34 );
+		uiTimeSigType->addButton( QIcon("images/ts24.svg"), 24 );
+		uiTimeSigType->addButton( QIcon("images/ts38.svg"), 38 );
+		uiTimeSigType->addButton( QIcon("images/ts68.svg"), 68 );
+		uiTimeSigType->addButton( QIcon("images/tscustom.svg"), 0 );			
 	uiBarlineType = new CAMenuToolButton( tr("Select Barline" ), 4, this );
 		uiBarlineType->setObjectName( "uiBarlineType" );
 		uiBarlineType->addButton( QIcon("images/barlinesingle.svg"), CABarline::Single, tr("Single Barline") );
@@ -475,7 +473,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertToolBar->addAction( uiInsertKeySig );
 	uiTimeSigType->setDefaultAction( uiInsertToolBar->addWidget( uiTimeSigType ) );
 	uiTimeSigType->defaultAction()->setToolTip(tr("Insert new time signature"));
-	uiTimeSigType->setCurrentId( TS_44 );
+	uiTimeSigType->setCurrentId( 44 );
 	connect( uiInsertTimeSig, SIGNAL( triggered() ), uiTimeSigType, SLOT( click() ) );
 	uiBarlineType->setDefaultAction( uiInsertToolBar->addWidget( uiBarlineType ) );
 	uiBarlineType->defaultAction()->setToolTip(tr("Insert new barline"));
@@ -2350,19 +2348,19 @@ void CAMainWin::on_uiTimeSigBeats_valueChanged(int beats) {
 	if (mode()==InsertMode) {
 		musElementFactory()->setTimeSigBeats( beats );
 		if (uiTimeSigBeats->value()==4 && uiTimeSigBeat->value()==4)
-			uiTimeSigType->setCurrentId( TS_44 );
+			uiTimeSigType->setCurrentId( 44 );
 		else if (uiTimeSigBeats->value()==3 && uiTimeSigBeat->value()==4)
-			uiTimeSigType->setCurrentId( TS_34 );
+			uiTimeSigType->setCurrentId( 34 );
 		else if (uiTimeSigBeats->value()==2 && uiTimeSigBeat->value()==4)
-			uiTimeSigType->setCurrentId( TS_24 );
+			uiTimeSigType->setCurrentId( 24 );
 		else if (uiTimeSigBeats->value()==2 && uiTimeSigBeat->value()==2)
-			uiTimeSigType->setCurrentId( TS_22 );
+			uiTimeSigType->setCurrentId( 22 );
 		else if (uiTimeSigBeats->value()==3 && uiTimeSigBeat->value()==8)
-			uiTimeSigType->setCurrentId( TS_38 );
+			uiTimeSigType->setCurrentId( 38 );
 		else if (uiTimeSigBeats->value()==6 && uiTimeSigBeat->value()==8)
-			uiTimeSigType->setCurrentId( TS_68 );
+			uiTimeSigType->setCurrentId( 68 );
 		else
-			uiTimeSigType->setCurrentId( TS_CUSTOM );
+			uiTimeSigType->setCurrentId( 0 );
 	} else if ( mode()==EditMode ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if ( v && v->selection().size() ) {
@@ -2379,19 +2377,19 @@ void CAMainWin::on_uiTimeSigBeat_valueChanged(int beat) {
 	if (mode()==InsertMode) {
 		musElementFactory()->setTimeSigBeat( beat );
 		if (uiTimeSigBeats->value()==4 && uiTimeSigBeat->value()==4)
-			uiTimeSigType->setCurrentId( TS_44 );
+			uiTimeSigType->setCurrentId( 44 );
 		else if (uiTimeSigBeats->value()==3 && uiTimeSigBeat->value()==4)
-			uiTimeSigType->setCurrentId( TS_34 );
+			uiTimeSigType->setCurrentId( 34 );
 		else if (uiTimeSigBeats->value()==2 && uiTimeSigBeat->value()==4)
-			uiTimeSigType->setCurrentId( TS_24 );
+			uiTimeSigType->setCurrentId( 24 );
 		else if (uiTimeSigBeats->value()==2 && uiTimeSigBeat->value()==2)
-			uiTimeSigType->setCurrentId( TS_22 );
+			uiTimeSigType->setCurrentId( 22 );
 		else if (uiTimeSigBeats->value()==3 && uiTimeSigBeat->value()==8)
-			uiTimeSigType->setCurrentId( TS_38 );
+			uiTimeSigType->setCurrentId( 38 );
 		else if (uiTimeSigBeats->value()==6 && uiTimeSigBeat->value()==8)
-			uiTimeSigType->setCurrentId( TS_68 );
+			uiTimeSigType->setCurrentId( 68 );
 		else
-			uiTimeSigType->setCurrentId( TS_CUSTOM );
+			uiTimeSigType->setCurrentId( 0 );
 	} else if ( mode()==EditMode ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if ( v && v->selection().size() ) {
@@ -2406,36 +2404,32 @@ void CAMainWin::on_uiTimeSigBeat_valueChanged(int beat) {
 
 void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 	if (checked) {
-		// Read currently selected entry from tool button menu
-		CAFixedTimeSig type = static_cast<CAFixedTimeSig>(buttonId);
-		
-		// New (fixed) time signature
-		switch( type ) {
-			case TS_44:
+		switch( buttonId ) {
+			case 44:
 			  uiTimeSigBeats->setValue( 4 );
 			  uiTimeSigBeat->setValue( 4 );
 			  break;
-			case TS_22:
+			case 22:
 			  uiTimeSigBeats->setValue( 2 );
 			  uiTimeSigBeat->setValue( 2 );
 			  break;
-			case TS_34:
+			case 34:
 			  uiTimeSigBeats->setValue( 3 );
 			  uiTimeSigBeat->setValue( 4 );
 			  break;
-			case TS_24:
+			case 24:
 			  uiTimeSigBeats->setValue( 2 );
 			  uiTimeSigBeat->setValue( 4 );
 			  break;
-			case TS_38:
+			case 38:
 			  uiTimeSigBeats->setValue( 3 );
 			  uiTimeSigBeat->setValue( 8 );
 			  break;
-			case TS_68:
+			case 68:
 			  uiTimeSigBeats->setValue( 6 );
 			  uiTimeSigBeat->setValue( 8 );
 			  break;
-			case TS_UNKNOWN:
+			case 0:
 			  break;
 		}
 		musElementFactory()->setTimeSigBeats( uiTimeSigBeats->value() );

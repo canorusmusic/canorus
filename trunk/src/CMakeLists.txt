@@ -57,7 +57,6 @@ SET(Canorus_MOCs
 	ui/mainwin.h	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	ui/settingsdialog.h
 	ui/pluginaction.h
-	widgets/keyoffs.h
 	widgets/lcdnumber.h
 	widgets/viewport.h
 	widgets/viewportcontainer.h
@@ -108,7 +107,6 @@ SET(Canorus_Scripting_Srcs	# Sources meant for bridging C++<->scripting language
 )
 
 SET(Canorus_Widget_Srcs  	# Sources for all the widgets present in Canorus
-	widgets/keyoffs.cpp
 	widgets/lcdnumber.cpp
 	widgets/scoreviewport.cpp
 	widgets/sourceviewport.cpp
