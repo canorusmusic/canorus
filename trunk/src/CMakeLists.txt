@@ -48,7 +48,6 @@ ENDIF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 # Define the UI source files used by Canorus
 SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compiled
 	ui/mainwin.ui
-	ui/timesig.ui
 	ui/settingsdialog.ui
 )
 

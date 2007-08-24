@@ -436,7 +436,13 @@ void CAMainWin::setupCustomUi() {
 	
 	// Standard Toolbar
 	uiUndo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiUndo ) );
+	uiUndo->defaultAction()->setText(tr("Undo"));
+    uiUndo->defaultAction()->setShortcut(QApplication::translate("uiMainWindow", "Ctrl+Z", 0, QApplication::UnicodeUTF8));
+	uiMenuEdit->insertAction( uiCut, uiUndo->defaultAction() );
 	uiRedo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiRedo ) );
+	uiRedo->defaultAction()->setText(tr("Redo"));
+    uiRedo->defaultAction()->setShortcut(QApplication::translate("uiMainWindow", "Ctrl+Y", 0, QApplication::UnicodeUTF8));
+	uiMenuEdit->insertAction( uiCut, uiRedo->defaultAction() );
 	
 	// Hide the specialized pre-created toolbars in Qt designer.
 	/// \todo When Qt Designer have support for setting the visibility property, do this in Qt Designer already! -Matevz
@@ -867,14 +873,14 @@ void CAMainWin::on_uiRedo_toggled( bool checked, int row ) {
 */
 void CAMainWin::updateUndoRedoButtons() {
 	if ( CACanorus::undo()->canUndo( document() ) )
-		uiUndo->setEnabled(true);
+		uiUndo->defaultAction()->setEnabled(true);
 	else
-		uiUndo->setEnabled(false);
+		uiUndo->defaultAction()->setEnabled(false);
 	
 	if ( CACanorus::undo()->canRedo( document() ) )
-		uiRedo->setEnabled(true);
+		uiRedo->defaultAction()->setEnabled(true);
 	else
-		uiRedo->setEnabled(false);
+		uiRedo->defaultAction()->setEnabled(false);
 }
 
 /*!
@@ -3054,6 +3060,7 @@ void CAMainWin::on_uiCut_triggered() {
 		CACanorus::undo()->createUndoCommand( document(), tr("cut", "undo") );
 		copySelection( currentScoreViewPort() );
 		deleteSelection( currentScoreViewPort(), false, false ); // and don't make undo as we already make it
+		CACanorus::undo()->pushUndoCommand();
 	}	
 }
 
@@ -3075,7 +3082,7 @@ void CAMainWin::copySelection( CAScoreViewPort *v ) {
 		
 		for (int i=0; i<v->selection().size(); i++) {
 			if (v->selection().at(i)->musElement() && !list.contains( v->selection().at(i)->musElement())) {
-				list << v->selection().at(i)->musElement();
+				list << v->selection().at(i)->musElement()->clone(); // Add clones to clipboard. They are destroyed in CAMimeData destructor!
 			}
 		}
 		
@@ -3129,8 +3136,10 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool d
 			} else {
 				(*i)->context()->removeMusElement(*i);
 			}
-		}			
-		CACanorus::undo()->pushUndoCommand();
+		}
+		if (doUndo)
+			CACanorus::undo()->pushUndoCommand();
+		
 		v->clearSelection();
 		CACanorus::rebuildUI(document(), v->sheet());
 	}	
@@ -3153,23 +3162,32 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 		if (drawableLeft)
 			left = drawableLeft->musElement();
 		
+		QList<CAMusElement*> newEltList;
 		QList<CAMusElement*> eltList = static_cast<const CAMimeData*>(QApplication::clipboard()->mimeData())->musElements();
 		for ( int i=0; i<eltList.size(); i++ ) {
 			CAMusElement *newElt;
 			if ( eltList[i]->isPlayable() ) {
 				newElt = static_cast<CAPlayable*>(eltList[i])->clone(voice);
 				newElt->setTimeStart(left?left->timeEnd():0);
-				voice->insertMusElementAfter( newElt, left );
+				voice->insertMusElement( newElt );
 			} else {
 				newElt = eltList[i]->clone();
 				newElt->setContext( staff );
 				newElt->setTimeStart(left?left->timeEnd():0);
 				staff->insertSignAfter( newElt, left );
 			}
+			newEltList << newElt;
 			left = newElt;
 		}
 		
+		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI( document(), currentSheet() );
+		
+		// select paste elements
+		currentScoreViewPort()->clearSelection();
+		for (int i=0; i<newEltList.size(); i++)
+			currentScoreViewPort()->addToSelection( newEltList[i] );
+		currentScoreViewPort()->repaint();
 	}
 }
 
