@@ -35,11 +35,14 @@ void CASwigPython::init() {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("CanorusPython.py").at(0)+"')").toStdString().c_str());
 	
 #ifdef Q_WS_WIN
-	if (CACanorus::locateResource("_CanorusPython.dll").size())
+	if (CACanorus::locateResource("_CanorusPython.dll").size()) {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("_CanorusPython.dll").at(0)+"')").toStdString().c_str());
+		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("pythonLib").at(0)+"')").toStdString().c_str());
+	}
 #else
-	if (CACanorus::locateResource("_CanorusPython.so").size())
+	if (CACanorus::locateResource("_CanorusPython.so").size()) {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("_CanorusPython.so").at(0)+"')").toStdString().c_str());
+	}
 #endif
 	
 	PyRun_SimpleString("import CanorusPython");
