@@ -481,8 +481,8 @@ IF(MINGW)
 	# Install Qt libs
 	INSTALL( FILES ${QT_BIN_DIR}/QtCore4.dll ${QT_BIN_DIR}/QtGui4.dll ${QT_BIN_DIR}/QtSvg4.dll ${QT_BIN_DIR}/QtXml4.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
 	
-	# Install qsvg1.dll plugin for rendering SVG icons
-	INSTALL( FILES ${QT_PLUGINS_DIR}/iconengines/qsvg1.dll DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR}/iconengines" )
+	# Install qsvg plugin for rendering SVG icons
+	INSTALL( FILES ${QT_PLUGINS_DIR}/iconengines/qsvg4.dll DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR}/iconengines" )
 	
 	# Install mingwm10.dll
 	IF(MINGW)
