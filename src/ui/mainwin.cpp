@@ -747,7 +747,7 @@ void CAMainWin::on_uiCloseDocument_triggered() {
 	Shows the current score in CanorusML syntax in a new or the current viewport.
 */
 void CAMainWin::on_uiCanorusMLSource_triggered() {
-	CASourceViewPort *v = new CASourceViewPort(document(), static_cast<QWidget*>(currentViewPort()->parent()));
+	CASourceViewPort *v = new CASourceViewPort(document(), 0);
 	initViewPort( v );
 	currentViewPortContainer()->addViewPort( v );
 	
@@ -2520,24 +2520,25 @@ void CAMainWin::on_uiSettings_triggered() {
 
 void CAMainWin::on_uiLilyPondSource_triggered() {
 	CAContext *context = currentContext();
-	if ( context ) {
-		CASourceViewPort *v=0;
-		if (context->contextType()==CAContext::Staff) {
-			CAStaff *staff = static_cast<CAStaff*>(static_cast<CAScoreViewPort*>(currentViewPort())->currentContext()->context());
-			int voiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
-			CAVoice *voice = staff->voiceAt( voiceNum );
-			v = new CASourceViewPort(voice, 0);
-		} else
-		if (context->contextType()==CAContext::LyricsContext) {
-			v = new CASourceViewPort(static_cast<CALyricsContext*>(context), 0);
-		}
-		
-		initViewPort( v );
-		currentViewPortContainer()->addViewPort( v );
-		
-		uiUnsplitAll->setEnabled(true);
-		uiCloseCurrentView->setEnabled(true);
+	if ( !context ) 
+		return;
+	
+	CASourceViewPort *v=0;
+	CAStaff *staff = 0;
+	if (staff = currentStaff()) {
+		int voiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
+		CAVoice *voice = staff->voiceAt( voiceNum );
+		v = new CASourceViewPort(voice, 0);
+	} else
+	if (context->contextType()==CAContext::LyricsContext) {
+		v = new CASourceViewPort(static_cast<CALyricsContext*>(context), 0);
 	}
+	
+	initViewPort( v );
+	currentViewPortContainer()->addViewPort( v );
+	
+	uiUnsplitAll->setEnabled(true);
+	uiCloseCurrentView->setEnabled(true);
 }
 
 /*!
