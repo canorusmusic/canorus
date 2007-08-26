@@ -36,6 +36,9 @@ ENDIF(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
 FIND_PACKAGE(PythonLibs)
 IF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 	MESSAGE("Python Library and Development files found. Python extensions enabled.")
+	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" PYTHON_LIB_TMP2 "${PYTHON_LIBRARY}")
+	STRING(REGEX REPLACE "\\\\" "/" PYTHON_LIB_TMP "${PYTHON_LIB_TMP2}")  # Replace back slashes to slashes
+	SET( PYTHON_LIB "${PYTHON_LIB_TMP}/Lib/" )
 	SET(USE_PYTHON True)
 ELSE(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 	MESSAGE("Python Library and Development files *not* found. Python extensions disabled!")
@@ -52,9 +55,9 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 )
 
 # Define the MOC source files used by Canorus
-SET(Canorus_MOCs
+SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	core/autorecovery.h
-	ui/mainwin.h	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
+	ui/mainwin.h
 	ui/settingsdialog.h
 	ui/pluginaction.h
 	widgets/lcdnumber.h
@@ -106,7 +109,7 @@ SET(Canorus_Scripting_Srcs	# Sources meant for bridging C++<->scripting language
 	scripting/swigpython.cpp
 )
 
-SET(Canorus_Widget_Srcs  	# Sources for all the widgets present in Canorus
+SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/lcdnumber.cpp
 	widgets/scoreviewport.cpp
 	widgets/sourceviewport.cpp
@@ -144,7 +147,7 @@ SET(Canorus_Drawable_Srcs	# Drawable instances of the data
 	drawable/drawablefunctionmarking.cpp
 )
 
-SET(Canorus_Interface_Srcs	# Classes which glue the UI and Data part of the MVC model. Engraver, Playback, Plugin manager and others belong here.
+SET(Canorus_Interface_Srcs	# Other interfaces like Engraver, Playback, Plugin manager and others belong here.
 	interface/engraver.cpp
 	interface/playback.cpp
 	interface/rtmididevice.cpp
@@ -208,11 +211,9 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	interface/playback.cpp
 )
 
-SET(Canorus_Scripts	# Official scripts shipped with Canorus.
-	scripts/newdocument.py
-)
+SET( Canorus_Scripts "scripts" ) # Official scripts shipped with Canorus.
 
-FILE(GLOB Canorus_Images "ui/images/*.png" "ui/images/*.svg")
+SET( Canorus_Images "ui/images" )
 
 # Set translation files
 FILE(GLOB Canorus_Translation_Srcs "lang/*.ts") # lang/*.ts -> Canorus_Translation_Srcs
@@ -223,7 +224,7 @@ SET(Canorus_Fonts	# Music fonts needed by Canorus
 	fonts/CenturySchL-Bold.ttf
 	fonts/CenturySchL-Ital.ttf
 	fonts/CenturySchL-Roma.ttf
-	fonts/Emmentaler-14.ttf		# emmentaler needed for notes, rests, clefs etc.
+	fonts/Emmentaler-14.ttf		# LilyPond's emmentaler needed for notes, rests, clefs etc.
 	fonts/FreeSans.ttf		# FreeSans needed for function markings
 )
 
@@ -332,11 +333,10 @@ ENDIF(USE_SWIG)
 IF(USE_RUBY)
 	INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES CPLUSPLUS ON)
-#	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES SWIG_FLAGS "-includeall")
-
+	
 	SET(CANORUS_RUBY_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusrubyRUBY_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_RUBY_WRAP_CXX} PROPERTIES GENERATED TRUE)
-
+	
 	SWIG_ADD_MODULE(CanorusRuby ruby
 		${Canorus_Swig_Srcs}
 		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
@@ -347,11 +347,10 @@ ENDIF(USE_RUBY)
 IF(USE_PYTHON)
 	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i PROPERTIES CPLUSPLUS ON)
-#	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i PROPERTIES SWIG_FLAGS "-includeall")
-
+	
 	SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspythonPYTHON_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES GENERATED TRUE)
-
+	
 	SWIG_ADD_MODULE(CanorusPython python 		# Warning! CMake renames CanorusPython automatically to _CanorusPython
 		${Canorus_Swig_Srcs}
 		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i
@@ -469,9 +468,9 @@ IF(USE_PYTHON)
 ENDIF(USE_PYTHON)
 
 # Install scripts
-INSTALL(FILES ${Canorus_Scripts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/scripts")
+INSTALL( DIRECTORY ${Canorus_Scripts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" PATTERN ".svn" EXCLUDE )
 # Install data - icons, images, sounds etc.
-INSTALL(FILES ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/images") # all images are currently included in exe
+INSTALL( DIRECTORY ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" PATTERN ".svn" EXCLUDE )
 # Install translations
 INSTALL(FILES ${Canorus_Translation_Bins} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/lang")
 # Install fonts
@@ -492,6 +491,7 @@ IF(MINGW)
 	# Install Python libs
 	IF(USE_PYTHON)
 		INSTALL( FILES ${PYTHON_LIBRARY} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
+		INSTALL( DIRECTORY ${PYTHON_LIB} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR}/pythonLib" )
 	ENDIF(USE_PYTHON)
 	
 	# Install Ruby libs
@@ -501,17 +501,16 @@ IF(MINGW)
 ENDIF(MINGW)
 
 IF(APPLE)
-
 	# Install icon & Info.plist
 	INSTALL(FILES ${Canorus_OSX_Icon} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR})
 	INSTALL(FILES ${Canorus_OSX_Info} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_OSX_APP_DIR})
-
+	
 	# FIXME: library installations disabled for now since linking bundled libs doesn't work properly.
 	# -- Sam 2007.06.09
-
+	
 	# Install Qt libs
 	#INSTALL(PROGRAMS ${Canorus_OSX_Qt_libs} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_LIB_DIR})
-
+	
 	# Install Python libs
 	IF(USE_PYTHON)
 		# OSX build requires a "framework" build of Python
@@ -519,7 +518,7 @@ IF(APPLE)
 		#SET(OSX_PYTHON_LIB /Library/Frameworks/Python.framework/Versions/Current/Python)		
 		#INSTALL(FILES ${OSX_PYTHON_LIB} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_LIB_DIR})
 	ENDIF(USE_PYTHON)
-
+	
 	# Make a list of source libraries so the packaging script knows which symbols to change
 	# Bundle Qt libs and Python with the .app, OSX comes with the correct version of Ruby already installed
 	#SET(OSX_installed_libs_file ${CANORUS_OSX_DIR}/OSX_installed_libs.txt)
