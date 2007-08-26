@@ -53,28 +53,25 @@ CAViewPortContainer::~CAViewPortContainer() {
 	Returns the newly created viewport.
 */		
 CAViewPort* CAViewPortContainer::splitVertically(CAViewPort *v) {
-	if ( !v ) v = currentViewPort();
-	
-	if ( v ) {
-		QSplitter *splitter = _viewPortMap[v];
-		CAViewPort *newViewPort = v->clone();
-		if ( splitter->orientation()==Qt::Horizontal ) {
-			addViewPort( newViewPort, splitter );
-		} else if ( splitter->count()==1 ) {
-			splitter->setOrientation( Qt::Horizontal );
-			addViewPort( newViewPort, splitter );
-		} else {
-			QSplitter *newSplitter = new QSplitter( Qt::Horizontal, 0 );
-			int idx = splitter->indexOf(v);
-			addViewPort( v, newSplitter);
-			addViewPort( newViewPort, newSplitter);
-			splitter->insertWidget( idx, newSplitter );
-		}
-		
-		return newViewPort;
-	} else {
+	if ( !v && !(v = currentViewPort()))
 		return 0;
+	
+	QSplitter *splitter = _viewPortMap[v];
+	CAViewPort *newViewPort = v->clone(0);
+	if ( splitter->orientation()==Qt::Horizontal ) {
+		addViewPort( newViewPort, splitter );
+	} else if ( splitter->count()==1 ) {
+		splitter->setOrientation( Qt::Horizontal );
+		addViewPort( newViewPort, splitter );
+	} else {
+		QSplitter *newSplitter = new QSplitter( Qt::Horizontal, 0 );
+		int idx = splitter->indexOf(v);
+		addViewPort( v, newSplitter);
+		addViewPort( newViewPort, newSplitter);
+		splitter->insertWidget( idx, newSplitter );
 	}
+	
+	return newViewPort;
 }
 
 /*!
@@ -83,28 +80,25 @@ CAViewPort* CAViewPortContainer::splitVertically(CAViewPort *v) {
 	Returns the newly created viewport.
 */		
 CAViewPort* CAViewPortContainer::splitHorizontally(CAViewPort *v) {
-	if ( !v ) v = currentViewPort();
-	
-	if ( v ) {
-		QSplitter *splitter = _viewPortMap[v];
-		CAViewPort *newViewPort = v->clone();
-		if ( splitter->orientation()==Qt::Vertical ) {
-			addViewPort( newViewPort, splitter );
-		} else if (splitter->count()==1) {
-			splitter->setOrientation( Qt::Vertical );
-			addViewPort( newViewPort, splitter );
-		} else {
-			QSplitter *newSplitter = new QSplitter( Qt::Vertical, 0 );
-			int idx = splitter->indexOf(v);
-			addViewPort( v, newSplitter);
-			addViewPort( newViewPort, newSplitter);
-			splitter->insertWidget( idx, newSplitter );
-		}
-		
-		return newViewPort;
-	} else {
+	if ( !v && !(v = currentViewPort()))
 		return 0;
+	
+	QSplitter *splitter = _viewPortMap[v];
+	CAViewPort *newViewPort = v->clone(0);
+	if ( splitter->orientation()==Qt::Vertical ) {
+		addViewPort( newViewPort, splitter );
+	} else if (splitter->count()==1) {
+		splitter->setOrientation( Qt::Vertical );
+		addViewPort( newViewPort, splitter );
+	} else {
+		QSplitter *newSplitter = new QSplitter( Qt::Vertical, 0 );
+		int idx = splitter->indexOf(v);
+		addViewPort( v, newSplitter);
+		addViewPort( newViewPort, newSplitter);
+		splitter->insertWidget( idx, newSplitter );
 	}
+	
+	return newViewPort;
 }
 
 /*!
