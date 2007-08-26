@@ -177,3 +177,16 @@ void CAUndo::createUndoCommand( CADocument *d, QString text ) {
 	clearUndoCommand();
 	_undoCommand = new CAUndoCommand( d, text );
 }
+
+/*!
+	Change the document pointer of an undo stack.
+	This function is called when the document is rebuilt, e.g. when a CanorusML view commits changes.
+*/
+
+void CAUndo::changeDocument( CADocument *oldDoc, CADocument *newDoc) {
+	clearUndoCommand();
+	QList< CAUndoCommand* >* stack = _undoStack[oldDoc];
+	
+	_undoStack.remove(oldDoc);
+	_undoStack[newDoc] = stack;
+}

@@ -34,6 +34,7 @@ public:
 	CAUndoCommand *undoCommand( CADocument *d );
 	CAUndoCommand *redoCommand( CADocument *d );
 	void updateLastUndoCommand( CAUndoCommand *c );
+	void changeDocument( CADocument*, CADocument* );
 
 private:
 	void clearUndoCommand();

@@ -1017,10 +1017,8 @@ void CAMainWin::setMode(CAMode mode) {
 			p.setColor(Qt::blue);
 			p.setWidth(3);
 			
-			if ( musElementFactory()->musElementType() == CAMusElement::Note && currentScoreViewPort() )
-				currentScoreViewPort()->setShadowNoteVisible(true);
-			else
-				currentScoreViewPort()->setShadowNoteVisible(false); /// \todo Set other mouse cursors
+			if ( currentScoreViewPort() )
+				currentScoreViewPort()->setShadowNoteVisible((musElementFactory()->musElementType() == CAMusElement::Note) ? true : false); /// \todo Set other mouse cursors
 
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
@@ -2470,7 +2468,9 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		QXmlInputSource input;
 		input.setData(inputString);
 		CACanorus::undo()->pushUndoCommand();
-		setDocument(CACanorusML::openDocument(&input));
+		CADocument* newDoc = CACanorusML::openDocument(&input);
+		CACanorus::undo()->changeDocument( document(), newDoc );
+		setDocument(newDoc);
 		CACanorus::rebuildUI(document());
 	} else
 	if (v->voice()) {
