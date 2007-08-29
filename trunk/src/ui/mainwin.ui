@@ -78,7 +78,7 @@
     <addaction name="uiSelectAll" />
     <addaction name="uiInvertSelection" />
     <addaction name="separator" />
-    <addaction name="uiProperties" />
+    <addaction name="uiDocumentProperties" />
    </widget>
    <widget class="QMenu" name="uiMenuTools" >
     <property name="title" >
@@ -687,18 +687,7 @@
     <string>New voice</string>
    </property>
   </action>
-  <action name="uiProperties" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
-   <property name="text" >
-    <string>Properties...</string>
-   </property>
-  </action>
   <action name="uiDocumentProperties" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="text" >
     <string>Document properties...</string>
    </property>
@@ -801,9 +790,6 @@
    </property>
   </action>
   <action name="uiVoiceProperties" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="icon" >
     <iconset>images/voiceproperties.svg</iconset>
    </property>
@@ -842,9 +828,6 @@
    </property>
   </action>
   <action name="uiContextProperties" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="icon" >
     <iconset>images/contextproperties.svg</iconset>
    </property>
@@ -861,9 +844,6 @@
    </property>
   </action>
   <action name="uiSheetProperties" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="icon" >
     <iconset>images/sheetproperties.svg</iconset>
    </property>

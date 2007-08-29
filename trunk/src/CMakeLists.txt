@@ -52,6 +52,14 @@ ENDIF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compiled
 	ui/mainwin.ui
 	ui/settingsdialog.ui
+	
+	ui/propertiesdialog.ui
+	ui/documentproperties.ui
+	ui/sheetproperties.ui
+	ui/staffproperties.ui
+	ui/voiceproperties.ui
+	ui/lyricscontextproperties.ui
+	ui/functionmarkingproperties.ui
 )
 
 # Define the MOC source files used by Canorus
@@ -60,6 +68,8 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	ui/mainwin.h
 	ui/settingsdialog.h
 	ui/pluginaction.h
+	ui/propertiesdialog.h
+	
 	widgets/lcdnumber.h
 	widgets/viewport.h
 	widgets/viewportcontainer.h
@@ -124,6 +134,7 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/mainwin.cpp
 	ui/settingsdialog.cpp
 	ui/pluginaction.cpp
+	ui/propertiesdialog.cpp
 )
 
 SET(Canorus_Drawable_Srcs	# Drawable instances of the data

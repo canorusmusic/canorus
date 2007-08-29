@@ -25,6 +25,7 @@
 
 #include "ui/mainwin.h"
 #include "ui/settingsdialog.h"
+#include "ui/propertiesdialog.h"
 
 #include "interface/playback.h"
 #include "interface/engraver.h"
@@ -2103,6 +2104,13 @@ void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
 }
 
 /*!
+	Brings up the properties dialog.
+*/
+void CAMainWin::on_uiVoiceProperties_triggered() {
+	CAPropertiesDialog::voiceProperties( currentVoice(), this );
+}
+
+/*!
 	Changes the number of accidentals.
 */
 void CAMainWin::on_uiKeySig_currentIndexChanged( int row ) {
@@ -2612,6 +2620,13 @@ void CAMainWin::removeSheet( CASheet *sheet ) {
 	}
 }
 
+/*!
+	Brings up the properties dialog.
+*/
+void CAMainWin::on_uiDocumentProperties_triggered() {
+	CAPropertiesDialog::documentProperties( document(), this );
+}
+
 void CAMainWin::on_uiSheetName_returnPressed() {
 	CASheet *sheet = currentSheet();
 	if (sheet) {
@@ -2621,6 +2636,13 @@ void CAMainWin::on_uiSheetName_returnPressed() {
 		sheet->setName( uiSheetName->text() );
 		uiTabWidget->setTabText(uiTabWidget->currentIndex(), sheet->name());
 	}
+}
+
+/*!
+	Brings up properties dialog.
+*/
+void CAMainWin::on_uiSheetProperties_triggered() {
+	CAPropertiesDialog::sheetProperties( currentSheet(), this );
 }
 
 /*!
@@ -2634,6 +2656,13 @@ void CAMainWin::on_uiContextName_returnPressed() {
 		updateUndoRedoButtons();
 		context->setName(uiContextName->text());
 	}
+}
+
+/*!
+	Brings up the properties dialog.
+*/
+void CAMainWin::on_uiContextProperties_triggered() {
+	CAPropertiesDialog::contextProperties( currentContext(), this );
 }
 
 /*!
@@ -2760,7 +2789,7 @@ void CAMainWin::updateVoiceToolBar() {
 				uiRemoveVoice->setEnabled(true);
 				uiVoiceStemDirection->setCurrentId( curVoice->stemDirection() );
 				uiVoiceStemDirection->setEnabled(true);
-//				uiVoiceProperties->setEnabled(true);
+				uiVoiceProperties->setEnabled(true);
 			} else {
 				uiVoiceName->setEnabled(false);
 				uiVoiceInstrument->setEnabled(false);

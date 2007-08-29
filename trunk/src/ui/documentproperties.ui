@@ -1,0 +1,62 @@
+<ui version="4.0" >
+ <class>uiDocumentProperties</class>
+ <widget class="QWidget" name="uiDocumentProperties" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>473</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>471</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" >
+    <item>
+     <widget class="QLabel" name="uiDocumentTitleLabel" >
+      <property name="text" >
+       <string>Title:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="uiDocumentTitle" />
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_2" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>40</y>
+     <width>471</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" >
+    <item>
+     <widget class="QLabel" name="uiDocumentComposerLabel" >
+      <property name="text" >
+       <string>Composer:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="uiDocumentComposer" />
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
