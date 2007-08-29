@@ -162,6 +162,7 @@ private slots:
 	void on_uiCopy_triggered();
 	void on_uiCut_triggered();
 	void on_uiPaste_triggered();
+	void on_uiDocumentProperties_triggered();
 	
 	// Insert
 	void on_uiSelectMode_toggled(bool);
@@ -193,6 +194,7 @@ private slots:
 	// Sheet
 	void on_uiRemoveSheet_triggered();
 	void on_uiSheetName_returnPressed();
+	void on_uiSheetProperties_triggered();
 	
 	// Context
 	void on_uiContextName_returnPressed();
@@ -200,6 +202,7 @@ private slots:
 	void on_uiStaffNumberOfLines_valueChanged(int);
 	void on_uiStanzaNumber_valueChanged(int);
 	void on_uiAssociatedVoice_currentIndexChanged(int);
+	void on_uiContextProperties_triggered();
 	
 	// Playback
 	void on_uiPlayFromSelection_toggled(bool);
@@ -235,6 +238,7 @@ private slots:
 	void on_uiVoiceInstrument_currentIndexChanged(int);
 	void on_uiRemoveVoice_triggered();
 	void on_uiVoiceStemDirection_toggled(bool, int);
+	void on_uiVoiceProperties_triggered();
 	
 	// Window
 	void on_uiSplitHorizontally_triggered();
