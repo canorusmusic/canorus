@@ -124,8 +124,6 @@
     <addaction name="uiSaveDocumentAs" />
     <addaction name="uiCloseDocument" />
     <addaction name="separator" />
-    <addaction name="uiDocumentProperties" />
-    <addaction name="separator" />
     <addaction name="uiImportDocument" />
     <addaction name="uiExportDocument" />
     <addaction name="separator" />

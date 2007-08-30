@@ -6,7 +6,9 @@
 */
 
 #include <QApplication>
+#include <QSplashScreen>
 #include <QTranslator>
+#include <QFont>
 #include <QLocale>
 
 // Python.h needs to be loaded first!
@@ -37,15 +39,27 @@ int main(int argc, char *argv[]) {
 	signal(SIGQUIT, catch_sig);
 #endif
 	
+	QPixmap splashPixmap( 400, 300 );
+	if ( CACanorus::locateResource("images/splash.png").size() )
+		splashPixmap = QPixmap( CACanorus::locateResource("images/splash.png")[0] );
+	else if ( CACanorus::locateResource("ui/images/splash.png").size() )
+		splashPixmap = QPixmap( CACanorus::locateResource("ui/images/splash.png")[0] );
+	
+	QSplashScreen splash( splashPixmap );
+	QFont font("Century Schoolbook L");
+	font.setPixelSize(17);
+	splash.setFont(font);
+	mainApp.processEvents();
+	
 	// Set main application properties
 	CACanorus::initMain();
 	
 	// Parse switch and settings command line arguments
 	CACanorus::parseSettingsArguments(argc, argv);
+	splash.show();
 	
 	// Load config file
-	CASettingsDialog::CASettingsPage showSettingsPage = 
-		CACanorus::initSettings();
+	CASettingsDialog::CASettingsPage showSettingsPage = CACanorus::initSettings();
 	
 	// Init dialogs etc.
 	CACanorus::initCommonGUI();
@@ -60,21 +74,33 @@ int main(int argc, char *argv[]) {
 	}
 	
 	// Enable scripting and plugins subsystem
+	splash.showMessage( QObject::tr("Initializing Scripting engine", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
+	mainApp.processEvents();
 	CACanorus::initScripting();
-	
+		
 	// Finds all the plugins
+	splash.showMessage( QObject::tr("Reading Plugins", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
+	mainApp.processEvents();
 	CAPluginManager::readPlugins();
 	
 	// Initialize autosave
+	splash.showMessage( QObject::tr("Initializing Automatic recovery", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
+	mainApp.processEvents();
 	CACanorus::initAutoRecovery();
 	
 	// Initialize undo/redo stacks
+	splash.showMessage( QObject::tr("Initializing Undo/Redo framework", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
+	mainApp.processEvents();
 	CACanorus::initUndo();
 	
 	// Check for any crashed Canorus sessions and open the recovery files
+	splash.showMessage( QObject::tr("Searching for recovery documents", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
+	mainApp.processEvents();
 	CACanorus::autoRecovery()->openRecovery();
 	
 	// Creates a main window of a document to open if passed in command line
+	splash.showMessage( QObject::tr("Initializing Main window", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
+	mainApp.processEvents();
 	CACanorus::parseOpenFileArguments(argc, argv);
 	
 	// If no file to open is passed in command line, create a new default main window. It's shown automatically by CACanorus::addMainWin().
@@ -83,11 +109,14 @@ int main(int argc, char *argv[]) {
 		CACanorus::addMainWin(mainWin);
 		mainWin->newDocument();
 	}
+	splash.close();
 	
 	// Show settings dialog, if needed (eg. MIDI setup when running Canorus for the first time)
-	if ( showSettingsPage != CASettingsDialog::UndefinedSettings )
+	if ( showSettingsPage != CASettingsDialog::UndefinedSettings ) {
 		CASettingsDialog( showSettingsPage, CACanorus::mainWinAt(0) );
+	}
 	
-	QObject::connect( &mainApp, SIGNAL(lastWindowClosed()), CACanorus::autoRecovery(), SLOT(cleanupRecovery()) );  
+	QObject::connect( &mainApp, SIGNAL(lastWindowClosed()), CACanorus::autoRecovery(), SLOT(cleanupRecovery()) );
+	
 	return mainApp.exec();
 }
