@@ -32,7 +32,7 @@ public:
 	inline void removeSheet(CASheet *sheet) { _sheetList.removeAll(sheet); }
 	
 	const QString title() { return _title; }
-	const QString subTitle() { return _subTitle; }
+	const QString subtitle() { return _subtitle; }
 	const QString composer() { return _composer; }
 	const QString arranger() { return _arranger; }
 	const QString poet() { return _poet; }
@@ -46,7 +46,7 @@ public:
 	const QString fileName() { return _fileName; }
 	
 	void setTitle(const QString title) { _title = title; }
-	void setSubTitle(const QString subTitle) { _subTitle = subTitle; }
+	void setSubtitle(const QString subtitle) { _subtitle = subtitle; }
 	void setComposer(const QString composer) { _composer = composer; }
 	void setArranger(const QString arranger) { _arranger = arranger; }
 	void setPoet(const QString poet) { _poet = poet; }
@@ -63,7 +63,7 @@ private:
 	QList<CASheet *> _sheetList;
 	
 	QString _title;
-	QString _subTitle;
+	QString _subtitle;
 	QString _composer;
 	QString _arranger;
 	QString _poet;

@@ -25,7 +25,7 @@
     <item>
      <widget class="QLabel" name="uiMidiChanneLabel" >
       <property name="text" >
-       <string>Midi channel</string>
+       <string>Midi channel:</string>
       </property>
      </widget>
     </item>

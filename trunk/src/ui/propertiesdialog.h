@@ -62,7 +62,6 @@ class CAPropertiesDialog : public QDialog, private Ui::uiPropertiesDialog
 public:
 	CAPropertiesDialog( CADocument *doc, QWidget *parent=0 );
 	virtual ~CAPropertiesDialog();
-	
 	static void documentProperties( CADocument *doc, QWidget *parent );
 	static void sheetProperties( CASheet *sheet, QWidget *parent );
 	static void contextProperties( CAContext *context, QWidget *parent );
@@ -89,14 +88,14 @@ private:
 	void updateFunctionMarkingContextProperties( CAFunctionMarkingContext* );
 	
 	CADocument                           *_document;
-	QTreeWidgetItem                      *_documentItem;
-	QWidget                              *_documentPropertiesWidget;
-	QHash< CASheet*, QWidget* >           _sheetPropertiesWidget;
-	QHash< QTreeWidgetItem*, CASheet* >   _sheetItem;
-	QHash< CAContext*, QWidget* >         _contextPropertiesWidget;
-	QHash< QTreeWidgetItem*, CAContext* > _contextItem;
-	QHash< CAVoice*, QWidget* >           _voicePropertiesWidget;
-	QHash< QTreeWidgetItem*, CAVoice* >   _voiceItem;
+	QTreeWidgetItem                      *_documentItem;             // Document => Document properties widget
+	QWidget                              *_documentPropertiesWidget; // Document item in tree widget => Document
+	QHash< CASheet*, QWidget* >           _sheetPropertiesWidget;    // Sheet => Sheet properties widget
+	QHash< QTreeWidgetItem*, CASheet* >   _sheetItem;                // Sheet item in tree widget => Sheet
+	QHash< CAContext*, QWidget* >         _contextPropertiesWidget;  // Context => Context properties widget
+	QHash< QTreeWidgetItem*, CAContext* > _contextItem;              // Context item in tree widget => Context
+	QHash< CAVoice*, QWidget* >           _voicePropertiesWidget;    // Voice => Voice properties widget
+	QHash< QTreeWidgetItem*, CAVoice* >   _voiceItem;                // Voice item in tree widget => Voice
 };
 
 #endif /* PROPERTIESDIALOG_H_ */
