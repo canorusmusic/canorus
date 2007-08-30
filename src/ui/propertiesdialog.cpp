@@ -10,6 +10,7 @@
 #include "ui/propertiesdialog.h"
 
 #include "core/canorus.h"
+#include "core/undo.h"
 
 #include "core/document.h"
 #include "core/sheet.h"
@@ -17,6 +18,22 @@
 #include "core/voice.h"
 #include "core/lyricscontext.h"
 #include "core/functionmarkingcontext.h"
+
+/*!
+	\class CAPropertiesDialog
+	\brief Advanced Document, Sheet, Staff etc. properties
+	
+	This dialog offers changing all the settings for Canorus objects. It is similar to CASettingsDialog.
+	On the left it shows you a tree widget view of the current document and allows you to select
+	one of the objects and sub-objects. On the right, the object properties are shown. Changes are
+	managed using Ok, Apply and Cancel buttons.
+	
+	To use this dialog, call one of the static methods documentProperties(), sheetProperties(), contextProperties()
+	or voiceProperties() and pass the current document, sheet, context or voice. Methods will generate and show
+	the dialog and delete it in the end. 
+	
+	Actual objects properties widgets (properties widget for document, sheet etc.) are stored inside *.ui files.
+*/
 
 CAPropertiesDialog::CAPropertiesDialog( CADocument *doc, QWidget *parent )
  : QDialog(parent) {
@@ -29,6 +46,10 @@ CAPropertiesDialog::CAPropertiesDialog( CADocument *doc, QWidget *parent )
 CAPropertiesDialog::~CAPropertiesDialog() {
 }
 
+/*!
+	Fills the content of the document tree on the left.
+	Tree always shows the whole Document structure.
+*/
 void CAPropertiesDialog::buildTree() {
 	// Locate resources (images, icons)
 	QString currentPath = QDir::currentPath();
@@ -196,15 +217,24 @@ void CAPropertiesDialog::on_uiButtonBox_clicked( QAbstractButton* button ) {
 void CAPropertiesDialog::applyProperties() {
 	QTreeWidgetItem *item = uiDocumentTree->topLevelItem(0);
 	
+	CACanorus::undo()->createUndoCommand( _document, tr("apply properties") );
+	CACanorus::undo()->pushUndoCommand();
+	
 	// store Document properties
 	CADocumentProperties *dp = static_cast<CADocumentProperties*>(_documentPropertiesWidget);
-	_document->setTitle( dp->uiDocumentTitle->text() );
-	_document->setComposer( dp->uiDocumentComposer->text() );
+	_document->setTitle( dp->uiTitle->text() );
+	_document->setSubtitle( dp->uiSubtitle->text() );
+	_document->setComposer( dp->uiComposer->text() );
+	_document->setArranger( dp->uiArranger->text() );
+	_document->setPoet( dp->uiPoet->text() );
+	_document->setTextTranslator( dp->uiTextTranslator->text() );
+	_document->setDedication( dp->uiDedication->text() );
+	_document->setCopyright( dp->uiCopyright->text() );
+	_document->setComments( dp->uiComments->toPlainText() );
 	
 	// store Sheet properties
 	for (int i=0; i<_sheetPropertiesWidget.keys().size(); i++) {
 		CASheet *s = _sheetPropertiesWidget.keys().at(i);
-//		s->setName()...
 	}
 	
 	// store Context properties
@@ -229,9 +259,19 @@ void CAPropertiesDialog::applyProperties() {
 }
 
 void CAPropertiesDialog::updateDocumentProperties( CADocument *doc ) {
-	static_cast<CADocumentProperties*>(_documentPropertiesWidget)->uiDocumentTitle->setText( doc->title() );
+	CADocumentProperties *dp = static_cast<CADocumentProperties*>(_documentPropertiesWidget);
 	
-	uiPropertiesWidget->setCurrentWidget( _documentPropertiesWidget );
+	dp->uiTitle->setText( doc->title() );
+	dp->uiSubtitle->setText( doc->subtitle() );
+	dp->uiComposer->setText( doc->composer() );
+	dp->uiArranger->setText( doc->arranger() );
+	dp->uiPoet->setText( doc->poet() );
+	dp->uiTextTranslator->setText( doc->textTranslator() );
+	dp->uiDedication->setText( doc->dedication() );
+	dp->uiCopyright->setText( doc->copyright() );
+	dp->uiComments->setText( doc->comments() );
+	
+	uiPropertiesWidget->setCurrentWidget( dp );
 }
 
 void CAPropertiesDialog::updateSheetProperties( CASheet *sheet ) {
@@ -239,6 +279,8 @@ void CAPropertiesDialog::updateSheetProperties( CASheet *sheet ) {
 }
 
 void CAPropertiesDialog::updateStaffProperties( CAStaff *staff ) {
+	CAStaffProperties *sp = static_cast<CAStaffProperties*>( _contextPropertiesWidget[staff] );
+	
 	uiPropertiesWidget->setCurrentWidget( _contextPropertiesWidget[staff] );
 }
 

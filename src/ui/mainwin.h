@@ -31,6 +31,7 @@ class QToolBar;
 class QLabel;
 class QLineEdit;
 class QComboBox;
+class QAction;
 
 class CAPlayback;
 class CAMenuToolButton;
@@ -358,9 +359,12 @@ private:
 			//QAction          *uiContextProperties; // made by Qt Designer
 			// CAStaff
 			QSpinBox         *uiStaffNumberOfLines;
+			QAction          *uiStaffNumberOfLinesAction;
 			// CALyricsContext
 			QSpinBox         *uiStanzaNumber;
+			QAction          *uiStanzaNumberAction;
 			QComboBox        *uiAssociatedVoice;
+			QAction          *uiAssociatedVoiceAction;
 			// CAFunctionMarkingContext
 		
 		QToolBar *uiVoiceToolBar;

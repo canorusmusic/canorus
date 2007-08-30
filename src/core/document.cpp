@@ -40,7 +40,7 @@ CADocument *CADocument::clone() {
 	
 	// set properties
 	newDocument->setTitle( title() );
-	newDocument->setSubTitle( subTitle() );
+	newDocument->setSubtitle( subtitle() );
 	newDocument->setComposer( composer() );
 	newDocument->setArranger( arranger() );
 	newDocument->setPoet( poet() );
@@ -71,7 +71,7 @@ CADocument::~CADocument() {
 */
 void CADocument::clear() {
 	_title.clear();
-	_subTitle.clear();
+	_subtitle.clear();
 	_composer.clear();
 	_arranger.clear();
 	_poet.clear();

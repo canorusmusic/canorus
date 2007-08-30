@@ -493,9 +493,9 @@ void CAMainWin::setupCustomUi() {
 	
 	// Context Toolbar
 	uiContextToolBar->addWidget( uiContextName );
-	uiContextToolBar->addWidget( uiStaffNumberOfLines );
-	uiContextToolBar->addWidget( uiStanzaNumber );
-	uiContextToolBar->addWidget( uiAssociatedVoice );
+	uiStaffNumberOfLinesAction = uiContextToolBar->addWidget( uiStaffNumberOfLines );
+	uiStanzaNumberAction = uiContextToolBar->addWidget( uiStanzaNumber );
+	uiAssociatedVoiceAction = uiContextToolBar->addWidget( uiAssociatedVoice );
 	uiContextToolBar->addAction( uiRemoveContext );
 	uiContextToolBar->addAction( uiContextProperties );
 	addToolBar(Qt::TopToolBarArea, uiContextToolBar);
@@ -2818,15 +2818,15 @@ void CAMainWin::updateContextToolBar() {
 		switch (context->contextType()) {
 			case CAContext::Staff: {
 				uiStaffNumberOfLines->setValue(static_cast<CAStaff*>(context)->numberOfLines());
-				uiStaffNumberOfLines->setVisible(true);
-				uiStanzaNumber->setVisible(false);
-				uiAssociatedVoice->setVisible(false);
+				uiStaffNumberOfLinesAction->setVisible(true);
+				uiStanzaNumberAction->setVisible(false);
+				uiAssociatedVoiceAction->setVisible(false);
 				break;
 			}
 			case CAContext::LyricsContext: {
 				CALyricsContext *c = static_cast<CALyricsContext*>(context);				
 				uiStanzaNumber->setValue(c->stanzaNumber());
-				uiStanzaNumber->setVisible(true);
+				uiStanzaNumberAction->setVisible(true);
 				
 				uiAssociatedVoice->disconnect(); // avoid recursive rebuilds in widget's slot
 				uiAssociatedVoice->clear();
@@ -2835,15 +2835,15 @@ void CAMainWin::updateContextToolBar() {
 				for (int i=0; i<voiceList.count(); i++) uiAssociatedVoice->addItem(voiceList[i]->name());
 				connect( uiAssociatedVoice, SIGNAL(currentIndexChanged(int)), this, SLOT(on_uiAssociatedVoice_currentIndexChanged(int)) );
 				uiAssociatedVoice->setCurrentIndex( idx );
-				uiAssociatedVoice->setVisible(true);
+				uiAssociatedVoiceAction->setVisible(true);
 				
-				uiStaffNumberOfLines->setVisible(false);
+				uiStaffNumberOfLinesAction->setVisible(false);
 				break;
 			}
 			case CAContext::FunctionMarkingContext: {
-				uiStanzaNumber->setVisible(false);
-				uiAssociatedVoice->setVisible(false);
-				uiStaffNumberOfLines->setVisible(false);
+				uiStanzaNumberAction->setVisible(false);
+				uiAssociatedVoiceAction->setVisible(false);
+				uiStaffNumberOfLinesAction->setVisible(false);
 				break;
 			}
 		}

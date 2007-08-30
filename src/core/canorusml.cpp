@@ -136,8 +136,22 @@ void CACanorusML::saveDocument(CADocument *doc, QTextStream& out) {
 	
 	if (!doc->title().isEmpty())
 		dDocument.setAttribute("title", doc->title());
+	if (!doc->subtitle().isEmpty())
+		dDocument.setAttribute("subtitle", doc->subtitle());
 	if (!doc->composer().isEmpty())
 		dDocument.setAttribute("composer", doc->composer());
+	if (!doc->arranger().isEmpty())
+		dDocument.setAttribute("arranger", doc->arranger());
+	if (!doc->poet().isEmpty())
+		dDocument.setAttribute("poet", doc->poet());
+	if (!doc->textTranslator().isEmpty())
+		dDocument.setAttribute("text-translator", doc->textTranslator());
+	if (!doc->dedication().isEmpty())
+		dDocument.setAttribute("dedication", doc->dedication());
+	if (!doc->copyright().isEmpty())
+		dDocument.setAttribute("copyright", doc->copyright());
+	if (!doc->comments().isEmpty())
+		dDocument.setAttribute("comments", doc->comments());
 	
 	dDocument.setAttribute( "date-created", doc->dateCreated().toString(Qt::ISODate) );
 	dDocument.setAttribute( "date-last-modified", doc->dateLastModified().toString(Qt::ISODate) );
@@ -381,7 +395,14 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		// CADocument
 		_document = new CADocument();
 		_document->setTitle( attributes.value("title") );
+		_document->setSubtitle( attributes.value("subtitle") );
 		_document->setComposer( attributes.value("composer") );
+		_document->setArranger( attributes.value("arranger") );
+		_document->setPoet( attributes.value("poet") );
+		_document->setTextTranslator( attributes.value("text-translator") );
+		_document->setCopyright( attributes.value("copyright") );
+		_document->setDedication( attributes.value("dedication") );
+		_document->setComments( attributes.value("comments") );
 		
 		_document->setDateCreated( QDateTime::fromString( attributes.value("date-created"), Qt::ISODate ) );
 		_document->setDateLastModified( QDateTime::fromString( attributes.value("date-last-modified"), Qt::ISODate ) );
