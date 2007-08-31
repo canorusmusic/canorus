@@ -6,6 +6,8 @@
 */
 
 #include <QTreeWidgetItem>
+#include <QDateTime>
+#include <QDate>
 
 #include "ui/propertiesdialog.h"
 
@@ -18,6 +20,27 @@
 #include "core/voice.h"
 #include "core/lyricscontext.h"
 #include "core/functionmarkingcontext.h"
+
+void CADocumentProperties::on_uiComposer_editingFinished() {
+	QString curText = uiCopyright->currentText();
+	uiCopyright->clear();
+	
+	QString startMsg = "(C)";
+	int yearStart = _document->dateCreated().date().year();
+	int yearCur = QDate::currentDate().year();
+	
+	if (yearStart && yearStart!=yearCur)
+		startMsg += QString::number(yearStart) + "-";
+	startMsg += QString::number(yearCur);
+	if (uiComposer->text().size())
+		startMsg += " " + uiComposer->text() + ",";
+	
+	uiCopyright->addItem( startMsg + " " + tr("CC, Some rights reserved", "copyright") );
+	uiCopyright->addItem( startMsg + " " + tr("Public domain", "copyright") );
+	uiCopyright->addItem( startMsg + " " + tr("All rights reserved", "copyright") );
+	
+	uiCopyright->setEditText( curText );
+}
 
 /*!
 	\class CAPropertiesDialog
@@ -63,7 +86,7 @@ void CAPropertiesDialog::buildTree() {
 	QWidget *w=0;
 	QTreeWidgetItem *docItem=0;
 	if (_document) {
-		w = new CADocumentProperties( this );
+		w = new CADocumentProperties( _document, this );
 		_documentPropertiesWidget = w;
 		uiPropertiesWidget->addWidget( w );
 		updateDocumentProperties( _document );
@@ -217,7 +240,7 @@ void CAPropertiesDialog::on_uiButtonBox_clicked( QAbstractButton* button ) {
 void CAPropertiesDialog::applyProperties() {
 	QTreeWidgetItem *item = uiDocumentTree->topLevelItem(0);
 	
-	CACanorus::undo()->createUndoCommand( _document, tr("apply properties") );
+	CACanorus::undo()->createUndoCommand( _document, tr("apply properties", "undo") );
 	CACanorus::undo()->pushUndoCommand();
 	
 	// store Document properties
@@ -229,7 +252,7 @@ void CAPropertiesDialog::applyProperties() {
 	_document->setPoet( dp->uiPoet->text() );
 	_document->setTextTranslator( dp->uiTextTranslator->text() );
 	_document->setDedication( dp->uiDedication->text() );
-	_document->setCopyright( dp->uiCopyright->text() );
+	_document->setCopyright( dp->uiCopyright->currentText() );
 	_document->setComments( dp->uiComments->toPlainText() );
 	
 	// store Sheet properties
@@ -268,7 +291,8 @@ void CAPropertiesDialog::updateDocumentProperties( CADocument *doc ) {
 	dp->uiPoet->setText( doc->poet() );
 	dp->uiTextTranslator->setText( doc->textTranslator() );
 	dp->uiDedication->setText( doc->dedication() );
-	dp->uiCopyright->setText( doc->copyright() );
+	dp->on_uiComposer_editingFinished();
+	dp->uiCopyright->setEditText( doc->copyright() );
 	dp->uiComments->setText( doc->comments() );
 	
 	uiPropertiesWidget->setCurrentWidget( dp );
