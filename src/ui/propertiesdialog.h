@@ -27,8 +27,13 @@ class CALyricsContext;
 class CAFunctionMarkingContext;
 
 class CADocumentProperties : public QWidget, public Ui::uiDocumentProperties {
+	Q_OBJECT
 public:
-	CADocumentProperties( QWidget *parent=0 ) : QWidget( parent ) { setupUi(this); }
+	CADocumentProperties( CADocument *doc, QWidget *parent=0 ) : QWidget( parent ) { _document = doc; setupUi(this); }
+public slots:
+	void on_uiComposer_editingFinished();
+private:
+	CADocument *_document;
 };
 
 class CASheetProperties : public QWidget, public Ui::uiSheetProperties {
@@ -67,6 +72,7 @@ public:
 	static void contextProperties( CAContext *context, QWidget *parent );
 	static void voiceProperties( CAVoice *voice, QWidget *parent );
 	
+	inline CADocument *document() { return _document; }
 	inline QTreeWidgetItem *documentItem() { return _documentItem; }
 	inline QHash< QTreeWidgetItem*, CASheet* >& sheetItem() { return _sheetItem; }
 	inline QHash< QTreeWidgetItem*, CAContext* >& contextItem() { return _contextItem; }
