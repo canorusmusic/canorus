@@ -29,10 +29,8 @@ CALyricsContext::CALyricsContext(int stanzaNumber, CAVoice *v, CASheet *s, const
 	setContextType( LyricsContext );
 	
 	_associatedVoice=0;
-	setAssociatedVoice( v );
+	setAssociatedVoice( v ); // also reposits syllables
 	setStanzaNumber(stanzaNumber);
-	
-	repositSyllables();
 }
 
 CALyricsContext::~CALyricsContext() {
@@ -151,15 +149,18 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart, bool auto
 }
 
 /*!
-	Adds a syllable to the context.
+	Adds a syllable to the context. The syllable at that location is replaced (default) by the new one, if
+	\a replace is True.
+	Time starts after the inserted syllable are increased for the length of the inserted syllable.
 	Syllables are always sorted by their startTimes.
-	Updates startTimes, if needed (syllable inserted in the middle);
 	
 	\sa _syllableList
 */
-bool CALyricsContext::addSyllable( CASyllable *syllable ) {
+bool CALyricsContext::addSyllable( CASyllable *syllable, bool replace ) {
 	int i;
-	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<=syllable->timeStart(); i++);
+	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<syllable->timeStart(); i++);
+	if ( i!=_syllableList.size() && replace )
+		_syllableList.removeAt(i);
 	_syllableList.insert(i, syllable);
 	for (i++; i<_syllableList.size(); i++)
 		_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() + syllable->timeLength() );

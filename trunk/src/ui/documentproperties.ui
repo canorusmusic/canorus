@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Form</string>
+   <string>Document properties</string>
   </property>
   <widget class="QTabWidget" name="uiTabWidget" >
    <property name="geometry" >
