@@ -30,7 +30,7 @@ public:
 	QList<CAMusElement*> musElementList();
 	bool removeMusElement(CAMusElement*, bool);
 		
-	bool addSyllable( CASyllable* );
+	bool addSyllable( CASyllable*, bool replace=true );
 	bool addEmptySyllable( int timeStart, int timeLength );
 	CASyllable* removeSyllableAtTimeStart( int timeStart, bool autoDelete=true );
 	CASyllable* syllableAt( int idx ) { return _syllableList[idx]; }

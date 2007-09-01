@@ -79,8 +79,8 @@ CASourceViewPort::CASourceViewPort(CALyricsContext *lc, QWidget *parent)
 void CASourceViewPort::setupUI() {
 	_layout = new QGridLayout(this);
 	_layout->addWidget(_textEdit = new QTextEdit(0));
-	_layout->addWidget(_commit = new QPushButton("Commit changes"));
-	_layout->addWidget(_revert = new QPushButton("Revert changes"));
+	_layout->addWidget(_commit = new QPushButton(tr("Commit changes")));
+	_layout->addWidget(_revert = new QPushButton(tr("Revert changes")));
 	
 	connect(_commit, SIGNAL(clicked()), this, SLOT(on_commit_clicked()));
 	connect(_revert, SIGNAL(clicked()), this, SLOT(rebuild()));

@@ -1248,6 +1248,11 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 					}
 					case CAContext::LyricsContext: {
 						CACanorus::undo()->createUndoCommand( document(), tr("new lyrics context", "undo"));
+						
+						int stanza=1;
+						if (dupContext && dupContext->context() && dupContext->context()->contextType()==CAContext::LyricsContext)
+							stanza = static_cast<CALyricsContext*>(dupContext->context())->stanzaNumber()+1;
+							
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CALyricsContext(
@@ -1257,6 +1262,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 								tr("LyricsContext%1").arg(v->sheet()->contextCount()+1)
 							)
 						);
+						
 						break;
 					}
 					case CAContext::FunctionMarkingContext: {

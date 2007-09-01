@@ -103,17 +103,17 @@ Naslednji dokumenti so bili uspešno obnovljeni:
         <translation>Izberite smer notnih vratov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2510"/>
+        <location filename="../ui/mainwin.cpp" line="2516"/>
         <source>About Qt</source>
         <translation>O knjižnici Qt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2514"/>
+        <location filename="../ui/mainwin.cpp" line="2520"/>
         <source>About Canorus</source>
         <translation>O programu Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2521"/>
+        <location filename="../ui/mainwin.cpp" line="2527"/>
         <source>Canorus - The next generation music score editor
 
 Version %1
@@ -490,12 +490,12 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Nov trak za funkcijske označbe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1257"/>
+        <location filename="../ui/mainwin.cpp" line="1262"/>
         <source>LyricsContext%1</source>
         <translation>Besedilo%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1268"/>
+        <location filename="../ui/mainwin.cpp" line="1274"/>
         <source>FunctionMarkingContext%1</source>
         <translation>FunkcijskeOznačbe%1</translation>
     </message>
@@ -546,133 +546,133 @@ Domača stran: http://www.canorus.org</translation>
         <translation>nov trak za besedilo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1263"/>
+        <location filename="../ui/mainwin.cpp" line="1269"/>
         <source>new function marking context</source>
         <comment>undo</comment>
         <translation>nov trak za funkcijske označbe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1486"/>
+        <location filename="../ui/mainwin.cpp" line="1492"/>
         <source>insert barline</source>
         <comment>undo</comment>
         <translation>vstavljanje taktnice</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1508"/>
+        <location filename="../ui/mainwin.cpp" line="1514"/>
         <source>rise note</source>
         <comment>undo</comment>
         <translation>višanje note</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1534"/>
+        <location filename="../ui/mainwin.cpp" line="1540"/>
         <source>lower note</source>
         <comment>undo</comment>
         <translation>nižanje note</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1562"/>
+        <location filename="../ui/mainwin.cpp" line="1568"/>
         <source>add sharp</source>
         <comment>undo</comment>
         <translation>dodajanje višaja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1582"/>
+        <location filename="../ui/mainwin.cpp" line="1588"/>
         <source>add flat</source>
         <comment>undo</comment>
         <translation>dodajanje nižaja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1599"/>
+        <location filename="../ui/mainwin.cpp" line="1605"/>
         <source>set dotted</source>
         <comment>undo</comment>
         <translation>punktacijo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3158"/>
+        <location filename="../ui/mainwin.cpp" line="3164"/>
         <source>deletion of elements</source>
         <comment>undo</comment>
         <translation>brisanje elementov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1672"/>
+        <location filename="../ui/mainwin.cpp" line="1678"/>
         <source>insertion of music element</source>
         <comment>undo</comment>
         <translation>dodajanje elementov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2126"/>
+        <location filename="../ui/mainwin.cpp" line="2132"/>
         <source>change number of accidentals</source>
         <comment>undo</comment>
         <translation>spreminjanje števila predznakov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2151"/>
+        <location filename="../ui/mainwin.cpp" line="2157"/>
         <source>change voice name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2244"/>
+        <location filename="../ui/mainwin.cpp" line="2250"/>
         <source>lyrics edit</source>
         <comment>undo</comment>
         <translation>spreminjanje besedila</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2470"/>
+        <location filename="../ui/mainwin.cpp" line="2476"/>
         <source>commit CanorusML source</source>
         <comment>undo</comment>
         <translation>potrditev CanorusML izvorne kode</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2496"/>
+        <location filename="../ui/mainwin.cpp" line="2502"/>
         <source>commit LilyPond source</source>
         <comment>undo</comment>
         <translation>potrditev LilyPond izvorne kode</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2575"/>
+        <location filename="../ui/mainwin.cpp" line="2581"/>
         <source>deletion of the sheet</source>
         <comment>undo</comment>
         <translation>brisanje lista</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2633"/>
+        <location filename="../ui/mainwin.cpp" line="2639"/>
         <source>change sheet name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena lista</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2654"/>
+        <location filename="../ui/mainwin.cpp" line="2660"/>
         <source>change context name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena traku</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2674"/>
+        <location filename="../ui/mainwin.cpp" line="2680"/>
         <source>change number of staff lines</source>
         <comment>undo</comment>
         <translation>spreminjanje števila črt v črtovju</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2687"/>
+        <location filename="../ui/mainwin.cpp" line="2693"/>
         <source>change stanza number</source>
         <comment>undo</comment>
         <translation>spreminjanje številke kitice</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2699"/>
+        <location filename="../ui/mainwin.cpp" line="2705"/>
         <source>change associated voice</source>
         <comment>undo</comment>
         <translation>dodeljevanje glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2710"/>
+        <location filename="../ui/mainwin.cpp" line="2716"/>
         <source>change voice stem direction</source>
         <comment>undo</comment>
         <translation>spreminjanje smeri vratov za glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2727"/>
+        <location filename="../ui/mainwin.cpp" line="2733"/>
         <source>change note stem direction</source>
         <comment>undo</comment>
         <translation>spreminjanje smeri vratov not</translation>
@@ -718,13 +718,13 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Stranska stopnja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3119"/>
+        <location filename="../ui/mainwin.cpp" line="3125"/>
         <source>cut</source>
         <comment>undo</comment>
         <translation>rezanje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3215"/>
+        <location filename="../ui/mainwin.cpp" line="3221"/>
         <source>paste</source>
         <comment>undo</comment>
         <translation>lepljenje</translation>
@@ -1694,6 +1694,19 @@ Domača stran: http://www.canorus.org</translation>
     </message>
 </context>
 <context>
+    <name>CASourceViewPort</name>
+    <message>
+        <location filename="../widgets/sourceviewport.cpp" line="82"/>
+        <source>Commit changes</source>
+        <translation>Uveljavi spremembe</translation>
+    </message>
+    <message>
+        <location filename="../widgets/sourceviewport.cpp" line="83"/>
+        <source>Revert changes</source>
+        <translation>Prekliči spremembe</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../import/lilypondimport.cpp" line="61"/>
@@ -1836,84 +1849,84 @@ Domača stran: http://www.canorus.org</translation>
     <name>uiDocumentProperties</name>
     <message>
         <location filename="../ui_documentproperties.h" line="251"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui_documentproperties.h" line="252"/>
         <source>Title:</source>
         <translation>Naslov:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="253"/>
+        <location filename="../ui_documentproperties.h" line="252"/>
         <source>Composer:</source>
         <translation>Avtor:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="254"/>
+        <location filename="../ui_documentproperties.h" line="253"/>
         <source>Composer name and e-mail address in &lt;&gt; brackets</source>
         <translation>Avtorjevo ime in e-poštni naslov v &lt;&gt; oklepajih</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="255"/>
+        <location filename="../ui_documentproperties.h" line="254"/>
         <source>Arranger:</source>
         <translation>Aranžer:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="256"/>
+        <location filename="../ui_documentproperties.h" line="255"/>
         <source>Poet:</source>
         <translation>Pisec besedila:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="257"/>
+        <location filename="../ui_documentproperties.h" line="256"/>
         <source>General</source>
         <translation>Splošno</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="258"/>
+        <location filename="../ui_documentproperties.h" line="257"/>
         <source>Subtitle:</source>
         <translation>Podnaslov:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="259"/>
+        <location filename="../ui_documentproperties.h" line="258"/>
         <source>Text translator:</source>
         <translation>Prevajalec besedila:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="260"/>
+        <location filename="../ui_documentproperties.h" line="259"/>
         <source>Dedication:</source>
         <translation>Posvetilo:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="261"/>
+        <location filename="../ui_documentproperties.h" line="260"/>
         <source>Copyright:</source>
         <translation>Avtorske pravice:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="262"/>
+        <location filename="../ui_documentproperties.h" line="261"/>
         <source>Extra comments:</source>
         <translation>Dodatni komentar:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="263"/>
+        <location filename="../ui_documentproperties.h" line="262"/>
         <source>Advanced</source>
         <translation>Dodatno</translation>
+    </message>
+    <message>
+        <location filename="../ui_documentproperties.h" line="250"/>
+        <source>Document properties</source>
+        <translation>Lastnosti dokumenta</translation>
     </message>
 </context>
 <context>
     <name>uiFunctionMarkingContextProperties</name>
     <message>
         <location filename="../ui_functionmarkingproperties.h" line="38"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+        <source>Function marking properties</source>
+        <translation>Lastnosti funkcijskih označb</translation>
     </message>
 </context>
 <context>
     <name>uiLyricsContextProperties</name>
     <message>
         <location filename="../ui_lyricscontextproperties.h" line="38"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+        <source>Lyrics context properties</source>
+        <translation>Lastnosti besedila</translation>
     </message>
 </context>
 <context>
@@ -2392,14 +2405,14 @@ Domača stran: http://www.canorus.org</translation>
 <context>
     <name>uiPropertiesDialog</name>
     <message>
-        <location filename="../ui_propertiesdialog.h" line="112"/>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../ui_propertiesdialog.h" line="114"/>
         <source>Current element name</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui_propertiesdialog.h" line="112"/>
+        <source>Properties</source>
+        <translation>Lastnosti</translation>
     </message>
 </context>
 <context>
@@ -2560,34 +2573,34 @@ Domača stran: http://www.canorus.org</translation>
     <name>uiSheetProperties</name>
     <message>
         <location filename="../ui_sheetproperties.h" line="38"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+        <source>Sheet properties</source>
+        <translation>Lastnosti lista</translation>
     </message>
 </context>
 <context>
     <name>uiStaffProperties</name>
     <message>
-        <location filename="../ui_staffproperties.h" line="68"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../ui_staffproperties.h" line="69"/>
         <source>Number of lines:</source>
         <translation>Število črt:</translation>
+    </message>
+    <message>
+        <location filename="../ui_staffproperties.h" line="68"/>
+        <source>Staff properties</source>
+        <translation>Lastnosti črtovja</translation>
     </message>
 </context>
 <context>
     <name>uiVoiceProperties</name>
     <message>
-        <location filename="../ui_voiceproperties.h" line="68"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../ui_voiceproperties.h" line="69"/>
         <source>Midi channel:</source>
         <translation>Midi kanal:</translation>
+    </message>
+    <message>
+        <location filename="../ui_voiceproperties.h" line="68"/>
+        <source>Voice properties</source>
+        <translation>Lastnosti glasu</translation>
     </message>
 </context>
 </TS>

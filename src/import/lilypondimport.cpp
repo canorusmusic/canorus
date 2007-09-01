@@ -332,7 +332,8 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 
 bool CALilyPondImport::importLyricsContext( CALyricsContext *lc ) {
 	CASyllable *lastSyllable = 0;
-	for (QString curElt = parseNextElement(); (!in().isEmpty() || !curElt.isEmpty() ); curElt = parseNextElement()) {
+	int timeSDummy=0; // dummy timestart to keep the order of inserted syllables. Real timeStarts are sets when repositSyllables() is called
+	for (QString curElt = parseNextElement(); (!in().isEmpty() || !curElt.isEmpty() ); curElt = parseNextElement(), timeSDummy++) {
 		QString text = curElt;
 		if (curElt == "_")
 			text = "";
@@ -343,7 +344,7 @@ bool CALilyPondImport::importLyricsContext( CALyricsContext *lc ) {
 		if (lastSyllable && text=="__") {
 			lastSyllable->setMelismaStart(true);
 		} else {
-			lc->addSyllable(lastSyllable = new CASyllable( text, false, false, lc, 0, 0 ));
+			lc->addSyllable( lastSyllable = new CASyllable( text, false, false, lc, timeSDummy, 0 ) );
 		}
 	}
 	lc->repositSyllables(); // sets syllables timeStarts and timeLengths
