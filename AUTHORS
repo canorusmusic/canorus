@@ -1,4 +1,5 @@
 Main developers:
+================
 Matevž Jekovec <matevz.jekovec@gmail.com>
   core features and UI, Windows port, Debian/Ubuntu packages, cmake, Wiki site
 Reinhard Katzmann <suamor@web.de>
@@ -9,6 +10,7 @@ Sam Hernandez <merphant@yahoo.com>
   LilyPond export, build fixes
 
 Contributors:
+=============
 Erlend Aasland <erlenda@gmail.com>
   MacOSX port, small compatibility fixes and improvements
 Georg Rudolph <georg.rudolph@schwaben.de>

@@ -1,21 +1,55 @@
-Compiling the Canorus prototype.
-================================
+Canorus - a free music score editor
+===================================
+Canorus  is a free music score editor. It supports note writing, scripting support,
+import/export of various file formats, MIDI input and output and more! Note that
+Canorus is still in early stage of development and not nearly all the features are
+implemented yet!
 
-- You need to have a compiler and linker installed
+Canorus is free (libre) software, licensed under GNU GPL. This means that the program
+source code is available to public, anyone is welcome to research how the program
+works, participate in its development, freely distribute the program and spread the
+word! Canorus runs on Linux, Windows, MacOSX and others! 
 
-The prototype was only test-compiled with gcc-4.x but should also
-compile file with gcc-3.x. If you encouter problems with one of
-these compilers please report them to the Canorus Development ML
-or on the Canorus project page (forum/support). 
-For those on Win32 or MAC-OSX platform: You need to install the 
-corresponding GNU tools first to compile Canorus (MinGW on Win32, 
-don't know for MAC-OSX).
+Build dependencies:
+===================
+- Qt development package >=4.3 (http://www.trolltech.com)
+- Swig >=1.3.31 (http://www.swig.org)
+- g++ >=4.1, make (http://gcc.gnu.org, http://www.mingw.org)
+- cmake >=2.4.6 (http://www.cmake.org)
+- Python development package >=2.5 (http://www.python.org)
 
-- Make sure you have Qt4 and Qt4-devel installed
-  (the development files contain headers and qmake)
-- You need to have at least cmake 2.4.2 installed
-- Configure Canorus from a command shell with the following command: "cmake ."
+Runtime dependencies:
+=====================
+- Qt library, same version
+- Python library, same version
 
+Compilation:
+============
+ $ cmake .
+ $ make
+ $ src/canorus(.exe)
+
+Installation
+============
+ $ make install
+
+Then install the fonts files in directory src/fonts. I know of at least
+three methods:
+
+- Copy them to ~/.fonts (on *n*x based systems)
+- Install them with an install tool like install font option in konqueror or drakfont.
+- Manual installation like described here: http://linux.org.mt/article/ttfonts
+
+Debian based distributions:
+===========================
+Download the SVN/release version of canorus and run:
+ $ cd canorus-X.Y
+ $ debian/rules binary
+ 
+Install the created .deb package.
+
+Troubleshooting:
+================
 If you get the following error (could be only the last line!):
 
 QT_QMAKE_EXECUTABLE set to qmake version: QTVERSION = **Unknown**
@@ -48,20 +82,6 @@ ln -s /usr/share/swig/1.3.[version] /usr/share/swig1.3
 
 Replace .[version] with the real version f.e. 1.3.27.
 
-If you get the error "... Please set the following variable ...
-RUBY_INCLUDE_PATH" then you need to point the FindRuby.cmake
-file to the correct include path on your system. I needed to
-modify the script directly:
-
-- RUBY_POSSIBLE_INCLUDE_PATHS /usr/lib/ruby1.8/i586-linux(-gnu)
-  (Attention, could be x86_64, i686, ... on some systems)
-- FIND_LIBRARY - NAMES "ruby" (instead of "ruby1.8)
-- FIND_PROGRAM - NAMES "ruby" (instead of "ruby1.8)
-
-Best is to tell the package maker of ruby/cmake/swig about these
-problems if they occur on your distribution. I won't adapt the Canorus
-cmake files to cover all the possible pathes of every distribution.
-
 If you get the following error:
 "libpython.a: undefined reference to openpty"
 your system requires the util library to be included to the
@@ -73,28 +93,11 @@ Add " util" as last library to the line f.e. like this:
 
 I hope that the NO_DEFAULT_PATH options gets added to newer cmake releases.
 
-- Compile Canorus with the following command: "make"
-
-Installation
-============
-
-Install the fonts files in the directory fonts. I know of at least
-two methods:
-
-- Copy them to ~/.fonts (on *n*x based systems)
-- Install them with an install tool like kcontrol or drakfont.
-- Manual installation like described here: http://linux.org.mt/article/ttfonts
-
-Running the Canorus Prototype
-=============================
-
-simply start "canorus(.exe)"
-
 Settings
 ========
-The settings are stored in the $HOME/.config/Canorus directory.
-(Recent file list, current menu/perspective settings, options).
+Settings are stored in $HOME/.config/Canorus directory under POSIX systems and under
+Local settings directory in your user profile directory under Microsoft Windows.
 
 Windows users
 =============
-See nsis/Readme.txt for details about building Canorus under Microsoft Windows.
+See windows/Readme.txt for details about building Canorus under Microsoft Windows.
