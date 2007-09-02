@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="-15 -515 1000 1000"
+   id="svg1333"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   width="128"
+   height="128"
+   sodipodi:docname="clefbass.svg"
+   sodipodi:docbase="/home/matevz/canorus/artwork/images"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   version="1.0">
+  <metadata
+     id="metadata1342">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs1340">
+    <linearGradient
+       id="linearGradient3969">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop3971" />
+      <stop
+         style="stop-color:#646464;stop-opacity:1;"
+         offset="1"
+         id="stop3973" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3969"
+       id="linearGradient3975"
+       x1="-14.393877"
+       y1="-124.88742"
+       x2="659"
+       y2="-124.88742"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3969"
+       id="linearGradient14615"
+       gradientUnits="userSpaceOnUse"
+       x1="-14.393877"
+       y1="-124.88742"
+       x2="659"
+       y2="-124.88742" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3969"
+       id="linearGradient14623"
+       gradientUnits="userSpaceOnUse"
+       x1="-14.393877"
+       y1="-124.88742"
+       x2="659"
+       y2="-124.88742" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3969"
+       id="linearGradient14625"
+       gradientUnits="userSpaceOnUse"
+       x1="-14.393877"
+       y1="-124.88742"
+       x2="659"
+       y2="-124.88742" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="978"
+     inkscape:window-width="1400"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:zoom="1.4215638"
+     inkscape:cx="215.94299"
+     inkscape:cy="-1.4068909"
+     inkscape:window-x="192"
+     inkscape:window-y="140"
+     inkscape:current-layer="svg1333"
+     width="128px"
+     height="128px" />
+  <g
+     id="g14617"
+     transform="matrix(5.5191846,0,0,5.5191846,-1423.5335,316.63628)">
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/clefbass.png"
+       style="fill:#000000;fill-opacity:0.39215686"
+       id="g1346"
+       transform="matrix(0.200656,0,0,-0.200656,282.41886,-84.314826)">
+      <path
+         style="fill:#000000;fill-opacity:0.39215686"
+         id="path1348"
+         d="M 205,264 C 243,268 306,262 348,249 C 449,218 509,151 523,51 C 525,32 525,-12 522,-34 C 512,-112 482,-177 425,-244 C 412,-259 382,-290 366,-304 C 284,-375 174,-440 25,-504 C 17,-507 9,-511 7,-513 C 4,-515 3,-515 -1,-515 C -6,-514 -9,-512 -12,-508 C -15,-504 -15,-497 -13,-493 C -12,-492 -5,-486 4,-482 C 84,-433 153,-386 204,-344 C 313,-253 374,-159 391,-58 C 395,-36 395,-26 395,1 C 395,44 390,78 377,113 C 353,180 311,222 256,234 C 244,236 217,236 205,234 C 160,224 125,193 101,145 C 97,136 89,116 89,115 L 95,117 C 102,119 126,119 136,116 C 180,104 209,68 212,25 C 214,-12 196,-50 166,-70 C 146,-84 123,-89 98,-86 C 49,-80 10,-44 1,3 C -3,28 3,75 16,108 C 47,194 120,253 205,264 z M 598,174 C 630,180 659,156 659,124 C 659,97 636,74 609,74 C 586,74 565,90 559,113 C 554,135 565,160 586,170 C 590,171 596,173 598,174 z M 598,-75 C 630,-69 659,-93 659,-125 C 659,-152 636,-175 609,-175 C 586,-175 565,-159 559,-136 C 554,-114 565,-89 586,-79 C 590,-78 596,-76 598,-75 z " />
+    </g>
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/clefbass.png"
+       style="fill:url(#linearGradient14623);fill-opacity:1"
+       id="g1335"
+       transform="matrix(0.200656,0,0,-0.200656,279.83685,-85.979826)">
+      <path
+         style="fill:url(#linearGradient14625);fill-opacity:1"
+         id="path1337"
+         d="M 205,264 C 243,268 306,262 348,249 C 449,218 509,151 523,51 C 525,32 525,-12 522,-34 C 512,-112 482,-177 425,-244 C 412,-259 382,-290 366,-304 C 284,-375 174,-440 25,-504 C 17,-507 9,-511 7,-513 C 4,-515 3,-515 -1,-515 C -6,-514 -9,-512 -12,-508 C -15,-504 -15,-497 -13,-493 C -12,-492 -5,-486 4,-482 C 84,-433 153,-386 204,-344 C 313,-253 374,-159 391,-58 C 395,-36 395,-26 395,1 C 395,44 390,78 377,113 C 353,180 311,222 256,234 C 244,236 217,236 205,234 C 160,224 125,193 101,145 C 97,136 89,116 89,115 L 95,117 C 102,119 126,119 136,116 C 180,104 209,68 212,25 C 214,-12 196,-50 166,-70 C 146,-84 123,-89 98,-86 C 49,-80 10,-44 1,3 C -3,28 3,75 16,108 C 47,194 120,253 205,264 z M 598,174 C 630,180 659,156 659,124 C 659,97 636,74 609,74 C 586,74 565,90 559,113 C 554,135 565,160 586,170 C 590,171 596,173 598,174 z M 598,-75 C 630,-69 659,-93 659,-125 C 659,-152 636,-175 609,-175 C 586,-175 565,-159 559,-136 C 554,-114 565,-89 586,-79 C 590,-78 596,-76 598,-75 z " />
+    </g>
+  </g>
+</svg>
