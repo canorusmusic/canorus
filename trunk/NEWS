@@ -1,3 +1,45 @@
+0.4
+===
+- Settings dialog
+- Customizable colors for Score editor
+- Element advanced properties dialog
+- Copy/Paste
+- Undo/Redo
+- Splash screen
+- MIDI instrument per voice support
+- Key signature major/minor support and function marking integration
+- Scripting engine is now always synchronized with the current API
+- Python engine now uses objective Swig interface
+- New CanorusML support in scripting library for directly opening/saving
+Canorus files
+- New playback support in scripting library
+- Qt4.3 compatibility
+- lots of smaller additions and even more fixes
+
+0.3.1
+=====
+- SVG icons are now shown on Windows.
+- Fixed hyphen and melisma bug.
+- Fixed playback of chords.
+- Fixed LilyPond import and export of key signatures.
+- Fixed LilyPond import of notes with flats.
+- Fixed LilyPond crash when importing rests before notes.
+- Uninstaller on Windows now also removes Canorus directory and menu entry
+- Fixed some CMake rules for correct QSvg and QXml module inclusion and
+linkage.
+
+0.3
+===
+- Added support for Ties, Slurs and Phrasing slurs.
+- Added support for Lyrics.
+- Multiple selection.
+- Added support for Function markings manipulation.
+- Rewritten Playback to support repeat barlines.
+- LilyPond imoprt and export of Lyrics and other fixes.
+- SVG icons used instead of PNG.
+- Improved ScoreViewPort rendering.
+- Fixed lots of crashes and other annoying bugs.
+
 0.2.5
 =====
 - New Doxygen documentation.
