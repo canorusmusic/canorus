@@ -1242,9 +1242,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.2203152"
-     inkscape:cx="300.09893"
-     inkscape:cy="173.32707"
+     inkscape:zoom="1.1101576"
+     inkscape:cx="335.28402"
+     inkscape:cy="155.38103"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="400px"
@@ -1277,7 +1277,8 @@
        sodipodi:absref="/home/rousseau/Desktop1/CanorusSplashScreen-Background.jpg"
        xlink:href="CanorusSplashScreen-Background.jpg" />
     <g
-       id="g2436">
+       id="g2436"
+       transform="matrix(0.8607269,0,0,0.8607269,28.130743,8.701728)">
       <g
          transform="matrix(2.5094884,0,0,2.5094884,279.14988,383.60166)"
          id="g13764">
