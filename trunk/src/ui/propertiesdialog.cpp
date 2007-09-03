@@ -7,6 +7,7 @@
 
 #include <QTreeWidgetItem>
 #include <QDateTime>
+#include <QHeaderView> // needed to hide header widget from document tree
 #include <QDate>
 
 #include "ui/propertiesdialog.h"
@@ -62,8 +63,20 @@ CAPropertiesDialog::CAPropertiesDialog( CADocument *doc, QWidget *parent )
  : QDialog(parent) {
 	_document = doc;
 	
+	// Locate resources (images, icons)
+	QString currentPath = QDir::currentPath();
+	
+	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
+	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
+		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
+		
+	QDir::setCurrent( resourcesLocations[0] ); /// \todo Button and menu icons by default look at the current working directory as their resource path only. QResource::addSearchPath() doesn't work for external icons. Any other ideas? -Matevz
+
 	Ui::uiPropertiesDialog::setupUi( this );
+	uiDocumentTree->header()->hide();
 	buildTree();
+	
+	QDir::setCurrent( currentPath );
 }
 
 CAPropertiesDialog::~CAPropertiesDialog() {
@@ -74,15 +87,6 @@ CAPropertiesDialog::~CAPropertiesDialog() {
 	Tree always shows the whole Document structure.
 */
 void CAPropertiesDialog::buildTree() {
-	// Locate resources (images, icons)
-	QString currentPath = QDir::currentPath();
-	
-	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
-	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
-		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
-		
-	QDir::setCurrent( resourcesLocations[0] ); /// \todo Button and menu icons by default look at the current working directory as their resource path only. QResource::addSearchPath() doesn't work for external icons. Any other ideas? -Matevz
-
 	QWidget *w=0;
 	QTreeWidgetItem *docItem=0;
 	if (_document) {
@@ -156,8 +160,6 @@ void CAPropertiesDialog::buildTree() {
 		uiDocumentTree->addTopLevelItem( docItem );
 		uiDocumentTree->expandAll();
 	}
-	
-	QDir::setCurrent( currentPath );
 }
 
 void CAPropertiesDialog::documentProperties( CADocument *doc, QWidget *parent ) {
@@ -165,7 +167,6 @@ void CAPropertiesDialog::documentProperties( CADocument *doc, QWidget *parent ) 
 		CAPropertiesDialog pd( doc, parent );
 		pd.uiDocumentTree->setCurrentItem( pd.documentItem() );
 		pd.exec();
-		CACanorus::rebuildUI( doc );
 	}
 }
 
@@ -174,7 +175,6 @@ void CAPropertiesDialog::sheetProperties( CASheet *sheet, QWidget *parent ) {
 		CAPropertiesDialog pd( sheet->document(), parent );
 		pd.uiDocumentTree->setCurrentItem( pd.sheetItem().key(sheet) );
 		pd.exec();
-		CACanorus::rebuildUI( sheet->document() );
 	}
 }
 
@@ -183,7 +183,6 @@ void CAPropertiesDialog::contextProperties( CAContext *context, QWidget *parent 
 		CAPropertiesDialog pd( context->sheet()->document(), parent );
 		pd.uiDocumentTree->setCurrentItem( pd.contextItem().key(context) );
 		pd.exec();
-		CACanorus::rebuildUI( context->sheet()->document() );
 	}
 }
 
@@ -193,7 +192,6 @@ void CAPropertiesDialog::voiceProperties( CAVoice *voice, QWidget *parent ) {
 		CAPropertiesDialog pd( voice->staff()->sheet()->document(), parent );
 		pd.uiDocumentTree->setCurrentItem( pd.voiceItem().key(voice) );
 		pd.exec();
-		CACanorus::rebuildUI( voice->staff()->sheet()->document() );
 	}
 }
 
@@ -202,9 +200,30 @@ void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *
 	
 	if ( _documentItem == cur ) {
 		updateDocumentProperties( _document );
+		
+		// update uiUp/uiDown buttons
+		uiUp->setEnabled(false);
+		uiDown->setEnabled(false);
 	} else
 	if ( _sheetItem.contains(cur) ) {
 		updateSheetProperties( _sheetItem[cur] );
+		
+		// update uiUp/uiDown buttons
+		uiUp->setEnabled( false );
+		for (int idx = uiDocumentTree->indexOfTopLevelItem(cur); idx>=0; idx--) {
+			if (_sheetItem.contains( uiDocumentTree->topLevelItem(idx) )) {
+				uiUp->setEnabled(true);
+				break;
+			}
+		}
+		
+		uiDown->setEnabled( false );
+		for (int idx = uiDocumentTree->indexOfTopLevelItem(cur); idx<uiDocumentTree->topLevelItemCount(); idx++) {
+			if (_sheetItem.contains( uiDocumentTree->topLevelItem(idx) )) {
+				uiDown->setEnabled(true);
+				break;
+			}
+		}
 	} else
 	if ( _contextItem.contains(cur) ) {
 		switch ( _contextItem[cur]->contextType() ) {
@@ -218,9 +237,43 @@ void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *
 				updateFunctionMarkingContextProperties( static_cast<CAFunctionMarkingContext*>( _contextItem[cur] ) );
 				break;
 		}
+		
+		// update uiUp/uiDown buttons
+		uiUp->setEnabled( false );
+		for (int idx = uiDocumentTree->indexOfTopLevelItem(cur); idx>=0; idx--) {
+			if ( _contextItem.contains( uiDocumentTree->topLevelItem(idx) ) || _sheetItem.contains( uiDocumentTree->topLevelItem(idx) )) {
+				uiUp->setEnabled(true);
+				break;
+			}
+		}
+		
+		uiDown->setEnabled( false );
+		for (int idx = uiDocumentTree->indexOfTopLevelItem(cur); idx<uiDocumentTree->topLevelItemCount(); idx++) {
+			if ( _contextItem.contains( uiDocumentTree->topLevelItem(idx) ) || _sheetItem.contains( uiDocumentTree->topLevelItem(idx) )) {
+				uiDown->setEnabled(true);
+				break;
+			}
+		}
 	} else
 	if ( _voiceItem.contains(cur) ) {
 		updateVoiceProperties( _voiceItem[cur] );
+		
+		// update uiUp/uiDown buttons
+		uiUp->setEnabled( false );
+		for (QTreeWidgetItem *next=uiDocumentTree->itemAbove(cur); next; next=uiDocumentTree->itemAbove(next)) {
+			if ( _contextItem.contains(next) && _contextItem[next]->contextType()==CAContext::Staff || _voiceItem.contains(next) ) {
+				uiUp->setEnabled(true);
+				break;
+			}
+		}
+		
+		uiDown->setEnabled( false );
+		for (QTreeWidgetItem *next=uiDocumentTree->itemBelow(cur); next; next=uiDocumentTree->itemBelow(next)) {
+			if ( _contextItem.contains(next) && _contextItem[next]->contextType()==CAContext::Staff || _voiceItem.contains(next) ) {
+				uiDown->setEnabled(true);
+				break;
+			}
+		}
 	}
 }
 
@@ -264,12 +317,18 @@ void CAPropertiesDialog::applyProperties() {
 	for (int i=0; i<_contextPropertiesWidget.keys().size(); i++) {
 		CAContext *c = _contextPropertiesWidget.keys().at(i);
 		switch (c->contextType()) {
-			case CAContext::Staff:
+			case CAContext::Staff: {
+				CAStaff *staff = static_cast<CAStaff*>(c);
+				CAStaffProperties *sp = static_cast<CAStaffProperties*>(_contextPropertiesWidget[staff]);
+				staff->setNumberOfLines( sp->uiNumberOfLines->value() );
 				break;
-			case CAContext::LyricsContext:
+			}
+			case CAContext::LyricsContext: {
 				break;
-			case CAContext::FunctionMarkingContext:
+			}
+			case CAContext::FunctionMarkingContext: {
 				break;
+			}
 		}
 	}
 	
@@ -279,6 +338,25 @@ void CAPropertiesDialog::applyProperties() {
 		CAVoiceProperties *vp = static_cast<CAVoiceProperties*>(_voicePropertiesWidget[ voice ]);
 		voice->setMidiChannel( vp->uiMidiChannel->value() );
 	}
+	
+	CACanorus::rebuildUI( _document );
+}
+
+void CAPropertiesDialog::on_uiUp_clicked( bool down ) {
+	QTreeWidgetItem *cur = uiDocumentTree->currentItem();
+	
+	if ( _sheetItem.contains(cur) ) {
+		for (QTreeWidgetItem *next = uiDocumentTree->itemAbove(cur); next; next = uiDocumentTree->itemAbove(next) )
+			if ( _sheetItem.contains(next) ) {
+				uiDocumentTree->removeItemWidget( cur, 0 );
+				uiDocumentTree->insertTopLevelItem( uiDocumentTree->indexOfTopLevelItem(next), cur);
+				break;
+			}
+	}
+}
+
+void CAPropertiesDialog::on_uiDown_clicked( bool down ) {
+	
 }
 
 void CAPropertiesDialog::updateDocumentProperties( CADocument *doc ) {
@@ -304,6 +382,7 @@ void CAPropertiesDialog::updateSheetProperties( CASheet *sheet ) {
 
 void CAPropertiesDialog::updateStaffProperties( CAStaff *staff ) {
 	CAStaffProperties *sp = static_cast<CAStaffProperties*>( _contextPropertiesWidget[staff] );
+	sp->uiNumberOfLines->setValue( staff->numberOfLines() );
 	
 	uiPropertiesWidget->setCurrentWidget( _contextPropertiesWidget[staff] );
 }

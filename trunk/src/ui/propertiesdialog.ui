@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>762</width>
-    <height>535</height>
+    <width>766</width>
+    <height>532</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -15,32 +15,53 @@
   <widget class="QWidget" name="layoutWidget" >
    <property name="geometry" >
     <rect>
-     <x>11</x>
-     <y>12</y>
-     <width>741</width>
-     <height>511</height>
+     <x>2</x>
+     <y>5</y>
+     <width>761</width>
+     <height>521</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
     <item>
      <layout class="QHBoxLayout" >
       <item>
-       <widget class="QTreeWidget" name="uiDocumentTree" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <layout class="QVBoxLayout" >
+        <property name="spacing" >
+         <number>2</number>
         </property>
-        <property name="dragEnabled" >
-         <bool>true</bool>
-        </property>
-        <column>
-         <property name="text" >
-          <string/>
-         </property>
-        </column>
-       </widget>
+        <item>
+         <widget class="QPushButton" name="uiUp" >
+          <property name="icon" >
+           <iconset>images/up.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTreeWidget" name="uiDocumentTree" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="columnCount" >
+           <number>1</number>
+          </property>
+          <column>
+           <property name="text" >
+            <string/>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="uiDown" >
+          <property name="icon" >
+           <iconset>images/down.svg</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QVBoxLayout" >
