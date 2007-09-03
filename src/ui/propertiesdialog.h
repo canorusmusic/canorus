@@ -81,6 +81,8 @@ public:
 public slots:
 	void on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *cur, QTreeWidgetItem *prev );
 	void on_uiButtonBox_clicked( QAbstractButton* );
+	void on_uiUp_clicked( bool );
+	void on_uiDown_clicked( bool );
 	
 private:
 	void buildTree();

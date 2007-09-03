@@ -200,7 +200,6 @@ private slots:
 	// Context
 	void on_uiContextName_returnPressed();
 	void on_uiRemoveContext_triggered();
-	void on_uiStaffNumberOfLines_valueChanged(int);
 	void on_uiStanzaNumber_valueChanged(int);
 	void on_uiAssociatedVoice_currentIndexChanged(int);
 	void on_uiContextProperties_triggered();
@@ -358,8 +357,6 @@ private:
 			//QAction          *uiRemoveContext; // made by Qt Designer
 			//QAction          *uiContextProperties; // made by Qt Designer
 			// CAStaff
-			QSpinBox         *uiStaffNumberOfLines;
-			QAction          *uiStaffNumberOfLinesAction;
 			// CALyricsContext
 			QSpinBox         *uiStanzaNumber;
 			QAction          *uiStanzaNumberAction;

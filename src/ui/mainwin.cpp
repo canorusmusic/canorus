@@ -261,10 +261,6 @@ void CAMainWin::createCustomActions() {
 	uiContextName = new QLineEdit(this);
 		uiContextName->setObjectName( "uiContextName" );
 		uiContextName->setToolTip(tr("Context name"));
-	uiStaffNumberOfLines = new QSpinBox(this);
-		uiStaffNumberOfLines->setObjectName( "uiStaffNumberOfLines" );
-		uiStaffNumberOfLines->setToolTip(tr("Number of lines"));
-		uiStaffNumberOfLines->hide();
 	uiStanzaNumber = new QSpinBox(this);
 		uiStanzaNumber->setObjectName( "uiStanzaNumber" );
 		uiStanzaNumber->setToolTip(tr("Stanza number"));
@@ -493,7 +489,6 @@ void CAMainWin::setupCustomUi() {
 	
 	// Context Toolbar
 	uiContextToolBar->addWidget( uiContextName );
-	uiStaffNumberOfLinesAction = uiContextToolBar->addWidget( uiStaffNumberOfLines );
 	uiStanzaNumberAction = uiContextToolBar->addWidget( uiStanzaNumber );
 	uiAssociatedVoiceAction = uiContextToolBar->addWidget( uiAssociatedVoice );
 	uiContextToolBar->addAction( uiRemoveContext );
@@ -2672,20 +2667,6 @@ void CAMainWin::on_uiContextProperties_triggered() {
 }
 
 /*!
-	Sets the number of lines in the staff.
-*/
-void CAMainWin::on_uiStaffNumberOfLines_valueChanged(int lines) {
-	CAStaff *staff = currentStaff();
-	if (staff) {
-		CACanorus::undo()->createUndoCommand( document(), tr("change number of staff lines", "undo") );
-		if (staff->numberOfLines()!=lines)
-			CACanorus::undo()->pushUndoCommand();
-		staff->setNumberOfLines(lines);
-		CACanorus::rebuildUI(document(), currentSheet());
-	}
-}
-
-/*!
 	Sets the stanza number of the current lyrics context.
 */
 void CAMainWin::on_uiStanzaNumber_valueChanged(int stanzaNumber) {
@@ -2823,8 +2804,6 @@ void CAMainWin::updateContextToolBar() {
 		
 		switch (context->contextType()) {
 			case CAContext::Staff: {
-				uiStaffNumberOfLines->setValue(static_cast<CAStaff*>(context)->numberOfLines());
-				uiStaffNumberOfLinesAction->setVisible(true);
 				uiStanzaNumberAction->setVisible(false);
 				uiAssociatedVoiceAction->setVisible(false);
 				break;
@@ -2843,13 +2822,11 @@ void CAMainWin::updateContextToolBar() {
 				uiAssociatedVoice->setCurrentIndex( idx );
 				uiAssociatedVoiceAction->setVisible(true);
 				
-				uiStaffNumberOfLinesAction->setVisible(false);
 				break;
 			}
 			case CAContext::FunctionMarkingContext: {
 				uiStanzaNumberAction->setVisible(false);
 				uiAssociatedVoiceAction->setVisible(false);
-				uiStaffNumberOfLinesAction->setVisible(false);
 				break;
 			}
 		}
