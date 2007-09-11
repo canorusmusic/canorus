@@ -88,6 +88,7 @@ private:
 	void buildTree();
 	
 	void applyProperties();
+	void createDocumentFromTree();
 	void updateDocumentProperties( CADocument* );
 	void updateSheetProperties( CASheet* );
 	void updateStaffProperties( CAStaff* );

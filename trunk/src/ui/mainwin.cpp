@@ -495,18 +495,6 @@ void CAMainWin::setupCustomUi() {
 	uiContextToolBar->addAction( uiContextProperties );
 	addToolBar(Qt::TopToolBarArea, uiContextToolBar);
 	
-	// Voice Toolbar
-	uiVoiceToolBar->addAction( uiNewVoice );
-	uiVoiceToolBar->addWidget( uiVoiceNum );
-	uiVoiceToolBar->addWidget( uiVoiceName );
-	uiVoiceToolBar->addWidget( uiVoiceInstrument );
-	uiVoiceToolBar->addAction( uiRemoveVoice );
-	uiVoiceStemDirection->setDefaultAction( uiVoiceToolBar->addWidget( uiVoiceStemDirection ) );
-	uiVoiceStemDirection->defaultAction()->setToolTip(tr("Voice stem direction"));
-	uiVoiceStemDirection->defaultAction()->setCheckable(false);
-	uiVoiceToolBar->addAction( uiVoiceProperties );
-	addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
-	
 	// Playable Toolbar
 	uiPlayableLength->setDefaultAction( uiPlayableToolBar->addWidget( uiPlayableLength ) );
 	uiPlayableLength->defaultAction()->setToolTip(tr("Playable length"));
@@ -518,6 +506,18 @@ void CAMainWin::setupCustomUi() {
 	uiNoteStemDirection->setCurrentId( CANote::StemPreferred );
 	uiPlayableToolBar->addAction( uiHiddenRest );
 	addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
+	
+	// Voice Toolbar
+	uiVoiceToolBar->addAction( uiNewVoice );
+	uiVoiceToolBar->addWidget( uiVoiceNum );
+	uiVoiceToolBar->addWidget( uiVoiceName );
+	uiVoiceToolBar->addWidget( uiVoiceInstrument );
+	uiVoiceToolBar->addAction( uiRemoveVoice );
+	uiVoiceStemDirection->setDefaultAction( uiVoiceToolBar->addWidget( uiVoiceStemDirection ) );
+	uiVoiceStemDirection->defaultAction()->setToolTip(tr("Voice stem direction"));
+	uiVoiceStemDirection->defaultAction()->setCheckable(false);
+	uiVoiceToolBar->addAction( uiVoiceProperties );
+	addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
 	
 	// KeySig Toolbar
 	uiKeySigToolBar->addWidget( uiKeySig );
@@ -890,6 +890,7 @@ void CAMainWin::on_uiNewSheet_triggered() {
 	document()->addSheetByName( tr("Sheet%1").arg(QString::number(document()->sheetCount()+1)) );
 	CACanorus::undo()->pushUndoCommand();
 	CACanorus::rebuildUI(document());
+	uiTabWidget->setCurrentIndex(uiTabWidget->count()-1);
 }
 
 /*!
@@ -1117,6 +1118,8 @@ void CAMainWin::rebuildUI(bool repaint) {
 	
 	setRebuildUILock( true );
 	if (document()) {
+		int curIndex = uiTabWidget->currentIndex();
+		
 		// save the current state of viewports
 		QList<QRect> worldCoordsList;
 		for (int i=0; i<_viewPortList.size(); i++)
@@ -1142,6 +1145,9 @@ void CAMainWin::rebuildUI(bool repaint) {
 			if (repaint)
 				_viewPortList[i]->repaint();
 		}
+		
+		if ( curIndex<uiTabWidget->count() )
+			uiTabWidget->setCurrentIndex(curIndex);
 	} else {
 		clearUI();
 	}
