@@ -346,7 +346,7 @@ CANote::CAStemDirection CANote::actualStemDirection() {
 			break;
 		
 		case StemNeutral:
-			if ( staff() && notePosition() < staff()->numberOfLines() )	// position from 0 to half of the number of lines - where position has step of 2 per line
+			if ( staff() && notePosition() < staff()->numberOfLines()-1 )	// position from 0 to half of the number of lines - where position has step of 2 per line
 				return StemUp;
 			else
 				return StemDown;
@@ -362,7 +362,7 @@ CANote::CAStemDirection CANote::actualStemDirection() {
 					break;
 				
 				case StemNeutral:
-					if ( staff() && notePosition() < staff()->numberOfLines() )	// position from 0 to half of the number of lines - where position has step of 2 per line
+					if ( staff() && notePosition() < staff()->numberOfLines()-1 )	// position from 0 to half of the number of lines - where position has step of 2 per line
 						return StemUp;
 					else
 						return StemDown;
