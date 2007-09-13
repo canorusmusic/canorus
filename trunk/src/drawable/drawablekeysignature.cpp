@@ -18,92 +18,143 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 	_drawableMusElementType = CADrawableMusElement::DrawableKeySignature;
 	
 	int newX = x;
- 	if (keySig->keySignatureType() == CAKeySignature::MajorMinor) {
- 		int idx, minY=y, maxY=y;
- 		
- 		CAKeySignature *prevKeySig = drawableStaff->getKeySignature(x);
- 		//TODO: How are the accidentals pitches determined (which octave)?! Currently, I only call calculateHighestCenterYCoord() for all the positions. -Matevz
- 		if (prevKeySig) {
- 			idx = 3;
- 			for (int i=0; i<7; i++) {	//place naturals for sharps
-				if ((prevKeySig->accidentals()[idx]!=1) || (keySig->accidentals()[idx]==1))
-					continue;
-				
- 				CADrawableAccidental *acc = new CADrawableAccidental(0, keySig, drawableStaff, newX, drawableStaff->calculateHighestCenterYCoord(idx, x));
- 				
- 				_drawableAccidentalList << acc;
- 				
- 				newX += (acc->width() + 5);
- 				idx = (idx+4)%7;
- 				
- 				if (acc->yPos() < minY)
- 					minY = acc->yPos();
- 				if (acc->yPos() + acc->height() > maxY)
- 					maxY = acc->yPos() + acc->height();
- 			}
- 			
-			idx = 6;
- 			for (int i=0; i<7; i++) {	//place naturals for flats
-				if ((prevKeySig->accidentals()[idx]!=-1) || (keySig->accidentals()[idx]==-1))
-					continue;
-					
- 				CADrawableAccidental *acc = new CADrawableAccidental(0, keySig, drawableStaff, newX, drawableStaff->calculateHighestCenterYCoord(idx, x));
- 				
- 				_drawableAccidentalList << acc;
- 				
- 				newX += (acc->width() + 5);
- 				idx = (idx+3)%7;	
-
-	 			if (acc->yPos() < minY)
- 					minY = acc->yPos();
- 				if (acc->yPos() + acc->height() > maxY)
- 					maxY = acc->yPos() + acc->height();
- 			}
- 		}
- 		
- 		idx = 3;
- 		for (int i=0; i<7; i++) {	//place sharps
-			if (keySig->accidentals()[idx]!=1)
-				continue;
-				
- 			CADrawableAccidental *acc = new CADrawableAccidental(1, keySig, drawableStaff, newX, drawableStaff->calculateHighestCenterYCoord(idx, x));
- 			
- 			_drawableAccidentalList << acc;
- 			
- 			newX += (acc->width() + 5);
- 			idx = (idx+4)%7;
- 			
- 			if (acc->yPos() < minY)
- 				minY = acc->yPos();
- 			if (acc->yPos() + acc->height() > maxY)
- 				maxY = acc->yPos() + acc->height();
- 		}
- 		
-		idx = 6;
- 		for (int i=0; i<7; i++) {	//place flats
-			if (keySig->accidentals()[idx]!=-1)
+	CAClef *clef = drawableStaff->getClef(x);
+	int idx, idx2; // pitches of accidentals
+	int minY=y, maxY=y;
+	
+	CAKeySignature *prevKeySig = drawableStaff->getKeySignature(x);
+	if (prevKeySig) {
+		// get initial neutral-sharp position
+		idx = 3;
+		idx2 = 0;
+		while ( idx + (clef?clef->c1():-2) - 28  < -1 ||
+				idx2 + (clef?clef->c1():-2) - 28 < -1) {
+			idx+=7;
+			idx2+=7;
+		}
+		
+ 		for ( int i=0; i<7; idx += (i%2?-3:4), i++ ) {	// place neutrals for sharps
+			if ( (prevKeySig->accidentals()[idx%7]!=1) ||
+			     (prevKeySig->accidentals()[idx%7]==1) && (keySig->accidentals()[idx%7]==1) )
 				continue;
 			
- 			CADrawableAccidental *acc = new CADrawableAccidental(-1, keySig, drawableStaff, newX, drawableStaff->calculateHighestCenterYCoord(idx, x));
+			int curIdx=idx;
+			if ( curIdx + (clef?clef->c1():-2) - 28  < -1 )
+				curIdx+=7;
+			if ( curIdx + (clef?clef->c1():-2) - 28  > drawableStaff->staff()->numberOfLines()*2-1 )
+				curIdx-=7;
+			
+ 			CADrawableAccidental *acc = new CADrawableAccidental(0, keySig, drawableStaff, newX, drawableStaff->calculateCenterYCoord(curIdx, x));
  			
  			_drawableAccidentalList << acc;
  			
  			newX += (acc->width() + 5);
- 			idx = (idx+3)%7;
-
- 			if (acc->yPos() < minY)
+			
+ 			if ( acc->yPos() < minY )
  				minY = acc->yPos();
- 			if (acc->yPos() + acc->height() > maxY)
+ 			if ( acc->yPos() + acc->height() > maxY )
  				maxY = acc->yPos() + acc->height();
  		}
- 	
- 		_width = newX - x;
- 		_height = maxY - minY;
-	 	_yPos = minY;
-	 	
-	 	_neededWidth = _width;
-	 	_neededHeight = _height;
- 	}
+	
+		// get initial neutral-flat position
+		idx = 6;
+		idx2 = 9;
+		while ( idx + (clef?clef->c1():-2) - 28  < -1 ||
+				idx2 + (clef?clef->c1():-2) - 28 < -1) {
+			idx+=7;
+			idx2+=7;
+		}
+		for ( int i=0; i<7; idx += (i%2?-4:3), i++ ) {	// place neutrals for flats
+			if ( (prevKeySig->accidentals()[idx%7]!=-1) ||
+			     (prevKeySig->accidentals()[idx%7]==-1) && (keySig->accidentals()[idx%7]==-1) )
+				continue;
+			
+			int curIdx=idx;
+			if ( curIdx + (clef?clef->c1():-2) - 28  < -1 )
+				curIdx+=7;
+			if ( curIdx + (clef?clef->c1():-2) - 28  > drawableStaff->staff()->numberOfLines()*2-1 )
+				curIdx-=7;
+			
+			CADrawableAccidental *acc = new CADrawableAccidental(0, keySig, drawableStaff, newX, drawableStaff->calculateCenterYCoord(curIdx, x));
+			
+			_drawableAccidentalList << acc;
+			
+			newX += (acc->width() + 5);
+			
+			if ( acc->yPos() < minY )
+				minY = acc->yPos();
+			if ( acc->yPos() + acc->height() > maxY )
+				maxY = acc->yPos() + acc->height();
+		}
+	}
+	
+	// get initial sharp position
+	idx = 3;
+	idx2 = 0;
+	while ( idx + (clef?clef->c1():-2) - 28  < -1 ||
+			idx2 + (clef?clef->c1():-2) - 28 < -1) {
+		idx+=7;
+		idx2+=7;
+	}
+	
+	for ( int i=0; i<7; idx += (i%2?-3:4), i++ ) {	// place sharps
+		if (keySig->accidentals()[idx%7]!=1)
+			continue;
+		
+		int curIdx=idx;
+		if ( curIdx + (clef?clef->c1():-2) - 28  < -1 )
+			curIdx+=7;
+		if ( curIdx + (clef?clef->c1():-2) - 28  > drawableStaff->staff()->numberOfLines()*2-1 )
+			curIdx-=7;
+		
+			CADrawableAccidental *acc = new CADrawableAccidental(1, keySig, drawableStaff, newX, drawableStaff->calculateCenterYCoord(curIdx, x));
+		
+		_drawableAccidentalList << acc;
+		
+		newX += (acc->width() + 5);
+		
+		if ( acc->yPos() < minY )
+			minY = acc->yPos();
+		if ( acc->yPos() + acc->height() > maxY )
+			maxY = acc->yPos() + acc->height();
+	}
+	
+	// get initial flat position
+	idx = 6;
+	idx2 = 9;
+	while ( idx + (clef?clef->c1():-2) - 28  < -1 ||
+			idx2 + (clef?clef->c1():-2) - 28 < -1) {
+		idx+=7;
+		idx2+=7;
+	}
+	for ( int i=0; i<7; idx += (i%2?-4:3), i++ ) {	// place flats,
+		if (keySig->accidentals()[idx%7]!=-1)
+			continue;
+		
+		int curIdx=idx;
+		if ( (curIdx + (clef?clef->c1():-2) - 28)  < -1 )
+			curIdx+=7;
+		if ( (curIdx + (clef?clef->c1():-2) - 28)  > (drawableStaff->staff()->numberOfLines()*2-1) )
+			curIdx-=7;
+		
+		CADrawableAccidental *acc = new CADrawableAccidental(-1, keySig, drawableStaff, newX, drawableStaff->calculateCenterYCoord(curIdx, x));
+		
+		_drawableAccidentalList << acc;
+		
+		newX += (acc->width() + 5);
+		
+		if ( acc->yPos() < minY )
+			minY = acc->yPos();
+		if ( acc->yPos() + acc->height() > maxY )
+			maxY = acc->yPos() + acc->height();
+	}
+	
+	_width = newX - x;
+	_height = maxY - minY;
+ 	_yPos = minY;
+	
+ 	_neededWidth = _width;
+ 	_neededHeight = _height;
 }
 
 CADrawableKeySignature::~CADrawableKeySignature() {
