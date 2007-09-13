@@ -737,7 +737,7 @@
     <iconset>images/insertplayable.svg</iconset>
    </property>
    <property name="text" >
-    <string>Playable...</string>
+    <string>Notes and Rests</string>
    </property>
   </action>
   <action name="uiInsertFM" >
