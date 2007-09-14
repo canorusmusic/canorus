@@ -53,6 +53,7 @@ CAMusElementFactory::CAMusElementFactory() {
 	_iKeySigNumberOfAccs = 0;
 	_eKeySigGender = CAKeySignature::Major;
 	_eClef = CAClef::Treble;
+	_iClefOffset = 0;
 	_iNoteAccs = 0;
 	_iNoteExtraAccs = 0;
 	_eBarlineType = CABarline::Single;
@@ -95,7 +96,7 @@ bool CAMusElementFactory::configureClef( CAStaff *staff,
 {
 	bool success = false;
 	if ( staff ) {
-		mpoMusElement = new CAClef(_eClef, staff, (left?left->timeEnd():0));
+		mpoMusElement = new CAClef( _eClef, staff, (left?left->timeEnd():0), _iClefOffset );
 		success = staff->insertSignAfter(mpoMusElement, left, true);
 		if (!success)
 			removeMusElem( true );

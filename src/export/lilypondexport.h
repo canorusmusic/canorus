@@ -53,7 +53,7 @@ private:
 	////////////////////
 	// Helper methods //
 	////////////////////
-	const QString clefTypeToLilyPond(CAClef::CAClefType type);	
+	const QString clefTypeToLilyPond( CAClef::CAClefType type, int c1, int offset );	
 	const QString keySignaturePitchToLilyPond(signed char accs, CAKeySignature::CAMajorMinorGender gender);
 	const QString keySignatureGenderToLilyPond(CAKeySignature::CAMajorMinorGender gender);
 	const QString playableLengthToLilyPond(CAPlayable::CAPlayableLength length, int dotted);

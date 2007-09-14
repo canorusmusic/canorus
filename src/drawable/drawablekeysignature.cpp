@@ -27,13 +27,13 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 		// get initial neutral-sharp position
 		idx = 3;
 		idx2 = 0;
-		while ( idx + (clef?clef->c1():-2) - 28  < -1 ||
-				idx2 + (clef?clef->c1():-2) - 28 < -1) {
+		while ( idx + (clef?clef->c1():-2) - 28  < 0 ||
+				idx2 + (clef?clef->c1():-2) - 28 < 0) {
 			idx+=7;
 			idx2+=7;
 		}
 		
- 		for ( int i=0; i<7; idx += (i%2?-3:4), i++ ) {	// place neutrals for sharps
+ 		for ( int i=0; i<7; idx += (i%2?4:-3), i++ ) {	// place neutrals for sharps
 			if ( (prevKeySig->accidentals()[idx%7]!=1) ||
 			     (prevKeySig->accidentals()[idx%7]==1) && (keySig->accidentals()[idx%7]==1) )
 				continue;
@@ -59,8 +59,8 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 		// get initial neutral-flat position
 		idx = 6;
 		idx2 = 9;
-		while ( idx + (clef?clef->c1():-2) - 28  < -1 ||
-				idx2 + (clef?clef->c1():-2) - 28 < -1) {
+		while ( idx + (clef?clef->c1():-2) - 28  < 0 ||
+				idx2 + (clef?clef->c1():-2) - 28 < 0) {
 			idx+=7;
 			idx2+=7;
 		}
@@ -91,13 +91,13 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 	// get initial sharp position
 	idx = 3;
 	idx2 = 0;
-	while ( idx + (clef?clef->c1():-2) - 28  < -1 ||
-			idx2 + (clef?clef->c1():-2) - 28 < -1) {
+	while ( idx + (clef?clef->c1():-2) - 28  < 0 ||
+			idx2 + (clef?clef->c1():-2) - 28 < 0) {
 		idx+=7;
 		idx2+=7;
 	}
 	
-	for ( int i=0; i<7; idx += (i%2?-3:4), i++ ) {	// place sharps
+	for ( int i=0; i<7; idx += (i%2?4:-3), i++ ) {	// place sharps
 		if (keySig->accidentals()[idx%7]!=1)
 			continue;
 		
@@ -122,8 +122,8 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 	// get initial flat position
 	idx = 6;
 	idx2 = 9;
-	while ( idx + (clef?clef->c1():-2) - 28  < -1 ||
-			idx2 + (clef?clef->c1():-2) - 28 < -1) {
+	while ( idx + (clef?clef->c1():-2) - 28  < 0 ||
+			idx2 + (clef?clef->c1():-2) - 28 < 0) {
 		idx+=7;
 		idx2+=7;
 	}

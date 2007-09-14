@@ -133,8 +133,11 @@ public:
 	inline void setTimeSigBeat( int iTimeSigBeat )
 	{ _iTimeSigBeat = iTimeSigBeat; };
 	
-	inline void setClef( CAClef::CAClefType eClefType )
+	inline void setClef( CAClef::CAPredefinedClefType eClefType )
 	{ _eClef = eClefType; };
+	
+	inline void setClefOffset( int offset )
+	{ _iClefOffset= offset; };
 	
 	inline CABarline::CABarlineType barlineType() { return _eBarlineType; }
 	inline void setBarlineType( CABarline::CABarlineType type)
@@ -187,7 +190,8 @@ private:
 	CAKeySignature::CAMajorMinorGender _eKeySigGender; // Major/Minor gender of the key signature
 	int _iTimeSigBeats;                            // Time signature number of beats to be inserted
 	int _iTimeSigBeat;                             // Time signature beat to be inserted
-	CAClef::CAClefType _eClef;                     // Type of the clef to be inserted
+	CAClef::CAPredefinedClefType _eClef;           // Type of the clef to be inserted
+	int                          _iClefOffset;     // Interval offset for the clef
 	CABarline::CABarlineType _eBarlineType;        // Type of the barline
 	CASlur::CASlurStyle _slurStyle;                // Style of the slur (solid, dotted)
 	

@@ -229,11 +229,18 @@ void CAMainWin::createCustomActions() {
 		uiSlurType->addButton( QIcon("images/tie.svg"), CASlur::TieType, tr("Tie") );
 		uiSlurType->addButton( QIcon("images/slur.svg"), CASlur::SlurType, tr("Slur") );
 		uiSlurType->addButton( QIcon("images/phrasingslur.svg"), CASlur::PhrasingSlurType, tr("Phrasing Slur") );
-	uiClefType = new CAMenuToolButton( tr("Select Clef"), 3, this );
+	uiClefType = new CAMenuToolButton( tr("Select Clef"), 5, this );
 		uiClefType->setObjectName( "uiClefType" );
-		uiClefType->addButton( QIcon("images/cleftreble.svg"), CAClef::Treble, tr("Treble Clef") );
-		uiClefType->addButton( QIcon("images/clefbass.svg"), CAClef::Bass, tr("Bass Clef") );
-		uiClefType->addButton( QIcon("images/clefalto.svg"), CAClef::Alto, tr("Alto Clef") );
+		uiClefType->addButton( QIcon("images/clefg.svg"), CAClef::Treble, tr("Treble Clef") );
+		uiClefType->addButton( QIcon("images/clefg.svg"), CAClef::French, tr("French Clef") );
+		uiClefType->addButton( QIcon("images/cleff.svg"), CAClef::Bass, tr("Bass Clef") );
+		uiClefType->addButton( QIcon("images/cleff.svg"), CAClef::Varbaritone, tr("Varbaritone Clef") );
+		uiClefType->addButton( QIcon("images/cleff.svg"), CAClef::Subbass, tr("Subbass Clef") );
+		uiClefType->addButton( QIcon("images/clefc.svg"), CAClef::Soprano, tr("Soprano Clef") );
+		uiClefType->addButton( QIcon("images/clefc.svg"), CAClef::Mezzosoprano, tr("Mezzosoprano Clef") );
+		uiClefType->addButton( QIcon("images/clefc.svg"), CAClef::Alto, tr("Alto Clef") );
+		uiClefType->addButton( QIcon("images/clefc.svg"), CAClef::Tenor, tr("Tenor Clef") );
+		uiClefType->addButton( QIcon("images/clefc.svg"), CAClef::Baritone, tr("Baritone Clef") );
 	uiTimeSigType = new CAMenuToolButton( tr("Select Time Signature" ), 3, this );
 		uiTimeSigType->setObjectName( "uiTimeSigType" );
 		uiTimeSigType->addButton( QIcon("images/tsc.svg"), 44 );
@@ -2345,8 +2352,8 @@ void CAMainWin::on_uiSlurType_toggled( bool checked, int buttonId ) {
 void CAMainWin::on_uiClefType_toggled(bool checked, int buttonId) {
 	if ( checked ) {
 		// Read currently selected entry from tool button menu
-		CAClef::CAClefType clefType =
-			static_cast<CAClef::CAClefType>(buttonId);
+		CAClef::CAPredefinedClefType clefType =
+			static_cast<CAClef::CAPredefinedClefType>(buttonId);
 			
 		musElementFactory()->setMusElementType( CAMusElement::Clef );
 		
