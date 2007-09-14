@@ -566,18 +566,18 @@ CAClef::CAPredefinedClefType CALilyPondImport::predefinedClefTypeFromLilyPond( c
 	QString clef(constClef);
 	clef.remove(QRegExp("[\"']"));
 	
-	if ( clef.contains("treble") || clef.contains("violin") || clef.contains("G") ) return CAClef::Treble; else
-	if ( clef.contains("french") ) return CAClef::French; else
-	if ( clef.contains("bass") || clef.contains("F") ) return CAClef::Bass; else
-	if ( clef.contains("varbaritone") ) return CAClef::Varbaritone; else
-	if ( clef.contains("subbass") ) return CAClef::Subbass; else
-	if ( clef.contains("mezzosoprano") ) return CAClef::Mezzosoprano; else
-	if ( clef.contains("soprano") ) return CAClef::Soprano; else
-	if ( clef.contains("alto") ) return CAClef::Alto; else
-	if ( clef.contains("tenor") ) return CAClef::Tenor; else
-	if ( clef.contains("baritone") ) return CAClef::Baritone; else
-	if ( clef=="percussion" ) return CAClef::Percussion; else
-	if ( clef=="tab" ) return CAClef::Tablature; else
+	if ( clef.contains("treble") || clef.contains("violin") || clef.contains("G") ) return CAClef::Treble;
+	if ( clef.contains("french") ) return CAClef::French;
+	if ( clef.contains("bass") || clef.contains("F") ) return CAClef::Bass;
+	if ( clef.contains("varbaritone") ) return CAClef::Varbaritone;
+	if ( clef.contains("subbass") ) return CAClef::Subbass;
+	if ( clef.contains("mezzosoprano") ) return CAClef::Mezzosoprano;
+	if ( clef.contains("soprano") ) return CAClef::Soprano;
+	if ( clef.contains("alto") ) return CAClef::Alto;
+	if ( clef.contains("tenor") ) return CAClef::Tenor;
+	if ( clef.contains("baritone") ) return CAClef::Baritone;
+	if ( clef=="percussion" ) return CAClef::Percussion;
+	if ( clef=="tab" ) return CAClef::Tablature;
 	
 	return CAClef::Treble;
 }
@@ -586,18 +586,22 @@ CAClef::CAPredefinedClefType CALilyPondImport::predefinedClefTypeFromLilyPond( c
 	Returns the Canorus octava or whichever interval above or below the clef.
 */
 int CALilyPondImport::clefOffsetFromLilyPond( const QString constClef ) {
-	if ( !constClef.contains("_") && !constClef.contains("^") )
+	// remove any quotes/double quotes
+	QString clef(constClef);
+	clef.remove(QRegExp("[\"']"));
+	
+	if ( !clef.contains("_") && !clef.contains("^") )
 		return 0;
 	
 	int m;
-	int idx = constClef.indexOf("^");
+	int idx = clef.indexOf("^");
 	if (idx==-1) {
-		idx = constClef.indexOf("_");
+		idx = clef.indexOf("_");
 		m=-1;
 	} else
 		m=1;
 	
-	return (constClef.right( constClef.size()-idx-1 ).toInt()-1)*m;
+	return clef.right( clef.size()-(idx+1) ).toInt()*m;
 }
 
 /*!

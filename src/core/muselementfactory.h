@@ -124,18 +124,18 @@ public:
 	{ _eRestType = eType; }
 	
 	inline int timeSigBeats() { return _iTimeSigBeats; }
-	
 	inline void setTimeSigBeats( int iTimeSigBeats )
 	{ _iTimeSigBeats = iTimeSigBeats; };
 	
 	inline int timeSigBeat() { return _iTimeSigBeat; }
-	
 	inline void setTimeSigBeat( int iTimeSigBeat )
 	{ _iTimeSigBeat = iTimeSigBeat; };
 	
+	inline CAClef::CAPredefinedClefType clef() { return _eClef; }
 	inline void setClef( CAClef::CAPredefinedClefType eClefType )
 	{ _eClef = eClefType; };
 	
+	inline int clefOffset() { return _iClefOffset; } // readable offset interval, not internal offset
 	inline void setClefOffset( int offset )
 	{ _iClefOffset= offset; };
 	

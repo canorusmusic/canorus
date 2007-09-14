@@ -41,11 +41,11 @@ public:
 		Tab
 	};
 	
-	CAClef( CAPredefinedClefType type, CAStaff *staff, int time, int offset=0 );
+	CAClef( CAPredefinedClefType type, CAStaff *staff, int time, int offsetInterval=0 );
 	CAClef( CAClefType type, int c1, CAStaff *staff, int time, int offset=0 );
 	CAClef *clone();
 	
-	void setPredefinedType( CAPredefinedClefType type, int octave=0 );
+	void setPredefinedType( CAPredefinedClefType type );
 	CAClefType clefType() { return _clefType; }
 	const int c1() { return _c1; }
 	const int centerPitch() { return _centerPitch; }
@@ -53,11 +53,14 @@ public:
 	
 	void setClefType(CAClefType type);
 	
-	inline void setOffset( int offset ) { _offset = offset; }
+	inline void setOffset( int offset ) { _c1-=_offset; _c1+=(_offset=offset); }
 	inline int offset() { return _offset; }
 	
 	static const QString clefTypeToString(CAClefType);
 	static CAClefType clefTypeFromString(const QString);
+	
+	static const int offsetFromReadable( const int offsetInterval );
+	static const int offsetToReadable( const int offset );
 	
 private:
 	CAClefType _clefType;

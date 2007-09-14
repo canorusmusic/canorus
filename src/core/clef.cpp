@@ -19,21 +19,21 @@
 /*!
 	Creates a new predefined clef with type \a type, parent \a staff and start time \a time.
 	_timeLength is set to 0.
-	\a offset can be custom 0, +7 or -7 etc. and means the 8 written above or below the clef which raises or
-	lowers the clef for one octave or whichever interval.
+	\a offsetInterval can be custom -1,0,1 no offset, +8 or -8 etc. mean the 8 written above or below the clef which raises or
+	lowers the clef for one octave or whichever interval. Offset is the musical interval, not the internal offset.
 	
 	\sa CAPredefinedClefType, CAMusElement
 */
-CAClef::CAClef( CAPredefinedClefType type, CAStaff *staff, int time, int offset ) : CAMusElement( staff, time ) {
+CAClef::CAClef( CAPredefinedClefType type, CAStaff *staff, int time, int offsetInterval ) : CAMusElement( staff, time ) {
 	_musElementType = CAMusElement::Clef;
 	
-	setOffset(offset);
+	_offset = CAClef::offsetFromReadable( offsetInterval );
 	setPredefinedType(type);
 }
 
 /*!
 	Creates a new clef with type \a type, location of middle C \a c1, time start \a time and parent \a staff.
-	Offset does not affect c1. 
+	\a offset is the internal clef offset 0, +7, -7 etc. It does not affect c1.
 	
 	\sa CAPredefinedClefType, CAMusElement
 */
@@ -41,11 +41,11 @@ CAClef::CAClef( CAClefType type, int c1, CAStaff *staff, int time, int offset ) 
 	_musElementType = CAMusElement::Clef;
 	
 	_c1 = c1;
-	setOffset(offset);
+	_offset = offset;
 	setClefType(type);
 }
 
-void CAClef::setPredefinedType( CAPredefinedClefType type, int octave ) {
+void CAClef::setPredefinedType( CAPredefinedClefType type ) {
 	switch (type) {
 		case Treble:
 			setClefType(G);
@@ -153,6 +153,37 @@ CAClef::CAClefType CAClef::clefTypeFromString(const QString type) {
 	if (type=="percussion-low") return PercussionLow; else
 	if (type=="tab") return Tab;
 	else return G;
+}
+
+/*!
+	Converts the internal clef offset to the musical interval.
+	eg. offset +1 means +2 (supper second),
+	           +7 means +8 (supper octave),
+	           -7 means -8 (sub octave),
+	           0 is an exception and stays 0 (instead of prime)
+	
+	This method is usually called when displaying the offset of the key (eg. when rendering it).
+	
+	\sa offsetFromReadable()
+*/
+const int CAClef::offsetToReadable( const int offsetInterval ) {
+	if ( !offsetInterval )
+		return 0;
+	
+	return offsetInterval + offsetInterval/qAbs(offsetInterval);
+}
+
+/*!
+	Converts the musical interval offset to Canorus internal offset.
+	This method is usually called where user inputs the offset interval and it needs to be stored.
+	
+	\sa offsetToReadable()
+*/
+const int CAClef::offsetFromReadable( const int offset ) {
+	if ( qAbs(offset)==1 || !offset )
+		return 0;
+	
+	return offset - offset/qAbs(offset);
 }
 
 /*!

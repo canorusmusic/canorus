@@ -208,6 +208,7 @@ CAMainWin::~CAMainWin()  {
 	delete uiPlayableToolBar;
 	delete uiKeySigToolBar;
 	delete uiTimeSigToolBar;
+	delete uiClefToolBar;
 	delete uiFMToolBar;
 }
 
@@ -363,6 +364,15 @@ void CAMainWin::createCustomActions() {
 		uiTimeSigBeat->setValue( 4 );
 		uiTimeSigBeat->setToolTip( tr("Beat") );
 	
+	uiClefToolBar = new QToolBar( tr("Clef ToolBar"), this );
+	oldUiClefOffsetValue = 0;
+	uiClefOffset = new QSpinBox( this );
+		uiClefOffset->setObjectName("uiClefOffset");
+		uiClefOffset->setMinimum( -22 );
+		uiClefOffset->setMaximum( 22 );
+		uiClefOffset->setValue( 0 );
+		uiClefOffset->setToolTip( tr("Clef offset") );
+	
 	uiFMToolBar = new QToolBar( tr("Function marking ToolBar"), this );
 	uiFMFunction = new CAMenuToolButton( tr("Select Function Name"), 8, this );
 		uiFMFunction->setObjectName( "uiFMFunction" );
@@ -514,6 +524,20 @@ void CAMainWin::setupCustomUi() {
 	uiPlayableToolBar->addAction( uiHiddenRest );
 	addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 	
+	// KeySig Toolbar
+	uiKeySigToolBar->addWidget( uiKeySig );
+	addToolBar(Qt::TopToolBarArea, uiKeySigToolBar);
+	
+	// Clef Toolbar
+	uiClefToolBar->addWidget( uiClefOffset );
+	addToolBar(Qt::TopToolBarArea, uiClefToolBar);
+	
+	// TimeSig Toolbar
+	uiTimeSigToolBar->addWidget( uiTimeSigBeats );
+	uiTimeSigToolBar->addWidget( uiTimeSigSlash );
+	uiTimeSigToolBar->addWidget( uiTimeSigBeat );
+	addToolBar(Qt::TopToolBarArea, uiTimeSigToolBar);
+	
 	// Voice Toolbar
 	uiVoiceToolBar->addAction( uiNewVoice );
 	uiVoiceToolBar->addWidget( uiVoiceNum );
@@ -525,16 +549,6 @@ void CAMainWin::setupCustomUi() {
 	uiVoiceStemDirection->defaultAction()->setCheckable(false);
 	uiVoiceToolBar->addAction( uiVoiceProperties );
 	addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
-	
-	// KeySig Toolbar
-	uiKeySigToolBar->addWidget( uiKeySig );
-	addToolBar(Qt::TopToolBarArea, uiKeySigToolBar);
-	
-	// TimeSig Toolbar
-	uiTimeSigToolBar->addWidget( uiTimeSigBeats );
-	uiTimeSigToolBar->addWidget( uiTimeSigSlash );
-	uiTimeSigToolBar->addWidget( uiTimeSigBeat );
-	addToolBar(Qt::TopToolBarArea, uiTimeSigToolBar);
 	
 	// Function marking Toolbar
 	uiFMFunction->setDefaultAction( uiFMToolBar->addWidget( uiFMFunction ) );
@@ -576,6 +590,7 @@ void CAMainWin::setupCustomUi() {
 	uiPlayableToolBar->hide();
 	uiTimeSigToolBar->hide();
 	uiKeySigToolBar->hide();
+	uiClefToolBar->hide();
 	uiFMToolBar->hide();
 }
 
@@ -2157,6 +2172,37 @@ void CAMainWin::on_uiKeySig_currentIndexChanged( int row ) {
 }
 
 /*!
+	Changes the offset of the clef.
+*/
+void CAMainWin::on_uiClefOffset_valueChanged( int newOffset ) {
+	if ( oldUiClefOffsetValue==0 && qAbs(newOffset)==1 ) {
+		uiClefOffset->setValue( (newOffset/qAbs(newOffset))*2 );
+		return;
+	} else
+	if ( qAbs(oldUiClefOffsetValue)==2 && qAbs(newOffset)==1 ) {
+		uiClefOffset->setValue( 0 );
+		return;
+	}
+	
+	oldUiClefOffsetValue=newOffset;
+	if (mode()==InsertMode) {
+		musElementFactory()->setClefOffset( newOffset );
+	} else if ( mode()==EditMode ) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if ( v && v->selection().size() ) {
+			CACanorus::undo()->createUndoCommand( document(), tr("change clef offset", "undo") );		
+			CAClef *clef = dynamic_cast<CAClef*>(v->selection().at(0)->musElement());
+			
+			if ( clef ) {
+				clef->setOffset( CAClef::offsetFromReadable(newOffset) );
+				CACanorus::undo()->pushUndoCommand();
+				CACanorus::rebuildUI(document(), currentSheet());
+			}
+		}
+	}
+}
+
+/*!
 	Gets the current voice and sets its name.
 */
 void CAMainWin::on_uiVoiceName_returnPressed() {
@@ -2752,6 +2798,7 @@ void CAMainWin::updateToolBars() {
 	updatePlayableToolBar();
 	updateKeySigToolBar();
 	updateTimeSigToolBar();
+	updateClefToolBar();
 	updateFMToolBar();
 	updateUndoRedoButtons();
 }
@@ -2774,7 +2821,8 @@ void CAMainWin::updateSheetToolBar() {
 */
 void CAMainWin::updateVoiceToolBar() {
 	CAContext *context = currentContext();
-	if ( context && context->contextType() == CAContext::Staff ) {
+	if ( mode()==SelectMode && context && context->contextType() == CAContext::Staff ||
+	     uiInsertPlayable->isChecked() ) {
 		CAStaff *staff = static_cast<CAStaff*>(context);
 		uiNewVoice->setEnabled(true);
 		if (staff->voiceCount()) {
@@ -3010,6 +3058,26 @@ void CAMainWin::updateKeySigToolBar() {
 		uiKeySigToolBar->hide();
 }
 
+/*!
+	Shows/Hides the clef properties tool bar according to the current state.
+*/
+void CAMainWin::updateClefToolBar() {
+	if ( uiClefType->isChecked() && mode()==InsertMode ) {
+		uiClefOffset->setValue( musElementFactory()->clefOffset() );
+		uiClefToolBar->show();
+	} else if (mode()==EditMode) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if (v && v->selection().size()) {
+			CAClef *clef = dynamic_cast<CAClef*>(v->selection().at(0)->musElement());
+			if (clef) {
+				uiClefOffset->setValue( CAClef::offsetToReadable(clef->offset()) );
+				uiClefToolBar->show();
+			} else
+				uiClefToolBar->hide();
+		}	
+	} else
+		uiClefToolBar->hide();
+}
 /*!
 	Shows/Hides the function marking properties tool bar according to the current state.
 */

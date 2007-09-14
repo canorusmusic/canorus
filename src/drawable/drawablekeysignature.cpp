@@ -1,10 +1,9 @@
-/** @file drawablekeysignature.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #include <QPainter>
 
@@ -27,8 +26,8 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 		// get initial neutral-sharp position
 		idx = 3;
 		idx2 = 0;
-		while ( idx + (clef?clef->c1():-2) - 28  < 0 ||
-				idx2 + (clef?clef->c1():-2) - 28 < 0) {
+		while ( idx + (clef?clef->c1():-2) - 28  < -1 ||
+				idx2 + (clef?clef->c1():-2) - 28 < -1) {
 			idx+=7;
 			idx2+=7;
 		}
@@ -91,8 +90,8 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 	// get initial sharp position
 	idx = 3;
 	idx2 = 0;
-	while ( idx + (clef?clef->c1():-2) - 28  < 0 ||
-			idx2 + (clef?clef->c1():-2) - 28 < 0) {
+	while ( idx + (clef?clef->c1():-2) - 28  < -1 ||
+			idx2 + (clef?clef->c1():-2) - 28 < -1) {
 		idx+=7;
 		idx2+=7;
 	}
