@@ -47,72 +47,72 @@ Naslednji dokumenti so bili uspešno obnovljeni:
 <context>
     <name>CAMainWin</name>
     <message>
-        <location filename="../ui/mainwin.cpp" line="221"/>
+        <location filename="../ui/mainwin.cpp" line="222"/>
         <source>Insert ToolBar</source>
         <translation>Orodjarna za vstavljanje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="222"/>
+        <location filename="../ui/mainwin.cpp" line="223"/>
         <source>Select Context</source>
         <translation>Izberite trak</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="232"/>
+        <location filename="../ui/mainwin.cpp" line="233"/>
         <source>Select Clef</source>
         <translation>Izberite ključ</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="237"/>
+        <location filename="../ui/mainwin.cpp" line="245"/>
         <source>Select Time Signature</source>
         <translation>Izberite taktovski način</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="246"/>
+        <location filename="../ui/mainwin.cpp" line="254"/>
         <source>Select Barline</source>
         <translation>Izberite taktnico</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="260"/>
+        <location filename="../ui/mainwin.cpp" line="268"/>
         <source>Context ToolBar</source>
         <translation>Orodjarna za trakove</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="274"/>
+        <location filename="../ui/mainwin.cpp" line="282"/>
         <source>Voice ToolBar</source>
         <translation>Orodjarna za glasove</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="286"/>
+        <location filename="../ui/mainwin.cpp" line="294"/>
         <source>Select Voice Stem Direction</source>
         <translation>Izberite smer notnih vratov za glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="292"/>
+        <location filename="../ui/mainwin.cpp" line="300"/>
         <source>Playable ToolBar</source>
         <translation>Orodjarna za note in pavze</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="293"/>
+        <location filename="../ui/mainwin.cpp" line="301"/>
         <source>Select Length</source>
         <translation>Izberite dolžino</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="304"/>
+        <location filename="../ui/mainwin.cpp" line="312"/>
         <source>Select Note Stem Direction</source>
         <translation>Izberite smer notnih vratov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2517"/>
+        <location filename="../ui/mainwin.cpp" line="2570"/>
         <source>About Qt</source>
         <translation>O knjižnici Qt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2521"/>
+        <location filename="../ui/mainwin.cpp" line="2574"/>
         <source>About Canorus</source>
         <translation>O programu Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2528"/>
+        <location filename="../ui/mainwin.cpp" line="2581"/>
         <source>Canorus - The next generation music score editor
 
 Version %1
@@ -135,752 +135,803 @@ Podrobnosti najdete v datoteki LICENSE.GPL.
 Domača stran: http://www.canorus.org</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1244"/>
+        <location filename="../ui/mainwin.cpp" line="1266"/>
         <source>Staff%1</source>
         <translation>Črtovje%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1247"/>
+        <location filename="../ui/mainwin.cpp" line="1269"/>
         <source>Voice%1</source>
         <translation>Glas%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="890"/>
+        <location filename="../ui/mainwin.cpp" line="912"/>
         <source>Sheet%1</source>
         <translation>List%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="958"/>
+        <location filename="../ui/mainwin.cpp" line="980"/>
         <source>Canorus</source>
         <translation>Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="936"/>
+        <location filename="../ui/mainwin.cpp" line="958"/>
         <source>Are you sure do you want to delete voice
 %1 and all its notes?</source>
         <translation>Ali res želite zbrisati glas
 %1 in vse njegove note?</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="959"/>
+        <location filename="../ui/mainwin.cpp" line="981"/>
         <source>Are you sure do you want to delete context
 %1 and all its contents?</source>
         <translation>Ali res želite zbrisati trak
 %1 in vso njegovo vsebino?</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="263"/>
+        <location filename="../ui/mainwin.cpp" line="271"/>
         <source>Context name</source>
         <translation>Ime traku</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="277"/>
+        <location filename="../ui/mainwin.cpp" line="285"/>
         <source>Current Voice number</source>
         <translation>Trenutna številka glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="285"/>
+        <location filename="../ui/mainwin.cpp" line="293"/>
         <source>Voice name</source>
         <translation>Ime glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="517"/>
+        <location filename="../ui/mainwin.cpp" line="548"/>
         <source>Voice stem direction</source>
         <translation>Smer notnih vratov za glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="500"/>
+        <location filename="../ui/mainwin.cpp" line="517"/>
         <source>Playable length</source>
         <translation>Notna dolžina</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="504"/>
+        <location filename="../ui/mainwin.cpp" line="521"/>
         <source>Note stem direction</source>
         <translation>Smer notnih vratov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="256"/>
+        <location filename="../ui/mainwin.cpp" line="264"/>
         <source>Sheet ToolBar</source>
         <translation>Orodjarna za liste</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="930"/>
+        <location filename="../ui/mainwin.cpp" line="952"/>
         <source>Cannot delete the last voice in the staff!</source>
         <translation>Ni mogoče zbrisati zadnjega glasu v črtovju!</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="311"/>
+        <location filename="../ui/mainwin.cpp" line="319"/>
         <source>Key Signature ToolBar</source>
         <translation>Orodjarna za tonalitete</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="345"/>
+        <location filename="../ui/mainwin.cpp" line="353"/>
         <source>Time Signature ToolBar</source>
         <translation>Orodjarna za taktovske načine</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="350"/>
+        <location filename="../ui/mainwin.cpp" line="358"/>
         <source>Number of beats</source>
         <translation>Število dob</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="357"/>
+        <location filename="../ui/mainwin.cpp" line="365"/>
         <source>Beat</source>
         <translation>Doba</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="227"/>
+        <location filename="../ui/mainwin.cpp" line="228"/>
         <source>Select Slur Type</source>
-        <translation>Izberite tip loka</translation>
+        <translation>Izberite lok</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="234"/>
+        <location filename="../ui/mainwin.cpp" line="235"/>
         <source>Treble Clef</source>
         <translation>Violinski ključ</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="235"/>
+        <location filename="../ui/mainwin.cpp" line="237"/>
         <source>Bass Clef</source>
         <translation>Basovski ključ</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="236"/>
+        <location filename="../ui/mainwin.cpp" line="242"/>
         <source>Alto Clef</source>
         <translation>Altovski ključ</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="229"/>
+        <location filename="../ui/mainwin.cpp" line="230"/>
         <source>Tie</source>
         <translation>Vezaj</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="230"/>
+        <location filename="../ui/mainwin.cpp" line="231"/>
         <source>Slur</source>
         <translation>Lok</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="231"/>
+        <location filename="../ui/mainwin.cpp" line="232"/>
         <source>Phrasing Slur</source>
         <translation>Frazni lok</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="248"/>
+        <location filename="../ui/mainwin.cpp" line="256"/>
         <source>Single Barline</source>
         <translation>Enojna taktnica</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="249"/>
+        <location filename="../ui/mainwin.cpp" line="257"/>
         <source>Double Barline</source>
         <translation>Dvojna taktnica</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="250"/>
+        <location filename="../ui/mainwin.cpp" line="258"/>
         <source>End Barline</source>
         <translation>Končaj</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="251"/>
+        <location filename="../ui/mainwin.cpp" line="259"/>
         <source>Dotted Barline</source>
         <translation>Črtkasta taktnica</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="252"/>
+        <location filename="../ui/mainwin.cpp" line="260"/>
         <source>Repeat Open</source>
         <translation>Ponavljaj Odprt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="253"/>
+        <location filename="../ui/mainwin.cpp" line="261"/>
         <source>Repeat Closed</source>
         <translation>Ponavljaj Zaprt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="295"/>
+        <location filename="../ui/mainwin.cpp" line="303"/>
         <source>Breve Length</source>
         <translation>Brevis</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="296"/>
+        <location filename="../ui/mainwin.cpp" line="304"/>
         <source>Whole Length</source>
         <translation>Celinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="297"/>
+        <location filename="../ui/mainwin.cpp" line="305"/>
         <source>Half Length</source>
         <translation>Polovinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="298"/>
+        <location filename="../ui/mainwin.cpp" line="306"/>
         <source>Quarter Length</source>
         <translation>Četrtinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="299"/>
+        <location filename="../ui/mainwin.cpp" line="307"/>
         <source>Eighth Length</source>
         <translation>Osminka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="300"/>
+        <location filename="../ui/mainwin.cpp" line="308"/>
         <source>Sixteenth Length</source>
         <translation>Šestnajstinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="301"/>
+        <location filename="../ui/mainwin.cpp" line="309"/>
         <source>ThirtySecond Length</source>
         <translation>Dvaintridesetinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="302"/>
+        <location filename="../ui/mainwin.cpp" line="310"/>
         <source>SixtyFourth Length</source>
         <translation>Štiriinšestdesetinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="288"/>
+        <location filename="../ui/mainwin.cpp" line="296"/>
         <source>Voice Stems Neutral</source>
         <translation>Smeri vratov za glas Nevtralne</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="289"/>
+        <location filename="../ui/mainwin.cpp" line="297"/>
         <source>Voice Stems Up</source>
         <translation>Smeri vratov za glas Gor</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="290"/>
+        <location filename="../ui/mainwin.cpp" line="298"/>
         <source>Voice Stems Down</source>
         <translation>Smeri vratov za glas Dol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="306"/>
+        <location filename="../ui/mainwin.cpp" line="314"/>
         <source>Note Stem Neutral</source>
         <translation>Smer vratu Nevtralna</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="307"/>
+        <location filename="../ui/mainwin.cpp" line="315"/>
         <source>Note Stem Up</source>
         <translation>Smer vratu Gor</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="308"/>
+        <location filename="../ui/mainwin.cpp" line="316"/>
         <source>Note Stem Down</source>
         <translation>Smer vratu Dol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="309"/>
+        <location filename="../ui/mainwin.cpp" line="317"/>
         <source>Note Stem Preferred</source>
         <translation>Smer vratu Priporočena</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="254"/>
+        <location filename="../ui/mainwin.cpp" line="262"/>
         <source>Repeat Closed-Open</source>
         <translation>Ponavljaj Zaprt-Odprt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="359"/>
+        <location filename="../ui/mainwin.cpp" line="376"/>
         <source>Function marking ToolBar</source>
         <translation>Orodjarna za funkcijske označbe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="386"/>
+        <location filename="../ui/mainwin.cpp" line="403"/>
         <source>Tonic</source>
         <translation>Tonika</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="390"/>
+        <location filename="../ui/mainwin.cpp" line="407"/>
         <source>Subdominant</source>
         <translation>Subdominanta</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="392"/>
+        <location filename="../ui/mainwin.cpp" line="409"/>
         <source>Dominant</source>
         <translation>Dominanta</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="388"/>
+        <location filename="../ui/mainwin.cpp" line="405"/>
         <source>II</source>
         <translation>II</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="389"/>
+        <location filename="../ui/mainwin.cpp" line="406"/>
         <source>III</source>
         <translation>III</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="393"/>
+        <location filename="../ui/mainwin.cpp" line="410"/>
         <source>VI</source>
         <translation>VI</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="394"/>
+        <location filename="../ui/mainwin.cpp" line="411"/>
         <source>VII</source>
         <translation>VII</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="369"/>
+        <location filename="../ui/mainwin.cpp" line="386"/>
         <source>Cadenze</source>
         <translation>Kadenčni</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="387"/>
+        <location filename="../ui/mainwin.cpp" line="404"/>
         <source>minor Tonic</source>
         <translation>molova Tonika</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="391"/>
+        <location filename="../ui/mainwin.cpp" line="408"/>
         <source>minor Subdominant</source>
         <translation>molova Subdominanta</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="372"/>
+        <location filename="../ui/mainwin.cpp" line="389"/>
         <source>Napolitan</source>
         <translation>Napolitanski</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="373"/>
+        <location filename="../ui/mainwin.cpp" line="390"/>
         <source>Phrygian</source>
         <translation>Frigijski</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="374"/>
+        <location filename="../ui/mainwin.cpp" line="391"/>
         <source>Lydian</source>
         <translation>Lidijski</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="375"/>
+        <location filename="../ui/mainwin.cpp" line="392"/>
         <source>IV</source>
         <translation>IV</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="376"/>
+        <location filename="../ui/mainwin.cpp" line="393"/>
         <source>V</source>
         <translation>V</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="360"/>
+        <location filename="../ui/mainwin.cpp" line="377"/>
         <source>Select Function Name</source>
         <translation>Izberite funkcijsko označbo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="377"/>
+        <location filename="../ui/mainwin.cpp" line="394"/>
         <source>Select Chord Area</source>
         <translation>Izberite akordično območje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="384"/>
+        <location filename="../ui/mainwin.cpp" line="401"/>
         <source>Select Tonic Degree</source>
         <translation>Izberite stopnjo tonike</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="224"/>
+        <location filename="../ui/mainwin.cpp" line="225"/>
         <source>New Staff</source>
         <translation>Novo črtovje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="225"/>
+        <location filename="../ui/mainwin.cpp" line="226"/>
         <source>New Lyrics context</source>
         <translation>Nov trak za besedilo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="226"/>
+        <location filename="../ui/mainwin.cpp" line="227"/>
         <source>New Function Marking context</source>
         <translation>Nov trak za funkcijske označbe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1263"/>
+        <location filename="../ui/mainwin.cpp" line="1285"/>
         <source>LyricsContext%1</source>
         <translation>Besedilo%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1275"/>
+        <location filename="../ui/mainwin.cpp" line="1297"/>
         <source>FunctionMarkingContext%1</source>
         <translation>FunkcijskeOznačbe%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="266"/>
+        <location filename="../ui/mainwin.cpp" line="274"/>
         <source>Stanza number</source>
         <translation>Številka kitice</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="271"/>
+        <location filename="../ui/mainwin.cpp" line="279"/>
         <source>Associated voice</source>
         <translation>Dodeljen glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="889"/>
+        <location filename="../ui/mainwin.cpp" line="911"/>
         <source>new sheet</source>
         <comment>undo</comment>
         <translation>nov list</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="910"/>
+        <location filename="../ui/mainwin.cpp" line="932"/>
         <source>new voice</source>
         <comment>undo</comment>
         <translation>nov glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="941"/>
+        <location filename="../ui/mainwin.cpp" line="963"/>
         <source>voice removal</source>
         <comment>undo</comment>
         <translation>odstranitev glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="964"/>
+        <location filename="../ui/mainwin.cpp" line="986"/>
         <source>context removal</source>
         <comment>undo</comment>
         <translation>odstranitev traku</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1239"/>
+        <location filename="../ui/mainwin.cpp" line="1261"/>
         <source>new staff</source>
         <comment>undo</comment>
         <translation>novo črtovje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1251"/>
+        <location filename="../ui/mainwin.cpp" line="1273"/>
         <source>new lyrics context</source>
         <comment>undo</comment>
         <translation>nov trak za besedilo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1270"/>
+        <location filename="../ui/mainwin.cpp" line="1292"/>
         <source>new function marking context</source>
         <comment>undo</comment>
         <translation>nov trak za funkcijske označbe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1493"/>
+        <location filename="../ui/mainwin.cpp" line="1515"/>
         <source>insert barline</source>
         <comment>undo</comment>
         <translation>vstavljanje taktnice</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1515"/>
+        <location filename="../ui/mainwin.cpp" line="1537"/>
         <source>rise note</source>
         <comment>undo</comment>
         <translation>višanje note</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1541"/>
+        <location filename="../ui/mainwin.cpp" line="1563"/>
         <source>lower note</source>
         <comment>undo</comment>
         <translation>nižanje note</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1569"/>
+        <location filename="../ui/mainwin.cpp" line="1591"/>
         <source>add sharp</source>
         <comment>undo</comment>
         <translation>dodajanje višaja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1589"/>
+        <location filename="../ui/mainwin.cpp" line="1611"/>
         <source>add flat</source>
         <comment>undo</comment>
         <translation>dodajanje nižaja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1606"/>
+        <location filename="../ui/mainwin.cpp" line="1628"/>
         <source>set dotted</source>
         <comment>undo</comment>
         <translation>punktacijo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3147"/>
+        <location filename="../ui/mainwin.cpp" line="3222"/>
         <source>deletion of elements</source>
         <comment>undo</comment>
         <translation>brisanje elementov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1679"/>
+        <location filename="../ui/mainwin.cpp" line="1701"/>
         <source>insertion of music element</source>
         <comment>undo</comment>
         <translation>dodajanje elementov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2133"/>
+        <location filename="../ui/mainwin.cpp" line="2155"/>
         <source>change number of accidentals</source>
         <comment>undo</comment>
         <translation>spreminjanje števila predznakov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2158"/>
+        <location filename="../ui/mainwin.cpp" line="2211"/>
         <source>change voice name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2251"/>
+        <location filename="../ui/mainwin.cpp" line="2304"/>
         <source>lyrics edit</source>
         <comment>undo</comment>
         <translation>spreminjanje besedila</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2477"/>
+        <location filename="../ui/mainwin.cpp" line="2530"/>
         <source>commit CanorusML source</source>
         <comment>undo</comment>
         <translation>potrditev CanorusML izvorne kode</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2503"/>
+        <location filename="../ui/mainwin.cpp" line="2556"/>
         <source>commit LilyPond source</source>
         <comment>undo</comment>
         <translation>potrditev LilyPond izvorne kode</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2582"/>
+        <location filename="../ui/mainwin.cpp" line="2635"/>
         <source>deletion of the sheet</source>
         <comment>undo</comment>
         <translation>brisanje lista</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2640"/>
+        <location filename="../ui/mainwin.cpp" line="2693"/>
         <source>change sheet name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena lista</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2661"/>
+        <location filename="../ui/mainwin.cpp" line="2714"/>
         <source>change context name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena traku</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2680"/>
+        <location filename="../ui/mainwin.cpp" line="2733"/>
         <source>change stanza number</source>
         <comment>undo</comment>
         <translation>spreminjanje številke kitice</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2692"/>
+        <location filename="../ui/mainwin.cpp" line="2745"/>
         <source>change associated voice</source>
         <comment>undo</comment>
         <translation>dodeljevanje glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2703"/>
+        <location filename="../ui/mainwin.cpp" line="2756"/>
         <source>change voice stem direction</source>
         <comment>undo</comment>
         <translation>spreminjanje smeri vratov za glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2720"/>
+        <location filename="../ui/mainwin.cpp" line="2773"/>
         <source>change note stem direction</source>
         <comment>undo</comment>
         <translation>spreminjanje smeri vratov not</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="457"/>
+        <location filename="../ui/mainwin.cpp" line="474"/>
         <source>Insert new context</source>
         <translation>Vstavi nov trak</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="463"/>
+        <location filename="../ui/mainwin.cpp" line="480"/>
         <source>Insert new slur</source>
         <translation>Vstavi nov lok</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="467"/>
+        <location filename="../ui/mainwin.cpp" line="484"/>
         <source>Insert new clef</source>
         <translation>Vstavi nov ključ</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="472"/>
+        <location filename="../ui/mainwin.cpp" line="489"/>
         <source>Insert new time signature</source>
         <translation>Vstavi nov taktovski način</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="476"/>
+        <location filename="../ui/mainwin.cpp" line="493"/>
         <source>Insert new barline</source>
         <translation>Vstavi novo taktnico</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="534"/>
+        <location filename="../ui/mainwin.cpp" line="555"/>
         <source>Function marking</source>
         <translation>Funkcijske označbe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="537"/>
+        <location filename="../ui/mainwin.cpp" line="558"/>
         <source>Function marking chord area</source>
         <translation>Akordično območje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="541"/>
+        <location filename="../ui/mainwin.cpp" line="562"/>
         <source>Function marking tonic degree</source>
         <translation>Stranska stopnja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3108"/>
+        <location filename="../ui/mainwin.cpp" line="3183"/>
         <source>cut</source>
         <comment>undo</comment>
         <translation>rezanje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3204"/>
+        <location filename="../ui/mainwin.cpp" line="3279"/>
         <source>paste</source>
         <comment>undo</comment>
         <translation>lepljenje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="397"/>
+        <location filename="../ui/mainwin.cpp" line="414"/>
         <source>C-flat major</source>
         <translation>Ces-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="398"/>
+        <location filename="../ui/mainwin.cpp" line="415"/>
         <source>a-flat minor</source>
         <translation>as-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="399"/>
+        <location filename="../ui/mainwin.cpp" line="416"/>
         <source>G-flat major</source>
         <translation>Ges-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="400"/>
+        <location filename="../ui/mainwin.cpp" line="417"/>
         <source>e-flat minor</source>
         <translation>es-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="401"/>
+        <location filename="../ui/mainwin.cpp" line="418"/>
         <source>D-flat major</source>
         <translation>Des-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="403"/>
+        <location filename="../ui/mainwin.cpp" line="420"/>
         <source>A-flat major</source>
         <translation>As-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="404"/>
+        <location filename="../ui/mainwin.cpp" line="421"/>
         <source>f minor</source>
         <translation>f-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="405"/>
+        <location filename="../ui/mainwin.cpp" line="422"/>
         <source>E-flat major</source>
         <translation>Es-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="406"/>
+        <location filename="../ui/mainwin.cpp" line="423"/>
         <source>c minor</source>
         <translation>c-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="407"/>
+        <location filename="../ui/mainwin.cpp" line="424"/>
         <source>B-flat major</source>
         <translation>B-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="408"/>
+        <location filename="../ui/mainwin.cpp" line="425"/>
         <source>g minor</source>
         <translation>g-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="409"/>
+        <location filename="../ui/mainwin.cpp" line="426"/>
         <source>F major</source>
         <translation>F-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="410"/>
+        <location filename="../ui/mainwin.cpp" line="427"/>
         <source>d minor</source>
         <translation>d-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="411"/>
+        <location filename="../ui/mainwin.cpp" line="428"/>
         <source>C major</source>
         <translation>C-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="413"/>
+        <location filename="../ui/mainwin.cpp" line="430"/>
         <source>G major</source>
         <translation>G-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="414"/>
+        <location filename="../ui/mainwin.cpp" line="431"/>
         <source>e minor</source>
         <translation>e-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="415"/>
+        <location filename="../ui/mainwin.cpp" line="432"/>
         <source>D major</source>
         <translation>D-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="416"/>
+        <location filename="../ui/mainwin.cpp" line="433"/>
         <source>b minor</source>
         <translation>h-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="417"/>
+        <location filename="../ui/mainwin.cpp" line="434"/>
         <source>A major</source>
         <translation>A-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="418"/>
+        <location filename="../ui/mainwin.cpp" line="435"/>
         <source>f-sharp minor</source>
         <translation>fis-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="419"/>
+        <location filename="../ui/mainwin.cpp" line="436"/>
         <source>E major</source>
         <translation>E-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="420"/>
+        <location filename="../ui/mainwin.cpp" line="437"/>
         <source>c-sharp minor</source>
         <translation>cis-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="421"/>
+        <location filename="../ui/mainwin.cpp" line="438"/>
         <source>B major</source>
         <translation>H-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="422"/>
+        <location filename="../ui/mainwin.cpp" line="439"/>
         <source>g-sharp minor</source>
         <translation>gis-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="423"/>
+        <location filename="../ui/mainwin.cpp" line="440"/>
         <source>F-sharp major</source>
         <translation>Fis-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="424"/>
+        <location filename="../ui/mainwin.cpp" line="441"/>
         <source>d-sharp minor</source>
         <translation>dis-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="425"/>
+        <location filename="../ui/mainwin.cpp" line="442"/>
         <source>C-sharp major</source>
         <translation>Cis-Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="426"/>
+        <location filename="../ui/mainwin.cpp" line="443"/>
         <source>a-sharp minor</source>
         <translation>ais-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="412"/>
+        <location filename="../ui/mainwin.cpp" line="429"/>
         <source>a minor</source>
         <translation>a-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="402"/>
+        <location filename="../ui/mainwin.cpp" line="419"/>
         <source>b-flat minor</source>
         <translation>b-mol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="438"/>
+        <location filename="../ui/mainwin.cpp" line="455"/>
         <source>Undo</source>
         <translation>Razveljavi</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="442"/>
+        <location filename="../ui/mainwin.cpp" line="459"/>
         <source>Redo</source>
         <translation>Uveljavi</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="281"/>
+        <location filename="../ui/mainwin.cpp" line="289"/>
         <source>Voice instrument</source>
         <translation>Inštrument</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="236"/>
+        <source>French Clef</source>
+        <translation>Francoski ključ</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="238"/>
+        <source>Varbaritone Clef</source>
+        <translation>Varbaritonski ključ</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="239"/>
+        <source>Subbass Clef</source>
+        <translation>Subbasovski ključ</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="240"/>
+        <source>Soprano Clef</source>
+        <translation>Sopranski ključ</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="241"/>
+        <source>Mezzosoprano Clef</source>
+        <translation>Mezzosopranski ključ</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="243"/>
+        <source>Tenor Clef</source>
+        <translation>Tenorski ključ</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="244"/>
+        <source>Baritone Clef</source>
+        <translation>Baritonski ključ</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="367"/>
+        <source>Clef ToolBar</source>
+        <translation>Orodjarna za ključe</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="374"/>
+        <source>Clef offset</source>
+        <translation>Odmik ključa</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="2193"/>
+        <source>change clef offset</source>
+        <comment>undo</comment>
+        <translation>spreminjanje odmika ključa</translation>
     </message>
 </context>
 <context>
@@ -1712,22 +1763,22 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Črtovje%1</translation>
     </message>
     <message>
-        <location filename="../core/canorusml.cpp" line="416"/>
+        <location filename="../core/canorusml.cpp" line="418"/>
         <source>Sheet%1</source>
         <translation>List%1</translation>
     </message>
     <message>
-        <location filename="../core/canorusml.cpp" line="483"/>
+        <location filename="../core/canorusml.cpp" line="485"/>
         <source>Voice%1</source>
         <translation>Glas%1</translation>
     </message>
     <message>
-        <location filename="../core/canorusml.cpp" line="463"/>
+        <location filename="../core/canorusml.cpp" line="465"/>
         <source>Function Marking Context %1</source>
         <translation>FunkcijskeOznačbe%1</translation>
     </message>
     <message>
-        <location filename="../core/canorusml.cpp" line="445"/>
+        <location filename="../core/canorusml.cpp" line="447"/>
         <source>Lyrics Context %1</source>
         <translation>Besedilo%1</translation>
     </message>
@@ -1800,7 +1851,7 @@ Domača stran: http://www.canorus.org</translation>
         <location filename="../main.cpp" line="77"/>
         <source>Initializing Scripting engine</source>
         <comment>splashScreen</comment>
-        <translation>Inicializacija Skriptnega pogona</translation>
+        <translation>Inicializacija skriptnega pogona</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="82"/>
@@ -1812,13 +1863,13 @@ Domača stran: http://www.canorus.org</translation>
         <location filename="../main.cpp" line="87"/>
         <source>Initializing Automatic recovery</source>
         <comment>splashScreen</comment>
-        <translation>Inicializacija Varnostnega shranjevanja</translation>
+        <translation>Inicializacija varnostnega shranjevanja</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="92"/>
         <source>Initializing Undo/Redo framework</source>
         <comment>splashScreen</comment>
-        <translation>Inicializacija Razveljavi/Uveljavi ogrodja</translation>
+        <translation>Inicializacija ogrodja razveljavi/uveljavi</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="97"/>
@@ -1830,7 +1881,7 @@ Domača stran: http://www.canorus.org</translation>
         <location filename="../main.cpp" line="102"/>
         <source>Initializing Main window</source>
         <comment>splashScreen</comment>
-        <translation>Inicializacija Glavnega okna</translation>
+        <translation>Inicializacija glavnega okna</translation>
     </message>
 </context>
 <context>
@@ -2375,12 +2426,12 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Orodna vrstica za tiskanje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="439"/>
+        <location filename="../ui/mainwin.cpp" line="456"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="443"/>
+        <location filename="../ui/mainwin.cpp" line="460"/>
         <source>Ctrl+Y</source>
         <translation>Ctrl+Y</translation>
     </message>

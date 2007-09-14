@@ -15,7 +15,7 @@
 
 #include "core/clef.h"
 
-const int CADrawableClef::CLEF_EIGHT_SIZE = 7;
+const int CADrawableClef::CLEF_EIGHT_SIZE = 8;
 
 /*!
 	\class CADrawableClef
@@ -95,14 +95,27 @@ void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
 	*/
 	switch (clef()->clefType()) {
 		case CAClef::G:
-			p->drawText(s.x, (int)(s.y + 0.63*height()*s.z), QString(0xE195));
+			p->drawText(s.x, qRound(s.y + (clef()->offset()>0?CLEF_EIGHT_SIZE*s.z:0) + 0.63*(height() - (clef()->offset()?CLEF_EIGHT_SIZE:0))*s.z), QString(0xE195));
 			break;
 		case CAClef::F:
-			p->drawText(s.x, (int)(s.y + 0.32*height()*s.z), QString(0xE193));
+			p->drawText(s.x, qRound(s.y + (clef()->offset()>0?CLEF_EIGHT_SIZE*s.z:0) + 0.32*(height() - (clef()->offset()?CLEF_EIGHT_SIZE:0))*s.z), QString(0xE193));
 			break;
 		case CAClef::C:
-			p->drawText(s.x, (int)(s.y + 0.5*height()*s.z), QString(0xE191));
+			p->drawText(s.x, qRound(s.y + (clef()->offset()>0?CLEF_EIGHT_SIZE*s.z:0) + 0.5*(height() - (clef()->offset()?CLEF_EIGHT_SIZE:0))*s.z), QString(0xE191));
 			break;
+	}
+	
+	if (clef()->offset()) {
+		QFont number("Century Schoolbook L");
+		number.setPixelSize( qRound((CLEF_EIGHT_SIZE+5)*s.z) );
+		number.setStyle( QFont::StyleItalic );
+		p->setFont(number);
+		
+		if ( clef()->offset()>0 ) {
+			p->drawText( qRound(s.x+(width()/2-4)*s.z), qRound(s.y + CLEF_EIGHT_SIZE*s.z), QString::number(clef()->offset()+1) );
+		} else {
+			p->drawText( qRound(s.x+(width()/2-4)*s.z), qRound(s.y + height()*s.z), QString::number(qAbs(clef()->offset()-1)) );
+		}
 	}
 }
 

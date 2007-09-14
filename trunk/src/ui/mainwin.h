@@ -220,6 +220,9 @@ private slots:
 	void on_uiTimeSigBeats_valueChanged(int);
 	void on_uiTimeSigBeat_valueChanged(int);
 	
+	// Clef
+	void on_uiClefOffset_valueChanged(int);
+	
 	// Lyrics
 	void onSyllableEditKeyPressEvent(QKeyEvent *, CASyllableEdit*);
 	
@@ -320,6 +323,7 @@ private:
 	void updatePlayableToolBar();
 	void updateKeySigToolBar();
 	void updateTimeSigToolBar();
+	void updateClefToolBar();
 	void updateFMToolBar();
 	
 		/////////////////////
@@ -389,6 +393,10 @@ private:
 			// CAKeySigPSP  *uiKeySigPSP;	            /// Key signature perspective. \todo Reimplement it.
 			QComboBox *uiKeySig;
 			// QComboBox    *uiKeySigGender;
+		
+		QToolBar *uiClefToolBar;
+			QSpinBox *uiClefOffset;
+			int oldUiClefOffsetValue;
 		
 		QToolBar *uiTimeSigToolBar;
 			QSpinBox         *uiTimeSigBeats;

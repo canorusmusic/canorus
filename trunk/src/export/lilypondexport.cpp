@@ -300,7 +300,7 @@ const QString CALilyPondExport::relativePitchToString(int pitch, signed char acc
 */
 const QString CALilyPondExport::clefTypeToLilyPond( CAClef::CAClefType clefType, int c1orig, int offset ) {
 	QString type;
-	int c1 = c1orig + offset;
+	int c1 = c1orig - offset;
 	
 	switch (clefType) {
 		case CAClef::G:
