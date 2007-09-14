@@ -16,20 +16,36 @@ class CAStaff;
 
 class CAClef : public CAMusElement {
 public:
-	enum CAClefType {
+	enum CAPredefinedClefType {
 		Undefined=-1,
 		Treble,
 		Bass,
+		French,
+		Soprano,
+		Mezzosoprano,
 		Alto,
 		Tenor,
-		Soprano,
-		PercussionHigh,
-		PercussionLow
+		Baritone,
+		Varbaritone,
+		Subbass,
+		Percussion,
+		Tablature
 	};
 	
-	CAClef(CAClefType type, CAStaff *staff, int time);
+	enum CAClefType {
+		F,
+		G,
+		C,
+		PercussionHigh,
+		PercussionLow,
+		Tab
+	};
+	
+	CAClef( CAPredefinedClefType type, CAStaff *staff, int time, int offset=0 );
+	CAClef( CAClefType type, int c1, CAStaff *staff, int time, int offset=0 );
 	CAClef *clone();
 	
+	void setPredefinedType( CAPredefinedClefType type, int octave=0 );
 	CAClefType clefType() { return _clefType; }
 	const int c1() { return _c1; }
 	const int centerPitch() { return _centerPitch; }
@@ -37,12 +53,16 @@ public:
 	
 	void setClefType(CAClefType type);
 	
+	inline void setOffset( int offset ) { _offset = offset; }
+	inline int offset() { return _offset; }
+	
 	static const QString clefTypeToString(CAClefType);
 	static CAClefType clefTypeFromString(const QString);
 	
 private:
 	CAClefType _clefType;
-	int _c1; // Location of middle C in the staff
-	int _centerPitch;	// Location of the clefs physical center
+	int _c1;          // Location of middle C in the staff
+	int _centerPitch; // Location of the clefs physical center (where the clef's glyph is going to be rendered)
+	int _offset;
 };
-#endif /*CLEF_H_*/
+#endif /* CLEF_H_ */

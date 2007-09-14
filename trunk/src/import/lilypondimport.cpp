@@ -250,7 +250,8 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 		if (curElt.startsWith("\\clef")) {
 			// CAClef
 			QString typeString = peekNextElement();
-			CAClef::CAClefType type = clefTypeFromLilyPond(peekNextElement());
+			CAClef::CAPredefinedClefType type = predefinedClefTypeFromLilyPond( peekNextElement() );
+			int offset = clefOffsetFromLilyPond( peekNextElement() );
 			
 			if (type==CAClef::Undefined) {
 				addError(QString("Error while parsing clef type. Clef type %1 unknown.").arg(typeString));
@@ -259,7 +260,7 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			// remove clef type from the input
 			parseNextElement();
 			
-			CAClef *clef = new CAClef(type, curVoice()->staff(), curVoice()->lastTimeEnd());
+			CAClef *clef = new CAClef( type, curVoice()->staff(), curVoice()->lastTimeEnd(), offset );
 			CAClef *sharedClef = static_cast<CAClef*>(findSharedElement(clef));
 			
 			if (!sharedClef) {
@@ -560,18 +561,43 @@ CARest::CARestType CALilyPondImport::restTypeFromLilyPond( QString& elt, bool pa
 /*!
 	Genarates clef type from the LilyPond syntax for the given clef from format "clefType".
 */
-CAClef::CAClefType CALilyPondImport::clefTypeFromLilyPond(const QString constClef) {
+CAClef::CAPredefinedClefType CALilyPondImport::predefinedClefTypeFromLilyPond( const QString constClef ) {
 	// remove any quotes/double quotes
 	QString clef(constClef);
 	clef.remove(QRegExp("[\"']"));
 	
-	if (clef=="treble") return CAClef::Treble; else
-	if (clef=="bass") return CAClef::Bass; else
-	if (clef=="alto") return CAClef::Alto; else
-	if (clef=="soprano") return CAClef::Soprano; else
-	if (clef=="tenor") return CAClef::Tenor; else
-	if (clef=="percussion") return CAClef::PercussionHigh; else
-	return CAClef::Undefined;
+	if ( clef.contains("treble") || clef.contains("violin") || clef.contains("G") ) return CAClef::Treble; else
+	if ( clef.contains("french") ) return CAClef::French; else
+	if ( clef.contains("bass") || clef.contains("F") ) return CAClef::Bass; else
+	if ( clef.contains("varbaritone") ) return CAClef::Varbaritone; else
+	if ( clef.contains("subbass") ) return CAClef::Subbass; else
+	if ( clef.contains("mezzosoprano") ) return CAClef::Mezzosoprano; else
+	if ( clef.contains("soprano") ) return CAClef::Soprano; else
+	if ( clef.contains("alto") ) return CAClef::Alto; else
+	if ( clef.contains("tenor") ) return CAClef::Tenor; else
+	if ( clef.contains("baritone") ) return CAClef::Baritone; else
+	if ( clef=="percussion" ) return CAClef::Percussion; else
+	if ( clef=="tab" ) return CAClef::Tablature; else
+	
+	return CAClef::Treble;
+}
+
+/*!
+	Returns the Canorus octava or whichever interval above or below the clef.
+*/
+int CALilyPondImport::clefOffsetFromLilyPond( const QString constClef ) {
+	if ( !constClef.contains("_") && !constClef.contains("^") )
+		return 0;
+	
+	int m;
+	int idx = constClef.indexOf("^");
+	if (idx==-1) {
+		idx = constClef.indexOf("_");
+		m=-1;
+	} else
+		m=1;
+	
+	return (constClef.right( constClef.size()-idx-1 ).toInt()-1)*m;
 }
 
 /*!

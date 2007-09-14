@@ -303,7 +303,9 @@ void CACanorusML::writeVoice(QDomElement& dVoice, CAVoice* voice) {
 				CAClef *clef = (CAClef*)curElt;
 				QDomElement dClef = dDoc.createElement("clef"); dVoice.appendChild(dClef);
 				dClef.setAttribute("clef-type", CAClef::clefTypeToString(clef->clefType()));
+				dClef.setAttribute("c1", clef->c1());
 				dClef.setAttribute("time-start", clef->timeStart());
+				dClef.setAttribute("offset", clef->offset());
 				break;
 			}
 			case CAMusElement::KeySignature: {
@@ -492,27 +494,29 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 	}
 	else if (qName == "clef") {
 		// CAClef
-		_curClef = new CAClef(CAClef::clefTypeFromString(attributes.value("clef-type")),
-		                                                 _curVoice->staff(),
-		                                                 attributes.value("time-start").toInt()
-		                                                );
+		_curClef = new CAClef( CAClef::clefTypeFromString(attributes.value("clef-type")),
+		                       attributes.value("c1").toInt(),
+		                       _curVoice->staff(),
+		                       attributes.value("time-start").toInt(),
+		                       attributes.value("offset").toInt()
+		);
 	}
 	else if (qName == "time-signature") {
 		// CATimeSignature
-		_curTimeSig = new CATimeSignature(attributes.value("beats").toInt(),
-		                                  attributes.value("beat").toInt(),
-		                                  _curVoice->staff(),
-		                                  attributes.value("time-start").toInt(),
-		                                  CATimeSignature::timeSignatureTypeFromString(attributes.value("time-signature-type"))
-		                                 );
+		_curTimeSig = new CATimeSignature( attributes.value("beats").toInt(),
+		                                   attributes.value("beat").toInt(),
+		                                   _curVoice->staff(),
+		                                   attributes.value("time-start").toInt(),
+		                                   CATimeSignature::timeSignatureTypeFromString(attributes.value("time-signature-type"))
+		);
 	} else if (qName == "key-signature") {
 		// CAKeySignature
-		_curKeySig = new CAKeySignature(CAKeySignature::keySignatureTypeFromString(attributes.value("key-signature-type")),
-		                                (char)attributes.value("accs").toInt(),
-		                                CAKeySignature::majorMinorGenderFromString(attributes.value("major-minor-gender")),
-		                                _curVoice->staff(),
-		                                attributes.value("time-start").toInt()
-		                               );
+		_curKeySig = new CAKeySignature( CAKeySignature::keySignatureTypeFromString(attributes.value("key-signature-type")),
+		                                 (char)attributes.value("accs").toInt(),
+		                                 CAKeySignature::majorMinorGenderFromString(attributes.value("major-minor-gender")),
+		                                 _curVoice->staff(),
+		                                 attributes.value("time-start").toInt()
+		);
 		if (_curKeySig->keySignatureType()==CAKeySignature::MajorMinor) {
 			_curKeySig->setMajorMinorGender(CAKeySignature::majorMinorGenderFromString(attributes.value("major-minor-gender")));
 		}

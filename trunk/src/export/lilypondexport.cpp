@@ -88,7 +88,7 @@ void CALilyPondExport::exportVoice(CAVoice *v) {
 				CAClef *clef = static_cast<CAClef*>(v->musElementAt(i));
 				if (clef->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\clef \"";
-				out() << clefTypeToLilyPond(clef->clefType());
+				out() << clefTypeToLilyPond( clef->clefType(), clef->c1(), clef->offset() );
 				out() << "\"";
 				
 				break;
@@ -298,26 +298,41 @@ const QString CALilyPondExport::relativePitchToString(int pitch, signed char acc
 /*!
 	Converts the given clefType to LilyPond syntax.
 */
-const QString CALilyPondExport::clefTypeToLilyPond(CAClef::CAClefType clefType) {
+const QString CALilyPondExport::clefTypeToLilyPond( CAClef::CAClefType clefType, int c1orig, int offset ) {
 	QString type;
+	int c1 = c1orig + offset;
 	
 	switch (clefType) {
-		case CAClef::Treble:
-			type = "treble";
+		case CAClef::G:
+			if (c1==-2) type = "treble";
+			else if (c1==-4) type = "french";
 			break;
-		case CAClef::Bass:
-			type = "bass";
+		case CAClef::F:
+			if (c1==10) type = "bass";
+			else if (c1==4) type = "varbaritone";
+			else if (c1==8) type = "subbass";
 			break;
-		case CAClef::Alto:
-			type = "alto";
+		case CAClef::C:
+			if (c1==0) type = "soprano";
+			else if (c1==2) type = "mezzosoprano";
+			else if (c1==4) type = "alto";
+			else if (c1==6) type = "tenor";
+			else if (c1==8) type = "baritone";
 			break;
-		case CAClef::Tenor:
-			type = "tenor";
+		case CAClef::PercussionHigh:
+		case CAClef::PercussionLow:
+			type = "percussion";
 			break;
-		case CAClef::Soprano:
-			type = "soprano";
+		case CAClef::Tab:
+			type = "tab";
 			break;
 	}
+	
+	if ( offset > 0 )
+		type.append(QString("^") + QString::number(offset+1));
+	
+	if ( offset < 0 )
+		type.append(QString("_") + QString::number((offset-1)*(-1)));
 	
 	return type;
 }

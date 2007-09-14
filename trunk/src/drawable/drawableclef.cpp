@@ -1,10 +1,9 @@
-/** @file drawableclef.cpp
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #include <iostream>
 
@@ -16,41 +15,65 @@
 
 #include "core/clef.h"
 
+const int CADrawableClef::CLEF_EIGHT_SIZE = 7;
+
+/*!
+	\class CADrawableClef
+	\brief Drawable instance of CAClef
+	This class draws the clef to the canvas.
+*/
+
+/*!
+	Default constructor.
+	
+	\param clef Pointer to the logical CAClef.
+	\param x X coordinate of the left-margin of the clef.
+	\param y Y coordinate of the top of the staff. (WARNING! Not top of the clef!)
+*/
 CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaff, int x, int y)
  : CADrawableMusElement(musElement, drawableStaff, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableClef;
 	
-	switch (clef()->clefType()) {
-		case CAClef::Treble:
-			_width = 21;
-			_height = 68;
-			_yPos = y - 15;
-			break;
-		case CAClef::Bass:
-			_width = 22;
-			_height = 26;
-			_yPos = y + 1;
-			break;
-		case CAClef::Alto:
-		case CAClef::Tenor:
-		case CAClef::Soprano:
-			_width = 23;
-			_height = 34;
-			break;
-	}
+	float lineSpace = drawableStaff->lineSpace();
+	float bottom = drawableStaff->yPos()+drawableStaff->height();
 	
 	switch (clef()->clefType()) {
-		case CAClef::Soprano:
-			_yPos = y + 20;
+		case CAClef::G:
+			_width = 21;
+			_height = 68;
+			_yPos = qRound( bottom - (((clef()->c1() - clef()->offset())/2.0) * lineSpace) - 0.89*_height );
 			break;
-		case CAClef::Tenor:
-			_yPos = y - 8;
+		case CAClef::F:
+			_width = 22;
+			_height = 26;
+			_yPos = qRound( bottom - (((clef()->c1() - clef()->offset())/2.0) * lineSpace) + 1.1*lineSpace );
 			break;
-		case CAClef::Alto:
-			_yPos = y + 2;
-			break;		
+		case CAClef::C:
+			_width = 23;
+			_height = 34;
+			_yPos = qRound( bottom - (((clef()->c1() - clef()->offset())/2.0) * lineSpace) - 0.5*_height );
+			break;
+/*		case CAClef::PercussionHigh:
+			_width = 23;
+			_height = 44;
+			break;
+		case CAClef::PercussionLow:
+			_width = 23;
+			_height = 44;
+			break;
+		case CAClef::Tablature:
+			_width = 23;
+			_height = 44;
+			break;*/
 	}
-
+	
+	// make space for little 8 above/below, if needed
+	if ( clef()->offset() )
+		_height += CLEF_EIGHT_SIZE;
+	
+	if ( clef()->offset() > 0 )
+		_yPos -= CLEF_EIGHT_SIZE;
+	
 	setNeededWidth( width() );
 	setNeededHeight( height() );
 }
@@ -70,17 +93,14 @@ void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
 		- 0xE195: G-clef
 		- 0xE196: G-clef small
 	*/
-	
 	switch (clef()->clefType()) {
-		case CAClef::Treble:
+		case CAClef::G:
 			p->drawText(s.x, (int)(s.y + 0.63*height()*s.z), QString(0xE195));
 			break;
-		case CAClef::Bass:
+		case CAClef::F:
 			p->drawText(s.x, (int)(s.y + 0.32*height()*s.z), QString(0xE193));
 			break;
-		case CAClef::Alto:
-		case CAClef::Soprano:
-		case CAClef::Tenor:
+		case CAClef::C:
 			p->drawText(s.x, (int)(s.y + 0.5*height()*s.z), QString(0xE191));
 			break;
 	}
