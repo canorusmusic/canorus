@@ -66,7 +66,11 @@ int main(int argc, char *argv[]) {
 	
 	// Load system translation if found
 	QList<QString> translationLocations =
-		CACanorus::locateResource(QString("lang/") + QLocale::system().name() + ".qm");
+		CACanorus::locateResource(QString("lang/") + QLocale::system().name() + ".qm"); // load language_COUNTRY.qm
+	if (!translationLocations.size())
+		translationLocations = CACanorus::locateResource(QString("lang/") + QLocale::system().name().left(2) + ".qm"); // if not found, load language.qm only
+	std::cout << QLocale::languageToString(QLocale::system().language()).toStdString().c_str() << std::endl;
+	
 	QTranslator translator;
 	if (translationLocations.size()) {
 		translator.load(translationLocations[0]);

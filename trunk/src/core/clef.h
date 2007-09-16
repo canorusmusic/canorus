@@ -53,7 +53,7 @@ public:
 	
 	void setClefType(CAClefType type);
 	
-	inline void setOffset( int offset ) { _c1-=_offset; _c1+=(_offset=offset); }
+	inline void setOffset( int offset ) { _c1+=_offset; _c1-=(_offset=offset); }
 	inline int offset() { return _offset; }
 	
 	static const QString clefTypeToString(CAClefType);
