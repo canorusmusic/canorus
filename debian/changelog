@@ -1,8 +1,8 @@
-canorus (0.3.1-1ubuntu1) feisty; urgency=low
+canorus (0.4rc-1ubuntu1) feisty; urgency=low
 
   * new upstream release
 
- -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 05 Jun 2007 18:48:15 +0100
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 16 Sep 2007 20:41:15 +0100
 
 canorus (0.3-1ubuntu1) feisty; urgency=low
 
