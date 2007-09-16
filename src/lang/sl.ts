@@ -1848,37 +1848,37 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Izberite datoteko</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="77"/>
+        <location filename="../main.cpp" line="81"/>
         <source>Initializing Scripting engine</source>
         <comment>splashScreen</comment>
         <translation>Inicializacija skriptnega pogona</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="82"/>
+        <location filename="../main.cpp" line="86"/>
         <source>Reading Plugins</source>
         <comment>splashScreen</comment>
         <translation>Branje Dodatkov</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="87"/>
+        <location filename="../main.cpp" line="91"/>
         <source>Initializing Automatic recovery</source>
         <comment>splashScreen</comment>
         <translation>Inicializacija varnostnega shranjevanja</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="92"/>
+        <location filename="../main.cpp" line="96"/>
         <source>Initializing Undo/Redo framework</source>
         <comment>splashScreen</comment>
         <translation>Inicializacija ogrodja razveljavi/uveljavi</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="97"/>
+        <location filename="../main.cpp" line="101"/>
         <source>Searching for recovery documents</source>
         <comment>splashScreen</comment>
         <translation>Iskanje nerešenih varnostnih dokumentov</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="102"/>
+        <location filename="../main.cpp" line="106"/>
         <source>Initializing Main window</source>
         <comment>splashScreen</comment>
         <translation>Inicializacija glavnega okna</translation>

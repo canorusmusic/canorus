@@ -49,45 +49,45 @@ void CAClef::setPredefinedType( CAPredefinedClefType type ) {
 	switch (type) {
 		case Treble:
 			setClefType(G);
-			_c1 = -2 + offset();			
+			_c1 = -2 - offset();			
 			break;
 		case Bass:
 			setClefType(F);
-			_c1 = 10 + offset();
+			_c1 = 10 - offset();
 			break;
 		case French:
 			setClefType(G);
-			_c1 = -4 + offset();
+			_c1 = -4 - offset();
 			break;
 		case Soprano:
 			setClefType(C);
-			_c1 = 0 + offset();
+			_c1 = 0 - offset();
 			break;
 		case Mezzosoprano:
 			setClefType(C);
-			_c1 = 2 + offset();
+			_c1 = 2 - offset();
 			break;
 		case Alto:
 			setClefType(C);
-			_c1 = 4 + offset();
+			_c1 = 4 - offset();
 			break;
 		case Tenor:
 			setClefType(C);
-			_c1 = 6 + offset();
+			_c1 = 6 - offset();
 			break;
 		case Baritone:
 			setClefType(C);
-			_c1 = 8 + offset();
+			_c1 = 8 - offset();
 			break;
 		case Varbaritone:
 			setClefType(F);
-			_c1 = 8 + offset();
+			_c1 = 8 - offset();
 			break;
 		case Subbass:
 			setClefType(F);
-			_c1 = 12 + offset();
+			_c1 = 12 - offset();
 			break;
-	}	
+	}
 }
 
 /*!

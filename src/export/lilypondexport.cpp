@@ -300,7 +300,7 @@ const QString CALilyPondExport::relativePitchToString(int pitch, signed char acc
 */
 const QString CALilyPondExport::clefTypeToLilyPond( CAClef::CAClefType clefType, int c1orig, int offset ) {
 	QString type;
-	int c1 = c1orig - offset;
+	int c1 = c1orig + offset;
 	
 	switch (clefType) {
 		case CAClef::G:
@@ -309,8 +309,8 @@ const QString CALilyPondExport::clefTypeToLilyPond( CAClef::CAClefType clefType,
 			break;
 		case CAClef::F:
 			if (c1==10) type = "bass";
-			else if (c1==4) type = "varbaritone";
-			else if (c1==8) type = "subbass";
+			else if (c1==8) type = "varbaritone";
+			else if (c1==12) type = "subbass";
 			break;
 		case CAClef::C:
 			if (c1==0) type = "soprano";

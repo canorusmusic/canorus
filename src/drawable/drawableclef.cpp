@@ -41,17 +41,17 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 		case CAClef::G:
 			_width = 21;
 			_height = 68;
-			_yPos = qRound( bottom - (((clef()->c1() - clef()->offset())/2.0) * lineSpace) - 0.89*_height );
+			_yPos = qRound( bottom - (((clef()->c1() + clef()->offset())/2.0) * lineSpace) - 0.89*_height );
 			break;
 		case CAClef::F:
 			_width = 22;
 			_height = 26;
-			_yPos = qRound( bottom - (((clef()->c1() - clef()->offset())/2.0) * lineSpace) + 1.1*lineSpace );
+			_yPos = qRound( bottom - (((clef()->c1() + clef()->offset())/2.0) * lineSpace) + 1.1*lineSpace );
 			break;
 		case CAClef::C:
 			_width = 23;
 			_height = 34;
-			_yPos = qRound( bottom - (((clef()->c1() - clef()->offset())/2.0) * lineSpace) - 0.5*_height );
+			_yPos = qRound( bottom - (((clef()->c1() + clef()->offset())/2.0) * lineSpace) - 0.5*_height );
 			break;
 /*		case CAClef::PercussionHigh:
 			_width = 23;
