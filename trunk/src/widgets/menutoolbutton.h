@@ -37,7 +37,7 @@ public:
 	inline void setLayoutMargin(int margin) { _layoutMargin = margin; }
 	inline void setMargin(int margin) { _margin = margin; }
 	inline void setNumIconsPerRow( int numIconsRow )  { _numIconsRow = numIconsRow; }
-	void setCurrentId(int id);
+	void setCurrentId(int id, bool triggerSignal=false);
 	
 public slots:
 	void showButtons();

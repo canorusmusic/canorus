@@ -194,8 +194,9 @@ void CAMenuToolButton::wheelEvent( QWheelEvent *event ) {
 	The current tool tip is also changed.
 	
 	Does not change the current item, if the item is not part of the button box.
+	If \a triggerSignal is False (default) it doesn't emit toggled(), otherwise it does.
 */
-void CAMenuToolButton::setCurrentId(int id) {
+void CAMenuToolButton::setCurrentId(int id, bool triggerSignal) {
 	if (_buttonGroup->button( currentId() ))
 		_buttonGroup->button( currentId() )->setChecked(false);
 	
@@ -207,6 +208,9 @@ void CAMenuToolButton::setCurrentId(int id) {
 	_buttonGroup->button(id)->setChecked(true);
 	if ( defaultAction() )
 		defaultAction()->setIcon( _buttonGroup->button(id)->icon() );
+	
+	if ( triggerSignal )
+		emit toggled( false, id );
 }
 
 /*!

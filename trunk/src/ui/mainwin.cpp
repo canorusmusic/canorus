@@ -491,7 +491,7 @@ void CAMainWin::setupCustomUi() {
 	connect( uiInsertTimeSig, SIGNAL( triggered() ), uiTimeSigType, SLOT( click() ) );
 	uiBarlineType->setDefaultAction( uiInsertToolBar->addWidget( uiBarlineType ) );
 	uiBarlineType->defaultAction()->setToolTip(tr("Insert new barline"));
-	uiBarlineType->setCurrentId( CABarline::Single );
+	uiBarlineType->setCurrentId( CABarline::End );
 	connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
 	uiInsertToolBar->addAction( uiInsertSyllable );
 	uiInsertToolBar->addAction( uiInsertFM );
@@ -1055,10 +1055,12 @@ void CAMainWin::setMode(CAMode mode) {
 			p.setWidth(3);
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (!((CAScoreViewPort*)_viewPortList[i])->playing())
-						((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
+					CAScoreViewPort *sv = static_cast<CAScoreViewPort*>(_viewPortList[i]);
+					if (!sv->playing())
+						(sv->setBorder(p));
 					
-					_viewPortList[i]->repaint();
+					sv->setShadowNoteVisible(false);
+					sv->repaint();
 				}
 			}
 			
@@ -1672,6 +1674,53 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			break;
 		case Qt::Key_E:
 			uiEditMode->trigger();
+			break;
+		
+		// Note length keys
+		case Qt::Key_1:
+			if (mode()!=EditMode)
+				uiInsertPlayable->setChecked(true);
+			uiPlayableLength->setCurrentId( CANote::Whole, true );
+			break;
+		case Qt::Key_2:
+			if (mode()!=EditMode)
+				uiInsertPlayable->setChecked(true);
+			uiPlayableLength->setCurrentId( CANote::Half, true );
+			break;
+		case Qt::Key_4:
+			if (mode()!=EditMode)
+				uiInsertPlayable->setChecked(true);
+			uiPlayableLength->setCurrentId( CANote::Quarter, true );
+			break;
+		case Qt::Key_5:
+			if (mode()!=EditMode)
+				uiInsertPlayable->setChecked(true);
+			uiPlayableLength->setCurrentId( CANote::Eighth, true );
+			break;
+		case Qt::Key_6:
+			if (mode()!=EditMode)
+				uiInsertPlayable->setChecked(true);
+			uiPlayableLength->setCurrentId( CANote::Sixteenth, true );
+			break;
+		case Qt::Key_7:
+			if (mode()!=EditMode)
+				uiInsertPlayable->setChecked(true);
+			uiPlayableLength->setCurrentId( CANote::ThirtySecond, true );
+			break;
+		case Qt::Key_8:
+			if (mode()!=EditMode)
+				uiInsertPlayable->setChecked(true);
+			uiPlayableLength->setCurrentId( CANote::SixtyFourth, true );
+			break;
+		case Qt::Key_9:
+			if (mode()!=EditMode)
+				uiInsertPlayable->setChecked(true);
+			uiPlayableLength->setCurrentId( CANote::HundredTwentyEighth, true );
+			break;
+		case Qt::Key_0:
+			if (mode()!=EditMode)
+				uiInsertPlayable->setChecked(true);
+			uiPlayableLength->setCurrentId( CANote::Breve, true );
 			break;
 	}
 	
