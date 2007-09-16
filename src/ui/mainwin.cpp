@@ -1675,6 +1675,9 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		case Qt::Key_E:
 			uiEditMode->trigger();
 			break;
+		case Qt::Key_Space:
+			uiPlayFromSelection->trigger();
+			break;
 		
 		// Note length keys
 		case Qt::Key_1:
