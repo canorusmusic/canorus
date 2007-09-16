@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 -658 1000 1249"
+   id="svg10201"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   width="128"
+   height="128"
+   sodipodi:docname="cleftreble.svg"
+   sodipodi:docbase="/home/matevz/canorus/artwork/images"
+   inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/cleftreble.png"
+   inkscape:export-xdpi="120.95"
+   inkscape:export-ydpi="120.95"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   version="1.0">
+  <metadata
+     id="metadata10210">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs10208">
+    <linearGradient
+       id="linearGradient11964">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop11966" />
+      <stop
+         style="stop-color:#646464;stop-opacity:1;"
+         offset="1"
+         id="stop11968" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11964"
+       id="linearGradient11970"
+       x1="0.5"
+       y1="295.59705"
+       x2="640.83282"
+       y2="295.59705"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11964"
+       id="linearGradient11972"
+       gradientUnits="userSpaceOnUse"
+       x1="0.5"
+       y1="295.59705"
+       x2="640.83282"
+       y2="295.59705" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11964"
+       id="linearGradient14425"
+       gradientUnits="userSpaceOnUse"
+       x1="0.5"
+       y1="295.59705"
+       x2="640.83282"
+       y2="295.59705" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient11964"
+       id="linearGradient14427"
+       gradientUnits="userSpaceOnUse"
+       x1="0.5"
+       y1="295.59705"
+       x2="640.83282"
+       y2="295.59705" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="978"
+     inkscape:window-width="1400"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="4.0207896"
+     inkscape:cx="95.017454"
+     inkscape:cy="67.623954"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:current-layer="svg10201"
+     width="128px"
+     height="128px" />
+  <g
+     id="g14419"
+     transform="translate(-32.153612,-7.0834759)">
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/cleftreble.png"
+       style="fill:#000000;fill-opacity:0.39215686"
+       id="g11087"
+       transform="matrix(0.6324173,0,0,-0.6324173,341.90253,169.28181)">
+      <path
+         style="fill:#000000;fill-opacity:0.39215686"
+         id="path11089"
+         d="M 308,1246 C 318,1251 325,1248 339,1233 C 386,1183 430,1104 458,1019 C 486,933 492,867 476,792 C 459,705 417,623 330,507 C 321,495 313,485 313,484 C 312,483 317,466 326,439 C 347,377 365,321 378,275 L 380,265 L 391,265 C 429,262 463,253 495,237 C 522,224 540,211 562,190 C 601,150 626,102 636,46 C 654,-47 621,-140 549,-202 C 528,-219 501,-235 477,-244 L 468,-247 L 469,-283 C 469,-332 467,-394 463,-430 C 456,-494 429,-556 391,-597 C 348,-642 295,-662 234,-656 C 150,-648 78,-593 53,-517 C 43,-489 40,-454 46,-434 C 57,-392 92,-362 138,-354 C 169,-349 201,-360 221,-382 C 243,-406 254,-442 249,-473 C 242,-513 211,-544 171,-551 C 160,-552 144,-552 137,-550 L 131,-548 L 138,-557 C 160,-583 190,-601 225,-608 C 234,-610 239,-610 256,-610 C 274,-610 276,-610 286,-608 C 341,-594 382,-550 405,-481 C 415,-449 419,-420 422,-351 C 423,-324 423,-262 422,-260 C 422,-259 418,-260 409,-261 C 296,-277 191,-244 111,-168 C 51,-111 13,-35 2,51 C 0,68 0,113 2,132 C 10,205 35,274 81,351 C 108,397 138,439 206,526 L 235,564 L 226,590 C 185,711 170,785 165,884 C 162,958 167,1006 185,1061 C 201,1112 227,1157 262,1200 C 275,1216 302,1243 308,1246 z M 380,1083 C 376,1090 373,1096 372,1096 C 371,1097 352,1084 339,1074 C 278,1025 236,953 222,876 C 218,855 218,844 218,821 C 218,802 218,795 220,784 C 225,750 241,691 261,630 L 268,609 L 270,611 L 314,674 C 345,723 369,771 384,814 C 403,867 411,916 410,971 C 408,1019 402,1043 380,1083 z M 291,403 C 284,423 279,440 279,440 C 278,440 233,381 214,355 C 136,248 97,167 82,82 C 74,40 73,0 79,-27 C 99,-119 197,-199 310,-216 C 336,-220 379,-220 409,-215 C 416,-215 421,-214 421,-214 C 421,-213 418,-172 416,-154 C 407,-63 390,40 367,136 L 363,153 L 359,153 C 342,150 337,150 329,147 C 279,135 244,102 233,57 C 231,50 231,46 231,33 C 231,18 231,15 233,6 C 243,-32 268,-63 307,-85 C 319,-92 320,-93 323,-99 C 325,-103 325,-105 325,-109 C 324,-119 319,-126 310,-130 C 302,-132 297,-131 281,-123 C 216,-91 176,-38 164,28 C 161,44 161,77 163,92 C 171,138 190,174 220,205 C 239,223 259,237 283,247 C 296,252 314,258 326,260 C 329,261 333,262 333,262 C 335,263 313,334 291,403 z M 426,147 C 412,150 411,150 411,149 C 411,149 413,140 416,129 C 440,25 456,-78 464,-175 C 465,-189 466,-201 466,-201 C 467,-201 488,-190 495,-186 C 550,-149 579,-83 570,-17 C 560,63 504,127 426,147 z " />
+    </g>
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/cleftreble.png"
+       style="fill:url(#linearGradient14425);fill-opacity:1"
+       id="g10203"
+       transform="matrix(0.6324173,0,0,-0.6324173,316.81475,151.76651)">
+      <path
+         style="fill:url(#linearGradient14427);fill-opacity:1"
+         id="path10205"
+         d="M 308,1246 C 318,1251 325,1248 339,1233 C 386,1183 430,1104 458,1019 C 486,933 492,867 476,792 C 459,705 417,623 330,507 C 321,495 313,485 313,484 C 312,483 317,466 326,439 C 347,377 365,321 378,275 L 380,265 L 391,265 C 429,262 463,253 495,237 C 522,224 540,211 562,190 C 601,150 626,102 636,46 C 654,-47 621,-140 549,-202 C 528,-219 501,-235 477,-244 L 468,-247 L 469,-283 C 469,-332 467,-394 463,-430 C 456,-494 429,-556 391,-597 C 348,-642 295,-662 234,-656 C 150,-648 78,-593 53,-517 C 43,-489 40,-454 46,-434 C 57,-392 92,-362 138,-354 C 169,-349 201,-360 221,-382 C 243,-406 254,-442 249,-473 C 242,-513 211,-544 171,-551 C 160,-552 144,-552 137,-550 L 131,-548 L 138,-557 C 160,-583 190,-601 225,-608 C 234,-610 239,-610 256,-610 C 274,-610 276,-610 286,-608 C 341,-594 382,-550 405,-481 C 415,-449 419,-420 422,-351 C 423,-324 423,-262 422,-260 C 422,-259 418,-260 409,-261 C 296,-277 191,-244 111,-168 C 51,-111 13,-35 2,51 C 0,68 0,113 2,132 C 10,205 35,274 81,351 C 108,397 138,439 206,526 L 235,564 L 226,590 C 185,711 170,785 165,884 C 162,958 167,1006 185,1061 C 201,1112 227,1157 262,1200 C 275,1216 302,1243 308,1246 z M 380,1083 C 376,1090 373,1096 372,1096 C 371,1097 352,1084 339,1074 C 278,1025 236,953 222,876 C 218,855 218,844 218,821 C 218,802 218,795 220,784 C 225,750 241,691 261,630 L 268,609 L 270,611 L 314,674 C 345,723 369,771 384,814 C 403,867 411,916 410,971 C 408,1019 402,1043 380,1083 z M 291,403 C 284,423 279,440 279,440 C 278,440 233,381 214,355 C 136,248 97,167 82,82 C 74,40 73,0 79,-27 C 99,-119 197,-199 310,-216 C 336,-220 379,-220 409,-215 C 416,-215 421,-214 421,-214 C 421,-213 418,-172 416,-154 C 407,-63 390,40 367,136 L 363,153 L 359,153 C 342,150 337,150 329,147 C 279,135 244,102 233,57 C 231,50 231,46 231,33 C 231,18 231,15 233,6 C 243,-32 268,-63 307,-85 C 319,-92 320,-93 323,-99 C 325,-103 325,-105 325,-109 C 324,-119 319,-126 310,-130 C 302,-132 297,-131 281,-123 C 216,-91 176,-38 164,28 C 161,44 161,77 163,92 C 171,138 190,174 220,205 C 239,223 259,237 283,247 C 296,252 314,258 326,260 C 329,261 333,262 333,262 C 335,263 313,334 291,403 z M 426,147 C 412,150 411,150 411,149 C 411,149 413,140 416,129 C 440,25 456,-78 464,-175 C 465,-189 466,-201 466,-201 C 467,-201 488,-190 495,-186 C 550,-149 579,-83 570,-17 C 560,63 504,127 426,147 z " />
+    </g>
+  </g>
+</svg>

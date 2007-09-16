@@ -1,0 +1,365 @@
+/*!
+	Copyright (c) 2006, Reinhard Katzmann, Canorus development team
+	              2007, Matevž Jekovec, Canorus development team
+	
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
+
+#include "core/canorus.h"
+#include "core/muselementfactory.h"
+#include "core/functionmarkingcontext.h"
+
+/*!
+	\class CAMusElementFactory
+	\brief creation, removal, configuration of music elements
+	
+	This class is used when creating a new music element, settings its values, but not having it
+	placed inside the score (eg. music element still in the GUI, but user didn't clicked on the score
+	to place it yet).
+	
+	The factory contains the methods to set properties of all the available music elements ranging from
+	playable elements to slurs and lyrics. The actual music element is created and added to the scene
+	when one of the configure functions are called. These functions return True, if the element was
+	successfully created or False otherwise.
+	
+	This class should be typically used in the following order:
+	  1) User selects a music element to place. CAMusElementFactory::setMusElementType() is called.
+	  2) GUI for music element properties is updated according to the current factory values.
+	  3) User sets music element properties he wants (eg. number of accidentals in key signature).
+	     CAMusElementFactory::setSomeMusicElementProperty( music element property value ) is called
+	     (eg. CAMusElementFactory::setKeySigNumberOfAccs(3) for A-Major/fis-minor).
+	  4) User places the music element. CAMusElementFactory::configureSomeMusicElement()
+	     (eg. CAMusElementFactory::configureKeySignature(currentStaff, prevElement)).
+	  5) If the configure function returns True, the GUI is refreshed and the note is drawn.
+	
+	Changing the properties of already placed elements (eg. in edit mode) is done without using the factory.
+	
+	\sa CAMainWin, CAMusElement
+*/
+
+
+/*!
+	Creates an empty, defeault music elements factory.
+*/
+CAMusElementFactory::CAMusElementFactory() {
+	_ePlayableLength = CAPlayable::Quarter;
+	_eNoteStemDirection = CANote::StemPreferred;
+	_iPlayableDotted = 0;
+	_eRestType = CARest::Normal;
+	_iTimeSigBeats = 4;
+	_iTimeSigBeat = 4;
+	_iKeySigNumberOfAccs = 0;
+	_eKeySigGender = CAKeySignature::Major;
+	_eClef = CAClef::Treble;
+	_iClefOffset = 0;
+	_iNoteAccs = 0;
+	_iNoteExtraAccs = 0;
+	_eBarlineType = CABarline::Single;
+	_eSlurType = CASlur::TieType;
+	_slurStyle = CASlur::SlurSolid;
+
+	_fmFunction = CAFunctionMarking::T; // Name of the function
+	_fmChordArea = CAFunctionMarking::Undefined; // Chord area of the function
+	_fmTonicDegree = CAFunctionMarking::T; // Tonic degree of the function
+	_fmFunctionMinor = false;
+	_fmChordAreaMinor = false;
+	_fmTonicDegreeMinor = false;
+	_fmEllipse = false;
+	mpoMusElement = 0;
+	_musElementType = CAMusElement::Undefined;
+}
+
+/*!
+	Destroys the music elements factory.
+*/
+CAMusElementFactory::~CAMusElementFactory() {
+}
+
+/*!
+	Removes the current music element.
+	Destroys the music element, if \a bReallyRemove is true (default is false).
+*/
+void CAMusElementFactory::removeMusElem( bool bReallyRemove /* = false */ ) {
+	if( mpoMusElement && bReallyRemove )
+		delete mpoMusElement;
+	
+	mpoMusElement = 0;
+}
+
+/*!
+	Configures a new clef music element in \a context and right next to the \a left element.
+*/
+bool CAMusElementFactory::configureClef( CAStaff *staff, 
+                                         CAMusElement *left )
+{
+	bool success = false;
+	if ( staff ) {
+		mpoMusElement = new CAClef( _eClef, staff, (left?left->timeEnd():0), _iClefOffset );
+		success = staff->insertSignAfter(mpoMusElement, left, true);
+		if (!success)
+			removeMusElem( true );
+	}
+	return success;
+}
+
+/*!
+	Configures a new key signature music element with \a iKeySignature accidentals, \a context and right next to the \a left element.
+*/
+bool CAMusElementFactory::configureKeySignature( CAStaff *staff, 
+                                                 CAMusElement *left )
+{
+	bool success = false;
+	if (staff) {		
+		mpoMusElement = new CAKeySignature(CAKeySignature::MajorMinor, 
+			                           _iKeySigNumberOfAccs,
+			                           _eKeySigGender, staff,
+			                           (left?left->timeEnd():0));
+		success = staff->insertSignAfter(mpoMusElement, left, true);
+		if (!success)
+			removeMusElem( true );
+	}
+	return success;
+}
+
+/*!
+	Configures a new time signature music element with \a context and right next to the \a left element.
+*/
+bool CAMusElementFactory::configureTimeSignature( CAStaff *staff, 
+                                                  CAMusElement *left )
+{
+	bool success = false;
+	if (staff) {
+		mpoMusElement = new CATimeSignature( _iTimeSigBeats, _iTimeSigBeat,
+			                             staff,
+			                             (left?left->timeEnd():0));
+		success = staff->insertSignAfter(mpoMusElement, left, true);
+		if (!success)
+			removeMusElem( true );
+	}
+	return success;
+}
+
+/*!
+	Configures a new barline with \a context and right next to the \a left element.
+*/
+bool CAMusElementFactory::configureBarline( CAStaff *staff, 
+                                            CAMusElement *left )
+{
+	bool success = false;
+	if (staff) {
+		mpoMusElement = new CABarline( _eBarlineType,
+			                             staff,
+			                             (left?left->timeEnd():0));
+		success = staff->insertSignAfter(mpoMusElement, left, true);
+		if (!success)
+			removeMusElem( true );
+	}
+	return success;
+}
+
+/*!
+	Configures new note music element.
+	
+	\param iVoiceNum        voice number where new note is inserted
+	\param voice            voice where new note is inserted
+	\param coords           mouse position where the new note is inserted
+	\param context          context within the new note is inserted
+	\param left             music element left of new note
+*/
+bool CAMusElementFactory::configureNote( CAVoice *voice,
+                                         const QPoint coords,
+                                         CADrawableStaff *drawableStaff,
+                                         CADrawableMusElement *left )
+{
+	bool bSuccess = false;
+	removeMusElem();
+	if ( drawableStaff ) {
+		// did a user click on the note or before/after it? In first case, add a note to a chord, in latter case, insert a new note.
+		CADrawableMusElement *followingNote;			
+		if ( left && (left->musElement()->musElementType() == CAMusElement::Note) && (left->xPos() <= coords.x()) && (left->width() + left->xPos() >= coords.x()) ) {
+			// user clicked inside x borders of the note - add a note to the chord
+			if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart()))
+				return false;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
+				
+			int pitch;
+			mpoMusElement = new CANote(((CANote*)left->musElement())->playableLength(),
+		                  voice,
+		                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
+			          _iNoteAccs,
+			          left->musElement()->timeStart(),
+			          ((CANote*)left->musElement())->dotted()
+			        );
+			bSuccess = voice->addNoteToChord((CANote*)mpoMusElement, (CANote*)left->musElement());
+		} else {
+			// user clicked outside x borders of the note - add a new note
+			int pitch;
+			mpoMusElement = new CANote(_ePlayableLength,
+			          voice,
+			          pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
+			          _iNoteAccs,
+			          (left?left->musElement()->timeEnd():0),
+			          _iPlayableDotted
+			       );
+			// add an empty syllable or reposit syllables
+			static_cast<CANote*>(mpoMusElement)->setStemDirection( _eNoteStemDirection );
+			if (left)	// left element exists
+				bSuccess = voice->insertMusElementAfter(mpoMusElement, left->musElement());
+			else		// left element doesn't exist, prepend the new music element
+				bSuccess = voice->prependMusElement(mpoMusElement);
+			
+			// adds empty syllables, if syllable below the note doesn't exist or repositions the syllables, if it exists
+			if (voice->lastNote()==mpoMusElement) {
+				for (int i=0; i<voice->lyricsContextList().size(); i++) {
+					voice->lyricsContextList().at(i)->repositSyllables(); // adds an empty syllable or assigns the already placed at the end if it exists
+				}
+			} else {
+				for (int i=0; i<voice->lyricsContextList().size(); i++) {
+					voice->lyricsContextList().at(i)->addEmptySyllable(
+						mpoMusElement->timeStart(), mpoMusElement->timeLength()
+					);
+				}
+			}
+		}
+	}
+	
+	if (bSuccess)
+		static_cast<CANote*>(mpoMusElement)->updateTies();
+	else
+		removeMusElem( true );
+	
+	return bSuccess;
+}
+
+/*!
+	Configures the new tie, slur or phrasing slur for the notes \a noteStart and \a noteEnd.
+*/
+bool CAMusElementFactory::configureSlur( CAStaff *staff,
+                                         CANote *noteStart, CANote *noteEnd )
+{
+	bool success=false;
+	removeMusElem();
+	CASlur *slur = new CASlur( slurType(), CASlur::SlurPreferred, staff, noteStart, noteEnd );
+	mpoMusElement = slur;
+	
+	slur->setSlurStyle( slurStyle() );
+	switch (slurType()) {
+		case CASlur::TieType:
+			noteStart->setTieStart( slur );
+			if (noteEnd) noteEnd->setTieEnd( slur );
+			success=true;
+			break;
+		case CASlur::SlurType:
+			noteStart->setSlurStart( slur );
+			if (noteEnd) noteEnd->setSlurEnd( slur );
+			success=true;
+			break;
+		case CASlur::PhrasingSlurType:
+			noteStart->setPhrasingSlurStart( slur );
+			if (noteEnd) noteEnd->setPhrasingSlurEnd( slur );
+			success=true;
+			break;
+	}
+	
+	if (!success)
+		removeMusElem( true );
+	
+	return success;
+}
+
+/*!
+	Configures a new rest music element.
+	
+	\param voice      voice where new rest is inserted
+	\param left       music element left of new rest
+*/
+bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *left ) {
+	bool success = false;
+	if ( voice ) {
+		mpoMusElement = new CARest(restType(),
+				_ePlayableLength,
+				voice,
+				(left?left->timeEnd():0),
+				_iPlayableDotted
+				);
+		success = voice->insertMusElementAfter(mpoMusElement, left);
+		if (!success)
+			removeMusElem(true);
+	}
+	return success;
+}
+
+bool CAMusElementFactory::configureFunctionMarking( CAFunctionMarkingContext *fmc, int timeStart, int timeLength ) {
+	CAFunctionMarking *fm = new CAFunctionMarking(
+		fmFunction(), isFMFunctionMinor(),
+		CAKeySignature::keySignatureToString( _iKeySigNumberOfAccs, _eKeySigGender ),
+		fmc, timeStart, timeLength,
+		fmChordArea(), isFMChordAreaMinor(),
+		fmTonicDegree(), isFMTonicDegreeMinor(),
+		"", /// \todo Function marking altered/added degrees
+		isFMEllipse()
+	);
+	
+	fmc->addFunctionMarking(fm);
+	mpoMusElement = fm;
+	
+	return true;
+}
+
+/*!
+	\fn CAMusElementFactory::musElement()
+	Reads the current music element and returns its pointer.
+*/
+
+/*!
+	\fn CAMusElementFactory::musElementType()
+	Returns the current music element type.
+*/
+
+/*!
+	\fn CAMusElementFactory::setMusElementType(CAMusElement::CAMusElementType eMEType)
+	Sets the new current music element type \a eMEType, does not create a new element of this type!
+*/
+
+/*!
+	\var CAMusElementFactory::mpoMusElement
+	Newly created music element itself.
+
+	\sa musElement()
+*/
+
+/*!
+	\var CAMusElementFactory::_ePlayableLength
+	Length of note/rest to be added.
+*/
+
+/*!
+	\var CAMusElementFactory::_iPlayableDotted
+	Number of dots to be inserted for the note/rest.
+*/
+
+/*!
+	\var CAMusElementFactory::_iNoteExtraAccs
+	Extra note accidentals for new notes which user adds/removes with +/- keys.
+*/
+
+/*!
+	\var CAMusElementFactory::_iNoteAccs
+	Note accidentals at specific coordinates updated regularily when in insert mode.
+*/
+
+/*!
+	\var CAMusElementFactory::_iTimeSigBeats
+	Time signature number of beats to be inserted.
+*/
+
+/*!
+	\var CAMusElementFactory::_iTimeSigBeat
+	Time signature beat to be inserted.
+*/
+
+/*!
+	\var CAMusElementFactory::_eClef
+	Type of the clef to be inserted.
+*/
