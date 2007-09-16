@@ -1231,10 +1231,14 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 		case EditMode: {
 			v->clearSelectionRegionList();
 			
-			if (v->selection().size()) {
+			if ( v->selection().size() ) {
 				CADrawableMusElement *dElt = v->selection().front();
 				CAMusElement *elt = dElt->musElement();
 				if (!elt) break;
+				
+				if ( mode()==EditMode && dElt->drawableMusElementType()==CADrawableMusElement::DrawableSyllable ) {
+					v->createSyllableEdit( dElt );
+				}
 				
 				// debug
 				std::cout << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << std::endl;
@@ -1246,6 +1250,8 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						std::cout << ", pitch=" << ((CANote*)elt)->pitch();
 				}
 				std::cout << std::endl;
+			} else {
+				v->removeSyllableEdit();
 			}
 			
 			break;
@@ -1317,7 +1323,6 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				if ( v->currentContext() && v->currentContext()->context() &&
 					 v->currentContext()->context()->contextType()==CAContext::LyricsContext && v->selection().size() &&
 					 v->selection().front()->drawableMusElementType()==CADrawableMusElement::DrawableSyllable ) {
-					int timeStart = 0, timeLength = 256;
 					CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(v->currentContext());
 					v->createSyllableEdit( v->selection().front() );
 				} else {

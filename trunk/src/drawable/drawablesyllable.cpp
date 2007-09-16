@@ -24,7 +24,7 @@ CADrawableSyllable::CADrawableSyllable( CASyllable* s, CADrawableLyricsContext* 
 	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
 	QFontMetrics fm(font);
 	int textWidth = fm.width( textToDrawableText(s->text()) );
-	setWidth( textWidth < 7 ? 7 : textWidth ); // set minimum text width at lest 8 points
+	setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 	setHeight( qRound(DEFAULT_TEXT_SIZE) );
 	
 	setNeededWidth( width() );
