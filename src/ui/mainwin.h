@@ -354,7 +354,7 @@ private:
 			QLineEdit         *uiSheetName;
 			// QAction        *uiRemoveSheet; // made by Qt Designer
 			// QAction        *uiSheetProperties; // made by Qt Designer
-			
+		
 		QToolBar *uiContextToolBar;
 			// CAContext
 			QLineEdit        *uiContextName;
@@ -376,7 +376,7 @@ private:
 			// QAction       *uiRemoveVoice; // made by Qt Designer
 			CAMenuToolButton *uiVoiceStemDirection;
 			// QAction       *uiVoiceProperties; // made by Qt Designer
-			
+		
 		QToolBar *uiPlayableToolBar; // note and rest properties are merged for the time being
 			// Note properties
 			CAMenuToolButton *uiPlayableLength;

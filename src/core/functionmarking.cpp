@@ -61,8 +61,28 @@ CAFunctionMarking *CAFunctionMarking::clone() {
 	return newElt;
 }
 
-int CAFunctionMarking::compare(CAMusElement *func) {
-	return 0;	//! \todo Comparison of various function markings still needs to be done.
+void CAFunctionMarking::clear() {
+	setFunction( Undefined );
+	setChordArea( Undefined );
+	setTonicDegree( T );
+	setKey( "C" );
+}
+
+int CAFunctionMarking::compare( CAMusElement *func ) {
+	int diffs=0;
+	
+	if (func->musElementType()!=CAMusElement::FunctionMarking)
+		return -1;
+	
+	CAFunctionMarking *fm = static_cast<CAFunctionMarking*>(func);
+	if ( fm->function() != function() ) diffs++;
+	if ( fm->chordArea()!= chordArea() ) diffs++;
+	if ( fm->tonicDegree() != tonicDegree() ) diffs++;
+	if ( fm->key() != key() ) diffs++;
+	if ( fm->addedDegrees() != addedDegrees()) diffs++;
+	if ( fm->alteredDegrees() != alteredDegrees()) diffs++;
+	
+	return diffs;
 }
 
 /*!
