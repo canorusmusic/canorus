@@ -10,6 +10,7 @@
 #include "core/canorus.h"
 #include "core/muselementfactory.h"
 #include "core/functionmarkingcontext.h"
+#include "core/sheet.h"
 
 /*!
 	\class CAMusElementFactory
@@ -214,11 +215,21 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 				for (int i=0; i<voice->lyricsContextList().size(); i++) {
 					voice->lyricsContextList().at(i)->repositSyllables(); // adds an empty syllable or assigns the already placed at the end if it exists
 				}
+				for (int i=0; i<voice->staff()->sheet()->contextCount(); i++) {
+					if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkingContext)
+						static_cast<CAFunctionMarkingContext*>(voice->staff()->sheet()->contextAt(i))->repositFunctions();
+				}
 			} else {
 				for (int i=0; i<voice->lyricsContextList().size(); i++) {
 					voice->lyricsContextList().at(i)->addEmptySyllable(
 						mpoMusElement->timeStart(), mpoMusElement->timeLength()
 					);
+				}
+				for (int i=0; i<voice->staff()->sheet()->contextCount(); i++) {
+					if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkingContext)
+						static_cast<CAFunctionMarkingContext*>(voice->staff()->sheet()->contextAt(i))->addEmptyFunction(
+							mpoMusElement->timeStart(), mpoMusElement->timeLength()
+						);
 				}
 			}
 		}

@@ -45,7 +45,6 @@ void CAFunctionMarkingContext::clear() {
 		delete _functionMarkingList[i];
 	
 	_functionMarkingList.clear();
-	_functionMarkingHash.clear();
 }
 
 /*!
@@ -55,7 +54,6 @@ void CAFunctionMarkingContext::addFunctionMarking(CAFunctionMarking *function) {
 	int i;
 	for (i=_functionMarkingList.size()-1; i>0 && _functionMarkingList[i]->timeStart()>function->timeStart(); i--);
 	_functionMarkingList.insert(i+1, function);
-	_functionMarkingHash.insertMulti(function->timeStart(), function);
 }
 
 CAMusElement *CAFunctionMarkingContext::findNextMusElement(CAMusElement *elt) {
@@ -88,6 +86,26 @@ bool CAFunctionMarkingContext::removeMusElement(CAMusElement *elt, bool cleanup)
 }
 
 /*!
+	This method is similar to CALyircsContext::repositFunctions().
+	It repositions the functions (sets timeStart and timeLength) one by one according to the chords
+	above the context.
+	
+	If two functions contain the same timeStart, they are treated as modulation and will contain
+	the same timeStart after reposition is done as well!
+*/
+void CAFunctionMarkingContext::repositFunctions() {
+	
+}
+
+/*!
+	Adds an undefined function marking (uses for empty function markings when only function marking context exists and no actual
+	functions added).
+*/
+void CAFunctionMarkingContext::addEmptyFunction( int timeStart, int timeLength ) {
+	addFunctionMarking( new CAFunctionMarking( CAFunctionMarking::Undefined, false, "C", this, timeStart, timeLength ) );
+}
+
+/*!
 	Returns number of function markings with the given \a timeStart.
 */
 int CAFunctionMarkingContext::functionMarkingCount(int timeStart) {
@@ -104,10 +122,4 @@ int CAFunctionMarkingContext::functionMarkingCount(int timeStart) {
 /*!
 	\var CAFunctionMarkingContext::_functionMarkingList
 	List of all the function markings sorted by timeStart
-*/
-
-/*!
-	\var CAFunctionMarkingContext::_functionMarkingHash
-	Map of all the function markings in certain time slice - used by
-	containsNewFunctionMarking().
 */

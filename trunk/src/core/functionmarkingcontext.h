@@ -26,8 +26,10 @@ public:
 	int functionMarkingCount(int timeStart=0);
 	inline CAFunctionMarking *functionMarkingAt(int idx) { return _functionMarkingList[idx]; }
 	void addFunctionMarking(CAFunctionMarking *marking);
+	void addEmptyFunction( int timeStart, int timeLength );
 	inline QList<CAFunctionMarking*> functionMarkingList() { return _functionMarkingList; }
-		
+	void repositFunctions();
+	
 	void clear();
 	CAMusElement *findNextMusElement(CAMusElement *elt);
 	CAMusElement *findPrevMusElement(CAMusElement *elt);
@@ -35,6 +37,5 @@ public:
 	
 private:
 	QList<CAFunctionMarking*> _functionMarkingList;
-	QMultiHash<int,CAFunctionMarking*> _functionMarkingHash; // map of timeStart:functionMarking for faster look-up
 };
 #endif /* FUNCTIONMARKINGCONTEXT_H_*/

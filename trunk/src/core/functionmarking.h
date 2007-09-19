@@ -38,6 +38,7 @@ public:
 	// addedDegrees and alteredDegrees are generated from alterations parameter
 	CAFunctionMarking(CAFunctionType function, bool minor, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea=Undefined, bool chordAreaMinor=false, CAFunctionType tonicDegree=Undefined, bool tonicDegreeMinor=false, const QString alterations="", bool ellipseSequence=false);
 	CAFunctionMarking* clone();
+	void clear(); // same as in CASyllable
 	~CAFunctionMarking();
 	
 	CAFunctionType function() { return _function; }
@@ -51,7 +52,7 @@ public:
 	void setChordArea(CAFunctionType chordArea) { _chordArea = chordArea; }
 	void setChordAreaMinor(bool minor) { _chordAreaMinor = minor; }
 	void setTonicDegree(CAFunctionType tonicDegree) { _tonicDegree = tonicDegree; }
-	void setTonicDegreeMinor(CAFunctionType minor) { _tonicDegreeMinor = minor; }
+	void setTonicDegreeMinor(bool minor) { _tonicDegreeMinor = minor; }
 	void setAlteredDegrees(QList<int> degrees) { _alteredDegrees = degrees; }
 	void setAddedDegrees(QList<int> degrees) { _addedDegrees = degrees; }
 	void setMinor(bool minor) { _minor = minor; }

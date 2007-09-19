@@ -308,7 +308,6 @@ void CAMainWin::createCustomActions() {
 		uiPlayableLength->addButton( QIcon("images/n16.svg"), CANote::Sixteenth, tr("Sixteenth Length") );
 		uiPlayableLength->addButton( QIcon("images/n32.svg"), CANote::ThirtySecond, tr("ThirtySecond Length") );
 		uiPlayableLength->addButton( QIcon("images/n64.svg"), CANote::SixtyFourth, tr("SixtyFourth Length") );
-		uiPlayableLength->setCurrentId( CANote::Quarter );
 	uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this );
 		uiNoteStemDirection->setObjectName( "uiNoteStemDirection" );
 		uiNoteStemDirection->addButton( QIcon("images/notestemneutral.svg"), CANote::StemNeutral, tr("Note Stem Neutral") );
@@ -333,8 +332,8 @@ void CAMainWin::createCustomActions() {
 		uiKeySig->addItem( QIcon("images/accs-2.svg"), tr("g minor") );
 		uiKeySig->addItem( QIcon("images/accs-1.svg"), tr("F major") );
 		uiKeySig->addItem( QIcon("images/accs-1.svg"), tr("d minor") );
-		uiKeySig->addItem( QIcon("images/accs0.svg"), tr("C major") );
-		uiKeySig->addItem( QIcon("images/accs0.svg"), tr("a minor") );
+		uiKeySig->addItem( QIcon("images/none.svg"), tr("C major") );
+		uiKeySig->addItem( QIcon("images/none.svg"), tr("a minor") );
 		uiKeySig->addItem( QIcon("images/accs1.svg"), tr("G major") );
 		uiKeySig->addItem( QIcon("images/accs1.svg"), tr("e minor") );
 		uiKeySig->addItem( QIcon("images/accs2.svg"), tr("D major") );
@@ -391,6 +390,7 @@ void CAMainWin::createCustomActions() {
 		uiFMFunction->addButton( QIcon("images/fml.svg"), CAFunctionMarking::L, tr("Lydian") );
 		uiFMFunction->addButton( QIcon("images/fmiv.svg"), CAFunctionMarking::IV, tr("IV") );
 		uiFMFunction->addButton( QIcon("images/fmv.svg"), CAFunctionMarking::V, tr("V") );
+		uiFMFunction->addButton( QIcon("images/none.svg"), CAFunctionMarking::Undefined, tr("None") );
 	uiFMChordArea = new CAMenuToolButton( tr("Select Chord Area"), 3, this );
 		uiFMChordArea->setObjectName( "uiFMChordArea" );
 		uiFMChordArea->addButton( QIcon("images/fmpt.svg"), CAFunctionMarking::T, tr("Tonic") );
@@ -398,15 +398,16 @@ void CAMainWin::createCustomActions() {
 		uiFMChordArea->addButton( QIcon("images/fmpd.svg"), CAFunctionMarking::D, tr("Dominant") );
 		uiFMChordArea->addButton( QIcon("images/fmpot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
 		uiFMChordArea->addButton( QIcon("images/fmpos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
-	uiFMTonicDegree = new CAMenuToolButton( tr("Select Tonic Degree"), 7, this );
+		uiFMChordArea->addButton( QIcon("images/none.svg"), CAFunctionMarking::Undefined, tr("None") );
+	uiFMTonicDegree = new CAMenuToolButton( tr("Select Tonic Degree"), 5, this );
 		uiFMTonicDegree->setObjectName( "uiFMTonicDegree" );
 		uiFMTonicDegree->addButton( QIcon("images/fmt.svg"), CAFunctionMarking::T, tr("Tonic") );
 		uiFMTonicDegree->addButton( QIcon("images/fmot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
-		uiFMTonicDegree->addButton( QIcon("images/fmii.svg"), CAFunctionMarking::II, tr("II") );
-		uiFMTonicDegree->addButton( QIcon("images/fmiii.svg"), CAFunctionMarking::III, tr("III") );
 		uiFMTonicDegree->addButton( QIcon("images/fms.svg"), CAFunctionMarking::S, tr("Subdominant") );
 		uiFMTonicDegree->addButton( QIcon("images/fmos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
 		uiFMTonicDegree->addButton( QIcon("images/fmd.svg"), CAFunctionMarking::D, tr("Dominant") );
+		uiFMTonicDegree->addButton( QIcon("images/fmii.svg"), CAFunctionMarking::II, tr("II") );
+		uiFMTonicDegree->addButton( QIcon("images/fmiii.svg"), CAFunctionMarking::III, tr("III") );
 		uiFMTonicDegree->addButton( QIcon("images/fmvi.svg"), CAFunctionMarking::VI, tr("VI") );
 		uiFMTonicDegree->addButton( QIcon("images/fmvii.svg"), CAFunctionMarking::VII, tr("VII") );
 	uiFMKeySig = new QComboBox( this );
@@ -425,8 +426,8 @@ void CAMainWin::createCustomActions() {
 		uiFMKeySig->addItem( QIcon("images/accs-2.svg"), tr("g minor") );
 		uiFMKeySig->addItem( QIcon("images/accs-1.svg"), tr("F major") );
 		uiFMKeySig->addItem( QIcon("images/accs-1.svg"), tr("d minor") );
-		uiFMKeySig->addItem( QIcon("images/accs0.svg"), tr("C major") );
-		uiFMKeySig->addItem( QIcon("images/accs0.svg"), tr("a minor") );
+		uiFMKeySig->addItem( QIcon("images/none.svg"), tr("C major") );
+		uiFMKeySig->addItem( QIcon("images/none.svg"), tr("a minor") );
 		uiFMKeySig->addItem( QIcon("images/accs1.svg"), tr("G major") );
 		uiFMKeySig->addItem( QIcon("images/accs1.svg"), tr("e minor") );
 		uiFMKeySig->addItem( QIcon("images/accs2.svg"), tr("D major") );
@@ -516,6 +517,7 @@ void CAMainWin::setupCustomUi() {
 	uiPlayableLength->setDefaultAction( uiPlayableToolBar->addWidget( uiPlayableLength ) );
 	uiPlayableLength->defaultAction()->setToolTip(tr("Playable length"));
 	uiPlayableLength->defaultAction()->setCheckable(false);
+	uiPlayableLength->setCurrentId( CANote::Quarter );
 	uiPlayableToolBar->addAction( uiAccsVisible );
 	uiNoteStemDirection->setDefaultAction( uiPlayableToolBar->addWidget(uiNoteStemDirection ) );
 	uiNoteStemDirection->defaultAction()->setToolTip(tr("Note stem direction"));		
@@ -554,9 +556,11 @@ void CAMainWin::setupCustomUi() {
 	uiFMFunction->setDefaultAction( uiFMToolBar->addWidget( uiFMFunction ) );
 	uiFMFunction->defaultAction()->setToolTip( tr("Function marking") );
 	uiFMFunction->setCurrentId( CAFunctionMarking::T );
+	uiFMFunction->defaultAction()->setCheckable( false );
 	uiFMChordArea->setDefaultAction( uiFMToolBar->addWidget( uiFMChordArea ) );
 	uiFMChordArea->defaultAction()->setToolTip( tr("Function marking chord area") );
 	uiFMChordArea->setCurrentId( CAFunctionMarking::T );
+	uiFMChordArea->defaultAction()->setCheckable( false );
 	uiFMTonicDegree->setDefaultAction( uiFMToolBar->addWidget( uiFMTonicDegree ) );
 	uiFMTonicDegree->defaultAction()->setCheckable( false );
 	uiFMTonicDegree->defaultAction()->setToolTip( tr("Function marking tonic degree") );
@@ -2392,43 +2396,76 @@ void CAMainWin::onSyllableEditKeyPressEvent(QKeyEvent *e, CASyllableEdit *syllab
 	}
 }
 
-void CAMainWin::on_uiFMFunction_toggled(bool checked, int buttonId) {
-	if (checked) {
-		if (buttonId>0) {
-			musElementFactory()->setFMFunction( static_cast<CAFunctionMarking::CAFunctionType>(buttonId) );
-			musElementFactory()->setFMFunctionMinor( false );
-		} else {
-			musElementFactory()->setFMFunction( static_cast<CAFunctionMarking::CAFunctionType>(buttonId*(-1)) );
-			musElementFactory()->setFMFunctionMinor( true );
-		}
+void CAMainWin::on_uiFMFunction_toggled( bool checked, int buttonId ) {
+	if ( mode()==InsertMode ) {
+		musElementFactory()->setFMFunction( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+		musElementFactory()->setFMFunctionMinor( buttonId<0 );
 	} else
-		musElementFactory()->setFMFunction( CAFunctionMarking::Undefined );
-}
-
-void CAMainWin::on_uiFMChordArea_toggled(bool checked, int buttonId) {
-	if (checked) {
-		if (buttonId>0) {
-			musElementFactory()->setFMChordArea( static_cast<CAFunctionMarking::CAFunctionType>(buttonId) );
-			musElementFactory()->setFMChordAreaMinor( false );
-		} else {
-			musElementFactory()->setFMChordArea( static_cast<CAFunctionMarking::CAFunctionType>(buttonId*(-1)) );
-			musElementFactory()->setFMChordAreaMinor( true );
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("change function", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(0)->musElement() );
+			
+			if ( fm ) {
+				fm->setFunction( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+				fm->setMinor( buttonId<0 );
+			}
 		}
-	} else
-		musElementFactory()->setFMChordArea( CAFunctionMarking::Undefined );
-}
-
-void CAMainWin::on_uiFMTonicDegree_toggled(bool checked, int buttonId) {
-	if (buttonId>0) {
-		musElementFactory()->setFMTonicDegree( static_cast<CAFunctionMarking::CAFunctionType>(buttonId) );
-		musElementFactory()->setFMTonicDegreeMinor( false );
-	} else {
-		musElementFactory()->setFMTonicDegree( static_cast<CAFunctionMarking::CAFunctionType>(buttonId*(-1)) );
-		musElementFactory()->setFMTonicDegreeMinor( true );
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
 	}
 }
 
-void CAMainWin::on_uiFMEllipse_toggled(bool checked) {
+void CAMainWin::on_uiFMChordArea_toggled(bool checked, int buttonId) {
+	if ( mode()==InsertMode ) {
+		musElementFactory()->setFMChordArea( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+		musElementFactory()->setFMChordAreaMinor( buttonId<0 );
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("change chord area", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(0)->musElement() );
+			
+			if ( fm ) {
+				fm->setChordArea( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+				fm->setChordAreaMinor( buttonId<0 );
+			}
+		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+}
+
+void CAMainWin::on_uiFMTonicDegree_toggled(bool checked, int buttonId) {
+	if ( mode()==InsertMode ) {
+		musElementFactory()->setFMTonicDegree( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+		musElementFactory()->setFMTonicDegreeMinor( buttonId<0 );
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("change tonic degree", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(0)->musElement() );
+			
+			if ( fm ) {
+				fm->setTonicDegree( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+				fm->setTonicDegreeMinor( buttonId<0 );
+			}
+		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+}
+
+void CAMainWin::on_uiFMEllipse_toggled( bool checked ) {
 	musElementFactory()->setFMEllipse( checked );
 }
 
@@ -3140,85 +3177,28 @@ void CAMainWin::updateClefToolBar() {
 */
 void CAMainWin::updateFMToolBar() {
 	if (uiInsertFM->isChecked() && mode()==InsertMode) {
-		if ( !musElementFactory()->fmFunction()==CAFunctionMarking::Undefined ) {
-			uiFMFunction->defaultAction()->setChecked( false );
-			uiFMFunction->setCurrentId( musElementFactory()->fmFunction()*(musElementFactory()->isFMFunctionMinor()?-1:1) );
-			uiFMFunction->defaultAction()->toggle();
-		} else {
-			uiFMFunction->defaultAction()->setChecked( true );
-			uiFMFunction->defaultAction()->toggle();
-		}
-
-		if ( !musElementFactory()->fmChordArea()==CAFunctionMarking::Undefined ) {
-			uiFMChordArea->defaultAction()->setChecked( false );
-			uiFMChordArea->setCurrentId( musElementFactory()->fmChordArea()*(musElementFactory()->isFMChordAreaMinor()?-1:1) );
-			uiFMChordArea->defaultAction()->toggle();
-		} else {
-			uiFMChordArea->defaultAction()->setChecked( true );
-			uiFMChordArea->defaultAction()->toggle();
-		}
-		
-		if ( !musElementFactory()->fmTonicDegree()==CAFunctionMarking::Undefined ) {
-			uiFMTonicDegree->setCurrentId( musElementFactory()->fmTonicDegree()*(musElementFactory()->isFMTonicDegreeMinor()?-1:1) );
-			uiFMTonicDegree->defaultAction()->toggle();
-		}
-		
-		if ( musElementFactory()->isFMEllipse() ) {
-			uiFMEllipse->setChecked( false );
-			uiFMEllipse->trigger();
-		} else {
-			uiFMEllipse->setChecked( true );
-			uiFMEllipse->trigger();
-		}
+		uiFMFunction->setCurrentId( musElementFactory()->fmFunction()*(musElementFactory()->isFMFunctionMinor()?-1:1) );
+		uiFMChordArea->setCurrentId( musElementFactory()->fmChordArea()*(musElementFactory()->isFMChordAreaMinor()?-1:1) );
+		uiFMTonicDegree->setCurrentId( musElementFactory()->fmTonicDegree()*(musElementFactory()->isFMTonicDegreeMinor()?-1:1) );		
+		uiFMEllipse->setChecked( musElementFactory()->isFMEllipse() );
 		
 		uiFMKeySig->setCurrentIndex((musElementFactory()->keySigNumberOfAccs()+7)*2 + ((musElementFactory()->keySigGender()==CAKeySignature::Minor)?1:0) );
 		
 		uiFMToolBar->show();
-	} else if (mode()==EditMode) {
-		CAScoreViewPort *v = currentScoreViewPort();
-		if (v && v->selection().size()) {
-			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>(v->selection().at(0)->musElement());
-			if (fm) {
-				if ( !fm->function()==CAFunctionMarking::Undefined ) {
-					uiFMFunction->defaultAction()->setChecked( false );
-					uiFMFunction->setCurrentId( fm->function()*(fm->isMinor()?-1:1) );
-					uiFMFunction->defaultAction()->toggle();
-				} else {
-					uiFMFunction->defaultAction()->setChecked( true );
-					uiFMFunction->defaultAction()->toggle();
-				}
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CAFunctionMarking*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
+		CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>(currentScoreViewPort()->selection().at(0)->musElement());
+		uiFMFunction->setCurrentId( fm->function()*(fm->isMinor()?-1:1) );
+		uiFMChordArea->setCurrentId( fm->chordArea()*(fm->isChordAreaMinor()?-1:1) );
+		uiFMTonicDegree->setCurrentId( fm->tonicDegree()*(fm->isTonicDegreeMinor()?-1:1) );
+		uiFMEllipse->setChecked( fm->isPartOfEllipse() );
 		
-				if ( !fm->chordArea()==CAFunctionMarking::Undefined ) {
-					uiFMChordArea->defaultAction()->setChecked( false );
-					uiFMChordArea->setCurrentId( fm->chordArea()*(fm->isChordAreaMinor()?-1:1) );
-					uiFMChordArea->defaultAction()->toggle();
-				} else {
-					uiFMChordArea->defaultAction()->setChecked( true );
-					uiFMChordArea->defaultAction()->toggle();
-				}
-				
-				if ( !fm->tonicDegree()==CAFunctionMarking::Undefined ) {
-					uiFMTonicDegree->setCurrentId( fm->tonicDegree()*(fm->isTonicDegreeMinor()?-1:1) );
-					uiFMTonicDegree->defaultAction()->toggle();
-				}
-				
-				if ( fm->isPartOfEllipse() ) {
-					uiFMEllipse->setChecked( false );
-					uiFMEllipse->trigger();
-				} else {
-					uiFMEllipse->setChecked( true );
-					uiFMEllipse->trigger();
-				}
-				
-				signed char accs = CAKeySignature::keySigAccsFromString(fm->key());
-				CAKeySignature::CAMajorMinorGender gender = CAKeySignature::keySigGenderFromString(fm->key());
-				
-				uiFMKeySig->setCurrentIndex((accs+7)*2 + ((gender==CAKeySignature::Minor)?1:0) );
-				
-				uiFMToolBar->show();
-			} else
-				uiFMToolBar->hide();
-		}	
+		signed char accs = CAKeySignature::keySigAccsFromString(fm->key());
+		CAKeySignature::CAMajorMinorGender gender = CAKeySignature::keySigGenderFromString(fm->key());
+		uiFMKeySig->setCurrentIndex((accs+7)*2 + ((gender==CAKeySignature::Minor)?1:0) );
+		
+		uiFMToolBar->show();
 	} else
 		uiFMToolBar->hide();
 }
@@ -3312,6 +3292,14 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool d
 					lc->repositSyllables();
 				} else {
 					static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
+				}
+			} else if ((*i)->musElementType()==CAMusElement::FunctionMarking) {
+				if ( deleteSyllable ) {
+					CAFunctionMarkingContext *fmc = static_cast<CAFunctionMarkingContext*>((*i)->context()); 
+					(*i)->context()->removeMusElement(*i);  // actually removes the function if SHIFT is pressed
+					fmc->repositFunctions();
+				} else {
+					static_cast<CAFunctionMarking*>(*i)->clear(); // only clears the function
 				}
 			} else {
 				(*i)->context()->removeMusElement(*i);
