@@ -24,7 +24,7 @@
 /*!
 	Creates a context named \a name and with parent sheet \a s.
 */
-CAContext::CAContext(CASheet *s, const QString name) {
+CAContext::CAContext( const QString name, CASheet *s ) {
 	_sheet = s;
 	_name = name;
 }

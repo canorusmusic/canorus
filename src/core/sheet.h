@@ -19,7 +19,7 @@ class CAPlayable;
 
 class CASheet {
 public:
-	CASheet(const QString name, CADocument *doc);
+	CASheet( const QString name, CADocument *doc );
 	CASheet *clone( CADocument *doc );
 	inline CASheet *clone() { return clone( document() ); }
 	

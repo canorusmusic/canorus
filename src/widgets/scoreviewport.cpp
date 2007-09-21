@@ -231,7 +231,7 @@ void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 	_drawableMList.addElement(elt);
 	if (select) {
 		_selection.clear();
-		_selection << elt;
+		addToSelection(elt);
 	}
 	
 	elt->drawableContext()->addMElement(elt);
@@ -323,10 +323,9 @@ CADrawableMusElement* CAScoreViewPort::selectMElement(CAMusElement *elt) {
 	_selection.clear();
 	
 	for (int i=0; i<_drawableMList.size(); i++)
-		if (((CADrawableMusElement*)(_drawableMList.at(i)))->musElement() == elt) {
-			_selection << (CADrawableMusElement*)_drawableMList.at(i);
-			emit selectionChanged();
-			return (CADrawableMusElement*)_drawableMList.at(i);
+		if ( _drawableMList.at(i)->musElement() == elt ) {
+			addToSelection(_drawableMList.at(i));
+			return _drawableMList.at(i);
 		}
 	
 	emit selectionChanged();
@@ -1232,13 +1231,37 @@ CADrawableMusElement *CAScoreViewPort::selectDownMusElement() {
 }
 
 /*!
+	Adds the given drawable music element \a elt to the current selection.
+*/
+void CAScoreViewPort::addToSelection( CADrawableMusElement *elt, bool triggerSignal ) {
+	int i;
+	for (i=0; i<_selection.size() && _selection[i]->xPos() < elt->xPos(); i++);
+	_selection.insert( i, elt );
+	
+	if ( triggerSignal )
+		emit selectionChanged();
+}
+
+/*!
+	Adds the given list of drawable music elements \a list to the current selection.
+*/
+void CAScoreViewPort::addToSelection(const QList<CADrawableMusElement*> list, bool selectableOnly ) {
+	for (int i=0; i<list.size(); i++) {
+		if ( selectableOnly && list[i]->isSelectable() )
+			addToSelection(list[i], false);
+	}
+	
+	emit selectionChanged();
+}
+
+/*!
 	Adds the drawable music element of the given abstract music element \a elt to the selection.
 	Returns a pointer to its drawable element or 0, if the music element is not part of this score viewport.
 */
 CADrawableMusElement *CAScoreViewPort::addToSelection(CAMusElement *elt) {
 	for (int i=0; i<_drawableMList.size(); i++) {
-		if (((CADrawableMusElement*)_drawableMList.at(i))->musElement() == elt)
-			_selection << (CADrawableMusElement*)_drawableMList.at(i);
+		if ( static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement() == elt )
+			addToSelection(static_cast<CADrawableMusElement*>(_drawableMList.at(i)));
 	}
 	
 	emit selectionChanged();
@@ -1251,8 +1274,8 @@ CADrawableMusElement *CAScoreViewPort::addToSelection(CAMusElement *elt) {
 void CAScoreViewPort::addToSelection(const QList<CAMusElement*> elts) {
 	for (int i=0; i<_drawableMList.size(); i++) {
 		for (int j=0; j<elts.size(); j++) {
-			if (elts[j] == ((CADrawableMusElement*)_drawableMList.at(i))->musElement())
-				_selection << (CADrawableMusElement*)_drawableMList.at(i);
+			if ( elts[j] == static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement() )
+				addToSelection(static_cast<CADrawableMusElement*>(_drawableMList.at(i)));
 		}
 	}
 	emit selectionChanged();
@@ -1265,7 +1288,7 @@ void CAScoreViewPort::addToSelection(const QList<CAMusElement*> elts) {
 */
 CADrawableMusElement *CAScoreViewPort::findMElement(CAMusElement *elt) {
 	for (int i=0; i<_drawableMList.size(); i++)
-		if (static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement()==elt)
+		if ( static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement()==elt )
 			return static_cast<CADrawableMusElement*>(_drawableMList.at(i));
 }	
 	
@@ -1352,16 +1375,6 @@ QList<CADrawableContext*> CAScoreViewPort::findContextsInRegion( QRect &region )
 /*!
 	\fn CASheet *CAScoreViewPort::sheet()
 	Returns the pointer to the viewport's sheet it represents.
-*/
-
-/*!
-	\fn void CAScoreViewPort::addToSelection(CADrawableMusElement *elt)
-	Adds the given drawable music element \a elt to the current selection.
-*/
-
-/*!
-	\fn void CAScoreViewPort::addToSelection(const QList<CADrawableMusElement*> list)
-	Adds the given list of drawable music elements \a list to the current selection.
 */
 
 /*!

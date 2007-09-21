@@ -19,8 +19,8 @@
 	\sa CAContext
 */
 
-CAFunctionMarkingContext::CAFunctionMarkingContext(CASheet *sheet, const QString name)
- : CAContext(sheet, name) {
+CAFunctionMarkingContext::CAFunctionMarkingContext( const QString name, CASheet *sheet )
+ : CAContext( name, sheet ) {
  	_contextType = CAContext::FunctionMarkingContext;
 }
 
@@ -29,7 +29,7 @@ CAFunctionMarkingContext::~CAFunctionMarkingContext() {
 }
 
 CAFunctionMarkingContext *CAFunctionMarkingContext::clone( CASheet *s ) {
-	CAFunctionMarkingContext *newFmc = new CAFunctionMarkingContext( s, name() );
+	CAFunctionMarkingContext *newFmc = new CAFunctionMarkingContext( name(), s );
 	
 	for (int i=0; i<_functionMarkingList.size(); i++) {
 		CAFunctionMarking *newFm = _functionMarkingList[i]->clone();

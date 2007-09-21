@@ -24,8 +24,8 @@
 	\sa _syllableMap, CASyllable
 */
 
-CALyricsContext::CALyricsContext(int stanzaNumber, CAVoice *v, CASheet *s, const QString name)
- : CAContext(s, name) {
+CALyricsContext::CALyricsContext( const QString name, int stanzaNumber, CAVoice *v, CASheet *s )
+ : CAContext( name, s ) {
 	setContextType( LyricsContext );
 	
 	_associatedVoice=0;
@@ -43,7 +43,7 @@ void CALyricsContext::clear() {
 }
 
 CALyricsContext *CALyricsContext::clone( CASheet *s ) {
-	CALyricsContext *newLc = new CALyricsContext( stanzaNumber(), associatedVoice(), s, name() );
+	CALyricsContext *newLc = new CALyricsContext( name(), stanzaNumber(), associatedVoice(), s );
 	
 	for (int i=0; i<_syllableList.size(); i++) {
 		CASyllable *newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone());
@@ -63,17 +63,22 @@ void CALyricsContext::repositSyllables() {
 	if (associatedVoice()) {
 		QList<CANote*> noteList = associatedVoice()->noteList();
 		int i,j;
-		for (i=0, j=0; i<noteList.size() && j<_syllableList.size(); i++) {
+		for (i=0, j=0; i<noteList.size() && j<_syllableList.size(); i++, j++) {
 			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart()) // chord
 				continue;
 			_syllableList[j]->setTimeStart( noteList[i]->timeStart() );
 			_syllableList[j]->setTimeLength( noteList[i]->timeLength() );
-			j++;
 		}
+		bool emptyOnly = true;
 		for (; j<_syllableList.size() && j>0; j++) { // add syllables at the end, if too much of them exist
+			if ( !_syllableList[j]->text().isEmpty() )
+				emptyOnly = false;
+			
 			_syllableList[j]->setTimeStart(_syllableList[j-1]->timeStart()+_syllableList[j-1]->timeLength());
 			_syllableList[j]->setTimeLength( 256 );
 		}
+		if (emptyOnly) for (j=i; j<_syllableList.size() && j>0; ) _syllableList.removeAt(j); // remove all the syllables after, if only empty exist
+		
 		for (; i<noteList.size(); i++) {             // add empty syllables at the end, if missing
 			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart())
 				continue;

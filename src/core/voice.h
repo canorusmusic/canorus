@@ -19,7 +19,7 @@ class CALyricsContext;
 
 class CAVoice {
 public:
-	CAVoice(CAStaff *staff, const QString name, int voiceNumber, CANote::CAStemDirection stemDirection);
+	CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection=CANote::StemNeutral, int voiceNumber=0 );
 	~CAVoice();
 	inline CAStaff *staff() { return _staff; }
 	inline void setStaff(CAStaff *staff) { _staff = staff; }
@@ -91,7 +91,7 @@ private:
 	void updateTimes(int idx, int length=0);
 	QList<CAMusElement *> _musElementList;
 	CAStaff *_staff; // parent staff
-	int _voiceNumber;
+	int _voiceNumber; // voice number starting at 1
 	CANote::CAStemDirection _stemDirection;
 	QList<CALyricsContext*> _lyricsContextList;
 	

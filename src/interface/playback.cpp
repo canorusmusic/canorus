@@ -19,8 +19,6 @@
 #include "core/context.h"
 #include "core/barline.h"
 #include "core/note.h"
-#include "drawable/drawablecontext.h"
-#include "drawable/drawablemuselement.h"
 #include "core/voice.h"
 
 /*!

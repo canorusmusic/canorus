@@ -49,7 +49,7 @@ public:
 	
 	void clear(bool autoDelete=true);
 	inline int size() { return _list.size(); }
-	CADrawable *at(int i) { return _list[i]; }
+	T at(int i) { return _list[i]; }
 	QList<T>& list() { return _list; }
 	
 private:

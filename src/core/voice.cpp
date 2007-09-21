@@ -28,11 +28,17 @@
 
 /*!
 	Creates a new voice named \a name, in \a staff, \a voiceNumber and \a stemDirection of notes stems.
+	Voice number starts at 1.
 */
-CAVoice::CAVoice(CAStaff *staff, const QString name, int voiceNumber, CANote::CAStemDirection stemDirection) {
+CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection, int voiceNumber ) {
 	_staff = staff;
 	_name = name;
-	_voiceNumber = voiceNumber;
+	
+	if ( !voiceNumber && staff ) {
+		_voiceNumber = staff->voiceCount()+1;
+	} else {
+		_voiceNumber = voiceNumber;
+	}
 	_stemDirection = stemDirection;
 	
 	_midiChannel = (staff ? CAMidiDevice::freeMidiChannel( staff->sheet() ) : 0);
@@ -62,7 +68,7 @@ CAVoice::~CAVoice() {
 	Sets the voice staff to \a newStaff. If none given, use the original staff.
 */
 CAVoice *CAVoice::clone( CAStaff* newStaff ) {
-	CAVoice *newVoice = new CAVoice( newStaff, name(), voiceNumber(), stemDirection() );
+	CAVoice *newVoice = new CAVoice( name(), newStaff, stemDirection(), voiceNumber() );
 	newVoice->setMidiChannel( midiChannel() );
 	newVoice->setMidiProgram( midiProgram() );
 	

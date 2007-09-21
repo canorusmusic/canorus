@@ -550,11 +550,11 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						// Place the function itself, if it's independent
 						newElt = new CADrawableFunctionMarking(
 							function,
-							(CADrawableFunctionMarkingContext*)drawableContext,
+							static_cast<CADrawableFunctionMarkingContext*>(drawableContext),
 							streamsX[i],
 							(function->tonicDegree()==CAFunctionMarking::T && (!function->isPartOfEllipse()))?
-								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle):
-								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Upper)
+								static_cast<CADrawableFunctionMarkingContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Middle):
+								static_cast<CADrawableFunctionMarkingContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Upper)
 						);
 						
 						// Place alterations
@@ -567,7 +567,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 								streamsX[i],
 								((CADrawableFunctionMarkingContext*)drawableContext)->yPosLine(CADrawableFunctionMarkingContext::Lower)+3
 							);
-							//center-align alterations to function, if placed
+							// center-align alterations to function, if placed
 							if (newElt)
 								alterations->setXPos((int)(newElt->xPos()+newElt->width()/2.0-alterations->width()/2.0+0.5));
 							else	//center-align to note
@@ -657,10 +657,10 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							);
 						}
 						
-						//Place horizontal chord area rectangle, if element neighbours are of the same chordarea/function
+						// Place horizontal chord area rectangle for the previous elements, if element neighbours are of the same chordarea/function
 						j=streamsIdx[i]-1;
 						CADrawableFunctionMarkingSupport *hChordAreaRect=0;
-						if (j>=0 && //don't draw rectangle, if the current element would still be in the rectangle
+						if (j>=0 && // don't draw rectangle, if the current element would still be in the rectangle
 						    (((CAFunctionMarking*)musStreamList[i].at(j))->key()==function->key() && ((CAFunctionMarking*)musStreamList[i].at(j))->function()!=function->function() && ((CAFunctionMarking*)musStreamList[i].at(j))->function()!=function->chordArea() && ((CAFunctionMarking*)musStreamList[i].at(j))->chordArea()!=function->chordArea() ||
 						     ((CAFunctionMarking*)musStreamList[i].at(j))->key()!=function->key() || j==musStreamList[i].size()
 						    )
@@ -721,7 +721,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							chordArea->setXPos((int)(newElt->xPos()-(chordArea->width()-newElt->width())/2.0 + 0.5));
 						}
 						
-						//Place ellipse
+						// Place ellipse
 						j=streamsIdx[i]-1;
 						CADrawableFunctionMarkingSupport *ellipse=0;
 						if (j>=0 && ((CAFunctionMarking*)musStreamList[i].at(j))->isPartOfEllipse()	//place ellipse, if it has it
@@ -779,7 +779,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							}
 						}
 						
-						if (newElt) v->addMElement(newElt);	//when only alterations are made and no function placed, IF is needed
+						if (newElt) v->addMElement(newElt);	// when only alterations are made and no function placed, IF is needed
 						if (tonicization) { v->addMElement(tonicization); lastDFMTonicizations[i]=tonicization; }
 						if (ellipse) v->addMElement(ellipse);
 						if (hModulationRect) v->addMElement(hModulationRect);

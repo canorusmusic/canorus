@@ -90,7 +90,7 @@ void CASheet::insertContextAfter(CAContext *after, CAContext *c) {
 }
 
 CAStaff *CASheet::addStaff() {
-	CAStaff *s = new CAStaff(this, QObject::tr("Staff%1").arg(staffCount()+1));
+	CAStaff *s = new CAStaff( QObject::tr("Staff%1").arg(staffCount()+1), this );
 	_contextList.append(s);
 	_staffList.append(s);
 	
