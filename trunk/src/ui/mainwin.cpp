@@ -565,8 +565,9 @@ void CAMainWin::setupCustomUi() {
 	uiFMTonicDegree->defaultAction()->setCheckable( false );
 	uiFMTonicDegree->defaultAction()->setToolTip( tr("Function marking tonic degree") );
 	uiFMTonicDegree->setCurrentId( CAFunctionMarking::T );
+	uiFMToolBar->addAction( uiFMEllipse );
 	uiFMToolBar->addWidget( uiFMKeySig );
-	connect( uiFMKeySig, SIGNAL( currentIndexChanged(int) ), this, SLOT( on_uiKeySig_currentIndexChanged(int) ) );
+	connect( uiFMKeySig, SIGNAL( activated(int) ), this, SLOT( on_uiKeySig_activated(int) ) );
 	addToolBar(Qt::TopToolBarArea, uiFMToolBar);
 	
 	// Mutual exclusive groups
@@ -935,7 +936,7 @@ void CAMainWin::on_uiNewVoice_triggered() {
 	
 	CACanorus::undo()->createUndoCommand( document(), tr("new voice", "undo") );
 	if (staff)
-		staff->addVoice(new CAVoice(staff, staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 ), voiceNumber, stemDirection));
+		staff->addVoice(new CAVoice( staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 ), staff, stemDirection, voiceNumber ));
 	
 	CACanorus::undo()->pushUndoCommand();
 	CACanorus::rebuildUI(document(), currentSheet());
@@ -1274,11 +1275,11 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CAStaff(
-								v->sheet(),
-								tr("Staff%1").arg(v->sheet()->staffCount()+1)
+								tr("Staff%1").arg(v->sheet()->staffCount()+1),
+								v->sheet()
 							)
 						);
-						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice(static_cast<CAStaff*>(newContext), newContext->name() + tr("Voice%1").arg(1), 1, CANote::StemNeutral));
+						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice( newContext->name() + tr("Voice%1").arg(1), static_cast<CAStaff*>(newContext) ));
 						break;
 					}
 					case CAContext::LyricsContext: {
@@ -1291,10 +1292,10 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CALyricsContext(
+								tr("LyricsContext%1").arg(v->sheet()->contextCount()+1),
 								1,
 								(v->sheet()->voiceList().size()?v->sheet()->voiceList().at(0):0),
-								v->sheet(),
-								tr("LyricsContext%1").arg(v->sheet()->contextCount()+1)
+								v->sheet()								
 							)
 						);
 						
@@ -1305,8 +1306,8 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CAFunctionMarkingContext(
-								v->sheet(),
-								tr("FunctionMarkingContext%1").arg(v->sheet()->contextCount()+1)
+								tr("FunctionMarkingContext%1").arg(v->sheet()->contextCount()+1),
+								v->sheet()
 							)
 						);
 						break;
@@ -1435,7 +1436,7 @@ void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords, CAScore
 		QList<CADrawableContext*> dcList = c->findContextsInRegion( selectionRect );
 		for (int i=0; i<dcList.size(); i++) {
 			QList<CADrawableMusElement*> musEltList = dcList[i]->findInRange( selectionRect.x(), selectionRect.x() + selectionRect.width() );
-			if (c->selectedVoice() && dcList[i]->context()!=c->selectedVoice()->staff())
+			if ( c->selectedVoice() && dcList[i]->context()!=c->selectedVoice()->staff() )
 				continue;
 			
 			for (int j=0; j<musEltList.size(); j++)
@@ -2203,32 +2204,33 @@ void CAMainWin::on_uiVoiceProperties_triggered() {
 /*!
 	Changes the number of accidentals.
 */
-void CAMainWin::on_uiKeySig_currentIndexChanged( int row ) {
+void CAMainWin::on_uiKeySig_activated( int row ) {
 	signed char accs = qRound((row-14.5) / 2);
 	CAKeySignature::CAMajorMinorGender gender = (row%2)==0 ? CAKeySignature::Major : CAKeySignature::Minor;
 	
 	if (mode()==InsertMode) {
 		musElementFactory()->setKeySigNumberOfAccs( accs );
 		musElementFactory()->setKeySigGender( gender );
-	} else if ( mode()==EditMode ) {
-		CAScoreViewPort *v = currentScoreViewPort();
-		if ( v && v->selection().size() ) {
-			CACanorus::undo()->createUndoCommand( document(), tr("change number of accidentals", "undo") );		
-			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
-			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>(v->selection().at(0)->musElement());
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size() ) {
+		QList<CADrawableMusElement*> list = currentScoreViewPort()->selection();
+		CACanorus::undo()->createUndoCommand( document(), tr("change key signature", "undo") );
+		
+		for ( int i=0; i<list.size(); i++ ) {
+			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(list[i]->musElement());
+			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>(list[i]->musElement());
 			
 			if ( keySig ) {
 				keySig->setKeySignatureType( CAKeySignature::MajorMinor, accs, gender );
-				CACanorus::undo()->pushUndoCommand();
-				CACanorus::rebuildUI(document(), currentSheet());
 			}
 			
 			if ( fm ) {
 				fm->setKey( CAKeySignature::keySignatureToString( accs, gender ) );
-				CACanorus::undo()->pushUndoCommand();
-				CACanorus::rebuildUI(document(), currentSheet());
 			}
 		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI(document(), currentSheet());
 	}
 }
 
@@ -2278,7 +2280,7 @@ void CAMainWin::on_uiVoiceName_returnPressed() {
 /*!
 	Changes voice instrument.
 */
-void CAMainWin::on_uiVoiceInstrument_currentIndexChanged( int index ) {
+void CAMainWin::on_uiVoiceInstrument_activated( int index ) {
 	if ( !currentVoice() || index < 0 )
 		return;
 	
@@ -2406,7 +2408,7 @@ void CAMainWin::on_uiFMFunction_toggled( bool checked, int buttonId ) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change function", "undo") );
 		
 		for ( int i=0; i<v->selection().size(); i++ ) {
-			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(0)->musElement() );
+			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(i)->musElement() );
 			
 			if ( fm ) {
 				fm->setFunction( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
@@ -2429,7 +2431,7 @@ void CAMainWin::on_uiFMChordArea_toggled(bool checked, int buttonId) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change chord area", "undo") );
 		
 		for ( int i=0; i<v->selection().size(); i++ ) {
-			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(0)->musElement() );
+			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(i)->musElement() );
 			
 			if ( fm ) {
 				fm->setChordArea( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
@@ -2452,7 +2454,7 @@ void CAMainWin::on_uiFMTonicDegree_toggled(bool checked, int buttonId) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change tonic degree", "undo") );
 		
 		for ( int i=0; i<v->selection().size(); i++ ) {
-			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(0)->musElement() );
+			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(i)->musElement() );
 			
 			if ( fm ) {
 				fm->setTonicDegree( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
@@ -2466,7 +2468,24 @@ void CAMainWin::on_uiFMTonicDegree_toggled(bool checked, int buttonId) {
 }
 
 void CAMainWin::on_uiFMEllipse_toggled( bool checked ) {
-	musElementFactory()->setFMEllipse( checked );
+	if ( mode()==InsertMode ) {
+		musElementFactory()->setFMEllipse( checked );
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("set/unset ellipse", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(i)->musElement() );
+			
+			if ( fm ) {
+				fm->setEllipse( checked );
+			}
+		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
 }
 
 
@@ -2834,7 +2853,7 @@ void CAMainWin::on_uiStanzaNumber_valueChanged(int stanzaNumber) {
 /*!
 	Sets the associated voice of the current lyrics context.
 */
-void CAMainWin::on_uiAssociatedVoice_currentIndexChanged(int idx) {
+void CAMainWin::on_uiAssociatedVoice_activated(int idx) {
 	if (idx != -1 && currentContext() && currentContext()->contextType()==CAContext::LyricsContext) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change associated voice", "undo") );
 		if (static_cast<CALyricsContext*>(currentContext())->associatedVoice()!=currentSheet()->voiceList().at( idx ))
@@ -2968,13 +2987,10 @@ void CAMainWin::updateContextToolBar() {
 				uiStanzaNumber->setValue(c->stanzaNumber());
 				uiStanzaNumberAction->setVisible(true);
 				
-				uiAssociatedVoice->disconnect(); // avoid recursive rebuilds in widget's slot
 				uiAssociatedVoice->clear();
 				QList<CAVoice*> voiceList = currentSheet()->voiceList();
-				int idx = voiceList.indexOf( c->associatedVoice() );
 				for (int i=0; i<voiceList.count(); i++) uiAssociatedVoice->addItem(voiceList[i]->name());
-				connect( uiAssociatedVoice, SIGNAL(currentIndexChanged(int)), this, SLOT(on_uiAssociatedVoice_currentIndexChanged(int)) );
-				uiAssociatedVoice->setCurrentIndex( idx );
+				uiAssociatedVoice->setCurrentIndex( voiceList.indexOf( c->associatedVoice() ) );
 				uiAssociatedVoiceAction->setVisible(true);
 				
 				break;

@@ -201,7 +201,7 @@ private slots:
 	void on_uiContextName_returnPressed();
 	void on_uiRemoveContext_triggered();
 	void on_uiStanzaNumber_valueChanged(int);
-	void on_uiAssociatedVoice_currentIndexChanged(int);
+	void on_uiAssociatedVoice_activated(int);
 	void on_uiContextProperties_triggered();
 	
 	// Playback
@@ -214,7 +214,7 @@ private slots:
 	void onMidiInEvent( QVector<unsigned char> message );
 	
 	// Key Signature
-	void on_uiKeySig_currentIndexChanged( int );
+	void on_uiKeySig_activated( int );
 	
 	// Time Signature
 	void on_uiTimeSigBeats_valueChanged(int);
@@ -238,7 +238,7 @@ private slots:
 	// Voice
 	void on_uiVoiceNum_valChanged(int);
 	void on_uiVoiceName_returnPressed();
-	void on_uiVoiceInstrument_currentIndexChanged(int);
+	void on_uiVoiceInstrument_activated(int);
 	void on_uiRemoveVoice_triggered();
 	void on_uiVoiceStemDirection_toggled(bool, int);
 	void on_uiVoiceProperties_triggered();

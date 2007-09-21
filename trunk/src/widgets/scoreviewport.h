@@ -96,13 +96,8 @@ public:
 	inline void clearSelection() { _selection.clear(); emit selectionChanged(); }
 	inline bool removeFromSelection(CADrawableMusElement *elt) { return _selection.removeAll(elt); emit selectionChanged(); }
 	
-	inline void           addToSelection(CADrawableMusElement *elt) {
-		int i;
-		for (i=0; i<_selection.size() && _selection[i]->xPos() < elt->xPos(); i++);
-		_selection.insert( i, elt );
-		emit selectionChanged();
-	}
-	inline void           addToSelection(const QList<CADrawableMusElement*> list) { _selection << list; emit selectionChanged(); }
+	void                  addToSelection(CADrawableMusElement *elt, bool triggerSignal=true );
+	void                  addToSelection( const QList<CADrawableMusElement*> list, bool selectableOnly=true );
 	CADrawableMusElement *addToSelection(CAMusElement *elt);
 	void                  addToSelection(const QList<CAMusElement *> elts);
 	

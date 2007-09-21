@@ -166,11 +166,11 @@ void CASettingsDialog::applySettings() {
 void CASettingsDialog::buildPreviewSheet() {
 	_previewSheet = new CASheet( "", 0 );
 	_previewSheet->addStaff();
-	_previewSheet->staffAt(0)->addVoice( new CAVoice( _previewSheet->staffAt(0), "", 1, CANote::StemUp ) );
+	_previewSheet->staffAt(0)->addVoice( new CAVoice( "", _previewSheet->staffAt(0) ) );
 	_previewSheet->staffAt(0)->voiceAt(0)->appendMusElement( new CAClef( CAClef::Treble, _previewSheet->staffAt(0), 0 ) );
 	_previewSheet->staffAt(0)->voiceAt(0)->appendMusElement( new CATimeSignature( 2, 2, _previewSheet->staffAt(0), 0 ) );
 	_previewSheet->addStaff();
-	_previewSheet->staffAt(1)->addVoice( new CAVoice( _previewSheet->staffAt(0), "", 1, CANote::StemUp ) );
+	_previewSheet->staffAt(1)->addVoice( new CAVoice( "", _previewSheet->staffAt(0) ) );
 }
 
 void CASettingsDialog::on_uiDocumentsDirectoryBrowse_clicked(bool) {

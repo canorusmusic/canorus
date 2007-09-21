@@ -12,14 +12,17 @@
 #include "drawable/drawablefunctionmarkingcontext.h"
 #include "core/functionmarking.h"
 
-/////////////////////////////////////
-// class CADrawableFunctionMarking //
-/////////////////////////////////////
+/*!
+	\class CADrawableFunctionMarking
+	\brief Drawable class for function markings
+*/
+
 CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function, CADrawableFunctionMarkingContext *context, int x, int y)
  : CADrawableMusElement(function, context, x, y) {
  	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarking;
  	
  	_extenderLineVisible = false;
+ 	_extenderLineOnly = false;
  	CAMusElement *prevMusElt;
  	// function marking is stable
  	if (// tonic degree is tonic
@@ -80,31 +83,37 @@ CADrawableFunctionMarking::~CADrawableFunctionMarking() {
 }
 
 void CADrawableFunctionMarking::draw(QPainter *p, CADrawSettings s) {
-	QFont font("FreeSans");
-	if (functionMarking()->tonicDegree()==CAFunctionMarking::T)
-		font.setPixelSize((int)(19*s.z)); //use pixelSize instead of size as we want fixed font size no matter on screen DPI
-	else
-		font.setPixelSize((int)(17*s.z)); //use pixelSize instead of size as we want fixed font size no matter on screen DPI
+	int rightBorder = s.x + qRound( _width * s.z);
 	
-	p->setPen(QPen(s.color));
-	p->setFont(font);
-	p->drawText(s.x, s.y+(int)(_height*s.z+0.5), _text);
+	if ( !isExtenderLineOnly() ) { 
+		QFont font("FreeSans");
+		if (functionMarking()->tonicDegree()==CAFunctionMarking::T)
+			font.setPixelSize( qRound(19*s.z) );
+		else
+			font.setPixelSize( qRound(17*s.z) );
+		
+		p->setPen(QPen(s.color));
+		p->setFont(font);
+		p->drawText(s.x, s.y + qRound( _height*s.z ), _text);
+		s.x += qRound(p->boundingRect(0,0,0,0,0,_text).width() + 1*s.z);
+	}
 	
-	if (_extenderLineVisible)
-		p->drawLine(s.x + (int)(p->boundingRect(0,0,0,0,0,_text).width()+1*s.z+0.5), s.y+(int)((_height/2.0)*s.z+0.5),
-		            s.x + (int)(_width*s.z+0.5), s.y+(int)((_height/2.0)*s.z+0.5));
+	if ( isExtenderLineVisible() )
+		p->drawLine( s.x, s.y+qRound( (_height/2.0)*s.z ),
+		             rightBorder, s.y+qRound( (_height/2.0)*s.z ) );
 }
 
 CADrawableFunctionMarking *CADrawableFunctionMarking::clone(CADrawableContext* newContext) {
 	return new CADrawableFunctionMarking(functionMarking(), (newContext)?(CADrawableFunctionMarkingContext*)newContext:drawableFunctionMarkingContext(), ((CAFunctionMarking*)_musElement)->isMinor()?xPos()+6:xPos(), yPos());
 }
 
-////////////////////////////////////////////
-// class CADrawableFunctionMarkingSupport //
-////////////////////////////////////////////
-//KeyName constructor
+/*!
+	\class CADrawableFunctionMarkingSupport
+	\brief Rectangles, key names, numbers below/above function, lines etc.
+*/
+// KeyName constructor
 CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType type, const QString key, CADrawableContext *c, int x, int y)
- : CADrawableMusElement(0, c, x, y) {	//support functions point to no music element
+ : CADrawableMusElement(0, c, x, y) {	// support functions point to no music element
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkingSupport;
 	_drawableFunctionMarkingSupportType = type;
 	_key = key;
@@ -112,7 +121,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	
 	if (type==Key) {
 		_width = 0;	/// \todo Width determination should be done automatically using QPainter::boundingRect() method
-		for (int i=0; i<key.size(); i++) {	//character widths are calculated using FreeSans font, pixelSize 17
+		for (int i=0; i<key.size(); i++) {	// character widths are calculated using FreeSans font, pixelSize 17
 			if (key[i]=='C') _width+=12;
 			else if (key[i]=='D') _width+=12;
 			else if (key[i]=='E') _width+=11;
@@ -130,17 +139,17 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 			else if (key[i]=='i') _width+=5;
 			else if (key[i]=='s') _width+=9;
 		}
-		_width += 5;	//colon after the key name (:)
+		_width += 5;	// colon after the key name (:)
 		_height = 14;
 	}
 	
 	_neededWidth = _width;
 	_neededHeight = _height;
-	_selectable = false;
+	setSelectable( false );
 }
 
 CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType type, CADrawableFunctionMarking *f1, CADrawableContext *c, int x, int y, CADrawableFunctionMarking *f2)
- : CADrawableMusElement(0, c, x, y) {	//support functions point to no music element
+ : CADrawableMusElement(0, c, x, y) {	// support functions point to no music element
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkingSupport;
 	_drawableFunctionMarkingSupportType = type;
 	_function1 = f1;
@@ -153,7 +162,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 		_width+=6;
 	}
 	if (type==ChordArea) {
-		//character widths are calculated using FreeSans font, pixelSize 17
+		// character widths are calculated using FreeSans font, pixelSize 17
 		/// \todo Width determination should be done automatically using QPainter::boundingRect() method
 		if (f1->functionMarking()->chordArea()==CAFunctionMarking::T) { _width=10; }
 		else if (f1->functionMarking()->chordArea()==CAFunctionMarking::S) { _width=11; }
@@ -162,7 +171,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 		_width += 12;	//paranthesis
 		_height = 14;
 	} else if (type==Tonicization) {
-		//character widths are calculated using FreeSans font, pixelSize 19
+		// character widths are calculated using FreeSans font, pixelSize 19
 		/// \todo Width determination should be done automatically using QPainter::boundingRect() method
 		if (!f2) {
 			switch (f1->functionMarking()->tonicDegree()) {
@@ -178,14 +187,14 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 				case CAFunctionMarking::D:		_width+=12; break;
 			}
 		} else {
-			_width = f2->xPos() + f2->width() - f1->xPos();		//multiple tonicization
+			_width = f2->xPos() + f2->width() - f1->xPos();		// multiple tonicization
 		}
 		_height = 15;
 	} else if (type==Rectangle) {
 		if (f2->xPos()+f2->width()-f1->xPos() < f1->xPos()+f1->width()-f2->xPos())
-			_width = f1->xPos()+f1->width()-f2->xPos() + 6;	//used for vertical modulation
+			_width = f1->xPos()+f1->width()-f2->xPos() + 6;	// used for vertical modulation
 		else 
-			_width = f2->xPos()+f2->width()-f1->xPos() + 6;	//used for horizontal modulation/chordarea rectangle
+			_width = f2->xPos()+f2->width()-f1->xPos() + 6;	// used for horizontal modulation/chordarea rectangle
 		
 		_xPos -= 3;
 		_height = (f2->yPos()+f2->height()-f1->yPos()+6>f1->yPos()+f1->height()-f2->yPos()+6)?f2->yPos()+f2->height()-f1->yPos()+6:f1->yPos()+f1->height()-f2->yPos()+6;
@@ -197,10 +206,10 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	
 	_neededWidth = _width;
 	_neededHeight = _height;
-	_selectable = false;
+	setSelectable( false );
 }
 
-//Alterations constructor
+// Alterations constructor
 CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType type, CAFunctionMarking *function, CADrawableContext *c, int x, int y)
  : CADrawableMusElement(function, c, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkingSupport;
@@ -213,7 +222,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	
 	_height=function->addedDegrees().size()*13 + function->alteredDegrees().size()*8;
 	
-	if (function->function()==CAFunctionMarking::Undefined)	//paranthesis needed as well
+	if (function->function()==CAFunctionMarking::Undefined)	// paranthesis needed as well
 		_width=9+(int)(0.6*_height+0.5);
 	else
 		_width=6;
@@ -221,10 +230,7 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	
 	_neededWidth = _width;
 	_neededHeight = _height;
-	if (function->function()==CAFunctionMarking::Undefined)
-		_selectable = true;	//alterations can be selected, if they're independent
-	else
-		_selectable = false;
+	setSelectable( false );
 }
 
 CADrawableFunctionMarkingSupport::~CADrawableFunctionMarkingSupport() {
@@ -239,30 +245,30 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 	//prepare drawing stuff
 	switch (_drawableFunctionMarkingSupportType) {
 		case Key:
-			font.setPixelSize((int)(17*s.z+0.5));
+			font.setPixelSize(qRound( 17*s.z ));
 			break;
 		case ChordArea:
-			font.setPixelSize((int)(17*s.z+0.5));
+			font.setPixelSize(qRound( 17*s.z ));
 			type = _function1->functionMarking()->chordArea();
 			minor=_function1->functionMarking()->isChordAreaMinor();
 			break;
 		case Tonicization:
-			font.setPixelSize((int)(19*s.z+0.5));
+			font.setPixelSize(qRound( 19*s.z ));
 			type = _function1->functionMarking()->tonicDegree();
 			minor=_function1->functionMarking()->isTonicDegreeMinor();
 			break;
 		case Ellipse:
-			font.setPixelSize((int)(14*s.z+0.5));
+			font.setPixelSize(qRound( 14*s.z ));
 			break;
 		case Alterations:
-			font.setPixelSize((int)(9*s.z+0.5));
+			font.setPixelSize(qRound( 9*s.z ));
 			break;
 	}
 	
-	//fill in the text values for functions
+	// fill in the text values for functions
  	if (_drawableFunctionMarkingSupportType==Tonicization || _drawableFunctionMarkingSupportType==ChordArea) {
 		switch (type) {
-			//character widths are calculated using FreeSans font, pixelSize 19
+			// character widths are calculated using FreeSans font, pixelSize 19
 			case CAFunctionMarking::I:		text="I"; break;
 			case CAFunctionMarking::II:		text="II"; break;
 			case CAFunctionMarking::III:	text="III"; break;
@@ -286,7 +292,7 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 	p->setPen(QPen(s.color));
 	p->setFont(font);
 	
-	//draw
+	// draw
 	switch (_drawableFunctionMarkingSupportType) {
 		case Key:
 			p->drawText(s.x, s.y+(int)(_height*s.z+0.5), _key+":");
@@ -295,22 +301,22 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 			p->drawText(s.x, s.y+(int)(_height*s.z+0.5), QString("(")+text+")");
 			break;
 		case Tonicization:
-			if (!_function2) {	//tonicization is below a single function
+			if (!_function2) {	// tonicization is below a single function
 				p->drawText(s.x, s.y+(int)(_height*s.z+0.5), text);
 				if (_extenderLineVisible)
 					p->drawLine(s.x + p->boundingRect(0,0,0,0,0,text).width(), (int)(s.y+height()*s.z/2.0+0.5),
 								(int)(s.x + width()*s.z+0.5), (int)(s.y+height()*s.z/2.0+0.5));
 			} else {
-				p->drawText(	//tonicization is below multiple functions
-					//get the x-coordinate where to start text rendering
+				p->drawText(	// tonicization is below multiple functions
+					// get the x-coordinate where to start text rendering
 					(int)(s.x + (_function2->xPos() + _function2->width() - _function1->xPos())*s.z/2.0 - p->boundingRect(0,0,0,0,0,text).width()/2.0 + 0.5),
 					s.y+(int)(_height*s.z+0.5),
 					text
 				);
-				//draw line below side functions
+				// draw line below side functions
 				p->drawLine(s.x, s.y, (int)(s.x + (_function2->xPos()+_function2->width()-_function1->xPos())*s.z+0.5), s.y);
 				
-				//draw extender line of the support function
+				// draw extender line of the support function
 				if (_extenderLineVisible)
 					p->drawLine(s.x + (int)((_function2->xPos()+_function2->width()-_function1->xPos())*s.z/2.0 + p->boundingRect(0,0,0,0,0,text).width()/2.0+1*s.z), (int)(s.y+height()*s.z/2.0+0.5),
 								(int)(s.x + width()*s.z+0.5), (int)(s.y+height()*s.z/2.0+0.5));
@@ -318,10 +324,10 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 			}
 			break;
 		case Ellipse:
-			//draw vertical lines
+			// draw vertical lines
 			p->drawLine(s.x, (int)(s.y+2*s.z+0.5), s.x, (int)(s.y+height()*s.z/2.0+0.5));	//left vertical line
 			p->drawLine((int)(s.x+width()*s.z+0.5), (int)(s.y+2*s.z+0.5), (int)(s.x+width()*s.z+0.5), (int)(s.y+height()*s.z/2.0+0.5));	//right vertical line
-			//draw horizontal lines
+			// draw horizontal lines
 			p->drawLine(s.x, (int)(s.y+height()*s.z/2.0+0.5), (int)(s.x+width()*s.z/2.0 - p->boundingRect(0,0,0,0,0,"E").width()/2.0 - 2*s.z + 0.5), (int)(s.y+height()*s.z/2.0+0.5));	//left horizontal line
 			p->drawLine((int)(s.x+width()*s.z/2.0 + p->boundingRect(0,0,0,0,0,"E").width()/2.0 + 2*s.z + 0.5), (int)(s.y+height()*s.z/2.0+0.5), (int)(s.x+width()*s.z+0.5), (int)(s.y+height()*s.z/2.0+0.5));	//right horizontal line
 			
@@ -338,24 +344,24 @@ void CADrawableFunctionMarkingSupport::draw(QPainter *p, const CADrawSettings s)
 			int curX = s.x, curY = s.y;
 			
 			if (f1->function()==CAFunctionMarking::Undefined)
-				curX+=(int)(0.3*_height*s.z+0.5);	//make space for left paranthesis, if needed
-			//draw added degrees
+				curX+=(int)(0.3*_height*s.z+0.5);	// make space for left paranthesis, if needed
+			// draw added degrees
 			for (int i=0; i<f1->addedDegrees().size(); i++) {
-				//draw upper number
+				// draw upper number
 				p->drawText((int)(curX+2*s.z+0.5), (int)(curY+8*s.z+0.5), f1->addedDegrees().at(i)<0?QString::number(f1->addedDegrees().at(i)*(-1)):QString::number(f1->addedDegrees().at(i)));
-				//draw additional + or - for added or substracted degree
+				// draw additional + or - for added or substracted degree
 				p->drawText((int)(curX+2*s.z+0.5), (int)(curY+13*s.z+0.5), f1->addedDegrees().at(i)<0?"-":"+");
 				curY+=(int)(13*s.z+0.5);
 			}
 			
-			//draw altered degrees
+			// draw altered degrees
 			for (int i=0; i<f1->alteredDegrees().size(); i++) {
 				//draw numbers with + or - prefixed
 				p->drawText(curX, (int)(curY+8*s.z+0.5), f1->alteredDegrees().at(i)>0?QString("+")+QString::number(+f1->alteredDegrees().at(i)):QString::number(f1->alteredDegrees().at(i)));
 				curY+=(int)(8*s.z+0.5);
 			}
 			
-			//draw paranthesis, if needed
+			// draw paranthesis, if needed
 			if (f1->function()==CAFunctionMarking::Undefined) {
 				curX-=(int)(0.3*_height*s.z+0.5);
 				font.setPixelSize((int)(_height*s.z+0.5));

@@ -431,7 +431,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		if (!(_curContext = _curSheet->context(staffName))) {	//if the sheet doesn't contain the staff with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
 			if (staffName.isEmpty())
 				staffName = QObject::tr("Staff%1").arg(_curSheet->staffCount()+1);
-			_curContext = new CAStaff(_curSheet, staffName, attributes.value("number-of-lines").toInt());
+			_curContext = new CAStaff( staffName, _curSheet, attributes.value("number-of-lines").toInt());
 		}
 		_curSheet->addContext(_curContext);
 	} else if (qName == "lyrics-context") {
@@ -445,7 +445,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		if (!(_curContext = _curSheet->context(lcName))) {	//if the sheet doesn't contain the context with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
 			if (lcName.isEmpty())
 				lcName = QObject::tr("Lyrics Context %1").arg(_curSheet->contextCount()+1);
-			_curContext = new CALyricsContext(attributes.value("stanza-number").toInt(), 0, _curSheet, lcName);
+			_curContext = new CALyricsContext( lcName, attributes.value("stanza-number").toInt(), 0, _curSheet );
 			
 			// voices are not neccesseraly completely read - store indices of the voices internally and then assign them at the end
 			if (!attributes.value("associated-voice-idx").isEmpty())
@@ -463,7 +463,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		if (!(_curContext = _curSheet->context(fmcName))) {	//if the sheet doesn't contain the context with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
 			if (fmcName.isEmpty())
 				fmcName = QObject::tr("Function Marking Context %1").arg(_curSheet->contextCount()+1);
-			_curContext = new CAFunctionMarkingContext(_curSheet, fmcName);
+			_curContext = new CAFunctionMarkingContext( fmcName, _curSheet );
 		}
 		_curSheet->addContext(_curContext);
 	} else if (qName == "voice") {
@@ -488,7 +488,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 			if (!attributes.value("stem-direction").isEmpty())
 				stemDir = CANote::stemDirectionFromString(attributes.value("stem-direction"));
 			
-			_curVoice = new CAVoice( staff, voiceName, voiceNumber, stemDir );
+			_curVoice = new CAVoice( voiceName, staff, stemDir, voiceNumber );
 			staff->addVoice( _curVoice );
 		}
 	}

@@ -15,7 +15,7 @@ class CAMusElement;
 
 class CAContext {
 public:
-	CAContext(CASheet *s, const QString name);
+	CAContext( const QString name, CASheet *s );
 	virtual ~CAContext();
 	virtual CAContext* clone( CASheet* ) = 0;
 	

@@ -183,7 +183,7 @@ bool CAMusElementFactory::configureNote( CAVoice *voice,
 			// user clicked inside x borders of the note - add a note to the chord
 			if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart()))
 				return false;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
-				
+			
 			int pitch;
 			mpoMusElement = new CANote(((CANote*)left->musElement())->playableLength(),
 		                  voice,

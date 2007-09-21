@@ -19,7 +19,7 @@ class CAFunctionMarking;
 
 class CAFunctionMarkingContext : public CAContext {
 public:
-	CAFunctionMarkingContext(CASheet *sheet, const QString name);
+	CAFunctionMarkingContext( const QString name, CASheet *sheet );
 	~CAFunctionMarkingContext();
 	CAFunctionMarkingContext *clone( CASheet *s );
 	
