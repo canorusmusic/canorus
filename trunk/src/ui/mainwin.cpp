@@ -283,7 +283,6 @@ void CAMainWin::createCustomActions() {
 	uiVoiceNum = new CALCDNumber( 0, 20, this, "Voice number" );
 		uiVoiceNum->setObjectName( "uiVoiceNum" );
 		uiVoiceNum->setToolTip(tr("Current Voice number"));
-		//connect( uiVoiceNum, SIGNAL(valChanged( int )), this, SLOT(onUiVoiceNumValChanged( int )) );
 	uiVoiceInstrument = new QComboBox( this );
 		uiVoiceInstrument->setObjectName("uiVoiceInstrument");
 		uiVoiceInstrument->setToolTip(tr("Voice instrument"));
@@ -2914,6 +2913,11 @@ void CAMainWin::updateToolBars() {
 	updateClefToolBar();
 	updateFMToolBar();
 	updateUndoRedoButtons();
+	
+	if ( document() )
+		uiNewSheet->setVisible( true );
+	else
+		uiNewSheet->setVisible( false );
 }
 
 /*!
@@ -2937,6 +2941,7 @@ void CAMainWin::updateVoiceToolBar() {
 	if ( mode()==SelectMode && context && context->contextType() == CAContext::Staff ||
 	     uiInsertPlayable->isChecked() ) {
 		CAStaff *staff = static_cast<CAStaff*>(context);
+		uiNewVoice->setVisible(true);
 		uiNewVoice->setEnabled(true);
 		if (staff->voiceCount()) {
 			uiVoiceNum->setMax(staff->voiceCount());
@@ -2962,7 +2967,7 @@ void CAMainWin::updateVoiceToolBar() {
 		
 		uiVoiceToolBar->show();
 	} else {
-		uiNewVoice->setEnabled(false);
+		uiNewVoice->setVisible(false);
 		uiVoiceToolBar->hide();
 	}
 }
@@ -3083,6 +3088,18 @@ void CAMainWin::updateInsertToolBar() {
 	} else {
 		uiInsertToolBar->hide();
 		uiNewContext->setVisible(false);
+		uiInsertPlayable->setVisible(false);
+		uiSlurType->defaultAction()->setVisible(false);
+		uiSlurType->setVisible(false); // \todo This is needed in order for actions to hide?! -Matevz
+		uiInsertClef->setVisible(false); // menu
+		uiInsertBarline->setVisible(false); // menu
+		uiClefType->defaultAction()->setVisible(false);
+		uiTimeSigType->defaultAction()->setVisible(false);
+		uiInsertKeySig->setVisible(false);
+		uiInsertTimeSig->setVisible(false);
+		uiBarlineType->defaultAction()->setVisible(false);
+		uiInsertFM->setVisible(false);
+		uiInsertSyllable->setVisible(false);
 	}
 }
 
@@ -3120,8 +3137,9 @@ void CAMainWin::updatePlayableToolBar() {
 				uiHiddenRest->setEnabled(false);
 			}
 		}
-	} else
+	} else {
 		uiPlayableToolBar->hide();
+	}
 }
 
 /*!
