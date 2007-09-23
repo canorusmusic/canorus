@@ -1496,23 +1496,23 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 	setCurrentViewPort( v );
 	
 	switch (e->key()) {
-		//Music editing keys
+		// Music editing keys
 		case Qt::Key_Right: {
-			//select next music element
-			v->selectNextMusElement();
+			// select next music element
+			v->selectNextMusElement( e->modifiers()==Qt::ShiftModifier );
 			v->repaint();
 			break;
 		}
 		
 		case Qt::Key_Left: {
-			//select previous music element
-			v->selectPrevMusElement();
+			// select previous music element
+			v->selectPrevMusElement( e->modifiers()==Qt::ShiftModifier );
 			v->repaint();
 			break;
 		}
 		
 		case Qt::Key_B: {
-			//place a barline
+			// place a barline
 			CADrawableContext *drawableContext;
 			drawableContext = v->currentContext();
 			
@@ -1540,7 +1540,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		}
 		
 		case Qt::Key_Up: {
-			if (mode() == SelectMode) {	//select the upper music element
+			if (mode() == SelectMode) {	// select the upper music element
 				v->selectUpMusElement();
 				v->repaint();
 			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
@@ -1566,7 +1566,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		}
 		
 		case Qt::Key_Down: {
-			if (mode() == SelectMode) {	//select the upper music element
+			if (mode() == SelectMode) {	// select the upper music element
 				v->selectUpMusElement();
 				v->repaint();
 			} else if ((mode() == InsertMode) || (mode() == EditMode)) {

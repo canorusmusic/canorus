@@ -10,7 +10,6 @@
 
 #include <QString>
 #include <QList>
-#include <QMultiHash>
 
 #include "core/context.h"
 
@@ -25,7 +24,7 @@ public:
 	
 	int functionMarkingCount(int timeStart=0);
 	inline CAFunctionMarking *functionMarkingAt(int idx) { return _functionMarkingList[idx]; }
-	void addFunctionMarking(CAFunctionMarking *marking);
+	void addFunctionMarking(CAFunctionMarking *marking, bool replace=true);
 	void addEmptyFunction( int timeStart, int timeLength );
 	inline QList<CAFunctionMarking*> functionMarkingList() { return _functionMarkingList; }
 	void repositFunctions();

@@ -39,6 +39,7 @@ public:
 		for (int i=0; i<_drawableMusElementList.size(); i++)
 			if (_drawableMusElementList[i]->musElement()==elt)
 				return _drawableMusElementList[i];
+		return 0;
 	}
 	
 	QList<CADrawableMusElement*> findInRange( int x1, int x2 );

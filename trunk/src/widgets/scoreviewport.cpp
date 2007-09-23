@@ -1167,12 +1167,12 @@ void CAScoreViewPort::startAnimationTimer() {
 }
 
 /*!
-	Selects the next music element in the current context.
+	Selects the next music element in the current context or appends the next music element to the selection if \a append is True.
 	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
 	
 	This method is usually called when using the right arrow key.
 */
-CADrawableMusElement *CAScoreViewPort::selectNextMusElement() {
+CADrawableMusElement *CAScoreViewPort::selectNextMusElement( bool append ) {
 	if (_selection.isEmpty())
 		return 0;
 	
@@ -1181,16 +1181,19 @@ CADrawableMusElement *CAScoreViewPort::selectNextMusElement() {
 	if (!musElement)
 		return 0;
 	
-	return selectMElement(musElement);
+	if (append)
+		return addToSelection( musElement );
+	else
+		return selectMElement( musElement );
 }
 
 /*!
-	Selects the previous music element in the current context.
+	Selects the previous music element in the current context or appends the previous music element to the selection if \a append is True.
 	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
 	
 	This method is usually called when using the left arrow key.
 */
-CADrawableMusElement *CAScoreViewPort::selectPrevMusElement() {
+CADrawableMusElement *CAScoreViewPort::selectPrevMusElement( bool append ) {
 	if (_selection.isEmpty())
 		return 0;
 	
@@ -1199,7 +1202,10 @@ CADrawableMusElement *CAScoreViewPort::selectPrevMusElement() {
 	if (!musElement)
 		return 0;
 	
-	return selectMElement(musElement);
+	if (append)
+		return addToSelection( musElement );
+	else
+		return selectMElement( musElement );
 }
 
 /*!
