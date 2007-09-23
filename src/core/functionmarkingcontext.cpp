@@ -5,6 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
+#include "core/sheet.h"
+#include "core/playable.h"
 #include "core/functionmarkingcontext.h"
 #include "core/functionmarking.h"
 
@@ -22,6 +24,8 @@
 CAFunctionMarkingContext::CAFunctionMarkingContext( const QString name, CASheet *sheet )
  : CAContext( name, sheet ) {
  	_contextType = CAContext::FunctionMarkingContext;
+ 	
+ 	repositFunctions();
 }
 
 CAFunctionMarkingContext::~CAFunctionMarkingContext() {
@@ -50,10 +54,17 @@ void CAFunctionMarkingContext::clear() {
 /*!
 	Adds an already created function marking to this context.
 */
-void CAFunctionMarkingContext::addFunctionMarking(CAFunctionMarking *function) {
+void CAFunctionMarkingContext::addFunctionMarking( CAFunctionMarking *function, bool replace ) {
 	int i;
 	for (i=_functionMarkingList.size()-1; i>0 && _functionMarkingList[i]->timeStart()>function->timeStart(); i--);
-	_functionMarkingList.insert(i+1, function);
+	_functionMarkingList.insert( i+1, function );
+	if ( replace && i<_functionMarkingList.size() && _functionMarkingList[i]->isEmpty() ) {
+		_functionMarkingList.removeAt( i );
+	} else if (!replace) {
+		i++;
+		while ( ++i < _functionMarkingList.size() )
+			_functionMarkingList[i]->setTimeStart( _functionMarkingList[i]->timeStart() + function->timeLength() );
+	}
 }
 
 CAMusElement *CAFunctionMarkingContext::findNextMusElement(CAMusElement *elt) {
@@ -94,7 +105,26 @@ bool CAFunctionMarkingContext::removeMusElement(CAMusElement *elt, bool cleanup)
 	the same timeStart after reposition is done as well!
 */
 void CAFunctionMarkingContext::repositFunctions() {
-	
+	int TS, TL;
+	int curIdx;
+	QList<CAPlayable*> chord;
+	for ( TS=0, curIdx=0; (chord=sheet()->getChord(TS)).size() || curIdx<_functionMarkingList.size(); TS+=TL ) {
+		TL = (chord.size()?chord[0]->timeLength():256);
+		for ( int i=0; i<chord.size(); i++ )
+			if (chord[i]->timeLength()<TL)
+				TL = chord[i]->timeLength();
+		
+		if ( curIdx == _functionMarkingList.size() ) { // add new empty functions, if chords still exist
+			addEmptyFunction( TS, TL);
+			curIdx++;
+		}
+		
+		// apply timestart and length to existing function markings
+		for ( int startIdx = curIdx; curIdx==0 || curIdx < _functionMarkingList.size() && _functionMarkingList[curIdx]->timeStart()==_functionMarkingList[startIdx]->timeStart(); curIdx++ ) {
+			_functionMarkingList[curIdx]->setTimeLength( TL );
+			_functionMarkingList[curIdx]->setTimeStart( TS );
+		}
+	}
 }
 
 /*!
@@ -102,7 +132,7 @@ void CAFunctionMarkingContext::repositFunctions() {
 	functions added).
 */
 void CAFunctionMarkingContext::addEmptyFunction( int timeStart, int timeLength ) {
-	addFunctionMarking( new CAFunctionMarking( CAFunctionMarking::Undefined, false, "C", this, timeStart, timeLength ) );
+	addFunctionMarking( new CAFunctionMarking( CAFunctionMarking::Undefined, false, "C", this, timeStart, timeLength ), false );
 }
 
 /*!

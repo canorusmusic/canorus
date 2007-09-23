@@ -101,8 +101,8 @@ public:
 	CADrawableMusElement *addToSelection(CAMusElement *elt);
 	void                  addToSelection(const QList<CAMusElement *> elts);
 	
-	CADrawableMusElement* selectNextMusElement();
-	CADrawableMusElement* selectPrevMusElement();
+	CADrawableMusElement* selectNextMusElement( bool append=false );
+	CADrawableMusElement* selectPrevMusElement( bool append=false );
 	CADrawableMusElement* selectUpMusElement();
 	CADrawableMusElement* selectDownMusElement();
 	

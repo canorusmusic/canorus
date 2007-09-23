@@ -14,7 +14,10 @@
 
 /*!
 	\class CADrawableFunctionMarking
-	\brief Drawable class for function markings
+	\brief The drawable instance of the function marking.
+	These music elements are ordinary music elements selectable by the user.
+	
+	\sa CADrawableFunctionMarkingSupport
 */
 
 CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function, CADrawableFunctionMarkingContext *context, int x, int y)
@@ -24,6 +27,7 @@ CADrawableFunctionMarking::CADrawableFunctionMarking(CAFunctionMarking *function
  	_extenderLineVisible = false;
  	_extenderLineOnly = false;
  	CAMusElement *prevMusElt;
+ 	_width=11; // default width
  	// function marking is stable
  	if (// tonic degree is tonic
  	    functionMarking()->tonicDegree()==CAFunctionMarking::T &&
@@ -85,15 +89,16 @@ CADrawableFunctionMarking::~CADrawableFunctionMarking() {
 void CADrawableFunctionMarking::draw(QPainter *p, CADrawSettings s) {
 	int rightBorder = s.x + qRound( _width * s.z);
 	
+	QFont font("FreeSans");
+	if (functionMarking()->tonicDegree()==CAFunctionMarking::T)
+		font.setPixelSize( qRound(19*s.z) );
+	else
+		font.setPixelSize( qRound(17*s.z) );
+	
+	p->setPen(QPen(s.color));
+	p->setFont(font);
+			
 	if ( !isExtenderLineOnly() ) { 
-		QFont font("FreeSans");
-		if (functionMarking()->tonicDegree()==CAFunctionMarking::T)
-			font.setPixelSize( qRound(19*s.z) );
-		else
-			font.setPixelSize( qRound(17*s.z) );
-		
-		p->setPen(QPen(s.color));
-		p->setFont(font);
 		p->drawText(s.x, s.y + qRound( _height*s.z ), _text);
 		s.x += qRound(p->boundingRect(0,0,0,0,0,_text).width() + 1*s.z);
 	}
@@ -110,8 +115,15 @@ CADrawableFunctionMarking *CADrawableFunctionMarking::clone(CADrawableContext* n
 /*!
 	\class CADrawableFunctionMarkingSupport
 	\brief Rectangles, key names, numbers below/above function, lines etc.
+	Support class which draws the key of the function, rectangle around it, chord area, ellipse etc.
+	These drawable music elements aren't selectable, but they can't be drawn by a single CADrawableFunctionMarking because they're usually dependent on more than one function marking. 
+	
+	\sa CADrawableFunctionMarking
 */
-// KeyName constructor
+
+/*!
+	KeyName constructor.
+*/
 CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType type, const QString key, CADrawableContext *c, int x, int y)
  : CADrawableMusElement(0, c, x, y) {	// support functions point to no music element
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkingSupport;
@@ -148,6 +160,9 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	setSelectable( false );
 }
 
+/*!
+	ChordArea, Tonicization, Modulation/ChordArea Rectangle, Ellipse constructor.
+*/
 CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType type, CADrawableFunctionMarking *f1, CADrawableContext *c, int x, int y, CADrawableFunctionMarking *f2)
  : CADrawableMusElement(0, c, x, y) {	// support functions point to no music element
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkingSupport;
@@ -209,7 +224,9 @@ CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFun
 	setSelectable( false );
 }
 
-// Alterations constructor
+/*!
+	Alterations constructor.
+*/
 CADrawableFunctionMarkingSupport::CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType type, CAFunctionMarking *function, CADrawableContext *c, int x, int y)
  : CADrawableMusElement(function, c, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkingSupport;
@@ -383,9 +400,12 @@ CADrawableFunctionMarkingSupport *CADrawableFunctionMarkingSupport::clone(CADraw
 			break;
 		case Ellipse:
 			return new CADrawableFunctionMarkingSupport(Ellipse, _function1, (newContext)?newContext:_drawableContext, (int)(_xPos - _function1->width()/2.0+0.5), _yPos, _function2);
+			break;
 		case Rectangle:
 			return new CADrawableFunctionMarkingSupport(Rectangle, _function1, (newContext)?newContext:_drawableContext, _xPos+3, _yPos+3, _function2);
+			break;
 		case Alterations:
 			return new CADrawableFunctionMarkingSupport(Alterations, (CAFunctionMarking*)(_musElement), (newContext)?newContext:_drawableContext, _xPos, _yPos);
+			break;
 	}
 }
