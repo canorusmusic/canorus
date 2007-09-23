@@ -495,8 +495,12 @@ void CAMainWin::setupCustomUi() {
 	connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
 	uiInsertToolBar->addAction( uiInsertSyllable );
 	uiInsertToolBar->addAction( uiInsertFM );
-	addToolBar(Qt::LeftToolBarArea, uiInsertToolBar);
 	
+	if(qApp->isRightToLeft())
+		addToolBar(Qt::RightToolBarArea, uiInsertToolBar);
+	else
+		addToolBar(Qt::LeftToolBarArea, uiInsertToolBar);
+
 	// Sheet Toolbar
 	uiSheetToolBar->addAction( uiNewSheet );
 	uiSheetToolBar->addWidget( uiSheetName );

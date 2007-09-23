@@ -76,6 +76,9 @@ int main(int argc, char *argv[]) {
 		mainApp.installTranslator(&translator);
 	}
 	
+	if(QLocale::system().language() == QLocale::Hebrew) // \todo add Arabic, etc.
+		mainApp.setLayoutDirection(Qt::RightToLeft);
+
 	// Enable scripting and plugins subsystem
 	splash.showMessage( QObject::tr("Initializing Scripting engine", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
 	mainApp.processEvents();
