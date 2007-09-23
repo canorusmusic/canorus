@@ -82,37 +82,37 @@ Naslednji dokumenti so bili uspešno obnovljeni:
         <translation>Orodjarna za glasove</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="294"/>
+        <location filename="../ui/mainwin.cpp" line="293"/>
         <source>Select Voice Stem Direction</source>
         <translation>Izberite smer notnih vratov za glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="300"/>
+        <location filename="../ui/mainwin.cpp" line="299"/>
         <source>Playable ToolBar</source>
         <translation>Orodjarna za note in pavze</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="301"/>
+        <location filename="../ui/mainwin.cpp" line="300"/>
         <source>Select Length</source>
         <translation>Izberite dolžino</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="312"/>
+        <location filename="../ui/mainwin.cpp" line="310"/>
         <source>Select Note Stem Direction</source>
         <translation>Izberite smer notnih vratov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2570"/>
+        <location filename="../ui/mainwin.cpp" line="2682"/>
         <source>About Qt</source>
         <translation>O knjižnici Qt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2574"/>
+        <location filename="../ui/mainwin.cpp" line="2686"/>
         <source>About Canorus</source>
         <translation>O programu Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2581"/>
+        <location filename="../ui/mainwin.cpp" line="2693"/>
         <source>Canorus - The next generation music score editor
 
 Version %1
@@ -135,34 +135,34 @@ Podrobnosti najdete v datoteki LICENSE.GPL.
 Domača stran: http://www.canorus.org</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1266"/>
+        <location filename="../ui/mainwin.cpp" line="1277"/>
         <source>Staff%1</source>
         <translation>Črtovje%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1269"/>
+        <location filename="../ui/mainwin.cpp" line="1281"/>
         <source>Voice%1</source>
         <translation>Glas%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="912"/>
+        <location filename="../ui/mainwin.cpp" line="916"/>
         <source>Sheet%1</source>
         <translation>List%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="980"/>
+        <location filename="../ui/mainwin.cpp" line="984"/>
         <source>Canorus</source>
         <translation>Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="958"/>
+        <location filename="../ui/mainwin.cpp" line="962"/>
         <source>Are you sure do you want to delete voice
 %1 and all its notes?</source>
         <translation>Ali res želite zbrisati glas
 %1 in vse njegove note?</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="981"/>
+        <location filename="../ui/mainwin.cpp" line="985"/>
         <source>Are you sure do you want to delete context
 %1 and all its contents?</source>
         <translation>Ali res želite zbrisati trak
@@ -179,12 +179,12 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Trenutna številka glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="293"/>
+        <location filename="../ui/mainwin.cpp" line="292"/>
         <source>Voice name</source>
         <translation>Ime glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="548"/>
+        <location filename="../ui/mainwin.cpp" line="549"/>
         <source>Voice stem direction</source>
         <translation>Smer notnih vratov za glas</translation>
     </message>
@@ -194,7 +194,7 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Notna dolžina</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="521"/>
+        <location filename="../ui/mainwin.cpp" line="522"/>
         <source>Note stem direction</source>
         <translation>Smer notnih vratov</translation>
     </message>
@@ -204,27 +204,27 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Orodjarna za liste</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="952"/>
+        <location filename="../ui/mainwin.cpp" line="956"/>
         <source>Cannot delete the last voice in the staff!</source>
         <translation>Ni mogoče zbrisati zadnjega glasu v črtovju!</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="319"/>
+        <location filename="../ui/mainwin.cpp" line="317"/>
         <source>Key Signature ToolBar</source>
         <translation>Orodjarna za tonalitete</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="353"/>
+        <location filename="../ui/mainwin.cpp" line="351"/>
         <source>Time Signature ToolBar</source>
         <translation>Orodjarna za taktovske načine</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="358"/>
+        <location filename="../ui/mainwin.cpp" line="356"/>
         <source>Number of beats</source>
         <translation>Število dob</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="365"/>
+        <location filename="../ui/mainwin.cpp" line="363"/>
         <source>Beat</source>
         <translation>Doba</translation>
     </message>
@@ -294,77 +294,77 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Ponavljaj Zaprt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="303"/>
+        <location filename="../ui/mainwin.cpp" line="302"/>
         <source>Breve Length</source>
         <translation>Brevis</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="304"/>
+        <location filename="../ui/mainwin.cpp" line="303"/>
         <source>Whole Length</source>
         <translation>Celinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="305"/>
+        <location filename="../ui/mainwin.cpp" line="304"/>
         <source>Half Length</source>
         <translation>Polovinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="306"/>
+        <location filename="../ui/mainwin.cpp" line="305"/>
         <source>Quarter Length</source>
         <translation>Četrtinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="307"/>
+        <location filename="../ui/mainwin.cpp" line="306"/>
         <source>Eighth Length</source>
         <translation>Osminka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="308"/>
+        <location filename="../ui/mainwin.cpp" line="307"/>
         <source>Sixteenth Length</source>
         <translation>Šestnajstinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="309"/>
+        <location filename="../ui/mainwin.cpp" line="308"/>
         <source>ThirtySecond Length</source>
         <translation>Dvaintridesetinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="310"/>
+        <location filename="../ui/mainwin.cpp" line="309"/>
         <source>SixtyFourth Length</source>
         <translation>Štiriinšestdesetinka</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="296"/>
+        <location filename="../ui/mainwin.cpp" line="295"/>
         <source>Voice Stems Neutral</source>
         <translation>Smeri vratov za glas Nevtralne</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="297"/>
+        <location filename="../ui/mainwin.cpp" line="296"/>
         <source>Voice Stems Up</source>
         <translation>Smeri vratov za glas Gor</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="298"/>
+        <location filename="../ui/mainwin.cpp" line="297"/>
         <source>Voice Stems Down</source>
         <translation>Smeri vratov za glas Dol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="314"/>
+        <location filename="../ui/mainwin.cpp" line="312"/>
         <source>Note Stem Neutral</source>
         <translation>Smer vratu Nevtralna</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="315"/>
+        <location filename="../ui/mainwin.cpp" line="313"/>
         <source>Note Stem Up</source>
         <translation>Smer vratu Gor</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="316"/>
+        <location filename="../ui/mainwin.cpp" line="314"/>
         <source>Note Stem Down</source>
         <translation>Smer vratu Dol</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="317"/>
+        <location filename="../ui/mainwin.cpp" line="315"/>
         <source>Note Stem Preferred</source>
         <translation>Smer vratu Priporočena</translation>
     </message>
@@ -374,7 +374,7 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Ponavljaj Zaprt-Odprt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="376"/>
+        <location filename="../ui/mainwin.cpp" line="374"/>
         <source>Function marking ToolBar</source>
         <translation>Orodjarna za funkcijske označbe</translation>
     </message>
@@ -384,22 +384,22 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Tonika</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="407"/>
+        <location filename="../ui/mainwin.cpp" line="405"/>
         <source>Subdominant</source>
         <translation>Subdominanta</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="409"/>
+        <location filename="../ui/mainwin.cpp" line="407"/>
         <source>Dominant</source>
         <translation>Dominanta</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="405"/>
+        <location filename="../ui/mainwin.cpp" line="408"/>
         <source>II</source>
         <translation>II</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="406"/>
+        <location filename="../ui/mainwin.cpp" line="409"/>
         <source>III</source>
         <translation>III</translation>
     </message>
@@ -414,7 +414,7 @@ Domača stran: http://www.canorus.org</translation>
         <translation>VII</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="386"/>
+        <location filename="../ui/mainwin.cpp" line="384"/>
         <source>Cadenze</source>
         <translation>Kadenčni</translation>
     </message>
@@ -424,42 +424,42 @@ Domača stran: http://www.canorus.org</translation>
         <translation>molova Tonika</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="408"/>
+        <location filename="../ui/mainwin.cpp" line="406"/>
         <source>minor Subdominant</source>
         <translation>molova Subdominanta</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="389"/>
+        <location filename="../ui/mainwin.cpp" line="387"/>
         <source>Napolitan</source>
         <translation>Napolitanski</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="390"/>
+        <location filename="../ui/mainwin.cpp" line="388"/>
         <source>Phrygian</source>
         <translation>Frigijski</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="391"/>
+        <location filename="../ui/mainwin.cpp" line="389"/>
         <source>Lydian</source>
         <translation>Lidijski</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="392"/>
+        <location filename="../ui/mainwin.cpp" line="390"/>
         <source>IV</source>
         <translation>IV</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="393"/>
+        <location filename="../ui/mainwin.cpp" line="391"/>
         <source>V</source>
         <translation>V</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="377"/>
+        <location filename="../ui/mainwin.cpp" line="375"/>
         <source>Select Function Name</source>
         <translation>Izberite funkcijsko označbo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="394"/>
+        <location filename="../ui/mainwin.cpp" line="393"/>
         <source>Select Chord Area</source>
         <translation>Izberite akordično območje</translation>
     </message>
@@ -484,12 +484,12 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Nov trak za funkcijske označbe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1285"/>
+        <location filename="../ui/mainwin.cpp" line="1294"/>
         <source>LyricsContext%1</source>
         <translation>Besedilo%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1297"/>
+        <location filename="../ui/mainwin.cpp" line="1308"/>
         <source>FunctionMarkingContext%1</source>
         <translation>FunkcijskeOznačbe%1</translation>
     </message>
@@ -504,163 +504,157 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Dodeljen glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="911"/>
+        <location filename="../ui/mainwin.cpp" line="915"/>
         <source>new sheet</source>
         <comment>undo</comment>
         <translation>nov list</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="932"/>
+        <location filename="../ui/mainwin.cpp" line="936"/>
         <source>new voice</source>
         <comment>undo</comment>
         <translation>nov glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="963"/>
+        <location filename="../ui/mainwin.cpp" line="967"/>
         <source>voice removal</source>
         <comment>undo</comment>
         <translation>odstranitev glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="986"/>
+        <location filename="../ui/mainwin.cpp" line="990"/>
         <source>context removal</source>
         <comment>undo</comment>
         <translation>odstranitev traku</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1261"/>
+        <location filename="../ui/mainwin.cpp" line="1273"/>
         <source>new staff</source>
         <comment>undo</comment>
         <translation>novo črtovje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1273"/>
+        <location filename="../ui/mainwin.cpp" line="1285"/>
         <source>new lyrics context</source>
         <comment>undo</comment>
         <translation>nov trak za besedilo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1292"/>
+        <location filename="../ui/mainwin.cpp" line="1304"/>
         <source>new function marking context</source>
         <comment>undo</comment>
         <translation>nov trak za funkcijske označbe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1515"/>
+        <location filename="../ui/mainwin.cpp" line="1526"/>
         <source>insert barline</source>
         <comment>undo</comment>
         <translation>vstavljanje taktnice</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1537"/>
+        <location filename="../ui/mainwin.cpp" line="1548"/>
         <source>rise note</source>
         <comment>undo</comment>
         <translation>višanje note</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1563"/>
+        <location filename="../ui/mainwin.cpp" line="1574"/>
         <source>lower note</source>
         <comment>undo</comment>
         <translation>nižanje note</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1591"/>
+        <location filename="../ui/mainwin.cpp" line="1602"/>
         <source>add sharp</source>
         <comment>undo</comment>
         <translation>dodajanje višaja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1611"/>
+        <location filename="../ui/mainwin.cpp" line="1622"/>
         <source>add flat</source>
         <comment>undo</comment>
         <translation>dodajanje nižaja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1628"/>
+        <location filename="../ui/mainwin.cpp" line="1639"/>
         <source>set dotted</source>
         <comment>undo</comment>
         <translation>punktacijo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3222"/>
+        <location filename="../ui/mainwin.cpp" line="3293"/>
         <source>deletion of elements</source>
         <comment>undo</comment>
         <translation>brisanje elementov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1701"/>
+        <location filename="../ui/mainwin.cpp" line="1762"/>
         <source>insertion of music element</source>
         <comment>undo</comment>
         <translation>dodajanje elementov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2155"/>
-        <source>change number of accidentals</source>
-        <comment>undo</comment>
-        <translation>spreminjanje števila predznakov</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="2211"/>
+        <location filename="../ui/mainwin.cpp" line="2273"/>
         <source>change voice name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2304"/>
+        <location filename="../ui/mainwin.cpp" line="2366"/>
         <source>lyrics edit</source>
         <comment>undo</comment>
         <translation>spreminjanje besedila</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2530"/>
+        <location filename="../ui/mainwin.cpp" line="2642"/>
         <source>commit CanorusML source</source>
         <comment>undo</comment>
         <translation>potrditev CanorusML izvorne kode</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2556"/>
+        <location filename="../ui/mainwin.cpp" line="2668"/>
         <source>commit LilyPond source</source>
         <comment>undo</comment>
         <translation>potrditev LilyPond izvorne kode</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2635"/>
+        <location filename="../ui/mainwin.cpp" line="2747"/>
         <source>deletion of the sheet</source>
         <comment>undo</comment>
         <translation>brisanje lista</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2693"/>
+        <location filename="../ui/mainwin.cpp" line="2805"/>
         <source>change sheet name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena lista</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2714"/>
+        <location filename="../ui/mainwin.cpp" line="2826"/>
         <source>change context name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena traku</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2733"/>
+        <location filename="../ui/mainwin.cpp" line="2845"/>
         <source>change stanza number</source>
         <comment>undo</comment>
         <translation>spreminjanje številke kitice</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2745"/>
+        <location filename="../ui/mainwin.cpp" line="2857"/>
         <source>change associated voice</source>
         <comment>undo</comment>
         <translation>dodeljevanje glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2756"/>
+        <location filename="../ui/mainwin.cpp" line="2868"/>
         <source>change voice stem direction</source>
         <comment>undo</comment>
         <translation>spreminjanje smeri vratov za glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2773"/>
+        <location filename="../ui/mainwin.cpp" line="2885"/>
         <source>change note stem direction</source>
         <comment>undo</comment>
         <translation>spreminjanje smeri vratov not</translation>
@@ -691,28 +685,28 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Vstavi novo taktnico</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="555"/>
+        <location filename="../ui/mainwin.cpp" line="556"/>
         <source>Function marking</source>
         <translation>Funkcijske označbe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="558"/>
+        <location filename="../ui/mainwin.cpp" line="560"/>
         <source>Function marking chord area</source>
         <translation>Akordično območje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="562"/>
+        <location filename="../ui/mainwin.cpp" line="565"/>
         <source>Function marking tonic degree</source>
         <translation>Stranska stopnja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3183"/>
+        <location filename="../ui/mainwin.cpp" line="3254"/>
         <source>cut</source>
         <comment>undo</comment>
         <translation>rezanje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3279"/>
+        <location filename="../ui/mainwin.cpp" line="3358"/>
         <source>paste</source>
         <comment>undo</comment>
         <translation>lepljenje</translation>
@@ -878,7 +872,7 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Uveljavi</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="289"/>
+        <location filename="../ui/mainwin.cpp" line="288"/>
         <source>Voice instrument</source>
         <translation>Inštrument</translation>
     </message>
@@ -918,20 +912,55 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Baritonski ključ</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="367"/>
+        <location filename="../ui/mainwin.cpp" line="365"/>
         <source>Clef ToolBar</source>
         <translation>Orodjarna za ključe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="374"/>
+        <location filename="../ui/mainwin.cpp" line="372"/>
         <source>Clef offset</source>
         <translation>Odmik ključa</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2193"/>
+        <location filename="../ui/mainwin.cpp" line="2255"/>
         <source>change clef offset</source>
         <comment>undo</comment>
         <translation>spreminjanje odmika ključa</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="2407"/>
+        <source>change function</source>
+        <comment>undo</comment>
+        <translation>spreminjanje funkcije</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="400"/>
+        <source>None</source>
+        <translation>Brez</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="2430"/>
+        <source>change chord area</source>
+        <comment>undo</comment>
+        <translation>spreminjanje akordičnega območja</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="2453"/>
+        <source>change tonic degree</source>
+        <comment>undo</comment>
+        <translation>spreminjanje glavne veje</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="2475"/>
+        <source>set/unset ellipse</source>
+        <comment>undo</comment>
+        <translation>elipse</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="2216"/>
+        <source>change key signature</source>
+        <comment>undo</comment>
+        <translation>spreminjanje tonalitete</translation>
     </message>
 </context>
 <context>
@@ -940,769 +969,769 @@ Domača stran: http://www.canorus.org</translation>
         <location filename="../interface/mididevice.cpp" line="18"/>
         <source>Acoustic Grand Piano</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Koncertni klavir</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="19"/>
         <source>Bright Acoustic Piano</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pianino</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="20"/>
         <source>Electric Grand Piano</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Električni koncertni klavir</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="21"/>
         <source>Honky-tonk Piano</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Honky-tonk klavir</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="22"/>
         <source>Electric Piano 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Električni klavir 1</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="23"/>
         <source>Electric Piano 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Električni klavir 2</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="24"/>
         <source>Harpsichord</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Čembalo</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="25"/>
         <source>Clavi</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klavikord</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="26"/>
         <source>Celesta</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Celesta</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="27"/>
         <source>Glockenspiel</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Zvončki</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="28"/>
         <source>Music Box</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Lajna</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="29"/>
         <source>Vibraphone</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Vibrafon</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="30"/>
         <source>Marimba</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Marimba</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="31"/>
         <source>Xylophone</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ksilofon</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="32"/>
         <source>Tubular Bells</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Cevasti zvonovi</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="33"/>
         <source>Dulcimer</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Čembalo 2</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="34"/>
         <source>Drawbar Organ</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Orgle 1</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="35"/>
         <source>Percussive Organ</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Orgle 2</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="36"/>
         <source>Rock Organ</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Orgle 3</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="37"/>
         <source>Church Organ</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Orgle cerkvene</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="38"/>
         <source>Reed Organ</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Orgle 4</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="39"/>
         <source>Accordion</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Akordeon</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="40"/>
         <source>Harmonica</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Harmonika</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="41"/>
         <source>Tango Accordion</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tango akordeon</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="42"/>
         <source>Acoustic Guitar (nylon)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kitara akustična (najlonske strune)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="43"/>
         <source>Acoustic Guitar (steel)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kitara akustična (jeklene strune)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="44"/>
         <source>Electric Guitar (jazz)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kitara električna (jazz)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="45"/>
         <source>Electric Guitar (clean)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kitara električna (neojačana)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="46"/>
         <source>Electric Guitar (muted)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kitara električna (utišana)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="47"/>
         <source>Overdriven Guitar</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kitara električna (overdriven)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="48"/>
         <source>Distortion Guitar</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kitara električna (distortion)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="49"/>
         <source>Guitar harmonics</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kitara električna (harmonije)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="50"/>
         <source>Acoustic Bass</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Akustični bas</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="51"/>
         <source>Electric Bass (finger)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Električni bas 1</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="52"/>
         <source>Electric Bass (pick)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Električni bas 2</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="53"/>
         <source>Fretless Bass</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Električni bas 3</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="54"/>
         <source>Slap Bass 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Slap bas 1</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="55"/>
         <source>Slap Bass 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Slap bas 2</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="56"/>
         <source>Synth Bass 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Synth bas 1</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="57"/>
         <source>Synth Bass 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Synth bas 2</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="58"/>
         <source>Violin</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Violina</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="59"/>
         <source>Viola</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Viola</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="60"/>
         <source>Cello</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Čelo</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="61"/>
         <source>Contrabass</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kontrabas</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="62"/>
         <source>Tremolo Strings</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tremolo godala</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="63"/>
         <source>Pizzicato Strings</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pizzicato godala</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="64"/>
         <source>Orchestral Harp</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Harfa</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="65"/>
         <source>Timpani</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pavke</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="66"/>
         <source>String Ensemble 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ansambel godal 1</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="67"/>
         <source>String Ensemble 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ansambel godal 2</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="68"/>
         <source>SynthStrings 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Synth godala 1</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="69"/>
         <source>SynthStrings 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Synth godala 2</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="70"/>
         <source>Choir Aahs</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Zborovski &quot;aaa&quot;</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="71"/>
         <source>Voice Oohs</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pevski &quot;ooo&quot;</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="72"/>
         <source>Synth Voice</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Synth glas</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="73"/>
         <source>Orchestra Hit</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Orkestralni udarec</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="74"/>
         <source>Trumpet</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Trobenta</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="75"/>
         <source>Trombone</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Trombon</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="76"/>
         <source>Tuba</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tuba</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="77"/>
         <source>Muted Trumpet</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Utišana trobenta</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="78"/>
         <source>French Horn</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Francoski rog</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="79"/>
         <source>Brass Section</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Trobila</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="80"/>
         <source>SynthBrass 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Synth trobila 1</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="81"/>
         <source>SynthBrass 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Synth trobila 2</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="82"/>
         <source>Soprano Sax</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Saksofon sopran</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="83"/>
         <source>Alto Sax</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Saksofon alt</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="84"/>
         <source>Tenor Sax</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Saksofon tenor</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="85"/>
         <source>Baritone Sax</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Saksofon bariton</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="86"/>
         <source>Oboe</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Oboa</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="87"/>
         <source>English Horn</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Angleški rog</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="88"/>
         <source>Bassoon</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fagot</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="89"/>
         <source>Clarinet</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Klarinet</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="90"/>
         <source>Piccolo</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pikolo</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="91"/>
         <source>Flute</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Flavta prečna</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="92"/>
         <source>Recorder</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Flavta kljunasta</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="93"/>
         <source>Pan Flute</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Frulica</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="94"/>
         <source>Blown Bottle</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pihanje v steklenico</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="95"/>
         <source>Shakuhachi</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Šakuhači</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="96"/>
         <source>Whistle</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Žvižganje</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="97"/>
         <source>Ocarina</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Okarina</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="98"/>
         <source>Lead 1 (square)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Lead 1 (pravilen val)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="99"/>
         <source>Lead 2 (sawtooth)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Lead 2 (melodični val)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="100"/>
         <source>Lead 3 (calliope)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Lead 3 (calliope)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="101"/>
         <source>Lead 4 (chiff)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Lead 4 (chiff)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="102"/>
         <source>Lead 5 (charang)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Lead 5 (šarang)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="103"/>
         <source>Lead 6 (voice)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Lead 6 (glasovi)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="104"/>
         <source>Lead 7 (fifths)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Lead 7 (kvinte)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="105"/>
         <source>Lead 8 (bass + lead)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Lead 8 (bas + lead)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="106"/>
         <source>Pad 1 (new age)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pad 1 (nova doba)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="107"/>
         <source>Pad 2 (warm)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pad 2 (topli)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="108"/>
         <source>Pad 3 (polysynth)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pad 3 (polysynth)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="109"/>
         <source>Pad 4 (choir)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pad 4 (zbor)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="110"/>
         <source>Pad 5 (bowed)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pad 5 (steklovina)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="111"/>
         <source>Pad 6 (metallic)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pad 6 (kovinski)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="112"/>
         <source>Pad 7 (halo)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pad 7 (žareč)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="113"/>
         <source>Pad 8 (sweep)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pad 8 (izčiščen)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="114"/>
         <source>FX 1 (rain)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>FX 1 (dež)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="115"/>
         <source>FX 2 (soundtrack)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>FX 2 (soundtrack)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="116"/>
         <source>FX 3 (crystal)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>FX 3 (kristal)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="117"/>
         <source>FX 4 (atmosphere)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>FX 4 (atmosfera)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="118"/>
         <source>FX 5 (brightness)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>FX 5 (svetloba)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="119"/>
         <source>FX 6 (goblins)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>FX 6 (goblini)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="120"/>
         <source>FX 7 (echoes)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>FX 7 (odmevi)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="121"/>
         <source>FX 8 (sci-fi)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>FX 8 (fantastika)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="122"/>
         <source>Sitar</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Sitar</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="123"/>
         <source>Banjo</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Banjo</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="124"/>
         <source>Shamisen</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Šamisen</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="125"/>
         <source>Koto</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Koto</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="126"/>
         <source>Kalimba</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kalimba</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="127"/>
         <source>Bag pipe</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Dude irske</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="128"/>
         <source>Fiddle</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Gosli</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="129"/>
         <source>Shanai</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Šanai</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="130"/>
         <source>Tinkle Bell</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Zvončki otroški</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="131"/>
         <source>Agogo</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Agogo</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="132"/>
         <source>Steel Drums</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tolkala kovinska</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="133"/>
         <source>Woodblock</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tolkala lesena</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="134"/>
         <source>Taiko Drum</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Taiko boben</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="135"/>
         <source>Melodic Tom</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tom</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="136"/>
         <source>Synth Drum</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tolkala synth</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="137"/>
         <source>Reverse Cymbal</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Obrnjene činele</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="138"/>
         <source>Guitar Fret Noise</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Praskanje strune kitare</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="139"/>
         <source>Breath Noise</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Vdih</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="140"/>
         <source>Seashore</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Obala</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="141"/>
         <source>Bird Tweet</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ptiči</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="142"/>
         <source>Telephone Ring</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Telefon</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="143"/>
         <source>Helicopter</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Helikopter</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="144"/>
         <source>Applause</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Aplavz</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="144"/>
         <source>Gunshot</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pištola</translation>
     </message>
 </context>
 <context>
@@ -1848,37 +1877,37 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Izberite datoteko</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="81"/>
+        <location filename="../main.cpp" line="80"/>
         <source>Initializing Scripting engine</source>
         <comment>splashScreen</comment>
         <translation>Inicializacija skriptnega pogona</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="86"/>
+        <location filename="../main.cpp" line="85"/>
         <source>Reading Plugins</source>
         <comment>splashScreen</comment>
         <translation>Branje Dodatkov</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="91"/>
+        <location filename="../main.cpp" line="90"/>
         <source>Initializing Automatic recovery</source>
         <comment>splashScreen</comment>
         <translation>Inicializacija varnostnega shranjevanja</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="96"/>
+        <location filename="../main.cpp" line="95"/>
         <source>Initializing Undo/Redo framework</source>
         <comment>splashScreen</comment>
         <translation>Inicializacija ogrodja razveljavi/uveljavi</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="101"/>
+        <location filename="../main.cpp" line="100"/>
         <source>Searching for recovery documents</source>
         <comment>splashScreen</comment>
         <translation>Iskanje nerešenih varnostnih dokumentov</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="106"/>
+        <location filename="../main.cpp" line="105"/>
         <source>Initializing Main window</source>
         <comment>splashScreen</comment>
         <translation>Inicializacija glavnega okna</translation>

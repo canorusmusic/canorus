@@ -58,7 +58,7 @@ void CAFunctionMarkingContext::addFunctionMarking( CAFunctionMarking *function, 
 	int i;
 	for (i=_functionMarkingList.size()-1; i>0 && _functionMarkingList[i]->timeStart()>function->timeStart(); i--);
 	_functionMarkingList.insert( i+1, function );
-	if ( replace && i<_functionMarkingList.size() && _functionMarkingList[i]->isEmpty() ) {
+	if ( replace && i<_functionMarkingList.size() && i>=0 && _functionMarkingList[i]->isEmpty() ) {
 		_functionMarkingList.removeAt( i );
 	} else if (!replace) {
 		i++;
