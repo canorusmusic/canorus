@@ -25,9 +25,10 @@ class CAUndo;
 
 class CACanorus {
 public:
-	static void initMain();
+	static void initMain( int argc=0, char *argv[]=0 );
 	static CASettingsDialog::CASettingsPage initSettings();
 	static void initCommonGUI();
+	static void initPlayback();
 	static void parseSettingsArguments(int argc, char *argv[]);
 	static void initScripting();
 	static void initAutoRecovery();
@@ -37,6 +38,7 @@ public:
 	static QList<QString> locateResource(const QString fileName);
 	static QList<QString> locateResourceDir(const QString fileName);	
 	
+	inline static QApplication *mainApp() { return _mainApp; }
 	inline static int mainWinCount() { return _mainWinList.size(); }
 	static int mainWinCount(CADocument *);
 	static QList<CAMainWin*> findMainWin(CADocument* document);
@@ -62,6 +64,7 @@ private:
 	static CASettings *_settings;
 	static QString _settingsPath;
 	static CAUndo *_undo;
+	static QApplication *_mainApp;
 	
 	// Playback output
 	static CAMidiDevice *_midiDevice;

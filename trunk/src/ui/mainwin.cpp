@@ -286,7 +286,7 @@ void CAMainWin::createCustomActions() {
 	uiVoiceInstrument = new QComboBox( this );
 		uiVoiceInstrument->setObjectName("uiVoiceInstrument");
 		uiVoiceInstrument->setToolTip(tr("Voice instrument"));
-		uiVoiceInstrument->addItems(CAMidiDevice::GM_INSTRUMENTS);
+		uiVoiceInstrument->addItems( CACanorus::midiDevice()->GM_INSTRUMENTS );
 	uiVoiceName = new QLineEdit( this );
 		uiVoiceName->setObjectName( "uiVoiceName" );
 		uiVoiceName->setToolTip(tr("Voice name"));

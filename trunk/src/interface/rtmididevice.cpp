@@ -26,7 +26,8 @@
 	      probably be done by using Qt's signal-slot implementation. -Matevz
 */ 
 
-CARtMidiDevice::CARtMidiDevice() {
+CARtMidiDevice::CARtMidiDevice()
+ : CAMidiDevice() {
 	_midiDeviceType = RtMidiDevice;
 	_out = 0;
 	_in = 0;

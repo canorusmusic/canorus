@@ -9,139 +9,138 @@
 #include "core/sheet.h"
 #include "core/voice.h"
 
-/*!
-	\var CAMidiDevice::GM_INSTRUMENTS
-	Human names for General Midi Instruments.
-*/
-const QStringList CAMidiDevice::GM_INSTRUMENTS = QStringList() <<
-	CAMidiDevice::tr("Acoustic Grand Piano", "instrument") <<
-	CAMidiDevice::tr("Bright Acoustic Piano", "instrument") <<
-	CAMidiDevice::tr("Electric Grand Piano", "instrument") <<
-	CAMidiDevice::tr("Honky-tonk Piano", "instrument") <<
-	CAMidiDevice::tr("Electric Piano 1", "instrument") <<
-	CAMidiDevice::tr("Electric Piano 2", "instrument") <<
-	CAMidiDevice::tr("Harpsichord", "instrument") <<
-	CAMidiDevice::tr("Clavi", "instrument") <<
-	CAMidiDevice::tr("Celesta", "instrument") <<
-	CAMidiDevice::tr("Glockenspiel", "instrument") <<
-	CAMidiDevice::tr("Music Box", "instrument") <<
-	CAMidiDevice::tr("Vibraphone", "instrument") <<
-	CAMidiDevice::tr("Marimba", "instrument") <<
-	CAMidiDevice::tr("Xylophone", "instrument") <<
-	CAMidiDevice::tr("Tubular Bells", "instrument") <<
-	CAMidiDevice::tr("Dulcimer", "instrument") <<
-	CAMidiDevice::tr("Drawbar Organ", "instrument") <<
-	CAMidiDevice::tr("Percussive Organ", "instrument") <<
-	CAMidiDevice::tr("Rock Organ", "instrument") <<
-	CAMidiDevice::tr("Church Organ", "instrument") <<
-	CAMidiDevice::tr("Reed Organ", "instrument") <<
-	CAMidiDevice::tr("Accordion", "instrument") <<
-	CAMidiDevice::tr("Harmonica", "instrument") <<
-	CAMidiDevice::tr("Tango Accordion", "instrument") <<
-	CAMidiDevice::tr("Acoustic Guitar (nylon)", "instrument") <<
-	CAMidiDevice::tr("Acoustic Guitar (steel)", "instrument") <<
-	CAMidiDevice::tr("Electric Guitar (jazz)", "instrument") <<
-	CAMidiDevice::tr("Electric Guitar (clean)", "instrument") <<
-	CAMidiDevice::tr("Electric Guitar (muted)", "instrument") <<
-	CAMidiDevice::tr("Overdriven Guitar", "instrument") <<
-	CAMidiDevice::tr("Distortion Guitar", "instrument") <<
-	CAMidiDevice::tr("Guitar harmonics", "instrument") <<
-	CAMidiDevice::tr("Acoustic Bass", "instrument") <<
-	CAMidiDevice::tr("Electric Bass (finger)", "instrument") <<
-	CAMidiDevice::tr("Electric Bass (pick)", "instrument") <<
-	CAMidiDevice::tr("Fretless Bass", "instrument") <<
-	CAMidiDevice::tr("Slap Bass 1", "instrument") <<
-	CAMidiDevice::tr("Slap Bass 2", "instrument") <<
-	CAMidiDevice::tr("Synth Bass 1", "instrument") <<
-	CAMidiDevice::tr("Synth Bass 2", "instrument") <<
-	CAMidiDevice::tr("Violin", "instrument") <<
-	CAMidiDevice::tr("Viola", "instrument") <<
-	CAMidiDevice::tr("Cello", "instrument") <<
-	CAMidiDevice::tr("Contrabass", "instrument") <<
-	CAMidiDevice::tr("Tremolo Strings", "instrument") <<
-	CAMidiDevice::tr("Pizzicato Strings", "instrument") <<
-	CAMidiDevice::tr("Orchestral Harp", "instrument") <<
-	CAMidiDevice::tr("Timpani", "instrument") <<
-	CAMidiDevice::tr("String Ensemble 1", "instrument") <<
-	CAMidiDevice::tr("String Ensemble 2", "instrument") <<
-	CAMidiDevice::tr("SynthStrings 1", "instrument") <<
-	CAMidiDevice::tr("SynthStrings 2", "instrument") <<
-	CAMidiDevice::tr("Choir Aahs", "instrument") <<
-	CAMidiDevice::tr("Voice Oohs", "instrument") <<
-	CAMidiDevice::tr("Synth Voice", "instrument") <<
-	CAMidiDevice::tr("Orchestra Hit", "instrument") <<
-	CAMidiDevice::tr("Trumpet", "instrument") <<
-	CAMidiDevice::tr("Trombone", "instrument") <<
-	CAMidiDevice::tr("Tuba", "instrument") <<
-	CAMidiDevice::tr("Muted Trumpet", "instrument") <<
-	CAMidiDevice::tr("French Horn", "instrument") <<
-	CAMidiDevice::tr("Brass Section", "instrument") <<
-	CAMidiDevice::tr("SynthBrass 1", "instrument") <<
-	CAMidiDevice::tr("SynthBrass 2", "instrument") <<
-	CAMidiDevice::tr("Soprano Sax", "instrument") <<
-	CAMidiDevice::tr("Alto Sax", "instrument") <<
-	CAMidiDevice::tr("Tenor Sax", "instrument") <<
-	CAMidiDevice::tr("Baritone Sax", "instrument") <<
-	CAMidiDevice::tr("Oboe", "instrument") <<
-	CAMidiDevice::tr("English Horn", "instrument") <<
-	CAMidiDevice::tr("Bassoon", "instrument") <<
-	CAMidiDevice::tr("Clarinet", "instrument") <<
-	CAMidiDevice::tr("Piccolo", "instrument") <<
-	CAMidiDevice::tr("Flute", "instrument") <<
-	CAMidiDevice::tr("Recorder", "instrument") <<
-	CAMidiDevice::tr("Pan Flute", "instrument") <<
-	CAMidiDevice::tr("Blown Bottle", "instrument") <<
-	CAMidiDevice::tr("Shakuhachi", "instrument") <<
-	CAMidiDevice::tr("Whistle", "instrument") <<
-	CAMidiDevice::tr("Ocarina", "instrument") <<
-	CAMidiDevice::tr("Lead 1 (square)", "instrument") <<
-	CAMidiDevice::tr("Lead 2 (sawtooth)", "instrument") <<
-	CAMidiDevice::tr("Lead 3 (calliope)", "instrument") <<
-	CAMidiDevice::tr("Lead 4 (chiff)", "instrument") <<
-	CAMidiDevice::tr("Lead 5 (charang)", "instrument") <<
-	CAMidiDevice::tr("Lead 6 (voice)", "instrument") <<
-	CAMidiDevice::tr("Lead 7 (fifths)", "instrument") <<
-	CAMidiDevice::tr("Lead 8 (bass + lead)", "instrument") <<
-	CAMidiDevice::tr("Pad 1 (new age)", "instrument") <<
-	CAMidiDevice::tr("Pad 2 (warm)", "instrument") <<
-	CAMidiDevice::tr("Pad 3 (polysynth)", "instrument") <<
-	CAMidiDevice::tr("Pad 4 (choir)", "instrument") <<
-	CAMidiDevice::tr("Pad 5 (bowed)", "instrument") <<
-	CAMidiDevice::tr("Pad 6 (metallic)", "instrument") <<
-	CAMidiDevice::tr("Pad 7 (halo)", "instrument") <<
-	CAMidiDevice::tr("Pad 8 (sweep)", "instrument") <<
-	CAMidiDevice::tr("FX 1 (rain)", "instrument") <<
-	CAMidiDevice::tr("FX 2 (soundtrack)", "instrument") <<
-	CAMidiDevice::tr("FX 3 (crystal)", "instrument") <<
-	CAMidiDevice::tr("FX 4 (atmosphere)", "instrument") <<
-	CAMidiDevice::tr("FX 5 (brightness)", "instrument") <<
-	CAMidiDevice::tr("FX 6 (goblins)", "instrument") <<
-	CAMidiDevice::tr("FX 7 (echoes)", "instrument") <<
-	CAMidiDevice::tr("FX 8 (sci-fi)", "instrument") <<
-	CAMidiDevice::tr("Sitar", "instrument") <<
-	CAMidiDevice::tr("Banjo", "instrument") <<
-	CAMidiDevice::tr("Shamisen", "instrument") <<
-	CAMidiDevice::tr("Koto", "instrument") <<
-	CAMidiDevice::tr("Kalimba", "instrument") <<
-	CAMidiDevice::tr("Bag pipe", "instrument") <<
-	CAMidiDevice::tr("Fiddle", "instrument") <<
-	CAMidiDevice::tr("Shanai", "instrument") <<
-	CAMidiDevice::tr("Tinkle Bell", "instrument") <<
-	CAMidiDevice::tr("Agogo", "instrument") <<
-	CAMidiDevice::tr("Steel Drums", "instrument") <<
-	CAMidiDevice::tr("Woodblock", "instrument") <<
-	CAMidiDevice::tr("Taiko Drum", "instrument") <<
-	CAMidiDevice::tr("Melodic Tom", "instrument") <<
-	CAMidiDevice::tr("Synth Drum", "instrument") <<
-	CAMidiDevice::tr("Reverse Cymbal", "instrument") <<
-	CAMidiDevice::tr("Guitar Fret Noise", "instrument") <<
-	CAMidiDevice::tr("Breath Noise", "instrument") <<
-	CAMidiDevice::tr("Seashore", "instrument") <<
-	CAMidiDevice::tr("Bird Tweet", "instrument") <<
-	CAMidiDevice::tr("Telephone Ring", "instrument") <<
-	CAMidiDevice::tr("Helicopter", "instrument") <<
-	CAMidiDevice::tr("Applause", "instrument") <<
-	CAMidiDevice::tr("Gunshot", "instrument");
+CAMidiDevice::CAMidiDevice()
+ : QObject() {
+	GM_INSTRUMENTS = QStringList() <<
+	QObject::tr("Acoustic Grand Piano", "instrument") <<
+	QObject::tr("Bright Acoustic Piano", "instrument") <<
+	QObject::tr("Electric Grand Piano", "instrument") <<
+	QObject::tr("Honky-tonk Piano", "instrument") <<
+	QObject::tr("Electric Piano 1", "instrument") <<
+	QObject::tr("Electric Piano 2", "instrument") <<
+	QObject::tr("Harpsichord", "instrument") <<
+	QObject::tr("Clavi", "instrument") <<
+	QObject::tr("Celesta", "instrument") <<
+	QObject::tr("Glockenspiel", "instrument") <<
+	QObject::tr("Music Box", "instrument") <<
+	QObject::tr("Vibraphone", "instrument") <<
+	QObject::tr("Marimba", "instrument") <<
+	QObject::tr("Xylophone", "instrument") <<
+	QObject::tr("Tubular Bells", "instrument") <<
+	QObject::tr("Dulcimer", "instrument") <<
+	QObject::tr("Drawbar Organ", "instrument") <<
+	QObject::tr("Percussive Organ", "instrument") <<
+	QObject::tr("Rock Organ", "instrument") <<
+	QObject::tr("Church Organ", "instrument") <<
+	QObject::tr("Reed Organ", "instrument") <<
+	QObject::tr("Accordion", "instrument") <<
+	QObject::tr("Harmonica", "instrument") <<
+	QObject::tr("Tango Accordion", "instrument") <<
+	QObject::tr("Acoustic Guitar (nylon)", "instrument") <<
+	QObject::tr("Acoustic Guitar (steel)", "instrument") <<
+	QObject::tr("Electric Guitar (jazz)", "instrument") <<
+	QObject::tr("Electric Guitar (clean)", "instrument") <<
+	QObject::tr("Electric Guitar (muted)", "instrument") <<
+	QObject::tr("Overdriven Guitar", "instrument") <<
+	QObject::tr("Distortion Guitar", "instrument") <<
+	QObject::tr("Guitar harmonics", "instrument") <<
+	QObject::tr("Acoustic Bass", "instrument") <<
+	QObject::tr("Electric Bass (finger)", "instrument") <<
+	QObject::tr("Electric Bass (pick)", "instrument") <<
+	QObject::tr("Fretless Bass", "instrument") <<
+	QObject::tr("Slap Bass 1", "instrument") <<
+	QObject::tr("Slap Bass 2", "instrument") <<
+	QObject::tr("Synth Bass 1", "instrument") <<
+	QObject::tr("Synth Bass 2", "instrument") <<
+	QObject::tr("Violin", "instrument") <<
+	QObject::tr("Viola", "instrument") <<
+	QObject::tr("Cello", "instrument") <<
+	QObject::tr("Contrabass", "instrument") <<
+	QObject::tr("Tremolo Strings", "instrument") <<
+	QObject::tr("Pizzicato Strings", "instrument") <<
+	QObject::tr("Orchestral Harp", "instrument") <<
+	QObject::tr("Timpani", "instrument") <<
+	QObject::tr("String Ensemble 1", "instrument") <<
+	QObject::tr("String Ensemble 2", "instrument") <<
+	QObject::tr("SynthStrings 1", "instrument") <<
+	QObject::tr("SynthStrings 2", "instrument") <<
+	QObject::tr("Choir Aahs", "instrument") <<
+	QObject::tr("Voice Oohs", "instrument") <<
+	QObject::tr("Synth Voice", "instrument") <<
+	QObject::tr("Orchestra Hit", "instrument") <<
+	QObject::tr("Trumpet", "instrument") <<
+	QObject::tr("Trombone", "instrument") <<
+	QObject::tr("Tuba", "instrument") <<
+	QObject::tr("Muted Trumpet", "instrument") <<
+	QObject::tr("French Horn", "instrument") <<
+	QObject::tr("Brass Section", "instrument") <<
+	QObject::tr("SynthBrass 1", "instrument") <<
+	QObject::tr("SynthBrass 2", "instrument") <<
+	QObject::tr("Soprano Sax", "instrument") <<
+	QObject::tr("Alto Sax", "instrument") <<
+	QObject::tr("Tenor Sax", "instrument") <<
+	QObject::tr("Baritone Sax", "instrument") <<
+	QObject::tr("Oboe", "instrument") <<
+	QObject::tr("English Horn", "instrument") <<
+	QObject::tr("Bassoon", "instrument") <<
+	QObject::tr("Clarinet", "instrument") <<
+	QObject::tr("Piccolo", "instrument") <<
+	QObject::tr("Flute", "instrument") <<
+	QObject::tr("Recorder", "instrument") <<
+	QObject::tr("Pan Flute", "instrument") <<
+	QObject::tr("Blown Bottle", "instrument") <<
+	QObject::tr("Shakuhachi", "instrument") <<
+	QObject::tr("Whistle", "instrument") <<
+	QObject::tr("Ocarina", "instrument") <<
+	QObject::tr("Lead 1 (square)", "instrument") <<
+	QObject::tr("Lead 2 (sawtooth)", "instrument") <<
+	QObject::tr("Lead 3 (calliope)", "instrument") <<
+	QObject::tr("Lead 4 (chiff)", "instrument") <<
+	QObject::tr("Lead 5 (charang)", "instrument") <<
+	QObject::tr("Lead 6 (voice)", "instrument") <<
+	QObject::tr("Lead 7 (fifths)", "instrument") <<
+	QObject::tr("Lead 8 (bass + lead)", "instrument") <<
+	QObject::tr("Pad 1 (new age)", "instrument") <<
+	QObject::tr("Pad 2 (warm)", "instrument") <<
+	QObject::tr("Pad 3 (polysynth)", "instrument") <<
+	QObject::tr("Pad 4 (choir)", "instrument") <<
+	QObject::tr("Pad 5 (bowed)", "instrument") <<
+	QObject::tr("Pad 6 (metallic)", "instrument") <<
+	QObject::tr("Pad 7 (halo)", "instrument") <<
+	QObject::tr("Pad 8 (sweep)", "instrument") <<
+	QObject::tr("FX 1 (rain)", "instrument") <<
+	QObject::tr("FX 2 (soundtrack)", "instrument") <<
+	QObject::tr("FX 3 (crystal)", "instrument") <<
+	QObject::tr("FX 4 (atmosphere)", "instrument") <<
+	QObject::tr("FX 5 (brightness)", "instrument") <<
+	QObject::tr("FX 6 (goblins)", "instrument") <<
+	QObject::tr("FX 7 (echoes)", "instrument") <<
+	QObject::tr("FX 8 (sci-fi)", "instrument") <<
+	QObject::tr("Sitar", "instrument") <<
+	QObject::tr("Banjo", "instrument") <<
+	QObject::tr("Shamisen", "instrument") <<
+	QObject::tr("Koto", "instrument") <<
+	QObject::tr("Kalimba", "instrument") <<
+	QObject::tr("Bag pipe", "instrument") <<
+	QObject::tr("Fiddle", "instrument") <<
+	QObject::tr("Shanai", "instrument") <<
+	QObject::tr("Tinkle Bell", "instrument") <<
+	QObject::tr("Agogo", "instrument") <<
+	QObject::tr("Steel Drums", "instrument") <<
+	QObject::tr("Woodblock", "instrument") <<
+	QObject::tr("Taiko Drum", "instrument") <<
+	QObject::tr("Melodic Tom", "instrument") <<
+	QObject::tr("Synth Drum", "instrument") <<
+	QObject::tr("Reverse Cymbal", "instrument") <<
+	QObject::tr("Guitar Fret Noise", "instrument") <<
+	QObject::tr("Breath Noise", "instrument") <<
+	QObject::tr("Seashore", "instrument") <<
+	QObject::tr("Bird Tweet", "instrument") <<
+	QObject::tr("Telephone Ring", "instrument") <<
+	QObject::tr("Helicopter", "instrument") <<
+	QObject::tr("Applause", "instrument") <<
+	QObject::tr("Gunshot", "instrument");
+}
 
 /*!
 	\class CAMidiDevice
@@ -174,3 +173,8 @@ unsigned char CAMidiDevice::freeMidiChannel( CASheet* s ) {
 	
 	return 0;
 }
+
+/*!
+	\var CAMidiDevice::GM_INSTRUMENTS
+	Human names for General Midi Instruments.
+*/

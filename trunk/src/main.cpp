@@ -58,12 +58,6 @@ int main(int argc, char *argv[]) {
 	CACanorus::parseSettingsArguments(argc, argv);
 	splash.show();
 	
-	// Load config file
-	CASettingsDialog::CASettingsPage showSettingsPage = CACanorus::initSettings();
-	
-	// Init dialogs etc.
-	CACanorus::initCommonGUI();
-	
 	// Load system translation if found
 	QList<QString> translationLocations =
 		CACanorus::locateResource(QString("lang/") + QLocale::system().name() + ".qm"); // load language_COUNTRY.qm
@@ -78,7 +72,16 @@ int main(int argc, char *argv[]) {
 	
 	if(QLocale::system().language() == QLocale::Hebrew) // \todo add Arabic, etc.
 		mainApp.setLayoutDirection(Qt::RightToLeft);
-
+	
+	// Init MIDI devices
+	CACanorus::initPlayback();
+	
+	// Load config file
+	CASettingsDialog::CASettingsPage showSettingsPage = CACanorus::initSettings();
+	
+	// Init dialogs etc.
+	CACanorus::initCommonGUI();
+		
 	// Enable scripting and plugins subsystem
 	splash.showMessage( QObject::tr("Initializing Scripting engine", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
 	mainApp.processEvents();

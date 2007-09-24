@@ -54,6 +54,7 @@
 }
 
 void markDelete( PyObject* ); // function used to delete Canorus objects inside Python
+const char* tr( const char * sourceText, const char * comment = 0, int n = -1 );
 
 %include "scripting/context.i"
 %include "scripting/document.i"
@@ -87,6 +88,10 @@ QList<void*> markedObjects = QList<void*>(); // define markedObjects
 
 void markDelete( PyObject* object ) {
 	markedObjects << SWIG_Python_GetSwigThis(object)->ptr;
+}
+
+const char* tr( const char * sourceText, const char * comment = 0, int n = -1 ) {
+	return QObject::tr( sourceText, comment, n ).toUtf8().constData();
 }
 
 class QString;

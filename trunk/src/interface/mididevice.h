@@ -22,7 +22,9 @@ public:
 		RtMidiDevice
 	};
 	
-	static const QStringList GM_INSTRUMENTS;
+	CAMidiDevice();
+	
+	QStringList GM_INSTRUMENTS;
 	static unsigned char freeMidiChannel( CASheet* );
 	
 	virtual ~CAMidiDevice() {};
