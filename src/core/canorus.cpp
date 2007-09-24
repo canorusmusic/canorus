@@ -12,6 +12,8 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QCoreApplication>
+#include <QTranslator>
+#include <QLocale>
 
 #include "interface/rtmididevice.h"
 #include "ui/settingsdialog.h"
@@ -27,6 +29,7 @@ QString CACanorus::_settingsPath;
 CAAutoRecovery *CACanorus::_autoRecovery;
 CAMidiDevice *CACanorus::_midiDevice;
 CAUndo *CACanorus::_undo;
+QApplication *CACanorus::_mainApp;
 
 /*!
 	Locates a resource named fileName (relative path) and returns its absolute path of the file
@@ -89,14 +92,13 @@ QList<QString> CACanorus::locateResourceDir(const QString fileName) {
 /*!
 	Initializes application properties like application name, home page etc.
 */
-void CACanorus::initMain() {
+void CACanorus::initMain( int argc, char *argv[] ) {
 	_autoRecovery = 0;
 	
 	// Init main application properties
 	QCoreApplication::setOrganizationName("Canorus");
 	QCoreApplication::setOrganizationDomain("canorus.org");
 	QCoreApplication::setApplicationName("Canorus");
-	setMidiDevice( new CARtMidiDevice() );	
 }
 
 void CACanorus::initCommonGUI() {
@@ -122,6 +124,12 @@ void CACanorus::initCommonGUI() {
 	CAMainWin::uiImportDialog->setAcceptMode( QFileDialog::AcceptOpen );
 }
 
+/*!
+	Initializes playback devices.
+*/
+void CACanorus::initPlayback() {
+	 setMidiDevice( new CARtMidiDevice() );
+}
 
 /*!
 	Opens Canorus config file and loads the settings.

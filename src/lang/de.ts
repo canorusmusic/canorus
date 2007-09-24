@@ -82,37 +82,37 @@ Die Dokumente %1 wurden wieder hergestellt.</translation>
         <translation>Stimmenauswahl</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="294"/>
+        <location filename="../ui/mainwin.cpp" line="293"/>
         <source>Select Voice Stem Direction</source>
         <translation>Setze Notenhalsrichtung</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="300"/>
+        <location filename="../ui/mainwin.cpp" line="299"/>
         <source>Playable ToolBar</source>
         <translation>Wähle Noten und Pausen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="301"/>
+        <location filename="../ui/mainwin.cpp" line="300"/>
         <source>Select Length</source>
         <translation>Bestimme Notendauer</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="311"/>
+        <location filename="../ui/mainwin.cpp" line="310"/>
         <source>Select Note Stem Direction</source>
         <translation>Setze Notenhalsrichtung</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2683"/>
+        <location filename="../ui/mainwin.cpp" line="2686"/>
         <source>About Qt</source>
         <translation>Über Qt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2687"/>
+        <location filename="../ui/mainwin.cpp" line="2690"/>
         <source>About Canorus</source>
         <translation>Über Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2694"/>
+        <location filename="../ui/mainwin.cpp" line="2697"/>
         <source>Canorus - The next generation music score editor
 
 Version %1
@@ -134,33 +134,33 @@ Dieses Programm steht unter der GNU General Public License (GPL). Der genaue Wor
 Homepage: http://www.canorus.org</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1278"/>
+        <location filename="../ui/mainwin.cpp" line="1281"/>
         <source>Staff%1</source>
         <translation>System%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1282"/>
+        <location filename="../ui/mainwin.cpp" line="1285"/>
         <source>Voice%1</source>
         <translation>Stimme%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="917"/>
+        <location filename="../ui/mainwin.cpp" line="920"/>
         <source>Sheet%1</source>
         <translation>Blatt%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="985"/>
+        <location filename="../ui/mainwin.cpp" line="988"/>
         <source>Canorus</source>
         <translation>Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="963"/>
+        <location filename="../ui/mainwin.cpp" line="966"/>
         <source>Are you sure do you want to delete voice
 %1 and all its notes?</source>
         <translation>Sind sie sicher, die Stimme %1 mit ihren Noten zu löschen?</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="986"/>
+        <location filename="../ui/mainwin.cpp" line="989"/>
         <source>Are you sure do you want to delete context
 %1 and all its contents?</source>
         <translation>Sind sie sicher, den Kontext %1 mit Inhalt zu löschen?</translation>
@@ -176,22 +176,22 @@ Homepage: http://www.canorus.org</translation>
         <translation>Aktuelle Stimme</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="293"/>
+        <location filename="../ui/mainwin.cpp" line="292"/>
         <source>Voice name</source>
         <translation>Stimmbezeichnung</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="550"/>
+        <location filename="../ui/mainwin.cpp" line="553"/>
         <source>Voice stem direction</source>
         <translation>Halsrichtung der Stimme</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="518"/>
+        <location filename="../ui/mainwin.cpp" line="521"/>
         <source>Playable length</source>
         <translation>Notendauer</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="523"/>
+        <location filename="../ui/mainwin.cpp" line="526"/>
         <source>Note stem direction</source>
         <translation>Notenhalsrichtung</translation>
     </message>
@@ -201,27 +201,27 @@ Homepage: http://www.canorus.org</translation>
         <translation>Seitenwerkzeuge</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="957"/>
+        <location filename="../ui/mainwin.cpp" line="960"/>
         <source>Cannot delete the last voice in the staff!</source>
         <translation>Die letzte Stimme des Systems kann nicht gelöscht werden.</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="318"/>
+        <location filename="../ui/mainwin.cpp" line="317"/>
         <source>Key Signature ToolBar</source>
         <translation>Schlüsselauswahl</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="352"/>
+        <location filename="../ui/mainwin.cpp" line="351"/>
         <source>Time Signature ToolBar</source>
         <translation>Taktmaßauswahl</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="357"/>
+        <location filename="../ui/mainwin.cpp" line="356"/>
         <source>Number of beats</source>
         <translation>Zahl der Taktschläge</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="364"/>
+        <location filename="../ui/mainwin.cpp" line="363"/>
         <source>Beat</source>
         <translation>Takt</translation>
     </message>
@@ -291,77 +291,77 @@ Homepage: http://www.canorus.org</translation>
         <translation>Wiederholungsende</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="303"/>
+        <location filename="../ui/mainwin.cpp" line="302"/>
         <source>Breve Length</source>
         <translation>Breve</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="304"/>
+        <location filename="../ui/mainwin.cpp" line="303"/>
         <source>Whole Length</source>
         <translation>Ganze</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="305"/>
+        <location filename="../ui/mainwin.cpp" line="304"/>
         <source>Half Length</source>
         <translation>Halbe</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="306"/>
+        <location filename="../ui/mainwin.cpp" line="305"/>
         <source>Quarter Length</source>
         <translation>Viertel</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="307"/>
+        <location filename="../ui/mainwin.cpp" line="306"/>
         <source>Eighth Length</source>
         <translation>Achtel</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="308"/>
+        <location filename="../ui/mainwin.cpp" line="307"/>
         <source>Sixteenth Length</source>
         <translation>Sechzehntel</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="309"/>
+        <location filename="../ui/mainwin.cpp" line="308"/>
         <source>ThirtySecond Length</source>
         <translation>Zweiunddreißigstel</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="310"/>
+        <location filename="../ui/mainwin.cpp" line="309"/>
         <source>SixtyFourth Length</source>
         <translation>Vierundsechzigstel</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="296"/>
+        <location filename="../ui/mainwin.cpp" line="295"/>
         <source>Voice Stems Neutral</source>
         <translation>In Stimme Halsrichtung neutral</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="297"/>
+        <location filename="../ui/mainwin.cpp" line="296"/>
         <source>Voice Stems Up</source>
         <translation>In Stimme Halsrichtung nach oben</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="298"/>
+        <location filename="../ui/mainwin.cpp" line="297"/>
         <source>Voice Stems Down</source>
         <translation>In Stimme Halsrichtung nach unten</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="313"/>
+        <location filename="../ui/mainwin.cpp" line="312"/>
         <source>Note Stem Neutral</source>
         <translation>Halsrichtung neutral</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="314"/>
+        <location filename="../ui/mainwin.cpp" line="313"/>
         <source>Note Stem Up</source>
         <translation>Halsrichtung nach oben</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="315"/>
+        <location filename="../ui/mainwin.cpp" line="314"/>
         <source>Note Stem Down</source>
         <translation>Halsrichtung nach unten</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="316"/>
+        <location filename="../ui/mainwin.cpp" line="315"/>
         <source>Note Stem Preferred</source>
         <translation>bevorzugte Halsrichtung</translation>
     </message>
@@ -371,97 +371,97 @@ Homepage: http://www.canorus.org</translation>
         <translation>Wiederholung Ende und Anfang</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="375"/>
+        <location filename="../ui/mainwin.cpp" line="374"/>
         <source>Function marking ToolBar</source>
         <translation>Werkzeuge zur Funktionsbezeichnung</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="404"/>
+        <location filename="../ui/mainwin.cpp" line="403"/>
         <source>Tonic</source>
         <translation>Tonika</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="406"/>
+        <location filename="../ui/mainwin.cpp" line="405"/>
         <source>Subdominant</source>
         <translation>Subdominante</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="408"/>
+        <location filename="../ui/mainwin.cpp" line="407"/>
         <source>Dominant</source>
         <translation>Dominante</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="409"/>
+        <location filename="../ui/mainwin.cpp" line="408"/>
         <source>II</source>
         <translation>II</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="410"/>
+        <location filename="../ui/mainwin.cpp" line="409"/>
         <source>III</source>
         <translation>III</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="411"/>
+        <location filename="../ui/mainwin.cpp" line="410"/>
         <source>VI</source>
         <translation>VI</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="412"/>
+        <location filename="../ui/mainwin.cpp" line="411"/>
         <source>VII</source>
         <translation>VII</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="385"/>
+        <location filename="../ui/mainwin.cpp" line="384"/>
         <source>Cadenze</source>
         <translation>Kadenz</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="405"/>
+        <location filename="../ui/mainwin.cpp" line="404"/>
         <source>minor Tonic</source>
         <translation>Molltonika</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="407"/>
+        <location filename="../ui/mainwin.cpp" line="406"/>
         <source>minor Subdominant</source>
         <translation>Mollsubdominante</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="388"/>
+        <location filename="../ui/mainwin.cpp" line="387"/>
         <source>Napolitan</source>
         <translation>Neapolitaner</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="389"/>
+        <location filename="../ui/mainwin.cpp" line="388"/>
         <source>Phrygian</source>
         <translation>Phrygisch</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="390"/>
+        <location filename="../ui/mainwin.cpp" line="389"/>
         <source>Lydian</source>
         <translation>Lydisch</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="391"/>
+        <location filename="../ui/mainwin.cpp" line="390"/>
         <source>IV</source>
         <translation>IV</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="392"/>
+        <location filename="../ui/mainwin.cpp" line="391"/>
         <source>V</source>
         <translation>V</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="376"/>
+        <location filename="../ui/mainwin.cpp" line="375"/>
         <source>Select Function Name</source>
         <translation>Wähle Funktionsbezeichnung</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="394"/>
+        <location filename="../ui/mainwin.cpp" line="393"/>
         <source>Select Chord Area</source>
         <translation>Wähle Akkordbereich</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="402"/>
+        <location filename="../ui/mainwin.cpp" line="401"/>
         <source>Select Tonic Degree</source>
         <translation>Wähle Tonstufe</translation>
     </message>
@@ -481,12 +481,12 @@ Homepage: http://www.canorus.org</translation>
         <translation>Neuer Funktionskontext</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1295"/>
+        <location filename="../ui/mainwin.cpp" line="1298"/>
         <source>LyricsContext%1</source>
         <translation>Textkontext%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1309"/>
+        <location filename="../ui/mainwin.cpp" line="1312"/>
         <source>FunctionMarkingContext%1</source>
         <translation>Funktionsbezeichnung%1</translation>
     </message>
@@ -501,198 +501,198 @@ Homepage: http://www.canorus.org</translation>
         <translation>zugehörige Stimme</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="916"/>
+        <location filename="../ui/mainwin.cpp" line="919"/>
         <source>new sheet</source>
         <comment>undo</comment>
         <translation>Neues Blatt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="937"/>
+        <location filename="../ui/mainwin.cpp" line="940"/>
         <source>new voice</source>
         <comment>undo</comment>
         <translation>Neue Stimme</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="968"/>
+        <location filename="../ui/mainwin.cpp" line="971"/>
         <source>voice removal</source>
         <comment>undo</comment>
         <translation>Stimme löschen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="991"/>
+        <location filename="../ui/mainwin.cpp" line="994"/>
         <source>context removal</source>
         <comment>undo</comment>
         <translation>Kontext löschen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1274"/>
+        <location filename="../ui/mainwin.cpp" line="1277"/>
         <source>new staff</source>
         <comment>undo</comment>
         <translation>Neues System</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1286"/>
+        <location filename="../ui/mainwin.cpp" line="1289"/>
         <source>new lyrics context</source>
         <comment>undo</comment>
         <translation>neuer Textkontext</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1305"/>
+        <location filename="../ui/mainwin.cpp" line="1308"/>
         <source>new function marking context</source>
         <comment>undo</comment>
         <translation>neuer Funktionsbezeichnungskontext</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1527"/>
+        <location filename="../ui/mainwin.cpp" line="1530"/>
         <source>insert barline</source>
         <comment>undo</comment>
         <translation>Taktlinie einfügen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1549"/>
+        <location filename="../ui/mainwin.cpp" line="1552"/>
         <source>rise note</source>
         <comment>undo</comment>
         <translation>Note erhöhen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1575"/>
+        <location filename="../ui/mainwin.cpp" line="1578"/>
         <source>lower note</source>
         <comment>undo</comment>
         <translation>Note erniedrigen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1603"/>
+        <location filename="../ui/mainwin.cpp" line="1606"/>
         <source>add sharp</source>
         <comment>undo</comment>
         <translation>Kreuz hinzufügen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1623"/>
+        <location filename="../ui/mainwin.cpp" line="1626"/>
         <source>add flat</source>
         <comment>undo</comment>
         <translation>B hinzufügen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1640"/>
+        <location filename="../ui/mainwin.cpp" line="1643"/>
         <source>set dotted</source>
         <comment>undo</comment>
         <translation>Punktieren</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3275"/>
+        <location filename="../ui/mainwin.cpp" line="3297"/>
         <source>deletion of elements</source>
         <comment>undo</comment>
         <translation>Elemente löschen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1763"/>
+        <location filename="../ui/mainwin.cpp" line="1766"/>
         <source>insertion of music element</source>
         <comment>undo</comment>
         <translation>Noten und Pausen einfügen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2274"/>
+        <location filename="../ui/mainwin.cpp" line="2277"/>
         <source>change voice name</source>
         <comment>undo</comment>
         <translation>Stimmenamen ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2367"/>
+        <location filename="../ui/mainwin.cpp" line="2370"/>
         <source>lyrics edit</source>
         <comment>undo</comment>
         <translation>Text editieren</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2643"/>
+        <location filename="../ui/mainwin.cpp" line="2646"/>
         <source>commit CanorusML source</source>
         <comment>undo</comment>
         <translation>CanorusML Daten übernehmen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2669"/>
+        <location filename="../ui/mainwin.cpp" line="2672"/>
         <source>commit LilyPond source</source>
         <comment>undo</comment>
         <translation>LilyPond Daten übernehmen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2748"/>
+        <location filename="../ui/mainwin.cpp" line="2751"/>
         <source>deletion of the sheet</source>
         <comment>undo</comment>
         <translation>Blatt löschen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2806"/>
+        <location filename="../ui/mainwin.cpp" line="2809"/>
         <source>change sheet name</source>
         <comment>undo</comment>
         <translation>Blattbezeichnung ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2827"/>
+        <location filename="../ui/mainwin.cpp" line="2830"/>
         <source>change context name</source>
         <comment>undo</comment>
         <translation>Kontextnamen ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2846"/>
+        <location filename="../ui/mainwin.cpp" line="2849"/>
         <source>change stanza number</source>
         <comment>undo</comment>
         <translation>Strophennummer ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2858"/>
+        <location filename="../ui/mainwin.cpp" line="2861"/>
         <source>change associated voice</source>
         <comment>undo</comment>
         <translation>zugehörige Stimme ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2869"/>
+        <location filename="../ui/mainwin.cpp" line="2872"/>
         <source>change voice stem direction</source>
         <comment>undo</comment>
         <translation>Halsrichtung in der Stimme ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2886"/>
+        <location filename="../ui/mainwin.cpp" line="2889"/>
         <source>change note stem direction</source>
         <comment>undo</comment>
         <translation>Notenhalsrichtung ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="475"/>
+        <location filename="../ui/mainwin.cpp" line="474"/>
         <source>Insert new context</source>
         <translation>neuen Kontext einfügen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="481"/>
+        <location filename="../ui/mainwin.cpp" line="480"/>
         <source>Insert new slur</source>
         <translation>Legatobogen einfügen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="485"/>
+        <location filename="../ui/mainwin.cpp" line="484"/>
         <source>Insert new clef</source>
         <translation>Schlüssel einfügen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="490"/>
+        <location filename="../ui/mainwin.cpp" line="489"/>
         <source>Insert new time signature</source>
         <translation>Taktart einfügen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="494"/>
+        <location filename="../ui/mainwin.cpp" line="493"/>
         <source>Insert new barline</source>
         <translation>Taktlinie einfügen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="557"/>
+        <location filename="../ui/mainwin.cpp" line="560"/>
         <source>Function marking</source>
         <translation>Funktionsbezeichnung</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="561"/>
+        <location filename="../ui/mainwin.cpp" line="564"/>
         <source>Function marking chord area</source>
         <translation>Akkordbereich der Funktionsbezeichnung</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="566"/>
+        <location filename="../ui/mainwin.cpp" line="569"/>
         <source>Function marking tonic degree</source>
         <translation>Tonstufe der Funktionsbezeichnung</translation>
     </message>
@@ -732,1006 +732,235 @@ Homepage: http://www.canorus.org</translation>
         <translation>Baritonschlüssel</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="289"/>
+        <location filename="../ui/mainwin.cpp" line="288"/>
         <source>Voice instrument</source>
         <translation>Stimmeninstrument</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="415"/>
+        <location filename="../ui/mainwin.cpp" line="414"/>
         <source>C-flat major</source>
         <translation>Ces Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="416"/>
+        <location filename="../ui/mainwin.cpp" line="415"/>
         <source>a-flat minor</source>
         <translation>As Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="417"/>
+        <location filename="../ui/mainwin.cpp" line="416"/>
         <source>G-flat major</source>
         <translation>Ges Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="418"/>
+        <location filename="../ui/mainwin.cpp" line="417"/>
         <source>e-flat minor</source>
         <translation>Es Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="419"/>
+        <location filename="../ui/mainwin.cpp" line="418"/>
         <source>D-flat major</source>
         <translation>Des Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="420"/>
+        <location filename="../ui/mainwin.cpp" line="419"/>
         <source>b-flat minor</source>
         <translation>B Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="421"/>
+        <location filename="../ui/mainwin.cpp" line="420"/>
         <source>A-flat major</source>
         <translation>As Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="422"/>
+        <location filename="../ui/mainwin.cpp" line="421"/>
         <source>f minor</source>
         <translation>F Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="423"/>
+        <location filename="../ui/mainwin.cpp" line="422"/>
         <source>E-flat major</source>
         <translation>Es Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="424"/>
+        <location filename="../ui/mainwin.cpp" line="423"/>
         <source>c minor</source>
         <translation>C Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="425"/>
+        <location filename="../ui/mainwin.cpp" line="424"/>
         <source>B-flat major</source>
         <translation>B Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="426"/>
+        <location filename="../ui/mainwin.cpp" line="425"/>
         <source>g minor</source>
         <translation>G Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="427"/>
+        <location filename="../ui/mainwin.cpp" line="426"/>
         <source>F major</source>
         <translation>F Dur 
 </translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="428"/>
+        <location filename="../ui/mainwin.cpp" line="427"/>
         <source>d minor</source>
         <translation>D Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="429"/>
+        <location filename="../ui/mainwin.cpp" line="428"/>
         <source>C major</source>
         <translation>C Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="430"/>
+        <location filename="../ui/mainwin.cpp" line="429"/>
         <source>a minor</source>
         <translation>A Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="431"/>
+        <location filename="../ui/mainwin.cpp" line="430"/>
         <source>G major</source>
         <translation>G Dur 
 </translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="432"/>
+        <location filename="../ui/mainwin.cpp" line="431"/>
         <source>e minor</source>
         <translation>E Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="433"/>
+        <location filename="../ui/mainwin.cpp" line="432"/>
         <source>D major</source>
         <translation>D Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="434"/>
+        <location filename="../ui/mainwin.cpp" line="433"/>
         <source>b minor</source>
         <translation>H Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="435"/>
+        <location filename="../ui/mainwin.cpp" line="434"/>
         <source>A major</source>
         <translation>A Dur 
 </translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="436"/>
+        <location filename="../ui/mainwin.cpp" line="435"/>
         <source>f-sharp minor</source>
         <translation>Fis Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="437"/>
+        <location filename="../ui/mainwin.cpp" line="436"/>
         <source>E major</source>
         <translation>E Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="438"/>
+        <location filename="../ui/mainwin.cpp" line="437"/>
         <source>c-sharp minor</source>
         <translation>Cis Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="439"/>
+        <location filename="../ui/mainwin.cpp" line="438"/>
         <source>B major</source>
         <translation>H Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="440"/>
+        <location filename="../ui/mainwin.cpp" line="439"/>
         <source>g-sharp minor</source>
         <translation>Gis Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="441"/>
+        <location filename="../ui/mainwin.cpp" line="440"/>
         <source>F-sharp major</source>
         <translation>Fis Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="442"/>
+        <location filename="../ui/mainwin.cpp" line="441"/>
         <source>d-sharp minor</source>
         <translation>Dis Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="443"/>
+        <location filename="../ui/mainwin.cpp" line="442"/>
         <source>C-sharp major</source>
         <translation>Cis Dur</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="444"/>
+        <location filename="../ui/mainwin.cpp" line="443"/>
         <source>a-sharp minor</source>
         <translation>Ais Moll</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="366"/>
+        <location filename="../ui/mainwin.cpp" line="365"/>
         <source>Clef ToolBar</source>
         <translation>Schlüsselauswahl</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="373"/>
+        <location filename="../ui/mainwin.cpp" line="372"/>
         <source>Clef offset</source>
         <translation>Schlüsselverschiebung</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="456"/>
+        <location filename="../ui/mainwin.cpp" line="455"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="460"/>
+        <location filename="../ui/mainwin.cpp" line="459"/>
         <source>Redo</source>
         <translation>Wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2256"/>
+        <location filename="../ui/mainwin.cpp" line="2259"/>
         <source>change clef offset</source>
         <comment>undo</comment>
         <translation>Schlüsselverschiebung ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3236"/>
+        <location filename="../ui/mainwin.cpp" line="3258"/>
         <source>cut</source>
         <comment>undo</comment>
         <translation>Ausschneiden</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3340"/>
+        <location filename="../ui/mainwin.cpp" line="3362"/>
         <source>paste</source>
         <comment>undo</comment>
         <translation>Einfügen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="401"/>
+        <location filename="../ui/mainwin.cpp" line="400"/>
         <source>None</source>
         <translation type="unfinished">Keine</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2217"/>
+        <location filename="../ui/mainwin.cpp" line="2220"/>
         <source>change key signature</source>
         <comment>undo</comment>
         <translation>Schlüssel ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2408"/>
+        <location filename="../ui/mainwin.cpp" line="2411"/>
         <source>change function</source>
         <comment>undo</comment>
         <translation>Funktionsbeschreibung ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2431"/>
+        <location filename="../ui/mainwin.cpp" line="2434"/>
         <source>change chord area</source>
         <comment>undo</comment>
         <translation>Akkordbereich ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2454"/>
+        <location filename="../ui/mainwin.cpp" line="2457"/>
         <source>change tonic degree</source>
         <comment>undo</comment>
         <translation>Tonstufe ändern</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2476"/>
+        <location filename="../ui/mainwin.cpp" line="2479"/>
         <source>set/unset ellipse</source>
         <comment>undo</comment>
         <translation>Ellipse ein/aus</translation>
-    </message>
-</context>
-<context>
-    <name>CAMidiDevice</name>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="18"/>
-        <source>Acoustic Grand Piano</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="19"/>
-        <source>Bright Acoustic Piano</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="20"/>
-        <source>Electric Grand Piano</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="21"/>
-        <source>Honky-tonk Piano</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="22"/>
-        <source>Electric Piano 1</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="23"/>
-        <source>Electric Piano 2</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="24"/>
-        <source>Harpsichord</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="25"/>
-        <source>Clavi</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="26"/>
-        <source>Celesta</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="27"/>
-        <source>Glockenspiel</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="28"/>
-        <source>Music Box</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="29"/>
-        <source>Vibraphone</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="30"/>
-        <source>Marimba</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="31"/>
-        <source>Xylophone</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="32"/>
-        <source>Tubular Bells</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="33"/>
-        <source>Dulcimer</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="34"/>
-        <source>Drawbar Organ</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="35"/>
-        <source>Percussive Organ</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="36"/>
-        <source>Rock Organ</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="37"/>
-        <source>Church Organ</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="38"/>
-        <source>Reed Organ</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="39"/>
-        <source>Accordion</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="40"/>
-        <source>Harmonica</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="41"/>
-        <source>Tango Accordion</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="42"/>
-        <source>Acoustic Guitar (nylon)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="43"/>
-        <source>Acoustic Guitar (steel)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="44"/>
-        <source>Electric Guitar (jazz)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="45"/>
-        <source>Electric Guitar (clean)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="46"/>
-        <source>Electric Guitar (muted)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="47"/>
-        <source>Overdriven Guitar</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="48"/>
-        <source>Distortion Guitar</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="49"/>
-        <source>Guitar harmonics</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="50"/>
-        <source>Acoustic Bass</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="51"/>
-        <source>Electric Bass (finger)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="52"/>
-        <source>Electric Bass (pick)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="53"/>
-        <source>Fretless Bass</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="54"/>
-        <source>Slap Bass 1</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="55"/>
-        <source>Slap Bass 2</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="56"/>
-        <source>Synth Bass 1</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="57"/>
-        <source>Synth Bass 2</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="58"/>
-        <source>Violin</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="59"/>
-        <source>Viola</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="60"/>
-        <source>Cello</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="61"/>
-        <source>Contrabass</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="62"/>
-        <source>Tremolo Strings</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="63"/>
-        <source>Pizzicato Strings</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="64"/>
-        <source>Orchestral Harp</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="65"/>
-        <source>Timpani</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="66"/>
-        <source>String Ensemble 1</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="67"/>
-        <source>String Ensemble 2</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="68"/>
-        <source>SynthStrings 1</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="69"/>
-        <source>SynthStrings 2</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="70"/>
-        <source>Choir Aahs</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="71"/>
-        <source>Voice Oohs</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="72"/>
-        <source>Synth Voice</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="73"/>
-        <source>Orchestra Hit</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="74"/>
-        <source>Trumpet</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="75"/>
-        <source>Trombone</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="76"/>
-        <source>Tuba</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="77"/>
-        <source>Muted Trumpet</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="78"/>
-        <source>French Horn</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="79"/>
-        <source>Brass Section</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="80"/>
-        <source>SynthBrass 1</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="81"/>
-        <source>SynthBrass 2</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="82"/>
-        <source>Soprano Sax</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="83"/>
-        <source>Alto Sax</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="84"/>
-        <source>Tenor Sax</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="85"/>
-        <source>Baritone Sax</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="86"/>
-        <source>Oboe</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="87"/>
-        <source>English Horn</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="88"/>
-        <source>Bassoon</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="89"/>
-        <source>Clarinet</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="90"/>
-        <source>Piccolo</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="91"/>
-        <source>Flute</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="92"/>
-        <source>Recorder</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="93"/>
-        <source>Pan Flute</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="94"/>
-        <source>Blown Bottle</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="95"/>
-        <source>Shakuhachi</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="96"/>
-        <source>Whistle</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="97"/>
-        <source>Ocarina</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="98"/>
-        <source>Lead 1 (square)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="99"/>
-        <source>Lead 2 (sawtooth)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="100"/>
-        <source>Lead 3 (calliope)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="101"/>
-        <source>Lead 4 (chiff)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="102"/>
-        <source>Lead 5 (charang)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="103"/>
-        <source>Lead 6 (voice)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="104"/>
-        <source>Lead 7 (fifths)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="105"/>
-        <source>Lead 8 (bass + lead)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="106"/>
-        <source>Pad 1 (new age)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="107"/>
-        <source>Pad 2 (warm)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="108"/>
-        <source>Pad 3 (polysynth)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="109"/>
-        <source>Pad 4 (choir)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="110"/>
-        <source>Pad 5 (bowed)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="111"/>
-        <source>Pad 6 (metallic)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="112"/>
-        <source>Pad 7 (halo)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="113"/>
-        <source>Pad 8 (sweep)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="114"/>
-        <source>FX 1 (rain)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="115"/>
-        <source>FX 2 (soundtrack)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="116"/>
-        <source>FX 3 (crystal)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="117"/>
-        <source>FX 4 (atmosphere)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="118"/>
-        <source>FX 5 (brightness)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="119"/>
-        <source>FX 6 (goblins)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="120"/>
-        <source>FX 7 (echoes)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="121"/>
-        <source>FX 8 (sci-fi)</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="122"/>
-        <source>Sitar</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="123"/>
-        <source>Banjo</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="124"/>
-        <source>Shamisen</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="125"/>
-        <source>Koto</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="126"/>
-        <source>Kalimba</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="127"/>
-        <source>Bag pipe</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="128"/>
-        <source>Fiddle</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="129"/>
-        <source>Shanai</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="130"/>
-        <source>Tinkle Bell</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="131"/>
-        <source>Agogo</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="132"/>
-        <source>Steel Drums</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="133"/>
-        <source>Woodblock</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="134"/>
-        <source>Taiko Drum</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="135"/>
-        <source>Melodic Tom</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="136"/>
-        <source>Synth Drum</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="137"/>
-        <source>Reverse Cymbal</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="138"/>
-        <source>Guitar Fret Noise</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="139"/>
-        <source>Breath Noise</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="140"/>
-        <source>Seashore</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="141"/>
-        <source>Bird Tweet</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="142"/>
-        <source>Telephone Ring</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="143"/>
-        <source>Helicopter</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="144"/>
-        <source>Applause</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="144"/>
-        <source>Gunshot</source>
-        <comment>instrument</comment>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1812,58 +1041,58 @@ Homepage: http://www.canorus.org</translation>
         <translation>Textkontext %1</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="80"/>
+        <location filename="../main.cpp" line="86"/>
         <source>Initializing Scripting engine</source>
         <comment>splashScreen</comment>
         <translation>Initialisiere Skripting</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="85"/>
+        <location filename="../main.cpp" line="91"/>
         <source>Reading Plugins</source>
         <comment>splashScreen</comment>
         <translation>Plugins einlesen</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="90"/>
+        <location filename="../main.cpp" line="96"/>
         <source>Initializing Automatic recovery</source>
         <comment>splashScreen</comment>
         <translation>Initialisiere automatische Wiederherstellung</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="95"/>
+        <location filename="../main.cpp" line="101"/>
         <source>Initializing Undo/Redo framework</source>
         <comment>splashScreen</comment>
         <translation>Initialisiere Rückgängig/Wiederherstellen-Umgebung</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="100"/>
+        <location filename="../main.cpp" line="106"/>
         <source>Searching for recovery documents</source>
         <comment>splashScreen</comment>
         <translation>Nach wiederherzustellenden Dokumenten suchen</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="105"/>
+        <location filename="../main.cpp" line="111"/>
         <source>Initializing Main window</source>
         <comment>splashScreen</comment>
         <translation>Initialisierung Hauptfenster</translation>
     </message>
     <message>
-        <location filename="../core/canorus.cpp" line="104"/>
+        <location filename="../core/canorus.cpp" line="106"/>
         <source>Choose a file to save</source>
         <translation>Datei zum Speichern auswählen</translation>
     </message>
     <message>
-        <location filename="../core/canorus.cpp" line="110"/>
+        <location filename="../core/canorus.cpp" line="112"/>
         <source>Choose a file to open</source>
         <translation>Datei zum Öffnen auswählen</translation>
     </message>
     <message>
-        <location filename="../core/canorus.cpp" line="115"/>
+        <location filename="../core/canorus.cpp" line="117"/>
         <source>Choose a file to export</source>
         <translation>Datei zum Export auswählen</translation>
     </message>
     <message>
-        <location filename="../core/canorus.cpp" line="120"/>
+        <location filename="../core/canorus.cpp" line="122"/>
         <source>Choose a file to import</source>
         <translation>Datei zum Import auswählen</translation>
     </message>
@@ -1911,6 +1140,774 @@ Homepage: http://www.canorus.org</translation>
         <location filename="../ui/mainwin.cpp" line="93"/>
         <source>Midi file (*.mid, *.midi)</source>
         <translation>Midi Datei (*.mid, *.midi)</translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="17"/>
+        <source>Bright Acoustic Piano</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="18"/>
+        <source>Electric Grand Piano</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="19"/>
+        <source>Honky-tonk Piano</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="20"/>
+        <source>Electric Piano 1</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="21"/>
+        <source>Electric Piano 2</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="22"/>
+        <source>Harpsichord</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="23"/>
+        <source>Clavi</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="24"/>
+        <source>Celesta</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="25"/>
+        <source>Glockenspiel</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="26"/>
+        <source>Music Box</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="27"/>
+        <source>Vibraphone</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="28"/>
+        <source>Marimba</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="29"/>
+        <source>Xylophone</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="30"/>
+        <source>Tubular Bells</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="31"/>
+        <source>Dulcimer</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="32"/>
+        <source>Drawbar Organ</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="33"/>
+        <source>Percussive Organ</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="34"/>
+        <source>Rock Organ</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="35"/>
+        <source>Church Organ</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="36"/>
+        <source>Reed Organ</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="37"/>
+        <source>Accordion</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="38"/>
+        <source>Harmonica</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="39"/>
+        <source>Tango Accordion</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="40"/>
+        <source>Acoustic Guitar (nylon)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="41"/>
+        <source>Acoustic Guitar (steel)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="42"/>
+        <source>Electric Guitar (jazz)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="43"/>
+        <source>Electric Guitar (clean)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="44"/>
+        <source>Electric Guitar (muted)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="45"/>
+        <source>Overdriven Guitar</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="46"/>
+        <source>Distortion Guitar</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="47"/>
+        <source>Guitar harmonics</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="48"/>
+        <source>Acoustic Bass</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="49"/>
+        <source>Electric Bass (finger)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="50"/>
+        <source>Electric Bass (pick)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="51"/>
+        <source>Fretless Bass</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="52"/>
+        <source>Slap Bass 1</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="53"/>
+        <source>Slap Bass 2</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="54"/>
+        <source>Synth Bass 1</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="55"/>
+        <source>Synth Bass 2</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="56"/>
+        <source>Violin</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="57"/>
+        <source>Viola</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="58"/>
+        <source>Cello</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="59"/>
+        <source>Contrabass</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="60"/>
+        <source>Tremolo Strings</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="61"/>
+        <source>Pizzicato Strings</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="62"/>
+        <source>Orchestral Harp</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="63"/>
+        <source>Timpani</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="64"/>
+        <source>String Ensemble 1</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="65"/>
+        <source>String Ensemble 2</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="66"/>
+        <source>SynthStrings 1</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="67"/>
+        <source>SynthStrings 2</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="68"/>
+        <source>Choir Aahs</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="69"/>
+        <source>Voice Oohs</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="70"/>
+        <source>Synth Voice</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="71"/>
+        <source>Orchestra Hit</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="72"/>
+        <source>Trumpet</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="73"/>
+        <source>Trombone</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="74"/>
+        <source>Tuba</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="75"/>
+        <source>Muted Trumpet</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="76"/>
+        <source>French Horn</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="77"/>
+        <source>Brass Section</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="78"/>
+        <source>SynthBrass 1</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="79"/>
+        <source>SynthBrass 2</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="80"/>
+        <source>Soprano Sax</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="81"/>
+        <source>Alto Sax</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="82"/>
+        <source>Tenor Sax</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="83"/>
+        <source>Baritone Sax</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="84"/>
+        <source>Oboe</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="85"/>
+        <source>English Horn</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="86"/>
+        <source>Bassoon</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="87"/>
+        <source>Clarinet</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="88"/>
+        <source>Piccolo</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="89"/>
+        <source>Flute</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="90"/>
+        <source>Recorder</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="91"/>
+        <source>Pan Flute</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="92"/>
+        <source>Blown Bottle</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="93"/>
+        <source>Shakuhachi</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="94"/>
+        <source>Whistle</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="95"/>
+        <source>Ocarina</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="96"/>
+        <source>Lead 1 (square)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="97"/>
+        <source>Lead 2 (sawtooth)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="98"/>
+        <source>Lead 3 (calliope)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="99"/>
+        <source>Lead 4 (chiff)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="100"/>
+        <source>Lead 5 (charang)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="101"/>
+        <source>Lead 6 (voice)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="102"/>
+        <source>Lead 7 (fifths)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="103"/>
+        <source>Lead 8 (bass + lead)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="104"/>
+        <source>Pad 1 (new age)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="105"/>
+        <source>Pad 2 (warm)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="106"/>
+        <source>Pad 3 (polysynth)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="107"/>
+        <source>Pad 4 (choir)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="108"/>
+        <source>Pad 5 (bowed)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="109"/>
+        <source>Pad 6 (metallic)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="110"/>
+        <source>Pad 7 (halo)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="111"/>
+        <source>Pad 8 (sweep)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="112"/>
+        <source>FX 1 (rain)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="113"/>
+        <source>FX 2 (soundtrack)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="114"/>
+        <source>FX 3 (crystal)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="115"/>
+        <source>FX 4 (atmosphere)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="116"/>
+        <source>FX 5 (brightness)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="117"/>
+        <source>FX 6 (goblins)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="118"/>
+        <source>FX 7 (echoes)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="119"/>
+        <source>FX 8 (sci-fi)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="120"/>
+        <source>Sitar</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="121"/>
+        <source>Banjo</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="122"/>
+        <source>Shamisen</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="123"/>
+        <source>Koto</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="124"/>
+        <source>Kalimba</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="125"/>
+        <source>Bag pipe</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="126"/>
+        <source>Fiddle</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="127"/>
+        <source>Shanai</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="128"/>
+        <source>Tinkle Bell</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="129"/>
+        <source>Agogo</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="130"/>
+        <source>Steel Drums</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="131"/>
+        <source>Woodblock</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="132"/>
+        <source>Taiko Drum</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="133"/>
+        <source>Melodic Tom</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="134"/>
+        <source>Synth Drum</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="135"/>
+        <source>Reverse Cymbal</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="136"/>
+        <source>Guitar Fret Noise</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="137"/>
+        <source>Breath Noise</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="138"/>
+        <source>Seashore</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="139"/>
+        <source>Bird Tweet</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="140"/>
+        <source>Telephone Ring</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="141"/>
+        <source>Helicopter</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="142"/>
+        <source>Applause</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="142"/>
+        <source>Gunshot</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../interface/mididevice.cpp" line="16"/>
+        <source>Acoustic Grand Piano</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2085,12 +2082,12 @@ Homepage: http://www.canorus.org</translation>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="457"/>
+        <location filename="../ui/mainwin.cpp" line="456"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="461"/>
+        <location filename="../ui/mainwin.cpp" line="460"/>
         <source>Ctrl+Y</source>
         <translation>Ctrl+Y</translation>
     </message>
