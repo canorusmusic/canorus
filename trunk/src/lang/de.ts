@@ -1935,7 +1935,7 @@ Homepage: http://www.canorus.org</translation>
     <message>
         <location filename="../ui_documentproperties.h" line="254"/>
         <source>Arranger:</source>
-        <translation>Arangeur:</translation>
+        <translation>Arrangeur:</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="255"/>
