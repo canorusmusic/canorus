@@ -2942,8 +2942,7 @@ void CAMainWin::updateSheetToolBar() {
 */
 void CAMainWin::updateVoiceToolBar() {
 	CAContext *context = currentContext();
-	if ( mode()==SelectMode && context && context->contextType() == CAContext::Staff ||
-	     uiInsertPlayable->isChecked() ) {
+	if ( mode()==SelectMode && context && context->contextType() == CAContext::Staff ) {
 		CAStaff *staff = static_cast<CAStaff*>(context);
 		uiNewVoice->setVisible(true);
 		uiNewVoice->setEnabled(true);
