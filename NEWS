@@ -1,22 +1,23 @@
 0.4
 ===
-- Settings dialog
-- Customizable colors for Score editor
-- Element advanced properties dialog with abilities to change order of elements
-- Copy/Paste
-- Undo/Redo
-- Splash screen
-- MIDI instrument per voice support
-- Key signature major/minor support and function marking integration
-- All predefined clefs supported by LilyPond with custom offsets
-- Scripting engine is now always synchronized with the current API
-- Python engine now uses objective Swig interface
-- New CanorusML support in scripting library for directly opening/saving
-Canorus files
-- New playback support in scripting library
-- New translations: Dutch, Swedish, Hebrew, German
-- Qt4.3 compatibility
-- lots of smaller additions and even more fixes
+- Settings dialog.
+- Customizable colors for Score editor.
+- Element advanced properties dialog with abilities to change order of elements.
+- Document recovery, if Canorus crashes.
+- Copy/Paste.
+- Undo/Redo.
+- Splash screen.
+- MIDI instrument per voice support.
+- Key signature major/minor support and function marking integration.
+- All predefined clefs supported by LilyPond with custom offsets.
+- Scripting engine is now always synchronized with the current API.
+- Python engine uses objective Swig interface.
+- New CanorusML support in scripting library for directly opening/saving Canorus files.
+- New playback support in scripting library.
+- Supported translations besides English: Slovenian, Dutch, Swedish, Hebrew, German.
+- Keyboard bindings for note insertion, playback and selection.
+- Qt4.3 compatibility.
+- Lots of smaller additions and even more fixes.
 
 0.3.1
 =====
