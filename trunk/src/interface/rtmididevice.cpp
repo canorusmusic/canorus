@@ -9,6 +9,7 @@
 
 #include "interface/rtmididevice.h"
 #include "rtmidi/RtMidi.h"
+#include "core/canorus.h"
 
 /*!
 	\class CARtMidiDevice
@@ -73,7 +74,7 @@ bool CARtMidiDevice::openInputPort(int port) {
 			error.printMessage();
 			return false;	// error when opening the port
 		}
-		//_in->setCallback( &midiInCallback ); // sets the callback function \todo Compile errors :( -M
+		_in->setCallback( &rtMidiInCallback ); // sets the callback function
 		_inOpen=true;
 		return true;	// port opened successfully
 	} else {
@@ -85,8 +86,8 @@ bool CARtMidiDevice::openInputPort(int port) {
 /*!
 	Callback function which gets called by RtMidi automatically when an information on MidiIn device has come.
 */
-void CARtMidiDevice::midiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData ) {
-	//emit midiInEvent( QVector<unsigned char>::fromStdVector(*message) );
+void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData ) {
+	emit CACanorus::midiDevice()->midiInEvent( QVector< unsigned char >::fromStdVector(*message) );
 }
 
 void CARtMidiDevice::closeOutputPort() {
@@ -101,8 +102,10 @@ void CARtMidiDevice::closeOutputPort() {
 
 void CARtMidiDevice::closeInputPort() {
 	try {
-		if (_inOpen)
+		if (_inOpen) {
+			_in->cancelCallback();
 			_in->closePort();
+		}
 	} catch (RtError &error) {
 		error.printMessage();
 	}

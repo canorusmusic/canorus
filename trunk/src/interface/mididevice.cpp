@@ -149,9 +149,10 @@ CAMidiDevice::CAMidiDevice()
 	This class represents generic MIDI interface to Canorus.
 	Any MIDI wrapper class should extend this class. Canorus is aware only of this class.
 	
-	eg. In theory RtMidi is only one of the MIDI libraries implemented.
-	If, in future, we decide to implement any other MIDI libraries, CAMidiDevice should
-	mask the change and the core application shouldn't change at all.
+	Currently only RtMidi is one of the MIDI libraries implemented. This class could be
+	extended to implement any MIDI library.
+	
+	\warning MIDI INPUT is not available for Swig and therefore scripting languages yet.
 */
 
 /*!

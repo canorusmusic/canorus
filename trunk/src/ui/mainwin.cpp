@@ -181,7 +181,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	CAPluginManager::enablePlugins(this);
 	
 	// Connects MIDI IN callback function to a local slot. Not implemented yet.
-	//connect( CACanorus::midiDevice(), SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(onMidiInEvent( QVector<unsigned char> )) );
+	connect( CACanorus::midiDevice(), SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(onMidiInEvent( QVector<unsigned char> )) );
 	
 	// Connect QTimer so it increases the local document edited time every second
 	restartTimeEditedTime();
@@ -2103,7 +2103,7 @@ bool CAMainWin::saveDocument( QString fileName ) {
 void CAMainWin::onMidiInEvent( QVector<unsigned char> m) {
 	std::cout << "MidiInEvent: ";
 	for (int i=0; i<m.size(); i++)
-		std::cout << m[i] << " ";
+		std::cout << (int)m[i] << " ";
 	std::cout << std::endl;
 }
 

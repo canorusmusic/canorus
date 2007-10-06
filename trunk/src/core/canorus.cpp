@@ -128,6 +128,7 @@ void CACanorus::initCommonGUI() {
 	Initializes playback devices.
 */
 void CACanorus::initPlayback() {
+	qRegisterMetaType< QVector< unsigned char > >( "QVector< unsigned char >" );
 	 setMidiDevice( new CARtMidiDevice() );
 }
 
