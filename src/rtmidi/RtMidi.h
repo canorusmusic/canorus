@@ -98,6 +98,8 @@ class RtMidi
 #include <vector>
 #include <queue>
 
+class CARtMidiDevice;
+
 class RtMidiIn : public RtMidi
 {
  public:

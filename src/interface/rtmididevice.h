@@ -13,6 +13,10 @@
 class RtMidiOut;
 class RtMidiIn;
 
+#ifndef SWIG
+void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData );
+#endif
+
 class CARtMidiDevice : public CAMidiDevice {
 public:
 	CARtMidiDevice();
@@ -26,7 +30,6 @@ public:
 	void closeOutputPort();
 	void closeInputPort();
 	void send(QVector<unsigned char> message);
-	void midiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData );
 	
 private:
 	RtMidiOut *_out;

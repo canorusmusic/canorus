@@ -122,7 +122,7 @@ CASettingsDialog::CASettingsPage CASettings::readSettings() {
 	if ( contains("rtmidi/midiinport") &&
 	     value("rtmidi/midiinport").toInt() < CACanorus::midiDevice()->getInputPorts().count()
 	   ) {
-		setMidiInPort( value("rtmidi/midiinport").toInt() );	
+		setMidiInPort( value("rtmidi/midiinport").toInt() );
 	} else {
 		setMidiInPort( DEFAULT_MIDI_IN_PORT );
 		settingsPage = CASettingsDialog::PlaybackSettings;
@@ -138,4 +138,12 @@ CASettingsDialog::CASettingsPage CASettings::readSettings() {
 	}
 	
 	return settingsPage;
+}
+
+void CASettings::setMidiInPort(int in) {
+	_midiInPort = in;
+	if (CACanorus::midiDevice()) {
+		CACanorus::midiDevice()->closeInputPort();
+		CACanorus::midiDevice()->openInputPort( midiInPort() );
+	}
 }

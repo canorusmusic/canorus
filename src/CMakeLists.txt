@@ -65,6 +65,7 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 # Define the MOC source files used by Canorus
 SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	core/autorecovery.h
+	
 	ui/mainwin.h
 	ui/settingsdialog.h
 	ui/pluginaction.h
@@ -78,7 +79,7 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	widgets/toolbutton.h
 	widgets/menutoolbutton.h
 	widgets/undotoolbutton.h
-#	interface/mididevice.h # Signals not implemented yet for MIDI IN, Q_OBJECT and MOC not needed then
+	interface/mididevice.h
 )
 
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model

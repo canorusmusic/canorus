@@ -16,7 +16,13 @@
 
 class CASheet;
 
-class CAMidiDevice : public QObject {
+class CAMidiDevice : public QObject {	
+#ifndef SWIG
+	Q_OBJECT
+	
+	friend void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData );
+#endif
+	
 public:
 	enum CAMidiDeviceType {
 		RtMidiDevice
@@ -40,9 +46,11 @@ public:
 	virtual void closeInputPort() = 0;
 	virtual void send(QVector<unsigned char> message) = 0;
 	
-/*signals:
-	void midiInEvent( QVector<unsigned char> message );
-*/
+#ifndef SWIG
+signals:
+	void midiInEvent( QVector< unsigned char > message );	
+#endif
+	
 protected:
 	inline void setMidiDeviceType( CAMidiDeviceType t ) { _midiDeviceType = t; }
 	CAMidiDeviceType _midiDeviceType;

@@ -46,7 +46,7 @@ public:
 	inline void setSelectedContextColor( QColor selectedContextColor ) { _selectedContextColor = selectedContextColor; }
 	inline void setDisabledElementsColor( QColor disabledElementsColor ) { _disabledElementsColor = disabledElementsColor; }
 	inline void setHiddenElementsColor( QColor hiddenElementsColor ) { _hiddenElementsColor = hiddenElementsColor; }
-	inline void setMidiInPort( int in ) { _midiInPort = in; }
+	void setMidiInPort( int in );
 	inline void setMidiOutPort( int out ) { _midiOutPort = out; }
 	
 	static const bool DEFAULT_FINALE_LYRICS_BEHAVIOUR;
