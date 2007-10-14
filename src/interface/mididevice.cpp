@@ -10,7 +10,8 @@
 #include "core/voice.h"
 
 CAMidiDevice::CAMidiDevice()
- : QObject() {
+ : QObject()
+{
 	GM_INSTRUMENTS = QStringList() <<
 	QObject::tr("Acoustic Grand Piano", "instrument") <<
 	QObject::tr("Bright Acoustic Piano", "instrument") <<
