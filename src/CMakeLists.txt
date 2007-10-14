@@ -230,7 +230,7 @@ SET( Canorus_Images "ui/images" )
 
 # Set translation files
 FILE(GLOB Canorus_Translation_Srcs "lang/*.ts") # lang/*.ts -> Canorus_Translation_Srcs
-STRING(REGEX REPLACE ".ts" ".qm" Canorus_Translation_Bins "${Canorus_Translation_Srcs}") # Set Canorus_Translation_Bins to same values as Canorus_Translation_Srcs with different extensions
+STRING(REGEX REPLACE "\\.ts" ".qm" Canorus_Translation_Bins "${Canorus_Translation_Srcs}") # Set Canorus_Translation_Bins to same values as Canorus_Translation_Srcs with different extensions
 
 SET(Canorus_Fonts	# Music fonts needed by Canorus
 	fonts/CenturySchL-BoldItal.ttf	# Century family needed for numbers and signs
