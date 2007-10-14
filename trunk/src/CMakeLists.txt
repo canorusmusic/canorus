@@ -218,6 +218,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/functionmarking.cpp
 	
 	${Canorus_RtMidi_Srcs}
+	moc_mididevice.cxx
 	interface/rtmididevice.cpp
 	interface/mididevice.cpp
 	interface/playback.cpp
@@ -354,6 +355,7 @@ IF(USE_RUBY)
 		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
 	)
 	SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARY} ${QT_LIBRARIES})
+	SET_TARGET_PROPERTIES( CanorusRuby PROPERTIES COMPILE_FLAGS '-DSWIGCPP' )
 ENDIF(USE_RUBY)
 
 IF(USE_PYTHON)
@@ -368,6 +370,7 @@ IF(USE_PYTHON)
 		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i
 	)
 	SWIG_LINK_LIBRARIES(CanorusPython ${PYTHON_LIBRARY} ${QT_LIBRARIES})
+	SET_TARGET_PROPERTIES( _CanorusPython PROPERTIES COMPILE_FLAGS '-DSWIGCPP' )
 ENDIF(USE_PYTHON)
 
 # Adds Canorus resource file under Windows (Canorus icon etc.).

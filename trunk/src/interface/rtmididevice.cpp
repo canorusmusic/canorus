@@ -9,7 +9,10 @@
 
 #include "interface/rtmididevice.h"
 #include "rtmidi/RtMidi.h"
+
+#ifndef SWIGCPP
 #include "core/canorus.h"
+#endif
 
 /*!
 	\class CARtMidiDevice
@@ -87,7 +90,11 @@ bool CARtMidiDevice::openInputPort(int port) {
 	Callback function which gets called by RtMidi automatically when an information on MidiIn device has come.
 */
 void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData ) {
+#ifndef SWIGCPP
 	emit CACanorus::midiDevice()->midiInEvent( QVector< unsigned char >::fromStdVector(*message) );
+#else
+	// call scripting callback?
+#endif
 }
 
 void CARtMidiDevice::closeOutputPort() {

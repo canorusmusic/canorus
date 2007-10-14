@@ -16,13 +16,12 @@
 
 class CASheet;
 
-class CAMidiDevice : public QObject {	
+class CAMidiDevice : public QObject {
 #ifndef SWIG
 	Q_OBJECT
-	
-	friend void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData );
 #endif
 	
+	friend void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData );
 public:
 	enum CAMidiDeviceType {
 		RtMidiDevice
@@ -56,4 +55,4 @@ protected:
 	CAMidiDeviceType _midiDeviceType;
 };
 
-#endif /*MIDIDEVICE_H_*/
+#endif /* MIDIDEVICE_H_ */
