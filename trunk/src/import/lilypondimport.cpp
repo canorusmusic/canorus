@@ -5,7 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-#include <QMessageBox>
+#include <QTextStream>
+#include <QRegExp>
 
 #include <iostream> // DEBUG
 
@@ -38,28 +39,14 @@ const QRegExp CALilyPondImport::DELIMITERS =
 		CALilyPondImport::SYNTAX_DELIMITERS.pattern().mid(1)
 	);
 
-CALilyPondImport::CALilyPondImport(QString& in, CAVoice *voice) {
-	_in = in;
+CALilyPondImport::CALilyPondImport( QString& in )
+ : CAImport(in) {
 	initLilyPondImport();
-	
-	importVoice(voice);
-	QString messages;
-	if (_errors.size()) {
-		for (int i=0; i<_errors.size(); i++) messages += _errors[i];
-		QMessageBox::critical(0, QObject::tr("Import error"), messages);
-	}
 }
 
-CALilyPondImport::CALilyPondImport(QString& in, CALyricsContext *lc) {
-	_in = in;
-	initLilyPondImport();
-	
-	importLyricsContext(lc);
-	QString messages;
-	if (_errors.size()) {
-		for (int i=0; i<_errors.size(); i++) messages += _errors[i];
-		QMessageBox::critical(0, QObject::tr("Import error"), messages);
-	}
+CALilyPondImport::CALilyPondImport( QTextStream *in )
+ : CAImport(in) {
+	initLilyPondImport();	
 }
 
 CALilyPondImport::~CALilyPondImport() {
@@ -77,7 +64,8 @@ void CALilyPondImport::addError(QString description, int curLine, int curChar) {
 	           + description + "<br>";
 }
 
-bool CALilyPondImport::importVoice(CAVoice *voice) {
+CAVoice *CALilyPondImport::importVoiceImpl() {
+	CAVoice *voice = new CAVoice( "", 0 );
 	setCurVoice(voice);
 	CAPitch prevPitch = { 21, 0 };
 	CALength prevLength = { CAPlayable::Quarter, 0 };
@@ -328,10 +316,12 @@ bool CALilyPondImport::importVoice(CAVoice *voice) {
 			changed=false;
 	}
 	
-	return true;
+	return voice;
 }
 
-bool CALilyPondImport::importLyricsContext( CALyricsContext *lc ) {
+CALyricsContext *CALilyPondImport::importLyricsContextImpl() {
+	CALyricsContext *lc = new CALyricsContext( "", 1, static_cast<CASheet*>(0) );
+	
 	CASyllable *lastSyllable = 0;
 	int timeSDummy=0; // dummy timestart to keep the order of inserted syllables. Real timeStarts are sets when repositSyllables() is called
 	for (QString curElt = parseNextElement(); (!in().isEmpty() || !curElt.isEmpty() ); curElt = parseNextElement(), timeSDummy++) {
@@ -349,6 +339,8 @@ bool CALilyPondImport::importLyricsContext( CALyricsContext *lc ) {
 		}
 	}
 	lc->repositSyllables(); // sets syllables timeStarts and timeLengths
+	
+	return lc;
 }
 
 /*!
@@ -662,4 +654,15 @@ CABarline::CABarlineType CALilyPondImport::barlineTypeFromLilyPond(QString const
 	if (barline==":|:") return CABarline::RepeatCloseOpen; else
 	if (barline==":") return CABarline::Dotted; else
 	return CABarline::Undefined;
+}
+
+const QString CALilyPondImport::statusToReadable( int status ) {
+	switch (status) {
+	case 0:
+		return tr("Ready");
+	case 1:
+		return tr("Importing...");
+	case -1:
+		return tr("Error while importing!\nLine %1:%2.").arg(curLine()).arg(curChar());
+	}
 }

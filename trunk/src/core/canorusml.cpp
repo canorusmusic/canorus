@@ -445,7 +445,7 @@ bool CACanorusML::startElement(const QString& namespaceURI, const QString& local
 		if (!(_curContext = _curSheet->context(lcName))) {	//if the sheet doesn't contain the context with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
 			if (lcName.isEmpty())
 				lcName = QObject::tr("Lyrics Context %1").arg(_curSheet->contextCount()+1);
-			_curContext = new CALyricsContext( lcName, attributes.value("stanza-number").toInt(), 0, _curSheet );
+			_curContext = new CALyricsContext( lcName, attributes.value("stanza-number").toInt(), _curSheet );
 			
 			// voices are not neccesseraly completely read - store indices of the voices internally and then assign them at the end
 			if (!attributes.value("associated-voice-idx").isEmpty())

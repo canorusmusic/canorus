@@ -20,19 +20,24 @@
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
 
-class CALilyPondImport {
+#include "import/import.h"
+
+class QTextStream;
+
+class CALilyPondImport : public CAImport {
 public:
-	// Import voice
-	CALilyPondImport(QString& in, CAVoice *voice);
-	// Import lyrics context
-	CALilyPondImport(QString& in, CALyricsContext *lc);
+	// Constructors
+	CALilyPondImport( QString& in );
+	CALilyPondImport( QTextStream *in=0 );
 	
+	// Destructor
 	virtual ~CALilyPondImport();
 	
-	int curLine() { return _curLine; }
-	int curChar() { return _curChar; }
+	const QString statusToReadable( int status );
 	
 private:
+	void initLilyPondImport();
+	
 	static const QRegExp WHITESPACE_DELIMITERS;
 	static const QRegExp SYNTAX_DELIMITERS;
 	static const QRegExp DELIMITERS;
@@ -62,12 +67,9 @@ private:
 		Chord
 	};
 	
-	// Do the actual import of the current voice and input string
-	bool importVoice(CAVoice *voice);
-	// Do the actual import of the current lyricsc context and input string
-	bool importLyricsContext(CALyricsContext *lc);
-	
-	void initLilyPondImport();
+	// Actual import of the input string
+	CAVoice *importVoiceImpl();
+	CALyricsContext *importLyricsContextImpl();
 	
 	inline CAVoice *curVoice() { return _curVoice; }
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }
@@ -97,20 +99,21 @@ private:
 	///////////////////////////
 	// Getter/Setter methods //
 	///////////////////////////
-	inline QString& in() { return _in; }
+	inline QString& in() { return *stream()->string(); }
 	inline CALilyPondDepth curDepth() { return _depth.top(); }
 	inline void pushDepth(CALilyPondDepth depth) { _depth.push(depth); }
 	inline CALilyPondDepth popDepth() { return _depth.pop(); }
+	inline int curLine() { return _curLine; }
+	inline int curChar() { return _curChar; }
 	
 	// Attributes
-	QString _in;
 	CAVoice *_curVoice;
 	CASlur *_curSlur;
 	CASlur *_curPhrasingSlur;
-	QStack<CALilyPondDepth> _depth;
+	QStack<CALilyPondDepth> _depth; // which block is currently processed
 	int _curLine, _curChar;
 	QList<QString> _errors;
 	QList<QString> _warnings;
 };
 
-#endif /*LILYPONDIMPORT_H_*/
+#endif /* LILYPONDIMPORT_H_ */

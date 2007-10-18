@@ -24,12 +24,21 @@
 	\sa _syllableMap, CASyllable
 */
 
-CALyricsContext::CALyricsContext( const QString name, int stanzaNumber, CAVoice *v, CASheet *s )
+CALyricsContext::CALyricsContext( const QString name, int stanzaNumber, CAVoice *v )
+ : CAContext( name, (v && v->staff())? v->staff()->sheet() : 0 ) {
+	setContextType( LyricsContext );
+	
+	_associatedVoice = 0;
+	setAssociatedVoice( v ); // also reposits syllables
+	setStanzaNumber(stanzaNumber);
+}
+
+CALyricsContext::CALyricsContext( const QString name, int stanzaNumber, CASheet *s )
  : CAContext( name, s ) {
 	setContextType( LyricsContext );
 	
-	_associatedVoice=0;
-	setAssociatedVoice( v ); // also reposits syllables
+	_associatedVoice = 0;
+	setAssociatedVoice( 0 ); // also reposits syllables
 	setStanzaNumber(stanzaNumber);
 }
 
@@ -43,7 +52,7 @@ void CALyricsContext::clear() {
 }
 
 CALyricsContext *CALyricsContext::clone( CASheet *s ) {
-	CALyricsContext *newLc = new CALyricsContext( name(), stanzaNumber(), associatedVoice(), s );
+	CALyricsContext *newLc = new CALyricsContext( name(), stanzaNumber(), s );
 	
 	for (int i=0; i<_syllableList.size(); i++) {
 		CASyllable *newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone());

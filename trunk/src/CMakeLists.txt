@@ -65,6 +65,7 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 # Define the MOC source files used by Canorus
 SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	core/autorecovery.h
+	import/import.h
 	
 	ui/mainwin.h
 	ui/settingsdialog.h
@@ -90,6 +91,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/undo.cpp
 	core/autorecovery.cpp
 	core/mimedata.cpp
+	core/file.cpp
 	
 	core/document.cpp
 	core/sheet.cpp
@@ -173,6 +175,7 @@ SET(Canorus_Export_Srcs     # Classes for exporting Canorus data to various file
 )
 
 SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus data
+	import/import.cpp
 	import/lilypondimport.cpp
 )
 
