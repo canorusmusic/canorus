@@ -90,12 +90,16 @@ void CAAutoRecovery::cleanupRecovery() {
 */
 void CAAutoRecovery::openRecovery() {
 	QString documents;
-	for ( int i=0; QFile::exists(CACanorus::settingsPath()+"/recovery"+QString::number(i)); i++, documents.append("\n") ) {
-		CAMainWin *mainWin = new CAMainWin();
-		CACanorus::addMainWin( mainWin );
-		CADocument *document = mainWin->openDocument( CACanorus::settingsPath()+"/recovery"+QString::number(i) );
-		document->setFileName("");
-		documents.append( tr("- Document %1 last modified on %2.").arg(document->title()).arg(document->dateLastModified().toString()) );
+	for ( int i=0; QFile::exists(CACanorus::settingsPath()+"/recovery"+QString::number(i)); i++ ) {
+		CADocument *doc = CACanorusML::openDocumentFromFile( CACanorus::settingsPath()+"/recovery"+QString::number(i) );
+		if(doc)
+		{
+			CAMainWin *mainWin = new CAMainWin();
+			CACanorus::addMainWin( mainWin );
+			CADocument *document = mainWin->openDocument( doc ); 
+			documents.append( tr("- Document %1 last modified on %2.").arg(document->title()).arg(document->dateLastModified().toString()) );
+			documents.append("\n");
+		}
 	}
 	
 	cleanupRecovery();
