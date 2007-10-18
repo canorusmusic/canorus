@@ -103,7 +103,8 @@ public:
 	void copySelection( CAScoreViewPort *v );
 	void pasteAt( const QPoint coords, CAScoreViewPort *v );
 	
-	CADocument *openDocument( QString fileName );
+	CADocument *openDocument( const QString& fileName );
+	CADocument *openDocument( CADocument* doc );
 	bool saveDocument( QString fileName );
 	
 	inline CAMode mode() { return _mode; }

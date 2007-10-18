@@ -2047,23 +2047,38 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 }
 
 /*!
-	Opens a document with the given absolute fileName.
-	Previous document will be lost.
-	
-	Returns pointer to the opened document or null if opening the document failed.
+	Opens a document with the given absolute file name.
+	The previous document will be lost.
+
+	Returns a pointer to the opened document or null if opening the document has failed.
 */
-CADocument *CAMainWin::openDocument(QString fileName) {
-	CADocument *openedDoc = CACanorusML::openDocumentFromFile(fileName);
-	if (openedDoc) {
+CADocument *CAMainWin::openDocument(const QString& fileName)
+{
+	CADocument* doc =  openDocument(CACanorusML::openDocumentFromFile(fileName));
+	if(doc) {
+		doc->setFileName(fileName);
+		return openDocument(doc);
+	} else
+		return 0;
+}
+
+
+/*!
+	Opens the given document.
+	The previous document will be lost.
+	
+	Returns a pointer to the opened document or null if opening the document has failed.
+*/
+CADocument *CAMainWin::openDocument(CADocument *doc) {
+	if (doc) {
 		if (CACanorus::mainWinCount(document())==1) {
 			CACanorus::undo()->deleteUndoStack( document() ); 
 			delete document();
 		}
 		
-		setDocument(openedDoc);
+		setDocument(doc);
 		CACanorus::undo()->createUndoStack( document() );
 		
-		openedDoc->setFileName(fileName);
 		rebuildUI(); // local rebuild only
 		uiTabWidget->setCurrentIndex(0);
 		
@@ -2072,7 +2087,7 @@ CADocument *CAMainWin::openDocument(QString fileName) {
 			currentScoreViewPort()->selectContext( document()->sheetAt(0)->contextAt(0) );
 		updateToolBars();
 		
-		return openedDoc;
+		return doc;
 	}
 	
 	return 0;
