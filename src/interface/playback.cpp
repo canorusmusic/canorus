@@ -56,9 +56,10 @@ CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
 	Destructor deletes the created arrays.
 */
 CAPlayback::~CAPlayback() {
-	delete _streamIdx;
+	delete _repeating;
 	delete _lastRepeatOpenIdx;
 	delete _curTime;
+	delete _streamIdx;
 }
 
 void CAPlayback::run() {
