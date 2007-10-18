@@ -9,6 +9,9 @@
 #define FILE_H_
 
 #include <QThread>
+#include <QFile>
+
+class QTextStream;
 
 class CAFile : public QThread {
 public:
@@ -17,17 +20,24 @@ public:
 	
 	inline const int status() { return _status; }
 	inline const float progress() { return _progress; }
-	virtual static const QString statusToReadable( int status ) = 0;
+	virtual const QString statusToReadable( int status ) = 0;
+	void setStreamFromFile( const QString filename );
 	
 protected:
 	inline void setStatus( const int status ) { _status = status; }
 	inline void setProgress( const float progress ) { _progress = progress; }
+	
+	inline QTextStream *stream() { return _stream; }
 	inline void setStream( QTextStream *stream ) { _stream = stream; }
+	
+	inline QFile *file() { return _file; }
+	inline void setFile( QFile *file ) { _file = file; }
 	
 private:
 	int _status;
 	float _progress;
 	QTextStream *_stream;
+	QFile *_file;
 };
 
 #endif /* FILE_H_ */

@@ -6,11 +6,23 @@
 */
 
 #include "core/file.h"
+#include <QTextStream>
+#include <QFile>
 
 CAFile::CAFile() : QThread() {
-	_progress = 0;
-	_stream = 0;
+	setProgress( 0 );
+	setStatus( 0 );
+	setStream( 0 );
+	setFile( 0 );
 }
 
 CAFile::~CAFile() {
+	if ( stream() ) delete stream();
+	if ( file() ) delete file();
+}
+
+void CAFile::setStreamFromFile( const QString filename ) {
+	setFile( new QFile( filename ) );
+	file()->open( QIODevice::ReadOnly );
+	setStream( new QTextStream(file()) );
 }

@@ -18,7 +18,8 @@ class CASyllable;
 
 class CALyricsContext : public CAContext {
 public:
-	CALyricsContext( const QString name, int stanzaNumber, CAVoice *v, CASheet *s );
+	CALyricsContext( const QString name, int stanzaNumber, CAVoice *v );
+	CALyricsContext( const QString name, int stanzaNumber, CASheet *s );
 	~CALyricsContext();
 	void clear();
 	CALyricsContext *clone( CASheet *s );

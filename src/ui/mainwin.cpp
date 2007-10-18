@@ -1297,8 +1297,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 							newContext = new CALyricsContext(
 								tr("LyricsContext%1").arg(v->sheet()->contextCount()+1),
 								1,
-								(v->sheet()->voiceList().size()?v->sheet()->voiceList().at(0):0),
-								v->sheet()								
+								(v->sheet()->voiceList().size()?v->sheet()->voiceList().at(0):0)
 							)
 						);
 						
@@ -2664,7 +2663,7 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		v->voice()->clear(); // clearUI is not needed, because only voice content is changed
 		
 		CACanorus::undo()->pushUndoCommand();
-		CALilyPondImport(inputString, v->voice());
+		CALilyPondImport( inputString );
 		CACanorus::rebuildUI(document(), v->voice()->staff()->sheet());
 	} else
 	if (v->lyricsContext()) {
@@ -2674,7 +2673,7 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		v->lyricsContext()->clear(); // clearUI is not needed, because only voice content is changed
 		
 		CACanorus::undo()->pushUndoCommand();
-		CALilyPondImport(inputString, v->lyricsContext());
+		CALilyPondImport( inputString );
 		CACanorus::rebuildUI(document(), v->lyricsContext()->sheet());
 	}
 	
