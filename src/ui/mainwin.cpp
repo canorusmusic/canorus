@@ -2054,7 +2054,7 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 */
 CADocument *CAMainWin::openDocument(const QString& fileName)
 {
-	CADocument* doc =  openDocument(CACanorusML::openDocumentFromFile(fileName));
+	CADocument* doc = CACanorusML::openDocumentFromFile(fileName);
 	if(doc) {
 		doc->setFileName(fileName);
 		return openDocument(doc);
