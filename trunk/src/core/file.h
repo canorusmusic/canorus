@@ -20,7 +20,7 @@ public:
 	
 	inline const int status() { return _status; }
 	inline const float progress() { return _progress; }
-	virtual const QString statusToReadable( int status ) = 0;
+	virtual const QString readableStatus() = 0;
 	void setStreamFromFile( const QString filename );
 	
 protected:

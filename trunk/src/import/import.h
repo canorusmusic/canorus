@@ -24,6 +24,7 @@ public:
 	CAImport( QString& stream );
 	virtual ~CAImport();
 	
+	virtual const QString readableStatus();
 	void importDocument();
 	void importSheet();
 	void importStaff();
@@ -46,13 +47,17 @@ signals:
 	void lyricsContextImported( CALyricsContext* );
 	void functionMarkingContextImported( CAFunctionMarkingContext* );
 	
+	void importDone( int status );
+	
 protected:
-	virtual CADocument      *importDocumentImpl()      { return 0; }
-	virtual CASheet         *importSheetImpl()         { return 0; }
-	virtual CAStaff         *importStaffImpl()         { return 0; }
-	virtual CAVoice         *importVoiceImpl()         { return 0; }
-	virtual CALyricsContext *importLyricsContextImpl() { return 0; }
-	virtual CAFunctionMarkingContext *importFunctionMarkingContextImpl() { return 0; }
+	virtual CADocument      *importDocumentImpl()      { setStatus(0); return 0; }
+	virtual CASheet         *importSheetImpl()         { setStatus(0); return 0; }
+	virtual CAStaff         *importStaffImpl()         { setStatus(0); return 0; }
+	virtual CAVoice         *importVoiceImpl()         { setStatus(0); return 0; }
+	virtual CALyricsContext *importLyricsContextImpl() { setStatus(0); return 0; }
+	virtual CAFunctionMarkingContext *importFunctionMarkingContextImpl() { setStatus(0); return 0; }
+	
+	QTextStream& in() { return *stream(); }
 	
 private:
 	inline void setImportedDocument( CADocument *doc ) { _importedDocument = doc; }

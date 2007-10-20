@@ -2144,7 +2144,9 @@ void CAMainWin::on_uiExportDocument_triggered() {
 			
 			if (exportDialog()->selectedFilter() == CAFileFormats::LILYPOND_FILTER) {
 				// LilyPond
-				CALilyPondExport(document(), &out);
+				CALilyPondExport *le = new CALilyPondExport(&out);
+				le->exportDocument(document());
+				while (le->status());
 			}
   	 		
 			file.close();

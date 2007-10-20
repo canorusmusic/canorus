@@ -29,34 +29,15 @@
 	\a textStream is usually the file stream or the content of the score source view widget.
 	
 	\sa CALilyPondImport
+*/
+
 /*!
 	Constructor for voice export. Called when viewing a single voice source in Lily syntax.
 	Exports a voice to LilyPond syntax using the given text stream.
 */
-CALilyPondExport::CALilyPondExport( CAVoice *voice, QTextStream *out ) {
-	_out = out;
+CALilyPondExport::CALilyPondExport( QTextStream *out )
+ : CAExport(out) {
 	setIndentLevel( 0 );
-	exportVoice(voice);
-}
-
-/*!
-	Constructor for lyrics context export. Called when viewing a lyrics source in Lily syntax.
-	Exports this lyrics context to LilyPond syntax using the given text stream.
-*/
-CALilyPondExport::CALilyPondExport( CALyricsContext *lc, QTextStream *out ) {
-	_out = out;
-	setIndentLevel( 0 );
-	exportSyllables(lc);
-}
-
-/*!
-	Constructor for document export. Called when exporting a document to a .ly file.
-	Exports a document to LilyPond syntax using the given text stream.
-*/
-CALilyPondExport::CALilyPondExport( CADocument *doc, QTextStream *out ) {
-	_out = out;
-	setIndentLevel( 0 );
-	exportDocument( doc );
 }
 
 /*!
@@ -64,7 +45,7 @@ CALilyPondExport::CALilyPondExport( CADocument *doc, QTextStream *out ) {
 	
 	\sa CALilypondImport
 */
-void CALilyPondExport::exportVoice(CAVoice *v) {
+void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	setCurVoice(v);
 	
 	int lastNotePitch;   // initialized by writeRelativeIntro()
@@ -216,7 +197,7 @@ void CALilyPondExport::exportVoice(CAVoice *v) {
 		My bu -- ny is o -- ver the o -- cean __ My bu -- ny.
 	}
 */
-void CALilyPondExport::exportLyricsContext( CALyricsContext *lc ) {
+void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
 	// Print Canorus voice name as a comment to help with debugging/tweaking
 	indent();
 	out() << "\n% " << lc->name() << "\n";
@@ -501,7 +482,7 @@ const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
 /*!
 	Exports the current document to Lilypond syntax as a complete .ly file.
 */
-void CALilyPondExport::exportDocument(CADocument *doc)
+void CALilyPondExport::exportDocumentImpl(CADocument *doc)
 {
 	if ( doc->sheetCount() < 1 ) {
 		//TODO: no sheets, raise an error
@@ -516,14 +497,14 @@ void CALilyPondExport::exportDocument(CADocument *doc)
 
 	// For now only export the first sheet of the document
 	setCurSheet( doc->sheetAt( 0 ) );
-	exportSheet( curSheet() );
+	exportSheetImpl( curSheet() );
 }
 
 
 /*!
 	Exports the current sheet to Lilypond syntax.
 */
-void CALilyPondExport::exportSheet(CASheet *sheet)
+void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 {
 	setCurSheet( sheet );
 
@@ -535,7 +516,7 @@ void CALilyPondExport::exportSheet(CASheet *sheet)
 				exportStaffVoices( static_cast<CAStaff*>(sheet->contextAt( c )) );
 				break;
 			case CAContext::LyricsContext:
-				exportLyricsContext( static_cast<CALyricsContext*>(sheet->contextAt( c )) );
+				exportLyricsContextImpl( static_cast<CALyricsContext*>(sheet->contextAt( c )) );
 				break;			
 		}
 	}
@@ -559,14 +540,14 @@ void CALilyPondExport::exportStaffVoices(CAStaff *staff)
 		indent();
 		out() << "\n% " << curVoice()->name() << "\n";
 		
-		// Write out the voice name and the equals sign
+		// Write out the voice name and the equals signexportVoice
 		// Variable name is staff index and voice index
 		QString voiceName;
 		voiceVariableName( voiceName, curContextIndex(), v );
 		out() << voiceName << " = ";
 
-		exportVoice( curVoice() );
-		out() << "\n"; // exportVoice doesn't put endline at the end
+		exportVoiceImpl( curVoice() );
+		out() << "\n"; // exportVoiceImpl doesn't put endline at the end
 	}
 }
 
@@ -611,8 +592,7 @@ void CALilyPondExport::voiceVariableName( QString &name, int staffNum, int voice
 	}
 	\endcode
 */
-void CALilyPondExport::exportScoreBlock( CASheet *sheet )
-{
+void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 	out() << "\n\\score {\n";
 	indentMore();
 	int contextCount = sheet->contextCount();	
@@ -710,7 +690,7 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet )
 				out() << "% Voice assignment:\n";
 				indent();
 				 // needed for automatic treating of slurs as melisma for lyrics - multiple syllables below the slured notes are allowed in Canorus, but not recommended
-				 out() << "\\set Score.melismaBusyProperties = #'()\n";
+				out() << "\\set Score.melismaBusyProperties = #'()\n";
 			}
 			
 			CALyricsContext *lc;

@@ -140,13 +140,17 @@ void CASourceViewPort::rebuild() {
 	// CanorusML
 	if (document()) {
 		CACanorusML::saveDocument(document(), stream);
-	} else
-	// LilyPond
-	if (voice()) {
-		CALilyPondExport(voice(), &stream);
-	} else
-	if (lyricsContext()) {
-		CALilyPondExport(lyricsContext(), &stream);
+	} else {
+		CALilyPondExport le( &stream );
+		// LilyPond
+		if (voice()) {
+			le.exportVoice( voice() );
+			while (le.status());
+		} else
+		if (lyricsContext()) {
+			le.exportLyricsContext( lyricsContext() );
+			while (le.status());
+		}
 	}
 	
 	_textEdit->insertPlainText(*value);

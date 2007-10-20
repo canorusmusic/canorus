@@ -33,7 +33,7 @@ public:
 	// Destructor
 	virtual ~CALilyPondImport();
 	
-	const QString statusToReadable( int status );
+	const QString readableStatus();
 	
 private:
 	void initLilyPondImport();
