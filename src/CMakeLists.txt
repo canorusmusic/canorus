@@ -66,6 +66,7 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	core/autorecovery.h
 	import/import.h
+	export/export.h
 	
 	ui/mainwin.h
 	ui/settingsdialog.h
@@ -171,6 +172,7 @@ SET(Canorus_Interface_Srcs	# Other interfaces like Engraver, Playback, Plugin ma
 )
 
 SET(Canorus_Export_Srcs     # Classes for exporting Canorus data to various file formats
+	export/export.cpp
 	export/lilypondexport.cpp
 )
 

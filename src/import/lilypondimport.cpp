@@ -656,8 +656,8 @@ CABarline::CABarlineType CALilyPondImport::barlineTypeFromLilyPond(QString const
 	return CABarline::Undefined;
 }
 
-const QString CALilyPondImport::statusToReadable( int status ) {
-	switch (status) {
+const QString CALilyPondImport::readableStatus() {
+	switch (status()) {
 	case 0:
 		return tr("Ready");
 	case 1:

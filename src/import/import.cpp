@@ -63,6 +63,7 @@ void CAImport::run() {
 		break;
 	}
 	}
+	emit importDone( status() );
 }
 
 void CAImport::importDocument() {
@@ -93,4 +94,13 @@ void CAImport::importLyricsContext() {
 void CAImport::importFunctionMarkingContext() {
 	setImportPart( FunctionMarkingContext );
 	start();
+}
+
+const QString CAImport::readableStatus() {
+	switch (status()) {
+	case 1:
+		return tr("Importing...");
+	case 0:
+		return tr("Ready");
+	}
 }

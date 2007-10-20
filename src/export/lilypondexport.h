@@ -21,14 +21,11 @@
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
 
-class CALilyPondExport {
+#include "export/export.h"
+
+class CALilyPondExport : public CAExport {
 public:
-	// Export the whole document constructor
-	CALilyPondExport(CADocument *doc, QTextStream *out);
-	// Export voice constructor
-	CALilyPondExport(CAVoice *voice, QTextStream *out);
-	// Export lyrics context constructor
-	CALilyPondExport(CALyricsContext *lc, QTextStream *out);
+	CALilyPondExport( QTextStream *out=0 );
 	
 	///////////////////////////
 	// Polling export status //
@@ -41,12 +38,12 @@ public:
 	inline int curIndentLevel() { return _curIndentLevel; }
 	
 private:
-	void exportDocument(CADocument *doc);
-	void exportSheet(CASheet *sheet);
+	void exportDocumentImpl(CADocument *doc);
+	void exportSheetImpl(CASheet *sheet);
 	void exportScoreBlock(CASheet *sheet);
 	void exportStaffVoices(CAStaff *staff);
-	void exportVoice(CAVoice *voice);
-	void exportLyricsContext(CALyricsContext *lc);
+	void exportVoiceImpl(CAVoice *voice);
+	void exportLyricsContextImpl(CALyricsContext *lc);
 	void exportSyllables(CALyricsContext* lc);
 	int writeRelativeIntro();
 	
@@ -81,8 +78,6 @@ private:
 	inline void setCurContext(CAContext *context) { _curContext = context; }
 	inline void setCurContextIndex(int c) { _curContextIndex = c; }
 	inline void setIndentLevel( int level) { _curIndentLevel = level; }
-	
-	inline QTextStream& out() { return *_out; }
 	
 	/////////////
 	// Members //
