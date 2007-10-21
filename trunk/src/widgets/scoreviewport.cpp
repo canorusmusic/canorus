@@ -249,7 +249,7 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 	
 	if (elt->drawableContextType() == CADrawableContext::DrawableStaff) {
 		_shadowNote << new CANote(CANote::Whole, 0, 0, 0, 0);
-		_shadowNote.back()->setVoice(((CADrawableStaff*)elt)->staff()->voiceAt(0));
+		//_shadowNote.back()->setVoice(((CADrawableStaff*)elt)->staff()->voiceAt(0));
 		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), 0, 0, 0, true);
 		_shadowDrawableNote.back()->setDrawableContext(elt);
 	}

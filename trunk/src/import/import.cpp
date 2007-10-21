@@ -11,20 +11,21 @@
 CAImport::CAImport( QTextStream *stream )
  : CAFile() {
 	setStream( stream );
+	setImportPart( Undefined );
 }
 
 CAImport::CAImport( QString& stream )
  : CAFile() {
-	setStream( new QTextStream(&stream) );
+	setStream( new QTextStream( new QString(stream)) );
+	setImportPart( Undefined );
 }
 
 CAImport::~CAImport() {
+	if ( stream() && stream()->string() )
+		delete stream()->string();
 }
 
 void CAImport::run() {
-	exec(); // start event loop for timers and signals
-	
-	setStatus( 1 ); // import started
 	switch ( importPart() ) {
 	case Document: {
 		CADocument *doc = importDocumentImpl();
@@ -64,35 +65,46 @@ void CAImport::run() {
 	}
 	}
 	emit importDone( status() );
+	
+	if (status()>0) { // error - bad implemented filter
+		              // job is finished but status is still marked as working, set to Ready to prevent infinite loops
+		setStatus(0);
+	}
 }
 
 void CAImport::importDocument() {
 	setImportPart( Document );
+	setStatus( 1 ); // process started
 	start();
 }
 
 void CAImport::importSheet() {
 	setImportPart( Sheet );
+	setStatus( 1 ); // process started
 	start();
 }
 
 void CAImport::importStaff() {
 	setImportPart( Staff );
+	setStatus( 1 ); // process started
 	start();
 }
 
 void CAImport::importVoice() {
 	setImportPart( Voice );
+	setStatus( 1 ); // process started
 	start();
 }
 
 void CAImport::importLyricsContext() {
 	setImportPart( LyricsContext );
+	setStatus( 1 ); // process started
 	start();
 }
 
 void CAImport::importFunctionMarkingContext() {
 	setImportPart( FunctionMarkingContext );
+	setStatus( 1 ); // process started
 	start();
 }
 

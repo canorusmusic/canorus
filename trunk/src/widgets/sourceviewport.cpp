@@ -145,11 +145,11 @@ void CASourceViewPort::rebuild() {
 		// LilyPond
 		if (voice()) {
 			le.exportVoice( voice() );
-			while (le.status());
+			while (le.isRunning());
 		} else
 		if (lyricsContext()) {
 			le.exportLyricsContext( lyricsContext() );
-			while (le.status());
+			while (le.isRunning());
 		}
 	}
 	

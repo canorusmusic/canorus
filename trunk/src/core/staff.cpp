@@ -150,8 +150,7 @@ int CAStaff::lastTimeEnd() {
 
 void CAStaff::clear() {
 	while (_voiceList.size()) {
-		_voiceList.front()->clear();
-		delete _voiceList.front(); //CAVoice's destructor removes the voice from the list.
+		delete _voiceList.front(); // CAVoice's destructor removes the voice from the list.
 	}
 }
 
@@ -159,7 +158,9 @@ void CAStaff::clear() {
 	Adds a voice \a voice to the staff and sets its parent to this staff.
 */
 void CAStaff::addVoice(CAVoice *voice) {
-	_voiceList << voice;
+	int i;
+	for ( i=0; i<_voiceList.size() && _voiceList[i]->voiceNumber() < voice->voiceNumber(); i++ );
+	_voiceList.insert( i, voice );
 	voice->setStaff(this);
 }
 

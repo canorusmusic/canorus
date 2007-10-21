@@ -79,6 +79,8 @@ public:
 	
 	inline QList<CALyricsContext*> lyricsContextList() { return _lyricsContextList; }
 	inline void addLyricsContext( CALyricsContext *lc ) { _lyricsContextList << lc; }
+	inline void setLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList = list; }
+	inline void addLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList += list; }
 	inline bool removeLyricsContext( CALyricsContext *lc ) { return _lyricsContextList.removeAll(lc); }
 	
 	bool updateTimes(CAMusElement *elt, int length=0);
@@ -86,6 +88,7 @@ public:
 	
 	CAVoice *clone();
 	CAVoice *clone( CAStaff *newStaff );
+	void cloneVoiceProperties( CAVoice* v );
 	
 private:
 	void updateTimes(int idx, int length=0);

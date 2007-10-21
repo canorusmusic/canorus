@@ -21,6 +21,7 @@
 #include <QTextStream>
 #include <QXmlInputSource>
 #include <QComboBox>
+#include <QThread>
 #include <iostream>
 
 #include "ui/mainwin.h"
@@ -1157,7 +1158,7 @@ void CAMainWin::rebuildUI(bool repaint) {
 		for (int i=0; i<_viewPortList.size(); i++)
 			if (_viewPortList[i]->viewPortType() == CAViewPort::ScoreViewPort)
 				worldCoordsList << static_cast<CAScoreViewPort*>(_viewPortList[i])->worldCoords();
-		 
+		
 		clearUI();
 		for (int i=0; i<document()->sheetCount(); i++) {
 			addSheet(document()->sheetAt(i));
@@ -2140,13 +2141,11 @@ void CAMainWin::on_uiExportDocument_triggered() {
 	else {
 		QFile file(s);
 		if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-			QTextStream out(&file);
-			
 			if (exportDialog()->selectedFilter() == CAFileFormats::LILYPOND_FILTER) {
 				// LilyPond
-				CALilyPondExport *le = new CALilyPondExport(&out);
-				le->exportDocument(document());
-				while (le->status());
+				CALilyPondExport le( new QTextStream(&file) );
+				le.exportDocument(document());
+				while (le.isRunning());
 			}
   	 		
 			file.close();
@@ -2677,20 +2676,47 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		// LilyPond voice source
 		CACanorus::undo()->createUndoCommand( document(), tr("commit LilyPond source", "undo") );
 		
-		v->voice()->clear(); // clearUI is not needed, because only voice content is changed
+		CALilyPondImport li( inputString );
+		
+		CAVoice *oldVoice = v->voice();
+		oldVoice->staff()->removeVoice( oldVoice );
+		li.setTemplateVoice( oldVoice );
+		li.importVoice();
+		while (li.isRunning());
+		
+		CAVoice *newVoice = li.importedVoice();
+		newVoice->staff()->addVoice( newVoice );
+		delete oldVoice;
+		
+		for (int i=0; i<newVoice->lyricsContextList().size(); i++)
+			newVoice->lyricsContextList().at(i)->setAssociatedVoice( newVoice );
+		newVoice->staff()->addVoice( newVoice );
+		v->setVoice( newVoice );
 		
 		CACanorus::undo()->pushUndoCommand();
-		CALilyPondImport( inputString );
-		CACanorus::rebuildUI(document(), v->voice()->staff()->sheet());
+		CACanorus::rebuildUI(document(), newVoice->staff()->sheet());
 	} else
 	if (v->lyricsContext()) {
 		// LilyPond lyrics source
 		CACanorus::undo()->createUndoCommand( document(), tr("commit LilyPond source", "undo") );
 		
-		v->lyricsContext()->clear(); // clearUI is not needed, because only voice content is changed
+		CALilyPondImport li( inputString );
+		
+		li.importLyricsContext();
+		while (li.isRunning());
+		CALyricsContext *newLc = li.importedLyricsContext();
+		CALyricsContext *oldLc = v->lyricsContext();
+		newLc->cloneLyricsContextProperties( oldLc );
+		if (newLc->associatedVoice()) {
+			newLc->associatedVoice()->removeLyricsContext( oldLc );
+			newLc->associatedVoice()->addLyricsContext(newLc);
+		}
+		newLc->sheet()->insertContextAfter( oldLc, newLc );
+		newLc->sheet()->removeContext( oldLc );
+		v->setLyricsContext( newLc );
+		delete oldLc;
 		
 		CACanorus::undo()->pushUndoCommand();
-		CALilyPondImport( inputString );
 		CACanorus::rebuildUI(document(), v->lyricsContext()->sheet());
 	}
 	
