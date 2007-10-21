@@ -29,6 +29,7 @@ public:
 	// Constructors
 	CALilyPondImport( QString& in );
 	CALilyPondImport( QTextStream *in=0 );
+	inline void setTemplateVoice( CAVoice *voice ) { _templateVoice = voice; }
 	
 	// Destructor
 	virtual ~CALilyPondImport();
@@ -114,6 +115,9 @@ private:
 	int _curLine, _curChar;
 	QList<QString> _errors;
 	QList<QString> _warnings;
+	
+	inline CAVoice *templateVoice() { return _templateVoice; }
+	CAVoice *_templateVoice; // used when importing voice to set the staff etc.
 };
 
 #endif /* LILYPONDIMPORT_H_ */

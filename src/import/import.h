@@ -32,12 +32,12 @@ public:
 	void importLyricsContext();
 	void importFunctionMarkingContext();
 	
-	CADocument *importedDocument();
-	CASheet *importedSheet();
-	CAStaff *importedStaff();
-	CAVoice *importedVoice();
-	CALyricsContext *importedLyricsContext();
-	CAFunctionMarkingContext *importedFunctionMarking();
+	inline CADocument *importedDocument() { return _importedDocument; }
+	inline CASheet *importedSheet()       { return _importedSheet; }
+	inline CAStaff *importedStaff()       { return _importedStaff; }
+	inline CAVoice *importedVoice()       { return _importedVoice; }
+	inline CALyricsContext *importedLyricsContext() { return _importedLyricsContext; }
+	inline CAFunctionMarkingContext *importedFunctionMarkingContext() { return _importedFunctionMarkingContext; }
 	
 signals:
 	void documentImported( CADocument* );
@@ -75,6 +75,7 @@ private:
 	CAFunctionMarkingContext *_importedFunctionMarkingContext;
 	
 	enum CAImportPart {
+		Undefined,
 		Document,
 		Sheet,
 		Staff,

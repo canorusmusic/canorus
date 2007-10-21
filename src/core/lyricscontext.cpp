@@ -53,6 +53,7 @@ void CALyricsContext::clear() {
 
 CALyricsContext *CALyricsContext::clone( CASheet *s ) {
 	CALyricsContext *newLc = new CALyricsContext( name(), stanzaNumber(), s );
+	newLc->cloneLyricsContextProperties( this );
 	
 	for (int i=0; i<_syllableList.size(); i++) {
 		CASyllable *newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone());
@@ -61,6 +62,16 @@ CALyricsContext *CALyricsContext::clone( CASheet *s ) {
 	}
 	
 	return newLc;
+}
+
+/*!
+	Sets the properties of the given lyrics context to this lyrics context.
+*/
+void CALyricsContext::cloneLyricsContextProperties( CALyricsContext *lc ) {
+	setName( lc->name() );
+	setStanzaNumber( lc->stanzaNumber() );
+	setSheet( lc->sheet() );
+	setAssociatedVoice( lc->associatedVoice() );
 }
 
 /*!

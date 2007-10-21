@@ -53,26 +53,39 @@ CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection st
 */
 CAVoice::~CAVoice() {
 	clear();
-	if (_voiceNumber==2)
+	if ( staff() && staff()->voiceCount()==2 )
 		staff()->voiceAt(0)->setStemDirection(CANote::StemNeutral);
 	
 	for (int i=0; i<lyricsContextList().size(); i++)
 		lyricsContextList().at(i)->setAssociatedVoice( 0 );
 	
-	staff()->removeVoice(this);
+	if (staff())
+		staff()->removeVoice(this);
 }
-
 
 /*!
 	Clones the current voice including all the music elements.
 	Sets the voice staff to \a newStaff. If none given, use the original staff.
 */
 CAVoice *CAVoice::clone( CAStaff* newStaff ) {
-	CAVoice *newVoice = new CAVoice( name(), newStaff, stemDirection(), voiceNumber() );
-	newVoice->setMidiChannel( midiChannel() );
-	newVoice->setMidiProgram( midiProgram() );
+	CAVoice *newVoice = new CAVoice( name(), newStaff );
+	newVoice->cloneVoiceProperties( this );
+	newVoice->setStaff( newStaff );
 	
 	return newVoice;
+}
+
+/*!
+	Sets the properties of the given voice to this voice.
+*/
+void CAVoice::cloneVoiceProperties( CAVoice *voice ) {
+	setName( voice->name() );
+	setStaff( voice->staff() );
+	setVoiceNumber( voice->voiceNumber() );
+	setStemDirection( voice->stemDirection() );
+	setMidiChannel( voice->midiChannel() );
+	setMidiProgram( voice->midiProgram() );
+	setLyricsContexts( voice->lyricsContextList() );
 }
 
 /*!
@@ -85,11 +98,14 @@ CAVoice *CAVoice::clone() {
 
 /*!
 	Destroys all non-shared music elements held by the voice.
+	
+	When clearing the whole staff, make sure the voice is *deleted*.
+	It is automatically removed from the staff.
 */
 void CAVoice::clear() {
-	while (_musElementList.size()) {
+	while ( _musElementList.size() ) {
 		// deletes an element only if it's not present in other voices or we're deleting the last voice
-		if (_musElementList.front()->isPlayable() || staff()->voiceCount()==1)
+		if ( _musElementList.front()->isPlayable() || staff() && staff()->voiceCount()<2 )
 			delete _musElementList.front(); // CAMusElement's destructor removes it from the list
 		else
 			_musElementList.removeFirst();
@@ -348,7 +364,7 @@ void CAVoice::updateTimes(int idx, int givenLength) {
 */
 bool CAVoice::removeElement(CAMusElement *elt) {
 	int idx;
-	if ((idx = _musElementList.indexOf(elt)) != -1) {	//if the search element is found
+	if ((idx = _musElementList.indexOf(elt)) != -1) {	// if the search element is found
 		int length = _musElementList[idx]->timeLength();
 		
 		if (elt->musElementType()==CAMusElement::Note) {

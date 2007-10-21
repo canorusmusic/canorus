@@ -55,6 +55,7 @@ CALilyPondImport::~CALilyPondImport() {
 void CALilyPondImport::initLilyPondImport() {
 	_curLine = _curChar = 0;
 	_curSlur = 0; _curPhrasingSlur = 0;
+	_templateVoice = 0;
 }
 
 void CALilyPondImport::addError(QString description, int curLine, int curChar) {
@@ -66,6 +67,10 @@ void CALilyPondImport::addError(QString description, int curLine, int curChar) {
 
 CAVoice *CALilyPondImport::importVoiceImpl() {
 	CAVoice *voice = new CAVoice( "", 0 );
+	
+	if (templateVoice())
+		voice->cloneVoiceProperties( templateVoice() );
+	
 	setCurVoice(voice);
 	CAPitch prevPitch = { 21, 0 };
 	CALength prevLength = { CAPlayable::Quarter, 0 };
@@ -414,8 +419,11 @@ const QString CALilyPondImport::peekNextElement() {
 	\sa CAMusElement::compare()
 */
 CAMusElement* CALilyPondImport::findSharedElement(CAMusElement *elt) {
+	if ( !curVoice() || !curVoice()->staff() )
+		return 0;
+	
 	// gather a list of all the music elements of that type in the staff at that time
-	QList<CAMusElement*> foundElts = curVoice()->staff()->getEltByType(elt->musElementType(), elt->timeStart());
+	QList<CAMusElement*> foundElts = curVoice()->staff()->getEltByType( elt->musElementType(), elt->timeStart() );
 	
 	// compare gathered music elements properties
 	for (int i=0; i<foundElts.size(); i++)

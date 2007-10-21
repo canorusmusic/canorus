@@ -17,8 +17,10 @@ CAFile::CAFile() : QThread() {
 }
 
 CAFile::~CAFile() {
-	if ( stream() ) delete stream();
-	if ( file() ) delete file();
+	if ( file() ) {
+		delete stream();
+		delete file();
+	}
 }
 
 void CAFile::setStreamFromFile( const QString filename ) {

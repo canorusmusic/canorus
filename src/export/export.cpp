@@ -11,15 +11,19 @@
 CAExport::CAExport( QTextStream *stream )
  : CAFile() {
 	setStream( stream );
+	
+	setExportedDocument(0);
+	setExportedSheet(0);
+	setExportedStaff(0);
+	setExportedVoice(0);
+	setExportedLyricsContext(0);
+	setExportedFunctionMarkingContext(0);
 }
 
 CAExport::~CAExport() {
 }
 
 void CAExport::run() {
-	exec(); // start event loop for timers and signals
-	
-	setStatus( 1 ); // export started
 	if (exportedDocument()) {
 		exportDocumentImpl( exportedDocument() );
 		emit documentExported( exportedDocument() );
@@ -46,35 +50,46 @@ void CAExport::run() {
 	}
 	
 	emit exportDone( status() );
+	
+	if (status()>0) { // error - bad implemented filter
+		              // job is finished but status is still marked as working, set to Ready to prevent infinite loops
+		setStatus(0);
+	}
 }
 
 void CAExport::exportDocument( CADocument *doc ) {
 	setExportedDocument( doc );
+	setStatus( 1 ); // process started
 	start();
 }
 
 void CAExport::exportSheet( CASheet *sheet ) {
 	setExportedSheet( sheet );
+	setStatus( 1 ); // process started
 	start();
 }
 
 void CAExport::exportStaff( CAStaff *staff ) {
 	setExportedStaff( staff );
+	setStatus( 1 ); // process started
 	start();
 }
 
 void CAExport::exportVoice( CAVoice *voice ) {
 	setExportedVoice( voice );
+	setStatus( 1 ); // process started
 	start();
 }
 
 void CAExport::exportLyricsContext( CALyricsContext *lc ) {
 	setExportedLyricsContext( lc );
+	setStatus( 1 ); // process started
 	start();
 }
 
 void CAExport::exportFunctionMarkingContext( CAFunctionMarkingContext *fmc ) {
 	setExportedFunctionMarkingContext( fmc );
+	setStatus( 1 ); // process started
 	start();
 }
 

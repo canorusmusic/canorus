@@ -23,6 +23,7 @@ public:
 	~CALyricsContext();
 	void clear();
 	CALyricsContext *clone( CASheet *s );
+	void cloneLyricsContextProperties( CALyricsContext* );
 	
 	void repositSyllables();
 	

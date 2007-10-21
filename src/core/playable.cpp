@@ -78,6 +78,8 @@ CAPlayable::CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, i
 	Destroys the playable element.
 */
 CAPlayable::~CAPlayable() {
+	if (voice())
+		voice()->removeElement( this );
 }
 
 void CAPlayable::setVoice(CAVoice *voice) {

@@ -238,7 +238,8 @@ void CANote::updateTies() {
 	}
 	
 	// fix/create a tie, if needed
-	QList<CANote*> noteList = voice()->noteList();
+	QList<CANote*> noteList;
+	if (voice()) noteList = voice()->noteList();
 	
 	// checks a tie of the potential left note
 	CANote *leftNote = 0;
