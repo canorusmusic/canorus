@@ -1,3 +1,9 @@
+canorus (0.4-1ubuntu1) gutsy; urgency=low
+
+  * gutsy port
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Wed, 24 Oct 2007 18:08:12 +0100
+
 canorus (0.4-1ubuntu1) feisty; urgency=low
 
   * new upstream release
