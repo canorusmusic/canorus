@@ -126,7 +126,8 @@ void CAVoice::clear() {
 void CAVoice::insertMusElement(CAMusElement *elt, bool updateT) {
 	int i;
 	for (i=0;
-	     (i < _musElementList.size()) && (_musElementList[i]->timeStart() <= elt->timeStart());
+	     (i < _musElementList.size()) && ((_musElementList[i]->timeStart() < elt->timeStart() ||
+	      (_musElementList[i]->timeStart() == elt->timeStart() && !_musElementList[i]->isPlayable())));
 	     i++);
 	
 	_musElementList.insert(i, elt);

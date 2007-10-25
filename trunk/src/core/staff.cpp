@@ -336,9 +336,9 @@ bool CAStaff::fixVoiceErrors() {
 		for (int j=0; j<voiceCount(); j++) {
 			if (!signsIncluded[j].contains(signsNeeded[i])) {
 				everythingIncluded = false;
-				if (prevSignsNeeded[i] && (!prevSignsNeeded[i]->isPlayable()))
+/*				if (prevSignsNeeded[i] && (!prevSignsNeeded[i]->isPlayable()))
 					_voiceList[j]->insertMusElementAfter(signsNeeded[i], prevSignsNeeded[i]);
-				else
+				else*/
 					_voiceList[j]->insertMusElement(signsNeeded[i]);
 			}
 		}
