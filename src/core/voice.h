@@ -56,7 +56,7 @@ public:
 	QList<CAMusElement*> musElementList() { return _musElementList; }
 	int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
 	int lastTimeStart() { return (_musElementList.size()?_musElementList.back()->timeStart():0); }
-	CAMusElement *lastMusElement() { return _musElementList.back(); }
+	CAMusElement *lastMusElement() { return _musElementList.size()?_musElementList.back():0; }
 	CAMusElement *eltBefore(CAMusElement *elt);
 	CAMusElement *eltAfter(CAMusElement *elt);
 	int lastNotePitch(bool inChord=false);

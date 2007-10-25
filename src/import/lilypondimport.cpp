@@ -210,6 +210,8 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 
 			if (!sharedBar) {
 				curVoice()->staff()->insertSignAfter(bar, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
+				if (curVoice()->lastMusElement()!=bar) // when the voice is not part of the staff
+					curVoice()->appendMusElement( bar );
 			} else {
 				curVoice()->appendMusElement(sharedBar);
 				delete bar;
@@ -234,6 +236,8 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 
 			if (!sharedBar) {
 				curVoice()->staff()->insertSignAfter(bar, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
+				if (curVoice()->lastMusElement()!=bar) // when the voice is not part of the staff
+					curVoice()->appendMusElement( bar );
 			} else {
 				curVoice()->appendMusElement(sharedBar);
 				delete bar;
@@ -258,6 +262,8 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			
 			if (!sharedClef) {
 				curVoice()->staff()->insertSignAfter(clef, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
+				if (curVoice()->lastMusElement()!=clef) // when the voice is not part of the staff
+					curVoice()->appendMusElement( clef );
 			} else {
 				curVoice()->appendMusElement(sharedClef);
 				delete clef;
@@ -290,6 +296,8 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			
 			if (!sharedKeySig) {
 				curVoice()->staff()->insertSignAfter(keySig, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
+				if (curVoice()->lastMusElement()!=keySig) // when the voice is not part of the staff
+					curVoice()->appendMusElement( keySig );
 			} else {
 				curVoice()->appendMusElement(sharedKeySig);
 				delete keySig;
@@ -312,6 +320,8 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			
 			if (!sharedTimeSig) {
 				curVoice()->staff()->insertSignAfter(timeSig, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
+				if (curVoice()->lastMusElement()!=timeSig) // when the voice is not part of the staff
+					curVoice()->appendMusElement( timeSig );
 			} else {
 				curVoice()->appendMusElement(sharedTimeSig);
 				delete timeSig;
