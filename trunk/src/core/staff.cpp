@@ -315,16 +315,16 @@ QList<CAMusElement*> CAStaff::getEltByType(CAMusElement::CAMusElementType type, 
 */
 bool CAStaff::fixVoiceErrors() {
 	QList<CAMusElement *> signsNeeded;
-	QList<CAMusElement *> prevSignsNeeded;	//list of music elements before that sign in that voice
+	QList<CAMusElement *> prevSignsNeeded;	// list of music elements before that sign in that voice
 	QList<CAMusElement *> signsIncluded[voiceCount()];
 	
 	for (int i=0; i<voiceCount(); i++) {
 		QList<CAMusElement*> list = _voiceList[i]->musElementList();
 		for (int j=0; j<list.size(); j++) {
 			if (!list[j]->isPlayable()) {
-				signsIncluded[i] << list[j];	//add the current sign to voice's included list
+				signsIncluded[i] << list[j];	// add the current sign to voice's included list
 				if (!signsNeeded.contains(list[j])) {
-					signsNeeded << list[j];	//add the current sign to others voices needed list
+					signsNeeded << list[j];	// add the current sign to others voices needed list
 					prevSignsNeeded << _voiceList[i]->eltBefore(list[j]);
 				}
 			}

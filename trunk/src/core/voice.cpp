@@ -53,8 +53,6 @@ CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection st
 */
 CAVoice::~CAVoice() {
 	clear();
-	if ( staff() && staff()->voiceCount()==2 )
-		staff()->voiceAt(0)->setStemDirection(CANote::StemNeutral);
 	
 	for (int i=0; i<lyricsContextList().size(); i++)
 		lyricsContextList().at(i)->setAssociatedVoice( 0 );
@@ -289,7 +287,7 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 	If the given \a length is not 0, updates start time of the given music element \a
 	elt and start times of music elements after it for the given length.
 	
-	Updating times means increasing start time of a music element for certain length.
+	Updating times means increasing start time of music elements for the given length.
 	
 	This function is usually called when an element is deleted or inserted and
 	startTimes after it need to be updated.
@@ -383,11 +381,7 @@ bool CAVoice::removeElement(CAMusElement *elt) {
 			}
 		}
 		
-		// update the startTimes of elements behind it, but only if the note was not part of the chord
-		if (!(elt->musElementType()==CAMusElement::Note && ((CANote*)elt)->isPartOfTheChord()))
-			updateTimes(idx+1, -1*length);	//but only, if the removed note is not part of the chord
-		
-		_musElementList.removeAt(idx);					//remove the element from the music element list
+		_musElementList.removeAt(idx);					// removes the element from the music element list
 		return true;
 	} else {
 		return false;
@@ -406,10 +400,10 @@ bool CAVoice::removeElement(CAMusElement *elt) {
 int CAVoice::lastNotePitch(bool inChord) {
 	for (int i=_musElementList.size()-1; i>=0; i--) {
 		if (_musElementList[i]->musElementType()==CAMusElement::Note) {
-			if (!((CANote*)_musElementList[i])->isPartOfTheChord() || !inChord)	//the note is not part of the chord
+			if (!((CANote*)_musElementList[i])->isPartOfTheChord() || !inChord)	// the note is not part of the chord
 				return (((CANote*)_musElementList[i])->pitch());
 			else {
-				int chordTimeStart = _musElementList[i]->timeStart();	//
+				int chordTimeStart = _musElementList[i]->timeStart();
 				int j;
 				for (j=i;
 				     (j>=0 && _musElementList[j]->musElementType()==CAMusElement::Note && _musElementList[j]->timeStart()==chordTimeStart);

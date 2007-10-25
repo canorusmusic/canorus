@@ -2679,18 +2679,15 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		CALilyPondImport li( inputString );
 		
 		CAVoice *oldVoice = v->voice();
-		oldVoice->staff()->removeVoice( oldVoice );
 		li.setTemplateVoice( oldVoice );
 		li.importVoice();
 		while (li.isRunning());
 		
 		CAVoice *newVoice = li.importedVoice();
 		newVoice->staff()->addVoice( newVoice );
-		delete oldVoice;
+		delete oldVoice; // also removes voice from the staff
 		
-		for (int i=0; i<newVoice->lyricsContextList().size(); i++)
-			newVoice->lyricsContextList().at(i)->setAssociatedVoice( newVoice );
-		newVoice->staff()->addVoice( newVoice );
+		newVoice->staff()->fixVoiceErrors();
 		v->setVoice( newVoice );
 		
 		CACanorus::undo()->pushUndoCommand();
@@ -3362,8 +3359,13 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool d
 							note->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(note->timeStart());
 						musElemSet.remove(removedSyllable);
 					}
+					note->voice()->updateTimesAfter( note, -1*note->timeLength() );
 				}
-				(*i)->context()->removeMusElement(*i);
+				note->voice()->removeElement( note );
+				delete note;
+			} else if ((*i)->musElementType()==CAMusElement::Rest) {
+				static_cast<CARest*>(*i)->voice()->updateTimesAfter( *i, -1*(*i)->timeLength() );
+				delete *i;				
 			} else if ((*i)->musElementType()==CAMusElement::Syllable) {
 				if ( deleteSyllable ) {
 					CALyricsContext *lc = static_cast<CALyricsContext*>((*i)->context()); 
