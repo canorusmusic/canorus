@@ -22,13 +22,14 @@ public:
 	inline const float progress() { return _progress; }
 	virtual const QString readableStatus() = 0;
 	void setStreamFromFile( const QString filename );
+	void setStreamToFile( const QString filename );
 	
 protected:
 	inline void setStatus( const int status ) { _status = status; }
 	inline void setProgress( const float progress ) { _progress = progress; }
 	
 	inline QTextStream *stream() { return _stream; }
-	inline void setStream( QTextStream *stream ) { _stream = stream; }
+	inline virtual void setStream( QTextStream *stream ) { _stream = stream; }
 	
 	inline QFile *file() { return _file; }
 	inline void setFile( QFile *file ) { _file = file; }

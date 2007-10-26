@@ -81,13 +81,13 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	widgets/toolbutton.h
 	widgets/menutoolbutton.h
 	widgets/undotoolbutton.h
+	
 	interface/mididevice.h
 )
 
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/canorus.cpp
 	core/settings.cpp
-	core/canorusml.cpp
 	core/undocommand.cpp
 	core/undo.cpp
 	core/autorecovery.cpp
@@ -174,11 +174,13 @@ SET(Canorus_Interface_Srcs	# Other interfaces like Engraver, Playback, Plugin ma
 SET(Canorus_Export_Srcs     # Classes for exporting Canorus data to various file formats
 	export/export.cpp
 	export/lilypondexport.cpp
+	export/canorusmlexport.cpp
 )
 
 SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus data
 	import/import.cpp
 	import/lilypondimport.cpp
+	import/canorusmlimport.cpp
 )
 
 SET(Canorus_RtMidi_Srcs		# RtMIDI library
@@ -205,7 +207,6 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/staff.cpp
 	core/lyricscontext.cpp
 	core/functionmarkingcontext.cpp
-	core/canorusml.cpp
 
 	core/muselement.cpp
 	core/voice.cpp
@@ -222,6 +223,11 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	
 	core/functionmarking.cpp
 	
+	core/file.cpp
+	${Canorus_Import_Srcs}
+	moc_import.cxx
+	${Canorus_Export_Srcs}
+	moc_export.cxx
 	${Canorus_RtMidi_Srcs}
 	moc_mididevice.cxx
 	interface/rtmididevice.cpp
@@ -548,4 +554,3 @@ IF(APPLE)
 	#	FILE(APPEND ${OSX_installed_libs_file} "${file}\n")
 	#ENDFOREACH(file)
 ENDIF(APPLE)
-

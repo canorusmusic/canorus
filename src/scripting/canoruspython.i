@@ -56,31 +56,9 @@
 void markDelete( PyObject* ); // function used to delete Canorus objects inside Python
 const char* tr( const char * sourceText, const char * comment = 0, int n = -1 );
 
-%include "scripting/context.i"
-%include "scripting/document.i"
-%include "scripting/muselement.i"
-%include "scripting/sheet.i"
-%include "scripting/voice.i"
-%include "scripting/playable.i"
-%include "scripting/staff.i"
-%include "scripting/note.i"
-%include "scripting/rest.i"
-%include "scripting/keysignature.i"
-%include "scripting/timesignature.i"
-%include "scripting/clef.i"
-%include "scripting/barline.i"
-%include "scripting/lyricscontext.i"
-%include "scripting/syllable.i"
-%include "scripting/canorusml.i"
-%include "scripting/slur.i"
-%include "scripting/functionmarking.i"
-%include "scripting/functionmarkingcontext.i"
+%include "scripting/canoruslibrary.i"
 
-%include "scripting/playback.i"
-%include "scripting/mididevice.i"
-%include "scripting/rtmididevice.i"
-
-%{	//toPythonObject() function
+%{	// toPythonObject() function
 #include "scripting/swigpython.h"	//needed for CAClassType
 
 #include <QList>

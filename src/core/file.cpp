@@ -28,3 +28,9 @@ void CAFile::setStreamFromFile( const QString filename ) {
 	file()->open( QIODevice::ReadOnly );
 	setStream( new QTextStream(file()) );
 }
+
+void CAFile::setStreamToFile( const QString filename ) {
+	setFile( new QFile( filename ) );
+	file()->open( QIODevice::ReadWrite );
+	setStream( new QTextStream(file()) );
+}

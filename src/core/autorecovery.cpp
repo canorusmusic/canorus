@@ -11,7 +11,8 @@
 #include <QTimer>
 #include <QFile>
 #include <QMessageBox>
-#include "core/canorusml.h"
+#include "export/canorusmlexport.h"
+#include "import/canorusmlimport.h"
 #include "core/canorus.h"
 #include "core/settings.h"
 
@@ -65,7 +66,10 @@ void CAAutoRecovery::saveRecovery() {
 	
 	int c=0;
 	for (QSet<CADocument*>::const_iterator i=documents.constBegin(); i!=documents.constEnd(); i++, c++) {
-		CACanorusML::saveDocumentToFile( *i, CACanorus::settingsPath()+"/recovery"+QString::number(c) );
+		CACanorusMLExport save;
+		save.setStreamToFile( CACanorus::settingsPath()+"/recovery"+QString::number(c) );
+		save.exportDocument( *i );
+		while ( save.isRunning() );
 	}
 	
 	while (	QFile::exists(CACanorus::settingsPath()+"/recovery"+QString::number(c)) ) {
@@ -91,14 +95,15 @@ void CAAutoRecovery::cleanupRecovery() {
 void CAAutoRecovery::openRecovery() {
 	QString documents;
 	for ( int i=0; QFile::exists(CACanorus::settingsPath()+"/recovery"+QString::number(i)); i++ ) {
-		CADocument *doc = CACanorusML::openDocumentFromFile( CACanorus::settingsPath()+"/recovery"+QString::number(i) );
-		if(doc)
-		{
+		CACanorusMLImport open;
+		open.setStreamFromFile( CACanorus::settingsPath()+"/recovery"+QString::number(i) );
+		open.importDocument();
+		while ( open.isRunning() );
+		if ( open.importedDocument() ) {
 			CAMainWin *mainWin = new CAMainWin();
 			CACanorus::addMainWin( mainWin );
-			CADocument *document = mainWin->openDocument( doc ); 
-			documents.append( tr("- Document %1 last modified on %2.").arg(document->title()).arg(document->dateLastModified().toString()) );
-			documents.append("\n");
+			documents.append( tr("- Document %1 last modified on %2.").arg(open.importedDocument()->title()).arg(open.importedDocument()->dateLastModified().toString()) + "\n" );
+			mainWin->setDocument( open.importedDocument() );
 		}
 	}
 	

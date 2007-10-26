@@ -10,7 +10,7 @@
 #include <QPushButton>
 #include <QTextStream>
 
-#include "core/canorusml.h"
+#include "export/canorusmlexport.h"
 #include "widgets/sourceviewport.h"
 #include "core/document.h"
 #include "core/voice.h"
@@ -138,8 +138,10 @@ void CASourceViewPort::rebuild() {
 	QTextStream stream(value);
 	
 	// CanorusML
-	if (document()) {
-		CACanorusML::saveDocument(document(), stream);
+	if ( document() ) {
+		CACanorusMLExport save( &stream );
+		save.exportDocument( document() );
+		while ( save.isRunning() );
 	} else {
 		CALilyPondExport le( &stream );
 		// LilyPond
