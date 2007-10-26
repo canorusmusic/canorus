@@ -60,7 +60,6 @@
 #include "core/note.h"
 #include "core/slur.h"
 #include "core/rest.h"
-#include "core/canorusml.h"
 #include "core/voice.h"
 #include "core/barline.h"
 #include "core/timesignature.h"
@@ -74,7 +73,9 @@
 #include "scripting/swigpython.h"
 
 #include "export/lilypondexport.h"
+#include "export/canorusmlexport.h"
 #include "import/lilypondimport.h"
+#include "import/canorusmlimport.h"
 
 /*!
 	\class CAFileFormats
@@ -2053,12 +2054,15 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 
 	Returns a pointer to the opened document or null if opening the document has failed.
 */
-CADocument *CAMainWin::openDocument(const QString& fileName)
-{
-	CADocument* doc = CACanorusML::openDocumentFromFile(fileName);
-	if(doc) {
-		doc->setFileName(fileName);
-		return openDocument(doc);
+CADocument *CAMainWin::openDocument(const QString& fileName) {
+	CACanorusMLImport open;
+	open.setStreamFromFile( fileName );
+	open.importDocument();
+	while ( open.isRunning() );
+	
+	if( open.importedDocument() ) {
+		open.importedDocument()->setFileName(fileName);
+		return openDocument( open.importedDocument() );
 	} else
 		return 0;
 }
@@ -2104,15 +2108,20 @@ CADocument *CAMainWin::openDocument(CADocument *doc) {
 	Returns True, if the save was complete; False otherwise.
 */
 bool CAMainWin::saveDocument( QString fileName ) {
-	bool ret;
 	document()->setTimeEdited( document()->timeEdited() + _timeEditedTime );
 	document()->setDateLastModified( QDateTime::currentDateTime() );
 	CACanorus::restartTimeEditedTimes( document() );
 	
-	if (ret = CACanorusML::saveDocumentToFile( document(), fileName ))
-		document()->setFileName(fileName);
+	CACanorusMLExport save;
+	save.setStreamToFile( fileName );
+	save.exportDocument( document() );
+	while ( save.isRunning() );
 	
-	return ret;
+	if ( save.exportedDocument() ) {
+		document()->setFileName( fileName );
+	}
+	
+	return save.exportedDocument();
 }
 
 void CAMainWin::onMidiInEvent( QVector<unsigned char> m) {
@@ -2139,17 +2148,10 @@ void CAMainWin::on_uiExportDocument_triggered() {
 	if (CAPluginManager::exportFilterExists(uiExportDialog->selectedFilter()))
 		CAPluginManager::exportAction(uiExportDialog->selectedFilter(), document(), s);
 	else {
-		QFile file(s);
-		if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-			if (exportDialog()->selectedFilter() == CAFileFormats::LILYPOND_FILTER) {
-				// LilyPond
-				CALilyPondExport le( new QTextStream(&file) );
-				le.exportDocument(document());
-				while (le.isRunning());
-			}
-  	 		
-			file.close();
-		}
+		CALilyPondExport le;
+		le.setStreamToFile( s );
+		le.exportDocument( document() );
+		while ( le.isRunning() );
 	}
 }
 
@@ -2664,12 +2666,15 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		if ( document() )
 			delete document();
 		
-		QXmlInputSource input;
-		input.setData(inputString);
 		CACanorus::undo()->pushUndoCommand();
-		CADocument* newDoc = CACanorusML::openDocument(&input);
-		CACanorus::undo()->changeDocument( document(), newDoc );
-		setDocument(newDoc);
+		CACanorusMLImport open( inputString );
+		open.importDocument();
+		while ( open.isRunning() );
+		
+		if (open.importedDocument()) {
+			CACanorus::undo()->changeDocument( document(), open.importedDocument() );
+			setDocument( open.importedDocument() );
+		}
 		CACanorus::rebuildUI(document());
 	} else
 	if (v->voice()) {

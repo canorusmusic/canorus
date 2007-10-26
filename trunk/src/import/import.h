@@ -18,7 +18,9 @@ class CALyricsContext;
 class CAFunctionMarkingContext;
 
 class CAImport : public CAFile {
+#ifndef SWIG
 	Q_OBJECT
+#endif
 public:
 	CAImport( QTextStream *stream=0 );
 	CAImport( QString& stream );
@@ -39,6 +41,7 @@ public:
 	inline CALyricsContext *importedLyricsContext() { return _importedLyricsContext; }
 	inline CAFunctionMarkingContext *importedFunctionMarkingContext() { return _importedFunctionMarkingContext; }
 	
+#ifndef SWIG
 signals:
 	void documentImported( CADocument* );
 	void sheetImported( CASheet* );
@@ -48,6 +51,7 @@ signals:
 	void functionMarkingContextImported( CAFunctionMarkingContext* );
 	
 	void importDone( int status );
+#endif
 	
 protected:
 	virtual CADocument      *importDocumentImpl()      { setStatus(0); return 0; }
