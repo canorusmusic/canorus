@@ -401,6 +401,7 @@ void CAPropertiesDialog::createDocumentFromTree() {
 						s->removeVoice( s->voiceAt(0) );
 					
 					for ( int k=0; k<cur->child(i)->child(j)->childCount(); k++ ) {
+						_voiceItem[cur->child(i)->child(j)->child(k)]->setVoiceNumber( k+1 );
 						s->addVoice( _voiceItem[cur->child(i)->child(j)->child(k)] );
 					}	
 				}
