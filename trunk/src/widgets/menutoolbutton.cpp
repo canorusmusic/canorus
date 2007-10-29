@@ -11,9 +11,30 @@
 #include <QMainWindow>
 #include <QToolBar>
 #include <QWidgetAction>
+#include <QStylePainter>
+#include <QStyleOptionToolButton>
 
 #include "widgets/menutoolbutton.h"
 #include "ui/mainwin.h"
+using CAMenuToolButtonNS::CAGroupBoxButton;
+using CAMenuToolButtonNS::CAGroupBox;
+
+// Prevent buttons from staying sunken when they're not checked
+void CAGroupBoxButton::paintEvent( QPaintEvent* ) {
+		QStylePainter p(this);
+		QStyleOptionToolButton opt;
+		initStyleOption(&opt);
+		if(!isChecked() && (opt.state & QStyle::State_Sunken))
+			opt.state = opt.state ^ QStyle::State_Sunken | QStyle::State_Raised;
+		p.drawComplexControl(QStyle::CC_ToolButton, opt);
+}
+
+// Clicking off the popup should hide it 
+void CAGroupBox::mousePressEvent( QMouseEvent *e ) {
+	QGroupBox::mousePressEvent(e);
+	if(!QRect(x(), y(), width(), height()).contains(e->globalPos()))
+		hide();
+}
 
 /*!
 	\class CAMenuToolButton
@@ -51,8 +72,8 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
     boxSizePolicy.setHeightForWidth( widgetSizePolicy.hasHeightForWidth() );
     
     // Visual group box for the button menu
-	_groupBox = new QGroupBox( title, 0 );
-	_groupBox->setWindowFlags( Qt::FramelessWindowHint );
+	_groupBox = new CAGroupBox( title, 0 );
+	_groupBox->setWindowFlags( Qt::Popup );
 	_groupBox->hide();
     boxSizePolicy.setHeightForWidth( _groupBox->sizePolicy().hasHeightForWidth() );
     _groupBox->setSizePolicy( boxSizePolicy );
@@ -102,7 +123,7 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString 
 	    ySize    = iconSize;
 	
 	// Create new button for menu
-	button = new QToolButton( _groupBox );
+	button = new CAGroupBoxButton( _groupBox );
 	button->setIcon( icon );
 	button->setIconSize( QSize(iconSize, iconSize) );
 	button->setCheckable( true );
@@ -141,6 +162,7 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString 
 void CAMenuToolButton::showButtons() {
 	_groupBox->hide(); // always hide it, if the button box widget is behind the main window
 	_groupBox->show();
+	_buttonGroup->button(currentId())->setChecked(true);
 	
 	_groupBox->move( calculateTopLeft( _groupBox->size() ) );
 }
@@ -197,15 +219,11 @@ void CAMenuToolButton::wheelEvent( QWheelEvent *event ) {
 	If \a triggerSignal is False (default) it doesn't emit toggled(), otherwise it does.
 */
 void CAMenuToolButton::setCurrentId(int id, bool triggerSignal) {
-	if (_buttonGroup->button( currentId() ))
-		_buttonGroup->button( currentId() )->setChecked(false);
-	
 	CAToolButton::setCurrentId(id);
 	
 	if ( !_buttonGroup->button(id) )
 		return;
 	
-	_buttonGroup->button(id)->setChecked(true);
 	if ( defaultAction() )
 		defaultAction()->setIcon( _buttonGroup->button(id)->icon() );
 	
