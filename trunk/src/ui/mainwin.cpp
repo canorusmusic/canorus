@@ -2067,7 +2067,6 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 		return 0;
 }
 
-
 /*!
 	Opens the given document.
 	The previous document will be lost.
@@ -2085,7 +2084,8 @@ CADocument *CAMainWin::openDocument(CADocument *doc) {
 		CACanorus::undo()->createUndoStack( document() );
 		
 		rebuildUI(); // local rebuild only
-		uiTabWidget->setCurrentIndex(0);
+		if ( doc->sheetCount())
+			uiTabWidget->setCurrentIndex(0);
 		
 		// select the first context automatically
 		if ( document() && document()->sheetCount() && document()->sheetAt(0)->contextCount() )
@@ -2168,19 +2168,17 @@ void CAMainWin::on_uiImportDocument_triggered() {
 		return;
 	
 	QString s = fileNames[0];
+	CADocument *oldDocument = document();
 	
-	// clear existing document
-	if ( document() && (CACanorus::mainWinCount(document()) == 1) ) {
-		CACanorus::undo()->deleteUndoStack( document() ); 
-		delete document();
-	}
-	
-	setDocument(new CADocument());
-	CACanorus::undo()->createUndoStack( document() );
-	
-	if (CAPluginManager::importFilterExists(uiImportDialog->selectedFilter()))
+	bool success=false;
+	if (CAPluginManager::importFilterExists(uiImportDialog->selectedFilter())) {
+		setDocument(new CADocument());
+		CACanorus::undo()->createUndoStack( document() );
+		
 		CAPluginManager::importAction(uiImportDialog->selectedFilter(), document(), fileNames[0]);
-	else {
+		
+		success=true;
+	} else {
 		QFile file(s);
 		if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 			QTextStream in(&file);
@@ -2189,10 +2187,17 @@ void CAMainWin::on_uiImportDocument_triggered() {
 			file.close();
 		}
 	}
-	              
+	
+	// clear existing document
+	if ( success && oldDocument && (CACanorus::mainWinCount(oldDocument) == 1) ) {
+		CACanorus::undo()->deleteUndoStack( oldDocument ); 
+		delete oldDocument;
+	}
+	
 	// select the first context automatically
 	if ( document() && document()->sheetCount() && document()->sheetAt(0)->contextCount() )
 		currentScoreViewPort()->selectContext( document()->sheetAt(0)->contextAt(0) );
+	
 	updateToolBars();
 }
 
