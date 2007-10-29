@@ -16,6 +16,25 @@
 
 class CAMainWin;
 
+namespace CAMenuToolButtonNS {
+
+	class CAGroupBoxButton : public QToolButton {
+	Q_OBJECT
+	public:
+		CAGroupBoxButton(QWidget *w) : QToolButton(w) {}
+	protected:
+		void paintEvent( QPaintEvent* );
+	};
+
+	class CAGroupBox : public QGroupBox {
+	Q_OBJECT
+	public:
+		CAGroupBox( const QString& title, QWidget* parent = 0) : QGroupBox(title, parent) {}
+	protected:
+		void mousePressEvent(QMouseEvent *e);
+	};
+};
+
 class CAMenuToolButton : public CAToolButton {
 	Q_OBJECT
 public:
