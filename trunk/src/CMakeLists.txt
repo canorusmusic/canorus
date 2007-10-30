@@ -1,5 +1,7 @@
 # Define Sources of this Canorus directory
 
+INCLUDE(CheckLibraryExists)
+
 # This module is used to resolve the file dependencies
 # for QT files using an UI (User Unterface) Qt file
 # created with the Qt4 designer
@@ -39,6 +41,10 @@ IF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" PYTHON_LIB_TMP2 "${PYTHON_LIBRARY}")
 	STRING(REGEX REPLACE "\\\\" "/" PYTHON_LIB_TMP "${PYTHON_LIB_TMP2}")  # Replace back slashes to slashes
 	SET( PYTHON_LIB "${PYTHON_LIB_TMP}/Lib/" )
+	CHECK_LIBRARY_EXISTS(util openpty "" HAVE_OPENPTY)
+	IF (HAVE_OPENPTY)
+		SET(PYTHON_LIBRARY ${PYTHON_LIBRARY} util)
+	ENDIF (HAVE_OPENPTY)
 	SET(USE_PYTHON True)
 ELSE(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 	MESSAGE("Python Library and Development files *not* found. Python extensions disabled!")
