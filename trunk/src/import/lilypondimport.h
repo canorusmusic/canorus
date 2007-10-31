@@ -27,7 +27,7 @@ class QTextStream;
 class CALilyPondImport : public CAImport {
 public:
 	// Constructors
-	CALilyPondImport( QString& in );
+	CALilyPondImport( const QString in );
 	CALilyPondImport( QTextStream *in=0 );
 	inline void setTemplateVoice( CAVoice *voice ) { _templateVoice = voice; }
 	

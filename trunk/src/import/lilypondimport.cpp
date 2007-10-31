@@ -39,7 +39,7 @@ const QRegExp CALilyPondImport::DELIMITERS =
 		CALilyPondImport::SYNTAX_DELIMITERS.pattern().mid(1)
 	);
 
-CALilyPondImport::CALilyPondImport( QString& in )
+CALilyPondImport::CALilyPondImport( const QString in )
  : CAImport(in) {
 	initLilyPondImport();
 }

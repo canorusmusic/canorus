@@ -41,13 +41,13 @@
 	
 	In Python the example is even more direct using the string as an input method:
 	\code
-	  lilyString = "\relative c' { \clef treble \key d \minor c4 d e f | f e d c | c1 \bar \"|.\" }"
-	  import = LilyPondImport( lilyString )
-	  import.importVoice()
+	  lilyString = '\\relative c { \\clef "treble" \\time 4/4 c4 d e f | f e d c | c1 \\bar "|." }'
+	  myImport = LilyPondImport( lilyString )
+	  myImport.importVoice()
 	  
-	  while ( import.isRunning() ): pass
+	  while ( myImport.isRunning() ): pass
 	  
-	  voice = import.importedVoice()
+	  voice = myImport.importedVoice()
 	\endcode
 	
 	\note Both stream and string can be used both in Canorus and scripting. The example is only for illustration.
@@ -59,7 +59,7 @@ CAImport::CAImport( QTextStream *stream )
 	setImportPart( Undefined );
 }
 
-CAImport::CAImport( QString& stream )
+CAImport::CAImport( const QString stream )
  : CAFile() {
 	setStream( new QTextStream( new QString(stream)) );
 	setImportPart( Undefined );
