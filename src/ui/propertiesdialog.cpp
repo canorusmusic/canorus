@@ -12,7 +12,7 @@
 
 #include "ui/propertiesdialog.h"
 
-#include "core/canorus.h"
+#include "canorus.h"
 #include "core/undo.h"
 
 #include "core/document.h"

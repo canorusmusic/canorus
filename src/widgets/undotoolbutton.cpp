@@ -7,7 +7,7 @@
 
 #include "widgets/undotoolbutton.h"
 
-#include "core/canorus.h"
+#include "canorus.h"
 #include "core/undo.h"
 #include "core/undocommand.h"
 

@@ -5,14 +5,14 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include "ui/pluginaction.h"
+#include "interface/pluginaction.h"
 #include "ui/mainwin.h"
 
 /*!
 	\class CAPluginAction
 	CAPluginAction class represents each <action> stanza found in Canorus Plugin descriptor XML file.
 	Every action has its unique name, scripting language, function, its arguments and filename.
-	Optional properties are Canorus internal action which it reacts on, export filter, menu/toolbar text.
+	Other attributes are Canorus internal action which it reacts on, export filter, menu/toolbar text.
 */
 
 /*!
@@ -41,6 +41,5 @@ void CAPluginAction::triggeredSlot(bool on) {
 	while (dynamic_cast<CAMainWin*>(curObject)==0 && curObject!=0) // find the parent which is mainwindow
 		curObject = curObject->parent();
 	
-	_plugin->callAction(this, (CAMainWin*)curObject, ((CAMainWin*)curObject)->document(), 0, 0);
+	_plugin->callAction(this, static_cast<CAMainWin*>(curObject), static_cast<CAMainWin*>(curObject)->document(), 0, 0);
 }
-

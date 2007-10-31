@@ -79,7 +79,6 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	
 	ui/mainwin.h
 	ui/settingsdialog.h
-	ui/pluginaction.h
 	ui/propertiesdialog.h
 	
 	widgets/lcdnumber.h
@@ -92,16 +91,17 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	widgets/undotoolbutton.h
 	
 	interface/mididevice.h
+	interface/pluginaction.h
 )
 
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
-	core/canorus.cpp
 	core/settings.cpp
 	core/undocommand.cpp
 	core/undo.cpp
 	core/autorecovery.cpp
 	core/mimedata.cpp
 	core/file.cpp
+	core/fileformats.cpp
 	
 	core/document.cpp
 	core/sheet.cpp
@@ -146,7 +146,6 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
 	ui/mainwin.cpp
 	ui/settingsdialog.cpp
-	ui/pluginaction.cpp
 	ui/propertiesdialog.cpp
 )
 
@@ -177,6 +176,7 @@ SET(Canorus_Interface_Srcs	# Other interfaces like Engraver, Playback, Plugin ma
 	interface/rtmididevice.cpp
 	interface/mididevice.cpp
 	interface/pluginmanager.cpp
+	interface/pluginaction.cpp
 	interface/plugin.cpp
 )
 
@@ -198,6 +198,8 @@ SET(Canorus_RtMidi_Srcs		# RtMIDI library
 
 SET(Canorus_Srcs
 	main.cpp
+	canorus.cpp
+	
 	${Canorus_Core_Srcs}
 	${Canorus_Scripting_Srcs}
 	${Canorus_Drawable_Srcs}

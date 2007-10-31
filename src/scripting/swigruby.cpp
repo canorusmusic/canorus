@@ -6,7 +6,7 @@
 */
 
 #ifdef USE_RUBY
-#include "core/canorus.h"
+#include "canorus.h"
 #include "scripting/swigruby.h"
 #include <QFile>
 #include <QDir>

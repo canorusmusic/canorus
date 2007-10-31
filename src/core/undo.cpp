@@ -6,7 +6,6 @@
 */
 
 #include "core/undo.h"
-#include "core/canorus.h"
 #include "core/undocommand.h"
 
 /*!

@@ -12,9 +12,9 @@
 #include "scripting/swigruby.h"
 #endif
 
-#include "core/canorus.h"
+#include "canorus.h"
 #include "interface/plugin.h"
-#include "ui/pluginaction.h"
+#include "interface/pluginaction.h"
 
 #include "ui/mainwin.h"
 #include "widgets/viewportcontainer.h"

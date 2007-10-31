@@ -11,7 +11,7 @@
 #include "rtmidi/RtMidi.h"
 
 #ifndef SWIGCPP
-#include "core/canorus.h"
+#include "canorus.h"
 #endif
 
 /*!

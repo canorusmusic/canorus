@@ -6,10 +6,10 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
-#include "core/canorus.h"
+#include "canorus.h"
 #include "interface/pluginmanager.h"
 #include "interface/plugin.h"
-#include "ui/pluginaction.h"
+#include "interface/pluginaction.h"
 
 #include <QDir>
 #include <QFile>

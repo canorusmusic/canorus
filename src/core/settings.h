@@ -12,6 +12,7 @@
 #include <QColor>
 #include "ui/settingsdialog.h"
 #include "ui/mainwin.h"
+#include "core/fileformats.h"
 
 class CASettings : public QSettings {
 public:
