@@ -13,7 +13,7 @@
 #include <QMessageBox>
 #include "export/canorusmlexport.h"
 #include "import/canorusmlimport.h"
-#include "core/canorus.h"
+#include "canorus.h"
 #include "core/settings.h"
 
 /*!

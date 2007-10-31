@@ -39,7 +39,7 @@
 #include "core/rest.h"
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
-#include "core/canorus.h"
+#include "canorus.h"
 #include "core/settings.h"
 
 const int CAScoreViewPort::RIGHT_EXTRA_SPACE = 100;	// Gives some space after the music so you're able to insert music elements after the last element

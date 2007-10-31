@@ -7,7 +7,7 @@
 
 // Python.h needs to be loaded first!
 #include "scripting/swigpython.h"
-#include "core/canorus.h"
+#include "canorus.h"
 
 #include <QFileInfo>
 #include <QDir>

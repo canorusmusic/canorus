@@ -64,9 +64,6 @@ void CACanorusMLImport::initCanorusMLImport() {
 	\a mainWin is needed for any UI settings stored in the file (the last viewports
 	positions, current sheet etc.).
 	CACanorusML uses SAX parser for reading.
-	
-	\todo It would probably be better for us to use DOM parser for reading as well in the
-	future. -Matevz
 */
 CADocument* CACanorusMLImport::importDocumentImpl() {
 	QIODevice *device = stream()->device();

@@ -9,7 +9,7 @@
 #include "scripting/swigpython.h"
 #include <QFile>
 
-#include "core/canorus.h"
+#include "canorus.h"
 
 #include <iostream> // used for reporting errors in scripts
 

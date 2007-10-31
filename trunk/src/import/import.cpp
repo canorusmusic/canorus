@@ -8,6 +8,51 @@
 #include "import/import.h"
 #include <QTextStream>
 
+/*!
+	\class CAImport
+	\brief Base class for import filters
+	
+	This class inherits CAFile and is the base class for any specific import filter (eg. LilyPond,
+	CanorusML, MusicXML etc.).
+	
+	If a developer wants to write a new import filter, he should:
+	1) Create a new class with the base class CAImport
+	2) Implement CAImport constructors and at least importDocumentImpl() function which returns
+	   the new CADocument.
+	3) Register the filter (put a new fileformat to CAFileFormats and add the filter to open/save
+	   dialogs in CACanorus)
+	
+	Optionally:
+	Developer should change the current status and progress while operations are in progress. He should
+	also rewrite the readableStatus() function.
+	
+	The following example illustrates the usage of import class:
+	\code
+	  CAMyImportFilter import();
+	  import.setStreamFromFile("jingle bells.xml");
+	  import.importDocument();
+	  
+	  // busy-wait loop - not very effective
+	  while (import.isRunning());
+	  
+	  setDocument( import.importedDocument() );
+	  CACanorus::rebuildUI();
+	\endcode
+	
+	In Python the example is even more direct using the string as an input method:
+	\code
+	  lilyString = "\relative c' { \clef treble \key d \minor c4 d e f | f e d c | c1 \bar \"|.\" }"
+	  import = LilyPondImport( lilyString )
+	  import.importVoice()
+	  
+	  while ( import.isRunning() ): pass
+	  
+	  voice = import.importedVoice()
+	\endcode
+	
+	\note Both stream and string can be used both in Canorus and scripting. The example is only for illustration.
+*/
+
 CAImport::CAImport( QTextStream *stream )
  : CAFile() {
 	setStream( stream );
@@ -25,6 +70,11 @@ CAImport::~CAImport() {
 		delete stream()->string();
 }
 
+/*!
+	Executed when a new thread is dispatched.
+	It looks which part of the document should be imported and starts the procedure.
+	It emits the appropriate signal when the procedure is finished.
+*/
 void CAImport::run() {
 	switch ( importPart() ) {
 	case Document: {

@@ -8,6 +8,34 @@
 #include "export/export.h"
 #include <QTextStream>
 
+/*!
+	\class CAExport
+	\brief Base class for export filters
+	
+	This class inherits CAFile and is the base class for any specific import filter (eg. LilyPond,
+	CanorusML, MusicXML etc.).
+	
+	If a developer wants to write a new export filter, he should:
+	1) Create a new class with the base class CAExport
+	2) Implement CAExport constructors and at least exportDocumentImpl() function
+	3) Register the filter (put a new fileformat to CAFileFormats and add the filter to open/save
+	   dialogs in CACanorus)
+	
+	Optionally:
+	Developer should change the current status and progress while operations are in progress. He should
+	also rewrite the readableStatus() function.
+	
+	The following example illustrates the usage of export class:
+	\code
+	  CAMyExportFilter export();
+	  export.setStreamToFile("jingle bells.xml");
+	  export.exportDocument( curDocument );
+	  
+	  // busy-wait loop - not very effective
+	  while (export.isRunning());
+	\endcode
+*/
+
 CAExport::CAExport( QTextStream *stream )
  : CAFile() {
 	setStream( stream );
@@ -23,6 +51,11 @@ CAExport::CAExport( QTextStream *stream )
 CAExport::~CAExport() {
 }
 
+/*!
+	Executed when a new thread is dispatched.
+	It looks which part of the document should be exported and starts the procedure.
+	It emits the appropriate signal when the procedure is finished.
+*/
 void CAExport::run() {
 	if (exportedDocument()) {
 		exportDocumentImpl( exportedDocument() );

@@ -7,7 +7,7 @@
 
 #include "core/undo.h"
 #include "core/undocommand.h"
-#include "core/canorus.h"
+#include "canorus.h"
 #include "core/sheet.h"
 #include "core/document.h"
 #include "core/lyricscontext.h"

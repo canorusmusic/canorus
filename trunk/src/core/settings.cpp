@@ -6,7 +6,7 @@
 */
 
 #include "core/settings.h"
-#include "core/canorus.h"
+#include "canorus.h"
 #include "interface/rtmididevice.h"
 
 // Define default settings

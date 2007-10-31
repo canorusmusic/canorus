@@ -7,7 +7,6 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include "core/canorus.h"
 #include "core/muselementfactory.h"
 #include "core/functionmarkingcontext.h"
 #include "core/sheet.h"

@@ -12,7 +12,7 @@
 #include <QLocale>
 
 // Python.h needs to be loaded first!
-#include "core/canorus.h"
+#include "canorus.h"
 #include "ui/mainwin.h"
 #include "ui/settingsdialog.h"
 #include "interface/pluginmanager.h"

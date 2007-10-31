@@ -6,7 +6,7 @@
 */
 
 #include "widgets/viewport.h"
-#include "core/canorus.h"
+#include "canorus.h"
 
 const int CAViewPort::DEFAULT_VIEWPORT_WIDTH = 600;
 const int CAViewPort::DEFAULT_VIEWPORT_HEIGHT = 400;

@@ -9,7 +9,7 @@
 #include <QDir>
 
 // Python.h needs to be loaded first!
-#include "core/canorus.h"
+#include "canorus.h"
 #include "ui/settingsdialog.h"
 #include "interface/mididevice.h"
 #include "core/settings.h"
