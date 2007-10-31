@@ -27,7 +27,7 @@ class CASyllable;
 class CACanorusMLImport : public CAImport, public QXmlDefaultHandler {
 public:
 	CACanorusMLImport( QTextStream *stream=0 );
-	CACanorusMLImport( QString& stream );
+	CACanorusMLImport( const QString stream );
 	virtual ~CACanorusMLImport();
 	
 	void initCanorusMLImport();

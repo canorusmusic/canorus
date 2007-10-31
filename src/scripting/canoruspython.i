@@ -9,10 +9,13 @@
 
 // We don't have typemaps defined for custom types yet so we disable strongly typed languages by
 // this, but make things much easier for us.
-// In practice, it turned out this is used to enable default arguments support :)
+// In practice, it turned out this is used to enable default arguments support in Python :)
 %feature("compactdefaultargs");
 
+// don't add the object to Python object reference list so Python's gc deletes it
 %feature("ref")   ""
+
+// used when a user wants to delete an object
 %feature("unref") "
 	if (markedObjects.removeAll($this))
 		delete $this;
@@ -21,6 +24,12 @@
 %{
 #include <iostream>
 %}
+
+%typecheck(SWIG_TYPECHECK_STRING)
+	QString, const QString
+{
+	$1 = (PyString_Check($input)) ? 1 : 0; 
+}
 
 // convert returned QString value to Python's String format in UTF8 encoding
 %typemap(out) const QString {

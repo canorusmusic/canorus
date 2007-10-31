@@ -1,3 +1,16 @@
+class QThread {
+public:
+	bool isRunning();
+protected:
+	void run()=0;
+};
+
+class QXmlDefaultHandler {
+};
+
+class QObject {
+};
+
 %include "scripting/context.i"
 %include "scripting/document.i"
 %include "scripting/muselement.i"

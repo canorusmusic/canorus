@@ -34,7 +34,7 @@ CACanorusMLImport::CACanorusMLImport( QTextStream *stream )
 	initCanorusMLImport();
 }
 
-CACanorusMLImport::CACanorusMLImport( QString& stream )
+CACanorusMLImport::CACanorusMLImport( const QString stream )
  : CAImport(stream) {
 	initCanorusMLImport();
 }
