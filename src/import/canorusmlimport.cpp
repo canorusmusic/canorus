@@ -6,6 +6,7 @@
 */
 
 #include <QDebug>
+#include <QIODevice>
 
 #include "import/canorusmlimport.h"
 
@@ -68,8 +69,14 @@ void CACanorusMLImport::initCanorusMLImport() {
 	future. -Matevz
 */
 CADocument* CACanorusMLImport::importDocumentImpl() {
-	QXmlInputSource *src = new QXmlInputSource( stream()->device() );
-	
+	QIODevice *device = stream()->device();
+	QXmlInputSource *src;
+	if(device)
+		src = new QXmlInputSource( device );
+	else {
+		src = new QXmlInputSource();
+		src->setData( *stream()->string() );
+	}
 	QXmlSimpleReader *reader = new QXmlSimpleReader();
 	reader->setContentHandler( this );
 	reader->parse( src );
