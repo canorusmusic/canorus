@@ -16,24 +16,15 @@
 
 #include "widgets/menutoolbutton.h"
 #include "ui/mainwin.h"
-using CAMenuToolButtonNS::CAGroupBoxButton;
-using CAMenuToolButtonNS::CAGroupBox;
 
 // Prevent buttons from staying sunken when they're not checked
-void CAGroupBoxButton::paintEvent( QPaintEvent* ) {
+void CAGroupBoxToolButton::paintEvent( QPaintEvent* ) {
 		QStylePainter p(this);
 		QStyleOptionToolButton opt;
 		initStyleOption(&opt);
 		if(!isChecked() && (opt.state & QStyle::State_Sunken))
 			opt.state = opt.state ^ QStyle::State_Sunken | QStyle::State_Raised;
 		p.drawComplexControl(QStyle::CC_ToolButton, opt);
-}
-
-// Clicking off the popup should hide it 
-void CAGroupBox::mousePressEvent( QMouseEvent *e ) {
-	QGroupBox::mousePressEvent(e);
-	if(!QRect(x(), y(), width(), height()).contains(e->globalPos()))
-		hide();
 }
 
 /*!
@@ -72,14 +63,13 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
     boxSizePolicy.setHeightForWidth( widgetSizePolicy.hasHeightForWidth() );
     
     // Visual group box for the button menu
-	_groupBox = new CAGroupBox( title, 0 );
-	_groupBox->setWindowFlags( Qt::Popup );
-	_groupBox->hide();
+	_groupBox = new QGroupBox( title, 0 );
     boxSizePolicy.setHeightForWidth( _groupBox->sizePolicy().hasHeightForWidth() );
     _groupBox->setSizePolicy( boxSizePolicy );
 	_groupBox->setBackgroundRole( QPalette::Button );
 	_groupBox->setAutoFillBackground( true );
-    
+	setPopupWidget( _groupBox );
+
 	// Layout for visual group box
 	_boxLayout = new QGridLayout( _groupBox );
 	_boxLayout->setSpacing( spacing() );
@@ -90,8 +80,9 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	_buttonGroup = new QButtonGroup( _groupBox );
 	
 	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 
-	         this, SLOT( hideButtons( int ) ) );
-	
+	         this, SLOT( onButtonPressed( int ) ) );
+	connect( this, SIGNAL(show()), this, SLOT( onShow() ) );	
+
 	QToolButton::setDefaultAction( 0 );
     
 	// Actual positions of the buttons in the button menu layout
@@ -123,7 +114,7 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString 
 	    ySize    = iconSize;
 	
 	// Create new button for menu
-	button = new CAGroupBoxButton( _groupBox );
+	button = new CAGroupBoxToolButton( _groupBox );
 	button->setIcon( icon );
 	button->setIconSize( QSize(iconSize, iconSize) );
 	button->setCheckable( true );
@@ -154,23 +145,20 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString 
 	_groupBox->setMinimumSize( xMargin + xSize, yMargin + ySize );
 }
 
-/*!
-	Shows the button menu (connected to aboutToShow signal).
-	
+/*! 
+	Hackish adjustment needed for the groupbox to show correctly.
+
 	\warning Coordinates of groupBox are calculated according to its parent (main window) and not this parent (QToolBar).
+	\todo Move this warning..?
 */	
-void CAMenuToolButton::showButtons() {
-	_groupBox->hide(); // always hide it, if the button box widget is behind the main window
-	_groupBox->show();
+void CAMenuToolButton::onShow() {
 	_buttonGroup->button(currentId())->setChecked(true);
-	
-	_groupBox->move( calculateTopLeft( _groupBox->size() ) );
 }
 
 /*!
 	Hides the buttons menu, changes the current id and emits the toggled() signal.
 */
-void CAMenuToolButton::hideButtons( int id ) {
+void CAMenuToolButton::onButtonPressed( int id ) {
 	if ( _buttonGroup->button(id) ) {
 		setCurrentId( id );
 		if (isChecked())
@@ -180,13 +168,6 @@ void CAMenuToolButton::hideButtons( int id ) {
 		setChecked(true); // turn it on if it can turn off
 	}
 	hideButtons();
-}
-
-/*!
-	Hides the buttons menu only.
-*/
-void CAMenuToolButton::hideButtons() {
-	_groupBox->hide();
 }
 
 /*!

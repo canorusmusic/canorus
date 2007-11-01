@@ -24,16 +24,13 @@ public:
 	
 	CAUndoToolButton( QIcon icon, CAUndoToolButtonType t, QWidget *parent );
 	~CAUndoToolButton();
-	bool buttonsVisible() { return _listWidget->isVisible(); }
 	void setDefaultAction( QAction* );
 	
 	inline CAUndoToolButtonType undoType() { return _type; }
 	inline void setUndoType( CAUndoToolButtonType type ) { _type = type; }
 	
 public slots:
-	void showButtons();
-	void hideButtons( int buttonId );
-	void hideButtons();
+	void onShow(); 
 	void onListWidgetItemClicked( QListWidgetItem* );
 	
 protected:

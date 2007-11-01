@@ -16,23 +16,12 @@
 
 class CAMainWin;
 
-namespace CAMenuToolButtonNS {
-
-	class CAGroupBoxButton : public QToolButton {
-	Q_OBJECT
-	public:
-		CAGroupBoxButton(QWidget *w) : QToolButton(w) {}
-	protected:
-		void paintEvent( QPaintEvent* );
-	};
-
-	class CAGroupBox : public QGroupBox {
-	Q_OBJECT
-	public:
-		CAGroupBox( const QString& title, QWidget* parent = 0) : QGroupBox(title, parent) {}
-	protected:
-		void mousePressEvent(QMouseEvent *e);
-	};
+class CAGroupBoxToolButton : public QToolButton {
+Q_OBJECT
+public:
+	CAGroupBoxToolButton(QWidget *w) : QToolButton(w) {}
+protected:
+	void paintEvent( QPaintEvent* );
 };
 
 class CAMenuToolButton : public CAToolButton {
@@ -45,7 +34,6 @@ public:
 	inline QAbstractButton *getButton( int buttonId ) { return _buttonGroup->button( buttonId ); }
 
 	inline QList<QToolButton*> buttonList() { return _buttonList; }
-	inline bool buttonsVisible() { return _groupBox->isVisible(); }
 	
 	inline int spacing() { return _spacing; }
 	inline int layoutMargin() { return _layoutMargin; }
@@ -59,9 +47,8 @@ public:
 	void setCurrentId(int id, bool triggerSignal=false);
 	
 public slots:
-	void showButtons();
-	void hideButtons( int buttonId );
-	void hideButtons();
+	void onShow();
+	void onButtonPressed( int );
 	
 private:
 	void wheelEvent(QWheelEvent*);
