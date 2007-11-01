@@ -10,6 +10,8 @@
 
 #include <QToolButton>
 
+#include "widgets/toolbuttonpopup.h"
+
 class QWidget;
 class CAMainWin;
 
@@ -20,13 +22,12 @@ public:
 	virtual ~CAToolButton();
 	inline int currentId() { return _currentId; }
 	virtual void setCurrentId(int id) { _currentId = id; }
-	virtual bool buttonsVisible() = 0; // Is the popup widget visible or not
+	inline bool buttonsVisible() { return (_popupWidget) ? _popupWidget->isVisible() : 0; } // Is the popup widget visible or not
 	void setDefaultAction( QAction* );
 
 public slots:
-	virtual void showButtons()=0;
-	virtual void hideButtons( int buttonId )=0;
-	virtual void hideButtons()=0;
+	void showButtons();
+	void hideButtons();
 	
 private slots:
 	void handleToggled( bool checked );
@@ -34,16 +35,20 @@ private slots:
 	
 signals:
 	void toggled( bool checked, int id );
+	void show();
+	void hide();
 
 protected:
 	inline CAMainWin *mainWin() { return _mainWin; }
 	inline void setMainWin( CAMainWin *m ) { _mainWin = m; }
+	inline void setPopupWidget(QWidget* w) { _popupWidget->setWidget(w); }
 	virtual void wheelEvent(QWheelEvent*) = 0;
 	void mousePressEvent( QMouseEvent* );
 	QPoint calculateTopLeft( QSize widgetSize );
 	
 	CAMainWin          *_mainWin;         // Pointer to the main window for toolbar location polling etc.
 	int                 _currentId;       // current ID of the button
+	CAToolButtonPopup  *_popupWidget;	  // container for the floating widget
 };
 
 #endif /* TOOLBUTTON_H_ */

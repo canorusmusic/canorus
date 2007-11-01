@@ -21,17 +21,41 @@
 	custom widget (also called "buttons") where user chooses from various actions then.
 	When the element is selected, the action's icon is replaced with the previous icon on
 	the toolbutton and a signal toggled(bool checked, int id) is emitted.
+	
+	\remarks Subclasses must call setPopupWidget() on the floating widget once it's initialized. Showing/hiding is handled in CAToolButton. Subclasses can connect to the show() or hide() signals, which are emitted just before showing or hiding the widget.
 */ 
 
 CAToolButton::CAToolButton( QWidget *parent )
  : QToolButton( parent ) {
 	setMainWin( parent?dynamic_cast<CAMainWin*>(parent):0 );
 	setPopupMode( QToolButton::MenuButtonPopup );	
+	_popupWidget = new CAToolButtonPopup();
 }
 
 CAToolButton::~CAToolButton() {
+	delete _popupWidget;
 }
 
+/*!
+	Shows the popup widget if it's set
+*/
+void CAToolButton::showButtons() {
+	if(_popupWidget) { 
+		emit show(); 
+		_popupWidget->show();
+	}
+	_popupWidget->move( calculateTopLeft( _popupWidget->widget()->size() ) ); // \todo move before showing?
+}
+
+/*!
+	Hides the popup widget if it's set
+*/
+void CAToolButton::hideButtons() {
+	if (_popupWidget) { 
+		emit hide(); 
+		_popupWidget->hide(); 
+	} 
+}
 /*!
 	This function is overriden here in order to show buttons when clicked on the arrow.
 */

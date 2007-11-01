@@ -87,6 +87,7 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	widgets/scoreviewport.h
 	widgets/sourceviewport.h
 	widgets/toolbutton.h
+	widgets/toolbuttonpopup.h
 	widgets/menutoolbutton.h
 	widgets/undotoolbutton.h
 	
@@ -137,6 +138,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/scoreviewport.cpp
 	widgets/sourceviewport.cpp
 	widgets/toolbutton.cpp
+	widgets/toolbuttonpopup.cpp
 	widgets/menutoolbutton.cpp
 	widgets/undotoolbutton.cpp
 	widgets/viewport.cpp

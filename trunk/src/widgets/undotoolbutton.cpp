@@ -24,8 +24,9 @@ CAUndoToolButton::CAUndoToolButton( QIcon icon, CAUndoToolButtonType type, QWidg
 	setCurrentId(0);
 	setUndoType( type );
 	_listWidget = new QListWidget();
-	_listWidget->setWindowFlags( Qt::FramelessWindowHint );
+	setPopupWidget(_listWidget);
 	connect( _listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onListWidgetItemClicked(QListWidgetItem*)) );
+	connect( this, SIGNAL(show()), this, SLOT(onShow()) );
 }
 
 CAUndoToolButton::~CAUndoToolButton() {
@@ -41,10 +42,8 @@ void CAUndoToolButton::onListWidgetItemClicked( QListWidgetItem *item ) {
 	emit toggled( false, _listWidget->row(item) );
 }
 
-void CAUndoToolButton::showButtons() {
-	_listWidget->hide(); // hide/reshow if the button box widget is behind the main window
+void CAUndoToolButton::onShow() {
 	_listWidget->clear();
-	
 	if ( mainWin() ) {
 		QList<CAUndoCommand*> *stack = CACanorus::undo()->undoStack(mainWin()->document());
 		if ( undoType()==Undo ) {
@@ -60,18 +59,6 @@ void CAUndoToolButton::showButtons() {
 				_listWidget->addItem( stack->at(i)->text() );
 		}
 	}
-	
-	_listWidget->show();
-	
-	_listWidget->move( calculateTopLeft( _listWidget->size() ) );
-}
-
-void CAUndoToolButton::hideButtons( int buttonId ) {
-	_listWidget->hide();
-}
-
-void CAUndoToolButton::hideButtons() {
-	_listWidget->hide();
 }
 
 void CAUndoToolButton::setDefaultAction( QAction *action ) {
