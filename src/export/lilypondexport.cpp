@@ -536,10 +536,10 @@ void CALilyPondExport::writeDocumentHeader() {
 	indent(); out() << "title          = " << markupString( exportedDocument()->title() ) << "\n";
 	indent(); out() << "subtitle       = " << markupString( exportedDocument()->subtitle() ) << "\n";
 	indent(); out() << "composer       = " << markupString( exportedDocument()->composer() ) << "\n";
-	indent(); out() << "arranger       = " << markupString( exportedDocument()->arranger() ) << "\n";
+	indent(); out() << "arranger       = " << markupString( exportedDocument()->arranger().isEmpty()?"":(tr("arr.", "arrangement")+" "+exportedDocument()->arranger()) ) << "\n";
 	indent(); out() << "poet           = " << markupString( exportedDocument()->poet() ) << "\n";
 	indent(); out() << "texttranslator = " << markupString( exportedDocument()->textTranslator() ) << "\n";
-	indent(); out() << "dedication     = " << markupString( exportedDocument()->dedication().isEmpty()?"":(tr("arr. ", "arrangement")+exportedDocument()->dedication()) ) << "\n";
+	indent(); out() << "dedication     = " << markupString( exportedDocument()->dedication() ) << "\n";
 	indent(); out() << "copyright      = " << markupString( exportedDocument()->copyright() ) << "\n";
 	indentLess();
 	

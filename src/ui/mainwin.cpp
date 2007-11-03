@@ -142,6 +142,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_timeEditedTimer.start(1000);
 	
 	setDocument( 0 );
+	CACanorus::addMainWin( this );
 }
 
 CAMainWin::~CAMainWin()  {
@@ -821,7 +822,7 @@ void CAMainWin::on_uiNewWindow_triggered() {
 	CAMainWin *newMainWin = new CAMainWin();
 	newMainWin->setDocument(document());
 	newMainWin->rebuildUI();
-	CACanorus::addMainWin(newMainWin);
+	newMainWin->show();
 }
 
 void CAMainWin::on_uiNewDocument_triggered() {

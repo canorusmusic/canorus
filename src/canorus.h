@@ -45,7 +45,7 @@ public:
 	inline static CAMainWin* mainWinAt(int idx) { return _mainWinList[idx]; }
 	inline static void removeMainWin(CAMainWin *w) { _mainWinList.removeAll(w); }
 	inline static void removeViewPort(CAViewPort *v) { for (int i=0; i<mainWinCount(); i++) _mainWinList[i]->removeViewPort(v); }
-	static void addMainWin(CAMainWin *w, bool show=true);
+	inline static void addMainWin( CAMainWin *w ) { _mainWinList << w; }
 	inline static void restartTimeEditedTimes(CADocument *doc) { for (int i=0; i<mainWinCount(); i++) if (mainWinAt(i)->document()==doc) mainWinAt(i)->restartTimeEditedTime(); }
 	
 	inline static CAUndo *undo() { return _undo; }

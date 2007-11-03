@@ -115,8 +115,8 @@ int main(int argc, char *argv[]) {
 	// If no file to open is passed in command line, create a new default main window. It's shown automatically by CACanorus::addMainWin().
 	if (!CACanorus::mainWinCount()) {
 		CAMainWin *mainWin = new CAMainWin();
-		CACanorus::addMainWin(mainWin);
 		mainWin->newDocument();
+		mainWin->show();
 	}
 	splash.close();
 	
