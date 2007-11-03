@@ -471,6 +471,7 @@ const QString CALilyPondExport::barlineTypeToLilyPond(CABarline::CABarlineType t
 
 const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
 	QString ret = (s->text().isEmpty()?"_":s->text());
+	
 	if (s->hyphenStart())
 		ret += " --";
 	else if (s->melismaStart())
@@ -494,10 +495,11 @@ void CALilyPondExport::exportDocumentImpl(CADocument *doc)
 	
 	// Version of Lilypond syntax being generated.
 	out() << "\\version \"2.10.0\"\n";
-
+	
+	writeDocumentHeader();
+	
 	// For now only export the first sheet of the document
-	setCurSheet( doc->sheetAt( 0 ) );
-	exportSheetImpl( curSheet() );
+	exportSheetImpl( doc->sheetAt( 0 ) );
 }
 
 
@@ -524,6 +526,39 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 	exportScoreBlock( sheet );
 }
 
+/*!
+	Export document title, subtitle, composer, copyright etc.
+*/
+void CALilyPondExport::writeDocumentHeader() {
+	out() << "\n\\header {\n";
+	indentMore();
+	
+	indent(); out() << "title          = " << markupString( exportedDocument()->title() ) << "\n";
+	indent(); out() << "subtitle       = " << markupString( exportedDocument()->subtitle() ) << "\n";
+	indent(); out() << "composer       = " << markupString( exportedDocument()->composer() ) << "\n";
+	indent(); out() << "arranger       = " << markupString( exportedDocument()->arranger() ) << "\n";
+	indent(); out() << "poet           = " << markupString( exportedDocument()->poet() ) << "\n";
+	indent(); out() << "texttranslator = " << markupString( exportedDocument()->textTranslator() ) << "\n";
+	indent(); out() << "dedication     = " << markupString( exportedDocument()->dedication().isEmpty()?"":(tr("arr. ", "arrangement")+exportedDocument()->dedication()) ) << "\n";
+	indent(); out() << "copyright      = " << markupString( exportedDocument()->copyright() ) << "\n";
+	indentLess();
+	
+	out() << "}\n";
+}
+
+/*!
+	Encapsulates the given string into \markup {}.
+*/
+QString CALilyPondExport::markupString( QString in ) {
+	return QString("\\markup {\"") + escapeWeirdChars( in ) + QString("\"}");
+}
+
+/*!
+	Replaces characters like backslashes and double brackets with their escaped variant.
+*/
+QString CALilyPondExport::escapeWeirdChars( QString in ) {
+	return in.replace("\\", "\\\\").replace("\"", "\\\"");
+}
 
 /*!
 	Exports all the voices in the staff to Lilypond.

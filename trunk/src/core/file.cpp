@@ -64,7 +64,7 @@ void CAFile::setStreamFromFile( const QString filename ) {
 */
 void CAFile::setStreamToFile( const QString filename ) {
 	setFile( new QFile( filename ) );
-	file()->open( QIODevice::ReadWrite );
+	file()->open( QIODevice::WriteOnly );
 	setStream( new QTextStream(file()) );
 }
 

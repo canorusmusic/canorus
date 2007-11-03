@@ -1990,10 +1990,13 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 	     CAMainWin::uiSaveDialog->exec() && CAMainWin::uiSaveDialog->selectedFiles().size()
 	   ) {
 		QString s = CAMainWin::uiSaveDialog->selectedFiles().at(0);
-		// append the extension, if the last 4 characters don't already contain the dot
+		// append the extension, if the filename doesn't contain a dot
 		int i;
-		for (i=0; (i<4) && ((s.length()-i-1) > 0); i++) if (s[s.length()-i-1] == '.') break;
-		if (i==4) s.append(".xml");
+		if (!s.contains('.')) {
+			int left = uiSaveDialog->selectedFilter().indexOf("(*.") + 2;
+			int len = uiSaveDialog->selectedFilter().size() - left - 1;
+			s.append( uiSaveDialog->selectedFilter().mid( left, len ) );
+		}
 		
 		saveDocument(s);
 	}
@@ -2002,7 +2005,7 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 /*!
 	Opens a document with the given absolute file name.
 	The previous document will be lost.
-
+	
 	Returns a pointer to the opened document or null if opening the document has failed.
 */
 CADocument *CAMainWin::openDocument(const QString& fileName) {
@@ -2095,10 +2098,15 @@ void CAMainWin::on_uiExportDocument_triggered() {
 		return;
 	
 	QString s = fileNames[0];
-	
-	if (CAPluginManager::exportFilterExists(uiExportDialog->selectedFilter()))
+	if (!s.contains('.')) {
+		int left = uiExportDialog->selectedFilter().indexOf("(*.") + 2;
+		int len = uiExportDialog->selectedFilter().size() - left - 1;
+		s.append( uiExportDialog->selectedFilter().mid( left, len ) );
+	}
+
+	if (CAPluginManager::exportFilterExists(uiExportDialog->selectedFilter())) {
 		CAPluginManager::exportAction(uiExportDialog->selectedFilter(), document(), s);
-	else {
+	} else {
 		CALilyPondExport le;
 		le.setStreamToFile( s );
 		le.exportDocument( document() );
@@ -2350,11 +2358,11 @@ void CAMainWin::onSyllableEditKeyPressEvent(QKeyEvent *e, CASyllableEdit *syllab
 		CAVoice *voice = (syllable->associatedVoice()?syllable->associatedVoice():context->associatedVoice());
 		CAMusElement *nextSyllable = 0;
 		if (syllable) {
-			if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) // next right note
+			if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) { // next right note
 				nextSyllable = syllable->lyricsContext()->findNextMusElement(syllable);
-			else  if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace)                    // next left note
+			} else  if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) {                  // next left note
 				nextSyllable = syllable->lyricsContext()->findPrevMusElement(syllable);
-			else if (e->key()==Qt::Key_Minus) {
+			} else if (e->key()==Qt::Key_Minus) {
 				syllable->setHyphenStart(true);
 				nextSyllable = syllable->lyricsContext()->findNextMusElement(syllable);
 			}
@@ -2364,6 +2372,8 @@ void CAMainWin::onSyllableEditKeyPressEvent(QKeyEvent *e, CASyllableEdit *syllab
 			if (nextSyllable) {
 				CADrawableMusElement *dNextSyllable = v->selectMElement(nextSyllable);
 				v->createSyllableEdit( dNextSyllable );
+				if ( e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return )
+					v->syllableEdit()->setCursorPosition(0); // go to the beginning if moving to the right next syllable
 			}
 		}
 	}
