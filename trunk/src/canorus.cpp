@@ -175,18 +175,6 @@ void CACanorus::initUndo() {
 }
 
 /*!
-	Adds and initializes already created main window to main window list and shows it (default) if \a show is set.
-	
-	\sa removeMainWin(), mainWinAt()
-*/
-void CACanorus::addMainWin( CAMainWin *w, bool show ) {
-	_mainWinList << w;
-	
-	if (show)
-		w->show();
-}
-
-/*!
 	Parses the switches and settings command line arguments to application.
 	This function sets any settings passed in command line.
 	
@@ -209,8 +197,8 @@ void CACanorus::parseOpenFileArguments(int argc, char *argv[]) {
 			QString fileName = CACanorus::locateResource(argv[i]).at(0);
 			
 			CAMainWin *mainWin = new CAMainWin();
-			CACanorus::addMainWin(mainWin);
 			mainWin->openDocument(fileName);
+			mainWin->show();
 		}
 	}
 }
@@ -271,3 +259,10 @@ QList<CAMainWin*> CACanorus::findMainWin(CADocument *document) {
 	
 	return mainWinList;
 }
+
+/*!
+	\function void CACanorus::addMainWin( CAMainWin *w )
+	Adds an already created main window to the global main window list.
+	
+	\sa removeMainWin(), mainWinAt()
+*/
