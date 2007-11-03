@@ -1325,7 +1325,7 @@ CASyllableEdit *CAScoreViewPort::createSyllableEdit( CADrawableMusElement *dMusE
 	
 	int xPos=dMusElt->xPos(), yPos=dlc->yPos(), width=100, height=dlc->height();
 	
-	CADrawableMusElement *dRight = nearestRightElement( dMusElt->xPos(), dMusElt->yPos(), dlc->lyricsContext()->associatedVoice() );
+	CADrawableMusElement *dRight = findMElement( dlc->lyricsContext()->findNextMusElement( syllable ) );
 	if (dRight)
 		width = dRight->xPos() - dMusElt->xPos();
 	

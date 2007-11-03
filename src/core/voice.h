@@ -106,4 +106,4 @@ private:
 	unsigned char _midiChannel;
 	unsigned char _midiProgram;
 };
-#endif /*VOICE_H_*/
+#endif /* VOICE_H_ */

@@ -45,6 +45,8 @@ private:
 	void exportVoiceImpl(CAVoice *voice);
 	void exportLyricsContextImpl(CALyricsContext *lc);
 	void exportSyllables(CALyricsContext* lc);
+	
+	void writeDocumentHeader();
 	int writeRelativeIntro();
 	
 	////////////////////
@@ -65,6 +67,9 @@ private:
 	const QString relativePitchToString(int pitch, signed char accs, int prevPitch);
 	void voiceVariableName( QString &name, int staffNum, int voiceNum );
 	void spellNumbers( QString &s );
+	
+	QString markupString( QString );
+	QString escapeWeirdChars( QString );
 	
 	void indent();
 	inline void indentMore() { ++_curIndentLevel; }
