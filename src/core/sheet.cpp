@@ -115,15 +115,17 @@ CAContext *CASheet::context(const QString name) {
 }
 
 /*!
-	Returns a list of notes and rests (chord) for all the voices in time slice \a time.
+	Returns a list of notes and rests (chord) for all the voices in all the staffs
+	in the given time slice \a time.
+	
 	This is useful for determination of the harmony at certain point in time.
+	
+	\sa CAStaff:getChord(), CAVoice::getChord()
 */
 QList<CAPlayable*> CASheet::getChord(int time) {
 	QList<CAPlayable*> chordList;
 	for (int i=0; i<_staffList.size(); i++) {
-		for (int j=0; j<_staffList[i]->voiceCount(); j++) {
-			chordList << _staffList[i]->voiceAt(j)->getChord(time);
-		}
+		chordList << _staffList[i]->getChord(time);
 	}
 	
 	return chordList;
@@ -141,21 +143,21 @@ QList<CAVoice*> CASheet::voiceList() {
 }
 
 /*!
-	\fn CAContext::context(const QString name)
+	\fn CASheet::context(const QString name)
 	Looks up for the context with the given name.
 	
 	\sa contextAt(), _contextList
 */
 
 /*!
-	\fn CAContext::contextAt(int i)
+	\fn CASheet::contextAt(int i)
 	Return the context with index \a i counting from 0.
 	
 	\sa context(), _contextList
 */
 
 /*!
-	\var CAContext::_contextList
+	\var CASheet::_contextList
 	List of all the contexts in the sheet (lyrics, staffs, tablatures, general-bas
 	markings etc.).
 	
@@ -163,7 +165,7 @@ QList<CAVoice*> CASheet::voiceList() {
 */
 
 /*!
-	\var CAContext::_staffList
+	\var CASheet::_staffList
 	List of all the staffs in the sheet. Staff lookups are usually much more often than
 	other contexts.
 	

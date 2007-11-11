@@ -133,7 +133,7 @@ void CAVoice::insertMusElement(CAMusElement *elt, bool updateT) {
 	_musElementList.insert(i, elt);
 	
 	if (updateT)
-		updateTimes(i);
+		updateTimes(i, true);
 }
 
 /*!
@@ -208,7 +208,7 @@ bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, 
 	}
 	
 	if (updateT)
-		updateTimes(i);
+		updateTimes(i, true);
 
 	return true;
 }
@@ -231,7 +231,7 @@ bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, 
 	if (!eltBefore || !_musElementList.size()) {
 		_musElementList.push_front(elt);
 		if (updateT)
-			updateTimes(0);
+			updateTimes(0, true);
 		return true;
 	}
 	
@@ -261,7 +261,7 @@ bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, 
 	}
 	
 	if (updateT)
-		updateTimes(i);
+		updateTimes(i, true);
 	
 	return true;
 }
@@ -297,10 +297,10 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 	
 	\sa updateTimesAfter()
 */
-bool CAVoice::updateTimes(CAMusElement *elt, int length) {
+bool CAVoice::updateTimes(CAMusElement *elt, bool nonPlayable, int length) {
 	int idx;
 	if ((idx = _musElementList.indexOf(elt))!=-1) {
-		updateTimes(idx, length);
+		updateTimes(idx, nonPlayable, length);
 		return true;
 	}
 		return false;
@@ -316,10 +316,10 @@ bool CAVoice::updateTimes(CAMusElement *elt, int length) {
 	
 	\sa updateTimesAfter()
 */
-bool CAVoice::updateTimesAfter(CAMusElement *elt, int length) {
+bool CAVoice::updateTimesAfter(CAMusElement *elt, bool nonPlayable, int length) {
 	int idx;
 	if ((idx = _musElementList.indexOf(elt))!=-1) {
-		updateTimes(idx+1, length);
+		updateTimes(idx+1, nonPlayable, length);
 		return true;
 	}
 		return false;
@@ -335,7 +335,7 @@ bool CAVoice::updateTimesAfter(CAMusElement *elt, int length) {
 	If \a givenLength is not set, it takes the length of the element at \a idx and
 	updates times after it.
 */
-void CAVoice::updateTimes(int idx, int givenLength) {
+void CAVoice::updateTimes(int idx, bool nonPlayable, int givenLength) {
 	if (idx >= _musElementList.size())
 		return;
 	
@@ -345,12 +345,13 @@ void CAVoice::updateTimes(int idx, int givenLength) {
 	else
 		length = givenLength;
 	
-	//indent all the music elements after the given index's one.
-	//If the music elements aren't connected (previous's end time != next start time)
+	// indent all the music elements after the given index's one.
+	// If the music elements aren't connected (previous's end time != next start time)
 	for (int i=idx; i<_musElementList.size() && (givenLength ||
 	                (_musElementList[i-1]->timeEnd()==_musElementList[i]->timeStart()+length || _musElementList[i-1]->timeStart()==_musElementList[i]->timeStart()+length))
 	     ; i++) {
-		_musElementList[i]->setTimeStart(_musElementList[i]->timeStart() + length);
+		if (nonPlayable || !nonPlayable && _musElementList[i]->isPlayable())
+			_musElementList[i]->setTimeStart(_musElementList[i]->timeStart() + length);
 	}
 }
 
@@ -516,8 +517,12 @@ CAMusElement *CAVoice::eltAfter(CAMusElement *elt) {
 }
 
 /*!
-	Returns a list of notes and rests in the given \a time slice (chord) for the
-	current voice.
+	Returns a list of notes and rests (chord) in the given voice in the given
+	time slice \a time.
+	
+	This is useful for determination of the harmony at certain point in time.
+	
+	\sa CAStaff:getChord(), CASheet::getChord()
 */
 QList<CAPlayable*> CAVoice::getChord(int time) {
 	int i;

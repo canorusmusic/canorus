@@ -83,15 +83,15 @@ public:
 	inline void addLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList += list; }
 	inline bool removeLyricsContext( CALyricsContext *lc ) { return _lyricsContextList.removeAll(lc); }
 	
-	bool updateTimes(CAMusElement *elt, int length=0);
-	bool updateTimesAfter(CAMusElement *eltBefore, int length);
+	bool updateTimes( CAMusElement *elt, bool nonPlayable, int length=0 );
+	bool updateTimesAfter( CAMusElement *eltBefore, bool nonPlayable, int length );
 	
 	CAVoice *clone();
 	CAVoice *clone( CAStaff *newStaff );
 	void cloneVoiceProperties( CAVoice* v );
 	
 private:
-	void updateTimes(int idx, int length=0);
+	void updateTimes( int idx, bool nonPlayable, int length=0 );
 	QList<CAMusElement *> _musElementList;
 	CAStaff *_staff; // parent staff
 	int _voiceNumber; // voice number starting at 1
