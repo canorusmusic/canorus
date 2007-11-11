@@ -635,12 +635,10 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 		out() << "% No Contexts. This should probably raise an error.\n";
 	}
 	else {
-		// Do multiple contexts in parallel with simultaneous << ... >>
-		if ( contextCount > 1 ) {
-			indent();
-			out() <<  "<<\n" ;
-			indentMore();
-		}
+		// open multiple contexts
+		indent();
+		out() <<  "<<\n" ;
+		indentMore();
 		
 		// Output each staff
 		for( int c = 0; c < contextCount; ++c ) {
@@ -747,11 +745,11 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 		
 		// End simultaneous contexts
 		indentLess();
-		if ( contextCount > 1 ) {
-			indent();
-			out() << ">>\n";
-			indentLess();
-		}
+		
+		// close multiple contexts
+		indent();
+		out() << ">>\n";
+		indentLess();
 	}
 
 	// End score block
