@@ -165,6 +165,16 @@ void CAStaff::addVoice(CAVoice *voice) {
 }
 
 /*!
+	Adds an empty voice to the staff and synchronizes it with other voices.
+*/  
+CAVoice *CAStaff::addVoice() {
+	CAVoice *voice = new CAVoice( QObject::tr("Voice%1").arg( voiceCount()+1 ), this );
+	addVoice( voice );
+	
+	return voice;
+}
+
+/*!
 	Inserts a sign \a sign to the staff at certain time.
 	This method inserts the sign to all voices!
 	This is the difference between inserting a sign or a playable note - note is present in a single
@@ -305,6 +315,22 @@ QList<CAMusElement*> CAStaff::getEltByType(CAMusElement::CAMusElementType type, 
 	}
 	
 	return eltList;	
+}
+
+/*!
+	Returns a list of notes and rests (chord) for all the voices in the staff in
+	the given time slice \a time.
+	
+	This is useful for determination of the harmony at certain point in time.
+	
+	\sa CASheet:getChord(), CAVoice::getChord()
+*/
+QList<CAPlayable*> CAStaff::getChord(int time) {
+	QList<CAPlayable*> chord;
+	for (int i=0; i<voiceCount(); i++)
+		chord << voiceAt(i)->getChord(time);
+	
+	return chord;
 }
 
 /*!

@@ -40,7 +40,7 @@ public:
 	inline CAVoice *voiceAt(int i) { return voiceList().at(i); }
 	inline int voiceCount() { return voiceList().size(); }
 	
-	QList<CAPlayable*> getChord(int time);	// Returns a list of notes and rests (chord) for all the voices in certain time slice
+	QList<CAPlayable*> getChord(int time);
 	
 	inline CADocument *document() { return _document; }
 	inline void setDocument(CADocument *doc) { _document = doc; }

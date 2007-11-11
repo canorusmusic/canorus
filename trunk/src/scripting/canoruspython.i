@@ -50,6 +50,13 @@
 	
 	$result = list;
 }
+%typemap(out) const QList<CARest*>, QList<CARest*> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Rest));
+	
+	$result = list;
+}
 %typemap(out) const QList<CAPlayable*>, QList<CAPlayable*> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++) {

@@ -1236,7 +1236,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 								v->sheet()
 							)
 						);
-						static_cast<CAStaff*>(newContext)->addVoice(new CAVoice( newContext->name() + tr("Voice%1").arg(1), static_cast<CAStaff*>(newContext) ));
+						static_cast<CAStaff*>(newContext)->addVoice();
 						break;
 					}
 					case CAContext::LyricsContext: {
@@ -1607,7 +1607,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						} else if (elt->musElementType()==CAMusElement::Rest)
 							diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
 						 
-						((CAPlayable*)elt)->voice()->updateTimesAfter(elt, diff);
+						((CAPlayable*)elt)->voice()->updateTimesAfter(elt, true, diff);
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
@@ -3331,12 +3331,12 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool d
 							note->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(note->timeStart());
 						musElemSet.remove(removedSyllable);
 					}
-					note->voice()->updateTimesAfter( note, -1*note->timeLength() );
+					note->voice()->updateTimesAfter( note, true, -1*note->timeLength() );
 				}
 				note->voice()->removeElement( note );
 				delete note;
 			} else if ((*i)->musElementType()==CAMusElement::Rest) {
-				static_cast<CARest*>(*i)->voice()->updateTimesAfter( *i, -1*(*i)->timeLength() );
+				static_cast<CARest*>(*i)->voice()->updateTimesAfter( *i, true, -1*(*i)->timeLength() );
 				delete *i;				
 			} else if ((*i)->musElementType()==CAMusElement::Syllable) {
 				if ( deleteSyllable ) {

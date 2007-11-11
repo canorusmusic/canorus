@@ -37,7 +37,8 @@ public:
 	inline QList<CAVoice*> voiceList() { return _voiceList; }
 	CAVoice *voice(const QString name);
 	
-	void addVoice(CAVoice *voice);
+	void     addVoice(CAVoice *voice);
+	CAVoice* addVoice();
 	
 	void insertSign(CAMusElement *sign);
 	bool insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter, bool force=false);
@@ -51,6 +52,7 @@ public:
 	int lastTimeEnd();
 	QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
 	
+	QList<CAPlayable*> getChord(int time);
 	bool fixVoiceErrors();
 	
 	void setName(QString name) { _name = name; }
