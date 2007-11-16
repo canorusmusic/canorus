@@ -126,7 +126,7 @@ Homepage: http://www.canorus.org</source>
         <translation>Canorus - Der Noteneditor der nächsten Generation
 
 Version %1
-(C) 2006, 2007 Canorus Enticklerteam. Alle Rechte vorbehalten.
+(C) 2006, 2007 Canorus Entwicklerteam. Alle Rechte vorbehalten.
 Siehe Datei AUTHORS mit den Namen der Canorus Entwickler.
 
 Dieses Programm steht unter der GNU General Public License (GPL). Der genaue Wortlaut der GPL ist der Datei LICENSE.GPL zu entnehmen.
