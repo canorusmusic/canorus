@@ -809,7 +809,7 @@ CAVoice *CAMainWin::currentVoice() {
 	if (staff) {
 		if ( uiVoiceNum->getRealValue() &&
 		     uiVoiceNum->getRealValue() <= staff->voiceCount())
-			return staff->voiceAt( uiVoiceNum->getRealValue() - 1); 
+			return staff->voiceAt( uiVoiceNum->getRealValue() - 1);
 	}
 	
 	return 0;
@@ -892,8 +892,10 @@ void CAMainWin::on_uiNewVoice_triggered() {
 	}
 	
 	CACanorus::undo()->createUndoCommand( document(), tr("new voice", "undo") );
-	if (staff)
+	if (staff) {
 		staff->addVoice(new CAVoice( staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 ), staff, stemDirection, voiceNumber ));
+		staff->synchronizeVoices();
+	}
 	
 	CACanorus::undo()->pushUndoCommand();
 	CACanorus::rebuildUI(document(), currentSheet());
@@ -1474,19 +1476,29 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			
 			if ( (!drawableContext) || (drawableContext->context()->contextType() != CAContext::Staff) )
 				return;
-		
-			CAStaff *staff = (CAStaff*)drawableContext->context();
-			CAMusElement *left = 0;
+			
+			CAStaff *staff = static_cast<CAStaff*>(drawableContext->context());
+			CAMusElement *right = 0;
 			if (!v->selection().isEmpty())
-				left = v->selection().back()->musElement();
-				
+				right = staff->next(v->selection().back()->musElement());
+			
 			CACanorus::undo()->createUndoCommand( document(), tr("insert barline", "undo") );
 			CABarline *bar = new CABarline(
 				CABarline::Single,
 				staff,
-				(left?left->timeEnd():staff->lastTimeEnd())
+				0
 			);
-			staff->insertSignAfter(bar, left, true);	//insert the barline in all the voices
+			
+			if (currentVoice()) {
+				currentVoice()->insert( right, bar ); // insert the barline in all the voices, timeStart is set
+			} else {
+				if ( right && right->isPlayable() )
+					static_cast<CAPlayable*>(right)->voice()->insert( right, bar );
+				else
+					staff->voiceAt(0)->insert( right, bar );
+			}
+			
+			staff->synchronizeVoices();
 			
 			CACanorus::undo()->pushUndoCommand();
 			CACanorus::rebuildUI(document(), v->sheet());
@@ -1600,14 +1612,14 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						int diff;
 						if (elt->musElementType()==CAMusElement::Note) {
 							int i;
-							for (i=0; i<((CANote*)elt)->chord().size(); i++) {
-								diff = ((CANote*)elt)->chord().at(i)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
+							for (i=0; i<((CANote*)elt)->getChord().size(); i++) {
+								diff = ((CANote*)elt)->getChord().at(i)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
 							}
-							elt = ((CANote*)elt)->chord().last();
+							elt = ((CANote*)elt)->getChord().last();
 						} else if (elt->musElementType()==CAMusElement::Rest)
 							diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
 						 
-						((CAPlayable*)elt)->voice()->updateTimesAfter(elt, true, diff);
+						static_cast<CAPlayable*>(elt)->voice()->staff()->synchronizeVoices();
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
@@ -1705,11 +1717,11 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 		staff = dynamic_cast<CAStaff*>(drawableContext->context());
 	}
 	
-	CADrawableMusElement *drawableLeft = v->nearestLeftElement(coords.x(), coords.y());
+	CADrawableMusElement *drawableRight = v->nearestRightElement(coords.x(), coords.y());
 	
-	CAMusElement *left=0;
-	if ( drawableLeft )
-		left = drawableLeft->musElement();
+	CAMusElement *right=0;
+	if ( drawableRight )
+		right = drawableRight->musElement();
 	
 	bool success=false;
 	
@@ -1721,35 +1733,45 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	switch ( musElementFactory()->musElementType() ) {
 		case CAMusElement::Clef: {
 			if (staff)
-				success = musElementFactory()->configureClef( staff , left );
+				success = musElementFactory()->configureClef( staff , right );
 			break;
 		}
 		case CAMusElement::KeySignature: {
 			if ( staff )
-				success = musElementFactory()->configureKeySignature( staff, left );
+				success = musElementFactory()->configureKeySignature( staff, right );
 			break;
 		}
 		case CAMusElement::TimeSignature: {
 			if ( staff )
-				success = musElementFactory()->configureTimeSignature( staff, left );
+				success = musElementFactory()->configureTimeSignature( staff, right );
 			break;
 		}
 		case CAMusElement::Barline: {
 			if ( staff )
-				success = musElementFactory()->configureBarline( staff, left );
+				success = musElementFactory()->configureBarline( staff, right );
 			break;
 		}
 		case CAMusElement::Note: { // Do we really need to do all that here??
-			int iVoiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
-			CAVoice *voice = 0;
+			CAVoice *voice = currentVoice();
 			
-			if ( staff )
-				voice = staff->voiceAt( iVoiceNum );
+			if ( !voice )
+				break;
 			
-			CADrawableMusElement *left = v->nearestLeftElement(coords.x(), coords.y(), voice);
-			if ( voice && drawableStaff )
-				success = musElementFactory()->configureNote( voice, coords, drawableStaff, left );
-			if (success) {
+			CADrawableMusElement *left = v->nearestLeftElement( coords.x(), coords.y(), voice ); // use nearestLeft search because it searches left borders
+			CADrawableMusElement *dright = v->nearestRightElement( coords.x(), coords.y(), voice );
+			
+			if ( left && left->musElement() && left->musElement()->musElementType() == CAMusElement::Note &&
+			     left->xPos() <= coords.x() && (left->width() + left->xPos() >= coords.x()) ) {
+				// user clicked inside x borders of the note - add a note to the chord
+				if ( voice->containsPitch( drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart() ) )
+					break;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
+				
+				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, left->musElement(), true );
+			} else {
+				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, dright?dright->musElement():0, false );
+			}
+			
+			if ( success ) {
 				musElementFactory()->setNoteExtraAccs( 0 );
 				v->setDrawShadowNoteAccs( false ); 
 				v->setShadowNoteDotted( musElementFactory()->playableDotted() );
@@ -1762,7 +1784,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			if (staff)
 				voice = staff->voiceAt( iVoiceNum );
 			if (voice)
-				success = musElementFactory()->configureRest( voice, left );
+				success = musElementFactory()->configureRest( voice, right );
 			if (success)
 				v->setShadowNoteDotted( musElementFactory()->playableDotted() );
 			break;
@@ -1776,7 +1798,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				// Insert Tie
 				if ( noteStart && musElementFactory()->slurType()==CASlur::TieType ) {
 					noteEnd = 0; // find a fresh next note
-					QList<CANote*> noteList = noteStart->voice()->noteList();
+					QList<CANote*> noteList = noteStart->voice()->getNoteList();
 					
 					if ( noteStart->tieStart() ) {
 						break; // return, if the tie already exists
@@ -1793,9 +1815,9 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				} else
 				// Insert slur or phrasing slur
 				if ( noteStart && noteEnd && noteStart != noteEnd && (musElementFactory()->slurType()==CASlur::SlurType || musElementFactory()->slurType()==CASlur::PhrasingSlurType) ) {
-					if (noteStart->isPartOfTheChord()) noteStart = noteStart->chord().at(0);
-					if (noteEnd->isPartOfTheChord()) noteEnd = noteEnd->chord().at(0);
-					QList<CANote*> noteList = noteStart->voice()->noteList();
+					if (noteStart->isPartOfTheChord()) noteStart = noteStart->getChord().at(0);
+					if (noteEnd->isPartOfTheChord()) noteEnd = noteEnd->getChord().at(0);
+					QList<CANote*> noteList = noteStart->voice()->getNoteList();
 					int end = noteList.indexOf(noteEnd);
 					for (int i=noteList.indexOf(noteStart); i<=end; i++)
 						if ( musElementFactory()->slurType()==CASlur::SlurType && (noteList[i]->slurStart() || noteList[i]->slurEnd()) ||
@@ -1831,6 +1853,9 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 	}
 	
 	if (success) {
+		if (staff)
+			staff->synchronizeVoices();
+		
 		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI(document(), v->sheet());
 		v->selectMElement( musElementFactory()->musElement() );
@@ -2360,12 +2385,12 @@ void CAMainWin::onSyllableEditKeyPressEvent(QKeyEvent *e, CASyllableEdit *syllab
 		CAMusElement *nextSyllable = 0;
 		if (syllable) {
 			if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) { // next right note
-				nextSyllable = syllable->lyricsContext()->findNextMusElement(syllable);
+				nextSyllable = syllable->lyricsContext()->next(syllable);
 			} else  if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) {                  // next left note
-				nextSyllable = syllable->lyricsContext()->findPrevMusElement(syllable);
+				nextSyllable = syllable->lyricsContext()->previous(syllable);
 			} else if (e->key()==Qt::Key_Minus) {
 				syllable->setHyphenStart(true);
-				nextSyllable = syllable->lyricsContext()->findNextMusElement(syllable);
+				nextSyllable = syllable->lyricsContext()->next(syllable);
 			}
 			
 			CACanorus::undo()->pushUndoCommand();
@@ -2651,15 +2676,21 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		CALilyPondImport li( inputString );
 		
 		CAVoice *oldVoice = v->voice();
-		li.setTemplateVoice( oldVoice );
+		
+		QList<CAMusElement*> signList = oldVoice->getSignList();
+		for (int i=0; i<signList.size(); i++)
+			oldVoice->remove( signList[i] );  // removes signs from all voices
+		
+		li.setTemplateVoice( oldVoice );      // copy properties
 		li.importVoice();
 		while (li.isRunning());
 		
 		CAVoice *newVoice = li.importedVoice();
-		newVoice->staff()->addVoice( newVoice );
 		delete oldVoice; // also removes voice from the staff
 		
-		newVoice->staff()->fixVoiceErrors();
+		newVoice->staff()->addVoice( newVoice );
+		newVoice->staff()->synchronizeVoices();
+		
 		v->setVoice( newVoice );
 		
 		CACanorus::undo()->pushUndoCommand();
@@ -3331,17 +3362,17 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool d
 							note->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(note->timeStart());
 						musElemSet.remove(removedSyllable);
 					}
-					note->voice()->updateTimesAfter( note, true, -1*note->timeLength() );
+					note->voice()->staff()->synchronizeVoices();
 				}
-				note->voice()->removeElement( note );
+				note->voice()->remove( note );
 				delete note;
 			} else if ((*i)->musElementType()==CAMusElement::Rest) {
-				static_cast<CARest*>(*i)->voice()->updateTimesAfter( *i, true, -1*(*i)->timeLength() );
+				static_cast<CARest*>(*i)->voice()->staff()->synchronizeVoices();
 				delete *i;				
 			} else if ((*i)->musElementType()==CAMusElement::Syllable) {
 				if ( deleteSyllable ) {
 					CALyricsContext *lc = static_cast<CALyricsContext*>((*i)->context()); 
-					(*i)->context()->removeMusElement(*i);  // actually removes the syllable if SHIFT is pressed
+					(*i)->context()->remove(*i);  // actually removes the syllable if SHIFT is pressed
 					lc->repositSyllables();
 				} else {
 					static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
@@ -3349,13 +3380,13 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool d
 			} else if ((*i)->musElementType()==CAMusElement::FunctionMarking) {
 				if ( deleteSyllable ) {
 					CAFunctionMarkingContext *fmc = static_cast<CAFunctionMarkingContext*>((*i)->context()); 
-					(*i)->context()->removeMusElement(*i);  // actually removes the function if SHIFT is pressed
+					(*i)->context()->remove(*i);  // actually removes the function if SHIFT is pressed
 					fmc->repositFunctions();
 				} else {
 					static_cast<CAFunctionMarking*>(*i)->clear(); // only clears the function
 				}
 			} else {
-				(*i)->context()->removeMusElement(*i);
+				(*i)->context()->remove(*i);
 			}
 		}
 		if (doUndo)
@@ -3378,10 +3409,10 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 		
 		CAStaff *staff = static_cast<CAStaff*>( v->currentContext()->context() ); 
 		CAVoice *voice = staff->voiceAt( uiVoiceNum->getRealValue() ? uiVoiceNum->getRealValue()-1 : uiVoiceNum->getRealValue() );
-		CADrawableMusElement *drawableLeft = v->nearestLeftElement(coords.x(), coords.y(), voice);
-		CAMusElement *left = 0;
-		if (drawableLeft)
-			left = drawableLeft->musElement();
+		CADrawableMusElement *drawableRight = v->nearestRightElement(coords.x(), coords.y(), voice);
+		CAMusElement *right = 0;
+		if (drawableRight)
+			right = drawableRight->musElement();
 		
 		QList<CAMusElement*> newEltList;
 		QList<CAMusElement*> eltList = static_cast<const CAMimeData*>(QApplication::clipboard()->mimeData())->musElements();
@@ -3389,17 +3420,23 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 			CAMusElement *newElt;
 			if ( eltList[i]->isPlayable() ) {
 				newElt = static_cast<CAPlayable*>(eltList[i])->clone(voice);
-				newElt->setTimeStart(left?left->timeEnd():0);
-				voice->insertMusElement( newElt );
+				if ( eltList[i]->musElementType()==CAMusElement::Note &&
+				     static_cast<CANote*>(eltList[i])->isPartOfTheChord() &&
+				    !static_cast<CANote*>(eltList[i])->isFirstInTheChord() ) {
+					voice->insert( right, newElt, true );
+				} else {
+					voice->insert( right, newElt, false );
+				}
 			} else {
 				newElt = eltList[i]->clone();
 				newElt->setContext( staff );
-				newElt->setTimeStart(left?left->timeEnd():0);
-				staff->insertSignAfter( newElt, left );
+				newElt->setTimeStart( right?right->timeEnd():0);
+				voice->insert( right, newElt );
 			}
 			newEltList << newElt;
-			left = newElt;
 		}
+		
+		staff->synchronizeVoices();
 		
 		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI( document(), currentSheet() );

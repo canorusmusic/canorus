@@ -112,8 +112,8 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			popDepth();
 			chordCreated=false;
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
-				prevPitch.pitch = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0)->pitch();
-				prevPitch.accs = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0)->accidentals();
+				prevPitch.pitch = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0)->pitch();
+				prevPitch.accs = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0)->accidentals();
 			} else {
 				addError(QString("Chord should be finished with a note."));
 			}
@@ -132,7 +132,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 		} else
 		if (curElt.startsWith("(")) {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
-				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0);
+				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0);
 				_curSlur = new CASlur( CASlur::SlurType, CASlur::SlurPreferred, note->staff(), note, 0 );
 				note->setSlurStart(_curSlur);
 			} else {
@@ -142,7 +142,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 		} else
 		if ( curElt.startsWith(")") && _curSlur ) {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
-				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0);
+				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0);
 				note->setSlurEnd(_curSlur);
 				_curSlur->setNoteEnd(note);
 				_curSlur=0;
@@ -153,7 +153,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 		} else
 		if (curElt.startsWith("\\(")) {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
-				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0);
+				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0);
 				_curPhrasingSlur = new CASlur( CASlur::PhrasingSlurType, CASlur::SlurPreferred, note->staff(), note, 0 );
 				note->setPhrasingSlurStart(_curPhrasingSlur);
 			} else {
@@ -163,7 +163,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 		} else
 		if ( curElt.startsWith("\\)") && _curPhrasingSlur ) {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
-				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->chord().at(0);
+				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0);
 				note->setPhrasingSlurEnd(_curPhrasingSlur);
 				_curPhrasingSlur->setNoteEnd(note);
 				_curPhrasingSlur=0;
@@ -185,13 +185,14 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 				note = new CANote(prevLength.length, curVoice(), prevPitch.pitch, prevPitch.accs, curVoice()->lastTimeEnd(), prevLength.dotted);
 				if (curDepth()==Chord)
 					chordCreated = true;
+				curVoice()->append( note, false );
 			} else {
 				// the note is part of the already built chord
 				note = new CANote(prevLength.length, curVoice(), prevPitch.pitch, prevPitch.accs, curVoice()->lastTimeStart(), prevLength.dotted);
+				curVoice()->append( note, true );
 			}
 			
 			note->updateTies(); // close any opened ties if present
-			curVoice()->appendMusElement(note);
 		} else
 		if (isRest(curElt)) {
 			// CARest
@@ -200,7 +201,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			if (length.length!=CAPlayable::Undefined) // length may not be set
 				prevLength = length;
 						
-			curVoice()->appendMusElement(new CARest(type, prevLength.length, curVoice(), curVoice()->lastTimeEnd(), prevLength.dotted));
+			curVoice()->append( new CARest(type, prevLength.length, curVoice(), curVoice()->lastTimeEnd(), prevLength.dotted) );
 		} else
 		if (curElt.startsWith("|")) {
 			// CABarline::Single
@@ -209,11 +210,9 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			CABarline *sharedBar = static_cast<CABarline*>(findSharedElement(bar));
 
 			if (!sharedBar) {
-				curVoice()->staff()->insertSignAfter(bar, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
-				if (curVoice()->lastMusElement()!=bar) // when the voice is not part of the staff
-					curVoice()->appendMusElement( bar );
+				curVoice()->append( bar );
 			} else {
-				curVoice()->appendMusElement(sharedBar);
+				curVoice()->append( sharedBar );
 				delete bar;
 			}
 			curElt.remove(0,1);
@@ -235,11 +234,9 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			CABarline *sharedBar = static_cast<CABarline*>(findSharedElement(bar));
 
 			if (!sharedBar) {
-				curVoice()->staff()->insertSignAfter(bar, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
-				if (curVoice()->lastMusElement()!=bar) // when the voice is not part of the staff
-					curVoice()->appendMusElement( bar );
+				curVoice()->append( bar );
 			} else {
-				curVoice()->appendMusElement(sharedBar);
+				curVoice()->append( sharedBar );
 				delete bar;
 			}
 			curElt.remove(0,4);
@@ -261,11 +258,9 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			CAClef *sharedClef = static_cast<CAClef*>(findSharedElement(clef));
 			
 			if (!sharedClef) {
-				curVoice()->staff()->insertSignAfter(clef, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
-				if (curVoice()->lastMusElement()!=clef) // when the voice is not part of the staff
-					curVoice()->appendMusElement( clef );
+				curVoice()->append( clef );
 			} else {
-				curVoice()->appendMusElement(sharedClef);
+				curVoice()->append( sharedClef );
 				delete clef;
 			}
 			curElt.remove(0,5);
@@ -295,11 +290,9 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			CAKeySignature *sharedKeySig = static_cast<CAKeySignature*>(findSharedElement(keySig));
 			
 			if (!sharedKeySig) {
-				curVoice()->staff()->insertSignAfter(keySig, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
-				if (curVoice()->lastMusElement()!=keySig) // when the voice is not part of the staff
-					curVoice()->appendMusElement( keySig );
+				curVoice()->append( keySig );
 			} else {
-				curVoice()->appendMusElement(sharedKeySig);
+				curVoice()->append( sharedKeySig );
 				delete keySig;
 			}
 			curElt.remove(0,4);
@@ -319,11 +312,9 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			CATimeSignature *sharedTimeSig = static_cast<CATimeSignature*>(findSharedElement(timeSig));
 			
 			if (!sharedTimeSig) {
-				curVoice()->staff()->insertSignAfter(timeSig, curVoice()->musElementCount()?curVoice()->lastMusElement():0, true);
-				if (curVoice()->lastMusElement()!=timeSig) // when the voice is not part of the staff
-					curVoice()->appendMusElement( timeSig );
+				curVoice()->append( timeSig );
 			} else {
-				curVoice()->appendMusElement(sharedTimeSig);
+				curVoice()->append( sharedTimeSig );
 				delete timeSig;
 			}
 			curElt.remove(0,5);

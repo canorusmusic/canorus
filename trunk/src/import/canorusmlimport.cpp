@@ -193,7 +193,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		}
 		
 		CAStaff *staff = static_cast<CAStaff*>(_curContext);
-		if (!(_curVoice = staff->voice(voiceName))) {	//if the staff doesn't contain the voice with the given name, create a new voice and add it to the document. Otherwise, just set the current voice to the found one and leave
+		if (!(_curVoice = staff->voiceByName(voiceName))) {	// if the staff doesn't contain the voice with the given name, create a new voice and add it to the document. Otherwise, just set the current voice to the found one and leave
 			int voiceNumber = staff->voiceCount()+1;
 			
 			if (voiceName.isEmpty())
@@ -356,7 +356,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		//fix voice errors like shared voice elements not being present in both voices etc.
 		for (int i=0; _document && i<_document->sheetCount(); i++) {
 			for (int j=0; j<_document->sheetAt(i)->staffCount(); j++) {
-				_document->sheetAt(i)->staffAt(j)->fixVoiceErrors();
+				_document->sheetAt(i)->staffAt(j)->synchronizeVoices();
 			}
 		}
 	} else if (qName == "sheet") {
@@ -389,11 +389,11 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		}
 		
 		// lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Clef, _curClef->timeStart());
+		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::Clef, _curClef->timeStart());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
-			if (!foundElts[i]->compare(_curClef))	// element has exactly the same properties
-				if (!_curVoice->contains(foundElts[i]))	{ // element isn't present in the voice yet
+			if (!foundElts[i]->compare(_curClef))	      // element has exactly the same properties
+				if (!_curVoice->contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
 					sign = foundElts[i];
 					break;
 				}
@@ -401,10 +401,10 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		
 		if (!sign) {
 			// the element doesn't exist yet - add it to all the voices
-			_curVoice->staff()->insertSign( _curClef );
+			_curVoice->append( _curClef );
 		} else {
 			//the element was found, insert only a reference to the current voice
-			_curVoice->appendMusElement(sign);
+			_curVoice->append( sign );
 			delete _curClef; _curClef = 0;
 		}
 	} else if (qName == "key-signature") {
@@ -414,11 +414,11 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		}
 		
 		// lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::KeySignature, _curKeySig->timeStart());
+		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::KeySignature, _curKeySig->timeStart());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
-			if (!foundElts[i]->compare(_curKeySig))	// element has exactly the same properties
-				if (!_curVoice->contains(foundElts[i]))	{ // element isn't present in the voice yet
+			if (!foundElts[i]->compare(_curKeySig))	      // element has exactly the same properties
+				if (!_curVoice->contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
 					sign = foundElts[i];
 					break;
 				}
@@ -426,10 +426,10 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		
 		if (!sign) {
 			// the element doesn't exist yet - add it to all the voices
-			_curVoice->staff()->insertSign( _curKeySig );
+			_curVoice->append( _curKeySig );
 		} else {
 			// the element was found, insert only a reference to the current voice
-			_curVoice->appendMusElement(sign);
+			_curVoice->append( sign );
 			delete _curKeySig; _curKeySig = 0;
 		}
 	} else if (qName == "time-signature") {
@@ -439,11 +439,11 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		}
 		
 		// lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::TimeSignature, _curTimeSig->timeStart());
+		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::TimeSignature, _curTimeSig->timeStart());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
-			if (!foundElts[i]->compare(_curTimeSig))	//element has exactly the same properties
-				if (!_curVoice->contains(foundElts[i]))	{ //element isn't present in the voice yet
+			if (!foundElts[i]->compare(_curTimeSig))	  // element has exactly the same properties
+				if (!_curVoice->contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
 					sign = foundElts[i];
 					break;
 				}
@@ -451,10 +451,10 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		
 		if (!sign) {
 			// the element doesn't exist yet - add it to all the voices
-			_curVoice->staff()->insertSign( _curTimeSig );
+			_curVoice->append( _curTimeSig );
 		} else {
 			// the element was found, insert only a reference to the current voice
-			_curVoice->appendMusElement(sign);
+			_curVoice->append( sign );
 			delete _curTimeSig; _curTimeSig = 0;
 		}
 	} else if (qName == "barline") {
@@ -464,11 +464,11 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		}
 		
 		// lookup an element with the same type at the same time
-		QList<CAMusElement*> foundElts = ((CAStaff*)_curContext)->getEltByType(CAMusElement::Barline, _curBarline->timeStart());
+		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::Barline, _curBarline->timeStart());
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
-			if (!foundElts[i]->compare(_curBarline))	//element has exactly the same properties
-				if (!_curVoice->contains(foundElts[i]))	{ //element isn't present in the voice yet
+			if (!foundElts[i]->compare(_curBarline))	  // element has exactly the same properties
+				if (!_curVoice->contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
 					sign = foundElts[i];
 					break;
 				}
@@ -476,22 +476,26 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		
 		if (!sign) {
 			// the element doesn't exist yet - add it to all the voices
-			_curVoice->staff()->insertSign( _curBarline );
+			_curVoice->append( _curBarline );
 		} else {
 			// the element was found, insert only a reference to the current voice
-			_curVoice->appendMusElement(sign);
+			_curVoice->append( sign );
 			delete _curBarline; _curBarline = 0;
 		}
 	} else if (qName == "note") {
 		// CANote
-		_curVoice->appendMusElement( _curNote );
+		if (_curVoice->lastNote() && _curVoice->lastNote()->timeStart()==_curNote->timeStart())
+			_curVoice->append( _curNote, true );
+		else
+			_curVoice->append( _curNote, false );
+		
 		_curNote->updateTies();
 		_curNote = 0;
 	} else if (qName == "tie") {
 		// CASlur - tie
 	} else if (qName == "rest") {
 		// CARest
-		_curVoice->appendMusElement( _curRest );
+		_curVoice->append( _curRest );
 		_curRest = 0;
 	}
 	

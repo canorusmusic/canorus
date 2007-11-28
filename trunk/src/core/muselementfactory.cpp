@@ -89,15 +89,15 @@ void CAMusElementFactory::removeMusElem( bool bReallyRemove /* = false */ ) {
 }
 
 /*!
-	Configures a new clef music element in \a context and right next to the \a left element.
+	Configures a new clef music element in \a context and right before the \a right element.
 */
 bool CAMusElementFactory::configureClef( CAStaff *staff, 
-                                         CAMusElement *left )
+                                         CAMusElement *right )
 {
 	bool success = false;
-	if ( staff ) {
-		mpoMusElement = new CAClef( _eClef, staff, (left?left->timeEnd():0), _iClefOffset );
-		success = staff->insertSignAfter(mpoMusElement, left, true);
+	if ( staff && staff->voiceCount() ) {		
+		mpoMusElement = new CAClef( _eClef, staff, 0, _iClefOffset );
+		success = staff->voiceAt(0)->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem( true );
 	}
@@ -105,18 +105,18 @@ bool CAMusElementFactory::configureClef( CAStaff *staff,
 }
 
 /*!
-	Configures a new key signature music element with \a iKeySignature accidentals, \a context and right next to the \a left element.
+	Configures a new key signature music element with \a iKeySignature accidentals, \a context and right before the \a right element.
 */
 bool CAMusElementFactory::configureKeySignature( CAStaff *staff, 
-                                                 CAMusElement *left )
+                                                 CAMusElement *right )
 {
 	bool success = false;
-	if (staff) {		
+	if ( staff && staff->voiceCount() ) {		
 		mpoMusElement = new CAKeySignature(CAKeySignature::MajorMinor, 
 			                           _iKeySigNumberOfAccs,
 			                           _eKeySigGender, staff,
-			                           (left?left->timeEnd():0));
-		success = staff->insertSignAfter(mpoMusElement, left, true);
+			                           0);
+		success = staff->voiceAt(0)->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem( true );
 	}
@@ -124,17 +124,17 @@ bool CAMusElementFactory::configureKeySignature( CAStaff *staff,
 }
 
 /*!
-	Configures a new time signature music element with \a context and right next to the \a left element.
+	Configures a new time signature music element with \a context and right before the \a right element.
 */
 bool CAMusElementFactory::configureTimeSignature( CAStaff *staff, 
-                                                  CAMusElement *left )
+                                                  CAMusElement *right )
 {
 	bool success = false;
-	if (staff) {
+	if ( staff && staff->voiceCount() ) {		
 		mpoMusElement = new CATimeSignature( _iTimeSigBeats, _iTimeSigBeat,
 			                             staff,
-			                             (left?left->timeEnd():0));
-		success = staff->insertSignAfter(mpoMusElement, left, true);
+			                             0);
+		success = staff->voiceAt(0)->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem( true );
 	}
@@ -142,17 +142,17 @@ bool CAMusElementFactory::configureTimeSignature( CAStaff *staff,
 }
 
 /*!
-	Configures a new barline with \a context and right next to the \a left element.
+	Configures a new barline with \a context and right before the \a right element.
 */
 bool CAMusElementFactory::configureBarline( CAStaff *staff, 
-                                            CAMusElement *left )
+                                            CAMusElement *right )
 {
 	bool success = false;
-	if (staff) {
+	if ( staff && staff->voiceCount() ) {		
 		mpoMusElement = new CABarline( _eBarlineType,
 			                             staff,
-			                             (left?left->timeEnd():0));
-		success = staff->insertSignAfter(mpoMusElement, left, true);
+			                             0);
+		success = staff->voiceAt(0)->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem( true );
 	}
@@ -160,82 +160,68 @@ bool CAMusElementFactory::configureBarline( CAStaff *staff,
 }
 
 /*!
-	Configures new note music element.
-	
-	\param iVoiceNum        voice number where new note is inserted
-	\param voice            voice where new note is inserted
-	\param coords           mouse position where the new note is inserted
-	\param context          context within the new note is inserted
-	\param left             music element left of new note
+	Configures new note music element in the \a voice before element \a right.
+	If \a addToChord is true and right is note, the element is added to the note instead of inserted.
 */
-bool CAMusElementFactory::configureNote( CAVoice *voice,
-                                         const QPoint coords,
-                                         CADrawableStaff *drawableStaff,
-                                         CADrawableMusElement *left )
+bool CAMusElementFactory::configureNote( int pitch,
+                                         CAVoice *voice,
+                                         CAMusElement *right,
+                                         bool addToChord )
 {
 	bool bSuccess = false;
 	removeMusElem();
-	if ( drawableStaff ) {
-		// did a user click on the note or before/after it? In first case, add a note to a chord, in latter case, insert a new note.
-		CADrawableMusElement *followingNote;			
-		if ( left && (left->musElement()->musElementType() == CAMusElement::Note) && (left->xPos() <= coords.x()) && (left->width() + left->xPos() >= coords.x()) ) {
-			// user clicked inside x borders of the note - add a note to the chord
-			if (voice->containsPitch(drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart()))
-				return false;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
-			
-			int pitch;
-			mpoMusElement = new CANote(((CANote*)left->musElement())->playableLength(),
-		                  voice,
-		                  pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			          _iNoteAccs,
-			          left->musElement()->timeStart(),
-			          ((CANote*)left->musElement())->dotted()
-			        );
-			bSuccess = voice->addNoteToChord((CANote*)mpoMusElement, (CANote*)left->musElement());
+	
+	if ( right && addToChord ) {
+		mpoMusElement = new CANote( static_cast<CANote*>(right)->playableLength(),
+                                    voice,
+                                    pitch,
+	                                _iNoteAccs,
+	                                0, // timeStart is set when inserting to voice
+	                                0  // dotted is set when inserting to voice
+	   );
+		
+		bSuccess = voice->insert( right, mpoMusElement, true );
+	} else {
+		mpoMusElement = new CANote( _ePlayableLength,
+		                            voice,
+		                            pitch,
+		                            _iNoteAccs,
+		                            0,
+		                            _iPlayableDotted
+		);
+		
+		// add an empty syllable or reposit syllables
+		static_cast<CANote*>(mpoMusElement)->setStemDirection( _eNoteStemDirection );
+		bSuccess = voice->insert( right, mpoMusElement, false );
+		
+		// adds empty syllables, if syllable below the note doesn't exist or repositions the syllables, if it exists
+		if (voice->lastNote()==mpoMusElement) {
+			for (int i=0; i<voice->lyricsContextList().size(); i++) {
+				voice->lyricsContextList().at(i)->repositSyllables(); // adds an empty syllable or assigns the already placed at the end if it exists
+			}
+			for (int i=0; i<voice->staff()->sheet()->contextCount(); i++) {
+				if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkingContext)
+					static_cast<CAFunctionMarkingContext*>(voice->staff()->sheet()->contextAt(i))->repositFunctions();
+			}
 		} else {
-			// user clicked outside x borders of the note - add a new note
-			int pitch;
-			mpoMusElement = new CANote(_ePlayableLength,
-			          voice,
-			          pitch = drawableStaff->calculatePitch(coords.x(), coords.y()),
-			          _iNoteAccs,
-			          (left?left->musElement()->timeEnd():0),
-			          _iPlayableDotted
-			       );
-			// add an empty syllable or reposit syllables
-			static_cast<CANote*>(mpoMusElement)->setStemDirection( _eNoteStemDirection );
-			if (left)	// left element exists
-				bSuccess = voice->insertMusElementAfter(mpoMusElement, left->musElement());
-			else		// left element doesn't exist, prepend the new music element
-				bSuccess = voice->prependMusElement(mpoMusElement);
-			
-			// adds empty syllables, if syllable below the note doesn't exist or repositions the syllables, if it exists
-			if (voice->lastNote()==mpoMusElement) {
-				for (int i=0; i<voice->lyricsContextList().size(); i++) {
-					voice->lyricsContextList().at(i)->repositSyllables(); // adds an empty syllable or assigns the already placed at the end if it exists
-				}
-				for (int i=0; i<voice->staff()->sheet()->contextCount(); i++) {
-					if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkingContext)
-						static_cast<CAFunctionMarkingContext*>(voice->staff()->sheet()->contextAt(i))->repositFunctions();
-				}
-			} else {
-				for (int i=0; i<voice->lyricsContextList().size(); i++) {
-					voice->lyricsContextList().at(i)->addEmptySyllable(
+			for (int i=0; i<voice->lyricsContextList().size(); i++) {
+				voice->lyricsContextList().at(i)->addEmptySyllable(
+					mpoMusElement->timeStart(), mpoMusElement->timeLength()
+				);
+			}
+			for (int i=0; i<voice->staff()->sheet()->contextCount(); i++) {
+				if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkingContext)
+					static_cast<CAFunctionMarkingContext*>(voice->staff()->sheet()->contextAt(i))->addEmptyFunction(
 						mpoMusElement->timeStart(), mpoMusElement->timeLength()
 					);
-				}
-				for (int i=0; i<voice->staff()->sheet()->contextCount(); i++) {
-					if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkingContext)
-						static_cast<CAFunctionMarkingContext*>(voice->staff()->sheet()->contextAt(i))->addEmptyFunction(
-							mpoMusElement->timeStart(), mpoMusElement->timeLength()
-						);
-				}
 			}
 		}
+
 	}
 	
-	if (bSuccess)
+	if (bSuccess) {
 		static_cast<CANote*>(mpoMusElement)->updateTies();
+	}
 	else
 		removeMusElem( true );
 	
@@ -279,27 +265,27 @@ bool CAMusElementFactory::configureSlur( CAStaff *staff,
 }
 
 /*!
-	Configures a new rest music element.
-	
-	\param voice      voice where new rest is inserted
-	\param left       music element left of new rest
+	Configures a new rest music element in voice \a voice before element \a right.
 */
-bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *left ) {
+bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 	bool success = false;
 	if ( voice ) {
 		mpoMusElement = new CARest(restType(),
 				_ePlayableLength,
 				voice,
-				(left?left->timeEnd():0),
+				0,
 				_iPlayableDotted
 				);
-		success = voice->insertMusElementAfter(mpoMusElement, left);
+		success = voice->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem(true);
 	}
 	return success;
 }
 
+/*!
+	Configures a new function marking with \a timeStart and \a timeLength in context \a fmc.
+*/
 bool CAMusElementFactory::configureFunctionMarking( CAFunctionMarkingContext *fmc, int timeStart, int timeLength ) {
 	CAFunctionMarking *fm = new CAFunctionMarking(
 		fmFunction(), isFMFunctionMinor(),

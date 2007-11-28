@@ -34,9 +34,9 @@ public:
 	void setSheet(CASheet *sheet) { _sheet = sheet; }
 	
 	virtual void clear() = 0;
-	virtual CAMusElement *findNextMusElement(CAMusElement *elt) = 0;
-	virtual CAMusElement *findPrevMusElement(CAMusElement *elt) = 0;
-	virtual bool removeMusElement(CAMusElement *elt, bool cleanup = true) = 0;
+	virtual CAMusElement *next(CAMusElement *elt) = 0;
+	virtual CAMusElement *previous(CAMusElement *elt) = 0;
+	virtual bool remove( CAMusElement *elt ) = 0;
 	
 protected:
 	void setContextType( CAContextType t ) { _contextType = t; }

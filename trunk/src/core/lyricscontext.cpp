@@ -81,7 +81,7 @@ void CALyricsContext::cloneLyricsContextProperties( CALyricsContext *lc ) {
 */
 void CALyricsContext::repositSyllables() {
 	if (associatedVoice()) {
-		QList<CANote*> noteList = associatedVoice()->noteList();
+		QList<CANote*> noteList = associatedVoice()->getNoteList();
 		int i,j;
 		for (i=0, j=0; i<noteList.size() && j<_syllableList.size(); i++, j++) {
 			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart()) // chord
@@ -107,7 +107,7 @@ void CALyricsContext::repositSyllables() {
 	}
 }
 
-CAMusElement* CALyricsContext::findNextMusElement(CAMusElement* elt) {
+CAMusElement* CALyricsContext::next( CAMusElement* elt ) {
 	if (elt->musElementType()!=CAMusElement::Syllable)
 		return 0;
 	
@@ -118,7 +118,7 @@ CAMusElement* CALyricsContext::findNextMusElement(CAMusElement* elt) {
 		return 0;
 }
 
-CAMusElement* CALyricsContext::findPrevMusElement(CAMusElement* elt) {
+CAMusElement* CALyricsContext::previous( CAMusElement* elt ) {
 	if (elt->musElementType()!=CAMusElement::Syllable)
 		return 0;
 	
@@ -132,16 +132,12 @@ CAMusElement* CALyricsContext::findPrevMusElement(CAMusElement* elt) {
 /*!
 	Removes the given syllable from the list.
 */
-bool CALyricsContext::removeMusElement(CAMusElement* elt, bool autodelete) {
+bool CALyricsContext::remove( CAMusElement* elt ) {
 	if (elt->musElementType()!=CAMusElement::Syllable)
 		return false;
 	
-	
 	bool success=false;
 	success = _syllableList.removeAll(static_cast<CASyllable*>(elt));
-	
-	if (autodelete)
-		delete elt;
 	
 	return success;
 }
@@ -153,7 +149,7 @@ bool CALyricsContext::removeMusElement(CAMusElement* elt, bool autodelete) {
 	
 	Returns True if the syllable was found and removed; False otherwise.
 */
-CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart, bool autoDelete ) {
+CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart ) {
 	int i;
 	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()!=timeStart; i++);
 	if (i<_syllableList.size()) {
@@ -163,9 +159,6 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart, bool auto
 		// update times
 		for (; i<_syllableList.size(); i++)
 			_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() - syllable->timeLength() );
-		
-		if (autoDelete)
-			delete syllable;
 		
 		return syllable;
 	} else {

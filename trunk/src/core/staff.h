@@ -34,27 +34,23 @@ public:
 	inline int voiceCount() { return _voiceList.size(); }
 	inline CAVoice *voiceAt(int i) { return _voiceList[i]; }
 	inline void removeVoice(CAVoice *voice) { _voiceList.removeAll(voice); }
-	inline QList<CAVoice*> voiceList() { return _voiceList; }
-	CAVoice *voice(const QString name);
+	inline QList<CAVoice*>& voiceList() { return _voiceList; }
+	CAVoice *voiceByName(const QString name);
 	
 	void     addVoice(CAVoice *voice);
 	CAVoice* addVoice();
 	
-	void insertSign(CAMusElement *sign);
-	bool insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter, bool force=false);
-	bool insertSignAfter(CAMusElement *sign, CAMusElement *eltBefore, bool force=false);
-
-	bool removeMusElement(CAMusElement* elt, bool cleanup = true);
-	
-	CAMusElement *findNextMusElement(CAMusElement *elt);
-	CAMusElement *findPrevMusElement(CAMusElement *elt);
+	CAMusElement *next( CAMusElement *elt );
+	CAMusElement *previous( CAMusElement *elt );
+	bool remove( CAMusElement *elt );
 	
 	int lastTimeEnd();
-	QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
+	QList<CAMusElement*> getEltByType( CAMusElement::CAMusElementType type, int startTime );
 	
-	QList<CAPlayable*> getChord(int time);
-	bool fixVoiceErrors();
-	
+	QList<CAPlayable*> getChord( int time );
+
+	bool synchronizeVoices();
+
 	void setName(QString name) { _name = name; }
 	QString name() { return _name; }
 	
@@ -64,4 +60,4 @@ private:
 	
 	int _numberOfLines;
 };
-#endif /*STAFF_H_*/
+#endif /* STAFF_H_ */

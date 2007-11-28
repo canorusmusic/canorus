@@ -177,10 +177,14 @@ bool CANote::isLastInTheChord() {
 }
 
 /*!
-	Finds and returns a list of notes with the same start time - the whole chord - in the current voice.
+	Generates a list of notes with the same start time - the whole chord - in the current voice.
+	Notes in chord keep the order present in the voice. This is usually bottom-up.
+	
 	Returns a single element in the list - only the note itself, if the note isn't part of the chord.
+	
+	\sa CAVoice::addNoteToChord()
 */
-QList<CANote*> CANote::chord() {
+QList<CANote*> CANote::getChord() {
 	QList<CANote*> list;
 	int idx = _voice->indexOf(this) - 1;
 	
@@ -192,7 +196,7 @@ QList<CANote*> CANote::chord() {
 	for (idx++;
 	     (idx<_voice->musElementCount()) && (_voice->musElementAt(idx)->musElementType()==CAMusElement::Note) && (_voice->musElementAt(idx)->timeStart()==timeStart());
 	     idx++)
-		list << (CANote*)_voice->musElementAt(idx);
+		list << static_cast<CANote*>(_voice->musElementAt(idx));
 	
 	return list;
 }
@@ -239,7 +243,7 @@ void CANote::updateTies() {
 	
 	// fix/create a tie, if needed
 	QList<CANote*> noteList;
-	if (voice()) noteList = voice()->noteList();
+	if (voice()) noteList = voice()->getNoteList();
 	
 	// checks a tie of the potential left note
 	CANote *leftNote = 0;

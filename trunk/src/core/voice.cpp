@@ -98,7 +98,7 @@ CAVoice *CAVoice::clone() {
 	Destroys all non-shared music elements held by the voice.
 	
 	When clearing the whole staff, make sure the voice is *deleted*.
-	It is automatically removed from the staff.
+	It is automatically removed from the staff - in voice's destructor.
 */
 void CAVoice::clear() {
 	while ( _musElementList.size() ) {
@@ -111,159 +111,81 @@ void CAVoice::clear() {
 }
 
 /*!
-	Inserts the music element \a elt after the last element which startTime is lesser
-	or equal to the given \a elt one. Updates start times for elements after it, if
-	\a updateT is set. This is false when adding a note to a chord; otherwise true.
-	If such an element doesn't exist, appends a music element.
+	Appends a playable \a elt (note or rest) at the end of the voice.
 	
-	\warning If you're inserting shared signs like barlines, clefs, time signatures and other
-	non-playable signs use this method indirectly by calling CAStaff::insertSign(), because
-	the mentioned signs MUST be present in *all* voices. Use manually this method only if you
-	know what you're doing or you're inserting playable non-shared elements.
+	If \a addToChord is True and the appended element is note, the note is added to the chord
+	instead of added after the chord. If appended element is rest, \a addToChord is ignored.
 	
-	\sa insertMusElementBefore(), insertMusElementAfter()
+	Appended element's timeStart is changed respectively.
+	
+	\note Due to speed issues, voices are NOT synchronized for every inserted element. User
+	should manually call CAStaff::synchronizeVoices().
+	
+	\sa insert()
 */
-void CAVoice::insertMusElement(CAMusElement *elt, bool updateT) {
-	int i;
-	for (i=0;
-	     (i < _musElementList.size()) && ((_musElementList[i]->timeStart() < elt->timeStart() ||
-	      (_musElementList[i]->timeStart() == elt->timeStart() && !_musElementList[i]->isPlayable())));
-	     i++);
+void CAVoice::append( CAMusElement *elt, bool addToChord ) {
+	CAMusElement *last = (musElementList().size()?musElementList().last():0);
 	
-	_musElementList.insert(i, elt);
-	
-	if (updateT)
-		updateTimes(i, true);
+	if ( elt->musElementType()==CAMusElement::Note && last &&
+	     last->musElementType()==CAMusElement::Note &&
+	     addToChord ) {
+		elt->setTimeStart( last->timeStart() );
+		addNoteToChord( static_cast<CANote*>(elt), static_cast<CANote*>(last) );
+	} else {
+		elt->setTimeStart( last?last->timeEnd():0 );
+		insertMusElement( 0, elt );
+	}
 }
 
 /*!
-	Adds a \a note to an already existing \a referenceNote chord or a single note and
-	creates a chord out of it.
-	Notes in a chord always needs to be sorted by the pitch rising.
-	Chord in Canorus isn't its own structure but simply a list of notes sharing the
-	same start time.
+	Adds the given element \a elt to the voice before the given \a eltAfter. If \a eltAfter is null,
+	the element is appended.
 	
-	Returns true, if a referenceNote was found and a note was added; otherwise false.
+	If \a elt is non-playable, it eventually does the same as insertMusElement().
 	
-	\sa CANote::chord()
+	If \a elt is a note and addToChord is True, the eltAfter should also be a note and the \a elt is
+	then added to the chord which eltAfter is part of.
+	
+	If \a elt is other playable element, it is appropriately added before the \a eltAfter. \a addToChord is ignored.
+	
+	Inserted element's timeStart is correctly changed.
+	
+	Returns True, if the insertion action was successfully made, otherwise False.
+	
+	\note Due to speed issues, voices are NOT synchronized for every inserted element. User
+	should manually call CAStaff::synchronizeVoices().
+	
+	\sa insertMusElement()
 */
-bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
-	int idx = _musElementList.indexOf(referenceNote);
-	
-	if (idx==-1)
+bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord ) {
+	if ( !elt )
 		return false;
 	
-	QList<CANote*> chord = referenceNote->chord();
-	idx = _musElementList.indexOf(chord.first());
+	if ( eltAfter && eltAfter->musElementType()==CAMusElement::Note ) // if eltAfter is note, it should always be the FIRST note in the chord
+		eltAfter = static_cast<CANote*>(eltAfter)->getChord().front();
 	
-	int i;
-	for (i=0; i<chord.size() && chord[i]->pitch() < note->pitch(); i++);
-	
-	_musElementList.insert(idx+i, note);
-	
-	return true;
-}
-
-/*!
-	Inserts the \a elt right before the given \a eltAfter. If \a eltAfter is 0, it
-	appends the element. It updates start times of elements after the given element if
-	\a updateTimes is true. If \a force is set, it finds the nearest element with
-	larger start time of the given element and inserts the given element before it.
-	
-	\warning If you're inserting shared signs like barlines, clefs, time signatures and other
-	non-playable signs use this method indirectly by calling CAStaff::insertSign(), because
-	the mentioned signs MUST be present in *all* voices. Use manually this method only if you
-	know what you're doing or you're inserting playable non-shared elements.
-	
-	Returns true, if \a eltAfter was found and the elt was inserted/appended; otherwise
-	false.
-*/
-bool CAVoice::insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateT, bool force) {
-	if (!eltAfter || !_musElementList.size()) {
-		_musElementList << elt;
-		return true;
-	}
-	
-	int i;
-	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != eltAfter); i++);
-	
-	// if element wasn't found and the element before is slur
-	if ( eltAfter->musElementType()==CAMusElement::Slur && i==_musElementList.size() )
-		for (i=0; (i<_musElementList.size() && _musElementList[i] != static_cast<CASlur*>(eltAfter)->noteStart()); i++);
-	
-	if (i==_musElementList.size())
-		if (!force)
-			return false;
-		else {
-			int endTime = eltAfter->timeEnd();
-			for (i=0; (i<_musElementList.size()) && (_musElementList[i]->timeStart() < endTime); i++);
-			_musElementList.insert(i, elt);
-	} else {
-		if (_musElementList[i]->musElementType()==CAMusElement::Note &&	// a small check to see if a user wanted to insert an element after a chord, but selected a note in the middle of a chord (not the lowest one)
-		    ((CANote*)_musElementList[i])->isPartOfTheChord() &&
-		    eltAfter->timeStart()!=elt->timeStart() ) {
-			i = _musElementList.indexOf(((CANote*)_musElementList[i])->chord().front());
-		}
-		_musElementList.insert(i, elt);
-	}
-	
-	if (updateT)
-		updateTimes(i, true);
-
-	return true;
-}
-
-/*!
-	Inserts the \a elt right after the given \a eltBefore. If \a eltBefore is 0, it
-	prepends the element. It updates start times of elements after the given element if
-	\a updateTimes is true. If \a force is set, it finds the nearest element with
-	smaller start time of the given element and inserts the given element after it.
-	
-	\warning If you're inserting shared signs like barlines, clefs, time signatures and other
-	non-playable signs use this method indirectly by calling CAStaff::insertSign(), because
-	the mentioned signs MUST be present in *all* voices. Use manually this method only if you
-	know what you're doing or you're inserting playable non-shared elements.
-	
-	Returns true, if \a eltBefore was found and the elt was inserted/appended;
-	otherwise false.
-*/
-bool CAVoice::insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateT, bool force) {
-	if (!eltBefore || !_musElementList.size()) {
-		_musElementList.push_front(elt);
-		if (updateT)
-			updateTimes(0, true);
-		return true;
-	}
-	
-	int i;
-	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != eltBefore); i++);
-	
-	// if element wasn't found and the element before is slur
-	if ( eltBefore->musElementType()==CAMusElement::Slur && i==_musElementList.size() )
-		for (i=0; (i<_musElementList.size() && _musElementList[i] != static_cast<CASlur*>(eltBefore)->noteStart()); i++);
-	
-	if (i==_musElementList.size()) {
-		if (!force)
-			return false;
-		else {
-			int endTime = eltBefore->timeEnd();
-			for (i=0; (i<_musElementList.size()) && (_musElementList[i]->timeStart() < endTime); i++);
-			_musElementList.insert(i, elt);
-		}
-	} else {
-		if (_musElementList[i]->musElementType()==CAMusElement::Note &&	//a small check to see if a user wanted to insert an element after a chord, but selected a note in the middle of a chord (not the lowest one)
-		    ((CANote*)_musElementList[i])->isPartOfTheChord() &&
-		    eltBefore->timeStart()!=elt->timeStart() ) {
-			i = _musElementList.indexOf(((CANote*)_musElementList[i])->chord().back());
-		}
+	bool res;
+	if ( !elt->isPlayable() ) {
+		// insert sign
 		
-		_musElementList.insert(++i, elt);
+		elt->setTimeStart( eltAfter?eltAfter->timeStart():lastTimeEnd() );
+		res = insertMusElement( eltAfter, elt );
+		
+	} else if ( elt->musElementType()==CAMusElement::Note && eltAfter && eltAfter->musElementType()==CAMusElement::Note && addToChord ) {
+		// add a note to chord
+		
+		res = addNoteToChord( static_cast<CANote*>(elt), static_cast<CANote*>(eltAfter) );
+		
+	} else {
+		// insert a note somewhere in between, append or prepend
+		
+		elt->setTimeStart( eltAfter?eltAfter->timeStart():lastTimeEnd() );
+		res = insertMusElement( eltAfter, elt );
+		updateTimes( musElementList().indexOf(elt)+1, elt->timeLength(), true );
+		
 	}
 	
-	if (updateT)
-		updateTimes(i, true);
-	
-	return true;
+ 	return res;
 }
 
 /*!
@@ -282,112 +204,113 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 }
 
 /*!
-	If the given \a length is 0, take the given music elements \a elt length and
-	updates start times of music elements after the given element.
+	Removes the given music element \a elt from this voice, if the element is playable or from
+	all the voices in the staff, if non-playable and part of the staff.
 	
-	If the given \a length is not 0, updates start time of the given music element \a
-	elt and start times of music elements after it for the given length.
-	
-	Updating times means increasing start time of music elements for the given length.
-	
-	This function is usually called when an element is deleted or inserted and
-	startTimes after it need to be updated.
-	
-	Returns true, if \a elt was found and update was made; otherwise false;
-	
-	\sa updateTimesAfter()
-*/
-bool CAVoice::updateTimes(CAMusElement *elt, bool nonPlayable, int length) {
-	int idx;
-	if ((idx = _musElementList.indexOf(elt))!=-1) {
-		updateTimes(idx, nonPlayable, length);
-		return true;
-	}
-		return false;
-}
-
-/*!
-	Increase start times of music elements after the given \a elt for the \a length.
-	
-	This function is usually called when an element is deleted or inserted and
-	startTimes after it need to be updated.
-	
-	Returns true, if \a elt was found and update was made; otherwise false;
-	
-	\sa updateTimesAfter()
-*/
-bool CAVoice::updateTimesAfter(CAMusElement *elt, bool nonPlayable, int length) {
-	int idx;
-	if ((idx = _musElementList.indexOf(elt))!=-1) {
-		updateTimes(idx+1, nonPlayable, length);
-		return true;
-	}
-		return false;
-}
-
-/*!
-	Updates the musElements timeStarts from index \a idx and on by increasing their
-	start times by the \a givenLength.
-	
-	This function is usually called when an element is deleted or inserted and
-	startTimes after it need to be updated.
-	
-	If \a givenLength is not set, it takes the length of the element at \a idx and
-	updates times after it.
-*/
-void CAVoice::updateTimes(int idx, bool nonPlayable, int givenLength) {
-	if (idx >= _musElementList.size())
-		return;
-	
-	int length;
-	if (!givenLength)
-		length = _musElementList[idx++]->timeLength();
-	else
-		length = givenLength;
-	
-	// indent all the music elements after the given index's one.
-	// If the music elements aren't connected (previous's end time != next start time)
-	for (int i=idx; i<_musElementList.size() && (givenLength ||
-	                (_musElementList[i-1]->timeEnd()==_musElementList[i]->timeStart()+length || _musElementList[i-1]->timeStart()==_musElementList[i]->timeStart()+length))
-	     ; i++) {
-		if (nonPlayable || !nonPlayable && _musElementList[i]->isPlayable())
-			_musElementList[i]->setTimeStart(_musElementList[i]->timeStart() + length);
-	}
-}
-
-/*!
-	Removes the given music element \a elt from the voice.
 	\warning This function doesn't destroy the object, but only removes its
 	reference in the voice.
 	
+	\note Due to speed issues, voices are NOT synchronized for every inserted element. User
+	should manually call CAStaff::synchronizeVoices().
+	
 	Returns true, if the element was found and removed; otherwise false.
 */
-bool CAVoice::removeElement(CAMusElement *elt) {
-	int idx;
-	if ((idx = _musElementList.indexOf(elt)) != -1) {	// if the search element is found
-		int length = _musElementList[idx]->timeLength();
-		
-		if (elt->musElementType()==CAMusElement::Note) {
-			CANote *n = static_cast<CANote*>(elt);
-			if (n->isPartOfTheChord() && n->isFirstInTheChord()) {
-				CANote *prevNote = n->chord().at(1);
-				prevNote->setSlurStart( n->slurStart() );
-				prevNote->setSlurEnd( n->slurEnd() );
-				prevNote->setPhrasingSlurStart( n->phrasingSlurStart() );
-				prevNote->setPhrasingSlurEnd( n->phrasingSlurEnd() );
-			} else if (!(n->isPartOfTheChord())) {
-				if ( n->slurStart() ) delete n->slurStart();
-				if ( n->slurEnd() ) delete n->slurEnd();
-				if ( n->phrasingSlurStart() ) delete n->phrasingSlurStart();
-				if ( n->phrasingSlurEnd() ) delete n->phrasingSlurEnd();
+bool CAVoice::remove( CAMusElement *elt ) {
+	if ( _musElementList.contains(elt) ) {	// if the search element is found
+		if ( !elt->isPlayable() && staff() ) {          // element is shared - remove it from all the voices
+			for (int i=0; i<staff()->voiceCount(); i++) {
+				staff()->voiceAt(i)->musElementList().removeAll(elt);
 			}
+		} else {
+			if ( elt->musElementType()==CAMusElement::Note ) {
+				CANote *n = static_cast<CANote*>(elt);
+				if ( n->isPartOfTheChord() && n->isFirstInTheChord() ) {
+					CANote *prevNote = n->getChord().at(1);
+					prevNote->setSlurStart( n->slurStart() );
+					prevNote->setSlurEnd( n->slurEnd() );
+					prevNote->setPhrasingSlurStart( n->phrasingSlurStart() );
+					prevNote->setPhrasingSlurEnd( n->phrasingSlurEnd() );
+				} else if ( !(n->isPartOfTheChord()) ) {
+					if ( n->slurStart() ) delete n->slurStart();
+					if ( n->slurEnd() ) delete n->slurEnd();
+					if ( n->phrasingSlurStart() ) delete n->phrasingSlurStart();
+					if ( n->phrasingSlurEnd() ) delete n->phrasingSlurEnd();
+				}
+			}
+			
+			updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1) ); // shift back timeStarts of playable elements after it
+			musElementList().removeAll(elt);          // removes the element from the voice music element list
 		}
 		
-		_musElementList.removeAt(idx);					// removes the element from the music element list
 		return true;
 	} else {
 		return false;
 	}
+}
+
+/*!
+	Inserts the \a elt before the given \a eltAfter. If \a eltAfter is Null, it
+	appends the element.
+	
+	Returns True, if \a eltAfter was found and the elt was inserted/appended; otherwise False.
+*/
+bool CAVoice::insertMusElement( CAMusElement *eltAfter, CAMusElement *elt ) {
+	if (!eltAfter || !_musElementList.size()) {
+		musElementList().push_back(elt);
+		return true;
+	}
+	
+	int i = musElementList().indexOf( eltAfter );
+	
+	// if element wasn't found and the element before is slur
+	if ( eltAfter->musElementType()==CAMusElement::Slur && i==-1 )
+		i = musElementList().indexOf( static_cast<CASlur*>(eltAfter)->noteEnd() );
+	
+	if (i==-1) {
+		// eltBefore still wasn't found, return False
+		return false;
+	}
+	
+	// eltBefore found, insert it
+	musElementList().insert(i, elt);
+	
+	return true;
+}
+
+/*!
+	Adds a \a note to an already existing \a referenceNote chord or a single note and
+	creates a chord out of it.
+	Notes in a chord always need to be sorted by pitch rising.
+	Chord in Canorus isn't its own structure but simply a list of notes sharing the
+	same start time.
+	
+	The inserted \a note properteis timeStart, timeLength, dotted and playableLength
+	change according to other notes in the chord.
+	
+	Returns True, if a referenceNote was found and a note was added; otherwise False.
+	
+	\sa CANote::chord()
+*/
+bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
+	int idx = _musElementList.indexOf(referenceNote);
+	
+	if (idx==-1)
+		return false;
+	
+	QList<CANote*> chord = referenceNote->getChord();
+	idx = _musElementList.indexOf(chord.first());
+	
+	int i;
+	for ( i=0; i<chord.size() && chord[i]->pitch() < note->pitch(); i++ );
+	
+	_musElementList.insert( idx+i, note );
+	note->setDotted( referenceNote->dotted() );
+	note->setPlayableLength( referenceNote->playableLength() );
+	note->setTimeLength( referenceNote->timeLength() );
+	note->setTimeStart( referenceNote->timeStart() );
+	note->setStemDirection( referenceNote->stemDirection() );
+	
+	return true;
 }
 
 /*!
@@ -491,7 +414,7 @@ QList<CAMusElement*> CAVoice::getEltByType(CAMusElement::CAMusElementType type, 
 	Returns pointer to the music element before the given \a elt or 0, if the previous
 	music element doesn't exist.
 */
-CAMusElement *CAVoice::eltBefore(CAMusElement *elt) {
+CAMusElement *CAVoice::previous(CAMusElement *elt) {
 	int idx = _musElementList.indexOf(elt);
 	
 	if (--idx<0) //if the element wasn't found or was the first element
@@ -504,7 +427,7 @@ CAMusElement *CAVoice::eltBefore(CAMusElement *elt) {
 	Returns pointer to the music element after the given \a elt or 0, if the next music
 	element doesn't exist.
 */
-CAMusElement *CAVoice::eltAfter(CAMusElement *elt) {
+CAMusElement *CAVoice::next(CAMusElement *elt) {
 	int idx = _musElementList.indexOf(elt);
 	
 	if (idx==-1) //the element wasn't found
@@ -530,7 +453,7 @@ QList<CAPlayable*> CAVoice::getChord(int time) {
 	if (i!=_musElementList.size()) {
 		if (_musElementList[i]->musElementType()==CAMusElement::Note) {	// music element is a note
 			//! \todo Casting QList<CANote*> to QList<CAPlayable*> doesn't work?! :( Do the conversation manually. This is slow. -Matevz
-			QList<CANote*> list = ((CANote*)_musElementList[i])->chord();
+			QList<CANote*> list = static_cast<CANote*>(_musElementList[i])->getChord();
 			QList<CAPlayable*> ret;
 			for (int i=0; i<list.size(); i++)
 				ret << list[i];
@@ -547,27 +470,11 @@ QList<CAPlayable*> CAVoice::getChord(int time) {
 }
 
 /*!
-	Adds a music element \a elt to the end of the music elements list.
+	Generates a list of all the notes and chords in the voice.
 	
-	Returns true, if the element was successfully added; false otherwise.
+	This is useful for harmony analysis.
 */
-bool CAVoice::appendMusElement(CAMusElement *elt) {
-	return insertMusElementBefore(elt, 0, false, false);
-}
-
-/*!
-	Inserts a music element \a elt at the beginning of the music elements list.
-	
-	Returns true, if the element was successfully added; false otherwise.
-*/
-bool CAVoice::prependMusElement(CAMusElement *elt) {
-	return insertMusElementAfter(elt, 0, true, false);
-}
-
-/*!
-	Returns a list of all notes in the voice.
-*/
-QList<CANote*> CAVoice::noteList() {
+QList<CANote*> CAVoice::getNoteList() {
 	QList<CANote*> list;
 	for (int i=0; i<_musElementList.size(); i++)
 		if (_musElementList[i]->musElementType()==CAMusElement::Note)
@@ -577,10 +484,25 @@ QList<CANote*> CAVoice::noteList() {
 }
 
 /*!
+	Generates a list of all the notes and chords in the voice.
+	
+	This is useful when importing a specific voice and all the shared elements should be
+	completely repositioned.
+*/
+QList<CAMusElement*> CAVoice::getSignList() {
+	QList<CAMusElement*> list;
+	for (int i=0; i<_musElementList.size(); i++)
+		if ( !_musElementList[i]->isPlayable() )
+			list << _musElementList[i];
+	
+	return list;
+}
+
+/*!
 	Returns a pointer to the next note with the higher timeStart than the given one.
 	Returns 0, if the such a note doesn't exist.
 */
-CANote *CAVoice::findNextNote( int timeStart ) {
+CANote *CAVoice::nextNote( int timeStart ) {
 	CANote *n = 0;
 	int i;
 	for (i=0;
@@ -600,7 +522,7 @@ CANote *CAVoice::findNextNote( int timeStart ) {
 	Returns a pointer to the previous note with the lower timeStart than the given one.
 	Returns 0, if the such a note doesn't exist.
 */
-CANote *CAVoice::findPrevNote( int timeStart ) {
+CANote *CAVoice::previousNote( int timeStart ) {
 	CANote *n = 0;
 	int i;
 	for (i=_musElementList.size()-1;
@@ -617,11 +539,23 @@ CANote *CAVoice::findPrevNote( int timeStart ) {
 }
 
 /*!
+	Updates times of playable elements and optionally \a signsToo after and including the given index
+	\a idx for a delta \a length. The order of the elements stays intact.
+	
+	This method is usually called when inserting, removing or changing the music elements so they affect
+	others.
+*/
+bool CAVoice::updateTimes( int idx, int length, bool signsToo ) {
+	for (int i=idx; i<musElementList().size(); i++)
+		if ( signsToo || musElementList()[i]->isPlayable() )
+			musElementList()[i]->setTimeStart( musElementList()[i]->timeStart() + length );
+}
+
+/*!
+	\fn void CAVoice::setStemDirection(CANote::CAStemDirection direction)
+	
 	Sets the stem direction and update slur directions in all the notes in the voice.
 */
-void CAVoice::setStemDirection(CANote::CAStemDirection direction) {
-	_stemDirection = direction;
-}
 
 /*!
 	\var CAVoice::_voiceNumber

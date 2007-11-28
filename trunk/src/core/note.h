@@ -68,7 +68,7 @@ public:
 	bool isPartOfTheChord();
 	bool isLastInTheChord();
 	bool isFirstInTheChord();
-	QList<CANote*> chord();
+	QList<CANote*> getChord();
 	
 	bool forceAccidentals() { return _forceAccidentals; }
 	void setForceAccidentals(bool force) { _forceAccidentals = force; }
