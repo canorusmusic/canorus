@@ -67,7 +67,7 @@ void CAFunctionMarkingContext::addFunctionMarking( CAFunctionMarking *function, 
 	}
 }
 
-CAMusElement *CAFunctionMarkingContext::findNextMusElement(CAMusElement *elt) {
+CAMusElement *CAFunctionMarkingContext::next(CAMusElement *elt) {
 	int idx = _functionMarkingList.indexOf((CAFunctionMarking*)elt);
 	if (idx==-1)
 		return 0;
@@ -78,7 +78,7 @@ CAMusElement *CAFunctionMarkingContext::findNextMusElement(CAMusElement *elt) {
 		return _functionMarkingList[idx];
 }
 
-CAMusElement *CAFunctionMarkingContext::findPrevMusElement(CAMusElement *elt) {
+CAMusElement *CAFunctionMarkingContext::previous(CAMusElement *elt) {
 	int idx = _functionMarkingList.indexOf((CAFunctionMarking*)elt);
 	if (idx==-1)
 		return 0;
@@ -89,10 +89,7 @@ CAMusElement *CAFunctionMarkingContext::findPrevMusElement(CAMusElement *elt) {
 		return _functionMarkingList[idx];	
 }
 
-bool CAFunctionMarkingContext::removeMusElement(CAMusElement *elt, bool cleanup) {
-	if (cleanup)
-		delete elt;
-	
+bool CAFunctionMarkingContext::remove( CAMusElement *elt ) {
 	return _functionMarkingList.removeAll(static_cast<CAFunctionMarking*>(elt));
 }
 

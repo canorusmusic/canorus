@@ -27,14 +27,14 @@ public:
 	
 	void repositSyllables();
 	
-	CAMusElement* findNextMusElement(CAMusElement*);
-	CAMusElement* findPrevMusElement(CAMusElement*);
+	CAMusElement* next(CAMusElement*);
+	CAMusElement* previous(CAMusElement*);
 	QList<CAMusElement*> musElementList();
-	bool removeMusElement(CAMusElement*, bool);
+	bool remove( CAMusElement* );
 		
 	bool addSyllable( CASyllable*, bool replace=true );
 	bool addEmptySyllable( int timeStart, int timeLength );
-	CASyllable* removeSyllableAtTimeStart( int timeStart, bool autoDelete=true );
+	CASyllable* removeSyllableAtTimeStart( int timeStart );
 	CASyllable* syllableAt( int idx ) { return _syllableList[idx]; }
 	CASyllable* syllableAtTimeStart( int timeStart );
 	inline QList<CASyllable*> syllableList() { return _syllableList; }

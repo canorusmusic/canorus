@@ -33,6 +33,7 @@ public:
 	virtual CAPlayable *clone( CAVoice *voice ) = 0;
 	
 	inline CAPlayableLength playableLength() { return _playableLength; }
+	inline void setPlayableLength( CAPlayableLength l ) { _playableLength = l; }
 	
 	CAVoice *voice() { return _voice; }
 	void setVoice(CAVoice *v);

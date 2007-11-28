@@ -79,7 +79,7 @@ CAPlayable::CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, i
 */
 CAPlayable::~CAPlayable() {
 	if (voice())
-		voice()->removeElement( this );
+		voice()->remove( this );
 }
 
 void CAPlayable::setVoice(CAVoice *voice) {

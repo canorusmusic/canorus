@@ -507,7 +507,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							drawableContext->yPos() + qRound(CADrawableLyricsContext::DEFAULT_TEXT_VERTICAL_SPACING)
 						);
 						
-						CAMusElement *prevSyllable = drawableContext->context()->findPrevMusElement(elt);
+						CAMusElement *prevSyllable = drawableContext->context()->previous(elt);
 						CADrawableMusElement *prevDSyllable = (prevSyllable?v->findMElement(prevSyllable):0);
 						if (prevDSyllable) {
 							prevDSyllable->setWidth( newElt->xPos() - prevDSyllable->xPos() );

@@ -30,9 +30,9 @@ public:
 	void repositFunctions();
 	
 	void clear();
-	CAMusElement *findNextMusElement(CAMusElement *elt);
-	CAMusElement *findPrevMusElement(CAMusElement *elt);
-	bool removeMusElement(CAMusElement *elt, bool cleanup = true);
+	CAMusElement *next(CAMusElement *elt);
+	CAMusElement *previous(CAMusElement *elt);
+	bool remove( CAMusElement *elt );
 	
 private:
 	QList<CAFunctionMarking*> _functionMarkingList;

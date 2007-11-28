@@ -11,6 +11,7 @@
 #include "core/voice.h"
 #include "core/staff.h"
 #include "core/note.h"
+#include "core/rest.h" // used for voice synchronization
 
 /*!
 	\class CAStaff
@@ -59,7 +60,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 		for (int i=0; i<voiceCount(); i++) {
 			while ( eltIdx[i]<voiceAt(i)->musElementCount() && voiceAt(i)->musElementAt(eltIdx[i])->isPlayable() ) {
 				CAPlayable *newElt = static_cast<CAPlayable*>(voiceAt(i)->musElementAt(eltIdx[i]))->clone( newStaff->voiceAt(i) );
-				newStaff->voiceAt(i)->appendMusElement( newElt );
+				newStaff->voiceAt(i)->append( newElt );
 				
 				// check tie
 				if ( newElt->musElementType()==CAMusElement::Note &&
@@ -116,7 +117,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 			newElt->setContext( newStaff );
 			
 			for (int i=0; i<voiceCount(); i++) {
-				newStaff->voiceAt(i)->appendMusElement( newElt );
+				newStaff->voiceAt(i)->append( newElt );
 				eltIdx[i]++;
 			}
 		}
@@ -175,122 +176,50 @@ CAVoice *CAStaff::addVoice() {
 }
 
 /*!
-	Inserts a sign \a sign to the staff at certain time.
-	This method inserts the sign to all voices!
-	This is the difference between inserting a sign or a playable note - note is present in a single
-	voice and sign is shared - present in all the voice.
+	Returns the pointer to the element right next to the given \a elt in any of the voice.
+	
+	\sa next()
 */
-void CAStaff::insertSign(CAMusElement *sign) {
-	for (int i=0; i<_voiceList.size(); i++)
-		_voiceList[i]->insertMusElement(sign);
-}
-
-/*!
-	Inserts any sign \a sign (clef, siganutres, barline etc.) before the given \a eltAfter.
-	This method inserts the sign to all voices!
-	This is the difference between inserting a sign or a playable element - note is present in a
-	single voice, sign in both.
-	
-	If \a force is true, finds the element with nearest time start and inserts it before.
-	
-	Returns true if \a sign was successfully added; otherwise false.
-	
-	\sa CAVoice::insertMusElementBefore(), insertSignAfter()
-*/
-bool CAStaff::insertSignBefore(CAMusElement *sign, CAMusElement *eltAfter, bool force) {
-	bool error = false;
-	for (int i=0; i<_voiceList.size(); i++) {
-		if (!_voiceList[i]->insertMusElementBefore(sign, eltAfter, true, force))
-			error = true;
-	}
-	
-	return (!error);
-}
-
-/*!
-	Inserts any sign \a sign (clef, siganutres, barline etc.) after the given \a eltBefore.
-	This method inserts the sign to all voices!
-	This is the difference between inserting a sign or a playable element - note is present in a
-	single voice, sign in both.
-	
-	If \a force is true, finds the element with nearest time start and inserts it after.
-	
-	Returns true if \a sign was successfully added; otherwise false.
-	
-	\sa CAVoice::insertMusElementAfter(), insertSignBefore()
-*/
-bool CAStaff::insertSignAfter(CAMusElement *sign, CAMusElement *eltBefore, bool force) {
-	bool error = false;
-	for (int i=0; i<_voiceList.size(); i++) {
-		if (!_voiceList[i]->insertMusElementAfter(sign, eltBefore, true, force))
-			error = true;
-	}
-	
-	return (!error);
-}
-
-/*!
-	Removes the music element \a elt from all the voices.
-	Also destroys an object, if \a cleanup is true (default).
-	
-	Returns true on successful removal; otherwise false.
-*/
-bool CAStaff::removeMusElement(CAMusElement *elt, bool cleanup) {
-	bool success = false;
-	for (int i=0; i<_voiceList.size(); i++)
-		if (_voiceList[i]->removeElement(elt))
-			success = true;
-	
-	if (cleanup)
-		delete elt;
-		
-	return success;
-}
-
-/*!
-	Returns the pointer to the element right next to the given \a elt.
-	
-	\sa findPrevMusElement()
-*/
-CAMusElement *CAStaff::findNextMusElement(CAMusElement *elt) {
-	int idx;
-	
-	for (int i=0; i<_voiceList.size(); i++) {	//go through all the voices and check, if anyone of them includes the given element
-		if ((idx = _voiceList[i]->indexOf(elt)) != -1) {
-			if (++idx < _voiceList[i]->musElementCount())
-				return _voiceList[i]->musElementAt(idx); //return the pointer of the next element
-			else
-				return 0;	//or 0, if the element is the last one and doesn't have its right neighbour
+CAMusElement *CAStaff::next( CAMusElement *elt ) {
+	for ( int i=0; i<voiceCount(); i++ ) {	// go through all the voices and check, if any of them includes the given element
+		if ( voiceAt(i)->contains(elt) ) {
+			return voiceAt(i)->next(elt);
 		}
 	}
 	
-	return 0;	//the element doesn't exist in any of the voices, return 0
+	return 0;	// the element doesn't exist in any of the voices, return 0
 }
 
 /*!
-	Returns the pointer to the element right before the given \a elt.
+	Returns the pointer to the element right before the given \a elt in any of the voice.
 	
-	\sa findNextMusElement()
+	\sa previous()
 */
-CAMusElement *CAStaff::findPrevMusElement(CAMusElement *elt) {
-	int idx;
-	
-	for (int i=0; i<_voiceList.size(); i++) {	//go through all the voices and check, if anyone of them includes the given element
-		if ((idx = _voiceList[i]->indexOf(elt)) != -1) {
-			if (--idx > -1)
-				return _voiceList[i]->musElementAt(idx); //return the pointer of the previous element
-			else
-				return 0;	//or 0, if the element is the first one and doesn't have its left neighbour
+CAMusElement *CAStaff::previous( CAMusElement *elt ) {
+	for ( int i=0; i<voiceCount(); i++ ) {	// go through all the voices and check, if any of them includes the given element
+		if ( voiceAt(i)->contains(elt) ) {
+			return voiceAt(i)->previous(elt);
 		}
 	}
 	
-	return 0;	//the element doesn't exist in any of the voices, return 0
+	return 0;	// the element doesn't exist in any of the voices, return 0
 }
 
 /*!
-	Finds the voice names \a name and returns its pointer.
+	Removes the element \a elt.
+	Eventually does the same as CAVoice::remove(), but checks for any voices present in the staff.
 */
-CAVoice *CAStaff::voice(const QString name) {
+bool CAStaff::remove( CAMusElement *elt ) {
+	if ( !elt || !voiceCount() )
+		return false;
+	
+	return voiceAt(0)->remove(elt);
+}
+
+/*!
+	Returns a voice named \a name or Null, if such a voice doesn't exist.
+*/
+CAVoice *CAStaff::voiceByName(const QString name) {
 	for (int i=0; i<_voiceList.size(); i++)
 		if (_voiceList[i]->name() == name)
 			return _voiceList[i];
@@ -334,43 +263,122 @@ QList<CAPlayable*> CAStaff::getChord(int time) {
 }
 
 /*!
-	Checks and fixes, if any of the voices include signs (key sigs, clefs etc.) which aren't
-	present in other voices.
+	Fixes voices inconsistency:
+	1) If any of the voices include signs (key sigs, clefs etc.) which aren't present in all voices,
+	   add that sign to all the voices.
+	2) If a voice includes a sign which overlaps a playable element in other voice, insert rests until
+	   the sign is moved at the end of the overlapped chord in all voices.
+	3) If a voice elements are not linear (every N-th element's timeEnd should be N+1-th element's timeStart)
+	   inserts rests to achieve linearity.
 	
-	Returns true, if everything was ok. False, if fixes were needed.
+	Synchronizing voices is relatively slow (O(n*m) where n is number of voices and m number of elements
+	in voice n). This was the main reason to not automate the synchronization: import filters use lots of
+	insertions and synchronization of the voices every time a new element is inserted would considerably
+	slow down the import filter.
+	
+	Returns True, if everything was ok. False, if fixes were needed.
 */
-bool CAStaff::fixVoiceErrors() {
-	QList<CAMusElement *> signsNeeded;
-	QList<CAMusElement *> prevSignsNeeded;	// list of music elements before that sign in that voice
-	QList<CAMusElement *> signsIncluded[voiceCount()];
+bool CAStaff::synchronizeVoices() {
+	int idx[voiceCount()];                    for (int i=0; i<voiceCount(); i++) idx[i]=-1;          // array of current indices of voices at current timeStart
+	CAMusElement *lastPlayable[voiceCount()]; for (int i=0; i<voiceCount(); i++) lastPlayable[i]=0;
 	
-	for (int i=0; i<voiceCount(); i++) {
-		QList<CAMusElement*> list = _voiceList[i]->musElementList();
-		for (int j=0; j<list.size(); j++) {
-			if (!list[j]->isPlayable()) {
-				signsIncluded[i] << list[j];	// add the current sign to voice's included list
-				if (!signsNeeded.contains(list[j])) {
-					signsNeeded << list[j];	// add the current sign to others voices needed list
-					prevSignsNeeded << _voiceList[i]->eltBefore(list[j]);
+	QList<CAMusElement*> sharedList; // list of shared music elements having the same time-start sorted by voice number
+	int timeStart = 0, shortestTime;
+	bool done = false;
+	bool changesMade = false;
+	
+	while (!done) {
+		// gather shared elements into sharedList and remove them from the voice at new timeStart
+		for ( int i=0; i<voiceCount(); i++ ) {
+			// don't increase idx[i], if the next element is not-playable
+			while ( idx[i] < voiceAt(i)->musElementList().size()-1 && !voiceAt(i)->musElementList()[idx[i]+1]->isPlayable() && ( voiceAt(i)->musElementList()[idx[i]+1]->timeStart() == timeStart )) {
+				if ( !sharedList.contains(voiceAt(i)->musElementList()[ idx[i]+1 ]) )
+					sharedList << voiceAt(i)->musElementList()[ idx[i]+1 ];
+				voiceAt(i)->musElementList().removeAt( idx[i]+1 );
+			}
+		}
+		
+		// insert all elements from sharedList into all voices
+		// OR increase idx[i] for 1 in all voices, if their new element is playable and new timeStart is correct
+		if ( sharedList.size() ) {
+			for ( int i=0; i<voiceCount(); i++ ) {
+				for ( int j=0; j<sharedList.size(); j++) {
+					voiceAt(i)->musElementList().insert( idx[i]+1+j, sharedList[j] );
+				}
+				idx[i]++; // jump to the first one inserted from the sharedList
+			}
+		} else {
+			for ( int i=0; i<voiceCount(); i++ ) {
+				if ( idx[i] < voiceAt(i)->musElementList().size()-1 && ( voiceAt(i)->musElementList()[idx[i]+1]->timeStart() == timeStart ) ) {
+					if ( voiceAt(i)->musElementList()[idx[i]+1]->isPlayable() ) {
+						idx[i]++;
+						lastPlayable[i] = voiceAt(i)->musElementList()[idx[i]];
+					}
 				}
 			}
 		}
-	}
-	
-	bool everythingIncluded = true;
-	for (int i=0; i<signsNeeded.size(); i++) {
-		for (int j=0; j<voiceCount(); j++) {
-			if (!signsIncluded[j].contains(signsNeeded[i])) {
-				everythingIncluded = false;
-/*				if (prevSignsNeeded[i] && (!prevSignsNeeded[i]->isPlayable()))
-					_voiceList[j]->insertMusElementAfter(signsNeeded[i], prevSignsNeeded[i]);
-				else*/
-					_voiceList[j]->insertMusElement(signsNeeded[i]);
+		
+		// if the shared element overlaps any of the chords in other voices, insert rests (shift the shared sign forward) to that voice
+		for (int i=0; i<voiceCount(); i++) {
+			if ( idx[i]==-1 || voiceAt(i)->musElementList()[idx[i]]->isPlayable() ) // only legal idx[i] and non-playable elements
+				continue;
+			
+			for (int j=0; j<voiceCount(); j++) {
+				if (i==j) continue;
+				
+				// fix the overlapped chord, rests are inserted in non-linear part
+				if ( idx[j] != -1 && lastPlayable[j] && lastPlayable[j]->timeStart() < timeStart && lastPlayable[j]->timeEnd() > timeStart ) {
+					voiceAt(i)->musElementList()[idx[i]]->setTimeStart( lastPlayable[j]->timeEnd() );
+					voiceAt(i)->updateTimes( idx[i]+1, lastPlayable[j]->timeEnd() - timeStart, true );
+					
+					changesMade = true;
+				}
 			}
 		}
+		
+		// if the elements times are not linear (every N-th element's timeEnd should be N+1-th timeStart), insert rests to achieve it
+		for (int j=0; j<voiceCount(); j++) {
+			// fix the non-linearity
+			if ( idx[j]!=-1 && !voiceAt(j)->musElementList()[idx[j]]->isPlayable() && voiceAt(j)->musElementList()[idx[j]]->timeStart()==timeStart
+			     && (lastPlayable[j]?lastPlayable[ j ]->timeEnd():0) < timeStart ) {
+				int gapLength = timeStart - ( (idx[j]==-1||!lastPlayable[j])?0:lastPlayable[ j ]->timeEnd() );
+				QList<CARest*> restList = CARest::composeRests( gapLength, (idx[j]==-1||!lastPlayable[j])?0:lastPlayable[ j ]->timeEnd(), voiceAt(j), CARest::Normal );
+				for ( int k=0; k < restList.size(); k++ )
+					voiceAt(j)->musElementList().insert( idx[j]++, restList[k] ); // insert the missing rests, rests are added in back, idx++
+				voiceAt(j)->updateTimes( idx[j], gapLength, false );              // increase playable timeStarts
+				lastPlayable[ j ] = restList.last();
+				changesMade = true;
+			}
+		}
+		
+		// jump to the last inserted from the sharedList
+		if ( sharedList.size() ) {
+			for ( int i=0; i<voiceCount(); i++ ) {
+				idx[i]+=sharedList.size()-1;
+			}
+			sharedList.clear();
+		}
+		
+		// shortest time is delta between the current elements and the nearest one in the future
+		shortestTime=-1;
+		
+		for ( int i=0; i<voiceCount(); i++ ) {
+			if ( idx[i] < voiceAt(i)->musElementList().size()-1 &&
+			     ( shortestTime==-1 ||
+			       voiceAt(i)->musElementList()[ idx[i]+1 ]->timeStart() - timeStart < shortestTime )
+			   )
+				shortestTime = voiceAt(i)->musElementList()[ idx[i]+1 ]->timeStart() - timeStart;
+		}
+		timeStart += (shortestTime!=-1?shortestTime:0); // increase timeStart
+		
+		// if all voices are at the end, finish
+		done = true;
+		for ( int i=0; i<voiceCount(); i++ )
+			if ( idx[i] < voiceAt(i)->musElementList().size()-1 )
+				done = false;
 	}
 	
-	return everythingIncluded;
+	return changesMade;
 }
 
 /*!

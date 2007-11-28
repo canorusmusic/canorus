@@ -167,8 +167,8 @@ void CASettingsDialog::buildPreviewSheet() {
 	_previewSheet = new CASheet( "", 0 );
 	_previewSheet->addStaff();
 	_previewSheet->staffAt(0)->addVoice( new CAVoice( "", _previewSheet->staffAt(0) ) );
-	_previewSheet->staffAt(0)->voiceAt(0)->appendMusElement( new CAClef( CAClef::Treble, _previewSheet->staffAt(0), 0 ) );
-	_previewSheet->staffAt(0)->voiceAt(0)->appendMusElement( new CATimeSignature( 2, 2, _previewSheet->staffAt(0), 0 ) );
+	_previewSheet->staffAt(0)->voiceAt(0)->append( new CAClef( CAClef::Treble, _previewSheet->staffAt(0), 0 ) );
+	_previewSheet->staffAt(0)->voiceAt(0)->append( new CATimeSignature( 2, 2, _previewSheet->staffAt(0), 0 ) );
 	_previewSheet->addStaff();
 	_previewSheet->staffAt(1)->addVoice( new CAVoice( "", _previewSheet->staffAt(0) ) );
 }

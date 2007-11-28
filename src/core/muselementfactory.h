@@ -11,9 +11,6 @@
 #define MUSELEMENTFACTORY_H_
 #include "core/barline.h"
 
-#include "drawable/drawablecontext.h"
-#include "drawable/drawablestaff.h"
-
 #include "core/staff.h"
 #include "core/muselement.h"
 #include "core/keysignature.h"
@@ -43,25 +40,25 @@ public:
 	inline void cloneMusElem() { mpoMusElement = mpoMusElement->clone(); }
 	
 	bool configureClef( CAStaff *staff, 
-	                    CAMusElement *left );
+	                    CAMusElement *right );
 	
 	bool configureKeySignature( CAStaff *staff, 
-	                            CAMusElement *left );
+	                            CAMusElement *right );
 	
 	bool configureTimeSignature( CAStaff *staff, 
-	                             CAMusElement *left );
+	                             CAMusElement *right );
 	
 	bool configureBarline( CAStaff *staff, 
-	                       CAMusElement *left );
+	                       CAMusElement *right );
 	
 	bool configureRest( CAVoice *voice,
-	                    CAMusElement *left );
+	                    CAMusElement *right );
 	
 	
-	bool configureNote( CAVoice *voice,
-	                    const QPoint coords,
-	                    CADrawableStaff *staff,  // needed because of the note collision determination
-	                    CADrawableMusElement *left // needed because of the note collision determination
+	bool configureNote( int pitch,
+	                    CAVoice *voice,
+	                    CAMusElement *right,
+	                    bool addToChord
 	                  );
 	
 	bool configureSlur( CAStaff *staff,

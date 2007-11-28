@@ -135,26 +135,26 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 						out() << playableLengthToLilyPond(note->playableLength(), note->dotted());
 					}
 					
-					lastNotePitch = note->chord().at(0)->pitch();
+					lastNotePitch = note->getChord().at(0)->pitch();
 					lastPlayableLength = note->playableLength();
 					lastPlayableDotted = note->dotted();
 				}
 				
 				// place slurs and phrasing slurs
 				if (!note->isPartOfTheChord() && note->slurStart() ||
-				    note->isPartOfTheChord() && note->isLastInTheChord() && note->chord().at(0)->slurStart() ) {
+				    note->isPartOfTheChord() && note->isLastInTheChord() && note->getChord().at(0)->slurStart() ) {
 					out() << "(";
 				}
 				if (!note->isPartOfTheChord() && note->slurEnd() ||
-				    note->isPartOfTheChord() && note->isLastInTheChord() && note->chord().at(0)->slurEnd() ) {
+				    note->isPartOfTheChord() && note->isLastInTheChord() && note->getChord().at(0)->slurEnd() ) {
 					out() << ")";
 				}
 				if (!note->isPartOfTheChord() && note->phrasingSlurStart() ||
-				    note->isPartOfTheChord() && note->isLastInTheChord() && note->chord().at(0)->phrasingSlurStart() ) {
+				    note->isPartOfTheChord() && note->isLastInTheChord() && note->getChord().at(0)->phrasingSlurStart() ) {
 					out() << "\\(";
 				}
 				if (!note->isPartOfTheChord() && note->phrasingSlurEnd() ||
-				    note->isPartOfTheChord() && note->isLastInTheChord() && note->chord().at(0)->phrasingSlurEnd() ) {
+				    note->isPartOfTheChord() && note->isLastInTheChord() && note->getChord().at(0)->phrasingSlurEnd() ) {
 					out() << "\\)";
 				}
 				

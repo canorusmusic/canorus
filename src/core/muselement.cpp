@@ -47,7 +47,7 @@ CAMusElement::CAMusElement(CAContext *context, int time, int length) {
 CAMusElement::~CAMusElement() {
 	// needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
 	if( context() && !isPlayable() )
-		context()->removeMusElement(this, false);
+		context()->remove( this );
 }
 
 /*!

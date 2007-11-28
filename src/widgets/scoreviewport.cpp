@@ -298,14 +298,16 @@ CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 }
 
 /*!
-	Returns a list of pointer to the drawable music elements at the given coordinates.
-	If multiple elements exist at the same coordinates, they are selected one by another if you click at the same coordinates multiple times.
-	If no elements are present at the coordinates, clear the selection.
+	Returns a list of pointers to the drawable music elements at the given coordinates.
+	
+	Multiple elements can exist at the same coordinates.
+	
+	If there is a currently selected voice, only elements belonging to this voice are selected.
 */
 QList<CADrawableMusElement*> CAScoreViewPort::musElementsAt(int x, int y) {
 	QList<CADrawableMusElement *> l = _drawableMList.findInRange(x,y);
 	for (int i=0; i<l.size(); i++)
-		if (!(l[i])->isSelectable())
+		if ( !l[i]->isSelectable() || selectedVoice() && l[i]->musElement() && l[i]->musElement()->isPlayable() && static_cast<CAPlayable*>(l[i]->musElement())->voice()!=selectedVoice() )
 			l.removeAt(i--);
 	
 	return l;
@@ -1167,7 +1169,8 @@ void CAScoreViewPort::startAnimationTimer() {
 }
 
 /*!
-	Selects the next music element in the current context or appends the next music element to the selection if \a append is True.
+	Selects the next music element in the current context (voice, if selectedVoice is set) or appends the next music element
+	to the selection, if \a append is True.
 	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
 	
 	This method is usually called when using the right arrow key.
@@ -1177,7 +1180,11 @@ CADrawableMusElement *CAScoreViewPort::selectNextMusElement( bool append ) {
 		return 0;
 	
 	CAMusElement *musElement = _selection.back()->musElement();
-	musElement = musElement->context()->findNextMusElement(musElement);
+	if ( selectedVoice() )
+		musElement = selectedVoice()->next(musElement);
+	else
+		musElement = musElement->context()->next(musElement);
+	
 	if (!musElement)
 		return 0;
 	
@@ -1188,7 +1195,8 @@ CADrawableMusElement *CAScoreViewPort::selectNextMusElement( bool append ) {
 }
 
 /*!
-	Selects the previous music element in the current context or appends the previous music element to the selection if \a append is True.
+	Selects the next music element in the current context (voice, if selectedVoice is set) or appends the next music element
+	to the selection, if \a append is True.
 	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
 	
 	This method is usually called when using the left arrow key.
@@ -1198,7 +1206,11 @@ CADrawableMusElement *CAScoreViewPort::selectPrevMusElement( bool append ) {
 		return 0;
 	
 	CAMusElement *musElement = _selection.front()->musElement();
-	musElement = musElement->context()->findPrevMusElement(musElement);
+	if ( selectedVoice() )
+		musElement = selectedVoice()->previous(musElement);
+	else
+		musElement = musElement->context()->previous(musElement);
+	
 	if (!musElement)
 		return 0;
 	
@@ -1325,7 +1337,7 @@ CASyllableEdit *CAScoreViewPort::createSyllableEdit( CADrawableMusElement *dMusE
 	
 	int xPos=dMusElt->xPos(), yPos=dlc->yPos(), width=100, height=dlc->height();
 	
-	CADrawableMusElement *dRight = findMElement( dlc->lyricsContext()->findNextMusElement( syllable ) );
+	CADrawableMusElement *dRight = findMElement( dlc->lyricsContext()->next( syllable ) );
 	if (dRight)
 		width = dRight->xPos() - dMusElt->xPos();
 	

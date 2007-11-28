@@ -13,69 +13,76 @@
 #include "core/muselement.h"
 #include "core/note.h"
 
-class CAStaff;
 class CAClef;
 class CALyricsContext;
 
 class CAVoice {
+	friend class CAStaff; // used for insertion of music elements and updateTimes() when inserting elements and synchronizing voices
+	
 public:
 	CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection=CANote::StemNeutral, int voiceNumber=0 );
 	~CAVoice();
 	inline CAStaff *staff() { return _staff; }
 	inline void setStaff(CAStaff *staff) { _staff = staff; }
 	void clear();
+	CAVoice *clone();
+	CAVoice *clone( CAStaff *newStaff );
+	void cloneVoiceProperties( CAVoice* v );
+
+	/////////////////////////////////////////
+	// Notes, rests and signs manipulation //
+	/////////////////////////////////////////
+	void append( CAMusElement *elt, bool addToChord=false );
+	bool insert( CAMusElement *before, CAMusElement *elt, bool addToChord=false );
+	bool remove( CAMusElement *elt );
 	
-	void insertMusElement(CAMusElement *elt, bool updateTimes=true);
-	
-	bool insertMusElementBefore(CAMusElement *elt, CAMusElement *eltAfter, bool updateTimes = true, bool force=false);
-	bool insertMusElementAfter(CAMusElement *elt, CAMusElement *eltBefore, bool updateTimes = true, bool force=false);
-	
-	bool appendMusElement(CAMusElement *elt);
-	bool prependMusElement(CAMusElement *elt);
-	
-	bool addNoteToChord(CANote *note, CANote *referenceNote);
-	bool removeElement(CAMusElement *elt);
-	
-	int voiceNumber() { return _voiceNumber; }
-	bool isFirstVoice() { return !_voiceNumber; }
-	void setVoiceNumber(int idx) { _voiceNumber = idx; }
-	
+	//////////////////////////////
+	// Voice analysis and query //
+	//////////////////////////////
 	int musElementCount() { return _musElementList.count(); }
 	CAMusElement *musElementAt(int i) { return _musElementList[i]; }
 	int indexOf(CAMusElement *elt) { return _musElementList.indexOf(elt); }
 	bool contains(CAMusElement *elt) { return _musElementList.contains(elt); }
 	
-	QList<CANote*> noteList();
-	CANote *findNextNote(int timeStart);
-	CANote *findPrevNote(int timeStart);
+	QList<CAMusElement*> getSignList();
+	QList<CANote*> getNoteList();
+	CANote *nextNote(int timeStart);
+	CANote *previousNote(int timeStart);
 	
 	QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
 	
 	bool containsPitch(int pitch, int startTime);
 	
-	QList<CAMusElement*> musElementList() { return _musElementList; }
+	QList<CAMusElement*>& musElementList() { return _musElementList; }
 	int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
 	int lastTimeStart() { return (_musElementList.size()?_musElementList.back()->timeStart():0); }
 	CAMusElement *lastMusElement() { return _musElementList.size()?_musElementList.back():0; }
-	CAMusElement *eltBefore(CAMusElement *elt);
-	CAMusElement *eltAfter(CAMusElement *elt);
+	CAMusElement *next(CAMusElement *elt);
+	CAMusElement *previous(CAMusElement *elt);
 	int lastNotePitch(bool inChord=false);
 	CAPlayable* lastPlayableElt();
 	CANote*     lastNote();
-	CAClef *getClef(CAMusElement *elt);
+	CAClef*            getClef(CAMusElement *elt);
 	QList<CAPlayable*> getChord(int time);
 	
-	CANote::CAStemDirection stemDirection() { return _stemDirection; }
-	void setStemDirection(CANote::CAStemDirection direction);
+	////////////////
+	// Properties //
+	////////////////
+	inline int voiceNumber() { return _voiceNumber; }
+	inline bool isFirstVoice() { return (_voiceNumber==1); }
+	inline void setVoiceNumber(int nr) { _voiceNumber = nr; }
+
+	inline CANote::CAStemDirection stemDirection() { return _stemDirection; }
+	inline void setStemDirection( CANote::CAStemDirection direction ) { _stemDirection = direction; }
 	
-	const QString name() { return _name; }
-	void setName(const QString name) { _name = name; }
+	inline const QString name() { return _name; }
+	inline void setName(const QString name) { _name = name; }
 	
-	unsigned char midiChannel() { return _midiChannel; }
-	void setMidiChannel(const unsigned char ch) { _midiChannel = ch; }
+	inline unsigned char midiChannel() { return _midiChannel; }
+	inline void setMidiChannel(const unsigned char ch) { _midiChannel = ch; }
 	
-	unsigned char midiProgram() { return _midiProgram; }
-	void setMidiProgram(const unsigned char program) { _midiProgram = program; }
+	inline unsigned char midiProgram() { return _midiProgram; }
+	inline void setMidiProgram(const unsigned char program) { _midiProgram = program; }
 	
 	inline QList<CALyricsContext*> lyricsContextList() { return _lyricsContextList; }
 	inline void addLyricsContext( CALyricsContext *lc ) { _lyricsContextList << lc; }
@@ -83,15 +90,11 @@ public:
 	inline void addLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList += list; }
 	inline bool removeLyricsContext( CALyricsContext *lc ) { return _lyricsContextList.removeAll(lc); }
 	
-	bool updateTimes( CAMusElement *elt, bool nonPlayable, int length=0 );
-	bool updateTimesAfter( CAMusElement *eltBefore, bool nonPlayable, int length );
-	
-	CAVoice *clone();
-	CAVoice *clone( CAStaff *newStaff );
-	void cloneVoiceProperties( CAVoice* v );
-	
 private:
-	void updateTimes( int idx, bool nonPlayable, int length=0 );
+	bool addNoteToChord(CANote *note, CANote *referenceNote);
+	bool insertMusElement( CAMusElement *before, CAMusElement *elt );
+	bool updateTimes( int idx, int length, bool signsToo=false );
+	
 	QList<CAMusElement *> _musElementList;
 	CAStaff *_staff; // parent staff
 	int _voiceNumber; // voice number starting at 1

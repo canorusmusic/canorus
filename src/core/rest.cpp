@@ -95,7 +95,7 @@ QList<CARest*> CARest::composeRests(int timeLength, int timeStart, CAVoice* voic
 	
 	for ( int i = 0, TL=2048; i<256; (i?i*=2:i++), TL/=2 ) {
 		if ( TL <= timeLength) {
-			list.prepend( new CARest( type, static_cast<CAPlayableLength>( i ), voice, timeStart ) );
+			list << new CARest( type, static_cast<CAPlayableLength>( i ), voice, timeStart );
 			timeLength -= TL;
 			timeStart += TL;
 		}
