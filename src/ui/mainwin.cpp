@@ -1630,7 +1630,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		
 		case Qt::Key_Delete:
 		case Qt::Key_Backspace:
-			deleteSelection( v, e->modifiers()==Qt::ShiftModifier, true );
+			deleteSelection( v, e->modifiers()==Qt::ShiftModifier, e->modifiers()==Qt::ShiftModifier, true );
 			break;
 		
 		// Mode keys
@@ -1813,10 +1813,44 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 		case CAMusElement::Rest: {
 			int iVoiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
 			CAVoice *voice = 0;
+			
+			CADrawableMusElement *left = v->nearestLeftElement( coords.x(), coords.y(), voice ); // use nearestLeft search because it searches left borders
+			CADrawableMusElement *dright = v->nearestRightElement( coords.x(), coords.y(), voice );
+			
 			if (staff)
 				voice = staff->voiceAt( iVoiceNum );
-			if (voice)
-				success = musElementFactory()->configureRest( voice, right );
+			
+			if (voice) {
+				if ( left && left->musElement() && left->musElement()->musElementType() == CAMusElement::Rest &&
+				     left->xPos() <= coords.x() && (left->width() + left->xPos() >= coords.x()) ) {
+					
+					// user clicked inside x borders of the rest - replace the rest/rests with the new rest
+					
+					int timeSum = left->musElement()->timeLength();
+					int timeLength = CAPlayable::playableLengthToTimeLength( musElementFactory()->playableLength(), musElementFactory()->playableDotted() );
+					CAMusElement *next;
+					while ( (next=voice->next(left->musElement())) &&
+					        next->musElementType() == CAMusElement::Rest &&
+					        timeSum < timeLength ) {
+						voice->remove(next);
+						timeSum += next->timeLength();
+					}
+					
+					voice->remove( left->musElement() );
+					
+					if (timeSum - timeLength > 0) {
+						// we removed too many rests - insert the delta of the missing rests
+						QList<CARest*> rests = CARest::composeRests( timeSum - timeLength, next?next->timeStart():voice->lastTimeEnd(), voice, CARest::Normal );
+						for (int i=0; i<rests.size(); i++)
+							voice->insert(next, rests[i]);
+						next = rests[0];
+					}
+					
+					success = musElementFactory()->configureRest( voice, next );
+				} else {
+					success = musElementFactory()->configureRest( voice, right );
+				}
+			}
 			if (success)
 				v->setShadowNoteDotted( musElementFactory()->playableDotted() );
 			break;
@@ -3330,7 +3364,7 @@ void CAMainWin::on_uiCut_triggered() {
 	if ( currentScoreViewPort() ) {
 		CACanorus::undo()->createUndoCommand( document(), tr("cut", "undo") );
 		copySelection( currentScoreViewPort() );
-		deleteSelection( currentScoreViewPort(), false, false ); // and don't make undo as we already make it
+		deleteSelection( currentScoreViewPort(), false, true, false ); // and don't make undo as we already make it
 		CACanorus::undo()->pushUndoCommand();
 	}	
 }
@@ -3362,9 +3396,14 @@ void CAMainWin::copySelection( CAScoreViewPort *v ) {
 }
 
 /*!
-	Backend for Delete.
+	Delete action.
+	
+	If \a deleteSyllables or \a deleteNotes is True, it completely removes the element.
+	Otherwise it only replaces it with rest.
+	
+	If \a doUndo is True, it also creates undo. doUndo should be False when cutting.
 */
-void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool doUndo ) {
+void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool deleteNotes, bool doUndo ) {
 	if ( v->selection().size() ) {
 		if (doUndo)
 			CACanorus::undo()->createUndoCommand( document(), tr("deletion of elements", "undo") );
@@ -3396,13 +3435,20 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool d
 					}
 					note->voice()->staff()->synchronizeVoices();
 				}
+				
+				if ( !deleteNotes ) {
+					QList<CARest*> rests = CARest::composeRests( note->timeLength(), note->timeStart(), note->voice(), CARest::Normal );
+					for (int i=0; i<rests.size(); i++)
+						note->voice()->insert( note, rests[i] );
+				}
+				
 				note->voice()->remove( note );
 				delete note;
 			} else if ((*i)->musElementType()==CAMusElement::Rest) {
 				static_cast<CARest*>(*i)->voice()->staff()->synchronizeVoices();
 				delete *i;				
 			} else if ((*i)->musElementType()==CAMusElement::Syllable) {
-				if ( deleteSyllable ) {
+				if ( deleteSyllables ) {
 					CALyricsContext *lc = static_cast<CALyricsContext*>((*i)->context()); 
 					(*i)->context()->remove(*i);  // actually removes the syllable if SHIFT is pressed
 					lc->repositSyllables();
@@ -3410,7 +3456,7 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool d
 					static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
 				}
 			} else if ((*i)->musElementType()==CAMusElement::FunctionMarking) {
-				if ( deleteSyllable ) {
+				if ( deleteSyllables ) {
 					CAFunctionMarkingContext *fmc = static_cast<CAFunctionMarkingContext*>((*i)->context()); 
 					(*i)->context()->remove(*i);  // actually removes the function if SHIFT is pressed
 					fmc->repositFunctions();

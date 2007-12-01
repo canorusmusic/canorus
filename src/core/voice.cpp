@@ -166,17 +166,28 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 	
 	bool res;
 	if ( !elt->isPlayable() ) {
-		// insert sign
+		
+		// insert a sign
 		
 		elt->setTimeStart( eltAfter?eltAfter->timeStart():lastTimeEnd() );
 		res = insertMusElement( eltAfter, elt );
 		
+		// calculate note positions in staff when inserting a new clef
+		if ( elt->musElementType()==CAMusElement::Clef ) {
+			for ( int i=musElementList().indexOf(elt)+1; i < musElementCount(); i++ ) {
+				if ( musElementList()[i]->musElementType()==CAMusElement::Note )
+					static_cast<CANote*>(musElementList()[i])->setPitch( static_cast<CANote*>(musElementList()[i])->pitch() );
+			}
+		}
+		
 	} else if ( elt->musElementType()==CAMusElement::Note && eltAfter && eltAfter->musElementType()==CAMusElement::Note && addToChord ) {
+		
 		// add a note to chord
 		
 		res = addNoteToChord( static_cast<CANote*>(elt), static_cast<CANote*>(eltAfter) );
 		
 	} else {
+		
 		// insert a note somewhere in between, append or prepend
 		
 		elt->setTimeStart( eltAfter?eltAfter->timeStart():lastTimeEnd() );
