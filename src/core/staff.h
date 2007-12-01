@@ -42,7 +42,8 @@ public:
 	
 	CAMusElement *next( CAMusElement *elt );
 	CAMusElement *previous( CAMusElement *elt );
-	bool remove( CAMusElement *elt );
+	bool remove( CAMusElement *elt, bool updateSignTimes );
+	bool remove( CAMusElement *elt ) { return remove(elt, true); }
 	
 	int lastTimeEnd();
 	QList<CAMusElement*> getEltByType( CAMusElement::CAMusElementType type, int startTime );

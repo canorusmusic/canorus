@@ -1762,12 +1762,44 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			
 			if ( left && left->musElement() && left->musElement()->musElementType() == CAMusElement::Note &&
 			     left->xPos() <= coords.x() && (left->width() + left->xPos() >= coords.x()) ) {
+				
 				// user clicked inside x borders of the note - add a note to the chord
+				
 				if ( voice->containsPitch( drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart() ) )
-					break;	//user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
+					break;	// user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
 				
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, left->musElement(), true );
+			} else
+			if ( left && left->musElement() && left->musElement()->musElementType() == CAMusElement::Rest &&
+			     left->xPos() <= coords.x() && (left->width() + left->xPos() >= coords.x()) ) {
+				
+				// user clicked inside x borders of the rest - replace the rest/rests with the note
+				
+				int timeSum = left->musElement()->timeLength();
+				int timeLength = CAPlayable::playableLengthToTimeLength( musElementFactory()->playableLength(), musElementFactory()->playableDotted() );
+				CAMusElement *next;
+				while ( (next=voice->next(left->musElement())) &&
+				        next->musElementType() == CAMusElement::Rest &&
+				        timeSum < timeLength ) {
+					voice->remove(next);
+					timeSum += next->timeLength();
+				}
+				
+				voice->remove( left->musElement() );
+				
+				if (timeSum - timeLength > 0) {
+					// we removed too many rests - insert the delta of the missing rests
+					QList<CARest*> rests = CARest::composeRests( timeSum - timeLength, next?next->timeStart():voice->lastTimeEnd(), voice, CARest::Normal );
+					for (int i=0; i<rests.size(); i++)
+						voice->insert(next, rests[i]);
+					next = rests[0];
+				}
+				
+				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, next, false );
 			} else {
+				
+				// user clicked outside x borders of the note or rest
+				
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, dright?dright->musElement():0, false );
 			}
 			
