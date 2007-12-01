@@ -207,6 +207,9 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 	Removes the given music element \a elt from this voice, if the element is playable or from
 	all the voices in the staff, if non-playable and part of the staff.
 	
+	If \a updateSigns is True, startTimes of elements after the removed one are decreased
+	including the shared signs. Otherwise only timeStarts for playable elements are effected.
+	
 	\warning This function doesn't destroy the object, but only removes its
 	reference in the voice.
 	
@@ -215,7 +218,7 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 	
 	Returns true, if the element was found and removed; otherwise false.
 */
-bool CAVoice::remove( CAMusElement *elt ) {
+bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 	if ( _musElementList.contains(elt) ) {	// if the search element is found
 		if ( !elt->isPlayable() && staff() ) {          // element is shared - remove it from all the voices
 			for (int i=0; i<staff()->voiceCount(); i++) {
@@ -238,7 +241,7 @@ bool CAVoice::remove( CAMusElement *elt ) {
 				}
 			}
 			
-			updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1) ); // shift back timeStarts of playable elements after it
+			updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
 			musElementList().removeAll(elt);          // removes the element from the voice music element list
 		}
 		

@@ -43,8 +43,10 @@ public:
 	
 	int setDotted(int dotted);
 	
-	static const QString playableLengthToString(CAPlayableLength length);
-	static CAPlayableLength playableLengthFromString(const QString length);
+	static const QString playableLengthToString( CAPlayableLength length );
+	static CAPlayableLength playableLengthFromString( const QString length );
+	
+	static const int playableLengthToTimeLength( CAPlayableLength length, int dotted=0 );
 	
 protected:
 	int _dotted;

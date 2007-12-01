@@ -206,14 +206,17 @@ CAMusElement *CAStaff::previous( CAMusElement *elt ) {
 }
 
 /*!
-	Removes the element \a elt.
+	Removes the element \a elt. Updates timeStarts for elements after the given element.
+	
+	Also updates non-playable shared signs after the element, if \a updateSignTimes is True.
+	
 	Eventually does the same as CAVoice::remove(), but checks for any voices present in the staff.
 */
-bool CAStaff::remove( CAMusElement *elt ) {
+bool CAStaff::remove( CAMusElement *elt, bool updateSignTimes ) {
 	if ( !elt || !voiceCount() )
 		return false;
 	
-	return voiceAt(0)->remove(elt);
+	return voiceAt(0)->remove( elt, updateSignTimes);
 }
 
 /*!
@@ -342,7 +345,7 @@ bool CAStaff::synchronizeVoices() {
 			if ( idx[j]!=-1 && !voiceAt(j)->musElementList()[idx[j]]->isPlayable() && voiceAt(j)->musElementList()[idx[j]]->timeStart()==timeStart
 			     && (lastPlayable[j]?lastPlayable[ j ]->timeEnd():0) < timeStart ) {
 				int gapLength = timeStart - ( (idx[j]==-1||!lastPlayable[j])?0:lastPlayable[ j ]->timeEnd() );
-				QList<CARest*> restList = CARest::composeRests( gapLength, (idx[j]==-1||!lastPlayable[j])?0:lastPlayable[ j ]->timeEnd(), voiceAt(j), CARest::Normal );
+				QList<CARest*> restList = CARest::composeRests( gapLength, (idx[j]==-1||!lastPlayable[j])?0:lastPlayable[ j ]->timeEnd(), voiceAt(j) );
 				for ( int k=0; k < restList.size(); k++ )
 					voiceAt(j)->musElementList().insert( idx[j]++, restList[k] ); // insert the missing rests, rests are added in back, idx++
 				voiceAt(j)->updateTimes( idx[j], gapLength, false );              // increase playable timeStarts
