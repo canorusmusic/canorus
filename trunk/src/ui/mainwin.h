@@ -68,7 +68,7 @@ public:
 	void removeSheet(CASheet *s);
 	void insertMusElementAt( const QPoint coords, CAScoreViewPort *v );
 	void restartTimeEditedTime() { _timeEditedTime = 0; };
-	void deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool undo );
+	void deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool deleteNotes, bool undo );
 	void copySelection( CAScoreViewPort *v );
 	void pasteAt( const QPoint coords, CAScoreViewPort *v );
 	
