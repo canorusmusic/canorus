@@ -1638,7 +1638,11 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						} else {
 							p->staff()->synchronizeVoices();
 						}
-
+						
+						for (int j=0; j<p->voice()->lyricsContextList().size(); j++) { // reposit syllables
+							p->voice()->lyricsContextList().at(j)->repositSyllables();
+						}
+						
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), p->staff()->sheet());
 					}
@@ -2435,7 +2439,6 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 					for (int i=1; i<chord.size(); i++) {
 						p->voice()->insert( chord[0], chord[i], true );
 					}
-					
 				} else if ( p->musElementType()==CAMusElement::Rest ) {
 					next = p->voice()->next(p);
 					p->voice()->remove(p);
@@ -2450,6 +2453,10 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 					}
 				} else {
 					p->staff()->synchronizeVoices();
+				}
+				
+				for (int j=0; j<p->voice()->lyricsContextList().size(); j++) { // reposit syllables
+					p->voice()->lyricsContextList().at(j)->repositSyllables();
 				}
 			}
 		}
@@ -3490,7 +3497,7 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 			if ((*i)->musElementType()==CAMusElement::Note ||
 			    (*i)->musElementType()==CAMusElement::Rest) {
 				CAPlayable *p = static_cast<CAPlayable*>(*i);
-				if ( !dynamic_cast<CANote*>(p) || !static_cast<CANote*>(p)->isPartOfTheChord()) {
+				if ( !dynamic_cast<CANote*>(p) || !static_cast<CANote*>(p)->isPartOfTheChord() ) {
 					// find out the status of the rests in other voices
 					QList<CAPlayable*> chord = p->staff()->getChord( p->timeStart() );
 					int i;
@@ -3514,10 +3521,11 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 							CASyllable *removedSyllable =
 								p->voice()->lyricsContextList().at(j)->syllableAtTimeStart(p->timeStart());
 							p->voice()->lyricsContextList().at(j)->remove(removedSyllable);
+							
 							musElemSet.remove(removedSyllable);
 						}
 					} else {
-						// actually remove the note and shift other elements back if only rests in other voices present
+						// actually remove the note or rest and shift other elements back if only rests in other voices present
 						for (i=0; i<chord.size(); i++) {              // remove any rests from other voices
 							if ( chord[i]->voice()!=p->voice() ) {
 								musElemSet.remove( chord[i] );
@@ -3528,13 +3536,17 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 						for (int j=0; j<p->voice()->lyricsContextList().size(); j++) { // remove and shift syllables
 							CASyllable *removedSyllable =
 								p->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(p->timeStart());
-							musElemSet.remove(removedSyllable);
+							if (removedSyllable) // note was removed
+								p->voice()->lyricsContextList().at(j)->remove(removedSyllable);
 						}
 					}
 				}
 				
 				p->voice()->remove( p, true );
-				delete p; // also removes it from the voice
+				for (int j=0; j<p->voice()->lyricsContextList().size(); j++) {
+					p->voice()->lyricsContextList().at(j)->repositSyllables();					
+				}
+				delete p;
 			} else if ((*i)->musElementType()==CAMusElement::Syllable) {
 				if ( deleteSyllables ) {
 					CALyricsContext *lc = static_cast<CALyricsContext*>((*i)->context()); 
