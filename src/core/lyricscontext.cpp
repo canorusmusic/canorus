@@ -133,7 +133,7 @@ CAMusElement* CALyricsContext::previous( CAMusElement* elt ) {
 	Removes the given syllable from the list.
 */
 bool CALyricsContext::remove( CAMusElement* elt ) {
-	if (elt->musElementType()!=CAMusElement::Syllable)
+	if (!elt || elt->musElementType()!=CAMusElement::Syllable)
 		return false;
 	
 	bool success=false;
