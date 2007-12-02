@@ -1606,19 +1606,41 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			} else if (mode()==EditMode) {
 				if (!((CAScoreViewPort*)v)->selection().isEmpty()) {
 					CACanorus::undo()->createUndoCommand( document(), tr("set dotted", "undo") );
-					CAMusElement *elt = currentScoreViewPort()->selection().front()->musElement();
+					CAPlayable *p = dynamic_cast<CAPlayable*>(currentScoreViewPort()->selection().front()->musElement());
 					
-					if (elt->isPlayable()) {
-						if (elt->musElementType()==CAMusElement::Note) {
-							for (int i=0; i<static_cast<CANote*>(elt)->getChord().size(); i++) {
-								static_cast<CANote*>(elt)->getChord().at(i)->setDotted( (static_cast<CAPlayable*>(elt)->dotted()+1)%4 );
+					if (p) {
+						CAMusElement *next=0;
+						int oldLength = p->timeLength();
+						if ( p->musElementType()==CAMusElement::Note ) {                   // change the length of the whole chord
+							QList<CANote*> chord = static_cast<CANote*>(p)->getChord();
+							for (int i=0; i<chord.size(); i++) {
+								next = p->voice()->next(p);
+								p->voice()->remove(chord[i]);
+								chord[i]->setDotted( (p->dotted()+1)%4 );
 							}
-						} else if (elt->musElementType()==CAMusElement::Rest)
-							static_cast<CAPlayable*>(elt)->setDotted( (static_cast<CAPlayable*>(elt)->dotted()+1)%4 );
-						 
-						static_cast<CAPlayable*>(elt)->voice()->staff()->synchronizeVoices();
+							p->voice()->insert( next, chord[0], false );
+							for (int i=1; i<chord.size(); i++) {
+								p->voice()->insert( chord[0], chord[i], true );
+							}
+						} else if ( p->musElementType()==CAMusElement::Rest ) {
+							next = p->voice()->next(p);
+							p->voice()->remove(p);
+							p->setDotted( (p->dotted()+1)%4 );
+							p->voice()->insert( next, p );
+						}
+						
+						int newLength = p->timeLength();
+						if (newLength<oldLength) { // insert rests, if the new length is shorter to keep consistency
+							QList<CARest*> rests = CARest::composeRests( oldLength - newLength, p->timeStart()+p->timeLength(), p->voice(), CARest::Normal );
+							for (int i=rests.size()-1; i>=0; i--) {
+								p->voice()->insert( next, rests[i] ); // insert rests from shortest to longest
+							}
+						} else {
+							p->staff()->synchronizeVoices();
+						}
+
 						CACanorus::undo()->pushUndoCommand();
-						CACanorus::rebuildUI(document(), elt->context()->sheet());
+						CACanorus::rebuildUI(document(), p->staff()->sheet());
 					}
 				}
 			}
@@ -1787,7 +1809,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				if (timeSum - timeLength > 0) {
 					// we removed too many rests - insert the delta of the missing rests
 					QList<CARest*> rests = CARest::composeRests( timeSum - timeLength, next?next->timeStart():voice->lastTimeEnd(), voice, CARest::Normal );
-					for (int i=0; i<rests.size(); i++)
+					for (int i=rests.size()-1; i>=0; i--)
 						voice->insert(next, rests[i]);
 					next = rests[0];
 				}
@@ -1836,7 +1858,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				if (timeSum - timeLength > 0) {
 					// we removed too many rests - insert the delta of the missing rests
 					QList<CARest*> rests = CARest::composeRests( timeSum - timeLength, next?next->timeStart():voice->lastTimeEnd(), voice, CARest::Normal );
-					for (int i=0; i<rests.size(); i++)
+					for (int i=rests.size()-1; i>=0; i--)
 						voice->insert(next, rests[i]);
 					next = rests[0];
 				}
@@ -2387,8 +2409,55 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 	CAPlayable::CAPlayableLength length =
 		static_cast<CAPlayable::CAPlayableLength>(buttonId);
 		
-	// New note length type
-	musElementFactory()->setPlayableLength( length );
+	if ( mode()==InsertMode ) {
+		// New note length type
+		musElementFactory()->setPlayableLength( length );
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("change playable length", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAPlayable *p = dynamic_cast<CAPlayable*>( v->selection().at(i)->musElement() );
+			
+			if (p) {
+				CAMusElement *next=0;
+				int oldLength = p->timeLength();
+				int newLength = CAPlayable::playableLengthToTimeLength( length );
+				if ( p->musElementType()==CAMusElement::Note ) {                   // change the length of the whole chord
+					QList<CANote*> chord = static_cast<CANote*>(p)->getChord();
+					for (int i=0; i<chord.size(); i++) {
+						next = p->voice()->next(p);
+						p->voice()->remove(chord[i]);
+						chord[i]->setPlayableLength( length );
+					}
+					p->voice()->insert( next, chord[0], false );
+					for (int i=1; i<chord.size(); i++) {
+						p->voice()->insert( chord[0], chord[i], true );
+					}
+					
+				} else if ( p->musElementType()==CAMusElement::Rest ) {
+					next = p->voice()->next(p);
+					p->voice()->remove(p);
+					p->setPlayableLength( length );
+					p->voice()->insert( next, p );
+				}
+				
+				if (newLength<oldLength) { // insert rests, if the new length is shorter to keep consistency
+					QList<CARest*> rests = CARest::composeRests( oldLength - newLength, p->timeStart()+p->timeLength(), p->voice(), CARest::Normal );
+					for (int i=rests.size()-1; i>=0; i--) {
+						p->voice()->insert( next, rests[i] ); // insert rests from shortest to longest
+					}
+				} else {
+					p->staff()->synchronizeVoices();
+				}
+			}
+		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+
 }
 
 /*!
@@ -2561,7 +2630,6 @@ void CAMainWin::on_uiFMEllipse_toggled( bool checked ) {
 		CACanorus::rebuildUI( document(), currentSheet() );
 	}
 }
-
 
 void CAMainWin::on_uiSlurType_toggled( bool checked, int buttonId ) {
 	// remember previous muselement type so we can return to previous state after
@@ -3214,7 +3282,6 @@ void CAMainWin::updateInsertToolBar() {
 */
 void CAMainWin::updatePlayableToolBar() {
 	if ( uiInsertPlayable->isChecked() && mode()==InsertMode ) {
-		uiPlayableLength->defaultAction()->setEnabled(true);
 		uiPlayableLength->setCurrentId( musElementFactory()->playableLength() );
 		uiNoteStemDirection->setCurrentId( musElementFactory()->noteStemDirection() );
 		uiHiddenRest->setEnabled(true);
@@ -3225,7 +3292,6 @@ void CAMainWin::updatePlayableToolBar() {
 		if (v && v->selection().size()) {
 			CAPlayable *playable = dynamic_cast<CAPlayable*>(v->selection().at(0)->musElement());
 			if (playable) {
-				uiPlayableLength->defaultAction()->setEnabled(false);
 				uiPlayableLength->setCurrentId( playable->playableLength() );
 				if (playable->musElementType()==CAMusElement::Note) {
 					CANote *note = static_cast<CANote*>(playable);
@@ -3438,7 +3504,7 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 							break;
 					}
 					
-					if ( !deleteNotes || i!=chord.size() ) {
+					if ( p->musElementType()==CAMusElement::Note && !deleteNotes || i!=chord.size() ) {
 						// replace note with rest
 						QList<CARest*> rests = CARest::composeRests( p->timeLength(), p->timeStart(), p->voice(), CARest::Normal );
 						for (int i=0; i<rests.size(); i++)
