@@ -144,7 +144,6 @@ bool CALyricsContext::remove( CAMusElement* elt ) {
 
 /*!
 	Removes the syllable at the given \a timeStart and updates the timeStarts for syllables after it.
-	Also deletes the object itself, if \a autoDelete is set.
 	This function is usually called when removing the note.
 	
 	Returns True if the syllable was found and removed; False otherwise.

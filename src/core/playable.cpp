@@ -14,13 +14,13 @@
 	\brief Playable instances of music elements.
 	
 	CAPlayable class represents a base class for all the music elements which are
-	playable (_timeLength property is greater than 0). It brings other properties
+	playable (timeLength property is greater than 0). It also adds other properties
 	like the music length (whole, half, quarter etc.), number of dots and instead
 	of contexts, playable elements voices for their parent objects.
 	
 	Notes and rests inherit this class.
 	
-	\sa CAMusElement, CAPlayableType
+	\sa CAMusElement, CAPlayableLength
 */
 
 /*!
@@ -32,17 +32,21 @@
 CAPlayable::CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, int dotted)
  : CAMusElement(voice?voice->staff():0, timeStart, 0) {
 	setVoice( voice );
-	setPlayableLength( length );	
+	_playableLength = length;	
 	_dotted = dotted;
-	setTimeLength( playableLengthToTimeLength(length, dotted) );
+	calculateTimeLength();
 }
 
 /*!
 	Destroys the playable element.
+	
+	The element is removed from any voice, if part of.
+	
+	\note Non-playable signs are not shifted back when removing the element from the voice. 
 */
 CAPlayable::~CAPlayable() {
 	if (voice())
-		voice()->remove( this );
+		voice()->remove( this, false );
 }
 
 void CAPlayable::setVoice(CAVoice *voice) {
@@ -50,25 +54,16 @@ void CAPlayable::setVoice(CAVoice *voice) {
 }
 
 /*!
-	Sets the playable element having \a dotted dots and returns the difference of the previous
-	and new time lengths in absolute time units.
+	Calculates the new timeLength depending on the playableLength and dotted properties.
 	
-	This function also sets the new timeLength.
+	This function is usually automatically called when changing these properties.
 	
-	\sa dotted()
+	\sa playableLength(), dotted()
 */
-int CAPlayable::setDotted(int dotted) {
-	// calculate the original note length
+void CAPlayable::calculateTimeLength() {
 	float factor = 1.0, delta=0.5;
-	for (int i=0; i<this->dotted(); i++, factor+=delta, delta/=2);
-	int origLength = (int)( timeLength() / factor );
-	
-	// calculate and set the new note length
-	_dotted = dotted;	
-	factor = 1.0, delta=0.5;
-	for (int i=0; i<dotted; i++, factor+=delta, delta/=2);                // calculate the length factor out of number of dots
-
-	return (_timeLength - (_timeLength = qRound(origLength * factor)))*-1; // return delta of the new and old timeLengths, set the new timeLength
+	for (int i=0; i < dotted(); i++, factor+=delta, delta/=2);
+	setTimeLength( qRound( playableLengthToTimeLength(playableLength()) * factor ) );
 }
 
 CAPlayable::CAPlayableLength CAPlayable::playableLengthFromString(const QString length) {
@@ -133,7 +128,7 @@ const QString CAPlayable::playableLengthToString(CAPlayableLength length) {
 }
 
 /*!
-	Converts internal enum playableLength to logical timeLength.
+	Converts internal enum playableLength to actual timeLength.
 */
 const int CAPlayable::playableLengthToTimeLength( CAPlayableLength length, int dotted ) {
 	int timeLength;

@@ -351,7 +351,7 @@ CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
 		
 		elt->drawableContext()->removeMElement(elt);
 		CAMusElement *mElt = elt->musElement();
-		delete elt;	//delete drawable instance
+		delete elt;	// delete drawable instance
 
 		return mElt;
 	}
@@ -393,9 +393,7 @@ void CAScoreViewPort::importCElements(CAKDTree<CADrawableContext*> *elts) {
 	Returns the nearest element in the current context only, if currentContext is true (default).
 */
 CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool currentContext) {
-	CADrawableMusElement *elt;
-	return ( (elt = _drawableMList.findNearestLeft(x, true, currentContext?_currentContext:0))?
-	         elt : 0);
+	return _drawableMList.findNearestLeft(x, true, currentContext?_currentContext:0);
 }
 
 /*!
@@ -404,9 +402,7 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool cur
 	Drawable elements left borders are taken into account. 
 */
 CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice *voice) {
-	CADrawableMusElement *elt;
-	return ( (elt = _drawableMList.findNearestLeft(x, true, 0, voice))?
-	         elt : 0);
+	return _drawableMList.findNearestLeft(x, true, 0, voice);
 }
 
 /*!
@@ -415,9 +411,7 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice 
 	Returns the nearest element in the current context only, if currentContext is true (default).
 */
 CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool currentContext) {
-	CADrawableMusElement *elt;
-	return ( (elt = _drawableMList.findNearestRight(x, true, currentContext?_currentContext:0))?
-	         elt : 0);
+	return _drawableMList.findNearestRight(x, true, currentContext?_currentContext:0);
 }
 
 /*!
@@ -426,9 +420,7 @@ CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool cu
 	Drawable elements left borders are taken into account. 
 */
 CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, CAVoice *voice) {
-	CADrawableMusElement *elt;
-	return ( (elt = _drawableMList.findNearestRight(x, true, 0, voice))?
-	         elt : 0);
+	return _drawableMList.findNearestRight(x, true, 0, voice);
 }
 
 /*!

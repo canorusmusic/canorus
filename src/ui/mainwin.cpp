@@ -1606,22 +1606,19 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			} else if (mode()==EditMode) {
 				if (!((CAScoreViewPort*)v)->selection().isEmpty()) {
 					CACanorus::undo()->createUndoCommand( document(), tr("set dotted", "undo") );
-					CAMusElement *elt = ((CAScoreViewPort*)v)->selection().front()->musElement();
+					CAMusElement *elt = currentScoreViewPort()->selection().front()->musElement();
 					
 					if (elt->isPlayable()) {
-						int diff;
 						if (elt->musElementType()==CAMusElement::Note) {
-							int i;
-							for (i=0; i<((CANote*)elt)->getChord().size(); i++) {
-								diff = ((CANote*)elt)->getChord().at(i)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
+							for (int i=0; i<static_cast<CANote*>(elt)->getChord().size(); i++) {
+								static_cast<CANote*>(elt)->getChord().at(i)->setDotted( (static_cast<CAPlayable*>(elt)->dotted()+1)%4 );
 							}
-							elt = ((CANote*)elt)->getChord().last();
 						} else if (elt->musElementType()==CAMusElement::Rest)
-							diff = ((CAPlayable*)elt)->setDotted((((CAPlayable*)elt)->dotted()+1)%4);
+							static_cast<CAPlayable*>(elt)->setDotted( (static_cast<CAPlayable*>(elt)->dotted()+1)%4 );
 						 
 						static_cast<CAPlayable*>(elt)->voice()->staff()->synchronizeVoices();
 						CACanorus::undo()->pushUndoCommand();
-						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
+						CACanorus::rebuildUI(document(), elt->context()->sheet());
 					}
 				}
 			}
@@ -1811,48 +1808,47 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			break;
 		}
 		case CAMusElement::Rest: {
-			int iVoiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
-			CAVoice *voice = 0;
+			CAVoice *voice = currentVoice();
+			
+			if ( !voice )
+				break;
 			
 			CADrawableMusElement *left = v->nearestLeftElement( coords.x(), coords.y(), voice ); // use nearestLeft search because it searches left borders
 			CADrawableMusElement *dright = v->nearestRightElement( coords.x(), coords.y(), voice );
 			
-			if (staff)
-				voice = staff->voiceAt( iVoiceNum );
-			
-			if (voice) {
-				if ( left && left->musElement() && left->musElement()->musElementType() == CAMusElement::Rest &&
-				     left->xPos() <= coords.x() && (left->width() + left->xPos() >= coords.x()) ) {
-					
-					// user clicked inside x borders of the rest - replace the rest/rests with the new rest
-					
-					int timeSum = left->musElement()->timeLength();
-					int timeLength = CAPlayable::playableLengthToTimeLength( musElementFactory()->playableLength(), musElementFactory()->playableDotted() );
-					CAMusElement *next;
-					while ( (next=voice->next(left->musElement())) &&
-					        next->musElementType() == CAMusElement::Rest &&
-					        timeSum < timeLength ) {
-						voice->remove(next);
-						timeSum += next->timeLength();
-					}
-					
-					voice->remove( left->musElement() );
-					
-					if (timeSum - timeLength > 0) {
-						// we removed too many rests - insert the delta of the missing rests
-						QList<CARest*> rests = CARest::composeRests( timeSum - timeLength, next?next->timeStart():voice->lastTimeEnd(), voice, CARest::Normal );
-						for (int i=0; i<rests.size(); i++)
-							voice->insert(next, rests[i]);
-						next = rests[0];
-					}
-					
-					success = musElementFactory()->configureRest( voice, next );
-				} else {
-					success = musElementFactory()->configureRest( voice, right );
+			if ( left && left->musElement() && left->musElement()->isPlayable() &&
+			     left->xPos() <= coords.x() && (left->width() + left->xPos() >= coords.x()) ) {
+				
+				// user clicked inside x borders of the rest - replace the rest/rests with the new rest
+				
+				int timeSum = left->musElement()->timeLength();
+				int timeLength = CAPlayable::playableLengthToTimeLength( musElementFactory()->playableLength(), musElementFactory()->playableDotted() );
+				CAMusElement *next;
+				while ( (next=voice->next(left->musElement())) &&
+				        next->musElementType() == CAMusElement::Rest &&
+				        timeSum < timeLength ) {
+					voice->remove(next);
+					timeSum += next->timeLength();
 				}
+				
+				voice->remove( left->musElement() );
+				
+				if (timeSum - timeLength > 0) {
+					// we removed too many rests - insert the delta of the missing rests
+					QList<CARest*> rests = CARest::composeRests( timeSum - timeLength, next?next->timeStart():voice->lastTimeEnd(), voice, CARest::Normal );
+					for (int i=0; i<rests.size(); i++)
+						voice->insert(next, rests[i]);
+					next = rests[0];
+				}
+				
+				success = musElementFactory()->configureRest( voice, next );
+			} else {
+				success = musElementFactory()->configureRest( voice, dright?dright->musElement():0 );
 			}
+			
 			if (success)
 				v->setShadowNoteDotted( musElementFactory()->playableDotted() );
+			
 			break;
 		}
 		case CAMusElement::Slur: {
@@ -2789,8 +2785,7 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 	setCurrentViewPort( v );
 }
 
-void CAMainWin::on_uiAboutQt_triggered()
-{
+void CAMainWin::on_uiAboutQt_triggered() {
 	QMessageBox::aboutQt( this, tr("About Qt") );
 }
 
@@ -3317,6 +3312,7 @@ void CAMainWin::updateClefToolBar() {
 	} else
 		uiClefToolBar->hide();
 }
+
 /*!
 	Shows/Hides the function marking properties tool bar according to the current state.
 */
@@ -3425,28 +3421,54 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 		}
 		
 		for (QSet<CAMusElement*>::const_iterator i=musElemSet.constBegin(); i!=musElemSet.constEnd(); i++) {
-			if ((*i)->musElementType()==CAMusElement::Note) {
-				CANote *note = static_cast<CANote*>(*i);
-				if (!note->isPartOfTheChord()) {
-					for (int j=0; j<note->voice()->lyricsContextList().size(); j++) {
-						CASyllable *removedSyllable =
-							note->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(note->timeStart());
-						musElemSet.remove(removedSyllable);
+			if ((*i)->musElementType()==CAMusElement::Note ||
+			    (*i)->musElementType()==CAMusElement::Rest) {
+				CAPlayable *p = static_cast<CAPlayable*>(*i);
+				if ( !dynamic_cast<CANote*>(p) || !static_cast<CANote*>(p)->isPartOfTheChord()) {
+					// find out the status of the rests in other voices
+					QList<CAPlayable*> chord = p->staff()->getChord( p->timeStart() );
+					int i;
+					for (i=0; i<chord.size(); i++) {
+						if ( chord[i]->voice()!=p->voice() &&
+						    (chord[i]->musElementType()!=CAMusElement::Rest ||
+						     chord[i]->timeStart()!=p->timeStart() ||
+						     chord[i]->timeLength()!=p->timeLength()
+						    )
+						   )
+							break;
 					}
-					note->voice()->staff()->synchronizeVoices();
+					
+					if ( !deleteNotes || i!=chord.size() ) {
+						// replace note with rest
+						QList<CARest*> rests = CARest::composeRests( p->timeLength(), p->timeStart(), p->voice(), CARest::Normal );
+						for (int i=0; i<rests.size(); i++)
+							p->voice()->insert( p, rests[i] );
+						
+						for (int j=0; j<p->voice()->lyricsContextList().size(); j++) { // remove syllables
+							CASyllable *removedSyllable =
+								p->voice()->lyricsContextList().at(j)->syllableAtTimeStart(p->timeStart());
+							p->voice()->lyricsContextList().at(j)->remove(removedSyllable);
+							musElemSet.remove(removedSyllable);
+						}
+					} else {
+						// actually remove the note and shift other elements back if only rests in other voices present
+						for (i=0; i<chord.size(); i++) {              // remove any rests from other voices
+							if ( chord[i]->voice()!=p->voice() ) {
+								musElemSet.remove( chord[i] );
+								delete chord[i];
+							}
+						}
+						
+						for (int j=0; j<p->voice()->lyricsContextList().size(); j++) { // remove and shift syllables
+							CASyllable *removedSyllable =
+								p->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(p->timeStart());
+							musElemSet.remove(removedSyllable);
+						}
+					}
 				}
 				
-				if ( !deleteNotes ) {
-					QList<CARest*> rests = CARest::composeRests( note->timeLength(), note->timeStart(), note->voice(), CARest::Normal );
-					for (int i=0; i<rests.size(); i++)
-						note->voice()->insert( note, rests[i] );
-				}
-				
-				note->voice()->remove( note );
-				delete note;
-			} else if ((*i)->musElementType()==CAMusElement::Rest) {
-				static_cast<CARest*>(*i)->voice()->staff()->synchronizeVoices();
-				delete *i;				
+				p->voice()->remove( p, true );
+				delete p; // also removes it from the voice
 			} else if ((*i)->musElementType()==CAMusElement::Syllable) {
 				if ( deleteSyllables ) {
 					CALyricsContext *lc = static_cast<CALyricsContext*>((*i)->context()); 

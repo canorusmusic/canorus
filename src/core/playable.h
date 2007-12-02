@@ -33,15 +33,14 @@ public:
 	virtual CAPlayable *clone( CAVoice *voice ) = 0;
 	
 	inline CAPlayableLength playableLength() { return _playableLength; }
-	inline void setPlayableLength( CAPlayableLength l ) { _playableLength = l; }
+	inline void setPlayableLength( CAPlayableLength l ) { _playableLength = l; calculateTimeLength(); }
 	
 	CAVoice *voice() { return _voice; }
 	void setVoice(CAVoice *v);
-	CAStaff* staff() { return (CAStaff*)_context; }
+	CAStaff* staff() { return static_cast<CAStaff*>(_context); }
 	
 	inline int dotted() { return _dotted; }
-	
-	int setDotted(int dotted);
+	inline void setDotted(int dotted) { _dotted = dotted; calculateTimeLength(); }
 	
 	static const QString playableLengthToString( CAPlayableLength length );
 	static CAPlayableLength playableLengthFromString( const QString length );
@@ -49,8 +48,10 @@ public:
 	static const int playableLengthToTimeLength( CAPlayableLength length, int dotted=0 );
 	
 protected:
+	void calculateTimeLength();
+	
 	int _dotted;
 	CAPlayableLength _playableLength;
 	CAVoice *_voice;
 };
-#endif /*PLAYABLE_H_*/
+#endif /* PLAYABLE_H_ */
