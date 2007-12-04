@@ -35,9 +35,9 @@ public:
 	inline CAPlayableLength playableLength() { return _playableLength; }
 	inline void setPlayableLength( CAPlayableLength l ) { _playableLength = l; calculateTimeLength(); }
 	
-	CAVoice *voice() { return _voice; }
+	inline CAVoice *voice() { return _voice; }
 	void setVoice(CAVoice *v);
-	CAStaff* staff() { return static_cast<CAStaff*>(_context); }
+	inline CAStaff* staff() { return static_cast<CAStaff*>(_context); }
 	
 	inline int dotted() { return _dotted; }
 	inline void setDotted(int dotted) { _dotted = dotted; calculateTimeLength(); }
