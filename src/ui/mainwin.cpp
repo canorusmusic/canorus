@@ -1210,7 +1210,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				std::cout << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << std::endl;
 				std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", dContext = " << v->selection().front()->drawableContext() << ", context=" << elt->context();
 				if (elt->isPlayable()) {
-					std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
+					std::cout << ", voice=" << ((CANote*)elt)->isPartOfTheChord() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
 					std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
 					if (elt->musElementType()==CAMusElement::Note)
 						std::cout << ", pitch=" << ((CANote*)elt)->pitch();
@@ -3599,9 +3599,10 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 			if ( eltList[i]->isPlayable() ) {
 				newElt = static_cast<CAPlayable*>(eltList[i])->clone(voice);
 				if ( eltList[i]->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(eltList[i])->isPartOfTheChord() &&
-				    !static_cast<CANote*>(eltList[i])->isFirstInTheChord() ) {
-					voice->insert( right, newElt, true );
+				     i>0 && eltList[i-1]->musElementType()==CAMusElement::Note &&
+				     static_cast<CANote*>(eltList[i-1])->voice()==static_cast<CANote*>(eltList[i])->voice() &&
+				     eltList[i-1]->timeStart()==eltList[i]->timeStart() ) {
+					voice->insert( newEltList.last(), newElt, true );
 				} else {
 					voice->insert( right, newElt, false );
 				}

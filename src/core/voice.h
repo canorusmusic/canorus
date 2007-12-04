@@ -39,10 +39,10 @@ public:
 	//////////////////////////////
 	// Voice analysis and query //
 	//////////////////////////////
-	int musElementCount() { return _musElementList.count(); }
-	CAMusElement *musElementAt(int i) { return _musElementList[i]; }
-	int indexOf(CAMusElement *elt) { return _musElementList.indexOf(elt); }
-	bool contains(CAMusElement *elt) { return _musElementList.contains(elt); }
+	inline int musElementCount() { return musElementList().count(); }
+	inline CAMusElement *musElementAt(int i) { return musElementList()[i]; }
+	inline int indexOf(CAMusElement *elt) { return musElementList().indexOf(elt); }
+	inline bool contains(CAMusElement *elt) { return musElementList().contains(elt); }
 	
 	QList<CAMusElement*> getSignList();
 	QList<CANote*> getNoteList();
@@ -53,10 +53,10 @@ public:
 	
 	bool containsPitch(int pitch, int startTime);
 	
-	QList<CAMusElement*>& musElementList() { return _musElementList; }
-	int lastTimeEnd() { return (_musElementList.size()?_musElementList.back()->timeEnd():0); }
-	int lastTimeStart() { return (_musElementList.size()?_musElementList.back()->timeStart():0); }
-	CAMusElement *lastMusElement() { return _musElementList.size()?_musElementList.back():0; }
+	inline QList<CAMusElement*>& musElementList() { return _musElementList; }
+	inline int lastTimeEnd() { return (musElementList().size()?musElementList().back()->timeEnd():0); }
+	inline int lastTimeStart() { return (musElementList().size()?musElementList().back()->timeStart():0); }
+	inline CAMusElement *lastMusElement() { return musElementList().size()?musElementList().back():0; }
 	CAMusElement *next(CAMusElement *elt);
 	CAMusElement *previous(CAMusElement *elt);
 	int lastNotePitch(bool inChord=false);

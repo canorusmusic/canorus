@@ -87,7 +87,7 @@ CANote *CANote::clone( CAVoice *voice ) {
 	\sa _notePosition, notePosition()
 */
 void CANote::calculateNotePosition() {
-	CAClef *clef = (_voice?_voice->getClef(this):0);
+	CAClef *clef = (voice()?voice()->getClef(this):0);
 	
 	_notePosition = _pitch + (clef?clef->c1():-2) - 28;
 }
@@ -137,14 +137,14 @@ void CANote::setPitch(int pitch) {
 	Returns true, if the note is part of a chord; otherwise false.
 */
 bool CANote::isPartOfTheChord() {
-	int idx = _voice->indexOf(this);
+	int idx = voice()->indexOf(this);
 	
-	//is there a note with the same start time after ours?
-	if (idx+1<_voice->musElementCount() && _voice->musElementAt(idx+1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx+1)->timeStart()==_timeStart)
+	// is there a note with the same start time after ours?
+	if (idx+1<voice()->musElementCount() && voice()->musElementAt(idx+1)->musElementType()==CAMusElement::Note && voice()->musElementAt(idx+1)->timeStart()==_timeStart)
 		return true;
 	
-	//is there a note with the same start time before ours?
-	if (idx>0 && _voice->musElementAt(idx-1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx-1)->timeStart()==_timeStart)
+	// is there a note with the same start time before ours?
+	if (idx>0 && voice()->musElementAt(idx-1)->musElementType()==CAMusElement::Note && voice()->musElementAt(idx-1)->timeStart()==_timeStart)
 		return true;
 	
 	return false;
@@ -154,10 +154,10 @@ bool CANote::isPartOfTheChord() {
 	Returns true, if the note is the first in the list of the chord; otherwise false.
 */
 bool CANote::isFirstInTheChord() {
-	int idx = _voice->indexOf(this);
+	int idx = voice()->indexOf(this);
 	
 	//is there a note with the same start time before ours?
-	if (idx>0 && _voice->musElementAt(idx-1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx-1)->timeStart()==_timeStart)
+	if (idx>0 && voice()->musElementAt(idx-1)->musElementType()==CAMusElement::Note && voice()->musElementAt(idx-1)->timeStart()==_timeStart)
 		return false;
 	
 	return true;
@@ -167,10 +167,10 @@ bool CANote::isFirstInTheChord() {
 	Returns true, if the note is the last in the list of the chord; otherwise false.
 */
 bool CANote::isLastInTheChord() {
-	int idx = _voice->indexOf(this);
+	int idx = voice()->indexOf(this);
 	
 	//is there a note with the same start time after ours?
-	if (idx+1<_voice->musElementCount() && _voice->musElementAt(idx+1)->musElementType()==CAMusElement::Note && _voice->musElementAt(idx+1)->timeStart()==_timeStart)
+	if (idx+1<voice()->musElementCount() && voice()->musElementAt(idx+1)->musElementType()==CAMusElement::Note && voice()->musElementAt(idx+1)->timeStart()==_timeStart)
 		return false;
 	
 	return true;
@@ -186,17 +186,17 @@ bool CANote::isLastInTheChord() {
 */
 QList<CANote*> CANote::getChord() {
 	QList<CANote*> list;
-	int idx = _voice->indexOf(this) - 1;
+	int idx = voice()->indexOf(this) - 1;
 	
 	while (idx>=0 &&
-	       _voice->musElementAt(idx)->musElementType()==CAMusElement::Note &&
-	       _voice->musElementAt(idx)->timeStart()==timeStart())
+	       voice()->musElementAt(idx)->musElementType()==CAMusElement::Note &&
+	       voice()->musElementAt(idx)->timeStart()==timeStart())
 		idx--;
 	
 	for (idx++;
-	     (idx<_voice->musElementCount()) && (_voice->musElementAt(idx)->musElementType()==CAMusElement::Note) && (_voice->musElementAt(idx)->timeStart()==timeStart());
+	     (idx<voice()->musElementCount()) && (voice()->musElementAt(idx)->musElementType()==CAMusElement::Note) && (voice()->musElementAt(idx)->timeStart()==timeStart());
 	     idx++)
-		list << static_cast<CANote*>(_voice->musElementAt(idx));
+		list << static_cast<CANote*>(voice()->musElementAt(idx));
 	
 	return list;
 }
