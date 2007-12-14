@@ -37,7 +37,8 @@ class CASwigPython {
 			Barline,
 			FunctionMarking,
 			LyricsContext,
-			Syllable
+			Syllable,
+			Mark
 		};
 		
 		static void init();

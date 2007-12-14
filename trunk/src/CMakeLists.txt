@@ -123,6 +123,9 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/slur.cpp
 	core/rest.cpp
 	
+	core/mark.cpp
+	core/articulation.cpp
+	
 	core/syllable.cpp
 	
 	core/functionmarking.cpp

@@ -9,10 +9,12 @@
 #define MUSELEMENT_H_
 
 #include <QString>
+#include <QList>
 
 class CAContext;
 class CAMusElement;
 class CAPlayable;
+class CAMark;
 
 class CAMusElement {
 public:
@@ -26,7 +28,8 @@ public:
 		KeySignature,
 		Slur,
 		Syllable,
-		FunctionMarking
+		FunctionMarking,
+		Mark
 	};
 	
 	CAMusElement(CAContext *context, int timeStart, int timeLength=0);
@@ -49,6 +52,10 @@ public:
 	inline const QString name() { return _name; }
 	inline void setName(const QString name) { _name = name; }		
 	
+	inline const QList<CAMark*> markList() { return _markList; }
+	inline void addMark( CAMark *mark ) { _markList << mark; }
+	inline void removeMark( CAMark* mark ) { _markList.removeAll(mark); }
+	
 	bool isPlayable();
 	
 	static const QString musElementTypeToString(CAMusElementType);
@@ -57,6 +64,7 @@ public:
 protected:
 	inline void setMusElementType( CAMusElementType type ) { _musElementType = type; }
 	
+	QList< CAMark* > _markList;
 	CAMusElementType _musElementType;
 	CAContext *_context;
 	int _timeStart;
