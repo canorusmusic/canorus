@@ -1,10 +1,9 @@
-/** @file scripting/swigruby.h
- * 
- * Copyright (c) 2006, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
- */
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #ifdef USE_RUBY
 #ifndef SWIGRUBY_H_
@@ -38,7 +37,8 @@ class CASwigRuby {
 			Barline,
 			FunctionMarking,
 			LyricsContext,
-			Syllable			
+			Syllable,
+			Mark
 		};
 		
 		static void init();	///Initializes Ruby and loads base 'CanorusRuby' module. Call this before any other Ruby operations! Call this before calling toRubyObject() or any other conversation functions as well!

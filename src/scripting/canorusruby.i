@@ -39,6 +39,13 @@
 	
 	$result = arr;
 }
+%typemap(out) const QList<CAMark*>, QList<CAMark*> {
+	VALUE arr = rb_ary_new2($1.size());
+	for (int i=0; i<$1.size(); i++)
+		rb_ary_push(arr, CASwigRuby::toRubyObject($1.at(i), CASwigRuby::Mark));
+	
+	$result = arr;
+}
 
 // convert Ruby's List to QList
 // I found no generic way of doing this yet... -Matevz
@@ -117,6 +124,9 @@ VALUE CASwigRuby::toRubyObject(void *object, CASwigRuby::CAClassType type) {
 			break;
 		case CASwigRuby::Syllable:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CASyllable, 0);
+			break;
+		case CASwigRuby::Mark:
+			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAMark, 0);
 			break;
 	}
 }
