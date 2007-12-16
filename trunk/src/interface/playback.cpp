@@ -76,13 +76,13 @@ void CAPlayback::run() {
 		setStop(false);
 	
 	int minLength = -1;
-	while (!_stop) {
+	while (!_stop || _curPlaying.size()) {	// at stop true: enter to switch all notes off
 		for (int i=0; i<streamCount(); i++) {
 			loopUntilPlayable(i);
 		}
 		
 		for (int i=0; i<_curPlaying.size(); i++) {
-			if ( _curPlaying[i]->timeStart() + _curPlaying[i]->timeLength() >= curTime(i) ) {
+			if ( _stop || _curPlaying[i]->timeStart() + _curPlaying[i]->timeLength() <= curTime(i) ) {
 				// note off
 				CANote *note = dynamic_cast<CANote*>(_curPlaying[i]);
 				if (note) {
@@ -97,6 +97,8 @@ void CAPlayback::run() {
 				_curPlaying.removeAt(i--);				
 			}
 		}
+
+		if (_stop) continue;	// no notes on anymore
 		
 		minLength = -1;
 		for (int i=0; i<streamCount(); i++) {
