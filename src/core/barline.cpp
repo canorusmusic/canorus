@@ -25,8 +25,8 @@
 */
 CABarline::CABarline(CABarlineType type, CAStaff *staff, int startTime) 
  : CAMusElement(staff, startTime) {
-	_musElementType = CAMusElement::Barline;
-	_barlineType = type;
+	setMusElementType( CAMusElement::Barline );
+	setBarlineType( type );
 }
 
 /*!
@@ -36,15 +36,15 @@ CABarline::~CABarline() {
 }
 
 CABarline* CABarline::clone() {
-	return new CABarline(_barlineType, (CAStaff*)_context, _timeStart);
+	return new CABarline( barlineType(), static_cast<CAStaff*>(context()), timeStart() );
 }
 
-int CABarline::compare(CAMusElement *elt) {
-	if (elt->musElementType()!=CAMusElement::Barline)
+int CABarline::compare( CAMusElement *elt ) {
+	if ( elt->musElementType()!=CAMusElement::Barline )
 		return -1;
 	
 	int diffs=0;
-	if (_barlineType!=((CABarline*)elt)->barlineType()) diffs++;
+	if ( barlineType() != static_cast<CABarline*>(elt)->barlineType() ) diffs++;
 	
 	return diffs;
 }
