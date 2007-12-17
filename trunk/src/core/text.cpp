@@ -21,3 +21,11 @@ CAText::CAText( const QString s, CAMusElement *t )
 
 CAText::~CAText() {
 }
+
+CAMusElement* CAText::clone() {
+	return new CAText( text(), associatedElement() );
+}
+
+int CAText::compare(CAMusElement *elt) {
+	return 0; // TODO
+}

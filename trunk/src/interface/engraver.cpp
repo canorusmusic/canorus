@@ -20,6 +20,7 @@
 #include "drawable/drawablekeysignature.h"
 #include "drawable/drawabletimesignature.h"
 #include "drawable/drawablebarline.h"
+#include "drawable/drawablemark.h"
 #include "drawable/drawableaccidental.h"
 
 #include "drawable/drawablelyricscontext.h"
@@ -798,6 +799,10 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						
 						break;
 					}
+				}
+				
+				for ( int j=0; j < elt->markList().size(); j++ ) {
+					v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, newElt->xPos(), newElt->yPos()-20 ) );
 				}
 				
 				streamsIdx[i]++;

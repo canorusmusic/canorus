@@ -21,6 +21,7 @@
 #include "core/functionmarking.h"
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
+#include "core/mark.h"
 
 class CAMusElement;
 
@@ -63,6 +64,8 @@ public:
 	
 	bool configureSlur( CAStaff *staff,
 	                    CANote *noteStart, CANote *noteEnd );
+	
+	bool configureMark( CAMusElement *elt );
 	
 	bool configureFunctionMarking( CAFunctionMarkingContext *fmc,
 	                               int timeStart, int timeLength );
@@ -146,6 +149,9 @@ public:
 	inline CASlur::CASlurStyle slurStyle() { return _slurStyle; }
 	inline void setSlurStyle( CASlur::CASlurStyle style ) { _slurStyle = style; }
 	
+	inline CAMark::CAMarkType markType() { return _markType; }
+	inline void setMarkType( CAMark::CAMarkType t ) { _markType = t; }
+	
 	inline CAFunctionMarking::CAFunctionType fmFunction() { return _fmFunction; }
 	inline void setFMFunction( CAFunctionMarking::CAFunctionType f ) { _fmFunction = f; }
 	
@@ -190,6 +196,7 @@ private:
 	CAClef::CAPredefinedClefType _eClef;           // Type of the clef to be inserted
 	int                          _iClefOffset;     // Interval offset for the clef
 	CABarline::CABarlineType _eBarlineType;        // Type of the barline
+	CAMark::CAMarkType _markType;                  // Type of the mark
 	CASlur::CASlurStyle _slurStyle;                // Style of the slur (solid, dotted)
 	
 	// Function Marking

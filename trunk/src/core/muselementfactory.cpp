@@ -10,6 +10,7 @@
 #include "core/muselementfactory.h"
 #include "core/functionmarkingcontext.h"
 #include "core/sheet.h"
+#include "core/text.h"
 
 /*!
 	\class CAMusElementFactory
@@ -262,6 +263,21 @@ bool CAMusElementFactory::configureSlur( CAStaff *staff,
 		removeMusElem( true );
 	
 	return success;
+}
+
+/*!
+	Configures the new mark and adds it to the \a elt.
+*/
+bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
+	switch ( markType() ) {
+		case CAMark::Text: {
+			mpoMusElement = new CAText( "test", elt );
+			elt->addMark( static_cast<CAMark*>(mpoMusElement) );
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 /*!

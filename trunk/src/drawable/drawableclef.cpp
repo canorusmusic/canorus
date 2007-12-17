@@ -32,7 +32,7 @@ const int CADrawableClef::CLEF_EIGHT_SIZE = 8;
 */
 CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaff, int x, int y)
  : CADrawableMusElement(musElement, drawableStaff, x, y) {
-	_drawableMusElementType = CADrawableMusElement::DrawableClef;
+	setDrawableMusElementType( CADrawableMusElement::DrawableClef );
 	
 	float lineSpace = drawableStaff->lineSpace();
 	float bottom = drawableStaff->yPos()+drawableStaff->height();

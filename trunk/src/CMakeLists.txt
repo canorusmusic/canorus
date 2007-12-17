@@ -177,6 +177,7 @@ SET(Canorus_Drawable_Srcs	# Drawable instances of the data
 	drawable/drawablekeysignature.cpp
 	drawable/drawabletimesignature.cpp
 	drawable/drawablebarline.cpp
+	drawable/drawablemark.cpp
 	drawable/drawablesyllable.cpp
 	drawable/drawablefunctionmarking.cpp
 )

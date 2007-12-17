@@ -439,6 +439,7 @@ void CAMainWin::setupCustomUi() {
 	uiClefType->setCurrentId( CAClef::Treble );
 	connect( uiInsertClef, SIGNAL( triggered() ), uiClefType, SLOT( click() ) );
 	uiInsertToolBar->addAction( uiInsertKeySig );
+	uiInsertToolBar->addAction( uiInsertText );
 	uiTimeSigType->setDefaultAction( uiInsertToolBar->addWidget( uiTimeSigType ) );
 	uiTimeSigType->defaultAction()->setToolTip(tr("Insert new time signature"));
 	uiTimeSigType->setCurrentId( 44 );
@@ -540,6 +541,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->addAction( uiInsertTimeSig );
 	uiInsertGroup->addAction( uiTimeSigType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertKeySig );
+	uiInsertGroup->addAction( uiInsertText );
 	uiInsertGroup->addAction( uiInsertBarline );
 	uiInsertGroup->addAction( uiBarlineType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertSyllable );
@@ -1774,6 +1776,11 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				success = musElementFactory()->configureBarline( staff, right );
 			break;
 		}
+		case CAMusElement::Mark: {
+			if ( v->musElementsAt( coords.x(), coords.y() ).size() )
+				success = musElementFactory()->configureMark( v->musElementsAt( coords.x(), coords.y() )[0]->musElement() );
+			break;
+		}
 		case CAMusElement::Note: { // Do we really need to do all that here??
 			CAVoice *voice = currentVoice();
 			
@@ -2775,6 +2782,14 @@ void CAMainWin::on_uiInsertKeySig_toggled(bool checked) {
 	}
 }
 
+void CAMainWin::on_uiInsertText_toggled(bool checked) {
+	if (checked) {
+		musElementFactory()->setMusElementType( CAMusElement::Mark );
+		musElementFactory()->setMarkType( CAMark::Text );
+		setMode( InsertMode );
+	}
+}
+
 void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 	if (checked) {
 		musElementFactory()->setMusElementType( CAMusElement::Barline );
@@ -3215,6 +3230,7 @@ void CAMainWin::updateInsertToolBar() {
 						uiClefType->defaultAction()->setVisible(true);
 						uiTimeSigType->defaultAction()->setVisible(true);
 						uiInsertKeySig->setVisible(true);
+						uiInsertText->setVisible(true);
 						uiInsertTimeSig->setVisible(true);
 						uiBarlineType->defaultAction()->setVisible(true);
 						uiInsertFM->setVisible(false);
@@ -3229,6 +3245,7 @@ void CAMainWin::updateInsertToolBar() {
 						uiClefType->defaultAction()->setVisible(false);
 						uiTimeSigType->defaultAction()->setVisible(false);
 						uiInsertKeySig->setVisible(false);
+						uiInsertText->setVisible(false);
 						uiInsertTimeSig->setVisible(false);
 						uiBarlineType->defaultAction()->setVisible(false);
 						uiInsertFM->setVisible(true);
@@ -3243,6 +3260,7 @@ void CAMainWin::updateInsertToolBar() {
 						uiClefType->defaultAction()->setVisible(false);
 						uiTimeSigType->defaultAction()->setVisible(false);
 						uiInsertKeySig->setVisible(false);
+						uiInsertText->setVisible(false);
 						uiInsertTimeSig->setVisible(false);
 						uiBarlineType->defaultAction()->setVisible(false);
 						uiInsertFM->setVisible(false);
@@ -3259,6 +3277,7 @@ void CAMainWin::updateInsertToolBar() {
 				uiClefType->defaultAction()->setVisible(false);
 				uiTimeSigType->defaultAction()->setVisible(false);
 				uiInsertKeySig->setVisible(false);
+				uiInsertText->setVisible(false);
 				uiInsertTimeSig->setVisible(false);
 				uiBarlineType->defaultAction()->setVisible(false);
 				uiInsertFM->setVisible(false);
@@ -3277,6 +3296,7 @@ void CAMainWin::updateInsertToolBar() {
 		uiClefType->defaultAction()->setVisible(false);
 		uiTimeSigType->defaultAction()->setVisible(false);
 		uiInsertKeySig->setVisible(false);
+		uiInsertText->setVisible(false);
 		uiInsertTimeSig->setVisible(false);
 		uiBarlineType->defaultAction()->setVisible(false);
 		uiInsertFM->setVisible(false);
