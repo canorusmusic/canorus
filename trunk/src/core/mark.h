@@ -13,6 +13,7 @@
 class CAMark : public CAMusElement {
 public:
 	enum CAMarkType {
+		Undefined = -1,
 		Text,
 		Tempo,
 		Crescendo,
@@ -20,13 +21,8 @@ public:
 		Pedal,
 		InstrumentChange,
 		Bookmark,
-		ShortFermata,
 		Fermata,
-		LongFermata,
-		VeryLongFermata,
-		Segno,
-		Coda,
-		VarCoda,
+		RepeatMark,
 		Articulation,
 		Fingering
 	};
@@ -40,6 +36,9 @@ public:
 	
 	inline CAMarkType markType() { return _markType; }
 	inline void setMarkType( CAMarkType type ) { _markType = type; }
+	
+	static const QString markTypeToString( CAMarkType t );
+	static CAMarkType markTypeFromString( const QString s );
 	
 private:
 	CAMusElement *_associatedElt;

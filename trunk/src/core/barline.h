@@ -33,11 +33,12 @@ public:
 	int compare(CAMusElement* elt);
 	
 	CABarlineType barlineType() { return _barlineType; }		
+	void setBarlineType( CABarlineType t ) { _barlineType = t; }
 	
-	static const QString barlineTypeToString(CABarlineType);
-	static CABarlineType barlineTypeFromString(const QString);
+	static const QString barlineTypeToString( CABarlineType );
+	static CABarlineType barlineTypeFromString( const QString );
 	
-private:
+private:	
 	CABarlineType _barlineType;
 };
 #endif /* BARLINE_H_ */
