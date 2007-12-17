@@ -63,7 +63,7 @@
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>36</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="uiMenuEdit" >
@@ -888,6 +888,14 @@
    </property>
    <property name="text" >
     <string>Edit mode</string>
+   </property>
+  </action>
+  <action name="uiInsertText" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Insert Text</string>
    </property>
   </action>
  </widget>

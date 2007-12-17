@@ -25,7 +25,8 @@ class CADrawableMusElement : public CADrawable {
 			DrawableAccidental,
 			DrawableSlur,
 			DrawableSyllable,
-			DrawableFunctionMarking, DrawableFunctionMarkingSupport
+			DrawableFunctionMarking, DrawableFunctionMarkingSupport,
+			DrawableMark
 		};
 		
 		CADrawableMusElement(CAMusElement *musElement, CADrawableContext *drawableContext, int x, int y);

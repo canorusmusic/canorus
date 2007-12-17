@@ -5,7 +5,7 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include "drawablemuselement.h"
+#include "drawable/drawablemuselement.h"
 
 #ifndef DRAWABLECLEF_H_
 #define DRAWABLECLEF_H_
