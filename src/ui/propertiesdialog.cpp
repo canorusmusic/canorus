@@ -126,7 +126,7 @@ void CAPropertiesDialog::buildTree() {
 		
 		docItem = new QTreeWidgetItem( uiDocumentTree );
 		docItem->setText( 0, tr("Document") );
-		docItem->setIcon( 0, QIcon("images/document.svg") );
+		docItem->setIcon( 0, QIcon("images/document/document.svg") );
 		_documentItem = docItem;
 		
 		for ( int i=0; i<_document->sheetCount(); i++) {
@@ -138,7 +138,7 @@ void CAPropertiesDialog::buildTree() {
 			QTreeWidgetItem *sheetItem=0;
 			sheetItem = new QTreeWidgetItem( docItem );
 			sheetItem->setText( 0, _document->sheetAt(i)->name() );
-			sheetItem->setIcon( 0, QIcon("images/sheet.svg") );
+			sheetItem->setIcon( 0, QIcon("images/document/sheet.svg") );
 			_sheetItem[ sheetItem ] = _document->sheetAt(i);
 			
 			for ( int j=0; j<_document->sheetAt(i)->contextCount(); j++ ) {
@@ -148,7 +148,7 @@ void CAPropertiesDialog::buildTree() {
 				_contextItem[ contextItem ] = _document->sheetAt(i)->contextAt(j);
 				
 				if (dynamic_cast<CAStaff*>( _document->sheetAt(i)->contextAt(j) )) {
-					contextItem->setIcon( 0, QIcon("images/staff.svg") );
+					contextItem->setIcon( 0, QIcon("images/document/staff.svg") );
 					w = new CAStaffProperties( this );
 					uiPropertiesWidget->addWidget( w );
 					_contextPropertiesWidget[ _document->sheetAt(i)->contextAt(j) ] = w;
@@ -164,19 +164,19 @@ void CAPropertiesDialog::buildTree() {
 						QTreeWidgetItem *voiceItem=0;
 						voiceItem = new QTreeWidgetItem( contextItem );
 						voiceItem->setText( 0, s->voiceAt(k)->name() );
-						voiceItem->setIcon( 0, QIcon("images/voice.svg") );
+						voiceItem->setIcon( 0, QIcon("images/document/voice.svg") );
 						_voiceItem[ voiceItem ] = s->voiceAt(k);
 					}
 				} else
 				if (dynamic_cast<CALyricsContext*>( _document->sheetAt(i)->contextAt(j) )) {
-					contextItem->setIcon( 0, QIcon("images/lyricscontext.svg") );
+					contextItem->setIcon( 0, QIcon("images/document/lyricscontext.svg") );
 					w = new CALyricsContextProperties( this );
 					uiPropertiesWidget->addWidget( w );
 					_contextPropertiesWidget[ _document->sheetAt(i)->contextAt(j) ] = w;
 					updateLyricsContextProperties( static_cast<CALyricsContext*>(_document->sheetAt(i)->contextAt(j)) );					
 				} else
 				if (dynamic_cast<CAFunctionMarkingContext*>( _document->sheetAt(i)->contextAt(j) )) {
-				contextItem->setIcon( 0, QIcon("images/fmcontext.svg") );
+				contextItem->setIcon( 0, QIcon("images/document/fmcontext.svg") );
 				w = new CAFunctionMarkingContextProperties( this );
 					uiPropertiesWidget->addWidget( w );
 					_contextPropertiesWidget[ _document->sheetAt(i)->contextAt(j) ] = w;

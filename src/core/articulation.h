@@ -24,7 +24,6 @@ public:
 		UpBow,
 		DownBow,
 		Flageolet,
-		Thumb,
 		LHeel,
 		RHeel,
 		LToe,
