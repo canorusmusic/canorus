@@ -35,7 +35,7 @@
            <string>Move up</string>
           </property>
           <property name="icon" >
-           <iconset>images/up.svg</iconset>
+           <iconset>images/general/up.svg</iconset>
           </property>
          </widget>
         </item>
@@ -63,7 +63,7 @@
            <string>Move down</string>
           </property>
           <property name="icon" >
-           <iconset>images/down.svg</iconset>
+           <iconset>images/general/down.svg</iconset>
           </property>
          </widget>
         </item>

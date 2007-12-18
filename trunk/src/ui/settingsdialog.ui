@@ -82,7 +82,7 @@
           <string>Editor</string>
          </property>
          <property name="icon" >
-          <iconset>images/editorsettings.svg</iconset>
+          <iconset>images/settings/editorsettings.svg</iconset>
          </property>
         </item>
         <item>
@@ -90,7 +90,7 @@
           <string>Appearance</string>
          </property>
          <property name="icon" >
-          <iconset>images/colorsettings.svg</iconset>
+          <iconset>images/settings/colorsettings.svg</iconset>
          </property>
         </item>
         <item>
@@ -98,7 +98,7 @@
           <string>Load/Save</string>
          </property>
          <property name="icon" >
-          <iconset>images/floppy.svg</iconset>
+          <iconset>images/settings/floppy.svg</iconset>
          </property>
         </item>
         <item>
@@ -106,7 +106,7 @@
           <string>Playback</string>
          </property>
          <property name="icon" >
-          <iconset>images/midisetup.svg</iconset>
+          <iconset>images/settings/midisetup.svg</iconset>
          </property>
         </item>
        </widget>
