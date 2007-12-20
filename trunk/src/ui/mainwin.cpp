@@ -1459,9 +1459,10 @@ void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords, CAScore
 				continue;
 			
 			for (int j=0; j<musEltList.size(); j++)
-				if (c->selectedVoice() && musEltList[j]->musElement()->isPlayable() && static_cast<CAPlayable*>(musEltList[j]->musElement())->voice()!=c->selectedVoice() ||
-				    (!musEltList[j]->isSelectable()) ||
-				    (musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
+				if ((!musEltList[j]->isSelectable()) || 
+					(c->selectedVoice() && musEltList[j]->musElement()->isPlayable() &&
+						static_cast<CAPlayable*>(musEltList[j]->musElement())->voice()!=c->selectedVoice()) ||
+					(musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
 				)
 					musEltList.removeAt(j--);
 			c->addToSelection(musEltList);
