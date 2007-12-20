@@ -75,6 +75,7 @@
 
 #include "export/lilypondexport.h"
 #include "export/canorusmlexport.h"
+#include "export/midiexport.h"
 #include "import/lilypondimport.h"
 #include "import/canorusmlimport.h"
 
@@ -1631,7 +1632,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					CAMusElement *elt = v->selection().front()->musElement();
 					if (elt->musElementType()==CAMusElement::Note) {
 						CACanorus::undo()->createUndoCommand( document(), tr("add sharp", "undo") );
-						((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
+						if ( ((CANote*)elt)->accidentals() < 2 )		// limit the amount of accidentals
+							((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
@@ -1651,7 +1653,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					CAMusElement *elt = v->selection().front()->musElement();
 					if (elt->musElementType()==CAMusElement::Note) {
 						CACanorus::undo()->createUndoCommand( document(), tr("add flat", "undo") );
-						((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
+						if ( ((CANote*)elt)->accidentals() > -2 )		// limit the amount of accidentals
+							((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
