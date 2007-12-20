@@ -63,7 +63,7 @@
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>32</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="uiMenuEdit" >
@@ -893,15 +893,20 @@
     <string>Edit mode</string>
    </property>
   </action>
-  <action name="uiInsertText" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
+  <action name="uiInsertMark" >
    <property name="icon" >
     <iconset>images/mark/text.svg</iconset>
    </property>
    <property name="text" >
-    <string>Insert Text</string>
+    <string>Insert Mark</string>
+   </property>
+  </action>
+  <action name="uiInsertArticulation" >
+   <property name="icon" >
+    <iconset>images/mark/articulation/accent.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Insert Articulation Mark</string>
    </property>
   </action>
  </widget>

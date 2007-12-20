@@ -43,8 +43,7 @@ public:
 		DownMordent,
 		PrallDown,
 		PrallUp,
-		LinePrall,
-		Signumcongruentiae
+		LinePrall
 	};
 	
 	CAArticulation( CANote *n );

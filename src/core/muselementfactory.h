@@ -22,6 +22,7 @@
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
 #include "core/mark.h"
+#include "core/articulation.h"
 
 class CAMusElement;
 
@@ -152,6 +153,9 @@ public:
 	inline CAMark::CAMarkType markType() { return _markType; }
 	inline void setMarkType( CAMark::CAMarkType t ) { _markType = t; }
 	
+	inline CAArticulation::CAArticulationType articulationType() { return _articulationType; }
+	inline void setArticulationType( CAArticulation::CAArticulationType t ) { _articulationType = t; }
+	
 	inline CAFunctionMarking::CAFunctionType fmFunction() { return _fmFunction; }
 	inline void setFMFunction( CAFunctionMarking::CAFunctionType f ) { _fmFunction = f; }
 	
@@ -197,6 +201,7 @@ private:
 	int                          _iClefOffset;     // Interval offset for the clef
 	CABarline::CABarlineType _eBarlineType;        // Type of the barline
 	CAMark::CAMarkType _markType;                  // Type of the mark
+	CAArticulation::CAArticulationType _articulationType; // Type of the articulation mark
 	CASlur::CASlurStyle _slurStyle;                // Style of the slur (solid, dotted)
 	
 	// Function Marking
