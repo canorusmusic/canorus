@@ -11,6 +11,7 @@
 #include "core/functionmarkingcontext.h"
 #include "core/sheet.h"
 #include "core/text.h"
+#include "core/articulation.h"
 
 /*!
 	\class CAMusElementFactory
@@ -269,12 +270,24 @@ bool CAMusElementFactory::configureSlur( CAStaff *staff,
 	Configures the new mark and adds it to the \a elt.
 */
 bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
+	bool success = false;
+	
 	switch ( markType() ) {
 		case CAMark::Text: {
 			mpoMusElement = new CAText( "test", elt );
-			elt->addMark( static_cast<CAMark*>(mpoMusElement) );
-			return true;
+			success=true;
 		}
+		case CAMark::Articulation: {
+			if ( elt->musElementType()==CAMusElement::Note ) {
+				mpoMusElement = new CAArticulation( articulationType(), static_cast<CANote*>(elt) );
+				success=true;
+			}
+		}
+	}
+	
+	if (success) {
+		elt->addMark( static_cast<CAMark*>(mpoMusElement) );
+		return true;
 	}
 	
 	return false;

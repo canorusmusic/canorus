@@ -9,6 +9,7 @@
 #include "core/voice.h"
 #include "core/staff.h"
 #include "core/clef.h"
+#include "core/mark.h"
 
 /*!
 	\class CANote
@@ -47,6 +48,14 @@ CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char a
 CANote::~CANote() {
 	if ( tieStart() ) delete tieStart();      // slurs destructor also disconnects itself from the notes
 	if ( tieEnd() ) tieEnd()->setNoteEnd( 0 );
+	
+	for (int i=0; i<markList().size(); i++) {
+		if ( markList()[i]->markType()==CAMark::Articulation && isFirstInTheChord() || markList()[i]->markType()==CAMark::Fingering ) {
+			removeMark(markList()[i]);
+			delete markList()[i];
+			i--;
+		}
+	}
 	// other slurs are removed or moved in CAVoice::removeElement()
 }
 

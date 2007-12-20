@@ -124,7 +124,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 	int timeStart = 0;
 	bool done = false;
 	CADrawableFunctionMarkingSupport *lastDFMTonicizations[streams]; for (int i=0; i<streams; i++) lastDFMTonicizations[i]=0;
-	while (!done) {	
+	while (!done) {
 		//if all the indices are at the end of the streams, finish.
 		int idx;
 		for (idx=0; (idx < streams) && (streamsIdx[idx] == musStreamList[idx].size()); idx++);
@@ -183,6 +183,12 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							
 							streamsX[i] += (clef->neededWidth() + MINIMUM_SPACE);
 							placedSymbol = true;
+							
+							// place marks
+							for ( int j=0; j < elt->markList().size(); j++ ) {
+								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, clef->xPos(), clef->yPos()-20*(j+1) ) );
+							}
+							
 							break;
 						}
 						case CAMusElement::KeySignature: {
@@ -202,6 +208,12 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							
 							streamsX[i] += (keySig->neededWidth() + MINIMUM_SPACE);
 							placedSymbol = true;
+							
+							// place marks
+							for ( int j=0; j < elt->markList().size(); j++ ) {
+								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, keySig->xPos(), keySig->yPos()-20*(j+1) ) );
+							}
+							
 							break;
 						}
 						case CAMusElement::TimeSignature: {
@@ -221,10 +233,17 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							
 							streamsX[i] += (timeSig->neededWidth() + MINIMUM_SPACE);
 							placedSymbol = true;
+							
+							// place marks
+							for ( int j=0; j < elt->markList().size(); j++ ) {
+								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, timeSig->xPos(), timeSig->yPos()-20*(j+1) ) );
+							}
+							
 							break;
 						}
-					} /*SWITCH*/
-				} /*IF firstVoice*/
+					} /* SWITCH */
+					
+				} /* IF firstVoice */
 				streamsIdx[i]++;
 			}
 		}
@@ -288,6 +307,11 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 				placedSymbol = true;
 				streamsX[i] += (bar->neededWidth() + MINIMUM_SPACE);
 				streamsIdx[i] = streamsIdx[i] + 1;
+				
+				// place marks
+				for ( int j=0; j < elt->markList().size(); j++ ) {
+					v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, bar->xPos(), bar->yPos()-20*(j+1) ) );
+				}
 			}
 		}
 		
@@ -495,8 +519,14 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						}
 						
 						v->addMElement(newElt);
-						if (((CANote*)elt)->isLastInTheChord())	
+						if ( static_cast<CANote*>(elt)->isLastInTheChord() )	
 							streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
+						
+						// place marks
+						for ( int j=0; j < elt->markList().size(); j++ ) {
+							if ( static_cast<CANote*>(elt)->isFirstInTheChord() || elt->markList()[j]->markType()==CAMark::Fingering )
+								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, newElt->xPos(), newElt->yPos()-20*(j+1) ) );
+						}
 						
 						break;
 					}
@@ -799,10 +829,6 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						
 						break;
 					}
-				}
-				
-				for ( int j=0; j < elt->markList().size(); j++ ) {
-					v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, newElt->xPos(), newElt->yPos()-20 ) );
 				}
 				
 				streamsIdx[i]++;

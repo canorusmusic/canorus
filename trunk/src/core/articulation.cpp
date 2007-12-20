@@ -18,10 +18,18 @@
 	the same articulation. 
 */
 
-CAArticulation::CAArticulation( CANote *n )
+CAArticulation::CAArticulation( CAArticulationType t, CANote *n )
  : CAMark( CAMark::Articulation, n ) {
-	
+	setArticulationType( t );
 }
 
 CAArticulation::~CAArticulation() {
+}
+
+CAMusElement* CAArticulation::clone() {
+	return new CAArticulation( articulationType(), static_cast<CANote*>(associatedElement()) );
+}
+
+int CAArticulation::compare(CAMusElement *elt) {
+	return 0;
 }

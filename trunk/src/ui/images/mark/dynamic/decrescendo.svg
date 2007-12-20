@@ -203,9 +203,19 @@
        y1="-144.65044"
        x2="639.97705"
        y2="-144.65044" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient33317"
+       id="linearGradient3299"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-0.7871571,-0.1118568,-0.1118568,0.7871571,537.64992,419.97486)"
+       x1="-562.63727"
+       y1="-144.65044"
+       x2="639.97705"
+       y2="-144.65044" />
   </defs>
   <sodipodi:namedview
-     inkscape:window-height="978"
+     inkscape:window-height="979"
      inkscape:window-width="1400"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -213,24 +223,23 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="216.95575"
-     inkscape:cy="-43.784195"
-     inkscape:window-x="192"
-     inkscape:window-y="140"
+     inkscape:zoom="5.6568544"
+     inkscape:cx="88.727113"
+     inkscape:cy="37.820671"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:current-layer="svg27169"
      width="128px"
      height="128px" />
   <g
-     id="g27784"
-     transform="matrix(-1,0,0,1,999.2762,0)">
+     id="g3302">
     <path
        id="path26811"
-       d="M 845.78522,128.12845 L 42.37031,499.59976 L 968.57142,399.03839"
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:25.01970291;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.39215686" />
+       d="M 153.49098,128.12845 L 956.90589,499.59976 L 30.70478,399.03839"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:39.0859375;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.39215686" />
     <path
        id="path25832"
-       d="M 834.11968,106.70176 L 30.704776,478.17307 L 956.90586,377.6117"
-       style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient27788);stroke-width:25.01970291;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+       d="M 165.15652,106.70176 L 968.57142,478.17307 L 42.37034,377.6117"
+       style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient3299);stroke-width:39.0859375;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   </g>
 </svg>
