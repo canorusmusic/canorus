@@ -2778,7 +2778,8 @@ void CAMainWin::on_uiArticulationType_toggled(bool checked, int buttonId) {
 			
 		musElementFactory()->setMusElementType( CAMusElement::Mark );
 		
-		// New clef type
+		// New mark type
+		musElementFactory()->setMarkType( CAMark::Articulation );
 		musElementFactory()->setArticulationType( type );
 		
 		setMode( InsertMode );
@@ -3617,8 +3618,8 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 		}
 		
 		for (QSet<CAMusElement*>::const_iterator i=musElemSet.constBegin(); i!=musElemSet.constEnd(); i++) {
-			if ((*i)->musElementType()==CAMusElement::Note ||
-			    (*i)->musElementType()==CAMusElement::Rest) {
+			if ( (*i)->musElementType()==CAMusElement::Note ||
+			     (*i)->musElementType()==CAMusElement::Rest ) {
 				CAPlayable *p = static_cast<CAPlayable*>(*i);
 				if ( !dynamic_cast<CANote*>(p) || !static_cast<CANote*>(p)->isPartOfTheChord() ) {
 					// find out the status of the rests in other voices
@@ -3670,7 +3671,7 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 					p->voice()->lyricsContextList().at(j)->repositSyllables();					
 				}
 				delete p;
-			} else if ((*i)->musElementType()==CAMusElement::Syllable) {
+			} else if ( (*i)->musElementType()==CAMusElement::Syllable ) {
 				if ( deleteSyllables ) {
 					CALyricsContext *lc = static_cast<CALyricsContext*>((*i)->context()); 
 					(*i)->context()->remove(*i);  // actually removes the syllable if SHIFT is pressed
@@ -3678,7 +3679,7 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 				} else {
 					static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
 				}
-			} else if ((*i)->musElementType()==CAMusElement::FunctionMarking) {
+			} else if ( (*i)->musElementType()==CAMusElement::FunctionMarking ) {
 				if ( deleteSyllables ) {
 					CAFunctionMarkingContext *fmc = static_cast<CAFunctionMarkingContext*>((*i)->context()); 
 					(*i)->context()->remove(*i);  // actually removes the function if SHIFT is pressed
@@ -3686,6 +3687,8 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 				} else {
 					static_cast<CAFunctionMarking*>(*i)->clear(); // only clears the function
 				}
+			} else if ( (*i)->musElementType()==CAMusElement::Mark ) {
+				static_cast<CAMark*>(*i)->associatedElement()->removeMark( static_cast<CAMark*>(*i) );
 			} else {
 				(*i)->context()->remove(*i);
 			}

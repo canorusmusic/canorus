@@ -9,6 +9,7 @@
 #include "core/context.h"
 #include "core/staff.h"
 #include "core/playable.h"
+#include "core/mark.h"
 
 /*!
 	\class CAMusElement
@@ -48,6 +49,11 @@ CAMusElement::~CAMusElement() {
 	// needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
 	if( context() && !isPlayable() )
 		context()->remove( this );
+	
+	for (int i=0; i<markList().size(); i++) {
+		if ( markList()[i]->markType()!=CAMark::Articulation || markList()[i]->markType()!=CAMark::Fingering )
+			delete markList()[i];
+	}
 }
 
 /*!

@@ -46,8 +46,11 @@ public:
 		LinePrall
 	};
 	
-	CAArticulation( CANote *n );
+	CAArticulation( CAArticulationType t, CANote *n );
 	virtual ~CAArticulation();
+	
+	CAMusElement* clone();		
+	int compare(CAMusElement *elt);
 	
 	inline CANote *associatedNote() { return static_cast<CANote*>(associatedElement()); }
 	inline void *setAssociatedNote( CANote* n ) { setAssociatedElement(n); }
