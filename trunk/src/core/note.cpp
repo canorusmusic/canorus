@@ -225,6 +225,14 @@ int CANote::compare(CAMusElement *elt) {
 }
 
 /*!
+	Keeps _midPitch proper when the Accidentals are modified
+*/
+void CANote::setAccidentals(int accs) {
+	_accs = accs;
+	_midiPitch = CANote::pitchToMidiPitch( _pitch, _accs );
+};
+
+/*!
 	Sets the stem direction and update tie, slur and phrasing slur direction.
 */
 void CANote::setStemDirection( CAStemDirection dir ) {

@@ -35,7 +35,7 @@ public:
 	void setPitch(int pitch);
 	
 	int accidentals() { return _accs; }
-	void setAccidentals(int accs) { _accs = accs; };
+	void setAccidentals(int accs);
 	
 	CAStemDirection stemDirection() { return _stemDirection; }
 	void setStemDirection(CAStemDirection direction);
