@@ -14,8 +14,8 @@
    inkscape:version="0.45.1"
    width="128"
    height="128"
-   sodipodi:docname="text.svg"
-   sodipodi:docbase="/home/matevz/canorus/trunk/src/ui/images/mark"
+   sodipodi:docname="rit.svg"
+   sodipodi:docbase="/home/matevz/canorus/trunk/src/ui/images/mark/tempo"
    inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/n2.png"
    inkscape:export-xdpi="120.95"
    inkscape:export-ydpi="120.95"
@@ -133,6 +133,16 @@
        y1="336.54208"
        x2="2008.1578"
        y2="336.54208" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient33317"
+       id="linearGradient2248"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.5805313,0,0,0.5805313,-216.73483,128.73884)"
+       x1="483.75861"
+       y1="336.54208"
+       x2="2008.1578"
+       y2="336.54208" />
   </defs>
   <sodipodi:namedview
      inkscape:window-height="979"
@@ -152,7 +162,8 @@
      width="128px"
      height="128px" />
   <g
-     id="g2242">
+     id="g2242"
+     transform="translate(89.033839,20.905019)">
     <text
        id="text22680"
        y="459.46765"
@@ -163,17 +174,17 @@
          y="459.46765"
          x="56.062656"
          id="tspan22682"
-         sodipodi:role="line">text</tspan></text>
+         sodipodi:role="line">rit.</tspan></text>
     <text
        id="text19735"
        y="445.6976"
        x="39.592896"
-       style="font-size:480.57519531px;font-style:normal;font-weight:normal;fill:url(#linearGradient2238);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       style="font-size:480.57519531px;font-style:normal;font-weight:normal;fill:url(#linearGradient2248);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
        xml:space="preserve"><tspan
-         style="font-style:italic;font-weight:bold;fill:url(#linearGradient2238);fill-opacity:1;font-family:Century Schoolbook L"
+         style="font-style:italic;font-weight:bold;fill:url(#linearGradient2248);fill-opacity:1;font-family:Century Schoolbook L"
          y="445.6976"
          x="39.592896"
          id="tspan19737"
-         sodipodi:role="line">text</tspan></text>
+         sodipodi:role="line">rit.</tspan></text>
   </g>
 </svg>

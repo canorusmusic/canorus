@@ -56,6 +56,7 @@
 #include "core/functionmarkingcontext.h"
 #include "core/lyricscontext.h"
 #include "core/clef.h"
+#include "core/articulation.h"
 #include "core/keysignature.h"
 #include "core/note.h"
 #include "core/slur.h"
@@ -214,6 +215,54 @@ void CAMainWin::createCustomActions() {
 		uiBarlineType->addButton( QIcon("images/barline/barlinerepeatopen.svg"), CABarline::RepeatOpen, tr("Repeat Open") );
 		uiBarlineType->addButton( QIcon("images/barline/barlinerepeatclose.svg"), CABarline::RepeatClose, tr("Repeat Closed") );
 		uiBarlineType->addButton( QIcon("images/barline/barlinerepeatcloseopen.svg"), CABarline::RepeatCloseOpen, tr("Repeat Closed-Open") );
+	uiMarkType = new CAMenuToolButton( tr("Select Mark"), 3, this );
+		uiMarkType->setObjectName( "uiMarkType" );
+		uiMarkType->addButton( QIcon("images/mark/tempo/tempo.svg"),           CAMark::Tempo, tr("Tempo") );
+		uiMarkType->addButton( QIcon("images/mark/tempo/rit.svg"),             CAMark::Ritardando, tr("Ritardando") );
+		uiMarkType->addButton( QIcon("images/mark/tempo/accel.svg"),           CAMark::Ritardando*(-1), tr("Accellerando") );
+		uiMarkType->addButton( QIcon("images/mark/dynamic/mf.svg"),            CAMark::Dynamic, tr("Dynamic") );
+		uiMarkType->addButton( QIcon("images/mark/dynamic/crescendo.svg"),     CAMark::Crescendo, tr("Crescendo") );
+		uiMarkType->addButton( QIcon("images/mark/dynamic/decrescendo.svg"),   CAMark::Crescendo*(-1), tr("Decrescendo") );
+		uiMarkType->addButton( QIcon("images/mark/text.svg"),                  CAMark::Text, tr("Arbitrary Text") );
+		uiMarkType->addButton( QIcon("images/mark/bookmark.svg"),              CAMark::Bookmark, tr("Bookmark") );
+		uiMarkType->addButton( QIcon("images/mark/rehersalmark.svg"),          CAMark::RehersalMark, tr("Rehersal Mark") );
+		uiMarkType->addButton( QIcon("images/mark/fermata/fermatanormal.svg"), CAMark::Fermata, tr("Fermata") );
+		uiMarkType->addButton( QIcon("images/mark/repeatmark/coda.svg"),       CAMark::RepeatMark, tr("Repeat Mark") );
+		uiMarkType->addButton( QIcon("images/mark/instrumentchange.svg"),      CAMark::InstrumentChange, tr("Instrument Change") );
+		uiMarkType->addButton( QIcon("images/mark/pedal.svg"),                 CAMark::InstrumentChange, tr("Instrument Change") );
+		uiMarkType->addButton( QIcon("images/mark/fingering.svg"),             CAMark::Fingering, tr("Fingering") );
+	uiArticulationType = new CAMenuToolButton( tr("Articulation Mark"), 6, this );
+		uiArticulationType->setObjectName( "uiArticulationType" );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/accent.svg"),        CAArticulation::Accent,        tr("Accent") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/marcato.svg"),       CAArticulation::Marcato,       tr("Marcato") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/staccatissimo.svg"), CAArticulation::Staccatissimo, tr("Stacatissimo") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/espressivo.svg"),    CAArticulation::Espressivo,    tr("Espressivo") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/staccato.svg"),      CAArticulation::Staccato,      tr("Staccato") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/tenuto.svg"),        CAArticulation::Tenuto,        tr("Tenuto") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/portato.svg"),       CAArticulation::Portato,       tr("Portato") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/upbow.svg"),         CAArticulation::UpBow,         tr("UpBow") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/downbow.svg"),       CAArticulation::DownBow,       tr("DownBow") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/flageolet.svg"),     CAArticulation::Flageolet,     tr("Flageloet") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/lheel.svg"),         CAArticulation::LHeel,         tr("Left Heel") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/rheel.svg"),         CAArticulation::RHeel,         tr("Right Heel") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/ltoe.svg"),          CAArticulation::LToe,          tr("Left Toe") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/rtoe.svg"),          CAArticulation::RToe,          tr("Right Toe") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/open.svg"),          CAArticulation::Open,          tr("Open") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/stopped.svg"),       CAArticulation::Stopped,       tr("Stopped") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/turn.svg"),          CAArticulation::Turn,          tr("Turn") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/reverseturn.svg"),   CAArticulation::ReverseTurn,   tr("ReverseTurn") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/trill.svg"),         CAArticulation::Trill,         tr("Trill") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/prall.svg"),         CAArticulation::Prall,         tr("Prall") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/mordent.svg"),       CAArticulation::Mordent,       tr("Mordent") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/prallprall.svg"),    CAArticulation::PrallPrall,    tr("Prall-Prall") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/prallmordent.svg"),  CAArticulation::PrallMordent,  tr("Prall-Mordent") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/upprall.svg"),       CAArticulation::UpPrall,       tr("Up-Prall") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/downprall.svg"),     CAArticulation::DownPrall,     tr("Down-Prall") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/upmordent.svg"),     CAArticulation::UpMordent,     tr("Up-Mordent") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/downmordent.svg"),   CAArticulation::DownMordent,   tr("Down-Mordent") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/pralldown.svg"),     CAArticulation::PrallDown,     tr("Prall-Down") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/prallup.svg"),       CAArticulation::PrallUp,       tr("Prall-Up") );
+		uiArticulationType->addButton( QIcon("images/mark/articulation/lineprall.svg"),     CAArticulation::LinePrall,     tr("Line-Prall") );
 	
 	uiSheetToolBar = new QToolBar( tr("Sheet ToolBar"), this );
 	uiSheetName = new QLineEdit(this);
@@ -425,29 +474,36 @@ void CAMainWin::setupCustomUi() {
 	uiInsertToolBar->addAction( uiEditMode );
 	uiInsertToolBar->addSeparator();
 	uiContextType->setDefaultAction( uiInsertToolBar->addWidget( uiContextType ) );
-	uiContextType->defaultAction()->setToolTip(tr("Insert new context"));
+	uiContextType->defaultAction()->setToolTip(tr("Insert context"));
 	uiContextType->setCurrentId( CAContext::Staff );
 	connect( uiNewContext, SIGNAL( triggered() ), uiContextType, SLOT( click() ) );
 	uiInsertToolBar->addSeparator();
 	uiInsertToolBar->addAction( uiInsertPlayable );
 	uiSlurType->setDefaultAction( uiInsertToolBar->addWidget( uiSlurType ) );
-	uiSlurType->defaultAction()->setToolTip(tr("Insert new slur"));
+	uiSlurType->defaultAction()->setToolTip(tr("Insert slur"));
 	uiSlurType->setCurrentId( CASlur::TieType );
 	uiSlurType->defaultAction()->setCheckable(false);
 	uiClefType->setDefaultAction( uiInsertToolBar->addWidget( uiClefType ) );
-	uiClefType->defaultAction()->setToolTip(tr("Insert new clef"));
+	uiClefType->defaultAction()->setToolTip(tr("Insert clef"));
 	uiClefType->setCurrentId( CAClef::Treble );
 	connect( uiInsertClef, SIGNAL( triggered() ), uiClefType, SLOT( click() ) );
 	uiInsertToolBar->addAction( uiInsertKeySig );
-	uiInsertToolBar->addAction( uiInsertText );
 	uiTimeSigType->setDefaultAction( uiInsertToolBar->addWidget( uiTimeSigType ) );
-	uiTimeSigType->defaultAction()->setToolTip(tr("Insert new time signature"));
+	uiTimeSigType->defaultAction()->setToolTip(tr("Insert time signature"));
 	uiTimeSigType->setCurrentId( 44 );
 	connect( uiInsertTimeSig, SIGNAL( triggered() ), uiTimeSigType, SLOT( click() ) );
 	uiBarlineType->setDefaultAction( uiInsertToolBar->addWidget( uiBarlineType ) );
-	uiBarlineType->defaultAction()->setToolTip(tr("Insert new barline"));
+	uiBarlineType->defaultAction()->setToolTip(tr("Insert barline"));
 	uiBarlineType->setCurrentId( CABarline::End );
 	connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
+	uiMarkType->setDefaultAction( uiInsertToolBar->addWidget( uiMarkType ) );
+	uiMarkType->defaultAction()->setToolTip( tr("Insert mark") );
+	uiMarkType->setCurrentId( CAMark::Text );
+	connect( uiInsertMark, SIGNAL( triggered() ), uiMarkType, SLOT( click() ) );
+	uiArticulationType->setDefaultAction( uiInsertToolBar->addWidget( uiArticulationType ) );
+	uiArticulationType->defaultAction()->setToolTip( tr("Insert articulation mark") );
+	uiArticulationType->setCurrentId( CAArticulation::Accent );
+	connect( uiInsertArticulation, SIGNAL( triggered() ), uiArticulationType, SLOT( click() ) );
 	uiInsertToolBar->addAction( uiInsertSyllable );
 	uiInsertToolBar->addAction( uiInsertFM );
 	
@@ -541,9 +597,12 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->addAction( uiInsertTimeSig );
 	uiInsertGroup->addAction( uiTimeSigType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertKeySig );
-	uiInsertGroup->addAction( uiInsertText );
 	uiInsertGroup->addAction( uiInsertBarline );
 	uiInsertGroup->addAction( uiBarlineType->defaultAction() );
+	uiInsertGroup->addAction( uiMarkType->defaultAction() );
+	uiInsertGroup->addAction( uiInsertMark );
+	uiInsertGroup->addAction( uiArticulationType->defaultAction() );
+	uiInsertGroup->addAction( uiInsertArticulation );
 	uiInsertGroup->addAction( uiInsertSyllable );
 	uiInsertGroup->addAction( uiInsertFM );
 	uiInsertGroup->setExclusive( true );
@@ -2679,6 +2738,53 @@ void CAMainWin::on_uiClefType_toggled(bool checked, int buttonId) {
 	}
 }
 
+void CAMainWin::on_uiMarkType_toggled( bool checked, int buttonId ) {
+	if ( checked ) {
+		CAMark::CAMarkType markType;
+		
+		// Read currently selected entry from tool button menu
+		/*if ( buttonId==CAMark::Ritardando*(-1) ) {
+			markType = CAMark::Ritardando;
+			musElementFactory()->setRitardandoType( CATempo::Accellerando );
+		} else
+		if ( buttonId==CAMark::Ritardando ) {
+			markType = CAMark::Ritardando;
+			musElementFactory()->setRitardandoType( CATempo::Ritardando );
+		} else
+		if ( buttonId==CAMark::Crescendo*(-1) ) {
+			markType = CAMark::Crescendo;
+			musElementFactory()->setDynamicType( CADynamic::Decrescendo );
+		} else
+		if ( buttonId==CAMark::Crescendo ) {
+			markType = CAMark::Crescendo;
+			musElementFactory()->setDynamicType( CADynamic::Crescendo );
+		} else { */
+		markType = static_cast<CAMark::CAMarkType>(buttonId);
+			
+		musElementFactory()->setMusElementType( CAMusElement::Mark );
+		
+		// New mark type
+		musElementFactory()->setMarkType( markType );
+		
+		setMode( InsertMode );
+	}
+}
+
+void CAMainWin::on_uiArticulationType_toggled(bool checked, int buttonId) {
+	if ( checked ) {
+		// Read currently selected entry from tool button menu
+		CAArticulation::CAArticulationType type =
+			static_cast<CAArticulation::CAArticulationType>(buttonId);
+			
+		musElementFactory()->setMusElementType( CAMusElement::Mark );
+		
+		// New clef type
+		musElementFactory()->setArticulationType( type );
+		
+		setMode( InsertMode );
+	}
+}
+
 void CAMainWin::on_uiTimeSigBeats_valueChanged(int beats) {
 	if (mode()==InsertMode) {
 		musElementFactory()->setTimeSigBeats( beats );
@@ -2778,14 +2884,6 @@ void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 void CAMainWin::on_uiInsertKeySig_toggled(bool checked) {
 	if (checked) {
 		musElementFactory()->setMusElementType( CAMusElement::KeySignature );
-		setMode( InsertMode );
-	}
-}
-
-void CAMainWin::on_uiInsertText_toggled(bool checked) {
-	if (checked) {
-		musElementFactory()->setMusElementType( CAMusElement::Mark );
-		musElementFactory()->setMarkType( CAMark::Text );
 		setMode( InsertMode );
 	}
 }
@@ -3230,7 +3328,8 @@ void CAMainWin::updateInsertToolBar() {
 						uiClefType->defaultAction()->setVisible(true);
 						uiTimeSigType->defaultAction()->setVisible(true);
 						uiInsertKeySig->setVisible(true);
-						uiInsertText->setVisible(true);
+						uiMarkType->defaultAction()->setVisible(true);
+						uiArticulationType->defaultAction()->setVisible(true);
 						uiInsertTimeSig->setVisible(true);
 						uiBarlineType->defaultAction()->setVisible(true);
 						uiInsertFM->setVisible(false);
@@ -3245,7 +3344,8 @@ void CAMainWin::updateInsertToolBar() {
 						uiClefType->defaultAction()->setVisible(false);
 						uiTimeSigType->defaultAction()->setVisible(false);
 						uiInsertKeySig->setVisible(false);
-						uiInsertText->setVisible(false);
+						uiMarkType->defaultAction()->setVisible(false);
+						uiArticulationType->defaultAction()->setVisible(false);
 						uiInsertTimeSig->setVisible(false);
 						uiBarlineType->defaultAction()->setVisible(false);
 						uiInsertFM->setVisible(true);
@@ -3260,7 +3360,8 @@ void CAMainWin::updateInsertToolBar() {
 						uiClefType->defaultAction()->setVisible(false);
 						uiTimeSigType->defaultAction()->setVisible(false);
 						uiInsertKeySig->setVisible(false);
-						uiInsertText->setVisible(false);
+						uiMarkType->defaultAction()->setVisible(false);
+						uiArticulationType->defaultAction()->setVisible(false);
 						uiInsertTimeSig->setVisible(false);
 						uiBarlineType->defaultAction()->setVisible(false);
 						uiInsertFM->setVisible(false);
@@ -3277,7 +3378,8 @@ void CAMainWin::updateInsertToolBar() {
 				uiClefType->defaultAction()->setVisible(false);
 				uiTimeSigType->defaultAction()->setVisible(false);
 				uiInsertKeySig->setVisible(false);
-				uiInsertText->setVisible(false);
+				uiMarkType->defaultAction()->setVisible(false);
+				uiArticulationType->defaultAction()->setVisible(false);
 				uiInsertTimeSig->setVisible(false);
 				uiBarlineType->defaultAction()->setVisible(false);
 				uiInsertFM->setVisible(false);
@@ -3296,7 +3398,8 @@ void CAMainWin::updateInsertToolBar() {
 		uiClefType->defaultAction()->setVisible(false);
 		uiTimeSigType->defaultAction()->setVisible(false);
 		uiInsertKeySig->setVisible(false);
-		uiInsertText->setVisible(false);
+		uiMarkType->defaultAction()->setVisible(false);
+		uiArticulationType->defaultAction()->setVisible(false);
 		uiInsertTimeSig->setVisible(false);
 		uiBarlineType->defaultAction()->setVisible(false);
 		uiInsertFM->setVisible(false);

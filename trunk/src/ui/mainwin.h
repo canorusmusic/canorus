@@ -143,11 +143,12 @@ private slots:
 	void on_uiContextType_toggled(bool, int);
 	void on_uiClefType_toggled(bool, int);
 	void on_uiInsertKeySig_toggled(bool);
-	void on_uiInsertText_toggled(bool);
 	void on_uiTimeSigType_toggled(bool, int);
 	void on_uiBarlineType_toggled(bool, int);
 	void on_uiInsertPlayable_toggled(bool);
 	void on_uiSlurType_toggled(bool, int);
+	void on_uiMarkType_toggled(bool, int);
+	void on_uiArticulationType_toggled(bool, int);
 	void on_uiInsertSyllable_toggled(bool);
 	void on_uiInsertFM_toggled(bool);
 	
@@ -315,9 +316,10 @@ private:
 			// QAction       *uiInsertPlayable;  // made by Qt Designer
 			CAMenuToolButton *uiClefType;
 			// QAction       *uiInsertKeySig;  // made by Qt Designer
-			// QAction       *uiInsertText;
 			CAMenuToolButton *uiTimeSigType;  // made by Qt Designer
 			CAMenuToolButton *uiBarlineType;
+			CAMenuToolButton *uiMarkType;
+			CAMenuToolButton *uiArticulationType;
 			// QAction       *uiInsertSyllable;  // made by Qt Designer
 			// QAction       *uiInsertFM;  // made by Qt Designer
 		

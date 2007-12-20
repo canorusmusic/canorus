@@ -44,16 +44,20 @@ const QString CAMark::markTypeToString( CAMark::CAMarkType t ) {
 			return "Text";
 		case Tempo:
 			return "Tempo";
-		case Crescendo:
-			return "Crescendo";
+		case Ritardando:
+			return "Ritardando";
 		case Dynamic:
 			return "Dynamic";
+		case Crescendo:
+			return "Crescendo";
 		case Pedal:
 			return "Pedal";
 		case InstrumentChange:
 			return "InstrumentChange";
 		case Bookmark:
 			return "Bookmark";
+		case RehersalMark:
+			return "RehersalMark";
 		case Fermata:
 			return "Fermata";
 		case RepeatMark:
@@ -79,11 +83,14 @@ CAMark::CAMarkType CAMark::markTypeFromString( const QString s ) {
 	if ( s=="Tempo" ) {
 		return Tempo;
 	} else
-	if ( s=="Crescendo" ) {
-		return Crescendo;
+	if ( s=="Ritardando" ) {
+		return Ritardando;
 	} else
 	if ( s=="Dynamic" ) {
 		return Dynamic;
+	} else
+	if ( s=="Crescendo" ) {
+		return Crescendo;
 	} else
 	if ( s=="Pedal" ) {
 		return Pedal;
@@ -93,6 +100,9 @@ CAMark::CAMarkType CAMark::markTypeFromString( const QString s ) {
 	} else
 	if ( s=="Bookmark" ) {
 		return Bookmark;
+	} else
+	if ( s=="RehersalMark" ) {
+		return RehersalMark;
 	} else
 	if ( s=="Fermata" ) {
 		return Fermata;
