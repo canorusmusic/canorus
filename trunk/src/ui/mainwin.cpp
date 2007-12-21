@@ -75,7 +75,7 @@
 
 #include "export/lilypondexport.h"
 #include "export/canorusmlexport.h"
-#include "export/midiexport.h"
+//#include "export/midiexport.h"
 #include "import/lilypondimport.h"
 #include "import/canorusmlimport.h"
 
