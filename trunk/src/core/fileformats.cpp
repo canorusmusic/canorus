@@ -23,7 +23,7 @@ const QString CAFileFormats::ABCMUSIC_FILTER  = QObject::tr("ABC music document 
 const QString CAFileFormats::FINALE_FILTER    = QObject::tr("Finale document (*.mus)");
 const QString CAFileFormats::SIBELIUS_FILTER  = QObject::tr("Sibelius document (*.sib)");
 const QString CAFileFormats::CAPELLA_FILTER   = QObject::tr("Capella document (*.cap)");
-const QString CAFileFormats::MIDI_FILTER      = QObject::tr("Midi file (*.mid, *.midi)");
+const QString CAFileFormats::MIDI_FILTER      = QObject::tr("Midi file (*.mid *.midi)");
 
 /*!
 	Converts the file format enumeration to filter as string.
