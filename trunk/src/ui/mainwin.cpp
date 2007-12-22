@@ -75,7 +75,7 @@
 
 #include "export/lilypondexport.h"
 #include "export/canorusmlexport.h"
-//#include "export/midiexport.h"
+#include "export/midiexport.h"
 #include "import/lilypondimport.h"
 #include "import/canorusmlimport.h"
 
@@ -2274,6 +2274,8 @@ void CAMainWin::onMidiInEvent( QVector<unsigned char> m) {
 */
 void CAMainWin::on_uiExportDocument_triggered() {
 	QStringList fileNames;
+	QString fileExtString;
+	QStringList fileExtList;
 	int ffound = uiExportDialog->exec();
 	if (ffound)
 		fileNames = uiExportDialog->selectedFiles();
@@ -2285,16 +2287,26 @@ void CAMainWin::on_uiExportDocument_triggered() {
 	if (!s.contains('.')) {
 		int left = uiExportDialog->selectedFilter().indexOf("(*.") + 2;
 		int len = uiExportDialog->selectedFilter().size() - left - 1;
-		s.append( uiExportDialog->selectedFilter().mid( left, len ) );
+		fileExtString = uiExportDialog->selectedFilter().mid( left, len );
+		// the default file extension is the first one:
+		fileExtList = fileExtString.split( " " );
+		s.append( fileExtList[0] );
 	}
 
 	if (CAPluginManager::exportFilterExists(uiExportDialog->selectedFilter())) {
 		CAPluginManager::exportAction(uiExportDialog->selectedFilter(), document(), s);
 	} else {
-		CALilyPondExport le;
-		le.setStreamToFile( s );
-		le.exportDocument( document() );
-		while ( le.isRunning() );
+		if ( uiExportDialog->selectedFilter() == CAFileFormats::MIDI_FILTER ) {
+			CAMidiExport me;
+			me.setStreamToFile( s );
+			me.exportDocument( document() );
+			while ( me.isRunning() );
+		} else {
+			CALilyPondExport le;
+			le.setStreamToFile( s );
+			le.exportDocument( document() );
+			while ( le.isRunning() );
+		}
 	}
 }
 
