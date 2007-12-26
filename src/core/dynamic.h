@@ -15,17 +15,30 @@ class CANote;
 
 class CADynamic: public CAMark {
 public:
+	enum CADynamicText {
+		ppppp, pppp, ppp, pp, p,
+		fffff, ffff, fff, ff, f,
+		fp, mf, mp, rfz, sff, sf, sfz, spp, sp,
+		Custom
+	};
+	
 	CADynamic( QString text, int volume, CANote *note );
 	virtual ~CADynamic();
 	
+	CAMusElement *clone();
+	int compare( CAMusElement* );
+	
 	inline const QString text() { return _text; }
 	inline void setText( const QString t ) { _text = t; }
-	inline int volume() { return _volume; }
-	inline void setVolume( int v ) { _volume = v; }
+	inline const int volume() { return _volume; }
+	inline void setVolume( const int v ) { _volume = v; }
+	
+	static const QString dynamicTextToString( CADynamicText t );
+	static CADynamicText dynamicTextFromString( const QString t );
 	
 private:
 	QString _text;
-	int _volume;
+	int _volume; // volume percantage - from 0% to 100%
 };
 
 #endif /* DYNAMIC_H_ */

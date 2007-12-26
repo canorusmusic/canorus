@@ -66,6 +66,7 @@
 #include "core/timesignature.h"
 #include "core/syllable.h"
 #include "core/functionmarking.h"
+#include "core/dynamic.h"
 #include "core/muselementfactory.h"
 #include "core/mimedata.h"
 #include "core/undo.h"
@@ -166,6 +167,8 @@ CAMainWin::~CAMainWin()  {
 	delete uiTimeSigToolBar;
 	delete uiClefToolBar;
 	delete uiFMToolBar;
+	
+	delete uiDynamicToolBar;
 }
 
 void CAMainWin::createCustomActions() {
@@ -445,6 +448,39 @@ void CAMainWin::createCustomActions() {
 		uiFMKeySig->addItem( QIcon("images/accidental/accs6.svg"), tr("d-sharp minor") );
 		uiFMKeySig->addItem( QIcon("images/accidental/accs7.svg"), tr("C-sharp major") );
 		uiFMKeySig->addItem( QIcon("images/accidental/accs7.svg"), tr("a-sharp minor") );
+	
+	uiDynamicToolBar = new QToolBar( tr("Dynamic marks ToolBar"), this );
+	uiDynamicText = new CAMenuToolButton( tr("Select Dynamic"), 5, this );
+		uiDynamicText->setObjectName("uiDynamicText");
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/p.svg"), CADynamic::p, tr("Piano", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/pp.svg"), CADynamic::pp, tr("Pianissimo", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/ppp.svg"), CADynamic::ppp, tr("Pianissimo", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/pppp.svg"), CADynamic::pppp, tr("Pianissimo", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/ppppp.svg"), CADynamic::ppppp, tr("Pianissimo", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/f.svg"), CADynamic::f, tr("Forte", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/ff.svg"), CADynamic::ff, tr("Fortissimo", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/fff.svg"), CADynamic::fff, tr("Fortissimo", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/ffff.svg"), CADynamic::ffff, tr("Fortissimo", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/fffff.svg"), CADynamic::fffff, tr("Fortissimo", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/mf.svg"), CADynamic::mf, tr("Mezzo Forte", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/mp.svg"), CADynamic::mp, tr("Mezzo Piano", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/fp.svg"), CADynamic::fp, tr("Forte Piano", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/sf.svg"), CADynamic::sf, tr("Sforzando Forte", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/sp.svg"), CADynamic::sp, tr("Sforzando Piano", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/sfz.svg"), CADynamic::sfz, tr("Sforzando", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/rfz.svg"), CADynamic::rfz, tr("Rinforzando", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/spp.svg"), CADynamic::spp, tr("Sforzando Pianissimo", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/mark/dynamic/sff.svg"), CADynamic::sff, tr("Sforzando Fortissimo", "dynamics") );
+		uiDynamicText->addButton( QIcon("images/general/custom.svg"), CADynamic::Custom, tr("Custom", "dynamics") );
+	uiDynamicVolume = new QSpinBox(this);
+		uiDynamicVolume->setObjectName( "uiDynamicVolume" );
+		uiDynamicVolume->setToolTip(tr("Playback Volume"));
+		uiDynamicVolume->setMinimum( 0 );
+		uiDynamicVolume->setMaximum( 100 );
+		uiDynamicVolume->setSuffix(" %");
+	uiDynamicCustomText = new QLineEdit(this);
+		uiDynamicCustomText->setObjectName( "uiDynamicCustomText" );
+		uiDynamicCustomText->setToolTip(tr("Dynamic mark text"));
 }
 
 /*!
@@ -585,6 +621,15 @@ void CAMainWin::setupCustomUi() {
 	connect( uiFMKeySig, SIGNAL( activated(int) ), this, SLOT( on_uiKeySig_activated(int) ) );
 	addToolBar(Qt::TopToolBarArea, uiFMToolBar);
 	
+	// Dynamic marks toolbar
+	uiDynamicText->setDefaultAction( uiDynamicToolBar->addWidget( uiDynamicText ) );
+	uiDynamicText->defaultAction()->setToolTip( tr("Predefined dynamic mark") );
+	uiDynamicText->setCurrentId( CADynamic::mf );
+	uiDynamicText->defaultAction()->setCheckable( false );
+	uiDynamicToolBar->addWidget( uiDynamicVolume );
+	uiDynamicToolBar->addWidget( uiDynamicCustomText );
+	addToolBar(Qt::TopToolBarArea, uiDynamicToolBar);
+	
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
 	uiInsertGroup->addAction( uiSelectMode );
@@ -616,6 +661,7 @@ void CAMainWin::setupCustomUi() {
 	uiKeySigToolBar->hide();
 	uiClefToolBar->hide();
 	uiFMToolBar->hide();
+	uiDynamicToolBar->hide();
 }
 
 void CAMainWin::newDocument() {
@@ -2776,7 +2822,7 @@ void CAMainWin::on_uiMarkType_toggled( bool checked, int buttonId ) {
 			musElementFactory()->setDynamicType( CADynamic::Crescendo );
 		} else { */
 		markType = static_cast<CAMark::CAMarkType>(buttonId);
-			
+		
 		musElementFactory()->setMusElementType( CAMusElement::Mark );
 		
 		// New mark type
@@ -3215,6 +3261,8 @@ void CAMainWin::on_uiNoteStemDirection_toggled(bool checked, int id) {
 	Updates all the toolbars according to the current state of the main window.
 */
 void CAMainWin::updateToolBars() {
+	updateUndoRedoButtons();
+	
 	updateInsertToolBar();
 	updateSheetToolBar();
 	updateContextToolBar();
@@ -3224,7 +3272,7 @@ void CAMainWin::updateToolBars() {
 	updateTimeSigToolBar();
 	updateClefToolBar();
 	updateFMToolBar();
-	updateUndoRedoButtons();
+	updateDynamicToolBar();
 	
 	if ( document() )
 		uiNewSheet->setVisible( true );
@@ -3558,6 +3606,32 @@ void CAMainWin::updateFMToolBar() {
 }
 
 /*!
+	Shows/Hides the dynamic marks properties tool bar according to the current state.
+*/
+void CAMainWin::updateDynamicToolBar() {
+	if ( uiMarkType->isChecked() && uiMarkType->currentId()==CAMark::Dynamic && mode()==InsertMode) {
+		uiDynamicText->setCurrentId( CADynamic::dynamicTextFromString(musElementFactory()->dynamicText()) );
+		uiDynamicVolume->setValue( musElementFactory()->dynamicVolume() );
+		uiDynamicCustomText->setText( musElementFactory()->dynamicText() );
+		uiDynamicToolBar->show();
+	} else if (mode()==EditMode) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if (v && v->selection().size()) {
+			CADynamic *dynamic = dynamic_cast<CADynamic*>(v->selection().at(0)->musElement());
+			if (dynamic) {
+				uiDynamicText->setCurrentId( CADynamic::dynamicTextFromString(dynamic->text()) );
+				uiDynamicVolume->setValue( dynamic->volume() );
+				uiDynamicCustomText->setText( dynamic->text() );
+				uiDynamicToolBar->show();
+			} else
+				uiDynamicToolBar->hide();
+		}	
+	} else
+		uiDynamicToolBar->hide();
+
+}
+
+/*!
 	Action on Edit->Copy.
 */
 void CAMainWin::on_uiCopy_triggered() {
@@ -3767,6 +3841,59 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 		for (int i=0; i<newEltList.size(); i++)
 			currentScoreViewPort()->addToSelection( newEltList[i] );
 		currentScoreViewPort()->repaint();
+	}
+}
+
+void CAMainWin::on_uiDynamicText_toggled(bool checked, int t) {
+	if (t==CADynamic::Custom)
+		return;
+	
+	QString text = CADynamic::dynamicTextToString(static_cast<CADynamic::CADynamicText>(t));
+	if (mode()==InsertMode) {
+		musElementFactory()->setDynamicText( text );
+	} else if ( mode()==EditMode ) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if ( v && v->selection().size() ) {
+			CADynamic *dynamic = dynamic_cast<CADynamic*>(v->selection().at(0)->musElement());
+			if ( dynamic ) {
+				dynamic->setText( text );
+				CACanorus::rebuildUI(document(), currentSheet());
+			}
+		}
+	}
+}
+
+void CAMainWin::on_uiDynamicVolume_valueChanged(int vol) {
+	if (mode()==InsertMode) {
+		musElementFactory()->setDynamicVolume( vol );
+	} else if ( mode()==EditMode ) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if ( v && v->selection().size() ) {
+			CADynamic *dynamic = dynamic_cast<CADynamic*>(v->selection().at(0)->musElement());
+			if ( dynamic ) {
+				dynamic->setVolume( vol );
+				CACanorus::rebuildUI(document(), currentSheet());
+			}
+		}
+	}
+}
+
+void CAMainWin::on_uiDynamicCustomText_returnPressed() {
+	QString text = uiDynamicCustomText->text();
+	CADynamic::CADynamicText t = CADynamic::dynamicTextFromString(text);
+	
+	uiDynamicText->setCurrentId(t);
+	if (mode()==InsertMode) {
+		musElementFactory()->setDynamicText( text );
+	} else if ( mode()==EditMode ) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if ( v && v->selection().size() ) {
+			CADynamic *dynamic = dynamic_cast<CADynamic*>(v->selection().at(0)->musElement());
+			if ( dynamic ) {
+				dynamic->setText( text );
+				CACanorus::rebuildUI(document(), currentSheet());
+			}
+		}
 	}
 }
 

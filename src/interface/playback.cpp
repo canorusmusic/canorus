@@ -20,6 +20,8 @@
 #include "core/barline.h"
 #include "core/note.h"
 #include "core/voice.h"
+#include "core/mark.h"
+#include "core/dynamic.h"
 
 /*!
 	\class CAPlayback
@@ -103,8 +105,6 @@ void CAPlayback::run() {
 		minLength = -1;
 		for (int i=0; i<streamCount(); i++) {
 			while ( streamAt(i).size() > streamIdx(i) &&
-			        ( streamAt(i).at(streamIdx(i))->musElementType()==CAMusElement::Note ||
-			          streamAt(i).at(streamIdx(i))->musElementType()==CAMusElement::Rest ) &&
 			        streamAt(i).at(streamIdx(i))->timeStart() == curTime(i)
 			      ) {
 				// note on
@@ -112,14 +112,27 @@ void CAPlayback::run() {
 				
 				if (note) {
 				    QVector<unsigned char> message;
+				    
+				    // send dynamic information
+				    for (int j=0; j<note->markList().size(); j++) {
+				    	if ( note->markList()[j]->markType()==CAMark::Dynamic ) {
+				    		message << (176 + note->voice()->midiChannel()); // set volume
+				    		message << (7);
+				    		message << qRound(127 * static_cast<CADynamic*>(note->markList()[j])->volume()/100.0);
+				    		midiDevice()->send(message);
+				    		message.clear();
+				    	}
+				    }
+				    
 					message << (144 + note->voice()->midiChannel()); // note on
 					message << (note->midiPitch());
 					message << (127);
-					if ( note->musElementType()!=CAMusElement::Rest && !note->tieEnd() )
+					if ( !note->tieEnd() )
 						midiDevice()->send(message);
 					message.clear();
+					
+					_curPlaying << static_cast<CAPlayable*>(streamAt(i).at(streamIdx(i)));
 				}
-				_curPlaying << static_cast<CAPlayable*>(streamAt(i).at(streamIdx(i)));
 				
 				int delta;
 				if ( (delta = streamAt(i).at(streamIdx(i))->timeStart() + streamAt(i).at(streamIdx(i))->timeLength() - _curTime[i]) < minLength

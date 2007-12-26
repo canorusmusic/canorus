@@ -11,6 +11,7 @@
 #include "core/functionmarkingcontext.h"
 #include "core/sheet.h"
 #include "core/text.h"
+#include "core/dynamic.h"
 #include "core/articulation.h"
 
 /*!
@@ -71,6 +72,9 @@ CAMusElementFactory::CAMusElementFactory() {
 	_fmEllipse = false;
 	mpoMusElement = 0;
 	_musElementType = CAMusElement::Undefined;
+	
+	_dynamicText = "mf";
+	_dynamicVolume = 80;
 }
 
 /*!
@@ -273,16 +277,25 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 	bool success = false;
 	
 	switch ( markType() ) {
-		case CAMark::Text: {
-			mpoMusElement = new CAText( "test", elt );
-			success=true;
+	case CAMark::Dynamic: {
+		if ( elt->musElementType()==CAMusElement::Note ) {
+			mpoMusElement = new CADynamic( dynamicText(), dynamicVolume(), static_cast<CANote*>(elt) );
+			success = true;
 		}
-		case CAMark::Articulation: {
-			if ( elt->musElementType()==CAMusElement::Note ) {
-				mpoMusElement = new CAArticulation( articulationType(), static_cast<CANote*>(elt) );
-				success=true;
-			}
+		break;
+	}
+	case CAMark::Text: {
+		mpoMusElement = new CAText( "test", elt );
+		success = true;
+		break;
+	}
+	case CAMark::Articulation: {
+		if ( elt->musElementType()==CAMusElement::Note ) {
+			mpoMusElement = new CAArticulation( articulationType(), static_cast<CANote*>(elt) );
+			success = true;
 		}
+		break;
+	}
 	}
 	
 	if (success) {

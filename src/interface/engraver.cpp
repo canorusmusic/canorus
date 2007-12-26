@@ -530,6 +530,24 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						
 						break;
 					}
+					case CAMusElement::Rest: {
+						newElt = new CADrawableRest(
+							(CARest*)elt,
+							drawableContext,
+							streamsX[i],
+							drawableContext->yPos()
+						);
+
+						v->addMElement(newElt);
+						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
+						
+						// place marks
+						for ( int j=0; j < elt->markList().size(); j++ ) {
+							v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, newElt->xPos(), newElt->yPos()-20*(j+1) ) );
+						}
+
+						break;
+					}
 					case CAMusElement::Syllable: {
 						newElt = new CADrawableSyllable(
 							static_cast<CASyllable*>(elt),
@@ -544,18 +562,6 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							prevDSyllable->setWidth( newElt->xPos() - prevDSyllable->xPos() );
 						}
 						
-						v->addMElement(newElt);
-						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
-						break;
-					}
-					case CAMusElement::Rest: {
-						newElt = new CADrawableRest(
-							(CARest*)elt,
-							drawableContext,
-							streamsX[i],
-							drawableContext->yPos()
-						);
-
 						v->addMElement(newElt);
 						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 						break;
