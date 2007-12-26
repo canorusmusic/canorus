@@ -14,6 +14,7 @@
 #include "core/mark.h"
 #include "core/articulation.h"
 #include "core/text.h"
+#include "core/dynamic.h"
 
 const int CADrawableMark::DEFAULT_TEXT_SIZE = 20;
 
@@ -34,13 +35,25 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
  : CADrawableMusElement( mark, dContext, x, y ) {
 	setDrawableMusElementType( CADrawableMusElement::DrawableMark );
 	
-	QFont font("FreeSans");
-	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
-	QFontMetrics fm(font);
-	
 	if ( mark->markType()==CAMark::Text ) {
+		QFont font("FreeSans");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
+		QFontMetrics fm(font);
+		
 		int textWidth = fm.width( static_cast<CAText*>(this->mark())->text() );
 		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
+		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+	} else
+	if ( mark->markType()==CAMark::Dynamic ) {
+		QFont font("Emmentaler");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
+		QFontMetrics fm(font);
+		
+		int textWidth = fm.width( static_cast<CADynamic*>(this->mark())->text() );
+		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
+		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+	} else {
+		setWidth( 11 ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
 	}
 	
@@ -52,6 +65,14 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 	p->setPen(QPen(s.color));
 		
 	switch ( mark()->markType() ) {
+	case CAMark::Dynamic: {
+		QFont font("Emmentaler");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
+		p->setFont(font);
+		
+		p->drawText( s.x, s.y, static_cast<CADynamic*>(mark())->text() );
+		break;
+	}
 	case CAMark::Text: {
 		QFont font("FreeSans");
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );

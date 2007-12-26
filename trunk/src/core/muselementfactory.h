@@ -175,7 +175,13 @@ public:
 	inline void setFMChordAreaMinor( bool m ) { _fmChordAreaMinor = m; }
 	
 	inline bool isFMEllipse() { return _fmEllipse; }
-	inline void setFMEllipse( bool e ) { _fmEllipse = e; }	
+	inline void setFMEllipse( bool e ) { _fmEllipse = e; }
+	
+	inline const QString dynamicText() { return _dynamicText; }
+	inline void setDynamicText( const QString t ) { _dynamicText = t; }
+	
+	inline const int dynamicVolume() { return _dynamicVolume; }
+	inline void setDynamicVolume( const int vol ) { _dynamicVolume = vol; }
 	
 private:
 	CAMusElement *mpoMusElement;                    // Newly created music element itself
@@ -212,5 +218,9 @@ private:
 	bool _fmChordAreaMinor;
 	bool _fmTonicDegreeMinor;
 	bool _fmEllipse;
+	
+	// Marks
+	QString _dynamicText;
+	int _dynamicVolume;
 };
 #endif // MUSELEMENTFACTORY_H_

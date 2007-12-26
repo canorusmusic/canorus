@@ -198,11 +198,16 @@ private slots:
 	// Lyrics
 	void onSyllableEditKeyPressEvent(QKeyEvent *, CASyllableEdit*);
 	
-	// Function marking
+	// Function marks
 	void on_uiFMFunction_toggled(bool, int);
 	void on_uiFMChordArea_toggled(bool, int);
 	void on_uiFMTonicDegree_toggled(bool, int);
 	void on_uiFMEllipse_toggled(bool);
+	
+	// Dynamic marks
+	void on_uiDynamicText_toggled(bool, int);
+	void on_uiDynamicVolume_valueChanged(int);
+	void on_uiDynamicCustomText_returnPressed();
 	
 	// Tools
 	void on_uiSettings_triggered();
@@ -297,6 +302,7 @@ private:
 	void updateTimeSigToolBar();
 	void updateClefToolBar();
 	void updateFMToolBar();
+	void updateDynamicToolBar();
 	
 		/////////////////////
 		// Toolbar section //
@@ -386,5 +392,9 @@ private:
 			//QSpinBox        *uiKeySigNumberOfAccs; // defined in uiKeySigToolBar
 			//QComboBox       *uiKeySigGender; // defined in uiKeySigToolBar
 			//QAction         *uiFMEllipse; // made by Qt Designer
+		QToolBar *uiDynamicToolBar; // dynamic mark tool bar
+			CAMenuToolButton *uiDynamicText;
+			QSpinBox         *uiDynamicVolume;
+			QLineEdit        *uiDynamicCustomText;
 };
 #endif /* MAINWIN_H_ */
