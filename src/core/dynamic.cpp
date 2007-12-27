@@ -29,7 +29,16 @@ CAMusElement* CADynamic::clone() {
 }
 
 int CADynamic::compare( CAMusElement *elt ) {
-	return 0; //TODO
+	if (elt->musElementType()!=CAMusElement::Mark)
+		return -2;
+	
+	if (static_cast<CAMark*>(elt)->markType()!=CAMark::Dynamic)
+		return -1;
+	
+	if (static_cast<CADynamic*>(elt)->text()!=text())
+		return 1;
+	
+	return 0;
 }
 
 const QString CADynamic::dynamicTextToString( CADynamicText t ) {

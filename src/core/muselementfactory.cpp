@@ -12,6 +12,7 @@
 #include "core/sheet.h"
 #include "core/text.h"
 #include "core/dynamic.h"
+#include "core/instrumentchange.h"
 #include "core/articulation.h"
 
 /*!
@@ -75,6 +76,7 @@ CAMusElementFactory::CAMusElementFactory() {
 	
 	_dynamicText = "mf";
 	_dynamicVolume = 80;
+	_instrument = 0;
 }
 
 /*!
@@ -287,6 +289,13 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 	case CAMark::Text: {
 		mpoMusElement = new CAText( "test", elt );
 		success = true;
+		break;
+	}
+	case CAMark::InstrumentChange: {
+		if ( elt->musElementType()==CAMusElement::Note ) {
+			mpoMusElement = new CAInstrumentChange( instrument(), static_cast<CANote*>(elt) );
+			success = true;
+		}
 		break;
 	}
 	case CAMark::Articulation: {

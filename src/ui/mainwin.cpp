@@ -67,6 +67,7 @@
 #include "core/syllable.h"
 #include "core/functionmarking.h"
 #include "core/dynamic.h"
+#include "core/instrumentchange.h"
 #include "core/muselementfactory.h"
 #include "core/mimedata.h"
 #include "core/undo.h"
@@ -169,6 +170,7 @@ CAMainWin::~CAMainWin()  {
 	delete uiFMToolBar;
 	
 	delete uiDynamicToolBar;
+	delete uiInstrumentToolBar;
 }
 
 void CAMainWin::createCustomActions() {
@@ -233,7 +235,7 @@ void CAMainWin::createCustomActions() {
 		uiMarkType->addButton( QIcon("images/mark/fermata/fermatanormal.svg"), CAMark::Fermata, tr("Fermata") );
 		uiMarkType->addButton( QIcon("images/mark/repeatmark/coda.svg"),       CAMark::RepeatMark, tr("Repeat Mark") );
 		uiMarkType->addButton( QIcon("images/mark/instrumentchange.svg"),      CAMark::InstrumentChange, tr("Instrument Change") );
-		uiMarkType->addButton( QIcon("images/mark/pedal.svg"),                 CAMark::InstrumentChange, tr("Instrument Change") );
+		uiMarkType->addButton( QIcon("images/mark/pedal.svg"),                 CAMark::Pedal, tr("Instrument Change") );
 		uiMarkType->addButton( QIcon("images/mark/fingering.svg"),             CAMark::Fingering, tr("Fingering") );
 	uiArticulationType = new CAMenuToolButton( tr("Articulation Mark"), 6, this );
 		uiArticulationType->setObjectName( "uiArticulationType" );
@@ -481,6 +483,13 @@ void CAMainWin::createCustomActions() {
 	uiDynamicCustomText = new QLineEdit(this);
 		uiDynamicCustomText->setObjectName( "uiDynamicCustomText" );
 		uiDynamicCustomText->setToolTip(tr("Dynamic mark text"));
+	
+	uiInstrumentToolBar = new QToolBar( tr("Instrument ToolBar"), this );
+	uiInstrumentChange = new QComboBox( this );
+		uiInstrumentChange->setObjectName("uiInstrumentChange");
+		uiInstrumentChange->setToolTip(tr("Instrument Change"));
+		uiInstrumentChange->addItems( CACanorus::midiDevice()->GM_INSTRUMENTS );
+
 }
 
 /*!
@@ -630,6 +639,10 @@ void CAMainWin::setupCustomUi() {
 	uiDynamicToolBar->addWidget( uiDynamicCustomText );
 	addToolBar(Qt::TopToolBarArea, uiDynamicToolBar);
 	
+	// Instrument tool bar
+	uiInstrumentToolBar->addWidget( uiInstrumentChange );
+	addToolBar(Qt::TopToolBarArea, uiInstrumentToolBar);
+	
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
 	uiInsertGroup->addAction( uiSelectMode );
@@ -662,6 +675,7 @@ void CAMainWin::setupCustomUi() {
 	uiClefToolBar->hide();
 	uiFMToolBar->hide();
 	uiDynamicToolBar->hide();
+	uiInstrumentToolBar->hide();
 }
 
 void CAMainWin::newDocument() {
@@ -3273,6 +3287,7 @@ void CAMainWin::updateToolBars() {
 	updateClefToolBar();
 	updateFMToolBar();
 	updateDynamicToolBar();
+	updateInstrumentToolBar();
 	
 	if ( document() )
 		uiNewSheet->setVisible( true );
@@ -3632,6 +3647,28 @@ void CAMainWin::updateDynamicToolBar() {
 }
 
 /*!
+	Shows/Hides the instrument marks properties tool bar according to the current state.
+*/
+void CAMainWin::updateInstrumentToolBar() {
+	if ( uiMarkType->isChecked() && uiMarkType->currentId()==CAMark::InstrumentChange && mode()==InsertMode) {
+		uiInstrumentChange->setCurrentIndex( musElementFactory()->instrument() );
+		uiInstrumentToolBar->show();
+	} else if (mode()==EditMode) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if (v && v->selection().size()) {
+			CAInstrumentChange *instrument = dynamic_cast<CAInstrumentChange*>(v->selection().at(0)->musElement());
+			if (instrument) {
+				uiInstrumentChange->setCurrentIndex( instrument->instrument() );
+				uiInstrumentToolBar->show();
+			} else
+				uiInstrumentToolBar->hide();
+		}	
+	} else
+		uiInstrumentToolBar->hide();
+
+}
+
+/*!
 	Action on Edit->Copy.
 */
 void CAMainWin::on_uiCopy_triggered() {
@@ -3851,6 +3888,7 @@ void CAMainWin::on_uiDynamicText_toggled(bool checked, int t) {
 	QString text = CADynamic::dynamicTextToString(static_cast<CADynamic::CADynamicText>(t));
 	if (mode()==InsertMode) {
 		musElementFactory()->setDynamicText( text );
+		uiDynamicCustomText->setText(text);
 	} else if ( mode()==EditMode ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if ( v && v->selection().size() ) {
@@ -3891,6 +3929,21 @@ void CAMainWin::on_uiDynamicCustomText_returnPressed() {
 			CADynamic *dynamic = dynamic_cast<CADynamic*>(v->selection().at(0)->musElement());
 			if ( dynamic ) {
 				dynamic->setText( text );
+				CACanorus::rebuildUI(document(), currentSheet());
+			}
+		}
+	}
+}
+
+void CAMainWin::on_uiInstrumentChange_activated( int index ) {
+	if (mode()==InsertMode) {
+		musElementFactory()->setInstrument( index);
+	} else if ( mode()==EditMode ) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if ( v && v->selection().size() ) {
+			CAInstrumentChange *instrument = dynamic_cast<CAInstrumentChange*>(v->selection().at(0)->musElement());
+			if ( instrument ) {
+				instrument->setInstrument( index);
 				CACanorus::rebuildUI(document(), currentSheet());
 			}
 		}

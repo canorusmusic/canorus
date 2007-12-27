@@ -209,6 +209,9 @@ private slots:
 	void on_uiDynamicVolume_valueChanged(int);
 	void on_uiDynamicCustomText_returnPressed();
 	
+	// Instrument change
+	void on_uiInstrumentChange_activated( int );
+	
 	// Tools
 	void on_uiSettings_triggered();
 	
@@ -303,6 +306,7 @@ private:
 	void updateClefToolBar();
 	void updateFMToolBar();
 	void updateDynamicToolBar();
+	void updateInstrumentToolBar();
 	
 		/////////////////////
 		// Toolbar section //
@@ -396,5 +400,7 @@ private:
 			CAMenuToolButton *uiDynamicText;
 			QSpinBox         *uiDynamicVolume;
 			QLineEdit        *uiDynamicCustomText;
+		QToolBar *uiInstrumentToolBar; // instrument marks tool bar
+			QComboBox        *uiInstrumentChange;
 };
 #endif /* MAINWIN_H_ */
