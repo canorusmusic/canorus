@@ -11,10 +11,14 @@
 #include "drawable/drawablemark.h"
 #include "drawable/drawablecontext.h"
 
+#include "interface/mididevice.h" // needed for instrument change
+
 #include "core/mark.h"
 #include "core/articulation.h"
 #include "core/text.h"
 #include "core/dynamic.h"
+#include "core/instrumentchange.h"
+#include "canorus.h"
 
 const int CADrawableMark::DEFAULT_TEXT_SIZE = 20;
 
@@ -52,6 +56,16 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		int textWidth = fm.width( static_cast<CADynamic*>(this->mark())->text() );
 		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+	} else
+	if ( mark->markType()==CAMark::InstrumentChange ) {
+		QFont font("FreeSans");
+		font.setStyle( QFont::StyleItalic );
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
+		QFontMetrics fm(font);
+		
+		int textWidth = fm.width( CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
+		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
+		setHeight( qRound(DEFAULT_TEXT_SIZE) );
 	} else {
 		setWidth( 11 ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
@@ -79,6 +93,15 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		p->setFont(font);
 		
 		p->drawText( s.x, s.y, static_cast<CAText*>(mark())->text() );
+		break;
+	}
+	case CAMark::InstrumentChange: {
+		QFont font("FreeSans");
+		font.setStyle( QFont::StyleItalic );
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
+		p->setFont(font);
+		
+		p->drawText( s.x, s.y, CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
 		break;
 	}
 	case CAMark::Articulation: {

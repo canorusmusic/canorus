@@ -22,6 +22,7 @@
 #include "core/voice.h"
 #include "core/mark.h"
 #include "core/dynamic.h"
+#include "core/instrumentchange.h"
 
 /*!
 	\class CAPlayback
@@ -121,6 +122,12 @@ void CAPlayback::run() {
 				    		message << qRound(127 * static_cast<CADynamic*>(note->markList()[j])->volume()/100.0);
 				    		midiDevice()->send(message);
 				    		message.clear();
+				    	} else
+				    	if ( note->markList()[j]->markType()==CAMark::InstrumentChange ) {
+							message << (192 + note->voice()->midiChannel()); // change program
+							message << static_cast<unsigned char>(static_cast<CAInstrumentChange*>(note->markList()[j])->instrument());
+							midiDevice()->send(message);
+							message.clear();
 				    	}
 				    }
 				    

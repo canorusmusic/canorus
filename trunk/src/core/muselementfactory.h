@@ -183,6 +183,9 @@ public:
 	inline const int dynamicVolume() { return _dynamicVolume; }
 	inline void setDynamicVolume( const int vol ) { _dynamicVolume = vol; }
 	
+	inline const int instrument() { return _instrument; }
+	inline void setInstrument( const int instrument ) { _instrument = instrument; }
+	
 private:
 	CAMusElement *mpoMusElement;                    // Newly created music element itself
 	
@@ -222,5 +225,6 @@ private:
 	// Marks
 	QString _dynamicText;
 	int _dynamicVolume;
+	int _instrument;
 };
 #endif // MUSELEMENTFACTORY_H_
