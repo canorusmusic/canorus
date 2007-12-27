@@ -12,10 +12,13 @@
 #define DRAWABLEMARK_H_
 
 class CADrawableStaff;
+class CANote;
+class CADrawableNote;
 
 class CADrawableMark : public CADrawableMusElement {
 public:
 	CADrawableMark( CAMark *mark, CADrawableContext *drawableContext, int x, int y);
+	virtual ~CADrawableMark();
 	
 	void draw( QPainter *p, CADrawSettings s );
 	CADrawableMark *clone( CADrawableContext* newContext = 0 );
@@ -23,6 +26,8 @@ public:
 	
 private:
 	static const int DEFAULT_TEXT_SIZE;
+	CANote         *_tempoNote;
+	CADrawableNote *_tempoDNote;
 };
 
 #endif /* DRAWABLEMARK_H_ */

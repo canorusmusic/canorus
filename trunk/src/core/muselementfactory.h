@@ -23,6 +23,8 @@
 #include "core/syllable.h"
 #include "core/mark.h"
 #include "core/articulation.h"
+#include "core/fermata.h"
+#include "core/tempo.h"
 
 class CAMusElement;
 
@@ -187,6 +189,18 @@ public:
 	inline const int instrument() { return _instrument; }
 	inline void setInstrument( const int instrument ) { _instrument = instrument; }
 	
+	inline const CAFermata::CAFermataType fermataType() { return _fermataType; }
+	inline void setFermataType( const CAFermata::CAFermataType type ) { _fermataType = type; }
+	
+	inline const int tempoBpm() { return _tempoBpm; }
+	inline void setTempoBpm( const int tempoBpm ) { _tempoBpm = tempoBpm; }
+	
+	inline const int tempoBeatDotted() { return _tempoBeatDotted; }
+	inline void setTempoBeatDotted( const int dotted ) { _tempoBeatDotted = dotted; }
+	
+	inline const CAPlayable::CAPlayableLength tempoBeat() { return _tempoBeat; }
+	inline void setTempoBeat( CAPlayable::CAPlayableLength length ) { _tempoBeat = length; }
+	
 private:
 	CAMusElement *mpoMusElement;                    // Newly created music element itself
 	CAMusElement *mpoEmpty;                         // An empty (dummy) element.
@@ -228,5 +242,9 @@ private:
 	QString _dynamicText;
 	int _dynamicVolume;
 	int _instrument;
+	CAFermata::CAFermataType _fermataType;
+	CAPlayable::CAPlayableLength _tempoBeat;
+	int _tempoBeatDotted;
+	int _tempoBpm;
 };
 #endif // MUSELEMENTFACTORY_H_

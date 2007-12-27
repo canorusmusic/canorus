@@ -16,16 +16,19 @@ public:
 	CATempo( CAPlayable::CAPlayableLength l, int dotted, int bpm, CAMusElement *m );
 	virtual ~CATempo();
 	
+	CAMusElement *clone();
+	int compare( CAMusElement *elt );
+	
 	inline int bpm() { return _bpm; }
 	inline void setBpm( int bpm ) { _bpm = bpm; }
-	inline CAPlayable::CAPlayableLength playableLength() { return _playableLength; }
-	inline void setPlayableLength( CAPlayable::CAPlayableLength l ) { _playableLength = l; }
-	inline int dotted() { return _dotted; }
-	inline void setDotted( int dotted ) { _dotted = dotted; }
+	inline CAPlayable::CAPlayableLength beat() { return _beat; }
+	inline void setBeat( CAPlayable::CAPlayableLength l ) { _beat = l; }
+	inline int beatDotted() { return _beatDotted; }
+	inline void setBeatDotted( int dotted ) { _beatDotted = dotted; }
 	
 private:
-	CAPlayable::CAPlayableLength _playableLength;
-	int _dotted;
+	CAPlayable::CAPlayableLength _beat;
+	int _beatDotted;
 	int _bpm; // beats per minute
 };
 

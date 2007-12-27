@@ -173,6 +173,8 @@ CAMainWin::~CAMainWin()  {
 	delete uiFMToolBar;
 	delete uiDynamicToolBar;
 	delete uiInstrumentToolBar;
+	delete uiTempoToolBar;
+	delete uiFermataToolBar;
 
 	if(!CACanorus::mainWinCount()) // closing down
 		CACanorus::cleanUp();
@@ -234,14 +236,14 @@ void CAMainWin::createCustomActions() {
 		uiMarkType->addButton( QIcon("images/mark/dynamic/mf.svg"),            CAMark::Dynamic, tr("Dynamic") );
 		uiMarkType->addButton( QIcon("images/mark/dynamic/crescendo.svg"),     CAMark::Crescendo, tr("Crescendo") );
 		uiMarkType->addButton( QIcon("images/mark/dynamic/decrescendo.svg"),   CAMark::Crescendo*(-1), tr("Decrescendo") );
+		uiMarkType->addButton( QIcon("images/mark/fermata/normal.svg"),        CAMark::Fermata, tr("Fermata") );
 		uiMarkType->addButton( QIcon("images/mark/text.svg"),                  CAMark::Text, tr("Arbitrary Text") );
+		uiMarkType->addButton( QIcon("images/mark/repeatmark/coda.svg"),       CAMark::RepeatMark, tr("Repeat Mark") );
+		uiMarkType->addButton( QIcon("images/mark/pedal.svg"),                 CAMark::Pedal, tr("Instrument Change") );
 		uiMarkType->addButton( QIcon("images/mark/bookmark.svg"),              CAMark::Bookmark, tr("Bookmark") );
 		uiMarkType->addButton( QIcon("images/mark/rehersalmark.svg"),          CAMark::RehersalMark, tr("Rehersal Mark") );
-		uiMarkType->addButton( QIcon("images/mark/fermata/fermatanormal.svg"), CAMark::Fermata, tr("Fermata") );
-		uiMarkType->addButton( QIcon("images/mark/repeatmark/coda.svg"),       CAMark::RepeatMark, tr("Repeat Mark") );
-		uiMarkType->addButton( QIcon("images/mark/instrumentchange.svg"),      CAMark::InstrumentChange, tr("Instrument Change") );
-		uiMarkType->addButton( QIcon("images/mark/pedal.svg"),                 CAMark::Pedal, tr("Instrument Change") );
 		uiMarkType->addButton( QIcon("images/mark/fingering.svg"),             CAMark::Fingering, tr("Fingering") );
+		uiMarkType->addButton( QIcon("images/mark/instrumentchange.svg"),      CAMark::InstrumentChange, tr("Instrument Change") );
 	uiArticulationType = new CAMenuToolButton( tr("Articulation Mark"), 6, this );
 		uiArticulationType->setObjectName( "uiArticulationType" );
 		uiArticulationType->addButton( QIcon("images/mark/articulation/accent.svg"),        CAArticulation::Accent,        tr("Accent") );
@@ -313,14 +315,14 @@ void CAMainWin::createCustomActions() {
 	uiPlayableToolBar = new QToolBar( tr("Playable ToolBar"), this );
 	uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this );
 		uiPlayableLength->setObjectName( "uiPlayableLength" );
-		uiPlayableLength->addButton( QIcon("images/playable/n0.svg"), CANote::Breve, tr("Breve Length") );
-		uiPlayableLength->addButton( QIcon("images/playable/n1.svg"), CANote::Whole, tr("Whole Length") );
-		uiPlayableLength->addButton( QIcon("images/playable/n2.svg"), CANote::Half, tr("Half Length") );
-		uiPlayableLength->addButton( QIcon("images/playable/n4.svg"), CANote::Quarter, tr("Quarter Length") );
-		uiPlayableLength->addButton( QIcon("images/playable/n8.svg"), CANote::Eighth, tr("Eighth Length") );
-		uiPlayableLength->addButton( QIcon("images/playable/n16.svg"), CANote::Sixteenth, tr("Sixteenth Length") );
-		uiPlayableLength->addButton( QIcon("images/playable/n32.svg"), CANote::ThirtySecond, tr("ThirtySecond Length") );
-		uiPlayableLength->addButton( QIcon("images/playable/n64.svg"), CANote::SixtyFourth, tr("SixtyFourth Length") );
+		uiPlayableLength->addButton( QIcon("images/playable/n0.svg"), CANote::Breve, tr("Breve", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n1.svg"), CANote::Whole, tr("Whole", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n2.svg"), CANote::Half, tr("Half", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n4.svg"), CANote::Quarter, tr("Quarter", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n8.svg"), CANote::Eighth, tr("Eighth", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n16.svg"), CANote::Sixteenth, tr("Sixteenth", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n32.svg"), CANote::ThirtySecond, tr("ThirtySecond", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n64.svg"), CANote::SixtyFourth, tr("SixtyFourth", "note") );
 	uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this );
 		uiNoteStemDirection->setObjectName( "uiNoteStemDirection" );
 		uiNoteStemDirection->addButton( QIcon("images/playable/notestemneutral.svg"), CANote::StemNeutral, tr("Note Stem Neutral") );
@@ -368,9 +370,9 @@ void CAMainWin::createCustomActions() {
 		uiTimeSigBeats->setMinimum( 1 );
 		uiTimeSigBeats->setValue( 4 );
 		uiTimeSigBeats->setToolTip( tr("Number of beats") );
-		uiTimeSigSlash = new QLabel( "/", this );
+	uiTimeSigSlash = new QLabel( "/", this );
 		uiTimeSigSlash->setObjectName( "uiTimeSigSlash" );
-		uiTimeSigBeat = new QSpinBox(this);
+	uiTimeSigBeat = new QSpinBox(this);
 		uiTimeSigBeat->setObjectName( "uiTimeSigBeat" );
 		uiTimeSigBeat->setMinimum( 1 );
 		uiTimeSigBeat->setValue( 4 );
@@ -494,7 +496,29 @@ void CAMainWin::createCustomActions() {
 		uiInstrumentChange->setObjectName("uiInstrumentChange");
 		uiInstrumentChange->setToolTip(tr("Instrument Change"));
 		uiInstrumentChange->addItems( CACanorus::midiDevice()->GM_INSTRUMENTS );
-
+	
+	uiTempoToolBar = new QToolBar( tr("Tempo ToolBar"), this );
+	uiTempoBeat = new CAMenuToolButton( tr("Select Beat"), 3, this );
+		uiTempoBeat->setObjectName("uiTempoBeat");
+		uiTempoBeat->addButton( QIcon("images/playable/n4.svg"), CANote::Quarter, tr("Quarter", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n2.svg"), CANote::Half, tr("Half", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n8.svg"), CANote::Eighth, tr("Eighth", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n4d.svg"), CANote::Quarter*(-1), tr("Dotted Quarter", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n2d.svg"), CANote::Half*(-1), tr("Dotted Half", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n8d.svg"), CANote::Eighth*(-1), tr("Dotted Eighth", "note") );
+	uiTempoEquals = new QLabel("=", this);
+		uiTempoEquals->setObjectName("uiTempoEquals");
+	uiTempoBpm = new QLineEdit(this);
+		uiTempoBpm->setObjectName("uiTempoBpm");
+		uiTempoBpm->setToolTip(tr("Beats per minute", "tempo"));
+	
+	uiFermataToolBar = new QToolBar( tr("Fermata ToolBar"), this );
+	uiFermataType = new CAMenuToolButton( tr("Fermata Type"), 4, this );
+		uiFermataType->setObjectName("uiFermataType");
+		uiFermataType->addButton( QIcon("images/mark/fermata/short.svg"), CAFermata::ShortFermata, tr("Short", "fermata") );
+		uiFermataType->addButton( QIcon("images/mark/fermata/normal.svg"), CAFermata::NormalFermata, tr("Normal", "fermata") );
+		uiFermataType->addButton( QIcon("images/mark/fermata/long.svg"), CAFermata::LongFermata, tr("Long", "fermata") );
+		uiFermataType->addButton( QIcon("images/mark/fermata/verylong.svg"), CAFermata::VeryLongFermata, tr("Very Long", "fermata") );
 }
 
 /*!
@@ -549,7 +573,7 @@ void CAMainWin::setupCustomUi() {
 	connect( uiInsertBarline, SIGNAL( triggered() ), uiBarlineType, SLOT( click() ) );
 	uiMarkType->setDefaultAction( uiInsertToolBar->addWidget( uiMarkType ) );
 	uiMarkType->defaultAction()->setToolTip( tr("Insert mark") );
-	uiMarkType->setCurrentId( CAMark::Text );
+	uiMarkType->setCurrentId( CAMark::Dynamic );
 	connect( uiInsertMark, SIGNAL( triggered() ), uiMarkType, SLOT( click() ) );
 	uiArticulationType->setDefaultAction( uiInsertToolBar->addWidget( uiArticulationType ) );
 	uiArticulationType->defaultAction()->setToolTip( tr("Insert articulation mark") );
@@ -648,6 +672,20 @@ void CAMainWin::setupCustomUi() {
 	uiInstrumentToolBar->addWidget( uiInstrumentChange );
 	addToolBar(Qt::TopToolBarArea, uiInstrumentToolBar);
 	
+	// Tempo tool bar
+	uiTempoBeat->setDefaultAction( uiTempoToolBar->addWidget( uiTempoBeat ) );
+	uiTempoBeat->defaultAction()->setCheckable(false);
+	uiTempoBeat->defaultAction()->setToolTip(tr("Beat", "tempo"));
+	uiTempoToolBar->addWidget( uiTempoEquals );
+	uiTempoToolBar->addWidget( uiTempoBpm );
+	addToolBar(Qt::TopToolBarArea, uiTempoToolBar);
+	
+	// Fermata tool bar
+	uiFermataType->setDefaultAction( uiFermataToolBar->addWidget( uiFermataType ) );
+	uiFermataType->defaultAction()->setCheckable(false);
+	uiFermataType->defaultAction()->setToolTip(tr("Fermata Type", "fermata"));
+	addToolBar(Qt::TopToolBarArea, uiFermataToolBar);
+	
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
 	uiInsertGroup->addAction( uiSelectMode );
@@ -681,6 +719,8 @@ void CAMainWin::setupCustomUi() {
 	uiFMToolBar->hide();
 	uiDynamicToolBar->hide();
 	uiInstrumentToolBar->hide();
+	uiTempoToolBar->hide();
+	uiFermataToolBar->hide();
 }
 
 void CAMainWin::newDocument() {
@@ -3303,6 +3343,8 @@ void CAMainWin::updateToolBars() {
 	updateFMToolBar();
 	updateDynamicToolBar();
 	updateInstrumentToolBar();
+	updateTempoToolBar();
+	updateFermataToolBar();
 	
 	if ( document() )
 		uiNewSheet->setVisible( true );
@@ -3658,7 +3700,50 @@ void CAMainWin::updateDynamicToolBar() {
 		}	
 	} else
 		uiDynamicToolBar->hide();
+}
 
+/*!
+	Shows/Hides the fermata properties tool bar according to the current state.
+*/
+void CAMainWin::updateFermataToolBar() {
+	if ( uiMarkType->isChecked() && uiMarkType->currentId()==CAMark::Fermata && mode()==InsertMode) {
+		uiFermataType->setCurrentId( musElementFactory()->fermataType() );
+		uiFermataToolBar->show();
+	} else if (mode()==EditMode) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if (v && v->selection().size()) {
+			CAFermata *f = dynamic_cast<CAFermata*>(v->selection().at(0)->musElement());
+			if (f) {
+				uiFermataType->setCurrentId( f->fermataType() );
+				uiFermataToolBar->show();
+			} else
+				uiFermataToolBar->hide();
+		}	
+	} else
+		uiFermataToolBar->hide();
+}
+
+/*!
+	Shows/Hides the tempo marks properties tool bar according to the current state.
+*/
+void CAMainWin::updateTempoToolBar() {
+	if ( uiMarkType->isChecked() && uiMarkType->currentId()==CAMark::Tempo && mode()==InsertMode) {
+		uiTempoBeat->setCurrentId( musElementFactory()->tempoBeat() * (musElementFactory()->tempoBeatDotted()?-1:1) );
+		uiTempoBpm->setText( QString::number(musElementFactory()->tempoBpm()) );
+		uiTempoToolBar->show();
+	} else if (mode()==EditMode) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if (v && v->selection().size()) {
+			CATempo *tempo = dynamic_cast<CATempo*>(v->selection().at(0)->musElement());
+			if (tempo) {
+				uiTempoBeat->setCurrentId( tempo->beat() * (tempo->beatDotted()?-1:1) );
+				uiTempoBpm->setText( QString::number(tempo->bpm()) );
+				uiTempoToolBar->show();
+			} else
+				uiTempoToolBar->hide();
+		}	
+	} else
+		uiTempoToolBar->hide();
 }
 
 /*!
@@ -3951,16 +4036,92 @@ void CAMainWin::on_uiDynamicCustomText_returnPressed() {
 
 void CAMainWin::on_uiInstrumentChange_activated( int index ) {
 	if (mode()==InsertMode) {
-		musElementFactory()->setInstrument( index);
+		musElementFactory()->setInstrument( index );
 	} else if ( mode()==EditMode ) {
 		CAScoreViewPort *v = currentScoreViewPort();
-		if ( v && v->selection().size() ) {
-			CAInstrumentChange *instrument = dynamic_cast<CAInstrumentChange*>(v->selection().at(0)->musElement());
-			if ( instrument ) {
+		CACanorus::undo()->createUndoCommand( document(), tr("change fermata type", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAInstrumentChange *instrument = dynamic_cast<CAInstrumentChange*>( v->selection().at(i)->musElement() );
+			
+			if ( instrument) {
 				instrument->setInstrument( index);
-				CACanorus::rebuildUI(document(), currentSheet());
 			}
 		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+}
+
+void CAMainWin::on_uiFermataType_toggled( bool checked, int t ) {
+	CAFermata::CAFermataType type = static_cast<CAFermata::CAFermataType>( t );
+	
+	if ( mode()==InsertMode ) {
+		musElementFactory()->setFermataType( type );
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("change fermata type", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAFermata *fm = dynamic_cast<CAFermata*>( v->selection().at(i)->musElement() );
+			
+			if ( fm ) {
+				fm->setFermataType( type );
+			}
+		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+}
+
+void CAMainWin::on_uiTempoBeat_toggled( bool checked, int t ) {
+	CAPlayable::CAPlayableLength length = static_cast<CAPlayable::CAPlayableLength>( t<0?t*(-1):t );
+	
+	if ( mode()==InsertMode ) {
+		musElementFactory()->setTempoBeat( length );
+		musElementFactory()->setTempoBeatDotted( t<0?1:0 );
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("change tempo beat", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CATempo *tempo = dynamic_cast<CATempo*>( v->selection().at(i)->musElement() );
+			
+			if ( tempo ) {
+				tempo->setBeat( length );
+				tempo->setBeatDotted( t<0?1:0 );
+			}
+		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}	
+}
+
+void CAMainWin::on_uiTempoBpm_returnPressed() {
+	QString text = uiTempoBpm->text();
+	int bpm = text.toInt();
+	
+	if (mode()==InsertMode) {
+		musElementFactory()->setTempoBpm( bpm );
+	} else if ( mode()==EditMode ) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("change tempo bpm", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CATempo *tempo = dynamic_cast<CATempo*>( v->selection().at(i)->musElement() );
+			
+			if ( tempo ) {
+				tempo->setBpm( bpm );
+			}
+		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
 	}
 }
 

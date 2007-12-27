@@ -17,10 +17,29 @@
 
 CATempo::CATempo( CAPlayable::CAPlayableLength p, int dotted, int bpm, CAMusElement *t )
  : CAMark( CAMark::Tempo, t ) {
-	setPlayableLength( p );
-	setDotted( dotted );
+	setBeat( p );
+	setBeatDotted( dotted );
 	setBpm( bpm );
 }
 
 CATempo::~CATempo() {
+}
+
+CAMusElement *CATempo::clone() {
+	return new CATempo( beat(), beatDotted(), bpm(), associatedElement() );
+}
+
+int CATempo::compare( CAMusElement *elt ) {
+	if (elt->musElementType()!=CAMusElement::Mark)
+		return -2;
+	else if (static_cast<CAMark*>(elt)->markType()!=CAMark::Tempo)
+		return -1;
+	else if (static_cast<CATempo*>(elt)->bpm()!=bpm())
+		return 1;
+	else if (static_cast<CATempo*>(elt)->beat()!=beat())
+		return 2;
+	else if (static_cast<CATempo*>(elt)->beatDotted()!=beatDotted())
+		return 3;
+	else
+		return 0;
 }

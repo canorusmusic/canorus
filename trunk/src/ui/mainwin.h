@@ -213,6 +213,13 @@ private slots:
 	// Instrument change
 	void on_uiInstrumentChange_activated( int );
 	
+	// Fermata
+	void on_uiFermataType_toggled( bool, int );
+	
+	// Tempo
+	void on_uiTempoBeat_toggled( bool, int );
+	void on_uiTempoBpm_returnPressed();
+	
 	// Tools
 	void on_uiSettings_triggered();
 	
@@ -310,6 +317,8 @@ private:
 	void updateFMToolBar();
 	void updateDynamicToolBar();
 	void updateInstrumentToolBar();
+	void updateTempoToolBar();
+	void updateFermataToolBar();
 	
 		/////////////////////
 		// Toolbar section //
@@ -391,19 +400,26 @@ private:
 			QSpinBox         *uiTimeSigBeat;
 			// CAMenuToolButton *uiTimeSigStyle; /// \todo Implement it. -Matevz
 		
-		QToolBar *uiFMToolBar; // function marking tool bar
+		QToolBar *uiFMToolBar;                       // function marking tool bar
 			CAMenuToolButton  *uiFMFunction;
 			CAMenuToolButton  *uiFMChordArea;
 			CAMenuToolButton  *uiFMTonicDegree;
 			QComboBox         *uiFMKeySig;
 			//QSpinBox        *uiKeySigNumberOfAccs; // defined in uiKeySigToolBar
-			//QComboBox       *uiKeySigGender; // defined in uiKeySigToolBar
-			//QAction         *uiFMEllipse; // made by Qt Designer
-		QToolBar *uiDynamicToolBar; // dynamic mark tool bar
+			//QComboBox       *uiKeySigGender;       // defined in uiKeySigToolBar
+			//QAction         *uiFMEllipse;          // made by Qt Designer
+		
+		QToolBar *uiDynamicToolBar;                  // dynamic mark tool bar
 			CAMenuToolButton *uiDynamicText;
 			QSpinBox         *uiDynamicVolume;
 			QLineEdit        *uiDynamicCustomText;
-		QToolBar *uiInstrumentToolBar; // instrument marks tool bar
+		QToolBar *uiInstrumentToolBar;               // instrument marks tool bar
 			QComboBox        *uiInstrumentChange;
+		QToolBar *uiTempoToolBar;                    // tempo marks tool bar
+			CAMenuToolButton *uiTempoBeat;
+			QLabel           *uiTempoEquals;
+			QLineEdit        *uiTempoBpm;
+		QToolBar *uiFermataToolBar;                  // fermata tool bar
+			CAMenuToolButton *uiFermataType;
 };
 #endif /* MAINWIN_H_ */

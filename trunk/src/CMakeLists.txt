@@ -243,6 +243,16 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/note.cpp
 	core/slur.cpp
 	core/rest.cpp
+	
+	core/mark.cpp
+	core/articulation.cpp
+	core/fermata.cpp
+	core/repeatmark.cpp
+	core/tempo.cpp
+	core/text.cpp
+	core/fingering.cpp
+	core/dynamic.cpp
+	core/instrumentchange.cpp
 
 	core/syllable.cpp
 	

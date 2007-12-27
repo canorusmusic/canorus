@@ -18,7 +18,9 @@ class CAMusElement;
 class CAPlayable;
 
 class CAPlayback : public QThread {
+#ifndef SWIG
 Q_OBJECT
+#endif
 public:
 	CAPlayback(CAScoreViewPort*, CAMidiDevice *);
 	CAPlayback(CASheet*, CAMidiDevice *);
@@ -35,11 +37,17 @@ public:
 	inline void setSheet( CASheet *s ) { _sheet = s; }
 	inline QList<CAPlayable*>& curPlaying() { return _curPlaying; }
 	
+#ifndef SWIG
 public slots:
+#else
+public:
+#endif
 	void stopNow();
 
+#ifndef SWIG
 signals:
 	void playbackFinished();
+#endif
 
 private:
 	void initStreams( CASheet *sheet );
