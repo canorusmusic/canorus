@@ -21,6 +21,8 @@
 #include "core/note.h"
 #include "core/clef.h"
 
+#include "interface/playback.h"
+
 #include "widgets/viewportcontainer.h"
 #include "widgets/scoreviewport.h"
 
@@ -33,7 +35,6 @@ class QLineEdit;
 class QComboBox;
 class QAction;
 
-class CAPlayback;
 class CAMenuToolButton;
 class CAUndoToolButton;
 class CALCDNumber;
@@ -261,8 +262,6 @@ private:
 	CADocument *_document;
 	CAMode _mode;
 	
-	void doUnsplit(CAViewPort *v = 0);
-	
 	void setMode(CAMode mode);
 	inline void setCurrentViewPort( CAViewPort *viewPort ) { _currentViewPort = viewPort; }
 	inline void setCurrentViewPortContainer( CAViewPortContainer *vpc )
@@ -287,6 +286,10 @@ private:
 	unsigned int  _timeEditedTime;
 	CAMusElementFactory *_musElementFactory;
 	inline CAMusElementFactory *musElementFactory() { return _musElementFactory; }
+	inline bool stopPlayback() { 
+			if(_playback && _playback->isRunning())
+				_playback->stopNow();
+		}
 	
 	///////////////////////////////////////////////////////////////////////////
 	// Pure user interface - widgets that weren't created by Qt Designer yet //

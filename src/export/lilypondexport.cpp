@@ -50,7 +50,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	
 	int lastNotePitch;   // initialized by writeRelativeIntro()
 	int curStreamTime = 0;
-	CAPlayable::CAPlayableLength lastPlayableLength;
+	CAPlayable::CAPlayableLength lastPlayableLength = CAPlayable::Undefined;
 	int lastPlayableDotted=0;
 	
 	// Write \relative note for the first note

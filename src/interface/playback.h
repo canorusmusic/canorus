@@ -18,6 +18,7 @@ class CAMusElement;
 class CAPlayable;
 
 class CAPlayback : public QThread {
+Q_OBJECT
 public:
 	CAPlayback(CAScoreViewPort*, CAMidiDevice *);
 	CAPlayback(CASheet*, CAMidiDevice *);
@@ -34,6 +35,12 @@ public:
 	inline void setSheet( CASheet *s ) { _sheet = s; }
 	inline QList<CAPlayable*>& curPlaying() { return _curPlaying; }
 	
+public slots:
+	void stopNow();
+
+signals:
+	void playbackFinished();
+
 private:
 	void initStreams( CASheet *sheet );
 	void loopUntilPlayable( int i, bool ignoreRepeats=false );
@@ -45,6 +52,9 @@ private:
 	inline int& lastRepeatOpenIdx( int i ) { return _lastRepeatOpenIdx[i]; }
 	inline bool& repeating( int i ) { return _repeating[i]; }
 	
+	inline bool stopLock() { return _stopLock; }
+	inline void setStopLock(bool lock) { _stopLock = lock; }
+	
 	CAScoreViewPort *_scoreViewPort;
 	inline void setScoreViewPort( CAScoreViewPort *v ) { _scoreViewPort = v; }
 	
@@ -55,6 +65,7 @@ private:
 	
 	inline void setStop(bool stop) { _stop = stop; }
 	bool _stop;
+	bool _stopLock;
 	
 	int _initTimeStart;
 	

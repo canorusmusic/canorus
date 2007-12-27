@@ -40,6 +40,7 @@ public:
 	inline CAMusElement *musElement() { return mpoMusElement; };
 	
 	inline void cloneMusElem() { mpoMusElement = mpoMusElement->clone(); }
+	inline void emptyMusElem() { mpoMusElement = mpoEmpty; }
 	
 	bool configureClef( CAStaff *staff, 
 	                    CAMusElement *right );
@@ -188,6 +189,7 @@ public:
 	
 private:
 	CAMusElement *mpoMusElement;                    // Newly created music element itself
+	CAMusElement *mpoEmpty;                         // An empty (dummy) element.
 	
 	/////////////////////////////////
 	// Element creation parameters //

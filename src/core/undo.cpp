@@ -81,6 +81,8 @@ void CAUndo::redo( CADocument *doc ) {
 void CAUndo::deleteUndoStack( CADocument *doc ) {
 	clearUndoCommand();
 	QList<CAUndoCommand*> *stack = undoStack(doc);
+	while(!stack->isEmpty())
+		delete stack->takeFirst();
 	delete stack;
 	
 	QList<CADocument*> keys = _undoStack.keys(stack);
@@ -102,7 +104,6 @@ void CAUndo::pushUndoCommand() {
 	
 	CADocument *d = _undoCommand->getRedoDocument();
 	QList<CAUndoCommand*> *s = _undoStack[d];
-	int dd = undoIndex(d);
 	CAUndoCommand *prevUndoCommand = (undoIndex(d)<s->size() && undoIndex(d)>=0?s->at(undoIndex(d)):0);
 	
 	// delete undo commands after the new one, if any (eg. 3x changes, 2x undo, 1x change => removes last 2 undos when making a change)
@@ -159,7 +160,6 @@ bool CAUndo::canRedo( CADocument* d ) {
 */
 void CAUndo::clearUndoCommand() {
 	if ( _undoCommand ) {
-		_undoCommand->setUndoDocument(0); _undoCommand->setRedoDocument(0);
 		delete _undoCommand;
 		_undoCommand = 0;
 	}

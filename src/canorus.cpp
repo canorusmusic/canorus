@@ -175,6 +175,22 @@ void CACanorus::initUndo() {
 }
 
 /*!
+	Free resources before quitting
+*/
+void CACanorus::cleanUp()
+{
+	delete _settings;
+	delete CAMainWin::uiSaveDialog;
+	delete CAMainWin::uiOpenDialog;
+	delete CAMainWin::uiExportDialog;
+	delete CAMainWin::uiImportDialog;
+	delete _midiDevice;
+	autoRecovery()->cleanupRecovery();
+	delete _autoRecovery;
+	delete _undo;
+}
+
+/*!
 	Parses the switches and settings command line arguments to application.
 	This function sets any settings passed in command line.
 	

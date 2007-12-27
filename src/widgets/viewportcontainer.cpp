@@ -156,7 +156,6 @@ CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
 	Unsplits all the viewports except the last active one.
 */
 QList<CAViewPort*> CAViewPortContainer::unsplitAll() {
-	CAViewPort *v = currentViewPort();
 	QList<CAViewPort*> list;
 	while(count() > 1)
 		list << unsplit();

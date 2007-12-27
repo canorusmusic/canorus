@@ -150,14 +150,17 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 }
 
 CAMainWin::~CAMainWin()  {
-	if (!CACanorus::mainWinCount(document())) {
-		CACanorus::undo()->removeUndoStack(document()); // delete undo stack when the last document deleted
+	delete _musElementFactory;
+
+	if (CACanorus::mainWinCount(document()) == 1) { 
+		CACanorus::undo()->deleteUndoStack(document()); // delete undo stack when the last document deleted
 		delete document();
 	}
 	
 	CACanorus::removeMainWin(this); // must be called *after* CACanorus::deleteUndoStack()
-	delete _playback;
-	
+	if(_playback)
+		delete _playback;
+
 	// clear UI
 	delete uiInsertToolBar; // also deletes content of the toolbars
 	delete uiInsertGroup;
@@ -168,9 +171,11 @@ CAMainWin::~CAMainWin()  {
 	delete uiTimeSigToolBar;
 	delete uiClefToolBar;
 	delete uiFMToolBar;
-	
 	delete uiDynamicToolBar;
 	delete uiInstrumentToolBar;
+
+	if(!CACanorus::mainWinCount()) // closing down
+		CACanorus::cleanUp();
 }
 
 void CAMainWin::createCustomActions() {
@@ -679,6 +684,7 @@ void CAMainWin::setupCustomUi() {
 }
 
 void CAMainWin::newDocument() {
+	stopPlayback();
 	// clear GUI before clearing the data part!
 	clearUI();
 	
@@ -749,7 +755,7 @@ void CAMainWin::clearUI() {
 	// Delete all viewports
 	while(!_viewPortList.isEmpty())
 		delete _viewPortList.takeFirst();
-	_viewPortList.clear();
+	
 	_sheetMap.clear();
 	setCurrentViewPort( 0 );
 	uiSelectMode->trigger(); // select mode
@@ -810,18 +816,6 @@ void CAMainWin::on_uiSplitVertically_triggered() {
 	uiCloseCurrentView->setEnabled(true);
 }
 
-void CAMainWin::doUnsplit(CAViewPort *v) {
-	v = currentViewPortContainer()->unsplit(v);
-	if (!v) return;
-	
-	if (currentViewPortContainer()->viewPortList().size() == 1)
-	{
-		uiCloseCurrentView->setEnabled(false);
-		uiUnsplitAll->setEnabled(false);
-	}
-	setCurrentViewPort( currentViewPortContainer()->currentViewPort() );
-}
-
 void CAMainWin::on_uiUnsplitAll_triggered() {
 	currentViewPortContainer()->unsplitAll();
 	uiCloseCurrentView->setEnabled(false);
@@ -830,10 +824,14 @@ void CAMainWin::on_uiUnsplitAll_triggered() {
 }
 
 void CAMainWin::on_uiCloseCurrentView_triggered() {
-	if (currentViewPortContainer()->contains( currentViewPort() )) {
-		doUnsplit();
-	} else
-		delete currentViewPort();
+	currentViewPortContainer()->unsplit();
+	
+	if (currentViewPortContainer()->viewPortList().size() == 1)
+	{
+		uiCloseCurrentView->setEnabled(false);
+		uiUnsplitAll->setEnabled(false);
+	}
+	setCurrentViewPort( currentViewPortContainer()->currentViewPort() );
 }
 
 void CAMainWin::on_uiCloseDocument_triggered() {
@@ -952,6 +950,7 @@ void CAMainWin::on_uiNewDocument_triggered() {
 }
 
 void CAMainWin::on_uiUndo_toggled( bool checked, int row ) {
+	stopPlayback();
 	if ( document() ) {
 		for (int i=0; i<=row; i++) {
 			CACanorus::undo()->undo( document() );
@@ -962,6 +961,7 @@ void CAMainWin::on_uiUndo_toggled( bool checked, int row ) {
 }
 
 void CAMainWin::on_uiRedo_toggled( bool checked, int row ) {
+	stopPlayback();
 	if ( document() ) {
 		for (int i=0; i<=row; i++) {
 			CACanorus::undo()->redo( document() );
@@ -992,6 +992,7 @@ void CAMainWin::updateUndoRedoButtons() {
 	Adds a new empty sheet.
 */
 void CAMainWin::on_uiNewSheet_triggered() {
+	stopPlayback();
 	CACanorus::undo()->createUndoCommand( document(), tr("new sheet", "undo") );
 	document()->addSheetByName( tr("Sheet%1").arg(QString::number(document()->sheetCount()+1)) );
 	CACanorus::undo()->pushUndoCommand();
@@ -1046,6 +1047,7 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 			QMessageBox::No);
 		
 		if (ret == QMessageBox::Yes) {
+			stopPlayback();
 			CACanorus::undo()->createUndoCommand( document(), tr("voice removal", "undo") );
 			currentScoreViewPort()->clearSelection();
 			uiVoiceNum->setRealValue( voice->staff()->voiceCount()-1 );
@@ -1069,6 +1071,7 @@ void CAMainWin::on_uiRemoveContext_triggered() {
 			QMessageBox::No);
 		
 		if (ret == QMessageBox::Yes) {
+			stopPlayback();
 			CACanorus::undo()->createUndoCommand( document(), tr("context removal", "undo") );
 			CASheet *sheet = context->sheet();
 			sheet->removeContext(context);
@@ -1189,8 +1192,10 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	setRebuildUILock( true );
 	if (document()) {
 		for (int i=0; i<_viewPortList.size(); i++) {
-			if (sheet && _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort &&
-			    static_cast<CAScoreViewPort*>(_viewPortList[i])->sheet()!=sheet)
+			if ((!_viewPortList[i]->parent()) || // the viewport was removed (unsplitted). 
+				(sheet && _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort &&
+				    static_cast<CAScoreViewPort*>(_viewPortList[i])->sheet()!=sheet)
+			)
 				continue;
 			
 			_viewPortList[i]->rebuild();
@@ -2077,7 +2082,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI(document(), v->sheet());
 		v->selectMElement( musElementFactory()->musElement() );
-		musElementFactory()->cloneMusElem(); // Clones the current musElement so it doesn't conflict with the added musElement
+		musElementFactory()->emptyMusElem();
 	}
 }
 
@@ -2115,11 +2120,11 @@ void CAMainWin::onTimeEditedTimerTimeout() {
 	It stops the playback, closes ports etc.
 */
 void CAMainWin::playbackFinished() {
-	_playback->disconnect();
-	//delete _playback;	/// \todo crashes on application close, if deleted! Is this ok? -Matevz
+	delete _playback;
+	_playback = 0;
 	uiPlayFromSelection->setChecked(false);
 	static_cast<CAScoreViewPort*>(_playbackViewPort)->setPlaying(false);
-
+	
 	_repaintTimer->stop();
 	_repaintTimer->disconnect();	/// \todo crashes, if disconnected sometimes. -Matevz
 	delete _repaintTimer;			/// \todo crashes, if deleted. -Matevz
@@ -2129,7 +2134,7 @@ void CAMainWin::playbackFinished() {
 	static_cast<CAScoreViewPort*>(_playbackViewPort)->addToSelection( _prePlaybackSelection );
 	static_cast<CAScoreViewPort*>(_playbackViewPort)->unsetBorder();
 	_prePlaybackSelection.clear();
-
+	
 	setMode( mode() );
 }
 
@@ -2148,8 +2153,8 @@ void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
 		_playback = new CAPlayback(currentScoreViewPort(), CACanorus::midiDevice());
 		if ( currentScoreViewPort()->selection().size() && currentScoreViewPort()->selection().at(0)->musElement() )
 			_playback->setInitTimeStart( currentScoreViewPort()->selection().at(0)->musElement()->timeStart() );
-		
-		connect(_playback, SIGNAL(finished()), this, SLOT(playbackFinished()));
+
+		connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 		
 		QPen p;
 		p.setColor(Qt::green);
@@ -2164,7 +2169,7 @@ void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
 		currentScoreViewPort()->clearSelection();
 		
 		_playback->start();
-	} else {
+	} else if(_playback) {
 		_playback->stop();
 	}
 }
@@ -2253,6 +2258,7 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 	Returns a pointer to the opened document or null if opening the document has failed.
 */
 CADocument *CAMainWin::openDocument(const QString& fileName) {
+	stopPlayback();
 	CACanorusMLImport open;
 	open.setStreamFromFile( fileName );
 	open.importDocument();
@@ -2272,6 +2278,7 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 	Returns a pointer to the opened document or null if opening the document has failed.
 */
 CADocument *CAMainWin::openDocument(CADocument *doc) {
+	stopPlayback();
 	if (doc) {
 		if (CACanorus::mainWinCount(document())==1) {
 			CACanorus::undo()->deleteUndoStack( document() ); 
@@ -2381,7 +2388,8 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	
 	if (!ffound)
 		return;
-	
+	stopPlayback();
+
 	QString s = fileNames[0];
 	CADocument *oldDocument = document();
 	
@@ -2672,7 +2680,6 @@ void CAMainWin::onSyllableEditKeyPressEvent(QKeyEvent *e, CASyllableEdit *syllab
 				syllable->setHyphenStart(true);
 				nextSyllable = syllable->lyricsContext()->next(syllable);
 			}
-			
 			CACanorus::undo()->pushUndoCommand();
 			CACanorus::rebuildUI( document(), currentSheet() );
 			if (nextSyllable) {
@@ -2977,6 +2984,7 @@ void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 	Called when a user clicks "Commit" button in source viewport.
 */
 void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
+	stopPlayback();
 	if (v->document()) {
 		// CanorusML document source
 		CACanorus::undo()->createUndoCommand( document(), tr("commit CanorusML source", "undo") );
@@ -3018,8 +3026,14 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		newVoice->staff()->addVoice( newVoice );
 		newVoice->staff()->synchronizeVoices();
 		
-		v->setVoice( newVoice );
+		// FIXME any way to avoid this?
+		CAScoreViewPort *scorevp;
+		foreach(CAViewPort* vp, _viewPortList) {
+			if(vp->viewPortType() == CAViewPort::ScoreViewPort && (scorevp = static_cast<CAScoreViewPort*>(vp))->selectedVoice() == oldVoice)
+				scorevp->setSelectedVoice(newVoice);
+		}
 		
+		v->setVoice( newVoice );
 		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI(document(), newVoice->staff()->sheet());
 	} else
@@ -3114,6 +3128,7 @@ void CAMainWin::on_uiScoreView_triggered() {
 	Removes the sheet, all its contents and rebuilds the GUI.
 */
 void CAMainWin::on_uiRemoveSheet_triggered() {
+	stopPlayback();
 	CASheet *sheet = currentSheet();
 	if (sheet) {
 		CACanorus::undo()->createUndoCommand( document(), tr("deletion of the sheet", "undo") );
@@ -3682,6 +3697,7 @@ void CAMainWin::on_uiCopy_triggered() {
 */
 void CAMainWin::on_uiCut_triggered() {
 	if ( currentScoreViewPort() ) {
+		stopPlayback();
 		CACanorus::undo()->createUndoCommand( document(), tr("cut", "undo") );
 		copySelection( currentScoreViewPort() );
 		deleteSelection( currentScoreViewPort(), false, true, false ); // and don't make undo as we already make it
@@ -3787,8 +3803,6 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 						for (int j=0; j<p->voice()->lyricsContextList().size(); j++) { // remove and shift syllables
 							CASyllable *removedSyllable =
 								p->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(p->timeStart());
-							if (removedSyllable) // note was removed
-								p->voice()->lyricsContextList().at(j)->remove(removedSyllable);
 						}
 					}
 				}

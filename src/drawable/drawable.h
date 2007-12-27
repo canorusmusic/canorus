@@ -31,6 +31,7 @@ public:
 	};
 	
 	CADrawable(int x, int y);	// x and y position of an element in absolute world units	
+	virtual ~CADrawable() { }
 	virtual void draw(QPainter *p, const CADrawSettings s) = 0;
 	virtual CADrawable *clone();
 	

@@ -34,6 +34,7 @@ public:
 	static void initAutoRecovery();
 	static void initUndo();
 	static void parseOpenFileArguments(int argc, char *argv[]);
+	static void cleanUp();
 	
 	static QList<QString> locateResource(const QString fileName);
 	static QList<QString> locateResourceDir(const QString fileName);	
