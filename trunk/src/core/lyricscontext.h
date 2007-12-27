@@ -31,6 +31,7 @@ public:
 	CAMusElement* previous(CAMusElement*);
 	QList<CAMusElement*> musElementList();
 	bool remove( CAMusElement* );
+	void removeAt( int i );
 		
 	bool addSyllable( CASyllable*, bool replace=true );
 	bool addEmptySyllable( int timeStart, int timeLength );

@@ -67,7 +67,10 @@ CAImport::CAImport( const QString stream )
 
 CAImport::~CAImport() {
 	if ( stream() && stream()->string() )
+	{
 		delete stream()->string();
+		delete stream();
+	}
 }
 
 /*!

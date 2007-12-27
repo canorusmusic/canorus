@@ -92,6 +92,7 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	widgets/undotoolbutton.h
 	
 	interface/mididevice.h
+	interface/playback.h
 	interface/pluginaction.h
 )
 

@@ -60,10 +60,11 @@ CASheet *CASheet::clone( CADocument *doc ) {
 	
 	// assign contexts between each other (like associated voice of lyrics context etc.)
 	for (int i=0; i<contextCount(); i++) {
-		if ( newSheet->contextAt(i)->contextType()==CAContext::LyricsContext )
-			static_cast<CALyricsContext*>(newSheet->contextAt(i))->setAssociatedVoice(
-				voiceMap[ static_cast<CALyricsContext*>(newSheet->contextAt(i))->associatedVoice() ]
-			);
+		if ( newSheet->contextAt(i)->contextType()==CAContext::LyricsContext ) {
+			CAVoice *voice = voiceMap[ static_cast<CALyricsContext*>(newSheet->contextAt(i))->associatedVoice() ];
+			static_cast<CALyricsContext*>(newSheet->contextAt(i))->setAssociatedVoice(voice);
+			voice->removeLyricsContext(static_cast<CALyricsContext*>(contextAt(i)));
+		}
 	}
 	
 	return newSheet;

@@ -35,14 +35,12 @@ public:
 	CAUndoCommand *redoCommand( CADocument *d );
 	void updateLastUndoCommand( CAUndoCommand *c );
 	void changeDocument( CADocument*, CADocument* );
-
 private:
 	void clearUndoCommand();
 	CAUndoCommand *_undoCommand; // current undo command created to be put on the undo stack
 	
 	QHash< CADocument*, QList<CAUndoCommand*>* > _undoStack;
 	QHash< QList<CAUndoCommand*>*, int >         _undoIndex;
-	
 };
 
 #endif /* UNDO_H_ */

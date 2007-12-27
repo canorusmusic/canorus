@@ -71,8 +71,9 @@ CAMusElementFactory::CAMusElementFactory() {
 	_fmChordAreaMinor = false;
 	_fmTonicDegreeMinor = false;
 	_fmEllipse = false;
-	mpoMusElement = 0;
 	_musElementType = CAMusElement::Undefined;
+	mpoEmpty = new CANote(CAPlayable::Undefined, NULL, 0, 0, 0); // dummy element 
+	mpoMusElement = mpoEmpty;
 	
 	_dynamicText = "mf";
 	_dynamicVolume = 80;
@@ -83,6 +84,8 @@ CAMusElementFactory::CAMusElementFactory() {
 	Destroys the music elements factory.
 */
 CAMusElementFactory::~CAMusElementFactory() {
+	removeMusElem(true);
+	delete mpoEmpty;
 }
 
 /*!
@@ -90,10 +93,10 @@ CAMusElementFactory::~CAMusElementFactory() {
 	Destroys the music element, if \a bReallyRemove is true (default is false).
 */
 void CAMusElementFactory::removeMusElem( bool bReallyRemove /* = false */ ) {
-	if( mpoMusElement && bReallyRemove )
+	if( mpoMusElement && mpoMusElement != mpoEmpty && bReallyRemove)
 		delete mpoMusElement;
 	
-	mpoMusElement = 0;
+	mpoMusElement = mpoEmpty;
 }
 
 /*!

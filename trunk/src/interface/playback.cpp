@@ -36,7 +36,9 @@
 	   the sheet (usually used in scripting environment) and the midi device.
 	3) Optionally configure playback (setInitTimeStart() to start playback from the specific time. Default 0).
 	4) Call myPlaybackObject->run(). This will start playing in a new thread.
-	5) Call myPlaybackObject->stop() to stop the playback. Playback will also stops automatically when finished.
+	5) Call myPlaybackObject->stop() to stop the playback. Playback also stops automatically when finished.
+	
+	The playbackFinished() signal is emitted once playback has finished or stopped.
 */
 
 CAPlayback::CAPlayback(CAScoreViewPort *v, CAMidiDevice *m) {
@@ -45,6 +47,8 @@ CAPlayback::CAPlayback(CAScoreViewPort *v, CAMidiDevice *m) {
 	setSheet( v->sheet() );
 	_stop = false;
 	setInitTimeStart( 0 );
+	setStopLock(false);
+	connect(this, SIGNAL(finished()), SLOT(stopNow()));
 }
 
 CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
@@ -53,16 +57,22 @@ CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
 	setMidiDevice( m );
 	_stop = false;
 	setInitTimeStart( 0 );
+	setStopLock(false);
+	connect(this, SIGNAL(finished()), SLOT(stopNow()));
 }
 
 /*!
 	Destructor deletes the created arrays.
 */
 CAPlayback::~CAPlayback() {
-	delete _repeating;
-	delete _lastRepeatOpenIdx;
-	delete _curTime;
-	delete _streamIdx;
+	if(isRunning())	{
+		terminate();
+		wait();
+	}
+	delete [] _repeating;
+	delete [] _lastRepeatOpenIdx;
+	delete [] _curTime;
+	delete [] _streamIdx;
 }
 
 void CAPlayback::run() {
@@ -179,9 +189,32 @@ void CAPlayback::run() {
 
 /*!
 	The nice and the right way to stop the playback.
+	Returns immediately.
+
+	\sa stopNow()
 */
 void CAPlayback::stop() {
 	_stop = true;
+}
+
+/*!
+	Stop playback and clean up.
+	Blocks until all cleanups are done.
+	
+	\sa stop()
+*/
+void CAPlayback::stopNow()
+{
+	if(stopLock()) 
+		return;
+	setStopLock(true);
+	if(isRunning()) { // stopNow() was _not_ called by the finished() signal (i.e. it was called from another thread)
+		// stop playback and wait for the thread to finish.
+		stop(); 
+		wait(); // (QThread::finished() will be emitted here, so we need the lock flag)
+	}
+	setStopLock(false); 
+	emit playbackFinished();
 }
 
 /*!

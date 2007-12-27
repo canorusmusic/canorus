@@ -125,7 +125,5 @@ int main(int argc, char *argv[]) {
 		CASettingsDialog( showSettingsPage, CACanorus::mainWinAt(0) );
 	}
 	
-	QObject::connect( &mainApp, SIGNAL(lastWindowClosed()), CACanorus::autoRecovery(), SLOT(cleanupRecovery()) );
-	
 	return mainApp.exec();
 }

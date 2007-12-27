@@ -119,6 +119,7 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	_checkScrollBarsDeadLock = false;
 	_playing = false;
 	_currentContext = 0;
+	_xCursor = _yCursor = 0;
 	
 	// init layout
 	_layout = new QGridLayout(this);
@@ -178,16 +179,21 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 }
 
 CAScoreViewPort::~CAScoreViewPort() {
-	_drawableMList.clear(true);	//clears all the elements and delete its drawable contents too as autoDelete is true
-	_drawableCList.clear(true);	//clears all the elements and delete its drawable contents too as autoDelete is true
+	// Delete the drawable elements/contexts
+	_drawableMList.clear(true);
+	_drawableCList.clear(true);	
 	
+	while(!_shadowNote.isEmpty()) {
+		delete _shadowNote.takeFirst();
+		delete _shadowDrawableNote.takeFirst(); // same size 
+	}
+
 	_animationTimer->disconnect();
 	_animationTimer->stop();
 	delete _animationTimer;
 	
 	_hScrollBar->disconnect();
 	_vScrollBar->disconnect();
-	this->disconnect();
 }
 
 void CAScoreViewPort::on__animationTimer_timeout() {
