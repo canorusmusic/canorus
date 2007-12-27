@@ -29,3 +29,22 @@ CAFermata::CAFermata( CABarline *b, CAFermataType t )
 
 CAFermata::~CAFermata() {
 }
+
+CAMusElement *CAFermata::clone() {
+	if (associatedElement()->isPlayable()) {
+		return new CAFermata( static_cast<CAPlayable*>(associatedElement()), fermataType() );
+	} else {
+		return new CAFermata( static_cast<CABarline*>(associatedElement()), fermataType() );
+	}
+}
+
+int CAFermata::compare( CAMusElement *elt ) {
+	if (elt->musElementType()!=CAMusElement::Mark)
+		return -2;
+	else if (static_cast<CAMark*>(elt)->markType()!=CAMark::Fermata)
+		return -1;
+	else if (static_cast<CAFermata*>(elt)->fermataType()!=fermataType())
+		return 1;
+	
+	return 0;
+}

@@ -78,6 +78,11 @@ CAMusElementFactory::CAMusElementFactory() {
 	_dynamicText = "mf";
 	_dynamicVolume = 80;
 	_instrument = 0;
+	
+	_fermataType = CAFermata::NormalFermata;
+	_tempoBeat = CAPlayable::Half;
+	_tempoBeatDotted = 0;
+	_tempoBpm = 72;
 }
 
 /*!
@@ -297,6 +302,22 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 	case CAMark::InstrumentChange: {
 		if ( elt->musElementType()==CAMusElement::Note ) {
 			mpoMusElement = new CAInstrumentChange( instrument(), static_cast<CANote*>(elt) );
+			success = true;
+		}
+		break;
+	}
+	case CAMark::Tempo: {
+		mpoMusElement = new CATempo( tempoBeat(), tempoBeatDotted(), tempoBpm(), elt );
+		success = true;
+		break;
+	}
+	case CAMark::Fermata: {
+		if ( elt->isPlayable() ) {
+			mpoMusElement = new CAFermata( static_cast<CAPlayable*>(elt), fermataType() );
+			success = true;
+		} else
+		if ( elt->musElementType()==CAMusElement::Barline ) {
+			mpoMusElement = new CAFermata( static_cast<CABarline*>(elt), fermataType() );
 			success = true;
 		}
 		break;

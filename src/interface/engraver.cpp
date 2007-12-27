@@ -186,7 +186,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							
 							// place marks
 							for ( int j=0; j < elt->markList().size(); j++ ) {
-								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, clef->xPos(), clef->yPos()-20*(j+1) ) );
+								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, clef->xPos(), qMin(clef->yPos(),drawableContext->yPos())-20*(j+1) ) );
 							}
 							
 							break;
@@ -211,7 +211,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							
 							// place marks
 							for ( int j=0; j < elt->markList().size(); j++ ) {
-								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, keySig->xPos(), keySig->yPos()-20*(j+1) ) );
+								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, keySig->xPos(), qMin(keySig->yPos(),drawableContext->yPos())-20*(j+1) ) );
 							}
 							
 							break;
@@ -236,7 +236,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							
 							// place marks
 							for ( int j=0; j < elt->markList().size(); j++ ) {
-								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, timeSig->xPos(), timeSig->yPos()-20*(j+1) ) );
+								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, timeSig->xPos(), qMin(timeSig->yPos(),drawableContext->yPos())-20*(j+1) ) );
 							}
 							
 							break;
@@ -310,7 +310,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 				
 				// place marks
 				for ( int j=0; j < elt->markList().size(); j++ ) {
-					v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, bar->xPos(), bar->yPos()-20*(j+1) ) );
+					v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, bar->xPos(), qMin(bar->yPos(),drawableContext->yPos())-20*(j+1) ) );
 				}
 			}
 		}
@@ -525,7 +525,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						// place marks
 						for ( int j=0; j < elt->markList().size(); j++ ) {
 							if ( static_cast<CANote*>(elt)->isFirstInTheChord() || elt->markList()[j]->markType()==CAMark::Fingering )
-								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, newElt->xPos(), newElt->yPos()-20*(j+1) ) );
+								v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, newElt->xPos(), qMin(newElt->yPos(),drawableContext->yPos())-20*(j+1) ) );
 						}
 						
 						break;
@@ -543,7 +543,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						
 						// place marks
 						for ( int j=0; j < elt->markList().size(); j++ ) {
-							v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, newElt->xPos(), newElt->yPos()-20*(j+1) ) );
+							v->addMElement( new CADrawableMark( elt->markList()[j], drawableContext, newElt->xPos(), qMin(newElt->yPos(),drawableContext->yPos())-20*(j+1) ) );
 						}
 
 						break;

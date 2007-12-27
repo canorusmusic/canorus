@@ -10,14 +10,18 @@
 
 #include "drawable/drawablemark.h"
 #include "drawable/drawablecontext.h"
+#include "drawable/drawablenote.h" // needed for tempo mark
 
 #include "interface/mididevice.h" // needed for instrument change
 
+#include "core/note.h"            // needed for tempo mark
 #include "core/mark.h"
 #include "core/articulation.h"
 #include "core/text.h"
 #include "core/dynamic.h"
 #include "core/instrumentchange.h"
+#include "core/fermata.h"
+#include "core/tempo.h"
 #include "canorus.h"
 
 const int CADrawableMark::DEFAULT_TEXT_SIZE = 20;
@@ -38,6 +42,8 @@ const int CADrawableMark::DEFAULT_TEXT_SIZE = 20;
 CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x, int y)
  : CADrawableMusElement( mark, dContext, x, y ) {
 	setDrawableMusElementType( CADrawableMusElement::DrawableMark );
+	_tempoNote = 0;
+	_tempoDNote = 0;
 	
 	if ( mark->markType()==CAMark::Text ) {
 		QFont font("FreeSans");
@@ -57,6 +63,10 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
 	} else
+	if ( mark->markType()==CAMark::Fermata) {
+		setWidth( 25 );
+		setHeight( 20 );
+	} else
 	if ( mark->markType()==CAMark::InstrumentChange ) {
 		QFont font("FreeSans");
 		font.setStyle( QFont::StyleItalic );
@@ -66,6 +76,12 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		int textWidth = fm.width( CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
 		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+	} else
+	if ( mark->markType()==CAMark::Tempo ) {
+		setWidth( 40 );
+		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+		_tempoNote = new CANote( static_cast<CATempo*>(mark)->beat(), 0, 0, 0, 0, static_cast<CATempo*>(mark)->beatDotted() );
+		_tempoDNote = new CADrawableNote( _tempoNote, dContext, x, y );
 	} else {
 		setWidth( 11 ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
@@ -73,6 +89,11 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 	
 	setNeededWidth( width() );
 	setNeededHeight( height() );
+}
+
+CADrawableMark::~CADrawableMark() {
+	if ( _tempoDNote ) delete _tempoDNote;
+	if ( _tempoNote ) delete _tempoNote;
 }
 
 void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
@@ -104,9 +125,32 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		p->drawText( s.x, s.y, CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
 		break;
 	}
-	case CAMark::Articulation: {
+	case CAMark::Fermata: {
 		QFont font("Emmentaler");
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
+		p->setFont(font);
+		
+		switch ( static_cast<CAFermata*>(mark())->fermataType() ) {
+			case CAFermata::NormalFermata: p->drawText( s.x, s.y, QString(0xE150) ); break;
+			case CAFermata::ShortFermata: p->drawText( s.x, s.y, QString(0xE152) ); break;
+			case CAFermata::LongFermata: p->drawText( s.x, s.y, QString(0xE154) ); break;
+			case CAFermata::VeryLongFermata: p->drawText( s.x, s.y, QString(0xE156) ); break;
+		}
+		break;
+	}
+	case CAMark::Tempo: {
+		_tempoDNote->draw( p, s );
+		
+		s.x += qRound(_tempoDNote->width()*s.z);
+		QFont font("FreeSans");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
+		p->setFont(font);
+		p->drawText( s.x, s.y, QString(" = ") + QString::number( static_cast<CATempo*>(mark())->bpm() ) );
+		break;
+	}
+	case CAMark::Articulation: {
+		QFont font("Emmentaler");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*1.4*s.z) );
 		p->setFont(font);
 		
 		switch ( static_cast<CAArticulation*>(mark())->articulationType() ) {
