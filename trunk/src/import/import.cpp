@@ -31,9 +31,7 @@
 	  CAMyImportFilter import();
 	  import.setStreamFromFile("jingle bells.xml");
 	  import.importDocument();
-	  
-	  // busy-wait loop - not very effective
-	  while (import.isRunning());
+	  import.wait();
 	  
 	  setDocument( import.importedDocument() );
 	  CACanorus::rebuildUI();
@@ -44,8 +42,7 @@
 	  lilyString = '\\relative c { \\clef "treble" \\time 4/4 c4 d e f | f e d c | c1 \\bar "|." }'
 	  myImport = LilyPondImport( lilyString )
 	  myImport.importVoice()
-	  
-	  while ( myImport.isRunning() ): pass
+	  myImport.wait()	  
 	  
 	  voice = myImport.importedVoice()
 	\endcode
@@ -57,19 +54,32 @@ CAImport::CAImport( QTextStream *stream )
  : CAFile() {
 	setStream( stream );
 	setImportPart( Undefined );
+	
+	setImportedDocument( 0 );
+	setImportedSheet( 0 );
+	setImportedStaff( 0 );
+	setImportedVoice( 0 );
+	setImportedLyricsContext( 0 );
+	setImportedFunctionMarkingContext( 0 );
 }
 
 CAImport::CAImport( const QString stream )
  : CAFile() {
 	setStream( new QTextStream( new QString(stream)) );
 	setImportPart( Undefined );
+	
+	setImportedDocument( 0 );
+	setImportedSheet( 0 );
+	setImportedStaff( 0 );
+	setImportedVoice( 0 );
+	setImportedLyricsContext( 0 );
+	setImportedFunctionMarkingContext( 0 );
 }
 
 CAImport::~CAImport() {
 	if ( stream() && stream()->string() )
 	{
 		delete stream()->string();
-		delete stream();
 	}
 }
 
@@ -79,50 +89,55 @@ CAImport::~CAImport() {
 	It emits the appropriate signal when the procedure is finished.
 */
 void CAImport::run() {
-	switch ( importPart() ) {
-	case Document: {
-		CADocument *doc = importDocumentImpl();
-		setImportedDocument( doc );
-		emit documentImported( doc );
-		break;
+	if ( !stream() ) {
+		setStatus(-1);
+	} else {
+		switch ( importPart() ) {
+		case Document: {
+			CADocument *doc = importDocumentImpl();
+			setImportedDocument( doc );
+			emit documentImported( doc );
+			break;
+		}
+		case Sheet: {
+			CASheet *sheet = importSheetImpl();
+			setImportedSheet( sheet );
+			emit sheetImported( sheet );
+			break;
+		}
+		case Staff: {
+			CAStaff *staff = importStaffImpl();
+			setImportedStaff( staff );
+			emit staffImported( staff );
+			break;
+		}
+		case Voice: {
+			CAVoice *voice = importVoiceImpl();
+			setImportedVoice( voice );
+			emit voiceImported( voice );
+			break;
+		}
+		case LyricsContext: {
+			CALyricsContext *lc = importLyricsContextImpl();
+			setImportedLyricsContext( lc );
+			emit lyricsContextImported( lc );
+			break;
+		}
+		case FunctionMarkingContext: {
+			CAFunctionMarkingContext *fmc = importFunctionMarkingContextImpl();
+			setImportedFunctionMarkingContext( fmc );
+			emit functionMarkingContextImported( fmc );
+			break;
+		}
+		}
+		
+		if (status()>0) { // error - bad implemented filter
+			              // job is finished but status is still marked as working, set to Ready to prevent infinite loops
+			setStatus(0);
+		}
 	}
-	case Sheet: {
-		CASheet *sheet = importSheetImpl();
-		setImportedSheet( sheet );
-		emit sheetImported( sheet );
-		break;
-	}
-	case Staff: {
-		CAStaff *staff = importStaffImpl();
-		setImportedStaff( staff );
-		emit staffImported( staff );
-		break;
-	}
-	case Voice: {
-		CAVoice *voice = importVoiceImpl();
-		setImportedVoice( voice );
-		emit voiceImported( voice );
-		break;
-	}
-	case LyricsContext: {
-		CALyricsContext *lc = importLyricsContextImpl();
-		setImportedLyricsContext( lc );
-		emit lyricsContextImported( lc );
-		break;
-	}
-	case FunctionMarkingContext: {
-		CAFunctionMarkingContext *fmc = importFunctionMarkingContextImpl();
-		setImportedFunctionMarkingContext( fmc );
-		emit functionMarkingContextImported( fmc );
-		break;
-	}
-	}
-	emit importDone( status() );
 	
-	if (status()>0) { // error - bad implemented filter
-		              // job is finished but status is still marked as working, set to Ready to prevent infinite loops
-		setStatus(0);
-	}
+	emit importDone( status() );
 }
 
 void CAImport::importDocument() {
@@ -166,6 +181,8 @@ const QString CAImport::readableStatus() {
 	case 1:
 		return tr("Importing...");
 	case 0:
-		return tr("Ready");
+		return tr("Ready.");
+	case -1:
+		return tr("File not found or data stream not defined.");
 	}
 }

@@ -141,17 +141,17 @@ void CASourceViewPort::rebuild() {
 	if ( document() ) {
 		CACanorusMLExport save( &stream );
 		save.exportDocument( document() );
-		while ( save.isRunning() );
+		save.wait();
 	} else {
 		CALilyPondExport le( &stream );
 		// LilyPond
 		if (voice()) {
 			le.exportVoice( voice() );
-			while (le.isRunning());
+			le.wait();
 		} else
 		if (lyricsContext()) {
 			le.exportLyricsContext( lyricsContext() );
-			while (le.isRunning());
+			le.wait();
 		}
 	}
 	

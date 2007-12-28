@@ -18,8 +18,8 @@
 	
 	All file operations are done in a separate thread. While the file operations are in progress user
 	can poll the status by calling status(), progress() and readableStatus() for human-readable status
-	defined by the filter. Waiting for the thread to be finished can be implemented by an endless busy-wait
-	isRunning() function or by catching one of the signals emitted by children import and export classes.
+	defined by the filter. Waiting for the thread to be finished can be implemented by calling QThread::wait()
+	or by catching the signals emitted by children import and export classes.
 	
 	\sa CAImport, CAExport
 */
@@ -36,8 +36,11 @@ CAFile::CAFile() : QThread() {
 	Also destroys the created stream and file, if set.
 */
 CAFile::~CAFile() {
-	if ( file() ) {
+	if ( stream() ) {
 		delete stream();
+	}
+	
+	if ( file() ) {
 		delete file();
 	}
 }
@@ -51,8 +54,9 @@ CAFile::~CAFile() {
 */
 void CAFile::setStreamFromFile( const QString filename ) {
 	setFile( new QFile( filename ) );
-	file()->open( QIODevice::ReadOnly );
-	setStream( new QTextStream(file()) );
+	
+	if ( file()->open( QIODevice::ReadOnly ) )
+		setStream( new QTextStream(file()) );
 }
 
 /*!
@@ -64,17 +68,21 @@ void CAFile::setStreamFromFile( const QString filename ) {
 */
 void CAFile::setStreamToFile( const QString filename ) {
 	setFile( new QFile( filename ) );
-	file()->open( QIODevice::WriteOnly );
-	setStream( new QTextStream(file()) );
+	
+	if ( file()->open( QIODevice::WriteOnly ) )
+		setStream( new QTextStream(file()) );
 }
 
 /*!
 	\function int CAFile::status()
 	
-	Default:
-	  0 - filter is ready
-	  1 - filter is busy
-	 -1 - error during operations
+	The number describes the current status of the operations.
+	
+	Possible values are:
+	  0              - filter is ready (not started yet or successfully done)
+	  greater than 0 - filter is busy, custom filter status
+	  -1             - file not found or cannot be opened
+	  lesser than -1 - custom filter errors
 */
 
 /*!

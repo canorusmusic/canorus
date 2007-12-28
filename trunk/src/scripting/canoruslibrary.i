@@ -1,6 +1,7 @@
 class QThread {
 public:
 	bool isRunning();
+	bool wait ( unsigned long time = ULONG_MAX );
 protected:
 	void run()=0;
 };

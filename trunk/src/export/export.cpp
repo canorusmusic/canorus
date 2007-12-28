@@ -31,8 +31,7 @@
 	  export.setStreamToFile("jingle bells.xml");
 	  export.exportDocument( curDocument );
 	  
-	  // busy-wait loop - not very effective
-	  while (export.isRunning());
+	  export.wait();
 	\endcode
 */
 
@@ -57,37 +56,41 @@ CAExport::~CAExport() {
 	It emits the appropriate signal when the procedure is finished.
 */
 void CAExport::run() {
-	if (exportedDocument()) {
-		exportDocumentImpl( exportedDocument() );
-		emit documentExported( exportedDocument() );
-	} else
-	if (exportedSheet()) {
-		exportSheetImpl( exportedSheet() );
-		emit sheetExported( exportedSheet() );
-	} else
-	if (exportedStaff()) {
-		exportStaffImpl( exportedStaff() );
-		emit staffExported( exportedStaff() );
-	} else
-	if (exportedVoice()) {
-		exportVoiceImpl( exportedVoice() );
-		emit voiceExported( exportedVoice() );
-	} else
-	if (exportedLyricsContext()) {
-		exportLyricsContextImpl( exportedLyricsContext() );
-		emit lyricsContextExported( exportedLyricsContext() );
-	} else
-	if (exportedFunctionMarkingContext()) {
-		exportFunctionMarkingContextImpl( exportedFunctionMarkingContext() );
-		emit functionMarkingContextExported( exportedFunctionMarkingContext() );
+	if ( !stream() ) {
+		setStatus(-1);
+	} else {
+		if (exportedDocument()) {
+			exportDocumentImpl( exportedDocument() );
+			emit documentExported( exportedDocument() );
+		} else
+		if (exportedSheet()) {
+			exportSheetImpl( exportedSheet() );
+			emit sheetExported( exportedSheet() );
+		} else
+		if (exportedStaff()) {
+			exportStaffImpl( exportedStaff() );
+			emit staffExported( exportedStaff() );
+		} else
+		if (exportedVoice()) {
+			exportVoiceImpl( exportedVoice() );
+			emit voiceExported( exportedVoice() );
+		} else
+		if (exportedLyricsContext()) {
+			exportLyricsContextImpl( exportedLyricsContext() );
+			emit lyricsContextExported( exportedLyricsContext() );
+		} else
+		if (exportedFunctionMarkingContext()) {
+			exportFunctionMarkingContextImpl( exportedFunctionMarkingContext() );
+			emit functionMarkingContextExported( exportedFunctionMarkingContext() );
+		}
+		
+		if (status()>0) { // error - bad implemented filter
+			              // job is finished but status is still marked as working, set to Ready to prevent infinite loops
+			setStatus(0);
+		}
 	}
 	
 	emit exportDone( status() );
-	
-	if (status()>0) { // error - bad implemented filter
-		              // job is finished but status is still marked as working, set to Ready to prevent infinite loops
-		setStatus(0);
-	}
 }
 
 void CAExport::exportDocument( CADocument *doc ) {
@@ -131,6 +134,8 @@ const QString CAExport::readableStatus() {
 	case 1:
 		return tr("Exporting...");
 	case 0:
-		return tr("Ready");
+		return tr("Ready.");
+	case -1:
+		return tr("Data stream not defined.");
 	}
 }
