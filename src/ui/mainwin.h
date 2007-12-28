@@ -127,6 +127,8 @@ private slots:
 	void on_uiCloseDocument_triggered();
 	void on_uiExportDocument_triggered();
 	void on_uiImportDocument_triggered();
+	void on_uiOpenRecent_aboutToShow();
+	void onUiOpenRecentDocumentTriggered();
 	
 	// Edit
 	void on_uiUndo_toggled(bool, int);

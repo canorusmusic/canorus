@@ -23,13 +23,14 @@
 #include "core/undo.h"
 
 // define private static members
+QApplication *CACanorus::_mainApp;
 QList<CAMainWin*> CACanorus::_mainWinList;
 CASettings *CACanorus::_settings;
 QString CACanorus::_settingsPath;
 CAAutoRecovery *CACanorus::_autoRecovery;
 CAMidiDevice *CACanorus::_midiDevice;
 CAUndo *CACanorus::_undo;
-QApplication *CACanorus::_mainApp;
+QList<QString> CACanorus::_recentDocumentList;
 
 /*!
 	Locates a resource named fileName (relative path) and returns its absolute path of the file
@@ -174,6 +175,24 @@ void CACanorus::initUndo() {
 	_undo = new CAUndo();
 }
 
+void CACanorus::insertRecentDocument( QString filename ) {
+	if ( recentDocumentList().contains(filename) )
+		removeRecentDocument(filename);
+	
+	recentDocumentList().prepend(filename);
+	
+	if ( recentDocumentList().size() > settings()->maxRecentDocuments() )
+		recentDocumentList().removeLast();
+}
+
+void CACanorus::addRecentDocument( QString filename ) {
+	recentDocumentList() << filename;
+}
+
+void CACanorus::removeRecentDocument( QString filename ) {
+	recentDocumentList().removeAll(filename);
+}
+
 /*!
 	Free resources before quitting
 */
@@ -206,7 +225,7 @@ void CACanorus::parseSettingsArguments(int argc, char *argv[]) {
 */
 void CACanorus::parseOpenFileArguments(int argc, char *argv[]) {
 	for (int i=1; i<argc; i++) {
-		if (argv[i][0]!='-') { /// automatically treat any argument which doesn't start with '-' to be a file name - \todo
+		if (argv[i][0]!='-') { // automatically treat any argument which doesn't start with '-' to be a file name - \todo
 			// passed is not the switch but a file name
 			if (!CACanorus::locateResource(argv[i]).size())
 				continue;

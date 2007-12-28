@@ -2307,8 +2307,13 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 	if( open.importedDocument() ) {
 		open.importedDocument()->setFileName(fileName);
 		return openDocument( open.importedDocument() );
-	} else
+	} else {
+		QMessageBox::critical(
+			this, tr("Canorus"),
+			tr("Error while opening the file!")
+		);
 		return 0;
+	}
 }
 
 /*!
@@ -2326,6 +2331,7 @@ CADocument *CAMainWin::openDocument(CADocument *doc) {
 		}
 		
 		setDocument(doc);
+		CACanorus::insertRecentDocument( doc->fileName() );
 		CACanorus::undo()->createUndoStack( document() );
 		
 		rebuildUI(); // local rebuild only
@@ -2364,9 +2370,11 @@ bool CAMainWin::saveDocument( QString fileName ) {
 	
 	if ( save.exportedDocument() ) {
 		document()->setFileName( fileName );
+		CACanorus::insertRecentDocument( fileName );
+		return true;
 	}
 	
-	return save.exportedDocument();
+	return false;
 }
 
 void CAMainWin::onMidiInEvent( QVector<unsigned char> m) {
@@ -4122,6 +4130,30 @@ void CAMainWin::on_uiTempoBpm_returnPressed() {
 		
 		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+}
+
+void CAMainWin::on_uiOpenRecent_aboutToShow() {
+	while ( uiOpenRecent->actions().size() )
+		delete uiOpenRecent->actions().at(0);
+	
+	for (int i=0; i<CACanorus::recentDocumentList().size(); i++) {
+		QAction *a = new QAction( CACanorus::recentDocumentList()[i], this );
+		uiOpenRecent->addAction( a );
+		connect( a, SIGNAL(triggered()), this, SLOT(onUiOpenRecentDocumentTriggered()) );
+	}
+}
+
+void CAMainWin::onUiOpenRecentDocumentTriggered() {
+	bool success =
+		openDocument( CACanorus::recentDocumentList().at(
+				uiOpenRecent->actions().indexOf( static_cast<QAction*>(sender()) )
+		) );
+	
+	if (!success) {
+		CACanorus::removeRecentDocument( CACanorus::recentDocumentList().at(
+				uiOpenRecent->actions().indexOf( static_cast<QAction*>(sender()) )
+		) );
 	}
 }
 
