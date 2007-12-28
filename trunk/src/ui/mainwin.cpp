@@ -124,7 +124,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	setupUi( this ); // initialize elements created by Qt Designer
 	setupCustomUi();
 	QDir::setCurrent( currentPath );
-
+	
 	// Explicitly initialize this so it isn't true sometimes
 	setRebuildUILock( false );
 	
@@ -2190,10 +2190,10 @@ void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
 		//connect(_repaintTimer, SIGNAL(timeout()), this, SLOT(on_repaintTimer_timeout())); //TODO: timeout is connected directly to repaint() directly. This should be optimized in the future -Matevz
 		connect( _repaintTimer, SIGNAL(timeout()), this, SLOT( onRepaintTimerTimeout() ) );
 		
-		_playback = new CAPlayback(currentScoreViewPort(), CACanorus::midiDevice());
+		_playback = new CAPlayback(currentSheet(), CACanorus::midiDevice());
 		if ( currentScoreViewPort()->selection().size() && currentScoreViewPort()->selection().at(0)->musElement() )
 			_playback->setInitTimeStart( currentScoreViewPort()->selection().at(0)->musElement()->timeStart() );
-
+		
 		connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 		
 		QPen p;

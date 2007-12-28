@@ -11,7 +11,6 @@
 #include <QThread>
 #include <QList>
 
-class CAScoreViewPort;
 class CAMidiDevice;
 class CASheet;
 class CAMusElement;
@@ -22,7 +21,6 @@ class CAPlayback : public QThread {
 Q_OBJECT
 #endif
 public:
-	CAPlayback(CAScoreViewPort*, CAMidiDevice *);
 	CAPlayback(CASheet*, CAMidiDevice *);
 	~CAPlayback();
 	
@@ -32,7 +30,6 @@ public:
 	inline const int getInitTimeStart() { return _initTimeStart; }
 	inline void setInitTimeStart(int t) { _initTimeStart = t; }
 	inline CAMidiDevice *midiDevice() { return _midiDevice; }
-	inline CAScoreViewPort *scoreViewPort() { return _scoreViewPort; }
 	inline CASheet *sheet() { return _sheet; }
 	inline void setSheet( CASheet *s ) { _sheet = s; }
 	inline QList<CAPlayable*>& curPlaying() { return _curPlaying; }
@@ -62,9 +59,6 @@ private:
 	
 	inline bool stopLock() { return _stopLock; }
 	inline void setStopLock(bool lock) { _stopLock = lock; }
-	
-	CAScoreViewPort *_scoreViewPort;
-	inline void setScoreViewPort( CAScoreViewPort *v ) { _scoreViewPort = v; }
 	
 	CASheet *_sheet;
 	
