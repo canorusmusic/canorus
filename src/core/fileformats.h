@@ -14,21 +14,23 @@ class CAFileFormats {
 public:
 	enum CAFileFormatType {
 		CanorusML  = 0,
-		LilyPond   = 1,
-		MusicXML   = 2,
-		ABCMusic   = 3,
-		NoteEdit   = 4,
-		MUP        = 5,
-		Finale     = 6,
-		Sibelius   = 7,
-		Noteworthy = 8,
-		Igor       = 9,
-		Capella    = 10,
-		Midi       = 11
+		Can        = 1,
+		LilyPond   = 2,
+		MusicXML   = 3,
+		ABCMusic   = 4,
+		NoteEdit   = 5,
+		MUP        = 6,
+		Finale     = 7,
+		Sibelius   = 8,
+		Noteworthy = 9,
+		Igor       = 10,
+		Capella    = 11,
+		Midi       = 12
 	};
 	
 	static const QString LILYPOND_FILTER;
 	static const QString CANORUSML_FILTER;
+	static const QString CAN_FILTER;
 	static const QString MUSICXML_FILTER;
 	static const QString NOTEEDIT_FILTER;
 	static const QString ABCMUSIC_FILTER;

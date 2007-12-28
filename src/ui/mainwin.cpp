@@ -3881,7 +3881,6 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 						for (int j=0; j<p->voice()->lyricsContextList().size(); j++) { // remove syllables
 							CASyllable *removedSyllable =
 								p->voice()->lyricsContextList().at(j)->syllableAtTimeStart(p->timeStart());
-							p->voice()->lyricsContextList().at(j)->remove(removedSyllable);
 							
 							musElemSet.remove(removedSyllable);
 						}
@@ -3894,10 +3893,8 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 							}
 						}
 						
-						for (int j=0; j<p->voice()->lyricsContextList().size(); j++) { // remove and shift syllables
-							CASyllable *removedSyllable =
-								p->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(p->timeStart());
-						}
+						for (int j=0; j<p->voice()->lyricsContextList().size(); j++) // remove and shift syllables
+							p->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(p->timeStart());
 					}
 				}
 				

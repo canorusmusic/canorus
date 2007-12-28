@@ -104,6 +104,8 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/mimedata.cpp
 	core/file.cpp
 	core/fileformats.cpp
+	core/tar.cpp
+	core/archive.cpp
 	
 	core/document.cpp
 	core/sheet.cpp
@@ -198,12 +200,14 @@ SET(Canorus_Export_Srcs     # Classes for exporting Canorus data to various file
 	export/export.cpp
 	export/lilypondexport.cpp
 	export/canorusmlexport.cpp
+	#export/canexport.cpp
 )
 
 SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus data
 	import/import.cpp
 	import/lilypondimport.cpp
 	import/canorusmlimport.cpp
+	#import/canimport.cpp
 )
 
 SET(Canorus_RtMidi_Srcs		# RtMIDI library

@@ -2,7 +2,7 @@
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
-	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
 #include <QObject>
@@ -16,6 +16,7 @@
 */
 
 const QString CAFileFormats::CANORUSML_FILTER = QObject::tr("Canorus document (*.xml)");
+const QString CAFileFormats::CAN_FILTER = QObject::tr("Canorus archive (*.can)");
 const QString CAFileFormats::LILYPOND_FILTER  = QObject::tr("LilyPond document (*.ly)");
 const QString CAFileFormats::MUSICXML_FILTER  = QObject::tr("MusicXML document (*.xml)");
 const QString CAFileFormats::NOTEEDIT_FILTER  = QObject::tr("NoteEdit document (*.not)");
@@ -32,6 +33,8 @@ const QString CAFileFormats::getFilter( const CAFileFormats::CAFileFormatType t 
 	switch (t) {
 		case CanorusML:
 			return CANORUSML_FILTER;
+		case Can:
+			return CAN_FILTER;
 		case LilyPond:
 			return LILYPOND_FILTER;
 		case MusicXML:
@@ -48,6 +51,8 @@ const CAFileFormats::CAFileFormatType CAFileFormats::getType( const QString t ) 
 	if (t==CANORUSML_FILTER)
 		return CanorusML;
 	else
+	if (t==CAN_FILTER)
+		return Can;
 	if (t==LILYPOND_FILTER)
 		return LilyPond;
 	else
