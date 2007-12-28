@@ -69,7 +69,7 @@ void CAAutoRecovery::saveRecovery() {
 		CACanorusMLExport save;
 		save.setStreamToFile( CACanorus::settingsPath()+"/recovery"+QString::number(c) );
 		save.exportDocument( *i );
-		while ( save.isRunning() );
+		save.wait();
 	}
 	
 	while (	QFile::exists(CACanorus::settingsPath()+"/recovery"+QString::number(c)) ) {
@@ -98,7 +98,7 @@ void CAAutoRecovery::openRecovery() {
 		CACanorusMLImport open;
 		open.setStreamFromFile( CACanorus::settingsPath()+"/recovery"+QString::number(i) );
 		open.importDocument();
-		while ( open.isRunning() );
+		open.wait();
 		if ( open.importedDocument() ) {
 			CAMainWin *mainWin = new CAMainWin();
 			documents.append( tr("- Document %1 last modified on %2.").arg(open.importedDocument()->title()).arg(open.importedDocument()->dateLastModified().toString()) + "\n" );

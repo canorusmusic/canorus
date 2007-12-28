@@ -2302,7 +2302,7 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 	CACanorusMLImport open;
 	open.setStreamFromFile( fileName );
 	open.importDocument();
-	while ( open.isRunning() );
+	open.wait();
 	
 	if( open.importedDocument() ) {
 		open.importedDocument()->setFileName(fileName);
@@ -2310,7 +2310,7 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 	} else {
 		QMessageBox::critical(
 			this, tr("Canorus"),
-			tr("Error while opening the file!")
+			tr("Error while opening the file!\nError %1: ").arg(open.status()) + open.readableStatus()
 		);
 		return 0;
 	}
@@ -2331,7 +2331,8 @@ CADocument *CAMainWin::openDocument(CADocument *doc) {
 		}
 		
 		setDocument(doc);
-		CACanorus::insertRecentDocument( doc->fileName() );
+		if ( !doc->fileName().isEmpty() )
+			CACanorus::insertRecentDocument( doc->fileName() );
 		CACanorus::undo()->createUndoStack( document() );
 		
 		rebuildUI(); // local rebuild only
@@ -2366,7 +2367,7 @@ bool CAMainWin::saveDocument( QString fileName ) {
 	CACanorusMLExport save;
 	save.setStreamToFile( fileName );
 	save.exportDocument( document() );
-	while ( save.isRunning() );
+	save.wait();
 	
 	if ( save.exportedDocument() ) {
 		document()->setFileName( fileName );
@@ -2415,12 +2416,12 @@ void CAMainWin::on_uiExportDocument_triggered() {
 			CAMidiExport me;
 			me.setStreamToFile( s );
 			me.exportDocument( document() );
-			while ( me.isRunning() );
+			me.wait();
 		} else {
 			CALilyPondExport le;
 			le.setStreamToFile( s );
 			le.exportDocument( document() );
-			while ( le.isRunning() );
+			le.wait();
 		}
 	}
 }
@@ -3044,7 +3045,7 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		CACanorus::undo()->pushUndoCommand();
 		CACanorusMLImport open( inputString );
 		open.importDocument();
-		while ( open.isRunning() );
+		open.wait();
 		
 		if (open.importedDocument()) {
 			CACanorus::undo()->changeDocument( document(), open.importedDocument() );
@@ -3066,7 +3067,7 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		
 		li.setTemplateVoice( oldVoice );      // copy properties
 		li.importVoice();
-		while (li.isRunning());
+		li.wait();
 		
 		CAVoice *newVoice = li.importedVoice();
 		delete oldVoice; // also removes voice from the staff
@@ -3092,7 +3093,7 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		CALilyPondImport li( inputString );
 		
 		li.importLyricsContext();
-		while (li.isRunning());
+		li.wait();
 		CALyricsContext *newLc = li.importedLyricsContext();
 		CALyricsContext *oldLc = v->lyricsContext();
 		newLc->cloneLyricsContextProperties( oldLc );
