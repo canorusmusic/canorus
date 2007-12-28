@@ -13,7 +13,6 @@
 
 #include "interface/playback.h"
 #include "interface/mididevice.h"
-#include "widgets/scoreviewport.h"
 #include "core/sheet.h"
 #include "core/staff.h"
 #include "core/context.h"
@@ -41,18 +40,7 @@
 	The playbackFinished() signal is emitted once playback has finished or stopped.
 */
 
-CAPlayback::CAPlayback(CAScoreViewPort *v, CAMidiDevice *m) {
-	setScoreViewPort( v );
-	setMidiDevice( m );
-	setSheet( v->sheet() );
-	_stop = false;
-	setInitTimeStart( 0 );
-	setStopLock(false);
-	connect(this, SIGNAL(finished()), SLOT(stopNow()));
-}
-
 CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
-	setScoreViewPort( 0 );
 	setSheet( s );
 	setMidiDevice( m );
 	_stop = false;
@@ -79,7 +67,7 @@ void CAPlayback::run() {
 	// list of all the music element lists (ie. streams) taken from all the contexts
 	QList< QList<CAMusElement*> > stream; 
 	QVector<unsigned char> message;	// midi 3-byte message sent to midi device
-		
+	
 	// initializes all the streams, indices, repeat barlines etc.
 	initStreams( sheet() );
 	

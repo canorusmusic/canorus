@@ -268,6 +268,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	interface/rtmididevice.cpp
 	interface/mididevice.cpp
 	interface/playback.cpp
+	moc_playback.cxx
 )
 
 SET( Canorus_Scripts "scripts" ) # Official scripts shipped with Canorus.
