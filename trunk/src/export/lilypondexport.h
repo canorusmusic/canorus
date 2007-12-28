@@ -43,8 +43,8 @@ private:
 	void exportScoreBlock(CASheet *sheet);
 	void exportStaffVoices(CAStaff *staff);
 	void exportVoiceImpl(CAVoice *voice);
-	void exportLyricsContextImpl(CALyricsContext *lc);
-	void exportSyllables(CALyricsContext* lc);
+	void exportLyricsContextBlock(CALyricsContext *lc);
+	void exportLyricsContextImpl(CALyricsContext* lc);
 	
 	void writeDocumentHeader();
 	int writeRelativeIntro();

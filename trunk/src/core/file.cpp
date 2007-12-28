@@ -36,11 +36,10 @@ CAFile::CAFile() : QThread() {
 	Also destroys the created stream and file, if set.
 */
 CAFile::~CAFile() {
-	if ( stream() ) {
-		delete stream();
-	}
-	
 	if ( file() ) {
+		if ( stream() ) {
+			delete stream();
+		}
 		delete file();
 	}
 }
