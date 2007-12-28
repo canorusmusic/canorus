@@ -101,7 +101,6 @@ void CAAutoRecovery::openRecovery() {
 		while ( open.isRunning() );
 		if ( open.importedDocument() ) {
 			CAMainWin *mainWin = new CAMainWin();
-			CACanorus::addMainWin( mainWin );
 			documents.append( tr("- Document %1 last modified on %2.").arg(open.importedDocument()->title()).arg(open.importedDocument()->dateLastModified().toString()) + "\n" );
 			mainWin->openDocument( open.importedDocument() );
 			mainWin->show();

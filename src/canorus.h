@@ -33,7 +33,6 @@ public:
 	static void initScripting();
 	static void initAutoRecovery();
 	static void initUndo();
-	static void initRecentDocuments();
 	static void parseOpenFileArguments(int argc, char *argv[]);
 	static void cleanUp();
 	

@@ -2325,7 +2325,7 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 CADocument *CAMainWin::openDocument(CADocument *doc) {
 	stopPlayback();
 	if (doc) {
-		if (CACanorus::mainWinCount(document())==1) {
+		if ( document() && CACanorus::mainWinCount(document())==1 ) {
 			CACanorus::undo()->deleteUndoStack( document() ); 
 			delete document();
 		}
@@ -2437,7 +2437,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	if (!ffound)
 		return;
 	stopPlayback();
-
+	
 	QString s = fileNames[0];
 	CADocument *oldDocument = document();
 	
