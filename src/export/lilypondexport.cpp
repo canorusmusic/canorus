@@ -197,7 +197,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 		My bu -- ny is o -- ver the o -- cean __ My bu -- ny.
 	}
 */
-void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
+void CALilyPondExport::exportLyricsContextBlock( CALyricsContext *lc ) {
 	// Print Canorus voice name as a comment to help with debugging/tweaking
 	indent();
 	out() << "\n% " << lc->name() << "\n";
@@ -207,7 +207,7 @@ void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
 	indentMore();
 	
 	indent();
-	exportSyllables(lc);
+	exportLyricsContextImpl(lc);
 	
 	indentLess();
 	out() << "\n}\n";
@@ -216,7 +216,7 @@ void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
 /*!
 	Exports the syllables only without the SopranoLyircsOne = {} frame.
 */
-void CALilyPondExport::exportSyllables( CALyricsContext *lc ) {
+void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
 	for (int i=0; i<lc->syllableCount(); i++) {
 		if (i>0) out() << " "; // space between syllables
 		out() << syllableToLilyPond(lc->syllableAt(i));
@@ -518,7 +518,7 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 				exportStaffVoices( static_cast<CAStaff*>(sheet->contextAt( c )) );
 				break;
 			case CAContext::LyricsContext:
-				exportLyricsContextImpl( static_cast<CALyricsContext*>(sheet->contextAt( c )) );
+				exportLyricsContextBlock( static_cast<CALyricsContext*>(sheet->contextAt( c )) );
 				break;			
 		}
 	}
