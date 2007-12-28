@@ -275,7 +275,7 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/revert.svg</iconset>
+                  <iconset>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -330,7 +330,7 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/revert.svg</iconset>
+                  <iconset>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -385,7 +385,7 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/revert.svg</iconset>
+                  <iconset>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -440,7 +440,7 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/revert.svg</iconset>
+                  <iconset>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -495,7 +495,7 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/revert.svg</iconset>
+                  <iconset>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -550,7 +550,7 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/revert.svg</iconset>
+                  <iconset>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -605,7 +605,7 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/revert.svg</iconset>
+                  <iconset>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -689,7 +689,7 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/revert.svg</iconset>
+                  <iconset>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>

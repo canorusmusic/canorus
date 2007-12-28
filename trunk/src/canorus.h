@@ -33,6 +33,7 @@ public:
 	static void initScripting();
 	static void initAutoRecovery();
 	static void initUndo();
+	static void initRecentDocuments();
 	static void parseOpenFileArguments(int argc, char *argv[]);
 	static void cleanUp();
 	
@@ -51,6 +52,11 @@ public:
 	
 	inline static CAUndo *undo() { return _undo; }
 	
+	static void addRecentDocument( QString );
+	static void insertRecentDocument( QString );
+	static void removeRecentDocument( QString );
+	inline static QList<QString>& recentDocumentList() { return _recentDocumentList; }
+
 	inline static CASettings *settings() { return _settings; }
 	inline static CAAutoRecovery *autoRecovery() { return _autoRecovery; }
 	inline static QString settingsPath() { return _settingsPath; }
@@ -66,6 +72,7 @@ private:
 	static QString _settingsPath;
 	static CAUndo *_undo;
 	static QApplication *_mainApp;
+	static QList<QString> _recentDocumentList;
 	
 	// Playback output
 	static CAMidiDevice *_midiDevice;

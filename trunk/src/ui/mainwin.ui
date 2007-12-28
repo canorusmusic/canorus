@@ -63,7 +63,7 @@
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>29</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="uiMenuEdit" >
@@ -117,9 +117,19 @@
     <property name="title" >
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="uiOpenRecent" >
+     <property name="title" >
+      <string>Open &amp;recent</string>
+     </property>
+     <property name="icon" >
+      <iconset>images/general/fileopen.png</iconset>
+     </property>
+     <addaction name="actionRecent_documents" />
+    </widget>
     <addaction name="uiNewDocument" />
     <addaction name="uiNewDocumentWizard" />
     <addaction name="uiOpenDocument" />
+    <addaction name="uiOpenRecent" />
     <addaction name="uiSaveDocument" />
     <addaction name="uiSaveDocumentAs" />
     <addaction name="uiCloseDocument" />
@@ -907,6 +917,11 @@
    </property>
    <property name="text" >
     <string>Insert Articulation Mark</string>
+   </property>
+  </action>
+  <action name="actionRecent_documents" >
+   <property name="text" >
+    <string>recent documents dummy</string>
    </property>
   </action>
  </widget>

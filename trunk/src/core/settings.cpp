@@ -23,6 +23,7 @@ const QColor CASettings::DEFAULT_HIDDEN_ELEMENTS_COLOR = Qt::green;
 const QColor CASettings::DEFAULT_DISABLED_ELEMENTS_COLOR = Qt::gray;
 const int CASettings::DEFAULT_MIDI_IN_PORT = -1;
 const int CASettings::DEFAULT_MIDI_OUT_PORT = -1;
+const int CASettings::DEFAULT_MAX_RECENT_DOCUMENTS = 15;
 
 CASettings::CASettings(const QString & fileName, Format format, QObject * parent)
  : QSettings(fileName, format, parent) {
@@ -40,6 +41,8 @@ void CASettings::writeSettings() {
 	setValue( "files/documentsdirectory", documentsDirectory().absolutePath() );
 	setValue( "files/defaultsaveformat", defaultSaveFormat() );
 	setValue( "files/autorecoveryinterval", autoRecoveryInterval() );
+	setValue( "files/maxrecentdocuments", maxRecentDocuments() );
+	writeRecentDocuments();
 	setValue( "appearance/backgroundcolor", backgroundColor() );
 	setValue( "appearance/foregroundcolor", foregroundColor() );
 	setValue( "appearance/selectioncolor", selectionColor() );
@@ -82,6 +85,13 @@ CASettingsDialog::CASettingsPage CASettings::readSettings() {
 	else
 		setAutoRecoveryInterval( DEFAULT_AUTO_RECOVERY_INTERVAL );
 	
+	// Recently opened files
+	if ( contains("files/maxrecentdocuments") )
+		setMaxRecentDocuments( value("files/maxrecentdocuments").toInt() );
+	else
+		setMaxRecentDocuments( DEFAULT_MAX_RECENT_DOCUMENTS );
+	readRecentDocuments();
+
 	// Appearance settings
 	if ( contains("appearance/backgroundcolor") )
 		setBackgroundColor( value("appearance/backgroundcolor").value<QColor>() );
@@ -146,4 +156,17 @@ void CASettings::setMidiInPort(int in) {
 		CACanorus::midiDevice()->closeInputPort();
 		CACanorus::midiDevice()->openInputPort( midiInPort() );
 	}
+}
+
+void CASettings::readRecentDocuments() {
+	for ( int i=0; contains( QString("files/recentdocument") + QString::number(i) ); i++ )
+		CACanorus::addRecentDocument( value(QString("files/recentdocument") + QString::number(i)).toString() );
+}
+
+void CASettings::writeRecentDocuments() {
+	for ( int i=0; contains( QString("files/recentdocument") + QString::number(i) ); i++ )
+		remove( QString("files/recentdocument") + QString::number(i) );
+		
+	for ( int i=0; i<CACanorus::recentDocumentList().size(); i++ )
+		setValue( QString("files/recentdocument") + QString::number(i), CACanorus::recentDocumentList()[i] );
 }
