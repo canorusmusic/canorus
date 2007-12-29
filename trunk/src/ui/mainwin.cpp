@@ -2882,16 +2882,17 @@ void CAMainWin::on_uiMarkType_toggled( bool checked, int buttonId ) {
 		if ( buttonId==CAMark::Ritardando ) {
 			markType = CAMark::Ritardando;
 			musElementFactory()->setRitardandoType( CATempo::Ritardando );
-		} else
+		} else */
 		if ( buttonId==CAMark::Crescendo*(-1) ) {
 			markType = CAMark::Crescendo;
-			musElementFactory()->setDynamicType( CADynamic::Decrescendo );
+			musElementFactory()->setCrescendoType( CACrescendo::Decrescendo );
 		} else
 		if ( buttonId==CAMark::Crescendo ) {
 			markType = CAMark::Crescendo;
-			musElementFactory()->setDynamicType( CADynamic::Crescendo );
-		} else { */
-		markType = static_cast<CAMark::CAMarkType>(buttonId);
+			musElementFactory()->setCrescendoType( CACrescendo::Crescendo );
+		} else {
+			markType = static_cast<CAMark::CAMarkType>(buttonId);
+		}
 		
 		musElementFactory()->setMusElementType( CAMusElement::Mark );
 		

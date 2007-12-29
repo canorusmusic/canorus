@@ -136,6 +136,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/text.cpp
 	core/fingering.cpp
 	core/dynamic.cpp
+	core/crescendo.cpp
 	core/instrumentchange.cpp
 	
 	core/syllable.cpp
@@ -258,6 +259,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/text.cpp
 	core/fingering.cpp
 	core/dynamic.cpp
+	core/crescendo.cpp
 	core/instrumentchange.cpp
 
 	core/syllable.cpp

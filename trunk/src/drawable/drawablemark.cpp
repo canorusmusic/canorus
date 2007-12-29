@@ -22,6 +22,7 @@
 #include "core/instrumentchange.h"
 #include "core/fermata.h"
 #include "core/tempo.h"
+#include "core/crescendo.h"
 #include "canorus.h"
 
 const int CADrawableMark::DEFAULT_TEXT_SIZE = 20;
@@ -63,6 +64,12 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
 	} else
+	if ( mark->markType()==CAMark::Crescendo ) {
+		setWidth( mark->timeLength()/10 );
+		setHeight( static_cast<CACrescendo*>(mark)->finalVolume()/10 );
+		setHScalable(true);
+		setVScalable(true);
+	} else
 	if ( mark->markType()==CAMark::Fermata) {
 		setWidth( 25 );
 		setHeight( 20 );
@@ -98,7 +105,7 @@ CADrawableMark::~CADrawableMark() {
 
 void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 	p->setPen(QPen(s.color));
-		
+	
 	switch ( mark()->markType() ) {
 	case CAMark::Dynamic: {
 		QFont font("Emmentaler");
@@ -106,6 +113,16 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		p->setFont(font);
 		
 		p->drawText( s.x, s.y, static_cast<CADynamic*>(mark())->text() );
+		break;
+	}
+	case CAMark::Crescendo: {
+		if (static_cast<CACrescendo*>(mark())->crescendoType()==CACrescendo::Crescendo) {
+			p->drawLine( s.x, qRound(s.y+(height()*s.z) / 2), qRound(s.x + width()*s.z), s.y );
+			p->drawLine( s.x, qRound(s.y+(height()*s.z) / 2), qRound(s.x + width()*s.z), qRound(s.y+(height()*s.z)) );
+		} else {
+			p->drawLine( s.x, s.y, qRound(s.x + width()*s.z), qRound(s.y+(height()*s.z) / 2) );
+			p->drawLine( s.x, qRound(s.y+(height()*s.z)), qRound(s.x + width()*s.z), qRound(s.y+(height()*s.z) / 2) );
+		}
 		break;
 	}
 	case CAMark::Text: {

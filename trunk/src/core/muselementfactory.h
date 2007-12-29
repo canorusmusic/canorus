@@ -25,6 +25,7 @@
 #include "core/articulation.h"
 #include "core/fermata.h"
 #include "core/tempo.h"
+#include "core/crescendo.h"
 
 class CAMusElement;
 
@@ -201,6 +202,12 @@ public:
 	inline const CAPlayable::CAPlayableLength tempoBeat() { return _tempoBeat; }
 	inline void setTempoBeat( CAPlayable::CAPlayableLength length ) { _tempoBeat = length; }
 	
+	inline const int crescendoFinalVolume() { return _crescendoFinalVolume; }
+	inline void setCrescendoFinalVolume( const int v ) { _crescendoFinalVolume = v; }
+	
+	inline const CACrescendo::CACrescendoType crescendoType() { return _crescendoType; }
+	inline void setCrescendoType( CACrescendo::CACrescendoType t ) { _crescendoType = t; }
+	
 private:
 	CAMusElement *mpoMusElement;                    // Newly created music element itself
 	CAMusElement *mpoEmpty;                         // An empty (dummy) element.
@@ -246,5 +253,7 @@ private:
 	CAPlayable::CAPlayableLength _tempoBeat;
 	int _tempoBeatDotted;
 	int _tempoBpm;
+	int _crescendoFinalVolume;
+	CACrescendo::CACrescendoType _crescendoType;
 };
 #endif // MUSELEMENTFACTORY_H_
