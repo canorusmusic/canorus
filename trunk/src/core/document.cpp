@@ -26,7 +26,8 @@
 	
 	\sa addSheet()
 */
-CADocument::CADocument() {
+CADocument::CADocument()
+ : CAResourceContainer() {
 	setDateCreated( QDateTime::currentDateTime() );
 	setDateLastModified( QDateTime::currentDateTime() );
 	setTimeEdited(0);

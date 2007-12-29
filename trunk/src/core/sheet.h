@@ -13,11 +13,12 @@
 
 #include "core/context.h"
 #include "core/staff.h"
+#include "core/resourcecontainer.h"
 
 class CADocument;
 class CAPlayable;
 
-class CASheet {
+class CASheet : public CAResourceContainer {
 public:
 	CASheet( const QString name, CADocument *doc );
 	CASheet *clone( CADocument *doc );

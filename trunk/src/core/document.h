@@ -12,9 +12,11 @@
 #include <QString>
 #include <QDateTime>
 
+#include "core/resourcecontainer.h"
+
 class CASheet;
 
-class CADocument {
+class CADocument : public CAResourceContainer {
 public:
 	CADocument();
 	virtual ~CADocument();
