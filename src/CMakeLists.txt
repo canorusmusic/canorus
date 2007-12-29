@@ -106,6 +106,8 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/fileformats.cpp
 	core/tar.cpp
 	core/archive.cpp
+	core/resource.cpp
+	core/resourcecontainer.cpp
 	
 	core/document.cpp
 	core/sheet.cpp
@@ -263,6 +265,10 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/functionmarking.cpp
 	
 	core/file.cpp
+	core/tar.cpp
+	core/archive.cpp
+	core/resource.cpp
+	core/resourcecontainer.cpp
 	${Canorus_Import_Srcs}
 	moc_import.cxx
 	${Canorus_Export_Srcs}

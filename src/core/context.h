@@ -10,10 +10,13 @@
 
 #include <QString>
 
+#include "core/resourcecontainer.h"
+
 class CASheet;
 class CAMusElement;
 
-class CAContext {
+class CAContext
+ : public CAResourceContainer {
 public:
 	CAContext( const QString name, CASheet *s );
 	virtual ~CAContext();

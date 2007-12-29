@@ -12,6 +12,9 @@ class QXmlDefaultHandler {
 class QObject {
 };
 
+// resources
+%include "scripting/resources.i"
+
 // core
 %include "scripting/context.i"
 %include "scripting/document.i"

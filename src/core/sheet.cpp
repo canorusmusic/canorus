@@ -31,7 +31,8 @@
 /*!
 	Creats a new sheet named \a name with parent document \a doc.
 */
-CASheet::CASheet(const QString name, CADocument *doc) {
+CASheet::CASheet(const QString name, CADocument *doc)
+ : CAResourceContainer() {
 	_name = name;
 	_document = doc;
 }

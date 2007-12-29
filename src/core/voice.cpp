@@ -30,7 +30,8 @@
 	Creates a new voice named \a name, in \a staff, \a voiceNumber and \a stemDirection of notes stems.
 	Voice number starts at 1.
 */
-CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection, int voiceNumber ) {
+CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection, int voiceNumber )
+ : CAResourceContainer() {
 	_staff = staff;
 	_name = name;
 	
