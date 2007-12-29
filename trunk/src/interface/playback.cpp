@@ -22,6 +22,7 @@
 #include "core/mark.h"
 #include "core/dynamic.h"
 #include "core/instrumentchange.h"
+#include "core/tempo.h"
 
 /*!
 	\class CAPlayback
@@ -77,6 +78,7 @@ void CAPlayback::run() {
 		setStop(false);
 	
 	int minLength = -1;
+	float sleepFactor = 1.0;  // set by tempo to determine the miliseconds for sleep
 	while (!_stop || _curPlaying.size()) {	// at stop true: enter to switch all notes off
 		for (int i=0; i<streamCount(); i++) {
 			loopUntilPlayable(i);
@@ -126,6 +128,12 @@ void CAPlayback::run() {
 							message << static_cast<unsigned char>(static_cast<CAInstrumentChange*>(note->markList()[j])->instrument());
 							midiDevice()->send(message);
 							message.clear();
+				    	} else
+				    	if ( note->markList()[j]->markType()==CAMark::Tempo ) {
+				    		sleepFactor = 60000.0 /
+				    		( CAPlayable::playableLengthToTimeLength(static_cast<CATempo*>(note->markList()[j])->beat(), static_cast<CATempo*>(note->markList()[j])->beatDotted() )
+				    		  * static_cast<CATempo*>(note->markList()[j])->bpm()
+				    		);
 				    	}
 				    }
 				    
@@ -165,7 +173,7 @@ void CAPlayback::run() {
 		}
 		
 		if (minLength!=-1) {
-			msleep(minLength);
+			msleep( qRound(minLength*sleepFactor) );
 			for (int i=0; i<streamCount(); i++)
 				curTime(i) += minLength;
 		}
