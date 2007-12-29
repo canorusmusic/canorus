@@ -35,6 +35,9 @@ public:
 	virtual void draw(QPainter *p, const CADrawSettings s) = 0;
 	virtual CADrawable *clone();
 	
+	void drawHScaleHandles( QPainter *p, const CADrawSettings s );
+	void drawVScaleHandles( QPainter *p, const CADrawSettings s );
+	
 	inline CADrawableType drawableType() { return _drawableType; }
 	inline int xPos() { return _xPos + _xPosOffset; }
 	inline int yPos() { return _yPos + _yPosOffset; }
@@ -49,6 +52,8 @@ public:
 	inline const QRect bBox() { return QRect(_xPos + _xPosOffset, _yPos + _yPosOffset, _width, _height); }
 	inline bool isVisible() { return _visible; }
 	inline bool isSelectable() { return _selectable; }
+	inline bool isHScalable() { return _HScalable; }
+	inline bool isVScalable() { return _VScalable; }
 	
 	inline virtual void setXPos(int xPos) { _xPos = xPos; }
 	inline virtual void setYPos(int yPos) { _yPos = yPos; }
@@ -60,6 +65,8 @@ public:
 	inline void setHeight(int height) { _neededHeight += (height - _height); _height = height; }
 	inline void setVisible(bool v) { _visible = v; }
 	inline void setSelectable(bool s) { _selectable = s; }
+	inline void setHScalable(bool s) { _HScalable = s; }
+	inline void setVScalable(bool s) { _VScalable = s; }
 	
 protected:
 	inline void setNeededWidth(int width) { _neededWidth = width; }
@@ -75,6 +82,10 @@ protected:
 	int _neededHeight; // Minimum height the next element should be placed next to it by engraver
 	bool _visible;
 	bool _selectable;	// Can the element be clicked on and is then selected
+	bool _HScalable;    // Can the element be streched horizontally
+	bool _VScalable;    // Can the element be streched vertically
+	
+	static const int SCALE_HANDLES_SIZE; // Width and Height of the scale handles squares
 };
 
 #endif /* DRAWABLE_H_ */

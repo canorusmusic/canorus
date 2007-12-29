@@ -83,6 +83,9 @@ CAMusElementFactory::CAMusElementFactory() {
 	_tempoBeat = CAPlayable::Half;
 	_tempoBeatDotted = 0;
 	_tempoBpm = 72;
+	
+	_crescendoFinalVolume = 50;
+	_crescendoType = CACrescendo::Crescendo;
 }
 
 /*!
@@ -290,6 +293,13 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 	case CAMark::Dynamic: {
 		if ( elt->musElementType()==CAMusElement::Note ) {
 			mpoMusElement = new CADynamic( dynamicText(), dynamicVolume(), static_cast<CANote*>(elt) );
+			success = true;
+		}
+		break;
+	}
+	case CAMark::Crescendo: {
+		if ( elt->musElementType()==CAMusElement::Note ) {
+			mpoMusElement = new CACrescendo( crescendoFinalVolume(), static_cast<CANote*>(elt), crescendoType() );
 			success = true;
 		}
 		break;

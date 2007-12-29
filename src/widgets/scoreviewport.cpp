@@ -904,6 +904,14 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		               color
 		               };
 		mList[i]->draw(&p, s);
+		if ( _selection.contains(mList[i]) && mList[i]->isHScalable() ) {
+			s.color = foregroundColor();
+			mList[i]->drawHScaleHandles(&p, s);
+		}
+		if ( _selection.contains(mList[i]) && mList[i]->isVScalable() ) {
+			s.color = foregroundColor();
+			mList[i]->drawVScaleHandles(&p, s);
+		}
 	}
 	
 	// draw selection regions
