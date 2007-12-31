@@ -37,6 +37,7 @@ CARtMidiDevice::CARtMidiDevice()
 	_in = 0;
 	_outOpen=false;
 	_inOpen=false;
+	setRealTime(true);
 	
 	try {
 		_out = new RtMidiOut();
@@ -152,7 +153,10 @@ CARtMidiDevice::~CARtMidiDevice() {
 		delete _in;
 }
 
-void CARtMidiDevice::send(QVector<unsigned char> message) {
+/*!
+	Sends the given \a message to the midi device. \a offset is ignored because CARtMidiDevice is a realtime device.
+*/
+void CARtMidiDevice::send(QVector<unsigned char> message, int offset) {
 	std::vector<unsigned char> messageVector = message.toStdVector();
 	if (_outOpen)
 		_out->sendMessage(&messageVector);

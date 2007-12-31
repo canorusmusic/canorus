@@ -29,7 +29,7 @@ public:
 	bool openInputPort(int port);	// return true on success, false otherwise	
 	void closeOutputPort();
 	void closeInputPort();
-	void send(QVector<unsigned char> message);
+	void send(QVector<unsigned char> message, int offset=0);
 	
 private:
 	RtMidiOut *_out;
