@@ -30,6 +30,18 @@ public:
 		DrawableContext
 	};
 	
+	enum CADirection {
+		Undefined,
+		Top,
+		Bottom,
+		Left,
+		Right,
+		TopLeft,
+		TopRight,
+		BottomLeft,
+		BottomRight
+	};
+	
 	CADrawable(int x, int y);	// x and y position of an element in absolute world units	
 	virtual ~CADrawable() { }
 	virtual void draw(QPainter *p, const CADrawSettings s) = 0;

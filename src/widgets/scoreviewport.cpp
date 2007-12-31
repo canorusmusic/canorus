@@ -1067,6 +1067,20 @@ void CAScoreViewPort::checkScrollBars() {
 void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 	QPoint p(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY);
 	setLastMousePressCoords(p);
+	if ( selection().size() && selection().at(0)->isHScalable() ) {
+		if (selection().at(0)->xPos()==p.x()) {
+			setResizeDirection(CADrawable::Left);
+		} else if (selection().at(0)->xPos()+selection().at(0)->width()==p.x()) {
+			setResizeDirection(CADrawable::Right);
+		}
+	} else if ( selection().size() && selection().at(0)->isVScalable() ) {
+		if (selection().at(0)->yPos()==p.y()) {
+			setResizeDirection(CADrawable::Top);
+		} else if (selection().at(0)->yPos()+selection().at(0)->height()==p.y()) {
+			setResizeDirection(CADrawable::Bottom);
+		}
+	}
+	
 	emit CAMousePressEvent(e, p, this);
 }
 
@@ -1075,6 +1089,7 @@ void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 	A new signal is emitted: CAMouseReleaseEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreViewPort::mouseReleaseEvent(QMouseEvent *e) {
+	setResizeDirection( CADrawable::Undefined );
 	emit CAMouseReleaseEvent(e, QPoint(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY), this);
 }
 
@@ -1394,6 +1409,72 @@ int CAScoreViewPort::getMaxYExtended(CAKDTree<T> &v) {
 */
 QList<CADrawableContext*> CAScoreViewPort::findContextsInRegion( QRect &region ) {
 	return _drawableCList.findInRange(region);
+}
+
+/*!
+	Returns Canorus time for the given X coordinate \a x.
+	
+	Returns 0, if no contexts are present.
+*/
+int CAScoreViewPort::coordsToTime( int x ) {
+	CADrawableMusElement *d1 = nearestLeftElement( x, 0, false );
+	if ( selection().contains(d1) ) {
+		_drawableMList.list().removeAll(d1);
+		CADrawableMusElement *newD1 = nearestLeftElement( x, 0, false );
+		_drawableMList.addElement(d1);
+		d1 = newD1;
+	}
+	
+	CADrawableMusElement *d2 = nearestRightElement( x, 0, false );
+	if ( selection().contains(d2) ) {
+		_drawableMList.list().removeAll(d2);
+		CADrawableMusElement *newD2 = nearestRightElement( x, 0, false );
+		_drawableMList.addElement(d2);
+		d2 = newD2;
+	}
+	
+	if ( d1 && d2 && d1->musElement() && d2->musElement() ) {
+		int delta = (d2->xPos() - d1->xPos());
+		if (!delta) delta=1;
+		return qRound(d1->musElement()->timeStart() + ( d2->musElement()->timeStart() - d1->musElement()->timeStart() ) * ( (x - d1->xPos()) / (float)delta ) );
+	} else if ( d1 && d1->musElement() )
+		return ( d1->musElement()->timeEnd() );
+	else
+		return 0;
+}
+
+/*!
+	Returns the X coordinate for the given Canorus \a time.
+	Returns -1, if such a time doesn't exist in the score.
+*/
+int CAScoreViewPort::timeToCoords( int time ) {
+	CADrawableMusElement *leftElt = 0;
+	CADrawableMusElement *rightElt = 0;
+	for (int i=0; i<_drawableMList.size(); i++) {
+		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeStart() <= time && (
+				!leftElt || _drawableMList.at(i)->musElement()->timeStart() > leftElt->musElement()->timeStart() &&
+		        (leftElt->musElement()->timeStart()!=_drawableMList.at(i)->musElement()->timeStart() || _drawableMList.at(i)->xPos() > leftElt->xPos()) // get the right-most element of that time
+		    )
+		   )
+			leftElt = _drawableMList.at(i);
+		
+		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeEnd() >= time && (
+				!rightElt || _drawableMList.at(i)->musElement()->timeStart() < rightElt->musElement()->timeStart() &&
+		        (rightElt->musElement()->timeStart()!=_drawableMList.at(i)->musElement()->timeStart() || _drawableMList.at(i)->xPos() < rightElt->xPos()) // get the left-most element of that time
+		    )
+		   )
+			rightElt = _drawableMList.at(i);
+	}
+	
+	if ( leftElt && rightElt && leftElt->musElement() && rightElt->musElement() ) {
+		int delta = (rightElt->musElement()->timeStart() - leftElt->musElement()->timeStart());
+		if (!delta) delta=1;
+		return qRound(leftElt->xPos() + ( rightElt->xPos() - leftElt->xPos() ) *
+		              ( ((float)time - leftElt->musElement()->timeStart()) / delta )
+		             );
+	} else {
+		return -1;
+	}
 }
 
 /*!
