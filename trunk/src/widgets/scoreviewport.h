@@ -83,12 +83,12 @@ public:
 	///////////////
 	// Selection //
 	///////////////
-	inline QList<CADrawableMusElement*> selection() { return _selection; };
-	QList<CADrawableMusElement*>        musElementsAt(int x, int y);
-	CADrawableContext                  *selectCElement(int x, int y);
-	CADrawableMusElement               *selectMElement(CAMusElement *elt);
-	CADrawableContext                  *selectContext(CAContext *context);
-	inline QPoint                       lastMousePressCoords() { return _lastMousePressCoords; }
+	inline QList<CADrawableMusElement*>& selection() { return _selection; };
+	QList<CADrawableMusElement*>         musElementsAt(int x, int y);
+	CADrawableContext                   *selectCElement(int x, int y);
+	CADrawableMusElement                *selectMElement(CAMusElement *elt);
+	CADrawableContext                   *selectContext(CAContext *context);
+	inline QPoint                        lastMousePressCoords() { return _lastMousePressCoords; }
 	
 	inline CADrawableContext *currentContext() { return _currentContext; }
 	inline void setCurrentContext(CADrawableContext *c) { _currentContext = c; }
@@ -110,6 +110,7 @@ public:
 	inline void addSelectionRegion(QRect r) { _selectionRegionList << r; }
 	inline void removeSelectionRegion(QRect r) { _selectionRegionList.removeAll(r); }
 	inline void clearSelectionRegionList() { _selectionRegionList.clear(); }
+	inline CADrawable::CADirection resizeDirection() { return _resizeDirection; }
 	
 	/////////////////////////////////////////////////////////////////////
 	// Music elements and contexts query, space calculation and access //
@@ -121,6 +122,8 @@ public:
 	CADrawableMusElement     *nearestLeftElement(int x, int y, CAVoice *voice);
 	CADrawableMusElement     *nearestRightElement(int x, int y, bool currentContextOnly=true);
 	CADrawableMusElement     *nearestRightElement(int x, int y, CAVoice *voice);
+	int coordsToTime( int x );
+	int timeToCoords( int time );
 	
 	CADrawableContext *nearestUpContext(int x, int y);
 	CADrawableContext *nearestDownContext(int x, int y);
@@ -157,7 +160,7 @@ public:
 	inline const int worldWidth() { return _worldW; }
 	inline const int worldHeight() { return _worldH; }
 	inline const QRect worldCoords() { return QRect(worldX(), worldY(), worldWidth(), worldHeight()); }
-
+	
 	inline const float zoom() { return _zoom; }
 		
 	void setWorldCoords(const QRect r, bool animate=false, bool force=false);
@@ -300,6 +303,8 @@ private:
 	inline void setSyllableEditGeometry( const QRect r ) { _syllableEditGeometry = r; }
 	bool _syllableEditVisible;
 	inline void setSyllableEditVisible(bool v) { _syllableEditVisible = v; }
+	inline void setResizeDirection( CADrawable::CADirection r ) { _resizeDirection = r; }
+	CADrawable::CADirection _resizeDirection; // Is the current scalable music element in drag-drop resizing mode?
 	
 	// Selection regions
 	QList<QRect> _selectionRegionList;

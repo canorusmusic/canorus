@@ -1493,6 +1493,28 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 	\sa CAScoreViewPort::mouseMoveEvent(), scoreViewPortMousePress(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
 void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreViewPort *c) {
+	if ( mode() == SelectMode && c->selection().size() && (c->selection().at(0)->isHScalable() || c->selection().at(0)->isVScalable()) ) {
+		if (c->selection().at(0)->xPos()==coords.x() || c->selection().at(0)->xPos()+c->selection().at(0)->width()==coords.x())
+			c->setCursor(Qt::SizeHorCursor);
+		else if ( c->selection().at(0)->yPos()==coords.y() || c->selection().at(0)->yPos()+c->selection().at(0)->height()==coords.y() )
+			c->setCursor(Qt::SizeVerCursor);
+		else
+			c->setCursor(Qt::ArrowCursor);
+		
+		int time = c->coordsToTime(coords.x());
+		time -= (time%CAPlayable::playableLengthToTimeLength(CAPlayable::Sixteenth)); // round timelength to eighth notes length
+		if ( c->resizeDirection()==CADrawable::Right && (time - c->selection().at(0)->musElement()->timeStart() > 0) ) {
+			c->selection().at(0)->musElement()->setTimeLength( time - c->selection().at(0)->musElement()->timeStart() );
+			c->selection().at(0)->setWidth( c->timeToCoords(time) - c->selection().at(0)->xPos() );
+			c->repaint();
+		} else
+		if ( c->resizeDirection()==CADrawable::Left && (time < c->selection().at(0)->musElement()->timeEnd()) ) {
+			c->selection().at(0)->musElement()->setTimeLength( c->selection().at(0)->musElement()->timeLength() - (time - c->selection().at(0)->musElement()->timeStart()) );
+			c->selection().at(0)->musElement()->setTimeStart( time );
+			c->selection().at(0)->setXPos( c->timeToCoords(time) );
+			c->repaint();
+		}
+	} else
 	if ( (mode() == InsertMode && musElementFactory()->musElementType() == CAMusElement::Note) ) {
 		CADrawableStaff *s;
 		if (c->currentContext()?(c->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0)
