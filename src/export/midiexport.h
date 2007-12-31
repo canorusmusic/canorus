@@ -10,6 +10,9 @@
 
 #include <QTextStream>
 #include <QString>
+#include <QList>
+#include <QVector>
+#include <QByteArray>
 
 #include "core/keysignature.h"
 #include "core/timesignature.h"
@@ -22,12 +25,28 @@
 #include "core/syllable.h"
 
 #include "export/export.h"
+#include "interface/playback.h"
+
 
 class CAMidiExport : public CAExport {
 public:
-/*
 	CAMidiExport( QTextStream *out=0 );
+
+/*	Selbst erfunden FIXME:
+    ///////////////////////////
+    // Interface to File     //
+    ////////////////////////////
+	QMap<int, QString> getOutputPorts();
+	QMap<int, QString> getInputPorts();
 	
+	bool openOutputPort(int port);	// return true on success, false otherwise
+	bool openInputPort(int port);	// return true on success, false otherwise	
+	void closeOutputPort();
+	void closeInputPort();
+	void send(QVector<unsigned char> message);
+*/
+	
+/*
 	///////////////////////////
 	// Polling export status //
 	///////////////////////////
@@ -40,12 +59,19 @@ public:
 */
 	
 private:
-/*
+	void writeWord(unsigned int w);
+	void writeDWord(unsigned int w);
+	void writeString(char *s);
+	void writeTime(int time);
+	void writeText(int time, char *s);
 	void exportDocumentImpl(CADocument *doc);
+	int midiTrackCount;
+	QVector<QByteArray> trackChunks;
+	//void exportVoiceImpl(CAVoice *voice, QByteArray *trackChunk);
+/*
 	void exportSheetImpl(CASheet *sheet);
 	void exportScoreBlock(CASheet *sheet);
 	void exportStaffVoices(CAStaff *staff);
-	void exportVoiceImpl(CAVoice *voice);
 	void exportLyricsContextImpl(CALyricsContext *lc);
 	void exportSyllables(CALyricsContext* lc);
 	
@@ -81,8 +107,10 @@ private:
 	///////////////////////////
 	// Getter/Setter methods //
 	///////////////////////////
+*/
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }
 	inline void setCurSheet(CASheet *sheet) { _curSheet = sheet; }
+/*
 	inline void setCurContext(CAContext *context) { _curContext = context; }
 	inline void setCurContextIndex(int c) { _curContextIndex = c; }
 	inline void setIndentLevel( int level) { _curIndentLevel = level; }
@@ -91,8 +119,10 @@ private:
 	// Members //
 	/////////////
 	QTextStream *_out;
+*/
 	CAVoice *_curVoice;
 	CASheet *_curSheet;
+/*
 	CAContext *_curContext;
 	int _curContextIndex;
 	int _curIndentLevel;

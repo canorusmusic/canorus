@@ -118,7 +118,9 @@ void CACanorus::initCommonGUI() {
 	CAMainWin::uiExportDialog = new QFileDialog(0, QObject::tr("Choose a file to export"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiExportDialog->setFileMode(QFileDialog::AnyFile);
 	CAMainWin::uiExportDialog->setAcceptMode( QFileDialog::AcceptSave );
-	CAMainWin::uiExportDialog->setFilter( CAFileFormats::LILYPOND_FILTER );
+	QStringList exFilters;
+	exFilters << CAFileFormats::LILYPOND_FILTER << CAFileFormats::MIDI_FILTER;
+	CAMainWin::uiExportDialog->setFilters( exFilters );
   	
 	CAMainWin::uiImportDialog = new QFileDialog(0, QObject::tr("Choose a file to import"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiImportDialog->setFileMode( QFileDialog::ExistingFile );
