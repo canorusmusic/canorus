@@ -94,7 +94,7 @@ void CAPlayback::run() {
 					message << (127);
 					if ((note->musElementType()!=CAMusElement::Rest ) &&		// first because rest has no tie
 							!(note->tieStart() && note->tieStart()->noteEnd()) )
-						midiDevice()->send(message);
+						midiDevice()->send(message, 0);
 					message.clear();
 				}
 				_curPlaying.removeAt(i--);				
@@ -104,6 +104,7 @@ void CAPlayback::run() {
 		if (_stop) continue;	// no notes on anymore
 		
 		minLength = -1;
+		int mSeconds=0;
 		for (int i=0; i<streamCount(); i++) {
 			while ( streamAt(i).size() > streamIdx(i) &&
 			        streamAt(i).at(streamIdx(i))->timeStart() == curTime(i)
@@ -120,13 +121,13 @@ void CAPlayback::run() {
 				    		message << (176 + note->voice()->midiChannel()); // set volume
 				    		message << (7);
 				    		message << qRound(127 * static_cast<CADynamic*>(note->markList()[j])->volume()/100.0);
-				    		midiDevice()->send(message);
+				    		midiDevice()->send(message, mSeconds);
 				    		message.clear();
 				    	} else
 				    	if ( note->markList()[j]->markType()==CAMark::InstrumentChange ) {
 							message << (192 + note->voice()->midiChannel()); // change program
 							message << static_cast<unsigned char>(static_cast<CAInstrumentChange*>(note->markList()[j])->instrument());
-							midiDevice()->send(message);
+							midiDevice()->send(message, mSeconds);
 							message.clear();
 				    	} else
 				    	if ( note->markList()[j]->markType()==CAMark::Tempo ) {
@@ -141,7 +142,7 @@ void CAPlayback::run() {
 					message << (note->midiPitch());
 					message << (127);
 					if ( !note->tieEnd() )
-						midiDevice()->send(message);
+						midiDevice()->send(message, mSeconds);
 					message.clear();
 					
 					_curPlaying << static_cast<CAPlayable*>(streamAt(i).at(streamIdx(i)));
@@ -173,7 +174,11 @@ void CAPlayback::run() {
 		}
 		
 		if (minLength!=-1) {
-			msleep( qRound(minLength*sleepFactor) );
+			mSeconds += qRound(minLength*sleepFactor);
+			
+			if ( midiDevice()->isRealTime() )
+				msleep( qRound(minLength*sleepFactor) );
+			
 			for (int i=0; i<streamCount(); i++)
 				curTime(i) += minLength;
 		}
@@ -227,13 +232,13 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 				QVector<unsigned char> message;
 				message << (192 + staff->voiceAt(j)->midiChannel()); // change program
 				message << (staff->voiceAt(j)->midiProgram());
-				midiDevice()->send(message);
+				midiDevice()->send(message, 0);
 				message.clear();
 				
 				message << (176 + staff->voiceAt(j)->midiChannel()); // set volume
 				message << (7);
 				message << (100);
-				midiDevice()->send(message);
+				midiDevice()->send(message, 0);
 				message.clear();
 			}
 			

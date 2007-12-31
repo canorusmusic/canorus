@@ -145,13 +145,18 @@ CAMidiDevice::CAMidiDevice()
 
 /*!
 	\class CAMidiDevice
-	\brief Canorus<->MIDI bridge.
+	\brief Canorus<->Midi bridge.
 	
-	This class represents generic MIDI interface to Canorus.
-	Any MIDI wrapper class should extend this class. Canorus is aware only of this class.
+	This class represents generic Midiinterface to Canorus.
+	Any Midi wrapper class should extend this class.
 	
-	Currently only RtMidi is one of the MIDI libraries implemented. This class could be
-	extended to implement any MIDI library.
+	Currently CARtMidi is one of the Midi libraries implemented. This class is an example
+	of the so called real-time Midi classes. This means that the midi event will be heard
+	at the moment it is sent.
+	
+	Another example is CAMidiExport. This is a Midi file writer. The class is an example
+	of the non-real-time Midi classes. It needs the offset in miliseconds to write the
+	midi event to a file.
 	
 	\warning MIDI INPUT is not available for Swig and therefore scripting languages yet.
 */

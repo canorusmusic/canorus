@@ -24,7 +24,8 @@ class CAMidiDevice : public QObject {
 	friend void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData );
 public:
 	enum CAMidiDeviceType {
-		RtMidiDevice
+		RtMidiDevice,
+		MidiExportDevice
 	};
 	
 	CAMidiDevice();
@@ -36,6 +37,7 @@ public:
 	
 	inline CAMidiDeviceType midiDeviceType() { return _midiDeviceType; };
 	
+	bool isRealTime() { return _realTime; }
 	virtual QMap<int, QString> getOutputPorts() = 0;
 	virtual QMap<int, QString> getInputPorts() = 0;
 	
@@ -43,7 +45,7 @@ public:
 	virtual bool openInputPort(int port) = 0;	// return true on success, false otherwise	
 	virtual void closeOutputPort() = 0;
 	virtual void closeInputPort() = 0;
-	virtual void send(QVector<unsigned char> message) = 0;
+	virtual void send(QVector<unsigned char> message, int mSeconds=0) = 0; // message and absolute time of the message in miliseconds
 	
 #ifndef SWIG
 signals:
@@ -51,8 +53,10 @@ signals:
 #endif
 	
 protected:
+	void setRealTime( bool r ) { _realTime = r; }
 	inline void setMidiDeviceType( CAMidiDeviceType t ) { _midiDeviceType = t; }
 	CAMidiDeviceType _midiDeviceType;
+	bool _realTime;  // is the device
 };
 
 #endif /* MIDIDEVICE_H_ */
