@@ -201,6 +201,7 @@ SET(Canorus_Interface_Srcs	# Other interfaces like Engraver, Playback, Plugin ma
 
 SET(Canorus_Export_Srcs     # Classes for exporting Canorus data to various file formats
 	export/export.cpp
+	export/midiexport.cpp
 	export/lilypondexport.cpp
 	export/canorusmlexport.cpp
 	#export/canexport.cpp
