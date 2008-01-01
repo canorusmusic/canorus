@@ -122,3 +122,18 @@ CAMark::CAMarkType CAMark::markTypeFromString( const QString s ) {
 
 CAMark::~CAMark() {
 }
+
+CAMusElement *CAMark::clone() {
+	return new CAMark( markType(), associatedElement(), timeStart(), timeLength() );
+}
+
+int CAMark::compare( CAMusElement *elt ) {
+	if (elt->musElementType()!=CAMusElement::Mark) {
+		return -1;
+	} else
+	if (static_cast<CAMark*>(elt)->markType()!=markType()) {
+		return -1;
+	} else {
+		return 0;
+	}
+}

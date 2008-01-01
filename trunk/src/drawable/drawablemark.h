@@ -24,11 +24,15 @@ public:
 	CADrawableMark *clone( CADrawableContext* newContext = 0 );
 	inline CAMark *mark() { return static_cast<CAMark*>(musElement()); }
 	
+	inline void setRehersalMarkNumber( int n ) { _rehersalMarkNumber = n; }
+	inline int rehersalMarkNumber() { return _rehersalMarkNumber; }
+	
 private:
 	static const int DEFAULT_TEXT_SIZE;
 	CANote         *_tempoNote;
 	CADrawableNote *_tempoDNote;
 	QPixmap        *_pixmap;
+	int             _rehersalMarkNumber;
 };
 
 #endif /* DRAWABLEMARK_H_ */

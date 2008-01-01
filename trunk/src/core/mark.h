@@ -33,6 +33,9 @@ public:
 	CAMark( CAMarkType type, CAContext *context, int timeStart, int timeLength );
 	virtual ~CAMark();
 	
+	CAMusElement *clone();
+	int compare( CAMusElement* elt );
+	
 	inline CAMusElement *associatedElement() { return _associatedElt; }
 	inline void setAssociatedElement( CAMusElement* elt ) { _associatedElt = elt; }
 	

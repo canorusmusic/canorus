@@ -118,6 +118,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 	int streams = musStreamList.size();
 	int streamsIdx[streams]; for (int i=0; i<streams; i++) streamsIdx[i] = 0;
 	int streamsX[streams]; for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
+	int streamsRehersalMarks[streams]; for (int i=0; i<streams; i++) streamsRehersalMarks[i] = 0;
 	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
 	CAKeySignature *lastKeySig[streams]; for (int i=0; i<streams; i++) lastKeySig[i] = 0;
 	CATimeSignature *lastTimeSig[streams]; for (int i=0; i<streams; i++) lastTimeSig[i] = 0;	
@@ -322,6 +323,10 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 				for ( int j=0; j < elt->markList().size(); j++ ) {
 					CADrawableMark *m = new CADrawableMark( elt->markList()[j], drawableContext, bar->xPos(), qMin(bar->yPos(),drawableContext->yPos())-20*(j+1) );
 					v->addMElement( m );
+					
+					if ( elt->markList()[j]->markType()==CAMark::RehersalMark )
+						m->setRehersalMarkNumber( streamsRehersalMarks[i]++ );
+					
 					if (m->isHScalable() || m->isVScalable())
 						scalableElts << m;
 				}
