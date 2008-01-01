@@ -29,6 +29,20 @@ public:
 	};
 	
 	CAMidiDevice();
+
+	enum midiCommands {
+		Meta_Text        = 0x01,
+		Meta_Timesig     = 0x58,
+		Meta_Keysig      = 0x59,
+		Meta_Tempo       = 0x51,
+
+		Midi_Ctl_Reverb  = 0x5b,
+		Midi_Ctl_Chorus  = 0x5d,
+		Midi_Ctl_Pan     = 0x0a,
+		Midi_Ctl_Volume  = 0x07,
+		Midi_Ctl_Sustain = 0x40
+	};
+
 	
 	QStringList GM_INSTRUMENTS;
 	static unsigned char freeMidiChannel( CASheet* );

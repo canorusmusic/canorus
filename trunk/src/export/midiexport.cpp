@@ -40,16 +40,20 @@ class CACanorus;
 	Exports a voice to LilyPond syntax using the given text stream.
 */
 CAMidiExport::CAMidiExport( QTextStream *out )
- : CAExport(out) {
+ : CAExport(out), CAMidiDevice() {
+	_midiDeviceType = MidiExportDevice;
+	setRealTime(false);
 }
 
-/* FIXME: needed?
-bool CAMidiExport::openOutputPort(int port) { return true; }	// return true on success, false otherwise
-bool CAMidiExport::openInputPort(int port) { return true; } // return true on success, false otherwise	
-void CAMidiExport::closeOutputPort() { }
-void CAMidiExport::closeInputPort() { }
-void CAMidiExport::send(QVector<unsigned char> message) { }
-*/
+void CAMidiExport::send(QVector<unsigned char> message, int offset)
+{
+	std::cout << "Hallo    " << offset << "  ";
+	for (int i=0; i< message.size(); i++ ) {
+		out() << message[i];
+		std::cout << message[i] << " ";
+	}
+	std::cout << std::endl;
+}
 
 /*!
 	Exports the given voice music elements to LilyPond syntax.
@@ -161,14 +165,15 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 
 
 	// In the header chunk we need to know the count of tracks.
-	// We organize every voice in every staff as separate track.
+	// We export every non empty voice as separate track.
 	// For now we export only the first sheet.
 	CASheet *sheet = doc->sheetAt( 0 );
 	setCurSheet( sheet );
 
-	//CAPlayback *_playback = new CAPlayback(sheet, NULL /* CACanorus::midiDevice() */ );
-	//_playback->setInitTimeStart( 0 /* currentScoreViewPort()->selection().at(0)->musElement()->timeStart()*/ );
-	//_playback->start();
+	// Let's playback this sheet and dump that into a file,
+	// and for this we have our own midi driver:
+	CAPlayback *_playback = new CAPlayback(sheet, this );
+	_playback->run();
 
 	int count = 0;
 	for (int c = 0; c < doc->sheetAt(0)->contextCount(); ++c ) {
