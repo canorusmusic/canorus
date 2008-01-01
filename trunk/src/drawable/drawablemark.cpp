@@ -68,7 +68,6 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		setWidth( mark->timeLength()/10 );
 		setHeight( static_cast<CACrescendo*>(mark)->finalVolume()/10 );
 		setHScalable(true);
-		setVScalable(true);
 	} else
 	if ( mark->markType()==CAMark::Fermata) {
 		setWidth( 25 );
