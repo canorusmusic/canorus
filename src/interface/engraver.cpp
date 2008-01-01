@@ -348,7 +348,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 				   ) {
 						newElt = new CADrawableAccidental(
 							((CANote*)elt)->accidentals(),
-							0,
+							((CANote*)elt),
 							((CADrawableStaff*)drawableContext),
 							streamsX[i],
 							((CADrawableStaff*)drawableContext)->calculateCenterYCoord((CANote*)elt, lastClef[i])

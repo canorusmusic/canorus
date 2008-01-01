@@ -120,6 +120,7 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	_playing = false;
 	_currentContext = 0;
 	_xCursor = _yCursor = 0;
+	setResizeDirection( CADrawable::Undefined );
 	
 	// init layout
 	_layout = new QGridLayout(this);
@@ -1065,23 +1066,23 @@ void CAScoreViewPort::checkScrollBars() {
 	A new signal is emitted: CAMousePressEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
-	QPoint p(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY);
-	setLastMousePressCoords(p);
-	if ( selection().size() && selection().at(0)->isHScalable() ) {
-		if (selection().at(0)->xPos()==p.x()) {
+	QPoint coords(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY);
+	setLastMousePressCoords(coords);
+	if ( selection().size() && selection()[0]->isHScalable() && coords.y()>=selection()[0]->yPos() && coords.y()<=selection()[0]->yPos()+selection()[0]->height() ) {
+		if ( coords.x()==selection()[0]->xPos()  ) {
 			setResizeDirection(CADrawable::Left);
-		} else if (selection().at(0)->xPos()+selection().at(0)->width()==p.x()) {
+		} else if ( coords.x()==selection()[0]->xPos()+selection()[0]->width() ) {
 			setResizeDirection(CADrawable::Right);
 		}
-	} else if ( selection().size() && selection().at(0)->isVScalable() ) {
-		if (selection().at(0)->yPos()==p.y()) {
+	} else if ( selection().size() && selection().at(0)->isVScalable() && coords.x()>=selection()[0]->xPos() && coords.x()<=selection()[0]->xPos()+selection()[0]->width() ) {
+		if ( coords.y()==selection()[0]->yPos() ) {
 			setResizeDirection(CADrawable::Top);
-		} else if (selection().at(0)->yPos()+selection().at(0)->height()==p.y()) {
+		} else if ( coords.y()==selection()[0]->yPos()+selection()[0]->height() ) {
 			setResizeDirection(CADrawable::Bottom);
 		}
 	}
 	
-	emit CAMousePressEvent(e, p, this);
+	emit CAMousePressEvent(e, coords, this);
 }
 
 /*!
@@ -1102,6 +1103,29 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 	
 	_xCursor = coords.x();
 	_yCursor = coords.y();
+	
+	bool isHScalable = false;
+	for ( int i=0; i<selection().size() && !isHScalable; i++) {
+		if ( selection()[i]->isHScalable() && (coords.x()==selection()[i]->xPos() || coords.x()==selection()[i]->xPos()+selection()[i]->width()) &&
+		     coords.y()>=selection()[i]->yPos() && coords.y()<=selection()[i]->yPos()+selection()[i]->height()
+		   )
+			isHScalable = true;
+	}
+	
+	bool isVScalable = false;
+	for ( int i=0; i<selection().size() && !isVScalable; i++) {
+		if ( selection()[i]->isVScalable() && (coords.y()==selection()[i]->yPos() || coords.y()==selection()[i]->yPos()+selection()[i]->height()) &&
+		     coords.x()>=selection()[i]->xPos() && coords.x()<=selection()[i]->xPos()+selection()[i]->width()
+		   )
+			isVScalable = true;
+	}
+	
+	if (isHScalable)
+		setCursor(Qt::SizeHorCursor);
+	else if (isVScalable)
+		setCursor(Qt::SizeVerCursor);
+	else
+		setCursor(Qt::ArrowCursor);
 	
 	emit CAMouseMoveEvent(e, coords, this);
 
@@ -1451,17 +1475,17 @@ int CAScoreViewPort::timeToCoords( int time ) {
 	CADrawableMusElement *leftElt = 0;
 	CADrawableMusElement *rightElt = 0;
 	for (int i=0; i<_drawableMList.size(); i++) {
+		if ( selection().contains( _drawableMList.at(i) ) )
+			continue;
 		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeStart() <= time && (
-				!leftElt || _drawableMList.at(i)->musElement()->timeStart() > leftElt->musElement()->timeStart() &&
-		        (leftElt->musElement()->timeStart()!=_drawableMList.at(i)->musElement()->timeStart() || _drawableMList.at(i)->xPos() > leftElt->xPos()) // get the right-most element of that time
-		    )
+				!leftElt || _drawableMList.at(i)->musElement()->timeStart() > leftElt->musElement()->timeStart() ||
+		         _drawableMList.at(i)->xPos() > leftElt->xPos() ) // get the right-most element of that time
 		   )
 			leftElt = _drawableMList.at(i);
 		
-		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeEnd() >= time && (
-				!rightElt || _drawableMList.at(i)->musElement()->timeStart() < rightElt->musElement()->timeStart() &&
-		        (rightElt->musElement()->timeStart()!=_drawableMList.at(i)->musElement()->timeStart() || _drawableMList.at(i)->xPos() < rightElt->xPos()) // get the left-most element of that time
-		    )
+		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeStart() >= time && (
+				!rightElt || _drawableMList.at(i)->musElement()->timeStart() < rightElt->musElement()->timeStart() ||
+		        _drawableMList.at(i)->xPos() < rightElt->xPos() ) // get the left-most element of that time
 		   )
 			rightElt = _drawableMList.at(i);
 	}
