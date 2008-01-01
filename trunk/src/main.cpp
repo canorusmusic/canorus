@@ -42,8 +42,6 @@ int main(int argc, char *argv[]) {
 	QPixmap splashPixmap( 400, 300 );
 	if ( CACanorus::locateResource("images/splash.png").size() )
 		splashPixmap = QPixmap( CACanorus::locateResource("images/splash.png")[0] );
-	else if ( CACanorus::locateResource("ui/images/splash.png").size() )
-		splashPixmap = QPixmap( CACanorus::locateResource("ui/images/splash.png")[0] );
 	
 	QSplashScreen splash( splashPixmap );
 	QFont font("Century Schoolbook L");

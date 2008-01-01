@@ -72,6 +72,11 @@ QList<QString> CACanorus::locateResource(const QString fileName) {
 	
 #endif
 	
+	// Try the source ui/ directory (images etc.)
+	curPath = QCoreApplication::applicationDirPath() + "/ui/" + fileName;
+	if (QFileInfo(curPath).exists())
+			paths << QFileInfo(curPath).absoluteFilePath();
+	
 	// Remove duplicates. Is there a faster way to do this?
 	return paths.toSet().toList();
 }

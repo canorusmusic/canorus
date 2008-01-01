@@ -28,6 +28,7 @@ private:
 	static const int DEFAULT_TEXT_SIZE;
 	CANote         *_tempoNote;
 	CADrawableNote *_tempoDNote;
+	QPixmap        *_pixmap;
 };
 
 #endif /* DRAWABLEMARK_H_ */

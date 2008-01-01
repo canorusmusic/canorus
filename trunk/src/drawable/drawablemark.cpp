@@ -26,7 +26,7 @@
 #include "core/repeatmark.h"
 #include "canorus.h"
 
-const int CADrawableMark::DEFAULT_TEXT_SIZE = 20;
+const int CADrawableMark::DEFAULT_TEXT_SIZE = 16;
 
 /*!
 	\class CADrawableMark
@@ -46,6 +46,7 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 	setDrawableMusElementType( CADrawableMusElement::DrawableMark );
 	_tempoNote = 0;
 	_tempoDNote = 0;
+	_pixmap = 0;
 	
 	switch (mark->markType()) {
 	case CAMark::Text: {
@@ -85,6 +86,8 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
 		QFontMetrics fm(font);
 		
+		if ( CACanorus::locateResource("images/mark/instrumentchange.svg").size() )
+			_pixmap = new QPixmap( CACanorus::locateResource("images/mark/instrumentchange.svg")[0] );
 		int textWidth = fm.width( CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
 		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
@@ -123,6 +126,7 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 CADrawableMark::~CADrawableMark() {
 	if ( _tempoDNote ) delete _tempoDNote;
 	if ( _tempoNote ) delete _tempoNote;
+	if ( _pixmap ) delete _pixmap;
 }
 
 void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
@@ -156,6 +160,7 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		break;
 	}
 	case CAMark::InstrumentChange: {
+		p->drawPixmap( s.x, s.y, _pixmap->scaled(qRound(25*s.z), qRound(25*s.z) ) );
 		QFont font("FreeSans");
 		font.setStyle( QFont::StyleItalic );
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );

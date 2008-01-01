@@ -34,15 +34,15 @@ class CASheet;
 class CAStaff;
 class CALyricsContext;
 
-class CASyllableEdit : public QLineEdit {
+class CATextEdit : public QLineEdit {
 Q_OBJECT
 
 public:
-	CASyllableEdit( QWidget *parent=0 );
-	~CASyllableEdit();
+	CATextEdit( QWidget *parent=0 );
+	~CATextEdit();
 	
 signals:
-	void CAKeyPressEvent( QKeyEvent *, CASyllableEdit * );
+	void CAKeyPressEvent( QKeyEvent * );
 	
 public slots:
 	void keyPressEvent( QKeyEvent * );
@@ -214,10 +214,10 @@ public:
 	
 	inline void setShadowNoteDotted(int dotted) { for (int i=0; i<_shadowNote.size(); i++) _shadowNote[i]->setDotted(dotted); }
 	
-	CASyllableEdit *createSyllableEdit( CADrawableMusElement *syllable );
-	inline CASyllableEdit *syllableEdit() { return _syllableEdit; }
-	void removeSyllableEdit();
-	inline bool syllableEditVisible() { return _syllableEditVisible; }
+	CATextEdit *createTextEdit( CADrawableMusElement *elt );
+	inline CATextEdit *textEdit() { return _textEdit; }
+	void removeTextEdit();
+	inline bool textEditVisible() { return _textEditVisible; }
 	
 	void updateHelpers(); // method for updating shadow notes, syllable edits and other post-engrave elements coordinates and sizes when zoom level is changed etc.
 	
@@ -296,13 +296,13 @@ private:
 	QList<CADrawableNote*> _shadowDrawableNote;	// List of drawable shadow notes
 	
 	// QLineEdit for editing or creating a lyrics syllable
-	CASyllableEdit *_syllableEdit;
-	inline void setSyllableEdit( CASyllableEdit *e ) { _syllableEdit = e; }
-	QRect _syllableEditGeometry;
-	inline QRect syllableEditGeometry() { return _syllableEditGeometry; }
-	inline void setSyllableEditGeometry( const QRect r ) { _syllableEditGeometry = r; }
-	bool _syllableEditVisible;
-	inline void setSyllableEditVisible(bool v) { _syllableEditVisible = v; }
+	CATextEdit *_textEdit;
+	inline void setTextEdit( CATextEdit *e ) { _textEdit = e; }
+	QRect _textEditGeometry;
+	inline QRect textEditGeometry() { return _textEditGeometry; }
+	inline void setTextEditGeometry( const QRect r ) { _textEditGeometry = r; }
+	bool _textEditVisible;
+	inline void setTextEditVisible(bool v) { _textEditVisible = v; }
 	inline void setResizeDirection( CADrawable::CADirection r ) { _resizeDirection = r; }
 	CADrawable::CADirection _resizeDirection; // Is the current scalable music element in drag-drop resizing mode?
 	
