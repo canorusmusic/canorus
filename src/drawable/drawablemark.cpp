@@ -23,6 +23,7 @@
 #include "core/fermata.h"
 #include "core/tempo.h"
 #include "core/crescendo.h"
+#include "core/repeatmark.h"
 #include "canorus.h"
 
 const int CADrawableMark::DEFAULT_TEXT_SIZE = 20;
@@ -46,7 +47,8 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 	_tempoNote = 0;
 	_tempoDNote = 0;
 	
-	if ( mark->markType()==CAMark::Text ) {
+	switch (mark->markType()) {
+	case CAMark::Text: {
 		QFont font("FreeSans");
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
 		QFontMetrics fm(font);
@@ -54,8 +56,9 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		int textWidth = fm.width( static_cast<CAText*>(this->mark())->text() );
 		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-	} else
-	if ( mark->markType()==CAMark::Dynamic ) {
+		break;
+	}
+	case CAMark::Dynamic: {
 		QFont font("Emmentaler");
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
 		QFontMetrics fm(font);
@@ -63,17 +66,20 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		int textWidth = fm.width( static_cast<CADynamic*>(this->mark())->text() );
 		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-	} else
-	if ( mark->markType()==CAMark::Crescendo ) {
+		break;
+	}
+	case CAMark::Crescendo: {
 		setWidth( mark->timeLength()/10 );
 		setHeight( static_cast<CACrescendo*>(mark)->finalVolume()/10 );
 		setHScalable(true);
-	} else
-	if ( mark->markType()==CAMark::Fermata) {
+		break;
+	}
+	case CAMark::Fermata: {
 		setWidth( 25 );
 		setHeight( 20 );
-	} else
-	if ( mark->markType()==CAMark::InstrumentChange ) {
+		break;
+	}
+	case CAMark::InstrumentChange: {
 		QFont font("FreeSans");
 		font.setStyle( QFont::StyleItalic );
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
@@ -82,15 +88,32 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		int textWidth = fm.width( CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
 		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-	} else
-	if ( mark->markType()==CAMark::Tempo ) {
+		break;
+	}
+	case CAMark::Tempo: {
 		setWidth( 40 );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
 		_tempoNote = new CANote( static_cast<CATempo*>(mark)->beat(), 0, 0, 0, 0, static_cast<CATempo*>(mark)->beatDotted() );
 		_tempoDNote = new CADrawableNote( _tempoNote, dContext, x, y );
-	} else {
+		break;
+	}
+	case CAMark::RepeatMark: {
+		if (static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::Volta)
+			setWidth( 50 );
+		else if ( static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::DalCoda ||
+				  static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::DalSegno ||
+				  static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::DalVarCoda )
+			setWidth( 50 );
+		else
+			setWidth( 25 );
+		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+		break;
+	}
+	default: {
 		setWidth( 11 ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+		break;
+	}
 	}
 	
 	setNeededWidth( width() );
@@ -162,6 +185,41 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
 		p->setFont(font);
 		p->drawText( s.x, s.y, QString(" = ") + QString::number( static_cast<CATempo*>(mark())->bpm() ) );
+		break;
+	}
+	case CAMark::RepeatMark: {
+		CARepeatMark *r = static_cast<CARepeatMark*>(mark());
+		
+		// draw "dal" if needed
+		if ( r->repeatMarkType()==CARepeatMark::DalSegno ||
+		     r->repeatMarkType()==CARepeatMark::DalCoda ||
+		     r->repeatMarkType()==CARepeatMark::DalVarCoda ) {
+			QFont font("Century Schoolbook L");
+			font.setStyle( QFont::StyleItalic );
+			font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
+			p->setFont(font);
+			p->drawText( s.x, s.y, QString("Dal"));
+			s.x += qRound(45*s.z);
+		}
+		
+		// draw the actual sign
+		QFont font("Emmentaler");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*1.4*s.z) );
+		p->setFont(font);
+		switch ( static_cast<CARepeatMark*>(mark())->repeatMarkType() ) {
+			case CARepeatMark::Segno:
+			case CARepeatMark::DalSegno:   p->drawText( s.x, s.y, QString(0xE16F) ); break;
+			case CARepeatMark::Coda:
+			case CARepeatMark::DalCoda:    p->drawText( s.x, s.y, QString(0xE170) ); break;
+			case CARepeatMark::VarCoda:
+			case CARepeatMark::DalVarCoda: p->drawText( s.x, s.y, QString(0xE171) ); break;
+		}
+		
+		if (r->repeatMarkType()==CARepeatMark::Volta) {
+			p->drawLine( s.x, qRound(s.y+height()*s.z), s.x, s.y );
+			p->drawLine( s.x, s.y, qRound(s.x+width()*s.z), s.y );
+			p->drawText( s.x + qRound(5*s.z), qRound(s.y+(height()-5)*s.z), QString::number(r->voltaNumber())+"." );
+		}
 		break;
 	}
 	case CAMark::Articulation: {

@@ -68,6 +68,7 @@
 #include "core/functionmarking.h"
 #include "core/dynamic.h"
 #include "core/instrumentchange.h"
+#include "core/repeatmark.h"
 #include "core/muselementfactory.h"
 #include "core/mimedata.h"
 #include "core/undo.h"
@@ -519,6 +520,19 @@ void CAMainWin::createCustomActions() {
 		uiFermataType->addButton( QIcon("images/mark/fermata/normal.svg"), CAFermata::NormalFermata, tr("Normal", "fermata") );
 		uiFermataType->addButton( QIcon("images/mark/fermata/long.svg"), CAFermata::LongFermata, tr("Long", "fermata") );
 		uiFermataType->addButton( QIcon("images/mark/fermata/verylong.svg"), CAFermata::VeryLongFermata, tr("Very Long", "fermata") );
+	
+	uiRepeatMarkToolBar = new QToolBar( tr("Repeat Mark ToolBar"), this );
+	uiRepeatMarkType = new CAMenuToolButton( tr("Repeat Mark Type"), 3, this );
+		uiRepeatMarkType->setObjectName("uiRepeatMarkType");
+		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/segno.svg"), CARepeatMark::Segno, tr("Segno", "repeat mark") );
+		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/coda.svg"), CARepeatMark::Coda, tr("Coda", "repeat mark") );
+		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/varcoda.svg"), CARepeatMark::VarCoda, tr("VarCoda", "repeat mark") );
+		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/dalsegno.svg"), CARepeatMark::DalSegno, tr("Dal Segno", "repeat mark") );
+		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/dalcoda.svg"), CARepeatMark::DalCoda, tr("Dal Coda", "repeat mark") );
+		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/dalvarcoda.svg"), CARepeatMark::DalVarCoda, tr("Dal VarCoda", "repeat mark") );
+		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/volta1.svg"), -2, tr("Volta 1st", "repeat mark") ); // -1 can't be used?!
+		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/volta2.svg"), -3, tr("Volta 2nd", "repeat mark") );
+		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/volta3.svg"), -4, tr("Volta 3rd", "repeat mark") );
 }
 
 /*!
@@ -686,6 +700,12 @@ void CAMainWin::setupCustomUi() {
 	uiFermataType->defaultAction()->setToolTip(tr("Fermata Type", "fermata"));
 	addToolBar(Qt::TopToolBarArea, uiFermataToolBar);
 	
+	// Repeat Mark tool bar
+	uiRepeatMarkType->setDefaultAction( uiRepeatMarkToolBar->addWidget( uiRepeatMarkType ) );
+	uiRepeatMarkType->defaultAction()->setCheckable(false);
+	uiRepeatMarkType->defaultAction()->setToolTip(tr("Repeat Mark Type", "repeat mark"));
+	addToolBar(Qt::TopToolBarArea, uiRepeatMarkToolBar);
+	
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
 	uiInsertGroup->addAction( uiSelectMode );
@@ -721,6 +741,7 @@ void CAMainWin::setupCustomUi() {
 	uiInstrumentToolBar->hide();
 	uiTempoToolBar->hide();
 	uiFermataToolBar->hide();
+	uiRepeatMarkToolBar->hide();
 }
 
 void CAMainWin::newDocument() {
@@ -3371,6 +3392,7 @@ void CAMainWin::updateToolBars() {
 	updateInstrumentToolBar();
 	updateTempoToolBar();
 	updateFermataToolBar();
+	updateRepeatMarkToolBar();
 	
 	if ( document() )
 		uiNewSheet->setVisible( true );
@@ -3750,6 +3772,33 @@ void CAMainWin::updateFermataToolBar() {
 }
 
 /*!
+	Shows/Hides the repeat mark properties tool bar according to the current state.
+*/
+void CAMainWin::updateRepeatMarkToolBar() {
+	if ( uiMarkType->isChecked() && uiMarkType->currentId()==CAMark::RepeatMark && mode()==InsertMode) {
+		if ( musElementFactory()->repeatMarkType()==CARepeatMark::Volta )
+			uiRepeatMarkType->setCurrentId( musElementFactory()->repeatMarkVoltaNumber()*(-1)-1 );
+		else
+			uiRepeatMarkType->setCurrentId( musElementFactory()->repeatMarkType() );
+		uiRepeatMarkToolBar->show();
+	} else if (mode()==EditMode) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if (v && v->selection().size()) {
+			CARepeatMark *r = dynamic_cast<CARepeatMark*>(v->selection().at(0)->musElement());
+			if (r) {
+				if ( r->repeatMarkType()==CARepeatMark::Volta )
+					uiRepeatMarkType->setCurrentId( r->voltaNumber()*(-1)-1 );
+				else
+					uiRepeatMarkType->setCurrentId( r->repeatMarkType() );
+				uiRepeatMarkToolBar->show();
+			} else
+				uiRepeatMarkToolBar->hide();
+		}	
+	} else
+		uiRepeatMarkToolBar->hide();
+}
+
+/*!
 	Shows/Hides the tempo marks properties tool bar according to the current state.
 */
 void CAMainWin::updateTempoToolBar() {
@@ -4092,6 +4141,39 @@ void CAMainWin::on_uiFermataType_toggled( bool checked, int t ) {
 			
 			if ( fm ) {
 				fm->setFermataType( type );
+			}
+		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+}
+
+void CAMainWin::on_uiRepeatMarkType_toggled( bool checked, int t ) {
+	CARepeatMark::CARepeatMarkType type;
+	int voltaNumber;
+	if (t >= 0) {
+		type = static_cast<CARepeatMark::CARepeatMarkType>( t );
+		voltaNumber = 0;
+	} else {
+		type = CARepeatMark::Volta;
+		voltaNumber = t*(-1)-1;
+	}
+	
+	if ( mode()==InsertMode ) {
+		musElementFactory()->setRepeatMarkType( type );
+		musElementFactory()->setRepeatMarkVoltaNumber( voltaNumber );
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("change repeat mark", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CARepeatMark *r = dynamic_cast<CARepeatMark*>( v->selection().at(i)->musElement() );
+			
+			if ( r ) {
+				r->setRepeatMarkType( type );
+				r->setVoltaNumber(voltaNumber);
 			}
 		}
 		

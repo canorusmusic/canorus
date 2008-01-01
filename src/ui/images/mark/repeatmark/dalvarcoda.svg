@@ -14,7 +14,7 @@
    inkscape:version="0.45.1"
    width="128"
    height="128"
-   sodipodi:docname="varcoda.svg"
+   sodipodi:docname="dalvarcoda.svg"
    sodipodi:docbase="/home/matevz/canorus/trunk/src/ui/images/mark/repeatmark"
    inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/n2.png"
    inkscape:export-xdpi="120.95"
@@ -218,15 +218,6 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient33317"
-       id="linearGradient3347"
-       gradientUnits="userSpaceOnUse"
-       x1="-251.91379"
-       y1="0"
-       x2="251.91379"
-       y2="0" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient33317"
        id="linearGradient3383"
        gradientUnits="userSpaceOnUse"
        x1="12.879316"
@@ -260,6 +251,15 @@
        y1="0.31521606"
        x2="280"
        y2="0.31521606" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient33317"
+       id="linearGradient3535"
+       gradientUnits="userSpaceOnUse"
+       x1="12.879316"
+       y1="-18.366228"
+       x2="658.89288"
+       y2="-18.366228" />
   </defs>
   <sodipodi:namedview
      inkscape:window-height="979"
@@ -270,9 +270,9 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="0.99999999"
-     inkscape:cx="122.07277"
-     inkscape:cy="71.176387"
+     inkscape:zoom="4"
+     inkscape:cx="86.865524"
+     inkscape:cy="83.340129"
      inkscape:window-x="24"
      inkscape:window-y="0"
      inkscape:current-layer="svg27169"
@@ -280,7 +280,7 @@
      height="128px" />
   <g
      id="g3491"
-     transform="matrix(0.2160726,0,0,0.2160726,40.001685,295.52664)">
+     transform="matrix(0.1723916,0,0,0.1723916,338.72289,417.52472)">
     <g
        style="fill:#000000;fill-opacity:0.39215686"
        id="g3477"
@@ -299,5 +299,31 @@
          id="path3468"
          d="M -7,361 C 4.3333333,365.66667 12.333333,362.66667 17,352 C 18.333333,349.33333 19,331.66667 19,299 L 19,250 L 87,250 C 124.33333,250 146,249.66667 152,249 C 158,248.33333 162.33333,246.33333 165,243 L 167,240 L 167,129 L 167,19 L 216,19 C 248.66667,19 266,18.333333 268,17 C 276,13.666667 280,8 280,0 C 280,-8 276,-13.666667 268,-17 C 266,-18.333333 248.66667,-19 216,-19 L 167,-19 L 167,-129 C 167,-202.33333 166.33333,-240 165,-242 C 164.33333,-243.33333 163,-245 161,-247 C 157.66667,-249 133.33333,-250 88,-250 L 19,-250 L 19,-299 C 19,-331.66667 18.333333,-349 17,-351 C 15,-355.66667 11.666667,-359 7,-361 C 2.3333333,-363 -2.3333333,-363 -7,-361 C -11.666667,-359 -15,-355.66667 -17,-351 C -18.333333,-349 -19,-331.66667 -19,-299 L -19,-250 L -87,-250 C -124.33333,-250 -146,-249.66667 -152,-249 C -158,-248.33333 -162.33333,-246.33333 -165,-243 L -167,-240 L -167,-129 L -167,-19 L -216,-19 C -248.66667,-19 -266,-18.333333 -268,-17 C -275.33333,-13.666667 -279.16667,-8 -279.5,0 C -279.83333,8 -276,13.666667 -268,17 C -266,18.333333 -248.66667,19 -216,19 L -167,19 L -167,129 C -167,202.33333 -166.33333,240 -165,242 C -164.33333,243.33333 -163,245 -161,247 C -157.66667,249 -133.33333,250 -88,250 L -19,250 L -19,299 C -19,331.66667 -18.333333,349 -17,351 C -15,355.66667 -11.666667,359 -7,361 z M -19,116 L -19,212 L -45,212 L -72,212 L -72,116 L -72,19 L -45,19 L -19,19 L -19,116 z M 72,116 L 72,212 L 46,212 L 19,212 L 19,116 L 19,19 L 46,19 L 72,19 L 72,116 z M -19,-115 L -19,-19 L -45,-19 L -72,-19 L -72,-115 L -72,-212 L -45,-212 L -19,-212 L -19,-115 z M 72,-115 L 72,-19 L 46,-19 L 19,-19 L 19,-115 L 19,-212 L 46,-212 L 72,-212 L 72,-115 z " />
     </g>
+  </g>
+  <g
+     id="g3239"
+     transform="translate(3.8639951,18.914132)">
+    <text
+       id="text2256"
+       y="120.05885"
+       x="12.877217"
+       style="font-size:381.04464722px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:0.39215686;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         style="font-style:italic;fill:#000000;fill-opacity:0.39215686;font-family:URW Bookman L"
+         y="120.05885"
+         x="12.877217"
+         id="tspan2258"
+         sodipodi:role="line">Dal</tspan></text>
+    <text
+       id="text2252"
+       y="110.99843"
+       x="4.877378"
+       style="font-size:381.04464722px;font-style:normal;font-weight:normal;fill:url(#linearGradient3535);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         style="font-style:italic;fill:url(#linearGradient3535);fill-opacity:1;font-family:URW Bookman L"
+         y="110.99843"
+         x="4.877378"
+         id="tspan2254"
+         sodipodi:role="line">Dal</tspan></text>
   </g>
 </svg>
