@@ -292,6 +292,9 @@ bool CAMusElementFactory::configureSlur( CAStaff *staff,
 bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 	bool success = false;
 	
+	if ( elt->musElementType()==CAMusElement::Mark )
+		return false;
+	
 	switch ( markType() ) {
 	case CAMark::Dynamic: {
 		if ( elt->musElementType()==CAMusElement::Note ) {
@@ -308,7 +311,7 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 		break;
 	}
 	case CAMark::Text: {
-		mpoMusElement = new CAText( "test", elt );
+		mpoMusElement = new CAText( "", elt );
 		success = true;
 		break;
 	}

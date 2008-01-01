@@ -199,7 +199,7 @@ private slots:
 	void on_uiClefOffset_valueChanged(int);
 	
 	// Lyrics
-	void onSyllableEditKeyPressEvent(QKeyEvent *, CASyllableEdit*);
+	void onTextEditKeyPressEvent(QKeyEvent *);
 	
 	// Function marks
 	void on_uiFMFunction_toggled(bool, int);

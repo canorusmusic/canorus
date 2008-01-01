@@ -39,6 +39,7 @@
 #include "core/rest.h"
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
+#include "core/text.h"
 #include "canorus.h"
 #include "core/settings.h"
 
@@ -47,32 +48,33 @@ const int CAScoreViewPort::BOTTOM_EXTRA_SPACE = 30; // Gives some space after th
 const int CAScoreViewPort::ANIMATION_STEPS = 7;
 
 /*!
-	\class CASyllableEdit
-	\brief A syllable edit widget based on QLineEdit
+	\class CATextEdit
+	\brief A text edit widget based on QLineEdit
 	
-	This widget is an extended QLineEdit with custom actions on keypress events - caught and determined by the main window
-	then. A new signal CAKeyPressEvent() was introduced for this.
+	This widget is extended QLineEdit with custom actions on keypress events - caught and determined usually by the main
+	window then. A new signal CAKeyPressEvent() was introduced for this.
 	
-	Widget is usually used for editing the lyrics syllables. When left/right cursors are hit at the beginning/end of the
-	line, the next syllable in the score should be selected. This isn't possible to achieve with standard QLineEdit as we
-	need to control KeyPressEvent.
+	Widget is usually used for editing the lyrics syllables or writing other text in the score.
+	For syllable editing, when left/right cursors are hit at the beginning/end of the line, the next/previous syllable in
+	the score should be selected. This isn't possible to achieve with standard QLineEdit as we need to control KeyPressEvent.
+	This behaviour is again determined in the main window.
 */
 	
-CASyllableEdit::CASyllableEdit( QWidget *parent )
+CATextEdit::CATextEdit( QWidget *parent )
  : QLineEdit( parent ) {
 }
 
-CASyllableEdit::~CASyllableEdit() {
+CATextEdit::~CATextEdit() {
 }
 
-void CASyllableEdit::keyPressEvent( QKeyEvent *e ) {
+void CATextEdit::keyPressEvent( QKeyEvent *e ) {
 	int oldCurPos = cursorPosition();
 	QLineEdit::keyPressEvent(e); // call parent's keyPressEvent()
 	
 	if ((e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace || e->key()==Qt::Key_Right) && cursorPosition()!=oldCurPos)
 		return;
 	
-	emit CAKeyPressEvent(e, this);
+	emit CAKeyPressEvent(e);
 }
 
 /*!
@@ -145,8 +147,8 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	setShadowNoteVisibleOnLeave( false );
 	setShadowNoteAccs( 0 );
 	setDrawShadowNoteAccs( false );
-	setSyllableEdit( new CASyllableEdit( _canvas ) );
-	setSyllableEditVisible( false );
+	setTextEdit( new CATextEdit( _canvas ) );
+	setTextEditVisible( false );
 	
 	// init scrollbars
 	_vScrollBar = new QScrollBar(Qt::Vertical, this);
@@ -974,18 +976,18 @@ void CAScoreViewPort::updateHelpers() {
 		}
 	}
 	
-	// Syllable edit
-	if ( syllableEditVisible() ) {
-		syllableEdit()->setFont( QFont("Century Schoolbook L", qRound(zoom()*(12-2))) );
-		syllableEdit()->setGeometry(
-			qRound( (syllableEditGeometry().x()-worldX())*zoom() ),
-			qRound( (syllableEditGeometry().y()-worldY())*zoom() ),
-			qRound( syllableEditGeometry().width()*zoom() ),
-			qRound( syllableEditGeometry().height()*zoom() )
+	// Text edit widget
+	if ( textEditVisible() ) {
+		textEdit()->setFont( QFont("Century Schoolbook L", qRound(zoom()*(12-2))) );
+		textEdit()->setGeometry(
+			qRound( (textEditGeometry().x()-worldX())*zoom() ),
+			qRound( (textEditGeometry().y()-worldY())*zoom() ),
+			qRound( textEditGeometry().width()*zoom() ),
+			qRound( textEditGeometry().height()*zoom() )
 		);
-		syllableEdit()->show();
+		textEdit()->show();
 	} else {
-		syllableEdit()->hide();
+		textEdit()->hide();
 	}
 }
 
@@ -1367,44 +1369,55 @@ CADrawableContext *CAScoreViewPort::findCElement(CAContext *context) {
 }
 
 /*!
-	Creates a CASyllableEdit widget over the existing drawable syllable \a dMusElt.
+	Creates a CATextEdit widget over the existing drawable syllable \a dMusElt.
 	Returns the pointer to the created widget.
 	
-	\sa createSyllableEdit( QRect geometry )
+	\sa createTextEdit( QRect geometry )
 */
-CASyllableEdit *CAScoreViewPort::createSyllableEdit( CADrawableMusElement *dMusElt ) {
-	if (!dMusElt || dMusElt->drawableMusElementType()!=CADrawableMusElement::DrawableSyllable)
+CATextEdit *CAScoreViewPort::createTextEdit( CADrawableMusElement *dMusElt ) {
+	if (!dMusElt || !dMusElt->musElement() ||
+	     dMusElt->musElement()->musElementType()!=CAMusElement::Syllable &&
+	     dMusElt->musElement()->musElementType()!=CAMusElement::Mark )
 		return 0;
 	
-	CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(dMusElt->drawableContext());
-	CASyllable *syllable = static_cast<CASyllable*>(dMusElt->musElement());
-	if (!dlc || !syllable) return 0;
+	int xPos=dMusElt->xPos(), yPos=dMusElt->yPos(),
+	    width=100, height=25;
+	QString text;
+	if ( dMusElt->musElement()->musElementType()==CAMusElement::Syllable ) {
+		CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(dMusElt->drawableContext());
+		CASyllable *syllable = static_cast<CASyllable*>(dMusElt->musElement());
+		if (!dlc || !syllable) return 0;
+		
+		CADrawableMusElement *dRight = findMElement( dlc->lyricsContext()->next( syllable ) );
+		if (dRight)
+			width = dRight->xPos() - dMusElt->xPos();
+		
+		text = syllable->text();
+		if (syllable->hyphenStart()) text+="-";
+		else if (syllable->melismaStart()) text+="_";
+	} else if ( dMusElt->musElement()->musElementType()==CAMusElement::Mark ) {
+		CAText *textElt = dynamic_cast<CAText*>(dMusElt->musElement());
+		if (textElt) {
+			text = textElt->text();
+		}
+	}
 	
-	int xPos=dMusElt->xPos(), yPos=dlc->yPos(), width=100, height=dlc->height();
-	
-	CADrawableMusElement *dRight = findMElement( dlc->lyricsContext()->next( syllable ) );
-	if (dRight)
-		width = dRight->xPos() - dMusElt->xPos();
-	
-	QString text = syllable->text();
-	if (syllable->hyphenStart()) text+="-";
-	else if (syllable->melismaStart()) text+="_";
-	syllableEdit()->setText(text);
-	setSyllableEditVisible( true );
-	setSyllableEditGeometry( QRect(xPos-2, yPos, width+2, height) );
+	textEdit()->setText(text);
+	setTextEditVisible( true );
+	setTextEditGeometry( QRect(xPos-2, yPos, width+2, height) );
 	updateHelpers(); // show it
-	syllableEdit()->setFocus();
+	textEdit()->setFocus();
 	
-	return syllableEdit();
+	return textEdit();
 }
 
 /*!
 	Removes and deletes the line edit for creating a lyrics syllable.
 */
-void CAScoreViewPort::removeSyllableEdit() {
-	setSyllableEditVisible( false ); // don't delete it, just hide it!
+void CAScoreViewPort::removeTextEdit() {
+	setTextEditVisible( false ); // don't delete it, just hide it!
 	updateHelpers();
-	syllableEdit()->setText("");
+	textEdit()->setText("");
 	this->setFocus();
 }
 	
