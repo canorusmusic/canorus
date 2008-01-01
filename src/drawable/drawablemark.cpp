@@ -93,6 +93,11 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
 		break;
 	}
+	case CAMark::RehersalMark: {
+		setWidth( 11 );
+		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+		break;
+	}
 	case CAMark::Tempo: {
 		setWidth( 40 );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
@@ -138,7 +143,7 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
 		p->setFont(font);
 		
-		p->drawText( s.x, s.y, static_cast<CADynamic*>(mark())->text() );
+		p->drawText( s.x, s.y+qRound(height()*s.z), static_cast<CADynamic*>(mark())->text() );
 		break;
 	}
 	case CAMark::Crescendo: {
@@ -156,17 +161,27 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
 		p->setFont(font);
 		
-		p->drawText( s.x, s.y, static_cast<CAText*>(mark())->text() );
+		p->drawText( s.x, s.y+qRound(height()*s.z), static_cast<CAText*>(mark())->text() );
+		break;
+	}
+	case CAMark::RehersalMark: {
+		QFont font("FreeSans");
+		font.setBold( true );
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
+		p->setFont(font);
+		
+		p->drawRect( s.x, s.y, qRound(width()*s.z), qRound(height()*s.z) );
+		p->drawText( s.x, s.y+qRound(height()*s.z), QString((char)('A'+rehersalMarkNumber())) );
 		break;
 	}
 	case CAMark::InstrumentChange: {
 		p->drawPixmap( s.x, s.y, _pixmap->scaled(qRound(25*s.z), qRound(25*s.z) ) );
 		QFont font("FreeSans");
-		font.setStyle( QFont::StyleItalic );
+		font.setItalic( true );
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
 		p->setFont(font);
 		
-		p->drawText( s.x, s.y, CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
+		p->drawText( s.x, s.y+qRound(height()*s.z), CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
 		break;
 	}
 	case CAMark::Fermata: {
@@ -189,7 +204,7 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		QFont font("FreeSans");
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
 		p->setFont(font);
-		p->drawText( s.x, s.y, QString(" = ") + QString::number( static_cast<CATempo*>(mark())->bpm() ) );
+		p->drawText( s.x, s.y+qRound(height()*s.z), QString(" = ") + QString::number( static_cast<CATempo*>(mark())->bpm() ) );
 		break;
 	}
 	case CAMark::RepeatMark: {

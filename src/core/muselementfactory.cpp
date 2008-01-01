@@ -345,6 +345,13 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 		}
 		break;
 	}
+	case CAMark::RehersalMark: {
+		if ( elt->musElementType()==CAMusElement::Barline ) {
+			mpoMusElement = new CAMark( CAMark::RehersalMark, elt );
+			success = true;
+		}
+		break;
+	}
 	case CAMark::Articulation: {
 		if ( elt->musElementType()==CAMusElement::Note ) {
 			mpoMusElement = new CAArticulation( articulationType(), static_cast<CANote*>(elt) );
