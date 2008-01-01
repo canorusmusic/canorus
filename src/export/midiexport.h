@@ -25,26 +25,27 @@
 #include "core/syllable.h"
 
 #include "export/export.h"
+#include "interface/mididevice.h"
 #include "interface/playback.h"
 
 
-class CAMidiExport : public CAExport {
+class CAMidiExport : public CAExport, public CAMidiDevice {
 public:
 	CAMidiExport( QTextStream *out=0 );
 
-/*	Selbst erfunden FIXME:
-    ///////////////////////////
-    // Interface to File     //
-    ////////////////////////////
-	QMap<int, QString> getOutputPorts();
-	QMap<int, QString> getInputPorts();
-	
-	bool openOutputPort(int port);	// return true on success, false otherwise
-	bool openInputPort(int port);	// return true on success, false otherwise	
-	void closeOutputPort();
-	void closeInputPort();
-	void send(QVector<unsigned char> message);
+/*
+    //////////////////////////////
+    // Interface to file export //
+    //////////////////////////////
 */
+	QMap<int, QString> getOutputPorts() { };
+	QMap<int, QString> getInputPorts() { };
+	
+	bool openOutputPort(int port) { return true; }	// return true on success, false otherwise
+	bool openInputPort(int port) { return true; }	// return true on success, false otherwise	
+	void closeOutputPort() { }
+	void closeInputPort() { }
+	void send(QVector<unsigned char> message, int offset);
 	
 /*
 	///////////////////////////

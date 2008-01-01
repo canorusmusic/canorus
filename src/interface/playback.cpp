@@ -79,6 +79,7 @@ void CAPlayback::run() {
 	
 	int minLength = -1;
 	float sleepFactor = 1.0;  // set by tempo to determine the miliseconds for sleep
+	int mSeconds=0;           // actual song time, used when creating a midi file
 	while (!_stop || _curPlaying.size()) {	// at stop true: enter to switch all notes off
 		for (int i=0; i<streamCount(); i++) {
 			loopUntilPlayable(i);
@@ -94,7 +95,7 @@ void CAPlayback::run() {
 					message << (127);
 					if ((note->musElementType()!=CAMusElement::Rest ) &&		// first because rest has no tie
 							!(note->tieStart() && note->tieStart()->noteEnd()) )
-						midiDevice()->send(message, 0);
+						midiDevice()->send(message, mSeconds);
 					message.clear();
 				}
 				_curPlaying.removeAt(i--);				
@@ -104,7 +105,6 @@ void CAPlayback::run() {
 		if (_stop) continue;	// no notes on anymore
 		
 		minLength = -1;
-		int mSeconds=0;
 		for (int i=0; i<streamCount(); i++) {
 			while ( streamAt(i).size() > streamIdx(i) &&
 			        streamAt(i).at(streamIdx(i))->timeStart() == curTime(i)
@@ -119,7 +119,7 @@ void CAPlayback::run() {
 				    for (int j=0; j<note->markList().size(); j++) {
 				    	if ( note->markList()[j]->markType()==CAMark::Dynamic ) {
 				    		message << (176 + note->voice()->midiChannel()); // set volume
-				    		message << (7);
+				    		message << (CAMidiDevice::Midi_Ctl_Volume /* 7 */ );
 				    		message << qRound(127 * static_cast<CADynamic*>(note->markList()[j])->volume()/100.0);
 				    		midiDevice()->send(message, mSeconds);
 				    		message.clear();
