@@ -17,10 +17,28 @@
 	\sa CABarline
 */
 
-CARepeatMark::CARepeatMark( CABarline *b, CARepeatMarkType t )
+CARepeatMark::CARepeatMark( CABarline *b, CARepeatMarkType t, int voltaNumber )
  : CAMark( CAMark::RepeatMark, b ) {
 	setRepeatMarkType( t );
+	setVoltaNumber( voltaNumber );
 }
 
 CARepeatMark::~CARepeatMark() {
+}
+
+CAMusElement *CARepeatMark::clone() {
+	return new CARepeatMark( static_cast<CABarline*>(associatedElement()), repeatMarkType(), voltaNumber() );
+}
+
+int CARepeatMark::compare( CAMusElement *elt ) {
+	if (elt->musElementType()!=CAMusElement::Mark)
+		return -2;
+	else if (static_cast<CAMark*>(elt)->markType()!=CAMark::RepeatMark)
+		return -1;
+	else if (static_cast<CARepeatMark*>(elt)->repeatMarkType()!=repeatMarkType())
+		return 1;
+	else if (static_cast<CARepeatMark*>(elt)->voltaNumber()!=voltaNumber())
+		return 2;
+	else
+		return 0;
 }

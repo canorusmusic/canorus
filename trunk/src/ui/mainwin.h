@@ -218,6 +218,9 @@ private slots:
 	// Fermata
 	void on_uiFermataType_toggled( bool, int );
 	
+	// Repeat Mark
+	void on_uiRepeatMarkType_toggled( bool, int );
+	
 	// Tempo
 	void on_uiTempoBeat_toggled( bool, int );
 	void on_uiTempoBpm_returnPressed();
@@ -321,6 +324,7 @@ private:
 	void updateInstrumentToolBar();
 	void updateTempoToolBar();
 	void updateFermataToolBar();
+	void updateRepeatMarkToolBar();
 	
 		/////////////////////
 		// Toolbar section //
@@ -423,5 +427,7 @@ private:
 			QLineEdit        *uiTempoBpm;
 		QToolBar *uiFermataToolBar;                  // fermata tool bar
 			CAMenuToolButton *uiFermataType;
+		QToolBar *uiRepeatMarkToolBar;               // repeat mark tool bar
+			CAMenuToolButton *uiRepeatMarkType;
 };
 #endif /* MAINWIN_H_ */

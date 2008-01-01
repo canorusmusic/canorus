@@ -86,6 +86,9 @@ CAMusElementFactory::CAMusElementFactory() {
 	
 	_crescendoFinalVolume = 50;
 	_crescendoType = CACrescendo::Crescendo;
+	
+	_repeatMarkType = CARepeatMark::Segno;
+	_repeatMarkVoltaNumber = 1;
 }
 
 /*!
@@ -328,6 +331,13 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 		} else
 		if ( elt->musElementType()==CAMusElement::Barline ) {
 			mpoMusElement = new CAFermata( static_cast<CABarline*>(elt), fermataType() );
+			success = true;
+		}
+		break;
+	}
+	case CAMark::RepeatMark: {
+		if ( elt->musElementType()==CAMusElement::Barline ) {
+			mpoMusElement = new CARepeatMark( static_cast<CABarline*>(elt), repeatMarkType(), (repeatMarkType()==CARepeatMark::Volta?repeatMarkVoltaNumber():0) );
 			success = true;
 		}
 		break;

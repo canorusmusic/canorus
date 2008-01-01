@@ -15,20 +15,31 @@ class CABarline;
 class CARepeatMark : public CAMark {
 public:
 	enum CARepeatMarkType {
-		Volta,
-		Segno,
-		Coda,
-		VarCoda
+		Undefined  = 0,
+		Volta      = 1,
+		Segno      = 2,
+		Coda       = 3,
+		VarCoda    = 4,
+		DalSegno   = 5,
+		DalCoda    = 6,
+		DalVarCoda = 7
 	};
 	
-	CARepeatMark( CABarline *b, CARepeatMarkType t );
+	CARepeatMark( CABarline *b, CARepeatMarkType t, int voltaNumber = 0 );
 	virtual ~CARepeatMark();
+	
+	CAMusElement *clone();
+	int compare( CAMusElement *);
 	
 	inline CARepeatMarkType repeatMarkType() { return _repeatMarkType; }
 	inline void setRepeatMarkType( CARepeatMarkType t ) { _repeatMarkType = t; }
 	
+	inline int voltaNumber() { return _voltaNumber; }
+	inline void setVoltaNumber( int n ) { _voltaNumber = n; }
+	
 private:
 	CARepeatMarkType _repeatMarkType;
+	int _voltaNumber;
 };
 
 #endif /* REPEATMARK_H_ */

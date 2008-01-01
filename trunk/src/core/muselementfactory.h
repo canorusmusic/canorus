@@ -26,6 +26,7 @@
 #include "core/fermata.h"
 #include "core/tempo.h"
 #include "core/crescendo.h"
+#include "core/repeatmark.h"
 
 class CAMusElement;
 
@@ -200,13 +201,19 @@ public:
 	inline void setTempoBeatDotted( const int dotted ) { _tempoBeatDotted = dotted; }
 	
 	inline const CAPlayable::CAPlayableLength tempoBeat() { return _tempoBeat; }
-	inline void setTempoBeat( CAPlayable::CAPlayableLength length ) { _tempoBeat = length; }
+	inline void setTempoBeat( const CAPlayable::CAPlayableLength length ) { _tempoBeat = length; }
 	
 	inline const int crescendoFinalVolume() { return _crescendoFinalVolume; }
 	inline void setCrescendoFinalVolume( const int v ) { _crescendoFinalVolume = v; }
 	
 	inline const CACrescendo::CACrescendoType crescendoType() { return _crescendoType; }
-	inline void setCrescendoType( CACrescendo::CACrescendoType t ) { _crescendoType = t; }
+	inline void setCrescendoType( const CACrescendo::CACrescendoType t ) { _crescendoType = t; }
+	
+	inline const CARepeatMark::CARepeatMarkType repeatMarkType() { return _repeatMarkType; }
+	inline void setRepeatMarkType( const CARepeatMark::CARepeatMarkType t ) { _repeatMarkType = t; }
+	
+	inline const int repeatMarkVoltaNumber() { return _repeatMarkVoltaNumber; }
+	inline void setRepeatMarkVoltaNumber( const int n ) { _repeatMarkVoltaNumber = n; }
 	
 private:
 	CAMusElement *mpoMusElement;                    // Newly created music element itself
@@ -255,5 +262,7 @@ private:
 	int _tempoBpm;
 	int _crescendoFinalVolume;
 	CACrescendo::CACrescendoType _crescendoType;
+	CARepeatMark::CARepeatMarkType _repeatMarkType;
+	int _repeatMarkVoltaNumber;
 };
 #endif // MUSELEMENTFACTORY_H_
