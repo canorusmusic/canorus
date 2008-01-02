@@ -238,7 +238,7 @@ qint64 CAArchive::write(QIODevice& dest)
 int CAArchive::getOS()
 {
 #ifdef Q_WS_WIN
-	if(QSysInfo::WindowsVersion & QSysInfo::WV_NT_Based)
+	if(QSysInfo::WindowsVersion & QSysInfo::WV_NT_based)
 		return 11; // rfc 1952: "NTFS filesystem (NT)"
 	else
 		return 0; // rfc 1952: "FAT filesystem (MS-DOS, OS/2, NT/Win32"

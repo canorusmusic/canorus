@@ -9,8 +9,6 @@ Itay Perl <itay.perl@gmail.com>
 
 Contributors:
 =============
-LilyPond team <www.lilypond.org>
-  Feta font
 Sam Hernandez <merphant@yahoo.com>
   LilyPond export, build fixes
 Erlend Aasland <erlenda@gmail.com>
@@ -22,3 +20,11 @@ Erik Magnus Johansson <erik.magnus.johansson@telia.com>
 Zeelander
   Dutch translation
 
+External libraries and resources:
+=================================
+LilyPond team <http://www.lilypond.org>
+  Big kudos for such a beautiful music font
+RtMidi Library <http://www.music.mcgill.ca/~gary/rtmidi>
+  Fast and portable Midi library
+zlib <http://www.zlib.net>
+  Compression for our file format
