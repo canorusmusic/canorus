@@ -18,6 +18,7 @@
 #include "core/mark.h"
 #include "core/articulation.h"
 #include "core/text.h"
+#include "core/bookmark.h"
 #include "core/dynamic.h"
 #include "core/instrumentchange.h"
 #include "core/fermata.h"
@@ -27,6 +28,7 @@
 #include "canorus.h"
 
 const int CADrawableMark::DEFAULT_TEXT_SIZE = 16;
+const int CADrawableMark::DEFAULT_PIXMAP_SIZE = 25;
 
 /*!
 	\class CADrawableMark
@@ -59,6 +61,18 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
 		break;
 	}
+	case CAMark::BookMark: {
+		QFont font("FreeSans");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
+		QFontMetrics fm(font);
+		
+		int textWidth = fm.width( static_cast<CABookMark*>(this->mark())->text() );
+		setWidth( DEFAULT_PIXMAP_SIZE + textWidth );
+		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+		if ( CACanorus::locateResource("images/mark/bookmark.svg").size() )
+			_pixmap = new QPixmap( CACanorus::locateResource("images/mark/bookmark.svg")[0] );
+		break;
+	}
 	case CAMark::Dynamic: {
 		QFont font("Emmentaler");
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
@@ -89,7 +103,7 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		if ( CACanorus::locateResource("images/mark/instrumentchange.svg").size() )
 			_pixmap = new QPixmap( CACanorus::locateResource("images/mark/instrumentchange.svg")[0] );
 		int textWidth = fm.width( CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
-		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
+		setWidth( DEFAULT_PIXMAP_SIZE + textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
 		break;
 	}
@@ -164,6 +178,15 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		p->drawText( s.x, s.y+qRound(height()*s.z), static_cast<CAText*>(mark())->text() );
 		break;
 	}
+	case CAMark::BookMark: {
+		QFont font("FreeSans");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
+		p->setFont(font);
+		
+		p->drawPixmap( s.x, s.y, _pixmap->scaled(qRound(DEFAULT_PIXMAP_SIZE*s.z), qRound(DEFAULT_PIXMAP_SIZE*s.z) ) );
+		p->drawText( s.x+qRound((DEFAULT_PIXMAP_SIZE+1)*s.z), s.y+qRound(height()*s.z), static_cast<CAText*>(mark())->text() );
+		break;
+	}
 	case CAMark::RehersalMark: {
 		QFont font("FreeSans");
 		font.setBold( true );
@@ -175,13 +198,13 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		break;
 	}
 	case CAMark::InstrumentChange: {
-		p->drawPixmap( s.x, s.y, _pixmap->scaled(qRound(25*s.z), qRound(25*s.z) ) );
+		p->drawPixmap( s.x, s.y, _pixmap->scaled(qRound(DEFAULT_PIXMAP_SIZE*s.z), qRound(DEFAULT_PIXMAP_SIZE*s.z) ) );
 		QFont font("FreeSans");
 		font.setItalic( true );
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
 		p->setFont(font);
 		
-		p->drawText( s.x, s.y+qRound(height()*s.z), CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
+		p->drawText( s.x + qRound((DEFAULT_PIXMAP_SIZE+1)*s.z), s.y+qRound(height()*s.z), CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
 		break;
 	}
 	case CAMark::Fermata: {

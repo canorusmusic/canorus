@@ -5,16 +5,16 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-#ifndef TEXT_H_
-#define TEXT_H_
+#ifndef BOOKMARK_H_
+#define BOOKMARK_H_
 
 #include <QString>
 #include "core/mark.h"
 
-class CAText : public CAMark {
+class CABookMark: public CAMark {
 public:
-	CAText( const QString text, CAPlayable *m );
-	virtual ~CAText();
+	CABookMark( const QString text, CAMusElement *m );
+	virtual ~CABookMark();
 	
 	inline const QString text() { return _text; }
 	inline void setText( const QString t ) { _text = t; }
@@ -26,4 +26,4 @@ private:
 	QString _text;
 };
 
-#endif /* TEXT_H_ */
+#endif /* BOOKMARK_H_ */

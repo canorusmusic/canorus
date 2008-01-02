@@ -70,6 +70,7 @@
 #include "core/instrumentchange.h"
 #include "core/repeatmark.h"
 #include "core/text.h"
+#include "core/bookmark.h"
 #include "core/muselementfactory.h"
 #include "core/mimedata.h"
 #include "core/undo.h"
@@ -242,7 +243,7 @@ void CAMainWin::createCustomActions() {
 		uiMarkType->addButton( QIcon("images/mark/text.svg"),                  CAMark::Text, tr("Arbitrary Text") );
 		uiMarkType->addButton( QIcon("images/mark/repeatmark/coda.svg"),       CAMark::RepeatMark, tr("Repeat Mark") );
 		uiMarkType->addButton( QIcon("images/mark/pedal.svg"),                 CAMark::Pedal, tr("Instrument Change") );
-		uiMarkType->addButton( QIcon("images/mark/bookmark.svg"),              CAMark::Bookmark, tr("Bookmark") );
+		uiMarkType->addButton( QIcon("images/mark/bookmark.svg"),              CAMark::BookMark, tr("Bookmark") );
 		uiMarkType->addButton( QIcon("images/mark/rehersalmark.svg"),          CAMark::RehersalMark, tr("Rehersal Mark") );
 		uiMarkType->addButton( QIcon("images/mark/fingering.svg"),             CAMark::Fingering, tr("Fingering") );
 		uiMarkType->addButton( QIcon("images/mark/instrumentchange.svg"),      CAMark::InstrumentChange, tr("Instrument Change") );
@@ -1218,7 +1219,7 @@ void CAMainWin::setMode(CAMode mode) {
 			if (currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
 				CAMusElement *elt = currentScoreViewPort()->selection().front()->musElement();
 				if ( elt->musElementType()==CAMusElement::Syllable ||
-				     elt->musElementType()==CAMusElement::Mark && static_cast<CAMark*>(elt)->markType()==CAMark::Text
+				     elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
 				) {
 					currentScoreViewPort()->createTextEdit(currentScoreViewPort()->selection().front());
 				} else {
@@ -1489,7 +1490,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 			     musElementFactory()->setMusElementType( CAMusElement::Note );
 			
 			// Insert Syllable or Text
-			if ( uiInsertSyllable->isChecked() || uiMarkType->isChecked() && musElementFactory()->markType()==CAMark::Text ) {
+			if ( uiInsertSyllable->isChecked() || uiMarkType->isChecked() && (musElementFactory()->markType()==CAMark::Text || musElementFactory()->markType()==CAMark::BookMark) ) {
 				v->createTextEdit( v->selection().front() );
 			} else {
 				v->removeTextEdit();
@@ -2771,10 +2772,15 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 				}
 			}
 		}
-	} else if (elt->musElementType()==CAMusElement::Mark && static_cast<CAMark*>(elt)->markType()==CAMark::Text) {
+	} else if (elt->musElementType()==CAMusElement::Mark && static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark) {
 		if (e->key()==Qt::Key_Return) {
+			CAMark *mark = static_cast<CAMark*>(elt);
 			CACanorus::undo()->createUndoCommand( document(), tr("text edit", "undo") );
-			static_cast<CAText*>(elt)->setText( textEdit->text() );
+			if (mark->markType()==CAMark::Text) {
+				static_cast<CAText*>(mark)->setText( textEdit->text() );
+			} else if (mark->markType()==CAMark::BookMark) {
+				static_cast<CABookMark*>(mark)->setText( textEdit->text() );
+			}
 			v->removeTextEdit();
 			CACanorus::undo()->pushUndoCommand();
 			CACanorus::rebuildUI( document(), currentSheet() );

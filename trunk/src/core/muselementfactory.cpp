@@ -11,6 +11,7 @@
 #include "core/functionmarkingcontext.h"
 #include "core/sheet.h"
 #include "core/text.h"
+#include "core/bookmark.h"
 #include "core/dynamic.h"
 #include "core/instrumentchange.h"
 #include "core/articulation.h"
@@ -311,7 +312,14 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 		break;
 	}
 	case CAMark::Text: {
-		mpoMusElement = new CAText( "", elt );
+		if ( elt->isPlayable() ) {
+			mpoMusElement = new CAText( "", static_cast<CAPlayable*>(elt) );
+			success = true;
+		}
+		break;
+	}
+	case CAMark::BookMark: {
+		mpoMusElement = new CABookMark( "", elt );
 		success = true;
 		break;
 	}
