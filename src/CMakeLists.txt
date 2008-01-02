@@ -54,6 +54,9 @@ ELSE(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 	SET(PYTHON_LIBRARY "")
 ENDIF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 
+# Set ZLib sources on windows
+FILE(GLOB ZLIB_Srcs "zlib/*.c")
+
 ###################
 # List of sources #
 ###################
@@ -449,7 +452,7 @@ IF(MINGW)
 		-i canorusrc.rc
 		-o canorusrc.obj
 	)
-	SET(Canorus_Srcs ${Canorus_Srcs} canorusrc.obj)
+	SET(Canorus_Srcs ${Canorus_Srcs} ${ZLIB_Srcs} canorusrc.obj)
 ENDIF(MINGW)
 	
 # This line tells cmake to create the Canorus program.

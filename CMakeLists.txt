@@ -77,7 +77,7 @@ ENDIF(MINGW)
 
 #-----------------------------------------------------------------------------
 # Search for Qt4. We need the latest version of Qt
-SET(QT_MIN_VERSION "4.2.0")
+SET(QT_MIN_VERSION "4.3.0")
 
 # Either remove the below line and set it to the path of
 # your qmake executable or modify the FindQt4.cmake program
@@ -91,6 +91,7 @@ FIND_PACKAGE(Qt4 REQUIRED)
 
 # in the following lines all the requires include directories are added
 INCLUDE_DIRECTORIES(src)
+INCLUDE_DIRECTORIES(src/zlib)
 
 # Recurse into the "src" and "doc" subdirectories.  This does not actually
 # cause another cmake executable to run.  The same process will walk through
