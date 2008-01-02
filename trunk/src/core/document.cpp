@@ -9,6 +9,7 @@
 #include "core/staff.h"
 #include "core/sheet.h"
 #include "core/document.h"
+#include "core/archive.h"
 
 /*!
 	\class CADocument
@@ -31,6 +32,7 @@ CADocument::CADocument()
 	setDateCreated( QDateTime::currentDateTime() );
 	setDateLastModified( QDateTime::currentDateTime() );
 	setTimeEdited(0);
+	setArchive( new CAArchive() );
 }
 
 /*!
@@ -65,6 +67,7 @@ CADocument *CADocument::clone() {
 */
 CADocument::~CADocument() {
 	clear();
+	if ( archive() ) delete archive();
 }
 
 /*!
