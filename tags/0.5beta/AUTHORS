@@ -1,0 +1,30 @@
+Main developers:
+================
+Matevž Jekovec <matevz.jekovec@gmail.com>
+  lead developer, Windows port, Debian/Ubuntu packages, cmake, Wiki site
+Reinhard Katzmann <suamor@web.de>
+  Qt4 GUI maestro, cmake, programming patterns
+Itay Perl <itay.perl@gmail.com>
+  bughunter, lots of GUI fixes and additions, Hebrew translation
+
+Contributors:
+=============
+Sam Hernandez <merphant@yahoo.com>
+  LilyPond export, build fixes
+Erlend Aasland <erlenda@gmail.com>
+  MacOSX port, small compatibility fixes and improvements
+Georg Rudolph <georg.rudolph@schwaben.de>
+  lots of ideas, tester and bughunter, LilyPond, Midi export
+Erik Magnus Johansson <erik.magnus.johansson@telia.com>
+  bughunter, Swedish translation
+Zeelander
+  Dutch translation
+
+External libraries and resources:
+=================================
+LilyPond team <http://www.lilypond.org>
+  Big kudos for such a beautiful music font
+RtMidi Library <http://www.music.mcgill.ca/~gary/rtmidi>
+  Fast and portable Midi library
+zlib <http://www.zlib.net>
+  Compression for our file format
