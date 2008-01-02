@@ -9,13 +9,16 @@ Itay Perl <itay.perl@gmail.com>
 
 Contributors:
 =============
+LilyPond team <www.lilypond.org>
+  Feta font
 Sam Hernandez <merphant@yahoo.com>
   LilyPond export, build fixes
 Erlend Aasland <erlenda@gmail.com>
   MacOSX port, small compatibility fixes and improvements
 Georg Rudolph <georg.rudolph@schwaben.de>
-  lots of ideas, tester and bughunter, LilyPond, German translation
+  lots of ideas, tester and bughunter, LilyPond, Midi export
 Erik Magnus Johansson <erik.magnus.johansson@telia.com>
   bughunter, Swedish translation
 Zeelander
   Dutch translation
+
