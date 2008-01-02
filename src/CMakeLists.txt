@@ -288,6 +288,9 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	interface/playback.cpp
 	moc_playback.cxx
 )
+IF(MINGW)
+	SET( Canorus_Swig_Srcs ${Canorus_Swig_Srcs} ${ZLIB_Srcs} )
+ENDIF(MINGW)
 
 SET( Canorus_Scripts "scripts" ) # Official scripts shipped with Canorus.
 
