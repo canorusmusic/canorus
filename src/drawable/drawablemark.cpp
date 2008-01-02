@@ -119,6 +119,16 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		_tempoDNote = new CADrawableNote( _tempoNote, dContext, x, y );
 		break;
 	}
+	case CAMark::Fingering: {
+		QFont font("Emmentaler");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
+		QFontMetrics fm(font);
+		
+		QString text = fingerListToString( static_cast<CAFingering*>(mark)->fingerList() );
+		setWidth( fm.width( text ) ); // set minimum text width at least 11 points
+		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+		break;
+	}
 	case CAMark::RepeatMark: {
 		if (static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::Volta)
 			setWidth( 50 );
@@ -263,6 +273,17 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 			p->drawLine( s.x, s.y, qRound(s.x+width()*s.z), s.y );
 			p->drawText( s.x + qRound(5*s.z), qRound(s.y+(height()-5)*s.z), QString::number(r->voltaNumber())+"." );
 		}
+		
+		break;
+	}
+	case CAMark::Fingering: {
+		QFont font("Emmentaler");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*1.4*s.z) );
+		font.setItalic( static_cast<CAFingering*>(mark())->isOriginal() );
+		p->setFont(font);
+		QString text = fingerListToString( static_cast<CAFingering*>(mark())->fingerList() );
+		p->drawText( s.x, s.y + qRound(height()*s.z), text );
+		
 		break;
 	}
 	case CAMark::Articulation: {
@@ -281,10 +302,6 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 			case CAArticulation::UpBow:         p->drawText( s.x, s.y, QString(0xE165) ); break;
 			case CAArticulation::DownBow:       p->drawText( s.x, s.y, QString(0xE166) ); break;
 			case CAArticulation::Flageolet:     p->drawText( s.x, s.y, QString(0xE16E) ); break;
-			case CAArticulation::LHeel:         p->drawText( s.x, s.y, QString(0xE16A) ); break;
-			case CAArticulation::RHeel:         p->drawText( s.x, s.y, QString(0xE16B) ); break;
-			case CAArticulation::LToe:          p->drawText( s.x, s.y, QString(0xE16C) ); break;
-			case CAArticulation::RToe:          p->drawText( s.x, s.y, QString(0xE16D) ); break;
 			case CAArticulation::Open:          p->drawText( s.x, s.y, QString(0xE163) ); break;
 			case CAArticulation::Stopped:       p->drawText( s.x, s.y, QString(0xE164) ); break;
 			case CAArticulation::Turn:          p->drawText( s.x, s.y, QString(0xE167) ); break;
@@ -311,4 +328,27 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 
 CADrawableMark* CADrawableMark::clone( CADrawableContext* newContext ) {
 	return new CADrawableMark( mark(), newContext?newContext:drawableContext(), xPos(), yPos() );
+}
+
+/*!
+	Converts the list of fingers to Emmentaler string.
+*/
+QString CADrawableMark::fingerListToString( const QList<CAFingering::CAFingerNumber> list ) {
+	QString text;
+	for (int i=0; i<list.size(); i++) {
+		if (list[i]>0 && list[i]<6)
+			text += QString::number(list[i]);
+		else if (list[i]==CAFingering::Thumb)
+			text += QString(0xE158);
+		else if (list[i]==CAFingering::LHeel)
+			text += QString(0xE16A);
+		else if (list[i]==CAFingering::RHeel)
+			text += QString(0xE16B);
+		else if (list[i]==CAFingering::LToe)
+			text += QString(0xE16C);
+		else if (list[i]==CAFingering::RToe)
+			text += QString(0xE16D);
+	}
+	
+	return text;
 }

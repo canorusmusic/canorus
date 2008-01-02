@@ -15,20 +15,39 @@ class CANote;
 
 class CAFingering: public CAMark {
 public:
-	CAFingering( int finger, CANote *m, bool italic=false );
-	CAFingering( QList<int> fingers, CANote *m, bool italic=false );
+	enum CAFingerNumber {
+		First  = 1,
+		Second = 2,
+		Third  = 3,
+		Fourth = 4,
+		Fifth  = 5,
+		Thumb,
+		LHeel,
+		RHeel,
+		LToe,
+		RToe,
+		Undefined
+	};
+	
+	CAFingering( CAFingerNumber finger, CANote *m, bool italic=false );
+	CAFingering( QList<CAFingerNumber> fingers, CANote *m, bool italic=false );
 	virtual ~CAFingering();
 	
-	inline int finger()                   { return _fingerList[0]; }
-	inline QList<int>& fingerList()       { return _fingerList; }
-	inline void addFinger( int f )        { _fingerList << f; }
-	inline void removeFingerAt( int idx ) { _fingerList.removeAt(idx); }
-	inline bool isItalic() { return _italic; }
-	inline void setItalic( bool i ) { _italic = i; }
+	CAMusElement *clone();
+	int compare(CAMusElement *elt);
+	
+	inline CAFingerNumber finger()             { return (_fingerList.size()?_fingerList[0]:Undefined); }
+	inline void setFinger(CAFingerNumber f)    { _fingerList.clear(); _fingerList << f; }
+	inline QList<CAFingerNumber>& fingerList() { return _fingerList; }
+	inline void addFinger( CAFingerNumber f )  { _fingerList << f; }
+	inline void removeFingerAt( int idx )      { _fingerList.removeAt(idx); }
+	
+	inline bool isOriginal() { return _original; }
+	inline void setOriginal( bool original ) { _original = original; }
 	
 private:
-	QList<int> _fingerList;
-	bool _italic;
+	QList<CAFingerNumber> _fingerList;
+	bool _original;
 };
 
 #endif /* FINGERING_H_ */

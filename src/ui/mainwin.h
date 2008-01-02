@@ -33,6 +33,7 @@ class QToolBar;
 class QLabel;
 class QLineEdit;
 class QComboBox;
+class QCheckBox;
 class QAction;
 
 class CAMenuToolButton;
@@ -221,6 +222,10 @@ private slots:
 	// Repeat Mark
 	void on_uiRepeatMarkType_toggled( bool, int );
 	
+	// Fingering
+	void on_uiFinger_toggled( bool checked, int t );
+	void on_uiFingeringOriginal_toggled( bool checked );
+	
 	// Tempo
 	void on_uiTempoBeat_toggled( bool, int );
 	void on_uiTempoBpm_returnPressed();
@@ -325,6 +330,7 @@ private:
 	void updateTempoToolBar();
 	void updateFermataToolBar();
 	void updateRepeatMarkToolBar();
+	void updateFingeringToolBar();
 	
 		/////////////////////
 		// Toolbar section //
@@ -415,19 +421,23 @@ private:
 			//QComboBox       *uiKeySigGender;       // defined in uiKeySigToolBar
 			//QAction         *uiFMEllipse;          // made by Qt Designer
 		
-		QToolBar *uiDynamicToolBar;                  // dynamic mark tool bar
+		// Marks tool bars:
+		QToolBar *uiDynamicToolBar;
 			CAMenuToolButton *uiDynamicText;
 			QSpinBox         *uiDynamicVolume;
 			QLineEdit        *uiDynamicCustomText;
-		QToolBar *uiInstrumentToolBar;               // instrument marks tool bar
+		QToolBar *uiInstrumentToolBar;
 			QComboBox        *uiInstrumentChange;
-		QToolBar *uiTempoToolBar;                    // tempo marks tool bar
+		QToolBar *uiTempoToolBar;
 			CAMenuToolButton *uiTempoBeat;
 			QLabel           *uiTempoEquals;
 			QLineEdit        *uiTempoBpm;
-		QToolBar *uiFermataToolBar;                  // fermata tool bar
+		QToolBar *uiFermataToolBar;
 			CAMenuToolButton *uiFermataType;
-		QToolBar *uiRepeatMarkToolBar;               // repeat mark tool bar
+		QToolBar *uiRepeatMarkToolBar;
 			CAMenuToolButton *uiRepeatMarkType;
+		QToolBar *uiFingeringToolBar;
+			CAMenuToolButton *uiFinger;
+			QCheckBox        *uiFingeringOriginal;
 };
 #endif /* MAINWIN_H_ */

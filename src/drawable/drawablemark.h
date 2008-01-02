@@ -6,6 +6,7 @@
 */
 
 #include "drawable/drawablemuselement.h"
+#include "core/fingering.h"
 #include "core/mark.h"
 
 #ifndef DRAWABLEMARK_H_
@@ -26,6 +27,8 @@ public:
 	
 	inline void setRehersalMarkNumber( int n ) { _rehersalMarkNumber = n; }
 	inline int rehersalMarkNumber() { return _rehersalMarkNumber; }
+	
+	static QString fingerListToString( const QList<CAFingering::CAFingerNumber> list );
 	
 private:
 	static const int DEFAULT_TEXT_SIZE;
