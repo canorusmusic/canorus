@@ -21,6 +21,7 @@
 #include <QTextStream>
 #include <QXmlInputSource>
 #include <QComboBox>
+#include <QCheckBox>
 #include <QThread>
 #include <iostream>
 
@@ -71,6 +72,7 @@
 #include "core/repeatmark.h"
 #include "core/text.h"
 #include "core/bookmark.h"
+#include "core/fingering.h"
 #include "core/muselementfactory.h"
 #include "core/mimedata.h"
 #include "core/undo.h"
@@ -178,6 +180,7 @@ CAMainWin::~CAMainWin()  {
 	delete uiInstrumentToolBar;
 	delete uiTempoToolBar;
 	delete uiFermataToolBar;
+	delete uiRepeatMarkToolBar;
 
 	if(!CACanorus::mainWinCount()) // closing down
 		CACanorus::cleanUp();
@@ -245,7 +248,7 @@ void CAMainWin::createCustomActions() {
 		uiMarkType->addButton( QIcon("images/mark/pedal.svg"),                 CAMark::Pedal, tr("Instrument Change") );
 		uiMarkType->addButton( QIcon("images/mark/bookmark.svg"),              CAMark::BookMark, tr("Bookmark") );
 		uiMarkType->addButton( QIcon("images/mark/rehersalmark.svg"),          CAMark::RehersalMark, tr("Rehersal Mark") );
-		uiMarkType->addButton( QIcon("images/mark/fingering.svg"),             CAMark::Fingering, tr("Fingering") );
+		uiMarkType->addButton( QIcon("images/mark/fingering/fingering.svg"),             CAMark::Fingering, tr("Fingering") );
 		uiMarkType->addButton( QIcon("images/mark/instrumentchange.svg"),      CAMark::InstrumentChange, tr("Instrument Change") );
 	uiArticulationType = new CAMenuToolButton( tr("Articulation Mark"), 6, this );
 		uiArticulationType->setObjectName( "uiArticulationType" );
@@ -259,10 +262,6 @@ void CAMainWin::createCustomActions() {
 		uiArticulationType->addButton( QIcon("images/mark/articulation/upbow.svg"),         CAArticulation::UpBow,         tr("UpBow") );
 		uiArticulationType->addButton( QIcon("images/mark/articulation/downbow.svg"),       CAArticulation::DownBow,       tr("DownBow") );
 		uiArticulationType->addButton( QIcon("images/mark/articulation/flageolet.svg"),     CAArticulation::Flageolet,     tr("Flageloet") );
-		uiArticulationType->addButton( QIcon("images/mark/articulation/lheel.svg"),         CAArticulation::LHeel,         tr("Left Heel") );
-		uiArticulationType->addButton( QIcon("images/mark/articulation/rheel.svg"),         CAArticulation::RHeel,         tr("Right Heel") );
-		uiArticulationType->addButton( QIcon("images/mark/articulation/ltoe.svg"),          CAArticulation::LToe,          tr("Left Toe") );
-		uiArticulationType->addButton( QIcon("images/mark/articulation/rtoe.svg"),          CAArticulation::RToe,          tr("Right Toe") );
 		uiArticulationType->addButton( QIcon("images/mark/articulation/open.svg"),          CAArticulation::Open,          tr("Open") );
 		uiArticulationType->addButton( QIcon("images/mark/articulation/stopped.svg"),       CAArticulation::Stopped,       tr("Stopped") );
 		uiArticulationType->addButton( QIcon("images/mark/articulation/turn.svg"),          CAArticulation::Turn,          tr("Turn") );
@@ -535,6 +534,23 @@ void CAMainWin::createCustomActions() {
 		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/volta1.svg"), -2, tr("Volta 1st", "repeat mark") ); // -1 can't be used?!
 		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/volta2.svg"), -3, tr("Volta 2nd", "repeat mark") );
 		uiRepeatMarkType->addButton( QIcon("images/mark/repeatmark/volta3.svg"), -4, tr("Volta 3rd", "repeat mark") );
+	
+	uiFingeringToolBar = new QToolBar( tr("Fingering ToolBar"), this );
+	uiFinger = new CAMenuToolButton( tr("Finger"), 5, this );
+		uiFinger->setObjectName("uiFinger");
+		uiFinger->addButton( QIcon("images/mark/fingering/1.svg"),     CAFingering::First,  tr("First", "fingering") );
+		uiFinger->addButton( QIcon("images/mark/fingering/2.svg"),     CAFingering::Second, tr("Second", "fingering") );
+		uiFinger->addButton( QIcon("images/mark/fingering/3.svg"),     CAFingering::Third,  tr("Third", "fingering") );
+		uiFinger->addButton( QIcon("images/mark/fingering/4.svg"),     CAFingering::Fourth, tr("Fourth", "fingering") );
+		uiFinger->addButton( QIcon("images/mark/fingering/5.svg"),     CAFingering::Fifth,  tr("Fifth", "fingering") );
+		uiFinger->addButton( QIcon("images/mark/fingering/0.svg"),     CAFingering::Thumb,  tr("Thumb", "fingering") );		
+		uiFinger->addButton( QIcon("images/mark/fingering/lheel.svg"), CAFingering::LHeel,  tr("Left Heel", "fingering") );
+		uiFinger->addButton( QIcon("images/mark/fingering/rheel.svg"), CAFingering::RHeel,  tr("Right Heel", "fingering") );
+		uiFinger->addButton( QIcon("images/mark/fingering/ltoe.svg"),  CAFingering::LToe,   tr("Left Toe", "fingering") );
+		uiFinger->addButton( QIcon("images/mark/fingering/rtoe.svg"),  CAFingering::RToe,   tr("Right Toe", "fingering") );
+	uiFingeringOriginal = new QCheckBox( tr("Original"), this );
+		uiFingeringOriginal->setObjectName("uiFingeringOriginal");
+		uiFingeringOriginal->setToolTip( tr("Is the fingering original by a composer (usually written italic)", "fingering original checkbox") );
 }
 
 /*!
@@ -708,6 +724,14 @@ void CAMainWin::setupCustomUi() {
 	uiRepeatMarkType->defaultAction()->setToolTip(tr("Repeat Mark Type", "repeat mark"));
 	addToolBar(Qt::TopToolBarArea, uiRepeatMarkToolBar);
 	
+	// Fingering tool bar
+	uiFinger->setDefaultAction( uiFingeringToolBar->addWidget( uiFinger ) );
+	uiFinger->defaultAction()->setCheckable(false);
+	uiFinger->defaultAction()->setToolTip(tr("Finger", "fingering"));
+	uiFingeringOriginal->setChecked(false);
+	uiFingeringToolBar->addWidget( uiFingeringOriginal );
+	addToolBar(Qt::TopToolBarArea, uiFingeringToolBar);
+	
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
 	uiInsertGroup->addAction( uiSelectMode );
@@ -744,6 +768,7 @@ void CAMainWin::setupCustomUi() {
 	uiTempoToolBar->hide();
 	uiFermataToolBar->hide();
 	uiRepeatMarkToolBar->hide();
+	uiFingeringToolBar->hide();
 }
 
 void CAMainWin::newDocument() {
@@ -3405,6 +3430,7 @@ void CAMainWin::updateToolBars() {
 	updateTempoToolBar();
 	updateFermataToolBar();
 	updateRepeatMarkToolBar();
+	updateFingeringToolBar();
 	
 	if ( document() )
 		uiNewSheet->setVisible( true );
@@ -3811,6 +3837,29 @@ void CAMainWin::updateRepeatMarkToolBar() {
 }
 
 /*!
+	Shows/Hides the fingering properties tool bar according to the current state.
+*/
+void CAMainWin::updateFingeringToolBar() {
+	if ( uiMarkType->isChecked() && uiMarkType->currentId()==CAMark::Fingering && mode()==InsertMode) {
+		uiFinger->setCurrentId( musElementFactory()->fingeringFinger() );
+		uiFingeringOriginal->setChecked( musElementFactory()->isFingeringOriginal() );
+		uiFingeringToolBar->show();
+	} else if (mode()==EditMode) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		if (v && v->selection().size()) {
+			CAFingering *f = dynamic_cast<CAFingering*>(v->selection().at(0)->musElement());
+			if (f) {
+				uiFinger->setCurrentId( f->finger() );
+				uiFingeringOriginal->setChecked( f->isOriginal() );
+				uiFingeringToolBar->show();
+			} else
+				uiFingeringToolBar->hide();
+		}	
+	} else
+		uiFingeringToolBar->hide();
+}
+
+/*!
 	Shows/Hides the tempo marks properties tool bar according to the current state.
 */
 void CAMainWin::updateTempoToolBar() {
@@ -4159,6 +4208,50 @@ void CAMainWin::on_uiFermataType_toggled( bool checked, int t ) {
 		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI( document(), currentSheet() );
 	}
+}
+
+void CAMainWin::on_uiFinger_toggled( bool checked, int t ) {
+	CAFingering::CAFingerNumber type = static_cast<CAFingering::CAFingerNumber>( t );
+	
+	if ( mode()==InsertMode ) {
+		musElementFactory()->setFingeringFinger( type );
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("change finger", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAFingering *f = dynamic_cast<CAFingering*>( v->selection().at(i)->musElement() );
+			
+			if ( f ) {
+				f->setFinger( type );
+			}
+		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+}
+
+void CAMainWin::on_uiFingeringOriginal_toggled( bool checked ) {
+	if ( mode()==InsertMode ) {
+		musElementFactory()->setFingeringOriginal( checked );
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
+		CAScoreViewPort *v = currentScoreViewPort();
+		CACanorus::undo()->createUndoCommand( document(), tr("change finger original property", "undo") );
+		
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAFingering *f = dynamic_cast<CAFingering*>( v->selection().at(i)->musElement() );
+			
+			if ( f ) {
+				f->setOriginal( checked );
+			}
+		}
+		
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}	
 }
 
 void CAMainWin::on_uiRepeatMarkType_toggled( bool checked, int t ) {

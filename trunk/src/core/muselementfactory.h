@@ -27,6 +27,7 @@
 #include "core/tempo.h"
 #include "core/crescendo.h"
 #include "core/repeatmark.h"
+#include "core/fingering.h"
 
 class CAMusElement;
 
@@ -215,6 +216,11 @@ public:
 	inline const int repeatMarkVoltaNumber() { return _repeatMarkVoltaNumber; }
 	inline void setRepeatMarkVoltaNumber( const int n ) { _repeatMarkVoltaNumber = n; }
 	
+	inline const CAFingering::CAFingerNumber fingeringFinger() { return _fingeringFinger; }
+	inline void setFingeringFinger( const CAFingering::CAFingerNumber f ) { _fingeringFinger = f; }
+	
+	inline const bool isFingeringOriginal() { return _fingeringOriginal; }
+	inline void setFingeringOriginal( const int o ) { _fingeringOriginal = o; }
 private:
 	CAMusElement *mpoMusElement;                    // Newly created music element itself
 	CAMusElement *mpoEmpty;                         // An empty (dummy) element.
@@ -264,5 +270,7 @@ private:
 	CACrescendo::CACrescendoType _crescendoType;
 	CARepeatMark::CARepeatMarkType _repeatMarkType;
 	int _repeatMarkVoltaNumber;
+	CAFingering::CAFingerNumber _fingeringFinger;
+	int _fingeringOriginal;
 };
 #endif // MUSELEMENTFACTORY_H_

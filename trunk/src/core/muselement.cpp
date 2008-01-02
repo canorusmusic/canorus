@@ -46,14 +46,14 @@ CAMusElement::CAMusElement(CAContext *context, int time, int length) {
 	This removes the music element from the parent context as well!
 */
 CAMusElement::~CAMusElement() {
+	for (int i=0; i<markList().size(); i++) {
+		delete markList()[i]; // mark is automatically removed from the list
+		i--;
+	}
+	
 	// needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
 	if( context() && !isPlayable() )
 		context()->remove( this );
-	
-	for (int i=0; i<markList().size(); i++) {
-		if ( markList()[i]->markType()!=CAMark::Articulation || markList()[i]->markType()!=CAMark::Fingering )
-			delete markList()[i];
-	}
 }
 
 /*!

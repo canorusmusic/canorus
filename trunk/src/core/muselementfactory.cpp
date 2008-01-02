@@ -90,6 +90,9 @@ CAMusElementFactory::CAMusElementFactory() {
 	
 	_repeatMarkType = CARepeatMark::Segno;
 	_repeatMarkVoltaNumber = 1;
+	
+	_fingeringFinger = CAFingering::First;
+	_fingeringOriginal = false;
 }
 
 /*!
@@ -356,6 +359,13 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 	case CAMark::RehersalMark: {
 		if ( elt->musElementType()==CAMusElement::Barline ) {
 			mpoMusElement = new CAMark( CAMark::RehersalMark, elt );
+			success = true;
+		}
+		break;
+	}
+	case CAMark::Fingering: {
+		if ( elt->musElementType()==CAMusElement::Note ) {
+			mpoMusElement = new CAFingering( fingeringFinger(), static_cast<CANote*>(elt), isFingeringOriginal() );
 			success = true;
 		}
 		break;

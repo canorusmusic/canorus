@@ -49,13 +49,6 @@ CANote::~CANote() {
 	if ( tieStart() ) delete tieStart();      // slurs destructor also disconnects itself from the notes
 	if ( tieEnd() ) tieEnd()->setNoteEnd( 0 );
 	
-	for (int i=0; i<markList().size(); i++) {
-		if ( markList()[i]->markType()==CAMark::Articulation && isFirstInTheChord() || markList()[i]->markType()==CAMark::Fingering ) {
-			removeMark(markList()[i]);
-			delete markList()[i];
-			i--;
-		}
-	}
 	// other slurs are removed or moved in CAVoice::removeElement()
 }
 
@@ -203,7 +196,7 @@ QList<CANote*> CANote::getChord() {
 		idx--;
 	
 	for (idx++;
-	     (idx<voice()->musElementCount()) && (voice()->musElementAt(idx)->musElementType()==CAMusElement::Note) && (voice()->musElementAt(idx)->timeStart()==timeStart());
+	     (idx>=0 && idx<voice()->musElementCount()) && (voice()->musElementAt(idx)->musElementType()==CAMusElement::Note) && (voice()->musElementAt(idx)->timeStart()==timeStart());
 	     idx++)
 		list << static_cast<CANote*>(voice()->musElementAt(idx));
 	
