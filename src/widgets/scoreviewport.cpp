@@ -40,6 +40,7 @@
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
 #include "core/text.h"
+#include "core/bookmark.h"
 #include "canorus.h"
 #include "core/settings.h"
 
@@ -1375,9 +1376,7 @@ CADrawableContext *CAScoreViewPort::findCElement(CAContext *context) {
 	\sa createTextEdit( QRect geometry )
 */
 CATextEdit *CAScoreViewPort::createTextEdit( CADrawableMusElement *dMusElt ) {
-	if (!dMusElt || !dMusElt->musElement() ||
-	     dMusElt->musElement()->musElementType()!=CAMusElement::Syllable &&
-	     dMusElt->musElement()->musElementType()!=CAMusElement::Mark )
+	if ( !dMusElt || !dMusElt->musElement() )
 		return 0;
 	
 	int xPos=dMusElt->xPos(), yPos=dMusElt->yPos(),
@@ -1396,9 +1395,11 @@ CATextEdit *CAScoreViewPort::createTextEdit( CADrawableMusElement *dMusElt ) {
 		if (syllable->hyphenStart()) text+="-";
 		else if (syllable->melismaStart()) text+="_";
 	} else if ( dMusElt->musElement()->musElementType()==CAMusElement::Mark ) {
-		CAText *textElt = dynamic_cast<CAText*>(dMusElt->musElement());
-		if (textElt) {
-			text = textElt->text();
+		CAMusElement *elt = dMusElt->musElement();
+		if ( static_cast<CAMark*>(elt)->markType()==CAMark::Text ) {
+			text = static_cast<CAText*>(elt)->text();
+		} else if ( static_cast<CAMark*>(elt)->markType()==CAMark::BookMark ) {
+			text = static_cast<CABookMark*>(elt)->text();
 		}
 	}
 	
@@ -1412,7 +1413,7 @@ CATextEdit *CAScoreViewPort::createTextEdit( CADrawableMusElement *dMusElt ) {
 }
 
 /*!
-	Removes and deletes the line edit for creating a lyrics syllable.
+	Removes and deletes the text edit when quitting text editing mode.
 */
 void CAScoreViewPort::removeTextEdit() {
 	setTextEditVisible( false ); // don't delete it, just hide it!

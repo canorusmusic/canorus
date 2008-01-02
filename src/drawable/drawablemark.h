@@ -29,6 +29,7 @@ public:
 	
 private:
 	static const int DEFAULT_TEXT_SIZE;
+	static const int DEFAULT_PIXMAP_SIZE;
 	CANote         *_tempoNote;
 	CADrawableNote *_tempoDNote;
 	QPixmap        *_pixmap;

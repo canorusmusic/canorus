@@ -21,7 +21,7 @@ public:
 		Crescendo,
 		Pedal,
 		InstrumentChange,
-		Bookmark,
+		BookMark,
 		RehersalMark,
 		Fermata,
 		RepeatMark,

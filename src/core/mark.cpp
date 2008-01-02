@@ -54,8 +54,8 @@ const QString CAMark::markTypeToString( CAMark::CAMarkType t ) {
 			return "Pedal";
 		case InstrumentChange:
 			return "InstrumentChange";
-		case Bookmark:
-			return "Bookmark";
+		case BookMark:
+			return "BookMark";
 		case RehersalMark:
 			return "RehersalMark";
 		case Fermata:
@@ -98,8 +98,8 @@ CAMark::CAMarkType CAMark::markTypeFromString( const QString s ) {
 	if ( s=="InstrumentChange" ) {
 		return InstrumentChange;
 	} else
-	if ( s=="Bookmark" ) {
-		return Bookmark;
+	if ( s=="BookMark" ) {
+		return BookMark;
 	} else
 	if ( s=="RehersalMark" ) {
 		return RehersalMark;
