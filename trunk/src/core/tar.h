@@ -25,8 +25,9 @@ public:
 	CATar();
 	CATar(QIODevice&);
 	virtual ~CATar();
-	void addFile(const QString& filename, QIODevice& data);
-	void addFile(const QString& filename, QByteArray data);
+	bool addFile(const QString& filename, QIODevice& data);
+	bool addFile(const QString& filename, QByteArray data);
+	inline bool contains(const QString& filename);
 	void removeFile(const QString& filename);
 	CAIOPtr file(const QString& filename);
 	qint64 write(QIODevice& dest, qint64 chunk);

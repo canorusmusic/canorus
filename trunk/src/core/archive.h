@@ -22,8 +22,8 @@ public:
 	virtual ~CAArchive();
 
 	// interface to CATar
-	inline void addFile(const QString& filename, QIODevice& data) { if(!error()) _tar->addFile(filename, data); }
-	inline void addFile(const QString& filename, QByteArray data) { if(!error()) _tar->addFile(filename, data); }
+	inline bool addFile(const QString& filename, QIODevice& data) { if(!error()) return _tar->addFile(filename, data); else return false; }
+	inline bool addFile(const QString& filename, QByteArray data) { if(!error()) return _tar->addFile(filename, data); else return false; }
 	inline void removeFile(const QString& filename) { if(!error()) _tar->removeFile(filename); }
 	inline CAIOPtr file(const QString& filename) { if(!error()) return _tar->file(filename); else return CAIOPtr(new QBuffer());  }
 	inline bool error() { return _err ||  _tar->error(); }	

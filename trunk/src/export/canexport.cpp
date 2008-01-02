@@ -22,31 +22,29 @@ CACanExport::~CACanExport() {
 }
 
 void CACanExport::exportDocumentImpl( CADocument* doc ) {
-	QTemporaryFile tmp;
-	if (tmp.open()) {
-		// Write the score
-		CACanorusMLExport *content = new CACanorusMLExport( new QTextStream(&tmp) );
-		content->exportDocument( doc );
-		content->wait();
-		delete content;
-		tmp.close();
-		
-		doc->archive()->addFile( "content.xml", tmp );
-		
-		// \todo fix relative paths
-		for (int i=0; i<doc->resourceList().size(); i++) {
-			CAResource *r = doc->resourceList()[i];
-			if (r->isLinked()) {
-				// fix relative paths
-				continue;
-			}
-		}
-		
-		// Save the archive
-		doc->archive()->write( *stream()->device() );
-	
-		setStatus(0); // done
-	} else {
-		setStatus(-1);
+	// Write the score
+	QBuffer score;
+	CACanorusMLExport *content = new CACanorusMLExport();
+	content->setStreamToDevice(&score);
+	content->exportDocument( doc );
+	content->wait();
+	delete content;
+
+	if(!doc->archive()->addFile( "content.xml", score )) {
+		setStatus(-2);
+		return;
 	}
+	
+	// \todo fix relative paths
+	for (int i=0; i<doc->resourceList().size(); i++) {
+		CAResource *r = doc->resourceList()[i];
+		if (r->isLinked()) {
+			// fix relative paths
+			continue;
+		}
+	}
+		
+	// Save the archive
+	doc->archive()->write( *stream()->device() );
+	setStatus(0); // done
 }
