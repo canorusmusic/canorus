@@ -415,7 +415,7 @@ bool CATar::eof(QIODevice& dest)
 
 	If bufsize is -1 (the default), no NULs are added.
 */
-char *CATar::bufncpy(char* dest, const char *src, size_t len, size_t bufsize)
+char *CATar::bufncpy(char* dest, const char *src, size_t len, int bufsize)
 {
 	if(bufsize == -1)
 		bufsize = len;
@@ -427,7 +427,7 @@ char *CATar::bufncpy(char* dest, const char *src, size_t len, size_t bufsize)
 	return dest;
 }
 
-char *CATar::bufncpyi(char*& dest, const char *src, size_t len, size_t bufsize)
+char *CATar::bufncpyi(char*& dest, const char *src, size_t len, int bufsize)
 {
 	bufncpy(dest, src, len, bufsize);
 	return (dest += ((bufsize == -1) ? len : bufsize));
