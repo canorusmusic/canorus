@@ -144,7 +144,6 @@ void CAArchive::parse(QIODevice& arch)
 
 qint64 CAArchive::write(QIODevice& dest)
 {
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
 	bool close = false;
 	int ret, flush;
 	qint64 total = 0, read;

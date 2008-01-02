@@ -29,6 +29,7 @@ CAFile::CAFile() : QThread() {
 	setStatus( 0 );
 	setStream( 0 );
 	setFile( 0 );
+	_deleteStream = false;
 }
 
 /*!
@@ -36,12 +37,10 @@ CAFile::CAFile() : QThread() {
 	Also destroys the created stream and file, if set.
 */
 CAFile::~CAFile() {
-	if ( file() ) {
-		if ( stream() ) {
-			delete stream();
-		}
+	if( stream() && _deleteStream )
+		delete stream();
+	if ( file() )
 		delete file();
-	}
 }
 
 /*!
@@ -54,8 +53,14 @@ CAFile::~CAFile() {
 void CAFile::setStreamFromFile( const QString filename ) {
 	setFile( new QFile( filename ) );
 	
-	if ( file()->open( QIODevice::ReadOnly ) )
+	if ( file()->open( QIODevice::ReadOnly ) ) 
+	{
+		if(stream() && _deleteStream) {
+			delete stream();
+		}
 		setStream( new QTextStream(file()) );
+		_deleteStream = true;
+	}
 }
 
 /*!
@@ -66,10 +71,45 @@ void CAFile::setStreamFromFile( const QString filename ) {
 	access QTextStream class, so they call this wrapper instead with a simple string as parameter.
 */
 void CAFile::setStreamToFile( const QString filename ) {
+	if(stream() && _deleteStream)
+		delete stream();
 	setFile( new QFile( filename ) );
 	
-	if ( file()->open( QIODevice::WriteOnly ) )
+	if ( file()->open( QIODevice::WriteOnly ) ) {
+		if(stream() && _deleteStream) {
+			delete stream();
+		}
 		setStream( new QTextStream(file()) );
+		_deleteStream = true;
+	}
+}
+
+/**
+	Creates and sets the stream from the given device.
+	Read-write if the given device is not already open.
+*/
+void CAFile::setStreamToDevice(QIODevice* device)
+{
+	if(stream() && _deleteStream)
+		delete stream();
+	if(!device->isOpen())
+		device->open(QIODevice::ReadWrite);
+	setStream(new QTextStream(device));
+	_deleteStream = true;
+}
+
+/**
+	Creates and sets the stream from the given device.
+	Read-only if the device is not already open.
+*/
+void CAFile::setStreamFromDevice(QIODevice* device)
+{
+	if(stream() && _deleteStream)
+		delete stream();
+	if(!device->isOpen())
+		device->open(QIODevice::ReadOnly);
+	setStream(new QTextStream(device));
+	_deleteStream = true;
 }
 
 /*!

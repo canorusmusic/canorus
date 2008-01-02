@@ -23,6 +23,8 @@ public:
 	virtual const QString readableStatus() = 0;
 	void setStreamFromFile( const QString filename );
 	void setStreamToFile( const QString filename );
+	void setStreamFromDevice( QIODevice* device );
+	void setStreamToDevice( QIODevice* device );
 	
 protected:
 	inline void setStatus( const int status ) { _status = status; }
@@ -39,6 +41,7 @@ private:
 	int _progress;        // percentage of the work already done
 	QTextStream *_stream;
 	QFile *_file;
+	bool _deleteStream;	 // whether to delete stream when destroyed.
 };
 
 #endif /* FILE_H_ */

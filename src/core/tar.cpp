@@ -144,14 +144,30 @@ void CATar::parse(QIODevice& tar)
 		tar.close();
 }
 
+/** 
+	Returns true if the tar contains a file with the given filename. Otherwise false
+	filename may be a relative path.
+*/
+bool CATar::contains(const QString& filename)
+{
+	foreach(CATarFile *t, _files) {
+		if(filename == t->hdr.name)
+			return false;
+	}
+	return true;
+}
+
 /*!
 	Adds a file to the tar archive.
 
 	\param filename The full name of the file (including directory path).
 	\param data		A reader for the file.
+	\return True if the file has been added, false otherwise (e.g., file with the same name exists).
 */
-void CATar::addFile(const QString& filename, QIODevice& data)
+bool CATar::addFile(const QString& filename, QIODevice& data)
 {
+	if(!contains(filename))
+		return false;
 	CATarFile *file = new CATarFile;
 	
 	// Basename only for use with prefix if ever required (see below).
@@ -183,6 +199,7 @@ void CATar::addFile(const QString& filename, QIODevice& data)
 		data.open(QIODevice::ReadOnly);
 		wasOpen = false;
 	}
+	data.reset(); //seek to the beginning.
 	// Save the uncompressed data in a temporary file.
 	while(!data.atEnd())
 		file->data->write(data.read(CHUNK)); 
@@ -190,15 +207,16 @@ void CATar::addFile(const QString& filename, QIODevice& data)
 	if(!wasOpen)
 		data.close();
 	_files << file;
+	return true;
 }
 
 /*
 	A convenience method to add a file from a byte array.
 */
-void CATar::addFile(const QString& filename, QByteArray data)
+bool CATar::addFile(const QString& filename, QByteArray data)
 {
 	QBuffer buf(&data, 0);
-	addFile(filename, buf);
+	return addFile(filename, buf);
 }
 
 /*!
