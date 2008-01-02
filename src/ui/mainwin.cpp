@@ -82,9 +82,11 @@
 
 #include "export/lilypondexport.h"
 #include "export/canorusmlexport.h"
+#include "export/canexport.h"
 #include "export/midiexport.h"
 #include "import/lilypondimport.h"
 #include "import/canorusmlimport.h"
+#include "import/canimport.h"
 
 /*!
 	\class CAMainWin
@@ -2360,19 +2362,30 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 */
 CADocument *CAMainWin::openDocument(const QString& fileName) {
 	stopPlayback();
-	CACanorusMLImport open;
-	open.setStreamFromFile( fileName );
-	open.importDocument();
-	open.wait();
 	
-	if( open.importedDocument() ) {
-		open.importedDocument()->setFileName(fileName);
-		return openDocument( open.importedDocument() );
+	CAImport *open;
+	if ( fileName.endsWith(".xml") ) {
+		open = new CACanorusMLImport();
+	} else if ( fileName.endsWith(".can") ) {
+		open = new CACanImport();
+	}
+	
+	open->setStreamFromFile( fileName );
+	open->importDocument();
+	open->wait();
+	
+	if( open->importedDocument() ) {
+		CADocument *doc = open->importedDocument();
+		delete open;
+		
+		doc->setFileName(fileName);
+		return openDocument( doc );
 	} else {
 		QMessageBox::critical(
 			this, tr("Canorus"),
-			tr("Error while opening the file!\nError %1: ").arg(open.status()) + open.readableStatus()
+			tr("Error while opening the file!\nError %1: ").arg(open->status()) + open->readableStatus()
 		);
+		delete open;
 		return 0;
 	}
 }
@@ -2425,15 +2438,24 @@ bool CAMainWin::saveDocument( QString fileName ) {
 	document()->setDateLastModified( QDateTime::currentDateTime() );
 	CACanorus::restartTimeEditedTimes( document() );
 	
-	CACanorusMLExport save;
-	save.setStreamToFile( fileName );
-	save.exportDocument( document() );
-	save.wait();
+	CAExport *save=0;
+	if ( uiSaveDialog->selectedFilter()==CAFileFormats::CANORUSML_FILTER ) {
+		save = new CACanorusMLExport();
+	} else if ( uiSaveDialog->selectedFilter()==CAFileFormats::CAN_FILTER ) {
+		save = new CACanExport();
+	}
 	
-	if ( save.exportedDocument() ) {
-		document()->setFileName( fileName );
-		CACanorus::insertRecentDocument( fileName );
-		return true;
+	if (save) {
+		save->setStreamToFile( fileName );
+		save->exportDocument( document() );
+		save->wait();
+		
+		if ( save->exportedDocument() ) {
+			document()->setFileName( fileName );
+			CACanorus::insertRecentDocument( fileName );
+			delete save;
+			return true;
+		}
 	}
 	
 	return false;

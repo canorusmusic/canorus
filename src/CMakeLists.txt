@@ -205,14 +205,14 @@ SET(Canorus_Export_Srcs     # Classes for exporting Canorus data to various file
 	export/midiexport.cpp
 	export/lilypondexport.cpp
 	export/canorusmlexport.cpp
-	#export/canexport.cpp
+	export/canexport.cpp
 )
 
 SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus data
 	import/import.cpp
 	import/lilypondimport.cpp
 	import/canorusmlimport.cpp
-	#import/canimport.cpp
+	import/canimport.cpp
 )
 
 SET(Canorus_RtMidi_Srcs		# RtMIDI library

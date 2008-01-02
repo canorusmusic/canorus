@@ -16,7 +16,7 @@
 */
 
 const QString CAFileFormats::CANORUSML_FILTER = QObject::tr("Canorus document (*.xml)");
-const QString CAFileFormats::CAN_FILTER = QObject::tr("Canorus archive (*.can)");
+const QString CAFileFormats::CAN_FILTER       = QObject::tr("Canorus archive (*.can)");
 const QString CAFileFormats::LILYPOND_FILTER  = QObject::tr("LilyPond document (*.ly)");
 const QString CAFileFormats::MUSICXML_FILTER  = QObject::tr("MusicXML document (*.xml)");
 const QString CAFileFormats::NOTEEDIT_FILTER  = QObject::tr("NoteEdit document (*.not)");

@@ -15,6 +15,7 @@
 #include "core/resourcecontainer.h"
 
 class CASheet;
+class CAArchive;
 
 class CADocument : public CAResourceContainer {
 public:
@@ -46,6 +47,7 @@ public:
 	const unsigned int timeEdited() { return _timeEdited; }
 	const QString comments() { return _comments; }
 	const QString fileName() { return _fileName; }
+	CAArchive *archive() { return _archive; }
 	
 	void setTitle(const QString title) { _title = title; }
 	void setSubtitle(const QString subtitle) { _subtitle = subtitle; }
@@ -59,7 +61,9 @@ public:
 	void setDateLastModified(const QDateTime dateLastModified) { _dateLastModified = dateLastModified; }
 	void setTimeEdited(const unsigned int timeEdited) { _timeEdited = timeEdited; }
 	void setComments(const QString comments) { _comments = comments; }
+	
 	void setFileName(const QString fileName) { _fileName = fileName; } // not saved!
+	void setArchive( CAArchive *a ) { _archive = a; }
 	
 private:
 	QList<CASheet *> _sheetList;
@@ -77,5 +81,6 @@ private:
 	unsigned int _timeEdited; // time the document has been edited in seconds
 	QString _comments;
 	QString _fileName;
+	CAArchive *_archive;
 };
 #endif /* DOCUMENT_H_ */
