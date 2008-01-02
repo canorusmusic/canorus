@@ -69,8 +69,8 @@ protected:
 	} CATarBufInfo;
 	QHash<QIODevice*, CATarBufInfo> _pos;
 	// helper functions
-	char *bufncpy(char*, const char*, size_t, size_t = -1);
-	char *bufncpyi(char*&, const char*, size_t, size_t = -1);
+	char *bufncpy(char*, const char*, size_t, int = -1);
+	char *bufncpyi(char*&, const char*, size_t, int = -1);
 	char *numToOct(char*, qint64, int);
 	char *numToOcti(char*&, qint64, int);
 	void writeHeader(QIODevice& dest, int file);
