@@ -112,21 +112,29 @@ void CACanorus::initCommonGUI() {
 	CAMainWin::uiSaveDialog = new QFileDialog(0, QObject::tr("Choose a file to save"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiSaveDialog->setFileMode(QFileDialog::AnyFile);
 	CAMainWin::uiSaveDialog->setAcceptMode( QFileDialog::AcceptSave );
-	CAMainWin::uiSaveDialog->setFilter( CAFileFormats::CANORUSML_FILTER );
-	CAMainWin::uiSaveDialog->setFilter( CAFileFormats::CAN_FILTER );
+	CAMainWin::uiSaveDialog->setFilters( QStringList() << CAFileFormats::CANORUSML_FILTER );
+	CAMainWin::uiSaveDialog->setFilters( CAMainWin::uiSaveDialog->filters() << CAFileFormats::CAN_FILTER );
 	CAMainWin::uiSaveDialog->selectFilter( CAFileFormats::getFilter( settings()->defaultSaveFormat() ) );
 	
 	CAMainWin::uiOpenDialog = new QFileDialog(0, QObject::tr("Choose a file to open"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiOpenDialog->setFileMode( QFileDialog::ExistingFile );
 	CAMainWin::uiOpenDialog->setAcceptMode( QFileDialog::AcceptOpen );
-	CAMainWin::uiOpenDialog->setFilter( CAFileFormats::CANORUSML_FILTER );
-	CAMainWin::uiOpenDialog->setFilter( CAFileFormats::CAN_FILTER );
+	CAMainWin::uiOpenDialog->setFilters( QStringList() << CAFileFormats::CANORUSML_FILTER ); // clear the * filter
+	CAMainWin::uiOpenDialog->setFilters( CAMainWin::uiOpenDialog->filters() << CAFileFormats::CAN_FILTER );
+	QString allFilters; // generate list of all files
+	for (int i=0; i<CAMainWin::uiOpenDialog->filters().size(); i++) {
+		QString curFilter = CAMainWin::uiOpenDialog->filters()[i];
+		int left = curFilter.indexOf('(')+1;
+		allFilters += curFilter.mid( left, curFilter.size()-left-1 ) + " ";
+	}
+	allFilters.chop(1);
+	CAMainWin::uiOpenDialog->setFilters( QStringList() << QString(QObject::tr("All supported formats (%1)").arg(allFilters)) << CAMainWin::uiOpenDialog->filters() );
 	
 	CAMainWin::uiExportDialog = new QFileDialog(0, QObject::tr("Choose a file to export"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiExportDialog->setFileMode(QFileDialog::AnyFile);
 	CAMainWin::uiExportDialog->setAcceptMode( QFileDialog::AcceptSave );
-	CAMainWin::uiExportDialog->setFilter( CAFileFormats::LILYPOND_FILTER );
-	CAMainWin::uiExportDialog->setFilter( CAFileFormats::MIDI_FILTER );
+	CAMainWin::uiExportDialog->setFilters( QStringList() << CAFileFormats::LILYPOND_FILTER );
+	CAMainWin::uiExportDialog->setFilters( CAMainWin::uiExportDialog->filters() << CAFileFormats::MIDI_FILTER );
   	
 	CAMainWin::uiImportDialog = new QFileDialog(0, QObject::tr("Choose a file to import"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiImportDialog->setFileMode( QFileDialog::ExistingFile );

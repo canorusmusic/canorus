@@ -17,6 +17,7 @@ Build dependencies:
 - g++ >=4, make (http://gcc.gnu.org, http://www.mingw.org)
 - cmake >=2.4.6 (http://www.cmake.org)
 - Python development package >=2.5 (http://www.python.org)
+- zlib library (http://www.zlib.net). Compiled in Qt4 already. You only need zlib.h!
 
 Runtime dependencies:
 =====================
