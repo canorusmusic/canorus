@@ -9,6 +9,8 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <iostream>
+#include <iomanip>
+#include <stdio.h>
 
 #include "export/midiexport.h"
 
@@ -47,12 +49,14 @@ CAMidiExport::CAMidiExport( QTextStream *out )
 
 void CAMidiExport::send(QVector<unsigned char> message, int offset)
 {
-	std::cout << "Hallo    " << offset << "  ";
+	if ( message.size() ) trackChunk.append( writeTime( offset ));
+	char q;
 	for (int i=0; i< message.size(); i++ ) {
-		out() << message[i];
-		std::cout << message[i] << " ";
+		q = message[i];
+		trackChunk.append(q);
+		//std::cout << message[i] << " ";
 	}
-	std::cout << std::endl;
+	//std::cout << std::endl;
 }
 
 /*!
@@ -69,11 +73,13 @@ void CAMidiExport::exportVoiceImpl(CAVoice *v, QByteArray *trackChunk) {
 */
 
 
-#define META_TEXT    0x01
-#define META_TIMESIG 0x58
-#define META_KEYSIG  0x59
-#define META_TEMPO   0x51
+#define META_TEXT        0x01
+#define META_TIMESIG     0x58
+#define META_KEYSIG      0x59
+#define META_TEMPO       0x51
+#define META_TRACK_END   0x2f
 
+#define MIDI_CTL_EVENT   0xff
 #define MIDI_CTL_REVERB  0x5b
 #define MIDI_CTL_CHORUS  0x5d
 #define MIDI_CTL_PAN     0x0a
@@ -91,66 +97,86 @@ void CAMidiExport::exportVoiceImpl(CAVoice *v, QByteArray *trackChunk) {
 static unsigned char trackend[] = {0x00, 0xff , 0x2f, 0x00};
 
 
-void CAMidiExport::writeWord(unsigned int w) {
-	for (int i = 1; i >= 0; i-- ) {
-		char c = (unsigned char)(w >> (i*8));
-		out() << c;
-	}
+QByteArray CAMidiExport::word16(int x) {
+	QByteArray ba;
+	ba.append((char)(x >> 8));
+	ba.append((char) x);
+	return ba;
 }
 
 
-void CAMidiExport::writeDWord(unsigned int dw) {
-	for (int i = 3; i >= 0; i-- ) {
-		char c = (unsigned char)(dw >> (i*8));
-		out() << c;
+
+QByteArray CAMidiExport::variableLengthValue(int value) {
+
+	QByteArray chunk;
+	char b;
+	bool byteswritten = false;
+	b = (value >> 3*7) & 0x7f;
+	if (b) {
+		chunk.append(0x80 | b);
+		byteswritten = true;
 	}
+	b = (value >> 2*7) & 0x7f;
+	if (b || byteswritten) {
+		chunk.append(0x80 | b);
+		byteswritten = true;
+	}
+	b = (value >> 7) & 0x7f;
+	if (b || byteswritten) {
+		chunk.append(0x80 | b);
+		byteswritten = true;
+	}
+	b = value & 0x7f;
+	chunk.append(b);
+	return chunk;
 }
 
 
-void CAMidiExport::writeString(char *s) {
-	while (*s) {
-		out() << *s++;
-	}
-}
 
-void CAMidiExport::writeTime(int time) {
+QByteArray CAMidiExport::writeTime(int time) {
 	unsigned char b;
 	bool byteswritten = false;
+	QByteArray trackChunk;
 
 	b = (time >> 3*7) & 0x7f;
 	if (b) {
-		out() << (0x80 | b);
+		trackChunk.append(0x80 | b);
 		byteswritten = true;
 	}
 	b = (time >> 2*7) & 0x7f;
 	if (b || byteswritten) {
-		out() << (0x80 | b);
+		trackChunk.append(0x80 | b);
 		byteswritten = true;
 	}
 	b = (time >> 7) & 0x7f;
 	if (b || byteswritten) {
-		out() << (0x80 | b);
+		trackChunk.append(0x80 | b);
 		byteswritten = true;
 	}
 	b = time & 0x7f;
-	out() << b;
+	trackChunk.append(b);
+	return trackChunk;
 }
 
 
-void CAMidiExport::writeText(int time, char *s) {
-	char *cptr = s;
-	writeTime(time);
-	// writeByte(0xff); writeByte(META_TEXT); writeByte(strlen(s));
-	char c = 0xff;
-	out() << c;
-	c = META_TEXT;
-	out() << c;
-	c = strlen(s);
-	out() << c;
-	writeString( s );
-	//while (*cptr) {
-	//	putc(0xff & (*cptr++), midiout_);
-	//}
+QByteArray CAMidiExport::trackEnd(void) {
+	QByteArray tc;
+	tc.append(writeTime(0));
+	tc.append(MIDI_CTL_EVENT);
+	tc.append(META_TRACK_END);
+	tc.append('0');
+	return tc;
+}
+
+
+QByteArray CAMidiExport::textEvent(int time, const char *s) {
+	QByteArray tc;
+	tc.append(writeTime(time));
+	tc.append(MIDI_CTL_EVENT);
+	tc.append(META_TEXT);
+	tc.append(variableLengthValue(strlen(s)));
+	tc.append(s);
+	return tc;
 }
 
 /*!
@@ -169,9 +195,10 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 	// For now we export only the first sheet.
 	CASheet *sheet = doc->sheetAt( 0 );
 	setCurSheet( sheet );
+	trackChunk.clear();
 
 	// Let's playback this sheet and dump that into a file,
-	// and for this we have our own midi driver:
+	// and for this we have our own midi driver.
 	CAPlayback *_playback = new CAPlayback(sheet, this );
 	_playback->run();
 
@@ -190,15 +217,64 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 	}
 
 	// Header Chunk
-	writeString("MThd");
-	writeDWord(6);					// length
-	writeWord(1);					// Midi-Format version
-	writeWord(count + 1);			// number of tracks
-	writeWord(TICKS_PER_QUARTER);	// time division
 
-	// Track Chunks still needed from above
-	writeString("MTrk");
-	writeDWord(0);
+	// A midi file here is 8-Bit Ascii, so we need no coding translation,
+	// and this seems to switch it off, but I think there should be a null codec:   FIXME  !!
+	(*stream()).setCodec("Latin-1");
+
+	QByteArray headerChunk;
+	headerChunk.append("MThd....");		// header and space for length
+	headerChunk.append(word16( 1 ));	// Midi-Format version
+	headerChunk.append(word16( 2 ));	// number of tracks, a control track and a music track for a trying out ...
+	headerChunk.append(word16( 384 ));	// time division, should be TICKS_PER_QUARTER
+	setChunkLength( &headerChunk );
+	out() << headerChunk;
+
+	
+	QByteArray controlTrackChunk;
+	controlTrackChunk.append("MTrk....");
+	controlTrackChunk.append(textEvent(7, "Canorus Version 0.5beta generated."));
+	controlTrackChunk.append(textEvent(5, "(still very beta)"));
+	controlTrackChunk.append(trackEnd());
+	setChunkLength( &controlTrackChunk );
+	printQByteArray( controlTrackChunk );
+	out() << controlTrackChunk;
+
+	controlTrackChunk.clear();
+	controlTrackChunk.append("MTrk....");
+	controlTrackChunk.append(textEvent(0, "Canorus midi file without any music yet! Still in development"));
+	controlTrackChunk.append(trackEnd());
+	setChunkLength( &controlTrackChunk );
+	out() << controlTrackChunk;
+	printQByteArray( controlTrackChunk );
+
+}
+
+void CAMidiExport::setChunkLength( QByteArray *x ) {
+	quint32 l = (*x).size() - 8;	// subtract header
+	for (int i=0; i<4; i++ ) {
+		(*x )[7-i] = l >> (8*i);
+	}
+}
+
+
+void CAMidiExport::writeQByteArray( QByteArray x )
+{
+	QVector<unsigned char> chunk;
+	char q;
+	for (int i=0; i<x.size(); i++ ) {
+		q = 0x0ff & x[i];
+		out() << q;
+	}
+}
+
+
+void CAMidiExport::printQByteArray( QByteArray x )
+{
+	for (int i=0; i<x.size(); i++ ) {
+		printf( " %02x", 0x0ff & x.at(i));
+	}
+	printf( "\n");
 }
 
 

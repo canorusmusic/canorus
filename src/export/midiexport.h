@@ -52,58 +52,28 @@ public:
 	// Polling export status //
 	///////////////////////////
 	// Setter methods are private!
-	inline CAVoice *curVoice() { return _curVoice; }
-	inline CASheet *curSheet() { return _curSheet; }
-	inline CAContext *curContext() { return _curContext; }
-	inline int curContextIndex() { return _curContextIndex; }
-	inline int curIndentLevel() { return _curIndentLevel; }
 */
 	
 private:
-	void writeWord(unsigned int w);
-	void writeDWord(unsigned int w);
-	void writeString(char *s);
-	void writeTime(int time);
-	void writeText(int time, char *s);
+	void writeString(char s[]);
+	QByteArray writeTime(int time);
 	void exportDocumentImpl(CADocument *doc);
 	int midiTrackCount;
-	QVector<QByteArray> trackChunks;
-	//void exportVoiceImpl(CAVoice *voice, QByteArray *trackChunk);
+	QByteArray trackChunk;					// for the time beeing we build one big track
+	QVector<QByteArray> trackChunks;		// for the future
+	void printQByteArray( QByteArray x );	// for debugging only
+	void writeQByteArray( QByteArray x );
+	QByteArray variableLengthValue(int value);
+	QByteArray word16(int x);
+	QByteArray textEvent(int time, const char *s);
+	QByteArray trackEnd(void);
+	void setChunkLength( QByteArray *x );
+
 /*
-	void exportSheetImpl(CASheet *sheet);
-	void exportScoreBlock(CASheet *sheet);
-	void exportStaffVoices(CAStaff *staff);
-	void exportLyricsContextImpl(CALyricsContext *lc);
-	void exportSyllables(CALyricsContext* lc);
-	
-	void writeDocumentHeader();
-	int writeRelativeIntro();
 	
 	////////////////////
 	// Helper methods //
 	////////////////////
-	const QString clefTypeToLilyPond( CAClef::CAClefType type, int c1, int offset );	
-	const QString keySignaturePitchToLilyPond(signed char accs, CAKeySignature::CAMajorMinorGender gender);
-	const QString keySignatureGenderToLilyPond(CAKeySignature::CAMajorMinorGender gender);
-	const QString playableLengthToLilyPond(CAPlayable::CAPlayableLength length, int dotted);
-	const QString notePitchToLilyPond(int pitch, signed char accs);
-	const QString restTypeToLilyPond(CARest::CARestType type);
-	const QString barlineTypeToLilyPond(CABarline::CABarlineType type);
-	const QString syllableToLilyPond( CASyllable *s );
-	
-	inline const QString relativePitchToString(CANote* note, int prevPitch) {
-		return relativePitchToString(note->pitch(), note->accidentals(), prevPitch);
-	}
-	const QString relativePitchToString(int pitch, signed char accs, int prevPitch);
-	void voiceVariableName( QString &name, int staffNum, int voiceNum );
-	void spellNumbers( QString &s );
-	
-	QString markupString( QString );
-	QString escapeWeirdChars( QString );
-	
-	void indent();
-	inline void indentMore() { ++_curIndentLevel; }
-	inline void indentLess() { --_curIndentLevel; }
 	
 	///////////////////////////
 	// Getter/Setter methods //
@@ -112,10 +82,6 @@ private:
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }
 	inline void setCurSheet(CASheet *sheet) { _curSheet = sheet; }
 /*
-	inline void setCurContext(CAContext *context) { _curContext = context; }
-	inline void setCurContextIndex(int c) { _curContextIndex = c; }
-	inline void setIndentLevel( int level) { _curIndentLevel = level; }
-	
 	/////////////
 	// Members //
 	/////////////
