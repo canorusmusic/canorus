@@ -45,7 +45,7 @@ public:
 	bool openInputPort(int port) { return true; }	// return true on success, false otherwise	
 	void closeOutputPort() { }
 	void closeInputPort() { }
-	void send(QVector<unsigned char> message, int offset);
+	void send(QVector<unsigned char> message, int time);
 	
 /*
 	///////////////////////////
@@ -55,18 +55,20 @@ public:
 */
 	
 private:
-	void writeString(char s[]);
 	QByteArray writeTime(int time);
 	void exportDocumentImpl(CADocument *doc);
 	int midiTrackCount;
 	QByteArray trackChunk;					// for the time beeing we build one big track
+	int trackTime;							// which this is the time line for
 	QVector<QByteArray> trackChunks;		// for the future
+	QVector<int> trackTimes;
 	void printQByteArray( QByteArray x );	// for debugging only
-	void writeQByteArray( QByteArray x );
 	QByteArray variableLengthValue(int value);
 	QByteArray word16(int x);
 	QByteArray textEvent(int time, const char *s);
 	QByteArray trackEnd(void);
+	QByteArray timeSignature(void);
+	QByteArray keySignature(void);
 	void setChunkLength( QByteArray *x );
 
 /*

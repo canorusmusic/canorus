@@ -25,54 +25,45 @@ class CACanorus;
 
 /*!
 	\class CAMidiExport
-	\brief LilyPond export filter
-	This class is used to export the document or parts of the document to LilyPond syntax.
+	\brief Midi file export filter
+	This class is used to export the document or parts of the document to a midi file.
 	The most common use is to simply call one of the constructors
 	\code
 	CAMidiExport( myDocument, &textStream );
 	\endcode
 	
-	\a textStream is usually the file stream or the content of the score source view widget.
+	\a textStream is usually the file stream.
 	
-	\sa CALilyPondImport
+	\sa CAMidiImport
 */
 
 /*!
-	Constructor for voice export. Called when viewing a single voice source in Lily syntax.
-	Exports a voice to LilyPond syntax using the given text stream.
+	Constructor for midi file export. Called when choosing the mid/midi file extension in the export dialog.
+	Exports all voices to the given text stream.
 */
 CAMidiExport::CAMidiExport( QTextStream *out )
  : CAExport(out), CAMidiDevice() {
 	_midiDeviceType = MidiExportDevice;
 	setRealTime(false);
+	trackTime = 0;
 }
 
-void CAMidiExport::send(QVector<unsigned char> message, int offset)
+void CAMidiExport::send(QVector<unsigned char> message, int time)
 {
+	int offset = 0;
+	if ( time > trackTime ) {
+		offset = time-trackTime;
+		trackTime = time;
+	}
 	if ( message.size() ) trackChunk.append( writeTime( offset ));
 	char q;
 	for (int i=0; i< message.size(); i++ ) {
 		q = message[i];
 		trackChunk.append(q);
-		//std::cout << message[i] << " ";
 	}
-	//std::cout << std::endl;
 }
 
-/*!
-	Exports the given voice music elements to LilyPond syntax.
-	
-	\sa CALilypondImport
-*/
-/*
-void CAMidiExport::exportVoiceImpl(CAVoice *v, QByteArray *trackChunk) {
-	
-	// this function will be taken from CAPlayback,
-	// that's more appropriate!
-}
-*/
-
-
+// FIXME: these magic numbers should go into the midi class.
 #define META_TEXT        0x01
 #define META_TIMESIG     0x58
 #define META_KEYSIG      0x59
@@ -94,13 +85,10 @@ void CAMidiExport::exportVoiceImpl(CAVoice *v, QByteArray *trackChunk) {
 #define MY2MIDITIME(t) ((unsigned int) ((((double) t) * (double) (TICKS_PER_QUARTER)) / ((double) (QUARTER_LENGTH))))
 
 
-static unsigned char trackend[] = {0x00, 0xff , 0x2f, 0x00};
-
-
 QByteArray CAMidiExport::word16(int x) {
 	QByteArray ba;
-	ba.append((char)(x >> 8));
-	ba.append((char) x);
+	ba.append(x >> 8);
+	ba.append(x);
 	return ba;
 }
 
@@ -136,26 +124,52 @@ QByteArray CAMidiExport::variableLengthValue(int value) {
 QByteArray CAMidiExport::writeTime(int time) {
 	unsigned char b;
 	bool byteswritten = false;
-	QByteArray trackChunk;
+	QByteArray ba;
 
 	b = (time >> 3*7) & 0x7f;
 	if (b) {
-		trackChunk.append(0x80 | b);
+		ba.append(0x80 | b);
 		byteswritten = true;
 	}
 	b = (time >> 2*7) & 0x7f;
 	if (b || byteswritten) {
-		trackChunk.append(0x80 | b);
+		ba.append(0x80 | b);
 		byteswritten = true;
 	}
 	b = (time >> 7) & 0x7f;
 	if (b || byteswritten) {
-		trackChunk.append(0x80 | b);
+		ba.append(0x80 | b);
 		byteswritten = true;
 	}
 	b = time & 0x7f;
-	trackChunk.append(b);
-	return trackChunk;
+	ba.append(b);
+	return ba;
+}
+
+
+QByteArray CAMidiExport::keySignature(void) {
+	QByteArray tc;
+	tc.append(writeTime(0));
+	tc.append(MIDI_CTL_EVENT);
+	tc.append(META_KEYSIG);
+	tc.append(variableLengthValue( 2 ));
+	tc.append((char)0);		// number of sharps, negative: number of flats positive
+	tc.append((char)0);		// 0: major 1: minor
+	return tc;
+}
+
+
+QByteArray CAMidiExport::timeSignature(void) {
+	QByteArray tc;
+	tc.append(writeTime(0));
+	tc.append(MIDI_CTL_EVENT);
+	tc.append(META_TIMESIG);
+	tc.append(variableLengthValue( 4 ));
+	tc.append(4);			// FIXME: this is just a fixed filled in numbers
+	tc.append(2);
+	tc.append(1);
+	tc.append(8);
+	return tc;
 }
 
 
@@ -211,7 +225,7 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 				for ( int v = 0; v < staff->voiceCount(); ++v ) {
 					setCurVoice( staff->voiceAt( v ) );
 					count++;
-					std::cout << "Hallo  " << c << " " << v << "\n" << std::endl;
+					//std::cout << "Hallo  " << c << " " << v << "\n" << std::endl;
 				}
 		}
 	}
@@ -232,39 +246,31 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 
 	
 	QByteArray controlTrackChunk;
-	controlTrackChunk.append("MTrk....");
-	controlTrackChunk.append(textEvent(7, "Canorus Version 0.5beta generated."));
-	controlTrackChunk.append(textEvent(5, "(still very beta)"));
-	controlTrackChunk.append(trackEnd());
+	controlTrackChunk.append( "MTrk...." );
+	controlTrackChunk.append( textEvent(0, "Canorus Version 0.5beta generated. "));
+	controlTrackChunk.append( textEvent(0, "Timebase and some midi controls not yet implemented."));
+	controlTrackChunk.append( trackEnd());
 	setChunkLength( &controlTrackChunk );
-	printQByteArray( controlTrackChunk );
+	//printQByteArray( controlTrackChunk );
 	out() << controlTrackChunk;
 
-	controlTrackChunk.clear();
-	controlTrackChunk.append("MTrk....");
-	controlTrackChunk.append(textEvent(0, "Canorus midi file without any music yet! Still in development"));
-	controlTrackChunk.append(trackEnd());
-	setChunkLength( &controlTrackChunk );
-	out() << controlTrackChunk;
-	printQByteArray( controlTrackChunk );
+	// trackChunk is already filled with midi data,
+	// let's add chunk header, in reverse, ...
+	trackChunk.prepend(keySignature());
+	trackChunk.prepend(timeSignature());
+	trackChunk.prepend("MTrk....");
+	// ... and add the tail:
+	trackChunk.append(trackEnd());
+	setChunkLength( &trackChunk );
+	//printQByteArray( trackChunk );
+	out() << trackChunk;
 
 }
 
 void CAMidiExport::setChunkLength( QByteArray *x ) {
-	quint32 l = (*x).size() - 8;	// subtract header
+	quint32 l = (*x).size() - 8;	// subtract header length
 	for (int i=0; i<4; i++ ) {
 		(*x )[7-i] = l >> (8*i);
-	}
-}
-
-
-void CAMidiExport::writeQByteArray( QByteArray x )
-{
-	QVector<unsigned char> chunk;
-	char q;
-	for (int i=0; i<x.size(); i++ ) {
-		q = 0x0ff & x[i];
-		out() << q;
 	}
 }
 
@@ -278,28 +284,4 @@ void CAMidiExport::printQByteArray( QByteArray x )
 }
 
 
-/*!
-	Exports the current sheet to Lilypond syntax.
-*/
-/*
-void CAMidiExport::exportSheetImpl(CASheet *sheet)
-{
-	setCurSheet( sheet );
-
-	// Export voices as Lilypond variables: \StaffOneVoiceOne = \relative c { ... }
-	for ( int c = 0; c < sheet->contextCount(); ++c ) {
-		setCurContextIndex( c );
-		switch (sheet->contextAt(c)->contextType()) {
-			case CAContext::Staff:
-				// exportStaffVoices( static_cast<CAStaff*>(sheet->contextAt( c )) );
-				break;
-			case CAContext::LyricsContext:
-				exportLyricsContextImpl( static_cast<CALyricsContext*>(sheet->contextAt( c )) );
-				break;			
-		}
-	}
-
-	exportScoreBlock( sheet );
-}
-*/
 
