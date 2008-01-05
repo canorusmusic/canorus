@@ -178,7 +178,7 @@ QByteArray CAMidiExport::trackEnd(void) {
 	tc.append(writeTime(0));
 	tc.append(MIDI_CTL_EVENT);
 	tc.append(META_TRACK_END);
-	tc.append('0');
+	tc.append((char)0);
 	return tc;
 }
 
