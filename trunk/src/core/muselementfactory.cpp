@@ -114,6 +114,22 @@ void CAMusElementFactory::removeMusElem( bool bReallyRemove /* = false */ ) {
 	mpoMusElement = mpoEmpty;
 }
 
+void CAMusElementFactory::addPlayableDotted( int iAdd, CANote::CAPlayableLength l ) {
+	_iPlayableDotted = (_iPlayableDotted+iAdd)%4;
+	// FIXME: magic number 4 is max. number of flags.
+	// If 128th will be visible in the gui, _iPlabableDotted could be one higher.
+	//
+	// the more flags a to be inserted note has, the less dots are allowed:
+	//
+	switch ( l ) {
+	case CANote::Eighth:			if (_iPlayableDotted > 3) _iPlayableDotted = 0; break;
+	case CANote::Sixteenth:			if (_iPlayableDotted > 2) _iPlayableDotted = 0; break;
+	case CANote::ThirtySecond: 		if (_iPlayableDotted > 1) _iPlayableDotted = 0; break;
+	case CANote::SixtyFourth:		if (_iPlayableDotted > 0) _iPlayableDotted = 0; break;
+	default:						;
+	}
+};
+
 /*!
 	Configures a new clef music element in \a context and right before the \a right element.
 */
