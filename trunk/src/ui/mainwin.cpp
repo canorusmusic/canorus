@@ -1509,6 +1509,8 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				if (e->button()==Qt::RightButton && musElementFactory()->musElementType()==CAMusElement::Note)
 					// place a rest when using right mouse button and note insertion is selected
 					musElementFactory()->setMusElementType( CAMusElement::Rest );
+				// show the dotted shadow note
+				currentScoreViewPort()->setShadowNoteDotted( musElementFactory()->playableDotted() );
 			}
 			
 			insertMusElementAt( coords, v );
@@ -1833,7 +1835,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		
 		case Qt::Key_Period: {
 			if (mode()==InsertMode) {
-				musElementFactory()->addPlayableDotted( 1 );
+				musElementFactory()->addPlayableDotted( 1, musElementFactory()->playableLength() );
 				currentScoreViewPort()->setShadowNoteDotted( musElementFactory()->playableDotted() );
 				v->repaint();
 			} else if (mode()==EditMode) {
@@ -1913,46 +1915,55 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CANote::Whole, true );
+			musElementFactory()->setPlayableDotted( 0 );
 			break;
 		case Qt::Key_2:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CANote::Half, true );
+			musElementFactory()->setPlayableDotted( 0 );
 			break;
 		case Qt::Key_4:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CANote::Quarter, true );
+			musElementFactory()->setPlayableDotted( 0 );
 			break;
 		case Qt::Key_5:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CANote::Eighth, true );
+			musElementFactory()->setPlayableDotted( 0 );
 			break;
 		case Qt::Key_6:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CANote::Sixteenth, true );
+			musElementFactory()->setPlayableDotted( 0 );
 			break;
 		case Qt::Key_7:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CANote::ThirtySecond, true );
+			musElementFactory()->setPlayableDotted( 0 );
 			break;
 		case Qt::Key_8:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CANote::SixtyFourth, true );
+			musElementFactory()->setPlayableDotted( 0 );
 			break;
 		case Qt::Key_9:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CANote::HundredTwentyEighth, true );
+			musElementFactory()->setPlayableDotted( 0 );
 			break;
 		case Qt::Key_0:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CANote::Breve, true );
+			musElementFactory()->setPlayableDotted( 0 );
 			break;
 	}
 	
