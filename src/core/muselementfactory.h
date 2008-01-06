@@ -95,8 +95,7 @@ public:
 	inline void setNoteStemDirection( CANote::CAStemDirection eDir )
 	{ _eNoteStemDirection = eDir; }
 	
-	inline void addPlayableDotted( int iAdd )
-	{ _iPlayableDotted = (_iPlayableDotted+iAdd)%4; };
+	void addPlayableDotted( int iAdd, CANote::CAPlayableLength l);
 	
 	inline int  noteAccs() { return _iNoteAccs; };
 	
