@@ -45,6 +45,9 @@
 #define INITIAL_X_OFFSET 20 // space between the left border and the first music element
 #define MINIMUM_SPACE 10    // minimum space between the music elements
 
+QList<CADrawableMusElement*> CAEngraver::scalableElts;
+int *CAEngraver::streamsRehersalMarks;
+
 /*!
 	\class CAEngraver
 	\brief Class for correctly placing the abstract notes to the score canvas.
@@ -64,11 +67,10 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 	//list of all the music element lists (ie. streams) taken from all the contexts
 	QList< QList<CAMusElement*> > musStreamList; // streams music elements
 	QList<CAContext*> contexts; // which context does the stream belong to
-
+	
 	int dy = 50;
 	QList<int> nonFirstVoiceIdxs;	//list of indexes of musStreamLists which the voices aren't the first voice. This is used later for determining should a sign be created or not (if it has been created in 1st voice already, don't recreate it in the other voices in the same staff).
 	QMap<CAContext*, CADrawableContext*> drawableContextMap;
-	QList<CADrawableMusElement*> scalableElts;
 	
 	for (int i=0; i < sheet->contextCount(); i++) {
 		if (sheet->contextAt(i)->contextType() == CAContext::Staff) {
@@ -122,6 +124,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
 	CAKeySignature *lastKeySig[streams]; for (int i=0; i<streams; i++) lastKeySig[i] = 0;
 	CATimeSignature *lastTimeSig[streams]; for (int i=0; i<streams; i++) lastTimeSig[i] = 0;	
+	scalableElts.clear();
 	
 	int timeStart = 0;
 	bool done = false;
@@ -186,13 +189,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							streamsX[i] += (clef->neededWidth() + MINIMUM_SPACE);
 							placedSymbol = true;
 							
-							// place marks
-							for ( int j=0; j < elt->markList().size(); j++ ) {
-								CADrawableMark *m = new CADrawableMark( elt->markList()[j], drawableContext, clef->xPos(), qMin(clef->yPos(),drawableContext->yPos())-20*(j+1) );
-								v->addMElement( m );
-								if (m->isHScalable() || m->isVScalable())
-									scalableElts << m;
-							}
+							placeMarks( clef, v, i );
 							
 							break;
 						}
@@ -214,13 +211,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							streamsX[i] += (keySig->neededWidth() + MINIMUM_SPACE);
 							placedSymbol = true;
 							
-							// place marks
-							for ( int j=0; j < elt->markList().size(); j++ ) {
-								CADrawableMark *m = new CADrawableMark( elt->markList()[j], drawableContext, keySig->xPos(), qMin(keySig->yPos(),drawableContext->yPos())-20*(j+1) );
-								v->addMElement( m );
-								if (m->isHScalable() || m->isVScalable())
-									scalableElts << m;
-							}
+							placeMarks( keySig, v, i );
 							
 							break;
 						}
@@ -242,13 +233,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							streamsX[i] += (timeSig->neededWidth() + MINIMUM_SPACE);
 							placedSymbol = true;
 							
-							// place marks
-							for ( int j=0; j < elt->markList().size(); j++ ) {
-								CADrawableMark *m = new CADrawableMark( elt->markList()[j], drawableContext, timeSig->xPos(), qMin(timeSig->yPos(),drawableContext->yPos())-20*(j+1) );
-								v->addMElement( m );
-								if (m->isHScalable() || m->isVScalable())
-									scalableElts << m;
-							}
+							placeMarks( timeSig, v, i );
 							
 							break;
 						}
@@ -319,17 +304,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 				streamsX[i] += (bar->neededWidth() + MINIMUM_SPACE);
 				streamsIdx[i] = streamsIdx[i] + 1;
 				
-				// place marks
-				for ( int j=0; j < elt->markList().size(); j++ ) {
-					CADrawableMark *m = new CADrawableMark( elt->markList()[j], drawableContext, bar->xPos(), qMin(bar->yPos(),drawableContext->yPos())-20*(j+1) );
-					v->addMElement( m );
-					
-					if ( elt->markList()[j]->markType()==CAMark::RehersalMark )
-						m->setRehersalMarkNumber( streamsRehersalMarks[i]++ );
-					
-					if (m->isHScalable() || m->isVScalable())
-						scalableElts << m;
-				}
+				placeMarks( bar, v, i );
 			}
 		}
 		
@@ -540,15 +515,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						if ( static_cast<CANote*>(elt)->isLastInTheChord() )	
 							streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 						
-						// place marks
-						for ( int j=0; j < elt->markList().size(); j++ ) {
-							if ( static_cast<CANote*>(elt)->isFirstInTheChord() || elt->markList()[j]->markType()==CAMark::Fingering ) {
-								CADrawableMark *m = new CADrawableMark( elt->markList()[j], drawableContext, newElt->xPos(), qMin(newElt->yPos(),drawableContext->yPos())-20*(j+1) );
-								v->addMElement( m );
-								if (m->isHScalable() || m->isVScalable())
-									scalableElts << m;
-							}
-						}
+						placeMarks( newElt, v, i );
 						
 						break;
 					}
@@ -563,14 +530,8 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 						v->addMElement(newElt);
 						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 						
-						// place marks
-						for ( int j=0; j < elt->markList().size(); j++ ) {
-							CADrawableMark *m = new CADrawableMark( elt->markList()[j], drawableContext, newElt->xPos(), qMin(newElt->yPos(),drawableContext->yPos())-20*(j+1) );
-							v->addMElement( m );
-							if (m->isHScalable() || m->isVScalable())
-								scalableElts << m;
-						}
-
+						placeMarks( newElt, v, i );
+						
 						break;
 					}
 					case CAMusElement::Syllable: {
@@ -872,5 +833,32 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 	for (int i=0; i<scalableElts.size(); i++) {
 		scalableElts[i]->setXPos( v->timeToCoords(scalableElts[i]->musElement()->timeStart()) );
 		scalableElts[i]->setWidth( v->timeToCoords(scalableElts[i]->musElement()->timeEnd()) - scalableElts[i]->xPos() );
+	}
+}
+
+/*!
+	Place marks for the given music element.
+*/
+void CAEngraver::placeMarks( CADrawableMusElement *e, CAScoreViewPort *v, int i ) {
+	CAMusElement *elt = e->musElement();
+	
+	for ( int j=0,k=0; (j+k) < elt->markList().size(); ) {
+		int yCoord;
+		if ( elt->markList()[j+k]->markType()==CAMark::Pedal ) {
+			yCoord = qMax(e->yPos()+e->height(),e->drawableContext()->yPos()+e->drawableContext()->height())+20*(k+1);
+			k++;
+		} else {
+			yCoord = qMin(e->yPos(),e->drawableContext()->yPos())-20*(j+1);
+			j++;
+		}
+		
+		CADrawableMark *m = new CADrawableMark( elt->markList()[j+k-1], e->drawableContext(), e->xPos(), yCoord );
+		v->addMElement( m );
+		
+		if (m->isHScalable() || m->isVScalable())
+			scalableElts << m;
+		
+		if ( elt->markList()[j+k-1]->markType()==CAMark::RehersalMark )
+			m->setRehersalMarkNumber( streamsRehersalMarks[i]++ );
 	}
 }

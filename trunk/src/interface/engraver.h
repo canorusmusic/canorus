@@ -8,11 +8,18 @@
 #ifndef ENGRAVER_
 #define ENGRAVER_
 
+#include <QList>
+
 class CAScoreViewPort;
+class CADrawableMusElement;
 
 class CAEngraver {
 	public:
 		static void reposit(CAScoreViewPort *v);
+	private:
+		static void placeMarks( CADrawableMusElement*, CAScoreViewPort*, int );
+		static int *streamsRehersalMarks;
+		static QList<CADrawableMusElement*> scalableElts;
 };
 
 #endif /* ENGRAVER_ */

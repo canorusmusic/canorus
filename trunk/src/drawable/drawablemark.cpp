@@ -89,6 +89,12 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		setHScalable(true);
 		break;
 	}
+	case CAMark::Pedal: {
+		setWidth( mark->timeLength()/10 );
+		setHeight( 20 );
+		setHScalable(true);
+		break;
+	}
 	case CAMark::Fermata: {
 		setWidth( 25 );
 		setHeight( 20 );
@@ -283,6 +289,15 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		p->setFont(font);
 		QString text = fingerListToString( static_cast<CAFingering*>(mark())->fingerList() );
 		p->drawText( s.x, s.y + qRound(height()*s.z), text );
+		
+		break;
+	}
+	case CAMark::Pedal: {
+		QFont font("Emmentaler");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*2*s.z) );
+		p->setFont(font);
+		p->drawText( s.x, s.y+qRound(height()*s.z), QString(0xE1A3) );
+		p->drawText( s.x+qRound((width()-10)*s.z), s.y+qRound(height()*s.z), QString(0xE19D) );
 		
 		break;
 	}
