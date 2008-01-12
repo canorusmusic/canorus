@@ -354,6 +354,11 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 		success = true;
 		break;
 	}
+	case CAMark::Pedal: {
+		mpoMusElement = new CAMark( CAMark::Pedal, elt );
+		success = true;
+		break;
+	}
 	case CAMark::Fermata: {
 		if ( elt->isPlayable() ) {
 			mpoMusElement = new CAFermata( static_cast<CAPlayable*>(elt), fermataType() );
