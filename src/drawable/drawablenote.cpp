@@ -12,6 +12,16 @@
 #include "core/voice.h"
 #include "core/staff.h"
 
+const int CADrawableNote::HUNDREDTWENTYEIGHTH_STEM_LENGTH = 43;
+const int CADrawableNote::SIXTYFOURTH_STEM_LENGTH = 43;
+const int CADrawableNote::THIRTYSECOND_STEM_LENGTH = 37;
+const int CADrawableNote::SIXTEENTH_STEM_LENGTH = 31;
+const int CADrawableNote::EIGHTH_STEM_LENGTH = 31;
+const int CADrawableNote::QUARTER_STEM_LENGTH = 31;
+const int CADrawableNote::HALF_STEM_LENGTH = 31;
+const int CADrawableNote::QUARTER_YPOS_DELTA = 21;
+const int CADrawableNote::HALF_YPOS_DELTA = 23;
+
 /*!
 	Default constructor.
 	
@@ -32,15 +42,9 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, in
 		case CAPlayable::Sixteenth:
 		case CAPlayable::Eighth:
 		case CAPlayable::Quarter:
-			_width = 11;
-			_height = 9;
-			_yPos = (int)(y - _height/2.0 + 0.5);
-			_xPos = x;
-			break;
-		
 		case CAPlayable::Half:
 			_width = 11;
-			_height = 9;
+			_height = 10;
 			_yPos = (int)(y - _height/2.0 + 0.5);
 			_xPos = x;
 			break;
