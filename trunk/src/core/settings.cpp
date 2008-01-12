@@ -12,7 +12,7 @@
 // Define default settings
 const bool CASettings::DEFAULT_FINALE_LYRICS_BEHAVIOUR = false;
 const QDir CASettings::DEFAULT_DOCUMENTS_DIRECTORY = QDir::home();
-const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFormats::CanorusML;
+const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFormats::Can;
 const int CASettings::DEFAULT_AUTO_RECOVERY_INTERVAL = 1;
 const QColor CASettings::DEFAULT_BACKGROUND_COLOR = QColor(255, 255, 240);
 const QColor CASettings::DEFAULT_FOREGROUND_COLOR = Qt::black;
