@@ -40,15 +40,15 @@ class CADrawableNote : public CADrawableMusElement {
 		CADrawableAccidental *_drawableAcc;
 		CANote::CAStemDirection _stemDirection;	/// This value is StemUp or StemDown only, no StemPreferred or StemNeutral present. We generate this on CADrawableNote constructor.
 		int _noteHeadWidth;
-		static const int HUNDREDTWENTYEIGHTH_STEM_LENGTH = 36;
-		static const int SIXTYFOURTH_STEM_LENGTH = 43;
-		static const int THIRTYSECOND_STEM_LENGTH = 35;
-		static const int SIXTEENTH_STEM_LENGTH = 28;
-		static const int EIGHTH_STEM_LENGTH = 26;
-		static const int QUARTER_STEM_LENGTH = 22;
-		static const int HALF_STEM_LENGTH = 24;
-		static const int QUARTER_YPOS_DELTA = 21;
-		static const int HALF_YPOS_DELTA = 23;
+		static const int HUNDREDTWENTYEIGHTH_STEM_LENGTH;
+		static const int SIXTYFOURTH_STEM_LENGTH;
+		static const int THIRTYSECOND_STEM_LENGTH;
+		static const int SIXTEENTH_STEM_LENGTH;
+		static const int EIGHTH_STEM_LENGTH;
+		static const int QUARTER_STEM_LENGTH;
+		static const int HALF_STEM_LENGTH;
+		static const int QUARTER_YPOS_DELTA;
+		static const int HALF_YPOS_DELTA;
 };
 
 #endif /* DRAWABLENOTE_H_ */
