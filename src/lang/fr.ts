@@ -2615,67 +2615,67 @@ Site officiel : http://www.canorus.org</translation>
     <message>
         <location filename="../ui_documentproperties.h" line="248"/>
         <source>Document properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés du document</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="249"/>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Titre :</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="250"/>
         <source>Composer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Compositeur :</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="251"/>
         <source>Composer name and e-mail address in &lt;&gt; brackets</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom et adresse mél du compositeur entre &lt;&gt;</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="252"/>
         <source>Arranger:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrangeur :</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="253"/>
         <source>Poet:</source>
-        <translation type="unfinished"></translation>
+        <translation>Poète :</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="254"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Général</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="255"/>
         <source>Subtitle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sous-titres :</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="256"/>
         <source>Text translator:</source>
-        <translation type="unfinished"></translation>
+        <translation>Traducteur du texte :</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="257"/>
         <source>Dedication:</source>
-        <translation type="unfinished"></translation>
+        <translation>Didicace :</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="258"/>
         <source>Copyright:</source>
-        <translation type="unfinished"></translation>
+        <translation>Copyright :</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="259"/>
         <source>Extra comments:</source>
-        <translation type="unfinished"></translation>
+        <translation>Commentaires additionnels :</translation>
     </message>
     <message>
         <location filename="../ui_documentproperties.h" line="260"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Avancé</translation>
     </message>
 </context>
 <context>
@@ -2683,7 +2683,7 @@ Site officiel : http://www.canorus.org</translation>
     <message>
         <location filename="../ui_functionmarkingproperties.h" line="36"/>
         <source>Function marking properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriété du marquage de fonction</translation>
     </message>
 </context>
 <context>
@@ -2691,7 +2691,7 @@ Site officiel : http://www.canorus.org</translation>
     <message>
         <location filename="../ui_lyricscontextproperties.h" line="36"/>
         <source>Lyrics context properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés du contexte des paroles</translation>
     </message>
 </context>
 <context>
@@ -2699,492 +2699,492 @@ Site officiel : http://www.canorus.org</translation>
     <message>
         <location filename="../ui_mainwin.h" line="530"/>
         <source>Canorus - Score editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Canorus - Editeur de partition</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="532"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Quitter</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="533"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="534"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nouveau</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="535"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="536"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ouvrir...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="537"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="538"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregi&amp;strer</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="539"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="540"/>
         <source>Save &amp;as...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Enregistrer sous...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="541"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fermer</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="542"/>
         <source>&amp;Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importer...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="543"/>
         <source>&amp;Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exporter...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="544"/>
         <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="545"/>
         <source>Print pre&amp;view...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aperçu a&amp;vant impression...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="546"/>
         <source>&amp;Print...</source>
-        <translation type="unfinished"></translation>
+        <translation>Im&amp;primer...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="547"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="548"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Copier</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="549"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="550"/>
         <source>C&amp;ut</source>
-        <translation type="unfinished"></translation>
+        <translation>Co&amp;uper</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="551"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="552"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Co&amp;ller</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="553"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="554"/>
         <source>Select &amp;all</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectionner &amp;tout</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="555"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="556"/>
         <source>Invert Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverser Sélection</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="557"/>
         <source>Fit to width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuster à la largeur</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="558"/>
         <source>Goto bar...</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre de navigation...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="559"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="560"/>
         <source>St&amp;atus bar</source>
-        <translation type="unfinished"></translation>
+        <translation>B&amp;arre de status</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="561"/>
         <source>&amp;Fullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>Plein ec&amp;ran</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="562"/>
         <source>&amp;Time signature...</source>
-        <translation type="unfinished"></translation>
+        <translation>Signa&amp;ture rythmique...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="563"/>
         <source>&amp;Key signature...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ar&amp;mure...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="564"/>
         <source>Barline...</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre de mesure...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="565"/>
         <source>Note &amp;count...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dé&amp;comtpe des notes...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="566"/>
         <source>&amp;Settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètre&amp;s...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="567"/>
         <source>User&apos;s guide...</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuel d&apos;utilisation...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="568"/>
         <source>What&apos;s &amp;this</source>
-        <translation type="unfinished"></translation>
+        <translation>Qu&apos;est-ce que c&apos;es&amp;t ?</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="569"/>
         <source>Tip of the &amp;day</source>
-        <translation type="unfinished"></translation>
+        <translation>Astuce &amp;du jour</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="570"/>
         <source>About &amp;Canorus...</source>
-        <translation type="unfinished"></translation>
+        <translation>A propos de &amp;Canorus...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="571"/>
         <source>About &amp;Qt...</source>
-        <translation type="unfinished"></translation>
+        <translation>A propos de &amp;Qt...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="572"/>
         <source>Split view horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Partager la vue horizontalement</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="573"/>
         <source>Split view vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Partager la vue verticalement</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="574"/>
         <source>Close current view</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermer la vue courante</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="575"/>
         <source>Unsplit All</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusionner Tout</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="576"/>
         <source>New view</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelle vue</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="577"/>
         <source>New sheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelle partition</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="578"/>
         <source>New context...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau contexte...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="579"/>
         <source>Play from selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Jouer depuis la sélection</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="580"/>
         <source>Animated scroll</source>
-        <translation type="unfinished"></translation>
+        <translation>Défilement animé</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="581"/>
         <source>Lock scroll while playback</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas défiler en jouant</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="582"/>
         <source>Fit to &amp;height</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuster à la &amp;hauteur</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="583"/>
         <source>Best &amp;fit</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustement &amp;optimal</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="584"/>
         <source>Fit to selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuster à la sélection</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="585"/>
         <source>New window</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelle fenêtre</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="586"/>
         <source>Custom...</source>
-        <translation type="unfinished"></translation>
+        <translation>Personnalisé...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="587"/>
         <source>Score view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue de la partition</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="588"/>
         <source>LilyPond source</source>
-        <translation type="unfinished"></translation>
+        <translation>Source LilyPond</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="589"/>
         <source>CanorusML source</source>
-        <translation type="unfinished"></translation>
+        <translation>Source CanorusML</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="590"/>
         <source>New voice</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouvelle voix</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="591"/>
         <source>Document properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés du document...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="592"/>
         <source>Print directly</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimer directement</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="593"/>
         <source>Export to PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en PDF</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="594"/>
         <source>New document &amp;wizard...</source>
-        <translation type="unfinished"></translation>
+        <translation>Assistant de nou&amp;veau document...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="595"/>
         <source>Notes and Rests</source>
-        <translation type="unfinished"></translation>
+        <translation>Notes et Silences</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="596"/>
         <source>Function mark...</source>
-        <translation type="unfinished"></translation>
+        <translation>Marqueur de fonction...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="597"/>
         <source>Clef...</source>
-        <translation type="unfinished"></translation>
+        <translation>Clé...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="598"/>
         <source>Select mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner mode</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="599"/>
         <source>Remove Voice</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer Voix</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="600"/>
         <source>Voice Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés de la Voix</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="601"/>
         <source>Accidentals Visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Altérations Visibles</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="602"/>
         <source>Hidden Rest</source>
-        <translation type="unfinished"></translation>
+        <translation>Note Cachée</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="603"/>
         <source>Remove Context</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer Contexte</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="604"/>
         <source>Context Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés du Contexte</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="605"/>
         <source>Remove Sheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer Partition</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="606"/>
         <source>Sheet Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés de la Partition</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="607"/>
         <source>&amp;Transpose...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Transposer...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="608"/>
         <source>Ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation>Ellipse</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="609"/>
         <source>Insert syllable</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer syllabe</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="610"/>
         <source>Edit mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode Edition</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="611"/>
         <source>Insert Mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer Marqueur</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="612"/>
         <source>Insert Articulation Mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer Marqueur d&apos;Articulation</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="613"/>
         <source>recent documents dummy</source>
-        <translation type="unfinished"></translation>
+        <translation>documents récents factices</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="614"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Editer</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="615"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Ou&amp;tils</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="616"/>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="617"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;ide</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="618"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fichier</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="619"/>
         <source>Open &amp;recent</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Récemment ouvert</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="620"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vue</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="621"/>
         <source>Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="622"/>
         <source>Source view</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue de la source</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="623"/>
         <source>&amp;Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Insérer</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="624"/>
         <source>Standard ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre d&apos;Outil Standard</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="625"/>
         <source>File ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre d&apos;Outil Fichier</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="626"/>
         <source>Print ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre d&apos;Outil Impression</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="568"/>
         <source>Ctrl+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="572"/>
         <source>Ctrl+Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Y</translation>
     </message>
 </context>
 <context>
@@ -3192,22 +3192,22 @@ Site officiel : http://www.canorus.org</translation>
     <message>
         <location filename="../ui_propertiesdialog.h" line="132"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui_propertiesdialog.h" line="133"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../ui_propertiesdialog.h" line="135"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../ui_propertiesdialog.h" line="136"/>
         <source>Current element name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de l&apos;élément courant</translation>
     </message>
 </context>
 <context>
@@ -3221,147 +3221,147 @@ Site officiel : http://www.canorus.org</translation>
     <message>
         <location filename="../ui_settingsdialog.h" line="527"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="531"/>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editeur</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="535"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Apparence</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="539"/>
         <source>Load/Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement/Enregistrement</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="543"/>
         <source>Playback</source>
-        <translation type="unfinished"></translation>
+        <translation>Lecture</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="545"/>
         <source>Current page name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de la page actuelle</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="546"/>
         <source>When making hyphen, immediately jump to the next syllable without hitting space bar key.</source>
-        <translation type="unfinished"></translation>
+        <translation>Après un trait d&apos;union, passer immédiatement à la syllabe suivante sans appuyer sur la barre espace.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="547"/>
         <source>Use Finale/Sibelius lyrics behaviour</source>
-        <translation type="unfinished"></translation>
+        <translation>Adopter le comportement de Finale/Sibelius pour les paroles</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="548"/>
         <source>Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>Aperçu :</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="549"/>
         <source>Color which the background is filled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Coleur que revêt l&apos;arriève plan.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="550"/>
         <source>Background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur d&apos;arrière plan</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="552"/>
         <source>Color which the music elements are painted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur que revêtent les éléments musicaux.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="553"/>
         <source>Foreground color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur d&apos;avant plan</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="555"/>
         <source>Color which the selected music elements are painted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Colour que revêtent les éléments musicaux sélectionnés.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="556"/>
         <source>Selected elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Eléments sélectionnés</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="558"/>
         <source>Color which the current context is painted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Colour que revêt le contexte courant.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="559"/>
         <source>Selected context</source>
-        <translation type="unfinished"></translation>
+        <translation>Contexte sélectionné</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="561"/>
         <source>Color which the selection area background is filled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur que revêt l&apos;arrière plan de la zone de sélection.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="562"/>
         <source>Selection area</source>
-        <translation type="unfinished"></translation>
+        <translation>Zone de sélection</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="564"/>
         <source>Color which the invisible elements are painted in current-voice-only mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Colour que revêtent les éléments invibles en mode &quot;voix courante uniquement&quot;.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="565"/>
         <source>Hidden elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Eléments cachés</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="567"/>
         <source>Color which the elements in non-selected voice are painted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur que rêventent les éléments dans les voix désélectionnées.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="568"/>
         <source>Disabled elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Eléments désactivés</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="570"/>
         <source>Default documents location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Emplacement par défaut des documents :</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="571"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="572"/>
         <source>Default file format for saving:</source>
-        <translation type="unfinished"></translation>
+        <translation>Format d&apos;enregistrement par défaut :</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="574"/>
         <source>Automatically make recovery documents every specified number of ellapsed minutes. 0 to disable recovery saving.</source>
-        <translation type="unfinished"></translation>
+        <translation>Réaliser des documents de récupération toutes les X minutes. La valeur 0 désactive cette fonction.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="575"/>
         <source>MIDI IN devices:</source>
-        <translation type="unfinished"></translation>
+        <translation>Périphériques MIDI en entrée :</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="576"/>
         <source>MIDI OUT devices:</source>
-        <translation type="unfinished"></translation>
+        <translation>Périphériques MIDI en sortie :</translation>
     </message>
 </context>
 <context>
@@ -3369,7 +3369,7 @@ Site officiel : http://www.canorus.org</translation>
     <message>
         <location filename="../ui_sheetproperties.h" line="36"/>
         <source>Sheet properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés de la partition</translation>
     </message>
 </context>
 <context>
@@ -3377,12 +3377,12 @@ Site officiel : http://www.canorus.org</translation>
     <message>
         <location filename="../ui_staffproperties.h" line="66"/>
         <source>Staff properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés de la portée</translation>
     </message>
     <message>
         <location filename="../ui_staffproperties.h" line="67"/>
         <source>Number of lines:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de lignes :</translation>
     </message>
 </context>
 <context>
@@ -3390,12 +3390,12 @@ Site officiel : http://www.canorus.org</translation>
     <message>
         <location filename="../ui_voiceproperties.h" line="66"/>
         <source>Voice properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés de la voix</translation>
     </message>
     <message>
         <location filename="../ui_voiceproperties.h" line="67"/>
         <source>Midi channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal MIDI :</translation>
     </message>
 </context>
 </TS>
