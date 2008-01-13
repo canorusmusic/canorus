@@ -390,7 +390,7 @@ Linje %1:%2.</translation>
     <message>
         <location filename="../ui/mainwin.cpp" line="268"/>
         <source>Stopped</source>
-        <translation>Stopped</translation>
+        <translation>Stoppet</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="269"/>
@@ -898,7 +898,7 @@ Linje %1:%2.</translation>
     <message>
         <location filename="../ui/mainwin.cpp" line="466"/>
         <source>Select Dynamic</source>
-        <translation>Velg dynamikksymbol</translation>
+        <translation>Velg dynamisk symbol</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="468"/>
@@ -1007,7 +1007,7 @@ Linje %1:%2.</translation>
     <message>
         <location filename="../ui/mainwin.cpp" line="505"/>
         <source>Select Beat</source>
-        <translation>Velg slag</translation>
+        <translation>Velg taktslag</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="510"/>
@@ -1383,7 +1383,7 @@ Linje %1:%2.</translation>
     <message>
         <location filename="../ui/mainwin.cpp" line="1457"/>
         <source>Staff%1</source>
-        <translation>System%1</translation>
+        <translation>Notesystem%1</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="1465"/>
@@ -1429,13 +1429,13 @@ Linje %1:%2.</translation>
         <location filename="../ui/mainwin.cpp" line="1804"/>
         <source>add sharp</source>
         <comment>undo</comment>
-        <translation>legg til kryss for</translation>
+        <translation>legg til kryss</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="1825"/>
         <source>add flat</source>
         <comment>undo</comment>
-        <translation>legg til b for</translation>
+        <translation>legg til b</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="1843"/>
@@ -1809,7 +1809,7 @@ Hjemmeside: http://www.canorus.org</translation>
     <message>
         <location filename="../core/fileformats.cpp" line="27"/>
         <source>Midi file (*.mid *.midi)</source>
-        <translation>Midi-fil (*.mid *.midi)</translation>
+        <translation>MIDI-fil (*.mid *.midi)</translation>
     </message>
     <message>
         <location filename="../import/canorusmlimport.cpp" line="148"/>
@@ -1873,7 +1873,7 @@ Hjemmeside: http://www.canorus.org</translation>
         <location filename="../interface/mididevice.cpp" line="25"/>
         <source>Celesta</source>
         <comment>instrument</comment>
-        <translation>klaviaturklokkespill</translation>
+        <translation>Klaviaturklokkespill</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="26"/>
@@ -2137,13 +2137,13 @@ Hjemmeside: http://www.canorus.org</translation>
         <location filename="../interface/mididevice.cpp" line="69"/>
         <source>Choir Aahs</source>
         <comment>instrument</comment>
-        <translation>Kor Aahs</translation>
+        <translation>Kor Aah</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="70"/>
         <source>Voice Oohs</source>
         <comment>instrument</comment>
-        <translation>Vokal Oohs</translation>
+        <translation>Vokal Ooh</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="71"/>
@@ -3207,7 +3207,7 @@ Hjemmeside: http://www.canorus.org</translation>
     <message>
         <location filename="../ui_propertiesdialog.h" line="136"/>
         <source>Current element name</source>
-        <translation>Nåværende elementsnavn</translation>
+        <translation>Nåværende elementnavn</translation>
     </message>
 </context>
 <context>
@@ -3240,7 +3240,7 @@ Hjemmeside: http://www.canorus.org</translation>
     <message>
         <location filename="../ui_settingsdialog.h" line="545"/>
         <source>Current page name</source>
-        <translation>Nåværende sidetall</translation>
+        <translation>Nåværende sidenavn</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="546"/>
@@ -3290,7 +3290,7 @@ Hjemmeside: http://www.canorus.org</translation>
     <message>
         <location filename="../ui_settingsdialog.h" line="558"/>
         <source>Color which the current context is painted.</source>
-        <translation>Farge for system med fokus.</translation>
+        <translation>Farge for nåværende system.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="559"/>
@@ -3395,7 +3395,7 @@ Hjemmeside: http://www.canorus.org</translation>
     <message>
         <location filename="../ui_voiceproperties.h" line="67"/>
         <source>Midi channel:</source>
-        <translation>Midi-kanal:</translation>
+        <translation>MIDI-kanal:</translation>
     </message>
 </context>
 </TS>
