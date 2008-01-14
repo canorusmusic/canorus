@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS><TS version="1.1" language="de_DE">
 <context>
     <name>CAAutoRecovery</name>
     <message>
@@ -49,17 +49,17 @@ Die Dokumente %1 wurden wieder hergestellt.</translation>
     <message>
         <location filename="../export/export.cpp" line="135"/>
         <source>Exporting...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">exportierend...</translation>
     </message>
     <message>
         <location filename="../export/export.cpp" line="137"/>
         <source>Ready.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erledigt.</translation>
     </message>
     <message>
         <location filename="../export/export.cpp" line="139"/>
         <source>Data stream not defined.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Datenpfad nicht definiert.</translation>
     </message>
 </context>
 <context>
@@ -67,17 +67,17 @@ Die Dokumente %1 wurden wieder hergestellt.</translation>
     <message>
         <location filename="../import/import.cpp" line="182"/>
         <source>Importing...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Beim Importieren...</translation>
     </message>
     <message>
         <location filename="../import/import.cpp" line="184"/>
         <source>Ready.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Beendet.</translation>
     </message>
     <message>
         <location filename="../import/import.cpp" line="186"/>
         <source>File not found or data stream not defined.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">File nicht gefunden oder Datenstrom nicht definiert.</translation>
     </message>
 </context>
 <context>
@@ -86,7 +86,7 @@ Die Dokumente %1 wurden wieder hergestellt.</translation>
         <location filename="../export/lilypondexport.cpp" line="539"/>
         <source>arr.</source>
         <comment>arrangement</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Arr.</translation>
     </message>
 </context>
 <context>
@@ -94,18 +94,19 @@ Die Dokumente %1 wurden wieder hergestellt.</translation>
     <message>
         <location filename="../import/lilypondimport.cpp" line="671"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bereit</translation>
     </message>
     <message>
         <location filename="../import/lilypondimport.cpp" line="673"/>
         <source>Importing...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Beim Importieren</translation>
     </message>
     <message>
         <location filename="../import/lilypondimport.cpp" line="675"/>
         <source>Error while importing!
 Line %1:%2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler beim Import!
+Zeile %1:%2.</translation>
     </message>
 </context>
 <context>
@@ -943,12 +944,12 @@ Line %1:%2.</source>
         <location filename="../ui/mainwin.cpp" line="2715"/>
         <source>change playable length</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">variiere Dauer</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="239"/>
         <source>Select Mark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wähle Markierung</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="241"/>
@@ -968,7 +969,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="244"/>
         <source>Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dynamik</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="245"/>
@@ -983,47 +984,47 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="248"/>
         <source>Arbitrary Text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Text</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="251"/>
         <source>Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lesezeichen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="252"/>
         <source>Rehersal Mark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Probenzeichen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="247"/>
         <source>Fermata</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fermate</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="249"/>
         <source>Repeat Mark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wiederholungszeichen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="501"/>
         <source>Instrument Change</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Instrumentenwechsel</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="253"/>
         <source>Fingering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fingersatz</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="255"/>
         <source>Articulation Mark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Artikulierungszeichen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="257"/>
         <source>Accent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Akzent</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="258"/>
@@ -1058,12 +1059,12 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="264"/>
         <source>UpBow</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aufstrich</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="265"/>
         <source>DownBow</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Abstrich</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="266"/>
@@ -1073,32 +1074,32 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="267"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Offen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="268"/>
         <source>Stopped</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">abgebremst</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="269"/>
         <source>Turn</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Doppelschlag</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="270"/>
         <source>ReverseTurn</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">umgekehrter Doppelschalg</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="271"/>
         <source>Trill</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Triller</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="272"/>
         <source>Prall</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Praller</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="273"/>
@@ -1108,12 +1109,12 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="274"/>
         <source>Prall-Prall</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Doppelpraller</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="275"/>
         <source>Prall-Mordent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Prallmordent</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="276"/>
@@ -1153,47 +1154,47 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="586"/>
         <source>Insert context</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kontext einfügen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="592"/>
         <source>Insert slur</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bogen einfügen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="596"/>
         <source>Insert clef</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schlüssel einfügen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="601"/>
         <source>Insert time signature</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Taktmaß einfügen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="605"/>
         <source>Insert barline</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Taktstrich einfügen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="609"/>
         <source>Insert mark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Markierung einfügen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="613"/>
         <source>Insert articulation mark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Artikulierungszeichen einfügen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="465"/>
         <source>Dynamic marks ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Auswahl Dynamikzeichen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="466"/>
         <source>Select Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dynamikzeichen auswählen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="468"/>
@@ -1282,22 +1283,22 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="490"/>
         <source>Playback Volume</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wiedergabelautstärke</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="496"/>
         <source>Dynamic mark text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Text Dynamikzeichen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="698"/>
         <source>Predefined dynamic mark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vordefiniertes Dynamikzeichen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="498"/>
         <source>Instrument ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Instrumentenauswahl</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="322"/>
@@ -1309,83 +1310,83 @@ Line %1:%2.</source>
         <location filename="../ui/mainwin.cpp" line="323"/>
         <source>Whole</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ganze</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="508"/>
         <source>Half</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Halbe</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="507"/>
         <source>Quarter</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Viertel</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="509"/>
         <source>Eighth</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Achtel</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="327"/>
         <source>Sixteenth</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sechzehntel</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="328"/>
         <source>ThirtySecond</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">32-stel</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="329"/>
         <source>SixtyFourth</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">64-stel</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="504"/>
         <source>Tempo ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tempauswahl</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="510"/>
         <source>Dotted Quarter</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Punktierte Viertel</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="511"/>
         <source>Dotted Half</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Punktierte Halbe</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="512"/>
         <source>Dotted Eighth</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Punktierte Achtel</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="517"/>
         <source>Beats per minute</source>
         <comment>tempo</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schläge pro Minute</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="519"/>
         <source>Fermata ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fermatenauswahl</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="522"/>
         <source>Short</source>
         <comment>fermata</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kurz</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="523"/>
@@ -1397,13 +1398,13 @@ Line %1:%2.</source>
         <location filename="../ui/mainwin.cpp" line="524"/>
         <source>Long</source>
         <comment>fermata</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lang</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="525"/>
         <source>Very Long</source>
         <comment>fermata</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sehr lang</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="712"/>
@@ -1415,63 +1416,64 @@ Line %1:%2.</source>
         <location filename="../ui/mainwin.cpp" line="720"/>
         <source>Fermata Type</source>
         <comment>fermata</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fermatentyp</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="4231"/>
         <source>change fermata type</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fermatentyp ändern</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="4332"/>
         <source>change tempo beat</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schlagzahl ändern</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="4356"/>
         <source>change tempo bpm</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tempo bpm ändern</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="505"/>
         <source>Select Beat</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Taktmaß auswählen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="520"/>
         <source>Fermata Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fermatentyp</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="2397"/>
         <source>Error while opening the file!
 Error %1: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler beim Öffnen der Datei!
+Error %1: </translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="527"/>
         <source>Repeat Mark ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Auswahl Wiederholungszeichen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="528"/>
         <source>Repeat Mark Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wiederholungszeichentyp</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="530"/>
         <source>Segno</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="531"/>
         <source>Coda</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="532"/>
@@ -1483,13 +1485,13 @@ Error %1: </source>
         <location filename="../ui/mainwin.cpp" line="533"/>
         <source>Dal Segno</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="534"/>
         <source>Dal Coda</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="535"/>
@@ -1519,118 +1521,118 @@ Error %1: </source>
         <location filename="../ui/mainwin.cpp" line="726"/>
         <source>Repeat Mark Type</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation>Wiederholungszeichen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="4307"/>
         <source>change repeat mark</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation>Wiederholungszeichen ändern</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="2836"/>
         <source>text edit</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation>Text editieren</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="540"/>
         <source>Fingering ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>Fingersatzauswahl</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="541"/>
         <source>Finger</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="543"/>
         <source>First</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>Erster</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="544"/>
         <source>Second</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>Zweiter</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="545"/>
         <source>Third</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>Dritter</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="546"/>
         <source>Fourth</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>Vierter</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="547"/>
         <source>Fifth</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fünfter</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="548"/>
         <source>Thumb</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>Daumen</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="549"/>
         <source>Left Heel</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>Linke Ferse</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="550"/>
         <source>Right Heel</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>Rechte Ferse</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="551"/>
         <source>Left Toe</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>Zehen links</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="552"/>
         <source>Right Toe</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>Zehen rechts</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="553"/>
         <source>Original</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="555"/>
         <source>Is the fingering original by a composer (usually written italic)</source>
         <comment>fingering original checkbox</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ist der originale Fingersatz eines Komponisten (üblicherweise in Schrägschrift)</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="732"/>
         <source>Finger</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="4254"/>
         <source>change finger</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fingersatz ändern</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="4275"/>
         <source>change finger original property</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Originalen Fingersatz ändern</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="3236"/>
@@ -1644,16 +1646,15 @@ This program is licensed under the GNU General Public License (GPL).
 See the file LICENSE.GPL for details.
 
 Homepage: http://www.canorus.org</source>
-        <translation type="unfinished">Canorus - Der Noteneditor der nächsten Generation
+        <translation>Canorus - Der Noteneditor der nächsten Generation
 
 Version %1
-(C) 2006, 2007 Canorus Entwicklerteam. Alle Rechte vorbehalten.
+(C) 2006-2008 Canorus Entwicklerteam. Alle Rechte vorbehalten.
 Siehe Datei AUTHORS mit den Namen der Canorus Entwickler.
 
 Dieses Programm steht unter der GNU General Public License (GPL). Der genaue Wortlaut der GPL ist der Datei LICENSE.GPL zu entnehmen.
 
-Homepage: http://www.canorus.org {1
-?} {2006-2008 ?}</translation>
+Homepage: http://www.canorus.org</translation>
     </message>
 </context>
 <context>
@@ -2595,17 +2596,17 @@ Homepage: http://www.canorus.org {1
     <message>
         <location filename="../core/fileformats.cpp" line="27"/>
         <source>Midi file (*.mid *.midi)</source>
-        <translation type="unfinished"></translation>
+        <translation>Midi-File (*.mid *.midi)</translation>
     </message>
     <message>
         <location filename="../core/fileformats.cpp" line="19"/>
         <source>Canorus archive (*.can)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Canorus-Archiv (*.can)</translation>
     </message>
     <message>
         <location filename="../canorus.cpp" line="131"/>
         <source>All supported formats (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alle unterstützten Formate (%1)</translation>
     </message>
 </context>
 <context>
@@ -2707,7 +2708,7 @@ Homepage: http://www.canorus.org {1
     <message>
         <location filename="../ui_mainwin.h" line="533"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="534"/>
@@ -3162,27 +3163,27 @@ Homepage: http://www.canorus.org {1
     <message>
         <location filename="../ui_mainwin.h" line="596"/>
         <source>Function mark...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Funktionszeichen</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="611"/>
         <source>Insert Mark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeichen einfügen</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="612"/>
         <source>Insert Articulation Mark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Artikulierungszeichen einfügen</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="613"/>
         <source>recent documents dummy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Letzte Documentenvorlage</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="619"/>
         <source>Open &amp;recent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">zuletzt benutzte Dokumente</translation>
     </message>
 </context>
 <context>
