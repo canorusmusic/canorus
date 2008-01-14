@@ -5,7 +5,7 @@
     <message>
         <location filename="../core/autorecovery.cpp" line="104"/>
         <source>- Document %1 last modified on %2.</source>
-        <translation>- 文件 %1 最後修改於 %2。</translation>
+        <translation>- 文件 %1 上次修改時間是 %2。</translation>
     </message>
     <message>
         <location filename="../core/autorecovery.cpp" line="115"/>
@@ -78,7 +78,7 @@ The following documents were successfully recovered:
     <message>
         <location filename="../import/import.cpp" line="186"/>
         <source>File not found or data stream not defined.</source>
-        <translation>找不到檔案，或是發現沒有定義的資料串。</translation>
+        <translation>找不到檔案，或是發現未定義的資料串。</translation>
     </message>
 </context>
 <context>
@@ -87,9 +87,7 @@ The following documents were successfully recovered:
         <location filename="../export/lilypondexport.cpp" line="539"/>
         <source>arr.</source>
         <comment>arrangement</comment>
-        <translation>調.(arr.)
-
-調整</translation>
+        <translation>調.(arr.)</translation>
     </message>
 </context>
 <context>
@@ -122,7 +120,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="199"/>
         <source>Select Context</source>
-        <translation>上下文選取</translation>
+        <translation>內容選取</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="201"/>
@@ -132,12 +130,12 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="202"/>
         <source>New Lyrics context</source>
-        <translation>新增歌詞上下文</translation>
+        <translation>新增歌詞</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="203"/>
         <source>New Function Marking context</source>
-        <translation>新增功能標示上下文</translation>
+        <translation>新增功能標示內容</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="204"/>
@@ -152,7 +150,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="207"/>
         <source>Slur</source>
-        <translation>連奏</translation>
+        <translation>連奏型態</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="208"/>
@@ -497,7 +495,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="305"/>
         <source>Current Voice number</source>
-        <translation>目前聲音數</translation>
+        <translation>目前聲音編號</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="308"/>
@@ -517,7 +515,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="315"/>
         <source>Voice Stems Neutral</source>
-        <translation>聲音轉為中姓</translation>
+        <translation>聲音轉中</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="316"/>
@@ -537,7 +535,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="320"/>
         <source>Select Length</source>
-        <translation>所選長度</translation>
+        <translation>選取長度</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="322"/>
@@ -595,7 +593,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="332"/>
         <source>Note Stem Neutral</source>
-        <translation>音符轉為中姓</translation>
+        <translation>音符轉中</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="333"/>
@@ -615,112 +613,112 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="337"/>
         <source>Key Signature ToolBar</source>
-        <translation>調號工具列</translation>
+        <translation>Key工具列</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="434"/>
         <source>C-flat major</source>
-        <translation>降C大調</translation>
+        <translation>降 C大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="435"/>
         <source>a-flat minor</source>
-        <translation>降a小調</translation>
+        <translation>降 a小調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="436"/>
         <source>G-flat major</source>
-        <translation>降G大調</translation>
+        <translation>降 G大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="437"/>
         <source>e-flat minor</source>
-        <translation>降e小調</translation>
+        <translation>降 e小調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="438"/>
         <source>D-flat major</source>
-        <translation>降D大調</translation>
+        <translation>降 D大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="439"/>
         <source>b-flat minor</source>
-        <translation>降b小調</translation>
+        <translation>降 b小調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="440"/>
         <source>A-flat major</source>
-        <translation>降A大調</translation>
+        <translation>降 A大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="441"/>
         <source>f minor</source>
-        <translation>f小調</translation>
+        <translation>f 小調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="442"/>
         <source>E-flat major</source>
-        <translation>降E大調</translation>
+        <translation>降 E大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="443"/>
         <source>c minor</source>
-        <translation>c小調</translation>
+        <translation>c 小調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="444"/>
         <source>B-flat major</source>
-        <translation>降B大調</translation>
+        <translation>降 B大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="445"/>
         <source>g minor</source>
-        <translation>g小調</translation>
+        <translation>g 小調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="446"/>
         <source>F major</source>
-        <translation>F大調</translation>
+        <translation>F 大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="447"/>
         <source>d minor</source>
-        <translation>d小調</translation>
+        <translation>d 小調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="448"/>
         <source>C major</source>
-        <translation>C大調</translation>
+        <translation>C 大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="449"/>
         <source>a minor</source>
-        <translation>a小調</translation>
+        <translation>a 小調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="450"/>
         <source>G major</source>
-        <translation>G大調</translation>
+        <translation>G 大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="451"/>
         <source>e minor</source>
-        <translation>e小調</translation>
+        <translation>e 小調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="452"/>
         <source>D major</source>
-        <translation>D大調</translation>
+        <translation>D 大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="453"/>
         <source>b minor</source>
-        <translation>b小調</translation>
+        <translation>b 小調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="454"/>
         <source>A major</source>
-        <translation>A大調</translation>
+        <translation>A 大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="455"/>
@@ -730,7 +728,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="456"/>
         <source>E major</source>
-        <translation>E大調</translation>
+        <translation>E 大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="457"/>
@@ -740,7 +738,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="458"/>
         <source>B major</source>
-        <translation>B大調</translation>
+        <translation>B 大調</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="459"/>
@@ -770,12 +768,12 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="371"/>
         <source>Time Signature ToolBar</source>
-        <translation>拍號工具列</translation>
+        <translation>拍子工具列</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="376"/>
         <source>Number of beats</source>
-        <translation>節拍數</translation>
+        <translation>拍子數</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="383"/>
@@ -795,7 +793,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="394"/>
         <source>Function marking ToolBar</source>
-        <translation>功能標示工具列</translation>
+        <translation>功能標記工具列</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="395"/>
@@ -1555,7 +1553,7 @@ Homepage: http://www.canorus.org</source>
         <translation>Canorus - 新一代的樂譜製作軟體
 
 版本 %1
-(C) 2006-2008 Canorus 開發團隊，版權所有。
+(C) 2006-2008 Canorus 開發團隊. 版權所有.
 開發團隊成員，詳列於檔案 AUTHORS 中。
 
 本程式採用 GNU General Public License (GPL) 授權。
@@ -1657,7 +1655,7 @@ Homepage: http://www.canorus.org</source>
         <location filename="../ui/mainwin.cpp" line="4356"/>
         <source>change tempo bpm</source>
         <comment>undo</comment>
-        <translation>更改節奏bpmchange tempo bpm</translation>
+        <translation>更改節奏 bpm</translation>
     </message>
 </context>
 <context>
@@ -1671,9 +1669,7 @@ Homepage: http://www.canorus.org</source>
         <location filename="../ui/propertiesdialog.cpp" line="324"/>
         <source>apply properties</source>
         <comment>undo</comment>
-        <translation>套用屬性
-
-還原</translation>
+        <translation>套用屬性</translation>
     </message>
 </context>
 <context>
@@ -1829,43 +1825,43 @@ Homepage: http://www.canorus.org</source>
         <location filename="../interface/mididevice.cpp" line="17"/>
         <source>Acoustic Grand Piano</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>平臺鋼琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="18"/>
         <source>Bright Acoustic Piano</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>亮音鋼琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="19"/>
         <source>Electric Grand Piano</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>平臺電鋼琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="20"/>
         <source>Honky-tonk Piano</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>叮噹琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="21"/>
         <source>Electric Piano 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>電鋼琴一</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="22"/>
         <source>Electric Piano 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>電鋼琴二</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="23"/>
         <source>Harpsichord</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>大鍵琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="24"/>
@@ -1877,193 +1873,193 @@ Homepage: http://www.canorus.org</source>
         <location filename="../interface/mididevice.cpp" line="25"/>
         <source>Celesta</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>鋼片琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="26"/>
         <source>Glockenspiel</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>鐵琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="27"/>
         <source>Music Box</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>音樂盒</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="28"/>
         <source>Vibraphone</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>抖音琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="29"/>
         <source>Marimba</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>立奏木琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="30"/>
         <source>Xylophone</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>柔音木琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="31"/>
         <source>Tubular Bells</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>管鐘</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="32"/>
         <source>Dulcimer</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>揚琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="33"/>
         <source>Drawbar Organ</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>電風琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="34"/>
         <source>Percussive Organ</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>敲擊風琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="35"/>
         <source>Rock Organ</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>搖滾風琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="36"/>
         <source>Church Organ</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>教堂管風琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="37"/>
         <source>Reed Organ</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>簧管風琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="38"/>
         <source>Accordion</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>手風琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="39"/>
         <source>Harmonica</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>口琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="40"/>
         <source>Tango Accordion</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>探戈手風琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="41"/>
         <source>Acoustic Guitar (nylon)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>古典吉他</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="42"/>
         <source>Acoustic Guitar (steel)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>民謠吉他</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="43"/>
         <source>Electric Guitar (jazz)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>爵士電吉他</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="44"/>
         <source>Electric Guitar (clean)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>電吉他</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="45"/>
         <source>Electric Guitar (muted)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>悶音電吉他</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="46"/>
         <source>Overdriven Guitar</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>濁音電吉他</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="47"/>
         <source>Distortion Guitar</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>變音電吉他</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="48"/>
         <source>Guitar harmonics</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合音吉他</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="49"/>
         <source>Acoustic Bass</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>原音貝士原音貝士</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="50"/>
         <source>Electric Bass (finger)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>手彈貝士</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="51"/>
         <source>Electric Bass (pick)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>匹克貝士</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="52"/>
         <source>Fretless Bass</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>無格貝士無格貝士</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="53"/>
         <source>Slap Bass 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>重貝士一</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="54"/>
         <source>Slap Bass 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>重貝士二</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="55"/>
         <source>Synth Bass 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成貝士一</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="56"/>
         <source>Synth Bass 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成貝士二</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="57"/>
@@ -2087,531 +2083,531 @@ Homepage: http://www.canorus.org</source>
         <location filename="../interface/mididevice.cpp" line="60"/>
         <source>Contrabass</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>低音提琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="61"/>
         <source>Tremolo Strings</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>節奏工具列</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="62"/>
         <source>Pizzicato Strings</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>彈撥弦樂</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="63"/>
         <source>Orchestral Harp</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>豎琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="64"/>
         <source>Timpani</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>定音鼓</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="65"/>
         <source>String Ensemble 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合奏弦樂一</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="66"/>
         <source>String Ensemble 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合奏弦樂二</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="67"/>
         <source>SynthStrings 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成弦樂一</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="68"/>
         <source>SynthStrings 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成弦樂二</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="69"/>
         <source>Choir Aahs</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>唱詩樂(啊)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="70"/>
         <source>Voice Oohs</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>唱詩樂(喔)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="71"/>
         <source>Synth Voice</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成人聲</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="72"/>
         <source>Orchestra Hit</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>交響打擊樂</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="73"/>
         <source>Trumpet</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>小號</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="74"/>
         <source>Trombone</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>伸縮小號</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="75"/>
         <source>Tuba</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>低音小號</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="76"/>
         <source>Muted Trumpet</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>悶音小號</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="77"/>
         <source>French Horn</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>法國號</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="78"/>
         <source>Brass Section</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>銅管樂</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="79"/>
         <source>SynthBrass 1</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成銅管一</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="80"/>
         <source>SynthBrass 2</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成銅管二</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="81"/>
         <source>Soprano Sax</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>高音薩克管</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="82"/>
         <source>Alto Sax</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>中音薩克管</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="83"/>
         <source>Tenor Sax</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>次中音薩克管</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="84"/>
         <source>Baritone Sax</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>上低音薩克管</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="85"/>
         <source>Oboe</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>雙簧管</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="86"/>
         <source>English Horn</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>英國管</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="87"/>
         <source>Bassoon</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>低音管</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="88"/>
         <source>Clarinet</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>單簧管</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="89"/>
         <source>Piccolo</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>短笛</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="90"/>
         <source>Flute</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>長笛</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="91"/>
         <source>Recorder</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>直笛</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="92"/>
         <source>Pan Flute</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>排笛</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="93"/>
         <source>Blown Bottle</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>吹瓶聲</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="94"/>
         <source>Shakuhachi</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>尺八簫</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="95"/>
         <source>Whistle</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>笛哨聲</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="96"/>
         <source>Ocarina</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>陶笛</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="97"/>
         <source>Lead 1 (square)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音一(方波)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="98"/>
         <source>Lead 2 (sawtooth)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音二(鋸齒波)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="99"/>
         <source>Lead 3 (calliope)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音三(詩歌)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="100"/>
         <source>Lead 4 (chiff)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音四(合成吹管)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="101"/>
         <source>Lead 5 (charang)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音五(合成電吉他)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="102"/>
         <source>Lead 6 (voice)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音六(人聲鍵盤)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="103"/>
         <source>Lead 7 (fifths)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音七(五度音)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="104"/>
         <source>Lead 8 (bass + lead)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音八(貝士吉他合奏)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="105"/>
         <source>Pad 1 (new age)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音一(新歲月)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="106"/>
         <source>Pad 2 (warm)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音二(溫暖)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="107"/>
         <source>Pad 3 (polysynth)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音三(多重合音)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="108"/>
         <source>Pad 4 (choir)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音四(人聲合唱)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="109"/>
         <source>Pad 5 (bowed)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音五(玻璃)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="110"/>
         <source>Pad 6 (metallic)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音六(金屬)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="111"/>
         <source>Pad 7 (halo)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音七(光華)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="112"/>
         <source>Pad 8 (sweep)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音八(掃掠)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="113"/>
         <source>FX 1 (rain)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音一(雨聲)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="114"/>
         <source>FX 2 (soundtrack)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音二(電影音效) </translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="115"/>
         <source>FX 3 (crystal)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音三(水晶)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="116"/>
         <source>FX 4 (atmosphere)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音四(大氣)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="117"/>
         <source>FX 5 (brightness)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音五(明亮)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="118"/>
         <source>FX 6 (goblins)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音六(魅影)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="119"/>
         <source>FX 7 (echoes)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成音七(迴音)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="120"/>
         <source>FX 8 (sci-fi)</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>每日提示(&amp;d)</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="121"/>
         <source>Sitar</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>西塔琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="122"/>
         <source>Banjo</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>五絃琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="123"/>
         <source>Shamisen</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>三味線</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="124"/>
         <source>Koto</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>十三絃琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="125"/>
         <source>Kalimba</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>卡利瑪鐘琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="126"/>
         <source>Bag pipe</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>蘇格蘭風笛</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="127"/>
         <source>Fiddle</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>古提琴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="128"/>
         <source>Shanai</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>鎖吶</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="129"/>
         <source>Tinkle Bell</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>叮噹鈴</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="130"/>
         <source>Agogo</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>阿哥哥鼓</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="131"/>
         <source>Steel Drums</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>鋼鼓</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="132"/>
         <source>Woodblock</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>木塊</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="133"/>
         <source>Taiko Drum</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>日本太鼓</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="134"/>
         <source>Melodic Tom</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>古式高音鼓</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="135"/>
         <source>Synth Drum</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>合成鼓</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="136"/>
         <source>Reverse Cymbal</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>鈸</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="137"/>
         <source>Guitar Fret Noise</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>磨弦聲</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="138"/>
         <source>Breath Noise</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>呼吸聲</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="139"/>
         <source>Seashore</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>海浪聲</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="140"/>
         <source>Bird Tweet</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>鳥叫聲</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="141"/>
         <source>Telephone Ring</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>電話鈴聲</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="142"/>
         <source>Helicopter</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>直昇機聲</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="143"/>
         <source>Applause</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>拍手聲</translation>
     </message>
     <message>
         <location filename="../interface/mididevice.cpp" line="143"/>
         <source>Gunshot</source>
         <comment>instrument</comment>
-        <translation type="unfinished"></translation>
+        <translation>槍聲</translation>
     </message>
     <message>
         <location filename="../import/lilypondimport.cpp" line="62"/>
         <source>&lt;i&gt;Fatal error, line %1, char %2:&lt;/i&gt;&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;i&gt;嚴重錯誤，第 %1 行，第 %2 字：&lt;/i&gt;&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../import/canorusmlimport.cpp" line="133"/>
         <source>Sheet%1</source>
-        <translation type="unfinished">曲稿 %1</translation>
+        <translation>曲稿 %1</translation>
     </message>
     <message>
         <location filename="../import/canorusmlimport.cpp" line="162"/>
         <source>Lyrics Context %1</source>
-        <translation type="unfinished"></translation>
+        <translation>歌詞內容%1</translation>
     </message>
     <message>
         <location filename="../import/canorusmlimport.cpp" line="180"/>
         <source>Function Marking Context %1</source>
-        <translation type="unfinished"></translation>
+        <translation>功能標記內容%1</translation>
     </message>
 </context>
 <context>
@@ -3264,7 +3260,7 @@ Homepage: http://www.canorus.org</source>
     <message>
         <location filename="../ui_settingsdialog.h" line="549"/>
         <source>Color which the background is filled.</source>
-        <translation>背景的顏色。</translation>
+        <translation>整個工作區域的背景顏色。</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="550"/>
@@ -3274,7 +3270,7 @@ Homepage: http://www.canorus.org</source>
     <message>
         <location filename="../ui_settingsdialog.h" line="552"/>
         <source>Color which the music elements are painted.</source>
-        <translation>音樂元素的顏色。</translation>
+        <translation>各種音樂元素的顏色。</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="553"/>
@@ -3284,7 +3280,7 @@ Homepage: http://www.canorus.org</source>
     <message>
         <location filename="../ui_settingsdialog.h" line="555"/>
         <source>Color which the selected music elements are painted.</source>
-        <translation>選取之音樂元素的顏色。</translation>
+        <translation>所選取之音樂元素的顏色。</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="556"/>
@@ -3294,22 +3290,22 @@ Homepage: http://www.canorus.org</source>
     <message>
         <location filename="../ui_settingsdialog.h" line="558"/>
         <source>Color which the current context is painted.</source>
-        <translation>目前內容的的顏色。</translation>
+        <translation>所選區域內容的顏色。</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="559"/>
         <source>Selected context</source>
-        <translation>選取的內容。</translation>
+        <translation>選取的內容</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="561"/>
         <source>Color which the selection area background is filled.</source>
-        <translation>選取之背景的顏色。</translation>
+        <translation>所選取區域的背景顏色。</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="562"/>
         <source>Selection area</source>
-        <translation>選取之區域。</translation>
+        <translation>選取的區域</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="564"/>
@@ -3329,7 +3325,7 @@ Homepage: http://www.canorus.org</source>
     <message>
         <location filename="../ui_settingsdialog.h" line="568"/>
         <source>Disabled elements</source>
-        <translation>非選取的元素。</translation>
+        <translation>非選取的元素</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="570"/>
@@ -3350,9 +3346,7 @@ Homepage: http://www.canorus.org</source>
         <location filename="../ui_settingsdialog.h" line="573"/>
         <source>Recovery saving interval in minutes:</source>
         <comment>Auto save every %n minutes.</comment>
-        <translation>回復儲存間隔分鐘數: 
-
-每隔 %n 分鐘自動儲存。</translation>
+        <translation>回復儲存間隔分鐘數：</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="574"/>
