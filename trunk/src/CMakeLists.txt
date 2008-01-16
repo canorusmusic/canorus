@@ -136,6 +136,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/fermata.cpp
 	core/repeatmark.cpp
 	core/tempo.cpp
+	core/ritardando.cpp
 	core/text.cpp
 	core/bookmark.cpp
 	core/fingering.cpp
@@ -261,6 +262,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/fermata.cpp
 	core/repeatmark.cpp
 	core/tempo.cpp
+	core/ritardando.cpp
 	core/text.cpp
 	core/bookmark.cpp
 	core/fingering.cpp

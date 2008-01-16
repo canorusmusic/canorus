@@ -23,6 +23,7 @@
 #include "core/instrumentchange.h"
 #include "core/fermata.h"
 #include "core/tempo.h"
+#include "core/ritardando.h"
 #include "core/crescendo.h"
 #include "core/repeatmark.h"
 #include "canorus.h"
@@ -96,8 +97,8 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		break;
 	}
 	case CAMark::Fermata: {
-		setWidth( 25 );
-		setHeight( 20 );
+		setWidth( 20 );
+		setHeight( 15 );
 		break;
 	}
 	case CAMark::InstrumentChange: {
@@ -125,6 +126,12 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		_tempoDNote = new CADrawableNote( _tempoNote, dContext, x, y );
 		break;
 	}
+	case CAMark::Ritardando: {
+		setWidth( mark->timeLength()/10 );
+		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+		setHScalable(true);
+		break;
+	}
 	case CAMark::Fingering: {
 		QFont font("Emmentaler");
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
@@ -141,7 +148,7 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		else if ( static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::DalCoda ||
 				  static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::DalSegno ||
 				  static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::DalVarCoda )
-			setWidth( 50 );
+			setWidth( 40 );
 		else
 			setWidth( 25 );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
@@ -225,14 +232,20 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 	}
 	case CAMark::Fermata: {
 		QFont font("Emmentaler");
-		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*1.4*s.z) );
 		p->setFont(font);
 		
+		int inverted=0;
+		if ( mark()->associatedElement()->musElementType()==CAMusElement::Note && static_cast<CANote*>(mark()->associatedElement())->actualSlurDirection()==CASlur::SlurDown )
+			inverted=1;
+		
+		int x = qRound(s.x + (width()*s.z)*0.4);
+		int y = qRound(s.y + (inverted?0:(height()*s.z)));
 		switch ( static_cast<CAFermata*>(mark())->fermataType() ) {
-			case CAFermata::NormalFermata: p->drawText( s.x, s.y, QString(0xE150) ); break;
-			case CAFermata::ShortFermata: p->drawText( s.x, s.y, QString(0xE152) ); break;
-			case CAFermata::LongFermata: p->drawText( s.x, s.y, QString(0xE154) ); break;
-			case CAFermata::VeryLongFermata: p->drawText( s.x, s.y, QString(0xE156) ); break;
+			case CAFermata::NormalFermata: p->drawText( x, y, QString(0xE150+inverted) ); break;
+			case CAFermata::ShortFermata: p->drawText( x, y, QString(0xE152+inverted) ); break;
+			case CAFermata::LongFermata: p->drawText( x, y, QString(0xE154+inverted) ); break;
+			case CAFermata::VeryLongFermata: p->drawText( x, y, QString(0xE156+inverted) ); break;
 		}
 		break;
 	}
@@ -244,6 +257,15 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
 		p->setFont(font);
 		p->drawText( s.x, s.y+qRound(height()*s.z), QString(" = ") + QString::number( static_cast<CATempo*>(mark())->bpm() ) );
+		break;
+	}
+	case CAMark::Ritardando: {
+		QFont font("FreeSans");
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
+		font.setItalic( true );
+		p->setFont(font);
+		
+		p->drawText( s.x, s.y+qRound(height()*s.z), static_cast<CARitardando*>(mark())->ritardandoType()==CARitardando::Ritardando?"rit.":"accel." );
 		break;
 	}
 	case CAMark::RepeatMark: {
@@ -306,33 +328,35 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*1.4*s.z) );
 		p->setFont(font);
 		
+		int x = s.x;
+		int y = s.y + qRound(height()*s.z);
 		switch ( static_cast<CAArticulation*>(mark())->articulationType() ) {
-			case CAArticulation::Accent:        p->drawText( s.x, s.y, QString(0xE159) ); break;
-			case CAArticulation::Marcato:       p->drawText( s.x, s.y, QString(0xE161) ); break;
-			case CAArticulation::Staccatissimo: p->drawText( s.x, s.y, QString(0xE15C) ); break;
-			case CAArticulation::Espressivo:    p->drawText( s.x, s.y, QString(0xE15A) ); break;
-			case CAArticulation::Staccato:      p->drawText( s.x, s.y, QString(0xE15B) ); break;
-			case CAArticulation::Tenuto:        p->drawText( s.x, s.y, QString(0xE15E) ); break;
-			case CAArticulation::Portato:       p->drawText( s.x, s.y, QString(0xE15F) ); break;
-			case CAArticulation::UpBow:         p->drawText( s.x, s.y, QString(0xE165) ); break;
-			case CAArticulation::DownBow:       p->drawText( s.x, s.y, QString(0xE166) ); break;
-			case CAArticulation::Flageolet:     p->drawText( s.x, s.y, QString(0xE16E) ); break;
-			case CAArticulation::Open:          p->drawText( s.x, s.y, QString(0xE163) ); break;
-			case CAArticulation::Stopped:       p->drawText( s.x, s.y, QString(0xE164) ); break;
-			case CAArticulation::Turn:          p->drawText( s.x, s.y, QString(0xE167) ); break;
-			case CAArticulation::ReverseTurn:   p->drawText( s.x, s.y, QString(0xE168) ); break;
-			case CAArticulation::Trill:         p->drawText( s.x, s.y, QString(0xE169) ); break;
-			case CAArticulation::Prall:         p->drawText( s.x, s.y, QString(0xE17B) ); break;
-			case CAArticulation::Mordent:       p->drawText( s.x, s.y, QString(0xE17C) ); break;
-			case CAArticulation::PrallPrall:    p->drawText( s.x, s.y, QString(0xE17D) ); break;
-			case CAArticulation::PrallMordent:  p->drawText( s.x, s.y, QString(0xE17E) ); break;
-			case CAArticulation::UpPrall:       p->drawText( s.x, s.y, QString(0xE17F) ); break;
-			case CAArticulation::DownPrall:     p->drawText( s.x, s.y, QString(0xE182) ); break;
-			case CAArticulation::UpMordent:     p->drawText( s.x, s.y, QString(0xE180) ); break;
-			case CAArticulation::DownMordent:   p->drawText( s.x, s.y, QString(0xE183) ); break;
-			case CAArticulation::PrallDown:     p->drawText( s.x, s.y, QString(0xE181) ); break;
-			case CAArticulation::PrallUp:       p->drawText( s.x, s.y, QString(0xE184) ); break;
-			case CAArticulation::LinePrall:     p->drawText( s.x, s.y, QString(0xE185) ); break;
+			case CAArticulation::Accent:        p->drawText( x, y, QString(0xE159) ); break;
+			case CAArticulation::Marcato:       p->drawText( x, y, QString(0xE161) ); break;
+			case CAArticulation::Staccatissimo: p->drawText( x, y, QString(0xE15C) ); break;
+			case CAArticulation::Espressivo:    p->drawText( x, y, QString(0xE15A) ); break;
+			case CAArticulation::Staccato:      p->drawText( x, y, QString(0xE15B) ); break;
+			case CAArticulation::Tenuto:        p->drawText( x, y, QString(0xE15E) ); break;
+			case CAArticulation::Portato:       p->drawText( x, y, QString(0xE15F) ); break;
+			case CAArticulation::UpBow:         p->drawText( x, y, QString(0xE165) ); break;
+			case CAArticulation::DownBow:       p->drawText( x, y, QString(0xE166) ); break;
+			case CAArticulation::Flageolet:     p->drawText( x, y, QString(0xE16E) ); break;
+			case CAArticulation::Open:          p->drawText( x, y, QString(0xE163) ); break;
+			case CAArticulation::Stopped:       p->drawText( x, y, QString(0xE164) ); break;
+			case CAArticulation::Turn:          p->drawText( x, y, QString(0xE167) ); break;
+			case CAArticulation::ReverseTurn:   p->drawText( x, y, QString(0xE168) ); break;
+			case CAArticulation::Trill:         p->drawText( x, y, QString(0xE169) ); break;
+			case CAArticulation::Prall:         p->drawText( x, y, QString(0xE17B) ); break;
+			case CAArticulation::Mordent:       p->drawText( x, y, QString(0xE17C) ); break;
+			case CAArticulation::PrallPrall:    p->drawText( x, y, QString(0xE17D) ); break;
+			case CAArticulation::PrallMordent:  p->drawText( x, y, QString(0xE17E) ); break;
+			case CAArticulation::UpPrall:       p->drawText( x, y, QString(0xE17F) ); break;
+			case CAArticulation::DownPrall:     p->drawText( x, y, QString(0xE182) ); break;
+			case CAArticulation::UpMordent:     p->drawText( x, y, QString(0xE180) ); break;
+			case CAArticulation::DownMordent:   p->drawText( x, y, QString(0xE183) ); break;
+			case CAArticulation::PrallDown:     p->drawText( x, y, QString(0xE181) ); break;
+			case CAArticulation::PrallUp:       p->drawText( x, y, QString(0xE184) ); break;
+			case CAArticulation::LinePrall:     p->drawText( x, y, QString(0xE185) ); break;
 
 		}
 		

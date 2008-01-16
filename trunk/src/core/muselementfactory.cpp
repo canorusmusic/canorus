@@ -354,6 +354,13 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 		success = true;
 		break;
 	}
+	case CAMark::Ritardando: {
+		if ( elt->isPlayable() ) {
+			mpoMusElement = new CARitardando( 50, static_cast<CAPlayable*>(elt), elt->timeLength()*2, ritardandoType() );
+			success = true;
+		}
+		break;
+	}
 	case CAMark::Pedal: {
 		mpoMusElement = new CAMark( CAMark::Pedal, elt );
 		success = true;

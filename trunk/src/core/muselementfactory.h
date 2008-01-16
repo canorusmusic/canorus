@@ -25,6 +25,7 @@
 #include "core/articulation.h"
 #include "core/fermata.h"
 #include "core/tempo.h"
+#include "core/ritardando.h"
 #include "core/crescendo.h"
 #include "core/repeatmark.h"
 #include "core/fingering.h"
@@ -203,6 +204,9 @@ public:
 	inline const CAPlayable::CAPlayableLength tempoBeat() { return _tempoBeat; }
 	inline void setTempoBeat( const CAPlayable::CAPlayableLength length ) { _tempoBeat = length; }
 	
+	inline const CARitardando::CARitardandoType ritardandoType() { return _ritardandoType; }
+	inline void setRitardandoType( CARitardando::CARitardandoType t ) { _ritardandoType = t; }
+	
 	inline const int crescendoFinalVolume() { return _crescendoFinalVolume; }
 	inline void setCrescendoFinalVolume( const int v ) { _crescendoFinalVolume = v; }
 	
@@ -265,6 +269,7 @@ private:
 	CAPlayable::CAPlayableLength _tempoBeat;
 	int _tempoBeatDotted;
 	int _tempoBpm;
+	CARitardando::CARitardandoType _ritardandoType;
 	int _crescendoFinalVolume;
 	CACrescendo::CACrescendoType _crescendoType;
 	CARepeatMark::CARepeatMarkType _repeatMarkType;
