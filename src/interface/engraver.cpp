@@ -844,7 +844,9 @@ void CAEngraver::placeMarks( CADrawableMusElement *e, CAScoreViewPort *v, int i 
 	
 	for ( int j=0,k=0; (j+k) < elt->markList().size(); ) {
 		int yCoord;
-		if ( elt->markList()[j+k]->markType()==CAMark::Pedal ) {
+		if ( elt->markList()[j+k]->markType()==CAMark::Pedal ||
+		     elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->actualSlurDirection()==CASlur::SlurDown && 
+		     (elt->markList()[j+k]->markType()==CAMark::Fermata || elt->markList()[j+k]->markType()==CAMark::Articulation) ) {
 			yCoord = qMax(e->yPos()+e->height(),e->drawableContext()->yPos()+e->drawableContext()->height())+20*(k+1);
 			k++;
 		} else {

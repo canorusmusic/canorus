@@ -71,6 +71,7 @@
 #include "core/instrumentchange.h"
 #include "core/repeatmark.h"
 #include "core/text.h"
+#include "core/ritardando.h"
 #include "core/bookmark.h"
 #include "core/fingering.h"
 #include "core/muselementfactory.h"
@@ -2982,14 +2983,14 @@ void CAMainWin::on_uiMarkType_toggled( bool checked, int buttonId ) {
 		CAMark::CAMarkType markType;
 		
 		// Read currently selected entry from tool button menu
-		/*if ( buttonId==CAMark::Ritardando*(-1) ) {
+		if ( buttonId==CAMark::Ritardando*(-1) ) {
 			markType = CAMark::Ritardando;
-			musElementFactory()->setRitardandoType( CATempo::Accellerando );
+			musElementFactory()->setRitardandoType( CARitardando::Accellerando );
 		} else
 		if ( buttonId==CAMark::Ritardando ) {
 			markType = CAMark::Ritardando;
-			musElementFactory()->setRitardandoType( CATempo::Ritardando );
-		} else */
+			musElementFactory()->setRitardandoType( CARitardando::Ritardando );
+		} else 
 		if ( buttonId==CAMark::Crescendo*(-1) ) {
 			markType = CAMark::Crescendo;
 			musElementFactory()->setCrescendoType( CACrescendo::Decrescendo );
