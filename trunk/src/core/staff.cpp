@@ -74,7 +74,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 					static_cast<CANote*>(newElt)->setTieStart(curTie[i]);
 				}
 				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->tieEnd() ) {
+				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->tieEnd() && curTie[i] ) {
 					curTie[i]->setNoteEnd( static_cast<CANote*>(newElt) );
 					static_cast<CANote*>(newElt)->setTieEnd(curTie[i]);
 					curTie[i] = 0;
