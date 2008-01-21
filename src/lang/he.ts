@@ -50,17 +50,17 @@ The following documents were successfully recovered:
     <message>
         <location filename="../export/export.cpp" line="135"/>
         <source>Exporting...</source>
-        <translation type="unfinished"></translation>
+        <translation>מייצא...</translation>
     </message>
     <message>
         <location filename="../export/export.cpp" line="137"/>
         <source>Ready.</source>
-        <translation type="unfinished"></translation>
+        <translation>מוכן.</translation>
     </message>
     <message>
         <location filename="../export/export.cpp" line="139"/>
         <source>Data stream not defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>זרם נתונים לא מוגדר.</translation>
     </message>
 </context>
 <context>
@@ -68,17 +68,17 @@ The following documents were successfully recovered:
     <message>
         <location filename="../import/import.cpp" line="182"/>
         <source>Importing...</source>
-        <translation type="unfinished"></translation>
+        <translation>מייבא...</translation>
     </message>
     <message>
         <location filename="../import/import.cpp" line="184"/>
         <source>Ready.</source>
-        <translation type="unfinished"></translation>
+        <translation>מוכן.</translation>
     </message>
     <message>
         <location filename="../import/import.cpp" line="186"/>
         <source>File not found or data stream not defined.</source>
-        <translation type="unfinished"></translation>
+        <translation>הקובץ לא נמצא או זרם הנתונים לא מוגדר.</translation>
     </message>
 </context>
 <context>
@@ -87,7 +87,7 @@ The following documents were successfully recovered:
         <location filename="../export/lilypondexport.cpp" line="539"/>
         <source>arr.</source>
         <comment>arrangement</comment>
-        <translation type="unfinished"></translation>
+        <translation>עיבוד</translation>
     </message>
 </context>
 <context>
@@ -95,1545 +95,1547 @@ The following documents were successfully recovered:
     <message>
         <location filename="../import/lilypondimport.cpp" line="671"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>מוכן</translation>
     </message>
     <message>
         <location filename="../import/lilypondimport.cpp" line="673"/>
         <source>Importing...</source>
-        <translation type="unfinished"></translation>
+        <translation>מייבא...</translation>
     </message>
     <message>
         <location filename="../import/lilypondimport.cpp" line="675"/>
         <source>Error while importing!
 Line %1:%2.</source>
-        <translation type="unfinished"></translation>
+        <translation>שגיאה בייבוא!
+שורה %1:%2.</translation>
     </message>
 </context>
 <context>
     <name>CAMainWin</name>
     <message>
-        <location filename="../ui/mainwin.cpp" line="198"/>
+        <location filename="../ui/mainwin.cpp" line="199"/>
         <source>Insert ToolBar</source>
         <translation>סרגל הוספה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="199"/>
+        <location filename="../ui/mainwin.cpp" line="200"/>
         <source>Select Context</source>
         <translation>בחר הקשר</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="209"/>
+        <location filename="../ui/mainwin.cpp" line="210"/>
         <source>Select Clef</source>
         <translation>בחר מפתח</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="221"/>
+        <location filename="../ui/mainwin.cpp" line="222"/>
         <source>Select Time Signature</source>
         <translation>בחר משקל</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="230"/>
+        <location filename="../ui/mainwin.cpp" line="231"/>
         <source>Select Barline</source>
         <translation>בחר קו-תיבה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="288"/>
+        <location filename="../ui/mainwin.cpp" line="289"/>
         <source>Context ToolBar</source>
         <translation>סרגל הקשר</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="302"/>
+        <location filename="../ui/mainwin.cpp" line="303"/>
         <source>Voice ToolBar</source>
         <translation>סרגל קול</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="313"/>
+        <location filename="../ui/mainwin.cpp" line="314"/>
         <source>Select Voice Stem Direction</source>
         <translation>בחר כיוון רגל-תו של קול</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="319"/>
+        <location filename="../ui/mainwin.cpp" line="320"/>
         <source>Playable ToolBar</source>
         <translation>סרגל תווים והפסקות</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="320"/>
+        <location filename="../ui/mainwin.cpp" line="321"/>
         <source>Select Length</source>
         <translation>בחר אורך</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="330"/>
+        <location filename="../ui/mainwin.cpp" line="331"/>
         <source>Select Note Stem Direction</source>
         <translation>בחר כיוון רגל-תו</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3225"/>
+        <location filename="../ui/mainwin.cpp" line="3226"/>
         <source>About Qt</source>
         <translation>אודות Qt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3229"/>
+        <location filename="../ui/mainwin.cpp" line="3230"/>
         <source>About Canorus</source>
         <translation>אודות Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1457"/>
+        <location filename="../ui/mainwin.cpp" line="1458"/>
         <source>Staff%1</source>
         <translation>חמשה%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1109"/>
+        <location filename="../ui/mainwin.cpp" line="1110"/>
         <source>Voice%1</source>
         <translation>קול%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1087"/>
+        <location filename="../ui/mainwin.cpp" line="1088"/>
         <source>Sheet%1</source>
         <translation>דף%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2396"/>
+        <location filename="../ui/mainwin.cpp" line="2397"/>
         <source>Canorus</source>
         <translation>Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1135"/>
+        <location filename="../ui/mainwin.cpp" line="1136"/>
         <source>Are you sure do you want to delete voice
 %1 and all its notes?</source>
         <translation>האם את/ה בטוח/ה שברצונך להסיר את הקול
 %1 וכל התווים שבו?</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1159"/>
+        <location filename="../ui/mainwin.cpp" line="1160"/>
         <source>Are you sure do you want to delete context
 %1 and all its contents?</source>
         <translation>האם את/ה בטוח/ה שברצונך להסיר את ההקשר
 %1 ואת תוכנו?</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="291"/>
+        <location filename="../ui/mainwin.cpp" line="292"/>
         <source>Context name</source>
         <translation>שם ההקשר</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="305"/>
+        <location filename="../ui/mainwin.cpp" line="306"/>
         <source>Current Voice number</source>
         <translation>מספר הקול הנוכחי</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="312"/>
+        <location filename="../ui/mainwin.cpp" line="313"/>
         <source>Voice name</source>
         <translation>שם הקול</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="673"/>
+        <location filename="../ui/mainwin.cpp" line="674"/>
         <source>Voice stem direction</source>
         <translation>כיוון רגל-תו של קול</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="641"/>
+        <location filename="../ui/mainwin.cpp" line="642"/>
         <source>Playable length</source>
         <translation>אורך תו</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="646"/>
+        <location filename="../ui/mainwin.cpp" line="647"/>
         <source>Note stem direction</source>
         <translation>כיוון רגל-תו</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="284"/>
+        <location filename="../ui/mainwin.cpp" line="285"/>
         <source>Sheet ToolBar</source>
         <translation>סרגל דף</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1129"/>
+        <location filename="../ui/mainwin.cpp" line="1130"/>
         <source>Cannot delete the last voice in the staff!</source>
         <translation>לא ניתן להסיר את הקול האחרון בחמשה!</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="337"/>
+        <location filename="../ui/mainwin.cpp" line="338"/>
         <source>Key Signature ToolBar</source>
         <translation>סרגל סימני התק קבועים</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="371"/>
+        <location filename="../ui/mainwin.cpp" line="372"/>
         <source>Time Signature ToolBar</source>
         <translation>סרגל משקלים</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="376"/>
+        <location filename="../ui/mainwin.cpp" line="377"/>
         <source>Number of beats</source>
         <translation>מספר הפעמות</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="383"/>
+        <location filename="../ui/mainwin.cpp" line="384"/>
         <source>Beat</source>
         <translation>פעמה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="204"/>
+        <location filename="../ui/mainwin.cpp" line="205"/>
         <source>Select Slur Type</source>
         <translation>בחר סוג קשת</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="211"/>
+        <location filename="../ui/mainwin.cpp" line="212"/>
         <source>Treble Clef</source>
         <translation>מפתח סול</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="213"/>
+        <location filename="../ui/mainwin.cpp" line="214"/>
         <source>Bass Clef</source>
         <translation>מפתח פה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="218"/>
+        <location filename="../ui/mainwin.cpp" line="219"/>
         <source>Alto Clef</source>
         <translation>מפתח אלט</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="206"/>
+        <location filename="../ui/mainwin.cpp" line="207"/>
         <source>Tie</source>
         <translation>קשת מאריכה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="207"/>
+        <location filename="../ui/mainwin.cpp" line="208"/>
         <source>Slur</source>
         <translation>קשת מחברת</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="208"/>
+        <location filename="../ui/mainwin.cpp" line="209"/>
         <source>Phrasing Slur</source>
         <translation>קשת פיסוק</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="232"/>
+        <location filename="../ui/mainwin.cpp" line="233"/>
         <source>Single Barline</source>
         <translation>קו-תיבה בודד</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="233"/>
+        <location filename="../ui/mainwin.cpp" line="234"/>
         <source>Double Barline</source>
         <translation>קו-תיבה כפול</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="234"/>
+        <location filename="../ui/mainwin.cpp" line="235"/>
         <source>End Barline</source>
         <translation>קו סיום</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="235"/>
+        <location filename="../ui/mainwin.cpp" line="236"/>
         <source>Dotted Barline</source>
         <translation>קו-תיבה מקווקו</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="236"/>
+        <location filename="../ui/mainwin.cpp" line="237"/>
         <source>Repeat Open</source>
         <translation>סימן חזרה פותח</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="237"/>
+        <location filename="../ui/mainwin.cpp" line="238"/>
         <source>Repeat Closed</source>
         <translation>סימן חזרה סוגר</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="315"/>
+        <location filename="../ui/mainwin.cpp" line="316"/>
         <source>Voice Stems Neutral</source>
         <translation>כיוון רגל-תו ניטרלי</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="316"/>
+        <location filename="../ui/mainwin.cpp" line="317"/>
         <source>Voice Stems Up</source>
         <translation>רגל-תו כלפי מעלה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="317"/>
+        <location filename="../ui/mainwin.cpp" line="318"/>
         <source>Voice Stems Down</source>
         <translation>רגל-תו כלפי מטה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="332"/>
+        <location filename="../ui/mainwin.cpp" line="333"/>
         <source>Note Stem Neutral</source>
         <translation>כיוון רגל-תו ניטרלי</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="333"/>
+        <location filename="../ui/mainwin.cpp" line="334"/>
         <source>Note Stem Up</source>
         <translation>רגל-תו כלפי מעלה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="334"/>
+        <location filename="../ui/mainwin.cpp" line="335"/>
         <source>Note Stem Down</source>
         <translation>רגל-תו כלפי מטה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="335"/>
+        <location filename="../ui/mainwin.cpp" line="336"/>
         <source>Note Stem Preferred</source>
         <translation>כיוון רגל-תו מועדף</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="238"/>
+        <location filename="../ui/mainwin.cpp" line="239"/>
         <source>Repeat Closed-Open</source>
         <translation>סימן חזרה סוגר ופותח</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="394"/>
+        <location filename="../ui/mainwin.cpp" line="395"/>
         <source>Function marking ToolBar</source>
         <translation>סימון פונקציות הרמוניות</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="423"/>
+        <location filename="../ui/mainwin.cpp" line="424"/>
         <source>Tonic</source>
         <translation>טוניקה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="425"/>
+        <location filename="../ui/mainwin.cpp" line="426"/>
         <source>Subdominant</source>
         <translation>סוב-דומיננטה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="427"/>
+        <location filename="../ui/mainwin.cpp" line="428"/>
         <source>Dominant</source>
         <translation>דומיננטה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="428"/>
+        <location filename="../ui/mainwin.cpp" line="429"/>
         <source>II</source>
         <translation>II</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="429"/>
+        <location filename="../ui/mainwin.cpp" line="430"/>
         <source>III</source>
         <translation>III</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="430"/>
+        <location filename="../ui/mainwin.cpp" line="431"/>
         <source>VI</source>
         <translation>VI</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="431"/>
+        <location filename="../ui/mainwin.cpp" line="432"/>
         <source>VII</source>
         <translation>VII</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="404"/>
+        <location filename="../ui/mainwin.cpp" line="405"/>
         <source>Cadenze</source>
         <translation>קדנצה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="424"/>
+        <location filename="../ui/mainwin.cpp" line="425"/>
         <source>minor Tonic</source>
         <translation>טוניקה מינורית</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="426"/>
+        <location filename="../ui/mainwin.cpp" line="427"/>
         <source>minor Subdominant</source>
         <translation>סוב-דומיננטה מינורית</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="407"/>
+        <location filename="../ui/mainwin.cpp" line="408"/>
         <source>Napolitan</source>
         <translation>נפוליטני</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="408"/>
+        <location filename="../ui/mainwin.cpp" line="409"/>
         <source>Phrygian</source>
         <translation>פריגי</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="409"/>
+        <location filename="../ui/mainwin.cpp" line="410"/>
         <source>Lydian</source>
         <translation>לידי</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="410"/>
+        <location filename="../ui/mainwin.cpp" line="411"/>
         <source>IV</source>
         <translation>IV</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="411"/>
+        <location filename="../ui/mainwin.cpp" line="412"/>
         <source>V</source>
         <translation>V</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="395"/>
+        <location filename="../ui/mainwin.cpp" line="396"/>
         <source>Select Function Name</source>
         <translation>בחר שם פונקציה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="413"/>
+        <location filename="../ui/mainwin.cpp" line="414"/>
         <source>Select Chord Area</source>
         <translation>בחר תחום אקורדים</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="421"/>
+        <location filename="../ui/mainwin.cpp" line="422"/>
         <source>Select Tonic Degree</source>
         <translation>בחר דרגת הטוניקה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="201"/>
+        <location filename="../ui/mainwin.cpp" line="202"/>
         <source>New Staff</source>
         <translation>חמשה חדשה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="202"/>
+        <location filename="../ui/mainwin.cpp" line="203"/>
         <source>New Lyrics context</source>
         <translation>הקשר מלל חדש</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="203"/>
+        <location filename="../ui/mainwin.cpp" line="204"/>
         <source>New Function Marking context</source>
         <translation>הקשר חדש של סימון פונקציה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1474"/>
+        <location filename="../ui/mainwin.cpp" line="1475"/>
         <source>LyricsContext%1</source>
         <translation>הקשר_מלל%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1487"/>
+        <location filename="../ui/mainwin.cpp" line="1488"/>
         <source>FunctionMarkingContext%1</source>
         <translation>הקשר_סימון_פונקציה%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="294"/>
+        <location filename="../ui/mainwin.cpp" line="295"/>
         <source>Stanza number</source>
         <translation>מספר בית</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="299"/>
+        <location filename="../ui/mainwin.cpp" line="300"/>
         <source>Associated voice</source>
         <translation>קול מקושר</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1086"/>
+        <location filename="../ui/mainwin.cpp" line="1087"/>
         <source>new sheet</source>
         <comment>undo</comment>
         <translation>דף חדש</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1107"/>
+        <location filename="../ui/mainwin.cpp" line="1108"/>
         <source>new voice</source>
         <comment>undo</comment>
         <translation>קול חדש</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1141"/>
+        <location filename="../ui/mainwin.cpp" line="1142"/>
         <source>voice removal</source>
         <comment>undo</comment>
         <translation>הסרת קול</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1165"/>
+        <location filename="../ui/mainwin.cpp" line="1166"/>
         <source>context removal</source>
         <comment>undo</comment>
         <translation>הסרת הקשר</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1453"/>
+        <location filename="../ui/mainwin.cpp" line="1454"/>
         <source>new staff</source>
         <comment>undo</comment>
         <translation>חמשה חדשה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1465"/>
+        <location filename="../ui/mainwin.cpp" line="1466"/>
         <source>new lyrics context</source>
         <comment>undo</comment>
         <translation>הקשר מלל חדש</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1483"/>
+        <location filename="../ui/mainwin.cpp" line="1484"/>
         <source>new function marking context</source>
         <comment>undo</comment>
         <translation>הקשר חדש של סימון פונקציה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1718"/>
+        <location filename="../ui/mainwin.cpp" line="1719"/>
         <source>insert barline</source>
         <comment>undo</comment>
         <translation>הכנסת קו-תיבה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1750"/>
+        <location filename="../ui/mainwin.cpp" line="1751"/>
         <source>rise note</source>
         <comment>undo</comment>
         <translation>הגבהת תו</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1776"/>
+        <location filename="../ui/mainwin.cpp" line="1777"/>
         <source>lower note</source>
         <comment>undo</comment>
         <translation>הנמכת תו</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1804"/>
+        <location filename="../ui/mainwin.cpp" line="1805"/>
         <source>add sharp</source>
         <comment>undo</comment>
         <translation>הוספת דיאז</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1825"/>
+        <location filename="../ui/mainwin.cpp" line="1826"/>
         <source>add flat</source>
         <comment>undo</comment>
         <translation>הוספת במול</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1843"/>
+        <location filename="../ui/mainwin.cpp" line="1844"/>
         <source>set dotted</source>
         <comment>undo</comment>
         <translation>הוספת נקודה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3999"/>
+        <location filename="../ui/mainwin.cpp" line="4000"/>
         <source>deletion of elements</source>
         <comment>undo</comment>
         <translation>מחיקת פריטים</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1998"/>
+        <location filename="../ui/mainwin.cpp" line="1999"/>
         <source>insertion of music element</source>
         <comment>undo</comment>
         <translation>הוספת פריט</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2665"/>
+        <location filename="../ui/mainwin.cpp" line="2666"/>
         <source>change voice name</source>
         <comment>undo</comment>
         <translation>שינוי שם קול</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2805"/>
+        <location filename="../ui/mainwin.cpp" line="2806"/>
         <source>lyrics edit</source>
         <comment>undo</comment>
         <translation>עריכת מלל</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3147"/>
+        <location filename="../ui/mainwin.cpp" line="3148"/>
         <source>commit CanorusML source</source>
         <comment>undo</comment>
         <translation>ביצוע שינויים במקור CanorusML</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3199"/>
+        <location filename="../ui/mainwin.cpp" line="3200"/>
         <source>commit LilyPond source</source>
         <comment>undo</comment>
         <translation>ביצוע שינויים במקור LilyPond</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3291"/>
+        <location filename="../ui/mainwin.cpp" line="3292"/>
         <source>deletion of the sheet</source>
         <comment>undo</comment>
         <translation>מחיקת דף</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3349"/>
+        <location filename="../ui/mainwin.cpp" line="3350"/>
         <source>change sheet name</source>
         <comment>undo</comment>
         <translation>שינוי שם דף</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3370"/>
+        <location filename="../ui/mainwin.cpp" line="3371"/>
         <source>change context name</source>
         <comment>undo</comment>
         <translation>שינוי שם הקשר</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3389"/>
+        <location filename="../ui/mainwin.cpp" line="3390"/>
         <source>change stanza number</source>
         <comment>undo</comment>
         <translation>שינוי מספר בית</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3401"/>
+        <location filename="../ui/mainwin.cpp" line="3402"/>
         <source>change associated voice</source>
         <comment>undo</comment>
         <translation>שינוי קול מקושר</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3412"/>
+        <location filename="../ui/mainwin.cpp" line="3413"/>
         <source>change voice stem direction</source>
         <comment>undo</comment>
         <translation>שינוי כיוון רגל-תו של קול</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3429"/>
+        <location filename="../ui/mainwin.cpp" line="3430"/>
         <source>change note stem direction</source>
         <comment>undo</comment>
         <translation>שינוי כיוון רגל-תו</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="680"/>
+        <location filename="../ui/mainwin.cpp" line="681"/>
         <source>Function marking</source>
         <translation>סימון פונקציה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="684"/>
+        <location filename="../ui/mainwin.cpp" line="685"/>
         <source>Function marking chord area</source>
         <translation>תחום אקורדים של סימון פונקציות</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="689"/>
+        <location filename="../ui/mainwin.cpp" line="690"/>
         <source>Function marking tonic degree</source>
         <translation>סימון פונקציה של דרגת הטוניקה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="212"/>
+        <location filename="../ui/mainwin.cpp" line="213"/>
         <source>French Clef</source>
         <translation>מפתח סול צרפתי</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="214"/>
+        <location filename="../ui/mainwin.cpp" line="215"/>
         <source>Varbaritone Clef</source>
         <translation>מפתח פה בריטון</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="215"/>
+        <location filename="../ui/mainwin.cpp" line="216"/>
         <source>Subbass Clef</source>
         <translation>מפתח פה תת-בס</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="216"/>
+        <location filename="../ui/mainwin.cpp" line="217"/>
         <source>Soprano Clef</source>
         <translation>מפתח סופרן</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="217"/>
+        <location filename="../ui/mainwin.cpp" line="218"/>
         <source>Mezzosoprano Clef</source>
         <translation>מפתח מצו סופרן</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="219"/>
+        <location filename="../ui/mainwin.cpp" line="220"/>
         <source>Tenor Clef</source>
         <translation>מפתח טנור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="220"/>
+        <location filename="../ui/mainwin.cpp" line="221"/>
         <source>Baritone Clef</source>
         <translation>מפתח בריטון</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="308"/>
+        <location filename="../ui/mainwin.cpp" line="309"/>
         <source>Voice instrument</source>
         <translation>כלי</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="434"/>
+        <location filename="../ui/mainwin.cpp" line="435"/>
         <source>C-flat major</source>
         <translation>דו-במול מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="435"/>
+        <location filename="../ui/mainwin.cpp" line="436"/>
         <source>a-flat minor</source>
         <translation>לה-במול מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="436"/>
+        <location filename="../ui/mainwin.cpp" line="437"/>
         <source>G-flat major</source>
         <translation>סול-במול מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="437"/>
+        <location filename="../ui/mainwin.cpp" line="438"/>
         <source>e-flat minor</source>
         <translation>מי-במול מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="438"/>
+        <location filename="../ui/mainwin.cpp" line="439"/>
         <source>D-flat major</source>
         <translation>רה-במול מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="439"/>
+        <location filename="../ui/mainwin.cpp" line="440"/>
         <source>b-flat minor</source>
         <translation>סי-במול מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="440"/>
+        <location filename="../ui/mainwin.cpp" line="441"/>
         <source>A-flat major</source>
         <translation>לה-במול מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="441"/>
+        <location filename="../ui/mainwin.cpp" line="442"/>
         <source>f minor</source>
         <translation>פה מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="442"/>
+        <location filename="../ui/mainwin.cpp" line="443"/>
         <source>E-flat major</source>
         <translation>מי-במול מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="443"/>
+        <location filename="../ui/mainwin.cpp" line="444"/>
         <source>c minor</source>
         <translation>דו מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="444"/>
+        <location filename="../ui/mainwin.cpp" line="445"/>
         <source>B-flat major</source>
         <translation>סי-במול מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="445"/>
+        <location filename="../ui/mainwin.cpp" line="446"/>
         <source>g minor</source>
         <translation>סול מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="446"/>
+        <location filename="../ui/mainwin.cpp" line="447"/>
         <source>F major</source>
         <translation>פה מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="447"/>
+        <location filename="../ui/mainwin.cpp" line="448"/>
         <source>d minor</source>
         <translation>רה מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="448"/>
+        <location filename="../ui/mainwin.cpp" line="449"/>
         <source>C major</source>
         <translation>דו מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="449"/>
+        <location filename="../ui/mainwin.cpp" line="450"/>
         <source>a minor</source>
         <translation>לה מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="450"/>
+        <location filename="../ui/mainwin.cpp" line="451"/>
         <source>G major</source>
         <translation>סול מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="451"/>
+        <location filename="../ui/mainwin.cpp" line="452"/>
         <source>e minor</source>
         <translation>מי מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="452"/>
+        <location filename="../ui/mainwin.cpp" line="453"/>
         <source>D major</source>
         <translation>רה מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="453"/>
+        <location filename="../ui/mainwin.cpp" line="454"/>
         <source>b minor</source>
         <translation>סי מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="454"/>
+        <location filename="../ui/mainwin.cpp" line="455"/>
         <source>A major</source>
         <translation>לה מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="455"/>
+        <location filename="../ui/mainwin.cpp" line="456"/>
         <source>f-sharp minor</source>
         <translation>פה-דיאז מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="456"/>
+        <location filename="../ui/mainwin.cpp" line="457"/>
         <source>E major</source>
         <translation>מי מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="457"/>
+        <location filename="../ui/mainwin.cpp" line="458"/>
         <source>c-sharp minor</source>
         <translation>דו-דיאז מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="458"/>
+        <location filename="../ui/mainwin.cpp" line="459"/>
         <source>B major</source>
         <translation>סי מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="459"/>
+        <location filename="../ui/mainwin.cpp" line="460"/>
         <source>g-sharp minor</source>
         <translation>סול-דיאז מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="460"/>
+        <location filename="../ui/mainwin.cpp" line="461"/>
         <source>F-sharp major</source>
         <translation>פה-דיאז מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="461"/>
+        <location filename="../ui/mainwin.cpp" line="462"/>
         <source>d-sharp minor</source>
         <translation>רה-דיאז מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="462"/>
+        <location filename="../ui/mainwin.cpp" line="463"/>
         <source>C-sharp major</source>
         <translation>דו-דיאז מז&apos;ור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="463"/>
+        <location filename="../ui/mainwin.cpp" line="464"/>
         <source>a-sharp minor</source>
         <translation>לה-דיאז מינור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="385"/>
+        <location filename="../ui/mainwin.cpp" line="386"/>
         <source>Clef ToolBar</source>
         <translation>סרגל מפתחות</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="392"/>
+        <location filename="../ui/mainwin.cpp" line="393"/>
         <source>Clef offset</source>
         <translation>הזזת מפתח</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="567"/>
+        <location filename="../ui/mainwin.cpp" line="568"/>
         <source>Undo</source>
         <translation>בטל פעולה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="571"/>
+        <location filename="../ui/mainwin.cpp" line="572"/>
         <source>Redo</source>
         <translation>בצע שוב</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2647"/>
+        <location filename="../ui/mainwin.cpp" line="2648"/>
         <source>change clef offset</source>
         <comment>undo</comment>
         <translation>שינוי הזזת מפתח</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3955"/>
+        <location filename="../ui/mainwin.cpp" line="3956"/>
         <source>cut</source>
         <comment>undo</comment>
         <translation>גזור</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4104"/>
+        <location filename="../ui/mainwin.cpp" line="4105"/>
         <source>paste</source>
         <comment>undo</comment>
         <translation>הדבק</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="420"/>
+        <location filename="../ui/mainwin.cpp" line="421"/>
         <source>None</source>
         <translation>ללא</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2608"/>
+        <location filename="../ui/mainwin.cpp" line="2609"/>
         <source>change key signature</source>
         <comment>undo</comment>
         <translation>שנה סימני היתק במפתח</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2863"/>
+        <location filename="../ui/mainwin.cpp" line="2864"/>
         <source>change function</source>
         <comment>undo</comment>
         <translation>שנה פונקציה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2886"/>
+        <location filename="../ui/mainwin.cpp" line="2887"/>
         <source>change chord area</source>
         <comment>undo</comment>
         <translation>שינוי תחום אקורדים</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2909"/>
+        <location filename="../ui/mainwin.cpp" line="2910"/>
         <source>change tonic degree</source>
         <comment>undo</comment>
         <translation>שנה דרגת הטוניקה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2931"/>
+        <location filename="../ui/mainwin.cpp" line="2932"/>
         <source>set/unset ellipse</source>
         <comment>undo</comment>
         <translation>יצירת/הסרת אליפסה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2715"/>
+        <location filename="../ui/mainwin.cpp" line="2716"/>
         <source>change playable length</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation>שינוי אורך תו/הפסקה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="239"/>
+        <location filename="../ui/mainwin.cpp" line="240"/>
         <source>Select Mark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="241"/>
-        <source>Tempo</source>
-        <translation type="unfinished"></translation>
+        <translation>בחר סימן</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="242"/>
-        <source>Ritardando</source>
-        <translation type="unfinished"></translation>
+        <source>Tempo</source>
+        <translation>טמפו</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="243"/>
-        <source>Accellerando</source>
-        <translation type="unfinished"></translation>
+        <source>Ritardando</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="244"/>
-        <source>Dynamic</source>
-        <translation type="unfinished"></translation>
+        <source>Accellerando</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="245"/>
-        <source>Crescendo</source>
-        <translation type="unfinished"></translation>
+        <source>Dynamic</source>
+        <translation>דינמיקה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="246"/>
-        <source>Decrescendo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="248"/>
-        <source>Arbitrary Text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="251"/>
-        <source>Bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="252"/>
-        <source>Rehersal Mark</source>
-        <translation type="unfinished"></translation>
+        <source>Crescendo</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="247"/>
-        <source>Fermata</source>
-        <translation type="unfinished"></translation>
+        <source>Decrescendo</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="249"/>
-        <source>Repeat Mark</source>
-        <translation type="unfinished"></translation>
+        <source>Arbitrary Text</source>
+        <translation>טקסט חופשי</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="501"/>
-        <source>Instrument Change</source>
-        <translation type="unfinished"></translation>
+        <location filename="../ui/mainwin.cpp" line="252"/>
+        <source>Bookmark</source>
+        <translation>סימניה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="253"/>
+        <source>Rehersal Mark</source>
+        <translation>סימון תיבות</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="248"/>
+        <source>Fermata</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="250"/>
+        <source>Repeat Mark</source>
+        <translation>מראה-מקום לחזרה (קודה, וולטה, וכו&apos;)</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="502"/>
+        <source>Instrument Change</source>
+        <translation>שינוי כלי</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="254"/>
         <source>Fingering</source>
-        <translation type="unfinished"></translation>
+        <translation>אצבוע</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="255"/>
+        <location filename="../ui/mainwin.cpp" line="256"/>
         <source>Articulation Mark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="257"/>
-        <source>Accent</source>
-        <translation type="unfinished"></translation>
+        <translation>סימני ארטיקולציה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="258"/>
-        <source>Marcato</source>
-        <translation type="unfinished"></translation>
+        <source>Accent</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="259"/>
-        <source>Stacatissimo</source>
-        <translation type="unfinished"></translation>
+        <source>Marcato</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="260"/>
-        <source>Espressivo</source>
-        <translation type="unfinished"></translation>
+        <source>Stacatissimo</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="261"/>
-        <source>Staccato</source>
-        <translation type="unfinished"></translation>
+        <source>Espressivo</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="262"/>
-        <source>Tenuto</source>
-        <translation type="unfinished"></translation>
+        <source>Staccato</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="263"/>
-        <source>Portato</source>
-        <translation type="unfinished"></translation>
+        <source>Tenuto</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="264"/>
-        <source>UpBow</source>
-        <translation type="unfinished"></translation>
+        <source>Portato</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="265"/>
-        <source>DownBow</source>
-        <translation type="unfinished"></translation>
+        <source>UpBow</source>
+        <translation>קשת למעלה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="266"/>
-        <source>Flageloet</source>
-        <translation type="unfinished"></translation>
+        <source>DownBow</source>
+        <translation>קשת למטה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="267"/>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
+        <source>Flageloet</source>
+        <translation>פלז&apos;ולט</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="268"/>
-        <source>Stopped</source>
-        <translation type="unfinished"></translation>
+        <source>Open</source>
+        <translation>פתוח</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="269"/>
-        <source>Turn</source>
-        <translation type="unfinished"></translation>
+        <source>Stopped</source>
+        <translation>סגור</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="270"/>
-        <source>ReverseTurn</source>
-        <translation type="unfinished"></translation>
+        <source>Turn</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="271"/>
-        <source>Trill</source>
-        <translation type="unfinished"></translation>
+        <source>ReverseTurn</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="272"/>
-        <source>Prall</source>
-        <translation type="unfinished"></translation>
+        <source>Trill</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="273"/>
-        <source>Mordent</source>
-        <translation type="unfinished"></translation>
+        <source>Prall</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="274"/>
-        <source>Prall-Prall</source>
-        <translation type="unfinished"></translation>
+        <source>Mordent</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="275"/>
-        <source>Prall-Mordent</source>
-        <translation type="unfinished"></translation>
+        <source>Prall-Prall</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="276"/>
-        <source>Up-Prall</source>
-        <translation type="unfinished"></translation>
+        <source>Prall-Mordent</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="277"/>
-        <source>Down-Prall</source>
-        <translation type="unfinished"></translation>
+        <source>Up-Prall</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="278"/>
-        <source>Up-Mordent</source>
-        <translation type="unfinished"></translation>
+        <source>Down-Prall</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="279"/>
-        <source>Down-Mordent</source>
-        <translation type="unfinished"></translation>
+        <source>Up-Mordent</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="280"/>
-        <source>Prall-Down</source>
-        <translation type="unfinished"></translation>
+        <source>Down-Mordent</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="281"/>
-        <source>Prall-Up</source>
-        <translation type="unfinished"></translation>
+        <source>Prall-Down</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="282"/>
+        <source>Prall-Up</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="283"/>
         <source>Line-Prall</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="586"/>
+        <location filename="../ui/mainwin.cpp" line="587"/>
         <source>Insert context</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס הקשר</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="592"/>
+        <location filename="../ui/mainwin.cpp" line="593"/>
         <source>Insert slur</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס קשת</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="596"/>
+        <location filename="../ui/mainwin.cpp" line="597"/>
         <source>Insert clef</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס מפתח</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="601"/>
+        <location filename="../ui/mainwin.cpp" line="602"/>
         <source>Insert time signature</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס משקל</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="605"/>
+        <location filename="../ui/mainwin.cpp" line="606"/>
         <source>Insert barline</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס קו-תיבה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="609"/>
+        <location filename="../ui/mainwin.cpp" line="610"/>
         <source>Insert mark</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס סימן</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="613"/>
+        <location filename="../ui/mainwin.cpp" line="614"/>
         <source>Insert articulation mark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="465"/>
-        <source>Dynamic marks ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס סימן ארטיקולציה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="466"/>
-        <source>Select Dynamic</source>
-        <translation type="unfinished"></translation>
+        <source>Dynamic marks ToolBar</source>
+        <translation>סרגל דינמיקה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="468"/>
+        <location filename="../ui/mainwin.cpp" line="467"/>
+        <source>Select Dynamic</source>
+        <translation>בחר דינמיקה</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="469"/>
         <source>Piano</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="472"/>
-        <source>Pianissimo</source>
-        <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="473"/>
-        <source>Forte</source>
+        <source>Pianissimo</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="477"/>
-        <source>Fortissimo</source>
+        <location filename="../ui/mainwin.cpp" line="474"/>
+        <source>Forte</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="478"/>
-        <source>Mezzo Forte</source>
+        <source>Fortissimo</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="479"/>
-        <source>Mezzo Piano</source>
+        <source>Mezzo Forte</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="480"/>
-        <source>Forte Piano</source>
+        <source>Mezzo Piano</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="481"/>
-        <source>Sforzando Forte</source>
+        <source>Forte Piano</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="482"/>
-        <source>Sforzando Piano</source>
+        <source>Sforzando Forte</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="483"/>
-        <source>Sforzando</source>
+        <source>Sforzando Piano</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="484"/>
-        <source>Rinforzando</source>
+        <source>Sforzando</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="485"/>
-        <source>Sforzando Pianissimo</source>
+        <source>Rinforzando</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="486"/>
-        <source>Sforzando Fortissimo</source>
+        <source>Sforzando Pianissimo</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="487"/>
+        <source>Sforzando Fortissimo</source>
+        <comment>dynamics</comment>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="488"/>
         <source>Custom</source>
         <comment>dynamics</comment>
-        <translation type="unfinished"></translation>
+        <translation>מותאם אישית</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="490"/>
+        <location filename="../ui/mainwin.cpp" line="491"/>
         <source>Playback Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>עוצמת השמעה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="496"/>
+        <location filename="../ui/mainwin.cpp" line="497"/>
         <source>Dynamic mark text</source>
-        <translation type="unfinished"></translation>
+        <translation>טקסט דינמיקה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="698"/>
+        <location filename="../ui/mainwin.cpp" line="699"/>
         <source>Predefined dynamic mark</source>
-        <translation type="unfinished"></translation>
+        <translation>סימני דינמיקה מוגדרים מראש</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="498"/>
+        <location filename="../ui/mainwin.cpp" line="499"/>
         <source>Instrument ToolBar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="322"/>
-        <source>Breve</source>
-        <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation>סרגל כלי נגינה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="323"/>
+        <source>Breve</source>
+        <comment>note</comment>
+        <translation>שלם כפול</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="324"/>
         <source>Whole</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="508"/>
-        <source>Half</source>
-        <comment>note</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="507"/>
-        <source>Quarter</source>
-        <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation>שלם</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="509"/>
-        <source>Eighth</source>
+        <source>Half</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation>חצי</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="327"/>
-        <source>Sixteenth</source>
+        <location filename="../ui/mainwin.cpp" line="508"/>
+        <source>Quarter</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="328"/>
-        <source>ThirtySecond</source>
-        <comment>note</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="329"/>
-        <source>SixtyFourth</source>
-        <comment>note</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="504"/>
-        <source>Tempo ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>רבע</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="510"/>
-        <source>Dotted Quarter</source>
+        <source>Eighth</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation>שמינית</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="511"/>
-        <source>Dotted Half</source>
+        <location filename="../ui/mainwin.cpp" line="328"/>
+        <source>Sixteenth</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation>חלק שש-עשרה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="512"/>
-        <source>Dotted Eighth</source>
+        <location filename="../ui/mainwin.cpp" line="329"/>
+        <source>ThirtySecond</source>
         <comment>note</comment>
-        <translation type="unfinished"></translation>
+        <translation>חלק שלושים-ושניים</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="517"/>
-        <source>Beats per minute</source>
-        <comment>tempo</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="519"/>
-        <source>Fermata ToolBar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="522"/>
-        <source>Short</source>
-        <comment>fermata</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="523"/>
-        <source>Normal</source>
-        <comment>fermata</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="524"/>
-        <source>Long</source>
-        <comment>fermata</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="525"/>
-        <source>Very Long</source>
-        <comment>fermata</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="712"/>
-        <source>Beat</source>
-        <comment>tempo</comment>
-        <translation type="unfinished">פעמה</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="720"/>
-        <source>Fermata Type</source>
-        <comment>fermata</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="4231"/>
-        <source>change fermata type</source>
-        <comment>undo</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="4332"/>
-        <source>change tempo beat</source>
-        <comment>undo</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="4356"/>
-        <source>change tempo bpm</source>
-        <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <location filename="../ui/mainwin.cpp" line="330"/>
+        <source>SixtyFourth</source>
+        <comment>note</comment>
+        <translation>חלק שישים-וארבעה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="505"/>
-        <source>Select Beat</source>
-        <translation type="unfinished"></translation>
+        <source>Tempo ToolBar</source>
+        <translation>סרגל טמפו</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="511"/>
+        <source>Dotted Quarter</source>
+        <comment>note</comment>
+        <translation>רבע מנוקד</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="512"/>
+        <source>Dotted Half</source>
+        <comment>note</comment>
+        <translation>חצי מנוקד</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="513"/>
+        <source>Dotted Eighth</source>
+        <comment>note</comment>
+        <translation>שמינית מנוקדת</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="518"/>
+        <source>Beats per minute</source>
+        <comment>tempo</comment>
+        <translation>פעמות לדקה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="520"/>
-        <source>Fermata Type</source>
-        <translation type="unfinished"></translation>
+        <source>Fermata ToolBar</source>
+        <translation>סרגל פרמטה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2397"/>
+        <location filename="../ui/mainwin.cpp" line="523"/>
+        <source>Short</source>
+        <comment>fermata</comment>
+        <translation>קצר</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="524"/>
+        <source>Normal</source>
+        <comment>fermata</comment>
+        <translation>רגיל</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="525"/>
+        <source>Long</source>
+        <comment>fermata</comment>
+        <translation>ארוך</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="526"/>
+        <source>Very Long</source>
+        <comment>fermata</comment>
+        <translation>ארוך מאוד</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="713"/>
+        <source>Beat</source>
+        <comment>tempo</comment>
+        <translation>פעמה</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="721"/>
+        <source>Fermata Type</source>
+        <comment>fermata</comment>
+        <translation>סוג פרמטה</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="4232"/>
+        <source>change fermata type</source>
+        <comment>undo</comment>
+        <translation>שינוי סוג פרמטה</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="4333"/>
+        <source>change tempo beat</source>
+        <comment>undo</comment>
+        <translation>שינוי פעמת המשקל</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="4357"/>
+        <source>change tempo bpm</source>
+        <comment>undo</comment>
+        <translation>שינוי מספר מטרונומי</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="506"/>
+        <source>Select Beat</source>
+        <translation>בחר פעמת משקל</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="521"/>
+        <source>Fermata Type</source>
+        <translation>סוג פרמטה</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="2398"/>
         <source>Error while opening the file!
 Error %1: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="527"/>
-        <source>Repeat Mark ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>שגיאה בפתיחת הקובץ!
+שגיאה %1: </translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="528"/>
-        <source>Repeat Mark Type</source>
-        <translation type="unfinished"></translation>
+        <source>Repeat Mark ToolBar</source>
+        <translation>סרגל מראי מקום לחזרה</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="530"/>
-        <source>Segno</source>
-        <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <location filename="../ui/mainwin.cpp" line="529"/>
+        <source>Repeat Mark Type</source>
+        <translation>סוג מראה-מקום</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="531"/>
-        <source>Coda</source>
+        <source>Segno</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="532"/>
-        <source>VarCoda</source>
+        <source>Coda</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="533"/>
-        <source>Dal Segno</source>
+        <source>VarCoda</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="534"/>
-        <source>Dal Coda</source>
+        <source>Dal Segno</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="535"/>
-        <source>Dal VarCoda</source>
+        <source>Dal Coda</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="536"/>
-        <source>Volta 1st</source>
+        <source>Dal VarCoda</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="537"/>
-        <source>Volta 2nd</source>
+        <source>Volta 1st</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="538"/>
+        <source>Volta 2nd</source>
+        <comment>repeat mark</comment>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="539"/>
         <source>Volta 3rd</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="726"/>
+        <location filename="../ui/mainwin.cpp" line="727"/>
         <source>Repeat Mark Type</source>
         <comment>repeat mark</comment>
-        <translation type="unfinished"></translation>
+        <translation>סוג מראה מקום</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4307"/>
+        <location filename="../ui/mainwin.cpp" line="4308"/>
         <source>change repeat mark</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation>שינוי מראה מקום</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2836"/>
+        <location filename="../ui/mainwin.cpp" line="2837"/>
         <source>text edit</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="540"/>
-        <source>Fingering ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>עריכת טקסט חופשי</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="541"/>
-        <source>Finger</source>
-        <translation type="unfinished"></translation>
+        <source>Fingering ToolBar</source>
+        <translation>סרגל אצבוע</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="543"/>
-        <source>First</source>
-        <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <location filename="../ui/mainwin.cpp" line="542"/>
+        <source>Finger</source>
+        <translation>אצבע</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="544"/>
-        <source>Second</source>
+        <source>First</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>ראשונה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="545"/>
-        <source>Third</source>
+        <source>Second</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>שניה</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="546"/>
-        <source>Fourth</source>
+        <source>Third</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>שלישית</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="547"/>
-        <source>Fifth</source>
+        <source>Fourth</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>רביעית</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="548"/>
-        <source>Thumb</source>
+        <source>Fifth</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>חמישית</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="549"/>
-        <source>Left Heel</source>
+        <source>Thumb</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>בוהן</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="550"/>
-        <source>Right Heel</source>
+        <source>Left Heel</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>עקב שמאל</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="551"/>
-        <source>Left Toe</source>
+        <source>Right Heel</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>עקב ימין</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="552"/>
-        <source>Right Toe</source>
+        <source>Left Toe</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>אצבעות רגל שמאל</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="553"/>
-        <source>Original</source>
-        <translation type="unfinished"></translation>
+        <source>Right Toe</source>
+        <comment>fingering</comment>
+        <translation>אצבעות רגל ימין</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="555"/>
+        <location filename="../ui/mainwin.cpp" line="554"/>
+        <source>Original</source>
+        <translation>מקורי</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwin.cpp" line="556"/>
         <source>Is the fingering original by a composer (usually written italic)</source>
         <comment>fingering original checkbox</comment>
-        <translation type="unfinished"></translation>
+        <translation>האצבוע המקורי שנכתב ע&quot;י המלחין (מופיע בכתב נטוי)</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="732"/>
+        <location filename="../ui/mainwin.cpp" line="733"/>
         <source>Finger</source>
         <comment>fingering</comment>
-        <translation type="unfinished"></translation>
+        <translation>אצבע</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4254"/>
+        <location filename="../ui/mainwin.cpp" line="4255"/>
         <source>change finger</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation>שינוי אצבוע</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4275"/>
+        <location filename="../ui/mainwin.cpp" line="4276"/>
         <source>change finger original property</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation>שינוי תכונת מקוריות של אצבוע</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3236"/>
+        <location filename="../ui/mainwin.cpp" line="3237"/>
         <source>Canorus - The next generation music score editor
 
 Version %1
@@ -1644,16 +1646,16 @@ This program is licensed under the GNU General Public License (GPL).
 See the file LICENSE.GPL for details.
 
 Homepage: http://www.canorus.org</source>
-        <translation type="unfinished">Canorus - תוכנת התיווי של הדור הבא
+        <translation>Canorus - תוכנת התיווי של הדור הבא
 
 גרסה %1
-‎(C) 2006, 2007 Canorus Development team. 
+‎(C) 2006-2008 Canorus Development team. 
 ‏כל הזכויות שמורות.
+רשימת המפתחים נמצאת בקובץ AUTHORS.
 
 תוכנית זו מופצת ברשיון GPL.
 ‏פרטים נוספים בקובץ LICENSE.GPL.
-אתר הבית: http://www.canorus.org {1
-?} {2006-2008 ?}</translation>
+אתר הבית: http://www.canorus.org</translation>
     </message>
 </context>
 <context>
@@ -2595,17 +2597,17 @@ Homepage: http://www.canorus.org</source>
     <message>
         <location filename="../core/fileformats.cpp" line="27"/>
         <source>Midi file (*.mid *.midi)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../core/fileformats.cpp" line="19"/>
         <source>Canorus archive (*.can)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../canorus.cpp" line="131"/>
         <source>All supported formats (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>כל הפורמטים הנתמכים (%1)</translation>
     </message>
 </context>
 <context>
@@ -2780,12 +2782,12 @@ Homepage: http://www.canorus.org</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="568"/>
+        <location filename="../ui/mainwin.cpp" line="569"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="572"/>
+        <location filename="../ui/mainwin.cpp" line="573"/>
         <source>Ctrl+Y</source>
         <translation>Ctrl+Y</translation>
     </message>
@@ -3162,27 +3164,27 @@ Homepage: http://www.canorus.org</source>
     <message>
         <location filename="../ui_mainwin.h" line="596"/>
         <source>Function mark...</source>
-        <translation type="unfinished"></translation>
+        <translation>סימון פונקציה</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="611"/>
         <source>Insert Mark</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס סימן</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="612"/>
         <source>Insert Articulation Mark</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס סימן ארטיקולציה</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="613"/>
         <source>recent documents dummy</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="619"/>
         <source>Open &amp;recent</source>
-        <translation type="unfinished"></translation>
+        <translation>קבצים שנפתחו &amp;לאחרונה</translation>
     </message>
 </context>
 <context>
