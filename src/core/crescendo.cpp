@@ -18,8 +18,8 @@
 	to the final volume. Decrescendo decreases volume to the final volume.
 */
 
-CACrescendo::CACrescendo( int volume, CANote *note, CACrescendoType t )
- : CAMark( CAMark::Crescendo, note ) {
+CACrescendo::CACrescendo( int volume, CANote *note, CACrescendoType t, int timeStart, int timeLength )
+ : CAMark( CAMark::Crescendo, note, timeStart, timeLength ) {
 	setFinalVolume(volume);
 	setCrescendoType(t);
 }
@@ -28,7 +28,7 @@ CACrescendo::~CACrescendo() {
 }
 
 CAMusElement* CACrescendo::clone() {
-	return new CACrescendo( finalVolume(), static_cast<CANote*>(associatedElement()), crescendoType() );
+	return new CACrescendo( finalVolume(), static_cast<CANote*>(associatedElement()), crescendoType(), timeStart(), timeLength() );
 }
 
 int CACrescendo::compare( CAMusElement *elt ) {

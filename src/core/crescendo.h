@@ -19,7 +19,7 @@ public:
 		Decrescendo
 	};
 	
-	CACrescendo( int finalVolume, CANote *note, CACrescendoType t=Crescendo );
+	CACrescendo( int finalVolume, CANote *note, CACrescendoType t=Crescendo, int timeStart=-1, int timeLength=-1 );
 	virtual ~CACrescendo();
 	
 	CAMusElement *clone();

@@ -1093,8 +1093,8 @@ void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 	A new signal is emitted: CAMouseReleaseEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreViewPort::mouseReleaseEvent(QMouseEvent *e) {
-	setResizeDirection( CADrawable::Undefined );
 	emit CAMouseReleaseEvent(e, QPoint(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY), this);
+	setResizeDirection( CADrawable::Undefined );
 }
 
 /*!
