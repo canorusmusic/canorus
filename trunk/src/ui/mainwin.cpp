@@ -1411,10 +1411,15 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 		v->setCurrentContext( prevContext );
 	}
 	
+	if ( v->resizeDirection()!=CADrawable::Undefined ) {
+		CACanorus::undo()->createUndoCommand( document(), tr("resize", "undo"));
+	}
+	
 	switch ( mode() ) {
 		case SelectMode:
 		case EditMode: {
 			v->clearSelectionRegionList();
+			
 			
 			if ( v->selection().size() ) {
 				CADrawableMusElement *dElt = v->selection().front();
@@ -1612,6 +1617,9 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreVie
 	\sa CAScoreViewPort::mouseReleaseEvent(), scoreViewPortMousePress(), scoreViewPortMouseMove(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
 void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords, CAScoreViewPort *c) {
+	if ( c->resizeDirection()!=CADrawable::Undefined )
+		CACanorus::undo()->pushUndoCommand();
+
 	if ( mode() != InsertMode  && c->lastMousePressCoords()!=coords ) { // area was selected
 		c->clearSelectionRegionList();
 		

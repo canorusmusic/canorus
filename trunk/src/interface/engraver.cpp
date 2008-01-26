@@ -833,6 +833,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 	for (int i=0; i<scalableElts.size(); i++) {
 		scalableElts[i]->setXPos( v->timeToCoords(scalableElts[i]->musElement()->timeStart()) );
 		scalableElts[i]->setWidth( v->timeToCoords(scalableElts[i]->musElement()->timeEnd()) - scalableElts[i]->xPos() );
+		v->addMElement(scalableElts[i]);
 	}
 }
 
@@ -873,10 +874,12 @@ void CAEngraver::placeMarks( CADrawableMusElement *e, CAScoreViewPort *v, int i 
 		}
 		
 		CADrawableMark *m = new CADrawableMark( elt->markList()[i], e->drawableContext(), xCoord, yCoord );
-		v->addMElement( m );
 		
-		if (m->isHScalable() || m->isVScalable())
+		if (m->isHScalable() || m->isVScalable()) {
 			scalableElts << m;
+		} else {
+			v->addMElement( m );
+		}
 		
 		if ( elt->markList()[i]->markType()==CAMark::RehersalMark )
 			m->setRehersalMarkNumber( streamsRehersalMarks[i]++ );
