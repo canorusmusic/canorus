@@ -36,6 +36,7 @@ public:
 	void append( CAMusElement *elt, bool addToChord=false );
 	bool insert( CAMusElement *before, CAMusElement *elt, bool addToChord=false );
 	bool remove( CAMusElement *elt, bool updateSignsTimes=true );
+	bool synchronizeMusElements();
 	
 	//////////////////////////////
 	// Voice analysis and query //

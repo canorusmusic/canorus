@@ -841,26 +841,44 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 */
 void CAEngraver::placeMarks( CADrawableMusElement *e, CAScoreViewPort *v, int i ) {
 	CAMusElement *elt = e->musElement();
+	int xCoord = e->xPos();
 	
-	for ( int j=0,k=0; (j+k) < elt->markList().size(); ) {
+	for ( int i=0,j=0,k=0; i < elt->markList().size(); i++ ) {
+		if ( elt->markList()[i]->isCommon() &&
+		     elt->musElementType()==CAMusElement::Note &&
+		     !static_cast<CANote*>(elt)->isFirstInTheChord() ) {
+			continue;
+		}
+		
 		int yCoord;
-		if ( elt->markList()[j+k]->markType()==CAMark::Pedal ||
+		if ( elt->markList()[i]->markType()==CAMark::Pedal ||
 		     elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->actualSlurDirection()==CASlur::SlurDown && 
-		     (elt->markList()[j+k]->markType()==CAMark::Fermata || elt->markList()[j+k]->markType()==CAMark::Articulation) ) {
+		     (elt->markList()[i]->markType()==CAMark::Fermata || elt->markList()[i]->markType()==CAMark::Articulation) ) {
+			// place mark below
 			yCoord = qMax(e->yPos()+e->height(),e->drawableContext()->yPos()+e->drawableContext()->height())+20*(k+1);
 			k++;
+		} else if ( elt->musElementType()==CAMusElement::Note &&
+				    static_cast<CANote*>(elt)->isPartOfTheChord() &&
+		            elt->markList()[i]->markType()==CAMark::Fingering ) {
+			xCoord = e->xPos() + e->width() + 5;
+			yCoord = e->yPos() - 2;
 		} else {
+			// place mark above
 			yCoord = qMin(e->yPos(),e->drawableContext()->yPos())-20*(j+1);
 			j++;
 		}
 		
-		CADrawableMark *m = new CADrawableMark( elt->markList()[j+k-1], e->drawableContext(), e->xPos(), yCoord );
+		if ( elt->markList()[i]->markType()==CAMark::Articulation ) {
+			xCoord = e->xPos() + qRound(e->width()/2.0) - 3;
+		}
+		
+		CADrawableMark *m = new CADrawableMark( elt->markList()[i], e->drawableContext(), xCoord, yCoord );
 		v->addMElement( m );
 		
 		if (m->isHScalable() || m->isVScalable())
 			scalableElts << m;
 		
-		if ( elt->markList()[j+k-1]->markType()==CAMark::RehersalMark )
+		if ( elt->markList()[i]->markType()==CAMark::RehersalMark )
 			m->setRehersalMarkNumber( streamsRehersalMarks[i]++ );
 	}
 }
