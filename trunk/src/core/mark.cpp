@@ -23,6 +23,7 @@ CAMark::CAMark( CAMarkType type, CAMusElement *associatedElt, int timeStart, int
 	setMusElementType( Mark );	
 	setMarkType( type );
 	setAssociatedElement( associatedElt );
+	setCommon( true );
 }
 
 CAMark::CAMark( CAMarkType type, CAContext *c, int timeStart, int timeLength )
@@ -32,6 +33,7 @@ CAMark::CAMark( CAMarkType type, CAContext *c, int timeStart, int timeLength )
 	setMusElementType( Mark );	
 	setMarkType( type );
 	setAssociatedElement( 0 );
+	setCommon( true );
 }
 
 /*!
@@ -122,10 +124,15 @@ CAMark::CAMarkType CAMark::markTypeFromString( const QString s ) {
 }
 
 CAMark::~CAMark() {
-	if (associatedElement() && associatedElement()->musElementType()==CAMusElement::Note)
-		for (int i=0; i<static_cast<CANote*>(associatedElement())->getChord().size(); i++) {
-			static_cast<CANote*>(associatedElement())->getChord()[i]->removeMark(this);
+	if (associatedElement()) {
+		if (associatedElement()->musElementType()==CAMusElement::Note) {
+			for (int i=0; i<static_cast<CANote*>(associatedElement())->getChord().size(); i++) {
+				static_cast<CANote*>(associatedElement())->getChord()[i]->removeMark(this);
+			}
+		} else {
+			associatedElement()->removeMark(this);
 		}
+	}
 }
 
 CAMusElement *CAMark::clone() {
@@ -142,3 +149,11 @@ int CAMark::compare( CAMusElement *elt ) {
 		return 0;
 	}
 }
+
+/*!
+	\var bool CAMark::_common
+	Is mark present in all music elements in the chord. Default: True.
+	
+	The exception is the fingering which is assigned explicitly to the specific note
+	inside the chord
+*/

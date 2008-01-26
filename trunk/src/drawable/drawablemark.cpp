@@ -134,12 +134,12 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 	}
 	case CAMark::Fingering: {
 		QFont font("Emmentaler");
-		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
+		font.setPixelSize( 11 );
 		QFontMetrics fm(font);
 		
 		QString text = fingerListToString( static_cast<CAFingering*>(mark)->fingerList() );
 		setWidth( fm.width( text ) ); // set minimum text width at least 11 points
-		setHeight( qRound(DEFAULT_TEXT_SIZE) );
+		setHeight( 11 );
 		break;
 	}
 	case CAMark::RepeatMark: {
@@ -232,7 +232,7 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 	}
 	case CAMark::Fermata: {
 		QFont font("Emmentaler");
-		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*1.4*s.z) );
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*1.1*s.z) );
 		p->setFont(font);
 		
 		int inverted=0;
@@ -316,7 +316,7 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 	}
 	case CAMark::Pedal: {
 		QFont font("Emmentaler");
-		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*2*s.z) );
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*1.6*s.z) );
 		p->setFont(font);
 		p->drawText( s.x, s.y+qRound(height()*s.z), QString(0xE1A3) );
 		p->drawText( s.x+qRound((width()-10)*s.z), s.y+qRound(height()*s.z), QString(0xE19D) );
@@ -328,7 +328,7 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*1.4*s.z) );
 		p->setFont(font);
 		
-		int x = s.x;
+		int x = s.x + qRound((width()/2.0)*s.z);
 		int y = s.y + qRound(height()*s.z);
 		switch ( static_cast<CAArticulation*>(mark())->articulationType() ) {
 			case CAArticulation::Accent:        p->drawText( x, y, QString(0xE159) ); break;

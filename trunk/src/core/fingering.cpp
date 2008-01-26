@@ -24,12 +24,14 @@ CAFingering::CAFingering( CAFingerNumber finger, CANote *n, bool original )
  : CAMark( CAMark::Fingering, n ) {
 	addFinger( finger );
 	setOriginal( original);
+	setCommon( false );
 }
 
 CAFingering::CAFingering( QList<CAFingerNumber> fingers, CANote *n, bool original )
  : CAMark( CAMark::Fingering, n ) {
 	_fingerList = fingers;
 	setOriginal( original );
+	setCommon( false );
 }
 
 CAFingering::~CAFingering() {

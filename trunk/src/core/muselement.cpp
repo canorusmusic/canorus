@@ -10,6 +10,7 @@
 #include "core/staff.h"
 #include "core/playable.h"
 #include "core/mark.h"
+#include "core/articulation.h"
 
 /*!
 	\class CAMusElement
@@ -46,8 +47,14 @@ CAMusElement::CAMusElement(CAContext *context, int time, int length) {
 	This removes the music element from the parent context as well!
 */
 CAMusElement::~CAMusElement() {
-	while(!_markList.isEmpty())
-		delete _markList.takeFirst();
+	while(!_markList.isEmpty()) {
+		if ( !_markList.first()->isCommon() ||
+		     musElementType()!=CAMusElement::Note ) {
+			delete _markList.takeFirst();
+		} else {
+			_markList.takeFirst();
+		}
+	}
 	
 	// needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
 	if( context() && !isPlayable() )
@@ -102,6 +109,32 @@ CAMusElement::CAMusElementType CAMusElement::musElementTypeFromString(const QStr
 	if ( type=="slur" ) return Slur; else
 	if ( type=="function-marking" ) return FunctionMarking;
 	if ( type=="syllable" ) return Syllable;
+}
+
+/*!
+	Adds a \a mark to the mark list in correct order.
+*/
+void CAMusElement::addMark( CAMark *mark ) {
+	if ( !mark || _markList.contains(mark) )
+		return;
+	
+	int l;
+	for ( l=0; l<markList().size() && mark->markType() < markList()[l]->markType(); l++ ); // marks should be sorted by their mark type
+	if ( mark->markType()==CAMark::Articulation ) {
+		for ( ; l<markList().size() &&
+		        markList()[l]->markType()==CAMark::Articulation &&
+		        static_cast<CAArticulation*>(mark)->articulationType() < static_cast<CAArticulation*>(markList()[l])->articulationType(); l++ ); // marks should be sorted by their mark type
+	}
+	
+	_markList.insert( l, mark );
+}
+
+/*!
+	Adds a list of marks to the mark list in correct order.
+*/
+void CAMusElement::addMarks( QList<CAMark*> marks ) {
+	for (int i=0; i<marks.size(); i++)
+		addMark( marks[i] );
 }
 
 /*!

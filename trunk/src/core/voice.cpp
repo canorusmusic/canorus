@@ -14,6 +14,7 @@
 #include "core/playable.h"
 #include "core/lyricscontext.h"
 #include "core/slur.h"
+#include "core/mark.h"
 #include "interface/mididevice.h"
 
 /*!
@@ -568,6 +569,51 @@ bool CAVoice::updateTimes( int idx, int length, bool signsToo ) {
 	for (int i=idx; i<musElementList().size(); i++)
 		if ( signsToo || musElementList()[i]->isPlayable() )
 			musElementList()[i]->setTimeStart( musElementList()[i]->timeStart() + length );
+}
+
+/*!
+	Fixes any inconsistencies between music elements:
+	1) If a shared mark is present only in one of the notes of the chord, it's added to all notes in the chord.
+	   The exception are non-common marks (eg. fingering), which are assigned to each note separately.
+	2) If the mark is non-common, it is assigned to the first note in the chord.
+	
+	Returns True, if fixes were made or False otherwise.
+*/
+bool CAVoice::synchronizeMusElements() {
+	for (int i=0; i<musElementList().size(); i++) {
+		if ( musElementList()[i]->musElementType()==CAMusElement::Note &&
+		     musElementList()[i]->markList().size() &&
+		     static_cast<CANote*>(musElementList()[i])->isPartOfTheChord() ) {
+			QList<CAMark*> marks;
+			QList<CANote*> chord = static_cast<CANote*>(musElementList()[i])->getChord();
+			
+			// gather a list of marks and remove them from the chord
+			for ( int j=0; j<chord.size(); j++ ) {
+				for ( int k=0; k<chord[j]->markList().size(); k++ ) {
+					if ( chord[j]->markList()[k]->isCommon() )
+						chord[j]->markList()[k]->setAssociatedElement( chord.first() );
+					
+					if ( !marks.contains(chord[j]->markList()[k]) )
+						marks << chord[j]->markList()[k];
+					
+					chord[j]->removeMark( chord[j]->markList()[k] );
+				}
+			}
+			
+			// add marks back to the chord in correct order
+			for ( int j=0; j<chord.size(); j++ ) {
+				for (int k=0; k<marks.size(); k++) {
+					if ( marks[k]->isCommon() )
+						chord[j]->addMark(marks[k]);
+					else if (marks[k]->associatedElement() == chord[j] )
+						chord[j]->addMark(marks[k]);
+				}
+			}
+			
+			// move at the end of the chord
+			i += (chord.size() - chord.indexOf( static_cast<CANote*>(musElementList()[i]) ));
+		}
+	}
 }
 
 /*!

@@ -33,8 +33,8 @@ public:
 	CAMark( CAMarkType type, CAContext *context, int timeStart, int timeLength );
 	virtual ~CAMark();
 	
-	CAMusElement *clone();
-	int compare( CAMusElement* elt );
+	virtual CAMusElement *clone();
+	virtual int compare( CAMusElement* elt );
 	
 	inline CAMusElement *associatedElement() { return _associatedElt; }
 	inline void setAssociatedElement( CAMusElement* elt ) { _associatedElt = elt; }
@@ -42,12 +42,18 @@ public:
 	inline CAMarkType markType() { return _markType; }
 	inline void setMarkType( CAMarkType type ) { _markType = type; }
 	
+	inline bool isCommon() { return _common; }
+	
 	static const QString markTypeToString( CAMarkType t );
 	static CAMarkType markTypeFromString( const QString s );
+	
+protected:
+	inline void setCommon( bool c ) { _common=c; }
 	
 private:
 	CAMusElement *_associatedElt;
 	CAMarkType    _markType;
+	bool          _common;        // is mark present in all the notes inside the chord
 };
 
 #endif /* MARK_H_ */

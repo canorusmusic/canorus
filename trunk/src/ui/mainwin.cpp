@@ -4081,7 +4081,7 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 					static_cast<CAFunctionMarking*>(*i)->clear(); // only clears the function
 				}
 			} else if ( (*i)->musElementType()==CAMusElement::Mark ) {
-				static_cast<CAMark*>(*i)->associatedElement()->removeMark( static_cast<CAMark*>(*i) );
+				delete *i; // also removes itself from associated elements
 			} else {
 				(*i)->context()->remove(*i);
 			}

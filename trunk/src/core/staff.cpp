@@ -112,6 +112,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 				
 				eltIdx[i]++;
 			}
+			newStaff->voiceAt(i)->synchronizeMusElements();
 		}
 		
 		// append non-playable elements (shared by all voices - only create clone of the first voice element and append it to all)
@@ -292,6 +293,10 @@ bool CAStaff::synchronizeVoices() {
 	int timeStart = 0, shortestTime;
 	bool done = false;
 	bool changesMade = false;
+	
+	// first fix any inconsistencies inside a voice
+	for (int i=0; i<voiceCount(); i++)
+		voiceAt(i)->synchronizeMusElements();
 	
 	while (!done) {
 		// gather shared elements into sharedList and remove them from the voice at new timeStart

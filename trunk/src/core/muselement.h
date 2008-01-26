@@ -53,7 +53,8 @@ public:
 	inline void setName(const QString name) { _name = name; }		
 	
 	inline const QList<CAMark*> markList() { return _markList; }
-	inline void addMark( CAMark *mark ) { _markList << mark; }
+	void addMark( CAMark *mark );
+	void addMarks( QList<CAMark*> marks );
 	inline void removeMark( CAMark* mark ) { _markList.removeAll(mark); }
 	
 	bool isPlayable();
