@@ -237,6 +237,7 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 				staff()->voiceAt(i)->musElementList().removeAll(elt);
 			}
 		} else {
+			// element is playable
 			if ( elt->musElementType()==CAMusElement::Note ) {
 				CANote *n = static_cast<CANote*>(elt);
 				if ( n->isPartOfTheChord() && n->isFirstInTheChord() ) {
@@ -250,10 +251,13 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 					if ( n->slurEnd() ) delete n->slurEnd();
 					if ( n->phrasingSlurStart() ) delete n->phrasingSlurStart();
 					if ( n->phrasingSlurEnd() ) delete n->phrasingSlurEnd();
+					
+					updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
 				}
+			} else {
+				updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
 			}
 			
-			updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
 			musElementList().removeAll(elt);          // removes the element from the voice music element list
 		}
 		
