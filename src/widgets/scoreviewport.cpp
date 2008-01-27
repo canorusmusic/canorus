@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -334,14 +334,18 @@ QList<CADrawableMusElement*> CAScoreViewPort::musElementsAt(int x, int y) {
 CADrawableMusElement* CAScoreViewPort::selectMElement(CAMusElement *elt) {
 	_selection.clear();
 	
-	for (int i=0; i<_drawableMList.size(); i++)
-		if ( _drawableMList.at(i)->musElement() == elt ) {
+	for (int i=0; i<_drawableMList.size(); i++) {
+		if ( _drawableMList.at(i)->musElement() == elt && _drawableMList.at(i)->isSelectable() ) {
 			addToSelection(_drawableMList.at(i));
-			return _drawableMList.at(i);
 		}
+	}
 	
 	emit selectionChanged();
-	return 0;	
+	
+	if ( selection().size() )
+		return selection().back();
+	else
+		return 0;	
 }
 
 /*!
@@ -1304,7 +1308,9 @@ CADrawableMusElement *CAScoreViewPort::selectDownMusElement() {
 void CAScoreViewPort::addToSelection( CADrawableMusElement *elt, bool triggerSignal ) {
 	int i;
 	for (i=0; i<_selection.size() && _selection[i]->xPos() < elt->xPos(); i++);
-	_selection.insert( i, elt );
+	
+	if ( elt->isSelectable() )
+		_selection.insert( i, elt );
 	
 	if ( triggerSignal )
 		emit selectionChanged();
@@ -1341,11 +1347,14 @@ CADrawableMusElement *CAScoreViewPort::addToSelection(CAMusElement *elt) {
 */
 void CAScoreViewPort::addToSelection(const QList<CAMusElement*> elts) {
 	for (int i=0; i<_drawableMList.size(); i++) {
-		for (int j=0; j<elts.size(); j++) {
-			if ( elts[j] == static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement() )
-				addToSelection(static_cast<CADrawableMusElement*>(_drawableMList.at(i)));
+		if ( _drawableMList.at(i)->isSelectable() ) {
+			for (int j=0; j<elts.size(); j++) {
+				if ( elts[j] == static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement() )
+					addToSelection(static_cast<CADrawableMusElement*>(_drawableMList.at(i)), false);
+			}
 		}
 	}
+	
 	emit selectionChanged();
 }
 

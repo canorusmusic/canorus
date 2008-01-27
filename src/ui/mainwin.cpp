@@ -1,5 +1,5 @@
 /*! 
-	Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -1771,7 +1771,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
-						CANote *note = (CANote*)elt->musElement();
+						CANote *note = static_cast<CANote*>(elt->musElement());
 						note->setPitch(note->pitch()+1);
 						CACanorus::undo()->pushUndoCommand();
 						rebuild = true;
@@ -1797,7 +1797,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
-						CANote *note = (CANote*)elt->musElement();
+						CANote *note = static_cast<CANote*>(elt->musElement());
 						note->setPitch(note->pitch()-1);
 						CACanorus::undo()->pushUndoCommand();
 						rebuild = true;
