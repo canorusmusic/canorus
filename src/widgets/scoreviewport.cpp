@@ -487,8 +487,10 @@ void CAScoreViewPort::rebuild() {
 	_shadowDrawableNote.clear();
 
 	QList<CAMusElement*> musElementSelection;
-	for (int i=0; i<_selection.size(); i++)
-		musElementSelection << _selection[i]->musElement();
+	for (int i=0; i<_selection.size(); i++) {
+		if ( !musElementSelection.contains( _selection[i]->musElement() ) )
+			musElementSelection << _selection[i]->musElement();
+	}
 	
 	_selection.clear();
 	
