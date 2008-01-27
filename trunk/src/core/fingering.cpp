@@ -58,3 +58,64 @@ int CAFingering::compare( CAMusElement *elt ) {
 	
 	return differ;
 }
+
+const QString CAFingering::fingerNumberToString( CAFingerNumber n ) {
+	switch (n) {
+	case First:
+		return "First";
+	case Second:
+		return "Second";
+	case Third:
+		return "Third";
+	case Fourth:
+		return "Fourth";
+	case Fifth:
+		return "Fifth";
+	case Thumb:
+		return "Thumb";
+	case LHeel:
+		return "LHeel";
+	case RHeel:
+		return "RHeel";
+	case LToe:
+		return "LToe";
+	case RToe:
+		return "RToe";
+	case Undefined:
+		return "Undefined";
+	}
+}
+
+CAFingering::CAFingerNumber CAFingering::fingerNumberFromString( const QString f ) {
+	if (f=="First") {
+		return First;
+	} else
+	if (f=="Second") {
+		return Second;
+	} else
+	if (f=="Third") {
+		return Third;
+	} else
+	if (f=="Fourth") {
+		return Fourth;
+	} else
+	if (f=="Fifth") {
+		return Fifth;
+	} else
+	if (f=="Thumb") {
+		return Thumb;
+	} else
+	if (f=="LHeel") {
+		return LHeel;
+	} else
+	if (f=="RHeel") {
+		return RHeel;
+	} else
+	if (f=="LToe") {
+		return LToe;
+	} else
+	if (f=="RToe") {
+		return RToe;
+	} else
+		return Undefined;
+}

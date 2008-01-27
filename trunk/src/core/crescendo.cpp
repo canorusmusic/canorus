@@ -46,3 +46,21 @@ int CACrescendo::compare( CAMusElement *elt ) {
 	
 	return 0;
 }
+
+const QString CACrescendo::crescendoTypeToString( CACrescendoType t ) {
+	switch (t) {
+	case Crescendo:
+		return "Crescendo";
+	case Decrescendo:
+		return "Decrescendo";
+	}
+}
+
+CACrescendo::CACrescendoType CACrescendo::crescendoTypeFromString( const QString c ) {
+	if (c=="Crescendo") {
+		return Crescendo;
+	} else
+	if (c=="Decrescendo") {
+		return Decrescendo;
+	}
+}

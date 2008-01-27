@@ -32,6 +32,9 @@ public:
 	inline CAFermataType fermataType() { return _fermataType; }
 	inline void setFermataType( CAFermataType t ) { _fermataType = t; }
 	
+	static const QString fermataTypeToString( CAFermataType t );
+	static CAFermataType fermataTypeFromString( const QString r );
+	
 private:
 	CAFermataType _fermataType;
 };

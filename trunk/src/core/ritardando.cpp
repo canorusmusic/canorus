@@ -48,3 +48,21 @@ int CARitardando::compare( CAMusElement *elt ) {
 	
 	return 0;
 }
+
+const QString CARitardando::ritardandoTypeToString( CARitardandoType t ) {
+	switch (t) {
+	case Ritardando:
+		return "Ritardando";
+	case Accellerando:
+		return "Accellerando";
+	}
+}
+
+CARitardando::CARitardandoType CARitardando::ritardandoTypeFromString( const QString r ) {
+	if (r=="Ritardando") {
+		return Ritardando;
+	} else
+	if (r=="Accellerando") {
+		return Accellerando;
+	}
+}

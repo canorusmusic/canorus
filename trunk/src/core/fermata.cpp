@@ -48,3 +48,31 @@ int CAFermata::compare( CAMusElement *elt ) {
 	
 	return 0;
 }
+
+const QString CAFermata::fermataTypeToString( CAFermataType t ) {
+	switch (t) {
+	case NormalFermata:
+		return "NormalFermata";
+	case ShortFermata:
+		return "ShortFermata";
+	case LongFermata:
+		return "LongFermata";
+	case VeryLongFermata:
+		return "VeryLongFermata";
+	}
+}
+
+CAFermata::CAFermataType CAFermata::fermataTypeFromString( const QString r ) {
+	if (r=="NormalFermata") {
+		return NormalFermata;
+	} else
+	if (r=="ShortFermata") {
+		return ShortFermata;
+	} else
+	if (r=="LongFermata") {
+		return LongFermata;
+	} else
+	if (r=="VeryLongFermata") {
+		return VeryLongFermata;
+	}
+}

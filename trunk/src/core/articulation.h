@@ -14,6 +14,7 @@
 class CAArticulation : public CAMark {
 public:
 	enum CAArticulationType {
+		Undefined = -1,
 		Accent,
 		Marcato,
 		Staccatissimo,
@@ -53,6 +54,9 @@ public:
 	
 	inline CAArticulationType articulationType() { return _articulationType; }
 	inline void setArticulationType( CAArticulationType t ) { _articulationType = t; }
+	
+	static const QString articulationTypeToString( CAArticulationType t );
+	static CAArticulationType articulationTypeFromString( const QString s );
 	
 private:
 	CAArticulationType _articulationType;

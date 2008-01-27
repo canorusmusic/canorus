@@ -37,6 +37,9 @@ public:
 	inline int voltaNumber() { return _voltaNumber; }
 	inline void setVoltaNumber( int n ) { _voltaNumber = n; }
 	
+	static const QString repeatMarkTypeToString( CARepeatMarkType t );
+	static CARepeatMarkType repeatMarkTypeFromString( const QString r );
+	
 private:
 	CARepeatMarkType _repeatMarkType;
 	int _voltaNumber;
