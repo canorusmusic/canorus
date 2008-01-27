@@ -5,7 +5,7 @@ Matevž Jekovec <matevz.jekovec@gmail.com>
 Reinhard Katzmann <suamor@web.de>
   Qt4 GUI maestro, cmake, programming patterns
 Itay Perl <itay.perl@gmail.com>
-  bughunter, lots of GUI fixes and additions, Hebrew translation
+  bughunter, lots of GUI fixes and additions
 
 Contributors:
 =============
@@ -16,9 +16,30 @@ Erlend Aasland <erlenda@gmail.com>
 Georg Rudolph <georg.rudolph@schwaben.de>
   lots of ideas, tester and bughunter, LilyPond, Midi export
 Erik Magnus Johansson <erik.magnus.johansson@telia.com>
-  bughunter, Swedish translation
+  bughunter, musical terms
+
+Translators:
+============
+Itay Perl <itay.perl@gmail.com>
+  Hebrew translation
+Matevž Jekovec <matevz.jekovec@gmail.com>
+  Slovenian translation
+Erik Magnus Johansson <erik.magnus.johansson@telia.com>
+  Swedish translation
+Georg Rudolph <georg.rudolph@schwaben.de>
+  German translation
 Zeelander
   Dutch translation
+Róbert Kopácsi <kopacsi.robert@gmail.com>
+  Hungarian translation
+Dag Henning Sørbø <daghenningsorbo@yahoo.no>
+  Norwegian translation
+Choplair <chopinou@choplair.org>
+  French translation
+Henrik W. Gade <nordisc@runbox.com>
+  Danish translation
+Robert Lee <>
+  Traditional Chinese translation
 
 External libraries and resources:
 =================================

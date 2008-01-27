@@ -1,3 +1,48 @@
+0.5
+===
+- Implemented infrastructure for getting MIDI-IN events.
+- Lots of internal API changes:
+  - Generalized Import and Export classes. New fileformats can now be implemented simply
+    by inheriting those classes.
+  - Import and Export are now done in their own threads.
+  - Rewritten Voice class for insertion, deletion and manipulation for music elements.
+    The score should now always stay consistent when removing a shared element from a
+    single voice.
+  - Scripting engine now uses internal CA-class name names instead of class names only.
+    This solves the naming clashing problem in various scripting languages that don't
+    use namespaces (eg. PHP) and enum<->class names clashes.
+- Added marks:
+  - Arbitrary text
+  - BookMark
+  - Tempo (bpm)
+  - Ritardando, Accellerando
+  - Fermata (normal, short, long, very long)
+  - Dynamic (f, mf, p, sfz, etc.)
+  - Crescendo, Decrescendo
+  - Pedal (sustain)
+  - Instrument change (effects midi as well)
+  - Rehersal marks (A, B, C, D etc. on barlines)
+  - Repeat marks (coda, varcoda, segno, volta)
+  - Fingering (finger numbers, strings thumb, organ's left/right heel/toe)
+- Added articulation marks:
+  - Accent, Marcato, Staccatissimo, Espressivo, Staccato, Tenuto, Portato
+  - Up bow, Down bow, Flageolet, Open, Stopped
+  - Turn, ReverseTurn, Trill, Prall, Mordent, PrallPrall, PrallMordent, UpPrall,
+    DownPrall, UpMordent, DownMordent, PrallDown, PrallUp, LinePrall
+- Implemented export to Midi.
+- New file format CAN - compressed CanorusML format with resources. This is now the
+  default file format for Canorus.
+  ISSUE: Please use CanorusML file format when using the document on cross platforms.
+- Using new RtMidi-1.0.7 library.
+- New translations (Canorus speaks 12 languages):
+  - Danish
+  - Norwegian-NB
+  - Traditional Chinese
+  - German
+  - Hungarian
+  - French
+- Lots of other cleanups and bugfixes.
+
 0.4
 ===
 - Settings dialog.
