@@ -29,7 +29,7 @@ public:
 	static CASettingsDialog::CASettingsPage initSettings();
 	static void initCommonGUI();
 	static void initPlayback();
-	static void parseSettingsArguments(int argc, char *argv[]);
+	static bool parseSettingsArguments(int argc, char *argv[]);
 	static void initScripting();
 	static void initAutoRecovery();
 	static void initUndo();

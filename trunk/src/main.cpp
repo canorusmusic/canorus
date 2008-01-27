@@ -53,7 +53,9 @@ int main(int argc, char *argv[]) {
 	CACanorus::initMain();
 	
 	// Parse switch and settings command line arguments
-	CACanorus::parseSettingsArguments(argc, argv);
+	if ( !CACanorus::parseSettingsArguments(argc, argv) )
+		return 0;
+	
 	splash.show();
 	
 	// Load system translation if found
