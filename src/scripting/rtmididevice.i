@@ -9,5 +9,4 @@
 #include "interface/rtmididevice.h"
 %}
 
-%rename(RtMidiDevice) CARtMidiDevice;
 %include "interface/rtmididevice.h"

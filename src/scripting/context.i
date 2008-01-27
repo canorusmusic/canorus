@@ -9,5 +9,4 @@
 #include "core/context.h"
 %}
 
-%rename(Context) CAContext;
 %include "core/context.h"

@@ -9,5 +9,4 @@
 #include "interface/mididevice.h"
 %}
 
-%rename(MidiDevice) CAMidiDevice;
 %include "interface/mididevice.h"

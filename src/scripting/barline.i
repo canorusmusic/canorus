@@ -9,5 +9,4 @@
 #include "core/barline.h"
 %}
 
-%rename(Barline) CABarline;
 %include "core/barline.h"

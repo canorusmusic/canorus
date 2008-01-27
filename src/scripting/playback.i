@@ -9,5 +9,4 @@
 #include "interface/playback.h"
 %}
 
-%rename(Playback) CAPlayback;
 %include "interface/playback.h"

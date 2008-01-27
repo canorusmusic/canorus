@@ -9,5 +9,4 @@
 #include "core/note.h"
 %}
 
-%rename(Note) CANote;
 %include "core/note.h"

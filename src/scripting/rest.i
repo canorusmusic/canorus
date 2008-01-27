@@ -9,5 +9,4 @@
 #include "core/rest.h"
 %}
 
-%rename(Rest) CARest;
 %include "core/rest.h"

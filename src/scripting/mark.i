@@ -7,10 +7,28 @@
 
 %{
 #include "core/mark.h"
+#include "core/text.h"
+#include "core/tempo.h"
+#include "core/ritardando.h"
+#include "core/dynamic.h"
+#include "core/crescendo.h"
+#include "core/instrumentchange.h"
+#include "core/bookmark.h"
+#include "core/fermata.h"
+#include "core/repeatmark.h"
 #include "core/articulation.h"
+#include "core/fingering.h"
 %}
 
-%rename(Mark) CAMark;
 %include "core/mark.h"
-%rename(Articulation) CAArticulation;
+%include "core/text.h"
+%include "core/tempo.h"
+%include "core/ritardando.h"
+%include "core/dynamic.h"
+%include "core/crescendo.h"
+%include "core/instrumentchange.h"
+%include "core/bookmark.h"
+%include "core/fermata.h"
+%include "core/repeatmark.h"
 %include "core/articulation.h"
+%include "core/fingering.h"

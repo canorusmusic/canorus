@@ -10,7 +10,5 @@
 #include "core/resourcecontainer.h"
 %}
 
-%rename(Resource) CAResource;
 %include "core/resource.h"
-%rename(ResourceContainer) CAResourceContainer;
 %include "core/resourcecontainer.h"

@@ -40,7 +40,7 @@
 	In Python the example is even more direct using the string as an input method:
 	\code
 	  lilyString = '\\relative c { \\clef "treble" \\time 4/4 c4 d e f | f e d c | c1 \\bar "|." }'
-	  myImport = LilyPondImport( lilyString )
+	  myImport = CALilyPondImport( lilyString )
 	  myImport.importVoice()
 	  myImport.wait()	  
 	  

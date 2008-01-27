@@ -9,5 +9,4 @@
 #include "core/sheet.h"
 %}
 
-%rename(Sheet) CASheet;
 %include "core/sheet.h"
