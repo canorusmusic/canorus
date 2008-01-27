@@ -1617,8 +1617,10 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreVie
 	\sa CAScoreViewPort::mouseReleaseEvent(), scoreViewPortMousePress(), scoreViewPortMouseMove(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
 void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords, CAScoreViewPort *c) {
-	if ( c->resizeDirection()!=CADrawable::Undefined )
+	if ( c->resizeDirection()!=CADrawable::Undefined ) {
 		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI(document(), c->sheet());
+	}
 
 	if ( mode() != InsertMode  && c->lastMousePressCoords()!=coords ) { // area was selected
 		c->clearSelectionRegionList();

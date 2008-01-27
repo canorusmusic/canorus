@@ -45,6 +45,9 @@ public:
 	inline bool isOriginal() { return _original; }
 	inline void setOriginal( bool original ) { _original = original; }
 	
+	static const QString fingerNumberToString( CAFingerNumber n );
+	static CAFingerNumber fingerNumberFromString( const QString s );
+	
 private:
 	QList<CAFingerNumber> _fingerList;
 	bool _original;

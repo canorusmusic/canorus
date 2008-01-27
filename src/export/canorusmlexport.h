@@ -12,6 +12,8 @@
 
 #include "export/export.h"
 
+class CAMusElement;
+
 class CACanorusMLExport : public CAExport {
 public:
 	CACanorusMLExport( QTextStream *stream=0 );
@@ -21,6 +23,7 @@ public:
 	
 private:
 	void exportVoiceImpl( CAVoice* voice, QDomElement &dVoice );
+	void exportMarks( CAMusElement *associatedElt, QDomElement& domElt );
 };
 
 #endif /* CANORUSMLEXPORT_H_ */

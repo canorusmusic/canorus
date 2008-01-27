@@ -42,3 +42,50 @@ int CARepeatMark::compare( CAMusElement *elt ) {
 	else
 		return 0;
 }
+
+const QString CARepeatMark::repeatMarkTypeToString( CARepeatMarkType t ) {
+	switch (t) {
+	case (Undefined):
+		return "Undefined";
+	case (Volta):
+		return "Volta";
+	case (Segno):
+		return "Segno";
+	case (Coda):
+		return "Coda";
+	case (VarCoda):
+		return "VarCoda";
+	case (DalSegno):
+		return "DalSegno";
+	case (DalCoda):
+		return "DalCoda";
+	case (DalVarCoda):
+		return "DalVarCoda";
+	}
+}
+
+CARepeatMark::CARepeatMarkType CARepeatMark::repeatMarkTypeFromString( const QString r ) {
+	if (r=="Undefined")
+		return Undefined;
+	else
+	if (r=="Volta")
+		return Volta;
+	else
+	if (r=="Segno")
+		return Segno;
+	else
+	if (r=="Coda")
+		return Coda;
+	else
+	if (r=="VarCoda")
+		return VarCoda;
+	else
+	if (r=="DalSegno")
+		return DalSegno;
+	else
+	if (r=="DalCoda")
+		return DalCoda;
+	else
+	if (r=="DalVarCoda")
+		return DalVarCoda;
+}

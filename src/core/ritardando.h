@@ -30,6 +30,9 @@ public:
 	inline const CARitardandoType ritardandoType() { return _ritardandoType; }
 	inline void setRitardandoType( CARitardandoType t ) { _ritardandoType = t; }
 	
+	static const QString ritardandoTypeToString( CARitardandoType t );
+	static CARitardandoType ritardandoTypeFromString( const QString r );
+	
 private:
 	int _finalTempo; // tempo bpm at the end
 	CARitardandoType _ritardandoType;

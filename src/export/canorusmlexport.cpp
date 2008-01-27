@@ -24,6 +24,19 @@
 #include "core/timesignature.h"
 #include "core/barline.h"
 
+#include "core/mark.h"
+#include "core/text.h"
+#include "core/tempo.h"
+#include "core/bookmark.h"
+#include "core/articulation.h"
+#include "core/crescendo.h"
+#include "core/instrumentchange.h"
+#include "core/dynamic.h"
+#include "core/ritardando.h"
+#include "core/fermata.h"
+#include "core/repeatmark.h"
+#include "core/fingering.h"
+
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
 
@@ -181,7 +194,7 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 	QDomDocument dDoc = dVoice.ownerDocument();
 	for (int i=0; i<voice->musElementCount(); i++) {
-		CAMusElement *curElt = voice->musElementAt(i);
+		CAMusElement *curElt = voice->musElementAt(i);		
 		switch (curElt->musElementType()) {
 			case CAMusElement::Note: {
 				CANote *note = (CANote*)curElt;
@@ -217,6 +230,8 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 					QDomElement dPhrasingSlur = dDoc.createElement("phrasing-slur-end"); dNote.appendChild( dPhrasingSlur );
 				}
 				
+				exportMarks( curElt, dNote );
+				
 				break;
 			}
 			case CAMusElement::Rest: {
@@ -227,6 +242,9 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				dRest.setAttribute("time-start", rest->timeStart());
 				dRest.setAttribute("time-length", rest->timeLength());
 				dRest.setAttribute("dotted", rest->dotted());
+				
+				exportMarks( curElt, dRest );
+				
 				break;
 			}
 			case CAMusElement::Clef: {
@@ -236,6 +254,9 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				dClef.setAttribute("c1", clef->c1());
 				dClef.setAttribute("time-start", clef->timeStart());
 				dClef.setAttribute("offset", clef->offset());
+				
+				exportMarks( curElt, dClef );
+				
 				break;
 			}
 			case CAMusElement::KeySignature: {
@@ -255,6 +276,9 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				}
 				
 				dKey.setAttribute("time-start", key->timeStart());
+				
+				exportMarks( curElt, dKey );
+				
 				break;
 			}
 			case CAMusElement::TimeSignature: {
@@ -264,6 +288,9 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				dTime.setAttribute("beats", time->beats());
 				dTime.setAttribute("beat", time->beat());
 				dTime.setAttribute("time-start", time->timeStart());
+				
+				exportMarks( curElt, dTime );
+				
 				break;
 			}
 			case CAMusElement::Barline: {
@@ -271,7 +298,99 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				QDomElement dBarline = dDoc.createElement("barline"); dVoice.appendChild(dBarline);
 				dBarline.setAttribute("barline-type", CABarline::barlineTypeToString(barline->barlineType()));
 				dBarline.setAttribute("time-start", barline->timeStart());
+				
+				exportMarks( curElt, dBarline );
+				
 				break;
+			}
+		}
+	}
+}
+
+void CACanorusMLExport::exportMarks( CAMusElement *elt, QDomElement& domElt ) {
+	for (int i=0; i<elt->markList().size(); i++) {
+		CAMark *mark = elt->markList()[i];
+		if ( !mark->isCommon() || elt->musElementType()!=CAMusElement::Note ||
+		     elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->isFirstInTheChord() ) {
+			QDomElement dMark = domElt.ownerDocument().createElement("mark"); domElt.appendChild(dMark);
+			dMark.setAttribute("time-start", mark->timeStart());
+			dMark.setAttribute("time-length", mark->timeLength());
+			dMark.setAttribute("mark-type", CAMark::markTypeToString(mark->markType()));
+			
+			switch (mark->markType()) {
+			case CAMark::Text: {
+				CAText *text = static_cast<CAText*>(mark);
+				dMark.setAttribute("text", text->text());
+				break;
+			}
+			case CAMark::Tempo: {
+				CATempo *tempo = static_cast<CATempo*>(mark);
+				dMark.setAttribute("bpm", tempo->bpm());
+				dMark.setAttribute("beat", CAPlayable::playableLengthToString(tempo->beat()));
+				dMark.setAttribute("beat-dotted", tempo->beatDotted());
+				break;
+			}
+			case CAMark::Ritardando: {
+				CARitardando *rit = static_cast<CARitardando*>(mark);
+				dMark.setAttribute("ritardando-type", CARitardando::ritardandoTypeToString(rit->ritardandoType()));
+				dMark.setAttribute("final-tempo", rit->finalTempo());
+				break;
+			}
+			case CAMark::Dynamic: {
+				CADynamic *dyn = static_cast<CADynamic*>(mark);
+				dMark.setAttribute("volume", dyn->volume());
+				dMark.setAttribute("text", dyn->text());
+				break;
+			}
+			case CAMark::Crescendo: {
+				CACrescendo *cresc = static_cast<CACrescendo*>(mark);
+				dMark.setAttribute("final-volume", cresc->finalVolume());
+				dMark.setAttribute("crescendo-type", CACrescendo::crescendoTypeToString(cresc->crescendoType()));
+				break;
+			}
+			case CAMark::Pedal: {
+				// none
+				break;
+			}
+			case CAMark::InstrumentChange: {
+				CAInstrumentChange *ic = static_cast<CAInstrumentChange*>(mark);
+				dMark.setAttribute("instrument", ic->instrument());
+				break;
+			}
+			case CAMark::BookMark: {
+				CABookMark *b = static_cast<CABookMark*>(mark);
+				dMark.setAttribute("text", b->text());
+				break;
+			}
+			case CAMark::RehersalMark: {
+				// none
+				break;
+			}
+			case CAMark::Fermata: {
+				CAFermata *f = static_cast<CAFermata*>(mark);
+				dMark.setAttribute("fermata-type", CAFermata::fermataTypeToString(f->fermataType()));
+				break;
+			}
+			case CAMark::RepeatMark: {
+				CARepeatMark *r = static_cast<CARepeatMark*>(mark);
+				dMark.setAttribute("repeat-mark-type", CARepeatMark::repeatMarkTypeToString(r->repeatMarkType()));
+				if (r->repeatMarkType()==CARepeatMark::Volta) {
+					dMark.setAttribute("volta-number", r->voltaNumber());
+				}
+				break;
+			}
+			case CAMark::Articulation: {
+				CAArticulation *a = static_cast<CAArticulation*>(mark);
+				dMark.setAttribute("articulation-type", CAArticulation::articulationTypeToString(a->articulationType()));
+				break;
+			}
+			case CAMark::Fingering: {
+				CAFingering *f = static_cast<CAFingering*>(mark);
+				dMark.setAttribute("original", f->isOriginal());
+				for (int i=0; i<f->fingerList().size(); i++)
+					dMark.setAttribute(QString("finger%1").arg(i), CAFingering::fingerNumberToString(f->fingerList()[i]));
+				break;
+			}
 			}
 		}
 	}

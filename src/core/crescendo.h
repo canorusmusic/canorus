@@ -30,6 +30,9 @@ public:
 	inline const CACrescendoType crescendoType() { return _crescendoType; }
 	inline void setCrescendoType( CACrescendoType t ) { _crescendoType = t; }
 	
+	static const QString crescendoTypeToString( CACrescendoType t );
+	static CACrescendoType crescendoTypeFromString( const QString r );
+	
 private:
 	int _finalVolume; // volume percantage - from 0% to 100%
 	CACrescendoType _crescendoType;

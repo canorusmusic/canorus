@@ -133,13 +133,15 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 		break;
 	}
 	case CAMark::Fingering: {
+		setXPos( xPos()+6 );
 		QFont font("Emmentaler");
 		font.setPixelSize( 11 );
 		QFontMetrics fm(font);
 		
 		QString text = fingerListToString( static_cast<CAFingering*>(mark)->fingerList() );
 		setWidth( fm.width( text ) ); // set minimum text width at least 11 points
-		setHeight( 11 );
+		setHeight( 11 );		
+		
 		break;
 	}
 	case CAMark::RepeatMark: {
@@ -306,7 +308,8 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 	}
 	case CAMark::Fingering: {
 		QFont font("Emmentaler");
-		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*1.4*s.z) );
+		CAFingering *f = static_cast<CAFingering*>(mark());
+		font.setPixelSize( f->fingerList()[0]>5?qRound(DEFAULT_TEXT_SIZE*2*s.z):qRound(DEFAULT_TEXT_SIZE*1.3*s.z) );
 		font.setItalic( static_cast<CAFingering*>(mark())->isOriginal() );
 		p->setFont(font);
 		QString text = fingerListToString( static_cast<CAFingering*>(mark())->fingerList() );

@@ -121,6 +121,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 	int streamsIdx[streams]; for (int i=0; i<streams; i++) streamsIdx[i] = 0;
 	int streamsX[streams]; for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
 	int streamsRehersalMarks[streams]; for (int i=0; i<streams; i++) streamsRehersalMarks[i] = 0;
+	CAEngraver::streamsRehersalMarks = streamsRehersalMarks;
 	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
 	CAKeySignature *lastKeySig[streams]; for (int i=0; i<streams; i++) lastKeySig[i] = 0;
 	CATimeSignature *lastTimeSig[streams]; for (int i=0; i<streams; i++) lastTimeSig[i] = 0;	
@@ -840,7 +841,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 /*!
 	Place marks for the given music element.
 */
-void CAEngraver::placeMarks( CADrawableMusElement *e, CAScoreViewPort *v, int i ) {
+void CAEngraver::placeMarks( CADrawableMusElement *e, CAScoreViewPort *v, int streamIdx ) {
 	CAMusElement *elt = e->musElement();
 	int xCoord = e->xPos();
 	
@@ -851,17 +852,21 @@ void CAEngraver::placeMarks( CADrawableMusElement *e, CAScoreViewPort *v, int i 
 			continue;
 		}
 		
+		CAMark *mark = elt->markList()[i];
+		
 		int yCoord;
-		if ( elt->markList()[i]->markType()==CAMark::Pedal ||
+		if ( mark->markType()==CAMark::Pedal ||
+		     ( mark->markType()==CAMark::Fingering && (static_cast<CAFingering*>(mark)->fingerList()[0]==CAFingering::LHeel || static_cast<CAFingering*>(mark)->fingerList()[0]==CAFingering::LToe )) ||
 		     elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->actualSlurDirection()==CASlur::SlurDown && 
-		     (elt->markList()[i]->markType()==CAMark::Fermata || elt->markList()[i]->markType()==CAMark::Articulation) ) {
+		     (mark->markType()==CAMark::Fermata || mark->markType()==CAMark::Articulation || mark->markType()==CAMark::Fingering && static_cast<CAFingering*>(mark)->fingerList()[0]!=CAFingering::LHeel && static_cast<CAFingering*>(mark)->fingerList()[0]!=CAFingering::LToe ))  {
 			// place mark below
 			yCoord = qMax(e->yPos()+e->height(),e->drawableContext()->yPos()+e->drawableContext()->height())+20*(k+1);
 			k++;
 		} else if ( elt->musElementType()==CAMusElement::Note &&
 				    static_cast<CANote*>(elt)->isPartOfTheChord() &&
-		            elt->markList()[i]->markType()==CAMark::Fingering ) {
-			xCoord = e->xPos() + e->width() + 5;
+		            mark->markType()==CAMark::Fingering ) {
+			// place mark beside the note
+			xCoord = e->xPos() + e->width();
 			yCoord = e->yPos() - 2;
 		} else {
 			// place mark above
@@ -869,19 +874,19 @@ void CAEngraver::placeMarks( CADrawableMusElement *e, CAScoreViewPort *v, int i 
 			j++;
 		}
 		
-		if ( elt->markList()[i]->markType()==CAMark::Articulation ) {
+		if ( mark->markType()==CAMark::Articulation ) {
 			xCoord = e->xPos() + qRound(e->width()/2.0) - 3;
 		}
 		
-		CADrawableMark *m = new CADrawableMark( elt->markList()[i], e->drawableContext(), xCoord, yCoord );
+		CADrawableMark *m = new CADrawableMark( mark, e->drawableContext(), xCoord, yCoord );
+		
+		if ( mark->markType()==CAMark::RehersalMark )
+			m->setRehersalMarkNumber( streamsRehersalMarks[ streamIdx ]++ );
 		
 		if (m->isHScalable() || m->isVScalable()) {
 			scalableElts << m;
 		} else {
 			v->addMElement( m );
 		}
-		
-		if ( elt->markList()[i]->markType()==CAMark::RehersalMark )
-			m->setRehersalMarkNumber( streamsRehersalMarks[i]++ );
 	}
 }
