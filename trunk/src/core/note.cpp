@@ -51,16 +51,8 @@ CANote::~CANote() {
 	
 	// other slurs are removed or moved in CAVoice::removeElement()
 	
-	// remove common marks
 	for (int i=0; i<markList().size(); i++) {
-		if ( markList()[i]->isCommon() && !isPartOfTheChord() ) {
-			// remove common marks in the chord here, not in CAMusElement destructor
-			delete markList()[i--];
-		} else
-		if ( markList()[i]->isCommon() && isPartOfTheChord() && markList()[i]->associatedElement()==this ) {
-			// re-link common marks to the 2nd in the chord
-			markList()[i]->setAssociatedElement( getChord()[1] );
-		}
+		delete markList()[i--];
 	}
 }
 
@@ -92,11 +84,9 @@ CANote *CANote::clone( CAVoice *voice ) {
 	d->setStemDirection( stemDirection() );
 	
 	for (int i=0; i<markList().size(); i++) {
-		if (!markList()[i]->isCommon() || isFirstInTheChord()) {
-			CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-			m->setAssociatedElement(d);
-			d->addMark( m );
-		}
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
+		m->setAssociatedElement(d);
+		d->addMark( m );
 	}
 	
 	return d;

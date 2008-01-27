@@ -7,6 +7,7 @@
 
 #include "core/clef.h"
 #include "core/staff.h"
+#include "core/mark.h"
 
 /*!
 	\class CAClef
@@ -108,7 +109,15 @@ void CAClef::setClefType(CAClefType type) {
 }
 
 CAClef* CAClef::clone() {
-	return new CAClef( _clefType, _c1, static_cast<CAStaff*>(_context), _timeStart, _offset);
+	CAClef *c = new CAClef( _clefType, _c1, static_cast<CAStaff*>(_context), _timeStart, _offset);
+	
+	for (int i=0; i<markList().size(); i++) {
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
+		m->setAssociatedElement(c);
+		c->addMark( m );
+	}
+	
+	return c;
 }
 
 int CAClef::compare(CAMusElement *elt) {

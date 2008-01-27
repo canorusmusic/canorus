@@ -53,7 +53,7 @@ protected:
 private:
 	CAMusElement *_associatedElt;
 	CAMarkType    _markType;
-	bool          _common;        // is mark present in all the notes inside the chord
+	bool          _common;        // is mark assigned to a single element only or the whole chord - depends who deletes it!
 };
 
 #endif /* MARK_H_ */

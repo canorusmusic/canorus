@@ -860,16 +860,18 @@ void CAEngraver::placeMarks( CADrawableMusElement *e, CAScoreViewPort *v, int st
 		     elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->actualSlurDirection()==CASlur::SlurDown && 
 		     (mark->markType()==CAMark::Fermata || mark->markType()==CAMark::Articulation || mark->markType()==CAMark::Fingering && static_cast<CAFingering*>(mark)->fingerList()[0]!=CAFingering::LHeel && static_cast<CAFingering*>(mark)->fingerList()[0]!=CAFingering::LToe ))  {
 			// place mark below
+			xCoord = e->xPos();
 			yCoord = qMax(e->yPos()+e->height(),e->drawableContext()->yPos()+e->drawableContext()->height())+20*(k+1);
 			k++;
 		} else if ( elt->musElementType()==CAMusElement::Note &&
 				    static_cast<CANote*>(elt)->isPartOfTheChord() &&
-		            mark->markType()==CAMark::Fingering ) {
+		            mark->markType()==CAMark::Fingering && static_cast<CAFingering*>(mark)->fingerList()[0] < 6 ) {
 			// place mark beside the note
 			xCoord = e->xPos() + e->width();
 			yCoord = e->yPos() - 2;
 		} else {
 			// place mark above
+			xCoord = e->xPos();
 			yCoord = qMin(e->yPos(),e->drawableContext()->yPos())-20*(j+1);
 			j++;
 		}

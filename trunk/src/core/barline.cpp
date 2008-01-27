@@ -7,6 +7,7 @@
 
 #include "core/barline.h"
 #include "core/staff.h"
+#include "core/mark.h"
 
 /*!
 	\class CABarline
@@ -36,7 +37,15 @@ CABarline::~CABarline() {
 }
 
 CABarline* CABarline::clone() {
-	return new CABarline( barlineType(), static_cast<CAStaff*>(context()), timeStart() );
+	CABarline *b = new CABarline( barlineType(), static_cast<CAStaff*>(context()), timeStart() );
+	
+	for (int i=0; i<markList().size(); i++) {
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
+		m->setAssociatedElement(b);
+		b->addMark( m );
+	}
+	
+	return b;
 }
 
 int CABarline::compare( CAMusElement *elt ) {

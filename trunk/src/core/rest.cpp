@@ -7,6 +7,7 @@
 
 #include "core/rest.h"
 #include "core/staff.h"
+#include "core/mark.h"
 
 /*!
 	\class CARest
@@ -34,7 +35,15 @@ CARest::~CARest() {
 }
 
 CARest *CARest::clone( CAVoice *voice ) {
-	return new CARest(_restType, _playableLength, voice, _timeStart, _dotted);
+	CARest *r = new CARest(_restType, _playableLength, voice, _timeStart, _dotted);
+	
+	for (int i=0; i<markList().size(); i++) {
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
+		m->setAssociatedElement(r);
+		r->addMark( m );
+	}
+	
+	return r;
 }
 
 int CARest::compare(CAMusElement *elt) {
