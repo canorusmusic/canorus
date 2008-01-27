@@ -39,10 +39,10 @@ class QObject {
 %include "scripting/functionmarking.i"
 %include "scripting/functionmarkingcontext.i"
 
-// io
-%include "scripting/importexport.i"
-
 // playback
 %include "scripting/playback.i"
 %include "scripting/mididevice.i"
 %include "scripting/rtmididevice.i"
+
+// io
+%include "scripting/importexport.i"

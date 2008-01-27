@@ -9,5 +9,4 @@
 #include "core/functionmarking.h"
 %}
 
-%rename(FunctionMarking) CAFunctionMarking;
 %include "core/functionmarking.h"

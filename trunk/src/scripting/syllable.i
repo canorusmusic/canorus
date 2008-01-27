@@ -9,5 +9,4 @@
 #include "core/syllable.h"
 %}
 
-%rename(Syllable) CASyllable;
 %include "core/syllable.h"

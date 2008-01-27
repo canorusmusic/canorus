@@ -9,5 +9,4 @@
 #include "core/keysignature.h"
 %}
 
-%rename(KeySignature) CAKeySignature;
 %include "core/keysignature.h"

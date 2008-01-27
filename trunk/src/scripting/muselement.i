@@ -9,5 +9,4 @@
 #include "core/muselement.h"
 %}
 
-%rename(MusElement) CAMusElement;
 %include "core/muselement.h"

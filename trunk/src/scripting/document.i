@@ -9,5 +9,4 @@
 #include "core/document.h"
 %}
 
-%rename(Document) CADocument;
 %include "core/document.h"

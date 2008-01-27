@@ -9,5 +9,4 @@
 #include "core/slur.h"
 %}
 
-%rename(Slur) CASlur;
 %include "core/slur.h"

@@ -9,5 +9,4 @@
 #include "core/timesignature.h"
 %}
 
-%rename(TimeSignature) CATimeSignature;
 %include "core/timesignature.h"

@@ -9,5 +9,4 @@
 #include "core/functionmarkingcontext.h"
 %}
 
-%rename(FunctionMarkingContext) CAFunctionMarkingContext;
 %include "core/functionmarkingcontext.h"

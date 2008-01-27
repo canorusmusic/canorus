@@ -9,5 +9,4 @@
 #include "core/staff.h"
 %}
 
-%rename(Staff) CAStaff;
 %include "core/staff.h"

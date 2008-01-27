@@ -9,5 +9,4 @@
 #include "core/voice.h"
 %}
 
-%rename(Voice) CAVoice;
 %include "core/voice.h"

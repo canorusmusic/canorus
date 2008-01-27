@@ -9,5 +9,4 @@
 #include "core/lyricscontext.h"
 %}
 
-%rename(LyricsContext) CALyricsContext;
 %include "core/lyricscontext.h"

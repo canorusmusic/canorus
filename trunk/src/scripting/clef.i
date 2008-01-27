@@ -9,5 +9,4 @@
 #include "core/clef.h"
 %}
 
-%rename(Clef) CAClef;
 %include "core/clef.h"

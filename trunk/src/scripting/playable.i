@@ -9,5 +9,4 @@
 #include "core/playable.h"
 %}
 
-%rename(Playable) CAPlayable;
 %include "core/playable.h"
