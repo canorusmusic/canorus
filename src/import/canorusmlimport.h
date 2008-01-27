@@ -23,6 +23,7 @@ class CANote;
 class CARest;
 class CASlur;
 class CASyllable;
+class CAMusElement;
 
 class CACanorusMLImport : public CAImport, public QXmlDefaultHandler {
 public:
@@ -42,6 +43,8 @@ public:
 	bool characters(const QString& ch);
 	
 private:
+	void importMark( const QXmlAttributes& attributes );
+	
 	inline CADocument *document() { return _document; }
 	CADocument     *_document;
 	
@@ -59,6 +62,7 @@ private:
 	CABarline       *_curBarline;
 	CANote          *_curNote;
 	CARest          *_curRest;
+	CAMusElement    *_curMusElt;
 	CASlur          *_curTie;
 	CASlur          *_curSlur;
 	CASlur          *_curPhrasingSlur;

@@ -7,6 +7,7 @@
 
 #include "core/keysignature.h"
 #include "core/staff.h"
+#include "core/mark.h"
 
 /*!
 	\class CAKeySignature
@@ -110,7 +111,15 @@ CAKeySignature::~CAKeySignature() {
 }
 
 CAKeySignature* CAKeySignature::clone() {
-	return new CAKeySignature(_keySignatureType, numberOfAccidentals(), _majorMinorGender, (CAStaff*)_context, _timeStart);
+	CAKeySignature *k = new CAKeySignature(_keySignatureType, numberOfAccidentals(), _majorMinorGender, (CAStaff*)_context, _timeStart);
+	
+	for (int i=0; i<markList().size(); i++) {
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
+		m->setAssociatedElement(k);
+		k->addMark( m );
+	}
+	
+	return k;
 }
 
 /*!

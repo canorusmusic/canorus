@@ -242,11 +242,20 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 			if ( elt->musElementType()==CAMusElement::Note ) {
 				CANote *n = static_cast<CANote*>(elt);
 				if ( n->isPartOfTheChord() && n->isFirstInTheChord() ) {
+					// if the note is the first in the chord, the slurs and marks should be relinked to the 2nd in the chord
 					CANote *prevNote = n->getChord().at(1);
 					prevNote->setSlurStart( n->slurStart() );
 					prevNote->setSlurEnd( n->slurEnd() );
 					prevNote->setPhrasingSlurStart( n->phrasingSlurStart() );
 					prevNote->setPhrasingSlurEnd( n->phrasingSlurEnd() );
+					
+					for (int i=0; i<n->markList().size(); i++) {
+						if ( n->markList()[i]->isCommon() ) {
+							prevNote->addMark( n->markList()[i] );
+							n->markList()[i]->setAssociatedElement( prevNote );
+							n->removeMark( n->markList()[i--] );
+						}
+					}
 				} else if ( !(n->isPartOfTheChord()) ) {
 					if ( n->slurStart() ) delete n->slurStart();
 					if ( n->slurEnd() ) delete n->slurEnd();
@@ -567,15 +576,22 @@ CANote *CAVoice::previousNote( int timeStart ) {
 */
 bool CAVoice::updateTimes( int idx, int length, bool signsToo ) {
 	for (int i=idx; i<musElementList().size(); i++)
-		if ( signsToo || musElementList()[i]->isPlayable() )
+		if ( signsToo || musElementList()[i]->isPlayable() ) {
 			musElementList()[i]->setTimeStart( musElementList()[i]->timeStart() + length );
+			for (int j=0; j<musElementList()[i]->markList().size(); j++) {
+				CAMark *m = musElementList()[i]->markList()[j];
+				if ( !m->isCommon() || musElementList()[i]->musElementType()!=CAMusElement::Note ||
+				     static_cast<CANote*>(musElementList()[i])->isFirstInTheChord() )
+					m->setTimeStart( musElementList()[i]->timeStart() + length );
+			}
+		}
 }
 
 /*!
 	Fixes any inconsistencies between music elements:
-	1) If a shared mark is present only in one of the notes of the chord, it's added to all notes in the chord.
+	1) If a common (shared) mark is present only in non-first note of the chord, it's moved and assigned
+	   to first note in the chord.
 	   The exception are non-common marks (eg. fingering), which are assigned to each note separately.
-	2) If the mark is non-common, it is assigned to the first note in the chord.
 	
 	Returns True, if fixes were made or False otherwise.
 */
@@ -584,30 +600,26 @@ bool CAVoice::synchronizeMusElements() {
 		if ( musElementList()[i]->musElementType()==CAMusElement::Note &&
 		     musElementList()[i]->markList().size() &&
 		     static_cast<CANote*>(musElementList()[i])->isPartOfTheChord() ) {
-			QList<CAMark*> marks;
+			QList<CAMark*> marks; // list of shared marks
 			QList<CANote*> chord = static_cast<CANote*>(musElementList()[i])->getChord();
 			
 			// gather a list of marks and remove them from the chord
 			for ( int j=0; j<chord.size(); j++ ) {
 				for ( int k=0; k<chord[j]->markList().size(); k++ ) {
-					if ( chord[j]->markList()[k]->isCommon() )
+					if ( chord[j]->markList()[k]->isCommon() ) {
 						chord[j]->markList()[k]->setAssociatedElement( chord.first() );
 					
-					if ( !marks.contains(chord[j]->markList()[k]) )
-						marks << chord[j]->markList()[k];
-					
-					chord[j]->removeMark( chord[j]->markList()[k] );
+						if ( !marks.contains(chord[j]->markList()[k]) )
+							marks << chord[j]->markList()[k];
+						
+						chord[j]->removeMark( chord[j]->markList()[k] );
+					}
 				}
 			}
 			
-			// add marks back to the chord in correct order
-			for ( int j=0; j<chord.size(); j++ ) {
-				for (int k=0; k<marks.size(); k++) {
-					if ( marks[k]->isCommon() )
-						chord[j]->addMark(marks[k]);
-					else if (marks[k]->associatedElement() == chord[j] )
-						chord[j]->addMark(marks[k]);
-				}
+			// add marks back to the chord
+			for (int k=0; k<marks.size(); k++) {
+				chord.first()->addMark(marks[k]);
 			}
 			
 			// move at the end of the chord

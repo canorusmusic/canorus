@@ -125,13 +125,7 @@ CAMark::CAMarkType CAMark::markTypeFromString( const QString s ) {
 
 CAMark::~CAMark() {
 	if (associatedElement()) {
-		if (associatedElement()->musElementType()==CAMusElement::Note) {
-			for (int i=0; i<static_cast<CANote*>(associatedElement())->getChord().size(); i++) {
-				static_cast<CANote*>(associatedElement())->getChord()[i]->removeMark(this);
-			}
-		} else {
-			associatedElement()->removeMark(this);
-		}
+		associatedElement()->removeMark(this);
 	}
 }
 

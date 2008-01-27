@@ -1197,18 +1197,21 @@ void CAMainWin::setMode(CAMode mode) {
 	switch (mode) {
 		case SelectMode: {
 			for (int i=0; i<_viewPortList.size(); i++) {
-				if ( currentScoreViewPort() ) {
-					if (!currentScoreViewPort()->playing())
-						currentScoreViewPort()->unsetBorder();
-					currentScoreViewPort()->setShadowNoteVisible(false);
-					if (currentScoreViewPort()->textEditVisible())
-						currentScoreViewPort()->removeTextEdit();
-					statusBar()->showMessage("");
-					musElementFactory()->setMusElementType( CAMusElement::Undefined );
-					uiVoiceNum->setRealValue( 0 );
-					_viewPortList[i]->repaint();
+				if ( _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort ) {
+					CAScoreViewPort *v = static_cast<CAScoreViewPort*>(_viewPortList[i]);
+					if ( !v->playing())
+						v->unsetBorder();
+					
+					v->setShadowNoteVisible(false);
+					if ( v->textEditVisible())
+						v->removeTextEdit();
 				}
 			}
+			
+			statusBar()->showMessage("");
+			musElementFactory()->setMusElementType( CAMusElement::Undefined );
+			uiVoiceNum->setRealValue( 0 );
+			
 			break;
 		}
 		case InsertMode: {
@@ -1216,23 +1219,26 @@ void CAMainWin::setMode(CAMode mode) {
 			p.setColor(Qt::blue);
 			p.setWidth(3);
 			
-			if ( currentScoreViewPort() )
-				currentScoreViewPort()->setShadowNoteVisible((musElementFactory()->musElementType() == CAMusElement::Note) ? true : false); /// \todo Set other mouse cursors
-
 			for (int i=0; i<_viewPortList.size(); i++) {
-				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
-					if (!((CAScoreViewPort*)_viewPortList[i])->playing())
-						((CAScoreViewPort*)_viewPortList[i])->setBorder(p);
-					((CAScoreViewPort*)_viewPortList[i])->repaint();
+				if ( _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort ) {
+					CAScoreViewPort *v = static_cast<CAScoreViewPort*>(_viewPortList[i]);
+					if ( !v->playing())
+						v->setBorder(p);
 				}
 			}
-
+			
+			if ( currentScoreViewPort() ) {
+				currentScoreViewPort()->setShadowNoteVisible((musElementFactory()->musElementType() == CAMusElement::Note) ? true : false); /// \todo Set other mouse cursors
+				currentScoreViewPort()->repaint();
+			}
+			
 			break;
 		}
 		case EditMode: {
 			QPen p;
 			p.setColor(Qt::red);
 			p.setWidth(3);
+			
 			for (int i=0; i<_viewPortList.size(); i++) {
 				if (_viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort) {
 					CAScoreViewPort *sv = static_cast<CAScoreViewPort*>(_viewPortList[i]);

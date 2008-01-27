@@ -1,12 +1,13 @@
-/* 
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+/*!
+	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+	
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #include "core/timesignature.h"
 #include "core/staff.h"
+#include "core/mark.h"
 
 /*!
 	\class CATimeSignature
@@ -61,7 +62,15 @@ CATimeSignature::~CATimeSignature() {
 }
 
 CATimeSignature *CATimeSignature::clone() {
-	return new CATimeSignature(_beats, _beat, (CAStaff*)_context, _timeStart, _timeSignatureType);
+	CATimeSignature *t = new CATimeSignature(_beats, _beat, (CAStaff*)_context, _timeStart, _timeSignatureType);
+	
+	for (int i=0; i<markList().size(); i++) {
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
+		m->setAssociatedElement(t);
+		t->addMark( m );
+	}
+	
+	return t;
 }
 
 /*! \deprecated Use timeSignatureTypeToString() instead. This should be moved to LilyPond parser. 	-Matevz

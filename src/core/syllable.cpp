@@ -1,11 +1,12 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
 #include "core/syllable.h"
+#include "core/mark.h"
 
 /*!
 	\class CASyllable
@@ -45,7 +46,15 @@ void CASyllable::clear() {
 }
 
 CAMusElement* CASyllable::clone() {
-	return new CASyllable( text(), hyphenStart(), melismaStart(), lyricsContext(), timeStart(), timeLength(), associatedVoice() );
+	CASyllable *s = new CASyllable( text(), hyphenStart(), melismaStart(), lyricsContext(), timeStart(), timeLength(), associatedVoice() );
+	
+	for (int i=0; i<markList().size(); i++) {
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
+		m->setAssociatedElement(s);
+		s->addMark( m );
+	}
+	
+	return s;
 }
 
 int CASyllable::compare(CAMusElement* c) {

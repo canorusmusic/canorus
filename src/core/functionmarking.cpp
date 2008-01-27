@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -7,6 +7,7 @@
 
 #include "core/functionmarking.h"
 #include "core/functionmarkingcontext.h"
+#include "core/mark.h"
 
 /*!
 	\class CAFunctionMarking
@@ -57,6 +58,12 @@ CAFunctionMarking *CAFunctionMarking::clone() {
 	newElt = new CAFunctionMarking(function(), isMinor(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
 	newElt->setAlteredDegrees(_alteredDegrees);
 	newElt->setAddedDegrees(_addedDegrees);
+	
+	for (int i=0; i<markList().size(); i++) {
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
+		m->setAssociatedElement( newElt );
+		newElt->addMark( m );
+	}
 	
 	return newElt;
 }
