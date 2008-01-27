@@ -229,10 +229,22 @@ void CACanorus::cleanUp()
 	Parses the switches and settings command line arguments to application.
 	This function sets any settings passed in command line.
 	
+	Returns True, if application should resume with loading or False, if such
+	a switch was passed.
+	
 	\sa parseOpenFileArguments()
 */
-void CACanorus::parseSettingsArguments(int argc, char *argv[]) {
-
+bool CACanorus::parseSettingsArguments(int argc, char *argv[]) {
+	for (int i=1; i<argc; i++) {
+		if ( QString(argv[i])=="--version" ) {
+			std::cout << "Canorus - The next generation music score editor" << std::endl
+			          << "Version " << CANORUS_VERSION << std::endl;
+			
+			return false;
+		}
+	}
+	
+	return true;
 }
 
 /*!
