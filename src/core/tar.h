@@ -25,10 +25,10 @@ public:
 	CATar();
 	CATar(QIODevice&);
 	virtual ~CATar();
-	bool addFile(const QString& filename, QIODevice& data);
-	bool addFile(const QString& filename, QByteArray data);
-	inline bool contains(const QString& filename);
+	bool addFile(const QString& filename, QIODevice& data, bool replace = true);
+	bool addFile(const QString& filename, QByteArray data, bool replace = true);
 	void removeFile(const QString& filename);
+	inline bool contains(const QString& filename);
 	CAIOPtr file(const QString& filename);
 	qint64 write(QIODevice& dest, qint64 chunk);
 	qint64 write(QIODevice& dest);

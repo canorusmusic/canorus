@@ -152,9 +152,9 @@ bool CATar::contains(const QString& filename)
 {
 	foreach(CATarFile *t, _files) {
 		if(filename == t->hdr.name)
-			return false;
+			return true;
 	}
-	return true;
+	return false;
 }
 
 /*!
@@ -162,12 +162,17 @@ bool CATar::contains(const QString& filename)
 
 	\param filename The full name of the file (including directory path).
 	\param data		A reader for the file.
+	\param replace	Whether to replace the file, if it's already in the archive. Default is true.
 	\return True if the file has been added, false otherwise (e.g., file with the same name exists).
 */
-bool CATar::addFile(const QString& filename, QIODevice& data)
+bool CATar::addFile(const QString& filename, QIODevice& data, bool replace /* = true */)
 {
-	if(!contains(filename))
-		return false;
+	if(contains(filename)) {
+		if(!replace)
+			return false;
+		else
+			removeFile(filename);
+	}
 	CATarFile *file = new CATarFile;
 	
 	// Basename only for use with prefix if ever required (see below).
@@ -213,10 +218,10 @@ bool CATar::addFile(const QString& filename, QIODevice& data)
 /*
 	A convenience method to add a file from a byte array.
 */
-bool CATar::addFile(const QString& filename, QByteArray data)
+bool CATar::addFile(const QString& filename, QByteArray data, bool replace)
 {
 	QBuffer buf(&data, 0);
-	return addFile(filename, buf);
+	return addFile(filename, buf, replace);
 }
 
 /*!
