@@ -47,7 +47,7 @@ void CASwigPython::init() {
 		std::cerr << "Error: _CanorusPython.dll not found" << std::endl;
 	}
 	
-	if ( CACanorus::locateResource("pythonLib").size() )
+	if ( CACanorus::locateResource("pythonLib").size() ) {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResource("pythonLib").at(0)+"')").toStdString().c_str());
 	} else {
 		std::cerr << "Error: pythonLib/ not found" << std::endl;
