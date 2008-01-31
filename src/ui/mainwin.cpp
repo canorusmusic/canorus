@@ -160,7 +160,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 CAMainWin::~CAMainWin()  {
 	delete _musElementFactory;
 
-	if (CACanorus::mainWinCount(document()) == 1) { 
+	if (document() && CACanorus::mainWinCount(document()) == 1) { 
 		CACanorus::undo()->deleteUndoStack(document()); // delete undo stack when the last document deleted
 		delete document();
 	}
@@ -786,6 +786,7 @@ void CAMainWin::newDocument() {
 	}
 	
 	setDocument(new CADocument());
+	uiCloseDocument->setEnabled(true);
 	CACanorus::undo()->createUndoStack( document() );
 	restartTimeEditedTime();
 	
@@ -931,6 +932,7 @@ void CAMainWin::on_uiCloseDocument_triggered() {
 		delete document();
 	}
 	setDocument( 0 );
+	uiCloseDocument->setEnabled(false);
 	rebuildUI();
 }
 
@@ -2437,6 +2439,7 @@ CADocument *CAMainWin::openDocument(CADocument *doc) {
 			CACanorus::insertRecentDocument( doc->fileName() );
 		CACanorus::undo()->createUndoStack( document() );
 		
+		uiCloseDocument->setEnabled(true);
 		rebuildUI(); // local rebuild only
 		if ( doc->sheetCount())
 			uiTabWidget->setCurrentIndex(0);
@@ -2557,7 +2560,8 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	if (CAPluginManager::importFilterExists(uiImportDialog->selectedFilter())) {
 		setDocument(new CADocument());
 		CACanorus::undo()->createUndoStack( document() );
-		
+		uiCloseDocument->setEnabled(true);
+
 		CAPluginManager::importAction(uiImportDialog->selectedFilter(), document(), fileNames[0]);
 		
 		success=true;
