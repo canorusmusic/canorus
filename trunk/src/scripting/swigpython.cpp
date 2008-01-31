@@ -27,21 +27,36 @@ void CASwigPython::init() {
 	PyRun_SimpleString("import sys");
 	
 	// add path to scripts to Scripting path
-	if (CACanorus::locateResource("scripts").size())
+	if (CACanorus::locateResource("scripts").size()) {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResource("scripts").at(0)+"')").toStdString().c_str());
+	} else {
+		std::cerr << "Error: scripts/ not found" << std::endl;
+	}
 	
 	// add path to CanorusPython modules to Scripting path
-	if (CACanorus::locateResource("CanorusPython.py").size())
+	if (CACanorus::locateResourceDir("CanorusPython.py").size()) {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("CanorusPython.py").at(0)+"')").toStdString().c_str());
+	} else {
+		std::cerr << "Error: CanorusPython.py not found" << std::endl;
+	}
 	
 #ifdef Q_WS_WIN
-	if (CACanorus::locateResource("_CanorusPython.dll").size()) {
+	if ( CACanorus::locateResourceDir("_CanorusPython.dll").size() ) {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("_CanorusPython.dll").at(0)+"')").toStdString().c_str());
-		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("pythonLib").at(0)+"/pythonLib')").toStdString().c_str());
+	} else {
+		std::cerr << "Error: _CanorusPython.dll not found" << std::endl;
+	}
+	
+	if ( CACanorus::locateResource("pythonLib").size() )
+		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResource("pythonLib").at(0)+"')").toStdString().c_str());
+	} else {
+		std::cerr << "Error: pythonLib/ not found" << std::endl;
 	}
 #else
-	if (CACanorus::locateResource("_CanorusPython.so").size()) {
+	if (CACanorus::locateResourceDir("_CanorusPython.so").size()) {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("_CanorusPython.so").at(0)+"')").toStdString().c_str());
+	} else {
+		std::cerr << "Error: _CanorusPython.so not found" << std::endl;
 	}
 #endif
 	
