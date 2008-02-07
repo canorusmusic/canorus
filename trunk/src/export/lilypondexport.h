@@ -15,6 +15,7 @@
 #include "core/timesignature.h"
 #include "core/clef.h"
 #include "core/barline.h"
+#include "core/playable.h"
 #include "core/note.h"
 #include "core/rest.h"
 #include "core/document.h"
@@ -47,7 +48,7 @@ private:
 	void exportLyricsContextImpl(CALyricsContext* lc);
 	
 	void writeDocumentHeader();
-	int writeRelativeIntro();
+	CADiatonicPitch writeRelativeIntro();
 	
 	////////////////////
 	// Helper methods //
@@ -55,16 +56,16 @@ private:
 	const QString clefTypeToLilyPond( CAClef::CAClefType type, int c1, int offset );	
 	const QString keySignaturePitchToLilyPond(signed char accs, CAKeySignature::CAMajorMinorGender gender);
 	const QString keySignatureGenderToLilyPond(CAKeySignature::CAMajorMinorGender gender);
-	const QString playableLengthToLilyPond(CAPlayable::CAPlayableLength length, int dotted);
-	const QString notePitchToLilyPond(int pitch, signed char accs);
+	const QString playableLengthToLilyPond( CAPlayableLength length );
+	const QString diatonicPitchToLilyPond( CADiatonicPitch p );
 	const QString restTypeToLilyPond(CARest::CARestType type);
 	const QString barlineTypeToLilyPond(CABarline::CABarlineType type);
 	const QString syllableToLilyPond( CASyllable *s );
 	
-	inline const QString relativePitchToString(CANote* note, int prevPitch) {
-		return relativePitchToString(note->pitch(), note->accidentals(), prevPitch);
+	inline const QString relativePitchToString(CANote* note, CADiatonicPitch prevPitch) {
+		return relativePitchToString( note->diatonicPitch(), prevPitch);
 	}
-	const QString relativePitchToString(int pitch, signed char accs, int prevPitch);
+	const QString relativePitchToString( CADiatonicPitch p, CADiatonicPitch prevPitch);
 	void voiceVariableName( QString &name, int staffNum, int voiceNum );
 	void spellNumbers( QString &s );
 	

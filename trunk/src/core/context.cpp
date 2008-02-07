@@ -14,11 +14,11 @@
 	CAContext represents usually an infinite graphical space on the sheet where music elements are
 	placed in. This idea was introduced by LilyPond and it turned out to be quite useful.
 	
-	Contexts can be staffs, lyrics, figured bass context, function marking context, dynamics etc.
+	Contexts can be staffs, lyrics, figured bass context, function mark context, dynamics etc.
 	
 	CAContext is an abstract class and different solutions should be done based on it.
 	
-	\sa CAStaff, CAFunctionMarkingContext
+	\sa CAStaff, CAFunctionMarkContext
 */
 
 /*!
@@ -43,7 +43,7 @@ CAContext::~CAContext() {
 		- Lyrics
 			Holds words (syllables) for choir music. Every syllable is assigned to certain CANote.
 		- Dynamics
-			Sometimes we want to have a separate context for the crescendo, rit., mf and other markings
+			Sometimes we want to have a separate context for the crescendo, rit., mf and other marks
 */
 
 /*!

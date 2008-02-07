@@ -258,7 +258,7 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 		setCurrentContext(elt);
 	
 	if (elt->drawableContextType() == CADrawableContext::DrawableStaff) {
-		_shadowNote << new CANote(CANote::Whole, 0, 0, 0, 0);
+		_shadowNote << new CANote( CADiatonicPitch(), CAPlayableLength(CAPlayableLength::Whole, 0), 0, 0 );
 		//_shadowNote.back()->setVoice(((CADrawableStaff*)elt)->staff()->voiceAt(0));
 		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), 0, 0, 0, true);
 		_shadowDrawableNote.back()->setDrawableContext(elt);
@@ -974,7 +974,7 @@ void CAScoreViewPort::updateHelpers() {
 		int pitch = (static_cast<CADrawableStaff*>(currentContext()))->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
 		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
 			CAClef *clef = (static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext()))->getClef( _xCursor );
-			_shadowNote[i]->setPitch(pitch);
+			_shadowNote[i]->diatonicPitch().setNoteName( pitch );
 			_shadowNote[i]->setNotePosition( pitch + (clef?clef->c1():-2) - 28 );
 			_shadowDrawableNote[i]->setXPos(_xCursor);
 			_shadowDrawableNote[i]->setYPos(

@@ -19,6 +19,8 @@
 #include "core/barline.h"
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
+#include "core/playablelength.h"
+#include "core/diatonicpitch.h"
 
 #include "import/import.h"
 
@@ -42,18 +44,6 @@ private:
 	static const QRegExp WHITESPACE_DELIMITERS;
 	static const QRegExp SYNTAX_DELIMITERS;
 	static const QRegExp DELIMITERS;
-	
-	// Internal pitch structure
-	struct CAPitch {
-		int pitch;
-		signed char accs;
-	};
-	
-	// Internal length
-	struct CALength {
-		CAPlayable::CAPlayableLength length;
-		int dotted;
-	};
 	
 	// Internal time signature
 	struct CATime {
@@ -82,10 +72,10 @@ private:
 	//////////////////////
 	// Helper functions //
 	//////////////////////
-	CALength playableLengthFromLilyPond(QString &playableElt, bool parse=false);
+	CAPlayableLength playableLengthFromLilyPond( QString &playableElt, bool parse=false );
 	
 	bool isNote(const QString elt);
-	CAPitch relativePitchFromLilyPond(QString &note, int prevPitch, bool parse=false);
+	CADiatonicPitch relativePitchFromLilyPond(QString &note, CADiatonicPitch prevPitch, bool parse=false);
 	bool isRest(const QString elt);
 	CARest::CARestType restTypeFromLilyPond(QString& rest, bool parse=false);
 	CAClef::CAPredefinedClefType predefinedClefTypeFromLilyPond( const QString clef );

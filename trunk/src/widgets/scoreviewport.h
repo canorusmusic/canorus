@@ -212,7 +212,7 @@ public:
 	inline int shadowNoteAccs() { return _shadowNoteAccs; }
 	inline void setShadowNoteAccs(int accs) { _shadowNoteAccs = accs; }
 	
-	inline void setShadowNoteDotted(int dotted) { for (int i=0; i<_shadowNote.size(); i++) _shadowNote[i]->setDotted(dotted); }
+	inline void setShadowNoteDotted(int dotted) { for (int i=0; i<_shadowNote.size(); i++) _shadowNote[i]->playableLength().setDotted(dotted); }
 	
 	CATextEdit *createTextEdit( CADrawableMusElement *elt );
 	inline CATextEdit *textEdit() { return _textEdit; }

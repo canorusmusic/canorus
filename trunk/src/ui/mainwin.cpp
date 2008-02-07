@@ -54,7 +54,7 @@
 #include "core/settings.h"
 #include "core/sheet.h"
 #include "core/staff.h"
-#include "core/functionmarkingcontext.h"
+#include "core/functionmarkcontext.h"
 #include "core/lyricscontext.h"
 #include "core/clef.h"
 #include "core/articulation.h"
@@ -66,7 +66,7 @@
 #include "core/barline.h"
 #include "core/timesignature.h"
 #include "core/syllable.h"
-#include "core/functionmarking.h"
+#include "core/functionmark.h"
 #include "core/dynamic.h"
 #include "core/instrumentchange.h"
 #include "core/repeatmark.h"
@@ -201,7 +201,7 @@ void CAMainWin::createCustomActions() {
 		uiContextType->setObjectName( "uiContextType" );
 		uiContextType->addButton( QIcon("images/document/staffnew.svg"), CAContext::Staff, tr("New Staff") );
 		uiContextType->addButton( QIcon("images/document/lyricscontextnew.svg"), CAContext::LyricsContext, tr("New Lyrics context") );
-		uiContextType->addButton( QIcon("images/document/fmcontextnew.svg"), CAContext::FunctionMarkingContext, tr("New Function Marking context") );
+		uiContextType->addButton( QIcon("images/document/fmcontextnew.svg"), CAContext::FunctionMarkContext, tr("New Function Mark context") );
 	uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this );
 		uiSlurType->setObjectName( "uiSlurType" );
 		uiSlurType->addButton( QIcon("images/slur/tie.svg"), CASlur::TieType, tr("Tie") );
@@ -320,14 +320,14 @@ void CAMainWin::createCustomActions() {
 	uiPlayableToolBar = new QToolBar( tr("Playable ToolBar"), this );
 	uiPlayableLength = new CAMenuToolButton( tr("Select Length" ), 4, this );
 		uiPlayableLength->setObjectName( "uiPlayableLength" );
-		uiPlayableLength->addButton( QIcon("images/playable/n0.svg"), CANote::Breve, tr("Breve", "note") );
-		uiPlayableLength->addButton( QIcon("images/playable/n1.svg"), CANote::Whole, tr("Whole", "note") );
-		uiPlayableLength->addButton( QIcon("images/playable/n2.svg"), CANote::Half, tr("Half", "note") );
-		uiPlayableLength->addButton( QIcon("images/playable/n4.svg"), CANote::Quarter, tr("Quarter", "note") );
-		uiPlayableLength->addButton( QIcon("images/playable/n8.svg"), CANote::Eighth, tr("Eighth", "note") );
-		uiPlayableLength->addButton( QIcon("images/playable/n16.svg"), CANote::Sixteenth, tr("Sixteenth", "note") );
-		uiPlayableLength->addButton( QIcon("images/playable/n32.svg"), CANote::ThirtySecond, tr("ThirtySecond", "note") );
-		uiPlayableLength->addButton( QIcon("images/playable/n64.svg"), CANote::SixtyFourth, tr("SixtyFourth", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n0.svg"), CAPlayableLength::Breve, tr("Breve", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n1.svg"), CAPlayableLength::Whole, tr("Whole", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n2.svg"), CAPlayableLength::Half, tr("Half", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n4.svg"), CAPlayableLength::Quarter, tr("Quarter", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n8.svg"), CAPlayableLength::Eighth, tr("Eighth", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n16.svg"), CAPlayableLength::Sixteenth, tr("Sixteenth", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n32.svg"), CAPlayableLength::ThirtySecond, tr("ThirtySecond", "note") );
+		uiPlayableLength->addButton( QIcon("images/playable/n64.svg"), CAPlayableLength::SixtyFourth, tr("SixtyFourth", "note") );
 	uiNoteStemDirection = new CAMenuToolButton( tr("Select Note Stem Direction" ), 4, this );
 		uiNoteStemDirection->setObjectName( "uiNoteStemDirection" );
 		uiNoteStemDirection->addButton( QIcon("images/playable/notestemneutral.svg"), CANote::StemNeutral, tr("Note Stem Neutral") );
@@ -392,44 +392,44 @@ void CAMainWin::createCustomActions() {
 		uiClefOffset->setValue( 0 );
 		uiClefOffset->setToolTip( tr("Clef offset") );
 	
-	uiFMToolBar = new QToolBar( tr("Function marking ToolBar"), this );
+	uiFMToolBar = new QToolBar( tr("Function mark ToolBar"), this );
 	uiFMFunction = new CAMenuToolButton( tr("Select Function Name"), 8, this );
 		uiFMFunction->setObjectName( "uiFMFunction" );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmt.svg"), CAFunctionMarking::T, tr("Tonic") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fms.svg"), CAFunctionMarking::S, tr("Subdominant") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmd.svg"), CAFunctionMarking::D, tr("Dominant") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmii.svg"), CAFunctionMarking::II, tr("II") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmiii.svg"), CAFunctionMarking::III, tr("III") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmvi.svg"), CAFunctionMarking::VI, tr("VI") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmvii.svg"), CAFunctionMarking::VII, tr("VII") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmk.svg"), CAFunctionMarking::K, tr("Cadenze") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmn.svg"), CAFunctionMarking::N, tr("Napolitan") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmf.svg"), CAFunctionMarking::F, tr("Phrygian") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fml.svg"), CAFunctionMarking::L, tr("Lydian") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmiv.svg"), CAFunctionMarking::IV, tr("IV") );
-		uiFMFunction->addButton( QIcon("images/functionmark/fmv.svg"), CAFunctionMarking::V, tr("V") );
-		uiFMFunction->addButton( QIcon("images/general/none.svg"), CAFunctionMarking::Undefined, tr("None") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmt.svg"), CAFunctionMark::T, tr("Tonic") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fms.svg"), CAFunctionMark::S, tr("Subdominant") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmd.svg"), CAFunctionMark::D, tr("Dominant") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmii.svg"), CAFunctionMark::II, tr("II") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmiii.svg"), CAFunctionMark::III, tr("III") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmvi.svg"), CAFunctionMark::VI, tr("VI") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmvii.svg"), CAFunctionMark::VII, tr("VII") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmk.svg"), CAFunctionMark::K, tr("Cadenze") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmot.svg"), CAFunctionMark::T*(-1), tr("minor Tonic") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmos.svg"), CAFunctionMark::S*(-1), tr("minor Subdominant") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmn.svg"), CAFunctionMark::N, tr("Napolitan") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmf.svg"), CAFunctionMark::F, tr("Phrygian") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fml.svg"), CAFunctionMark::L, tr("Lydian") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmiv.svg"), CAFunctionMark::IV, tr("IV") );
+		uiFMFunction->addButton( QIcon("images/functionmark/fmv.svg"), CAFunctionMark::V, tr("V") );
+		uiFMFunction->addButton( QIcon("images/general/none.svg"), CAFunctionMark::Undefined, tr("None") );
 	uiFMChordArea = new CAMenuToolButton( tr("Select Chord Area"), 3, this );
 		uiFMChordArea->setObjectName( "uiFMChordArea" );
-		uiFMChordArea->addButton( QIcon("images/functionmark/fmpt.svg"), CAFunctionMarking::T, tr("Tonic") );
-		uiFMChordArea->addButton( QIcon("images/functionmark/fmps.svg"), CAFunctionMarking::S, tr("Subdominant") );
-		uiFMChordArea->addButton( QIcon("images/functionmark/fmpd.svg"), CAFunctionMarking::D, tr("Dominant") );
-		uiFMChordArea->addButton( QIcon("images/functionmark/fmpot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
-		uiFMChordArea->addButton( QIcon("images/functionmark/fmpos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
-		uiFMChordArea->addButton( QIcon("images/general/none.svg"), CAFunctionMarking::Undefined, tr("None") );
+		uiFMChordArea->addButton( QIcon("images/functionmark/fmpt.svg"), CAFunctionMark::T, tr("Tonic") );
+		uiFMChordArea->addButton( QIcon("images/functionmark/fmps.svg"), CAFunctionMark::S, tr("Subdominant") );
+		uiFMChordArea->addButton( QIcon("images/functionmark/fmpd.svg"), CAFunctionMark::D, tr("Dominant") );
+		uiFMChordArea->addButton( QIcon("images/functionmark/fmpot.svg"), CAFunctionMark::T*(-1), tr("minor Tonic") );
+		uiFMChordArea->addButton( QIcon("images/functionmark/fmpos.svg"), CAFunctionMark::S*(-1), tr("minor Subdominant") );
+		uiFMChordArea->addButton( QIcon("images/general/none.svg"), CAFunctionMark::Undefined, tr("None") );
 	uiFMTonicDegree = new CAMenuToolButton( tr("Select Tonic Degree"), 5, this );
 		uiFMTonicDegree->setObjectName( "uiFMTonicDegree" );
-		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmt.svg"), CAFunctionMarking::T, tr("Tonic") );
-		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmot.svg"), CAFunctionMarking::T*(-1), tr("minor Tonic") );
-		uiFMTonicDegree->addButton( QIcon("images/functionmark/fms.svg"), CAFunctionMarking::S, tr("Subdominant") );
-		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmos.svg"), CAFunctionMarking::S*(-1), tr("minor Subdominant") );
-		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmd.svg"), CAFunctionMarking::D, tr("Dominant") );
-		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmii.svg"), CAFunctionMarking::II, tr("II") );
-		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmiii.svg"), CAFunctionMarking::III, tr("III") );
-		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmvi.svg"), CAFunctionMarking::VI, tr("VI") );
-		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmvii.svg"), CAFunctionMarking::VII, tr("VII") );
+		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmt.svg"), CAFunctionMark::T, tr("Tonic") );
+		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmot.svg"), CAFunctionMark::T*(-1), tr("minor Tonic") );
+		uiFMTonicDegree->addButton( QIcon("images/functionmark/fms.svg"), CAFunctionMark::S, tr("Subdominant") );
+		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmos.svg"), CAFunctionMark::S*(-1), tr("minor Subdominant") );
+		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmd.svg"), CAFunctionMark::D, tr("Dominant") );
+		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmii.svg"), CAFunctionMark::II, tr("II") );
+		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmiii.svg"), CAFunctionMark::III, tr("III") );
+		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmvi.svg"), CAFunctionMark::VI, tr("VI") );
+		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmvii.svg"), CAFunctionMark::VII, tr("VII") );
 	uiFMKeySig = new QComboBox( this );
 		uiFMKeySig->setObjectName("uiFMKeySig");
 		uiFMKeySig->addItem( QIcon("images/accidental/accs-7.svg"), tr("C-flat major") );
@@ -505,12 +505,12 @@ void CAMainWin::createCustomActions() {
 	uiTempoToolBar = new QToolBar( tr("Tempo ToolBar"), this );
 	uiTempoBeat = new CAMenuToolButton( tr("Select Beat"), 3, this );
 		uiTempoBeat->setObjectName("uiTempoBeat");
-		uiTempoBeat->addButton( QIcon("images/playable/n4.svg"), CANote::Quarter, tr("Quarter", "note") );
-		uiTempoBeat->addButton( QIcon("images/playable/n2.svg"), CANote::Half, tr("Half", "note") );
-		uiTempoBeat->addButton( QIcon("images/playable/n8.svg"), CANote::Eighth, tr("Eighth", "note") );
-		uiTempoBeat->addButton( QIcon("images/playable/n4d.svg"), CANote::Quarter*(-1), tr("Dotted Quarter", "note") );
-		uiTempoBeat->addButton( QIcon("images/playable/n2d.svg"), CANote::Half*(-1), tr("Dotted Half", "note") );
-		uiTempoBeat->addButton( QIcon("images/playable/n8d.svg"), CANote::Eighth*(-1), tr("Dotted Eighth", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n4.svg"), CAPlayableLength::Quarter, tr("Quarter", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n2.svg"), CAPlayableLength::Half, tr("Half", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n8.svg"), CAPlayableLength::Eighth, tr("Eighth", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n4d.svg"), CAPlayableLength::Quarter*(-1), tr("Dotted Quarter", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n2d.svg"), CAPlayableLength::Half*(-1), tr("Dotted Half", "note") );
+		uiTempoBeat->addButton( QIcon("images/playable/n8d.svg"), CAPlayableLength::Eighth*(-1), tr("Dotted Eighth", "note") );
 	uiTempoEquals = new QLabel("=", this);
 		uiTempoEquals->setObjectName("uiTempoEquals");
 	uiTempoBpm = new QLineEdit(this);
@@ -641,7 +641,7 @@ void CAMainWin::setupCustomUi() {
 	uiPlayableLength->setDefaultAction( uiPlayableToolBar->addWidget( uiPlayableLength ) );
 	uiPlayableLength->defaultAction()->setToolTip(tr("Playable length"));
 	uiPlayableLength->defaultAction()->setCheckable(false);
-	uiPlayableLength->setCurrentId( CANote::Quarter );
+	uiPlayableLength->setCurrentId( CAPlayableLength::Quarter );
 	uiPlayableToolBar->addAction( uiAccsVisible );
 	uiNoteStemDirection->setDefaultAction( uiPlayableToolBar->addWidget(uiNoteStemDirection ) );
 	uiNoteStemDirection->defaultAction()->setToolTip(tr("Note stem direction"));		
@@ -676,19 +676,19 @@ void CAMainWin::setupCustomUi() {
 	uiVoiceToolBar->addAction( uiVoiceProperties );
 	addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
 	
-	// Function marking Toolbar
+	// Function mark Toolbar
 	uiFMFunction->setDefaultAction( uiFMToolBar->addWidget( uiFMFunction ) );
-	uiFMFunction->defaultAction()->setToolTip( tr("Function marking") );
-	uiFMFunction->setCurrentId( CAFunctionMarking::T );
+	uiFMFunction->defaultAction()->setToolTip( tr("Function mark") );
+	uiFMFunction->setCurrentId( CAFunctionMark::T );
 	uiFMFunction->defaultAction()->setCheckable( false );
 	uiFMChordArea->setDefaultAction( uiFMToolBar->addWidget( uiFMChordArea ) );
-	uiFMChordArea->defaultAction()->setToolTip( tr("Function marking chord area") );
-	uiFMChordArea->setCurrentId( CAFunctionMarking::T );
+	uiFMChordArea->defaultAction()->setToolTip( tr("Function mark chord area") );
+	uiFMChordArea->setCurrentId( CAFunctionMark::T );
 	uiFMChordArea->defaultAction()->setCheckable( false );
 	uiFMTonicDegree->setDefaultAction( uiFMToolBar->addWidget( uiFMTonicDegree ) );
 	uiFMTonicDegree->defaultAction()->setCheckable( false );
-	uiFMTonicDegree->defaultAction()->setToolTip( tr("Function marking tonic degree") );
-	uiFMTonicDegree->setCurrentId( CAFunctionMarking::T );
+	uiFMTonicDegree->defaultAction()->setToolTip( tr("Function mark tonic degree") );
+	uiFMTonicDegree->setCurrentId( CAFunctionMark::T );
 	uiFMToolBar->addAction( uiFMEllipse );
 	uiFMToolBar->addWidget( uiFMKeySig );
 	connect( uiFMKeySig, SIGNAL( activated(int) ), this, SLOT( on_uiKeySig_activated(int) ) );
@@ -1447,7 +1447,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 					std::cout << ", voice=" << ((CANote*)elt)->isPartOfTheChord() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
 					std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
 					if (elt->musElementType()==CAMusElement::Note)
-						std::cout << ", pitch=" << ((CANote*)elt)->pitch();
+						std::cout << ", pitch=" << static_cast<CANote*>(elt)->diatonicPitch().noteName();
 				}
 				std::cout << std::endl;
 			} else {
@@ -1493,12 +1493,12 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 						
 						break;
 					}
-					case CAContext::FunctionMarkingContext: {
-						CACanorus::undo()->createUndoCommand( document(), tr("new function marking context", "undo"));
+					case CAContext::FunctionMarkContext: {
+						CACanorus::undo()->createUndoCommand( document(), tr("new function mark context", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
-							newContext = new CAFunctionMarkingContext(
-								tr("FunctionMarkingContext%1").arg(v->sheet()->contextCount()+1),
+							newContext = new CAFunctionMarkContext(
+								tr("FunctionMarkContext%1").arg(v->sheet()->contextCount()+1),
 								v->sheet()
 							)
 						);
@@ -1524,7 +1524,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 					// place a rest when using right mouse button and note insertion is selected
 					musElementFactory()->setMusElementType( CAMusElement::Rest );
 				// show the dotted shadow note
-				currentScoreViewPort()->setShadowNoteDotted( musElementFactory()->playableDotted() );
+				currentScoreViewPort()->setShadowNoteDotted( musElementFactory()->playableLength().dotted() );
 			}
 			
 			insertMusElementAt( coords, v );
@@ -1558,7 +1558,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreViewPort *c) {
 	if ( mode() == SelectMode && c->resizeDirection()!=CADrawable::Undefined ) {
 		int time = c->coordsToTime(coords.x());
-		time -= (time%CAPlayable::playableLengthToTimeLength(CAPlayable::Sixteenth)); // round timelength to eighth notes length
+		time -= (time % CAPlayableLength::musicLengthToTimeLength(CAPlayableLength::Sixteenth)); // round timelength to eighth notes length
 	if ( c->resizeDirection()==CADrawable::Right && (time > c->selection().at(0)->musElement()->timeStart()) ) {
 			c->selection().at(0)->musElement()->setTimeLength( time - c->selection().at(0)->musElement()->timeStart() );
 			c->selection().at(0)->setWidth( c->timeToCoords(time) - c->selection().at(0)->xPos() );
@@ -1774,7 +1774,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 						CANote *note = static_cast<CANote*>(elt->musElement());
-						note->setPitch(note->pitch()+1);
+						note->diatonicPitch().setNoteName(note->diatonicPitch().noteName()+1);
 						CACanorus::undo()->pushUndoCommand();
 						rebuild = true;
 					}
@@ -1800,7 +1800,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 						CANote *note = static_cast<CANote*>(elt->musElement());
-						note->setPitch(note->pitch()-1);
+						note->diatonicPitch().setNoteName(note->diatonicPitch().noteName()-1);
 						CACanorus::undo()->pushUndoCommand();
 						rebuild = true;
 					}
@@ -1821,8 +1821,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					CAMusElement *elt = v->selection().front()->musElement();
 					if (elt->musElementType()==CAMusElement::Note) {
 						CACanorus::undo()->createUndoCommand( document(), tr("add sharp", "undo") );
-						if ( ((CANote*)elt)->accidentals() < 2 )		// limit the amount of accidentals
-							((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()+1);
+						if ( static_cast<CANote*>(elt)->diatonicPitch().accs() < 2 )       // limit the amount of accidentals
+							static_cast<CANote*>(elt)->diatonicPitch().setAccs( static_cast<CANote*>(elt)->diatonicPitch().accs()+1 );
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
@@ -1842,8 +1842,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					CAMusElement *elt = v->selection().front()->musElement();
 					if (elt->musElementType()==CAMusElement::Note) {
 						CACanorus::undo()->createUndoCommand( document(), tr("add flat", "undo") );
-						if ( ((CANote*)elt)->accidentals() > -2 )		// limit the amount of accidentals
-							((CANote*)elt)->setAccidentals(((CANote*)elt)->accidentals()-1);
+						if ( static_cast<CANote*>(elt)->diatonicPitch().accs() > -2 )       // limit the amount of accidentals
+							static_cast<CANote*>(elt)->diatonicPitch().setAccs( static_cast<CANote*>(elt)->diatonicPitch().accs()-1 );
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 					}
@@ -1855,7 +1855,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		case Qt::Key_Period: {
 			if (mode()==InsertMode) {
 				musElementFactory()->addPlayableDotted( 1, musElementFactory()->playableLength() );
-				currentScoreViewPort()->setShadowNoteDotted( musElementFactory()->playableDotted() );
+				currentScoreViewPort()->setShadowNoteDotted( musElementFactory()->playableLength().dotted() );
 				v->repaint();
 			} else if (mode()==EditMode) {
 				if (!((CAScoreViewPort*)v)->selection().isEmpty()) {
@@ -1870,7 +1870,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 							for (int i=0; i<chord.size(); i++) {
 								next = p->voice()->next(p);
 								p->voice()->remove(chord[i]);
-								chord[i]->setDotted( (p->dotted()+1)%4 );
+								chord[i]->playableLength().setDotted( (p->playableLength().dotted()+1)%4 );
 							}
 							p->voice()->insert( next, chord[0], false );
 							for (int i=1; i<chord.size(); i++) {
@@ -1879,7 +1879,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						} else if ( p->musElementType()==CAMusElement::Rest ) {
 							next = p->voice()->next(p);
 							p->voice()->remove(p);
-							p->setDotted( (p->dotted()+1)%4 );
+							p->playableLength().setDotted( (p->playableLength().dotted()+1)%4 );
 							p->voice()->insert( next, p );
 						}
 						
@@ -1933,56 +1933,56 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		case Qt::Key_1:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
-			uiPlayableLength->setCurrentId( CANote::Whole, true );
-			musElementFactory()->setPlayableDotted( 0 );
+			uiPlayableLength->setCurrentId( CAPlayableLength::Whole, true );
+			musElementFactory()->playableLength().setDotted( 0 );
 			break;
 		case Qt::Key_2:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
-			uiPlayableLength->setCurrentId( CANote::Half, true );
-			musElementFactory()->setPlayableDotted( 0 );
+			uiPlayableLength->setCurrentId( CAPlayableLength::Half, true );
+			musElementFactory()->playableLength().setDotted( 0 );
 			break;
 		case Qt::Key_4:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
-			uiPlayableLength->setCurrentId( CANote::Quarter, true );
-			musElementFactory()->setPlayableDotted( 0 );
+			uiPlayableLength->setCurrentId( CAPlayableLength::Quarter, true );
+			musElementFactory()->playableLength().setDotted( 0 );
 			break;
 		case Qt::Key_5:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
-			uiPlayableLength->setCurrentId( CANote::Eighth, true );
-			musElementFactory()->setPlayableDotted( 0 );
+			uiPlayableLength->setCurrentId( CAPlayableLength::Eighth, true );
+			musElementFactory()->playableLength().setDotted( 0 );
 			break;
 		case Qt::Key_6:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
-			uiPlayableLength->setCurrentId( CANote::Sixteenth, true );
-			musElementFactory()->setPlayableDotted( 0 );
+			uiPlayableLength->setCurrentId( CAPlayableLength::Sixteenth, true );
+			musElementFactory()->playableLength().setDotted( 0 );
 			break;
 		case Qt::Key_7:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
-			uiPlayableLength->setCurrentId( CANote::ThirtySecond, true );
-			musElementFactory()->setPlayableDotted( 0 );
+			uiPlayableLength->setCurrentId( CAPlayableLength::ThirtySecond, true );
+			musElementFactory()->playableLength().setDotted( 0 );
 			break;
 		case Qt::Key_8:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
-			uiPlayableLength->setCurrentId( CANote::SixtyFourth, true );
-			musElementFactory()->setPlayableDotted( 0 );
+			uiPlayableLength->setCurrentId( CAPlayableLength::SixtyFourth, true );
+			musElementFactory()->playableLength().setDotted( 0 );
 			break;
 		case Qt::Key_9:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
-			uiPlayableLength->setCurrentId( CANote::HundredTwentyEighth, true );
-			musElementFactory()->setPlayableDotted( 0 );
+			uiPlayableLength->setCurrentId( CAPlayableLength::HundredTwentyEighth, true );
+			musElementFactory()->playableLength().setDotted( 0 );
 			break;
 		case Qt::Key_0:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
-			uiPlayableLength->setCurrentId( CANote::Breve, true );
-			musElementFactory()->setPlayableDotted( 0 );
+			uiPlayableLength->setCurrentId( CAPlayableLength::Breve, true );
+			musElementFactory()->playableLength().setDotted( 0 );
 			break;
 	}
 	
@@ -2067,7 +2067,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				// user clicked inside x borders of the rest - replace the rest/rests with the note
 				
 				int timeSum = left->musElement()->timeLength();
-				int timeLength = CAPlayable::playableLengthToTimeLength( musElementFactory()->playableLength(), musElementFactory()->playableDotted() );
+				int timeLength = CAPlayableLength::playableLengthToTimeLength( musElementFactory()->playableLength() );
 				CAMusElement *next;
 				while ( (next=voice->next(left->musElement())) &&
 				        next->musElementType() == CAMusElement::Rest &&
@@ -2097,7 +2097,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			if ( success ) {
 				musElementFactory()->setNoteExtraAccs( 0 );
 				v->setDrawShadowNoteAccs( false ); 
-				v->setShadowNoteDotted( musElementFactory()->playableDotted() );
+				v->setShadowNoteDotted( musElementFactory()->playableLength().dotted() );
 			}
 			break;
 		}
@@ -2116,7 +2116,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				// user clicked inside x borders of the rest - replace the rest/rests with the new rest
 				
 				int timeSum = left->musElement()->timeLength();
-				int timeLength = CAPlayable::playableLengthToTimeLength( musElementFactory()->playableLength(), musElementFactory()->playableDotted() );
+				int timeLength = CAPlayableLength::playableLengthToTimeLength( musElementFactory()->playableLength() );
 				CAMusElement *next;
 				while ( (next=voice->next(left->musElement())) &&
 				        next->musElementType() == CAMusElement::Rest &&
@@ -2141,7 +2141,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			}
 			
 			if (success)
-				v->setShadowNoteDotted( musElementFactory()->playableDotted() );
+				v->setShadowNoteDotted( musElementFactory()->playableLength().dotted() );
 			
 			break;
 		}
@@ -2161,7 +2161,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 					} else {
 						// create a new tie
 						for (int i=0; i<noteList.count() && noteList[i]->timeStart()<=noteStart->timeEnd(); i++) {
-							if ( noteList[i]->timeStart()==noteStart->timeEnd() && noteList[i]->pitch()==noteStart->pitch() ) {
+							if ( noteList[i]->timeStart()==noteStart->timeEnd() && noteList[i]->diatonicPitch()==noteStart->diatonicPitch() ) {
 								noteEnd = noteList[i];
 								break;
 							}
@@ -2188,10 +2188,10 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			}
 			break;
 		}
-		case CAMusElement::FunctionMarking: {
-			// Insert function marking
-			if (drawableContext->context()->contextType()==CAContext::FunctionMarkingContext) {
-				CAFunctionMarkingContext *fmc = static_cast<CAFunctionMarkingContext*>(drawableContext->context());
+		case CAMusElement::FunctionMark: {
+			// Insert function mark
+			if (drawableContext->context()->contextType()==CAContext::FunctionMarkContext) {
+				CAFunctionMarkContext *fmc = static_cast<CAFunctionMarkContext*>(drawableContext->context());
 				CADrawableMusElement *dLeft = v->nearestLeftElement(coords.x(), coords.y(), false);
 				int timeStart = 0;
 				if ( dLeft ) // find the nearest left element from the cursor
@@ -2202,7 +2202,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 					if (chord[i]->timeLength()-(timeStart-chord[i]->timeStart())<timeLength)
 						timeLength = chord[i]->timeLength()-(timeStart-chord[i]->timeStart());
 				
-				success = musElementFactory()->configureFunctionMarking( fmc, timeStart, timeLength );
+				success = musElementFactory()->configureFunctionMark( fmc, timeStart, timeLength );
 			}
 			break;
 		}
@@ -2630,7 +2630,7 @@ void CAMainWin::on_uiKeySig_activated( int row ) {
 		
 		for ( int i=0; i<list.size(); i++ ) {
 			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(list[i]->musElement());
-			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>(list[i]->musElement());
+			CAFunctionMark *fm = dynamic_cast<CAFunctionMark*>(list[i]->musElement());
 			
 			if ( keySig ) {
 				keySig->setKeySignatureType( CAKeySignature::MajorMinor, accs, gender );
@@ -2717,15 +2717,14 @@ void CAMainWin::on_uiInsertSyllable_toggled( bool checked ) {
 
 void CAMainWin::on_uiInsertFM_toggled(bool checked) {
 	if (checked) {
-		musElementFactory()->setMusElementType( CAMusElement::FunctionMarking );
+		musElementFactory()->setMusElementType( CAMusElement::FunctionMark );
 		setMode( InsertMode );
 	}
 }
 
 void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 	// Read currently selected entry from tool button menu
-	CAPlayable::CAPlayableLength length =
-		static_cast<CAPlayable::CAPlayableLength>(buttonId);
+	CAPlayableLength length = CAPlayableLength(static_cast<CAPlayableLength::CAMusicLength>(buttonId));
 		
 	if ( mode()==InsertMode ) {
 		// New note length type
@@ -2741,7 +2740,7 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 			if (p) {
 				CAMusElement *next=0;
 				int oldLength = p->timeLength();
-				int newLength = CAPlayable::playableLengthToTimeLength( length );
+				int newLength = CAPlayableLength::playableLengthToTimeLength( length );
 				if ( p->musElementType()==CAMusElement::Note ) {                   // change the length of the whole chord
 					QList<CANote*> chord = static_cast<CANote*>(p)->getChord();
 					for (int i=0; i<chord.size(); i++) {
@@ -2876,7 +2875,7 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 
 void CAMainWin::on_uiFMFunction_toggled( bool checked, int buttonId ) {
 	if ( mode()==InsertMode ) {
-		musElementFactory()->setFMFunction( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+		musElementFactory()->setFMFunction( static_cast<CAFunctionMark::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
 		musElementFactory()->setFMFunctionMinor( buttonId<0 );
 	} else
 	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
@@ -2884,10 +2883,10 @@ void CAMainWin::on_uiFMFunction_toggled( bool checked, int buttonId ) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change function", "undo") );
 		
 		for ( int i=0; i<v->selection().size(); i++ ) {
-			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(i)->musElement() );
+			CAFunctionMark *fm = dynamic_cast<CAFunctionMark*>( v->selection().at(i)->musElement() );
 			
 			if ( fm ) {
-				fm->setFunction( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+				fm->setFunction( static_cast<CAFunctionMark::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
 				fm->setMinor( buttonId<0 );
 			}
 		}
@@ -2899,7 +2898,7 @@ void CAMainWin::on_uiFMFunction_toggled( bool checked, int buttonId ) {
 
 void CAMainWin::on_uiFMChordArea_toggled(bool checked, int buttonId) {
 	if ( mode()==InsertMode ) {
-		musElementFactory()->setFMChordArea( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+		musElementFactory()->setFMChordArea( static_cast<CAFunctionMark::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
 		musElementFactory()->setFMChordAreaMinor( buttonId<0 );
 	} else
 	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
@@ -2907,10 +2906,10 @@ void CAMainWin::on_uiFMChordArea_toggled(bool checked, int buttonId) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change chord area", "undo") );
 		
 		for ( int i=0; i<v->selection().size(); i++ ) {
-			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(i)->musElement() );
+			CAFunctionMark *fm = dynamic_cast<CAFunctionMark*>( v->selection().at(i)->musElement() );
 			
 			if ( fm ) {
-				fm->setChordArea( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+				fm->setChordArea( static_cast<CAFunctionMark::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
 				fm->setChordAreaMinor( buttonId<0 );
 			}
 		}
@@ -2922,7 +2921,7 @@ void CAMainWin::on_uiFMChordArea_toggled(bool checked, int buttonId) {
 
 void CAMainWin::on_uiFMTonicDegree_toggled(bool checked, int buttonId) {
 	if ( mode()==InsertMode ) {
-		musElementFactory()->setFMTonicDegree( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+		musElementFactory()->setFMTonicDegree( static_cast<CAFunctionMark::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
 		musElementFactory()->setFMTonicDegreeMinor( buttonId<0 );
 	} else
 	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
@@ -2930,10 +2929,10 @@ void CAMainWin::on_uiFMTonicDegree_toggled(bool checked, int buttonId) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change tonic degree", "undo") );
 		
 		for ( int i=0; i<v->selection().size(); i++ ) {
-			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(i)->musElement() );
+			CAFunctionMark *fm = dynamic_cast<CAFunctionMark*>( v->selection().at(i)->musElement() );
 			
 			if ( fm ) {
-				fm->setTonicDegree( static_cast<CAFunctionMarking::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
+				fm->setTonicDegree( static_cast<CAFunctionMark::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
 				fm->setTonicDegreeMinor( buttonId<0 );
 			}
 		}
@@ -2952,7 +2951,7 @@ void CAMainWin::on_uiFMEllipse_toggled( bool checked ) {
 		CACanorus::undo()->createUndoCommand( document(), tr("set/unset ellipse", "undo") );
 		
 		for ( int i=0; i<v->selection().size(); i++ ) {
-			CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>( v->selection().at(i)->musElement() );
+			CAFunctionMark *fm = dynamic_cast<CAFunctionMark*>( v->selection().at(i)->musElement() );
 			
 			if ( fm ) {
 				fm->setEllipse( checked );
@@ -3571,7 +3570,7 @@ void CAMainWin::updateContextToolBar() {
 				
 				break;
 			}
-			case CAContext::FunctionMarkingContext: {
+			case CAContext::FunctionMarkContext: {
 				uiStanzaNumberAction->setVisible(false);
 				uiAssociatedVoiceAction->setVisible(false);
 				break;
@@ -3612,8 +3611,8 @@ void CAMainWin::updateInsertToolBar() {
 						uiInsertFM->setVisible(false);
 						uiInsertSyllable->setVisible(false);
 						break;
-					case CAContext::FunctionMarkingContext:
-						// function marking context selected
+					case CAContext::FunctionMarkContext:
+						// function mark context selected
 						uiInsertPlayable->setVisible(false);
 						uiSlurType->defaultAction()->setVisible(false);
 						uiInsertClef->setVisible(false); // menu
@@ -3689,7 +3688,7 @@ void CAMainWin::updateInsertToolBar() {
 */
 void CAMainWin::updatePlayableToolBar() {
 	if ( uiInsertPlayable->isChecked() && mode()==InsertMode ) {
-		uiPlayableLength->setCurrentId( musElementFactory()->playableLength() );
+		uiPlayableLength->setCurrentId( musElementFactory()->playableLength().musicLength() );
 		uiNoteStemDirection->setCurrentId( musElementFactory()->noteStemDirection() );
 		uiHiddenRest->setEnabled(true);
 		uiHiddenRest->setChecked( musElementFactory()->restType()==CARest::Hidden );
@@ -3699,7 +3698,7 @@ void CAMainWin::updatePlayableToolBar() {
 		if (v && v->selection().size()) {
 			CAPlayable *playable = dynamic_cast<CAPlayable*>(v->selection().at(0)->musElement());
 			if (playable) {
-				uiPlayableLength->setCurrentId( playable->playableLength() );
+				uiPlayableLength->setCurrentId( playable->playableLength().musicLength() );
 				if (playable->musElementType()==CAMusElement::Note) {
 					CANote *note = static_cast<CANote*>(playable);
 					uiNoteStemDirection->setCurrentId( note->stemDirection() );
@@ -3787,7 +3786,7 @@ void CAMainWin::updateClefToolBar() {
 }
 
 /*!
-	Shows/Hides the function marking properties tool bar according to the current state.
+	Shows/Hides the function mark properties tool bar according to the current state.
 */
 void CAMainWin::updateFMToolBar() {
 	if (uiInsertFM->isChecked() && mode()==InsertMode) {
@@ -3801,8 +3800,8 @@ void CAMainWin::updateFMToolBar() {
 		uiFMToolBar->show();
 	} else if ( mode()==EditMode && currentScoreViewPort() &&
 	            currentScoreViewPort()->selection().size() &&
-	            dynamic_cast<CAFunctionMarking*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
-		CAFunctionMarking *fm = dynamic_cast<CAFunctionMarking*>(currentScoreViewPort()->selection().at(0)->musElement());
+	            dynamic_cast<CAFunctionMark*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
+		CAFunctionMark *fm = dynamic_cast<CAFunctionMark*>(currentScoreViewPort()->selection().at(0)->musElement());
 		uiFMFunction->setCurrentId( fm->function()*(fm->isMinor()?-1:1) );
 		uiFMChordArea->setCurrentId( fm->chordArea()*(fm->isChordAreaMinor()?-1:1) );
 		uiFMTonicDegree->setCurrentId( fm->tonicDegree()*(fm->isTonicDegreeMinor()?-1:1) );
@@ -3918,7 +3917,7 @@ void CAMainWin::updateFingeringToolBar() {
 */
 void CAMainWin::updateTempoToolBar() {
 	if ( uiMarkType->isChecked() && uiMarkType->currentId()==CAMark::Tempo && mode()==InsertMode) {
-		uiTempoBeat->setCurrentId( musElementFactory()->tempoBeat() * (musElementFactory()->tempoBeatDotted()?-1:1) );
+		uiTempoBeat->setCurrentId( musElementFactory()->tempoBeat().musicLength() * (musElementFactory()->tempoBeat().dotted()?-1:1) );
 		uiTempoBpm->setText( QString::number(musElementFactory()->tempoBpm()) );
 		uiTempoToolBar->show();
 	} else if (mode()==EditMode) {
@@ -3926,7 +3925,7 @@ void CAMainWin::updateTempoToolBar() {
 		if (v && v->selection().size()) {
 			CATempo *tempo = dynamic_cast<CATempo*>(v->selection().at(0)->musElement());
 			if (tempo) {
-				uiTempoBeat->setCurrentId( tempo->beat() * (tempo->beatDotted()?-1:1) );
+				uiTempoBeat->setCurrentId( tempo->beat().musicLength() * (tempo->beat().dotted()?-1:1) );
 				uiTempoBpm->setText( QString::number(tempo->bpm()) );
 				uiTempoToolBar->show();
 			} else
@@ -4092,13 +4091,13 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 				} else {
 					static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
 				}
-			} else if ( (*i)->musElementType()==CAMusElement::FunctionMarking ) {
+			} else if ( (*i)->musElementType()==CAMusElement::FunctionMark ) {
 				if ( deleteSyllables ) {
-					CAFunctionMarkingContext *fmc = static_cast<CAFunctionMarkingContext*>((*i)->context()); 
+					CAFunctionMarkContext *fmc = static_cast<CAFunctionMarkContext*>((*i)->context()); 
 					(*i)->context()->remove(*i);  // actually removes the function if SHIFT is pressed
 					fmc->repositFunctions();
 				} else {
-					static_cast<CAFunctionMarking*>(*i)->clear(); // only clears the function
+					static_cast<CAFunctionMark*>(*i)->clear(); // only clears the function
 				}
 			} else if ( (*i)->musElementType()==CAMusElement::Mark ) {
 				delete *i; // also removes itself from associated elements
@@ -4342,11 +4341,10 @@ void CAMainWin::on_uiRepeatMarkType_toggled( bool checked, int t ) {
 }
 
 void CAMainWin::on_uiTempoBeat_toggled( bool checked, int t ) {
-	CAPlayable::CAPlayableLength length = static_cast<CAPlayable::CAPlayableLength>( t<0?t*(-1):t );
+	CAPlayableLength length = CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>( t<0?t*(-1):t ), t<0?1:0 );
 	
 	if ( mode()==InsertMode ) {
 		musElementFactory()->setTempoBeat( length );
-		musElementFactory()->setTempoBeatDotted( t<0?1:0 );
 	} else
 	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
 		CAScoreViewPort *v = currentScoreViewPort();
@@ -4357,7 +4355,6 @@ void CAMainWin::on_uiTempoBeat_toggled( bool checked, int t ) {
 			
 			if ( tempo ) {
 				tempo->setBeat( length );
-				tempo->setBeatDotted( t<0?1:0 );
 			}
 		}
 		

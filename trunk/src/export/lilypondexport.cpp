@@ -48,10 +48,9 @@ CALilyPondExport::CALilyPondExport( QTextStream *out )
 void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	setCurVoice(v);
 	
-	int lastNotePitch;   // initialized by writeRelativeIntro()
+	CADiatonicPitch lastNotePitch;   // initialized by writeRelativeIntro()
 	int curStreamTime = 0;
-	CAPlayable::CAPlayableLength lastPlayableLength = CAPlayable::Undefined;
-	int lastPlayableDotted=0;
+	CAPlayableLength lastPlayableLength(CAPlayableLength::Undefined);
 	
 	// Write \relative note for the first note
 	lastNotePitch = writeRelativeIntro();
@@ -112,32 +111,29 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				}
 				
 				// write the note name
-				out() << relativePitchToString(note->pitch(), note->accidentals(), lastNotePitch);
+				out() << relativePitchToString( note->diatonicPitch(), lastNotePitch);
 				
-				if (!note->isPartOfTheChord() && lastPlayableLength != note->playableLength() || lastPlayableDotted != note->dotted()) {
-					out() << playableLengthToLilyPond(note->playableLength(), note->dotted());
+				if ( !note->isPartOfTheChord() && lastPlayableLength != note->playableLength() ) {
+					out() << playableLengthToLilyPond( note->playableLength() );
 				}
 				
 				if (note->tieStart())
 					out() << "~";
 				
-				lastNotePitch = note->pitch();
+				lastNotePitch = note->diatonicPitch();
 				if (!note->isPartOfTheChord())
 					lastPlayableLength = note->playableLength();
-				if (!note->isPartOfTheChord())
-					lastPlayableDotted = note->dotted();
 				
 				// finish the chord stanza if that's the last note of the chord
 				if (note->isPartOfTheChord() && note->isLastInTheChord()) {
 					out() << ">";
 					
-					if ( lastPlayableLength != note->playableLength() || lastPlayableDotted != note->dotted() ) {
-						out() << playableLengthToLilyPond(note->playableLength(), note->dotted());
+					if ( lastPlayableLength != note->playableLength() ) {
+						out() << playableLengthToLilyPond( note->playableLength() );
 					}
 					
-					lastNotePitch = note->getChord().at(0)->pitch();
+					lastNotePitch = note->getChord().at(0)->diatonicPitch();
 					lastPlayableLength = note->playableLength();
-					lastPlayableDotted = note->dotted();
 				}
 				
 				// place slurs and phrasing slurs
@@ -172,12 +168,11 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				
 				out() << restTypeToLilyPond(rest->restType());
 				
-				if (lastPlayableLength!=rest->playableLength() || lastPlayableDotted!=rest->dotted()) {
-					out() << playableLengthToLilyPond(rest->playableLength(), rest->dotted());
+				if ( lastPlayableLength!=rest->playableLength() ) {
+					out() << playableLengthToLilyPond( rest->playableLength() );
 				}
 				
 				lastPlayableLength = rest->playableLength();
-				lastPlayableDotted = rest->dotted();
 				curStreamTime += rest->timeLength();
 				
 				break;
@@ -228,7 +223,7 @@ void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
 	This function is usually used for writing the beginning of the voice.
 	\warning This function doesn't write "{" paranthesis to mark the start of the voice!
 */
-int CALilyPondExport::writeRelativeIntro() {
+CADiatonicPitch CALilyPondExport::writeRelativeIntro() {
 	int i;
 	
 	// find the first playable element and set the key signature if found any 
@@ -239,14 +234,14 @@ int CALilyPondExport::writeRelativeIntro() {
 	
 	// no playable elements present, return default c' pitch
 	if (i==curVoice()->musElementCount())
-		return 28;
+		return CADiatonicPitch( 28 );
 	
-	int notePitch = static_cast<CANote*>(curVoice()->musElementAt(i))->pitch();
-	int cPitch = ((notePitch + 3) / 7) * 7;
+	CADiatonicPitch notePitch = static_cast<CANote*>(curVoice()->musElementAt(i))->diatonicPitch();
+	notePitch.setNoteName( ((notePitch.noteName() + 3) / 7) * 7 );
 	out() << "\\relative "
-	      << relativePitchToString(cPitch, 0, 21) << " "; // LilyPond default C is c1
+	      << relativePitchToString( notePitch, CADiatonicPitch(21) ) << " "; // LilyPond default C is c1
 	
-	return cPitch;
+	return notePitch;
 }
 
 /*!
@@ -257,12 +252,12 @@ int CALilyPondExport::writeRelativeIntro() {
 	
 	\sa notePitchToLilyPond()
 */
-const QString CALilyPondExport::relativePitchToString(int pitch, signed char accs, int prevPitch) {
+const QString CALilyPondExport::relativePitchToString( CADiatonicPitch p, CADiatonicPitch prevPitch) {
 	// write the note name
-	QString stringPitch = notePitchToLilyPond(pitch, accs);
+	QString stringPitch = diatonicPitchToLilyPond(p);
 	
 	// write , or ' to lower/higher a note
-	int delta = prevPitch - pitch;
+	int delta = prevPitch.noteName() - p.noteName();
 	while (delta > 3) { // add the needed amount of the commas
 		stringPitch += ",";
 		delta -= 7;
@@ -346,7 +341,7 @@ const QString CALilyPondExport::keySignaturePitchToLilyPond(signed char numberOf
 	if (numberOfAccs<-4 && gender==CAKeySignature::Minor)
 		accs = (numberOfAccs+4)/7 - 1;
 	
-	return notePitchToLilyPond(pitch, accs);
+	return diatonicPitchToLilyPond( CADiatonicPitch(pitch, accs) );
 }
 
 /*!
@@ -366,39 +361,39 @@ const QString CALilyPondExport::keySignatureGenderToLilyPond(CAKeySignature::CAM
 /*!
 	Converts the note length to LilyPond syntax.
 */
-const QString CALilyPondExport::playableLengthToLilyPond(CAPlayable::CAPlayableLength playableLength, int dotted) {
+const QString CALilyPondExport::playableLengthToLilyPond( CAPlayableLength playableLength ) {
 	QString length;
-	switch (playableLength) {
-		case CAPlayable::Breve:
+	switch (playableLength.musicLength()) {
+		case CAPlayableLength::Breve:
 			length = "0";
 			break;
-		case CAPlayable::Whole:
+		case CAPlayableLength::Whole:
 			length = "1";
 			break;
-		case CAPlayable::Half:
+		case CAPlayableLength::Half:
 			length = "2";
 			break;
-		case CAPlayable::Quarter:
+		case CAPlayableLength::Quarter:
 			length = "4";
 			break;
-		case CAPlayable::Eighth:
+		case CAPlayableLength::Eighth:
 			length = "8";
 			break;
-		case CAPlayable::Sixteenth:
+		case CAPlayableLength::Sixteenth:
 			length = "16";
 			break;
-		case CAPlayable::ThirtySecond:
+		case CAPlayableLength::ThirtySecond:
 			length = "32";
 			break;
-		case CAPlayable::SixtyFourth:
+		case CAPlayableLength::SixtyFourth:
 			length = "64";
 			break;
-		case CAPlayable::HundredTwentyEighth:
+		case CAPlayableLength::HundredTwentyEighth:
 			length = "128";
 			break;
 	}
 	
-	for (int j=0; j<dotted; j++) length += ".";
+	for (int j=0; j<playableLength.dotted(); j++) length += ".";
 	
 	return length;
 }
@@ -406,15 +401,15 @@ const QString CALilyPondExport::playableLengthToLilyPond(CAPlayable::CAPlayableL
 /*!
 	Converts the note pitch to LilyPond syntax.
 */
-const QString CALilyPondExport::notePitchToLilyPond(int pitch, signed char accs) {
+const QString CALilyPondExport::diatonicPitchToLilyPond( CADiatonicPitch pitch ) {
 	QString name;
 	
-	name = (char)((pitch+2)%7 + 'a');
+	name = (char)((pitch.noteName()+2)%7 + 'a');
 	
-	for (int i=0; i < accs; i++)
+	for (int i=0; i < pitch.accs(); i++)
 		name += "is";	// append as many -is-es as necessary
 	
-	for (int i=0; i > accs; i--) {
+	for (int i=0; i > pitch.accs(); i--) {
 		if ( (name == "e") || (name == "a") )
 			name += "s";	// for pitches E and A, only append single -s the first time
 		else if (name[0]=='a')

@@ -26,7 +26,7 @@ class CASwigPython {
 			Context,
 			Staff,
 			Voice,
-			FunctionMarkingContext,
+			FunctionMarkContext,
 			MusElement,
 			Playable,
 			Note,
@@ -35,7 +35,7 @@ class CASwigPython {
 			TimeSignature,
 			Clef,
 			Barline,
-			FunctionMarking,
+			FunctionMark,
 			LyricsContext,
 			Syllable,
 			Mark

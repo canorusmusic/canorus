@@ -28,7 +28,7 @@ public:
 		KeySignature,
 		Slur,
 		Syllable,
-		FunctionMarking,
+		FunctionMark,
 		Mark
 	};
 	

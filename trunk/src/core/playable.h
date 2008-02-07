@@ -10,47 +10,26 @@
 
 #include "core/muselement.h"
 #include "core/staff.h"
+#include "core/playablelength.h"
 
 class CAVoice;
 
 class CAPlayable : public CAMusElement {
 public:
-	enum CAPlayableLength {
-		Undefined = -1,
-		Breve = 0,
-		Whole = 1,
-		Half = 2,
-		Quarter = 4,
-		Eighth = 8,
-		Sixteenth = 16,
-		ThirtySecond = 32,
-		SixtyFourth = 64,
-		HundredTwentyEighth = 128
-	};
-	
-	CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, int dotted=0);
+	CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart );
 	virtual ~CAPlayable();
 	virtual CAPlayable *clone( CAVoice *voice ) = 0;
 	
-	inline CAPlayableLength playableLength() { return _playableLength; }
-	inline void setPlayableLength( CAPlayableLength l ) { _playableLength = l; calculateTimeLength(); }
+	inline CAPlayableLength& playableLength() { return _playableLength; }
+	inline void setPlayableLength( CAPlayableLength& l ) { _playableLength = l; calculateTimeLength(); }
 	
 	inline CAVoice *voice() { return _voice; }
 	void setVoice(CAVoice *v);
 	inline CAStaff* staff() { return static_cast<CAStaff*>(_context); }
 	
-	inline int dotted() { return _dotted; }
-	inline void setDotted(int dotted) { _dotted = dotted; calculateTimeLength(); }
-	
-	static const QString playableLengthToString( CAPlayableLength length );
-	static CAPlayableLength playableLengthFromString( const QString length );
-	
-	static const int playableLengthToTimeLength( CAPlayableLength length, int dotted=0 );
-	
 protected:
 	void calculateTimeLength();
 	
-	int _dotted;
 	CAPlayableLength _playableLength;
 	CAVoice *_voice;
 };

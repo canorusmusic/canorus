@@ -89,8 +89,8 @@ VALUE CASwigRuby::toRubyObject(void *object, CASwigRuby::CAClassType type) {
 		case CASwigRuby::Voice:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAVoice, 0);
 			break;
-		case CASwigRuby::FunctionMarkingContext:
-			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarkingContext, 0);
+		case CASwigRuby::FunctionMarkContext:
+			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarkContext, 0);
 			break;
 		/*case CASwigRuby::MusElement:	//CAMusElement is always abstract
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAMusElement, 0);
@@ -116,8 +116,8 @@ VALUE CASwigRuby::toRubyObject(void *object, CASwigRuby::CAClassType type) {
 		case CASwigRuby::Barline:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CABarline, 0);
 			break;
-		case CASwigRuby::FunctionMarking:
-			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarking, 0);
+		case CASwigRuby::FunctionMark:
+			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAFunctionMark, 0);
 			break;
 		case CASwigRuby::LyricsContext:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CALyricsContext, 0);

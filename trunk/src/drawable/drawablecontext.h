@@ -20,7 +20,7 @@ public:
 	enum CADrawableContextType {
 		DrawableStaff,
 		DrawableLyricsContext,
-		DrawableFunctionMarkingContext
+		DrawableFunctionMarkContext
 	};
 
 	CADrawableContext(CAContext *c, int x, int y);

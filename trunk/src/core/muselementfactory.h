@@ -18,7 +18,7 @@
 #include "core/voice.h"
 #include "core/rest.h"
 #include "core/slur.h"
-#include "core/functionmarking.h"
+#include "core/functionmark.h"
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
 #include "core/mark.h"
@@ -29,6 +29,7 @@
 #include "core/crescendo.h"
 #include "core/repeatmark.h"
 #include "core/fingering.h"
+#include "core/playablelength.h"
 
 class CAMusElement;
 
@@ -75,28 +76,23 @@ public:
 	
 	bool configureMark( CAMusElement *elt );
 	
-	bool configureFunctionMarking( CAFunctionMarkingContext *fmc,
+	bool configureFunctionMark( CAFunctionMarkContext *fmc,
 	                               int timeStart, int timeLength );
 	
 	inline CAMusElement::CAMusElementType musElementType() { return _musElementType; }
 	void setMusElementType( CAMusElement::CAMusElementType eMEType ) { _musElementType = eMEType; } 
 	
-	inline CAPlayable::CAPlayableLength playableLength() { return _ePlayableLength; }
+	inline CAPlayableLength& playableLength() { return _playableLength; }
 	
-	inline void setPlayableLength( CAPlayable::CAPlayableLength ePlayableLength )
-	{ _ePlayableLength = ePlayableLength; };
+	inline void setPlayableLength( CAPlayableLength& playableLength )
+	{ _playableLength = playableLength; };
 	
-	inline int  playableDotted() { return _iPlayableDotted; };
-	
-	inline void setPlayableDotted( int iPlaybleDotted )
-	{ _iPlayableDotted = iPlaybleDotted; };
+	void addPlayableDotted( int add, CAPlayableLength curLength );
 	
 	inline CANote::CAStemDirection noteStemDirection() { return _eNoteStemDirection; }
 	
 	inline void setNoteStemDirection( CANote::CAStemDirection eDir )
 	{ _eNoteStemDirection = eDir; }
-	
-	void addPlayableDotted( int iAdd, CANote::CAPlayableLength l);
 	
 	inline int  noteAccs() { return _iNoteAccs; };
 	
@@ -162,14 +158,14 @@ public:
 	inline CAArticulation::CAArticulationType articulationType() { return _articulationType; }
 	inline void setArticulationType( CAArticulation::CAArticulationType t ) { _articulationType = t; }
 	
-	inline CAFunctionMarking::CAFunctionType fmFunction() { return _fmFunction; }
-	inline void setFMFunction( CAFunctionMarking::CAFunctionType f ) { _fmFunction = f; }
+	inline CAFunctionMark::CAFunctionType fmFunction() { return _fmFunction; }
+	inline void setFMFunction( CAFunctionMark::CAFunctionType f ) { _fmFunction = f; }
 	
-	inline CAFunctionMarking::CAFunctionType fmChordArea() { return _fmChordArea; }
-	inline void setFMChordArea( CAFunctionMarking::CAFunctionType c ) { _fmChordArea = c; }
+	inline CAFunctionMark::CAFunctionType fmChordArea() { return _fmChordArea; }
+	inline void setFMChordArea( CAFunctionMark::CAFunctionType c ) { _fmChordArea = c; }
 	
-	inline CAFunctionMarking::CAFunctionType fmTonicDegree() { return _fmTonicDegree; }
-	inline void setFMTonicDegree( CAFunctionMarking::CAFunctionType td ) { _fmTonicDegree = td; }
+	inline CAFunctionMark::CAFunctionType fmTonicDegree() { return _fmTonicDegree; }
+	inline void setFMTonicDegree( CAFunctionMark::CAFunctionType td ) { _fmTonicDegree = td; }
 	
 	inline bool isFMFunctionMinor() { return _fmFunctionMinor; }
 	inline void setFMFunctionMinor( bool m ) { _fmFunctionMinor = m; }
@@ -198,11 +194,8 @@ public:
 	inline const int tempoBpm() { return _tempoBpm; }
 	inline void setTempoBpm( const int tempoBpm ) { _tempoBpm = tempoBpm; }
 	
-	inline const int tempoBeatDotted() { return _tempoBeatDotted; }
-	inline void setTempoBeatDotted( const int dotted ) { _tempoBeatDotted = dotted; }
-	
-	inline const CAPlayable::CAPlayableLength tempoBeat() { return _tempoBeat; }
-	inline void setTempoBeat( const CAPlayable::CAPlayableLength length ) { _tempoBeat = length; }
+	inline CAPlayableLength& tempoBeat() { return _tempoBeat; }
+	inline void setTempoBeat( CAPlayableLength& length ) { _tempoBeat = length; }
 	
 	inline const CARitardando::CARitardandoType ritardandoType() { return _ritardandoType; }
 	inline void setRitardandoType( CARitardando::CARitardandoType t ) { _ritardandoType = t; }
@@ -234,7 +227,7 @@ private:
 	CAMusElement::CAMusElementType _musElementType; // Music element type
 	
 	// Staff music elements
-	CAPlayable::CAPlayableLength _ePlayableLength; // Length of note/rest to be added
+	CAPlayableLength _playableLength; // Length of note/rest to be added
 	CANote::CAStemDirection _eNoteStemDirection;   // Note stem direction to be inserted
 	CASlur::CASlurType _eSlurType;                 // Slur type to be placed
 	int _iPlayableDotted;                          // Number of dots to be inserted for the note/rest
@@ -252,10 +245,10 @@ private:
 	CAArticulation::CAArticulationType _articulationType; // Type of the articulation mark
 	CASlur::CASlurStyle _slurStyle;                // Style of the slur (solid, dotted)
 	
-	// Function Marking
-	CAFunctionMarking::CAFunctionType _fmFunction;    // Name of the function
-	CAFunctionMarking::CAFunctionType _fmChordArea;   // Chord area of the function
-	CAFunctionMarking::CAFunctionType _fmTonicDegree; // Tonic degree of the function
+	// Function Mark
+	CAFunctionMark::CAFunctionType _fmFunction;    // Name of the function
+	CAFunctionMark::CAFunctionType _fmChordArea;   // Chord area of the function
+	CAFunctionMark::CAFunctionType _fmTonicDegree; // Tonic degree of the function
 	bool _fmFunctionMinor;
 	bool _fmChordAreaMinor;
 	bool _fmTonicDegreeMinor;
@@ -266,8 +259,7 @@ private:
 	int _dynamicVolume;
 	int _instrument;
 	CAFermata::CAFermataType _fermataType;
-	CAPlayable::CAPlayableLength _tempoBeat;
-	int _tempoBeatDotted;
+	CAPlayableLength _tempoBeat;
 	int _tempoBpm;
 	CARitardando::CARitardandoType _ritardandoType;
 	int _crescendoFinalVolume;

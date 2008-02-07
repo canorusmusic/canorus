@@ -39,8 +39,8 @@
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
 
-#include "core/functionmarkingcontext.h"
-#include "core/functionmarking.h"
+#include "core/functionmarkcontext.h"
+#include "core/functionmark.h"
 
 CACanorusMLImport::CACanorusMLImport( QTextStream *stream )
  : CAImport(stream) {
@@ -56,20 +56,21 @@ CACanorusMLImport::~CACanorusMLImport() {
 }
 
 void CACanorusMLImport::initCanorusMLImport() {
-	_document = 0;
-	_curSheet = 0;
+	_document   = 0;
+	_curSheet   = 0;
 	_curContext = 0;
-	_curVoice = 0;
+	_curVoice   = 0;
 	
-	_curMusElt = 0;
-	_curClef = 0;
-	_curTimeSig = 0;
-	_curKeySig = 0;
-	_curBarline = 0;
-	_curNote = 0;
-	_curRest = 0;
-	_curTie = 0;
-	_curSlur = 0;
+	_curMusElt       = 0;
+	_curMark         = 0;
+	_curClef         = 0;
+	_curTimeSig      = 0;
+	_curKeySig       = 0;
+	_curBarline      = 0;
+	_curNote         = 0;
+	_curRest         = 0;
+	_curTie          = 0;
+	_curSlur         = 0;
 	_curPhrasingSlur = 0;	
 }
 
@@ -181,18 +182,18 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 				_lcMap[static_cast<CALyricsContext*>(_curContext)] = attributes.value("associated-voice-idx").toInt();
 		}
 		_curSheet->addContext(_curContext);
-	} else if (qName == "function-marking-context") {
-		// CAFunctionMarkingContext
+	} else if (qName == "function-mark-context" || qName == "function-marking-context") {
+		// CAFunctionMarkContext
 		QString fmcName = attributes.value("name");
 		if (!_curSheet) {
-			_errorMsg = "The sheet where to add the function marking context doesn't exist yet!";
+			_errorMsg = "The sheet where to add the function mark context doesn't exist yet!";
 			return false;
 		}
 		
 		if (!(_curContext = _curSheet->context(fmcName))) {	//if the sheet doesn't contain the context with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
 			if (fmcName.isEmpty())
-				fmcName = QObject::tr("Function Marking Context %1").arg(_curSheet->contextCount()+1);
-			_curContext = new CAFunctionMarkingContext( fmcName, _curSheet );
+				fmcName = QObject::tr("Function Mark Context %1").arg(_curSheet->contextCount()+1);
+			_curContext = new CAFunctionMarkContext( fmcName, _curSheet );
 		}
 		_curSheet->addContext(_curContext);
 	} else if (qName == "voice") {
@@ -264,19 +265,26 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curMusElt = _curBarline;
 	} else if (qName == "note") {
 		// CANote
-		_curNote = new CANote(CAPlayable::playableLengthFromString(attributes.value("playable-length")),
+		if ( _version.startsWith("0.5") ) {
+		_curNote = new CANote( CADiatonicPitch( attributes.value("pitch").toInt(), attributes.value("accs").toInt() ),
+		                       CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("playable-length")), attributes.value("dotted").toInt()),
 		                      _curVoice,
-		                      attributes.value("pitch").toInt(),
-		                      (char)attributes.value("accs").toInt(),
-		                      attributes.value("time-start").toInt(),
-		                      attributes.value("dotted").toInt()
+		                      attributes.value("time-start").toInt()
 		                     );
-			if (!attributes.value("stem-direction").isEmpty()) {
-				_curNote->setStemDirection(CANote::stemDirectionFromString(attributes.value("stem-direction")));
-			}
+		} else {
+			_curNote = new CANote( CADiatonicPitch(),
+			                       CAPlayableLength(),
+			                       _curVoice,
+			                       attributes.value("time-start").toInt()
+			                     );
+		}
+		
+		if (!attributes.value("stem-direction").isEmpty()) {
+			_curNote->setStemDirection(CANote::stemDirectionFromString(attributes.value("stem-direction")));
+		}
+		
+		_curMusElt = _curNote;
 			
-			_curMusElt = _curNote;
-	
 		} else if (qName == "tie") {
 			_curTie = new CASlur( CASlur::TieType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
 			_curNote->setTieStart( _curTie );
@@ -315,10 +323,9 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 	} else if (qName == "rest") {
 		// CARest
 		_curRest = new CARest(CARest::restTypeFromString(attributes.value("rest-type")),
-		                      CAPlayable::playableLengthFromString(attributes.value("playable-length")),
+		                      CAPlayableLength(),
 		                      _curVoice,
-		                      attributes.value("time-start").toInt(),
-		                      attributes.value("dotted").toInt()
+		                      attributes.value("time-start").toInt()
 		                     );
 		_curMusElt = _curRest;
 	} else if (qName == "syllable") {
@@ -336,31 +343,35 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		if (!attributes.value("associated-voice-idx").isEmpty())
 			_syllableMap[s] = attributes.value("associated-voice-idx").toInt();
 		_curMusElt = s;
-	} else if (qName == "function-marking") {
-		// CAFunctionMarking
-		CAFunctionMarking *f = 
-			new CAFunctionMarking(
-				CAFunctionMarking::functionTypeFromString(attributes.value("function")),
+	} else if (qName == "function-mark" || qName == "function-marking") {
+		// CAFunctionMark
+		CAFunctionMark *f = 
+			new CAFunctionMark(
+				CAFunctionMark::functionTypeFromString(attributes.value("function")),
 				(attributes.value("minor")=="1"?true:false),
 				(attributes.value("key").isEmpty()?"C":attributes.value("key")),
-				static_cast<CAFunctionMarkingContext*>(_curContext),
+				static_cast<CAFunctionMarkContext*>(_curContext),
 				attributes.value("time-start").toInt(),
 				attributes.value("time-length").toInt(),
-				CAFunctionMarking::functionTypeFromString(attributes.value("chord-area")),
+				CAFunctionMark::functionTypeFromString(attributes.value("chord-area")),
 				(attributes.value("chord-area-minor")=="1"?true:false),
-				CAFunctionMarking::functionTypeFromString(attributes.value("tonic-degree")),
+				CAFunctionMark::functionTypeFromString(attributes.value("tonic-degree")),
 				(attributes.value("tonic-degree-minor")=="1"?true:false),
 				"",
 				(attributes.value("ellipse")=="1"?true:false)
 			);
 		
-		static_cast<CAFunctionMarkingContext*>(_curContext)->addFunctionMarking(f);
+		static_cast<CAFunctionMarkContext*>(_curContext)->addFunctionMark(f);
 		_curMusElt = f;
 	} else if (qName == "mark") {
 		// CAMark and subvariants
 		importMark( attributes );
+	} else if (qName == "playable-length") {
+		_curPlayableLength = CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("music-length")), attributes.value("dotted").toInt() );
+	} else if (qName == "diatonic-pitch") {
+		_curDiatonicPitch = CADiatonicPitch( attributes.value("note-name").toInt(), attributes.value("accs").toInt() );
 	}
-
+	
 	_depth.push(qName);
 	return true;
 }
@@ -512,6 +523,12 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		}
 	} else if (qName == "note") {
 		// CANote
+		if ( _version.startsWith("0.5") ) {
+		} else {
+			_curNote->setPlayableLength( _curPlayableLength );
+			_curNote->setDiatonicPitch( _curDiatonicPitch );			
+		}
+		
 		if (_curVoice->lastNote() && _curVoice->lastNote()->timeStart()==_curNote->timeStart())
 			_curVoice->append( _curNote, true );
 		else
@@ -523,8 +540,17 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		// CASlur - tie
 	} else if (qName == "rest") {
 		// CARest
+		if ( _version.startsWith("0.5") ) {
+		} else {
+			_curRest->setPlayableLength( _curPlayableLength );
+		}
+		
 		_curVoice->append( _curRest );
 		_curRest = 0;
+	} else if (qName == "mark") {
+		if ( !_version.startsWith("0.5") && _curMark->markType()==CAMark::Tempo ) {
+			static_cast<CATempo*>(_curMark)->setBeat( _curPlayableLength );
+		}
 	}
 	
 	_cha="";
@@ -553,27 +579,34 @@ bool CACanorusMLImport::characters( const QString& ch ) {
 
 void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 	CAMark::CAMarkType type = CAMark::markTypeFromString(attributes.value("mark-type"));
-	CAMark *m=0;
+	_curMark = 0;
 	
 	switch (type) {
 	case CAMark::Text: {
-		m = new CAText(
+		_curMark = new CAText(
 			attributes.value("text"),
 			static_cast<CAPlayable*>(_curMusElt)
 		);
 		break;
 	}
 	case CAMark::Tempo: {
-		m = new CATempo(
-			CAPlayable::playableLengthFromString(attributes.value("beat")),
-			attributes.value("beat-dotted").toInt(),
-			attributes.value("bpm").toInt(),
-			_curMusElt
-		);
+		if ( _version.startsWith("0.5") ) {
+			_curMark = new CATempo(
+					CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("beat")), attributes.value("beat-dotted").toInt() ),
+					attributes.value("bpm").toInt(),
+					_curMusElt
+			);			
+		} else {
+			_curMark = new CATempo(
+					CAPlayableLength(),
+					attributes.value("bpm").toInt(),
+					_curMusElt
+			);
+		}
 		break;
 	}
 	case CAMark::Ritardando: {
-		m = new CARitardando(
+		_curMark = new CARitardando(
 			attributes.value("final-tempo").toInt(),
 			static_cast<CAPlayable*>(_curMusElt),
 			attributes.value("time-length").toInt(),
@@ -582,7 +615,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		break;
 	}
 	case CAMark::Dynamic: {
-		m = new CADynamic(
+		_curMark = new CADynamic(
 			attributes.value("text"),
 			attributes.value("volume").toInt(),
 			static_cast<CANote*>(_curMusElt)
@@ -590,7 +623,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		break;
 	}
 	case CAMark::Crescendo: {
-		m = new CACrescendo(
+		_curMark = new CACrescendo(
 			attributes.value("final-volume").toInt(),
 			static_cast<CANote*>(_curMusElt),
 			CACrescendo::crescendoTypeFromString(attributes.value("crescendo-type")),
@@ -600,7 +633,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		break;
 	}
 	case CAMark::Pedal: {
-		m = new CAMark(
+		_curMark = new CAMark(
 			CAMark::Pedal,
 			_curMusElt,
 			attributes.value("time-start").toInt(),
@@ -609,21 +642,21 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		break;
 	}
 	case CAMark::InstrumentChange: {
-		m = new CAInstrumentChange(
+		_curMark = new CAInstrumentChange(
 			attributes.value("instrument").toInt(),
 			static_cast<CANote*>(_curMusElt)
 		);
 		break;
 	}
 	case CAMark::BookMark: {
-		m = new CABookMark(
+		_curMark = new CABookMark(
 			attributes.value("text"),
 			_curMusElt
 		);
 		break;
 	}
 	case CAMark::RehersalMark: {
-		m = new CAMark(
+		_curMark = new CAMark(
 			CAMark::RehersalMark,
 			_curMusElt
 		);
@@ -631,12 +664,12 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 	}
 	case CAMark::Fermata: {
 		if (_curMusElt->isPlayable()) {
-			m = new CAFermata(
+			_curMark = new CAFermata(
 				static_cast<CAPlayable*>(_curMusElt),
 				CAFermata::fermataTypeFromString(attributes.value("fermata-type"))
 			);
 		} else if (_curMusElt->musElementType()==CAMusElement::Barline) {
-			m = new CAFermata(
+			_curMark = new CAFermata(
 				static_cast<CABarline*>(_curMusElt),
 				CAFermata::fermataTypeFromString(attributes.value("fermata-type"))
 			);
@@ -644,7 +677,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		break;
 	}
 	case CAMark::RepeatMark: {
-		m = new CARepeatMark(
+		_curMark = new CARepeatMark(
 			static_cast<CABarline*>(_curMusElt),
 			CARepeatMark::repeatMarkTypeFromString(attributes.value("repeat-mark-type")),
 			attributes.value("volta-number").toInt()
@@ -652,7 +685,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		break;
 	}
 	case CAMark::Articulation: {
-		m = new CAArticulation(
+		_curMark = new CAArticulation(
 			CAArticulation::articulationTypeFromString(attributes.value("articulation-type")),
 			static_cast<CANote*>(_curMusElt)
 		);
@@ -663,7 +696,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		for (int i=0; !attributes.value(QString("finger%1").arg(i)).isEmpty(); i++)
 			fingers << CAFingering::fingerNumberFromString( attributes.value(QString("finger%1").arg(i)) );
 		
-		m = new CAFingering(
+		_curMark = new CAFingering(
 			fingers,
 			static_cast<CANote*>(_curMusElt),
 			attributes.value("original").toInt()
@@ -672,8 +705,8 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 	}
 	}
 	
-	if (m)
-		_curMusElt->addMark(m);
+	if (_curMark)
+		_curMusElt->addMark(_curMark);
 }
 
 /*!

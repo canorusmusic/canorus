@@ -22,8 +22,8 @@
 
 	\sa CARestType, CAPlayableLength, CAPlayable, CAVoice
 */
-CARest::CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart, int dotted)
- : CAPlayable(length, voice, timeStart, dotted) {
+CARest::CARest( CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart )
+ : CAPlayable( length, voice, timeStart ) {
  	_musElementType = CAMusElement::Rest;
  	_restType = type;
 }
@@ -35,7 +35,7 @@ CARest::~CARest() {
 }
 
 CARest *CARest::clone( CAVoice *voice ) {
-	CARest *r = new CARest(_restType, _playableLength, voice, _timeStart, _dotted);
+	CARest *r = new CARest( restType(), playableLength(), voice, _timeStart );
 	
 	for (int i=0; i<markList().size(); i++) {
 		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
@@ -51,8 +51,7 @@ int CARest::compare(CAMusElement *elt) {
 		return -1;
 
 	int diffs=0;
-	if (_playableLength!=((CAPlayable*)elt)->playableLength()) diffs++;
-	if (timeLength()!=((CAPlayable*)elt)->timeLength()) diffs++;
+	if ( playableLength() != static_cast<CAPlayable*>(elt)->playableLength() ) diffs++;
 
 	return diffs;
 }
@@ -95,16 +94,16 @@ CARest::CARestType CARest::restTypeFromString(const QString type) {
 	
 	\note Only non-dotted rests are generated.
 */
-QList<CARest*> CARest::composeRests(int timeLength, int timeStart, CAVoice* voice, CARestType type ) {
+QList<CARest*> CARest::composeRests( int timeLength, int timeStart, CAVoice* voice, CARestType type ) {
 	QList<CARest*> list;
 	
 	// 2048 is the longest rest (breve)
 	for ( ; timeLength > 2048; timeLength-= 2048, timeStart+=2048 )
-		list << new CARest( type, static_cast<CAPlayableLength>(0), voice, timeStart );
+		list << new CARest( type, CAPlayableLength(CAPlayableLength::Breve), voice, timeStart );
 	
 	for ( int i = 0, TL=2048; i<256; (i?i*=2:i++), TL/=2 ) {
 		if ( TL <= timeLength) {
-			list << new CARest( type, static_cast<CAPlayableLength>( i ), voice, timeStart );
+			list << new CARest( type, CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(i) ), voice, timeStart );
 			timeLength -= TL;
 			timeStart += TL;
 		}

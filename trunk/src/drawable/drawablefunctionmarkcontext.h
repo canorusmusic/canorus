@@ -5,31 +5,31 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#ifndef DRAWABLEFUNCTIONMARKINGCONTEXT_H_
-#define DRAWABLEFUNCTIONMARKINGCONTEXT_H_
+#ifndef DRAWABLEFUNCTIONMARKCONTEXT_H_
+#define DRAWABLEFUNCTIONMARKCONTEXT_H_
 
 #include "drawable/drawablecontext.h"
 
-class CAFunctionMarkingContext;
+class CAFunctionMarkContext;
 
-class CADrawableFunctionMarkingContext : public CADrawableContext {
+class CADrawableFunctionMarkContext : public CADrawableContext {
 	public:
-		CADrawableFunctionMarkingContext(CAFunctionMarkingContext *c, int x, int y, int numberOfLines=2);
-		~CADrawableFunctionMarkingContext();
+		CADrawableFunctionMarkContext(CAFunctionMarkContext *c, int x, int y, int numberOfLines=2);
+		~CADrawableFunctionMarkContext();
 		
 		void draw(QPainter *p, const CADrawSettings s);
-		CADrawableFunctionMarkingContext *clone();
+		CADrawableFunctionMarkContext *clone();
 		
 		void setNumberOfLines(int number) { _numberOfLines = number; }
 		int numberOfLines() { return _numberOfLines; }
 		
-		enum CAFunctionMarkingLine {
+		enum CAFunctionMarkLine {
 			Upper,	// used for function name in tonicization
 			Middle,	// used for general function names
 			Lower	// used for chord areas, ellipse sign etc.
 		};
 		
-		int yPosLine(CAFunctionMarkingLine part);	// Returns the Y coordinate of the top of the given line
+		int yPosLine(CAFunctionMarkLine part);	// Returns the Y coordinate of the top of the given line
 		void nextLine() { _currentLineIdx = ++_currentLineIdx % _numberOfLines; }
 		int currentLineIdx() { return _currentLineIdx; }
 	
@@ -38,4 +38,4 @@ class CADrawableFunctionMarkingContext : public CADrawableContext {
 		int _currentLineIdx;
 };
 
-#endif /* DRAWABLEFUNCTIONMARKINGCONTEXT_H_ */
+#endif /* DRAWABLEFUNCTIONMARKCONTEXT_H_ */

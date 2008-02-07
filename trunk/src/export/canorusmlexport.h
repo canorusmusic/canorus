@@ -11,6 +11,8 @@
 #include <QDomElement>
 
 #include "export/export.h"
+#include "core/playablelength.h"
+#include "core/diatonicpitch.h"
 
 class CAMusElement;
 
@@ -23,7 +25,9 @@ public:
 	
 private:
 	void exportVoiceImpl( CAVoice* voice, QDomElement &dVoice );
-	void exportMarks( CAMusElement *associatedElt, QDomElement& domElt );
+	void exportMarks( CAMusElement *associatedElt, QDomElement& domParent );
+	void exportPlayableLength( CAPlayableLength l, QDomElement& domParent );
+	void exportDiatonicPitch( CADiatonicPitch p, QDomElement& domParent );
 };
 
 #endif /* CANORUSMLEXPORT_H_ */

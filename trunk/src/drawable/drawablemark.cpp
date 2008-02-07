@@ -122,7 +122,7 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, int x
 	case CAMark::Tempo: {
 		setWidth( 40 );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		_tempoNote = new CANote( static_cast<CATempo*>(mark)->beat(), 0, 0, 0, 0, static_cast<CATempo*>(mark)->beatDotted() );
+		_tempoNote = new CANote( CADiatonicPitch(), static_cast<CATempo*>(mark)->beat(), 0, 0 );
 		_tempoDNote = new CADrawableNote( _tempoNote, dContext, x, y );
 		break;
 	}

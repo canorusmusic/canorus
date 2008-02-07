@@ -23,7 +23,7 @@
 	spreadsheet applications. Each sheet is usually in its own tab.
 	
 	CASheet parent is CADocument and CASheet includes various contexts CAContext, let it
-	be staffs, lyrics, function markings etc.
+	be staffs, lyrics, function marks etc.
 	
 	\sa CADocument, CAContext
 */
@@ -161,7 +161,7 @@ QList<CAVoice*> CASheet::voiceList() {
 /*!
 	\var CASheet::_contextList
 	List of all the contexts in the sheet (lyrics, staffs, tablatures, general-bas
-	markings etc.).
+	marks etc.).
 	
 	\sa context(), contextAt(), contextCount(), _staffList
 */

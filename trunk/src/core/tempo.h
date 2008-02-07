@@ -13,7 +13,7 @@
 
 class CATempo : public CAMark {
 public:
-	CATempo( CAPlayable::CAPlayableLength l, int dotted, int bpm, CAMusElement *m );
+	CATempo( CAPlayableLength l, int bpm, CAMusElement *m );
 	virtual ~CATempo();
 	
 	CAMusElement *clone();
@@ -21,13 +21,13 @@ public:
 	
 	inline int bpm() { return _bpm; }
 	inline void setBpm( int bpm ) { _bpm = bpm; }
-	inline CAPlayable::CAPlayableLength beat() { return _beat; }
-	inline void setBeat( CAPlayable::CAPlayableLength l ) { _beat = l; }
+	inline CAPlayableLength beat() { return _beat; }
+	inline void setBeat( CAPlayableLength l ) { _beat = l; }
 	inline int beatDotted() { return _beatDotted; }
 	inline void setBeatDotted( int dotted ) { _beatDotted = dotted; }
 	
 private:
-	CAPlayable::CAPlayableLength _beat;
+	CAPlayableLength _beat;
 	int _beatDotted;
 	int _bpm; // beats per minute
 };

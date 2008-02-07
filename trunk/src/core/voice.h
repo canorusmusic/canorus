@@ -61,7 +61,7 @@ public:
 	inline CAMusElement *lastMusElement() { return musElementList().size()?musElementList().back():0; }
 	CAMusElement *next(CAMusElement *elt);
 	CAMusElement *previous(CAMusElement *elt);
-	int lastNotePitch(bool inChord=false);
+	CADiatonicPitch lastNotePitch(bool inChord=false);
 	CAPlayable* lastPlayableElt();
 	CANote*     lastNote();
 	CAClef*            getClef(CAMusElement *elt);

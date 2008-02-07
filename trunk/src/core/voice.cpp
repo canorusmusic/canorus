@@ -178,7 +178,7 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 		if ( elt->musElementType()==CAMusElement::Clef ) {
 			for ( int i=musElementList().indexOf(elt)+1; i < musElementCount(); i++ ) {
 				if ( musElementList()[i]->musElementType()==CAMusElement::Note )
-					static_cast<CANote*>(musElementList()[i])->setPitch( static_cast<CANote*>(musElementList()[i])->pitch() );
+					static_cast<CANote*>(musElementList()[i])->setDiatonicPitch( static_cast<CANote*>(musElementList()[i])->diatonicPitch() );
 			}
 		}
 		
@@ -330,10 +330,9 @@ bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 	idx = _musElementList.indexOf(chord.first());
 	
 	int i;
-	for ( i=0; i<chord.size() && chord[i]->pitch() < note->pitch(); i++ );
+	for ( i=0; i<chord.size() && chord[i]->diatonicPitch().noteName() < note->diatonicPitch().noteName(); i++ );
 	
 	_musElementList.insert( idx+i, note );
-	note->setDotted( referenceNote->dotted() );
 	note->setPlayableLength( referenceNote->playableLength() );
 	note->setTimeLength( referenceNote->timeLength() );
 	note->setTimeStart( referenceNote->timeStart() );
@@ -347,15 +346,15 @@ bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 	the last chord, if \a inChord is true.
 	
 	This method is usually used by LilyPond parser when exporting the document, where
-	, or ' octave markings need to be determined.
+	, or ' octave marks need to be determined.
 	
 	\sa lastPlayableElt()
 */
-int CAVoice::lastNotePitch(bool inChord) {
+CADiatonicPitch CAVoice::lastNotePitch(bool inChord) {
 	for (int i=_musElementList.size()-1; i>=0; i--) {
 		if (_musElementList[i]->musElementType()==CAMusElement::Note) {
 			if (!((CANote*)_musElementList[i])->isPartOfTheChord() || !inChord)	// the note is not part of the chord
-				return (((CANote*)_musElementList[i])->pitch());
+				return (static_cast<CANote*>(_musElementList[i])->diatonicPitch() );
 			else {
 				int chordTimeStart = _musElementList[i]->timeStart();
 				int j;
@@ -363,7 +362,7 @@ int CAVoice::lastNotePitch(bool inChord) {
 				     (j>=0 && _musElementList[j]->musElementType()==CAMusElement::Note && _musElementList[j]->timeStart()==chordTimeStart);
 				     j--);
 				
-				return (((CANote*)_musElementList[j+1])->pitch());
+				return (static_cast<CANote*>(_musElementList[j+1])->diatonicPitch() );
 			}
 			
 		}
@@ -410,9 +409,9 @@ CANote* CAVoice::lastNote() {
 	adding a note to a chord and the note is maybe already there. Note's accidentals
 	are ignored.
 */
-bool CAVoice::containsPitch(int pitch, int startTime) {
+bool CAVoice::containsPitch( int pitch, int startTime) {
 	 for (int i=0; i<_musElementList.size(); i++)
-	 	if ( (_musElementList[i]->musElementType() == CAMusElement::Note) && (_musElementList[i]->timeStart() == startTime) && (((CANote*)_musElementList[i])->pitch() == pitch) )
+	 	if ( (_musElementList[i]->musElementType() == CAMusElement::Note) && (_musElementList[i]->timeStart() == startTime) && (static_cast<CANote*>(_musElementList[i])->diatonicPitch() == pitch) )
 			return true;
 		
 	return false;

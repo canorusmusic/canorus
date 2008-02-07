@@ -117,8 +117,8 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 		case CASwigPython::Voice:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAVoice, 0);
 			break;
-		case CASwigPython::FunctionMarkingContext:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarkingContext, 0);
+		case CASwigPython::FunctionMarkContext:
+			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarkContext, 0);
 			break;
 		/*case CASwigPython::MusElement:	//CAMusElement is always abstract
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAMusElement, 0);
@@ -144,8 +144,8 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 		case CASwigPython::Barline:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CABarline, 0);
 			break;
-		case CASwigPython::FunctionMarking:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarking, 0);
+		case CASwigPython::FunctionMark:
+			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMark, 0);
 			break;
 		case CASwigPython::LyricsContext:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CALyricsContext, 0);

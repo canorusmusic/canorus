@@ -71,7 +71,7 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 	ui/staffproperties.ui
 	ui/voiceproperties.ui
 	ui/lyricscontextproperties.ui
-	ui/functionmarkingproperties.ui
+	ui/functionmarkcontextproperties.ui
 )
 
 # Define the MOC source files used by Canorus
@@ -112,11 +112,15 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/resource.cpp
 	core/resourcecontainer.cpp
 	
+	core/playablelength.cpp
+	core/diatonicpitch.cpp
+	core/interval.cpp
+	
 	core/document.cpp
 	core/sheet.cpp
 	core/context.cpp
 	core/staff.cpp
-	core/functionmarkingcontext.cpp
+	core/functionmarkcontext.cpp
 	core/lyricscontext.cpp
 	
 	core/muselement.cpp
@@ -146,7 +150,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	
 	core/syllable.cpp
 	
-	core/functionmarking.cpp
+	core/functionmark.cpp
 )
 
 SET(Canorus_Scripting_Srcs	# Sources meant for bridging C++<->scripting language
@@ -178,7 +182,7 @@ SET(Canorus_Drawable_Srcs	# Drawable instances of the data
 	drawable/drawablecontext.cpp
 	drawable/drawablestaff.cpp
 	drawable/drawablelyricscontext.cpp
-	drawable/drawablefunctionmarkingcontext.cpp
+	drawable/drawablefunctionmarkcontext.cpp
 
 	drawable/drawablemuselement.cpp
 	drawable/drawablenote.cpp
@@ -191,7 +195,7 @@ SET(Canorus_Drawable_Srcs	# Drawable instances of the data
 	drawable/drawablebarline.cpp
 	drawable/drawablemark.cpp
 	drawable/drawablesyllable.cpp
-	drawable/drawablefunctionmarking.cpp
+	drawable/drawablefunctionmark.cpp
 )
 
 SET(Canorus_Interface_Srcs	# Other interfaces like Engraver, Playback, Plugin manager and others belong here.
@@ -244,7 +248,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/context.cpp
 	core/staff.cpp
 	core/lyricscontext.cpp
-	core/functionmarkingcontext.cpp
+	core/functionmarkcontext.cpp
 
 	core/muselement.cpp
 	core/voice.cpp
@@ -256,6 +260,10 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/note.cpp
 	core/slur.cpp
 	core/rest.cpp
+	
+	core/playablelength.cpp
+	core/diatonicpitch.cpp
+	core/interval.cpp
 	
 	core/mark.cpp
 	core/articulation.cpp
@@ -272,7 +280,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 
 	core/syllable.cpp
 	
-	core/functionmarking.cpp
+	core/functionmark.cpp
 	
 	core/file.cpp
 	core/tar.cpp

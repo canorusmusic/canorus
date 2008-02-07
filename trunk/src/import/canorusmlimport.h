@@ -14,6 +14,9 @@
 
 #include "import/import.h"
 
+#include "core/diatonicpitch.h"
+#include "core/playablelength.h"
+
 class CAContext;
 class CAKeySignature;
 class CATimeSignature;
@@ -24,6 +27,7 @@ class CARest;
 class CASlur;
 class CASyllable;
 class CAMusElement;
+class CAMark;
 
 class CACanorusMLImport : public CAImport, public QXmlDefaultHandler {
 public:
@@ -63,9 +67,12 @@ private:
 	CANote          *_curNote;
 	CARest          *_curRest;
 	CAMusElement    *_curMusElt;
+	CAMark          *_curMark;
 	CASlur          *_curTie;
 	CASlur          *_curSlur;
 	CASlur          *_curPhrasingSlur;
+	CADiatonicPitch  _curDiatonicPitch;
+	CAPlayableLength _curPlayableLength;
 	QHash<CALyricsContext*, int> _lcMap;       // lyrics context associated voice indices
 	QHash<CASyllable*, int>      _syllableMap; // syllable associated voice indices
 	

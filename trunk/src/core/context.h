@@ -24,7 +24,7 @@ public:
 	
 	enum CAContextType {
 		Staff,
-		FunctionMarkingContext,
+		FunctionMarkContext,
 		LyricsContext
 	};
 	

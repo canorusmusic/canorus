@@ -5,25 +5,25 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#ifndef DRAWABLEFUNCTIONMARKING_H_
-#define DRAWABLEFUNCTIONMARKING_H_
+#ifndef DRAWABLEFUNCTIONMARK_H_
+#define DRAWABLEFUNCTIONMARK_H_
 
 #include "drawable/drawablemuselement.h"
-#include "core/functionmarking.h"
+#include "core/functionmark.h"
 
-class CAFunctionMarking;
-class CADrawableFunctionMarkingContext;
+class CAFunctionMark;
+class CADrawableFunctionMarkContext;
 
-class CADrawableFunctionMarking : public CADrawableMusElement {
+class CADrawableFunctionMark : public CADrawableMusElement {
 public:
-	CADrawableFunctionMarking(CAFunctionMarking *function, CADrawableFunctionMarkingContext *context, int x, int y);
-	~CADrawableFunctionMarking();
+	CADrawableFunctionMark(CAFunctionMark *function, CADrawableFunctionMarkContext *context, int x, int y);
+	~CADrawableFunctionMark();
 	
 	void draw(QPainter *p, const CADrawSettings s);
-	CADrawableFunctionMarking *clone(CADrawableContext* newContext = 0);
+	CADrawableFunctionMark *clone(CADrawableContext* newContext = 0);
 	
-	inline CAFunctionMarking *functionMarking() { return (CAFunctionMarking*)_musElement; };
-	inline CADrawableFunctionMarkingContext *drawableFunctionMarkingContext() { return (CADrawableFunctionMarkingContext*)_drawableContext; };
+	inline CAFunctionMark *functionMark() { return (CAFunctionMark*)_musElement; };
+	inline CADrawableFunctionMarkContext *drawableFunctionMarkContext() { return (CADrawableFunctionMarkContext*)_drawableContext; };
 	
 	bool isExtenderLineVisible() { return _extenderLineVisible; }
 	void setExtenderLineVisible(bool visible) { _extenderLineVisible = visible; }
@@ -36,9 +36,9 @@ private:
 	bool _extenderLineOnly;    // Only extender line should be rendered over the whole width of the function
 };
 
-class CADrawableFunctionMarkingSupport : public CADrawableMusElement {
+class CADrawableFunctionMarkSupport : public CADrawableMusElement {
 public:
-	enum CADrawableFunctionMarkingSupportType {
+	enum CADrawableFunctionMarkSupportType {
 		Key,
 		Rectangle,
 		ChordArea,
@@ -47,17 +47,17 @@ public:
 		Alterations
 	};
 	// Key constructor
-	CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, const QString key, CADrawableContext *c, int x, int y);
+	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, const QString key, CADrawableContext *c, int x, int y);
 	// Rectangle, ChordArea, Tonicization, Ellipse constructor
-	CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, CADrawableFunctionMarking *function, CADrawableContext *c, int x, int y, CADrawableFunctionMarking *function2=0);
+	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, CADrawableFunctionMark *function, CADrawableContext *c, int x, int y, CADrawableFunctionMark *function2=0);
 	// Alterations consructor
-	CADrawableFunctionMarkingSupport(CADrawableFunctionMarkingSupportType, CAFunctionMarking *function, CADrawableContext *c, int x, int y);
+	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, CAFunctionMark *function, CADrawableContext *c, int x, int y);
 	
-	~CADrawableFunctionMarkingSupport();
+	~CADrawableFunctionMarkSupport();
 	
 	void draw(QPainter *p, const CADrawSettings s);
-	CADrawableFunctionMarkingSupport *clone(CADrawableContext* newContext = 0);
-	CADrawableFunctionMarkingSupportType drawableFunctionMarkingSupportType() { return _drawableFunctionMarkingSupportType; }
+	CADrawableFunctionMarkSupport *clone(CADrawableContext* newContext = 0);
+	CADrawableFunctionMarkSupportType drawableFunctionMarkSupportType() { return _drawableFunctionMarkSupportType; }
 	
 	bool isExtenderLineVisible() { return _extenderLineVisible; }
 	void setExtenderLineVisible(bool visible) { _extenderLineVisible = visible; }
@@ -65,11 +65,11 @@ public:
 	void setRectWider(bool wider) { if (!_rectWider) { _rectWider = wider; _yPos -= 3; _height += 6; } }
 	
 private:
-	CADrawableFunctionMarkingSupportType _drawableFunctionMarkingSupportType;
+	CADrawableFunctionMarkSupportType _drawableFunctionMarkSupportType;
 	QString _key;
-	CADrawableFunctionMarking *_function1, *_function2;	// Tonicization's start/end functions
+	CADrawableFunctionMark *_function1, *_function2;	// Tonicization's start/end functions
 	bool _extenderLineVisible;							// Extender line when tonicization used after
 	bool _rectWider;									// Is rectangle wider in height. Default: false. Useful when doing a series of modulations where you don't know which rectangle belongs to which function. Every 2nd rectangle is then a bit higher than the others.
 };
 
-#endif /* DRAWABLEFUNCTIONMARKING_H_ */
+#endif /* DRAWABLEFUNCTIONMARK_H_ */
