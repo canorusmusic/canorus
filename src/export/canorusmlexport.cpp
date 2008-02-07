@@ -40,8 +40,8 @@
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
 
-#include "core/functionmarkingcontext.h"
-#include "core/functionmarking.h"
+#include "core/functionmarkcontext.h"
+#include "core/functionmark.h"
 
 CACanorusMLExport::CACanorusMLExport( QTextStream *stream )
  : CAExport(stream) {
@@ -154,22 +154,22 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 					
 					break;
 				}
-				case CAContext::FunctionMarkingContext: {
-					// CAFunctionMarkingContext
-					CAFunctionMarkingContext *fmc = static_cast<CAFunctionMarkingContext*>(c);
-					QDomElement dFmc = dDoc.createElement("function-marking-context"); dSheet.appendChild(dFmc);
+				case CAContext::FunctionMarkContext: {
+					// CAFunctionMarkContext
+					CAFunctionMarkContext *fmc = static_cast<CAFunctionMarkContext*>(c);
+					QDomElement dFmc = dDoc.createElement("function-mark-context"); dSheet.appendChild(dFmc);
 					dFmc.setAttribute("name", fmc->name());
 					
-					QList<CAFunctionMarking*> elts = fmc->functionMarkingList();
+					QList<CAFunctionMark*> elts = fmc->functionMarkList();
 					for (int i=0; i<elts.size(); i++) {
-						QDomElement dFm = dDoc.createElement("function-marking"); dFmc.appendChild(dFm);
+						QDomElement dFm = dDoc.createElement("function-mark"); dFmc.appendChild(dFm);
 						dFm.setAttribute( "time-start", elts[i]->timeStart() );
 						dFm.setAttribute( "time-length", elts[i]->timeLength() );						
-						dFm.setAttribute( "function", CAFunctionMarking::functionTypeToString(elts[i]->function()) );
+						dFm.setAttribute( "function", CAFunctionMark::functionTypeToString(elts[i]->function()) );
 						dFm.setAttribute( "minor", elts[i]->isMinor() );
-						dFm.setAttribute( "chord-area", CAFunctionMarking::functionTypeToString(elts[i]->chordArea()) );
+						dFm.setAttribute( "chord-area", CAFunctionMark::functionTypeToString(elts[i]->chordArea()) );
 						dFm.setAttribute( "chord-area-minor", elts[i]->isChordAreaMinor() );
-						dFm.setAttribute( "tonic-degree", CAFunctionMarking::functionTypeToString(elts[i]->tonicDegree()) );
+						dFm.setAttribute( "tonic-degree", CAFunctionMark::functionTypeToString(elts[i]->tonicDegree()) );
 						dFm.setAttribute( "tonic-degree-minor", elts[i]->isTonicDegreeMinor() );
 						dFm.setAttribute( "key", elts[i]->key() );
 						//dFm.setAttribute( "altered-degrees", elts[i]->alteredDegrees() );
@@ -199,14 +199,13 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 			case CAMusElement::Note: {
 				CANote *note = (CANote*)curElt;
 				QDomElement dNote = dDoc.createElement("note"); dVoice.appendChild(dNote);
-				dNote.setAttribute("playable-length", CAPlayable::playableLengthToString(note->playableLength()));
-				dNote.setAttribute("pitch", note->pitch());
-				dNote.setAttribute("accs", note->accidentals());
 				if (note->stemDirection()!=CANote::StemPreferred)
 					dNote.setAttribute("stem-direction", CANote::stemDirectionToString(note->stemDirection()));
 				dNote.setAttribute("time-start", note->timeStart());
 				dNote.setAttribute("time-length", note->timeLength());
-				dNote.setAttribute("dotted", note->dotted());
+				
+				exportPlayableLength( note->playableLength(), dNote );
+				exportDiatonicPitch( note->diatonicPitch(), dNote );
 				
 				if ( note->tieStart() ) {
 					QDomElement dTie = dDoc.createElement("tie"); dNote.appendChild( dTie );
@@ -237,12 +236,11 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 			case CAMusElement::Rest: {
 				CARest *rest = (CARest*)curElt;
 				QDomElement dRest = dDoc.createElement("rest"); dVoice.appendChild(dRest);
-				dRest.setAttribute("playable-length", CAPlayable::playableLengthToString(rest->playableLength()));
 				dRest.setAttribute("rest-type", CARest::restTypeToString(rest->restType()));
 				dRest.setAttribute("time-start", rest->timeStart());
 				dRest.setAttribute("time-length", rest->timeLength());
-				dRest.setAttribute("dotted", rest->dotted());
 				
+				exportPlayableLength( rest->playableLength(), dRest );
 				exportMarks( curElt, dRest );
 				
 				break;
@@ -326,8 +324,7 @@ void CACanorusMLExport::exportMarks( CAMusElement *elt, QDomElement& domElt ) {
 			case CAMark::Tempo: {
 				CATempo *tempo = static_cast<CATempo*>(mark);
 				dMark.setAttribute("bpm", tempo->bpm());
-				dMark.setAttribute("beat", CAPlayable::playableLengthToString(tempo->beat()));
-				dMark.setAttribute("beat-dotted", tempo->beatDotted());
+				exportPlayableLength( tempo->beat(), dMark );
 				break;
 			}
 			case CAMark::Ritardando: {
@@ -394,4 +391,16 @@ void CACanorusMLExport::exportMarks( CAMusElement *elt, QDomElement& domElt ) {
 			}
 		}
 	}
+}
+
+void CACanorusMLExport::exportPlayableLength( CAPlayableLength l, QDomElement& domParent ) {
+	QDomElement dl = domParent.ownerDocument().createElement("playable-length"); domParent.appendChild(dl);
+	dl.setAttribute( "music-length", CAPlayableLength::musicLengthToString(l.musicLength()) );
+	dl.setAttribute( "dotted", l.dotted() );
+}
+
+void CACanorusMLExport::exportDiatonicPitch( CADiatonicPitch p, QDomElement& domParent ) {
+	QDomElement dp = domParent.ownerDocument().createElement("diatonic-pitch"); domParent.appendChild(dp);
+	dp.setAttribute( "note-name", p.noteName() );
+	dp.setAttribute( "accs", p.accs() );	
 }

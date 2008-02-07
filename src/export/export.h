@@ -15,7 +15,7 @@ class CASheet;
 class CAStaff;
 class CAVoice;
 class CALyricsContext;
-class CAFunctionMarkingContext;
+class CAFunctionMarkContext;
 
 class CAExport : public CAFile {
 #ifndef SWIG
@@ -31,14 +31,14 @@ public:
 	void exportStaff( CAStaff* );
 	void exportVoice( CAVoice* );
 	void exportLyricsContext( CALyricsContext* );
-	void exportFunctionMarkingContext( CAFunctionMarkingContext* );
+	void exportFunctionMarkContext( CAFunctionMarkContext* );
 	
 	inline CADocument      *exportedDocument() { return _exportedDocument; }
 	inline CASheet         *exportedSheet() { return _exportedSheet; }
 	inline CAStaff         *exportedStaff() { return _exportedStaff; }
 	inline CAVoice         *exportedVoice() { return _exportedVoice; }
 	inline CALyricsContext *exportedLyricsContext() { return _exportedLyricsContext; }
-	inline CAFunctionMarkingContext *exportedFunctionMarkingContext() { return _exportedFunctionMarkingContext; }
+	inline CAFunctionMarkContext *exportedFunctionMarkContext() { return _exportedFunctionMarkContext; }
 	
 #ifndef SWIG
 signals:
@@ -47,7 +47,7 @@ signals:
 	void staffExported( CAStaff* );
 	void voiceExported( CAVoice* );
 	void lyricsContextExported( CALyricsContext* );
-	void functionMarkingContextExported( CAFunctionMarkingContext* );
+	void functionMarkContextExported( CAFunctionMarkContext* );
 	
 	void exportDone( int status );
 #endif
@@ -58,7 +58,7 @@ protected:
 	virtual void exportStaffImpl( CAStaff* )       { setStatus(0); return; }
 	virtual void exportVoiceImpl( CAVoice* )       { setStatus(0); return; }
 	virtual void exportLyricsContextImpl( CALyricsContext* ) { setStatus(0); return; }
-	virtual void exportFunctionMarkingContextImpl( CAFunctionMarkingContext* ) { setStatus(0); return; }
+	virtual void exportFunctionMarkContextImpl( CAFunctionMarkContext* ) { setStatus(0); return; }
 	
 	inline QTextStream& out() { return *stream(); }
 	
@@ -70,14 +70,14 @@ private:
 	inline void setExportedStaff( CAStaff *staff ) { _exportedStaff = staff; }
 	inline void setExportedVoice( CAVoice *voice ) { _exportedVoice = voice; }
 	inline void setExportedLyricsContext( CALyricsContext *lc ) { _exportedLyricsContext = lc; }
-	inline void setExportedFunctionMarkingContext( CAFunctionMarkingContext *fmc ) { _exportedFunctionMarkingContext = fmc; }
+	inline void setExportedFunctionMarkContext( CAFunctionMarkContext *fmc ) { _exportedFunctionMarkContext = fmc; }
 	
 	CADocument      *_exportedDocument;
 	CASheet         *_exportedSheet;
 	CAStaff         *_exportedStaff;
 	CAVoice         *_exportedVoice;
 	CALyricsContext *_exportedLyricsContext;
-	CAFunctionMarkingContext *_exportedFunctionMarkingContext;
+	CAFunctionMarkContext *_exportedFunctionMarkContext;
 	
 };
 

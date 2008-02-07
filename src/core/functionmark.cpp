@@ -5,26 +5,26 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-#include "core/functionmarking.h"
-#include "core/functionmarkingcontext.h"
+#include "core/functionmark.h"
+#include "core/functionmarkcontext.h"
 #include "core/mark.h"
 
 /*!
-	\class CAFunctionMarking
-	\brief Represents a function marking in the score
+	\class CAFunctionMark
+	\brief Represents a function mark in the score
 	
-	Function markings are used to describe a harmony flow of the score.
+	Function marks are used to describe a harmony flow of the score.
 	Current implementation uses a standard European-German nomenclature of harmony.
 	
 	\todo Current translations of terms are mostly done "by heart". An English/Amercian
 	composer or musicologist should translate attributes the best. -Matevz
 	
-	\sa CADrawableFunctionMarking, CAFunctionMarkingContext
+	\sa CADrawableFunctionMark, CAFunctionMarkContext
 */
 
-CAFunctionMarking::CAFunctionMarking(CAFunctionType function, bool minor, const QString key, CAFunctionMarkingContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence)
+CAFunctionMark::CAFunctionMark(CAFunctionType function, bool minor, const QString key, CAFunctionMarkContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence)
  : CAMusElement(context, timeStart, timeLength) {
- 	_musElementType = CAMusElement::FunctionMarking;
+ 	_musElementType = CAMusElement::FunctionMark;
  	_function = function;
  	_tonicDegree = tonicDegree;
  	_tonicDegreeMinor = tonicDegreeMinor;
@@ -37,10 +37,10 @@ CAFunctionMarking::CAFunctionMarking(CAFunctionType function, bool minor, const 
 	setAlterations(alterations);
 }
 
-CAFunctionMarking::~CAFunctionMarking() {
+CAFunctionMark::~CAFunctionMark() {
 }
 
-bool CAFunctionMarking::isSideDegree() {
+bool CAFunctionMark::isSideDegree() {
 	if (_function==I ||
 	    _function==II ||
 	    _function==III ||
@@ -53,9 +53,9 @@ bool CAFunctionMarking::isSideDegree() {
 		return false;
 }
 
-CAFunctionMarking *CAFunctionMarking::clone() {
-	CAFunctionMarking *newElt;
-	newElt = new CAFunctionMarking(function(), isMinor(), key(), (CAFunctionMarkingContext*)_context, timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
+CAFunctionMark *CAFunctionMark::clone() {
+	CAFunctionMark *newElt;
+	newElt = new CAFunctionMark(function(), isMinor(), key(), (CAFunctionMarkContext*)_context, timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
 	newElt->setAlteredDegrees(_alteredDegrees);
 	newElt->setAddedDegrees(_addedDegrees);
 	
@@ -68,20 +68,20 @@ CAFunctionMarking *CAFunctionMarking::clone() {
 	return newElt;
 }
 
-void CAFunctionMarking::clear() {
+void CAFunctionMark::clear() {
 	setFunction( Undefined );
 	setChordArea( Undefined );
 	setTonicDegree( T );
 	setKey( "C" );
 }
 
-int CAFunctionMarking::compare( CAMusElement *func ) {
+int CAFunctionMark::compare( CAMusElement *func ) {
 	int diffs=0;
 	
-	if (func->musElementType()!=CAMusElement::FunctionMarking)
+	if (func->musElementType()!=CAMusElement::FunctionMark)
 		return -1;
 	
-	CAFunctionMarking *fm = static_cast<CAFunctionMarking*>(func);
+	CAFunctionMark *fm = static_cast<CAFunctionMark*>(func);
 	if ( fm->function() != function() ) diffs++;
 	if ( fm->chordArea()!= chordArea() ) diffs++;
 	if ( fm->tonicDegree() != tonicDegree() ) diffs++;
@@ -98,7 +98,7 @@ int CAFunctionMarking::compare( CAMusElement *func ) {
 	Stable alterations have +/- sign before the number.
 	\a alterations consists first of added degrees and then altered degrees.
 */
-void CAFunctionMarking::setAlterations(const QString alterations) {
+void CAFunctionMark::setAlterations(const QString alterations) {
 	if (alterations.isEmpty())
 		return;
 	
@@ -139,7 +139,7 @@ void CAFunctionMarking::setAlterations(const QString alterations) {
 	}
 }
 
-const QString CAFunctionMarking::functionTypeToString(CAFunctionMarking::CAFunctionType type) {
+const QString CAFunctionMark::functionTypeToString(CAFunctionMark::CAFunctionType type) {
 	switch (type) {
 		case T:         return "T"; break;
 		case S:         return "S"; break;
@@ -161,7 +161,7 @@ const QString CAFunctionMarking::functionTypeToString(CAFunctionMarking::CAFunct
 	return "undefined";
 }
 
-CAFunctionMarking::CAFunctionType CAFunctionMarking::functionTypeFromString(const QString type) {
+CAFunctionMark::CAFunctionType CAFunctionMark::functionTypeFromString(const QString type) {
 	if (type=="T") return T; else
 	if (type=="S") return S; else
 	if (type=="D") return D; else
@@ -182,7 +182,7 @@ CAFunctionMarking::CAFunctionType CAFunctionMarking::functionTypeFromString(cons
 }
 
 /*!
-	\enum CAFunctionMarking::CAFunctionType
+	\enum CAFunctionMark::CAFunctionType
 	Name of the function (tonic, subdominant, etc.), its chord area or the tonic degree.
 	Possible names are:
 	- Undefined

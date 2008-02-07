@@ -18,7 +18,7 @@
 	
 	This class is a base class for every music element in the score.
 	Music elements can be of various types, note, rest, barline, clef, lyrics syllable,
-	function marking, figured bass marking etc.
+	function mark, figured bass mark etc.
 	See CAMusElementType for details.
 	
 	Every music element belongs to a so called parent area in the score called context. 
@@ -32,7 +32,7 @@
 */
 
 /*!
-	Constructs a music element with parent context (staff, lyrics, functionmarkings) \a context,
+	Constructs a music element with parent context (staff, lyrics, functionmarks) \a context,
 	start time \a time and length \a length.
 */
 CAMusElement::CAMusElement(CAContext *context, int time, int length) {
@@ -88,7 +88,7 @@ const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementTyp
 		case (TimeSignature): return "time-signature"; break;
 		case (KeySignature): return "key-signature"; break;
 		case (Slur): return "slur"; break;
-		case (FunctionMarking): return "function-marking"; break;
+		case (FunctionMark): return "function-mark"; break;
 		case (Syllable): return "syllable"; break;
 	}
 }
@@ -107,7 +107,7 @@ CAMusElement::CAMusElementType CAMusElement::musElementTypeFromString(const QStr
 	if ( type=="time-signature" ) return TimeSignature; else
 	if ( type=="key-signature" ) return KeySignature; else
 	if ( type=="slur" ) return Slur; else
-	if ( type=="function-marking" ) return FunctionMarking;
+	if ( type=="function-mark" ) return FunctionMark;
 	if ( type=="syllable" ) return Syllable;
 }
 
@@ -152,7 +152,7 @@ void CAMusElement::addMarks( QList<CAMark*> marks ) {
 		- Slur - A music element which represents CASlur.
 		- Tie - A music element which represents CATie.
 		- PhrazingSlur - A music element which represents CAPhrazingSlur.
-		- ExpressionMarking - A music element which represents any technical text markings about how the score should be played - CAExpressionMarking (eg. Legato)
+		- ExpressionMark - A music element which represents any technical text marks about how the score should be played - CAExpressionMark (eg. Legato)
 		- VolumeSign - A music element which represents any volue sign (forte, piano etc.).
 		- Text - A music element which represents any text notes and authors additions to the score. (eg. These 3 measures still need to be fixed)
 	

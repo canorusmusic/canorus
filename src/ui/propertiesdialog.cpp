@@ -20,7 +20,7 @@
 #include "core/staff.h"
 #include "core/voice.h"
 #include "core/lyricscontext.h"
-#include "core/functionmarkingcontext.h"
+#include "core/functionmarkcontext.h"
 
 void CADocumentProperties::on_uiComposer_editingFinished() {
 	QString curText = uiCopyright->currentText();
@@ -175,12 +175,12 @@ void CAPropertiesDialog::buildTree() {
 					_contextPropertiesWidget[ _document->sheetAt(i)->contextAt(j) ] = w;
 					updateLyricsContextProperties( static_cast<CALyricsContext*>(_document->sheetAt(i)->contextAt(j)) );					
 				} else
-				if (dynamic_cast<CAFunctionMarkingContext*>( _document->sheetAt(i)->contextAt(j) )) {
+				if (dynamic_cast<CAFunctionMarkContext*>( _document->sheetAt(i)->contextAt(j) )) {
 				contextItem->setIcon( 0, QIcon("images/document/fmcontext.svg") );
-				w = new CAFunctionMarkingContextProperties( this );
+				w = new CAFunctionMarkContextProperties( this );
 					uiPropertiesWidget->addWidget( w );
 					_contextPropertiesWidget[ _document->sheetAt(i)->contextAt(j) ] = w;
-					updateFunctionMarkingContextProperties( static_cast<CAFunctionMarkingContext*>(_document->sheetAt(i)->contextAt(j)) );					
+					updateFunctionMarkContextProperties( static_cast<CAFunctionMarkContext*>(_document->sheetAt(i)->contextAt(j)) );					
 				}
 				
 			}
@@ -274,8 +274,8 @@ void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *
 			case CAContext::LyricsContext:
 				updateLyricsContextProperties( static_cast<CALyricsContext*>( _contextItem[cur] ) );
 				break;
-			case CAContext::FunctionMarkingContext:
-				updateFunctionMarkingContextProperties( static_cast<CAFunctionMarkingContext*>( _contextItem[cur] ) );
+			case CAContext::FunctionMarkContext:
+				updateFunctionMarkContextProperties( static_cast<CAFunctionMarkContext*>( _contextItem[cur] ) );
 				break;
 		}
 		
@@ -356,7 +356,7 @@ void CAPropertiesDialog::applyProperties() {
 			case CAContext::LyricsContext: {
 				break;
 			}
-			case CAContext::FunctionMarkingContext: {
+			case CAContext::FunctionMarkContext: {
 				break;
 			}
 		}
@@ -479,6 +479,6 @@ void CAPropertiesDialog::updateLyricsContextProperties( CALyricsContext *lc ) {
 	uiPropertiesWidget->setCurrentWidget( _contextPropertiesWidget[lc] );
 }
 
-void CAPropertiesDialog::updateFunctionMarkingContextProperties( CAFunctionMarkingContext *fmc ) {
+void CAPropertiesDialog::updateFunctionMarkContextProperties( CAFunctionMarkContext *fmc ) {
 	uiPropertiesWidget->setCurrentWidget( _contextPropertiesWidget[fmc] );
 }

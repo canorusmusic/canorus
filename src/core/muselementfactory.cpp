@@ -8,7 +8,7 @@
 */
 
 #include "core/muselementfactory.h"
-#include "core/functionmarkingcontext.h"
+#include "core/functionmarkcontext.h"
 #include "core/sheet.h"
 #include "core/text.h"
 #include "core/bookmark.h"
@@ -49,7 +49,7 @@
 	Creates an empty, defeault music elements factory.
 */
 CAMusElementFactory::CAMusElementFactory() {
-	_ePlayableLength = CAPlayable::Quarter;
+	_playableLength = CAPlayableLength( CAPlayableLength::Quarter );
 	_eNoteStemDirection = CANote::StemPreferred;
 	_iPlayableDotted = 0;
 	_eRestType = CARest::Normal;
@@ -65,15 +65,15 @@ CAMusElementFactory::CAMusElementFactory() {
 	_eSlurType = CASlur::TieType;
 	_slurStyle = CASlur::SlurSolid;
 
-	_fmFunction = CAFunctionMarking::T; // Name of the function
-	_fmChordArea = CAFunctionMarking::Undefined; // Chord area of the function
-	_fmTonicDegree = CAFunctionMarking::T; // Tonic degree of the function
+	_fmFunction = CAFunctionMark::T; // Name of the function
+	_fmChordArea = CAFunctionMark::Undefined; // Chord area of the function
+	_fmTonicDegree = CAFunctionMark::T; // Tonic degree of the function
 	_fmFunctionMinor = false;
 	_fmChordAreaMinor = false;
 	_fmTonicDegreeMinor = false;
 	_fmEllipse = false;
 	_musElementType = CAMusElement::Undefined;
-	mpoEmpty = new CANote(CAPlayable::Undefined, NULL, 0, 0, 0); // dummy element 
+	mpoEmpty = new CANote( CADiatonicPitch(), CAPlayableLength(), NULL, 0 ); // dummy element 
 	mpoMusElement = mpoEmpty;
 	
 	_dynamicText = "mf";
@@ -81,8 +81,7 @@ CAMusElementFactory::CAMusElementFactory() {
 	_instrument = 0;
 	
 	_fermataType = CAFermata::NormalFermata;
-	_tempoBeat = CAPlayable::Half;
-	_tempoBeatDotted = 0;
+	_tempoBeat = CAPlayableLength( CAPlayableLength::Half );
 	_tempoBpm = 72;
 	
 	_crescendoFinalVolume = 50;
@@ -114,18 +113,18 @@ void CAMusElementFactory::removeMusElem( bool bReallyRemove /* = false */ ) {
 	mpoMusElement = mpoEmpty;
 }
 
-void CAMusElementFactory::addPlayableDotted( int iAdd, CANote::CAPlayableLength l ) {
-	_iPlayableDotted = (_iPlayableDotted+iAdd)%4;
+void CAMusElementFactory::addPlayableDotted( int add, CAPlayableLength l ) {
+	_playableLength.setDotted( (_playableLength.dotted()+add)%4 );
 	// FIXME: magic number 4 is max. number of flags.
-	// If 128th will be visible in the gui, _iPlabableDotted could be one higher.
+	// If 128th will be visible in the gui, _playableLength.dotted() could be one higher.
 	//
 	// the more flags a to be inserted note has, the less dots are allowed:
 	//
-	switch ( l ) {
-	case CANote::Eighth:			if (_iPlayableDotted > 3) _iPlayableDotted = 0; break;
-	case CANote::Sixteenth:			if (_iPlayableDotted > 2) _iPlayableDotted = 0; break;
-	case CANote::ThirtySecond: 		if (_iPlayableDotted > 1) _iPlayableDotted = 0; break;
-	case CANote::SixtyFourth:		if (_iPlayableDotted > 0) _iPlayableDotted = 0; break;
+	switch ( l.musicLength() ) {
+	case CAPlayableLength::Eighth:       if (_playableLength.dotted() > 3) _playableLength.setDotted(0); break;
+	case CAPlayableLength::Sixteenth:    if (_playableLength.dotted() > 2) _playableLength.setDotted(0); break;
+	case CAPlayableLength::ThirtySecond: if (_playableLength.dotted() > 1) _playableLength.setDotted(0); break;
+	case CAPlayableLength::SixtyFourth:  if (_playableLength.dotted() > 0) _playableLength.setDotted(0); break;
 	default:						;
 	}
 };
@@ -214,22 +213,18 @@ bool CAMusElementFactory::configureNote( int pitch,
 	removeMusElem();
 	
 	if ( right && addToChord ) {
-		mpoMusElement = new CANote( static_cast<CANote*>(right)->playableLength(),
+		mpoMusElement = new CANote( CADiatonicPitch( pitch, _iNoteAccs ),
+		                            static_cast<CANote*>(right)->playableLength(),
                                     voice,
-                                    pitch,
-	                                _iNoteAccs,
-	                                0, // timeStart is set when inserting to voice
-	                                0  // dotted is set when inserting to voice
+	                                0 // timeStart is set when inserting to voice
 	   );
 		
 		bSuccess = voice->insert( right, mpoMusElement, true );
 	} else {
-		mpoMusElement = new CANote( _ePlayableLength,
+		mpoMusElement = new CANote( CADiatonicPitch( pitch, _iNoteAccs ), 
+		                            _playableLength,
 		                            voice,
-		                            pitch,
-		                            _iNoteAccs,
-		                            0,
-		                            _iPlayableDotted
+		                            0
 		);
 		
 		// add an empty syllable or reposit syllables
@@ -242,8 +237,8 @@ bool CAMusElementFactory::configureNote( int pitch,
 				voice->lyricsContextList().at(i)->repositSyllables(); // adds an empty syllable or assigns the already placed at the end if it exists
 			}
 			for (int i=0; i<voice->staff()->sheet()->contextCount(); i++) {
-				if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkingContext)
-					static_cast<CAFunctionMarkingContext*>(voice->staff()->sheet()->contextAt(i))->repositFunctions();
+				if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkContext)
+					static_cast<CAFunctionMarkContext*>(voice->staff()->sheet()->contextAt(i))->repositFunctions();
 			}
 		} else {
 			for (int i=0; i<voice->lyricsContextList().size(); i++) {
@@ -252,8 +247,8 @@ bool CAMusElementFactory::configureNote( int pitch,
 				);
 			}
 			for (int i=0; i<voice->staff()->sheet()->contextCount(); i++) {
-				if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkingContext)
-					static_cast<CAFunctionMarkingContext*>(voice->staff()->sheet()->contextAt(i))->addEmptyFunction(
+				if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkContext)
+					static_cast<CAFunctionMarkContext*>(voice->staff()->sheet()->contextAt(i))->addEmptyFunction(
 						mpoMusElement->timeStart(), mpoMusElement->timeLength()
 					);
 			}
@@ -350,7 +345,7 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 		break;
 	}
 	case CAMark::Tempo: {
-		mpoMusElement = new CATempo( tempoBeat(), tempoBeatDotted(), tempoBpm(), elt );
+		mpoMusElement = new CATempo( tempoBeat(), tempoBpm(), elt );
 		success = true;
 		break;
 	}
@@ -421,12 +416,11 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 	bool success = false;
 	if ( voice ) {
-		mpoMusElement = new CARest(restType(),
-				_ePlayableLength,
-				voice,
-				0,
-				_iPlayableDotted
-				);
+		mpoMusElement = new CARest( restType(),
+		                            _playableLength,
+		                            voice,
+		                            0
+		);
 		success = voice->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem(true);
@@ -435,20 +429,20 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 }
 
 /*!
-	Configures a new function marking with \a timeStart and \a timeLength in context \a fmc.
+	Configures a new function mark with \a timeStart and \a timeLength in context \a fmc.
 */
-bool CAMusElementFactory::configureFunctionMarking( CAFunctionMarkingContext *fmc, int timeStart, int timeLength ) {
-	CAFunctionMarking *fm = new CAFunctionMarking(
+bool CAMusElementFactory::configureFunctionMark( CAFunctionMarkContext *fmc, int timeStart, int timeLength ) {
+	CAFunctionMark *fm = new CAFunctionMark(
 		fmFunction(), isFMFunctionMinor(),
 		CAKeySignature::keySignatureToString( _iKeySigNumberOfAccs, _eKeySigGender ),
 		fmc, timeStart, timeLength,
 		fmChordArea(), isFMChordAreaMinor(),
 		fmTonicDegree(), isFMTonicDegreeMinor(),
-		"", /// \todo Function marking altered/added degrees
+		"", /// \todo Function mark altered/added degrees
 		isFMEllipse()
 	);
 	
-	fmc->addFunctionMarking(fm);
+	fmc->addFunctionMark(fm);
 	mpoMusElement = fm;
 	
 	return true;

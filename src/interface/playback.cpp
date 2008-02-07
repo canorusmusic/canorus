@@ -91,7 +91,7 @@ void CAPlayback::run() {
 				CANote *note = dynamic_cast<CANote*>(_curPlaying[i]);
 				if (note) {
 					message << (128 + note->voice()->midiChannel()); // note off
-					message << (note->midiPitch());
+					message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
 					message << (127);
 					if ((note->musElementType()!=CAMusElement::Rest ) &&		// first because rest has no tie
 							!(note->tieStart() && note->tieStart()->noteEnd()) )
@@ -132,14 +132,14 @@ void CAPlayback::run() {
 				    	} else
 				    	if ( note->markList()[j]->markType()==CAMark::Tempo ) {
 				    		sleepFactor = 60000.0 /
-				    		( CAPlayable::playableLengthToTimeLength(static_cast<CATempo*>(note->markList()[j])->beat(), static_cast<CATempo*>(note->markList()[j])->beatDotted() )
+				    		( CAPlayableLength::playableLengthToTimeLength( static_cast<CATempo*>(note->markList()[j])->beat() )
 				    		  * static_cast<CATempo*>(note->markList()[j])->bpm()
 				    		);
 				    	}
 				    }
 				    
 					message << (144 + note->voice()->midiChannel()); // note on
-					message << (note->midiPitch());
+					message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
 					message << (127);
 					if ( !note->tieEnd() )
 						midiDevice()->send(message, mSeconds);

@@ -60,7 +60,7 @@ CAImport::CAImport( QTextStream *stream )
 	setImportedStaff( 0 );
 	setImportedVoice( 0 );
 	setImportedLyricsContext( 0 );
-	setImportedFunctionMarkingContext( 0 );
+	setImportedFunctionMarkContext( 0 );
 }
 
 CAImport::CAImport( const QString stream )
@@ -73,7 +73,7 @@ CAImport::CAImport( const QString stream )
 	setImportedStaff( 0 );
 	setImportedVoice( 0 );
 	setImportedLyricsContext( 0 );
-	setImportedFunctionMarkingContext( 0 );
+	setImportedFunctionMarkContext( 0 );
 }
 
 CAImport::~CAImport() {
@@ -123,10 +123,10 @@ void CAImport::run() {
 			emit lyricsContextImported( lc );
 			break;
 		}
-		case FunctionMarkingContext: {
-			CAFunctionMarkingContext *fmc = importFunctionMarkingContextImpl();
-			setImportedFunctionMarkingContext( fmc );
-			emit functionMarkingContextImported( fmc );
+		case FunctionMarkContext: {
+			CAFunctionMarkContext *fmc = importFunctionMarkContextImpl();
+			setImportedFunctionMarkContext( fmc );
+			emit functionMarkContextImported( fmc );
 			break;
 		}
 		}
@@ -170,8 +170,8 @@ void CAImport::importLyricsContext() {
 	start();
 }
 
-void CAImport::importFunctionMarkingContext() {
-	setImportPart( FunctionMarkingContext );
+void CAImport::importFunctionMarkContext() {
+	setImportPart( FunctionMarkContext );
 	setStatus( 1 ); // process started
 	start();
 }

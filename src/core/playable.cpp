@@ -29,12 +29,10 @@
 	
 	\sa CAPlayableLength, CAVoice, CAMusElement
 */
-CAPlayable::CAPlayable(CAPlayableLength length, CAVoice *voice, int timeStart, int dotted)
+CAPlayable::CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart )
  : CAMusElement(voice?voice->staff():0, timeStart, 0) {
 	setVoice( voice );
-	_playableLength = length;	
-	_dotted = dotted;
-	calculateTimeLength();
+	setPlayableLength( length );	
 }
 
 /*!
@@ -58,117 +56,8 @@ void CAPlayable::setVoice(CAVoice *voice) {
 	
 	This function is usually automatically called when changing these properties.
 	
-	\sa playableLength(), dotted()
+	\sa playableLength()
 */
 void CAPlayable::calculateTimeLength() {
-	float factor = 1.0, delta=0.5;
-	for (int i=0; i < dotted(); i++, factor+=delta, delta/=2);
-	setTimeLength( qRound( playableLengthToTimeLength(playableLength()) * factor ) );
-}
-
-CAPlayable::CAPlayableLength CAPlayable::playableLengthFromString(const QString length) {
-	if (length=="undefined") {
-		return Undefined;
-	} else
-	if (length=="breve") {
-		return Breve;
-	} else
-	if (length=="whole") {
-		return Whole;
-	} else
-	if (length=="half") {
-		return Half;
-	} else
-	if (length=="quarter") {
-		return Quarter;
-	} else
-	if (length=="eighth") {
-		return Eighth;
-	} else
-	if (length=="sixteenth") {
-		return Sixteenth;
-	} else
-	if (length=="thirty-second") {
-		return ThirtySecond;
-	} else
-	if (length=="sixty-fourth") {
-		return SixtyFourth;
-	} else
-	if (length=="hundred-twenty-eighth") {
-		return HundredTwentyEighth;
-	} else
-		return Undefined;
-}
-
-const QString CAPlayable::playableLengthToString(CAPlayableLength length) {
-	switch (length) {
-		case Undefined:
-			return "undefined";
-		case Breve:
-			return "breve";
-		case Whole:
-			return "whole";
-		case Half:
-			return "half";
-		case Quarter:
-			return "quarter";
-		case Eighth:
-			return "eighth";
-		case Sixteenth:
-			return "sixteenth";
-		case ThirtySecond:
-			return "thirty-second";
-		case SixtyFourth:
-			return "sixty-fourth";
-		case HundredTwentyEighth:
-			return "hundred-twenty-eighth";
-		default:
-			return "";
-	}
-}
-
-/*!
-	Converts internal enum playableLength to actual timeLength.
-*/
-const int CAPlayable::playableLengthToTimeLength( CAPlayableLength length, int dotted ) {
-	int timeLength;
-	
-	switch (length) {
-		case CAPlayable::HundredTwentyEighth:
-			timeLength = 8;
-			break;
-		case CAPlayable::SixtyFourth:
-			timeLength = 16;
-			break;
-		case CAPlayable::ThirtySecond:
-			timeLength = 32;
-			break;
-		case CAPlayable::Sixteenth:
-			timeLength = 64;
-			break;
-		case CAPlayable::Eighth:
-			timeLength = 128;
-			break;
-		case CAPlayable::Quarter:
-			timeLength = 256;
-			break;
-		case CAPlayable::Half:
-			timeLength = 512;
-			break;
-		case CAPlayable::Whole:
-			timeLength = 1024;
-			break;
-		case CAPlayable::Breve:
-			timeLength = 2048;
-			break;
-		default:            // This should never occur!
-			timeLength = 0;
-			break;
-	}
-	
-	float factor = 1.0, delta=0.5;
-	for (int i=0; i<dotted; i++, factor+=delta, delta/=2);  // calculate the length factor out of number of dots
-	timeLength = qRound(timeLength*factor);                 // increase the time length for the factor
-	
-	return timeLength;
+	setTimeLength( CAPlayableLength::playableLengthToTimeLength(playableLength()) );
 }

@@ -14,7 +14,7 @@
 #include "ui_staffproperties.h"
 #include "ui_voiceproperties.h"
 #include "ui_lyricscontextproperties.h"
-#include "ui_functionmarkingproperties.h"
+#include "ui_functionmarkcontextproperties.h"
 
 class QTreeWidgetItem;
 
@@ -24,7 +24,7 @@ class CAStaff;
 class CAContext;
 class CAVoice;
 class CALyricsContext;
-class CAFunctionMarkingContext;
+class CAFunctionMarkContext;
 
 class CADocumentProperties : public QWidget, public Ui::uiDocumentProperties {
 	Q_OBJECT
@@ -56,9 +56,9 @@ public:
 	CALyricsContextProperties( QWidget *parent=0 ) : QWidget( parent ) { setupUi(this); }
 };
 
-class CAFunctionMarkingContextProperties : public QWidget, public Ui::uiFunctionMarkingContextProperties {
+class CAFunctionMarkContextProperties : public QWidget, public Ui::uiFunctionMarkContextProperties {
 public:
-	CAFunctionMarkingContextProperties( QWidget *parent=0 ) : QWidget( parent ) { setupUi(this); }
+	CAFunctionMarkContextProperties( QWidget *parent=0 ) : QWidget( parent ) { setupUi(this); }
 };
 
 class CAPropertiesDialog : public QDialog, private Ui::uiPropertiesDialog
@@ -94,7 +94,7 @@ private:
 	void updateStaffProperties( CAStaff* );
 	void updateVoiceProperties( CAVoice* );
 	void updateLyricsContextProperties( CALyricsContext* );
-	void updateFunctionMarkingContextProperties( CAFunctionMarkingContext* );
+	void updateFunctionMarkContextProperties( CAFunctionMarkContext* );
 	
 	CADocument                           *_document;
 	QTreeWidgetItem                      *_documentItem;             // Document => Document properties widget

@@ -13,7 +13,7 @@
 
 class CAStaff;
 
-class CABarline : public CAMusElement{
+class CABarline : public CAMusElement {
 public:
 	enum CABarlineType {
 		Undefined = -1,

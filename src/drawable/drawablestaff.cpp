@@ -70,7 +70,7 @@ int CADrawableStaff::calculateCenterYCoord(int pitch, CAClef *clef) {
 */
 int CADrawableStaff::calculateCenterYCoord(CANote *note, int x) {
 	CAClef *clef = getClef(x);
-	return calculateCenterYCoord(note->pitch(), clef);
+	return calculateCenterYCoord( note->diatonicPitch().noteName(), clef );
 }
 
 /*!
@@ -97,7 +97,7 @@ int CADrawableStaff::calculateCenterYCoord(int pitch, int x) {
 	\return Center of a space/line of a staff in absolute world units.
 */
 int CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
-	return calculateCenterYCoord(note->pitch(), clef);
+	return calculateCenterYCoord( note->diatonicPitch().noteName(), clef );
 }
 
 /*!
@@ -170,9 +170,9 @@ int CADrawableStaff::getAccs(int x, int pitch) {
 	       _drawableMusElementList[i]->drawableMusElementType() != CADrawableMusElement::DrawableBarline &&
 	       _drawableMusElementList[i]->drawableMusElementType() != CADrawableMusElement::DrawableKeySignature &&
 	       (!(_drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableNote && 
-	          ((CANote*)_drawableMusElementList[i]->musElement())->pitch() == pitch
+	          (static_cast<CANote*>(_drawableMusElementList[i]->musElement())->diatonicPitch().noteName() == pitch)
 	         ))
-	      ) {	//go back while a barline, key signature or a note with accidental is found
+	      ) {	// go back until the barline, key signature or note with accidentals is found
 	      	i--;
 	}
 	
@@ -181,8 +181,8 @@ int CADrawableStaff::getAccs(int x, int pitch) {
 	if (_drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableBarline ||
 	    _drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableKeySignature)
 		return (key?key->accidentals()[pitch%7]:0);
-	else //note before
-		return ((CANote*)_drawableMusElementList[i]->musElement())->accidentals();
+	else // note before
+		return (static_cast<CANote*>(_drawableMusElementList[i]->musElement())->diatonicPitch().accs());
 }
 
 /*!

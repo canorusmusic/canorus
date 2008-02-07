@@ -72,8 +72,8 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 		voice->cloneVoiceProperties( templateVoice() );
 	
 	setCurVoice(voice);
-	CAPitch prevPitch = { 21, 0 };
-	CALength prevLength = { CAPlayable::Quarter, 0 };
+	CADiatonicPitch prevPitch( 21, 0 );
+	CAPlayableLength prevLength( CAPlayableLength::Quarter, 0 );
 	bool chordCreated=false;
 	bool changed=false;
 	
@@ -112,8 +112,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			popDepth();
 			chordCreated=false;
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
-				prevPitch.pitch = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0)->pitch();
-				prevPitch.accs = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0)->accidentals();
+				prevPitch = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0)->diatonicPitch();
 			} else {
 				addError(QString("Chord should be finished with a note."));
 			}
@@ -174,21 +173,21 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 		} else
 		if (isNote(curElt)) {
 			// CANote
-			prevPitch = relativePitchFromLilyPond(curElt, prevPitch.pitch, true);
-			CALength length = playableLengthFromLilyPond(curElt, true);
-			if (length.length!=CAPlayable::Undefined) // length may not be set
+			prevPitch = relativePitchFromLilyPond(curElt, prevPitch, true);
+			CAPlayableLength length = playableLengthFromLilyPond(curElt, true);
+			if (length.musicLength()!=CAPlayableLength::Undefined) // length may not be set
 				prevLength = length;
 			
 			CANote *note;
 			if (curDepth()!=Chord || !chordCreated) {
 				// the note is not part of the chord or is the first note in the chord
-				note = new CANote(prevLength.length, curVoice(), prevPitch.pitch, prevPitch.accs, curVoice()->lastTimeEnd(), prevLength.dotted);
+				note = new CANote( prevPitch, prevLength, curVoice(), curVoice()->lastTimeEnd() );
 				if (curDepth()==Chord)
 					chordCreated = true;
 				curVoice()->append( note, false );
 			} else {
 				// the note is part of the already built chord
-				note = new CANote(prevLength.length, curVoice(), prevPitch.pitch, prevPitch.accs, curVoice()->lastTimeStart(), prevLength.dotted);
+				note = new CANote( prevPitch, prevLength, curVoice(), curVoice()->lastTimeStart() );
 				curVoice()->append( note, true );
 			}
 			
@@ -197,11 +196,11 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 		if (isRest(curElt)) {
 			// CARest
 			CARest::CARestType type = restTypeFromLilyPond(curElt, true);
-			CALength length = playableLengthFromLilyPond(curElt, true);
-			if (length.length!=CAPlayable::Undefined) // length may not be set
+			CAPlayableLength length = playableLengthFromLilyPond(curElt, true);
+			if (length.musicLength()!=CAPlayableLength::Undefined) // length may not be set
 				prevLength = length;
 						
-			curVoice()->append( new CARest(type, prevLength.length, curVoice(), curVoice()->lastTimeEnd(), prevLength.dotted) );
+			curVoice()->append( new CARest( type, prevLength, curVoice(), curVoice()->lastTimeEnd() ) );
 		} else
 		if (curElt.startsWith("|")) {
 			// CABarline::Single
@@ -458,17 +457,17 @@ bool CALilyPondImport::isRest(const QString elt) {
 	
 	\sa playableLengthFromLilyPond()
 */
-CALilyPondImport::CAPitch CALilyPondImport::relativePitchFromLilyPond(QString& constNName, int prevPitch, bool parse) {
+CADiatonicPitch CALilyPondImport::relativePitchFromLilyPond(QString& constNName, CADiatonicPitch prevPitch, bool parse) {
 	QString noteName = constNName;
 	
 	// determine pitch
 	int curPitch = noteName[0].toLatin1() - 'a' + 5	// determine the 0-6 pitch from note name
-	               - (prevPitch % 7);	
+	               - (prevPitch.noteName() % 7);	
 	while (curPitch<-3)	//normalize pitch - the max +/- interval is fourth
 		curPitch+=7;
 	while (curPitch>3)
 		curPitch-=7;
-	curPitch += prevPitch;
+	curPitch += prevPitch.noteName();
 	
 	// determine accidentals
 	signed char curAccs = 0;
@@ -500,10 +499,7 @@ CALilyPondImport::CAPitch CALilyPondImport::relativePitchFromLilyPond(QString& c
 		}
 	}
 	
-	
-	
-	CAPitch ret = {curPitch, curAccs};
-	return ret;
+	return CADiatonicPitch( curPitch, curAccs );
 }
 
 /*!
@@ -513,8 +509,8 @@ CALilyPondImport::CAPitch CALilyPondImport::relativePitchFromLilyPond(QString& c
 	
 	\sa relativePitchFromString()
 */
-CALilyPondImport::CALength CALilyPondImport::playableLengthFromLilyPond(QString& elt, bool parse) {
-	CALength ret = { CAPlayable::Undefined, 0 };
+CAPlayableLength CALilyPondImport::playableLengthFromLilyPond(QString& elt, bool parse) {
+	CAPlayableLength ret;
 	
 	// index of the first number
 	int start = elt.indexOf(QRegExp("[\\d]"));
@@ -526,16 +522,16 @@ CALilyPondImport::CALength CALilyPondImport::playableLengthFromLilyPond(QString&
 		int dStart;
 		for (int i = dStart = elt.indexOf(".",start);
 		     i!=-1 && i<elt.size() && elt[i]=='.';
-		     i++, ret.dotted++);
+		     i++, ret.setDotted( ret.dotted()+1 ));
 		
 		if (dStart == -1)
 			dStart = elt.indexOf(QRegExp("[\\D]"), start);
 		if (dStart == -1)
 			dStart = elt.size();
 		
-		ret.length = static_cast<CAPlayable::CAPlayableLength>(elt.mid(start, dStart-start).toInt());
+		ret.setMusicLength( static_cast<CAPlayableLength::CAMusicLength>(elt.mid(start, dStart-start).toInt()) );
 		if (parse)
-			elt.remove(start, dStart-start+ret.dotted);
+			elt.remove(start, dStart-start+ret.dotted());
 	}
 	
 	return ret;

@@ -8,6 +8,7 @@
 #include "interface/mididevice.h"
 #include "core/sheet.h"
 #include "core/voice.h"
+#include "core/diatonicpitch.h"
 
 CAMidiDevice::CAMidiDevice()
  : QObject()
@@ -180,6 +181,32 @@ unsigned char CAMidiDevice::freeMidiChannel( CASheet* s ) {
 	
 	return 0;
 }
+
+/*!
+	Converts the given internal Canorus \a pitch with accidentals \a acc to
+	standard unsigned 7-bit MIDI pitch.
+	
+	\sa _pitch, midiPitchToPitch()
+*/
+int CAMidiDevice::diatonicPitchToMidiPitch( CADiatonicPitch pitch ) {
+	float step = (float)12/7;
+	
+	// +0.3 - rounding factor for 7/12 that exactly underlays every tone in octave, if rounded
+	// +12 - our logical pitch starts at Sub-contra C, midi counting starts one octave lower
+	return qRound( pitch.noteName()*step + 0.3 + 12) + pitch.accs();
+}
+
+/*!
+	Converts the given standard unsigned 7-bit MIDI pitch to internal Canorus pitch.
+	
+	\todo This method currently doesn't do anything. Problem is determination of sharp/flat from MIDI. -Matevz
+	
+	\sa _pitch, pitchToMidiPitch()
+*/
+CADiatonicPitch CAMidiDevice::midiPitchToDiatonicPitch(int midiPitch) {
+	return CADiatonicPitch();
+}
+
 
 /*!
 	\var CAMidiDevice::GM_INSTRUMENTS

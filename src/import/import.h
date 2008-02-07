@@ -15,7 +15,7 @@ class CASheet;
 class CAStaff;
 class CAVoice;
 class CALyricsContext;
-class CAFunctionMarkingContext;
+class CAFunctionMarkContext;
 
 class CAImport : public CAFile {
 #ifndef SWIG
@@ -32,14 +32,14 @@ public:
 	void importStaff();
 	void importVoice();
 	void importLyricsContext();
-	void importFunctionMarkingContext();
+	void importFunctionMarkContext();
 	
 	inline CADocument *importedDocument() { return _importedDocument; }
 	inline CASheet *importedSheet()       { return _importedSheet; }
 	inline CAStaff *importedStaff()       { return _importedStaff; }
 	inline CAVoice *importedVoice()       { return _importedVoice; }
 	inline CALyricsContext *importedLyricsContext() { return _importedLyricsContext; }
-	inline CAFunctionMarkingContext *importedFunctionMarkingContext() { return _importedFunctionMarkingContext; }
+	inline CAFunctionMarkContext *importedFunctionMarkContext() { return _importedFunctionMarkContext; }
 	
 #ifndef SWIG
 signals:
@@ -48,7 +48,7 @@ signals:
 	void staffImported( CAStaff* );
 	void voiceImported( CAVoice* );
 	void lyricsContextImported( CALyricsContext* );
-	void functionMarkingContextImported( CAFunctionMarkingContext* );
+	void functionMarkContextImported( CAFunctionMarkContext* );
 	
 	void importDone( int status );
 #endif
@@ -59,7 +59,7 @@ protected:
 	virtual CAStaff         *importStaffImpl()         { setStatus(0); return 0; }
 	virtual CAVoice         *importVoiceImpl()         { setStatus(0); return 0; }
 	virtual CALyricsContext *importLyricsContextImpl() { setStatus(0); return 0; }
-	virtual CAFunctionMarkingContext *importFunctionMarkingContextImpl() { setStatus(0); return 0; }
+	virtual CAFunctionMarkContext *importFunctionMarkContextImpl() { setStatus(0); return 0; }
 #ifndef SWIG
 	QTextStream& in() { return *stream(); }
 #else
@@ -72,14 +72,14 @@ private:
 	inline void setImportedStaff( CAStaff *staff ) { _importedStaff = staff; }
 	inline void setImportedVoice( CAVoice *voice ) { _importedVoice = voice; }
 	inline void setImportedLyricsContext( CALyricsContext *lc ) { _importedLyricsContext = lc; }
-	inline void setImportedFunctionMarkingContext( CAFunctionMarkingContext *fmc ) { _importedFunctionMarkingContext = fmc; }
+	inline void setImportedFunctionMarkContext( CAFunctionMarkContext *fmc ) { _importedFunctionMarkContext = fmc; }
 	
 	CADocument      *_importedDocument;
 	CASheet         *_importedSheet;
 	CAStaff         *_importedStaff;
 	CAVoice         *_importedVoice;
 	CALyricsContext *_importedLyricsContext;
-	CAFunctionMarkingContext *_importedFunctionMarkingContext;
+	CAFunctionMarkContext *_importedFunctionMarkContext;
 	
 	enum CAImportPart {
 		Undefined,
@@ -88,7 +88,7 @@ private:
 		Staff,
 		Voice,
 		LyricsContext,
-		FunctionMarkingContext
+		FunctionMarkContext
 	};
 	
 	void run();

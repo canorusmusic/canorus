@@ -14,6 +14,8 @@
 #include <QString>
 #include <QObject>
 
+#include "core/diatonicpitch.h"
+
 class CASheet;
 
 class CAMidiDevice : public QObject {
@@ -65,6 +67,10 @@ public:
 signals:
 	void midiInEvent( QVector< unsigned char > message );	
 #endif
+	
+public:
+	static int diatonicPitchToMidiPitch( CADiatonicPitch );
+	static CADiatonicPitch midiPitchToDiatonicPitch( int );
 	
 protected:
 	void setRealTime( bool r ) { _realTime = r; }

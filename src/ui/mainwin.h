@@ -374,7 +374,7 @@ private:
 			QAction          *uiStanzaNumberAction;
 			QComboBox        *uiAssociatedVoice;
 			QAction          *uiAssociatedVoiceAction;
-			// CAFunctionMarkingContext
+			// CAFunctionMarkContext
 		
 		QToolBar *uiVoiceToolBar;
 			// QAction       *uiNewVoice;  // made by Qt Designer
@@ -412,7 +412,7 @@ private:
 			QSpinBox         *uiTimeSigBeat;
 			// CAMenuToolButton *uiTimeSigStyle; /// \todo Implement it. -Matevz
 		
-		QToolBar *uiFMToolBar;                       // function marking tool bar
+		QToolBar *uiFMToolBar;                       // function mark tool bar
 			CAMenuToolButton  *uiFMFunction;
 			CAMenuToolButton  *uiFMChordArea;
 			CAMenuToolButton  *uiFMTonicDegree;

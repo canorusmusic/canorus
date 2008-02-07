@@ -20,7 +20,7 @@ public:
 		Hidden
 	};
 	
-	CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart, int dotted=0);
+	CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart);
 	~CARest();
 	
 	CARest *clone( CAVoice *voice );

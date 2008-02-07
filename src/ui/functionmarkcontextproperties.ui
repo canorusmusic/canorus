@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>uiFunctionMarkingContextProperties</class>
- <widget class="QWidget" name="uiFunctionMarkingContextProperties" >
+ <class>uiFunctionMarkContextProperties</class>
+ <widget class="QWidget" name="uiFunctionMarkContextProperties" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Function marking properties</string>
+   <string>Function mark context properties</string>
   </property>
  </widget>
  <resources/>

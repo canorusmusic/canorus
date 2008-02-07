@@ -44,7 +44,7 @@ CAExport::CAExport( QTextStream *stream )
 	setExportedStaff(0);
 	setExportedVoice(0);
 	setExportedLyricsContext(0);
-	setExportedFunctionMarkingContext(0);
+	setExportedFunctionMarkContext(0);
 }
 
 CAExport::~CAExport() {
@@ -79,9 +79,9 @@ void CAExport::run() {
 			exportLyricsContextImpl( exportedLyricsContext() );
 			emit lyricsContextExported( exportedLyricsContext() );
 		} else
-		if (exportedFunctionMarkingContext()) {
-			exportFunctionMarkingContextImpl( exportedFunctionMarkingContext() );
-			emit functionMarkingContextExported( exportedFunctionMarkingContext() );
+		if (exportedFunctionMarkContext()) {
+			exportFunctionMarkContextImpl( exportedFunctionMarkContext() );
+			emit functionMarkContextExported( exportedFunctionMarkContext() );
 		}
 		
 		stream()->flush();
@@ -124,8 +124,8 @@ void CAExport::exportLyricsContext( CALyricsContext *lc ) {
 	start();
 }
 
-void CAExport::exportFunctionMarkingContext( CAFunctionMarkingContext *fmc ) {
-	setExportedFunctionMarkingContext( fmc );
+void CAExport::exportFunctionMarkContext( CAFunctionMarkContext *fmc ) {
+	setExportedFunctionMarkContext( fmc );
 	setStatus( 1 ); // process started
 	start();
 }

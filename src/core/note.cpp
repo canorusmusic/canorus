@@ -25,15 +25,11 @@
 	
 	\sa CAPlayableLength, CAPlayable, CAVoice, _pitch, _accs
 */
-CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char accs, int timeStart, int dotted)
- : CAPlayable(length, voice, timeStart, dotted) {
+CANote::CANote( CADiatonicPitch pitch, CAPlayableLength length, CAVoice *voice, int timeStart )
+ : CAPlayable( length, voice, timeStart ) {
 	_musElementType = CAMusElement::Note;
 	_forceAccidentals = false;
-	_accs = accs;
 	_stemDirection = StemPreferred;
-	
-	_pitch = pitch;
-	_midiPitch = CANote::pitchToMidiPitch(pitch, _accs);
 	
 	setTieStart( 0 );
 	setSlurStart( 0 );
@@ -42,7 +38,7 @@ CANote::CANote(CAPlayableLength length, CAVoice *voice, int pitch, signed char a
 	setSlurEnd( 0 );
 	setPhrasingSlurEnd( 0 );
 
-	calculateNotePosition();
+	setDiatonicPitch(pitch);
 }
 
 CANote::~CANote() {
@@ -80,7 +76,7 @@ CANote::~CANote() {
 	Does *not* create clones of ties, slurs and phrasing slurs!
 */
 CANote *CANote::clone( CAVoice *voice ) {
-	CANote *d = new CANote(_playableLength, voice, _pitch, _accs, _timeStart, _dotted);
+	CANote *d = new CANote( diatonicPitch(), playableLength(), voice, timeStart() );
 	d->setStemDirection( stemDirection() );
 	
 	for (int i=0; i<markList().size(); i++) {
@@ -101,7 +97,7 @@ CANote *CANote::clone( CAVoice *voice ) {
 void CANote::calculateNotePosition() {
 	CAClef *clef = (voice()?voice()->getClef(this):0);
 	
-	_notePosition = _pitch + (clef?clef->c1():-2) - 28;
+	_notePosition = diatonicPitch().noteName() + (clef?clef->c1():-2) - 28;
 }
 
 /*!
@@ -130,19 +126,6 @@ const QString CANote::generateNoteName(int pitch, int accs) {
 		name.append(',');
 	
 	return name;
-}
-
-/*!
-	Sets the note pitch to \a pitch.
-	
-	\sa _pitch
-*/
-void CANote::setPitch(int pitch) {
-	_pitch = pitch;
-	_midiPitch = CANote::pitchToMidiPitch(pitch, _accs);
-	
-	calculateNotePosition();
-	updateTies();
 }
 
 /*!
@@ -218,22 +201,11 @@ int CANote::compare(CAMusElement *elt) {
 		return -1;
 	
 	int diffs=0;
-	if ((_pitch!=((CANote*)elt)->pitch()) ||
-	(_accs!=((CANote*)elt)->accidentals())) diffs++;
-	if (_playableLength!=((CAPlayable*)elt)->playableLength()) diffs++;
-	if (_midiPitch!=((CANote*)elt)->midiPitch()) diffs++;
-	if (timeLength()!=((CANote*)elt)->timeLength()) diffs++;
+	if ( diatonicPitch() != static_cast<CANote*>(elt)->diatonicPitch() )diffs++;
+	if ( playableLength() != static_cast<CAPlayable*>(elt)->playableLength() ) diffs++;
 	
 	return diffs;
 }
-
-/*!
-	Keeps _midPitch proper when the Accidentals are modified
-*/
-void CANote::setAccidentals(int accs) {
-	_accs = accs;
-	_midiPitch = CANote::pitchToMidiPitch( _pitch, _accs );
-};
 
 /*!
 	Sets the stem direction and update tie, slur and phrasing slur direction.
@@ -249,13 +221,13 @@ void CANote::setStemDirection( CAStemDirection dir ) {
 void CANote::updateTies() {
 	// break the tie, if needed
 	if ( tieStart() && tieStart()->noteEnd() &&
-	     pitch()!=tieStart()->noteEnd()->pitch() ) {
+	     diatonicPitch()!=tieStart()->noteEnd()->diatonicPitch() ) {
 		// break the tie, if the first note isn't the same pitch
 		tieStart()->noteEnd()->setTieEnd( 0 );
 		tieStart()->setNoteEnd( 0 );
 	}
 	if ( tieEnd() && tieEnd()->noteStart() &&
-	     pitch()!=tieEnd()->noteStart()->pitch() ) {
+	     diatonicPitch()!=tieEnd()->noteStart()->diatonicPitch() ) {
 		// break the tie, if the next note isn't the same pitch
 		tieEnd()->setNoteEnd( 0 );
 		setTieEnd( 0 );
@@ -268,7 +240,7 @@ void CANote::updateTies() {
 	// checks a tie of the potential left note
 	CANote *leftNote = 0;
 	for (int i=0; i<noteList.count() && noteList[i]->timeEnd()<=timeStart(); i++) { // get the left note
-		if ( noteList[i]->timeEnd()==timeStart() && noteList[i]->pitch()==pitch() ) {
+		if ( noteList[i]->timeEnd()==timeStart() && noteList[i]->diatonicPitch()==diatonicPitch() ) {
 			leftNote = noteList[i];
 			break;
 		}
@@ -281,7 +253,7 @@ void CANote::updateTies() {
 	// checks a tie of the potential right note
 	CANote *rightNote = 0;
 	for (int i=0; i<noteList.count() && noteList[i]->timeStart()<=timeEnd(); i++) { // get the right note
-		if ( noteList[i]->timeStart()==timeEnd() && noteList[i]->pitch()==pitch() ) {
+		if ( noteList[i]->timeStart()==timeEnd() && noteList[i]->diatonicPitch()==diatonicPitch() ) {
 			rightNote = noteList[i];
 			break;
 		}
@@ -333,31 +305,6 @@ CANote::CAStemDirection CANote::stemDirectionFromString(const QString dir) {
 		return CANote::StemPreferred;
 	} else
 		return CANote::StemPreferred;
-}
-
-/*!
-	Converts the given internal Canorus \a pitch with accidentals \a acc to
-	standard unsigned 7-bit MIDI pitch.
-	
-	\sa _pitch, midiPitchToPitch()
-*/
-int CANote::pitchToMidiPitch(int pitch, int acc) {
-	float step = (float)12/7;
-	
-	// +0.3 - rounding factor for 7/12 that exactly underlays every tone in octave, if rounded
-	// +12 - our logical pitch starts at Sub-contra C, midi counting starts one octave lower
-	return qRound(pitch*step + 0.3 + 12) + acc;
-}
-
-/*!
-	Converts the given standard unsigned 7-bit MIDI pitch to internal Canorus pitch.
-	
-	\todo This method currently doesn't do anything. Problem is determination of sharp/flat from MIDI. -Matevz
-	
-	\sa _pitch, pitchToMidiPitch()
-*/
-int CANote::midiPitchToPitch(int midiPitch) {
-	return 0;
 }
 
 /*!

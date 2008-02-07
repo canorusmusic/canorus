@@ -15,10 +15,9 @@
 	It consists of the note (beat) and beats per minute number.
 */
 
-CATempo::CATempo( CAPlayable::CAPlayableLength p, int dotted, int bpm, CAMusElement *t )
+CATempo::CATempo( CAPlayableLength p, int bpm, CAMusElement *t )
  : CAMark( CAMark::Tempo, t ) {
 	setBeat( p );
-	setBeatDotted( dotted );
 	setBpm( bpm );
 }
 
@@ -26,7 +25,7 @@ CATempo::~CATempo() {
 }
 
 CAMusElement *CATempo::clone() {
-	return new CATempo( beat(), beatDotted(), bpm(), associatedElement() );
+	return new CATempo( beat(), bpm(), associatedElement() );
 }
 
 int CATempo::compare( CAMusElement *elt ) {
