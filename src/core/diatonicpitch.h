@@ -8,6 +8,8 @@
 #ifndef DIATONICPITCH_H_
 #define DIATONICPITCH_H_
 
+#include "core/interval.h"
+
 class CADiatonicPitch {
 public:
 	enum CANoteName {
@@ -26,14 +28,20 @@ public:
 	
 	bool operator==(CADiatonicPitch);
 	inline bool operator!=(CADiatonicPitch p) { return !operator==(p); }
+	
 	bool operator==(int noteName);
 	inline bool operator!=(int p) { return !operator==(p); }
+	
+	CADiatonicPitch operator+(CAInterval);
+	CADiatonicPitch operator-(CAInterval i) {
+		return operator+( CAInterval( i.quality(), i.quantity()*(-1) ) );
+	}
 	
 	inline const int noteName() { return _noteName; }
 	inline const int accs() { return _accs; }
 	
-	inline void setNoteName( const int& noteName ) { _noteName = noteName; }
-	inline void setAccs( const int& accs ) { _accs = accs; }
+	inline void setNoteName( const int noteName ) { _noteName = noteName; }
+	inline void setAccs( const int accs ) { _accs = accs; }
 	
 private:
 	int _noteName; // 0-sub-contra C, 1-D, 2-E etc.
