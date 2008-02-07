@@ -7,6 +7,23 @@
 
 #include "core/playablelength.h"
 
+/*!
+	\class CAPlayableLength
+	\brief Musical length of notes and rests
+	
+	This class represents a musical length (quarter, half, whole etc.) of notes
+	and rests with number of dots.
+	
+	It consists of two properties:
+	- music length (quarter, half, whole etc.)
+	- number of dots
+	
+	Playable length can be easily converted to timeLength. Vice-versa is a bit more
+	difficult.
+	
+	\sa playableLengthToTimeLength(), CARest::composeRests()
+*/
+
 CAPlayableLength::CAPlayableLength() {
 	setMusicLength( Undefined );
 	setDotted( 0 );

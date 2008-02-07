@@ -8,6 +8,8 @@
 #ifndef INTERVAL_H_
 #define INTERVAL_H_
 
+class CADiatonicPitch;
+
 class CAInterval {
 public:
 	enum CAQuality {
@@ -31,6 +33,13 @@ public:
 	};
 	
 	CAInterval( int qlt, int qnt );
+	CAInterval( CADiatonicPitch note1, CADiatonicPitch note2 );
+	
+	CAInterval operator~();
+	CAInterval operator+( CAInterval );
+	CAInterval operator-(CAInterval i) {
+		return operator+( CAInterval( i.quality(), i.quantity()*(-1) ) );
+	}
 	
 	inline const int quality() { return _qlt; }
 	inline const int quantity() { return _qnt; }
