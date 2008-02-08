@@ -48,12 +48,12 @@ public:
 	
 	QList<CAMusElement*> getSignList();
 	QList<CANote*> getNoteList();
+	bool containsPitch( int noteName , int timeStart );
+	bool containsPitch( CADiatonicPitch p, int timeStart );
 	CANote *nextNote(int timeStart);
 	CANote *previousNote(int timeStart);
 	
 	QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
-	
-	bool containsPitch(int pitch, int startTime);
 	
 	inline QList<CAMusElement*>& musElementList() { return _musElementList; }
 	inline int lastTimeEnd() { return (musElementList().size()?musElementList().back()->timeEnd():0); }
