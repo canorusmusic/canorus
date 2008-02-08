@@ -402,22 +402,6 @@ CANote* CAVoice::lastNote() {
 }
 
 /*!
-	Returns true, if this voice contains a note with the given \a pitch at the given
-	\a startTime.
-	
-	This is useful when inserting a note and there needs to be determined if a user is
-	adding a note to a chord and the note is maybe already there. Note's accidentals
-	are ignored.
-*/
-bool CAVoice::containsPitch( int pitch, int startTime) {
-	 for (int i=0; i<_musElementList.size(); i++)
-	 	if ( (_musElementList[i]->musElementType() == CAMusElement::Note) && (_musElementList[i]->timeStart() == startTime) && (static_cast<CANote*>(_musElementList[i])->diatonicPitch() == pitch) )
-			return true;
-		
-	return false;
-}
-
-/*!
 	Returns a list of pointers to actual music elements which have the given \a
 	startTime and are of given \a type.
 	This is useful for querying for eg. If a new key signature exists at the certain
@@ -625,6 +609,43 @@ bool CAVoice::synchronizeMusElements() {
 			i += (chord.size() - chord.indexOf( static_cast<CANote*>(musElementList()[i]) ));
 		}
 	}
+}
+
+/*!
+	Returns true, if this voice contains a note with the given \a pitch notename at the
+	given \a timeStart.
+	
+	This is useful when inserting a note and there needs to be determined if a user is
+	adding a note to a chord and the note is maybe already there. Note's accidentals
+	are ignored.
+*/
+bool CAVoice::containsPitch( int noteName, int timeStart ) {
+	for (int i=0 ;i<_musElementList.size(); i++) {
+		if ( _musElementList[i]->timeStart()==timeStart &&
+		     _musElementList[i]->musElementType()==CAMusElement::Note &&
+		     static_cast<CANote*>(_musElementList[i])->diatonicPitch().noteName()==noteName )
+			return true;
+	}
+	
+	return false;
+}
+
+/*!
+	Returns true, if this voice contains a note with the given diatonic \a pitch at the
+	given \a timeStart.
+	
+	This is useful when inserting a note and there needs to be determined if a user is
+	adding a note to a chord and the note is maybe already there.
+*/
+bool CAVoice::containsPitch( CADiatonicPitch p, int timeStart ) {
+	for (int i=0 ;i<_musElementList.size(); i++) {
+		if ( _musElementList[i]->timeStart()==timeStart &&
+		     _musElementList[i]->musElementType()==CAMusElement::Note &&
+		     static_cast<CANote*>(_musElementList[i])->diatonicPitch()==p )
+			return true;
+	}
+	
+	return false;	
 }
 
 /*!
