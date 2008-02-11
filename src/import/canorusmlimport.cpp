@@ -358,13 +358,13 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		if (!attributes.value("associated-voice-idx").isEmpty())
 			_syllableMap[s] = attributes.value("associated-voice-idx").toInt();
 		_curMusElt = s;
-	} else if (qName == "function-mark" || qName == "function-marking") {
+	} else if (qName == "function-mark" || _version.startsWith("0.5") && qName == "function-marking") {
 		// CAFunctionMark
 		CAFunctionMark *f = 
 			new CAFunctionMark(
 				CAFunctionMark::functionTypeFromString(attributes.value("function")),
 				(attributes.value("minor")=="1"?true:false),
-				(attributes.value("key").isEmpty()?"C":attributes.value("key")),
+				(_version.startsWith("0.5")?(attributes.value("key").isEmpty()?"C":attributes.value("key")):CADiatonicKey()),
 				static_cast<CAFunctionMarkContext*>(_curContext),
 				attributes.value("time-start").toInt(),
 				attributes.value("time-length").toInt(),
@@ -573,6 +573,10 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 	} else if (qName == "mark") {
 		if ( !_version.startsWith("0.5") && _curMark->markType()==CAMark::Tempo ) {
 			static_cast<CATempo*>(_curMark)->setBeat( _curPlayableLength );
+		}
+	} else if (qName == "function-mark") {
+		if ( !_version.startsWith("0.5") && _curMusElt->musElementType()==CAMusElement::FunctionMark ) {
+			static_cast<CAFunctionMark*>(_curMusElt)->setKey( _curDiatonicKey );
 		}
 	} else if (qName == "diatonic-key" ) {
 		_curDiatonicKey.setDiatonicPitch( _curDiatonicPitch );

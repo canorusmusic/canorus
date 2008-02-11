@@ -30,12 +30,7 @@ CADiatonicKey::CADiatonicKey() {
 }
 
 CADiatonicKey::CADiatonicKey( const QString& key ) {
-	setDiatonicPitch(CADiatonicPitch( key ));
-	setGender( key[0].isUpper()?Major:Minor );
-	if ( gender()==Major )
-		setShape( Natural );
-	else
-		setShape( Harmonic );
+	operator=(key);
 }
 
 CADiatonicKey::CADiatonicKey( const int& nAccs, const CAGender& gender ) {
@@ -97,6 +92,15 @@ bool CADiatonicKey::operator==(CADiatonicKey k) {
 		return true;
 	else
 		return false;
+}
+
+void CADiatonicKey::operator=(const QString& key) {
+	setDiatonicPitch(CADiatonicPitch( key ));
+	setGender( key[0].isUpper()?Major:Minor );
+	if ( gender()==Major )
+		setShape( Natural );
+	else
+		setShape( Harmonic );
 }
 
 const QString CADiatonicKey::genderToString( CAGender gender ) {

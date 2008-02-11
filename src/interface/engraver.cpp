@@ -250,7 +250,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 		for (int i=0;
 		     (i<streams) &&
 		     (streamsIdx[i] < musStreamList[i].size()) &&
-			 ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() == timeStart);
+			 (musStreamList[i].at(streamsIdx[i])->timeStart() == timeStart);
 			 i++) {
 			CAMusElement *elt = musStreamList[i].at(streamsIdx[i]);
 			if (elt->musElementType()==CAMusElement::FunctionMark && ((CAFunctionMark*)elt)->function()!=CAFunctionMark::Undefined) {
@@ -261,7 +261,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 					//draw new function mark key, if it was changed or if it's the first function in the score
 					CADrawableFunctionMarkSupport *support = new CADrawableFunctionMarkSupport(
 						CADrawableFunctionMarkSupport::Key,
-						((CAFunctionMark*)elt)->key(),
+						CADiatonicKey::diatonicKeyToString(static_cast<CAFunctionMark*>(elt)->key()),
 						drawableContext,
 						streamsX[i],
 						((CADrawableFunctionMarkContext*)drawableContext)->yPosLine(CADrawableFunctionMarkContext::Middle)
@@ -561,7 +561,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							((CADrawableFunctionMarkContext*)drawableContext)->nextLine();
 							CADrawableFunctionMarkSupport *newKey = new CADrawableFunctionMarkSupport(
 								CADrawableFunctionMarkSupport::Key,
-								function->key(),
+								CADiatonicKey::diatonicKeyToString(function->key()),
 								drawableContext,
 								streamsX[i],
 								((CADrawableFunctionMarkContext*)drawableContext)->yPosLine(CADrawableFunctionMarkContext::Middle)
@@ -788,7 +788,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 									if ( prevElt->key()==function->key() )
 										tonicization->setWidth( newElt->xPos()-tonicization->xPos() );
 									else
-										tonicization->setWidth( lastDFMKeyNames[i]->xPos()-tonicization->xPos() );
+										tonicization->setWidth( lastDFMKeyNames.last()->xPos()-tonicization->xPos() );
 								}
 								
 								if (lastDFMTonicizations[i]) {
@@ -804,7 +804,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 								if ( prevElt->key()==function->key() )
 									prevDFM->setWidth( newElt->xPos()-prevDFM->xPos() );
 								else
-									prevDFM->setWidth( lastDFMKeyNames[i]->xPos()-prevDFM->xPos() );
+									prevDFM->setWidth( lastDFMKeyNames.last()->xPos()-prevDFM->xPos() );
 							}
 						}
 						

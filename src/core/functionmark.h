@@ -12,6 +12,7 @@
 #include <QString>
 
 #include "core/muselement.h"
+#include "core/diatonickey.h"
 
 class CAFunctionMarkContext;
 
@@ -36,19 +37,19 @@ public:
 	};
 	
 	// addedDegrees and alteredDegrees are generated from alterations parameter
-	CAFunctionMark(CAFunctionType function, bool minor, const QString key, CAFunctionMarkContext* context, int timeStart, int timeLength, CAFunctionType chordArea=Undefined, bool chordAreaMinor=false, CAFunctionType tonicDegree=T, bool tonicDegreeMinor=false, const QString alterations="", bool ellipseSequence=false);
+	CAFunctionMark(CAFunctionType function, bool minor, const CADiatonicKey key, CAFunctionMarkContext* context, int timeStart, int timeLength, CAFunctionType chordArea=Undefined, bool chordAreaMinor=false, CAFunctionType tonicDegree=T, bool tonicDegreeMinor=false, const QString alterations="", bool ellipseSequence=false);
 	CAFunctionMark* clone();
 	void clear(); // same as in CASyllable
 	~CAFunctionMark();
 	
 	CAFunctionType function() { return _function; }
-	QString key() { return _key; }
+	CADiatonicKey key() { return _key; }
 	CAFunctionType chordArea() { return _chordArea; }
 	CAFunctionType tonicDegree() { return _tonicDegree; }
 	QList<int> alteredDegrees() { return _alteredDegrees; }
 	QList<int> addedDegrees() { return _addedDegrees; }
 	void setFunction(CAFunctionType function) { _function = function; }
-	void setKey(QString key) { _key = key; }
+	void setKey(CADiatonicKey key) { _key = key; }
 	void setChordArea(CAFunctionType chordArea) { _chordArea = chordArea; }
 	void setChordAreaMinor(bool minor) { _chordAreaMinor = minor; }
 	void setTonicDegree(CAFunctionType tonicDegree) { _tonicDegree = tonicDegree; }
@@ -73,15 +74,15 @@ public:
 	static CAFunctionType functionTypeFromString(const QString);
 	
 private:
-	CAFunctionType _function;		// Function name
-	QString _key;					// C for C-Major, g for g-minor, bes for b-flat-minor, Fis for F-sharp-Major etc.
-	CAFunctionType _chordArea;		// Side degrees have undetermined chord locations (eg. 6th can be treated as chord of Subdominant or Tonic)
-	bool _chordAreaMinor;			// Is chord area minor?
-	CAFunctionType _tonicDegree;	// Used when doing tonicization (see http://en.wikipedia.org/wiki/Tonicization). This value is always set if the function name is set.
-	bool _tonicDegreeMinor;			// Is tonic degree minor?
-	QList<int> _alteredDegrees;		// Degree of the chord which are altered according to the current key. These marks are usually written below the function name, eg. -3, -7 for German chord
-	QList<int> _addedDegrees;		// Degrees of the chord which are added to or substracted from the basic. eg. sixte ajoutée in cadence
-	bool _minor;					// Should the function have a circle drawn?
-	bool _ellipseSequence;			// Function is part of ellipse?
+	CAFunctionType _function;       // Function name
+	CADiatonicKey _key;	            // C for C-Major, g for g-minor, bes for b-flat-minor, Fis for F-sharp-Major etc.
+	CAFunctionType _chordArea;      // Side degrees have undetermined chord locations (eg. 6th can be treated as chord of Subdominant or Tonic)
+	bool _chordAreaMinor;           // Is chord area minor?
+	CAFunctionType _tonicDegree;    // Used when doing tonicization (see http://en.wikipedia.org/wiki/Tonicization). This value is always set if the function name is set.
+	bool _tonicDegreeMinor;         // Is tonic degree minor?
+	QList<int> _alteredDegrees;     // Degree of the chord which are altered according to the current key. These marks are usually written below the function name, eg. -3, -7 for German chord
+	QList<int> _addedDegrees;       // Degrees of the chord which are added to or substracted from the basic. eg. sixte ajoutée in cadence
+	bool _minor;                    // Should the function have a circle drawn?
+	bool _ellipseSequence;          // Function is part of ellipse?
 };
 #endif /* FUNCTIONMARK_H_*/

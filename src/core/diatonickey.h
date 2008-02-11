@@ -32,7 +32,9 @@ public:
 	
 	bool operator==(CADiatonicKey);
 	inline bool operator!=(CADiatonicKey p) { return !operator==(p); }
-	
+#ifndef SWIG
+	void operator=(const QString& key);
+#endif
 	inline CADiatonicPitch diatonicPitch() { return _diatonicPitch; }
 	inline const CAGender gender() { return _gender; }
 	inline const CAShape shape() { return _shape; }
