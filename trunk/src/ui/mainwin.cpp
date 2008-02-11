@@ -2396,8 +2396,10 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 	CAImport *open;
 	if ( fileName.endsWith(".xml") ) {
 		open = new CACanorusMLImport();
+		uiSaveDialog->selectFilter( CAFileFormats::CANORUSML_FILTER );
 	} else if ( fileName.endsWith(".can") ) {
 		open = new CACanImport();
+		uiSaveDialog->selectFilter( CAFileFormats::CAN_FILTER );
 	}
 	
 	open->setStreamFromFile( fileName );
