@@ -276,16 +276,10 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			
 			// gender
 			QString genderString = peekNextElement();
-			CAKeySignature::CAMajorMinorGender gender = keySigGenderFromLilyPond(genderString);
-			if (gender==CAKeySignature::Undefined) {
-				addError(QString("Error while parsing key signature gender. Gender %1 unknown.").arg(genderString));
-				continue;
-			}
+			CADiatonicKey::CAGender gender = diatonicKeyGenderFromLilyPond(genderString);
 			parseNextElement();
 			
-			signed char accs = keySigAccsFromLilyPond(keyString, gender);
-			
-			CAKeySignature *keySig = new CAKeySignature(CAKeySignature::MajorMinor, accs, gender, curVoice()->staff(), curVoice()->lastTimeEnd());
+			CAKeySignature *keySig = new CAKeySignature( CADiatonicKey(relativePitchFromLilyPond(keyString, CADiatonicPitch(3) ), gender), curVoice()->staff(), curVoice()->lastTimeEnd() );
 			CAKeySignature *sharedKeySig = static_cast<CAKeySignature*>(findSharedElement(keySig));
 			
 			if (!sharedKeySig) {
@@ -602,32 +596,13 @@ int CALilyPondImport::clefOffsetFromLilyPond( const QString constClef ) {
 }
 
 /*!
-	Returns the number and type of accidentals for the given key signature.
-*/
-signed char CALilyPondImport::keySigAccsFromLilyPond(QString keySig, CAKeySignature::CAMajorMinorGender gender) {
-	signed char accs = static_cast<signed char>( ((keySig[0].toAscii() - 'a') * 2 + 4) % 7 - 4 );
-	
-	QString key(keySig);
-	accs -= 7*keySig.count("as");
-	accs -= 7*keySig.count("es");
-	accs += 7*keySig.count("is");
-	
-	if (gender==CAKeySignature::Major)
-		accs += 3;
-	
-	return accs;
-}
-
-/*!
 	Returns the key signature gender from format \\genderType.
 */
-CAKeySignature::CAMajorMinorGender CALilyPondImport::keySigGenderFromLilyPond(QString gender) {
+CADiatonicKey::CAGender CALilyPondImport::diatonicKeyGenderFromLilyPond(QString gender) {
 	if (gender=="\\major")
-		return CAKeySignature::Major;
-	else if (gender=="\\minor")
-		return CAKeySignature::Minor;
+		return CADiatonicKey::Major;
 	else
-		return CAKeySignature::Undefined;
+		return CADiatonicKey::Minor;
 }
 
 /*!

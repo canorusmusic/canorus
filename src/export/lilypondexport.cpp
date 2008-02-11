@@ -78,8 +78,8 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				CAKeySignature *key = static_cast<CAKeySignature*>(v->musElementAt(i));
 				if (key->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\key "
-				    << keySignaturePitchToLilyPond(key->numberOfAccidentals(), key->majorMinorGender()) << " "
-				    << keySignatureGenderToLilyPond(key->majorMinorGender());
+				    << diatonicPitchToLilyPond( key->diatonicKey().diatonicPitch() ) << " "
+				    << diatonicKeyGenderToLilyPond( key->diatonicKey().gender() );
 				
 				break;
 			}
@@ -314,45 +314,14 @@ const QString CALilyPondExport::clefTypeToLilyPond( CAClef::CAClefType clefType,
 }
 
 /*!
-	Returns the key signature pitch in LilyPond syntax.
-	Pitch is always lower-case regardless of the Key signature gender.
-	eg. "e" for E-Major (4 sharps) or e-minor (1 sharp)
-	
-	\sa keySignatureGenderToLilyPond()
-*/
-const QString CALilyPondExport::keySignaturePitchToLilyPond(signed char numberOfAccs, CAKeySignature::CAMajorMinorGender gender) {
-	// calculate key signature pitch from number of accidentals
-	int pitch = ((4*numberOfAccs) % 7) + ((numberOfAccs < 0) ? 7 : 0);
-	
-	if (gender==CAKeySignature::Minor)	// find the parallel minor key
-		pitch = (pitch + 5) % 7;
-	
-	signed char accs = 0;
-	
-	if (numberOfAccs>5 && gender==CAKeySignature::Major)
-		accs = (numberOfAccs-5)/7+1;
-	else
-	if (numberOfAccs>2 && gender==CAKeySignature::Minor)
-		accs = (numberOfAccs-2)/7 + 1;
-	else
-	if (numberOfAccs<-1 && gender==CAKeySignature::Major)
-		accs = (numberOfAccs+1)/7-1;
-	else
-	if (numberOfAccs<-4 && gender==CAKeySignature::Minor)
-		accs = (numberOfAccs+4)/7 - 1;
-	
-	return diatonicPitchToLilyPond( CADiatonicPitch(pitch, accs) );
-}
-
-/*!
 	Returns the key signature gender major/minor in LilyPond syntax.
 	
 	\sa keySignaturePitchToLilyPond()
 */
-const QString CALilyPondExport::keySignatureGenderToLilyPond(CAKeySignature::CAMajorMinorGender gender) {
+const QString CALilyPondExport::diatonicKeyGenderToLilyPond( CADiatonicKey::CAGender gender ) {
 	switch (gender) {
-		case CAKeySignature::Major: return QString("\\major");
-		case CAKeySignature::Minor: return QString("\\minor");
+		case CADiatonicKey::Major: return QString("\\major");
+		case CADiatonicKey::Minor: return QString("\\minor");
 	}
 	
 	return QString();

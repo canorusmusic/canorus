@@ -16,6 +16,7 @@
 
 #include "core/diatonicpitch.h"
 #include "core/playablelength.h"
+#include "core/diatonickey.h"
 
 class CAContext;
 class CAKeySignature;
@@ -72,6 +73,7 @@ private:
 	CASlur          *_curSlur;
 	CASlur          *_curPhrasingSlur;
 	CADiatonicPitch  _curDiatonicPitch;
+	CADiatonicKey    _curDiatonicKey;
 	CAPlayableLength _curPlayableLength;
 	QHash<CALyricsContext*, int> _lcMap;       // lyrics context associated voice indices
 	QHash<CASyllable*, int>      _syllableMap; // syllable associated voice indices
@@ -79,7 +81,7 @@ private:
 	//////////////////////////////////////////////
 	// Temporary properties for each XML stanza //
 	//////////////////////////////////////////////
-	QString _cha;	
+	QString _cha;
 };
 
 #endif /* CANORUSMLIMPORT_H_ */

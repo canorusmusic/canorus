@@ -54,8 +54,7 @@ private:
 	// Helper methods //
 	////////////////////
 	const QString clefTypeToLilyPond( CAClef::CAClefType type, int c1, int offset );	
-	const QString keySignaturePitchToLilyPond(signed char accs, CAKeySignature::CAMajorMinorGender gender);
-	const QString keySignatureGenderToLilyPond(CAKeySignature::CAMajorMinorGender gender);
+	const QString diatonicKeyGenderToLilyPond( CADiatonicKey::CAGender gender);
 	const QString playableLengthToLilyPond( CAPlayableLength length );
 	const QString diatonicPitchToLilyPond( CADiatonicPitch p );
 	const QString restTypeToLilyPond(CARest::CARestType type);

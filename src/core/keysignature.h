@@ -11,6 +11,7 @@
 #include <QString>
 
 #include "core/muselement.h"
+#include "core/diatonickey.h"
 
 class CAStaff;
 
@@ -20,18 +21,6 @@ public:
 		MajorMinor, // Marks the standard 7-level Major/Minor
 		Modus,
 		Custom
-	};
-	
-	enum CAMajorMinorGender {
-		Undefined=-1,
-		Major,
-		Minor
-	};
-	
-	enum CAMajorMinorShape {
-		Natural,
-		Harmonic,
-		Melodic
 	};
 	
 	enum CAModus {
@@ -48,43 +37,35 @@ public:
 		Hypophrygian
 	};
 	
-	CAKeySignature(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender, CAStaff *staff, int timeStart);
+	CAKeySignature(CADiatonicKey k, CAStaff *staff, int timeStart);
+	CAKeySignature(CAModus m, CAStaff *staff, int timeStart);
 	~CAKeySignature();
 	CAKeySignature *clone();
 	
-	CAKeySignatureType keySignatureType() { return _keySignatureType; }
-	void setKeySignatureType(CAKeySignatureType type, signed char accs, CAMajorMinorGender gender);	
+	inline CAKeySignatureType keySignatureType() { return _keySignatureType; }
+	inline void setKeySignatureType(CAKeySignatureType type) { _keySignatureType = type; }	
 	
-	//////////////////////////////
-	// Diatonic keys properties //
-	//////////////////////////////
-	CAMajorMinorGender majorMinorGender() { return _majorMinorGender; }
-	CAMajorMinorShape majorMinorShape() { return _majorMinorShape; }
+	CADiatonicKey diatonicKey() { return _diatonicKey; }
 	CAModus modus() { return _modus; }
-	void setMajorMinorGender(CAMajorMinorGender gender) { _majorMinorGender = gender; }
-	void setMajorMinorShape(CAMajorMinorShape shape) { _majorMinorShape = shape; }
+	
+	void setDiatonicKey(CADiatonicKey k) { _diatonicKey = k; updateAccidentals(); }
 	void setModus(CAModus modus) { _modus = modus; }
 	
-	signed char numberOfAccidentals();
 	signed char *accidentals() { return _accidentals; }
 	
 	int compare(CAMusElement* elt);
 	
-	static const QString keySignatureToString( signed char numberOfAccs, CAMajorMinorGender gender );
-	static signed char keySigAccsFromString( QString );
-	static CAKeySignature::CAMajorMinorGender keySigGenderFromString( const QString );
 	static const QString keySignatureTypeToString(CAKeySignatureType);
 	static CAKeySignatureType keySignatureTypeFromString(const QString);
-	static const QString majorMinorGenderToString(CAMajorMinorGender);
-	static CAMajorMinorGender majorMinorGenderFromString(const QString);
 	static const QString modusToString(CAModus);
 	static CAModus modusFromString(const QString);
 	
 private:
+	void updateAccidentals();
+	
 	CAKeySignatureType _keySignatureType;
 	CAModus _modus;
-	CAMajorMinorGender _majorMinorGender;
-	CAMajorMinorShape _majorMinorShape;
+	CADiatonicKey _diatonicKey;
 	
 	signed char _accidentals[7];	// Accidentals configuration for each level
 };

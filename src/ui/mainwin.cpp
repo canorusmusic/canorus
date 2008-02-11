@@ -2618,11 +2618,11 @@ void CAMainWin::on_uiVoiceProperties_triggered() {
 */
 void CAMainWin::on_uiKeySig_activated( int row ) {
 	signed char accs = qRound((row-14.5) / 2);
-	CAKeySignature::CAMajorMinorGender gender = (row%2)==0 ? CAKeySignature::Major : CAKeySignature::Minor;
+	CADiatonicKey::CAGender gender = (row%2)==0 ? CADiatonicKey::Major : CADiatonicKey::Minor;
 	
 	if (mode()==InsertMode) {
-		musElementFactory()->setKeySigNumberOfAccs( accs );
-		musElementFactory()->setKeySigGender( gender );
+		musElementFactory()->setDiatonicKeyNumberOfAccs( accs );
+		musElementFactory()->setDiatonicKeyGender( gender );
 	} else
 	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size() ) {
 		QList<CADrawableMusElement*> list = currentScoreViewPort()->selection();
@@ -2633,11 +2633,11 @@ void CAMainWin::on_uiKeySig_activated( int row ) {
 			CAFunctionMark *fm = dynamic_cast<CAFunctionMark*>(list[i]->musElement());
 			
 			if ( keySig ) {
-				keySig->setKeySignatureType( CAKeySignature::MajorMinor, accs, gender );
+				keySig->setDiatonicKey( CADiatonicKey(accs, gender) );
 			}
 			
 			if ( fm ) {
-				fm->setKey( CAKeySignature::keySignatureToString( accs, gender ) );
+				fm->setKey( CADiatonicKey::diatonicKeyToString( CADiatonicKey(accs, gender) ) );
 			}
 		}
 		
@@ -3748,14 +3748,14 @@ void CAMainWin::updateTimeSigToolBar() {
 */
 void CAMainWin::updateKeySigToolBar() {
 	if (uiInsertKeySig->isChecked() && mode()==InsertMode) {
-		uiKeySig->setCurrentIndex((musElementFactory()->keySigNumberOfAccs()+7)*2 + ((musElementFactory()->keySigGender()==CAKeySignature::Minor)?1:0) );
+		uiKeySig->setCurrentIndex((musElementFactory()->diatonicKeyNumberOfAccs()+7)*2 + ((musElementFactory()->diatonicKeyGender()==CADiatonicKey::Minor)?1:0) );
 		uiKeySigToolBar->show();
 	} else if (mode()==EditMode) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
 			if (keySig) {
-				uiKeySig->setCurrentIndex((keySig->numberOfAccidentals()+7)*2 + ((keySig->majorMinorGender()==CAKeySignature::Minor)?1:0) );
+				uiKeySig->setCurrentIndex((keySig->diatonicKey().numberOfAccs()+7)*2 + ((keySig->diatonicKey().gender()==CADiatonicKey::Minor)?1:0) );
 				uiKeySigToolBar->show();
 			} else
 				uiKeySigToolBar->hide();
@@ -3795,7 +3795,7 @@ void CAMainWin::updateFMToolBar() {
 		uiFMTonicDegree->setCurrentId( musElementFactory()->fmTonicDegree()*(musElementFactory()->isFMTonicDegreeMinor()?-1:1) );		
 		uiFMEllipse->setChecked( musElementFactory()->isFMEllipse() );
 		
-		uiFMKeySig->setCurrentIndex((musElementFactory()->keySigNumberOfAccs()+7)*2 + ((musElementFactory()->keySigGender()==CAKeySignature::Minor)?1:0) );
+		uiFMKeySig->setCurrentIndex((musElementFactory()->diatonicKeyNumberOfAccs()+7)*2 + ((musElementFactory()->diatonicKeyGender()==CADiatonicKey::Minor)?1:0) );
 		
 		uiFMToolBar->show();
 	} else if ( mode()==EditMode && currentScoreViewPort() &&
@@ -3807,9 +3807,8 @@ void CAMainWin::updateFMToolBar() {
 		uiFMTonicDegree->setCurrentId( fm->tonicDegree()*(fm->isTonicDegreeMinor()?-1:1) );
 		uiFMEllipse->setChecked( fm->isPartOfEllipse() );
 		
-		signed char accs = CAKeySignature::keySigAccsFromString(fm->key());
-		CAKeySignature::CAMajorMinorGender gender = CAKeySignature::keySigGenderFromString(fm->key());
-		uiFMKeySig->setCurrentIndex((accs+7)*2 + ((gender==CAKeySignature::Minor)?1:0) );
+		CADiatonicKey k = CADiatonicKey(fm->key());
+		uiFMKeySig->setCurrentIndex((k.numberOfAccs()+7)*2 + ((k.gender()==CADiatonicKey::Minor)?1:0) );
 		
 		uiFMToolBar->show();
 	} else

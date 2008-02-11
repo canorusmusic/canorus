@@ -55,8 +55,8 @@ CAMusElementFactory::CAMusElementFactory() {
 	_eRestType = CARest::Normal;
 	_iTimeSigBeats = 4;
 	_iTimeSigBeat = 4;
-	_iKeySigNumberOfAccs = 0;
-	_eKeySigGender = CAKeySignature::Major;
+	_diatonicKeyNumberOfAccs = 0;
+	_diatonicKeyGender = CADiatonicKey::Major;
 	_eClef = CAClef::Treble;
 	_iClefOffset = 0;
 	_iNoteAccs = 0;
@@ -153,10 +153,9 @@ bool CAMusElementFactory::configureKeySignature( CAStaff *staff,
 {
 	bool success = false;
 	if ( staff && staff->voiceCount() ) {		
-		mpoMusElement = new CAKeySignature(CAKeySignature::MajorMinor, 
-			                           _iKeySigNumberOfAccs,
-			                           _eKeySigGender, staff,
-			                           0);
+		mpoMusElement = new CAKeySignature( CADiatonicKey( _diatonicKeyNumberOfAccs, _diatonicKeyGender ), 
+			                                staff,
+			                                0);
 		success = staff->voiceAt(0)->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem( true );
@@ -434,7 +433,7 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 bool CAMusElementFactory::configureFunctionMark( CAFunctionMarkContext *fmc, int timeStart, int timeLength ) {
 	CAFunctionMark *fm = new CAFunctionMark(
 		fmFunction(), isFMFunctionMinor(),
-		CAKeySignature::keySignatureToString( _iKeySigNumberOfAccs, _eKeySigGender ),
+		CADiatonicKey::diatonicKeyToString( CADiatonicKey(_diatonicKeyNumberOfAccs, _diatonicKeyGender) ),
 		fmc, timeStart, timeLength,
 		fmChordArea(), isFMChordAreaMinor(),
 		fmTonicDegree(), isFMTonicDegreeMinor(),
