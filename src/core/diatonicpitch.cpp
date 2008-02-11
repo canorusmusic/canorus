@@ -96,19 +96,19 @@ const QString CADiatonicPitch::diatonicPitchToString( CADiatonicPitch pitch ) {
 	Calculates a new pitch using the old pitch + interval.
 */
 CADiatonicPitch CADiatonicPitch::operator+( CAInterval i ) {
-	CADiatonicPitch dp;
+	CADiatonicPitch dp( noteName(), accs() );
 	
-	if ( i.quantity()<0 ) { // inverse interval, if negative
-		dp.setNoteName( noteName() + (((i.quantity()+2) / 7) - 1) * 7 ); // lower the pitch for n-octaves
-		 i=~i; // inverse interval
+	if ( i.quantity()<0 ) { // only use intervals UP - inverse interval, if negative
+		dp.setNoteName( dp.noteName() + (((i.quantity()+2) / 7) - 1) * 7 ); // lower the pitch for n-octaves
+		i = ~i; // inverse interval
 	}
 	
-	dp.setNoteName( noteName()+i.quantity()-1 );
+	dp.setNoteName( dp.noteName()+i.quantity()-1 );
 	int deltaAccs=0;
 	
 	int relP = noteName()%7;
 	int relQnt = ((i.quantity()-1) % 7) + 1;
-	switch (relQnt) {
+	switch (relQnt) { // major or perfect intervals up:
 	case 1: // prime
 		deltaAccs=0;
 		break;
@@ -135,30 +135,33 @@ CADiatonicPitch CADiatonicPitch::operator+( CAInterval i ) {
 			deltaAccs=1;
 		else
 			deltaAccs=0;
+		break;
 	case 6: // sixth
 		if ( relP==2 || relP==5 || relP==6 )
 			deltaAccs=1;
 		else
 			deltaAccs=0;
+		break;
 	case 7: // seventh
 		if ( relP==0 || relP==3 )
 			deltaAccs=0;
 		else
 			deltaAccs=1;
+		break;
 	}
 	
-	if ( relP==4 || relP==5 || relP==1 ) {
+	if ( relQnt==4 || relQnt==5 || relQnt==1 ) {
 		if (i.quality()<0)
-			dp.setAccs( deltaAccs + accs() + i.quality() + 1 );
+			dp.setAccs( deltaAccs + dp.accs() + i.quality() + 1 );
 		else if (i.quality()>0)
-			dp.setAccs( deltaAccs + accs() + i.quality() - 1 );
+			dp.setAccs( deltaAccs + dp.accs() + i.quality() - 1 );
 		else
-			dp.setAccs( deltaAccs + accs() );
+			dp.setAccs( deltaAccs + dp.accs() );
 	} else {
 		if (i.quality()<0)
-			dp.setAccs( deltaAccs + accs() + i.quality() );
+			dp.setAccs( deltaAccs + dp.accs() + i.quality() );
 		else if (i.quality()>0)
-			dp.setAccs( deltaAccs + accs() + i.quality() - 1 );
+			dp.setAccs( deltaAccs + dp.accs() + i.quality() - 1 );
 	}
 	
 	return dp;
