@@ -30,6 +30,26 @@ CADiatonicPitch::CADiatonicPitch() {
 	setAccs( 0 );
 }
 
+CADiatonicPitch::CADiatonicPitch( const QString& pitch ) {
+	QString noteName = pitch;
+	
+	int curPitch = (noteName[0].toLower().toLatin1() - 'a' + 5) % 7;
+	
+	// determine accidentals
+	int curAccs = 0;
+	while (noteName.indexOf("is") != -1) {
+		curAccs++;
+		noteName.remove(0, noteName.indexOf("is") + 2);
+	}
+	while ((noteName.indexOf("es") != -1) || (noteName.indexOf("as") != -1)) {
+		curAccs--;
+		noteName.remove(0, ((noteName.indexOf("es")==-1) ? (noteName.indexOf("as")+2) : (noteName.indexOf("es")+2)) );
+	}
+	
+	setNoteName( curPitch );
+	setAccs( curAccs );
+}
+
 CADiatonicPitch::CADiatonicPitch( const int& noteName, const int& accs ) {
 	setNoteName( noteName );
 	setAccs( accs );
@@ -47,6 +67,29 @@ bool CADiatonicPitch::operator==(int p) {
 		return true;
 	else
 		return false;
+}
+
+/*!
+	Converts the music pitch to string.
+*/
+const QString CADiatonicPitch::diatonicPitchToString( CADiatonicPitch pitch ) {
+	QString name;
+	
+	name = (char)((pitch.noteName()+2)%7 + 'a');
+	
+	for (int i=0; i < pitch.accs(); i++)
+		name += "is";	// append as many -is-es as necessary
+	
+	for (int i=0; i > pitch.accs(); i--) {
+		if ( (name == "e") || (name == "a") )
+			name += "s";	// for pitches E and A, only append single -s the first time
+		else if (name[0]=='a')
+			name += "as";	// for pitch A, append -as instead of -es
+		else
+			name += "es";	// otherwise, append normally as many es-es as necessary
+	}
+	
+	return name;
 }
 
 /*!

@@ -262,16 +262,13 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				QDomElement dKey = dDoc.createElement("key-signature"); dVoice.appendChild(dKey);
 				dKey.setAttribute("key-signature-type", CAKeySignature::keySignatureTypeToString(key->keySignatureType()));
 				
-				if (key->keySignatureType()==CAKeySignature::MajorMinor || key->keySignatureType()==CAKeySignature::Modus) {
-					dKey.setAttribute("accs", key->numberOfAccidentals());
-					if (key->keySignatureType()==CAKeySignature::MajorMinor) {
-						dKey.setAttribute("major-minor-gender", CAKeySignature::majorMinorGenderToString(key->majorMinorGender()));
-					} else
-					if (key->keySignatureType()==CAKeySignature::Modus) {
-						dKey.setAttribute("modus", CAKeySignature::modusToString(key->modus()));
-					}
-					//! \todo Custom accidentals in key signature saving -Matevz
+				if ( key->keySignatureType()==CAKeySignature::MajorMinor ) {
+					exportDiatonicKey( key->diatonicKey(), dKey );
+				} else
+				if (key->keySignatureType()==CAKeySignature::Modus) {
+					dKey.setAttribute("modus", CAKeySignature::modusToString(key->modus()));
 				}
+				//! \todo Custom accidentals in key signature saving -Matevz	exportDiatonicPitch( key->diatonicKey().diatonicPitch(), dKey );
 				
 				dKey.setAttribute("time-start", key->timeStart());
 				
@@ -403,4 +400,10 @@ void CACanorusMLExport::exportDiatonicPitch( CADiatonicPitch p, QDomElement& dom
 	QDomElement dp = domParent.ownerDocument().createElement("diatonic-pitch"); domParent.appendChild(dp);
 	dp.setAttribute( "note-name", p.noteName() );
 	dp.setAttribute( "accs", p.accs() );	
+}
+
+void CACanorusMLExport::exportDiatonicKey( CADiatonicKey k, QDomElement& domParent ) {
+	QDomElement dk = domParent.ownerDocument().createElement("diatonic-key"); domParent.appendChild(dk);
+	dk.setAttribute("gender", CADiatonicKey::genderToString(k.gender()));
+	exportDiatonicPitch( k.diatonicPitch(), dk );
 }

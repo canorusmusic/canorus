@@ -243,18 +243,24 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curMusElt = _curTimeSig;
 	} else if (qName == "key-signature") {
 		// CAKeySignature
-		_curKeySig = new CAKeySignature( CAKeySignature::keySignatureTypeFromString(attributes.value("key-signature-type")),
-		                                 (char)attributes.value("accs").toInt(),
-		                                 CAKeySignature::majorMinorGenderFromString(attributes.value("major-minor-gender")),
-		                                 _curVoice->staff(),
-		                                 attributes.value("time-start").toInt()
-		);
-		if (_curKeySig->keySignatureType()==CAKeySignature::MajorMinor) {
-			_curKeySig->setMajorMinorGender(CAKeySignature::majorMinorGenderFromString(attributes.value("major-minor-gender")));
+		CAKeySignature::CAKeySignatureType type = CAKeySignature::keySignatureTypeFromString(attributes.value("key-signature-type"));
+		switch (type) {
+		case CAKeySignature::MajorMinor: {
+			_curKeySig = new CAKeySignature( CADiatonicKey(), 
+			                                 _curVoice->staff(),
+					                         attributes.value("time-start").toInt()
+					                       );
+			break;
 		}
-		else if (_curKeySig->keySignatureType()==CAKeySignature::Modus) {
-			_curKeySig->setModus(CAKeySignature::modusFromString(attributes.value("modus")));
+		case CAKeySignature::Modus: {
+			_curKeySig = new CAKeySignature( CAKeySignature::modusFromString(attributes.value("modus")), 
+						                     _curVoice->staff(),
+								             attributes.value("time-start").toInt()
+								           );
+			break;
 		}
+		}
+		
 		_curMusElt = _curKeySig;
 	} else if (qName == "barline") {
 		// CABarline
@@ -284,7 +290,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		}
 		
 		_curMusElt = _curNote;
-			
+		
 		} else if (qName == "tie") {
 			_curTie = new CASlur( CASlur::TieType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
 			_curNote->setTieStart( _curTie );
@@ -322,11 +328,20 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			
 	} else if (qName == "rest") {
 		// CARest
-		_curRest = new CARest(CARest::restTypeFromString(attributes.value("rest-type")),
-		                      CAPlayableLength(),
-		                      _curVoice,
-		                      attributes.value("time-start").toInt()
-		                     );
+		if ( _version.startsWith("0.5") ) {
+			_curRest = new CARest( CARest::restTypeFromString(attributes.value("rest-type")),
+			                       CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("playable-length")), attributes.value("dotted").toInt()),
+			                      _curVoice,
+			                      attributes.value("time-start").toInt()
+			                     );
+		} else {
+			_curRest = new CARest( CARest::restTypeFromString(attributes.value("rest-type")),
+					               CAPlayableLength(),
+					               _curVoice,
+					               attributes.value("time-start").toInt()
+					             );
+		}
+		
 		_curMusElt = _curRest;
 	} else if (qName == "syllable") {
 		// CASyllable
@@ -370,6 +385,8 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curPlayableLength = CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("music-length")), attributes.value("dotted").toInt() );
 	} else if (qName == "diatonic-pitch") {
 		_curDiatonicPitch = CADiatonicPitch( attributes.value("note-name").toInt(), attributes.value("accs").toInt() );
+	} else if (qName == "diatonic-key") {
+		_curDiatonicKey = CADiatonicKey( CADiatonicPitch(), CADiatonicKey::genderFromString(attributes.value("gender")) );
 	}
 	
 	_depth.push(qName);
@@ -450,6 +467,12 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		// CAKeySignature
 		if (!_curContext || !_curVoice || _curContext->contextType()!=CAContext::Staff) {
 			return false;
+		}
+		
+		switch (_curKeySig->keySignatureType()) {
+		case CAKeySignature::MajorMinor:
+			_curKeySig->setDiatonicKey( _curDiatonicKey );
+			break;
 		}
 		
 		// lookup an element with the same type at the same time
@@ -551,6 +574,8 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		if ( !_version.startsWith("0.5") && _curMark->markType()==CAMark::Tempo ) {
 			static_cast<CATempo*>(_curMark)->setBeat( _curPlayableLength );
 		}
+	} else if (qName == "diatonic-key" ) {
+		_curDiatonicKey.setDiatonicPitch( _curDiatonicPitch );
 	}
 	
 	_cha="";

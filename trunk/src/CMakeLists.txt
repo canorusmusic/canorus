@@ -115,6 +115,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/playablelength.cpp
 	core/diatonicpitch.cpp
 	core/interval.cpp
+	core/diatonickey.cpp
 	
 	core/document.cpp
 	core/sheet.cpp
@@ -264,6 +265,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/playablelength.cpp
 	core/diatonicpitch.cpp
 	core/interval.cpp
+	core/diatonickey.cpp
 	
 	core/mark.cpp
 	core/articulation.cpp

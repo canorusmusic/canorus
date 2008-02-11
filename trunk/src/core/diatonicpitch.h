@@ -9,6 +9,7 @@
 #define DIATONICPITCH_H_
 
 #include "core/interval.h"
+#include <QString>
 
 class CADiatonicPitch {
 public:
@@ -24,6 +25,7 @@ public:
 	};
 	
 	CADiatonicPitch();
+	CADiatonicPitch( const QString& pitch );
 	CADiatonicPitch( const int& noteName, const int& accs=0 );
 	
 	bool operator==(CADiatonicPitch);
@@ -42,6 +44,8 @@ public:
 	
 	inline void setNoteName( const int noteName ) { _noteName = noteName; }
 	inline void setAccs( const int accs ) { _accs = accs; }
+	
+	static const QString diatonicPitchToString( CADiatonicPitch p );
 	
 private:
 	int _noteName; // 0-sub-contra C, 1-D, 2-E etc.

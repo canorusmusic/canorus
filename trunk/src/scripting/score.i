@@ -18,6 +18,7 @@
 #include "core/playablelength.h"
 #include "core/diatonicpitch.h"
 #include "core/interval.h"
+#include "core/diatonickey.h"
 
 #include "core/muselement.h"
 #include "core/playable.h"
@@ -44,6 +45,7 @@
 %include "core/playablelength.h"
 %include "core/diatonicpitch.h"
 %include "core/interval.h"
+%include "core/diatonickey.h"
 
 %include "core/muselement.h"
 %include "core/playable.h"

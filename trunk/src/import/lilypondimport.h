@@ -81,8 +81,7 @@ private:
 	CAClef::CAPredefinedClefType predefinedClefTypeFromLilyPond( const QString clef );
 	int clefOffsetFromLilyPond( const QString clef );
 	CABarline::CABarlineType barlineTypeFromLilyPond(const QString bar);
-	signed char keySigAccsFromLilyPond(QString keySig, CAKeySignature::CAMajorMinorGender gender);
-	CAKeySignature::CAMajorMinorGender keySigGenderFromLilyPond(QString gender);
+	CADiatonicKey::CAGender diatonicKeyGenderFromLilyPond(QString gender);
 	CATime timeSigFromLilyPond(QString time);
 		
 	CAMusElement* findSharedElement(CAMusElement *elt);

@@ -30,6 +30,7 @@
 #include "core/repeatmark.h"
 #include "core/fingering.h"
 #include "core/playablelength.h"
+#include "core/diatonickey.h"
 
 class CAMusElement;
 
@@ -105,10 +106,10 @@ public:
 	inline void subNoteAccs( int iSub )
 	{ _iNoteAccs-= iSub; };
 	
-	inline int keySigNumberOfAccs() { return _iKeySigNumberOfAccs; }
-	inline void setKeySigNumberOfAccs(int accs) { _iKeySigNumberOfAccs = accs; }
-	inline CAKeySignature::CAMajorMinorGender keySigGender() { return _eKeySigGender; }
-	inline void setKeySigGender( CAKeySignature::CAMajorMinorGender g ) { _eKeySigGender = g; }
+	inline int diatonicKeyNumberOfAccs() { return _diatonicKeyNumberOfAccs; }
+	inline void setDiatonicKeyNumberOfAccs(int accs) { _diatonicKeyNumberOfAccs = accs; }
+	inline CADiatonicKey::CAGender diatonicKeyGender() { return _diatonicKeyGender; }
+	inline void setDiatonicKeyGender( CADiatonicKey::CAGender g ) { _diatonicKeyGender = g; }
 	
 	inline int  noteExtraAccs() { return _iNoteExtraAccs; };
 	
@@ -234,8 +235,8 @@ private:
 	int _iNoteExtraAccs;                           // Extra note accidentals for new notes which user adds/removes with +/- keys
 	int _iNoteAccs;                                // Note accidentals at specific coordinates updated regularily when in insert mode
 	CARest::CARestType _eRestType;                 // Hidden/Normal rest
-	int _iKeySigNumberOfAccs;                      // Key signature number of accidentals
-	CAKeySignature::CAMajorMinorGender _eKeySigGender; // Major/Minor gender of the key signature
+	int _diatonicKeyNumberOfAccs;                  // Key signature number of accidentals
+	CADiatonicKey::CAGender _diatonicKeyGender;    // Major/Minor gender of the key signature
 	int _iTimeSigBeats;                            // Time signature number of beats to be inserted
 	int _iTimeSigBeat;                             // Time signature beat to be inserted
 	CAClef::CAPredefinedClefType _eClef;           // Type of the clef to be inserted

@@ -13,6 +13,7 @@
 #include "export/export.h"
 #include "core/playablelength.h"
 #include "core/diatonicpitch.h"
+#include "core/diatonickey.h"
 
 class CAMusElement;
 
@@ -28,6 +29,7 @@ private:
 	void exportMarks( CAMusElement *associatedElt, QDomElement& domParent );
 	void exportPlayableLength( CAPlayableLength l, QDomElement& domParent );
 	void exportDiatonicPitch( CADiatonicPitch p, QDomElement& domParent );
+	void exportDiatonicKey( CADiatonicKey k, QDomElement& domParent );
 };
 
 #endif /* CANORUSMLEXPORT_H_ */
