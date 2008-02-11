@@ -22,7 +22,7 @@
 	\sa CADrawableFunctionMark, CAFunctionMarkContext
 */
 
-CAFunctionMark::CAFunctionMark(CAFunctionType function, bool minor, const QString key, CAFunctionMarkContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence)
+CAFunctionMark::CAFunctionMark(CAFunctionType function, bool minor, const CADiatonicKey key, CAFunctionMarkContext* context, int timeStart, int timeLength, CAFunctionType chordArea, bool chordAreaMinor, CAFunctionType tonicDegree, bool tonicDegreeMinor, const QString alterations, bool ellipseSequence)
  : CAMusElement(context, timeStart, timeLength) {
  	_musElementType = CAMusElement::FunctionMark;
  	_function = function;
@@ -72,7 +72,7 @@ void CAFunctionMark::clear() {
 	setFunction( Undefined );
 	setChordArea( Undefined );
 	setTonicDegree( T );
-	setKey( "C" );
+	setKey( CADiatonicKey("C") );
 }
 
 int CAFunctionMark::compare( CAMusElement *func ) {

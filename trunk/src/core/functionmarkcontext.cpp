@@ -129,7 +129,7 @@ void CAFunctionMarkContext::repositFunctions() {
 	functions added).
 */
 void CAFunctionMarkContext::addEmptyFunction( int timeStart, int timeLength ) {
-	addFunctionMark( new CAFunctionMark( CAFunctionMark::Undefined, false, "C", this, timeStart, timeLength ), false );
+	addFunctionMark( new CAFunctionMark( CAFunctionMark::Undefined, false, CADiatonicKey("C"), this, timeStart, timeLength ), false );
 }
 
 /*!

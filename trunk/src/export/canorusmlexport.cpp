@@ -171,7 +171,7 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 						dFm.setAttribute( "chord-area-minor", elts[i]->isChordAreaMinor() );
 						dFm.setAttribute( "tonic-degree", CAFunctionMark::functionTypeToString(elts[i]->tonicDegree()) );
 						dFm.setAttribute( "tonic-degree-minor", elts[i]->isTonicDegreeMinor() );
-						dFm.setAttribute( "key", elts[i]->key() );
+						exportDiatonicKey( elts[i]->key(), dFm );
 						//dFm.setAttribute( "altered-degrees", elts[i]->alteredDegrees() );
 						//dFm.setAttribute( "added-degrees", elts[i]->addedDegrees() );
 						dFm.setAttribute( "ellipse", elts[i]->isPartOfEllipse() );
