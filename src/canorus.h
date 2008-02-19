@@ -65,6 +65,9 @@ public:
 	static void rebuildUI( CADocument *document, CASheet *sheet );
 	static void rebuildUI( CADocument *document=0 );
 	
+	// Our own slot connection method
+	static void connectSlotsByName(QObject *pOS, const QObject *pOR);
+
 private:
 	static QList<CAMainWin*> _mainWinList;
 	static CASettings *_settings;
