@@ -177,6 +177,11 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/propertiesdialog.cpp
 )
 
+SET(Canorus_Ctl_Srcs            # Control instances for user interface or views and core
+#	control/printpreviewctl.cpp
+#       control/printctl.cpp
+)
+
 SET(Canorus_Drawable_Srcs	# Drawable instances of the data
 	drawable/drawable.cpp
 
@@ -233,6 +238,7 @@ SET(Canorus_Srcs
 	canorus.cpp
 	
 	${Canorus_Core_Srcs}
+	${Canorus_Ctl_Srcs}
 	${Canorus_Scripting_Srcs}
 	${Canorus_Drawable_Srcs}
 	${Canorus_Ui_Srcs}
