@@ -126,7 +126,7 @@ CAContext *CASheet::context(const QString name) {
 */
 QList<CAPlayable*> CASheet::getChord(int time) {
 	QList<CAPlayable*> chordList;
-	for (int i=0; i<_staffList.size(); i++) {
+	for (int i=staffCount()-1; i>=0; i--) {
 		chordList << _staffList[i]->getChord(time);
 	}
 	

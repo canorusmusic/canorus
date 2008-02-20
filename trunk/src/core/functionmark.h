@@ -85,4 +85,4 @@ private:
 	bool _minor;                    // Should the function have a circle drawn?
 	bool _ellipseSequence;          // Function is part of ellipse?
 };
-#endif /* FUNCTIONMARK_H_*/
+#endif /* FUNCTIONMARK_H_ */

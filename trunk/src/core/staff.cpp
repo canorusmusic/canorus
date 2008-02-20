@@ -263,7 +263,7 @@ QList<CAMusElement*> CAStaff::getEltByType(CAMusElement::CAMusElementType type, 
 */
 QList<CAPlayable*> CAStaff::getChord(int time) {
 	QList<CAPlayable*> chord;
-	for (int i=0; i<voiceCount(); i++)
+	for (int i=voiceCount()-1; i>=0; i--)
 		chord << voiceAt(i)->getChord(time);
 	
 	return chord;
