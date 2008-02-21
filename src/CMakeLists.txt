@@ -97,6 +97,8 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	interface/mididevice.h
 	interface/playback.h
 	interface/pluginaction.h
+
+	control/externprogram.h
 )
 
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
@@ -180,6 +182,7 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 SET(Canorus_Ctl_Srcs            # Control instances for user interface or views and core
 #	control/printpreviewctl.cpp
 #       control/printctl.cpp
+	control/externprogram.cpp
 )
 
 SET(Canorus_Drawable_Srcs	# Drawable instances of the data
