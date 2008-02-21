@@ -8,9 +8,10 @@
 #ifndef SOURCEVIEWPORT_H_
 #define SOURCEVIEWPORT_H_
 
+#include <QTextEdit>
+
 #include "widgets/viewport.h"
 
-class QTextEdit;
 class QPushButton;
 class QGridLayout;
 
@@ -45,6 +46,7 @@ public:
 	inline void setVoice( CAVoice *voice ) { _voice = voice; }
 	inline void setLyricsContext( CALyricsContext *c ) { _lyricsContext = c; }
 	
+	inline void selectAll() { _textEdit->selectAll(); }
 signals:
 	void CACommit( QString documentString, CASourceViewPort *v );
 	

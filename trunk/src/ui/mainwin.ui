@@ -413,9 +413,6 @@
    </property>
   </action>
   <action name="uiSelectAll" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="text" >
     <string>Select &amp;all</string>
    </property>
@@ -424,9 +421,6 @@
    </property>
   </action>
   <action name="uiInvertSelection" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="text" >
     <string>Invert Selection</string>
    </property>

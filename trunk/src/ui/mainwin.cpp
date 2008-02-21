@@ -2327,6 +2327,23 @@ void CAMainWin::on_uiLockScrollPlayback_toggled(bool val) {
 	_lockScrollPlayback = val;
 }
 
+void CAMainWin::on_uiSelectAll_triggered() {
+	if(!currentViewPort())
+		return;
+	if(currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort)
+		static_cast<CAScoreViewPort*>(currentViewPort())->selectAll();
+	else if(currentViewPort()->viewPortType() == CAViewPort::SourceViewPort)
+		static_cast<CASourceViewPort*>(currentViewPort())->selectAll();
+	currentViewPort()->repaint();
+}
+
+void CAMainWin::on_uiInvertSelection_triggered() {
+	if(currentViewPort() && currentViewPort()->viewPortType() == CAViewPort::ScoreViewPort) {
+		static_cast<CAScoreViewPort*>(currentViewPort())->invertSelection();
+		currentViewPort()->repaint();
+	}
+}
+
 void CAMainWin::on_uiZoomToSelection_triggered() {
 	if (_currentViewPort->viewPortType() == CAViewPort::ScoreViewPort)
 		((CAScoreViewPort*)_currentViewPort)->zoomToSelection(_animatedScroll);
