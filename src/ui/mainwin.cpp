@@ -1533,7 +1533,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 			     musElementFactory()->setMusElementType( CAMusElement::Note );
 			
 			// Insert Syllable or Text
-			if ( uiInsertSyllable->isChecked() || uiMarkType->isChecked() && (musElementFactory()->markType()==CAMark::Text || musElementFactory()->markType()==CAMark::BookMark) && !v->selection().isEmpty() ) {
+			if ( (uiInsertSyllable->isChecked() || (uiMarkType->isChecked() && (musElementFactory()->markType()==CAMark::Text || musElementFactory()->markType()==CAMark::BookMark))) && !v->selection().isEmpty() ) {
 				v->createTextEdit( v->selection().front() );
 			} else {
 				v->removeTextEdit();
