@@ -93,6 +93,8 @@ public:
 	inline CADrawableContext *currentContext() { return _currentContext; }
 	inline void setCurrentContext(CADrawableContext *c) { _currentContext = c; }
 	
+	void selectAll();
+	void invertSelection();
 	inline void clearSelection() { _selection.clear(); emit selectionChanged(); }
 	inline bool removeFromSelection(CADrawableMusElement *elt) { return _selection.removeAll(elt); emit selectionChanged(); }
 	

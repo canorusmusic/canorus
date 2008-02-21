@@ -137,6 +137,8 @@ private slots:
 	void on_uiCopy_triggered();
 	void on_uiCut_triggered();
 	void on_uiPaste_triggered();
+	void on_uiSelectAll_triggered();
+	void on_uiInvertSelection_triggered();
 	void on_uiDocumentProperties_triggered();
 	
 	// Insert

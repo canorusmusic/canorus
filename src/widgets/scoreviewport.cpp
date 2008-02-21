@@ -1359,6 +1359,32 @@ void CAScoreViewPort::addToSelection(const QList<CAMusElement*> elts) {
 }
 
 /*!
+	Select all elements in the viewport.
+*/
+void CAScoreViewPort::selectAll() {
+	clearSelection();
+
+	for(int i=0; i<_drawableMList.size(); i++)
+		addToSelection(_drawableMList.at(i), false);
+	
+	emit selectionChanged();
+}
+
+/*!
+	Inverts the current selection.
+*/
+void CAScoreViewPort::invertSelection() {
+	QList<CADrawableMusElement *> oldSelection = selection();
+	clearSelection();
+	
+	for(int i=0; i<_drawableMList.size(); i++)
+		if(!oldSelection.contains(_drawableMList.at(i)))
+			addToSelection(_drawableMList.at(i), false);
+	
+	emit selectionChanged();
+}
+
+/*!
 	Finds the drawable instance of the given abstract music element.
 	
 	\sa findCElement()
