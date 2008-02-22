@@ -156,6 +156,9 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 		case CASwigPython::Mark:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAMark, 0);
 			break;
+                case CASwigPython::PyConsoleInterface:
+			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAPyConsoleInterface, 0);
+			break;
 	}
 }
 

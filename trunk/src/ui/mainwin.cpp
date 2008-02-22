@@ -551,9 +551,16 @@ void CAMainWin::createCustomActions() {
 		uiFinger->addButton( QIcon("images/mark/fingering/rheel.svg"), CAFingering::RHeel,  tr("Right Heel", "fingering") );
 		uiFinger->addButton( QIcon("images/mark/fingering/ltoe.svg"),  CAFingering::LToe,   tr("Left Toe", "fingering") );
 		uiFinger->addButton( QIcon("images/mark/fingering/rtoe.svg"),  CAFingering::RToe,   tr("Right Toe", "fingering") );
+
+	uiPyConsoleToolbar = new QToolBar(tr("Canorus console"), this);
+	pyConsole = new CAPyConsole(document(), uiPyConsoleToolbar);
+	pyConsoleIface = new CAPyConsoleInterface(pyConsole);
+	uiPyConsoleToolbar->addWidget(pyConsole);
+
 	uiFingeringOriginal = new QCheckBox( tr("Original"), this );
 		uiFingeringOriginal->setObjectName("uiFingeringOriginal");
 		uiFingeringOriginal->setToolTip( tr("Is the fingering original by a composer (usually written italic)", "fingering original checkbox") );
+
 }
 
 /*!
@@ -734,6 +741,9 @@ void CAMainWin::setupCustomUi() {
 	uiFingeringOriginal->setChecked(false);
 	uiFingeringToolBar->addWidget( uiFingeringOriginal );
 	addToolBar(Qt::TopToolBarArea, uiFingeringToolBar);
+
+	// Python console tool bar
+	addToolBar(Qt::BottomToolBarArea, uiPyConsoleToolbar);
 	
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
@@ -772,6 +782,7 @@ void CAMainWin::setupCustomUi() {
 	uiFermataToolBar->hide();
 	uiRepeatMarkToolBar->hide();
 	uiFingeringToolBar->hide();
+	uiPyConsoleToolbar->hide();
 }
 
 void CAMainWin::newDocument() {

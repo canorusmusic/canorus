@@ -22,6 +22,8 @@
 #include "core/clef.h"
 
 #include "interface/playback.h"
+#include "ui/pyconsole.h"
+#include "interface/pyconsoleinterface.h"
 
 #include "widgets/viewportcontainer.h"
 #include "widgets/scoreviewport.h"
@@ -114,6 +116,10 @@ public:
 	static QFileDialog *uiOpenDialog;
 	static QFileDialog *uiExportDialog;
 	static QFileDialog *uiImportDialog;
+
+	// Python Console
+	CAPyConsole *pyConsole;
+	CAPyConsoleInterface* pyConsoleIface;
 	
 private slots:
 	///////////////////////////
@@ -441,5 +447,8 @@ private:
 		QToolBar *uiFingeringToolBar;
 			CAMenuToolButton *uiFinger;
 			QCheckBox        *uiFingeringOriginal;
+
+		// Python console
+		QToolBar *uiPyConsoleToolbar;
 };
 #endif /* MAINWIN_H_ */
