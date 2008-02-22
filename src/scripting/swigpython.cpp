@@ -12,6 +12,7 @@
 #include "canorus.h"
 
 #include <iostream> // used for reporting errors in scripts
+#include <pthread.h>
 
 /// Load 'CanorusPython' module and initialize classes - defined in SWIG wrapper class
 extern "C" void init_CanorusPython();
@@ -74,10 +75,27 @@ void CASwigPython::init() {
 	
 	\warning You have to add path of the plugin to Python path before, manually! This is usually done by CAPlugin::callAction("onInit").
 */
+
+QString thr_fileName;
+QString thr_function;
+QList<PyObject*> thr_args;
+
 PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args) {
 	if (!QFile::exists(fileName))
 		return 0;
 	
+	//\todo: asynch. plugins: run pycli asynchronously
+	if (fileName.contains("pycli") && (!function.contains("init"))) {
+		pthread_t tid;
+		thr_fileName = fileName;
+		thr_args = args;
+		thr_function = function;
+		pthread_create(&tid, NULL, &callPycli, NULL);
+		
+//		return PyRun_SimpleString("print 'called pycli asynchronously'");
+		return args.first();
+	}	
+
 	///\todo A very ugly hack which supports up to 4 arguments to be passed to Py_BuildValue. If anyone knows how to pass a custom number of arguments (eg. array) to variadic C functions, let me know! -Matevz
 	PyObject *pyArgs;
 	switch (args.size()) {
@@ -121,6 +139,58 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	
 	return ret;
 }
+
+
+
+/*!
+	Function for intializing python-CLI pycli, called asynchronously from 'callFunction' (it's a copy to avoid confusion)
+	temporary solution
+
+	\param fileName Absolute path to the filename of the script
+	\param args -> document reference, pyCli widget referece **
+	
+*/
+void *CASwigPython::callPycli(void*) {
+
+	QString fileName = thr_fileName;
+	QString function = thr_function;
+	QList<PyObject*> args = thr_args;
+	
+	if (!QFile::exists(fileName)){
+		pthread_exit((void*)NULL);
+	}
+	
+	PyObject *pyArgs = Py_BuildValue("(OO)", args[0], args[1]);
+	
+	// Load module, if not yet
+	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
+	moduleName = moduleName.remove(0, moduleName.lastIndexOf("/")+1);
+	PyObject *pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
+
+	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
+	
+	// Get function object
+
+	//PyObject *pyFunction = PyObject_GetAttrString(pyModule, "pycli");
+	PyObject *pyFunction = PyObject_GetAttrString(pyModule, (char*)function.toStdString().c_str());
+
+	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
+	
+	// Call the actual function
+	//
+	PyObject *ret;
+	ret = PyEval_CallObject(pyFunction, pyArgs);
+	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
+	
+	Py_DECREF(pyFunction);
+//	Py_DECREF(pyArgs); /// \todo Crashes if uncommented?!d
+	Py_DECREF(pyModule);
+	for (int i=0; i<args.size(); i++)
+		Py_DECREF(args[i]);	
+	pthread_exit((void*)NULL);
+}
+
+
 
 
 /*

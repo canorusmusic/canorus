@@ -25,3 +25,6 @@ class QObject {
 
 // io
 %include "scripting/importexport.i"
+
+// console
+%include "scripting/pyconsoleinterface.i"

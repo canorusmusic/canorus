@@ -38,11 +38,15 @@ class CASwigPython {
 			FunctionMark,
 			LyricsContext,
 			Syllable,
-			Mark
+			Mark,
+
+			// Console
+			PyConsoleInterface
 		};
 		
 		static void init();
 		static PyObject *callFunction(QString fileName, QString function, QList<PyObject*> args);
+		static void *callPycli(void*);
 		static PyObject *toPythonObject(void *object, CAClassType type);	// defined in scripting/canoruspython.i
 };
 

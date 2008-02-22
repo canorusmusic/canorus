@@ -193,6 +193,11 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #endif
 		}
 	}
+#ifdef USE_PYTHON
+	if (_name == "pyCLI") {
+		pythonArgs << CASwigPython::toPythonObject(mainWin->pyConsoleIface, CASwigPython::PyConsoleInterface);
+	}
+#endif
 	
 	//add the plugin's path for the first time, so scripting languages can find their modules
 	if (action->onAction()=="onInit") {
