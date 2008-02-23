@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2008, Stefan Sakalik, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2008, Štefan Sakalík, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -50,10 +50,11 @@ CAPyConsole::CAPyConsole( CADocument *doc, QWidget *parent) : QTextEdit(parent) 
 	connect(this, SIGNAL(cursorPositionChanged()), SLOT(curPosChanged()));
 	connect(this, SIGNAL(textChanged()), SLOT(txtChanged()));
 
-	bCmdProcess = false;
 	bufSend = "";
 
 	bNoTxtChange = false;
+	thrWaitMut = new QMutex();
+	thrWait = new QWaitCondition();
 }
 
 /*!
@@ -159,14 +160,17 @@ void CAPyConsole::plugin_init(void){
 QString CAPyConsole::buffered_input(QString prompt){
 	emit thr_insertTextAtEnd(prompt);			//thread safe
 
-	while(!bCmdProcess);	// wait for some input
-	bCmdProcess = false;
+	thrWaitMut->lock();
+	thrWait->wait(thrWaitMut);
 
 	QString *str = new QString(bufSend);	//put contents of bufSend into buffer \todo: synch
 	if (bufSend == "html") {
 		std::cout << toHtml().toAscii().data() << std::endl; 
 	}
 	bufSend = "";
+	
+	thrWaitMut->unlock();
+
 	return *str;
 }
 
@@ -191,7 +195,7 @@ void CAPyConsole::keyPressEvent (QKeyEvent * e) {
 		bufSend = qStrInput;
 		QTextEdit::keyPressEvent(e);
 		insertTextAtEnd("");		//update all necessary pointers, and stuff
-		bCmdProcess = true;
+		thrWait->wakeOne();
 	} else
 		QTextEdit::keyPressEvent(e);
 
