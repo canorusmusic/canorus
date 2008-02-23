@@ -11,7 +11,8 @@
 #include <QObject>
 #include <QTextEdit>
 #include <QMutex>
-#include <QToolBar>		// parent->show???
+#include <QWaitCondition>
+#include <QToolBar>
 #include "core/document.h"
 
 class CAPyConsole : public QTextEdit {
@@ -49,8 +50,10 @@ private:
 	bool bNoTxtChange;
 
 	QString bufSend;	// \todo: synch
-	bool bCmdProcess;	//python received command, bud yet didn't respond
-
+	
+	// waiting thread
+	QMutex *thrWaitMut;
+	QWaitCondition *thrWait;
 };
 
 #endif /* PYCONSOLE_H_ */
