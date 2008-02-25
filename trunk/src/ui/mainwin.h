@@ -449,6 +449,6 @@ private:
 			QCheckBox        *uiFingeringOriginal;
 
 		// Python console
-		QToolBar *uiPyConsoleToolbar;
+		QDockWidget *uiPyConsoleDock;
 };
 #endif /* MAINWIN_H_ */

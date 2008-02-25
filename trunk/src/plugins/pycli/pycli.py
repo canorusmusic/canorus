@@ -9,11 +9,13 @@
 
 # TODO: better STD* overrides
 # TODO: interactive help
-# TODO: route interrupts to python
+# TODO: SIGINT
 
 import sys
 import traceback
 import CanorusPython
+import time
+from threading import Thread
 from codeop import CommandCompiler, compile_command
 
 __all__ = ["InteractiveInterpreter", "InteractiveConsole", "interact",
@@ -23,13 +25,13 @@ def init(pluginDir, canorusInterface):
 	print "Python CLI initialized"
 
 def pycli(document, canorusInterface):
-	# canorusConsole = CanorusConsoleInterface(canorusInterface)
 	canorusInterface.plugin_init();
+
 	sys.stdin = CanorusConsoleInterfaceIN(canorusInterface)
 	sys.stdout = CanorusConsoleInterfaceOUT(canorusInterface, False)
 	sys.stderr = CanorusConsoleInterfaceOUT(canorusInterface, True)
-	interact("Canorus CLI initialized", None , {"CanorusPython":CanorusPython,"document":document})
 
+	interact("Canorus CLI initialized", sys.stdin.raw_input , {"CanorusPython":CanorusPython,"document":document})
 
 class CanorusConsoleInterfaceOUT:
 	"""Provides 'output' interface to canorus
@@ -44,13 +46,7 @@ class CanorusConsoleInterfaceOUT:
 		self.stdErrMod = stdErrMod
 	
 	def write(self, string):
-		if (self.stdErrMod):
-			self.canorusInterface.buffered_output(string, True)
-		else:
-			self.canorusInterface.buffered_output(string, False)
-
-#	def raw_input(self, prompt):
-#		return self.canorusInterface.buffered_input(prompt)
+		self.canorusInterface.buffered_output(string, self.stdErrMod)
 
 class CanorusConsoleInterfaceIN:
 	"""Provides 'input' interface to canorus
@@ -63,11 +59,13 @@ class CanorusConsoleInterfaceIN:
 		"""
 		self.canorusInterface = canorusInterface
 
-#	def raw_input(self, prompt):
-#		return self.canorusInterface.buffered_input(prompt)
-
 	def readline(self):
 		return self.canorusInterface.buffered_input("") + '\n'
+
+	def raw_input(self, prompt):
+		return self.canorusInterface.buffered_input(prompt)
+
+
 
 def softspace(file, newvalue):
     oldvalue = 0

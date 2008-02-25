@@ -37,8 +37,7 @@ void CASwigPython::init() {
 	// add path to CanorusPython modules to Scripting path
 	if (CACanorus::locateResourceDir("CanorusPython.py").size()) {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("CanorusPython.py").at(0)+"')").toStdString().c_str());
-	} else {
-		std::cerr << "Error: CanorusPython.py not found" << std::endl;
+
 	}
 	
 #ifdef Q_WS_WIN
@@ -76,6 +75,7 @@ void CASwigPython::init() {
 	\warning You have to add path of the plugin to Python path before, manually! This is usually done by CAPlugin::callAction("onInit").
 */
 
+pthread_t *tid=NULL;
 QString thr_fileName;
 QString thr_function;
 QList<PyObject*> thr_args;
@@ -84,17 +84,16 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	if (!QFile::exists(fileName))
 		return 0;
 	
-	//\todo: asynch. plugins: run pycli asynchronously
+	// run pycli in pthread, this is temporary solution
 	if (fileName.contains("pycli") && (!function.contains("init"))) {
-		pthread_t tid;
+		tid = new pthread_t;
 		thr_fileName = fileName;
 		thr_args = args;
 		thr_function = function;
-		pthread_create(&tid, NULL, &callPycli, NULL);
+		pthread_create(tid, NULL, &callPycli, NULL);
 		
-//		return PyRun_SimpleString("print 'called pycli asynchronously'");
 		return args.first();
-	}	
+	}
 
 	///\todo A very ugly hack which supports up to 4 arguments to be passed to Py_BuildValue. If anyone knows how to pass a custom number of arguments (eg. array) to variadic C functions, let me know! -Matevz
 	PyObject *pyArgs;
@@ -187,11 +186,9 @@ void *CASwigPython::callPycli(void*) {
 	Py_DECREF(pyModule);
 	for (int i=0; i<args.size(); i++)
 		Py_DECREF(args[i]);	
+
 	pthread_exit((void*)NULL);
 }
-
-
-
 
 /*
 	\function static PyObject* CASwigPython::toPythonObject(void *object, CAClassType type)
