@@ -14,6 +14,8 @@
 #include <QString>
 #include <QList>
 
+
+
 class CASwigPython {
 	public:
 		enum CAClassType {

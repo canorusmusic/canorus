@@ -14,8 +14,9 @@
 class CAPyConsoleInterface {
 public:
 	CAPyConsoleInterface (CAPyConsole* pyConsole);
+
 	// API for pycli plugin
-	char* buffered_input(char* prompt);	// Input goes to python interpreter
+	char* buffered_input(char* prompt);	// Input goes to script
 	void buffered_output(char* bufInp, bool bStdErr);
 	void plugin_init(void);			// when script initializes
 
