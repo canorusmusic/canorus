@@ -168,7 +168,7 @@ void *CASwigPython::callPycli(void*) {
 	QList<PyObject*> args = thr_args;
 	
 	if (!QFile::exists(fileName)){
-		pthread_exit((void*)NULL);
+//		pthread_exit((void*)NULL);
 	}
 	
 	PyObject *pyArgs = Py_BuildValue("(OO)", args[0], args[1]);
@@ -199,7 +199,7 @@ void *CASwigPython::callPycli(void*) {
 	for (int i=0; i<args.size(); i++)
 		Py_DECREF(args[i]);	
 
-	pthread_exit((void*)NULL);
+//	pthread_exit((void*)NULL);
 }
 
 /*
