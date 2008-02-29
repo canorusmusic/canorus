@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2008, Štefan Sakalík, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008, Štefan Sakalík, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -9,19 +9,28 @@
 #define PYCONSOLEINTERFACE_H_
 
 #include <QString>
-#include "ui/pyconsole.h"
+
+class CAPyConsole;
 
 class CAPyConsoleInterface {
 public:
+#if !defined( SWIG ) && !defined( SWIGCPP )
 	CAPyConsoleInterface (CAPyConsole* pyConsole);
 
 	// API for pycli plugin
-	char* buffered_input(char* prompt);	// Input goes to script
-	void buffered_output(char* bufInp, bool bStdErr);
-	void plugin_init(void);			// when script initializes
+	char* bufferedInput(char* prompt);	// Input goes to script
+	void bufferedOutput(char* bufInp, bool bStdErr);
+#else
+	char* bufferedInput(char* prompt) {}
+	void bufferedOutput(char* bufInp, bool bStdErr) {}
+#endif	
+	CAPyConsoleInterface () {}
+	void pluginInit(void);			// when script initializes
 
 private:
-	CAPyConsole* pycons;
+#if !defined( SWIG ) && !defined( SWIGCPP )
+	CAPyConsole* _pycons;
+#endif
 
 };
 

@@ -43,6 +43,7 @@
 #include "widgets/viewportcontainer.h"
 #include "widgets/scoreviewport.h"
 #include "widgets/sourceviewport.h"
+#include "widgets/pyconsole.h"
 
 #include "drawable/drawablecontext.h"
 #include "drawable/drawablestaff.h"

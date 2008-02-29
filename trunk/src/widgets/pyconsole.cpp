@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <QKeyEvent>
 
-#include "ui/pyconsole.h"
+#include "widgets/pyconsole.h"
 #include "scripting/swigpython.h"
 #include "canorus.h"
 
