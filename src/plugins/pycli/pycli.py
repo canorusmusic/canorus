@@ -25,13 +25,17 @@ def init(pluginDir, canorusInterface):
 	print "Python CLI initialized"
 
 def pycli(document, canorusInterface):
-	canorusInterface.plugin_init();
+	canorusInterface.pluginInit();
 
 	sys.stdin = CanorusConsoleInterfaceIN(canorusInterface)
+	print 'a'
 	sys.stdout = CanorusConsoleInterfaceOUT(canorusInterface, False)
+	print 'b'
 	sys.stderr = CanorusConsoleInterfaceOUT(canorusInterface, True)
+	print 'c'
 
 	interact("Canorus CLI initialized", sys.stdin.raw_input , {"CanorusPython":CanorusPython,"document":document})
+	print 'd'
 
 class CanorusConsoleInterfaceOUT:
 	"""Provides 'output' interface to canorus
@@ -44,9 +48,10 @@ class CanorusConsoleInterfaceOUT:
 		"""
 		self.canorusInterface = canorusInterface
 		self.stdErrMod = stdErrMod
+		self.canorusInterface.bufferedOutput('hello', False)
 	
 	def write(self, string):
-		self.canorusInterface.buffered_output(string, self.stdErrMod)
+		self.canorusInterface.bufferedOutput(string, self.stdErrMod)
 
 class CanorusConsoleInterfaceIN:
 	"""Provides 'input' interface to canorus
@@ -60,10 +65,10 @@ class CanorusConsoleInterfaceIN:
 		self.canorusInterface = canorusInterface
 
 	def readline(self):
-		return self.canorusInterface.buffered_input("") + '\n'
+		return self.canorusInterface.bufferedInput("") + '\n'
 
 	def raw_input(self, prompt):
-		return self.canorusInterface.buffered_input(prompt)
+		return self.canorusInterface.bufferedInput(prompt)
 
 
 

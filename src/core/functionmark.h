@@ -13,8 +13,7 @@
 
 #include "core/muselement.h"
 #include "core/diatonickey.h"
-
-class CAFunctionMarkContext;
+#include "core/functionmarkcontext.h"
 
 class CAFunctionMark : public CAMusElement {
 public:
@@ -41,6 +40,7 @@ public:
 	CAFunctionMark* clone();
 	void clear(); // same as in CASyllable
 	~CAFunctionMark();
+	inline CAFunctionMarkContext *fmContext() { return static_cast<CAFunctionMarkContext*>(context()); }
 	
 	CAFunctionType function() { return _function; }
 	CADiatonicKey key() { return _key; }

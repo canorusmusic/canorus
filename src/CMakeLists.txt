@@ -83,7 +83,6 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	ui/mainwin.h
 	ui/settingsdialog.h
 	ui/propertiesdialog.h
-	ui/pyconsole.h
 	
 	widgets/lcdnumber.h
 	widgets/viewport.h
@@ -94,6 +93,7 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	widgets/toolbuttonpopup.h
 	widgets/menutoolbutton.h
 	widgets/undotoolbutton.h
+	widgets/pyconsole.h
 	
 	interface/mididevice.h
 	interface/playback.h
@@ -172,13 +172,13 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/undotoolbutton.cpp
 	widgets/viewport.cpp
 	widgets/viewportcontainer.cpp
+	widgets/pyconsole.cpp
 )
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
 	ui/mainwin.cpp
 	ui/settingsdialog.cpp
 	ui/propertiesdialog.cpp
-	ui/pyconsole.cpp
 )
 
 SET(Canorus_Ctl_Srcs            # Control instances for user interface or views and core
@@ -313,7 +313,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	interface/playback.cpp
 
 	interface/pyconsoleinterface.cpp
-	
+
 	moc_playback.cxx
 )
 IF(MINGW)

@@ -6,25 +6,34 @@
 */
 
 #include "interface/pyconsoleinterface.h"
+#ifndef SWIGCPP
+#include "widgets/pyconsole.h"
+#endif
 
 /*!
 	This class serves as a proxy, simple wrapper:
 	plugins/pycli   <=>   interface/pyconsoleinterface   <=>   ui/pyconsole
 */
 
+#ifndef SWIGCPP
 CAPyConsoleInterface::CAPyConsoleInterface(CAPyConsole* pyConsole ) {
-	pycons = pyConsole;
+	_pycons = pyConsole;
+}
+#endif
+
+void CAPyConsoleInterface::pluginInit(void){
+#ifndef SWIGCPP
+	_pycons->plugin_init();
+#endif
 }
 
-void CAPyConsoleInterface::plugin_init(void){
-	pycons->plugin_init();
+#ifndef SWIGCPP
+char* CAPyConsoleInterface::bufferedInput(char* prompt) {
+	return (_pycons->buffered_input(QString(prompt))).toUtf8().data();
 }
 
-char* CAPyConsoleInterface::buffered_input(char* prompt) {
-	return (pycons->buffered_input(QString(prompt))).toUtf8().data();
-}
-
-void CAPyConsoleInterface::buffered_output (char* str, bool bStdErr) {
+void CAPyConsoleInterface::bufferedOutput (char* str, bool bStdErr) {
 	QString *q_str = new QString(str);
-	pycons->buffered_output(*q_str, bStdErr);
+	_pycons->buffered_output(*q_str, bStdErr);
 }
+#endif

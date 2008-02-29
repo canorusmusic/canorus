@@ -22,7 +22,6 @@
 #include "core/clef.h"
 
 #include "interface/playback.h"
-#include "ui/pyconsole.h"
 #include "interface/pyconsoleinterface.h"
 
 #include "widgets/viewportcontainer.h"
@@ -45,6 +44,7 @@ class CASheet;
 class CAScoreViewPort;
 class CASourceViewPort;
 class CAMusElementFactory;
+class CAPyConsole;
 
 class CAMainWin : public QMainWindow, private Ui::uiMainWindow
 {

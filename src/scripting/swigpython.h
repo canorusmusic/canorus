@@ -41,7 +41,7 @@ class CASwigPython {
 			LyricsContext,
 			Syllable,
 			Mark,
-
+			
 			// Console
 			PyConsoleInterface
 		};
