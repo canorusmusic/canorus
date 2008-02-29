@@ -8,11 +8,18 @@
 #ifdef USE_PYTHON
 #include "scripting/swigpython.h"
 #include <QFile>
+#include <QThread>
 
 #include "canorus.h"
 
 #include <iostream> // used for reporting errors in scripts
-#include <pthread.h>
+//#include <pthread.h>
+
+class CAPyconsoleThread : public QThread {
+protected:
+	void run() { CASwigPython::callPycli(NULL); }
+};
+
 
 /// Load 'CanorusPython' module and initialize classes - defined in SWIG wrapper class
 extern "C" void init_CanorusPython();
@@ -75,7 +82,9 @@ void CASwigPython::init() {
 	\warning You have to add path of the plugin to Python path before, manually! This is usually done by CAPlugin::callAction("onInit").
 */
 
-pthread_t *tid=NULL;
+
+//pthread_t *tid=NULL;
+QThread *qtid=NULL;
 QString thr_fileName;
 QString thr_function;
 QList<PyObject*> thr_args;
@@ -86,11 +95,14 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	
 	// run pycli in pthread, this is temporary solution
 	if (fileName.contains("pycli") && (!function.contains("init"))) {
-		tid = new pthread_t;
+
+		//tid = new pthread_t;
+		qtid = new CAPyconsoleThread();
 		thr_fileName = fileName;
 		thr_args = args;
 		thr_function = function;
-		pthread_create(tid, NULL, &callPycli, NULL);
+		qtid->start();
+		//pthread_create(tid, NULL, &callPycli, NULL);
 		
 		return args.first();
 	}
