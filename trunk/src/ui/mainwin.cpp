@@ -140,6 +140,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	// Initialize internal UI properties
 	_mode = SelectMode;
 	_playback = 0;
+	_playbackViewPort = 0;
+	_repaintTimer = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
 	
