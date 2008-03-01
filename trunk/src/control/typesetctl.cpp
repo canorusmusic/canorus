@@ -28,9 +28,11 @@ CATypesetCtl::CATypesetCtl()
 {
 	_poTypesetter = new CAExternProgram;
 	_poConvPS2PDF = new CAExternProgram;
-	_poExport = new CAExport;
+	_poExport = 0;
+	_poOutputFile = 0;
 	_bPDFConversion = false;
 	connect( _poTypesetter, SIGNAL( programExited( int ) ), this, SLOT( typsetterFinished( int ) ) );
+	connect( _poTypesetter, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( rcvTypesetterOutput( const QByteArray & ) ) );
 }
 
 // Destructor
@@ -42,9 +44,9 @@ CATypesetCtl::~CATypesetCtl()
 	if( _poConvPS2PDF )
 		delete _poConvPS2PDF;
 	_poConvPS2PDF = 0;
-	if( _poExport )
-		delete _poExport;
-	_poExport = 0;
+	if( _poOutputFile )
+		delete _poOutputFile;
+	_poOutputFile = 0;
 }
 
 /*!
@@ -149,9 +151,20 @@ void CATypesetCtl::exportDocument( CADocument *poDoc )
 	// @todo: Add export options to the document directly ?
 	if( _poExport )
 	{
-		QTemporaryFile::createLocalFile( _oOutputFile ); 
-		_poExport->setStreamToFile( _oOutputFile.fileName() );
+		if(  _poOutputFile )
+		{
+			delete _poOutputFile;
+			_poTypesetter->clearParameters();
+		}
+		_poOutputFile = new QTemporaryFile;
+		// Create the unique file as the file name is only defined when opening the file
+		_poOutputFile->open();
+		_poTypesetter->addParameter( _poOutputFile->fileName() );
+		_poExport->setStreamToDevice( _poOutputFile );
 		_poExport->exportDocument( poDoc );
+		// @ToDo use signal/slot mechanism to wait for the file
+		_poExport->wait();
+		_poOutputFile->close();
 	}
 	else
 	  qCritical("TypesetCtl: No export was done - no exporter defined");
@@ -185,8 +198,9 @@ bool CATypesetCtl::createPDF()
 	return _poConvPS2PDF->execProgram();
 }
 
-void CATypesetCtl::rcvTypesetterOutput()
+void CATypesetCtl::rcvTypesetterOutput( const QByteArray &roData )
 {
+	emit nextOutput( roData );
 }
 
 void CATypesetCtl::typsetterFinished( int iExitCode )
@@ -194,4 +208,3 @@ void CATypesetCtl::typsetterFinished( int iExitCode )
 	if( iExitCode != 0 )
 	  qCritical("TypesetCtl: Typesetter finished with code %d",iExitCode);
 }
-
