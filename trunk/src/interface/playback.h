@@ -15,13 +15,15 @@ class CAMidiDevice;
 class CASheet;
 class CAMusElement;
 class CAPlayable;
+class CANote;
 
 class CAPlayback : public QThread {
 #ifndef SWIG
 Q_OBJECT
 #endif
 public:
-	CAPlayback(CASheet*, CAMidiDevice *);
+	CAPlayback( CASheet*, CAMidiDevice* );
+	CAPlayback( QList<CAMusElement*>, CAMidiDevice* );
 	~CAPlayback();
 	
 	void run();
@@ -33,6 +35,8 @@ public:
 	inline CASheet *sheet() { return _sheet; }
 	inline void setSheet( CASheet *s ) { _sheet = s; }
 	inline QList<CAPlayable*>& curPlaying() { return _curPlaying; }
+	
+	static void playSelection( QList<CAMusElement*>, CAMidiDevice* );
 	
 #ifndef SWIG
 public slots:
@@ -49,6 +53,7 @@ signals:
 private:
 	void initStreams( CASheet *sheet );
 	void loopUntilPlayable( int i, bool ignoreRepeats=false );
+	void playSelectionImpl();
 	
 	inline QList<CAMusElement*> streamAt(int idx) { return _stream[idx]; }
 	inline int streamCount() { return _stream.size(); }
@@ -68,6 +73,9 @@ private:
 	inline void setStop(bool stop) { _stop = stop; }
 	bool _stop;
 	bool _stopLock;
+	
+	bool _playSelectionOnly;
+	QList<CAMusElement*> _selection;
 	
 	int _initTimeStart;
 	

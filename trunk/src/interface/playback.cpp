@@ -24,6 +24,9 @@
 #include "core/instrumentchange.h"
 #include "core/tempo.h"
 
+#include "canorus.h" // used for single note playback
+#include "core/settings.h"
+
 /*!
 	\class CAPlayback
 	\brief Audio playback of the score.
@@ -48,6 +51,30 @@ CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
 	setInitTimeStart( 0 );
 	setStopLock(false);
 	connect(this, SIGNAL(finished()), SLOT(stopNow()));
+	_playSelectionOnly = false;
+	
+	_repeating=0;
+	_lastRepeatOpenIdx=0;
+	_curTime=0;
+	_streamIdx=0;
+}
+
+/*!
+	Plays the list of music elements simultaniously.
+	It only takes notes into account.
+*/
+CAPlayback::CAPlayback( QList<CAMusElement*> elts, CAMidiDevice *m ) {
+	setMidiDevice( m );
+	_stop = false;
+	setStopLock(false);
+	_playSelectionOnly = true;
+	_selection = elts;
+	connect(this, SIGNAL(finished()), SLOT(stopNow()));
+	
+	_repeating=0;
+	_lastRepeatOpenIdx=0;
+	_curTime=0;
+	_streamIdx=0;
 }
 
 /*!
@@ -58,19 +85,33 @@ CAPlayback::~CAPlayback() {
 		terminate();
 		wait();
 	}
-	delete [] _repeating;
-	delete [] _lastRepeatOpenIdx;
-	delete [] _curTime;
-	delete [] _streamIdx;
+	
+	if (_repeating)
+		delete [] _repeating;
+	
+	if (_lastRepeatOpenIdx)
+		delete [] _lastRepeatOpenIdx;
+	
+	if (_curTime)
+		delete [] _curTime;
+	
+	if (_streamIdx)
+		delete [] _streamIdx;
 }
 
 void CAPlayback::run() {
+	if ( _playSelectionOnly ) {
+		playSelectionImpl();
+		return;
+	}
+	
 	// list of all the music element lists (ie. streams) taken from all the contexts
 	QList< QList<CAMusElement*> > stream; 
 	QVector<unsigned char> message;	// midi 3-byte message sent to midi device
 	
 	// initializes all the streams, indices, repeat barlines etc.
-	initStreams( sheet() );
+	if ( !streamCount() )
+		initStreams( sheet() );
 	
 	if ( !streamCount() )
 		stop();
@@ -188,6 +229,52 @@ void CAPlayback::run() {
 	stop();
 }
 
+void CAPlayback::playSelectionImpl() {
+	midiDevice()->openOutputPort( CACanorus::settings()->midiOutPort() );
+	
+	QVector<unsigned char> message;
+	for (int i=0; i<_selection.size(); i++) {
+		if ( _selection[i]->musElementType()!=CAMusElement::Note )
+			continue;
+		
+		CANote *note = static_cast<CANote*>(_selection[i]);
+		
+		message << (192 + note->voice()->midiChannel()); // change program
+		message << (note->voice()->midiProgram());
+		midiDevice()->send(message, 0);
+		message.clear();
+		
+		message << (176 + note->voice()->midiChannel()); // set volume
+		message << (7);
+		message << (100);
+		midiDevice()->send(message, 0);
+		message.clear();
+
+		message << (144 + note->voice()->midiChannel()); // note on
+		message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
+		message << (127);
+		midiDevice()->send(message, 0);
+		message.clear();
+	}
+	
+	msleep( qRound(500) );
+	
+	for (int i=0; i<_selection.size(); i++) {
+		if ( _selection[i]->musElementType()!=CAMusElement::Note )
+			continue;
+		
+		CANote *note = static_cast<CANote*>(_selection[i]);
+		
+		message << (128 + note->voice()->midiChannel()); // note off
+		message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
+		message << (127);
+		midiDevice()->send(message, 0);
+		message.clear();
+	}
+	
+	// output ports are closed in MainWin
+}
+
 /*!
 	The nice and the right way to stop the playback.
 	Returns immediately.
@@ -219,7 +306,7 @@ void CAPlayback::stopNow()
 }
 
 /*!
-	Generates streams (elements lists) of playable elements (notes, rests) and stores it locally.
+	Generates streams (elements lists) of playable elements (notes, rests) from the given sheet.
 */
 void CAPlayback::initStreams( CASheet *sheet ) {
 	for (int i=0; i < sheet->contextCount(); i++) {
@@ -241,7 +328,6 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 				midiDevice()->send(message, 0);
 				message.clear();
 			}
-			
 		}
 	}
 	_streamIdx = new int[streamCount()];
@@ -257,7 +343,6 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 		repeating(i) = false;
 		loopUntilPlayable(i, true); // ignore repeats
 	}
-	
 }
 
 /*!
@@ -295,4 +380,13 @@ void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
 	// last element if non-playable is exception - increase the index counter
 	if (streamIdx(i)==streamAt(i).size()-1 && !streamAt(i).at(streamIdx(i))->isPlayable())
 		streamIdx(i)++;
+}
+
+/*!
+	Plays the pitch of the given note only.
+	Usually used when inserting notes to play the inserted note.
+*/
+void CAPlayback::playSelection( QList<CAMusElement*> elts, CAMidiDevice* m ) {
+	CAPlayback p( elts, m );
+	p.start();
 }
