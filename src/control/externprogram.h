@@ -42,17 +42,20 @@ public:
 	int getExitState();
 
 	void addParameter( const QString &roParam, bool bAddDelimiter = true );
+	inline void clearParameters() { _oParameters.clear(); }
 	bool execProgram( const QString &roCwd = "." );
 
 signals:
-	void nextOutput( QByteArray oData );
+	void nextOutput( const QByteArray &roData );
 	void programExited( int iExitCode );
   
 protected slots:
 	void rcvProgramOutput();
+	void programError( QProcess::ProcessError ) { programExited(); }
+	void programFinished( int, QProcess::ExitStatus ) {  programExited(); }
 
 protected:
-	void programFinished();
+	void programExited();
 
 	// References to the real objects(!)
 	QProcess    *_poExternProgram;       // Process object running the watched program

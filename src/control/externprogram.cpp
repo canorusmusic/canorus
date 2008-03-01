@@ -25,8 +25,8 @@ CAExternProgram::CAExternProgram( bool bRcvStdErr /* = true */, bool bRcvStdOut 
 	_bRcvStdErr = bRcvStdErr;
 	_poExternProgram = new QProcess();
 	_oParamDelimiter = " ";
-	connect( _poExternProgram, SIGNAL( error() ), this, SLOT( programFinished() ) );
-	connect( _poExternProgram, SIGNAL( finished() ), this, SLOT( programFinished() ) );
+	connect( _poExternProgram, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( programError( QProcess::ProcessError ) ) );
+	connect( _poExternProgram, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( programFinished( int, QProcess::ExitStatus ) ) );
   if( bRcvStdOut )
 		connect( _poExternProgram, SIGNAL( readyReadStandardError() ), this, SLOT( rcvProgramOutput() ) );
   if( bRcvStdErr )
@@ -195,9 +195,15 @@ void CAExternProgram::rcvProgramOutput()
   // CACacheExternProgram or include it in a CACacheProgramData class or use
 	// the cache class Qt provides named QCache for such a purpose.
 	if( _poExternProgram->readChannel() == QProcess::StandardOutput )
-		emit nextOutput( _poExternProgram->readAllStandardOutput() );
+	{
+		const QByteArray &rSO = _poExternProgram->readAllStandardOutput(); 
+		emit nextOutput( rSO );
+	}
 	if( _poExternProgram->readChannel() == QProcess::StandardError )
-		emit nextOutput( _poExternProgram->readAllStandardError() );
+	{
+		const QByteArray &rSE = _poExternProgram->readAllStandardError(); 
+		emit nextOutput( rSE );
+	}
 }
 
 /*!
@@ -209,7 +215,7 @@ void CAExternProgram::rcvProgramOutput()
 
 	\sa QProcess::setProgram( QString oProgram )
 */
-void CAExternProgram::programFinished()
+void CAExternProgram::programExited()
 {
 	if( getRunning() )
 	{

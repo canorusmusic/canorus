@@ -13,12 +13,12 @@
 #include <QVariant>
 #include <QVector>
 #include <QStringList>
-#include <QFile>
 
 // Forward declarations
 class CAExternProgram;
 class CAExport;
 class CADocument;
+class QTemporaryFile;
 
 class CATypesetCtl : public QObject
 {
@@ -34,30 +34,32 @@ public:
 	virtual void setExpOption( const QVariant &roName, const QVariant &roValue );
 	virtual void setTSetOption( const QVariant &roName, const QVariant &roValue );
 	inline void setPDFConversion( bool bConversion ) { _bPDFConversion = bConversion; }
+	inline void setExporter( CAExport *poExport ) { _poExport = poExport ; }
 	// Attention: .pdf automatically added and removed if it was added internally
-	bool createPDF();
-
-	inline bool getPDFConversion() { return _bPDFConversion; }
-
-signals:
-  void nextOutput( QByteArray oData );
-	void nextStep();
-
-protected slots:
-	void rcvTypesetterOutput();
-	void typsetterFinished( int iExitCode );
-
-protected:
 	void exportDocument( CADocument *poDoc );
 	void runTypesetter();
 
-	CAExternProgram    *_poTypesetter;    // Transforms exported file to pdf / postscript
-	CAExternProgram    *_poConvPS2PDF;    // Transforms postscripts files to pdf if needed
-	CAExport           *_poExport;        // Transforms canorus document to typesetter format
-	QVector<QVariant>   _oExpOptList;		  // List of options for export
-	QVector<QVariant>   _oTSetOptList;		// List of options for typesetter
-	QFile               _oOutputFile;     // Output file for pdf (also used for exported file)
-	bool                _bPDFConversion;  // Do a conversion from postscript to pdf
+	inline bool getPDFConversion() { return _bPDFConversion; }
+	inline CAExport *getExporter() { return _poExport; }
+
+signals:
+	void nextOutput( const QByteArray &roData );
+	void nextStep();
+
+protected slots:
+	void rcvTypesetterOutput( const QByteArray &roData );
+	void typsetterFinished( int iExitCode );
+
+protected:
+	bool createPDF();
+
+	CAExternProgram    *_poTypesetter;      // Transforms exported file to pdf / postscript
+	CAExternProgram    *_poConvPS2PDF;   // Transforms postscripts files to pdf if needed
+	CAExport                *_poExport;            // Transforms canorus document to typesetter format
+	QVector<QVariant>   _oExpOptList;       // List of options for export
+	QVector<QVariant>   _oTSetOptList;      // List of options for typesetter
+	QTemporaryFile       *_poOutputFile;        // Output file for pdf (also used for exported file)
+	bool                        _bPDFConversion;  // Do a conversion from postscript to pdf
 };
 
 #endif // _TYPESET_CTL_H_
