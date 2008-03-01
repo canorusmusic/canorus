@@ -44,6 +44,8 @@ class CASheet;
 class CAScoreViewPort;
 class CASourceViewPort;
 class CAMusElementFactory;
+class CAPrintPreviewCtl;
+class CAPrintCtl;
 class CAPyConsole;
 
 class CAMainWin : public QMainWindow, private Ui::uiMainWindow
@@ -286,6 +288,8 @@ private:
 	////////////////////////////////////
 	CADocument *_document;
 	CAMode _mode;
+	//CAPrintPreviewCtl *_poPrintPreviewCtl;
+	CAPrintCtl *_poPrintCtl;
 	
 	void setMode(CAMode mode);
 	inline void setCurrentViewPort( CAViewPort *viewPort ) { _currentViewPort = viewPort; }
