@@ -27,22 +27,22 @@ public:
 	CAExternProgram( bool bRcvStdErr = true, bool bRcvStdOut = true );
 	~CAExternProgram();
 
-	void setProgramName( QString oProgram );
-	void setProgramPath( QString oPath );
+	void setProgramName( const QString &roProgram );
+	void setProgramPath( const QString &roPath );
 	// Warning: Setting all parameters overwrites all
 	// parameters added via addParameter method!
-	void setParameters( QStringList oParams );
+	void setParameters( const QStringList &roParams );
 	void inline setParamDelimiter( QString oDelimiter = " " )
 	{ _oParamDelimiter = oDelimiter; }
 
-	inline QStringList getParameters() { return _oParameters; }
+	inline const QStringList &getParameters() { return _oParameters; }
 	inline bool getRunning() 
 	{ return _poExternProgram->state() == QProcess::Running; }
-	inline QString getParamDelimiter() { return _oParamDelimiter; }
+	inline const QString &getParamDelimiter() { return _oParamDelimiter; }
 	int getExitState();
 
-	void addParameter( QString oParam, bool bAddDelimiter = true );
-	bool execProgram( QString oCwd = "." );
+	void addParameter( const QString &roParam, bool bAddDelimiter = true );
+	bool execProgram( const QString &roCwd = "." );
 
 signals:
 	void nextOutput( QByteArray oData );

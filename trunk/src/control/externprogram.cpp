@@ -52,11 +52,11 @@ CAExternProgram::~CAExternProgram()
 	\sa setProgramPath( QString oPath )
 	\sa execProgram( QString oCwd )
 */
-void CAExternProgram::setProgramName( QString oProgram )
+void CAExternProgram::setProgramName( const QString &roProgram )
 {
 	// Make sure that the program name is defined
-	if( !oProgram.isEmpty() )
-		_oProgramName = oProgram;
+	if( !roProgram.isEmpty() )
+		_oProgramName = roProgram;
 	else
 	  qWarning("ExternProgram: Ignoring program name being empty!");
 }
@@ -70,11 +70,11 @@ void CAExternProgram::setProgramName( QString oProgram )
 
 	\sa setProgramName( QString oProgram )
 */
-void CAExternProgram::setProgramPath( QString oPath )
+void CAExternProgram::setProgramPath( const QString &roPath )
 {
 	// Make sure that the program path is defined
-	if( !oPath.isEmpty() )
-		_oProgramPath = oPath;
+	if( !roPath.isEmpty() )
+		_oProgramPath = roPath;
 	else
 	  qWarning("ExternProgram: Ignoring program path being empty!");
 }
@@ -90,11 +90,11 @@ void CAExternProgram::setProgramPath( QString oPath )
 	\sa addParameter( QString oParam, bool bAddSpaces = true )
 	\sa setProgramName( QString oProgram )
 */
-void CAExternProgram::setParameters( QStringList oParams )
+void CAExternProgram::setParameters( const QStringList &roParams )
 {
 	// Make sure that the parameters are defined
-	if( !oParams.isEmpty() )
-		_oParameters = oParams;
+	if( !roParams.isEmpty() )
+		_oParameters = roParams;
 	else
 	  qWarning("ExternProgram: Ignoring parameters being empty!");
 }
@@ -129,15 +129,15 @@ int CAExternProgram::getExitState()
 	\sa setParameters( QString oParams )
 	\sa setParamDelimiter( QString oDelimiter )
 */
-void CAExternProgram::addParameter( QString oParam, bool bAddDelimiter /* = true */ )
+void CAExternProgram::addParameter( const QString &roParam, bool bAddDelimiter /* = true */ )
 {
 	// Make sure that the parameters are defined
-	if( !oParam.isEmpty() )
+	if( !roParam.isEmpty() )
 	{
 		if( bAddDelimiter )
-			_oParameters += QString(_oParamDelimiter + oParam);
+			_oParameters += QString(_oParamDelimiter + roParam);
 		else
-			_oParameters += oParam;
+			_oParameters += roParam;
 	}
 	else
 	 qWarning("ExternProgram: Ignoring additional parameter being empty!");
@@ -154,15 +154,15 @@ void CAExternProgram::addParameter( QString oParam, bool bAddDelimiter /* = true
 	\sa setParameters( QString oParams )
 	\sa setProgram( QString oProgram )
 */
-bool CAExternProgram::execProgram( QString oCwd /* = "." */ )
+bool CAExternProgram::execProgram( const QString &roCwd /* = "." */ )
 {
   if( _oProgramName.isEmpty() )
 	{
 		qCritical("ExternProgram: Could not run program, no program name specified!");
 		return false;
 	}
-	if( !oCwd.isEmpty() )
-		_poExternProgram->setWorkingDirectory( oCwd );
+	if( !roCwd.isEmpty() )
+		_poExternProgram->setWorkingDirectory( roCwd );
 
 	// Add optional path (including dash, so there doesn't need to be a dash at the end of the path)
 	if( _oProgramPath.isEmpty() )
