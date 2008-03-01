@@ -29,6 +29,9 @@
 #include "ui/settingsdialog.h"
 #include "ui/propertiesdialog.h"
 
+//#include "control/printpreviewctl.h"
+#include "control/printctl.h"
+
 #include "interface/playback.h"
 #include "interface/engraver.h"
 #include "interface/pluginmanager.h"
@@ -574,6 +577,9 @@ void CAMainWin::createCustomActions() {
 void CAMainWin::setupCustomUi() {
 	_musElementFactory = new CAMusElementFactory();
 	
+	//_poPrintPreviewCtl = new CAPrintPreviewCtl( this );
+	_poPrintCtl = new CAPrintCtl( this );
+
 	// Standard Toolbar
 	uiUndo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiUndo ) );
 	uiUndo->defaultAction()->setText(tr("Undo"));
