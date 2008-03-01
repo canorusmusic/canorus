@@ -24,9 +24,6 @@
 #include "core/instrumentchange.h"
 #include "core/tempo.h"
 
-#include "canorus.h" // used for single note playback
-#include "core/settings.h"
-
 /*!
 	\class CAPlayback
 	\brief Audio playback of the score.
@@ -63,7 +60,7 @@ CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
 	Plays the list of music elements simultaniously.
 	It only takes notes into account.
 */
-CAPlayback::CAPlayback( QList<CAMusElement*> elts, CAMidiDevice *m ) {
+CAPlayback::CAPlayback( QList<CAMusElement*> elts, CAMidiDevice *m, int port ) {
 	setMidiDevice( m );
 	_stop = false;
 	setStopLock(false);
@@ -75,6 +72,8 @@ CAPlayback::CAPlayback( QList<CAMusElement*> elts, CAMidiDevice *m ) {
 	_lastRepeatOpenIdx=0;
 	_curTime=0;
 	_streamIdx=0;
+	
+	m->openOutputPort( port );
 }
 
 /*!
@@ -230,8 +229,6 @@ void CAPlayback::run() {
 }
 
 void CAPlayback::playSelectionImpl() {
-	midiDevice()->openOutputPort( CACanorus::settings()->midiOutPort() );
-	
 	QVector<unsigned char> message;
 	for (int i=0; i<_selection.size(); i++) {
 		if ( _selection[i]->musElementType()!=CAMusElement::Note )
@@ -380,13 +377,4 @@ void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
 	// last element if non-playable is exception - increase the index counter
 	if (streamIdx(i)==streamAt(i).size()-1 && !streamAt(i).at(streamIdx(i))->isPlayable())
 		streamIdx(i)++;
-}
-
-/*!
-	Plays the pitch of the given note only.
-	Usually used when inserting notes to play the inserted note.
-*/
-void CAPlayback::playSelection( QList<CAMusElement*> elts, CAMidiDevice* m ) {
-	CAPlayback p( elts, m );
-	p.start();
 }

@@ -60,8 +60,8 @@ void CASettings::writeSettings() {
 	Returns Undefined, if everything went fine or appropriate settings page, if a file or value wasn't set
 	and settings window should be shown (eg. setup the MIDI devices the first time).
 */
-CASettingsDialog::CASettingsPage CASettings::readSettings() {
-	CASettingsDialog::CASettingsPage settingsPage = CASettingsDialog::UndefinedSettings;
+int CASettings::readSettings() {
+	int settingsPage = -1;
 	
 	// Editor settings
 	if ( contains("editor/finalelyricsbehaviour") )
@@ -135,7 +135,7 @@ CASettingsDialog::CASettingsPage CASettings::readSettings() {
 		setMidiInPort( value("rtmidi/midiinport").toInt() );
 	} else {
 		setMidiInPort( DEFAULT_MIDI_IN_PORT );
-		settingsPage = CASettingsDialog::PlaybackSettings;
+		settingsPage = 2;
 	}
 	
 	if ( contains("rtmidi/midioutport") &&
@@ -144,7 +144,7 @@ CASettingsDialog::CASettingsPage CASettings::readSettings() {
 		setMidiOutPort( value("rtmidi/midioutport").toInt() );	
 	} else {
 		setMidiOutPort( DEFAULT_MIDI_OUT_PORT );
-		settingsPage = CASettingsDialog::PlaybackSettings;
+		settingsPage = 3;
 	}
 	
 	return settingsPage;

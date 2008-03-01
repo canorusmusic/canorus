@@ -9,8 +9,8 @@
 #define CANORUS_H_
 
 // Python.h needs to be loaded first!
-#include "ui/mainwin.h"
 #include "ui/settingsdialog.h"
+#include "ui/mainwin.h"
 #include "core/autorecovery.h"
 
 #include <QString>
