@@ -5,12 +5,12 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
+#include "scripting/swigpython.h" // Must be included first (includes Python.h).
+#include "widgets/pyconsole.h"
+#include "canorus.h"
+
 #include <stdio.h>
 #include <QKeyEvent>
-
-#include "widgets/pyconsole.h"
-#include "scripting/swigpython.h"
-#include "canorus.h"
 
 
 /*!
