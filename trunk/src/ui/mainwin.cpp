@@ -1797,7 +1797,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				}
 				
 				if (!_playback) {
-					_playback = new CAPlayback(eltList, CACanorus::midiDevice());
+					_playback = new CAPlayback(eltList, CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
 					connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 					_playback->start();
 				}
@@ -1833,7 +1833,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				}
 				
 				if (!_playback) {
-					_playback = new CAPlayback(eltList, CACanorus::midiDevice());
+					_playback = new CAPlayback(eltList, CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
 					connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 					_playback->start();
 				}
@@ -1859,7 +1859,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 						
 						if (!_playback) {
-							_playback = new CAPlayback( QList<CAMusElement*>() << elt, CACanorus::midiDevice());
+							_playback = new CAPlayback( QList<CAMusElement*>() << elt, CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
 							connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 							_playback->start();
 						}
@@ -1886,7 +1886,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 						
 						if (!_playback) {
-							_playback = new CAPlayback( QList<CAMusElement*>() << elt, CACanorus::midiDevice());
+							_playback = new CAPlayback( QList<CAMusElement*>() << elt, CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
 							connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 							_playback->start();
 						}
@@ -2143,7 +2143,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			
 			if ( success ) {
 				if ( musElementFactory()->musElement()->musElementType()==CAMusElement::Note && !_playback ) {
-					_playback = new CAPlayback( QList<CAMusElement*>() << musElementFactory()->musElement(), CACanorus::midiDevice());
+					_playback = new CAPlayback( QList<CAMusElement*>() << musElementFactory()->musElement(), CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
 					connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 					_playback->start();
 				}
@@ -2337,14 +2337,14 @@ void CAMainWin::playbackFinished() {
 */
 void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
 	if (checked && currentScoreViewPort() && !_playback) {
-		CACanorus::midiDevice()->openOutputPort( CACanorus::settings()->midiOutPort() );
 		_repaintTimer = new QTimer();
 		_repaintTimer->setInterval(100);
 		_repaintTimer->start();
 		//connect(_repaintTimer, SIGNAL(timeout()), this, SLOT(on_repaintTimer_timeout())); //TODO: timeout is connected directly to repaint() directly. This should be optimized in the future -Matevz
 		connect( _repaintTimer, SIGNAL(timeout()), this, SLOT( onRepaintTimerTimeout() ) );
 		
-		_playback = new CAPlayback(currentSheet(), CACanorus::midiDevice());
+		CACanorus::midiDevice()->openOutputPort( CACanorus::settings()->midiOutPort() );
+		_playback = new CAPlayback(currentSheet(), CACanorus::midiDevice() );
 		if ( currentScoreViewPort()->selection().size() && currentScoreViewPort()->selection().at(0)->musElement() )
 			_playback->setInitTimeStart( currentScoreViewPort()->selection().at(0)->musElement()->timeStart() );
 		

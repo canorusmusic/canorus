@@ -166,7 +166,7 @@ CASettingsDialog::CASettingsPage CACanorus::initSettings() {
 	
 	_settings = new CASettings( settingsPath()+"/canorus.ini", QSettings::IniFormat );
 	
-	return _settings->readSettings();
+	return static_cast<CASettingsDialog::CASettingsPage>(_settings->readSettings());
 }
 
 /*!

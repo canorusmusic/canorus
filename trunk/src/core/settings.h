@@ -10,8 +10,7 @@
 
 #include <QSettings>
 #include <QColor>
-#include "ui/settingsdialog.h"
-#include "ui/mainwin.h"
+#include <QDir>
 #include "core/fileformats.h"
 
 class CASettings : public QSettings {
@@ -19,7 +18,7 @@ public:
 	CASettings( const QString & fileName, Format format, QObject * parent = 0 );
 	virtual ~CASettings();
 	
-	CASettingsDialog::CASettingsPage readSettings();
+	int readSettings();
 	void writeSettings();
 	
 	inline bool finaleLyricsBehaviour() { return _finaleLyricsBehaviour; }

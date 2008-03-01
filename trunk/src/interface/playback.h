@@ -23,7 +23,7 @@ Q_OBJECT
 #endif
 public:
 	CAPlayback( CASheet*, CAMidiDevice* );
-	CAPlayback( QList<CAMusElement*>, CAMidiDevice* );
+	CAPlayback( QList<CAMusElement*>, CAMidiDevice*, int port );
 	~CAPlayback();
 	
 	void run();
@@ -35,8 +35,6 @@ public:
 	inline CASheet *sheet() { return _sheet; }
 	inline void setSheet( CASheet *s ) { _sheet = s; }
 	inline QList<CAPlayable*>& curPlaying() { return _curPlaying; }
-	
-	static void playSelection( QList<CAMusElement*>, CAMidiDevice* );
 	
 #ifndef SWIG
 public slots:
