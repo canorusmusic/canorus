@@ -1781,17 +1781,27 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				if (v->selection().size())
 					CACanorus::undo()->createUndoCommand( document(), tr("rise note", "undo") );
 				
+				QList<CAMusElement*> eltList;
 				for (int i=0; i<v->selection().size(); i++) {
 					CADrawableMusElement *elt = v->selection().at(i);
 					
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 						CANote *note = static_cast<CANote*>(elt->musElement());
-						note->diatonicPitch().setNoteName(note->diatonicPitch().noteName()+1);
+						CADiatonicPitch pitch( note->diatonicPitch().noteName()+1, note->diatonicPitch().accs() );
+						note->setDiatonicPitch( pitch );
 						CACanorus::undo()->pushUndoCommand();
 						rebuild = true;
+						eltList << note;
 					}
 				}
+				
+				if (!_playback) {
+					_playback = new CAPlayback(eltList, CACanorus::midiDevice());
+					connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
+					_playback->start();
+				}
+				
 				if (rebuild)
 					CACanorus::rebuildUI(document(), currentSheet());
 			}
@@ -1807,16 +1817,25 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				if (v->selection().size())
 					CACanorus::undo()->createUndoCommand( document(), tr("lower note", "undo") );
 				
+				QList<CAMusElement*> eltList;
 				for (int i=0; i<v->selection().size(); i++) {
 					CADrawableMusElement *elt = v->selection().at(i);
 					
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 						CANote *note = static_cast<CANote*>(elt->musElement());
-						note->diatonicPitch().setNoteName(note->diatonicPitch().noteName()-1);
+						CADiatonicPitch pitch( note->diatonicPitch().noteName()-1, note->diatonicPitch().accs() );
+						note->setDiatonicPitch( pitch );
 						CACanorus::undo()->pushUndoCommand();
 						rebuild = true;
+						eltList << note;
 					}
+				}
+				
+				if (!_playback) {
+					_playback = new CAPlayback(eltList, CACanorus::midiDevice());
+					connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
+					_playback->start();
 				}
 				CACanorus::rebuildUI(document(), currentSheet());
 			}
@@ -1838,6 +1857,12 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 							static_cast<CANote*>(elt)->diatonicPitch().setAccs( static_cast<CANote*>(elt)->diatonicPitch().accs()+1 );
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
+						
+						if (!_playback) {
+							_playback = new CAPlayback( QList<CAMusElement*>() << elt, CACanorus::midiDevice());
+							connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
+							_playback->start();
+						}
 					}
 				}
 			}
@@ -1859,6 +1884,12 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 							static_cast<CANote*>(elt)->diatonicPitch().setAccs( static_cast<CANote*>(elt)->diatonicPitch().accs()-1 );
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
+						
+						if (!_playback) {
+							_playback = new CAPlayback( QList<CAMusElement*>() << elt, CACanorus::midiDevice());
+							connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
+							_playback->start();
+						}
 					}
 				}
 			}
@@ -1940,6 +1971,9 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 			break;
 		case Qt::Key_Space:
 			uiPlayFromSelection->trigger();
+			break;
+		case Qt::Key_F5:
+			CACanorus::rebuildUI( document() );
 			break;
 		
 		// Note length keys
@@ -2108,6 +2142,12 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			}
 			
 			if ( success ) {
+				if ( musElementFactory()->musElement()->musElementType()==CAMusElement::Note && !_playback ) {
+					_playback = new CAPlayback( QList<CAMusElement*>() << musElementFactory()->musElement(), CACanorus::midiDevice());
+					connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
+					_playback->start();
+				}
+				
 				musElementFactory()->setNoteExtraAccs( 0 );
 				v->setDrawShadowNoteAccs( false ); 
 				v->setShadowNoteDotted( musElementFactory()->playableLength().dotted() );
@@ -2269,16 +2309,24 @@ void CAMainWin::playbackFinished() {
 	delete _playback;
 	_playback = 0;
 	uiPlayFromSelection->setChecked(false);
-	static_cast<CAScoreViewPort*>(_playbackViewPort)->setPlaying(false);
 	
-	_repaintTimer->stop();
-	_repaintTimer->disconnect();	/// \todo crashes, if disconnected sometimes. -Matevz
-	delete _repaintTimer;			/// \todo crashes, if deleted. -Matevz
+	if (_playbackViewPort) {
+		static_cast<CAScoreViewPort*>(_playbackViewPort)->setPlaying(false);
+	}
+	_playbackViewPort=0;
+	
+	if (_repaintTimer) {
+		_repaintTimer->stop();
+		_repaintTimer->disconnect();	/// \todo crashes, if disconnected sometimes. -Matevz
+		delete _repaintTimer;			/// \todo crashes, if deleted. -Matevz
+	}
 	CACanorus::midiDevice()->closeOutputPort();
 	
-	static_cast<CAScoreViewPort*>(_playbackViewPort)->clearSelection();
-	static_cast<CAScoreViewPort*>(_playbackViewPort)->addToSelection( _prePlaybackSelection );
-	static_cast<CAScoreViewPort*>(_playbackViewPort)->unsetBorder();
+	if (_playbackViewPort) {
+		static_cast<CAScoreViewPort*>(_playbackViewPort)->clearSelection();
+		static_cast<CAScoreViewPort*>(_playbackViewPort)->addToSelection( _prePlaybackSelection );
+		static_cast<CAScoreViewPort*>(_playbackViewPort)->unsetBorder();
+	}
 	_prePlaybackSelection.clear();
 	
 	setMode( mode() );
@@ -2288,7 +2336,7 @@ void CAMainWin::playbackFinished() {
 	Connected with the play button which starts the playback.
 */
 void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
-	if (checked && currentScoreViewPort()) {
+	if (checked && currentScoreViewPort() && !_playback) {
 		CACanorus::midiDevice()->openOutputPort( CACanorus::settings()->midiOutPort() );
 		_repaintTimer = new QTimer();
 		_repaintTimer->setInterval(100);
@@ -3725,7 +3773,9 @@ void CAMainWin::updatePlayableToolBar() {
 		uiHiddenRest->setEnabled(true);
 		uiHiddenRest->setChecked( musElementFactory()->restType()==CARest::Hidden );
 		uiPlayableToolBar->show();
-	} else if (mode()==EditMode) {
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CAPlayable*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CAPlayable *playable = dynamic_cast<CAPlayable*>(v->selection().at(0)->musElement());
@@ -3760,7 +3810,9 @@ void CAMainWin::updateTimeSigToolBar() {
 		uiTimeSigBeats->setValue( musElementFactory()->timeSigBeats() );
 		uiTimeSigBeat->setValue( musElementFactory()->timeSigBeat() );
 		uiTimeSigToolBar->show();
-	} else if (mode()==EditMode) {
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CATimeSignature*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CATimeSignature *timeSig = dynamic_cast<CATimeSignature*>(v->selection().at(0)->musElement());
@@ -3782,7 +3834,9 @@ void CAMainWin::updateKeySigToolBar() {
 	if (uiInsertKeySig->isChecked() && mode()==InsertMode) {
 		uiKeySig->setCurrentIndex((musElementFactory()->diatonicKeyNumberOfAccs()+7)*2 + ((musElementFactory()->diatonicKeyGender()==CADiatonicKey::Minor)?1:0) );
 		uiKeySigToolBar->show();
-	} else if (mode()==EditMode) {
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CAKeySignature*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
@@ -3803,7 +3857,9 @@ void CAMainWin::updateClefToolBar() {
 	if ( uiClefType->isChecked() && mode()==InsertMode ) {
 		uiClefOffset->setValue( musElementFactory()->clefOffset() );
 		uiClefToolBar->show();
-	} else if (mode()==EditMode) {
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CAClef*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CAClef *clef = dynamic_cast<CAClef*>(v->selection().at(0)->musElement());
@@ -3843,8 +3899,9 @@ void CAMainWin::updateFMToolBar() {
 		uiFMKeySig->setCurrentIndex((k.numberOfAccs()+7)*2 + ((k.gender()==CADiatonicKey::Minor)?1:0) );
 		
 		uiFMToolBar->show();
-	} else
+	} else {
 		uiFMToolBar->hide();
+	}
 }
 
 /*!
@@ -3856,7 +3913,9 @@ void CAMainWin::updateDynamicToolBar() {
 		uiDynamicVolume->setValue( musElementFactory()->dynamicVolume() );
 		uiDynamicCustomText->setText( musElementFactory()->dynamicText() );
 		uiDynamicToolBar->show();
-	} else if (mode()==EditMode) {
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CADynamic*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CADynamic *dynamic = dynamic_cast<CADynamic*>(v->selection().at(0)->musElement());
@@ -3879,7 +3938,9 @@ void CAMainWin::updateFermataToolBar() {
 	if ( uiMarkType->isChecked() && uiMarkType->currentId()==CAMark::Fermata && mode()==InsertMode) {
 		uiFermataType->setCurrentId( musElementFactory()->fermataType() );
 		uiFermataToolBar->show();
-	} else if (mode()==EditMode) {
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CAFermata*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CAFermata *f = dynamic_cast<CAFermata*>(v->selection().at(0)->musElement());
@@ -3903,7 +3964,9 @@ void CAMainWin::updateRepeatMarkToolBar() {
 		else
 			uiRepeatMarkType->setCurrentId( musElementFactory()->repeatMarkType() );
 		uiRepeatMarkToolBar->show();
-	} else if (mode()==EditMode) {
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CARepeatMark*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CARepeatMark *r = dynamic_cast<CARepeatMark*>(v->selection().at(0)->musElement());
@@ -3928,7 +3991,9 @@ void CAMainWin::updateFingeringToolBar() {
 		uiFinger->setCurrentId( musElementFactory()->fingeringFinger() );
 		uiFingeringOriginal->setChecked( musElementFactory()->isFingeringOriginal() );
 		uiFingeringToolBar->show();
-	} else if (mode()==EditMode) {
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CAFingering*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CAFingering *f = dynamic_cast<CAFingering*>(v->selection().at(0)->musElement());
@@ -3951,7 +4016,9 @@ void CAMainWin::updateTempoToolBar() {
 		uiTempoBeat->setCurrentId( musElementFactory()->tempoBeat().musicLength() * (musElementFactory()->tempoBeat().dotted()?-1:1) );
 		uiTempoBpm->setText( QString::number(musElementFactory()->tempoBpm()) );
 		uiTempoToolBar->show();
-	} else if (mode()==EditMode) {
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CATempo*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CATempo *tempo = dynamic_cast<CATempo*>(v->selection().at(0)->musElement());
@@ -3973,7 +4040,9 @@ void CAMainWin::updateInstrumentToolBar() {
 	if ( uiMarkType->isChecked() && uiMarkType->currentId()==CAMark::InstrumentChange && mode()==InsertMode) {
 		uiInstrumentChange->setCurrentIndex( musElementFactory()->instrument() );
 		uiInstrumentToolBar->show();
-	} else if (mode()==EditMode) {
+	} else if ( mode()==EditMode && currentScoreViewPort() &&
+	            currentScoreViewPort()->selection().size() &&
+	            dynamic_cast<CAInstrumentChange*>(currentScoreViewPort()->selection().at(0)->musElement()) ) {
 		CAScoreViewPort *v = currentScoreViewPort();
 		if (v && v->selection().size()) {
 			CAInstrumentChange *instrument = dynamic_cast<CAInstrumentChange*>(v->selection().at(0)->musElement());

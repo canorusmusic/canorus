@@ -64,7 +64,8 @@ CASheet *CASheet::clone( CADocument *doc ) {
 		if ( newSheet->contextAt(i)->contextType()==CAContext::LyricsContext ) {
 			CAVoice *voice = voiceMap[ static_cast<CALyricsContext*>(newSheet->contextAt(i))->associatedVoice() ];
 			static_cast<CALyricsContext*>(newSheet->contextAt(i))->setAssociatedVoice(voice);
-			voice->removeLyricsContext(static_cast<CALyricsContext*>(contextAt(i)));
+			if (voice)
+				voice->removeLyricsContext(static_cast<CALyricsContext*>(contextAt(i)));
 		}
 	}
 	

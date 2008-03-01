@@ -28,14 +28,10 @@ def pycli(document, canorusInterface):
 	canorusInterface.pluginInit();
 
 	sys.stdin = CanorusConsoleInterfaceIN(canorusInterface)
-	print 'a'
 	sys.stdout = CanorusConsoleInterfaceOUT(canorusInterface, False)
-	print 'b'
 	sys.stderr = CanorusConsoleInterfaceOUT(canorusInterface, True)
-	print 'c'
 
 	interact("Canorus CLI initialized", sys.stdin.raw_input , {"CanorusPython":CanorusPython,"document":document})
-	print 'd'
 
 class CanorusConsoleInterfaceOUT:
 	"""Provides 'output' interface to canorus
@@ -48,7 +44,6 @@ class CanorusConsoleInterfaceOUT:
 		"""
 		self.canorusInterface = canorusInterface
 		self.stdErrMod = stdErrMod
-		self.canorusInterface.bufferedOutput('hello', False)
 	
 	def write(self, string):
 		self.canorusInterface.bufferedOutput(string, self.stdErrMod)

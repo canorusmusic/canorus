@@ -974,7 +974,8 @@ void CAScoreViewPort::updateHelpers() {
 		int pitch = (static_cast<CADrawableStaff*>(currentContext()))->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
 		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
 			CAClef *clef = (static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext()))->getClef( _xCursor );
-			_shadowNote[i]->diatonicPitch().setNoteName( pitch );
+			CADiatonicPitch dPitch(pitch, 0);
+			_shadowNote[i]->setDiatonicPitch( dPitch );
 			_shadowNote[i]->setNotePosition( pitch + (clef?clef->c1():-2) - 28 );
 			_shadowDrawableNote[i]->setXPos(_xCursor);
 			_shadowDrawableNote[i]->setYPos(
