@@ -28,7 +28,7 @@ CAExternProgram::CAExternProgram( bool bRcvStdErr /* = true */, bool bRcvStdOut 
 	connect( _poExternProgram, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( programError( QProcess::ProcessError ) ) );
 	connect( _poExternProgram, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( programFinished( int, QProcess::ExitStatus ) ) );
   if( bRcvStdOut )
-		connect( _poExternProgram, SIGNAL( readyReadStandardError() ), this, SLOT( rcvProgramOutput() ) );
+		connect( _poExternProgram, SIGNAL( readyReadStandardOutput() ), this, SLOT( rcvProgramOutput() ) );
   if( bRcvStdErr )
 		connect( _poExternProgram, SIGNAL( readyReadStandardError() ), this, SLOT( rcvProgramOutput() ) );
 }
@@ -166,7 +166,11 @@ bool CAExternProgram::execProgram( const QString &roCwd /* = "." */ )
 
 	// Add optional path (including dash, so there doesn't need to be a dash at the end of the path)
 	if( _oProgramPath.isEmpty() )
+	{
 		_poExternProgram->start( _oProgramName, _oParameters );
+		qDebug("Started %s with parameters %s", _oProgramName.toAscii().data(),
+				      _oParameters.join(" ").toAscii().data() );
+	}
 	else
 		_poExternProgram->start( _oProgramPath+"/"+_oProgramName, _oParameters );
 	// Wa it until program was started

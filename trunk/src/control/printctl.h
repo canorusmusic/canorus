@@ -33,10 +33,12 @@ public slots:
  
 protected slots:
 	void outputTypsetterOutput( const QByteArray &roOutput );
-
+	void printPDF( int iExitCode );
+	
 protected:
 	CATypesetCtl *_poTypesetCtl;
 	CAMainWin    *_poMainWin;
+	QString           _oOutputPDFName;
 };
 
 #endif // _PRINT_CTL_H

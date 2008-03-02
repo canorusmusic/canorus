@@ -6,6 +6,9 @@
 */
 
 // Includes
+#include <QDesktopServices>
+#include <QUrl>
+
 #include "ui/mainwin.h"
 #include "export/lilypondexport.h"
 #include "control/typesetctl.h"
@@ -26,6 +29,7 @@ CAPrintCtl::CAPrintCtl( CAMainWin *poMainWin )
 		qCritical("PrintCtl: No mainwindow instance available!");
 	else
 		 CACanorus::connectSlotsByName(_poMainWin, this);
+	connect(  _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( printPDF( int ) ) );
 }
 
 // Destructor
@@ -39,12 +43,24 @@ CAPrintCtl::~CAPrintCtl()
 void CAPrintCtl::on_uiPrint_triggered()
 {
 	qDebug("PrintCtl: Print triggered via main window");
+	// The exportDocument method defines the temporary file name and
+	// directory, so we can only read it after the creation
 	_poTypesetCtl->exportDocument( _poMainWin->document() );
+	const QString roTempPath = _poTypesetCtl->getTempFilePath();
+	_poTypesetCtl->setTSetOption( QString("o"), roTempPath );
 	_poTypesetCtl->runTypesetter();
+	// Copy the name for later output on the printer
+	_oOutputPDFName = roTempPath;
 }
  
 void CAPrintCtl::outputTypsetterOutput( const QByteArray &roOutput )
 {
 	// Output to error console
 	qDebug( "%s", roOutput.data() );
+}
+
+void CAPrintCtl::printPDF( int iExitCode )
+{
+	qDebug("Showing PDF file %s", QString("file://"+_oOutputPDFName+".pdf").toAscii().data());
+	QDesktopServices::openUrl( QUrl( QString("file://")+_oOutputPDFName+".pdf" ) );
 }
