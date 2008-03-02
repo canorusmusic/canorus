@@ -13,12 +13,12 @@
 #include <QVariant>
 #include <QVector>
 #include <QStringList>
+#include <QTemporaryFile>
 
 // Forward declarations
 class CAExternProgram;
 class CAExport;
 class CADocument;
-class QTemporaryFile;
 
 class CATypesetCtl : public QObject
 {
@@ -32,7 +32,7 @@ public:
 	void setPS2PDF( const QString &roProgrammName, const QString &roProgramPath = "",
                   const QStringList &roParams = (QStringList() << QString("") ) );
 	virtual void setExpOption( const QVariant &roName, const QVariant &roValue );
-	virtual void setTSetOption( const QVariant &roName, const QVariant &roValue );
+	virtual void setTSetOption( const QVariant &roName, const QVariant &roValue, bool bShortParam = true );
 	inline void setPDFConversion( bool bConversion ) { _bPDFConversion = bConversion; }
 	inline void setExporter( CAExport *poExport ) { _poExport = poExport ; }
 	// Attention: .pdf automatically added and removed if it was added internally
@@ -41,14 +41,16 @@ public:
 
 	inline bool getPDFConversion() { return _bPDFConversion; }
 	inline CAExport *getExporter() { return _poExport; }
+	inline QString getTempFilePath() { return _oOutputFileName; } 
 
 signals:
 	void nextOutput( const QByteArray &roData );
 	void nextStep();
+	void typesetterFinished( int iExitCode );
 
 protected slots:
 	void rcvTypesetterOutput( const QByteArray &roData );
-	void typsetterFinished( int iExitCode );
+	void typsetterExited( int iExitCode );
 
 protected:
 	bool createPDF();
@@ -58,8 +60,10 @@ protected:
 	CAExport                *_poExport;            // Transforms canorus document to typesetter format
 	QVector<QVariant>   _oExpOptList;       // List of options for export
 	QVector<QVariant>   _oTSetOptList;      // List of options for typesetter
-	QTemporaryFile       *_poOutputFile;        // Output file for pdf (also used for exported file)
+	QTemporaryFile       *_poOutputFile;       // Output file for pdf (also used for exported file)
+	QString                    _oOutputFileName; // Output file name for pdf (temporary file deletes it on close)
 	bool                        _bPDFConversion;  // Do a conversion from postscript to pdf
+	bool                        _bOutputFileNameFirst; // File name as first parameter ? (Default: No)
 };
 
 #endif // _TYPESET_CTL_H_

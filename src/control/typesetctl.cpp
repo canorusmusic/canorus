@@ -6,8 +6,6 @@
 */
 
 // Includes
-#include <QTemporaryFile>
-
 #include "export/export.h"
 #include "control/externprogram.h"
 #include "control/typesetctl.h"
@@ -31,7 +29,8 @@ CATypesetCtl::CATypesetCtl()
 	_poExport = 0;
 	_poOutputFile = 0;
 	_bPDFConversion = false;
-	connect( _poTypesetter, SIGNAL( programExited( int ) ), this, SLOT( typsetterFinished( int ) ) );
+	_bOutputFileNameFirst = false;
+	connect( _poTypesetter, SIGNAL( programExited( int ) ), this, SLOT( typsetterExited( int ) ) );
 	connect( _poTypesetter, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( rcvTypesetterOutput( const QByteArray & ) ) );
 }
 
@@ -123,7 +122,7 @@ void CATypesetCtl::setExpOption( const QVariant &roName, const QVariant &roValue
 
 	\sa runTypesetter();
 */
-void CATypesetCtl::setTSetOption( const QVariant &roName, const QVariant &roValue )
+void CATypesetCtl::setTSetOption( const QVariant &roName, const QVariant &roValue, bool bShortParam )
 {
 	_oTSetOptList.append( roName );
 	_oTSetOptList.append( roValue );
@@ -132,10 +131,14 @@ void CATypesetCtl::setTSetOption( const QVariant &roName, const QVariant &roValu
 	// Primitive solution is here: Convert Name and Value to string and store it to string list
 	if( !roName.toString().isEmpty() && !roValue.toString().isEmpty() )
 	{
-		_poTypesetter->addParameter( QString("-")+roName.toString()+"="+roValue.toString() );
+		if( bShortParam )
+			_poTypesetter->addParameter( QString("-")+roName.toString()+" "+roValue.toString(), false );
+		else
+			_poTypesetter->addParameter( QString("-")+roName.toString()+"="+roValue.toString(), false );
 	}
 	else
-	  qWarning("TypesetCtl: Ignoring typesetter option name being empty!");
+	  qWarning("TypesetCtl: Ignoring typesetter option name being empty! %s/%s",
+			           roName.toString().toAscii().data(), roValue.toString().toAscii().data() );
 }
 
 /*!
@@ -159,7 +162,13 @@ void CATypesetCtl::exportDocument( CADocument *poDoc )
 		_poOutputFile = new QTemporaryFile;
 		// Create the unique file as the file name is only defined when opening the file
 		_poOutputFile->open();
-		_poTypesetter->addParameter( _poOutputFile->fileName() );
+		// Add the input file name as default parameter. 
+		// @ToDo: There might be problems with typesetter expecting file extensions,
+		// if so, methods have to be added handling this
+		_oOutputFileName = _poOutputFile->fileName();
+		// Only add output file name as first parameter file name if it is needed
+		if( true == _bOutputFileNameFirst )
+			_poTypesetter->addParameter( _oOutputFileName, false );
 		_poExport->setStreamToDevice( _poOutputFile );
 		_poExport->exportDocument( poDoc );
 		// @ToDo use signal/slot mechanism to wait for the file
@@ -175,6 +184,9 @@ void CATypesetCtl::exportDocument( CADocument *poDoc )
 */
 void CATypesetCtl::runTypesetter()
 {
+	// Only add output file name as first parameter file name if it is needed
+	if( false == _bOutputFileNameFirst )
+		_poTypesetter->addParameter( _oOutputFileName, false );
 	if( _poTypesetter->execProgram() )
 	{
 		if( _bPDFConversion )
@@ -203,8 +215,9 @@ void CATypesetCtl::rcvTypesetterOutput( const QByteArray &roData )
 	emit nextOutput( roData );
 }
 
-void CATypesetCtl::typsetterFinished( int iExitCode )
+void CATypesetCtl::typsetterExited( int iExitCode )
 {
 	if( iExitCode != 0 )
 	  qCritical("TypesetCtl: Typesetter finished with code %d",iExitCode);
+	emit typesetterFinished( iExitCode );
 }
