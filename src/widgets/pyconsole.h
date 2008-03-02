@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2008, Štefan Sakalík, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -18,72 +18,84 @@
 class CAPyConsole : public QTextEdit {
 	Q_OBJECT
 public:
-	CAPyConsole ( CADocument *doc, QWidget *parent=0);
-
-	QString buffered_input(QString prompt);
-	void buffered_output(QString bufInp, bool bStderr);
-	void plugin_init(void);
-	void keyboard_interrupt(void);
-
-	enum TxtType {
+    enum TxtType {
 		txtNormal,
 		txtStdout,
 		txtStderr
 	};
 
+	CAPyConsole ( CADocument *doc, QWidget *parent=0);
+
+	QString asyncBufferedInput(QString prompt);
+	void asyncBufferedOutput(QString bufInp, bool bStdErr);
+	void asyncPluginInit();
+	void asyncKeyboardInterrupt();
+
 protected:
 	void keyPressEvent (QKeyEvent * e);
 
 private slots:
-	void insertTextAtEnd(const QString & text, TxtType txtType = txtNormal );
-	void txtChanged();
-	void posChanged();
-	void selChanged();
-	void fmtChanged();
-	void safePluginInit();
+	void txtAppend(const QString & text, TxtType txtType = txtNormal );
+	void on_txtChanged();
+	void on_posChanged();
+	void on_selChanged();
+	void on_fmtChanged();
+	void syncPluginInit();
 
 signals:
-	void thr_insertTextAtEnd(const QString & text, TxtType stdType);
-	void thr_pluginInit();
+	void sig_txtAppend(const QString & text, TxtType stdType);
+	void sig_syncPluginInit();
 
 private:
-	void txtRevert();
+    enum HistLay {
+        histPrev,
+        histNext
+    };
 
-	CADocument *canorusDoc;		// not used (yet?)
-	bool bNoTxtChange;
-
-	struct TxtFragment {
+    struct TxtFragment {
 		QString text;
 		TxtType type;
 	};
 
-	QWidget* _parent;
+	// void txtAppend(...) -> is in signals
+	void txtRevert();
+	QString txtGetInput(bool bReadText = false);
+    void txtSetInput(QString input, bool bUpdateText = true);
+
+	void histAdd();
+    void histGet(HistLay histLay);
 
 	// text in the console
-	QTextCursor *consoleCursor;
+	QTextCursor _curInput, _curNew;
 	int _iCurStart, _iCurNowOld, _iCurNow;
-	QList<TxtFragment*> txtFixed;
-	QString strInput;
+    bool _bIgnTxtChange;
 
-	TxtFragment *tf;
-	QTextCursor newCur;
+	TxtFragment *_tf;
+	QList<TxtFragment*> _txtFixed;
+	QString _strInput;
 
 	// history
-	void histAdd();
-	void histGet(bool prev);
+    int _histIndex;
+	QList<QString> _histList;
+	QString _histOldInput;	// old _strInput
 
-	QList<QString> histList;
-	int histIndex;
-	QString histOldInput;	// old strInput
-	
 	QTextCharFormat _fmtNormal;
 	QTextCharFormat _fmtStdout;
 	QTextCharFormat _fmtStderr;
 
 	// thread
-	QString bufSend;
-	QMutex *thrWaitMut;
-	QWaitCondition *thrWait;
+	QString _bufSend;
+	QMutex *_thrWaitMut;
+	QWaitCondition *_thrWait;
+	QMutex *_thrIntrWaitMut;
+	QWaitCondition *_thrIntrWait;
+
+	// pyconsole '/' commands
+	bool cmdIntern(QString strCmd);
+
+    // rarely used
+	CADocument *_canorusDoc;
+	QWidget* _parent;
 };
 
 #endif /* PYCONSOLE_H_ */
