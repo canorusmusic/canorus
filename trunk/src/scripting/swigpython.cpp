@@ -44,7 +44,6 @@ void CASwigPython::init() {
 	// add path to CanorusPython modules to Scripting path
 	if (CACanorus::locateResourceDir("CanorusPython.py").size()) {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResourceDir("CanorusPython.py").at(0)+"')").toStdString().c_str());
-
 	}
 	
 #ifdef Q_WS_WIN

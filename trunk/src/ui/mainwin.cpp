@@ -1545,7 +1545,8 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 					// place a rest when using right mouse button and note insertion is selected
 					musElementFactory()->setMusElementType( CAMusElement::Rest );
 				// show the dotted shadow note
-				currentScoreViewPort()->setShadowNoteDotted( musElementFactory()->playableLength().dotted() );
+				currentScoreViewPort()->setShadowNoteLength( musElementFactory()->playableLength() );
+				currentScoreViewPort()->updateHelpers();
 			}
 			
 			insertMusElementAt( coords, v );
@@ -1907,7 +1908,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 		case Qt::Key_Period: {
 			if (mode()==InsertMode) {
 				musElementFactory()->addPlayableDotted( 1, musElementFactory()->playableLength() );
-				currentScoreViewPort()->setShadowNoteDotted( musElementFactory()->playableLength().dotted() );
+				currentScoreViewPort()->setShadowNoteLength( musElementFactory()->playableLength() );
+				currentScoreViewPort()->updateHelpers();
 				v->repaint();
 			} else if (mode()==EditMode) {
 				if (!((CAScoreViewPort*)v)->selection().isEmpty()) {
@@ -1990,54 +1992,81 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Whole, true );
 			musElementFactory()->playableLength().setDotted( 0 );
+			v->setShadowNoteLength( musElementFactory()->playableLength() );
+			v->updateHelpers();
+			v->repaint();
 			break;
 		case Qt::Key_2:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Half, true );
 			musElementFactory()->playableLength().setDotted( 0 );
+			v->setShadowNoteLength( musElementFactory()->playableLength() );
+			v->updateHelpers();
+			v->repaint();
 			break;
 		case Qt::Key_4:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Quarter, true );
 			musElementFactory()->playableLength().setDotted( 0 );
+			v->setShadowNoteLength( musElementFactory()->playableLength() );
+			v->updateHelpers();
+			v->repaint();
 			break;
 		case Qt::Key_5:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Eighth, true );
 			musElementFactory()->playableLength().setDotted( 0 );
+			v->setShadowNoteLength( musElementFactory()->playableLength() );
+			v->updateHelpers();
+			v->repaint();
 			break;
 		case Qt::Key_6:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Sixteenth, true );
 			musElementFactory()->playableLength().setDotted( 0 );
+			v->setShadowNoteLength( musElementFactory()->playableLength() );
+			v->updateHelpers();
+			v->repaint();
 			break;
 		case Qt::Key_7:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::ThirtySecond, true );
 			musElementFactory()->playableLength().setDotted( 0 );
+			v->setShadowNoteLength( musElementFactory()->playableLength() );
+			v->updateHelpers();
+			v->repaint();
 			break;
 		case Qt::Key_8:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::SixtyFourth, true );
 			musElementFactory()->playableLength().setDotted( 0 );
+			v->setShadowNoteLength( musElementFactory()->playableLength() );
+			v->updateHelpers();
+			v->repaint();
 			break;
 		case Qt::Key_9:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::HundredTwentyEighth, true );
 			musElementFactory()->playableLength().setDotted( 0 );
+			v->setShadowNoteLength( musElementFactory()->playableLength() );
+			v->updateHelpers();
+			v->repaint();
 			break;
 		case Qt::Key_0:
 			if (mode()!=EditMode)
 				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Breve, true );
 			musElementFactory()->playableLength().setDotted( 0 );
+			v->setShadowNoteLength( musElementFactory()->playableLength() );
+			v->updateHelpers();
+			v->repaint();
 			break;
 	}
 	
@@ -2158,7 +2187,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				
 				musElementFactory()->setNoteExtraAccs( 0 );
 				v->setDrawShadowNoteAccs( false ); 
-				v->setShadowNoteDotted( musElementFactory()->playableLength().dotted() );
+				v->setShadowNoteLength( musElementFactory()->playableLength() );
+				v->updateHelpers();
 			}
 			break;
 		}
@@ -2201,8 +2231,10 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				success = musElementFactory()->configureRest( voice, dright?dright->musElement():0 );
 			}
 			
-			if (success)
-				v->setShadowNoteDotted( musElementFactory()->playableLength().dotted() );
+			if (success) {
+				v->setShadowNoteLength( musElementFactory()->playableLength() );
+				v->updateHelpers();
+			}
 			
 			break;
 		}
