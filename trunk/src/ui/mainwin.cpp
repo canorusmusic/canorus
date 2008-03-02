@@ -1313,7 +1313,7 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	setRebuildUILock( true );
 	if (document()) {
 		for (int i=0; i<_viewPortList.size(); i++) {
-			if ((!_viewPortList[i]->parent()) || // the viewport was removed (unsplitted). 
+			if (//(!_viewPortList[i]->parent()) || // the viewport was removed (unsplitted). 
 				(sheet && _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort &&
 				    static_cast<CAScoreViewPort*>(_viewPortList[i])->sheet()!=sheet)
 			)
@@ -2849,6 +2849,10 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 	if ( mode()==InsertMode ) {
 		// New note length type
 		musElementFactory()->setPlayableLength( length );
+		if (currentScoreViewPort()) {
+			currentScoreViewPort()->setShadowNoteLength( musElementFactory()->playableLength() );
+			currentScoreViewPort()->updateHelpers();
+		}
 	} else
 	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
 		CAScoreViewPort *v = currentScoreViewPort();
