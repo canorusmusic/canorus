@@ -481,13 +481,15 @@ CAContext *CAScoreViewPort::contextCollision(int x, int y) {
 
 void CAScoreViewPort::rebuild() {
 	// clear the shadow notes
+	CAPlayableLength l( CAPlayableLength::Quarter );
 	for (int i=0; i<_shadowNote.size(); i++) {
-		delete _shadowNote[i];
 		delete _shadowDrawableNote[i];
+		l = _shadowNote[i]->playableLength();
+		delete _shadowNote[i];
 	}
 	_shadowNote.clear();
 	_shadowDrawableNote.clear();
-
+	
 	QList<CAMusElement*> musElementSelection;
 	for (int i=0; i<_selection.size(); i++) {
 		if ( !musElementSelection.contains( _selection[i]->musElement() ) )
@@ -501,6 +503,11 @@ void CAScoreViewPort::rebuild() {
 	_drawableCList.clear(true);
 	
 	CAEngraver::reposit(this);
+	
+	for (int i=0; i<_shadowNote.size(); i++) {
+		_shadowNote[i]->setPlayableLength(l);
+	}
+	updateHelpers();
 	
 	if (contextIdx != -1)	// restore the last used context
 		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
