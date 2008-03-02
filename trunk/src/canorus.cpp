@@ -200,6 +200,8 @@ void CACanorus::insertRecentDocument( QString filename ) {
 	
 	if ( recentDocumentList().size() > settings()->maxRecentDocuments() )
 		recentDocumentList().removeLast();
+	
+	settings()->writeSettings();
 }
 
 void CACanorus::addRecentDocument( QString filename ) {
