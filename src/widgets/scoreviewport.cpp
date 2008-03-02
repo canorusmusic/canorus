@@ -258,10 +258,8 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 		setCurrentContext(elt);
 	
 	if (elt->drawableContextType() == CADrawableContext::DrawableStaff) {
-		_shadowNote << new CANote( CADiatonicPitch(), CAPlayableLength(CAPlayableLength::Whole, 0), 0, 0 );
-		//_shadowNote.back()->setVoice(((CADrawableStaff*)elt)->staff()->voiceAt(0));
-		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), 0, 0, 0, true);
-		_shadowDrawableNote.back()->setDrawableContext(elt);
+		_shadowNote << new CANote( CADiatonicPitch(), CAPlayableLength(CAPlayableLength::Quarter, 0), 0, 0 );
+		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), elt, 0, 0, true);
 	}
 }
 
@@ -977,10 +975,10 @@ void CAScoreViewPort::updateHelpers() {
 			CADiatonicPitch dPitch(pitch, 0);
 			_shadowNote[i]->setDiatonicPitch( dPitch );
 			_shadowNote[i]->setNotePosition( pitch + (clef?clef->c1():-2) - 28 );
-			_shadowDrawableNote[i]->setXPos(_xCursor);
-			_shadowDrawableNote[i]->setYPos(
-				static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext())->calculateCenterYCoord(pitch, _xCursor)
-			);
+			
+			CADrawableContext *c = _shadowDrawableNote[i]->drawableContext();
+			delete _shadowDrawableNote[i];
+			_shadowDrawableNote[i] = new CADrawableNote(_shadowNote[i], c, _xCursor, static_cast<CADrawableStaff*>(c)->calculateCenterYCoord(pitch, _xCursor), true);
 		}
 	}
 	
@@ -1551,6 +1549,14 @@ int CAScoreViewPort::timeToCoords( int time ) {
 	} else {
 		return -1;
 	}
+}
+
+void CAScoreViewPort::setShadowNoteLength( CAPlayableLength l ) {
+	for (int i=0; i<_shadowNote.size(); i++) {
+		_shadowNote[i]->setPlayableLength( l );
+	}
+	
+	updateHelpers();
 }
 
 /*!

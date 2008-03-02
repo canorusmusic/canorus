@@ -101,10 +101,10 @@ public:
 	{ _iNoteAccs = iNoteAccs; };
 	
 	inline void addNoteAccs( int iAdd )
-	{ _iNoteAccs+= iAdd; };
+	{ if (_iNoteAccs < 2) _iNoteAccs+= iAdd; };
 	
 	inline void subNoteAccs( int iSub )
-	{ _iNoteAccs-= iSub; };
+	{ if (_iNoteAccs > -2) _iNoteAccs-= iSub; };
 	
 	inline int diatonicKeyNumberOfAccs() { return _diatonicKeyNumberOfAccs; }
 	inline void setDiatonicKeyNumberOfAccs(int accs) { _diatonicKeyNumberOfAccs = accs; }
