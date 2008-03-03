@@ -60,6 +60,7 @@ CAPyConsole::CAPyConsole( CADocument *doc, QWidget *parent) : QTextEdit(parent) 
 	_bufSend = "";
 	_strInput = "";
 	_bIgnTxtChange = false;
+	_iCurStart = 0;
 
 	setUndoRedoEnabled(false);
 	setFontFamily("Courier");

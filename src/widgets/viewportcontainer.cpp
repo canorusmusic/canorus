@@ -126,9 +126,8 @@ CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
 				other->setParent( s->parentWidget() );
 				if(otherViewPort)
 					_viewPortMap[otherViewPort] = static_cast<QSplitter*>(s->parent());	
-				v->setParent(0); // remove the viewport from the splitter
-				delete s; // delete the splitter
 				removeViewPort(v);
+				delete s; // delete the splitter
 				return v;
 			} else if( !otherViewPort )
 			{
@@ -146,7 +145,6 @@ CAViewPort* CAViewPortContainer::unsplit(CAViewPort *v) {
 		}
 		// falls through only if s == this
 		default:
-			v->setParent(0); // remove the viewport from the splitter
 			removeViewPort(v);
 			return v;
 	}
@@ -181,6 +179,7 @@ void CAViewPortContainer::addViewPort( CAViewPort *v, QSplitter *s ) {
 */
 void CAViewPortContainer::removeViewPort( CAViewPort *v ) {
 	_viewPortMap.remove( v );
+	delete v;
 	
 	if ( v==currentViewPort() )
 		setCurrentViewPort( _viewPortMap.keys().last() );

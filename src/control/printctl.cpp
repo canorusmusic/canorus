@@ -35,8 +35,10 @@ CAPrintCtl::CAPrintCtl( CAMainWin *poMainWin )
 // Destructor
 CAPrintCtl::~CAPrintCtl()
 {
-	if( _poTypesetCtl )
+	if( _poTypesetCtl ) {
+		delete _poTypesetCtl->getExporter();
 		delete _poTypesetCtl;
+	}
 	_poTypesetCtl = 0;
 }
 

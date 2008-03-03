@@ -507,7 +507,6 @@ void CAScoreViewPort::rebuild() {
 	for (int i=0; i<_shadowNote.size(); i++) {
 		_shadowNote[i]->setPlayableLength(l);
 	}
-	updateHelpers();
 	
 	if (contextIdx != -1)	// restore the last used context
 		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
