@@ -5,9 +5,9 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
+#include "scripting/swigpython.h" // Must be included first (includes Python.h).
 #include "interface/plugin.h"
 #include "interface/pluginmanager.h"
-#include "scripting/swigpython.h" // Must be included first (includes Python.h).
 #include "widgets/pyconsole.h"
 #include "canorus.h"
 
