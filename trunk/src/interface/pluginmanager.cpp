@@ -147,14 +147,16 @@ bool CAPluginManager::disablePlugins() {
 	\sa disablePlugin()
 */
 bool CAPluginManager::enablePlugin(CAPlugin *plugin, CAMainWin *mainWin) {
+	CAPluginManager *pm;
 	QFile *file = new QFile(plugin->dirName() + "/canorusplugin.xml");
 	file->open(QIODevice::ReadOnly);
 	QXmlInputSource in(file);
 	
 	QXmlSimpleReader reader;
-	reader.setContentHandler(new CAPluginManager(mainWin, plugin));
+	reader.setContentHandler(pm = new CAPluginManager(mainWin, plugin));
 	reader.parse(in);
 	delete file;
+	delete pm;
 	
 	if (plugin->isEnabled())
 		// plugin was enabled before

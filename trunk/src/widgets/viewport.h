@@ -10,6 +10,8 @@
 
 #include <QWidget>
 
+class QCloseEvent;
+
 class CAViewPort : public QWidget {
 Q_OBJECT
 
@@ -46,8 +48,10 @@ signals:
 	void CAMouseMoveEvent(QMouseEvent *e, CAViewPort *v);
 	void CAWheelEvent(QWheelEvent *e, CAViewPort *v);
 	void CAKeyPressEvent(QKeyEvent *e, CAViewPort *v);
+	void closed(CAViewPort*);
 	
 protected:
+	inline void closeEvent(QCloseEvent*) { emit closed(this); }
 	inline void setViewPortType(CAViewPortType t) { _viewPortType = t; }
 	
 	////////////////////////

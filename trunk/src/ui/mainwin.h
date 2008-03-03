@@ -275,6 +275,7 @@ private slots:
 	void scoreViewPortWheel(QWheelEvent *e, const QPoint coords, CAScoreViewPort *v);
 	void scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v);
 	void sourceViewPortCommit(QString inputString, CASourceViewPort*);
+	void floatViewPortClosed(CAViewPort*);
 	
 	void onTimeEditedTimerTimeout();
 	

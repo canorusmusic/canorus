@@ -174,7 +174,8 @@ CAMainWin::~CAMainWin()  {
 	CACanorus::removeMainWin(this); // must be called *after* CACanorus::deleteUndoStack()
 	if(_playback)
 		delete _playback;
-
+	
+	delete _poPrintCtl;
 	// clear UI
 	delete uiInsertToolBar; // also deletes content of the toolbars
 	delete uiInsertGroup;
@@ -855,17 +856,15 @@ void CAMainWin::addSheet(CASheet *s) {
 	part of Canorus as well.
 */
 void CAMainWin::clearUI() {
-	if(_viewPortList.size() > 1)
-		on_uiUnsplitAll_triggered();
 	
-	// Delete all view port containers
+	// Delete all view port containers and view ports.
 	while (uiTabWidget->count()) {
 		CAViewPortContainer *vpc = static_cast<CAViewPortContainer*>(uiTabWidget->currentWidget());
 		uiTabWidget->removeTab( 0 );
 		delete vpc;
 	}
-	
-	// Delete all viewports
+
+	//delete floating viewports
 	while(!_viewPortList.isEmpty())
 		delete _viewPortList.takeFirst();
 	
@@ -930,15 +929,17 @@ void CAMainWin::on_uiSplitVertically_triggered() {
 }
 
 void CAMainWin::on_uiUnsplitAll_triggered() {
-	currentViewPortContainer()->unsplitAll();
+	QList<CAViewPort*> list = currentViewPortContainer()->unsplitAll();
+	foreach(CAViewPort* vp, list)
+		_viewPortList.removeAll(vp);
 	uiCloseCurrentView->setEnabled(false);
 	uiUnsplitAll->setEnabled(false);
 	setCurrentViewPort( currentViewPortContainer()->currentViewPort() );
 }
 
 void CAMainWin::on_uiCloseCurrentView_triggered() {
-	currentViewPortContainer()->unsplit();
-	
+	CAViewPort* v = currentViewPortContainer()->unsplit();
+	_viewPortList.removeAll(v);
 	if (currentViewPortContainer()->viewPortList().size() == 1)
 	{
 		uiCloseCurrentView->setEnabled(false);
@@ -969,9 +970,20 @@ void CAMainWin::on_uiCanorusMLSource_triggered() {
 	uiCloseCurrentView->setEnabled(true);
 }
 
+/*!
+	Called when a floating view port is closed
+*/
+void CAMainWin::floatViewPortClosed(CAViewPort* v)
+{
+	delete v;
+	if(currentViewPort() == v)
+		setCurrentViewPort( currentViewPortContainer()->currentViewPort() );
+}
+
 void CAMainWin::on_uiNewViewport_triggered() {
 	CAViewPort *v = currentViewPort()->clone( 0 );
 	initViewPort( v );
+	connect(v, SIGNAL(closed(CAViewPort*)), this, SLOT(floatViewPortClosed(CAViewPort*)));
 	v->show();
 	v->setGeometry(v->x(), v->y(), CAViewPort::DEFAULT_VIEWPORT_WIDTH, CAViewPort::DEFAULT_VIEWPORT_HEIGHT);
 }
@@ -1313,10 +1325,8 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	setRebuildUILock( true );
 	if (document()) {
 		for (int i=0; i<_viewPortList.size(); i++) {
-			if (//(!_viewPortList[i]->parent()) || // the viewport was removed (unsplitted). 
-				(sheet && _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort &&
+			if (sheet && _viewPortList[i]->viewPortType()==CAViewPort::ScoreViewPort &&
 				    static_cast<CAScoreViewPort*>(_viewPortList[i])->sheet()!=sheet)
-			)
 				continue;
 			
 			_viewPortList[i]->rebuild();
@@ -1399,7 +1409,8 @@ void CAMainWin::rebuildUI(bool repaint) {
 */
 void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAScoreViewPort *v) {
 	setCurrentViewPort( v );
-	currentViewPortContainer()->setCurrentViewPort( currentViewPort() );
+	if(currentViewPort()->parent()) // not floating
+		currentViewPortContainer()->setCurrentViewPort( currentViewPort() );
 	
 	CADrawableContext *prevContext = v->currentContext();
 	v->selectCElement(coords.x(), coords.y());

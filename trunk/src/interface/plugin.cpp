@@ -169,12 +169,12 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="pluginDir") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
-				rubyArgs << CASwigRuby::toRubyObject(new QString(dirName()), CASwigRuby::String);
+				rubyArgs << CASwigRuby::toRubyObject(&_dirName, CASwigRuby::String);
 			}
 #endif
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
-				pythonArgs << CASwigPython::toPythonObject(new QString(dirName()), CASwigPython::String);
+				pythonArgs << CASwigPython::toPythonObject(&_dirName, CASwigPython::String);
 			}
 #endif	
 		}
