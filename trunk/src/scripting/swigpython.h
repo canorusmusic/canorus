@@ -50,6 +50,8 @@ class CASwigPython {
 		static PyObject *callFunction(QString fileName, QString function, QList<PyObject*> args);
 		static void *callPycli(void*);
 		static PyObject *toPythonObject(void *object, CAClassType type);	// defined in scripting/canoruspython.i
+		
+        static PyThreadState *mainThreadState, *pycliThreadState;
 };
 
 #endif /*SWIGPYTHON_H_*/
