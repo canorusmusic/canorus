@@ -32,7 +32,7 @@ public:
 	void setPS2PDF( const QString &roProgrammName, const QString &roProgramPath = "",
                   const QStringList &roParams = (QStringList() << QString("") ) );
 	virtual void setExpOption( const QVariant &roName, const QVariant &roValue );
-	virtual void setTSetOption( const QVariant &roName, const QVariant &roValue, bool bShortParam = true );
+	virtual void setTSetOption( const QVariant &roName, const QVariant &roValue, bool bSpace = false, bool bShortParam = true );
 	inline void setPDFConversion( bool bConversion ) { _bPDFConversion = bConversion; }
 	inline void setExporter( CAExport *poExport ) { _poExport = poExport ; }
 	// Attention: .pdf automatically added and removed if it was added internally
