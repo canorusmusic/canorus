@@ -50,11 +50,13 @@ signals:
 	void programExited( int iExitCode );
   
 protected slots:
-	void rcvProgramOutput();
+ 	void rcvProgramStdOut() { rcvProgramOutput( _poExternProgram->readAllStandardOutput() ); }
+ 	void rcvProgramStdErr() { rcvProgramOutput( _poExternProgram->readAllStandardError() ); }
 	void programError( QProcess::ProcessError ) { programExited(); }
 	void programFinished( int, QProcess::ExitStatus ) {  programExited(); }
 
 protected:
+	void rcvProgramOutput( const QByteArray &roData );
 	void programExited();
 
 	// References to the real objects(!)

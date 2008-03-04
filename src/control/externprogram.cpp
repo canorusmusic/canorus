@@ -28,9 +28,9 @@ CAExternProgram::CAExternProgram( bool bRcvStdErr /* = true */, bool bRcvStdOut 
 	connect( _poExternProgram, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( programError( QProcess::ProcessError ) ) );
 	connect( _poExternProgram, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( programFinished( int, QProcess::ExitStatus ) ) );
   if( bRcvStdOut )
-		connect( _poExternProgram, SIGNAL( readyReadStandardOutput() ), this, SLOT( rcvProgramOutput() ) );
+		connect( _poExternProgram, SIGNAL( readyReadStandardOutput() ), this, SLOT( rcvProgramStdOut() ) );
   if( bRcvStdErr )
-		connect( _poExternProgram, SIGNAL( readyReadStandardError() ), this, SLOT( rcvProgramOutput() ) );
+		connect( _poExternProgram, SIGNAL( readyReadStandardError() ), this, SLOT( rcvProgramStdErr() ) );
 }
 
 // Destructor
@@ -184,30 +184,24 @@ bool CAExternProgram::execProgram( const QString &roCwd /* = "." */ )
 }
 
 /*!
-	This slot sends a signal when data is received by the extern program
+	This method sends a signal when data is received by the extern program
 
 	To receive data from the extern program create a signal/slot connection
-	to the rcvProgrammOutput signal. This class does not cache any data!
+	to the nextOutput signal. This class does not cache any data!
+	The \o roData contains the data received by the process output to
+	either stdout or stderr. Use the constructor to define if you don't wish to
+	either receive standartd output or standard error.
 
 	\sa QProcess::setProgram( QString oProgram )
 */
-void CAExternProgram::rcvProgramOutput()
+void CAExternProgram::rcvProgramOutput(  const QByteArray &roData  )
 {
 	// The data is not stored but has to be immediately read by the using object
 	// Else the data ist lost.
 	// If you need a data caching please create a sub class from this class like
-  // CACacheExternProgram or include it in a CACacheProgramData class or use
+	// CACacheExternProgram or include it in a CACacheProgramData class or use
 	// the cache class Qt provides named QCache for such a purpose.
-	if( _poExternProgram->readChannel() == QProcess::StandardOutput )
-	{
-		const QByteArray &rSO = _poExternProgram->readAllStandardOutput(); 
-		emit nextOutput( rSO );
-	}
-	if( _poExternProgram->readChannel() == QProcess::StandardError )
-	{
-		const QByteArray &rSE = _poExternProgram->readAllStandardError(); 
-		emit nextOutput( rSE );
-	}
+	emit nextOutput( roData );
 }
 
 /*!
