@@ -9,6 +9,7 @@
 #include "scripting/swigpython.h"
 #include <QFile>
 #include <QThread>
+#include <QDebug>
 
 #include "canorus.h"
 
@@ -20,6 +21,8 @@ protected:
 	void run() { CASwigPython::callPycli(NULL); }
 };
 
+PyThreadState * CASwigPython::mainThreadState;
+PyThreadState * CASwigPython::pycliThreadState;
 
 /// Load 'CanorusPython' module and initialize classes - defined in SWIG wrapper class
 extern "C" void init_CanorusPython();
@@ -30,10 +33,13 @@ extern "C" void init_CanorusPython();
 	functions as well!
 */
 void CASwigPython::init() {
+
 	Py_Initialize();
+	PyEval_InitThreads();
+
 	init_CanorusPython();
-	PyRun_SimpleString("import sys");
-	
+    PyRun_SimpleString("import sys");
+    
 	// add path to scripts to Scripting path
 	if (CACanorus::locateResource("scripts").size()) {
 		PyRun_SimpleString((QString("sys.path.append('")+CACanorus::locateResource("scripts").at(0)+"')").toStdString().c_str());
@@ -65,8 +71,17 @@ void CASwigPython::init() {
 		std::cerr << "Error: _CanorusPython.so not found" << std::endl;
 	}
 #endif
-	
-	PyRun_SimpleString("import CanorusPython");
+
+    mainThreadState = PyThreadState_Get();
+    PyEval_ReleaseLock();
+
+PyEval_AcquireLock();
+    PyInterpreterState * mainInterpreterState = mainThreadState->interp;
+    
+    pycliThreadState = PyThreadState_New(mainInterpreterState);
+    PyThreadState_Swap(mainThreadState);
+    
+PyEval_ReleaseLock();
 }
 
 
@@ -89,13 +104,13 @@ QString thr_function;
 QList<PyObject*> thr_args;
 
 PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args) {
+    
 	if (!QFile::exists(fileName))
 		return 0;
 	
 	// run pycli in pthread, this is temporary solution
 	if (fileName.contains("pycli") && (!function.contains("init"))) {
-
-		//tid = new pthread_t;
+	    //tid = new pthread_t;
 		qtid = new CAPyconsoleThread();
 		thr_fileName = fileName;
 		thr_args = args;
@@ -125,10 +140,12 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	
 	// Load module, if not yet
 	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
+
 	moduleName = moduleName.remove(0, moduleName.lastIndexOf("/")+1);
+	
 	PyObject *pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
 	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
-	
+		
 	// Get function object
 	PyObject *pyFunction = PyObject_GetAttrString(pyModule, (char*)function.toStdString().c_str());
 	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
@@ -161,7 +178,11 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	
 */
 void *CASwigPython::callPycli(void*) {
-
+    
+    
+    PyEval_AcquireLock();
+    PyThreadState_Swap(pycliThreadState);
+    
 	QString fileName = thr_fileName;
 	QString function = thr_function;
 	QList<PyObject*> args = thr_args;
@@ -197,6 +218,10 @@ void *CASwigPython::callPycli(void*) {
 	Py_DECREF(pyModule);
 	for (int i=0; i<args.size(); i++)
 		Py_DECREF(args[i]);	
+		
+		
+    PyThreadState_Swap(mainThreadState);
+    PyEval_ReleaseLock();
 
 //	pthread_exit((void*)NULL);
 }

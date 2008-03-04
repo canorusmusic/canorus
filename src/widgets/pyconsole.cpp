@@ -30,31 +30,32 @@
 
 
 // --python shell emulation; script interaction--
+// document as parameter won't work (solved like in pluginaction.cpp)
 // \todo pycli: interactive help won't work. More sys.std* overrides?
 // \todo command queuing, when busy
 // \todo [CRLF on windows] in QTextEdit & python
 // \todo (design) remove unnecessary _fmtNormal changes
-// \todo signals, interrupts, exit() exits Canorus, maybe ExternProgram / separate process
+// \todo processes
 
 // --Behaviour, internal commands (at the bottom of source)--
-// \todo redesign 1: fragility, unstability (near future)
-// \todo redesign 2: CAPyConsole is no more TextWidget (far future)
+// \todo redesign 2: CAPyConsole TextWidget (future)
 // \todo design: history <-> text edition <-> text changed signal <-> text Revert
 // \todo design: specify behaviour
 //
 // \todo maybe TABS? -> anyone wants this?
 //
-// \todo working -> internal commands (???)
 //
 // Internal commands: are entered to python shell
 // 			looks like this "/commandx", have / at the beginning
 // 			are interpreted in canorus not python
+//     "/callscript <script>", "/entryfunc", "entryfunc <function>"
 //
 // /todo autoindentation, internal variable (like in idle), test it!
 
 CAPyConsole::CAPyConsole( CADocument *doc, QWidget *parent) : QTextEdit(parent) {
 	_parent = parent;
 	_canorusDoc = doc;
+	_strEntryFunc = "main";
 
 	_histIndex = -1;
 	_bufSend = "";
@@ -296,14 +297,20 @@ void CAPyConsole::asyncPluginInit(void) {
 	\todo: remove QString prompt; (do we need to know which prompt is used ps1/ps2?)
 */
 QString CAPyConsole::asyncBufferedInput(QString prompt) {
-	//prompt = "~";
+    
 	emit sig_txtAppend(prompt, txtNormal);
 
-// blocking operation
-Py_BEGIN_ALLOW_THREADS
+// blocking operation;
+PyThreadState_Swap(CASwigPython::mainThreadState);
+PyEval_ReleaseLock();
+
+//Py_BEGIN_ALLOW_THREADS
 	_thrWaitMut->lock();
 	_thrWait->wait(_thrWaitMut);
-Py_END_ALLOW_THREADS
+//Py_END_ALLOW_THREADS
+
+PyEval_AcquireLock();
+PyThreadState_Swap(CASwigPython::pycliThreadState);
 
 	QString *str = new QString(_bufSend);	//put contents of _bufSend into buffer \todo: synch
 	if (_bufSend == "html") {
@@ -466,6 +473,9 @@ void CAPyConsole::keyPressEvent (QKeyEvent * e) {
 // none of this works, because of some threading issues
 
 bool CAPyConsole::cmdIntern(QString strCmd) {
+    if (!strCmd.startsWith("/"))
+        return false;
+    
     if (strCmd == "/i") {
         txtAppend("[Can't reset PyCLI]\n");
         /*
@@ -483,22 +493,38 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         return true;
     }
     else if (strCmd.startsWith("/callscript ")) {
-        /*
 #ifdef USE_PYTHON
 
+        if((CACanorus::locateResource("scripts/" + strCmd.mid(12))).isEmpty()) {
+            txtAppend("Script not found\n",txtStderr);
+            txtAppend(">>> ",txtNormal);
+            return true;
+        }
+        
         QList<PyObject*> argsPython;
-        argsPython << CASwigPython::toPythonObject(_canorusDoc, CASwigPython::Document);
+        //argsPython << CASwigPython::toPythonObject(_canorusDoc, CASwigPython::Document);
+        
+        QObject *curObject = this;
+        while (dynamic_cast<CAMainWin*>(curObject)==0 && curObject!=0) // find the parent which is mainwindow
+            curObject = curObject->parent();
+        
+        argsPython << CASwigPython::toPythonObject(static_cast<CAMainWin*>(curObject)->document(), CASwigPython::Document);        
 
-        if((CACanorus::locateResource("scripts/" + strCmd.mid(12))).isEmpty())
-            txtAppend("umpty");
-        else
-            txtAppend(CACanorus::locateResource("scripts/" + strCmd.mid(12)).at(0));
-
-        CASwigPython::callFunction(CACanorus::locateResource("scripts/" + strCmd.mid(12)).at(0), "main", argsPython);
+        CASwigPython::callFunction(CACanorus::locateResource("scripts/" + strCmd.mid(12)).at(0), _strEntryFunc, argsPython);
+        txtAppend(">>> ",txtNormal);
         return true;
 #endif
-        */
     }
-    else
-        return false;
+    
+    else if (strCmd == "/entryfunc"){
+        txtAppend("Default entry function: " + _strEntryFunc + "\n" ,txtStdout);
+        txtAppend(">>> ",txtNormal);
+    }
+    
+    else if (strCmd.startsWith("/entryfunc ")) {
+        _strEntryFunc = strCmd.mid(11);
+        txtAppend(">>> ",txtNormal);
+    }
+    
+    return true;
 }

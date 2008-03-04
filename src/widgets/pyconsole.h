@@ -92,6 +92,7 @@ private:
 
 	// pyconsole '/' commands
 	bool cmdIntern(QString strCmd);
+	QString _strEntryFunc;
 
     // rarely used
 	CADocument *_canorusDoc;
