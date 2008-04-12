@@ -29,7 +29,7 @@
 #include "ui/settingsdialog.h"
 #include "ui/propertiesdialog.h"
 
-//#include "control/printpreviewctl.h"
+#include "control/previewctl.h"
 #include "control/printctl.h"
 
 #include "interface/playback.h"
@@ -175,7 +175,10 @@ CAMainWin::~CAMainWin()  {
 	if(_playback)
 		delete _playback;
 	
+#ifdef USE_POPPLER
 	delete _poPrintCtl;
+#endif
+	delete _poPrintPreviewCtl;
 	// clear UI
 	delete uiInsertToolBar; // also deletes content of the toolbars
 	delete uiInsertGroup;
@@ -578,9 +581,12 @@ void CAMainWin::createCustomActions() {
 void CAMainWin::setupCustomUi() {
 	_musElementFactory = new CAMusElementFactory();
 	
-	//_poPrintPreviewCtl = new CAPrintPreviewCtl( this );
+	_poPrintPreviewCtl = new CAPreviewCtl( this );
+#ifdef USE_POPPLER
 	_poPrintCtl = new CAPrintCtl( this );
-
+#else
+	uiPrint->setEnabled( false );
+#endif
 	// Standard Toolbar
 	uiUndo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiUndo ) );
 	uiUndo->defaultAction()->setText(tr("Undo"));
