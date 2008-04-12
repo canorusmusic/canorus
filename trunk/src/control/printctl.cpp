@@ -8,6 +8,13 @@
 // Includes
 #include <QDesktopServices>
 #include <QUrl>
+#include <QPainter>
+#include <QPrinter>
+#include <QPrintDialog>
+// For some unknown reason PATH_SUFFIXES does not work
+// in the CMakeList.txt configure script (it does return
+// the wrong path, f.e. /usr/include under Linux)
+#include <poppler/qt4/poppler-qt4.h>
 
 #include "ui/mainwin.h"
 #include "export/lilypondexport.h"
@@ -63,6 +70,47 @@ void CAPrintCtl::outputTypsetterOutput( const QByteArray &roOutput )
 
 void CAPrintCtl::printPDF( int iExitCode )
 {
-	qDebug("Showing PDF file %s", QString("file://"+_oOutputPDFName+".pdf").toAscii().data());
-	QDesktopServices::openUrl( QUrl( QString("file://")+_oOutputPDFName+".pdf" ) );
+	QPrinter oPrinter(QPrinter::PrinterResolution);
+	QPainter oPainter;
+	oPrinter.setFullPage(true);
+	QPrintDialog oPrintDlg(&oPrinter);
+	// Start by letting the user select the print settings
+	qDebug("Printing PDF file %s", QString("file://"+_oOutputPDFName+".pdf").toAscii().data());
+	// Read PDF document from disk to draw it's individual pages
+	Poppler::Document *poPDFDoc = Poppler::Document::load(QString(_oOutputPDFName+".pdf"));
+	// Set the maximum number of pages
+	if( poPDFDoc )
+	{
+		int iNumPages = poPDFDoc->numPages(), iC;
+		oPrintDlg.setMinMax( 1, iNumPages );
+		oPrintDlg.exec();
+		// Get the selected number of pages
+		iNumPages = oPrinter.toPage() - oPrinter.fromPage();
+		Poppler::Page *poPDFPage;
+		// Actual printing with the help of the painter
+		oPainter.begin( &oPrinter );
+		// @ToDo: Limit to the page range the user wants to print
+		// Read the current page
+		for( iC= oPrinter.fromPage(); iC< oPrinter.toPage(); ++iC )
+		{
+			if( oPrinter.pageOrder() == QPrinter::FirstPageFirst )
+				poPDFPage = poPDFDoc->page(iC);
+			else
+				poPDFPage = poPDFDoc->page(iNumPages-iC);
+			if( poPDFPage )
+			{
+				oPainter.drawImage(0,0,poPDFPage->renderToImage(oPrinter.resolution(),oPrinter.resolution()));
+				oPrinter.newPage();
+			}
+		}
+		// Last page (separated to avoid extra if in for loop for last page)
+		if( oPrinter.pageOrder() == QPrinter::FirstPageFirst )
+			poPDFPage = poPDFDoc->page(iC);
+		else
+			poPDFPage = poPDFDoc->page(iNumPages-iC);
+		if( poPDFPage )
+			oPainter.drawImage(0,0,poPDFPage->renderToImage(oPrinter.resolution(),oPrinter.resolution()));
+		oPainter.end();
+  }
 }
+
