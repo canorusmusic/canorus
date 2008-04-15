@@ -74,10 +74,25 @@ void CAPrintCtl::printPDF( int iExitCode )
 	QPainter oPainter;
 	oPrinter.setFullPage(true);
 	QPrintDialog oPrintDlg(&oPrinter);
+	QDir oPath;
+	QFile oTempFile( oPath.absolutePath ()+"/print.pdf" );
+	if( !oTempFile.remove() )
+  {
+		qWarning("PreviewCtl: Could not remove old print file %s, error %s", oTempFile.fileName().toAscii().constData(),
+             oTempFile.errorString().toAscii().constData() );
+    oTempFile.unsetError();
+  }
+  oTempFile.setFileName( _oOutputPDFName+".pdf" );
 	// Start by letting the user select the print settings
-	qDebug("Printing PDF file %s", QString("file://"+_oOutputPDFName+".pdf").toAscii().data());
+	qDebug("Printing PDF file %s", QString("file://"+oPath.absolutePath ()+"/print.pdf").toAscii().data());
+	if( !oTempFile.copy( oPath.absolutePath ()+"/preview.pdf" ) ) // Rename it, so we can delete the temporary file
+  {
+		qCritical("PreviewCtl: Could not copy temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
+             oTempFile.errorString().toAscii().constData() );
+    return;
+  }
 	// Read PDF document from disk to draw it's individual pages
-	Poppler::Document *poPDFDoc = Poppler::Document::load(QString(_oOutputPDFName+".pdf"));
+	Poppler::Document *poPDFDoc = Poppler::Document::load(QString( oPath.absolutePath ()+"print.pdf"));
 	// Set the maximum number of pages
 	if( poPDFDoc )
 	{
@@ -111,6 +126,23 @@ void CAPrintCtl::printPDF( int iExitCode )
 		if( poPDFPage )
 			oPainter.drawImage(0,0,poPDFPage->renderToImage(oPrinter.resolution(),oPrinter.resolution()));
 		oPainter.end();
+  }
+  // Remove temporary files. 
+	if( !oTempFile.remove() )
+  {
+		qWarning("PreviewCtl: Could not remove temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
+             oTempFile.errorString().toAscii().constData() );
+    oTempFile.unsetError();
+  }
+	oTempFile.setFileName( _oOutputPDFName+".ps" );
+	// No warning as not every typesetter leaves postscript files behind
+	oTempFile.remove();
+	oTempFile.setFileName( _oOutputPDFName );
+	if( !oTempFile.remove() )
+  {
+		qWarning("PreviewCtl: Could not remove temporary file %s, error %s", oTempFile.fileName().constData(),
+             oTempFile.errorString().toAscii().constData() );
+    oTempFile.unsetError();
   }
 }
 
