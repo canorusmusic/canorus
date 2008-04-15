@@ -63,18 +63,40 @@ void CAPreviewCtl::outputTypsetterOutput( const QByteArray &roOutput )
 
 void CAPreviewCtl::showPDF( int iExitCode )
 {
-	qDebug("Showing PDF file %s", QString("file://"+_oOutputPDFName+".pdf").toAscii().data());
-	// First version show the pdf file with the default pdf system viewer
-	QDesktopServices::openUrl( QUrl( QString("file://")+_oOutputPDFName+".pdf" ) );
-  // Remove temporary files. Question: When ? QDesktopServices::openURL immediately returns here
-	QFile oTempFile( _oOutputPDFName+".pdf" );
+	QDir oPath;
+	QFile oTempFile( oPath.absolutePath ()+"/preview.pdf" );
 	if( !oTempFile.remove() )
-		qWarning("PreviewCtl: Could not remove temporary file %s", QString(_oOutputPDFName+".pdf").toAscii().constData() );
+  {
+		qWarning("PreviewCtl: Could not remove old preview file %s, error %s", oTempFile.fileName().toAscii().constData(),
+             oTempFile.errorString().toAscii().constData() );
+    oTempFile.unsetError();
+  }
+  oTempFile.setFileName( _oOutputPDFName+".pdf" );
+	qDebug("Showing PDF file %s", QString("file:"+oPath.absolutePath ()+"/preview.pdf").toAscii().data());
+	if( !oTempFile.copy( oPath.absolutePath ()+"/preview.pdf" ) ) // Rename it, so we can delete the temporary file
+  {
+		qCritical("PreviewCtl: Could not copy temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
+             oTempFile.errorString().toAscii().constData() );
+    return;
+  }
+	// First version show the pdf file with the default pdf system viewer
+	QDesktopServices::openUrl( QUrl( QString("file:")+oPath.absolutePath ()+"/preview.pdf" ) );
+  // Remove temporary files. 
+	if( !oTempFile.remove() )
+  {
+		qWarning("PreviewCtl: Could not remove temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
+             oTempFile.errorString().toAscii().constData() );
+    oTempFile.unsetError();
+  }
 	oTempFile.setFileName( _oOutputPDFName+".ps" );
 	// No warning as not every typesetter leaves postscript files behind
 	oTempFile.remove();
 	oTempFile.setFileName( _oOutputPDFName );
 	if( !oTempFile.remove() )
-		qWarning("PreviewCtl: Could not remove temporary file %s",_oOutputPDFName.toAscii().constData() );
+  {
+		qWarning("PreviewCtl: Could not remove temporary file %s, error %s", oTempFile.fileName().constData(),
+             oTempFile.errorString().toAscii().constData() );
+    oTempFile.unsetError();
+  }
 }
 
