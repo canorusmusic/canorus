@@ -182,6 +182,13 @@ const QString CADiatonicKey::diatonicKeyToString( CADiatonicKey k ) {
 }
 
 /*!
+	Creates a new diatonic key from the given string.
+*/
+CADiatonicKey CADiatonicKey::diatonicKeyFromString( const QString s ) {
+	return CADiatonicKey(s);
+}
+
+/*!
 	\enum CADiatonicKey::CAGender
 	The lower tetrachord of the scale - gender:
 		- Major

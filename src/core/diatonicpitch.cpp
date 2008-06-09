@@ -166,3 +166,10 @@ CADiatonicPitch CADiatonicPitch::operator+( CAInterval i ) {
 	
 	return dp;
 }
+
+/*!
+	Creates a new diatonic pitch from the given string.
+*/
+CADiatonicPitch CADiatonicPitch::diatonicPitchToString( const QString s ) {
+	return CADiatonicPitch( s );
+}

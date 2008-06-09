@@ -46,7 +46,8 @@ public:
 	inline void setAccs( const int accs ) { _accs = accs; }
 	
 	static const QString diatonicPitchToString( CADiatonicPitch p );
-	
+	static CADiatonicPitch diatonicPitchToString( const QString s );
+		
 private:
 	int _noteName; // 0-sub-contra C, 1-D, 2-E etc.
 	int _accs;     // 0-neutral, 1-sharp, -1-flat etc.
