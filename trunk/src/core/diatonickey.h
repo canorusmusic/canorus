@@ -49,6 +49,7 @@ public:
 	static CAGender genderFromString( const QString );
 	
 	static const QString diatonicKeyToString( CADiatonicKey k );
+	static CADiatonicKey diatonicKeyFromString( const QString );
 	
 	int numberOfAccs();
 	
