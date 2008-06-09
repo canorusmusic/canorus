@@ -31,9 +31,9 @@ CADiatonicPitch::CADiatonicPitch() {
 }
 
 CADiatonicPitch::CADiatonicPitch( const QString& pitch ) {
-	QString noteName = pitch;
+	QString noteName = pitch.toLower();
 	
-	int curPitch = (noteName[0].toLower().toLatin1() - 'a' + 5) % 7;
+	int curPitch = (noteName[0].toLatin1() - 'a' + 5) % 7;
 	
 	// determine accidentals
 	int curAccs = 0;
