@@ -3702,12 +3702,14 @@ void CAMainWin::updateContextToolBar() {
 				CALyricsContext *c = static_cast<CALyricsContext*>(context);				
 				uiStanzaNumber->setValue(c->stanzaNumber());
 				uiStanzaNumberAction->setVisible(true);
+				uiStanzaNumberAction->setEnabled(true);
 				
 				uiAssociatedVoice->clear();
 				QList<CAVoice*> voiceList = currentSheet()->voiceList();
 				for (int i=0; i<voiceList.count(); i++) uiAssociatedVoice->addItem(voiceList[i]->name());
 				uiAssociatedVoice->setCurrentIndex( voiceList.indexOf( c->associatedVoice() ) );
 				uiAssociatedVoiceAction->setVisible(true);
+				uiAssociatedVoiceAction->setEnabled(true);
 				
 				break;
 			}
@@ -3738,17 +3740,17 @@ void CAMainWin::updateInsertToolBar() {
 					case CAContext::Staff:
 						// staff selected
 						uiInsertPlayable->setVisible(true);
-						uiSlurType->defaultAction()->setVisible(true);
-						uiSlurType->setVisible(true); // \todo This is needed in order for actions to hide?! -Matevz
+						uiSlurType->defaultAction()->setVisible(true); uiSlurType->defaultAction()->setEnabled(true);
+						//uiSlurType->setVisible(true); // \todo This is needed in order for actions to hide?! -Matevz
 						uiInsertClef->setVisible(true); // menu
 						uiInsertBarline->setVisible(true); // menu
-						uiClefType->defaultAction()->setVisible(true);
-						uiTimeSigType->defaultAction()->setVisible(true);
+						uiClefType->defaultAction()->setVisible(true); uiClefType->defaultAction()->setEnabled(true);
+						uiTimeSigType->defaultAction()->setVisible(true); uiTimeSigType->defaultAction()->setEnabled(true);
 						uiInsertKeySig->setVisible(true);
-						uiMarkType->defaultAction()->setVisible(true);
-						uiArticulationType->defaultAction()->setVisible(true);
+						uiMarkType->defaultAction()->setVisible(true); uiMarkType->defaultAction()->setEnabled(true);
+						uiArticulationType->defaultAction()->setVisible(true); uiArticulationType->defaultAction()->setEnabled(true);
 						uiInsertTimeSig->setVisible(true);
-						uiBarlineType->defaultAction()->setVisible(true);
+						uiBarlineType->defaultAction()->setVisible(true); uiBarlineType->defaultAction()->setEnabled(true);
 						uiInsertFM->setVisible(false);
 						uiInsertSyllable->setVisible(false);
 						break;
@@ -3789,7 +3791,6 @@ void CAMainWin::updateInsertToolBar() {
 				// no contexts selected
 				uiInsertPlayable->setVisible(false);
 				uiSlurType->defaultAction()->setVisible(false);
-				uiSlurType->setVisible(false); // \todo This is needed in order for actions to hide?! -Matevz
 				uiInsertClef->setVisible(false); // menu
 				uiInsertBarline->setVisible(false); // menu
 				uiClefType->defaultAction()->setVisible(false);
@@ -3809,7 +3810,7 @@ void CAMainWin::updateInsertToolBar() {
 		uiNewContext->setVisible(false);
 		uiInsertPlayable->setVisible(false);
 		uiSlurType->defaultAction()->setVisible(false);
-		uiSlurType->setVisible(false); // \todo This is needed in order for actions to hide?! -Matevz
+		//uiSlurType->setVisible(false); // \todo This is needed in order for actions to hide?! -Matevz
 		uiInsertClef->setVisible(false); // menu
 		uiInsertBarline->setVisible(false); // menu
 		uiClefType->defaultAction()->setVisible(false);
