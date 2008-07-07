@@ -81,9 +81,9 @@ ENDIF(POPPLER_INCLUDE_PATH AND POPPLER_LIBRARY AND POPPLERQT4_LIBRARY)
 # Set ZLib sources on windows
 FILE(GLOB ZLIB_Srcs "zlib/*.c")
 
-###################
-# List of sources #
-###################
+##############################
+# List of Qt4-parsed sources #
+##############################
 # Define the UI source files used by Canorus
 SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compiled
 	ui/mainwin.ui
@@ -99,10 +99,8 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 )
 
 # Define the MOC source files used by Canorus
-SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
+SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	core/autorecovery.h
-	import/import.h
-	export/export.h
 	
 	ui/mainwin.h
 	ui/settingsdialog.h
@@ -119,16 +117,58 @@ SET(Canorus_MOCs	# List of classes which Qt needs to produce MOCs for them (in o
 	widgets/undotoolbutton.h
 	widgets/pyconsole.h
 	
-	interface/mididevice.h
-	interface/playback.h
 	interface/pluginaction.h
-
+	
 	control/externprogram.h
 	control/typesetctl.h
 	${POPPLER_HEADER}
 	control/previewctl.h
 )
 
+SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
+	import/import.h
+	export/export.h
+	
+	interface/mididevice.h
+	interface/playback.h
+)
+
+################
+# Qt4 settings #
+################
+# This line adds the QtXML and QtSVG libraries to the Qt libraries
+# loaded when linking Canorus
+SET(QT_USE_QTXML True)
+SET(QT_USE_QTSVG True)
+
+# Add all resources to Canorus_Resrcs (icons, html files etc.)
+#SET(Canorus_Resrcs ui/mainwin.qrc) # not needed, all resources are loaded on-the-fly
+
+# Add all the dependencies needed for the MainWindow
+# add_file_dependencies( ui/mainwin.cpp ui/ui_mainwin.h )
+
+# This scripts runs the resource compiler rcc.
+# The result of it is stored into Canorus_Resrcs_Srcs
+# variable. This has to be included later in the
+# add_executable line.
+QT4_ADD_RESOURCES(Canorus_Resrcs_Srcs ${Canorus_Resrcs})
+
+# This scripts runs the user interface compiler uic.
+# The result of it is stored into Canorus_UIC_Srcs
+# variable. This has to be included later in the
+# add_executable line.
+QT4_WRAP_UI(Canorus_UIC_Srcs ${Canorus_UIs})
+
+# This script runs the meta object compiler moc.
+# The result of it is stored into Canorus_Gui_MOC_Srcs and Canorus_Core_MOC_Srcs
+# variable. This has to be included later in the
+# add_executable line.
+QT4_WRAP_CPP(Canorus_Gui_MOC_Srcs ${Canorus_Gui_MOCs})
+QT4_WRAP_CPP(Canorus_Core_MOC_Srcs ${Canorus_Core_MOCs})
+
+#########################
+# List of other sources #
+#########################
 SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/settings.cpp
 	core/undocommand.cpp
@@ -331,18 +371,15 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/resource.cpp
 	core/resourcecontainer.cpp
 	${Canorus_Import_Srcs}
-	moc_import.cxx
 	${Canorus_Export_Srcs}
-	moc_export.cxx
 	${Canorus_RtMidi_Srcs}
-	moc_mididevice.cxx
 	interface/rtmididevice.cpp
 	interface/mididevice.cpp
 	interface/playback.cpp
 
 	interface/pyconsoleinterface.cpp
 
-	moc_playback.cxx
+	${Canorus_Core_MOC_Srcs}
 )
 IF(MINGW)
 	SET( Canorus_Swig_Srcs ${Canorus_Swig_Srcs} ${ZLIB_Srcs} )
@@ -376,39 +413,6 @@ IF(APPLE)
 		${QT_QTSVG_LIBRARY}/Versions/4/QtSvg
 		)
 ENDIF(APPLE)
-
-
-################
-# Qt4 settings #
-###############
-# This line adds the QtXML and QtSVG libraries to the Qt libraries
-# loaded when linking Canorus
-SET(QT_USE_QTXML True)
-SET(QT_USE_QTSVG True)
-
-# Add all resources to Canorus_Resrcs (icons, html files etc.)
-#SET(Canorus_Resrcs ui/mainwin.qrc) # not needed, all resources are loaded on-the-fly
-
-# Add all the dependencies needed for the MainWindow
-# add_file_dependencies( ui/mainwin.cpp ui/ui_mainwin.h )
-
-# This scripts runs the resource compiler rcc.
-# The result of it is stored into Canorus_Resrcs_Srcs
-# variable. This has to be included later in the
-# add_executable line.
-QT4_ADD_RESOURCES(Canorus_Resrcs_Srcs ${Canorus_Resrcs})
-
-# This scripts runs the user interface compiler uic.
-# The result of it is stored into Canorus_UIC_Srcs
-# variable. This has to be included later in the
-# add_executable line.
-QT4_WRAP_UI(Canorus_UIC_Srcs ${Canorus_UIs})
-
-# This script runs the meta object compiler moc.
-# The result of it is stored into Canorus_MOC_Srcs
-# variable. This has to be included later in the
-# add_executable line.
-QT4_WRAP_CPP(Canorus_MOC_Srcs ${Canorus_MOCs})
 
 #########################
 # Compiler Define flags #
@@ -525,7 +529,7 @@ ENDIF(MINGW)
 # All dependent libraries like RtMidi must be added here.
 # Attention: In contrast to Makefiles don't add "\" to separate lines
 ADD_EXECUTABLE(canorus ${Canorus_UIC_Srcs}  ${Canorus_Srcs}
-                       ${Canorus_MOC_Srcs} ${Canorus_Resrcs_Srcs}
+                       ${Canorus_Core_MOC_Srcs} ${Canorus_Gui_MOC_Srcs} ${Canorus_Resrcs_Srcs}
                        ${CANORUS_RUBY_WRAP_CXX}
                        ${CANORUS_PYTHON_WRAP_CXX}
                        ${MACOSX_BUNDLE}	# Works only under Apple - adds the application description, icon etc.
