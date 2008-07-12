@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -51,16 +51,16 @@ const int CAScoreViewPort::ANIMATION_STEPS = 7;
 /*!
 	\class CATextEdit
 	\brief A text edit widget based on QLineEdit
-	
+
 	This widget is extended QLineEdit with custom actions on keypress events - caught and determined usually by the main
 	window then. A new signal CAKeyPressEvent() was introduced for this.
-	
+
 	Widget is usually used for editing the lyrics syllables or writing other text in the score.
 	For syllable editing, when left/right cursors are hit at the beginning/end of the line, the next/previous syllable in
 	the score should be selected. This isn't possible to achieve with standard QLineEdit as we need to control KeyPressEvent.
 	This behaviour is again determined in the main window.
 */
-	
+
 CATextEdit::CATextEdit( QWidget *parent )
  : QLineEdit( parent ) {
 }
@@ -71,31 +71,31 @@ CATextEdit::~CATextEdit() {
 void CATextEdit::keyPressEvent( QKeyEvent *e ) {
 	int oldCurPos = cursorPosition();
 	QLineEdit::keyPressEvent(e); // call parent's keyPressEvent()
-	
+
 	if ((e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace || e->key()==Qt::Key_Right) && cursorPosition()!=oldCurPos)
 		return;
-	
+
 	emit CAKeyPressEvent(e);
 }
 
 /*!
 	\class CAScoreViewPort
 	Widget for rendering the score.
-	
+
 	This class represents the widget capable of rendering the score. It is usually used as a central widget in the main window, but might be used
 	for example, in a list of possible harmonization or improvization solutions, score layout window and more as an independent widget or only as
 	a drawable content on a button.
-	
+
 	Score viewport consists of a virtual workspace full of drawable elements which represent the abstract music elements or contexts. Every drawable
 	element has its absolute X, Y, Width and Height geometry properties. Score viewport also shows usually a small part of the whole workspace
 	(depending on scroll bars values and a zoom level). When drawable elements are drawn, their CADrawable::draw() methods are called with the
 	viewports X and Y coordinates, zoom level, pen color and other properties needed to correctly draw an element to the score viewport's canvas.
-	
+
 	Note that this widget is only capable of correctly rendering the drawable elements. No Control part of the MVC model is implemented here. The
 	viewport logic is implemented outside of this class (usually main window). Score viewport only provides various signals to communicate with
 	outer world. However, this class provides various modes (eg. drawing the shadow notes when inserting music elements, coloring only one voice,
 	hiding certain staffs, animating the scroll etc.) the controller might use.
-	
+
 	This widget also provides horizontal and vertical scrollbars (see _hScrollBar and _vScrollBar).
 */
 
@@ -106,12 +106,12 @@ CAScoreViewPort::CAScoreViewPort( CASheet *sheet, QWidget *parent )
 
 CAScoreViewPort::CAScoreViewPort( QWidget *parent )
  : CAViewPort(parent) {
-	initScoreViewPort( 0 );	
+	initScoreViewPort( 0 );
 }
 
 void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	setViewPortType( ScoreViewPort );
-	
+
 	setSheet( sheet );
 	_worldX = _worldY = 0;
 	_worldW = _worldH = 0;
@@ -124,24 +124,24 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	_currentContext = 0;
 	_xCursor = _yCursor = 0;
 	setResizeDirection( CADrawable::Undefined );
-	
+
 	// init layout
 	_layout = new QGridLayout(this);
 	_layout->setMargin(2);
 	_layout->setSpacing(2);
 	_drawBorder = false;
-	
+
 	// init virtual canvas
 	_canvas = new QWidget(this);
 	setMouseTracking(true);
 	_canvas->setMouseTracking(true);
 	_repaintArea = 0;
-	
+
 	// init animation stuff
 	_animationTimer = new QTimer();
 	_animationTimer->setInterval(50);
 	connect(_animationTimer, SIGNAL(timeout()), this, SLOT(on__animationTimer_timeout()));
-	
+
 	// init helpers
 	setSelectedVoice( 0 );
 	setShadowNoteVisible( false );
@@ -150,7 +150,7 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	setDrawShadowNoteAccs( false );
 	setTextEdit( new CATextEdit( _canvas ) );
 	setTextEditVisible( false );
-	
+
 	// init scrollbars
 	_vScrollBar = new QScrollBar(Qt::Vertical, this);
 	_hScrollBar = new QScrollBar(Qt::Horizontal, this);
@@ -162,17 +162,17 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	_hScrollBar->hide();
 	_scrollBarVisible = ScrollBarShowIfNeeded;
 	_allowManualScroll = true;
-	
+
 	connect(_hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(HScrollBarEvent(int)));
 	connect(_vScrollBar, SIGNAL(valueChanged(int)), this, SLOT(VScrollBarEvent(int)));
-	
+
 	// connect layout and widgets
 	_layout->addWidget(_canvas, 0, 0);
 	_layout->addWidget(_vScrollBar, 0, 1);
 	_layout->addWidget(_hScrollBar, 1, 0);
-	
+
 	_oldWorldW = 0; _oldWorldH = 0;
-	
+
 	setBackgroundColor( CACanorus::settings()->backgroundColor() );
 	setForegroundColor( CACanorus::settings()->foregroundColor() );
 	setSelectionColor( CACanorus::settings()->selectionColor() );
@@ -185,51 +185,51 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 CAScoreViewPort::~CAScoreViewPort() {
 	// Delete the drawable elements/contexts
 	_drawableMList.clear(true);
-	_drawableCList.clear(true);	
-	
+	_drawableCList.clear(true);
+
 	while(!_shadowNote.isEmpty()) {
 		delete _shadowNote.takeFirst();
-		delete _shadowDrawableNote.takeFirst(); // same size 
+		delete _shadowDrawableNote.takeFirst(); // same size
 	}
 
 	_animationTimer->disconnect();
 	_animationTimer->stop();
 	delete _animationTimer;
-	
+
 	_hScrollBar->disconnect();
 	_vScrollBar->disconnect();
 }
 
 void CAScoreViewPort::on__animationTimer_timeout() {
 	_animationStep++;
-	
+
 	float newZoom = _zoom + (_targetZoom - _zoom) * sqrt(((float)_animationStep)/ANIMATION_STEPS);
 	int newWorldX = (int)(_worldX + (_targetWorldX - _worldX) * sqrt(((float)_animationStep)/ANIMATION_STEPS));
 	int newWorldY = (int)(_worldY + (_targetWorldY - _worldY) * sqrt(((float)_animationStep)/ANIMATION_STEPS));
 	int newWorldW = (int)(drawableWidth() / newZoom);
 	int newWorldH = (int)(drawableHeight() / newZoom);
-	
+
 	setWorldCoords(newWorldX, newWorldY, newWorldW, newWorldH);
-	
+
 	if (_animationStep==ANIMATION_STEPS)
 		_animationTimer->stop();
-	
+
 	repaint();
 }
 
 CAScoreViewPort *CAScoreViewPort::clone() {
 	CAScoreViewPort *v = new CAScoreViewPort(_sheet, static_cast<QWidget*>(parent()));
-	
+
 	v->importElements(&_drawableMList, &_drawableCList);
-	
+
 	return v;
 }
 
 CAScoreViewPort *CAScoreViewPort::clone(QWidget *parent) {
 	CAScoreViewPort *v = new CAScoreViewPort(_sheet, parent);
-	
+
 	v->importElements(&_drawableMList, &_drawableCList);
-	
+
 	return v;
 }
 
@@ -243,7 +243,7 @@ void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 		_selection.clear();
 		addToSelection(elt);
 	}
-	
+
 	elt->drawableContext()->addMElement(elt);
 	emit selectionChanged();
 }
@@ -253,12 +253,13 @@ void CAScoreViewPort::addMElement(CADrawableMusElement *elt, bool select) {
 */
 void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 	_drawableCList.addElement(elt);
-	
+
 	if (select)
 		setCurrentContext(elt);
-	
-	if (elt->drawableContextType() == CADrawableContext::DrawableStaff) {
-		_shadowNote << new CANote( CADiatonicPitch(), CAPlayableLength(CAPlayableLength::Quarter, 0), 0, 0 );
+
+	if (elt->drawableContextType() == CADrawableContext::DrawableStaff &&
+	    static_cast<CAStaff*>(elt->context())->voiceCount()) {
+		_shadowNote << new CANote( CADiatonicPitch(), CAPlayableLength(CAPlayableLength::Quarter, 0), static_cast<CAStaff*>(elt->context())->voiceAt(0), 0 );
 		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), elt, 0, 0, true);
 	}
 }
@@ -266,9 +267,9 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 /*!
 	Selects the drawable context of the given abstract context.
 	If there are multiple drawable elements representing a single abstract element, selects the first one.
-	
+
 	Returns a pointer to the drawable instance of the given context or 0 if the context was not found.
-	
+
 	\sa selectMElement(CAMusElement*)
 */
 CADrawableContext *CAScoreViewPort::selectContext(CAContext *context) {
@@ -276,7 +277,7 @@ CADrawableContext *CAScoreViewPort::selectContext(CAContext *context) {
 		setCurrentContext(0);
 		return false;
 	}
-	
+
 	for (int i=0; i<_drawableCList.size(); i++) {
 		CAContext *c = ((CADrawableContext*)_drawableCList.at(i))->context();
 		if (c == context) {
@@ -284,7 +285,7 @@ CADrawableContext *CAScoreViewPort::selectContext(CAContext *context) {
 			return (CADrawableContext*)_drawableCList.at(i);
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -296,20 +297,20 @@ CADrawableContext *CAScoreViewPort::selectContext(CAContext *context) {
 */
 CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 	QList<CADrawableContext*> l = _drawableCList.findInRange(x,y);
-	
+
 	if (l.size()!=0) {
 		setCurrentContext(l.front());
 	} else
 		setCurrentContext(0);
-	
+
 	return currentContext();
 }
 
 /*!
 	Returns a list of pointers to the drawable music elements at the given coordinates.
-	
+
 	Multiple elements can exist at the same coordinates.
-	
+
 	If there is a currently selected voice, only elements belonging to this voice are selected.
 */
 QList<CADrawableMusElement*> CAScoreViewPort::musElementsAt(int x, int y) {
@@ -317,33 +318,33 @@ QList<CADrawableMusElement*> CAScoreViewPort::musElementsAt(int x, int y) {
 	for (int i=0; i<l.size(); i++)
 		if ( !l[i]->isSelectable() || selectedVoice() && l[i]->musElement() && l[i]->musElement()->isPlayable() && static_cast<CAPlayable*>(l[i]->musElement())->voice()!=selectedVoice() )
 			l.removeAt(i--);
-	
+
 	return l;
 }
 
 /*!
 	Selects the drawable music element of the given abstract music element.
 	If there are multiple drawable elements representing a single abstract element, selects the first one.
-	
+
 	Returns a pointer to the drawable instance of the given music element or 0 if the music element was not found.
-	
+
 	\sa selectCElement(CAContext*)
 */
 CADrawableMusElement* CAScoreViewPort::selectMElement(CAMusElement *elt) {
 	_selection.clear();
-	
+
 	for (int i=0; i<_drawableMList.size(); i++) {
 		if ( _drawableMList.at(i)->musElement() == elt && _drawableMList.at(i)->isSelectable() ) {
 			addToSelection(_drawableMList.at(i));
 		}
 	}
-	
+
 	emit selectionChanged();
-	
+
 	if ( selection().size() )
 		return selection().back();
 	else
-		return 0;	
+		return 0;
 }
 
 /*!
@@ -360,14 +361,14 @@ CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
 			((CADrawableStaff*)elt->drawableContext())->removeKeySignature((CADrawableKeySignature*)elt);
 		else if (elt->drawableMusElementType() == CADrawableMusElement::DrawableTimeSignature)
 			((CADrawableStaff*)elt->drawableContext())->removeTimeSignature((CADrawableTimeSignature*)elt);
-		
+
 		elt->drawableContext()->removeMElement(elt);
 		CAMusElement *mElt = elt->musElement();
 		delete elt;	// delete drawable instance
 
 		return mElt;
 	}
-	
+
 	return 0;
 }
 
@@ -383,7 +384,7 @@ void CAScoreViewPort::importElements(CAKDTree<CADrawableMusElement*> *drawableML
 		{
 			printf("Error!! Music element %p is not in its context!\n", drawableMList->at(i));
 			target = 0;
-		} else 
+		} else
 			target = (CADrawableContext*)_drawableCList.at(idx);
 		addMElement(((CADrawableMusElement*)drawableMList->at(i))->clone(target));
 	}
@@ -401,7 +402,7 @@ void CAScoreViewPort::importCElements(CAKDTree<CADrawableContext*> *elts) {
 
 /*!
 	Returns a pointer to the nearest drawable music element left of the current coordinates with the largest startTime.
-	Drawable elements left borders are taken into account. 
+	Drawable elements left borders are taken into account.
 	Returns the nearest element in the current context only, if currentContext is true (default).
 */
 CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool currentContext) {
@@ -411,7 +412,7 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool cur
 /*!
 	Returns a pointer to the nearest drawable music element left of the current coordinates with the
 	largest startTime in the given voice.
-	Drawable elements left borders are taken into account. 
+	Drawable elements left borders are taken into account.
 */
 CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice *voice) {
 	return _drawableMList.findNearestLeft(x, true, 0, voice);
@@ -419,7 +420,7 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice 
 
 /*!
 	Returns a pointer to the nearest drawable music element right of the current coordinates with the largest startTime.
-	Drawable elements left borders are taken into account. 
+	Drawable elements left borders are taken into account.
 	Returns the nearest element in the current context only, if currentContext is true (default).
 */
 CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool currentContext) {
@@ -429,7 +430,7 @@ CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool cu
 /*!
 	Returns a pointer to the nearest drawable music element right of the current coordinates with the
 	largest startTime in the given voice.
-	Drawable elements left borders are taken into account. 
+	Drawable elements left borders are taken into account.
 */
 CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, CAVoice *voice) {
 	return _drawableMList.findNearestRight(x, true, 0, voice);
@@ -457,7 +458,7 @@ CADrawableContext *CAScoreViewPort::nearestDownContext(int x, int y) {
 int CAScoreViewPort::calculateTime(int x, int y) {
 	CADrawableMusElement *left = _drawableMList.findNearestLeft(x, true);
 	CADrawableMusElement *right = _drawableMList.findNearestRight(x, true);
-	
+
 	if (left)	//the user clicked right of the element - return the nearest left element end time
 		return left->musElement()->timeStart() + left->musElement()->timeLength();
 	else if (right)	//the user clicked left of the element - return the nearest right element start time
@@ -474,7 +475,7 @@ CAContext *CAScoreViewPort::contextCollision(int x, int y) {
 	if (l.size() == 0) {
 		return 0;
 	} else {
-		CAContext *context = l.front()->context(); 
+		CAContext *context = l.front()->context();
 		return context;
 	}
 }
@@ -489,32 +490,32 @@ void CAScoreViewPort::rebuild() {
 	}
 	_shadowNote.clear();
 	_shadowDrawableNote.clear();
-	
+
 	QList<CAMusElement*> musElementSelection;
 	for (int i=0; i<_selection.size(); i++) {
 		if ( !musElementSelection.contains( _selection[i]->musElement() ) )
 			musElementSelection << _selection[i]->musElement();
 	}
-	
+
 	_selection.clear();
-	
+
 	_drawableMList.clear(true);
 	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	// remember the index of last used context
 	_drawableCList.clear(true);
-	
+
 	CAEngraver::reposit(this);
-	
+
 	for (int i=0; i<_shadowNote.size(); i++) {
 		_shadowNote[i]->setPlayableLength(l);
 	}
-	
+
 	if (contextIdx != -1)	// restore the last used context
 		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
 	else
 		setCurrentContext(0);
-	
+
 	addToSelection(musElementSelection);
-	
+
 	checkScrollBars();
 	updateHelpers();
 }
@@ -522,7 +523,7 @@ void CAScoreViewPort::rebuild() {
 /*!
 	Sets the world Top-Left X coordinate of the viewport. Animates the scroll, if \a animate is True.
 	If \a force is True, sets the value despite the potential illegal value (like negative coordinates).
-	
+
 	\warning Repaint is not done automatically!
 */
 void CAScoreViewPort::setWorldX(int x, bool animate, bool force) {
@@ -533,7 +534,7 @@ void CAScoreViewPort::setWorldX(int x, bool animate, bool force) {
 		if (x < 0)
 			x = 0;
 	}
-	
+
 	if (animate) {
 		_targetWorldX = x;
 		_targetWorldY = _worldY;
@@ -555,7 +556,7 @@ void CAScoreViewPort::setWorldX(int x, bool animate, bool force) {
 /*!
 	Sets the world Top-Left Y coordinate of the viewport. Animates the scroll, if \a animate is True.
 	If \a force is True, sets the value despite the potential illegal value (like negative coordinates).
-	
+
 	\warning Repaint is not done automatically!
 */
 void CAScoreViewPort::setWorldY(int y, bool animate, bool force) {
@@ -566,7 +567,7 @@ void CAScoreViewPort::setWorldY(int y, bool animate, bool force) {
 		if (y < 0)
 			y = 0;
 	}
-	
+
 	if (animate) {
 		_targetWorldX = _worldX;
 		_targetWorldY = y;
@@ -580,7 +581,7 @@ void CAScoreViewPort::setWorldY(int y, bool animate, bool force) {
 	_vScrollBarDeadLock = true;
 	_vScrollBar->setValue(y);
 	_vScrollBarDeadLock = false;
-	
+
 	checkScrollBars();
 	updateHelpers();
 }
@@ -588,28 +589,28 @@ void CAScoreViewPort::setWorldY(int y, bool animate, bool force) {
 /*!
 	Sets the world width of the viewport.
 	If \a force is True, sets the value despite the potential illegal value (like negative coordinates).
-	
+
 	\warning Repaint is not done automatically!
 */
 void CAScoreViewPort::setWorldWidth(int w, bool force) {
 	if (!force) {
 		if (w < 1) return;
 	}
-	
+
 	_oldWorldW = _worldW;
 	_worldW = w;
-	
+
 	int scrollMax;
 	if ((scrollMax = ((getMaxXExtended(_drawableMList) > getMaxXExtended(_drawableCList))?getMaxXExtended(_drawableMList):getMaxXExtended(_drawableCList)) - _worldW) >= 0) {
 		if (scrollMax < _worldX)	//if you resize the widget at a large zoom level and if the getMax border has been reached
 			setWorldX(scrollMax);	//scroll the view away from the border
-			
+
 		_hScrollBarDeadLock = true;
 		_hScrollBar->setMaximum(scrollMax);
 		_hScrollBar->setPageStep(_worldW);
 		_hScrollBarDeadLock = false;
 	}
-	
+
 	_zoom = ((float)drawableWidth() / _worldW);
 
 	checkScrollBars();
@@ -618,14 +619,14 @@ void CAScoreViewPort::setWorldWidth(int w, bool force) {
 /*!
 	Sets the world height of the viewport.
 	If \a force is True, sets the value despite the potential illegal value (like negative coordinates).
-	
+
 	\warning Repaint is not done automatically!
 */
 void CAScoreViewPort::setWorldHeight(int h, bool force) {
 	if (!force) {
 		if (h < 1) return;
 	}
-	
+
 	_oldWorldH = _worldH;
 	_worldH = h;
 
@@ -633,7 +634,7 @@ void CAScoreViewPort::setWorldHeight(int h, bool force) {
 	if ((scrollMax = ((getMaxYExtended(_drawableMList) > getMaxYExtended(_drawableCList))?getMaxYExtended(_drawableMList):getMaxYExtended(_drawableCList)) - _worldH) >= 0) {
 		if (scrollMax < _worldY)	//if you resize the widget at a large zoom level and if the getMax border has been reached
 			setWorldY(scrollMax);	//scroll the view away from the border
-		
+
 		_vScrollBarDeadLock = true;
 		_vScrollBar->setMaximum(scrollMax);
 		_vScrollBar->setPageStep(_worldH);
@@ -648,7 +649,7 @@ void CAScoreViewPort::setWorldHeight(int h, bool force) {
 /*!
 	Sets the world coordinates of the viewport to the given rectangle \a coords.
 	This is an overloaded member function, provided for convenience.
-	
+
 	\warning Repaint is not done automatically!
 */
 void CAScoreViewPort::setWorldCoords(QRect coords, bool animate, bool force) {
@@ -656,7 +657,7 @@ void CAScoreViewPort::setWorldCoords(QRect coords, bool animate, bool force) {
 
 	if (!drawableWidth() && !drawableHeight())
 		return;
-	
+
 	float scale = (float)drawableWidth() / drawableHeight();	//always keep the world rectangle area in the same scale as the actual width/height of the drawable canvas
 	if (coords.height()) {	//avoid division by zero
 		if ((float)coords.width() / coords.height() > scale)
@@ -665,8 +666,8 @@ void CAScoreViewPort::setWorldCoords(QRect coords, bool animate, bool force) {
 			coords.setWidth( qRound(coords.height() * scale) );
 	} else
 		coords.setHeight( qRound(coords.width() / scale) );
-		
-	
+
+
 	setWorldWidth(coords.width(), force);
 	setWorldHeight(coords.height(), force);
 	setWorldX(coords.x(), animate, force);
@@ -680,9 +681,9 @@ void CAScoreViewPort::setWorldCoords(QRect coords, bool animate, bool force) {
 	\fn void CAScoreViewPort::setWorldCoords(int x, int y, int w, int h, bool animate, bool force)
 	Sets the world coordinates of the viewport.
 	This is an overloaded member function, provided for convenience.
-	
+
 	\warning Repaint is not done automatically!
-	
+
 	\param x Top-left X coordinate of the new viewport area in absolute world units.
 	\param y Top-left Y coordinate of the new viewport area in absolute world units.
 	\param w Width of the new viewport area in absolute world units.
@@ -694,9 +695,9 @@ void CAScoreViewPort::setWorldCoords(QRect coords, bool animate, bool force) {
 void CAScoreViewPort::zoomToSelection(bool animate, bool force) {
 	if (!_selection.size())
 		return;
-	
+
 	QRect rect;
-	
+
 	rect.setX(_selection[0]->xPos()); rect.setY(_selection[0]->yPos());
 	rect.setWidth(_selection[0]->width()); rect.setHeight(_selection[0]->height());
 	for (int i=1; i<_selection.size(); i++) {
@@ -709,7 +710,7 @@ void CAScoreViewPort::zoomToSelection(bool animate, bool force) {
 		if (_selection[i]->yPos() + _selection[i]->height() > rect.y() + rect.height())
 			rect.setHeight(_selection[i]->yPos() + _selection[i]->height() - rect.y());
 	}
-	
+
 	setWorldCoords(rect, animate, force);
 }
 
@@ -724,9 +725,9 @@ void CAScoreViewPort::zoomToHeight(bool animate, bool force) {
 }
 
 void CAScoreViewPort::zoomToFit(bool animate, bool force) {
-	int maxX = ((_drawableCList.getMaxX() > _drawableMList.getMaxX())?_drawableCList.getMaxX():_drawableMList.getMaxX()); 
-	int maxY = ((_drawableCList.getMaxY() > _drawableMList.getMaxY())?_drawableCList.getMaxY():_drawableMList.getMaxY()); 
-	
+	int maxX = ((_drawableCList.getMaxX() > _drawableMList.getMaxX())?_drawableCList.getMaxX():_drawableMList.getMaxX());
+	int maxY = ((_drawableCList.getMaxY() > _drawableMList.getMaxY())?_drawableCList.getMaxY():_drawableMList.getMaxY());
+
 	setWorldCoords(0, 0, maxX, maxY, animate, force);
 }
 
@@ -734,7 +735,7 @@ void CAScoreViewPort::zoomToFit(bool animate, bool force) {
 	Sets the world coordinates of the viewport, so the given coordinates are the center of the new viewport area.
 	If the area has for eg. negative top-left coordinates, the area is moved to the (0,0) coordinates if \a force is False.
 	ViewPort's width and height stay intact.
-	\warning Repaint is not done automatically!	
+	\warning Repaint is not done automatically!
 */
 void CAScoreViewPort::setCenterCoords(int x, int y, bool animate, bool force) {
 	_checkScrollBarsDeadLock = true;
@@ -748,9 +749,9 @@ void CAScoreViewPort::setCenterCoords(int x, int y, bool animate, bool force) {
 /*!
 	Zooms to the given level to given direction.
 	\warning Repaint is not done automatically, if \a animate is False!
-	
+
 	\param z Zoom level. (1.0 = 100%, 1.5 = 150% etc.)
-	\param x X coordinate of the point of the zoom direction. 
+	\param x X coordinate of the point of the zoom direction.
 	\param y Y coordinate of the point of the zoom direction.
 	\param animate Use smooth animated zoom.
 	\param force Use the given world units despite their illegal values (like negative coordinates etc.).
@@ -779,7 +780,7 @@ void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
 	//set the world width - updates the zoom level zoom_ as well
 	setWorldWidth((int)(drawableWidth() / z));
 	setWorldHeight((int)(drawableHeight() / z));
-	
+
 	if (!zoomOut) { //zoom in
 		//the new view's center coordinates will become the middle point of the current viewport center coords and the mouse pointer coords
 		setCenterCoords( ( _worldX + (_worldW/2) + x ) / 2,
@@ -792,7 +793,7 @@ void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
 		                 (int)(1.5*_worldY + 0.75*_worldH - 0.5*y),
 		                 force );
 	}
-	
+
 	checkScrollBars();
 	updateHelpers();
 }
@@ -802,13 +803,13 @@ void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
 	Zooms to the given level to given direction.
 	This is an overloaded member function, provided for convenience.
 	\warning Repaint is not done automatically, if \a animate is False!
-	
+
 	\param z Zoom level. (1.0 = 100%, 1.5 = 150% etc.)
 	\param p QPoint of the zoom direction.
 	\param animate Use smooth animated zoom.
 	\param force Use the given world units despite their illegal values (like negative coordinates etc.).
 */
-		
+
 /*!
 	General Qt's paint event.
 	All the music elements get actually rendered in this method.
@@ -816,7 +817,7 @@ void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
 void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	if (_holdRepaint)
 		return;
-	
+
 	// draw the border
 	QPainter p(this);
 	if (_drawBorder) {
@@ -838,14 +839,14 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		                    _canvas->height()),
 		              Qt::UniteClip);
 	}
-	
-	
+
+
 	// draw the background
 	if (_repaintArea)
 		p.fillRect(qRound((_repaintArea->x() - _worldX)*_zoom), qRound((_repaintArea->y() - _worldY)*_zoom), qRound(_repaintArea->width()*_zoom), qRound(_repaintArea->height()*_zoom), _backgroundColor);
 	else
 		p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundColor);
-	
+
 	// draw contexts
 	QList<CADrawableContext*> cList;
 	int j = _drawableCList.size();
@@ -853,7 +854,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		cList = _drawableCList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
 	else
 		cList = _drawableCList.findInRange(_worldX, _worldY, _worldW, _worldH);
-	
+
 	for (int i=0; i<cList.size(); i++) {
 		CADrawSettings s = {
 	    	           _zoom,
@@ -875,7 +876,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	for (int i=0; i<mList.size(); i++) {
 		QColor color;
 		CAMusElement *elt = mList[i]->musElement();
-		
+
 		if ( _selection.contains(mList[i])) {
 			color = selectionColor();
 		} else
@@ -909,7 +910,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 				color = disabledElementsColor();
 			}
 		}
-		
+
 		CADrawSettings s = {
 		               _zoom,
 		               qRound((mList[i]->xPos() - _worldX) * _zoom),
@@ -927,7 +928,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 			mList[i]->drawVScaleHandles(&p, s);
 		}
 	}
-	
+
 	// draw selection regions
 	for (int i=0; i<selectionRegionList().size(); i++) {
 		CADrawSettings c = {
@@ -940,7 +941,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		};
 		drawSelectionRegion( &p, c );
 	}
-	
+
 	// draw shadow note
 	if (_shadowNoteVisible) {
 		for (int i=0; i<_shadowDrawableNote.size(); i++) {
@@ -960,11 +961,11 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 			}
 		}
 	}
-	
+
 	// flush the oldWorld coordinates as they're needed for the first repaint only
 	_oldWorldX = _worldX; _oldWorldY = _worldY;
 	_oldWorldW = _worldW; _oldWorldH = _worldH;
-	
+
 	if (_repaintArea) {
 		delete _repaintArea;
 		_repaintArea = 0;
@@ -981,13 +982,13 @@ void CAScoreViewPort::updateHelpers() {
 			CADiatonicPitch dPitch(pitch, 0);
 			_shadowNote[i]->setDiatonicPitch( dPitch );
 			_shadowNote[i]->setNotePosition( pitch + (clef?clef->c1():-2) - 28 );
-			
+
 			CADrawableContext *c = _shadowDrawableNote[i]->drawableContext();
 			delete _shadowDrawableNote[i];
 			_shadowDrawableNote[i] = new CADrawableNote(_shadowNote[i], c, _xCursor, static_cast<CADrawableStaff*>(c)->calculateCenterYCoord(pitch, _xCursor), true);
 		}
 	}
-	
+
 	// Text edit widget
 	if ( textEditVisible() ) {
 		textEdit()->setFont( QFont("Century Schoolbook L", qRound(zoom()*(12-2))) );
@@ -1028,7 +1029,7 @@ void CAScoreViewPort::unsetBorder() {
 	Note that repaint() event is also triggered when the internal drawable canvas changes its size (for eg. when scrollbars are shown/hidden) and the size of the viewport does not change.
 */
 void CAScoreViewPort::resizeEvent(QResizeEvent *e) {
-	setWorldCoords( _worldX, _worldY, qRound(drawableWidth() / _zoom), qRound(drawableHeight() / _zoom) );	
+	setWorldCoords( _worldX, _worldY, qRound(drawableWidth() / _zoom), qRound(drawableHeight() / _zoom) );
 	// setWorld methods already check for scrollbars
 }
 
@@ -1040,7 +1041,7 @@ void CAScoreViewPort::resizeEvent(QResizeEvent *e) {
 void CAScoreViewPort::checkScrollBars() {
 	if ((isScrollBarVisible() != ScrollBarShowIfNeeded) || (_checkScrollBarsDeadLock))
 		return;
-	
+
 	bool change = false;
 	_holdRepaint = true;	// disable repaint until the scrollbar values are set
 	_checkScrollBarsDeadLock = true;	// disable any further method calls until the method is over
@@ -1054,7 +1055,7 @@ void CAScoreViewPort::checkScrollBars() {
 			_hScrollBar->hide();
 			change = true;
 		}
-	
+
 	if ((((getMaxYExtended(_drawableMList) > getMaxYExtended(_drawableCList))?getMaxYExtended(_drawableMList):getMaxYExtended(_drawableCList)) - worldHeight() > 0) || (_vScrollBar->value()!=0)) { //if scrollbar is needed
 		if (!_vScrollBar->isVisible()) {
 			_vScrollBar->show();
@@ -1065,12 +1066,12 @@ void CAScoreViewPort::checkScrollBars() {
 			_vScrollBar->hide();
 			change = true;
 		}
-	
+
 	if (change) {
 		setWorldHeight((int)(drawableHeight() / _zoom));
 		setWorldWidth((int)(drawableWidth() / _zoom));
 	}
-	
+
 	_holdRepaint = false;
 	_checkScrollBarsDeadLock = false;
 }
@@ -1095,7 +1096,7 @@ void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 			setResizeDirection(CADrawable::Bottom);
 		}
 	}
-	
+
 	emit CAMousePressEvent(e, coords, this);
 }
 
@@ -1114,10 +1115,10 @@ void CAScoreViewPort::mouseReleaseEvent(QMouseEvent *e) {
 */
 void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 	QPoint coords((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY);
-	
+
 	_xCursor = coords.x();
 	_yCursor = coords.y();
-	
+
 	bool isHScalable = false;
 	for ( int i=0; i<selection().size() && !isHScalable; i++) {
 		if ( selection()[i]->isHScalable() && (coords.x()==selection()[i]->xPos() || coords.x()==selection()[i]->xPos()+selection()[i]->width()) &&
@@ -1125,7 +1126,7 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 		   )
 			isHScalable = true;
 	}
-	
+
 	bool isVScalable = false;
 	for ( int i=0; i<selection().size() && !isVScalable; i++) {
 		if ( selection()[i]->isVScalable() && (coords.y()==selection()[i]->yPos() || coords.y()==selection()[i]->yPos()+selection()[i]->height()) &&
@@ -1133,14 +1134,14 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 		   )
 			isVScalable = true;
 	}
-	
+
 	if (isHScalable)
 		setCursor(Qt::SizeHorCursor);
 	else if (isVScalable)
 		setCursor(Qt::SizeVerCursor);
 	else
 		setCursor(Qt::ArrowCursor);
-	
+
 	emit CAMouseMoveEvent(e, coords, this);
 
 	if (_shadowNoteVisible) {
@@ -1154,10 +1155,10 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 */
 void CAScoreViewPort::wheelEvent(QWheelEvent *e) {
 	QPoint coords((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY);
-	
-	emit CAWheelEvent(e, coords, this);	
 
-	_xCursor = (int)(e->x() / _zoom) + _worldX;	//TODO: _xCursor and _yCursor are still the old one. Somehow, _zoom level and _worldX/Y are not updated when emmiting CAWheel event. -Matevz 
+	emit CAWheelEvent(e, coords, this);
+
+	_xCursor = (int)(e->x() / _zoom) + _worldX;	//TODO: _xCursor and _yCursor are still the old one. Somehow, _zoom level and _worldX/Y are not updated when emmiting CAWheel event. -Matevz
 	_yCursor = (int)(e->y() / _zoom) + _worldY;
 }
 
@@ -1171,19 +1172,19 @@ void CAScoreViewPort::keyPressEvent(QKeyEvent *e) {
 
 void CAScoreViewPort::setScrollBarVisible(CAScrollBarVisibility status) {
 	_scrollBarVisible = status;
-	
+
 	if ((status == ScrollBarAlwaysVisible) && (!_hScrollBar->isVisible())) {
 		_hScrollBar->show();
 		_vScrollBar->show();
 		return;
 	}
-	
+
 	if ((status == ScrollBarAlwaysHidden) && (_hScrollBar->isVisible())) {
 		_hScrollBar->hide();
 		_vScrollBar->hide();
 		return;
 	}
-	
+
 	checkScrollBars();
 }
 
@@ -1214,7 +1215,7 @@ void CAScoreViewPort::leaveEvent(QEvent *e) {
 	_shadowNoteVisible = false;
 	repaint();
 }
-		
+
 void CAScoreViewPort::enterEvent(QEvent *e) {
 	_shadowNoteVisible = _shadowNoteVisibleOnLeave;
 	repaint();
@@ -1231,22 +1232,22 @@ void CAScoreViewPort::startAnimationTimer() {
 	Selects the next music element in the current context (voice, if selectedVoice is set) or appends the next music element
 	to the selection, if \a append is True.
 	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
-	
+
 	This method is usually called when using the right arrow key.
 */
 CADrawableMusElement *CAScoreViewPort::selectNextMusElement( bool append ) {
 	if (_selection.isEmpty())
 		return 0;
-	
+
 	CAMusElement *musElement = _selection.back()->musElement();
 	if ( selectedVoice() )
 		musElement = selectedVoice()->next(musElement);
 	else
 		musElement = musElement->context()->next(musElement);
-	
+
 	if (!musElement)
 		return 0;
-	
+
 	if (append)
 		return addToSelection( musElement );
 	else
@@ -1257,22 +1258,22 @@ CADrawableMusElement *CAScoreViewPort::selectNextMusElement( bool append ) {
 	Selects the next music element in the current context (voice, if selectedVoice is set) or appends the next music element
 	to the selection, if \a append is True.
 	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
-	
+
 	This method is usually called when using the left arrow key.
 */
 CADrawableMusElement *CAScoreViewPort::selectPrevMusElement( bool append ) {
 	if (_selection.isEmpty())
 		return 0;
-	
+
 	CAMusElement *musElement = _selection.front()->musElement();
 	if ( selectedVoice() )
 		musElement = selectedVoice()->previous(musElement);
 	else
 		musElement = musElement->context()->previous(musElement);
-	
+
 	if (!musElement)
 		return 0;
-	
+
 	if (append)
 		return addToSelection( musElement );
 	else
@@ -1282,28 +1283,28 @@ CADrawableMusElement *CAScoreViewPort::selectPrevMusElement( bool append ) {
 /*!
 	Selects the upper music element in the current context.
 	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
-	
+
 	This method is usually called when using the up arrow key.
 	\todo Still needs to be written. Currently, it only returns the currently selected element.
 */
 CADrawableMusElement *CAScoreViewPort::selectUpMusElement() {
 	if (_selection.isEmpty())
 		return 0;
-	
+
 	return _selection.front();
 }
 
 /*!
 	Selects the lower music element in the current context.
 	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
-	
+
 	This method is usually called when using the up arrow key.
 	\todo Still needs to be written. Currently, it only returns the currently selected element.
 */
 CADrawableMusElement *CAScoreViewPort::selectDownMusElement() {
 	if (_selection.isEmpty())
 		return 0;
-	
+
 	return _selection.front();
 }
 
@@ -1313,10 +1314,10 @@ CADrawableMusElement *CAScoreViewPort::selectDownMusElement() {
 void CAScoreViewPort::addToSelection( CADrawableMusElement *elt, bool triggerSignal ) {
 	int i;
 	for (i=0; i<_selection.size() && _selection[i]->xPos() < elt->xPos(); i++);
-	
+
 	if ( elt->isSelectable() )
 		_selection.insert( i, elt );
-	
+
 	if ( triggerSignal )
 		emit selectionChanged();
 }
@@ -1329,7 +1330,7 @@ void CAScoreViewPort::addToSelection(const QList<CADrawableMusElement*> list, bo
 		if ( selectableOnly && list[i]->isSelectable() )
 			addToSelection(list[i], false);
 	}
-	
+
 	emit selectionChanged();
 }
 
@@ -1342,7 +1343,7 @@ CADrawableMusElement *CAScoreViewPort::addToSelection(CAMusElement *elt) {
 		if ( static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement() == elt )
 			addToSelection(static_cast<CADrawableMusElement*>(_drawableMList.at(i)));
 	}
-	
+
 	emit selectionChanged();
 	return _selection.back();
 }
@@ -1359,7 +1360,7 @@ void CAScoreViewPort::addToSelection(const QList<CAMusElement*> elts) {
 			}
 		}
 	}
-	
+
 	emit selectionChanged();
 }
 
@@ -1371,7 +1372,7 @@ void CAScoreViewPort::selectAll() {
 
 	for(int i=0; i<_drawableMList.size(); i++)
 		addToSelection(_drawableMList.at(i), false);
-	
+
 	emit selectionChanged();
 }
 
@@ -1381,28 +1382,28 @@ void CAScoreViewPort::selectAll() {
 void CAScoreViewPort::invertSelection() {
 	QList<CADrawableMusElement *> oldSelection = selection();
 	clearSelection();
-	
+
 	for(int i=0; i<_drawableMList.size(); i++)
 		if(!oldSelection.contains(_drawableMList.at(i)))
 			addToSelection(_drawableMList.at(i), false);
-	
+
 	emit selectionChanged();
 }
 
 /*!
 	Finds the drawable instance of the given abstract music element.
-	
+
 	\sa findCElement()
 */
 CADrawableMusElement *CAScoreViewPort::findMElement(CAMusElement *elt) {
 	for (int i=0; i<_drawableMList.size(); i++)
 		if ( static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement()==elt )
 			return static_cast<CADrawableMusElement*>(_drawableMList.at(i));
-}	
-	
+}
+
 /*!
 	Finds the drawable instance of the given abstract context.
-	
+
 	\sa findMElement()
 */
 CADrawableContext *CAScoreViewPort::findCElement(CAContext *context) {
@@ -1414,13 +1415,13 @@ CADrawableContext *CAScoreViewPort::findCElement(CAContext *context) {
 /*!
 	Creates a CATextEdit widget over the existing drawable syllable \a dMusElt.
 	Returns the pointer to the created widget.
-	
+
 	\sa createTextEdit( QRect geometry )
 */
 CATextEdit *CAScoreViewPort::createTextEdit( CADrawableMusElement *dMusElt ) {
 	if ( !dMusElt || !dMusElt->musElement() )
 		return 0;
-	
+
 	int xPos=dMusElt->xPos(), yPos=dMusElt->yPos(),
 	    width=100, height=25;
 	QString text;
@@ -1428,11 +1429,11 @@ CATextEdit *CAScoreViewPort::createTextEdit( CADrawableMusElement *dMusElt ) {
 		CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(dMusElt->drawableContext());
 		CASyllable *syllable = static_cast<CASyllable*>(dMusElt->musElement());
 		if (!dlc || !syllable) return 0;
-		
+
 		CADrawableMusElement *dRight = findMElement( dlc->lyricsContext()->next( syllable ) );
 		if (dRight)
 			width = dRight->xPos() - dMusElt->xPos();
-		
+
 		text = syllable->text();
 		if (syllable->hyphenStart()) text+="-";
 		else if (syllable->melismaStart()) text+="_";
@@ -1444,13 +1445,13 @@ CATextEdit *CAScoreViewPort::createTextEdit( CADrawableMusElement *dMusElt ) {
 			text = static_cast<CABookMark*>(elt)->text();
 		}
 	}
-	
+
 	textEdit()->setText(text);
 	setTextEditVisible( true );
 	setTextEditGeometry( QRect(xPos-2, yPos, width+2, height) );
 	updateHelpers(); // show it
 	textEdit()->setFocus();
-	
+
 	return textEdit();
 }
 
@@ -1463,7 +1464,7 @@ void CAScoreViewPort::removeTextEdit() {
 	textEdit()->setText("");
 	this->setFocus();
 }
-	
+
 /*!
 	Returns the maximum X of the viewable World a little bigger to make insertion at the end easy.
 */
@@ -1493,7 +1494,7 @@ QList<CADrawableContext*> CAScoreViewPort::findContextsInRegion( QRect &region )
 
 /*!
 	Returns Canorus time for the given X coordinate \a x.
-	
+
 	Returns 0, if no contexts are present.
 */
 int CAScoreViewPort::coordsToTime( int x ) {
@@ -1504,7 +1505,7 @@ int CAScoreViewPort::coordsToTime( int x ) {
 		_drawableMList.addElement(d1);
 		d1 = newD1;
 	}
-	
+
 	CADrawableMusElement *d2 = nearestRightElement( x, 0, false );
 	if ( selection().contains(d2) ) {
 		_drawableMList.list().removeAll(d2);
@@ -1512,7 +1513,7 @@ int CAScoreViewPort::coordsToTime( int x ) {
 		_drawableMList.addElement(d2);
 		d2 = newD2;
 	}
-	
+
 	if ( d1 && d2 && d1->musElement() && d2->musElement() ) {
 		int delta = (d2->xPos() - d1->xPos());
 		if (!delta) delta=1;
@@ -1538,14 +1539,14 @@ int CAScoreViewPort::timeToCoords( int time ) {
 		         _drawableMList.at(i)->xPos() > leftElt->xPos() ) // get the right-most element of that time
 		   )
 			leftElt = _drawableMList.at(i);
-		
+
 		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeStart() >= time && (
 				!rightElt || _drawableMList.at(i)->musElement()->timeStart() < rightElt->musElement()->timeStart() ||
 		        _drawableMList.at(i)->xPos() < rightElt->xPos() ) // get the left-most element of that time
 		   )
 			rightElt = _drawableMList.at(i);
 	}
-	
+
 	if ( leftElt && rightElt && leftElt->musElement() && rightElt->musElement() ) {
 		int delta = (rightElt->musElement()->timeStart() - leftElt->musElement()->timeStart());
 		if (!delta) delta=1;
@@ -1561,7 +1562,7 @@ void CAScoreViewPort::setShadowNoteLength( CAPlayableLength l ) {
 	for (int i=0; i<_shadowNote.size(); i++) {
 		_shadowNote[i]->setPlayableLength( l );
 	}
-	
+
 	updateHelpers();
 }
 
@@ -1608,25 +1609,25 @@ void CAScoreViewPort::setShadowNoteLength( CAPlayableLength l ) {
 /*!
 	\fn void CAScoreViewPort::setRepaintArea(QRect *area)
 	Sets the area to be repainted, not the whole widget.
-	
+
 	\sa clearRepaintArea()
-*/ 
+*/
 
 /*!
 	\fn void CAScoreViewPort::clearRepaintArea()
 	Disables and deletes the area to be repainted.
-	
+
 	\sa setRepaintArea()
 */
 
 /*!
 	\fn void CAScoreViewPort::CAMousePressEvent(QMouseEvent *e, QPoint p, CAScoreViewPort *v)
-	
+
 	This signal is emitted when mousePressEvent() is called. Parent class is usually connected to this event.
 	It adds another two arguments to the mousePressEvent() function - pointer to this viewport and coordinates
 	in world coordinates where user used the mouse.
 	This is useful when a parent class wants to know which class the signal was emmitted by.
-	
+
 	\param e Mouse event which gets processed.
 	\param p Coordinates of the mouse cursor in absolute world values.
 	\param v Pointer to this viewport (the viewport which emmitted the signal).
@@ -1634,12 +1635,12 @@ void CAScoreViewPort::setShadowNoteLength( CAPlayableLength l ) {
 
 /*!
 	\fn void CAScoreViewPort::CAMouseMoveEvent(QMouseEvent *e, QPoint p, CAScoreViewPort *v)
-	
+
 	This signal is emitted when mouseMoveEvent() is called. Parent class is usually connected to this event.
 	It adds another two arguments to the mouseMoveEvent() function - pointer to this viewport and coordinates
 	in world coordinates where user used the mouse.
 	This is useful when a parent class wants to know which class the signal was emmitted by.
-	
+
 	\param e Mouse event which gets processed.
 	\param p Coordinates of the mouse cursor in absolute world values.
 	\param v Pointer to this viewport (the viewport which emmitted the signal).
@@ -1647,12 +1648,12 @@ void CAScoreViewPort::setShadowNoteLength( CAPlayableLength l ) {
 
 /*!
 	\fn void CAScoreViewPort::CAMouseReleaseEvent(QMouseEvent *e, QPoint p, CAScoreViewPort *v)
-	
+
 	This signal is emitted when mouseReleaseEvent() is called. Parent class is usually connected to this event.
 	It adds another two arguments to the mouseReleaseEvent() function - pointer to this score viewport and coordinates
 	in world coordinates where user used the mouse.
 	This is useful when a parent class wants to know which class the signal was emmitted by.
-	
+
 	\param e Mouse event which gets processed.
 	\param p Coordinates of the mouse cursor in absolute world values.
 	\param v Pointer to this viewport (the viewport which emmitted the signal).
@@ -1660,12 +1661,12 @@ void CAScoreViewPort::setShadowNoteLength( CAPlayableLength l ) {
 
 /*!
 	\fn void CAScoreViewPort::CAWheelEvent(QWheelEvent *e, QPoint p, CAScoreViewPort *v)
-	
+
 	This signal is emitted when wheelEvent() is called. Parent class is usually connected to this event.
 	It adds another two arguments to the wheelEvent() function - pointer to this score viewport and coordinates
 	in world coordinates where user used the mouse.
 	This is useful when a parent class wants to know which class the signal was emmitted by.
-	
+
 	\param e Wheel event which gets processed.
 	\param p Coordinates of the mouse cursor in absolute world values.
 	\param v Pointer to this viewport (the viewport which emmitted the signal).
@@ -1673,11 +1674,11 @@ void CAScoreViewPort::setShadowNoteLength( CAPlayableLength l ) {
 
 /*!
 	\fn void CAScoreViewPort::CAKeyPressEvent(QKeyEvent *e, CAScoreViewPort *v)
-	
+
 	This signal is emitted when keyPressEvent() is called. Parent class is usually connected to this event.
 	It adds another two arguments to the wheelEvent() function - pointer to this score viewport.
 	This is useful when a parent class wants to know which class the signal was emmitted by.
-	
+
 	\param e Wheel event which gets processed.
 	\param v Pointer to this viewport (the viewport which emmitted the signal).
 */
