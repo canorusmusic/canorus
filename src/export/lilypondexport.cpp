@@ -16,6 +16,8 @@
 #include "core/sheet.h"
 #include "core/staff.h"
 #include "core/voice.h"
+#include "core/mark.h"
+#include "core/text.h"
 
 /*!
 	\class CALilyPondExport
@@ -178,12 +180,30 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				break;
 			}
 		}
+		
+		exportMarks(v->musElementAt(i));
 	}
 	
 	// end of the voice block
 	indentLess();
 	indent();
 	out() << "\n}";
+}
+
+/*!
+	Exports the music element's \a elt marks.
+*/
+void CALilyPondExport::exportMarks( CAMusElement *elt ) {
+	for (int i=0; i<elt->markList().size(); i++) {
+		CAMark *curMark = elt->markList()[i];
+		
+		switch ( curMark->markType() ) {
+		case CAMark::Text: {
+			out() << "^\"" << static_cast<CAText*>(curMark)->text() << "\" ";
+			break;
+		}
+		}
+	}
 }
 
 /*!
