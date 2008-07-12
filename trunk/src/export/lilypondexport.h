@@ -46,6 +46,7 @@ private:
 	void exportVoiceImpl(CAVoice *voice);
 	void exportLyricsContextBlock(CALyricsContext *lc);
 	void exportLyricsContextImpl(CALyricsContext* lc);
+	void exportMarks( CAMusElement* );
 	
 	void writeDocumentHeader();
 	CADiatonicPitch writeRelativeIntro();
