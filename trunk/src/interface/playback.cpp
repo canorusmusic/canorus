@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -29,7 +29,7 @@
 	\brief Audio playback of the score.
 	This class creates playback events (usually MIDI events) for the music elements and sends these events to
 	one of the playback devices (usually CAMidiDevice).
-	
+
 	To use the playback capabilities:
 	1) Create one of the CAMidiDevices (eg. CARtMidiDevice) and configure it (open output/input port).
 	2) Create CAPlayback object passing it the current score viewport (played notes will be painted red) or only
@@ -37,7 +37,7 @@
 	3) Optionally configure playback (setInitTimeStart() to start playback from the specific time. Default 0).
 	4) Call myPlaybackObject->run(). This will start playing in a new thread.
 	5) Call myPlaybackObject->stop() to stop the playback. Playback also stops automatically when finished.
-	
+
 	The playbackFinished() signal is emitted once playback has finished or stopped.
 */
 
@@ -49,7 +49,7 @@ CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
 	setStopLock(false);
 	connect(this, SIGNAL(finished()), SLOT(stopNow()));
 	_playSelectionOnly = false;
-	
+
 	_repeating=0;
 	_lastRepeatOpenIdx=0;
 	_curTime=0;
@@ -67,12 +67,12 @@ CAPlayback::CAPlayback( QList<CAMusElement*> elts, CAMidiDevice *m, int port ) {
 	_playSelectionOnly = true;
 	_selection = elts;
 	connect(this, SIGNAL(finished()), SLOT(stopNow()));
-	
+
 	_repeating=0;
 	_lastRepeatOpenIdx=0;
 	_curTime=0;
 	_streamIdx=0;
-	
+
 	m->openOutputPort( port );
 }
 
@@ -84,16 +84,16 @@ CAPlayback::~CAPlayback() {
 		terminate();
 		wait();
 	}
-	
+
 	if (_repeating)
 		delete [] _repeating;
-	
+
 	if (_lastRepeatOpenIdx)
 		delete [] _lastRepeatOpenIdx;
-	
+
 	if (_curTime)
 		delete [] _curTime;
-	
+
 	if (_streamIdx)
 		delete [] _streamIdx;
 }
@@ -103,20 +103,20 @@ void CAPlayback::run() {
 		playSelectionImpl();
 		return;
 	}
-	
+
 	// list of all the music element lists (ie. streams) taken from all the contexts
-	QList< QList<CAMusElement*> > stream; 
+	QList< QList<CAMusElement*> > stream;
 	QVector<unsigned char> message;	// midi 3-byte message sent to midi device
-	
+
 	// initializes all the streams, indices, repeat barlines etc.
 	if ( !streamCount() )
 		initStreams( sheet() );
-	
+
 	if ( !streamCount() )
 		stop();
 	else
 		setStop(false);
-	
+
 	int minLength = -1;
 	float sleepFactor = 1.0;  // set by tempo to determine the miliseconds for sleep
 	int mSeconds=0;           // actual song time, used when creating a midi file
@@ -124,9 +124,9 @@ void CAPlayback::run() {
 		for (int i=0; i<streamCount(); i++) {
 			loopUntilPlayable(i);
 		}
-		
+
 		for (int i=0; i<_curPlaying.size(); i++) {
-			if ( _stop || _curPlaying[i]->timeStart() + _curPlaying[i]->timeLength() <= curTime(i) ) {
+			if ( _stop || _curPlaying[i]->timeEnd() <= curTime(i) ) {
 				// note off
 				CANote *note = dynamic_cast<CANote*>(_curPlaying[i]);
 				if (note) {
@@ -138,12 +138,12 @@ void CAPlayback::run() {
 						midiDevice()->send(message, mSeconds);
 					message.clear();
 				}
-				_curPlaying.removeAt(i--);				
+				_curPlaying.removeAt(i--);
 			}
 		}
 
 		if (_stop) continue;	// no notes on anymore
-		
+
 		minLength = -1;
 		for (int i=0; i<streamCount(); i++) {
 			while ( streamAt(i).size() > streamIdx(i) &&
@@ -151,10 +151,10 @@ void CAPlayback::run() {
 			      ) {
 				// note on
 				CANote *note = dynamic_cast<CANote*>(streamAt(i).at(streamIdx(i)));
-				
+
 				if (note) {
 				    QVector<unsigned char> message;
-				    
+
 				    // send dynamic information
 				    for (int j=0; j<note->markList().size(); j++) {
 				    	if ( note->markList()[j]->markType()==CAMark::Dynamic ) {
@@ -177,53 +177,53 @@ void CAPlayback::run() {
 				    		);
 				    	}
 				    }
-				    
+
 					message << (144 + note->voice()->midiChannel()); // note on
 					message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
 					message << (127);
 					if ( !note->tieEnd() )
 						midiDevice()->send(message, mSeconds);
 					message.clear();
-					
+
 					_curPlaying << static_cast<CAPlayable*>(streamAt(i).at(streamIdx(i)));
 				}
-				
+
 				int delta;
-				if ( (delta = streamAt(i).at(streamIdx(i))->timeStart() + streamAt(i).at(streamIdx(i))->timeLength() - _curTime[i]) < minLength
+				if ( (delta = (streamAt(i).at(streamIdx(i))->timeEnd() - _curTime[i])) < minLength
 				    ||
 				     minLength==-1
 				   )
 					minLength = delta;
-				
+
 				streamIdx(i)++;
 			}
-			
+
 			// calculate the pause needed by msleep
+			// last playables in the stream - _curPlaying is otherwise always set!
+			// pre-last pass, set minLength to their timeLengths to stop the notes
+			// \ŧodo curtime() below doesn't work yet for asynchrone staffs (not-aligned repeat bars)
+			for (int j=0; j<_curPlaying.size(); j++) {
+				if ((_curPlaying[j]->timeEnd() - curTime(i)) < minLength || minLength==-1)
+					minLength =_curPlaying[j]->timeEnd() - curTime(i);
+			}
 		}
-		
-		// last playables in the stream - _curPlaying is otherwise always set!
-		// pre-last pass, set minLength to their timeLengths to stop the notes
-		for (int i=0; i<_curPlaying.size(); i++) {
-			if (_curPlaying[i]->timeLength() < minLength || minLength==-1)
-				minLength = _curPlaying[i]->timeLength();			
-		}
-		
+
 		if (minLength==-1) {
 			// last pass, notes indices are at the ends and no notes are played anymore
 			setStop(true);
 		}
-		
+
 		if (minLength!=-1) {
 			mSeconds += qRound(minLength*sleepFactor);
-			
+
 			if ( midiDevice()->isRealTime() )
 				msleep( qRound(minLength*sleepFactor) );
-			
+
 			for (int i=0; i<streamCount(); i++)
 				curTime(i) += minLength;
 		}
 	}
-	
+
 	_curPlaying.clear();
 	stop();
 }
@@ -233,14 +233,14 @@ void CAPlayback::playSelectionImpl() {
 	for (int i=0; i<_selection.size(); i++) {
 		if ( _selection[i]->musElementType()!=CAMusElement::Note )
 			continue;
-		
+
 		CANote *note = static_cast<CANote*>(_selection[i]);
-		
+
 		message << (192 + note->voice()->midiChannel()); // change program
 		message << (note->voice()->midiProgram());
 		midiDevice()->send(message, 0);
 		message.clear();
-		
+
 		message << (176 + note->voice()->midiChannel()); // set volume
 		message << (7);
 		message << (100);
@@ -253,22 +253,22 @@ void CAPlayback::playSelectionImpl() {
 		midiDevice()->send(message, 0);
 		message.clear();
 	}
-	
+
 	msleep( qRound(500) );
-	
+
 	for (int i=0; i<_selection.size(); i++) {
 		if ( _selection[i]->musElementType()!=CAMusElement::Note )
 			continue;
-		
+
 		CANote *note = static_cast<CANote*>(_selection[i]);
-		
+
 		message << (128 + note->voice()->midiChannel()); // note off
 		message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
 		message << (127);
 		midiDevice()->send(message, 0);
 		message.clear();
 	}
-	
+
 	// output ports are closed in MainWin
 }
 
@@ -285,20 +285,20 @@ void CAPlayback::stop() {
 /*!
 	Stop playback and clean up.
 	Blocks until all cleanups are done.
-	
+
 	\sa stop()
 */
 void CAPlayback::stopNow()
 {
-	if(stopLock()) 
+	if(stopLock())
 		return;
 	setStopLock(true);
 	if(isRunning()) { // stopNow() was _not_ called by the finished() signal (i.e. it was called from another thread)
 		// stop playback and wait for the thread to finish.
-		stop(); 
+		stop();
 		wait(); // (QThread::finished() will be emitted here, so we need the lock flag)
 	}
-	setStopLock(false); 
+	setStopLock(false);
 	emit playbackFinished();
 }
 
@@ -312,13 +312,13 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 			// add all the voices lists to the common list stream
 			for (int j=0; j < staff->voiceCount(); j++) {
 				_stream << staff->voiceAt(j)->musElementList();
-				
+
 				QVector<unsigned char> message;
 				message << (192 + staff->voiceAt(j)->midiChannel()); // change program
 				message << (staff->voiceAt(j)->midiProgram());
 				midiDevice()->send(message, 0);
 				message.clear();
-				
+
 				message << (176 + staff->voiceAt(j)->midiChannel()); // set volume
 				message << (7);
 				message << (100);
@@ -331,7 +331,7 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 	_curTime = new int[streamCount()];
 	_lastRepeatOpenIdx = new int[streamCount()];
 	_repeating = new bool[streamCount()];
-	
+
 	// init streams indices, current times and last repeat barlines
 	for (int i=0; i<streamCount(); i++) {
 		curTime(i) = getInitTimeStart();
@@ -360,7 +360,7 @@ void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
 		   ) {
 			lastRepeatOpenIdx(i) = j;
 		}
-		
+
 		if ( streamAt(i).at(j)->musElementType()==CAMusElement::Barline &&
 		     static_cast<CABarline*>(streamAt(i).at(j))->barlineType()==CABarline::RepeatClose &&
 		     !ignoreRepeats ) {
@@ -373,7 +373,7 @@ void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
 			}
 		}
 	}
-	
+
 	// last element if non-playable is exception - increase the index counter
 	if (streamIdx(i)==streamAt(i).size()-1 && !streamAt(i).at(streamIdx(i))->isPlayable())
 		streamIdx(i)++;

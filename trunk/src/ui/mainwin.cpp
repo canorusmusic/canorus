@@ -3352,7 +3352,7 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		li.wait();
 
 		CAVoice *newVoice = li.importedVoice();
-		delete oldVoice; // also removes voice from the staff
+		oldVoice->staff()->removeVoice(oldVoice);
 
 		newVoice->staff()->addVoice( newVoice );
 		newVoice->staff()->synchronizeVoices();
@@ -3367,6 +3367,8 @@ void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
 		v->setVoice( newVoice );
 		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI(document(), newVoice->staff()->sheet());
+		oldVoice->staff()->addVoice(oldVoice);
+		delete oldVoice; // also removes voice from the staff
 	} else
 	if (v->lyricsContext()) {
 		// LilyPond lyrics source
