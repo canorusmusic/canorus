@@ -1,7 +1,7 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICNESE.GPL for details.
 */
 
@@ -19,7 +19,7 @@ class CALyricsContext;
 
 class CAVoice : public CAResourceContainer {
 	friend class CAStaff; // used for insertion of music elements and updateTimes() when inserting elements and synchronizing voices
-	
+
 public:
 	CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection=CANote::StemNeutral, int voiceNumber=0 );
 	~CAVoice();
@@ -37,7 +37,7 @@ public:
 	bool insert( CAMusElement *before, CAMusElement *elt, bool addToChord=false );
 	bool remove( CAMusElement *elt, bool updateSignsTimes=true );
 	bool synchronizeMusElements();
-	
+
 	//////////////////////////////
 	// Voice analysis and query //
 	//////////////////////////////
@@ -45,16 +45,16 @@ public:
 	inline CAMusElement *musElementAt(int i) { return musElementList()[i]; }
 	inline int indexOf(CAMusElement *elt) { return musElementList().indexOf(elt); }
 	inline bool contains(CAMusElement *elt) { return musElementList().contains(elt); }
-	
+
 	QList<CAMusElement*> getSignList();
 	QList<CANote*> getNoteList();
 	bool containsPitch( int noteName , int timeStart );
 	bool containsPitch( CADiatonicPitch p, int timeStart );
 	CANote *nextNote(int timeStart);
 	CANote *previousNote(int timeStart);
-	
+
 	QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
-	
+
 	inline QList<CAMusElement*>& musElementList() { return _musElementList; }
 	inline int lastTimeEnd() { return (musElementList().size()?musElementList().back()->timeEnd():0); }
 	inline int lastTimeStart() { return (musElementList().size()?musElementList().back()->timeStart():0); }
@@ -66,45 +66,44 @@ public:
 	CANote*     lastNote();
 	CAClef*            getClef(CAMusElement *elt);
 	QList<CAPlayable*> getChord(int time);
-	
+
 	////////////////
 	// Properties //
 	////////////////
-	inline int voiceNumber() { return _voiceNumber; }
-	inline bool isFirstVoice() { return (_voiceNumber==1); }
-	inline void setVoiceNumber(int nr) { _voiceNumber = nr; }
+	inline int voiceNumber() { return (staff()?(staff()->voiceIndex(this)+1):1); }
+	inline bool isFirstVoice() { return (voiceNumber()==1); }
 
 	inline CANote::CAStemDirection stemDirection() { return _stemDirection; }
 	inline void setStemDirection( CANote::CAStemDirection direction ) { _stemDirection = direction; }
-	
+
 	inline const QString name() { return _name; }
 	inline void setName(const QString name) { _name = name; }
-	
+
 	inline unsigned char midiChannel() { return _midiChannel; }
 	inline void setMidiChannel(const unsigned char ch) { _midiChannel = ch; }
-	
+
 	inline unsigned char midiProgram() { return _midiProgram; }
 	inline void setMidiProgram(const unsigned char program) { _midiProgram = program; }
-	
+
 	inline QList<CALyricsContext*> lyricsContextList() { return _lyricsContextList; }
 	inline void addLyricsContext( CALyricsContext *lc ) { _lyricsContextList << lc; }
 	inline void setLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList = list; }
 	inline void addLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList += list; }
 	inline bool removeLyricsContext( CALyricsContext *lc ) { return _lyricsContextList.removeAll(lc); }
-	
+
 private:
 	bool addNoteToChord(CANote *note, CANote *referenceNote);
 	bool insertMusElement( CAMusElement *before, CAMusElement *elt );
 	bool updateTimes( int idx, int length, bool signsToo=false );
-	
+
 	QList<CAMusElement *> _musElementList;
 	CAStaff *_staff; // parent staff
 	int _voiceNumber; // voice number starting at 1
 	CANote::CAStemDirection _stemDirection;
 	QList<CALyricsContext*> _lyricsContextList;
-	
+
 	QString _name;
-	
+
 	/////////////////////
 	// MIDI properties //
 	/////////////////////

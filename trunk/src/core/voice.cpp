@@ -1,7 +1,7 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -20,10 +20,10 @@
 /*!
 	\class CAVoice
 	\brief Class which represents a voice in the staff.
-	
+
 	CAVoice is a class which holds music elements in the staff. In hieararchy, staff
 	includes multiple voices and every voice includes multiple music elements.
-	
+
 	\sa CAStaff, CAMusElement
 */
 
@@ -35,14 +35,14 @@ CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection st
  : CAResourceContainer() {
 	_staff = staff;
 	_name = name;
-	
+
 	if ( !voiceNumber && staff ) {
 		_voiceNumber = staff->voiceCount()+1;
 	} else {
 		_voiceNumber = voiceNumber;
 	}
 	_stemDirection = stemDirection;
-	
+
 	_midiChannel = (staff ? CAMidiDevice::freeMidiChannel( staff->sheet() ) : 0);
 	_midiProgram = 0;
 }
@@ -50,15 +50,15 @@ CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection st
 /*!
 	Clears and destroys the current voice.
 	This also destroys all non-shared music elements held by the voice.
-	
+
 	\sa clear()
 */
 CAVoice::~CAVoice() {
 	clear();
-	
+
 	for (int i=0; i<lyricsContextList().size(); i++)
 		lyricsContextList().at(i)->setAssociatedVoice( 0 );
-	
+
 	if (staff())
 		staff()->removeVoice(this);
 }
@@ -71,7 +71,7 @@ CAVoice *CAVoice::clone( CAStaff* newStaff ) {
 	CAVoice *newVoice = new CAVoice( name(), newStaff );
 	newVoice->cloneVoiceProperties( this );
 	newVoice->setStaff( newStaff );
-	
+
 	return newVoice;
 }
 
@@ -81,7 +81,6 @@ CAVoice *CAVoice::clone( CAStaff* newStaff ) {
 void CAVoice::cloneVoiceProperties( CAVoice *voice ) {
 	setName( voice->name() );
 	setStaff( voice->staff() );
-	setVoiceNumber( voice->voiceNumber() );
 	setStemDirection( voice->stemDirection() );
 	setMidiChannel( voice->midiChannel() );
 	setMidiProgram( voice->midiProgram() );
@@ -98,7 +97,7 @@ CAVoice *CAVoice::clone() {
 
 /*!
 	Destroys all non-shared music elements held by the voice.
-	
+
 	When clearing the whole staff, make sure the voice is *deleted*.
 	It is automatically removed from the staff - in voice's destructor.
 */
@@ -114,20 +113,20 @@ void CAVoice::clear() {
 
 /*!
 	Appends a playable \a elt (note or rest) at the end of the voice.
-	
+
 	If \a addToChord is True and the appended element is note, the note is added to the chord
 	instead of added after the chord. If appended element is rest, \a addToChord is ignored.
-	
+
 	Appended element's timeStart is changed respectively.
-	
+
 	\note Due to speed issues, voices are NOT synchronized for every inserted element. User
 	should manually call CAStaff::synchronizeVoices().
-	
+
 	\sa insert()
 */
 void CAVoice::append( CAMusElement *elt, bool addToChord ) {
 	CAMusElement *last = (musElementList().size()?musElementList().last():0);
-	
+
 	if ( elt->musElementType()==CAMusElement::Note && last &&
 	     last->musElementType()==CAMusElement::Note &&
 	     addToChord ) {
@@ -142,38 +141,38 @@ void CAVoice::append( CAMusElement *elt, bool addToChord ) {
 /*!
 	Adds the given element \a elt to the voice before the given \a eltAfter. If \a eltAfter is null,
 	the element is appended.
-	
+
 	If \a elt is non-playable, it eventually does the same as insertMusElement().
-	
+
 	If \a elt is a note and addToChord is True, the eltAfter should also be a note and the \a elt is
 	then added to the chord which eltAfter is part of.
-	
+
 	If \a elt is other playable element, it is appropriately added before the \a eltAfter. \a addToChord is ignored.
-	
+
 	Inserted element's timeStart is correctly changed.
-	
+
 	Returns True, if the insertion action was successfully made, otherwise False.
-	
+
 	\note Due to speed issues, voices are NOT synchronized for every inserted element. User
 	should manually call CAStaff::synchronizeVoices().
-	
+
 	\sa insertMusElement()
 */
 bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord ) {
 	if ( !elt )
 		return false;
-	
+
 	if ( eltAfter && eltAfter->musElementType()==CAMusElement::Note ) // if eltAfter is note, it should always be the FIRST note in the chord
 		eltAfter = static_cast<CANote*>(eltAfter)->getChord().front();
-	
+
 	bool res;
 	if ( !elt->isPlayable() ) {
-		
+
 		// insert a sign
-		
+
 		elt->setTimeStart( eltAfter?eltAfter->timeStart():lastTimeEnd() );
 		res = insertMusElement( eltAfter, elt );
-		
+
 		// calculate note positions in staff when inserting a new clef
 		if ( elt->musElementType()==CAMusElement::Clef ) {
 			for ( int i=musElementList().indexOf(elt)+1; i < musElementCount(); i++ ) {
@@ -181,23 +180,23 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 					static_cast<CANote*>(musElementList()[i])->setDiatonicPitch( static_cast<CANote*>(musElementList()[i])->diatonicPitch() );
 			}
 		}
-		
+
 	} else if ( elt->musElementType()==CAMusElement::Note && eltAfter && eltAfter->musElementType()==CAMusElement::Note && addToChord ) {
-		
+
 		// add a note to chord
-		
+
 		res = addNoteToChord( static_cast<CANote*>(elt), static_cast<CANote*>(eltAfter) );
-		
+
 	} else {
-		
+
 		// insert a note somewhere in between, append or prepend
-		
+
 		elt->setTimeStart( eltAfter?eltAfter->timeStart():lastTimeEnd() );
 		res = insertMusElement( eltAfter, elt );
 		updateTimes( musElementList().indexOf(elt)+1, elt->timeLength(), true );
-		
+
 	}
-	
+
  	return res;
 }
 
@@ -212,23 +211,23 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 		if (_musElementList[i]->musElementType() == CAMusElement::Clef)
 			lastClef = (CAClef*)_musElementList[i];
 	}
-	
+
 	return lastClef;
 }
 
 /*!
 	Removes the given music element \a elt from this voice, if the element is playable or from
 	all the voices in the staff, if non-playable and part of the staff.
-	
+
 	If \a updateSigns is True, startTimes of elements after the removed one are decreased
 	including the shared signs. Otherwise only timeStarts for playable elements are effected.
-	
+
 	\warning This function doesn't destroy the object, but only removes its
 	reference in the voice.
-	
+
 	\note Due to speed issues, voices are NOT synchronized for every inserted element. User
 	should manually call CAStaff::synchronizeVoices().
-	
+
 	Returns true, if the element was found and removed; otherwise false.
 */
 bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
@@ -248,7 +247,7 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 					prevNote->setSlurEnd( n->slurEnd() );
 					prevNote->setPhrasingSlurStart( n->phrasingSlurStart() );
 					prevNote->setPhrasingSlurEnd( n->phrasingSlurEnd() );
-					
+
 					for (int i=0; i<n->markList().size(); i++) {
 						if ( n->markList()[i]->isCommon() ) {
 							prevNote->addMark( n->markList()[i] );
@@ -261,16 +260,16 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 					if ( n->slurEnd() ) delete n->slurEnd();
 					if ( n->phrasingSlurStart() ) delete n->phrasingSlurStart();
 					if ( n->phrasingSlurEnd() ) delete n->phrasingSlurEnd();
-					
+
 					updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
 				}
 			} else {
 				updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
 			}
-			
+
 			musElementList().removeAll(elt);          // removes the element from the voice music element list
 		}
-		
+
 		return true;
 	} else {
 		return false;
@@ -280,7 +279,7 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 /*!
 	Inserts the \a elt before the given \a eltAfter. If \a eltAfter is Null, it
 	appends the element.
-	
+
 	Returns True, if \a eltAfter was found and the elt was inserted/appended; otherwise False.
 */
 bool CAVoice::insertMusElement( CAMusElement *eltAfter, CAMusElement *elt ) {
@@ -288,21 +287,21 @@ bool CAVoice::insertMusElement( CAMusElement *eltAfter, CAMusElement *elt ) {
 		musElementList().push_back(elt);
 		return true;
 	}
-	
+
 	int i = musElementList().indexOf( eltAfter );
-	
+
 	// if element wasn't found and the element before is slur
 	if ( eltAfter->musElementType()==CAMusElement::Slur && i==-1 )
 		i = musElementList().indexOf( static_cast<CASlur*>(eltAfter)->noteEnd() );
-	
+
 	if (i==-1) {
 		// eltBefore still wasn't found, return False
 		return false;
 	}
-	
+
 	// eltBefore found, insert it
 	musElementList().insert(i, elt);
-	
+
 	return true;
 }
 
@@ -312,42 +311,42 @@ bool CAVoice::insertMusElement( CAMusElement *eltAfter, CAMusElement *elt ) {
 	Notes in a chord always need to be sorted by pitch rising.
 	Chord in Canorus isn't its own structure but simply a list of notes sharing the
 	same start time.
-	
+
 	The inserted \a note properteis timeStart, timeLength, dotted and playableLength
 	change according to other notes in the chord.
-	
+
 	Returns True, if a referenceNote was found and a note was added; otherwise False.
-	
+
 	\sa CANote::chord()
 */
 bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 	int idx = _musElementList.indexOf(referenceNote);
-	
+
 	if (idx==-1)
 		return false;
-	
+
 	QList<CANote*> chord = referenceNote->getChord();
 	idx = _musElementList.indexOf(chord.first());
-	
+
 	int i;
 	for ( i=0; i<chord.size() && chord[i]->diatonicPitch().noteName() < note->diatonicPitch().noteName(); i++ );
-	
+
 	_musElementList.insert( idx+i, note );
 	note->setPlayableLength( referenceNote->playableLength() );
 	note->setTimeLength( referenceNote->timeLength() );
 	note->setTimeStart( referenceNote->timeStart() );
 	note->setStemDirection( referenceNote->stemDirection() );
-	
+
 	return true;
 }
 
 /*!
 	Returns the pitch of the last note in the voice (default) or of the first note in
 	the last chord, if \a inChord is true.
-	
+
 	This method is usually used by LilyPond parser when exporting the document, where
 	, or ' octave marks need to be determined.
-	
+
 	\sa lastPlayableElt()
 */
 CADiatonicPitch CAVoice::lastNotePitch(bool inChord) {
@@ -361,10 +360,10 @@ CADiatonicPitch CAVoice::lastNotePitch(bool inChord) {
 				for (j=i;
 				     (j>=0 && _musElementList[j]->musElementType()==CAMusElement::Note && _musElementList[j]->timeStart()==chordTimeStart);
 				     j--);
-				
+
 				return (static_cast<CANote*>(_musElementList[j+1])->diatonicPitch() );
 			}
-			
+
 		}
 		else if (_musElementList[i]->musElementType()==CAMusElement::Clef)
 			return (((CAClef*)_musElementList[i])->centerPitch());
@@ -375,7 +374,7 @@ CADiatonicPitch CAVoice::lastNotePitch(bool inChord) {
 
 /*!
 	Returns the last playable element (eg. note or rest) in the voice.
-	
+
 	\sa lastNotePitch()
 */
 CAPlayable* CAVoice::lastPlayableElt() {
@@ -383,13 +382,13 @@ CAPlayable* CAVoice::lastPlayableElt() {
 		if (_musElementList[i]->isPlayable())
 			return static_cast<CAPlayable*>(_musElementList[i]);
 	}
-	
+
 	return 0;
 }
 
 /*!
 	Returns the note in the voice.
-	
+
 	\sa lastNotePitch()
 */
 CANote* CAVoice::lastNote() {
@@ -397,7 +396,7 @@ CANote* CAVoice::lastNote() {
 		if (_musElementList[i]->musElementType()==CAMusElement::Note)
 			return static_cast<CANote*>(_musElementList[i]);
 	}
-	
+
 	return 0;
 }
 
@@ -409,16 +408,16 @@ CANote* CAVoice::lastNote() {
 */
 QList<CAMusElement*> CAVoice::getEltByType(CAMusElement::CAMusElementType type, int startTime) {
 	QList<CAMusElement*> eltList;
-	
+
 	int i;
 	for (i=0; i < _musElementList.size() && _musElementList[i]->timeStart() < startTime; i++);	// seek to the start of the music elements with the given time
-	
+
 	while (i<_musElementList.size() && _musElementList[i]->timeStart()==startTime) {	// create a list of music elements with the given time
 		if (_musElementList[i]->musElementType() == type)
 			eltList << _musElementList[i];
 		i++;
 	}
-	
+
 	return eltList;
 }
 
@@ -428,10 +427,10 @@ QList<CAMusElement*> CAVoice::getEltByType(CAMusElement::CAMusElementType type, 
 */
 CAMusElement *CAVoice::previous(CAMusElement *elt) {
 	int idx = _musElementList.indexOf(elt);
-	
+
 	if (--idx<0) //if the element wasn't found or was the first element
 		return 0;
-	
+
 	return _musElementList[idx];
 }
 
@@ -441,22 +440,22 @@ CAMusElement *CAVoice::previous(CAMusElement *elt) {
 */
 CAMusElement *CAVoice::next(CAMusElement *elt) {
 	int idx = _musElementList.indexOf(elt);
-	
+
 	if (idx==-1) //the element wasn't found
 		return 0;
-	
+
 	if (++idx==_musElementList.size())	//last element in the list
 		return 0;
-	
+
 	return _musElementList[idx];
 }
 
 /*!
 	Returns a list of notes and rests (chord) in the given voice in the given
 	time slice \a time.
-	
+
 	This is useful for determination of the harmony at certain point in time.
-	
+
 	\sa CAStaff:getChord(), CASheet::getChord()
 */
 QList<CAPlayable*> CAVoice::getChord(int time) {
@@ -477,13 +476,13 @@ QList<CAPlayable*> CAVoice::getChord(int time) {
 			return ret;
 		}
 	}
-	
+
 	return QList<CAPlayable*>();
 }
 
 /*!
 	Generates a list of all the notes and chords in the voice.
-	
+
 	This is useful for harmony analysis.
 */
 QList<CANote*> CAVoice::getNoteList() {
@@ -491,13 +490,13 @@ QList<CANote*> CAVoice::getNoteList() {
 	for (int i=0; i<_musElementList.size(); i++)
 		if (_musElementList[i]->musElementType()==CAMusElement::Note)
 			list << ((CANote*)_musElementList[i]);
-	
+
 	return list;
 }
 
 /*!
 	Generates a list of all the notes and chords in the voice.
-	
+
 	This is useful when importing a specific voice and all the shared elements should be
 	completely repositioned.
 */
@@ -506,7 +505,7 @@ QList<CAMusElement*> CAVoice::getSignList() {
 	for (int i=0; i<_musElementList.size(); i++)
 		if ( !_musElementList[i]->isPlayable() )
 			list << _musElementList[i];
-	
+
 	return list;
 }
 
@@ -523,7 +522,7 @@ CANote *CAVoice::nextNote( int timeStart ) {
 	     	 _musElementList[i]->timeStart()<=timeStart
 	     	);
 	     i++);
-	
+
 	if (i<_musElementList.size())
 		return static_cast<CANote*>(_musElementList[i]);
 	else
@@ -543,7 +542,7 @@ CANote *CAVoice::previousNote( int timeStart ) {
 	     	 _musElementList[i]->timeStart()>=timeStart
 	     	);
 	     i--);
-	
+
 	if (i>-1)
 		return static_cast<CANote*>(_musElementList[i]);
 	else
@@ -553,7 +552,7 @@ CANote *CAVoice::previousNote( int timeStart ) {
 /*!
 	Updates times of playable elements and optionally \a signsToo after and including the given index
 	\a idx for a delta \a length. The order of the elements stays intact.
-	
+
 	This method is usually called when inserting, removing or changing the music elements so they affect
 	others.
 */
@@ -575,7 +574,7 @@ bool CAVoice::updateTimes( int idx, int length, bool signsToo ) {
 	1) If a common (shared) mark is present only in non-first note of the chord, it's moved and assigned
 	   to first note in the chord.
 	   The exception are non-common marks (eg. fingering), which are assigned to each note separately.
-	
+
 	Returns True, if fixes were made or False otherwise.
 */
 bool CAVoice::synchronizeMusElements() {
@@ -585,26 +584,26 @@ bool CAVoice::synchronizeMusElements() {
 		     static_cast<CANote*>(musElementList()[i])->isPartOfTheChord() ) {
 			QList<CAMark*> marks; // list of shared marks
 			QList<CANote*> chord = static_cast<CANote*>(musElementList()[i])->getChord();
-			
+
 			// gather a list of marks and remove them from the chord
 			for ( int j=0; j<chord.size(); j++ ) {
 				for ( int k=0; k<chord[j]->markList().size(); k++ ) {
 					if ( chord[j]->markList()[k]->isCommon() ) {
 						chord[j]->markList()[k]->setAssociatedElement( chord.first() );
-					
+
 						if ( !marks.contains(chord[j]->markList()[k]) )
 							marks << chord[j]->markList()[k];
-						
+
 						chord[j]->removeMark( chord[j]->markList()[k] );
 					}
 				}
 			}
-			
+
 			// add marks back to the chord
 			for (int k=0; k<marks.size(); k++) {
 				chord.first()->addMark(marks[k]);
 			}
-			
+
 			// move at the end of the chord
 			i += (chord.size() - chord.indexOf( static_cast<CANote*>(musElementList()[i]) ));
 		}
@@ -614,7 +613,7 @@ bool CAVoice::synchronizeMusElements() {
 /*!
 	Returns true, if this voice contains a note with the given \a pitch notename at the
 	given \a timeStart.
-	
+
 	This is useful when inserting a note and there needs to be determined if a user is
 	adding a note to a chord and the note is maybe already there. Note's accidentals
 	are ignored.
@@ -626,14 +625,14 @@ bool CAVoice::containsPitch( int noteName, int timeStart ) {
 		     static_cast<CANote*>(_musElementList[i])->diatonicPitch().noteName()==noteName )
 			return true;
 	}
-	
+
 	return false;
 }
 
 /*!
 	Returns true, if this voice contains a note with the given diatonic \a pitch at the
 	given \a timeStart.
-	
+
 	This is useful when inserting a note and there needs to be determined if a user is
 	adding a note to a chord and the note is maybe already there.
 */
@@ -644,13 +643,13 @@ bool CAVoice::containsPitch( CADiatonicPitch p, int timeStart ) {
 		     static_cast<CANote*>(_musElementList[i])->diatonicPitch()==p )
 			return true;
 	}
-	
-	return false;	
+
+	return false;
 }
 
 /*!
 	\fn void CAVoice::setStemDirection(CANote::CAStemDirection direction)
-	
+
 	Sets the stem direction and update slur directions in all the notes in the voice.
 */
 
@@ -664,20 +663,20 @@ bool CAVoice::containsPitch( CADiatonicPitch p, int timeStart ) {
 /*!
 	\fn CAVoice::musElementList()
 	Returns the list of music elements in the voice.
-	
+
 	\sa _musElementList
 */
 
 /*!
 	\var CAVoice::_staff
 	Staff which this voice belongs to.
-	
+
 	\sa staff()
 */
 
 /*!
-	\var CAVoice::_voiceNumber
+	\fn CAVoice::voiceNumber()
 	Voice number in the staff starting at 1.
-	
-	\sa voiceNumber()
+
+	Voice number is 1, if no staff defined.
 */

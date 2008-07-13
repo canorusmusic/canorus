@@ -902,18 +902,23 @@ void CAMainWin::on_uiFullscreen_toggled(bool checked) {
 }
 
 void CAMainWin::on_uiHiddenRest_toggled( bool checked ) {
-	if ( mode()==InsertMode )
+	if ( mode()==InsertMode ) {
 		musElementFactory()->setRestType( checked ? CARest::Hidden : CARest::Normal );
-	else if (mode()==SelectMode || mode()==EditMode) {
+	} else
+	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size()) {
 		CAScoreViewPort *v = currentScoreViewPort();
-		if ( v && v->selection().size() ) {
-			CARest *rest = dynamic_cast<CARest*>(v->selection().at(0)->musElement());
-			if ( rest ) {
-				rest->setRestType( checked ? CARest::Hidden : CARest::Normal );
-				CACanorus::rebuildUI( document(), currentSheet() );
+		CACanorus::undo()->createUndoCommand( document(), tr("change hidden rest", "undo") );
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CARest *r = dynamic_cast<CARest*>( v->selection().at(i)->musElement() );
+			if ( r ) {
+				r->setRestType( checked ? CARest::Hidden : CARest::Normal );
 			}
 		}
-	}}
+
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+}
 
 void CAMainWin::on_uiSplitHorizontally_triggered() {
 	CAViewPort *v = currentViewPortContainer()->splitHorizontally();
@@ -1186,9 +1191,13 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 			CACanorus::undo()->createUndoCommand( document(), tr("voice removal", "undo") );
 			currentScoreViewPort()->clearSelection();
 			uiVoiceNum->setRealValue( voice->staff()->voiceCount()-1 );
-			delete voice; // also removes voice from the staff
+
+			voice->staff()->removeVoice(voice);
 			CACanorus::undo()->pushUndoCommand();
 			CACanorus::rebuildUI(document(), currentSheet());
+
+			voice->staff()->addVoice(voice);
+			delete voice; // also removes voice from the staff
 		}
 	}
 }
