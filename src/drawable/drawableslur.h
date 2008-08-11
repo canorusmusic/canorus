@@ -15,7 +15,7 @@ class CASlur;
 
 class CADrawableSlur : public CADrawableMusElement {
 public:
-	CADrawableSlur( CASlur *slur, CADrawableContext *c, int x1, int y1, int xMid, int yMid, int x1, int y1 );
+	CADrawableSlur( CASlur *slur, CADrawableContext *c, int x1, int y1, int xMid, int yMid, int x2, int y2 );
 	virtual ~CADrawableSlur();
 	
 	CASlur *slur() { return static_cast<CASlur*>(_musElement); }
