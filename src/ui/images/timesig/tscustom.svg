@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@
    height="128"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45"
+   inkscape:version="0.46"
    version="1.0"
    sodipodi:docname="tscustom.svg"
    sodipodi:docbase="/home/matevz/canorus/artwork/icons/scalable"
@@ -21,6 +21,13 @@
    sodipodi:modified="true">
   <defs
      id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 64 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="128 : 64 : 1"
+       inkscape:persp3d-origin="64 : 42.666667 : 1"
+       id="perspective3851" />
     <linearGradient
        id="linearGradient3155">
       <stop
@@ -41,7 +48,7 @@
        x2="87.581919"
        y2="97.434215"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-1.0606602,0)" />
+       gradientTransform="matrix(1.04599,0,0,1.0459899,-2.9815218,-5.358636)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3155"
@@ -52,6 +59,26 @@
        y2="30.60917"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(-1.0606602,0)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3155"
+       id="linearGradient3865"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-1.0606602,0)"
+       x1="41.563186"
+       y1="30.60917"
+       x2="89.886955"
+       y2="30.60917" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3155"
+       id="linearGradient3867"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.04599,0,0,1.0459899,-2.9815218,-5.358636)"
+       x1="40.109475"
+       y1="97.434215"
+       x2="87.581919"
+       y2="97.434215" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -70,10 +97,11 @@
      inkscape:current-layer="layer1"
      width="128px"
      height="128px"
-     inkscape:window-width="1600"
+     inkscape:window-width="1590"
      inkscape:window-height="1126"
      inkscape:window-x="0"
-     inkscape:window-y="0" />
+     inkscape:window-y="0"
+     showgrid="false" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -89,49 +117,59 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <text
-       xml:space="preserve"
-       style="font-size:76.07000732px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:0.55186726;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Book Antiqua"
-       x="41.778572"
-       y="58.300385"
-       id="text3165"><tspan
-         sodipodi:role="line"
-         id="tspan3167"
-         x="41.778572"
+    <g
+       id="g3853"
+       transform="matrix(0.9255763,0,0,0.9255763,1.4908347e-2,1.0594922)">
+      <text
+         id="text3165"
          y="58.300385"
-         style="font-weight:bold;fill:#000000;fill-opacity:0.55186726">X</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:74.44377136px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:0.55186726;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Book Antiqua"
-       x="41.041702"
-       y="124.56046"
-       id="text3169"><tspan
-         sodipodi:role="line"
-         id="tspan3171"
-         x="41.041702"
-         y="124.56046"
-         style="font-weight:bold;fill:#000000;fill-opacity:0.55186726">Y</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:76.07000732px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:url(#linearGradient3163);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Book Antiqua"
-       x="39.276787"
-       y="57.036812"
-       id="text2176"><tspan
-         sodipodi:role="line"
-         id="tspan2178"
-         x="39.276787"
+         x="41.778572"
+         style="font-size:76.07000732px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:0.55186726;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Book Antiqua"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#000000;fill-opacity:0.55186726;font-family:Century Schoolbook L;-inkscape-font-specification:Century Schoolbook L Bold"
+           y="58.300385"
+           x="41.778572"
+           id="tspan3167"
+           sodipodi:role="line">X</tspan></text>
+      <text
+         id="text2176"
          y="57.036812"
-         style="font-weight:bold;fill:url(#linearGradient3163);fill-opacity:1">X</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:74.44377136px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:url(#linearGradient3161);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Book Antiqua"
-       x="38.539921"
-       y="123.29688"
-       id="text2180"><tspan
-         sodipodi:role="line"
-         id="tspan2182"
-         x="38.539921"
-         y="123.29688"
-         style="font-weight:bold;fill:url(#linearGradient3161);fill-opacity:1">Y</tspan></text>
+         x="39.276787"
+         style="font-size:76.07000732px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:url(#linearGradient3865);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Book Antiqua"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:url(#linearGradient3865);fill-opacity:1;font-family:Century Schoolbook L;-inkscape-font-specification:Century Schoolbook L Bold"
+           y="57.036812"
+           x="39.276787"
+           id="tspan2178"
+           sodipodi:role="line">X</tspan></text>
+    </g>
+    <g
+       id="g3859"
+       transform="translate(-3.2603451,0)">
+      <text
+         transform="scale(1.0038511,0.9961637)"
+         id="text3169"
+         y="124.93036"
+         x="41.057129"
+         style="font-size:77.86743927px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:0.55186726;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Book Antiqua"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:0.55186726;font-family:Century Schoolbook L;-inkscape-font-specification:Century Schoolbook L"
+           y="124.93036"
+           x="41.057129"
+           id="tspan3171"
+           sodipodi:role="line">Y</tspan></text>
+      <text
+         transform="scale(1.0038511,0.9961637)"
+         id="text2180"
+         y="123.60867"
+         x="38.440289"
+         style="font-size:77.86743927px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:url(#linearGradient3867);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Book Antiqua"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:url(#linearGradient3867);fill-opacity:1;font-family:Century Schoolbook L;-inkscape-font-specification:Century Schoolbook L"
+           y="123.60867"
+           x="38.440289"
+           id="tspan2182"
+           sodipodi:role="line">Y</tspan></text>
+    </g>
   </g>
 </svg>
