@@ -96,7 +96,7 @@ SET(QT_MIN_VERSION "4.3.0")
 # and add "NO_DEFAULT_PATH" to the FIND_PROGRAM(QT_QMAKE_EXECUTABLE
 # instruction as last option, so the default path are not searched
 # for the qmake binary (like /usr/bin/qmake on Mandriva)
-set(QT_QMAKE_EXECUTABLE "/usr/lib/qt4/bin/qmake")
+# set(QT_QMAKE_EXECUTABLE "/usr/lib/qt4/bin/qmake")
 
 # this line includes FindQt4.cmake, which searches the Qt library and headers
 FIND_PACKAGE(Qt4 REQUIRED)
