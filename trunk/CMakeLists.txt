@@ -1,7 +1,19 @@
+if(COMMAND cmake_minimum_required)
+  cmake_minimum_required(VERSION 2.4.8)
+endif(COMMAND cmake_minimum_required)
 # The name of our project is "Canorus".  CMakeLists files in this project can
 # refer to the root source directory of the project as ${CANORUS_SOURCE_DIR}
 # and to the root binary directory of the project as ${CANORUS_BINARY_DIR}.
 PROJECT(Canorus)
+
+# Be compatible with old version of cmake (2.4.8)
+# so ignore the preprocessor escape warnings for now
+# Swig does not enable the CMP0003 policy
+# so ignore it for swig and all others as well
+if(COMMAND cmake_policy)
+  cmake_policy(SET CMP0005 OLD)
+  cmake_policy(SET CMP0003 OLD)
+endif(COMMAND cmake_policy)
 
 # Don't build anything unless the version of CMake is high enough.
 # The matching ELSE/ENDIF should be the last lines in the file.
@@ -84,7 +96,7 @@ SET(QT_MIN_VERSION "4.3.0")
 # and add "NO_DEFAULT_PATH" to the FIND_PROGRAM(QT_QMAKE_EXECUTABLE
 # instruction as last option, so the default path are not searched
 # for the qmake binary (like /usr/bin/qmake on Mandriva)
-#set(QT_QMAKE_EXECUTABLE "/usr/lib/qt4/bin/qmake")
+set(QT_QMAKE_EXECUTABLE "/usr/lib/qt4/bin/qmake")
 
 # this line includes FindQt4.cmake, which searches the Qt library and headers
 FIND_PACKAGE(Qt4 REQUIRED)
