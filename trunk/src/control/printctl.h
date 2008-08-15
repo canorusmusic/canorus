@@ -34,6 +34,7 @@ public slots:
 protected slots:
 	void outputTypsetterOutput( const QByteArray &roOutput );
 	void printPDF( int iExitCode );
+	void printSVG( int iExitCode );
 	
 protected:
 	CATypesetCtl *_poTypesetCtl;
