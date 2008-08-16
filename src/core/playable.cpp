@@ -46,6 +46,9 @@ CAPlayable::CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart )
 CAPlayable::~CAPlayable() {
 	if (voice())
 		voice()->remove( this, false );
+
+	if (tuplet())
+		delete tuplet();
 }
 
 void CAPlayable::setVoice(CAVoice *voice) {

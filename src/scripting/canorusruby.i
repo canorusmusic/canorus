@@ -128,6 +128,12 @@ VALUE CASwigRuby::toRubyObject(void *object, CASwigRuby::CAClassType type) {
 		case CASwigRuby::Mark:
 			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CAMark, 0);
 			break;
+		case CASwigRuby::Slur:
+			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CASlur, 0);
+			break;
+		case CASwigRuby::Tuplet:
+			return SWIG_Ruby_NewPointerObj(object, SWIGTYPE_p_CATuplet, 0);
+			break;
 	}
 }
 %}

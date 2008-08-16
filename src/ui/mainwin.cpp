@@ -2203,6 +2203,15 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 
 				int timeSum = left->musElement()->timeLength();
 				int timeLength = CAPlayableLength::playableLengthToTimeLength( musElementFactory()->playableLength() );
+
+				CATuplet *tuplet = static_cast<CAPlayable*>(left->musElement())->tuplet();
+				QList<CAPlayable*> noteList; int number; int actualNumber;
+				if ( tuplet  ) {
+					noteList = tuplet->noteList();
+					number = tuplet->number();
+					actualNumber = tuplet->actualNumber();
+				}
+
 				CAMusElement *next;
 				while ( (next=voice->next(left->musElement())) &&
 				        next->musElementType() == CAMusElement::Rest &&
@@ -2212,21 +2221,41 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				}
 
 				voice->remove( left->musElement() );
+				int tupIndex = noteList.indexOf( static_cast<CAPlayable*>(left->musElement()) );
+				noteList.removeAll( static_cast<CAPlayable*>(left->musElement()) );
 
 				if (timeSum - timeLength > 0) {
 					// we removed too many rests - insert the delta of the missing rests
 					QList<CARest*> rests = CARest::composeRests( timeSum - timeLength, next?next->timeStart():voice->lastTimeEnd(), voice, CARest::Normal );
-					for (int i=rests.size()-1; i>=0; i--)
+					for (int i=rests.size()-1; i>=0; i--) {
 						voice->insert(next, rests[i]);
+						noteList.insert( tupIndex, rests[i] );
+					}
 					next = rests[0];
 				}
 
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, next, false );
+
+				if (tuplet) {
+					new CATuplet( number, actualNumber, noteList );
+				}
 			} else {
 
 				// user clicked outside x borders of the note or rest
-
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, dright?dright->musElement():0, false );
+
+				if ( uiTupletType->isChecked() ) {
+					QList<CAPlayable*> elements;
+					elements << static_cast<CAPlayable*>(musElementFactory()->musElement());
+
+					for (int i=1; i<uiTupletNumber->value(); i++) {
+						musElementFactory()->configureRest( voice, dright?dright->musElement():0 );
+						elements << static_cast<CAPlayable*>(musElementFactory()->musElement());
+					}
+					musElementFactory()->setMusElement( elements[0] );
+
+					new CATuplet( uiTupletNumber->value(), uiTupletActualNumber->value(), elements );
+				}
 			}
 
 			if ( success ) {
@@ -3320,11 +3349,31 @@ void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 
 void CAMainWin::on_uiTupletType_toggled(bool checked, int type) {
 	if (checked) {
-		switch (type) {
-		case 0:
-			uiTupletNumber->setValue(3);
-			uiTupletActualNumber->setValue(2);
-			break;
+		if ( mode()==EditMode ) {
+			CACanorus::undo()->createUndoCommand( document(), tr("insert tuplet", "undo") );
+
+			QList<CAPlayable*> playableList;
+			for (int i=0; i<currentScoreViewPort()->selection().size(); i++) {
+				if ( currentScoreViewPort()->selection()[i]->musElement() &&
+				     currentScoreViewPort()->selection()[i]->musElement()->isPlayable() )
+					playableList << static_cast<CAPlayable*>(currentScoreViewPort()->selection()[i]->musElement());
+			}
+
+			if (type==0) {
+				new CATuplet( 3, 2, playableList );
+			} else {
+				new CATuplet( uiTupletNumber->value(), uiTupletActualNumber->value(), playableList );
+			}
+
+			CACanorus::undo()->pushUndoCommand();
+			CACanorus::rebuildUI( document(), currentSheet() );
+		} else {
+			switch (type) {
+			case 0:
+				uiTupletNumber->setValue(3);
+				uiTupletActualNumber->setValue(2);
+				break;
+			}
 		}
 	}
 
@@ -3931,9 +3980,9 @@ void CAMainWin::updatePlayableToolBar() {
 				uiHiddenRest->setEnabled(false);
 			}
 
-			uiTupletNumber->hide();
-			uiTupletInsteadOf->hide();
-			uiTupletActualNumber->hide();
+			uiTupletNumber->show();
+			uiTupletInsteadOf->show();
+			uiTupletActualNumber->show();
 		}
 	} else {
 		uiPlayableToolBar->hide();
@@ -4280,7 +4329,7 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 					// find out the status of the rests in other voices
 					QList<CAPlayable*> chord = p->staff()->getChord( p->timeStart() );
 					int chordIdx;
-					for (chordIdx=0; chordIdx<chord.size(); chordIdx++) {
+					for (chordIdx=0; chordIdx<chord.size(); chordIdx++) { // calculates chordIdx
 						if ( chord[chordIdx]->voice()!=p->voice() &&
 						    (chord[chordIdx]->musElementType()!=CAMusElement::Rest ||
 						     chord[chordIdx]->timeStart()!=p->timeStart() ||
@@ -4288,6 +4337,11 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 						    )
 						   )
 							break;
+					}
+
+					if ( p->tuplet() ) {
+						musElemSet.remove( p->tuplet() );
+						delete p->tuplet();
 					}
 
 					if ( p->musElementType()==CAMusElement::Note && !deleteNotes || chordIdx!=chord.size() ) {
@@ -4316,6 +4370,9 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 					}
 				}
 
+				if ( p->tuplet() ) {
+					p->tuplet()->removeNote(p);
+				}
 				p->voice()->remove( p, true );
 				for (int j=0; j<p->voice()->lyricsContextList().size(); j++) {
 					p->voice()->lyricsContextList().at(j)->repositSyllables();
@@ -4340,6 +4397,8 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 			} else if ( (*i)->musElementType()==CAMusElement::Mark ) {
 				delete *i; // also removes itself from associated elements
 			} else if ( (*i)->musElementType()==CAMusElement::Slur ) {
+				delete *i; // also removes itself from associated elements
+			} else if ( (*i)->musElementType()==CAMusElement::Tuplet ) {
 				delete *i; // also removes itself from associated elements
 			} else {
 				(*i)->context()->remove(*i);
