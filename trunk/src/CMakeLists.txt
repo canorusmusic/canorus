@@ -205,6 +205,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/playable.cpp
 	core/note.cpp
 	core/slur.cpp
+	core/tuplet.cpp
 	core/rest.cpp
 	
 	core/mark.cpp
@@ -267,6 +268,7 @@ SET(Canorus_Drawable_Srcs	# Drawable instances of the data
 	drawable/drawablemuselement.cpp
 	drawable/drawablenote.cpp
 	drawable/drawableslur.cpp
+	drawable/drawabletuplet.cpp
 	drawable/drawablerest.cpp
 	drawable/drawableaccidental.cpp
 	drawable/drawableclef.cpp
@@ -342,6 +344,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/playable.cpp
 	core/note.cpp
 	core/slur.cpp
+	core/tuplet.cpp
 	core/rest.cpp
 	
 	core/playablelength.cpp

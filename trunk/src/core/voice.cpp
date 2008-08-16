@@ -260,6 +260,7 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 					if ( n->slurEnd() ) delete n->slurEnd();
 					if ( n->phrasingSlurStart() ) delete n->phrasingSlurStart();
 					if ( n->phrasingSlurEnd() ) delete n->phrasingSlurEnd();
+					if ( n->tuplet() ) delete n->tuplet();
 
 					updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
 				}

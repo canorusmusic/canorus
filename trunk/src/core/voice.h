@@ -35,7 +35,7 @@ public:
 	// Notes, rests and signs manipulation //
 	/////////////////////////////////////////
 	void append( CAMusElement *elt, bool addToChord=false );
-	bool insert( CAMusElement *before, CAMusElement *elt, bool addToChord=false );
+	bool insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord=false );
 	bool remove( CAMusElement *elt, bool updateSignsTimes=true );
 	bool synchronizeMusElements();
 

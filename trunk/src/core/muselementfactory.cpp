@@ -220,6 +220,9 @@ bool CAMusElementFactory::configureNote( int pitch,
 	   );
 
 		bSuccess = voice->insert( right, mpoMusElement, true );
+		if ( static_cast<CANote*>(right)->tuplet() ) {
+			static_cast<CANote*>(right)->tuplet()->addNote( static_cast<CAPlayable*>(mpoMusElement) );
+		}
 	} else {
 		mpoMusElement = new CANote( CADiatonicPitch( pitch, _iNoteAccs ),
 		                            _playableLength,

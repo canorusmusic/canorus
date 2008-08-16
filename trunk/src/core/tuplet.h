@@ -25,7 +25,7 @@ public:
 	inline void setActualNumber( int n ) { _actualNumber = n; }
 
 	inline QList<CAPlayable*>& noteList() { return _noteList; }
-	inline void addNote( CAPlayable* p ) { _noteList << p; }
+	void addNote( CAPlayable* p );
 	inline void addNotes( QList<CAPlayable*> l ) { _noteList << l; }
 	inline void removeNote( CAPlayable* p ) { _noteList.removeAll(p); }
 	inline CAPlayable *firstNote() { return _noteList.front(); }

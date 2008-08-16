@@ -46,6 +46,7 @@ public:
 	void configureMusElem( CAMusElement &roMusElement );
 
 	inline CAMusElement *musElement() { return mpoMusElement; };
+	inline void setMusElement( CAMusElement *elt ) { mpoMusElement = elt; }
 
 	inline void cloneMusElem() { mpoMusElement = mpoMusElement->clone(); }
 	inline void emptyMusElem() { mpoMusElement = mpoEmpty; }

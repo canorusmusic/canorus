@@ -16,6 +16,7 @@
 #include "drawable/drawableclef.h"
 #include "drawable/drawablenote.h"
 #include "drawable/drawableslur.h"
+#include "drawable/drawabletuplet.h"
 #include "drawable/drawablerest.h"
 #include "drawable/drawablekeysignature.h"
 #include "drawable/drawabletimesignature.h"
@@ -36,6 +37,8 @@
 #include "core/keysignature.h"
 #include "core/timesignature.h"
 
+#include "core/note.h"
+#include "core/rest.h"
 #include "core/lyricscontext.h"
 #include "core/syllable.h"
 
@@ -511,6 +514,28 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 								dSlur->setYMid( qMax( dSlur->y2(), dSlur->y1() ) + 19 );
 							}
 						}
+						if ( static_cast<CADrawableNote*>(newElt)->note()->isLastInTuplet() ) {
+							int x1 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->xPos();
+							int x2 = newElt->xPos() + newElt->width();
+							int y1 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->yPos();
+							if ( y1 > drawableContext->yPos() && y1 < drawableContext->yPos()+drawableContext->height() ) {
+								y1 = drawableContext->yPos()+drawableContext->height() + 10; // inside the staff
+							} else if ( y1 < drawableContext->yPos() ){
+								y1 -= 10; // above the staff
+							} else {
+								y1 += 10; // under the staff
+							}
+							int y2 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->lastNote())->yPos();
+							if ( y2 > drawableContext->yPos() && y2 < drawableContext->yPos()+drawableContext->height() ) {
+								y2 = drawableContext->yPos()+drawableContext->height() + 10; // inside the staff
+							} else if ( y2 < drawableContext->yPos() ){
+								y2 -= 10; // above the staff
+							} else {
+								y2 += 10; // under the staff
+							}
+
+							CADrawableTuplet *dTuplet = new CADrawableTuplet( static_cast<CADrawableNote*>(newElt)->note()->tuplet(), drawableContext, x1, y1, x2, y2 );
+						}
 
 						v->addMElement(newElt);
 						if ( static_cast<CANote*>(elt)->isLastInChord() )
@@ -530,6 +555,30 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 
 						v->addMElement(newElt);
 						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
+
+						// add tuplet - same as for the notes
+						if ( static_cast<CADrawableRest*>(newElt)->rest()->isLastInTuplet() ) {
+							int x1 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->firstNote())->xPos();
+							int x2 = newElt->xPos() + newElt->width();
+							int y1 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->firstNote())->yPos();
+							if ( y1 > drawableContext->yPos() && y1 < drawableContext->yPos()+drawableContext->height() ) {
+								y1 = drawableContext->yPos()+drawableContext->height() + 10; // inside the staff
+							} else if ( y1 < drawableContext->yPos() ){
+								y1 -= 10; // above the staff
+							} else {
+								y1 += 10; // under the staff
+							}
+							int y2 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->lastNote())->yPos();
+							if ( y2 > drawableContext->yPos() && y2 < drawableContext->yPos()+drawableContext->height() ) {
+								y2 = drawableContext->yPos()+drawableContext->height() + 10; // inside the staff
+							} else if ( y2 < drawableContext->yPos() ){
+								y2 -= 10; // above the staff
+							} else {
+								y2 += 10; // under the staff
+							}
+
+							CADrawableTuplet *dTuplet = new CADrawableTuplet( static_cast<CADrawableRest*>(newElt)->rest()->tuplet(), drawableContext, x1, y1, x2, y2 );
+						}
 
 						placeMarks( newElt, v, i );
 
