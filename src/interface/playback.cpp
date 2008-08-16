@@ -352,7 +352,7 @@ void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
 	     streamAt(i).at(j)->timeStart() <= curTime(i) &&
 	     (streamAt(i).at(j)->timeStart() != curTime(i) ||
 	      !(streamAt(i).at(j)->musElementType()==CAMusElement::Note) ||
-	      (static_cast<CANote*>(streamAt(i).at(j))->isFirstInTheChord())
+	      (static_cast<CANote*>(streamAt(i).at(j))->isFirstInChord())
 	     );
 	     streamIdx(i) = j++) {
 		if ( streamAt(i).at(j)->musElementType()==CAMusElement::Barline &&

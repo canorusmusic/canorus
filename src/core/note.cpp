@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -14,7 +14,7 @@
 /*!
 	\class CANote
 	\brief Represents a note in the score.
-	
+
 	This class represents every note in the score. It inherits the base class CAPlayable.
 */
 
@@ -22,7 +22,7 @@
 	Creates a new note with playable length \a length in voice \a voice with pitch \a pitch
 	and accidentals \a accs, with starting time in the score \a timeStart and number of dots \a dotted.
 	timeLength is calculated automatically from the playable length.
-	
+
 	\sa CAPlayableLength, CAPlayable, CAVoice, _pitch, _accs
 */
 CANote::CANote( CADiatonicPitch pitch, CAPlayableLength length, CAVoice *voice, int timeStart )
@@ -30,7 +30,7 @@ CANote::CANote( CADiatonicPitch pitch, CAPlayableLength length, CAVoice *voice, 
 	_musElementType = CAMusElement::Note;
 	_forceAccidentals = false;
 	_stemDirection = StemPreferred;
-	
+
 	setTieStart( 0 );
 	setSlurStart( 0 );
 	setPhrasingSlurStart( 0 );
@@ -44,9 +44,9 @@ CANote::CANote( CADiatonicPitch pitch, CAPlayableLength length, CAVoice *voice, 
 CANote::~CANote() {
 	if ( tieStart() ) delete tieStart();      // slurs destructor also disconnects itself from the notes
 	if ( tieEnd() ) tieEnd()->setNoteEnd( 0 );
-	
+
 	// other slurs are removed or moved in CAVoice::removeElement()
-	
+
 	for (int i=0; i<markList().size(); i++) {
 		delete markList()[i--];
 	}
@@ -55,11 +55,11 @@ CANote::~CANote() {
 /*!
 	\enum CANote::CAStemDirection
 	\brief Direction of the note's stem
-	
+
 	This type represents the direction of the note's stem.
 	\todo Stem itself will probably be created as a separate class in the future. This will give us
 	possibility for a chord to have a common stem, apply additional stem properties etc. -Matevz
-	
+
 	Possible values:
 		- StemNeutral
 			Up if under the middle line, down if above the middle line.
@@ -78,25 +78,25 @@ CANote::~CANote() {
 CANote *CANote::clone( CAVoice *voice ) {
 	CANote *d = new CANote( diatonicPitch(), playableLength(), voice, timeStart() );
 	d->setStemDirection( stemDirection() );
-	
+
 	for (int i=0; i<markList().size(); i++) {
 		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
 		m->setAssociatedElement(d);
 		d->addMark( m );
 	}
-	
+
 	return d;
 }
 
 /*!
 	Dependent on the current clef calculates and stores internally the vertical
 	note position in the staff.
-	
+
 	\sa _notePosition, notePosition()
 */
 void CANote::calculateNotePosition() {
 	CAClef *clef = (voice()?voice()->getClef(this):0);
-	
+
 	_notePosition = diatonicPitch().noteName() + (clef?clef->c1():-2) - 28;
 }
 
@@ -104,106 +104,106 @@ void CANote::calculateNotePosition() {
 	Generates the note name on the given pitch \a pitch with accidentals \a accs.
 	Note name ranges are from C,, for sub-contra octave to c''''' for fifth octave.
 	This method is usually used for showing the note pitch in status bar.
-	
+
 	\sa _pitch, _accs
 */
 const QString CANote::generateNoteName(int pitch, int accs) {
 	QString name;
-	
+
 	name = (char)((pitch+2)%7 + 'a');
 	while (accs>0) { name += "is"; accs--; }
 	while (accs<0) { if (name!="e" && name!="a") name+="es"; else name+="s"; accs++; }
-	
+
 	if (pitch < 21)
 		name = name.toUpper();
-	
+
 	for (int i=0; i<(pitch-21)/7; i++)
 		name.append('\'');
-	
+
 	if (pitch<14)
 		name.append(',');
 	if (pitch<7)
 		name.append(',');
-	
+
 	return name;
 }
 
 /*!
 	Returns true, if the note is part of a chord; otherwise false.
 */
-bool CANote::isPartOfTheChord() {
+bool CANote::isPartOfChord() {
 	int idx = voice()->indexOf(this);
-	
+
 	// is there a note with the same start time after ours?
 	if (idx+1<voice()->musElementCount() && voice()->musElementAt(idx+1)->musElementType()==CAMusElement::Note && voice()->musElementAt(idx+1)->timeStart()==_timeStart)
 		return true;
-	
+
 	// is there a note with the same start time before ours?
 	if (idx>0 && voice()->musElementAt(idx-1)->musElementType()==CAMusElement::Note && voice()->musElementAt(idx-1)->timeStart()==_timeStart)
 		return true;
-	
+
 	return false;
 }
 
 /*!
 	Returns true, if the note is the first in the list of the chord; otherwise false.
 */
-bool CANote::isFirstInTheChord() {
+bool CANote::isFirstInChord() {
 	int idx = voice()->indexOf(this);
-	
+
 	//is there a note with the same start time before ours?
 	if (idx>0 && voice()->musElementAt(idx-1)->musElementType()==CAMusElement::Note && voice()->musElementAt(idx-1)->timeStart()==_timeStart)
 		return false;
-	
+
 	return true;
 }
 
 /*!
 	Returns true, if the note is the last in the list of the chord; otherwise false.
 */
-bool CANote::isLastInTheChord() {
+bool CANote::isLastInChord() {
 	int idx = voice()->indexOf(this);
-	
+
 	//is there a note with the same start time after ours?
 	if (idx+1<voice()->musElementCount() && voice()->musElementAt(idx+1)->musElementType()==CAMusElement::Note && voice()->musElementAt(idx+1)->timeStart()==_timeStart)
 		return false;
-	
+
 	return true;
 }
 
 /*!
 	Generates a list of notes with the same start time - the whole chord - in the current voice.
 	Notes in chord keep the order present in the voice. This is usually bottom-up.
-	
+
 	Returns a single element in the list - only the note itself, if the note isn't part of the chord.
-	
+
 	\sa CAVoice::addNoteToChord()
 */
 QList<CANote*> CANote::getChord() {
 	QList<CANote*> list;
 	int idx = voice()->indexOf(this) - 1;
-	
+
 	while (idx>=0 &&
 	       voice()->musElementAt(idx)->musElementType()==CAMusElement::Note &&
 	       voice()->musElementAt(idx)->timeStart()==timeStart())
 		idx--;
-	
+
 	for (idx++;
 	     (idx>=0 && idx<voice()->musElementCount()) && (voice()->musElementAt(idx)->musElementType()==CAMusElement::Note) && (voice()->musElementAt(idx)->timeStart()==timeStart());
 	     idx++)
 		list << static_cast<CANote*>(voice()->musElementAt(idx));
-	
+
 	return list;
 }
 
 int CANote::compare(CAMusElement *elt) {
 	if (elt->musElementType()!=CAMusElement::Note)
 		return -1;
-	
+
 	int diffs=0;
 	if ( diatonicPitch() != static_cast<CANote*>(elt)->diatonicPitch() )diffs++;
 	if ( playableLength() != static_cast<CAPlayable*>(elt)->playableLength() ) diffs++;
-	
+
 	return diffs;
 }
 
@@ -232,11 +232,11 @@ void CANote::updateTies() {
 		tieEnd()->setNoteEnd( 0 );
 		setTieEnd( 0 );
 	}
-	
+
 	// fix/create a tie, if needed
 	QList<CANote*> noteList;
 	if (voice()) noteList = voice()->getNoteList();
-	
+
 	// checks a tie of the potential left note
 	CANote *leftNote = 0;
 	for (int i=0; i<noteList.count() && noteList[i]->timeEnd()<=timeStart(); i++) { // get the left note
@@ -249,7 +249,7 @@ void CANote::updateTies() {
 		leftNote->tieStart()->setNoteEnd( this );
 		setTieEnd( leftNote->tieStart() );
 	}
-	
+
 	// checks a tie of the potential right note
 	CANote *rightNote = 0;
 	for (int i=0; i<noteList.count() && noteList[i]->timeStart()<=timeEnd(); i++) { // get the right note
@@ -261,13 +261,13 @@ void CANote::updateTies() {
 	if ( rightNote && tieStart() ) {
 		rightNote->setTieEnd( tieStart() );
 		tieStart()->setNoteEnd( rightNote );
-	}	
+	}
 }
 
 /*!
 	Converts stem direction CAStemDirection to QString.
 	This is usually used when saving the score.
-	
+
 	\sa CAStemDirection, CACanorusML
 */
 const QString CANote::stemDirectionToString(CANote::CAStemDirection dir) {
@@ -288,7 +288,7 @@ const QString CANote::stemDirectionToString(CANote::CAStemDirection dir) {
 /*!
 	Converts stem direction in QString format to CAStemDirection.
 	This is usually used when loading a score.
-	
+
 	\sa CAStemDirection, CACanorusML
 */
 CANote::CAStemDirection CANote::stemDirectionFromString(const QString dir) {
@@ -316,23 +316,23 @@ CANote::CAStemDirection CANote::actualStemDirection() {
 		case StemDown:
 			return stemDirection();
 			break;
-		
+
 		case StemNeutral:
 			if ( staff() && notePosition() < staff()->numberOfLines()-1 )	// position from 0 to half of the number of lines - where position has step of 2 per line
 				return StemUp;
 			else
 				return StemDown;
 			break;
-		
+
 		case StemPreferred:
 			if (!voice()) { return StemUp; }
-			
+
 			switch ( voice()->stemDirection() ) {
 				case StemUp:
 				case StemDown:
 					return voice()->stemDirection();
 					break;
-				
+
 				case StemNeutral:
 					if ( staff() && notePosition() < staff()->numberOfLines()-1 )	// position from 0 to half of the number of lines - where position has step of 2 per line
 						return StemUp;
@@ -351,7 +351,7 @@ CANote::CAStemDirection CANote::actualStemDirection() {
 */
 CASlur::CASlurDirection CANote::actualSlurDirection() {
 	CAStemDirection dir = actualStemDirection();
-	
+
 	if ( stemDirection()==StemNeutral || (stemDirection()==StemPreferred && voice() && voice()->stemDirection()==StemNeutral) ) {
 		if (dir==StemUp) return CASlur::SlurDown;
 		else return CASlur::SlurUp;
@@ -364,14 +364,14 @@ CASlur::CASlurDirection CANote::actualSlurDirection() {
 /*!
 	\fn CANote::accidentals()
 	Returns number and type of accidentals of the note.
-	
+
 	\sa _accs, setAccidentals()
 */
 
 /*!
 	\fn CANote::setAccidentals(int accs)
 	Sets a number and type of accidentals to \a accs of the note.
-	
+
 	\sa _accs, accidentals()
 */
 
@@ -381,21 +381,21 @@ CASlur::CASlurDirection CANote::actualSlurDirection() {
 		- 0 - neutral
 		- 1 - sharp
 		- -1 - flat etc.
-	
+
 	\sa accidentals(), setAccidentals()
 */
 
 /*!
 	\fn CANote::pitch()
 	Returns the note pitch in internal Canorus units.
-	
+
 	\sa _pitch, setPitch()
 */
 
 /*!
 	\fn CANote::setPitch(int pitch)
 	Sets the note pitch to \a pitch.
-	
+
 	\sa _pitch, pitch()
 */
 
@@ -406,14 +406,14 @@ CASlur::CASlurDirection CANote::actualSlurDirection() {
 		- 1 - sub-contra D
 		- 28 - middle C
 		- 56 - c5 etc.
-	
+
 	\sa pitch(), setPitch(), midiPitchToPitch(), pitchToMidiPitch(), pitchToString(), generateNoteName()
 */
 
 /*!
 	\var CANote::_stemDirection
 	Direction of the note's stem, if any.
-	
+
 	\sa CAStemDirection
 */
 
@@ -423,13 +423,13 @@ CASlur::CASlurDirection CANote::actualSlurDirection() {
 		- 0 - first line
 		- 1 - first space
 		- -2 - first ledger line below the staff etc.
-	
+
 	\sa calculateNotePosition()
 */
 
 /*!
 	\var CANote::_forceAccidentals
 	Always draw notes accidentals.
-	
+
 	\sa _accs
 */

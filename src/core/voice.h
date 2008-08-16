@@ -16,6 +16,7 @@
 
 class CAClef;
 class CALyricsContext;
+class CARest;
 
 class CAVoice : public CAResourceContainer {
 	friend class CAStaff; // used for insertion of music elements and updateTimes() when inserting elements and synchronizing voices
@@ -52,6 +53,10 @@ public:
 	bool containsPitch( CADiatonicPitch p, int timeStart );
 	CANote *nextNote(int timeStart);
 	CANote *previousNote(int timeStart);
+	CARest *nextRest(int timeStart);
+	CARest *previousRest(int timeStart);
+	CAPlayable *nextPlayable(int timeStart);
+	CAPlayable *previousPlayable(int timeStart);
 
 	QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
 

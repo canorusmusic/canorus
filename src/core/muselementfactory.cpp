@@ -1,9 +1,9 @@
 /*!
 	Copyright (c) 2006, Reinhard Katzmann, Canorus development team
 	              2007, Matevž Jekovec, Canorus development team
-	
+
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -15,20 +15,21 @@
 #include "core/dynamic.h"
 #include "core/instrumentchange.h"
 #include "core/articulation.h"
+#include "core/tuplet.h"
 
 /*!
 	\class CAMusElementFactory
 	\brief creation, removal, configuration of music elements
-	
+
 	This class is used when creating a new music element, settings its values, but not having it
 	placed inside the score (eg. music element still in the GUI, but user didn't clicked on the score
 	to place it yet).
-	
+
 	The factory contains the methods to set properties of all the available music elements ranging from
 	playable elements to slurs and lyrics. The actual music element is created and added to the scene
 	when one of the configure functions are called. These functions return True, if the element was
 	successfully created or False otherwise.
-	
+
 	This class should be typically used in the following order:
 	  1) User selects a music element to place. CAMusElementFactory::setMusElementType() is called.
 	  2) GUI for music element properties is updated according to the current factory values.
@@ -38,9 +39,9 @@
 	  4) User places the music element. CAMusElementFactory::configureSomeMusicElement()
 	     (eg. CAMusElementFactory::configureKeySignature(currentStaff, prevElement)).
 	  5) If the configure function returns True, the GUI is refreshed and the note is drawn.
-	
+
 	Changing the properties of already placed elements (eg. in edit mode) is done without using the factory.
-	
+
 	\sa CAMainWin, CAMusElement
 */
 
@@ -73,23 +74,23 @@ CAMusElementFactory::CAMusElementFactory() {
 	_fmTonicDegreeMinor = false;
 	_fmEllipse = false;
 	_musElementType = CAMusElement::Undefined;
-	mpoEmpty = new CANote( CADiatonicPitch(), CAPlayableLength(), NULL, 0 ); // dummy element 
+	mpoEmpty = new CANote( CADiatonicPitch(), CAPlayableLength(), NULL, 0 ); // dummy element
 	mpoMusElement = mpoEmpty;
-	
+
 	_dynamicText = "mf";
 	_dynamicVolume = 80;
 	_instrument = 0;
-	
+
 	_fermataType = CAFermata::NormalFermata;
 	_tempoBeat = CAPlayableLength( CAPlayableLength::Half );
 	_tempoBpm = 72;
-	
+
 	_crescendoFinalVolume = 50;
 	_crescendoType = CACrescendo::Crescendo;
-	
+
 	_repeatMarkType = CARepeatMark::Segno;
 	_repeatMarkVoltaNumber = 1;
-	
+
 	_fingeringFinger = CAFingering::First;
 	_fingeringOriginal = false;
 }
@@ -109,7 +110,7 @@ CAMusElementFactory::~CAMusElementFactory() {
 void CAMusElementFactory::removeMusElem( bool bReallyRemove /* = false */ ) {
 	if( mpoMusElement && mpoMusElement != mpoEmpty && bReallyRemove)
 		delete mpoMusElement;
-	
+
 	mpoMusElement = mpoEmpty;
 }
 
@@ -132,11 +133,11 @@ void CAMusElementFactory::addPlayableDotted( int add, CAPlayableLength l ) {
 /*!
 	Configures a new clef music element in \a context and right before the \a right element.
 */
-bool CAMusElementFactory::configureClef( CAStaff *staff, 
+bool CAMusElementFactory::configureClef( CAStaff *staff,
                                          CAMusElement *right )
 {
 	bool success = false;
-	if ( staff && staff->voiceCount() ) {		
+	if ( staff && staff->voiceCount() ) {
 		mpoMusElement = new CAClef( _eClef, staff, 0, _iClefOffset );
 		success = staff->voiceAt(0)->insert( right, mpoMusElement );
 		if (!success)
@@ -148,12 +149,12 @@ bool CAMusElementFactory::configureClef( CAStaff *staff,
 /*!
 	Configures a new key signature music element with \a iKeySignature accidentals, \a context and right before the \a right element.
 */
-bool CAMusElementFactory::configureKeySignature( CAStaff *staff, 
+bool CAMusElementFactory::configureKeySignature( CAStaff *staff,
                                                  CAMusElement *right )
 {
 	bool success = false;
-	if ( staff && staff->voiceCount() ) {		
-		mpoMusElement = new CAKeySignature( CADiatonicKey( _diatonicKeyNumberOfAccs, _diatonicKeyGender ), 
+	if ( staff && staff->voiceCount() ) {
+		mpoMusElement = new CAKeySignature( CADiatonicKey( _diatonicKeyNumberOfAccs, _diatonicKeyGender ),
 			                                staff,
 			                                0);
 		success = staff->voiceAt(0)->insert( right, mpoMusElement );
@@ -166,11 +167,11 @@ bool CAMusElementFactory::configureKeySignature( CAStaff *staff,
 /*!
 	Configures a new time signature music element with \a context and right before the \a right element.
 */
-bool CAMusElementFactory::configureTimeSignature( CAStaff *staff, 
+bool CAMusElementFactory::configureTimeSignature( CAStaff *staff,
                                                   CAMusElement *right )
 {
 	bool success = false;
-	if ( staff && staff->voiceCount() ) {		
+	if ( staff && staff->voiceCount() ) {
 		mpoMusElement = new CATimeSignature( _iTimeSigBeats, _iTimeSigBeat,
 			                             staff,
 			                             0);
@@ -184,11 +185,11 @@ bool CAMusElementFactory::configureTimeSignature( CAStaff *staff,
 /*!
 	Configures a new barline with \a context and right before the \a right element.
 */
-bool CAMusElementFactory::configureBarline( CAStaff *staff, 
+bool CAMusElementFactory::configureBarline( CAStaff *staff,
                                             CAMusElement *right )
 {
 	bool success = false;
-	if ( staff && staff->voiceCount() ) {		
+	if ( staff && staff->voiceCount() ) {
 		mpoMusElement = new CABarline( _eBarlineType,
 			                             staff,
 			                             0);
@@ -210,26 +211,26 @@ bool CAMusElementFactory::configureNote( int pitch,
 {
 	bool bSuccess = false;
 	removeMusElem();
-	
+
 	if ( right && addToChord ) {
 		mpoMusElement = new CANote( CADiatonicPitch( pitch, _iNoteAccs ),
 		                            static_cast<CANote*>(right)->playableLength(),
                                     voice,
 	                                0 // timeStart is set when inserting to voice
 	   );
-		
+
 		bSuccess = voice->insert( right, mpoMusElement, true );
 	} else {
-		mpoMusElement = new CANote( CADiatonicPitch( pitch, _iNoteAccs ), 
+		mpoMusElement = new CANote( CADiatonicPitch( pitch, _iNoteAccs ),
 		                            _playableLength,
 		                            voice,
 		                            0
 		);
-		
+
 		// add an empty syllable or reposit syllables
 		static_cast<CANote*>(mpoMusElement)->setStemDirection( _eNoteStemDirection );
 		bSuccess = voice->insert( right, mpoMusElement, false );
-		
+
 		// adds empty syllables, if syllable below the note doesn't exist or repositions the syllables, if it exists
 		if (voice->lastNote()==mpoMusElement) {
 			for (int i=0; i<voice->lyricsContextList().size(); i++) {
@@ -254,13 +255,13 @@ bool CAMusElementFactory::configureNote( int pitch,
 		}
 
 	}
-	
+
 	if (bSuccess) {
 		static_cast<CANote*>(mpoMusElement)->updateTies();
 	}
 	else
 		removeMusElem( true );
-	
+
 	return bSuccess;
 }
 
@@ -274,7 +275,7 @@ bool CAMusElementFactory::configureSlur( CAStaff *staff,
 	removeMusElem();
 	CASlur *slur = new CASlur( slurType(), CASlur::SlurPreferred, staff, noteStart, noteEnd );
 	mpoMusElement = slur;
-	
+
 	slur->setSlurStyle( slurStyle() );
 	switch (slurType()) {
 		case CASlur::TieType:
@@ -293,10 +294,10 @@ bool CAMusElementFactory::configureSlur( CAStaff *staff,
 			success=true;
 			break;
 	}
-	
+
 	if (!success)
 		removeMusElem( true );
-	
+
 	return success;
 }
 
@@ -305,10 +306,10 @@ bool CAMusElementFactory::configureSlur( CAStaff *staff,
 */
 bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 	bool success = false;
-	
+
 	if ( elt->musElementType()==CAMusElement::Mark )
 		return false;
-	
+
 	switch ( markType() ) {
 	case CAMark::Dynamic: {
 		if ( elt->musElementType()==CAMusElement::Note ) {
@@ -400,12 +401,12 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 		break;
 	}
 	}
-	
+
 	if (success) {
 		elt->addMark( static_cast<CAMark*>(mpoMusElement) );
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -440,11 +441,18 @@ bool CAMusElementFactory::configureFunctionMark( CAFunctionMarkContext *fmc, int
 		"", /// \todo Function mark altered/added degrees
 		isFMEllipse()
 	);
-	
+
 	fmc->addFunctionMark(fm);
 	mpoMusElement = fm;
-	
+
 	return true;
+}
+
+/*!
+	Configures a new tuplet containing the given \a noteList.
+ */
+bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> noteList ) {
+
 }
 
 /*!

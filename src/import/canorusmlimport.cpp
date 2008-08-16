@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -60,7 +60,7 @@ void CACanorusMLImport::initCanorusMLImport() {
 	_curSheet   = 0;
 	_curContext = 0;
 	_curVoice   = 0;
-	
+
 	_curMusElt       = 0;
 	_curMark         = 0;
 	_curClef         = 0;
@@ -71,7 +71,7 @@ void CACanorusMLImport::initCanorusMLImport() {
 	_curRest         = 0;
 	_curTie          = 0;
 	_curSlur         = 0;
-	_curPhrasingSlur = 0;	
+	_curPhrasingSlur = 0;
 }
 
 /*!
@@ -92,23 +92,23 @@ CADocument* CACanorusMLImport::importDocumentImpl() {
 	QXmlSimpleReader *reader = new QXmlSimpleReader();
 	reader->setContentHandler( this );
 	reader->parse( src );
-	
+
 	delete reader;
 	delete src;
-	
+
 	return document();
 }
 
 /*!
 	This method should be called when a critical error occurs while parsing the XML source.
-	
+
 	\sa startElement(), endElement()
 */
 bool CACanorusMLImport::fatalError ( const QXmlParseException & exception ) {
 	qWarning() << "Fatal error on line " << exception.lineNumber()
 		<< ", column " << exception.columnNumber() << ": "
 		<< exception.message() << "\n\nParser message:\n" << _errorMsg;
-	
+
 	return false;
 }
 
@@ -116,10 +116,10 @@ bool CACanorusMLImport::fatalError ( const QXmlParseException & exception ) {
 	This function is called automatically by Qt SAX parser while reading the CanorusML
 	source. This function is called when a new node is opened. It already reads node
 	attributes.
-	
+
 	The function returns true, if the node was successfully recognized and parsed;
 	otherwise false.
-	
+
 	\sa endElement()
 */
 bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes ) {
@@ -135,11 +135,11 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_document->setCopyright( attributes.value("copyright") );
 		_document->setDedication( attributes.value("dedication") );
 		_document->setComments( attributes.value("comments") );
-		
+
 		_document->setDateCreated( QDateTime::fromString( attributes.value("date-created"), Qt::ISODate ) );
 		_document->setDateLastModified( QDateTime::fromString( attributes.value("date-last-modified"), Qt::ISODate ) );
 		_document->setTimeEdited( attributes.value("time-edited").toUInt() );
-		
+
 	} else if (qName == "sheet") {
 		// CASheet
 		QString sheetName = attributes.value("name");
@@ -147,7 +147,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			if (sheetName.isEmpty())
 				sheetName = QObject::tr("Sheet%1").arg(_document->sheetCount()+1);
 			_curSheet = new CASheet(sheetName, _document);
-			
+
 			_document->addSheet(_curSheet);
 		}
 	} else if (qName == "staff") {
@@ -157,7 +157,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			_errorMsg = "The sheet where to add the staff doesn't exist yet!";
 			return false;
 		}
-		
+
 		if (!(_curContext = _curSheet->context(staffName))) {	//if the sheet doesn't contain the staff with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
 			if (staffName.isEmpty())
 				staffName = QObject::tr("Staff%1").arg(_curSheet->staffCount()+1);
@@ -171,12 +171,12 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			_errorMsg = "The sheet where to add the lyrics context doesn't exist yet!";
 			return false;
 		}
-		
+
 		if (!(_curContext = _curSheet->context(lcName))) {	//if the sheet doesn't contain the context with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
 			if (lcName.isEmpty())
 				lcName = QObject::tr("Lyrics Context %1").arg(_curSheet->contextCount()+1);
 			_curContext = new CALyricsContext( lcName, attributes.value("stanza-number").toInt(), _curSheet );
-			
+
 			// voices are not neccesseraly completely read - store indices of the voices internally and then assign them at the end
 			if (!attributes.value("associated-voice-idx").isEmpty())
 				_lcMap[static_cast<CALyricsContext*>(_curContext)] = attributes.value("associated-voice-idx").toInt();
@@ -189,7 +189,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			_errorMsg = "The sheet where to add the function mark context doesn't exist yet!";
 			return false;
 		}
-		
+
 		if (!(_curContext = _curSheet->context(fmcName))) {	//if the sheet doesn't contain the context with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
 			if (fmcName.isEmpty())
 				fmcName = QObject::tr("Function Mark Context %1").arg(_curSheet->contextCount()+1);
@@ -206,18 +206,18 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			_errorMsg = "The context type which contains voice " + voiceName + " isn't staff!";
 			return false;
 		}
-		
+
 		CAStaff *staff = static_cast<CAStaff*>(_curContext);
 		if (!(_curVoice = staff->voiceByName(voiceName))) {	// if the staff doesn't contain the voice with the given name, create a new voice and add it to the document. Otherwise, just set the current voice to the found one and leave
 			int voiceNumber = staff->voiceCount()+1;
-			
+
 			if (voiceName.isEmpty())
 				voiceName = QObject::tr("Voice%1").arg( voiceNumber );
-			
+
 			CANote::CAStemDirection stemDir = CANote::StemNeutral;
 			if (!attributes.value("stem-direction").isEmpty())
 				stemDir = CANote::stemDirectionFromString(attributes.value("stem-direction"));
-			
+
 			_curVoice = new CAVoice( voiceName, staff, stemDir, voiceNumber );
 			staff->addVoice( _curVoice );
 		}
@@ -246,21 +246,21 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		CAKeySignature::CAKeySignatureType type = CAKeySignature::keySignatureTypeFromString(attributes.value("key-signature-type"));
 		switch (type) {
 		case CAKeySignature::MajorMinor: {
-			_curKeySig = new CAKeySignature( CADiatonicKey(), 
+			_curKeySig = new CAKeySignature( CADiatonicKey(),
 			                                 _curVoice->staff(),
 					                         attributes.value("time-start").toInt()
 					                       );
 			break;
 		}
 		case CAKeySignature::Modus: {
-			_curKeySig = new CAKeySignature( CAKeySignature::modusFromString(attributes.value("modus")), 
+			_curKeySig = new CAKeySignature( CAKeySignature::modusFromString(attributes.value("modus")),
 						                     _curVoice->staff(),
 								             attributes.value("time-start").toInt()
 								           );
 			break;
 		}
 		}
-		
+
 		_curMusElt = _curKeySig;
 	} else if (qName == "barline") {
 		// CABarline
@@ -284,48 +284,47 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			                       attributes.value("time-start").toInt()
 			                     );
 		}
-		
+
 		if (!attributes.value("stem-direction").isEmpty()) {
 			_curNote->setStemDirection(CANote::stemDirectionFromString(attributes.value("stem-direction")));
 		}
-		
+
 		_curMusElt = _curNote;
-		
-		} else if (qName == "tie") {
-			_curTie = new CASlur( CASlur::TieType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
-			_curNote->setTieStart( _curTie );
-			if (!attributes.value("slur-style").isEmpty())
-				_curTie->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
-			if (!attributes.value("slur-direction").isEmpty())
-				_curTie->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
-			_curMusElt = _curTie;			
-		} else if (qName == "slur-start") {
-			_curSlur = new CASlur( CASlur::SlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
-			_curNote->setSlurStart( _curSlur );
-			if (!attributes.value("slur-style").isEmpty())
-				_curSlur->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
-			if (!attributes.value("slur-direction").isEmpty())
-				_curSlur->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
-			_curMusElt = _curSlur;			
-		} else if (qName == "slur-end") {
-			_curNote->setSlurEnd( _curSlur );
-			_curSlur->setNoteEnd( _curNote );
-			_curSlur = 0;
-			_curMusElt = _curSlur;	
-		} else if (qName == "phrasing-slur-start") {
-			_curPhrasingSlur = new CASlur( CASlur::PhrasingSlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
-			_curNote->setPhrasingSlurStart( _curPhrasingSlur );
-			if (!attributes.value("slur-style").isEmpty())
-				_curPhrasingSlur->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
-			if (!attributes.value("slur-direction").isEmpty())
-				_curPhrasingSlur->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
-			_curMusElt = _curPhrasingSlur;			
-		} else if (qName == "phrasing-slur-end") {
-			_curNote->setPhrasingSlurEnd( _curPhrasingSlur );
-			_curPhrasingSlur->setNoteEnd( _curNote );
-			_curPhrasingSlur = 0;
-			_curMusElt = _curPhrasingSlur;
-			
+
+	} else if (qName == "tie") {
+		_curTie = new CASlur( CASlur::TieType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
+		_curNote->setTieStart( _curTie );
+		if (!attributes.value("slur-style").isEmpty())
+			_curTie->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
+		if (!attributes.value("slur-direction").isEmpty())
+			_curTie->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
+		_curMusElt = _curTie;
+	} else if (qName == "slur-start") {
+		_curSlur = new CASlur( CASlur::SlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
+		_curNote->setSlurStart( _curSlur );
+		if (!attributes.value("slur-style").isEmpty())
+			_curSlur->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
+		if (!attributes.value("slur-direction").isEmpty())
+			_curSlur->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
+		_curMusElt = _curSlur;
+	} else if (qName == "slur-end") {
+		_curNote->setSlurEnd( _curSlur );
+		_curSlur->setNoteEnd( _curNote );
+		_curSlur = 0;
+		_curMusElt = _curSlur;
+	} else if (qName == "phrasing-slur-start") {
+		_curPhrasingSlur = new CASlur( CASlur::PhrasingSlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
+		_curNote->setPhrasingSlurStart( _curPhrasingSlur );
+		if (!attributes.value("slur-style").isEmpty())
+			_curPhrasingSlur->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
+		if (!attributes.value("slur-direction").isEmpty())
+			_curPhrasingSlur->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
+		_curMusElt = _curPhrasingSlur;
+	} else if (qName == "phrasing-slur-end") {
+		_curNote->setPhrasingSlurEnd( _curPhrasingSlur );
+		_curPhrasingSlur->setNoteEnd( _curNote );
+		_curPhrasingSlur = 0;
+		_curMusElt = _curPhrasingSlur;
 	} else if (qName == "rest") {
 		// CARest
 		if ( _version.startsWith("0.5") ) {
@@ -341,7 +340,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 					               attributes.value("time-start").toInt()
 					             );
 		}
-		
+
 		_curMusElt = _curRest;
 	} else if (qName == "syllable") {
 		// CASyllable
@@ -353,14 +352,14 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			attributes.value("time-start").toInt(),
 			attributes.value("time-length").toInt()
 		);
-		
+
 		static_cast<CALyricsContext*>(_curContext)->addSyllable(s);
 		if (!attributes.value("associated-voice-idx").isEmpty())
 			_syllableMap[s] = attributes.value("associated-voice-idx").toInt();
 		_curMusElt = s;
 	} else if (qName == "function-mark" || _version.startsWith("0.5") && qName == "function-marking") {
 		// CAFunctionMark
-		CAFunctionMark *f = 
+		CAFunctionMark *f =
 			new CAFunctionMark(
 				CAFunctionMark::functionTypeFromString(attributes.value("function")),
 				(attributes.value("minor")=="1"?true:false),
@@ -375,7 +374,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 				"",
 				(attributes.value("ellipse")=="1"?true:false)
 			);
-		
+
 		static_cast<CAFunctionMarkContext*>(_curContext)->addFunctionMark(f);
 		_curMusElt = f;
 	} else if (qName == "mark") {
@@ -388,7 +387,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 	} else if (qName == "diatonic-key") {
 		_curDiatonicKey = CADiatonicKey( CADiatonicPitch(), CADiatonicKey::genderFromString(attributes.value("gender")) );
 	}
-	
+
 	_depth.push(qName);
 	return true;
 }
@@ -398,10 +397,10 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 	source. This function is called when a node has been closed (\</nodeName\>). Attributes
 	for closed notes are usually not set in CanorusML format. That's why we need to store
 	local node attributes (set when the node is opened) each time.
-	
+
 	The function returns true, if the node was successfully recognized and parsed;
 	otherwise false.
-	
+
 	\sa startElement()
 */
 bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& localName, const QString& qName ) {
@@ -421,14 +420,14 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		QList<CALyricsContext*> lcs = _lcMap.keys();
 		for (int i=0; i<lcs.size(); i++) // assign voices from voice indices
 			lcs.at(i)->setAssociatedVoice( voices.at(_lcMap[lcs[i]]) );
-		
+
 		QList<CASyllable*> syllables = _syllableMap.keys();
 		for (int i=0; i<syllables.size(); i++) // assign voices from voice indices
 			syllables.at(i)->setAssociatedVoice( voices.at(_syllableMap[syllables[i]]) );
-		
+
 		_lcMap.clear();
 		_syllableMap.clear();
-		_curSheet = 0;		
+		_curSheet = 0;
 	} else if (qName == "staff") {
 		// CAStaff
 		_curContext = 0;
@@ -443,7 +442,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		if (!_curContext || !_curVoice || _curContext->contextType()!=CAContext::Staff) {
 			return false;
 		}
-		
+
 		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::Clef, _curClef->timeStart());
 		CAMusElement *sign=0;
@@ -454,7 +453,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 					break;
 				}
 		}
-		
+
 		if (!sign) {
 			// the element doesn't exist yet - add it to all the voices
 			_curVoice->append( _curClef );
@@ -468,13 +467,13 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		if (!_curContext || !_curVoice || _curContext->contextType()!=CAContext::Staff) {
 			return false;
 		}
-		
+
 		switch (_curKeySig->keySignatureType()) {
 		case CAKeySignature::MajorMinor:
 			_curKeySig->setDiatonicKey( _curDiatonicKey );
 			break;
 		}
-		
+
 		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::KeySignature, _curKeySig->timeStart());
 		CAMusElement *sign=0;
@@ -485,7 +484,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 					break;
 				}
 		}
-		
+
 		if (!sign) {
 			// the element doesn't exist yet - add it to all the voices
 			_curVoice->append( _curKeySig );
@@ -499,7 +498,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		if (!_curContext || !_curVoice || _curContext->contextType()!=CAContext::Staff) {
 			return false;
 		}
-		
+
 		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::TimeSignature, _curTimeSig->timeStart());
 		CAMusElement *sign=0;
@@ -510,7 +509,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 					break;
 				}
 		}
-		
+
 		if (!sign) {
 			// the element doesn't exist yet - add it to all the voices
 			_curVoice->append( _curTimeSig );
@@ -524,7 +523,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		if (!_curContext || !_curVoice || _curContext->contextType()!=CAContext::Staff) {
 			return false;
 		}
-		
+
 		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::Barline, _curBarline->timeStart());
 		CAMusElement *sign=0;
@@ -535,7 +534,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 					break;
 				}
 		}
-		
+
 		if (!sign) {
 			// the element doesn't exist yet - add it to all the voices
 			_curVoice->append( _curBarline );
@@ -549,14 +548,14 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		if ( _version.startsWith("0.5") ) {
 		} else {
 			_curNote->setPlayableLength( _curPlayableLength );
-			_curNote->setDiatonicPitch( _curDiatonicPitch );			
+			_curNote->setDiatonicPitch( _curDiatonicPitch );
 		}
-		
+
 		if (_curVoice->lastNote() && _curVoice->lastNote()->timeStart()==_curNote->timeStart())
 			_curVoice->append( _curNote, true );
 		else
 			_curVoice->append( _curNote, false );
-		
+
 		_curNote->updateTies();
 		_curNote = 0;
 	} else if (qName == "tie") {
@@ -567,7 +566,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		} else {
 			_curRest->setPlayableLength( _curPlayableLength );
 		}
-		
+
 		_curVoice->append( _curRest );
 		_curRest = 0;
 	} else if (qName == "mark") {
@@ -581,7 +580,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 	} else if (qName == "diatonic-key" ) {
 		_curDiatonicKey.setDiatonicPitch( _curDiatonicPitch );
 	}
-	
+
 	_cha="";
 	_depth.pop();
 	return true;
@@ -591,25 +590,25 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 	Stores the characters between the greater-lesser signs while parsing the XML file.
 	This is usually needed for getting the property values stored not as node attributes,
 	but between greater-lesser signs.
-	
+
 	eg.
 	\code
 		<length>127</length>
 	\endcode
 	Would set _cha value to "127".
-	
+
 	\sa startElement(), endElement()
 */
 bool CACanorusMLImport::characters( const QString& ch ) {
 	_cha = ch;
-	
+
 	return true;
 }
 
 void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 	CAMark::CAMarkType type = CAMark::markTypeFromString(attributes.value("mark-type"));
 	_curMark = 0;
-	
+
 	switch (type) {
 	case CAMark::Text: {
 		_curMark = new CAText(
@@ -624,7 +623,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 					CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("beat")), attributes.value("beat-dotted").toInt() ),
 					attributes.value("bpm").toInt(),
 					_curMusElt
-			);			
+			);
 		} else {
 			_curMark = new CATempo(
 					CAPlayableLength(),
@@ -639,7 +638,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 			attributes.value("final-tempo").toInt(),
 			static_cast<CAPlayable*>(_curMusElt),
 			attributes.value("time-length").toInt(),
-			CARitardando::ritardandoTypeFromString(attributes.value("ritardando-type"))			
+			CARitardando::ritardandoTypeFromString(attributes.value("ritardando-type"))
 		);
 		break;
 	}
@@ -724,7 +723,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		QList<CAFingering::CAFingerNumber> fingers;
 		for (int i=0; !attributes.value(QString("finger%1").arg(i)).isEmpty(); i++)
 			fingers << CAFingering::fingerNumberFromString( attributes.value(QString("finger%1").arg(i)) );
-		
+
 		_curMark = new CAFingering(
 			fingers,
 			static_cast<CANote*>(_curMusElt),
@@ -733,7 +732,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		break;
 	}
 	}
-	
+
 	if (_curMark)
 		_curMusElt->addMark(_curMark);
 }
@@ -747,7 +746,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 	\var CACanorusMLImport::_cha
 	Current characters being read using characters() method between the greater/lesser
 	separators in XML file.
-	
+
 	\sa characters()
 */
 
@@ -755,27 +754,27 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 	\var CACanorusMLImport::_depth
 	Stack which represents the current depth of the document while SAX parsing. It contains
 	the tag names as the values.
-	
+
 	\sa startElement(), endElement()
 */
 
 /*!
 	\var CACanorusMLImport::_errorMsg
 	The error message content stored as QString, if the error happens.
-	
+
 	\sa fatalError()
 */
 
 /*!
 	\var CACanorusMLImport::_version
 	Document program version - which Canorus saved the file?
-	
+
 	\sa startElement(), endElement()
 */
 
 /*!
 	\var CACanorusMLImport::_document
 	Pointer to the document being read.
-	
+
 	\sa CADocument
 */
