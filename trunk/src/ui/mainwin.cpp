@@ -344,6 +344,22 @@ void CAMainWin::createCustomActions() {
 		uiNoteStemDirection->addButton( QIcon("images/playable/notestemup.svg"), CANote::StemUp, tr("Note Stem Up") );
 		uiNoteStemDirection->addButton( QIcon("images/playable/notestemdown.svg"), CANote::StemDown, tr("Note Stem Down") );
 		uiNoteStemDirection->addButton( QIcon("images/playable/notestemvoice.svg"), CANote::StemPreferred, tr("Note Stem Preferred") );
+	uiTupletType = new CAMenuToolButton( tr("Select Tuplet Type"), 2, this );
+		uiTupletType->setObjectName( "uiTupletType" );
+		uiTupletType->addButton( QIcon("images/tuplet/triplet.svg"), 0, tr("Triplet") );
+		uiTupletType->addButton( QIcon("images/tuplet/tuplet.svg"), 1, tr("Tuplet") );
+	uiTupletNumber = new QSpinBox(this);
+		uiTupletNumber->setObjectName( "uiTupletNumber" );
+		uiTupletNumber->setMinimum( 1 );
+		uiTupletNumber->setValue( 20 );
+		uiTupletNumber->setToolTip( tr("Number of notes") );
+	uiTupletInsteadOf = new QLabel( tr("instead of"), this );
+		uiTupletInsteadOf->setObjectName( "uiTupletInsteadOf" );
+	uiTupletActualNumber = new QSpinBox(this);
+		uiTupletActualNumber->setObjectName( "uiTupletActualNumber" );
+		uiTupletActualNumber->setMinimum( 1 );
+		uiTupletActualNumber->setValue( 20 );
+		uiTupletActualNumber->setToolTip( tr("Actual number of notes") );
 
 	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
 	uiKeySig = new QComboBox( this );
@@ -667,6 +683,12 @@ void CAMainWin::setupCustomUi() {
 	uiPlayableLength->defaultAction()->setCheckable(false);
 	uiPlayableLength->setCurrentId( CAPlayableLength::Quarter );
 	uiPlayableToolBar->addAction( uiAccsVisible );
+	uiTupletType->setDefaultAction( uiPlayableToolBar->addWidget( uiTupletType ) );
+	uiTupletType->defaultAction()->setToolTip(tr("Insert tuplet"));
+	uiTupletType->setCurrentId( 0 );
+	uiTupletNumberAction = uiPlayableToolBar->addWidget( uiTupletNumber );
+	uiTupletInsteadOfAction = uiPlayableToolBar->addWidget( uiTupletInsteadOf );
+	uiTupletActualNumberAction = uiPlayableToolBar->addWidget( uiTupletActualNumber );
 	uiNoteStemDirection->setDefaultAction( uiPlayableToolBar->addWidget(uiNoteStemDirection ) );
 	uiNoteStemDirection->defaultAction()->setToolTip(tr("Note stem direction"));
 	uiNoteStemDirection->defaultAction()->setCheckable(false);
@@ -1494,7 +1516,7 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				std::cout << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << std::endl;
 				std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", dContext = " << v->selection().front()->drawableContext() << ", context=" << elt->context();
 				if (elt->isPlayable()) {
-					std::cout << ", voice=" << ((CANote*)elt)->isPartOfTheChord() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
+					std::cout << ", voice=" << ((CANote*)elt)->isPartOfChord() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
 					std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
 					if (elt->musElementType()==CAMusElement::Note)
 						std::cout << ", pitch=" << static_cast<CANote*>(elt)->diatonicPitch().noteName();
@@ -2293,8 +2315,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				} else
 				// Insert slur or phrasing slur
 				if ( noteStart && noteEnd && noteStart != noteEnd && (musElementFactory()->slurType()==CASlur::SlurType || musElementFactory()->slurType()==CASlur::PhrasingSlurType) ) {
-					if (noteStart->isPartOfTheChord()) noteStart = noteStart->getChord().at(0);
-					if (noteEnd->isPartOfTheChord()) noteEnd = noteEnd->getChord().at(0);
+					if (noteStart->isPartOfChord()) noteStart = noteStart->getChord().at(0);
+					if (noteEnd->isPartOfChord()) noteEnd = noteEnd->getChord().at(0);
 					QList<CANote*> noteList = noteStart->voice()->getNoteList();
 					int end = noteList.indexOf(noteEnd);
 					for (int i=noteList.indexOf(noteStart); i<=end; i++)
@@ -3296,6 +3318,27 @@ void CAMainWin::on_uiTimeSigType_toggled(bool checked, int buttonId) {
 	}
 }
 
+void CAMainWin::on_uiTupletType_toggled(bool checked, int type) {
+	if (checked) {
+		switch (type) {
+		case 0:
+			uiTupletNumber->setValue(3);
+			uiTupletActualNumber->setValue(2);
+			break;
+		}
+	}
+
+	updatePlayableToolBar();
+}
+
+void CAMainWin::on_uiTupletNumber_valueChanged(int value) {
+	musElementFactory()->setTupletNumber( value );
+}
+
+void CAMainWin::on_uiTupletActualNumber_valueChanged(int value) {
+	musElementFactory()->setTupletActualNumber( value );
+}
+
 void CAMainWin::on_uiInsertKeySig_toggled(bool checked) {
 	if (checked) {
 		musElementFactory()->setMusElementType( CAMusElement::KeySignature );
@@ -3847,6 +3890,20 @@ void CAMainWin::updatePlayableToolBar() {
 	if ( uiInsertPlayable->isChecked() && mode()==InsertMode ) {
 		uiPlayableLength->setCurrentId( musElementFactory()->playableLength().musicLength() );
 		uiNoteStemDirection->setCurrentId( musElementFactory()->noteStemDirection() );
+
+		if ( uiTupletType->isChecked() && uiTupletType->currentId()==1 ) {
+			uiTupletNumberAction->setVisible(true);
+			uiTupletNumberAction->setEnabled(true);
+			uiTupletInsteadOfAction->setVisible(true);
+			uiTupletInsteadOfAction->setEnabled(true);
+			uiTupletActualNumberAction->setVisible(true);
+			uiTupletActualNumberAction->setEnabled(true);
+		} else {
+			uiTupletNumberAction->setVisible(false);
+			uiTupletInsteadOfAction->setVisible(false);
+			uiTupletActualNumberAction->setVisible(false);
+		}
+
 		uiHiddenRest->setEnabled(true);
 		uiHiddenRest->setChecked( musElementFactory()->restType()==CARest::Hidden );
 		uiPlayableToolBar->show();
@@ -3873,6 +3930,10 @@ void CAMainWin::updatePlayableToolBar() {
 				uiPlayableToolBar->hide();
 				uiHiddenRest->setEnabled(false);
 			}
+
+			uiTupletNumber->hide();
+			uiTupletInsteadOf->hide();
+			uiTupletActualNumber->hide();
 		}
 	} else {
 		uiPlayableToolBar->hide();
@@ -4215,7 +4276,7 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 			if ( (*i)->musElementType()==CAMusElement::Note ||
 			     (*i)->musElementType()==CAMusElement::Rest ) {
 				CAPlayable *p = static_cast<CAPlayable*>(*i);
-				if ( !dynamic_cast<CANote*>(p) || !static_cast<CANote*>(p)->isPartOfTheChord() ) {
+				if ( !dynamic_cast<CANote*>(p) || !static_cast<CANote*>(p)->isPartOfChord() ) {
 					// find out the status of the rests in other voices
 					QList<CAPlayable*> chord = p->staff()->getChord( p->timeStart() );
 					int chordIdx;

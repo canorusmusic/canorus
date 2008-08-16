@@ -240,7 +240,7 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 			// element is playable
 			if ( elt->musElementType()==CAMusElement::Note ) {
 				CANote *n = static_cast<CANote*>(elt);
-				if ( n->isPartOfTheChord() && n->isFirstInTheChord() ) {
+				if ( n->isPartOfChord() && n->isFirstInChord() ) {
 					// if the note is the first in the chord, the slurs and marks should be relinked to the 2nd in the chord
 					CANote *prevNote = n->getChord().at(1);
 					prevNote->setSlurStart( n->slurStart() );
@@ -255,7 +255,7 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 							n->removeMark( n->markList()[i--] );
 						}
 					}
-				} else if ( !(n->isPartOfTheChord()) ) {
+				} else if ( !(n->isPartOfChord()) ) {
 					if ( n->slurStart() ) delete n->slurStart();
 					if ( n->slurEnd() ) delete n->slurEnd();
 					if ( n->phrasingSlurStart() ) delete n->phrasingSlurStart();
@@ -352,7 +352,7 @@ bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 CADiatonicPitch CAVoice::lastNotePitch(bool inChord) {
 	for (int i=_musElementList.size()-1; i>=0; i--) {
 		if (_musElementList[i]->musElementType()==CAMusElement::Note) {
-			if (!((CANote*)_musElementList[i])->isPartOfTheChord() || !inChord)	// the note is not part of the chord
+			if (!((CANote*)_musElementList[i])->isPartOfChord() || !inChord)	// the note is not part of the chord
 				return (static_cast<CANote*>(_musElementList[i])->diatonicPitch() );
 			else {
 				int chordTimeStart = _musElementList[i]->timeStart();
@@ -514,7 +514,6 @@ QList<CAMusElement*> CAVoice::getSignList() {
 	Returns 0, if the such a note doesn't exist.
 */
 CANote *CAVoice::nextNote( int timeStart ) {
-	CANote *n = 0;
 	int i;
 	for (i=0;
 	     i<_musElementList.size() &&
@@ -534,7 +533,6 @@ CANote *CAVoice::nextNote( int timeStart ) {
 	Returns 0, if the such a note doesn't exist.
 */
 CANote *CAVoice::previousNote( int timeStart ) {
-	CANote *n = 0;
 	int i;
 	for (i=_musElementList.size()-1;
 	     i>-1 &&
@@ -545,6 +543,82 @@ CANote *CAVoice::previousNote( int timeStart ) {
 
 	if (i>-1)
 		return static_cast<CANote*>(_musElementList[i]);
+	else
+		return 0;
+}
+
+/*!
+	Returns a pointer to the next rest with the higher timeStart than the given one.
+	Returns 0, if the such a note doesn't exist.
+*/
+CARest *CAVoice::nextRest(int timeStart) {
+	int i;
+	for (i=0;
+	     i<_musElementList.size() &&
+	     	(_musElementList[i]->musElementType()!=CAMusElement::Rest ||
+	     	 _musElementList[i]->timeStart()<=timeStart
+	     	);
+	     i++);
+
+	if (i<_musElementList.size())
+		return static_cast<CARest*>(_musElementList[i]);
+	else
+		return 0;
+}
+
+/*!
+	Returns a pointer to the previous rest with the lower timeStart than the given one.
+	Returns 0, if the such a note doesn't exist.
+*/
+CARest *CAVoice::previousRest(int timeStart) {
+	int i;
+	for (i=_musElementList.size()-1;
+	     i>-1 &&
+	     	(_musElementList[i]->musElementType()!=CAMusElement::Rest ||
+	     	 _musElementList[i]->timeStart()>=timeStart
+	     	);
+	     i--);
+
+	if (i>-1)
+		return static_cast<CARest*>(_musElementList[i]);
+	else
+		return 0;
+}
+
+/*!
+	Returns a pointer to the next note with the higher timeStart than the given one.
+	Returns 0, if the such a note doesn't exist.
+*/
+CAPlayable *CAVoice::nextPlayable(int timeStart) {
+	int i;
+	for (i=0;
+	     i<_musElementList.size() &&
+	     	(dynamic_cast<CAPlayable*>(_musElementList[i]) ||
+	     	 _musElementList[i]->timeStart()<=timeStart
+	     	);
+	     i++);
+
+	if (i<_musElementList.size())
+		return static_cast<CAPlayable*>(_musElementList[i]);
+	else
+		return 0;
+}
+
+/*!
+	Returns a pointer to the previous playable with the lower timeStart than the given one.
+	Returns 0, if the such a note doesn't exist.
+*/
+CAPlayable *CAVoice::previousPlayable(int timeStart) {
+	int i;
+	for (i=_musElementList.size()-1;
+	     i>-1 &&
+	     	(dynamic_cast<CAPlayable*>(_musElementList[i]) ||
+	     	 _musElementList[i]->timeStart()>=timeStart
+	     	);
+	     i--);
+
+	if (i>-1)
+		return static_cast<CAPlayable*>(_musElementList[i]);
 	else
 		return 0;
 }
@@ -563,7 +637,7 @@ bool CAVoice::updateTimes( int idx, int length, bool signsToo ) {
 			for (int j=0; j<musElementList()[i]->markList().size(); j++) {
 				CAMark *m = musElementList()[i]->markList()[j];
 				if ( !m->isCommon() || musElementList()[i]->musElementType()!=CAMusElement::Note ||
-				     static_cast<CANote*>(musElementList()[i])->isFirstInTheChord() )
+				     static_cast<CANote*>(musElementList()[i])->isFirstInChord() )
 					m->setTimeStart( musElementList()[i]->timeStart() + length );
 			}
 		}
@@ -581,7 +655,7 @@ bool CAVoice::synchronizeMusElements() {
 	for (int i=0; i<musElementList().size(); i++) {
 		if ( musElementList()[i]->musElementType()==CAMusElement::Note &&
 		     musElementList()[i]->markList().size() &&
-		     static_cast<CANote*>(musElementList()[i])->isPartOfTheChord() ) {
+		     static_cast<CANote*>(musElementList()[i])->isPartOfChord() ) {
 			QList<CAMark*> marks; // list of shared marks
 			QList<CANote*> chord = static_cast<CANote*>(musElementList()[i])->getChord();
 

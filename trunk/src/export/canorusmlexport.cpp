@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -53,28 +53,28 @@ CACanorusMLExport::~CACanorusMLExport() {
 /*!
 	Saves the document.
 	It uses DOM object internally for writing the XML output.
-	
+
 	\sa openDocument()
 */
 void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 	int depth = 0;
-	
+
 	// CADocument
 	QDomDocument dDoc("canorusml");
-	
+
 	// Add encoding
 	dDoc.appendChild(dDoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\" "));
-	
+
 	// Root node - <canorus-document>
 	QDomElement dCanorusDocument = dDoc.createElement("canorus-document"); dDoc.appendChild(dCanorusDocument);
 	// Add program version
 	QDomElement dCanorusVersion = dDoc.createElement("canorus-version"); dCanorusDocument.appendChild(dCanorusVersion);
 	dCanorusVersion.appendChild(dDoc.createTextNode(CANORUS_VERSION));
-	
+
 	// Document content node - <document>
 	QDomElement dDocument = dDoc.createElement("document");
 	dCanorusDocument.appendChild(dDocument);
-	
+
 	if (!doc->title().isEmpty())
 		dDocument.setAttribute("title", doc->title());
 	if (!doc->subtitle().isEmpty())
@@ -93,22 +93,22 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 		dDocument.setAttribute("copyright", doc->copyright());
 	if (!doc->comments().isEmpty())
 		dDocument.setAttribute("comments", doc->comments());
-	
+
 	dDocument.setAttribute( "date-created", doc->dateCreated().toString(Qt::ISODate) );
 	dDocument.setAttribute( "date-last-modified", doc->dateLastModified().toString(Qt::ISODate) );
 	dDocument.setAttribute( "time-edited", doc->timeEdited() );
-	
+
 	for (int sheetIdx=0; sheetIdx < doc->sheetCount(); sheetIdx++) {
 		setProgress( qRound(((float)sheetIdx / doc->sheetCount()) * 100) );
-		
+
 		// CASheet
 		QDomElement dSheet = dDoc.createElement("sheet"); dDocument.appendChild(dSheet);
 		dSheet.setAttribute("name", doc->sheetAt(sheetIdx)->name());
-		
+
 		for (int contextIdx=0; contextIdx < doc->sheetAt(sheetIdx)->contextCount(); contextIdx++) {
 			// (CAContext)
 			CAContext *c = doc->sheetAt(sheetIdx)->contextAt(contextIdx);
-			
+
 			switch (c->contextType()) {
 				case CAContext::Staff: {
 					// CAStaff
@@ -116,7 +116,7 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 					QDomElement dStaff = dDoc.createElement("staff"); dSheet.appendChild(dStaff);
 					dStaff.setAttribute("name", staff->name());
 					dStaff.setAttribute("number-of-lines", staff->numberOfLines());
-					
+
 					for (int voiceIdx=0; voiceIdx < staff->voiceCount(); voiceIdx++) {
 						// CAVoice
 						CAVoice *v = staff->voiceAt(voiceIdx);
@@ -125,10 +125,10 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 						dVoice.setAttribute("midi-channel", v->midiChannel());
 						dVoice.setAttribute("midi-program", v->midiProgram());
 						dVoice.setAttribute("stem-direction", CANote::stemDirectionToString(v->stemDirection()));
-						
+
 						exportVoiceImpl( v, dVoice ); // writes notes, clefs etc.
 					}
-					
+
 					break;
 				}
 				case CAContext::LyricsContext: {
@@ -138,7 +138,7 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 					dlc.setAttribute("name", lc->name());
 					dlc.setAttribute("stanza-number", lc->stanzaNumber());
 					dlc.setAttribute("associated-voice-idx", doc->sheetAt(sheetIdx)->voiceList().indexOf(lc->associatedVoice()));
-					
+
 					QList<CASyllable*> syllables = lc->syllableList();
 					for (int i=0; i<syllables.size(); i++) {
 						QDomElement s = dDoc.createElement("syllable"); dlc.appendChild(s);
@@ -147,11 +147,11 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 						s.setAttribute( "text", syllables[i]->text() );
 						s.setAttribute( "hyphen", syllables[i]->hyphenStart() );
 						s.setAttribute( "melisma", syllables[i]->melismaStart() );
-						
+
 						if (syllables[i]->associatedVoice())
 							s.setAttribute( "associated-voice-idx", doc->sheetAt(sheetIdx)->voiceList().indexOf(syllables[i]->associatedVoice()) );
 					}
-					
+
 					break;
 				}
 				case CAContext::FunctionMarkContext: {
@@ -159,12 +159,12 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 					CAFunctionMarkContext *fmc = static_cast<CAFunctionMarkContext*>(c);
 					QDomElement dFmc = dDoc.createElement("function-mark-context"); dSheet.appendChild(dFmc);
 					dFmc.setAttribute("name", fmc->name());
-					
+
 					QList<CAFunctionMark*> elts = fmc->functionMarkList();
 					for (int i=0; i<elts.size(); i++) {
 						QDomElement dFm = dDoc.createElement("function-mark"); dFmc.appendChild(dFm);
 						dFm.setAttribute( "time-start", elts[i]->timeStart() );
-						dFm.setAttribute( "time-length", elts[i]->timeLength() );						
+						dFm.setAttribute( "time-length", elts[i]->timeLength() );
 						dFm.setAttribute( "function", CAFunctionMark::functionTypeToString(elts[i]->function()) );
 						dFm.setAttribute( "minor", elts[i]->isMinor() );
 						dFm.setAttribute( "chord-area", CAFunctionMark::functionTypeToString(elts[i]->chordArea()) );
@@ -180,7 +180,7 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 			}
 		}
 	}
-	
+
 	out() << dDoc.toString();
 }
 
@@ -188,13 +188,13 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 	Used for writing the voice node in XML output.
 	It uses DOM object internally for writing the XML output.
 	This method is usually called by saveDocument().
-	
+
 	\sa exportDocumentImpl()
 */
 void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 	QDomDocument dDoc = dVoice.ownerDocument();
 	for (int i=0; i<voice->musElementCount(); i++) {
-		CAMusElement *curElt = voice->musElementAt(i);		
+		CAMusElement *curElt = voice->musElementAt(i);
 		switch (curElt->musElementType()) {
 			case CAMusElement::Note: {
 				CANote *note = (CANote*)curElt;
@@ -203,10 +203,10 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 					dNote.setAttribute("stem-direction", CANote::stemDirectionToString(note->stemDirection()));
 				dNote.setAttribute("time-start", note->timeStart());
 				dNote.setAttribute("time-length", note->timeLength());
-				
+
 				exportPlayableLength( note->playableLength(), dNote );
 				exportDiatonicPitch( note->diatonicPitch(), dNote );
-				
+
 				if ( note->tieStart() ) {
 					QDomElement dTie = dDoc.createElement("tie"); dNote.appendChild( dTie );
 					dTie.setAttribute("slur-style", CASlur::slurStyleToString( note->tieStart()->slurStyle() ));
@@ -228,9 +228,9 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				if ( note->phrasingSlurEnd() ) {
 					QDomElement dPhrasingSlur = dDoc.createElement("phrasing-slur-end"); dNote.appendChild( dPhrasingSlur );
 				}
-				
+
 				exportMarks( curElt, dNote );
-				
+
 				break;
 			}
 			case CAMusElement::Rest: {
@@ -239,10 +239,10 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				dRest.setAttribute("rest-type", CARest::restTypeToString(rest->restType()));
 				dRest.setAttribute("time-start", rest->timeStart());
 				dRest.setAttribute("time-length", rest->timeLength());
-				
+
 				exportPlayableLength( rest->playableLength(), dRest );
 				exportMarks( curElt, dRest );
-				
+
 				break;
 			}
 			case CAMusElement::Clef: {
@@ -252,16 +252,16 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				dClef.setAttribute("c1", clef->c1());
 				dClef.setAttribute("time-start", clef->timeStart());
 				dClef.setAttribute("offset", clef->offset());
-				
+
 				exportMarks( curElt, dClef );
-				
+
 				break;
 			}
 			case CAMusElement::KeySignature: {
 				CAKeySignature *key = (CAKeySignature*)curElt;
 				QDomElement dKey = dDoc.createElement("key-signature"); dVoice.appendChild(dKey);
 				dKey.setAttribute("key-signature-type", CAKeySignature::keySignatureTypeToString(key->keySignatureType()));
-				
+
 				if ( key->keySignatureType()==CAKeySignature::MajorMinor ) {
 					exportDiatonicKey( key->diatonicKey(), dKey );
 				} else
@@ -269,11 +269,11 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 					dKey.setAttribute("modus", CAKeySignature::modusToString(key->modus()));
 				}
 				//! \todo Custom accidentals in key signature saving -Matevz	exportDiatonicPitch( key->diatonicKey().diatonicPitch(), dKey );
-				
+
 				dKey.setAttribute("time-start", key->timeStart());
-				
+
 				exportMarks( curElt, dKey );
-				
+
 				break;
 			}
 			case CAMusElement::TimeSignature: {
@@ -283,9 +283,9 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				dTime.setAttribute("beats", time->beats());
 				dTime.setAttribute("beat", time->beat());
 				dTime.setAttribute("time-start", time->timeStart());
-				
+
 				exportMarks( curElt, dTime );
-				
+
 				break;
 			}
 			case CAMusElement::Barline: {
@@ -293,9 +293,9 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 				QDomElement dBarline = dDoc.createElement("barline"); dVoice.appendChild(dBarline);
 				dBarline.setAttribute("barline-type", CABarline::barlineTypeToString(barline->barlineType()));
 				dBarline.setAttribute("time-start", barline->timeStart());
-				
+
 				exportMarks( curElt, dBarline );
-				
+
 				break;
 			}
 		}
@@ -306,12 +306,12 @@ void CACanorusMLExport::exportMarks( CAMusElement *elt, QDomElement& domElt ) {
 	for (int i=0; i<elt->markList().size(); i++) {
 		CAMark *mark = elt->markList()[i];
 		if ( !mark->isCommon() || elt->musElementType()!=CAMusElement::Note ||
-		     elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->isFirstInTheChord() ) {
+		     elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->isFirstInChord() ) {
 			QDomElement dMark = domElt.ownerDocument().createElement("mark"); domElt.appendChild(dMark);
 			dMark.setAttribute("time-start", mark->timeStart());
 			dMark.setAttribute("time-length", mark->timeLength());
 			dMark.setAttribute("mark-type", CAMark::markTypeToString(mark->markType()));
-			
+
 			switch (mark->markType()) {
 			case CAMark::Text: {
 				CAText *text = static_cast<CAText*>(mark);
@@ -399,7 +399,7 @@ void CACanorusMLExport::exportPlayableLength( CAPlayableLength l, QDomElement& d
 void CACanorusMLExport::exportDiatonicPitch( CADiatonicPitch p, QDomElement& domParent ) {
 	QDomElement dp = domParent.ownerDocument().createElement("diatonic-pitch"); domParent.appendChild(dp);
 	dp.setAttribute( "note-name", p.noteName() );
-	dp.setAttribute( "accs", p.accs() );	
+	dp.setAttribute( "accs", p.accs() );
 }
 
 void CACanorusMLExport::exportDiatonicKey( CADiatonicKey k, QDomElement& domParent ) {

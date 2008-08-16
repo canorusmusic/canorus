@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -11,6 +11,7 @@
 #include "core/muselement.h"
 #include "core/staff.h"
 #include "core/playablelength.h"
+#include "core/tuplet.h"
 
 class CAVoice;
 
@@ -19,18 +20,27 @@ public:
 	CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart );
 	virtual ~CAPlayable();
 	virtual CAPlayable *clone( CAVoice *voice ) = 0;
-	
+
 	inline CAPlayableLength& playableLength() { return _playableLength; }
 	inline void setPlayableLength( CAPlayableLength& l ) { _playableLength = l; calculateTimeLength(); }
-	
+
+	CATuplet *tuplet() { return _tuplet; }
+	void setTuplet( CATuplet *t ) { _tuplet = t; }
+
 	inline CAVoice *voice() { return _voice; }
 	void setVoice(CAVoice *v);
 	inline CAStaff* staff() { return static_cast<CAStaff*>(_context); }
-	
+
+	inline bool isFirstInTuplet() { return ( _tuplet && _tuplet->firstNote()==this); }
+	inline bool isLastInTuplet() { return ( _tuplet && _tuplet->lastNote()==this); }
+
+	void resetTime();
+
 protected:
 	void calculateTimeLength();
-	
+
 	CAPlayableLength _playableLength;
 	CAVoice *_voice;
+	CATuplet *_tuplet;
 };
 #endif /* PLAYABLE_H_ */

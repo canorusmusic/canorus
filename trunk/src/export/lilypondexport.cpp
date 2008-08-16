@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -27,9 +27,9 @@
 	\code
 	CALilyPondExport( myDocument, &textStream );
 	\endcode
-	
+
 	\a textStream is usually the file stream or the content of the score source view widget.
-	
+
 	\sa CALilyPondImport
 */
 
@@ -44,24 +44,24 @@ CALilyPondExport::CALilyPondExport( QTextStream *out )
 
 /*!
 	Exports the given voice music elements to LilyPond syntax.
-	
+
 	\sa CALilypondImport
 */
 void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	setCurVoice(v);
-	
+
 	CADiatonicPitch lastNotePitch;   // initialized by writeRelativeIntro()
 	int curStreamTime = 0;
 	CAPlayableLength lastPlayableLength(CAPlayableLength::Undefined);
-	
+
 	// Write \relative note for the first note
 	lastNotePitch = writeRelativeIntro();
-	
+
 	// start of the voice block
 	out() << "{\n";
 	indentMore();
 	indent();
-	
+
 	for (int i=0; i<v->musElementCount(); i++, out() << " ") { // append blank after each element
 		// (CAMusElement)
 		switch (v->musElementAt(i)->musElementType()) {
@@ -72,7 +72,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				out() << "\\clef \"";
 				out() << clefTypeToLilyPond( clef->clefType(), clef->c1(), clef->offset() );
 				out() << "\"";
-				
+
 				break;
 			}
 			case CAMusElement::KeySignature: {
@@ -82,7 +82,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				out() << "\\key "
 				    << diatonicPitchToLilyPond( key->diatonicKey().diatonicPitch() ) << " "
 				    << diatonicKeyGenderToLilyPond( key->diatonicKey().gender() );
-				
+
 				break;
 			}
 			case CAMusElement::TimeSignature: {
@@ -90,7 +90,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				CATimeSignature *time = static_cast<CATimeSignature*>(v->musElementAt(i));
 				if (time->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\time " << time->beats() << "/" << time->beat();
-				
+
 				break;
 			}
 			case CAMusElement::Barline: {
@@ -101,89 +101,89 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 					out() << "|";
 				else
 					out() << "\\bar \"" << barlineTypeToLilyPond(bar->barlineType()) << "\"";
-				
+
 				break;
 			}
 			case CAMusElement::Note: {
 				// CANote
 				CANote *note = static_cast<CANote*>(v->musElementAt(i));
 				if (note->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
-				if (note->isPartOfTheChord() && note->isFirstInTheChord()) {
+				if (note->isPartOfChord() && note->isFirstInChord()) {
 					out() << "<";
 				}
-				
+
 				// write the note name
 				out() << relativePitchToString( note->diatonicPitch(), lastNotePitch);
-				
-				if ( !note->isPartOfTheChord() && lastPlayableLength != note->playableLength() ) {
+
+				if ( !note->isPartOfChord() && lastPlayableLength != note->playableLength() ) {
 					out() << playableLengthToLilyPond( note->playableLength() );
 				}
-				
+
 				if (note->tieStart())
 					out() << "~";
-				
+
 				lastNotePitch = note->diatonicPitch();
-				if (!note->isPartOfTheChord())
+				if (!note->isPartOfChord())
 					lastPlayableLength = note->playableLength();
-				
+
 				// finish the chord stanza if that's the last note of the chord
-				if (note->isPartOfTheChord() && note->isLastInTheChord()) {
+				if (note->isPartOfChord() && note->isLastInChord()) {
 					out() << ">";
-					
+
 					if ( lastPlayableLength != note->playableLength() ) {
 						out() << playableLengthToLilyPond( note->playableLength() );
 					}
-					
+
 					lastNotePitch = note->getChord().at(0)->diatonicPitch();
 					lastPlayableLength = note->playableLength();
 				}
-				
+
 				// place slurs and phrasing slurs
-				if (!note->isPartOfTheChord() && note->slurStart() ||
-				    note->isPartOfTheChord() && note->isLastInTheChord() && note->getChord().at(0)->slurStart() ) {
+				if (!note->isPartOfChord() && note->slurStart() ||
+				    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurStart() ) {
 					out() << "(";
 				}
-				if (!note->isPartOfTheChord() && note->slurEnd() ||
-				    note->isPartOfTheChord() && note->isLastInTheChord() && note->getChord().at(0)->slurEnd() ) {
+				if (!note->isPartOfChord() && note->slurEnd() ||
+				    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurEnd() ) {
 					out() << ")";
 				}
-				if (!note->isPartOfTheChord() && note->phrasingSlurStart() ||
-				    note->isPartOfTheChord() && note->isLastInTheChord() && note->getChord().at(0)->phrasingSlurStart() ) {
+				if (!note->isPartOfChord() && note->phrasingSlurStart() ||
+				    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurStart() ) {
 					out() << "\\(";
 				}
-				if (!note->isPartOfTheChord() && note->phrasingSlurEnd() ||
-				    note->isPartOfTheChord() && note->isLastInTheChord() && note->getChord().at(0)->phrasingSlurEnd() ) {
+				if (!note->isPartOfChord() && note->phrasingSlurEnd() ||
+				    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurEnd() ) {
 					out() << "\\)";
 				}
-				
+
 				// add to the stream time, if the note is not part of the chord or is the last one in the chord
-				if (!note->isPartOfTheChord() ||
-				    (note->isPartOfTheChord() && note->isLastInTheChord()) )
+				if (!note->isPartOfChord() ||
+				    (note->isPartOfChord() && note->isLastInChord()) )
 					curStreamTime += note->timeLength();
-				
+
 				break;
 			}
 			case CAMusElement::Rest: {
 				// CARest
 				CARest *rest = (CARest*)v->musElementAt(i);
 				if (rest->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
-				
+
 				out() << restTypeToLilyPond(rest->restType());
-				
+
 				if ( lastPlayableLength!=rest->playableLength() ) {
 					out() << playableLengthToLilyPond( rest->playableLength() );
 				}
-				
+
 				lastPlayableLength = rest->playableLength();
 				curStreamTime += rest->timeLength();
-				
+
 				break;
 			}
 		}
-		
+
 		exportMarks(v->musElementAt(i));
 	}
-	
+
 	// end of the voice block
 	indentLess();
 	indent();
@@ -196,7 +196,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 	for (int i=0; i<elt->markList().size(); i++) {
 		CAMark *curMark = elt->markList()[i];
-		
+
 		switch ( curMark->markType() ) {
 		case CAMark::Text: {
 			out() << "^\"" << static_cast<CAText*>(curMark)->text() << "\" ";
@@ -220,10 +220,10 @@ void CALilyPondExport::exportLyricsContextBlock( CALyricsContext *lc ) {
 	spellNumbers(name);
 	out() << name << " = \\lyricmode {\n";
 	indentMore();
-	
+
 	indent();
 	exportLyricsContextImpl(lc);
-	
+
 	indentLess();
 	out() << "\n}\n";
 }
@@ -245,37 +245,37 @@ void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
 */
 CADiatonicPitch CALilyPondExport::writeRelativeIntro() {
 	int i;
-	
-	// find the first playable element and set the key signature if found any 
+
+	// find the first playable element and set the key signature if found any
 	for ( i=0;
 	      (i<curVoice()->musElementCount() &&
 	      (curVoice()->musElementAt(i)->musElementType()!=CAMusElement::Note));
 	      i++);
-	
+
 	// no playable elements present, return default c' pitch
 	if (i==curVoice()->musElementCount())
 		return CADiatonicPitch( 28 );
-	
+
 	CADiatonicPitch notePitch = static_cast<CANote*>(curVoice()->musElementAt(i))->diatonicPitch();
 	notePitch.setNoteName( ((notePitch.noteName() + 3) / 7) * 7 );
 	out() << "\\relative "
 	      << relativePitchToString( notePitch, CADiatonicPitch(21) ) << " "; // LilyPond default C is c1
-	
+
 	return notePitch;
 }
 
 /*!
 	This function returns the relative note pitch in LilyPond syntax on the given
 	Canorus pitch and previous note pitch.
-	
+
 	eg. pitch=10, accs=1, prevPitch=5 => returns "f'"
-	
+
 	\sa notePitchToLilyPond()
 */
 const QString CALilyPondExport::relativePitchToString( CADiatonicPitch p, CADiatonicPitch prevPitch) {
 	// write the note name
 	QString stringPitch = diatonicPitchToLilyPond(p);
-	
+
 	// write , or ' to lower/higher a note
 	int delta = prevPitch.noteName() - p.noteName();
 	while (delta > 3) { // add the needed amount of the commas
@@ -286,7 +286,7 @@ const QString CALilyPondExport::relativePitchToString( CADiatonicPitch p, CADiat
 		stringPitch += "'";
 		delta += 7;
 	}
-	
+
 	return stringPitch;
 }
 
@@ -297,7 +297,7 @@ const QString CALilyPondExport::relativePitchToString( CADiatonicPitch p, CADiat
 const QString CALilyPondExport::clefTypeToLilyPond( CAClef::CAClefType clefType, int c1orig, int offset ) {
 	QString type;
 	int c1 = c1orig + offset;
-	
+
 	switch (clefType) {
 		case CAClef::G:
 			if (c1==-2) type = "treble";
@@ -323,19 +323,19 @@ const QString CALilyPondExport::clefTypeToLilyPond( CAClef::CAClefType clefType,
 			type = "tab";
 			break;
 	}
-	
+
 	if ( offset > 0 )
 		type.append(QString("^") + QString::number(offset+1));
-	
+
 	if ( offset < 0 )
 		type.append(QString("_") + QString::number((offset-1)*(-1)));
-	
+
 	return type;
 }
 
 /*!
 	Returns the key signature gender major/minor in LilyPond syntax.
-	
+
 	\sa keySignaturePitchToLilyPond()
 */
 const QString CALilyPondExport::diatonicKeyGenderToLilyPond( CADiatonicKey::CAGender gender ) {
@@ -343,7 +343,7 @@ const QString CALilyPondExport::diatonicKeyGenderToLilyPond( CADiatonicKey::CAGe
 		case CADiatonicKey::Major: return QString("\\major");
 		case CADiatonicKey::Minor: return QString("\\minor");
 	}
-	
+
 	return QString();
 }
 
@@ -381,9 +381,9 @@ const QString CALilyPondExport::playableLengthToLilyPond( CAPlayableLength playa
 			length = "128";
 			break;
 	}
-	
+
 	for (int j=0; j<playableLength.dotted(); j++) length += ".";
-	
+
 	return length;
 }
 
@@ -392,12 +392,12 @@ const QString CALilyPondExport::playableLengthToLilyPond( CAPlayableLength playa
 */
 const QString CALilyPondExport::diatonicPitchToLilyPond( CADiatonicPitch pitch ) {
 	QString name;
-	
+
 	name = (char)((pitch.noteName()+2)%7 + 'a');
-	
+
 	for (int i=0; i < pitch.accs(); i++)
 		name += "is";	// append as many -is-es as necessary
-	
+
 	for (int i=0; i > pitch.accs(); i--) {
 		if ( (name == "e") || (name == "a") )
 			name += "s";	// for pitches E and A, only append single -s the first time
@@ -406,7 +406,7 @@ const QString CALilyPondExport::diatonicPitchToLilyPond( CADiatonicPitch pitch )
 		else
 			name += "es";	// otherwise, append normally as many es-es as necessary
 	}
-	
+
 	return name;
 }
 
@@ -455,12 +455,12 @@ const QString CALilyPondExport::barlineTypeToLilyPond(CABarline::CABarlineType t
 
 const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
 	QString ret = (s->text().isEmpty()?"_":s->text());
-	
+
 	if (s->hyphenStart())
 		ret += " --";
 	else if (s->melismaStart())
 		ret += " __";
-	
+
 	return ret;
 }
 
@@ -471,17 +471,17 @@ void CALilyPondExport::exportDocumentImpl(CADocument *doc)
 {
 	if ( doc->sheetCount() < 1 ) {
 		//TODO: no sheets, raise an error
-		return;	
+		return;
 	}
 
 	// Print file name and Canorus version in comments at the top of the file
 	out() << "% This document was generated by Canorus, version " << CANORUS_VERSION << "\n";
-	
+
 	// Version of Lilypond syntax being generated.
 	out() << "\\version \"2.10.0\"\n";
-	
+
 	writeDocumentHeader();
-	
+
 	// For now only export the first sheet of the document
 	exportSheetImpl( doc->sheetAt( 0 ) );
 }
@@ -503,7 +503,7 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 				break;
 			case CAContext::LyricsContext:
 				exportLyricsContextBlock( static_cast<CALyricsContext*>(sheet->contextAt( c )) );
-				break;			
+				break;
 		}
 	}
 
@@ -516,7 +516,7 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 void CALilyPondExport::writeDocumentHeader() {
 	out() << "\n\\header {\n";
 	indentMore();
-	
+
 	indent(); out() << "title          = " << markupString( exportedDocument()->title() ) << "\n";
 	indent(); out() << "subtitle       = " << markupString( exportedDocument()->subtitle() ) << "\n";
 	indent(); out() << "composer       = " << markupString( exportedDocument()->composer() ) << "\n";
@@ -526,7 +526,7 @@ void CALilyPondExport::writeDocumentHeader() {
 	indent(); out() << "dedication     = " << markupString( exportedDocument()->dedication() ) << "\n";
 	indent(); out() << "copyright      = " << markupString( exportedDocument()->copyright() ) << "\n";
 	indentLess();
-	
+
 	out() << "}\n";
 }
 
@@ -558,7 +558,7 @@ void CALilyPondExport::exportStaffVoices(CAStaff *staff)
 		// Print Canorus voice name as a comment to help with debugging/tweaking
 		indent();
 		out() << "\n% " << curVoice()->name() << "\n";
-		
+
 		// Write out the voice name and the equals signexportVoice
 		// Variable name is staff index and voice index
 		QString voiceName;
@@ -576,7 +576,7 @@ void CALilyPondExport::exportStaffVoices(CAStaff *staff)
 	X and Y are spelled-out versions of \a staffNum and \a voiceNum, respectively.
 	This is for generating names of Lilypond variables from Canorus staff and voices indices,
 	since Lilypond variable names must contain only alphabetical characters.
-	
+
 	Example: voiceVariableName( name, 1, 2 );
 	--> name is "StaffOneVoiceTwo"
 */
@@ -586,7 +586,7 @@ void CALilyPondExport::voiceVariableName( QString &name, int staffNum, int voice
 	spellNumbers( name );
 }
 
-	
+
 /*!
 	Exports the \score block for LilyPond from the current sheet.
 	Looks like this:
@@ -614,7 +614,7 @@ void CALilyPondExport::voiceVariableName( QString &name, int staffNum, int voice
 void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 	out() << "\n\\score {\n";
 	indentMore();
-	int contextCount = sheet->contextCount();	
+	int contextCount = sheet->contextCount();
 	if ( contextCount < 1 ) {
 		out() << "% No Contexts. This should probably raise an error.\n";
 	}
@@ -623,19 +623,19 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 		indent();
 		out() <<  "<<\n" ;
 		indentMore();
-		
+
 		// Output each staff
 		for( int c = 0; c < contextCount; ++c ) {
 			setCurContext( sheet->contextAt( c ) );
-			
+
 			switch (curContext()->contextType()) {
 				case CAContext::Staff: {
 					CAStaff *s = static_cast<CAStaff*>(curContext());
-					
+
 					indent();
 					out() <<  "\\new Staff {\n" ;
 					indentMore();
-					
+
 					// More than one voice? Add simultaneous symbol
 					int voiceCount = s->voiceCount();
 					if ( voiceCount > 1 ) {
@@ -643,15 +643,15 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 						out() <<  "<<\n" ;
 						indentMore();
 					}
-					
+
 					// Output voices
 					for( int v = 0; v < voiceCount; ++v ) {
-						
+
 						// Print Canorus voice name as a comment to aid with debugging etc.
 						QString curVoiceName( s->voiceAt( v )->name() );
 						indent();
 						out() << "% " << curVoiceName << "\n";
-						
+
 						// curVoiceLilyCommand is "\voiceOne", "\voiceTwo", etc. to get proper stem directions
 						// Only use this if there is more than one voice.
 						QString curVoiceLilyCommand;
@@ -660,7 +660,7 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 							curVoiceLilyCommand = "\\voice" + curVoiceLilyCommand;
 							spellNumbers( curVoiceLilyCommand );
 						}
-						
+
 						// Print Lily variable name
 						QString voiceName;
 						voiceVariableName( voiceName, c, v );
@@ -668,36 +668,36 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 						out() <<  "\\new Voice = \"" << voiceName << "Virtual\" { " << curVoiceLilyCommand << " \\" << voiceName << " }\n" ;
 					}
 					indentLess();
-					
+
 					// End simultaneous voice
 					if ( voiceCount > 1 ) {
 						indent();
 						out() <<  ">>\n" ;
 						indentLess();
 					}
-					
+
 					// End \new Staff {
 					indent();
 					out() <<  "}\n" ;
-					
+
 					break;
 				}
 				case CAContext::LyricsContext: { // only position the lyrics contexts. Voice assignment at the end of the score block!
 					CALyricsContext *lc = static_cast<CALyricsContext*>(curContext());
 					QString lcName = lc->name();
 					spellNumbers( lcName );
-					
+
 					indent();
 					out() << "% " << lc->name() << "\n";
 					indent();
 					out() << "\\new Lyrics = \"" << lcName << "Virtual\"\n";
-					
+
 					break;
 				}
 			}
-			
+
 		} // for(contexts)
-		
+
 		// After positioning the lyrics contexts, set their associated voices!
 		for (int i=0; i<contextCount; i++) {
 			if (i==0) {
@@ -709,27 +709,27 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 				 // needed for automatic treating of slurs as melisma for lyrics - multiple syllables below the slured notes are allowed in Canorus, but not recommended
 				out() << "\\set Score.melismaBusyProperties = #'()\n";
 			}
-			
+
 			CALyricsContext *lc;
 			if (lc = dynamic_cast<CALyricsContext*>(sheet->contextAt( i ))) {
 				QString lcName = lc->name();
 				spellNumbers(lcName);
-				
+
 				QString voiceName;
 				voiceVariableName(
 					voiceName,
 					curSheet()->contextList().indexOf(lc->associatedVoice()->staff()),
 					lc->associatedVoice()->staff()->voiceList().indexOf(lc->associatedVoice())
 				);
-				
+
 				indent();
 				out() << "\\context Lyrics = \"" << lcName << "Virtual\" { \\lyricsto \"" << voiceName << "Virtual\" \\" << lcName << " }\n";
 			}
 		}
-		
+
 		// End simultaneous contexts
 		indentLess();
-		
+
 		// close multiple contexts
 		indent();
 		out() << ">>\n";

@@ -62,8 +62,8 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 				CAPlayable *newElt = static_cast<CAPlayable*>(voiceAt(i)->musElementAt(eltIdx[i]))->clone( newStaff->voiceAt(i) );
 				newStaff->voiceAt(i)->append( newElt,
 					voiceAt(i)->musElementAt(eltIdx[i])->musElementType()==CAMusElement::Note &&
-					static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->isPartOfTheChord() &&
-					!static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->isFirstInTheChord() );
+					static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->isPartOfChord() &&
+					!static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->isFirstInChord() );
 
 				// check tie
 				if ( newElt->musElementType()==CAMusElement::Note &&
