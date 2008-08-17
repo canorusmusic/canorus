@@ -265,6 +265,7 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 					updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
 				}
 			} else {
+				if ( elt->isPlayable() && static_cast<CAPlayable*>(elt)->tuplet() ) delete static_cast<CAPlayable*>(elt)->tuplet();
 				updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
 			}
 

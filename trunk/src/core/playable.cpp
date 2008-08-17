@@ -70,6 +70,8 @@ void CAPlayable::calculateTimeLength() {
 	Calculates both the new timeLength and timeStart according to the playableLength
 	and the previous playable element timeEnd.
 
+	Element should be part of the voice.
+
 	\sa calculateTimeLength()
  */
 void CAPlayable::resetTime() {
