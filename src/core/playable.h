@@ -35,10 +35,9 @@ public:
 	inline bool isLastInTuplet() { return ( _tuplet && _tuplet->lastNote()==this); }
 
 	void resetTime();
-
-protected:
 	void calculateTimeLength();
 
+protected:
 	CAPlayableLength _playableLength;
 	CAVoice *_voice;
 	CATuplet *_tuplet;

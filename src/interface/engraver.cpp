@@ -514,6 +514,10 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 								dSlur->setYMid( qMax( dSlur->y2(), dSlur->y1() ) + 19 );
 							}
 						}
+
+						v->addMElement(newElt);
+
+						// add tuplet - same as for the rests
 						if ( static_cast<CADrawableNote*>(newElt)->note()->isLastInTuplet() ) {
 							int x1 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->xPos();
 							int x2 = newElt->xPos() + newElt->width();
@@ -535,9 +539,9 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							}
 
 							CADrawableTuplet *dTuplet = new CADrawableTuplet( static_cast<CADrawableNote*>(newElt)->note()->tuplet(), drawableContext, x1, y1, x2, y2 );
+							v->addMElement(dTuplet);
 						}
 
-						v->addMElement(newElt);
 						if ( static_cast<CANote*>(elt)->isLastInChord() )
 							streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 
@@ -578,6 +582,7 @@ void CAEngraver::reposit( CAScoreViewPort *v ) {
 							}
 
 							CADrawableTuplet *dTuplet = new CADrawableTuplet( static_cast<CADrawableRest*>(newElt)->rest()->tuplet(), drawableContext, x1, y1, x2, y2 );
+							v->addMElement(dTuplet);
 						}
 
 						placeMarks( newElt, v, i );

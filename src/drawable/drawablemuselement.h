@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -24,11 +24,12 @@ class CADrawableMusElement : public CADrawable {
 			DrawableBarline,
 			DrawableAccidental,
 			DrawableSlur,
+			DrawableTuplet,
 			DrawableSyllable,
 			DrawableFunctionMark, DrawableFunctionMarkSupport,
 			DrawableMark
 		};
-		
+
 		CADrawableMusElement(CAMusElement *musElement, CADrawableContext *drawableContext, int x, int y);
 
 		CADrawableMusElementType drawableMusElementType() { return _drawableMusElementType; }
@@ -36,10 +37,10 @@ class CADrawableMusElement : public CADrawable {
 		CADrawableContext *drawableContext() { return _drawableContext; }
 		void setDrawableContext(CADrawableContext *context) { _drawableContext = context; }
 		virtual CADrawableMusElement* clone(CADrawableContext* newContext = 0) = 0;
-		
+
 	protected:
 		void setDrawableMusElementType( CADrawableMusElementType t ) { _drawableMusElementType = t; }
-		
+
 		CADrawableMusElementType _drawableMusElementType;	// CADrawableMusElement type
 		CADrawableContext *_drawableContext;
 		CAMusElement *_musElement;

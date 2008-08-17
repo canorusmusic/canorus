@@ -34,8 +34,10 @@
 */
 
 /*!
-	Constructor for voice export. Called when viewing a single voice source in Lily syntax.
-	Exports a voice to LilyPond syntax using the given text stream.
+	Constructor for the lilypond export. Called when viewing a single voice source in
+	Lily syntax or exporting the whole document to a file.
+
+	Uses \a out for the output.
 */
 CALilyPondExport::CALilyPondExport( QTextStream *out )
  : CAExport(out) {

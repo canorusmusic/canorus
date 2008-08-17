@@ -12,6 +12,7 @@
 #include "core/staff.h"
 #include "core/note.h"
 #include "core/rest.h" // used for voice synchronization
+#include "core/tuplet.h"
 
 /*!
 	\class CAStaff
@@ -58,23 +59,26 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 	while (!done) {
 		// append playable elements
 		for (int i=0; i<voiceCount(); i++) {
+			QList<CAPlayable*> elementsUnderTuplet;
+
 			while ( eltIdx[i]<voiceAt(i)->musElementCount() && voiceAt(i)->musElementAt(eltIdx[i])->isPlayable() ) {
-				CAPlayable *newElt = static_cast<CAPlayable*>(voiceAt(i)->musElementAt(eltIdx[i]))->clone( newStaff->voiceAt(i) );
+				CAPlayable *clonedElt = static_cast<CAPlayable*>(voiceAt(i)->musElementAt(eltIdx[i]));
+				CAPlayable *newElt = clonedElt->clone( newStaff->voiceAt(i) );
 				newStaff->voiceAt(i)->append( newElt,
 					voiceAt(i)->musElementAt(eltIdx[i])->musElementType()==CAMusElement::Note &&
-					static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->isPartOfChord() &&
-					!static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->isFirstInChord() );
+					static_cast<CANote*>(clonedElt)->isPartOfChord() &&
+					!static_cast<CANote*>(clonedElt)->isFirstInChord() );
 
 				// check tie
 				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->tieStart() ) {
-					curTie[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->tieStart()->clone();
+				     static_cast<CANote*>(clonedElt)->tieStart() ) {
+					curTie[i] = static_cast<CANote*>(clonedElt)->tieStart()->clone();
 					curTie[i]->setContext( newStaff );
 					curTie[i]->setNoteStart( static_cast<CANote*>(newElt) );
 					static_cast<CANote*>(newElt)->setTieStart(curTie[i]);
 				}
 				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->tieEnd() && curTie[i] ) {
+				     static_cast<CANote*>(clonedElt)->tieEnd() && curTie[i] ) {
 					curTie[i]->setNoteEnd( static_cast<CANote*>(newElt) );
 					static_cast<CANote*>(newElt)->setTieEnd(curTie[i]);
 					curTie[i] = 0;
@@ -82,14 +86,14 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 
 				// check slur
 				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurStart() ) {
+				     static_cast<CANote*>(clonedElt)->slurStart() ) {
 					curSlur[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurStart()->clone();
 					curSlur[i]->setContext( newStaff );
 					curSlur[i]->setNoteStart( static_cast<CANote*>(newElt) );
 					static_cast<CANote*>(newElt)->setSlurStart(curSlur[i]);
 				}
 				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurEnd() ) {
+				     static_cast<CANote*>(clonedElt)->slurEnd() ) {
 					curSlur[i]->setNoteEnd( static_cast<CANote*>(newElt) );
 					static_cast<CANote*>(newElt)->setSlurEnd(curSlur[i]);
 					curSlur[i] = 0;
@@ -97,17 +101,27 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 
 				// check phrasing slur
 				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->phrasingSlurStart() ) {
-					curPhrasingSlur[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->phrasingSlurStart()->clone();
+				     static_cast<CANote*>(clonedElt)->phrasingSlurStart() ) {
+					curPhrasingSlur[i] = static_cast<CANote*>(clonedElt)->phrasingSlurStart()->clone();
 					curPhrasingSlur[i]->setContext( newStaff );
 					curPhrasingSlur[i]->setNoteStart( static_cast<CANote*>(newElt) );
 					static_cast<CANote*>(newElt)->setPhrasingSlurStart(curPhrasingSlur[i]);
 				}
 				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->phrasingSlurEnd() ) {
+				     static_cast<CANote*>(clonedElt)->phrasingSlurEnd() ) {
 					curPhrasingSlur[i]->setNoteEnd( static_cast<CANote*>(newElt) );
 					static_cast<CANote*>(newElt)->setPhrasingSlurEnd(curPhrasingSlur[i]);
 					curPhrasingSlur[i] = 0;
+				}
+
+				// check tuplets
+				if ( clonedElt->tuplet() ) {
+					elementsUnderTuplet << newElt;
+				}
+
+				if ( clonedElt->isLastInTuplet() ) {
+					new CATuplet( clonedElt->tuplet()->number(), clonedElt->tuplet()->actualNumber(), elementsUnderTuplet );
+					elementsUnderTuplet.clear();
 				}
 
 				eltIdx[i]++;
