@@ -1514,9 +1514,9 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 
 				// debug
 				std::cout << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << std::endl;
-				std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", dContext = " << v->selection().front()->drawableContext() << ", context=" << elt->context();
+				std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", context=" << elt->context();
 				if (elt->isPlayable()) {
-					std::cout << ", voice=" << ((CANote*)elt)->isPartOfChord() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
+					std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
 					std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
 					if (elt->musElementType()==CAMusElement::Note)
 						std::cout << ", pitch=" << static_cast<CANote*>(elt)->diatonicPitch().noteName();
@@ -4373,14 +4373,9 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 							break;
 					}
 
-					if ( p->tuplet() ) {
-						musElemSet.remove( p->tuplet() );
-						delete p->tuplet();
-					}
-
 					if ( p->musElementType()==CAMusElement::Note && !deleteNotes || chordIdx!=chord.size() ) {
 						// replace note with rest
-						QList<CARest*> rests = CARest::composeRests( p->timeLength(), p->timeStart(), p->voice(), CARest::Normal );
+						QList<CARest*> rests = CARest::composeRests( CAPlayableLength::playableLengthToTimeLength( p->playableLength() ), p->timeStart(), p->voice(), CARest::Normal );
 						for (int j=0; j<rests.size(); j++)
 							p->voice()->insert( p, rests[j] );
 
@@ -4390,6 +4385,18 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 
 							musElemSet.remove(removedSyllable); // only remove syllables from the selection
 						}
+
+						if ( p->tuplet() ) { // remove the note from tuplet and add a rest
+							CATuplet *tuplet = p->tuplet();
+							tuplet->removeNote(p);
+							p->setTuplet(0);
+							for (int j=0; j<rests.size(); j++) {
+								tuplet->addNote(rests[j]);
+							}
+
+							tuplet->assignTimes();
+						}
+
 					} else {
 						// actually remove the note or rest and shift other elements back if only rests in other voices present
 						for (int j=0; j<chord.size(); j++) {              // remove any rests from other voices
@@ -4401,13 +4408,13 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 
 						for (int j=0; j<p->voice()->lyricsContextList().size(); j++) // delete and shift syllables
 							musElemSet.remove( p->voice()->lyricsContextList().at(j)->removeSyllableAtTimeStart(p->timeStart()) );
+
+						if ( p->tuplet() ) { // remove the tuplet from selection, if any, because it's deleted in playable destructor
+							musElemSet.remove( p->tuplet() );
+						}
 					}
 				}
 
-				if ( p->tuplet() ) {
-					p->tuplet()->removeNote(p);
-					p->setTuplet(0);
-				}
 				p->voice()->remove( p, true );
 				for (int j=0; j<p->voice()->lyricsContextList().size(); j++) {
 					p->voice()->lyricsContextList().at(j)->repositSyllables();
