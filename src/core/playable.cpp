@@ -30,7 +30,7 @@
 	\sa CAPlayableLength, CAVoice, CAMusElement
 */
 CAPlayable::CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart )
- : CAMusElement(voice?voice->staff():0, timeStart, 0) {
+ : CAMusElement(voice?(voice->staff()):0, timeStart, 0) {
 	setVoice( voice );
 	setPlayableLength( length );
 	setTuplet( 0 );
@@ -44,11 +44,12 @@ CAPlayable::CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart )
 	\note Non-playable signs are not shifted back when removing the element from the voice.
 */
 CAPlayable::~CAPlayable() {
+	if (tuplet()) {
+		tuplet()->removeNote(this);
+	}
+
 	if (voice())
 		voice()->remove( this, false );
-
-	if (tuplet())
-		delete tuplet();
 }
 
 void CAPlayable::setVoice(CAVoice *voice) {

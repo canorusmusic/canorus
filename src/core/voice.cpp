@@ -191,7 +191,7 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 
 		// insert a note somewhere in between, append or prepend
 
-		elt->setTimeStart( eltAfter?eltAfter->timeStart():lastTimeEnd() );
+		elt->setTimeStart( eltAfter?(eltAfter->timeStart()):lastTimeEnd() );
 		res = insertMusElement( eltAfter, elt );
 		updateTimes( musElementList().indexOf(elt)+1, elt->timeLength(), true );
 
