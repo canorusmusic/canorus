@@ -1518,6 +1518,11 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 				if (elt->isPlayable()) {
 					std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
 					std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
+
+					if (static_cast<CAPlayable*>(elt)->tuplet()) {
+						std::cout << ", tuplet=" << static_cast<CAPlayable*>(elt)->tuplet();
+					}
+
 					if (elt->musElementType()==CAMusElement::Note)
 						std::cout << ", pitch=" << static_cast<CANote*>(elt)->diatonicPitch().noteName();
 				}
@@ -2240,7 +2245,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, next, false );
 				noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
-				if (tuplet) {
+				if ( tuplet ) {
 					new CATuplet( number, actualNumber, noteList );
 				}
 			} else {
@@ -4014,6 +4019,7 @@ void CAMainWin::updatePlayableToolBar() {
 				uiHiddenRest->setEnabled(false);
 			}
 
+			uiTupletType->defaultAction()->setChecked( false );
 			uiTupletNumber->show();
 			uiTupletInsteadOf->show();
 			uiTupletActualNumber->show();
@@ -4394,6 +4400,7 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 								tuplet->addNote(rests[j]);
 							}
 
+							p->voice()->remove( p, true );
 							tuplet->assignTimes();
 						}
 

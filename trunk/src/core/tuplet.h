@@ -13,6 +13,7 @@
 class CATuplet : public CAMusElement {
 public:
 	CATuplet( int number, int actualNumber, QList<CAPlayable*> noteList );
+	CATuplet( int number, int actualNumber );
 	virtual ~CATuplet();
 
 	CAMusElement* clone();
@@ -31,6 +32,9 @@ public:
 	inline CAPlayable *firstNote() { return noteList().front(); }
 	inline CAPlayable *lastNote() { return noteList().back(); }
 	inline bool containsNote( CAPlayable *p ) { return noteList().contains(p); }
+
+	int timeLength();
+	int timeStart();
 
 	void assignTimes();
 

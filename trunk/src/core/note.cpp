@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -25,8 +25,8 @@
 
 	\sa CAPlayableLength, CAPlayable, CAVoice, _pitch, _accs
 */
-CANote::CANote( CADiatonicPitch pitch, CAPlayableLength length, CAVoice *voice, int timeStart )
- : CAPlayable( length, voice, timeStart ) {
+CANote::CANote( CADiatonicPitch pitch, CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength )
+ : CAPlayable( length, voice, timeStart, timeLength ) {
 	_musElementType = CAMusElement::Note;
 	_forceAccidentals = false;
 	_stemDirection = StemPreferred;
@@ -76,7 +76,7 @@ CANote::~CANote() {
 	Does *not* create clones of ties, slurs and phrasing slurs!
 */
 CANote *CANote::clone( CAVoice *voice ) {
-	CANote *d = new CANote( diatonicPitch(), playableLength(), voice, timeStart() );
+	CANote *d = new CANote( diatonicPitch(), playableLength(), voice, timeStart(), timeLength() );
 	d->setStemDirection( stemDirection() );
 
 	for (int i=0; i<markList().size(); i++) {

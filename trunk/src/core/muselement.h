@@ -44,11 +44,11 @@ public:
 	inline CAContext *context() { return _context; }
 	inline CAContext *setContext(CAContext *context) { _context = context; }
 
-	inline int timeStart() { return _timeStart; }
+	inline virtual int timeStart() { return _timeStart; }
 	inline void setTimeStart(int time) { _timeStart = time; }
-	inline int timeLength() { return _timeLength; }
+	inline virtual int timeLength() { return _timeLength; }
 	inline void setTimeLength(int length) { _timeLength = length; }
-	inline int timeEnd() { return _timeStart + _timeLength; }
+	inline int timeEnd() { return timeStart() + timeLength(); }
 
 	inline const QString name() { return _name; }
 	inline void setName(const QString name) { _name = name; }

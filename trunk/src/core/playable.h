@@ -17,12 +17,12 @@ class CAVoice;
 
 class CAPlayable : public CAMusElement {
 public:
-	CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart );
+	CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength=-1 );
 	virtual ~CAPlayable();
 	virtual CAPlayable *clone( CAVoice *voice ) = 0;
 
 	inline CAPlayableLength& playableLength() { return _playableLength; }
-	inline void setPlayableLength( CAPlayableLength& l ) { _playableLength = l; calculateTimeLength(); }
+	inline void setPlayableLength( CAPlayableLength& l ) { _playableLength = l; }
 
 	CATuplet *tuplet() { return _tuplet; }
 	void setTuplet( CATuplet *t ) { _tuplet = t; }

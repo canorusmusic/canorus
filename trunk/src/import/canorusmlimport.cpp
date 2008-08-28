@@ -72,6 +72,7 @@ void CACanorusMLImport::initCanorusMLImport() {
 	_curTie          = 0;
 	_curSlur         = 0;
 	_curPhrasingSlur = 0;
+	_curTuplet       = 0;
 }
 
 /*!
@@ -275,18 +276,25 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curNote = new CANote( CADiatonicPitch( attributes.value("pitch").toInt(), attributes.value("accs").toInt() ),
 		                       CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("playable-length")), attributes.value("dotted").toInt()),
 		                      _curVoice,
-		                      attributes.value("time-start").toInt()
+		                      attributes.value("time-start").toInt(),
+		                      attributes.value("time-length").toInt()
 		                     );
 		} else {
 			_curNote = new CANote( CADiatonicPitch(),
 			                       CAPlayableLength(),
 			                       _curVoice,
-			                       attributes.value("time-start").toInt()
+			                       attributes.value("time-start").toInt(),
+			                       attributes.value("time-length").toInt()
 			                     );
 		}
 
 		if (!attributes.value("stem-direction").isEmpty()) {
 			_curNote->setStemDirection(CANote::stemDirectionFromString(attributes.value("stem-direction")));
+		}
+
+		if (_curTuplet) {
+			_curNote->setTuplet( _curTuplet );
+			_curTuplet->addNote( _curNote );
 		}
 
 		_curMusElt = _curNote;
@@ -325,20 +333,29 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curPhrasingSlur->setNoteEnd( _curNote );
 		_curPhrasingSlur = 0;
 		_curMusElt = _curPhrasingSlur;
+	} else if ( qName == "tuplet" ) {
+		_curTuplet = new CATuplet( attributes.value("number").toInt(), attributes.value("actual-number").toInt() );
 	} else if (qName == "rest") {
 		// CARest
 		if ( _version.startsWith("0.5") ) {
 			_curRest = new CARest( CARest::restTypeFromString(attributes.value("rest-type")),
 			                       CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("playable-length")), attributes.value("dotted").toInt()),
 			                      _curVoice,
-			                      attributes.value("time-start").toInt()
+			                      attributes.value("time-start").toInt(),
+			                      attributes.value("time-length").toInt()
 			                     );
 		} else {
 			_curRest = new CARest( CARest::restTypeFromString(attributes.value("rest-type")),
 					               CAPlayableLength(),
 					               _curVoice,
-					               attributes.value("time-start").toInt()
+					               attributes.value("time-start").toInt(),
+					               attributes.value("time-length").toInt()
 					             );
+		}
+
+		if (_curTuplet) {
+			_curRest->setTuplet( _curTuplet );
+			_curTuplet->addNote( _curRest );
 		}
 
 		_curMusElt = _curRest;
@@ -548,6 +565,9 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		if ( _version.startsWith("0.5") ) {
 		} else {
 			_curNote->setPlayableLength( _curPlayableLength );
+			if ( !_curNote->tuplet() ) {
+				_curNote->calculateTimeLength();
+			}
 			_curNote->setDiatonicPitch( _curDiatonicPitch );
 		}
 
@@ -560,11 +580,17 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		_curNote = 0;
 	} else if (qName == "tie") {
 		// CASlur - tie
+	} else if ( qName == "tuplet" ) {
+		_curTuplet->assignTimes();
+		_curTuplet = 0;
 	} else if (qName == "rest") {
 		// CARest
 		if ( _version.startsWith("0.5") ) {
 		} else {
 			_curRest->setPlayableLength( _curPlayableLength );
+			if ( !_curRest->tuplet() ) {
+				_curRest->calculateTimeLength();
+			}
 		}
 
 		_curVoice->append( _curRest );

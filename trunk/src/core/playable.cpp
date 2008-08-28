@@ -29,10 +29,14 @@
 
 	\sa CAPlayableLength, CAVoice, CAMusElement
 */
-CAPlayable::CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart )
- : CAMusElement(voice?(voice->staff()):0, timeStart, 0) {
+CAPlayable::CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength )
+ : CAMusElement(voice?(voice->staff()):0, timeStart, timeLength) {
 	setVoice( voice );
 	setPlayableLength( length );
+	if ( timeLength==-1 ) {
+		calculateTimeLength();
+	}
+
 	setTuplet( 0 );
 }
 
@@ -59,7 +63,7 @@ void CAPlayable::setVoice(CAVoice *voice) {
 /*!
 	Calculates the new timeLength depending on the playableLength.
 
-	This function is usually automatically called when changing these properties.
+	Tuplets and other time transformations are not recognized.
 
 	\sa playableLength(), resetTime()
 */
@@ -72,6 +76,8 @@ void CAPlayable::calculateTimeLength() {
 	and the previous playable element timeEnd.
 
 	Element should be part of the voice.
+
+	Tuplets and other time transformations are not recognized.
 
 	\sa calculateTimeLength()
  */
