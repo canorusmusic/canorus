@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -19,22 +19,22 @@ public:
 		Normal,
 		Hidden
 	};
-	
-	CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart);
+
+	CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength=-1);
 	~CARest();
-	
+
 	CARest *clone( CAVoice *voice );
 	inline CARest *clone() { return clone( voice() ); }
-	
+
 	CARestType restType() { return _restType; }
 	void setRestType( CARestType type ) { _restType = type; }
-	
+
 	int compare(CAMusElement *elt);
-	
+
 	static const QString restTypeToString(CARestType);
 	static CARestType restTypeFromString(const QString);
 	static QList<CARest*> composeRests( int timeLength, int timeStart, CAVoice* voice=0, CARestType=Hidden );
-	
+
 private:
 	CARestType _restType;
 };

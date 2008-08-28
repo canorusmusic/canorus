@@ -216,7 +216,8 @@ bool CAMusElementFactory::configureNote( int pitch,
 		mpoMusElement = new CANote( CADiatonicPitch( pitch, _iNoteAccs ),
 		                            static_cast<CANote*>(right)->playableLength(),
                                     voice,
-	                                0 // timeStart is set when inserting to voice
+	                                0, // timeStart is set when inserting to voice
+	                                static_cast<CANote*>(right)->timeLength()
 	   );
 
 		bSuccess = voice->insert( right, mpoMusElement, true );

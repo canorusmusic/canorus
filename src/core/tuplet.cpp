@@ -38,6 +38,17 @@ CATuplet::CATuplet( int number, int actualNumber, QList<CAPlayable*> noteList )
 	assignTimes();
 }
 
+/*!
+	Constructs an empty tuplet.
+
+	Add notes and rests under it manually by calling addNote().
+	Call assignTimes() to apply the actual times then.
+ */
+CATuplet::CATuplet( int number, int actualNumber )
+ : CAMusElement( 0, 0, 0 ), _number(number), _actualNumber(actualNumber) {
+	setMusElementType( Tuplet );
+}
+
 CATuplet::~CATuplet() {
 	resetTimes();
 }
@@ -68,14 +79,18 @@ int CATuplet::compare(CAMusElement* elt) {
 	2) Create a tuplet containing them. This calls assignTimes() automatically
 	   to transform music elements times.
 
+	This function requires elements to be part of the voice.
+
 	\sa resetTimes()
  */
 void CATuplet::assignTimes() {
+	resetTimes();
+
 	CAVoice *voice = noteList().front()->voice();
 	CAMusElement *next = 0;
-	if ( noteList().back()->musElementType()==Note ) {
+	if ( noteList().back()->musElementType()==Note && static_cast<CANote*>(noteList().back())->getChord().size() ) {
 		next = voice->next( static_cast<CANote*>(noteList().back())->getChord().back() );
-	} else {
+	} else { // rest
 		next = voice->next( noteList().back() );
 	}
 
@@ -89,12 +104,12 @@ void CATuplet::assignTimes() {
 		noteList()[i]->setTimeStart( qRound( firstNote()->timeStart() + (noteList()[i]->timeStart() - firstNote()->timeStart()) * ((float)actualNumber() / number()) ) );
 	}
 
-	for (int i=0; i<noteList().size()-1; i++) {
-		int j=i;
-		while ( j<noteList().size() && (noteList()[j]->timeStart() - noteList()[i]->timeStart()) == 0 ) {
+	for (int i=0; i<noteList().size(); i++) {
+		int j=i+1;
+		while ( j<noteList().size() && (noteList()[j]->timeStart() == noteList()[i]->timeStart())  ) {
 			j++;
 		}
-		if ( j!= noteList().size() ) {
+		if ( j < noteList().size() ) {
 			noteList()[i]->setTimeLength( qRound( noteList()[j]->timeStart() - noteList()[i]->timeStart() ) );
 		} else {
 			noteList()[i]->setTimeLength( qRound( CAPlayableLength::playableLengthToTimeLength( noteList()[i]->playableLength() ) * ((float)actualNumber() / number()) ) );
@@ -111,10 +126,14 @@ void CATuplet::assignTimes() {
 		i+=(j-1);
 	}
 
-	setTimeLength( noteList().last()->timeEnd()-noteList().front()->timeStart() );
+	setTimeLength( noteList().last()->timeEnd() - noteList().front()->timeStart() );
 
 	for (int i=0; i<noteList().size(); i++) {
 		noteList()[i]->setTuplet(this);
+	}
+
+	if ( noteList().size() ) {
+		setContext( noteList()[0]->context() );
 	}
 }
 
@@ -126,30 +145,34 @@ void CATuplet::assignTimes() {
  */
 void CATuplet::resetTimes() {
 	CAVoice *voice = noteList().front()->voice();
-	CAMusElement *next = voice->next( noteList().back() );
+	CAMusElement *next = 0;
+	if ( noteList().back()->musElementType()==Note && static_cast<CANote*>(noteList().back())->getChord().size() ) {
+		next = voice->next( static_cast<CANote*>(noteList().back())->getChord().back() );
+	} else { // rest
+		next = voice->next( noteList().back() );
+	}
 
-	for (int i=0; i<noteList().size(); i++) {
-		noteList()[i]->setTuplet( 0 );
+	// removes notes from the voice
+	for (int i=noteList().size()-1; i>=0; i--) {
+		noteList()[i]->setTuplet(0);
+		voice->remove( noteList()[i] );
 	}
 
 	for (int i=0; i<noteList().size(); ) {
-		CAPlayable *prevPlayable = (i==0)?(noteList()[i]->voice()->previousPlayable(  noteList()[i]->timeStart() )):(noteList()[i-1]);
-		int newTimeStart = (prevPlayable?prevPlayable->timeEnd():0);
+		int newTimeStart = (i==0)?(noteList()[0]->timeStart()):(noteList()[i-1]->timeEnd());
 
-		if ( noteList()[i]->musElementType()==Note ) {
-			QList<CANote*> chord = static_cast<CANote*>(noteList()[i])->getChord();
-			for (int j=0; j<chord.size(); j++, i++) { // chord..
-				// removes notes from the voice
-				voice->remove( chord[j] );
-				chord[j]->calculateTimeLength();
-				noteList()[i]->setTimeStart( newTimeStart );
-			}
-		} else { // rest
-			voice->remove( noteList()[i] );
-			noteList()[i]->calculateTimeLength();
-			noteList()[i]->setTimeStart( newTimeStart );
-			i++;
+		QList<CAPlayable*> chord;
+		int j=0;
+		for (; i+j<noteList().size() && noteList()[i+j]->timeStart()==noteList()[i]->timeStart(); j++) { // chord..
+			chord << noteList()[i+j];
 		}
+
+		for (int k=0; k<chord.size(); k++) {
+			chord[k]->calculateTimeLength();
+			chord[k]->setTimeStart(newTimeStart);
+		}
+
+		i+=j;
 	}
 
 	// adds notes back to the voice
@@ -168,7 +191,24 @@ void CATuplet::resetTimes() {
  */
 void CATuplet::addNote( CAPlayable *p ) {
 	int i;
-	for (i=0; i<noteList().size() && noteList()[i]->timeStart()<p->timeStart(); i++);
+	for (i=0; i<noteList().size() && noteList()[i]->timeStart() <= p->timeStart() &&
+	     (noteList()[i]->musElementType()!=Note || noteList()[i]->timeStart() != p->timeStart() || static_cast<CANote*>(noteList()[i])->diatonicPitch().noteName() < static_cast<CANote*>(p)->diatonicPitch().noteName() ); i++);
 
 	 noteList().insert(i, p);
+}
+
+int CATuplet::timeLength() {
+	if (noteList().size()) {
+		return ( noteList().back()->timeEnd() - timeStart() );
+	} else {
+		return 0;
+	}
+}
+
+int CATuplet::timeStart() {
+	if (noteList().size()) {
+		return noteList()[0]->timeStart();
+	} else {
+		return 0;
+	}
 }

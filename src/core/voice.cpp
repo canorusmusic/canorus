@@ -162,7 +162,8 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 	if ( !elt )
 		return false;
 
-	if ( eltAfter && eltAfter->musElementType()==CAMusElement::Note ) // if eltAfter is note, it should always be the FIRST note in the chord
+	if ( eltAfter && eltAfter->musElementType()==CAMusElement::Note &&
+	     static_cast<CANote*>(eltAfter)->getChord().size() ) // if eltAfter is note, it should always be the FIRST note in the chord
 		eltAfter = static_cast<CANote*>(eltAfter)->getChord().front();
 
 	bool res;

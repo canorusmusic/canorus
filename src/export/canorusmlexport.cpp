@@ -197,8 +197,22 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 		CAMusElement *curElt = voice->musElementAt(i);
 		switch (curElt->musElementType()) {
 			case CAMusElement::Note: {
-				CANote *note = (CANote*)curElt;
-				QDomElement dNote = dDoc.createElement("note"); dVoice.appendChild(dNote);
+				CANote *note = static_cast<CANote*>(curElt);
+
+				if ( note->isFirstInTuplet() ) {
+					_dTuplet = dDoc.createElement("tuplet");
+					_dTuplet.setAttribute( "number", note->tuplet()->number() );
+					_dTuplet.setAttribute( "actual-number", note->tuplet()->actualNumber() );
+					dVoice.appendChild( _dTuplet );
+				}
+
+				QDomElement dNote = dDoc.createElement("note");
+				if ( note->tuplet() ) {
+					_dTuplet.appendChild( dNote );
+				} else {
+					dVoice.appendChild(dNote);
+				}
+
 				if (note->stemDirection()!=CANote::StemPreferred)
 					dNote.setAttribute("stem-direction", CANote::stemDirectionToString(note->stemDirection()));
 				dNote.setAttribute("time-start", note->timeStart());
@@ -235,7 +249,21 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 			}
 			case CAMusElement::Rest: {
 				CARest *rest = (CARest*)curElt;
-				QDomElement dRest = dDoc.createElement("rest"); dVoice.appendChild(dRest);
+
+				if ( rest->isFirstInTuplet() ) {
+					_dTuplet = dDoc.createElement("tuplet");
+					_dTuplet.setAttribute( "number", rest->tuplet()->number() );
+					_dTuplet.setAttribute( "actual-number", rest->tuplet()->actualNumber() );
+					dVoice.appendChild( _dTuplet );
+				}
+
+				QDomElement dRest = dDoc.createElement("rest");
+				if ( rest->tuplet() ) {
+					_dTuplet.appendChild( dRest );
+				} else {
+					dVoice.appendChild(dRest);
+				}
+
 				dRest.setAttribute("rest-type", CARest::restTypeToString(rest->restType()));
 				dRest.setAttribute("time-start", rest->timeStart());
 				dRest.setAttribute("time-length", rest->timeLength());
