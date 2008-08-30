@@ -42,7 +42,10 @@ public:
 		Midi_Ctl_Chorus  = 0x5d,
 		Midi_Ctl_Pan     = 0x0a,
 		Midi_Ctl_Volume  = 0x07,
-		Midi_Ctl_Sustain = 0x40
+		Midi_Ctl_Sustain = 0x40,
+
+		Midi_Note_Off    = 0x80,
+		Midi_Note_On     = 0x90
 	};
 
 	
