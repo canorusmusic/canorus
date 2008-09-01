@@ -18,6 +18,7 @@
 #include "core/voice.h"
 #include "core/mark.h"
 #include "core/text.h"
+#include "core/tuplet.h"
 
 /*!
 	\class CALilyPondExport
@@ -52,12 +53,11 @@ CALilyPondExport::CALilyPondExport( QTextStream *out )
 void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	setCurVoice(v);
 
-	CADiatonicPitch lastNotePitch;   // initialized by writeRelativeIntro()
-	int curStreamTime = 0;
-	CAPlayableLength lastPlayableLength(CAPlayableLength::Undefined);
+	_curStreamTime = 0;
+	_lastPlayableLength = CAPlayableLength::Undefined;
 
 	// Write \relative note for the first note
-	lastNotePitch = writeRelativeIntro();
+	_lastNotePitch = writeRelativeIntro();
 
 	// start of the voice block
 	out() << "{\n";
@@ -70,7 +70,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			case CAMusElement::Clef: {
 				// CAClef
 				CAClef *clef = static_cast<CAClef*>(v->musElementAt(i));
-				if (clef->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+				if (clef->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\clef \"";
 				out() << clefTypeToLilyPond( clef->clefType(), clef->c1(), clef->offset() );
 				out() << "\"";
@@ -80,7 +80,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			case CAMusElement::KeySignature: {
 				// CAKeySignature
 				CAKeySignature *key = static_cast<CAKeySignature*>(v->musElementAt(i));
-				if (key->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+				if (key->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\key "
 				    << diatonicPitchToLilyPond( key->diatonicKey().diatonicPitch() ) << " "
 				    << diatonicKeyGenderToLilyPond( key->diatonicKey().gender() );
@@ -90,7 +90,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			case CAMusElement::TimeSignature: {
 				// CATimeSignature
 				CATimeSignature *time = static_cast<CATimeSignature*>(v->musElementAt(i));
-				if (time->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+				if (time->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\time " << time->beats() << "/" << time->beat();
 
 				break;
@@ -98,7 +98,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			case CAMusElement::Barline: {
 				// CABarline
 				CABarline *bar = static_cast<CABarline*>(v->musElementAt(i));
-				if (bar->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+				if (bar->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				if (bar->barlineType() == CABarline::Single)
 					out() << "|";
 				else
@@ -106,81 +106,10 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 
 				break;
 			}
-			case CAMusElement::Note: {
-				// CANote
-				CANote *note = static_cast<CANote*>(v->musElementAt(i));
-				if (note->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
-				if (note->isPartOfChord() && note->isFirstInChord()) {
-					out() << "<";
-				}
+		}
 
-				// write the note name
-				out() << relativePitchToString( note->diatonicPitch(), lastNotePitch);
-
-				if ( !note->isPartOfChord() && lastPlayableLength != note->playableLength() ) {
-					out() << playableLengthToLilyPond( note->playableLength() );
-				}
-
-				if (note->tieStart())
-					out() << "~";
-
-				lastNotePitch = note->diatonicPitch();
-				if (!note->isPartOfChord())
-					lastPlayableLength = note->playableLength();
-
-				// finish the chord stanza if that's the last note of the chord
-				if (note->isPartOfChord() && note->isLastInChord()) {
-					out() << ">";
-
-					if ( lastPlayableLength != note->playableLength() ) {
-						out() << playableLengthToLilyPond( note->playableLength() );
-					}
-
-					lastNotePitch = note->getChord().at(0)->diatonicPitch();
-					lastPlayableLength = note->playableLength();
-				}
-
-				// place slurs and phrasing slurs
-				if (!note->isPartOfChord() && note->slurStart() ||
-				    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurStart() ) {
-					out() << "(";
-				}
-				if (!note->isPartOfChord() && note->slurEnd() ||
-				    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurEnd() ) {
-					out() << ")";
-				}
-				if (!note->isPartOfChord() && note->phrasingSlurStart() ||
-				    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurStart() ) {
-					out() << "\\(";
-				}
-				if (!note->isPartOfChord() && note->phrasingSlurEnd() ||
-				    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurEnd() ) {
-					out() << "\\)";
-				}
-
-				// add to the stream time, if the note is not part of the chord or is the last one in the chord
-				if (!note->isPartOfChord() ||
-				    (note->isPartOfChord() && note->isLastInChord()) )
-					curStreamTime += note->timeLength();
-
-				break;
-			}
-			case CAMusElement::Rest: {
-				// CARest
-				CARest *rest = (CARest*)v->musElementAt(i);
-				if (rest->timeStart()!=curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
-
-				out() << restTypeToLilyPond(rest->restType());
-
-				if ( lastPlayableLength!=rest->playableLength() ) {
-					out() << playableLengthToLilyPond( rest->playableLength() );
-				}
-
-				lastPlayableLength = rest->playableLength();
-				curStreamTime += rest->timeLength();
-
-				break;
-			}
+		if ( v->musElementAt(i)->isPlayable() ) {
+			exportPlayable( static_cast<CAPlayable*>(v->musElementAt(i)) );
 		}
 
 		exportMarks(v->musElementAt(i));
@@ -190,6 +119,94 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	indentLess();
 	indent();
 	out() << "\n}";
+}
+
+void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
+	if ( elt->isFirstInTuplet() ) {
+		out() << "\\times " << elt->tuplet()->actualNumber() << "/" << elt->tuplet()->number() << " { ";
+	}
+
+	switch (elt->musElementType()) {
+	case CAMusElement::Note: {
+		// CANote
+		CANote *note = static_cast<CANote*>(elt);
+		if (note->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+		if (note->isPartOfChord() && note->isFirstInChord()) {
+			out() << "<";
+		}
+
+		// write the note name
+		out() << relativePitchToString( note->diatonicPitch(), _lastNotePitch);
+
+		if ( !note->isPartOfChord() && _lastPlayableLength != note->playableLength() ) {
+			out() << playableLengthToLilyPond( note->playableLength() );
+		}
+
+		if (note->tieStart())
+			out() << "~";
+
+		_lastNotePitch = note->diatonicPitch();
+		if (!note->isPartOfChord())
+			_lastPlayableLength = note->playableLength();
+
+		// finish the chord stanza if that's the last note of the chord
+		if (note->isPartOfChord() && note->isLastInChord()) {
+			out() << ">";
+
+			if ( _lastPlayableLength != note->playableLength() ) {
+				out() << playableLengthToLilyPond( note->playableLength() );
+			}
+
+			_lastNotePitch = note->getChord().at(0)->diatonicPitch();
+			_lastPlayableLength = note->playableLength();
+		}
+
+		// place slurs and phrasing slurs
+		if (!note->isPartOfChord() && note->slurStart() ||
+		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurStart() ) {
+			out() << "(";
+		}
+		if (!note->isPartOfChord() && note->slurEnd() ||
+		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurEnd() ) {
+			out() << ")";
+		}
+		if (!note->isPartOfChord() && note->phrasingSlurStart() ||
+		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurStart() ) {
+			out() << "\\(";
+		}
+		if (!note->isPartOfChord() && note->phrasingSlurEnd() ||
+		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurEnd() ) {
+			out() << "\\)";
+		}
+
+		// add to the stream time, if the note is not part of the chord or is the last one in the chord
+		if (!note->isPartOfChord() ||
+		    (note->isPartOfChord() && note->isLastInChord()) )
+			_curStreamTime += note->timeLength();
+
+			break;
+	}
+	case CAMusElement::Rest: {
+		// CARest
+		CARest *rest = static_cast<CARest*>(elt);
+		if (rest->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+
+		out() << restTypeToLilyPond(rest->restType());
+
+		if ( _lastPlayableLength!=rest->playableLength() ) {
+			out() << playableLengthToLilyPond( rest->playableLength() );
+		}
+
+		_lastPlayableLength = rest->playableLength();
+		_curStreamTime += rest->timeLength();
+
+		break;
+	}
+	}
+
+	if ( elt->isLastInTuplet() ) {
+		out() << "} ";
+	}
 }
 
 /*!

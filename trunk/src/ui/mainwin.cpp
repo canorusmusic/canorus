@@ -41,6 +41,7 @@
 #include "widgets/menutoolbutton.h"
 #include "widgets/undotoolbutton.h"
 #include "widgets/lcdnumber.h"
+#include "widgets/midirecorderview.h"
 
 #include "widgets/viewport.h"
 #include "widgets/viewportcontainer.h"
@@ -81,6 +82,7 @@
 #include "core/muselementfactory.h"
 #include "core/mimedata.h"
 #include "core/undo.h"
+#include "core/midirecorder.h"
 
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
@@ -2732,7 +2734,7 @@ bool CAMainWin::saveDocument( QString fileName ) {
 	return false;
 }
 
-void CAMainWin::onMidiInEvent( QVector<unsigned char> m) {
+void CAMainWin::onMidiInEvent( QVector<unsigned char> m ) {
 	std::cout << "MidiInEvent: ";
 	for (int i=0; i<m.size(); i++)
 		std::cout << (int)m[i] << " ";
@@ -3392,20 +3394,31 @@ void CAMainWin::on_uiTupletType_toggled(bool checked, int type) {
 			CACanorus::undo()->createUndoCommand( document(), tr("insert tuplet", "undo") );
 
 			QList<CAPlayable*> playableList;
+			bool wrongVoice=false; // all elements should belong to a single voice. If multiple voices detected, cancel the tuplet creation.
+			CAVoice *tupletVoice = 0;
 			for (int i=0; i<currentScoreViewPort()->selection().size(); i++) {
 				if ( currentScoreViewPort()->selection()[i]->musElement() &&
-				     currentScoreViewPort()->selection()[i]->musElement()->isPlayable() )
+				     currentScoreViewPort()->selection()[i]->musElement()->isPlayable() ) {
 					playableList << static_cast<CAPlayable*>(currentScoreViewPort()->selection()[i]->musElement());
+					if ( !tupletVoice || static_cast<CAPlayable*>(currentScoreViewPort()->selection()[i]->musElement())->voice() == tupletVoice ) {
+						tupletVoice = static_cast<CAPlayable*>(currentScoreViewPort()->selection()[i]->musElement())->voice();
+					} else {
+						wrongVoice=true;
+						break;
+					}
+				}
 			}
 
-			if (type==0) {
-				new CATuplet( 3, 2, playableList );
-			} else {
-				new CATuplet( uiTupletNumber->value(), uiTupletActualNumber->value(), playableList );
-			}
+			if (!wrongVoice) {
+				if (type==0) {
+					new CATuplet( 3, 2, playableList );
+				} else {
+					new CATuplet( uiTupletNumber->value(), uiTupletActualNumber->value(), playableList );
+				}
 
-			CACanorus::undo()->pushUndoCommand();
-			CACanorus::rebuildUI( document(), currentSheet() );
+				CACanorus::undo()->pushUndoCommand();
+				CACanorus::rebuildUI( document(), currentSheet() );
+			}
 		} else {
 			switch (type) {
 			case 0:
@@ -3546,6 +3559,14 @@ Homepage: http://www.canorus.org").arg(CANORUS_VERSION) );
 void CAMainWin::on_uiSettings_triggered() {
 	CASettingsDialog( CASettingsDialog::EditorSettings, this );
 	CACanorus::rebuildUI();
+}
+
+void CAMainWin::on_uiMidiRecorder_triggered() {
+	CAResource *myMidiFile = new CAResource( "/tmp/mymidifile.mid", "My Midi File", false, CAResource::Sound );
+	document()->addResource( myMidiFile );
+	CAMidiRecorder *r = new CAMidiRecorder( myMidiFile, CACanorus::midiDevice() );
+	CAMidiRecorderView *midiRecorderView = new CAMidiRecorderView( r, this );
+	addToolBar(Qt::TopToolBarArea, midiRecorderView);
 }
 
 void CAMainWin::on_uiLilyPondSource_triggered() {

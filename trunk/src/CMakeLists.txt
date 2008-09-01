@@ -102,6 +102,7 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 # Define the MOC source files used by Canorus
 SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	core/autorecovery.h
+	core/midirecorder.h
 	
 	ui/mainwin.h
 	ui/settingsdialog.h
@@ -117,6 +118,7 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	widgets/menutoolbutton.h
 	widgets/undotoolbutton.h
 	widgets/pyconsole.h
+	widgets/midirecorderview.h
 	
 	interface/pluginaction.h
 	
@@ -182,6 +184,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/archive.cpp
 	core/resource.cpp
 	core/resourcecontainer.cpp
+	core/midirecorder.cpp
 	
 	core/playablelength.cpp
 	core/diatonicpitch.cpp
@@ -242,6 +245,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/viewport.cpp
 	widgets/viewportcontainer.cpp
 	widgets/pyconsole.cpp
+	widgets/midirecorderview.cpp
 )
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
@@ -374,6 +378,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/archive.cpp
 	core/resource.cpp
 	core/resourcecontainer.cpp
+	core/midirecorder.cpp
 	${Canorus_Import_Srcs}
 	${Canorus_Export_Srcs}
 	${Canorus_RtMidi_Srcs}
