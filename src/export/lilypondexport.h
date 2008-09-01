@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -27,7 +27,7 @@
 class CALilyPondExport : public CAExport {
 public:
 	CALilyPondExport( QTextStream *out=0 );
-	
+
 	///////////////////////////
 	// Polling export status //
 	///////////////////////////
@@ -37,7 +37,7 @@ public:
 	inline CAContext *curContext() { return _curContext; }
 	inline int curContextIndex() { return _curContextIndex; }
 	inline int curIndentLevel() { return _curIndentLevel; }
-	
+
 private:
 	void exportDocumentImpl(CADocument *doc);
 	void exportSheetImpl(CASheet *sheet);
@@ -47,35 +47,36 @@ private:
 	void exportLyricsContextBlock(CALyricsContext *lc);
 	void exportLyricsContextImpl(CALyricsContext* lc);
 	void exportMarks( CAMusElement* );
-	
+	void exportPlayable( CAPlayable *elt );
+
 	void writeDocumentHeader();
 	CADiatonicPitch writeRelativeIntro();
-	
+
 	////////////////////
 	// Helper methods //
 	////////////////////
-	const QString clefTypeToLilyPond( CAClef::CAClefType type, int c1, int offset );	
+	const QString clefTypeToLilyPond( CAClef::CAClefType type, int c1, int offset );
 	const QString diatonicKeyGenderToLilyPond( CADiatonicKey::CAGender gender);
 	const QString playableLengthToLilyPond( CAPlayableLength length );
 	const QString diatonicPitchToLilyPond( CADiatonicPitch p );
 	const QString restTypeToLilyPond(CARest::CARestType type);
 	const QString barlineTypeToLilyPond(CABarline::CABarlineType type);
 	const QString syllableToLilyPond( CASyllable *s );
-	
+
 	inline const QString relativePitchToString(CANote* note, CADiatonicPitch prevPitch) {
 		return relativePitchToString( note->diatonicPitch(), prevPitch);
 	}
 	const QString relativePitchToString( CADiatonicPitch p, CADiatonicPitch prevPitch);
 	void voiceVariableName( QString &name, int staffNum, int voiceNum );
 	void spellNumbers( QString &s );
-	
+
 	QString markupString( QString );
 	QString escapeWeirdChars( QString );
-	
+
 	void indent();
 	inline void indentMore() { ++_curIndentLevel; }
 	inline void indentLess() { --_curIndentLevel; }
-	
+
 	///////////////////////////
 	// Getter/Setter methods //
 	///////////////////////////
@@ -84,7 +85,7 @@ private:
 	inline void setCurContext(CAContext *context) { _curContext = context; }
 	inline void setCurContextIndex(int c) { _curContextIndex = c; }
 	inline void setIndentLevel( int level) { _curIndentLevel = level; }
-	
+
 	/////////////
 	// Members //
 	/////////////
@@ -94,6 +95,11 @@ private:
 	CAContext *_curContext;
 	int _curContextIndex;
 	int _curIndentLevel;
+
+	// Voice exporting current status
+	CADiatonicPitch _lastNotePitch;
+	CAPlayableLength _lastPlayableLength;
+	int _curStreamTime;
 };
 
 #endif /* LILYPONDEXPORT_H_*/

@@ -246,6 +246,7 @@ private slots:
 
 	// Tools
 	void on_uiSettings_triggered();
+	void on_uiMidiRecorder_triggered();
 
 	// Voice
 	void on_uiVoiceNum_valChanged(int);

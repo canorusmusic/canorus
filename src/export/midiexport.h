@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -40,20 +40,21 @@ public:
 */
 	QMap<int, QString> getOutputPorts() { };
 	QMap<int, QString> getInputPorts() { };
-	
+
 	bool openOutputPort(int port) { return true; }	// return true on success, false otherwise
-	bool openInputPort(int port) { return true; }	// return true on success, false otherwise	
+	bool openInputPort(int port) { return true; }	// return true on success, false otherwise
 	void closeOutputPort() { }
 	void closeInputPort() { }
 	void send(QVector<unsigned char> message, int time);
-	
+	void writeFile(); // direct access to the writing
+
 /*
 	///////////////////////////
 	// Polling export status //
 	///////////////////////////
 	// Setter methods are private!
 */
-	
+
 private:
 	QByteArray writeTime(int time);
 	void exportDocumentImpl(CADocument *doc);
@@ -72,11 +73,11 @@ private:
 	void setChunkLength( QByteArray *x );
 
 /*
-	
+
 	////////////////////
 	// Helper methods //
 	////////////////////
-	
+
 	///////////////////////////
 	// Getter/Setter methods //
 	///////////////////////////

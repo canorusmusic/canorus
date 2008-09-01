@@ -14,29 +14,26 @@
    <string>Canorus - Score editor</string>
   </property>
   <property name="windowIcon" >
-   <iconset>images/clogosm.png</iconset>
+   <iconset>
+    <normaloff>images/clogosm.png</normaloff>images/clogosm.png</iconset>
   </property>
   <property name="statusTip" >
    <string/>
   </property>
   <widget class="QWidget" name="uiCentralWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>58</y>
+     <width>905</width>
+     <height>578</height>
+    </rect>
+   </property>
    <layout class="QGridLayout" >
-    <property name="leftMargin" >
+    <property name="margin" >
      <number>6</number>
     </property>
-    <property name="topMargin" >
-     <number>6</number>
-    </property>
-    <property name="rightMargin" >
-     <number>6</number>
-    </property>
-    <property name="bottomMargin" >
-     <number>6</number>
-    </property>
-    <property name="horizontalSpacing" >
-     <number>4</number>
-    </property>
-    <property name="verticalSpacing" >
+    <property name="spacing" >
      <number>4</number>
     </property>
     <item row="0" column="0" >
@@ -63,7 +60,7 @@
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>32</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="uiMenuEdit" >
@@ -87,6 +84,7 @@
     <addaction name="uiGotoBar" />
     <addaction name="uiTranspose" />
     <addaction name="uiNoteCount" />
+    <addaction name="uiMidiRecorder" />
     <addaction name="separator" />
     <addaction name="uiSettings" />
    </widget>
@@ -122,7 +120,8 @@
       <string>Open &amp;recent</string>
      </property>
      <property name="icon" >
-      <iconset>images/general/fileopen.png</iconset>
+      <iconset>
+       <normaloff>images/general/fileopen.png</normaloff>images/general/fileopen.png</iconset>
      </property>
      <addaction name="actionRecent_documents" />
     </widget>
@@ -199,8 +198,25 @@
    <addaction name="uiMenuWindow" />
    <addaction name="uiMenuHelp" />
   </widget>
-  <widget class="QStatusBar" name="uiStatusBarWidget" />
+  <widget class="QStatusBar" name="uiStatusBarWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>636</y>
+     <width>905</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="uiStandardToolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>24</y>
+     <width>424</width>
+     <height>34</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Standard ToolBar</string>
    </property>
@@ -227,6 +243,14 @@
    <addaction name="uiPlayFromSelection" />
   </widget>
   <widget class="QToolBar" name="uiFileToolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>424</x>
+     <y>24</y>
+     <width>285</width>
+     <height>34</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>File ToolBar</string>
    </property>
@@ -252,6 +276,14 @@
    <property name="enabled" >
     <bool>true</bool>
    </property>
+   <property name="geometry" >
+    <rect>
+     <x>709</x>
+     <y>24</y>
+     <width>196</width>
+     <height>34</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Print ToolBar</string>
    </property>
@@ -271,7 +303,8 @@
   </widget>
   <action name="uiQuit" >
    <property name="icon" >
-    <iconset>images/general/exit.png</iconset>
+    <iconset>
+     <normaloff>images/general/exit.png</normaloff>images/general/exit.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Quit</string>
@@ -282,7 +315,8 @@
   </action>
   <action name="uiNewDocument" >
    <property name="icon" >
-    <iconset>images/general/filenew.png</iconset>
+    <iconset>
+     <normaloff>images/general/filenew.png</normaloff>images/general/filenew.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;New</string>
@@ -293,7 +327,8 @@
   </action>
   <action name="uiOpenDocument" >
    <property name="icon" >
-    <iconset>images/general/fileopen.png</iconset>
+    <iconset>
+     <normaloff>images/general/fileopen.png</normaloff>images/general/fileopen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open...</string>
@@ -304,7 +339,8 @@
   </action>
   <action name="uiSaveDocument" >
    <property name="icon" >
-    <iconset>images/general/filesave.png</iconset>
+    <iconset>
+     <normaloff>images/general/filesave.png</normaloff>images/general/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Save</string>
@@ -315,7 +351,8 @@
   </action>
   <action name="uiSaveDocumentAs" >
    <property name="icon" >
-    <iconset>images/general/filesaveas.png</iconset>
+    <iconset>
+     <normaloff>images/general/filesaveas.png</normaloff>images/general/filesaveas.png</iconset>
    </property>
    <property name="text" >
     <string>Save &amp;as...</string>
@@ -323,7 +360,8 @@
   </action>
   <action name="uiCloseDocument" >
    <property name="icon" >
-    <iconset>images/general/fileclose.svg</iconset>
+    <iconset>
+     <normaloff>images/general/fileclose.svg</normaloff>images/general/fileclose.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Close</string>
@@ -334,7 +372,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/general/filesave.png</iconset>
+    <iconset>
+     <normaloff>images/general/filesave.png</normaloff>images/general/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Import...</string>
@@ -342,7 +381,8 @@
   </action>
   <action name="uiExportDocument" >
    <property name="icon" >
-    <iconset>images/general/filesave.png</iconset>
+    <iconset>
+     <normaloff>images/general/filesave.png</normaloff>images/general/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Export...</string>
@@ -356,7 +396,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/printing/fileprintpreview.png</iconset>
+    <iconset>
+     <normaloff>images/printing/fileprintpreview.png</normaloff>images/printing/fileprintpreview.png</iconset>
    </property>
    <property name="text" >
     <string>Print pre&amp;view...</string>
@@ -370,7 +411,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/printing/fileprint.png</iconset>
+    <iconset>
+     <normaloff>images/printing/fileprint.png</normaloff>images/printing/fileprint.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Print...</string>
@@ -381,7 +423,8 @@
   </action>
   <action name="uiCopy" >
    <property name="icon" >
-    <iconset>images/general/editcopy.png</iconset>
+    <iconset>
+     <normaloff>images/general/editcopy.png</normaloff>images/general/editcopy.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Copy</string>
@@ -392,7 +435,8 @@
   </action>
   <action name="uiCut" >
    <property name="icon" >
-    <iconset>images/general/editcut.png</iconset>
+    <iconset>
+     <normaloff>images/general/editcut.png</normaloff>images/general/editcut.png</iconset>
    </property>
    <property name="text" >
     <string>C&amp;ut</string>
@@ -403,7 +447,8 @@
   </action>
   <action name="uiPaste" >
    <property name="icon" >
-    <iconset>images/general/editpaste.png</iconset>
+    <iconset>
+     <normaloff>images/general/editpaste.png</normaloff>images/general/editpaste.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Paste</string>
@@ -457,7 +502,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/general/fullscreen.png</iconset>
+    <iconset>
+     <normaloff>images/general/fullscreen.png</normaloff>images/general/fullscreen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Fullscreen</string>
@@ -468,7 +514,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/timesig/tsc.svg</iconset>
+    <iconset>
+     <normaloff>images/timesig/tsc.svg</normaloff>images/timesig/tsc.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Time signature...</string>
@@ -479,7 +526,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/accidental/keysig.svg</iconset>
+    <iconset>
+     <normaloff>images/accidental/keysig.svg</normaloff>images/accidental/keysig.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Key signature...</string>
@@ -490,7 +538,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/barline/barlinesingle.svg</iconset>
+    <iconset>
+     <normaloff>images/barline/barlinesingle.svg</normaloff>images/barline/barlinesingle.svg</iconset>
    </property>
    <property name="text" >
     <string>Barline...</string>
@@ -506,7 +555,8 @@
   </action>
   <action name="uiSettings" >
    <property name="icon" >
-    <iconset>images/settings/settings.svg</iconset>
+    <iconset>
+     <normaloff>images/settings/settings.svg</normaloff>images/settings/settings.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Settings...</string>
@@ -541,7 +591,8 @@
   </action>
   <action name="uiAboutCanorus" >
    <property name="icon" >
-    <iconset>images/clogosm.png</iconset>
+    <iconset>
+     <normaloff>images/clogosm.png</normaloff>images/clogosm.png</iconset>
    </property>
    <property name="text" >
     <string>About &amp;Canorus...</string>
@@ -549,7 +600,8 @@
   </action>
   <action name="uiAboutQt" >
    <property name="icon" >
-    <iconset>images/qtlogo.png</iconset>
+    <iconset>
+     <normaloff>images/qtlogo.png</normaloff>images/qtlogo.png</iconset>
    </property>
    <property name="text" >
     <string>About &amp;Qt...</string>
@@ -588,7 +640,8 @@
   </action>
   <action name="uiNewSheet" >
    <property name="icon" >
-    <iconset>images/document/sheetnew.svg</iconset>
+    <iconset>
+     <normaloff>images/document/sheetnew.svg</normaloff>images/document/sheetnew.svg</iconset>
    </property>
    <property name="text" >
     <string>New sheet</string>
@@ -599,7 +652,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/document/contextnew.svg</iconset>
+    <iconset>
+     <normaloff>images/document/contextnew.svg</normaloff>images/document/contextnew.svg</iconset>
    </property>
    <property name="text" >
     <string>New context...</string>
@@ -610,7 +664,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/playback/player_play.png</iconset>
+    <iconset>
+     <normaloff>images/playback/play.svg</normaloff>images/playback/play.svg</iconset>
    </property>
    <property name="text" >
     <string>Play from selection</string>
@@ -667,7 +722,8 @@
   </action>
   <action name="uiLilyPondSource" >
    <property name="icon" >
-    <iconset>images/general/lilypondsource.svg</iconset>
+    <iconset>
+     <normaloff>images/general/lilypondsource.svg</normaloff>images/general/lilypondsource.svg</iconset>
    </property>
    <property name="text" >
     <string>LilyPond source</string>
@@ -675,7 +731,8 @@
   </action>
   <action name="uiCanorusMLSource" >
    <property name="icon" >
-    <iconset>images/general/canorusmlsource.svg</iconset>
+    <iconset>
+     <normaloff>images/general/canorusmlsource.svg</normaloff>images/general/canorusmlsource.svg</iconset>
    </property>
    <property name="text" >
     <string>CanorusML source</string>
@@ -683,7 +740,8 @@
   </action>
   <action name="uiNewVoice" >
    <property name="icon" >
-    <iconset>images/document/voicenew.svg</iconset>
+    <iconset>
+     <normaloff>images/document/voicenew.svg</normaloff>images/document/voicenew.svg</iconset>
    </property>
    <property name="text" >
     <string>New voice</string>
@@ -691,7 +749,8 @@
   </action>
   <action name="uiDocumentProperties" >
    <property name="icon" >
-    <iconset>images/document/documentproperties.svg</iconset>
+    <iconset>
+     <normaloff>images/document/documentproperties.svg</normaloff>images/document/documentproperties.svg</iconset>
    </property>
    <property name="text" >
     <string>Document properties...</string>
@@ -702,7 +761,8 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset>images/printing/filequickprint.png</iconset>
+    <iconset>
+     <normaloff>images/printing/filequickprint.png</normaloff>images/printing/filequickprint.png</iconset>
    </property>
    <property name="text" >
     <string>Print directly</string>
@@ -716,7 +776,8 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset>images/general/pdf.png</iconset>
+    <iconset>
+     <normaloff>images/general/pdf.png</normaloff>images/general/pdf.png</iconset>
    </property>
    <property name="text" >
     <string>Export to PDF</string>
@@ -730,7 +791,8 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset>images/general/filenewwizard.png</iconset>
+    <iconset>
+     <normaloff>images/general/filenewwizard.png</normaloff>images/general/filenewwizard.png</iconset>
    </property>
    <property name="text" >
     <string>New document &amp;wizard...</string>
@@ -741,7 +803,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/playable/insertplayable.svg</iconset>
+    <iconset>
+     <normaloff>images/playable/insertplayable.svg</normaloff>images/playable/insertplayable.svg</iconset>
    </property>
    <property name="text" >
     <string>Notes and Rests</string>
@@ -755,7 +818,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/functionmark/insertfm.svg</iconset>
+    <iconset>
+     <normaloff>images/functionmark/insertfm.svg</normaloff>images/functionmark/insertfm.svg</iconset>
    </property>
    <property name="text" >
     <string>Function mark...</string>
@@ -766,7 +830,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/clef/cleff.svg</iconset>
+    <iconset>
+     <normaloff>images/clef/cleff.svg</normaloff>images/clef/cleff.svg</iconset>
    </property>
    <property name="text" >
     <string>Clef...</string>
@@ -780,7 +845,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/general/arrow.svg</iconset>
+    <iconset>
+     <normaloff>images/general/arrow.svg</normaloff>images/general/arrow.svg</iconset>
    </property>
    <property name="text" >
     <string>Select mode</string>
@@ -788,7 +854,8 @@
   </action>
   <action name="uiRemoveVoice" >
    <property name="icon" >
-    <iconset>images/document/voiceremove.svg</iconset>
+    <iconset>
+     <normaloff>images/document/voiceremove.svg</normaloff>images/document/voiceremove.svg</iconset>
    </property>
    <property name="text" >
     <string>Remove Voice</string>
@@ -796,7 +863,8 @@
   </action>
   <action name="uiVoiceProperties" >
    <property name="icon" >
-    <iconset>images/document/voiceproperties.svg</iconset>
+    <iconset>
+     <normaloff>images/document/voiceproperties.svg</normaloff>images/document/voiceproperties.svg</iconset>
    </property>
    <property name="text" >
     <string>Voice Properties</string>
@@ -807,7 +875,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/accidental/accsvisible.svg</iconset>
+    <iconset>
+     <normaloff>images/accidental/accsvisible.svg</normaloff>images/accidental/accsvisible.svg</iconset>
    </property>
    <property name="text" >
     <string>Accidentals Visible</string>
@@ -818,7 +887,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/playable/hiddenrest.svg</iconset>
+    <iconset>
+     <normaloff>images/playable/hiddenrest.svg</normaloff>images/playable/hiddenrest.svg</iconset>
    </property>
    <property name="text" >
     <string>Hidden Rest</string>
@@ -826,7 +896,8 @@
   </action>
   <action name="uiRemoveContext" >
    <property name="icon" >
-    <iconset>images/document/contextremove.svg</iconset>
+    <iconset>
+     <normaloff>images/document/contextremove.svg</normaloff>images/document/contextremove.svg</iconset>
    </property>
    <property name="text" >
     <string>Remove Context</string>
@@ -834,7 +905,8 @@
   </action>
   <action name="uiContextProperties" >
    <property name="icon" >
-    <iconset>images/document/contextproperties.svg</iconset>
+    <iconset>
+     <normaloff>images/document/contextproperties.svg</normaloff>images/document/contextproperties.svg</iconset>
    </property>
    <property name="text" >
     <string>Context Properties</string>
@@ -842,7 +914,8 @@
   </action>
   <action name="uiRemoveSheet" >
    <property name="icon" >
-    <iconset>images/document/sheetremove.svg</iconset>
+    <iconset>
+     <normaloff>images/document/sheetremove.svg</normaloff>images/document/sheetremove.svg</iconset>
    </property>
    <property name="text" >
     <string>Remove Sheet</string>
@@ -850,7 +923,8 @@
   </action>
   <action name="uiSheetProperties" >
    <property name="icon" >
-    <iconset>images/document/sheetproperties.svg</iconset>
+    <iconset>
+     <normaloff>images/document/sheetproperties.svg</normaloff>images/document/sheetproperties.svg</iconset>
    </property>
    <property name="text" >
     <string>Sheet Properties</string>
@@ -869,7 +943,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/functionmark/fme.svg</iconset>
+    <iconset>
+     <normaloff>images/functionmark/fme.svg</normaloff>images/functionmark/fme.svg</iconset>
    </property>
    <property name="text" >
     <string>Ellipse</string>
@@ -880,7 +955,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/document/syllable.svg</iconset>
+    <iconset>
+     <normaloff>images/document/syllable.svg</normaloff>images/document/syllable.svg</iconset>
    </property>
    <property name="text" >
     <string>Insert syllable</string>
@@ -891,7 +967,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>images/general/editmode.svg</iconset>
+    <iconset>
+     <normaloff>images/general/editmode.svg</normaloff>images/general/editmode.svg</iconset>
    </property>
    <property name="text" >
     <string>Edit mode</string>
@@ -899,7 +976,8 @@
   </action>
   <action name="uiInsertMark" >
    <property name="icon" >
-    <iconset>images/mark/text.svg</iconset>
+    <iconset>
+     <normaloff>images/mark/text.svg</normaloff>images/mark/text.svg</iconset>
    </property>
    <property name="text" >
     <string>Insert Mark</string>
@@ -907,7 +985,8 @@
   </action>
   <action name="uiInsertArticulation" >
    <property name="icon" >
-    <iconset>images/mark/articulation/accent.svg</iconset>
+    <iconset>
+     <normaloff>images/mark/articulation/accent.svg</normaloff>images/mark/articulation/accent.svg</iconset>
    </property>
    <property name="text" >
     <string>Insert Articulation Mark</string>
@@ -916,6 +995,11 @@
   <action name="actionRecent_documents" >
    <property name="text" >
     <string>recent documents dummy</string>
+   </property>
+  </action>
+  <action name="uiMidiRecorder" >
+   <property name="text" >
+    <string>Midi recorder</string>
    </property>
   </action>
  </widget>

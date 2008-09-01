@@ -1,0 +1,43 @@
+/*!
+	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
+
+#ifndef MIDIRECORDER_H_
+#define MIDIRECORDER_H_
+
+#include <QTimer>
+#include <QThread>
+
+class CAMidiExport;
+class CAResource;
+class CAMidiDevice;
+
+class CAMidiRecorder : public QThread {
+	Q_OBJECT
+
+public:
+	CAMidiRecorder( CAResource *r, CAMidiDevice *d );
+	virtual ~CAMidiRecorder();
+
+	void startRecording( int time=0 );
+	void stopRecording();
+
+	const unsigned int& curTime() const { return _curTime; }
+	const unsigned int deltaTime();
+
+private slots:
+	void timerTimeout();
+	void onMidiInEvent( QVector<unsigned char> messages );
+
+private:
+	CAResource   *_resource;
+	CAMidiExport *_midiExport;
+	QTimer       *_timer;
+	unsigned int  _curTime;
+	unsigned int  _lastTime;
+};
+
+#endif /* MIDIRECORDER_H_ */

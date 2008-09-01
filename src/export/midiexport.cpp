@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -31,9 +31,9 @@ class CACanorus;
 	\code
 	CAMidiExport( myDocument, &textStream );
 	\endcode
-	
+
 	\a textStream is usually the file stream.
-	
+
 	\sa CAMidiImport
 */
 
@@ -200,7 +200,7 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 {
 	if ( doc->sheetCount() < 1 ) {
 		//TODO: no sheets, raise an error
-		return;	
+		return;
 	}
 
 
@@ -230,6 +230,10 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 		}
 	}
 
+	writeFile();
+}
+
+void CAMidiExport::writeFile() {
 	// Header Chunk
 
 	// A midi file here is 8-Bit Ascii, so we need no coding translation,
@@ -244,7 +248,7 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 	setChunkLength( &headerChunk );
 	out() << headerChunk;
 
-	
+
 	QByteArray controlTrackChunk;
 	controlTrackChunk.append( "MTrk...." );
 	controlTrackChunk.append( textEvent(0, "Canorus Version 0.5beta generated. "));
@@ -264,7 +268,6 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 	setChunkLength( &trackChunk );
 	//printQByteArray( trackChunk );
 	out() << trackChunk;
-
 }
 
 void CAMidiExport::setChunkLength( QByteArray *x ) {
