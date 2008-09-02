@@ -25,7 +25,7 @@
 	   close the stream.
  */
 CAMidiRecorder::CAMidiRecorder( CAResource *r, CAMidiDevice *d )
- : QThread(), _resource(r), _curTime(0), _lastTime(0), _midiExport(0) {
+ : QObject(), _resource(r), _curTime(0), _lastTime(0), _midiExport(0) {
 	_timer = new QTimer();
 	_timer->setInterval(10);
 	connect( _timer, SIGNAL(timeout()), this, SLOT(timerTimeout()) );
