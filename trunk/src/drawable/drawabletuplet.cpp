@@ -67,10 +67,10 @@ void CADrawableTuplet::draw(QPainter *p, const CADrawSettings s) {
 	p->drawPolyline(points, 9);
 
 	QFont font("Emmentaler");
-	font.setPixelSize( 16*1.3*s.z );
+	font.setPixelSize( qRound(16*1.3*s.z) );
 	font.setItalic( true );
 	p->setFont(font);
-	p->drawText( s.x + (width()/2.0-3)*s.z, s.y + (height()/2.0+9)*s.z, QString::number( tuplet()->number() ) );
+	p->drawText( s.x + qRound((width()/2.0-3)*s.z), s.y + qRound((height()/2.0+9)*s.z), QString::number( tuplet()->number() ) );
 }
 
 CADrawableTuplet *CADrawableTuplet::clone(CADrawableContext* newContext) {

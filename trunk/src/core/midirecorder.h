@@ -9,15 +9,16 @@
 #define MIDIRECORDER_H_
 
 #include <QTimer>
-#include <QThread>
+#include <QObject>
 
 class CAMidiExport;
 class CAResource;
 class CAMidiDevice;
 
-class CAMidiRecorder : public QThread {
+class CAMidiRecorder : public QObject {
+#ifndef SWIG
 	Q_OBJECT
-
+#endif
 public:
 	CAMidiRecorder( CAResource *r, CAMidiDevice *d );
 	virtual ~CAMidiRecorder();
