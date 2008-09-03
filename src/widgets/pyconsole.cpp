@@ -5,6 +5,7 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
+
 #include "scripting/swigpython.h" // Must be included first (includes Python.h).
 #include "interface/plugin.h"
 #include "interface/pluginmanager.h"
@@ -14,6 +15,7 @@
 #include <stdio.h>
 #include <QKeyEvent>
 
+#ifdef USE_PYTHON
 /*!
 	\class CAPyConsole
 	\brief Canorus console widget
@@ -493,7 +495,6 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         return true;
     }
     else if (strCmd.startsWith("/callscript ")) {
-#ifdef USE_PYTHON
 
         if((CACanorus::locateResource("scripts/" + strCmd.mid(12))).isEmpty()) {
             txtAppend("Script not found\n",txtStderr);
@@ -502,7 +503,6 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         }
         
         QList<PyObject*> argsPython;
-        //argsPython << CASwigPython::toPythonObject(_canorusDoc, CASwigPython::Document);
         
         QObject *curObject = this;
         while (dynamic_cast<CAMainWin*>(curObject)==0 && curObject!=0) // find the parent which is mainwindow
@@ -513,7 +513,6 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         CASwigPython::callFunction(CACanorus::locateResource("scripts/" + strCmd.mid(12)).at(0), _strEntryFunc, argsPython);
         txtAppend(">>> ",txtNormal);
         return true;
-#endif
     }
     
     else if (strCmd == "/entryfunc"){
@@ -528,3 +527,15 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
     
     return true;
 }
+#else
+
+// If there is no python, generate dummy functions
+void CAPyConsole::txtAppend(QString const&, CAPyConsole::TxtType) {}
+void CAPyConsole::on_txtChanged() {}
+void CAPyConsole::on_posChanged() {}
+void CAPyConsole::on_selChanged() {}
+void CAPyConsole::on_fmtChanged() {}
+void CAPyConsole::syncPluginInit() {}
+void CAPyConsole::keyPressEvent (QKeyEvent * e) {}
+#endif //USE_PYTHON
+

@@ -5,6 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
+#ifdef USE_PYTHON
+
 #include "interface/pyconsoleinterface.h"
 #ifndef SWIGCPP
 #include "widgets/pyconsole.h"
@@ -37,3 +39,5 @@ void CAPyConsoleInterface::bufferedOutput (char* str, bool bStdErr) {
 	_pycons->asyncBufferedOutput(*q_str, bStdErr);
 }
 #endif
+#endif
+
