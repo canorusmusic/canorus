@@ -580,11 +580,13 @@ void CAMainWin::createCustomActions() {
 		uiFinger->addButton( QIcon("images/mark/fingering/ltoe.svg"),  CAFingering::LToe,   tr("Left Toe", "fingering") );
 		uiFinger->addButton( QIcon("images/mark/fingering/rtoe.svg"),  CAFingering::RToe,   tr("Right Toe", "fingering") );
 
+#ifdef USE_PYTHON
 	uiPyConsoleDock = new QDockWidget(tr("Canorus console"), this);
 	uiPyConsoleDock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	pyConsole = new CAPyConsole(document(), uiPyConsoleDock);
 	pyConsoleIface = new CAPyConsoleInterface(pyConsole);
 	uiPyConsoleDock->setWidget(pyConsole);
+#endif
 
 	uiFingeringOriginal = new QCheckBox( tr("Original"), this );
 		uiFingeringOriginal->setObjectName("uiFingeringOriginal");
@@ -783,8 +785,11 @@ void CAMainWin::setupCustomUi() {
 	uiFingeringToolBar->addWidget( uiFingeringOriginal );
 	addToolBar(Qt::TopToolBarArea, uiFingeringToolBar);
 
+#ifdef USE_PYTHON
 	// Python console dock widget
 	addDockWidget(Qt::BottomDockWidgetArea, uiPyConsoleDock);
+	uiPyConsoleDock->hide();
+#endif
 
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
@@ -823,7 +828,6 @@ void CAMainWin::setupCustomUi() {
 	uiFermataToolBar->hide();
 	uiRepeatMarkToolBar->hide();
 	uiFingeringToolBar->hide();
-	uiPyConsoleDock->hide();
 }
 
 void CAMainWin::newDocument() {
