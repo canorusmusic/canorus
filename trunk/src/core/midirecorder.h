@@ -9,7 +9,7 @@
 #define MIDIRECORDER_H_
 
 #include <QTimer>
-#include <QObject>
+#include <QVector>
 
 class CAMidiExport;
 class CAResource;
