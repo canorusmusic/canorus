@@ -7,7 +7,7 @@
 
 #include <QByteArray>
 #include <zlib.h> 
-#include <iostream> //dbg
+#include <QDebug>
 #include <QTemporaryFile>
 
 #ifdef Q_OS_WIN
@@ -74,7 +74,7 @@ void CAArchive::parse(QIODevice& arch)
 
 	if(!arch.isOpen()) {
 		if(!arch.open(QIODevice::ReadOnly)) {
-			_err = -1; // _tar is invalid.
+			_err = true; // _tar is invalid.
 			return;
 		}
 		close = true;
@@ -190,6 +190,7 @@ qint64 CAArchive::write(QIODevice& dest)
 	}
 
 	//compress until EOF
+	_tar->open(in);
 	do { 
 		in.reset();
 		ret = _tar->write(in, CHUNK);
@@ -225,6 +226,7 @@ qint64 CAArchive::write(QIODevice& dest)
 	delete[] header.comment;
 	if(close)
 		dest.close();
+	_tar->close(in);
 	in.close();
 	out.close();
 	return (_err) ? -1 : total;

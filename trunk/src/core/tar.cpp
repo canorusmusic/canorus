@@ -12,7 +12,7 @@
 #include <QDir>
 
 #include <cmath> // pow()
-#include <iostream> //dbg
+#include <QDebug>
 
 #include "core/tar.h"
 
@@ -21,6 +21,8 @@
 	\brief Class for the manipulation of tar files
 
 	This class can create and read tar archives, which allow concatenation of multiple files (with directory structure) into a single file.
+	
+	The archive must be opened using \a open() before writing, and closed with close() when writing is done. Don't forget to close() the archive when you're done!
 
 	For more info on the Tar format see <http://en.wikipedia.org/wiki/Tar_(file_format)>.
 */
@@ -333,7 +335,8 @@ qint64 CATar::write(QIODevice& dest, qint64 chunk)
 		return 0;
 		
 	if(!_pos.contains(&dest))
-		_pos[&dest].pos = _pos[&dest].file = _pos[&dest].eof = 0;
+		return -2; // dest was not open()'d.
+	
 	CATarBufInfo& pos = _pos[&dest];
 	first_pos = pos.pos;
 	

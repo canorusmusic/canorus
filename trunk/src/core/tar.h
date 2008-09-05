@@ -32,6 +32,8 @@ public:
 	CAIOPtr file(const QString& filename);
 	qint64 write(QIODevice& dest, qint64 chunk);
 	qint64 write(QIODevice& dest);
+	inline bool open(QIODevice& dest) { if(_pos.contains(&dest)) { return false; } _pos[&dest].pos = _pos[&dest].file = _pos[&dest].eof = 0; return true; }
+	inline void close(QIODevice& dest) { _pos.remove(&dest); }
 	bool eof(QIODevice& dest);
 	inline bool error() { return !_ok; }
 protected:
