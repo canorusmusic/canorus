@@ -3566,11 +3566,12 @@ void CAMainWin::on_uiSettings_triggered() {
 }
 
 void CAMainWin::on_uiMidiRecorder_triggered() {
-	CAResource *myMidiFile = new CAResource( "/tmp/mymidifile.mid", "My Midi File", false, CAResource::Sound );
+	CAResource *myMidiFile = new CAResource( QUrl::fromLocalFile("/tmp/mymidifile.mid"), "My Midi File", false, CAResource::Sound, document() );
 	document()->addResource( myMidiFile );
 	CAMidiRecorder *r = new CAMidiRecorder( myMidiFile, CACanorus::midiDevice() );
 	CAMidiRecorderView *midiRecorderView = new CAMidiRecorderView( r, this );
-	addToolBar(Qt::TopToolBarArea, midiRecorderView);
+	midiRecorderView->move( 70, 90 );
+	midiRecorderView->show();
 }
 
 void CAMainWin::on_uiLilyPondSource_triggered() {
