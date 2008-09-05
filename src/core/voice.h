@@ -12,13 +12,12 @@
 
 #include "core/muselement.h"
 #include "core/note.h"
-#include "core/resourcecontainer.h"
 
 class CAClef;
 class CALyricsContext;
 class CARest;
 
-class CAVoice : public CAResourceContainer {
+class CAVoice {
 	friend class CAStaff; // used for insertion of music elements and updateTimes() when inserting elements and synchronizing voices
 
 public:

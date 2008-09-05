@@ -43,7 +43,7 @@ void CAMidiRecorder::timerTimeout() {
 
 void CAMidiRecorder::startRecording( int startTime ) {
 	_midiExport = new CAMidiExport();
-	_midiExport->setStreamToFile(_resource->fileName());
+	_midiExport->setStreamToFile( _resource->url().toLocalFile() );
 
 	_timer->start();
 }
