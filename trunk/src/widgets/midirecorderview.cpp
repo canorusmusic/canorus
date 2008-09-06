@@ -27,67 +27,69 @@ CAMidiRecorderView::CAMidiRecorderView( CAMidiRecorder *r, QWidget *parent )
 	setupCustomUi( parent );
 
 	QDir::setCurrent( currentPath );
+
+	_status = Idle;
 }
 
 CAMidiRecorderView::~CAMidiRecorderView() {
 }
 
 void CAMidiRecorderView::setupCustomUi( QWidget *parent ) {
-	uiPlay = new QAction( QIcon("images/playback/play.svg"), tr("Play"), this );
-	uiPlay->setObjectName( "uiPlay" );
-	addAction( uiPlay );
+	uiRecord = new QAction( QIcon("images/playback/record.svg"), tr("Record"), this );
+	uiRecord->setObjectName( "uiRecord" );
+	addAction( uiRecord );
 	uiPause = new QAction( QIcon("images/playback/pause.svg"), tr("Pause"), this );
 	uiPause->setObjectName( "uiPause" );
 	addAction( uiPause );
 	uiStop = new QAction( QIcon("images/playback/stop.svg"), tr("Stop"), this );
 	uiStop->setObjectName( "uiStop" );
 	addAction( uiStop );
-	uiRecord = new QAction( QIcon("images/playback/record.svg"), tr("Record"), this );
-	uiRecord->setObjectName( "uiRecord" );
-	addAction( uiRecord );
-	_slider = new QSlider( Qt::Horizontal, this );
-	_sliderAction = addWidget( _slider );
-	_time = new QLabel( "0:50", this );
+	_time = new QLabel( "0:00", this );
 	_timeAction = addWidget( _time );
+
+	_timer = new QTimer();
+	_timer->setInterval(1000);
+	_timer->start();
+
+	connect( _timer, SIGNAL(timeout()), this, SLOT(onTimerTimeout()) );
 
 	QMetaObject::connectSlotsByName( this );
 
+	uiRecord->setEnabled( true );
 	uiPause->setVisible( false );
 	uiStop->setEnabled( false );
-	uiPlay->setEnabled( false );
-	uiRecord->setEnabled( true );
-	_status = Idle;
 }
 
-void CAMidiRecorderView::on_uiPlay_triggered(bool checked) {
-	uiPlay->setVisible( false );
-	uiPause->setVisible( true );
-	_status = Playing;
-
-	// TODO
+void CAMidiRecorderView::onTimerTimeout() {
+	if (_midiRecorder) {
+		if ( _time->text().isEmpty() || _status != Pause ) {
+			_time->setText( QString("%1:%2").arg((_midiRecorder->curTime()/1000)/60).arg((_midiRecorder->curTime()/1000) % 60, 2, 10, QChar('0')) );
+		} else {
+			_time->setText("");
+		}
+	}
 }
 
 void CAMidiRecorderView::on_uiPause_triggered(bool checked) {
 	uiPause->setVisible( false );
-	uiPlay->setVisible( true );
+	uiRecord->setVisible( true );
 
-	// TODO
+	_midiRecorder->pauseRecording();
+	_status = Pause;
 }
 
 void CAMidiRecorderView::on_uiStop_triggered(bool checked) {
-	uiPlay->setVisible( false );
-	uiPause->setVisible( true );
+	uiRecord->setVisible( true );
+	uiPause->setVisible( false );
+	uiStop->setEnabled( false );
 
-	if ( _status==Recording ) {
-		_midiRecorder->stopRecording();
-	}
-
+	_midiRecorder->stopRecording();
 	_status = Idle;
 }
 
 void CAMidiRecorderView::on_uiRecord_triggered(bool checked) {
-	uiPlay->setEnabled( false );
-	uiRecord->setEnabled( false );
+	uiRecord->setVisible( false );
+	uiPause->setVisible( true );
 	uiStop->setEnabled( true );
 
 	_midiRecorder->startRecording();

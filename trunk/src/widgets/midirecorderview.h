@@ -9,6 +9,7 @@
 #define MIDIRECORDERVIEW_H_
 
 #include <QToolBar>
+#include <QTimer>
 
 class QAction;
 class QLabel;
@@ -26,27 +27,25 @@ public:
 
 	enum CARecorderStatus {
 		Idle,
-		Playing,
+		Pause,
 		Recording
 	};
 
 private slots:
-	void on_uiPlay_triggered(bool);
-	void on_uiStop_triggered(bool);
-	void on_uiPause_triggered(bool);
 	void on_uiRecord_triggered(bool);
+	void on_uiPause_triggered(bool);
+	void on_uiStop_triggered(bool);
+	void onTimerTimeout();
 
 private:
 	void setupCustomUi( QWidget *parent );
 
-	QAction *uiPlay;
-	QAction *uiPause;
-	QAction *uiStop;
-	QAction *uiRecord;
-	QSlider *_slider;       // progress
-	QAction *_sliderAction;
-	QLabel  *_time;
-	QAction *_timeAction;
+	QAction  *uiRecord;
+	QAction  *uiPause;
+	QAction  *uiStop;
+	QLabel   *_time;
+	QAction  *_timeAction;
+	QTimer   *_timer;
 
 	CAMidiRecorder *_midiRecorder;
 	CARecorderStatus _status;
