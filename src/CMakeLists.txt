@@ -104,7 +104,6 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 # Define the MOC source files used by Canorus
 SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	core/autorecovery.h
-	core/midirecorder.h
 	
 	ui/mainwin.h
 	ui/settingsdialog.h
@@ -136,6 +135,7 @@ SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 	
 	interface/mididevice.h
 	interface/playback.h
+	core/midirecorder.h
 )
 
 ################

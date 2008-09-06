@@ -29,9 +29,11 @@ public:
 
 	const unsigned int& curTime() const { return _curTime; }
 
+#ifndef SWIG
 private slots:
 	void timerTimeout();
 	void onMidiInEvent( QVector<unsigned char> messages );
+#endif
 
 private:
 	CAResource   *_resource;
