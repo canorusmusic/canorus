@@ -7,6 +7,8 @@
 
 %{
 #include "interface/playback.h"
+#include "core/midirecorder.h"
 %}
 
 %include "interface/playback.h"
+%include "core/midirecorder.h"
