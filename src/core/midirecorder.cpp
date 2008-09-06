@@ -25,10 +25,8 @@
 	   close the stream.
  */
 CAMidiRecorder::CAMidiRecorder( CAResource *r, CAMidiDevice *d )
- : QObject(), _resource(r), _curTime(0), _lastTime(0), _midiExport(0) {
-	_timer = new QTimer();
-	_timer->setInterval(10);
-	connect( _timer, SIGNAL(timeout()), this, SLOT(timerTimeout()) );
+ : QObject(), _resource(r), _curTime(0), _midiExport(0) {
+	_paused = false;
 
 	connect( d, SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(onMidiInEvent( QVector<unsigned char> )) );
 }
@@ -38,14 +36,25 @@ CAMidiRecorder::~CAMidiRecorder() {
 }
 
 void CAMidiRecorder::timerTimeout() {
-	_curTime+=10;
+	if (!_paused) {
+		_curTime+=10;
+	}
 }
 
 void CAMidiRecorder::startRecording( int startTime ) {
-	_midiExport = new CAMidiExport();
-	_midiExport->setStreamToFile( _resource->url().toLocalFile() );
+	if (!_paused) {
+		_midiExport = new CAMidiExport();
+		_midiExport->setStreamToFile( _resource->url().toLocalFile() );
 
-	_timer->start();
+		_curTime = 0;
+
+		_timer = new QTimer();
+		_timer->setInterval(10);
+		connect( _timer, SIGNAL(timeout()), this, SLOT(timerTimeout()) );
+		_timer->start();
+	} else {
+		_paused = false;
+	}
 }
 
 void CAMidiRecorder::stopRecording() {
@@ -53,21 +62,16 @@ void CAMidiRecorder::stopRecording() {
 
 	delete _midiExport;
 	_midiExport = 0;
+	_timer->stop();
+	_timer->disconnect();
+}
+
+void CAMidiRecorder::pauseRecording() {
+	_paused=true;
 }
 
 void CAMidiRecorder::onMidiInEvent( QVector<unsigned char> messages ) {
-	if (_midiExport) {
-		_midiExport->send( messages, deltaTime() );
+	if (_midiExport && !_paused) {
+		_midiExport->send( messages, _curTime );
 	}
-}
-
-/*!
-	Returns the difference in mseconds between the current time and
-	the last time accessed by this function.
- */
-const unsigned int CAMidiRecorder::deltaTime() {
-	unsigned int delta = _curTime - _lastTime;
-	_lastTime = _curTime;
-
-	return delta;
 }

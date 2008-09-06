@@ -24,10 +24,10 @@ public:
 	virtual ~CAMidiRecorder();
 
 	void startRecording( int time=0 );
+	void pauseRecording();
 	void stopRecording();
 
 	const unsigned int& curTime() const { return _curTime; }
-	const unsigned int deltaTime();
 
 private slots:
 	void timerTimeout();
@@ -38,7 +38,8 @@ private:
 	CAMidiExport *_midiExport;
 	QTimer       *_timer;
 	unsigned int  _curTime;
-	unsigned int  _lastTime;
+
+	bool          _paused;
 };
 
 #endif /* MIDIRECORDER_H_ */
