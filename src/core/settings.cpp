@@ -1,7 +1,7 @@
-/*! 
+/*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -52,7 +52,7 @@ void CASettings::writeSettings() {
 	setValue( "appearance/disabledelementscolor", disabledElementsColor() );
 	setValue( "rtmidi/midioutport", midiOutPort() );
 	setValue( "rtmidi/midiinport", midiInPort() );
-	sync();	
+	sync();
 }
 
 /*!
@@ -62,29 +62,29 @@ void CASettings::writeSettings() {
 */
 int CASettings::readSettings() {
 	int settingsPage = -1;
-	
+
 	// Editor settings
 	if ( contains("editor/finalelyricsbehaviour") )
 		setFinaleLyricsBehaviour( value("editor/finalelyricsbehaviour").toBool() );
 	else
 		setFinaleLyricsBehaviour( DEFAULT_FINALE_LYRICS_BEHAVIOUR );
-	
+
 	// Saving/Loading settings
 	if ( contains("files/documentsdirectory") )
 		setDocumentsDirectory( value("files/documentsdirectory").toString() );
 	else
 		setDocumentsDirectory( DEFAULT_DOCUMENTS_DIRECTORY );
-	
+
 	if ( contains("files/defaultsaveformat") )
 		setDefaultSaveFormat( static_cast<CAFileFormats::CAFileFormatType>(value("files/defaultsaveformat").toInt()) );
 	else
 		setDefaultSaveFormat( DEFAULT_SAVE_FORMAT );
-	
+
 	if ( contains("files/autorecoveryinterval") )
 		setAutoRecoveryInterval( value("files/autorecoveryinterval").toInt() );
 	else
 		setAutoRecoveryInterval( DEFAULT_AUTO_RECOVERY_INTERVAL );
-	
+
 	// Recently opened files
 	if ( contains("files/maxrecentdocuments") )
 		setMaxRecentDocuments( value("files/maxrecentdocuments").toInt() );
@@ -97,37 +97,37 @@ int CASettings::readSettings() {
 		setBackgroundColor( value("appearance/backgroundcolor").value<QColor>() );
 	else
 		setBackgroundColor( DEFAULT_BACKGROUND_COLOR );
-	
+
 	if ( contains("appearance/foregroundcolor") )
 		setForegroundColor( value("appearance/foregroundcolor").value<QColor>() );
 	else
 		setForegroundColor( DEFAULT_FOREGROUND_COLOR );
-	
+
 	if ( contains("appearance/selectioncolor") )
 		setSelectionColor( value("appearance/selectioncolor").value<QColor>() );
 	else
 		setSelectionColor( DEFAULT_SELECTION_COLOR );
-	
+
 	if ( contains("appearance/selectionareacolor") )
 		setSelectionAreaColor( value("appearance/selectionareacolor").value<QColor>() );
 	else
 		setSelectionAreaColor( DEFAULT_SELECTION_AREA_COLOR );
-	
+
 	if ( contains("appearance/selectedcontextcolor") )
 		setSelectedContextColor( value("appearance/selectedcontextcolor").value<QColor>() );
 	else
 		setSelectedContextColor( DEFAULT_SELECTED_CONTEXT_COLOR );
-	
+
 	if ( contains("appearance/hiddenelementscolor") )
 		setHiddenElementsColor( value("appearance/hiddenelementscolor").value<QColor>() );
 	else
 		setHiddenElementsColor( DEFAULT_HIDDEN_ELEMENTS_COLOR );
-	
+
 	if ( contains("appearance/disabledelementscolor") )
 		setDisabledElementsColor( value("appearance/disabledelementscolor").value<QColor>() );
 	else
 		setDisabledElementsColor( DEFAULT_DISABLED_ELEMENTS_COLOR );
-	
+
 	// Playback settings
 	if ( contains("rtmidi/midiinport") &&
 	     value("rtmidi/midiinport").toInt() < CACanorus::midiDevice()->getInputPorts().count()
@@ -135,18 +135,18 @@ int CASettings::readSettings() {
 		setMidiInPort( value("rtmidi/midiinport").toInt() );
 	} else {
 		setMidiInPort( DEFAULT_MIDI_IN_PORT );
-		settingsPage = 2;
+		settingsPage = 3;
 	}
-	
+
 	if ( contains("rtmidi/midioutport") &&
 	     value("rtmidi/midioutport").toInt() < CACanorus::midiDevice()->getOutputPorts().count()
 	   ) {
-		setMidiOutPort( value("rtmidi/midioutport").toInt() );	
+		setMidiOutPort( value("rtmidi/midioutport").toInt() );
 	} else {
 		setMidiOutPort( DEFAULT_MIDI_OUT_PORT );
 		settingsPage = 3;
 	}
-	
+
 	return settingsPage;
 }
 
@@ -166,7 +166,7 @@ void CASettings::readRecentDocuments() {
 void CASettings::writeRecentDocuments() {
 	for ( int i=0; contains( QString("files/recentdocument") + QString::number(i) ); i++ )
 		remove( QString("files/recentdocument") + QString::number(i) );
-		
+
 	for ( int i=0; i<CACanorus::recentDocumentList().size(); i++ )
 		setValue( QString("files/recentdocument") + QString::number(i), CACanorus::recentDocumentList()[i] );
 }
