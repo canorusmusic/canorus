@@ -14,7 +14,7 @@
 #include <QDir>
 
 CAMidiRecorderView::CAMidiRecorderView( CAMidiRecorder *r, QWidget *parent )
- : QToolBar( tr("Midi recorder"), parent ), _midiRecorder(r) {
+ : QDockWidget( tr("Midi recorder"), parent ), _midiRecorder(r) {
 	// Locate resources (images, icons)
 	QString currentPath = QDir::currentPath();
 
@@ -24,6 +24,7 @@ CAMidiRecorderView::CAMidiRecorderView( CAMidiRecorder *r, QWidget *parent )
 
 	QDir::setCurrent( resourcesLocations[0] );
 
+	setupUi( this ); // initialize elements created by Qt Designer
 	setupCustomUi( parent );
 
 	QDir::setCurrent( currentPath );
@@ -32,28 +33,20 @@ CAMidiRecorderView::CAMidiRecorderView( CAMidiRecorder *r, QWidget *parent )
 }
 
 CAMidiRecorderView::~CAMidiRecorderView() {
+	if (midiRecorder()) {
+		delete midiRecorder();
+		setMidiRecorder(0);
+	}
 }
 
 void CAMidiRecorderView::setupCustomUi( QWidget *parent ) {
-	uiRecord = new QAction( QIcon("images/playback/record.svg"), tr("Record"), this );
-	uiRecord->setObjectName( "uiRecord" );
-	addAction( uiRecord );
-	uiPause = new QAction( QIcon("images/playback/pause.svg"), tr("Pause"), this );
-	uiPause->setObjectName( "uiPause" );
-	addAction( uiPause );
-	uiStop = new QAction( QIcon("images/playback/stop.svg"), tr("Stop"), this );
-	uiStop->setObjectName( "uiStop" );
-	addAction( uiStop );
-	_time = new QLabel( "0:00", this );
-	_timeAction = addWidget( _time );
+	setAttribute( Qt::WA_DeleteOnClose, true );
 
 	_timer = new QTimer();
 	_timer->setInterval(1000);
 	_timer->start();
 
 	connect( _timer, SIGNAL(timeout()), this, SLOT(onTimerTimeout()) );
-
-	QMetaObject::connectSlotsByName( this );
 
 	uiRecord->setEnabled( true );
 	uiPause->setVisible( false );
@@ -62,15 +55,15 @@ void CAMidiRecorderView::setupCustomUi( QWidget *parent ) {
 
 void CAMidiRecorderView::onTimerTimeout() {
 	if (_midiRecorder) {
-		if ( _time->text().isEmpty() || _status != Pause ) {
-			_time->setText( QString("%1:%2").arg((_midiRecorder->curTime()/1000)/60).arg((_midiRecorder->curTime()/1000) % 60, 2, 10, QChar('0')) );
+		if ( uiTime->text().isEmpty() || _status != Pause ) {
+			uiTime->setText( QString("%1:%2").arg((_midiRecorder->curTime()/1000)/60).arg((_midiRecorder->curTime()/1000) % 60, 2, 10, QChar('0')) );
 		} else {
-			_time->setText("");
+			uiTime->setText("");
 		}
 	}
 }
 
-void CAMidiRecorderView::on_uiPause_triggered(bool checked) {
+void CAMidiRecorderView::on_uiPause_clicked(bool checked) {
 	uiPause->setVisible( false );
 	uiRecord->setVisible( true );
 
@@ -78,7 +71,7 @@ void CAMidiRecorderView::on_uiPause_triggered(bool checked) {
 	_status = Pause;
 }
 
-void CAMidiRecorderView::on_uiStop_triggered(bool checked) {
+void CAMidiRecorderView::on_uiStop_clicked(bool checked) {
 	uiRecord->setVisible( true );
 	uiPause->setVisible( false );
 	uiStop->setEnabled( false );
@@ -87,7 +80,7 @@ void CAMidiRecorderView::on_uiStop_triggered(bool checked) {
 	_status = Idle;
 }
 
-void CAMidiRecorderView::on_uiRecord_triggered(bool checked) {
+void CAMidiRecorderView::on_uiRecord_clicked(bool checked) {
 	uiRecord->setVisible( false );
 	uiPause->setVisible( true );
 	uiStop->setEnabled( true );
