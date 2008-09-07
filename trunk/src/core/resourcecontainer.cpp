@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -11,19 +11,20 @@
 
 /*!
 	\class CAResourceContainer
-	\brief Resource manipulation class inherited by CADocument, CASheet etc.
-	
-	This class is used for creation of new resources out of files on the disk.
+	\brief Resource manipulation class inherited by CADocument
+
+	This class is used for creation of new resources out of files on the disk or
+	web URLs.
+
 	Resources are rarely created directly, but are almost always part of the document
 	(eg. audio file of the whole score), sheet (eg. audio file of a theme),
 	staff (eg. svg images in contemporary music), voice etc.
-	This class is inherited by CADocument, CASheet etc., so you can simply add a
-	resource by calling
-	CASheet::addResource( "/home/user/title.jpeg" );
-	
+	You can simply add a resource by calling
+	CADocument::addResource( new CAResource( "/home/user/title.jpeg", "My image") );
+
 	CAResourceContainer takes care of creating copies for non-linked resources.
 	It picks a random unique name for a new resource in the system temporary file.
-	
+
 	\sa CAResource
 */
 
@@ -46,4 +47,12 @@ void CAResourceContainer::addResource( QString fileName, bool linked ) {
 	} else {
 		addResource( new CAResource( (new QTemporaryFile())->fileName(), fileName, false ) );
 	}
+}
+
+CAResource *CAResourceContainer::createEmptyResource( QString name, CAResource::CAResourceType t ) {
+	QTemporaryFile f;
+	f.open();
+	QString fileName = f.fileName();
+	f.close();
+	return new CAResource( fileName, name, false, t, this );
 }

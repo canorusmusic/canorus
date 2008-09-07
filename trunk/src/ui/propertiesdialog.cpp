@@ -22,27 +22,6 @@
 #include "core/lyricscontext.h"
 #include "core/functionmarkcontext.h"
 
-void CADocumentProperties::on_uiComposer_editingFinished() {
-	QString curText = uiCopyright->currentText();
-	uiCopyright->clear();
-
-	QString startMsg = "(C)";
-	int yearStart = _document->dateCreated().date().year();
-	int yearCur = QDate::currentDate().year();
-
-	if (yearStart && yearStart!=yearCur)
-		startMsg += QString::number(yearStart) + "-";
-	startMsg += QString::number(yearCur);
-	if (uiComposer->text().size())
-		startMsg += " " + uiComposer->text() + ",";
-
-	uiCopyright->addItem( startMsg + " " + tr("CC, Some rights reserved", "copyright") );
-	uiCopyright->addItem( startMsg + " " + tr("Public domain", "copyright") );
-	uiCopyright->addItem( startMsg + " " + tr("All rights reserved", "copyright") );
-
-	uiCopyright->setEditText( curText );
-}
-
 /*!
 	\class CAPropertiesDialog
 	\brief Advanced Document, Sheet, Staff etc. properties
@@ -239,6 +218,27 @@ void CAPropertiesDialog::voiceProperties( CAVoice *voice, QWidget *parent ) {
 		pd.uiDocumentTree->setCurrentItem( pd.voiceItem().key(voice) );
 		pd.exec();
 	}
+}
+
+void CADocumentProperties::on_uiComposer_editingFinished() {
+	QString curText = uiCopyright->currentText();
+	uiCopyright->clear();
+
+	QString startMsg = "(C)";
+	int yearStart = _document->dateCreated().date().year();
+	int yearCur = QDate::currentDate().year();
+
+	if (yearStart && yearStart!=yearCur)
+		startMsg += QString::number(yearStart) + "-";
+	startMsg += QString::number(yearCur);
+	if (uiComposer->text().size())
+		startMsg += " " + uiComposer->text() + ",";
+
+	uiCopyright->addItem( startMsg + " " + tr("CC, Some rights reserved", "copyright") );
+	uiCopyright->addItem( startMsg + " " + tr("Public domain", "copyright") );
+	uiCopyright->addItem( startMsg + " " + tr("All rights reserved", "copyright") );
+
+	uiCopyright->setEditText( curText );
 }
 
 void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *cur, QTreeWidgetItem *prev ) {

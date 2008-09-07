@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -23,17 +23,17 @@ public:
 	virtual ~CADocument();
 	CADocument *clone();
 	void clear();
-	
+
 	QList<CASheet*> sheetList() { return _sheetList; }
 	int sheetCount() { return _sheetList.size(); }
 	CASheet *sheet(const QString name);
 	CASheet *sheetAt(int i) { return _sheetList[i]; }
 	void setSheetAt(int i, CASheet *newSheet) { _sheetList[i]=newSheet; }
-	
+
 	CASheet *addSheetByName(const QString name);
 	void addSheet(CASheet *sheet);
 	inline void removeSheet(CASheet *sheet) { _sheetList.removeAll(sheet); }
-	
+
 	const QString title() { return _title; }
 	const QString subtitle() { return _subtitle; }
 	const QString composer() { return _composer; }
@@ -46,9 +46,7 @@ public:
 	const QDateTime dateLastModified() { return _dateLastModified; }
 	const unsigned int timeEdited() { return _timeEdited; }
 	const QString comments() { return _comments; }
-	const QString fileName() { return _fileName; }
-	CAArchive *archive() { return _archive; }
-	
+
 	void setTitle(const QString title) { _title = title; }
 	void setSubtitle(const QString subtitle) { _subtitle = subtitle; }
 	void setComposer(const QString composer) { _composer = composer; }
@@ -61,13 +59,19 @@ public:
 	void setDateLastModified(const QDateTime dateLastModified) { _dateLastModified = dateLastModified; }
 	void setTimeEdited(const unsigned int timeEdited) { _timeEdited = timeEdited; }
 	void setComments(const QString comments) { _comments = comments; }
-	
+
+	//////////////////////////////////////////////////////
+	// Temporary properties (not saved inside the file) //
+	//////////////////////////////////////////////////////
+	const QString fileName() { return _fileName; }
+	CAArchive *archive() { return _archive; }
+
 	void setFileName(const QString fileName) { _fileName = fileName; } // not saved!
 	void setArchive( CAArchive *a ) { _archive = a; }
-	
+
 private:
 	QList<CASheet *> _sheetList;
-	
+
 	QString _title;
 	QString _subtitle;
 	QString _composer;

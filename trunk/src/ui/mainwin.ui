@@ -170,6 +170,7 @@
     <addaction name="separator" />
     <addaction name="uiScoreView" />
     <addaction name="uiMenuSourceView" />
+    <addaction name="uiResourceView" />
     <addaction name="separator" />
     <addaction name="uiShowStatusBar" />
     <addaction name="uiFullscreen" />
@@ -1000,6 +1001,14 @@
   <action name="uiMidiRecorder" >
    <property name="text" >
     <string>Midi recorder</string>
+   </property>
+  </action>
+  <action name="uiResourceView" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Resources view</string>
    </property>
   </action>
  </widget>

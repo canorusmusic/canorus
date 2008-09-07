@@ -183,12 +183,12 @@ QByteArray CAMidiExport::trackEnd(void) {
 }
 
 
-QByteArray CAMidiExport::textEvent(int time, const char *s) {
+QByteArray CAMidiExport::textEvent(int time, QString s) {
 	QByteArray tc;
 	tc.append(writeTime(time));
 	tc.append(MIDI_CTL_EVENT);
 	tc.append(META_TEXT);
-	tc.append(variableLengthValue(strlen(s)));
+	tc.append(variableLengthValue(s.length()));
 	tc.append(s);
 	return tc;
 }
@@ -252,7 +252,7 @@ void CAMidiExport::writeFile() {
 
 	QByteArray controlTrackChunk;
 	controlTrackChunk.append( "MTrk...." );
-	controlTrackChunk.append( textEvent(0, "Canorus Version 0.5beta generated. "));
+	controlTrackChunk.append( textEvent(0, QString("Canorus Version ") + CANORUS_VERSION + " generated. "));
 	controlTrackChunk.append( textEvent(0, "Timebase and some midi controls not yet implemented."));
 	controlTrackChunk.append( trackEnd());
 	setChunkLength( &controlTrackChunk );

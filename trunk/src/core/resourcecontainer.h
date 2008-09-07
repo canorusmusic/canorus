@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -17,13 +17,14 @@ class CAResourceContainer {
 public:
 	CAResourceContainer();
 	virtual ~CAResourceContainer();
-	
+
 	void addResource( QString fileName, bool linked );
 	inline void addResource( CAResource* r ) { _resourceList << r; }
+	CAResource *createEmptyResource( QString name, CAResource::CAResourceType t=CAResource::Other );
 	inline void deleteResource( CAResource* r ) { removeResource(r); delete r; }
 	inline void removeResource( CAResource* r ) { _resourceList.removeAll(r); }
 	inline QList<CAResource*>& resourceList() { return _resourceList; }
-	
+
 private:
 	QList<CAResource*> _resourceList;
 };
