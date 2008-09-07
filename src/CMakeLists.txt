@@ -122,6 +122,7 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	widgets/undotoolbutton.h
 	widgets/pyconsole.h
 	widgets/midirecorderview.h
+	widgets/resourceview.h
 	
 	interface/pluginaction.h
 	
@@ -250,6 +251,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/viewportcontainer.cpp
 	widgets/pyconsole.cpp
 	widgets/midirecorderview.cpp
+	widgets/resourceview.cpp
 )
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files

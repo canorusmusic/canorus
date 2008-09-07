@@ -66,7 +66,7 @@ private:
 	void printQByteArray( QByteArray x );	// for debugging only
 	QByteArray variableLengthValue(int value);
 	QByteArray word16(int x);
-	QByteArray textEvent(int time, const char *s);
+	QByteArray textEvent(int time, QString s);
 	QByteArray trackEnd(void);
 	QByteArray timeSignature(void);
 	QByteArray keySignature(void);

@@ -161,6 +161,9 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	connect( &_timeEditedTimer, SIGNAL(timeout()), this, SLOT(onTimeEditedTimerTimeout()) );
 	_timeEditedTimer.start(1000);
 
+	_resourceView = new CAResourceView( 0, 0 );
+	_resourceView->hide();
+
 	setDocument( 0 );
 	CACanorus::addMainWin( this );
 }
@@ -1013,6 +1016,18 @@ void CAMainWin::on_uiCanorusMLSource_triggered() {
 }
 
 /*!
+	Toggles the visibility of the resource view window.
+ */
+void CAMainWin::on_uiResourceView_toggled(bool checked) {
+	if (checked) {
+		_resourceView->show();
+	} else {
+		_resourceView->hide();
+	}
+}
+
+
+/*!
 	Called when a floating view port is closed
 */
 void CAMainWin::floatViewPortClosed(CAViewPort* v)
@@ -1387,6 +1402,11 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 		clearUI();
 	}
 	updateToolBars();
+
+	if (_resourceView) {
+		_resourceView->rebuildUi();
+	}
+
 	setRebuildUILock( false );
 }
 
@@ -1443,6 +1463,11 @@ void CAMainWin::rebuildUI(bool repaint) {
 	} else {
 		clearUI();
 	}
+
+	if (_resourceView) {
+		_resourceView->rebuildUi();
+	}
+
 	updateToolBars();
 	setRebuildUILock( false );
 }
@@ -3566,10 +3591,14 @@ void CAMainWin::on_uiSettings_triggered() {
 }
 
 void CAMainWin::on_uiMidiRecorder_triggered() {
-	CAResource *myMidiFile = new CAResource( QUrl::fromLocalFile("/tmp/mymidifile.mid"), "My Midi File", false, CAResource::Sound, document() );
-	document()->addResource( myMidiFile );
-	CAMidiRecorderView *midiRecorderView = new CAMidiRecorderView( new CAMidiRecorder( myMidiFile, CACanorus::midiDevice() ), this );
-	midiRecorderView->show();
+	if (document()) {
+		CAResource *myMidiFile = document()->createEmptyResource( tr("Recorded Midi file"), CAResource::Sound );
+		CAMidiRecorderView *midiRecorderView = new CAMidiRecorderView( new CAMidiRecorder( myMidiFile, CACanorus::midiDevice() ), this );
+		midiRecorderView->show();
+
+		_resourceView->rebuildUi();
+		uiResourceView->setChecked(true);
+	}
 }
 
 void CAMainWin::on_uiLilyPondSource_triggered() {

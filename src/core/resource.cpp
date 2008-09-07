@@ -36,6 +36,10 @@ CAResource::CAResource( QUrl url, QString name, bool linked, CAResourceType t, C
 	setLinked(linked);
 	setResourceType(t);
 	setResourceContainer(c);
+
+	if (c) {
+		c->addResource(this);
+	}
 }
 
 CAResource::~CAResource() {

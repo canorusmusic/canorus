@@ -26,6 +26,7 @@
 
 #include "widgets/viewportcontainer.h"
 #include "widgets/scoreviewport.h"
+#include "widgets/resourceview.h"
 
 class QKeyEvent;
 class QSlider;
@@ -112,7 +113,7 @@ public:
 	inline CAViewPortContainer *currentViewPortContainer() { return _currentViewPortContainer; }
 	inline CADocument *document() { return _document; }
 
-	inline void setDocument(CADocument *document) { _document = document; }
+	inline void setDocument(CADocument *document) { _document = document; _resourceView->setDocument( document ); }
 
 	// Dialogs, Windows
 	static QFileDialog *uiSaveDialog;
@@ -178,6 +179,7 @@ private slots:
 	void on_uiScoreView_triggered();
 	void on_uiLilyPondSource_triggered();
 	void on_uiCanorusMLSource_triggered();
+	void on_uiResourceView_toggled(bool);
 
 	// Sheet
 	void on_uiRemoveSheet_triggered();
@@ -297,6 +299,7 @@ private:
 
 	CAPreviewCtl *_poPrintPreviewCtl;
 	CAPrintCtl   *_poPrintCtl;
+	CAResourceView *_resourceView;
 
 	void setMode(CAMode mode);
 	inline void setCurrentViewPort( CAViewPort *viewPort ) { _currentViewPort = viewPort; }
