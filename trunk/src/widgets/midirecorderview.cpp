@@ -48,6 +48,8 @@ void CAMidiRecorderView::setupCustomUi( QWidget *parent ) {
 
 	connect( _timer, SIGNAL(timeout()), this, SLOT(onTimerTimeout()) );
 
+	uiTime->setText("0:00");
+
 	uiRecord->setEnabled( true );
 	uiPause->setVisible( false );
 	uiStop->setEnabled( false );
