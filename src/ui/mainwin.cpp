@@ -260,7 +260,7 @@ void CAMainWin::createCustomActions() {
 		uiMarkType->addButton( QIcon("images/mark/fermata/normal.svg"),        CAMark::Fermata, tr("Fermata") );
 		uiMarkType->addButton( QIcon("images/mark/text.svg"),                  CAMark::Text, tr("Arbitrary Text") );
 		uiMarkType->addButton( QIcon("images/mark/repeatmark/coda.svg"),       CAMark::RepeatMark, tr("Repeat Mark") );
-		uiMarkType->addButton( QIcon("images/mark/pedal.svg"),                 CAMark::Pedal, tr("Instrument Change") );
+		uiMarkType->addButton( QIcon("images/mark/pedal.svg"),                 CAMark::Pedal, tr("Pedal Mark") );
 		uiMarkType->addButton( QIcon("images/mark/bookmark.svg"),              CAMark::BookMark, tr("Bookmark") );
 		uiMarkType->addButton( QIcon("images/mark/rehersalmark.svg"),          CAMark::RehersalMark, tr("Rehersal Mark") );
 		uiMarkType->addButton( QIcon("images/mark/fingering/fingering.svg"),             CAMark::Fingering, tr("Fingering") );
