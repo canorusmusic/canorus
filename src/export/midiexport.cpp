@@ -244,7 +244,8 @@ void CAMidiExport::writeFile() {
 	headerChunk.append("MThd....");		// header and space for length
 	headerChunk.append(word16( 1 ));	// Midi-Format version
 	headerChunk.append(word16( 2 ));	// number of tracks, a control track and a music track for a trying out ...
-	headerChunk.append(word16( 384 ));	// time division, should be TICKS_PER_QUARTER
+//	headerChunk.append(word16( 384 ));	// time division, should be TICKS_PER_QUARTER
+	headerChunk.append(word16( 512 ));  // time division 512 seems to work fine for us. Dunno why? -Matevz
 	setChunkLength( &headerChunk );
 	out() << headerChunk;
 
