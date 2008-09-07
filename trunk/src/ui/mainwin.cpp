@@ -3568,9 +3568,7 @@ void CAMainWin::on_uiSettings_triggered() {
 void CAMainWin::on_uiMidiRecorder_triggered() {
 	CAResource *myMidiFile = new CAResource( QUrl::fromLocalFile("/tmp/mymidifile.mid"), "My Midi File", false, CAResource::Sound, document() );
 	document()->addResource( myMidiFile );
-	CAMidiRecorder *r = new CAMidiRecorder( myMidiFile, CACanorus::midiDevice() );
-	CAMidiRecorderView *midiRecorderView = new CAMidiRecorderView( r, this );
-	midiRecorderView->move( 70, 90 );
+	CAMidiRecorderView *midiRecorderView = new CAMidiRecorderView( new CAMidiRecorder( myMidiFile, CACanorus::midiDevice() ), this );
 	midiRecorderView->show();
 }
 

@@ -8,8 +8,10 @@
 #ifndef MIDIRECORDERVIEW_H_
 #define MIDIRECORDERVIEW_H_
 
-#include <QToolBar>
 #include <QTimer>
+#include <QDockWidget>
+
+#include "ui_midirecorder.h"
 
 class QAction;
 class QLabel;
@@ -18,12 +20,15 @@ class QWidget;
 
 class CAMidiRecorder;
 
-class CAMidiRecorderView : public QToolBar {
+class CAMidiRecorderView : public QDockWidget, private Ui::uiMidiRecorder {
 	Q_OBJECT
 
 public:
 	CAMidiRecorderView( CAMidiRecorder *recorder, QWidget *parent=0 );
 	virtual ~CAMidiRecorderView();
+
+	void setMidiRecorder( CAMidiRecorder *r ) { _midiRecorder = r; }
+	CAMidiRecorder *midiRecorder() { return _midiRecorder; }
 
 	enum CARecorderStatus {
 		Idle,
@@ -32,19 +37,14 @@ public:
 	};
 
 private slots:
-	void on_uiRecord_triggered(bool);
-	void on_uiPause_triggered(bool);
-	void on_uiStop_triggered(bool);
+	void on_uiRecord_clicked(bool);
+	void on_uiPause_clicked(bool);
+	void on_uiStop_clicked(bool);
 	void onTimerTimeout();
 
 private:
 	void setupCustomUi( QWidget *parent );
 
-	QAction  *uiRecord;
-	QAction  *uiPause;
-	QAction  *uiStop;
-	QLabel   *_time;
-	QAction  *_timeAction;
 	QTimer   *_timer;
 
 	CAMidiRecorder *_midiRecorder;

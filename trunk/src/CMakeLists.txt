@@ -99,6 +99,8 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 	ui/voiceproperties.ui
 	ui/lyricscontextproperties.ui
 	ui/functionmarkcontextproperties.ui
+	
+	ui/midirecorder.ui
 )
 
 # Define the MOC source files used by Canorus
