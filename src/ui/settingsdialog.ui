@@ -27,16 +27,7 @@
       <property name="spacing" >
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin" >
        <number>0</number>
       </property>
       <item>
@@ -82,7 +73,8 @@
           <string>Editor</string>
          </property>
          <property name="icon" >
-          <iconset>images/settings/editorsettings.svg</iconset>
+          <iconset>
+           <normaloff>images/settings/editorsettings.svg</normaloff>images/settings/editorsettings.svg</iconset>
          </property>
         </item>
         <item>
@@ -90,7 +82,8 @@
           <string>Appearance</string>
          </property>
          <property name="icon" >
-          <iconset>images/settings/colorsettings.svg</iconset>
+          <iconset>
+           <normaloff>images/settings/colorsettings.svg</normaloff>images/settings/colorsettings.svg</iconset>
          </property>
         </item>
         <item>
@@ -98,7 +91,8 @@
           <string>Load/Save</string>
          </property>
          <property name="icon" >
-          <iconset>images/settings/floppy.svg</iconset>
+          <iconset>
+           <normaloff>images/settings/floppy.svg</normaloff>images/settings/floppy.svg</iconset>
          </property>
         </item>
         <item>
@@ -106,7 +100,8 @@
           <string>Playback</string>
          </property>
          <property name="icon" >
-          <iconset>images/settings/midisetup.svg</iconset>
+          <iconset>
+           <normaloff>images/settings/midisetup.svg</normaloff>images/settings/midisetup.svg</iconset>
          </property>
         </item>
        </widget>
@@ -116,16 +111,7 @@
         <property name="spacing" >
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin" >
          <number>0</number>
         </property>
         <item>
@@ -176,6 +162,22 @@
              <string>Use Finale/Sibelius lyrics behaviour</string>
             </property>
            </widget>
+           <widget class="QCheckBox" name="uiShadowNotesInOtherStaffs" >
+            <property name="geometry" >
+             <rect>
+              <x>10</x>
+              <y>40</y>
+              <width>431</width>
+              <height>29</height>
+             </rect>
+            </property>
+            <property name="toolTip" >
+             <string>When inserting notes, show the helper notes in all staffs, not only in the active one</string>
+            </property>
+            <property name="text" >
+             <string>Show helper notes in other staffs</string>
+            </property>
+           </widget>
           </widget>
           <widget class="QWidget" name="appearanceSettings" >
            <widget class="QLabel" name="uiPreviewLabel" >
@@ -214,16 +216,7 @@
              <property name="spacing" >
               <number>6</number>
              </property>
-             <property name="leftMargin" >
-              <number>0</number>
-             </property>
-             <property name="topMargin" >
-              <number>0</number>
-             </property>
-             <property name="rightMargin" >
-              <number>0</number>
-             </property>
-             <property name="bottomMargin" >
+             <property name="margin" >
               <number>0</number>
              </property>
              <item>
@@ -231,16 +224,7 @@
                <property name="spacing" >
                 <number>6</number>
                </property>
-               <property name="leftMargin" >
-                <number>0</number>
-               </property>
-               <property name="topMargin" >
-                <number>0</number>
-               </property>
-               <property name="rightMargin" >
-                <number>0</number>
-               </property>
-               <property name="bottomMargin" >
+               <property name="margin" >
                 <number>0</number>
                </property>
                <item>
@@ -275,7 +259,8 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/settings/revert.svg</iconset>
+                  <iconset>
+                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -286,16 +271,7 @@
                <property name="spacing" >
                 <number>6</number>
                </property>
-               <property name="leftMargin" >
-                <number>0</number>
-               </property>
-               <property name="topMargin" >
-                <number>0</number>
-               </property>
-               <property name="rightMargin" >
-                <number>0</number>
-               </property>
-               <property name="bottomMargin" >
+               <property name="margin" >
                 <number>0</number>
                </property>
                <item>
@@ -330,7 +306,8 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/settings/revert.svg</iconset>
+                  <iconset>
+                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -341,16 +318,7 @@
                <property name="spacing" >
                 <number>6</number>
                </property>
-               <property name="leftMargin" >
-                <number>0</number>
-               </property>
-               <property name="topMargin" >
-                <number>0</number>
-               </property>
-               <property name="rightMargin" >
-                <number>0</number>
-               </property>
-               <property name="bottomMargin" >
+               <property name="margin" >
                 <number>0</number>
                </property>
                <item>
@@ -385,7 +353,8 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/settings/revert.svg</iconset>
+                  <iconset>
+                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -396,16 +365,7 @@
                <property name="spacing" >
                 <number>6</number>
                </property>
-               <property name="leftMargin" >
-                <number>0</number>
-               </property>
-               <property name="topMargin" >
-                <number>0</number>
-               </property>
-               <property name="rightMargin" >
-                <number>0</number>
-               </property>
-               <property name="bottomMargin" >
+               <property name="margin" >
                 <number>0</number>
                </property>
                <item>
@@ -440,7 +400,8 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/settings/revert.svg</iconset>
+                  <iconset>
+                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -451,16 +412,7 @@
                <property name="spacing" >
                 <number>6</number>
                </property>
-               <property name="leftMargin" >
-                <number>0</number>
-               </property>
-               <property name="topMargin" >
-                <number>0</number>
-               </property>
-               <property name="rightMargin" >
-                <number>0</number>
-               </property>
-               <property name="bottomMargin" >
+               <property name="margin" >
                 <number>0</number>
                </property>
                <item>
@@ -495,7 +447,8 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/settings/revert.svg</iconset>
+                  <iconset>
+                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -506,16 +459,7 @@
                <property name="spacing" >
                 <number>6</number>
                </property>
-               <property name="leftMargin" >
-                <number>0</number>
-               </property>
-               <property name="topMargin" >
-                <number>0</number>
-               </property>
-               <property name="rightMargin" >
-                <number>0</number>
-               </property>
-               <property name="bottomMargin" >
+               <property name="margin" >
                 <number>0</number>
                </property>
                <item>
@@ -550,7 +494,8 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/settings/revert.svg</iconset>
+                  <iconset>
+                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -561,16 +506,7 @@
                <property name="spacing" >
                 <number>6</number>
                </property>
-               <property name="leftMargin" >
-                <number>0</number>
-               </property>
-               <property name="topMargin" >
-                <number>0</number>
-               </property>
-               <property name="rightMargin" >
-                <number>0</number>
-               </property>
-               <property name="bottomMargin" >
+               <property name="margin" >
                 <number>0</number>
                </property>
                <item>
@@ -605,7 +541,8 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/settings/revert.svg</iconset>
+                  <iconset>
+                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -628,16 +565,7 @@
              <property name="spacing" >
               <number>6</number>
              </property>
-             <property name="leftMargin" >
-              <number>0</number>
-             </property>
-             <property name="topMargin" >
-              <number>0</number>
-             </property>
-             <property name="rightMargin" >
-              <number>0</number>
-             </property>
-             <property name="bottomMargin" >
+             <property name="margin" >
               <number>0</number>
              </property>
              <item>
@@ -652,16 +580,7 @@
                <property name="spacing" >
                 <number>6</number>
                </property>
-               <property name="leftMargin" >
-                <number>0</number>
-               </property>
-               <property name="topMargin" >
-                <number>0</number>
-               </property>
-               <property name="rightMargin" >
-                <number>0</number>
-               </property>
-               <property name="bottomMargin" >
+               <property name="margin" >
                 <number>0</number>
                </property>
                <item>
@@ -689,7 +608,8 @@
                   </size>
                  </property>
                  <property name="icon" >
-                  <iconset>images/settings/revert.svg</iconset>
+                  <iconset>
+                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -710,16 +630,7 @@
              <property name="spacing" >
               <number>6</number>
              </property>
-             <property name="leftMargin" >
-              <number>0</number>
-             </property>
-             <property name="topMargin" >
-              <number>0</number>
-             </property>
-             <property name="rightMargin" >
-              <number>0</number>
-             </property>
-             <property name="bottomMargin" >
+             <property name="margin" >
               <number>0</number>
              </property>
              <item>
@@ -754,16 +665,7 @@
              <property name="spacing" >
               <number>6</number>
              </property>
-             <property name="leftMargin" >
-              <number>0</number>
-             </property>
-             <property name="topMargin" >
-              <number>0</number>
-             </property>
-             <property name="rightMargin" >
-              <number>0</number>
-             </property>
-             <property name="bottomMargin" >
+             <property name="margin" >
               <number>0</number>
              </property>
              <item>
@@ -797,7 +699,7 @@
                <property name="orientation" >
                 <enum>Qt::Horizontal</enum>
                </property>
-               <property name="sizeHint" >
+               <property name="sizeHint" stdset="0" >
                 <size>
                  <width>40</width>
                  <height>20</height>
@@ -822,16 +724,7 @@
              <property name="spacing" >
               <number>6</number>
              </property>
-             <property name="leftMargin" >
-              <number>0</number>
-             </property>
-             <property name="topMargin" >
-              <number>0</number>
-             </property>
-             <property name="rightMargin" >
-              <number>0</number>
-             </property>
-             <property name="bottomMargin" >
+             <property name="margin" >
               <number>0</number>
              </property>
              <item>
@@ -839,16 +732,7 @@
                <property name="spacing" >
                 <number>6</number>
                </property>
-               <property name="leftMargin" >
-                <number>0</number>
-               </property>
-               <property name="topMargin" >
-                <number>0</number>
-               </property>
-               <property name="rightMargin" >
-                <number>0</number>
-               </property>
-               <property name="bottomMargin" >
+               <property name="margin" >
                 <number>0</number>
                </property>
                <item>
@@ -875,16 +759,7 @@
                <property name="spacing" >
                 <number>6</number>
                </property>
-               <property name="leftMargin" >
-                <number>0</number>
-               </property>
-               <property name="topMargin" >
-                <number>0</number>
-               </property>
-               <property name="rightMargin" >
-                <number>0</number>
-               </property>
-               <property name="bottomMargin" >
+               <property name="margin" >
                 <number>0</number>
                </property>
                <item>
@@ -914,7 +789,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <property name="standardButtons" >
-       <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+       <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
       </property>
      </widget>
     </item>

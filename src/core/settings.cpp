@@ -11,9 +11,13 @@
 
 // Define default settings
 const bool CASettings::DEFAULT_FINALE_LYRICS_BEHAVIOUR = false;
+const bool CASettings::DEFAULT_SHADOW_NOTES_IN_OTHER_STAFFS = false;
+
 const QDir CASettings::DEFAULT_DOCUMENTS_DIRECTORY = QDir::home();
 const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFormats::Can;
 const int CASettings::DEFAULT_AUTO_RECOVERY_INTERVAL = 1;
+const int CASettings::DEFAULT_MAX_RECENT_DOCUMENTS = 15;
+
 const QColor CASettings::DEFAULT_BACKGROUND_COLOR = QColor(255, 255, 240);
 const QColor CASettings::DEFAULT_FOREGROUND_COLOR = Qt::black;
 const QColor CASettings::DEFAULT_SELECTION_COLOR = Qt::red;
@@ -21,9 +25,9 @@ const QColor CASettings::DEFAULT_SELECTION_AREA_COLOR = QColor( 255, 0, 80, 70 )
 const QColor CASettings::DEFAULT_SELECTED_CONTEXT_COLOR = Qt::blue;
 const QColor CASettings::DEFAULT_HIDDEN_ELEMENTS_COLOR = Qt::green;
 const QColor CASettings::DEFAULT_DISABLED_ELEMENTS_COLOR = Qt::gray;
+
 const int CASettings::DEFAULT_MIDI_IN_PORT = -1;
 const int CASettings::DEFAULT_MIDI_OUT_PORT = -1;
-const int CASettings::DEFAULT_MAX_RECENT_DOCUMENTS = 15;
 
 CASettings::CASettings(const QString & fileName, Format format, QObject * parent)
  : QSettings(fileName, format, parent) {
@@ -38,11 +42,14 @@ CASettings::~CASettings() {
 */
 void CASettings::writeSettings() {
 	setValue( "editor/finalelyricsbehaviour", finaleLyricsBehaviour() );
+	setValue( "editor/shadownotesinotherstaffs", shadowNotesInOtherStaffs() );
+
 	setValue( "files/documentsdirectory", documentsDirectory().absolutePath() );
 	setValue( "files/defaultsaveformat", defaultSaveFormat() );
 	setValue( "files/autorecoveryinterval", autoRecoveryInterval() );
 	setValue( "files/maxrecentdocuments", maxRecentDocuments() );
 	writeRecentDocuments();
+
 	setValue( "appearance/backgroundcolor", backgroundColor() );
 	setValue( "appearance/foregroundcolor", foregroundColor() );
 	setValue( "appearance/selectioncolor", selectionColor() );
@@ -50,6 +57,7 @@ void CASettings::writeSettings() {
 	setValue( "appearance/selectedcontextcolor", selectedContextColor() );
 	setValue( "appearance/hiddenelementscolor",hiddenElementsColor() );
 	setValue( "appearance/disabledelementscolor", disabledElementsColor() );
+
 	setValue( "rtmidi/midioutport", midiOutPort() );
 	setValue( "rtmidi/midiinport", midiInPort() );
 	sync();
@@ -68,6 +76,11 @@ int CASettings::readSettings() {
 		setFinaleLyricsBehaviour( value("editor/finalelyricsbehaviour").toBool() );
 	else
 		setFinaleLyricsBehaviour( DEFAULT_FINALE_LYRICS_BEHAVIOUR );
+
+	if ( contains("editor/shadownotesinotherstaffs") )
+		setShadowNotesInOtherStaffs( value("editor/shadownotesinotherstaffs").toBool() );
+	else
+		setShadowNotesInOtherStaffs( DEFAULT_SHADOW_NOTES_IN_OTHER_STAFFS );
 
 	// Saving/Loading settings
 	if ( contains("files/documentsdirectory") )
