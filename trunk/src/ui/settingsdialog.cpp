@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -29,19 +29,19 @@ CASettingsDialog::CASettingsDialog( CASettingsPage currentPage, QWidget *parent 
  : QDialog( parent ) {
 	// Locate resources (images, icons)
 	QString currentPath = QDir::currentPath();
-	
+
 	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
 	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
 		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
-		
+
 	QDir::setCurrent( resourcesLocations[0] ); /// \todo Button and menu icons by default look at the current working directory as their resource path only. QResource::addSearchPath() doesn't work for external icons. Any other ideas? -Matevz
 	// Create the GUI (actions, toolbars, menus etc.)
 	setupUi( this ); // initialize elements created by Qt Designer
 	QDir::setCurrent( currentPath );
-	
+
 	buildPreviewSheet();
 	setupPages( currentPage );
-	
+
 	exec();
 }
 
@@ -52,7 +52,8 @@ CASettingsDialog::~CASettingsDialog() {
 void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	// Editor Page
 	uiFinaleLyricsCheckBox->setChecked( CACanorus::settings()->finaleLyricsBehaviour() );
-	
+	uiShadowNotesInOtherStaffs->setChecked( CACanorus::settings()->shadowNotesInOtherStaffs() );
+
 	// Appearance Page
 	uiForegroundColor->setPalette( QPalette( CACanorus::settings()->foregroundColor() ) );
 	uiBackgroundColor->setPalette( QPalette( CACanorus::settings()->backgroundColor() ) );
@@ -69,23 +70,23 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiPreviewScoreViewPort->addSelectionRegion( QRect(50, 40, 70, 90) );
 	uiPreviewScoreViewPort->addToSelection( _previewSheet->staffAt(0)->voiceAt(0)->musElementAt(1) );
 	uiPreviewScoreViewPort->repaint();
-	
+
 	// Loading Saving Page
 	uiDocumentsDirectory->setText( CACanorus::settings()->documentsDirectory().absolutePath() );
-	
+
 	uiDefaultSaveComboBox->addItems( CAMainWin::uiSaveDialog->filters() );
 	uiDefaultSaveComboBox->setCurrentIndex(
 		uiDefaultSaveComboBox->findText(
 			CAFileFormats::getFilter(CACanorus::settings()->defaultSaveFormat())
 		)
 	);
-	
+
 	uiAutoRecoverySpinBox->setValue( CACanorus::settings()->autoRecoveryInterval() );
-	
+
 	// Playback Page
 	_midiInPorts = CACanorus::midiDevice()->getInputPorts();
 	_midiOutPorts = CACanorus::midiDevice()->getOutputPorts();
-	
+
 	uiMidiInList->addItem( tr("None") );
 	for ( int i=0; i<_midiInPorts.values().size(); i++ ) {
 		uiMidiInList->addItem( _midiInPorts.value(i) );
@@ -94,7 +95,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	}
 	if ( CACanorus::settings()->midiInPort()==-1 )
 		uiMidiInList->setCurrentItem( uiMidiInList->item(0) );                     // select the previous device
-	
+
 	uiMidiOutList->addItem( tr("None") );
 	for ( int i=0; i<_midiOutPorts.values().size(); i++ ) {
 		uiMidiOutList->addItem( _midiOutPorts.value(i) );
@@ -103,7 +104,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	}
 	if ( CACanorus::settings()->midiOutPort()==-1 )
 		uiMidiOutList->setCurrentItem( uiMidiOutList->item(0) );                   // select the previous device
-	
+
 	uiSettingsList->setCurrentRow( (currentPage!=UndefinedSettings)?currentPage:0 );
 }
 
@@ -128,7 +129,8 @@ void CASettingsDialog::on_uiSettingsList_currentItemChanged( QListWidgetItem * c
 void CASettingsDialog::applySettings() {
 	// Editor Page
 	CACanorus::settings()->setFinaleLyricsBehaviour( uiFinaleLyricsCheckBox->isChecked() );
-	
+	CACanorus::settings()->setShadowNotesInOtherStaffs( uiShadowNotesInOtherStaffs->isChecked() );
+
 	// Saving/Loading Page
 	CACanorus::settings()->setDocumentsDirectory( uiDocumentsDirectory->text() );
 	CAMainWin::uiOpenDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
@@ -139,7 +141,7 @@ void CASettingsDialog::applySettings() {
 	CAMainWin::uiSaveDialog->selectFilter( uiDefaultSaveComboBox->currentText() );
 	CACanorus::settings()->setAutoRecoveryInterval( uiAutoRecoverySpinBox->value() );
 	CACanorus::autoRecovery()->updateTimer();
-	
+
 	// Appearance Page
 	CACanorus::settings()->setBackgroundColor( uiBackgroundColor->palette().color(QPalette::Window) );
 	CACanorus::settings()->setForegroundColor( uiForegroundColor->palette().color(QPalette::Window) );
@@ -148,19 +150,19 @@ void CASettingsDialog::applySettings() {
 	CACanorus::settings()->setSelectedContextColor( uiSelectedContextColor->palette().color(QPalette::Window) );
 	CACanorus::settings()->setHiddenElementsColor( uiHiddenElementsColor->palette().color(QPalette::Window) );
 	CACanorus::settings()->setDisabledElementsColor( uiDisabledElementsColor->palette().color(QPalette::Window) );
-	
+
 	// Playback Page
 	if ( uiMidiInList->currentIndex().row()==0 )
 		CACanorus::settings()->setMidiInPort(-1);
 	else
 		CACanorus::settings()->setMidiInPort(_midiInPorts.keys().at( uiMidiInList->currentIndex().row()-1 ));
-	
+
 	if ( uiMidiOutList->currentIndex().row()==0 )
 		CACanorus::settings()->setMidiOutPort(-1);
 	else
 		CACanorus::settings()->setMidiOutPort(_midiOutPorts.keys().at( uiMidiOutList->currentIndex().row()-1 ));
-	
-	CACanorus::settings()->writeSettings();	
+
+	CACanorus::settings()->writeSettings();
 }
 
 void CASettingsDialog::buildPreviewSheet() {

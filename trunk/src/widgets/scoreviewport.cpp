@@ -945,19 +945,23 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	// draw shadow note
 	if (_shadowNoteVisible) {
 		for (int i=0; i<_shadowDrawableNote.size(); i++) {
-			CADrawSettings s = {
-			               _zoom,
-			               qRound((_shadowDrawableNote[i]->xPos() - _worldX - _shadowDrawableNote[i]->width()/2) * _zoom),
-			               qRound((_shadowDrawableNote[i]->yPos() - _worldY) * _zoom),
-			               drawableWidth(), drawableHeight(),
-			               disabledElementsColor()
-			               };
-			_shadowDrawableNote[i]->draw(&p, s);
-			if (_drawShadowNoteAccs) {
-				CADrawableAccidental acc(_shadowNoteAccs, 0, 0, 0, _shadowDrawableNote[i]->yCenter());
-				s.x -= qRound((acc.width()+2)*_zoom);
-				s.y = qRound((acc.yPos() - _worldY)*_zoom);
-				acc.draw(&p, s);
+			if ( CACanorus::settings()->shadowNotesInOtherStaffs() || _shadowDrawableNote[i]->drawableContext() == currentContext() ) {
+				CADrawSettings s = {
+					_zoom,
+					qRound((_shadowDrawableNote[i]->xPos() - _worldX - _shadowDrawableNote[i]->width()/2) * _zoom),
+					qRound((_shadowDrawableNote[i]->yPos() - _worldY) * _zoom),
+					drawableWidth(), drawableHeight(),
+					disabledElementsColor()
+				};
+
+				_shadowDrawableNote[i]->draw(&p, s);
+
+				if (_drawShadowNoteAccs) {
+					CADrawableAccidental acc(_shadowNoteAccs, 0, 0, 0, _shadowDrawableNote[i]->yCenter());
+					s.x -= qRound((acc.width()+2)*_zoom);
+					s.y = qRound((acc.yPos() - _worldY)*_zoom);
+					acc.draw(&p, s);
+				}
 			}
 		}
 	}
