@@ -50,3 +50,10 @@ CAResource::~CAResource() {
 		QFile::remove( url().toLocalFile() );
 }
 
+bool CAResource::copy( QString fileName ) {
+	if ( QFile::exists( fileName ) ) {
+		QFile::remove( fileName );
+	}
+
+	return QFile::copy( url().toLocalFile(), fileName );
+}

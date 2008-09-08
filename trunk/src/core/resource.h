@@ -40,6 +40,8 @@ public:
 	inline void setResourceContainer( CAResourceContainer *c ) { _resourceContainer = c; }
 	inline CAResourceContainer *resourceContainer() { return _resourceContainer; }
 
+	bool copy( QString fileName );
+
 private:
 	QString _name;
 	QUrl _url;
