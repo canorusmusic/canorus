@@ -3594,6 +3594,7 @@ void CAMainWin::on_uiMidiRecorder_triggered() {
 	if (document()) {
 		CAResource *myMidiFile = document()->createEmptyResource( tr("Recorded Midi file"), CAResource::Sound );
 		CAMidiRecorderView *midiRecorderView = new CAMidiRecorderView( new CAMidiRecorder( myMidiFile, CACanorus::midiDevice() ), this );
+		addDockWidget( Qt::TopDockWidgetArea, midiRecorderView );
 		midiRecorderView->show();
 
 		_resourceView->rebuildUi();
