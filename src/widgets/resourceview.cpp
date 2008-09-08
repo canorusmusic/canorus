@@ -8,6 +8,7 @@
 #include "widgets/resourceview.h"
 #include "core/document.h"
 #include "core/resource.h"
+#include "canorus.h"
 
 #include <QStringList>
 
@@ -50,5 +51,21 @@ void CAResourceView::rebuildUi() {
 			_items[ item ] = document()->resourceList()[i];
 			addTopLevelItem( item );
 		}
+	}
+}
+
+void CAResourceView::showEvent( QShowEvent * event ) {
+	QList<CAMainWin*> mainWins = CACanorus::findMainWin( document() );
+
+	for (int i=0; i<mainWins.size(); i++) {
+		mainWins[i]->resourceViewAction()->setChecked(true);
+	}
+}
+
+void CAResourceView::closeEvent( QCloseEvent * event ) {
+	QList<CAMainWin*> mainWins = CACanorus::findMainWin( document() );
+
+	for (int i=0; i<mainWins.size(); i++) {
+		mainWins[i]->resourceViewAction()->setChecked(false);
 	}
 }

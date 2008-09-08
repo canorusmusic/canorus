@@ -28,6 +28,9 @@ public:
 	CADocument *document() { return _document; }
 
 private:
+	void showEvent( QShowEvent* );
+	void closeEvent( QCloseEvent* );
+
 	CADocument *_document;
 	QMap< QTreeWidgetItem*, CAResource* > _items;
 };

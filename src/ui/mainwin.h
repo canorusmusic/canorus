@@ -87,6 +87,8 @@ public:
 	inline CAMode mode() { return _mode; }
 	inline QFileDialog *exportDialog() { return uiExportDialog; }
 	inline QFileDialog *importDialog() { return uiImportDialog; }
+	inline CAResourceView *resourceView() { return _resourceView; }
+	inline QAction        *resourceViewAction() { return uiResourceView; }
 	inline CAViewPort *currentViewPort() { return _currentViewPort; }
 	inline void removeViewPort(CAViewPort* v) { _viewPortList.removeAll(v); }
 	inline QList<CAViewPort*> viewPortList() { return _viewPortList; }
