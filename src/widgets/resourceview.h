@@ -27,9 +27,13 @@ public:
 	void setDocument( CADocument *doc ) { _document = doc; rebuildUi(); }
 	CADocument *document() { return _document; }
 
+protected slots:
+	void on_itemChanged( QTreeWidgetItem *i, int column );
+
 private:
 	void showEvent( QShowEvent* );
 	void closeEvent( QCloseEvent* );
+	void contextMenuEvent( QContextMenuEvent * e );
 
 	CADocument *_document;
 	QMap< QTreeWidgetItem*, CAResource* > _items;
