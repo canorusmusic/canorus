@@ -298,6 +298,7 @@ SET(Canorus_Interface_Srcs	# Other interfaces like Engraver, Playback, Plugin ma
 	interface/pluginmanager.cpp
 	interface/pluginaction.cpp
 	interface/plugin.cpp
+	interface/keybdinput.cpp
 
 	interface/pyconsoleinterface.cpp
 )
