@@ -8,6 +8,7 @@
 #include "interface/mididevice.h"
 #include "core/sheet.h"
 #include "core/voice.h"
+#include "core/diatonickey.h"
 #include "core/diatonicpitch.h"
 
 CAMidiDevice::CAMidiDevice()
@@ -204,7 +205,33 @@ int CAMidiDevice::diatonicPitchToMidiPitch( CADiatonicPitch pitch ) {
 	\sa _pitch, pitchToMidiPitch()
 */
 CADiatonicPitch CAMidiDevice::midiPitchToDiatonicPitch(int midiPitch) {
-	return CADiatonicPitch();
+	CADiatonicKey cm;	// Default is here C Major
+	return midiPitchToDiatonicPitch(midiPitch, cm);
+}
+/*!
+
+	Converts the given standard unsigned 7-bit MIDI pitch to internal Canorus pitch dependent on the
+	diatonic key k.
+	
+	\todo This method currently only assumes the diatonic key c.
+	
+	\sa _pitch, pitchToMidiPitch()
+*/
+CADiatonicPitch CAMidiDevice::midiPitchToDiatonicPitch(int midiPitch, CADiatonicKey k) {
+	float step =(float)7/12;
+
+	int oktave = midiPitch /12 - 1;
+	int rest = midiPitch %12;
+	CADiatonicPitch y;
+	// todo: Some more explanation of the algorithm.
+	y.setNoteName( qRound( step*rest -0.5 + 1.0/7 ));
+	y.setAccs( 0 );
+	y.setAccs( (diatonicPitchToMidiPitch( y )%12) == rest ? 0 : 1 );
+	
+	CADiatonicPitch x;
+	x.setNoteName(y.noteName()+oktave*7);
+	x.setAccs(y.accs()); 
+	return x;
 }
 
 

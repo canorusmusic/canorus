@@ -17,6 +17,7 @@
 #include "core/diatonicpitch.h"
 
 class CASheet;
+class CADiatonicKey;
 
 class CAMidiDevice : public QObject {
 #ifndef SWIG
@@ -74,6 +75,7 @@ signals:
 public:
 	static int diatonicPitchToMidiPitch( CADiatonicPitch );
 	static CADiatonicPitch midiPitchToDiatonicPitch( int );
+	static CADiatonicPitch midiPitchToDiatonicPitch( int, CADiatonicKey k );
 	
 protected:
 	void setRealTime( bool r ) { _realTime = r; }
