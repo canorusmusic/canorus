@@ -424,6 +424,31 @@ QList<CAMusElement*> CAVoice::getEltByType(CAMusElement::CAMusElementType type, 
 }
 
 /*!
+	Returns a list of pointers to actual music elements which are at or left (not past)
+	the given \a startTime and are of given \a type.
+	This is useful for querying for eg. which key pitch is in effect before a certain
+	point in time.
+
+	A list from time 0 until startTime is created which is
+	questionable regarding need and efficiency.
+*/
+QList<CAMusElement*> CAVoice::getPreviousByType(CAMusElement::CAMusElementType type, int startTime) {
+	QList<CAMusElement*> eltList;
+
+	int i;
+	for (i= _musElementList.size()-1;
+			i >= 0 && _musElementList[i]->timeStart() > startTime; i--);	// seek to the most right of the music elements with the given time
+	while (i >=0 && _musElementList[i]->timeStart() <= startTime) {	// create a list of music elements not past the given time
+		if (_musElementList[i]->musElementType() == type)
+			eltList.prepend(_musElementList[i]);
+		i--;
+	}
+
+
+	return eltList;
+}
+
+/*!
 	Returns pointer to the music element before the given \a elt or 0, if the previous
 	music element doesn't exist.
 */
