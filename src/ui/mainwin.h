@@ -49,6 +49,7 @@ class CAPrintPreviewCtl;
 class CAPrintCtl;
 class CAPreviewCtl;
 class CAPyConsole;
+class CAKeybdInput;
 
 class CAMainWin : public QMainWindow, private Ui::uiMainWindow
 {
@@ -326,12 +327,14 @@ private:
 	QTimer _timeEditedTimer;
 	unsigned int  _timeEditedTime;
 	CAMusElementFactory *_musElementFactory;
+public:
 	inline CAMusElementFactory *musElementFactory() { return _musElementFactory; }
+private:
 	inline bool stopPlayback() {
 			if(_playback && _playback->isRunning())
 				_playback->stopNow();
 		}
-
+	CAKeybdInput *_keybdInput;
 	///////////////////////////////////////////////////////////////////////////
 	// Pure user interface - widgets that weren't created by Qt Designer yet //
 	///////////////////////////////////////////////////////////////////////////

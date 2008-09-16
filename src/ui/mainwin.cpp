@@ -37,6 +37,7 @@
 #include "interface/pluginmanager.h"
 #include "interface/mididevice.h"
 #include "interface/rtmididevice.h"
+#include "interface/keybdinput.h"
 
 #include "widgets/menutoolbutton.h"
 #include "widgets/undotoolbutton.h"
@@ -160,6 +161,9 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	restartTimeEditedTime();
 	connect( &_timeEditedTimer, SIGNAL(timeout()), this, SLOT(onTimeEditedTimerTimeout()) );
 	_timeEditedTimer.start(1000);
+
+	// Setup the midi keyboad input processing object
+	_keybdInput = new CAKeybdInput( this );
 
 	_resourceView = new CAResourceView( 0, 0 );
 	_resourceView->hide();
@@ -2764,10 +2768,8 @@ bool CAMainWin::saveDocument( QString fileName ) {
 }
 
 void CAMainWin::onMidiInEvent( QVector<unsigned char> m ) {
-	std::cout << "MidiInEvent: ";
-	for (int i=0; i<m.size(); i++)
-		std::cout << (int)m[i] << " ";
-	std::cout << std::endl;
+	_keybdInput->onMidiInEvent( m );
+	return;
 }
 
 /*!

@@ -20,9 +20,20 @@ class CAKeybdInput {
 public:
 	CAKeybdInput( CAMainWin* m);
 	~CAKeybdInput();
+	void onMidiInEvent( QVector<unsigned char> m );
 
 private:
 	CAMainWin* _mw;
+	void midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char> m);
+	QTimer _midiInChordTimer;
+	CASheet *_lastMidiInSheet;
+	CAStaff *_lastMidiInStaff;
+	CAVoice *_lastMidiInVoice;
+	CADiatonicPitch _actualKeySignature;
+	signed char _actualKeySignatureAccs[7];
+	int _actualKeyAccidentalsSum;
+	CADiatonicPitch matchPitchToKey( CADiatonicPitch p );
+
 };
 
 #endif /* KEYBDINPUT_H_ */
