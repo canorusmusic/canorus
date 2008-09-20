@@ -1529,6 +1529,46 @@ int CAScoreViewPort::coordsToTime( int x ) {
 }
 
 /*!
+	Simple Version of \sa timeToCoords( time ):
+	Returns the X coordinate for the given Canorus \a time.
+	Returns -1, if such a time doesn't exist in the score.
+*/
+int CAScoreViewPort::timeToCoordsSimpleVersion( int time ) {
+	CADrawableMusElement *leftElt = 0;
+	CADrawableMusElement *rightElt = 0;
+	for (int i=0; i<_drawableMList.size(); i++) {
+		//if ( selection().contains( _drawableMList.at(i) ) ) {
+		//	std::cout << "  in continue-Ast" << std::endl;
+		//	continue;
+		//}
+		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeStart() <= time && (
+				!leftElt || _drawableMList.at(i)->musElement()->timeStart() > leftElt->musElement()->timeStart() ||
+		         _drawableMList.at(i)->xPos() > leftElt->xPos() ) // get the right-most element of that time
+		   )
+			leftElt = _drawableMList.at(i);
+
+		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeStart() >= time && (
+				!rightElt || _drawableMList.at(i)->musElement()->timeStart() < rightElt->musElement()->timeStart() ||
+		        _drawableMList.at(i)->xPos() < rightElt->xPos() ) // get the left-most element of that time
+		   )
+			rightElt = _drawableMList.at(i);
+	}
+
+	if ( leftElt /* && rightElt */ && leftElt->musElement() /* && rightElt->musElement() */ ) {
+/*
+		int delta = (rightElt->musElement()->timeStart() - leftElt->musElement()->timeStart());
+		if (!delta) delta=1;
+		return qRound(leftElt->xPos() + ( rightElt->xPos() - leftElt->xPos() ) *
+		              ( ((float)time - leftElt->musElement()->timeStart()) / delta )
+		             );
+*/
+		return leftElt->xPos();
+	} else {
+		return -1;
+	}
+}
+
+/*!
 	Returns the X coordinate for the given Canorus \a time.
 	Returns -1, if such a time doesn't exist in the score.
 */
