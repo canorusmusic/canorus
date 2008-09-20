@@ -64,6 +64,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 
 	int i;
 	CADiatonicPitch p = CAMidiDevice::midiPitchToDiatonicPitch( m[1] );
+	// didn't help:  _mw->setCurrentViewPort( v );
 
 	CAVoice *voice = _mw->currentVoice();
 	if (voice) {
@@ -89,9 +90,6 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 			}
 		}
 		CADiatonicPitch nonenharmonicPitch = matchPitchToKey( p );
-		//QString pi = CADiatonicPitch::diatonicPitchToString( _actualKeySignature );
-		//QByteArray pa = pi.toUtf8();
-		//std::cout << " Tonart: " << *pa << " accsum: " << _actualKeyAccidentalsSum;
 
 		CANote *note = new CANote( nonenharmonicPitch, _mw->musElementFactory()->playableLength(), voice, 0 ); //voice->lastIimeEnd() );
 
@@ -108,15 +106,26 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 
 		QList<CAMusElement*> tupletList = voice->getPreviousByType( CAMusElement::Tuplet, 1000000 ); // voice->lastTimeEnd());
 		// std::cout << " Tonartliste: " << keyList.size();
-		// std::cout << " Zeitanfang: " << voice->lastTimeStart();
-		// std::cout << " Zeitende: " << voice->lastTimeEnd();
 		// std::cout << "Tupletliste: " << tupletList.size() << std::endl;
 
-
 		// if note come in sufficiently close together we make a chord of them
-		voice->append( note, _midiInChordTimer.isActive() );
-		v->selectNextMusElement( true );	// todo: is not working as I expect it ...
+		bool appendToChord = _midiInChordTimer.isActive();
+		if (!appendToChord)
+			v->clearSelection();
+
+		voice->append( note, appendToChord );
+		voice->synchronizeMusElements();	// probably not needed
+		v->addToSelection( (CADrawableMusElement*)(voice->lastMusElement()), true );	// todo: is not working as I expect it ...
+
+		QRect scene = v->worldCoords();
+		int xlast = v->timeToCoordsSimpleVersion( voice->lastTimeStart() );
+		if ( ((xlast+50) > scene.right()) ) {	// the magic number 50 should be defined, ist the width of an element
+			scene.translate( scene.width()/2, 0 );
+			v->setWorldCoords(scene, false, true );
+		}
+		v->repaint();
 		CACanorus::rebuildUI(_mw->document(), _mw->currentSheet());
+
 		if ( !_midiInChordTimer.isActive() ) {
 			_midiInChordTimer.start( 100 );		// Notes max 100 ms apart will form a chord
 		}

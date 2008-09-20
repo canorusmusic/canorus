@@ -126,6 +126,7 @@ public:
 	CADrawableMusElement     *nearestRightElement(int x, int y, CAVoice *voice);
 	int coordsToTime( int x );
 	int timeToCoords( int time );
+	int timeToCoordsSimpleVersion( int time );
 	
 	CADrawableContext *nearestUpContext(int x, int y);
 	CADrawableContext *nearestDownContext(int x, int y);
