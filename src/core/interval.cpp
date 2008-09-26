@@ -138,13 +138,13 @@ CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2 ) {
 }
 
 /*!
-	Returns the inverse of the interval.
+	Returns the inverse of the interval. The reversed interval is always positive.
 
 	eg. seventh -> second, major -> minor and vice versa
 */
 CAInterval CAInterval::operator~() {
 	int qlt = quality()*(-1);
-	int qnt = 8 - ((qAbs(quantity())-1) % 7);
+	int qnt = 8 - ((qAbs(quantity())-2) % 7 + 1);
 
 	return CAInterval( qlt, qnt );
 }
