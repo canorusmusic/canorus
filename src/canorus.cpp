@@ -1,7 +1,7 @@
-/*! 
+/*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -32,6 +32,7 @@ CAAutoRecovery *CACanorus::_autoRecovery;
 CAMidiDevice *CACanorus::_midiDevice;
 CAUndo *CACanorus::_undo;
 QList<QString> CACanorus::_recentDocumentList;
+QString CACanorus::_prevPath;
 
 /*!
 	Locates a resource named fileName (relative path) and returns its absolute path of the file
@@ -41,7 +42,7 @@ QList<QString> CACanorus::_recentDocumentList;
 		- current dir
 		- exe dir
 		- DEFAULT_DATA_DIR set by compiler
-	
+
 	\sa locateResourceDir()
 */
 QList<QString> CACanorus::locateResource(const QString fileName) {
@@ -49,49 +50,49 @@ QList<QString> CACanorus::locateResource(const QString fileName) {
 	//! \todo Config file implementation
 	//! \todo Application path argument
 	QString curPath;
-	
+
 	// Try absolute path
 	curPath = fileName;
 	if (QFileInfo(curPath).exists())
 		paths << QFileInfo(curPath).absoluteFilePath();
-	
+
 	// Try current working directory
 	curPath = QDir::currentPath() + "/" + fileName;
 	if (QFileInfo(curPath).exists())
 		paths << QFileInfo(curPath).absoluteFilePath();
-	
+
 	// Try application exe directory
 	curPath = QCoreApplication::applicationDirPath() + "/" + fileName;
 	if (QFileInfo(curPath).exists())
 		paths << QFileInfo(curPath).absoluteFilePath();
-	
+
 #ifdef DEFAULT_DATA_DIR
 	// Try compiler defined DEFAULT_DATA_DIR constant (useful on Unix OSes)
 	curPath = QString(DEFAULT_DATA_DIR) + "/" + fileName;
 	if (QFileInfo(curPath).exists())
 		paths << QFileInfo(curPath).absoluteFilePath();
-	
+
 #endif
-	
+
 	// Try the source ui/ directory (images etc.)
 	curPath = QCoreApplication::applicationDirPath() + "/ui/" + fileName;
 	if (QFileInfo(curPath).exists())
 			paths << QFileInfo(curPath).absoluteFilePath();
-	
+
 	// Remove duplicates. Is there a faster way to do this?
 	return paths.toSet().toList();
 }
 
 /*!
 	Finds the resource named fileName and returns its absolute directory.
-	
+
 	\sa locateResource()
 */
 QList<QString> CACanorus::locateResourceDir(const QString fileName) {
 	QList<QString> paths = CACanorus::locateResource(fileName);
 	for (int i=0; i<paths.size(); i++)
 		paths[i] = paths[i].left(paths[i].lastIndexOf("/"));
-	
+
 	// Remove duplicates. Is there a faster way to do this?
 	return paths.toSet().toList();
 }
@@ -101,7 +102,7 @@ QList<QString> CACanorus::locateResourceDir(const QString fileName) {
 */
 void CACanorus::initMain( int argc, char *argv[] ) {
 	_autoRecovery = 0;
-	
+
 	// Init main application properties
 	QCoreApplication::setOrganizationName("Canorus");
 	QCoreApplication::setOrganizationDomain("canorus.org");
@@ -116,7 +117,7 @@ void CACanorus::initCommonGUI() {
 	CAMainWin::uiSaveDialog->setFilters( QStringList() << CAFileFormats::CANORUSML_FILTER );
 	CAMainWin::uiSaveDialog->setFilters( CAMainWin::uiSaveDialog->filters() << CAFileFormats::CAN_FILTER );
 	CAMainWin::uiSaveDialog->selectFilter( CAFileFormats::getFilter( settings()->defaultSaveFormat() ) );
-	
+
 	CAMainWin::uiOpenDialog = new QFileDialog(0, QObject::tr("Choose a file to open"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiOpenDialog->setFileMode( QFileDialog::ExistingFile );
 	CAMainWin::uiOpenDialog->setAcceptMode( QFileDialog::AcceptOpen );
@@ -130,13 +131,13 @@ void CACanorus::initCommonGUI() {
 	}
 	allFilters.chop(1);
 	CAMainWin::uiOpenDialog->setFilters( QStringList() << QString(QObject::tr("All supported formats (%1)").arg(allFilters)) << CAMainWin::uiOpenDialog->filters() );
-	
+
 	CAMainWin::uiExportDialog = new QFileDialog(0, QObject::tr("Choose a file to export"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiExportDialog->setFileMode(QFileDialog::AnyFile);
 	CAMainWin::uiExportDialog->setAcceptMode( QFileDialog::AcceptSave );
 	CAMainWin::uiExportDialog->setFilters( QStringList() << CAFileFormats::LILYPOND_FILTER );
 	CAMainWin::uiExportDialog->setFilters( CAMainWin::uiExportDialog->filters() << CAFileFormats::MIDI_FILTER );
-  	
+
 	CAMainWin::uiImportDialog = new QFileDialog(0, QObject::tr("Choose a file to import"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiImportDialog->setFileMode( QFileDialog::ExistingFile );
 	CAMainWin::uiImportDialog->setAcceptMode( QFileDialog::AcceptOpen );
@@ -154,8 +155,8 @@ void CACanorus::initPlayback() {
 	Opens Canorus config file and loads the settings.
 	Config file is always INI file in user's home directory.
 	No native formats are used (Windows registry etc.) - this is provided for easier transition of settings between the platforms.
-	
-	\sa settings() 
+
+	\sa settings()
 */
 CASettingsDialog::CASettingsPage CACanorus::initSettings() {
 #ifdef Q_WS_WIN	// M$ is of course an exception
@@ -163,9 +164,9 @@ CASettingsDialog::CASettingsPage CACanorus::initSettings() {
 #else	// POSIX systems use the same config file path
 	_settingsPath = QDir::homePath()+"/.config/Canorus";
 #endif
-	
+
 	_settings = new CASettings( settingsPath()+"/canorus.ini", QSettings::IniFormat );
-	
+
 	return static_cast<CASettingsDialog::CASettingsPage>(_settings->readSettings());
 }
 
@@ -173,7 +174,7 @@ CASettingsDialog::CASettingsPage CACanorus::initSettings() {
 	Initializes scripting and plugins subsystem.
 */
 void CACanorus::initScripting() {
-#ifdef USE_RUBY	
+#ifdef USE_RUBY
 	CASwigRuby::init();
 #endif
 #ifdef USE_PYTHON
@@ -195,12 +196,12 @@ void CACanorus::initUndo() {
 void CACanorus::insertRecentDocument( QString filename ) {
 	if ( recentDocumentList().contains(filename) )
 		removeRecentDocument(filename);
-	
+
 	recentDocumentList().prepend(filename);
-	
+
 	if ( recentDocumentList().size() > settings()->maxRecentDocuments() )
 		recentDocumentList().removeLast();
-	
+
 	settings()->writeSettings();
 }
 
@@ -231,10 +232,10 @@ void CACanorus::cleanUp()
 /*!
 	Parses the switches and settings command line arguments to application.
 	This function sets any settings passed in command line.
-	
+
 	Returns True, if application should resume with loading or False, if such
 	a switch was passed.
-	
+
 	\sa parseOpenFileArguments()
 */
 bool CACanorus::parseSettingsArguments(int argc, char *argv[]) {
@@ -242,11 +243,11 @@ bool CACanorus::parseSettingsArguments(int argc, char *argv[]) {
 		if ( QString(argv[i])=="--version" ) {
 			std::cout << "Canorus - The next generation music score editor" << std::endl
 			          << "Version " << CANORUS_VERSION << std::endl;
-			
+
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
@@ -261,7 +262,7 @@ void CACanorus::parseOpenFileArguments(int argc, char *argv[]) {
 			if (!CACanorus::locateResource(argv[i]).size())
 				continue;
 			QString fileName = CACanorus::locateResource(argv[i]).at(0);
-			
+
 			CAMainWin *mainWin = new CAMainWin();
 			mainWin->openDocument(fileName);
 			mainWin->show();
@@ -271,7 +272,7 @@ void CACanorus::parseOpenFileArguments(int argc, char *argv[]) {
 
 /*!
 	\fn int CACanorus::mainWinCount()
-	
+
 	Returns the number of all main windows.
 */
 
@@ -283,14 +284,14 @@ int CACanorus::mainWinCount(CADocument *doc) {
 	for (int i=0; i<_mainWinList.size(); i++)
 		if (_mainWinList[i]->document()==doc)
 			count++;
-	
+
 	return count;
 }
 
 /*!
 	Rebuilds main windows with the given \a document and its viewports showing the given \a sheet.
 	Rebuilds all viewports if no sheet is null.
-	
+
 	\sa rebuildUI(CADocument*), CAMainWin::rebuildUI()
 */
 void CACanorus::rebuildUI( CADocument *document, CASheet *sheet ) {
@@ -302,7 +303,7 @@ void CACanorus::rebuildUI( CADocument *document, CASheet *sheet ) {
 /*!
 	Rebuilds main windows with the given \a document.
 	Rebuilds all main windows, if \a document is not given or null.
-	
+
 	\sa rebuildUI(CADocument*, CASheet*), CAMainWin::rebuildUI()
 */
 void CACanorus::rebuildUI( CADocument *document ) {
@@ -322,14 +323,14 @@ QList<CAMainWin*> CACanorus::findMainWin(CADocument *document) {
 	for (int i=0; i<mainWinCount(); i++)
 		if (mainWinAt(i)->document()==document)
 			mainWinList << mainWinAt(i);
-	
+
 	return mainWinList;
 }
 
 /*!
 	\function void CACanorus::addMainWin( CAMainWin *w )
 	Adds an already created main window to the global main window list.
-	
+
 	\sa removeMainWin(), mainWinAt()
 */
 
@@ -395,3 +396,36 @@ void CACanorus::connectSlotsByName(QObject *pOS, const QObject *pOR)
     }
 }
 
+/*!
+	This function sets the current path to the directory containing the
+	/images folder and stores the current path. It looks the current path,
+	canorus exe, data path and source dir.
+
+	This function is usually called when initializing the GUI where icons
+	and other GUI resources should be located relative to the current directory.
+
+	\sa CACanorus::restorePath(), CACanorus::locateResourceDir()
+ */
+bool CACanorus::setImagesPath() {
+	_prevPath = QDir::currentPath();
+
+	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
+	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
+		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
+
+	if ( resourcesLocations.size() ) {
+		QDir::setCurrent( resourcesLocations[0] );
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/*!
+	This function restores the path stored when calling setImagesPath().
+
+	\sa CACanorus::setImagesPath(), CACanorus::locateResourceDir()
+ */
+void CACanorus::restorePath() {
+	QDir::setCurrent( _prevPath );
+}

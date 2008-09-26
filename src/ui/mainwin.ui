@@ -21,14 +21,6 @@
    <string/>
   </property>
   <widget class="QWidget" name="uiCentralWidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>58</y>
-     <width>905</width>
-     <height>578</height>
-    </rect>
-   </property>
    <layout class="QGridLayout" >
     <property name="margin" >
      <number>6</number>
@@ -60,7 +52,7 @@
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="uiMenuEdit" >
@@ -199,25 +191,8 @@
    <addaction name="uiMenuWindow" />
    <addaction name="uiMenuHelp" />
   </widget>
-  <widget class="QStatusBar" name="uiStatusBarWidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>636</y>
-     <width>905</width>
-     <height>24</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="uiStatusBarWidget" />
   <widget class="QToolBar" name="uiStandardToolBar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>24</y>
-     <width>424</width>
-     <height>34</height>
-    </rect>
-   </property>
    <property name="windowTitle" >
     <string>Standard ToolBar</string>
    </property>
@@ -244,14 +219,6 @@
    <addaction name="uiPlayFromSelection" />
   </widget>
   <widget class="QToolBar" name="uiFileToolBar" >
-   <property name="geometry" >
-    <rect>
-     <x>424</x>
-     <y>24</y>
-     <width>285</width>
-     <height>34</height>
-    </rect>
-   </property>
    <property name="windowTitle" >
     <string>File ToolBar</string>
    </property>
@@ -276,14 +243,6 @@
   <widget class="QToolBar" name="uiPrintToolBar" >
    <property name="enabled" >
     <bool>true</bool>
-   </property>
-   <property name="geometry" >
-    <rect>
-     <x>709</x>
-     <y>24</y>
-     <width>196</width>
-     <height>34</height>
-    </rect>
    </property>
    <property name="windowTitle" >
     <string>Print ToolBar</string>
@@ -932,9 +891,6 @@
    </property>
   </action>
   <action name="uiTranspose" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="text" >
     <string>&amp;Transpose...</string>
    </property>

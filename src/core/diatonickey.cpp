@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -10,16 +10,17 @@
 /*!
 	\class CADiatonicKey
 	\brief Musical key
-	
+
 	This is a typical music presentation of the key.
 	For example, C-major, d-minor, e-flat-minor etc.
-	
+
 	It consists of two properties:
 	- diatonic pitch (cis, des etc.)
 	- gender (major, minor etc.)
-	
-	Valid range of diatonic pitch for the key is from C (0) to B (6)
-	
+
+	Valid range of diatonic pitch for the diatonic key is a positive
+	number ranging from 0 (C) to 6 (B).
+
 	\sa CADiatonicPitch
 */
 
@@ -36,14 +37,14 @@ CADiatonicKey::CADiatonicKey( const QString& key ) {
 CADiatonicKey::CADiatonicKey( const int& nAccs, const CAGender& gender ) {
 	setGender( gender );
 	setShape( Natural );
-	
+
 	int pitch = ((4*nAccs) % 7) + ((nAccs < 0) ? 7 : 0);
-	
+
 	if (gender==CADiatonicKey::Minor) // find the parallel minor key
 		pitch = (pitch + 5) % 7;
-	
+
 	signed char accs = 0;
-	
+
 	if (nAccs>5 && gender==CADiatonicKey::Major)
 		accs = (nAccs-5)/7+1;
 	else
@@ -55,14 +56,14 @@ CADiatonicKey::CADiatonicKey( const int& nAccs, const CAGender& gender ) {
 	else
 	if (nAccs<-4 && gender==CADiatonicKey::Minor)
 		accs = (nAccs+4)/7 - 1;
-	
+
 	setDiatonicPitch( CADiatonicPitch(pitch, accs) );
 }
 
 CADiatonicKey::CADiatonicKey( const CADiatonicPitch& pitch, const CAGender& gender ) {
 	setDiatonicPitch( pitch );
 	setGender( gender );
-	
+
 	if ( gender==Major )
 		setShape( Natural );
 	else
@@ -78,12 +79,12 @@ CADiatonicKey::CADiatonicKey( const CADiatonicPitch& pitch, const CAGender& gend
 int CADiatonicKey::numberOfAccs() {
 	// calculate accs for minor keys
 	int accs = ( ((diatonicPitch().noteName()+2) * 2 + 4) % 7 - 4 );
-	
+
 	accs += 7*diatonicPitch().accs();
-	
+
 	if (gender()==CADiatonicKey::Major)
 		accs += 3;
-	
+
 	return accs;
 }
 
@@ -101,6 +102,20 @@ void CADiatonicKey::operator=(const QString& key) {
 		setShape( Natural );
 	else
 		setShape( Harmonic );
+}
+
+/*!
+	Transposes the key for the given \a interval.
+	The new pitch is correctly bounded.
+ */
+CADiatonicKey CADiatonicKey::operator+( CAInterval interval ) {
+	CADiatonicPitch p = diatonicPitch() + interval;
+	p.setNoteName( p.noteName() % 7 );
+	if ( p.noteName() < 0 ) {
+		p.setNoteName( p.noteName() + 7 );
+	}
+
+	return CADiatonicKey( p, gender(), shape() );
 }
 
 const QString CADiatonicKey::genderToString( CAGender gender ) {
@@ -141,12 +156,12 @@ CADiatonicKey::CAShape CADiatonicKey::shapeFromString( const QString shape ) {
 const QString CADiatonicKey::diatonicKeyToString( CADiatonicKey k ) {
 	// calculate key signature pitch from number of accidentals
 	int pitch = ((4*k.numberOfAccs()) % 7) + ((k.numberOfAccs() < 0) ? 7 : 0);
-	
+
 	if (k.gender()==CADiatonicKey::Minor) // find the parallel minor key
 		pitch = (pitch + 5) % 7;
-	
+
 	signed char accs = 0;
-	
+
 	if (k.numberOfAccs()>5 && k.gender()==CADiatonicKey::Major)
 		accs = (k.numberOfAccs()-5)/7+1;
 	else
@@ -158,14 +173,14 @@ const QString CADiatonicKey::diatonicKeyToString( CADiatonicKey k ) {
 	else
 	if (k.numberOfAccs()<-4 && k.gender()==CADiatonicKey::Minor)
 		accs = (k.numberOfAccs()+4)/7 - 1;
-	
+
 	QString name;
-	
+
 	name = (char)((pitch+2)%7 + 'a');
-	
+
 	for (int i=0; i < accs; i++)
 		name += "is";	// append as many -is-es as necessary
-	
+
 	for (int i=0; i > accs; i--) {
 		if ( (name == "e") || (name == "a") )
 			name += "s";	// for pitches E and A, only append single -s the first time
@@ -174,10 +189,10 @@ const QString CADiatonicKey::diatonicKeyToString( CADiatonicKey k ) {
 		else
 			name += "es";	// otherwise, append normally as many es-es as necessary
 	}
-	
+
 	if (k.gender()==CADiatonicKey::Major)
 		name[0] = name[0].toUpper();
-	
+
 	return name;
 }
 

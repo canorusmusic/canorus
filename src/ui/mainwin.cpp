@@ -28,6 +28,7 @@
 #include "ui/mainwin.h"
 #include "ui/settingsdialog.h"
 #include "ui/propertiesdialog.h"
+#include "ui/transposeview.h"
 
 #include "control/previewctl.h"
 #include "control/printctl.h"
@@ -55,6 +56,7 @@
 #include "drawable/drawablelyricscontext.h"
 #include "drawable/drawablemuselement.h"
 #include "drawable/drawablenote.h"
+#include "drawable/drawablekeysignature.h"
 
 #include "canorus.h"
 #include "core/settings.h"
@@ -126,19 +128,14 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
  : QMainWindow( oParent ) {
 	setAttribute( Qt::WA_DeleteOnClose );
 
-	// Locate resources (images, icons)
-	QString currentPath = QDir::currentPath();
+	CACanorus::setImagesPath();
 
-	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
-	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
-		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
-
-	QDir::setCurrent( resourcesLocations[0] ); /// \todo Button and menu icons by default look at the current working directory as their resource path only. QResource::addSearchPath() doesn't work for external icons. Any other ideas? -Matevz
 	// Create the GUI (actions, toolbars, menus etc.)
 	createCustomActions();
 	setupUi( this ); // initialize elements created by Qt Designer
 	setupCustomUi();
-	QDir::setCurrent( currentPath );
+
+	CACanorus::restorePath();
 
 	// Explicitly initialize this so it isn't true sometimes
 	setRebuildUILock( false );
@@ -167,6 +164,10 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 
 	_resourceView = new CAResourceView( 0, 0 );
 	_resourceView->hide();
+
+	_transposeView = new CATransposeView( this );
+	addDockWidget( Qt::RightDockWidgetArea, _transposeView );
+	_transposeView->hide();
 
 	setDocument( 0 );
 	CACanorus::addMainWin( this );
@@ -203,6 +204,9 @@ CAMainWin::~CAMainWin()  {
 	delete uiTempoToolBar;
 	delete uiFermataToolBar;
 	delete uiRepeatMarkToolBar;
+
+	delete _resourceView;
+	delete _transposeView;
 
 	if(!CACanorus::mainWinCount()) // closing down
 		CACanorus::cleanUp();
@@ -373,36 +377,7 @@ void CAMainWin::createCustomActions() {
 	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
 	uiKeySig = new QComboBox( this );
 		uiKeySig->setObjectName("uiKeySig");
-		uiKeySig->addItem( QIcon("images/accidental/accs-7.svg"), tr("C-flat major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-7.svg"), tr("a-flat minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-6.svg"), tr("G-flat major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-6.svg"), tr("e-flat minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-5.svg"), tr("D-flat major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-5.svg"), tr("b-flat minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-4.svg"), tr("A-flat major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-4.svg"), tr("f minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-3.svg"), tr("E-flat major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-3.svg"), tr("c minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-2.svg"), tr("B-flat major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-2.svg"), tr("g minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-1.svg"), tr("F major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs-1.svg"), tr("d minor") );
-		uiKeySig->addItem( QIcon("images/general/none.svg"), tr("C major") );
-		uiKeySig->addItem( QIcon("images/general/none.svg"), tr("a minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs1.svg"), tr("G major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs1.svg"), tr("e minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs2.svg"), tr("D major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs2.svg"), tr("b minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs3.svg"), tr("A major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs3.svg"), tr("f-sharp minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs4.svg"), tr("E major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs4.svg"), tr("c-sharp minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs5.svg"), tr("B major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs5.svg"), tr("g-sharp minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs6.svg"), tr("F-sharp major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs6.svg"), tr("d-sharp minor") );
-		uiKeySig->addItem( QIcon("images/accidental/accs7.svg"), tr("C-sharp major") );
-		uiKeySig->addItem( QIcon("images/accidental/accs7.svg"), tr("a-sharp minor") );
+		CADrawableKeySignature::populateComboBox( uiKeySig );
 
 	uiTimeSigToolBar = new QToolBar( tr("Time Signature ToolBar"), this );
 	uiTimeSigBeats = new QSpinBox(this);
@@ -467,36 +442,7 @@ void CAMainWin::createCustomActions() {
 		uiFMTonicDegree->addButton( QIcon("images/functionmark/fmvii.svg"), CAFunctionMark::VII, tr("VII") );
 	uiFMKeySig = new QComboBox( this );
 		uiFMKeySig->setObjectName("uiFMKeySig");
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-7.svg"), tr("C-flat major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-7.svg"), tr("a-flat minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-6.svg"), tr("G-flat major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-6.svg"), tr("e-flat minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-5.svg"), tr("D-flat major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-5.svg"), tr("b-flat minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-4.svg"), tr("A-flat major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-4.svg"), tr("f minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-3.svg"), tr("E-flat major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-3.svg"), tr("c minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-2.svg"), tr("B-flat major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-2.svg"), tr("g minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-1.svg"), tr("F major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs-1.svg"), tr("d minor") );
-		uiFMKeySig->addItem( QIcon("images/general/none.svg"), tr("C major") );
-		uiFMKeySig->addItem( QIcon("images/general/none.svg"), tr("a minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs1.svg"), tr("G major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs1.svg"), tr("e minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs2.svg"), tr("D major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs2.svg"), tr("b minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs3.svg"), tr("A major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs3.svg"), tr("f-sharp minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs4.svg"), tr("E major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs4.svg"), tr("c-sharp minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs5.svg"), tr("B major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs5.svg"), tr("g-sharp minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs6.svg"), tr("F-sharp major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs6.svg"), tr("d-sharp minor") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs7.svg"), tr("C-sharp major") );
-		uiFMKeySig->addItem( QIcon("images/accidental/accs7.svg"), tr("a-sharp minor") );
+		CADrawableKeySignature::populateComboBox( uiFMKeySig );
 
 	uiDynamicToolBar = new QToolBar( tr("Dynamic marks ToolBar"), this );
 	uiDynamicText = new CAMenuToolButton( tr("Select Dynamic"), 5, this );
@@ -1058,12 +1004,12 @@ void CAMainWin::on_uiNewViewport_triggered() {
 */
 void CAMainWin::initViewPort(CAViewPort *v) {
 	_viewPortList << v;
-	QList<QString> paths = CACanorus::locateResource("images/clogosm.png");
-	if ( !paths.size() )
-		paths = CACanorus::locateResource("ui/images/clogosm.png");
 
-	if ( paths.size() )
-		v->setWindowIcon(QIcon( paths[0] ));
+	CACanorus::setImagesPath();
+
+	v->setWindowIcon(QIcon( "images/clogosm.png" ));
+
+	CACanorus::restorePath();
 
 	switch (v->viewPortType()) {
 		case CAViewPort::ScoreViewPort: {
@@ -2890,12 +2836,11 @@ void CAMainWin::on_uiVoiceProperties_triggered() {
 	Changes the number of accidentals.
 */
 void CAMainWin::on_uiKeySig_activated( int row ) {
-	signed char accs = qRound((row-14.5) / 2);
-	CADiatonicKey::CAGender gender = (row%2)==0 ? CADiatonicKey::Major : CADiatonicKey::Minor;
+	CADiatonicKey key = CADrawableKeySignature::comboBoxRowToDiatonicKey( row );
 
 	if (mode()==InsertMode) {
-		musElementFactory()->setDiatonicKeyNumberOfAccs( accs );
-		musElementFactory()->setDiatonicKeyGender( gender );
+		musElementFactory()->setDiatonicKeyNumberOfAccs( key.numberOfAccs() );
+		musElementFactory()->setDiatonicKeyGender( key.gender() );
 	} else
 	if ( mode()==EditMode && currentScoreViewPort() && currentScoreViewPort()->selection().size() ) {
 		QList<CADrawableMusElement*> list = currentScoreViewPort()->selection();
@@ -2906,11 +2851,11 @@ void CAMainWin::on_uiKeySig_activated( int row ) {
 			CAFunctionMark *fm = dynamic_cast<CAFunctionMark*>(list[i]->musElement());
 
 			if ( keySig ) {
-				keySig->setDiatonicKey( CADiatonicKey(accs, gender) );
+				keySig->setDiatonicKey( key );
 			}
 
 			if ( fm ) {
-				fm->setKey( CADiatonicKey::diatonicKeyToString( CADiatonicKey(accs, gender) ) );
+				fm->setKey( CADiatonicKey::diatonicKeyToString( key ) );
 			}
 		}
 
@@ -3604,6 +3549,12 @@ void CAMainWin::on_uiMidiRecorder_triggered() {
 	}
 }
 
+void CAMainWin::on_uiTranspose_triggered() {
+	if (document()) {
+		_transposeView->show();
+	}
+}
+
 void CAMainWin::on_uiLilyPondSource_triggered() {
 	CAContext *context = currentContext();
 	if ( !context )
@@ -4124,7 +4075,7 @@ void CAMainWin::updateKeySigToolBar() {
 		if (v && v->selection().size()) {
 			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
 			if (keySig) {
-				uiKeySig->setCurrentIndex((keySig->diatonicKey().numberOfAccs()+7)*2 + ((keySig->diatonicKey().gender()==CADiatonicKey::Minor)?1:0) );
+				uiKeySig->setCurrentIndex( CADrawableKeySignature::diatonicKeyToRow( keySig->diatonicKey() ) );
 				uiKeySigToolBar->show();
 			} else
 				uiKeySigToolBar->hide();
@@ -4178,8 +4129,7 @@ void CAMainWin::updateFMToolBar() {
 		uiFMTonicDegree->setCurrentId( fm->tonicDegree()*(fm->isTonicDegreeMinor()?-1:1) );
 		uiFMEllipse->setChecked( fm->isPartOfEllipse() );
 
-		CADiatonicKey k = CADiatonicKey(fm->key());
-		uiFMKeySig->setCurrentIndex((k.numberOfAccs()+7)*2 + ((k.gender()==CADiatonicKey::Minor)?1:0) );
+		uiFMKeySig->setCurrentIndex( CADrawableKeySignature::diatonicKeyToRow(fm->key()) );
 
 		uiFMToolBar->show();
 	} else {

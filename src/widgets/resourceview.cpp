@@ -59,14 +59,7 @@ void CAResourceView::rebuildUi() {
 		}
 	}
 
-	// Locate resources (images, icons)
-	QString currentPath = QDir::currentPath();
-
-	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
-	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
-		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
-
-	QDir::setCurrent( resourcesLocations[0] ); /// \todo Button and menu icons by default look at the current working directory as their resource path only. QResource::addSearchPath() doesn't work for external icons. Any other ideas? -Matevz
+	CACanorus::setImagesPath();
 
 	if (document()) {
 		QTreeWidgetItem *doc = new QTreeWidgetItem( QStringList() << tr("Document") << "" );
@@ -81,7 +74,7 @@ void CAResourceView::rebuildUi() {
 		}
 	}
 
-	QDir::setCurrent( currentPath );
+	CACanorus::restorePath();
 
 	expandAll();
 

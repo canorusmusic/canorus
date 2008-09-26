@@ -14,20 +14,14 @@
 #include <QDir>
 
 CAMidiRecorderView::CAMidiRecorderView( CAMidiRecorder *r, QWidget *parent )
- : QDockWidget( tr("Midi recorder"), parent ), _midiRecorder(r) {
-	// Locate resources (images, icons)
-	QString currentPath = QDir::currentPath();
+ : QDockWidget( parent ), _midiRecorder(r) {
 
-	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
-	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
-		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
-
-	QDir::setCurrent( resourcesLocations[0] );
+	CACanorus::setImagesPath();
 
 	setupUi( this ); // initialize elements created by Qt Designer
-	setupCustomUi( parent );
+	setupCustomUi();
 
-	QDir::setCurrent( currentPath );
+	CACanorus::restorePath();
 
 	_status = Idle;
 }
@@ -39,7 +33,7 @@ CAMidiRecorderView::~CAMidiRecorderView() {
 	}
 }
 
-void CAMidiRecorderView::setupCustomUi( QWidget *parent ) {
+void CAMidiRecorderView::setupCustomUi() {
 	setAttribute( Qt::WA_DeleteOnClose, true );
 
 	_timer = new QTimer();

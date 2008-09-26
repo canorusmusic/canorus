@@ -101,6 +101,7 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 	ui/functionmarkcontextproperties.ui
 	
 	ui/midirecorder.ui
+	ui/transposeview.ui
 )
 
 # Define the MOC source files used by Canorus
@@ -110,6 +111,7 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	ui/mainwin.h
 	ui/settingsdialog.h
 	ui/propertiesdialog.h
+	ui/transposeview.h
 	
 	widgets/lcdnumber.h
 	widgets/viewport.h
@@ -195,6 +197,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/diatonicpitch.cpp
 	core/interval.cpp
 	core/diatonickey.cpp
+	core/transpose.cpp
 	
 	core/document.cpp
 	core/sheet.cpp
@@ -258,6 +261,7 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/mainwin.cpp
 	ui/settingsdialog.cpp
 	ui/propertiesdialog.cpp
+	ui/transposeview.cpp
 )
 
 SET(Canorus_Ctl_Srcs            # Control instances for user interface or views and core
@@ -362,6 +366,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/diatonicpitch.cpp
 	core/interval.cpp
 	core/diatonickey.cpp
+	core/transpose.cpp
 	
 	core/mark.cpp
 	core/articulation.cpp

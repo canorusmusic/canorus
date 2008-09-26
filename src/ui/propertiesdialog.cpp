@@ -42,17 +42,11 @@ CAPropertiesDialog::CAPropertiesDialog( CADocument *doc, QWidget *parent )
  : QDialog(parent) {
 	_document = doc;
 
-	// Locate resources (images, icons)
-	QString currentPath = QDir::currentPath();
-
-	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
-	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
-		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
-
-	QDir::setCurrent( resourcesLocations[0] ); /// \todo Button and menu icons by default look at the current working directory as their resource path only. QResource::addSearchPath() doesn't work for external icons. Any other ideas? -Matevz
+	CACanorus::setImagesPath();
 
 	Ui::uiPropertiesDialog::setupUi( this );
-	QDir::setCurrent( currentPath );
+
+	CACanorus::restorePath();
 
 	uiDocumentTree->header()->hide();
 	buildTree();
@@ -66,15 +60,7 @@ CAPropertiesDialog::~CAPropertiesDialog() {
 	Tree always shows the whole Document structure.
 */
 void CAPropertiesDialog::buildTree() {
-	// Locate resources (images, icons)
-	QString currentPath = QDir::currentPath();
-
-	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
-	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
-		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
-
-	QDir::setCurrent( resourcesLocations[0] ); /// \todo Button and menu icons by default look at the current working directory as their resource path only. QResource::addSearchPath() doesn't work for external icons. Any other ideas? -Matevz
-
+	CACanorus::setImagesPath();
 	QWidget *w=0;
 
 	// get current item
@@ -184,7 +170,7 @@ void CAPropertiesDialog::buildTree() {
 			uiDocumentTree->setCurrentItem( _voiceItem.key(curVoice) );
 	}
 
-	QDir::setCurrent( currentPath );
+	CACanorus::restorePath();
 }
 
 void CAPropertiesDialog::documentProperties( CADocument *doc, QWidget *parent ) {
