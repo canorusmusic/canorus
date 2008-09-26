@@ -1,10 +1,10 @@
-/*! 
+/*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
- 
+
 #ifndef CANORUS_H_
 #define CANORUS_H_
 
@@ -35,10 +35,12 @@ public:
 	static void initUndo();
 	static void parseOpenFileArguments(int argc, char *argv[]);
 	static void cleanUp();
-	
+
 	static QList<QString> locateResource(const QString fileName);
-	static QList<QString> locateResourceDir(const QString fileName);	
-	
+	static QList<QString> locateResourceDir(const QString fileName);
+	static bool setImagesPath();
+	static void restorePath();
+
 	inline static QApplication *mainApp() { return _mainApp; }
 	inline static int mainWinCount() { return _mainWinList.size(); }
 	static int mainWinCount(CADocument *);
@@ -48,9 +50,9 @@ public:
 	inline static void removeViewPort(CAViewPort *v) { for (int i=0; i<mainWinCount(); i++) _mainWinList[i]->removeViewPort(v); }
 	inline static void addMainWin( CAMainWin *w ) { _mainWinList << w; }
 	inline static void restartTimeEditedTimes(CADocument *doc) { for (int i=0; i<mainWinCount(); i++) if (mainWinAt(i)->document()==doc) mainWinAt(i)->restartTimeEditedTime(); }
-	
+
 	inline static CAUndo *undo() { return _undo; }
-	
+
 	static void addRecentDocument( QString );
 	static void insertRecentDocument( QString );
 	static void removeRecentDocument( QString );
@@ -61,10 +63,10 @@ public:
 	inline static QString settingsPath() { return _settingsPath; }
 	inline static CAMidiDevice *midiDevice() { return _midiDevice; }
 	inline static void setMidiDevice(CAMidiDevice *d) { _midiDevice = d; }
-	
+
 	static void rebuildUI( CADocument *document, CASheet *sheet );
 	static void rebuildUI( CADocument *document=0 );
-	
+
 	// Our own slot connection method
 	static void connectSlotsByName(QObject *pOS, const QObject *pOR);
 
@@ -72,13 +74,14 @@ private:
 	static QList<CAMainWin*> _mainWinList;
 	static CASettings *_settings;
 	static QString _settingsPath;
+	static QString _prevPath;
 	static CAUndo *_undo;
 	static QApplication *_mainApp;
 	static QList<QString> _recentDocumentList;
-	
+
 	// Playback output
 	static CAMidiDevice *_midiDevice;
-	
+
 	// Auto recovery
 	static CAAutoRecovery *_autoRecovery;
 };

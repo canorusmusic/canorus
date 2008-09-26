@@ -13,6 +13,8 @@
 #include "core/muselement.h"
 #include "core/note.h"
 
+class CAKeySignature;
+class CATimeSignature;
 class CAClef;
 class CALyricsContext;
 class CARest;
@@ -69,6 +71,8 @@ public:
 	CADiatonicPitch lastNotePitch(bool inChord=false);
 	CAPlayable* lastPlayableElt();
 	CANote*     lastNote();
+	CATimeSignature*    getTimeSig(CAMusElement *elt);
+	CAKeySignature*    getKeySig(CAMusElement *elt);
 	CAClef*            getClef(CAMusElement *elt);
 	QList<CAPlayable*> getChord(int time);
 

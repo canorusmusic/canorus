@@ -8,6 +8,8 @@
 #include "core/muselement.h"
 #include "core/voice.h"
 #include "core/staff.h"
+#include "core/keysignature.h"
+#include "core/timesignature.h"
 #include "core/clef.h"
 #include "core/note.h"
 #include "core/rest.h"
@@ -205,14 +207,38 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 	Returns 0, if no clefs placed yet.
 */
 CAClef* CAVoice::getClef(CAMusElement *elt) {
-	CAClef* lastClef = 0;
-	int i;
-	for (i=0; (i<_musElementList.size()) && (_musElementList[i] != elt); i++) {
-		if (_musElementList[i]->musElementType() == CAMusElement::Clef)
-			lastClef = (CAClef*)_musElementList[i];
-	}
+	if (!elt)
+		elt = lastMusElement();
 
-	return lastClef;
+	while ( elt && (elt->musElementType() != CAMusElement::Clef) && (elt = previous(elt)) );
+
+	return static_cast<CAClef*>(elt);
+}
+
+/*!
+	Returns a pointer to the time signature which the given \a elt belongs to.
+	Returns 0, if no time signatures placed yet.
+*/
+CATimeSignature* CAVoice::getTimeSig(CAMusElement *elt) {
+	if (!elt)
+		elt = lastMusElement();
+
+	while ( elt && (elt->musElementType() != CAMusElement::TimeSignature) && (elt = previous(elt)) );
+
+	return static_cast<CATimeSignature*>(elt);
+}
+
+/*!
+	Returns a pointer to the key signature which the given \a elt belongs to.
+	Returns 0, if no key signatures placed yet.
+*/
+CAKeySignature* CAVoice::getKeySig(CAMusElement *elt) {
+	if (!elt)
+		elt = lastMusElement();
+
+	while ( elt && (elt->musElementType() != CAMusElement::KeySignature) && (elt = previous(elt)) );
+
+	return static_cast<CAKeySignature*>(elt);
 }
 
 /*!

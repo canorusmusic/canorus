@@ -27,20 +27,15 @@
 
 CASettingsDialog::CASettingsDialog( CASettingsPage currentPage, QWidget *parent )
  : QDialog( parent ) {
-	// Locate resources (images, icons)
-	QString currentPath = QDir::currentPath();
+	CACanorus::setImagesPath();
 
-	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
-	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
-		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
+	setupUi( this );
 
-	QDir::setCurrent( resourcesLocations[0] ); /// \todo Button and menu icons by default look at the current working directory as their resource path only. QResource::addSearchPath() doesn't work for external icons. Any other ideas? -Matevz
-	// Create the GUI (actions, toolbars, menus etc.)
-	setupUi( this ); // initialize elements created by Qt Designer
-	QDir::setCurrent( currentPath );
+	CACanorus::restorePath();
 
 	buildPreviewSheet();
 	setupPages( currentPage );
+
 
 	exec();
 }

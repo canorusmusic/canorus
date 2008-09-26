@@ -49,6 +49,7 @@ class CAPrintPreviewCtl;
 class CAPrintCtl;
 class CAPreviewCtl;
 class CAPyConsole;
+class CATransposeView;
 class CAKeybdInput;
 
 class CAMainWin : public QMainWindow, private Ui::uiMainWindow
@@ -251,6 +252,7 @@ private slots:
 
 	// Tools
 	void on_uiSettings_triggered();
+	void on_uiTranspose_triggered();
 	void on_uiMidiRecorder_triggered();
 
 	// Voice
@@ -303,6 +305,7 @@ private:
 	CAPreviewCtl *_poPrintPreviewCtl;
 	CAPrintCtl   *_poPrintCtl;
 	CAResourceView *_resourceView;
+	CATransposeView *_transposeView;
 
 	void setMode(CAMode mode);
 	inline void setCurrentViewPort( CAViewPort *viewPort ) { _currentViewPort = viewPort; }

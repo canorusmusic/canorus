@@ -43,7 +43,7 @@ private slots:
 	void onTimerTimeout();
 
 private:
-	void setupCustomUi( QWidget *parent );
+	void setupCustomUi();
 
 	QTimer   *_timer;
 
