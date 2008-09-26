@@ -151,9 +151,15 @@ void CATransposeView::on_uiApply_clicked( QAbstractButton *b ) {
 					             uiIntervalDir->currentIndex()?(-1):1 );
 		} else
 		if ( uiByInterval->isChecked() ) {
-			t.transposeByInterval( CAInterval( uiIntervalQuality->currentIndex()-2,
-			                                   (uiIntervalQuantity->currentIndex()+1)*(uiIntervalDir->currentIndex()?(-1):1)
-			                                 ) );
+			CAInterval i;
+			if (uiIntervalQuality->count()==3) { // prime, fourth, fifth, octave
+				i = CAInterval( (uiIntervalQuality->currentIndex()-1)*2,
+		                        (uiIntervalQuantity->currentIndex()+1)*(uiIntervalDir->currentIndex()?(-1):1) );
+			} else { // second, third, sixth, seventh
+				i = CAInterval( qRound(uiIntervalQuality->currentIndex()-1.5),
+		                        (uiIntervalQuantity->currentIndex()+1)*(uiIntervalDir->currentIndex()?(-1):1) );
+			}
+			t.transposeByInterval( i );
 		} else
 		if ( uiBySemitones->isChecked() ) {
 			t.transposeBySemitones( uiSemitones->value() );

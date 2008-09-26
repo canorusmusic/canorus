@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -10,18 +10,18 @@
 /*!
 	\class CADiatonicPitch
 	\brief Musical note pitch
-	
+
 	This is a typical music presentation of the note pitch.
-	
+
 	It consists of two properties:
 	- note name (C-0, D-1, E-2 etc.)
 	- accidentals (0-neutral, 1-one sharp, -1-one flat etc.)
-	
+
 	Note name begins with sub-contra C.
-	
+
 	Diatonic pitches can be compared with each other or only note names
 	and summed with intervals.
-	
+
 	\sa CAInterval, operator+(), CAMidiDevice::diatonicPitchToMidi()
 */
 
@@ -32,9 +32,9 @@ CADiatonicPitch::CADiatonicPitch() {
 
 CADiatonicPitch::CADiatonicPitch( const QString& pitch ) {
 	QString noteName = pitch.toLower();
-	
+
 	int curPitch = (noteName[0].toLatin1() - 'a' + 5) % 7;
-	
+
 	// determine accidentals
 	int curAccs = 0;
 	while (noteName.indexOf("is") != -1) {
@@ -45,7 +45,7 @@ CADiatonicPitch::CADiatonicPitch( const QString& pitch ) {
 		curAccs--;
 		noteName.remove(0, ((noteName.indexOf("es")==-1) ? (noteName.indexOf("as")+2) : (noteName.indexOf("es")+2)) );
 	}
-	
+
 	setNoteName( curPitch );
 	setAccs( curAccs );
 }
@@ -74,12 +74,12 @@ bool CADiatonicPitch::operator==(int p) {
 */
 const QString CADiatonicPitch::diatonicPitchToString( CADiatonicPitch pitch ) {
 	QString name;
-	
+
 	name = (char)((pitch.noteName()+2)%7 + 'a');
-	
+
 	for (int i=0; i < pitch.accs(); i++)
 		name += "is";	// append as many -is-es as necessary
-	
+
 	for (int i=0; i > pitch.accs(); i--) {
 		if ( (name == "e") || (name == "a") )
 			name += "s";	// for pitches E and A, only append single -s the first time
@@ -88,68 +88,77 @@ const QString CADiatonicPitch::diatonicPitchToString( CADiatonicPitch pitch ) {
 		else
 			name += "es";	// otherwise, append normally as many es-es as necessary
 	}
-	
+
 	return name;
 }
 
 /*!
-	Calculates a new pitch using the old pitch + interval.
+	Calculates the new pitch using the old pitch + interval.
 */
 CADiatonicPitch CADiatonicPitch::operator+( CAInterval i ) {
 	CADiatonicPitch dp( noteName(), accs() );
-	
-	if ( i.quantity()<0 ) { // only use intervals UP - inverse interval, if negative
-		dp.setNoteName( dp.noteName() + (((i.quantity()+2) / 7) - 1) * 7 ); // lower the pitch for n-octaves
-		i = ~i; // inverse interval
+
+	// Only use positive intervals UP. If the interval is negative, inverse it:
+	if ( i.quantity()<0 ) {
+		if (i.quantity()!=-1) {
+			// First lower the pitch for i octaves + 1,
+			dp.setNoteName( dp.noteName() + ((i.quantity()-5) / 7) * 7 );
+		} else {
+			// The exception is the negative prime (which actually doesn't exist, but we have to take care of it)
+			dp.setNoteName( dp.noteName() - 7 );
+		}
+		// then inverse the interval. (negative prime becomes octave)
+		i = ~i;
+		// Below, the positive interval is now added to the lowered note.
 	}
-	
+
 	dp.setNoteName( dp.noteName()+i.quantity()-1 );
 	int deltaAccs=0;
-	
+
 	int relP = noteName()%7;
 	int relQnt = ((i.quantity()-1) % 7) + 1;
 	switch (relQnt) { // major or perfect intervals up:
-	case 1: // prime
+	case CAInterval::Prime:
 		deltaAccs=0;
 		break;
-	case 2: // second
+	case CAInterval::Second:
 		if ( relP==2 || relP==6 )
 			deltaAccs=1;
 		else
 			deltaAccs=0;
 		break;
-	case 3: // third
+	case CAInterval::Third:
 		if ( relP==0 || relP==3 || relP==4 )
 			deltaAccs=0;
 		else
 			deltaAccs=1;
 		break;
-	case 4: // fourth
+	case CAInterval::Fourth:
 		if ( relP==3 )
 			deltaAccs=-1;
 		else
 			deltaAccs=0;
 		break;
-	case 5: // fifth
+	case CAInterval::Fifth:
 		if ( relP==6 )
 			deltaAccs=1;
 		else
 			deltaAccs=0;
 		break;
-	case 6: // sixth
+	case CAInterval::Sixth:
 		if ( relP==2 || relP==5 || relP==6 )
 			deltaAccs=1;
 		else
 			deltaAccs=0;
 		break;
-	case 7: // seventh
+	case CAInterval::Seventh:
 		if ( relP==0 || relP==3 )
 			deltaAccs=0;
 		else
 			deltaAccs=1;
 		break;
 	}
-	
+
 	if ( relQnt==4 || relQnt==5 || relQnt==1 ) {
 		if (i.quality()<0)
 			dp.setAccs( deltaAccs + dp.accs() + i.quality() + 1 );
@@ -163,7 +172,7 @@ CADiatonicPitch CADiatonicPitch::operator+( CAInterval i ) {
 		else if (i.quality()>0)
 			dp.setAccs( deltaAccs + dp.accs() + i.quality() - 1 );
 	}
-	
+
 	return dp;
 }
 
