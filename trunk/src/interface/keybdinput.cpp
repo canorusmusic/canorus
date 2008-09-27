@@ -11,7 +11,10 @@
 #include "core/muselementfactory.h"
 #include "core/interval.h"
 #include "drawable/drawablestaff.h"
+#include "widgets/menutoolbutton.h"
 #include "canorus.h"
+
+class CAMenuToolButton;
  
 
 /*!
@@ -69,33 +72,69 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 	CAVoice *voice = _mw->currentVoice();
 	if (voice) {
 
-		// Default actual Key Signature is C
-		_actualKeySignature = CADiatonicPitch ( CADiatonicPitch::C );
-		for(i=0;i<7;i++) _actualKeySignatureAccs[i] = 0;
-		_actualKeyAccidentalsSum = 0;
+		autoBarInsert();
 
-		// Trace which Key Signature might be in effect.
-		// We make a local copy for later optimisation by only updating at a non
-		// linear input
-		QList<CAMusElement*> keyList = voice->getPreviousByType(
-												CAMusElement::KeySignature, voice->lastTimeEnd());
-		if (keyList.size()) {
-			// set the note name and its accidental and the accidentals of the scale
-			CAKeySignature* effSig = (CAKeySignature*) keyList.last();
-			_actualKeySignature = effSig->diatonicKey().diatonicPitch();
-			_actualKeyAccidentalsSum = 0;
-			for(i=0;i<7;i++) {
-				_actualKeySignatureAccs[i] = (effSig->accidentals())[i];
-				_actualKeyAccidentalsSum += _actualKeySignatureAccs[i];
+		int cpitch = m[1];
+		switch (cpitch) {
+		case 37:	std::cout << "  Pause" << std::endl;
+					break;
+		default:	;
+		}
+
+		CADiatonicPitch nonenharmonicPitch = matchPitchToKey( voice, p );
+
+		CADrawableMusElement *left = (CADrawableMusElement*)(voice->lastMusElement());
+		// Problem: zeigt auf die KeySignatur
+		CAMusElement* guck = voice->musElementAt(voice->musElementList().count()-1);
+		CAPlayable* pla;
+		CATuplet* tup;
+		std::cout<<"tu-Config: "<<_mw->uiTupletType->isChecked()
+					<<"/"<<_mw->uiTupletNumber->value()
+					<<"/"<<_mw->uiTupletActualNumber->value()<<std::endl;
+		for(i= voice->musElementList().count()-1; i>=0; i--) {
+			guck = voice->musElementAt(i);
+			pla = dynamic_cast<CAPlayable*>(guck);
+			if (pla) {
+				tup = pla->tuplet();
+				//tup = static_cast<CAPlayable*>(guck)->tuplet();
+				if (tup) {
+					std::cout<<"   "<<i<<"      Tuplet gefunden: "<<tup->actualNumber()<<"/"<<tup->number()
+																	<<" "<<(pla==tup->firstNote())
+																	<<" "<<tup->containsNote(pla)
+																	<<" "<<(pla==tup->lastNote())
+																	<<" "<<pla->timeStart()
+																	<<std::endl;
+				} else {
+					std::cout<<"   "<<i<<"      Note"<<std::endl;
+				}
+			} else {
+					std::cout<<"   "<<i<<"      ????"<<std::endl;
 			}
 		}
-		CADiatonicPitch nonenharmonicPitch = matchPitchToKey( p );
 
-		CANote *note = new CANote( nonenharmonicPitch, _mw->musElementFactory()->playableLength(), voice, 0 ); //voice->lastIimeEnd() );
+		if (left && ((CAMusElement*)(left))->musElementType()==CAMusElement::Tuplet ) {
+			CATuplet *tuplet = static_cast<CAPlayable*>(left->musElement())->tuplet();
+			QList<CAPlayable*> noteList; int number; int actualNumber;
+			std::cout<<" Tuplet "<<tuplet<<" Liste mit "<<noteList.size()<<" number "<<number<<" actnume "
+					<<actualNumber<<std::endl;
+			if ( tuplet  ) {
+				noteList = tuplet->noteList();
+				number = tuplet->number();
+				actualNumber = tuplet->actualNumber();
+				std::cout<<" Tuplet "<<tuplet<<" Liste mit "<<noteList.size()<<" number "<<number<<" actnume "
+						<<actualNumber<<std::endl;
+				delete tuplet;
+			}
+			int timeSum = left->musElement()->timeLength();
+			int timeLength = CAPlayableLength::playableLengthToTimeLength( _mw->musElementFactory()->playableLength() );
+		}
+
+
+
+		CANote *note = new CANote( nonenharmonicPitch, _mw->musElementFactory()->playableLength(), voice, -1 );
 
 		// Only for testing these functions, will be cleaned up!
 		// It's still a work in progress.
-		QList<CADrawableMusElement*> list = v->selection();
 		CADrawableContext *drawableContext = v->currentContext();
 		CAStaff *staff=0;
 		CADrawableStaff *drawableStaff = 0;
@@ -104,18 +143,48 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 			staff = dynamic_cast<CAStaff*>(drawableContext->context());
 		}
 
-		QList<CAMusElement*> tupletList = voice->getPreviousByType( CAMusElement::Tuplet, 1000000 ); // voice->lastTimeEnd());
+		// QList<CAMusElement*> tupletList = voice->getPreviousByType( CAMusElement::Tuplet, 1000000 ); // voice->lastTimeEnd());
 		// std::cout << " Tonartliste: " << keyList.size();
 		// std::cout << "Tupletliste: " << tupletList.size() << std::endl;
 
 		// if note come in sufficiently close together we make a chord of them
 		bool appendToChord = _midiInChordTimer.isActive();
-		if (!appendToChord)
+		if (!appendToChord) {
 			v->clearSelection();
+			_mw->currentScoreViewPort()->clearSelection();
+		}
 
-		voice->append( note, appendToChord );
+
+		// from mainwin.cpp, ca. line 2241
+		if ( _mw->uiTupletType->isChecked() ) {
+			// insert a tuplet, first is the note, tuplet is filled with rests
+			QList<CAPlayable*> elements;
+			elements << static_cast<CAPlayable*>(note);
+			for (int i=1; i<_mw->uiTupletNumber->value(); i++) {
+				_mw->musElementFactory()->configureRest( voice, 0 );
+				elements << static_cast<CAPlayable*>(_mw->musElementFactory()->musElement());
+			}
+			new CATuplet( _mw->uiTupletNumber->value(), _mw->uiTupletActualNumber->value(), elements );
+
+		} else {
+			// insert just a note
+			voice->append( note, appendToChord );
+		}
+
+
 		voice->synchronizeMusElements();	// probably not needed
 		v->addToSelection( (CADrawableMusElement*)(voice->lastMusElement()), true );	// todo: is not working as I expect it ...
+
+		// QList<CAMusElement*> newEltList;
+		// select paste elements
+		// for (int i=0; i<newEltList.size(); i++)
+		// 	currentScoreViewPort()->addToSelection( newEltList[i] );
+
+		// verkraftet er nicht:  _mw->currentScoreViewPort()->addToSelection( voice->lastMusElement() );
+		_mw->currentScoreViewPort()->repaint();
+
+		QList<CADrawableMusElement*> list = v->selection();
+		std::cout << " Selektierte Elemente: " << list.size() << " Stück" << std::endl;
 
 		QRect scene = v->worldCoords();
 		int xlast = v->timeToCoordsSimpleVersion( voice->lastTimeStart() );
@@ -133,7 +202,31 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 }
 
 
-CADiatonicPitch CAKeybdInput::matchPitchToKey( CADiatonicPitch p ) {
+CADiatonicPitch CAKeybdInput::matchPitchToKey( CAVoice* voice, CADiatonicPitch p ) {
+
+	// Default actual Key Signature is C
+	_actualKeySignature = CADiatonicPitch ( CADiatonicPitch::C );
+
+	int i;
+	for(i=0;i<7;i++) _actualKeySignatureAccs[i] = 0;
+	_actualKeyAccidentalsSum = 0;
+
+	// Trace which Key Signature might be in effect.
+	// We make a local copy for later optimisation by only updating at a non
+	// linear input
+	QList<CAMusElement*> keyList = voice->getPreviousByType(
+							CAMusElement::KeySignature, voice->lastTimeEnd());
+	if (keyList.size()) {
+		// set the note name and its accidental and the accidentals of the scale
+		CAKeySignature* effSig = (CAKeySignature*) keyList.last();
+		_actualKeySignature = effSig->diatonicKey().diatonicPitch();
+		_actualKeyAccidentalsSum = 0;
+		for(i=0;i<7;i++) {
+			_actualKeySignatureAccs[i] = (effSig->accidentals())[i];
+			_actualKeyAccidentalsSum += _actualKeySignatureAccs[i];
+		}
+	}
+
 	// f and s (flat/sharp) are enharmonic pitches for p
 	CADiatonicPitch f = p + CAInterval( CAInterval::Diminished, CAInterval::Second );
 	CADiatonicPitch s = p - CAInterval( CAInterval::Diminished, CAInterval::Second );
@@ -159,5 +252,25 @@ CADiatonicPitch CAKeybdInput::matchPitchToKey( CADiatonicPitch p ) {
 		}
 	}
 	return p;
+}
+
+
+CADiatonicPitch CAKeybdInput::autoBarInsert( void ) {
+	// Trace which Time Signature might be in effect.
+	// We make a local copy for later optimisation by only updating at a non
+	// linear input
+	CAVoice *voice = _mw->currentVoice();
+	if (voice) {
+		QList<CAMusElement*> tSigList = voice->getPreviousByType(
+				CAMusElement::TimeSignature, voice->lastTimeEnd());
+		int beats, beat = 0;
+		if ( tSigList.size() ) {
+			beats = ((CATimeSignature*)(tSigList.last()))->beats();
+			beat = ((CATimeSignature*)(tSigList.last()))->beat();
+		} else {
+			beats = beat = 4;
+		}
+		std::cout << "TimeSig: "<<beats<<"/"<<beat<<std::endl;
+	}
 }
 
