@@ -420,9 +420,9 @@ private:
 			CAMenuToolButton *uiPlayableLength;
 			CAMenuToolButton *uiNoteAccs;
 			CAMenuToolButton *uiSlurType;
-public:		// Because CAKeyboardInput, input with midi keyboard, needs to operate these widgets to
-			// provide gui feedback, these, probably even more should made available the public.
-			// Maybe some clean interface would be appropriate.
+public:		// Because CAKeyboardInput (input with midi keyboard) needs to operate these widgets to
+			// provide gui feedback, these, probably even more, should become public.
+			// Some clean interface would be appropriate.
 			CAMenuToolButton *uiTupletType;
 			QSpinBox         *uiTupletNumber;
 			QSpinBox         *uiTupletActualNumber;
