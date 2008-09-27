@@ -32,7 +32,8 @@ private:
 	CADiatonicPitch _actualKeySignature;
 	signed char _actualKeySignatureAccs[7];
 	int _actualKeyAccidentalsSum;
-	CADiatonicPitch matchPitchToKey( CADiatonicPitch p );
+	CADiatonicPitch matchPitchToKey( CAVoice *voice, CADiatonicPitch p );
+	CADiatonicPitch autoBarInsert( void );
 
 };
 

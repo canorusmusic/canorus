@@ -420,12 +420,16 @@ private:
 			CAMenuToolButton *uiPlayableLength;
 			CAMenuToolButton *uiNoteAccs;
 			CAMenuToolButton *uiSlurType;
+public:		// Because CAKeyboardInput, input with midi keyboard, needs to operate these widgets to
+			// provide gui feedback, these, probably even more should made available the public.
+			// Maybe some clean interface would be appropriate.
 			CAMenuToolButton *uiTupletType;
 			QSpinBox         *uiTupletNumber;
+			QSpinBox         *uiTupletActualNumber;
+private:
 			QAction          *uiTupletNumberAction;
 			QLabel           *uiTupletInsteadOf;
 			QAction          *uiTupletInsteadOfAction;
-			QSpinBox         *uiTupletActualNumber;
 			QAction          *uiTupletActualNumberAction;
 			// QAction       *uiNoteAccsVisible; // made by Qt Designer
 			CAMenuToolButton *uiNoteStemDirection;
