@@ -26,7 +26,6 @@ CAUndoToolButton::CAUndoToolButton( QIcon icon, CAUndoToolButtonType type, QWidg
 	_listWidget = new QListWidget();
 	setPopupWidget(_listWidget);
 	connect( _listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onListWidgetItemClicked(QListWidgetItem*)) );
-	connect( this, SIGNAL(show()), this, SLOT(onShow()) );
 }
 
 CAUndoToolButton::~CAUndoToolButton() {
@@ -42,7 +41,7 @@ void CAUndoToolButton::onListWidgetItemClicked( QListWidgetItem *item ) {
 	emit toggled( false, _listWidget->row(item) );
 }
 
-void CAUndoToolButton::onShow() {
+void CAUndoToolButton::showButtons() {
 	_listWidget->clear();
 	if ( mainWin() ) {
 		QList<CAUndoCommand*> *stack = CACanorus::undo()->undoStack(mainWin()->document());
@@ -59,6 +58,7 @@ void CAUndoToolButton::onShow() {
 				_listWidget->addItem( stack->at(i)->text() );
 		}
 	}
+	CAToolButton::showButtons();
 }
 
 void CAUndoToolButton::setDefaultAction( QAction *action ) {

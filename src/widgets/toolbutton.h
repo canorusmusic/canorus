@@ -24,19 +24,15 @@ public:
 	virtual void setCurrentId(int id) { _currentId = id; }
 	inline bool buttonsVisible() { return (_popupWidget) ? _popupWidget->isVisible() : 0; } // Is the popup widget visible or not
 	void setDefaultAction( QAction* );
+	virtual void showButtons();
+	virtual void hideButtons();
 
-public slots:
-	void showButtons();
-	void hideButtons();
-	
 private slots:
 	void handleToggled( bool checked );
 	void handleTriggered();
 	
 signals:
 	void toggled( bool checked, int id );
-	void show();
-	void hide();
 
 protected:
 	inline CAMainWin *mainWin() { return _mainWin; }

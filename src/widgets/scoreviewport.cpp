@@ -275,7 +275,7 @@ void CAScoreViewPort::addCElement(CADrawableContext *elt, bool select) {
 CADrawableContext *CAScoreViewPort::selectContext(CAContext *context) {
 	if (!context) {
 		setCurrentContext(0);
-		return false;
+		return 0;
 	}
 
 	for (int i=0; i<_drawableCList.size(); i++) {
