@@ -60,7 +60,6 @@ public:
 
 	inline static CASettings *settings() { return _settings; }
 	inline static CAAutoRecovery *autoRecovery() { return _autoRecovery; }
-	inline static QString settingsPath() { return _settingsPath; }
 	inline static CAMidiDevice *midiDevice() { return _midiDevice; }
 	inline static void setMidiDevice(CAMidiDevice *d) { _midiDevice = d; }
 
@@ -73,7 +72,6 @@ public:
 private:
 	static QList<CAMainWin*> _mainWinList;
 	static CASettings *_settings;
-	static QString _settingsPath;
 	static QString _prevPath;
 	static CAUndo *_undo;
 	static QApplication *_mainApp;

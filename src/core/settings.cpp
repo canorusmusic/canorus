@@ -12,6 +12,7 @@
 // Define default settings
 const bool CASettings::DEFAULT_FINALE_LYRICS_BEHAVIOUR = false;
 const bool CASettings::DEFAULT_SHADOW_NOTES_IN_OTHER_STAFFS = false;
+const bool CASettings::DEFAULT_PLAY_INSERTED_NOTES = true;
 
 const QDir CASettings::DEFAULT_DOCUMENTS_DIRECTORY = QDir::home();
 const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFormats::Can;
@@ -29,8 +30,43 @@ const QColor CASettings::DEFAULT_DISABLED_ELEMENTS_COLOR = Qt::gray;
 const int CASettings::DEFAULT_MIDI_IN_PORT = -1;
 const int CASettings::DEFAULT_MIDI_OUT_PORT = -1;
 
-CASettings::CASettings(const QString & fileName, Format format, QObject * parent)
- : QSettings(fileName, format, parent) {
+/*!
+	\class CASettings
+	\brief Class for storing the Canorus settings
+
+	This class is a model class used for reading and writing the settings in/out
+	of the config file.
+
+	The default location of config files are usually $HOME$/.config/Canorus for
+	POSIX systems and %HOME%\Application data\Canorus on M$ systems. See
+	\fn defaultSettingsPath().
+
+	To use this class simply create it and (optionally) pass a config file name.
+	Use readSettings() to read the actual values then. Use getter/setter methods
+	for getting the properties and call writeSettings() to store new settings.
+
+	To add a new property:
+	1) add a private property (eg. _textColor)
+	2) add public getter, setter methods and initial value (eg. getTextColor(), setTextColor(), DEFAULT_TEXT_COLOR)
+	3) define the initial value itself in .cpp file
+	4) add setValue() sentence in writeSettings() method and setTextColor() in readSettings()
+	5) (optionally) create GUI in CASettingsDialog for your new property
+
+	\sa CASettingsDialog
+ */
+
+/*!
+	Create a new settings instance using the config file \a fileName.
+ */
+CASettings::CASettings(const QString & fileName, QObject * parent)
+ : QSettings(fileName, QSettings::IniFormat, parent) {
+}
+
+/*!
+	Create a new settings instance using the default config file for a local user.
+ */
+CASettings::CASettings( QObject * parent )
+ : QSettings( defaultSettingsPath()+"/canorus.ini", QSettings::IniFormat, parent) {
 }
 
 CASettings::~CASettings() {
@@ -43,6 +79,7 @@ CASettings::~CASettings() {
 void CASettings::writeSettings() {
 	setValue( "editor/finalelyricsbehaviour", finaleLyricsBehaviour() );
 	setValue( "editor/shadownotesinotherstaffs", shadowNotesInOtherStaffs() );
+	setValue( "editor/playinsertednotes", playInsertedNotes() );
 
 	setValue( "files/documentsdirectory", documentsDirectory().absolutePath() );
 	setValue( "files/defaultsaveformat", defaultSaveFormat() );
@@ -81,6 +118,11 @@ int CASettings::readSettings() {
 		setShadowNotesInOtherStaffs( value("editor/shadownotesinotherstaffs").toBool() );
 	else
 		setShadowNotesInOtherStaffs( DEFAULT_SHADOW_NOTES_IN_OTHER_STAFFS );
+
+	if ( contains("editor/playinsertednotes") )
+		setShadowNotesInOtherStaffs( value("editor/playinsertednotes").toBool() );
+	else
+		setShadowNotesInOtherStaffs( DEFAULT_PLAY_INSERTED_NOTES );
 
 	// Saving/Loading settings
 	if ( contains("files/documentsdirectory") )
@@ -182,4 +224,16 @@ void CASettings::writeRecentDocuments() {
 
 	for ( int i=0; i<CACanorus::recentDocumentList().size(); i++ )
 		setValue( QString("files/recentdocument") + QString::number(i), CACanorus::recentDocumentList()[i] );
+}
+
+/*!
+	Returns the default settings path. This function is static and is used when no config
+	filename is specified or when a plugin wants a settings directory to store its own settings in.
+ */
+QString CASettings::defaultSettingsPath() {
+#ifdef Q_WS_WIN	// M$ is of course an exception
+	return QDir::homePath()+"/Application Data/Canorus";
+#else	// POSIX systems use the same config file path
+	return QDir::homePath()+"/.config/Canorus";
+#endif
 }
