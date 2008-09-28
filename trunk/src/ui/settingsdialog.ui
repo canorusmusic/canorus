@@ -151,7 +151,7 @@
            <item>
             <widget class="QCheckBox" name="uiShadowNotesInOtherStaffs" >
              <property name="toolTip" >
-              <string>When inserting notes, show the helper notes in all staffs, not only in the active one</string>
+              <string>When inserting notes, show the helper notes in all staffs, not only in the active one.</string>
              </property>
              <property name="text" >
               <string>Show helper notes in other staffs</string>
@@ -161,7 +161,7 @@
            <item>
             <widget class="QCheckBox" name="uiPlayInsertedNotes" >
              <property name="toolTip" >
-              <string>When inserting new notes or changing existing notes pitches, play the new pitches</string>
+              <string>When inserting notes or changing existing notes pitch, play the new notes.</string>
              </property>
              <property name="text" >
               <string>Play inserted notes</string>
@@ -171,7 +171,7 @@
            <item>
             <widget class="QCheckBox" name="uiAutoBar" >
              <property name="toolTip" >
-              <string>When inserting notes and rests, place the barlines automatically, if the last bar is full.</string>
+              <string>When inserting notes and rests, place a barline automatically, if the last bar is full.</string>
              </property>
              <property name="text" >
               <string>Automatic bar placement</string>
