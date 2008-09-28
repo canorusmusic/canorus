@@ -296,9 +296,11 @@ private slots:
 	void onRepaintTimerTimeout();
 
 private:
-	////////////////////////////////////
-	// General properties and methods //
-	////////////////////////////////////
+	void playImmediately( QList<CAMusElement*> elements );
+
+	////////////////////////
+	// General properties //
+	////////////////////////
 	CADocument *_document;
 	CAMode _mode;
 

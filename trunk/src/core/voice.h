@@ -52,6 +52,8 @@ public:
 	QList<CANote*> getNoteList();
 	bool containsPitch( int noteName , int timeStart );
 	bool containsPitch( CADiatonicPitch p, int timeStart );
+	CAMusElement *next(CAMusElement *elt);
+	CAMusElement *previous(CAMusElement *elt);
 	CANote *nextNote(int timeStart);
 	CANote *previousNote(int timeStart);
 	CARest *nextRest(int timeStart);
@@ -66,12 +68,10 @@ public:
 	inline int lastTimeEnd() { return (musElementList().size()?musElementList().back()->timeEnd():0); }
 	inline int lastTimeStart() { return (musElementList().size()?musElementList().back()->timeStart():0); }
 	inline CAMusElement *lastMusElement() { return musElementList().size()?musElementList().back():0; }
-	CAMusElement *next(CAMusElement *elt);
-	CAMusElement *previous(CAMusElement *elt);
 	CADiatonicPitch lastNotePitch(bool inChord=false);
 	CAPlayable* lastPlayableElt();
 	CANote*     lastNote();
-	CATimeSignature*    getTimeSig(CAMusElement *elt);
+	CATimeSignature*   getTimeSig(CAMusElement *elt);
 	CAKeySignature*    getKeySig(CAMusElement *elt);
 	CAClef*            getClef(CAMusElement *elt);
 	QList<CAPlayable*> getChord(int time);

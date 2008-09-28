@@ -1,7 +1,7 @@
-/*! 
+/*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -19,7 +19,7 @@
 /*!
 	\class CAAutoRecovery
 	\brief Class for making recovery files for application crashes
-	
+
 	Canorus creates recovery files in Canorus writeable settings directory for each currently
 	opened document every number minutes defined in CASettings.
 	If the application is closed nicely, recovery files are deleted as well by calling
@@ -28,7 +28,7 @@
 	automatically by calling openRecovery().
 	Call saveRecovery() to save the currently opened documents to recovery files. The
 	auto recovery timer's signal is also connected to this slot.
-	
+
 	Settings class should already be initialized when creating instance of this class.
 */
 
@@ -63,17 +63,17 @@ void CAAutoRecovery::saveRecovery() {
 	QSet<CADocument*> documents;
 	for (int i=0; i<CACanorus::mainWinCount(); i++)
 		documents << CACanorus::mainWinAt(i)->document();
-	
+
 	int c=0;
 	for (QSet<CADocument*>::const_iterator i=documents.constBegin(); i!=documents.constEnd(); i++, c++) {
 		CACanorusMLExport save;
-		save.setStreamToFile( CACanorus::settingsPath()+"/recovery"+QString::number(c) );
+		save.setStreamToFile( CASettings::defaultSettingsPath()+"/recovery"+QString::number(c) );
 		save.exportDocument( *i );
 		save.wait();
 	}
-	
-	while (	QFile::exists(CACanorus::settingsPath()+"/recovery"+QString::number(c)) ) {
-		QFile::remove(CACanorus::settingsPath()+"/recovery"+QString::number(c));
+
+	while (	QFile::exists(CASettings::defaultSettingsPath()+"/recovery"+QString::number(c)) ) {
+		QFile::remove(CASettings::defaultSettingsPath()+"/recovery"+QString::number(c));
 		c++;
 	}
 }
@@ -83,8 +83,8 @@ void CAAutoRecovery::saveRecovery() {
 	This method is usually called when successfully quiting Canorus.
 */
 void CAAutoRecovery::cleanupRecovery() {
-	for ( int i=0; QFile::exists(CACanorus::settingsPath()+"/recovery"+QString::number(i)); i++ ) {
-		QFile::remove(CACanorus::settingsPath()+"/recovery"+QString::number(i));
+	for ( int i=0; QFile::exists(CASettings::defaultSettingsPath()+"/recovery"+QString::number(i)); i++ ) {
+		QFile::remove(CASettings::defaultSettingsPath()+"/recovery"+QString::number(i));
 	}
 }
 
@@ -94,9 +94,9 @@ void CAAutoRecovery::cleanupRecovery() {
 */
 void CAAutoRecovery::openRecovery() {
 	QString documents;
-	for ( int i=0; QFile::exists(CACanorus::settingsPath()+"/recovery"+QString::number(i)); i++ ) {
+	for ( int i=0; QFile::exists(CASettings::defaultSettingsPath()+"/recovery"+QString::number(i)); i++ ) {
 		CACanorusMLImport open;
-		open.setStreamFromFile( CACanorus::settingsPath()+"/recovery"+QString::number(i) );
+		open.setStreamFromFile( CASettings::defaultSettingsPath()+"/recovery"+QString::number(i) );
 		open.importDocument();
 		open.wait();
 		if ( open.importedDocument() ) {
@@ -106,9 +106,9 @@ void CAAutoRecovery::openRecovery() {
 			mainWin->show();
 		}
 	}
-	
+
 	cleanupRecovery();
-	
+
 	if (!documents.isEmpty()) {
 		QMessageBox::information(
 				CACanorus::mainWinAt( CACanorus::mainWinCount()-1 ),

@@ -27,7 +27,6 @@
 QApplication *CACanorus::_mainApp;
 QList<CAMainWin*> CACanorus::_mainWinList;
 CASettings *CACanorus::_settings;
-QString CACanorus::_settingsPath;
 CAAutoRecovery *CACanorus::_autoRecovery;
 CAMidiDevice *CACanorus::_midiDevice;
 CAUndo *CACanorus::_undo;
@@ -159,13 +158,7 @@ void CACanorus::initPlayback() {
 	\sa settings()
 */
 CASettingsDialog::CASettingsPage CACanorus::initSettings() {
-#ifdef Q_WS_WIN	// M$ is of course an exception
-	_settingsPath = QDir::homePath()+"/Application Data/Canorus";
-#else	// POSIX systems use the same config file path
-	_settingsPath = QDir::homePath()+"/.config/Canorus";
-#endif
-
-	_settings = new CASettings( settingsPath()+"/canorus.ini", QSettings::IniFormat );
+	_settings = new CASettings();
 
 	return static_cast<CASettingsDialog::CASettingsPage>(_settings->readSettings());
 }

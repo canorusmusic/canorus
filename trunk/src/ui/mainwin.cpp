@@ -1842,10 +1842,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					}
 				}
 
-				if (!_playback) {
-					_playback = new CAPlayback(eltList, CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
-					connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
-					_playback->start();
+				if ( CACanorus::settings()->playInsertedNotes() ) {
+					playImmediately(eltList);
 				}
 
 				if (rebuild)
@@ -1878,11 +1876,10 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 					}
 				}
 
-				if (!_playback) {
-					_playback = new CAPlayback(eltList, CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
-					connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
-					_playback->start();
+				if ( CACanorus::settings()->playInsertedNotes() ) {
+					playImmediately(eltList);
 				}
+
 				CACanorus::rebuildUI(document(), currentSheet());
 			}
 			break;
@@ -1904,10 +1901,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 
-						if (!_playback) {
-							_playback = new CAPlayback( QList<CAMusElement*>() << elt, CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
-							connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
-							_playback->start();
+						if ( CACanorus::settings()->playInsertedNotes() ) {
+							playImmediately( QList<CAMusElement*>() << elt );
 						}
 					}
 				}
@@ -1931,10 +1926,8 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
 						CACanorus::undo()->pushUndoCommand();
 						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
 
-						if (!_playback) {
-							_playback = new CAPlayback( QList<CAMusElement*>() << elt, CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
-							connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
-							_playback->start();
+						if ( CACanorus::settings()->playInsertedNotes() ) {
+							playImmediately( QList<CAMusElement*>() << elt );
 						}
 					}
 				}
@@ -2254,10 +2247,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 			}
 
 			if ( success ) {
-				if ( musElementFactory()->musElement()->musElementType()==CAMusElement::Note && !_playback ) {
-					_playback = new CAPlayback( QList<CAMusElement*>() << musElementFactory()->musElement(), CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
-					connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
-					_playback->start();
+				if ( musElementFactory()->musElement()->musElementType()==CAMusElement::Note && CACanorus::settings()->playInsertedNotes() ) {
+					playImmediately( QList<CAMusElement*>() << musElementFactory()->musElement() );
 				}
 
 				musElementFactory()->setNoteExtraAccs( 0 );
@@ -4761,6 +4752,20 @@ void CAMainWin::onUiOpenRecentDocumentTriggered() {
 		CACanorus::removeRecentDocument( CACanorus::recentDocumentList().at(
 				uiOpenRecent->actions().indexOf( static_cast<QAction*>(sender()) )
 		) );
+	}
+}
+
+/*!
+	Immediately plays the notes. This is usually called when inserting
+	new notes or changing the pitch of existing notes.
+
+	\sa CASettings::_playInsertedNotes
+ */
+void CAMainWin::playImmediately( QList<CAMusElement*> elements ) {
+	if (!_playback) {
+		_playback = new CAPlayback(elements, CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
+		connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
+		_playback->start();
 	}
 }
 
