@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="sl_SI">
+<defaultcodec></defaultcodec>
 <context>
     <name>CAAutoRecovery</name>
     <message>
@@ -3633,11 +3634,6 @@ Odstranjevanje ne more biti razveljavljeno!</translation>
         <translation>Varnostno shranjevanje v minutah:</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="634"/>
-        <source>When inserting notes, show the helper notes in all staffs, not only in the active one</source>
-        <translation type="unfinished">Ob vstavljanju not pokaži sivo noto v vseh črtovjih, ne samo v aktivnem</translation>
-    </message>
-    <message>
         <location filename="../ui_settingsdialog.h" line="637"/>
         <source>Show helper notes in other staffs</source>
         <translation>Pokaži sive note v ostalih črtovjih</translation>
@@ -3653,14 +3649,19 @@ Odstranjevanje ne more biti razveljavljeno!</translation>
         <translation>Zaigraj vstavljeno noto</translation>
     </message>
     <message>
+        <location filename="../ui_settingsdialog.h" line="634"/>
+        <source>When inserting notes, show the helper notes in all staffs, not only in the active one.</source>
+        <translation>Ob vstavljanju not pokaži pomožne (sive) note tudi v ostalih črtovjih, ne samo v trenutnem.</translation>
+    </message>
+    <message>
         <location filename="../ui_settingsdialog.h" line="640"/>
-        <source>When inserting new notes or changing existing notes pitches, play the new pitches</source>
-        <translation type="unfinished"></translation>
+        <source>When inserting notes or changing existing notes pitch, play the new notes.</source>
+        <translation>Zaigraj note ob vstavljanju novih not ali spreminjanju višine obstoječih not.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="646"/>
-        <source>When inserting notes and rests, place the barlines automatically, if the last bar is full.</source>
-        <translation type="unfinished"></translation>
+        <source>When inserting notes and rests, place a barline automatically, if the last bar is full.</source>
+        <translation>Ob vstavljanju not in pavz samodejno postavi taktnico, če je prejšnji takt poln.</translation>
     </message>
 </context>
 <context>
