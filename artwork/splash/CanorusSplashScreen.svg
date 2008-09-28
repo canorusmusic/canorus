@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -13,17 +13,23 @@
    height="300"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45"
+   inkscape:version="0.46"
    version="1.0"
    sodipodi:docbase="/home/matevz/canorus/artwork/splash"
    sodipodi:docname="CanorusSplashScreen.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    inkscape:export-filename="/home/matevz/canorus/trunk/src/ui/images/splash.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
-   sodipodi:modified="true">
+   inkscape:export-ydpi="90">
   <defs
      id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 150 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="400 : 150 : 1"
+       inkscape:persp3d-origin="200 : 100 : 1"
+       id="perspective2825" />
     <linearGradient
        id="linearGradient5188">
       <stop
@@ -134,11 +140,11 @@
       <stop
          id="stop4454"
          offset="0"
-         style="stop-color:#ffb61d;stop-opacity:1;" />
+         style="stop-color:#ffbf1d;stop-opacity:1;" />
       <stop
          id="stop4456"
          offset="1"
-         style="stop-color:#ffee85;stop-opacity:1;" />
+         style="stop-color:#ffffb7;stop-opacity:1;" />
     </linearGradient>
     <linearGradient
        y2="63.946518"
@@ -1215,7 +1221,17 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4452"
-       id="linearGradient2422"
+       id="linearGradient2424"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9067035,0,0,0.9067035,-55.240698,-114.3449)"
+       x1="35.100529"
+       y1="2.6243386"
+       x2="34.116402"
+       y2="-20.994709" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4452"
+       id="linearGradient2837"
        gradientUnits="userSpaceOnUse"
        x1="280.34512"
        y1="-188.93166"
@@ -1224,13 +1240,88 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4452"
-       id="linearGradient2424"
+       id="linearGradient2839"
+       gradientUnits="userSpaceOnUse"
+       x1="-5.2941122"
+       y1="0"
+       x2="435.93254"
+       y2="0" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4452"
+       id="linearGradient2841"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.9067035,0,0,0.9067035,-55.240698,-114.3449)"
        x1="35.100529"
        y1="2.6243386"
        x2="34.116402"
        y2="-20.994709" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4452"
+       id="linearGradient3663"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.9584652,0,0,1.9584652,148.13739,90.948683)"
+       x1="35.100529"
+       y1="2.6243386"
+       x2="34.116402"
+       y2="-20.994709" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4452"
+       id="linearGradient3674"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9067035,0,0,0.9067035,10.650831,-113.47023)"
+       x1="35.100529"
+       y1="2.6243386"
+       x2="34.116402"
+       y2="-20.994709" />
+    <filter
+       inkscape:collect="always"
+       id="filter3720"
+       x="-0.06205441"
+       width="1.1241088"
+       y="-0.10631576"
+       height="1.2126315">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.3035432"
+         id="feGaussianBlur3722" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4452"
+       id="linearGradient3726"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9257933,0,0,0.9257933,358.92801,253.06105)"
+       x1="35.100529"
+       y1="2.6243386"
+       x2="34.116402"
+       y2="-20.994709" />
+    <filter
+       inkscape:collect="always"
+       id="filter3748"
+       x="-0.04390922"
+       width="1.0878184"
+       y="-0.15643561"
+       height="1.3128712">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="2.7248302"
+         id="feGaussianBlur3750" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3832"
+       x="-0.10083842"
+       width="1.2016768"
+       y="-0.17276311"
+       height="1.3455262">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="2.1182577"
+         id="feGaussianBlur3834" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1242,17 +1333,18 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.1101576"
-     inkscape:cx="335.28402"
-     inkscape:cy="155.38103"
+     inkscape:zoom="2.032932"
+     inkscape:cx="156.09769"
+     inkscape:cy="163.30421"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="400px"
      height="300px"
-     inkscape:window-width="1600"
-     inkscape:window-height="1179"
+     inkscape:window-width="1590"
+     inkscape:window-height="1129"
      inkscape:window-x="0"
-     inkscape:window-y="0" />
+     inkscape:window-y="0"
+     showgrid="false" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -1277,63 +1369,56 @@
        sodipodi:absref="/home/rousseau/Desktop1/CanorusSplashScreen-Background.jpg"
        xlink:href="CanorusSplashScreen-Background.jpg" />
     <g
-       id="g2436"
-       transform="matrix(0.8607269,0,0,0.8607269,28.130743,8.701728)">
+       id="g13764"
+       transform="matrix(2.1599842,0,0,2.1599842,270.40255,340.878)"
+       style="fill:#000000;fill-opacity:1;stroke:none;filter:url(#filter3748)">
       <g
-         transform="matrix(2.5094884,0,0,2.5094884,279.14988,383.60166)"
-         id="g13764">
-        <g
-           transform="matrix(5.9719617e-2,0,0,-5.9719617e-2,-104.66142,-127.40771)"
-           id="g6420"
-           style="fill:#000000;fill-opacity:0.44398343;stroke:#000000;stroke-width:13.78757095;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221"
-           inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/timesigC|.png"
-           inkscape:export-xdpi="90"
-           inkscape:export-ydpi="90">
-          <path
-             d="M 199,348 C 202,350 204,350 215,350 C 225,350 227,350 230,348 C 236,344 236,344 236,303 L 236,265 L 253,265 C 277,264 294,260 315,252 C 366,230 406,180 419,122 C 425,97 421,76 409,58 C 392,34 364,24 336,34 C 295,48 276,87 290,129 C 299,157 322,175 352,177 L 362,177 L 360,180 C 353,190 337,205 324,213 C 301,228 275,235 248,235 L 236,235 L 236,0 L 236,-235 L 252,-235 C 270,-234 280,-232 294,-227 C 338,-211 376,-167 394,-110 C 397,-101 400,-91 401,-87 C 404,-78 406,-76 414,-75 C 420,-75 424,-77 428,-82 C 431,-86 431,-89 427,-104 C 422,-122 417,-134 408,-152 C 395,-179 382,-197 364,-215 C 330,-249 292,-265 247,-265 L 236,-265 L 236,-303 C 236,-338 236,-341 234,-344 C 231,-349 228,-350 215,-350 C 201,-350 198,-349 195,-344 C 193,-341 193,-338 193,-300 L 193,-260 L 181,-258 C 135,-247 100,-228 70,-199 C 33,-161 10,-110 2,-44 C 0,-24 0,24 2,44 C 10,110 33,161 70,199 C 102,230 137,248 191,260 L 193,260 L 193,300 C 193,344 193,344 199,348 z M 193,0 L 193,224 C 193,224 190,222 186,220 C 160,205 145,174 140,124 C 136,84 136,-84 140,-123 C 142,-139 145,-159 149,-170 C 157,-194 171,-212 188,-221 L 193,-224 L 193,0 z "
-             id="path6422"
-             style="fill:#000000;fill-opacity:0.44398343;stroke:#000000;stroke-width:13.78757095;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221" />
-        </g>
-        <text
-           xml:space="preserve"
-           style="font-size:41.97792816px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:0.44398343;stroke:#000000;stroke-width:0.84969485;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221;font-family:FreeSerif"
-           x="-78.583633"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/timesigC|.png"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:13.78757095;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221"
+         id="g6420"
+         transform="matrix(5.9719617e-2,0,0,-5.9719617e-2,-104.66142,-127.40771)">
+        <path
+           style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:13.78757095;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221"
+           id="path6422"
+           d="M 199,348 C 202,350 204,350 215,350 C 225,350 227,350 230,348 C 236,344 236,344 236,303 L 236,265 L 253,265 C 277,264 294,260 315,252 C 366,230 406,180 419,122 C 425,97 421,76 409,58 C 392,34 364,24 336,34 C 295,48 276,87 290,129 C 299,157 322,175 352,177 L 362,177 L 360,180 C 353,190 337,205 324,213 C 301,228 275,235 248,235 L 236,235 L 236,0 L 236,-235 L 252,-235 C 270,-234 280,-232 294,-227 C 338,-211 376,-167 394,-110 C 397,-101 400,-91 401,-87 C 404,-78 406,-76 414,-75 C 420,-75 424,-77 428,-82 C 431,-86 431,-89 427,-104 C 422,-122 417,-134 408,-152 C 395,-179 382,-197 364,-215 C 330,-249 292,-265 247,-265 L 236,-265 L 236,-303 C 236,-338 236,-341 234,-344 C 231,-349 228,-350 215,-350 C 201,-350 198,-349 195,-344 C 193,-341 193,-338 193,-300 L 193,-260 L 181,-258 C 135,-247 100,-228 70,-199 C 33,-161 10,-110 2,-44 C 0,-24 0,24 2,44 C 10,110 33,161 70,199 C 102,230 137,248 191,260 L 193,260 L 193,300 C 193,344 193,344 199,348 z M 193,0 L 193,224 C 193,224 190,222 186,220 C 160,205 145,174 140,124 C 136,84 136,-84 140,-123 C 142,-139 145,-159 149,-170 C 157,-194 171,-212 188,-221 L 193,-224 L 193,0 z" />
+      </g>
+      <text
+         id="text6424"
+         y="-112.51923"
+         x="-78.583633"
+         style="font-size:41.97792816px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.84969485;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221;font-family:FreeSerif"
+         xml:space="preserve"><tspan
+           style="font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.84969485;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221;font-family:FreeSerif"
            y="-112.51923"
-           id="text6424"><tspan
-             sodipodi:role="line"
-             id="tspan6426"
-             x="-78.583633"
-             y="-112.51923"
-             style="font-weight:bold;fill:#000000;fill-opacity:0.44398343;stroke:#000000;stroke-width:0.84969485;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221;font-family:FreeSerif">anorus</tspan></text>
-      </g>
-      <g
-         transform="matrix(2.5094884,0,0,2.5094884,278.05065,382.50243)"
-         id="g13770">
-        <g
-           transform="matrix(5.9719617e-2,0,0,-5.9719617e-2,-105.37492,-128.08058)"
-           id="g63430"
-           style="fill:url(#linearGradient2420);fill-opacity:1;stroke:#e95d00;stroke-width:13.78757095;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/timesigC|.png"
-           inkscape:export-xdpi="90"
-           inkscape:export-ydpi="90">
-          <path
-             d="M 199,348 C 202,350 204,350 215,350 C 225,350 227,350 230,348 C 236,344 236,344 236,303 L 236,265 L 253,265 C 277,264 294,260 315,252 C 366,230 406,180 419,122 C 425,97 421,76 409,58 C 392,34 364,24 336,34 C 295,48 276,87 290,129 C 299,157 322,175 352,177 L 362,177 L 360,180 C 353,190 337,205 324,213 C 301,228 275,235 248,235 L 236,235 L 236,0 L 236,-235 L 252,-235 C 270,-234 280,-232 294,-227 C 338,-211 376,-167 394,-110 C 397,-101 400,-91 401,-87 C 404,-78 406,-76 414,-75 C 420,-75 424,-77 428,-82 C 431,-86 431,-89 427,-104 C 422,-122 417,-134 408,-152 C 395,-179 382,-197 364,-215 C 330,-249 292,-265 247,-265 L 236,-265 L 236,-303 C 236,-338 236,-341 234,-344 C 231,-349 228,-350 215,-350 C 201,-350 198,-349 195,-344 C 193,-341 193,-338 193,-300 L 193,-260 L 181,-258 C 135,-247 100,-228 70,-199 C 33,-161 10,-110 2,-44 C 0,-24 0,24 2,44 C 10,110 33,161 70,199 C 102,230 137,248 191,260 L 193,260 L 193,300 C 193,344 193,344 199,348 z M 193,0 L 193,224 C 193,224 190,222 186,220 C 160,205 145,174 140,124 C 136,84 136,-84 140,-123 C 142,-139 145,-159 149,-170 C 157,-194 171,-212 188,-221 L 193,-224 L 193,0 z "
-             id="path63432"
-             style="fill:url(#linearGradient2422);fill-opacity:1;stroke:#e95d00;stroke-width:13.78757095;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        </g>
-        <text
-           xml:space="preserve"
-           style="font-size:41.97792816px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:url(#linearGradient2424);fill-opacity:1;stroke:#e95d00;stroke-width:0.84969485;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:FreeSerif"
-           x="-79.297127"
-           y="-113.1921"
-           id="text3469"><tspan
-             sodipodi:role="line"
-             id="tspan3471"
-             x="-79.297127"
-             y="-113.1921"
-             style="font-weight:bold;fill:url(#linearGradient2424);fill-opacity:1;stroke:#e95d00;stroke-width:0.84969485;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:FreeSerif">anorus</tspan></text>
-      </g>
+           x="-78.583633"
+           id="tspan6426"
+           sodipodi:role="line">anorus</tspan></text>
     </g>
+    <g
+       transform="matrix(0.1289934,0,0,-0.1289934,39.848258,61.279831)"
+       id="g63430"
+       style="fill:url(#linearGradient2839);fill-opacity:1;stroke:#e95d00;stroke-width:13.78757095;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/timesigC|.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         d="M 199,348 C 202,350 204,350 215,350 C 225,350 227,350 230,348 C 236,344 236,344 236,303 L 236,265 L 253,265 C 277,264 294,260 315,252 C 366,230 406,180 419,122 C 425,97 421,76 409,58 C 392,34 364,24 336,34 C 295,48 276,87 290,129 C 299,157 322,175 352,177 L 362,177 L 360,180 C 353,190 337,205 324,213 C 301,228 275,235 248,235 L 236,235 L 236,0 L 236,-235 L 252,-235 C 270,-234 280,-232 294,-227 C 338,-211 376,-167 394,-110 C 397,-101 400,-91 401,-87 C 404,-78 406,-76 414,-75 C 420,-75 424,-77 428,-82 C 431,-86 431,-89 427,-104 C 422,-122 417,-134 408,-152 C 395,-179 382,-197 364,-215 C 330,-249 292,-265 247,-265 L 236,-265 L 236,-303 C 236,-338 236,-341 234,-344 C 231,-349 228,-350 215,-350 C 201,-350 198,-349 195,-344 C 193,-341 193,-338 193,-300 L 193,-260 L 181,-258 C 135,-247 100,-228 70,-199 C 33,-161 10,-110 2,-44 C 0,-24 0,24 2,44 C 10,110 33,161 70,199 C 102,230 137,248 191,260 L 193,260 L 193,300 C 193,344 193,344 199,348 z M 193,0 L 193,224 C 193,224 190,222 186,220 C 160,205 145,174 140,124 C 136,84 136,-84 140,-123 C 142,-139 145,-159 149,-170 C 157,-194 171,-212 188,-221 L 193,-224 L 193,0 z"
+         id="path63432"
+         style="fill:url(#linearGradient2837);fill-opacity:1;stroke:#e95d00;stroke-width:13.78757095;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:90.67166138px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:url(#linearGradient3663);fill-opacity:1;stroke:#e95d00;stroke-width:1.83532751;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:FreeSerif"
+       x="96.17588"
+       y="93.438713"
+       id="text3469"><tspan
+         sodipodi:role="line"
+         id="tspan3471"
+         x="96.17588"
+         y="93.438713"
+         style="font-weight:bold;fill:url(#linearGradient3663);fill-opacity:1;stroke:#e95d00;stroke-width:1.83532751;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:FreeSerif">anorus</tspan></text>
     <rect
        style="opacity:0.91011239;fill:#241c1c;fill-opacity:0.72222218;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter6799)"
        id="rect4779"
@@ -1343,45 +1428,39 @@
        y="277.07007"
        transform="matrix(1.0165212,0,0,1.5766203,-4.0469849,-168.86162)" />
     <g
-       id="g2411">
+       id="g2513"
+       transform="matrix(1.0210541,0,0,1.0210541,347.75158,370.00296)"
+       style="filter:url(#filter3832);fill:#000000;fill-opacity:1">
       <g
-         transform="matrix(1.0210541,0,0,1.0210541,333.73884,370.00296)"
-         id="g2513">
-        <g
-           transform="matrix(5.9719617e-2,0,0,-5.9719617e-2,-104.66142,-127.40771)"
-           id="g2515"
-           style="fill:#000000;fill-opacity:0.44398343;stroke:#000000;stroke-width:13.78757095;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221"
-           inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/timesigC|.png"
-           inkscape:export-xdpi="90"
-           inkscape:export-ydpi="90" />
-        <text
-           xml:space="preserve"
-           style="font-size:41.97792816px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:0.44398343;stroke:#000000;stroke-width:0.84969485;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221;font-family:FreeSerif"
-           x="-9.7765493"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/timesigC|.png"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:13.78757094999999921;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867220999999997"
+         id="g2515"
+         transform="matrix(5.9719617e-2,0,0,-5.9719617e-2,-104.66142,-127.40771)" />
+      <text
+         id="text2519"
+         y="-110.47835"
+         x="-9.7765493"
+         style="font-size:41.97792815999999760px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.84969485000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867220999999997;font-family:FreeSerif;opacity:1;filter:url(#filter3720)"
+         xml:space="preserve"><tspan
+           style="font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.84969485000000000;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867220999999997;font-family:FreeSerif"
            y="-110.47835"
-           id="text2519"><tspan
-             sodipodi:role="line"
-             id="tspan2521"
-             x="-9.7765493"
-             y="-110.47835"
-             style="font-weight:bold;fill:#000000;fill-opacity:0.44398343;stroke:#000000;stroke-width:0.84969485;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221;font-family:FreeSerif">0.4</tspan></text>
-      </g>
-      <g
-         transform="matrix(1.0210541,0,0,1.0210541,336.0402,370.92029)"
-         id="g2523">
-        <text
-           xml:space="preserve"
-           style="font-size:41.97792816px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:url(#linearGradient2402);fill-opacity:1;stroke:#e95d00;stroke-width:0.84969485;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:FreeSerif"
-           x="-13.405598"
-           y="-112.31744"
-           id="text2529"><tspan
-             sodipodi:role="line"
-             id="tspan2531"
-             x="-13.405598"
-             y="-112.31744"
-             style="font-weight:bold;fill:url(#linearGradient2402);fill-opacity:1;stroke:#e95d00;stroke-width:0.84969485;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:FreeSerif">0.4</tspan></text>
-      </g>
+           x="-9.7765493"
+           id="tspan2521"
+           sodipodi:role="line">0.6</tspan></text>
     </g>
+    <text
+       xml:space="preserve"
+       style="font-size:42.8617363px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:url(#linearGradient3726);fill-opacity:1;stroke:#e95d00;stroke-width:1.06799996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:FreeSerif"
+       x="334.36511"
+       y="254.2381"
+       id="text2529"><tspan
+         sodipodi:role="line"
+         id="tspan2531"
+         x="334.36511"
+         y="254.2381"
+         style="font-weight:bold;fill:url(#linearGradient3726);fill-opacity:1;stroke:#e95d00;stroke-width:1.06799996;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:FreeSerif">0.6</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -1398,7 +1477,7 @@
          sodipodi:role="line"
          id="tspan2499"
          x="9.9567928"
-         y="224.80711">Copyright (C) 2006-2007 Canorus development team</tspan><tspan
+         y="224.80711">Copyright (C) 2006-2008 Canorus development team</tspan><tspan
          sodipodi:role="line"
          x="9.9567928"
          y="238.60622"
