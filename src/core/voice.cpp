@@ -479,35 +479,6 @@ QList<CAMusElement*> CAVoice::getPreviousByType(CAMusElement::CAMusElementType t
 }
 
 /*!
-	Returns pointer to the music element before the given \a elt or 0, if the previous
-	music element doesn't exist.
-*/
-CAMusElement *CAVoice::previous(CAMusElement *elt) {
-	int idx = _musElementList.indexOf(elt);
-
-	if (--idx<0) //if the element wasn't found or was the first element
-		return 0;
-
-	return _musElementList[idx];
-}
-
-/*!
-	Returns pointer to the music element after the given \a elt or 0, if the next music
-	element doesn't exist.
-*/
-CAMusElement *CAVoice::next(CAMusElement *elt) {
-	int idx = _musElementList.indexOf(elt);
-
-	if (idx==-1) //the element wasn't found
-		return 0;
-
-	if (++idx==_musElementList.size())	//last element in the list
-		return 0;
-
-	return _musElementList[idx];
-}
-
-/*!
 	Returns a list of notes and rests (chord) in the given voice in the given
 	time slice \a time.
 
@@ -564,6 +535,75 @@ QList<CAMusElement*> CAVoice::getSignList() {
 			list << _musElementList[i];
 
 	return list;
+}
+
+/*!
+	Returns pointer to the music element after the given \a elt or 0, if the next music
+	element doesn't exist.
+
+	If \elt is null, it returns the first element in the voice.
+*/
+CAMusElement *CAVoice::next(CAMusElement *elt) {
+	if (elt) {
+		int idx = _musElementList.indexOf(elt);
+
+		if (idx==-1) //the element wasn't found
+			return 0;
+
+		if (++idx==_musElementList.size())	//last element in the list
+			return 0;
+
+		return _musElementList[idx];
+	} else {
+		return _musElementList.first();
+	}
+}
+
+/*!
+	Returns the first element of type \a type after the given \a elt or Null if
+	such an element doesn't exist.
+
+	If \a elt is Null, it returns the first element with such a type in the voice.
+
+	\sa previousByType()
+ */
+CAMusElement *CAVoice::nextByType( CAMusElement::CAMusElementType type, CAMusElement *elt ) {
+	while ( (elt = next(elt)) && (elt->musElementType() != type) );
+
+	return elt;
+}
+
+/*!
+	Returns the first element of type \a type before the given \a elt or Null if
+	such an element doesn't exist.
+
+	If \a elt is Null, it returns the last element with such a type in the voice.
+
+	\sa previousByType()
+ */
+CAMusElement *CAVoice::previousByType( CAMusElement::CAMusElementType type, CAMusElement *elt ) {
+	while ( (elt = previous(elt)) && (elt->musElementType() != type) );
+
+	return elt;
+}
+
+/*!
+	Returns pointer to the music element before the given \a elt or 0, if the previous
+	music element doesn't exist.
+
+	If \elt is null, it returns the last element in the voice.
+*/
+CAMusElement *CAVoice::previous(CAMusElement *elt) {
+	if (elt) {
+		int idx = _musElementList.indexOf(elt);
+
+		if (--idx<0) //if the element wasn't found or was the first element
+			return 0;
+
+		return _musElementList[idx];
+	} else {
+		return _musElementList.last();
+	}
 }
 
 /*!

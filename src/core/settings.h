@@ -38,6 +38,9 @@ public:
 	inline bool playInsertedNotes() { return _playInsertedNotes; }
 	inline void setPlayInsertedNotes( bool b ) { _playInsertedNotes = b; }
 	static const bool DEFAULT_PLAY_INSERTED_NOTES;
+	inline bool autoBar() { return _autoBar; }
+	inline void setAutoBar( bool b ) { _autoBar = b; }
+	static const bool DEFAULT_AUTO_BAR;
 
 	/////////////////////////////
 	// Loading/Saving settings //
@@ -104,6 +107,7 @@ private:
 	bool _finaleLyricsBehaviour;
 	bool _shadowNotesInOtherStaffs;
 	bool _playInsertedNotes;
+	bool _autoBar;
 
 	/////////////////////////////
 	// Loading/Saving settings //

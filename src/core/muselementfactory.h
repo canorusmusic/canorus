@@ -231,6 +231,8 @@ private:
 	CAMusElement *mpoMusElement;                    // Newly created music element itself
 	CAMusElement *mpoEmpty;                         // An empty (dummy) element.
 
+	void placeAutoBar( CAPlayable* elt );
+
 	/////////////////////////////////
 	// Element creation parameters //
 	/////////////////////////////////

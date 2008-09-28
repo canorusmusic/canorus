@@ -49,6 +49,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiFinaleLyricsCheckBox->setChecked( CACanorus::settings()->finaleLyricsBehaviour() );
 	uiShadowNotesInOtherStaffs->setChecked( CACanorus::settings()->shadowNotesInOtherStaffs() );
 	uiPlayInsertedNotes->setChecked( CACanorus::settings()->playInsertedNotes() );
+	uiAutoBar->setChecked( CACanorus::settings()->autoBar() );
 
 	// Appearance Page
 	uiForegroundColor->setPalette( QPalette( CACanorus::settings()->foregroundColor() ) );
@@ -127,6 +128,7 @@ void CASettingsDialog::applySettings() {
 	CACanorus::settings()->setFinaleLyricsBehaviour( uiFinaleLyricsCheckBox->isChecked() );
 	CACanorus::settings()->setShadowNotesInOtherStaffs( uiShadowNotesInOtherStaffs->isChecked() );
 	CACanorus::settings()->setPlayInsertedNotes( uiPlayInsertedNotes->isChecked() );
+	CACanorus::settings()->setAutoBar( uiAutoBar->isChecked() );
 
 	// Saving/Loading Page
 	CACanorus::settings()->setDocumentsDirectory( uiDocumentsDirectory->text() );
