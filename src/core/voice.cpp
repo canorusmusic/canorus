@@ -198,6 +198,10 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 		updateTimes( musElementList().indexOf(elt)+1, elt->timeLength(), true );
 
 	}
+	if( elt->musElementType() == CAMusElement::Note ) {
+		CANote* note = static_cast<CANote*>(elt);
+		note->setDiatonicPitch(note->diatonicPitch());
+	}
 
  	return res;
 }
@@ -207,7 +211,7 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 	Returns 0, if no clefs placed yet.
 */
 CAClef* CAVoice::getClef(CAMusElement *elt) {
-	if (!elt || indexOf(elt) == -1)
+	if (!elt || !contains(elt))
 		elt = lastMusElement();
 
 	while ( elt && (elt->musElementType() != CAMusElement::Clef) && (elt = previous(elt)) );
@@ -220,7 +224,7 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 	Returns 0, if no time signatures placed yet.
 */
 CATimeSignature* CAVoice::getTimeSig(CAMusElement *elt) {
-	if (!elt || indexOf(elt) == -1)
+	if (!elt || !contains(elt))
 		elt = lastMusElement();
 
 	while ( elt && (elt->musElementType() != CAMusElement::TimeSignature) && (elt = previous(elt)) );
@@ -233,7 +237,7 @@ CATimeSignature* CAVoice::getTimeSig(CAMusElement *elt) {
 	Returns 0, if no key signatures placed yet.
 */
 CAKeySignature* CAVoice::getKeySig(CAMusElement *elt) {
-	if (!elt || indexOf(elt) == -1)
+	if (!elt || !contains(elt))
 		elt = lastMusElement();
 
 	while ( elt && (elt->musElementType() != CAMusElement::KeySignature) && (elt = previous(elt)) );
