@@ -6,7 +6,9 @@
 */
 
 #include "core/settings.h"
+#ifndef SWIGCPP
 #include "canorus.h"
+#endif
 #include "interface/rtmididevice.h"
 
 // Define default settings
