@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="sl_SI">
-<defaultcodec></defaultcodec>
 <context>
     <name>CAAutoRecovery</name>
     <message>
@@ -168,12 +167,12 @@ Vrstica %1:%2.</translation>
         <translation>Izberite smer notnih vratov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3521"/>
+        <location filename="../ui/mainwin.cpp" line="3512"/>
         <source>About Qt</source>
         <translation>O knjižnici Qt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3525"/>
+        <location filename="../ui/mainwin.cpp" line="3516"/>
         <source>About Canorus</source>
         <translation>O programu Canorus</translation>
     </message>
@@ -193,7 +192,7 @@ Vrstica %1:%2.</translation>
         <translation>List%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2635"/>
+        <location filename="../ui/mainwin.cpp" line="2626"/>
         <source>Canorus</source>
         <translation>Canorus</translation>
     </message>
@@ -540,115 +539,115 @@ Vrstica %1:%2.</translation>
         <translation>višanje note</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1864"/>
+        <location filename="../ui/mainwin.cpp" line="1862"/>
         <source>lower note</source>
         <comment>undo</comment>
         <translation>nižanje note</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1901"/>
+        <location filename="../ui/mainwin.cpp" line="1898"/>
         <source>add sharp</source>
         <comment>undo</comment>
         <translation>dodajanje višaja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1928"/>
+        <location filename="../ui/mainwin.cpp" line="1923"/>
         <source>add flat</source>
         <comment>undo</comment>
         <translation>dodajanje nižaja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1953"/>
+        <location filename="../ui/mainwin.cpp" line="1946"/>
         <source>set dotted</source>
         <comment>undo</comment>
         <translation>punktacijo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4352"/>
+        <location filename="../ui/mainwin.cpp" line="4343"/>
         <source>deletion of elements</source>
         <comment>undo</comment>
         <translation>brisanje elementov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2138"/>
+        <location filename="../ui/mainwin.cpp" line="2131"/>
         <source>insertion of music element</source>
         <comment>undo</comment>
         <translation>dodajanje elementov</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2904"/>
+        <location filename="../ui/mainwin.cpp" line="2895"/>
         <source>change voice name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3047"/>
+        <location filename="../ui/mainwin.cpp" line="3038"/>
         <source>lyrics edit</source>
         <comment>undo</comment>
         <translation>spreminjanje besedila</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3441"/>
+        <location filename="../ui/mainwin.cpp" line="3432"/>
         <source>commit CanorusML source</source>
         <comment>undo</comment>
         <translation>potrditev CanorusML izvorne kode</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3495"/>
+        <location filename="../ui/mainwin.cpp" line="3486"/>
         <source>commit LilyPond source</source>
         <comment>undo</comment>
         <translation>potrditev LilyPond izvorne kode</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3605"/>
+        <location filename="../ui/mainwin.cpp" line="3596"/>
         <source>deletion of the sheet</source>
         <comment>undo</comment>
         <translation>brisanje lista</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3663"/>
+        <location filename="../ui/mainwin.cpp" line="3654"/>
         <source>change sheet name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena lista</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3684"/>
+        <location filename="../ui/mainwin.cpp" line="3675"/>
         <source>change context name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena traku</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3703"/>
+        <location filename="../ui/mainwin.cpp" line="3694"/>
         <source>change stanza number</source>
         <comment>undo</comment>
         <translation>spreminjanje številke kitice</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3715"/>
+        <location filename="../ui/mainwin.cpp" line="3706"/>
         <source>change associated voice</source>
         <comment>undo</comment>
         <translation>dodeljevanje glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3726"/>
+        <location filename="../ui/mainwin.cpp" line="3717"/>
         <source>change voice stem direction</source>
         <comment>undo</comment>
         <translation>spreminjanje smeri vratov za glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3743"/>
+        <location filename="../ui/mainwin.cpp" line="3734"/>
         <source>change note stem direction</source>
         <comment>undo</comment>
         <translation>spreminjanje smeri vratov not</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4308"/>
+        <location filename="../ui/mainwin.cpp" line="4299"/>
         <source>cut</source>
         <comment>undo</comment>
         <translation>rezanje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4478"/>
+        <location filename="../ui/mainwin.cpp" line="4469"/>
         <source>paste</source>
         <comment>undo</comment>
         <translation>lepljenje</translation>
@@ -714,13 +713,13 @@ Vrstica %1:%2.</translation>
         <translation>Odmik ključa</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2886"/>
+        <location filename="../ui/mainwin.cpp" line="2877"/>
         <source>change clef offset</source>
         <comment>undo</comment>
         <translation>spreminjanje odmika ključa</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3105"/>
+        <location filename="../ui/mainwin.cpp" line="3096"/>
         <source>change function</source>
         <comment>undo</comment>
         <translation>spreminjanje funkcije</translation>
@@ -731,31 +730,31 @@ Vrstica %1:%2.</translation>
         <translation>Brez</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3128"/>
+        <location filename="../ui/mainwin.cpp" line="3119"/>
         <source>change chord area</source>
         <comment>undo</comment>
         <translation>spreminjanje akordičnega območja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3151"/>
+        <location filename="../ui/mainwin.cpp" line="3142"/>
         <source>change tonic degree</source>
         <comment>undo</comment>
         <translation>spreminjanje glavne veje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3173"/>
+        <location filename="../ui/mainwin.cpp" line="3164"/>
         <source>set/unset ellipse</source>
         <comment>undo</comment>
         <translation>elipse</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2847"/>
+        <location filename="../ui/mainwin.cpp" line="2838"/>
         <source>change key signature</source>
         <comment>undo</comment>
         <translation>spreminjanje tonalitete</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2957"/>
+        <location filename="../ui/mainwin.cpp" line="2948"/>
         <source>change playable length</source>
         <comment>undo</comment>
         <translation>spreminjanje dolžine</translation>
@@ -1233,19 +1232,19 @@ Vrstica %1:%2.</translation>
         <translation>Tip korone</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4605"/>
+        <location filename="../ui/mainwin.cpp" line="4596"/>
         <source>change fermata type</source>
         <comment>undo</comment>
         <translation>spreminjanje tipa korone</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4705"/>
+        <location filename="../ui/mainwin.cpp" line="4696"/>
         <source>change tempo beat</source>
         <comment>undo</comment>
         <translation>spreminjanje dobe pri tempu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4728"/>
+        <location filename="../ui/mainwin.cpp" line="4719"/>
         <source>change tempo bpm</source>
         <comment>undo</comment>
         <translation>spreminjanje udarcev na minuto</translation>
@@ -1261,7 +1260,7 @@ Vrstica %1:%2.</translation>
         <translation>Tip korone</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2636"/>
+        <location filename="../ui/mainwin.cpp" line="2627"/>
         <source>Error while opening the file!
 Error %1: </source>
         <translation>Napaka pri odpiranju datoteke!
@@ -1338,13 +1337,13 @@ Napaka %1:</translation>
         <translation>Tip ponavljanja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4681"/>
+        <location filename="../ui/mainwin.cpp" line="4672"/>
         <source>change repeat mark</source>
         <comment>undo</comment>
         <translation>spreminjanje ponaljanja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3078"/>
+        <location filename="../ui/mainwin.cpp" line="3069"/>
         <source>text edit</source>
         <comment>undo</comment>
         <translation>urejanje besedila</translation>
@@ -1437,19 +1436,19 @@ Napaka %1:</translation>
         <translation>Prst</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4628"/>
+        <location filename="../ui/mainwin.cpp" line="4619"/>
         <source>change finger</source>
         <comment>undo</comment>
         <translation>spreminjanje prsta</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4649"/>
+        <location filename="../ui/mainwin.cpp" line="4640"/>
         <source>change finger original property</source>
         <comment>undo</comment>
         <translation>spreminjanje prvotnosti prstnega reda</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3532"/>
+        <location filename="../ui/mainwin.cpp" line="3523"/>
         <source>Canorus - The next generation music score editor
 
 Version %1
@@ -1560,7 +1559,7 @@ Domača stran: http://www.canorus.org</translation>
         <translation>namesto</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3370"/>
+        <location filename="../ui/mainwin.cpp" line="3361"/>
         <source>insert tuplet</source>
         <comment>undo</comment>
         <translation>vstavljanje triole</translation>
@@ -1571,7 +1570,7 @@ Domača stran: http://www.canorus.org</translation>
         <translation>Pedalne oznake</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3542"/>
+        <location filename="../ui/mainwin.cpp" line="3533"/>
         <source>Recorded Midi file</source>
         <translation>Posneta Midi datoteka</translation>
     </message>
@@ -1653,12 +1652,12 @@ Odstranjevanje ne more biti razveljavljeno!</translation>
 <context>
     <name>CASettingsDialog</name>
     <message>
-        <location filename="../ui/settingsdialog.cpp" line="94"/>
+        <location filename="../ui/settingsdialog.cpp" line="96"/>
         <source>None</source>
         <translation>Brez</translation>
     </message>
     <message>
-        <location filename="../ui/settingsdialog.cpp" line="174"/>
+        <location filename="../ui/settingsdialog.cpp" line="178"/>
         <source>Choose default documents directory</source>
         <translation>Izberite privzeto mesto za hranjenje dokumentov</translation>
     </message>
@@ -1753,22 +1752,22 @@ Odstranjevanje ne more biti razveljavljeno!</translation>
         <translation>Capella dokument (*.cap)</translation>
     </message>
     <message>
-        <location filename="../canorus.cpp" line="121"/>
+        <location filename="../canorus.cpp" line="120"/>
         <source>Choose a file to open</source>
         <translation>Izberite datoteko</translation>
     </message>
     <message>
-        <location filename="../canorus.cpp" line="114"/>
+        <location filename="../canorus.cpp" line="113"/>
         <source>Choose a file to save</source>
         <translation>Izberite datoteko</translation>
     </message>
     <message>
-        <location filename="../canorus.cpp" line="135"/>
+        <location filename="../canorus.cpp" line="134"/>
         <source>Choose a file to export</source>
         <translation>Izberite datoteko</translation>
     </message>
     <message>
-        <location filename="../canorus.cpp" line="141"/>
+        <location filename="../canorus.cpp" line="140"/>
         <source>Choose a file to import</source>
         <translation>Izberite datoteko</translation>
     </message>
@@ -2587,7 +2586,7 @@ Odstranjevanje ne more biti razveljavljeno!</translation>
         <translation>Canorus arhiv (*.can)</translation>
     </message>
     <message>
-        <location filename="../canorus.cpp" line="133"/>
+        <location filename="../canorus.cpp" line="132"/>
         <source>All supported formats (%1)</source>
         <translation>Vsi podprti formati (%1)</translation>
     </message>
@@ -3483,165 +3482,185 @@ Odstranjevanje ne more biti razveljavljeno!</translation>
 <context>
     <name>uiSettingsDialog</name>
     <message>
-        <location filename="../ui_settingsdialog.h" line="596"/>
+        <location filename="../ui_settingsdialog.h" line="615"/>
         <source>Settings</source>
         <translation>Nastavitve</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="600"/>
+        <location filename="../ui_settingsdialog.h" line="619"/>
         <source>Editor</source>
         <translation>Urejevalnik</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="601"/>
+        <location filename="../ui_settingsdialog.h" line="620"/>
         <source>Appearance</source>
         <translation>Izgled</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="602"/>
+        <location filename="../ui_settingsdialog.h" line="621"/>
         <source>Load/Save</source>
         <translation>Nalaganje/Shranjevanje</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="603"/>
+        <location filename="../ui_settingsdialog.h" line="622"/>
         <source>Playback</source>
         <translation>Predvajanje</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="606"/>
+        <location filename="../ui_settingsdialog.h" line="625"/>
         <source>Current page name</source>
         <translation>Trenutno ime strani</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="609"/>
+        <location filename="../ui_settingsdialog.h" line="628"/>
         <source>When making hyphen, immediately jump to the next syllable without hitting space bar key.</source>
         <translation>Skoči na naslednji zlog takoj ob simbolu za deljenje besede brez pritiska na preslednico.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="612"/>
+        <location filename="../ui_settingsdialog.h" line="631"/>
         <source>Use Finale/Sibelius lyrics behaviour</source>
         <translation>Uporabi Finale/Sibelius obnašanje pri besedilu</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="619"/>
+        <location filename="../ui_settingsdialog.h" line="650"/>
         <source>Preview:</source>
         <translation>Predogled:</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="622"/>
+        <location filename="../ui_settingsdialog.h" line="653"/>
         <source>Color which the background is filled.</source>
         <translation>Barva, s katero je pobarvano ozadje.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="625"/>
+        <location filename="../ui_settingsdialog.h" line="656"/>
         <source>Background color</source>
         <translation>Barva ozadja</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="629"/>
+        <location filename="../ui_settingsdialog.h" line="660"/>
         <source>Color which the music elements are painted.</source>
         <translation>Barva, s katero so pobarvani glasbeni elementi.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="632"/>
+        <location filename="../ui_settingsdialog.h" line="663"/>
         <source>Foreground color</source>
         <translation>Barva ospredja</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="636"/>
+        <location filename="../ui_settingsdialog.h" line="667"/>
         <source>Color which the selected music elements are painted.</source>
         <translation>Barva, s katero so pobarvani izbrani elementi.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="639"/>
+        <location filename="../ui_settingsdialog.h" line="670"/>
         <source>Selected elements</source>
         <translation>Izbrani elementi</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="643"/>
+        <location filename="../ui_settingsdialog.h" line="674"/>
         <source>Color which the current context is painted.</source>
         <translation>Barva, s katero je pobarvan trenutni trak.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="646"/>
+        <location filename="../ui_settingsdialog.h" line="677"/>
         <source>Selected context</source>
         <translation>Izbran trak</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="650"/>
+        <location filename="../ui_settingsdialog.h" line="681"/>
         <source>Color which the selection area background is filled.</source>
         <translation>Barva, s katero je pobarvano ozadje izbranih elementov.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="653"/>
+        <location filename="../ui_settingsdialog.h" line="684"/>
         <source>Selection area</source>
         <translation>Barva ozadja izbire</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="657"/>
+        <location filename="../ui_settingsdialog.h" line="688"/>
         <source>Color which the invisible elements are painted in current-voice-only mode.</source>
         <translation>Barva, s katero so nevidni elementi pobarvani v enoglasnem načinu.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="660"/>
+        <location filename="../ui_settingsdialog.h" line="691"/>
         <source>Hidden elements</source>
         <translation>Skriti elementi</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="664"/>
+        <location filename="../ui_settingsdialog.h" line="695"/>
         <source>Color which the elements in non-selected voice are painted.</source>
         <translation>Barva, s katero so pobarvani elementi drugih glasov v enoglasnem načinu.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="667"/>
+        <location filename="../ui_settingsdialog.h" line="698"/>
         <source>Disabled elements</source>
         <translation>Onemogočeni elementi</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="669"/>
+        <location filename="../ui_settingsdialog.h" line="700"/>
         <source>Default documents location:</source>
         <translation>Privzeto mesto dokumentov:</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="670"/>
+        <location filename="../ui_settingsdialog.h" line="701"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="671"/>
+        <location filename="../ui_settingsdialog.h" line="702"/>
         <source>Default file format for saving:</source>
         <translation>Privzet format za shranjevanje:</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="678"/>
+        <location filename="../ui_settingsdialog.h" line="709"/>
         <source>MIDI IN devices:</source>
         <translation>MIDI vhodne naprave:</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="679"/>
+        <location filename="../ui_settingsdialog.h" line="710"/>
         <source>MIDI OUT devices:</source>
         <translation>MIDI izhodne naprave:</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="675"/>
+        <location filename="../ui_settingsdialog.h" line="706"/>
         <source>Automatically make recovery documents every specified number of ellapsed minutes. 0 to disable recovery saving.</source>
         <translation>Samodejno ustvari varnostno kopijo dokumenta po preteku števila minut. 0 onemogoči shranjevanje.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="672"/>
+        <location filename="../ui_settingsdialog.h" line="703"/>
         <source>Recovery saving interval in minutes:</source>
         <comment>Auto save every %n minutes.</comment>
         <translation>Varnostno shranjevanje v minutah:</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="615"/>
+        <location filename="../ui_settingsdialog.h" line="634"/>
         <source>When inserting notes, show the helper notes in all staffs, not only in the active one</source>
-        <translation>Ob vstavljanju not pokaži sivo noto v vseh črtovjih, ne samo v aktivnem.</translation>
+        <translation type="unfinished">Ob vstavljanju not pokaži sivo noto v vseh črtovjih, ne samo v aktivnem</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="618"/>
+        <location filename="../ui_settingsdialog.h" line="637"/>
         <source>Show helper notes in other staffs</source>
         <translation>Pokaži sive note v ostalih črtovjih</translation>
+    </message>
+    <message>
+        <location filename="../ui_settingsdialog.h" line="649"/>
+        <source>Automatic bar placement</source>
+        <translation>Samodejna postavitev taktnic</translation>
+    </message>
+    <message>
+        <location filename="../ui_settingsdialog.h" line="643"/>
+        <source>Play inserted notes</source>
+        <translation>Zaigraj vstavljeno noto</translation>
+    </message>
+    <message>
+        <location filename="../ui_settingsdialog.h" line="640"/>
+        <source>When inserting new notes or changing existing notes pitches, play the new pitches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui_settingsdialog.h" line="646"/>
+        <source>When inserting notes and rests, place the barlines automatically, if the last bar is full.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

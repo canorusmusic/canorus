@@ -54,6 +54,9 @@ public:
 	bool containsPitch( CADiatonicPitch p, int timeStart );
 	CAMusElement *next(CAMusElement *elt);
 	CAMusElement *previous(CAMusElement *elt);
+	CAMusElement *nextByType(CAMusElement::CAMusElementType type, CAMusElement *elt);
+	CAMusElement *previousByType(CAMusElement::CAMusElementType type, CAMusElement *elt);
+
 	CANote *nextNote(int timeStart);
 	CANote *previousNote(int timeStart);
 	CARest *nextRest(int timeStart);

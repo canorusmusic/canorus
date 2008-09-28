@@ -13,6 +13,7 @@
 const bool CASettings::DEFAULT_FINALE_LYRICS_BEHAVIOUR = false;
 const bool CASettings::DEFAULT_SHADOW_NOTES_IN_OTHER_STAFFS = false;
 const bool CASettings::DEFAULT_PLAY_INSERTED_NOTES = true;
+const bool CASettings::DEFAULT_AUTO_BAR = true;
 
 const QDir CASettings::DEFAULT_DOCUMENTS_DIRECTORY = QDir::home();
 const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFormats::Can;
@@ -52,7 +53,7 @@ const int CASettings::DEFAULT_MIDI_OUT_PORT = -1;
 	2) add public getter, setter methods and initial value (eg. getTextColor(), setTextColor(), DEFAULT_TEXT_COLOR)
 	3) define the initial value itself in .cpp file
 	4) add setValue() sentence in writeSettings() method and setTextColor() in readSettings()
-	5) (optionally) create GUI in CASettingsDialog for your new property
+	5) (optionally) create GUI in CASettingsDialog or CAMainWin menu for your new property
 
 	\sa CASettingsDialog
  */
@@ -82,6 +83,7 @@ void CASettings::writeSettings() {
 	setValue( "editor/finalelyricsbehaviour", finaleLyricsBehaviour() );
 	setValue( "editor/shadownotesinotherstaffs", shadowNotesInOtherStaffs() );
 	setValue( "editor/playinsertednotes", playInsertedNotes() );
+	setValue( "editor/autobar", autoBar() );
 
 	setValue( "files/documentsdirectory", documentsDirectory().absolutePath() );
 	setValue( "files/defaultsaveformat", defaultSaveFormat() );
@@ -123,9 +125,14 @@ int CASettings::readSettings() {
 		setShadowNotesInOtherStaffs( DEFAULT_SHADOW_NOTES_IN_OTHER_STAFFS );
 
 	if ( contains("editor/playinsertednotes") )
-		setShadowNotesInOtherStaffs( value("editor/playinsertednotes").toBool() );
+		setPlayInsertedNotes( value("editor/playinsertednotes").toBool() );
 	else
-		setShadowNotesInOtherStaffs( DEFAULT_PLAY_INSERTED_NOTES );
+		setPlayInsertedNotes( DEFAULT_PLAY_INSERTED_NOTES );
+
+	if ( contains("editor/autobar") )
+		setAutoBar( value("editor/autobar").toBool() );
+	else
+		setAutoBar( DEFAULT_AUTO_BAR );
 
 	// Saving/Loading settings
 	if ( contains("files/documentsdirectory") )

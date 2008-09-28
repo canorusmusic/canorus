@@ -16,6 +16,10 @@
 #include "core/instrumentchange.h"
 #include "core/articulation.h"
 #include "core/tuplet.h"
+#include "core/playable.h"
+
+#include "canorus.h" // needed for CASettings
+#include "core/settings.h"
 
 /*!
 	\class CAMusElementFactory
@@ -259,6 +263,8 @@ bool CAMusElementFactory::configureNote( int pitch,
 			}
 		}
 
+		if ( CACanorus::settings()->autoBar() )
+			placeAutoBar( static_cast<CAPlayable*>(mpoMusElement) );
 	}
 
 	if (bSuccess) {
@@ -427,6 +433,10 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 		                            0
 		);
 		success = voice->insert( right, mpoMusElement );
+
+		if ( CACanorus::settings()->autoBar() )
+			placeAutoBar( static_cast<CAPlayable*>(mpoMusElement) );
+
 		if (!success)
 			removeMusElem(true);
 	}
@@ -458,6 +468,22 @@ bool CAMusElementFactory::configureFunctionMark( CAFunctionMarkContext *fmc, int
  */
 bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> noteList ) {
 
+}
+
+/*!
+	Places a barline in front of the element, if needed.
+ */
+void CAMusElementFactory::placeAutoBar( CAPlayable* elt ) {
+	CABarline *b = static_cast<CABarline*>(elt->voice()->previousByType( CAMusElement::Barline, elt ));
+	CATimeSignature *t = static_cast<CATimeSignature*>(elt->voice()->previousByType( CAMusElement::TimeSignature, elt ));
+
+	if (t) {
+		int barLength = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(t->beat()) ) ) * t->beats();
+		if ( (b?(b->timeStart()):0) + barLength <= elt->timeStart() ) {
+			elt->voice()->insert( elt, new CABarline( CABarline::Single, elt->staff(), elt->timeStart() ) );
+			elt->staff()->synchronizeVoices();
+		}
+	}
 }
 
 /*!

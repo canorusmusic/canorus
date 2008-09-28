@@ -160,8 +160,21 @@
            </item>
            <item>
             <widget class="QCheckBox" name="uiPlayInsertedNotes" >
+             <property name="toolTip" >
+              <string>When inserting new notes or changing existing notes pitches, play the new pitches</string>
+             </property>
              <property name="text" >
-              <string>Play the inserted notes</string>
+              <string>Play inserted notes</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="uiAutoBar" >
+             <property name="toolTip" >
+              <string>When inserting notes and rests, place the barlines automatically, if the last bar is full.</string>
+             </property>
+             <property name="text" >
+              <string>Automatic bar placement</string>
              </property>
             </widget>
            </item>
