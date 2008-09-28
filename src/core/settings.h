@@ -9,7 +9,9 @@
 #define SETTINGS_H_
 
 #include <QSettings>
+#ifndef SWIG
 #include <QColor>
+#endif
 #include <QDir>
 #include "core/fileformats.h"
 
@@ -22,7 +24,7 @@ public:
 	int readSettings();
 	void writeSettings();
 
-	static QString defaultSettingsPath();
+	static const QString defaultSettingsPath();
 
 	/////////////////////
 	// Editor settings //
@@ -56,6 +58,7 @@ public:
 	/////////////////////////
 	// Appearance settings //
 	/////////////////////////
+#ifndef SWIG
 	inline QColor backgroundColor() { return _backgroundColor; }
 	inline void setBackgroundColor( QColor backgroundColor ) { _backgroundColor = backgroundColor; }
 	static const QColor DEFAULT_BACKGROUND_COLOR;
@@ -77,6 +80,7 @@ public:
 	inline QColor disabledElementsColor() { return _disabledElementsColor; }
 	inline void setHiddenElementsColor( QColor hiddenElementsColor ) { _hiddenElementsColor = hiddenElementsColor; }
 	static const QColor DEFAULT_DISABLED_ELEMENTS_COLOR;
+#endif
 
 	///////////////////////
 	// Playback settings //
@@ -89,8 +93,10 @@ public:
 	static const int DEFAULT_MIDI_OUT_PORT;
 
 private:
+#ifndef SWIG
 	void writeRecentDocuments();
 	void readRecentDocuments();
+#endif
 
 	/////////////////////
 	// Editor settings //
@@ -110,6 +116,7 @@ private:
 	/////////////////////////
 	// Appearance settings //
 	/////////////////////////
+#ifndef SWIG
 	QColor _backgroundColor;
 	QColor _foregroundColor;
 	QColor _selectionColor;
@@ -117,7 +124,7 @@ private:
 	QColor _selectedContextColor;
 	QColor _hiddenElementsColor;
 	QColor _disabledElementsColor;
-
+#endif
 	///////////////////////
 	// Playback settings //
 	///////////////////////

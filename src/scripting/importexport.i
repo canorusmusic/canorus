@@ -6,6 +6,8 @@
 */
 
 %{
+#include "core/settings.h"
+
 #include "core/file.h"
 
 #include "import/import.h"
@@ -19,6 +21,8 @@
 #include "export/lilypondexport.h"
 #include "export/midiexport.h"
 %}
+
+%include "core/settings.h"
 
 %include "core/file.h"
 

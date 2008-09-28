@@ -12,6 +12,9 @@ class QXmlDefaultHandler {
 class QObject {
 };
 
+class QSettings {
+};
+
 // resources
 %include "scripting/resources.i"
 

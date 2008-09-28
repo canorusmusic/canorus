@@ -385,6 +385,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	
 	core/functionmark.cpp
 	
+	core/settings.cpp
 	core/file.cpp
 	core/tar.cpp
 	core/archive.cpp
