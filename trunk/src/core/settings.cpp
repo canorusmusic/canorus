@@ -19,6 +19,7 @@ const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFo
 const int CASettings::DEFAULT_AUTO_RECOVERY_INTERVAL = 1;
 const int CASettings::DEFAULT_MAX_RECENT_DOCUMENTS = 15;
 
+#ifndef SWIGCPP
 const QColor CASettings::DEFAULT_BACKGROUND_COLOR = QColor(255, 255, 240);
 const QColor CASettings::DEFAULT_FOREGROUND_COLOR = Qt::black;
 const QColor CASettings::DEFAULT_SELECTION_COLOR = Qt::red;
@@ -26,6 +27,7 @@ const QColor CASettings::DEFAULT_SELECTION_AREA_COLOR = QColor( 255, 0, 80, 70 )
 const QColor CASettings::DEFAULT_SELECTED_CONTEXT_COLOR = Qt::blue;
 const QColor CASettings::DEFAULT_HIDDEN_ELEMENTS_COLOR = Qt::green;
 const QColor CASettings::DEFAULT_DISABLED_ELEMENTS_COLOR = Qt::gray;
+#endif
 
 const int CASettings::DEFAULT_MIDI_IN_PORT = -1;
 const int CASettings::DEFAULT_MIDI_OUT_PORT = -1;
@@ -85,6 +87,7 @@ void CASettings::writeSettings() {
 	setValue( "files/defaultsaveformat", defaultSaveFormat() );
 	setValue( "files/autorecoveryinterval", autoRecoveryInterval() );
 	setValue( "files/maxrecentdocuments", maxRecentDocuments() );
+#ifndef SWIGCPP
 	writeRecentDocuments();
 
 	setValue( "appearance/backgroundcolor", backgroundColor() );
@@ -94,7 +97,7 @@ void CASettings::writeSettings() {
 	setValue( "appearance/selectedcontextcolor", selectedContextColor() );
 	setValue( "appearance/hiddenelementscolor",hiddenElementsColor() );
 	setValue( "appearance/disabledelementscolor", disabledElementsColor() );
-
+#endif
 	setValue( "rtmidi/midioutport", midiOutPort() );
 	setValue( "rtmidi/midiinport", midiInPort() );
 	sync();
@@ -145,6 +148,8 @@ int CASettings::readSettings() {
 		setMaxRecentDocuments( value("files/maxrecentdocuments").toInt() );
 	else
 		setMaxRecentDocuments( DEFAULT_MAX_RECENT_DOCUMENTS );
+
+#ifndef SWIGCPP
 	readRecentDocuments();
 
 	// Appearance settings
@@ -183,9 +188,12 @@ int CASettings::readSettings() {
 	else
 		setDisabledElementsColor( DEFAULT_DISABLED_ELEMENTS_COLOR );
 
+#endif
 	// Playback settings
-	if ( contains("rtmidi/midiinport") &&
-	     value("rtmidi/midiinport").toInt() < CACanorus::midiDevice()->getInputPorts().count()
+	if ( contains("rtmidi/midiinport")
+#ifndef SWIGCPP
+		&& value("rtmidi/midiinport").toInt() < CACanorus::midiDevice()->getInputPorts().count()
+#endif
 	   ) {
 		setMidiInPort( value("rtmidi/midiinport").toInt() );
 	} else {
@@ -193,8 +201,10 @@ int CASettings::readSettings() {
 		settingsPage = 3;
 	}
 
-	if ( contains("rtmidi/midioutport") &&
-	     value("rtmidi/midioutport").toInt() < CACanorus::midiDevice()->getOutputPorts().count()
+	if ( contains("rtmidi/midioutport")
+#ifndef SWIGCPP
+		 && value("rtmidi/midioutport").toInt() < CACanorus::midiDevice()->getOutputPorts().count()
+#endif
 	   ) {
 		setMidiOutPort( value("rtmidi/midioutport").toInt() );
 	} else {
@@ -207,17 +217,22 @@ int CASettings::readSettings() {
 
 void CASettings::setMidiInPort(int in) {
 	_midiInPort = in;
+#ifndef SWIGCPP
 	if (CACanorus::midiDevice()) {
 		CACanorus::midiDevice()->closeInputPort();
 		CACanorus::midiDevice()->openInputPort( midiInPort() );
 	}
+#endif
 }
 
+#ifndef SWIGCPP
 void CASettings::readRecentDocuments() {
 	for ( int i=0; contains( QString("files/recentdocument") + QString::number(i) ); i++ )
 		CACanorus::addRecentDocument( value(QString("files/recentdocument") + QString::number(i)).toString() );
 }
+#endif
 
+#ifndef SWIGCPP
 void CASettings::writeRecentDocuments() {
 	for ( int i=0; contains( QString("files/recentdocument") + QString::number(i) ); i++ )
 		remove( QString("files/recentdocument") + QString::number(i) );
@@ -225,12 +240,13 @@ void CASettings::writeRecentDocuments() {
 	for ( int i=0; i<CACanorus::recentDocumentList().size(); i++ )
 		setValue( QString("files/recentdocument") + QString::number(i), CACanorus::recentDocumentList()[i] );
 }
+#endif
 
 /*!
 	Returns the default settings path. This function is static and is used when no config
 	filename is specified or when a plugin wants a settings directory to store its own settings in.
  */
-QString CASettings::defaultSettingsPath() {
+const QString CASettings::defaultSettingsPath() {
 #ifdef Q_WS_WIN	// M$ is of course an exception
 	return QDir::homePath()+"/Application Data/Canorus";
 #else	// POSIX systems use the same config file path
