@@ -41,7 +41,6 @@ CAToolButton::~CAToolButton() {
 */
 void CAToolButton::showButtons() {
 	if(_popupWidget) { 
-		emit show(); 
 		_popupWidget->move( calculateTopLeft( _popupWidget->sizeHint() ) );
 		_popupWidget->show();
 	}
@@ -52,7 +51,6 @@ void CAToolButton::showButtons() {
 */
 void CAToolButton::hideButtons() {
 	if (_popupWidget) { 
-		emit hide(); 
 		_popupWidget->hide(); 
 	} 
 }

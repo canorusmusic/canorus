@@ -28,9 +28,9 @@ public:
 	
 	inline CAUndoToolButtonType undoType() { return _type; }
 	inline void setUndoType( CAUndoToolButtonType type ) { _type = type; }
+	void showButtons();
 	
 public slots:
-	void onShow(); 
 	void onListWidgetItemClicked( QListWidgetItem* );
 	
 protected:

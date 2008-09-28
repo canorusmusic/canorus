@@ -81,7 +81,6 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	
 	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 
 	         this, SLOT( onButtonPressed( int ) ) );
-	connect( this, SIGNAL(show()), this, SLOT( onShow() ) );	
 
 	QToolButton::setDefaultAction( 0 );
     
@@ -98,8 +97,6 @@ CAMenuToolButton::~CAMenuToolButton() {
 	delete _buttonGroup;
 	delete _groupBox;
 }
-
-
 
 /*!
 	Adds a Tool button to the menu with the given \a icon and \a buttonId.
@@ -145,16 +142,6 @@ void CAMenuToolButton::addButton( const QIcon icon, int buttonId, const QString 
 	_groupBox->setMinimumSize( xMargin + xSize, yMargin + ySize );
 }
 
-/*! 
-	Hackish adjustment needed for the groupbox to show correctly.
-
-	\warning Coordinates of groupBox are calculated according to its parent (main window) and not this parent (QToolBar).
-	\todo Move this warning..?
-*/	
-void CAMenuToolButton::onShow() {
-	_buttonGroup->button(currentId())->setChecked(true);
-}
-
 /*!
 	Hides the buttons menu, changes the current id and emits the toggled() signal.
 */
@@ -168,6 +155,14 @@ void CAMenuToolButton::onButtonPressed( int id ) {
 		setChecked(true); // turn it on if it can turn off
 	}
 	hideButtons();
+}
+
+/*!
+	Set the current button, then show the popup widget.
+*/
+void CAMenuToolButton::showButtons() {
+	_buttonGroup->button(currentId())->setChecked(true);
+	CAToolButton::showButtons();
 }
 
 /*!

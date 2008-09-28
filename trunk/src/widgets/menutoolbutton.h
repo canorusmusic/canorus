@@ -45,9 +45,9 @@ public:
 	inline void setMargin(int margin) { _margin = margin; }
 	inline void setNumIconsPerRow( int numIconsRow )  { _numIconsRow = numIconsRow; }
 	void setCurrentId(int id, bool triggerSignal=false);
+	void showButtons();
 	
 public slots:
-	void onShow();
 	void onButtonPressed( int );
 	
 private:
