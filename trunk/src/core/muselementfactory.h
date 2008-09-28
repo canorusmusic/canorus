@@ -73,6 +73,8 @@ public:
 	                    bool addToChord
 	                  );
 
+	static void placeAutoBar( CAPlayable* elt );
+
 	bool configureTuplet( QList<CAPlayable*> listOfNotes );
 
 	bool configureSlur( CAStaff *staff,
@@ -230,8 +232,6 @@ public:
 private:
 	CAMusElement *mpoMusElement;                    // Newly created music element itself
 	CAMusElement *mpoEmpty;                         // An empty (dummy) element.
-
-	void placeAutoBar( CAPlayable* elt );
 
 	/////////////////////////////////
 	// Element creation parameters //

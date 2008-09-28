@@ -2217,6 +2217,9 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				}
 
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, next, false );
+				if ( CACanorus::settings()->autoBar() )
+					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
+
 				noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
 				if ( tuplet ) {
@@ -2231,6 +2234,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				}
 
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, dright?dright->musElement():0, false );
+				if ( CACanorus::settings()->autoBar() )
+					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
 				if ( uiTupletType->isChecked() ) {
 					QList<CAPlayable*> elements;
@@ -2309,6 +2314,9 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				}
 
 				success = musElementFactory()->configureRest( voice, next );
+				if ( CACanorus::settings()->autoBar() )
+					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
+
 				noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
 				if (tuplet) {
@@ -2320,6 +2328,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				}
 
 				success = musElementFactory()->configureRest( voice, dright?dright->musElement():0 );
+				if ( CACanorus::settings()->autoBar() )
+					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 			}
 
 			if (success) {

@@ -262,9 +262,6 @@ bool CAMusElementFactory::configureNote( int pitch,
 					);
 			}
 		}
-
-		if ( CACanorus::settings()->autoBar() )
-			placeAutoBar( static_cast<CAPlayable*>(mpoMusElement) );
 	}
 
 	if (bSuccess) {
@@ -434,9 +431,6 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 		);
 		success = voice->insert( right, mpoMusElement );
 
-		if ( CACanorus::settings()->autoBar() )
-			placeAutoBar( static_cast<CAPlayable*>(mpoMusElement) );
-
 		if (!success)
 			removeMusElem(true);
 	}
@@ -472,8 +466,13 @@ bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> noteList ) {
 
 /*!
 	Places a barline in front of the element, if needed.
+
+	The function finds the last barline and places a new one, if the last bar is full.
  */
 void CAMusElementFactory::placeAutoBar( CAPlayable* elt ) {
+	if ( !elt )
+		return;
+
 	CABarline *b = static_cast<CABarline*>(elt->voice()->previousByType( CAMusElement::Barline, elt ));
 	CATimeSignature *t = static_cast<CATimeSignature*>(elt->voice()->previousByType( CAMusElement::TimeSignature, elt ));
 
