@@ -207,6 +207,50 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 }
 
 /*!
+	Inserts a note/rest in a tuplet/voice. If the result should not be a chord the element
+	found will be deleted and replaced. This function probably should also work for non
+	tuplets.
+
+	Currently only adding notes, and with the basic tuplet timelength are implemented.
+*/
+CAPlayable* CAVoice::insertInTupletAndVoiceAt( CAPlayable *reference, CAPlayable *p ) {
+	int t = reference->timeStart();
+	int rtype = static_cast<CAMusElement*>(reference)->musElementType();
+	int ptype = static_cast<CAMusElement*>(p)->musElementType();
+	CATuplet* tup = reference->tuplet();
+	
+	CAVoice* voice = reference->voice();
+	CAMusElement* next = voice->next(static_cast<CAMusElement*>(reference));
+	p->setTimeStart( t );
+		
+	if (rtype == CAMusElement::Rest) {
+
+		voice->insert( next, static_cast<CAMusElement*>(p), false );
+
+
+		if ( tup ) { // remove the rest from the tuplet and add the note
+			tup->removeNote(reference);
+			reference->setTuplet(0);
+			tup->addNote(p);
+			
+			reference->voice()->remove( reference, true );
+			tup->assignTimes();
+		}
+
+	} else {
+		// add the note to a chord
+		voice->insert( reference, static_cast<CAMusElement*>(p), true );
+
+		if ( tup ) {
+			tup->addNote(p);
+			tup->assignTimes();
+		}
+	}
+	return p;
+}
+
+
+/*!
 	Returns a pointer to the clef which the given \a elt belongs to.
 	Returns 0, if no clefs placed yet.
 */
@@ -814,7 +858,6 @@ bool CAVoice::containsPitch( CADiatonicPitch p, int timeStart ) {
 		     static_cast<CANote*>(_musElementList[i])->diatonicPitch()==p )
 			return true;
 	}
-
 	return false;
 }
 

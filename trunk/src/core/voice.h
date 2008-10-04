@@ -38,6 +38,7 @@ public:
 	void append( CAMusElement *elt, bool addToChord=false );
 	bool insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord=false );
 	bool remove( CAMusElement *elt, bool updateSignsTimes=true );
+	CAPlayable* insertInTupletAndVoiceAt( CAPlayable *p, CAPlayable *n );
 	bool synchronizeMusElements();
 
 	//////////////////////////////
