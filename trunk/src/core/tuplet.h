@@ -32,6 +32,7 @@ public:
 	inline CAPlayable *firstNote() { return noteList().front(); }
 	inline CAPlayable *lastNote() { return noteList().back(); }
 	inline bool containsNote( CAPlayable *p ) { return noteList().contains(p); }
+	CAPlayable *nextTimed( CAPlayable *p );
 
 	int timeLength();
 	int timeStart();
