@@ -197,6 +197,18 @@ void CATuplet::addNote( CAPlayable *p ) {
 	 noteList().insert(i, p);
 }
 
+/*!
+	Returns a pointer to the next member of tuplet with a greater timeStart.
+	If it doesn't exist it returns 0.
+ */
+CAPlayable* CATuplet::nextTimed( CAPlayable *p ) {
+	int t = p->timeStart();
+	for (int i=0;i<noteList().size(); i++){
+		if( noteList()[i]->timeStart() > t ) return noteList()[i];
+	}
+	return 0;
+}
+
 int CATuplet::timeLength() {
 	if (noteList().size()) {
 		return ( noteList().back()->timeEnd() - timeStart() );
