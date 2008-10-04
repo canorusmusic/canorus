@@ -35,6 +35,9 @@ private:
 	CADiatonicPitch matchPitchToKey( CAVoice *voice, CADiatonicPitch p );
 	CADiatonicPitch autoBarInsert( void );
 
+	CAPlayable* _tupPla;
+	CATuplet* _tup;
+
 };
 
 #endif /* KEYBDINPUT_H_ */
