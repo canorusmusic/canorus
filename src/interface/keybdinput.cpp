@@ -41,6 +41,8 @@ CAKeybdInput::CAKeybdInput (CAMainWin *mw) {
 	// Initialize keyboad input chord timer
 	_midiInChordTimer.stop();
 	_midiInChordTimer.setSingleShot(true);
+	_tupPla = 0;
+	_tup = 0;
 }
 
 /*!
@@ -88,9 +90,11 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 		CAMusElement* guck = voice->musElementAt(voice->musElementList().count()-1);
 		CAPlayable* pla;
 		CATuplet* tup;
+/*
 		std::cout<<"tu-Config: "<<_mw->uiTupletType->isChecked()
 					<<"/"<<_mw->uiTupletNumber->value()
 					<<"/"<<_mw->uiTupletActualNumber->value()<<std::endl;
+
 		for(i= voice->musElementList().count()-1; i>=0; i--) {
 			guck = voice->musElementAt(i);
 			pla = dynamic_cast<CAPlayable*>(guck);
@@ -103,14 +107,16 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 																	<<" "<<tup->containsNote(pla)
 																	<<" "<<(pla==tup->lastNote())
 																	<<" "<<pla->timeStart()
+																	<<" "<<guck->musElementType()
 																	<<std::endl;
 				} else {
-					std::cout<<"   "<<i<<"      Note"<<std::endl;
+					std::cout<<"   "<<i<<"      Note    t "<<guck->musElementType()<<std::endl;
 				}
 			} else {
-					std::cout<<"   "<<i<<"      ????"<<std::endl;
+					std::cout<<"   "<<i<<"      ????    t "<<guck->musElementType()<<std::endl;
 			}
 		}
+*/
 
 		if (left && ((CAMusElement*)(left))->musElementType()==CAMusElement::Tuplet ) {
 			CATuplet *tuplet = static_cast<CAPlayable*>(left->musElement())->tuplet();
@@ -154,9 +160,23 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 			_mw->currentScoreViewPort()->clearSelection();
 		}
 
+		if ( _tupPla &&!appendToChord ) {
+			_tupPla = _tup->nextTimed( _tupPla );
+		}
 
-		// from mainwin.cpp, ca. line 2241
-		if ( _mw->uiTupletType->isChecked() ) {
+		if ( !_tupPla && !appendToChord ) {
+		//	if ( CACanorus::settings()->autoBar() )
+				//  CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(_mw->musElementFactory()->musElement()) );
+		}
+
+
+		if ( _tupPla ) {
+			_tupPla = voice->insertInTupletAndVoiceAt( _tupPla, note );
+			_tup = _tupPla->tuplet();
+
+
+		} else if ( _mw->uiTupletType->isChecked() ) {
+			// from mainwin.cpp, ca. line 2241
 			// insert a tuplet, first is the note, tuplet is filled with rests
 			QList<CAPlayable*> elements;
 			elements << static_cast<CAPlayable*>(note);
@@ -164,7 +184,8 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 				_mw->musElementFactory()->configureRest( voice, 0 );
 				elements << static_cast<CAPlayable*>(_mw->musElementFactory()->musElement());
 			}
-			new CATuplet( _mw->uiTupletNumber->value(), _mw->uiTupletActualNumber->value(), elements );
+			_tup = new CATuplet( _mw->uiTupletNumber->value(), _mw->uiTupletActualNumber->value(), elements );
+			_tupPla = _tup->firstNote();
 
 		} else {
 			// insert just a note
@@ -184,7 +205,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 		_mw->currentScoreViewPort()->repaint();
 
 		QList<CADrawableMusElement*> list = v->selection();
-		std::cout << " Selektierte Elemente: " << list.size() << " Stück" << std::endl;
+		//std::cout << " Selektierte Elemente: " << list.size() << " Stück" << std::endl;
 
 		QRect scene = v->worldCoords();
 		int xlast = v->timeToCoordsSimpleVersion( voice->lastTimeStart() );
