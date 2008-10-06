@@ -55,6 +55,9 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 
 	_curStreamTime = 0;
 	_lastPlayableLength = CAPlayableLength::Undefined;
+	bool anacrusisCheck = true;	// process upbeat eventually
+	int timeBeats = -1;
+	int timeBeat = -1;
 
 	// Write \relative note for the first note
 	_lastNotePitch = writeRelativeIntro();
@@ -92,6 +95,8 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				CATimeSignature *time = static_cast<CATimeSignature*>(v->musElementAt(i));
 				if (time->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\time " << time->beats() << "/" << time->beat();
+				timeBeats = time->beats();	// remember for anacrusis processing
+				timeBeat = time->beat();
 
 				break;
 			}
@@ -109,6 +114,36 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 		}
 
 		if ( v->musElementAt(i)->isPlayable() ) {
+
+			if (anacrusisCheck) {	// upbeat bar
+				if (timeBeats < 0) anacrusisCheck = false;	// without time signature no upbeat
+				int beatNote = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter );
+				switch (timeBeat) {	// only time signature with eigth/quarter/half are supported
+				case 4:			break;
+				case 8:			beatNote /= 2;	break;
+				case 2:			beatNote *= 2;	break;
+				default:		anacrusisCheck = false;
+				}
+				if (!anacrusisCheck) break;
+
+				int oneBar = timeBeats*beatNote;
+				int barlen = 0;
+				for (int j=i; j<v->musElementCount(); j++) {
+					if (v->musElementAt(j)->isPlayable()) {
+						barlen += v->musElementAt(j)->timeLength();
+					}
+					// after one bar without barline no anacrusis, probably a staff without barlines
+					if (v->musElementAt(j)->musElementType() == CAMusElement::Barline) break;
+					// don't look after more than one bar length
+					if (v->musElementAt(j)->timeLength() >= oneBar) break;
+				}
+				const int quarter = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter );
+				const int thirtysecond = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::ThirtySecond );
+				if (barlen < oneBar) {
+					out() << "\\partial " <<thirtysecond<<"*"<<barlen/thirtysecond<<" ";
+				}
+				anacrusisCheck = false;		// we don't check a second time
+			}
 			exportPlayable( static_cast<CAPlayable*>(v->musElementAt(i)) );
 		}
 
