@@ -218,11 +218,11 @@ CAPlayable* CAVoice::insertInTupletAndVoiceAt( CAPlayable *reference, CAPlayable
 	int rtype = static_cast<CAMusElement*>(reference)->musElementType();
 	int ptype = static_cast<CAMusElement*>(p)->musElementType();
 	CATuplet* tup = reference->tuplet();
-	
+
 	CAVoice* voice = reference->voice();
 	CAMusElement* next = voice->next(static_cast<CAMusElement*>(reference));
 	p->setTimeStart( t );
-		
+
 	if (rtype == CAMusElement::Rest) {
 
 		voice->insert( next, static_cast<CAMusElement*>(p), false );
@@ -232,7 +232,7 @@ CAPlayable* CAVoice::insertInTupletAndVoiceAt( CAPlayable *reference, CAPlayable
 			tup->removeNote(reference);
 			reference->setTuplet(0);
 			tup->addNote(p);
-			
+
 			reference->voice()->remove( reference, true );
 			tup->assignTimes();
 		}
@@ -651,7 +651,7 @@ CAMusElement *CAVoice::previous(CAMusElement *elt) {
 }
 
 /*!
-	Returns a pointer to the next note with the higher timeStart than the given one.
+	Returns a pointer to the next note with the strictly higher timeStart than the given one.
 	Returns 0, if the such a note doesn't exist.
 */
 CANote *CAVoice::nextNote( int timeStart ) {
@@ -670,7 +670,7 @@ CANote *CAVoice::nextNote( int timeStart ) {
 }
 
 /*!
-	Returns a pointer to the previous note with the lower timeStart than the given one.
+	Returns a pointer to the previous note with the strictly lower timeStart than the given one.
 	Returns 0, if the such a note doesn't exist.
 */
 CANote *CAVoice::previousNote( int timeStart ) {
@@ -689,7 +689,7 @@ CANote *CAVoice::previousNote( int timeStart ) {
 }
 
 /*!
-	Returns a pointer to the next rest with the higher timeStart than the given one.
+	Returns a pointer to the next rest with the strictly higher timeStart than the given one.
 	Returns 0, if the such a note doesn't exist.
 */
 CARest *CAVoice::nextRest(int timeStart) {
@@ -708,7 +708,7 @@ CARest *CAVoice::nextRest(int timeStart) {
 }
 
 /*!
-	Returns a pointer to the previous rest with the lower timeStart than the given one.
+	Returns a pointer to the previous rest with the strictly lower timeStart than the given one.
 	Returns 0, if the such a note doesn't exist.
 */
 CARest *CAVoice::previousRest(int timeStart) {
@@ -727,14 +727,14 @@ CARest *CAVoice::previousRest(int timeStart) {
 }
 
 /*!
-	Returns a pointer to the next note with the higher timeStart than the given one.
+	Returns a pointer to the next playable element with the strictly higher timeStart than the given one.
 	Returns 0, if the such a note doesn't exist.
 */
 CAPlayable *CAVoice::nextPlayable(int timeStart) {
 	int i;
 	for (i=0;
 	     i<_musElementList.size() &&
-	     	(dynamic_cast<CAPlayable*>(_musElementList[i]) ||
+	     	(!_musElementList[i]->isPlayable() ||
 	     	 _musElementList[i]->timeStart()<=timeStart
 	     	);
 	     i++);
@@ -746,14 +746,14 @@ CAPlayable *CAVoice::nextPlayable(int timeStart) {
 }
 
 /*!
-	Returns a pointer to the previous playable with the lower timeStart than the given one.
+	Returns a pointer to the previous playable with the strictly lower timeStart than the given one.
 	Returns 0, if the such a note doesn't exist.
 */
 CAPlayable *CAVoice::previousPlayable(int timeStart) {
 	int i;
 	for (i=_musElementList.size()-1;
 	     i>-1 &&
-	     	(dynamic_cast<CAPlayable*>(_musElementList[i]) ||
+	     	(!_musElementList[i]->isPlayable() ||
 	     	 _musElementList[i]->timeStart()>=timeStart
 	     	);
 	     i--);

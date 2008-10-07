@@ -4369,25 +4369,57 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 		}
 
 		for (QSet<CAMusElement*>::const_iterator i=musElemSet.constBegin(); i!=musElemSet.constEnd(); i++) {
-			if ( (*i)->musElementType()==CAMusElement::Note ||
-			     (*i)->musElementType()==CAMusElement::Rest ) {
+			if ( (*i)->isPlayable() ) {
 				CAPlayable *p = static_cast<CAPlayable*>(*i);
-				if ( !dynamic_cast<CANote*>(p) || !static_cast<CANote*>(p)->isPartOfChord() ) {
+				if ( (p->musElementType()==CAMusElement::Rest) || (!static_cast<CANote*>(p)->isPartOfChord()) ) {
 					// find out the status of the rests in other voices
 					QList<CAPlayable*> chord = p->staff()->getChord( p->timeStart() );
+					QList<CARest*> restsInOtherVoices;
+
+					// if deleting a rest, shift back by default
+					if (p->musElementType()==CAMusElement::Rest)
+						deleteNotes = true;
+
 					int chordIdx;
 					for (chordIdx=0; chordIdx<chord.size(); chordIdx++) { // calculates chordIdx
-						if ( chord[chordIdx]->voice()!=p->voice() &&
-						    (chord[chordIdx]->musElementType()!=CAMusElement::Rest ||
-						     chord[chordIdx]->timeStart()!=p->timeStart() ||
-						     chord[chordIdx]->timeLength()!=p->timeLength()
-						    )
-						   )
-							break;
+						if ( chord[chordIdx]->voice()!=p->voice() ) {
+							if ( chord[chordIdx]->musElementType()==CAMusElement::Note ) { // note in other voice, do not shift back
+								deleteNotes = false;
+								break;
+							} else { // rest in other voice
+								// is the total sum of rests in other voices enough
+
+								restsInOtherVoices << static_cast<CARest*>(chord[chordIdx]);
+								if ( chord[chordIdx]->timeEnd() < p->timeEnd() ) {
+									// rest in other voice finishes before the end of our selection
+									// check, if it contains right neighbours to fill the gap
+									CAPlayable *next = chord[chordIdx];
+									while ( (next = next->voice()->nextPlayable( next->timeStart() )) && (next->timeStart() < p->timeEnd()) ) {
+										if ( next->musElementType()==CAMusElement::Note ) { // note in other voice, do not shift back
+											deleteNotes = false;
+											break;
+										}
+										restsInOtherVoices << static_cast<CARest*>(next);
+									}
+
+									// check, if it failed
+									if ( !next && restsInOtherVoices.size() &&
+									    ( restsInOtherVoices.back()->voice()!=chord[chordIdx]->voice() ||
+									      restsInOtherVoices.back()->voice()==chord[chordIdx]->voice() &&
+									      restsInOtherVoices.back()->timeEnd() < p->timeEnd() )
+									   ) {
+										deleteNotes = false;
+										break;
+									}
+								}
+
+							}
+						}
 					}
 
-					if ( p->musElementType()==CAMusElement::Note && !deleteNotes || chordIdx!=chord.size() ) {
+					if ( !deleteNotes ) {
 						// replace note with rest
+
 						QList<CARest*> rests = CARest::composeRests( CAPlayableLength::playableLengthToTimeLength( p->playableLength() ), p->timeStart(), p->voice(), CARest::Normal );
 						for (int j=0; j<rests.size(); j++)
 							p->voice()->insert( p, rests[j] );
@@ -4412,11 +4444,69 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 						}
 
 					} else {
-						// actually remove the note or rest and shift other elements back if only rests in other voices present
-						for (int j=0; j<chord.size(); j++) {              // remove any rests from other voices
-							if ( chord[j]->voice()!=p->voice() ) {
-								musElemSet.remove( chord[j] );
-								delete chord[j];
+						// Actually remove the note or rest and shift other elements back if only rests in other voices present.
+						// This is allowed, if only rests are present below the deleted element in other voices.
+						// Example - the most comprehensive deletion:
+						// When deleting a half note in the first voice and there are two half rests in the second voice sticking
+						// together just in the middle of our half note, the deletion is made in 3 steps:
+						// 1. Convert the two rests below the deleted element to one quarter rest before the element, one half rest
+						//    just below the deleted element (its timeStart and timeLength are now equal to deleted elt) and one
+						//    quarter rest after the deleted element.
+						// 2. Do step 1 for all other voices (we only have 2 voices in our case).
+						// 3. Delete the newly generated rest right below the element in other voices and do not shift back
+						//    shared elements (shared elements are shifted back in the next step).
+						// 4. Delete the deleted element and shift back shared elements.
+
+						QList<CARest*> restRightBelowDeletedElement;
+						// remove any rests from other voices
+						for (int j=0; j<restsInOtherVoices.size(); j++) {
+
+							// gather rests in the current voice
+							QList<CARest*> restsInCurVoice;
+							restsInCurVoice << restsInOtherVoices[j];
+							CAVoice *rVoice = restsInOtherVoices[j]->voice();
+							while ( (++j < restsInOtherVoices.size()) && (restsInOtherVoices[j]->voice() == rVoice) ) {
+								restsInCurVoice << restsInOtherVoices[j];
+							}
+
+							int firstTimeStart = restsInCurVoice.front()->timeStart();
+							int fullTimeLength = restsInCurVoice.back()->timeEnd() - restsInCurVoice.front()->timeStart();
+							int firstTimeLength = p->timeStart() - firstTimeStart;
+							CARest::CARestType firstRestType = restsInCurVoice.front()->restType();
+							CARest::CARestType lastRestType = restsInCurVoice.back()->restType();
+
+							CAMusElement *nextElt = rVoice->next( restsInCurVoice.back() ); // needed later for insertion
+
+							// convert the rests
+							for ( int k=0; k<restsInCurVoice.size(); k++) {
+								if (restsInCurVoice[k]->tuplet()) {
+									musElemSet.remove( restsInCurVoice[k]->tuplet() );
+								}
+								musElemSet.remove( restsInCurVoice[k] );
+								rVoice->remove( restsInCurVoice[k], true );
+							}
+
+							// insert the first rests
+							QList<CARest*> firstRests = CARest::composeRests( firstTimeLength, firstTimeStart, rVoice, firstRestType );
+							for (int k=0; k<firstRests.size(); k++) {
+								rVoice->insert( nextElt, firstRests[k] );
+							}
+
+							// insert the rests below the element - needed to correctly update timeStart of shared elements
+							QList<CARest*> restsRightBelow = CARest::composeRests( p->timeLength(), firstTimeStart+firstTimeLength, rVoice, CARest::Normal );
+							for (int k=0; k<restsRightBelow.size(); k++) {
+								rVoice->insert( nextElt, restsRightBelow[k] );
+							}
+
+							// insert the rests after the element
+							QList<CARest*> lastRests = CARest::composeRests( fullTimeLength-(firstTimeLength+p->timeLength()), firstTimeStart+firstTimeLength+p->timeLength(), rVoice, lastRestType );
+							for (int k=0; k<lastRests.size(); k++) {
+								rVoice->insert( nextElt, lastRests[k] );
+							}
+
+							// delete the rests below the element
+							for (int k=0; k<restsRightBelow.size(); k++) {
+								delete restsRightBelow[k]; // do not shift back shared elements
 							}
 						}
 
