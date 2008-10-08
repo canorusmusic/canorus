@@ -51,6 +51,7 @@ private:
 
 	void writeDocumentHeader();
 	CADiatonicPitch writeRelativeIntro();
+	void doAnacrusisCheck(CATimeSignature *time);
 
 	////////////////////
 	// Helper methods //
