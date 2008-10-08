@@ -282,22 +282,20 @@ void CALilyPondExport::doAnacrusisCheck(CATimeSignature *time) {
 
 				int oneBar = time->beats()*beatNoteLen;
 				int barlen = 0;
-				for (int j=0; j<curVoice()->musElementCount(); j++) {
-					if (curVoice()->musElementAt(j)->isPlayable()) {
-						barlen += curVoice()->musElementAt(j)->timeLength();
+				for (int i=0; i<curVoice()->musElementCount(); i++) {
+					if (curVoice()->musElementAt(i)->isPlayable()) {
+						barlen += curVoice()->musElementAt(i)->timeLength();
 					}
-					// after one bar without barline no anacrusis (probably a staff without barlines)
-					if (curVoice()->musElementAt(j)->musElementType() == CAMusElement::Barline) break;
-					// don't look for more than one bar
-					if (barlen >= oneBar) break;
+					// if it's a whole bar or beyond no upbeat (probably a staff without barlines)
+					if (barlen >= oneBar) return;
+
+					if (curVoice()->musElementAt(i)->musElementType() == CAMusElement::Barline) break;
 				}
-				if (barlen < oneBar) {
-					CAPlayableLength res = CAPlayableLength( CAPlayableLength::HundredTwentyEighth );
-					out() << "\\partial "
-					<<res.musicLength()
-					<<"*"<<barlen/res.playableLengthToTimeLength(res)
-					<<" ";
-				}
+				CAPlayableLength res = CAPlayableLength( CAPlayableLength::HundredTwentyEighth );
+				out() << "\\partial "
+				<<res.musicLength()
+				<<"*"<<barlen/res.playableLengthToTimeLength(res)
+				<<" ";
 }
 
 /*!
