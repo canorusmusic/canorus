@@ -56,8 +56,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	_curStreamTime = 0;
 	_lastPlayableLength = CAPlayableLength::Undefined;
 	bool anacrusisCheck = true;	// process upbeat eventually
-	int timeBeats = -1;
-	int timeBeat = -1;
+	CATimeSignature *time = 0;
 
 	// Write \relative note for the first note
 	_lastNotePitch = writeRelativeIntro();
@@ -91,12 +90,10 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				break;
 			}
 			case CAMusElement::TimeSignature: {
-				// CATimeSignature
-				CATimeSignature *time = static_cast<CATimeSignature*>(v->musElementAt(i));
+				// CATimeSignature, remember for anacrusis processing
+				time = static_cast<CATimeSignature*>(v->musElementAt(i));
 				if (time->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\time " << time->beats() << "/" << time->beat();
-				timeBeats = time->beats();	// remember for anacrusis processing
-				timeBeat = time->beat();
 
 				break;
 			}
@@ -115,34 +112,9 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 
 		if ( v->musElementAt(i)->isPlayable() ) {
 
-			if (anacrusisCheck) {	// upbeat bar
-				if (timeBeats < 0) anacrusisCheck = false;	// without time signature no upbeat
-				int beatNote = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter );
-				switch (timeBeat) {	// only time signature with eigth/quarter/half are supported
-				case 4:			break;
-				case 8:			beatNote /= 2;	break;
-				case 2:			beatNote *= 2;	break;
-				default:		anacrusisCheck = false;
-				}
-				if (!anacrusisCheck) break;
-
-				int oneBar = timeBeats*beatNote;
-				int barlen = 0;
-				for (int j=i; j<v->musElementCount(); j++) {
-					if (v->musElementAt(j)->isPlayable()) {
-						barlen += v->musElementAt(j)->timeLength();
-					}
-					// after one bar without barline no anacrusis, probably a staff without barlines
-					if (v->musElementAt(j)->musElementType() == CAMusElement::Barline) break;
-					// don't look after more than one bar length
-					if (v->musElementAt(j)->timeLength() >= oneBar) break;
-				}
-				const int quarter = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter );
-				const int thirtysecond = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::ThirtySecond );
-				if (barlen < oneBar) {
-					out() << "\\partial " <<thirtysecond<<"*"<<barlen/thirtysecond<<" ";
-				}
-				anacrusisCheck = false;		// we don't check a second time
+			if (anacrusisCheck) {			// first check upbeat bar, only once
+				doAnacrusisCheck( time );
+				anacrusisCheck = false;
 			}
 			exportPlayable( static_cast<CAPlayable*>(v->musElementAt(i)) );
 		}
@@ -290,6 +262,42 @@ void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
 		if (i>0) out() << " "; // space between syllables
 		out() << syllableToLilyPond(lc->syllableAt(i));
 	}
+}
+
+/*!
+	Writes the partial command before the first note if there is an upbeat.
+*/
+void CALilyPondExport::doAnacrusisCheck(CATimeSignature *time) {
+
+				if (!time) return;			// without time signature no upbeat
+
+				// compute the lenght of the beat note,	eigth/quarter/half are supported
+				int beatNoteLen = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter );
+				switch (time->beat()) {
+				case 4:			break;
+				case 8:			beatNoteLen /= 2;	break;
+				case 2:			beatNoteLen *= 2;	break;
+				default:		return;		// at strange base notes no upbeat
+				}
+
+				int oneBar = time->beats()*beatNoteLen;
+				int barlen = 0;
+				for (int j=0; j<curVoice()->musElementCount(); j++) {
+					if (curVoice()->musElementAt(j)->isPlayable()) {
+						barlen += curVoice()->musElementAt(j)->timeLength();
+					}
+					// after one bar without barline no anacrusis (probably a staff without barlines)
+					if (curVoice()->musElementAt(j)->musElementType() == CAMusElement::Barline) break;
+					// don't look for more than one bar
+					if (barlen >= oneBar) break;
+				}
+				if (barlen < oneBar) {
+					CAPlayableLength res = CAPlayableLength( CAPlayableLength::HundredTwentyEighth );
+					out() << "\\partial "
+					<<res.musicLength()
+					<<"*"<<barlen/res.playableLengthToTimeLength(res)
+					<<" ";
+				}
 }
 
 /*!
