@@ -21,7 +21,7 @@ class CAMenuToolButton;
 	\class CAKeybdInput
 	\brief Music input per midi non realtime
 	This class adds a midi keyboard to the input devices to write a music score. It allows to use
-	the computer mouse, computer keyboard and midi keyboard to input scores in non realtime.
+	a midi keyboard, the computer mouse and the computer keyboard to input scores in non realtime.
 
 	To activate midi keyboard input you have to select in canorus settings, readable devices,
 	the alsa midi port of your midi keyboard. When in input mode, when a voice and a duration
@@ -29,10 +29,13 @@ class CAMenuToolButton;
 
 	Key strockes within 100 ms will be combined into a chord.
 
-	User selectable (to be implemented) midi pitches can be set to be interpreted as rest input,
+	Accents are set according the current key pitch. Automatic tracking of the scene is done.
+
+	todo: User selectable (to be implemented) midi pitches can be set to be interpreted as rest input,
 	punctuation and so on.
 
-	todo: accents according the current key pitch, auto barlines, automatic tracking of the scene ...
+	todo: applying auto barlines, possibly inserting at the currently selected note, configuration of
+	selectable midi pitches to 
 	
 */
 
@@ -65,119 +68,72 @@ void CAKeybdInput::onMidiInEvent( QVector<unsigned char> m ) {
 	}
 }
  
+/*!
+	This is the entry point the midi input device. All note on events are passed over here.
+*/
 void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char> m) {
 
 	int i;
 	CADiatonicPitch p = CAMidiDevice::midiPitchToDiatonicPitch( m[1] );
-	// didn't help:  _mw->setCurrentViewPort( v );
+	CADiatonicPitch nonenharmonicPitch;
 
 	CAVoice *voice = _mw->currentVoice();
 	if (voice) {
 
-		autoBarInsert();
-
 		int cpitch = m[1];
+/*
+		// will publish this only when it's configurable. Habe only a four octave keyboard ...
+
+		CAPlayableLength plength = CAPlayableLength::Undefined;
+		switch (cpitch) {
+		case 39:	plength = CAPlayableLength::Whole;		break;
+		case 40:	plength = CAPlayableLength::Half;		break;
+		case 41:	plength = CAPlayableLength::Quarter;	break;
+		case 42:	plength = CAPlayableLength::Eighth;		break;
+		case 43:	plength = CAPlayableLength::Sixteenth;	break;
+		default:	;
+		}
+		if (plength !=  CAPlayableLength::Undefined) {
+			_mw->uiPlayableLength->setCurrentId( plength.musicLength(), true );
+			_mw->musElementFactory()->playableLength().setDotted( 0 );
+			v->setShadowNoteLength( _mw->musElementFactory()->playableLength() );
+			v->updateHelpers();
+			v->repaint();
+			return;
+		}
+
 		switch (cpitch) {
 		case 37:	std::cout << "  Pause" << std::endl;
 					break;
-		default:	;
-		}
-
-		CADiatonicPitch nonenharmonicPitch = matchPitchToKey( voice, p );
-
-		CADrawableMusElement *left = (CADrawableMusElement*)(voice->lastMusElement());
-		// Problem: zeigt auf die KeySignatur
-		CAMusElement* guck = voice->musElementAt(voice->musElementList().count()-1);
-		CAPlayable* pla;
-		CATuplet* tup;
-/*
-		std::cout<<"tu-Config: "<<_mw->uiTupletType->isChecked()
-					<<"/"<<_mw->uiTupletNumber->value()
-					<<"/"<<_mw->uiTupletActualNumber->value()<<std::endl;
-
-		for(i= voice->musElementList().count()-1; i>=0; i--) {
-			guck = voice->musElementAt(i);
-			pla = dynamic_cast<CAPlayable*>(guck);
-			if (pla) {
-				tup = pla->tuplet();
-				//tup = static_cast<CAPlayable*>(guck)->tuplet();
-				if (tup) {
-					std::cout<<"   "<<i<<"      Tuplet gefunden: "<<tup->actualNumber()<<"/"<<tup->number()
-																	<<" "<<(pla==tup->firstNote())
-																	<<" "<<tup->containsNote(pla)
-																	<<" "<<(pla==tup->lastNote())
-																	<<" "<<pla->timeStart()
-																	<<" "<<guck->musElementType()
-																	<<std::endl;
-				} else {
-					std::cout<<"   "<<i<<"      Note    t "<<guck->musElementType()<<std::endl;
-				}
-			} else {
-					std::cout<<"   "<<i<<"      ????    t "<<guck->musElementType()<<std::endl;
-			}
+		case 38:	_mw->uiTupletType->defaultAction()->setChecked( !_mw->uiTupletType->isChecked() );
+					return;
+		default:	nonenharmonicPitch = matchPitchToKey( voice, p );
 		}
 */
 
-		if (left && ((CAMusElement*)(left))->musElementType()==CAMusElement::Tuplet ) {
-			CATuplet *tuplet = static_cast<CAPlayable*>(left->musElement())->tuplet();
-			QList<CAPlayable*> noteList; int number; int actualNumber;
-			std::cout<<" Tuplet "<<tuplet<<" Liste mit "<<noteList.size()<<" number "<<number<<" actnume "
-					<<actualNumber<<std::endl;
-			if ( tuplet  ) {
-				noteList = tuplet->noteList();
-				number = tuplet->number();
-				actualNumber = tuplet->actualNumber();
-				std::cout<<" Tuplet "<<tuplet<<" Liste mit "<<noteList.size()<<" number "<<number<<" actnume "
-						<<actualNumber<<std::endl;
-				delete tuplet;
-			}
-			int timeSum = left->musElement()->timeLength();
-			int timeLength = CAPlayableLength::playableLengthToTimeLength( _mw->musElementFactory()->playableLength() );
-		}
-
-
-
+		nonenharmonicPitch = matchPitchToKey( voice, p );
 		CANote *note = new CANote( nonenharmonicPitch, _mw->musElementFactory()->playableLength(), voice, -1 );
 
-		// Only for testing these functions, will be cleaned up!
-		// It's still a work in progress.
-		CADrawableContext *drawableContext = v->currentContext();
-		CAStaff *staff=0;
-		CADrawableStaff *drawableStaff = 0;
-		if (drawableContext) {
-			drawableStaff = dynamic_cast<CADrawableStaff*>(drawableContext);
-			staff = dynamic_cast<CAStaff*>(drawableContext->context());
-		}
-
-		// QList<CAMusElement*> tupletList = voice->getPreviousByType( CAMusElement::Tuplet, 1000000 ); // voice->lastTimeEnd());
-		// std::cout << " Tonartliste: " << keyList.size();
-		// std::cout << "Tupletliste: " << tupletList.size() << std::endl;
-
-		// if note come in sufficiently close together we make a chord of them
+		// if notes come in sufficiently close together we make a chord of them
 		bool appendToChord = _midiInChordTimer.isActive();
-		if (!appendToChord) {
-			v->clearSelection();
-			_mw->currentScoreViewPort()->clearSelection();
-		}
 
+		// Where to put the note? When in a tuplet, do a chord in the tuplet or the nex not in the tuplet.
 		if ( _tupPla &&!appendToChord ) {
 			_tupPla = _tup->nextTimed( _tupPla );
 		}
 
 		if ( !_tupPla && !appendToChord ) {
-		//	if ( CACanorus::settings()->autoBar() )
-				//  CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(_mw->musElementFactory()->musElement()) );
+			//	try to apply autobar, still crashing:
+			//	if ( CACanorus::settings()->autoBar() )
+			//  	CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(_mw->musElementFactory()->musElement()) );
 		}
 
-
 		if ( _tupPla ) {
+			// next note in tuplet
 			_tupPla = voice->insertInTupletAndVoiceAt( _tupPla, note );
 			_tup = _tupPla->tuplet();
-
-
 		} else if ( _mw->uiTupletType->isChecked() ) {
-			// from mainwin.cpp, ca. line 2241
-			// insert a tuplet, first is the note, tuplet is filled with rests
+			// start a new tuplet
 			QList<CAPlayable*> elements;
 			elements << static_cast<CAPlayable*>(note);
 			for (int i=1; i<_mw->uiTupletNumber->value(); i++) {
@@ -186,36 +142,39 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 			}
 			_tup = new CATuplet( _mw->uiTupletNumber->value(), _mw->uiTupletActualNumber->value(), elements );
 			_tupPla = _tup->firstNote();
-
 		} else {
 			// insert just a note
 			voice->append( note, appendToChord );
 		}
 
-
 		voice->synchronizeMusElements();	// probably not needed
-		v->addToSelection( (CADrawableMusElement*)(voice->lastMusElement()), true );	// todo: is not working as I expect it ...
 
-		// QList<CAMusElement*> newEltList;
-		// select paste elements
-		// for (int i=0; i<newEltList.size(); i++)
-		// 	currentScoreViewPort()->addToSelection( newEltList[i] );
+		// now we try to highlight the inserted note/chord by selection:
+		if (!appendToChord) {
+			v->clearSelection();	// remove old note/chord from selection
+		}
+		QList<CAPlayable*> lp = voice->getChord(voice->lastMusElement()->timeStart());
+		QList<CAMusElement*> lme;
+		for (int i=0;i<lp.size();i++) lme << static_cast<CAMusElement*>(lp[i]);
+		v->addToSelection(lme);
 
-		// verkraftet er nicht:  _mw->currentScoreViewPort()->addToSelection( voice->lastMusElement() );
-		_mw->currentScoreViewPort()->repaint();
+		// When I looking the last appended note is note showing up. Where goes it missing?
+		// Still without a clue. georg
+		// QList<CADrawableMusElement*> list = v->selection();
+		// std::cout << " Selektierte Elemente: " << list.size() << " Stück, oben "<<lp.size()<<" und "<<lme.size() << std::endl;
 
-		QList<CADrawableMusElement*> list = v->selection();
-		//std::cout << " Selektierte Elemente: " << list.size() << " Stück" << std::endl;
-
+		// scene tracking
 		QRect scene = v->worldCoords();
 		int xlast = v->timeToCoordsSimpleVersion( voice->lastTimeStart() );
 		if ( ((xlast+50) > scene.right()) ) {	// the magic number 50 should be defined, ist the width of an element
 			scene.translate( scene.width()/2, 0 );
 			v->setWorldCoords(scene, false, true );
 		}
+		v->updateHelpers();
 		v->repaint();
 		CACanorus::rebuildUI(_mw->document(), _mw->currentSheet());
 
+		// start timer eventually for chord detection
 		if ( !_midiInChordTimer.isActive() ) {
 			_midiInChordTimer.start( 100 );		// Notes max 100 ms apart will form a chord
 		}
@@ -223,6 +182,12 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 }
 
 
+/*!
+	This function looks up the current key signiture. Then it computes the proper accidentials
+	for the note.
+
+	This function should be somewhere else, maybe in \a CADiatonicPitch ?
+*/
 CADiatonicPitch CAKeybdInput::matchPitchToKey( CAVoice* voice, CADiatonicPitch p ) {
 
 	// Default actual Key Signature is C
@@ -275,7 +240,9 @@ CADiatonicPitch CAKeybdInput::matchPitchToKey( CAVoice* voice, CADiatonicPitch p
 	return p;
 }
 
-
+/*!
+	Not in use currently, will be superseeded by autoBar() hopefully
+*/
 CADiatonicPitch CAKeybdInput::autoBarInsert( void ) {
 	// Trace which Time Signature might be in effect.
 	// We make a local copy for later optimisation by only updating at a non
