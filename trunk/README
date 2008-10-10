@@ -91,6 +91,9 @@ Add " util" as last library to the line f.e. like this:
 
 - TARGET_LINK_LIBRARIES(canorus ${QT_LIBRARIES} ${QT_QTXML_LIBRARY} ${RUBY_LIBRARY} ${PYTHON_LIBRARY} util)
 
+To disable Ruby/Python support even when installed call cmake with these options:
+-CNO_RUBY:BOOL=TRUE -CNO_PYTHON:BOOL=TRUE
+
 I hope that the NO_DEFAULT_PATH options gets added to newer cmake releases.
 
 Settings
