@@ -33,7 +33,6 @@ private:
 	signed char _actualKeySignatureAccs[7];
 	int _actualKeyAccidentalsSum;
 	CADiatonicPitch matchPitchToKey( CAVoice *voice, CADiatonicPitch p );
-	CADiatonicPitch autoBarInsert( void );
 
 	CAPlayable* _tupPla;
 	CATuplet* _tup;

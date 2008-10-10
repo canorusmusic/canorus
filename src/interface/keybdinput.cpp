@@ -6,6 +6,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
+#include <QObject>
+
 #include "interface/keybdinput.h"
 #include "interface/mididevice.h"
 #include "core/muselementfactory.h"
@@ -13,6 +15,8 @@
 #include "drawable/drawablestaff.h"
 #include "widgets/menutoolbutton.h"
 #include "canorus.h"
+#include "core/settings.h"
+#include "core/undo.h"
 
 class CAMenuToolButton;
  
@@ -81,9 +85,9 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 	if (voice) {
 
 		int cpitch = m[1];
-/*
-		// will publish this only when it's configurable. Habe only a four octave keyboard ...
 
+		// will publish this only when it's configurable. Habe only a four octave keyboard ...
+/*
 		CAPlayableLength plength = CAPlayableLength::Undefined;
 		switch (cpitch) {
 		case 39:	plength = CAPlayableLength::Whole;		break;
@@ -101,18 +105,21 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 			v->repaint();
 			return;
 		}
+*/
+		CANote *note = 0;
+		CARest *rest = 0;
 
 		switch (cpitch) {
-		case 37:	std::cout << "  Pause" << std::endl;
-					break;
-		case 38:	_mw->uiTupletType->defaultAction()->setChecked( !_mw->uiTupletType->isChecked() );
-					return;
+//		case 37:	std::cout << "  Pause" << std::endl;
+//					rest = new CARest( CARest::Normal, _mw->musElementFactory()->playableLength(), voice, 0, -1 );
+//					break;
+//		case 38:	_mw->uiTupletType->defaultAction()->setChecked( !_mw->uiTupletType->isChecked() );
+//					return;
 		default:	nonenharmonicPitch = matchPitchToKey( voice, p );
+					note = new CANote( nonenharmonicPitch, _mw->musElementFactory()->playableLength(), voice, -1 );
 		}
-*/
 
-		nonenharmonicPitch = matchPitchToKey( voice, p );
-		CANote *note = new CANote( nonenharmonicPitch, _mw->musElementFactory()->playableLength(), voice, -1 );
+		CACanorus::undo()->createUndoCommand( _mw->document(), QObject::tr("insert midi note", "undo") );
 
 		// if notes come in sufficiently close together we make a chord of them
 		bool appendToChord = _midiInChordTimer.isActive();
@@ -122,20 +129,19 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 			_tupPla = _tup->nextTimed( _tupPla );
 		}
 
-		if ( !_tupPla && !appendToChord ) {
-			//	try to apply autobar, still crashing:
-			//	if ( CACanorus::settings()->autoBar() )
-			//  	CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(_mw->musElementFactory()->musElement()) );
-		}
-
 		if ( _tupPla ) {
 			// next note in tuplet
-			_tupPla = voice->insertInTupletAndVoiceAt( _tupPla, note );
-			_tup = _tupPla->tuplet();
+			if (note) {
+				_tupPla = voice->insertInTupletAndVoiceAt( _tupPla, note );
+				_tup = _tupPla->tuplet();
+			}
 		} else if ( _mw->uiTupletType->isChecked() ) {
 			// start a new tuplet
 			QList<CAPlayable*> elements;
-			elements << static_cast<CAPlayable*>(note);
+			if (note) {
+				elements << static_cast<CAPlayable*>(note);
+			} else
+				elements << static_cast<CAPlayable*>(rest);
 			for (int i=1; i<_mw->uiTupletNumber->value(); i++) {
 				_mw->musElementFactory()->configureRest( voice, 0 );
 				elements << static_cast<CAPlayable*>(_mw->musElementFactory()->musElement());
@@ -144,10 +150,18 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 			_tupPla = _tup->firstNote();
 		} else {
 			// insert just a note
-			voice->append( note, appendToChord );
+			if (note) {
+				voice->append( note, appendToChord );
+			} else 
+				voice->append( rest, false );
 		}
 
+		if ( !_tup && CACanorus::settings()->autoBar() )
+		  	_mw->musElementFactory()->placeAutoBar( note );
+
 		voice->synchronizeMusElements();	// probably not needed
+
+		CACanorus::undo()->pushUndoCommand();
 
 		// now we try to highlight the inserted note/chord by selection:
 		if (!appendToChord) {
@@ -240,25 +254,4 @@ CADiatonicPitch CAKeybdInput::matchPitchToKey( CAVoice* voice, CADiatonicPitch p
 	return p;
 }
 
-/*!
-	Not in use currently, will be superseeded by autoBar() hopefully
-*/
-CADiatonicPitch CAKeybdInput::autoBarInsert( void ) {
-	// Trace which Time Signature might be in effect.
-	// We make a local copy for later optimisation by only updating at a non
-	// linear input
-	CAVoice *voice = _mw->currentVoice();
-	if (voice) {
-		QList<CAMusElement*> tSigList = voice->getPreviousByType(
-				CAMusElement::TimeSignature, voice->lastTimeEnd());
-		int beats, beat = 0;
-		if ( tSigList.size() ) {
-			beats = ((CATimeSignature*)(tSigList.last()))->beats();
-			beat = ((CATimeSignature*)(tSigList.last()))->beat();
-		} else {
-			beats = beat = 4;
-		}
-		std::cout << "TimeSig: "<<beats<<"/"<<beat<<std::endl;
-	}
-}
 
