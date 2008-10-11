@@ -24,8 +24,8 @@ class CAMenuToolButton;
 /*!
 	\class CAKeybdInput
 	\brief Music input per midi non realtime
-	This class adds a midi keyboard to the input devices to write a music score. It allows to use
-	a midi keyboard, the computer mouse and the computer keyboard to input scores in non realtime.
+	This class adds score input capability through a connected midi keyboard in non realtime.
+	It allows to use simultaniously the computer mouse and the computer keyboard as usual.
 
 	To activate midi keyboard input you have to select in canorus settings, readable devices,
 	the alsa midi port of your midi keyboard. When in input mode, when a voice and a duration
@@ -33,13 +33,10 @@ class CAMenuToolButton;
 
 	Key strockes within 100 ms will be combined into a chord.
 
-	Accents are set according the current key pitch. Automatic tracking of the scene is done.
+	Accents are set according the current key pitch. Automatic tracking of the scene is done too.
 
 	todo: User selectable (to be implemented) midi pitches can be set to be interpreted as rest input,
-	punctuation and so on.
-
-	todo: applying auto barlines, possibly inserting at the currently selected note, configuration of
-	selectable midi pitches to 
+	punctuation and so on.  Inserting at the currently selected note.
 	
 */
 
@@ -50,6 +47,7 @@ CAKeybdInput::CAKeybdInput (CAMainWin *mw) {
 	_midiInChordTimer.setSingleShot(true);
 	_tupPla = 0;
 	_tup = 0;
+	_lastMidiInVoice = 0;
 }
 
 /*!
@@ -124,6 +122,10 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 		// if notes come in sufficiently close together we make a chord of them
 		bool appendToChord = _midiInChordTimer.isActive();
 
+		// If we are still in the processing of a tuplet, check if it's still there.
+		// Possibly editing on the GUI could have moved it around or away, and no crash please.
+		if ( _tupPla && ( !voice->contains(_tupPla) || _tupPla->tuplet() != _tup )) _tupPla = 0;
+
 		// Where to put the note? When in a tuplet, do a chord in the tuplet or the nex not in the tuplet.
 		if ( _tupPla &&!appendToChord ) {
 			_tupPla = _tup->nextTimed( _tupPla );
@@ -156,8 +158,13 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 				voice->append( rest, false );
 		}
 
-		if ( !_tup && CACanorus::settings()->autoBar() )
-		  	_mw->musElementFactory()->placeAutoBar( note );
+		// We make shure not to try to place a barline inside a chord or inside a tuplet
+		if ( CACanorus::settings()->autoBar() && !appendToChord && (!_tupPla || _tupPla->isFirstInTuplet())) {
+			if (note)
+			  	_mw->musElementFactory()->placeAutoBar( note );
+			else
+			  	_mw->musElementFactory()->placeAutoBar( rest );
+		}
 
 		voice->synchronizeMusElements();	// probably not needed
 
