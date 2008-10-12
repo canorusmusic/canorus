@@ -121,22 +121,11 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 		return args.first();
 	}
 
-	///\todo A very ugly hack which supports up to 4 arguments to be passed to Py_BuildValue. If anyone knows how to pass a custom number of arguments (eg. array) to variadic C functions, let me know! -Matevz
-	PyObject *pyArgs;
-	switch (args.size()) {
-	case 1:
-		pyArgs = Py_BuildValue("(O)", args[0]);
-		break;
-	case 2:
-		pyArgs = Py_BuildValue("(OO)", args[0], args[1]);
-		break;
-	case 3:
-		pyArgs = Py_BuildValue("(OOO)", args[0], args[1], args[2]);
-		break;
-	case 4:
-		pyArgs = Py_BuildValue("(OOOO)", args[0], args[1], args[2], args[3]);
-		break;
-	}
+	PyObject *pyArgs = PyTuple_New(args.size());
+	if (!pyArgs)
+		return NULL;
+	for(int i=0; i<args.size(); i++)
+		PyTuple_SetItem(pyArgs, i, args[i]);
 	
 	// Load module, if not yet
 	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
