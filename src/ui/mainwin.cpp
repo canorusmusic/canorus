@@ -1507,6 +1507,9 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 					if (elt->musElementType()==CAMusElement::Note)
 						std::cout << ", pitch=" << static_cast<CANote*>(elt)->diatonicPitch().noteName();
 				}
+				if (elt->musElementType()==CAMusElement::Slur) {
+					std::cout << "noteStart=" << static_cast<CASlur*>(elt)->noteStart() << ", noteEnd=" << static_cast<CASlur*>(elt)->noteStart();
+				}
 				std::cout << std::endl;
 			} else {
 				v->removeTextEdit();
@@ -2213,7 +2216,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 						voice->insert(next, rests[i]);
 						noteList.insert( tupIndex, rests[i] );
 					}
-					next = rests[0];
+					next = rests[rests.size()-1];
 				}
 
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, next, false );
@@ -2310,7 +2313,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 						voice->insert(next, rests[i]);
 						noteList.insert( tupIndex, rests[i] );
 					}
-					next = rests[0];
+					next = rests[rests.size()-1];
 				}
 
 				success = musElementFactory()->configureRest( voice, next );
