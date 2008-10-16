@@ -10,6 +10,9 @@
 
 #include <QString>
 
+class CABarline;
+class CATimeSignature;
+
 class CAPlayableLength {
 public:
 	enum CAMusicLength {
@@ -44,6 +47,9 @@ public:
 	inline static const int musicLengthToTimeLength( CAMusicLength l ) {
 		return playableLengthToTimeLength( CAPlayableLength(l) );
 	}
+	static const CAPlayableLength timeLengthToPlayableLength( int timeLength );
+	QList<CAPlayableLength> timeLengthToPlayableLengthList( int timeLength );
+	QList<CAPlayableLength> matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts );
 	
 private:
 	CAMusicLength _musicLength; // note, rest length (half, whole, quarter)
