@@ -47,7 +47,6 @@ public:
 	inline static const int musicLengthToTimeLength( CAMusicLength l ) {
 		return playableLengthToTimeLength( CAPlayableLength(l) );
 	}
-	static const CAPlayableLength timeLengthToPlayableLength( int timeLength );
 	QList<CAPlayableLength> timeLengthToPlayableLengthList( int timeLength );
 	QList<CAPlayableLength> matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts );
 	

@@ -148,48 +148,20 @@ const int CAPlayableLength::playableLengthToTimeLength( CAPlayableLength length 
 }
 
 /*!
+	Compute for a given time length the CAPlayableLengths. In the general case
+	this could result in several notes to stay within canorus limits.
+	In canorus gui we have max. 4 dots.
+
 	To make this computation fast we take in account that note durations are
-	a binary representation of the time duration. Restrictions are the number
-	of dots allowed for small and big durations.
+	a binary representation of the time duration. The breve value is not exactly
+	a log2 value, so we do this nonlinear operation through the method of
+	computation (see **).
 
 	Limitations: Maximum four dots per note, bar the smallest resulting time duration
 	is SixtyFourth;
-*/
-const CAPlayableLength CAPlayableLength::timeLengthToPlayableLength( int t ) {
 
-	// We compute the biggest note not longer than t:
-	int x,d;
-	int dotsAllowed = -1;	// 128th and 64th no dots;
-	int musLen = HundredTwentyEighth;
-	for ( x = playableLengthToTimeLength( CAMusicLength(musLen) ); x < playableLengthToTimeLength( Breve ); x *= 2 ) {
-		if ( x*2 > t ) break;
-		dotsAllowed++;
-		musLen /= 2;
-	}
-	// maybe we found the match without dots
-	//std::cout<<"pre        t "<<t<<" "<<x<<" "<<t<<" "<<dotsAllowed<<std::endl;
-	if ( x == t )
-		return CAPlayableLength( CAMusicLength(musLen) );
-
-	//std::cout<<"dot"<<std::endl;
-	// We add dots
-	int dval = x;
-	for (d = 0; d <= dotsAllowed && d <= 4 ; d++) {
-		//std::cout<<"          in         "<<d<<" "<<t<<" "<<(x+(x>>d))<<std::endl;
-		if (x+dval/2 > t) break;
-		dval /=2;
-		x += dval;
-	}
-	return CAPlayableLength( CAMusicLength(musLen), d );
-}
-
-/*!
-	To make this computation fast we take in account that note durations are
-	a binary representation of the time duration. Restrictions are the number
-	of dots allowed for small and big durations.
-
-	Limitations: Maximum four dots per note, bar the smallest resulting time duration
-	is SixtyFourth;
+	Todo: Allow change of limitations as function parameters, which are longest note
+	and number of dots.
 */
 QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t ) {
 
@@ -215,6 +187,8 @@ QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t 
 	
 		if (findNote) {
 			if (workTime & currentTime) {
+				// Now we reverse log2 and exponentiate and do the nonlinear mapping of breve (**)
+				// when the value 1 is erased by division with 2::
 				pl << CAPlayableLength( CAMusicLength( (1<<logCurrentMusLenPlusOne)/2 ));
 				dots = maxDots;
 				findNote = maxDots > 0 ? false : true;
@@ -222,7 +196,7 @@ QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t 
 				findNote = true;
 			}
 		} else {
-			// try to find a dot here
+			// try to find a dot for the current note
 			if (workTime & currentTime) {
 				pl.back().setDotted( pl.back().dotted() + 1 );
 				dots--;
@@ -234,7 +208,6 @@ QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t 
 		currentTime /= 2;
 		logCurrentMusLenPlusOne++;
 	}
-
 	return pl;
 }
 
@@ -262,7 +235,6 @@ bool CAPlayableLength::operator!=( CAPlayableLength l ) {
 QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts ) {
 	QList<CAPlayableLength> unchanged; unchanged << len;
 	if (!ts) return unchanged;
-
 	
 	int beat = ts->beat();
 	switch (beat) {
@@ -274,34 +246,24 @@ QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int
 	int barLength = CAPlayableLength::playableLengthToTimeLength(
 				CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(ts->beat()) ) ) * ts->beats();
 	int barRest = ( lastBarline ? lastBarline->timeStart() : 0 ) + barLength - timeStart;
-	//std::cout<<" Analyse: "<<( lastBarline ? lastBarline->timeStart() : 0 )<<" "<<barLength<<" "<<timeStart<<std::endl;
-	// no change when bar lengths bogus
+	// no change when bar lengths are bogus
 	if (barRest < 0 || barRest > barLength) return unchanged;
 
 	int noteLen = len.playableLengthToTimeLength( len );
-	int orig = noteLen;
 
-	// split is ovbious, either the rest of the old bar or completely new bars
+	// now we really do a split
 	QList<CAPlayableLength> list;
 	int tSplit = barRest ? barRest : barLength;
-	//std::cout<<"  vorm split: "<<tSplit<<" "<<noteLen<<std::endl;
 	do {
 		if (noteLen) {
 			tSplit = tSplit > noteLen ? noteLen : tSplit;
-			list << timeLengthToPlayableLength( tSplit );
-			//std::cout<<" -- -- "<<playableLengthToTimeLength(list.back());
-			int lt = playableLengthToTimeLength( list.back() );
-			noteLen -= lt;
-			tSplit -= lt;
-			if (!tSplit)
-				tSplit = noteLen > barLength ? barLength : noteLen;
+			list << timeLengthToPlayableLengthList( tSplit );
+			noteLen -= tSplit;
+			tSplit = noteLen > barLength ? barLength : noteLen;
 		} else {
-			// list << timeLengthToPlayableLength( noteLen );
-			//std::cout<<" -- -- "<<playableLengthToTimeLength(list.back());
 			break;
 		}
 	} while (true);
-	//std::cout<<" war: "<<orig<<" rest: "<<barRest<<" Taktl: "<<barLength<<" zus.: "<<list.size()<<std::endl;
 	
 	return list;
 }
