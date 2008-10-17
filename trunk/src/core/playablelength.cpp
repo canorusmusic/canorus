@@ -149,26 +149,26 @@ const int CAPlayableLength::playableLengthToTimeLength( CAPlayableLength length 
 
 /*!
 	Compute for a given time length the CAPlayableLengths. In the general case
-	this could result in several notes to stay within canorus limits.
-	In canorus gui we have max. 4 dots.
+	this could result in several notes. In the canorus GUI we have can have max. 4 dots.
+	By default longer notes appear first in the list, but with negating longNotesFirst
+	the short ones appear first. This is useful for end of bar notes.
 
 	To make this computation fast we take in account that note durations are
-	a binary representation of the time duration. The breve value is not exactly
-	a log2 value, so we do this nonlinear operation through the method of
+	a binary presentation of the time duration. The breve value is not exactly
+	a log2 value, so we do this singular nonlinear operation through the method of
 	computation (see **).
 
-	Limitations: Maximum four dots per note, bar the smallest resulting time duration
+	Limitations: Maximum four dots per note, and the smallest resulting time duration
 	is SixtyFourth;
 
 	Todo: Allow change of limitations as function parameters, which are longest note
 	and number of dots.
 */
-QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t ) {
+QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t, bool longNotesFirst, int dotsLimit ) {
 
 	QList<CAPlayableLength> pl;
 	int workTime = t;	// this is the register that decreases for every item processed
 	const int breveTime = playableLengthToTimeLength( Breve );
-	int maxDots = 4;
 
 	int leadingBreves = workTime & ~(2*breveTime-1);
 	while (leadingBreves>breveTime) {
@@ -176,8 +176,11 @@ QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t 
 		leadingBreves -= breveTime;
 	}
 
-	// now only a breve with possibly many dots is left
+	// Now only maximum one breve with possibly many dots is left
 	workTime &= 2*breveTime-1;
+	// and as a safety measure we suppress time elements smaller than 128ths.
+	workTime &= ~(playableLengthToTimeLength( HundredTwentyEighth )-1);
+	if (dotsLimit > 4) dotsLimit = 4;
 
 	int currentTime = breveTime;
 	int logCurrentMusLenPlusOne = 0;
@@ -190,8 +193,8 @@ QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t 
 				// Now we reverse log2 and exponentiate and do the nonlinear mapping of breve (**)
 				// when the value 1 is erased by division with 2::
 				pl << CAPlayableLength( CAMusicLength( (1<<logCurrentMusLenPlusOne)/2 ));
-				dots = maxDots;
-				findNote = maxDots > 0 ? false : true;
+				dots = dotsLimit;
+				findNote = dotsLimit > 0 ? false : true;
 			} else {
 				findNote = true;
 			}
@@ -208,6 +211,9 @@ QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t 
 		currentTime /= 2;
 		logCurrentMusLenPlusOne++;
 	}
+	// If not short notes first, for example at the end of bar, we reverse the list.
+	int i,j;
+	if (!longNotesFirst) for( i=0, j=pl.size()-1; i<j ; i++,j-- ) pl.swap(i,j);
 	return pl;
 }
 
@@ -232,7 +238,9 @@ bool CAPlayableLength::operator!=( CAPlayableLength l ) {
 /*!
 	Split a playable to match a given bar border and bar length.
 */
-QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts ) {
+QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit ) {
+
+	// If something is strange or undoable we prepare for returning the length unchanged.
 	QList<CAPlayableLength> unchanged; unchanged << len;
 	if (!ts) return unchanged;
 	
@@ -254,16 +262,14 @@ QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int
 	// now we really do a split
 	QList<CAPlayableLength> list;
 	int tSplit = barRest ? barRest : barLength;
-	do {
-		if (noteLen) {
-			tSplit = tSplit > noteLen ? noteLen : tSplit;
-			list << timeLengthToPlayableLengthList( tSplit );
-			noteLen -= tSplit;
-			tSplit = noteLen > barLength ? barLength : noteLen;
-		} else {
-			break;
-		}
-	} while (true);
+	bool longNotesFirst = barRest ? false : true;
+	while (noteLen) {
+		tSplit = tSplit > noteLen ? noteLen : tSplit;
+		list << timeLengthToPlayableLengthList( tSplit, longNotesFirst, dotsLimit );
+		noteLen -= tSplit;
+		tSplit = noteLen > barLength ? barLength : noteLen;
+		longNotesFirst = true;
+	}
 	
 	return list;
 }
