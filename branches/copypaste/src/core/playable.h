@@ -19,10 +19,10 @@ class CAPlayable : public CAMusElement {
 public:
 	CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength=-1 );
 	virtual ~CAPlayable();
-	virtual CAPlayable *clone( CAVoice *voice ) = 0;
 
 	inline CAPlayableLength& playableLength() { return _playableLength; }
 	inline void setPlayableLength( CAPlayableLength& l ) { _playableLength = l; }
+	virtual CAPlayable* clone(CAVoice* voice=0)=0;
 
 	CATuplet *tuplet() { return _tuplet; }
 	void setTuplet( CATuplet *t ) { _tuplet = t; }

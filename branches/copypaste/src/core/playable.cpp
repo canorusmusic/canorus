@@ -48,9 +48,8 @@ CAPlayable::CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart, 
 	\note Non-playable signs are not shifted back when removing the element from the voice.
 */
 CAPlayable::~CAPlayable() {
-	if (tuplet()) {
+	if (tuplet())
 		tuplet()->removeNote(this);
-	}
 
 	if (voice())
 		voice()->remove( this, false );

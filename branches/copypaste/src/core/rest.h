@@ -23,8 +23,8 @@ public:
 	CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength=-1);
 	~CARest();
 
-	CARest *clone( CAVoice *voice );
-	inline CARest *clone() { return clone( voice() ); }
+	inline CARest *clone(CAContext* context) { CARest* newRest = clone(); newRest->setContext(context); return newRest; }
+	CARest *clone(CAVoice* voice = 0);
 
 	CARestType restType() { return _restType; }
 	void setRestType( CARestType type ) { _restType = type; }

@@ -403,10 +403,10 @@ void CAScoreViewPort::importCElements(CAKDTree<CADrawableContext*> *elts) {
 /*!
 	Returns a pointer to the nearest drawable music element left of the current coordinates with the largest startTime.
 	Drawable elements left borders are taken into account.
-	Returns the nearest element in the current context only, if currentContext is true (default).
+	If \a context is non-zero, returns the nearest element in the given context only.
 */
-CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, bool currentContext) {
-	return _drawableMList.findNearestLeft(x, true, currentContext?_currentContext:0);
+CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CADrawableContext* context) {
+	return _drawableMList.findNearestLeft(x, true, context);
 }
 
 /*!
@@ -421,10 +421,10 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice 
 /*!
 	Returns a pointer to the nearest drawable music element right of the current coordinates with the largest startTime.
 	Drawable elements left borders are taken into account.
-	Returns the nearest element in the current context only, if currentContext is true (default).
+	If \a context is non-zero, returns the nearest element in the given context only.
 */
-CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, bool currentContext) {
-	return _drawableMList.findNearestRight(x, true, currentContext?_currentContext:0);
+CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, CADrawableContext* context) {
+	return _drawableMList.findNearestRight(x, true, context);
 }
 
 /*!
@@ -1403,6 +1403,7 @@ CADrawableMusElement *CAScoreViewPort::findMElement(CAMusElement *elt) {
 	for (int i=0; i<_drawableMList.size(); i++)
 		if ( static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement()==elt )
 			return static_cast<CADrawableMusElement*>(_drawableMList.at(i));
+	return 0;
 }
 
 /*!
@@ -1414,6 +1415,7 @@ CADrawableContext *CAScoreViewPort::findCElement(CAContext *context) {
 	for (int i=0; i<_drawableCList.size(); i++)
 		if (static_cast<CADrawableContext*>(_drawableCList.at(i))->context()==context)
 			return static_cast<CADrawableContext*>(_drawableCList.at(i));
+	return 0;
 }
 
 /*!
@@ -1502,18 +1504,18 @@ QList<CADrawableContext*> CAScoreViewPort::findContextsInRegion( QRect &region )
 	Returns 0, if no contexts are present.
 */
 int CAScoreViewPort::coordsToTime( int x ) {
-	CADrawableMusElement *d1 = nearestLeftElement( x, 0, false );
+	CADrawableMusElement *d1 = nearestLeftElement( x, 0 );
 	if ( selection().contains(d1) ) {
 		_drawableMList.list().removeAll(d1);
-		CADrawableMusElement *newD1 = nearestLeftElement( x, 0, false );
+		CADrawableMusElement *newD1 = nearestLeftElement( x, 0 );
 		_drawableMList.addElement(d1);
 		d1 = newD1;
 	}
 
-	CADrawableMusElement *d2 = nearestRightElement( x, 0, false );
+	CADrawableMusElement *d2 = nearestRightElement( x, 0 );
 	if ( selection().contains(d2) ) {
 		_drawableMList.list().removeAll(d2);
-		CADrawableMusElement *newD2 = nearestRightElement( x, 0, false );
+		CADrawableMusElement *newD2 = nearestRightElement( x, 0 );
 		_drawableMList.addElement(d2);
 		d2 = newD2;
 	}

@@ -36,8 +36,7 @@ CAFunctionMarkContext *CAFunctionMarkContext::clone( CASheet *s ) {
 	CAFunctionMarkContext *newFmc = new CAFunctionMarkContext( name(), s );
 	
 	for (int i=0; i<_functionMarkList.size(); i++) {
-		CAFunctionMark *newFm = _functionMarkList[i]->clone();
-		newFm->setContext( newFmc );
+		CAFunctionMark *newFm = _functionMarkList[i]->clone(newFmc);
 		newFmc->addFunctionMark( newFm );
 	}
 	
@@ -105,7 +104,7 @@ void CAFunctionMarkContext::repositFunctions() {
 	int TS, TL;
 	int curIdx;
 	QList<CAPlayable*> chord;
-	for ( TS=0, curIdx=0; (chord=sheet()->getChord(TS)).size() || curIdx<_functionMarkList.size(); TS+=TL ) {
+	for ( TS=0, curIdx=0; sheet() && (chord=sheet()->getChord(TS)).size() || curIdx<_functionMarkList.size(); TS+=TL ) {
 		TL = (chord.size()?chord[0]->timeLength():256);
 		for ( int i=0; i<chord.size(); i++ )
 			if (chord[i]->timeLength()<TL)

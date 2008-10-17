@@ -25,8 +25,8 @@ public:
 	};
 
 	CANote( CADiatonicPitch pitch, CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength=-1 );
-	CANote *clone( CAVoice *voice );
-	inline CANote *clone() { return clone( voice() ); }
+	inline CANote *clone(CAContext* context) { CANote* newNote = clone(); newNote->setContext(context); return newNote; }
+	CANote *clone(CAVoice* voice=0);
 
 	virtual ~CANote();
 

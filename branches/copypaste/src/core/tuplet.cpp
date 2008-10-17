@@ -53,7 +53,7 @@ CATuplet::~CATuplet() {
 	resetTimes();
 }
 
-CAMusElement* CATuplet::clone() {
+CATuplet* CATuplet::clone(CAContext* context) { // context is ignored FIXME add doxygen
 	CATuplet *t = new CATuplet( number(), actualNumber(), noteList() );
 }
 

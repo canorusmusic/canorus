@@ -26,8 +26,14 @@ CAInstrumentChange::CAInstrumentChange( int instrument, CANote *note )
 CAInstrumentChange::~CAInstrumentChange() {
 }
 
-CAMusElement* CAInstrumentChange::clone() {
-	return new CAInstrumentChange( instrument(), static_cast<CANote*>(associatedElement()) );
+CAInstrumentChange* CAInstrumentChange::clone(CAContext* context) {
+	CAInstrumentChange* newElt = new CAInstrumentChange( instrument(), 0 );
+	newElt->setContext(context);
+	return newElt;
+}
+
+CAInstrumentChange* CAInstrumentChange::clone(CAMusElement* elt) {
+	return new CAInstrumentChange( instrument(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0 );
 }
 
 int CAInstrumentChange::compare( CAMusElement *elt ) {

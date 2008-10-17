@@ -22,8 +22,14 @@ CABookMark::CABookMark( const QString s, CAMusElement *elt )
 CABookMark::~CABookMark() {
 }
 
-CAMusElement* CABookMark::clone() {
-	return new CABookMark( text(), associatedElement() );
+CABookMark* CABookMark::clone(CAContext* context) {
+	CABookMark* newElt = new CABookMark( text(), 0 );
+	newElt->setContext(context);
+	return newElt;
+}
+
+CABookMark* CABookMark::clone(CAMusElement* elt) {
+	return new CABookMark( text(), elt );
 }
 
 int CABookMark::compare(CAMusElement *elt) {

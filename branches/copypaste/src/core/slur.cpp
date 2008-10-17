@@ -73,8 +73,8 @@ CASlur::~CASlur() {
 	}
 }
 
-CASlur *CASlur::clone() {
-	return new CASlur( slurType(), slurDirection(), context(), noteStart(), noteEnd(), slurStyle() );
+CASlur *CASlur::clone(CAContext* context) {
+	return new CASlur( slurType(), slurDirection(), context, noteStart(), noteEnd(), slurStyle() );
 }
 
 int CASlur::compare( CAMusElement *elt ) {

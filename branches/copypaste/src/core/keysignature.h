@@ -14,6 +14,7 @@
 #include "core/diatonickey.h"
 
 class CAStaff;
+class CAContext;
 
 class CAKeySignature : public CAMusElement {
 public:
@@ -40,7 +41,7 @@ public:
 	CAKeySignature(CADiatonicKey k, CAStaff *staff, int timeStart);
 	CAKeySignature(CAModus m, CAStaff *staff, int timeStart);
 	~CAKeySignature();
-	CAKeySignature *clone();
+	CAKeySignature *clone(CAContext* context=0);
 	
 	inline CAKeySignatureType keySignatureType() { return _keySignatureType; }
 	inline void setKeySignatureType(CAKeySignatureType type) { _keySignatureType = type; }	

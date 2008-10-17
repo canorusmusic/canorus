@@ -36,12 +36,11 @@ CABarline::CABarline(CABarlineType type, CAStaff *staff, int startTime)
 CABarline::~CABarline() {
 }
 
-CABarline* CABarline::clone() {
-	CABarline *b = new CABarline( barlineType(), static_cast<CAStaff*>(context()), timeStart() );
+CABarline* CABarline::clone(CAContext* context) {
+	CABarline *b = new CABarline( barlineType(), static_cast<CAStaff*>(context), timeStart() );
 	
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement(b);
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(b));
 		b->addMark( m );
 	}
 	

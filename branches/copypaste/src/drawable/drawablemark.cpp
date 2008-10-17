@@ -229,7 +229,7 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
 		p->setFont(font);
 		
-		p->drawText( s.x + qRound((DEFAULT_PIXMAP_SIZE+1)*s.z), s.y+qRound(height()*s.z), CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
+		p->drawText( s.x + qRound((DEFAULT_PIXMAP_SIZE+1)*s.z), s.y+qRound(height()*s.z), CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(mark())->instrument()] );
 		break;
 	}
 	case CAMark::Fermata: {

@@ -22,7 +22,8 @@ public:
 	CARitardando( int finalTempo, CAPlayable *p, int timeLength, CARitardandoType t=Ritardando );
 	virtual ~CARitardando();
 	
-	CAMusElement *clone();
+	CARitardando *clone(CAContext* context);
+	CARitardando *clone(CAMusElement* elt);
 	int compare( CAMusElement* );
 	
 	inline const int finalTempo() { return _finalTempo; }

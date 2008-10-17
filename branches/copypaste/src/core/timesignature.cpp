@@ -61,12 +61,11 @@ CATimeSignature::CATimeSignature(int beats, int beat, CAStaff *staff, int startT
 CATimeSignature::~CATimeSignature() {
 }
 
-CATimeSignature *CATimeSignature::clone() {
-	CATimeSignature *t = new CATimeSignature(_beats, _beat, (CAStaff*)_context, _timeStart, _timeSignatureType);
+CATimeSignature *CATimeSignature::clone(CAContext* context) {
+	CATimeSignature *t = new CATimeSignature(_beats, _beat, (CAStaff*)context, _timeStart, _timeSignatureType);
 	
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement(t);
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(t));
 		t->addMark( m );
 	}
 	

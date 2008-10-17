@@ -170,6 +170,8 @@ CAMidiDevice::CAMidiDevice()
 	\warning This function never returns midi channel 10 as it's reserved for percussion instruments only.
 */
 unsigned char CAMidiDevice::freeMidiChannel( CASheet* s ) {
+	if (!s)
+		return 0;
 	QList<CAVoice*> voices = s->voiceList();
 	for (unsigned char i=0; i<16; i++) {
 		int j=0;

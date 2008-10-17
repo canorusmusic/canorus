@@ -60,8 +60,7 @@ CALyricsContext *CALyricsContext::clone( CASheet *s ) {
 	newLc->cloneLyricsContextProperties( this );
 	
 	for (int i=0; i<_syllableList.size(); i++) {
-		CASyllable *newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone());
-		newSyllable->setContext( newLc );
+		CASyllable *newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone(newLc));
 		newLc->addSyllable( newSyllable );
 	}
 	return newLc;

@@ -108,12 +108,11 @@ void CAClef::setClefType(CAClefType type) {
 	_centerPitch += offset();
 }
 
-CAClef* CAClef::clone() {
-	CAClef *c = new CAClef( _clefType, _c1, static_cast<CAStaff*>(_context), _timeStart, _offset);
+CAClef* CAClef::clone(CAContext* context) {
+	CAClef *c = new CAClef( _clefType, _c1, static_cast<CAStaff*>(context), _timeStart, _offset);
 	
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement(c);
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(c));
 		c->addMark( m );
 	}
 	

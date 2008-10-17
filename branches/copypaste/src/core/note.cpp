@@ -80,8 +80,7 @@ CANote *CANote::clone( CAVoice *voice ) {
 	d->setStemDirection( stemDirection() );
 
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement(d);
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(d));
 		d->addMark( m );
 	}
 
@@ -373,6 +372,15 @@ CASlur::CASlurDirection CANote::actualSlurDirection() {
 	Sets a number and type of accidentals to \a accs of the note.
 
 	\sa _accs, accidentals()
+*/
+
+/*!
+	\fn CANote::clone(CAContext* context)
+	Clones the note with \a voice = 0 and context set to \a context
+	
+	This should not usually be used.
+	
+	\sa clone(CAVoice* voice)
 */
 
 /*!

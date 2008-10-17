@@ -37,8 +37,15 @@ CAFingering::CAFingering( QList<CAFingerNumber> fingers, CANote *n, bool origina
 CAFingering::~CAFingering() {
 }
 
-CAMusElement *CAFingering::clone() {
-	return new CAFingering( fingerList(), static_cast<CANote*>(associatedElement()), isOriginal() );
+CAFingering *CAFingering::clone(CAContext* context) {
+	CAFingering* newElt = new CAFingering( fingerList(), 0, isOriginal() );
+	newElt->setContext(context);
+	return newElt;
+
+}
+
+CAFingering *CAFingering::clone(CAMusElement* elt) {
+	return new CAFingering( fingerList(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0, isOriginal() );
 }
 
 int CAFingering::compare( CAMusElement *elt ) {

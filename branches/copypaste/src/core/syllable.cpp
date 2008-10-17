@@ -45,12 +45,12 @@ void CASyllable::clear() {
 	setMelismaStart( false );
 }
 
-CAMusElement* CASyllable::clone() {
-	CASyllable *s = new CASyllable( text(), hyphenStart(), melismaStart(), lyricsContext(), timeStart(), timeLength(), associatedVoice() );
+CASyllable* CASyllable::clone(CAContext* context) {
+	CASyllable *s = new CASyllable( text(), hyphenStart(), melismaStart(), static_cast<CALyricsContext*>(context), timeStart(), timeLength(), 0 );
+	s->setContext(context);
 	
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement(s);
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(s));
 		s->addMark( m );
 	}
 	

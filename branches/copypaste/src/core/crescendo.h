@@ -22,7 +22,8 @@ public:
 	CACrescendo( int finalVolume, CANote *note, CACrescendoType t=Crescendo, int timeStart=-1, int timeLength=-1 );
 	virtual ~CACrescendo();
 	
-	CAMusElement *clone();
+	CACrescendo *clone(CAContext* context);
+	CACrescendo *clone(CAMusElement* elt);
 	int compare( CAMusElement* );
 	
 	inline const int finalVolume() { return _finalVolume; }

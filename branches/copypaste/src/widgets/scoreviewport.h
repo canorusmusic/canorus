@@ -120,9 +120,9 @@ public:
 	CADrawableMusElement     *findMElement(CAMusElement*);
 	CADrawableContext        *findCElement(CAContext*);
 	QList<CADrawableContext*> findContextsInRegion(QRect &reg);
-	CADrawableMusElement     *nearestLeftElement(int x, int y, bool currentContextOnly=true);
+	CADrawableMusElement     *nearestLeftElement(int x, int y, CADrawableContext* context=0);
 	CADrawableMusElement     *nearestLeftElement(int x, int y, CAVoice *voice);
-	CADrawableMusElement     *nearestRightElement(int x, int y, bool currentContextOnly=true);
+	CADrawableMusElement     *nearestRightElement(int x, int y, CADrawableContext* context=0);
 	CADrawableMusElement     *nearestRightElement(int x, int y, CAVoice *voice);
 	int coordsToTime( int x );
 	int timeToCoords( int time );

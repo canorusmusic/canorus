@@ -38,8 +38,7 @@ CARest *CARest::clone( CAVoice *voice ) {
 	CARest *r = new CARest( restType(), playableLength(), voice, timeStart(), timeLength() );
 
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement(r);
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(r));
 		r->addMark( m );
 	}
 
@@ -111,6 +110,15 @@ QList<CARest*> CARest::composeRests( int timeLength, int timeStart, CAVoice* voi
 
 	return list;
 }
+
+/*!
+	\fn CARest::clone(CAContext* context)
+	Clones the rest with \a voice = 0 and context set to \a context
+	
+	This should not usually be used.
+	
+	\sa clone(CAVoice* voice)
+*/
 
 /*!
 	\var CARest::_restType

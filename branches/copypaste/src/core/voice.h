@@ -28,8 +28,7 @@ public:
 	inline CAStaff *staff() { return _staff; }
 	inline void setStaff(CAStaff *staff) { _staff = staff; }
 	void clear();
-	CAVoice *clone();
-	CAVoice *clone( CAStaff *newStaff );
+	CAVoice *clone( CAStaff *newStaff = 0 );
 	void cloneVoiceProperties( CAVoice* v );
 
 	/////////////////////////////////////////

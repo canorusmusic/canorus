@@ -104,17 +104,16 @@ void CAKeySignature::updateAccidentals() {
 CAKeySignature::~CAKeySignature() {
 }
 
-CAKeySignature* CAKeySignature::clone() {
+CAKeySignature* CAKeySignature::clone(CAContext* context) {
 	CAKeySignature *k = 0;
 	
 	switch (keySignatureType()) {
 	case MajorMinor:
-		k = new CAKeySignature( diatonicKey(), static_cast<CAStaff*>(context()), timeStart());
+		k = new CAKeySignature( diatonicKey(), static_cast<CAStaff*>(context), timeStart());
 	}
 	
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement(k);
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(k));
 		k->addMark( m );
 	}
 	

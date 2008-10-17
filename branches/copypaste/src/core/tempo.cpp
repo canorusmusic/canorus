@@ -24,8 +24,14 @@ CATempo::CATempo( CAPlayableLength p, int bpm, CAMusElement *t )
 CATempo::~CATempo() {
 }
 
-CAMusElement *CATempo::clone() {
-	return new CATempo( beat(), bpm(), associatedElement() );
+CATempo *CATempo::clone(CAContext* context) {
+	CATempo* newElt = new CATempo( beat(), bpm(), 0 );
+	newElt->setContext(context);
+	return newElt;
+}
+
+CATempo *CATempo::clone(CAMusElement* elt) {
+	return new CATempo( beat(), bpm(), elt );
 }
 
 int CATempo::compare( CAMusElement *elt ) {

@@ -44,7 +44,7 @@ CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection st
 	}
 	_stemDirection = stemDirection;
 
-	_midiChannel = (staff ? CAMidiDevice::freeMidiChannel( staff->sheet() ) : 0);
+	_midiChannel = ((staff && staff->sheet()) ? CAMidiDevice::freeMidiChannel( staff->sheet() ) : 0);
 	_midiProgram = 0;
 }
 
@@ -86,14 +86,6 @@ void CAVoice::cloneVoiceProperties( CAVoice *voice ) {
 	setMidiChannel( voice->midiChannel() );
 	setMidiProgram( voice->midiProgram() );
 	setLyricsContexts( voice->lyricsContextList() );
-}
-
-/*!
-	Clones the voice.
-	This method is provided for convenience.
-*/
-CAVoice *CAVoice::clone() {
-	return clone( staff() );
 }
 
 /*!
