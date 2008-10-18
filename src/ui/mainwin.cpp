@@ -97,6 +97,7 @@
 #include "import/lilypondimport.h"
 #include "import/canorusmlimport.h"
 #include "import/canimport.h"
+#include "import/midiimport.h"
 
 /*!
 	\class CAMainWin
@@ -2789,12 +2790,25 @@ void CAMainWin::on_uiImportDocument_triggered() {
 
 		success=true;
 	} else {
-		QFile file(s);
-		if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-			QTextStream in(&file);
-			/// \todo Call appropriate built-in import function here
-			/// eg. CALilyImport::importDocument(in, document());
-			file.close();
+
+		if ( uiImportDialog->selectedFilter() == CAFileFormats::MIDI_FILTER ) {
+			std::cout<<" Work in progress: midi import from file "<<s.toAscii().constData()<<std::endl;
+			CAMidiImport mi;
+			mi.setStreamFromFile( s );
+			mi.importDocument();
+			mi.wait();
+			if (mi.importedDocument()) {
+				setDocument( mi.importedDocument() );
+				success = true;
+			}
+		} else {
+			QFile file(s);
+			if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+				QTextStream in(&file);
+				/// \todo Call appropriate built-in import function here
+				/// eg. CALilyImport::importDocument(in, document());
+				file.close();
+			}
 		}
 	}
 

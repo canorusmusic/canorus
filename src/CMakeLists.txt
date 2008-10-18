@@ -318,6 +318,7 @@ SET(Canorus_Export_Srcs     # Classes for exporting Canorus data to various file
 SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus data
 	import/import.cpp
 	import/lilypondimport.cpp
+	import/midiimport.cpp
 	import/canorusmlimport.cpp
 	import/canimport.cpp
 )
