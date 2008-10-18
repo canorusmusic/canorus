@@ -140,6 +140,7 @@ void CACanorus::initCommonGUI() {
 	CAMainWin::uiImportDialog = new QFileDialog(0, QObject::tr("Choose a file to import"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiImportDialog->setFileMode( QFileDialog::ExistingFile );
 	CAMainWin::uiImportDialog->setAcceptMode( QFileDialog::AcceptOpen );
+	CAMainWin::uiImportDialog->setFilters( CAMainWin::uiImportDialog->filters() << CAFileFormats::MIDI_FILTER );
 }
 
 /*!
