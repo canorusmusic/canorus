@@ -48,6 +48,7 @@ CAKeybdInput::CAKeybdInput (CAMainWin *mw) {
 	_tupPla = 0;
 	_tup = 0;
 	_lastMidiInVoice = 0;
+	_noteLayout.clear();
 }
 
 /*!
@@ -62,6 +63,8 @@ void CAKeybdInput::onMidiInEvent( QVector<unsigned char> m ) {
  	for (int i=0; i<m.size(); i++)
  		std::cout << (int)m[i] << " ";
  	std::cout << std::endl;
+	if (m.size()<3)		// only note on/off here which are 3 bytes
+		return;
 	event = m[0];
 	velocity = m[2];
 	if ( event == CAMidiDevice::Midi_Note_On && velocity !=0 ) {
@@ -81,7 +84,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 
 	CAVoice *voice = _mw->currentVoice();
 	if (voice) {
-
+ 	
 		int cpitch = m[1];
 
 		// will publish this only when it's configurable. Habe only a four octave keyboard ...
@@ -104,6 +107,15 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 			return;
 		}
 */
+
+		CADrawableContext *drawableContext = v->currentContext();
+		CAStaff *staff=0;
+		CADrawableStaff *drawableStaff = 0;
+		if (drawableContext) {
+			drawableStaff = dynamic_cast<CADrawableStaff*>(drawableContext);
+			staff = dynamic_cast<CAStaff*>(drawableContext->context());
+		}
+
 		CANote *note = 0;
 		CARest *rest = 0;
 
@@ -153,9 +165,64 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 		} else {
 			// insert just a note
 			if (note) {
-				voice->append( note, appendToChord );
-			} else 
-				voice->append( rest, false );
+
+				//voice->append( note, appendToChord );
+				if (appendToChord && _noteLayout.size()) {
+					CANote *prevNote = 0;
+					for (i=0;i<_noteLayout.size();i++) {
+						note = new CANote( nonenharmonicPitch, static_cast<CAPlayable*>(_noteLayout[i])->playableLength(), voice, -1 );
+						voice->insert( _noteLayout[i], note, appendToChord );
+						if (i>0) {
+							_mw->musElementFactory()->configureSlur( staff, prevNote, note );
+						}
+						prevNote = note;
+					}
+				} else {
+					if (note) {
+						delete note;
+					}
+
+					CAMusElement *elt = voice->lastMusElement();
+					CABarline *b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline,
+														voice->lastMusElement()));
+					//CABarline *b = static_cast<CABarline*>(
+					//	voice->lastPlayableElt()->voice()->previousByType( CAMusElement::Barline, voice->lastMusElement() ));
+					CATimeSignature *ts = static_cast<CATimeSignature*>(
+						voice->previousByType( CAMusElement::TimeSignature, voice->lastPlayableElt() ));
+					QList<CAPlayableLength> lll;
+					CAPlayableLength px;
+					lll << px.matchToBars( _mw->musElementFactory()->playableLength(), voice->lastTimeEnd(), b, ts );
+					CANote *prevNote = 0;
+					_noteLayout.clear();
+					for (i=0;i<lll.size();i++) {
+						
+						note = new CANote( nonenharmonicPitch, lll[i], voice, -1 );
+						voice->append( note, appendToChord );
+						_noteLayout.append( voice->lastMusElement());
+						std::cout<<" -- "<<lll[i].musicLength()<<"."<<lll[i].dotted();
+			  			_mw->musElementFactory()->placeAutoBar( note );
+						if (i>0) {
+							_mw->musElementFactory()->configureSlur( staff, prevNote, note );
+						}
+						prevNote = note;
+					}
+				std::cout<<" -- "<<std::endl;
+				}
+
+			} else {
+				delete rest;
+				CABarline *b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline,
+									voice->lastMusElement()));
+				CATimeSignature *ts = static_cast<CATimeSignature*>(
+									voice->previousByType( CAMusElement::TimeSignature, voice->lastPlayableElt() ));
+				CAPlayableLength pr;
+				QList<CAPlayableLength> rests;
+				rests << pr.matchToBars( _mw->musElementFactory()->playableLength(), voice->lastTimeEnd(), b, ts );
+				for (i=0;i<rests.size();i++) {
+					rest = new CARest( CARest::Normal, rests[i], voice, 0, -1 );
+					voice->append( rest, false );
+				}
+			}
 		}
 
 		// We make shure not to try to place a barline inside a chord or inside a tuplet
@@ -177,7 +244,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 		QList<CAPlayable*> lp = voice->getChord(voice->lastMusElement()->timeStart());
 		QList<CAMusElement*> lme;
 		for (int i=0;i<lp.size();i++) lme << static_cast<CAMusElement*>(lp[i]);
-		v->addToSelection(lme);
+		_mw->currentScoreViewPort()->addToSelection(lme);
 
 		// When I looking the last appended note is note showing up. Where goes it missing?
 		// Still without a clue. georg
