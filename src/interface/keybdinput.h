@@ -36,6 +36,7 @@ private:
 
 	CAPlayable* _tupPla;
 	CATuplet* _tup;
+	QList<CAMusElement*> _noteLayout;
 
 };
 
