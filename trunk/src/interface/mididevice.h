@@ -38,15 +38,19 @@ public:
 		Meta_Timesig     = 0x58,
 		Meta_Keysig      = 0x59,
 		Meta_Tempo       = 0x51,
+		Meta_Track_End   = 0x2f,
 
 		Midi_Ctl_Reverb  = 0x5b,
 		Midi_Ctl_Chorus  = 0x5d,
 		Midi_Ctl_Pan     = 0x0a,
 		Midi_Ctl_Volume  = 0x07,
 		Midi_Ctl_Sustain = 0x40,
-
-		Midi_Note_Off    = 0x80,
-		Midi_Note_On     = 0x90
+		Midi_Ctl_Event   = 0xff,
+			// Events with midi channel on the low nibble:
+		Midi_Note_Off    = 0x80,		// 3 byte
+		Midi_Note_On     = 0x90,
+		Midi_Prog_Change = 0xc0,		// 2 byte
+		Midi_Control_Chg = 0xb0			// 3 byte
 	};
 
 	

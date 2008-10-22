@@ -2795,10 +2795,10 @@ void CAMainWin::on_uiImportDocument_triggered() {
 			std::cout<<" Work in progress: midi import from file "<<s.toAscii().constData()<<std::endl;
 			CAMidiImport mi;
 			mi.setStreamFromFile( s );
-			mi.importDocument();
+			mi.importSheet();
 			mi.wait();
-			if (mi.importedDocument()) {
-				setDocument( mi.importedDocument() );
+			if (mi.importedSheet()) {
+				// not needed? FIXME setSheet( mi.importedSheet() );
 				success = true;
 			}
 		} else {
