@@ -25,6 +25,7 @@
 #include "import/import.h"
 
 class QTextStream;
+class CAMidiDevice;
 
 class CAMidiImport : public CAImport {
 public:
@@ -37,9 +38,10 @@ public:
 	virtual ~CAMidiImport();
 	
 	const QString readableStatus();
+	CASheet *importSheetImpl();
 	
 private:
-	void initLilyPondImport();
+	void initMidiImport();
 	
 	static const QRegExp WHITESPACE_DELIMITERS;
 	static const QRegExp SYNTAX_DELIMITERS;
@@ -107,6 +109,19 @@ private:
 	
 	inline CAVoice *templateVoice() { return _templateVoice; }
 	CAVoice *_templateVoice; // used when importing voice to set the staff etc.
+
+	//////////////////////
+	// Helper functions //
+	//////////////////////
+	int getVariableLength(QByteArray *x );
+	QByteArray getHead(QByteArray *x);
+	unsigned char getByte(QByteArray *x);
+	int getWord16(QByteArray *x);
+	int getWord32(QByteArray *x);
+	QByteArray getString(QByteArray *x, int len);
+	void printQByteArray( QByteArray x );	// debugging only
+	int _dataIndex;
+	int _nextTrackIndex;
 };
 
 #endif /* MIDIIMPORT_H_ */
