@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE canorusml>
+<canorus-document>
+ <canorus-version>0.3svn</canorus-version>
+ <document time-edited="42" date-last-modified="2007-08-07T17:44:34" date-created="2007-08-07T17:43:53" title="Jingle bells" >
+  <sheet name="Sheet1" >
+   <staff number-of-lines="5" name="Črtovje1" >
+    <voice midi-channel="0" midi-program="0" name="Staff1Voice1" stem-direction="stem-up" >
+     <clef clef-type="treble" time-start="0" />
+     <time-signature beat="4" beats="4" time-start="0" time-signature-type="classical" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="30" dotted="0" time-start="0" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="30" dotted="0" time-start="256" />
+     <note accs="0" playable-length="half" time-length="512" pitch="30" dotted="0" time-start="512" />
+     <barline barline-type="single" time-start="1024" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="30" dotted="0" time-start="1024" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="30" dotted="0" time-start="1280" />
+     <note accs="0" playable-length="half" time-length="512" pitch="30" dotted="0" time-start="1536" />
+     <barline barline-type="single" time-start="2048" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="30" dotted="0" time-start="2048" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="32" dotted="0" time-start="2304" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="28" dotted="0" time-start="2560" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="29" dotted="0" time-start="2816" />
+     <barline barline-type="single" time-start="3072" />
+     <note accs="0" playable-length="whole" time-length="1024" pitch="30" dotted="0" time-start="3072" />
+     <barline barline-type="end" time-start="4096" />
+    </voice>
+    <voice midi-channel="0" midi-program="0" name="Staff1Voice2" stem-direction="stem-up" >
+     <clef clef-type="treble" time-start="0" />
+     <time-signature beat="4" beats="4" time-start="0" time-signature-type="classical" />
+     <barline barline-type="single" time-start="1024" />
+     <barline barline-type="single" time-start="2048" />
+     <barline barline-type="single" time-start="3072" />
+     <barline barline-type="end" time-start="4096" />
+    </voice>
+   </staff>
+   <staff number-of-lines="5" name="Črtovje2" >
+    <voice midi-channel="0" midi-program="0" name="Staff2Voice1" stem-direction="stem-up" >
+     <clef clef-type="bass" time-start="0" />
+     <time-signature beat="4" beats="4" time-start="0" time-signature-type="classical" />
+    </voice>
+    <voice midi-channel="0" midi-program="0" name="Staff2Voice2" stem-direction="stem-up" >
+     <clef clef-type="bass" time-start="0" />
+     <time-signature beat="4" beats="4" time-start="0" time-signature-type="classical" />
+    </voice>
+   </staff>
+  </sheet>
+ </document>
+</canorus-document>
