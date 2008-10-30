@@ -14,7 +14,35 @@
 #include "import/midiimport.h"
 #include "core/note.h"
 #include "core/playable.h"
+#include "core/playablelength.h"
 #include "core/slur.h"
+#include "core/sheet.h"
+#include "core/document.h"
+
+class CAMidiImportEvent {
+public:
+	CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time );
+	~CAMidiImportEvent();
+	bool _on;
+	int _channel;
+	int _pitch;
+	int _velocity;
+	int _time;
+	int _length;
+};
+
+CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time){
+	_on = on;
+	_channel = channel;
+	_pitch = pitch;
+	_velocity = velocity;
+	_time = time;
+	_length = 0;
+}
+
+CAMidiImportEvent::~CAMidiImportEvent() {
+}
+
 
 /*!
 	Delimiters which separate various music elements in LilyPond syntax. These are new lines, tabs, blanks etc.
@@ -48,7 +76,14 @@ CAMidiImport::CAMidiImport( const QString in )
 CAMidiImport::CAMidiImport( QTextStream *in )
  : CAImport(in) {
 	initMidiImport();	
+	std::cout<<"          FIXME: jetzt in midiimport deprec !"<<std::endl;
+}
+
+CAMidiImport::CAMidiImport( CADocument *document, QTextStream *in )
+ : CAImport(in) {
+	initMidiImport();	
 	std::cout<<"          FIXME: jetzt in midiimport!"<<std::endl;
+	_document = document;
 }
 
 CAMidiImport::~CAMidiImport() {
@@ -58,6 +93,8 @@ void CAMidiImport::initMidiImport() {
 	_curLine = _curChar = 0;
 	_curSlur = 0; _curPhrasingSlur = 0;
 	_templateVoice = 0;
+	_document = 0;
+	_microSecondsPerMidiQuarternote = 0;
 }
 
 void CAMidiImport::addError(QString description, int curLine, int curChar) {
@@ -90,12 +127,14 @@ CASheet *CAMidiImport::importSheetImpl() {
 	int program;
 	int midiChannel;
 	int combinedEvent;
-	unsigned int event;
-	unsigned int metaEvent;
+	int event;
+	int metaEvent;
 	_dataIndex=0;
 	_nextTrackIndex=0;
+	int time = 0;
+	_parseError = false;
 
-	while (_dataIndex<peek.size()) {
+	while (_dataIndex<peek.size() && !_parseError) {
 		
 		head.clear();
 		head = getHead( &peek );
@@ -113,10 +152,22 @@ CASheet *CAMidiImport::importSheetImpl() {
 		} else if (head=="MTrk") {
 
 			length = getWord32( &peek );
+			std::cout<<" MTrk.... Länge: "<<length<<std::endl;
+
+			if (length<0) {
+				std::cout<<"  negative!"<<std::endl;
+				int a = _dataIndex-10<0 ? 0 : _dataIndex-10;
+				int b = _dataIndex+10>peek.size() ? peek.size() : _dataIndex+10;
+				printQByteArray(peek.mid(a,b-a));
+				printQByteArray(peek.mid(_dataIndex-4,4));
+				return 0;
+			}
+
 			_nextTrackIndex = _dataIndex + length;
 
-			while (_dataIndex < _nextTrackIndex) {
+			while (_dataIndex < _nextTrackIndex && !_parseError) {
 				deltaTime = getVariableLength( &peek );
+				time += deltaTime;
 				event = getByte( &peek );
 	
 				switch (event) {
@@ -132,6 +183,37 @@ CASheet *CAMidiImport::importSheetImpl() {
 						std::cout<<// " len "<<length<<" vorher "<<_dataIndex<<
 							"     "<<getString( &peek, length ).constData()<<::std::endl;
 						//	" nachher "<<_dataIndex<<std::endl;
+						break;
+					case CAMidiDevice::Meta_Tempo:	// FIXME
+						length = getByte( &peek );
+						if (length != 3) _parseError = true;
+						_microSecondsPerMidiQuarternote = getWord24( &peek );
+						std::cout<<"    Tempo: "<<_microSecondsPerMidiQuarternote<<" usec per midi quarter"<<std::endl;
+						break;
+						
+					case CAMidiDevice::Meta_InstrName:	// FIXME
+					case CAMidiDevice::Meta_SeqTrkName: // 3
+						length = getVariableLength( &peek );
+						getString( &peek, length );
+						printf("    metaEv: %x   ", metaEvent);
+						for (int jj=0; jj<length; jj++ ) {
+							printf(" %2x", peek.at(_dataIndex-length+jj) & 0x0ff);
+						}
+						printf("\n");
+						break;
+					case CAMidiDevice::Meta_SMPTEOffs:	// FIXME
+						length = getVariableLength( &peek );
+						if (length != 5) {
+							std::cout<<"  wrong SMPTE Offset length"<<std::endl;
+							_parseError = true;
+							break;
+						}
+						printf("    metaEv: %x   SMPTE Offset:", metaEvent );
+						for (int i=0;i<next;i++) {
+							_smtpOffset[i] = getByte( &peek );
+						printf(" %d", _smtpOffset[i]);
+						}
+						printf("\n");
 						break;
 					case CAMidiDevice::Meta_Keysig:
 						length = getVariableLength( &peek );
@@ -156,19 +238,22 @@ CASheet *CAMidiImport::importSheetImpl() {
 				default:
 					// printQByteArray( peek.mid(_dataIndex,_dataIndex+16<peek.size()?16:0));
 
-					midiChannel = event & 0xf;
-					combinedEvent = event & 0xf0;
+					midiChannel = event & 0x0f;
+					combinedEvent = event & 0x0f0;
 
 					switch (combinedEvent) {
 					case CAMidiDevice::Midi_Note_On:
 						pitch = getByte( &peek );	
 						velocity = getByte( &peek );
-						std::cout<<"     note on "<<pitch<<" "<<velocity<<std::endl;
+						//std::cout<<"     note on "<<hex<<pitch<<" "<<hex<<velocity<<" at "<<time<<" ms"<<std::endl;
+						printf("     note on %x %x at %d ms    kanal %d\n", pitch, velocity, time, midiChannel );
+						noteOn( true, midiChannel, pitch, velocity, time );
 						break;
 					case CAMidiDevice::Midi_Note_Off:
 						pitch = getByte( &peek );	
 						velocity = getByte( &peek );
-						std::cout<<"     note off "<<pitch<<" "<<velocity<<std::endl;
+						std::cout<<"     note off "<<pitch<<" "<<velocity<<" ch "<<midiChannel<<std::endl;
+						noteOn( false, midiChannel, pitch, velocity, time );
 						break;
 					case CAMidiDevice::Midi_Prog_Change:
 						program = getByte( &peek );
@@ -179,6 +264,12 @@ CASheet *CAMidiImport::importSheetImpl() {
 						controlValue = getByte( &peek );
 						std::cout<<"     control change "<<control<<" val "<<controlValue<<std::endl;
 						break;
+					case CAMidiDevice::Midi_Ctl_Sustain:	// where in midi spec? 
+						control = getByte( &peek );
+						controlValue = getByte( &peek );
+						std::cout<<"     control change "<<control<<" val "<<controlValue<<std::endl;
+						_parseError = true;
+						break;
 											
 					//case CAMidiDevice::MIDI_CTL_REVERB:  ;
 					//case CAMidiDevice::MIDI_CTL_CHORUS:  ;
@@ -186,17 +277,135 @@ CASheet *CAMidiImport::importSheetImpl() {
 					//case CAMidiDevice::MIDI_CTL_VOLUME:  ;
 					//case CAMidiDevice::MIDI_CTL_SUSTAIN: ;
 
-					default:	printQByteArray( peek.mid(_dataIndex,_dataIndex+16<peek.size()?16:0));
-								std::cout<<"Hier, was ist zu tun?  Event: "<<event<<std::endl;
-								return 0;
-
+					default:	int a = _dataIndex-20 >=0 ? _dataIndex-20: 0;
+								printQByteArray( peek.mid(a,_dataIndex-a+1));
+								int b = _dataIndex+20 < peek.size() ? 20 : peek.size()-_dataIndex;
+								printQByteArray( peek.mid(_dataIndex, b ));
+								//std::cout<<"Hier, was ist zu tun?  Event: "<<hex<<int(event)<<" im File char "<<_dataIndex<<std::endl;
+								printf("Hier, was ist zu tun?  Event: %x im File char %d\n", event, _dataIndex);
+								_parseError = true;
 					}
 				}
+			} // end of track elements
+		} else { // end of track
+			std::cout<<"Track Header not recognized"<<std::endl;
+			int a = _dataIndex-10<0 ? 0 : _dataIndex-10;
+			int b = _dataIndex+10>peek.size() ? peek.size() : _dataIndex+10;
+			printQByteArray(peek.mid(a,b-a));
+			return 0;
+		}
+	} // end of file
+
+	for (int i=0;i<_events.size(); i++) {
+		std::cout<<"......   "<<_events[i]->_on
+						<<"  "<<_events[i]->_channel
+						<<"  "<<_events[i]->_pitch
+						<<"  "<<_events[i]->_velocity
+						<<"  "<<_events[i]->_time
+						<<" l "<<_events[i]->_length
+		<<std::endl;
+	}
+	combineMidiFileEvents();
+	CASheet *sheet = _document->sheetList().first();
+	writeMidiFileEventsToScore( sheet );
+	std::cout<<"------------------------------"<<std::endl;
+	for (int i=0;i<_events.size(); i++) {
+		std::cout<<"......   "<<_events[i]->_on
+						<<"  "<<_events[i]->_channel
+						<<"  "<<_events[i]->_pitch
+						<<"  "<<_events[i]->_velocity
+						<<"  "<<_events[i]->_time
+						<<" l "<<_events[i]->_length
+		<<std::endl;
+	}
+
+
+	return sheet;
+}
+
+
+void CAMidiImport::writeMidiFileEventsToScore( CASheet *sheet ) {
+
+//	QList<CAPlayableLength> timeLengthToPlayableLengthList( int timeLength, bool longNotesFirst = true, int dotsLimit = 4 );
+//	QList<CAPlayableLength> matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit = 4 );
+
+
+	QString sheetName("imported");
+	//CASheet *sheet = new CASheet( sheetName, _document );
+	CAStaff *staff = sheet->staffList().first();
+	CAVoice *voice = staff->voiceList().first();
+	
+	if (templateVoice())
+		voice->cloneVoiceProperties( templateVoice() );
+	
+	setCurVoice(voice);
+
+	CANote *note;
+	CARest *rest;
+	CANote *previousNote;	// for sluring
+	QList<CAPlayableLength> timeLayout;
+	CAPlayableLength dummy;
+	int time = 0;			// current time in the loop, only increasing, for tracking notes and rests
+	int length;
+	int pitch;
+	for (int i=0; i<_events.size(); i++ ) {
+std::cout<<"Schleife 0 "<<i<<std::endl;
+		pitch = _events[i]->_pitch;
+		if (_events[i]->_on && _events[i]->_velocity > 0 && pitch > 0 && _events[i]->_length > 0) {
+std::cout<<"Schleife 1 "<<i<<std::endl;
+			length = _events[i]->_time - time;
+			if ( length > 0 ) {
+				timeLayout.clear();	
+				timeLayout << dummy.timeLengthToPlayableLengthList( length );
+				for (int j=0; j<timeLayout.size();j++) {
+					rest = new CARest( CARest::Normal, timeLayout[j], voice, 0, -1 );
+					voice->append( rest, false );
+				}
+				time = _events[i]->_time;
+			}
+			length = _events[i]->_length;
+			timeLayout.clear();	
+			timeLayout << dummy.timeLengthToPlayableLengthList( length );
+			for (int j=0; j<timeLayout.size();j++) {
+				note = new CANote( CAMidiDevice::midiPitchToDiatonicPitch(pitch), timeLayout[j], voice, -1 );
+						// TODO: note = new CANote( nonenharmonicPitch, lll[i], voice, -1 );
+				voice->append( note, false );
+			}
+			time += _events[i]->_length;
+		}
+	}
+	std::cout<<" DEBUG "<<_document<<sheet<<std::endl;
+}
+
+
+void CAMidiImport::combineMidiFileEvents() {
+	for (int i=0;i<_events.size();i++) {
+		if (_events[i]->_on && _events[i]->_velocity > 0 && _events[i]->_pitch > 0) {
+			int j = i+1;
+			int pitch = _events[i]->_pitch;
+			while ( j < _events.size() ) {
+				
+				if (_events[j]->_pitch == pitch &&
+						(!_events[j]->_on || _events[j]->_velocity == 0)) {
+					_events[i]->_length = _events[j]->_time - _events[i]->_time;
+					_events[j]->_pitch = -1;
+					break;
+				}
+				j++;
 			}
 		}
 	}
-	return 0;
 }
+
+void CAMidiImport::closeFile() {
+	file()->close();
+}
+
+void CAMidiImport::noteOn( bool on, int channel, int pitch, int velocity, int time) {
+
+	_events << new CAMidiImportEvent( on, channel, pitch, velocity, time );
+}
+
 
 CAVoice *CAMidiImport::importVoiceImpl() {
 	CAVoice *voice = new CAVoice( "", 0 );
@@ -795,6 +1004,8 @@ QByteArray CAMidiImport::getHead(QByteArray *x) {
 	if (_dataIndex<x->size()-3) {
 		y = x->mid(_dataIndex,4);
 		_dataIndex += 4;
+	} else {
+		_parseError = true;
 	}
 	return y;
 }
@@ -806,37 +1017,51 @@ int CAMidiImport::getWord32(QByteArray *x) {
 	return y;
 }
 
+int CAMidiImport::getWord24(QByteArray *x) {
+
+	int y = getWord16( x )<<8;
+	y |= getByte( x );
+	return y;
+}
+
 int CAMidiImport::getWord16(QByteArray *x) {
 
 	int y = 0;
-	unsigned char b;
 	if (_dataIndex<x->size()-1) {
-		y = x->at(_dataIndex++)<<8;
-		y |= x->at(_dataIndex++);
+		y = ((x->at(_dataIndex++)) & 0x0ff)<<8;
+		y |= (x->at(_dataIndex++)) & 0x0ff;
+	} else {
+		_parseError = true;
 	}
 	return y;
 }
 
-unsigned char CAMidiImport::getByte(QByteArray *x) {
+int CAMidiImport::getByte(QByteArray *x) {
 
-	unsigned char b;
+	int b = 0;
 	if (_dataIndex<x->size()) {
 		b = x->at(_dataIndex++);
+		b &= 0x0ff;
+	} else {
+		_parseError = true;
 	}
 	return b;
 }
 
 int CAMidiImport::getVariableLength(QByteArray *x) {
 
-	unsigned char byte;
+	int byte;
 	unsigned int y = 0;
-	bool next = true;
 
 	int startIndex = _dataIndex;
-	while (_dataIndex < x->size() && next && _dataIndex < startIndex+4 ) {
-		byte = x->at(_dataIndex++);
+	bool parsable = false;
+	bool next = _dataIndex < x->size();
+	_parseError |= not next;	// not shure if this covers all illegal lengths.
+	while (_dataIndex < x->size() && next ) {
+		byte = x->at(_dataIndex++) & 0x0ff;
 		y = (y << 7) | (byte & 0x7f);
 		next = (byte & 0x80) ? true : false;
+		parsable = false;
 	}
 	return y;
 }
@@ -846,6 +1071,8 @@ QByteArray CAMidiImport::getString(QByteArray *x, int len) {
 	if (_dataIndex+len < x->size()){
 		y = x->mid(_dataIndex,len);
 		_dataIndex += len;
+	} else {
+		_parseError = true;
 	}
 	return y;
 }
