@@ -26,16 +26,21 @@
 
 class QTextStream;
 class CAMidiDevice;
+class CAMidiImportEvent;
 
 class CAMidiImport : public CAImport {
 public:
 	// Constructors
 	CAMidiImport( const QString in );
 	CAMidiImport( QTextStream *in=0 );
+	CAMidiImport( CADocument *document, QTextStream *in=0 );
 	inline void setTemplateVoice( CAVoice *voice ) { _templateVoice = voice; }
 	
 	// Destructor
 	virtual ~CAMidiImport();
+
+	// close midi in file after import
+	void closeFile();
 	
 	const QString readableStatus();
 	CASheet *importSheetImpl();
@@ -115,13 +120,27 @@ private:
 	//////////////////////
 	int getVariableLength(QByteArray *x );
 	QByteArray getHead(QByteArray *x);
-	unsigned char getByte(QByteArray *x);
+	int getByte(QByteArray *x);
 	int getWord16(QByteArray *x);
+	int getWord24(QByteArray *x);
 	int getWord32(QByteArray *x);
 	QByteArray getString(QByteArray *x, int len);
 	void printQByteArray( QByteArray x );	// debugging only
 	int _dataIndex;
 	int _nextTrackIndex;
+	bool _parseError;
+	void noteOn( bool on, int channel, int pitch, int velocity, int time );
+
+	enum smtpOffsComponents {
+		hr, min, se, fr, ff, next
+	};
+	int _smtpOffset[next];
+	int _microSecondsPerMidiQuarternote;
+
+	CADocument *_document;
+	QList<CAMidiImportEvent*> _events;
+	void combineMidiFileEvents();
+	void writeMidiFileEventsToScore( CASheet *sheet );
 };
 
 #endif /* MIDIIMPORT_H_ */

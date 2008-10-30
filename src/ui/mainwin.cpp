@@ -2781,6 +2781,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	CADocument *oldDocument = document();
 
 	bool success=false;
+	bool midiImported = false;
 	if (CAPluginManager::importFilterExists(uiImportDialog->selectedFilter())) {
 		setDocument(new CADocument());
 		CACanorus::undo()->createUndoStack( document() );
@@ -2793,14 +2794,16 @@ void CAMainWin::on_uiImportDocument_triggered() {
 
 		if ( uiImportDialog->selectedFilter() == CAFileFormats::MIDI_FILTER ) {
 			std::cout<<" Work in progress: midi import from file "<<s.toAscii().constData()<<std::endl;
-			CAMidiImport mi;
+			CAMidiImport mi( document() );
 			mi.setStreamFromFile( s );
 			mi.importSheet();
 			mi.wait();
 			if (mi.importedSheet()) {
 				// not needed? FIXME setSheet( mi.importedSheet() );
+				midiImported = true;
 				success = true;
 			}
+			mi.closeFile();
 		} else {
 			QFile file(s);
 			if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -2813,7 +2816,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	}
 
 	// clear existing document
-	if ( success && oldDocument && (CACanorus::mainWinCount(oldDocument) == 1) ) {
+	if ( success && oldDocument && (CACanorus::mainWinCount(oldDocument) == 1) && !midiImported ) {
 		CACanorus::undo()->deleteUndoStack( oldDocument );
 		delete oldDocument;
 	}
@@ -2821,6 +2824,12 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	// select the first context automatically
 	if ( document() && document()->sheetCount() && document()->sheetAt(0)->contextCount() )
 		currentScoreViewPort()->selectContext( document()->sheetAt(0)->contextAt(0) );
+
+	if (midiImported) {
+		currentScoreViewPort()->updateHelpers();
+		currentScoreViewPort()->repaint();
+		CACanorus::rebuildUI(this->document(), this->currentSheet());
+	}
 
 	updateToolBars();
 }

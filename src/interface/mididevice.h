@@ -35,9 +35,16 @@ public:
 
 	enum midiCommands {
 		Meta_Text        = 0x01,
+		Meta_Copyright   = 0x02,
+		Meta_SeqTrkName  = 0x03,
+		Meta_InstrName   = 0x04,
+		Meta_Lyric       = 0x05,
+		Meta_Marker      = 0x06,
+		Meta_CuePoint    = 0x07,
+		Meta_Tempo       = 0x51, // len=03 tt tt tt microseconds per midi quarter note
+		Meta_SMPTEOffs   = 0x54, // len=05 hr mn se fr ff SMPTE Offset
 		Meta_Timesig     = 0x58,
 		Meta_Keysig      = 0x59,
-		Meta_Tempo       = 0x51,
 		Meta_Track_End   = 0x2f,
 
 		Midi_Ctl_Reverb  = 0x5b,
