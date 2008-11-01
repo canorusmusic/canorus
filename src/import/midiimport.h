@@ -30,9 +30,8 @@ class CAMidiImportEvent;
 
 class CAMidiImport : public CAImport {
 public:
-	// Constructors
+	// Constructor
 	CAMidiImport( CADocument *document, QTextStream *in=0 );
-	inline void setTemplateVoice( CAVoice *voice ) { _templateVoice = voice; }
 	
 	// Destructor
 	virtual ~CAMidiImport();
@@ -40,8 +39,10 @@ public:
 	// close midi in file after import
 	void closeFile();
 	
-	const QString readableStatus();
+	// where the real work is done
 	CASheet *importSheetImpl();
+
+	const QString readableStatus();
 	
 private:
 	void initMidiImport();
@@ -62,10 +63,6 @@ private:
 		Voice,
 		Chord
 	};
-	
-	// Actual import of the input string
-	CAVoice *importVoiceImpl();
-	CALyricsContext *importLyricsContextImpl();
 	
 	inline CAVoice *curVoice() { return _curVoice; }
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }
@@ -110,8 +107,8 @@ private:
 	QList<QString> _errors;
 	QList<QString> _warnings;
 	
-	inline CAVoice *templateVoice() { return _templateVoice; }
-	CAVoice *_templateVoice; // used when importing voice to set the staff etc.
+	//inline CAVoice *templateVoice() { return _templateVoice; }
+	//CAVoice *_templateVoice; // used when importing voice to set the staff etc.
 
 	//////////////////////
 	// Helper functions //
