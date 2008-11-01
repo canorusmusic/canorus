@@ -31,8 +31,6 @@ class CAMidiImportEvent;
 class CAMidiImport : public CAImport {
 public:
 	// Constructors
-	CAMidiImport( const QString in );
-	CAMidiImport( QTextStream *in=0 );
 	CAMidiImport( CADocument *document, QTextStream *in=0 );
 	inline void setTemplateVoice( CAVoice *voice ) { _templateVoice = voice; }
 	
@@ -138,9 +136,11 @@ private:
 	int _microSecondsPerMidiQuarternote;
 
 	CADocument *_document;
-	QList<CAMidiImportEvent*> _events;
+	QVector<QList<CAMidiImportEvent*>*> _allChannelEvents;
+	QList<CAMidiImportEvent*> _eventsX;
 	void combineMidiFileEvents();
 	void writeMidiFileEventsToScore( CASheet *sheet );
+	void writeMidiChannelEventsToVoice( int channel, CAStaff *staff, CAVoice *voice );
 };
 
 #endif /* MIDIIMPORT_H_ */

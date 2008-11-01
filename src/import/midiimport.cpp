@@ -68,22 +68,15 @@ const QRegExp CAMidiImport::DELIMITERS =
 		CAMidiImport::SYNTAX_DELIMITERS.pattern().mid(1)
 	);
 
-CAMidiImport::CAMidiImport( const QString in )
- : CAImport(in) {
-	initMidiImport();
-}
-
-CAMidiImport::CAMidiImport( QTextStream *in )
- : CAImport(in) {
-	initMidiImport();	
-	std::cout<<"          FIXME: jetzt in midiimport deprec !"<<std::endl;
-}
 
 CAMidiImport::CAMidiImport( CADocument *document, QTextStream *in )
  : CAImport(in) {
 	initMidiImport();	
 	std::cout<<"          FIXME: jetzt in midiimport!"<<std::endl;
 	_document = document;
+	for (int i=0;i<16; i++) {
+		_allChannelEvents << new QList<CAMidiImportEvent*>;
+	}
 }
 
 CAMidiImport::~CAMidiImport() {
@@ -296,19 +289,11 @@ CASheet *CAMidiImport::importSheetImpl() {
 		}
 	} // end of file
 
-	for (int i=0;i<_events.size(); i++) {
-		std::cout<<"......   "<<_events[i]->_on
-						<<"  "<<_events[i]->_channel
-						<<"  "<<_events[i]->_pitch
-						<<"  "<<_events[i]->_velocity
-						<<"  "<<_events[i]->_time
-						<<" l "<<_events[i]->_length
-		<<std::endl;
-	}
 	combineMidiFileEvents();
 	CASheet *sheet = _document->sheetList().first();
 	writeMidiFileEventsToScore( sheet );
 	std::cout<<"------------------------------"<<std::endl;
+/*
 	for (int i=0;i<_events.size(); i++) {
 		std::cout<<"......   "<<_events[i]->_on
 						<<"  "<<_events[i]->_channel
@@ -318,6 +303,7 @@ CASheet *CAMidiImport::importSheetImpl() {
 						<<" l "<<_events[i]->_length
 		<<std::endl;
 	}
+*/
 
 
 	return sheet;
@@ -332,14 +318,41 @@ void CAMidiImport::writeMidiFileEventsToScore( CASheet *sheet ) {
 
 	QString sheetName("imported");
 	//CASheet *sheet = new CASheet( sheetName, _document );
-	CAStaff *staff = sheet->staffList().first();
-	CAVoice *voice = staff->voiceList().first();
-	
-	if (templateVoice())
-		voice->cloneVoiceProperties( templateVoice() );
-	
-	setCurVoice(voice);
+	int numberOfStaffs = sheet->staffList().size();
+	int staffIndex = 0;
+	CAStaff *staff;
+	CAVoice *voice;
 
+	for (int ch=0;ch<16;ch++) {
+
+		if (!_allChannelEvents[ch]->size())
+			continue;
+
+		if (staffIndex < numberOfStaffs) {
+			staff = sheet->staffList().at(staffIndex);
+			voice = staff->voiceList().first();
+		} else {
+			// create a new staff with 5 lines
+			staff = new CAStaff( "", sheet, 5);
+			sheet->addContext(staff);
+			// voiceName = QObject::tr("Voice%1").arg( voiceNumber );
+			voice = new CAVoice( "", staff, CANote::StemNeutral, 1 );
+			staff->addVoice( voice );
+		}
+		
+		if (templateVoice())
+			voice->cloneVoiceProperties( templateVoice() );
+		
+		setCurVoice(voice);
+		writeMidiChannelEventsToVoice( ch, staff, voice );
+
+		staffIndex++;
+	}
+}
+
+void CAMidiImport::writeMidiChannelEventsToVoice( int channel, CAStaff *staff, CAVoice *voice ) {
+
+	QList<CAMidiImportEvent*> *events = _allChannelEvents[channel];
 	CANote *note;
 	CARest *rest;
 	CANote *previousNote;	// for sluring
@@ -348,12 +361,12 @@ void CAMidiImport::writeMidiFileEventsToScore( CASheet *sheet ) {
 	int time = 0;			// current time in the loop, only increasing, for tracking notes and rests
 	int length;
 	int pitch;
-	for (int i=0; i<_events.size(); i++ ) {
+	for (int i=0; i<events->size() && i<1000; i++ ) {	// FIXME: limit is for debugging only
 std::cout<<"Schleife 0 "<<i<<std::endl;
-		pitch = _events[i]->_pitch;
-		if (_events[i]->_on && _events[i]->_velocity > 0 && pitch > 0 && _events[i]->_length > 0) {
+		pitch = events->at(i)->_pitch;
+		if (events->at(i)->_on && events->at(i)->_velocity > 0 && pitch > 0 && events->at(i)->_length > 0) {
 std::cout<<"Schleife 1 "<<i<<std::endl;
-			length = _events[i]->_time - time;
+			length = events->at(i)->_time - time;
 			if ( length > 0 ) {
 				timeLayout.clear();	
 				timeLayout << dummy.timeLengthToPlayableLengthList( length );
@@ -361,37 +374,52 @@ std::cout<<"Schleife 1 "<<i<<std::endl;
 					rest = new CARest( CARest::Normal, timeLayout[j], voice, 0, -1 );
 					voice->append( rest, false );
 				}
-				time = _events[i]->_time;
+				time = events->at(i)->_time;
 			}
-			length = _events[i]->_length;
+			length = events->at(i)->_length;
 			timeLayout.clear();	
 			timeLayout << dummy.timeLengthToPlayableLengthList( length );
+			previousNote = 0;
 			for (int j=0; j<timeLayout.size();j++) {
 				note = new CANote( CAMidiDevice::midiPitchToDiatonicPitch(pitch), timeLayout[j], voice, -1 );
 						// TODO: note = new CANote( nonenharmonicPitch, lll[i], voice, -1 );
 				voice->append( note, false );
+				if (previousNote) {
+					CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNote, note );
+					previousNote->setTieStart( slur );
+					note->setTieEnd( slur );
+				}
+				previousNote = note;
 			}
-			time += _events[i]->_length;
+			time += events->at(i)->_length;
 		}
 	}
-	std::cout<<" DEBUG "<<_document<<sheet<<std::endl;
 }
 
-
+/*!
+	Combines the midi on/off events and reduces them to a note with a length.
+	Note off events are, which can also be a note on with velocity zero, are thus eaten up and
+	are invalidated by pitch -1.
+*/
 void CAMidiImport::combineMidiFileEvents() {
-	for (int i=0;i<_events.size();i++) {
-		if (_events[i]->_on && _events[i]->_velocity > 0 && _events[i]->_pitch > 0) {
-			int j = i+1;
-			int pitch = _events[i]->_pitch;
-			while ( j < _events.size() ) {
-				
-				if (_events[j]->_pitch == pitch &&
-						(!_events[j]->_on || _events[j]->_velocity == 0)) {
-					_events[i]->_length = _events[j]->_time - _events[i]->_time;
-					_events[j]->_pitch = -1;
-					break;
+	for (int ch=0;ch<_allChannelEvents.size();ch++) {
+
+		QList<CAMidiImportEvent*> *events = _allChannelEvents[ch];
+		
+		for (int i=0;i<events->size();i++) {
+			if (events->at(i)->_on && events->at(i)->_velocity > 0 && events->at(i)->_pitch > 0) {
+				int j = i+1;
+				int pitch = events->at(i)->_pitch;
+				while ( j < events->size() ) {
+					
+					if (events->at(j)->_pitch == pitch &&
+							(!events->at(j)->_on || events->at(j)->_velocity == 0)) {
+						events->at(i)->_length = events->at(j)->_time - events->at(i)->_time;
+						events->at(j)->_pitch = -1;
+						break;
+					}
+					j++;
 				}
-				j++;
 			}
 		}
 	}
@@ -403,7 +431,7 @@ void CAMidiImport::closeFile() {
 
 void CAMidiImport::noteOn( bool on, int channel, int pitch, int velocity, int time) {
 
-	_events << new CAMidiImportEvent( on, channel, pitch, velocity, time );
+	_allChannelEvents[channel]->append( new CAMidiImportEvent( on, channel, pitch, velocity, time ));
 }
 
 
