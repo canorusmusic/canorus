@@ -133,9 +133,11 @@ private:
 	int _microSecondsPerMidiQuarternote;
 
 	CADocument *_document;
-	QVector<QList<CAMidiImportEvent*>*> _allChannelEvents;
+	QVector<QList<QList<CAMidiImportEvent*>*>*> _allChannelsEvents;
 	QList<CAMidiImportEvent*> _eventsX;
 	void combineMidiFileEvents();
+	void quantizeMidiFileEvents();
+	void exportNonChordsToOtherVoices();
 	void writeMidiFileEventsToScore( CASheet *sheet );
 	void writeMidiChannelEventsToVoice( int channel, CAStaff *staff, CAVoice *voice );
 };

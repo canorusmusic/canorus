@@ -29,6 +29,8 @@ public:
 	int _velocity;
 	int _time;
 	int _length;
+	int _timeCorrection;
+	int _lengthCorrection;
 };
 
 CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time){
@@ -75,7 +77,8 @@ CAMidiImport::CAMidiImport( CADocument *document, QTextStream *in )
 	std::cout<<"          FIXME: jetzt in midiimport!"<<std::endl;
 	_document = document;
 	for (int i=0;i<16; i++) {
-		_allChannelEvents << new QList<CAMidiImportEvent*>;
+		_allChannelsEvents << new QList<QList<CAMidiImportEvent*>*>;
+		_allChannelsEvents[i]->append( new QList<CAMidiImportEvent*> );
 	}
 }
 
@@ -291,6 +294,9 @@ CASheet *CAMidiImport::importSheetImpl() {
 	} // end of file
 
 	combineMidiFileEvents();
+	quantizeMidiFileEvents();
+	exportNonChordsToOtherVoices();
+
 	CASheet *sheet = _document->sheetList().first();
 	writeMidiFileEventsToScore( sheet );
 	std::cout<<"------------------------------"<<std::endl;
@@ -326,7 +332,7 @@ void CAMidiImport::writeMidiFileEventsToScore( CASheet *sheet ) {
 
 	for (int ch=0;ch<16;ch++) {
 
-		if (!_allChannelEvents[ch]->size())
+		if (!_allChannelsEvents[ch]->size())
 			continue;
 
 		if (staffIndex < numberOfStaffs) {
@@ -350,7 +356,7 @@ void CAMidiImport::writeMidiFileEventsToScore( CASheet *sheet ) {
 
 void CAMidiImport::writeMidiChannelEventsToVoice( int channel, CAStaff *staff, CAVoice *voice ) {
 
-	QList<CAMidiImportEvent*> *events = _allChannelEvents[channel];
+	QList<CAMidiImportEvent*> *events = _allChannelsEvents[channel]->first();
 	CANote *note;
 	CARest *rest;
 	CANote *previousNote;	// for sluring
@@ -404,9 +410,9 @@ void CAMidiImport::writeMidiChannelEventsToVoice( int channel, CAStaff *staff, C
 	todo: combine concurrent notes to chords or export concurrent notes to a next voice.
 */
 void CAMidiImport::combineMidiFileEvents() {
-	for (int ch=0;ch<_allChannelEvents.size();ch++) {
+	for (int ch=0;ch<_allChannelsEvents.size();ch++) {
 
-		QList<CAMidiImportEvent*> *events = _allChannelEvents[ch];
+		QList<CAMidiImportEvent*> *events = _allChannelsEvents[ch]->first();
 		
 		for (int i=0;i<events->size();i++) {
 			if (events->at(i)->_on && events->at(i)->_velocity > 0 && events->at(i)->_pitch > 0) {
@@ -418,13 +424,107 @@ void CAMidiImport::combineMidiFileEvents() {
 							(!events->at(j)->_on || events->at(j)->_velocity == 0)) {
 						events->at(i)->_length = events->at(j)->_time - events->at(i)->_time;
 						events->at(j)->_pitch = -1;
+						events->at(j)->_on = false;
 						break;
 					}
 					j++;
 				}
 			}
 		}
+		// no we cleanup unpaired note on's
+		for (int i=0;i<events->size();i++) {
+			if (events->at(i)->_on && events->at(i)->_length == 0 ) {
+						events->at(i)->_on = false;
+						events->at(i)->_pitch = -1;
+			}
+		}
 	}
+}
+
+/*!
+	Quantisize the notes and rests, don't affect the duration of the music.
+*/
+void CAMidiImport::quantizeMidiFileEvents() {
+
+	const int roundQuant = 32;
+
+	for (int ch=0;ch<_allChannelsEvents.size();ch++) {
+
+		QList<CAMidiImportEvent*> *events = _allChannelsEvents[ch]->first();
+
+		int nLostNotes = 0;
+		
+		int prevTimeCorrection = 0;		// not yet in use
+		int prevLengthCorrection = 0;
+
+		for (int i=0;i<events->size();i++) {
+
+			events->at(i)->_timeCorrection = events->at(i)->_lengthCorrection = 0;
+
+			if (events->at(i)->_on && events->at(i)->_pitch > 0) {
+
+				int time = events->at(i)->_time;
+				int timeRounded = (time + roundQuant/2) / roundQuant;
+				timeRounded *= roundQuant;
+				events->at(i)->_time = timeRounded;
+				events->at(i)->_timeCorrection = timeRounded - time;
+
+				int length = events->at(i)->_length;
+				int lenRounded = (length + roundQuant/2) / roundQuant;
+				lenRounded *= roundQuant;
+				events->at(i)->_length = lenRounded;
+				events->at(i)->_lengthCorrection = lenRounded - length;
+				if (!lenRounded) {
+					events->at(i)->_on = false;
+					events->at(i)->_pitch = -1;
+					nLostNotes++;
+				}
+			}
+			if (nLostNotes) {
+				std::cout<<"Due to rounding "<<nLostNotes<<" Notes got lost in Midi Channel "<<i<<"."<<std::endl;
+			}
+		}
+	}
+}
+
+/*!
+	If not a chord move overlapping notes to other voices.
+
+	The algorithm is this: For every note on event we look if there are follow up events that overlap.
+	If there is a overlap the second note will be moved to a higher (index of the) voice,
+	so high, where it can be stay without overlap.
+*/
+void CAMidiImport::exportNonChordsToOtherVoices() {
+
+	for (int ch=0;ch<_allChannelsEvents.size();ch++) {
+		QList<CAMidiImportEvent*> *events = _allChannelsEvents[ch]->first();
+		int erasedNote = 0;
+		for (int i=0;i<events->size() -1 ;i++) {
+			if (events->at(i)->_on) {
+				int time = events->at(i)->_time;
+				int timeEnd = time + events->at(i)->_length;
+				int next = events->at(i+1)->_time;
+std::cout<<"ch "<<ch<<" at "<<i<<" start "<<time<<" Ende "<<timeEnd<<" nächste "<<next<<std::endl;
+				int j = i;
+				while (true) {
+					j++;
+					if (j >= events->size())	// don't run out of the list
+						break;
+					if (!events->at(j)->_on)	// we look only on note on events
+						continue;
+					if (events->at(j)->_time >= timeEnd)
+						break;
+					// overlapping events are deleted
+					events->at(j)->_on = false;		// todo: this note should be moved to another voice
+					events->at(j)->_pitch = -1;
+std::cout<<"xx "<<ch<<" at "<<j<<" start "<<events->at(j)->_time<<std::endl;
+					erasedNote++;
+				}
+			}
+		}
+		std::cout<<"Erased "<<erasedNote<<" overlapping Notes on Channel "<<ch<<std::endl;
+	}
+
 }
 
 void CAMidiImport::closeFile() {
@@ -433,7 +533,8 @@ void CAMidiImport::closeFile() {
 
 void CAMidiImport::noteOn( bool on, int channel, int pitch, int velocity, int time) {
 
-	_allChannelEvents[channel]->append( new CAMidiImportEvent( on, channel, pitch, velocity, time ));
+	// for now we put everything in the first voice of the channel
+	_allChannelsEvents[channel]->first()->append( new CAMidiImportEvent( on, channel, pitch, velocity, time ));
 }
 
 /*!
