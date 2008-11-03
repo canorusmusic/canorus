@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -11,26 +11,26 @@
 /*!
 	\class CAExport
 	\brief Base class for export filters
-	
+
 	This class inherits CAFile and is the base class for any specific import filter (eg. LilyPond,
 	CanorusML, MusicXML etc.).
-	
+
 	If a developer wants to write a new export filter, he should:
 	1) Create a new class with the base class CAExport
 	2) Implement CAExport constructors and at least exportDocumentImpl() function
 	3) Register the filter (put a new fileformat to CAFileFormats and add the filter to open/save
 	   dialogs in CACanorus)
-	
+
 	Optionally:
 	Developer should change the current status and progress while operations are in progress. He should
 	also rewrite the readableStatus() function.
-	
+
 	The following example illustrates the usage of export class:
 	\code
 	  CAMyExportFilter export();
 	  export.setStreamToFile("jingle bells.xml");
 	  export.exportDocument( curDocument );
-	  
+
 	  export.wait();
 	\endcode
 */
@@ -38,7 +38,7 @@
 CAExport::CAExport( QTextStream *stream )
  : CAFile() {
 	setStream( stream );
-	
+
 	setExportedDocument(0);
 	setExportedSheet(0);
 	setExportedStaff(0);
@@ -83,21 +83,39 @@ void CAExport::run() {
 			exportFunctionMarkContextImpl( exportedFunctionMarkContext() );
 			emit functionMarkContextExported( exportedFunctionMarkContext() );
 		}
-		
+
 		stream()->flush();
 		if (status()>0) { // error - bad implemented filter
 			              // job is finished but status is still marked as working, set to Ready to prevent infinite loops
 			setStatus(0);
 		}
 	}
-	
+
 	emit exportDone( status() );
 }
 
-void CAExport::exportDocument( CADocument *doc ) {
+void CAExport::exportDocument( CADocument *doc, bool bStartThread ) {
 	setExportedDocument( doc );
 	setStatus( 1 ); // process started
-	start();
+	if( bStartThread )
+		start();
+	else
+	{
+		if ( !stream() ) {
+			setStatus(-1);
+		} else {
+			if (exportedDocument()) {
+				exportDocumentImpl( exportedDocument() );
+				emit documentExported( exportedDocument() );
+			}
+			stream()->flush();
+			if (status()>0) { // error - bad implemented filter
+			                         // job is finished but status is still marked as working, set to Ready to prevent infinite loops
+			setStatus(0);
+			}
+		}
+		emit exportDone( status() );
+	}
 }
 
 void CAExport::exportSheet( CASheet *sheet ) {
