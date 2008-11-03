@@ -1,7 +1,7 @@
 /*!
         Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
-        
+
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -53,7 +53,7 @@ CATypesetCtl::~CATypesetCtl()
 
 	This method let's you define the typesetter
 	executable name (with optionally included path name)
-	
+
 
 	\sa setTSetOption( QVariant oName, QVariant oValue );
 	\sa CAExternProgram::execProgram( QString oCwd )
@@ -74,7 +74,7 @@ void CATypesetCtl::setTypesetter( const QString &roProgramName, const QString &r
 	This method let's you define the executble name of an optional
 	postscript->pdf converter in case the typesetter does not
 	support the output of pdf. (with optionally included path name
-	and a list of parameters)	
+	and a list of parameters)
 
 	\sa createPDF();
 	\sa CAExternProgram::execProgram( QString oCwd )
@@ -115,11 +115,11 @@ void CATypesetCtl::setExpOption( const QVariant &roName, const QVariant &roValue
 	this method. The \a oName does define the name of the parameter
 	and the \a oValue defines the value of the parameter name to be
 	passed to the typesetter.
-	
+
 	If the optional parameter \a bSpace is set to true a space between the
 	name and value is set, else the "=" character is set. If \a bShortParam
 	is set to true nothing is set between the parameter name and value.
-	
+
 	The name and values are converted to a string (so only QVariants that can
 	be converted to QString are supported) in the form "-<name>=<option>"
 	(without < and > signs) with no additional apostrophes.
@@ -168,7 +168,7 @@ void CATypesetCtl::exportDocument( CADocument *poDoc )
 		_poOutputFile = new QTemporaryFile;
 		// Create the unique file as the file name is only defined when opening the file
 		_poOutputFile->open();
-		// Add the input file name as default parameter. 
+		// Add the input file name as default parameter.
 		// @ToDo: There might be problems with typesetter expecting file extensions,
 		// if so, methods have to be added handling this
 		_oOutputFileName = _poOutputFile->fileName();
@@ -187,10 +187,10 @@ void CATypesetCtl::exportDocument( CADocument *poDoc )
 
 /*!
 	Start the typesetter
-	
+
 	This method runs the typesetter. Make sure that all the
 	required name, path and parameters are set
-	
+
 	\sa setTypesetter( const QString &roProgramName, const QString &roProgramPath )
 */
 void CATypesetCtl::runTypesetter()
@@ -215,7 +215,7 @@ bool CATypesetCtl::createPDF()
 
 /*!
  	Sends new received output to a connected slot
- 	
+
  	If slots are connected to the signal nextOutput the
  	output received by the typesetter are sent to that slot.
  	No distinction is made between standard error and output.
@@ -226,12 +226,24 @@ void CATypesetCtl::rcvTypesetterOutput( const QByteArray &roData )
 }
 
 /*!
+	Blocks until the process has finished and the finished() signal has been emitted
+	or until msecs milliseconds have passed.
+
+	Returns true if the process finished; otherwise returns false (if the operation timed
+	out or if an error occurred).
+*/
+bool CATypesetCtl::waitForFinished ( int iMSecs )
+{
+	_poTypesetter->waitForFinished( iMSecs );
+}
+
+/*!
 	Send the exit code of the finished typesetter to a connected slot.
-	
+
 	As soon as the typesetter finished it's job in the background this
 	method sends the typesetterFinished method to all connected
 	slots. The method assumes that on a successful finish the exit
-	code of the typesetter is set to 0. 
+	code of the typesetter is set to 0.
 	If a typesetter only does support postscript output, the pdf
 	creation process can be started afterwards (this also requires
 	that the exit code of the typesetter was 0!)

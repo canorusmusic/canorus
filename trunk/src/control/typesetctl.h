@@ -1,7 +1,7 @@
 /*!
         Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
-        
+
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -41,7 +41,8 @@ public:
 
 	inline bool getPDFConversion() { return _bPDFConversion; }
 	inline CAExport *getExporter() { return _poExport; }
-	inline QString getTempFilePath() { return _oOutputFileName; } 
+	inline QString getTempFilePath() { return _oOutputFileName; }
+	bool waitForFinished ( int iMSecs );
 
 signals:
 	void nextOutput( const QByteArray &roData );
