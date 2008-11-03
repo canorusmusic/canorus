@@ -16,9 +16,8 @@
 #include <QFile>
 
 // Forward declarations
-class CATypesetCtl;
-class CADocument;
 class CAMainWin;
+class CAPDFExport;
 
 class CAPreviewCtl : public QObject
 {
@@ -32,13 +31,12 @@ public slots:
 	void on_uiPrintPreview_triggered();
  
 protected slots:
-	void outputTypsetterOutput( const QByteArray &roOutput );
 	void showPDF( int iExitCode );
 	
 protected:
-	CATypesetCtl *_poTypesetCtl;
 	CAMainWin    *_poMainWin;
-	QString       _oOutputPDFName;
+	CAPDFExport *_poPDFExport;
+	QString           _oOutputPDFName;
 };
 
 #endif // _PREVIEW_CTL_H
