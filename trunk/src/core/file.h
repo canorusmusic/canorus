@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -17,7 +17,7 @@ class CAFile : public QThread {
 public:
 	CAFile();
 	virtual ~CAFile();
-	
+
 	inline const int status() { return _status; }
 	inline const int progress() { return _progress; }
 	virtual const QString readableStatus() = 0;
@@ -25,17 +25,17 @@ public:
 	void setStreamToFile( const QString filename );
 	void setStreamFromDevice( QIODevice* device );
 	void setStreamToDevice( QIODevice* device );
-	
+
 protected:
 	inline void setStatus( const int status ) { _status = status; }
 	inline void setProgress( const int progress ) { _progress = progress; }
-	
+
 	inline QTextStream *stream() { return _stream; }
-	inline virtual void setStream( QTextStream *stream ) { _stream = stream; }
-	
+	virtual void setStream( QTextStream *stream ) { _stream = stream; }
+
 	inline QFile *file() { return _file; }
 	inline void setFile( QFile *file ) { _file = file; }
-	
+
 private:
 	int _status;          // status number
 	int _progress;        // percentage of the work already done
