@@ -1,7 +1,7 @@
 /*!
         Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
-        
+
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -36,7 +36,7 @@ public:
 	{ _oParamDelimiter = oDelimiter; }
 
 	inline const QStringList &getParameters() { return _oParameters; }
-	inline bool getRunning() 
+	inline bool getRunning()
 	{ return _poExternProgram->state() == QProcess::Running; }
 	inline const QString &getParamDelimiter() { return _oParamDelimiter; }
 	int getExitState();
@@ -44,11 +44,12 @@ public:
 	void addParameter( const QString &roParam, bool bAddDelimiter = true );
 	inline void clearParameters() { _oParameters.clear(); }
 	bool execProgram( const QString &roCwd = "." );
+	inline bool waitForFinished ( int iMSecs ) { _poExternProgram->waitForFinished( iMSecs ); }
 
 signals:
 	void nextOutput( const QByteArray &roData );
 	void programExited( int iExitCode );
-  
+
 protected slots:
  	void rcvProgramStdOut() { rcvProgramOutput( _poExternProgram->readAllStandardOutput() ); }
  	void rcvProgramStdErr() { rcvProgramOutput( _poExternProgram->readAllStandardError() ); }

@@ -29,13 +29,6 @@
 CAPDFExport::CAPDFExport( QTextStream *stream )
  : CAExport(stream)
 {
- 	_poTypesetCtl = new CATypesetCtl();
-	// For now we support only lilypond export
-	_poTypesetCtl->setTypesetter( QString("lilypond") );
-	_poTypesetCtl->setExporter( new CALilyPondExport() );
-	// Put lilypond output to console, could be shown on a canorus console later
-	connect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
-	connect( _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( pdfFinished( int ) ) );
 }
 
 // Destructor
@@ -48,6 +41,28 @@ CAPDFExport::~CAPDFExport()
 	_poTypesetCtl = 0;
 }
 
+void CAPDFExport::startExport()
+{
+ 	_poTypesetCtl = new CATypesetCtl();
+	// For now we support only lilypond export
+	_poTypesetCtl->setTypesetter( QString("lilypond") );
+	_poTypesetCtl->setExporter( new CALilyPondExport() );
+	// Put lilypond output to console, could be shown on a canorus console later
+	connect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
+	connect( _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( pdfFinished( int ) ) );
+}
+
+void CAPDFExport::finishExport()
+{
+	if( _poTypesetCtl )
+	{
+		// Put lilypond output to console, could be shown on a canorus console later
+		disconnect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
+		disconnect( _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( pdfFinished( int ) ) );
+		delete _poTypesetCtl;
+	}
+}
+
 /*!
 	Exports the document \a poDoc to LilyPond first and create a PDF from it
   using the Typesetter instance.
@@ -58,6 +73,9 @@ void CAPDFExport::exportDocumentImpl(CADocument *poDoc)
 		//TODO: no sheets, raise an error
 		return;
 	}
+	// We cannot create the typesetter instance (a QProcess in the end)
+	// in the constructor as it's parent would be in a different thread!
+	startExport();
 	// The exportDocument method defines the temporary file name and
 	// directory, so we can only read it after the creation
 	_poTypesetCtl->exportDocument( poDoc );
@@ -71,6 +89,9 @@ void CAPDFExport::exportDocumentImpl(CADocument *poDoc)
 		file()->unsetError();
 	}
 	_poTypesetCtl->runTypesetter(); // create pdf
+	// as we are not in the main thread wait until we are finished
+	if( _poTypesetCtl->waitForFinished( -1 ) == false )
+		qWarning("PDFExport: Typesetter %s was not finished","lilypond");
 }
 
 /*!
@@ -91,29 +112,30 @@ void CAPDFExport::pdfFinished( int iExitCode )
   oTempFile.setFileName( getTempFilePath()+".pdf" );
 	qDebug("Exporting PDF file %s", file()->fileName().toAscii().data());
 	if( !oTempFile.copy( file()->fileName() ) ) // Rename it, so we can delete the temporary file
-  {
+	{
 		qCritical("PDFExport: Could not copy temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
              oTempFile.errorString().toAscii().constData() );
-    return;
-  }
+		return;
+	}
 	emit pdfIsFinished( iExitCode );
   // Remove temporary files.
 	if( !oTempFile.remove() )
-  {
+	{
 		qWarning("PDFExport: Could not remove temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
              oTempFile.errorString().toAscii().constData() );
-    oTempFile.unsetError();
-  }
+		oTempFile.unsetError();
+	}
 	oTempFile.setFileName( getTempFilePath()+".ps" );
 	// No warning as not every typesetter leaves postscript files behind
 	oTempFile.remove();
 	oTempFile.setFileName( getTempFilePath() );
 	if( !oTempFile.remove() )
-  {
+	{
 		qWarning("PDFExport: Could not remove temporary file %s, error %s", oTempFile.fileName().constData(),
              oTempFile.errorString().toAscii().constData() );
-    oTempFile.unsetError();
-  }
+		oTempFile.unsetError();
+	}
+	finishExport();
 }
 
 QString CAPDFExport::getTempFilePath()

@@ -33,6 +33,8 @@ protected slots:
 	void pdfFinished( int iExitCode );
 
 private:
+	void startExport();
+	void finishExport();
 	void exportDocumentImpl(CADocument *doc);
 
 protected:
