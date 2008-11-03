@@ -29,14 +29,6 @@
 CASVGExport::CASVGExport( QTextStream *stream )
  : CAExport(stream)
 {
- 	_poTypesetCtl = new CATypesetCtl();
-	// For now we support only lilypond export
-	_poTypesetCtl->setTypesetter( QString("lilypond") );
-	_poTypesetCtl->setTSetOption("dbackend","svg",false,false);
-	_poTypesetCtl->setExporter( new CALilyPondExport() );
-	// Put lilypond output to console, could be shown on a canorus console later
-	connect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
-	connect( _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( svgFinished( int ) ) );
 }
 
 // Destructor
@@ -49,6 +41,29 @@ CASVGExport::~CASVGExport()
 	_poTypesetCtl = 0;
 }
 
+void CASVGExport::startExport()
+{
+ 	_poTypesetCtl = new CATypesetCtl();
+	// For now we support only lilypond export
+	_poTypesetCtl->setTypesetter( QString("lilypond") );
+	_poTypesetCtl->setTSetOption("dbackend","svg",false,false);
+	_poTypesetCtl->setExporter( new CALilyPondExport() );
+	// Put lilypond output to console, could be shown on a canorus console later
+	connect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
+	connect( _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( svgFinished( int ) ) );
+}
+
+void CASVGExport::finishExport()
+{
+	if( _poTypesetCtl )
+	{
+		// Put lilypond output to console, could be shown on a canorus console later
+		disconnect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
+		disconnect( _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( svgFinished( int ) ) );
+		delete _poTypesetCtl;
+	}
+}
+
 /*!
 	Exports the document \a poDoc to LilyPond first and create a SVG from it
   using the Typesetter instance.
@@ -59,6 +74,9 @@ void CASVGExport::exportDocumentImpl(CADocument *poDoc)
 		//TODO: no sheets, raise an error
 		return;
 	}
+	// We cannot create the typesetter instance (a QProcess in the end)
+	// in the constructor as it's parent would be in a different thread!
+	startExport();
 	// The exportDocument method defines the temporary file name and
 	// directory, so we can only read it after the creation
 	_poTypesetCtl->exportDocument( poDoc );
@@ -73,6 +91,9 @@ void CASVGExport::exportDocumentImpl(CADocument *poDoc)
 		file()->unsetError();
 	}
 	_poTypesetCtl->runTypesetter(); // create svg
+	// as we are not in the main thread wait until we are finished
+	if( _poTypesetCtl->waitForFinished( -1 ) == false )
+		qWarning("SVGExport: Typesetter %s was not finished","lilypond");
 }
 
 /*!
@@ -93,29 +114,30 @@ void CASVGExport::svgFinished( int iExitCode )
   oTempFile.setFileName( getTempFilePath()+".svg" );
 	qDebug("Exporting SVG file %s", file()->fileName().toAscii().data());
 	if( !oTempFile.copy( file()->fileName() ) ) // Rename it, so we can delete the temporary file
-  {
+	{
 		qCritical("SVGExport: Could not copy temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
              oTempFile.errorString().toAscii().constData() );
-    return;
-  }
+		return;
+	}
 	emit svgIsFinished( iExitCode );
-  // Remove temporary files.
+ 	// Remove temporary files.
 	if( !oTempFile.remove() )
-  {
+	{
 		qWarning("SVGExport: Could not remove temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
              oTempFile.errorString().toAscii().constData() );
-    oTempFile.unsetError();
-  }
+		oTempFile.unsetError();
+	}
 	oTempFile.setFileName( getTempFilePath()+".ps" );
 	// No warning as not every typesetter leaves postscript files behind
 	oTempFile.remove();
 	oTempFile.setFileName( getTempFilePath() );
 	if( !oTempFile.remove() )
-  {
+	{
 		qWarning("SVGExport: Could not remove temporary file %s, error %s", oTempFile.fileName().constData(),
              oTempFile.errorString().toAscii().constData() );
-    oTempFile.unsetError();
-  }
+		oTempFile.unsetError();
+	}
+	finishExport();
 }
 
 QString CASVGExport::getTempFilePath()
