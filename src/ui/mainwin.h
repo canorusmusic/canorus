@@ -51,6 +51,7 @@ class CAPreviewCtl;
 class CAPyConsole;
 class CATransposeView;
 class CAKeybdInput;
+class CAAbsExport;
 
 class CAMainWin : public QMainWindow, private Ui::uiMainWindow
 {
@@ -306,6 +307,7 @@ private:
 
 	CAPreviewCtl *_poPrintPreviewCtl;
 	CAPrintCtl   *_poPrintCtl;
+	CAAbsExport *_poExp; // abstract export instance
 	CAResourceView *_resourceView;
 	CATransposeView *_transposeView;
 

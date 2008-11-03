@@ -93,6 +93,8 @@
 #include "export/lilypondexport.h"
 #include "export/canorusmlexport.h"
 #include "export/canexport.h"
+#include "export/pdfexport.h"
+#include "export/svgexport.h"
 #include "export/midiexport.h"
 #include "import/lilypondimport.h"
 #include "import/canorusmlimport.h"
@@ -171,6 +173,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_transposeView->hide();
 
 	setDocument( 0 );
+	_poExp = 0;
 	CACanorus::addMainWin( this );
 }
 
@@ -208,6 +211,9 @@ CAMainWin::~CAMainWin()  {
 
 	delete _resourceView;
 	delete _transposeView;
+
+	if( _poExp )
+		delete _poExp;
 
 	if(!CACanorus::mainWinCount()) // closing down
 		CACanorus::cleanUp();
@@ -2695,7 +2701,7 @@ bool CAMainWin::saveDocument( QString fileName ) {
 	document()->setDateLastModified( QDateTime::currentDateTime() );
 	CACanorus::restartTimeEditedTimes( document() );
 
-	CAExport *save=0;
+	CAAbsExport *save=0;
 	if ( uiSaveDialog->selectedFilter()==CAFileFormats::CANORUSML_FILTER ) {
 		save = new CACanorusMLExport();
 	} else if ( uiSaveDialog->selectedFilter()==CAFileFormats::CAN_FILTER ) {
@@ -2731,13 +2737,24 @@ void CAMainWin::on_uiExportDocument_triggered() {
 	QString fileExtString;
 	QStringList fileExtList;
 	int ffound = uiExportDialog->exec();
-	if (ffound)
-		fileNames = uiExportDialog->selectedFiles();
-
 	if (!ffound)
 		return;
 
+	// ! Warning: If there is still a running export instance
+	// !               this will stop the old one (kill it actually)
+	// @todo: maybe block new export until the old is finished
+	if( _poExp ) // Delete old export instance
+		delete _poExp;
+
+	fileNames = uiExportDialog->selectedFiles();
+
 	QString s = fileNames[0];
+	if(s.isEmpty())
+	{
+		QMessageBox::information( 0,tr("No file name"), tr("Warning: No file name for export specified.") );
+		return;
+	}
+
 	if (!s.contains('.')) {
 		int left = uiExportDialog->selectedFilter().indexOf("(*.") + 2;
 		int len = uiExportDialog->selectedFilter().size() - left - 1;
@@ -2751,15 +2768,28 @@ void CAMainWin::on_uiExportDocument_triggered() {
 		CAPluginManager::exportAction(uiExportDialog->selectedFilter(), document(), s);
 	} else {
 		if ( uiExportDialog->selectedFilter() == CAFileFormats::MIDI_FILTER ) {
-			CAMidiExport me;
-			me.setStreamToFile( s );
-			me.exportDocument( document() );
-			me.wait();
+			CAMidiExport *pme = new CAMidiExport;
+			_poExp = pme;
+		} else if ( uiExportDialog->selectedFilter() == CAFileFormats::LILYPOND_FILTER ) {
+			CALilyPondExport *ple = new CALilyPondExport;
+			_poExp = ple;
+		} else if ( uiExportDialog->selectedFilter() == CAFileFormats::PDF_FILTER ) {
+			CAPDFExport *ppe = new CAPDFExport;
+			_poExp = ppe;
+		} else if ( uiExportDialog->selectedFilter() == CAFileFormats::SVG_FILTER ) {
+			CASVGExport *pse = new CASVGExport;
+			_poExp = pse;
 		} else {
-			CALilyPondExport le;
-			le.setStreamToFile( s );
-			le.exportDocument( document() );
-			le.wait();
+			//TODO: unknown/unsupported format, raise an error
+			return;
+		}
+		if( _poExp )
+		{
+			_poExp->setStreamToFile( s );
+			_poExp->exportDocument( document(), bStartThread );
+			if( bStartThread )
+				_poExp->wait();
+			//delete _poExp;
 		}
 	}
 }
