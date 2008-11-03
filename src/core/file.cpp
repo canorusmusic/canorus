@@ -58,7 +58,7 @@ void CAFile::setStreamFromFile( const QString filename ) {
 		if(stream() && _deleteStream) {
 			delete stream();
 		}
-		setStream( new QTextStream(file()) );
+		CAFile::setStream( new QTextStream(file()) );
 		_deleteStream = true;
 	}
 }
@@ -79,7 +79,7 @@ void CAFile::setStreamToFile( const QString filename ) {
 		if(stream() && _deleteStream) {
 			delete stream();
 		}
-		setStream( new QTextStream(file()) );
+		CAFile::setStream( new QTextStream(file()) );
 		_deleteStream = true;
 	}
 }
@@ -94,7 +94,7 @@ void CAFile::setStreamToDevice(QIODevice* device)
 		delete stream();
 	if(!device->isOpen())
 		device->open(QIODevice::ReadWrite);
-	setStream(new QTextStream(device));
+	CAFile::setStream(new QTextStream(device));
 	_deleteStream = true;
 }
 
@@ -108,7 +108,7 @@ void CAFile::setStreamFromDevice(QIODevice* device)
 		delete stream();
 	if(!device->isOpen())
 		device->open(QIODevice::ReadOnly);
-	setStream(new QTextStream(device));
+	CAFile::setStream(new QTextStream(device));
 	_deleteStream = true;
 }
 
