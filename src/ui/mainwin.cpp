@@ -2786,9 +2786,8 @@ void CAMainWin::on_uiExportDocument_triggered() {
 		if( _poExp )
 		{
 			_poExp->setStreamToFile( s );
-			_poExp->exportDocument( document(), bStartThread );
-			if( bStartThread )
-				_poExp->wait();
+			_poExp->exportDocument( document() );
+			_poExp->wait();
 			//delete _poExp;
 		}
 	}
