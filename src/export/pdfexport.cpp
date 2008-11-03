@@ -60,6 +60,7 @@ void CAPDFExport::finishExport()
 		disconnect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
 		disconnect( _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( pdfFinished( int ) ) );
 		delete _poTypesetCtl;
+		_poTypesetCtl = 0; // Destruktor may not delete the same object again
 	}
 }
 

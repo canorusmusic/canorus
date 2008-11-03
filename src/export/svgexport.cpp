@@ -61,6 +61,7 @@ void CASVGExport::finishExport()
 		disconnect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
 		disconnect( _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( svgFinished( int ) ) );
 		delete _poTypesetCtl;
+		_poTypesetCtl = 0; // Destruktor may not delete the same object again
 	}
 }
 
