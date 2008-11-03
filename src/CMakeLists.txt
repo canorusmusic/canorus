@@ -59,27 +59,27 @@ ENDIF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 ##################################
 # Poppler detection for printing #
 ##################################
-FIND_PATH(POPPLER_INCLUDE_PATH 
-	NAMES	poppler-config.h
-	PATH_SUFFIXES poppler
- )
-FIND_LIBRARY(POPPLER_LIBRARY NAMES poppler )
-FIND_LIBRARY(POPPLERQT4_LIBRARY NAMES poppler-qt4)
-IF(POPPLER_INCLUDE_PATH AND POPPLER_LIBRARY AND POPPLERQT4_LIBRARY)
-	MESSAGE("Poppler Libraries found. Printing enabled.")
-	MESSAGE("Include path: ${POPPLER_INCLUDE_PATH}" )
-	SET(USE_POPPLER True)
-	SET(POPPLER_SOURCE control/printctl.cpp)
-	SET(POPPLER_HEADER control/printctl.h)
-ELSE(POPPLER_INCLUDE_PATH AND POPPLER_LIBRARY AND POPPLERQT4_LIBRARY)
-	MESSAGE("Poppler Library and Development files *not* found. Printing disabled!")
-	MESSAGE("Path ${POPPLER_INCLUDE_PATH}, Lib ${POPPLER_LIBRARIES}")
-	SET(POPPLER_LIBRARY "")
-	SET(POPPLER_INCLUDE_PATH "")
-	SET(POPPLERQT4_LIBRARY "")
-	SET(POPPLER_SOURCE "")
-	SET(POPPLER_HEADER "")
-ENDIF(POPPLER_INCLUDE_PATH AND POPPLER_LIBRARY AND POPPLERQT4_LIBRARY)
+#FIND_PATH(POPPLER_INCLUDE_PATH 
+#	NAMES	poppler-config.h
+#	PATH_SUFFIXES poppler
+# )
+#FIND_LIBRARY(POPPLER_LIBRARY NAMES poppler )
+#FIND_LIBRARY(POPPLERQT4_LIBRARY NAMES poppler-qt4)
+#IF(POPPLER_INCLUDE_PATH AND POPPLER_LIBRARY AND POPPLERQT4_LIBRARY)
+#	MESSAGE("Poppler Libraries found. Printing enabled.")
+#	MESSAGE("Include path: ${POPPLER_INCLUDE_PATH}" )
+#	SET(USE_POPPLER True)
+#	SET(POPPLER_SOURCE control/printctl.cpp)
+#	SET(POPPLER_HEADER control/printctl.h)
+#ELSE(POPPLER_INCLUDE_PATH AND POPPLER_LIBRARY AND POPPLERQT4_LIBRARY)
+#	MESSAGE("Poppler Library and Development files *not* found. Printing disabled!")
+#	MESSAGE("Path ${POPPLER_INCLUDE_PATH}, Lib ${POPPLER_LIBRARIES}")
+#	SET(POPPLER_LIBRARY "")
+#	SET(POPPLER_INCLUDE_PATH "")
+#	SET(POPPLERQT4_LIBRARY "")
+#	SET(POPPLER_SOURCE "")
+#	SET(POPPLER_HEADER "")
+#ENDIF(POPPLER_INCLUDE_PATH AND POPPLER_LIBRARY AND POPPLERQT4_LIBRARY)
 
 # Set ZLib sources on windows
 FILE(GLOB ZLIB_Srcs "zlib/*.c")
@@ -130,8 +130,11 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	
 	control/externprogram.h
 	control/typesetctl.h
-	${POPPLER_HEADER}
+#	${POPPLER_HEADER}
 	control/previewctl.h
+
+	export/pdfexport.h
+	export/svgexport.h
 )
 
 SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
@@ -267,7 +270,7 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 SET(Canorus_Ctl_Srcs            # Control instances for user interface or views and core
 	control/externprogram.cpp
 	control/typesetctl.cpp
-	${POPPLER_SOURCE}
+#	${POPPLER_SOURCE}
 	control/previewctl.cpp
 )
 
@@ -313,6 +316,8 @@ SET(Canorus_Export_Srcs     # Classes for exporting Canorus data to various file
 	export/lilypondexport.cpp
 	export/canorusmlexport.cpp
 	export/canexport.cpp
+  export/pdfexport.cpp
+  export/svgexport.cpp
 )
 
 SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus data
@@ -478,9 +483,9 @@ ENDIF(USE_RUBY)
 IF(USE_PYTHON)
 	ADD_DEFINITIONS(-DUSE_PYTHON)
 ENDIF(USE_PYTHON)
-IF(USE_POPPLER)
-	ADD_DEFINITIONS(-DUSE_POPPLER)
-ENDIF(USE_POPPLER)
+#IF(USE_POPPLER)
+#	ADD_DEFINITIONS(-DUSE_POPPLER)
+#ENDIF(USE_POPPLER)
 
 ####################################
 # Include paths and set up targets #
@@ -527,9 +532,9 @@ IF(USE_PYTHON)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusPython_REAL_NAME} PROPERTIES COMPILE_FLAGS '-DSWIGCPP' )
 ENDIF(USE_PYTHON)
 
-IF(USE_POPPLER)
-	INCLUDE_DIRECTORIES(${POPPLER_INCLUDE_PATH})
-ENDIF(USE_POPPLER)
+#IF(USE_POPPLER)
+#	INCLUDE_DIRECTORIES(${POPPLER_INCLUDE_PATH})
+#ENDIF(USE_POPPLER)
 
 # Adds Canorus resource file under Windows (Canorus icon etc.).
 IF(MINGW)
@@ -567,7 +572,8 @@ ENDIF(USE_PYTHON)
 # Here the needed Qt Libraries are added to the link
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
-TARGET_LINK_LIBRARIES(canorus ${POPPLERQT4_LIBRARY} ${POPPLER_LIBRARY} ${QT_LIBRARIES} ${RUBY_LIBRARY} ${PYTHON_LIBRARY} )
+# Add ${POPPLERQT4_LIBRARY} ${POPPLER_LIBRARY} to reactivate poppler libraries
+TARGET_LINK_LIBRARIES(canorus ${QT_LIBRARIES} ${RUBY_LIBRARY} ${PYTHON_LIBRARY} )
 
 ############################
 # RtMIDI Library additions #
