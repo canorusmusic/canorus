@@ -1,7 +1,7 @@
 /*!
         Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
-        
+
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -12,14 +12,9 @@
 #include <QPrinter>
 #include <QSvgRenderer>
 #include <QPrintDialog>
-// For some unknown reason PATH_SUFFIXES does not work
-// in the CMakeList.txt configure script (it does return
-// the wrong path, f.e. /usr/include under Linux)
-#include <poppler/qt4/poppler-qt4.h>
 
 #include "ui/mainwin.h"
-#include "export/lilypondexport.h"
-#include "control/typesetctl.h"
+#include "export/svgexport.h"
 #include "control/printctl.h"
 #include "canorus.h"
 
@@ -27,49 +22,43 @@ CAPrintCtl::CAPrintCtl( CAMainWin *poMainWin )
 {
 	setObjectName("oPrintCtl");
 	_poMainWin = poMainWin;
- 	_poTypesetCtl = new CATypesetCtl();
-	// For now we support only lilypond export
-	_poTypesetCtl->setTypesetter( QString("lilypond") );
-	_poTypesetCtl->setTSetOption("dbackend","svg",false,false);
-	_poTypesetCtl->setExporter( new CALilyPondExport() );
-	// Put lilypond output to console, could be shown on a canorus console later
-	connect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
+	_poSVGExport = new CASVGExport();
 	if( poMainWin == 0 )
 		qCritical("PrintCtl: No mainwindow instance available!");
 	else
 		 CACanorus::connectSlotsByName(_poMainWin, this);
-	//connect(  _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( printPDF( int ) ) );
-	connect(  _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( printSVG( int ) ) );
+	connect( _poSVGExport, SIGNAL( svgIsFinished( int ) ), this, SLOT( printSVG( int ) ) );
 }
 
 // Destructor
 CAPrintCtl::~CAPrintCtl()
 {
-	if( _poTypesetCtl ) {
-		delete _poTypesetCtl->getExporter();
-		delete _poTypesetCtl;
+	if( _poSVGExport ) {
+		delete _poSVGExport;
 	}
-	_poTypesetCtl = 0;
+	_poSVGExport = 0;
 }
 
 void CAPrintCtl::on_uiPrint_triggered()
 {
+	QDir oPath;
+	QFile oTempFile( oPath.absolutePath ()+"/print.svg" );
+	QString oTempFileName( oPath.absolutePath ()+"/print.svg" );
+	if( !oTempFile.remove() )
+	{
+		qWarning("PrintCtl: Could not remove old print file %s, error %s", oTempFile.fileName().toAscii().constData(),
+		oTempFile.errorString().toAscii().constData() );
+		oTempFile.unsetError();
+	}
 	qDebug("PrintCtl: Print triggered via main window");
 	// The exportDocument method defines the temporary file name and
 	// directory, so we can only read it after the creation
-	_poTypesetCtl->exportDocument( _poMainWin->document() );
-	const QString roTempPath = _poTypesetCtl->getTempFilePath();
-	_poTypesetCtl->setTSetOption( QString("o"), roTempPath );
-	_poTypesetCtl->setTSetOption("dbackend","svg",false,false);
-	_poTypesetCtl->runTypesetter();
+	_poSVGExport->setStreamToFile( oTempFileName );
+	_poSVGExport->exportDocument( _poMainWin->document() );
+	_poSVGExport->wait();
+	const QString roTempPath = _poSVGExport->getTempFilePath();
 	// Copy the name for later output on the printer
-	_oOutputPDFName = roTempPath;
-}
- 
-void CAPrintCtl::outputTypsetterOutput( const QByteArray &roOutput )
-{
-	// Output to error console
-	qDebug( "%s", roOutput.data() );
+	_oOutputSVGName = roTempPath;
 }
 
 void CAPrintCtl::printSVG( int iExitCode )
@@ -82,133 +71,17 @@ void CAPrintCtl::printSVG( int iExitCode )
 	QDir oPath;
 	QFile oTempFile( oPath.absolutePath ()+"/print.svg" );
 	QSvgRenderer oRen;
-	if( !oTempFile.remove() )
-	{
-		qWarning("PreviewCtl: Could not remove old print file %s, error %s", oTempFile.fileName().toAscii().constData(),
-		oTempFile.errorString().toAscii().constData() );
-		oTempFile.unsetError();
-	}
-	oTempFile.setFileName( _oOutputPDFName+".svg" );
+	oTempFile.setFileName( _oOutputSVGName+".svg" );
 	// Start by letting the user select the print settings
-	qDebug("Printing SVG file %s", QString("file://"+oPath.absolutePath ()+"/print.svg").toAscii().data());
-	if( !oTempFile.copy( oPath.absolutePath ()+"/print.svg" ) ) // Rename it, so we can delete the temporary file
-	{
-		qCritical("PreviewCtl: Could not copy temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
-						oTempFile.errorString().toAscii().constData() );
-		return;
- 	}
 	if( oRen.load( oPath.absolutePath ()+"/print.svg" ) )
 	{
 		oPrintDlg.exec();
 		// Actual printing with the help of the painter
 		oPainter.begin( &oPrinter );
 		// Draw the SVG image
-		//oPainter.drawImage(0,0,poPDFPage->renderToImage(oPrinter.resolution(),oPrinter.resolution()));
+		//oPainter.drawImage(0,0,poSVGPage->renderToImage(oPrinter.resolution(),oPrinter.resolution()));
 		oPainter.setRenderHints( QPainter::Antialiasing );
 		oRen.render( &oPainter );
 		oPainter.end();
 	}
-	// Remove temporary files. 
-	if( !oTempFile.remove() )
-	{
-		qWarning("PreviewCtl: Could not remove temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
-						  oTempFile.errorString().toAscii().constData() );
-		oTempFile.unsetError();
- 	}
-	oTempFile.setFileName( _oOutputPDFName+".ps" );
-	// No warning as not every typesetter leaves postscript files behind
-	oTempFile.remove();
-	oTempFile.setFileName( _oOutputPDFName );
-	if( !oTempFile.remove() )
-	{
-		qWarning("PreviewCtl: Could not remove temporary file %s, error %s", oTempFile.fileName().constData(),
-						 oTempFile.errorString().toAscii().constData() );
-		oTempFile.unsetError();
-	}
 }
-
-void CAPrintCtl::printPDF( int iExitCode )
-{
-	// High resolution requires huge amount of memory :-(
-	QPrinter oPrinter(QPrinter::ScreenResolution);
-	QPainter oPainter;
-	oPrinter.setFullPage(true);
-	QPrintDialog oPrintDlg(&oPrinter);
-	QDir oPath;
-	QFile oTempFile( oPath.absolutePath ()+"/print.pdf" );
-	if( !oTempFile.remove() )
-	{
-		qWarning("PreviewCtl: Could not remove old print file %s, error %s", oTempFile.fileName().toAscii().constData(),
-		oTempFile.errorString().toAscii().constData() );
-		oTempFile.unsetError();
-	}
-	oTempFile.setFileName( _oOutputPDFName+".pdf" );
-	// Start by letting the user select the print settings
-	qDebug("Printing PDF file %s", QString("file://"+oPath.absolutePath ()+"/print.pdf").toAscii().data());
-	if( !oTempFile.copy( oPath.absolutePath ()+"/print.pdf" ) ) // Rename it, so we can delete the temporary file
-	{
-		qCritical("PreviewCtl: Could not copy temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
-						oTempFile.errorString().toAscii().constData() );
-		return;
- 	}
-	// Read PDF document from disk to draw it's individual pages
-	Poppler::Document *poPDFDoc = Poppler::Document::load(QString( oPath.absolutePath ()+"/print.pdf"));
-	// Set the maximum number of pages
-	if( poPDFDoc )
-	{
-		int iNumPages = poPDFDoc->numPages(), iC;
-		oPrintDlg.setMinMax( 1, iNumPages );
-		oPrintDlg.exec();
-		// Get the selected number of pages
-		iNumPages = oPrinter.toPage() - oPrinter.fromPage();
-		Poppler::Page *poPDFPage;
-		//poPDFDoc->setRenderBackend( Poppler::Document::ArthurBackend );
-		poPDFDoc->setRenderHint( Poppler::Document::Antialiasing, true );
-		poPDFDoc->setRenderHint( Poppler::Document::TextAntialiasing, true );
-		oPainter.setRenderHints( QPainter::Antialiasing );
-		// Actual printing with the help of the painter
-		oPainter.begin( &oPrinter );
-		// @ToDo: Limit to the page range the user wants to print
-		// Read the current page
-		for( iC= oPrinter.fromPage(); iC< oPrinter.toPage(); ++iC )
-		{
- 			if( oPrinter.pageOrder() == QPrinter::FirstPageFirst )
-				poPDFPage = poPDFDoc->page(iC);
-			else
-				poPDFPage = poPDFDoc->page(iNumPages-iC);
-			if( poPDFPage )
-			{
-				oPainter.drawImage(0,0,poPDFPage->renderToImage(oPrinter.resolution(),oPrinter.resolution()));
-				//oPainter.drawImage(0,0,poPDFPage->splashRenderToPixmap(oPrinter.resolution(),oPrinter.resolution()));
-				oPrinter.newPage();
-			}
-			delete poPDFPage;
-		}
-		// Last page (separated to avoid extra if in for loop for last page)
-		if( oPrinter.pageOrder() == QPrinter::FirstPageFirst )
-			poPDFPage = poPDFDoc->page(iC);
-		else
-			poPDFPage = poPDFDoc->page(iNumPages-iC);
-		if( poPDFPage )
-			oPainter.drawImage(0,0,poPDFPage->renderToImage(oPrinter.resolution(),oPrinter.resolution()));
-		oPainter.end();
-	}
-	// Remove temporary files. 
-	if( !oTempFile.remove() )
-	{
-		qWarning("PreviewCtl: Could not remove temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
-						  oTempFile.errorString().toAscii().constData() );
-		oTempFile.unsetError();
- 	}
-	oTempFile.setFileName( _oOutputPDFName+".ps" );
-	// No warning as not every typesetter leaves postscript files behind
-	oTempFile.remove();
-	oTempFile.setFileName( _oOutputPDFName );
-	if( !oTempFile.remove() )
-	{
-		qWarning("PreviewCtl: Could not remove temporary file %s, error %s", oTempFile.fileName().constData(),
-						 oTempFile.errorString().toAscii().constData() );
-		oTempFile.unsetError();
-	}
-}
-
