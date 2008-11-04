@@ -41,7 +41,7 @@ CAPrintCtl::~CAPrintCtl()
 
 void CAPrintCtl::on_uiPrint_triggered()
 {
-	QDir oPath;
+	QDir oPath( QDir::tempPath() );
 	QFile oTempFile( oPath.absolutePath ()+"/print.svg" );
 	QString oTempFileName( oPath.absolutePath ()+"/print.svg" );
 	if( !oTempFile.remove() )
@@ -68,7 +68,7 @@ void CAPrintCtl::printSVG( int iExitCode )
 	QPainter oPainter;
 	oPrinter.setFullPage(true);
 	QPrintDialog oPrintDlg(&oPrinter);
-	QDir oPath;
+	QDir oPath( QDir::tempPath() );
 	QFile oTempFile( oPath.absolutePath ()+"/print.svg" );
 	QSvgRenderer oRen;
 	oTempFile.setFileName( _oOutputSVGName+".svg" );

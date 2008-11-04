@@ -37,8 +37,8 @@ CAPreviewCtl::~CAPreviewCtl()
 
 void CAPreviewCtl::on_uiPrintPreview_triggered()
 {
-	QDir oPath;
-	QFile oTempFile( oPath.absolutePath ()+"/print.svg" );
+	QDir oPath( QDir::tempPath() );
+	QFile oTempFile( oPath.absolutePath ()+"/preview.pdf" );
 	QString oTempFileName( oPath.absolutePath()+"/preview.pdf" );
 	if( !oTempFile.remove() )
  	{
@@ -61,5 +61,5 @@ void CAPreviewCtl::showPDF( int iExitCode )
 {
 	QDir oPath;
 	// First version show the pdf file with the default pdf system viewer
-	QDesktopServices::openUrl( QUrl( QString("file:")+oPath.absolutePath ()+"/preview.pdf" ) );
+	QDesktopServices::openUrl( QUrl( QString("file:")+QDir::tempPath()+"/preview.pdf" ) );
 }
