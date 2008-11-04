@@ -29,6 +29,7 @@
 CASVGExport::CASVGExport( QTextStream *stream )
  : CAExport(stream)
 {
+	_poTypesetCtl = 0;
 }
 
 // Destructor
