@@ -1,3 +1,9 @@
+0.7
+===
+- Skipped 0.6 version for various reasons
+- Added support for printing and preview of score
+- Added new export filters to PDF and SVG based on lilypond
+
 0.5
 ===
 - Implemented infrastructure for getting MIDI-IN events.
