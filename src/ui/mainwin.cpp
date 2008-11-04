@@ -189,7 +189,7 @@ CAMainWin::~CAMainWin()  {
 	if(_playback)
 		delete _playback;
 
-	delete _poPrintCtl;
+	//delete _poPrintCtl;
 	delete _poPrintPreviewCtl;
 	// clear UI
 	delete uiInsertToolBar; // also deletes content of the toolbars
@@ -560,7 +560,7 @@ void CAMainWin::setupCustomUi() {
 	_musElementFactory = new CAMusElementFactory();
 
 	_poPrintPreviewCtl = new CAPreviewCtl( this );
-	_poPrintCtl = new CAPrintCtl( this );
+	//_poPrintCtl = new CAPrintCtl( this );
 	//uiPrint->setEnabled( false );
 	// Standard Toolbar
 	uiUndo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiUndo ) );
