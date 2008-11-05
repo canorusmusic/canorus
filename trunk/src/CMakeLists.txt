@@ -132,6 +132,7 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	control/typesetctl.h
 #	${POPPLER_HEADER}
 	control/previewctl.h
+	control/printctl.h
 
 	export/pdfexport.h
 	export/svgexport.h
@@ -272,6 +273,7 @@ SET(Canorus_Ctl_Srcs            # Control instances for user interface or views 
 	control/typesetctl.cpp
 #	${POPPLER_SOURCE}
 	control/previewctl.cpp
+	control/printctl.cpp
 )
 
 SET(Canorus_Drawable_Srcs	# Drawable instances of the data
