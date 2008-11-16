@@ -33,7 +33,7 @@ public:
 	
 	inline CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(_context); }
 	
-	CASyllable* clone(CAContext* context=0);
+	CASyllable* clone(CAContext* context);
 	int compare(CAMusElement*);
 	
 private:

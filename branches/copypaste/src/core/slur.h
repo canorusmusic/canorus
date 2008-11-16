@@ -40,6 +40,7 @@ public:
 	virtual ~CASlur();
 	
 	CASlur *clone(CAContext* context=0);
+	CASlur *clone(CAContext* context, CANote* noteStart, CANote* noteEnd);
 	int compare( CAMusElement *elt );
 	
 	inline CASlurDirection slurDirection() { return _slurDirection; }

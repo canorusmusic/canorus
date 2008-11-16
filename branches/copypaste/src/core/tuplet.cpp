@@ -53,8 +53,12 @@ CATuplet::~CATuplet() {
 	resetTimes();
 }
 
-CATuplet* CATuplet::clone(CAContext* context) { // context is ignored FIXME add doxygen
-	CATuplet *t = new CATuplet( number(), actualNumber(), noteList() );
+CATuplet* CATuplet::clone(CAContext* context) { // context is ignored. this method should not be used. FIXME.
+	return new CATuplet( number(), actualNumber(), noteList() );
+}
+
+CATuplet* CATuplet::clone(QList<CAPlayable*> newList) {
+	return new CATuplet( number(), actualNumber(), newList );
 }
 
 int CATuplet::compare(CAMusElement* elt) {
@@ -95,9 +99,12 @@ void CATuplet::assignTimes() {
 	}
 
 	// removes notes from the voice
-	for (int i=noteList().size()-1; i>=0; i--) {
-		noteList()[i]->setTuplet(0);
-		voice->remove( noteList()[i] );
+	if(voice->contains(noteList().front()))
+	{
+		for (int i=noteList().size()-1; i>=0; i--) {
+			noteList()[i]->setTuplet(0);
+			voice->remove( noteList()[i] );
+		}
 	}
 
 	for (int i=0; i<noteList().size(); i++) {
@@ -144,6 +151,8 @@ void CATuplet::assignTimes() {
 	This is usually called from the destructor of the tuplet.
  */
 void CATuplet::resetTimes() {
+	if(noteList().isEmpty())
+		return;
 	CAVoice *voice = noteList().front()->voice();
 	CAMusElement *next = 0;
 	if ( noteList().back()->musElementType()==Note && static_cast<CANote*>(noteList().back())->getChord().size() ) {

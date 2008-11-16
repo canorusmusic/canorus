@@ -19,6 +19,8 @@
 #include "core/mark.h"
 #include "interface/mididevice.h"
 
+#include <QDebug>
+
 /*!
 	\class CAVoice
 	\brief Class which represents a voice in the staff.
@@ -580,6 +582,8 @@ QList<CAMusElement*> CAVoice::getSignList() {
 	If \elt is null, it returns the first element in the voice.
 */
 CAMusElement *CAVoice::next(CAMusElement *elt) {
+	if(musElementList().isEmpty())
+		return 0;
 	if (elt) {
 		int idx = _musElementList.indexOf(elt);
 
@@ -630,6 +634,8 @@ CAMusElement *CAVoice::previousByType( CAMusElement::CAMusElementType type, CAMu
 	If \elt is null, it returns the last element in the voice.
 */
 CAMusElement *CAVoice::previous(CAMusElement *elt) {
+	if(musElementList().isEmpty())
+		return 0;
 	if (elt) {
 		int idx = _musElementList.indexOf(elt);
 

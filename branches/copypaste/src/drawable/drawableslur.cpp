@@ -60,6 +60,7 @@ int CADrawableSlur::max(int x, int y, int z) {
 }
 
 void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
+	p->setRenderHint(QPainter::Antialiasing);
 	QPen pen(s.color);
 	pen.setWidth( qRound(1.2*s.z) );
 	pen.setCapStyle( Qt::RoundCap );
@@ -69,7 +70,7 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 			break;
 		case CASlur::SlurDotted:
 			pen.setStyle( Qt::DotLine );
-			break;		
+			break;
 	}
 	p->setPen( pen );
 	

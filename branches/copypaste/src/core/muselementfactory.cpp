@@ -20,6 +20,7 @@
 
 #include "canorus.h" // needed for CASettings
 #include "core/settings.h"
+#include <QDebug>
 
 /*!
 	\class CAMusElementFactory
@@ -472,7 +473,6 @@ bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> noteList ) {
 void CAMusElementFactory::placeAutoBar( CAPlayable* elt ) {
 	if ( !elt )
 		return;
-
 	CABarline *b = static_cast<CABarline*>(elt->voice()->previousByType( CAMusElement::Barline, elt ));
 	CATimeSignature *t = static_cast<CATimeSignature*>(elt->voice()->previousByType( CAMusElement::TimeSignature, elt ));
 

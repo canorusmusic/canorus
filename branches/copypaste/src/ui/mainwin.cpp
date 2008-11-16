@@ -2221,12 +2221,13 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				}
 
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, next, false );
-				if ( CACanorus::settings()->autoBar() )
+				if ( success && CACanorus::settings()->autoBar() )
 					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
-				noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
+				if( success )
+					noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
-				if ( tuplet ) {
+				if ( success && tuplet ) {
 					new CATuplet( number, actualNumber, noteList );
 				}
 			} else {
@@ -2238,10 +2239,10 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				}
 
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, dright?dright->musElement():0, false );
-				if ( CACanorus::settings()->autoBar() )
+				if ( success && CACanorus::settings()->autoBar() )
 					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
-				if ( uiTupletType->isChecked() ) {
+				if ( success && uiTupletType->isChecked() ) {
 					QList<CAPlayable*> elements;
 					elements << static_cast<CAPlayable*>(musElementFactory()->musElement());
 
@@ -2318,21 +2319,22 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreViewPort *v) {
 				}
 
 				success = musElementFactory()->configureRest( voice, next );
-				if ( CACanorus::settings()->autoBar() )
+				if ( success && CACanorus::settings()->autoBar() )
 					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
-				noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
+				if( success )
+					noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
-				if (tuplet) {
+				if( success && tuplet ) {
 					new CATuplet( number, actualNumber, noteList );
 				}
 			} else {
 				if ( dright && dright->musElement() && dright->musElement()->isPlayable() && static_cast<CAPlayable*>(dright->musElement())->tuplet() && !static_cast<CAPlayable*>(dright->musElement())->isFirstInTuplet() ) {
 					delete static_cast<CAPlayable*>(dright->musElement())->tuplet();
 				}
-
+				
 				success = musElementFactory()->configureRest( voice, dright?dright->musElement():0 );
-				if ( CACanorus::settings()->autoBar() )
+				if ( success && CACanorus::settings()->autoBar() )
 					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 			}
 
@@ -4312,6 +4314,7 @@ void CAMainWin::on_uiCut_triggered() {
 		stopPlayback();
 		CACanorus::undo()->createUndoCommand( document(), tr("cut", "undo") );
 		copySelection( currentScoreViewPort() );
+		//FIXME should we replace with rests when a part of a tuplet is cut?
 		deleteSelection( currentScoreViewPort(), false, true, false ); // and don't make undo as we already make it
 		CACanorus::undo()->pushUndoCommand();
 	}
@@ -4331,79 +4334,149 @@ void CAMainWin::on_uiPaste_triggered() {
 */
 void CAMainWin::copySelection( CAScoreViewPort *v ) {
 	if ( v->selection().size() ) {
-		QHash<CAContext*, CAContext*> contextMap;
-		QHash<CAVoice*, CAVoice*> voiceMap;
+		CASheet* currentSheet = v->sheet();
+		QHash<CAContext*, QList<CAMusElement*> > eltMap;
+		QList<CAContext*> contexts;
+		for(int i=0; i < currentSheet->contextCount(); i++)
+			contexts << 0;
 
 		foreach(CADrawableMusElement* drawable, v->selection()) {
-			if (drawable->musElement()) {
-				CAMusElement* p = drawable->musElement();
-				if(p->musElementType() == CAMusElement::FunctionMark)
-					continue; // \todo Does it make sense to handle copy and paste of function marks? 
-				if(p->musElementType() == CAMusElement::Mark)
-					continue; // marks are cloned together with their associated element, no need to clone them separately.
-				if(!p->context())
-						continue;
-				if(p->isPlayable())
-				{
-					CAPlayable* pl = static_cast<CAPlayable*>(p);
-					CAStaff* s = 0;
-					CAVoice* v = 0;
-					if(pl->voice() && pl->voice()->staff() && !(s = static_cast<CAStaff*>(contextMap[pl->voice()->staff()]))) {
-						s = new CAStaff("", 0, pl->voice()->staff()->numberOfLines()); //FIXME ""
-						contextMap[pl->voice()->staff()] = s;
-					}
-					if(pl->voice() && !(v = voiceMap[pl->voice()])) {
-						v = new CAVoice("", s, pl->voice()->stemDirection(), 0); //FIXME ""
-						voiceMap[pl->voice()] = v;
-						s->addVoice(v);
-					}
-					
-					if(s != 0 && v != 0) // Discard standalone notes (TODO probably redundant).
-					{
-						CANote* n;
-						if((n=dynamic_cast<CANote*>(pl)) && n->isPartOfChord() && !n->isFirstInChord()) // FIXME dynamic_cast
-						{	
-							v->append(pl->clone(v), true);
-						}
-						else
-							v->append(pl->clone(v));
-					}
-				} else {
-					switch(p->context()->contextType()) {
-						case CAContext::LyricsContext: {
-							CALyricsContext *c = 0;
-							if(!(c = static_cast<CALyricsContext*>(contextMap[p->context()]))) {
-								CALyricsContext *lc = static_cast<CALyricsContext*>(p->context());
-								contextMap[p->context()] = c = new CALyricsContext("", lc->stanzaNumber(), voiceMap[lc->associatedVoice()]); // FIXME Will be initialized to voice = 0 if not in selection, needs thinking; FIXME ""
-							}
-						   	c->addSyllable(static_cast<CASyllable*>(p->clone(c)), false);
-						}	break;
-						case CAContext::Staff: {
-							CAStaff *c = 0;
-							if(!(c = static_cast<CAStaff*>(contextMap[p->context()]))) {
-								CAStaff *staff = static_cast<CAStaff*>(p->context());
-								contextMap[p->context()] = c = new CAStaff("", 0, staff->numberOfLines()); //FIXME ""
-							} 
-							if(c->voiceCount() == 0)
-								c->addVoice();
-							c->voiceAt(0)->append(p->clone(c)); // voice inconsistencies will be fixed when pasting.
-						}	break;
-						default:
-							break; // Function marks?
-					}
+			CAMusElement* elt;
+			CAContext* context;
+			if(!(elt=drawable->musElement()) || !(context = elt->context()))
+				continue;	
+			if(elt->musElementType() == CAMusElement::Mark || elt->musElementType() == CAMusElement::Tuplet || elt->musElementType() == CAMusElement::Slur)
+				continue;	// marks are cloned together with their associated element, no need to clone them separately.
+							// tuplet is not really a music element (i.e., cannot be inserted to a context or a voice). FIXME.							// slur is also not inserted into a voice.
+			if(context->contextType() != CAContext::Staff && context->contextType() != CAContext::LyricsContext)
+				continue; // only these context types are impl'd. If we added anything else, we'd have old pointers in the context list.
+			eltMap[context] << elt;
+			int idx = currentSheet->contextList().indexOf(context);
+			contexts[idx] = context;
+		}
+		contexts.removeAll(0);
+		// contexts now contains the contexts of the selected elements, in the correct order.
+
+		// Copy staff elements
+		QHash<CAVoice*, CAVoice*> voiceMap; // all voices in selection
+		for(int i=0; i<contexts.size(); i++)
+		{
+			CAContext* context = contexts[i];
+			if(context->contextType() != CAContext::Staff)
+				continue;
+			CAStaff* staff = static_cast<CAStaff*>(context);
+			CAStaff* newStaff = new CAStaff("", 0, staff->numberOfLines());
+			contexts[i] = newStaff;
+
+			QList<CAVoice*> voices;
+			for(int i=0; i<staff->voiceCount(); i++)
+				voices << 0;
+			
+			// create voices
+			foreach(CAMusElement* elt, eltMap[context])
+			{
+				if(!elt->isPlayable())
+					continue;
+				CAVoice* voice = static_cast<CAPlayable*>(elt)->voice();
+				int idx = staff->voiceIndex(voice);
+				Q_ASSERT_X(idx >= 0 && idx < staff->voiceCount(), __PRETTY_FUNCTION__, "Cannot happen!");
+				if(!voices[idx])
+					voiceMap[voice] = voices[idx] = new CAVoice("", newStaff);
+				
+			}
+			
+			CAVoice* defaultVoice = 0; // for non-playable elements
+			foreach(CAVoice* voice, voices)
+			{
+				if(voice) {
+					defaultVoice = voice;
+					break;
 				}
 			}
-		}
-
-		QList<CAContext*> contexts;
-		// sort new contexts by real order of contexts.
-		foreach(CAContext* c1, v->sheet()->contextList()) {
-			foreach(CAContext* c2, contextMap.keys()) {
-				if(c1 == c2) {
-					contexts << contextMap[c2];
-				}	
+			if(!defaultVoice)
+				defaultVoice = new CAVoice("", newStaff);
+			// future FIXME (also in pasteAt): tuplets across staves (when cross-staff beam are impl'd GUI-wise).	
+			QHash<CATuplet*, QList<CAPlayable*> > tupletMap;
+			QHash<CASlur*, CANote*> slurMap; //FIXME: cross-staff slurs.
+			foreach(CAMusElement* elt, eltMap[context])
+			{
+				if(elt->isPlayable()) {
+					CAPlayable* pl = static_cast<CAPlayable*>(elt);
+					CAVoice* voice = pl->voice();
+					int idx = staff->voiceIndex(voice);
+					bool addToChord = false;
+					int eltidx = eltMap[context].indexOf(elt);
+					CAMusElement* prev = 0;
+					CANote* note = (pl->musElementType() == CAMusElement::Note)?static_cast<CANote*>(pl):0;
+					if(note && eltidx>0 
+							&& (prev = eltMap[context][eltidx-1]) && prev->musElementType() == CAMusElement::Note) {
+						CANote *prevNote = static_cast<CANote*>(prev);
+						addToChord = prev->timeStart() == note->timeStart();
+					}
+					CAPlayable* cloned = pl->clone(voices[idx]);
+					voices[idx]->append(cloned, addToChord);
+					if(pl->tuplet())
+					{
+						tupletMap[pl->tuplet()] << cloned;
+						if(tupletMap[pl->tuplet()].size() == pl->tuplet()->number())
+							pl->tuplet()->clone(tupletMap[pl->tuplet()]);
+					}
+					if(note)
+					{
+						QList<CASlur*> slurs;
+						slurs << note->tieStart() << note->tieEnd() << note->slurStart() << note->slurEnd() << note->phrasingSlurStart() << note->phrasingSlurEnd();
+						slurs.removeAll(0);
+						foreach(CASlur* s, slurs)
+						{
+							if(!slurMap.contains(s))
+								slurMap[s] = static_cast<CANote*>(cloned);
+							else {
+								CANote* noteStart = slurMap[s], *noteEnd = static_cast<CANote*>(cloned);
+								CASlur* newSlur = s->clone(noteStart->context(), noteStart, noteEnd);
+								switch (s->slurType()) {
+									case CASlur::TieType:
+										noteStart->setTieStart( newSlur );
+										noteEnd->setTieEnd( newSlur );
+										break;
+									case CASlur::SlurType:
+										noteStart->setSlurStart( newSlur );
+										noteEnd->setSlurEnd( newSlur );
+										break;
+									case CASlur::PhrasingSlurType:
+										noteStart->setPhrasingSlurStart( newSlur );
+										noteEnd->setPhrasingSlurEnd( newSlur );
+										break;
+								}
+							}
+						}	
+					}
+				} else
+					defaultVoice->append(elt->clone(newStaff));
 			}
+
+			voices.removeAll(0);
+			if(voices.isEmpty())
+				voices << defaultVoice;
+			
+			CAStaff *last = static_cast<CAStaff*>(currentSheet->contextList().last());
+			foreach(CAVoice* voice, voices)
+				newStaff->addVoice(voice);
 		}
+		
+		// Copy lyrics
+		for(int i=0; i<contexts.size(); i++)
+		{
+			CAContext *context = contexts[i];
+			if(context->contextType() != CAContext::LyricsContext)
+				continue;
+			CALyricsContext* lc = static_cast<CALyricsContext*>(context);
+			CAVoice* associated = voiceMap[lc->associatedVoice()]; // init'd to 0 if map doesn't contain the voice.
+			CALyricsContext* newLc = new CALyricsContext("", 0 /*FIXME*/, associated);
+			contexts[i] = newLc;
+			foreach(CAMusElement* elt, eltMap[context])
+				newLc->addSyllable(static_cast<CASyllable*>(elt->clone(newLc)), false);
+		}
+		
 		QApplication::clipboard()->setMimeData( new CAMimeData(contexts) );
 	}
 }
@@ -4613,8 +4686,9 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 				delete *i; // also removes itself from associated elements
 			} else if ( (*i)->musElementType()==CAMusElement::Slur ) {
 				delete *i; // also removes itself from associated elements
-			} else if ( (*i)->musElementType()==CAMusElement::Tuplet ) {
-				delete *i; // also removes itself from associated elements
+			//FIXME ...
+//			} else if ( (*i)->musElementType()==CAMusElement::Tuplet ) {
+//				delete *i; // also removes itself from associated elements
 			} else {
 				(*i)->context()->remove(*i);
 			}
@@ -4667,8 +4741,9 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 						CAVoice* voice = voiceMap[static_cast<CALyricsContext*>(context)->associatedVoice()];
 						if(!voice && currentContext && currentContext->contextType() == CAContext::Staff) 
 							voice = static_cast<CAStaff*>(currentContext)->voiceAt( (currentContext == v->currentContext()->context())? (uiVoiceNum->getRealValue()?uiVoiceNum->getRealValue()-1:uiVoiceNum->getRealValue()) : 1); // That is, if the currentContext is still the context that the user last clicked before pasting, use the current voice number. Otherwise, use the first voice.
-						if(!voice)
+						if(!voice) {
 							continue; // skipping lyrics - can't find a staff.
+						}
 						newContext = new CALyricsContext(tr("LyricsContext%1").arg(v->sheet()->contextCount()+1), 1, voice);
 						break;
 					}
@@ -4686,19 +4761,91 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 			if(context->contextType()==CAContext::Staff) {
 				CAStaff* staff = static_cast<CAStaff*>(currentContext), *cbstaff = static_cast<CAStaff*>(context);
 				int voice = uiVoiceNum->getRealValue() ? uiVoiceNum->getRealValue()-1 : uiVoiceNum->getRealValue();
-				for(int i=voice; i<cbstaff->voiceCount()-staff->voiceCount()+voice; i++) {
+				int voiceDiff = cbstaff->voiceCount()-staff->voiceCount();
+				for(int i=voice; i< voiceDiff+voice; i++) {
 					staff->addVoice();
 				}
 				for(int i=voice; i<voice+cbstaff->voiceCount(); i++) {
 					CADrawableMusElement *drawable = v->nearestRightElement(coords.x(), coords.y(), staff->voiceAt(i));
-					CAMusElement* current = (drawable)?drawable->musElement():0;
+					CAMusElement* right = (drawable)?drawable->musElement():0;
 					
+					// Can't have playables between two notes linked by a tie. Remove the tie in this case.
+					// FIXME this should be the behavior for insert as well.
+					CAMusElement* leftPl = right;
+				    while((leftPl = staff->voiceAt(i)->previous(leftPl)) && !leftPl->isPlayable());
+					CANote* leftNote = (leftPl&&leftPl->musElementType()==CAMusElement::Note)?static_cast<CANote*>(leftPl):0;
+					CASlur* tie = leftNote?leftNote->tieStart():0;
+					
+					if(tie)
+					{
+						if(tie->noteEnd() && staff->voiceAt(i)->contains(tie->noteEnd()))
+							// pasting between two tied notes - remove tie
+							delete tie; // resets notes' tieStart/tieEnd; FIXME any problem with this?
+						else {
+							// pasting after an "open" tie - if the first paste element is a note, connect them. Otherwise delete the tie.
+							int idx = 0;
+							for(;idx < cbstaff->voiceAt(i)->musElementCount() && !cbstaff->voiceAt(i)->musElementAt(idx)->isPlayable();idx++);
+							CAPlayable* first = (idx!=cbstaff->voiceAt(i)->musElementCount())?static_cast<CAPlayable*>(cbstaff->voiceAt(i)->musElementAt(idx)):0;
+							if(first && first->musElementType() == CAMusElement::Note)
+								static_cast<CANote*>(first)->setTieEnd(tie);
+							else
+								delete tie;
+						}
+					}
+
+					QHash<CATuplet*, QList<CAPlayable*> > tupletMap;
+					QHash<CASlur*, CANote*> slurMap;
 					foreach(CAMusElement* elt, cbstaff->voiceAt(i)->musElementList()) {
 						CAMusElement* cloned = (elt->isPlayable())?static_cast<CAPlayable*>(elt)->clone(staff->voiceAt(i)):elt->clone(staff);
 						CANote* n = (elt->musElementType() == CAMusElement::Note)?static_cast<CANote*>(elt):0;
-						staff->voiceAt(i)->insert(current, cloned, n&&n->isPartOfChord()&&!n->isFirstInChord());
+						CAMusElement* prev = cbstaff->voiceAt(i)->previous(n);
+						CANote* prevNote = (prev&&prev->musElementType() == CAMusElement::Note)?static_cast<CANote*>(prev):0;
+						bool chord = n && prevNote && prevNote->timeStart() == n->timeStart();
+						if(elt->isPlayable())
+						{
+							CAPlayable* pl = static_cast<CAPlayable*>(elt);
+							if(pl->tuplet())
+							{
+								tupletMap[pl->tuplet()] << static_cast<CAPlayable*>(cloned);
+								if(tupletMap[pl->tuplet()].size() == pl->tuplet()->number())
+									pl->tuplet()->clone(tupletMap[pl->tuplet()]);
+							}
+						}
+						if(n)
+						{
+							QList<CASlur*> slurs;
+							slurs << n->tieStart() << n->tieEnd() << n->slurStart() << n->slurEnd() << n->phrasingSlurStart() << n->phrasingSlurEnd();
+							slurs.removeAll(0);
+							foreach(CASlur* s, slurs)
+							{
+								if(!slurMap.contains(s))
+									slurMap[s] = static_cast<CANote*>(cloned);
+								else {
+									CANote* noteStart = slurMap[s], *noteEnd = static_cast<CANote*>(cloned);
+									CASlur* newSlur = s->clone(noteStart->context(), noteStart, noteEnd);
+									switch (s->slurType()) {
+										case CASlur::TieType:
+											noteStart->setTieStart( newSlur );
+											noteEnd->setTieEnd( newSlur );
+											break;
+										case CASlur::SlurType:
+											noteStart->setSlurStart( newSlur );
+											noteEnd->setSlurEnd( newSlur );
+											break;
+										case CASlur::PhrasingSlurType:
+											noteStart->setPhrasingSlurStart( newSlur );
+											noteEnd->setPhrasingSlurEnd( newSlur );
+											break;
+									}
+								}
+							}
+							
+						}
+						staff->voiceAt(i)->insert(chord?newEltList.last():right, cloned, chord);
 						newEltList << cloned;
 					}
+					foreach( CALyricsContext* context, staff->voiceAt(i)->lyricsContextList() )
+						context->repositSyllables();
 				}
 				staff->synchronizeVoices();
 			} else {
@@ -4706,7 +4853,6 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 				if(context->contextType() == CAContext::LyricsContext) {
 					CALyricsContext* lc = static_cast<CALyricsContext*>(context);
 					CALyricsContext* currentLc = static_cast<CALyricsContext*>(currentContext);
-					//CAVoice* voice = currentLc->associatedVoice();
 					CADrawableMusElement *drawable = 0;
 					if(currentContext == v->currentContext()->context()) // pasting where the user has clicked
                     	drawable = v->nearestRightElement(coords.x(), coords.y(), v->currentContext() );
@@ -4714,8 +4860,8 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 					// Add syllables until there are no more notes, [popping existing syllables on the right end?].
 					foreach(CASyllable* syl, lc->syllableList()) {
 						CASyllable* clone = syl->clone(currentLc);
-						clone->setTimeStart(clone->timeStart()-offset); 
-						currentLc->addSyllable(clone, false); 
+						clone->setTimeStart(clone->timeStart()-offset);
+						currentLc->addSyllable(clone, false);
 						newEltList << clone;
 					}
 				}
@@ -4731,6 +4877,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 		currentScoreViewPort()->clearSelection();
 		for (int i=0; i<newEltList.size(); i++)
 			currentScoreViewPort()->addToSelection( newEltList[i] );
+		//FIXME move last mouse click coords to after the pasted elements.
 		currentScoreViewPort()->repaint();
 	}
 }
