@@ -23,12 +23,6 @@ CAText::CAText( const QString s, CAPlayable *t )
 CAText::~CAText() {
 }
 
-CAText* CAText::clone(CAContext* context) {
-	CAText* newElt = new CAText( text(), 0 );
-	newElt->setContext(context);
-	return newElt;
-}
-
 CAText* CAText::clone(CAMusElement* elt) {
 	return new CAText( text(), (elt->isPlayable())?static_cast<CAPlayable*>(elt):0 );
 }

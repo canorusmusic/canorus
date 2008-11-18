@@ -26,12 +26,6 @@ CAInstrumentChange::CAInstrumentChange( int instrument, CANote *note )
 CAInstrumentChange::~CAInstrumentChange() {
 }
 
-CAInstrumentChange* CAInstrumentChange::clone(CAContext* context) {
-	CAInstrumentChange* newElt = new CAInstrumentChange( instrument(), 0 );
-	newElt->setContext(context);
-	return newElt;
-}
-
 CAInstrumentChange* CAInstrumentChange::clone(CAMusElement* elt) {
 	return new CAInstrumentChange( instrument(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0 );
 }

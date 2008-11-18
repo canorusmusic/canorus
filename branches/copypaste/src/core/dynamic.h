@@ -25,8 +25,7 @@ public:
 	CADynamic( QString text, int volume, CANote *note );
 	virtual ~CADynamic();
 	
-	CADynamic *clone(CAContext* context);
-	CADynamic *clone(CAMusElement* elt);
+	CADynamic *clone(CAMusElement* elt=0);
 	int compare( CAMusElement* );
 	
 	inline const QString text() { return _text; }

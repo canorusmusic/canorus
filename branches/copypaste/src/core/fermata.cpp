@@ -30,12 +30,6 @@ CAFermata::CAFermata( CABarline *b, CAFermataType t )
 CAFermata::~CAFermata() {
 }
 
-CAFermata *CAFermata::clone(CAContext* context) {
-	CAFermata* newElt = new CAFermata( (CAPlayable*)0, fermataType() );
-	newElt->setContext(context);
-	return newElt;
-}
-
 CAFermata *CAFermata::clone(CAMusElement* elt) {
 	if (elt->isPlayable()) {
 		return new CAFermata( static_cast<CAPlayable*>(elt), fermataType() );

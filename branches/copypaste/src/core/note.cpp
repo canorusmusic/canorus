@@ -375,15 +375,6 @@ CASlur::CASlurDirection CANote::actualSlurDirection() {
 */
 
 /*!
-	\fn CANote::clone(CAContext* context)
-	Clones the note with \a voice = 0 and context set to \a context
-	
-	This should not usually be used.
-	
-	\sa clone(CAVoice* voice)
-*/
-
-/*!
 	\var CANote::_accs
 	Number of note accidentals:
 		- 0 - neutral

@@ -46,7 +46,6 @@ public:
 	CAArticulation( CAArticulationType t, CANote *n );
 	virtual ~CAArticulation();
 	
-	CAArticulation *clone(CAContext* context=0);
 	CAArticulation *clone(CAMusElement* elt);
 	int compare(CAMusElement *elt);
 	

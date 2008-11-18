@@ -27,12 +27,6 @@ CACrescendo::CACrescendo( int volume, CANote *note, CACrescendoType t, int timeS
 CACrescendo::~CACrescendo() {
 }
 
-CACrescendo* CACrescendo::clone(CAContext* context) {
-	CACrescendo* newElt = new CACrescendo( finalVolume(), 0, crescendoType(), timeStart(), timeLength() );
-	newElt->setContext(context);
-	return newElt;
-}
-
 CACrescendo* CACrescendo::clone(CAMusElement* elt) {
 	return new CACrescendo( finalVolume(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0, crescendoType(), timeStart(), timeLength() );
 }

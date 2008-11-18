@@ -19,8 +19,7 @@ public:
 	inline const QString text() { return _text; }
 	inline void setText( const QString t ) { _text = t; }
 	
-	CABookMark* clone(CAContext* context);
-	CABookMark* clone(CAMusElement* elt);
+	CABookMark* clone(CAMusElement* elt=0);
 	int compare(CAMusElement *elt);
 
 private:

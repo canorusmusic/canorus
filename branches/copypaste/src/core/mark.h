@@ -35,8 +35,8 @@ public:
 	CAMark( CAMarkType type, CAContext *context, int timeStart, int timeLength );
 	virtual ~CAMark();
 	
-	virtual CAMark *clone(CAContext* context=0);
-	virtual CAMark *clone(CAMusElement* elt);
+	virtual CAMark *clone(CAContext* context) { CAMark* c = clone(); c->setContext(context); }
+	virtual CAMark *clone(CAMusElement* elt=0);
 	virtual int compare( CAMusElement* elt );
 	
 	inline CAMusElement *associatedElement() { return _associatedElt; }

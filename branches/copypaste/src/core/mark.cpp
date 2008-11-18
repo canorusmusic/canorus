@@ -129,10 +129,6 @@ CAMark::~CAMark() {
 	}
 }
 
-CAMark *CAMark::clone(CAContext* context) {
-	return new CAMark( markType(), context, timeStart(), timeLength() );
-}
-
 CAMark *CAMark::clone(CAMusElement* elt) {
 	return new CAMark( markType(), elt, timeStart(), timeLength() );
 }

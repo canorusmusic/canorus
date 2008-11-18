@@ -18,8 +18,7 @@ public:
 	CAInstrumentChange( int instrument, CANote *note );
 	virtual ~CAInstrumentChange();
 	
-	CAInstrumentChange *clone(CAContext *context);
-	CAInstrumentChange *clone(CAMusElement *elt);
+	CAInstrumentChange *clone(CAMusElement *elt=0);
 	int compare( CAMusElement* );
 	
 	inline const int instrument() { return _instrument; }

@@ -29,12 +29,6 @@ CARitardando::CARitardando( int finalTempo, CAPlayable *p, int timeLength, CARit
 CARitardando::~CARitardando() {
 }
 
-CARitardando* CARitardando::clone(CAContext* context) {
-	CARitardando* newElt = new CARitardando( finalTempo(), 0, timeLength(), ritardandoType() );
-	newElt->setContext(context);
-	return newElt;
-}
-
 CARitardando* CARitardando::clone(CAMusElement* elt) {
 	return new CARitardando( finalTempo(), (elt->isPlayable())?static_cast<CAPlayable*>(elt):0, timeLength(), ritardandoType() );
 }

@@ -24,12 +24,6 @@ CADynamic::CADynamic( QString text, int volume, CANote *note )
 CADynamic::~CADynamic() {
 }
 
-CADynamic* CADynamic::clone(CAContext *context) {
-	CADynamic* newElt = new CADynamic( text(), volume(), 0 );
-	newElt->setContext(context);
-	return newElt;
-}
-
 CADynamic* CADynamic::clone(CAMusElement *elt) {
 	return new CADynamic( text(), volume(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0 );
 }

@@ -26,12 +26,6 @@ CAArticulation::CAArticulation( CAArticulationType t, CANote *n )
 CAArticulation::~CAArticulation() {
 }
 
-CAArticulation* CAArticulation::clone(CAContext* context) {
-	CAArticulation* newElt = new CAArticulation( articulationType(), 0 );
-	newElt->setContext(context);
-	return newElt;
-}
-
 CAArticulation* CAArticulation::clone(CAMusElement* elt) {
 	return new CAArticulation( articulationType(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0 );
 }

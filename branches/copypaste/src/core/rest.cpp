@@ -112,15 +112,6 @@ QList<CARest*> CARest::composeRests( int timeLength, int timeStart, CAVoice* voi
 }
 
 /*!
-	\fn CARest::clone(CAContext* context)
-	Clones the rest with \a voice = 0 and context set to \a context
-	
-	This should not usually be used.
-	
-	\sa clone(CAVoice* voice)
-*/
-
-/*!
 	\var CARest::_restType
 	Type of the rest.
 
