@@ -4843,9 +4843,20 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 						}
 						staff->voiceAt(i)->insert(chord?newEltList.last():right, cloned, chord);
 						newEltList << cloned;
+						// FIXME duplicated from CAMusElementFactory::configureNote.
+						if(n && staff->voiceAt(i)->lastNote() != static_cast<CANote*>(cloned)) {
+							foreach( CALyricsContext* context, staff->voiceAt(i)->lyricsContextList() )
+								context->addEmptySyllable(cloned->timeStart(), cloned->timeLength());
+							foreach( CAContext* context, currentSheet->contextList() ) 
+								if(context->contextType()==CAContext::FunctionMarkContext)
+									static_cast<CAFunctionMarkContext*>(context)->addEmptyFunction(cloned->timeStart(), cloned->timeLength());
+						}
 					}
 					foreach( CALyricsContext* context, staff->voiceAt(i)->lyricsContextList() )
 						context->repositSyllables();
+					foreach( CAContext* context, currentSheet->contextList() ) 
+						if(context->contextType()==CAContext::FunctionMarkContext)
+							static_cast<CAFunctionMarkContext*>(context)->repositFunctions();
 				}
 				staff->synchronizeVoices();
 			} else {

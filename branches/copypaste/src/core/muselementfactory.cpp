@@ -434,6 +434,11 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 
 		if (!success)
 			removeMusElem(true);
+		else {
+			foreach (CALyricsContext* lc, voice->lyricsContextList()) {
+				lc->repositSyllables(); // Move the syllables accordingly.
+			}
+		}
 	}
 	return success;
 }
