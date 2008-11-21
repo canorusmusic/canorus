@@ -4418,7 +4418,7 @@ void CAMainWin::copySelection( CAScoreViewPort *v ) {
 					if(pl->tuplet())
 					{
 						tupletMap[pl->tuplet()] << cloned;
-						if(tupletMap[pl->tuplet()].size() == pl->tuplet()->number())
+						if(tupletMap[pl->tuplet()].size() == pl->tuplet()->noteList().size())
 							pl->tuplet()->clone(tupletMap[pl->tuplet()]);
 					}
 					if(note)
@@ -4801,16 +4801,6 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 						CAMusElement* prev = cbstaff->voiceAt(i)->previous(n);
 						CANote* prevNote = (prev&&prev->musElementType() == CAMusElement::Note)?static_cast<CANote*>(prev):0;
 						bool chord = n && prevNote && prevNote->timeStart() == n->timeStart();
-						if(elt->isPlayable())
-						{
-							CAPlayable* pl = static_cast<CAPlayable*>(elt);
-							if(pl->tuplet())
-							{
-								tupletMap[pl->tuplet()] << static_cast<CAPlayable*>(cloned);
-								if(tupletMap[pl->tuplet()].size() == pl->tuplet()->number())
-									pl->tuplet()->clone(tupletMap[pl->tuplet()]);
-							}
-						}
 						if(n)
 						{
 							QList<CASlur*> slurs;
@@ -4843,6 +4833,16 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 						}
 						staff->voiceAt(i)->insert(chord?newEltList.last():right, cloned, chord);
 						newEltList << cloned;
+						if(elt->isPlayable())
+						{
+							CAPlayable* pl = static_cast<CAPlayable*>(elt);
+							if(pl->tuplet())
+							{
+								tupletMap[pl->tuplet()] << static_cast<CAPlayable*>(cloned);
+								if(tupletMap[pl->tuplet()].size() == pl->tuplet()->noteList().size())
+									pl->tuplet()->clone(tupletMap[pl->tuplet()]);
+							}
+						}
 						// FIXME duplicated from CAMusElementFactory::configureNote.
 						if(n && staff->voiceAt(i)->lastNote() != static_cast<CANote*>(cloned)) {
 							foreach( CALyricsContext* context, staff->voiceAt(i)->lyricsContextList() )

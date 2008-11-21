@@ -99,12 +99,9 @@ void CATuplet::assignTimes() {
 	}
 
 	// removes notes from the voice
-	if(voice->contains(noteList().front()))
-	{
-		for (int i=noteList().size()-1; i>=0; i--) {
-			noteList()[i]->setTuplet(0);
-			voice->remove( noteList()[i] );
-		}
+	for (int i=noteList().size()-1; i>=0; i--) {
+		noteList()[i]->setTuplet(0);
+		voice->remove( noteList()[i] );
 	}
 
 	for (int i=0; i<noteList().size(); i++) {
