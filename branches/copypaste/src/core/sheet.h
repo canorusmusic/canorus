@@ -27,6 +27,7 @@ public:
 	CAContext *contextAt(int i) { return _contextList[i]; }
 	CAContext *context(const QString name);
 	inline QList<CAContext*> contextList() { return _contextList; }
+	inline int contextIndex(CAContext* context) { return _contextList.indexOf(context); }
 	void insertContextAfter( CAContext *after, CAContext *c);
 	void addContext(CAContext *);
 	inline void removeContext(CAContext* c) { _contextList.removeAll(c); _staffList.removeAll(static_cast<CAStaff*>(c)); }

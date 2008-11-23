@@ -89,7 +89,8 @@ public:
 	CADrawableMusElement                *selectMElement(CAMusElement *elt);
 	CADrawableContext                   *selectContext(CAContext *context);
 	inline QPoint                        lastMousePressCoords() { return _lastMousePressCoords; }
-	
+	void                                 setLastMousePressCoordsAfter(const QList<CAMusElement*> list);
+
 	inline CADrawableContext *currentContext() { return _currentContext; }
 	inline void setCurrentContext(CADrawableContext *c) { _currentContext = c; }
 	

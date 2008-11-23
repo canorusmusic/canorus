@@ -290,6 +290,21 @@ CADrawableContext *CAScoreViewPort::selectContext(CAContext *context) {
 }
 
 /*!
+	Change the x-coord of the last mouse press coords to after the right most element on the given list.
+*/
+void CAScoreViewPort::setLastMousePressCoordsAfter(const QList<CAMusElement*> list) {
+	int maxX = 0;
+	for( int i=0; i < _drawableMList.size(); i++) {
+		CADrawableMusElement* delt = _drawableMList.at(i);
+		if(list.contains(delt->musElement()))
+			maxX = qMax(delt->xPos() + delt->width(), maxX);
+	}
+	QPoint newCoords(lastMousePressCoords());
+	newCoords.setX(maxX);
+	setLastMousePressCoords(newCoords);
+}
+
+/*!
 	Selects a drawable context element at the given coordinates, if it exists.
 	Returns a pointer to its abstract context element.
 	If multiple elements exist at the same coordinates, they are selected one by another if you click at the same coordinates multiple times.

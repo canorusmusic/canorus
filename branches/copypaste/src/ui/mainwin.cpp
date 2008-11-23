@@ -4347,7 +4347,7 @@ void CAMainWin::copySelection( CAScoreViewPort *v ) {
 				continue;	
 			if(elt->musElementType() == CAMusElement::Mark || elt->musElementType() == CAMusElement::Tuplet || elt->musElementType() == CAMusElement::Slur)
 				continue;	// marks are cloned together with their associated element, no need to clone them separately.
-							// tuplet is not really a music element (i.e., cannot be inserted to a context or a voice). FIXME.							// slur is also not inserted into a voice.
+							// tuplets and slurs cannot be inserted into a context or a voice
 			if(context->contextType() != CAContext::Staff && context->contextType() != CAContext::LyricsContext)
 				continue; // only these context types are impl'd. If we added anything else, we'd have old pointers in the context list.
 			eltMap[context] << elt;
@@ -4721,7 +4721,11 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 			// exception: if the context is a staff, skip lyrics contexts instead of inserting a staff before a lyrics context.
 			if(context->contextType() == CAContext::Staff)
 				while(currentContext && currentContext->contextType() == CAContext::LyricsContext)
-					currentContext = currentSheet->contextAt(currentSheet->contextList().indexOf(currentContext)); // TODO lame
+					if(currentContext != currentSheet->contextList().last())
+						currentContext = currentSheet->contextAt(currentSheet->contextIndex(currentContext)+1);
+					else
+						currentContext = 0;
+
 			if(!currentContext || context->contextType() != currentContext->contextType())
 			{
 				CAContext* newContext = 0;
@@ -4737,13 +4741,12 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 						 * - Some notes were copied together with the lyrics below them: in this case the linked voice would've already been pasted (as the context list is ordered top to bottom), so we find the new voice using voiceMap.
 						 * - Lyrics were copied without the notes. If currentContext is a staff, we'll use the current voice. Otherwise lyrics will not be pasted.
 						 */
-						// FIXME a slight problem with this when you copy from a staff and a lyrics context of another staff, for example.
 						CAVoice* voice = voiceMap[static_cast<CALyricsContext*>(context)->associatedVoice()];
 						if(!voice && currentContext && currentContext->contextType() == CAContext::Staff) 
 							voice = static_cast<CAStaff*>(currentContext)->voiceAt( (currentContext == v->currentContext()->context())? (uiVoiceNum->getRealValue()?uiVoiceNum->getRealValue()-1:uiVoiceNum->getRealValue()) : 1); // That is, if the currentContext is still the context that the user last clicked before pasting, use the current voice number. Otherwise, use the first voice.
-						if(!voice) {
+						if(!voice)
 							continue; // skipping lyrics - can't find a staff.
-						}
+
 						newContext = new CALyricsContext(tr("LyricsContext%1").arg(v->sheet()->contextCount()+1), 1, voice);
 						break;
 					}
@@ -4767,6 +4770,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 				}
 				for(int i=voice; i<voice+cbstaff->voiceCount(); i++) {
 					CADrawableMusElement *drawable = v->nearestRightElement(coords.x(), coords.y(), staff->voiceAt(i));
+					voiceMap[cbstaff->voiceAt(i)] = staff->voiceAt(i);
 					CAMusElement* right = (drawable)?drawable->musElement():0;
 					
 					// Can't have playables between two notes linked by a tie. Remove the tie in this case.
@@ -4780,7 +4784,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 					{
 						if(tie->noteEnd() && staff->voiceAt(i)->contains(tie->noteEnd()))
 							// pasting between two tied notes - remove tie
-							delete tie; // resets notes' tieStart/tieEnd; FIXME any problem with this?
+							delete tie; // resets notes' tieStart/tieEnd;
 						else {
 							// pasting after an "open" tie - if the first paste element is a note, connect them. Otherwise delete the tie.
 							int idx = 0;
@@ -4888,7 +4892,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 		currentScoreViewPort()->clearSelection();
 		for (int i=0; i<newEltList.size(); i++)
 			currentScoreViewPort()->addToSelection( newEltList[i] );
-		//FIXME move last mouse click coords to after the pasted elements.
+		currentScoreViewPort()->setLastMousePressCoordsAfter( newEltList );
 		currentScoreViewPort()->repaint();
 	}
 }
