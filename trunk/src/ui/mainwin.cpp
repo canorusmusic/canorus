@@ -3016,10 +3016,11 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 				int newLength = CAPlayableLength::playableLengthToTimeLength( length );
 				if ( p->musElementType()==CAMusElement::Note ) {                   // change the length of the whole chord
 					QList<CANote*> chord = static_cast<CANote*>(p)->getChord();
+					next = p->voice()->next( chord.back() );
 					for (int i=0; i<chord.size(); i++) {
-						next = p->voice()->next(p);
 						p->voice()->remove(chord[i]);
 						chord[i]->setPlayableLength( length );
+						chord[i]->calculateTimeLength();
 					}
 					p->voice()->insert( next, chord[0], false );
 					for (int i=1; i<chord.size(); i++) {
@@ -3029,6 +3030,7 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 					next = p->voice()->next(p);
 					p->voice()->remove(p);
 					p->setPlayableLength( length );
+					p->calculateTimeLength();
 					p->voice()->insert( next, p );
 				}
 
