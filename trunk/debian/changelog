@@ -1,3 +1,10 @@
+canorus (0.6-1ubuntu1) hardy; urgency=low
+
+  * new upstream release
+  * hardy port
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 25 Nov 2008 01:30:24 +0100
+
 canorus (0.5-1ubuntu1) gutsy; urgency=low
 
   * new upstream release
