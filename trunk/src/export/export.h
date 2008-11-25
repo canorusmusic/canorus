@@ -40,7 +40,7 @@ public:
 	bool wait ( unsigned long time = ULONG_MAX )
 	{ return CAFile::wait( time ); }
 
-	#ifndef SWIG
+#ifndef SWIG
 signals:
 	void documentExported( CADocument* );
 	void sheetExported( CASheet* );
