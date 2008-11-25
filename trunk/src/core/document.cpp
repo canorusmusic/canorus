@@ -33,6 +33,7 @@ CADocument::CADocument()
 	setDateLastModified( QDateTime::currentDateTime() );
 	setTimeEdited(0);
 	setArchive( new CAArchive() );
+	setModified( false );
 }
 
 /*!

@@ -60,13 +60,15 @@ public:
 	void setTimeEdited(const unsigned int timeEdited) { _timeEdited = timeEdited; }
 	void setComments(const QString comments) { _comments = comments; }
 
-	//////////////////////////////////////////////////////
-	// Temporary properties (not saved inside the file) //
-	//////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////
+	// Temporary properties (not stored inside the file) //
+	///////////////////////////////////////////////////////
 	const QString fileName() { return _fileName; }
+	bool isModified() { return _modified; }
 	CAArchive *archive() { return _archive; }
 
 	void setFileName(const QString fileName) { _fileName = fileName; } // not saved!
+	void setModified( bool m ) { _modified = m; }
 	void setArchive( CAArchive *a ) { _archive = a; }
 
 private:
@@ -84,7 +86,9 @@ private:
 	QDateTime _dateCreated;
 	unsigned int _timeEdited; // time the document has been edited in seconds
 	QString _comments;
+
 	QString _fileName;
+	bool    _modified; // unsaved changes
 	CAArchive *_archive;
 };
 #endif /* DOCUMENT_H_ */
