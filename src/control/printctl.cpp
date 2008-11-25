@@ -23,6 +23,7 @@ CAPrintCtl::CAPrintCtl( CAMainWin *poMainWin )
 	setObjectName("oPrintCtl");
 	_poMainWin = poMainWin;
 	_poSVGExport = new CASVGExport();
+	_showDialog = true;
 	if( poMainWin == 0 )
 		qCritical("PrintCtl: No mainwindow instance available!");
 	else
@@ -39,7 +40,17 @@ CAPrintCtl::~CAPrintCtl()
 	_poSVGExport = 0;
 }
 
-void CAPrintCtl::on_uiPrint_triggered()
+void CAPrintCtl::on_uiPrint_triggered() {
+	_showDialog = true;
+	printDocument();
+}
+
+void CAPrintCtl::on_uiPrintDirectly_triggered() {
+	_showDialog = false;
+	printDocument();
+}
+
+void CAPrintCtl::printDocument()
 {
 	QDir oPath( QDir::tempPath() );
 	QFile oTempFile( oPath.absolutePath ()+"/print.svg" );
@@ -64,7 +75,9 @@ void CAPrintCtl::on_uiPrint_triggered()
 void CAPrintCtl::printSVG( int iExitCode )
 {
 	// High resolution requires huge amount of memory :-(
-	QPrinter oPrinter(QPrinter::ScreenResolution);
+	//QPrinter oPrinter;
+	QPrinter oPrinter( QPrinterInfo::defaultPrinter(), QPrinter::ScreenResolution );
+
 	QPainter oPainter;
 	oPrinter.setFullPage(true);
 	QPrintDialog oPrintDlg(&oPrinter);
@@ -73,9 +86,8 @@ void CAPrintCtl::printSVG( int iExitCode )
 	QSvgRenderer oRen;
 	oTempFile.setFileName( _oOutputSVGName+".svg" );
 	// Start by letting the user select the print settings
-	if( oRen.load( oPath.absolutePath ()+"/print.svg" ) )
+	if( oRen.load( oPath.absolutePath()+"/print.svg" ) && (!_showDialog || oPrintDlg.exec()) )
 	{
-		oPrintDlg.exec();
 		// Actual printing with the help of the painter
 		oPainter.begin( &oPrinter );
 		// Draw the SVG image
