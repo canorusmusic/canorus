@@ -14,6 +14,7 @@
 #include <QVector>
 #include <QStringList>
 #include <QFile>
+#include <QPrinterInfo>
 
 // Forward declarations
 class CAMainWin;
@@ -29,14 +30,18 @@ public:
 
 public slots:
 	void on_uiPrint_triggered();
+	void on_uiPrintDirectly_triggered();
 
 protected slots:
 	void printSVG( int iExitCode );
 
 protected:
-	CAMainWin     *_poMainWin;
+	void printDocument();
+
+	CAMainWin   *_poMainWin;
 	CASVGExport *_poSVGExport;
-	QString           _oOutputSVGName;
+	QString      _oOutputSVGName;
+	bool         _showDialog;  // used when printing directly
 };
 
 #endif // _PRINT_CTL_H

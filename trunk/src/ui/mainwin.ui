@@ -21,6 +21,14 @@
    <string/>
   </property>
   <widget class="QWidget" name="uiCentralWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>56</y>
+     <width>905</width>
+     <height>582</height>
+    </rect>
+   </property>
    <layout class="QGridLayout" >
     <property name="margin" >
      <number>6</number>
@@ -52,7 +60,7 @@
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="uiMenuEdit" >
@@ -191,8 +199,25 @@
    <addaction name="uiMenuWindow" />
    <addaction name="uiMenuHelp" />
   </widget>
-  <widget class="QStatusBar" name="uiStatusBarWidget" />
+  <widget class="QStatusBar" name="uiStatusBarWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>638</y>
+     <width>905</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="uiStandardToolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>22</y>
+     <width>413</width>
+     <height>34</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Standard ToolBar</string>
    </property>
@@ -219,6 +244,14 @@
    <addaction name="uiPlayFromSelection" />
   </widget>
   <widget class="QToolBar" name="uiFileToolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>413</x>
+     <y>22</y>
+     <width>280</width>
+     <height>34</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>File ToolBar</string>
    </property>
@@ -243,6 +276,14 @@
   <widget class="QToolBar" name="uiPrintToolBar" >
    <property name="enabled" >
     <bool>true</bool>
+   </property>
+   <property name="geometry" >
+    <rect>
+     <x>693</x>
+     <y>22</y>
+     <width>212</width>
+     <height>34</height>
+    </rect>
    </property>
    <property name="windowTitle" >
     <string>Print ToolBar</string>
@@ -279,7 +320,7 @@
      <normaloff>images/general/filenew.png</normaloff>images/general/filenew.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;New</string>
+    <string>&amp;New document</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+N</string>
@@ -718,7 +759,7 @@
   </action>
   <action name="uiPrintDirectly" >
    <property name="enabled" >
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon" >
     <iconset>
@@ -732,9 +773,6 @@
    </property>
   </action>
   <action name="uiExportToPdf" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="icon" >
     <iconset>
      <normaloff>images/general/pdf.png</normaloff>images/general/pdf.png</iconset>

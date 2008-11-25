@@ -2859,6 +2859,14 @@ void CAMainWin::on_uiImportDocument_triggered() {
 }
 
 /*!
+	Called when Export directly to PDF action is clicked.
+*/
+void CAMainWin::on_uiExportToPdf_triggered() {
+	uiExportDialog->setFilter( CAFileFormats::PDF_FILTER );
+	on_uiExportDocument_triggered();
+}
+
+/*!
 	Called when a user changes the current voice number.
 */
 void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
