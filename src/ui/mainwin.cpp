@@ -787,6 +787,11 @@ void CAMainWin::setupCustomUi() {
 
 void CAMainWin::newDocument() {
 	stopPlayback();
+
+	if ( !handleUnsavedChanges() ) {
+		return;
+	}
+
 	// clear GUI before clearing the data part!
 	clearUI();
 
@@ -814,6 +819,34 @@ void CAMainWin::newDocument() {
 	if ( document()->sheetCount() && document()->sheetAt(0)->contextCount() )
 		currentScoreViewPort()->selectContext( document()->sheetAt(0)->contextAt(0) );
 	updateToolBars();
+}
+
+/*!
+	Checks for any unsaved modifications and returns True, to continue with closing the current document.
+	Returns False only, if user clicks Cancel button.
+
+	This method looks at CADocument::_modified property.
+	The property is changed in undo/redo code.
+ */
+bool CAMainWin::handleUnsavedChanges() {
+	if ( document() ) {
+		if ( document()->isModified() ) {
+			QMessageBox::StandardButton ret = QMessageBox::question( this, tr("Unsaved changes"), tr("Document \"%1\" was modified. Do you want to save the changes?").arg(document()->title()), QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes );
+			if (ret == QMessageBox::Yes) {
+				on_uiSaveDocument_triggered();
+				return true;
+			} else
+			if (ret == QMessageBox::No) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
+	} else {
+		return true;
+	}
 }
 
 /*!
@@ -947,6 +980,10 @@ void CAMainWin::on_uiCloseCurrentView_triggered() {
 
 void CAMainWin::on_uiCloseDocument_triggered() {
 	if ( CACanorus::mainWinCount(document()) == 1 ) {
+		if ( !handleUnsavedChanges() ) {
+			return;
+		}
+
 		CACanorus::undo()->deleteUndoStack( document() );
 		delete document();
 	}
@@ -1353,12 +1390,13 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	} else {
 		clearUI();
 	}
-	updateToolBars();
 
 	if (_resourceView) {
 		_resourceView->rebuildUi();
 	}
 
+	updateWindowTitle();
+	updateToolBars();
 	setRebuildUILock( false );
 }
 
@@ -1420,6 +1458,7 @@ void CAMainWin::rebuildUI(bool repaint) {
 		_resourceView->rebuildUi();
 	}
 
+	updateWindowTitle();
 	updateToolBars();
 	setRebuildUILock( false );
 }
@@ -2571,11 +2610,20 @@ void CAMainWin::on_uiZoomToHeight_triggered() {
 		((CAScoreViewPort*)_currentViewPort)->zoomToHeight();
 }
 
-void CAMainWin::closeEvent(QCloseEvent *event) {	//TODO: Make the main window the main window of the application somehow - when it's closed, the destructor is also called. This way, this function will not be needed anymore. -Matevz
-	clearUI();
+void CAMainWin::closeEvent(QCloseEvent *event) {
+	if ( !handleUnsavedChanges() ) {
+		event->ignore();
+	} else {
+		clearUI();
+		event->accept();
+	}
 }
 
 void CAMainWin::on_uiOpenDocument_triggered() {
+	if ( !handleUnsavedChanges() ) {
+		return;
+	}
+
 	if ( CAMainWin::uiOpenDialog->exec() && CAMainWin::uiOpenDialog->selectedFiles().size() ) {
 		openDocument(CAMainWin::uiOpenDialog->selectedFiles().at(0));
 	}
@@ -2712,11 +2760,32 @@ bool CAMainWin::saveDocument( QString fileName ) {
 			document()->setFileName( fileName );
 			CACanorus::insertRecentDocument( fileName );
 			delete save;
+
+			document()->setModified( false );
+			updateWindowTitle();
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void CAMainWin::updateWindowTitle() {
+	if ( document() && !document()->title().isEmpty() ) {
+		setWindowTitle( document()->title() + " - Canorus" );
+	} else
+	if ( document() && !document()->fileName().isEmpty() ) {
+		setWindowTitle( document()->fileName().right( document()->fileName().size() - document()->fileName().lastIndexOf('/') - 1 ) + " - Canorus" );
+	} else
+	if ( document() ) {
+		setWindowTitle( tr("Untitled") + " - Canorus" );
+	} else {
+		setWindowTitle( "Canorus" );
+	}
+
+	if ( document() && document()->isModified() ) {
+		setWindowTitle( windowTitle() + " " + tr("(modified)") );
+	}
 }
 
 void CAMainWin::onMidiInEvent( QVector<unsigned char> m ) {
@@ -2792,6 +2861,10 @@ void CAMainWin::on_uiExportDocument_triggered() {
 	Called when File->Import is clicked.
 */
 void CAMainWin::on_uiImportDocument_triggered() {
+	if ( !handleUnsavedChanges() ) {
+		return;
+	}
+
 	QStringList fileNames;
 	int ffound = uiImportDialog->exec();
 	if (ffound)

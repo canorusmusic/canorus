@@ -73,6 +73,7 @@ public:
 	void rebuildUI(CASheet *sheet, bool repaint=true);
 	void rebuildUI(bool repaint=true);
 	inline bool rebuildUILock() { return _rebuildUILock; }
+	void updateWindowTitle();
 
 	void newDocument();
 	void addSheet(CASheet *s);
@@ -342,6 +343,9 @@ private:
 			if(_playback && _playback->isRunning())
 				_playback->stopNow();
 		}
+
+	bool handleUnsavedChanges();
+
 	CAKeybdInput *_keybdInput;
 	///////////////////////////////////////////////////////////////////////////
 	// Pure user interface - widgets that weren't created by Qt Designer yet //
