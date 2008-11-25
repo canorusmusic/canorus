@@ -128,19 +128,18 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	
 	interface/pluginaction.h
 	
-	control/externprogram.h
-	control/typesetctl.h
-#	${POPPLER_HEADER}
 	control/previewctl.h
 	control/printctl.h
-
-	export/pdfexport.h
-	export/svgexport.h
 )
 
 SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 	import/import.h
 	export/export.h
+	export/pdfexport.h
+	export/svgexport.h
+
+	control/externprogram.h
+	control/typesetctl.h
 	
 	interface/mididevice.h
 	interface/playback.h
@@ -268,12 +267,14 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/transposeview.cpp
 )
 
+SET(Canorus_Gui_Ctl_Srcs
+	control/previewctl.cpp
+	control/printctl.cpp
+)
+
 SET(Canorus_Ctl_Srcs            # Control instances for user interface or views and core
 	control/externprogram.cpp
 	control/typesetctl.cpp
-#	${POPPLER_SOURCE}
-	control/previewctl.cpp
-	control/printctl.cpp
 )
 
 SET(Canorus_Drawable_Srcs	# Drawable instances of the data
@@ -318,8 +319,8 @@ SET(Canorus_Export_Srcs     # Classes for exporting Canorus data to various file
 	export/lilypondexport.cpp
 	export/canorusmlexport.cpp
 	export/canexport.cpp
-  export/pdfexport.cpp
-  export/svgexport.cpp
+	export/pdfexport.cpp
+	export/svgexport.cpp
 )
 
 SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus data
@@ -340,6 +341,7 @@ SET(Canorus_Srcs
 	
 	${Canorus_Core_Srcs}
 	${Canorus_Ctl_Srcs}
+	${Canorus_Gui_Ctl_Srcs}
 	${Canorus_Scripting_Srcs}
 	${Canorus_Drawable_Srcs}
 	${Canorus_Ui_Srcs}
@@ -402,6 +404,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/midirecorder.cpp
 	${Canorus_Import_Srcs}
 	${Canorus_Export_Srcs}
+	${Canorus_Ctl_Srcs}
 	${Canorus_RtMidi_Srcs}
 	interface/rtmididevice.cpp
 	interface/mididevice.cpp

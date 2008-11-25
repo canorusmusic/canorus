@@ -17,14 +17,16 @@ class CATypesetCtl;
 // PDF Export class doing lilypond export internally
 // !! exportDocument does not support threading !!
 class CAPDFExport : public CAExport {
+#ifndef SWIG
 	Q_OBJECT
+#endif
 
 public:
 	CAPDFExport( QTextStream *stream=0 );
 	~CAPDFExport();
 
-  QString getTempFilePath();
-
+	QString getTempFilePath();
+#ifndef SWIG
 signals:
 	void pdfIsFinished( int iExitCode );
 
@@ -39,6 +41,7 @@ private:
 
 protected:
 	CATypesetCtl *_poTypesetCtl;
+#endif
 };
 
 #endif // PDFEXPORT_H_

@@ -17,14 +17,17 @@ class CATypesetCtl;
 // SVG Export class doing lilypond export internally
 // !! exportDocument does not support threading !!
 class CASVGExport : public CAExport {
+#ifndef SWIG
 	Q_OBJECT
+#endif
 
 public:
 	CASVGExport( QTextStream *stream=0 );
 	~CASVGExport();
 
-  QString getTempFilePath();
+	QString getTempFilePath();
 
+#ifndef SWIG
 signals:
 	void svgIsFinished( int iExitCode );
 
@@ -39,6 +42,7 @@ private:
 
 protected:
 	CATypesetCtl *_poTypesetCtl;
+#endif
 };
 
 #endif // SVGEXPORT_H_
