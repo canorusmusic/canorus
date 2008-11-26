@@ -831,7 +831,7 @@ void CAMainWin::newDocument() {
 bool CAMainWin::handleUnsavedChanges() {
 	if ( document() ) {
 		if ( document()->isModified() ) {
-			QMessageBox::StandardButton ret = QMessageBox::question( this, tr("Unsaved changes"), tr("Document \"%1\" was modified. Do you want to save the changes?").arg(document()->title()), QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes );
+			QMessageBox::StandardButton ret = QMessageBox::question( this, tr("Unsaved changes"), tr("Document \"%1\" was modified. Do you want to save the changes?").arg(document()->title().isEmpty()?tr("Untitled"):document()->title()), QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes );
 			if (ret == QMessageBox::Yes) {
 				on_uiSaveDocument_triggered();
 				return true;
