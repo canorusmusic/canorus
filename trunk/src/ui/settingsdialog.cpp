@@ -7,6 +7,7 @@
 
 #include <QSettings>
 #include <QDir>
+#include <QFileDialog>
 
 // Python.h needs to be loaded first!
 #include "canorus.h"
@@ -23,6 +24,8 @@
 	\class CASettingsDialog
 	Settings dialog for various options like editor behaviour, loading/saving settings,
 	colors, playback options etc.
+
+	\sa CASettings
 */
 
 CASettingsDialog::CASettingsDialog( CASettingsPage currentPage, QWidget *parent )
@@ -103,6 +106,13 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 		uiMidiOutList->setCurrentItem( uiMidiOutList->item(0) );                   // select the previous device
 
 	uiSettingsList->setCurrentRow( (currentPage!=UndefinedSettings)?currentPage:0 );
+
+	// Printing Page
+	uiTypesetter->setCurrentIndex( CACanorus::settings()->typesetter()-1 );
+	uiTypesetterLocation->setText( CACanorus::settings()->typesetterLocation() );
+	uiTypesetterDefault->setChecked( CACanorus::settings()->useSystemDefaultTypesetter() );
+	uiPdfViewerLocation->setText( CACanorus::settings()->pdfViewerLocation() );
+	uiPdfViewerDefault->setChecked( CACanorus::settings()->useSystemDefaultPdfViewer() );
 }
 
 void CASettingsDialog::on_uiButtonBox_clicked( QAbstractButton *button ) {
@@ -160,6 +170,13 @@ void CASettingsDialog::applySettings() {
 		CACanorus::settings()->setMidiOutPort(-1);
 	else
 		CACanorus::settings()->setMidiOutPort(_midiOutPorts.keys().at( uiMidiOutList->currentIndex().row()-1 ));
+
+	// Printing Page
+	CACanorus::settings()->setTypesetter( static_cast<CATypesetter::CATypesetterType>(uiTypesetter->currentIndex()+1) );
+	CACanorus::settings()->setTypesetterLocation( uiTypesetterLocation->text() );
+	CACanorus::settings()->setUseSystemDefaultTypesetter( uiTypesetterDefault->isChecked() );
+	CACanorus::settings()->setPdfViewerLocation( uiPdfViewerLocation->text() );
+	CACanorus::settings()->setUseSystemDefaultPdfViewer( uiPdfViewerDefault->isChecked() );
 
 	CACanorus::settings()->writeSettings();
 }
@@ -287,4 +304,38 @@ void CASettingsDialog::on_uiDisabledElementsRevert_clicked(bool) {
 	uiDisabledElementsColor->setPalette( QPalette(CASettings::DEFAULT_DISABLED_ELEMENTS_COLOR) );
 	uiPreviewScoreViewPort->setDisabledElementsColor(CASettings::DEFAULT_DISABLED_ELEMENTS_COLOR);
 	uiPreviewScoreViewPort->repaint();
+}
+
+void CASettingsDialog::on_uiTypesetterBrowse_clicked(bool) {
+	QString path = QFileDialog::getOpenFileName( static_cast<QWidget*>(parent()), tr("Select typesetter executable") );
+	if ( !path.isNull() ) {
+		uiTypesetterLocation->setText( path );
+	}
+}
+
+void CASettingsDialog::on_uiPdfViewerBrowse_clicked(bool) {
+	QString path = QFileDialog::getOpenFileName( static_cast<QWidget*>(parent()), tr("Select PDF viewer executable") );
+	if ( !path.isNull() ) {
+		uiPdfViewerLocation->setText( path );
+	}
+}
+
+void CASettingsDialog::on_uiTypesetterDefault_toggled(bool checked) {
+	if (checked) {
+		uiTypesetterLocation->setEnabled( false );
+		uiTypesetterBrowse->setEnabled( false );
+	} else {
+		uiTypesetterLocation->setEnabled( true );
+		uiTypesetterBrowse->setEnabled( true );
+	}
+}
+
+void CASettingsDialog::on_uiPdfViewerDefault_toggled(bool checked) {
+	if (checked) {
+		uiPdfViewerLocation->setEnabled( false );
+		uiPdfViewerBrowse->setEnabled( false );
+	} else {
+		uiPdfViewerLocation->setEnabled( true );
+		uiPdfViewerBrowse->setEnabled( true );
+	}
 }

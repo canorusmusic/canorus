@@ -13,21 +13,21 @@
 class CAFileFormats {
 public:
 	enum CAFileFormatType {
-		CanorusML  = 0,
-		Can        = 1,
-		LilyPond   = 2,
-		MusicXML   = 3,
-		ABCMusic   = 4,
-		NoteEdit   = 5,
-		MUP        = 6,
-		Finale     = 7,
-		Sibelius   = 8,
-		Noteworthy = 9,
-		Igor       = 10,
-		Capella    = 11,
-		Midi       = 12,
-		PDF        = 13,
-		SVG        = 14
+		CanorusML  = 1,
+		Can        = 2,
+		LilyPond   = 3,
+		MusicXML   = 4,
+		ABCMusic   = 5,
+		NoteEdit   = 6,
+		MUP        = 7,
+		Finale     = 8,
+		Sibelius   = 9,
+		Noteworthy = 10,
+		Igor       = 11,
+		Capella    = 12,
+		Midi       = 13,
+		PDF        = 14,
+		SVG        = 15
 	};
 
 	static const QString LILYPOND_FILTER;

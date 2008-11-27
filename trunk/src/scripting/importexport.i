@@ -7,6 +7,7 @@
 
 %{
 #include "core/settings.h"
+#include "core/typesetter.h"
 
 #include "core/file.h"
 
@@ -38,6 +39,7 @@ class CAAbsExport {
 };
 
 %include "core/settings.h"
+%include "core/typesetter.h"
 
 %include "core/file.h"
 

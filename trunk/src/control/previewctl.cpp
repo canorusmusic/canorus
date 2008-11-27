@@ -8,7 +8,11 @@
 // Includes
 #include <QDesktopServices>
 #include <QUrl>
+#include <QMessageBox>
+#include <QProcess> // needed for custom pdf viewer application
 
+#include "canorus.h" // needed for settings
+#include "core/settings.h"
 #include "ui/mainwin.h"
 #include "export/pdfexport.h"
 #include "control/previewctl.h"
@@ -59,7 +63,20 @@ void CAPreviewCtl::on_uiPrintPreview_triggered()
 
 void CAPreviewCtl::showPDF( int iExitCode )
 {
-	QDir oPath;
+	if ( iExitCode ) {
+		QMessageBox::critical( _poMainWin, tr("Error running preview"), tr("Error while running the typesetter.\n\nPlease install LilyPond (visit http://www.lilypond.org) and check the settings.") );
+		return;
+	}
+
+	bool success;
 	// First version show the pdf file with the default pdf system viewer
-	QDesktopServices::openUrl( QUrl( QString("file:")+QDir::tempPath()+"/preview.pdf" ) );
+	if ( CACanorus::settings()->useSystemDefaultPdfViewer() ) {
+		success = QDesktopServices::openUrl( QUrl( QString("file:")+QDir::tempPath()+"/preview.pdf" ) );
+	} else {
+		success = QProcess::startDetached( CACanorus::settings()->pdfViewerLocation(), QStringList() << QDir::tempPath()+"/preview.pdf" );
+	}
+
+	if ( !success ) {
+		QMessageBox::critical( _poMainWin, tr("Error running preview"), tr("Unable to show %1.\n\nPlease install a PDF viewer and check the settings.").arg(QDir::tempPath()+"/preview.pdf") );
+	}
 }

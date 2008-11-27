@@ -35,6 +35,20 @@ const QColor CASettings::DEFAULT_DISABLED_ELEMENTS_COLOR = Qt::gray;
 const int CASettings::DEFAULT_MIDI_IN_PORT = -1;
 const int CASettings::DEFAULT_MIDI_OUT_PORT = -1;
 
+const CATypesetter::CATypesetterType CASettings::DEFAULT_TYPESETTER = CATypesetter::LilyPond;
+#ifdef Q_WS_X11
+const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "lilypond";
+#endif
+#ifdef Q_WS_WIN
+const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "C:/Program files/LilyPond/usr/bin/lilypond.exe";
+#endif
+#ifdef Q_WS_MAC
+const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "/Applications/LilyPond.app/Contents/Resources/bin/lilypond";
+#endif
+const bool                           CASettings::DEFAULT_USE_SYSTEM_TYPESETTER = true;
+const QString                        CASettings::DEFAULT_PDF_VIEWER_LOCATION = "";
+const bool                           CASettings::DEFAULT_USE_SYSTEM_PDF_VIEWER = true;
+
 /*!
 	\class CASettings
 	\brief Class for storing the Canorus settings
@@ -104,6 +118,13 @@ void CASettings::writeSettings() {
 #endif
 	setValue( "rtmidi/midioutport", midiOutPort() );
 	setValue( "rtmidi/midiinport", midiInPort() );
+
+	setValue( "printing/typesetter", typesetter() );
+	setValue( "printing/typesetterlocation", typesetterLocation() );
+	setValue( "printing/usesystemdefaulttypesetter", useSystemDefaultTypesetter() );
+	setValue( "printing/pdfviewerlocation", pdfViewerLocation() );
+	setValue( "printing/usesystemdefaultpdfviewer", useSystemDefaultPdfViewer() );
+
 	sync();
 }
 
@@ -220,6 +241,32 @@ int CASettings::readSettings() {
 		setMidiOutPort( DEFAULT_MIDI_OUT_PORT );
 		settingsPage = 3;
 	}
+
+	// Printing settings
+	if ( contains("printing/typesetter") )
+		setTypesetter( static_cast<CATypesetter::CATypesetterType>(value("printing/typesetter").toInt()) );
+	else
+		setTypesetter( DEFAULT_TYPESETTER );
+
+	if ( contains("printing/typesetterlocation") )
+		setTypesetterLocation( value("printing/typesetterlocation").toString() );
+	else
+		setTypesetterLocation( DEFAULT_TYPESETTER_LOCATION );
+
+	if ( contains("printing/usesystemdefaulttypesetter") )
+		setUseSystemDefaultTypesetter( value("printing/usesystemdefaulttypesetter").toBool() );
+	else
+		setUseSystemDefaultTypesetter( DEFAULT_USE_SYSTEM_TYPESETTER );
+
+	if ( contains("printing/pdfviewerlocation") )
+		setPdfViewerLocation( value("printing/pdfviewerlocation").toString() );
+	else
+		setPdfViewerLocation( DEFAULT_PDF_VIEWER_LOCATION );
+
+	if ( contains("printing/usesystemdefaultpdfviewer") )
+		setUseSystemDefaultPdfViewer( value("printing/usesystemdefaultpdfviewer").toBool() );
+	else
+		setUseSystemDefaultPdfViewer( DEFAULT_USE_SYSTEM_PDF_VIEWER );
 
 	return settingsPage;
 }
