@@ -14,6 +14,7 @@
 #endif
 #include <QDir>
 #include "core/fileformats.h"
+#include "core/typesetter.h"
 
 class CASettings : public QSettings {
 public:
@@ -95,6 +96,25 @@ public:
 	inline void setMidiOutPort( int out ) { _midiOutPort = out; }
 	static const int DEFAULT_MIDI_OUT_PORT;
 
+	///////////////////////
+	// Printing settings //
+	///////////////////////
+	inline CATypesetter::CATypesetterType typesetter() { return _typesetter; }
+	void setTypesetter( CATypesetter::CATypesetterType t ) { _typesetter = t; }
+	static const CATypesetter::CATypesetterType DEFAULT_TYPESETTER;
+	inline QString typesetterLocation() { return _typesetterLocation; }
+	void setTypesetterLocation( QString tl ) { _typesetterLocation = tl; }
+	static const QString DEFAULT_TYPESETTER_LOCATION;
+	inline bool useSystemDefaultTypesetter() { return _useSystemDefaultTypesetter; }
+	void setUseSystemDefaultTypesetter( bool s ) { _useSystemDefaultTypesetter = s; }
+	static const bool DEFAULT_USE_SYSTEM_TYPESETTER;
+	inline QString pdfViewerLocation() { return _pdfViewerLocation; }
+	void setPdfViewerLocation( QString pl ) { _pdfViewerLocation = pl; }
+	static const QString DEFAULT_PDF_VIEWER_LOCATION;
+	inline bool useSystemDefaultPdfViewer() { return _useSystemDefaultPdfViewer; }
+	void setUseSystemDefaultPdfViewer( bool s ) { _useSystemDefaultPdfViewer= s; }
+	static const bool DEFAULT_USE_SYSTEM_PDF_VIEWER;
+
 private:
 #ifndef SWIG
 	void writeRecentDocuments();
@@ -134,6 +154,15 @@ private:
 	///////////////////////
 	int _midiOutPort; // -1 disabled, 0+ port number
 	int _midiInPort;  // -1 disabled, 0+ port number
+
+	///////////////////////
+	// Printing settings //
+	///////////////////////
+	CATypesetter::CATypesetterType _typesetter;
+	QString                        _typesetterLocation;
+	bool                           _useSystemDefaultTypesetter;
+	QString                        _pdfViewerLocation;
+	bool                           _useSystemDefaultPdfViewer;
 };
 
 #endif /* SETTINGS_H_ */

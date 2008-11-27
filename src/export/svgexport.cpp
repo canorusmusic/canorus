@@ -9,6 +9,10 @@
 #include "export/lilypondexport.h"
 #include "control/typesetctl.h"
 #include "export/svgexport.h"
+#ifndef SWIGCPP
+#include "canorus.h" // needed for settings()
+#endif
+#include "core/settings.h"
 
 /*!
 	\class CASVGExport
@@ -46,7 +50,11 @@ void CASVGExport::startExport()
 {
  	_poTypesetCtl = new CATypesetCtl();
 	// For now we support only lilypond export
-	_poTypesetCtl->setTypesetter( QString("lilypond") );
+#ifndef SWIGCPP
+	_poTypesetCtl->setTypesetter( (CACanorus::settings()->useSystemDefaultTypesetter())?(CASettings::DEFAULT_TYPESETTER_LOCATION):(CACanorus::settings()->typesetterLocation()) );
+#else
+	_poTypesetCtl->setTypesetter( CASettings::DEFAULT_TYPESETTER_LOCATION );
+#endif
 	_poTypesetCtl->setTSetOption("dbackend","svg",false,false);
 	_poTypesetCtl->setExporter( new CALilyPondExport() );
 	// Put lilypond output to console, could be shown on a canorus console later
@@ -94,8 +102,9 @@ void CASVGExport::exportDocumentImpl(CADocument *poDoc)
 	}
 	_poTypesetCtl->runTypesetter(); // create svg
 	// as we are not in the main thread wait until we are finished
-	if( _poTypesetCtl->waitForFinished( -1 ) == false )
+	if( _poTypesetCtl->waitForFinished( -1 ) == false ) {
 		qWarning("SVGExport: Typesetter %s was not finished","lilypond");
+	}
 }
 
 /*!
@@ -112,10 +121,11 @@ void CASVGExport::outputTypsetterOutput( const QByteArray &roOutput )
 */
 void CASVGExport::svgFinished( int iExitCode )
 {
+	setStatus( iExitCode );
 	QFile oTempFile( getTempFilePath()+".svg" );
-  oTempFile.setFileName( getTempFilePath()+".svg" );
+	oTempFile.setFileName( getTempFilePath()+".svg" );
 	qDebug("Exporting SVG file %s", file()->fileName().toAscii().data());
-	if( !oTempFile.copy( file()->fileName() ) ) // Rename it, so we can delete the temporary file
+	if( !iExitCode && !oTempFile.copy( file()->fileName() ) ) // Rename it, so we can delete the temporary file
 	{
 		qCritical("SVGExport: Could not copy temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
              oTempFile.errorString().toAscii().constData() );

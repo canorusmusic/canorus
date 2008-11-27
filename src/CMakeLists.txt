@@ -190,6 +190,7 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/mimedata.cpp
 	core/file.cpp
 	core/fileformats.cpp
+	core/typesetter.cpp
 	core/tar.cpp
 	core/archive.cpp
 	core/resource.cpp
@@ -402,6 +403,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/resource.cpp
 	core/resourcecontainer.cpp
 	core/midirecorder.cpp
+	core/typesetter.cpp
 	${Canorus_Import_Srcs}
 	${Canorus_Export_Srcs}
 	${Canorus_Ctl_Srcs}

@@ -9,6 +9,10 @@
 #include "export/lilypondexport.h"
 #include "control/typesetctl.h"
 #include "export/pdfexport.h"
+#ifndef SWIGCPP
+#include "canorus.h" // needed for settings()
+#endif
+#include "core/settings.h"
 
 /*!
 	\class CAPDFExport
@@ -46,7 +50,11 @@ void CAPDFExport::startExport()
 {
  	_poTypesetCtl = new CATypesetCtl();
 	// For now we support only lilypond export
-	_poTypesetCtl->setTypesetter( QString("lilypond") );
+#ifndef SWIGCPP
+	_poTypesetCtl->setTypesetter( (CACanorus::settings()->useSystemDefaultTypesetter())?(CASettings::DEFAULT_TYPESETTER_LOCATION):(CACanorus::settings()->typesetterLocation()) );
+#else
+	_poTypesetCtl->setTypesetter( CASettings::DEFAULT_TYPESETTER_LOCATION );
+#endif
 	_poTypesetCtl->setExporter( new CALilyPondExport() );
 	// Put lilypond output to console, could be shown on a canorus console later
 	connect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
@@ -92,8 +100,9 @@ void CAPDFExport::exportDocumentImpl(CADocument *poDoc)
 	}
 	_poTypesetCtl->runTypesetter(); // create pdf
 	// as we are not in the main thread wait until we are finished
-	if( _poTypesetCtl->waitForFinished( -1 ) == false )
+	if( _poTypesetCtl->waitForFinished( -1 ) == false ) {
 		qWarning("PDFExport: Typesetter %s was not finished","lilypond");
+	}
 }
 
 /*!
@@ -110,17 +119,18 @@ void CAPDFExport::outputTypsetterOutput( const QByteArray &roOutput )
 */
 void CAPDFExport::pdfFinished( int iExitCode )
 {
+	setStatus( iExitCode );
 	QFile oTempFile( getTempFilePath()+".pdf" );
-  oTempFile.setFileName( getTempFilePath()+".pdf" );
+	oTempFile.setFileName( getTempFilePath()+".pdf" );
 	qDebug("Exporting PDF file %s", file()->fileName().toAscii().data());
-	if( !oTempFile.copy( file()->fileName() ) ) // Rename it, so we can delete the temporary file
+	if( !iExitCode && !oTempFile.copy( file()->fileName() ) ) // Rename it, so we can delete the temporary file
 	{
 		qCritical("PDFExport: Could not copy temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
              oTempFile.errorString().toAscii().constData() );
 		return;
 	}
 	emit pdfIsFinished( iExitCode );
-  // Remove temporary files.
+	// Remove temporary files.
 	if( !oTempFile.remove() )
 	{
 		qWarning("PDFExport: Could not remove temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),

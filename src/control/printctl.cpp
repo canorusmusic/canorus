@@ -12,7 +12,9 @@
 #include <QPrinter>
 #include <QSvgRenderer>
 #include <QPrintDialog>
+#include <QMessageBox>
 
+#include "core/settings.h"
 #include "ui/mainwin.h"
 #include "export/svgexport.h"
 #include "control/printctl.h"
@@ -74,6 +76,11 @@ void CAPrintCtl::printDocument()
 
 void CAPrintCtl::printSVG( int iExitCode )
 {
+	if ( iExitCode ) {
+		QMessageBox::critical( _poMainWin, tr("Error while printing"), tr("Error while running the typesetter.\n\nPlease install LilyPond (visit http://www.lilypond.org) and check the settings.") );
+		return;
+	}
+
 	// High resolution requires huge amount of memory :-(
 	//QPrinter oPrinter;
 	QPrinter oPrinter( QPrinterInfo::defaultPrinter(), QPrinter::ScreenResolution );

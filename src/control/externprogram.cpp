@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-        
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -100,7 +100,7 @@ void CAExternProgram::setParameters( const QStringList &roParams )
 }
 
 /*!
-	Returns the exit status of the finished program 
+	Returns the exit status of the finished program
 
 	Returns "-1" if the program is still running, else
 	the exist status of the process
@@ -176,7 +176,7 @@ bool CAExternProgram::execProgram( const QString &roCwd /* = "." */ )
 	// Wa it until program was started
 	if( !_poExternProgram->waitForStarted() )
 	{
-		qCritical("ExternProgram: Could not run program %s! Error %s", _oProgramName.toAscii().constData(), 
+		qCritical("ExternProgram: Could not run program %s! Error %s", _oProgramName.toAscii().constData(),
               QString( "%1 " + _poExternProgram->errorString() ).arg( _poExternProgram->error() ).toAscii().constData() );
 		return false;
 	}
@@ -222,10 +222,18 @@ void CAExternProgram::programExited()
 		return;
 	}
 	// Check if the program exited normally else put out error message
-	if( _poExternProgram->exitStatus() != QProcess::NormalExit )
-		qCritical("ExternProgram: program %s didn't finish correctly! Exit code %d", _oProgramName.toAscii().constData(), 
-              QString( _poExternProgram->exitCode() + " " + _poExternProgram->errorString() ).toAscii().constData() );		
-	
+	if( _poExternProgram->exitStatus() != QProcess::NormalExit ) {
+		qCritical("ExternProgram: program %s didn't finish correctly! Exit code %d", _oProgramName.toAscii().constData(),
+              QString( _poExternProgram->exitCode() + " " + _poExternProgram->errorString() ).toAscii().constData() );
+		emit programExited( _poExternProgram->exitCode() );
+	}
+
+	if( _poExternProgram->error() == QProcess::FailedToStart ) {
+		qCritical("ExternProgram: program %s didn't start correctly! Error code %d", _oProgramName.toAscii().constData(),
+              QString( _poExternProgram->error() + " " + _poExternProgram->errorString() ).toAscii().constData() );
+		emit programExited( -1 );
+	}
+
 	emit programExited( _poExternProgram->exitCode() );
 }
 
