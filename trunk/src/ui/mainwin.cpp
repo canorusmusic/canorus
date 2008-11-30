@@ -1052,16 +1052,20 @@ void CAMainWin::initViewPort(CAViewPort *v) {
 
 	switch (v->viewPortType()) {
 		case CAViewPort::ScoreViewPort: {
-			connect( v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint, CAScoreViewPort *)),
-			         this, SLOT(scoreViewPortMousePress(QMouseEvent *, QPoint, CAScoreViewPort *)) );
-			connect( v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint, CAScoreViewPort *)),
-			         this, SLOT(scoreViewPortMouseMove(QMouseEvent *, QPoint, CAScoreViewPort *)) );
-			connect( v, SIGNAL(CAMouseReleaseEvent(QMouseEvent *, QPoint, CAScoreViewPort *)),
-			         this, SLOT(scoreViewPortMouseRelease(QMouseEvent *, QPoint, CAScoreViewPort *)) );
-			connect( v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint, CAScoreViewPort *)),
-			         this, SLOT(scoreViewPortWheel(QWheelEvent *, QPoint, CAScoreViewPort *)) );
-			connect( v, SIGNAL(CAKeyPressEvent(QKeyEvent *, CAScoreViewPort *)),
-			         this, SLOT(scoreViewPortKeyPress(QKeyEvent *, CAScoreViewPort *)) );
+			connect( v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint)),
+			         this, SLOT(scoreViewPortMousePress(QMouseEvent *, QPoint)) );
+			connect( v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint)),
+			         this, SLOT(scoreViewPortMouseMove(QMouseEvent *, QPoint)) );
+			connect( v, SIGNAL(CAMouseReleaseEvent(QMouseEvent *, QPoint)),
+			         this, SLOT(scoreViewPortMouseRelease(QMouseEvent *, QPoint)) );
+			connect( v, SIGNAL(CADoubleClickEvent(QMouseEvent *, QPoint)),
+			         this, SLOT(scoreViewPortDoubleClick(QMouseEvent *, QPoint)) );
+			connect( v, SIGNAL(CATripleClickEvent(QMouseEvent *, QPoint)),
+			         this, SLOT(scoreViewPortTripleClick(QMouseEvent *, QPoint)) );
+			connect( v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint)),
+			         this, SLOT(scoreViewPortWheel(QWheelEvent *, QPoint)) );
+			connect( v, SIGNAL(CAKeyPressEvent(QKeyEvent *)),
+			         this, SLOT(scoreViewPortKeyPress(QKeyEvent *)) );
 			connect( static_cast<CAScoreViewPort*>(v)->textEdit(), SIGNAL(CAKeyPressEvent(QKeyEvent*)),
 			         this, SLOT(onTextEditKeyPressEvent(QKeyEvent*)) );
 			connect( v, SIGNAL(selectionChanged()),
@@ -1069,7 +1073,7 @@ void CAMainWin::initViewPort(CAViewPort *v) {
 			break;
 		}
 		case CAViewPort::SourceViewPort: {
-			connect(v, SIGNAL(CACommit(QString, CASourceViewPort*)), this, SLOT(sourceViewPortCommit(QString, CASourceViewPort*)));
+			connect(v, SIGNAL(CACommit(QString)), this, SLOT(sourceViewPortCommit(QString)));
 			break;
 		}
 	}
@@ -1464,12 +1468,13 @@ void CAMainWin::rebuildUI(bool repaint) {
 }
 
 /*!
-	Processes the mouse press event \a e with world coordinates \a coords of the score viewport \a v.
+	Processes the mouse press event \a e with world coordinates \a coords.
 	Any action happened in any of the viewports are always linked to these main window slots.
 
 	\sa CAScoreViewPort::mousePressEvent(), scoreViewPortMouseMove(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
-void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAScoreViewPort *v) {
+void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords) {
+	CAScoreViewPort *v = static_cast<CAScoreViewPort*>(sender());
 	setCurrentViewPort( v );
 	if(currentViewPort()->parent()) // not floating
 		currentViewPortContainer()->setCurrentViewPort( currentViewPort() );
@@ -1653,12 +1658,13 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords, CAS
 }
 
 /*!
-	Processes the mouse move event \a e with coordinates \a coords of the score viewport \a v.
+	Processes the mouse move event \a e with coordinates \a coords.
 	Any action happened in any of the viewports are always linked to its main window slots.
 
 	\sa CAScoreViewPort::mouseMoveEvent(), scoreViewPortMousePress(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
-void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreViewPort *c) {
+void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords) {
+	CAScoreViewPort *c = static_cast<CAScoreViewPort*>(sender());
 	if ( mode() == SelectMode && c->resizeDirection()!=CADrawable::Undefined ) {
 		int time = c->coordsToTime(coords.x());
 		time -= (time % CAPlayableLength::musicLengthToTimeLength(CAPlayableLength::Sixteenth)); // round timelength to eighth notes length
@@ -1722,12 +1728,35 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords, CAScoreVie
 }
 
 /*!
-	Processes the mouse move event \a e with coordinates \a coords of the score viewport \a v.
+	Processes the mouse double click event.
+	Currently this selects the current bar.
+
+	\sa CAScoreViewPort::selectAllCurBar()
+ */
+void CAMainWin::scoreViewPortDoubleClick( QMouseEvent *e, const QPoint coords ) {
+	static_cast<CAScoreViewPort*>(sender())->selectAllCurBar();
+	static_cast<CAScoreViewPort*>(sender())->repaint();
+}
+
+/*!
+	Processes the mouse triple click event.
+	Currently this selects the current line.
+
+	\sa CAScoreViewPort::selectAllCurContext()
+ */
+void CAMainWin::scoreViewPortTripleClick( QMouseEvent *e, const QPoint coords ) {
+	static_cast<CAScoreViewPort*>(sender())->selectAllCurContext();
+	static_cast<CAScoreViewPort*>(sender())->repaint();
+}
+
+/*!
+	Processes the mouse move event \a e with coordinates \a coords.
 	Any action happened in any of the viewports are always linked to its main window slots.
 
 	\sa CAScoreViewPort::mouseReleaseEvent(), scoreViewPortMousePress(), scoreViewPortMouseMove(), scoreViewPortWheel(), scoreViewPortKeyPress()
 */
-void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords, CAScoreViewPort *c) {
+void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords) {
+	CAScoreViewPort *c = static_cast<CAScoreViewPort*>(sender());
 	if ( c->resizeDirection()!=CADrawable::Undefined ) {
 		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI(document(), c->sheet());
@@ -1765,12 +1794,13 @@ void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords, CAScore
 }
 
 /*!
-	Processes the mouse wheel event \a e with coordinates \a coords of the score viewport \a v.
+	Processes the mouse wheel event \a e with coordinates \a coords.
 	Any action happened in any of the viewports are always linked to its main window slots.
 
 	\sa CAScoreViewPort::wheelEvent(), scoreViewPortMousePress(), scoreViewPortMouseMove(), scoreViewPortKeyPress()
 */
-void CAMainWin::scoreViewPortWheel(QWheelEvent *e, QPoint coords, CAScoreViewPort *sv) {
+void CAMainWin::scoreViewPortWheel(QWheelEvent *e, QPoint coords) {
+	CAScoreViewPort *sv = static_cast<CAScoreViewPort*>(sender());
 	setCurrentViewPort( sv );
 
 	int val;
@@ -1800,12 +1830,13 @@ void CAMainWin::scoreViewPortWheel(QWheelEvent *e, QPoint coords, CAScoreViewPor
 }
 
 /*!
-	Processes the key press event \a e of the score viewport \a v.
+	Processes the key press event \a e.
 	Any action happened in any of the viewports are always linked to its main window slots.
 
 	\sa CAScoreViewPort::keyPressEvent(), scoreViewPortMousePress(), scoreViewPortMouseMove(), scoreViewPortWheel()
 */
-void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e, CAScoreViewPort *v) {
+void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
+	CAScoreViewPort *v = static_cast<CAScoreViewPort*>(sender());
 	setCurrentViewPort( v );
 
 	switch (e->key()) {
@@ -3568,7 +3599,9 @@ void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 /*!
 	Called when a user clicks "Commit" button in source viewport.
 */
-void CAMainWin::sourceViewPortCommit(QString inputString, CASourceViewPort *v) {
+void CAMainWin::sourceViewPortCommit(QString inputString) {
+	CASourceViewPort *v = static_cast<CASourceViewPort*>(sender());
+
 	stopPlayback();
 	if (v->document()) {
 		// CanorusML document source

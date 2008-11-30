@@ -138,9 +138,15 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	_repaintArea = 0;
 
 	// init animation stuff
-	_animationTimer = new QTimer();
+	_animationTimer = new QTimer(this);
 	_animationTimer->setInterval(50);
-	connect(_animationTimer, SIGNAL(timeout()), this, SLOT(on__animationTimer_timeout()));
+	connect(_animationTimer, SIGNAL(timeout()), this, SLOT(on_animationTimer_timeout()));
+
+	// init click timer (used for measuring double/triple click since Qt4 doesn't support triple click yet ;))
+	_clickTimer = new QTimer(this);
+	_clickTimer->setSingleShot(true);
+	_clickTimer->setInterval( static_cast<int>(QApplication::doubleClickInterval()*1.5) );
+	connect( _clickTimer, SIGNAL(timeout()), this, SLOT(on_clickTimer_timeout()) );
 
 	// init helpers
 	setSelectedVoice( 0 );
@@ -200,7 +206,7 @@ CAScoreViewPort::~CAScoreViewPort() {
 	_vScrollBar->disconnect();
 }
 
-void CAScoreViewPort::on__animationTimer_timeout() {
+void CAScoreViewPort::on_animationTimer_timeout() {
 	_animationStep++;
 
 	float newZoom = _zoom + (_targetZoom - _zoom) * sqrt(((float)_animationStep)/ANIMATION_STEPS);
@@ -1086,7 +1092,6 @@ void CAScoreViewPort::checkScrollBars() {
 */
 void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 	QPoint coords(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY);
-	setLastMousePressCoords(coords);
 	if ( selection().size() && selection()[0]->isHScalable() && coords.y()>=selection()[0]->yPos() && coords.y()<=selection()[0]->yPos()+selection()[0]->height() ) {
 		if ( coords.x()==selection()[0]->xPos()  ) {
 			setResizeDirection(CADrawable::Left);
@@ -1101,7 +1106,30 @@ void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 		}
 	}
 
-	emit CAMousePressEvent(e, coords, this);
+	if ( !_clickTimer->isActive() || coords!=lastMousePressCoords() ) {
+		_clickTimer->start();
+	}
+
+	_numberOfClicks++;
+
+	emit CAMousePressEvent( e, coords );
+
+	setLastMousePressCoords(coords);
+
+	if (_numberOfClicks==2) {
+		emit CADoubleClickEvent( e, coords );
+	} else
+	if (_numberOfClicks==3) {
+		emit CATripleClickEvent( e, coords );
+	}
+}
+
+/*!
+	Clears number of clicks done so far inside one interval.
+	This function is usually click timer's slot.
+ */
+void CAScoreViewPort::on_clickTimer_timeout() {
+	_numberOfClicks = 0;
 }
 
 /*!
@@ -1109,7 +1137,7 @@ void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 	A new signal is emitted: CAMouseReleaseEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreViewPort::mouseReleaseEvent(QMouseEvent *e) {
-	emit CAMouseReleaseEvent(e, QPoint(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY), this);
+	emit CAMouseReleaseEvent(e, QPoint(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY));
 	setResizeDirection( CADrawable::Undefined );
 }
 
@@ -1146,7 +1174,7 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 	else
 		setCursor(Qt::ArrowCursor);
 
-	emit CAMouseMoveEvent(e, coords, this);
+	emit CAMouseMoveEvent(e, coords);
 
 	if (_shadowNoteVisible) {
 		updateHelpers();
@@ -1160,7 +1188,7 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 void CAScoreViewPort::wheelEvent(QWheelEvent *e) {
 	QPoint coords((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY);
 
-	emit CAWheelEvent(e, coords, this);
+	emit CAWheelEvent(e, coords);
 
 	_xCursor = (int)(e->x() / _zoom) + _worldX;	//TODO: _xCursor and _yCursor are still the old one. Somehow, _zoom level and _worldX/Y are not updated when emmiting CAWheel event. -Matevz
 	_yCursor = (int)(e->y() / _zoom) + _worldY;
@@ -1171,7 +1199,7 @@ void CAScoreViewPort::wheelEvent(QWheelEvent *e) {
 	A new signal is emitted: CAKeyPressEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreViewPort::keyPressEvent(QKeyEvent *e) {
-	emit CAKeyPressEvent(e, this);
+	emit CAKeyPressEvent(e);
 }
 
 void CAScoreViewPort::setScrollBarVisible(CAScrollBarVisibility status) {
@@ -1229,7 +1257,7 @@ void CAScoreViewPort::startAnimationTimer() {
 	_animationTimer->stop();
 	_animationStep = 0;
 	_animationTimer->start();
-	on__animationTimer_timeout();
+	on_animationTimer_timeout();
 }
 
 /*!
@@ -1331,7 +1359,7 @@ void CAScoreViewPort::addToSelection( CADrawableMusElement *elt, bool triggerSig
 */
 void CAScoreViewPort::addToSelection(const QList<CADrawableMusElement*> list, bool selectableOnly ) {
 	for (int i=0; i<list.size(); i++) {
-		if ( selectableOnly && list[i]->isSelectable() )
+		if ( !selectableOnly || selectableOnly && list[i]->isSelectable() )
 			addToSelection(list[i], false);
 	}
 
@@ -1370,12 +1398,51 @@ void CAScoreViewPort::addToSelection(const QList<CAMusElement*> elts) {
 
 /*!
 	Select all elements in the viewport.
+	This function is usually associated with CTRL+A key.
 */
 void CAScoreViewPort::selectAll() {
 	clearSelection();
 
 	for(int i=0; i<_drawableMList.size(); i++)
 		addToSelection(_drawableMList.at(i), false);
+
+	emit selectionChanged();
+}
+
+/*!
+	Selects all elements in the current bar.
+	This function is usually called when double clicking on the bar.
+ */
+void CAScoreViewPort::selectAllCurBar() {
+	if ( !currentContext() || currentContext()->drawableContextType()!=CADrawableContext::DrawableStaff ) {
+		return;
+	}
+
+	clearSelection();
+
+	if (selectedVoice()) {
+		addToSelection( selectedVoice()->getBar( coordsToTime(_lastMousePressCoords.x()) ) );
+	} else {
+		QList<CAVoice*> voices = static_cast<CAStaff*>(currentContext()->context())->voiceList();
+		for (int i=0; i<voices.size(); i++) {
+			addToSelection( voices[i]->getBar( coordsToTime(_lastMousePressCoords.x()) ) );
+		}
+	}
+
+	emit selectionChanged();
+}
+
+/*!
+	Selects all elements in the current context (line).
+	This function is usually called when triple clicking on the context.
+ */
+void CAScoreViewPort::selectAllCurContext() {
+	if ( !currentContext() ) {
+		return;
+	}
+
+	clearSelection();
+	addToSelection( currentContext()->drawableMusElementList(), false );
 
 	emit selectionChanged();
 }

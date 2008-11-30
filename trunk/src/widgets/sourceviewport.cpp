@@ -1,7 +1,7 @@
-/*! 
+/*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -21,16 +21,16 @@
 /*!
 	\class CASourceViewPort
 	\brief Widget that shows the current score source in various syntax
-	
+
 	This widget is a viewport which shows in the main text area the syntax of the current score (or voice, staff).
 	It includes 2 buttons for committing the changes to the score and reverting any changes back from the score.
-	
+
 	\sa CAScoreViewPort
 */
 
 /*!
 	Constructor for CanorusML syntax - requires the whole document.
-	
+
 	\todo This should be merged in the future with other formats.
 */
 CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
@@ -40,13 +40,13 @@ CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
  	_document = doc;
  	_voice = 0;
   	_lyricsContext = 0;
- 	
+
  	setupUI();
 }
 
 /*!
 	Constructor for LilyPond syntax - requires the current voice.
-	
+
 	\todo This should be merged in the future with other formats.
 */
 CASourceViewPort::CASourceViewPort(CAVoice *voice, QWidget *parent)
@@ -56,13 +56,13 @@ CASourceViewPort::CASourceViewPort(CAVoice *voice, QWidget *parent)
  	_document = 0;
  	_voice = voice;
  	_lyricsContext = 0;
- 	
+
  	setupUI();
 }
 
 /*!
 	Constructor for LilyPond syntax - requires the current lyrics context to show the lyrics.
-	
+
 	\todo This should be merged in the future with other formats.
 */
 CASourceViewPort::CASourceViewPort(CALyricsContext *lc, QWidget *parent)
@@ -72,7 +72,7 @@ CASourceViewPort::CASourceViewPort(CALyricsContext *lc, QWidget *parent)
  	_document = 0;
  	_voice = 0;
   	_lyricsContext = lc;
- 	
+
  	setupUI();
 }
 
@@ -81,10 +81,10 @@ void CASourceViewPort::setupUI() {
 	_layout->addWidget(_textEdit = new QTextEdit(0));
 	_layout->addWidget(_commit = new QPushButton(tr("Commit changes")));
 	_layout->addWidget(_revert = new QPushButton(tr("Revert changes")));
-	
+
 	connect(_commit, SIGNAL(clicked()), this, SLOT(on_commit_clicked()));
 	connect(_revert, SIGNAL(clicked()), this, SLOT(rebuild()));
-	
+
 	rebuild();
 }
 
@@ -93,7 +93,7 @@ CASourceViewPort::~CASourceViewPort() {
 	_commit->disconnect();
 	_revert->disconnect();
 	_layout->disconnect();
-	
+
 	delete _textEdit;
 	delete _commit;
 	delete _revert;
@@ -101,7 +101,7 @@ CASourceViewPort::~CASourceViewPort() {
 }
 
 void CASourceViewPort::on_commit_clicked() {
-	emit CACommit( _textEdit->toPlainText(), this );
+	emit CACommit( _textEdit->toPlainText() );
 }
 
 CASourceViewPort *CASourceViewPort::clone() {
@@ -112,7 +112,7 @@ CASourceViewPort *CASourceViewPort::clone() {
 		v = new CASourceViewPort( voice(), static_cast<QWidget*>(parent()) );
 	else if ( lyricsContext() )
 		v = new CASourceViewPort( lyricsContext(), static_cast<QWidget*>(parent()) );
-	
+
 	return v;
 }
 
@@ -124,19 +124,19 @@ CASourceViewPort *CASourceViewPort::clone(QWidget *parent) {
 		v = new CASourceViewPort( voice(), parent );
 	else if ( lyricsContext() )
 		v = new CASourceViewPort( lyricsContext(), parent );
-	
+
 	return v;
 }
 
 /*!
 	Generates the score source from the current score and fill the text area with it.
-*/ 
+*/
 void CASourceViewPort::rebuild() {
 	_textEdit->clear();
-	
+
 	QString *value = new QString();
 	QTextStream stream(value);
-	
+
 	// CanorusML
 	if ( document() ) {
 		CACanorusMLExport save( &stream );
@@ -154,8 +154,8 @@ void CASourceViewPort::rebuild() {
 			le.wait();
 		}
 	}
-	
+
 	_textEdit->insertPlainText(*value);
-	
+
 	delete value;
 }
