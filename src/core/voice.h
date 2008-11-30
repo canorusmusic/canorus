@@ -79,6 +79,7 @@ public:
 	CAKeySignature*    getKeySig(CAMusElement *elt);
 	CAClef*            getClef(CAMusElement *elt);
 	QList<CAPlayable*> getChord(int time);
+	QList<CAMusElement*> getBar( int time );
 
 	////////////////
 	// Properties //

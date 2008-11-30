@@ -553,6 +553,44 @@ QList<CAPlayable*> CAVoice::getChord(int time) {
 }
 
 /*!
+	Returns a list of music elements inside the given bar.
+	The return list consists of all music elements between two barlines excluding the first barline.
+	Expression marks and other non-standalone elements are excluded as well.
+	The parameter \a time is any time of music elements inside the bar.
+
+	This function is usually called when double clicking on the score.
+ */
+QList<CAMusElement*> CAVoice::getBar( int time ) {
+	QList<CAPlayable*> chord = getChord(time);
+	QList<CAMusElement*> ret;
+
+	if ( !chord.size() ) {
+		return ret;
+	}
+
+	// search left
+	CAMusElement *curElt = previous( chord[0] );
+	while ( curElt && curElt->musElementType()!=CAMusElement::Barline ) {
+		ret.append( curElt );
+		curElt = previous(curElt);
+	}
+
+	ret.append( chord[0] );
+
+	curElt = next( chord[0] );
+	while ( curElt && curElt->musElementType()!=CAMusElement::Barline ) {
+		ret.append( curElt );
+		curElt = next(curElt);
+	}
+
+	if (curElt) { // last elt is barline
+		ret.append( curElt );
+	}
+
+	return ret;
+}
+
+/*!
 	Generates a list of all the notes and chords in the voice.
 
 	This is useful for harmony analysis.
