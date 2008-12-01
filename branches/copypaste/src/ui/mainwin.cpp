@@ -4525,40 +4525,27 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 					int chordIdx;
 					for (chordIdx=0; chordIdx<chord.size(); chordIdx++) { // calculates chordIdx
 						if ( chord[chordIdx]->voice()!=p->voice() ) {
-							if ( chord[chordIdx]->musElementType()==CAMusElement::Note ) { // note in other voice, do not shift back
+							CAPlayable *current = chord[chordIdx];
+							do {
+								if ( current->musElementType() == CAMusElement::Rest )
+									restsInOtherVoices << static_cast<CARest*>(current);
+								else if( !musElemSet.contains(current) ) {
+									deleteNotes = false; // note in other voice which is not going to be deleted, don't shift back
+									break;
+								}
+								// loop over following playables while they start before p ends. i.e., not shifting back in situations such as: << { c1 } \ { r4 r g g } >>.
+							} while( (current = current->voice()->nextPlayable( current->timeStart() )) && (current->timeStart() < p->timeEnd()) );
+							
+							if ( !current && restsInOtherVoices.size() &&
+								( restsInOtherVoices.back()->voice()!=chord[chordIdx]->voice() ||
+								  restsInOtherVoices.back()->voice()==chord[chordIdx]->voice() &&
+								  restsInOtherVoices.back()->timeEnd() < p->timeEnd() )
+							   ) {
 								deleteNotes = false;
 								break;
-							} else { // rest in other voice
-								// is the total sum of rests in other voices enough
-
-								restsInOtherVoices << static_cast<CARest*>(chord[chordIdx]);
-								if ( chord[chordIdx]->timeEnd() < p->timeEnd() ) {
-									// rest in other voice finishes before the end of our selection
-									// check, if it contains right neighbours to fill the gap
-									CAPlayable *next = chord[chordIdx];
-									while ( (next = next->voice()->nextPlayable( next->timeStart() )) && (next->timeStart() < p->timeEnd()) ) {
-										if ( next->musElementType()==CAMusElement::Note ) { // note in other voice, do not shift back
-											deleteNotes = false;
-											break;
-										}
-										restsInOtherVoices << static_cast<CARest*>(next);
-									}
-
-									// check, if it failed
-									if ( !next && restsInOtherVoices.size() &&
-									    ( restsInOtherVoices.back()->voice()!=chord[chordIdx]->voice() ||
-									      restsInOtherVoices.back()->voice()==chord[chordIdx]->voice() &&
-									      restsInOtherVoices.back()->timeEnd() < p->timeEnd() )
-									   ) {
-										deleteNotes = false;
-										break;
-									}
-								}
-
 							}
 						}
 					}
-
 					if ( !deleteNotes ) {
 						// replace note with rest
 
