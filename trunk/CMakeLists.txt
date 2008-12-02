@@ -89,7 +89,7 @@ ENDIF(MINGW)
 
 #-----------------------------------------------------------------------------
 # Search for Qt4. We need the latest version of Qt
-SET(QT_MIN_VERSION "4.3.0")
+SET(QT_MIN_VERSION "4.4.0")
 
 # Either remove the below line and set it to the path of
 # your qmake executable or modify the FindQt4.cmake program
