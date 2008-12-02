@@ -30,11 +30,11 @@ CAFermata::CAFermata( CABarline *b, CAFermataType t )
 CAFermata::~CAFermata() {
 }
 
-CAMusElement *CAFermata::clone() {
-	if (associatedElement()->isPlayable()) {
-		return new CAFermata( static_cast<CAPlayable*>(associatedElement()), fermataType() );
+CAFermata *CAFermata::clone(CAMusElement* elt) {
+	if (elt->isPlayable()) {
+		return new CAFermata( static_cast<CAPlayable*>(elt), fermataType() );
 	} else {
-		return new CAFermata( static_cast<CABarline*>(associatedElement()), fermataType() );
+		return new CAFermata( (elt->musElementType()==Barline)?static_cast<CABarline*>(elt):0, fermataType() );
 	}
 }
 

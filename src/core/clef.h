@@ -13,6 +13,7 @@
 #include "core/muselement.h"
 
 class CAStaff;
+class CAContext;
 
 class CAClef : public CAMusElement {
 public:
@@ -43,7 +44,7 @@ public:
 	
 	CAClef( CAPredefinedClefType type, CAStaff *staff, int time, int offsetInterval=0 );
 	CAClef( CAClefType type, int c1, CAStaff *staff, int time, int offset=0 );
-	CAClef *clone();
+	CAClef *clone(CAContext* context=0);
 	
 	void setPredefinedType( CAPredefinedClefType type );
 	CAClefType clefType() { return _clefType; }

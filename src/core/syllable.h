@@ -14,6 +14,7 @@
 #include <QString>
 
 class CAVoice;
+class CAContext;
 
 class CASyllable : public CAMusElement {
 public:
@@ -32,7 +33,7 @@ public:
 	
 	inline CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(_context); }
 	
-	CAMusElement* clone();
+	CASyllable* clone(CAContext* context);
 	int compare(CAMusElement*);
 	
 private:

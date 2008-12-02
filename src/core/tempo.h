@@ -16,7 +16,7 @@ public:
 	CATempo( CAPlayableLength l, int bpm, CAMusElement *m );
 	virtual ~CATempo();
 	
-	CAMusElement *clone();
+	CATempo *clone(CAMusElement* elt=0);
 	int compare( CAMusElement *elt );
 	
 	inline int bpm() { return _bpm; }

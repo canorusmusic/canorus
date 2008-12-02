@@ -6,34 +6,34 @@
 */
 
 #include "core/mimedata.h"
-#include "core/muselement.h"
+#include "core/context.h"
 
 /*!
 	Subclass of QMimeData which incorporates list of Music elements for
 	copy/paste functionality.
 	
-	MIME types for Canorus music elements are "application/canorus-muselements".
+	MIME types for Canorus contexts are "application/canorus-contexts".
 */
 
-const QString CAMimeData::CANORUS_MIME_TYPE = "application/canorus-muselements";
+const QString CAMimeData::CANORUS_MIME_TYPE = "application/canorus-contexts";
 
 CAMimeData::CAMimeData()
  : QMimeData() {
 }
 
-CAMimeData::CAMimeData( QList<CAMusElement*> list )
+CAMimeData::CAMimeData( QList<CAContext*> list )
  : QMimeData() {
-	setMusElements( list );
+	setContexts( list );
 }
 
 CAMimeData::~CAMimeData() {
-	for (int i=0 ;i<musElements().size(); i++)
-		delete musElements().at(i);
+	for (int i=0; i<contexts().size(); i++)
+		delete contexts().at(i);
 }
 
 QStringList CAMimeData::formats() const {
 	QStringList curFormats = QMimeData::formats();
-	if ( hasMusElements() )
+	if ( hasContexts() )
 		curFormats << CANORUS_MIME_TYPE;
 	return curFormats;
 }

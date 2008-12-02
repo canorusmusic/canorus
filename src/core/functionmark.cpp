@@ -53,15 +53,14 @@ bool CAFunctionMark::isSideDegree() {
 		return false;
 }
 
-CAFunctionMark *CAFunctionMark::clone() {
+CAFunctionMark *CAFunctionMark::clone(CAContext* context) {
 	CAFunctionMark *newElt;
-	newElt = new CAFunctionMark(function(), isMinor(), key(), (CAFunctionMarkContext*)_context, timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
+	newElt = new CAFunctionMark(function(), isMinor(), key(), (CAFunctionMarkContext*)context, timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
 	newElt->setAlteredDegrees(_alteredDegrees);
 	newElt->setAddedDegrees(_addedDegrees);
 	
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement( newElt );
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(newElt));
 		newElt->addMark( m );
 	}
 	

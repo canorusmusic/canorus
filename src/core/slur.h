@@ -12,6 +12,7 @@
 
 #include "core/muselement.h"
 
+class CAContext;
 class CANote;
 
 class CASlur : public CAMusElement {
@@ -38,7 +39,8 @@ public:
 	CASlur( CASlurType, CASlurDirection, CAContext *c, CANote *noteStart, CANote *noteEnd=0, CASlurStyle style=SlurSolid );
 	virtual ~CASlur();
 	
-	CASlur *clone();
+	CASlur *clone(CAContext* context=0);
+	CASlur *clone(CAContext* context, CANote* noteStart, CANote* noteEnd);
 	int compare( CAMusElement *elt );
 	
 	inline CASlurDirection slurDirection() { return _slurDirection; }

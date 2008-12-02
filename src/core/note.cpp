@@ -80,8 +80,7 @@ CANote *CANote::clone( CAVoice *voice ) {
 	d->setStemDirection( stemDirection() );
 
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement(d);
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(d));
 		d->addMark( m );
 	}
 

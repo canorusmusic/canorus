@@ -53,8 +53,12 @@ CATuplet::~CATuplet() {
 	resetTimes();
 }
 
-CAMusElement* CATuplet::clone() {
-	CATuplet *t = new CATuplet( number(), actualNumber(), noteList() );
+CATuplet* CATuplet::clone(CAContext* context) { // context is ignored. this method should not be used. FIXME.
+	return new CATuplet( number(), actualNumber(), noteList() );
+}
+
+CATuplet* CATuplet::clone(QList<CAPlayable*> newList) {
+	return new CATuplet( number(), actualNumber(), newList );
 }
 
 int CATuplet::compare(CAMusElement* elt) {
@@ -144,6 +148,8 @@ void CATuplet::assignTimes() {
 	This is usually called from the destructor of the tuplet.
  */
 void CATuplet::resetTimes() {
+	if(noteList().isEmpty())
+		return;
 	CAVoice *voice = noteList().front()->voice();
 	CAMusElement *next = 0;
 	if ( noteList().back()->musElementType()==Note && static_cast<CANote*>(noteList().back())->getChord().size() ) {

@@ -25,9 +25,8 @@ CADrawable::CADrawable(int x, int y) {
 }
 
 CADrawable* CADrawable::clone() {
-	// If we reach CADrawable::clone(), then this must be a CADrawableMusElement, because otherwise it would go to the
-	// CADrawableContext cloned() (this is an impure virtual function).
-	return ((CADrawable*)((CADrawableMusElement*)this)->clone());
+	// We only reach CADrawable::clone() if this is a CADrawableMusElement, otherwise CADrawableContext::clone() will be called (this is a non-pure virtual function).
+	return static_cast<CADrawableMusElement*>(this)->clone();
 }
 
 void CADrawable::drawHScaleHandles( QPainter *p, CADrawSettings s ) {

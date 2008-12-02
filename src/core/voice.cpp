@@ -44,7 +44,7 @@ CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection st
 	}
 	_stemDirection = stemDirection;
 
-	_midiChannel = (staff ? CAMidiDevice::freeMidiChannel( staff->sheet() ) : 0);
+	_midiChannel = ((staff && staff->sheet()) ? CAMidiDevice::freeMidiChannel( staff->sheet() ) : 0);
 	_midiProgram = 0;
 }
 
@@ -86,14 +86,6 @@ void CAVoice::cloneVoiceProperties( CAVoice *voice ) {
 	setMidiChannel( voice->midiChannel() );
 	setMidiProgram( voice->midiProgram() );
 	setLyricsContexts( voice->lyricsContextList() );
-}
-
-/*!
-	Clones the voice.
-	This method is provided for convenience.
-*/
-CAVoice *CAVoice::clone() {
-	return clone( staff() );
 }
 
 /*!
@@ -626,6 +618,8 @@ QList<CAMusElement*> CAVoice::getSignList() {
 	If \elt is null, it returns the first element in the voice.
 */
 CAMusElement *CAVoice::next(CAMusElement *elt) {
+	if(musElementList().isEmpty())
+		return 0;
 	if (elt) {
 		int idx = _musElementList.indexOf(elt);
 
@@ -676,6 +670,8 @@ CAMusElement *CAVoice::previousByType( CAMusElement::CAMusElementType type, CAMu
 	If \elt is null, it returns the last element in the voice.
 */
 CAMusElement *CAVoice::previous(CAMusElement *elt) {
+	if(musElementList().isEmpty())
+		return 0;
 	if (elt) {
 		int idx = _musElementList.indexOf(elt);
 

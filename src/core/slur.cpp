@@ -11,11 +11,8 @@
 /*!
 	\class CASlur
 	\brief Slur, Tie, Phrasing slur and Laissez vibrer tie
-	This class represents any type of the slur.
-	It doesn't have any references to notes it represents, but notes have pointers to
-	slurs if the note has one.
-	timeStart is the timeStart of the first note.
-	timeLength is the delta between first and second notes timeStarts.
+	This class represents any type of slur.
+	Holds pointers to the first and last notes.
 	
 	\sa CANote::_slurStart, \sa CANote::_tieStart, \sa CANote::_phrasingSlurStart
 */
@@ -73,8 +70,13 @@ CASlur::~CASlur() {
 	}
 }
 
-CASlur *CASlur::clone() {
-	return new CASlur( slurType(), slurDirection(), context(), noteStart(), noteEnd(), slurStyle() );
+// FIXME copying noteStart/End pointers.
+CASlur *CASlur::clone(CAContext* context) {
+	return new CASlur( slurType(), slurDirection(), context, noteStart(), noteEnd(), slurStyle() );
+}
+
+CASlur *CASlur::clone(CAContext* context, CANote* noteStart, CANote* noteEnd) {
+	return new CASlur( slurType(), slurDirection(), context, noteStart, noteEnd, slurStyle() );
 }
 
 int CASlur::compare( CAMusElement *elt ) {

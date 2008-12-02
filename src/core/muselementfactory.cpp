@@ -433,6 +433,11 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 
 		if (!success)
 			removeMusElem(true);
+		else {
+			foreach (CALyricsContext* lc, voice->lyricsContextList()) {
+				lc->repositSyllables(); // Move the syllables accordingly.
+			}
+		}
 	}
 	return success;
 }
@@ -472,7 +477,6 @@ bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> noteList ) {
 void CAMusElementFactory::placeAutoBar( CAPlayable* elt ) {
 	if ( !elt )
 		return;
-
 	CABarline *b = static_cast<CABarline*>(elt->voice()->previousByType( CAMusElement::Barline, elt ));
 	CATimeSignature *t = static_cast<CATimeSignature*>(elt->voice()->previousByType( CAMusElement::TimeSignature, elt ));
 

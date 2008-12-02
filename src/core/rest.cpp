@@ -38,8 +38,7 @@ CARest *CARest::clone( CAVoice *voice ) {
 	CARest *r = new CARest( restType(), playableLength(), voice, timeStart(), timeLength() );
 
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement(r);
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(r));
 		r->addMark( m );
 	}
 

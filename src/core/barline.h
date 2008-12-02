@@ -12,6 +12,7 @@
 #include "core/muselement.h"
 
 class CAStaff;
+class CAContext;
 
 class CABarline : public CAMusElement {
 public:
@@ -29,7 +30,7 @@ public:
 	CABarline(CABarlineType type, CAStaff *staff, int startTime);		
 	virtual ~CABarline();
 	
-	CABarline *clone();
+	CABarline *clone(CAContext* context=0);
 	int compare(CAMusElement* elt);
 	
 	CABarlineType barlineType() { return _barlineType; }		

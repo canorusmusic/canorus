@@ -36,7 +36,7 @@ public:
 	CAMusElement(CAContext *context, int timeStart, int timeLength=0);
 	virtual ~CAMusElement();
 
-	virtual CAMusElement* clone()=0;
+	virtual CAMusElement* clone(CAContext* context=0)=0;
 	virtual int compare(CAMusElement *elt) = 0;
 
 	CAMusElementType musElementType() { return _musElementType; }

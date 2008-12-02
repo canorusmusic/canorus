@@ -28,7 +28,7 @@ public:
 	CARepeatMark( CABarline *b, CARepeatMarkType t, int voltaNumber = 0 );
 	virtual ~CARepeatMark();
 	
-	CAMusElement *clone();
+	CARepeatMark *clone(CAMusElement* elt=0);
 	int compare( CAMusElement *);
 	
 	inline CARepeatMarkType repeatMarkType() { return _repeatMarkType; }

@@ -26,8 +26,8 @@ CAArticulation::CAArticulation( CAArticulationType t, CANote *n )
 CAArticulation::~CAArticulation() {
 }
 
-CAMusElement* CAArticulation::clone() {
-	return new CAArticulation( articulationType(), static_cast<CANote*>(associatedElement()) );
+CAArticulation* CAArticulation::clone(CAMusElement* elt) {
+	return new CAArticulation( articulationType(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0 );
 }
 
 int CAArticulation::compare(CAMusElement *elt) {

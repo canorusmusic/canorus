@@ -33,7 +33,7 @@ public:
 	CAFingering( QList<CAFingerNumber> fingers, CANote *m, bool italic=false );
 	virtual ~CAFingering();
 	
-	CAMusElement *clone();
+	CAFingering *clone(CAMusElement* elt=0);
 	int compare(CAMusElement *elt);
 	
 	inline CAFingerNumber finger()             { return (_fingerList.size()?_fingerList[0]:Undefined); }
