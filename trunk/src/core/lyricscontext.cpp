@@ -60,8 +60,7 @@ CALyricsContext *CALyricsContext::clone( CASheet *s ) {
 	newLc->cloneLyricsContextProperties( this );
 	
 	for (int i=0; i<_syllableList.size(); i++) {
-		CASyllable *newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone());
-		newSyllable->setContext( newLc );
+		CASyllable *newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone(newLc));
 		newLc->addSyllable( newSyllable );
 	}
 	return newLc;
@@ -87,23 +86,25 @@ void CALyricsContext::repositSyllables() {
 		QList<CANote*> noteList = associatedVoice()->getNoteList();
 		int i,j;
 		for (i=0, j=0; i<noteList.size() && j<_syllableList.size(); i++, j++) {
-			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart()) // chord
+			if (i>0 && noteList[i-1]->timeStart()==noteList[i]->timeStart()) { // chord
+				i++;
 				continue;
+			}
 			_syllableList[j]->setTimeStart( noteList[i]->timeStart() );
 			_syllableList[j]->setTimeLength( noteList[i]->timeLength() );
 		}
-		bool emptyOnly = true;
+		int firstEmpty = j;
 		for (; j<_syllableList.size() && j>0; j++) { // add syllables at the end, if too much of them exist
 			if ( !_syllableList[j]->text().isEmpty() )
-				emptyOnly = false;
+				firstEmpty = j+1;
 			
 			_syllableList[j]->setTimeStart(_syllableList[j-1]->timeStart()+_syllableList[j-1]->timeLength());
 			_syllableList[j]->setTimeLength( 256 );
 		}
-		if (emptyOnly) for (j=i; j<_syllableList.size() && j>0; j++) removeAt(j); // remove all the syllables after, if only empty exist
+		for (j=firstEmpty; j<_syllableList.size() && j>0; j++) removeAt(j); // remove empty "leftover" syllables from the end 
 		
-		for (; i<noteList.size(); i++) {             // add empty syllables at the end, if missing
-			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart())
+		for (; i<noteList.size(); i++) { // add empty syllables at the end, if missing
+			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart()) // chord
 				continue;
 			addEmptySyllable( noteList[i]->timeStart(), noteList[i]->timeLength() );
 		}

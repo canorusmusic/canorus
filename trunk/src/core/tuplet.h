@@ -10,13 +10,17 @@
 
 #include "core/muselement.h"
 
+class CAContext;
+class CAVoice;
+
 class CATuplet : public CAMusElement {
 public:
 	CATuplet( int number, int actualNumber, QList<CAPlayable*> noteList );
 	CATuplet( int number, int actualNumber );
 	virtual ~CATuplet();
 
-	CAMusElement* clone();
+	CATuplet* clone(CAContext* context=0);
+	CATuplet* clone(QList<CAPlayable*> newList);
 	int compare(CAMusElement*);
 
 	inline int number() { return _number; }

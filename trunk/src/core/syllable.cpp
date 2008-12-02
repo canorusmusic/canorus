@@ -45,12 +45,18 @@ void CASyllable::clear() {
 	setMelismaStart( false );
 }
 
-CAMusElement* CASyllable::clone() {
-	CASyllable *s = new CASyllable( text(), hyphenStart(), melismaStart(), lyricsContext(), timeStart(), timeLength(), associatedVoice() );
+/*!
+ * Clone the syllable using the given new context.
+ * If the given context is not a lyrics context, 0 is used instead. 
+ */
+CASyllable* CASyllable::clone(CAContext* context) {
+	CALyricsContext* newContext = 0;
+	if(context->contextType() == CAContext::LyricsContext)
+		newContext = static_cast<CALyricsContext*>(context);
+	CASyllable *s = new CASyllable( text(), hyphenStart(), melismaStart(), newContext, timeStart(), timeLength(), newContext?newContext->associatedVoice():0 );
 	
 	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone());
-		m->setAssociatedElement(s);
+		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(s));
 		s->addMark( m );
 	}
 	

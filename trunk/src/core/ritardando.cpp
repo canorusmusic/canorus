@@ -29,8 +29,8 @@ CARitardando::CARitardando( int finalTempo, CAPlayable *p, int timeLength, CARit
 CARitardando::~CARitardando() {
 }
 
-CAMusElement* CARitardando::clone() {
-	return new CARitardando( finalTempo(), static_cast<CAPlayable*>(associatedElement()), timeLength(), ritardandoType() );
+CARitardando* CARitardando::clone(CAMusElement* elt) {
+	return new CARitardando( finalTempo(), (elt->isPlayable())?static_cast<CAPlayable*>(elt):0, timeLength(), ritardandoType() );
 }
 
 int CARitardando::compare( CAMusElement *elt ) {

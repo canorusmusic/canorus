@@ -13,6 +13,7 @@
 #include "core/muselement.h"
 
 class CAStaff;
+class CAContext;
 
 class CATimeSignature : public CAMusElement {
 	public:
@@ -26,7 +27,7 @@ class CATimeSignature : public CAMusElement {
 		
 		CATimeSignature(int beats, int beat, CAStaff *staff, int startTime, CATimeSignatureType type = Classical);
 		
-		CATimeSignature *clone();
+		CATimeSignature *clone(CAContext* context=0);
 		~CATimeSignature();
 	
 		int beats() { return _beats; }

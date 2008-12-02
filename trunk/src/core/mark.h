@@ -10,6 +10,8 @@
 
 #include "core/muselement.h"
 
+class CAContext;
+
 class CAMark : public CAMusElement {
 public:
 	enum CAMarkType {
@@ -33,11 +35,12 @@ public:
 	CAMark( CAMarkType type, CAContext *context, int timeStart, int timeLength );
 	virtual ~CAMark();
 	
-	virtual CAMusElement *clone();
+	virtual CAMark *clone(CAContext* context) { CAMark* c = clone(); c->setContext(context); }
+	virtual CAMark *clone(CAMusElement* elt=0);
 	virtual int compare( CAMusElement* elt );
 	
 	inline CAMusElement *associatedElement() { return _associatedElt; }
-	inline void setAssociatedElement( CAMusElement* elt ) { _associatedElt = elt; }
+	inline void setAssociatedElement( CAMusElement* elt ) { _associatedElt = elt; if(elt) _context = elt->context(); }
 	
 	inline CAMarkType markType() { return _markType; }
 	inline void setMarkType( CAMarkType type ) { _markType = type; }

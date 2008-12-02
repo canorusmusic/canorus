@@ -37,7 +37,7 @@ public:
 	
 	// addedDegrees and alteredDegrees are generated from alterations parameter
 	CAFunctionMark(CAFunctionType function, bool minor, const CADiatonicKey key, CAFunctionMarkContext* context, int timeStart, int timeLength, CAFunctionType chordArea=Undefined, bool chordAreaMinor=false, CAFunctionType tonicDegree=T, bool tonicDegreeMinor=false, const QString alterations="", bool ellipseSequence=false);
-	CAFunctionMark* clone();
+	CAFunctionMark* clone(CAContext* context=0);
 	void clear(); // same as in CASyllable
 	~CAFunctionMark();
 	inline CAFunctionMarkContext *fmContext() { return static_cast<CAFunctionMarkContext*>(context()); }

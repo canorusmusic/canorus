@@ -24,8 +24,8 @@ CADynamic::CADynamic( QString text, int volume, CANote *note )
 CADynamic::~CADynamic() {
 }
 
-CAMusElement* CADynamic::clone() {
-	return new CADynamic( text(), volume(), static_cast<CANote*>(associatedElement()) );
+CADynamic* CADynamic::clone(CAMusElement *elt) {
+	return new CADynamic( text(), volume(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0 );
 }
 
 int CADynamic::compare( CAMusElement *elt ) {

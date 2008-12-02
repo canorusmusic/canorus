@@ -72,8 +72,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 				// check tie
 				if ( newElt->musElementType()==CAMusElement::Note &&
 				     static_cast<CANote*>(clonedElt)->tieStart() ) {
-					curTie[i] = static_cast<CANote*>(clonedElt)->tieStart()->clone();
-					curTie[i]->setContext( newStaff );
+					curTie[i] = static_cast<CANote*>(clonedElt)->tieStart()->clone(newStaff);
 					curTie[i]->setNoteStart( static_cast<CANote*>(newElt) );
 					static_cast<CANote*>(newElt)->setTieStart(curTie[i]);
 				}
@@ -87,8 +86,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 				// check slur
 				if ( newElt->musElementType()==CAMusElement::Note &&
 				     static_cast<CANote*>(clonedElt)->slurStart() ) {
-					curSlur[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurStart()->clone();
-					curSlur[i]->setContext( newStaff );
+					curSlur[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurStart()->clone(newStaff);
 					curSlur[i]->setNoteStart( static_cast<CANote*>(newElt) );
 					static_cast<CANote*>(newElt)->setSlurStart(curSlur[i]);
 				}
@@ -102,8 +100,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 				// check phrasing slur
 				if ( newElt->musElementType()==CAMusElement::Note &&
 				     static_cast<CANote*>(clonedElt)->phrasingSlurStart() ) {
-					curPhrasingSlur[i] = static_cast<CANote*>(clonedElt)->phrasingSlurStart()->clone();
-					curPhrasingSlur[i]->setContext( newStaff );
+					curPhrasingSlur[i] = static_cast<CANote*>(clonedElt)->phrasingSlurStart()->clone(newStaff);
 					curPhrasingSlur[i]->setNoteStart( static_cast<CANote*>(newElt) );
 					static_cast<CANote*>(newElt)->setPhrasingSlurStart(curPhrasingSlur[i]);
 				}
@@ -131,8 +128,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 
 		// append non-playable elements (shared by all voices - only create clone of the first voice element and append it to all)
 		if ( eltIdx[0]<voiceAt(0)->musElementCount() ) {
-			CAMusElement *newElt = voiceAt(0)->musElementAt(eltIdx[0])->clone();
-			newElt->setContext( newStaff );
+			CAMusElement *newElt = voiceAt(0)->musElementAt(eltIdx[0])->clone( newStaff );
 
 			for (int i=0; i<voiceCount(); i++) {
 				newStaff->voiceAt(i)->append( newElt );

@@ -26,8 +26,8 @@ CARepeatMark::CARepeatMark( CABarline *b, CARepeatMarkType t, int voltaNumber )
 CARepeatMark::~CARepeatMark() {
 }
 
-CAMusElement *CARepeatMark::clone() {
-	return new CARepeatMark( static_cast<CABarline*>(associatedElement()), repeatMarkType(), voltaNumber() );
+CARepeatMark *CARepeatMark::clone(CAMusElement* elt) {
+	return new CARepeatMark( (elt->musElementType()==CAMusElement::Barline)?static_cast<CABarline*>(elt):0, repeatMarkType(), voltaNumber() );
 }
 
 int CARepeatMark::compare( CAMusElement *elt ) {

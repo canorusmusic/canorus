@@ -46,7 +46,7 @@ public:
 	CAArticulation( CAArticulationType t, CANote *n );
 	virtual ~CAArticulation();
 	
-	CAMusElement* clone();		
+	CAArticulation *clone(CAMusElement* elt);
 	int compare(CAMusElement *elt);
 	
 	inline CANote *associatedNote() { return static_cast<CANote*>(associatedElement()); }
