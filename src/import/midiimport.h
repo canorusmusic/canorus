@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -31,51 +31,52 @@ class CAMidiImportEvent;
 class CAMidiImport : public CAImport {
 public:
 	// Constructor
-	CAMidiImport( CADocument *document, QTextStream *in=0 );
-	
+	CAMidiImport( QTextStream *in=0 );
+
 	// Destructor
 	virtual ~CAMidiImport();
 
 	// close midi in file after import
 	void closeFile();
-	
+
 	// where the real work is done
+	CADocument *importDocumentImpl();
 	CASheet *importSheetImpl();
 
 	const QString readableStatus();
-	
+
 private:
 	void initMidiImport();
-	
+
 	static const QRegExp WHITESPACE_DELIMITERS;
 	static const QRegExp SYNTAX_DELIMITERS;
 	static const QRegExp DELIMITERS;
-	
+
 	// Internal time signature
 	struct CATime {
 		int beats;
 		int beat;
 	};
-	
+
 	enum CALilyPondDepth {
 		Score,
 		Layout,
 		Voice,
 		Chord
 	};
-	
+
 	inline CAVoice *curVoice() { return _curVoice; }
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }
-	
+
 	const QString parseNextElement();
 	const QString peekNextElement();
 	void addError(QString description, int lineError = 0, int charError = 0);
-	
+
 	//////////////////////
 	// Helper functions //
 	//////////////////////
 	CAPlayableLength playableLengthFromLilyPond( QString &playableElt, bool parse=false );
-	
+
 	bool isNote(const QString elt);
 	CADiatonicPitch relativePitchFromLilyPond(QString &note, CADiatonicPitch prevPitch, bool parse=false);
 	bool isRest(const QString elt);
@@ -85,9 +86,9 @@ private:
 	CABarline::CABarlineType barlineTypeFromLilyPond(const QString bar);
 	CADiatonicKey::CAGender diatonicKeyGenderFromLilyPond(QString gender);
 	CATime timeSigFromLilyPond(QString time);
-		
+
 	CAMusElement* findSharedElement(CAMusElement *elt);
-	
+
 	///////////////////////////
 	// Getter/Setter methods //
 	///////////////////////////
@@ -97,7 +98,7 @@ private:
 	inline CALilyPondDepth popDepth() { return _depth.pop(); }
 	inline int curLine() { return _curLine; }
 	inline int curChar() { return _curChar; }
-	
+
 	// Attributes
 	CAVoice *_curVoice;
 	CASlur *_curSlur;
@@ -106,7 +107,7 @@ private:
 	int _curLine, _curChar;
 	QList<QString> _errors;
 	QList<QString> _warnings;
-	
+
 	//inline CAVoice *templateVoice() { return _templateVoice; }
 	//CAVoice *_templateVoice; // used when importing voice to set the staff etc.
 
