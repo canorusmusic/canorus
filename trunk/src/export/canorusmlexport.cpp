@@ -51,10 +51,8 @@ CACanorusMLExport::~CACanorusMLExport() {
 }
 
 /*!
-	Saves the document.
+	Saves the document to CanorusML XML format.
 	It uses DOM object internally for writing the XML output.
-
-	\sa openDocument()
 */
 void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 	int depth = 0;

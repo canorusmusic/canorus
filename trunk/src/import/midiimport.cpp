@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -48,7 +48,7 @@ CAMidiImportEvent::~CAMidiImportEvent() {
 
 /*!
 	Delimiters which separate various music elements in LilyPond syntax. These are new lines, tabs, blanks etc.
-	
+
 	\sa nextElement(), parseNextElement()
 */
 const QRegExp CAMidiImport::WHITESPACE_DELIMITERS = QRegExp("[\\s]");
@@ -56,10 +56,10 @@ const QRegExp CAMidiImport::WHITESPACE_DELIMITERS = QRegExp("[\\s]");
 /*!
 	Delimiters which separate various music elements in LilyPond syntax, but are specific for LilyPond syntax.
 	They are reported as its own element when parsing the next element.
-	
+
 	\sa nextElement(), parseNextElement()
-*/ 
-const QRegExp CAMidiImport::SYNTAX_DELIMITERS = QRegExp("[<>{}]"); 
+*/
+const QRegExp CAMidiImport::SYNTAX_DELIMITERS = QRegExp("[<>{}]");
 
 /*!
 	Combined WHITESPACE_DELIMITERS and SYNTAX_DELIMITERS.
@@ -71,11 +71,10 @@ const QRegExp CAMidiImport::DELIMITERS =
 	);
 
 
-CAMidiImport::CAMidiImport( CADocument *document, QTextStream *in )
+CAMidiImport::CAMidiImport( QTextStream *in )
  : CAImport(in) {
-	initMidiImport();	
+	initMidiImport();
 	std::cout<<"          FIXME: jetzt in midiimport!"<<std::endl;
-	_document = document;
 	for (int i=0;i<16; i++) {
 		_allChannelsEvents << new QList<QList<CAMidiImportEvent*>*>;
 		_allChannelsEvents[i]->append( new QList<CAMidiImportEvent*> );
@@ -99,9 +98,19 @@ void CAMidiImport::addError(QString description, int curLine, int curChar) {
 	           + description + "<br>";
 }
 
+CADocument *CAMidiImport::importDocumentImpl() {
+	_document = new CADocument();
+	CASheet *s = importSheetImpl();
+	_document->addSheet(s);
+
+	return _document;
+}
+
 CASheet *CAMidiImport::importSheetImpl() {
+	CASheet *sheet = new CASheet(tr("Midi imported sheet"), _document );
+
 	QString alles;
-	(*stream()).setCodec("Latin-1");	// Binary files like midi files need all codecs to be switched off. This does it!?!?
+	stream()->setCodec("Latin-1");	// Binary files like midi files need all codecs to be switched off. This does it!?!?
 	alles = stream()->readAll();
 	std::cout<<"              FIXME: did a sheet export. In-File ist leer: "<<alles.size()<<std::endl;
 	QByteArray peek;
@@ -130,7 +139,7 @@ CASheet *CAMidiImport::importSheetImpl() {
 	_parseError = false;
 
 	while (_dataIndex<peek.size() && !_parseError) {
-		
+
 		head.clear();
 		head = getHead( &peek );
 		std::cout<<"Head read"<<std::endl;
@@ -166,7 +175,7 @@ CASheet *CAMidiImport::importSheetImpl() {
 				deltaTime = getVariableLength( &peek );
 				time += deltaTime;
 				event = getByte( &peek );
-	
+
 				switch (event) {
 
 				case CAMidiDevice::Midi_Ctl_Event:
@@ -187,7 +196,7 @@ CASheet *CAMidiImport::importSheetImpl() {
 						_microSecondsPerMidiQuarternote = getWord24( &peek );
 						std::cout<<"    Tempo: "<<_microSecondsPerMidiQuarternote<<" usec per midi quarter"<<std::endl;
 						break;
-						
+
 					case CAMidiDevice::Meta_InstrName:	// FIXME
 					case CAMidiDevice::Meta_SeqTrkName: // 3
 						length = getVariableLength( &peek );
@@ -240,14 +249,14 @@ CASheet *CAMidiImport::importSheetImpl() {
 
 					switch (combinedEvent) {
 					case CAMidiDevice::Midi_Note_On:
-						pitch = getByte( &peek );	
+						pitch = getByte( &peek );
 						velocity = getByte( &peek );
 						//std::cout<<"     note on "<<hex<<pitch<<" "<<hex<<velocity<<" at "<<time<<" ms"<<std::endl;
 						printf("     note on %x %x at %d ms    kanal %d\n", pitch, velocity, time, midiChannel );
 						noteOn( true, midiChannel, pitch, velocity, time );
 						break;
 					case CAMidiDevice::Midi_Note_Off:
-						pitch = getByte( &peek );	
+						pitch = getByte( &peek );
 						velocity = getByte( &peek );
 						std::cout<<"     note off "<<pitch<<" "<<velocity<<" ch "<<midiChannel<<std::endl;
 						noteOn( false, midiChannel, pitch, velocity, time );
@@ -261,13 +270,13 @@ CASheet *CAMidiImport::importSheetImpl() {
 						controlValue = getByte( &peek );
 						std::cout<<"     control change "<<control<<" val "<<controlValue<<std::endl;
 						break;
-					case CAMidiDevice::Midi_Ctl_Sustain:	// where in midi spec? 
+					case CAMidiDevice::Midi_Ctl_Sustain:	// where in midi spec?
 						control = getByte( &peek );
 						controlValue = getByte( &peek );
 						std::cout<<"     control change "<<control<<" val "<<controlValue<<std::endl;
 						_parseError = true;
 						break;
-											
+
 					//case CAMidiDevice::MIDI_CTL_REVERB:  ;
 					//case CAMidiDevice::MIDI_CTL_CHORUS:  ;
 					//case CAMidiDevice::MIDI_CTL_PAN:  ;
@@ -297,7 +306,6 @@ CASheet *CAMidiImport::importSheetImpl() {
 	quantizeMidiFileEvents();
 	exportNonChordsToOtherVoices();
 
-	CASheet *sheet = _document->sheetList().first();
 	writeMidiFileEventsToScore( sheet );
 	std::cout<<"------------------------------"<<std::endl;
 /*
@@ -346,7 +354,7 @@ void CAMidiImport::writeMidiFileEventsToScore( CASheet *sheet ) {
 			voice = new CAVoice( "", staff, CANote::StemNeutral, 1 );
 			staff->addVoice( voice );
 		}
-		
+
 		setCurVoice(voice);
 		writeMidiChannelEventsToVoice( ch, staff, voice );
 
@@ -372,7 +380,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice( int channel, CAStaff *staff, C
 //std::cout<<"Schleife 1 "<<i<<std::endl;
 			length = events->at(i)->_time - time;
 			if ( length > 0 ) {
-				timeLayout.clear();	
+				timeLayout.clear();
 				timeLayout << dummy.timeLengthToPlayableLengthList( length );
 				for (int j=0; j<timeLayout.size();j++) {
 					rest = new CARest( CARest::Normal, timeLayout[j], voice, 0, -1 );
@@ -381,7 +389,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice( int channel, CAStaff *staff, C
 				time = events->at(i)->_time;
 			}
 			length = events->at(i)->_length;
-			timeLayout.clear();	
+			timeLayout.clear();
 			timeLayout << dummy.timeLengthToPlayableLengthList( length );
 			previousNote = 0;
 			for (int j=0; j<timeLayout.size();j++) {
@@ -413,13 +421,13 @@ void CAMidiImport::combineMidiFileEvents() {
 	for (int ch=0;ch<_allChannelsEvents.size();ch++) {
 
 		QList<CAMidiImportEvent*> *events = _allChannelsEvents[ch]->first();
-		
+
 		for (int i=0;i<events->size();i++) {
 			if (events->at(i)->_on && events->at(i)->_velocity > 0 && events->at(i)->_pitch > 0) {
 				int j = i+1;
 				int pitch = events->at(i)->_pitch;
 				while ( j < events->size() ) {
-					
+
 					if (events->at(j)->_pitch == pitch &&
 							(!events->at(j)->_on || events->at(j)->_velocity == 0)) {
 						events->at(i)->_length = events->at(j)->_time - events->at(i)->_time;
@@ -453,7 +461,7 @@ void CAMidiImport::quantizeMidiFileEvents() {
 		QList<CAMidiImportEvent*> *events = _allChannelsEvents[ch]->first();
 
 		int nLostNotes = 0;
-		
+
 		int prevTimeCorrection = 0;		// not yet in use
 		int prevLengthCorrection = 0;
 
@@ -539,8 +547,8 @@ void CAMidiImport::noteOn( bool on, int channel, int pitch, int velocity, int ti
 
 /*!
 	Returns the first element in input stream ended with one of the delimiters and shorten input stream for the element.
-	
-	\todo Only one-character syntax delimiters are supported so far. 
+
+	\todo Only one-character syntax delimiters are supported so far.
 	\sa peekNextElement()
 */
 const QString CAMidiImport::parseNextElement() {
@@ -548,11 +556,11 @@ const QString CAMidiImport::parseNextElement() {
 	int start = in().indexOf(QRegExp("\\S"));
 	if (start==-1)
 		start = 0;
-	
+
 	int i = in().indexOf(DELIMITERS, start);
 	if (i==-1)
 		i=in().size();
-	
+
 	QString ret;
 	if (i==start) {
 		// syntax delimiter only
@@ -563,13 +571,13 @@ const QString CAMidiImport::parseNextElement() {
 		ret = in().mid(start, i-start);
 		in().remove(0, i);
 	}
-	
+
 	return ret;
 }
 
 /*!
 	Returns the first element in input stream ended with one of the delimiters but don't shorten the stream.
-	
+
 	\sa parseNextElement()
 */
 const QString CAMidiImport::peekNextElement() {
@@ -577,11 +585,11 @@ const QString CAMidiImport::peekNextElement() {
 	int start = in().indexOf(QRegExp("\\S"));
 	if (start==-1)
 		start = 0;
-	
+
 	int i = in().indexOf(DELIMITERS, start);
 	if (i==-1)
 		i=in().size();
-	
+
 	QString ret;
 	if (i==start) {
 		// syntax delimiter only
@@ -590,42 +598,42 @@ const QString CAMidiImport::peekNextElement() {
 		// ordinary whitespace/syntax delimiter
 		ret = in().mid(start, i-start);
 	}
-	
+
 	return ret;
 }
 
 /*!
 	Gathers a list of music elements with the given element's start time and returns the first music element in the
 	gathered list with the same attributes.
-	
+
 	This method is usually called when voices have "shared" music elements (barlines, clefs etc.). However, in LilyPond
 	syntax the music element can/should be present in all the voices. This function finds this shared music element, if
 	it already exists.
-	
+
 	If the music element with the same properties exists, user should delete its own instance and add an already
 	existing instance of the returned shared music element to the voice.
-	
+
 	\sa CAMusElement::compare()
 */
 CAMusElement* CAMidiImport::findSharedElement(CAMusElement *elt) {
 	if ( !curVoice() || !curVoice()->staff() )
 		return 0;
-	
+
 	// gather a list of all the music elements of that type in the staff at that time
 	QList<CAMusElement*> foundElts = curVoice()->staff()->getEltByType( elt->musElementType(), elt->timeStart() );
-	
+
 	// compare gathered music elements properties
 	for (int i=0; i<foundElts.size(); i++)
 		if (!foundElts[i]->compare(elt))             // element has exactly the same properties
 			if (!curVoice()->contains(foundElts[i])) // element isn't present in the voice yet
 				return foundElts[i];
-	
+
 	return 0;
 }
 
 /*!
 	Returns true, if the given LilyPond element is a note.
-	
+
 	\sa isRest()
 */
 bool CAMidiImport::isNote(const QString elt) {
@@ -634,7 +642,7 @@ bool CAMidiImport::isNote(const QString elt) {
 
 /*!
 	Returns true, if the given LilyPond element is a rest.
-	
+
 	\sa isNote()
 */
 bool CAMidiImport::isRest(const QString elt) {
@@ -643,21 +651,21 @@ bool CAMidiImport::isRest(const QString elt) {
 
 /*!
 	Generates the note pitch and number of accidentals from the note written in LilyPond syntax.
-	
+
 	\sa playableLengthFromLilyPond()
 */
 CADiatonicPitch CAMidiImport::relativePitchFromLilyPond(QString& constNName, CADiatonicPitch prevPitch, bool parse) {
 	QString noteName = constNName;
-	
+
 	// determine pitch
 	int curPitch = noteName[0].toLatin1() - 'a' + 5	// determine the 0-6 pitch from note name
-	               - (prevPitch.noteName() % 7);	
+	               - (prevPitch.noteName() % 7);
 	while (curPitch<-3)	//normalize pitch - the max +/- interval is fourth
 		curPitch+=7;
 	while (curPitch>3)
 		curPitch-=7;
 	curPitch += prevPitch.noteName();
-	
+
 	// determine accidentals
 	signed char curAccs = 0;
 	while (noteName.indexOf("is") != -1) {
@@ -674,7 +682,7 @@ CADiatonicPitch CAMidiImport::relativePitchFromLilyPond(QString& constNName, CAD
 	}
 	if (!curAccs && parse)
 		constNName.remove(0, 1);
-	
+
 	// add octave up/down
 	for (int i=0; i<noteName.size(); i++) {
 		if (noteName[i]=='\'') {
@@ -687,7 +695,7 @@ CADiatonicPitch CAMidiImport::relativePitchFromLilyPond(QString& constNName, CAD
 				constNName.remove(0,1);
 		}
 	}
-	
+
 	return CADiatonicPitch( curPitch, curAccs );
 }
 
@@ -695,12 +703,12 @@ CADiatonicPitch CAMidiImport::relativePitchFromLilyPond(QString& constNName, CAD
 	Generates playable lentgth and number of dots from the note/rest string in LilyPond syntax.
 	If the playable element doesn't include length, { CAPlayable::CAPlayableLength::Undefined, 0 } is returned.
 	This function also shortens the given string for the playable length, if \a parse is True.
-	
+
 	\sa relativePitchFromString()
 */
 CAPlayableLength CAMidiImport::playableLengthFromLilyPond(QString& elt, bool parse) {
 	CAPlayableLength ret;
-	
+
 	// index of the first number
 	int start = elt.indexOf(QRegExp("[\\d]"));
 	if (start == -1)  // no length written
@@ -712,17 +720,17 @@ CAPlayableLength CAMidiImport::playableLengthFromLilyPond(QString& elt, bool par
 		for (int i = dStart = elt.indexOf(".",start);
 		     i!=-1 && i<elt.size() && elt[i]=='.';
 		     i++, ret.setDotted( ret.dotted()+1 ));
-		
+
 		if (dStart == -1)
 			dStart = elt.indexOf(QRegExp("[\\D]"), start);
 		if (dStart == -1)
 			dStart = elt.size();
-		
+
 		ret.setMusicLength( static_cast<CAPlayableLength::CAMusicLength>(elt.mid(start, dStart-start).toInt()) );
 		if (parse)
 			elt.remove(start, dStart-start+ret.dotted());
 	}
-	
+
 	return ret;
 }
 
@@ -732,15 +740,15 @@ CAPlayableLength CAMidiImport::playableLengthFromLilyPond(QString& elt, bool par
 */
 CARest::CARestType CAMidiImport::restTypeFromLilyPond( QString& elt, bool parse ) {
 	CARest::CARestType t = CARest::Normal;
-	
+
 	if (elt[0]=='r' || elt[0]=='R')
 		t = CARest::Normal;
 	else
 		t = CARest::Hidden;
-	
+
 	if (parse)
 		elt.remove( 0, 1 );
-	
+
 	return t;
 }
 
@@ -751,7 +759,7 @@ CAClef::CAPredefinedClefType CAMidiImport::predefinedClefTypeFromLilyPond( const
 	// remove any quotes/double quotes
 	QString clef(constClef);
 	clef.remove(QRegExp("[\"']"));
-	
+
 	if ( clef.contains("treble") || clef.contains("violin") || clef.contains("G") ) return CAClef::Treble;
 	if ( clef.contains("french") ) return CAClef::French;
 	if ( clef.contains("bass") || clef.contains("F") ) return CAClef::Bass;
@@ -764,7 +772,7 @@ CAClef::CAPredefinedClefType CAMidiImport::predefinedClefTypeFromLilyPond( const
 	if ( clef.contains("baritone") ) return CAClef::Baritone;
 	if ( clef=="percussion" ) return CAClef::Percussion;
 	if ( clef=="tab" ) return CAClef::Tablature;
-	
+
 	return CAClef::Treble;
 }
 
@@ -775,10 +783,10 @@ int CAMidiImport::clefOffsetFromLilyPond( const QString constClef ) {
 	// remove any quotes/double quotes
 	QString clef(constClef);
 	clef.remove(QRegExp("[\"']"));
-	
+
 	if ( !clef.contains("_") && !clef.contains("^") )
 		return 0;
-	
+
 	int m;
 	int idx = clef.indexOf("^");
 	if (idx==-1) {
@@ -786,7 +794,7 @@ int CAMidiImport::clefOffsetFromLilyPond( const QString constClef ) {
 		m=-1;
 	} else
 		m=1;
-	
+
 	return clef.right( clef.size()-(idx+1) ).toInt()*m;
 }
 
@@ -805,10 +813,10 @@ CADiatonicKey::CAGender CAMidiImport::diatonicKeyGenderFromLilyPond(QString gend
 */
 CAMidiImport::CATime CAMidiImport::timeSigFromLilyPond(QString timeSig) {
 	int beats=0, beat=0;
-	
+
 	beats = timeSig.mid(0, timeSig.indexOf("/")).toInt();
 	beat = timeSig.mid(timeSig.indexOf("/")+1).toInt();
-	
+
 	CATime time = { beats, beat };
 	return time;
 }
@@ -820,7 +828,7 @@ CABarline::CABarlineType CAMidiImport::barlineTypeFromLilyPond(QString constBarl
 	// remove any quotes/double quotes
 	QString barline(constBarline);
 	barline.remove(QRegExp("[\"']"));
-	
+
 	if (barline=="|") return CABarline::Single; else
 	if (barline=="||") return CABarline::Double; else
 	if (barline=="|.") return CABarline::End; else
