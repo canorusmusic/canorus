@@ -1736,8 +1736,10 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords) {
 	\sa CAScoreViewPort::selectAllCurBar()
  */
 void CAMainWin::scoreViewPortDoubleClick( QMouseEvent *e, const QPoint coords ) {
-	static_cast<CAScoreViewPort*>(sender())->selectAllCurBar();
-	static_cast<CAScoreViewPort*>(sender())->repaint();
+	if (mode() == SelectMode) {
+		static_cast<CAScoreViewPort*>(sender())->selectAllCurBar();
+		static_cast<CAScoreViewPort*>(sender())->repaint();
+	}
 }
 
 /*!
@@ -1747,8 +1749,10 @@ void CAMainWin::scoreViewPortDoubleClick( QMouseEvent *e, const QPoint coords ) 
 	\sa CAScoreViewPort::selectAllCurContext()
  */
 void CAMainWin::scoreViewPortTripleClick( QMouseEvent *e, const QPoint coords ) {
-	static_cast<CAScoreViewPort*>(sender())->selectAllCurContext();
-	static_cast<CAScoreViewPort*>(sender())->repaint();
+	if (mode() == SelectMode) {
+		static_cast<CAScoreViewPort*>(sender())->selectAllCurContext();
+		static_cast<CAScoreViewPort*>(sender())->repaint();
+	}
 }
 
 /*!
