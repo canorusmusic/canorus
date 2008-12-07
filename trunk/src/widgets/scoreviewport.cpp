@@ -501,6 +501,10 @@ CAContext *CAScoreViewPort::contextCollision(int x, int y) {
 	}
 }
 
+/*!
+	Calls the engraver to reposition the music elements on the canvas.
+	Also updates scrollbars.
+ */
 void CAScoreViewPort::rebuild() {
 	// clear the shadow notes
 	CAPlayableLength l( CAPlayableLength::Quarter );
@@ -537,6 +541,7 @@ void CAScoreViewPort::rebuild() {
 
 	addToSelection(musElementSelection);
 
+	setWorldCoords( worldCoords() ); // needed to update the scrollbars
 	checkScrollBars();
 	updateHelpers();
 }
