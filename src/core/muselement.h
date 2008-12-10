@@ -10,6 +10,7 @@
 
 #include <QString>
 #include <QList>
+#include <QColor>
 
 class CAContext;
 class CAMusElement;
@@ -53,6 +54,12 @@ public:
 	inline const QString name() { return _name; }
 	inline void setName(const QString name) { _name = name; }
 
+	inline const bool isVisible() { return _visible; }
+	inline void setVisible( const bool v ) { _visible = v; }
+
+	inline const QColor color() { return _color; }
+	inline void setColor( const QColor c ) { _color = c; }
+
 	inline const QList<CAMark*> markList() { return _markList; }
 	void addMark( CAMark *mark );
 	void addMarks( QList<CAMark*> marks );
@@ -71,6 +78,8 @@ protected:
 	CAContext *_context;
 	int _timeStart;
 	int _timeLength;
+	bool _visible;
+	QColor _color;
 	QString _name;
 };
 #endif /* MUSELEMENT_H_ */
