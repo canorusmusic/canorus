@@ -41,6 +41,25 @@
 	$1 = QString::fromUtf8(PyString_AsString($input));
 }
 
+// convert returned QColor value to Python's tuple of RGBA integers
+%typemap(out) const QColor {
+	PyObject *tuple = PyTuple_New(4);
+	PyTuple_SetItem( tuple, 0, PyInt_FromLong($1.red()) );
+	PyTuple_SetItem( tuple, 1, PyInt_FromLong($1.green()) );
+	PyTuple_SetItem( tuple, 2, PyInt_FromLong($1.blue()) );
+	PyTuple_SetItem( tuple, 3, PyInt_FromLong($1.alpha()) );
+	$result = tuple;
+}
+
+// convert Python's tuple of RGBA integers to QColor
+%typemap(in) const QColor {
+	$1 = QColor( PyInt_AsLong( PyTuple_GetItem( $input, 0 ) ),
+	             PyInt_AsLong( PyTuple_GetItem( $input, 1 ) ),
+	             PyInt_AsLong( PyTuple_GetItem( $input, 2 ) ),
+	             (PyTuple_Size($input)>3)?PyInt_AsLong( PyTuple_GetItem( $input, 3 ) ):255
+	           );
+}
+
 // convert returned QList value to Python's list
 // I found no generic way of doing this yet... -Matevz
 %typemap(out) const QList<CANote*>, QList<CANote*> {

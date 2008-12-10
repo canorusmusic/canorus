@@ -921,11 +921,14 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 			   ) {
 			   	color = hiddenElementsColor();
 			} else if ( elt && elt->musElementType()==CAMusElement::Rest &&
-			            static_cast<CARest*>(elt)->restType()==CARest::Hidden
+			            static_cast<CARest*>(elt)->restType()==CARest::Hidden ||
+			            elt && !elt->isVisible()
 			          ) {
 			   	color = QColor(0,0,0,0); // transparent color
+			} else if ( elt && elt->color()!=QColor(0,0,0,0) ) {
+				color = elt->color(); // set elements color, if defined
 			} else {
-				color = foregroundColor();
+				color = foregroundColor(); // set default color for foreground elements
 			}
 		} else {
 			if ( elt && elt->musElementType()==CAMusElement::Rest &&
