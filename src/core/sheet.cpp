@@ -73,28 +73,16 @@ CASheet *CASheet::clone( CADocument *doc ) {
 
 void CASheet::addContext(CAContext *c) {
 	_contextList.append(c);
-	if (c->contextType() == CAContext::Staff)
-		_staffList.append((CAStaff*)c);
 }
 
 void CASheet::insertContextAfter(CAContext *after, CAContext *c) {
 	int idx = _contextList.indexOf(after);
 	_contextList.insert(idx+1, c);
-	if (c->contextType() == CAContext::Staff) {
-		for (; idx>0 && _contextList[idx]->contextType()!=CAContext::Staff; idx--);
-		if (idx>=0) {
-			idx = _staffList.indexOf(static_cast<CAStaff*>(_contextList[idx]));
-			_staffList.insert(idx+1, static_cast<CAStaff*>(c));
-		} else {
-			_staffList.prepend(static_cast<CAStaff*>(c));
-		}
-	}
 }
 
-CAStaff *CASheet::addStaff() {
+CAStaff *CASheet::addEmptyStaff() {
 	CAStaff *s = new CAStaff( QObject::tr("Staff%1").arg(staffCount()+1), this );
 	_contextList.append(s);
-	_staffList.append(s);
 
 	return s;
 }
@@ -127,7 +115,7 @@ CAContext *CASheet::context(const QString name) {
 QList<CAPlayable*> CASheet::getChord(int time) {
 	QList<CAPlayable*> chordList;
 	for (int i=staffCount()-1; i>=0; i--) {
-		chordList << _staffList[i]->getChord(time);
+		chordList << staffAt(i)->getChord(time);
 	}
 
 	return chordList;
@@ -142,6 +130,44 @@ QList<CAVoice*> CASheet::voiceList() {
 		list << staffAt(i)->voiceList();
 
 	return list;
+}
+
+int CASheet::staffCount() {
+	int sum=0;
+	for (int i=0; i<_contextList.size(); i++) {
+		if ( _contextList[i]->contextType()==CAContext::Staff ) {
+			sum++;
+		}
+	}
+
+	return sum;
+}
+
+CAStaff *CASheet::staffAt(int idx) {
+	int sum=0;
+	for (int i=0; i<_contextList.size() && sum<idx; i++) {
+		if ( _contextList[i]->contextType()==CAContext::Staff ) {
+			sum++;
+		}
+	}
+
+	if (sum==idx && sum < _contextList.size()) {
+		return static_cast<CAStaff*>(_contextList[sum]);
+	} else {
+		return 0;
+	}
+}
+
+QList<CAStaff*> CASheet::staffList() {
+	QList<CAStaff*> staffList;
+
+	for (int i=0; i<_contextList.size(); i++) {
+		if ( _contextList[i]->contextType()==CAContext::Staff ) {
+			staffList << static_cast<CAStaff*>(_contextList[i]);
+		}
+	}
+
+	return staffList;
 }
 
 /*!
@@ -164,14 +190,4 @@ QList<CAVoice*> CASheet::voiceList() {
 	marks etc.).
 
 	\sa context(), contextAt(), contextCount(), _staffList
-*/
-
-/*!
-	\var CASheet::_staffList
-	List of all the staffs in the sheet. Staff lookups are usually much more often than
-	other contexts.
-
-	All the staffs are contexts and are part of _contextList as well!
-
-	\sa addStaff(), staffCount(), staffAt(), _contextList
 */

@@ -27,19 +27,6 @@
 #include "export/svgexport.h"
 %}
 
-class CAAbsExport {
-	CADocument      *exportedDocument() = 0;
-	CASheet         *exportedSheet()  = 0;
-	CAStaff         *exportedStaff()  = 0;
-	CAVoice         *exportedVoice()  = 0;
-	CALyricsContext *exportedLyricsContext()  = 0;
-	CAFunctionMarkContext *exportedFunctionMarkContext() = 0;
-
-	// CAFile reimplemented for virtual table
-	void setStreamToFile( const QString filename ) = 0;
-	bool wait ( unsigned long time = ULONG_MAX ) = 0;
-};
-
 %include "core/settings.h"
 %include "core/typesetter.h"
 

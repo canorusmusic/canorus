@@ -8,6 +8,7 @@
 #include <QString>
 #include <QDomDocument>
 #include <QTextStream>
+#include <QVariant>
 
 #include "export/canorusmlexport.h"
 
@@ -193,6 +194,7 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 	QDomDocument dDoc = dVoice.ownerDocument();
 	for (int i=0; i<voice->musElementCount(); i++) {
 		CAMusElement *curElt = voice->musElementAt(i);
+		QDomElement dElt;
 		switch (curElt->musElementType()) {
 			case CAMusElement::Note: {
 				CANote *note = static_cast<CANote*>(curElt);
@@ -204,49 +206,45 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 					dVoice.appendChild( _dTuplet );
 				}
 
-				QDomElement dNote = dDoc.createElement("note");
+				dElt = dDoc.createElement("note");
 				if ( note->tuplet() ) {
-					_dTuplet.appendChild( dNote );
+					_dTuplet.appendChild( dElt );
 				} else {
-					dVoice.appendChild(dNote);
+					dVoice.appendChild(dElt);
 				}
 
 				if (note->stemDirection()!=CANote::StemPreferred)
-					dNote.setAttribute("stem-direction", CANote::stemDirectionToString(note->stemDirection()));
-				dNote.setAttribute("time-start", note->timeStart());
-				dNote.setAttribute("time-length", note->timeLength());
+					dElt.setAttribute("stem-direction", CANote::stemDirectionToString(note->stemDirection()));
 
-				exportPlayableLength( note->playableLength(), dNote );
-				exportDiatonicPitch( note->diatonicPitch(), dNote );
+				exportPlayableLength( note->playableLength(), dElt );
+				exportDiatonicPitch( note->diatonicPitch(), dElt );
 
 				if ( note->tieStart() ) {
-					QDomElement dTie = dDoc.createElement("tie"); dNote.appendChild( dTie );
+					QDomElement dTie = dDoc.createElement("tie"); dElt.appendChild( dTie );
 					dTie.setAttribute("slur-style", CASlur::slurStyleToString( note->tieStart()->slurStyle() ));
 					dTie.setAttribute("slur-direction", CASlur::slurDirectionToString( note->tieStart()->slurDirection() ));
 				}
 				if ( note->slurStart() ) {
-					QDomElement dSlur = dDoc.createElement("slur-start"); dNote.appendChild( dSlur );
+					QDomElement dSlur = dDoc.createElement("slur-start"); dElt.appendChild( dSlur );
 					dSlur.setAttribute("slur-style", CASlur::slurStyleToString( note->slurStart()->slurStyle() ));
 					dSlur.setAttribute("slur-direction", CASlur::slurDirectionToString( note->slurStart()->slurDirection() ));
 				}
 				if ( note->slurEnd() ) {
-					QDomElement dSlur = dDoc.createElement("slur-end"); dNote.appendChild( dSlur );
+					QDomElement dSlur = dDoc.createElement("slur-end"); dElt.appendChild( dSlur );
 				}
 				if ( note->phrasingSlurStart() ) {
-					QDomElement dPhrasingSlur = dDoc.createElement("phrasing-slur-start"); dNote.appendChild( dPhrasingSlur );
+					QDomElement dPhrasingSlur = dDoc.createElement("phrasing-slur-start"); dElt.appendChild( dPhrasingSlur );
 					dPhrasingSlur.setAttribute("slur-style", CASlur::slurStyleToString( note->phrasingSlurStart()->slurStyle() ));
 					dPhrasingSlur.setAttribute("slur-direction", CASlur::slurDirectionToString( note->phrasingSlurStart()->slurDirection() ));
 				}
 				if ( note->phrasingSlurEnd() ) {
-					QDomElement dPhrasingSlur = dDoc.createElement("phrasing-slur-end"); dNote.appendChild( dPhrasingSlur );
+					QDomElement dPhrasingSlur = dDoc.createElement("phrasing-slur-end"); dElt.appendChild( dPhrasingSlur );
 				}
-
-				exportMarks( curElt, dNote );
 
 				break;
 			}
 			case CAMusElement::Rest: {
-				CARest *rest = (CARest*)curElt;
+				CARest *rest = static_cast<CARest*>(curElt);
 
 				if ( rest->isFirstInTuplet() ) {
 					_dTuplet = dDoc.createElement("tuplet");
@@ -255,76 +253,66 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 					dVoice.appendChild( _dTuplet );
 				}
 
-				QDomElement dRest = dDoc.createElement("rest");
+				dElt = dDoc.createElement("rest");
 				if ( rest->tuplet() ) {
-					_dTuplet.appendChild( dRest );
+					_dTuplet.appendChild( dElt );
 				} else {
-					dVoice.appendChild(dRest);
+					dVoice.appendChild(dElt);
 				}
 
-				dRest.setAttribute("rest-type", CARest::restTypeToString(rest->restType()));
-				dRest.setAttribute("time-start", rest->timeStart());
-				dRest.setAttribute("time-length", rest->timeLength());
+				dElt.setAttribute("rest-type", CARest::restTypeToString(rest->restType()));
 
-				exportPlayableLength( rest->playableLength(), dRest );
-				exportMarks( curElt, dRest );
+				exportPlayableLength( rest->playableLength(), dElt );
 
 				break;
 			}
 			case CAMusElement::Clef: {
-				CAClef *clef = (CAClef*)curElt;
-				QDomElement dClef = dDoc.createElement("clef"); dVoice.appendChild(dClef);
-				dClef.setAttribute("clef-type", CAClef::clefTypeToString(clef->clefType()));
-				dClef.setAttribute("c1", clef->c1());
-				dClef.setAttribute("time-start", clef->timeStart());
-				dClef.setAttribute("offset", clef->offset());
-
-				exportMarks( curElt, dClef );
+				CAClef *clef = static_cast<CAClef*>(curElt);
+				dElt = dDoc.createElement("clef"); dVoice.appendChild(dElt);
+				dElt.setAttribute("clef-type", CAClef::clefTypeToString(clef->clefType()));
+				dElt.setAttribute("c1", clef->c1());
+				dElt.setAttribute("offset", clef->offset());
 
 				break;
 			}
 			case CAMusElement::KeySignature: {
-				CAKeySignature *key = (CAKeySignature*)curElt;
-				QDomElement dKey = dDoc.createElement("key-signature"); dVoice.appendChild(dKey);
-				dKey.setAttribute("key-signature-type", CAKeySignature::keySignatureTypeToString(key->keySignatureType()));
+				CAKeySignature *key = static_cast<CAKeySignature*>(curElt);
+				dElt = dDoc.createElement("key-signature"); dVoice.appendChild(dElt);
+				dElt.setAttribute("key-signature-type", CAKeySignature::keySignatureTypeToString(key->keySignatureType()));
 
 				if ( key->keySignatureType()==CAKeySignature::MajorMinor ) {
-					exportDiatonicKey( key->diatonicKey(), dKey );
+					exportDiatonicKey( key->diatonicKey(), dElt );
 				} else
 				if (key->keySignatureType()==CAKeySignature::Modus) {
-					dKey.setAttribute("modus", CAKeySignature::modusToString(key->modus()));
+					dElt.setAttribute("modus", CAKeySignature::modusToString(key->modus()));
 				}
-				//! \todo Custom accidentals in key signature saving -Matevz	exportDiatonicPitch( key->diatonicKey().diatonicPitch(), dKey );
-
-				dKey.setAttribute("time-start", key->timeStart());
-
-				exportMarks( curElt, dKey );
+				//! \todo Custom accidentals in key signature saving -Matevz
+				// exportDiatonicPitch( key->diatonicKey().diatonicPitch(), dKey );
 
 				break;
 			}
 			case CAMusElement::TimeSignature: {
-				CATimeSignature *time = (CATimeSignature*)curElt;
-				QDomElement dTime = dDoc.createElement("time-signature"); dVoice.appendChild(dTime);
-				dTime.setAttribute("time-signature-type", CATimeSignature::timeSignatureTypeToString(time->timeSignatureType()));
-				dTime.setAttribute("beats", time->beats());
-				dTime.setAttribute("beat", time->beat());
-				dTime.setAttribute("time-start", time->timeStart());
-
-				exportMarks( curElt, dTime );
+				CATimeSignature *time = static_cast<CATimeSignature*>(curElt);
+				dElt = dDoc.createElement("time-signature"); dVoice.appendChild(dElt);
+				dElt.setAttribute("time-signature-type", CATimeSignature::timeSignatureTypeToString(time->timeSignatureType()));
+				dElt.setAttribute("beats", time->beats());
+				dElt.setAttribute("beat", time->beat());
 
 				break;
 			}
 			case CAMusElement::Barline: {
-				CABarline *barline = (CABarline*)curElt;
-				QDomElement dBarline = dDoc.createElement("barline"); dVoice.appendChild(dBarline);
-				dBarline.setAttribute("barline-type", CABarline::barlineTypeToString(barline->barlineType()));
-				dBarline.setAttribute("time-start", barline->timeStart());
-
-				exportMarks( curElt, dBarline );
+				CABarline *barline = static_cast<CABarline*>(curElt);
+				dElt = dDoc.createElement("barline"); dVoice.appendChild(dElt);
+				dElt.setAttribute("barline-type", CABarline::barlineTypeToString(barline->barlineType()));
 
 				break;
 			}
 		}
+
+		exportTime( curElt, dElt );
+		exportColor( curElt, dElt );
+
+		exportMarks( curElt, dElt );
 	}
 }
 
@@ -412,7 +400,24 @@ void CACanorusMLExport::exportMarks( CAMusElement *elt, QDomElement& domElt ) {
 				break;
 			}
 			}
+
+			exportColor( mark, dMark );
 		}
+
+	}
+}
+
+void CACanorusMLExport::exportColor( CAMusElement *elt, QDomElement& domParent ) {
+	if ( elt->color()!=QColor() ) {
+		domParent.setAttribute( "color", QVariant(elt->color()).toString() );
+	}
+}
+
+void CACanorusMLExport::exportTime( CAMusElement *elt, QDomElement& domParent ) {
+	domParent.setAttribute("time-start", elt->timeStart());
+
+	if ( elt->isPlayable() ) {
+		domParent.setAttribute("time-length", elt->timeLength());
 	}
 }
 

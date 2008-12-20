@@ -9,6 +9,7 @@
 #define CANORUSMLEXPORT_H_
 
 #include <QDomElement>
+#include <QColor>
 
 #include "export/export.h"
 #include "core/playablelength.h"
@@ -30,8 +31,11 @@ private:
 	void exportPlayableLength( CAPlayableLength l, QDomElement& domParent );
 	void exportDiatonicPitch( CADiatonicPitch p, QDomElement& domParent );
 	void exportDiatonicKey( CADiatonicKey k, QDomElement& domParent );
+	void exportColor( CAMusElement *elt, QDomElement& domParent );
+	void exportTime( CAMusElement *elt, QDomElement& domParent );
 
-	QDomElement     _dTuplet;
+	QDomElement _dTuplet;
+	QColor      _color; // foreground color of elements
 };
 
 #endif /* CANORUSMLEXPORT_H_ */
