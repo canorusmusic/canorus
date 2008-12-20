@@ -9,9 +9,17 @@
 #define EXPORT_H_
 
 #include "core/file.h"
-#include "export/absexport.h"
+#include <QString>
 
-class CAExport : public CAFile, public CAAbsExport {
+class QTextStream;
+class CADocument;
+class CASheet;
+class CAStaff;
+class CAVoice;
+class CALyricsContext;
+class CAFunctionMarkContext;
+
+class CAExport : public CAFile {
 #ifndef SWIG
 	Q_OBJECT
 #endif

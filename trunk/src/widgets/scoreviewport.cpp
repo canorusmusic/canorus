@@ -1133,11 +1133,14 @@ void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 		_clickTimer->start();
 	}
 
-	_numberOfClicks++;
-
 	emit CAMousePressEvent( e, coords );
 
-	setLastMousePressCoords(coords);
+	if ( coords!=lastMousePressCoords() ) {
+		setLastMousePressCoords(coords);
+		_numberOfClicks=1;
+	} else {
+		_numberOfClicks++;
+	}
 
 	if (_numberOfClicks==2) {
 		emit CADoubleClickEvent( e, coords );

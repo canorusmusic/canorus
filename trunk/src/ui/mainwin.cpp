@@ -90,6 +90,7 @@
 #include "scripting/swigruby.h"
 #include "scripting/swigpython.h"
 
+#include "export/export.h"
 #include "export/lilypondexport.h"
 #include "export/canorusmlexport.h"
 #include "export/canexport.h"
@@ -2783,7 +2784,7 @@ bool CAMainWin::saveDocument( QString fileName ) {
 	document()->setDateLastModified( QDateTime::currentDateTime() );
 	CACanorus::restartTimeEditedTimes( document() );
 
-	CAAbsExport *save=0;
+	CAExport *save=0;
 	if ( uiSaveDialog->selectedFilter()==CAFileFormats::CANORUSML_FILTER ) {
 		save = new CACanorusMLExport();
 	} else if ( uiSaveDialog->selectedFilter()==CAFileFormats::CAN_FILTER ) {

@@ -26,17 +26,17 @@ public:
 
 	CAContext *contextAt(int i) { return _contextList[i]; }
 	CAContext *context(const QString name);
-	inline QList<CAContext*> contextList() { return _contextList; }
+	inline QList<CAContext*>& contextList() { return _contextList; }
 	inline int contextIndex(CAContext* context) { return _contextList.indexOf(context); }
 	void insertContextAfter( CAContext *after, CAContext *c);
 	void addContext(CAContext *);
-	inline void removeContext(CAContext* c) { _contextList.removeAll(c); _staffList.removeAll(static_cast<CAStaff*>(c)); }
+	inline void removeContext(CAContext* c) { _contextList.removeAll(c); }
 	inline int contextCount() { return _contextList.size(); }
 
-	CAStaff *addStaff();
-	inline int staffCount() { return _staffList.size(); }
-	inline CAStaff *staffAt(int i) { return _staffList[i]; }
-	inline QList<CAStaff*> staffList() { return _staffList; }
+	CAStaff *addEmptyStaff();
+	int staffCount();
+	CAStaff *staffAt(int i);
+	QList<CAStaff*> staffList();
 
 	QList<CAVoice*> voiceList();
 	inline CAVoice *voiceAt(int i) { return voiceList().at(i); }
@@ -54,7 +54,6 @@ public:
 
 private:
 	QList<CAContext *> _contextList;
-	QList<CAStaff *> _staffList; // Only list of staffs
 	CADocument *_document;
 
 	QString _name;

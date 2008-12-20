@@ -11,6 +11,7 @@
 #include <QStack>
 #include <QHash>
 #include <QXmlDefaultHandler>
+#include <QColor>
 
 #include "import/import.h"
 
@@ -79,6 +80,7 @@ private:
 	CAPlayableLength _curPlayableLength;
 	QHash<CALyricsContext*, int> _lcMap;       // lyrics context associated voice indices
 	QHash<CASyllable*, int>      _syllableMap; // syllable associated voice indices
+	QColor           _color; // foreground color of elements
 
 	//////////////////////////////////////////////
 	// Temporary properties for each XML stanza //
