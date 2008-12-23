@@ -33,7 +33,7 @@ public:
 	inline void removeContext(CAContext* c) { _contextList.removeAll(c); }
 	inline int contextCount() { return _contextList.size(); }
 
-	CAStaff *addEmptyStaff();
+	CAStaff *addStaff();
 	int staffCount();
 	CAStaff *staffAt(int i);
 	QList<CAStaff*> staffList();

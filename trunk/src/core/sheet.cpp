@@ -73,6 +73,7 @@ CASheet *CASheet::clone( CADocument *doc ) {
 
 void CASheet::addContext(CAContext *c) {
 	_contextList.append(c);
+	c->setSheet(this);
 }
 
 void CASheet::insertContextAfter(CAContext *after, CAContext *c) {
@@ -80,8 +81,13 @@ void CASheet::insertContextAfter(CAContext *after, CAContext *c) {
 	_contextList.insert(idx+1, c);
 }
 
-CAStaff *CASheet::addEmptyStaff() {
+/*!
+	Appends a new staff to the sheet with one empty voice.
+ */
+CAStaff *CASheet::addStaff() {
 	CAStaff *s = new CAStaff( QObject::tr("Staff%1").arg(staffCount()+1), this );
+	s->addVoice();
+
 	_contextList.append(s);
 
 	return s;

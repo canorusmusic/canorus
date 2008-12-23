@@ -1173,7 +1173,7 @@ void CAMainWin::updateUndoRedoButtons() {
 void CAMainWin::on_uiNewSheet_triggered() {
 	stopPlayback();
 	CACanorus::undo()->createUndoCommand( document(), tr("new sheet", "undo") );
-	document()->addSheetByName( tr("Sheet%1").arg(QString::number(document()->sheetCount()+1)) );
+	document()->addSheet();
 	CACanorus::undo()->pushUndoCommand();
 	CACanorus::rebuildUI(document());
 	uiTabWidget->setCurrentIndex(uiTabWidget->count()-1);

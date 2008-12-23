@@ -105,7 +105,7 @@ void CAVoice::clear() {
 }
 
 /*!
-	Appends a playable \a elt (note or rest) at the end of the voice.
+	Appends a music element \a elt at the end of the voice.
 
 	If \a addToChord is True and the appended element is note, the note is added to the chord
 	instead of added after the chord. If appended element is rest, \a addToChord is ignored.
