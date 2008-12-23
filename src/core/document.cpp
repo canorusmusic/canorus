@@ -122,6 +122,16 @@ void CADocument::addSheet(CASheet *sheet) {
 }
 
 /*!
+	Adds and empty sheet to the document.
+ */
+CASheet *CADocument::addSheet() {
+	CASheet *s = new CASheet(QObject::tr("Sheet%1").arg(sheetCount()+1), this);
+	addSheet( s );
+
+	return s;
+}
+
+/*!
 	Look up for the sheet with the given \a name and return a
 	pointer to it.
 

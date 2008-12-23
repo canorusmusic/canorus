@@ -32,6 +32,7 @@ public:
 
 	CASheet *addSheetByName(const QString name);
 	void addSheet(CASheet *sheet);
+	CASheet *addSheet();
 	inline void removeSheet(CASheet *sheet) { _sheetList.removeAll(sheet); }
 
 	const QString title() { return _title; }

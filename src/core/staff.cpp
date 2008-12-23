@@ -178,10 +178,11 @@ void CAStaff::addVoice(CAVoice *voice) {
 }
 
 /*!
-	Adds an empty voice to the staff and synchronizes it with other voices.
+	Adds an empty voice to the staff.
+	Call synchronizeVoices() manually to synchronize a new voice with other voices.
 */
 CAVoice *CAStaff::addVoice() {
-	CAVoice *voice = new CAVoice( QObject::tr("Voice%1").arg( voiceCount()+1 ), this );
+	CAVoice *voice = new CAVoice( name()+QObject::tr("Voice%1").arg( voiceCount()+1 ), this );
 	addVoice( voice );
 
 	return voice;
