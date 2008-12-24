@@ -88,15 +88,18 @@ CANote *CANote::clone( CAVoice *voice ) {
 }
 
 /*!
-	Dependent on the current clef calculates and stores internally the vertical
-	note position in the staff.
-
-	\sa _notePosition, notePosition()
+	Dependent on the current clef calculates and returns the vertical
+	note position in the staff looking bottom-up:
+	-  0 - first line
+	-  1 - first space
+	-  2 - second line
+	- -1 - first space below the first line
+	- -2 - first ledger line below the staff (eg. C1 in treble clef)
 */
-void CANote::calculateNotePosition() {
+int CANote::notePosition() {
 	CAClef *clef = (voice()?voice()->getClef(this):0);
 
-	_notePosition = diatonicPitch().noteName() + (clef?clef->c1():-2) - 28;
+	return (diatonicPitch().noteName() + (clef?clef->c1():-2) - 28);
 }
 
 /*!
@@ -414,16 +417,6 @@ CASlur::CASlurDirection CANote::actualSlurDirection() {
 	Direction of the note's stem, if any.
 
 	\sa CAStemDirection
-*/
-
-/*!
-	\var CANote::_notePosition
-	Note location in the staff:
-		- 0 - first line
-		- 1 - first space
-		- -2 - first ledger line below the staff etc.
-
-	\sa calculateNotePosition()
 */
 
 /*!

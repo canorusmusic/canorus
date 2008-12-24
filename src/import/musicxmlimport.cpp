@@ -123,16 +123,18 @@ void CAMusicXmlImport::readScorePartwise() {
 	while (!atEnd() && !(tokenType()==EndElement && name()=="score-partwise")) {
 		readNext();
 
-		if (name()=="work") {
-			readWork();
-		} else if (name()=="identification") {
-			readIdentification();
-		} else if (name()=="defaults") {
-			readDefaults();
-		} else if (name()=="part-list") {
-			readPartList();
-		} else if (name()=="part") {
-			readPart();
+		if (tokenType()==StartElement) {
+			if (name()=="work") {
+				readWork();
+			} else if (name()=="identification") {
+				readIdentification();
+			} else if (name()=="defaults") {
+				readDefaults();
+			} else if (name()=="part-list") {
+				readPartList();
+			} else if (name()=="part") {
+				readPart();
+			}
 		}
 	}
 
@@ -243,8 +245,6 @@ void CAMusicXmlImport::readPart() {
 			}
 		}
 	}
-
-	staff->synchronizeVoices();
 }
 
 void CAMusicXmlImport::readMeasure( CAStaff *staff ) {
@@ -262,11 +262,23 @@ void CAMusicXmlImport::readMeasure( CAStaff *staff ) {
 		}
 	}
 
-	staff->voiceAt(0)->append( new CABarline( CABarline::Single, staff, 0 ) );
+	int lastVoice=0;
+	for (int i=0; i<staff->voiceCount(); i++) {
+		if ( staff->voiceAt(lastVoice)->lastTimeEnd() < staff->voiceAt(i)->lastTimeEnd() ) {
+			lastVoice = i;
+		}
+	}
+
+	staff->voiceAt(lastVoice)->append( new CABarline( CABarline::Single, staff, 0 ) );
+//	staff->synchronizeVoices(); // TODO: This should be called, but causes infinite loop.
 }
 
 void CAMusicXmlImport::readAttributes( CAStaff *staff ) {
 	if (name()!="attributes") return;
+
+	CAKeySignature *keySig=0;
+	CATimeSignature *timeSig=0;
+	CAClef *clef=0;
 
 	while (!atEnd() && !(tokenType()==EndElement && name()=="attributes")) {
 		readNext();
@@ -278,12 +290,23 @@ void CAMusicXmlImport::readAttributes( CAStaff *staff ) {
 
 			} else if (name()=="key") {
 
-				while (name()!="fifths") readNext();
-				int accs = readElementText().toInt();
-				while (name()!="mode") readNext();
-				CADiatonicKey::CAGender gender = CADiatonicKey::genderFromString( readElementText() );
+				int accs = 0;
+				CADiatonicKey::CAGender gender = CADiatonicKey::Major;
 
-				staff->voiceAt(0)->append( new CAKeySignature( CADiatonicKey( accs, gender), staff, 0 ) );
+				while (!atEnd() && !(tokenType()==EndElement && name()=="key")) {
+					readNext();
+
+					if (tokenType()==StartElement) {
+						if ( name()=="fifths" ) {
+							accs = readElementText().toInt();
+						}
+						if ( name()=="mode" ) {
+							gender = CADiatonicKey::genderFromString( readElementText() );
+						}
+					}
+				}
+
+				keySig = new CAKeySignature( CADiatonicKey( accs, gender ), staff, 0 );
 
 			} else if (name()=="time") {
 
@@ -292,7 +315,7 @@ void CAMusicXmlImport::readAttributes( CAStaff *staff ) {
 				while (name()!="beat-type") readNext();
 				int beat = readElementText().toInt();
 
-				staff->voiceAt(0)->append( new CATimeSignature( beats, beat, staff, 0 ) );
+				timeSig = new CATimeSignature( beats, beat, staff, 0 );
 
 			} else if (name()=="clef") {
 
@@ -303,10 +326,20 @@ void CAMusicXmlImport::readAttributes( CAStaff *staff ) {
 				if (sign=="G") t=CAClef::Treble;
 				else if (sign=="F") t=CAClef::Bass;
 
-				staff->voiceAt(0)->append( new CAClef( t, staff, 0 ) );
+				clef = new CAClef( t, staff, 0 );
 
 			}
 		}
+	}
+
+	if (clef) {
+		staff->voiceAt(0)->append( clef );
+	}
+	if (keySig) {
+		staff->voiceAt(0)->append( keySig );
+	}
+	if (timeSig) {
+		staff->voiceAt(0)->append( timeSig );
 	}
 }
 
@@ -315,10 +348,12 @@ void CAMusicXmlImport::readNote( CAStaff *staff, int divisions ) {
 
 	bool isRest = false;
 	bool isPartOfChord = false;
-	int voice = -1;
+	int voice = 1;
 	CAPlayableLength length;
 	CADiatonicPitch pitch;
 	CANote::CAStemDirection stem = CANote::StemPreferred;
+	int lyricsNumber=-1;
+	QString lyricsText;
 
 	while (!atEnd() && !(tokenType()==EndElement && name()=="note")) {
 		readNext();
@@ -328,8 +363,9 @@ void CAMusicXmlImport::readNote( CAStaff *staff, int divisions ) {
 				isRest = true;
 			} else if (name()=="chord") {
 				isPartOfChord = true;
-			} else if (name()=="type") {
-				length = CAPlayableLength::musicLengthFromString( readElementText() );
+			} else if (name()=="duration") {
+				int duration = readElementText().toInt();
+				length = CAPlayableLength::timeLengthToPlayableLengthList( (duration/(float)divisions) * 256 ).first();
 			} else if (name()=="stem") {
 				QString s = readElementText();
 				if (s=="up") stem = CANote::StemUp;
@@ -344,23 +380,39 @@ void CAMusicXmlImport::readNote( CAStaff *staff, int divisions ) {
 				pitch.setNoteName( pitch.noteName()+(octave*7) );
 			} else if (name()=="voice") {
 				voice = readElementText().toInt();
+			} else if (name()=="lyric") {
+				lyricsNumber=1;
+
+				if ( !attributes().value("number").isEmpty() ) {
+					lyricsNumber = attributes().value("number").toString().toInt();
+				}
+
+				while (name()!="text") readNext();
+				lyricsText = readElementText();
 			}
 		}
 	}
 
-	if (voice!=-1) {
-		while (voice > staff->voiceCount()) {
-			staff->addVoice();
+	while (voice > staff->voiceCount()) {
+		staff->addVoice();
+	}
+
+	CAVoice *v = staff->voiceAt(voice-1);
+	CAPlayable *p;
+	if (!isRest) {
+		p = new CANote( pitch, length, v, 0 );
+	} else {
+		p = new CARest( CARest::Normal, length, v, 0 );
+	}
+
+	v->append( p, isPartOfChord );
+
+	if (lyricsNumber!=-1) {
+		while (lyricsNumber > v->lyricsContextList().size()) {
+			v->addLyricsContext( new CALyricsContext( v->name()+tr("Lyrics"), v->lyricsContextList().size()+1, v ) );
+			staff->sheet()->insertContextAfter( staff, v->lyricsContextList()[lyricsNumber-1] );
 		}
 
-		CAVoice *v = staff->voiceAt(voice-1);
-		CAPlayable *p;
-		if (!isRest) {
-			p = new CANote( pitch, length, v, 0 );
-		} else {
-			p = new CARest( CARest::Normal, length, v, 0 );
-		}
-
-		v->append( p, isPartOfChord );
+		v->lyricsContextList()[lyricsNumber-1]->addSyllable( new CASyllable(lyricsText, false, false, v->lyricsContextList()[lyricsNumber-1], p->timeStart(), p->timeLength(), v ) );
 	}
 }
