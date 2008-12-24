@@ -59,6 +59,9 @@ private slots:
 private:
 	void setupUI();
 
+	class CATextEdit;
+	friend class CASourceViewPort::CATextEdit;
+
 	/////////////
 	// Widgets //
 	/////////////

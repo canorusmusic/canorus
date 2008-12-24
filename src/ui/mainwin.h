@@ -284,6 +284,8 @@ private slots:
 	void keyPressEvent(QKeyEvent *);
 	void on_uiTabWidget_currentChanged(int);
 
+	void viewPortClicked();
+
 	void scoreViewPortMousePress(QMouseEvent *e, const QPoint coords);
 	void scoreViewPortMouseMove(QMouseEvent *e, const QPoint coords);
 	void scoreViewPortMouseRelease(QMouseEvent *e, const QPoint coords);

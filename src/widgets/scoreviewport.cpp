@@ -1114,6 +1114,7 @@ void CAScoreViewPort::checkScrollBars() {
 	A new signal is emitted: CAMousePressEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
+	CAViewPort::mousePressEvent(e);
 	QPoint coords(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY);
 	if ( selection().size() && selection()[0]->isHScalable() && coords.y()>=selection()[0]->yPos() && coords.y()<=selection()[0]->yPos()+selection()[0]->height() ) {
 		if ( coords.x()==selection()[0]->xPos()  ) {

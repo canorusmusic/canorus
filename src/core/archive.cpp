@@ -6,9 +6,10 @@
 */
 
 #include <QByteArray>
-#include <zlib.h> 
-#include <QDebug>
 #include <QTemporaryFile>
+#include <QString>
+#include <QRegExp>
+#include <zlib.h> 
 
 #ifdef Q_OS_WIN
 #	include <QSysInfo>
@@ -28,7 +29,7 @@
 */
 
 const int CAArchive::CHUNK = 16384;
-const char* CAArchive::VERSION = "Canorus Archive v0.5";
+const QString CAArchive::COMMENT = "Canorus Archive v"+QString(CANORUS_VERSION).remove(QRegExp("[a-z]*$"));
 
 /*!
 	Creates and empty archive
@@ -126,9 +127,14 @@ void CAArchive::parse(QIODevice& arch)
 		_err = true;
 	
 	if(!_err) {
-		// If version checking is ever needed on this level (i.e. the archive format itself), use this:
-		// int cmp = qstrcmp((char*)header.comment, VERSION);
-		tar.reset();	
+		QRegExp re("Canorus Archive v(\\d+\\.\\d+)");
+		if(re.indexIn((char*)header.comment) != -1)
+			_version = re.cap(1);
+		else {
+			_err = true;
+		}
+		
+		tar.reset();
 		_tar = new CATar(tar);
 	}
 
@@ -166,8 +172,8 @@ qint64 CAArchive::write(QIODevice& dest)
 	}
 	
 	header.os = getOS(); 
-	header.comment = new unsigned char[strlen(VERSION)+1];
-	strcpy((char*)header.comment, VERSION);
+	header.comment = new unsigned char[COMMENT.size()+1];
+	strcpy((char*)header.comment, COMMENT.toLatin1().data());
 	
 	in.open(QIODevice::ReadWrite);
 	out.open(QIODevice::ReadWrite);

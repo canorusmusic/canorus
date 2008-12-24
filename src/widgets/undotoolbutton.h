@@ -32,6 +32,7 @@ public:
 	
 public slots:
 	void onListWidgetItemClicked( QListWidgetItem* );
+	void onListWidgetItemEntered( QListWidgetItem* );
 	
 protected:
 	void wheelEvent(QWheelEvent*);

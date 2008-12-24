@@ -9,6 +9,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QTextStream>
+#include <QMouseEvent>
 
 #include "export/canorusmlexport.h"
 #include "widgets/sourceviewport.h"
@@ -17,6 +18,19 @@
 
 #include "export/lilypondexport.h"
 #include "import/lilypondimport.h"
+	
+class CASourceViewPort::CATextEdit : public QTextEdit {
+	public:
+		CATextEdit(CASourceViewPort* v) : QTextEdit(v), _viewport(v) {}
+	protected:
+		void focusInEvent(QFocusEvent* event) {
+			QTextEdit::focusInEvent(event);
+			QMouseEvent fake(QEvent::MouseButtonPress, QCursor::pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			_viewport->mousePressEvent(&fake);
+		}
+	private:
+		CASourceViewPort* _viewport;
+};
 
 /*!
 	\class CASourceViewPort
@@ -78,7 +92,7 @@ CASourceViewPort::CASourceViewPort(CALyricsContext *lc, QWidget *parent)
 
 void CASourceViewPort::setupUI() {
 	_layout = new QGridLayout(this);
-	_layout->addWidget(_textEdit = new QTextEdit(0));
+	_layout->addWidget(_textEdit = new CATextEdit(this));
 	_layout->addWidget(_commit = new QPushButton(tr("Commit changes")));
 	_layout->addWidget(_revert = new QPushButton(tr("Revert changes")));
 

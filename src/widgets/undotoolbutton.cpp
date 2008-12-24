@@ -23,9 +23,12 @@ CAUndoToolButton::CAUndoToolButton( QIcon icon, CAUndoToolButtonType type, QWidg
 	_icon = icon;
 	setCurrentId(0);
 	setUndoType( type );
-	_listWidget = new QListWidget();
+	_listWidget = new QListWidget;
+	_listWidget->setMouseTracking(true);
+	_listWidget->setSelectionMode(QListWidget::MultiSelection);
 	setPopupWidget(_listWidget);
 	connect( _listWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onListWidgetItemClicked(QListWidgetItem*)) );
+	connect( _listWidget, SIGNAL(itemEntered(QListWidgetItem*)), this, SLOT(onListWidgetItemEntered(QListWidgetItem*)) );
 }
 
 CAUndoToolButton::~CAUndoToolButton() {
@@ -39,6 +42,11 @@ void CAUndoToolButton::wheelEvent( QWheelEvent *e ) {
 void CAUndoToolButton::onListWidgetItemClicked( QListWidgetItem *item ) {
 	hideButtons();
 	emit toggled( false, _listWidget->row(item) );
+}
+
+void CAUndoToolButton::onListWidgetItemEntered( QListWidgetItem *item ) {
+	for(int i=0; i<_listWidget->count(); i++)
+		_listWidget->item(i)->setSelected(i<=_listWidget->row(item));
 }
 
 void CAUndoToolButton::showButtons() {
