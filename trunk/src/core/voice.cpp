@@ -190,10 +190,6 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 		updateTimes( musElementList().indexOf(elt)+1, elt->timeLength(), true );
 
 	}
-	if( elt->musElementType() == CAMusElement::Note ) {
-		CANote* note = static_cast<CANote*>(elt);
-		note->setDiatonicPitch(note->diatonicPitch());
-	}
 
  	return res;
 }

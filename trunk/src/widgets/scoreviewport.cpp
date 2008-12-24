@@ -1014,7 +1014,6 @@ void CAScoreViewPort::updateHelpers() {
 			CAClef *clef = (static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext()))->getClef( _xCursor );
 			CADiatonicPitch dPitch(pitch, 0);
 			_shadowNote[i]->setDiatonicPitch( dPitch );
-			_shadowNote[i]->setNotePosition( pitch + (clef?clef->c1():-2) - 28 );
 
 			CADrawableContext *c = _shadowDrawableNote[i]->drawableContext();
 			delete _shadowDrawableNote[i];

@@ -34,15 +34,13 @@ public:
 	inline CADiatonicPitch& diatonicPitch() { return _diatonicPitch; }
 	inline void setDiatonicPitch( CADiatonicPitch& pitch ) {
 		_diatonicPitch = pitch;
-		calculateNotePosition();
 		updateTies();
 	}
 
 	CAStemDirection stemDirection() { return _stemDirection; }
 	void setStemDirection(CAStemDirection direction);
 
-	inline int notePosition() { return _notePosition; }
-	inline void setNotePosition( int notePosition ) { _notePosition = notePosition; }
+	int notePosition();
 
 	inline CASlur *tieStart() { return _tieStart; }
 	inline CASlur *tieEnd() { return _tieEnd; }
@@ -79,11 +77,8 @@ public:
 	int compare(CAMusElement* elt);
 
 private:
-	void calculateNotePosition();
-
 	CADiatonicPitch _diatonicPitch;
 	CAStemDirection _stemDirection;
-	int _notePosition; // Note location in the staff. 0 first line, 1 first space, -2 first ledger line below the staff etc.
 	bool _forceAccidentals; // Always draw notes accidentals.
 
 	////////////////////
