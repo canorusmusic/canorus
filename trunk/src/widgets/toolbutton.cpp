@@ -12,6 +12,7 @@
 #include <QMouseEvent>
 #include <QStyle>
 #include <QStyleOptionToolButton>
+#include <QDesktopWidget>
 
 /*!
 	\class CAToolButton
@@ -125,37 +126,37 @@ QPoint CAToolButton::calculateTopLeft( QSize size ) {
 	QToolBar *toolBar = dynamic_cast<QToolBar*>(parent());
 	if ( mainWin() && toolBar ) {
 		QPoint topLeft = mapToGlobal(QPoint(0,0)); // get the absolute coordinates of top-left corner of the button
+		QPoint screenBottomRight = qApp->desktop()->screenGeometry().bottomRight();
 		
-		// Set buttons box coordinates which fit on the main window
+		// Set popup menu coordinates which fit on screen.
 		if (mainWin()->toolBarArea(toolBar) == Qt::LeftToolBarArea) {
-			if (topLeft.x() + width() + size.width() > mainWin()->width()) x = mainWin()->width() - size.width();
+			if (topLeft.x() + width() + size.width() > screenBottomRight.x()) x = screenBottomRight.x() - size.width();
 			else x = topLeft.x() + width();
 			
-			if (topLeft.y() + size.height() > mainWin()->height()) y = mainWin()->height() - size.height();
+			if (topLeft.y() + size.height() > screenBottomRight.y()) y = screenBottomRight.y() - size.height();
 			else y = topLeft.y();
 		} else
 		if (mainWin()->toolBarArea(toolBar) == Qt::TopToolBarArea) {
-			if (topLeft.x() + size.width() > mainWin()->width()) x = mainWin()->width() - size.width();
+			if (topLeft.x() + size.width() > screenBottomRight.x()) x = screenBottomRight.x() - size.width();
 			else x = topLeft.x();
 			
-			if (topLeft.y() + height() + size.height() > mainWin()->height()) y = mainWin()->height() - size.height();
+			if (topLeft.y() + height() + size.height() > screenBottomRight.y()) y = screenBottomRight.y() - size.height();
 			else y = topLeft.y() + height();
 		} else
 		if (mainWin()->toolBarArea(toolBar) == Qt::RightToolBarArea) {
-			if (topLeft.x() - width() - size.width() < 0) x = 0;
+			if (topLeft.x() - size.width() < 0) x = 0;
 			else x = topLeft.x() - size.width();
 			
-			if (topLeft.y() + size.height() > mainWin()->height()) y = mainWin()->height() - size.height();
+			if (topLeft.y() + size.height() > screenBottomRight.y()) y = screenBottomRight.y() - size.height();
 			else y = topLeft.y();
 		} else
 		if (mainWin()->toolBarArea(toolBar) == Qt::BottomToolBarArea) {
-			if (topLeft.x() + size.width() > mainWin()->width()) x = mainWin()->width() - size.width();
+			if (topLeft.x() + size.width() > screenBottomRight.x()) x = screenBottomRight.x() - size.width();
 			else x = topLeft.x();
 			
 			if (topLeft.y() - size.height() < 0) y = 0;
 			else y = topLeft.y() - size.height();
 		}
 	}
-	
 	return QPoint(x,y);
 }

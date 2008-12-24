@@ -6,7 +6,6 @@
 */
 
 #include <QHash>
-#include <QObject>
 
 #include "core/document.h"
 #include "core/context.h"
@@ -141,27 +140,23 @@ QList<CAVoice*> CASheet::voiceList() {
 int CASheet::staffCount() {
 	int sum=0;
 	for (int i=0; i<_contextList.size(); i++) {
-		if ( _contextList[i]->contextType()==CAContext::Staff ) {
+		if ( _contextList[i]->contextType()==CAContext::Staff )
 			sum++;
-		}
 	}
-
 	return sum;
 }
 
 CAStaff *CASheet::staffAt(int idx) {
 	int sum=0;
-	for (int i=0; i<_contextList.size() && sum<idx; i++) {
+	for (int i=0; i<_contextList.size(); i++) {
 		if ( _contextList[i]->contextType()==CAContext::Staff ) {
+			if(sum == idx)
+				return static_cast<CAStaff*>(_contextList[i]);
 			sum++;
 		}
 	}
 
-	if (sum==idx && sum < _contextList.size()) {
-		return static_cast<CAStaff*>(_contextList[sum]);
-	} else {
-		return 0;
-	}
+	return 0;
 }
 
 QList<CAStaff*> CASheet::staffList() {

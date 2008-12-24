@@ -37,27 +37,7 @@ CAViewPort::~CAViewPort() {
 
 void CAViewPort::mousePressEvent(QMouseEvent *e) {
 	QWidget::mousePressEvent(e);
-	emit CAMousePressEvent( e, this );
-}
-
-void CAViewPort::mouseMoveEvent(QMouseEvent *e) {
-	QWidget::mouseMoveEvent(e);
-	emit CAMouseMoveEvent( e, this );
-}
-
-void CAViewPort::mouseReleaseEvent(QMouseEvent *e) {
-	QWidget::mouseReleaseEvent(e);
-	emit CAMouseReleaseEvent( e, this );
-}
-
-void CAViewPort::wheelEvent(QWheelEvent *e) {
-	QWidget::wheelEvent(e);
-	emit CAWheelEvent( e, this );
-}
-		
-void CAViewPort::keyPressEvent(QKeyEvent *e) {
-	QWidget::keyPressEvent(e);
-	emit CAKeyPressEvent( e, this );
+	emit clicked();
 }
 
 /*!
@@ -82,58 +62,9 @@ void CAViewPort::keyPressEvent(QKeyEvent *e) {
 */
 
 /*!
-	\fn void CAViewPort::CAMousePressEvent(QMouseEvent *e, CAViewPort *v)
+	\fn void CAViewPort::clicked
 	
 	This signal is emitted when mousePressEvent() is called. Parent class is usually connected to this event.
-	It adds another argument to the mousePressEvent() function - pointer to this viewport.
-	This is useful when a parent class wants to know which class the signal was emmitted by.
-	
-	\param e Mouse event which gets processed.
-	\param v Pointer to this viewport (the viewport which emmitted the signal).
-*/
-
-/*!
-	\fn void CAViewPort::CAMouseMoveEvent(QMouseEvent *e, CAViewPort *v)
-	
-	This signal is emitted when mouseMoveEvent() is called. Parent class is usually connected to this event.
-	It adds another argument to the mouseMoveEvent() function - pointer to this viewport.
-	This is useful when a parent class wants to know which class the signal was emmitted by.
-	
-	\param e Mouse event which gets processed.
-	\param v Pointer to this viewport (the viewport which emmitted the signal).
-*/
-
-/*!
-	\fn void CAViewPort::CAMouseReleaseEvent(QMouseEvent *e, CAViewPort *v)
-	
-	This signal is emitted when mouseReleaseEvent() is called. Parent class is usually connected to this event.
-	It adds another argument to the mouseReleaseEvent() function - pointer to this viewport.
-	This is useful when a parent class wants to know which class the signal was emmitted by.
-	
-	\param e Mouse event which gets processed.
-	\param v Pointer to this viewport (the viewport which emmitted the signal).
-*/
-
-/*!
-	\fn void CAViewPort::CAWheelEvent(QWheelEvent *e, CAViewPort *v)
-	
-	This signal is emitted when wheelEvent() is called. Parent class is usually connected to this event.
-	It adds another argument to the wheelEvent() function - pointer to this viewport.
-	This is useful when a parent class wants to know which class the signal was emmitted by.
-	
-	\param e Wheel event which gets processed.
-	\param v Pointer to this viewport (the viewport which emmitted the signal).
-*/
-
-/*!
-	\fn void CAKeyPressEvent(QKeyEvent *e, CAViewPort *v)
-
-	This signal is emitted when keyPressEvent() is called. Parent class is usually connected to this event.
-	It adds another argument to the keyPressEvent() function - pointer to this viewport.
-	This is useful when a parent class wants to know which class the signal was emmitted by.
-	
-	\param e Key event which gets processed.
-	\param v Pointer to this viewport (the viewport which emmitted the signal).
 */
 
 /*!

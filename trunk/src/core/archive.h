@@ -13,6 +13,7 @@
 #include <iostream>
 
 class QByteArray;
+class QString;
 
 class CAArchive {
 public:
@@ -27,9 +28,12 @@ public:
 	inline void removeFile(const QString& filename) { if(!error()) _tar->removeFile(filename); }
 	inline CAIOPtr file(const QString& filename) { if(!error()) return _tar->file(filename); else return CAIOPtr(new QBuffer());  }
 	inline bool error() { return _err ||  _tar->error(); }	
+	inline const QString& version() { return _version; }
 protected:
 	static const int CHUNK;
-	static const char* VERSION;
+	static const QString COMMENT;
+
+	QString _version;
 	bool _err;
 	void parse(QIODevice&);
 	int getOS();

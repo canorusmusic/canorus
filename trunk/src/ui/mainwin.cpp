@@ -570,9 +570,12 @@ void CAMainWin::setupCustomUi() {
 	uiUndo->defaultAction()->setText(tr("Undo"));
     uiUndo->defaultAction()->setShortcut(QApplication::translate("uiMainWindow", "Ctrl+Z", 0, QApplication::UnicodeUTF8));
 	uiMenuEdit->insertAction( uiCut, uiUndo->defaultAction() );
+	QList<QKeySequence> redoShortcuts;
+	redoShortcuts << QApplication::translate("uiMainWindow", "Ctrl+Y", 0, QApplication::UnicodeUTF8);
+	redoShortcuts << QApplication::translate("uiMainWindow", "Ctrl+Shift+Z", 0, QApplication::UnicodeUTF8);
 	uiRedo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiRedo ) );
 	uiRedo->defaultAction()->setText(tr("Redo"));
-    uiRedo->defaultAction()->setShortcut(QApplication::translate("uiMainWindow", "Ctrl+Y", 0, QApplication::UnicodeUTF8));
+    uiRedo->defaultAction()->setShortcuts(redoShortcuts);
 	uiMenuEdit->insertAction( uiCut, uiRedo->defaultAction() );
 
 	// Hide the specialized pre-created toolbars in Qt designer.
@@ -1053,6 +1056,7 @@ void CAMainWin::initViewPort(CAViewPort *v) {
 
 	CACanorus::restorePath();
 
+	connect( v, SIGNAL(clicked()), this, SLOT(viewPortClicked()) );
 	switch (v->viewPortType()) {
 		case CAViewPort::ScoreViewPort: {
 			connect( v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint)),
@@ -1478,9 +1482,6 @@ void CAMainWin::rebuildUI(bool repaint) {
 */
 void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords) {
 	CAScoreViewPort *v = static_cast<CAScoreViewPort*>(sender());
-	setCurrentViewPort( v );
-	if(currentViewPort()->parent()) // not floating
-		currentViewPortContainer()->setCurrentViewPort( currentViewPort() );
 
 	CADrawableContext *prevContext = v->currentContext();
 	v->selectCElement(coords.x(), coords.y());
@@ -1658,6 +1659,19 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords) {
 
 	updateToolBars();
 	v->repaint();
+}
+
+/*!
+	General viewport mouse press event.
+	Sets it as the current view port.
+
+	\sa scoreViewPortMousePress()
+*/
+void CAMainWin::viewPortClicked() {
+    CAViewPort *v = static_cast<CAViewPort*>(sender());
+    setCurrentViewPort( v );
+    if(currentViewPort()->parent()) // not floating
+        currentViewPortContainer()->setCurrentViewPort( currentViewPort() );
 }
 
 /*!
@@ -2100,86 +2114,42 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 
 		// Note length keys
 		case Qt::Key_1:
-			if (mode()!=EditMode)
-				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Whole, true );
-			musElementFactory()->playableLength().setDotted( 0 );
-			v->setShadowNoteLength( musElementFactory()->playableLength() );
-			v->updateHelpers();
-			v->repaint();
 			break;
 		case Qt::Key_2:
-			if (mode()!=EditMode)
-				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Half, true );
-			musElementFactory()->playableLength().setDotted( 0 );
-			v->setShadowNoteLength( musElementFactory()->playableLength() );
-			v->updateHelpers();
-			v->repaint();
 			break;
 		case Qt::Key_4:
-			if (mode()!=EditMode)
-				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Quarter, true );
-			musElementFactory()->playableLength().setDotted( 0 );
-			v->setShadowNoteLength( musElementFactory()->playableLength() );
-			v->updateHelpers();
-			v->repaint();
 			break;
 		case Qt::Key_5:
-			if (mode()!=EditMode)
-				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Eighth, true );
-			musElementFactory()->playableLength().setDotted( 0 );
-			v->setShadowNoteLength( musElementFactory()->playableLength() );
-			v->updateHelpers();
-			v->repaint();
 			break;
 		case Qt::Key_6:
-			if (mode()!=EditMode)
-				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Sixteenth, true );
-			musElementFactory()->playableLength().setDotted( 0 );
-			v->setShadowNoteLength( musElementFactory()->playableLength() );
-			v->updateHelpers();
-			v->repaint();
 			break;
 		case Qt::Key_7:
-			if (mode()!=EditMode)
-				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::ThirtySecond, true );
-			musElementFactory()->playableLength().setDotted( 0 );
-			v->setShadowNoteLength( musElementFactory()->playableLength() );
-			v->updateHelpers();
-			v->repaint();
 			break;
 		case Qt::Key_8:
-			if (mode()!=EditMode)
-				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::SixtyFourth, true );
-			musElementFactory()->playableLength().setDotted( 0 );
-			v->setShadowNoteLength( musElementFactory()->playableLength() );
-			v->updateHelpers();
-			v->repaint();
 			break;
 		case Qt::Key_9:
-			if (mode()!=EditMode)
-				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::HundredTwentyEighth, true );
-			musElementFactory()->playableLength().setDotted( 0 );
-			v->setShadowNoteLength( musElementFactory()->playableLength() );
-			v->updateHelpers();
-			v->repaint();
 			break;
 		case Qt::Key_0:
-			if (mode()!=EditMode)
-				uiInsertPlayable->setChecked(true);
 			uiPlayableLength->setCurrentId( CAPlayableLength::Breve, true );
-			musElementFactory()->playableLength().setDotted( 0 );
-			v->setShadowNoteLength( musElementFactory()->playableLength() );
-			v->updateHelpers();
-			v->repaint();
 			break;
+	}
+	
+	if(e->key() >= Qt::Key_0 && e->key() <= Qt::Key_9 && e->key() != Qt::Key_3)
+	{
+		if (mode()!=EditMode)
+			uiInsertPlayable->setChecked(true);
+		musElementFactory()->playableLength().setDotted( 0 );
+		v->setShadowNoteLength( musElementFactory()->playableLength() );
+		v->updateHelpers();
+		v->repaint();
 	}
 
 	updateToolBars();

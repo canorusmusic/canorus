@@ -35,23 +35,15 @@ public:
 	static const int DEFAULT_VIEWPORT_WIDTH;
 	static const int DEFAULT_VIEWPORT_HEIGHT;
 	
-private slots:
-	virtual void mousePressEvent(QMouseEvent *e);
-	virtual void mouseMoveEvent(QMouseEvent *e);
-	virtual void mouseReleaseEvent(QMouseEvent *e);
-	virtual void wheelEvent(QWheelEvent *e);		
-	virtual void keyPressEvent(QKeyEvent *e);
+protected slots:
+	void mousePressEvent(QMouseEvent *e);
+	inline void closeEvent(QCloseEvent*) { emit closed(this); }
 	
 signals:
-	void CAMousePressEvent(QMouseEvent *e, CAViewPort *v);
-	void CAMouseReleaseEvent(QMouseEvent *e, CAViewPort *v);
-	void CAMouseMoveEvent(QMouseEvent *e, CAViewPort *v);
-	void CAWheelEvent(QWheelEvent *e, CAViewPort *v);
-	void CAKeyPressEvent(QKeyEvent *e, CAViewPort *v);
+	void clicked();
 	void closed(CAViewPort*);
 	
 protected:
-	inline void closeEvent(QCloseEvent*) { emit closed(this); }
 	inline void setViewPortType(CAViewPortType t) { _viewPortType = t; }
 	
 	////////////////////////
