@@ -47,6 +47,7 @@ private:
 	void readMeasure( CAStaff* );
 	void readAttributes( CAStaff* );
 	void readNote( CAStaff*, int );
+	void readForward( CAStaff*, int );
 
 	QString         _musicXmlVersion;
 

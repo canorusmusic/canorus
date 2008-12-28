@@ -7,6 +7,7 @@
 
 #include <QDebug>
 #include <QXmlStreamAttributes>
+#include <iostream> // debug
 #include "import/musicxmlimport.h"
 
 #include "import/canorusmlimport.h"
@@ -256,8 +257,10 @@ void CAMusicXmlImport::readMeasure( CAStaff *staff ) {
 		if (tokenType()==StartElement) {
 			if (name()=="attributes") {
 				readAttributes( staff );
-			} else  if (name()=="note") {
+			} else if (name()=="note") {
 				readNote( staff, _divisions[staff] );
+			} else if (name()=="forward") {
+				readForward( staff, _divisions[staff] );
 			}
 		}
 	}
@@ -270,7 +273,7 @@ void CAMusicXmlImport::readMeasure( CAStaff *staff ) {
 	}
 
 	staff->voiceAt(lastVoice)->append( new CABarline( CABarline::Single, staff, 0 ) );
-//	staff->synchronizeVoices(); // TODO: This should be called, but causes infinite loop.
+	staff->synchronizeVoices();
 }
 
 void CAMusicXmlImport::readAttributes( CAStaff *staff ) {
@@ -371,13 +374,26 @@ void CAMusicXmlImport::readNote( CAStaff *staff, int divisions ) {
 				if (s=="up") stem = CANote::StemUp;
 				else if (s=="down") stem = CANote::StemDown;
 			} else if (name()=="pitch") {
-				while (name()!="step") readNext();
-				QString step = readElementText();
-				while (name()!="octave") readNext();
-				int octave = readElementText().toInt();
+				int alter = 0;
+				QString step;
+				int octave = -1;
+				while (!atEnd() && !(tokenType()==EndElement && name()=="pitch")) {
+					readNext();
+
+					if (tokenType()==StartElement) {
+						if (name()=="step") {
+							step = readElementText();
+						} else if (name()=="octave") {
+							octave = readElementText().toInt();
+						} else if (name()=="alter") {
+							alter = readElementText().toInt();
+						}
+					}
+				}
 
 				pitch = CADiatonicPitch::diatonicPitchFromString( step );
 				pitch.setNoteName( pitch.noteName()+(octave*7) );
+				pitch.setAccs( alter );
 			} else if (name()=="voice") {
 				voice = readElementText().toInt();
 			} else if (name()=="lyric") {
@@ -395,6 +411,7 @@ void CAMusicXmlImport::readNote( CAStaff *staff, int divisions ) {
 
 	while (voice > staff->voiceCount()) {
 		staff->addVoice();
+		staff->synchronizeVoices();
 	}
 
 	CAVoice *v = staff->voiceAt(voice-1);
@@ -414,5 +431,38 @@ void CAMusicXmlImport::readNote( CAStaff *staff, int divisions ) {
 		}
 
 		v->lyricsContextList()[lyricsNumber-1]->addSyllable( new CASyllable(lyricsText, false, false, v->lyricsContextList()[lyricsNumber-1], p->timeStart(), p->timeLength(), v ) );
+	}
+}
+
+void CAMusicXmlImport::readForward( CAStaff *staff, int divisions ) {
+	if (name()!="forward") return;
+
+	int voice=-1;
+	int length=-1;
+
+	while (!atEnd() && !(tokenType()==EndElement && name()=="forward")) {
+		readNext();
+
+		if (tokenType()==StartElement) {
+			if (name()=="duration") {
+				length = (int)((readElementText().toInt()/(float)divisions) * 256);
+			} else if (name()=="voice") {
+				voice = readElementText().toInt();
+			}
+		}
+	}
+
+	if (voice!=-1 && length!=-1) {
+		while (voice > staff->voiceCount()) {
+			staff->addVoice();
+			staff->synchronizeVoices();
+		}
+
+		CAVoice *v = staff->voiceAt(voice-1);
+
+		QList<CARest*> hiddenRests = CARest::composeRests( length, v->lastTimeEnd(), v );
+
+		for (int i=0; i<hiddenRests.size(); i++)
+			v->append( hiddenRests[i] );
 	}
 }

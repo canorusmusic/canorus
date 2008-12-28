@@ -171,6 +171,7 @@ void CAStaff::clear() {
 
 /*!
 	Adds a voice \a voice to the staff and sets its parent to this staff.
+	Call synchronizeVoices() manually to synchronize a new voice with other voices.
 */
 void CAStaff::addVoice(CAVoice *voice) {
 	_voiceList << voice;
@@ -298,8 +299,7 @@ bool CAStaff::synchronizeVoices() {
 	int idx[voiceCount()];                    for (int i=0; i<voiceCount(); i++) idx[i]=-1;          // array of current indices of voices at current timeStart
 	CAMusElement *lastPlayable[voiceCount()]; for (int i=0; i<voiceCount(); i++) lastPlayable[i]=0;
 
-	QList<CAMusElement*> sharedList; // list of shared music elements having the same time-start sorted by voice number
-	int timeStart = 0, shortestTime;
+	int timeStart = 0;
 	bool done = false;
 	bool changesMade = false;
 
@@ -308,12 +308,15 @@ bool CAStaff::synchronizeVoices() {
 		voiceAt(i)->synchronizeMusElements();
 
 	while (!done) {
+		QList<CAMusElement*> sharedList; // list of shared music elements having the same time-start sorted by voice number
+
 		// gather shared elements into sharedList and remove them from the voice at new timeStart
 		for ( int i=0; i<voiceCount(); i++ ) {
 			// don't increase idx[i], if the next element is not-playable
 			while ( idx[i] < voiceAt(i)->musElementList().size()-1 && !voiceAt(i)->musElementList()[idx[i]+1]->isPlayable() && ( voiceAt(i)->musElementList()[idx[i]+1]->timeStart() == timeStart )) {
-				if ( !sharedList.contains(voiceAt(i)->musElementList()[ idx[i]+1 ]) )
+				if ( !sharedList.contains(voiceAt(i)->musElementList()[ idx[i]+1 ]) ) {
 					sharedList << voiceAt(i)->musElementList()[ idx[i]+1 ];
+				}
 				voiceAt(i)->musElementList().removeAt( idx[i]+1 );
 			}
 		}
@@ -325,7 +328,8 @@ bool CAStaff::synchronizeVoices() {
 				for ( int j=0; j<sharedList.size(); j++) {
 					voiceAt(i)->musElementList().insert( idx[i]+1+j, sharedList[j] );
 				}
-				idx[i]++; // jump to the first one inserted from the sharedList
+				idx[i]++; // jump to the first one inserted from the sharedList, if inserting shared elts for the first time
+				          // or the first one after the sharedList in second pass
 			}
 		} else {
 			for ( int i=0; i<voiceCount(); i++ ) {
@@ -346,10 +350,17 @@ bool CAStaff::synchronizeVoices() {
 			for (int j=0; j<voiceCount(); j++) {
 				if (i==j) continue;
 
-				// fix the overlapped chord, rests are inserted in non-linear part
-				if ( idx[j] != -1 && lastPlayable[j] && lastPlayable[j]->timeStart() < timeStart && lastPlayable[j]->timeEnd() > timeStart ) {
+				// fix the overlapped chord, rests are inserted later in non-linearity check
+				if ( idx[j] != -1 && voiceAt(i)->musElementList()[idx[i]]->timeStart() == timeStart &&
+				     lastPlayable[j] && lastPlayable[j]->timeStart() < timeStart && lastPlayable[j]->timeEnd() > timeStart ) {
+					int gapLength = lastPlayable[j]->timeEnd() - timeStart;
+					QList<CARest*> restList = CARest::composeRests( gapLength, voiceAt(i)->musElementList()[idx[i]]->timeStart(), voiceAt(i) );
+
 					voiceAt(i)->musElementList()[idx[i]]->setTimeStart( lastPlayable[j]->timeEnd() );
-					voiceAt(i)->updateTimes( idx[i]+1, lastPlayable[j]->timeEnd() - timeStart, true );
+					for ( int k=0; k < restList.size(); k++ )
+						voiceAt(i)->musElementList().insert( idx[i]++, restList[k] ); // insert the missing rests, rests are added in back, idx++
+					voiceAt(i)->updateTimes( idx[i], gapLength, false );              // increase playable timeStarts
+					lastPlayable[ i ] = restList.last();
 
 					changesMade = true;
 				}
@@ -374,25 +385,25 @@ bool CAStaff::synchronizeVoices() {
 		// jump to the last inserted from the sharedList
 		if ( sharedList.size() ) {
 			for ( int i=0; i<voiceCount(); i++ ) {
-				idx[i]+=sharedList.size()-1;
+				idx[i]+=(sharedList.size()-1);
 			}
-			sharedList.clear();
 		}
 
 		// shortest time is delta between the current elements and the nearest one in the future
-		shortestTime=-1;
+		int shortestTime=-1;
 
 		for ( int i=0; i<voiceCount(); i++ ) {
-			if ( idx[i] < voiceAt(i)->musElementList().size()-1 &&
+			if ( idx[i] < (voiceAt(i)->musElementList().size()-1) &&
 			     ( shortestTime==-1 ||
 			       voiceAt(i)->musElementList()[ idx[i]+1 ]->timeStart() - timeStart < shortestTime )
 			   )
 				shortestTime = voiceAt(i)->musElementList()[ idx[i]+1 ]->timeStart() - timeStart;
 		}
-		timeStart += (shortestTime!=-1?shortestTime:0); // increase timeStart
+		int deltaTime = ((shortestTime!=-1)?shortestTime:0);
+		timeStart += deltaTime; // increase timeStart
 
 		// if all voices are at the end, finish
-		done = true;
+		done = (deltaTime==0); // last pass is only meant to linearize
 		for ( int i=0; i<voiceCount(); i++ )
 			if ( idx[i] < voiceAt(i)->musElementList().size()-1 )
 				done = false;
