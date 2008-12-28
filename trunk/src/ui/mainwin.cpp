@@ -2141,7 +2141,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 			uiPlayableLength->setCurrentId( CAPlayableLength::Breve, true );
 			break;
 	}
-	
+
 	if(e->key() >= Qt::Key_0 && e->key() <= Qt::Key_9 && e->key() != Qt::Key_3)
 	{
 		if (mode()!=EditMode)
@@ -2949,7 +2949,8 @@ void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
 	if ( currentScoreViewPort() ) {
 		if ( voiceNr &&
 		     currentScoreViewPort()->currentContext() &&
-		     currentScoreViewPort()->currentContext()->context()->contextType() == CAContext::Staff
+		     currentScoreViewPort()->currentContext()->context()->contextType() == CAContext::Staff &&
+		     voiceNr <= static_cast<CAStaff*>(currentScoreViewPort()->currentContext()->context())->voiceCount()
 		   )
 			currentScoreViewPort()->setSelectedVoice( static_cast<CAStaff*>(currentScoreViewPort()->currentContext()->context())->voiceAt(voiceNr-1) );
 		else
