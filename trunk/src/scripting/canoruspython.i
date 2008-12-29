@@ -94,6 +94,13 @@
 	
 	$result = list;
 }
+%typemap(out) const QList<CAPlayableLength>, QList<CAPlayableLength> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject(const_cast<CAPlayableLength*>(&($1.at(i))), CASwigPython::PlayableLength));
+	
+	$result = list;
+}
 
 void markDelete( PyObject* ); // function used to delete Canorus objects inside Python
 const char* tr( const char * sourceText, const char * comment = 0, int n = -1 );
@@ -180,6 +187,9 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 			break;
 		case CASwigPython::Tuplet:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CATuplet, 0);
+			break;
+		case CASwigPython::PlayableLength:
+			return SWIG_Python_NewPointerObj(new CAPlayableLength(*(static_cast<CAPlayableLength*>(object))), SWIGTYPE_p_CAPlayableLength, 0);
 			break;
 		case CASwigPython::PyConsoleInterface:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAPyConsoleInterface, 0);
