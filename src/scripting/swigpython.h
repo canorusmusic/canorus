@@ -43,6 +43,7 @@ class CASwigPython {
 			Mark,
 			Slur,
 			Tuplet,
+			PlayableLength,
 
 			// Console
 			PyConsoleInterface
