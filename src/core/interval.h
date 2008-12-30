@@ -36,7 +36,7 @@ public:
 
 	CAInterval();
 	CAInterval( int qlt, int qnt );
-	CAInterval( CADiatonicPitch note1, CADiatonicPitch note2 );
+	CAInterval( CADiatonicPitch note1, CADiatonicPitch note2, bool absolute=true );
 
 	CAInterval operator~();
 	CAInterval operator+( CAInterval );
