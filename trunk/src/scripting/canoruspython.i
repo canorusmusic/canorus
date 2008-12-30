@@ -94,6 +94,27 @@
 	
 	$result = list;
 }
+%typemap(out) const QList<CAContext*>, QList<CAContext*> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Context));
+	
+	$result = list;
+}
+%typemap(out) const QList<CAStaff*>, QList<CAStaff*> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Staff));
+	
+	$result = list;
+}
+%typemap(out) const QList<CAVoice*>, QList<CAVoice*> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Voice));
+	
+	$result = list;
+}
 %typemap(out) const QList<CAPlayableLength>, QList<CAPlayableLength> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
@@ -134,9 +155,19 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 		case CASwigPython::Sheet:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CASheet, 0);
 			break;
-		/*case CASwigPython::Context:	//CAContext is always abstract
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAContext, 0);
-			break;*/
+		case CASwigPython::Context: {
+			switch (static_cast<CAContext*>(object)->contextType()) {
+			case CAContext::Staff:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAStaff, 0);
+			case CAContext::LyricsContext:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CALyricsContext, 0);
+			case CAContext::FunctionMarkContext:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarkContext, 0);
+			default:
+				std::cerr << "canoruspython.i: Wrong CAContext::contextType()!" << std::endl;
+			}
+			break;
+		}
 		case CASwigPython::Staff:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAStaff, 0);
 			break;
@@ -146,7 +177,7 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 		case CASwigPython::FunctionMarkContext:
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarkContext, 0);
 			break;
-		/*case CASwigPython::MusElement:	//CAMusElement is always abstract
+		/*case CASwigPython::MusElement:	// TODO: CAMusElement is always abstract and is not subclassed in Python.
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAMusElement, 0);
 			break;*/
 		case CASwigPython::Playable:

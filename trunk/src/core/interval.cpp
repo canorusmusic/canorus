@@ -49,9 +49,10 @@ CAInterval::CAInterval() {
 
 /*!
 	Constructs an interval between the pitches \a pitch1 and \a pitch2.
-	Interval quantity is positive regardless of the order of pitches.
+	Interval quantity is positive regardless of the order of pitches, if \a absolute is True (default).
+	Otherwise, quantity is negative, if second pitch is lower than the first one.
 */
-CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2 ) {
+CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2, bool absolute ) {
 	CADiatonicPitch pLow, pHigh;
 	if ( pitch1.noteName() < pitch2.noteName() ||
 	     pitch1.noteName() == pitch2.noteName() && pitch1.accs() <= pitch2.accs() ) {
@@ -134,6 +135,10 @@ CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2 ) {
 		setQuality( deltaQlt + pHigh.accs() - pLow.accs() + 1 );
 	} else {
 		setQuality( deltaQlt + pHigh.accs() - pLow.accs() );
+	}
+
+	if (!absolute && pitch1.noteName()>pitch2.noteName()) {
+		setQuantity( -quantity() );
 	}
 }
 

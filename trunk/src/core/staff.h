@@ -35,7 +35,7 @@ public:
 	inline CAVoice *voiceAt(int i) { return _voiceList[i]; }
 	inline int voiceIndex(CAVoice *voice) { return _voiceList.indexOf(voice); }
 	inline void removeVoice(CAVoice *voice) { _voiceList.removeAll(voice); }
-	inline QList<CAVoice*>& voiceList() { return _voiceList; }
+	inline QList<CAVoice*> voiceList() { return _voiceList; }
 	CAVoice *voiceByName(const QString name);
 
 	void     addVoice(CAVoice *voice);
