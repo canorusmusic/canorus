@@ -125,6 +125,7 @@
 
 void markDelete( PyObject* ); // function used to delete Canorus objects inside Python
 const char* tr( const char * sourceText, const char * comment = 0, int n = -1 );
+void rebuildUi();
 
 %include "scripting/canoruslibrary.i"
 
@@ -136,6 +137,18 @@ QList<void*> markedObjects = QList<void*>(); // define markedObjects
 
 void markDelete( PyObject* object ) {
 	markedObjects << SWIG_Python_GetSwigThis(object)->ptr;
+}
+
+#ifndef SWIGCPP
+#include "canorus.h"
+#endif
+
+void rebuildUi() {
+#ifndef SWIGCPP
+	CACanorus::rebuildUI();
+#else
+	std::cout << "CanorusPython: No Canorus GUI found." << std::endl;
+#endif
 }
 
 const char* tr( const char * sourceText, const char * comment = 0, int n = -1 ) {
