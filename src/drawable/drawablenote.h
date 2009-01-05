@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -39,7 +39,12 @@ class CADrawableNote : public CADrawableMusElement {
 		bool _shadowNote;	///Is the current note shadow note?
 		CADrawableAccidental *_drawableAcc;
 		CANote::CAStemDirection _stemDirection;	/// This value is StemUp or StemDown only, no StemPreferred or StemNeutral present. We generate this on CADrawableNote constructor.
+		int _stemLength;
 		int _noteHeadWidth;
+		float _penWidth; // pen width for stem
+		int _noteHeadCodepoint; // Unicode codepoint for the notehead symbol.
+		int _stemUpCodepoint;
+		int _stemDownCodepoint;
 		static const int HUNDREDTWENTYEIGHTH_STEM_LENGTH;
 		static const int SIXTYFOURTH_STEM_LENGTH;
 		static const int THIRTYSECOND_STEM_LENGTH;
