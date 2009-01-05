@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -27,15 +27,14 @@ CADrawableStaff::CADrawableStaff(CAStaff *s, int x, int y) : CADrawableContext(s
 
 void CADrawableStaff::draw(QPainter *p, const CADrawSettings s) {
 	QPen pen;
-	pen.setWidth((int)(STAFFLINE_WIDTH*s.z));
+	pen.setWidthF(STAFFLINE_WIDTH*s.z);
 	pen.setCapStyle(Qt::RoundCap);
 	pen.setColor(s.color);
 	p->setPen(pen);
-	
-	int dy=0;
-	for (int i=0; i<staff()->numberOfLines(); i++, dy = (int)(((float)i/(staff()->numberOfLines()-1)) * _height * s.z)) {
-		p->drawLine(0, s.y + dy,
-		            s.w, s.y + dy);
+	int dy = qRound(lineSpaceF()*s.z);
+	for (int i=0; i<staff()->numberOfLines(); i++) {
+		p->drawLine(0, s.y + dy*i,
+		            s.w, s.y + dy*i);
 	}
 }
 
@@ -53,9 +52,9 @@ CADrawableStaff *CADrawableStaff::clone() {
 	\return Center of a space/line of a staff in absolute world units.
 */
 int CADrawableStaff::calculateCenterYCoord(int pitch, CAClef *clef) {
-	return (int)( yPos() + height() -
-	               //middle c in logical pitch is 28
-	               ((pitch - 28) + (clef?clef->c1():-2) + 0.0)*(lineSpace()/2)
+	// middle c in logical pitch is 28.
+	return qRound( yPos() + height() - 1 -
+	               (((pitch - 28) + (clef?clef->c1():-2))/(qreal)2)*(lineSpace())
 	            );
 }
 
