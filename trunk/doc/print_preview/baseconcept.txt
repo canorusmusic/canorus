@@ -1,0 +1,219 @@
+              Printing parameterand Preview of Print in Canorus
+              ========================================
+
+This is a rather short basis concept, classes and their functions.
+Roughly all was based on how in NoteEdit I implemented this stuff.
+
+CAExternProgram - Start external program and fetch it's input
+                  Sends signal when program is finished
+
+CATypesetCtl    - Control for preview / print: Export, Typesetting
+                  program. Creates PDF file from the exported class
+                  Requires a parameter table/map to transform a concrete
+                  parameter to a typesetter program option (subclass ?)
+
+CAPreviewCtl     - Control preview: Create PDF file and let it display
+                   Base class for all preview classes
+
+CALilyPreviewCtl - Preview for lilypond
+...              - other preview classes as needed
+CADirectPreviewCtl - internal renderer if we ever create one (or
+                     use the one from mscore)
+
+CAPrintCtl       - Reacts on menu item, defines Typesetting program, export 
+                   type, displays the corresponding parameter dialog and uses
+                   CATypesetCtl to create the file to be printed
+
+CAPreviewView    - Internal view for showing created PDF file
+
+CAPreviewModel   - Configuration options and other data for preview
+
+CAPrintModel     - Configuration options and other data for printing
+
+CAParamsForm     - Generic parameter form (quick alternative
+                   to create form for dialogs or similar instead
+                   of using UI files from designer - ideally
+                   to be used by scripts as well)
+
+CAParamsDelegate - Contains a thin interface to CAParamsForm but avoids
+                   Qt dependencies so it can be used via extern scripts.
+                   (Problem: How to call script functions from Canorus when
+                    a signal occurs calling a method in the delegate ?)
+
+CAExportDlg      - Dialog for export options (if needed)
+
+CAPrintDlg       - Dialog for print options (if needed)
+
+
+CAExternProgram
+===============
+
+It's task is to start an extern program. It uses QProcess to
+be platform independent. Output from the program can be either
+put out to stdout/err or delivered as QString. When the program
+finishes a signal (Qt Signal/Slot mechanism) is sent.
+
+CATypesetCtl
+============
+
+It performs an export of the currently defined typesetter program.
+If the export was succesful the typesetter program is started and
+the output written to a specified log file. It is optionally possible
+to convert a postscript file to pdf. This operation requires 
+ghostscript to be installed. In a future version other output types
+might be supported.
+In case anything of the above fails an appropriate error message
+is shown to the user.
+
+CAPreviewCtl
+============
+
+The abstract base class provides methods for creating a pdf files and
+showing it on the screen. It is used by all preview classes to perform
+the preview. It creates the preview model and provides access to it.
+
+CALilyPreviewCtl
+================
+
+It defines all the programs, parameters, versions etc. for performing
+a proper lilypond output and conversion with the help of it's base methods.
+It loads and saves the user changeable parameters.
+
+CADirectPreviewCtl
+==================
+
+It defines all the parameters, versions etc. for performing a proper
+output using (one of) the internal renderer with the help of it's base 
+methods. It loads and saves the user changeable parameters. The pdf is
+then created and printed using the defined print system.
+
+CAPrintCtl
+==========
+
+Starts the print process by invoking the Qt print dialog. All the stored
+parameters from the print model are used as base (loaded when the print 
+control object is created). Changes concerning the print model by the print
+dialog are saved. 
+
+CAPDFView
+=========
+
+(previously CAPreviewView, but there is only PDF, so I renamed it)
+It shows a given pdf file on screen. Uses poppler library for display.
+Additionally zoom in/out can be done here (zoom position is not stored).
+While the view is opened Canorus can still be used as normal (non-modal).
+
+CAPreviewModel
+==============
+
+It stores all the changeable parameters for performing print preview as
+well as the currently selected Typesetter. It provides access methods
+for each parameter as well as for the changement of the whole model.
+
+CAPrintModel
+============
+
+It stores all the changeable parameters for performing the print itself
+including the selected Typseseter. It provides access methods for each
+parameter as well as for the changement of the whole model. Also there
+is a method to use a preview model as a base for the print model.
+
+CAParamsForm
+============
+
+It's possible to create a parameter form or dialog with the help of
+this class in a simple way (no need to use the qt4 designer). The
+form can be filled with standard widgets (buttons, comboboxes, 
+spinboxes, checkboxes, empty space(r), labels, line edits) in a
+grid layout. You additionally only define the position in the grid.
+You can read and change these widgets any time using a widget ID
+being generated at creation time. Also widgets can be deleted.
+Finally there is a slot for interaction when the user changes a value
+and another one when the user presses a button (returning the ID of
+the pressed button). Future additions could be double spin boxes,
+date/time edits, dials, text browser, lines / frames and general
+options for changing the layout (spacing, margin).
+
+CAExportDlg
+===========
+
+Based on CAParamsForm it is a view for input of special export dialog
+options that are only temporarily needed for one export or are special
+options only needed for a certain typesetter. The export class itself
+has to store and load these parameters as settings.
+
+CAPrintDlg
+==========
+
+Possible dialog to be embedded into the normal dialog for typesetter
+specific options (see above). While normally upon closing the export
+dialog the pdf file is created alternatively this second dialog could
+be omitted if it can be embedded into the print dialog provided by
+Qt (KDE3 did support such an embedding mechanism - see NoteEdit).
+Also this class could be used as a wrapper class for a Qt printing dialog
+(or anther provided by some lib(s)) if the interface is to complex to fit
+into CAPrintCtl.
+
+CASettingsDlg
+=============
+
+It let's the composer select all the setting of Canorus. For print and
+preview all changeble parameters from the currently selected Typesetter
+are displayed and can be changed. One options should be mentioned: The
+composer can chose to automatically set the printing options from the
+preview options. In this case these options cannot be changed via this
+dialog anymore (this also affects the print model!).
+
+Therefore the class needs to be extended. Currently all settings are
+created via designer. To be more flexible settings pages have to be
+addable, IDs need to be stored for each page. This will be useful for
+plugins as well needing user settings. Also an interface is needed for
+storing and restoring of settings (via CASettings class).
+
+Generally
+=========
+
+Upon creation the default preview ctl is created when there are no stored
+settings for the typesetter. Else loading settings creates the preview ctl.
+The corresponding method for loading settings from the abstract interface
+is called afterwards. Similar happens for the print ctl but without abstract
+interface.
+
+Integration
+===========
+
+
+Development steps
+=================
+
+1) CAExternProgram => Interface
+2) CATypesetCtl    => Export
+3) CAPrintCtl      => Export/Core
+4) CAPrintModel    => Core
+5) CAPreviewModel  => Core
+6) CAParamsForm for 7) if needed => Widget
+7) CAPrintDlg if needed (could use "lpr" for a first test, => UI
+   but this won't work on Win32)
+
+After these steps (and integration) printing should be basically possible.
+
+8) CASettingsDlg for Print => UI
+9) CAPreviewCtl            => Export/Core
+10) CALilyPreviewCtl       => Export
+11) CAParamsForm for 11) if not already implemented => Widget
+12) CAExportDlg (optionally see above) => UI
+13) CASettingsDlg for Preview  => UI
+
+Now preview and settings for print/preview should work
+
+14) CADirectPreviewCtl => Core
+15) CAPDFView          => Widget/UI
+
+This should make the internal view possible
+
+Notes:
+=====
+To create lilypond svg output use
+-dbackend=svg
+for lilypond 2.11.55
+
