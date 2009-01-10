@@ -4536,12 +4536,17 @@ void CAMainWin::copySelection( CAScoreViewPort *v ) {
 					int idx = staff->voiceIndex(voice);
 					bool addToChord = false;
 					int eltidx = eltMap[context].indexOf(elt);
-					CAMusElement* prev = 0;
 					CANote* note = (pl->musElementType() == CAMusElement::Note)?static_cast<CANote*>(pl):0;
-					if(note && eltidx>0
-							&& (prev = eltMap[context][eltidx-1]) && prev->musElementType() == CAMusElement::Note) {
-						CANote *prevNote = static_cast<CANote*>(prev);
-						addToChord = prev->timeStart() == note->timeStart();
+					if(note) {
+						CAMusElement* prev = 0;
+						for(int previdx = eltidx-1; previdx >= 0; previdx--) {
+							if((prev = eltMap[context][previdx]) && prev->musElementType() == CAMusElement::Note 
+									&& pl->voice() == static_cast<CAPlayable*>(prev)->voice()) {
+								CANote *prevNote = static_cast<CANote*>(prev);
+								addToChord = prev->timeStart() == note->timeStart();
+								break;
+							}
+						}
 					}
 					CAPlayable* cloned = pl->clone(voices[idx]);
 					voices[idx]->append(cloned, addToChord);
@@ -4880,13 +4885,13 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 			if(context->contextType()==CAContext::Staff) {
 				CAStaff* staff = static_cast<CAStaff*>(currentContext), *cbstaff = static_cast<CAStaff*>(context);
 				int voice = uiVoiceNum->getRealValue() ? uiVoiceNum->getRealValue()-1 : uiVoiceNum->getRealValue();
-				int voiceDiff = cbstaff->voiceCount()-staff->voiceCount();
-				for(int i=voice; i< voiceDiff+voice; i++) {
+				for(int i=staff->voiceCount()-1; i < voice+cbstaff->voiceCount()-1; i++) {
 					staff->addVoice();
 				}
 				for(int i=voice; i<voice+cbstaff->voiceCount(); i++) {
+					int cbi = i-voice;
 					CADrawableMusElement *drawable = v->nearestRightElement(coords.x(), coords.y(), staff->voiceAt(i));
-					voiceMap[cbstaff->voiceAt(i)] = staff->voiceAt(i);
+					voiceMap[cbstaff->voiceAt(cbi)] = staff->voiceAt(i);
 					CAMusElement* right = (drawable)?drawable->musElement():0;
 
 					// Can't have playables between two notes linked by a tie. Remove the tie in this case.
@@ -4904,8 +4909,8 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 						else {
 							// pasting after an "open" tie - if the first paste element is a note, connect them. Otherwise delete the tie.
 							int idx = 0;
-							for(;idx < cbstaff->voiceAt(i)->musElementCount() && !cbstaff->voiceAt(i)->musElementAt(idx)->isPlayable();idx++);
-							CAPlayable* first = (idx!=cbstaff->voiceAt(i)->musElementCount())?static_cast<CAPlayable*>(cbstaff->voiceAt(i)->musElementAt(idx)):0;
+							for(;idx < cbstaff->voiceAt(cbi)->musElementCount() && !cbstaff->voiceAt(cbi)->musElementAt(idx)->isPlayable();idx++);
+							CAPlayable* first = (idx!=cbstaff->voiceAt(cbi)->musElementCount())?static_cast<CAPlayable*>(cbstaff->voiceAt(cbi)->musElementAt(idx)):0;
 							if(first && first->musElementType() == CAMusElement::Note)
 								static_cast<CANote*>(first)->setTieEnd(tie);
 							else
@@ -4915,10 +4920,10 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 
 					QHash<CATuplet*, QList<CAPlayable*> > tupletMap;
 					QHash<CASlur*, CANote*> slurMap;
-					foreach(CAMusElement* elt, cbstaff->voiceAt(i)->musElementList()) {
+					foreach(CAMusElement* elt, cbstaff->voiceAt(cbi)->musElementList()) {
 						CAMusElement* cloned = (elt->isPlayable())?static_cast<CAPlayable*>(elt)->clone(staff->voiceAt(i)):elt->clone(staff);
 						CANote* n = (elt->musElementType() == CAMusElement::Note)?static_cast<CANote*>(elt):0;
-						CAMusElement* prev = cbstaff->voiceAt(i)->previous(n);
+						CAMusElement* prev = cbstaff->voiceAt(cbi)->previous(n);
 						CANote* prevNote = (prev&&prev->musElementType() == CAMusElement::Note)?static_cast<CANote*>(prev):0;
 						bool chord = n && prevNote && prevNote->timeStart() == n->timeStart();
 						if(n)
