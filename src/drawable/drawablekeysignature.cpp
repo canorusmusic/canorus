@@ -10,6 +10,7 @@
 
 #include "drawable/drawablekeysignature.h"
 #include "drawable/drawablestaff.h"
+#include "core/clef.h"
 #include "core/keysignature.h"
 #include "drawable/drawableaccidental.h"
 

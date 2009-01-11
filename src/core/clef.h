@@ -11,8 +11,8 @@
 #include <QString>
 
 #include "core/muselement.h"
+#include "core/staff.h"
 
-class CAStaff;
 class CAContext;
 
 class CAClef : public CAMusElement {
@@ -45,6 +45,7 @@ public:
 	CAClef( CAPredefinedClefType type, CAStaff *staff, int time, int offsetInterval=0 );
 	CAClef( CAClefType type, int c1, CAStaff *staff, int time, int offset=0 );
 	CAClef *clone(CAContext* context=0);
+	CAStaff *staff() { return static_cast<CAStaff*>(context()); }
 
 	void setPredefinedType( CAPredefinedClefType type );
 	CAClefType clefType() { return _clefType; }

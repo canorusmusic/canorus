@@ -21,6 +21,7 @@
 class CADocument;
 class CASheet;
 class CAStaff;
+class CAClef;
 class CAKeySignature;
 class CATimeSignature;
 
@@ -44,18 +45,24 @@ private:
 	void readDefaults();
 	void readPartList();
 	void readPart();
-	void readMeasure( CAStaff* );
-	void readAttributes( CAStaff* );
-	void readNote( CAStaff*, int );
-	void readForward( CAStaff*, int );
+	void readMeasure( QString partId );
+	void readAttributes( QString partId );
+	void readNote( QString partId, int );
+	void readForward( QString partId, int );
+	CAVoice *addVoiceIfNeeded( QString partId, int staff, int voice );
 
 	QString         _musicXmlVersion;
 
 	CADocument *_document;
-	QHash<QString, CAStaff*> _staffMap;
-	QHash<CAStaff*, int> _midiChannel;
-	QHash<CAStaff*, int> _midiProgram;
-	QHash<CAStaff*, int> _divisions;
+	QHash<QString, QHash<int, CAVoice*> > _partMapVoice; // part name -> map of voice number : voice
+	QHash<QString, QList<CAStaff*> > _partMapStaff; // part name -> list of staffs
+	QHash<QString, QHash<int, CAClef*> > _partMapClef; // part name -> map of staff number : last clef
+	QHash<QString, QHash<int, CAKeySignature*> > _partMapKeySig; // part name -> map of staff number : last keysig
+	QHash<QString, QHash<int, CATimeSignature*> > _partMapTimeSig; // part name -> map of staff number : last timesig
+	QHash<QString, int> _midiChannel;
+	QHash<QString, int> _midiProgram;
+	QHash<QString, QString> _partName;
+	QHash<QString, int> _divisions; // part name -> divisions
 };
 
 #endif /* MUSICXMLIMPORT_H_ */

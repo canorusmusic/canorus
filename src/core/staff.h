@@ -14,7 +14,7 @@
 class QPainter;
 
 #include "core/context.h"
-#include "core/clef.h"
+#include "core/muselement.h"
 
 class CASheet;
 class CAContext;

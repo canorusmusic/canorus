@@ -13,6 +13,7 @@
 
 #include "core/staff.h"
 #include "core/muselement.h"
+#include "core/clef.h"
 #include "core/keysignature.h"
 #include "core/timesignature.h"
 #include "core/voice.h"
