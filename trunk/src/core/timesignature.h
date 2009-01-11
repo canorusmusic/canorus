@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -11,8 +11,8 @@
 #include <QString>
 
 #include "core/muselement.h"
+#include "core/staff.h"
 
-class CAStaff;
 class CAContext;
 
 class CATimeSignature : public CAMusElement {
@@ -24,28 +24,29 @@ class CATimeSignature : public CAMusElement {
 			Neomensural,
 			Baroque
 		};
-		
+
 		CATimeSignature(int beats, int beat, CAStaff *staff, int startTime, CATimeSignatureType type = Classical);
-		
+
 		CATimeSignature *clone(CAContext* context=0);
 		~CATimeSignature();
-	
+		CAStaff *staff() { return static_cast<CAStaff*>(context()); }
+
 		int beats() { return _beats; }
 		void setBeats(int beats) { _beats = beats; }
-		
+
 		int beat() { return _beat; }
 		void setBeat(int beat) { _beat = beat; }
-		
+
 		CATimeSignatureType timeSignatureType() { return _timeSignatureType; }
-		
+
 		const QString timeSignatureML();  // Deprecated
 		const QString timeSignatureTypeML(); // Deprecated
-		
+
 		static const QString timeSignatureTypeToString(CATimeSignatureType);
 		static CATimeSignatureType timeSignatureTypeFromString(const QString);
-		
+
 		int compare(CAMusElement *elt);
-		
+
 	private:
 		int _beats;
 		int _beat;
