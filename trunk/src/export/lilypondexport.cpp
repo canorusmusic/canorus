@@ -713,9 +713,9 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 						out() << "% " << curVoiceName << "\n";
 
 						// curVoiceLilyCommand is "\voiceOne", "\voiceTwo", etc. to get proper stem directions
-						// Only use this if there is more than one voice.
+						// Only use this if there is more than one voice and less then five (Lily limitation).
 						QString curVoiceLilyCommand;
-						if ( voiceCount > 1 ) {
+						if ( voiceCount > 1 && v < 4 ) {
 							curVoiceLilyCommand.setNum( v + 1 );
 							curVoiceLilyCommand = "\\voice" + curVoiceLilyCommand;
 							spellNumbers( curVoiceLilyCommand );

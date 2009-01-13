@@ -271,17 +271,19 @@ void CAMusicXmlImport::readMeasure( QString partId ) {
 	}
 
 	// Finish the measure (add barlines to all staffs)
-	for (int staffIdx=0; staffIdx<_partMapVoice[partId].values().size(); staffIdx++) {
-		CAStaff *staff = _partMapVoice[partId].values()[staffIdx]->staff();
-		int lastVoice=0;
+	for (int staffIdx=0; staffIdx<_partMapStaff[partId].size(); staffIdx++) {
+		CAStaff *staff = _partMapStaff[partId][staffIdx];
+		int lastVoice=-1;
 		for (int i=0; i<staff->voiceCount(); i++) {
-			if ( staff->voiceAt(lastVoice)->lastTimeEnd() < staff->voiceAt(i)->lastTimeEnd() ) {
+			if ( lastVoice==-1 || staff->voiceAt(lastVoice)->lastTimeEnd() < staff->voiceAt(i)->lastTimeEnd() ) {
 				lastVoice = i;
 			}
 		}
 
-		staff->voiceAt(lastVoice)->append( new CABarline( CABarline::Single, staff, 0 ) );
-		staff->synchronizeVoices();
+		if (lastVoice!=-1) {
+			staff->voiceAt(lastVoice)->append( new CABarline( CABarline::Single, staff, 0 ) );
+			staff->synchronizeVoices();
+		}
 	}
 }
 
