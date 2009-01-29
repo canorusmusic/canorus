@@ -1,4 +1,4 @@
-Canorus documentation is split in two parts:
+Canorus documentation is split to two parts:
  - Developer's guide
  - User's guide
 
@@ -10,10 +10,10 @@ Developer's guide:
 Is generated out from Canorus source code using doxygen.
 Doxygen generates html files.
 
-User's guide
-============
-Is written in Lyx. To edit user's guide open your_language.lyx
-in Lyx and export it to plain Latex.
+User's guide:
+Is written in Lyx. To edit or translate User's guide open
+your_language.lyx in Lyx and export it to plain Latex
+(generates your_language.tex which is needed).
 
 You can then compile it to:
  - PDF (for printing)
