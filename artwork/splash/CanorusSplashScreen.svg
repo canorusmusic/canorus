@@ -1335,14 +1335,14 @@
      inkscape:pageshadow="2"
      inkscape:zoom="2.032932"
      inkscape:cx="156.09769"
-     inkscape:cy="163.30421"
+     inkscape:cy="143.6282"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="400px"
      height="300px"
      inkscape:window-width="1590"
      inkscape:window-height="1129"
-     inkscape:window-x="0"
+     inkscape:window-x="1400"
      inkscape:window-y="0"
      showgrid="false" />
   <metadata
@@ -1442,13 +1442,13 @@
          id="text2519"
          y="-110.47835"
          x="-9.7765493"
-         style="font-size:41.97792815999999760px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.84969485000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867220999999997;font-family:FreeSerif;opacity:1;filter:url(#filter3720)"
+         style="font-size:41.97792816px;font-style:normal;font-weight:bold;text-align:justify;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.84969485;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221;filter:url(#filter3720);font-family:FreeSerif"
          xml:space="preserve"><tspan
-           style="font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.84969485000000000;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867220999999997;font-family:FreeSerif"
+           style="font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.84969485;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.51867221;font-family:FreeSerif"
            y="-110.47835"
            x="-9.7765493"
            id="tspan2521"
-           sodipodi:role="line">0.6</tspan></text>
+           sodipodi:role="line">0.7</tspan></text>
     </g>
     <text
        xml:space="preserve"
@@ -1460,7 +1460,7 @@
          id="tspan2531"
          x="334.36511"
          y="254.2381"
-         style="font-weight:bold;fill:url(#linearGradient3726);fill-opacity:1;stroke:#e95d00;stroke-width:1.06799996;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:FreeSerif">0.6</tspan></text>
+         style="font-weight:bold;fill:url(#linearGradient3726);fill-opacity:1;stroke:#e95d00;stroke-width:1.06799996;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:FreeSerif">0.7</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -1477,7 +1477,7 @@
          sodipodi:role="line"
          id="tspan2499"
          x="9.9567928"
-         y="224.80711">Copyright (C) 2006-2008 Canorus development team</tspan><tspan
+         y="224.80711">Copyright (C) 2006-2009 Canorus development team</tspan><tspan
          sodipodi:role="line"
          x="9.9567928"
          y="238.60622"
