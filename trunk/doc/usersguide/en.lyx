@@ -1,0 +1,120 @@
+#LyX 1.6.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+\begin_inset Graphics
+	filename images/canorus.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part
+Introduction
+\end_layout
+
+\begin_layout Standard
+Canorus is a free cross-platform music score editor.
+ Our website is 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.canorus.org
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Part
+Writing music
+\end_layout
+
+\begin_layout Section
+Inserting notes and rests
+\end_layout
+
+\begin_layout Standard
+Left click on staff, insert playable icon 
+\begin_inset Graphics
+	filename images/insertplayable.png
+	scale 50
+
+\end_inset
+
+, select note length at top and click on the staff.
+ Right click for rests.
+\end_layout
+
+\begin_layout Part
+Printing
+\end_layout
+
+\begin_layout Standard
+Canorus uses external typesetters for printing.
+\end_layout
+
+\begin_layout Part
+Import and export
+\end_layout
+
+\begin_layout Standard
+Canorus exports to Midi, MusicXml and Lilypond format.
+ Canorus imports MusicXml.
+\end_layout
+
+\end_body
+\end_document

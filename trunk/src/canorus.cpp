@@ -22,6 +22,7 @@
 #include "core/sheet.h"
 #include "core/settings.h"
 #include "core/undo.h"
+#include "control/helpctl.h"
 
 // define private static members
 QApplication *CACanorus::_mainApp;
@@ -30,6 +31,7 @@ CASettings *CACanorus::_settings;
 CAAutoRecovery *CACanorus::_autoRecovery;
 CAMidiDevice *CACanorus::_midiDevice;
 CAUndo *CACanorus::_undo;
+CAHelpCtl *CACanorus::_help;
 QList<QString> CACanorus::_recentDocumentList;
 QString CACanorus::_prevPath;
 
@@ -57,6 +59,11 @@ QList<QString> CACanorus::locateResource(const QString fileName) {
 
 	// Try current working directory
 	curPath = QDir::currentPath() + "/" + fileName;
+	if (QFileInfo(curPath).exists())
+		paths << QFileInfo(curPath).absoluteFilePath();
+
+	// Try parent working directory (used for doc outside src directory)
+	curPath = QCoreApplication::applicationDirPath() + "/../" + fileName;
 	if (QFileInfo(curPath).exists())
 		paths << QFileInfo(curPath).absoluteFilePath();
 
@@ -189,6 +196,10 @@ void CACanorus::initAutoRecovery() {
 
 void CACanorus::initUndo() {
 	_undo = new CAUndo();
+}
+
+void CACanorus::initHelp() {
+	_help = new CAHelpCtl();
 }
 
 void CACanorus::insertRecentDocument( QString filename ) {

@@ -268,12 +268,13 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/transposeview.cpp
 )
 
-SET(Canorus_Gui_Ctl_Srcs
+SET(Canorus_Gui_Ctl_Srcs       # Control instances for user interface or views 
 	control/previewctl.cpp
 	control/printctl.cpp
+	control/helpctl.cpp
 )
 
-SET(Canorus_Ctl_Srcs            # Control instances for user interface or views and core
+SET(Canorus_Ctl_Srcs            # Control instances for core
 	control/externprogram.cpp
 	control/typesetctl.cpp
 )
