@@ -6,7 +6,7 @@ pdf:
 html:
 	htlatex *.tex
 
-qthelp:
+qthelp: html
 	qcollectiongenerator *.qhcp
 
 clean: clean-html clean-pdf clean-qthelp
