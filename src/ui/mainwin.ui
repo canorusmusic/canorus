@@ -523,9 +523,6 @@
    </property>
   </action>
   <action name="uiUsersGuide" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="text" >
     <string>User's guide...</string>
    </property>

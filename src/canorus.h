@@ -22,6 +22,7 @@ class CASettings;
 class CAMidiDevice;
 class CADocument;
 class CAUndo;
+class CAHelpCtl;
 
 class CACanorus {
 public:
@@ -33,6 +34,7 @@ public:
 	static void initScripting();
 	static void initAutoRecovery();
 	static void initUndo();
+	static void initHelp();
 	static void parseOpenFileArguments(int argc, char *argv[]);
 	static void cleanUp();
 
@@ -63,6 +65,8 @@ public:
 	inline static CAMidiDevice *midiDevice() { return _midiDevice; }
 	inline static void setMidiDevice(CAMidiDevice *d) { _midiDevice = d; }
 
+	inline static CAHelpCtl *help() { return _help; }
+
 	static void rebuildUI( CADocument *document, CASheet *sheet );
 	static void rebuildUI( CADocument *document=0 );
 
@@ -82,5 +86,8 @@ private:
 
 	// Auto recovery
 	static CAAutoRecovery *_autoRecovery;
+
+	// Help
+	static CAHelpCtl *_help;
 };
 #endif /* CANORUS_H_ */

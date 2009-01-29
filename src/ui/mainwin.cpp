@@ -32,6 +32,7 @@
 
 #include "control/previewctl.h"
 #include "control/printctl.h"
+#include "control/helpctl.h"
 
 #include "interface/playback.h"
 #include "interface/engraver.h"
@@ -3656,6 +3657,10 @@ void CAMainWin::sourceViewPortCommit(QString inputString) {
 	setCurrentViewPort( v );
 }
 
+void CAMainWin::on_uiUsersGuide_triggered() {
+	CACanorus::help()->showUsersGuide();
+}
+
 void CAMainWin::on_uiAboutQt_triggered() {
 	QMessageBox::aboutQt( this, tr("About Qt") );
 }
@@ -4540,7 +4545,7 @@ void CAMainWin::copySelection( CAScoreViewPort *v ) {
 					if(note) {
 						CAMusElement* prev = 0;
 						for(int previdx = eltidx-1; previdx >= 0; previdx--) {
-							if((prev = eltMap[context][previdx]) && prev->musElementType() == CAMusElement::Note 
+							if((prev = eltMap[context][previdx]) && prev->musElementType() == CAMusElement::Note
 									&& pl->voice() == static_cast<CAPlayable*>(prev)->voice()) {
 								CANote *prevNote = static_cast<CANote*>(prev);
 								addToChord = prev->timeStart() == note->timeStart();
