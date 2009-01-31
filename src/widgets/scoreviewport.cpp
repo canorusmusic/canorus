@@ -1219,6 +1219,20 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 			e->x() - ((_lastMousePressCoords.x()-_worldX) * _zoom - _stylusMask.width()/2),
 			e->y() - ((_lastMousePressCoords.y()-_worldY) * _zoom - _stylusMask.height()/2)
 		);
+
+		_stylusMask.setPixel( coordInImage, 1 );
+
+		coordInImage.setX( coordInImage.x()-1 );
+		_stylusMask.setPixel( coordInImage, 1 );
+
+		coordInImage.setX( coordInImage.x()+2 );
+		_stylusMask.setPixel( coordInImage, 1 );
+
+		coordInImage.setY( coordInImage.y()-1 );
+		coordInImage.setX( coordInImage.x()-1 );
+		_stylusMask.setPixel( coordInImage, 1 );
+
+		coordInImage.setY( coordInImage.y()+2 );
 		_stylusMask.setPixel( coordInImage, 1 );
 	}
 

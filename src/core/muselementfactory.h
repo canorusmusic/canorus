@@ -91,7 +91,7 @@ public:
 
 	inline CAPlayableLength& playableLength() { return _playableLength; }
 
-	inline void setPlayableLength( CAPlayableLength& playableLength )
+	inline void setPlayableLength( CAPlayableLength playableLength )
 	{ _playableLength = playableLength; };
 
 	void addPlayableDotted( int add, CAPlayableLength curLength );

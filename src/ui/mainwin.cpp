@@ -33,6 +33,7 @@
 #include "control/previewctl.h"
 #include "control/printctl.h"
 #include "control/helpctl.h"
+#include "control/stylusctl.h"
 
 #include "interface/playback.h"
 #include "interface/engraver.h"
@@ -151,6 +152,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_mode = SelectMode;
 	_playback = 0;
 	_playbackViewPort = 0;
+	_stylusCtl = new CAStylusCtl();
 	_repaintTimer = 0;
 	_animatedScroll = true;
 	_lockScrollPlayback = false;
@@ -1831,9 +1833,12 @@ void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords) {
 				c->addToSelection(musEltList);
 			}
 		}
+		break;
 	}
 	case StylusMode: {
 		c->setStylusMaskVisible(false);
+		_stylusCtl->detectAndInsertElement( c->stylusMask(), c->lastMousePressCoords(), this );
+		break;
 	}
 	}
 
@@ -3972,7 +3977,7 @@ void CAMainWin::updateSheetToolBar() {
 */
 void CAMainWin::updateVoiceToolBar() {
 	CAContext *context = currentContext();
-	if ( mode()==SelectMode && context && context->contextType() == CAContext::Staff ) {
+	if ( (mode()==SelectMode || mode()==InsertMode || mode()==StylusMode) && context && context->contextType() == CAContext::Staff ) {
 		CAStaff *staff = static_cast<CAStaff*>(context);
 		uiNewVoice->setVisible(true);
 		uiNewVoice->setEnabled(true);
