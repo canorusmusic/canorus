@@ -52,6 +52,7 @@ class CAPyConsole;
 class CATransposeView;
 class CAKeybdInput;
 class CAExport;
+class CAStylusCtl;
 
 class CAMainWin : public QMainWindow, private Ui::uiMainWindow
 {
@@ -329,6 +330,7 @@ private:
 
 	CAViewPortContainer *_currentViewPortContainer;
 	QList<CAViewPortContainer *>_viewPortContainerList;
+	CAStylusCtl *_stylusCtl;
 
 	QList<CAViewPort *> _viewPortList;
 	QHash<CAViewPortContainer*, CASheet*> _sheetMap;

@@ -962,6 +962,10 @@
    </property>
   </action>
   <action name="uiStylusMode" >
+   <property name="icon" >
+    <iconset>
+     <normaloff>images/general/stylus.svg</normaloff>images/general/stylus.svg</iconset>
+   </property>
    <property name="checkable" >
     <bool>true</bool>
    </property>

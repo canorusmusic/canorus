@@ -214,6 +214,8 @@ public:
 	inline bool shadowNoteVisible() { return _shadowNoteVisible; }
 	inline void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; setShadowNoteVisibleOnLeave(visible); }
 
+	inline QImage& stylusMask() { return _stylusMask; }
+
 	inline bool stylusMaskVisible() { return _stylusMaskVisible; }
 	inline void setStylusMaskVisible(bool visible) { _stylusMaskVisible = visible; }
 
