@@ -423,7 +423,12 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		importMark( attributes );
 		_curMark->setColor(_color);
 	} else if (qName == "playable-length") {
-		_curPlayableLength = CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("music-length")), attributes.value("dotted").toInt() );
+		CAPlayableLength pl = CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("music-length")), attributes.value("dotted").toInt() );
+		if (_depth.top()=="mark") {
+			_curTempoPlayableLength = pl;
+		} else {
+			_curPlayableLength = pl;
+		}
 	} else if (qName == "diatonic-pitch") {
 		_curDiatonicPitch = CADiatonicPitch( attributes.value("note-name").toInt(), attributes.value("accs").toInt() );
 	} else if (qName == "diatonic-key") {
@@ -622,7 +627,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		_curRest = 0;
 	} else if (qName == "mark") {
 		if ( !_version.startsWith("0.5") && _curMark->markType()==CAMark::Tempo ) {
-			static_cast<CATempo*>(_curMark)->setBeat( _curPlayableLength );
+			static_cast<CATempo*>(_curMark)->setBeat( _curTempoPlayableLength );
 		}
 	} else if (qName == "function-mark") {
 		if ( !_version.startsWith("0.5") && _curMusElt->musElementType()==CAMusElement::FunctionMark ) {

@@ -78,6 +78,7 @@ private:
 	CADiatonicPitch  _curDiatonicPitch;
 	CADiatonicKey    _curDiatonicKey;
 	CAPlayableLength _curPlayableLength;
+	CAPlayableLength _curTempoPlayableLength;
 	QHash<CALyricsContext*, int> _lcMap;       // lyrics context associated voice indices
 	QHash<CASyllable*, int>      _syllableMap; // syllable associated voice indices
 	QColor           _color; // foreground color of elements
