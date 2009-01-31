@@ -614,6 +614,7 @@ IF(APPLE)
 ENDIF(APPLE)
 IF(MINGW)
 	TARGET_LINK_LIBRARIES(canorus "winmm.lib")
+	SET(LINK_FLAGS "${LINK_FLAGS} -mwindows") # Disable console output on Windows
 	IF(USE_PYTHON)
 		TARGET_LINK_LIBRARIES(${SWIG_MODULE_CanorusPython_REAL_NAME} "winmm.lib")
 	ENDIF(USE_PYTHON)
