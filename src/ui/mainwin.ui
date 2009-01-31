@@ -961,6 +961,14 @@
     <string>Resources view</string>
    </property>
   </action>
+  <action name="uiStylusMode" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Stylus mode</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>

@@ -14,6 +14,7 @@
 #include <QRect>
 #include <QLineEdit>
 #include <QTimer>
+#include <QImage>
 
 #include "widgets/viewport.h"
 #include "core/kdtree.h"
@@ -213,6 +214,9 @@ public:
 	inline bool shadowNoteVisible() { return _shadowNoteVisible; }
 	inline void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; setShadowNoteVisibleOnLeave(visible); }
 
+	inline bool stylusMaskVisible() { return _stylusMaskVisible; }
+	inline void setStylusMaskVisible(bool visible) { _stylusMaskVisible = visible; }
+
 	inline bool drawShadowNoteAccs() { return _drawShadowNoteAccs; }
 	inline void setDrawShadowNoteAccs(bool draw) { _drawShadowNoteAccs = draw; }
 
@@ -304,6 +308,10 @@ private:
 	bool _drawShadowNoteAccs;       // Draw shadow note accs?
 	QList<CANote*> _shadowNote;     // List of all shadow notes - one shadow note per drawable staff
 	QList<CADrawableNote*> _shadowDrawableNote;	// List of drawable shadow notes
+
+	// Stylus drawing
+	QImage _stylusMask;
+	bool   _stylusMaskVisible;
 
 	// QLineEdit for editing or creating a lyrics syllable
 	CATextEdit *_textEdit;

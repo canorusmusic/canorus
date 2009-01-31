@@ -272,6 +272,7 @@ SET(Canorus_Gui_Ctl_Srcs       # Control instances for user interface or views
 	control/previewctl.cpp
 	control/printctl.cpp
 	control/helpctl.cpp
+	control/stylusctl.cpp
 )
 
 SET(Canorus_Ctl_Srcs            # Control instances for core

@@ -63,7 +63,8 @@ public:
 		InsertMode,
 		SelectMode,
 		EditMode,
-		ReadOnlyMode
+		ReadOnlyMode,
+		StylusMode
 	};
 
 	CAMainWin(QMainWindow *oParent = 0);
@@ -158,9 +159,12 @@ private slots:
 	void on_uiInvertSelection_triggered();
 	void on_uiDocumentProperties_triggered();
 
-	// Insert
+	// Modes
 	void on_uiSelectMode_toggled(bool);
 	void on_uiEditMode_toggled(bool);
+	void on_uiStylusMode_toggled(bool);
+
+	// Insert
 	void on_uiNewSheet_triggered();
 	void on_uiNewVoice_triggered();
 	void on_uiContextType_toggled(bool, int);
@@ -388,6 +392,8 @@ private:
 		QToolBar     *uiInsertToolBar;
 			QActionGroup *uiInsertGroup;           // Group for mutual exclusive selection of music elements
 			// QAction       *uiSelectMode; // made by Qt Designer
+			// QAction       *uiEditMode; // made by Qt Designer
+			// QAction       *uiStylusMode; // made by Qt Designer
 			// QAction       *uiNewSheet; // made by Qt Designer
 			CAMenuToolButton *uiContextType;
 

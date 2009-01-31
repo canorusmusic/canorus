@@ -156,6 +156,11 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	setDrawShadowNoteAccs( false );
 	setTextEdit( new CATextEdit( _canvas ) );
 	setTextEditVisible( false );
+	_stylusMask = QImage( 300, 300, QImage::Format_Mono );
+	_stylusMask.setColor( 0, 0x00000000 ); // background color is transparent
+	_stylusMask.setColor( 1, 0xff000000 ); // foreground color is black
+	_stylusMask.fill(0);
+	setStylusMaskVisible( false );
 
 	// init scrollbars
 	_vScrollBar = new QScrollBar(Qt::Vertical, this);
@@ -995,6 +1000,13 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		}
 	}
 
+	// draw stylus mask
+	if (_stylusMaskVisible) {
+		p.drawImage( QPoint((_lastMousePressCoords.x() - _worldX) * _zoom - _stylusMask.width()/2,
+				            (_lastMousePressCoords.y() - _worldY) * _zoom - _stylusMask.height()/2),
+				     _stylusMask );
+	}
+
 	// flush the oldWorld coordinates as they're needed for the first repaint only
 	_oldWorldX = _worldX; _oldWorldY = _worldY;
 	_oldWorldW = _worldW; _oldWorldH = _worldH;
@@ -1133,6 +1145,8 @@ void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 		_clickTimer->start();
 	}
 
+	_stylusMask.fill(0);
+
 	emit CAMousePressEvent( e, coords );
 
 	if ( coords!=lastMousePressCoords() ) {
@@ -1199,6 +1213,14 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 		setCursor(Qt::SizeVerCursor);
 	else
 		setCursor(Qt::ArrowCursor);
+
+	if (_stylusMaskVisible) {
+		QPoint coordInImage(
+			e->x() - ((_lastMousePressCoords.x()-_worldX) * _zoom - _stylusMask.width()/2),
+			e->y() - ((_lastMousePressCoords.y()-_worldY) * _zoom - _stylusMask.height()/2)
+		);
+		_stylusMask.setPixel( coordInImage, 1 );
+	}
 
 	emit CAMouseMoveEvent(e, coords);
 

@@ -588,6 +588,7 @@ void CAMainWin::setupCustomUi() {
 	// Insert Toolbar
 	uiInsertToolBar->addAction( uiSelectMode );
 	uiInsertToolBar->addAction( uiEditMode );
+	uiInsertToolBar->addAction( uiStylusMode );
 	uiInsertToolBar->addSeparator();
 	uiContextType->setDefaultAction( uiInsertToolBar->addWidget( uiContextType ) );
 	uiContextType->defaultAction()->setToolTip(tr("Insert context"));
@@ -757,6 +758,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup = new QActionGroup( this );
 	uiInsertGroup->addAction( uiSelectMode );
 	uiInsertGroup->addAction( uiEditMode );
+	uiInsertGroup->addAction( uiStylusMode );
 	uiInsertGroup->addAction( uiNewContext );
 	uiInsertGroup->addAction( uiContextType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertPlayable );
@@ -1285,6 +1287,11 @@ void CAMainWin::on_uiEditMode_toggled(bool checked) {
 		setMode( EditMode );
 }
 
+void CAMainWin::on_uiStylusMode_toggled(bool checked) {
+	if (checked)
+		setMode( StylusMode );
+}
+
 /*!
 	Sets the current mode and updates the GUI and toolbars.
 */
@@ -1654,6 +1661,10 @@ void CAMainWin::scoreViewPortMousePress(QMouseEvent *e, const QPoint coords) {
 
 			break;
 		}
+		case StylusMode: {
+			v->setStylusMaskVisible( true );
+			break;
+		}
 	}
 
 	CAPluginManager::action("onScoreViewPortClick", document(), 0, 0, this);
@@ -1683,14 +1694,15 @@ void CAMainWin::viewPortClicked() {
 */
 void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords) {
 	CAScoreViewPort *c = static_cast<CAScoreViewPort*>(sender());
+
 	if ( mode() == SelectMode && c->resizeDirection()!=CADrawable::Undefined ) {
 		int time = c->coordsToTime(coords.x());
 		time -= (time % CAPlayableLength::musicLengthToTimeLength(CAPlayableLength::Sixteenth)); // round timelength to eighth notes length
-	if ( c->resizeDirection()==CADrawable::Right && (time > c->selection().at(0)->musElement()->timeStart()) ) {
-			c->selection().at(0)->musElement()->setTimeLength( time - c->selection().at(0)->musElement()->timeStart() );
-			c->selection().at(0)->setWidth( c->timeToCoords(time) - c->selection().at(0)->xPos() );
-			c->repaint();
-		} else
+		if ( c->resizeDirection()==CADrawable::Right && (time > c->selection().at(0)->musElement()->timeStart()) ) {
+				c->selection().at(0)->musElement()->setTimeLength( time - c->selection().at(0)->musElement()->timeStart() );
+				c->selection().at(0)->setWidth( c->timeToCoords(time) - c->selection().at(0)->xPos() );
+				c->repaint();
+			} else
 		if ( c->resizeDirection()==CADrawable::Left && (time < c->selection().at(0)->musElement()->timeEnd()) ) {
 			c->selection().at(0)->musElement()->setTimeLength( c->selection().at(0)->musElement()->timeEnd() - time );
 			c->selection().at(0)->musElement()->setTimeStart( time );
@@ -1721,7 +1733,7 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords) {
 		c->setShadowNoteAccs(iNoteAccs);
 		c->repaint();
 	} else
-	if ( mode()!=InsertMode  && e->buttons()==Qt::LeftButton ) { // multiple selection
+	if ( (mode()==SelectMode || mode()==EditMode) && e->buttons()==Qt::LeftButton ) { // multiple selection
 		c->clearSelectionRegionList();
 		int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
 		    w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
@@ -1741,6 +1753,9 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords) {
 				                             musEltList.back()->xPos()+musEltList.back()->width()-musEltList.front()->xPos(), dcList[i]->height()) );
 			}
 		}
+		c->repaint();
+	} else
+	if ( mode()==StylusMode ) {
 		c->repaint();
 	}
 }
@@ -1784,35 +1799,45 @@ void CAMainWin::scoreViewPortMouseRelease(QMouseEvent *e, QPoint coords) {
 		CACanorus::rebuildUI(document(), c->sheet());
 	}
 
-	if ( mode() != InsertMode  && c->lastMousePressCoords()!=coords ) { // area was selected
-		c->clearSelectionRegionList();
+	switch (mode()) {
+	case SelectMode:
+	case EditMode: {
+		if ( c->lastMousePressCoords()!=coords ) { // area was selected
+			c->clearSelectionRegionList();
 
-		if (e->modifiers()==Qt::NoModifier)
-			c->clearSelection();
+			if (e->modifiers()==Qt::NoModifier)
+				c->clearSelection();
 
-		int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
-		    w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
-		if (w<0) { x+=w; w*=(-1); } // user selected from right to left
-		if (h<0) { y+=h; h*=(-1); } // user selected from bottom to top
-		QRect selectionRect( x, y, w, h );
+			int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
+			    w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
+			if (w<0) { x+=w; w*=(-1); } // user selected from right to left
+			if (h<0) { y+=h; h*=(-1); } // user selected from bottom to top
+			QRect selectionRect( x, y, w, h );
 
-		QList<CADrawableContext*> dcList = c->findContextsInRegion( selectionRect );
-		for (int i=0; i<dcList.size(); i++) {
-			QList<CADrawableMusElement*> musEltList = dcList[i]->findInRange( selectionRect.x(), selectionRect.x() + selectionRect.width() );
-			if ( c->selectedVoice() && dcList[i]->context()!=c->selectedVoice()->staff() )
-				continue;
+			QList<CADrawableContext*> dcList = c->findContextsInRegion( selectionRect );
+			for (int i=0; i<dcList.size(); i++) {
+				QList<CADrawableMusElement*> musEltList = dcList[i]->findInRange( selectionRect.x(), selectionRect.x() + selectionRect.width() );
 
-			for (int j=0; j<musEltList.size(); j++)
-				if ((!musEltList[j]->isSelectable()) ||
-					(c->selectedVoice() && musEltList[j]->musElement()->isPlayable() &&
-						static_cast<CAPlayable*>(musEltList[j]->musElement())->voice()!=c->selectedVoice()) ||
-					(musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
-				)
-					musEltList.removeAt(j--);
-			c->addToSelection(musEltList);
+				if ( c->selectedVoice() && dcList[i]->context()!=c->selectedVoice()->staff() )
+					continue;
+
+				for (int j=0; j<musEltList.size(); j++)
+					if ((!musEltList[j]->isSelectable()) ||
+						(c->selectedVoice() && musEltList[j]->musElement()->isPlayable() &&
+							static_cast<CAPlayable*>(musEltList[j]->musElement())->voice()!=c->selectedVoice()) ||
+						(musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
+					)
+						musEltList.removeAt(j--);
+				c->addToSelection(musEltList);
+			}
 		}
-		c->repaint();
 	}
+	case StylusMode: {
+		c->setStylusMaskVisible(false);
+	}
+	}
+
+	c->repaint();
 }
 
 /*!
