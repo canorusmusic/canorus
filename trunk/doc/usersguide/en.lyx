@@ -41,9 +41,11 @@
 
 \begin_body
 
-\begin_layout Title
+\begin_layout Standard
+\align center
 \begin_inset Graphics
 	filename images/canorus.png
+	width 70text%
 
 \end_inset
 
@@ -91,7 +93,7 @@ Inserting notes and rests
 Left click on staff, insert playable icon 
 \begin_inset Graphics
 	filename images/insertplayable.png
-	scale 50
+	scale 40
 
 \end_inset
 

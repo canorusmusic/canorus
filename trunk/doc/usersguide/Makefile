@@ -1,15 +1,22 @@
 all: pdf html qthelp
 
-pdf:
+tex:
+	lyx -e latex *.lyx
+
+pdf: tex
+	pdflatex *.tex
 	pdflatex *.tex
 
-html:
+html: tex
 	htlatex *.tex
 
 qthelp: html
 	qcollectiongenerator *.qhcp
 
-clean: clean-html clean-pdf clean-qthelp
+clean: clean-tex clean-html clean-pdf clean-qthelp
+
+clean-tex:
+	rm -f *.tex images/*.eps
 
 clean-pdf:
 	rm -f *.log *.aux *.pdf
