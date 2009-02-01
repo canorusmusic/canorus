@@ -12,7 +12,7 @@
 // In practice, it turned out this is used to enable default arguments support in Python :)
 %feature("compactdefaultargs");
 
-// don't add the object to Python object reference list so Python's gc deletes it
+// don't add the object to Python object reference list so Python's gc doesn't touch it
 %feature("ref")   ""
 
 // used when a user wants to delete an object
@@ -126,6 +126,7 @@
 void markDelete( PyObject* ); // function used to delete Canorus objects inside Python
 const char* tr( const char * sourceText, const char * comment = 0, int n = -1 );
 void rebuildUi();
+bool hasGui();
 
 %include "scripting/canoruslibrary.i"
 
@@ -148,6 +149,14 @@ void rebuildUi() {
 	CACanorus::rebuildUI();
 #else
 	std::cout << "CanorusPython: No Canorus GUI found." << std::endl;
+#endif
+}
+
+bool hasGui() {
+#ifndef SWIGCPP
+	return true;
+#else
+	return false;
 #endif
 }
 
