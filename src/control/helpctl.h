@@ -9,18 +9,21 @@
 #define HELPCTL_H_
 
 #include <QString>
+#include <QUrl>
 
-class QProcess;
+class QHelpEngine;
+class QWidget;
 
 class CAHelpCtl {
 public:
 	CAHelpCtl();
 	virtual ~CAHelpCtl();
 
-	void showUsersGuide( QString chapter="" );
+	void showUsersGuide( QString chapter="", QWidget *helpWidget=0 );
 
 private:
-	QProcess *_usersGuideProcess;
+	void displayHelp( QUrl url, QWidget *helpWidget );
+	QHelpEngine *_helpEngine;
 };
 
 #endif /* HELPCTL_H_ */

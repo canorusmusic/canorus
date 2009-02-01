@@ -149,10 +149,11 @@ SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 ################
 # Qt4 settings #
 ################
-# This line adds the QtXML and QtSVG libraries to the Qt libraries
-# loaded when linking Canorus
-SET(QT_USE_QTXML True)
-SET(QT_USE_QTSVG True)
+# Enable needed Qt modules for Canorus
+SET(QT_USE_QTXML True) # Save/Load
+SET(QT_USE_QTSVG True) # Icons, Images etc.
+SET(QT_USE_QTHELP True) # Inline help browser
+SET(QT_USE_QTWEBKIT True) # Inline help browser
 
 # Add all resources to Canorus_Resrcs (icons, html files etc.)
 #SET(Canorus_Resrcs ui/mainwin.qrc) # not needed, all resources are loaded on-the-fly

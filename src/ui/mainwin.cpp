@@ -23,6 +23,7 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QThread>
+#include <QTextBrowser> // user's guide
 #include <iostream>
 
 #include "ui/mainwin.h"
@@ -542,6 +543,16 @@ void CAMainWin::createCustomActions() {
 		uiFinger->addButton( QIcon("images/mark/fingering/ltoe.svg"),  CAFingering::LToe,   tr("Left Toe", "fingering") );
 		uiFinger->addButton( QIcon("images/mark/fingering/rtoe.svg"),  CAFingering::RToe,   tr("Right Toe", "fingering") );
 
+	uiFingeringOriginal = new QCheckBox( tr("Original"), this );
+		uiFingeringOriginal->setObjectName("uiFingeringOriginal");
+		uiFingeringOriginal->setToolTip( tr("Is the fingering original by a composer (usually written italic)", "fingering original checkbox") );
+
+	// User's guide and other Help
+	uiHelpDock = new QDockWidget(tr("Help"), this);
+	uiHelpDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	uiHelpWidget = new QTextBrowser( uiHelpDock );
+	uiHelpDock->setWidget( uiHelpWidget );
+
 #ifdef USE_PYTHON
 	uiPyConsoleDock = new QDockWidget(tr("Canorus console"), this);
 	uiPyConsoleDock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
@@ -549,10 +560,6 @@ void CAMainWin::createCustomActions() {
 	pyConsoleIface = new CAPyConsoleInterface(pyConsole);
 	uiPyConsoleDock->setWidget(pyConsole);
 #endif
-
-	uiFingeringOriginal = new QCheckBox( tr("Original"), this );
-		uiFingeringOriginal->setObjectName("uiFingeringOriginal");
-		uiFingeringOriginal->setToolTip( tr("Is the fingering original by a composer (usually written italic)", "fingering original checkbox") );
 
 }
 
@@ -752,6 +759,10 @@ void CAMainWin::setupCustomUi() {
 	addDockWidget(Qt::BottomDockWidgetArea, uiPyConsoleDock);
 	uiPyConsoleDock->hide();
 #endif
+
+	// Help
+	addDockWidget(Qt::RightDockWidgetArea, uiHelpDock);
+	uiHelpDock->hide();
 
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
@@ -3658,7 +3669,7 @@ void CAMainWin::sourceViewPortCommit(QString inputString) {
 }
 
 void CAMainWin::on_uiUsersGuide_triggered() {
-	CACanorus::help()->showUsersGuide();
+	CACanorus::help()->showUsersGuide( "", this );
 }
 
 void CAMainWin::on_uiAboutQt_triggered() {
@@ -3669,7 +3680,7 @@ void CAMainWin::on_uiAboutCanorus_triggered() {
 	QMessageBox::about( this, tr("About Canorus"),
 	tr("Canorus - The next generation music score editor\n\n\
 Version %1\n\
-(C) 2006-2008 Canorus Development team. All rights reserved.\n\
+(C) 2006-2009 Canorus Development team. All rights reserved.\n\
 See the file AUTHORS for the list of Canorus developers\n\n\
 This program is licensed under the GNU General Public License (GPL).\n\
 See the file LICENSE.GPL for details.\n\n\
