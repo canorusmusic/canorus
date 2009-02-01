@@ -37,6 +37,7 @@ class QLineEdit;
 class QComboBox;
 class QCheckBox;
 class QAction;
+class QTextEdit;
 
 class CAMenuToolButton;
 class CAUndoToolButton;
@@ -130,6 +131,9 @@ public:
 	// Python Console
 	CAPyConsole *pyConsole;
 	CAPyConsoleInterface* pyConsoleIface;
+
+	QDockWidget *helpDock() { return uiHelpDock; }
+	QTextEdit *helpWidget() { return uiHelpWidget; }
 
 private slots:
 	///////////////////////////
@@ -497,5 +501,9 @@ private:
 
 		// Python console
 		QDockWidget *uiPyConsoleDock;
+
+		// Help widget
+		QDockWidget *uiHelpDock;
+		QTextEdit   *uiHelpWidget;
 };
 #endif /* MAINWIN_H_ */

@@ -6,58 +6,67 @@
 */
 
 #include <QStringList>
-#include <QTextStream>
-#include <QProcess>
+#include <QHelpEngine>
+#include <QTextBrowser>
+#include <QDockWidget>
 
 #include "canorus.h"
 #include "control/helpctl.h"
+#include "ui/mainwin.h"
 
 /*!
 	\class CAHelpCtl
 	\brief Class for showing User's guide, What's new, Did you know tips etc.
  */
 
-CAHelpCtl::CAHelpCtl()
- : _usersGuideProcess(0) {
+CAHelpCtl::CAHelpCtl() {
+	QStringList location = CACanorus::locateResource(QString("doc/usersguide/")+QLocale::system().name()+".qhc");
+	if (location.isEmpty()) {
+		location = CACanorus::locateResource("doc/usersguide/en.qhc");
+	}
 
+	if (!location.isEmpty()) {
+		_helpEngine = new QHelpEngine(location[0]);
+	}
 }
 
 CAHelpCtl::~CAHelpCtl() {
 }
 
-void CAHelpCtl::showUsersGuide( QString chapter ) {
-	if (!_usersGuideProcess || _usersGuideProcess->state()!=QProcess::Running) {
-		if (_usersGuideProcess) delete _usersGuideProcess;
+void CAHelpCtl::showUsersGuide( QString chapter, QWidget *helpWidget ) {
+	QUrl url;
 
+	if (chapter.isEmpty()) {
 		QStringList location = CACanorus::locateResource(QString("doc/usersguide/")+QLocale::system().name()+".qhc");
-		if (location.isEmpty()) {
-			location = CACanorus::locateResource("doc/usersguide/en.qhc");
-		}
-
 		if (!location.isEmpty()) {
-			_usersGuideProcess = new QProcess;
-			QStringList args;
-			args << "-collectionFile"
-			    << location[0]
-			    << "-enableRemoteControl";
-			_usersGuideProcess->start("assistant", args);
-
-			if (!_usersGuideProcess->waitForStarted()) {
-				std::cout << "Error launching Qt assistant." << endl;
-			}
+			url = QString("qthelp://canorus/usersguide/")+QLocale::system().name()+".html";
+		} else {
+			url = QString("qthelp://canorus/usersguide/en.html");
+		}
+	} else {
+		QMap<QString, QUrl> links = _helpEngine->linksForIdentifier(chapter);
+		if (links.count()) {
+			url = links.constBegin().value();
 		}
 	}
 
-	if (!_usersGuideProcess)
-		return;
+	displayHelp( url, helpWidget );
+}
 
-	/*if (chapter.isEmpty()) {
-		QTextStream str(_usersGuideProcess);
-		QStringList location = CACanorus::locateResource(QString("doc/usersguide/")+QLocale::system().name()+".qhc");
- 		if (!location.isEmpty()) {
- 			str << (QString("setSource qthelp://canorus/usersguide/")+QLocale::system().name()+".html") << endl;
- 		} else {
- 			str << "setSource qthelp://canorus/usersguide/en.html" << endl;
- 		}
-	}*/
+void CAHelpCtl::displayHelp( QUrl url, QWidget *helpWidget ) {
+	QByteArray help = _helpEngine->fileData(url);
+
+	QTextEdit *textEdit=0;
+	if ( !helpWidget ) {
+		textEdit = new QTextBrowser();
+		textEdit->setAttribute(Qt::WA_DeleteOnClose);
+	} else
+	if (dynamic_cast<CAMainWin*>(helpWidget)) {
+		textEdit = static_cast<CAMainWin*>(helpWidget)->helpWidget();
+		static_cast<CAMainWin*>(helpWidget)->helpDock()->show();
+	}
+
+	if (textEdit) {
+		textEdit->setText( help );
+	}
 }
