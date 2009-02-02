@@ -23,6 +23,8 @@ public:
 
 private:
 	void displayHelp( QUrl url, QWidget *helpWidget );
+	QString usersGuideLanguage();
+
 	QHelpEngine *_helpEngine;
 };
 

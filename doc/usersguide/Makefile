@@ -4,14 +4,14 @@ tex:
 	lyx -e latex *.lyx
 
 pdf: tex
-	pdflatex *.tex
-	pdflatex *.tex
+	for i in *.tex; do pdflatex $$i; done
+	for i in *.tex; do pdflatex $$i; done # TOC
 
 html: tex
-	htlatex *.tex
+	for i in *.tex; do htlatex $$i; done
 
 qthelp: html
-	qcollectiongenerator *.qhcp
+	for i in *.qhcp; do qcollectiongenerator $$i; done
 
 clean: clean-tex clean-html clean-pdf clean-qthelp
 

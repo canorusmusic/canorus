@@ -19,29 +19,53 @@
 	\brief Class for showing User's guide, What's new, Did you know tips etc.
  */
 
-CAHelpCtl::CAHelpCtl() {
-	QStringList location = CACanorus::locateResource(QString("doc/usersguide/")+QLocale::system().name()+".qhc");
-	if (location.isEmpty()) {
-		location = CACanorus::locateResource("doc/usersguide/en.qhc");
-	}
+/*!
+	Initializes Help and loads User's guide.
+ */
+CAHelpCtl::CAHelpCtl()
+ : _helpEngine(0) {
+	QString lang = usersGuideLanguage();
 
-	if (!location.isEmpty()) {
-		_helpEngine = new QHelpEngine(location[0]);
+	if (!lang.isEmpty()) {
+		_helpEngine = new QHelpEngine( CACanorus::locateResource(QString("doc/usersguide/")+lang+".qhc")[0] );
 	}
 }
 
 CAHelpCtl::~CAHelpCtl() {
 }
 
+/*!
+	Helper function which returns the existent User's guide language.
+ */
+QString CAHelpCtl::usersGuideLanguage() {
+	if (CACanorus::locateResource(QString("doc/usersguide/")+QLocale::system().name()+".qhc").size()) {
+		return QLocale::system().name();
+	} else
+	if (CACanorus::locateResource(QString("doc/usersguide/")+QLocale::system().name().left(2)+".qhc").size()) {
+		return QLocale::system().name().left(2);
+	} else
+	if (CACanorus::locateResource(QString("doc/usersguide/en.qhc")).size()) {
+		return "en";
+	} else {
+		return "";
+	}
+}
+
+/*!
+	Loads user's guide file
+ */
 void CAHelpCtl::showUsersGuide( QString chapter, QWidget *helpWidget ) {
 	QUrl url;
 
+	if (!_helpEngine) {
+		return;
+	}
+
 	if (chapter.isEmpty()) {
-		QStringList location = CACanorus::locateResource(QString("doc/usersguide/")+QLocale::system().name()+".qhc");
-		if (!location.isEmpty()) {
-			url = QString("qthelp://canorus/usersguide/")+QLocale::system().name()+".html";
+		if (!usersGuideLanguage().isEmpty()) {
+			url = QString("qthelp://canorus/usersguide-")+usersGuideLanguage()+"/"+usersGuideLanguage()+".html";
 		} else {
-			url = QString("qthelp://canorus/usersguide/en.html");
+			return;
 		}
 	} else {
 		QMap<QString, QUrl> links = _helpEngine->linksForIdentifier(chapter);
