@@ -22,8 +22,6 @@ Name Canorus
 # Included files
 !include Sections.nsh
 !include MUI.nsh
-!include FontName.nsh
-!include FontReg.nsh
 
 # Reserved Files
 
@@ -105,17 +103,6 @@ Section /o un.Main UNSEC0000
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 	
     RmDir /r /REBOOTOK $INSTDIR
-SectionEnd
-
-Section "Fonts"
-    StrCpy $FONT_DIR $FONTS
-    !insertmacro InstallTTFFont 'canorus\FreeSans.ttf'
-    !insertmacro InstallTTFFont 'canorus\CenturySchL-Bold.ttf'
-    !insertmacro InstallTTFFont 'canorus\CenturySchL-BoldItal.ttf'
-    !insertmacro InstallTTFFont 'canorus\CenturySchL-Ital.ttf'
-    !insertmacro InstallTTFFont 'canorus\CenturySchL-Roma.ttf'
-    !insertmacro InstallTTFFont 'canorus\Emmentaler-14.ttf'
-    SendMessage ${HWND_BROADCAST} ${WM_FONTCHANGE} 0 0 /TIMEOUT=5000
 SectionEnd
 
 Section un.post UNSEC0001
