@@ -848,8 +848,7 @@ bool CAMainWin::handleUnsavedChanges() {
 		if ( document()->isModified() ) {
 			QMessageBox::StandardButton ret = QMessageBox::question( this, tr("Unsaved changes"), tr("Document \"%1\" was modified. Do you want to save the changes?").arg(document()->title().isEmpty()?tr("Untitled"):document()->title()), QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes );
 			if (ret == QMessageBox::Yes) {
-				on_uiSaveDocument_triggered();
-				return true;
+				return on_uiSaveDocument_triggered();
 			} else
 			if (ret == QMessageBox::No) {
 				return true;
@@ -2644,17 +2643,18 @@ void CAMainWin::on_uiOpenDocument_triggered() {
 	}
 }
 
-void CAMainWin::on_uiSaveDocument_triggered() {
+bool CAMainWin::on_uiSaveDocument_triggered() {
 	QString s;
 	if (document()) {
-		if ((s=document()->fileName()).isEmpty())
-			on_uiSaveDocumentAs_triggered();
-		else
-			saveDocument(s);
+		if ((s=document()->fileName()).isEmpty()) {
+			return on_uiSaveDocumentAs_triggered();
+		} else {
+			return saveDocument(s);
+		}
 	}
 }
 
-void CAMainWin::on_uiSaveDocumentAs_triggered() {
+bool CAMainWin::on_uiSaveDocumentAs_triggered() {
 	if ( document() &&
 	     CAMainWin::uiSaveDialog->exec() && CAMainWin::uiSaveDialog->selectedFiles().size()
 	   ) {
@@ -2667,7 +2667,9 @@ void CAMainWin::on_uiSaveDocumentAs_triggered() {
 			s.append( uiSaveDialog->selectedFilter().mid( left, len ) );
 		}
 
-		saveDocument(s);
+		return saveDocument(s);
+	} else {
+		return false;
 	}
 }
 

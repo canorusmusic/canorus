@@ -143,8 +143,8 @@ private slots:
 	// File
 	void on_uiNewDocument_triggered();
 	void on_uiOpenDocument_triggered();
-	void on_uiSaveDocument_triggered();
-	void on_uiSaveDocumentAs_triggered();
+	bool on_uiSaveDocument_triggered();
+	bool on_uiSaveDocumentAs_triggered();
 	void on_uiCloseDocument_triggered();
 	void on_uiExportDocument_triggered();
 	void on_uiImportDocument_triggered();

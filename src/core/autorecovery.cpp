@@ -21,13 +21,23 @@
 	\brief Class for making recovery files for application crashes
 
 	Canorus creates recovery files in Canorus writeable settings directory for each currently
-	opened document every number minutes defined in CASettings.
-	If the application is closed nicely, recovery files are deleted as well by calling
+	opened document every number of minutes defined in CASettings.
+
+	If the application is closed nicely, recovery files must be cleaned by calling
 	cleanupRecovery() method.
-	Otherwise Canorus looks for recovery files everytime it's executed and opens them
-	automatically by calling openRecovery().
+
+	Otherwise Canorus looks for recovery files then next time it's executed and opens them
+	automatically by calling openRecovery(). After recovering the files documents are marked
+	as modified (so user needs to resave them, if closing the document by accident) and
+	a special short-interval singleshot timer (see _saveAfterRecoveryInterval) is started
+	to resave recovery files. This is usually needed when a user finds a bug, immediately
+	repeats it and the autosave interval usually set to few minutes is not triggered yet.
+	Recovery documents are not resaved immediately because Canorus might crash when recovering
+	them (or soon after eg. mouse move) and is in unusable state until recovery files are
+	manually deleted.
+
 	Call saveRecovery() to save the currently opened documents to recovery files. The
-	auto recovery timer's signal is also connected to this slot.
+	autosave timer's signal is connected to this slot.
 
 	Settings class should already be initialized when creating instance of this class.
 */
@@ -35,7 +45,8 @@
 /*!
 	Initializes autosave. Reads the autosave timer settings from the CASettings class.
 */
-CAAutoRecovery::CAAutoRecovery() {
+CAAutoRecovery::CAAutoRecovery()
+ : _saveAfterRecoveryTimer(0) {
 	_autoRecoveryTimer = new QTimer(this);
 	_autoRecoveryTimer->setSingleShot( false );
 	connect( _autoRecoveryTimer, SIGNAL(timeout()), this, SLOT(saveRecovery()) );
@@ -100,6 +111,8 @@ void CAAutoRecovery::openRecovery() {
 		open.importDocument();
 		open.wait();
 		if ( open.importedDocument() ) {
+			open.importedDocument()->setModified(true); // warn that the file is unsaved, if closing
+
 			CAMainWin *mainWin = new CAMainWin();
 			documents.append( tr("- Document %1 last modified on %2.").arg(open.importedDocument()->title()).arg(open.importedDocument()->dateLastModified().toString()) + "\n" );
 			mainWin->openDocument( open.importedDocument() );
@@ -110,6 +123,13 @@ void CAAutoRecovery::openRecovery() {
 	cleanupRecovery();
 
 	if (!documents.isEmpty()) {
+		if (_saveAfterRecoveryTimer ) delete _saveAfterRecoveryTimer;
+		_saveAfterRecoveryTimer = new QTimer();
+		_saveAfterRecoveryTimer->setInterval( 4000 );
+		_saveAfterRecoveryTimer->setSingleShot( true );
+		connect( _saveAfterRecoveryTimer, SIGNAL(timeout()), this, SLOT(saveRecovery()) );
+		_saveAfterRecoveryTimer->start();
+
 		QMessageBox::information(
 				CACanorus::mainWinAt( CACanorus::mainWinCount()-1 ),
 				tr("Document recovery"),
