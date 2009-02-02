@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <QHelpCollectionProject version="1.0">
 	<assistant>
-		<title>Canorus Users's guide</title>
-		<startPage>qthelp://canorus/usersguide-en/en.html</startPage>
+		<title>Canorus uporabniški priročnik</title>
+		<startPage>qthelp://canorus/usersguide-sl/sl.html</startPage>
 		<currentFilter>Canorus</currentFilter>
 		<applicationIcon>images/canorushelpicon.png</applicationIcon>
 		<enableFilterFunctionality>false</enableFilterFunctionality>
@@ -12,12 +12,12 @@
 	<docFiles>
 		<generate>
 			<file>
-				<input>en.qhp</input>
-				<output>en.qch</output>
+				<input>sl.qhp</input>
+				<output>sl.qch</output>
 			</file>
 		</generate>
 		<register>
-			<file>en.qch</file>
+			<file>sl.qch</file>
 		</register>
 	</docFiles>
 </QHelpCollectionProject>

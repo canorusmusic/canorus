@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QtHelpProject version="1.0">
 	<namespace>canorus</namespace>
-	<virtualFolder>usersguide-en</virtualFolder>
+	<virtualFolder>usersguide-sl</virtualFolder>
 	<customFilter name="Canorus">
 		<filterAttribute>canorus</filterAttribute>
 	</customFilter>
 	<filterSection>
 		<filterAttribute>canorus</filterAttribute>
 		<toc>
-			<section title="Canorus User's guide" ref="en.html">
-				<section title="Chapter 1" ref="en.html#chapter1"/>
+			<section title="Canorus Uporabniški priročnik" ref="sl.html">
+				<section title="Chapter 1" ref="sl.html#chapter1"/>
 			</section>
 		</toc>
 		<!--<keywords>
@@ -18,11 +18,11 @@
 			<keyword id="MyApplication::foobar" ref="doc.html#foobar"/>
 		</keywords>-->
 		<files>
-			<file>en.css</file>
-			<file>en.html</file>
+			<file>sl.css</file>
+			<file>sl.html</file>
 			<file>images/canorushelpicon.png</file>
-			<file>en0x.png</file>
-			<file>en1x.png</file>
+			<file>sl0x.png</file>
+			<file>sl1x.png</file>
 		</files>
 	</filterSection>
 </QtHelpProject>
