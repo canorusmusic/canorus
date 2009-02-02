@@ -42,9 +42,9 @@ class CADrawableNote : public CADrawableMusElement {
 		int _stemLength;
 		int _noteHeadWidth;
 		float _penWidth; // pen width for stem
-		int _noteHeadCodepoint; // Unicode codepoint for the notehead symbol.
-		int _stemUpCodepoint;
-		int _stemDownCodepoint;
+		QString _noteHeadGlyphName; // Feta glyph name for the notehead symbol.
+		QString _flagUpGlyphName; // likewise for stem flags 
+		QString _flagDownGlyphName;
 		static const int HUNDREDTWENTYEIGHTH_STEM_LENGTH;
 		static const int SIXTYFOURTH_STEM_LENGTH;
 		static const int THIRTYSECOND_STEM_LENGTH;

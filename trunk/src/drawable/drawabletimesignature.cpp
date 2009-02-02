@@ -55,26 +55,17 @@ void CADrawableTimeSignature::draw(QPainter *p, CADrawSettings s) {
 	
 	/*
 	 * Time signature emmentaler numbers glyphs:
-	 * - 0xE19B: C 4/4 classical key signature - y0 is the center of the glyph
-	 * - 0xE19C: C| 2/2 classical key signature - y0 is the center of the glyph
-	 * - 0x30: 0 - y0 are the bottom of the glyphs
-	 * - 0x31: 1
-	 * - 0x32: 2
-	 * - 0x33: 3
-	 * - 0x34: 4
-	 * - 0x35: 5
-	 * - 0x36: 6
-	 * - 0x37: 7
-	 * - 0x38: 8
-	 * - 0x39: 9
+	 * - timesig.C44: C 4/4 classical key signature - y0 is the center of the glyph
+	 * - timesig.C22: C| 2/2 classical key signature - y0 is the center of the glyph
+	 * - 0..9: y0 is the bottom of the glyph
 	 */
 	switch (timeSignature()->timeSignatureType()) {
 		case CATimeSignature::Classical: {	//draw C or C| only, otherwise don't berak, go to Number then
 			if ((timeSignature()->beat() == 4) && (timeSignature()->beats() == 4)) {
-				p->drawText(s.x, (int)(s.y + 0.5*height()*s.z), QString(0xE19B));	//draw C
+				p->drawText(s.x, (int)(s.y + 0.5*height()*s.z), QString(CACanorus::fetaCodepoint("timesig.C44")));
 				break;
 			} else if ((timeSignature()->beat() == 2) && (timeSignature()->beats() == 2)) {
-				p->drawText(s.x, (int)(s.y + 0.5*height()*s.z), QString(0xE19C));	//draw C|
+				p->drawText(s.x, (int)(s.y + 0.5*height()*s.z), QString(CACanorus::fetaCodepoint("timesig.C22")));
 				break;
 			}
 		}

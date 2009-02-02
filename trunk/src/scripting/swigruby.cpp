@@ -18,15 +18,15 @@ void CASwigRuby::init() {
 	ruby_init();
 	Init_CanorusRuby();
 	// add path to scripts to Scripting path
-	if (CACanorus::locateResource("scripts").size())
-		rb_eval_string((QString("$: << '") + CACanorus::locateResource("scripts").at(0) + "'").toStdString().c_str());
+	if (QDir::searchPaths("scripts").size())
+		rb_eval_string((QString("$: << '") + QDir::searchPaths("scripts")[0] + "'").toStdString().c_str());
 	// add path to CanorusRuby module to Scripting path
 #ifdef Q_WS_WIN
-	if (CACanorus::locateResource("CanorusRuby.dll").size())
-		rb_eval_string((QString("$: << '") + CACanorus::locateResourceDir("CanorusRuby.dll").at(0) + "'").toStdString().c_str());
+	if (QFileInfo("base:CanorusRuby.dll").exists())
+		rb_eval_string((QString("$: << '") + QFileInfo("base:CanorusRuby.dll").absolutePath() + "'").toStdString().c_str());
 #else
-	if (CACanorus::locateResource("CanorusRuby.so").size())
-		rb_eval_string((QString("$: << '") + CACanorus::locateResourceDir("CanorusRuby.so").at(0) + "'").toStdString().c_str());
+	if (QFileInfo("base:CanorusRuby.so").exists())
+		rb_eval_string((QString("$: << '") + QFileInfo("base:CanorusRuby.so").absolutePath() + "'").toStdString().c_str());
 #endif
 }
 

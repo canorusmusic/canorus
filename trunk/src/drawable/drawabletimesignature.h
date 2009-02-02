@@ -10,6 +10,7 @@
 #define DRAWABLETIMESIGNATURE_H_
 
 #include "drawable/drawablemuselement.h"
+#include "canorus.h"
 
 class CATimeSignature;
 class CADrawableStaff;

@@ -9,6 +9,7 @@
 #include "drawable/drawablecontext.h"
 #include "drawable/drawablestaff.h"
 #include "core/rest.h"
+#include "canorus.h"
 
 #include <QPainter>
 
@@ -114,39 +115,39 @@ void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
 	QPen pen;
 	switch ( rest()->playableLength().musicLength() ) {
 	case CAPlayableLength::HundredTwentyEighth: {
-		p->drawText((int)(s.x + 4*s.z + 0.5), (int)(s.y + (2.6*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z + 0.5), QString(0xE10D));
+		p->drawText((int)(s.x + 4*s.z + 0.5), (int)(s.y + (2.6*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.7")));
 		break;
 	}
 	case CAPlayableLength::SixtyFourth: {
-		p->drawText((int)(s.x + 3*s.z + 0.5), (int)(s.y + (1.75*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z + 0.5), QString(0xE10C));
+		p->drawText((int)(s.x + 3*s.z + 0.5), (int)(s.y + (1.75*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.6")));
 		break;
 	}
 	case CAPlayableLength::ThirtySecond: {
-		p->drawText((int)(s.x + 2.5*s.z + 0.5), (int)(s.y + (1.8*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z + 0.5), QString(0xE10B));
+		p->drawText((int)(s.x + 2.5*s.z + 0.5), (int)(s.y + (1.8*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.5")));
 		break;
 	}
 	case CAPlayableLength::Sixteenth: {
-		p->drawText((int)(s.x + 1*s.z + 0.5), (int)(s.y + (((CADrawableStaff*)_drawableContext)->lineSpace()-0.9)*s.z + 0.5), QString(0xE10A));
+		p->drawText((int)(s.x + 1*s.z + 0.5), (int)(s.y + (((CADrawableStaff*)_drawableContext)->lineSpace()-0.9)*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.4")));
 		break;
 	}
 	case CAPlayableLength::Eighth: {
-		p->drawText(s.x, (int)(s.y + (((CADrawableStaff*)_drawableContext)->lineSpace()-0.9)*s.z + 0.5), QString(0xE109));
+		p->drawText(s.x, (int)(s.y + (((CADrawableStaff*)_drawableContext)->lineSpace()-0.9)*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.3")));
 		break;
 	}
 	case CAPlayableLength::Quarter: {
-		p->drawText(s.x,(int)(s.y + 0.5*height()*s.z),QString(0xE107));
+		p->drawText(s.x,(int)(s.y + 0.5*height()*s.z),QString(CACanorus::fetaCodepoint("rests.2")));
 		break;
 	}
 	case CAPlayableLength::Half: {
-		p->drawText(s.x,(int)(s.y + height()*s.z + 0.5), QString(0xE101));
+		p->drawText(s.x,(int)(s.y + height()*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.1")));
 		break;
 	}
 	case CAPlayableLength::Whole: {
-		p->drawText(s.x, s.y, QString(0xE100));
+		p->drawText(s.x, s.y, QString(CACanorus::fetaCodepoint("rests.0")));
 		break;
 	}
 	case CAPlayableLength::Breve: {
-		p->drawText(s.x, (int)(s.y + height()*s.z + 0.5), QString(0xE106));
+		p->drawText(s.x, (int)(s.y + height()*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.M1")));
 		break;
 	}
 	}

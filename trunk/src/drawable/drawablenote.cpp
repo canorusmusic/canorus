@@ -12,8 +12,9 @@
 #include "drawable/drawableaccidental.h"
 #include "core/voice.h"
 #include "core/staff.h"
+#include "canorus.h"
 
-const int CADrawableNote::HUNDREDTWENTYEIGHTH_STEM_LENGTH = 43;
+const int CADrawableNote::HUNDREDTWENTYEIGHTH_STEM_LENGTH = 50;
 const int CADrawableNote::SIXTYFOURTH_STEM_LENGTH = 43;
 const int CADrawableNote::THIRTYSECOND_STEM_LENGTH = 37;
 const int CADrawableNote::SIXTEENTH_STEM_LENGTH = 31;
@@ -44,28 +45,28 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, in
 	case CAPlayableLength::Sixteenth:
 	case CAPlayableLength::Eighth:
 	case CAPlayableLength::Quarter:
-		_noteHeadCodepoint = 0xE125;
+		_noteHeadGlyphName = "noteheads.s2";
 		_penWidth = 1.2;
 		_width = 11;
 		_height = 10;
 		break;
 	
 	case CAPlayableLength::Half:
-		_noteHeadCodepoint = 0xE124;
+		_noteHeadGlyphName = "noteheads.s1";
 		_penWidth = 1.3;
 		_width = 12;
 		_height = 10;
 		break;
 		
 	case CAPlayableLength::Whole:
-		_noteHeadCodepoint = 0xE123;
+		_noteHeadGlyphName = "noteheads.s0";
 		_penWidth = 0;
 		_width = 17;
 		_height = 8;
 		break;
 	
 	case CAPlayableLength::Breve:
-		_noteHeadCodepoint = 0xE122;
+		_noteHeadGlyphName = "noteheads.sM1";
 		_penWidth = 0;
 		_width = 18;
 		_height = 8;
@@ -78,40 +79,34 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, in
 	case CAPlayableLength::HundredTwentyEighth:
 		/// \todo Emmentaler font doesn't have 128th, 64th flag is drawn instead! Need to somehow compose the 128th flag? -Matevz
 		_stemLength = HUNDREDTWENTYEIGHTH_STEM_LENGTH;
-		_stemUpCodepoint = 0xE18A;
-		_stemDownCodepoint = 0xE190;
+		_flagUpGlyphName = "flags.u7";
+		_flagDownGlyphName = "flags.d7";
 		break;
 	case CAPlayableLength::SixtyFourth:
 		_stemLength = SIXTYFOURTH_STEM_LENGTH;
-		_stemUpCodepoint = 0xE18A;
-		_stemDownCodepoint = 0xE190;
+		_flagUpGlyphName = "flags.u6";
+		_flagDownGlyphName = "flags.d6";
 		break;
 	case CAPlayableLength::ThirtySecond:
 		_stemLength = THIRTYSECOND_STEM_LENGTH;
-		_stemUpCodepoint = 0xE189;
-		_stemDownCodepoint = 0xE18F;
+		_flagUpGlyphName = "flags.u5";
+		_flagDownGlyphName = "flags.d5";
 		break;
 	case CAPlayableLength::Sixteenth:
 		_stemLength = SIXTEENTH_STEM_LENGTH;
-		_stemUpCodepoint = 0xE188;
-		_stemDownCodepoint = 0xE18E;
+		_flagUpGlyphName = "flags.u4";
+		_flagDownGlyphName = "flags.d4";
 		break;
 	case CAPlayableLength::Eighth:
 		_stemLength = EIGHTH_STEM_LENGTH;
-		_stemUpCodepoint = 0xE187;
-		_stemDownCodepoint = 0xE18B;
+		_flagUpGlyphName = "flags.u3";
+		_flagDownGlyphName = "flags.d3";
 		break;
 	case CAPlayableLength::Quarter:
 		_stemLength = QUARTER_STEM_LENGTH;
-		_stemUpCodepoint = _stemDownCodepoint = 0;
 		break;
 	case CAPlayableLength::Half:
 		_stemLength = HALF_STEM_LENGTH;
-		_stemUpCodepoint = _stemDownCodepoint = 0;
-		break;
-	case CAPlayableLength::Whole:
-	case CAPlayableLength::Breve:
-		_stemLength = _stemUpCodepoint = _stemDownCodepoint = 0;
 		break;
 	}
 	
@@ -171,7 +166,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 
 	// Draw notehead
 	s.y += _height*s.z/2;
-	p->drawText(s.x, qRound(s.y), QString(_noteHeadCodepoint));
+	p->drawText(s.x, qRound(s.y), QString(CACanorus::fetaCodepoint(_noteHeadGlyphName)));
 
 	if (note()->noteLength().musicLength() >= CAPlayableLength::Half) {
 		// Draw stem and flag
@@ -183,14 +178,14 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			s.x += qRound(_noteHeadWidth*s.z);
 			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(_stemLength*s.z));
 			if(note()->noteLength().musicLength() >= CAPlayableLength::Eighth) {
-				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - _stemLength*s.z),QString(_stemUpCodepoint));
+				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - _stemLength*s.z),QString(CACanorus::fetaCodepoint(_flagUpGlyphName)));
 				s.x+=(int)(6*s.z+0.5);  // additional X-offset for dots
 			}
 		} else {
 			s.x+=(int)(0.6*s.z+0.5);
 			p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(_stemLength*s.z));
 			if(note()->noteLength().musicLength() >= CAPlayableLength::Eighth)
-				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (_stemLength+5)*s.z),QString(_stemDownCodepoint));
+				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (_stemLength+5)*s.z),QString(CACanorus::fetaCodepoint(_flagDownGlyphName)));
 			s.x+=(int)(_noteHeadWidth*s.z+0.5);
 		}
 	}

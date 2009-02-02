@@ -59,11 +59,9 @@ void CAResourceView::rebuildUi() {
 		}
 	}
 
-	CACanorus::setImagesPath();
-
 	if (document()) {
 		QTreeWidgetItem *doc = new QTreeWidgetItem( QStringList() << tr("Document") << "" );
-		doc->setIcon( 0, QIcon("images/document/document.svg") );
+		doc->setIcon( 0, QIcon("images:document/document.svg") );
 		addTopLevelItem( doc );
 
 		for (int i=0; i<document()->resourceList().size(); i++) {
@@ -73,8 +71,6 @@ void CAResourceView::rebuildUi() {
 			doc->addChild( item );
 		}
 	}
-
-	CACanorus::restorePath();
 
 	expandAll();
 

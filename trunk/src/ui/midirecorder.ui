@@ -36,7 +36,7 @@
       </property>
       <property name="icon" >
        <iconset>
-        <normaloff>images/playback/record.svg</normaloff>images/playback/record.svg</iconset>
+        <normaloff>images:playback/record.svg</normaloff>images:playback/record.svg</iconset>
       </property>
      </widget>
     </item>
@@ -56,7 +56,7 @@
       </property>
       <property name="icon" >
        <iconset>
-        <normaloff>images/playback/pause.svg</normaloff>images/playback/pause.svg</iconset>
+        <normaloff>images:playback/pause.svg</normaloff>images:playback/pause.svg</iconset>
       </property>
      </widget>
     </item>
@@ -76,7 +76,7 @@
       </property>
       <property name="icon" >
        <iconset>
-        <normaloff>images/playback/stop.svg</normaloff>images/playback/stop.svg</iconset>
+        <normaloff>images:playback/stop.svg</normaloff>images:playback/stop.svg</iconset>
       </property>
      </widget>
     </item>

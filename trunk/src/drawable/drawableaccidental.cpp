@@ -12,6 +12,7 @@
 #include "core/muselement.h"
 #include "drawable/drawablecontext.h"
 #include "drawable/drawableclef.h"
+#include "canorus.h"
 
 /*!
 	Default constructor.
@@ -65,27 +66,21 @@ void CADrawableAccidental::draw(QPainter *p, CADrawSettings s) {
 	p->setPen(QPen(s.color));
 	p->setFont(font);
 	
-	// Glyph unicode numbers for accidentals (in hex):
-	//  - 0xe10e - Emmentaler sharp
-	//  - 0xe112 - Emmentaler flat
-	//  - 0xe111 - Emmentaler natural
-	//  - 0xe116 - Emmentaler cross
-	//  - 0xe114 - Emmentaler double flat
 	switch (_accs) {
 		case 0:
-			p->drawText(s.x, s.y + (int)(_height/2*s.z), QString(0xE111));
+			p->drawText(s.x, s.y + (int)(_height/2*s.z), QString(CACanorus::fetaCodepoint("accidentals.natural")));
 			break;
 		case 1:
-			p->drawText(s.x, s.y + (int)((_height/2 + 0.3)*s.z), QString(0xE10E));
+			p->drawText(s.x, s.y + (int)((_height/2 + 0.3)*s.z), QString(CACanorus::fetaCodepoint("accidentals.sharp")));
 			break;
 		case -1:
-			p->drawText(s.x, s.y + (int)((_height/2 + 5)*s.z), QString(0xE112));
+			p->drawText(s.x, s.y + (int)((_height/2 + 5)*s.z), QString(CACanorus::fetaCodepoint("accidentals.flat")));
 			break;
 		case 2:
-			p->drawText(s.x, s.y + (int)(_height/2*s.z), QString(0xE116));
+			p->drawText(s.x, s.y + (int)(_height/2*s.z), QString(CACanorus::fetaCodepoint("accidentals.doublesharp")));
 			break;
 		case -2:
-			p->drawText(s.x, s.y + (int)((_height/2 + 5)*s.z), QString(0xE114));
+			p->drawText(s.x, s.y + (int)((_height/2 + 5)*s.z), QString(CACanorus::fetaCodepoint("accidentals.flatflat")));
 			break;
 	}
 }

@@ -59,7 +59,7 @@
         </property>
         <property name="icon" >
          <iconset>
-          <normaloff>images/settings/editorsettings.svg</normaloff>images/settings/editorsettings.svg</iconset>
+          <normaloff>images:settings/editorsettings.svg</normaloff>images:settings/editorsettings.svg</iconset>
         </property>
        </item>
        <item>
@@ -68,7 +68,7 @@
         </property>
         <property name="icon" >
          <iconset>
-          <normaloff>images/settings/colorsettings.svg</normaloff>images/settings/colorsettings.svg</iconset>
+          <normaloff>images:settings/colorsettings.svg</normaloff>images:settings/colorsettings.svg</iconset>
         </property>
        </item>
        <item>
@@ -77,7 +77,7 @@
         </property>
         <property name="icon" >
          <iconset>
-          <normaloff>images/settings/floppy.svg</normaloff>images/settings/floppy.svg</iconset>
+          <normaloff>images:settings/floppy.svg</normaloff>images:settings/floppy.svg</iconset>
         </property>
        </item>
        <item>
@@ -86,7 +86,7 @@
         </property>
         <property name="icon" >
          <iconset>
-          <normaloff>images/settings/midisetup.svg</normaloff>images/settings/midisetup.svg</iconset>
+          <normaloff>images:settings/midisetup.svg</normaloff>images:settings/midisetup.svg</iconset>
         </property>
        </item>
        <item>
@@ -95,7 +95,7 @@
         </property>
         <property name="icon" >
          <iconset>
-          <normaloff>images/settings/printingsettings.svg</normaloff>images/settings/printingsettings.svg</iconset>
+          <normaloff>images:settings/printingsettings.svg</normaloff>images:settings/printingsettings.svg</iconset>
         </property>
        </item>
       </widget>
@@ -247,7 +247,7 @@
                  </property>
                  <property name="icon" >
                   <iconset>
-                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
+                   <normaloff>images:settings/revert.svg</normaloff>images:settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -294,7 +294,7 @@
                  </property>
                  <property name="icon" >
                   <iconset>
-                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
+                   <normaloff>images:settings/revert.svg</normaloff>images:settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -341,7 +341,7 @@
                  </property>
                  <property name="icon" >
                   <iconset>
-                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
+                   <normaloff>images:settings/revert.svg</normaloff>images:settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -388,7 +388,7 @@
                  </property>
                  <property name="icon" >
                   <iconset>
-                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
+                   <normaloff>images:settings/revert.svg</normaloff>images:settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -435,7 +435,7 @@
                  </property>
                  <property name="icon" >
                   <iconset>
-                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
+                   <normaloff>images:settings/revert.svg</normaloff>images:settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -482,7 +482,7 @@
                  </property>
                  <property name="icon" >
                   <iconset>
-                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
+                   <normaloff>images:settings/revert.svg</normaloff>images:settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -529,7 +529,7 @@
                  </property>
                  <property name="icon" >
                   <iconset>
-                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
+                   <normaloff>images:settings/revert.svg</normaloff>images:settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -606,7 +606,7 @@
                  </property>
                  <property name="icon" >
                   <iconset>
-                   <normaloff>images/settings/revert.svg</normaloff>images/settings/revert.svg</iconset>
+                   <normaloff>images:settings/revert.svg</normaloff>images:settings/revert.svg</iconset>
                  </property>
                 </widget>
                </item>
@@ -781,7 +781,7 @@
                 </property>
                 <property name="icon" >
                  <iconset>
-                  <normaloff>images/general/lilypond.svg</normaloff>images/general/lilypond.svg</iconset>
+                  <normaloff>images:general/lilypond.svg</normaloff>images:general/lilypond.svg</iconset>
                 </property>
                </item>
               </widget>
