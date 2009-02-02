@@ -73,18 +73,18 @@ CAPluginManager::~CAPluginManager() {
 	Reads the system and user's plugins directories and adds all the plugins to the internal plugins list.
 	\warning This function doesn't enable or initialize any of the plugins - use enablePlugins() for this.
 
+	\todo Add support for a user plugins directory.
+
 	\sa enablePlugin(), enablePlugins()
 */
 void CAPluginManager::readPlugins() {
-	QList<QString> pluginsPaths = CACanorus::locateResource("plugins");
+	QString systemPluginsPath = QDir::searchPaths("plugins")[0];
 	QList<QString> pluginPaths;
 
 	// search the plugins paths and creates a list of directories for each plugin
-	for (int i=0; i<pluginsPaths.size(); i++) {
-		QDir curDir(pluginsPaths[i]);
-		for (int j=0; j<curDir.count(); j++) {
-			pluginPaths << curDir.absolutePath() + "/" + curDir[j];
-		}
+	QDir curDir(systemPluginsPath);
+	for (int j=0; j<curDir.count(); j++) {
+		pluginPaths << curDir.absolutePath() + "/" + curDir[j];
 	}
 
 	for (int i=0; i<pluginPaths.size(); i++) {

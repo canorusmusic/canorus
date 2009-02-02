@@ -34,16 +34,14 @@ public:
 	static void initScripting();
 	static void initAutoRecovery();
 	static void initUndo();
+	static void initSearchPaths();
+	static void initFonts();
 	static void initHelp();
 	static void parseOpenFileArguments(int argc, char *argv[]);
 	static void cleanUp();
 
-	static QList<QString> locateResource(const QString fileName);
-	static QList<QString> locateResourceDir(const QString fileName);
-	static bool setImagesPath();
-	static void restorePath();
+	static int  fetaCodepoint(const QString& name);
 
-	inline static QApplication *mainApp() { return _mainApp; }
 	inline static int mainWinCount() { return _mainWinList.size(); }
 	static int mainWinCount(CADocument *);
 	static QList<CAMainWin*> findMainWin(CADocument* document);
@@ -76,10 +74,9 @@ public:
 private:
 	static QList<CAMainWin*> _mainWinList;
 	static CASettings *_settings;
-	static QString _prevPath;
 	static CAUndo *_undo;
-	static QApplication *_mainApp;
 	static QList<QString> _recentDocumentList;
+	static QHash<QString, int> _fetaMap;
 
 	// Playback output
 	static CAMidiDevice *_midiDevice;

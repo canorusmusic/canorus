@@ -18,7 +18,6 @@
 
 CATransposeView::CATransposeView( CAMainWin *p )
 : QDockWidget( p ) {
-	CACanorus::setImagesPath();
 	setupUi( this );
 	setupCustomUi();
 }

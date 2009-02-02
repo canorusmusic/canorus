@@ -426,6 +426,8 @@ ENDIF(MINGW)
 
 SET( Canorus_Scripts "scripts" ) # Official scripts shipped with Canorus.
 
+SET( Canorus_Plugins "plugins" ) # Official plug-ins shipped with Canorus.
+
 SET( Canorus_Images "ui/images" )
 
 # Set translation files
@@ -660,12 +662,14 @@ ENDIF(USE_PYTHON)
 
 # Install scripts
 INSTALL( DIRECTORY ${Canorus_Scripts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" PATTERN ".svn" EXCLUDE )
+# Install plugins
+INSTALL( DIRECTORY ${Canorus_Plugins} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" PATTERN ".svn" EXCLUDE )
 # Install data - icons, images, sounds etc.
 INSTALL( DIRECTORY ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" PATTERN ".svn" EXCLUDE )
 # Install translations
 INSTALL(FILES ${Canorus_Translation_Bins} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/lang")
 # Install fonts
-INSTALL(FILES ${Canorus_Fonts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_FONTS_DIR}")
+INSTALL(FILES ${Canorus_Fonts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/fonts")
 
 IF(MINGW)
 	# Install Qt libs

@@ -14,6 +14,7 @@
 #include "drawable/drawablestaff.h"
 
 #include "core/clef.h"
+#include "canorus.h"
 
 const int CADrawableClef::CLEF_EIGHT_SIZE = 8;
 
@@ -85,23 +86,18 @@ void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
 	p->setFont(font);
 	
 	/*
-		Clef emmentaler glyphs: The first one is a normal clef (at the beginning of the system) and the other one is a smaller clef (at the center of the system)
-		- 0xE191: C-clef
-		- 0xE192: C-clef small
-		- 0xE193: F-clef
-		- 0xE194: F-clef small
-		- 0xE195: G-clef
-		- 0xE196: G-clef small
+		There are two glyphs for each clef type: a normal clef (placed at the beginning of the system) and a smaller one (at the center of the system, key change).
+		clefs.G, clefs.G_change, ...
 	*/
 	switch (clef()->clefType()) {
 		case CAClef::G:
-			p->drawText(s.x, qRound(s.y + (clef()->offset()>0?CLEF_EIGHT_SIZE*s.z:0) + 0.63*(height() - (clef()->offset()?CLEF_EIGHT_SIZE:0))*s.z), QString(0xE195));
+			p->drawText(s.x, qRound(s.y + (clef()->offset()>0?CLEF_EIGHT_SIZE*s.z:0) + 0.63*(height() - (clef()->offset()?CLEF_EIGHT_SIZE:0))*s.z), QString(CACanorus::fetaCodepoint("clefs.G")));
 			break;
 		case CAClef::F:
-			p->drawText(s.x, qRound(s.y + (clef()->offset()>0?CLEF_EIGHT_SIZE*s.z:0) + 0.32*(height() - (clef()->offset()?CLEF_EIGHT_SIZE:0))*s.z), QString(0xE193));
+			p->drawText(s.x, qRound(s.y + (clef()->offset()>0?CLEF_EIGHT_SIZE*s.z:0) + 0.32*(height() - (clef()->offset()?CLEF_EIGHT_SIZE:0))*s.z), QString(CACanorus::fetaCodepoint("clefs.F")));
 			break;
 		case CAClef::C:
-			p->drawText(s.x, qRound(s.y + (clef()->offset()>0?CLEF_EIGHT_SIZE*s.z:0) + 0.5*(height() - (clef()->offset()?CLEF_EIGHT_SIZE:0))*s.z), QString(0xE191));
+			p->drawText(s.x, qRound(s.y + (clef()->offset()>0?CLEF_EIGHT_SIZE*s.z:0) + 0.5*(height() - (clef()->offset()?CLEF_EIGHT_SIZE:0))*s.z), QString(CACanorus::fetaCodepoint("clefs.C")));
 			break;
 	}
 	

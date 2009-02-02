@@ -195,36 +195,36 @@ CADrawableKeySignature* CADrawableKeySignature::clone(CADrawableContext* newCont
 	\sa CADrawableKeySignature::comboBoxRowToDiatonicKey(), CADrawableKeySignature::populateComboBoxDirection()
  */
 void CADrawableKeySignature::populateComboBox( QComboBox *c ) {
-	c->addItem( QIcon("images/accidental/accs-7.svg"), QObject::tr("C-flat major") );
-	c->addItem( QIcon("images/accidental/accs-7.svg"), QObject::tr("a-flat minor") );
-	c->addItem( QIcon("images/accidental/accs-6.svg"), QObject::tr("G-flat major") );
-	c->addItem( QIcon("images/accidental/accs-6.svg"), QObject::tr("e-flat minor") );
-	c->addItem( QIcon("images/accidental/accs-5.svg"), QObject::tr("D-flat major") );
-	c->addItem( QIcon("images/accidental/accs-5.svg"), QObject::tr("b-flat minor") );
-	c->addItem( QIcon("images/accidental/accs-4.svg"), QObject::tr("A-flat major") );
-	c->addItem( QIcon("images/accidental/accs-4.svg"), QObject::tr("f minor") );
-	c->addItem( QIcon("images/accidental/accs-3.svg"), QObject::tr("E-flat major") );
-	c->addItem( QIcon("images/accidental/accs-3.svg"), QObject::tr("c minor") );
-	c->addItem( QIcon("images/accidental/accs-2.svg"), QObject::tr("B-flat major") );
-	c->addItem( QIcon("images/accidental/accs-2.svg"), QObject::tr("g minor") );
-	c->addItem( QIcon("images/accidental/accs-1.svg"), QObject::tr("F major") );
-	c->addItem( QIcon("images/accidental/accs-1.svg"), QObject::tr("d minor") );
-	c->addItem( QIcon("images/general/none.svg"), QObject::tr("C major") );
-	c->addItem( QIcon("images/general/none.svg"), QObject::tr("a minor") );
-	c->addItem( QIcon("images/accidental/accs1.svg"), QObject::tr("G major") );
-	c->addItem( QIcon("images/accidental/accs1.svg"), QObject::tr("e minor") );
-	c->addItem( QIcon("images/accidental/accs2.svg"), QObject::tr("D major") );
-	c->addItem( QIcon("images/accidental/accs2.svg"), QObject::tr("b minor") );
-	c->addItem( QIcon("images/accidental/accs3.svg"), QObject::tr("A major") );
-	c->addItem( QIcon("images/accidental/accs3.svg"), QObject::tr("f-sharp minor") );
-	c->addItem( QIcon("images/accidental/accs4.svg"), QObject::tr("E major") );
-	c->addItem( QIcon("images/accidental/accs4.svg"), QObject::tr("c-sharp minor") );
-	c->addItem( QIcon("images/accidental/accs5.svg"), QObject::tr("B major") );
-	c->addItem( QIcon("images/accidental/accs5.svg"), QObject::tr("g-sharp minor") );
-	c->addItem( QIcon("images/accidental/accs6.svg"), QObject::tr("F-sharp major") );
-	c->addItem( QIcon("images/accidental/accs6.svg"), QObject::tr("d-sharp minor") );
-	c->addItem( QIcon("images/accidental/accs7.svg"), QObject::tr("C-sharp major") );
-	c->addItem( QIcon("images/accidental/accs7.svg"), QObject::tr("a-sharp minor") );
+	c->addItem( QIcon("images:accidental/accs-7.svg"), QObject::tr("C-flat major") );
+	c->addItem( QIcon("images:accidental/accs-7.svg"), QObject::tr("a-flat minor") );
+	c->addItem( QIcon("images:accidental/accs-6.svg"), QObject::tr("G-flat major") );
+	c->addItem( QIcon("images:accidental/accs-6.svg"), QObject::tr("e-flat minor") );
+	c->addItem( QIcon("images:accidental/accs-5.svg"), QObject::tr("D-flat major") );
+	c->addItem( QIcon("images:accidental/accs-5.svg"), QObject::tr("b-flat minor") );
+	c->addItem( QIcon("images:accidental/accs-4.svg"), QObject::tr("A-flat major") );
+	c->addItem( QIcon("images:accidental/accs-4.svg"), QObject::tr("f minor") );
+	c->addItem( QIcon("images:accidental/accs-3.svg"), QObject::tr("E-flat major") );
+	c->addItem( QIcon("images:accidental/accs-3.svg"), QObject::tr("c minor") );
+	c->addItem( QIcon("images:accidental/accs-2.svg"), QObject::tr("B-flat major") );
+	c->addItem( QIcon("images:accidental/accs-2.svg"), QObject::tr("g minor") );
+	c->addItem( QIcon("images:accidental/accs-1.svg"), QObject::tr("F major") );
+	c->addItem( QIcon("images:accidental/accs-1.svg"), QObject::tr("d minor") );
+	c->addItem( QIcon("images:general/none.svg"), QObject::tr("C major") );
+	c->addItem( QIcon("images:general/none.svg"), QObject::tr("a minor") );
+	c->addItem( QIcon("images:accidental/accs1.svg"), QObject::tr("G major") );
+	c->addItem( QIcon("images:accidental/accs1.svg"), QObject::tr("e minor") );
+	c->addItem( QIcon("images:accidental/accs2.svg"), QObject::tr("D major") );
+	c->addItem( QIcon("images:accidental/accs2.svg"), QObject::tr("b minor") );
+	c->addItem( QIcon("images:accidental/accs3.svg"), QObject::tr("A major") );
+	c->addItem( QIcon("images:accidental/accs3.svg"), QObject::tr("f-sharp minor") );
+	c->addItem( QIcon("images:accidental/accs4.svg"), QObject::tr("E major") );
+	c->addItem( QIcon("images:accidental/accs4.svg"), QObject::tr("c-sharp minor") );
+	c->addItem( QIcon("images:accidental/accs5.svg"), QObject::tr("B major") );
+	c->addItem( QIcon("images:accidental/accs5.svg"), QObject::tr("g-sharp minor") );
+	c->addItem( QIcon("images:accidental/accs6.svg"), QObject::tr("F-sharp major") );
+	c->addItem( QIcon("images:accidental/accs6.svg"), QObject::tr("d-sharp minor") );
+	c->addItem( QIcon("images:accidental/accs7.svg"), QObject::tr("C-sharp major") );
+	c->addItem( QIcon("images:accidental/accs7.svg"), QObject::tr("a-sharp minor") );
 }
 
 /*!
@@ -245,8 +245,8 @@ CADiatonicKey CADrawableKeySignature::comboBoxRowToDiatonicKey( int row ) {
 	\sa CADrawableKeySignature::comboBoxRowToDiatonicKey(), CADrawableKeySignature::populateComboBox()
  */
 void CADrawableKeySignature::populateComboBoxDirection( QComboBox *c ) {
-	c->addItem( QIcon("images/general/up.svg"), QObject::tr("Up") );
-	c->addItem( QIcon("images/general/down.svg"), QObject::tr("Down") );
+	c->addItem( QIcon("images:general/up.svg"), QObject::tr("Up") );
+	c->addItem( QIcon("images:general/down.svg"), QObject::tr("Down") );
 }
 
 /*!

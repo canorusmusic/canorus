@@ -15,6 +15,7 @@
 #include <QTranslator>
 #include <QLocale>
 #include <QMetaMethod>
+#include <QFontDatabase>
 
 #include "interface/rtmididevice.h"
 #include "ui/settingsdialog.h"
@@ -25,7 +26,6 @@
 #include "control/helpctl.h"
 
 // define private static members
-QApplication *CACanorus::_mainApp;
 QList<CAMainWin*> CACanorus::_mainWinList;
 CASettings *CACanorus::_settings;
 CAAutoRecovery *CACanorus::_autoRecovery;
@@ -33,74 +33,40 @@ CAMidiDevice *CACanorus::_midiDevice;
 CAUndo *CACanorus::_undo;
 CAHelpCtl *CACanorus::_help;
 QList<QString> CACanorus::_recentDocumentList;
-QString CACanorus::_prevPath;
+QHash<QString, int> CACanorus::_fetaMap;
 
 /*!
-	Locates a resource named fileName (relative path) and returns its absolute path of the file
-	if found in the following order:
-		- passed path as an argument to exe
-		- path in user's config file
-		- current dir
-		- exe dir
-		- DEFAULT_DATA_DIR set by compiler
-
-	\sa locateResourceDir()
+	Add all search paths.
+	The search order is the following:
+	- TODO passed path as an argument to exe
+	- TODO path in user's config file
+	- current dir
+	- exe dir
+	- DEFAULT_DATA_DIR set by compiler
 */
-QList<QString> CACanorus::locateResource(const QString fileName) {
-	QList<QString> paths;
-	//! \todo Config file implementation
-	//! \todo Application path argument
-	QString curPath;
 
-	// Try absolute path
-	curPath = fileName;
-	if (QFileInfo(curPath).exists())
-		paths << QFileInfo(curPath).absoluteFilePath();
-
-	// Try current working directory
-	curPath = QDir::currentPath() + "/" + fileName;
-	if (QFileInfo(curPath).exists())
-		paths << QFileInfo(curPath).absoluteFilePath();
-
-	// Try parent working directory (used for doc outside src directory)
-	curPath = QCoreApplication::applicationDirPath() + "/../" + fileName;
-	if (QFileInfo(curPath).exists())
-		paths << QFileInfo(curPath).absoluteFilePath();
-
-	// Try application exe directory
-	curPath = QCoreApplication::applicationDirPath() + "/" + fileName;
-	if (QFileInfo(curPath).exists())
-		paths << QFileInfo(curPath).absoluteFilePath();
-
+void CACanorus::initSearchPaths()
+{
+	QStringList categories, paths;
+	categories << "images" << "fonts" << "plugins" << "scripts" << "doc" << "lang" << "base";
+	foreach(QString cat, categories) {
+		// The "base" prefix is used by CASwigPython and CASwigRuby to find files which are not in a subdir.
+		QString dirname = (cat == "base") ? "" : cat; 
+		if(QDir(QDir::currentPath() + "/" + dirname).exists())
+			QDir::addSearchPath(cat, QDir::currentPath() + "/" + dirname);
+		// Special rules
+		if(cat == "images" && QDir(qApp->applicationDirPath() + "/ui/" + dirname).exists())
+			QDir::addSearchPath(cat, qApp->applicationDirPath() + "/ui/" + dirname);
+		if(cat == "doc" && QDir(qApp->applicationDirPath()).exists("../"+dirname))
+			QDir::addSearchPath(cat, qApp->applicationDirPath()+"/../doc");
+		// END Special rules
+		if(QDir(qApp->applicationDirPath() + "/" + dirname).exists())
+			QDir::addSearchPath(cat, qApp->applicationDirPath() + "/" + dirname);
 #ifdef DEFAULT_DATA_DIR
-	// Try compiler defined DEFAULT_DATA_DIR constant (useful on Unix OSes)
-	curPath = QString(DEFAULT_DATA_DIR) + "/" + fileName;
-	if (QFileInfo(curPath).exists())
-		paths << QFileInfo(curPath).absoluteFilePath();
-
+		if(QDir(DEFAULT_DATA_DIR + ("/" + dirname)).exists())
+			QDir::addSearchPath(cat, DEFAULT_DATA_DIR + ("/" + dirname));
 #endif
-
-	// Try the source ui/ directory (images etc.)
-	curPath = QCoreApplication::applicationDirPath() + "/ui/" + fileName;
-	if (QFileInfo(curPath).exists())
-			paths << QFileInfo(curPath).absoluteFilePath();
-
-	// Remove duplicates. Is there a faster way to do this?
-	return paths.toSet().toList();
-}
-
-/*!
-	Finds the resource named fileName and returns its absolute directory.
-
-	\sa locateResource()
-*/
-QList<QString> CACanorus::locateResourceDir(const QString fileName) {
-	QList<QString> paths = CACanorus::locateResource(fileName);
-	for (int i=0; i<paths.size(); i++)
-		paths[i] = paths[i].left(paths[i].lastIndexOf("/"));
-
-	// Remove duplicates. Is there a faster way to do this?
-	return paths.toSet().toList();
+	}
 }
 
 /*!
@@ -198,6 +164,25 @@ void CACanorus::initUndo() {
 	_undo = new CAUndo();
 }
 
+void CACanorus::initFonts() {
+	// addApplicationFont doesn't understand prefix: paths.
+	QFontDatabase::addApplicationFont(QFileInfo("fonts:CenturySchL-Roma.ttf").absoluteFilePath());
+	QFontDatabase::addApplicationFont(QFileInfo("fonts:CenturySchL-Ital.ttf").absoluteFilePath());
+	QFontDatabase::addApplicationFont(QFileInfo("fonts:CenturySchL-Bold.ttf").absoluteFilePath());
+	QFontDatabase::addApplicationFont(QFileInfo("fonts:CenturySchL-BoldItal.ttf").absoluteFilePath());
+	QFontDatabase::addApplicationFont(QFileInfo("fonts:FreeSans.ttf").absoluteFilePath());
+	QFontDatabase::addApplicationFont(QFileInfo("fonts:Emmentaler-14.ttf").absoluteFilePath());
+	// populate glyph->codepoint map using generated list
+	#include "fonts/fetaList.cxx"
+}
+
+/*!
+	Returns codepoint for an Feta (Emmentaler) glyph by its name.
+ */
+int CACanorus::fetaCodepoint(const QString& name) {
+	return _fetaMap[name];
+}
+
 void CACanorus::initHelp() {
 	_help = new CAHelpCtl();
 }
@@ -268,12 +253,13 @@ void CACanorus::parseOpenFileArguments(int argc, char *argv[]) {
 	for (int i=1; i<argc; i++) {
 		if (argv[i][0]!='-') { // automatically treat any argument which doesn't start with '-' to be a file name - \todo
 			// passed is not the switch but a file name
-			if (!CACanorus::locateResource(argv[i]).size())
+			QFileInfo file(argv[i]);
+
+			if(!file.exists())
 				continue;
-			QString fileName = CACanorus::locateResource(argv[i]).at(0);
 
 			CAMainWin *mainWin = new CAMainWin();
-			mainWin->openDocument(fileName);
+			mainWin->openDocument(file.absoluteFilePath());
 			mainWin->show();
 		}
 	}
@@ -405,36 +391,3 @@ void CACanorus::connectSlotsByName(QObject *pOS, const QObject *pOR)
     }
 }
 
-/*!
-	This function sets the current path to the directory containing the
-	/images folder and stores the current path. It looks the current path,
-	canorus exe, data path and source dir.
-
-	This function is usually called when initializing the GUI where icons
-	and other GUI resources should be located relative to the current directory.
-
-	\sa CACanorus::restorePath(), CACanorus::locateResourceDir()
- */
-bool CACanorus::setImagesPath() {
-	_prevPath = QDir::currentPath();
-
-	QList<QString> resourcesLocations = CACanorus::locateResourceDir(QString("images"));
-	if (!resourcesLocations.size()) // when Canorus not installed, search the source path
-		resourcesLocations = CACanorus::locateResourceDir(QString("ui/images"));
-
-	if ( resourcesLocations.size() ) {
-		QDir::setCurrent( resourcesLocations[0] );
-		return true;
-	} else {
-		return false;
-	}
-}
-
-/*!
-	This function restores the path stored when calling setImagesPath().
-
-	\sa CACanorus::setImagesPath(), CACanorus::locateResourceDir()
- */
-void CACanorus::restorePath() {
-	QDir::setCurrent( _prevPath );
-}

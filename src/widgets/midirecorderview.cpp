@@ -16,12 +16,8 @@
 CAMidiRecorderView::CAMidiRecorderView( CAMidiRecorder *r, QWidget *parent )
  : QDockWidget( parent ), _midiRecorder(r) {
 
-	CACanorus::setImagesPath();
-
 	setupUi( this ); // initialize elements created by Qt Designer
 	setupCustomUi();
-
-	CACanorus::restorePath();
 
 	_status = Idle;
 }

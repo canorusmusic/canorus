@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2009, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -39,9 +39,10 @@ int main(int argc, char *argv[]) {
 	signal(SIGQUIT, catch_sig);
 #endif
 
+	CACanorus::initSearchPaths();
+	
 	QPixmap splashPixmap( 400, 300 );
-	if ( CACanorus::locateResource("images/splash.png").size() )
-		splashPixmap = QPixmap( CACanorus::locateResource("images/splash.png")[0] );
+	splashPixmap = QPixmap("images:splash.png");
 
 	QSplashScreen splash( splashPixmap );
 	QFont font("Century Schoolbook L");
@@ -59,14 +60,13 @@ int main(int argc, char *argv[]) {
 	splash.show();
 
 	// Load system translation if found
-	QList<QString> translationLocations =
-		CACanorus::locateResource(QString("lang/") + QLocale::system().name() + ".qm"); // load language_COUNTRY.qm
-	if (!translationLocations.size())
-		translationLocations = CACanorus::locateResource(QString("lang/") + QLocale::system().name().left(2) + ".qm"); // if not found, load language.qm only
+	QString translationFile = "lang:" + QLocale::system().name() + ".qm"; // load language_COUNTRY.qm
+	if(!QFileInfo(translationFile).exists())
+		translationFile = "lang:" + QLocale::system().name().left(2) + ".qm"; // if not found, load language.qm
 
 	QTranslator translator;
-	if (translationLocations.size()) {
-		translator.load(translationLocations[0]);
+	if(QFileInfo(translationFile).exists()) {
+		translator.load(QFileInfo(translationFile).absoluteFilePath());
 		mainApp.installTranslator(&translator);
 	}
 
@@ -106,6 +106,11 @@ int main(int argc, char *argv[]) {
 	splash.showMessage( QObject::tr("Initializing Undo/Redo framework", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
 	mainApp.processEvents();
 	CACanorus::initUndo();
+
+	// Load bundled fonts
+	splash.showMessage( QObject::tr("Loading fonts", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
+	mainApp.processEvents();
+	CACanorus::initFonts();
 
 	// Check for any crashed Canorus sessions and open the recovery files
 	splash.showMessage( QObject::tr("Searching for recovery documents", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );

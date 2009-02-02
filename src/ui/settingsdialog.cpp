@@ -30,11 +30,7 @@
 
 CASettingsDialog::CASettingsDialog( CASettingsPage currentPage, QWidget *parent )
  : QDialog( parent ) {
-	CACanorus::setImagesPath();
-
 	setupUi( this );
-
-	CACanorus::restorePath();
 
 	buildPreviewSheet();
 	setupPages( currentPage );

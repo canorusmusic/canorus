@@ -496,7 +496,7 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
     }
     else if (strCmd.startsWith("/callscript ")) {
 
-        if((CACanorus::locateResource("scripts/" + strCmd.mid(12))).isEmpty()) {
+        if(!QFile::exists("scripts:" + strCmd.mid(12))) {
             txtAppend("Script not found\n",txtStderr);
             txtAppend(">>> ",txtNormal);
             return true;
@@ -510,7 +510,7 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         
         argsPython << CASwigPython::toPythonObject(static_cast<CAMainWin*>(curObject)->document(), CASwigPython::Document);        
 
-        CASwigPython::callFunction(CACanorus::locateResource("scripts/" + strCmd.mid(12)).at(0), _strEntryFunc, argsPython);
+        CASwigPython::callFunction(QFileInfo("scripts:" + strCmd.mid(12)).absoluteFilePath(), _strEntryFunc, argsPython);
         txtAppend(">>> ",txtNormal);
         return true;
     }
