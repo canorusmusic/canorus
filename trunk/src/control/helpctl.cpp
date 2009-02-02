@@ -27,7 +27,7 @@ CAHelpCtl::CAHelpCtl()
 	QString lang = usersGuideLanguage();
 
 	if (!lang.isEmpty()) {
-		_helpEngine = new QHelpEngine( CACanorus::locateResource(QString("doc/usersguide/")+lang+".qhc")[0] );
+		_helpEngine = new QHelpEngine( QFileInfo("doc:usersguide/"+lang+".qhc").absoluteFilePath() );
 	}
 }
 
@@ -38,13 +38,13 @@ CAHelpCtl::~CAHelpCtl() {
 	Helper function which returns the existent User's guide language.
  */
 QString CAHelpCtl::usersGuideLanguage() {
-	if (CACanorus::locateResource(QString("doc/usersguide/")+QLocale::system().name()+".qhc").size()) {
+	if ( QFileInfo("doc:usersguide/"+QLocale::system().name()+".qhc").exists() ) {
 		return QLocale::system().name();
 	} else
-	if (CACanorus::locateResource(QString("doc/usersguide/")+QLocale::system().name().left(2)+".qhc").size()) {
+	if ( QFileInfo("doc:usersguide/"+QLocale::system().name().left(2)+".qhc").exists() ) {
 		return QLocale::system().name().left(2);
 	} else
-	if (CACanorus::locateResource(QString("doc/usersguide/en.qhc")).size()) {
+	if ( QFileInfo("doc:usersguide/en.qhc").exists() ) {
 		return "en";
 	} else {
 		return "";
@@ -62,11 +62,10 @@ void CAHelpCtl::showUsersGuide( QString chapter, QWidget *helpWidget ) {
 	}
 
 	if (chapter.isEmpty()) {
-		if (!usersGuideLanguage().isEmpty()) {
-			url = QString("qthelp://canorus/usersguide-")+usersGuideLanguage()+"/"+usersGuideLanguage()+".html";
-		} else {
+		if (!usersGuideLanguage().isEmpty())
+			url = "qthelp://canorus/usersguide-"+usersGuideLanguage()+"/"+usersGuideLanguage()+".html";
+		else 
 			return;
-		}
 	} else {
 		QMap<QString, QUrl> links = _helpEngine->linksForIdentifier(chapter);
 		if (links.count()) {
