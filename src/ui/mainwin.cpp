@@ -1864,6 +1864,13 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 	CAScoreViewPort *v = static_cast<CAScoreViewPort*>(sender());
 	setCurrentViewPort( v );
 
+	// go to Insert mode (if in Select mode) before changing note length
+	if(e->key() >= Qt::Key_0 && e->key() <= Qt::Key_9 && e->key() != Qt::Key_3) {
+		if (mode()!=EditMode) {
+			uiInsertPlayable->setChecked(true);
+		}
+	}
+
 	switch (e->key()) {
 		// Music editing keys
 		case Qt::Key_Right: {
@@ -2055,6 +2062,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 								next = p->voice()->next(p);
 								p->voice()->remove(chord[i]);
 								chord[i]->playableLength().setDotted( (p->playableLength().dotted()+1)%4 );
+								chord[i]->calculateTimeLength();
 							}
 							p->voice()->insert( next, chord[0], false );
 							for (int i=1; i<chord.size(); i++) {
@@ -2064,6 +2072,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 							next = p->voice()->next(p);
 							p->voice()->remove(p);
 							p->playableLength().setDotted( (p->playableLength().dotted()+1)%4 );
+							p->calculateTimeLength();
 							p->voice()->insert( next, p );
 						}
 
@@ -2148,8 +2157,6 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 
 	if(e->key() >= Qt::Key_0 && e->key() <= Qt::Key_9 && e->key() != Qt::Key_3)
 	{
-		if (mode()!=EditMode)
-			uiInsertPlayable->setChecked(true);
 		musElementFactory()->playableLength().setDotted( 0 );
 		v->setShadowNoteLength( musElementFactory()->playableLength() );
 		v->updateHelpers();
