@@ -126,6 +126,7 @@ bool CACanorusMLImport::fatalError ( const QXmlParseException & exception ) {
 	\sa endElement()
 */
 bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes ) {
+	qDebug() << qName;
 	if ( attributes.value("color")!="" ) {
 		_color = QVariant(attributes.value("color")).value<QColor>();
 	} else {
@@ -391,6 +392,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			attributes.value("time-start").toInt(),
 			attributes.value("time-length").toInt()
 		);
+		// Note: associatedVoice property is set when finishing parsing the sheet
 
 		static_cast<CALyricsContext*>(_curContext)->addSyllable(s);
 		if (!attributes.value("associated-voice-idx").isEmpty())
@@ -469,8 +471,11 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 			lcs.at(i)->setAssociatedVoice( voices.at(_lcMap[lcs[i]]) );
 
 		QList<CASyllable*> syllables = _syllableMap.keys();
-		for (int i=0; i<syllables.size(); i++) // assign voices from voice indices
-			syllables.at(i)->setAssociatedVoice( voices.at(_syllableMap[syllables[i]]) );
+		for (int i=0; i<syllables.size(); i++) { // assign voices from voice indices
+			if (_syllableMap[syllables[i]]>=0 && _syllableMap[syllables[i]]<voices.count()) {
+				syllables.at(i)->setAssociatedVoice( voices.at(_syllableMap[syllables[i]]) );
+			}
+		}
 
 		_lcMap.clear();
 		_syllableMap.clear();

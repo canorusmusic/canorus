@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007-2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -10,21 +10,26 @@
 
 /*!
 	\class CASyllable
-	\brief Text under the note
-	
-	This class represents each text part below or under every note. It doesn't neccessarily consists only of the one
-	syllable in the meaning of the word, but it usually does. Syllable is part of CALyricsContext.
-	
-	Every syllable can finish with a hyphen (a horizontal dash line), with melisma (a horizontal
+	\brief Lyrics under the note
+
+	This class represents one lyrics element above or below the note. It doesn't neccessarily consist of one
+	syllable or even a word, but can contain multiple syllables and words (using an underscore _ or a dash -).
+	Syllables are usually stored inside CALyricsContext.
+
+	Every lyrics element can finish with a hyphen (a horizontal middle line), with melisma (a horizontal
 	underscore line) or without line at the end of the word.
-	
-	\todo Each syllable can have a custom associated voice, if set.
+
+	Each syllable can have a custom associated voice, if set. Usually parent's (lyrics context) voice is taken.
 */
 
+/*!
+	Creates a new lyrics element with the given \a text, hyphenation \a hyphen and \a melisma properties, parent \a context,
+	\a timeStart and \a timeLength. \a voice is a special per-syllable associated voice (default 0 - takes parent's voice).
+ */
 CASyllable::CASyllable( QString text, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice)
  : CAMusElement(context, timeStart, timeLength) {
 	setMusElementType( Syllable );
-	
+
 	setText( text );
 	setHyphenStart( hyphen );
 	setMelismaStart( melisma );
@@ -47,19 +52,19 @@ void CASyllable::clear() {
 
 /*!
  * Clone the syllable using the given new context.
- * If the given context is not a lyrics context, 0 is used instead. 
+ * If the given context is not a lyrics context, 0 is used instead.
  */
 CASyllable* CASyllable::clone(CAContext* context) {
 	CALyricsContext* newContext = 0;
 	if(context->contextType() == CAContext::LyricsContext)
 		newContext = static_cast<CALyricsContext*>(context);
-	CASyllable *s = new CASyllable( text(), hyphenStart(), melismaStart(), newContext, timeStart(), timeLength(), newContext?newContext->associatedVoice():0 );
-	
+	CASyllable *s = new CASyllable( text(), hyphenStart(), melismaStart(), newContext, timeStart(), timeLength(), associatedVoice() );
+
 	for (int i=0; i<markList().size(); i++) {
 		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(s));
 		s->addMark( m );
 	}
-	
+
 	return s;
 }
 

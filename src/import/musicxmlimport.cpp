@@ -481,7 +481,7 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 			_document->sheetAt(0)->insertContextAfter( v->staff(), v->lyricsContextList()[lyricsNumber-1] );
 		}
 
-		v->lyricsContextList()[lyricsNumber-1]->addSyllable( new CASyllable(lyricsText, false, false, v->lyricsContextList()[lyricsNumber-1], p->timeStart(), p->timeLength(), v ) );
+		v->lyricsContextList()[lyricsNumber-1]->addSyllable( new CASyllable(lyricsText, false, false, v->lyricsContextList()[lyricsNumber-1], p->timeStart(), p->timeLength() ) );
 	}
 }
 

@@ -147,8 +147,9 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 						s.setAttribute( "hyphen", syllables[i]->hyphenStart() );
 						s.setAttribute( "melisma", syllables[i]->melismaStart() );
 
-						if (syllables[i]->associatedVoice())
+						if ( syllables[i]->associatedVoice() && doc->sheetAt(sheetIdx)->voiceList().contains(syllables[i]->associatedVoice()) ) {
 							s.setAttribute( "associated-voice-idx", doc->sheetAt(sheetIdx)->voiceList().indexOf(syllables[i]->associatedVoice()) );
+						}
 					}
 
 					break;
