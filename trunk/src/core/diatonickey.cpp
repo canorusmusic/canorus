@@ -204,6 +204,31 @@ CADiatonicKey CADiatonicKey::diatonicKeyFromString( const QString s ) {
 }
 
 /*!
+	Returns a list of accs from C to B for the key signature.
+ */
+QList<int> CADiatonicKey::accsMatrix() {
+	QList<int> matrix;
+	for (int i=0; i<7; i++) matrix << 0;
+
+	for (int i=1; i<=numberOfAccs(); i++) {
+		matrix[(i*4-1)%7] = 1;
+	}
+	for (int i=-1; i>=numberOfAccs(); i--) {
+		matrix[(i*(-3)+3)%7] = -1;
+	}
+
+	return matrix;
+}
+
+/*!
+	Returns number of accidentals for the given note.
+	Eg. If we call noteAccs(17) in D-Major, it returns 1, because 17 is a note F and D-Major has Fis.
+ */
+int CADiatonicKey::noteAccs( int noteName ) {
+	return accsMatrix()[noteName%7];
+}
+
+/*!
 	\enum CADiatonicKey::CAGender
 	The lower tetrachord of the scale - gender:
 		- Major
