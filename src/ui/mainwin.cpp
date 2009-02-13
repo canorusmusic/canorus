@@ -1941,7 +1941,11 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 						CANote *note = static_cast<CANote*>(elt->musElement());
-						CADiatonicPitch pitch( note->diatonicPitch().noteName()+1, note->diatonicPitch().accs() );
+						CADiatonicKey key;
+						if (note->voice()->getKeySig(note)) {
+							key = note->voice()->getKeySig(note)->diatonicKey();
+						}
+						CADiatonicPitch pitch( note->diatonicPitch().noteName()+1, key.noteAccs(note->diatonicPitch().noteName()+1) );
 						note->setDiatonicPitch( pitch );
 						CACanorus::undo()->pushUndoCommand();
 						rebuild = true;
@@ -1975,7 +1979,11 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 					// pitch note for one step higher
 					if (elt->drawableMusElementType() == CADrawableMusElement::DrawableNote) {
 						CANote *note = static_cast<CANote*>(elt->musElement());
-						CADiatonicPitch pitch( note->diatonicPitch().noteName()-1, note->diatonicPitch().accs() );
+						CADiatonicKey key;
+						if (note->voice()->getKeySig(note)) {
+							key = note->voice()->getKeySig(note)->diatonicKey();
+						}
+						CADiatonicPitch pitch( note->diatonicPitch().noteName()-1, key.noteAccs(note->diatonicPitch().noteName()-1) );
 						note->setDiatonicPitch( pitch );
 						CACanorus::undo()->pushUndoCommand();
 						rebuild = true;

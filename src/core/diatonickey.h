@@ -10,6 +10,7 @@
 
 #include "core/diatonicpitch.h"
 #include <QString>
+#include <QList>
 
 class CADiatonicKey {
 public:
@@ -55,6 +56,8 @@ public:
 	static CADiatonicKey diatonicKeyFromString( const QString );
 
 	int numberOfAccs();
+	QList<int> accsMatrix();
+	int noteAccs( int noteName );
 
 private:
 	CADiatonicPitch _diatonicPitch; // pitch of the key
