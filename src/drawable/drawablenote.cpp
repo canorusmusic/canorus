@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -26,7 +26,7 @@ const int CADrawableNote::HALF_YPOS_DELTA = 23;
 
 /*!
 	Default constructor.
-	
+
 	\param x coordinate represents the left border of the notehead.
 	\param y coordinate represents the center of the notehead.
 */
@@ -34,9 +34,9 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, in
  : CADrawableMusElement(n, drawableContext, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableNote;
 	_drawableAcc = drawableAcc;
-	
+
 	_stemDirection = note()->actualStemDirection();
-	
+
 	// Notehead widths are hardcoded below; it's possible to determine them at runtime using QFontMetrics, if necessary.
 	switch (n->playableLength().musicLength()) {
 	case CAPlayableLength::HundredTwentyEighth:
@@ -50,21 +50,21 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, in
 		_width = 11;
 		_height = 10;
 		break;
-	
+
 	case CAPlayableLength::Half:
 		_noteHeadGlyphName = "noteheads.s1";
 		_penWidth = 1.3;
 		_width = 12;
 		_height = 10;
 		break;
-		
+
 	case CAPlayableLength::Whole:
 		_noteHeadGlyphName = "noteheads.s0";
 		_penWidth = 0;
 		_width = 17;
 		_height = 8;
 		break;
-	
+
 	case CAPlayableLength::Breve:
 		_noteHeadGlyphName = "noteheads.sM1";
 		_penWidth = 0;
@@ -109,19 +109,19 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, in
 		_stemLength = HALF_STEM_LENGTH;
 		break;
 	}
-	
+
 	_noteHeadWidth = _width;
-	
+
 	if (n->playableLength().dotted()) {
 		_width += 3;
 		for (int i=0; i<n->playableLength().dotted(); i++)
 			_width += 2;
 	}
-	
+
 	_neededWidth = _width;
 	_neededHeight = _height;
 	_shadowNote = shadowNote;
-	
+
 	_drawLedgerLines = true;
 }
 
@@ -131,12 +131,12 @@ CADrawableNote::~CADrawableNote() {
 void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 	QFont font("Emmentaler");
 	font.setPixelSize((int)(35*s.z));
-	
+
 	p->setPen(QPen(s.color));
 	p->setFont(font);
 
 	QPen pen;
-	
+
 	// Draw ledger lines
 	if ( _drawLedgerLines &&
 	     note() && note()->voice() && note()->voice()->staff() &&
@@ -146,7 +146,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 	   ) {
 	   	int direction = (note()->notePosition() > 0 ? 1 : -1);	// 1 falling, -1 rising
 	   	int ledgerDist = qRound(9.0*s.z);	// distance between the ledger lines - notehead height
-	   	
+
 	   	// draw ledger lines in direction from the notehead to staff
 		qreal ry = (direction==1)?_drawableContext->yPos():_drawableContext->yPos()+(_drawableContext->height()-1);
 		ry *= s.z;
@@ -170,7 +170,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 
 	if (note()->noteLength().musicLength() >= CAPlayableLength::Half) {
 		// Draw stem and flag
-		pen.setWidthF(_penWidth*s.z);	
+		pen.setWidthF(_penWidth*s.z);
 		pen.setCapStyle(Qt::RoundCap);
 		pen.setColor(s.color);
 		p->setPen(pen);
@@ -189,7 +189,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 			s.x+=(int)(_noteHeadWidth*s.z+0.5);
 		}
 	}
-	
+
 	// Draw Dots
 	float delta=4*s.z;
 	for (int i=0; i<note()->playableLength().dotted(); i++) {
@@ -200,7 +200,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 		p->drawPoint((int)(s.x + delta + 0.5), (int)(s.y - 1.7*s.z + 0.5));
 		delta += 3*s.z;
 	}
-		
+
 	s.x += (int)(delta+0.5);
 }
 

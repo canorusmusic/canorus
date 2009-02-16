@@ -153,6 +153,7 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	setShadowNoteVisible( false );
 	setShadowNoteVisibleOnLeave( false );
 	setShadowNoteAccs( 0 );
+	setNoteNameVisible( false );
 	setDrawShadowNoteAccs( false );
 	setTextEdit( new CATextEdit( _canvas ) );
 	setTextEditVisible( false );
@@ -992,6 +993,15 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 					acc.draw(&p, s);
 				}
 			}
+		}
+
+		// draw note name
+		if (_shadowNote.size()) {
+			QFont font("FreeSans");
+			font.setPixelSize( 20 );
+			p.setFont(font);
+			p.setPen(disabledElementsColor());
+			p.drawText( qRound((_xCursor-_worldX) * _zoom + 10), qRound((_yCursor-_worldY) * _zoom - 10), CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
 		}
 	}
 

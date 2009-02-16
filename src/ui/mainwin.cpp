@@ -1308,7 +1308,6 @@ void CAMainWin::setMode(CAMode mode) {
 				}
 			}
 
-			statusBar()->showMessage("");
 			musElementFactory()->setMusElementType( CAMusElement::Undefined );
 			uiVoiceNum->setRealValue( 0 );
 
@@ -1689,7 +1688,7 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords) {
 	if ( mode() == SelectMode && c->resizeDirection()!=CADrawable::Undefined ) {
 		int time = c->coordsToTime(coords.x());
 		time -= (time % CAPlayableLength::musicLengthToTimeLength(CAPlayableLength::Sixteenth)); // round timelength to eighth notes length
-	if ( c->resizeDirection()==CADrawable::Right && (time > c->selection().at(0)->musElement()->timeStart()) ) {
+		if ( c->resizeDirection()==CADrawable::Right && (time > c->selection().at(0)->musElement()->timeStart()) ) {
 			c->selection().at(0)->musElement()->setTimeLength( time - c->selection().at(0)->musElement()->timeStart() );
 			c->selection().at(0)->setWidth( c->timeToCoords(time) - c->selection().at(0)->xPos() );
 			c->repaint();
@@ -1720,7 +1719,6 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords) {
 		// write into the main window's status bar the note pitch name
 		int iNoteAccs = s->getAccs(coords.x(), pitch) + musElementFactory()->noteExtraAccs();
 		musElementFactory()->setNoteAccs( iNoteAccs );
-		statusBar()->showMessage(CANote::generateNoteName(pitch, iNoteAccs));
 		c->setShadowNoteAccs(iNoteAccs);
 		c->repaint();
 	} else
