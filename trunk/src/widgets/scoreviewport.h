@@ -219,12 +219,18 @@ public:
 	inline int shadowNoteAccs() { return _shadowNoteAccs; }
 	inline void setShadowNoteAccs(int accs) { _shadowNoteAccs = accs; }
 
-	void setShadowNoteLength( CAPlayableLength lengt );
+	void setShadowNoteLength( CAPlayableLength );
 
 	CATextEdit *createTextEdit( CADrawableMusElement *elt );
 	inline CATextEdit *textEdit() { return _textEdit; }
 	void removeTextEdit();
 	inline bool textEditVisible() { return _textEditVisible; }
+
+	bool noteNameVisible() { return _noteNameVisible; }
+	void setNoteNameVisible( bool v ) { _noteNameVisible = v; }
+
+	QString noteName() { return _noteName; }
+	void setNoteName( QString n ) { _noteName = n; }
 
 	void updateHelpers(); // method for updating shadow notes, syllable edits and other post-engrave elements coordinates and sizes when zoom level is changed etc.
 
@@ -333,6 +339,8 @@ private:
 	QColor _selectedContextColor;  // Color which the current context is painted.
 	QColor _disabledElementsColor; // Color which the elements in non-selected voice are painted.
 	QColor _hiddenElementsColor;   // Color which the invisible elements are painted in current-voice-only mode.
+	bool    _noteNameVisible;      // Is the written note name visible
+	QString _noteName;             // Name of the note to be inserted. eg. c', Des,
 
 	///////////////
 	// Animation //
@@ -356,8 +364,8 @@ private:
 	/////////////////////////
 	int _oldWorldX, _oldWorldY, _oldWorldW, _oldWorldH; // Old coordinates used before the repaint. This is needed so only the new part of the viewport gets repainted when panning.
 	bool _playing;                                      // Set to on, when in Playback mode
-	QTimer *_clickTimer;                                 // Used for measuring doubleClick and tripleClick
-	int     _numberOfClicks;                             // Used for measuring doubleClick and tripleClick
+	QTimer *_clickTimer;                                // Used for measuring doubleClick and tripleClick
+	int     _numberOfClicks;                            // Used for measuring doubleClick and tripleClick
 
 	int _xCursor, _yCursor;                             // Mouse cursor position in absolute world coords.
 	bool _holdRepaint;                                  // Flag to prevent multiple repaintings.
