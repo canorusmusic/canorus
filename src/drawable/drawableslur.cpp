@@ -1,7 +1,7 @@
 /*!
  * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
+ *
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
  */
 
@@ -17,9 +17,9 @@ CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, int x1, int 
 	setYMid( yMid );
  	setX2( x2 );
  	setY2( y2 );
- 	
+
  	updateGeometry(); // sets width, height, xPos, yPos
- 	
+
 	setNeededWidth( width() );
 	setNeededHeight( height() );
 }
@@ -30,7 +30,7 @@ CADrawableSlur::~CADrawableSlur() {
 void CADrawableSlur::updateGeometry() {
 	setXPos( min(x1(), xMid(), x2()) );
 	setWidth( max(x1(), xMid(), x2()) - xPos() );
-	
+
 	setYPos( min(y1(), yMid(), y2()) );
 	setHeight( max(y1(), yMid(), y2()) - yPos() );
 }
@@ -60,7 +60,6 @@ int CADrawableSlur::max(int x, int y, int z) {
 }
 
 void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
-	p->setRenderHint(QPainter::Antialiasing);
 	QPen pen(s.color);
 	pen.setWidth( qRound(1.2*s.z) );
 	pen.setCapStyle( Qt::RoundCap );
@@ -73,7 +72,7 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 			break;
 	}
 	p->setPen( pen );
-	
+
 	int minY = min(y1(), yMid(), y2());
 	int yLeft = qRound(s.y + (y1()-minY)     * s.z);
 	int yMidl = qRound(s.y + (yMid()-minY)   * s.z);
@@ -83,7 +82,7 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 	int deltaY2 = (yRight - yMidl);
 	int deltaX1 = xMidl - s.x;
 	int deltaX2 = qRound(s.x + width()*s.z - xMidl);
-	
+
 	// generate an array of points for the rounded slur using the exponent shape
 	QPoint points[21];
 	points[0] = QPoint( s.x, yLeft );
@@ -107,7 +106,7 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 	points[18] = QPoint( qRound(xMidl + 0.8*deltaX2), qRound(yMidl + deltaY2*0.47) );
 	points[19] = QPoint( qRound(xMidl + 0.9*deltaX2), qRound(yMidl + deltaY2*0.66) );
 	points[20] = QPoint( qRound(s.x+width()*s.z), yRight );
-	
+
 	p->drawPolyline(points, 21);
 }
 

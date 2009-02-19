@@ -31,8 +31,11 @@
     </item>
     <item>
      <widget class="QSpinBox" name="uiMidiChannel" >
+      <property name="minimum" >
+       <number>1</number>
+      </property>
       <property name="maximum" >
-       <number>15</number>
+       <number>16</number>
       </property>
      </widget>
     </item>
@@ -44,7 +47,7 @@
       <property name="sizeType" >
        <enum>QSizePolicy::MinimumExpanding</enum>
       </property>
-      <property name="sizeHint" >
+      <property name="sizeHint" stdset="0" >
        <size>
         <width>40</width>
         <height>20</height>
