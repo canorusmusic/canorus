@@ -149,6 +149,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 
 	   	// draw ledger lines in direction from the notehead to staff
 		qreal ry = (direction==1)?_drawableContext->yPos():_drawableContext->yPos()+(_drawableContext->height()-1);
+		ry -= s.worldY;
 		ry *= s.z;
 		QPen pen(s.color);
 		pen.setWidthF(1.0*s.z);

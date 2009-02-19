@@ -1,7 +1,7 @@
-/*! 
+/*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -21,6 +21,8 @@ struct CADrawSettings {
 		int h;
 		// QPenStyle penStyle;
 		QColor color;
+		int worldX;
+		int worldY;
 };
 
 class CADrawable {
@@ -29,7 +31,7 @@ public:
 		DrawableMusElement,
 		DrawableContext
 	};
-	
+
 	enum CADirection {
 		Undefined,
 		Top,
@@ -41,15 +43,15 @@ public:
 		BottomLeft,
 		BottomRight
 	};
-	
-	CADrawable(int x, int y);	// x and y position of an element in absolute world units	
+
+	CADrawable(int x, int y);	// x and y position of an element in absolute world units
 	virtual ~CADrawable() { }
 	virtual void draw(QPainter *p, const CADrawSettings s) = 0;
 	virtual CADrawable *clone();
-	
+
 	void drawHScaleHandles( QPainter *p, const CADrawSettings s );
 	void drawVScaleHandles( QPainter *p, const CADrawSettings s );
-	
+
 	inline CADrawableType drawableType() { return _drawableType; }
 	inline int xPos() { return _xPos + _xPosOffset; }
 	inline int yPos() { return _yPos + _yPosOffset; }
@@ -66,7 +68,7 @@ public:
 	inline bool isSelectable() { return _selectable; }
 	inline bool isHScalable() { return _HScalable; }
 	inline bool isVScalable() { return _VScalable; }
-	
+
 	inline virtual void setXPos(int xPos) { _xPos = xPos; }
 	inline virtual void setYPos(int yPos) { _yPos = yPos; }
 	inline void setXPosAbsolute(int xPos) { _xPos = xPos; } // set the xPos directly without any specific offsets
@@ -79,7 +81,7 @@ public:
 	inline void setSelectable(bool s) { _selectable = s; }
 	inline void setHScalable(bool s) { _HScalable = s; }
 	inline void setVScalable(bool s) { _VScalable = s; }
-	
+
 protected:
 	inline void setNeededWidth(int width) { _neededWidth = width; }
 	inline void setNeededHeight(int height) { _neededHeight = height; }
@@ -96,7 +98,7 @@ protected:
 	bool _selectable;	// Can the element be clicked on and is then selected
 	bool _HScalable;    // Can the element be streched horizontally
 	bool _VScalable;    // Can the element be streched vertically
-	
+
 	static const int SCALE_HANDLES_SIZE; // Width and Height of the scale handles squares
 };
 
