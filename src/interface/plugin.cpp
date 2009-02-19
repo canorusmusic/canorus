@@ -1,8 +1,8 @@
 /** @file interface/plugin.cpp
- * 
+ *
  * Copyright (c) 2006, Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
- * 
+ *
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
@@ -30,7 +30,7 @@ CAPlugin::CAPlugin() {
 	_dirName = "";
 	_homeUrl = "";
 	_updateUrl = "";
-	
+
 	_enabled = false;
 }
 
@@ -42,7 +42,7 @@ CAPlugin::CAPlugin(QString name, QString author, QString version, QString date, 
 	_dirName = dirName;
 	_homeUrl = homeUrl;
 	_updateUrl = updateUrl;
-	
+
 	_enabled = false;
 }
 
@@ -50,7 +50,7 @@ CAPlugin::~CAPlugin() {
 	QList<CAPluginAction*> pluginActions = _actionMap.values();
 	for (int i=0; i<pluginActions.size(); i++)
 		delete pluginActions[i];
-	
+
 	QList<QMenu*> menus = _menuMap.values();
 	for (int i=0; i<menus.size(); i++)
 		delete menus[i];
@@ -59,15 +59,15 @@ CAPlugin::~CAPlugin() {
 bool CAPlugin::action(QString onAction, CAMainWin *mainWin, CADocument *document, QEvent *evt, QPoint *coords) {
 	if (!_enabled)
 		return false;
-	
+
 	QList<CAPluginAction*> actionList = _actionMap.values(onAction);
 	if (!actionList.size())	// action not found
 		return false;
-	
+
 	bool error = false;
 	for (int i=0; i<actionList.size(); i++)
 		error |= (!callAction(actionList[i], mainWin, document, evt, coords));
-	
+
 	return (!error);
 }
 
@@ -79,14 +79,14 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #ifdef USE_PYTHON
 	QList<PyObject*> pythonArgs;
 #endif
-	
+
 	bool rebuildDocument = false;
-	
+
 	// Convert arguments to its needed scripting language types
 	QList<QString> args = action->args();
 	for (int i=0; i<args.size(); i++) {
 		QString val=args[i];
-		
+
 		// Currently selected document
 		if (val=="document") {
 			rebuildDocument = true;
@@ -101,7 +101,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 			}
 #endif
 		} else
-		
+
 		// Currently selected sheet
 		if (val=="sheet") {
 #ifdef USE_RUBY
@@ -125,7 +125,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 			}
 #endif
 		} else
-		
+
 		// Currently selected note
 		if (val=="note") {
 #ifdef USE_RUBY
@@ -152,7 +152,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 						error=true;
 						break;
 					}
-					pythonArgs << CASwigPython::toPythonObject(v->selection().front()->musElement(), CASwigPython::Note);
+					pythonArgs << CASwigPython::toPythonObject(v->selection().front()->musElement(), CASwigPython::MusElement);
 				}
 				else {
 					error = true;
@@ -164,7 +164,28 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="chord") {
 			//TODO
 		} else
-		
+
+		// Selection in the current score view
+		if (val=="selection") {
+#ifdef USE_PYTHON
+			if (action->lang()=="python") {
+				if ( mainWin->currentScoreViewPort() ) {
+					QList<CAMusElement*> musElements = mainWin->currentScoreViewPort()->musElementSelection();
+					PyObject *list = PyList_New(0);
+					for (int i=0; i<musElements.size(); i++) {
+						PyList_Append(list, CASwigPython::toPythonObject(musElements[i], CASwigPython::MusElement));
+					}
+
+					pythonArgs << list;
+				}
+				else {
+					error = true;
+					break;
+				}
+			}
+#endif
+		} else
+
 		// Directory of the plugin
 		if (val=="pluginDir") {
 #ifdef USE_RUBY
@@ -176,9 +197,9 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 			if (action->lang()=="python") {
 				pythonArgs << CASwigPython::toPythonObject(&_dirName, CASwigPython::String);
 			}
-#endif	
-		}
-		
+#endif
+		} else
+
 		// File name selected in export/import dialogs
 		if (val=="export-filename" || val=="import-filename") {
 #ifdef USE_RUBY
@@ -198,7 +219,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		pythonArgs << CASwigPython::toPythonObject(mainWin->pyConsoleIface, CASwigPython::PyConsoleInterface);
 	}
 #endif
-	
+
 	//add the plugin's path for the first time, so scripting languages can find their modules
 	if (action->onAction()=="onInit") {
 #ifdef USE_RUBY
@@ -212,7 +233,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		}
 #endif
 	}
-	
+
 	if (!error) {
 #ifdef USE_RUBY
 		if (action->lang()=="ruby") {
@@ -225,14 +246,14 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		}
 #endif
 	}
-	
+
 	if (action->refresh()) {
 		if (rebuildDocument)
 			CACanorus::rebuildUI(document);
 		else
 			CACanorus::rebuildUI(document, mainWin->currentSheet());
 	}
-	
+
 	return (!error);
 }
 
