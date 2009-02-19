@@ -11,7 +11,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 
 # Build universal binaries on Mac
 IF(APPLE)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch ppc -arch i386")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch ppc -arch i386")
 ENDIF(APPLE)
 
 #######################
@@ -47,11 +47,13 @@ IF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 	STRING(REGEX REPLACE "\\\\" "/" PYTHON_LIB "${PYTHON_LIB}")  # Replace back slashes to slashes
 	SET( PYTHON_LIB "${PYTHON_LIB_TMP}/Lib/" ) # add /Lib/
 
-	# Needed on some distros (SuSE, Gentoo) to prevent linking issues (openpty, forkpty) 
+	# Needed on some Linux distros (SuSE, Gentoo) to prevent linking issues (openpty, forkpty) 
 	CHECK_LIBRARY_EXISTS(util openpty "" HAVE_OPENPTY)
-	IF (HAVE_OPENPTY)
-		SET(PYTHON_LIBRARY ${PYTHON_LIBRARY} util)
-	ENDIF (HAVE_OPENPTY)
+	IF(NOT APPLE)
+		IF (HAVE_OPENPTY)
+			SET(PYTHON_LIBRARY ${PYTHON_LIBRARY} util)
+		ENDIF (HAVE_OPENPTY)
+	ENDIF(NOT APPLE)
 	
 	SET(USE_PYTHON True)
 ELSE(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
