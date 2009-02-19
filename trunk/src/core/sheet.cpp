@@ -35,6 +35,10 @@ CASheet::CASheet(const QString name, CADocument *doc) {
 	_document = doc;
 }
 
+CASheet::~CASheet() {
+
+}
+
 /*!
 	Clones the current sheet with all its content.
 	If a new parent document \a doc is given, it also sets the document.
@@ -101,6 +105,9 @@ void CASheet::clear() {
 	_contextList.clear();
 }
 
+/*!
+	Returns the first context with the given \a name.
+ */
 CAContext *CASheet::context(const QString name) {
 	for (int i=0; i<_contextList.size(); i++)
 		if (_contextList[i]->name() == name)

@@ -126,7 +126,6 @@ bool CACanorusMLImport::fatalError ( const QXmlParseException & exception ) {
 	\sa endElement()
 */
 bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes ) {
-	qDebug() << qName;
 	if ( attributes.value("color")!="" ) {
 		_color = QVariant(attributes.value("color")).value<QColor>();
 	} else {
@@ -153,13 +152,13 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 	} else if (qName == "sheet") {
 		// CASheet
 		QString sheetName = attributes.value("name");
-		if (!(_curSheet = _document->sheet(sheetName))) {	//if the document doesn't contain the sheet with the given name, create a new sheet and add it to the document. Otherwise, just set the current sheet to the found one and leave
-			if (sheetName.isEmpty())
-				sheetName = QObject::tr("Sheet%1").arg(_document->sheetCount()+1);
-			_curSheet = new CASheet(sheetName, _document);
 
-			_document->addSheet(_curSheet);
-		}
+		if (sheetName.isEmpty())
+			sheetName = QObject::tr("Sheet%1").arg(_document->sheetCount()+1);
+		_curSheet = new CASheet(sheetName, _document);
+
+		_document->addSheet(_curSheet);
+
 	} else if (qName == "staff") {
 		// CAStaff
 		QString staffName = attributes.value("name");
@@ -168,12 +167,12 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			return false;
 		}
 
-		if (!(_curContext = _curSheet->context(staffName))) {	//if the sheet doesn't contain the staff with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
-			if (staffName.isEmpty())
-				staffName = QObject::tr("Staff%1").arg(_curSheet->staffCount()+1);
-			_curContext = new CAStaff( staffName, _curSheet, attributes.value("number-of-lines").toInt());
-		}
+		if (staffName.isEmpty())
+			staffName = QObject::tr("Staff%1").arg(_curSheet->staffCount()+1);
+		_curContext = new CAStaff( staffName, _curSheet, attributes.value("number-of-lines").toInt());
+
 		_curSheet->addContext(_curContext);
+
 	} else if (qName == "lyrics-context") {
 		// CALyricsContext
 		QString lcName = attributes.value("name");
@@ -182,16 +181,16 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			return false;
 		}
 
-		if (!(_curContext = _curSheet->context(lcName))) {	//if the sheet doesn't contain the context with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
-			if (lcName.isEmpty())
-				lcName = QObject::tr("Lyrics Context %1").arg(_curSheet->contextCount()+1);
-			_curContext = new CALyricsContext( lcName, attributes.value("stanza-number").toInt(), _curSheet );
+		if (lcName.isEmpty())
+			lcName = QObject::tr("Lyrics Context %1").arg(_curSheet->contextCount()+1);
+		_curContext = new CALyricsContext( lcName, attributes.value("stanza-number").toInt(), _curSheet );
 
-			// voices are not neccesseraly completely read - store indices of the voices internally and then assign them at the end
-			if (!attributes.value("associated-voice-idx").isEmpty())
-				_lcMap[static_cast<CALyricsContext*>(_curContext)] = attributes.value("associated-voice-idx").toInt();
-		}
+		// voices are not neccesseraly completely read - store indices of the voices internally and then assign them at the end
+		if (!attributes.value("associated-voice-idx").isEmpty())
+			_lcMap[static_cast<CALyricsContext*>(_curContext)] = attributes.value("associated-voice-idx").toInt();
+
 		_curSheet->addContext(_curContext);
+
 	} else if (qName == "function-mark-context" || qName == "function-marking-context") {
 		// CAFunctionMarkContext
 		QString fmcName = attributes.value("name");
@@ -200,12 +199,12 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			return false;
 		}
 
-		if (!(_curContext = _curSheet->context(fmcName))) {	//if the sheet doesn't contain the context with the given name, create a new sheet and add it to the document. Otherwise, just set the current staff to the found one and leave
-			if (fmcName.isEmpty())
-				fmcName = QObject::tr("Function Mark Context %1").arg(_curSheet->contextCount()+1);
-			_curContext = new CAFunctionMarkContext( fmcName, _curSheet );
-		}
+		if (fmcName.isEmpty())
+			fmcName = QObject::tr("Function Mark Context %1").arg(_curSheet->contextCount()+1);
+		_curContext = new CAFunctionMarkContext( fmcName, _curSheet );
+
 		_curSheet->addContext(_curContext);
+
 	} else if (qName == "voice") {
 		// CAVoice
 		QString voiceName = attributes.value("name");
@@ -218,19 +217,19 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		}
 
 		CAStaff *staff = static_cast<CAStaff*>(_curContext);
-		if (!(_curVoice = staff->voiceByName(voiceName))) {	// if the staff doesn't contain the voice with the given name, create a new voice and add it to the document. Otherwise, just set the current voice to the found one and leave
-			int voiceNumber = staff->voiceCount()+1;
 
-			if (voiceName.isEmpty())
-				voiceName = QObject::tr("Voice%1").arg( voiceNumber );
+		int voiceNumber = staff->voiceCount()+1;
 
-			CANote::CAStemDirection stemDir = CANote::StemNeutral;
-			if (!attributes.value("stem-direction").isEmpty())
-				stemDir = CANote::stemDirectionFromString(attributes.value("stem-direction"));
+		if (voiceName.isEmpty())
+			voiceName = QObject::tr("Voice%1").arg( voiceNumber );
 
-			_curVoice = new CAVoice( voiceName, staff, stemDir, voiceNumber );
-			staff->addVoice( _curVoice );
-		}
+		CANote::CAStemDirection stemDir = CANote::StemNeutral;
+		if (!attributes.value("stem-direction").isEmpty())
+			stemDir = CANote::stemDirectionFromString(attributes.value("stem-direction"));
+
+		_curVoice = new CAVoice( voiceName, staff, stemDir, voiceNumber );
+		staff->addVoice( _curVoice );
+
 	}
 	else if (qName == "clef") {
 		// CAClef
