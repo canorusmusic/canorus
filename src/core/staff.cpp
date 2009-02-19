@@ -234,7 +234,7 @@ bool CAStaff::remove( CAMusElement *elt, bool updateSignTimes ) {
 }
 
 /*!
-	Returns a voice named \a name or Null, if such a voice doesn't exist.
+	Returns the first voice with the given \a name or Null, if such a voice doesn't exist.
 */
 CAVoice *CAStaff::voiceByName(const QString name) {
 	for (int i=0; i<_voiceList.size(); i++)

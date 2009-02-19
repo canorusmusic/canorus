@@ -132,10 +132,7 @@ CASheet *CADocument::addSheet() {
 }
 
 /*!
-	Look up for the sheet with the given \a name and return a
-	pointer to it.
-
-	\sa _sheetList
+	Returns the first sheet with the given \a name.
 */
 CASheet *CADocument::sheet(const QString name) {
 	for (int i=0; i<_sheetList.size(); i++) {

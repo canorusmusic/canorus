@@ -57,11 +57,14 @@ CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection st
 CAVoice::~CAVoice() {
 	clear();
 
-	for (int i=0; i<lyricsContextList().size(); i++)
-		lyricsContextList().at(i)->setAssociatedVoice( 0 );
+	QList<CALyricsContext*> lc = lyricsContextList();
+	for (int i=0; i<lc.size(); i++) {
+		lc[i]->setAssociatedVoice( 0 );
+	}
 
-	if (staff())
+	if (staff()) {
 		staff()->removeVoice(this);
+	}
 }
 
 /*!
