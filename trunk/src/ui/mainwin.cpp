@@ -2525,7 +2525,6 @@ void CAMainWin::playbackFinished() {
 	if (_playbackViewPort) {
 		static_cast<CAScoreViewPort*>(_playbackViewPort)->setPlaying(false);
 	}
-	_playbackViewPort=0;
 
 	if (_repaintTimer) {
 		_repaintTimer->stop();
@@ -2541,6 +2540,7 @@ void CAMainWin::playbackFinished() {
 	}
 	_prePlaybackSelection.clear();
 
+	_playbackViewPort=0;
 	setMode( mode() );
 }
 
