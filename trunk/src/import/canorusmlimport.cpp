@@ -228,6 +228,9 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			stemDir = CANote::stemDirectionFromString(attributes.value("stem-direction"));
 
 		_curVoice = new CAVoice( voiceName, staff, stemDir, voiceNumber );
+		if (!attributes.value("midi-channel").isEmpty())
+			_curVoice->setMidiChannel(attributes.value("midi-channel").toInt());
+
 		staff->addVoice( _curVoice );
 
 	}

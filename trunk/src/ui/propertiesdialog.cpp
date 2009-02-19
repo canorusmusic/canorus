@@ -345,7 +345,7 @@ void CAPropertiesDialog::applyProperties() {
 	for (int i=0; i<_voicePropertiesWidget.keys().size(); i++) {
 		CAVoice *voice = _voicePropertiesWidget.keys().at(i);
 		CAVoiceProperties *vp = static_cast<CAVoiceProperties*>(_voicePropertiesWidget[ voice ]);
-		voice->setMidiChannel( vp->uiMidiChannel->value() );
+		voice->setMidiChannel( vp->uiMidiChannel->value()-1 );
 	}
 
 	CACanorus::rebuildUI( _document );
@@ -448,7 +448,7 @@ void CAPropertiesDialog::updateStaffProperties( CAStaff *staff ) {
 }
 
 void CAPropertiesDialog::updateVoiceProperties( CAVoice *voice ) {
-	static_cast<CAVoiceProperties*>(_voicePropertiesWidget[voice])->uiMidiChannel->setValue( voice->midiChannel() );
+	static_cast<CAVoiceProperties*>(_voicePropertiesWidget[voice])->uiMidiChannel->setValue( voice->midiChannel()+1 );
 
 	uiPropertiesWidget->setCurrentWidget( _voicePropertiesWidget[voice] );
 }
