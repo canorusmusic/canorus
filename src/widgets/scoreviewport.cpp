@@ -888,7 +888,9 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	        	       qRound((cList[i]->xPos() - _worldX) * _zoom),
 		               qRound((cList[i]->yPos() - _worldY) * _zoom),
 	            	   drawableWidth(), drawableHeight(),
-		               ((_currentContext == cList[i])?selectedContextColor():foregroundColor())
+		               ((_currentContext == cList[i])?selectedContextColor():foregroundColor()),
+		               _worldX,
+		               _worldY
 		};
 		cList[i]->draw(&p, s);
 	}
@@ -947,7 +949,9 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 		               qRound((mList[i]->xPos() - _worldX) * _zoom),
 		               qRound((mList[i]->yPos() - _worldY) * _zoom),
 		               drawableWidth(), drawableHeight(),
-		               color
+		               color,
+		               _worldX,
+		               _worldY
 		               };
 		mList[i]->draw(&p, s);
 		if ( _selection.contains(mList[i]) && mList[i]->isHScalable() ) {
@@ -968,7 +972,9 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 			qRound( (selectionRegionList().at(i).y() - _worldY) * _zoom),
 			qRound( selectionRegionList().at(i).width() * _zoom),
 			qRound( selectionRegionList().at(i).height() * _zoom),
-			selectionAreaColor()
+			selectionAreaColor(),
+            _worldX,
+            _worldY
 		};
 		drawSelectionRegion( &p, c );
 	}
@@ -982,7 +988,9 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 					qRound((_shadowDrawableNote[i]->xPos() - _worldX - _shadowDrawableNote[i]->width()/2) * _zoom),
 					qRound((_shadowDrawableNote[i]->yPos() - _worldY) * _zoom),
 					drawableWidth(), drawableHeight(),
-					disabledElementsColor()
+					disabledElementsColor(),
+	               _worldX,
+	               _worldY
 				};
 
 				_shadowDrawableNote[i]->draw(&p, s);
