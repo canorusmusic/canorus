@@ -6,7 +6,7 @@
 
 3. Download and install Python: http://www.python.org/download/
 
-4. Download, install, and run SimpleSynth: http://pete.yandell.com/software/ (or another synth of your choice)
+4. Download, install, and run SimpleSynth: http://notahat.com/simplesynth (or another synth of your choice)
 
 5. In /Applications/Utilities/Audio MIDI Setup, enable the "IAC Driver" (click "Device is online")
 

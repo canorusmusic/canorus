@@ -100,3 +100,9 @@ instclean:
 
 
 allclean: instclean pkgclean
+
+# Simply pack the application and fonts into a zip to avoid installers.
+zip:
+	rm -f Canorus.zip
+	(cd package-contents/Applications && zip -9 -r ../../Canorus.zip Canorus.app)
+	(cd package-contents/Library && zip -9 -r ../../Canorus.zip Fonts)
