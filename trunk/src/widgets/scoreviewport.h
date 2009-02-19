@@ -85,6 +85,7 @@ public:
 	// Selection //
 	///////////////
 	inline QList<CADrawableMusElement*>& selection() { return _selection; };
+	QList<CAMusElement*>                 musElementSelection();
 	QList<CADrawableMusElement*>         musElementsAt(int x, int y);
 	CADrawableContext                   *selectCElement(int x, int y);
 	CADrawableMusElement                *selectMElement(CAMusElement *elt);

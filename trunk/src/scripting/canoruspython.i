@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -62,49 +62,24 @@
 
 // convert returned QList value to Python's list
 // I found no generic way of doing this yet... -Matevz
-%typemap(out) const QList<CANote*>, QList<CANote*> {
+%typemap(out) const QList<CAMusElement*>, QList<CAMusElement*>,
+              const QList<CANote*>, QList<CANote*>,
+              const QList<CARest*>, QList<CARest*>,
+              const QList<CAMark*>, QList<CAMark*>,
+              const QList<CAPlayable*>, QList<CAPlayable*> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
-		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Note));
+		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::MusElement));
 	
 	$result = list;
 }
-%typemap(out) const QList<CARest*>, QList<CARest*> {
-	PyObject *list = PyList_New(0);
-	for (int i=0; i<$1.size(); i++)
-		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Rest));
-	
-	$result = list;
-}
-%typemap(out) const QList<CAPlayable*>, QList<CAPlayable*> {
-	PyObject *list = PyList_New(0);
-	for (int i=0; i<$1.size(); i++) {
-		if ($1.at(i)->musElementType() == CAMusElement::Note)
-			PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Note));
-		else
-			PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Rest));			
-	}
-	
-	$result = list;
-}
-%typemap(out) const QList<CAMark*>, QList<CAMark*> {
-	PyObject *list = PyList_New(0);
-	for (int i=0; i<$1.size(); i++)
-		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Mark));
-	
-	$result = list;
-}
-%typemap(out) const QList<CAContext*>, QList<CAContext*> {
+%typemap(out) const QList<CAContext*>, QList<CAContext*>,
+              const QList<CAStaff*>, QList<CAStaff*>,
+              const QList<CALyricsContext*>, QList<CALyricsContext*>,
+              const QList<CAFunctionMarkContext*>, QList<CAFunctionMarkContext*> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
 		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Context));
-	
-	$result = list;
-}
-%typemap(out) const QList<CAStaff*>, QList<CAStaff*> {
-	PyObject *list = PyList_New(0);
-	for (int i=0; i<$1.size(); i++)
-		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Staff));
 	
 	$result = list;
 }
@@ -127,6 +102,7 @@ void markDelete( PyObject* ); // function used to delete Canorus objects inside 
 const char* tr( const char * sourceText, const char * comment = 0, int n = -1 );
 void rebuildUi();
 bool hasGui();
+void setSelection( QList<CAMusElement*> elements ); // selects the given \a elements. Works only in GUI!
 
 %include "scripting/canoruslibrary.i"
 
@@ -144,11 +120,18 @@ void markDelete( PyObject* object ) {
 #include "canorus.h"
 #endif
 
+/*!
+	Reports error for Python functions which need Canorus GUI but are run from the CLI.
+*/
+void guiError() {
+	std::cerr << "CanorusPython: No Canorus GUI found." << std::endl;
+}
+
 void rebuildUi() {
 #ifndef SWIGCPP
 	CACanorus::rebuildUI();
 #else
-	std::cout << "CanorusPython: No Canorus GUI found." << std::endl;
+	guiError();
 #endif
 }
 
@@ -160,6 +143,26 @@ bool hasGui() {
 #endif
 }
 
+void setSelection( QList<CAMusElement*> elements ) {
+#ifndef SWIGCPP
+	if (!elements.size() || !elements[0]->context() || !elements[0]->context()->sheet() || !elements[0]->context()->sheet()->document()) {
+		return;
+	}
+	
+	CADocument *doc = elements[0]->context()->sheet()->document();
+	QList<CAMainWin*> mainwins = CACanorus::findMainWin(doc);
+	
+	if (!mainwins.size() || !mainwins[0]->currentScoreViewPort()) {
+		return;
+	}
+	
+	mainwins[0]->currentScoreViewPort()->clearSelection();
+	mainwins[0]->currentScoreViewPort()->addToSelection(elements);
+#else
+	guiError();
+#endif
+}
+
 const char* tr( const char * sourceText, const char * comment = 0, int n = -1 ) {
 	return QObject::tr( sourceText, comment, n ).toUtf8().constData();
 }
@@ -168,15 +171,18 @@ class QString;
 
 PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType type) {
 	switch (type) {
-		case CASwigPython::String:
+		case CASwigPython::String: {
 			return Py_BuildValue("s", ((QString*)object)->toUtf8().data());
 			break;
-		case CASwigPython::Document:
+		}
+		case CASwigPython::Document: {
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CADocument, 0);
 			break;
-		case CASwigPython::Sheet:
+		}
+		case CASwigPython::Sheet: {
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CASheet, 0);
 			break;
+		}
 		case CASwigPython::Context: {
 			switch (static_cast<CAContext*>(object)->contextType()) {
 			case CAContext::Staff:
@@ -187,66 +193,58 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarkContext, 0);
 			default:
 				std::cerr << "canoruspython.i: Wrong CAContext::contextType()!" << std::endl;
+				return 0;
 			}
 			break;
 		}
-		case CASwigPython::Staff:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAStaff, 0);
-			break;
-		case CASwigPython::Voice:
+		case CASwigPython::Voice: {
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAVoice, 0);
 			break;
-		case CASwigPython::FunctionMarkContext:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarkContext, 0);
+		}
+		case CASwigPython::MusElement: {
+			CAMusElement *elt = static_cast<CAMusElement*>(object);
+			switch (elt->musElementType()) {
+			case CAMusElement::Note:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CANote, 0);
+			case CAMusElement::Rest:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CARest, 0);
+			case CAMusElement::KeySignature:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAKeySignature, 0);
+			case CAMusElement::TimeSignature:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CATimeSignature, 0);
+			case CAMusElement::Clef:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAClef, 0);
+			case CAMusElement::Barline:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CABarline, 0);
+			case CAMusElement::FunctionMark:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMark, 0);
+			case CAMusElement::Syllable:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CASyllable, 0);
+			case CAMusElement::Mark:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAMark, 0);
+			case CAMusElement::Slur:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CASlur, 0);
+			case CAMusElement::Tuplet:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CATuplet, 0);
+			default:
+				std::cerr << "canoruspython.i: Wrong CAMusElement::musElementType()!" << std::endl;
+				return 0;
+			}
 			break;
-		/*case CASwigPython::MusElement:	// TODO: CAMusElement is always abstract and is not subclassed in Python.
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAMusElement, 0);
-			break;*/
-		case CASwigPython::Playable:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAPlayable, 0);
-			break;
-		case CASwigPython::Note:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CANote, 0);
-			break;
-		case CASwigPython::Rest:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CARest, 0);
-			break;
-		case CASwigPython::KeySignature:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAKeySignature, 0);
-			break;
-		case CASwigPython::TimeSignature:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CATimeSignature, 0);
-			break;
-		case CASwigPython::Clef:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAClef, 0);
-			break;
-		case CASwigPython::Barline:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CABarline, 0);
-			break;
-		case CASwigPython::FunctionMark:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMark, 0);
-			break;
-		case CASwigPython::LyricsContext:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CALyricsContext, 0);
-			break;			
-		case CASwigPython::Syllable:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CASyllable, 0);
-			break;
-		case CASwigPython::Mark:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAMark, 0);
-			break;
-		case CASwigPython::Slur:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CASlur, 0);
-			break;
-		case CASwigPython::Tuplet:
-			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CATuplet, 0);
-			break;
-		case CASwigPython::PlayableLength:
+		}
+		case CASwigPython::PlayableLength: {
 			return SWIG_Python_NewPointerObj(new CAPlayableLength(*(static_cast<CAPlayableLength*>(object))), SWIGTYPE_p_CAPlayableLength, 0);
 			break;
-		case CASwigPython::PyConsoleInterface:
+		}
+		case CASwigPython::PyConsoleInterface: {
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAPyConsoleInterface, 0);
 			break;
+		}
+		default: {
+			std::cerr << "canoruspython.i: Wrong CACanorusPython::type!" << std::endl;
+			return 0;
+			break;
+		}
 	}
 }
 

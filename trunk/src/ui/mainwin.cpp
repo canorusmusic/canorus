@@ -2503,6 +2503,8 @@ void CAMainWin::onScoreViewPortSelectionChanged() {
 		uiCopy->setEnabled(false);
 		uiCut->setEnabled(false);
 	}
+
+	CAPluginManager::action("onSelectionChanged", document(), 0, 0, this);
 }
 
 /*!

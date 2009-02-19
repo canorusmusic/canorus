@@ -1725,6 +1725,22 @@ void CAScoreViewPort::setShadowNoteLength( CAPlayableLength l ) {
 }
 
 /*!
+	Returns a list of currently selected music elements.
+	Does the same as selection(), but doesn't return their Drawable instances.
+ */
+QList<CAMusElement*> CAScoreViewPort::musElementSelection() {
+	QList<CAMusElement*> res;
+
+	for (int i=0; i<_selection.size(); i++) {
+		if (!res.contains(_selection[i]->musElement())) {
+			res << _selection[i]->musElement();
+		}
+	}
+
+	return res;
+}
+
+/*!
 	\fn CASheet *CAScoreViewPort::sheet()
 	Returns the pointer to the viewport's sheet it represents.
 */
