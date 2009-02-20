@@ -40,10 +40,9 @@ ENDIF(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
 FIND_PACKAGE(PythonLibs)
 IF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 	MESSAGE("Python Library and Development files found. Python extensions enabled.")
-	# PYTHON_LIBRARIES points to C:\PythonXY\libs\libpython.a.
+	# PYTHON_LIBRARY points to C:\PythonXY\pythonXY.dll
 	# PYTHON_LIB should point to C:\PythonXY\Lib
-	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" PYTHON_LIB "${PYTHON_LIBRARIES}") # libpython.a
-	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" PYTHON_LIB "${PYTHON_LIB}") # libs
+	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" PYTHON_LIB "${PYTHON_LIBRARY}") # remove pythonXY.dll
 	STRING(REGEX REPLACE "\\\\" "/" PYTHON_LIB "${PYTHON_LIB}")  # Replace back slashes to slashes
 	SET( PYTHON_LIB "${PYTHON_LIB}/Lib/" ) # add /Lib/
 
