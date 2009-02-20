@@ -16,7 +16,7 @@ Name Canorus
 !define MUI_STARTMENUPAGE_REGISTRY_KEY Software\Canorus
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME StartMenuGroup
 !define MUI_STARTMENUPAGE_DEFAULT_FOLDER Canorus
-!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\orange-uninstall.ico"
+!define MUI_UNICON "ucanorus.ico"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
 # Included files
