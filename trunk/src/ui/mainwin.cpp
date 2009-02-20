@@ -3688,13 +3688,13 @@ void CAMainWin::on_uiAboutQt_triggered() {
 
 void CAMainWin::on_uiAboutCanorus_triggered() {
 	QMessageBox::about( this, tr("About Canorus"),
-	tr("Canorus - The next generation music score editor\n\n\
-Version %1\n\
-(C) 2006-2009 Canorus Development team. All rights reserved.\n\
-See the file AUTHORS for the list of Canorus developers\n\n\
-This program is licensed under the GNU General Public License (GPL).\n\
-See the file LICENSE.GPL for details.\n\n\
-Homepage: http://www.canorus.org").arg(CANORUS_VERSION) );
+	tr("<p><b>Canorus - The next generation music score editor</b></p>\
+<p>Version %1<br>\
+(C) 2006-2009 Canorus Development team. All rights reserved.<br>\
+See the file AUTHORS for the list of Canorus developers<br><br>\
+This program is licensed under the GNU General Public License (GPL).<br>\
+See the file LICENSE.GPL for details.<br><br>\
+Homepage: <a href=\"http://www.canorus.org\">http://www.canorus.org</a></p>").arg(CANORUS_VERSION) );
 }
 
 void CAMainWin::on_uiSettings_triggered() {

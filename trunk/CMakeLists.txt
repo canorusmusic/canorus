@@ -1,24 +1,13 @@
-if(COMMAND cmake_minimum_required)
-  cmake_minimum_required(VERSION 2.4.8)
-endif(COMMAND cmake_minimum_required)
 # The name of our project is "Canorus".  CMakeLists files in this project can
 # refer to the root source directory of the project as ${CANORUS_SOURCE_DIR}
 # and to the root binary directory of the project as ${CANORUS_BINARY_DIR}.
 PROJECT(Canorus)
 
-# Be compatible with old version of cmake (2.4.8)
-# so ignore the preprocessor escape warnings for now
-# Swig does not enable the CMP0003 policy
-# so ignore it for swig and all others as well
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0005 OLD)
-  cmake_policy(SET CMP0003 OLD)
-endif(COMMAND cmake_policy)
-
 # Don't build anything unless the version of CMake is high enough.
-# The matching ELSE/ENDIF should be the last lines in the file.
-# QT4 Support: Requires a very recent version (2.3.4 from March/April 2006)
-IF("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" GREATER 2.2)
+cmake_minimum_required(VERSION 2.6)
+
+# Disable ruby support by default
+SET(NO_RUBY 1)
 
 # Enable make uninstall rule
 CONFIGURE_FILE(
@@ -31,13 +20,13 @@ ADD_CUSTOM_TARGET(uninstall
 
 # Set MingW bin dir, if MingW present
 IF(MINGW)
-	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" MINGW_BIN_DIR_TMP "${CMAKE_CXX_COMPILER}")
-	STRING(REGEX REPLACE "\\\\" "/" MINGW_BIN_DIR "${MINGW_BIN_DIR_TMP}") # Replace back slashes to slashes
+	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" MINGW_BIN_DIR "${CMAKE_CXX_COMPILER}")
+	STRING(REGEX REPLACE "\\\\" "/" MINGW_BIN_DIR "${MINGW_BIN_DIR}") # Replace back slashes to slashes
 ENDIF(MINGW)
 
 # Set Qt4 bin dir to find QtCore4.dll and other libs to install
-STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" QT_BIN_DIR_TMP "${QT_QMAKE_EXECUTABLE}")
-STRING(REGEX REPLACE "\\\\" "/" QT_BIN_DIR "${QT_BIN_DIR_TMP}")  # Replace back slashes to slashes
+STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}")
+STRING(REGEX REPLACE "\\\\" "/" QT_BIN_DIR "${QT_BIN_DIR}")  # Replace back slashes to slashes
 
 #-----------------------------------------------------------------------------
 # Canorus version number.
@@ -48,7 +37,6 @@ STRING(REGEX REPLACE "\n" "" CANORUS_VERSION "${CANORUS_VERSION}") # get rid of 
 # In *nix environments this is /usr/local 
 # Under M$ Windows this is C:\Program files\Canorus 
 # On Mac OS X it is /Applications for the .app and /Library/Fonts for the fonts, but see note below
-# WARNING: Leading slash should be added - this is for easier concatenation of the strings due to slash/backslash issues
 IF(MINGW)
 	IF (NOT CMAKE_INSTALL_PREFIX)
 		SET(CMAKE_INSTALL_PREFIX "C:/Program files/Canorus")
@@ -88,13 +76,6 @@ ENDIF(MINGW)
 # Search for Qt4. We need the latest version of Qt
 SET(QT_MIN_VERSION "4.4.0")
 
-# Either remove the below line and set it to the path of
-# your qmake executable or modify the FindQt4.cmake program
-# and add "NO_DEFAULT_PATH" to the FIND_PROGRAM(QT_QMAKE_EXECUTABLE
-# instruction as last option, so the default path are not searched
-# for the qmake binary (like /usr/bin/qmake on Mandriva)
-# set(QT_QMAKE_EXECUTABLE "/usr/lib/qt4/bin/qmake")
-
 # this line includes FindQt4.cmake, which searches the Qt library and headers
 FIND_PACKAGE(Qt4 REQUIRED)
 
@@ -107,12 +88,6 @@ INCLUDE_DIRECTORIES(src/zlib)
 # the project's entire directory structure.
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(doc)
-
-ELSE("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" GREATER 2.2)
-  MESSAGE(SEND_ERROR
-          "This version of CMake is too old to build Canorus.  "
-          "Please upgrade to CMake to at least 2.3.4")
-ENDIF("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" GREATER 2.2)
 
 # Install README, VERSION, LICENSE.GPL and other raw txt files
 INSTALL(FILES AUTHORS DEVELOPERS LICENSE.GPL NEWS README VERSION DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}")
