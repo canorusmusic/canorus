@@ -45,7 +45,7 @@ IF(PYTHON_INCLUDE_PATH AND NOT NO_PYTHON)
 	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" PYTHON_LIB "${PYTHON_LIBRARIES}") # libpython.a
 	STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" PYTHON_LIB "${PYTHON_LIB}") # libs
 	STRING(REGEX REPLACE "\\\\" "/" PYTHON_LIB "${PYTHON_LIB}")  # Replace back slashes to slashes
-	SET( PYTHON_LIB "${PYTHON_LIB_TMP}/Lib/" ) # add /Lib/
+	SET( PYTHON_LIB "${PYTHON_LIB}/Lib/" ) # add /Lib/
 
 	# Needed on some Linux distros (SuSE, Gentoo) to prevent linking issues (openpty, forkpty) 
 	CHECK_LIBRARY_EXISTS(util openpty "" HAVE_OPENPTY)
