@@ -14,6 +14,7 @@
 #include "canorus.h"
 
 #include <iostream> // used for reporting errors in scripts
+using namespace std;
 //#include <pthread.h>
 
 class CAPyconsoleThread : public QThread {
@@ -35,7 +36,7 @@ extern "C" void init_CanorusPython();
 void CASwigPython::init() {
 
 	Py_Initialize();
-	PyEval_InitThreads();
+	PyEval_InitThreads(); // our python will use GIL
 
 	init_CanorusPython();
     PyRun_SimpleString("import sys");
@@ -75,6 +76,7 @@ void CASwigPython::init() {
     mainThreadState = PyThreadState_Get();
     PyEval_ReleaseLock();
 
+       // my section with thread initialization
 PyEval_AcquireLock();
     PyInterpreterState * mainInterpreterState = mainThreadState->interp;
 
@@ -90,6 +92,7 @@ PyEval_ReleaseLock();
 	\param fileName Absolute path to the filename of the script
 	\param function Function or method name.
 	\param args List of arguments in Python's PyObject pointer format. Use toPythonObject() to convert C++ classes to Python objects.
+	\param autoReload automatically reload module if it was imported before, defaults to false
 
 	\warning You have to add path of the plugin to Python path before, manually! This is usually done by CAPlugin::callAction("onInit").
 */
@@ -101,7 +104,7 @@ QString thr_fileName;
 QString thr_function;
 QList<PyObject*> thr_args;
 
-PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args) {
+PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args, bool autoReload) {
 
 	if (!QFile::exists(fileName))
 		return 0;
@@ -127,15 +130,29 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 
 	// Load module, if not yet
 	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
-
 	moduleName = moduleName.remove(0, moduleName.lastIndexOf("/")+1);
 
-	PyObject *pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
-	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
+	PyEval_AcquireLock();
+	
+	PyObject *pyModule;
+	if (autoReload) {
+		PyObject *moduleDict = PyImport_GetModuleDict(); // borrowed ref.
+		PyObject *ourModuleName = PyString_FromString((char*)moduleName.toStdString().c_str()); // new ref.
+		pyModule = PyDict_GetItem(moduleDict, ourModuleName); // borrowed ref.
+		Py_DECREF(ourModuleName);
+
+		if (pyModule == NULL) // not imported yet
+			pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
+		else
+			Py_XDECREF(PyImport_ReloadModule(pyModule)); // we don't need the reference returned from ReloadModule
+	} else {
+		pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
+	}
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
 
 	// Get function object
 	PyObject *pyFunction = PyObject_GetAttrString(pyModule, (char*)function.toStdString().c_str());
-	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
 
 	// Call the actual function
 	PyObject *ret;
@@ -143,7 +160,7 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 		ret = PyEval_CallObject(pyFunction, pyArgs);
 	else
 		ret = PyEval_CallObject(pyFunction, NULL);
-	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
 
 	Py_DECREF(pyFunction);
 	Py_DECREF(pyModule);
@@ -151,6 +168,7 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	for (int i=0; i<args.size(); i++)
 		Py_DECREF(args[i]);
 
+    PyEval_ReleaseLock();
 	return ret;
 }
 
@@ -183,22 +201,23 @@ void *CASwigPython::callPycli(void*) {
 	// Load module, if not yet
 	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
 	moduleName = moduleName.remove(0, moduleName.lastIndexOf("/")+1);
+
 	PyObject *pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
 
-	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
 
 	// Get function object
 
 	//PyObject *pyFunction = PyObject_GetAttrString(pyModule, "pycli");
 	PyObject *pyFunction = PyObject_GetAttrString(pyModule, (char*)function.toStdString().c_str());
 
-	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
 
 	// Call the actual function
 	//
 	PyObject *ret;
 	ret = PyEval_CallObject(pyFunction, pyArgs);
-	if (PyErr_Occurred()) { PyErr_Print(); return NULL; }
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
 
 	Py_DECREF(pyFunction);
 //	Py_DECREF(pyArgs); /// \todo Crashes if uncommented?!d

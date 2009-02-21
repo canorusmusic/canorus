@@ -1,6 +1,7 @@
 # Define Sources of this Canorus directory
 
 INCLUDE(CheckLibraryExists)
+FIND_PACKAGE(Qt4)
 
 # This module is used to resolve the file dependencies
 # for QT files using an UI (User Unterface) Qt file

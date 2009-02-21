@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <QKeyEvent>
+#include <qwaitcondition.h>
 
 #ifdef USE_PYTHON
 /*!
@@ -66,7 +67,7 @@ CAPyConsole::CAPyConsole( CADocument *doc, QWidget *parent) : QTextEdit(parent) 
 	_iCurStart = 0;
 
 	setUndoRedoEnabled(false);
-	setFontFamily("Courier");
+	setFontFamily("Courier 10 Pitch");
 	setFontPointSize(9);
 
 	_fmtStderr = _fmtStdout = _fmtNormal = currentCharFormat();
@@ -510,8 +511,9 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         
         argsPython << CASwigPython::toPythonObject(static_cast<CAMainWin*>(curObject)->document(), CASwigPython::Document);        
 
-        CASwigPython::callFunction(QFileInfo("scripts:" + strCmd.mid(12)).absoluteFilePath(), _strEntryFunc, argsPython);
-        txtAppend(">>> ",txtNormal);
+//		if (strCmd.length() != 12) {		// entryfunc specified explicitly
+        CASwigPython::callFunction(QFileInfo("scripts:" + strCmd.mid(12)).absoluteFilePath(), _strEntryFunc, argsPython, true);
+        emit sig_txtAppend(">>> ",txtNormal);		// if not emitted, error from python and this are not in order
         return true;
     }
     
@@ -524,7 +526,12 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         _strEntryFunc = strCmd.mid(11);
         txtAppend(">>> ",txtNormal);
     }
-    
+
+	else {
+		txtAppend("Error: no such command\n", txtStderr);
+		txtAppend(">>> ", txtNormal);
+	}    
+
     return true;
 }
 #else
