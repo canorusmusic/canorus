@@ -60,8 +60,27 @@
 	           );
 }
 
-// convert returned QList value to Python's list
-// I found no generic way of doing this yet... -Matevz
+// convert Python list to QList
+%rename(QListCAMusElement) QList<CAMusElement*>;
+%typemap(in) const QListCAMusElement, QListCAMusElement {
+    $1 = QList<CAMusElement*>();
+    for (int i=0; i<PyList_Size($input); i++) {
+    	void *listp;
+    	SWIG_ConvertPtr(PyList_GetItem( $input, i ), &listp,SWIGTYPE_p_CAMusElement, 0 |  0 );
+    	$1.append(reinterpret_cast<CAMusElement*>(listp));
+    }
+}
+%rename(QListCAContext) QList<CAContext*>;
+%typemap(in) const QListCAContext, QListCAContext {
+    $1 = QList<CAContext*>();
+    for (int i=0; i<PyList_Size($input); i++) {
+    	void *listp;
+    	SWIG_ConvertPtr(PyList_GetItem( $input, i ), &listp,SWIGTYPE_p_CAContext, 0 |  0 );
+    	$1.append(reinterpret_cast<CAContext*>(listp));
+    }
+}
+
+// convert QList to Python list
 %typemap(out) const QList<CAMusElement*>, QList<CAMusElement*>,
               const QList<CANote*>, QList<CANote*>,
               const QList<CARest*>, QList<CARest*>,
@@ -101,6 +120,7 @@
 void markDelete( PyObject* ); // function used to delete Canorus objects inside Python
 const char* tr( const char * sourceText, const char * comment = 0, int n = -1 );
 void rebuildUi();
+void repaintUi();
 bool hasGui();
 void setSelection( QList<CAMusElement*> elements ); // selects the given \a elements. Works only in GUI!
 
@@ -130,6 +150,14 @@ void guiError() {
 void rebuildUi() {
 #ifndef SWIGCPP
 	CACanorus::rebuildUI();
+#else
+	guiError();
+#endif
+}
+
+void repaintUi() {
+#ifndef SWIGCPP
+	CACanorus::repaintUI();
 #else
 	guiError();
 #endif

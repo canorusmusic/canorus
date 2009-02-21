@@ -22,7 +22,9 @@ class CATranspose {
 public:
 	CATranspose();
 	CATranspose( CASheet *sheet );
+#ifndef SWIG
 	CATranspose( QList<CAContext*> contexts );
+#endif
 	CATranspose( QList<CAMusElement*> selection );
 	~CATranspose();
 

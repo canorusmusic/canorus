@@ -51,7 +51,7 @@ void CACanorus::initSearchPaths()
 	categories << "images" << "fonts" << "plugins" << "scripts" << "doc" << "lang" << "base";
 	foreach(QString cat, categories) {
 		// The "base" prefix is used by CASwigPython and CASwigRuby to find files which are not in a subdir.
-		QString dirname = (cat == "base") ? "" : cat; 
+		QString dirname = (cat == "base") ? "" : cat;
 		if(QDir(QDir::currentPath() + "/" + dirname).exists())
 			QDir::addSearchPath(cat, QDir::currentPath() + "/" + dirname);
 		// Special rules
@@ -307,6 +307,17 @@ void CACanorus::rebuildUI( CADocument *document ) {
 			mainWinAt(i)->rebuildUI();
 		} else if ( !document )
 			mainWinAt(i)->rebuildUI();
+	}
+}
+
+/*!
+	Repaints all main window.
+	This is useful for example if only selection was changed by external event (eg. plugin)
+	and the GUI should be repainted, but not rebuilt.
+ */
+void CACanorus::repaintUI() {
+	for (int i=0; i<mainWinCount(); i++) {
+		mainWinAt(i)->repaint();
 	}
 }
 
