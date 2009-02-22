@@ -61,8 +61,13 @@
 }
 
 // convert Python list to QList
-%rename(QListCAMusElement) QList<CAMusElement*>;
-%typemap(in) const QListCAMusElement, QListCAMusElement {
+%typecheck(SWIG_TYPECHECK_LIST)
+	QList<CAMusElement*>, const QList<CAMusElement*>,
+	QList<CAContext*>, const QList<CAContext*>
+{
+	$1 = (PyList_Check($input)) ? 1 : 0; 
+}
+%typemap(in) const QList<CAMusElement*>, QList<CAMusElement*> {
     $1 = QList<CAMusElement*>();
     for (int i=0; i<PyList_Size($input); i++) {
     	void *listp;
@@ -70,8 +75,7 @@
     	$1.append(reinterpret_cast<CAMusElement*>(listp));
     }
 }
-%rename(QListCAContext) QList<CAContext*>;
-%typemap(in) const QListCAContext, QListCAContext {
+%typemap(in) const QList<CAContext*>, QList<CAContext*> {
     $1 = QList<CAContext*>();
     for (int i=0; i<PyList_Size($input); i++) {
     	void *listp;
@@ -81,6 +85,7 @@
 }
 
 // convert QList to Python list
+// Note - C++ references (QList<T>&) are pointers in Python (QList<T>*).
 %typemap(out) const QList<CAMusElement*>, QList<CAMusElement*>,
               const QList<CANote*>, QList<CANote*>,
               const QList<CARest*>, QList<CARest*>,
@@ -92,6 +97,17 @@
 	
 	$result = list;
 }
+%typemap(out) const QList<CAMusElement*>&, QList<CAMusElement*>&,
+              const QList<CANote*>&, QList<CANote*>&,
+              const QList<CARest*>&, QList<CARest*>&,
+              const QList<CAMark*>&, QList<CAMark*>&,
+              const QList<CAPlayable*>&, QList<CAPlayable*>& {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1->size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1->at(i), CASwigPython::MusElement));
+	
+	$result = list;
+}
 %typemap(out) const QList<CAContext*>, QList<CAContext*>,
               const QList<CAStaff*>, QList<CAStaff*>,
               const QList<CALyricsContext*>, QList<CALyricsContext*>,
@@ -99,6 +115,16 @@
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
 		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Context));
+	
+	$result = list;
+}
+%typemap(out) const QList<CAContext*>&, QList<CAContext*>&,
+              const QList<CAStaff*>&, QList<CAStaff*>&,
+              const QList<CALyricsContext*>&, QList<CALyricsContext*>&,
+              const QList<CAFunctionMarkContext*>&, QList<CAFunctionMarkContext*>& {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1->size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1->at(i), CASwigPython::Context));
 	
 	$result = list;
 }
