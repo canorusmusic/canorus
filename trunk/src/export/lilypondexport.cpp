@@ -228,6 +228,10 @@ void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 			out() << "^\"" << static_cast<CAText*>(curMark)->text() << "\" ";
 			break;
 		}
+		case CAMark::RehersalMark: {
+			out() << "\\mark \\default ";
+			break;
+		}
 		}
 	}
 }
