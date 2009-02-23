@@ -28,6 +28,7 @@ class CACanorus {
 public:
 	static void initMain( int argc=0, char *argv[]=0 );
 	static CASettingsDialog::CASettingsPage initSettings();
+	static void initTranslations();
 	static void initCommonGUI();
 	static void initPlayback();
 	static bool parseSettingsArguments(int argc, char *argv[]);

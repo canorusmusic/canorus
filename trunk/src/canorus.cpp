@@ -14,6 +14,7 @@
 #include <QCoreApplication>
 #include <QTranslator>
 #include <QLocale>
+#include <QTextCodec>
 #include <QMetaMethod>
 #include <QFontDatabase>
 
@@ -79,6 +80,28 @@ void CACanorus::initMain( int argc, char *argv[] ) {
 	QCoreApplication::setOrganizationName("Canorus");
 	QCoreApplication::setOrganizationDomain("canorus.org");
 	QCoreApplication::setApplicationName("Canorus");
+}
+
+/*!
+	Initializes language specific settings like the translation file for the GUI,
+	text flow (left-to-right or right-to-left), default string encoding etc.
+ */
+void CACanorus::initTranslations() {
+	QString translationFile = "lang:" + QLocale::system().name() + ".qm"; // load language_COUNTRY.qm
+	if(!QFileInfo(translationFile).exists())
+		translationFile = "lang:" + QLocale::system().name().left(2) + ".qm"; // if not found, load language.qm
+
+	QTranslator *translator = new QTranslator(); // translators are destroyed when application closes anyway
+	if(QFileInfo(translationFile).exists()) {
+		translator->load(QFileInfo(translationFile).absoluteFilePath());
+		static_cast<QApplication*>(QApplication::instance())->installTranslator(translator);
+	}
+
+	if(QLocale::system().language() == QLocale::Hebrew) { // \todo add Arabic, etc.
+		static_cast<QApplication*>(QApplication::instance())->setLayoutDirection(Qt::RightToLeft);
+	}
+
+	QTextCodec::setCodecForCStrings( QTextCodec::codecForName("UTF-8") ); // set all QStrings I/O to UTF-8
 }
 
 void CACanorus::initCommonGUI() {
