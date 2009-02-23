@@ -7,9 +7,7 @@
 
 #include <QApplication>
 #include <QSplashScreen>
-#include <QTranslator>
 #include <QFont>
-#include <QLocale>
 
 // Python.h needs to be loaded first!
 #include "canorus.h"
@@ -40,7 +38,7 @@ int main(int argc, char *argv[]) {
 #endif
 
 	CACanorus::initSearchPaths();
-	
+
 	QPixmap splashPixmap( 400, 300 );
 	splashPixmap = QPixmap("images:splash.png");
 
@@ -60,18 +58,7 @@ int main(int argc, char *argv[]) {
 	splash.show();
 
 	// Load system translation if found
-	QString translationFile = "lang:" + QLocale::system().name() + ".qm"; // load language_COUNTRY.qm
-	if(!QFileInfo(translationFile).exists())
-		translationFile = "lang:" + QLocale::system().name().left(2) + ".qm"; // if not found, load language.qm
-
-	QTranslator translator;
-	if(QFileInfo(translationFile).exists()) {
-		translator.load(QFileInfo(translationFile).absoluteFilePath());
-		mainApp.installTranslator(&translator);
-	}
-
-	if(QLocale::system().language() == QLocale::Hebrew) // \todo add Arabic, etc.
-		mainApp.setLayoutDirection(Qt::RightToLeft);
+	CACanorus::initTranslations();
 
 	// Init MIDI devices
 	CACanorus::initPlayback();
