@@ -7,12 +7,12 @@
 
 #include <QStringList>
 #include <QHelpEngine>
-#include <QTextBrowser>
 #include <QDockWidget>
 
 #include "canorus.h"
 #include "control/helpctl.h"
 #include "ui/mainwin.h"
+#include "widgets/helpbrowser.h"
 
 /*!
 	\class CAHelpCtl
@@ -77,19 +77,18 @@ void CAHelpCtl::showUsersGuide( QString chapter, QWidget *helpWidget ) {
 }
 
 void CAHelpCtl::displayHelp( QUrl url, QWidget *helpWidget ) {
-	QByteArray help = _helpEngine->fileData(url);
-
-	QTextEdit *textEdit=0;
+	CAHelpBrowser *browser=0;
 	if ( !helpWidget ) {
-		textEdit = new QTextBrowser();
-		textEdit->setAttribute(Qt::WA_DeleteOnClose);
+		browser = new CAHelpBrowser;
+		browser->setAttribute(Qt::WA_DeleteOnClose);
 	} else
 	if (dynamic_cast<CAMainWin*>(helpWidget)) {
-		textEdit = static_cast<CAMainWin*>(helpWidget)->helpWidget();
+		browser = static_cast<CAMainWin*>(helpWidget)->helpWidget();
 		static_cast<CAMainWin*>(helpWidget)->helpDock()->show();
 	}
 
-	if (textEdit) {
-		textEdit->setText( help );
+	if (browser) {
+		browser->setHelpEngine( _helpEngine );
+		browser->setSource( url );
 	}
 }
