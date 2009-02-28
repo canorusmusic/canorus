@@ -23,7 +23,6 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QThread>
-#include <QTextBrowser> // user's guide
 #include <iostream>
 
 #include "ui/mainwin.h"
@@ -46,6 +45,7 @@
 #include "widgets/undotoolbutton.h"
 #include "widgets/lcdnumber.h"
 #include "widgets/midirecorderview.h"
+#include "widgets/helpbrowser.h"
 
 #include "widgets/viewport.h"
 #include "widgets/viewportcontainer.h"
@@ -547,7 +547,7 @@ void CAMainWin::createCustomActions() {
 	// User's guide and other Help
 	uiHelpDock = new QDockWidget(tr("Help"), this);
 	uiHelpDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	uiHelpWidget = new QTextBrowser( uiHelpDock );
+	uiHelpWidget = new CAHelpBrowser( uiHelpDock );
 	uiHelpDock->setWidget( uiHelpWidget );
 
 #ifdef USE_PYTHON
@@ -2006,16 +2006,25 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 				v->repaint();
 			} else if (mode()==EditMode) {
 				if (!v->selection().isEmpty()) {
-					CAMusElement *elt = v->selection().front()->musElement();
-					if (elt->musElementType()==CAMusElement::Note) {
-						CACanorus::undo()->createUndoCommand( document(), tr("add sharp", "undo") );
-						if ( static_cast<CANote*>(elt)->diatonicPitch().accs() < 2 )       // limit the amount of accidentals
-							static_cast<CANote*>(elt)->diatonicPitch().setAccs( static_cast<CANote*>(elt)->diatonicPitch().accs()+1 );
+					QList<CAMusElement*> eltList;
+					CASheet* sheet = 0;
+					foreach(CADrawableMusElement* dElt, v->selection()) {
+						CAMusElement *elt = dElt->musElement();
+						if (elt->musElementType()==CAMusElement::Note) {
+							if(!sheet) {
+								sheet = static_cast<CANote*>(elt)->voice()->staff()->sheet();
+								CACanorus::undo()->createUndoCommand( document(), tr("add sharp", "undo") );
+							}
+							if ( static_cast<CANote*>(elt)->diatonicPitch().accs() < 2 )       // limit the amount of accidentals
+								static_cast<CANote*>(elt)->diatonicPitch().setAccs( static_cast<CANote*>(elt)->diatonicPitch().accs()+1 );
+						}
+						eltList << elt;
+					}
+					if(sheet) { // something's changed
 						CACanorus::undo()->pushUndoCommand();
-						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
-
+						CACanorus::rebuildUI(document(), sheet);
 						if ( CACanorus::settings()->playInsertedNotes() ) {
-							playImmediately( QList<CAMusElement*>() << elt );
+							playImmediately( eltList );
 						}
 					}
 				}
@@ -2031,16 +2040,25 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 				v->repaint();
 			} else if (mode()==EditMode) {
 				if (!v->selection().isEmpty()) {
-					CAMusElement *elt = v->selection().front()->musElement();
-					if (elt->musElementType()==CAMusElement::Note) {
-						CACanorus::undo()->createUndoCommand( document(), tr("add flat", "undo") );
-						if ( static_cast<CANote*>(elt)->diatonicPitch().accs() > -2 )       // limit the amount of accidentals
-							static_cast<CANote*>(elt)->diatonicPitch().setAccs( static_cast<CANote*>(elt)->diatonicPitch().accs()-1 );
+					QList<CAMusElement*> eltList;
+					CASheet* sheet = 0;
+					foreach(CADrawableMusElement* dElt, v->selection()) {
+						CAMusElement *elt = dElt->musElement();
+						if (elt->musElementType()==CAMusElement::Note) {
+							if(!sheet) {
+								sheet = static_cast<CANote*>(elt)->voice()->staff()->sheet();
+								CACanorus::undo()->createUndoCommand( document(), tr("add flat", "undo") );
+							}
+							if ( static_cast<CANote*>(elt)->diatonicPitch().accs() > -2 )       // limit the amount of accidentals
+								static_cast<CANote*>(elt)->diatonicPitch().setAccs( static_cast<CANote*>(elt)->diatonicPitch().accs()-1 );
+						}
+						eltList << elt;
+					}
+					if(sheet) { // something's changed
 						CACanorus::undo()->pushUndoCommand();
-						CACanorus::rebuildUI(document(), ((CANote*)elt)->voice()->staff()->sheet());
-
+						CACanorus::rebuildUI(document(), sheet);
 						if ( CACanorus::settings()->playInsertedNotes() ) {
-							playImmediately( QList<CAMusElement*>() << elt );
+							playImmediately( eltList );
 						}
 					}
 				}
