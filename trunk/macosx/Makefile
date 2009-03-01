@@ -12,7 +12,7 @@ DMG_DIR = Canorus
 PACKAGE_ROOT = package-contents
 
 # Directory that contains the .app
-APP_DIR = $(PACKAGE_ROOT)/Applications
+APP_DIR = $(PACKAGE_ROOT)
 
 FRAMEWORKS_DIR = $(APP_DIR)/Canorus.app/Contents/Frameworks
 
@@ -61,7 +61,6 @@ links:
 # Copy files from the resources dir to the right place
 files: readme
 	cp $(RESOURCES_DIR)/canorus-example.xml $(DMG_DIR)
-	cp $(RESOURCES_DIR)/Emmentaler-14.ttf $(PACKAGE_ROOT)/Library/Fonts/
 
 
 # Change permissions on the .app
@@ -104,5 +103,5 @@ allclean: instclean pkgclean
 # Simply pack the application and fonts into a zip to avoid installers.
 zip:
 	rm -f Canorus.zip
-	(cd package-contents/Applications && zip -9 -r ../../Canorus.zip Canorus.app)
-	(cd package-contents/Library && zip -9 -r ../../Canorus.zip Fonts)
+	(cd $(PACKAGE_ROOT) && zip -9 -r ../../Canorus.zip Canorus.app)
+

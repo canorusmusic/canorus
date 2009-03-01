@@ -57,7 +57,7 @@ IF(APPLE)
 	# or similar and have it install and link the libraries properly
 	SET(CMAKE_INSTALL_PREFIX "${CANORUS_OSX_DIR}/package-contents")
 
-	SET(CANORUS_OSX_APP_DIR	"Applications/Canorus.app/Contents")
+	SET(CANORUS_OSX_APP_DIR "Canorus.app/Contents")
 	
 	SET(CANORUS_INSTALL_BIN_DIR ${CANORUS_OSX_APP_DIR}/MacOS)
 	SET(CANORUS_INSTALL_DATA_DIR ${CANORUS_OSX_APP_DIR}/Resources)
