@@ -39,6 +39,8 @@
 	5) Call myPlaybackObject->stop() to stop the playback. Playback also stops automatically when finished.
 
 	The playbackFinished() signal is emitted once playback has finished or stopped.
+
+	If you want to immediately play only given elements (eg. when inserting notes), call playImmediately().
 */
 
 CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
@@ -60,20 +62,17 @@ CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
 	Plays the list of music elements simultaniously.
 	It only takes notes into account.
 */
-CAPlayback::CAPlayback( QList<CAMusElement*> elts, CAMidiDevice *m, int port ) {
+CAPlayback::CAPlayback( CAMidiDevice *m, int port ) {
 	setMidiDevice( m );
 	_stop = false;
 	setStopLock(false);
 	_playSelectionOnly = true;
-	_selection = elts;
 	connect(this, SIGNAL(finished()), SLOT(stopNow()));
 
 	_repeating=0;
 	_lastRepeatOpenIdx=0;
 	_curTime=0;
 	_streamIdx=0;
-
-	m->openOutputPort( port );
 }
 
 /*!
@@ -96,6 +95,19 @@ CAPlayback::~CAPlayback() {
 
 	if (_streamIdx)
 		delete [] _streamIdx;
+}
+
+/*!
+	Immediately plays the given \a elts.
+ */
+void CAPlayback::playImmediately( QList<CAMusElement*> elts, int port ) {
+	_selection << elts;
+
+	midiDevice()->openOutputPort( port );
+
+	if (!isRunning()) {
+		start();
+	}
 }
 
 void CAPlayback::run() {
@@ -230,47 +242,74 @@ void CAPlayback::run() {
 	stop();
 }
 
+/*!
+	Private function for immediately playing the music elements in _selection.
+	This function ends when all the notes in _selection queue are played.
+	_selection queue might be refilled during the playback by calling playImmediately().
+
+	This function is usually called when inserting new notes. If the first note is still playing,
+	the second note is played simultaniously - thus having two notes in _selection for eg.
+ */
 void CAPlayback::playSelectionImpl() {
 	QVector<unsigned char> message;
-	for (int i=0; i<_selection.size(); i++) {
-		if ( _selection[i]->musElementType()!=CAMusElement::Note )
-			continue;
+	QList<CANote*> curPlaying; // currently playing notes
+	QList<int> timeEnds;       // time ends when the notes should turned off
+	int waitTime = 16;
+	int curTime = 0;
 
-		CANote *note = static_cast<CANote*>(_selection[i]);
+	while (_selection.size() || curPlaying.size()) {
+		while (_selection.size()) {
+			if ( _selection[0]->musElementType()!=CAMusElement::Note ) {
+				_selection.takeFirst();
+				continue;
+			}
 
-		message << (192 + note->voice()->midiChannel()); // change program
-		message << (note->voice()->midiProgram());
-		midiDevice()->send(message, 0);
-		message.clear();
+			CANote *note = static_cast<CANote*>(_selection.takeFirst());
 
-		message << (176 + note->voice()->midiChannel()); // set volume
-		message << (7);
-		message << (100);
-		midiDevice()->send(message, 0);
-		message.clear();
+			// Note ON
+			message << (192 + note->voice()->midiChannel()); // change program
+			message << (note->voice()->midiProgram());
+			midiDevice()->send(message, 0);
+			message.clear();
 
-		message << (144 + note->voice()->midiChannel()); // note on
-		message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
-		message << (127);
-		midiDevice()->send(message, 0);
-		message.clear();
+			message << (176 + note->voice()->midiChannel()); // set volume
+			message << (7);
+			message << (100);
+			midiDevice()->send(message, 0);
+			message.clear();
+
+			message << (144 + note->voice()->midiChannel()); // note on
+			message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
+			message << (127);
+			midiDevice()->send(message, 0);
+			message.clear();
+
+			curPlaying << note;
+			timeEnds << curTime + note->timeLength()*4;
+		}
+
+		for (int i=0; i<curPlaying.size(); i++) {
+			if (curTime >= timeEnds[i]) {
+				// Note OFF
+				CANote *note = curPlaying[i];
+
+				message << (128 + note->voice()->midiChannel()); // note off
+				message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
+				message << (127);
+				midiDevice()->send(message, 0);
+				message.clear();
+
+				timeEnds.removeAt(i);
+				curPlaying.removeAt(i);
+				i--;
+			}
+		}
+
+		msleep( waitTime );
+		curTime += waitTime;
 	}
 
-	msleep( qRound(500) );
-
-	for (int i=0; i<_selection.size(); i++) {
-		if ( _selection[i]->musElementType()!=CAMusElement::Note )
-			continue;
-
-		CANote *note = static_cast<CANote*>(_selection[i]);
-
-		message << (128 + note->voice()->midiChannel()); // note off
-		message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
-		message << (127);
-		midiDevice()->send(message, 0);
-		message.clear();
-	}
-
+	stop();
 	// output ports are closed in MainWin
 }
 

@@ -23,11 +23,13 @@ Q_OBJECT
 #endif
 public:
 	CAPlayback( CASheet*, CAMidiDevice* );
-	CAPlayback( QList<CAMusElement*>, CAMidiDevice*, int port );
+	CAPlayback( CAMidiDevice*, int port );
 	~CAPlayback();
 
 	void run();
 	void stop();
+
+	void playImmediately( QList<CAMusElement*> elts, int port );
 
 	inline const int getInitTimeStart() { return _initTimeStart; }
 	inline void setInitTimeStart(int t) { _initTimeStart = t; }

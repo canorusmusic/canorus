@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -19,16 +19,16 @@
 	\brief Canorus wrapper for RtMidi library
 	CARtMidiDevice is a Canorus wrapper class for a cross-platform MIDI library
 	RtMidi written by Gary P. Scavone (http://www.music.mcgill.ca/~gary/rtmidi/).
-	
+
 	Usage:
 	1) When created, Input and Output MIDI devices get initialized.
 	2) Call getOutputPorts() and getInputPorts() to retreive a map of portNumber/portName.
 	3) Call openOutputPort(port) and/or openInputPort(port) to open an Output/Input port.
 	4) Send MIDI events (for midi output) using send(QVector<unsigned char>).
-	
+
 	\todo Callback function implementation for retreiving MIDI-IN events. This should
 	      probably be done by using Qt's signal-slot implementation. -Matevz
-*/ 
+*/
 
 CARtMidiDevice::CARtMidiDevice()
  : CAMidiDevice() {
@@ -38,7 +38,7 @@ CARtMidiDevice::CARtMidiDevice()
 	_outOpen=false;
 	_inOpen=false;
 	setRealTime(true);
-	
+
 	try {
 		_out = new RtMidiOut();
 		_in = new RtMidiIn();
@@ -49,9 +49,9 @@ CARtMidiDevice::CARtMidiDevice()
 }
 
 bool CARtMidiDevice::openOutputPort(int port) {
-	if (port==-1)
+	if (port==-1 || _outOpen)
 		return false;
-	
+
 	if (_out && _out->getPortCount() > port) {	// check outputs
 		try {
 			_out->openPort(port);
@@ -68,9 +68,9 @@ bool CARtMidiDevice::openOutputPort(int port) {
 }
 
 bool CARtMidiDevice::openInputPort(int port) {
-	if (port==-1)
+	if (port==-1 || _inOpen)
 		return false;
-	
+
 	if (_in && _in->getPortCount() > port) {	// check outputs
 		try {
 			_in->openPort(port);
@@ -128,7 +128,7 @@ QMap<int, QString> CARtMidiDevice::getOutputPorts() {
 	} catch (RtError &error) {
 		error.printMessage();
 	}
-	
+
 	return outPorts;
 }
 
@@ -140,7 +140,7 @@ QMap<int, QString> CARtMidiDevice::getInputPorts() {
 	} catch (RtError &error) {
 		error.printMessage();
 	}
-	
+
 	return inPorts;
 }
 
