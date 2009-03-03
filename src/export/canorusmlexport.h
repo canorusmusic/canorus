@@ -33,6 +33,7 @@ private:
 	void exportDiatonicKey( CADiatonicKey k, QDomElement& domParent );
 	void exportColor( CAMusElement *elt, QDomElement& domParent );
 	void exportTime( CAMusElement *elt, QDomElement& domParent );
+	void exportResources( CADocument*, QDomElement& );
 
 	QDomElement _dTuplet;
 	QColor      _color; // foreground color of elements

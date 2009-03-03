@@ -10,6 +10,7 @@
 #include "core/sheet.h"
 #include "core/document.h"
 #include "core/archive.h"
+#include "core/resource.h"
 
 /*!
 	\class CADocument
@@ -27,8 +28,7 @@
 
 	\sa addSheet()
 */
-CADocument::CADocument()
- : CAResourceContainer() {
+CADocument::CADocument() {
 	setDateCreated( QDateTime::currentDateTime() );
 	setDateLastModified( QDateTime::currentDateTime() );
 	setTimeEdited(0);
@@ -95,6 +95,10 @@ void CADocument::clear() {
 		delete _sheetList[i];
 	}
 	_sheetList.clear();
+
+	while (_resourceList.size()) {
+		delete _resourceList[0];
+	}
 }
 
 /*!

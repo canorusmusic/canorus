@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -10,23 +10,27 @@
 
 #include <QUrl>
 
-class CAResourceContainer;
+class CADocument;
 
 class CAResource {
 public:
 	enum CAResourceType {
-		Image,     // vector or bitmap image or an icon
-		Sound,     // sound sample, midi etc.
-		Movie,     // movie clip
-		Document,  // Canorus, pdf or other score document
-		Other      // other resources
+		Undefined=-1, // error
+		Image,        // vector or bitmap image or an icon
+		Sound,        // sound sample, midi etc.
+		Movie,        // movie clip
+		Document,     // Canorus, pdf or other score document
+		Other         // other resources
 	};
 
-	CAResource( QUrl fileName, QString name, bool linked=false, CAResourceType t=Other, CAResourceContainer *c=0 );
+	CAResource( QUrl fileName, QString name, bool linked=false, CAResourceType t=Other, CADocument *c=0 );
 	virtual ~CAResource();
 
 	inline void setName( const QString n ) { _name = n; }
 	inline const QString name() { return _name; }
+
+	inline void setDescription( const QString n ) { _description = n; }
+	inline const QString description() { return _description; }
 
 	inline void setUrl( const QUrl url ) { _url = url; }
 	inline const QUrl url() { return _url; }
@@ -37,17 +41,21 @@ public:
 	inline void setLinked( bool l ) { _linked = l; }
 	inline bool isLinked() { return _linked; }
 
-	inline void setResourceContainer( CAResourceContainer *c ) { _resourceContainer = c; }
-	inline CAResourceContainer *resourceContainer() { return _resourceContainer; }
+	inline void setDocument( CADocument *d ) { _document = d; }
+	inline CADocument *document() { return _document; }
 
 	bool copy( QString fileName );
 
+	static QString resourceTypeToString( CAResourceType type );
+	static CAResourceType resourceTypeFromString( QString type );
+
 private:
 	QString _name;
-	QUrl _url;
+	QString _description;
+	QUrl _url;               // Absolute path to resource. Becomes relative if "file://" scheme when saved.
 	CAResourceType _resType;
 	bool _linked;
-	CAResourceContainer *_resourceContainer;
+	CADocument *_document;
 };
 
 #endif /* RESOURCE_H_ */

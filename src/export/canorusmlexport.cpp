@@ -9,10 +9,12 @@
 #include <QDomDocument>
 #include <QTextStream>
 #include <QVariant>
+#include <QDir>
 
 #include "export/canorusmlexport.h"
 
 #include "core/document.h"
+#include "core/resource.h"
 #include "core/sheet.h"
 #include "core/context.h"
 #include "core/staff.h"
@@ -180,6 +182,8 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 			}
 		}
 	}
+
+	exportResources(doc, dCanorusDocument);
 
 	out() << dDoc.toString();
 }
@@ -438,4 +442,65 @@ void CACanorusMLExport::exportDiatonicKey( CADiatonicKey k, QDomElement& domPare
 	QDomElement dk = domParent.ownerDocument().createElement("diatonic-key"); domParent.appendChild(dk);
 	dk.setAttribute("gender", CADiatonicKey::genderToString(k.gender()));
 	exportDiatonicPitch( k.diatonicPitch(), dk );
+}
+
+/*!
+	Exports the resources to exported filename files/ directory.
+
+	There are 4 possible scenarios:
+	1) Linked resource, resource is remote (eg. http, https resource on the web):
+	   Only resource url is stored inside the xml file.
+	2) Linked resource, resource is local (eg. large video on the disk):
+	   Relative path to the resource is calculated from the directory where the
+	   document is being saved.
+	3) Attached resource:
+	   Resource is copied from the tmp/ directory to the directory where the document
+	   is being saved + "filename files/". eg. "content.xml files/myImageXXXX.png"
+ */
+void CACanorusMLExport::exportResources( CADocument *doc, QDomElement& dCanorusDocument ) {
+	for (int i=0; i<doc->resourceList().size(); i++) {
+		CAResource *r = doc->resourceList()[i];
+		QUrl url;
+
+		if (r->isLinked()) {
+			// linked resource, calculate relative path of the resource to the document where it's being saved
+			if (r->url().scheme()=="file" && file()) {
+				// local file
+				QDir outDir(QFileInfo(*file()).absolutePath());
+				url = QUrl::fromLocalFile( outDir.relativeFilePath( r->url().toLocalFile() ) );
+			} else {
+				// remote file
+				url = r->url();
+			}
+		} else if (file()) {
+			// attached resource, copy the resource to "filename files/" directory
+			QString targetDir = QFileInfo(*file()).absolutePath();
+			QString targetFileName = QFileInfo(*file()).fileName();
+
+			// create directory if it doesn't exist
+			if (!QDir(targetDir+"/"+targetFileName+" files").exists()) {
+				QDir(targetDir).mkdir(targetFileName+" files");
+			}
+
+			// copies resource /tmp/qt_tempXXXX -> myDocument files/qt_tempXXXX
+			r->copy( targetDir+"/"+targetFileName+" files/" + QFileInfo(r->url().toLocalFile()).fileName() );
+
+			// generates relative path
+			url = QString("file://") + targetFileName + " files/" + QFileInfo(r->url().toLocalFile()).fileName();
+		} else {
+			// saving to stream - usually when compressing to .can format
+			// copying is done in CACanExport class
+			url = QString("file://content.xml files/")+QFileInfo(r->url().toLocalFile()).fileName();
+		}
+
+		QDomElement dResource = dCanorusDocument.ownerDocument().createElement("resource");
+
+		dResource.setAttribute("name", r->name());
+		dResource.setAttribute("description", r->description());
+		dResource.setAttribute("linked", r->isLinked());
+		dResource.setAttribute("resource-type", CAResource::resourceTypeToString(r->resourceType()));
+		dResource.setAttribute("url", url.toString());
+
+		dCanorusDocument.appendChild(dResource);
+	}
 }

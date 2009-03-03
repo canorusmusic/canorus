@@ -8,10 +8,14 @@
 #include <QDebug>
 #include <QIODevice>
 #include <QVariant>
+#include <QFileInfo>
 
 #include "import/canorusmlimport.h"
 
+#include "control/resourcectl.h"
+
 #include "core/document.h"
+#include "core/resource.h"
 #include "core/sheet.h"
 #include "core/context.h"
 #include "core/staff.h"
@@ -437,6 +441,8 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curDiatonicPitch = CADiatonicPitch( attributes.value("note-name").toInt(), attributes.value("accs").toInt() );
 	} else if (qName == "diatonic-key") {
 		_curDiatonicKey = CADiatonicKey( CADiatonicPitch(), CADiatonicKey::genderFromString(attributes.value("gender")) );
+	} else if (qName == "resource") {
+		importResource( attributes );
 	}
 
 	_depth.push(qName);
@@ -798,6 +804,31 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 
 	if (_curMark) {
 		_curMusElt->addMark(_curMark);
+	}
+}
+
+/*!
+	Imports the current resource.
+ */
+void CACanorusMLImport::importResource( const QXmlAttributes& attributes ) {
+	bool isLinked = attributes.value("linked").toInt();
+
+	CAResource *r;
+	QUrl url = attributes.value("url");
+	QString name = attributes.value("name");
+	QString description = attributes.value("description");
+	CAResource::CAResourceType type = CAResource::resourceTypeFromString(attributes.value("resource-type"));
+
+	if (isLinked || !file()) {
+		// if the attached resource doesn't exist yet (eg. extracting from the .can file), only add resource stubs
+		r = new CAResource( url, name, isLinked, type, _document );
+		r->setDescription(description);
+	} else if (file()) {
+		QString path;
+		path = QFileInfo(file()->fileName()).absolutePath();
+
+		r = CAResourceCtl().importResource( name, path+"/"+url.toLocalFile(), _document, type );
+		r->setDescription(description);
 	}
 }
 

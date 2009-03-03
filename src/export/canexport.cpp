@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Itay Perl, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -9,10 +9,13 @@
 #include "export/canorusmlexport.h"
 #include "core/archive.h"
 
+#include "core/resource.h"
 #include "core/document.h"
 
 #include <QTextStream>
 #include <QTemporaryFile>
+#include <QFile>
+#include <QFileInfo>
 
 CACanExport::CACanExport( QTextStream *stream )
  : CAExport(stream) {
@@ -30,11 +33,21 @@ void CACanExport::exportDocumentImpl( CADocument* doc ) {
 	content->wait();
 	delete content;
 
-	if(!doc->archive()->addFile( "content.xml", score )) {
+	QString fileName = "content.xml";
+	if(!doc->archive()->addFile( fileName, score )) {
 		setStatus(-2);
 		return;
 	}
-	
+
+	for (int i=0; i<doc->resourceList().size(); i++) {
+		CAResource *r = doc->resourceList()[i];
+		if (!r->isLinked()) {
+			// /tmp/qt_tempXXXXX -> qt_tempXXXXX
+			QFile target(r->url().toLocalFile());
+			doc->archive()->addFile( fileName + " files/"+QFileInfo(target).fileName(), target );
+		}
+	}
+
 	// \todo fix relative paths
 	for (int i=0; i<doc->resourceList().size(); i++) {
 		CAResource *r = doc->resourceList()[i];
@@ -43,7 +56,7 @@ void CACanExport::exportDocumentImpl( CADocument* doc ) {
 			continue;
 		}
 	}
-		
+
 	// Save the archive
 	doc->archive()->write( *stream()->device() );
 	setStatus(0); // done

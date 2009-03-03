@@ -201,7 +201,6 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/tar.cpp
 	core/archive.cpp
 	core/resource.cpp
-	core/resourcecontainer.cpp
 	core/midirecorder.cpp
 	
 	core/playablelength.cpp
@@ -285,6 +284,7 @@ SET(Canorus_Gui_Ctl_Srcs       # Control instances for user interface or views
 SET(Canorus_Ctl_Srcs            # Control instances for core
 	control/externprogram.cpp
 	control/typesetctl.cpp
+	control/resourcectl.cpp
 )
 
 SET(Canorus_Drawable_Srcs	# Drawable instances of the data
@@ -412,7 +412,6 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/tar.cpp
 	core/archive.cpp
 	core/resource.cpp
-	core/resourcecontainer.cpp
 	core/midirecorder.cpp
 	core/typesetter.cpp
 	${Canorus_Import_Srcs}
