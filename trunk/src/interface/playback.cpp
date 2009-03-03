@@ -184,7 +184,9 @@ void CAPlayback::run() {
 					if ( !note->tieEnd() )
 						midiDevice()->send(message, mSeconds);
 					message.clear();
+				}
 
+				if (streamAt(i).at(streamIdx(i))->isPlayable()) {
 					_curPlaying << static_cast<CAPlayable*>(streamAt(i).at(streamIdx(i)));
 				}
 
@@ -201,7 +203,7 @@ void CAPlayback::run() {
 			// calculate the pause needed by msleep
 			// last playables in the stream - _curPlaying is otherwise always set!
 			// pre-last pass, set minLength to their timeLengths to stop the notes
-			// \ŧodo curtime() below doesn't work yet for asynchrone staffs (not-aligned repeat bars)
+			// \todo curtime() below doesn't work yet for asynchrone staffs (not-aligned repeat bars)
 			for (int j=0; j<_curPlaying.size(); j++) {
 				if ((_curPlaying[j]->timeEnd() - curTime(i)) < minLength || minLength==-1)
 					minLength =_curPlaying[j]->timeEnd() - curTime(i);

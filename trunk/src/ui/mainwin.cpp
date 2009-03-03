@@ -2618,8 +2618,11 @@ void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
 void CAMainWin::onRepaintTimerTimeout() {
 	CAScoreViewPort *sv = static_cast<CAScoreViewPort*>(_playbackViewPort);
 	sv->clearSelection();
-	for (int i=0; i<_playback->curPlaying().size(); i++)
-		sv->addToSelection( static_cast<CAMusElement*>(_playback->curPlaying().at(i)) );
+	for (int i=0; i<_playback->curPlaying().size(); i++) {
+		if (_playback->curPlaying().at(i)->musElementType()==CAMusElement::Note) {
+			sv->addToSelection( _playback->curPlaying()[i] );
+		}
+	}
 	sv->repaint();
 }
 
