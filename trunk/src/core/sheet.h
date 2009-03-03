@@ -13,7 +13,6 @@
 
 #include "core/context.h"
 #include "core/staff.h"
-#include "core/resourcecontainer.h"
 
 class CADocument;
 class CAPlayable;

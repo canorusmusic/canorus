@@ -95,7 +95,9 @@ void CAAutoRecovery::saveRecovery() {
 */
 void CAAutoRecovery::cleanupRecovery() {
 	for ( int i=0; QFile::exists(CASettings::defaultSettingsPath()+"/recovery"+QString::number(i)); i++ ) {
-		QFile::remove(CASettings::defaultSettingsPath()+"/recovery"+QString::number(i));
+		QString fileName = CASettings::defaultSettingsPath()+"/recovery"+QString::number(i);
+		QFile::remove(fileName);
+		QFile::remove(fileName + " files");
 	}
 }
 

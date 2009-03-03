@@ -12,12 +12,11 @@
 #include <QString>
 #include <QDateTime>
 
-#include "core/resourcecontainer.h"
-
 class CASheet;
 class CAArchive;
+class CAResource;
 
-class CADocument : public CAResourceContainer {
+class CADocument {
 public:
 	CADocument();
 	virtual ~CADocument();
@@ -29,6 +28,10 @@ public:
 	CASheet *sheet(const QString name);
 	CASheet *sheetAt(int i) { return _sheetList[i]; }
 	void setSheetAt(int i, CASheet *newSheet) { _sheetList[i]=newSheet; }
+
+	QList<CAResource*>& resourceList() { return _resourceList; }
+	inline void addResource(CAResource *r) { _resourceList << r; }
+	inline void removeResource(CAResource *r) { _resourceList.removeAll(r); }
 
 	CASheet *addSheetByName(const QString name);
 	void addSheet(CASheet *sheet);
@@ -73,7 +76,8 @@ public:
 	void setArchive( CAArchive *a ) { _archive = a; }
 
 private:
-	QList<CASheet *> _sheetList;
+	QList<CASheet*>    _sheetList;
+	QList<CAResource*> _resourceList;
 
 	QString _title;
 	QString _subtitle;

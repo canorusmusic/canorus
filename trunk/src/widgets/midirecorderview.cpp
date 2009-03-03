@@ -27,6 +27,10 @@ CAMidiRecorderView::~CAMidiRecorderView() {
 		delete midiRecorder();
 		setMidiRecorder(0);
 	}
+
+	if (parent() && dynamic_cast<CAMainWin*>(parent())) {
+		static_cast<CAMainWin*>(parent())->setMidiRecorderView(0);
+	}
 }
 
 void CAMidiRecorderView::setupCustomUi() {

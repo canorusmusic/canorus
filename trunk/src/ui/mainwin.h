@@ -37,8 +37,8 @@ class QLineEdit;
 class QComboBox;
 class QCheckBox;
 class QAction;
-class CAHelpBrowser;
 
+class CAHelpBrowser;
 class CAMenuToolButton;
 class CAUndoToolButton;
 class CALCDNumber;
@@ -51,6 +51,7 @@ class CAPrintCtl;
 class CAPreviewCtl;
 class CAPyConsole;
 class CATransposeView;
+class CAMidiRecorderView;
 class CAKeybdInput;
 class CAExport;
 
@@ -94,6 +95,8 @@ public:
 	inline QFileDialog *importDialog() { return uiImportDialog; }
 	inline CAResourceView *resourceView() { return _resourceView; }
 	inline QAction        *resourceViewAction() { return uiResourceView; }
+	inline CAMidiRecorderView *midiRecorderView() { return _midiRecorderView; }
+	inline void setMidiRecorderView( CAMidiRecorderView *v ) { _midiRecorderView = v; }
 	inline CAViewPort *currentViewPort() { return _currentViewPort; }
 	inline void removeViewPort(CAViewPort* v) { _viewPortList.removeAll(v); }
 	inline QList<CAViewPort*> viewPortList() { return _viewPortList; }
@@ -321,6 +324,7 @@ private:
 	CAExport *_poExp; // abstract export instance
 	CAResourceView *_resourceView;
 	CATransposeView *_transposeView;
+	CAMidiRecorderView *_midiRecorderView;
 
 	void setMode(CAMode mode);
 	inline void setCurrentViewPort( CAViewPort *viewPort ) { _currentViewPort = viewPort; }

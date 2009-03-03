@@ -33,6 +33,7 @@
 #include "control/previewctl.h"
 #include "control/printctl.h"
 #include "control/helpctl.h"
+#include "control/resourcectl.h"
 
 #include "interface/playback.h"
 #include "interface/engraver.h"
@@ -169,6 +170,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_resourceView = new CAResourceView( 0, 0 );
 	_resourceView->hide();
 
+	_midiRecorderView = 0;
+
 	_transposeView = new CATransposeView( this );
 	addDockWidget( Qt::RightDockWidgetArea, _transposeView );
 	_transposeView->hide();
@@ -213,6 +216,9 @@ CAMainWin::~CAMainWin()  {
 
 	if( _poExp )
 		delete _poExp;
+
+	if (_midiRecorderView)
+		delete _midiRecorderView;
 
 	if(!CACanorus::mainWinCount()) // closing down
 		CACanorus::cleanUp();
@@ -909,6 +915,11 @@ void CAMainWin::clearUI() {
 
 	_sheetMap.clear();
 	setCurrentViewPort( 0 );
+
+	if (_midiRecorderView) {
+		delete _midiRecorderView;
+	}
+
 	uiSelectMode->trigger(); // select mode
 }
 
@@ -3722,13 +3733,18 @@ void CAMainWin::on_uiSettings_triggered() {
 
 void CAMainWin::on_uiMidiRecorder_triggered() {
 	if (document()) {
-		CAResource *myMidiFile = document()->createEmptyResource( tr("Recorded Midi file"), CAResource::Sound );
-		CAMidiRecorderView *midiRecorderView = new CAMidiRecorderView( new CAMidiRecorder( myMidiFile, CACanorus::midiDevice() ), this );
-		addDockWidget( Qt::TopDockWidgetArea, midiRecorderView );
-		midiRecorderView->show();
+		CAResource *myMidiFile = CAResourceCtl().createEmptyResource( tr("Recorded Midi file"), document(), CAResource::Sound );
+		document()->addResource(myMidiFile);
+
+		if (_midiRecorderView) {
+			delete _midiRecorderView;
+		}
+
+		_midiRecorderView = new CAMidiRecorderView( new CAMidiRecorder( myMidiFile, CACanorus::midiDevice() ), this );
+		addDockWidget( Qt::TopDockWidgetArea, _midiRecorderView );
+		_midiRecorderView->show();
 
 		_resourceView->rebuildUi();
-		uiResourceView->setChecked(true);
 	}
 }
 

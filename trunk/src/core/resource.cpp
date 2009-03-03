@@ -1,59 +1,96 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-#include "core/resource.h"
-#include "core/resourcecontainer.h"
 #include <QFile>
+#include <iostream>
+
+#include "core/resource.h"
+#include "control/resourcectl.h"
+#include "core/document.h"
 
 /*!
 	\class CAResource
 	\brief Different resources included in the file
 
-	CAResource is a wrapper for any file included or linked from the document
-	itself. Resource files are usually the recorded midi files, transcripts of
-	the score in a pdf format, audio and video files, score in other formats,
-	images in the score etc.
+	CAResource is a wrapper for any file attached to the document.
+	Resource files are usually the recorded midi files, transcripts of
+	the score or a scanned music, audio and video files, score in other
+	formats, images in the score etc.
 
-	CAResource contains a valid path (_fileName) to the actual file. If the
-	resource is external (not included in file), _linked is True and a _fileName
-	is the absolute path of the linked file. If the resource is internal (included
-	in the file), _linked is False and a _fileName is an absolute path to the extracted
-	file in the system temporary directory.
+	CAResource contains a valid absolute path (_fileName) to the actual file:
+	- If the resource is external (not included in file, but linked), _linked is
+	  True and a _fileName is the absolute path of the linked file (or URL).
+	- If the resource is internal (saved along the file), _linked is False and a
+	  _fileName is an absolute path to the extracted file in the system temporary
+	  directory.
 
+	When the resources are saved, internal resources are saved as
 	\sa CAResourceContainer
 */
 
 /*!
 	Default constructor.
 */
-CAResource::CAResource( QUrl url, QString name, bool linked, CAResourceType t, CAResourceContainer *c ) {
+CAResource::CAResource( QUrl url, QString name, bool linked, CAResourceType t, CADocument *parent ) {
 	setName(name);
 	setUrl(url);
 	setLinked(linked);
 	setResourceType(t);
-	setResourceContainer(c);
+	setDocument(parent);
 
-	if (c) {
-		c->addResource(this);
+	if (parent) {
+		parent->addResource(this);
 	}
 }
 
 CAResource::~CAResource() {
-	if (resourceContainer())
-		resourceContainer()->removeResource(this);
+	if (document()) {
+		document()->removeResource(this);
+	}
 
-	if (!isLinked())
+	if (!isLinked()) {
 		QFile::remove( url().toLocalFile() );
+	}
 }
 
+/*!
+	Copies the resource to the specified \a fileName.
+	Overwrites the specified \a fileName, if the file already exists.
+ */
 bool CAResource::copy( QString fileName ) {
 	if ( QFile::exists( fileName ) ) {
 		QFile::remove( fileName );
 	}
 
 	return QFile::copy( url().toLocalFile(), fileName );
+}
+
+/*!
+	Converts the given \a type to string. Usually called when saving the resource.
+ */
+QString CAResource::resourceTypeToString( CAResourceType type ) {
+	switch (type) {
+	case Image:    return "image";
+	case Sound:    return "sound";
+	case Movie:    return "movie";
+	case Document: return "document";
+	case Other:    return "other";
+	default:       return "";
+	}
+}
+
+/*!
+	Converts the given string \a type to CAResourceType. Usually called when opening the resource.
+ */
+CAResource::CAResourceType CAResource::resourceTypeFromString( QString type ) {
+	if (type=="image")         { return Image; }
+	else if (type=="sound")    { return Sound; }
+	else if (type=="movie")    { return Movie; }
+	else if (type=="document") { return Document; }
+	else if (type=="other")    { return Other; }
+	else                       { return Undefined; }
 }

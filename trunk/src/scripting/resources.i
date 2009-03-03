@@ -7,8 +7,8 @@
 
 %{
 #include "core/resource.h"
-#include "core/resourcecontainer.h"
+#include "control/resourcectl.h"
 %}
 
 %include "core/resource.h"
-%include "core/resourcecontainer.h"
+%include "control/resourcectl.h"

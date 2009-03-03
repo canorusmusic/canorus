@@ -51,6 +51,7 @@ public:
 
 private:
 	void importMark( const QXmlAttributes& attributes );
+	void importResource( const QXmlAttributes& attributes );
 
 	inline CADocument *document() { return _document; }
 	CADocument     *_document;
