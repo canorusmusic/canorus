@@ -73,6 +73,9 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 	}
 	p->setPen( pen );
 
+	bool aliasing = p->testRenderHint( QPainter::Antialiasing );
+	p->setRenderHint( QPainter::Antialiasing, true );
+
 	int minY = min(y1(), yMid(), y2());
 	int yLeft = qRound(s.y + (y1()-minY)     * s.z);
 	int yMidl = qRound(s.y + (yMid()-minY)   * s.z);
@@ -108,6 +111,8 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 	points[20] = QPoint( qRound(s.x+width()*s.z), yRight );
 
 	p->drawPolyline(points, 21);
+
+	p->setRenderHint( QPainter::Antialiasing, aliasing );
 }
 
 CADrawableSlur *CADrawableSlur::clone(CADrawableContext* newContext) {
