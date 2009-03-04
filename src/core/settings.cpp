@@ -23,6 +23,7 @@ const int CASettings::DEFAULT_AUTO_RECOVERY_INTERVAL = 1;
 const int CASettings::DEFAULT_MAX_RECENT_DOCUMENTS = 15;
 
 #ifndef SWIGCPP
+const bool   CASettings::DEFAULT_ANTIALIASING = true;
 const QColor CASettings::DEFAULT_BACKGROUND_COLOR = QColor(255, 255, 240);
 const QColor CASettings::DEFAULT_FOREGROUND_COLOR = Qt::black;
 const QColor CASettings::DEFAULT_SELECTION_COLOR = Qt::red;
@@ -108,6 +109,7 @@ void CASettings::writeSettings() {
 #ifndef SWIGCPP
 	writeRecentDocuments();
 
+	setValue( "appearance/antialiasing", antiAliasing() );
 	setValue( "appearance/backgroundcolor", backgroundColor() );
 	setValue( "appearance/foregroundcolor", foregroundColor() );
 	setValue( "appearance/selectioncolor", selectionColor() );
@@ -183,6 +185,11 @@ int CASettings::readSettings() {
 	readRecentDocuments();
 
 	// Appearance settings
+	if ( contains("appearance/antialiasing") )
+		setAntiAliasing( value("appearance/antialiasing").toBool() );
+	else
+		setAntiAliasing( DEFAULT_ANTIALIASING );
+
 	if ( contains("appearance/backgroundcolor") )
 		setBackgroundColor( value("appearance/backgroundcolor").value<QColor>() );
 	else

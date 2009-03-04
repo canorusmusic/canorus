@@ -137,7 +137,7 @@
           <enum>QFrame::Plain</enum>
          </property>
          <property name="currentIndex" >
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="editorSettings" >
           <layout class="QVBoxLayout" name="verticalLayout_2" >
@@ -206,6 +206,16 @@
              <property name="margin" >
               <number>0</number>
              </property>
+             <item>
+              <widget class="QCheckBox" name="uiAntiAliasing" >
+               <property name="toolTip" >
+                <string>Use anti-aliased fonts for drawing the score. Looks nicer, but slower.</string>
+               </property>
+               <property name="text" >
+                <string>Use anti-aliased fonts</string>
+               </property>
+              </widget>
+             </item>
              <item>
               <layout class="QHBoxLayout" >
                <property name="spacing" >

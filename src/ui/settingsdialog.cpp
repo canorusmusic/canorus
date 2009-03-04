@@ -47,6 +47,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	// Editor Page
 	uiFinaleLyricsCheckBox->setChecked( CACanorus::settings()->finaleLyricsBehaviour() );
 	uiShadowNotesInOtherStaffs->setChecked( CACanorus::settings()->shadowNotesInOtherStaffs() );
+	uiAntiAliasing->setChecked( CACanorus::settings()->antiAliasing() );
 	uiPlayInsertedNotes->setChecked( CACanorus::settings()->playInsertedNotes() );
 	uiAutoBar->setChecked( CACanorus::settings()->autoBar() );
 
@@ -133,6 +134,7 @@ void CASettingsDialog::applySettings() {
 	// Editor Page
 	CACanorus::settings()->setFinaleLyricsBehaviour( uiFinaleLyricsCheckBox->isChecked() );
 	CACanorus::settings()->setShadowNotesInOtherStaffs( uiShadowNotesInOtherStaffs->isChecked() );
+	CACanorus::settings()->setAntiAliasing( uiAntiAliasing->isChecked() );
 	CACanorus::settings()->setPlayInsertedNotes( uiPlayInsertedNotes->isChecked() );
 	CACanorus::settings()->setAutoBar( uiAutoBar->isChecked() );
 

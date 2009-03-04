@@ -902,7 +902,8 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 	else
 		mList = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
 
-	p.setRenderHint(QPainter::Antialiasing);
+	p.setRenderHint( QPainter::Antialiasing, CACanorus::settings()->antiAliasing() );
+
 	for (int i=0; i<mList.size(); i++) {
 		QColor color;
 		CAMusElement *elt = mList[i]->musElement();

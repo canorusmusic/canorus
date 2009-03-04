@@ -63,6 +63,9 @@ public:
 	// Appearance settings //
 	/////////////////////////
 #ifndef SWIG
+	static const bool DEFAULT_ANTIALIASING;
+	inline bool antiAliasing() { return _antiAliasing; }
+	inline void setAntiAliasing( bool a ) { _antiAliasing = a; }
 	inline QColor backgroundColor() { return _backgroundColor; }
 	inline void setBackgroundColor( QColor backgroundColor ) { _backgroundColor = backgroundColor; }
 	static const QColor DEFAULT_BACKGROUND_COLOR;
@@ -141,6 +144,7 @@ private:
 	// Appearance settings //
 	/////////////////////////
 #ifndef SWIG
+	bool   _antiAliasing;
 	QColor _backgroundColor;
 	QColor _foregroundColor;
 	QColor _selectionColor;
