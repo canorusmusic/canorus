@@ -1,7 +1,7 @@
-/*! 
+/*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -18,7 +18,7 @@ class CAUndo {
 public:
 	CAUndo();
 	virtual ~CAUndo();
-	
+
 	bool canUndo( CADocument* );
 	bool canRedo( CADocument* );
 	void undo( CADocument* );
@@ -35,10 +35,11 @@ public:
 	CAUndoCommand *redoCommand( CADocument *d );
 	void updateLastUndoCommand( CAUndoCommand *c );
 	void changeDocument( CADocument*, CADocument* );
+	QList<CADocument*> getAllDocuments( CADocument *d );
 private:
 	void clearUndoCommand();
 	CAUndoCommand *_undoCommand; // current undo command created to be put on the undo stack
-	
+
 	QHash< CADocument*, QList<CAUndoCommand*>* > _undoStack;
 	QHash< QList<CAUndoCommand*>*, int >         _undoIndex;
 };

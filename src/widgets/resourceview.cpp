@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -8,6 +8,7 @@
 #include "widgets/resourceview.h"
 #include "core/document.h"
 #include "core/resource.h"
+#include "control/resourcectl.h"
 #include "canorus.h"
 
 #include <QStringList>
@@ -121,8 +122,8 @@ void CAResourceView::contextMenuEvent( QContextMenuEvent *e ) {
 			if (selectedAction==rename) {
 				editItem( selection[0], 0 );
 			} else
-			if (selectedAction==remove && QMessageBox::question(this, tr("Confirm deletion"), tr("Do you want to remove resource %1.\nDeletion cannot be undone!").arg(resource->name())) == QMessageBox::Yes) {
-				delete resource;
+			if (selectedAction==remove && QMessageBox::question(this, tr("Confirm deletion"), tr("Do you want to remove resource \"%1\"?\n\nDeletion cannot be undone!").arg(resource->name()), QMessageBox::Yes|QMessageBox::Cancel) == QMessageBox::Yes) {
+				CAResourceCtl::deleteResource(resource);
 				CACanorus::rebuildUI( document() );
 			} else
 			if (selectedAction==saveAs) {

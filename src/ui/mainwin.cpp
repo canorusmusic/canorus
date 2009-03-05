@@ -3736,8 +3736,7 @@ void CAMainWin::on_uiSettings_triggered() {
 
 void CAMainWin::on_uiMidiRecorder_triggered() {
 	if (document()) {
-		CAResource *myMidiFile = CAResourceCtl().createEmptyResource( tr("Recorded Midi file"), document(), CAResource::Sound );
-		document()->addResource(myMidiFile);
+		CAResource *myMidiFile = CAResourceCtl::createEmptyResource( tr("Recorded Midi file"), document(), CAResource::Sound );
 
 		if (_midiRecorderView) {
 			delete _midiRecorderView;
@@ -3747,7 +3746,7 @@ void CAMainWin::on_uiMidiRecorder_triggered() {
 		addDockWidget( Qt::TopDockWidgetArea, _midiRecorderView );
 		_midiRecorderView->show();
 
-		_resourceView->rebuildUi();
+		CACanorus::rebuildUI(document(), currentSheet());
 	}
 }
 

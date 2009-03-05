@@ -818,18 +818,14 @@ void CACanorusMLImport::importResource( const QXmlAttributes& attributes ) {
 	QString name = attributes.value("name");
 	QString description = attributes.value("description");
 	CAResource::CAResourceType type = CAResource::resourceTypeFromString(attributes.value("resource-type"));
+	QString rUrl = url.toString();
 
-	if (isLinked || !file()) {
-		// if the attached resource doesn't exist yet (eg. extracting from the .can file), only add resource stubs
-		r = new CAResource( url, name, isLinked, type, _document );
-		r->setDescription(description);
-	} else if (file()) {
-		QString path;
-		path = QFileInfo(file()->fileName()).absolutePath();
-
-		r = CAResourceCtl().importResource( name, path+"/"+url.toLocalFile(), _document, type );
-		r->setDescription(description);
+	if (!isLinked && file()) {
+		rUrl = QFileInfo(file()->fileName()).absolutePath()+"/"+url.toLocalFile();
 	}
+
+	r = CAResourceCtl::importResource( name, rUrl, isLinked, _document, type );
+	r->setDescription(description);
 }
 
 /*!

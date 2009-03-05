@@ -48,6 +48,10 @@ CADocument *CACanImport::importDocumentImpl() {
 			if (!r->isLinked()) {
 				// attached file - copy to /tmp
 				CAIOPtr rPtr = arc->file(r->url().toLocalFile().mid(2)); // chop the two leading slashes
+				if (!dynamic_cast<QFile*>(&*rPtr)) {
+					std::cerr << "CACanImport: Resource \"" << r->url().toString().toStdString().c_str() << "\" not found in the file." << std::endl;
+					continue;
+				}
 
 				QTemporaryFile *f = new QTemporaryFile(QDir::tempPath()+"/"+r->name());
 				f->open();
