@@ -5,6 +5,7 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
+#include "control/resourcectl.h"
 #include "core/context.h"
 #include "core/staff.h"
 #include "core/sheet.h"
@@ -97,7 +98,7 @@ void CADocument::clear() {
 	_sheetList.clear();
 
 	while (_resourceList.size()) {
-		delete _resourceList[0];
+		CAResourceCtl::deleteResource( _resourceList[0] );
 	}
 }
 

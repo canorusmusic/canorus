@@ -18,8 +18,9 @@ public:
 	CAResourceCtl();
 	virtual ~CAResourceCtl();
 
-	CAResource *importResource( QString name, QString fileName, CADocument *parent=0, CAResource::CAResourceType t=CAResource::Other );
-	CAResource *createEmptyResource( QString name, CADocument *parent=0, CAResource::CAResourceType t=CAResource::Other );
+	static CAResource *importResource( QString name, QString fileName, bool isLinked=false, CADocument *parent=0, CAResource::CAResourceType t=CAResource::Other );
+	static CAResource *createEmptyResource( QString name, CADocument *parent=0, CAResource::CAResourceType t=CAResource::Other );
+	static void deleteResource( CAResource* );
 };
 
 #endif /* RESOURCECTL_H_ */

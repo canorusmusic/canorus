@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="sl_SI">
-<defaultcodec></defaultcodec>
 <context>
     <name>CAAutoRecovery</name>
     <message>
@@ -178,7 +177,7 @@ Vrstica %1:%2.</translation>
         <translation>O programu Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4920"/>
+        <location filename="../ui/mainwin.cpp" line="4919"/>
         <source>Staff%1</source>
         <translation>Črtovje%1</translation>
     </message>
@@ -472,7 +471,7 @@ Vrstica %1:%2.</translation>
         <translation>Nov trak za besedilo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4934"/>
+        <location filename="../ui/mainwin.cpp" line="4933"/>
         <source>LyricsContext%1</source>
         <translation>Besedilo%1</translation>
     </message>
@@ -559,7 +558,7 @@ Vrstica %1:%2.</translation>
         <translation>punktacijo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4693"/>
+        <location filename="../ui/mainwin.cpp" line="4692"/>
         <source>deletion of elements</source>
         <comment>undo</comment>
         <translation>brisanje elementov</translation>
@@ -595,55 +594,55 @@ Vrstica %1:%2.</translation>
         <translation>potrditev LilyPond izvorne kode</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3807"/>
+        <location filename="../ui/mainwin.cpp" line="3806"/>
         <source>deletion of the sheet</source>
         <comment>undo</comment>
         <translation>brisanje lista</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3865"/>
+        <location filename="../ui/mainwin.cpp" line="3864"/>
         <source>change sheet name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena lista</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3886"/>
+        <location filename="../ui/mainwin.cpp" line="3885"/>
         <source>change context name</source>
         <comment>undo</comment>
         <translation>spreminjanje imena traku</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3905"/>
+        <location filename="../ui/mainwin.cpp" line="3904"/>
         <source>change stanza number</source>
         <comment>undo</comment>
         <translation>spreminjanje številke kitice</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3917"/>
+        <location filename="../ui/mainwin.cpp" line="3916"/>
         <source>change associated voice</source>
         <comment>undo</comment>
         <translation>dodeljevanje glasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3928"/>
+        <location filename="../ui/mainwin.cpp" line="3927"/>
         <source>change voice stem direction</source>
         <comment>undo</comment>
         <translation>spreminjanje smeri vratov za glas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3945"/>
+        <location filename="../ui/mainwin.cpp" line="3944"/>
         <source>change note stem direction</source>
         <comment>undo</comment>
         <translation>spreminjanje smeri vratov not</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4510"/>
+        <location filename="../ui/mainwin.cpp" line="4509"/>
         <source>cut</source>
         <comment>undo</comment>
         <translation>rezanje</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4895"/>
+        <location filename="../ui/mainwin.cpp" line="4894"/>
         <source>paste</source>
         <comment>undo</comment>
         <translation>lepljenje</translation>
@@ -1228,19 +1227,19 @@ Vrstica %1:%2.</translation>
         <translation>Tip korone</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5166"/>
+        <location filename="../ui/mainwin.cpp" line="5165"/>
         <source>change fermata type</source>
         <comment>undo</comment>
         <translation>spreminjanje tipa korone</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5266"/>
+        <location filename="../ui/mainwin.cpp" line="5265"/>
         <source>change tempo beat</source>
         <comment>undo</comment>
         <translation>spreminjanje dobe pri tempu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5289"/>
+        <location filename="../ui/mainwin.cpp" line="5288"/>
         <source>change tempo bpm</source>
         <comment>undo</comment>
         <translation>spreminjanje udarcev na minuto</translation>
@@ -1333,7 +1332,7 @@ Napaka %1:</translation>
         <translation>Tip ponavljanja</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5242"/>
+        <location filename="../ui/mainwin.cpp" line="5241"/>
         <source>change repeat mark</source>
         <comment>undo</comment>
         <translation>spreminjanje ponaljanja</translation>
@@ -1432,13 +1431,13 @@ Napaka %1:</translation>
         <translation>Prst</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5189"/>
+        <location filename="../ui/mainwin.cpp" line="5188"/>
         <source>change finger</source>
         <comment>undo</comment>
         <translation>spreminjanje prsta</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5210"/>
+        <location filename="../ui/mainwin.cpp" line="5209"/>
         <source>change finger original property</source>
         <comment>undo</comment>
         <translation>spreminjanje prvotnosti prstnega reda</translation>
@@ -1486,7 +1485,7 @@ Napaka %1:</translation>
         <translation>nov trak za funkcijske oznake</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4938"/>
+        <location filename="../ui/mainwin.cpp" line="4937"/>
         <source>FunctionMarkContext%1</source>
         <translation>FunkcijskeOznake%1</translation>
     </message>
@@ -1702,61 +1701,63 @@ Namestite LilyPond (obiščite http://www.lilypond.org) in preverite nastavitve.
 <context>
     <name>CAResourceView</name>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="40"/>
+        <location filename="../widgets/resourceview.cpp" line="41"/>
         <source>Name</source>
         <translation>Ime</translation>
     </message>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="40"/>
+        <location filename="../widgets/resourceview.cpp" line="41"/>
         <source>Linked</source>
         <translation>Povezava</translation>
     </message>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="68"/>
+        <location filename="../widgets/resourceview.cpp" line="69"/>
         <source>yes</source>
         <translation>da</translation>
     </message>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="68"/>
+        <location filename="../widgets/resourceview.cpp" line="69"/>
         <source>no</source>
         <translation>ne</translation>
     </message>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="41"/>
+        <location filename="../widgets/resourceview.cpp" line="42"/>
         <source>Document Resources</source>
         <translation>Viri Dokumenta</translation>
     </message>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="63"/>
+        <location filename="../widgets/resourceview.cpp" line="64"/>
         <source>Document</source>
         <translation>Dokument</translation>
     </message>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="107"/>
+        <location filename="../widgets/resourceview.cpp" line="108"/>
         <source>Rename</source>
         <translation>Preimenuj</translation>
     </message>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="112"/>
+        <location filename="../widgets/resourceview.cpp" line="113"/>
         <source>Save as...</source>
         <translation>Shrani kot ...</translation>
     </message>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="116"/>
+        <location filename="../widgets/resourceview.cpp" line="117"/>
         <source>Remove</source>
         <translation>Odstrani</translation>
     </message>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="124"/>
+        <location filename="../widgets/resourceview.cpp" line="125"/>
         <source>Confirm deletion</source>
         <translation>Potrdi brisanje</translation>
     </message>
     <message>
-        <location filename="../widgets/resourceview.cpp" line="124"/>
-        <source>Do you want to remove resource %1.
+        <location filename="../widgets/resourceview.cpp" line="125"/>
+        <source>Do you want to remove resource &quot;%1&quot;?
+
 Deletion cannot be undone!</source>
-        <translation>Ali želite odstraniti vir %1.
-Odstranjevanje ne more biti razveljavljeno!</translation>
+        <translation>Ali res želite odstraniti vir &quot;%1&quot;?
+
+Brisanja ne bo mogoče razveljaviti!</translation>
     </message>
 </context>
 <context>

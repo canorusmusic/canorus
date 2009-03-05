@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -12,24 +12,25 @@
 #include "core/document.h"
 #include "core/lyricscontext.h"
 #include "core/voice.h"
+#include "core/resource.h"
 #include "widgets/scoreviewport.h"
 #include "widgets/sourceviewport.h"
 
 /*!
 	\class CAUndoCommand
 	\brief Internal Undo/Redo command
-	
+
 	This class implements undo and redo action.
-	
+
 	It inherits QUndoCommand and is usually stored inside QUndoStack or a list.
-	
+
 	Create this object by passing it a pointer to a document which the state should be saved for
 	the future use. When called undo() or redo() (usually called by CAUndo class) all the documents and
 	sheets currently opened are updated pointing to the previous (undone) or next (redone) states of the
 	structures.
-	
+
 	\warning You should never directly access this class. Use CAUndo instead.
-	
+
 	\sa CAUndo
 */
 
@@ -49,7 +50,7 @@ CAUndoCommand::CAUndoCommand( CADocument *document, QString text )
 CAUndoCommand::~CAUndoCommand() {
 	if ( getUndoDocument() && (!CACanorus::mainWinCount(getUndoDocument())) )
 		delete getUndoDocument();
-	
+
 	// delete also redoDocument, if the last on the stack
 	if ( getRedoDocument() && !CACanorus::mainWinCount(getRedoDocument()) &&
 	     CACanorus::undo()->undoStack(getRedoDocument()) &&
@@ -80,7 +81,7 @@ void CAUndoCommand::undoDocument( CADocument *current, CADocument *newDocument )
 	QHash< CAContext*, CAContext* > contextMap; // map old->new contexts
 	QHash< CAVoice*, CAVoice* > voiceMap;       // map old->new voices
 	bool rebuildNeeded=false;
-	
+
 	for (int i=0; i<newDocument->sheetCount() && i<current->sheetCount(); i++) {
 		sheetMap[current->sheetAt(i)] = newDocument->sheetAt(i);
 		for (int j=0; j<newDocument->sheetAt(i)->contextCount() && j<current->sheetAt(i)->contextCount(); j++) {
@@ -90,7 +91,7 @@ void CAUndoCommand::undoDocument( CADocument *current, CADocument *newDocument )
 			voiceMap[current->sheetAt(i)->voiceAt(j)] = newDocument->sheetAt(i)->voiceAt(j);
 		}
 	}
-	
+
 	QList<CAMainWin*> mainWinList = CACanorus::findMainWin( current );
 	if (newDocument->sheetCount() != current->sheetCount()) {
 		for (int i=0; i<mainWinList.size(); i++) {
@@ -105,7 +106,7 @@ void CAUndoCommand::undoDocument( CADocument *current, CADocument *newDocument )
 					case CAViewPort::ScoreViewPort: {
 						CAScoreViewPort *sv = static_cast<CAScoreViewPort*>(viewPortList[j]);
 						sv->setSheet( sheetMap[sv->sheet()] );
-						
+
 						break;
 					}
 					case CAViewPort::SourceViewPort: {
@@ -135,11 +136,16 @@ void CAUndoCommand::undoDocument( CADocument *current, CADocument *newDocument )
 					}
 				}
 			}
-			
+
 			mainWinList[i]->setDocument( newDocument );
 		}
 	}
-	
+
+	// update resources
+	for (int i=0; i<current->resourceList().size(); i++) {
+		current->resourceList()[i]->setDocument(newDocument);
+	}
+
 	if (rebuildNeeded)
-		CACanorus::rebuildUI( newDocument );		
+		CACanorus::rebuildUI( newDocument );
 }

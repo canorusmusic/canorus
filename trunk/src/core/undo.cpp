@@ -5,6 +5,7 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
+#include <iostream>
 #include "core/undo.h"
 #include "core/undocommand.h"
 #include "core/document.h" // needed for setting the modified flag
@@ -82,8 +83,10 @@ void CAUndo::redo( CADocument *doc ) {
 void CAUndo::deleteUndoStack( CADocument *doc ) {
 	clearUndoCommand();
 	QList<CAUndoCommand*> *stack = undoStack(doc);
-	while(!stack->isEmpty())
-		delete stack->takeFirst();
+	while(!stack->isEmpty()) {
+		delete stack->first();
+		stack->takeFirst();
+	}
 	delete stack;
 
 	QList<CADocument*> keys = _undoStack.keys(stack);
@@ -193,4 +196,29 @@ void CAUndo::changeDocument( CADocument *oldDoc, CADocument *newDoc) {
 
 	_undoStack.remove(oldDoc);
 	_undoStack[newDoc] = stack;
+}
+
+/*!
+	Gathers a list of all redo and undo instances of the given document \a d.
+	This function is usually called when adding/removing a resource to/from a document.
+	Because resources are not undoable, they should be the same for all the documents.
+ */
+QList<CADocument*> CAUndo::getAllDocuments( CADocument *d ) {
+	QList<CADocument*> documents;
+
+	QList<CAUndoCommand*>* undoCommands = _undoStack[d];
+
+	if (undoCommands && undoCommands->size()) {
+		for (int i=0; i<undoCommands->size(); i++) {
+			documents << undoCommands->at(i)->getUndoDocument();
+		}
+
+		if (undoCommands->size()>0) {
+			documents << undoCommands->at(undoCommands->size()-1)->getRedoDocument();
+		}
+	} else {
+		documents << d;
+	}
+
+	return documents;
 }

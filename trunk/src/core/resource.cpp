@@ -9,7 +9,6 @@
 #include <iostream>
 
 #include "core/resource.h"
-#include "control/resourcectl.h"
 #include "core/document.h"
 
 /*!
@@ -41,10 +40,6 @@ CAResource::CAResource( QUrl url, QString name, bool linked, CAResourceType t, C
 	setLinked(linked);
 	setResourceType(t);
 	setDocument(parent);
-
-	if (parent) {
-		parent->addResource(this);
-	}
 }
 
 CAResource::~CAResource() {
