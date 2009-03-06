@@ -31,3 +31,6 @@ class QSettings {
 
 // console
 %include "scripting/pyconsoleinterface.i"
+
+// plugins
+%include "scripting/plugins.i"

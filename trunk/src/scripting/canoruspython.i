@@ -36,8 +36,18 @@
 	$result = Py_BuildValue("s", $1.toUtf8().data());
 }
 
+// non-const QString version
+%typemap(out) QString {
+	$result = Py_BuildValue("s", $1.toUtf8().data());
+}
+
 // convert Python's String to QString in UTF8 encoding
 %typemap(in) const QString {
+	$1 = QString::fromUtf8(PyString_AsString($input));
+}
+
+// non-const QString version
+%typemap(in) QString {
 	$1 = QString::fromUtf8(PyString_AsString($input));
 }
 
@@ -81,6 +91,16 @@
     	void *listp;
     	SWIG_ConvertPtr(PyList_GetItem( $input, i ), &listp,SWIGTYPE_p_CAContext, 0 |  0 );
     	$1.append(reinterpret_cast<CAContext*>(listp));
+    }
+}
+
+%rename(QListCAPlugin) QList<CAPlugin*>;
+%typemap(in) const QListCAPlugin, QListCAPlugin {
+    $1 = QList<CAPlugin*>();
+    for (int i=0; i<PyList_Size($input); i++) {
+    	void *listp;
+    	SWIG_ConvertPtr(PyList_GetItem( $input, i ), &listp,SWIGTYPE_p_CAPlugin, 0 |  0 );
+    	$1.append(reinterpret_cast<CAPlugin*>(listp));
     }
 }
 
@@ -139,6 +159,14 @@
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
 		PyList_Append(list, CASwigPython::toPythonObject(const_cast<CAPlayableLength*>(&($1.at(i))), CASwigPython::PlayableLength));
+	
+	$result = list;
+}
+
+%typemap(out) const QList<CAPlugin*>, QList<CAPlugin*> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject(const_cast<CAPlugin*>($1.at(i)), CASwigPython::Plugin));
 	
 	$result = list;
 }
@@ -294,6 +322,10 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAPyConsoleInterface, 0);
 			break;
 		}
+        case CASwigPython::Plugin: {
+            return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAPlugin, 0);
+            break;
+        }       
 		default: {
 			std::cerr << "canoruspython.i: Wrong CACanorusPython::type!" << std::endl;
 			return 0;

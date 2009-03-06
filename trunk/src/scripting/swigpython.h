@@ -31,7 +31,10 @@ class CASwigPython {
 			PlayableLength,
 
 			// Console
-			PyConsoleInterface
+			PyConsoleInterface,
+
+			// Plugins
+			Plugin
 		};
 
 		static void init();
