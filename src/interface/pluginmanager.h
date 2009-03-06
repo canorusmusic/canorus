@@ -42,7 +42,7 @@ public:
 	static bool installPlugin(QString path);
 	static bool removePlugin(CAPlugin* plugin);
 	
-	const QList<CAPlugin*> pluginList() { return _pluginList; };
+	static const QList<CAPlugin*> pluginList() { return _pluginList; };
 	
 	// XML parser functions:
 	bool startElement(const QString& namespaceURI, const QString& localName, const QString& qName,
