@@ -34,7 +34,7 @@ install: build
 	dh_installdirs
 	$(MAKE) install
 	cp canorus.desktop $(CURDIR)/debian/canorus/usr/share/applications
-	dh_link usr/share/canorus/images/clogosm.png usr/share/icons/canorus.png
+	dh_link usr/share/canorus/images/clogosm.png usr/share/pixmaps/canorus.png
 
 binary-indep: build install
 
