@@ -4,5 +4,5 @@
 	longtitle="Music score editor"\
 	hints="Sound"\
 	title="Canorus"\
-	icon="/usr/share/icons/canorus.png"\
+	icon="/usr/share/pixmaps/canorus.png"\
 	command="/usr/bin/canorus"

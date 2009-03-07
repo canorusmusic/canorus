@@ -1,3 +1,10 @@
+canorus (0.7-1ubuntu1) intrepid; urgency=low
+
+  * new upstream release
+  * intrepid port
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 07 Mar 2009 23:55:22 +0100
+
 canorus (0.6-1ubuntu1) hardy; urgency=low
 
   * new upstream release
