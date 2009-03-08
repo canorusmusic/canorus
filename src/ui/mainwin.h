@@ -282,7 +282,9 @@ private slots:
 	void on_uiNewWindow_triggered();
 
 	// Help
+public slots:
 	void on_uiUsersGuide_triggered();
+private slots:
 	void on_uiAboutCanorus_triggered();
 	void on_uiAboutQt_triggered();
 
