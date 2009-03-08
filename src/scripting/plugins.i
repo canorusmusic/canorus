@@ -8,7 +8,9 @@
 %{
 #include "interface/plugin.h"
 #include "interface/pluginmanager.h"
+#include "interface/pluginaction.h"
 %}
 
 %include "interface/plugin.h"
 %include "interface/pluginmanager.h"
+%include "interface/pluginaction.h"
