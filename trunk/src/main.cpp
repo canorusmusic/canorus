@@ -8,9 +8,11 @@
 #include <QApplication>
 #include <QSplashScreen>
 #include <QFont>
+#include <QFile>
 
 // Python.h needs to be loaded first!
 #include "canorus.h"
+#include "core/settings.h"
 #include "ui/mainwin.h"
 #include "ui/settingsdialog.h"
 #include "interface/pluginmanager.h"
@@ -64,6 +66,7 @@ int main(int argc, char *argv[]) {
 	CACanorus::initPlayback();
 
 	// Load config file
+	bool firstTime = !QFile::exists(CASettings::defaultSettingsPath()+"/canorus.ini");
 	CASettingsDialog::CASettingsPage showSettingsPage = CACanorus::initSettings();
 
 	// Init dialogs etc.
@@ -114,6 +117,10 @@ int main(int argc, char *argv[]) {
 		CAMainWin *mainWin = new CAMainWin();
 		mainWin->newDocument();
 		mainWin->show();
+
+		if (firstTime) {
+			mainWin->on_uiUsersGuide_triggered();
+		}
 	}
 	splash.close();
 
