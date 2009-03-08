@@ -13,7 +13,9 @@
 #include "interface/plugin.h"
 
 class CAPluginAction : public QAction {
+#if !defined( SWIG ) && !defined( SWIGCPP )
 	Q_OBJECT
+#endif
 public:
 	CAPluginAction(CAPlugin *plugin, QString name, QString lang, QString function, QList<QString> args, QString filename);
 	
@@ -61,11 +63,13 @@ private:
 	QHash<QString, QString> _text;         /// Text written on a menu item or the toolbar button
 	bool _refresh;                         /// Should the UI be rebuilt when calling the action.
 
+#if !defined( SWIG ) && !defined( SWIGCPP )
 private slots:
 	void triggeredSlot(bool);              /// Connected to triggered(), calls plugin->callAction()
 	
 signals:
 	void triggered(QAction*, bool);        /// When the action is triggered, this signal is emitted
+#endif
 };
 
 #endif /* PLUGINACTION_H_ */
