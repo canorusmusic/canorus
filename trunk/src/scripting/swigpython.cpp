@@ -10,8 +10,12 @@
 #include <QFile>
 #include <QThread>
 #include <QDebug>
+#include <QDir>
+#include <QFileInfo>
 
+#ifndef SWIGCPP
 #include "canorus.h"
+#endif
 
 #include <iostream> // used for reporting errors in scripts
 using namespace std;

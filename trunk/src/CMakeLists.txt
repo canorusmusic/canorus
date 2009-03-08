@@ -423,7 +423,12 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	interface/playback.cpp
 
 	interface/pyconsoleinterface.cpp
-
+	interface/plugin.cpp
+	interface/pluginaction.cpp
+	interface/pluginmanager.cpp
+	interface/plugins_swig.cpp
+	scripting/swigpython.cpp
+	scripting/swigruby.cpp
 	${Canorus_Core_MOC_Srcs}
 )
 IF(MINGW) # Append ZLIB srcs to Swig srcs on Windows

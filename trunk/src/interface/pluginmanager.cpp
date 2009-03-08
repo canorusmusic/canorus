@@ -6,7 +6,11 @@
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
  */
 
+#ifndef SWIGCPP
 #include "canorus.h"
+#else
+#include "interface/plugins_swig.h"
+#endif
 #include "interface/pluginmanager.h"
 #include "interface/plugin.h"
 #include "interface/pluginaction.h"
@@ -313,7 +317,10 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 		if (qName == "action") {
 			CAPluginAction *action = new CAPluginAction(_curPlugin, _curActionName, _curActionLang, _curActionFunction, _curActionArgs, _curActionFilename);
 			if (!_curActionParentMenu.isEmpty()) {
+				#ifndef SWIGCPP
 				action->setParent(_mainWin);
+				#else
+				#endif
 				_curPlugin->menu(_curActionParentMenu)->addAction(action);
 			}
 
@@ -331,18 +338,27 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			filters = _curActionExportFilter.values();
 			for (int i=0; i<filters.size(); i++) {
 				_exportFilterMap[filters[i]] = action;
+				#ifndef SWIGCPP
 				_mainWin->exportDialog()->setFilters(_mainWin->exportDialog()->filters() << filters[i]);
+				#else
+				// TODO
+				#endif
 			}
 
 			filters = _curActionImportFilter.values();
 			for (int i=0; i<filters.size(); i++) {
 				_importFilterMap[filters[i]] = action;
+				#ifndef SWIGCPP
 				_mainWin->importDialog()->setFilters(_mainWin->importDialog()->filters() << filters[i]);
+				#else
+				// TODO
+				#endif
 			}
 
 			_curPlugin->addAction(action);
 		} else
 		if (qName == "menu") {
+			#ifndef SWIGCPP
 			QMenu *menu;
 			if (_curMenuParentMenu.isEmpty()) {
 				// no parent menu set, add it to the top-level mainwindow's menu before the Help menu
@@ -361,6 +377,8 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 				menu->setTitle( _curMenuTitle[""] );
 
 			_curPlugin->addMenu(_curMenuName, menu);
+			#else
+			#endif
 		} else
 		// action level
 		if (qName == "on-action") {
