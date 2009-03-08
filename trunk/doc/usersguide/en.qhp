@@ -23,6 +23,12 @@
 			<file>images/canorushelpicon.png</file>
 			<file>en0x.png</file>
 			<file>en1x.png</file>
+			<file>en2x.png</file>
+			<file>en3x.png</file>
+			<file>en4x.png</file>
+			<file>en5x.png</file>
+			<file>en6x.png</file>
+			<file>en7x.png</file>
 		</files>
 	</filterSection>
 </QtHelpProject>
