@@ -6,7 +6,11 @@
 */
 
 #include "interface/pluginaction.h"
+#ifndef SWIGCPP
 #include "ui/mainwin.h"
+#else
+#include "plugins_swig.cpp"
+#endif
 
 /*!
 	\class CAPluginAction
@@ -27,7 +31,9 @@ CAPluginAction::CAPluginAction(CAPlugin *plugin, QString name, QString lang, QSt
 	_filename = filename;
 	_args = args;
 	
+	#ifndef SWIGCPP
 	connect(this, SIGNAL(triggered(bool)), this, SLOT(triggeredSlot(bool)));
+	#endif
 }
 
 /*!
@@ -36,6 +42,7 @@ CAPluginAction::CAPluginAction(CAPlugin *plugin, QString name, QString lang, QSt
 	function slots. This function is a pretty elegant solution to connect plugin's reactions to internal
 	Canorus GUI signals.
 */
+#ifndef SWIGCPP
 void CAPluginAction::triggeredSlot(bool on) {
 	QObject *curObject = this;
 	while (dynamic_cast<CAMainWin*>(curObject)==0 && curObject!=0) // find the parent which is mainwindow
@@ -43,3 +50,4 @@ void CAPluginAction::triggeredSlot(bool on) {
 	
 	_plugin->callAction(this, static_cast<CAMainWin*>(curObject), static_cast<CAMainWin*>(curObject)->document(), 0, 0);
 }
+#endif

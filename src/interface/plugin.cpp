@@ -12,15 +12,20 @@
 #include "scripting/swigruby.h"
 #endif
 
-#include "canorus.h"
 #include "interface/plugin.h"
 #include "interface/pluginaction.h"
 
+#ifndef SWIGCPP
+#include "canorus.h"
 #include "ui/mainwin.h"
 #include "widgets/viewportcontainer.h"
 #include "widgets/viewport.h"
 #include "widgets/scoreviewport.h"
 #include "drawable/drawablemuselement.h"
+#else
+#include <QMenu>
+#include "interface/plugins_swig.h"
+#endif
 
 CAPlugin::CAPlugin() {
 	_name = "";
@@ -130,6 +135,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="note") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
+				#ifndef SWIGCPP
 				if ( mainWin->currentScoreViewPort() ) {
 					CAScoreViewPort *v = mainWin->currentScoreViewPort();
 					if (!v->selection().size() || v->selection().front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
@@ -143,9 +149,13 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 					break;
 				}
 			}
+			#else
+			// TODO
+			#endif
 #endif
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
+				#ifndef SWIGCPP
 				if ( mainWin->currentScoreViewPort() ) {
 					CAScoreViewPort *v = mainWin->currentScoreViewPort();
 					if (!v->selection().size() || v->selection().front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
@@ -158,6 +168,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 					error = true;
 					break;
 				}
+				#else
+				#endif
 			}
 #endif
 		} else
@@ -169,6 +181,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="selection") {
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
+				#ifndef SWIGCPP
 				if ( mainWin->currentScoreViewPort() ) {
 					QList<CAMusElement*> musElements = mainWin->currentScoreViewPort()->musElementSelection();
 					PyObject *list = PyList_New(0);
@@ -182,6 +195,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 					error = true;
 					break;
 				}
+				#else
+				#endif
 			}
 #endif
 		} else
@@ -216,7 +231,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 	}
 #ifdef USE_PYTHON
 	if (_name == "pyCLI") {
-		pythonArgs << CASwigPython::toPythonObject(mainWin->pyConsoleIface, CASwigPython::PyConsoleInterface);
+		if (mainWin->pyConsoleIface)
+			pythonArgs << CASwigPython::toPythonObject(mainWin->pyConsoleIface, CASwigPython::PyConsoleInterface);
 	}
 #endif
 
@@ -248,10 +264,14 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 	}
 
 	if (action->refresh()) {
+		#ifndef SWIGCPP
 		if (rebuildDocument)
 			CACanorus::rebuildUI(document);
 		else
 			CACanorus::rebuildUI(document, mainWin->currentSheet());
+		#else
+		//TODO
+		#endif
 	}
 
 	return (!error);
