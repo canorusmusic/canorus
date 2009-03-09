@@ -1,8 +1,37 @@
 0.7
 ===
-- Skipped 0.6 version for various reasons
-- Added support for printing and preview of score
-- Added new export filters to PDF and SVG based on lilypond
+- Added support for printing and preview of score.
+- Added integrated Midi recorder.
+- Added resources storage inside the document.
+- Added User's guide.
+- Added transposition support.
+- GUI improvements:
+  - Anti-aliasing in score view.
+  - Music fonts not installed anymore.
+  - Show note name when inserting notes.
+  - Integrated User's guide browser.
+- Import/Export improvements:
+  - Basic MusicXml import
+  - Basic Midi import
+  - LilyPond now exports partial measure, uptext, downtext and rehersal marks
+  - New export filters to PDF and SVG based on LilyPond
+- Plugin improvements:
+  - setSelection() and selection added to scripting engine.
+  - rebuildUi() and repaintUi() added to scripting engine.
+  - Added separator action for menus.
+- Model improvements:
+  - Added color property to music element.
+  - Added facilities for calculating intervals from/to music pitches and key
+    signatures.
+  - Redesigned key signature, diatonic key and diatonic pitch.
+  - Redesigned playable length and absolute length.
+- Shipped Python 2.5 on Microsoft Windows.
+- Support for Qt4.4.
+- Official support for Mac OS X.
+
+0.6
+===
+- Version 0.6 was skipped for various reasons
 
 0.5
 ===
