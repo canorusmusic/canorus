@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE canorusml>
+<canorus-document>
+ <canorus-version>0.3svn</canorus-version>
+ <document time-edited="27" date-last-modified="2007-08-07T17:43:50" date-created="2007-08-07T17:43:23" title="Twinkle twinkle little star" >
+  <sheet name="Sheet1" >
+   <staff number-of-lines="5" name="Črtovje1" >
+    <voice midi-channel="0" midi-program="0" name="Staff1Voice1" stem-direction="stem-up" >
+     <clef clef-type="treble" time-start="0" />
+     <time-signature beat="4" beats="4" time-start="0" time-signature-type="classical" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="28" dotted="0" time-start="0" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="28" dotted="0" time-start="256" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="32" dotted="0" time-start="512" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="32" dotted="0" time-start="768" />
+     <barline barline-type="single" time-start="1024" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="33" dotted="0" time-start="1024" />
+     <note accs="0" playable-length="quarter" time-length="256" pitch="33" dotted="0" time-start="1280" />
+     <note accs="0" playable-length="half" time-length="512" pitch="32" dotted="0" time-start="1536" />
+     <barline barline-type="single" time-start="2048" />
+    </voice>
+    <voice midi-channel="0" midi-program="0" name="Staff1Voice2" stem-direction="stem-up" >
+     <clef clef-type="treble" time-start="0" />
+     <time-signature beat="4" beats="4" time-start="0" time-signature-type="classical" />
+     <barline barline-type="single" time-start="1024" />
+     <barline barline-type="single" time-start="2048" />
+    </voice>
+   </staff>
+   <staff number-of-lines="5" name="Črtovje2" >
+    <voice midi-channel="0" midi-program="0" name="Staff2Voice1" stem-direction="stem-up" >
+     <clef clef-type="bass" time-start="0" />
+     <time-signature beat="4" beats="4" time-start="0" time-signature-type="classical" />
+    </voice>
+    <voice midi-channel="0" midi-program="0" name="Staff2Voice2" stem-direction="stem-up" >
+     <clef clef-type="bass" time-start="0" />
+     <time-signature beat="4" beats="4" time-start="0" time-signature-type="classical" />
+    </voice>
+   </staff>
+  </sheet>
+ </document>
+</canorus-document>

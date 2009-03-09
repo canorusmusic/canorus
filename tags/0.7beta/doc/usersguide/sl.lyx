@@ -1,0 +1,122 @@
+#LyX 1.6.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language slovene
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/canorus.png
+	width 70text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part
+Uvod
+\end_layout
+
+\begin_layout Standard
+Canorus je odprt blah blah.
+ Naša spletna stran je 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.canorus.org
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Part
+Pisanje glasbe
+\end_layout
+
+\begin_layout Section
+Vstavljanje not in pavz
+\end_layout
+
+\begin_layout Standard
+Lev klik na črtovje in izberite ikono 
+\begin_inset Graphics
+	filename images/insertplayable.png
+	scale 40
+
+\end_inset
+
+, izberite dolžino note in kliknite na želen prostor v črtovju.
+\end_layout
+
+\begin_layout Part
+Tiskanje
+\end_layout
+
+\begin_layout Standard
+Canorus uporablja zunanjo aplikacijo LilyPond za tiskanje.
+\end_layout
+
+\begin_layout Part
+Uvoz in izvoz
+\end_layout
+
+\begin_layout Standard
+Canorus izvaža v Midi, MusicXml in Lilypond zapis.
+ Canorus uvaža MusicXml.
+\end_layout
+
+\end_body
+\end_document
