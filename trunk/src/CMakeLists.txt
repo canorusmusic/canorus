@@ -13,6 +13,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 # Build universal binaries on Mac
 IF(APPLE)
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch ppc -arch i386")
+	SET(DEFAULT_DATA_DIR "Canorus.app/Contents/Resources")
 ENDIF(APPLE)
 
 #######################
@@ -33,6 +34,8 @@ FIND_PACKAGE(Ruby)	#Setup RUBY_INCLUDE_PATH and RUBY_LIBRARIES
 IF(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
 	MESSAGE("Ruby Library and Development files found. Ruby extensions enabled.")
 	SET(USE_RUBY True)
+    # Create empty file as needed so build does not stop here		
+	FILE(APPEND ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusrubyRUBY_wrap.cxx "")
 ELSE(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
 	MESSAGE("Ruby Library and Development files *not* found. Ruby extensions disabled!")
 	SET(RUBY_LIBRARY "")
@@ -281,7 +284,7 @@ SET(Canorus_Gui_Ctl_Srcs       # Control instances for user interface or views
 	control/helpctl.cpp
 )
 
-SET(Canorus_Ctl_Srcs            # Control instances for core
+SET(Canorus_Ctl_Srcs            # Control instances for user interface or views and core
 	control/externprogram.cpp
 	control/typesetctl.cpp
 	control/resourcectl.cpp
@@ -529,7 +532,7 @@ ENDIF(USE_SWIG)
 IF(USE_RUBY)
 	INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES CPLUSPLUS ON)
-	
+			
 	SET(CANORUS_RUBY_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusrubyRUBY_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_RUBY_WRAP_CXX} PROPERTIES GENERATED TRUE)
 	
