@@ -203,18 +203,19 @@ T CAKDTree<T>::findNearestLeft(int x, bool timeBased, CADrawableContext *context
 	CADrawable *elt=0;
 	int i;
 	for (i=0; i < _list.size(); i++) {
-		if ( ( !elt || (timeBased?(static_cast<CADrawable*>(_list[i]))->xPosOrig():(static_cast<CADrawable*>(_list[i]))->xPos()) > (timeBased?elt->xPosOrig():elt->xPos()) ) && // element's X is lesser than the already found element's X
+		if ( static_cast<CADrawableMusElement*>(_list[i])->musElement() && // drawable must have a music element
+			( !elt || (timeBased?(static_cast<CADrawable*>(_list[i]))->xPosOrig():(static_cast<CADrawable*>(_list[i]))->xPos()) > (timeBased?elt->xPosOrig():elt->xPos()) ) && // element's X is lesser than the already found element's X
 		     ( ( timeBased?(static_cast<CADrawable*>(_list[i]))->xPosOrig():(static_cast<CADrawable*>(_list[i]))->xPos() ) < x) && // element's X is lesser than the given X
 		     ( !context  || static_cast<CADrawableMusElement*>(_list[i])->drawableContext() == context ) && // compare contexts
 		     ( !voice || // compare voices
-		       (static_cast<CADrawableMusElement*>(_list[i]))->musElement() && (
+		       (
 		         !(static_cast<CADrawableMusElement*>(_list[i]))->musElement()->isPlayable() && // if the element isn't playable, see if it has the same context as the voice
 		         ((static_cast<CADrawableMusElement*>(_list[i]))->musElement()->context() == voice->staff() && voice->contains(static_cast<CADrawableMusElement*>(_list[i])->musElement()))
 		         || 
 		         (static_cast<CADrawableMusElement*>(_list[i]))->musElement()->isPlayable() && // if the element is playable, see if it has the exactly same voice
 		         static_cast<CAPlayable*>(static_cast<CADrawableMusElement*>(_list[i])->musElement())->voice() == voice
-		       )
-		     )
+		      )
+			 )
 		   ) {
 			elt = static_cast<CADrawable*>(_list[i]);
 		}
@@ -239,11 +240,12 @@ T CAKDTree<T>::findNearestRight(int x, bool timeBased, CADrawableContext *contex
 	CADrawable *elt=0;
 	int i;
 	for (i=0; i < _list.size(); i++) {
-		if ( ( !elt || (timeBased?(static_cast<CADrawable*>(_list[i]))->xPosOrig():(static_cast<CADrawable*>(_list[i]))->xPos()) < (timeBased?elt->xPosOrig():elt->xPos()) ) && // element's X is greater than the already found element's X
+		if ( static_cast<CADrawableMusElement*>(_list[i])->musElement() && // drawable must have a music element 
+			 ( !elt || (timeBased?(static_cast<CADrawable*>(_list[i]))->xPosOrig():(static_cast<CADrawable*>(_list[i]))->xPos()) < (timeBased?elt->xPosOrig():elt->xPos()) ) && // element's X is greater than the already found element's X
 		     ( ( timeBased?(static_cast<CADrawable*>(_list[i]))->xPosOrig():(static_cast<CADrawable*>(_list[i]))->xPos() ) > x) && // element's X is lesser than the given X
 		     ( !context  || static_cast<CADrawableMusElement*>(_list[i])->drawableContext() == context ) && // compare contexts
 		     ( !voice || // compare voices
-		       (static_cast<CADrawableMusElement*>(_list[i]))->musElement() && (
+		       (
 		         !(static_cast<CADrawableMusElement*>(_list[i]))->musElement()->isPlayable() && // if the element isn't playable, see if it has the same context as the voice
 		         ((static_cast<CADrawableMusElement*>(_list[i]))->musElement()->context() == voice->staff() && voice->contains((static_cast<CADrawableMusElement*>(_list[i]))->musElement()))
 		         || 
