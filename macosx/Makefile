@@ -25,13 +25,6 @@ README_FILE = README-OSX.txt
 # Path to the PackageMaker executable
 PACKAGEMAKER = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker
 
-# This file lists the libraries that the canorus executable links to;
-# we need to look for these names in the executable and change them
-# to point to the the .app's private copies.
-INSTALLED_LIBS_FILE = OSX_installed_libs.txt
-
-
-
 all: files permissions pkg dmg
 
 # append Canorus version with SVN revision to README-OSX, e.g. "Version 0.3svn R509" 
@@ -46,16 +39,13 @@ readme:
 		cat $(RESOURCES_DIR)/$(README_FILE) >> $(DMG_DIR)/$(README_FILE)
 
 
-# Test for prerequisites:
-# change-libraries.sh uses the INSTALLED_LIBS_FILE to determine the libraries to change
-test:
-	test -f $(INSTALLED_LIBS_FILE)
-
-
-# Change the link info for the libraries installed inside the .app
-# not working presently 2007-06-09
+# Include dynamically linked Qt Frameworks inside the app bundle for
+# redistribution. This is done using the macdeployqt program provided
+# since 4.5.0. However, version 4.5.0 incorrectly binds svg libraries.
+# You either have to use 4.5.1 or apply the svg correction included in
+# http://www.mail-archive.com/qt4-preview-feedback@trolltech.com/msg00849.html
 links:
-	./change-libraries.sh $(APP_DIR)/Canorus.app/Contents `cat $(INSTALLED_LIBS_FILE)`
+	(cd package-contents && macdeployqt Canorus.app)
 
 
 # Copy files from the resources dir to the right place
@@ -95,7 +85,6 @@ pkgclean:
 # see also "make uninstall" by cmake
 instclean:
 	sudo rm -rf $(PACKAGE_ROOT)/*
-	rm -f $(INSTALLED_LIBS_FILE)
 
 
 allclean: instclean pkgclean
