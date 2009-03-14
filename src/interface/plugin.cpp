@@ -27,6 +27,8 @@
 #include "interface/plugins_swig.h"
 #endif
 
+extern "C" void guiError(); // defined in canoruspython.i
+
 CAPlugin::CAPlugin() {
 	_name = "";
 	_author = "";
@@ -135,7 +137,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="note") {
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
-				#ifndef SWIGCPP
+#ifndef SWIGCPP
 				if ( mainWin->currentScoreViewPort() ) {
 					CAScoreViewPort *v = mainWin->currentScoreViewPort();
 					if (!v->selection().size() || v->selection().front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
@@ -148,14 +150,12 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 					error = true;
 					break;
 				}
+#endif
 			}
-			#else
-			// TODO
-			#endif
 #endif
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
-				#ifndef SWIGCPP
+#ifndef SWIGCPP
 				if ( mainWin->currentScoreViewPort() ) {
 					CAScoreViewPort *v = mainWin->currentScoreViewPort();
 					if (!v->selection().size() || v->selection().front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
@@ -168,8 +168,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 					error = true;
 					break;
 				}
-				#else
-				#endif
+#endif
 			}
 #endif
 		} else
@@ -181,7 +180,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 		if (val=="selection") {
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
-				#ifndef SWIGCPP
+#ifndef SWIGCPP
 				if ( mainWin->currentScoreViewPort() ) {
 					QList<CAMusElement*> musElements = mainWin->currentScoreViewPort()->musElementSelection();
 					PyObject *list = PyList_New(0);
@@ -195,8 +194,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 					error = true;
 					break;
 				}
-				#else
-				#endif
+#endif
 			}
 #endif
 		} else
@@ -263,16 +261,14 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #endif
 	}
 
+#ifndef SWIGCPP
 	if (action->refresh()) {
-		#ifndef SWIGCPP
 		if (rebuildDocument)
 			CACanorus::rebuildUI(document);
 		else
 			CACanorus::rebuildUI(document, mainWin->currentSheet());
-		#else
-		//TODO
-		#endif
 	}
+#endif
 
 	return (!error);
 }
