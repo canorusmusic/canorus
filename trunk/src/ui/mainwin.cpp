@@ -1056,7 +1056,7 @@ void CAMainWin::on_uiNewViewport_triggered() {
 	initViewPort( v );
 	connect(v, SIGNAL(closed(CAViewPort*)), this, SLOT(floatViewPortClosed(CAViewPort*)));
 	v->show();
-	v->setGeometry(v->x(), v->y(), CAViewPort::DEFAULT_VIEWPORT_WIDTH, CAViewPort::DEFAULT_VIEWPORT_HEIGHT);
+	v->setGeometry(this->geometry().x(), this->geometry().y(), CAViewPort::DEFAULT_VIEWPORT_WIDTH, CAViewPort::DEFAULT_VIEWPORT_HEIGHT);
 }
 
 /*!
