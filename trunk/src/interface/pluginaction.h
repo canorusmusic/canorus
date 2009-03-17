@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -12,13 +12,15 @@
 
 #include "interface/plugin.h"
 
+#ifndef SWIG
 class CAPluginAction : public QAction {
-#if !defined( SWIG ) && !defined( SWIGCPP )
 	Q_OBJECT
+#else
+class CAPluginAction {
 #endif
 public:
 	CAPluginAction(CAPlugin *plugin, QString name, QString lang, QString function, QList<QString> args, QString filename);
-	
+
 	inline CAPlugin *plugin() { return _plugin; }
 	inline QString name() { return _name; }
 	inline QString lang() { return _lang; }
@@ -33,7 +35,7 @@ public:
 	inline QString localeText(QString lang) { return _text[lang]; }
 	QString localText() { if (_text.contains(QLocale::system().name())) return localeText(QLocale::system().name()); else return localeText(""); }
 	bool refresh() { return _refresh; }
-	
+
 	void setPlugin(CAPlugin *plugin) { _plugin = plugin; }
 	void setName(QString name) { _name = name; }
 	void setLang(QString lang) { _lang = lang; }
@@ -46,10 +48,10 @@ public:
 	void setExportFilters(QHash< QString, QString > f) { _exportFilter = f; }
 	void setImportFilter(QString lang, QString value) { _importFilter[lang] = value; }
 	void setImportFilters(QHash< QString, QString > f) { _importFilter = f; }
-	void setLocaleText(QString lang, QString value) { _text[lang] = value; 	this->setText(localText()); } 
+	void setLocaleText(QString lang, QString value) { _text[lang] = value; 	this->setText(localText()); }
 	void setTexts(QHash< QString, QString > t) { _text = t;	this->setText(localText()); }
 	void setRefresh(bool refresh) { _refresh = refresh; }
-	
+
 private:
 	CAPlugin *_plugin;                     /// Pointer to the plugin which this action belongs to
 	QString _name;                         /// Action name
@@ -66,7 +68,7 @@ private:
 #if !defined( SWIG ) && !defined( SWIGCPP )
 private slots:
 	void triggeredSlot(bool);              /// Connected to triggered(), calls plugin->callAction()
-	
+
 signals:
 	void triggered(QAction*, bool);        /// When the action is triggered, this signal is emitted
 #endif
