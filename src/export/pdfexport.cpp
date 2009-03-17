@@ -94,8 +94,8 @@ void CAPDFExport::exportDocumentImpl(CADocument *poDoc)
 	// Remove old pdf file first, but ignore error (file might not exist)
 	if( !file()->remove() )
 	{
-		qWarning("PDFExport: Could not remove old pdf file %s, error %s", file()->fileName().toAscii().constData(),
-				file()->errorString().toAscii().constData() );
+		qWarning("PDFExport: Could not remove old pdf file %s, error %s", qPrintable( file()->fileName() ),
+				qPrintable( file()->errorString() ) );
 		file()->unsetError();
 	}
 	_poTypesetCtl->runTypesetter(); // create pdf
@@ -125,16 +125,16 @@ void CAPDFExport::pdfFinished( int iExitCode )
 	qDebug("Exporting PDF file %s", file()->fileName().toAscii().data());
 	if( !iExitCode && !oTempFile.copy( file()->fileName() ) ) // Rename it, so we can delete the temporary file
 	{
-		qCritical("PDFExport: Could not copy temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
-             oTempFile.errorString().toAscii().constData() );
+		qCritical("PDFExport: Could not copy temporary file %s, error %s", qPrintable( oTempFile.fileName() ),
+              qPrintable( oTempFile.errorString() ) );
 		return;
 	}
 	emit pdfIsFinished( iExitCode );
 	// Remove temporary files.
 	if( !oTempFile.remove() )
 	{
-		qWarning("PDFExport: Could not remove temporary file %s, error %s", oTempFile.fileName().toAscii().constData(),
-             oTempFile.errorString().toAscii().constData() );
+		qWarning("PDFExport: Could not remove temporary file %s, error %s", qPrintable( oTempFile.fileName() ),
+             qPrintable( oTempFile.errorString() ) );
 		oTempFile.unsetError();
 	}
 	oTempFile.setFileName( getTempFilePath()+".ps" );
@@ -143,8 +143,8 @@ void CAPDFExport::pdfFinished( int iExitCode )
 	oTempFile.setFileName( getTempFilePath() );
 	if( !oTempFile.remove() )
 	{
-		qWarning("PDFExport: Could not remove temporary file %s, error %s", oTempFile.fileName().constData(),
-             oTempFile.errorString().toAscii().constData() );
+		qWarning("PDFExport: Could not remove temporary file %s, error %s", qPrintable( oTempFile.fileName() ),
+             qPrintable( oTempFile.errorString() ) );
 		oTempFile.unsetError();
 	}
 	finishExport();
