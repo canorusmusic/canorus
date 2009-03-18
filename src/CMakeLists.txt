@@ -135,8 +135,6 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	widgets/resourceview.h
 	widgets/helpbrowser.h
 	
-	interface/pluginaction.h
-	
 	control/previewctl.h
 	control/printctl.h
 )
@@ -153,6 +151,8 @@ SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 	interface/mididevice.h
 	interface/playback.h
 	core/midirecorder.h
+
+	interface/pluginaction.h
 )
 
 ################
@@ -429,7 +429,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	interface/plugin.cpp
 	interface/pluginaction.cpp
 	interface/pluginmanager.cpp
-	interface/plugins_swig.cpp
+#	interface/plugins_swig.cpp
 	scripting/swigpython.cpp
 	scripting/swigruby.cpp
 	${Canorus_Core_MOC_Srcs}
