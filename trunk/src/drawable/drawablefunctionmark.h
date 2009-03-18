@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -16,22 +16,22 @@ class CADrawableFunctionMarkContext;
 
 class CADrawableFunctionMark : public CADrawableMusElement {
 public:
-	CADrawableFunctionMark(CAFunctionMark *function, CADrawableFunctionMarkContext *context, int x, int y);
+	CADrawableFunctionMark(CAFunctionMark *function, CADrawableFunctionMarkContext *context, double x, double y);
 	~CADrawableFunctionMark();
-	
+
 	void draw(QPainter *p, const CADrawSettings s);
 	CADrawableFunctionMark *clone(CADrawableContext* newContext = 0);
-	
+
 	inline CAFunctionMark *functionMark() { return (CAFunctionMark*)_musElement; };
 	inline CADrawableFunctionMarkContext *drawableFunctionMarkContext() { return (CADrawableFunctionMarkContext*)_drawableContext; };
-	
+
 	bool isExtenderLineVisible() { return _extenderLineVisible; }
 	void setExtenderLineVisible(bool visible) { _extenderLineVisible = visible; }
 	bool isExtenderLineOnly() { return _extenderLineOnly; }
 	void setExtenderLineOnly( bool line ) { _extenderLineOnly = line; }
 
-private:		
-	bool _extenderLineVisible; // Should the function draw a horizontal line until the end of the function		
+private:
+	bool _extenderLineVisible; // Should the function draw a horizontal line until the end of the function
 	QString _text;             // Function transformed to String which is rendered then
 	bool _extenderLineOnly;    // Only extender line should be rendered over the whole width of the function
 };
@@ -47,23 +47,23 @@ public:
 		Alterations
 	};
 	// Key constructor
-	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, const QString key, CADrawableContext *c, int x, int y);
+	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, const QString key, CADrawableContext *c, double x, double y);
 	// Rectangle, ChordArea, Tonicization, Ellipse constructor
-	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, CADrawableFunctionMark *function, CADrawableContext *c, int x, int y, CADrawableFunctionMark *function2=0);
+	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, CADrawableFunctionMark *function, CADrawableContext *c, double x, double y, CADrawableFunctionMark *function2=0);
 	// Alterations consructor
-	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, CAFunctionMark *function, CADrawableContext *c, int x, int y);
-	
+	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, CAFunctionMark *function, CADrawableContext *c, double x, double y);
+
 	~CADrawableFunctionMarkSupport();
-	
+
 	void draw(QPainter *p, const CADrawSettings s);
 	CADrawableFunctionMarkSupport *clone(CADrawableContext* newContext = 0);
 	CADrawableFunctionMarkSupportType drawableFunctionMarkSupportType() { return _drawableFunctionMarkSupportType; }
-	
+
 	bool isExtenderLineVisible() { return _extenderLineVisible; }
 	void setExtenderLineVisible(bool visible) { _extenderLineVisible = visible; }
 	bool rectWider() { return _rectWider; }
 	void setRectWider(bool wider) { if (!_rectWider) { _rectWider = wider; _yPos -= 3; _height += 6; } }
-	
+
 private:
 	CADrawableFunctionMarkSupportType _drawableFunctionMarkSupportType;
 	QString _key;

@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2006, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -11,14 +11,14 @@
 #include "drawable/drawablefunctionmarkcontext.h"
 #include "core/functionmarkcontext.h"
 
-CADrawableFunctionMarkContext::CADrawableFunctionMarkContext(CAFunctionMarkContext *context, int x, int y, int numberOfLines)
+CADrawableFunctionMarkContext::CADrawableFunctionMarkContext(CAFunctionMarkContext *context, double x, double y, int numberOfLines)
  : CADrawableContext(context, x, y) {
- 	_drawableContextType = CADrawableContext::DrawableFunctionMarkContext;
- 	
+ 	setDrawableContextType( CADrawableContext::DrawableFunctionMarkContext );
+
  	_numberOfLines = numberOfLines;
  	_currentLineIdx = 0;
- 	_width = 0;
- 	_height = 45*numberOfLines - 10*(numberOfLines-1);
+ 	setWidth( 0 );
+ 	setHeight( 45*numberOfLines - 10*(numberOfLines-1) );
 }
 
 CADrawableFunctionMarkContext::~CADrawableFunctionMarkContext() {
@@ -32,15 +32,15 @@ CADrawableFunctionMarkContext *CADrawableFunctionMarkContext::clone() {
 	return new CADrawableFunctionMarkContext((CAFunctionMarkContext*)_context, xPos(), yPos());
 }
 
-int CADrawableFunctionMarkContext::yPosLine(CAFunctionMarkLine part) {
-	int yPos = _yPos;
+double CADrawableFunctionMarkContext::yPosLine(CAFunctionMarkLine part) {
+	double y = yPos();
 	for (int i=0; i<_currentLineIdx; i++) {
-		yPos += 35;	//height of a single line
+		y += 35;	//height of a single line
 	}
 	if (part==Middle)
-		yPos += 15;
+		y += 15;
 	else if (part==Lower)
-		yPos += 30;
-	
-	return yPos;
+		y += 30;
+
+	return y;
 }

@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -19,14 +19,14 @@
 
 	\a y marks the top line Y coordinate of the staff in absolute world units.
 */
-CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawableStaff *drawableStaff, int x, int y)
+CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawableStaff *drawableStaff, double x, double y)
  : CADrawableMusElement(keySig, drawableStaff, x, y) {
-	_drawableMusElementType = CADrawableMusElement::DrawableKeySignature;
+	setDrawableMusElementType( CADrawableMusElement::DrawableKeySignature );
 
-	int newX = x;
+	double newX = x;
 	CAClef *clef = drawableStaff->getClef(x);
 	int idx, idx2; // pitches of accidentals
-	int minY=y, maxY=y;
+	double minY=y, maxY=y;
 
 	CAKeySignature *prevKeySig = drawableStaff->getKeySignature(x);
 	if (prevKeySig) {
@@ -155,12 +155,9 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 			maxY = acc->yPos() + acc->height();
 	}
 
-	_width = newX - x;
-	_height = maxY - minY;
- 	_yPos = minY;
-
- 	_neededWidth = _width;
- 	_neededHeight = _height;
+	setWidth( newX - x );
+	setHeight( maxY - minY );
+ 	setYPos( minY );
 }
 
 CADrawableKeySignature::~CADrawableKeySignature() {
@@ -175,15 +172,15 @@ void CADrawableKeySignature::draw(QPainter *p, CADrawSettings s) {
 	int yOrig = s.y;
 
 	for (int i=0; i<_drawableAccidentalList.size(); i++) {
-		s.x = xOrig + (int)((_drawableAccidentalList[i]->xPos() - xPos())*s.z);
-		s.y = yOrig + (int)((_drawableAccidentalList[i]->yPos() - yPos())*s.z);
+		s.x = xOrig + qRound((_drawableAccidentalList[i]->xPos() - xPos())*s.z);
+		s.y = yOrig + qRound((_drawableAccidentalList[i]->yPos() - yPos())*s.z);
 		_drawableAccidentalList[i]->draw(p, s);
 
 	}
 }
 
 CADrawableKeySignature* CADrawableKeySignature::clone(CADrawableContext* newContext) {
-	return (new CADrawableKeySignature(keySignature(), (CADrawableStaff*)((newContext)?newContext:_drawableContext), xPos(), _drawableContext->yPos()));
+	return (new CADrawableKeySignature(keySignature(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext), xPos(), _drawableContext->yPos()));
 }
 
 /*!

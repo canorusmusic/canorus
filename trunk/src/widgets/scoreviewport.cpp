@@ -210,11 +210,11 @@ CAScoreViewPort::~CAScoreViewPort() {
 void CAScoreViewPort::on_animationTimer_timeout() {
 	_animationStep++;
 
-	float newZoom = _zoom + (_targetZoom - _zoom) * sqrt(((float)_animationStep)/ANIMATION_STEPS);
-	int newWorldX = (int)(_worldX + (_targetWorldX - _worldX) * sqrt(((float)_animationStep)/ANIMATION_STEPS));
-	int newWorldY = (int)(_worldY + (_targetWorldY - _worldY) * sqrt(((float)_animationStep)/ANIMATION_STEPS));
-	int newWorldW = (int)(drawableWidth() / newZoom);
-	int newWorldH = (int)(drawableHeight() / newZoom);
+	float newZoom = _zoom + (_targetZoom - _zoom) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
+	double newWorldX = _worldX + (_targetWorldX - _worldX) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
+	double newWorldY = _worldY + (_targetWorldY - _worldY) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
+	double newWorldW = drawableWidth() / newZoom;
+	double newWorldH = drawableHeight() / newZoom;
 
 	setWorldCoords(newWorldX, newWorldY, newWorldW, newWorldH);
 
@@ -300,7 +300,7 @@ CADrawableContext *CAScoreViewPort::selectContext(CAContext *context) {
 	Change the x-coord of the last mouse press coords to after the right most element on the given list.
 */
 void CAScoreViewPort::setLastMousePressCoordsAfter(const QList<CAMusElement*> list) {
-	int maxX = 0;
+	double maxX = 0;
 	for( int i=0; i < _drawableMList.size(); i++) {
 		CADrawableMusElement* delt = _drawableMList.at(i);
 		if(list.contains(delt->musElement()))
@@ -317,7 +317,7 @@ void CAScoreViewPort::setLastMousePressCoordsAfter(const QList<CAMusElement*> li
 	If multiple elements exist at the same coordinates, they are selected one by another if you click at the same coordinates multiple times.
 	If no elements are present at the coordinates, clear the selection.
 */
-CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
+CADrawableContext* CAScoreViewPort::selectCElement(double x, double y) {
 	QList<CADrawableContext*> l = _drawableCList.findInRange(x,y);
 
 	if (l.size()!=0) {
@@ -335,7 +335,7 @@ CADrawableContext* CAScoreViewPort::selectCElement(int x, int y) {
 
 	If there is a currently selected voice, only elements belonging to this voice are selected.
 */
-QList<CADrawableMusElement*> CAScoreViewPort::musElementsAt(int x, int y) {
+QList<CADrawableMusElement*> CAScoreViewPort::musElementsAt(double x, double y) {
 	QList<CADrawableMusElement *> l = _drawableMList.findInRange(x,y);
 	for (int i=0; i<l.size(); i++)
 		if ( !l[i]->isSelectable() || selectedVoice() && l[i]->musElement() && l[i]->musElement()->isPlayable() && static_cast<CAPlayable*>(l[i]->musElement())->voice()!=selectedVoice() )
@@ -374,7 +374,7 @@ CADrawableMusElement* CAScoreViewPort::selectMElement(CAMusElement *elt) {
 	Returns the pointer of the abstract music element, if the element was found and deleted.
 	\warning This function only deletes the CADrawable part of the object. You still need to delete the abstract part (the pointer returned)!
 */
-CAMusElement *CAScoreViewPort::removeMElement(int x, int y) {
+CAMusElement *CAScoreViewPort::removeMElement(double x, double y) {
 	CADrawableMusElement *elt = _drawableMList.removeElement(x,y,false);
 	if (elt) {
 		if (elt->drawableMusElementType() == CADrawableMusElement::DrawableClef)
@@ -427,7 +427,7 @@ void CAScoreViewPort::importCElements(CAKDTree<CADrawableContext*> *elts) {
 	Drawable elements left borders are taken into account.
 	If \a context is non-zero, returns the nearest element in the given context only.
 */
-CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CADrawableContext* context) {
+CADrawableMusElement *CAScoreViewPort::nearestLeftElement(double x, double y, CADrawableContext* context) {
 	return _drawableMList.findNearestLeft(x, true, context);
 }
 
@@ -436,7 +436,7 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CADrawab
 	largest startTime in the given voice.
 	Drawable elements left borders are taken into account.
 */
-CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice *voice) {
+CADrawableMusElement *CAScoreViewPort::nearestLeftElement(double x, double y, CAVoice *voice) {
 	return _drawableMList.findNearestLeft(x, true, 0, voice);
 }
 
@@ -445,7 +445,7 @@ CADrawableMusElement *CAScoreViewPort::nearestLeftElement(int x, int y, CAVoice 
 	Drawable elements left borders are taken into account.
 	If \a context is non-zero, returns the nearest element in the given context only.
 */
-CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, CADrawableContext* context) {
+CADrawableMusElement *CAScoreViewPort::nearestRightElement(double x, double y, CADrawableContext* context) {
 	return _drawableMList.findNearestRight(x, true, context);
 }
 
@@ -454,7 +454,7 @@ CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, CADrawa
 	largest startTime in the given voice.
 	Drawable elements left borders are taken into account.
 */
-CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, CAVoice *voice) {
+CADrawableMusElement *CAScoreViewPort::nearestRightElement(double x, double y, CAVoice *voice) {
 	return _drawableMList.findNearestRight(x, true, 0, voice);
 }
 
@@ -462,7 +462,7 @@ CADrawableMusElement *CAScoreViewPort::nearestRightElement(int x, int y, CAVoice
 	Returns a pointer to the nearest upper drawable context from the given coordinates.
 	\todo Also look at X coordinate
 */
-CADrawableContext *CAScoreViewPort::nearestUpContext(int x, int y) {
+CADrawableContext *CAScoreViewPort::nearestUpContext(double x, double y) {
 	return static_cast<CADrawableContext*>(_drawableCList.findNearestUp(y));
 }
 
@@ -470,14 +470,14 @@ CADrawableContext *CAScoreViewPort::nearestUpContext(int x, int y) {
 	Returns a pointer to the nearest upper drawable context from the given coordinates.
 	\todo Also look at X coordinate
 */
-CADrawableContext *CAScoreViewPort::nearestDownContext(int x, int y) {
+CADrawableContext *CAScoreViewPort::nearestDownContext(double x, double y) {
 	return static_cast<CADrawableContext*>(_drawableCList.findNearestDown(y));
 }
 
 /*!
 	Calculates the logical time at the given coordinates \a x and \a y.
 */
-int CAScoreViewPort::calculateTime(int x, int y) {
+int CAScoreViewPort::calculateTime(double x, double y) {
 	CADrawableMusElement *left = _drawableMList.findNearestLeft(x, true);
 	CADrawableMusElement *right = _drawableMList.findNearestRight(x, true);
 
@@ -492,7 +492,7 @@ int CAScoreViewPort::calculateTime(int x, int y) {
 /*!
 	If the given coordinates hit any of the contexts, returns that context.
 */
-CAContext *CAScoreViewPort::contextCollision(int x, int y) {
+CAContext *CAScoreViewPort::contextCollision(double x, double y) {
 	QList<CADrawableContext*> l = _drawableCList.findInRange(x, y, 0, 0);
 	if (l.size() == 0) {
 		return 0;
@@ -687,12 +687,12 @@ void CAScoreViewPort::setWorldCoords(QRect coords, bool animate, bool force) {
 
 	float scale = (float)drawableWidth() / drawableHeight();	//always keep the world rectangle area in the same scale as the actual width/height of the drawable canvas
 	if (coords.height()) {	//avoid division by zero
-		if ((float)coords.width() / coords.height() > scale)
-			coords.setHeight( qRound(coords.width() / scale) );
+		if (coords.width() / coords.height() > scale)
+			coords.setHeight( coords.width() / scale );
 		else
-			coords.setWidth( qRound(coords.height() * scale) );
+			coords.setWidth( coords.height() * scale );
 	} else
-		coords.setHeight( qRound(coords.width() / scale) );
+		coords.setHeight( coords.width() / scale );
 
 
 	setWorldWidth(coords.width(), force);
@@ -764,10 +764,10 @@ void CAScoreViewPort::zoomToFit(bool animate, bool force) {
 	ViewPort's width and height stay intact.
 	\warning Repaint is not done automatically!
 */
-void CAScoreViewPort::setCenterCoords(int x, int y, bool animate, bool force) {
+void CAScoreViewPort::setCenterCoords(double x, double y, bool animate, bool force) {
 	_checkScrollBarsDeadLock = true;
-	setWorldX(x - (int)(0.5*_worldW), animate, force);
-	setWorldY(y - (int)(0.5*_worldH), animate, force);
+	setWorldX(x - 0.5*_worldW, animate, force);
+	setWorldY(y - 0.5*_worldH, animate, force);
 	_checkScrollBarsDeadLock = false;
 
 	checkScrollBars();
@@ -783,7 +783,7 @@ void CAScoreViewPort::setCenterCoords(int x, int y, bool animate, bool force) {
 	\param animate Use smooth animated zoom.
 	\param force Use the given world units despite their illegal values (like negative coordinates etc.).
 */
-void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
+void CAScoreViewPort::setZoom(float z, double x, double y, bool animate, bool force) {
 	bool zoomOut = false;
 	if (_zoom - z > 0.0)
 		zoomOut = true;
@@ -796,8 +796,8 @@ void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
 			startAnimationTimer();
 			return;
 		} else {
-			_targetWorldX = (int)(1.5*_worldX + 0.25*_worldW - 0.5*x);
-			_targetWorldY = (int)(1.5*_worldY + 0.25*_worldH - 0.5*y);
+			_targetWorldX = 1.5*_worldX + 0.25*_worldW - 0.5*x;
+			_targetWorldY = 1.5*_worldY + 0.25*_worldH - 0.5*y;
 			_targetZoom = z;
 			startAnimationTimer();
 			return;
@@ -805,8 +805,8 @@ void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
 	}
 
 	//set the world width - updates the zoom level zoom_ as well
-	setWorldWidth((int)(drawableWidth() / z));
-	setWorldHeight((int)(drawableHeight() / z));
+	setWorldWidth(drawableWidth() / z);
+	setWorldHeight(drawableHeight() / z);
 
 	if (!zoomOut) { //zoom in
 		//the new view's center coordinates will become the middle point of the current viewport center coords and the mouse pointer coords
@@ -816,8 +816,8 @@ void CAScoreViewPort::setZoom(float z, int x, int y, bool animate, bool force) {
 	} else { //zoom out
 		//the new view's center coordinates will become the middle point of the current viewport center coords and the mirrored over center pointer coords
 		//worldX_ + (worldW_/2) + (worldX_ + (worldW_/2) - x)/2
-		setCenterCoords( (int)(1.5*_worldX + 0.75*_worldW - 0.5*x),
-		                 (int)(1.5*_worldY + 0.75*_worldH - 0.5*y),
+		setCenterCoords( 1.5*_worldX + 0.75*_worldW - 0.5*x,
+		                 1.5*_worldY + 0.75*_worldH - 0.5*y,
 		                 force );
 	}
 
@@ -1011,7 +1011,7 @@ void CAScoreViewPort::paintEvent(QPaintEvent *e) {
 			font.setPixelSize( 20 );
 			p.setFont(font);
 			p.setPen(disabledElementsColor());
-			p.drawText( qRound((_xCursor-_worldX) * _zoom + 10), qRound((_yCursor-_worldY) * _zoom - 10), CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
+			p.drawText( qRound((_xCursor-_worldX+10) * _zoom), qRound((_yCursor-_worldY-10) * _zoom), CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
 		}
 	}
 
@@ -1081,7 +1081,7 @@ void CAScoreViewPort::unsetBorder() {
 	Note that repaint() event is also triggered when the internal drawable canvas changes its size (for eg. when scrollbars are shown/hidden) and the size of the viewport does not change.
 */
 void CAScoreViewPort::resizeEvent(QResizeEvent *e) {
-	setWorldCoords( _worldX, _worldY, qRound(drawableWidth() / _zoom), qRound(drawableHeight() / _zoom) );
+	setWorldCoords( _worldX, _worldY, drawableWidth() / _zoom, drawableHeight() / _zoom );
 	// setWorld methods already check for scrollbars
 }
 
@@ -1134,7 +1134,7 @@ void CAScoreViewPort::checkScrollBars() {
 */
 void CAScoreViewPort::mousePressEvent(QMouseEvent *e) {
 	CAViewPort::mousePressEvent(e);
-	QPoint coords(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY);
+	QPoint coords(e->x() / _zoom + _worldX, e->y() / _zoom + _worldY);
 	if ( selection().size() && selection()[0]->isHScalable() && coords.y()>=selection()[0]->yPos() && coords.y()<=selection()[0]->yPos()+selection()[0]->height() ) {
 		if ( coords.x()==selection()[0]->xPos()  ) {
 			setResizeDirection(CADrawable::Left);
@@ -1183,7 +1183,7 @@ void CAScoreViewPort::on_clickTimer_timeout() {
 	A new signal is emitted: CAMouseReleaseEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreViewPort::mouseReleaseEvent(QMouseEvent *e) {
-	emit CAMouseReleaseEvent(e, QPoint(qRound(e->x() / _zoom) + _worldX, qRound(e->y() / _zoom) + _worldY));
+	emit CAMouseReleaseEvent(e, QPoint(e->x() / _zoom + _worldX, e->y() / _zoom + _worldY));
 	setResizeDirection( CADrawable::Undefined );
 }
 
@@ -1192,7 +1192,7 @@ void CAScoreViewPort::mouseReleaseEvent(QMouseEvent *e) {
 	A new signal is emitted: CAMouseMoveEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
-	QPoint coords((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY);
+	QPoint coords(e->x() / _zoom + _worldX, e->y() / _zoom + _worldY);
 
 	_xCursor = coords.x();
 	_yCursor = coords.y();
@@ -1616,7 +1616,7 @@ QList<CADrawableContext*> CAScoreViewPort::findContextsInRegion( QRect &region )
 
 	Returns 0, if no contexts are present.
 */
-int CAScoreViewPort::coordsToTime( int x ) {
+int CAScoreViewPort::coordsToTime( double x ) {
 	CADrawableMusElement *d1 = nearestLeftElement( x, 0 );
 	if ( selection().contains(d1) ) {
 		_drawableMList.list().removeAll(d1);
@@ -1648,7 +1648,7 @@ int CAScoreViewPort::coordsToTime( int x ) {
 	Returns the X coordinate for the given Canorus \a time.
 	Returns -1, if such a time doesn't exist in the score.
 */
-int CAScoreViewPort::timeToCoordsSimpleVersion( int time ) {
+double CAScoreViewPort::timeToCoordsSimpleVersion( int time ) {
 	CADrawableMusElement *leftElt = 0;
 	CADrawableMusElement *rightElt = 0;
 	for (int i=0; i<_drawableMList.size(); i++) {
@@ -1687,7 +1687,7 @@ int CAScoreViewPort::timeToCoordsSimpleVersion( int time ) {
 	Returns the X coordinate for the given Canorus \a time.
 	Returns -1, if such a time doesn't exist in the score.
 */
-int CAScoreViewPort::timeToCoords( int time ) {
+double CAScoreViewPort::timeToCoords( int time ) {
 	CADrawableMusElement *leftElt = 0;
 	CADrawableMusElement *rightElt = 0;
 	for (int i=0; i<_drawableMList.size(); i++) {
@@ -1709,9 +1709,8 @@ int CAScoreViewPort::timeToCoords( int time ) {
 	if ( leftElt && rightElt && leftElt->musElement() && rightElt->musElement() ) {
 		int delta = (rightElt->musElement()->timeStart() - leftElt->musElement()->timeStart());
 		if (!delta) delta=1;
-		return qRound(leftElt->xPos() + ( rightElt->xPos() - leftElt->xPos() ) *
-		              ( ((float)time - leftElt->musElement()->timeStart()) / delta )
-		             );
+		return leftElt->xPos() + ( rightElt->xPos() - leftElt->xPos() ) *
+		              ( ((double)time - leftElt->musElement()->timeStart()) / delta );
 	} else {
 		return -1;
 	}

@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -15,18 +15,18 @@
 /*!
 	Vertical space between the top edge of the lyrics context and the top border of the lyrcs text.
 */
-const float CADrawableLyricsContext::DEFAULT_TEXT_VERTICAL_SPACING = 3;
+const double CADrawableLyricsContext::DEFAULT_TEXT_VERTICAL_SPACING = 3;
 
 /*!
 	Drawable instance of the lyrics context.
-	
+
 	\sa CALyricsContext
 */
-CADrawableLyricsContext::CADrawableLyricsContext(CALyricsContext *c, int x, int y)
+CADrawableLyricsContext::CADrawableLyricsContext(CALyricsContext *c, double x, double y)
  : CADrawableContext(c, x, y) {
 	setDrawableContextType( DrawableLyricsContext );
 	setWidth( 0 );
- 	setHeight( qRound(CADrawableSyllable::DEFAULT_TEXT_SIZE + 2*DEFAULT_TEXT_VERTICAL_SPACING) );
+ 	setHeight( CADrawableSyllable::DEFAULT_TEXT_SIZE + 2*DEFAULT_TEXT_VERTICAL_SPACING );
 }
 
 CADrawableLyricsContext::~CADrawableLyricsContext() {

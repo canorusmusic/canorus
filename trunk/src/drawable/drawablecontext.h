@@ -23,7 +23,7 @@ public:
 		DrawableFunctionMarkContext
 	};
 
-	CADrawableContext(CAContext *c, int x, int y);
+	CADrawableContext(CAContext *c, double x, double y);
 	inline CAContext *context() { return _context; }
 	CADrawableContextType drawableContextType() { return _drawableContextType; }
 	inline virtual void addMElement(CADrawableMusElement *elt) {
@@ -43,7 +43,7 @@ public:
 		return 0;
 	}
 
-	QList<CADrawableMusElement*> findInRange( int x1, int x2 );
+	QList<CADrawableMusElement*> findInRange( double x1, double x2 );
 
 protected:
 	void setDrawableContextType( CADrawableContextType type ) { _drawableContextType = type; }

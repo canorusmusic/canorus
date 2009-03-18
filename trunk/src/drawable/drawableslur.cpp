@@ -1,14 +1,14 @@
 /*!
- * Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- *
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 
 #include "drawable/drawableslur.h"
 #include <QPainter>
 
-CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, int x1, int y1, int xMid, int yMid, int x2, int y2  )
+CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, double x1, double y1, double xMid, double yMid, double x2, double y2  )
  : CADrawableMusElement( slur, c, x1, 0) {
  	setDrawableMusElementType( DrawableSlur );
  	setX1( x1 );
@@ -20,8 +20,8 @@ CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, int x1, int 
 
  	updateGeometry(); // sets width, height, xPos, yPos
 
-	setNeededWidth( width() );
-	setNeededHeight( height() );
+	setNeededSpaceWidth( 0 );
+	setNeededSpaceHeight( 0 );
 }
 
 CADrawableSlur::~CADrawableSlur() {
@@ -38,7 +38,7 @@ void CADrawableSlur::updateGeometry() {
 /*!
 	Returns the minimum of all the three integers given.
 */
-int CADrawableSlur::min(int x, int y, int z) {
+double CADrawableSlur::min(double x, double y, double z) {
 	if ( x <= y && x <= z )
 		return x;
 	else if ( y <= x && y <= z )
@@ -50,7 +50,7 @@ int CADrawableSlur::min(int x, int y, int z) {
 /*!
 	Returns the maximum of all the three integers given.
 */
-int CADrawableSlur::max(int x, int y, int z) {
+double CADrawableSlur::max(double x, double y, double z) {
 	if ( x >= y && x >= z )
 		return x;
 	else if ( y >= x && y >= z )
@@ -76,19 +76,19 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 	bool aliasing = p->testRenderHint( QPainter::Antialiasing );
 	p->setRenderHint( QPainter::Antialiasing, true );
 
-	int minY = min(y1(), yMid(), y2());
-	int yLeft = qRound(s.y + (y1()-minY)     * s.z);
-	int yMidl = qRound(s.y + (yMid()-minY)   * s.z);
-	int xMidl = qRound(s.x + (xMid()-xPos()) * s.z);
-	int yRight = qRound(s.y + (y2()-minY)    * s.z);
-	int deltaY1 = (yMidl - yLeft);
-	int deltaY2 = (yRight - yMidl);
-	int deltaX1 = xMidl - s.x;
-	int deltaX2 = qRound(s.x + width()*s.z - xMidl);
+	double minY = min(y1(), yMid(), y2());
+	double yLeft = s.y + (y1()-minY)     * s.z;
+	double yMidl = s.y + (yMid()-minY)   * s.z;
+	double xMidl = s.x + (xMid()-xPos()) * s.z;
+	double yRight = s.y + (y2()-minY)    * s.z;
+	double deltaY1 = (yMidl - yLeft);
+	double deltaY2 = (yRight - yMidl);
+	double deltaX1 = xMidl - s.x;
+	double deltaX2 = qRound(s.x + width()*s.z - xMidl);
 
 	// generate an array of points for the rounded slur using the exponent shape
 	QPoint points[21];
-	points[0] = QPoint( s.x, yLeft );
+	points[0] = QPoint( s.x, qRound(yLeft) );
 	points[1] = QPoint( qRound(s.x + 0.1*deltaX1), qRound(yLeft + deltaY1*0.34) );
 	points[2] = QPoint( qRound(s.x + 0.2*deltaX1), qRound(yLeft + deltaY1*0.53) );
 	points[3] = QPoint( qRound(s.x + 0.3*deltaX1), qRound(yLeft + deltaY1*0.71) );

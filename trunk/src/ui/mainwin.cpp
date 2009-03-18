@@ -4845,6 +4845,11 @@ void CAMainWin::deleteSelection( CAScoreViewPort *v, bool deleteSyllables, bool 
 					}
 				}
 
+				// stop the playback before deleting the note
+				if (_playback && _playback->curPlaying().contains(p)) {
+					_playback->stopNow();
+				}
+
 				p->voice()->remove( p, true );
 				for (int j=0; j<p->voice()->lyricsContextList().size(); j++) {
 					p->voice()->lyricsContextList().at(j)->repositSyllables();

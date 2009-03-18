@@ -75,7 +75,7 @@ public:
 	////////////////////////////////////////////
 	void addMElement(CADrawableMusElement *elt, bool select=false);
 	void addCElement(CADrawableContext *elt, bool select=false);
-	CAMusElement *removeMElement(int x, int y);
+	CAMusElement *removeMElement(double x, double y);
 
 	void importElements(CAKDTree<CADrawableMusElement*> *drawableMList, CAKDTree<CADrawableContext*> *drawableCList);
 	void importMElements(CAKDTree<CADrawableMusElement*> *elts);
@@ -86,8 +86,8 @@ public:
 	///////////////
 	inline QList<CADrawableMusElement*>& selection() { return _selection; };
 	QList<CAMusElement*>                 musElementSelection();
-	QList<CADrawableMusElement*>         musElementsAt(int x, int y);
-	CADrawableContext                   *selectCElement(int x, int y);
+	QList<CADrawableMusElement*>         musElementsAt(double x, double y);
+	CADrawableContext                   *selectCElement(double x, double y);
 	CADrawableMusElement                *selectMElement(CAMusElement *elt);
 	CADrawableContext                   *selectContext(CAContext *context);
 	inline QPoint                        lastMousePressCoords() { return _lastMousePressCoords; }
@@ -125,20 +125,20 @@ public:
 	CADrawableMusElement     *findMElement(CAMusElement*);
 	CADrawableContext        *findCElement(CAContext*);
 	QList<CADrawableContext*> findContextsInRegion(QRect &reg);
-	CADrawableMusElement     *nearestLeftElement(int x, int y, CADrawableContext* context=0);
-	CADrawableMusElement     *nearestLeftElement(int x, int y, CAVoice *voice);
-	CADrawableMusElement     *nearestRightElement(int x, int y, CADrawableContext* context=0);
-	CADrawableMusElement     *nearestRightElement(int x, int y, CAVoice *voice);
-	int coordsToTime( int x );
-	int timeToCoords( int time );
-	int timeToCoordsSimpleVersion( int time );
+	CADrawableMusElement     *nearestLeftElement(double x, double y, CADrawableContext* context=0);
+	CADrawableMusElement     *nearestLeftElement(double x, double y, CAVoice *voice);
+	CADrawableMusElement     *nearestRightElement(double x, double y, CADrawableContext* context=0);
+	CADrawableMusElement     *nearestRightElement(double x, double y, CAVoice *voice);
+	int coordsToTime( double x );
+	double timeToCoords( int time );
+	double timeToCoordsSimpleVersion( int time );
 
-	CADrawableContext *nearestUpContext(int x, int y);
-	CADrawableContext *nearestDownContext(int x, int y);
+	CADrawableContext *nearestUpContext(double x, double y);
+	CADrawableContext *nearestDownContext(double x, double y);
 
-	int calculateTime(int x, int y);
+	int calculateTime(double x, double y);
 
-	CAContext *contextCollision(int x, int y);
+	CAContext *contextCollision(double x, double y);
 
 	////////////////
 	// Scrollbars //
@@ -172,11 +172,11 @@ public:
 	inline const float zoom() { return _zoom; }
 
 	void setWorldCoords(const QRect r, bool animate=false, bool force=false);
-	void setWorldCoords(int x, int y, int w, int h, bool animate=false, bool force=false)  { setWorldCoords( QRect(x,y,w,h), animate, force); }
+	void setWorldCoords(double x, double y, double w, double h, bool animate=false, bool force=false)  { setWorldCoords( QRect(x,y,w,h), animate, force); }
 
-	void setCenterCoords(int x, int y, bool animate=false, bool force=false);
+	void setCenterCoords(double x, double y, bool animate=false, bool force=false);
 
-	void setZoom(float z, int x=0, int y=0, bool animate=false, bool force = false);
+	void setZoom(float z, double x=0, double y=0, bool animate=false, bool force = false);
 	void setZoom(float z, QPoint p,  bool animate=false, bool force = false) { setZoom(z, p.x(), p.y(), animate, force); }
 
 	void zoomToSelection(bool animate=false, bool force=false);
@@ -290,7 +290,7 @@ private:
 	template <typename T> int getMaxXExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
 	template <typename T> int getMaxYExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting below easies
 
-	int _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the viewport is currently showing.
+	double _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the viewport is currently showing.
 	QPoint _lastMousePressCoords;           // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
 	inline void setLastMousePressCoords( QPoint p ) { _lastMousePressCoords = p; }
 	float _zoom;                            // Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
@@ -349,7 +349,7 @@ private:
 	QTimer *_animationTimer;          // Timer used to animate scroll/zoom behaviour.
 	static const int ANIMATION_STEPS; // Number of steps used in animation
 	int _animationStep;               // Current step in the animation
-	int _targetWorldX, _targetWorldY, _targetWorldW, _targetWorldH;	// Absolute world coordinates of the area the viewport is currently showing.
+	double _targetWorldX, _targetWorldY, _targetWorldW, _targetWorldH;	// Absolute world coordinates of the area the viewport is currently showing.
 	float _targetZoom;                // Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
 
 	void startAnimationTimer();
@@ -363,12 +363,12 @@ private:
 	/////////////////////////
 	// Internal properties //
 	/////////////////////////
-	int _oldWorldX, _oldWorldY, _oldWorldW, _oldWorldH; // Old coordinates used before the repaint. This is needed so only the new part of the viewport gets repainted when panning.
+	double _oldWorldX, _oldWorldY, _oldWorldW, _oldWorldH; // Old coordinates used before the repaint. This is needed so only the new part of the viewport gets repainted when panning.
 	bool _playing;                                      // Set to on, when in Playback mode
 	QTimer *_clickTimer;                                // Used for measuring doubleClick and tripleClick
 	int     _numberOfClicks;                            // Used for measuring doubleClick and tripleClick
 
-	int _xCursor, _yCursor;                             // Mouse cursor position in absolute world coords.
+	double _xCursor, _yCursor;                             // Mouse cursor position in absolute world coords.
 	bool _holdRepaint;                                  // Flag to prevent multiple repaintings.
 	bool _checkScrollBarsDeadLock;                      // Flag to prevent recursive checkScrollBars() calls.
 	bool _hScrollBarDeadLock;                           // Flag to prevent recursive scrollbar calls when its value is manually changed.

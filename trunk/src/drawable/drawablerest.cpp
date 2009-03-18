@@ -1,10 +1,10 @@
 /*!
-	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
- 
+
 #include "drawable/drawablerest.h"
 #include "drawable/drawablecontext.h"
 #include "drawable/drawablestaff.h"
@@ -13,133 +13,119 @@
 
 #include <QPainter>
 
-CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext, int x, int y)
+CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext, double x, double y)
  : CADrawableMusElement(rest, drawableContext, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableRest;
-	
+
 	if (drawableContext->drawableContextType() != CADrawableContext::DrawableStaff)
 		return;
-	
+
 	switch ( rest->playableLength().musicLength() ) {
 	case CAPlayableLength::HundredTwentyEighth:
-		_width = 16;
-		_height = 49;
-		_yPos = y;
-		_xPos = x;
+		setWidth( 16 );
+		setHeight( 49 );
 		break;
-		
-	case CAPlayableLength::SixtyFourth:
-		_width = 14;
-		_height = 41;
-		_yPos = y;
-		_xPos = x;
-		break;
-	
-	case CAPlayableLength::ThirtySecond:
-		_width = 12;
-		_height = 33;
-		_yPos = (int)(y + 2 + 0.5);
-		_xPos = x;
-		break;
-		
-	case CAPlayableLength::Sixteenth:
-		_width = 10;
-		_height = 24;
-		_yPos = (int)(y + ((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);
-		_xPos = x;
-		break;
-		
-	case CAPlayableLength::Eighth:
-		_width = 8;
-		_height = 17;
-		_yPos = (int)(y + ((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);
-		_xPos = x;
-		break;
-		
-	case CAPlayableLength::Quarter:
-		_width = 8;
-		_height = 20;
-		_yPos = (int)(y + ((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);
-		_xPos = x;
-		break;
-	
-	case CAPlayableLength::Half:
-		_width = 12;
-		_height = 5;
-		_yPos = (int)(y + 1.5*((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);	//values in constructor are the notehead center coords. yPos represents the top of the stem.
-		_xPos = x;
-		break;
-		
-	case CAPlayableLength::Whole:
-		_width = 12;
-		_height = 5;
-		_yPos = (int)(y + ((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);	//values in constructor are the notehead center coords. yPos represents the top of the stem.
-		_xPos = x;
-		break;
-		
-	case CAPlayableLength::Breve:
-		_width = 4;
-		_height = 9;
-		_yPos = (int)(y + ((CADrawableStaff*)drawableContext)->lineSpace() + 0.5);
-		_xPos = x;
-		break;			
-	}
-	
-	_restWidth = _width;
-	
-	if (rest->playableLength().dotted()) {
-		_width += 3;
-		for (int i=0; i<rest->playableLength().dotted(); i++)
-			_width += 2;
-	}
-	
-	_neededWidth = _width;
-	_neededHeight = _height;
 
+	case CAPlayableLength::SixtyFourth:
+		setWidth( 14 );
+		setHeight( 41 );
+		break;
+
+	case CAPlayableLength::ThirtySecond:
+		setWidth( 12 );
+		setHeight( 33 );
+		setYPos(y + 2);
+		break;
+
+	case CAPlayableLength::Sixteenth:
+		setWidth( 10 );
+		setHeight( 24 );
+		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
+		break;
+
+	case CAPlayableLength::Eighth:
+		setWidth( 8 );
+		setHeight( 17 );
+		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
+		break;
+
+	case CAPlayableLength::Quarter:
+		setWidth( 8 );
+		setHeight( 20 );
+		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
+		break;
+
+	case CAPlayableLength::Half:
+		setWidth( 12 );
+		setHeight( 5 );
+		setYPos(y + 1.5*static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
+		break;
+
+	case CAPlayableLength::Whole:
+		setWidth( 12 );
+		setHeight( 5 );
+		//values in constructor are the notehead center coords. yPos represents the top of the stem.
+		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
+		break;
+
+	case CAPlayableLength::Breve:
+		setWidth( 4 );
+		setHeight( 9 );
+		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
+		break;
+	}
+
+	_restWidth = _width;
+
+	if (rest->playableLength().dotted()) {
+		setWidth( width() + 3 );
+		for (int i=0; i<rest->playableLength().dotted(); i++)
+			setWidth( width() + 2 );
+	}
 }
 
 CADrawableRest::~CADrawableRest() {
 }
 
 CADrawableRest *CADrawableRest::clone(CADrawableContext* newContext) {
-	return new CADrawableRest(rest(), (newContext)?newContext:_drawableContext, _xPos, _yPos);
+	return new CADrawableRest(rest(), (newContext)?newContext:_drawableContext, xPos(), yPos());
 }
 
 void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
 	QFont font("Emmentaler");
-	font.setPixelSize((int)(35*s.z));
-	
+	font.setPixelSize(qRound(35*s.z));
+
 	p->setPen(QPen(s.color));
 	p->setFont(font);
 
 	QPen pen;
 	switch ( rest()->playableLength().musicLength() ) {
 	case CAPlayableLength::HundredTwentyEighth: {
-		p->drawText((int)(s.x + 4*s.z + 0.5), (int)(s.y + (2.6*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.7")));
+		p->drawText(qRound(s.x + 4*s.z), qRound(s.y + (2.6*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z), QString(CACanorus::fetaCodepoint("rests.7")));
 		break;
 	}
 	case CAPlayableLength::SixtyFourth: {
-		p->drawText((int)(s.x + 3*s.z + 0.5), (int)(s.y + (1.75*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.6")));
+		p->drawText(qRound(s.x + 3*s.z), qRound(s.y + (1.75*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z), QString(CACanorus::fetaCodepoint("rests.6")));
 		break;
 	}
 	case CAPlayableLength::ThirtySecond: {
-		p->drawText((int)(s.x + 2.5*s.z + 0.5), (int)(s.y + (1.8*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.5")));
+		p->drawText(qRound(s.x + 2.5*s.z), qRound(s.y + (1.8*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z), QString(CACanorus::fetaCodepoint("rests.5")));
 		break;
 	}
 	case CAPlayableLength::Sixteenth: {
-		p->drawText((int)(s.x + 1*s.z + 0.5), (int)(s.y + (((CADrawableStaff*)_drawableContext)->lineSpace()-0.9)*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.4")));
+		p->drawText(qRound(s.x + 1*s.z), qRound(s.y + (((CADrawableStaff*)_drawableContext)->lineSpace()-0.9)*s.z), QString(CACanorus::fetaCodepoint("rests.4")));
 		break;
 	}
 	case CAPlayableLength::Eighth: {
-		p->drawText(s.x, (int)(s.y + (((CADrawableStaff*)_drawableContext)->lineSpace()-0.9)*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.3")));
+		p->drawText(s.x, qRound(s.y + (((CADrawableStaff*)_drawableContext)->lineSpace()-0.9)*s.z), QString(CACanorus::fetaCodepoint("rests.3")));
 		break;
 	}
 	case CAPlayableLength::Quarter: {
-		p->drawText(s.x,(int)(s.y + 0.5*height()*s.z),QString(CACanorus::fetaCodepoint("rests.2")));
+		p->drawText(s.x,qRound(s.y + 0.5*height()*s.z),QString(CACanorus::fetaCodepoint("rests.2")));
 		break;
 	}
 	case CAPlayableLength::Half: {
-		p->drawText(s.x,(int)(s.y + height()*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.1")));
+		p->drawText(s.x,qRound(s.y + height()*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.1")));
 		break;
 	}
 	case CAPlayableLength::Whole: {
@@ -147,22 +133,22 @@ void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
 		break;
 	}
 	case CAPlayableLength::Breve: {
-		p->drawText(s.x, (int)(s.y + height()*s.z + 0.5), QString(CACanorus::fetaCodepoint("rests.M1")));
+		p->drawText(s.x, qRound(s.y + height()*s.z), QString(CACanorus::fetaCodepoint("rests.M1")));
 		break;
 	}
 	}
-	
+
 	///////////////
 	// Draw Dots //
 	///////////////
 	float delta=4*s.z;
 	for (int i=0; i<rest()->playableLength().dotted(); i++) {
-		pen.setWidth((int)(2.7*s.z+0.5) + 1);
+		pen.setWidth(qRound(2.7*s.z+0.5) + 1);
 		pen.setCapStyle(Qt::RoundCap);
 		pen.setColor(s.color);
 		p->setPen(pen);
-		p->drawPoint((int)(s.x + _restWidth*s.z + delta + 0.5), (int)(s.y + 0.3*_height*s.z + 0.5));
+		p->drawPoint(qRound(s.x + _restWidth*s.z + delta), qRound(s.y + 0.3*_height*s.z));
 		delta += 3*s.z;
 	}
-	
+
 }

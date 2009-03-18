@@ -19,7 +19,7 @@ class QComboBox;
 
 class CADrawableKeySignature : public CADrawableMusElement {
 	public:
-		CADrawableKeySignature(CAKeySignature *keySig, CADrawableStaff *staff, int x, int y);
+		CADrawableKeySignature(CAKeySignature *keySig, CADrawableStaff *staff, double x, double y);
 		~CADrawableKeySignature();
 
 		void draw(QPainter *p, CADrawSettings s);
