@@ -1,9 +1,9 @@
 /*!
- * Copyright (c) 2008, Matevž Jekovec, Canorus development team
- * All Rights Reserved. See AUTHORS for a complete list of authors.
- *
- * Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
- */
+	Copyright (c) 2008-2009, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
 
 #include "drawable/drawabletuplet.h"
 #include "drawable/drawablecontext.h"
@@ -11,16 +11,13 @@
 #include <QPainter>
 #include <QFont>
 
-CADrawableTuplet::CADrawableTuplet( CATuplet *tuplet, CADrawableContext *c, int x1, int y1, int x2, int y2 )
+CADrawableTuplet::CADrawableTuplet( CATuplet *tuplet, CADrawableContext *c, double x1, double y1, double x2, double y2 )
  : CADrawableMusElement( tuplet, c, x1, 0 ) {
 	setDrawableMusElementType( DrawableTuplet );
 
 	setWidth( x2-x1 );
 	setHeight( (abs(y2-y1)>5)?abs(y2-y1):8 );
 	setYPos( (c && qMin(y1, y2)>c->yPos())?qMin(y1, y2):(qMin(y1,y2)-height()) );
-
-	setNeededWidth( width() );
-	setNeededHeight( height() );
 }
 
 CADrawableTuplet::~CADrawableTuplet() {
@@ -32,19 +29,19 @@ void CADrawableTuplet::draw(QPainter *p, const CADrawSettings s) {
 	pen.setCapStyle( Qt::RoundCap );
 	p->setPen( pen );
 
-	int minY = qMin(yPos(), yPos())-8;
-	int yLeft = qRound(s.y + (yPos()-minY)       * s.z);
-	int yMidl = qRound(s.y + (yPos()-minY)       * s.z);
-	int xMidl = qRound(s.x + (width()/2.0) * s.z);
-	int yRight = qRound(s.y + (yPos()-minY)      * s.z);
-	int deltaY1 = (yMidl - yLeft);
-	int deltaY2 = (yRight - yMidl);
-	int deltaX1 = xMidl - s.x;
-	int deltaX2 = qRound(s.x + width()*s.z - xMidl);
+	double minY = qMin(yPos(), yPos())-8;
+	double yLeft = s.y + (yPos()-minY)  * s.z;
+	double yMidl = s.y + (yPos()-minY)  * s.z;
+	double xMidl = s.x + (width()/2.0)  * s.z;
+	double yRight = s.y + (yPos()-minY) * s.z;
+	double deltaY1 = yMidl - yLeft;
+	double deltaY2 = yRight - yMidl;
+	double deltaX1 = xMidl - s.x;
+	double deltaX2 = s.x + width()*s.z - xMidl;
 
 	// generate an array of points for the rounded slur using the exponent shape
 	QPoint points[9];
-	points[0] = QPoint( s.x, yLeft );
+	points[0] = QPoint( qRound(s.x), qRound(yLeft) );
 	points[1] = QPoint( qRound(s.x + 0.1*deltaX1), qRound(yLeft + deltaY1*0.34) );
 	points[2] = QPoint( qRound(s.x + 0.2*deltaX1), qRound(yLeft + deltaY1*0.53) );
 	points[3] = QPoint( qRound(s.x + 0.3*deltaX1), qRound(yLeft + deltaY1*0.71) );

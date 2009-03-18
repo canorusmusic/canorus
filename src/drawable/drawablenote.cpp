@@ -7,6 +7,7 @@
 
 #include <QPainter>
 #include <iostream>
+#include "drawable/drawablestaff.h"
 #include "drawable/drawablenote.h"
 #include "drawable/drawablecontext.h"
 #include "drawable/drawableaccidental.h"
@@ -14,15 +15,15 @@
 #include "core/staff.h"
 #include "canorus.h"
 
-const int CADrawableNote::HUNDREDTWENTYEIGHTH_STEM_LENGTH = 50;
-const int CADrawableNote::SIXTYFOURTH_STEM_LENGTH = 43;
-const int CADrawableNote::THIRTYSECOND_STEM_LENGTH = 37;
-const int CADrawableNote::SIXTEENTH_STEM_LENGTH = 31;
-const int CADrawableNote::EIGHTH_STEM_LENGTH = 31;
-const int CADrawableNote::QUARTER_STEM_LENGTH = 31;
-const int CADrawableNote::HALF_STEM_LENGTH = 31;
-const int CADrawableNote::QUARTER_YPOS_DELTA = 21;
-const int CADrawableNote::HALF_YPOS_DELTA = 23;
+const double CADrawableNote::HUNDREDTWENTYEIGHTH_STEM_LENGTH = 50;
+const double CADrawableNote::SIXTYFOURTH_STEM_LENGTH = 43;
+const double CADrawableNote::THIRTYSECOND_STEM_LENGTH = 37;
+const double CADrawableNote::SIXTEENTH_STEM_LENGTH = 31;
+const double CADrawableNote::EIGHTH_STEM_LENGTH = 31;
+const double CADrawableNote::QUARTER_STEM_LENGTH = 31;
+const double CADrawableNote::HALF_STEM_LENGTH = 31;
+const double CADrawableNote::QUARTER_YPOS_DELTA = 21;
+const double CADrawableNote::HALF_YPOS_DELTA = 23;
 
 /*!
 	Default constructor.
@@ -30,7 +31,7 @@ const int CADrawableNote::HALF_YPOS_DELTA = 23;
 	\param x coordinate represents the left border of the notehead.
 	\param y coordinate represents the center of the notehead.
 */
-CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, int x, int y, bool shadowNote, CADrawableAccidental *drawableAcc)
+CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, double x, double y, bool shadowNote, CADrawableAccidental *drawableAcc)
  : CADrawableMusElement(n, drawableContext, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableNote;
 	_drawableAcc = drawableAcc;
@@ -47,33 +48,33 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, in
 	case CAPlayableLength::Quarter:
 		_noteHeadGlyphName = "noteheads.s2";
 		_penWidth = 1.2;
-		_width = 11;
-		_height = 10;
+		setWidth( 11 );
+		setHeight( 10 );
 		break;
 
 	case CAPlayableLength::Half:
 		_noteHeadGlyphName = "noteheads.s1";
 		_penWidth = 1.3;
-		_width = 12;
-		_height = 10;
+		setWidth( 12 );
+		setHeight( 10 );
 		break;
 
 	case CAPlayableLength::Whole:
 		_noteHeadGlyphName = "noteheads.s0";
 		_penWidth = 0;
-		_width = 17;
-		_height = 8;
+		setWidth( 17 );
+		setHeight( 8 );
 		break;
 
 	case CAPlayableLength::Breve:
 		_noteHeadGlyphName = "noteheads.sM1";
 		_penWidth = 0;
-		_width = 18;
-		_height = 8;
+		setWidth( 18 );
+		setHeight( 8 );
 		break;
 	}
-	_yPos = (int)(y - _height/2.0 + 0.5);
-	_xPos = x;
+	setYPos( y - height()/2.0 );
+	setXPos( x );
 
 	switch (n->playableLength().musicLength()) {
 	case CAPlayableLength::HundredTwentyEighth:
@@ -110,16 +111,14 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, in
 		break;
 	}
 
-	_noteHeadWidth = _width;
+	_noteHeadWidth = width();
 
 	if (n->playableLength().dotted()) {
-		_width += 3;
+		setWidth( width()+3 );
 		for (int i=0; i<n->playableLength().dotted(); i++)
-			_width += 2;
+			setWidth( width()+2 );
 	}
 
-	_neededWidth = _width;
-	_neededHeight = _height;
 	_shadowNote = shadowNote;
 
 	_drawLedgerLines = true;
@@ -130,7 +129,7 @@ CADrawableNote::~CADrawableNote() {
 
 void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 	QFont font("Emmentaler");
-	font.setPixelSize((int)(35*s.z));
+	font.setPixelSize(qRound(35*s.z));
 
 	p->setPen(QPen(s.color));
 	p->setFont(font);
@@ -138,17 +137,17 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 	QPen pen;
 
 	// Draw ledger lines
-	if ( _drawLedgerLines &&
+	if ( _drawLedgerLines && drawableContext() && drawableContext()->drawableContextType()==CADrawableContext::DrawableStaff &&
 	     note() && note()->voice() && note()->voice()->staff() &&
 	     ( (note()->notePosition() <= -2) ||	// note is below the staff
 	       (note()->notePosition() >= note()->voice()->staff()->numberOfLines()*2)	// note is above the staff
 	     )
 	   ) {
 	   	int direction = (note()->notePosition() > 0 ? 1 : -1);	// 1 falling, -1 rising
-	   	int ledgerDist = qRound(9.0*s.z);	// distance between the ledger lines - notehead height
+	   	double ledgerDist = static_cast<CADrawableStaff*>(drawableContext())->lineSpace()*s.z;	// distance between the ledger lines - notehead height
 
 	   	// draw ledger lines in direction from the notehead to staff
-		qreal ry = (direction==1)?_drawableContext->yPos():_drawableContext->yPos()+(_drawableContext->height()-1);
+		qreal ry = (direction==1)?_drawableContext->yPos():_drawableContext->yPos()+(_drawableContext->height());
 		ry -= s.worldY;
 		ry *= s.z;
 		QPen pen(s.color);
@@ -166,7 +165,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 	}
 
 	// Draw notehead
-	s.y += _height*s.z/2;
+	s.y += height()*s.z/2;
 	p->drawText(s.x, qRound(s.y), QString(CACanorus::fetaCodepoint(_noteHeadGlyphName)));
 
 	if (note()->noteLength().musicLength() >= CAPlayableLength::Half) {
@@ -177,55 +176,34 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 		p->setPen(pen);
 		if (_stemDirection == CANote::StemUp) {
 			s.x += qRound(_noteHeadWidth*s.z);
-			p->drawLine(s.x, (int)(s.y-1*s.z), s.x, s.y-(int)(_stemLength*s.z));
+			p->drawLine(s.x, qRound(s.y-1*s.z), s.x, s.y-qRound(_stemLength*s.z));
 			if(note()->noteLength().musicLength() >= CAPlayableLength::Eighth) {
-				p->drawText((int)(s.x+0.6*s.z+0.5),(int)(s.y - _stemLength*s.z),QString(CACanorus::fetaCodepoint(_flagUpGlyphName)));
-				s.x+=(int)(6*s.z+0.5);  // additional X-offset for dots
+				p->drawText(qRound(s.x+0.6*s.z),qRound(s.y - _stemLength*s.z),QString(CACanorus::fetaCodepoint(_flagUpGlyphName)));
+				s.x+=qRound(6*s.z);  // additional X-offset for dots
 			}
 		} else {
-			s.x+=(int)(0.6*s.z+0.5);
-			p->drawLine(s.x, (int)(s.y+1*s.z), s.x, s.y+(int)(_stemLength*s.z));
+			s.x+=qRound(0.6*s.z);
+			p->drawLine(s.x, qRound(s.y+1*s.z), s.x, s.y+qRound(_stemLength*s.z));
 			if(note()->noteLength().musicLength() >= CAPlayableLength::Eighth)
-				p->drawText((int)(s.x+0.4*s.z+0.5),(int)(s.y + (_stemLength+5)*s.z),QString(CACanorus::fetaCodepoint(_flagDownGlyphName)));
-			s.x+=(int)(_noteHeadWidth*s.z+0.5);
+				p->drawText(qRound(s.x+0.4*s.z),qRound(s.y + (_stemLength+5)*s.z),QString(CACanorus::fetaCodepoint(_flagDownGlyphName)));
+			s.x+=qRound(_noteHeadWidth*s.z);
 		}
 	}
 
 	// Draw Dots
 	float delta=4*s.z;
 	for (int i=0; i<note()->playableLength().dotted(); i++) {
-		pen.setWidth((int)(2.7*s.z+0.5) + 1);
+		pen.setWidth(qRound(2.7*s.z) + 1);
 		pen.setCapStyle(Qt::RoundCap);
 		pen.setColor(s.color);
 		p->setPen(pen);
-		p->drawPoint((int)(s.x + delta + 0.5), (int)(s.y - 1.7*s.z + 0.5));
+		p->drawPoint(qRound(s.x + delta), qRound(s.y - 1.7*s.z));
 		delta += 3*s.z;
 	}
 
-	s.x += (int)(delta+0.5);
+	s.x += qRound(delta);
 }
 
 CADrawableNote *CADrawableNote::clone(CADrawableContext* newContext) {
-	return new CADrawableNote(note(), (newContext)?newContext:_drawableContext, _xPos, _yPos + _height/2);
-}
-
-void CADrawableNote::setXPos(int xPos) {
-	_xPos = xPos;
-}
-
-void CADrawableNote::setYPos(int yPos) {
-	switch ( note()->playableLength().musicLength() ) {
-	case CAPlayableLength::Quarter:
-		_yPos = yPos - _height/2;
-		break;
-	case CAPlayableLength::Half:
-		_yPos = yPos - _height/2;
-		break;
-	case CAPlayableLength::Whole:
-		_yPos = yPos - _height/2;
-		break;
-	case CAPlayableLength::Breve:
-		_yPos = yPos - _height/2;
-		break;
-	}
+	return new CADrawableNote(note(), (newContext)?newContext:_drawableContext, xPos(), yPos() + height()/2);
 }

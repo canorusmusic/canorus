@@ -252,12 +252,11 @@ void CAPlayback::run() {
  */
 void CAPlayback::playSelectionImpl() {
 	QVector<unsigned char> message;
-	QList<CANote*> curPlaying; // currently playing notes
 	QList<int> timeEnds;       // time ends when the notes should turned off
 	int waitTime = 16;
 	int curTime = 0;
 
-	while (_selection.size() || curPlaying.size()) {
+	while (_selection.size() || _curPlaying.size()) {
 		while (_selection.size()) {
 			if ( _selection[0]->musElementType()!=CAMusElement::Note ) {
 				_selection.takeFirst();
@@ -284,23 +283,25 @@ void CAPlayback::playSelectionImpl() {
 			midiDevice()->send(message, 0);
 			message.clear();
 
-			curPlaying << note;
+			_curPlaying << note;
 			timeEnds << curTime + note->timeLength()*4;
 		}
 
-		for (int i=0; i<curPlaying.size(); i++) {
-			if (curTime >= timeEnds[i]) {
+		for (int i=0; i<_curPlaying.size(); i++) {
+			if (curTime >= timeEnds[i] || _stop) {
 				// Note OFF
-				CANote *note = curPlaying[i];
+				if (_curPlaying[i]->musElementType()==CAMusElement::Note) {
+					CANote *note = static_cast<CANote*>(_curPlaying[i]);
 
-				message << (128 + note->voice()->midiChannel()); // note off
-				message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
-				message << (127);
-				midiDevice()->send(message, 0);
-				message.clear();
+					message << (128 + note->voice()->midiChannel()); // note off
+					message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
+					message << (127);
+					midiDevice()->send(message, 0);
+					message.clear();
+				}
 
 				timeEnds.removeAt(i);
-				curPlaying.removeAt(i);
+				_curPlaying.removeAt(i);
 				i--;
 			}
 		}

@@ -1,7 +1,7 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
@@ -13,15 +13,11 @@
 
 const int CADrawable::SCALE_HANDLES_SIZE = 2;
 
-CADrawable::CADrawable(int x, int y) {
-	setXPosAbsolute( x );
-	setYPosAbsolute( y );
-	setXPosOffset( 0 );
-	setYPosOffset( 0 );
-	setVisible( true );
-	setSelectable( true );
-	setHScalable( false );
-	setVScalable( false );
+CADrawable::CADrawable(double x, double y)
+ : _xPos(x), _yPos(y),
+   _neededSpaceWidth(0), _neededSpaceHeight(0),
+   _visible(true), _selectable(true),
+   _hScalable(false), _vScalable(false) {
 }
 
 CADrawable* CADrawable::clone() {
@@ -40,7 +36,7 @@ void CADrawable::drawHScaleHandles( QPainter *p, CADrawSettings s ) {
 void CADrawable::drawVScaleHandles( QPainter *p, CADrawSettings s ) {
 	p->setPen(QPen(s.color));
 	p->drawRect( s.x + qRound((width()*s.z)/2 - (SCALE_HANDLES_SIZE*s.z)/2), s.y - qRound((SCALE_HANDLES_SIZE*s.z)/2),
-			     qRound(SCALE_HANDLES_SIZE*s.z), qRound(SCALE_HANDLES_SIZE*s.z) );	
+			     qRound(SCALE_HANDLES_SIZE*s.z), qRound(SCALE_HANDLES_SIZE*s.z) );
 	p->drawRect( s.x + qRound((width()*s.z)/2 - (SCALE_HANDLES_SIZE*s.z)/2), s.y + qRound(((height() - SCALE_HANDLES_SIZE/2.0)*s.z)),
-			     qRound(SCALE_HANDLES_SIZE*s.z), qRound(SCALE_HANDLES_SIZE*s.z) );	
+			     qRound(SCALE_HANDLES_SIZE*s.z), qRound(SCALE_HANDLES_SIZE*s.z) );
 }
