@@ -71,6 +71,8 @@ void CAAutoRecovery::updateTimer() {
 	Saves the currently opened documents into settings folder named recovery0, recovery1 etc.
 */
 void CAAutoRecovery::saveRecovery() {
+	cleanupRecovery();
+
 	QSet<CADocument*> documents;
 	for (int i=0; i<CACanorus::mainWinCount(); i++)
 		documents << CACanorus::mainWinAt(i)->document();
@@ -82,11 +84,6 @@ void CAAutoRecovery::saveRecovery() {
 		save.exportDocument( *i );
 		save.wait();
 	}
-
-	while (	QFile::exists(CASettings::defaultSettingsPath()+"/recovery"+QString::number(c)) ) {
-		QFile::remove(CASettings::defaultSettingsPath()+"/recovery"+QString::number(c));
-		c++;
-	}
 }
 
 /*!
@@ -97,7 +94,12 @@ void CAAutoRecovery::cleanupRecovery() {
 	for ( int i=0; QFile::exists(CASettings::defaultSettingsPath()+"/recovery"+QString::number(i)); i++ ) {
 		QString fileName = CASettings::defaultSettingsPath()+"/recovery"+QString::number(i);
 		QFile::remove(fileName);
-		QFile::remove(fileName + " files");
+		if(QDir(fileName+" files").exists()) {
+			foreach(QString entry, QDir(fileName+" files").entryList(QDir::Files)) {
+				QFile::remove(fileName+" files/"+entry);
+			}
+			QDir().rmdir(fileName+" files");
+		}
 	}
 }
 
