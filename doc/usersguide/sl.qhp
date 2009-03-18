@@ -23,6 +23,12 @@
 			<file>images/canorushelpicon.png</file>
 			<file>sl0x.png</file>
 			<file>sl1x.png</file>
+			<file>sl2x.png</file>
+			<file>sl3x.png</file>
+			<file>sl4x.png</file>
+			<file>sl5x.png</file>
+			<file>sl6x.png</file>
+			<file>sl7x.png</file>
 		</files>
 	</filterSection>
 </QtHelpProject>
