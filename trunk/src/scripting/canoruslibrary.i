@@ -12,6 +12,11 @@ class QXmlDefaultHandler {
 class QObject {
 };
 
+class QAction {
+public:
+	QAction(QObject*);
+};
+
 class QSettings {
 };
 

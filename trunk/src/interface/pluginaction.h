@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -12,11 +12,9 @@
 
 #include "interface/plugin.h"
 
-#ifndef SWIG
 class CAPluginAction : public QAction {
+#ifndef SWIG
 	Q_OBJECT
-#else
-class CAPluginAction {
 #endif
 public:
 	CAPluginAction(CAPlugin *plugin, QString name, QString lang, QString function, QList<QString> args, QString filename);
@@ -65,7 +63,7 @@ private:
 	QHash<QString, QString> _text;         /// Text written on a menu item or the toolbar button
 	bool _refresh;                         /// Should the UI be rebuilt when calling the action.
 
-#if !defined( SWIG ) && !defined( SWIGCPP )
+#ifndef SWIG
 private slots:
 	void triggeredSlot(bool);              /// Connected to triggered(), calls plugin->callAction()
 
