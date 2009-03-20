@@ -1221,10 +1221,6 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 		setCursor(Qt::ArrowCursor);
 
 	emit CAMouseMoveEvent(e, coords);
-
-	if (_shadowNoteVisible) {
-		updateHelpers();
-	}
 }
 
 /*!
