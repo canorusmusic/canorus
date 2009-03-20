@@ -112,7 +112,7 @@ int CANote::notePosition() {
 const QString CANote::generateNoteName(int pitch, int accs) {
 	QString name;
 
-	name = (char)((pitch+2)%7 + 'a');
+	name = (char)(((pitch<0?pitch*(-1):pitch)+2)%7 + 'a');
 	while (accs>0) { name += "is"; accs--; }
 	while (accs<0) { if (name!="e" && name!="a") name+="es"; else name+="s"; accs++; }
 
@@ -122,9 +122,7 @@ const QString CANote::generateNoteName(int pitch, int accs) {
 	for (int i=0; i<(pitch-21)/7; i++)
 		name.append('\'');
 
-	if (pitch<14)
-		name.append(',');
-	if (pitch<7)
+	for (int i=0; i<(pitch-20)/(-7); i++)
 		name.append(',');
 
 	return name;

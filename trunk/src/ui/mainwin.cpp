@@ -1731,6 +1731,7 @@ void CAMainWin::scoreViewPortMouseMove(QMouseEvent *e, QPoint coords) {
 		int iNoteAccs = s->getAccs(coords.x(), pitch) + musElementFactory()->noteExtraAccs();
 		musElementFactory()->setNoteAccs( iNoteAccs );
 		c->setShadowNoteAccs(iNoteAccs);
+		c->updateHelpers();
 		c->repaint();
 	} else
 	if ( mode()!=InsertMode  && e->buttons()==Qt::LeftButton ) { // multiple selection
