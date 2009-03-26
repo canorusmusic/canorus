@@ -53,12 +53,8 @@ public:
 
 	bool synchronizeVoices();
 
-	void setName(QString name) { _name = name; }
-	QString name() { return _name; }
-
 private:
 	QList<CAVoice *> _voiceList;
-	QString _name;
 
 	int _numberOfLines;
 };

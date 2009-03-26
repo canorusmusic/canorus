@@ -1907,8 +1907,14 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 
 			CAStaff *staff = static_cast<CAStaff*>(drawableContext->context());
 			CAMusElement *right = 0;
-			if (!v->selection().isEmpty())
-				right = staff->next(v->selection().back()->musElement());
+			if (!v->selection().isEmpty()) {
+				CAMusElement *e = v->selection().back()->musElement();
+				if (e->musElementType()==CAMusElement::Note) {
+					right = staff->next(static_cast<CANote*>(e)->getChord().back());
+				} else {
+					right = staff->next(e);
+				}
+			}
 
 			CACanorus::undo()->createUndoCommand( document(), tr("insert barline", "undo") );
 			CABarline *bar = new CABarline(
@@ -3094,6 +3100,7 @@ void CAMainWin::on_uiVoiceName_returnPressed() {
 		CACanorus::undo()->createUndoCommand( document(), tr("change voice name", "undo") );
 		CACanorus::undo()->pushUndoCommand();
 		voice->setName(uiVoiceName->text());
+		CACanorus::rebuildUI( document(), currentSheet() );
 	}
 }
 
@@ -3104,7 +3111,10 @@ void CAMainWin::on_uiVoiceInstrument_activated( int index ) {
 	if ( !currentVoice() || index < 0 )
 		return;
 
+	CACanorus::undo()->createUndoCommand( document(), tr("change voice instrument", "undo") );
+	CACanorus::undo()->pushUndoCommand();
 	currentVoice()->setMidiProgram( (unsigned char)index );
+	CACanorus::rebuildUI( document(), currentSheet() );
 }
 
 void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
@@ -3864,9 +3874,8 @@ void CAMainWin::on_uiSheetName_returnPressed() {
 	if (sheet) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change sheet name", "undo") );
 		CACanorus::undo()->pushUndoCommand();
-		updateUndoRedoButtons();
 		sheet->setName( uiSheetName->text() );
-		uiTabWidget->setTabText(uiTabWidget->currentIndex(), sheet->name());
+		CACanorus::rebuildUI( document(), currentSheet() );
 	}
 }
 
@@ -3885,8 +3894,8 @@ void CAMainWin::on_uiContextName_returnPressed() {
 	if (context) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change context name", "undo") );
 		CACanorus::undo()->pushUndoCommand();
-		updateUndoRedoButtons();
 		context->setName(uiContextName->text());
+		CACanorus::rebuildUI( document(), currentSheet() );
 	}
 }
 
@@ -5151,7 +5160,7 @@ void CAMainWin::on_uiInstrumentChange_activated( int index ) {
 			CAInstrumentChange *instrument = dynamic_cast<CAInstrumentChange*>( v->selection().at(i)->musElement() );
 
 			if ( instrument) {
-				instrument->setInstrument( index);
+				instrument->setInstrument( index );
 			}
 		}
 
