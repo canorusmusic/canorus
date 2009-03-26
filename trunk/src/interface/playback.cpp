@@ -133,10 +133,6 @@ void CAPlayback::run() {
 	float sleepFactor = 1.0;  // set by tempo to determine the miliseconds for sleep
 	int mSeconds=0;           // actual song time, used when creating a midi file
 	while (!_stop || _curPlaying.size()) {	// at stop true: enter to switch all notes off
-		for (int i=0; i<streamCount(); i++) {
-			loopUntilPlayable(i);
-		}
-
 		for (int i=0; i<_curPlaying.size(); i++) {
 			if ( _stop || _curPlaying[i]->timeEnd() <= curTime(i) ) {
 				// note off
@@ -152,6 +148,10 @@ void CAPlayback::run() {
 				}
 				_curPlaying.removeAt(i--);
 			}
+		}
+
+		for (int i=0; i<streamCount(); i++) {
+			loopUntilPlayable(i);
 		}
 
 		if (_stop) continue;	// no notes on anymore
