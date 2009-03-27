@@ -169,21 +169,21 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 		}
 
 		// place slurs and phrasing slurs
-		if (!note->isPartOfChord() && note->slurStart() ||
-		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurStart() ) {
-			out() << "(";
-		}
 		if (!note->isPartOfChord() && note->slurEnd() ||
 		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurEnd() ) {
 			out() << ")";
 		}
-		if (!note->isPartOfChord() && note->phrasingSlurStart() ||
-		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurStart() ) {
-			out() << "\\(";
-		}
 		if (!note->isPartOfChord() && note->phrasingSlurEnd() ||
 		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurEnd() ) {
 			out() << "\\)";
+		}
+		if (!note->isPartOfChord() && note->slurStart() ||
+		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurStart() ) {
+			out() << "(";
+		}
+		if (!note->isPartOfChord() && note->phrasingSlurStart() ||
+		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurStart() ) {
+			out() << "\\(";
 		}
 
 		// add to the stream time, if the note is not part of the chord or is the last one in the chord
