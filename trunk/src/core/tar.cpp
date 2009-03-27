@@ -304,7 +304,7 @@ qint64 CATar::write(QIODevice& dest)
 	qint64 total=0, i;
 	while(!eof(dest)) 
 	{
-		i = write(dest, 16384);
+		i = write(dest, CHUNK);
 		if(i == -1)
 			return -1;
 		total += i;
@@ -380,9 +380,6 @@ qint64 CATar::write(QIODevice& dest, qint64 chunk)
 			chunk -= ret;
 		}
 		
-		if(chunk == 0)
-			break;
-
 		//proceed to next file.
 		if(pos.file == _files.size()-1)
 		{
