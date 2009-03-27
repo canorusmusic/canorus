@@ -1,0 +1,175 @@
+/*!
+	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
+
+#include <QTextEdit>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QTextStream>
+#include <QMouseEvent>
+
+#include "export/canorusmlexport.h"
+#include "widgets/sourceviewport.h"
+#include "core/document.h"
+#include "core/voice.h"
+
+#include "export/lilypondexport.h"
+#include "import/lilypondimport.h"
+	
+class CASourceViewPort::CATextEdit : public QTextEdit {
+	public:
+		CATextEdit(CASourceViewPort* v) : QTextEdit(v), _viewport(v) {}
+	protected:
+		void focusInEvent(QFocusEvent* event) {
+			QTextEdit::focusInEvent(event);
+			QMouseEvent fake(QEvent::MouseButtonPress, QCursor::pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+			_viewport->mousePressEvent(&fake);
+		}
+	private:
+		CASourceViewPort* _viewport;
+};
+
+/*!
+	\class CASourceViewPort
+	\brief Widget that shows the current score source in various syntax
+
+	This widget is a viewport which shows in the main text area the syntax of the current score (or voice, staff).
+	It includes 2 buttons for committing the changes to the score and reverting any changes back from the score.
+
+	\sa CAScoreViewPort
+*/
+
+/*!
+	Constructor for CanorusML syntax - requires the whole document.
+
+	\todo This should be merged in the future with other formats.
+*/
+CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
+ : CAViewPort(parent) {
+ 	setViewPortType( SourceViewPort );
+ 	setSourceViewPortType( CanorusML );
+ 	_document = doc;
+ 	_voice = 0;
+  	_lyricsContext = 0;
+
+ 	setupUI();
+}
+
+/*!
+	Constructor for LilyPond syntax - requires the current voice.
+
+	\todo This should be merged in the future with other formats.
+*/
+CASourceViewPort::CASourceViewPort(CAVoice *voice, QWidget *parent)
+ : CAViewPort(parent) {
+ 	setViewPortType( SourceViewPort );
+ 	setSourceViewPortType( LilyPond );
+ 	_document = 0;
+ 	_voice = voice;
+ 	_lyricsContext = 0;
+
+ 	setupUI();
+}
+
+/*!
+	Constructor for LilyPond syntax - requires the current lyrics context to show the lyrics.
+
+	\todo This should be merged in the future with other formats.
+*/
+CASourceViewPort::CASourceViewPort(CALyricsContext *lc, QWidget *parent)
+ : CAViewPort(parent) {
+ 	setViewPortType( SourceViewPort );
+  	setSourceViewPortType( LilyPond );
+ 	_document = 0;
+ 	_voice = 0;
+  	_lyricsContext = lc;
+
+ 	setupUI();
+}
+
+void CASourceViewPort::setupUI() {
+	_layout = new QGridLayout(this);
+	_layout->addWidget(_textEdit = new CATextEdit(this));
+	_layout->addWidget(_commit = new QPushButton(tr("Commit changes")));
+	_layout->addWidget(_revert = new QPushButton(tr("Revert changes")));
+
+	connect(_commit, SIGNAL(clicked()), this, SLOT(on_commit_clicked()));
+	connect(_revert, SIGNAL(clicked()), this, SLOT(rebuild()));
+
+	rebuild();
+}
+
+CASourceViewPort::~CASourceViewPort() {
+	_textEdit->disconnect();
+	_commit->disconnect();
+	_revert->disconnect();
+	_layout->disconnect();
+
+	delete _textEdit;
+	delete _commit;
+	delete _revert;
+	delete _layout;
+}
+
+void CASourceViewPort::on_commit_clicked() {
+	emit CACommit( _textEdit->toPlainText() );
+}
+
+CASourceViewPort *CASourceViewPort::clone() {
+	CASourceViewPort *v;
+	if ( document() )
+		v = new CASourceViewPort( document(), static_cast<QWidget*>(parent()) );
+	else if ( voice() )
+		v = new CASourceViewPort( voice(), static_cast<QWidget*>(parent()) );
+	else if ( lyricsContext() )
+		v = new CASourceViewPort( lyricsContext(), static_cast<QWidget*>(parent()) );
+
+	return v;
+}
+
+CASourceViewPort *CASourceViewPort::clone(QWidget *parent) {
+	CASourceViewPort *v;
+	if ( document() )
+		v = new CASourceViewPort( document(), parent );
+	else if ( voice() )
+		v = new CASourceViewPort( voice(), parent );
+	else if ( lyricsContext() )
+		v = new CASourceViewPort( lyricsContext(), parent );
+
+	return v;
+}
+
+/*!
+	Generates the score source from the current score and fill the text area with it.
+*/
+void CASourceViewPort::rebuild() {
+	_textEdit->clear();
+
+	QString *value = new QString();
+	QTextStream stream(value);
+
+	// CanorusML
+	if ( document() ) {
+		CACanorusMLExport save( &stream );
+		save.exportDocument( document() );
+		save.wait();
+	} else {
+		CALilyPondExport le( &stream );
+		// LilyPond
+		if (voice()) {
+			le.exportVoice( voice() );
+			le.wait();
+		} else
+		if (lyricsContext()) {
+			le.exportLyricsContext( lyricsContext() );
+			le.wait();
+		}
+	}
+
+	_textEdit->insertPlainText(*value);
+
+	delete value;
+}

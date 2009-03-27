@@ -1,0 +1,53 @@
+Main developers:
+================
+Matevž Jekovec <matevz.jekovec@gmail.com>
+  lead developer, Windows port, Debian/Ubuntu packages, cmake, Wiki site
+Reinhard Katzmann <suamor@web.de>
+  Qt4 GUI maestro, cmake, programming patterns
+Itay Perl <itay.perl@gmail.com>
+  bughunter, lots of GUI fixes and additions
+
+Contributors:
+=============
+Sam Hernandez <merphant@yahoo.com>
+  LilyPond export, build fixes
+Erlend Aasland <erlenda@gmail.com>
+  MacOSX port, small compatibility fixes and improvements
+Georg Rudolph <georg.rudolph@schwaben.de>
+  lots of ideas, tester and bughunter, LilyPond, Midi export
+Erik Magnus Johansson <erik.magnus.johansson@telia.com>
+  bughunter, musical terms
+Štefan Sakalík <rabbit6440@gmail.com>
+  PyCli and scripting enhancements
+
+Translators:
+============
+Itay Perl <itay.perl@gmail.com>
+  Hebrew translation
+Matevž Jekovec <matevz.jekovec@gmail.com>
+  Slovenian translation
+Erik Magnus Johansson <erik.magnus.johansson@telia.com>
+  Swedish translation
+Georg Rudolph <georg.rudolph@schwaben.de>
+  German translation
+Zeelander
+  Dutch translation
+Róbert Kopácsi <kopacsi.robert@gmail.com>
+  Hungarian translation
+Dag Henning Sørbø <daghenningsorbo@yahoo.no>
+  Norwegian translation
+Choplair <chopinou@choplair.org>
+  French translation
+Henrik W. Gade <nordisc@runbox.com>
+  Danish translation
+Robert Lee <>
+  Traditional Chinese translation
+
+External libraries and resources:
+=================================
+LilyPond team <http://www.lilypond.org>
+  Big kudos for such a beautiful music font
+RtMidi Library <http://www.music.mcgill.ca/~gary/rtmidi>
+  Fast and portable Midi library
+zlib <http://www.zlib.net>
+  Compression for our file format

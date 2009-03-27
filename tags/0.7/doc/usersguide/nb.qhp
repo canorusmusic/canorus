@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+	<namespace>canorus</namespace>
+	<virtualFolder>usersguide-nb</virtualFolder>
+	<customFilter name="Canorus">
+		<filterAttribute>canorus</filterAttribute>
+	</customFilter>
+	<filterSection>
+		<filterAttribute>canorus</filterAttribute>
+		<toc>
+			<section title="Canorus User's guide" ref="en.html">
+				<section title="Chapter 1" ref="en.html#chapter1"/>
+			</section>
+		</toc>
+		<!--<keywords>
+			<keyword name="foo" id="MyApplication::foo" ref="doc.html#foo"/>
+			<keyword name="bar" ref="doc.html#bar"/>
+			<keyword id="MyApplication::foobar" ref="doc.html#foobar"/>
+		</keywords>-->
+		<files>
+			<file>nb.css</file>
+			<file>nb.html</file>
+			<file>images/canorushelpicon.png</file>
+			<file>nb0x.png</file>
+			<file>nb1x.png</file>
+			<file>nb2x.png</file>
+			<file>nb3x.png</file>
+			<file>nb4x.png</file>
+			<file>nb5x.png</file>
+			<file>nb6x.png</file>
+			<file>nb7x.png</file>
+		</files>
+	</filterSection>
+</QtHelpProject>
+

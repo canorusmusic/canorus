@@ -1,0 +1,183 @@
+0.7
+===
+- Added support for printing and preview of score using LilyPond backend.
+- Added integrated Midi recorder.
+- Added resources storage inside the document.
+- Added User's guide.
+- Added transposition support.
+- GUI improvements:
+  - Anti-aliasing in score view.
+  - Music fonts loaded in runtime.
+  - Show note name when inserting notes.
+  - Integrated User's guide browser.
+  - Copy&Paste rewritten and now supports copying complete voices and staffs.
+- Import/Export improvements:
+  - Basic MusicXml import
+  - Basic Midi import
+  - LilyPond now exports partial measure, uptext, downtext and rehersal marks
+  - New export filters to PDF and SVG based on LilyPond
+- Plugin improvements:
+  - setSelection() and selection added to scripting engine.
+  - rebuildUi() and repaintUi() added to scripting engine.
+  - Added separator action for menus.
+- Model improvements:
+  - Added color property to music element.
+  - Added facilities for calculating intervals from/to music pitches and key
+    signatures.
+  - Redesigned key signature, diatonic key and diatonic pitch.
+  - Redesigned playable length and absolute length.
+- Shipped Python 2.5 on Microsoft Windows.
+- Support for Qt4.4.
+- Official support for Mac OS X.
+- Available translations:
+  - English
+  - German
+  - Slovenian
+  - Norwegian
+  - Hebrew
+
+0.6
+===
+- Version 0.6 was skipped. 
+
+0.5
+===
+- Implemented infrastructure for getting MIDI-IN events.
+- Lots of internal API changes:
+  - Generalized Import and Export classes. New fileformats can now be implemented simply
+    by inheriting those classes.
+  - Import and Export are now done in their own threads.
+  - Rewritten Voice class for insertion, deletion and manipulation for music elements.
+    The score should now always stay consistent when removing a shared element from a
+    single voice.
+  - Scripting engine now uses internal CA-class name names instead of class names only.
+    This solves the naming clashing problem in various scripting languages that don't
+    use namespaces (eg. PHP) and enum<->class names clashes.
+- Added marks:
+  - Arbitrary text
+  - BookMark
+  - Tempo (bpm)
+  - Ritardando, Accellerando
+  - Fermata (normal, short, long, very long)
+  - Dynamic (f, mf, p, sfz, etc.)
+  - Crescendo, Decrescendo
+  - Pedal (sustain)
+  - Instrument change (effects midi as well)
+  - Rehersal marks (A, B, C, D etc. on barlines)
+  - Repeat marks (coda, varcoda, segno, volta)
+  - Fingering (finger numbers, strings thumb, organ's left/right heel/toe)
+- Added articulation marks:
+  - Accent, Marcato, Staccatissimo, Espressivo, Staccato, Tenuto, Portato
+  - Up bow, Down bow, Flageolet, Open, Stopped
+  - Turn, ReverseTurn, Trill, Prall, Mordent, PrallPrall, PrallMordent, UpPrall,
+    DownPrall, UpMordent, DownMordent, PrallDown, PrallUp, LinePrall
+- Implemented export to Midi.
+- New file format CAN - compressed CanorusML format with resources. This is now the
+  default file format for Canorus.
+  ISSUE: Please use CanorusML file format when using the document on cross platforms.
+- Using new RtMidi-1.0.7 library.
+- New translations (Canorus speaks 12 languages):
+  - Danish
+  - Norwegian-NB
+  - Traditional Chinese
+  - German
+  - Hungarian
+  - French
+- Lots of other cleanups and bugfixes.
+
+0.4
+===
+- Settings dialog.
+- Customizable colors for Score editor.
+- Element advanced properties dialog with abilities to change order of elements.
+- Document recovery, if Canorus crashes.
+- Copy/Paste.
+- Undo/Redo.
+- Splash screen.
+- MIDI instrument per voice support.
+- Key signature major/minor support and function marking integration.
+- All predefined clefs supported by LilyPond with custom offsets.
+- Scripting engine is now always synchronized with the current API.
+- Python engine uses objective Swig interface.
+- New CanorusML support in scripting library for directly opening/saving Canorus files.
+- New playback support in scripting library.
+- Supported translations besides English: Slovenian, Dutch, Swedish, Hebrew, German.
+- Keyboard bindings for note insertion, playback and selection.
+- Qt4.3 compatibility.
+- Lots of smaller additions and even more fixes.
+
+0.3.1
+=====
+- SVG icons are now shown on Windows.
+- Fixed hyphen and melisma bug.
+- Fixed playback of chords.
+- Fixed LilyPond import and export of key signatures.
+- Fixed LilyPond import of notes with flats.
+- Fixed LilyPond crash when importing rests before notes.
+- Uninstaller on Windows now also removes Canorus directory and menu entry
+- Fixed some CMake rules for correct QSvg and QXml module inclusion and
+linkage.
+
+0.3
+===
+- Added support for Ties, Slurs and Phrasing slurs.
+- Added support for Lyrics.
+- Multiple selection.
+- Added support for Function markings manipulation.
+- Rewritten Playback to support repeat barlines.
+- LilyPond imoprt and export of Lyrics and other fixes.
+- SVG icons used instead of PNG.
+- Improved ScoreViewPort rendering.
+- Fixed lots of crashes and other annoying bugs.
+
+0.2.5
+=====
+- New Doxygen documentation.
+- Initial work on MacOSX port.
+- Improved function marking rendering
+- Scripting engine now offers integration with Canorus menu, import/export
+  dialogs and keyboard and mouse events.
+- New completely XML CanorusML format.
+- LilyPond document export support.
+- LilyPond voice import/export support.
+- Rewritten GUI. Now supports multiple main windows. Added lots of icons.
+- Translations support. Current translations: English, Slovenian.
+- Majority of the code rewritten so we have a more robust foundation now for
+  future development.
+- Lots of warnings, crashes, bugfixes and memory leaks fixed in MIDI, GUI and
+  Scripting engine.
+
+0.1.0
+=====
+- Third technical preview release
+- Python scripting support
+- Official windows support (MacOS-X was confirmed to compile too)
+- MIDI setup dialog
+- Canorus's settings are now stored (mainly for Midi Setup)
+- Plugins subsystem
+- Rest insertion
+- Added FunctionMarking support
+- Converted .otf fonts to .ttf
+- Fixed some crashes
+- Windows compilation support using MINGW compiler
+- debian/rules added to create .deb packages for Debian-based
+Linux
+- nsis setup added to create Nullsoft Windows installer
+
+0.0.5
+=====
+- Second technical preview release
+- Scripting support (currently only ruby supported) via swig
+- Support of musical element (like rests, notes with flags, time signature)
+- New plugin architecture (still work in progress). A plugin can be
+  requested via Canorus ML; it currently requires ruby-qt4 to be installed.
+
+0.0.2
+=====
+- First officially released version
+- Prototype with several working features
+
+0.0.1
+=====
+- Skipped this version, should have been released as early prototype
+
