@@ -2736,14 +2736,15 @@ bool CAMainWin::on_uiSaveDocumentAs_triggered() {
 CADocument *CAMainWin::openDocument(const QString& fileName) {
 	stopPlayback();
 
-	CAImport *open;
+	CAImport *open = 0;
 	if ( fileName.endsWith(".xml") ) {
 		open = new CACanorusMLImport();
 		uiSaveDialog->selectFilter( CAFileFormats::CANORUSML_FILTER );
 	} else if ( fileName.endsWith(".can") ) {
 		open = new CACanImport();
 		uiSaveDialog->selectFilter( CAFileFormats::CAN_FILTER );
-	}
+	} else
+		return 0; // FIXME Failing quietly, add error message
 
 	open->setStreamFromFile( fileName );
 	open->importDocument();

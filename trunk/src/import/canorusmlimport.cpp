@@ -344,9 +344,11 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curMusElt = _curSlur;
 		_curMusElt->setColor(_color);
 	} else if (qName == "slur-end") {
-		_curNote->setSlurEnd( _curSlur );
-		_curSlur->setNoteEnd( _curNote );
-		_curSlur = 0;
+		if(_curSlur) {
+			_curNote->setSlurEnd( _curSlur );
+			_curSlur->setNoteEnd( _curNote );
+			_curSlur = 0;
+		}
 	} else if (qName == "phrasing-slur-start") {
 		_curPhrasingSlur = new CASlur( CASlur::PhrasingSlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
 		_curNote->setPhrasingSlurStart( _curPhrasingSlur );
@@ -357,9 +359,11 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curMusElt = _curPhrasingSlur;
 		_curMusElt->setColor(_color);
 	} else if (qName == "phrasing-slur-end") {
-		_curNote->setPhrasingSlurEnd( _curPhrasingSlur );
-		_curPhrasingSlur->setNoteEnd( _curNote );
-		_curPhrasingSlur = 0;
+		if(_curPhrasingSlur) {
+			_curNote->setPhrasingSlurEnd( _curPhrasingSlur );
+			_curPhrasingSlur->setNoteEnd( _curNote );
+			_curPhrasingSlur = 0;
+		}
 	} else if ( qName == "tuplet" ) {
 		_curTuplet = new CATuplet( attributes.value("number").toInt(), attributes.value("actual-number").toInt() );
 		_curTuplet->setColor(_color);
