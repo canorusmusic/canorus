@@ -1,15 +1,16 @@
 0.7
 ===
-- Added support for printing and preview of score.
+- Added support for printing and preview of score using LilyPond backend.
 - Added integrated Midi recorder.
 - Added resources storage inside the document.
 - Added User's guide.
 - Added transposition support.
 - GUI improvements:
   - Anti-aliasing in score view.
-  - Music fonts not installed anymore.
+  - Music fonts loaded in runtime.
   - Show note name when inserting notes.
   - Integrated User's guide browser.
+  - Copy&Paste rewritten and now supports copying complete voices and staffs.
 - Import/Export improvements:
   - Basic MusicXml import
   - Basic Midi import
@@ -28,10 +29,16 @@
 - Shipped Python 2.5 on Microsoft Windows.
 - Support for Qt4.4.
 - Official support for Mac OS X.
+- Available translations:
+  - English
+  - German
+  - Slovenian
+  - Norwegian
+  - Hebrew
 
 0.6
 ===
-- Version 0.6 was skipped for various reasons
+- Version 0.6 was skipped. 
 
 0.5
 ===
