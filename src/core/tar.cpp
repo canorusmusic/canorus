@@ -179,9 +179,9 @@ bool CATar::addFile(const QString& filename, QIODevice& data, bool replace /* = 
 	
 	// Basename only for use with prefix if ever required (see below).
 	//QString basename = filename.right(filename.lastIndexOf("/")); // \todo slash in windows? win32 tar?
-	//bufncpy(file->hdr.name, basename.toAscii(), basename.size(), 100);
+	//bufncpy(file->hdr.name, basename.toUtf8(), basename.toUtf8().size(), 100);
 	
-	bufncpy(file->hdr.name, filename.toUtf8(), filename.size(), 100); // FIXME works with unicode filenames?
+	bufncpy(file->hdr.name, filename.toUtf8(), filename.toUtf8().size(), 100);
 	
 	file->hdr.mode = 0644; // file permissions. set read/write for user, read only for everyone else.
 	file->hdr.size = data.size();
