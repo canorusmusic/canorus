@@ -444,6 +444,8 @@ SET( Canorus_Plugins "plugins" ) # Official plug-ins shipped with Canorus.
 
 SET( Canorus_Images "ui/images" )
 
+SET( Canorus_Examples "../examples" )
+
 # Set translation files
 FILE(GLOB Canorus_Translation_Srcs "lang/*.ts") # lang/*.ts -> Canorus_Translation_Srcs
 STRING(REGEX REPLACE "\\.ts" ".qm" Canorus_Translation_Bins "${Canorus_Translation_Srcs}") # Set Canorus_Translation_Bins to same values as Canorus_Translation_Srcs with different extensions
@@ -675,11 +677,11 @@ IF(USE_PYTHON)
 ENDIF(USE_PYTHON)
 
 # Install scripts
-INSTALL( DIRECTORY ${Canorus_Scripts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" PATTERN ".svn" EXCLUDE )
+INSTALL( DIRECTORY ${Canorus_Scripts} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" )
 # Install plugins
-INSTALL( DIRECTORY ${Canorus_Plugins} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" PATTERN ".svn" EXCLUDE )
+INSTALL( DIRECTORY ${Canorus_Plugins} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" )
 # Install data - icons, images, sounds etc.
-INSTALL( DIRECTORY ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" PATTERN ".svn" EXCLUDE )
+INSTALL( DIRECTORY ${Canorus_Images} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" )
 # Install translations
 INSTALL(FILES ${Canorus_Translation_Bins} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/lang")
 # Install fonts
@@ -689,6 +691,8 @@ INSTALL(CODE "FILE(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA
 INSTALL(CODE "FILE(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/doc/usersguide)")
 FILE(GLOB Canorus_Usersguide RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../doc/usersguide/*.qhc ../doc/usersguide/*.qch)
 INSTALL(FILES ${Canorus_Usersguide} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}/doc/usersguide")
+# Install examples
+INSTALL( DIRECTORY ${Canorus_Examples} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_DATA_DIR}" )
 
 IF(MINGW)
 	# Install Qt libs
