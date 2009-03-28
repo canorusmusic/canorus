@@ -4915,6 +4915,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 		QList<CAMusElement*> newEltList;
 		QList<CAContext*> contexts = static_cast<const CAMimeData*>(QApplication::clipboard()->mimeData())->contexts();
 		QHash<CAVoice*, CAVoice*> voiceMap; // MimeData -> paste
+		CAContext* insertAfter = 0;
 		foreach( CAContext* context, contexts ) {
 			// create a new context if there isn't one of the right type.
 			// exception: if the context is a staff, skip lyrics contexts instead of inserting a staff before a lyrics context.
@@ -4947,6 +4948,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 							continue; // skipping lyrics - can't find a staff.
 
 						newContext = new CALyricsContext(tr("LyricsContext%1").arg(v->sheet()->contextCount()+1), 1, voice);
+						insertAfter = voice->staff();
 						break;
 					}
 					case CAContext::FunctionMarkContext: {
@@ -4954,7 +4956,10 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreViewPort *v ) {
 						break;
 					}
 				}
-				if(currentContext)
+				if(insertAfter) {
+					currentSheet->insertContextAfter(insertAfter, newContext);
+					insertAfter = 0;
+				} else if(currentContext)
 					currentSheet->insertContextAfter(currentContext, newContext);
 				else
 					currentSheet->addContext(newContext);
