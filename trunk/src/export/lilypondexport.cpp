@@ -232,6 +232,10 @@ void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 			out() << "\\mark \\default ";
 			break;
 		}
+		case CAMark::Fermata: {
+			out() << "\\fermata ";
+			break;
+		}
 		}
 	}
 }
