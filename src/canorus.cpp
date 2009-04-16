@@ -100,8 +100,6 @@ void CACanorus::initTranslations() {
 	if(QLocale::system().language() == QLocale::Hebrew) { // \todo add Arabic, etc.
 		static_cast<QApplication*>(QApplication::instance())->setLayoutDirection(Qt::RightToLeft);
 	}
-
-	QTextCodec::setCodecForCStrings( QTextCodec::codecForName("UTF-8") ); // set all QStrings I/O to UTF-8
 }
 
 void CACanorus::initCommonGUI() {
