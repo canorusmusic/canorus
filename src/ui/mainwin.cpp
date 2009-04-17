@@ -1010,6 +1010,7 @@ void CAMainWin::on_uiCloseDocument_triggered() {
 		}
 
 		CACanorus::undo()->deleteUndoStack( document() );
+		clearUI();
 		delete document();
 	}
 	setDocument( 0 );
