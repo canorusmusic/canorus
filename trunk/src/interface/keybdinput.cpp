@@ -11,15 +11,15 @@
 #include "interface/keybdinput.h"
 #include "interface/mididevice.h"
 #include "core/muselementfactory.h"
-#include "core/interval.h"
-#include "drawable/drawablestaff.h"
+#include "score/interval.h"
+#include "layout/drawablestaff.h"
 #include "widgets/menutoolbutton.h"
 #include "canorus.h"
 #include "core/settings.h"
 #include "core/undo.h"
 
 class CAMenuToolButton;
- 
+
 
 /*!
 	\class CAKeybdInput
@@ -37,7 +37,7 @@ class CAMenuToolButton;
 
 	todo: User selectable (to be implemented) midi pitches can be set to be interpreted as rest input,
 	punctuation and so on.  Inserting at the currently selected note.
-	
+
 */
 
 CAKeybdInput::CAKeybdInput (CAMainWin *mw) {
@@ -72,7 +72,7 @@ void CAKeybdInput::onMidiInEvent( QVector<unsigned char> m ) {
 		midiInEventToScore( _mw->currentScoreViewPort(), m );
 	}
 }
- 
+
 /*!
 	This is the entry point the midi input device. All note on events are passed over here.
 */
@@ -84,7 +84,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 
 	CAVoice *voice = _mw->currentVoice();
 	if (voice) {
- 	
+
 		int cpitch = m[1];
 
 		// will publish this only when it's configurable. Habe only a four octave keyboard ...
@@ -195,7 +195,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 					CANote *prevNote = 0;
 					_noteLayout.clear();
 					for (i=0;i<lll.size();i++) {
-						
+
 						note = new CANote( nonenharmonicPitch, lll[i], voice, -1 );
 						voice->append( note, appendToChord );
 						_noteLayout.append( voice->lastMusElement());

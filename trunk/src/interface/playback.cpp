@@ -13,16 +13,16 @@
 
 #include "interface/playback.h"
 #include "interface/mididevice.h"
-#include "core/sheet.h"
-#include "core/staff.h"
-#include "core/context.h"
-#include "core/barline.h"
-#include "core/note.h"
-#include "core/voice.h"
-#include "core/mark.h"
-#include "core/dynamic.h"
-#include "core/instrumentchange.h"
-#include "core/tempo.h"
+#include "score/sheet.h"
+#include "score/staff.h"
+#include "score/context.h"
+#include "score/barline.h"
+#include "score/note.h"
+#include "score/voice.h"
+#include "score/mark.h"
+#include "score/dynamic.h"
+#include "score/instrumentchange.h"
+#include "score/tempo.h"
 
 /*!
 	\class CAPlayback

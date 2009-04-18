@@ -11,16 +11,16 @@
 #include <QTextStream>
 #include <QString>
 
-#include "core/keysignature.h"
-#include "core/timesignature.h"
-#include "core/clef.h"
-#include "core/barline.h"
-#include "core/playable.h"
-#include "core/note.h"
-#include "core/rest.h"
-#include "core/document.h"
-#include "core/lyricscontext.h"
-#include "core/syllable.h"
+#include "score/keysignature.h"
+#include "score/timesignature.h"
+#include "score/clef.h"
+#include "score/barline.h"
+#include "score/playable.h"
+#include "score/note.h"
+#include "score/rest.h"
+#include "score/document.h"
+#include "score/lyricscontext.h"
+#include "score/syllable.h"
 
 #include "export/export.h"
 

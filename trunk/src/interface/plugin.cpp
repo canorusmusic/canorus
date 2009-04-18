@@ -21,7 +21,7 @@
 #include "widgets/viewportcontainer.h"
 #include "widgets/viewport.h"
 #include "widgets/scoreviewport.h"
-#include "drawable/drawablemuselement.h"
+#include "layout/drawablemuselement.h"
 #else
 #include <QMenu>
 #include "interface/plugins_swig.h"

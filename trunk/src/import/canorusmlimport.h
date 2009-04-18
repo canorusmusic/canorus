@@ -15,9 +15,9 @@
 
 #include "import/import.h"
 
-#include "core/diatonicpitch.h"
-#include "core/playablelength.h"
-#include "core/diatonickey.h"
+#include "score/diatonicpitch.h"
+#include "score/playablelength.h"
+#include "score/diatonickey.h"
 
 class CAContext;
 class CAKeySignature;

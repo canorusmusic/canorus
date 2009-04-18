@@ -8,9 +8,9 @@
 #include "import/canimport.h"
 #include "import/canorusmlimport.h"
 #include "core/archive.h"
-#include "core/resource.h"
+#include "score/resource.h"
 
-#include "core/document.h"
+#include "score/document.h"
 
 #include <iostream>
 #include <QDir>

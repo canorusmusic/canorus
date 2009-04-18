@@ -13,12 +13,12 @@
 
 #include "export/canorusmlexport.h"
 #include "widgets/sourceviewport.h"
-#include "core/document.h"
-#include "core/voice.h"
+#include "score/document.h"
+#include "score/voice.h"
 
 #include "export/lilypondexport.h"
 #include "import/lilypondimport.h"
-	
+
 class CASourceViewPort::CATextEdit : public QTextEdit {
 	public:
 		CATextEdit(CASourceViewPort* v) : QTextEdit(v), _viewport(v) {}

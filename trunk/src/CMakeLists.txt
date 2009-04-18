@@ -192,7 +192,7 @@ QT4_WRAP_CPP(Canorus_Core_MOC_Srcs ${Canorus_Core_MOCs})
 #########################
 # List of other sources #
 #########################
-SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
+SET(Canorus_Core_Srcs		# Core sources
 	core/settings.cpp
 	core/undocommand.cpp
 	core/undo.cpp
@@ -203,51 +203,53 @@ SET(Canorus_Core_Srcs		# Core sources - data part of the MVC model
 	core/typesetter.cpp
 	core/tar.cpp
 	core/archive.cpp
-	core/resource.cpp
 	core/midirecorder.cpp
-	
-	core/playablelength.cpp
-	core/diatonicpitch.cpp
-	core/interval.cpp
-	core/diatonickey.cpp
-	core/transpose.cpp
-	
-	core/document.cpp
-	core/sheet.cpp
-	core/context.cpp
-	core/staff.cpp
-	core/functionmarkcontext.cpp
-	core/lyricscontext.cpp
-	
-	core/muselement.cpp
 	core/muselementfactory.cpp
-	core/voice.cpp
-	core/barline.cpp
-	core/clef.cpp
-	core/keysignature.cpp
-	core/timesignature.cpp
-	core/playable.cpp
-	core/note.cpp
-	core/slur.cpp
-	core/tuplet.cpp
-	core/rest.cpp
+	core/transpose.cpp
+)
+
+SET(Canorus_Score_Srcs		# Score representation
+	score/playablelength.cpp
+	score/diatonicpitch.cpp
+	score/interval.cpp
+	score/diatonickey.cpp
 	
-	core/mark.cpp
-	core/articulation.cpp
-	core/fermata.cpp
-	core/repeatmark.cpp
-	core/tempo.cpp
-	core/ritardando.cpp
-	core/text.cpp
-	core/bookmark.cpp
-	core/fingering.cpp
-	core/dynamic.cpp
-	core/crescendo.cpp
-	core/instrumentchange.cpp
+	score/document.cpp
+	score/resource.cpp
+	score/sheet.cpp
+	score/context.cpp
+	score/staff.cpp
+	score/functionmarkcontext.cpp
+	score/lyricscontext.cpp
 	
-	core/syllable.cpp
+	score/muselement.cpp
+	score/voice.cpp
+	score/barline.cpp
+	score/clef.cpp
+	score/keysignature.cpp
+	score/timesignature.cpp
+	score/playable.cpp
+	score/note.cpp
+	score/slur.cpp
+	score/tuplet.cpp
+	score/rest.cpp
 	
-	core/functionmark.cpp
+	score/mark.cpp
+	score/articulation.cpp
+	score/fermata.cpp
+	score/repeatmark.cpp
+	score/tempo.cpp
+	score/ritardando.cpp
+	score/text.cpp
+	score/bookmark.cpp
+	score/fingering.cpp
+	score/dynamic.cpp
+	score/crescendo.cpp
+	score/instrumentchange.cpp
+	
+	score/syllable.cpp
+	
+	score/functionmark.cpp
 )
 
 SET(Canorus_Scripting_Srcs	# Sources meant for bridging C++<->scripting language
@@ -290,31 +292,32 @@ SET(Canorus_Ctl_Srcs            # Control instances for user interface or views 
 	control/resourcectl.cpp
 )
 
-SET(Canorus_Drawable_Srcs	# Drawable instances of the data
-	drawable/drawable.cpp
+SET(Canorus_Layout_Srcs	# Drawable instances of the data
+	layout/layoutengine.cpp
+	
+	layout/drawable.cpp
 
-	drawable/drawablecontext.cpp
-	drawable/drawablestaff.cpp
-	drawable/drawablelyricscontext.cpp
-	drawable/drawablefunctionmarkcontext.cpp
+	layout/drawablecontext.cpp
+	layout/drawablestaff.cpp
+	layout/drawablelyricscontext.cpp
+	layout/drawablefunctionmarkcontext.cpp
 
-	drawable/drawablemuselement.cpp
-	drawable/drawablenote.cpp
-	drawable/drawableslur.cpp
-	drawable/drawabletuplet.cpp
-	drawable/drawablerest.cpp
-	drawable/drawableaccidental.cpp
-	drawable/drawableclef.cpp
-	drawable/drawablekeysignature.cpp
-	drawable/drawabletimesignature.cpp
-	drawable/drawablebarline.cpp
-	drawable/drawablemark.cpp
-	drawable/drawablesyllable.cpp
-	drawable/drawablefunctionmark.cpp
+	layout/drawablemuselement.cpp
+	layout/drawablenote.cpp
+	layout/drawableslur.cpp
+	layout/drawabletuplet.cpp
+	layout/drawablerest.cpp
+	layout/drawableaccidental.cpp
+	layout/drawableclef.cpp
+	layout/drawablekeysignature.cpp
+	layout/drawabletimesignature.cpp
+	layout/drawablebarline.cpp
+	layout/drawablemark.cpp
+	layout/drawablesyllable.cpp
+	layout/drawablefunctionmark.cpp
 )
 
 SET(Canorus_Interface_Srcs	# Other interfaces like Engraver, Playback, Plugin manager and others belong here.
-	interface/engraver.cpp
 	interface/playback.cpp
 	interface/rtmididevice.cpp
 	interface/mididevice.cpp
@@ -355,10 +358,11 @@ SET(Canorus_Srcs
 	canorus.cpp
 	
 	${Canorus_Core_Srcs}
+	${Canorus_Score_Srcs}
 	${Canorus_Ctl_Srcs}
 	${Canorus_Gui_Ctl_Srcs}
 	${Canorus_Scripting_Srcs}
-	${Canorus_Drawable_Srcs}
+	${Canorus_Layout_Srcs}
 	${Canorus_Ui_Srcs}
 	${Canorus_Interface_Srcs}
 	${Canorus_Export_Srcs}
@@ -368,53 +372,13 @@ SET(Canorus_Srcs
 )
 
 SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module.
-	core/document.cpp
-	core/sheet.cpp
-	core/context.cpp
-	core/staff.cpp
-	core/lyricscontext.cpp
-	core/functionmarkcontext.cpp
-
-	core/muselement.cpp
-	core/voice.cpp
-	core/barline.cpp
-	core/clef.cpp
-	core/keysignature.cpp
-	core/timesignature.cpp
-	core/playable.cpp
-	core/note.cpp
-	core/slur.cpp
-	core/tuplet.cpp
-	core/rest.cpp
-	
-	core/playablelength.cpp
-	core/diatonicpitch.cpp
-	core/interval.cpp
-	core/diatonickey.cpp
+	${Canorus_Score_Srcs}
 	core/transpose.cpp
-	
-	core/mark.cpp
-	core/articulation.cpp
-	core/fermata.cpp
-	core/repeatmark.cpp
-	core/tempo.cpp
-	core/ritardando.cpp
-	core/text.cpp
-	core/bookmark.cpp
-	core/fingering.cpp
-	core/dynamic.cpp
-	core/crescendo.cpp
-	core/instrumentchange.cpp
-
-	core/syllable.cpp
-	
-	core/functionmark.cpp
 	
 	core/settings.cpp
 	core/file.cpp
 	core/tar.cpp
 	core/archive.cpp
-	core/resource.cpp
 	core/midirecorder.cpp
 	core/typesetter.cpp
 	${Canorus_Import_Srcs}

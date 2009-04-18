@@ -8,7 +8,7 @@
 #include <iostream>
 #include "core/undo.h"
 #include "core/undocommand.h"
-#include "core/document.h" // needed for setting the modified flag
+#include "score/document.h" // needed for setting the modified flag
 
 /*!
 	\class CAUndo

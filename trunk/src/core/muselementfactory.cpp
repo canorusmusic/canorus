@@ -8,15 +8,15 @@
 */
 
 #include "core/muselementfactory.h"
-#include "core/functionmarkcontext.h"
-#include "core/sheet.h"
-#include "core/text.h"
-#include "core/bookmark.h"
-#include "core/dynamic.h"
-#include "core/instrumentchange.h"
-#include "core/articulation.h"
-#include "core/tuplet.h"
-#include "core/playable.h"
+#include "score/functionmarkcontext.h"
+#include "score/sheet.h"
+#include "score/text.h"
+#include "score/bookmark.h"
+#include "score/dynamic.h"
+#include "score/instrumentchange.h"
+#include "score/articulation.h"
+#include "score/tuplet.h"
+#include "score/playable.h"
 
 #include "canorus.h" // needed for CASettings
 #include "core/settings.h"

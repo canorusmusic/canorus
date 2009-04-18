@@ -9,8 +9,8 @@
 #include "export/canorusmlexport.h"
 #include "core/archive.h"
 
-#include "core/resource.h"
-#include "core/document.h"
+#include "score/resource.h"
+#include "score/document.h"
 
 #include <QTextStream>
 #include <QTemporaryFile>

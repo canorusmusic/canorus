@@ -12,13 +12,13 @@
 
 #include "export/lilypondexport.h"
 
-#include "core/document.h"
-#include "core/sheet.h"
-#include "core/staff.h"
-#include "core/voice.h"
-#include "core/mark.h"
-#include "core/text.h"
-#include "core/tuplet.h"
+#include "score/document.h"
+#include "score/sheet.h"
+#include "score/staff.h"
+#include "score/voice.h"
+#include "score/mark.h"
+#include "score/text.h"
+#include "score/tuplet.h"
 
 /*!
 	\class CALilyPondExport

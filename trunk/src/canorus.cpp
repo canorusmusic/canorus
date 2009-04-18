@@ -21,7 +21,7 @@
 #include "interface/rtmididevice.h"
 #include "ui/settingsdialog.h"
 #include "scripting/swigruby.h"
-#include "core/sheet.h"
+#include "score/sheet.h"
 #include "core/settings.h"
 #include "core/undo.h"
 #include "control/helpctl.h"

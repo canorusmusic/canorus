@@ -16,10 +16,10 @@
 
 #include "ui_mainwin.h"
 
-#include "core/document.h"
-#include "core/muselement.h"
-#include "core/note.h"
-#include "core/clef.h"
+#include "score/document.h"
+#include "score/muselement.h"
+#include "score/note.h"
+#include "score/clef.h"
 
 #include "interface/playback.h"
 #include "interface/pyconsoleinterface.h"

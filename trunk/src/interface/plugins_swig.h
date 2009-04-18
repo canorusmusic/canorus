@@ -1,6 +1,6 @@
 #include <QObject>
-#include "core/sheet.h"
-#include "core/document.h"
+#include "score/sheet.h"
+#include "score/document.h"
 #include "interface/pyconsoleinterface.h"
 
 class CAMainWin { //: public QObject {
@@ -12,7 +12,7 @@ class CAMainWin { //: public QObject {
 
 // currentScoreViewport
 //   -> musElementSelection ok
-//   
+//
 public:
 	CAMainWin () { pyConsoleIface = NULL; };
 	CASheet *currentSheet() {
