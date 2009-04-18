@@ -837,8 +837,10 @@ void CAMainWin::newDocument() {
 	rebuildUI();
 
 	// select the first context automatically
-	if ( document()->sheetCount() && document()->sheetAt(0)->contextCount() )
+	if ( document()->sheetCount() && document()->sheetAt(0)->contextCount() ) {
 		currentScoreViewPort()->selectContext( document()->sheetAt(0)->contextAt(0) );
+	}
+
 	updateToolBars();
 }
 
@@ -1877,7 +1879,7 @@ void CAMainWin::scoreViewPortKeyPress(QKeyEvent *e) {
 
 	// go to Insert mode (if in Select mode) before changing note length
 	if(e->key() >= Qt::Key_0 && e->key() <= Qt::Key_9 && e->key() != Qt::Key_3) {
-		if (mode()!=EditMode) {
+		if (mode()!=EditMode && currentScoreViewPort()->currentContext()) {
 			uiInsertPlayable->setChecked(true);
 		}
 	}
@@ -4198,14 +4200,12 @@ void CAMainWin::updatePlayableToolBar() {
 	if ( uiInsertPlayable->isChecked() && mode()==InsertMode ) {
 		uiPlayableLength->setCurrentId( musElementFactory()->playableLength().musicLength() );
 		uiNoteStemDirection->setCurrentId( musElementFactory()->noteStemDirection() );
+		uiTupletType->defaultAction()->setVisible(true);
 
 		if ( uiTupletType->isChecked() && uiTupletType->currentId()==1 ) {
 			uiTupletNumberAction->setVisible(true);
-			uiTupletNumberAction->setEnabled(true);
 			uiTupletInsteadOfAction->setVisible(true);
-			uiTupletInsteadOfAction->setEnabled(true);
 			uiTupletActualNumberAction->setVisible(true);
-			uiTupletActualNumberAction->setEnabled(true);
 		} else {
 			uiTupletNumberAction->setVisible(false);
 			uiTupletInsteadOfAction->setVisible(false);
@@ -4239,10 +4239,10 @@ void CAMainWin::updatePlayableToolBar() {
 				uiHiddenRest->setEnabled(false);
 			}
 
-			uiTupletType->defaultAction()->setChecked( false );
-			uiTupletNumber->show();
-			uiTupletInsteadOf->show();
-			uiTupletActualNumber->show();
+			uiTupletType->defaultAction()->setVisible(false);
+			uiTupletNumberAction->setVisible(false);
+			uiTupletInsteadOfAction->setVisible(false);
+			uiTupletActualNumberAction->setVisible(false);
 		}
 	} else {
 		uiPlayableToolBar->hide();
