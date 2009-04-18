@@ -1,0 +1,50 @@
+Design of Action editor
+=======================
+
+Classes
+-------
+1) CAActionEditor
+User interface of action editor
+
+2) CAActionControl
+Controls the action editor (not the user interface itself but
+external controls like from settings dialog)
+
+3) CASingleAction
+One action based on QAction, Midi and QString. Contains all
+information (including description) for one control command
+
+4) CASettings
+Enhanced to include the Action control editor and all the
+CASingleAction instances.
+
+5) CAMainWin
+Actions need to be adapted to use the control settings
+defined via settings. Default settings are loaded from
+"default.cakey" when no settings exists up to now.
+Similar is used for midi commands: "default.camid"
+
+External configuration file format
+----------------------------------
+The file format is the same used by smplayer action editor
+but enhanced to include midi control and context settings.
+Entries look like this:
+
+<command><blank|tab><context><blank|tab><shortcut><blank|tab><midi command>
+
+A midi command exists of three parts: control, pitch, velocity separated by blanks.
+
+Example:
+insert_note	edit	Ctrl+I  2 5 0
+open_file	menu	Ctrl+O	1 3 0
+
+Plugins
+-------
+Plugins need to provide some short description and optional control command.
+Additionally the menus could be improved for fast keyboard access like this:
+&a plugin command 1
+&b plugin command 1
+&c plugin command 1
+&d plugin command 1
+So some default control command is something like Ctrl+Shift+<key>
+
