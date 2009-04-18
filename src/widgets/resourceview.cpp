@@ -6,8 +6,8 @@
 */
 
 #include "widgets/resourceview.h"
-#include "core/document.h"
-#include "core/resource.h"
+#include "score/document.h"
+#include "score/resource.h"
 #include "control/resourcectl.h"
 #include "canorus.h"
 

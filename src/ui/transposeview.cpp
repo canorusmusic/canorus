@@ -10,11 +10,11 @@
 #include "core/undo.h"
 #include "canorus.h"
 
-#include "core/keysignature.h"
+#include "score/keysignature.h"
 #include "core/transpose.h"
-#include "core/sheet.h"
-#include "drawable/drawablekeysignature.h"
-#include "drawable/drawablemuselement.h"
+#include "score/sheet.h"
+#include "layout/drawablekeysignature.h"
+#include "layout/drawablemuselement.h"
 
 CATransposeView::CATransposeView( CAMainWin *p )
 : QDockWidget( p ) {

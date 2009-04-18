@@ -13,7 +13,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <QToolBar>
-#include "core/document.h"
+#include "score/document.h"
 
 class CAPyConsole : public QTextEdit {
 	Q_OBJECT

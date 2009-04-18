@@ -20,27 +20,27 @@
 #include <iostream>
 
 #include "widgets/scoreviewport.h"
-#include "drawable/drawable.h"
-#include "drawable/drawablecontext.h"
-#include "drawable/drawablelyricscontext.h" // syllable edit creation
-#include "drawable/drawablemuselement.h"
-#include "drawable/drawablestaff.h"
-#include "drawable/drawablenote.h"
-#include "drawable/drawableaccidental.h"
+#include "layout/drawable.h"
+#include "layout/drawablecontext.h"
+#include "layout/drawablelyricscontext.h" // syllable edit creation
+#include "layout/drawablemuselement.h"
+#include "layout/drawablestaff.h"
+#include "layout/drawablenote.h"
+#include "layout/drawableaccidental.h"
 
-#include "interface/engraver.h"
-#include "core/document.h"
-#include "core/sheet.h"
-#include "core/context.h"
-#include "core/muselement.h"
-#include "core/staff.h"
-#include "core/voice.h"
-#include "core/note.h"
-#include "core/rest.h"
-#include "core/lyricscontext.h"
-#include "core/syllable.h"
-#include "core/text.h"
-#include "core/bookmark.h"
+#include "layout/layoutengine.h"
+#include "score/document.h"
+#include "score/sheet.h"
+#include "score/context.h"
+#include "score/muselement.h"
+#include "score/staff.h"
+#include "score/voice.h"
+#include "score/note.h"
+#include "score/rest.h"
+#include "score/lyricscontext.h"
+#include "score/syllable.h"
+#include "score/text.h"
+#include "score/bookmark.h"
 #include "canorus.h"
 #include "core/settings.h"
 
@@ -529,7 +529,7 @@ void CAScoreViewPort::rebuild() {
 	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	// remember the index of last used context
 	_drawableCList.clear(true);
 
-	CAEngraver::reposit(this);
+	CALayoutEngine::reposit(this);
 
 	for (int i=0; i<_shadowNote.size(); i++) {
 		_shadowNote[i]->setPlayableLength(l);

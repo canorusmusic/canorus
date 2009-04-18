@@ -11,8 +11,8 @@
 #include <QList>
 #include <QSet>
 
-#include "core/interval.h"
-#include "core/diatonickey.h"
+#include "score/interval.h"
+#include "score/diatonickey.h"
 
 class CAMusElement;
 class CASheet;

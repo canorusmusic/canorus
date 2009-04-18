@@ -14,8 +14,8 @@
 #include <QHash>
 #include <QMultiHash>
 
-#include "core/playablelength.h"
-#include "core/diatonicpitch.h"
+#include "score/playablelength.h"
+#include "score/diatonicpitch.h"
 #include "import/import.h"
 
 class CADocument;

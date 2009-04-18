@@ -1,17 +1,17 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
 #include "core/mimedata.h"
-#include "core/context.h"
+#include "score/context.h"
 
 /*!
 	Subclass of QMimeData which incorporates list of Music elements for
 	copy/paste functionality.
-	
+
 	MIME types for Canorus contexts are "application/canorus-contexts".
 */
 

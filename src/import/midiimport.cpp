@@ -12,12 +12,12 @@
 
 #include "interface/mididevice.h"
 #include "import/midiimport.h"
-#include "core/note.h"
-#include "core/playable.h"
-#include "core/playablelength.h"
-#include "core/slur.h"
-#include "core/sheet.h"
-#include "core/document.h"
+#include "score/note.h"
+#include "score/playable.h"
+#include "score/playablelength.h"
+#include "score/slur.h"
+#include "score/sheet.h"
+#include "score/document.h"
 
 class CAMidiImportEvent {
 public:

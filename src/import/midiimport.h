@@ -11,16 +11,16 @@
 #include <QString>
 #include <QStack>
 
-#include "core/voice.h"
-#include "core/rest.h"
-#include "core/keysignature.h"
-#include "core/clef.h"
-#include "core/timesignature.h"
-#include "core/barline.h"
-#include "core/lyricscontext.h"
-#include "core/syllable.h"
-#include "core/playablelength.h"
-#include "core/diatonicpitch.h"
+#include "score/voice.h"
+#include "score/rest.h"
+#include "score/keysignature.h"
+#include "score/clef.h"
+#include "score/timesignature.h"
+#include "score/barline.h"
+#include "score/lyricscontext.h"
+#include "score/syllable.h"
+#include "score/playablelength.h"
+#include "score/diatonicpitch.h"
 
 #include "import/import.h"
 

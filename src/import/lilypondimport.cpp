@@ -1,7 +1,7 @@
 /*!
 	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
-	
+
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
@@ -11,13 +11,13 @@
 #include <iostream> // DEBUG
 
 #include "import/lilypondimport.h"
-#include "core/note.h"
-#include "core/playable.h"
-#include "core/slur.h"
+#include "score/note.h"
+#include "score/playable.h"
+#include "score/slur.h"
 
 /*!
 	Delimiters which separate various music elements in LilyPond syntax. These are new lines, tabs, blanks etc.
-	
+
 	\sa nextElement(), parseNextElement()
 */
 const QRegExp CALilyPondImport::WHITESPACE_DELIMITERS = QRegExp("[\\s]");
@@ -25,10 +25,10 @@ const QRegExp CALilyPondImport::WHITESPACE_DELIMITERS = QRegExp("[\\s]");
 /*!
 	Delimiters which separate various music elements in LilyPond syntax, but are specific for LilyPond syntax.
 	They are reported as its own element when parsing the next element.
-	
+
 	\sa nextElement(), parseNextElement()
-*/ 
-const QRegExp CALilyPondImport::SYNTAX_DELIMITERS = QRegExp("[<>{}]"); 
+*/
+const QRegExp CALilyPondImport::SYNTAX_DELIMITERS = QRegExp("[<>{}]");
 
 /*!
 	Combined WHITESPACE_DELIMITERS and SYNTAX_DELIMITERS.
@@ -46,7 +46,7 @@ CALilyPondImport::CALilyPondImport( const QString in )
 
 CALilyPondImport::CALilyPondImport( QTextStream *in )
  : CAImport(in) {
-	initLilyPondImport();	
+	initLilyPondImport();
 }
 
 CALilyPondImport::~CALilyPondImport() {
@@ -67,16 +67,16 @@ void CALilyPondImport::addError(QString description, int curLine, int curChar) {
 
 CAVoice *CALilyPondImport::importVoiceImpl() {
 	CAVoice *voice = new CAVoice( "", 0 );
-	
+
 	if (templateVoice())
 		voice->cloneVoiceProperties( templateVoice() );
-	
+
 	setCurVoice(voice);
 	CADiatonicPitch prevPitch( 21, 0 );
 	CAPlayableLength prevLength( CAPlayableLength::Quarter, 0 );
 	bool chordCreated=false;
 	bool changed=false;
-	
+
 	for (QString curElt = parseNextElement();
 	     (!in().isEmpty());
 	     curElt = ((curElt.size() && changed)?curElt:parseNextElement())) { // go to next element, if current one is empty or not changed
@@ -88,14 +88,14 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 				addError("\\relative doesn't include pitch.");
 				continue;
 			}
-			
+
 			prevPitch = relativePitchFromLilyPond(notePitch, 21);
 			curElt.remove(0,9);
 		} else
 		if (curElt.startsWith("{")) {
 			// start of the voice
 			pushDepth(Voice);
-			curElt.remove(0,1);			
+			curElt.remove(0,1);
 		} else
 		if (curElt.startsWith("}")) {
 			// end of the voice
@@ -177,7 +177,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			CAPlayableLength length = playableLengthFromLilyPond(curElt, true);
 			if (length.musicLength()!=CAPlayableLength::Undefined) // length may not be set
 				prevLength = length;
-			
+
 			CANote *note;
 			if (curDepth()!=Chord || !chordCreated) {
 				// the note is not part of the chord or is the first note in the chord
@@ -190,7 +190,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 				note = new CANote( prevPitch, prevLength, curVoice(), curVoice()->lastTimeStart() );
 				curVoice()->append( note, true );
 			}
-			
+
 			note->updateTies(); // close any opened ties if present
 		} else
 		if (isRest(curElt)) {
@@ -199,7 +199,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			CAPlayableLength length = playableLengthFromLilyPond(curElt, true);
 			if (length.musicLength()!=CAPlayableLength::Undefined) // length may not be set
 				prevLength = length;
-						
+
 			curVoice()->append( new CARest( type, prevLength, curVoice(), curVoice()->lastTimeEnd() ) );
 		} else
 		if (curElt.startsWith("|")) {
@@ -220,14 +220,14 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			// CABarline
 			QString typeString = peekNextElement();
 			CABarline::CABarlineType type = barlineTypeFromLilyPond(peekNextElement());
-			
+
 			if (type==CABarline::Undefined) {
 				addError(QString("Error while parsing barline type. Barline type %1 unknown.").arg(typeString));
 			}
-			
+
 			// remove clef type from the input
 			parseNextElement();
-			
+
 			// lookup an element with the same type at the same time
 			CABarline *bar = new CABarline(type, curVoice()->staff(), curVoice()->lastTimeEnd());
 			CABarline *sharedBar = static_cast<CABarline*>(findSharedElement(bar));
@@ -245,17 +245,17 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			QString typeString = peekNextElement();
 			CAClef::CAPredefinedClefType type = predefinedClefTypeFromLilyPond( peekNextElement() );
 			int offset = clefOffsetFromLilyPond( peekNextElement() );
-			
+
 			if (type==CAClef::Undefined) {
 				addError(QString("Error while parsing clef type. Clef type %1 unknown.").arg(typeString));
 			}
-			
+
 			// remove clef type from the input
 			parseNextElement();
-			
+
 			CAClef *clef = new CAClef( type, curVoice()->staff(), curVoice()->lastTimeEnd(), offset );
 			CAClef *sharedClef = static_cast<CAClef*>(findSharedElement(clef));
-			
+
 			if (!sharedClef) {
 				curVoice()->append( clef );
 			} else {
@@ -273,15 +273,15 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 				continue;
 			}
 			parseNextElement(); // remove pitch
-			
+
 			// gender
 			QString genderString = peekNextElement();
 			CADiatonicKey::CAGender gender = diatonicKeyGenderFromLilyPond(genderString);
 			parseNextElement();
-			
+
 			CAKeySignature *keySig = new CAKeySignature( CADiatonicKey(relativePitchFromLilyPond(keyString, CADiatonicPitch(3) ), gender), curVoice()->staff(), curVoice()->lastTimeEnd() );
 			CAKeySignature *sharedKeySig = static_cast<CAKeySignature*>(findSharedElement(keySig));
-			
+
 			if (!sharedKeySig) {
 				curVoice()->append( keySig );
 			} else {
@@ -300,10 +300,10 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			}
 			CATime time = timeSigFromLilyPond(timeString);
 			parseNextElement();
-			
+
 			CATimeSignature *timeSig = new CATimeSignature(time.beats, time.beat, curVoice()->staff(), curVoice()->lastTimeEnd());
 			CATimeSignature *sharedTimeSig = static_cast<CATimeSignature*>(findSharedElement(timeSig));
-			
+
 			if (!sharedTimeSig) {
 				curVoice()->append( timeSig );
 			} else {
@@ -314,20 +314,20 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 		} else
 			changed=false;
 	}
-	
+
 	return voice;
 }
 
 CALyricsContext *CALilyPondImport::importLyricsContextImpl() {
 	CALyricsContext *lc = new CALyricsContext( "", 1, static_cast<CASheet*>(0) );
-	
+
 	CASyllable *lastSyllable = 0;
 	int timeSDummy=0; // dummy timestart to keep the order of inserted syllables. Real timeStarts are sets when repositSyllables() is called
 	for (QString curElt = parseNextElement(); (!in().isEmpty() || !curElt.isEmpty() ); curElt = parseNextElement(), timeSDummy++) {
 		QString text = curElt;
 		if (curElt == "_")
 			text = "";
-		
+
 		if (lastSyllable && text=="--") {
 			lastSyllable->setHyphenStart(true);
 		} else
@@ -338,14 +338,14 @@ CALyricsContext *CALilyPondImport::importLyricsContextImpl() {
 		}
 	}
 	lc->repositSyllables(); // sets syllables timeStarts and timeLengths
-	
+
 	return lc;
 }
 
 /*!
 	Returns the first element in input stream ended with one of the delimiters and shorten input stream for the element.
-	
-	\todo Only one-character syntax delimiters are supported so far. 
+
+	\todo Only one-character syntax delimiters are supported so far.
 	\sa peekNextElement()
 */
 const QString CALilyPondImport::parseNextElement() {
@@ -353,11 +353,11 @@ const QString CALilyPondImport::parseNextElement() {
 	int start = in().indexOf(QRegExp("\\S"));
 	if (start==-1)
 		start = 0;
-	
+
 	int i = in().indexOf(DELIMITERS, start);
 	if (i==-1)
 		i=in().size();
-	
+
 	QString ret;
 	if (i==start) {
 		// syntax delimiter only
@@ -368,13 +368,13 @@ const QString CALilyPondImport::parseNextElement() {
 		ret = in().mid(start, i-start);
 		in().remove(0, i);
 	}
-	
+
 	return ret;
 }
 
 /*!
 	Returns the first element in input stream ended with one of the delimiters but don't shorten the stream.
-	
+
 	\sa parseNextElement()
 */
 const QString CALilyPondImport::peekNextElement() {
@@ -382,11 +382,11 @@ const QString CALilyPondImport::peekNextElement() {
 	int start = in().indexOf(QRegExp("\\S"));
 	if (start==-1)
 		start = 0;
-	
+
 	int i = in().indexOf(DELIMITERS, start);
 	if (i==-1)
 		i=in().size();
-	
+
 	QString ret;
 	if (i==start) {
 		// syntax delimiter only
@@ -395,42 +395,42 @@ const QString CALilyPondImport::peekNextElement() {
 		// ordinary whitespace/syntax delimiter
 		ret = in().mid(start, i-start);
 	}
-	
+
 	return ret;
 }
 
 /*!
 	Gathers a list of music elements with the given element's start time and returns the first music element in the
 	gathered list with the same attributes.
-	
+
 	This method is usually called when voices have "shared" music elements (barlines, clefs etc.). However, in LilyPond
 	syntax the music element can/should be present in all the voices. This function finds this shared music element, if
 	it already exists.
-	
+
 	If the music element with the same properties exists, user should delete its own instance and add an already
 	existing instance of the returned shared music element to the voice.
-	
+
 	\sa CAMusElement::compare()
 */
 CAMusElement* CALilyPondImport::findSharedElement(CAMusElement *elt) {
 	if ( !curVoice() || !curVoice()->staff() )
 		return 0;
-	
+
 	// gather a list of all the music elements of that type in the staff at that time
 	QList<CAMusElement*> foundElts = curVoice()->staff()->getEltByType( elt->musElementType(), elt->timeStart() );
-	
+
 	// compare gathered music elements properties
 	for (int i=0; i<foundElts.size(); i++)
 		if (!foundElts[i]->compare(elt))             // element has exactly the same properties
 			if (!curVoice()->contains(foundElts[i])) // element isn't present in the voice yet
 				return foundElts[i];
-	
+
 	return 0;
 }
 
 /*!
 	Returns true, if the given LilyPond element is a note.
-	
+
 	\sa isRest()
 */
 bool CALilyPondImport::isNote(const QString elt) {
@@ -439,7 +439,7 @@ bool CALilyPondImport::isNote(const QString elt) {
 
 /*!
 	Returns true, if the given LilyPond element is a rest.
-	
+
 	\sa isNote()
 */
 bool CALilyPondImport::isRest(const QString elt) {
@@ -448,21 +448,21 @@ bool CALilyPondImport::isRest(const QString elt) {
 
 /*!
 	Generates the note pitch and number of accidentals from the note written in LilyPond syntax.
-	
+
 	\sa playableLengthFromLilyPond()
 */
 CADiatonicPitch CALilyPondImport::relativePitchFromLilyPond(QString& constNName, CADiatonicPitch prevPitch, bool parse) {
 	QString noteName = constNName;
-	
+
 	// determine pitch
 	int curPitch = noteName[0].toLatin1() - 'a' + 5	// determine the 0-6 pitch from note name
-	               - (prevPitch.noteName() % 7);	
+	               - (prevPitch.noteName() % 7);
 	while (curPitch<-3)	//normalize pitch - the max +/- interval is fourth
 		curPitch+=7;
 	while (curPitch>3)
 		curPitch-=7;
 	curPitch += prevPitch.noteName();
-	
+
 	// determine accidentals
 	signed char curAccs = 0;
 	while (noteName.indexOf("is") != -1) {
@@ -479,7 +479,7 @@ CADiatonicPitch CALilyPondImport::relativePitchFromLilyPond(QString& constNName,
 	}
 	if (!curAccs && parse)
 		constNName.remove(0, 1);
-	
+
 	// add octave up/down
 	for (int i=0; i<noteName.size(); i++) {
 		if (noteName[i]=='\'') {
@@ -492,7 +492,7 @@ CADiatonicPitch CALilyPondImport::relativePitchFromLilyPond(QString& constNName,
 				constNName.remove(0,1);
 		}
 	}
-	
+
 	return CADiatonicPitch( curPitch, curAccs );
 }
 
@@ -500,12 +500,12 @@ CADiatonicPitch CALilyPondImport::relativePitchFromLilyPond(QString& constNName,
 	Generates playable lentgth and number of dots from the note/rest string in LilyPond syntax.
 	If the playable element doesn't include length, { CAPlayable::CAPlayableLength::Undefined, 0 } is returned.
 	This function also shortens the given string for the playable length, if \a parse is True.
-	
+
 	\sa relativePitchFromString()
 */
 CAPlayableLength CALilyPondImport::playableLengthFromLilyPond(QString& elt, bool parse) {
 	CAPlayableLength ret;
-	
+
 	// index of the first number
 	int start = elt.indexOf(QRegExp("[\\d]"));
 	if (start == -1)  // no length written
@@ -517,17 +517,17 @@ CAPlayableLength CALilyPondImport::playableLengthFromLilyPond(QString& elt, bool
 		for (int i = dStart = elt.indexOf(".",start);
 		     i!=-1 && i<elt.size() && elt[i]=='.';
 		     i++, ret.setDotted( ret.dotted()+1 ));
-		
+
 		if (dStart == -1)
 			dStart = elt.indexOf(QRegExp("[\\D]"), start);
 		if (dStart == -1)
 			dStart = elt.size();
-		
+
 		ret.setMusicLength( static_cast<CAPlayableLength::CAMusicLength>(elt.mid(start, dStart-start).toInt()) );
 		if (parse)
 			elt.remove(start, dStart-start+ret.dotted());
 	}
-	
+
 	return ret;
 }
 
@@ -537,15 +537,15 @@ CAPlayableLength CALilyPondImport::playableLengthFromLilyPond(QString& elt, bool
 */
 CARest::CARestType CALilyPondImport::restTypeFromLilyPond( QString& elt, bool parse ) {
 	CARest::CARestType t = CARest::Normal;
-	
+
 	if (elt[0]=='r' || elt[0]=='R')
 		t = CARest::Normal;
 	else
 		t = CARest::Hidden;
-	
+
 	if (parse)
 		elt.remove( 0, 1 );
-	
+
 	return t;
 }
 
@@ -556,7 +556,7 @@ CAClef::CAPredefinedClefType CALilyPondImport::predefinedClefTypeFromLilyPond( c
 	// remove any quotes/double quotes
 	QString clef(constClef);
 	clef.remove(QRegExp("[\"']"));
-	
+
 	if ( clef.contains("treble") || clef.contains("violin") || clef.contains("G") ) return CAClef::Treble;
 	if ( clef.contains("french") ) return CAClef::French;
 	if ( clef.contains("bass") || clef.contains("F") ) return CAClef::Bass;
@@ -569,7 +569,7 @@ CAClef::CAPredefinedClefType CALilyPondImport::predefinedClefTypeFromLilyPond( c
 	if ( clef.contains("baritone") ) return CAClef::Baritone;
 	if ( clef=="percussion" ) return CAClef::Percussion;
 	if ( clef=="tab" ) return CAClef::Tablature;
-	
+
 	return CAClef::Treble;
 }
 
@@ -580,10 +580,10 @@ int CALilyPondImport::clefOffsetFromLilyPond( const QString constClef ) {
 	// remove any quotes/double quotes
 	QString clef(constClef);
 	clef.remove(QRegExp("[\"']"));
-	
+
 	if ( !clef.contains("_") && !clef.contains("^") )
 		return 0;
-	
+
 	int m;
 	int idx = clef.indexOf("^");
 	if (idx==-1) {
@@ -591,7 +591,7 @@ int CALilyPondImport::clefOffsetFromLilyPond( const QString constClef ) {
 		m=-1;
 	} else
 		m=1;
-	
+
 	return clef.right( clef.size()-(idx+1) ).toInt()*m;
 }
 
@@ -610,10 +610,10 @@ CADiatonicKey::CAGender CALilyPondImport::diatonicKeyGenderFromLilyPond(QString 
 */
 CALilyPondImport::CATime CALilyPondImport::timeSigFromLilyPond(QString timeSig) {
 	int beats=0, beat=0;
-	
+
 	beats = timeSig.mid(0, timeSig.indexOf("/")).toInt();
 	beat = timeSig.mid(timeSig.indexOf("/")+1).toInt();
-	
+
 	CATime time = { beats, beat };
 	return time;
 }
@@ -625,7 +625,7 @@ CABarline::CABarlineType CALilyPondImport::barlineTypeFromLilyPond(QString const
 	// remove any quotes/double quotes
 	QString barline(constBarline);
 	barline.remove(QRegExp("[\"']"));
-	
+
 	if (barline=="|") return CABarline::Single; else
 	if (barline=="||") return CABarline::Double; else
 	if (barline=="|.") return CABarline::End; else

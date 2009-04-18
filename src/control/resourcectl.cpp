@@ -6,7 +6,7 @@
 */
 
 #include "control/resourcectl.h"
-#include "core/document.h"
+#include "score/document.h"
 #ifndef SWIGCPP
 #include "core/undo.h"
 #include "canorus.h"

@@ -16,8 +16,8 @@
 #include <QTimer>
 
 #include "widgets/viewport.h"
-#include "core/kdtree.h"
-#include "core/note.h"
+#include "layout/kdtree.h"
+#include "score/note.h"
 
 class QScrollBar;
 class QMouseEvent;

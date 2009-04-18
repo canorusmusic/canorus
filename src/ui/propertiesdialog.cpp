@@ -15,12 +15,12 @@
 #include "canorus.h"
 #include "core/undo.h"
 
-#include "core/document.h"
-#include "core/sheet.h"
-#include "core/staff.h"
-#include "core/voice.h"
-#include "core/lyricscontext.h"
-#include "core/functionmarkcontext.h"
+#include "score/document.h"
+#include "score/sheet.h"
+#include "score/staff.h"
+#include "score/voice.h"
+#include "score/lyricscontext.h"
+#include "score/functionmarkcontext.h"
 
 /*!
 	\class CAPropertiesDialog

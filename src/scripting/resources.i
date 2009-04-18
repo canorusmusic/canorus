@@ -6,9 +6,9 @@
 */
 
 %{
-#include "core/resource.h"
+#include "score/resource.h"
 #include "control/resourcectl.h"
 %}
 
-%include "core/resource.h"
+%include "score/resource.h"
 %include "control/resourcectl.h"

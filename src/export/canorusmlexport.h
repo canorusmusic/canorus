@@ -12,9 +12,9 @@
 #include <QColor>
 
 #include "export/export.h"
-#include "core/playablelength.h"
-#include "core/diatonicpitch.h"
-#include "core/diatonickey.h"
+#include "score/playablelength.h"
+#include "score/diatonicpitch.h"
+#include "score/diatonickey.h"
 
 class CAMusElement;
 

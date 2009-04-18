@@ -7,7 +7,7 @@
 
 #include "core/midirecorder.h"
 #include "export/midiexport.h"
-#include "core/resource.h"
+#include "score/resource.h"
 #include "interface/mididevice.h"
 
 /*!

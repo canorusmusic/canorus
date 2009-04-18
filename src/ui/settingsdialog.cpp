@@ -14,11 +14,11 @@
 #include "ui/settingsdialog.h"
 #include "interface/mididevice.h"
 #include "core/settings.h"
-#include "core/sheet.h"         // needed for preview sheet
-#include "core/staff.h"         // needed for preview sheet
-#include "core/voice.h"         // needed for preview sheet
-#include "core/clef.h"          // needed for preview sheet
-#include "core/timesignature.h" // needed for preview sheet
+#include "score/sheet.h"         // needed for preview sheet
+#include "score/staff.h"         // needed for preview sheet
+#include "score/voice.h"         // needed for preview sheet
+#include "score/clef.h"          // needed for preview sheet
+#include "score/timesignature.h" // needed for preview sheet
 
 /*!
 	\class CASettingsDialog

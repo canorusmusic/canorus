@@ -7,15 +7,15 @@
 
 #include "core/transpose.h"
 
-#include "core/staff.h"
-#include "core/functionmarkcontext.h"
-#include "core/voice.h"
-#include "core/sheet.h"
-#include "core/muselement.h"
-#include "core/keysignature.h"
-#include "core/functionmark.h"
-#include "core/note.h"
-#include "core/diatonicpitch.h"
+#include "score/staff.h"
+#include "score/functionmarkcontext.h"
+#include "score/voice.h"
+#include "score/sheet.h"
+#include "score/muselement.h"
+#include "score/keysignature.h"
+#include "score/functionmark.h"
+#include "score/note.h"
+#include "score/diatonicpitch.h"
 
 /*!
 	\class CATranspose

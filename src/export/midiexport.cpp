@@ -14,10 +14,10 @@
 
 #include "export/midiexport.h"
 
-#include "core/document.h"
-#include "core/sheet.h"
-#include "core/staff.h"
-#include "core/voice.h"
+#include "score/document.h"
+#include "score/sheet.h"
+#include "score/staff.h"
+#include "score/voice.h"
 #include "interface/playback.h"
 #include "interface/mididevice.h"
 

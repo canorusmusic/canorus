@@ -11,7 +11,7 @@
 #include <QString>
 #include <QList>
 
-#include "core/resource.h"
+#include "score/resource.h"
 
 class CAResourceCtl {
 public:
