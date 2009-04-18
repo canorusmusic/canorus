@@ -51,9 +51,12 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 	}
 
 	int eltIdx[voiceCount()]; for (int i=0; i<voiceCount(); i++) eltIdx[i]=0;
-	CASlur *curTie[voiceCount()]; for (int i=0; i<voiceCount(); i++) curTie[i]=0;
-	CASlur *curSlur[voiceCount()]; for (int i=0; i<voiceCount(); i++) curSlur[i]=0;
-	CASlur *curPhrasingSlur[voiceCount()]; for (int i=0; i<voiceCount(); i++) curPhrasingSlur[i]=0;
+	QList<CANote*> tiedOrigNotes; // original notes having opened tie
+	QList<CANote*> sluredOrigNotes; // original notes having opened slur
+	QList<CANote*> phrasingSluredOrigNotes; // original notes having opened phrasing slur
+	QList<CANote*> tiedClonedNotes; // cloned notes having opened tie
+	QList<CANote*> sluredClonedNotes; // cloned notes having opened slur
+	QList<CANote*> phrasingSluredClonedNotes; // cloned notes having opened phrasing slur
 
 	bool done=false;
 	while (!done) {
@@ -61,63 +64,79 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 		for (int i=0; i<voiceCount(); i++) {
 			QList<CAPlayable*> elementsUnderTuplet;
 
+			// clone elements in the current voice until the non-playable element is reached
 			while ( eltIdx[i]<voiceAt(i)->musElementCount() && voiceAt(i)->musElementAt(eltIdx[i])->isPlayable() ) {
-				CAPlayable *clonedElt = static_cast<CAPlayable*>(voiceAt(i)->musElementAt(eltIdx[i]));
-				CAPlayable *newElt = clonedElt->clone( newStaff->voiceAt(i) );
-				newStaff->voiceAt(i)->append( newElt,
+				CAPlayable *origElt = static_cast<CAPlayable*>(voiceAt(i)->musElementAt(eltIdx[i]));
+				CAPlayable *clonedElt = origElt->clone( newStaff->voiceAt(i) );
+				newStaff->voiceAt(i)->append( clonedElt,
 					voiceAt(i)->musElementAt(eltIdx[i])->musElementType()==CAMusElement::Note &&
-					static_cast<CANote*>(clonedElt)->isPartOfChord() &&
-					!static_cast<CANote*>(clonedElt)->isFirstInChord() );
+					static_cast<CANote*>(origElt)->isPartOfChord() &&
+					!static_cast<CANote*>(origElt)->isFirstInChord() );
 
-				// check tie
-				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(clonedElt)->tieEnd() ) {
-					curTie[i]->setNoteEnd( static_cast<CANote*>(newElt) );
-					static_cast<CANote*>(newElt)->setTieEnd(curTie[i]);
-					curTie[i] = 0;
-				}
-				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(clonedElt)->tieStart() ) {
-					curTie[i] = static_cast<CANote*>(clonedElt)->tieStart()->clone(newStaff);
-					curTie[i]->setNoteStart( static_cast<CANote*>(newElt) );
-					static_cast<CANote*>(newElt)->setTieStart(curTie[i]);
-				}
+				if ( origElt->musElementType()==CAMusElement::Note ) {
+					CANote *origNote = static_cast<CANote*>(origElt);
+					CANote *clonedNote = static_cast<CANote*>(clonedElt);
 
-				// check slur
-				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(clonedElt)->slurEnd() ) {
-					curSlur[i]->setNoteEnd( static_cast<CANote*>(newElt) );
-					static_cast<CANote*>(newElt)->setSlurEnd(curSlur[i]);
-					curSlur[i] = 0;
-				}
-				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(clonedElt)->slurStart() ) {
-					curSlur[i] = static_cast<CANote*>(voiceAt(i)->musElementAt(eltIdx[i]))->slurStart()->clone(newStaff);
-					curSlur[i]->setNoteStart( static_cast<CANote*>(newElt) );
-					static_cast<CANote*>(newElt)->setSlurStart(curSlur[i]);
-				}
+					// check starting ties, slurs, prasing slurs
+					for ( int i=0; i<tiedOrigNotes.size(); i++ ) {
+						if ( tiedOrigNotes[i]->tieStart()->noteEnd()==origNote ) {
+							CASlur *newTie = tiedOrigNotes[i]->tieStart()->clone(newStaff);
+							tiedClonedNotes[i]->setTieStart( newTie );
+							newTie->setNoteStart(tiedClonedNotes[i]);
+							newTie->setNoteEnd(clonedNote);
+							clonedNote->setTieEnd(newTie);
 
-				// check phrasing slur
-				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(clonedElt)->phrasingSlurEnd() ) {
-					curPhrasingSlur[i]->setNoteEnd( static_cast<CANote*>(newElt) );
-					static_cast<CANote*>(newElt)->setPhrasingSlurEnd(curPhrasingSlur[i]);
-					curPhrasingSlur[i] = 0;
-				}
-				if ( newElt->musElementType()==CAMusElement::Note &&
-				     static_cast<CANote*>(clonedElt)->phrasingSlurStart() ) {
-					curPhrasingSlur[i] = static_cast<CANote*>(clonedElt)->phrasingSlurStart()->clone(newStaff);
-					curPhrasingSlur[i]->setNoteStart( static_cast<CANote*>(newElt) );
-					static_cast<CANote*>(newElt)->setPhrasingSlurStart(curPhrasingSlur[i]);
+							tiedOrigNotes.removeAt(i);
+							tiedClonedNotes.removeAt(i);
+						}
+					}
+					for ( int i=0; i<sluredOrigNotes.size(); i++ ) {
+						if ( sluredOrigNotes[i]->slurStart()->noteEnd()==origNote ) {
+							CASlur *newSlur = sluredOrigNotes[i]->slurStart()->clone(newStaff);
+							sluredClonedNotes[i]->setSlurStart( newSlur );
+							newSlur->setNoteStart(sluredClonedNotes[i]);
+							newSlur->setNoteEnd(clonedNote);
+							clonedNote->setSlurEnd(newSlur);
+
+							sluredOrigNotes.removeAt(i);
+							sluredClonedNotes.removeAt(i);
+						}
+					}
+					for ( int i=0; i<phrasingSluredOrigNotes.size(); i++ ) {
+						if ( phrasingSluredOrigNotes[i]->phrasingSlurStart()->noteEnd()==origNote ) {
+							CASlur *newPhrasingSlur = phrasingSluredOrigNotes[i]->phrasingSlurStart()->clone(newStaff);
+							phrasingSluredClonedNotes[i]->setPhrasingSlurStart( newPhrasingSlur );
+							newPhrasingSlur->setNoteStart(phrasingSluredClonedNotes[i]);
+							newPhrasingSlur->setNoteEnd(clonedNote);
+							clonedNote->setPhrasingSlurEnd(newPhrasingSlur);
+
+							phrasingSluredOrigNotes.removeAt(i);
+							phrasingSluredClonedNotes.removeAt(i);
+						}
+					}
+
+					// check ending ties, slurs, phrasing slurs
+					if ( origNote->tieStart() ) {
+						tiedOrigNotes << origNote;
+						tiedClonedNotes << static_cast<CANote*>(clonedElt);
+					}
+					if ( origNote->slurStart() ) {
+						sluredOrigNotes << origNote;
+						sluredClonedNotes << static_cast<CANote*>(clonedElt);
+					}
+					if ( origNote->phrasingSlurStart() ) {
+						phrasingSluredOrigNotes << origNote;
+						phrasingSluredClonedNotes << static_cast<CANote*>(clonedElt);
+					}
 				}
 
 				// check tuplets
-				if ( clonedElt->tuplet() ) {
-					elementsUnderTuplet << newElt;
+				if ( origElt->tuplet() ) {
+					elementsUnderTuplet << clonedElt;
 				}
 
-				if ( clonedElt->isLastInTuplet() ) {
-					new CATuplet( clonedElt->tuplet()->number(), clonedElt->tuplet()->actualNumber(), elementsUnderTuplet );
+				if ( origElt->isLastInTuplet() ) {
+					new CATuplet( origElt->tuplet()->number(), origElt->tuplet()->actualNumber(), elementsUnderTuplet );
 					elementsUnderTuplet.clear();
 				}
 
