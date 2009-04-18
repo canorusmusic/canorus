@@ -155,7 +155,7 @@ void CATransposeView::on_uiApply_clicked( QAbstractButton *b ) {
 				i = CAInterval( (uiIntervalQuality->currentIndex()-1)*2,
 		                        (uiIntervalQuantity->currentIndex()+1)*(uiIntervalDir->currentIndex()?(-1):1) );
 			} else { // second, third, sixth, seventh
-				i = CAInterval( qRound(uiIntervalQuality->currentIndex()-1.5),
+				i = CAInterval( qRound((uiIntervalQuality->currentIndex()-1.5)*(4/3.0)), //simple formula to distribute 0..3 -> -2..2
 		                        (uiIntervalQuantity->currentIndex()+1)*(uiIntervalDir->currentIndex()?(-1):1) );
 			}
 			t.transposeByInterval( i );
