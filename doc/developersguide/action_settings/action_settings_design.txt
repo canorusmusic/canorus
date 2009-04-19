@@ -12,11 +12,16 @@ external controls like from settings dialog)
 
 3) CASingleAction
 One action based on QAction, Midi and QString. Contains all
-information (including description) for one control command
+information (including description) for one control command:
+- Command (name, not an internal representation!)
+- Context (typically menu (toolbar), one mode)
+- Description (is shown in the table via tool tip)
+- Shortcut (Keyboard)
+- Midi Command
 
 4) CASettings
 Enhanced to include the Action control editor and all the
-CASingleAction instances.
+CASingleAction instances (as vector).
 
 5) CAMainWin
 Actions need to be adapted to use the control settings
@@ -37,6 +42,14 @@ A midi command exists of three parts: control, pitch, velocity separated by blan
 Example:
 insert_note	edit	Ctrl+I  2 5 0
 open_file	menu	Ctrl+O	1 3 0
+
+The regular expression for parsing one line looks like this:
+^(.*)\\t(.*)\\t(.*)\\t(.*)\\t(.*)\\t(.*)
+If required this expression can be improved for some check when
+reading the numbers of the midi command and the "Ctrl" keyword.
+Be aware that when reading one line the command showed at the
+table is not identical to the one saved. You have to first identify it
+with the instance of the CASingleAction vector in CASettings.
 
 Plugins
 -------
