@@ -24,8 +24,8 @@
 #include "interface/playback.h"
 #include "interface/pyconsoleinterface.h"
 
-#include "widgets/viewportcontainer.h"
-#include "widgets/scoreviewport.h"
+#include "widgets/viewcontainer.h"
+#include "widgets/scoreview.h"
 #include "widgets/resourceview.h"
 
 class QKeyEvent;
@@ -43,8 +43,8 @@ class CAMenuToolButton;
 class CAUndoToolButton;
 class CALCDNumber;
 class CASheet;
-class CAScoreViewPort;
-class CASourceViewPort;
+class CAScoreView;
+class CASourceView;
 class CAMusElementFactory;
 class CAPrintPreviewCtl;
 class CAPrintCtl;
@@ -80,11 +80,11 @@ public:
 	void newDocument();
 	void addSheet(CASheet *s);
 	void removeSheet(CASheet *s);
-	void insertMusElementAt( const QPoint coords, CAScoreViewPort *v );
+	void insertMusElementAt( const QPoint coords, CAScoreView *v );
 	void restartTimeEditedTime() { _timeEditedTime = 0; };
-	void deleteSelection( CAScoreViewPort *v, bool deleteSyllable, bool deleteNotes, bool undo );
-	void copySelection( CAScoreViewPort *v );
-	void pasteAt( const QPoint coords, CAScoreViewPort *v );
+	void deleteSelection( CAScoreView *v, bool deleteSyllable, bool deleteNotes, bool undo );
+	void copySelection( CAScoreView *v );
+	void pasteAt( const QPoint coords, CAScoreView *v );
 
 	CADocument *openDocument( const QString& fileName );
 	CADocument *openDocument( CADocument* doc );
@@ -97,17 +97,17 @@ public:
 	inline QAction        *resourceViewAction() { return uiResourceView; }
 	inline CAMidiRecorderView *midiRecorderView() { return _midiRecorderView; }
 	inline void setMidiRecorderView( CAMidiRecorderView *v ) { _midiRecorderView = v; }
-	inline CAViewPort *currentViewPort() { return _currentViewPort; }
-	inline void removeViewPort(CAViewPort* v) { _viewPortList.removeAll(v); }
-	inline QList<CAViewPort*> viewPortList() { return _viewPortList; }
+	inline CAView *currentView() { return _currentView; }
+	inline void removeView(CAView* v) { _viewList.removeAll(v); }
+	inline QList<CAView*> viewList() { return _viewList; }
 
-	inline CAScoreViewPort *currentScoreViewPort() {
-		if (currentViewPort()) return dynamic_cast<CAScoreViewPort*>(currentViewPort());
+	inline CAScoreView *currentScoreView() {
+		if (currentView()) return dynamic_cast<CAScoreView*>(currentView());
 		else return 0;
 	}
 
 	inline CASheet *currentSheet() {
-		CAScoreViewPort *v = currentScoreViewPort();
+		CAScoreView *v = currentScoreView();
 		if (v) return v->sheet();
 		else return 0;
 	}
@@ -120,7 +120,7 @@ public:
 
 	CAContext *currentContext();
 	CAVoice   *currentVoice();
-	inline CAViewPortContainer *currentViewPortContainer() { return _currentViewPortContainer; }
+	inline CAViewContainer *currentViewContainer() { return _currentViewContainer; }
 	inline CADocument *document() { return _document; }
 
 	inline void setDocument(CADocument *document) { _document = document; _resourceView->setDocument( document ); }
@@ -278,7 +278,7 @@ private slots:
 	void on_uiSplitVertically_triggered();
 	void on_uiUnsplitAll_triggered();
 	void on_uiCloseCurrentView_triggered();
-	void on_uiNewViewport_triggered();
+	void on_uiNewView_triggered();
 	void on_uiNewWindow_triggered();
 
 	// Help
@@ -294,22 +294,22 @@ private slots:
 	void keyPressEvent(QKeyEvent *);
 	void on_uiTabWidget_currentChanged(int);
 
-	void viewPortClicked();
+	void viewClicked();
 
-	void scoreViewPortMousePress(QMouseEvent *e, const QPoint coords);
-	void scoreViewPortMouseMove(QMouseEvent *e, const QPoint coords);
-	void scoreViewPortMouseRelease(QMouseEvent *e, const QPoint coords);
-	void scoreViewPortDoubleClick(QMouseEvent *e, const QPoint coords);
-	void scoreViewPortTripleClick(QMouseEvent *e, const QPoint coords);
-	void scoreViewPortWheel(QWheelEvent *e, const QPoint coords);
-	void scoreViewPortKeyPress(QKeyEvent *e);
-	void sourceViewPortCommit(QString inputString);
-	void floatViewPortClosed(CAViewPort*);
+	void scoreViewMousePress(QMouseEvent *e, const QPoint coords);
+	void scoreViewMouseMove(QMouseEvent *e, const QPoint coords);
+	void scoreViewMouseRelease(QMouseEvent *e, const QPoint coords);
+	void scoreViewDoubleClick(QMouseEvent *e, const QPoint coords);
+	void scoreViewTripleClick(QMouseEvent *e, const QPoint coords);
+	void scoreViewWheel(QWheelEvent *e, const QPoint coords);
+	void scoreViewKeyPress(QKeyEvent *e);
+	void sourceViewCommit(QString inputString);
+	void floatViewClosed(CAView*);
 
 	void onTimeEditedTimerTimeout();
 
 	void playbackFinished();
-	void onScoreViewPortSelectionChanged();
+	void onScoreViewSelectionChanged();
 	void onRepaintTimerTimeout();
 
 private:
@@ -329,19 +329,19 @@ private:
 	CAMidiRecorderView *_midiRecorderView;
 
 	void setMode(CAMode mode);
-	inline void setCurrentViewPort( CAViewPort *viewPort ) { _currentViewPort = viewPort; }
-	inline void setCurrentViewPortContainer( CAViewPortContainer *vpc )
-		{ _currentViewPortContainer = vpc; }
+	inline void setCurrentView( CAView *view ) { _currentView = view; }
+	inline void setCurrentViewContainer( CAViewContainer *vpc )
+		{ _currentViewContainer = vpc; }
 
-	CAViewPortContainer *_currentViewPortContainer;
-	QList<CAViewPortContainer *>_viewPortContainerList;
+	CAViewContainer *_currentViewContainer;
+	QList<CAViewContainer *>_viewContainerList;
 
-	QList<CAViewPort *> _viewPortList;
-	QHash<CAViewPortContainer*, CASheet*> _sheetMap;
-	CAViewPort *_currentViewPort;
+	QList<CAView *> _viewList;
+	QHash<CAViewContainer*, CASheet*> _sheetMap;
+	CAView *_currentView;
 	bool _animatedScroll;
 	bool _lockScrollPlayback;
-	CAViewPort *_playbackViewPort;
+	CAView *_playbackView;
 	QList<CADrawableMusElement*> _prePlaybackSelection;
 	QTimer *_repaintTimer;
 	bool _rebuildUILock;
@@ -367,7 +367,7 @@ private:
 	///////////////////////////////////////////////////////////////////////////
 	void createCustomActions();
 	void setupCustomUi();
-	void initViewPort(CAViewPort*);
+	void initView(CAView*);
 	void updateUndoRedoButtons();
 	void updateToolBars();
 	void updateSheetToolBar();

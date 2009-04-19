@@ -305,8 +305,8 @@ int CACanorus::mainWinCount(CADocument *doc) {
 }
 
 /*!
-	Rebuilds main windows with the given \a document and its viewports showing the given \a sheet.
-	Rebuilds all viewports if no sheet is null.
+	Rebuilds main windows with the given \a document and its views showing the given \a sheet.
+	Rebuilds all views if no sheet is null.
 
 	\sa rebuildUI(CADocument*), CAMainWin::rebuildUI()
 */

@@ -48,7 +48,7 @@ public:
 	static QList<CAMainWin*> findMainWin(CADocument* document);
 	inline static CAMainWin* mainWinAt(int idx) { return _mainWinList[idx]; }
 	inline static void removeMainWin(CAMainWin *w) { _mainWinList.removeAll(w); }
-	inline static void removeViewPort(CAViewPort *v) { for (int i=0; i<mainWinCount(); i++) _mainWinList[i]->removeViewPort(v); }
+	inline static void removeView(CAView *v) { for (int i=0; i<mainWinCount(); i++) _mainWinList[i]->removeView(v); }
 	inline static void addMainWin( CAMainWin *w ) { _mainWinList << w; }
 	inline static void restartTimeEditedTimes(CADocument *doc) { for (int i=0; i<mainWinCount(); i++) if (mainWinAt(i)->document()==doc) mainWinAt(i)->restartTimeEditedTime(); }
 

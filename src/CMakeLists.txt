@@ -122,10 +122,10 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	ui/transposeview.h
 	
 	widgets/lcdnumber.h
-	widgets/viewport.h
-	widgets/viewportcontainer.h
-	widgets/scoreviewport.h
-	widgets/sourceviewport.h
+	widgets/view.h
+	widgets/viewcontainer.h
+	widgets/scoreview.h
+	widgets/sourceview.h
 	widgets/toolbutton.h
 	widgets/toolbuttonpopup.h
 	widgets/menutoolbutton.h
@@ -259,14 +259,14 @@ SET(Canorus_Scripting_Srcs	# Sources meant for bridging C++<->scripting language
 
 SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/lcdnumber.cpp
-	widgets/scoreviewport.cpp
-	widgets/sourceviewport.cpp
+	widgets/scoreview.cpp
+	widgets/sourceview.cpp
 	widgets/toolbutton.cpp
 	widgets/toolbuttonpopup.cpp
 	widgets/menutoolbutton.cpp
 	widgets/undotoolbutton.cpp
-	widgets/viewport.cpp
-	widgets/viewportcontainer.cpp
+	widgets/view.cpp
+	widgets/viewcontainer.cpp
 	widgets/pyconsole.cpp
 	widgets/midirecorderview.cpp
 	widgets/resourceview.cpp

@@ -10,7 +10,7 @@
 #include <iostream>	//debug
 #include "layout/layoutengine.h"
 
-#include "widgets/scoreviewport.h"
+#include "widgets/scoreview.h"
 
 #include "layout/drawablestaff.h"
 #include "layout/drawableclef.h"
@@ -60,10 +60,10 @@ int *CALayoutEngine::streamsRehersalMarks;
 */
 
 /*!
-	Repositions the notes in the abstract sheet of the given score viewport \a v so they fit nicely.
-	This function doesn't clear the viewport, but only adds the elements.
+	Repositions the notes in the abstract sheet of the given score view \a v so they fit nicely.
+	This function doesn't clear the view, but only adds the elements.
 */
-void CALayoutEngine::reposit( CAScoreViewPort *v ) {
+void CALayoutEngine::reposit( CAScoreView *v ) {
 	int i;
 	CASheet *sheet = v->sheet();
 
@@ -895,7 +895,7 @@ void CALayoutEngine::reposit( CAScoreViewPort *v ) {
 /*!
 	Place marks for the given music element.
 */
-void CALayoutEngine::placeMarks( CADrawableMusElement *e, CAScoreViewPort *v, int streamIdx ) {
+void CALayoutEngine::placeMarks( CADrawableMusElement *e, CAScoreView *v, int streamIdx ) {
 	CAMusElement *elt = e->musElement();
 	int xCoord = e->xPos();
 

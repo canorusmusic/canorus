@@ -47,6 +47,16 @@
 #include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
 
+/*!
+	\class CACanorusMLImport
+	\brief Class for opening the Canorus documents
+
+	CACanorusMLImport class opens the XML based Canorus documents.
+	It uses SAX parser for reading.
+
+	\sa CAImport, CACanorusMLExport
+*/
+
 CACanorusMLImport::CACanorusMLImport( QTextStream *stream )
  : CAImport(stream), QXmlDefaultHandler() {
 	initCanorusMLImport();
@@ -80,12 +90,6 @@ void CACanorusMLImport::initCanorusMLImport() {
 	_curTuplet       = 0;
 }
 
-/*!
-	Opens a CanorusML source \a in and creates a document out of it.
-	\a mainWin is needed for any UI settings stored in the file (the last viewports
-	positions, current sheet etc.).
-	CACanorusML uses SAX parser for reading.
-*/
 CADocument* CACanorusMLImport::importDocumentImpl() {
 	QIODevice *device = stream()->device();
 	QXmlInputSource *src;

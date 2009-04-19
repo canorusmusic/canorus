@@ -234,12 +234,12 @@ void setSelection( QList<CAMusElement*> elements ) {
 	CADocument *doc = elements[0]->context()->sheet()->document();
 	QList<CAMainWin*> mainwins = CACanorus::findMainWin(doc);
 	
-	if (!mainwins.size() || !mainwins[0]->currentScoreViewPort()) {
+	if (!mainwins.size() || !mainwins[0]->currentScoreView()) {
 		return;
 	}
 	
-	mainwins[0]->currentScoreViewPort()->clearSelection();
-	mainwins[0]->currentScoreViewPort()->addToSelection(elements);
+	mainwins[0]->currentScoreView()->clearSelection();
+	mainwins[0]->currentScoreView()->addToSelection(elements);
 #else
 	guiError();
 #endif

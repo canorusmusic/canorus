@@ -84,7 +84,7 @@
     <property name="title" >
      <string>Window</string>
     </property>
-    <addaction name="uiNewViewport" />
+    <addaction name="uiNewView" />
     <addaction name="uiNewWindow" />
     <addaction name="separator" />
     <addaction name="uiSplitHorizontally" />
@@ -590,7 +590,7 @@
     <string>Unsplit All</string>
    </property>
   </action>
-  <action name="uiNewViewport" >
+  <action name="uiNewView" >
    <property name="text" >
     <string>New view</string>
    </property>

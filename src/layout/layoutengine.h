@@ -10,14 +10,14 @@
 
 #include <QList>
 
-class CAScoreViewPort;
+class CAScoreView;
 class CADrawableMusElement;
 
 class CALayoutEngine {
 	public:
-		static void reposit(CAScoreViewPort *v);
+		static void reposit(CAScoreView *v);
 	private:
-		static void placeMarks( CADrawableMusElement*, CAScoreViewPort*, int );
+		static void placeMarks( CADrawableMusElement*, CAScoreView*, int );
 		static int *streamsRehersalMarks;
 		static QList<CADrawableMusElement*> scalableElts;
 };

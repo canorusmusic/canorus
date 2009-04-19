@@ -69,14 +69,14 @@ void CAKeybdInput::onMidiInEvent( QVector<unsigned char> m ) {
 	velocity = m[2];
 	if ( event == CAMidiDevice::Midi_Note_On && velocity !=0 ) {
 		CADiatonicPitch x = CAMidiDevice::midiPitchToDiatonicPitch( m[1] );
-		midiInEventToScore( _mw->currentScoreViewPort(), m );
+		midiInEventToScore( _mw->currentScoreView(), m );
 	}
 }
 
 /*!
 	This is the entry point the midi input device. All note on events are passed over here.
 */
-void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char> m) {
+void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) {
 
 	int i;
 	CADiatonicPitch p = CAMidiDevice::midiPitchToDiatonicPitch( m[1] );
@@ -244,7 +244,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char>
 		QList<CAPlayable*> lp = voice->getChord(voice->lastMusElement()->timeStart());
 		QList<CAMusElement*> lme;
 		for (int i=0;i<lp.size();i++) lme << static_cast<CAMusElement*>(lp[i]);
-		_mw->currentScoreViewPort()->addToSelection(lme);
+		_mw->currentScoreView()->addToSelection(lme);
 
 		// When I looking the last appended note is note showing up. Where goes it missing?
 		// Still without a clue. georg

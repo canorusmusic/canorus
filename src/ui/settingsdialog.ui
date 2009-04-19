@@ -561,7 +561,7 @@
             </widget>
            </item>
            <item>
-            <widget class="CAScoreViewPort" native="1" name="uiPreviewScoreViewPort" />
+            <widget class="CAScoreView" native="1" name="uiPreviewScoreView" />
            </item>
           </layout>
          </widget>
@@ -923,9 +923,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CAScoreViewPort</class>
+   <class>CAScoreView</class>
    <extends>QWidget</extends>
-   <header>widgets/scoreviewport.h</header>
+   <header>widgets/scoreview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

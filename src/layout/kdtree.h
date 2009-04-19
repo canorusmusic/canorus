@@ -76,7 +76,7 @@ private:
 
 	\todo Currently, an ordinary vector is used. No tree structure present yet, so all the operations are slow - O(n).
 
-	\sa CAScoreViewPort, CADrawable
+	\sa CAScoreView, CADrawable
 */
 
 /*!

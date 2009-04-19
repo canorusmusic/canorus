@@ -18,9 +18,9 @@
 #ifndef SWIGCPP
 #include "canorus.h"
 #include "ui/mainwin.h"
-#include "widgets/viewportcontainer.h"
-#include "widgets/viewport.h"
-#include "widgets/scoreviewport.h"
+#include "widgets/viewcontainer.h"
+#include "widgets/view.h"
+#include "widgets/scoreview.h"
 #include "layout/drawablemuselement.h"
 #else
 #include <QMenu>
@@ -138,8 +138,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
 #ifndef SWIGCPP
-				if ( mainWin->currentScoreViewPort() ) {
-					CAScoreViewPort *v = mainWin->currentScoreViewPort();
+				if ( mainWin->currentScoreView() ) {
+					CAScoreView *v = mainWin->currentScoreView();
 					if (!v->selection().size() || v->selection().front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
 						error=true;
 						break;
@@ -156,8 +156,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
 #ifndef SWIGCPP
-				if ( mainWin->currentScoreViewPort() ) {
-					CAScoreViewPort *v = mainWin->currentScoreViewPort();
+				if ( mainWin->currentScoreView() ) {
+					CAScoreView *v = mainWin->currentScoreView();
 					if (!v->selection().size() || v->selection().front()->drawableMusElementType()!=CADrawableMusElement::DrawableNote) {
 						error=true;
 						break;
@@ -181,8 +181,8 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 #ifdef USE_PYTHON
 			if (action->lang()=="python") {
 #ifndef SWIGCPP
-				if ( mainWin->currentScoreViewPort() ) {
-					QList<CAMusElement*> musElements = mainWin->currentScoreViewPort()->musElementSelection();
+				if ( mainWin->currentScoreView() ) {
+					QList<CAMusElement*> musElements = mainWin->currentScoreView()->musElementSelection();
 					PyObject *list = PyList_New(0);
 					for (int i=0; i<musElements.size(); i++) {
 						PyList_Append(list, CASwigPython::toPythonObject(musElements[i], CASwigPython::MusElement));

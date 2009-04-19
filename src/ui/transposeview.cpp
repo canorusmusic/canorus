@@ -47,7 +47,7 @@ void CATransposeView::setupCustomUi() {
 	Sets the KeySig1 key signature to the key signature of the first selected note.
  */
 void CATransposeView::show() {
-	CAScoreViewPort *v = static_cast<CAMainWin*>(parent())->currentScoreViewPort();
+	CAScoreView *v = static_cast<CAMainWin*>(parent())->currentScoreView();
 
 	if (v) {
 		CAKeySignature *k = 0;
@@ -125,10 +125,10 @@ void CATransposeView::on_uiIntervalQuantity_currentIndexChanged( int newIndex ) 
 
 void CATransposeView::on_uiApply_clicked( QAbstractButton *b ) {
 	if ( dynamic_cast<CAMainWin*>(parent()) &&
-	     static_cast<CAMainWin*>(parent())->currentScoreViewPort() ) {
+	     static_cast<CAMainWin*>(parent())->currentScoreView() ) {
 		CACanorus::undo()->createUndoCommand( static_cast<CAMainWin*>(parent())->document(), tr("transposition", "undo") );
 
-		CAScoreViewPort *v = static_cast<CAMainWin*>(parent())->currentScoreViewPort();
+		CAScoreView *v = static_cast<CAMainWin*>(parent())->currentScoreView();
 		CATranspose t;
 
 		// get the music elements to transpose
