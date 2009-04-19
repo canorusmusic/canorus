@@ -5,8 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#ifndef SCOREVIEWPORT_H_
-#define SCOREVIEWPORT_H_
+#ifndef SCOREVIEW_H_
+#define SCOREVIEW_H_
 
 #include <QList>
 #include <QPen>
@@ -15,7 +15,7 @@
 #include <QLineEdit>
 #include <QTimer>
 
-#include "widgets/viewport.h"
+#include "widgets/view.h"
 #include "layout/kdtree.h"
 #include "score/note.h"
 
@@ -49,7 +49,7 @@ public slots:
 	void keyPressEvent( QKeyEvent * );
 };
 
-class CAScoreViewPort : public CAViewPort {
+class CAScoreView : public CAView {
 Q_OBJECT
 
 public:
@@ -62,11 +62,11 @@ public:
 	///////////////////
 	// Basic methods //
 	///////////////////
-	CAScoreViewPort(QWidget *parent=0);
-	CAScoreViewPort(CASheet *sheet, QWidget *parent=0);
-	virtual ~CAScoreViewPort();
-	CAScoreViewPort *clone();
-	CAScoreViewPort *clone(QWidget *parent);
+	CAScoreView(QWidget *parent=0);
+	CAScoreView(CASheet *sheet, QWidget *parent=0);
+	virtual ~CAScoreView();
+	CAScoreView *clone();
+	CAScoreView *clone(QWidget *parent);
 	inline CASheet  *sheet() { return _sheet; }
 	inline void setSheet( CASheet *sheet ) { _sheet = sheet; }
 
@@ -263,7 +263,7 @@ signals:
 	void selectionChanged();
 
 private:
-	void initScoreViewPort( CASheet *s );
+	void initScoreView( CASheet *s );
 	inline void clearMElements() { _drawableMList.clear(true); }
 	inline void clearCElements() { _drawableCList.clear(true); }
 	inline bool isSelected(CADrawableMusElement *elt) { return (_selection.contains(elt)); }
@@ -272,15 +272,15 @@ private:
 	// Core Widgets //
 	//////////////////
 	QGridLayout *_layout;    // Grid layout for placing the scrollbars at the right and the bottom.
-	QWidget *_canvas;        // Virtual canvas which represents the size of the drawable area. All its signals are forwarded to CAViewPort.
+	QWidget *_canvas;        // Virtual canvas which represents the size of the drawable area. All its signals are forwarded to CAView.
 	QScrollBar *_hScrollBar, *_vScrollBar; // Horizontal/vertical scrollbars
 
 	////////////////////////
 	// General properties //
 	////////////////////////
-	CAKDTree<CADrawableMusElement*> _drawableMList;  // The list of music elements stored in a tree for faster lookup and other operations. Every viewport has its own list of drawable elements and drawable objects themselves!
-	CAKDTree<CADrawableContext*>    _drawableCList;  // The list of context drawable elements (staffs, lyrics etc.). Every viewport has its own list of drawable elements and drawable objects themselves!
-	CASheet                        *_sheet;          // Pointer to the CASheet which the viewport represents.
+	CAKDTree<CADrawableMusElement*> _drawableMList;  // The list of music elements stored in a tree for faster lookup and other operations. Every view has its own list of drawable elements and drawable objects themselves!
+	CAKDTree<CADrawableContext*>    _drawableCList;  // The list of context drawable elements (staffs, lyrics etc.). Every view has its own list of drawable elements and drawable objects themselves!
+	CASheet                        *_sheet;          // Pointer to the CASheet which the view represents.
 
 	QList<CADrawableMusElement *>   _selection;      // The set of elements being selected.
 	CADrawableContext              *_currentContext; // The pointer to the currently active context (staff, lyrics).
@@ -290,10 +290,10 @@ private:
 	template <typename T> int getMaxXExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
 	template <typename T> int getMaxYExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting below easies
 
-	double _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the viewport is currently showing.
+	double _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the view is currently showing.
 	QPoint _lastMousePressCoords;           // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
 	inline void setLastMousePressCoords( QPoint p ) { _lastMousePressCoords = p; }
-	float _zoom;                            // Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
+	float _zoom;                            // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
 
 	CAVoice *_selectedVoice;        // Voice to be drawn normal colors, others are shaded
 
@@ -303,7 +303,7 @@ private:
 	// Shadow note
 	bool _shadowNoteVisible;        // Should the shadow notes be rendered or not
 
-	bool _shadowNoteVisibleOnLeave; // When you leave the viewport, shadow note is always turned off. This property holds the value, if shadow note was enabled before you left the viewport.
+	bool _shadowNoteVisibleOnLeave; // When you leave the view, shadow note is always turned off. This property holds the value, if shadow note was enabled before you left the view.
 	inline bool shadowNoteVisibleOnLeave() { return _shadowNoteVisibleOnLeave; }
 	inline void setShadowNoteVisibleOnLeave( bool v ) { _shadowNoteVisibleOnLeave = v; }
 
@@ -349,21 +349,21 @@ private:
 	QTimer *_animationTimer;          // Timer used to animate scroll/zoom behaviour.
 	static const int ANIMATION_STEPS; // Number of steps used in animation
 	int _animationStep;               // Current step in the animation
-	double _targetWorldX, _targetWorldY, _targetWorldW, _targetWorldH;	// Absolute world coordinates of the area the viewport is currently showing.
-	float _targetZoom;                // Zoom level of the viewport (1.0 = 100%, 1.5 = 150% etc.).
+	double _targetWorldX, _targetWorldY, _targetWorldW, _targetWorldH;	// Absolute world coordinates of the area the view is currently showing.
+	float _targetZoom;                // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
 
 	void startAnimationTimer();
 
 	///////////////////////
 	// Widgets behaviour //
 	///////////////////////
-	CAScrollBarVisibility _scrollBarVisible;  // Are the scrollbars always visible/never/if needed. Use CAViewPort::ScrollBarAlwaysVisible, CAViewPort::ScrollBarAlwaysHidden or CAViewPort::ScrollBarShowIfNeeded.
+	CAScrollBarVisibility _scrollBarVisible;  // Are the scrollbars always visible/never/if needed. Use CAView::ScrollBarAlwaysVisible, CAView::ScrollBarAlwaysHidden or CAView::ScrollBarShowIfNeeded.
 	bool _allowManualScroll; // Does the scrollbars actually react on user actions - sometimes we only want the scrollbars to show the current location of the score and don't do anything
 
 	/////////////////////////
 	// Internal properties //
 	/////////////////////////
-	double _oldWorldX, _oldWorldY, _oldWorldW, _oldWorldH; // Old coordinates used before the repaint. This is needed so only the new part of the viewport gets repainted when panning.
+	double _oldWorldX, _oldWorldY, _oldWorldW, _oldWorldH; // Old coordinates used before the repaint. This is needed so only the new part of the view gets repainted when panning.
 	bool _playing;                                      // Set to on, when in Playback mode
 	QTimer *_clickTimer;                                // Used for measuring doubleClick and tripleClick
 	int     _numberOfClicks;                            // Used for measuring doubleClick and tripleClick
@@ -375,4 +375,4 @@ private:
 	bool _vScrollBarDeadLock;                           // Flag to prevent recursive scrollbar calls when its value is manually changed.
 };
 
-#endif /*SCOREVIEWPORT_H_*/
+#endif /*SCOREVIEW_H_*/

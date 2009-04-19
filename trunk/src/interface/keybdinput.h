@@ -24,7 +24,7 @@ public:
 
 private:
 	CAMainWin* _mw;
-	void midiInEventToScore(CAScoreViewPort *v, QVector<unsigned char> m);
+	void midiInEventToScore(CAScoreView *v, QVector<unsigned char> m);
 	QTimer _midiInChordTimer;
 	CASheet *_lastMidiInSheet;
 	CAStaff *_lastMidiInStaff;

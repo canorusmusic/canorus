@@ -5,12 +5,12 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#ifndef SOURCEVIEWPORT_H_
-#define SOURCEVIEWPORT_H_
+#ifndef SOURCEVIEW_H_
+#define SOURCEVIEW_H_
 
 #include <QTextEdit>
 
-#include "widgets/viewport.h"
+#include "widgets/view.h"
 
 class QPushButton;
 class QGridLayout;
@@ -19,25 +19,25 @@ class CADocument;
 class CAVoice;
 class CALyricsContext;
 
-class CASourceViewPort : public CAViewPort {
+class CASourceView : public CAView {
 	Q_OBJECT
 
-	enum CASourceViewPortType {
+	enum CASourceViewType {
 		LilyPond,
 		CanorusML
 	};
 
 public:
-	CASourceViewPort(CADocument *doc, QWidget *parent=0);
-	CASourceViewPort(CAVoice *voice, QWidget *parent=0);
-	CASourceViewPort(CALyricsContext *lc, QWidget *parent=0);
-	virtual ~CASourceViewPort();
+	CASourceView(CADocument *doc, QWidget *parent=0);
+	CASourceView(CAVoice *voice, QWidget *parent=0);
+	CASourceView(CALyricsContext *lc, QWidget *parent=0);
+	virtual ~CASourceView();
 
-	CASourceViewPort *clone();
-	CASourceViewPort *clone(QWidget *parent);
+	CASourceView *clone();
+	CASourceView *clone(QWidget *parent);
 
-	inline CASourceViewPortType sourceViewPortType() { return _sourceViewPortType; }
-	inline void setSourceViewPortType( CASourceViewPortType t ) { _sourceViewPortType = t; }
+	inline CASourceViewType sourceViewType() { return _sourceViewType; }
+	inline void setSourceViewType( CASourceViewType t ) { _sourceViewType = t; }
 
 	inline CADocument *document() { return _document; };
 	inline CAVoice *voice() { return _voice; }
@@ -60,7 +60,7 @@ private:
 	void setupUI();
 
 	class CATextEdit;
-	friend class CASourceViewPort::CATextEdit;
+	friend class CASourceView::CATextEdit;
 
 	/////////////
 	// Widgets //
@@ -73,10 +73,10 @@ private:
 	////////////////
 	// Properties //
 	////////////////
-	CASourceViewPortType _sourceViewPortType;
+	CASourceViewType _sourceViewType;
 	CADocument *_document;
 	CAVoice *_voice;
 	CALyricsContext *_lyricsContext;
 };
 
-#endif /* SOURCEVIEWPORT_H_ */
+#endif /* SOURCEVIEW_H_ */

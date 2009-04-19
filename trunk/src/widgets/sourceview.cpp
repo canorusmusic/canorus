@@ -12,34 +12,34 @@
 #include <QMouseEvent>
 
 #include "export/canorusmlexport.h"
-#include "widgets/sourceviewport.h"
+#include "widgets/sourceview.h"
 #include "score/document.h"
 #include "score/voice.h"
 
 #include "export/lilypondexport.h"
 #include "import/lilypondimport.h"
 
-class CASourceViewPort::CATextEdit : public QTextEdit {
+class CASourceView::CATextEdit : public QTextEdit {
 	public:
-		CATextEdit(CASourceViewPort* v) : QTextEdit(v), _viewport(v) {}
+		CATextEdit(CASourceView* v) : QTextEdit(v), _view(v) {}
 	protected:
 		void focusInEvent(QFocusEvent* event) {
 			QTextEdit::focusInEvent(event);
 			QMouseEvent fake(QEvent::MouseButtonPress, QCursor::pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-			_viewport->mousePressEvent(&fake);
+			_view->mousePressEvent(&fake);
 		}
 	private:
-		CASourceViewPort* _viewport;
+		CASourceView* _view;
 };
 
 /*!
-	\class CASourceViewPort
+	\class CASourceView
 	\brief Widget that shows the current score source in various syntax
 
-	This widget is a viewport which shows in the main text area the syntax of the current score (or voice, staff).
+	This widget is a view which shows in the main text area the syntax of the current score (or voice, staff).
 	It includes 2 buttons for committing the changes to the score and reverting any changes back from the score.
 
-	\sa CAScoreViewPort
+	\sa CAScoreView
 */
 
 /*!
@@ -47,10 +47,10 @@ class CASourceViewPort::CATextEdit : public QTextEdit {
 
 	\todo This should be merged in the future with other formats.
 */
-CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
- : CAViewPort(parent) {
- 	setViewPortType( SourceViewPort );
- 	setSourceViewPortType( CanorusML );
+CASourceView::CASourceView(CADocument *doc, QWidget *parent)
+ : CAView(parent) {
+ 	setViewType( SourceView );
+ 	setSourceViewType( CanorusML );
  	_document = doc;
  	_voice = 0;
   	_lyricsContext = 0;
@@ -63,10 +63,10 @@ CASourceViewPort::CASourceViewPort(CADocument *doc, QWidget *parent)
 
 	\todo This should be merged in the future with other formats.
 */
-CASourceViewPort::CASourceViewPort(CAVoice *voice, QWidget *parent)
- : CAViewPort(parent) {
- 	setViewPortType( SourceViewPort );
- 	setSourceViewPortType( LilyPond );
+CASourceView::CASourceView(CAVoice *voice, QWidget *parent)
+ : CAView(parent) {
+ 	setViewType( SourceView );
+ 	setSourceViewType( LilyPond );
  	_document = 0;
  	_voice = voice;
  	_lyricsContext = 0;
@@ -79,10 +79,10 @@ CASourceViewPort::CASourceViewPort(CAVoice *voice, QWidget *parent)
 
 	\todo This should be merged in the future with other formats.
 */
-CASourceViewPort::CASourceViewPort(CALyricsContext *lc, QWidget *parent)
- : CAViewPort(parent) {
- 	setViewPortType( SourceViewPort );
-  	setSourceViewPortType( LilyPond );
+CASourceView::CASourceView(CALyricsContext *lc, QWidget *parent)
+ : CAView(parent) {
+ 	setViewType( SourceView );
+  	setSourceViewType( LilyPond );
  	_document = 0;
  	_voice = 0;
   	_lyricsContext = lc;
@@ -90,7 +90,7 @@ CASourceViewPort::CASourceViewPort(CALyricsContext *lc, QWidget *parent)
  	setupUI();
 }
 
-void CASourceViewPort::setupUI() {
+void CASourceView::setupUI() {
 	_layout = new QGridLayout(this);
 	_layout->addWidget(_textEdit = new CATextEdit(this));
 	_layout->addWidget(_commit = new QPushButton(tr("Commit changes")));
@@ -102,7 +102,7 @@ void CASourceViewPort::setupUI() {
 	rebuild();
 }
 
-CASourceViewPort::~CASourceViewPort() {
+CASourceView::~CASourceView() {
 	_textEdit->disconnect();
 	_commit->disconnect();
 	_revert->disconnect();
@@ -114,30 +114,30 @@ CASourceViewPort::~CASourceViewPort() {
 	delete _layout;
 }
 
-void CASourceViewPort::on_commit_clicked() {
+void CASourceView::on_commit_clicked() {
 	emit CACommit( _textEdit->toPlainText() );
 }
 
-CASourceViewPort *CASourceViewPort::clone() {
-	CASourceViewPort *v;
+CASourceView *CASourceView::clone() {
+	CASourceView *v;
 	if ( document() )
-		v = new CASourceViewPort( document(), static_cast<QWidget*>(parent()) );
+		v = new CASourceView( document(), static_cast<QWidget*>(parent()) );
 	else if ( voice() )
-		v = new CASourceViewPort( voice(), static_cast<QWidget*>(parent()) );
+		v = new CASourceView( voice(), static_cast<QWidget*>(parent()) );
 	else if ( lyricsContext() )
-		v = new CASourceViewPort( lyricsContext(), static_cast<QWidget*>(parent()) );
+		v = new CASourceView( lyricsContext(), static_cast<QWidget*>(parent()) );
 
 	return v;
 }
 
-CASourceViewPort *CASourceViewPort::clone(QWidget *parent) {
-	CASourceViewPort *v;
+CASourceView *CASourceView::clone(QWidget *parent) {
+	CASourceView *v;
 	if ( document() )
-		v = new CASourceViewPort( document(), parent );
+		v = new CASourceView( document(), parent );
 	else if ( voice() )
-		v = new CASourceViewPort( voice(), parent );
+		v = new CASourceView( voice(), parent );
 	else if ( lyricsContext() )
-		v = new CASourceViewPort( lyricsContext(), parent );
+		v = new CASourceView( lyricsContext(), parent );
 
 	return v;
 }
@@ -145,7 +145,7 @@ CASourceViewPort *CASourceViewPort::clone(QWidget *parent) {
 /*!
 	Generates the score source from the current score and fill the text area with it.
 */
-void CASourceViewPort::rebuild() {
+void CASourceView::rebuild() {
 	_textEdit->clear();
 
 	QString *value = new QString();
