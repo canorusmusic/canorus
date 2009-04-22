@@ -21,7 +21,7 @@
 
 class QTableWidget;
 class QTableWidgetItem;
-class QAction;
+class CASingleAction;
 class QSettings;
 class QPushButton;
 
@@ -46,7 +46,7 @@ public:
 	void addActions(QWidget * widget);
 
 	// Static functions
-	static QAction * findAction(QObject *o, const QString & name);
+	static CASingleAction * findAction(QObject *o, const QString & name);
 	static QStringList actionsNames(QObject *o);
 
 	static void saveToConfig(QObject *o, QSettings *set);
@@ -95,7 +95,7 @@ protected slots:
 
 private:
 	QTableWidget *actionsTable;
-    QList<QAction*> actionsList;
+    QList<CASingleAction *> actionsList;
 	QPushButton *saveButton;
 	QPushButton *loadButton;
 	QString latest_dir;
