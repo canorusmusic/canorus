@@ -33,6 +33,7 @@
 #include "images.h"
 #include "filedialog.h"
 #include "paths.h"
+#include "ui/casingleaction.h"
 
 // Number of columns used: Conflicts, Command, Context, Shortcut, Midi Command
 #define COL_NUM 5
@@ -183,11 +184,11 @@ void CAActionsEditor::clear() {
 }
 
 void CAActionsEditor::addActions(QWidget *widget) {
-	QAction *action;
+	CASingleAction *action;
 
-	QList<QAction *> actions = widget->findChildren<QAction *>();
+	QList<CASingleAction *> actions = widget->findChildren<QAction *>();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<QAction*> (actions[n]);
+		action = static_cast<CASingleAction*> (actions[n]);
 		if (!action->objectName().isEmpty() && !action->inherits("QWidgetAction"))
 	        actionsList.append(action);
     }
@@ -198,8 +199,8 @@ void CAActionsEditor::addActions(QWidget *widget) {
 void CAActionsEditor::updateView() {
 	actionsTable->setRowCount( actionsList.count() );
 
-    QAction *action;
-	QString accelText;
+    CASingleAction *action;
+	QString accelText, midi_com, context;
 
 //#if !USE_SHORTCUTGETTER
 	dont_validate = true;
@@ -208,23 +209,23 @@ void CAActionsEditor::updateView() {
 
 // @ToDo: Replace with our own list of Canorus actions
 	for (int n=0; n < actionsList.count(); n++) {
-		action = static_cast<QAction*> (actionsList[n]);
+		action = static_cast<CASingleAction*> (actionsList[n]);
 
 //#if USE_MULTIPLE_SHORTCUTS
 //		accelText = shortcutsToString( action->shortcuts() );
 //#else
-		accelText = action->shortcut().toString();
+		accelText = action->getShortCut().toString();
 //#endif
-		midi_com = action->midi().toString();
+		context  = action->getContext().toString();
+		midi_com = action->getMidiCommand().toString();
 		
 		QTableWidgetItem * i_conf = new QTableWidgetItem();
 
 		// Command column
-		QTableWidgetItem * i_command = new QTableWidgetItem(action->objectName());
+		QTableWidgetItem * i_command = new QTableWidgetItem(action->text());
 
 		// Context column
-		QTableWidgetItem * i_context = new QTableWidgetItem(action->text().replace("&",""));
-		i_desc->setIcon( action->icon() );
+		QTableWidgetItem * i_context = new QTableWidgetItem( context );
 
 		// Shortcut column
 		QTableWidgetItem * i_shortcut = new QTableWidgetItem(accelText);
@@ -248,9 +249,9 @@ void CAActionsEditor::updateView() {
 		// Add items to table
 		actionsTable->setItem(n, COL_CONFLICTS, i_conf );
 		actionsTable->setItem(n, COL_COMMAND, i_name );
-		actionsTable->setItem(n, COL_CONFLICTS, i_desc );
+		actionsTable->setItem(n, COL_CONTEXT, i_context );
 		actionsTable->setItem(n, COL_SHORTCUT, i_shortcut );
-		actionsTable->setItem(n, COL_MIDI, i_shortcut );
+		actionsTable->setItem(n, COL_MIDI, i_midi );
 
 	}
 	hasConflicts(); // Check for conflicts
@@ -270,7 +271,7 @@ void CAActionsEditor::applyChanges() {
 	qDebug("CAActionsEditor::applyChanges");
 
 	for (int row = 0; row < (int)actionsList.size(); ++row) {
-		QAction *action = actionsList[row];
+		CASingleAction *action = actionsList[row];
 		QTableWidgetItem *i = actionsTable->item(row, COL_SHORTCUT);
 
 //#if USE_MULTIPLE_SHORTCUTS
@@ -278,7 +279,7 @@ void CAActionsEditor::applyChanges() {
 //#else
 		// @ToDo Update Midi/Shortcut corresponding but
 		// Update our own list of settings
-		action->setShortcut( QKeySequence(i->text()) );
+		action->setShortCut( QKeySequence(i->text()) );
 //#endif
 	}
 }
@@ -555,17 +556,17 @@ void CAActionsEditor::saveToConfig(QObject *o, QSettings *set) {
 
 	set->beginGroup("actions");
 
-	QAction *action;
-	QList<QAction *> actions = o->findChildren<QAction *>();
+	CASingleAction *action;
+	QList<CASingleAction *> actions = o->findChildren<QAction *>();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<QAction*> (actions[n]);
-		if (!action->objectName().isEmpty() && !action->inherits("QWidgetAction")) {
-#if USE_MULTIPLE_SHORTCUTS
-			QString accelText = shortcutsToString(action->shortcuts());
-#else
-			QString accelText = action->shortcut().toString();
-#endif
-			set->setValue(action->objectName(), accelText);
+		action = static_cast<CASingleAction*> (actions[/n]);
+		if (!action->text().isEmpty() && !action->inherits("QWidgetAction")) {
+//#if USE_MULTIPLE_SHORTCUTS
+//			QString accelText = shortcutsToString(action->shortcuts());
+//#else
+			QString accelText = action->getShortCut().toString();
+//#endif
+			set->setValue(action->text(), accelText);
 		}
     }
 
@@ -578,33 +579,33 @@ void CAActionsEditor::loadFromConfig(QObject *o, QSettings *set) {
 
 	set->beginGroup("actions");
 
-	QAction *action;
+	CASingleAction *action;
 	QString accelText;
 
-	QList<QAction *> actions = o->findChildren<QAction *>();
+	QList<CASingleAction *> actions = o->findChildren<QAction *>();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<QAction*> (actions[n]);
+		action = static_cast<CASingleAction*> (actions[n]);
 		if (!action->objectName().isEmpty() && !action->inherits("QWidgetAction")) {
-#if USE_MULTIPLE_SHORTCUTS
-			QString current = shortcutsToString(action->shortcuts());
-			accelText = set->value(action->objectName(), current).toString();
-			action->setShortcuts( stringToShortcuts( accelText ) );
-#else
-			accelText = set->value(action->objectName(), action->shortcut().toString()).toString();
-			action->setShortcut(QKeySequence(accelText));
-#endif
+//#if USE_MULTIPLE_SHORTCUTS
+//			QString current = shortcutsToString(action->shortcuts());
+//			accelText = set->value(action->objectName(), current).toString();
+//			action->setShortcuts( stringToShortcuts( accelText ) );
+//#else
+			accelText = set->value(action->text(), action->getShortCut().toString()).toString();
+			action->setShortCut(QKeySequence(accelText));
+//#endif
 		}
     }
 
 	set->endGroup();
 }
 
-QAction * CAActionsEditor::findAction(QObject *o, const QString & name) {
-	QAction *action;
+CASingleAction * CAActionsEditor::findAction(QObject *o, const QString & name) {
+	CASingleAction *action;
 
-	QList<QAction *> actions = o->findChildren<QAction *>();
+	QList<CASingleAction *> actions = o->findChildren<QAction *>();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<QAction*> (actions[n]);
+		action = static_cast<CASingleAction*> (actions[n]);
 		if (name == action->objectName()) return action;
     }
 
@@ -614,15 +615,15 @@ QAction * CAActionsEditor::findAction(QObject *o, const QString & name) {
 QStringList CAActionsEditor::actionsNames(QObject *o) {
 	QStringList l;
 
-	QAction *action;
+	CASingleAction *action;
 
-	QList<QAction *> actions = o->findChildren<QAction *>();
+	QList<CASingleAction *> actions = o->findChildren<QAction *>();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<QAction*> (actions[n]);
+		action = static_cast<CASingleAction*> (actions[n]);
 		//qDebug("action name: '%s'", action->objectName().toUtf8().data());
 		//qDebug("action name: '%s'", action->text().toUtf8().data());
-		if (!action->objectName().isEmpty())
-			l.append( action->objectName() );
+		if (!action->text().isEmpty())
+			l.append( action->text() );
     }
 
 	return l;
