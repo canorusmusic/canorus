@@ -61,6 +61,7 @@ CAImport::CAImport( QTextStream *stream )
 	setImportedVoice( 0 );
 	setImportedLyricsContext( 0 );
 	setImportedFunctionMarkContext( 0 );
+	_fileName.clear();
 }
 
 CAImport::CAImport( const QString stream )
@@ -82,6 +83,20 @@ CAImport::~CAImport() {
 		delete stream()->string();
 	}
 }
+
+/*!
+	Extends CAFile::setStreamFromFile by storing the filename in a public variable
+	for use in the pmidi midi file parser.
+*/
+void CAImport::setStreamFromFile( const QString filename ) {
+	_fileName = filename;
+	CAFile::setStreamFromFile( filename );
+}
+
+QString CAImport::fileName() {
+	return _fileName;
+}
+
 
 /*!
 	Executed when a new thread is dispatched.

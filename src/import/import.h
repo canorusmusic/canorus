@@ -26,6 +26,9 @@ public:
 	CAImport( const QString stream );
 	virtual ~CAImport();
 
+	void setStreamFromFile( const QString filename );
+	QString fileName();
+
 	virtual const QString readableStatus();
 	void importDocument();
 	void importSheet();
@@ -67,6 +70,7 @@ protected:
 #endif
 
 private:
+	QString _fileName;
 	inline void setImportedDocument( CADocument *doc ) { _importedDocument = doc; }
 	inline void setImportedSheet( CASheet *sheet ) { _importedSheet = sheet; }
 	inline void setImportedStaff( CAStaff *staff ) { _importedStaff = staff; }
