@@ -5,21 +5,32 @@
 #include "midi.h"
 #include "md.h"
 #include "seqlib.h"
+#include "wrapper.h"
 
 
-
-// #ifdef __cplusplus
-// extern "C" {
-// #endif
-
-// #ifdef __cplusplus
-// }
-// #endif
 
 /*
-	In settings.cpp ist ein Beispiel für Platform-abhängiges
-	Compilieren, zB. #ifdef Q_WS_X11
+	Transfer the name of the to be imported midi file to pmidi,
+	so it can opened here too.
 */
+void pmidi_open_midi_file( const char *name )
+{
+	printf(" In pmidi ist der Filename angekommen: %s\n", name );
+}
+
+char str[256];
+
+/*
+	Example for a callback function to bring data back to the calling party.
+*/
+int pmidi_parse_midi_file( char** p )
+{
+	static int x = 0;
+	sprintf( str, "  Ausgabe von PMIDI: %d\n", x );
+	*p = str;
+	x++;
+	return x < 5;
+}
 
 
 static void 
@@ -93,7 +104,7 @@ play(void *arg, struct element *el)
 
 
 
-int main(int argc, char **argv)
+int pmidi_main(int argc, char **argv)
 {
 	struct rootElement *root;
 	struct sequenceState *seq;

@@ -19,6 +19,13 @@
 #include "score/sheet.h"
 #include "score/document.h"
 
+/*
+	For the moment only for Linux, and parts of pmidi in use are still dependant on alsa, so:
+*/
+#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
+#include "import/pmidi/wrapper.h"
+#endif
+
 class CAMidiImportEvent {
 public:
 	CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time );
@@ -108,6 +115,20 @@ CADocument *CAMidiImport::importDocumentImpl() {
 
 CASheet *CAMidiImport::importSheetImpl() {
 	CASheet *sheet = new CASheet(tr("Midi imported sheet"), _document );
+
+	QByteArray s;
+	s.append(fileName());
+
+#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
+	pmidi_open_midi_file( s.constData() );
+	for (;;) {
+		char* p;
+		int res = pmidi_parse_midi_file( &p );
+		if (!res) break;
+		//std::cout<<p<<std::endl;
+		
+	}
+#endif
 
 	QString alles;
 	stream()->setCodec("Latin-1");	// Binary files like midi files need all codecs to be switched off. This does it!?!?
@@ -700,7 +721,7 @@ CADiatonicPitch CAMidiImport::relativePitchFromLilyPond(QString& constNName, CAD
 }
 
 /*!
-	Generates playable lentgth and number of dots from the note/rest string in LilyPond syntax.
+	Generates playable length and number of dots from the note/rest string in LilyPond syntax.
 	If the playable element doesn't include length, { CAPlayable::CAPlayableLength::Undefined, 0 } is returned.
 	This function also shortens the given string for the playable length, if \a parse is True.
 
