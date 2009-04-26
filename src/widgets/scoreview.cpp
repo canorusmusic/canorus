@@ -130,6 +130,8 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	_layout->setMargin(2);
 	_layout->setSpacing(2);
 	_drawBorder = false;
+	_grabTabKey = true;
+	setFocusPolicy( Qt::StrongFocus );
 
 	// init virtual canvas
 	_canvas = new QWidget(this);
@@ -1035,6 +1037,10 @@ void CAScoreView::updateHelpers() {
 			CADiatonicPitch dPitch(pitch, 0);
 			_shadowNote[i]->setDiatonicPitch( dPitch );
 
+			if (selectedVoice()) {
+				_shadowNote[i]->setStemDirection( selectedVoice()->stemDirection() );
+			}
+
 			CADrawableContext *c = _shadowDrawableNote[i]->drawableContext();
 			delete _shadowDrawableNote[i];
 			_shadowDrawableNote[i] = new CADrawableNote(_shadowNote[i], c, _xCursor, static_cast<CADrawableStaff*>(c)->calculateCenterYCoord(pitch, _xCursor), true);
@@ -1126,6 +1132,20 @@ void CAScoreView::checkScrollBars() {
 
 	_holdRepaint = false;
 	_checkScrollBarsDeadLock = false;
+}
+
+/*!
+	This functions forward the Tab and Shift+Tab keys to keyPressEvent(), if grabTabKey is True.
+*/
+bool CAScoreView::event( QEvent *event ) {
+	if (event->type() == QEvent::KeyPress) {
+		QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+		if ((keyEvent->key() == Qt::Key_Tab || keyEvent->key() == Qt::Key_Backtab) && _grabTabKey) {
+			keyPressEvent( keyEvent );
+			return true;
+		}
+	}
+	return QWidget::event(event);
 }
 
 /*!

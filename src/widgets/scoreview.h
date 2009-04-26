@@ -183,6 +183,9 @@ public:
 	void zoomToWidth(bool animate=false, bool force=false);
 	void zoomToHeight(bool animate=false, bool force=false);
 	void zoomToFit(bool animate=false, bool force=false);
+	
+	bool grabTabKey() { return _grabTabKey; }
+	void setGrabTabKey( bool g ) { _grabTabKey = g; }
 
 	void setBorder(const QPen pen);
 	void unsetBorder();
@@ -262,6 +265,9 @@ signals:
 	void CAKeyPressEvent( QKeyEvent *e );
 	void selectionChanged();
 
+protected:
+	bool event( QEvent *event );
+
 private:
 	void initScoreView( CASheet *s );
 	inline void clearMElements() { _drawableMList.clear(true); }
@@ -330,6 +336,7 @@ private:
 	////////////////
 	// Appearance //
 	////////////////
+	bool _grabTabKey;              // Pass the tab key to keyPressEvent() or treat it like the next item key
 	bool _drawBorder;              // Should the border be drawn or not.
 	QRect *_repaintArea;           // Area to be repainted on paintEvent().
 	QPen _borderPen;               // Pen which the border is drawn by.

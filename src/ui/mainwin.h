@@ -119,6 +119,7 @@ public:
 	}
 
 	CAContext *currentContext();
+	void       setCurrentVoice( CAVoice* );
 	CAVoice   *currentVoice();
 	inline CAViewContainer *currentViewContainer() { return _currentViewContainer; }
 	inline CADocument *document() { return _document; }

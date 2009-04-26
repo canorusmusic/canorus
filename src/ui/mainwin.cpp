@@ -1126,14 +1126,27 @@ CAContext *CAMainWin::currentContext() {
 	Returns the pointer to the currently active voice or 0, if All voices are selected or the current context is not a staff at all.
 */
 CAVoice *CAMainWin::currentVoice() {
-	CAStaff *staff = currentStaff();
-	if (staff) {
-		if ( uiVoiceNum->getRealValue() &&
-		     uiVoiceNum->getRealValue() <= staff->voiceCount())
-			return staff->voiceAt( uiVoiceNum->getRealValue() - 1);
+	if (currentScoreView()) {
+		return currentScoreView()->selectedVoice();
 	}
 
 	return 0;
+}
+
+/*!
+	Sets the currently selected voice and update toolbars and helpers accordingly.
+*/
+void CAMainWin::setCurrentVoice( CAVoice *v ) {
+	if (currentScoreView()) {
+		if (v) {
+			currentScoreView()->selectContext( v->staff() );
+		}
+		currentScoreView()->setSelectedVoice(v);
+		currentScoreView()->updateHelpers();
+
+		updateVoiceToolBar();
+		currentScoreView()->repaint();
+	}
 }
 
 /*!
@@ -1153,23 +1166,41 @@ void CAMainWin::on_uiNewDocument_triggered() {
 void CAMainWin::on_uiUndo_toggled( bool checked, int row ) {
 	stopPlayback();
 	if ( document() ) {
+		int curVoiceIdx = 0;
+		if (currentVoice() && currentVoice()->staff() && currentVoice()->staff()->sheet()) {
+			curVoiceIdx = currentVoice()->staff()->sheet()->voiceList().indexOf(currentVoice());
+		}
+
 		for (int i=0; i<=row; i++) {
 			CACanorus::undo()->undo( document() );
 		}
+
+		CACanorus::rebuildUI( document(), 0 );
+
+		if (curVoiceIdx>=0 && curVoiceIdx<currentSheet()->voiceList().size()) {
+			setCurrentVoice( currentSheet()->voiceList()[curVoiceIdx] );
+		}
 	}
-	CACanorus::rebuildUI( document(), 0 );
-	on_uiVoiceNum_valChanged( uiVoiceNum->getRealValue() ); // updates current voice in score View
 }
 
 void CAMainWin::on_uiRedo_toggled( bool checked, int row ) {
 	stopPlayback();
 	if ( document() ) {
+		int curVoiceIdx = 0;
+		if (currentVoice() && currentVoice()->staff() && currentVoice()->staff()->sheet()) {
+			curVoiceIdx = currentVoice()->staff()->sheet()->voiceList().indexOf(currentVoice());
+		}
+
 		for (int i=0; i<=row; i++) {
 			CACanorus::undo()->redo( document() );
 		}
+
+		CACanorus::rebuildUI( document(), 0 );
+
+		if (curVoiceIdx>=0 && curVoiceIdx<currentSheet()->voiceList().size()) {
+			setCurrentVoice( currentSheet()->voiceList()[curVoiceIdx] );
+		}
 	}
-	CACanorus::rebuildUI( document(), 0 );
-	on_uiVoiceNum_valChanged( uiVoiceNum->getRealValue() ); // updates current voice in score View
 }
 
 /*!
@@ -2198,6 +2229,22 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 		case Qt::Key_0:
 			uiPlayableLength->setCurrentId( CAPlayableLength::Breve, true );
 			break;
+		case Qt::Key_Tab:
+		case Qt::Key_Backtab: {
+			if (currentVoice() && mode()==InsertMode) {
+				int idx = currentSheet()->voiceList().indexOf(currentVoice());
+				if (e->key()==Qt::Key_Tab) {
+					idx++;
+				} else {
+					idx--;
+				}
+
+				if ( idx >= 0 && idx < currentSheet()->voiceList().size() ) {
+					setCurrentVoice( currentSheet()->voiceList()[idx] );
+				}
+			}
+			break;
+		}
 	}
 
 	if(e->key() >= Qt::Key_0 && e->key() <= Qt::Key_9 && e->key() != Qt::Key_3)
@@ -3010,18 +3057,16 @@ void CAMainWin::on_uiExportToPdf_triggered() {
 	Called when a user changes the current voice number.
 */
 void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
-	updateVoiceToolBar();
 	if ( currentScoreView() ) {
 		if ( voiceNr &&
 		     currentScoreView()->currentContext() &&
 		     currentScoreView()->currentContext()->context()->contextType() == CAContext::Staff &&
 		     voiceNr <= static_cast<CAStaff*>(currentScoreView()->currentContext()->context())->voiceCount()
-		   )
-			currentScoreView()->setSelectedVoice( static_cast<CAStaff*>(currentScoreView()->currentContext()->context())->voiceAt(voiceNr-1) );
-		else
-			currentScoreView()->setSelectedVoice(0);
-
-		currentScoreView()->repaint();
+		   ) {
+			setCurrentVoice( static_cast<CAStaff*>(currentScoreView()->currentContext()->context())->voiceAt(voiceNr-1) );
+		} else {
+			setCurrentVoice(0);
+		}
 	}
 }
 
