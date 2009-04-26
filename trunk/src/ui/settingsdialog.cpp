@@ -60,6 +60,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiHiddenElementsColor->setPalette( QPalette( CACanorus::settings()->hiddenElementsColor() ) );
 	uiDisabledElementsColor->setPalette( QPalette( CACanorus::settings()->disabledElementsColor() ) );
 	uiPreviewScoreView->setSheet( _previewSheet );
+	uiPreviewScoreView->setGrabTabKey( false );
 	uiPreviewScoreView->setScrollBarVisible( CAScoreView::ScrollBarAlwaysHidden );
 	uiPreviewScoreView->rebuild();
 	uiPreviewScoreView->setZoom(0.6, 0, 0, false, false);
