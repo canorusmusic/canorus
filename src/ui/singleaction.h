@@ -16,6 +16,8 @@ class QString;
 // information (including description) for one control command
 class CASingleAction : public QAction
 {
+    Q_OBJECT
+
 public:
 	// Constructor / Desctructor
 	CASingleAction( QObject * );
@@ -41,6 +43,6 @@ protected:
 	QString _oDescription;
 	QString _oShortCut;
 	QString _oMidiCommand;
-}
+};
 
 #endif // _CASINGLEACTION_H_
