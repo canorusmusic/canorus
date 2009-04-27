@@ -11,11 +11,11 @@
 
 
 CASingleAction::CASingleAction( QObject *parent )
-: QAction( parent )
+ : QAction( parent )
 {
 }
 
-CASingleAction:~CASingleAction()
+CASingleAction::~CASingleAction()
 {
 }
 
@@ -48,7 +48,7 @@ void CASingleAction::setShortCut( QString oShortCut )
 	if( !oShortCut.isEmpty() )
 	{
 		_oShortCut = oShortCut;
-		QAction::setShortCut( oShortCut );
+		QAction::setShortcut( oShortCut );
 	}
 }
 
