@@ -289,6 +289,27 @@ void CASettings::setMidiInPort(int in) {
 }
 
 #ifndef SWIGCPP
+
+CASingleAction &CASettings::getSingleAction(QString oCommand)
+{
+}
+
+void CASettings::setSingleAction(CASingleAction oSingleAction)
+{
+}
+
+void CASettings::setActionList(QList<CASingleAction *> &oActionList)
+{
+}
+
+void CASettings::addSingleAction(CASingleAction oSingleAction)
+{
+}
+
+void CASettings::deleteSingleAction(QString oCommand)
+{
+}
+
 void CASettings::readRecentDocuments() {
 	for ( int i=0; contains( QString("files/recentdocument") + QString::number(i) ); i++ )
 		CACanorus::addRecentDocument( value(QString("files/recentdocument") + QString::number(i)).toString() );
