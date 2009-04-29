@@ -120,7 +120,8 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	ui/settingsdialog.h
 	ui/propertiesdialog.h
 	ui/transposeview.h
-	
+	ui/singleaction.h
+
 	widgets/lcdnumber.h
 	widgets/view.h
 	widgets/viewcontainer.h
@@ -134,6 +135,7 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	widgets/midirecorderview.h
 	widgets/resourceview.h
 	widgets/helpbrowser.h
+	widgets/actionseditor.h
 	
 	control/previewctl.h
 	control/printctl.h
@@ -271,6 +273,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/midirecorderview.cpp
 	widgets/resourceview.cpp
 	widgets/helpbrowser.cpp
+	widgets/actionseditor.cpp
 )
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
@@ -278,6 +281,7 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/settingsdialog.cpp
 	ui/propertiesdialog.cpp
 	ui/transposeview.cpp
+	ui/singleaction.cpp
 )
 
 SET(Canorus_Gui_Ctl_Srcs       # Control instances for user interface or views 
