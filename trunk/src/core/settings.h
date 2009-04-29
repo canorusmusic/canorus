@@ -11,6 +11,7 @@
 #include <QSettings>
 #ifndef SWIG
 #include <QColor>
+#include "ui/singleaction.h"
 #endif
 #include <QDir>
 #include "core/fileformats.h"
@@ -118,6 +119,20 @@ public:
 	void setUseSystemDefaultPdfViewer( bool s ) { _useSystemDefaultPdfViewer= s; }
 	static const bool DEFAULT_USE_SYSTEM_PDF_VIEWER;
 
+	///////////////////////////////
+	// Action / Command settings //
+	///////////////////////////////
+	inline QDir latestShortcutsDirectory() { return _latestShortcutsDirectory; }
+	inline void setLatestShortcutsDirectory( QDir d ) { _latestShortcutsDirectory = d; }
+#ifndef SWIG
+	CASingleAction &getSingleAction(QString oCommand);
+	void setSingleAction(CASingleAction oSingleAction);
+	inline QList<CASingleAction *> &getActionList() { return actionsList; }
+	void setActionList(QList<CASingleAction *> &oActionList);
+	void addSingleAction(CASingleAction oSingleAction);
+	void deleteSingleAction(QString oCommand);
+#endif
+
 private:
 #ifndef SWIG
 	void writeRecentDocuments();
@@ -167,6 +182,14 @@ private:
 	bool                           _useSystemDefaultTypesetter;
 	QString                        _pdfViewerLocation;
 	bool                           _useSystemDefaultPdfViewer;
+	/////////////////////////////
+	// Action/Command settings //
+	/////////////////////////////
+	QDir _latestShortcutsDirectory; // save location of shortcuts/midi commands
+	// @ToDo: QAction can be exported to SWIG ? Abstract interface but requires QObject
+#ifndef SWIG
+    QList<CASingleAction *> actionsList;
+#endif
 };
 
 #endif /* SETTINGS_H_ */
