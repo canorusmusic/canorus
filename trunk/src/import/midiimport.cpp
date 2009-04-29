@@ -28,7 +28,7 @@
 
 class CAMidiImportEvent {
 public:
-	CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time );
+	CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length );
 	~CAMidiImportEvent();
 	bool _on;
 	int _channel;
@@ -40,13 +40,13 @@ public:
 	int _lengthCorrection;
 };
 
-CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time){
+CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0){
 	_on = on;
 	_channel = channel;
 	_pitch = pitch;
 	_velocity = velocity;
 	_time = time;
-	_length = 0;
+	_length = length;
 }
 
 CAMidiImportEvent::~CAMidiImportEvent() {
@@ -123,7 +123,10 @@ CASheet *CAMidiImport::importSheetImpl() {
 	pmidi_open_midi_file( s.constData() );
 	for (;;) {
 		char* p;
-		int res = pmidi_parse_midi_file( &p );
+		int t,a,b,c,d;
+		int res = pmidi_parse_midi_file( &p, &t, &a, &b, &c, &d );
+		std::cout<<" über: "<<res<<" t: "<<t<<"  pitch "<<b<<std::endl;
+		
 		if (!res) break;
 		//std::cout<<p<<std::endl;
 		
