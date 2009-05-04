@@ -2,7 +2,7 @@
 	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
-	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+	Licensed punder the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
 #include <QSettings>
@@ -13,6 +13,7 @@
 #include "canorus.h"
 #include "ui/settingsdialog.h"
 #include "interface/mididevice.h"
+#include "widgets/actionseditor.h"
 #include "core/settings.h"
 #include "score/sheet.h"         // needed for preview sheet
 #include "score/staff.h"         // needed for preview sheet
@@ -33,6 +34,7 @@ CASettingsDialog::CASettingsDialog( CASettingsPage currentPage, QWidget *parent 
 	setupUi( this );
 
 	buildPreviewSheet();
+	buildActionsEditorPage();
 	setupPages( currentPage );
 
 
@@ -69,6 +71,8 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiPreviewScoreView->addToSelection( _previewSheet->staffAt(0)->voiceAt(0)->musElementAt(1) );
 	uiPreviewScoreView->repaint();
 
+	// Commands Settings Page
+	
 	// Loading Saving Page
 	uiDocumentsDirectory->setText( CACanorus::settings()->documentsDirectory().absolutePath() );
 
@@ -178,6 +182,19 @@ void CASettingsDialog::applySettings() {
 	CACanorus::settings()->setUseSystemDefaultPdfViewer( uiPdfViewerDefault->isChecked() );
 
 	CACanorus::settings()->writeSettings();
+}
+
+void CASettingsDialog::buildActionsEditorPage()
+{
+	int i;
+	QWidget oSingleActions; // all actions added here
+	 QList<CASingleAction *> &roSAList = CACanorus::settings()->getActionList();
+	_commandsEditor = new CAActionsEditor( 0 );
+	// Read all elements from single action list (API requirement)
+	for(i=0; i< roSAList.size(); ++i)
+		oSingleActions.addAction( roSAList[i] );
+	// Add all command actions (loading happens earlier in Canorus)
+	_commandsEditor->addActions( &oSingleActions );
 }
 
 void CASettingsDialog::buildPreviewSheet() {
