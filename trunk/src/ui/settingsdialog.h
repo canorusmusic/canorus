@@ -15,6 +15,7 @@
 #include "ui_settingsdialog.h"
 
 class CASheet;
+class CAActionsEditor;
 
 class CASettingsDialog : public QDialog, private Ui::uiSettingsDialog {
 	Q_OBJECT
@@ -24,8 +25,9 @@ public:
 		UndefinedSettings = -1,
 		EditorSettings = 0,
 		AppearanceSettings  = 1,
-		LoadSaveSettings = 2,
-		PlaybackSettings = 3
+		ActionSettings = 2,
+		LoadSaveSettings = 3,
+		PlaybackSettings = 4,
 	};
 
 	CASettingsDialog( CASettingsPage currentPage, QWidget *parent=0 );
@@ -61,10 +63,12 @@ private slots:
 private:
 	void setupPages( CASettingsPage currentPage=EditorSettings );
 	void buildPreviewSheet();
+	void buildActionsEditorPage();
 	void applySettings();
 
 	// Pages temporary variables
 	CASheet *_previewSheet;
+	CAActionsEditor *_commandsEditor;
 	QMap<int, QString> _midiInPorts;
 	QMap<int, QString> _midiOutPorts;
 };
