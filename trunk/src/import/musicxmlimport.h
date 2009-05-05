@@ -50,6 +50,7 @@ private:
 	void readNote( QString partId, int );
 	void readForward( QString partId, int );
 	CAVoice *addVoiceIfNeeded( QString partId, int staff, int voice );
+	void     addStavesIfNeeded( QString partId, int staves );
 
 	QString         _musicXmlVersion;
 

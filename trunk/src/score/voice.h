@@ -98,7 +98,7 @@ public:
 	inline unsigned char midiProgram() { return _midiProgram; }
 	inline void setMidiProgram(const unsigned char program) { _midiProgram = program; }
 
-	inline QList<CALyricsContext*> lyricsContextList() { return _lyricsContextList; }
+	inline QList<CALyricsContext*>& lyricsContextList() { return _lyricsContextList; }
 	inline void addLyricsContext( CALyricsContext *lc ) { _lyricsContextList << lc; }
 	inline void setLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList = list; }
 	inline void addLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList += list; }

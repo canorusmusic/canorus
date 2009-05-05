@@ -238,6 +238,7 @@ void CAMusicXmlImport::readPart() {
 
 	QString partId = attributes().value("id").toString();
 	_partMapStaff[ partId ] = QList<CAStaff*>();
+	addStavesIfNeeded( partId, 1 );
 	_partMapClef[ partId ] = QHash<int, CAClef*>();
 	_partMapKeySig[ partId ] = QHash<int, CAKeySignature*>();
 	_partMapTimeSig[ partId ] = QHash<int, CATimeSignature*>();
@@ -381,21 +382,7 @@ void CAMusicXmlImport::readAttributes( QString partId ) {
 		}
 	}
 
-	for (int i=1; i<=staves && staves > _partMapStaff[partId].size(); i++) {
-		CAStaff *s = new CAStaff( tr("Staff%1").arg(_document->sheetAt(0)->staffCount()), _document->sheetAt(0) );
-		_document->sheetAt(0)->addContext(s);
-		_partMapStaff[partId].append( s );
-
-		if (_partMapKeySig[partId].contains(i)) {
-			_partMapKeySig[partId][i]->setContext( s );
-		}
-		if (_partMapTimeSig[partId].contains(i)) {
-			_partMapTimeSig[partId][i]->setContext( s );
-		}
-		if (_partMapClef[partId].contains(i)) {
-			_partMapClef[partId][i]->setContext( s );
-		}
-	}
+	addStavesIfNeeded( partId, staves );
 }
 
 void CAMusicXmlImport::readNote( QString partId, int divisions ) {
@@ -410,6 +397,11 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 	CANote::CAStemDirection stem = CANote::StemPreferred;
 	int lyricsNumber=-1;
 	QString lyricsText;
+
+	if (!divisions) {
+		std::cerr << "CAMusicXmlImport::readNote()- Error: divisions is 0, setting to 8" << std::endl;
+		divisions=8;
+	}
 
 	while (!atEnd() && !(tokenType()==EndElement && name()=="note")) {
 		readNext();
@@ -478,10 +470,34 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 	if (lyricsNumber!=-1) {
 		while (lyricsNumber > v->lyricsContextList().size()) {
 			v->addLyricsContext( new CALyricsContext( v->name()+tr("Lyrics"), v->lyricsContextList().size()+1, v ) );
-			_document->sheetAt(0)->insertContextAfter( v->staff(), v->lyricsContextList()[lyricsNumber-1] );
+			if (v->lyricsContextList().size()==1) {
+				// Add the first lyrics right below the staff
+				_document->sheetAt(0)->insertContextAfter( v->staff(), v->lyricsContextList().last() );
+			} else {
+				// Add next lyrics below the last lyrics line
+				_document->sheetAt(0)->insertContextAfter( v->lyricsContextList()[v->lyricsContextList().size()-2], v->lyricsContextList().last() );
+			}
 		}
 
 		v->lyricsContextList()[lyricsNumber-1]->addSyllable( new CASyllable(lyricsText, false, false, v->lyricsContextList()[lyricsNumber-1], p->timeStart(), p->timeLength() ) );
+	}
+}
+
+void CAMusicXmlImport::addStavesIfNeeded( QString partId, int staves ) {
+	for (int i=1; i<=staves && staves > _partMapStaff[partId].size(); i++) {
+		CAStaff *s = new CAStaff( tr("Staff%1").arg(_document->sheetAt(0)->staffCount()), _document->sheetAt(0) );
+		_document->sheetAt(0)->addContext(s);
+		_partMapStaff[partId].append( s );
+
+		if (_partMapKeySig[partId].contains(i)) {
+			_partMapKeySig[partId][i]->setContext( s );
+		}
+		if (_partMapTimeSig[partId].contains(i)) {
+			_partMapTimeSig[partId][i]->setContext( s );
+		}
+		if (_partMapClef[partId].contains(i)) {
+			_partMapClef[partId][i]->setContext( s );
+		}
 	}
 }
 
