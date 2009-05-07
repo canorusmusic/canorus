@@ -60,11 +60,12 @@ CAMusicXmlImport::~CAMusicXmlImport() {
 
 void CAMusicXmlImport::initMusicXmlImport() {
 	_document = 0;
+	_tempoBpm = -1;
 }
 
 /*!
 	Opens a MusicXML source \a in and creates a document out of it.
-	CAMusicXmlImport uses SAX model for reading.
+	CAMusicXmlImport uses QXmlStreamReader and SAX model for reading.
 */
 CADocument* CAMusicXmlImport::importDocumentImpl() {
 	QXmlStreamReader::setDevice( stream()->device() );
@@ -127,6 +128,8 @@ void CAMusicXmlImport::readScorePartwise() {
 		if (tokenType()==StartElement) {
 			if (name()=="work") {
 				readWork();
+			} else if (name()=="movement-title") {
+				_document->setTitle( readElementText() );
 			} else if (name()=="identification") {
 				readIdentification();
 			} else if (name()=="defaults") {
@@ -267,6 +270,10 @@ void CAMusicXmlImport::readMeasure( QString partId ) {
 				readNote( partId, _divisions[partId] );
 			} else if (name()=="forward") {
 				readForward( partId, _divisions[partId] );
+			} else if (name()=="direction") {
+
+			} else if (name()=="sound") {
+				readSound( partId );
 			}
 		}
 	}
@@ -369,7 +376,7 @@ void CAMusicXmlImport::readAttributes( QString partId ) {
 				}
 
 				CAClef::CAPredefinedClefType t;
-				if (sign=="G") t=CAClef::Treble;
+				if (sign=="G") t=CAClef::Treble; // only treble and bass clefs are supported for now
 				else if (sign=="F") t=CAClef::Bass;
 
 				if (_partMapStaff[partId].size()>=number) {
@@ -461,6 +468,10 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 	CAPlayable *p;
 	if (!isRest) {
 		p = new CANote( pitch, length, v, 0 );
+		if (_tempoBpm!=-1) {
+			p->addMark( new CATempo( CAPlayableLength::Quarter, _tempoBpm, p ) );
+ 			_tempoBpm = -1;
+		}
 	} else {
 		p = new CARest( CARest::Normal, length, v, 0 );
 	}
@@ -483,8 +494,21 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 	}
 }
 
+void CAMusicXmlImport::readSound( QString partId ) {
+	if (name()!="sound") return;
+
+	if ( !attributes().value("tempo").isEmpty() ) {
+		_tempoBpm = attributes().value("tempo").toString().toInt();
+	}
+}
+
+/*!
+	Assures that the given \a partId contains at least \a staves number of staves.
+	Adds new staves, if needed and assings any clefs, key signatures or time signatures in the buffer
+	to the new staff, if their number is the number of the new staff.
+*/
 void CAMusicXmlImport::addStavesIfNeeded( QString partId, int staves ) {
-	for (int i=1; i<=staves && staves > _partMapStaff[partId].size(); i++) {
+	for (int i=_partMapStaff[partId].size()+1; i<=staves && staves > _partMapStaff[partId].size(); i++) {
 		CAStaff *s = new CAStaff( tr("Staff%1").arg(_document->sheetAt(0)->staffCount()), _document->sheetAt(0) );
 		_document->sheetAt(0)->addContext(s);
 		_partMapStaff[partId].append( s );
@@ -501,6 +525,11 @@ void CAMusicXmlImport::addStavesIfNeeded( QString partId, int staves ) {
 	}
 }
 
+/*!
+	Assures that the given \a partId and \a staff contains at least \a voice number of voices.
+	Adds new voices, if needed and adds any clefs, key signatures or time signatures in the buffer
+	to the new voice.
+*/
 CAVoice *CAMusicXmlImport::addVoiceIfNeeded( QString partId, int staff, int voice ) {
 	CAVoice *v = 0;
 	CAStaff *s = 0;

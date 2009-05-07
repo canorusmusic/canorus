@@ -24,6 +24,7 @@ class CAStaff;
 class CAClef;
 class CAKeySignature;
 class CATimeSignature;
+class CATempo;
 
 class CAMusicXmlImport: public CAImport, private QXmlStreamReader {
 public:
@@ -49,6 +50,7 @@ private:
 	void readAttributes( QString partId );
 	void readNote( QString partId, int );
 	void readForward( QString partId, int );
+	void readSound( QString partId );
 	CAVoice *addVoiceIfNeeded( QString partId, int staff, int voice );
 	void     addStavesIfNeeded( QString partId, int staves );
 
@@ -64,6 +66,7 @@ private:
 	QHash<QString, int> _midiProgram;
 	QHash<QString, QString> _partName;
 	QHash<QString, int> _divisions; // part name -> divisions
+	int _tempoBpm; // current tempo buffer, append to first found note, set to -1 then
 };
 
 #endif /* MUSICXMLIMPORT_H_ */
