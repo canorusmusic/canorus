@@ -422,7 +422,7 @@ const QString CALilyPondExport::playableLengthToLilyPond( CAPlayableLength playa
 	QString length;
 	switch (playableLength.musicLength()) {
 		case CAPlayableLength::Breve:
-			length = "0";
+			length = "\\breve";
 			break;
 		case CAPlayableLength::Whole:
 			length = "1";
