@@ -465,12 +465,18 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 
 	CAVoice *v = addVoiceIfNeeded( partId, staff, voice );
 
-	CAPlayable *p;
+	// grace notes are not supported yet
+	if (length.musicLength()==CAPlayableLength::Undefined) {
+		// grace notes don't have musicLength set
+		return;
+	}
+
+	CAPlayable *p=0;
 	if (!isRest) {
 		p = new CANote( pitch, length, v, 0 );
 		if (_tempoBpm!=-1) {
 			p->addMark( new CATempo( CAPlayableLength::Quarter, _tempoBpm, p ) );
- 			_tempoBpm = -1;
+			_tempoBpm = -1;
 		}
 	} else {
 		p = new CARest( CARest::Normal, length, v, 0 );
