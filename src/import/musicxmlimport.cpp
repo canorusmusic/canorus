@@ -149,8 +149,8 @@ void CAMusicXmlImport::readScorePartwise() {
 			CAStaff *s = _partMapStaff[_partMapStaff.keys()[i]][j];
 			for (int k=0; k<s->voiceCount(); k++) {
 				// go through all voices in this staff
-				s->voiceAt(k)->setMidiProgram( _midiProgram[_partMapStaff.keys()[i]] );
-				s->voiceAt(k)->setMidiChannel( _midiChannel[_partMapStaff.keys()[i]] );
+				s->voiceAt(k)->setMidiProgram( _midiProgram[_partMapStaff.keys()[i]]-1 );
+				s->voiceAt(k)->setMidiChannel( _midiChannel[_partMapStaff.keys()[i]]-1 );
 			}
 		}
 	}

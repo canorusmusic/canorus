@@ -62,8 +62,8 @@ private:
 	QHash<QString, QHash<int, CAClef*> > _partMapClef; // part name -> map of staff number : last clef
 	QHash<QString, QHash<int, CAKeySignature*> > _partMapKeySig; // part name -> map of staff number : last keysig
 	QHash<QString, QHash<int, CATimeSignature*> > _partMapTimeSig; // part name -> map of staff number : last timesig
-	QHash<QString, int> _midiChannel;
-	QHash<QString, int> _midiProgram;
+	QHash<QString, int> _midiChannel; // 1-16
+	QHash<QString, int> _midiProgram; // 1-128
 	QHash<QString, QString> _partName;
 	QHash<QString, int> _divisions; // part name -> divisions
 	int _tempoBpm; // current tempo buffer, append to first found note, set to -1 then
