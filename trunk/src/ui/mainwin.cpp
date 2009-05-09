@@ -151,7 +151,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_playbackView = 0;
 	_repaintTimer = 0;
 	_animatedScroll = true;
-	_lockScrollPlayback = false;
+	_lockScrollPlayback = true;
 
 	// Create plugins menus and toolbars in this main window
 	CAPluginManager::enablePlugins(this);
@@ -2677,9 +2677,15 @@ void CAMainWin::onRepaintTimerTimeout() {
 	sv->clearSelection();
 	for (int i=0; i<_playback->curPlaying().size(); i++) {
 		if (_playback->curPlaying().at(i)->musElementType()==CAMusElement::Note) {
-			sv->addToSelection( _playback->curPlaying()[i] );
+			CADrawableMusElement *elt = sv->addToSelection( _playback->curPlaying()[i] );
+			if (_lockScrollPlayback) {
+				if ( elt && elt->xPos() > sv->worldX()+sv->worldWidth() ) {
+					sv->setWorldX( elt->xPos()-50, _animatedScroll );
+				}
+			}
 		}
 	}
+
 	sv->repaint();
 }
 
