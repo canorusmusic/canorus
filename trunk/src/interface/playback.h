@@ -58,9 +58,7 @@ private:
 	inline QList<CAMusElement*> streamAt(int idx) { return _stream[idx]; }
 	inline int streamCount() { return _stream.size(); }
 	inline int& streamIdx( int i ) { return _streamIdx[i]; }
-	inline int& curTime( int i ) { return _curTime[i]; }
 	inline int& lastRepeatOpenIdx( int i ) { return _lastRepeatOpenIdx[i]; }
-	inline bool& repeating( int i ) { return _repeating[i]; }
 
 	inline bool stopLock() { return _stopLock; }
 	inline void setStopLock(bool lock) { _stopLock = lock; }
@@ -82,9 +80,9 @@ private:
 	QList< QList<CAMusElement*> > _stream;
 	QList<CAPlayable*> _curPlaying;	// list of currently playing notes and rests
 	int *_streamIdx;
-	bool *_repeating;
+	bool _repeating;
 	int *_lastRepeatOpenIdx;
-	int *_curTime; // multiple curTimes are needed for repeat bars, if staffs aren't synchronized
+	int  _curTime;
 };
 
 #endif /* PLAYBACK_H_ */
