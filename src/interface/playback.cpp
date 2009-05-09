@@ -84,14 +84,8 @@ CAPlayback::~CAPlayback() {
 		wait();
 	}
 
-	if (_repeating)
-		delete [] _repeating;
-
 	if (_lastRepeatOpenIdx)
 		delete [] _lastRepeatOpenIdx;
-
-	if (_curTime)
-		delete [] _curTime;
 
 	if (_streamIdx)
 		delete [] _streamIdx;
@@ -134,7 +128,7 @@ void CAPlayback::run() {
 	int mSeconds=0;           // actual song time, used when creating a midi file
 	while (!_stop || _curPlaying.size()) {	// at stop true: enter to switch all notes off
 		for (int i=0; i<_curPlaying.size(); i++) {
-			if ( _stop || _curPlaying[i]->timeEnd() <= curTime(i) ) {
+			if ( _stop || _curPlaying[i]->timeEnd() <= _curTime ) {
 				// note off
 				CANote *note = dynamic_cast<CANote*>(_curPlaying[i]);
 				if (note) {
@@ -159,7 +153,7 @@ void CAPlayback::run() {
 		minLength = -1;
 		for (int i=0; i<streamCount(); i++) {
 			while ( streamAt(i).size() > streamIdx(i) &&
-			        streamAt(i).at(streamIdx(i))->timeStart() == curTime(i)
+			        streamAt(i).at(streamIdx(i))->timeStart() == _curTime
 			      ) {
 				// note on
 				CANote *note = dynamic_cast<CANote*>(streamAt(i).at(streamIdx(i)));
@@ -203,7 +197,7 @@ void CAPlayback::run() {
 				}
 
 				int delta;
-				if ( (delta = (streamAt(i).at(streamIdx(i))->timeEnd() - _curTime[i])) < minLength
+				if ( (delta = (streamAt(i).at(streamIdx(i))->timeEnd() - _curTime)) < minLength
 				    ||
 				     minLength==-1
 				   )
@@ -215,10 +209,9 @@ void CAPlayback::run() {
 			// calculate the pause needed by msleep
 			// last playables in the stream - _curPlaying is otherwise always set!
 			// pre-last pass, set minLength to their timeLengths to stop the notes
-			// \todo curtime() below doesn't work yet for asynchrone staffs (not-aligned repeat bars)
 			for (int j=0; j<_curPlaying.size(); j++) {
-				if ((_curPlaying[j]->timeEnd() - curTime(i)) < minLength || minLength==-1)
-					minLength =_curPlaying[j]->timeEnd() - curTime(i);
+				if ((_curPlaying[j]->timeEnd() - _curTime) < minLength || minLength==-1)
+					minLength =_curPlaying[j]->timeEnd() - _curTime;
 			}
 		}
 
@@ -233,8 +226,7 @@ void CAPlayback::run() {
 			if ( midiDevice()->isRealTime() )
 				msleep( qRound(minLength*sleepFactor) );
 
-			for (int i=0; i<streamCount(); i++)
-				curTime(i) += minLength;
+			_curTime += minLength;
 		}
 	}
 
@@ -370,16 +362,14 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 		}
 	}
 	_streamIdx = new int[streamCount()];
-	_curTime = new int[streamCount()];
 	_lastRepeatOpenIdx = new int[streamCount()];
-	_repeating = new bool[streamCount()];
 
 	// init streams indices, current times and last repeat barlines
 	for (int i=0; i<streamCount(); i++) {
-		curTime(i) = getInitTimeStart();
+		_curTime = getInitTimeStart();
 		streamIdx(i) = 0;
 		lastRepeatOpenIdx(i) = -1;
-		repeating(i) = false;
+		_repeating = false;
 		loopUntilPlayable(i, true); // ignore repeats
 	}
 }
@@ -391,8 +381,8 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
 	for (int j=streamIdx(i);
 	     j<streamAt(i).size() &&
-	     streamAt(i).at(j)->timeStart() <= curTime(i) &&
-	     (streamAt(i).at(j)->timeStart() != curTime(i) ||
+	     streamAt(i).at(j)->timeStart() <= _curTime &&
+	     (streamAt(i).at(j)->timeStart() != _curTime ||
 	      !(streamAt(i).at(j)->musElementType()==CAMusElement::Note) ||
 	      (static_cast<CANote*>(streamAt(i).at(j))->isFirstInChord())
 	     );
@@ -406,12 +396,12 @@ void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
 		if ( streamAt(i).at(j)->musElementType()==CAMusElement::Barline &&
 		     static_cast<CABarline*>(streamAt(i).at(j))->barlineType()==CABarline::RepeatClose &&
 		     !ignoreRepeats ) {
-			if (repeating(i))
-				repeating(i) = false;
-			else {
+			if (_repeating) {
+				_repeating = false;
+			} else {
 				j = streamIdx(i) = lastRepeatOpenIdx(i)+1;
-				curTime(i) = streamAt(i).at(streamIdx(i))->timeStart();
-				repeating(i) = true;
+				_curTime = streamAt(i).at(streamIdx(i))->timeStart();
+				_repeating = true;
 			}
 		}
 	}
