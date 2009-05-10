@@ -44,10 +44,7 @@ public:
 	//////////////////////////////
 	// Voice analysis and query //
 	//////////////////////////////
-	inline int musElementCount() { return musElementList().count(); }
-	inline CAMusElement *musElementAt(int i) { return musElementList()[i]; }
-	inline int indexOf(CAMusElement *elt) { return musElementList().indexOf(elt); }
-	inline bool contains(CAMusElement *elt) { return musElementList().contains(elt); }
+	inline QList<CAMusElement*>& musElementList() { return _musElementList; }
 
 	QList<CAMusElement*> getSignList();
 	QList<CANote*> getNoteList();
@@ -68,7 +65,6 @@ public:
 	QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
 	QList<CAMusElement*> getPreviousByType(CAMusElement::CAMusElementType type, int startTime);
 
-	inline QList<CAMusElement*>& musElementList() { return _musElementList; }
 	inline int lastTimeEnd() { return (musElementList().size()?musElementList().back()->timeEnd():0); }
 	inline int lastTimeStart() { return (musElementList().size()?musElementList().back()->timeStart():0); }
 	inline CAMusElement *lastMusElement() { return musElementList().size()?musElementList().back():0; }

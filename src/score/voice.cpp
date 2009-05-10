@@ -173,7 +173,7 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 
 		// calculate note positions in staff when inserting a new clef
 		if ( elt->musElementType()==CAMusElement::Clef ) {
-			for ( int i=musElementList().indexOf(elt)+1; i < musElementCount(); i++ ) {
+			for ( int i=musElementList().indexOf(elt)+1; i < musElementList().size(); i++ ) {
 				if ( musElementList()[i]->musElementType()==CAMusElement::Note )
 					static_cast<CANote*>(musElementList()[i])->setDiatonicPitch( static_cast<CANote*>(musElementList()[i])->diatonicPitch() );
 			}
@@ -247,7 +247,7 @@ CAPlayable* CAVoice::insertInTupletAndVoiceAt( CAPlayable *reference, CAPlayable
 	Returns 0, if no clefs placed yet.
 */
 CAClef* CAVoice::getClef(CAMusElement *elt) {
-	if (!elt || !contains(elt))
+	if (!elt || !musElementList().contains(elt))
 		elt = lastMusElement();
 
 	while ( elt && (elt->musElementType() != CAMusElement::Clef) && (elt = previous(elt)) );
@@ -260,7 +260,7 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 	Returns 0, if no time signatures placed yet.
 */
 CATimeSignature* CAVoice::getTimeSig(CAMusElement *elt) {
-	if (!elt || !contains(elt))
+	if (!elt || !musElementList().contains(elt))
 		elt = lastMusElement();
 
 	while ( elt && (elt->musElementType() != CAMusElement::TimeSignature) && (elt = previous(elt)) );
@@ -273,7 +273,7 @@ CATimeSignature* CAVoice::getTimeSig(CAMusElement *elt) {
 	Returns 0, if no key signatures placed yet.
 */
 CAKeySignature* CAVoice::getKeySig(CAMusElement *elt) {
-	if (!elt || !contains(elt))
+	if (!elt || !musElementList().contains(elt))
 		elt = lastMusElement();
 
 	while ( elt && (elt->musElementType() != CAMusElement::KeySignature) && (elt = previous(elt)) );

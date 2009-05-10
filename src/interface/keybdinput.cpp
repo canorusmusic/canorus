@@ -136,7 +136,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 
 		// If we are still in the processing of a tuplet, check if it's still there.
 		// Possibly editing on the GUI could have moved it around or away, and no crash please.
-		if ( _tupPla && ( !voice->contains(_tupPla) || _tupPla->tuplet() != _tup )) _tupPla = 0;
+		if ( _tupPla && ( !voice->musElementList().contains(_tupPla) || _tupPla->tuplet() != _tup )) _tupPla = 0;
 
 		// Where to put the note? When in a tuplet, do a chord in the tuplet or the nex not in the tuplet.
 		if ( _tupPla &&!appendToChord ) {

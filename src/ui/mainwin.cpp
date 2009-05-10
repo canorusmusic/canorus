@@ -1594,7 +1594,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 				std::cout << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << std::endl;
 				std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", context=" << elt->context();
 				if (elt->isPlayable()) {
-					std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->indexOf(elt);
+					std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->musElementList().indexOf(elt);
 					std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
 
 					if (static_cast<CAPlayable*>(elt)->tuplet()) {
@@ -5033,14 +5033,14 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 
 					if(tie)
 					{
-						if(tie->noteEnd() && staff->voiceAt(i)->contains(tie->noteEnd()))
+						if(tie->noteEnd() && staff->voiceAt(i)->musElementList().contains(tie->noteEnd()))
 							// pasting between two tied notes - remove tie
 							delete tie; // resets notes' tieStart/tieEnd;
 						else {
 							// pasting after an "open" tie - if the first paste element is a note, connect them. Otherwise delete the tie.
 							int idx = 0;
-							for(;idx < cbstaff->voiceAt(cbi)->musElementCount() && !cbstaff->voiceAt(cbi)->musElementAt(idx)->isPlayable();idx++);
-							CAPlayable* first = (idx!=cbstaff->voiceAt(cbi)->musElementCount())?static_cast<CAPlayable*>(cbstaff->voiceAt(cbi)->musElementAt(idx)):0;
+							for(;idx < cbstaff->voiceAt(cbi)->musElementList().size() && !cbstaff->voiceAt(cbi)->musElementList()[idx]->isPlayable();idx++);
+							CAPlayable* first = (idx!=cbstaff->voiceAt(cbi)->musElementList().size())?static_cast<CAPlayable*>(cbstaff->voiceAt(cbi)->musElementList()[idx]):0;
 							if(first && first->musElementType() == CAMusElement::Note)
 								static_cast<CANote*>(first)->setTieEnd(tie);
 							else
