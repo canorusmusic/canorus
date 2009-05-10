@@ -516,7 +516,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curClef))	      // element has exactly the same properties
-				if (!_curVoice->contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
+				if (!_curVoice->musElementList().contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
 					sign = foundElts[i];
 					break;
 				}
@@ -547,7 +547,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curKeySig))	      // element has exactly the same properties
-				if (!_curVoice->contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
+				if (!_curVoice->musElementList().contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
 					sign = foundElts[i];
 					break;
 				}
@@ -572,7 +572,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curTimeSig))	  // element has exactly the same properties
-				if (!_curVoice->contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
+				if (!_curVoice->musElementList().contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
 					sign = foundElts[i];
 					break;
 				}
@@ -597,7 +597,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		CAMusElement *sign=0;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curBarline))	  // element has exactly the same properties
-				if (!_curVoice->contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
+				if (!_curVoice->musElementList().contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
 					sign = foundElts[i];
 					break;
 				}

@@ -197,8 +197,8 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 */
 void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 	QDomDocument dDoc = dVoice.ownerDocument();
-	for (int i=0; i<voice->musElementCount(); i++) {
-		CAMusElement *curElt = voice->musElementAt(i);
+	for (int i=0; i<voice->musElementList().size(); i++) {
+		CAMusElement *curElt = voice->musElementList()[i];
 		QDomElement dElt;
 		switch (curElt->musElementType()) {
 			case CAMusElement::Note: {

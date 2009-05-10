@@ -422,7 +422,7 @@ CAMusElement* CALilyPondImport::findSharedElement(CAMusElement *elt) {
 	// compare gathered music elements properties
 	for (int i=0; i<foundElts.size(); i++)
 		if (!foundElts[i]->compare(elt))             // element has exactly the same properties
-			if (!curVoice()->contains(foundElts[i])) // element isn't present in the voice yet
+			if (!curVoice()->musElementList().contains(foundElts[i])) // element isn't present in the voice yet
 				return foundElts[i];
 
 	return 0;

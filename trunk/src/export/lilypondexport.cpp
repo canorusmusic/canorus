@@ -66,12 +66,12 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	indentMore();
 	indent();
 
-	for (int i=0; i<v->musElementCount(); i++, out() << " ") { // append blank after each element
+	for (int i=0; i<v->musElementList().size(); i++, out() << " ") { // append blank after each element
 		// (CAMusElement)
-		switch (v->musElementAt(i)->musElementType()) {
+		switch (v->musElementList()[i]->musElementType()) {
 			case CAMusElement::Clef: {
 				// CAClef
-				CAClef *clef = static_cast<CAClef*>(v->musElementAt(i));
+				CAClef *clef = static_cast<CAClef*>(v->musElementList()[i]);
 				if (clef->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\clef \"";
 				out() << clefTypeToLilyPond( clef->clefType(), clef->c1(), clef->offset() );
@@ -81,7 +81,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			}
 			case CAMusElement::KeySignature: {
 				// CAKeySignature
-				CAKeySignature *key = static_cast<CAKeySignature*>(v->musElementAt(i));
+				CAKeySignature *key = static_cast<CAKeySignature*>(v->musElementList()[i]);
 				if (key->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\key "
 				    << diatonicPitchToLilyPond( key->diatonicKey().diatonicPitch() ) << " "
@@ -91,7 +91,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			}
 			case CAMusElement::TimeSignature: {
 				// CATimeSignature, remember for anacrusis processing
-				time = static_cast<CATimeSignature*>(v->musElementAt(i));
+				time = static_cast<CATimeSignature*>(v->musElementList()[i]);
 				if (time->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\time " << time->beats() << "/" << time->beat();
 
@@ -99,7 +99,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			}
 			case CAMusElement::Barline: {
 				// CABarline
-				CABarline *bar = static_cast<CABarline*>(v->musElementAt(i));
+				CABarline *bar = static_cast<CABarline*>(v->musElementList()[i]);
 				if (bar->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				if (bar->barlineType() == CABarline::Single)
 					out() << "|";
@@ -110,16 +110,16 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			}
 		}
 
-		if ( v->musElementAt(i)->isPlayable() ) {
+		if ( v->musElementList()[i]->isPlayable() ) {
 
 			if (anacrusisCheck) {			// first check upbeat bar, only once
 				doAnacrusisCheck( time );
 				anacrusisCheck = false;
 			}
-			exportPlayable( static_cast<CAPlayable*>(v->musElementAt(i)) );
+			exportPlayable( static_cast<CAPlayable*>(v->musElementList()[i]) );
 		}
 
-		exportMarks(v->musElementAt(i));
+		exportMarks(v->musElementList()[i]);
 	}
 
 	// end of the voice block
@@ -290,14 +290,14 @@ void CALilyPondExport::doAnacrusisCheck(CATimeSignature *time) {
 
 				int oneBar = time->beats()*beatNoteLen;
 				int barlen = 0;
-				for (int i=0; i<curVoice()->musElementCount(); i++) {
-					if (curVoice()->musElementAt(i)->isPlayable()) {
-						barlen += curVoice()->musElementAt(i)->timeLength();
+				for (int i=0; i<curVoice()->musElementList().size(); i++) {
+					if (curVoice()->musElementList()[i]->isPlayable()) {
+						barlen += curVoice()->musElementList()[i]->timeLength();
 					}
 					// if it's a whole bar or beyond no upbeat (probably a staff without barlines)
 					if (barlen >= oneBar) return;
 
-					if (curVoice()->musElementAt(i)->musElementType() == CAMusElement::Barline) break;
+					if (curVoice()->musElementList()[i]->musElementType() == CAMusElement::Barline) break;
 				}
 				CAPlayableLength res = CAPlayableLength( CAPlayableLength::HundredTwentyEighth );
 				out() << "\\partial "
@@ -316,15 +316,15 @@ CADiatonicPitch CALilyPondExport::writeRelativeIntro() {
 
 	// find the first playable element and set the key signature if found any
 	for ( i=0;
-	      (i<curVoice()->musElementCount() &&
-	      (curVoice()->musElementAt(i)->musElementType()!=CAMusElement::Note));
+	      (i<curVoice()->musElementList().size() &&
+	      (curVoice()->musElementList()[i]->musElementType()!=CAMusElement::Note));
 	      i++);
 
 	// no playable elements present, return default c' pitch
-	if (i==curVoice()->musElementCount())
+	if (i==curVoice()->musElementList().size())
 		return CADiatonicPitch( 28 );
 
-	CADiatonicPitch notePitch = static_cast<CANote*>(curVoice()->musElementAt(i))->diatonicPitch();
+	CADiatonicPitch notePitch = static_cast<CANote*>(curVoice()->musElementList()[i])->diatonicPitch();
 	notePitch.setNoteName( ((notePitch.noteName() + 3) / 7) * 7 );
 	out() << "\\relative "
 	      << relativePitchToString( notePitch, CADiatonicPitch(21) ) << " "; // LilyPond default C is c1

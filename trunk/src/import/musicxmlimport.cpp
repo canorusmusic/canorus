@@ -397,6 +397,7 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 
 	bool isRest = false;
 	bool isPartOfChord = false;
+	bool tieStop = false;
 	int voice = 1;
 	int staff = 1;
 	CAPlayableLength length;
@@ -459,6 +460,10 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 
 				while (name()!="text") readNext();
 				lyricsText = readElementText();
+			} else if (name()=="tie") {
+				if ( attributes().value("type")=="stop" ) {
+					tieStop = true;
+				}
 			}
 		}
 	}
@@ -484,6 +489,29 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 
 	v->append( p, isPartOfChord );
 
+	// create ties
+	if (tieStop) {
+		CANote *noteEnd = static_cast<CANote*>(p);
+		CANote *noteStart = 0;
+		CANote *prevNote = v->previousNote(p->timeStart());
+		if (prevNote) {
+			QList<CANote*> prevChord = prevNote->getChord();
+			for (int i=0; i<prevChord.size(); i++) {
+				if (static_cast<CANote*>(prevChord[i])->diatonicPitch()==noteEnd->diatonicPitch()) {
+					noteStart = static_cast<CANote*>(prevChord[i]);
+					break;
+				}
+			}
+		}
+
+		if (noteStart) {
+			CASlur *tie = new CASlur( CASlur::TieType, CASlur::SlurPreferred, v->staff(), noteStart, noteEnd );
+			noteStart->setTieStart(tie);
+			noteEnd->setTieEnd(tie);
+		}
+	}
+
+	// create lyrics
 	if (lyricsNumber!=-1) {
 		while (lyricsNumber > v->lyricsContextList().size()) {
 			v->addLyricsContext( new CALyricsContext( v->name()+tr("Lyrics"), v->lyricsContextList().size()+1, v ) );

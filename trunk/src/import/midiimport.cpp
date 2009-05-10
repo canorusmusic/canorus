@@ -126,10 +126,10 @@ CASheet *CAMidiImport::importSheetImpl() {
 		int t,a,b,c,d;
 		int res = pmidi_parse_midi_file( &p, &t, &a, &b, &c, &d );
 		std::cout<<" über: "<<res<<" t: "<<t<<"  pitch "<<b<<std::endl;
-		
+
 		if (!res) break;
 		//std::cout<<p<<std::endl;
-		
+
 	}
 #endif
 
@@ -649,7 +649,7 @@ CAMusElement* CAMidiImport::findSharedElement(CAMusElement *elt) {
 	// compare gathered music elements properties
 	for (int i=0; i<foundElts.size(); i++)
 		if (!foundElts[i]->compare(elt))             // element has exactly the same properties
-			if (!curVoice()->contains(foundElts[i])) // element isn't present in the voice yet
+			if (!curVoice()->musElementList().contains(foundElts[i])) // element isn't present in the voice yet
 				return foundElts[i];
 
 	return 0;

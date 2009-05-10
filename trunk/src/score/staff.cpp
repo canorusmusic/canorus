@@ -66,11 +66,11 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 			QList<CAPlayable*> elementsUnderTuplet;
 
 			// clone elements in the current voice until the non-playable element is reached
-			while ( eltIdx[i]<voiceAt(i)->musElementCount() && voiceAt(i)->musElementAt(eltIdx[i])->isPlayable() ) {
-				CAPlayable *origElt = static_cast<CAPlayable*>(voiceAt(i)->musElementAt(eltIdx[i]));
+			while ( eltIdx[i]<voiceAt(i)->musElementList().size() && voiceAt(i)->musElementList()[eltIdx[i]]->isPlayable() ) {
+				CAPlayable *origElt = static_cast<CAPlayable*>(voiceAt(i)->musElementList()[eltIdx[i]]);
 				CAPlayable *clonedElt = origElt->clone( newStaff->voiceAt(i) );
 				newStaff->voiceAt(i)->append( clonedElt,
-					voiceAt(i)->musElementAt(eltIdx[i])->musElementType()==CAMusElement::Note &&
+					voiceAt(i)->musElementList()[eltIdx[i]]->musElementType()==CAMusElement::Note &&
 					static_cast<CANote*>(origElt)->isPartOfChord() &&
 					!static_cast<CANote*>(origElt)->isFirstInChord() );
 
@@ -147,8 +147,8 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 		}
 
 		// append non-playable elements (shared by all voices - only create clone of the first voice element and append it to all)
-		if ( eltIdx[0]<voiceAt(0)->musElementCount() ) {
-			CAMusElement *newElt = voiceAt(0)->musElementAt(eltIdx[0])->clone( newStaff );
+		if ( eltIdx[0]<voiceAt(0)->musElementList().size() ) {
+			CAMusElement *newElt = voiceAt(0)->musElementList()[eltIdx[0]]->clone( newStaff );
 
 			for (int i=0; i<voiceCount(); i++) {
 				newStaff->voiceAt(i)->append( newElt );
@@ -159,7 +159,7 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 		// check if we're at the end
 		done = true;
 		for (int i=0; i<voiceCount(); i++) {
-			if (eltIdx[i]<voiceAt(i)->musElementCount()) {
+			if (eltIdx[i]<voiceAt(i)->musElementList().size()) {
 				done = false;
 				break;
 			}
@@ -216,7 +216,7 @@ CAVoice *CAStaff::addVoice() {
 */
 CAMusElement *CAStaff::next( CAMusElement *elt ) {
 	for ( int i=0; i<voiceCount(); i++ ) {	// go through all the voices and check, if any of them includes the given element
-		if ( voiceAt(i)->contains(elt) ) {
+		if ( voiceAt(i)->musElementList().contains(elt) ) {
 			return voiceAt(i)->next(elt);
 		}
 	}
@@ -231,7 +231,7 @@ CAMusElement *CAStaff::next( CAMusElement *elt ) {
 */
 CAMusElement *CAStaff::previous( CAMusElement *elt ) {
 	for ( int i=0; i<voiceCount(); i++ ) {	// go through all the voices and check, if any of them includes the given element
-		if ( voiceAt(i)->contains(elt) ) {
+		if ( voiceAt(i)->musElementList().contains(elt) ) {
 			return voiceAt(i)->previous(elt);
 		}
 	}

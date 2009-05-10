@@ -69,7 +69,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiPreviewScoreView->setZoom(0.6, 0, 0, false, false);
 	uiPreviewScoreView->setCurrentContext( uiPreviewScoreView->findCElement( _previewSheet->staffAt(0) ) );
 	uiPreviewScoreView->addSelectionRegion( QRect(50, 40, 70, 90) );
-	uiPreviewScoreView->addToSelection( _previewSheet->staffAt(0)->voiceAt(0)->musElementAt(1) );
+	uiPreviewScoreView->addToSelection( _previewSheet->staffAt(0)->voiceAt(0)->musElementList()[1] );
 	uiPreviewScoreView->repaint();
 
 	// Commands Settings Page

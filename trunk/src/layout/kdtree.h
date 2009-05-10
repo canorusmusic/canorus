@@ -209,7 +209,7 @@ T CAKDTree<T>::findNearestLeft(double x, bool timeBased, CADrawableContext *cont
 		     ( !voice || // compare voices
 		       (
 		         !(static_cast<CADrawableMusElement*>(_list[i]))->musElement()->isPlayable() && // if the element isn't playable, see if it has the same context as the voice
-		         ((static_cast<CADrawableMusElement*>(_list[i]))->musElement()->context() == voice->staff() && voice->contains(static_cast<CADrawableMusElement*>(_list[i])->musElement()))
+		         ((static_cast<CADrawableMusElement*>(_list[i]))->musElement()->context() == voice->staff() && voice->musElementList().contains(static_cast<CADrawableMusElement*>(_list[i])->musElement()))
 		         ||
 		         (static_cast<CADrawableMusElement*>(_list[i]))->musElement()->isPlayable() && // if the element is playable, see if it has the exactly same voice
 		         static_cast<CAPlayable*>(static_cast<CADrawableMusElement*>(_list[i])->musElement())->voice() == voice
@@ -246,7 +246,7 @@ T CAKDTree<T>::findNearestRight(double x, bool timeBased, CADrawableContext *con
 		     ( !voice || // compare voices
 		       (
 		         !(static_cast<CADrawableMusElement*>(_list[i]))->musElement()->isPlayable() && // if the element isn't playable, see if it has the same context as the voice
-		         ((static_cast<CADrawableMusElement*>(_list[i]))->musElement()->context() == voice->staff() && voice->contains((static_cast<CADrawableMusElement*>(_list[i]))->musElement()))
+		         ((static_cast<CADrawableMusElement*>(_list[i]))->musElement()->context() == voice->staff() && voice->musElementList().contains((static_cast<CADrawableMusElement*>(_list[i]))->musElement()))
 		         ||
 		         (static_cast<CADrawableMusElement*>(_list[i]))->musElement()->isPlayable() && // if the element is playable, see if it has the exactly same voice
 		         static_cast<CAPlayable*>(static_cast<CADrawableMusElement*>(_list[i])->musElement())->voice() == voice
