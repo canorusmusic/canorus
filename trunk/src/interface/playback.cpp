@@ -44,35 +44,44 @@
 */
 
 CAPlayback::CAPlayback( CASheet *s, CAMidiDevice *m ) {
-	setSheet( s );
-	setMidiDevice( m );
-	_stop = false;
-	setInitTimeStart( 0 );
-	setStopLock(false);
-	connect(this, SIGNAL(finished()), SLOT(stopNow()));
-	_playSelectionOnly = false;
+	initPlayback();
 
-	_repeating=0;
-	_lastRepeatOpenIdx=0;
-	_curTime=0;
-	_streamIdx=0;
+	_sheet = s;
+	_midiDevice = m;
+	_playSelectionOnly = false;
 }
 
 /*!
 	Plays the list of music elements simultaniously.
 	It only takes notes into account.
 */
-CAPlayback::CAPlayback( CAMidiDevice *m, int port ) {
-	setMidiDevice( m );
-	_stop = false;
-	setStopLock(false);
-	_playSelectionOnly = true;
-	connect(this, SIGNAL(finished()), SLOT(stopNow()));
+CAPlayback::CAPlayback( CAMidiDevice *m ) {
+	initPlayback();
 
+	_midiDevice = m;
+	_playSelectionOnly = true;
+}
+
+/*!
+	Initializes all basic playback values to zero and connects the signals.
+	Usually called only once from the constructor.
+*/
+void CAPlayback::initPlayback() {
 	_repeating=0;
 	_lastRepeatOpenIdx=0;
 	_curTime=0;
 	_streamIdx=0;
+	_stop = false;
+	_stopLock = false;
+
+	// override this settings in actual constructor
+	_sheet = 0;
+	_midiDevice = 0;
+	_playSelectionOnly = false;
+	_initTimeStart = 0;
+	_sleepFactor = 1.0; // set by tempo to determine the miliseconds for sleep
+
+	connect(this, SIGNAL(finished()), SLOT(stopNow()));
 }
 
 /*!
@@ -115,8 +124,9 @@ void CAPlayback::run() {
 	QVector<unsigned char> message;	// midi 3-byte message sent to midi device
 
 	// initializes all the streams, indices, repeat barlines etc.
-	if ( !streamCount() )
+	if ( !streamCount() ) {
 		initStreams( sheet() );
+	}
 
 	if ( !streamCount() )
 		stop();
@@ -124,7 +134,6 @@ void CAPlayback::run() {
 		setStop(false);
 
 	int minLength = -1;
-	float sleepFactor = 1.0;  // set by tempo to determine the miliseconds for sleep
 	int mSeconds=0;           // actual song time, used when creating a midi file
 	while (!_stop || _curPlaying.size()) {	// at stop true: enter to switch all notes off
 		for (int i=0; i<_curPlaying.size(); i++) {
@@ -177,10 +186,7 @@ void CAPlayback::run() {
 							message.clear();
 				    	} else
 				    	if ( note->markList()[j]->markType()==CAMark::Tempo ) {
-				    		sleepFactor = 60000.0 /
-				    		( CAPlayableLength::playableLengthToTimeLength( static_cast<CATempo*>(note->markList()[j])->beat() )
-				    		  * static_cast<CATempo*>(note->markList()[j])->bpm()
-				    		);
+				    		updateSleepFactor( static_cast<CATempo*>(note->markList()[j]) );
 				    	}
 				    }
 
@@ -221,10 +227,10 @@ void CAPlayback::run() {
 		}
 
 		if (minLength!=-1) {
-			mSeconds += qRound(minLength*sleepFactor);
+			mSeconds += qRound(minLength*_sleepFactor);
 
 			if ( midiDevice()->isRealTime() )
-				msleep( qRound(minLength*sleepFactor) );
+				msleep( qRound(minLength*_sleepFactor) );
 
 			_curTime += minLength;
 		}
@@ -232,6 +238,17 @@ void CAPlayback::run() {
 
 	_curPlaying.clear();
 	stop();
+}
+
+/*!
+	Calculates the sleep factor for the given tempo \a t.
+	If \a t is null, it does nothing.
+ */
+void CAPlayback::updateSleepFactor( CATempo *t ) {
+	if (t) {
+		_sleepFactor = 60000.0 /
+		              ( CAPlayableLength::playableLengthToTimeLength( t->beat() ) * t->bpm() );
+	}
 }
 
 /*!
@@ -371,6 +388,10 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 		lastRepeatOpenIdx(i) = -1;
 		_repeating = false;
 		loopUntilPlayable(i, true); // ignore repeats
+	}
+
+	if (_sheet) {
+		updateSleepFactor( _sheet->getTempo(getInitTimeStart()) );
 	}
 }
 

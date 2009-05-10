@@ -13,6 +13,7 @@
 #include "score/sheet.h"
 #include "score/voice.h"
 #include "score/lyricscontext.h"
+#include "score/tempo.h"
 
 /*!
 	\class CASheet
@@ -176,6 +177,21 @@ QList<CAStaff*> CASheet::staffList() {
 	}
 
 	return staffList;
+}
+
+/*!
+	Returns the Tempo element active at the given time.
+ */
+CATempo *CASheet::getTempo( int time ) {
+	CATempo *tempo = 0;
+	for (int i=0; i<staffList().size(); i++) {
+		CATempo *t = staffList()[i]->getTempo(time);
+		if ( t && (!tempo || t->timeStart() > tempo->timeStart()) ) {
+			tempo = t;
+		}
+	}
+
+	return tempo;
 }
 
 /*!

@@ -16,6 +16,7 @@ class CASheet;
 class CAMusElement;
 class CAPlayable;
 class CANote;
+class CATempo;
 
 class CAPlayback : public QThread {
 #ifndef SWIG
@@ -23,7 +24,7 @@ Q_OBJECT
 #endif
 public:
 	CAPlayback( CASheet*, CAMidiDevice* );
-	CAPlayback( CAMidiDevice*, int port );
+	CAPlayback( CAMidiDevice* );
 	~CAPlayback();
 
 	void run();
@@ -51,9 +52,11 @@ signals:
 #endif
 
 private:
+	void initPlayback();
 	void initStreams( CASheet *sheet );
 	void loopUntilPlayable( int i, bool ignoreRepeats=false );
 	void playSelectionImpl();
+	void updateSleepFactor( CATempo *t );
 
 	inline QList<CAMusElement*> streamAt(int idx) { return _stream[idx]; }
 	inline int streamCount() { return _stream.size(); }
@@ -76,6 +79,7 @@ private:
 	QList<CAMusElement*> _selection;
 
 	int _initTimeStart;
+	float _sleepFactor;
 
 	QList< QList<CAMusElement*> > _stream;
 	QList<CAPlayable*> _curPlaying;	// list of currently playing notes and rests

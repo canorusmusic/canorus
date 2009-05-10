@@ -16,6 +16,7 @@
 
 class CADocument;
 class CAPlayable;
+class CATempo;
 
 class CASheet {
 public:
@@ -43,6 +44,7 @@ public:
 	inline int voiceCount() { return voiceList().size(); }
 
 	QList<CAPlayable*> getChord(int time);
+	CATempo           *getTempo(int time);
 
 	inline CADocument *document() { return _document; }
 	inline void setDocument(CADocument *doc) { _document = doc; }
