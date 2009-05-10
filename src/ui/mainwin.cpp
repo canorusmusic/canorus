@@ -150,8 +150,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_playback = 0;
 	_playbackView = 0;
 	_repaintTimer = 0;
-	_animatedScroll = true;
-	_lockScrollPlayback = true;
+	uiLockScrollPlayback->setChecked( CACanorus::settings()->lockScrollPlayback() );
 
 	// Create plugins menus and toolbars in this main window
 	CAPluginManager::enablePlugins(this);
@@ -1875,22 +1874,22 @@ void CAMainWin::scoreViewWheel(QWheelEvent *e, QPoint coords) {
 	int val;
 	switch (e->modifiers()) {
 		case Qt::NoModifier:			//scroll horizontally
-			sv->setWorldX( sv->worldX() - (int)((0.5*e->delta()) / sv->zoom()), _animatedScroll );
+			sv->setWorldX( sv->worldX() - (int)((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::AltModifier:			//scroll horizontally, fast
-			sv->setWorldX( sv->worldX() - (int)(e->delta() / sv->zoom()), _animatedScroll );
+			sv->setWorldX( sv->worldX() - (int)(e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::ShiftModifier:			//scroll vertically
-			sv->setWorldY( sv->worldY() - (int)((0.5*e->delta()) / sv->zoom()), _animatedScroll );
+			sv->setWorldY( sv->worldY() - (int)((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
-			sv->setWorldY( sv->worldY() - (int)(e->delta() / sv->zoom()), _animatedScroll );
+			sv->setWorldY( sv->worldY() - (int)(e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::ControlModifier:		//zoom
 			if (e->delta() > 0)
-				sv->setZoom( sv->zoom()*1.1, coords.x(), coords.y(), _animatedScroll );
+				sv->setZoom( sv->zoom()*1.1, coords.x(), coords.y(), CACanorus::settings()->animatedScroll() );
 			else
-				sv->setZoom( sv->zoom()/1.1, coords.x(), coords.y(), _animatedScroll );
+				sv->setZoom( sv->zoom()/1.1, coords.x(), coords.y(), CACanorus::settings()->animatedScroll() );
 
 			break;
 	}
@@ -2678,9 +2677,9 @@ void CAMainWin::onRepaintTimerTimeout() {
 	for (int i=0; i<_playback->curPlaying().size(); i++) {
 		if (_playback->curPlaying().at(i)->musElementType()==CAMusElement::Note) {
 			CADrawableMusElement *elt = sv->addToSelection( _playback->curPlaying()[i] );
-			if (_lockScrollPlayback) {
-				if ( elt && elt->xPos() > sv->worldX()+sv->worldWidth() ) {
-					sv->setWorldX( elt->xPos()-50, _animatedScroll );
+			if ( CACanorus::settings()->lockScrollPlayback() ) {
+				if ( elt && (elt->xPos() > (sv->worldX()+sv->worldWidth()) || elt->xPos() < sv->worldX()) ) {
+					sv->setWorldX( elt->xPos()-50, CACanorus::settings()->animatedScroll() );
 				}
 			}
 		}
@@ -2689,12 +2688,8 @@ void CAMainWin::onRepaintTimerTimeout() {
 	sv->repaint();
 }
 
-void CAMainWin::on_uiAnimatedScroll_toggled(bool val) {
-	_animatedScroll = val;
-}
-
 void CAMainWin::on_uiLockScrollPlayback_toggled(bool val) {
-	_lockScrollPlayback = val;
+	CACanorus::settings()->setLockScrollPlayback( val );
 }
 
 void CAMainWin::on_uiSelectAll_triggered() {
@@ -2716,7 +2711,7 @@ void CAMainWin::on_uiInvertSelection_triggered() {
 
 void CAMainWin::on_uiZoomToSelection_triggered() {
 	if (_currentView->viewType() == CAView::ScoreView)
-		((CAScoreView*)_currentView)->zoomToSelection(_animatedScroll);
+		((CAScoreView*)_currentView)->zoomToSelection(CACanorus::settings()->animatedScroll());
 }
 
 void CAMainWin::on_uiZoomToFit_triggered() {
@@ -5435,17 +5430,6 @@ void CAMainWin::playImmediately( QList<CAMusElement*> elements ) {
 /*!
 	\var CAView* CACanorus::_currentView
 	Currently active View. Only one View per main window can be active.
-*/
-
-/*!
-	\var bool CACanorus::_animatedScroll
-	Animates mouse scroll/zoom. This gives a better user experience but slows down things.
-*/
-
-/*!
-	\var bool CACanorus::_lockScrollPlayback
-	If True, locks the scroll UI while playback.
-	If False, user can scroll freely.
 */
 
 /*!

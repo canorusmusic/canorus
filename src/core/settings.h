@@ -64,9 +64,15 @@ public:
 	// Appearance settings //
 	/////////////////////////
 #ifndef SWIG
-	static const bool DEFAULT_ANTIALIASING;
+	inline bool lockScrollPlayback() { return _lockScrollPlayback; }
+	inline void setLockScrollPlayback( bool l ) { _lockScrollPlayback = l; }
+	static const bool DEFAULT_LOCK_SCROLL_PLAYBACK;
+	inline bool animatedScroll() { return _animatedScroll; }
+	inline void setAnimatedScroll( bool a ) { _animatedScroll = a; }
+	static const bool DEFAULT_ANIMATED_SCROLL;
 	inline bool antiAliasing() { return _antiAliasing; }
 	inline void setAntiAliasing( bool a ) { _antiAliasing = a; }
+	static const bool DEFAULT_ANTIALIASING;
 	inline QColor backgroundColor() { return _backgroundColor; }
 	inline void setBackgroundColor( QColor backgroundColor ) { _backgroundColor = backgroundColor; }
 	static const QColor DEFAULT_BACKGROUND_COLOR;
@@ -159,6 +165,8 @@ private:
 	// Appearance settings //
 	/////////////////////////
 #ifndef SWIG
+	bool   _lockScrollPlayback;
+	bool   _animatedScroll;
 	bool   _antiAliasing;
 	QColor _backgroundColor;
 	QColor _foregroundColor;

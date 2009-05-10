@@ -185,7 +185,6 @@ private slots:
 
 	// View
 	void on_uiFullscreen_toggled(bool);
-	void on_uiAnimatedScroll_toggled(bool);
 	void on_uiLockScrollPlayback_toggled(bool);
 	void on_uiZoomToSelection_triggered();
 	void on_uiZoomToFit_triggered();
@@ -340,8 +339,6 @@ private:
 	QList<CAView *> _viewList;
 	QHash<CAViewContainer*, CASheet*> _sheetMap;
 	CAView *_currentView;
-	bool _animatedScroll;
-	bool _lockScrollPlayback;
 	CAView *_playbackView;
 	QList<CADrawableMusElement*> _prePlaybackSelection;
 	QTimer *_repaintTimer;
