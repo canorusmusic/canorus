@@ -23,6 +23,8 @@ const int CASettings::DEFAULT_AUTO_RECOVERY_INTERVAL = 1;
 const int CASettings::DEFAULT_MAX_RECENT_DOCUMENTS = 15;
 
 #ifndef SWIGCPP
+const bool   CASettings::DEFAULT_LOCK_SCROLL_PLAYBACK = true; // scroll while playing
+const bool   CASettings::DEFAULT_ANIMATED_SCROLL = true;
 const bool   CASettings::DEFAULT_ANTIALIASING = true;
 const QColor CASettings::DEFAULT_BACKGROUND_COLOR = QColor(255, 255, 240);
 const QColor CASettings::DEFAULT_FOREGROUND_COLOR = Qt::black;
@@ -109,6 +111,8 @@ void CASettings::writeSettings() {
 #ifndef SWIGCPP
 	writeRecentDocuments();
 
+	setValue( "appearance/lockscrollplayback", lockScrollPlayback() );
+	setValue( "appearance/animatedscroll", animatedScroll() );
 	setValue( "appearance/antialiasing", antiAliasing() );
 	setValue( "appearance/backgroundcolor", backgroundColor() );
 	setValue( "appearance/foregroundcolor", foregroundColor() );
@@ -185,6 +189,16 @@ int CASettings::readSettings() {
 	readRecentDocuments();
 
 	// Appearance settings
+	if ( contains("appearance/lockscrollplayback") )
+		setLockScrollPlayback( value("appearance/lockscrollplayback").toBool() );
+	else
+		setLockScrollPlayback( DEFAULT_LOCK_SCROLL_PLAYBACK );
+
+	if ( contains("appearance/animatedscroll") )
+		setAnimatedScroll( value("appearance/animatedscroll").toBool() );
+	else
+		setAnimatedScroll( DEFAULT_ANIMATED_SCROLL );
+
 	if ( contains("appearance/antialiasing") )
 		setAntiAliasing( value("appearance/antialiasing").toBool() );
 	else

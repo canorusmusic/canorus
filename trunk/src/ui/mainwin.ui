@@ -1,8 +1,9 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <author>Reinhard Katzmann, Matevž Jekovec</author>
  <class>uiMainWindow</class>
- <widget class="QMainWindow" name="uiMainWindow" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="uiMainWindow">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -10,957 +11,956 @@
     <height>660</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Canorus</string>
   </property>
-  <property name="windowIcon" >
+  <property name="windowIcon">
    <iconset>
     <normaloff>images:clogosm.png</normaloff>images:clogosm.png</iconset>
   </property>
-  <property name="statusTip" >
+  <property name="statusTip">
    <string/>
   </property>
-  <widget class="QWidget" name="uiCentralWidget" >
-   <layout class="QGridLayout" >
-    <property name="margin" >
+  <widget class="QWidget" name="uiCentralWidget">
+   <layout class="QGridLayout">
+    <property name="margin">
      <number>6</number>
     </property>
-    <property name="spacing" >
+    <property name="spacing">
      <number>4</number>
     </property>
-    <item row="0" column="0" >
-     <widget class="QTabWidget" name="uiTabWidget" >
-      <property name="sizePolicy" >
-       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="uiTabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="autoFillBackground" >
+      <property name="autoFillBackground">
        <bool>false</bool>
       </property>
-      <property name="tabPosition" >
+      <property name="tabPosition">
        <enum>QTabWidget::South</enum>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="uiMenuBar" >
-   <property name="geometry" >
+  <widget class="QMenuBar" name="uiMenuBar">
+   <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>25</height>
+     <height>30</height>
     </rect>
    </property>
-   <widget class="QMenu" name="uiMenuEdit" >
-    <property name="title" >
+   <widget class="QMenu" name="uiMenuEdit">
+    <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="separator" />
-    <addaction name="uiCut" />
-    <addaction name="uiCopy" />
-    <addaction name="uiPaste" />
-    <addaction name="separator" />
-    <addaction name="uiSelectAll" />
-    <addaction name="uiInvertSelection" />
-    <addaction name="separator" />
-    <addaction name="uiDocumentProperties" />
+    <addaction name="separator"/>
+    <addaction name="uiCut"/>
+    <addaction name="uiCopy"/>
+    <addaction name="uiPaste"/>
+    <addaction name="separator"/>
+    <addaction name="uiSelectAll"/>
+    <addaction name="uiInvertSelection"/>
+    <addaction name="separator"/>
+    <addaction name="uiDocumentProperties"/>
    </widget>
-   <widget class="QMenu" name="uiMenuTools" >
-    <property name="title" >
+   <widget class="QMenu" name="uiMenuTools">
+    <property name="title">
      <string>&amp;Tools</string>
     </property>
-    <addaction name="uiGotoBar" />
-    <addaction name="uiTranspose" />
-    <addaction name="uiNoteCount" />
-    <addaction name="uiMidiRecorder" />
-    <addaction name="separator" />
-    <addaction name="uiSettings" />
+    <addaction name="uiGotoBar"/>
+    <addaction name="uiTranspose"/>
+    <addaction name="uiNoteCount"/>
+    <addaction name="uiMidiRecorder"/>
+    <addaction name="separator"/>
+    <addaction name="uiSettings"/>
    </widget>
-   <widget class="QMenu" name="uiMenuWindow" >
-    <property name="title" >
+   <widget class="QMenu" name="uiMenuWindow">
+    <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="uiNewView" />
-    <addaction name="uiNewWindow" />
-    <addaction name="separator" />
-    <addaction name="uiSplitHorizontally" />
-    <addaction name="uiSplitVertically" />
-    <addaction name="uiCloseCurrentView" />
-    <addaction name="uiUnsplitAll" />
+    <addaction name="uiNewView"/>
+    <addaction name="uiNewWindow"/>
+    <addaction name="separator"/>
+    <addaction name="uiSplitHorizontally"/>
+    <addaction name="uiSplitVertically"/>
+    <addaction name="uiCloseCurrentView"/>
+    <addaction name="uiUnsplitAll"/>
    </widget>
-   <widget class="QMenu" name="uiMenuHelp" >
-    <property name="title" >
+   <widget class="QMenu" name="uiMenuHelp">
+    <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="uiUsersGuide" />
-    <addaction name="uiWhatsThis" />
-    <addaction name="uiTipOfTheDay" />
-    <addaction name="separator" />
-    <addaction name="uiAboutCanorus" />
-    <addaction name="uiAboutQt" />
+    <addaction name="uiUsersGuide"/>
+    <addaction name="uiWhatsThis"/>
+    <addaction name="uiTipOfTheDay"/>
+    <addaction name="separator"/>
+    <addaction name="uiAboutCanorus"/>
+    <addaction name="uiAboutQt"/>
    </widget>
-   <widget class="QMenu" name="uiMenuFile" >
-    <property name="title" >
+   <widget class="QMenu" name="uiMenuFile">
+    <property name="title">
      <string>&amp;File</string>
     </property>
-    <widget class="QMenu" name="uiOpenRecent" >
-     <property name="title" >
+    <widget class="QMenu" name="uiOpenRecent">
+     <property name="title">
       <string>Open &amp;recent</string>
      </property>
-     <property name="icon" >
+     <property name="icon">
       <iconset>
        <normaloff>images:general/fileopen.png</normaloff>images:general/fileopen.png</iconset>
      </property>
-     <addaction name="actionRecent_documents" />
+     <addaction name="actionRecent_documents"/>
     </widget>
-    <addaction name="uiNewDocument" />
-    <addaction name="uiNewDocumentWizard" />
-    <addaction name="uiOpenDocument" />
-    <addaction name="uiOpenRecent" />
-    <addaction name="uiSaveDocument" />
-    <addaction name="uiSaveDocumentAs" />
-    <addaction name="uiCloseDocument" />
-    <addaction name="separator" />
-    <addaction name="uiImportDocument" />
-    <addaction name="uiExportDocument" />
-    <addaction name="separator" />
-    <addaction name="uiPrintPreview" />
-    <addaction name="uiPrint" />
-    <addaction name="separator" />
-    <addaction name="uiQuit" />
+    <addaction name="uiNewDocument"/>
+    <addaction name="uiNewDocumentWizard"/>
+    <addaction name="uiOpenDocument"/>
+    <addaction name="uiOpenRecent"/>
+    <addaction name="uiSaveDocument"/>
+    <addaction name="uiSaveDocumentAs"/>
+    <addaction name="uiCloseDocument"/>
+    <addaction name="separator"/>
+    <addaction name="uiImportDocument"/>
+    <addaction name="uiExportDocument"/>
+    <addaction name="separator"/>
+    <addaction name="uiPrintPreview"/>
+    <addaction name="uiPrint"/>
+    <addaction name="separator"/>
+    <addaction name="uiQuit"/>
    </widget>
-   <widget class="QMenu" name="uiMenuView" >
-    <property name="title" >
+   <widget class="QMenu" name="uiMenuView">
+    <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="uiMenuZoom" >
-     <property name="title" >
+    <widget class="QMenu" name="uiMenuZoom">
+     <property name="title">
       <string>Zoom</string>
      </property>
-     <addaction name="uiZoomToWidth" />
-     <addaction name="uiZoomToHeight" />
-     <addaction name="uiZoomToFit" />
-     <addaction name="uiZoomToSelection" />
-     <addaction name="separator" />
-     <addaction name="uiCustomZoom" />
+     <addaction name="uiZoomToWidth"/>
+     <addaction name="uiZoomToHeight"/>
+     <addaction name="uiZoomToFit"/>
+     <addaction name="uiZoomToSelection"/>
+     <addaction name="separator"/>
+     <addaction name="uiCustomZoom"/>
     </widget>
-    <widget class="QMenu" name="uiMenuSourceView" >
-     <property name="title" >
+    <widget class="QMenu" name="uiMenuSourceView">
+     <property name="title">
       <string>Source view</string>
      </property>
-     <addaction name="uiLilyPondSource" />
-     <addaction name="uiCanorusMLSource" />
+     <addaction name="uiLilyPondSource"/>
+     <addaction name="uiCanorusMLSource"/>
     </widget>
-    <addaction name="separator" />
-    <addaction name="uiMenuZoom" />
-    <addaction name="uiAnimatedScroll" />
-    <addaction name="uiLockScrollPlayback" />
-    <addaction name="separator" />
-    <addaction name="uiScoreView" />
-    <addaction name="uiMenuSourceView" />
-    <addaction name="uiResourceView" />
-    <addaction name="separator" />
-    <addaction name="uiShowStatusBar" />
-    <addaction name="uiFullscreen" />
+    <addaction name="separator"/>
+    <addaction name="uiMenuZoom"/>
+    <addaction name="uiLockScrollPlayback"/>
+    <addaction name="separator"/>
+    <addaction name="uiScoreView"/>
+    <addaction name="uiMenuSourceView"/>
+    <addaction name="uiResourceView"/>
+    <addaction name="separator"/>
+    <addaction name="uiShowStatusBar"/>
+    <addaction name="uiFullscreen"/>
    </widget>
-   <widget class="QMenu" name="uiMenuInsert" >
-    <property name="title" >
+   <widget class="QMenu" name="uiMenuInsert">
+    <property name="title">
      <string>&amp;Insert</string>
     </property>
-    <addaction name="uiNewSheet" />
-    <addaction name="uiNewContext" />
-    <addaction name="uiNewVoice" />
-    <addaction name="separator" />
-    <addaction name="uiInsertPlayable" />
-    <addaction name="uiInsertClef" />
-    <addaction name="uiInsertKeySig" />
-    <addaction name="uiInsertTimeSig" />
-    <addaction name="uiInsertBarline" />
-    <addaction name="uiInsertSyllable" />
-    <addaction name="uiInsertFM" />
+    <addaction name="uiNewSheet"/>
+    <addaction name="uiNewContext"/>
+    <addaction name="uiNewVoice"/>
+    <addaction name="separator"/>
+    <addaction name="uiInsertPlayable"/>
+    <addaction name="uiInsertClef"/>
+    <addaction name="uiInsertKeySig"/>
+    <addaction name="uiInsertTimeSig"/>
+    <addaction name="uiInsertBarline"/>
+    <addaction name="uiInsertSyllable"/>
+    <addaction name="uiInsertFM"/>
    </widget>
-   <addaction name="uiMenuFile" />
-   <addaction name="uiMenuEdit" />
-   <addaction name="uiMenuView" />
-   <addaction name="uiMenuInsert" />
-   <addaction name="uiMenuTools" />
-   <addaction name="uiMenuWindow" />
-   <addaction name="uiMenuHelp" />
+   <addaction name="uiMenuFile"/>
+   <addaction name="uiMenuEdit"/>
+   <addaction name="uiMenuView"/>
+   <addaction name="uiMenuInsert"/>
+   <addaction name="uiMenuTools"/>
+   <addaction name="uiMenuWindow"/>
+   <addaction name="uiMenuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="uiStatusBarWidget" />
-  <widget class="QToolBar" name="uiStandardToolBar" >
-   <property name="windowTitle" >
+  <widget class="QStatusBar" name="uiStatusBarWidget"/>
+  <widget class="QToolBar" name="uiStandardToolBar">
+   <property name="windowTitle">
     <string>Standard ToolBar</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="uiNewDocument" />
-   <addaction name="uiOpenDocument" />
-   <addaction name="uiSaveDocument" />
-   <addaction name="separator" />
-   <addaction name="uiExportToPdf" />
-   <addaction name="uiPrintDirectly" />
-   <addaction name="separator" />
-   <addaction name="uiCut" />
-   <addaction name="uiCopy" />
-   <addaction name="uiPaste" />
-   <addaction name="separator" />
-   <addaction name="uiPlayFromSelection" />
+   <addaction name="uiNewDocument"/>
+   <addaction name="uiOpenDocument"/>
+   <addaction name="uiSaveDocument"/>
+   <addaction name="separator"/>
+   <addaction name="uiExportToPdf"/>
+   <addaction name="uiPrintDirectly"/>
+   <addaction name="separator"/>
+   <addaction name="uiCut"/>
+   <addaction name="uiCopy"/>
+   <addaction name="uiPaste"/>
+   <addaction name="separator"/>
+   <addaction name="uiPlayFromSelection"/>
   </widget>
-  <widget class="QToolBar" name="uiFileToolBar" >
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="uiFileToolBar">
+   <property name="windowTitle">
     <string>File ToolBar</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="uiNewDocument" />
-   <addaction name="uiNewDocumentWizard" />
-   <addaction name="uiOpenDocument" />
-   <addaction name="uiSaveDocument" />
-   <addaction name="uiSaveDocumentAs" />
-   <addaction name="uiImportDocument" />
-   <addaction name="uiExportDocument" />
-   <addaction name="uiCloseDocument" />
+   <addaction name="uiNewDocument"/>
+   <addaction name="uiNewDocumentWizard"/>
+   <addaction name="uiOpenDocument"/>
+   <addaction name="uiSaveDocument"/>
+   <addaction name="uiSaveDocumentAs"/>
+   <addaction name="uiImportDocument"/>
+   <addaction name="uiExportDocument"/>
+   <addaction name="uiCloseDocument"/>
   </widget>
-  <widget class="QToolBar" name="uiPrintToolBar" >
-   <property name="enabled" >
+  <widget class="QToolBar" name="uiPrintToolBar">
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="windowTitle" >
+   <property name="windowTitle">
     <string>Print ToolBar</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="uiPrint" />
-   <addaction name="uiPrintDirectly" />
-   <addaction name="uiPrintPreview" />
-   <addaction name="uiExportToPdf" />
+   <addaction name="uiPrint"/>
+   <addaction name="uiPrintDirectly"/>
+   <addaction name="uiPrintPreview"/>
+   <addaction name="uiExportToPdf"/>
   </widget>
-  <action name="uiQuit" >
-   <property name="icon" >
+  <action name="uiQuit">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/exit.png</normaloff>images:general/exit.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Quit</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="uiNewDocument" >
-   <property name="icon" >
+  <action name="uiNewDocument">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/filenew.png</normaloff>images:general/filenew.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;New document</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="uiOpenDocument" >
-   <property name="icon" >
+  <action name="uiOpenDocument">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/fileopen.png</normaloff>images:general/fileopen.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Open...</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="uiSaveDocument" >
-   <property name="icon" >
+  <action name="uiSaveDocument">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/filesave.png</normaloff>images:general/filesave.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Save</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="uiSaveDocumentAs" >
-   <property name="icon" >
+  <action name="uiSaveDocumentAs">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/filesaveas.png</normaloff>images:general/filesaveas.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Save &amp;as...</string>
    </property>
   </action>
-  <action name="uiCloseDocument" >
-   <property name="icon" >
+  <action name="uiCloseDocument">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/fileclose.svg</normaloff>images:general/fileclose.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Close</string>
    </property>
   </action>
-  <action name="uiImportDocument" >
-   <property name="enabled" >
+  <action name="uiImportDocument">
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:general/filesave.png</normaloff>images:general/filesave.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Import...</string>
    </property>
   </action>
-  <action name="uiExportDocument" >
-   <property name="icon" >
+  <action name="uiExportDocument">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/filesave.png</normaloff>images:general/filesave.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Export...</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="uiPrintPreview" >
-   <property name="enabled" >
+  <action name="uiPrintPreview">
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:printing/fileprintpreview.png</normaloff>images:printing/fileprintpreview.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Print pre&amp;view...</string>
    </property>
-   <property name="visible" >
+   <property name="visible">
     <bool>true</bool>
    </property>
   </action>
-  <action name="uiPrint" >
-   <property name="enabled" >
+  <action name="uiPrint">
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:printing/fileprint.png</normaloff>images:printing/fileprint.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Print...</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="uiCopy" >
-   <property name="icon" >
+  <action name="uiCopy">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/editcopy.png</normaloff>images:general/editcopy.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Copy</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="uiCut" >
-   <property name="icon" >
+  <action name="uiCut">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/editcut.png</normaloff>images:general/editcut.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>C&amp;ut</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+X</string>
    </property>
   </action>
-  <action name="uiPaste" >
-   <property name="icon" >
+  <action name="uiPaste">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/editpaste.png</normaloff>images:general/editpaste.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Paste</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="uiSelectAll" >
-   <property name="text" >
+  <action name="uiSelectAll">
+   <property name="text">
     <string>Select &amp;all</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="uiInvertSelection" >
-   <property name="text" >
+  <action name="uiInvertSelection">
+   <property name="text">
     <string>Invert Selection</string>
    </property>
   </action>
-  <action name="uiZoomToWidth" >
-   <property name="text" >
+  <action name="uiZoomToWidth">
+   <property name="text">
     <string>Fit to width</string>
    </property>
   </action>
-  <action name="uiGotoBar" >
-   <property name="enabled" >
+  <action name="uiGotoBar">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Goto bar...</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+G</string>
    </property>
   </action>
-  <action name="uiShowStatusBar" >
-   <property name="checkable" >
+  <action name="uiShowStatusBar">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>St&amp;atus bar</string>
    </property>
   </action>
-  <action name="uiFullscreen" >
-   <property name="checkable" >
+  <action name="uiFullscreen">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:general/fullscreen.png</normaloff>images:general/fullscreen.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Fullscreen</string>
    </property>
   </action>
-  <action name="uiInsertTimeSig" >
-   <property name="checkable" >
+  <action name="uiInsertTimeSig">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:timesig/tsc.svg</normaloff>images:timesig/tsc.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Time signature...</string>
    </property>
   </action>
-  <action name="uiInsertKeySig" >
-   <property name="checkable" >
+  <action name="uiInsertKeySig">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:accidental/keysig.svg</normaloff>images:accidental/keysig.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Key signature...</string>
    </property>
   </action>
-  <action name="uiInsertBarline" >
-   <property name="checkable" >
+  <action name="uiInsertBarline">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:barline/barlinesingle.svg</normaloff>images:barline/barlinesingle.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Barline...</string>
    </property>
   </action>
-  <action name="uiNoteCount" >
-   <property name="enabled" >
+  <action name="uiNoteCount">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Note &amp;count...</string>
    </property>
   </action>
-  <action name="uiSettings" >
-   <property name="icon" >
+  <action name="uiSettings">
+   <property name="icon">
     <iconset>
      <normaloff>images:settings/settings.svg</normaloff>images:settings/settings.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Settings...</string>
    </property>
   </action>
-  <action name="uiUsersGuide" >
-   <property name="text" >
+  <action name="uiUsersGuide">
+   <property name="text">
     <string>User's guide...</string>
    </property>
   </action>
-  <action name="uiWhatsThis" >
-   <property name="enabled" >
+  <action name="uiWhatsThis">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>What's &amp;this</string>
    </property>
   </action>
-  <action name="uiTipOfTheDay" >
-   <property name="checkable" >
+  <action name="uiTipOfTheDay">
+   <property name="checkable">
     <bool>false</bool>
    </property>
-   <property name="enabled" >
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Tip of the &amp;day</string>
    </property>
   </action>
-  <action name="uiAboutCanorus" >
-   <property name="icon" >
+  <action name="uiAboutCanorus">
+   <property name="icon">
     <iconset>
      <normaloff>images:clogosm.png</normaloff>images:clogosm.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>About &amp;Canorus...</string>
    </property>
   </action>
-  <action name="uiAboutQt" >
-   <property name="icon" >
+  <action name="uiAboutQt">
+   <property name="icon">
     <iconset>
      <normaloff>images:qtlogo.png</normaloff>images:qtlogo.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>About &amp;Qt...</string>
    </property>
   </action>
-  <action name="uiSplitHorizontally" >
-   <property name="text" >
+  <action name="uiSplitHorizontally">
+   <property name="text">
     <string>Split view horizontally</string>
    </property>
   </action>
-  <action name="uiSplitVertically" >
-   <property name="text" >
+  <action name="uiSplitVertically">
+   <property name="text">
     <string>Split view vertically</string>
    </property>
   </action>
-  <action name="uiCloseCurrentView" >
-   <property name="enabled" >
+  <action name="uiCloseCurrentView">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Close current view</string>
    </property>
   </action>
-  <action name="uiUnsplitAll" >
-   <property name="enabled" >
+  <action name="uiUnsplitAll">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Unsplit All</string>
    </property>
   </action>
-  <action name="uiNewView" >
-   <property name="text" >
+  <action name="uiNewView">
+   <property name="text">
     <string>New view</string>
    </property>
   </action>
-  <action name="uiNewSheet" >
-   <property name="icon" >
+  <action name="uiNewSheet">
+   <property name="icon">
     <iconset>
      <normaloff>images:document/sheetnew.svg</normaloff>images:document/sheetnew.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>New sheet</string>
    </property>
   </action>
-  <action name="uiNewContext" >
-   <property name="checkable" >
+  <action name="uiNewContext">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:document/contextnew.svg</normaloff>images:document/contextnew.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>New context...</string>
    </property>
   </action>
-  <action name="uiPlayFromSelection" >
-   <property name="checkable" >
+  <action name="uiPlayFromSelection">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:playback/play.svg</normaloff>images:playback/play.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Play from selection</string>
    </property>
   </action>
-  <action name="uiAnimatedScroll" >
-   <property name="checkable" >
+  <action name="uiAnimatedScroll">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Animated scroll</string>
    </property>
   </action>
-  <action name="uiLockScrollPlayback" >
-   <property name="checkable" >
+  <action name="uiLockScrollPlayback">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Lock scroll while playback</string>
    </property>
   </action>
-  <action name="uiZoomToHeight" >
-   <property name="text" >
+  <action name="uiZoomToHeight">
+   <property name="text">
     <string>Fit to &amp;height</string>
    </property>
   </action>
-  <action name="uiZoomToFit" >
-   <property name="text" >
+  <action name="uiZoomToFit">
+   <property name="text">
     <string>Best &amp;fit</string>
    </property>
   </action>
-  <action name="uiZoomToSelection" >
-   <property name="text" >
+  <action name="uiZoomToSelection">
+   <property name="text">
     <string>Fit to selection</string>
    </property>
   </action>
-  <action name="uiNewWindow" >
-   <property name="text" >
+  <action name="uiNewWindow">
+   <property name="text">
     <string>New window</string>
    </property>
   </action>
-  <action name="uiCustomZoom" >
-   <property name="text" >
+  <action name="uiCustomZoom">
+   <property name="text">
     <string>Custom...</string>
    </property>
   </action>
-  <action name="uiScoreView" >
-   <property name="text" >
+  <action name="uiScoreView">
+   <property name="text">
     <string>Score view</string>
    </property>
   </action>
-  <action name="uiLilyPondSource" >
-   <property name="icon" >
+  <action name="uiLilyPondSource">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/lilypondsource.svg</normaloff>images:general/lilypondsource.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>LilyPond source</string>
    </property>
   </action>
-  <action name="uiCanorusMLSource" >
-   <property name="icon" >
+  <action name="uiCanorusMLSource">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/canorusmlsource.svg</normaloff>images:general/canorusmlsource.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>CanorusML source</string>
    </property>
   </action>
-  <action name="uiNewVoice" >
-   <property name="icon" >
+  <action name="uiNewVoice">
+   <property name="icon">
     <iconset>
      <normaloff>images:document/voicenew.svg</normaloff>images:document/voicenew.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>New voice</string>
    </property>
   </action>
-  <action name="uiDocumentProperties" >
-   <property name="icon" >
+  <action name="uiDocumentProperties">
+   <property name="icon">
     <iconset>
      <normaloff>images:document/documentproperties.svg</normaloff>images:document/documentproperties.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Document properties...</string>
    </property>
   </action>
-  <action name="uiPrintDirectly" >
-   <property name="enabled" >
+  <action name="uiPrintDirectly">
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:printing/filequickprint.png</normaloff>images:printing/filequickprint.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Print directly</string>
    </property>
-   <property name="visible" >
+   <property name="visible">
     <bool>true</bool>
    </property>
   </action>
-  <action name="uiExportToPdf" >
-   <property name="icon" >
+  <action name="uiExportToPdf">
+   <property name="icon">
     <iconset>
      <normaloff>images:general/pdf.png</normaloff>images:general/pdf.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Export to PDF</string>
    </property>
-   <property name="visible" >
+   <property name="visible">
     <bool>true</bool>
    </property>
   </action>
-  <action name="uiNewDocumentWizard" >
-   <property name="enabled" >
+  <action name="uiNewDocumentWizard">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:general/filenewwizard.png</normaloff>images:general/filenewwizard.png</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>New document &amp;wizard...</string>
    </property>
   </action>
-  <action name="uiInsertPlayable" >
-   <property name="checkable" >
+  <action name="uiInsertPlayable">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:playable/insertplayable.svg</normaloff>images:playable/insertplayable.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Notes and Rests</string>
    </property>
   </action>
-  <action name="uiInsertFM" >
-   <property name="checkable" >
+  <action name="uiInsertFM">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="enabled" >
+   <property name="enabled">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:functionmark/insertfm.svg</normaloff>images:functionmark/insertfm.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Function mark...</string>
    </property>
   </action>
-  <action name="uiInsertClef" >
-   <property name="checkable" >
+  <action name="uiInsertClef">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:clef/cleff.svg</normaloff>images:clef/cleff.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Clef...</string>
    </property>
   </action>
-  <action name="uiSelectMode" >
-   <property name="checkable" >
+  <action name="uiSelectMode">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:general/arrow.svg</normaloff>images:general/arrow.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Select mode</string>
    </property>
   </action>
-  <action name="uiRemoveVoice" >
-   <property name="icon" >
+  <action name="uiRemoveVoice">
+   <property name="icon">
     <iconset>
      <normaloff>images:document/voiceremove.svg</normaloff>images:document/voiceremove.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Remove Voice</string>
    </property>
   </action>
-  <action name="uiVoiceProperties" >
-   <property name="icon" >
+  <action name="uiVoiceProperties">
+   <property name="icon">
     <iconset>
      <normaloff>images:document/voiceproperties.svg</normaloff>images:document/voiceproperties.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Voice Properties</string>
    </property>
   </action>
-  <action name="uiAccsVisible" >
-   <property name="checkable" >
+  <action name="uiAccsVisible">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:accidental/accsvisible.svg</normaloff>images:accidental/accsvisible.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Accidentals Visible</string>
    </property>
   </action>
-  <action name="uiHiddenRest" >
-   <property name="checkable" >
+  <action name="uiHiddenRest">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:playable/hiddenrest.svg</normaloff>images:playable/hiddenrest.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Hidden Rest</string>
    </property>
   </action>
-  <action name="uiRemoveContext" >
-   <property name="icon" >
+  <action name="uiRemoveContext">
+   <property name="icon">
     <iconset>
      <normaloff>images:document/contextremove.svg</normaloff>images:document/contextremove.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Remove Context</string>
    </property>
   </action>
-  <action name="uiContextProperties" >
-   <property name="icon" >
+  <action name="uiContextProperties">
+   <property name="icon">
     <iconset>
      <normaloff>images:document/contextproperties.svg</normaloff>images:document/contextproperties.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Context Properties</string>
    </property>
   </action>
-  <action name="uiRemoveSheet" >
-   <property name="icon" >
+  <action name="uiRemoveSheet">
+   <property name="icon">
     <iconset>
      <normaloff>images:document/sheetremove.svg</normaloff>images:document/sheetremove.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Remove Sheet</string>
    </property>
   </action>
-  <action name="uiSheetProperties" >
-   <property name="icon" >
+  <action name="uiSheetProperties">
+   <property name="icon">
     <iconset>
      <normaloff>images:document/sheetproperties.svg</normaloff>images:document/sheetproperties.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Sheet Properties</string>
    </property>
   </action>
-  <action name="uiTranspose" >
-   <property name="text" >
+  <action name="uiTranspose">
+   <property name="text">
     <string>&amp;Transpose...</string>
    </property>
   </action>
-  <action name="uiFMEllipse" >
-   <property name="checkable" >
+  <action name="uiFMEllipse">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:functionmark/fme.svg</normaloff>images:functionmark/fme.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Ellipse</string>
    </property>
   </action>
-  <action name="uiInsertSyllable" >
-   <property name="checkable" >
+  <action name="uiInsertSyllable">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:document/syllable.svg</normaloff>images:document/syllable.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Insert syllable</string>
    </property>
   </action>
-  <action name="uiEditMode" >
-   <property name="checkable" >
+  <action name="uiEditMode">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
+   <property name="icon">
     <iconset>
      <normaloff>images:general/editmode.svg</normaloff>images:general/editmode.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Edit mode</string>
    </property>
   </action>
-  <action name="uiInsertMark" >
-   <property name="icon" >
+  <action name="uiInsertMark">
+   <property name="icon">
     <iconset>
      <normaloff>images:mark/text.svg</normaloff>images:mark/text.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Insert Mark</string>
    </property>
   </action>
-  <action name="uiInsertArticulation" >
-   <property name="icon" >
+  <action name="uiInsertArticulation">
+   <property name="icon">
     <iconset>
      <normaloff>images:mark/articulation/accent.svg</normaloff>images:mark/articulation/accent.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Insert Articulation Mark</string>
    </property>
   </action>
-  <action name="actionRecent_documents" >
-   <property name="text" >
+  <action name="actionRecent_documents">
+   <property name="text">
     <string>recent documents dummy</string>
    </property>
   </action>
-  <action name="uiMidiRecorder" >
-   <property name="text" >
+  <action name="uiMidiRecorder">
+   <property name="text">
     <string>Midi recorder</string>
    </property>
   </action>
-  <action name="uiResourceView" >
-   <property name="checkable" >
+  <action name="uiResourceView">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Resources view</string>
    </property>
   </action>
@@ -973,11 +973,11 @@
    <receiver>uiMainWindow</receiver>
    <slot>close()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>-1</x>
      <y>-1</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>402</x>
      <y>301</y>
     </hint>

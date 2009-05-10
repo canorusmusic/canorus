@@ -49,11 +49,12 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	// Editor Page
 	uiFinaleLyricsCheckBox->setChecked( CACanorus::settings()->finaleLyricsBehaviour() );
 	uiShadowNotesInOtherStaffs->setChecked( CACanorus::settings()->shadowNotesInOtherStaffs() );
-	uiAntiAliasing->setChecked( CACanorus::settings()->antiAliasing() );
 	uiPlayInsertedNotes->setChecked( CACanorus::settings()->playInsertedNotes() );
 	uiAutoBar->setChecked( CACanorus::settings()->autoBar() );
 
 	// Appearance Page
+	uiAntiAliasing->setChecked( CACanorus::settings()->antiAliasing() );
+	uiAnimatedScroll->setChecked( CACanorus::settings()->animatedScroll() );
 	uiForegroundColor->setPalette( QPalette( CACanorus::settings()->foregroundColor() ) );
 	uiBackgroundColor->setPalette( QPalette( CACanorus::settings()->backgroundColor() ) );
 	uiSelectionColor->setPalette( QPalette( CACanorus::settings()->selectionColor() ) );
@@ -72,7 +73,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiPreviewScoreView->repaint();
 
 	// Commands Settings Page
-	
+
 	// Loading Saving Page
 	uiDocumentsDirectory->setText( CACanorus::settings()->documentsDirectory().absolutePath() );
 
@@ -139,7 +140,6 @@ void CASettingsDialog::applySettings() {
 	// Editor Page
 	CACanorus::settings()->setFinaleLyricsBehaviour( uiFinaleLyricsCheckBox->isChecked() );
 	CACanorus::settings()->setShadowNotesInOtherStaffs( uiShadowNotesInOtherStaffs->isChecked() );
-	CACanorus::settings()->setAntiAliasing( uiAntiAliasing->isChecked() );
 	CACanorus::settings()->setPlayInsertedNotes( uiPlayInsertedNotes->isChecked() );
 	CACanorus::settings()->setAutoBar( uiAutoBar->isChecked() );
 
@@ -155,6 +155,8 @@ void CASettingsDialog::applySettings() {
 	CACanorus::autoRecovery()->updateTimer();
 
 	// Appearance Page
+	CACanorus::settings()->setAntiAliasing( uiAntiAliasing->isChecked() );
+	CACanorus::settings()->setAnimatedScroll( uiAnimatedScroll->isChecked() );
 	CACanorus::settings()->setBackgroundColor( uiBackgroundColor->palette().color(QPalette::Window) );
 	CACanorus::settings()->setForegroundColor( uiForegroundColor->palette().color(QPalette::Window) );
 	CACanorus::settings()->setSelectionColor( uiSelectionColor->palette().color(QPalette::Window) );
