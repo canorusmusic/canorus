@@ -13,6 +13,7 @@
 #include "score/note.h"
 #include "score/rest.h" // used for voice synchronization
 #include "score/tuplet.h"
+#include "score/tempo.h"
 
 /*!
 	\class CAStaff
@@ -296,6 +297,21 @@ QList<CAPlayable*> CAStaff::getChord(int time) {
 		chord << voiceAt(i)->getChord(time);
 
 	return chord;
+}
+
+/*!
+	Returns the Tempo element active at the given time.
+ */
+CATempo *CAStaff::getTempo( int time ) {
+	CATempo *tempo = 0;
+	for (int i=0; i<voiceList().size(); i++) {
+		CATempo *t = voiceList()[i]->getTempo(time);
+		if ( t && (!tempo || t->timeStart() > tempo->timeStart()) ) {
+			tempo = t;
+		}
+	}
+
+	return tempo;
 }
 
 /*!

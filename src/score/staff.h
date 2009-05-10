@@ -20,6 +20,7 @@ class CASheet;
 class CAContext;
 class CAVoice;
 class CANote;
+class CATempo;
 
 class CAStaff : public CAContext {
 public:
@@ -50,6 +51,7 @@ public:
 	QList<CAMusElement*> getEltByType( CAMusElement::CAMusElementType type, int startTime );
 
 	QList<CAPlayable*> getChord( int time );
+	CATempo           *getTempo( int time );
 
 	bool synchronizeVoices();
 

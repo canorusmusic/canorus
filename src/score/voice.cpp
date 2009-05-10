@@ -17,6 +17,7 @@
 #include "score/lyricscontext.h"
 #include "score/slur.h"
 #include "score/mark.h"
+#include "score/tempo.h"
 #include "interface/mididevice.h"
 
 /*!
@@ -892,6 +893,32 @@ bool CAVoice::containsPitch( CADiatonicPitch p, int timeStart ) {
 			return true;
 	}
 	return false;
+}
+
+/*!
+	Returns the Tempo element active at the given time.
+ */
+CATempo *CAVoice::getTempo( int time ) {
+	QList<CAPlayable*> chord = getChord(time);
+	int curElt = -1;
+
+	if ( chord.isEmpty() ) {
+		curElt = musElementList().size()-1;
+	} else {
+		curElt = musElementList().indexOf(chord.last());
+	}
+
+	CATempo *tempo = 0;
+	while (!tempo && curElt>=0) {
+		for (int i=0; i<musElementList()[curElt]->markList().size(); i++) {
+			if (musElementList()[curElt]->markList()[i]->markType()==CAMark::Tempo) {
+				tempo = static_cast<CATempo*>(musElementList()[curElt]->markList()[i]);
+			}
+		}
+		curElt--;
+	}
+
+	return tempo;
 }
 
 /*!

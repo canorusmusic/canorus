@@ -18,6 +18,7 @@ class CATimeSignature;
 class CAClef;
 class CALyricsContext;
 class CARest;
+class CATempo;
 
 class CAVoice {
 	friend class CAStaff; // used for insertion of music elements and updateTimes() when inserting elements and synchronizing voices
@@ -77,8 +78,9 @@ public:
 	CATimeSignature*   getTimeSig(CAMusElement *elt);
 	CAKeySignature*    getKeySig(CAMusElement *elt);
 	CAClef*            getClef(CAMusElement *elt);
-	QList<CAPlayable*> getChord(int time);
+	QList<CAPlayable*>   getChord( int time );
 	QList<CAMusElement*> getBar( int time );
+	CATempo             *getTempo( int time );
 
 	////////////////
 	// Properties //

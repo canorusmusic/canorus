@@ -5400,7 +5400,7 @@ void CAMainWin::onUiOpenRecentDocumentTriggered() {
  */
 void CAMainWin::playImmediately( QList<CAMusElement*> elements ) {
 	if (!_playback) {
-		_playback = new CAPlayback(CACanorus::midiDevice(), CACanorus::settings()->midiOutPort() );
+		_playback = new CAPlayback(CACanorus::midiDevice() );
 		connect(_playback, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 	}
 
