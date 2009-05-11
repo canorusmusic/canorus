@@ -17,11 +17,11 @@
 #include <QWidget>
 #include <QList>
 #include <QStringList>
-#include "singleaction.h"
+//#include "singleaction.h"
 
 class QTableWidget;
 class QTableWidgetItem;
-class CASingleAction;
+//class CASingleAction;
 class QSettings;
 class QPushButton;
 
@@ -46,7 +46,7 @@ public:
 	void addActions(QWidget * widget);
 
 	// Static functions
-	static CASingleAction * findAction(QObject *o, const QString & name);
+	static QAction * findAction(QObject *o, const QString & name);
 	static QStringList actionsNames(QObject *o);
 
 	static void saveToConfig(QObject *o, QSettings *set);
@@ -95,7 +95,7 @@ protected slots:
 
 private:
 	QTableWidget *actionsTable;
-    QList<CASingleAction *> actionsList;
+    QList<QAction *> actionsList;
 	QPushButton *saveButton;
 	QPushButton *loadButton;
 	QString latest_dir;

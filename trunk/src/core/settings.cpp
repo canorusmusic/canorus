@@ -304,19 +304,19 @@ void CASettings::setMidiInPort(int in) {
 
 #ifndef SWIGCPP
 
-CASingleAction &CASettings::getSingleAction(QString oCommand)
+QAction &CASettings::getSingleAction(QString oCommand)
 {
 }
 
-void CASettings::setSingleAction(CASingleAction oSingleAction)
+void CASettings::setSingleAction(QAction oSingleAction)
 {
 }
 
-void CASettings::setActionList(QList<CASingleAction *> &oActionList)
+void CASettings::setActionList(QList<QAction *> &oActionList)
 {
 }
 
-void CASettings::addSingleAction(CASingleAction oSingleAction)
+void CASettings::addSingleAction(QAction oSingleAction)
 {
 }
 
