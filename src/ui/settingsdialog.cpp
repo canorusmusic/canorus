@@ -190,7 +190,7 @@ void CASettingsDialog::buildActionsEditorPage()
 {
 	int i;
 	QWidget oSingleActions; // all actions added here
-	 QList<CASingleAction *> &roSAList = CACanorus::settings()->getActionList();
+	 QList<QAction *> &roSAList = CACanorus::settings()->getActionList();
 	_commandsEditor = new CAActionsEditor( 0 );
 	// Read all elements from single action list (API requirement)
 	for(i=0; i< roSAList.size(); ++i)

@@ -72,6 +72,14 @@ public:
 
 	// Our own slot connection method
 	static void connectSlotsByName(QObject *pOS, const QObject *pOR);
+	
+	// Canorus specific names of const properties for actions
+	static const char *propCommand()     { return "Command"; }
+	static const char *propContext()     { return "Context"; }
+	static const char *propDescription() { return "Description"; }
+	static const char *propShortCut()    { return "ShortCut"; }
+	static const char *propMidiCommand() { return "MidiCommand"; }
+	static const char *propConflicts()   { return "Conflicts"; }
 
 private:
 	static QList<CAMainWin*> _mainWinList;

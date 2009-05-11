@@ -33,7 +33,6 @@
 #include "images.h"
 #include "filedialog.h"
 #include "paths.h"
-#include "ui/casingleaction.h"
 
 // Number of columns used: Conflicts, Command, Context, Shortcut, Midi Command
 #define COL_NUM 5
@@ -184,11 +183,11 @@ void CAActionsEditor::clear() {
 }
 
 void CAActionsEditor::addActions(QWidget *widget) {
-	CASingleAction *action;
+	QAction *action;
 
-	QList<CASingleAction *> actions = widget->findChildren<QAction *>();
+	QList<QAction *> actions = widget->findChildren<QAction *>();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<CASingleAction*> (actions[n]);
+		action = static_cast<QAction*> (actions[n]);
 		if (!action->objectName().isEmpty() && !action->inherits("QWidgetAction"))
 	        actionsList.append(action);
     }
@@ -199,7 +198,7 @@ void CAActionsEditor::addActions(QWidget *widget) {
 void CAActionsEditor::updateView() {
 	actionsTable->setRowCount( actionsList.count() );
 
-    CASingleAction *action;
+    QAction *action;
 	QString accelText, midi_com, context;
 
 //#if !USE_SHORTCUTGETTER
@@ -209,15 +208,15 @@ void CAActionsEditor::updateView() {
 
 // @ToDo: Replace with our own list of Canorus actions
 	for (int n=0; n < actionsList.count(); n++) {
-		action = static_cast<CASingleAction*> (actionsList[n]);
+		action = static_cast<QAction*> (actionsList[n]);
 
 //#if USE_MULTIPLE_SHORTCUTS
 //		accelText = shortcutsToString( action->shortcuts() );
 //#else
-		accelText = action->getShortCut().toString();
+		accelText = action->property( CACanorus::propShortCut() ).toString();
 //#endif
-		context  = action->getContext().toString();
-		midi_com = action->getMidiCommand().toString();
+		context  = action->property( CACanorus::propContext() ).toString();
+		midi_com = action->property( CACanorus::propMidiCommand() ).toString();
 		
 		QTableWidgetItem * i_conf = new QTableWidgetItem();
 
@@ -239,11 +238,17 @@ void CAActionsEditor::updateView() {
 //		i_name->setFlags(Qt::ItemIsEnabled);
 //		i_desc->setFlags(Qt::ItemIsEnabled);
 //#else
+		// Show specific command description
 		i_conf->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		i_conf->setToolTip( action->property( CACanorus::propDescription ).toString() );
 		i_name->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		i_name->setToolTip( action->property( CACanorus::propDescription ).toString() );
 		i_desc->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		i_desc->setToolTip( action->property( CACanorus::propDescription ).toString() );
 		i_shortcut->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		i_shortcut->setToolTip( action->property( CACanorus::propDescription ).toString() );
 		i_midi>setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		i_midi->setToolTip( action->property( CACanorus::propDescription ).toString() );
 //#endif
 
 		// Add items to table
@@ -271,7 +276,7 @@ void CAActionsEditor::applyChanges() {
 	qDebug("CAActionsEditor::applyChanges");
 
 	for (int row = 0; row < (int)actionsList.size(); ++row) {
-		CASingleAction *action = actionsList[row];
+		QAction *action = actionsList[row];
 		QTableWidgetItem *i = actionsTable->item(row, COL_SHORTCUT);
 
 //#if USE_MULTIPLE_SHORTCUTS
@@ -279,8 +284,11 @@ void CAActionsEditor::applyChanges() {
 //#else
 		// @ToDo Update Midi/Shortcut corresponding but
 		// Update our own list of settings
-		action->setShortCut( QKeySequence(i->text()) );
+		action->setProperty( CACanorus::propShortCut(), QKeySequence(i->text()) );
+		i = actionsTable->item(row, COL_MIDI);
+		action->setProperty( CACanorus::propMidiCommand(), i->text() );
 //#endif
+
 	}
 }
 
@@ -397,7 +405,10 @@ bool CAActionsEditor::hasConflicts(bool bMidi) {
 	for (int n=0; n < actionsTable->rowCount(); n++) {
 		//actionsTable->setText( n, COL_CONFLICTS, " ");
 		i = actionsTable->item( n, COL_CONFLICTS );
+		// Think positive, no conflict when we start to search
 		if (i) i->setIcon( QPnixmap() );
+		// @ToDo: remove hardcoded names for icon and conflict types
+		actionsList[row]->setProperty( CACanorus::propConflicts(), "none" );
 
 		i = actionsTable->item(n, iType );
 		if (i) {
@@ -409,6 +420,10 @@ bool CAActionsEditor::hasConflicts(bool bMidi) {
 					conflict = true;
 					//actionsTable->setText( n, COL_CONFLICTS, "!");
 					actionsTable->item( n, COL_CONFLICTS )->setIcon( Images::icon("conflict") );
+					if( bMidi ) // type of conflict
+						actionsList[row]->setProperty( CACanorus::propConflicts(), "midi" );
+					else
+						actionsList[row]->setProperty( CACanorus::propConflicts(), "shortcut" );
 				}
 			}
 		}
@@ -469,8 +484,9 @@ bool CAActionsEditor::saveActionsTable(const QString & filename) {
 		stream.setCodec("UTF-8");
 
 		for (int row=0; row < actionsTable->rowCount(); row++) {
-			stream << actionsTable->item(row, COL_NAME)->text() << "\t" 
+			stream << actionsTable->item(row, COL_COMMAND)->text() << "\t" 
                    << actionsTable->item(row, COL_SHORTCUT)->text() << "\n";
+				   << actionsTable->item(row, COL_MIDI)->text() << "\n";
 		}
 		f.close();
 		return true;
@@ -556,15 +572,15 @@ void CAActionsEditor::saveToConfig(QObject *o, QSettings *set) {
 
 	set->beginGroup("actions");
 
-	CASingleAction *action;
-	QList<CASingleAction *> actions = o->findChildren<QAction *>();
+	QAction *action;
+	QList<QAction *> actions = o->findChildren<QAction *>();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<CASingleAction*> (actions[/n]);
+		action = static_cast<QAction*> (actions[/n]);
 		if (!action->text().isEmpty() && !action->inherits("QWidgetAction")) {
 //#if USE_MULTIPLE_SHORTCUTS
 //			QString accelText = shortcutsToString(action->shortcuts());
 //#else
-			QString accelText = action->getShortCut().toString();
+			QString accelText = action->property( CACanorus::propShortCut() ).toString();
 //#endif
 			set->setValue(action->text(), accelText);
 		}
@@ -579,12 +595,12 @@ void CAActionsEditor::loadFromConfig(QObject *o, QSettings *set) {
 
 	set->beginGroup("actions");
 
-	CASingleAction *action;
+	QAction *action;
 	QString accelText;
 
-	QList<CASingleAction *> actions = o->findChildren<QAction *>();
+	QList<QAction *> actions = o->findChildren<QAction *>();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<CASingleAction*> (actions[n]);
+		action = static_cast<QAction*> (actions[n]);
 		if (!action->objectName().isEmpty() && !action->inherits("QWidgetAction")) {
 //#if USE_MULTIPLE_SHORTCUTS
 //			QString current = shortcutsToString(action->shortcuts());
@@ -592,7 +608,7 @@ void CAActionsEditor::loadFromConfig(QObject *o, QSettings *set) {
 //			action->setShortcuts( stringToShortcuts( accelText ) );
 //#else
 			accelText = set->value(action->text(), action->getShortCut().toString()).toString();
-			action->setShortCut(QKeySequence(accelText));
+			action->setProperty( CACanorus::propShortCut(), QKeySequence(accelText));
 //#endif
 		}
     }
@@ -600,12 +616,12 @@ void CAActionsEditor::loadFromConfig(QObject *o, QSettings *set) {
 	set->endGroup();
 }
 
-CASingleAction * CAActionsEditor::findAction(QObject *o, const QString & name) {
-	CASingleAction *action;
+QAction * CAActionsEditor::findAction(QObject *o, const QString & name) {
+	QAction *action;
 
-	QList<CASingleAction *> actions = o->findChildren<QAction *>();
+	QList<QAction *> actions = o->findChildren<QAction *>();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<CASingleAction*> (actions[n]);
+		action = static_cast<QAction*> (actions[n]);
 		if (name == action->objectName()) return action;
     }
 
@@ -615,11 +631,11 @@ CASingleAction * CAActionsEditor::findAction(QObject *o, const QString & name) {
 QStringList CAActionsEditor::actionsNames(QObject *o) {
 	QStringList l;
 
-	CASingleAction *action;
+	QAction *action;
 
-	QList<CASingleAction *> actions = o->findChildren<QAction *>();
+	QList<QAction *> actions = o->findChildren<QAction *>();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<CASingleAction*> (actions[n]);
+		action = static_cast<QAction*> (actions[n]);
 		//qDebug("action name: '%s'", action->objectName().toUtf8().data());
 		//qDebug("action name: '%s'", action->text().toUtf8().data());
 		if (!action->text().isEmpty())
