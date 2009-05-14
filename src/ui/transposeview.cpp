@@ -63,8 +63,8 @@ void CATransposeView::show() {
 
 		// the key signature wasn't found yet - find the first key sig in the score
 		for (int i=0; !k && i<v->sheet()->staffList().size(); i++) {
-			if ( v->sheet()->staffList()[i]->voiceCount() ) {
-				k = v->sheet()->staffList()[i]->voiceAt(0)->getKeySig( 0 );
+			if ( v->sheet()->staffList()[i]->voiceList().size() ) {
+				k = v->sheet()->staffList()[i]->voiceList()[0]->getKeySig( 0 );
 			}
 		}
 

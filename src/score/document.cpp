@@ -56,8 +56,8 @@ CADocument *CADocument::clone() {
 	newDocument->setComments( comments() );
 	newDocument->setFileName( fileName() );
 
-	for (int i=0; i<sheetCount(); i++)
-		newDocument->addSheet( sheetAt(i)->clone() );
+	for (int i=0; i<sheetList().size(); i++)
+		newDocument->addSheet( sheetList()[i]->clone() );
 
 	for (int i=0; i<resourceList().size(); i++) {
 		newDocument->addResource( resourceList()[i] );
@@ -116,21 +116,10 @@ CASheet *CADocument::addSheetByName(const QString name) {
 }
 
 /*!
-	Adds an already created \a sheet to the document.
-	Sheet's owner document is set to this document.
-
-	\sa addSheet(const QString name)
-*/
-void CADocument::addSheet(CASheet *sheet) {
-	_sheetList.append(sheet);
-	sheet->setDocument(this);
-}
-
-/*!
 	Adds and empty sheet to the document.
  */
 CASheet *CADocument::addSheet() {
-	CASheet *s = new CASheet(QObject::tr("Sheet%1").arg(sheetCount()+1), this);
+	CASheet *s = new CASheet(QObject::tr("Sheet%1").arg(sheetList().size()+1), this);
 	addSheet( s );
 
 	return s;
@@ -139,7 +128,7 @@ CASheet *CADocument::addSheet() {
 /*!
 	Returns the first sheet with the given \a name.
 */
-CASheet *CADocument::sheet(const QString name) {
+CASheet *CADocument::findSheet(const QString name) {
 	for (int i=0; i<_sheetList.size(); i++) {
 		if (_sheetList[i]->name() == name)
 			return _sheetList[i];
@@ -148,32 +137,3 @@ CASheet *CADocument::sheet(const QString name) {
 	return 0;
 }
 
-/*!
-	\fn CADocument::sheetCount()
-	Returns the number of created sheets in the document.
-
-	\sa _sheetList
-*/
-
-/*!
-	\fn CADocument::sheetAt(int i)
-	Returns the sheet with index \a i.
-
-	\sa _sheetList
-*/
-
-/*!
-	\var CADocument::_sheetList
-	List of documents sheets.
-
-	\sa sheet(), sheetAt(), sheetCount()
-*/
-
-/*!
-	\fn CADocument::fileName()
-	Returns the absolute path of the file the document has been saved to or empty
-	string if document hasn't been saved yet.
-	Document's file name property is not saved to a file.
-
-	\sa setFileName()
-*/

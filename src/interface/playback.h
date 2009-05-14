@@ -58,8 +58,8 @@ private:
 	void playSelectionImpl();
 	void updateSleepFactor( CATempo *t );
 
-	inline QList<CAMusElement*> streamAt(int idx) { return _stream[idx]; }
-	inline int streamCount() { return _stream.size(); }
+	inline QList<CAMusElement*>& streamAt(int idx) { return _streamList[idx]; }
+	inline const QList< QList<CAMusElement*> >& streamList() { return _streamList; }
 	inline int& streamIdx( int i ) { return _streamIdx[i]; }
 	inline int& lastRepeatOpenIdx( int i ) { return _lastRepeatOpenIdx[i]; }
 
@@ -81,7 +81,7 @@ private:
 	int _initTimeStart;
 	float _sleepFactor;
 
-	QList< QList<CAMusElement*> > _stream;
+	QList< QList<CAMusElement*> > _streamList;
 	QList<CAPlayable*> _curPlaying;	// list of currently playing notes and rests
 	int *_streamIdx;
 	bool _repeating;

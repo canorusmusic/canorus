@@ -266,9 +266,9 @@ void CALilyPondExport::exportLyricsContextBlock( CALyricsContext *lc ) {
 	Exports the syllables only without the SopranoLyircsOne = {} frame.
 */
 void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
-	for (int i=0; i<lc->syllableCount(); i++) {
+	for (int i=0; i<lc->syllableList().size(); i++) {
 		if (i>0) out() << " "; // space between syllables
-		out() << syllableToLilyPond(lc->syllableAt(i));
+		out() << syllableToLilyPond(lc->syllableList()[i]);
 	}
 }
 
@@ -537,7 +537,7 @@ const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
 */
 void CALilyPondExport::exportDocumentImpl(CADocument *doc)
 {
-	if ( doc->sheetCount() < 1 ) {
+	if ( doc->sheetList().size() < 1 ) {
 		//TODO: no sheets, raise an error
 		return;
 	}
@@ -551,7 +551,7 @@ void CALilyPondExport::exportDocumentImpl(CADocument *doc)
 	writeDocumentHeader();
 
 	// For now only export the first sheet of the document
-	exportSheetImpl( doc->sheetAt( 0 ) );
+	exportSheetImpl( doc->sheetList()[ 0 ] );
 }
 
 
@@ -563,14 +563,14 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 	setCurSheet( sheet );
 
 	// Export voices as Lilypond variables: \StaffOneVoiceOne = \relative c { ... }
-	for ( int c = 0; c < sheet->contextCount(); ++c ) {
+	for ( int c = 0; c < sheet->contextList().size(); ++c ) {
 		setCurContextIndex( c );
-		switch (sheet->contextAt(c)->contextType()) {
+		switch (sheet->contextList()[c]->contextType()) {
 			case CAContext::Staff:
-				exportStaffVoices( static_cast<CAStaff*>(sheet->contextAt( c )) );
+				exportStaffVoices( static_cast<CAStaff*>(sheet->contextList()[c]) );
 				break;
 			case CAContext::LyricsContext:
-				exportLyricsContextBlock( static_cast<CALyricsContext*>(sheet->contextAt( c )) );
+				exportLyricsContextBlock( static_cast<CALyricsContext*>(sheet->contextList()[c]) );
 				break;
 		}
 	}
@@ -620,8 +620,8 @@ QString CALilyPondExport::escapeWeirdChars( QString in ) {
 */
 void CALilyPondExport::exportStaffVoices(CAStaff *staff)
 {
-	for ( int v = 0; v < staff->voiceCount(); ++v ) {
-		setCurVoice( staff->voiceAt( v ) );
+	for ( int v = 0; v < staff->voiceList().size(); ++v ) {
+		setCurVoice( staff->voiceList()[v] );
 
 		// Print Canorus voice name as a comment to help with debugging/tweaking
 		indent();
@@ -682,7 +682,7 @@ void CALilyPondExport::voiceVariableName( QString &name, int staffNum, int voice
 void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 	out() << "\n\\score {\n";
 	indentMore();
-	int contextCount = sheet->contextCount();
+	int contextCount = sheet->contextList().size();
 	if ( contextCount < 1 ) {
 		out() << "% No Contexts. This should probably raise an error.\n";
 	}
@@ -694,7 +694,7 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 
 		// Output each staff
 		for( int c = 0; c < contextCount; ++c ) {
-			setCurContext( sheet->contextAt( c ) );
+			setCurContext( sheet->contextList()[c] );
 
 			switch (curContext()->contextType()) {
 				case CAContext::Staff: {
@@ -705,7 +705,7 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 					indentMore();
 
 					// More than one voice? Add simultaneous symbol
-					int voiceCount = s->voiceCount();
+					int voiceCount = s->voiceList().size();
 					if ( voiceCount > 1 ) {
 						indent();
 						out() <<  "<<\n" ;
@@ -716,7 +716,7 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 					for( int v = 0; v < voiceCount; ++v ) {
 
 						// Print Canorus voice name as a comment to aid with debugging etc.
-						QString curVoiceName( s->voiceAt( v )->name() );
+						QString curVoiceName( s->voiceList()[v]->name() );
 						indent();
 						out() << "% " << curVoiceName << "\n";
 
@@ -779,7 +779,7 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 			}
 
 			CALyricsContext *lc;
-			if (lc = dynamic_cast<CALyricsContext*>(sheet->contextAt( i ))) {
+			if (lc = dynamic_cast<CALyricsContext*>(sheet->contextList()[ i ])) {
 				QString lcName = lc->name();
 				spellNumbers(lcName);
 

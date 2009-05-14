@@ -74,8 +74,8 @@ void CAAutoRecovery::saveRecovery() {
 	cleanupRecovery();
 
 	QSet<CADocument*> documents;
-	for (int i=0; i<CACanorus::mainWinCount(); i++)
-		documents << CACanorus::mainWinAt(i)->document();
+	for (int i=0; i<CACanorus::mainWinList().size(); i++)
+		documents << CACanorus::mainWinList()[i]->document();
 
 	int c=0;
 	for (QSet<CADocument*>::const_iterator i=documents.constBegin(); i!=documents.constEnd(); i++, c++) {
@@ -135,7 +135,7 @@ void CAAutoRecovery::openRecovery() {
 		_saveAfterRecoveryTimer->start();
 
 		QMessageBox::information(
-				CACanorus::mainWinAt( CACanorus::mainWinCount()-1 ),
+				CACanorus::mainWinList()[ CACanorus::mainWinList().size()-1 ],
 				tr("Document recovery"),
 				tr("Previous session of Canorus was unexpectedly closed.\n\n\
 The following documents were successfully recovered:\n%1").arg(documents)

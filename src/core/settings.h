@@ -134,7 +134,7 @@ public:
 #ifndef SWIG
 	QAction &getSingleAction(QString oCommand);
 	void setSingleAction(QAction oSingleAction);
-	inline QList<QAction *> &getActionList() { return actionsList; }
+	inline const QList<QAction*>& getActionList() { return _actionList; }
 	void setActionList(QList<QAction *> &oActionList);
 	void addSingleAction(QAction oSingleAction);
 	void deleteSingleAction(QString oCommand);
@@ -197,7 +197,7 @@ private:
 	QDir _latestShortcutsDirectory; // save location of shortcuts/midi commands
 	// @ToDo: QAction can be exported to SWIG ? Abstract interface but requires QObject
 #ifndef SWIG
-    QList<QAction *> actionsList;
+    QList<QAction *> _actionList;
 #endif
 };
 

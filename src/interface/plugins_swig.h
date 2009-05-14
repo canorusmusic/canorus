@@ -25,8 +25,12 @@ public:
 	CAPyConsoleInterface* pyConsoleIface;
 };
 
+// Needs refactoring!
+// Functions in this file should be moved to scripting directory and merged with
+// scripting code (canoruspython.i and swigpython.cpp). -Matevz
 class CACanorus {
 public:
-	static int mainWinCount() { return 0; };
-	static CAMainWin* mainWinAt(int i) { return new CAMainWin(); }
+	inline static QList<CAMainWin*>& mainWinList() { return _mainWinList; }
+private:
+	static QList<CAMainWin*> _mainWinList;
 };

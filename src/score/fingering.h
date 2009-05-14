@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -36,11 +36,11 @@ public:
 	CAFingering *clone(CAMusElement* elt=0);
 	int compare(CAMusElement *elt);
 
-	inline CAFingerNumber finger()             { return (_fingerList.size()?_fingerList[0]:Undefined); }
-	inline void setFinger(CAFingerNumber f)    { _fingerList.clear(); _fingerList << f; }
-	inline QList<CAFingerNumber>& fingerList() { return _fingerList; }
-	inline void addFinger( CAFingerNumber f )  { _fingerList << f; }
-	inline void removeFingerAt( int idx )      { _fingerList.removeAt(idx); }
+	inline CAFingerNumber finger()                   { return (_fingerList.size()?_fingerList[0]:Undefined); }
+	inline void setFinger(CAFingerNumber f)          { _fingerList.clear(); _fingerList << f; }
+	inline const QList<CAFingerNumber>& fingerList() { return _fingerList; }
+	inline void addFinger( CAFingerNumber f )        { _fingerList << f; }
+	inline void removeFinger( CAFingerNumber n )     { _fingerList.removeAll(n); }
 
 	inline bool isOriginal() { return _original; }
 	inline void setOriginal( bool original ) { _original = original; }

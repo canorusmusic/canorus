@@ -32,15 +32,11 @@ public:
 	void clear();
 	CAStaff *clone( CASheet *s );
 
-	inline int voiceCount() { return _voiceList.size(); }
-	inline CAVoice *voiceAt(int i) { return _voiceList[i]; }
-	inline int voiceIndex(CAVoice *voice) { return _voiceList.indexOf(voice); }
-	inline void removeVoice(CAVoice *voice) { _voiceList.removeAll(voice); }
-	inline QList<CAVoice*> voiceList() { return _voiceList; }
-	CAVoice *voiceByName(const QString name);
-
-	void     addVoice(CAVoice *voice);
+	inline const QList<CAVoice*>& voiceList() { return _voiceList; }
+	inline void addVoice(CAVoice *voice) { _voiceList << voice; }
 	CAVoice* addVoice();
+	inline void removeVoice(CAVoice *voice) { _voiceList.removeAll(voice); }
+	CAVoice *findVoice(const QString name);
 
 	CAMusElement *next( CAMusElement *elt );
 	CAMusElement *previous( CAMusElement *elt );

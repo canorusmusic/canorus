@@ -22,11 +22,11 @@ public:
 	~CAFunctionMarkContext();
 	CAFunctionMarkContext *clone( CASheet *s );
 
-	int functionMarkCount(int timeStart=0);
-	inline CAFunctionMark *functionMarkAt(int idx) { return _functionMarkList[idx]; }
+	inline const QList<CAFunctionMark*>& functionMarkList() { return _functionMarkList; }
+	QList< CAFunctionMark* > functionMarkAt( int timeStart );
 	void addFunctionMark(CAFunctionMark *mark, bool replace=true);
 	void addEmptyFunction( int timeStart, int timeLength );
-	inline QList<CAFunctionMark*> functionMarkList() { return _functionMarkList; }
+
 	void repositFunctions();
 
 	void clear();

@@ -198,7 +198,7 @@ QByteArray CAMidiExport::textEvent(int time, QString s) {
 */
 void CAMidiExport::exportDocumentImpl(CADocument *doc)
 {
-	if ( doc->sheetCount() < 1 ) {
+	if ( doc->sheetList().size() < 1 ) {
 		//TODO: no sheets, raise an error
 		return;
 	}
@@ -207,7 +207,7 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 	// In the header chunk we need to know the count of tracks.
 	// We export every non empty voice as separate track.
 	// For now we export only the first sheet.
-	CASheet *sheet = doc->sheetAt( 0 );
+	CASheet *sheet = doc->sheetList()[ 0 ];
 	setCurSheet( sheet );
 	trackChunk.clear();
 
@@ -217,13 +217,13 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 	_playback->run();
 
 	int count = 0;
-	for (int c = 0; c < doc->sheetAt(0)->contextCount(); ++c ) {
-		switch (sheet->contextAt(c)->contextType()) {
+	for (int c = 0; c < doc->sheetList()[0]->contextList().size(); ++c ) {
+		switch (sheet->contextList()[c]->contextType()) {
 			case CAContext::Staff:
-				// exportStaffVoices( static_cast<CAStaff*>(sheet->contextAt( c )) );
-				CAStaff *staff = static_cast<CAStaff*>(sheet->contextAt( c ));
-				for ( int v = 0; v < staff->voiceCount(); ++v ) {
-					setCurVoice( staff->voiceAt( v ) );
+				// exportStaffVoices( static_cast<CAStaff*>(sheet->contextList()[c]) );
+				CAStaff *staff = static_cast<CAStaff*>(sheet->contextList()[c]);
+				for ( int v = 0; v < staff->voiceList().size(); ++v ) {
+					setCurVoice( staff->voiceList()[v] );
 					count++;
 					//std::cout << "Hallo  " << c << " " << v << "\n" << std::endl;
 				}

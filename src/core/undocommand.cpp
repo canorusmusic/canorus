@@ -82,18 +82,18 @@ void CAUndoCommand::undoDocument( CADocument *current, CADocument *newDocument )
 	QHash< CAVoice*, CAVoice* > voiceMap;       // map old->new voices
 	bool rebuildNeeded=false;
 
-	for (int i=0; i<newDocument->sheetCount() && i<current->sheetCount(); i++) {
-		sheetMap[current->sheetAt(i)] = newDocument->sheetAt(i);
-		for (int j=0; j<newDocument->sheetAt(i)->contextCount() && j<current->sheetAt(i)->contextCount(); j++) {
-			contextMap[current->sheetAt(i)->contextAt(j)] = newDocument->sheetAt(i)->contextAt(j);
+	for (int i=0; i<newDocument->sheetList().size() && i<current->sheetList().size(); i++) {
+		sheetMap[current->sheetList()[i]] = newDocument->sheetList()[i];
+		for (int j=0; j<newDocument->sheetList()[i]->contextList().size() && j<current->sheetList()[i]->contextList().size(); j++) {
+			contextMap[current->sheetList()[i]->contextList()[j]] = newDocument->sheetList()[i]->contextList()[j];
 		}
-		for (int j=0; j<newDocument->sheetAt(i)->voiceCount() && j<current->sheetAt(i)->voiceCount(); j++) {
-			voiceMap[current->sheetAt(i)->voiceAt(j)] = newDocument->sheetAt(i)->voiceAt(j);
+		for (int j=0; j<newDocument->sheetList()[i]->voiceList().size() && j<current->sheetList()[i]->voiceList().size(); j++) {
+			voiceMap[current->sheetList()[i]->voiceList()[j]] = newDocument->sheetList()[i]->voiceList()[j];
 		}
 	}
 
 	QList<CAMainWin*> mainWinList = CACanorus::findMainWin( current );
-	if (newDocument->sheetCount() != current->sheetCount()) {
+	if (newDocument->sheetList().size() != current->sheetList().size()) {
 		for (int i=0; i<mainWinList.size(); i++) {
 			mainWinList[i]->setDocument( newDocument );
 		}

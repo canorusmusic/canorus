@@ -132,17 +132,22 @@ void CAFunctionMarkContext::addEmptyFunction( int timeStart, int timeLength ) {
 }
 
 /*!
-	Returns number of function marks with the given \a timeStart.
+	Returns the function marks at the exact given \a timeStart.
+	This function is usually called to determine the number of possible modulations of the
+	same chord at the given time.
 */
-int CAFunctionMarkContext::functionMarkCount(int timeStart) {
+QList<CAFunctionMark*> CAFunctionMarkContext::functionMarkAt(int timeStart) {
 	int i;
-	for (i=0; i<_functionMarkList.size() && _functionMarkList[i]->timeStart()>timeStart; i++);
-	if (i<_functionMarkList.size() && _functionMarkList[i]->timeStart()==timeStart) {
-		int count;
-		for (count=1; i<_functionMarkList.size() && _functionMarkList[i]->timeStart()==timeStart; count++, i++);
-		return count;
-	} else
-		return 0;
+	QList<CAFunctionMark*> ret;
+
+	// seek to the given time
+	for (i=0; i<_functionMarkList.size() && _functionMarkList[i]->timeStart() < timeStart; i++);
+
+	for (; i<_functionMarkList.size() && _functionMarkList[i]->timeStart() == timeStart; i++) {
+		ret << _functionMarkList[i];
+	}
+
+	return ret;
 }
 
 /*!

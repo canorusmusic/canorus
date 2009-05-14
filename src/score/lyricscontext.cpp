@@ -101,7 +101,10 @@ void CALyricsContext::repositSyllables() {
 			_syllableList[j]->setTimeStart(_syllableList[j-1]->timeStart()+_syllableList[j-1]->timeLength());
 			_syllableList[j]->setTimeLength( 256 );
 		}
-		for (j=firstEmpty; j<_syllableList.size() && j>0; j++) removeAt(j); // remove empty "leftover" syllables from the end
+		for (j=firstEmpty; j<_syllableList.size() && j>0; j++) {
+			delete _syllableList[j];
+			_syllableList.removeAt(j); // remove empty "leftover" syllables from the end
+		}
 
 		for (; i<noteList.size(); i++) { // add empty syllables at the end, if missing
 			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart()) // chord
@@ -150,15 +153,6 @@ bool CALyricsContext::remove( CAMusElement* elt ) {
 }
 
 /*!
-	Removes the syllable at the given position.
-*/
-void CALyricsContext::removeAt(int i)
-{
-	if(i>=0 && i<_syllableList.size())
-		delete _syllableList.takeAt(i);
-}
-
-/*!
 	Removes the syllable at the given \a timeStart and updates the timeStarts for syllables after it.
 	This function is usually called when removing the note.
 
@@ -174,7 +168,8 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart ) {
 		for (int j=i+1; j<_syllableList.size(); j++)
 			_syllableList[j]->setTimeStart( _syllableList[j]->timeStart() - syllable->timeLength() );
 
-		removeAt(i);
+		delete _syllableList[i];
+		_syllableList.removeAt(i);
 		return syllable;
 	} else {
 		return 0;
@@ -192,8 +187,10 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart ) {
 bool CALyricsContext::addSyllable( CASyllable *syllable, bool replace ) {
 	int i;
 	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<syllable->timeStart(); i++);
-	if ( i!=_syllableList.size() && replace )
-		removeAt(i);
+	if ( i!=_syllableList.size() && replace ) {
+		delete _syllableList[i];
+		_syllableList.removeAt(i);
+	}
 	_syllableList.insert(i, syllable);
 	for (i++; i<_syllableList.size(); i++)
 		_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() + syllable->timeLength() );
@@ -203,7 +200,8 @@ bool CALyricsContext::addSyllable( CASyllable *syllable, bool replace ) {
 
 /*!
 	Adds an empty syllable to the context.
-	This is useful when initializing the lyrics context or inserting a new note.
+	This function is usually called when initializing the lyrics context
+	or inserting a new note.
 */
 bool CALyricsContext::addEmptySyllable( int timeStart, int timeLength ) {
 	int i;
@@ -215,14 +213,10 @@ bool CALyricsContext::addEmptySyllable( int timeStart, int timeLength ) {
 	return true;
 }
 
-QList<CAMusElement*> CALyricsContext::musElementList() {
-	QList<CAMusElement*> musEltList;
-	for (int i=0; i<_syllableList.size(); i++)
-		musEltList << _syllableList[i];
-
-	return musEltList;
-}
-
+/*!
+	Finds the syllable with exactly the given \a timeStart or Null, if such a
+	syllables doesn't exist.
+ */
 CASyllable *CALyricsContext::syllableAtTimeStart( int timeStart ) {
 	int i;
 	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()!=timeStart; i++);
@@ -230,4 +224,18 @@ CASyllable *CALyricsContext::syllableAtTimeStart( int timeStart ) {
 		return _syllableList[i];
 	else
 		return 0;
+}
+
+/*!
+	Sets a new associated voice and repositiones the syllables.
+ */
+void CALyricsContext::setAssociatedVoice( CAVoice *v ) {
+	if (_associatedVoice)
+		_associatedVoice->removeLyricsContext(this);
+
+	if (v)
+		v->addLyricsContext(this);
+
+	_associatedVoice = v;
+	repositSyllables();
 }

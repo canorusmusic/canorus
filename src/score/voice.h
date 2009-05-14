@@ -44,7 +44,7 @@ public:
 	//////////////////////////////
 	// Voice analysis and query //
 	//////////////////////////////
-	inline QList<CAMusElement*>& musElementList() { return _musElementList; }
+	inline const QList<CAMusElement*>& musElementList() { return _musElementList; }
 
 	QList<CAMusElement*> getSignList();
 	QList<CANote*> getNoteList();
@@ -81,7 +81,7 @@ public:
 	////////////////
 	// Properties //
 	////////////////
-	inline int voiceNumber() { return (staff()?(staff()->voiceIndex(this)+1):1); }
+	inline int voiceNumber() { return (staff()?(staff()->voiceList().indexOf(this)+1):1); }
 	inline bool isFirstVoice() { return (voiceNumber()==1); }
 
 	inline CANote::CAStemDirection stemDirection() { return _stemDirection; }
@@ -96,7 +96,7 @@ public:
 	inline unsigned char midiProgram() { return _midiProgram; }
 	inline void setMidiProgram(const unsigned char program) { _midiProgram = program; }
 
-	inline QList<CALyricsContext*>& lyricsContextList() { return _lyricsContextList; }
+	inline const QList<CALyricsContext*>& lyricsContextList() { return _lyricsContextList; }
 	inline void addLyricsContext( CALyricsContext *lc ) { _lyricsContextList << lc; }
 	inline void setLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList = list; }
 	inline void addLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList += list; }

@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
 	CACanorus::parseOpenFileArguments(argc, argv);
 
 	// If no file to open is passed in command line, create a new default main window. It's shown automatically by CACanorus::addMainWin().
-	if (!CACanorus::mainWinCount()) {
+	if (!CACanorus::mainWinList().size()) {
 		CAMainWin *mainWin = new CAMainWin();
 		mainWin->newDocument();
 		mainWin->show();
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
 
 	// Show settings dialog, if needed (eg. MIDI setup when running Canorus for the first time)
 	if ( showSettingsPage != CASettingsDialog::UndefinedSettings ) {
-		CASettingsDialog( showSettingsPage, CACanorus::mainWinAt(0) );
+		CASettingsDialog( showSettingsPage, CACanorus::mainWinList()[0] );
 	}
 
 	return mainApp.exec();

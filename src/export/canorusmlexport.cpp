@@ -99,16 +99,16 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 	dDocument.setAttribute( "date-last-modified", doc->dateLastModified().toString(Qt::ISODate) );
 	dDocument.setAttribute( "time-edited", doc->timeEdited() );
 
-	for (int sheetIdx=0; sheetIdx < doc->sheetCount(); sheetIdx++) {
-		setProgress( qRound(((float)sheetIdx / doc->sheetCount()) * 100) );
+	for (int sheetIdx=0; sheetIdx < doc->sheetList().size(); sheetIdx++) {
+		setProgress( qRound(((float)sheetIdx / doc->sheetList().size()) * 100) );
 
 		// CASheet
 		QDomElement dSheet = dDoc.createElement("sheet"); dDocument.appendChild(dSheet);
-		dSheet.setAttribute("name", doc->sheetAt(sheetIdx)->name());
+		dSheet.setAttribute("name", doc->sheetList()[sheetIdx]->name());
 
-		for (int contextIdx=0; contextIdx < doc->sheetAt(sheetIdx)->contextCount(); contextIdx++) {
+		for (int contextIdx=0; contextIdx < doc->sheetList()[sheetIdx]->contextList().size(); contextIdx++) {
 			// (CAContext)
-			CAContext *c = doc->sheetAt(sheetIdx)->contextAt(contextIdx);
+			CAContext *c = doc->sheetList()[sheetIdx]->contextList()[contextIdx];
 
 			switch (c->contextType()) {
 				case CAContext::Staff: {
@@ -118,9 +118,9 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 					dStaff.setAttribute("name", staff->name());
 					dStaff.setAttribute("number-of-lines", staff->numberOfLines());
 
-					for (int voiceIdx=0; voiceIdx < staff->voiceCount(); voiceIdx++) {
+					for (int voiceIdx=0; voiceIdx < staff->voiceList().size(); voiceIdx++) {
 						// CAVoice
-						CAVoice *v = staff->voiceAt(voiceIdx);
+						CAVoice *v = staff->voiceList()[voiceIdx];
 						QDomElement dVoice = dDoc.createElement("voice"); dStaff.appendChild(dVoice);
 						dVoice.setAttribute("name", v->name());
 						dVoice.setAttribute("midi-channel", v->midiChannel());
@@ -138,7 +138,7 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 					QDomElement dlc = dDoc.createElement("lyrics-context"); dSheet.appendChild(dlc);
 					dlc.setAttribute("name", lc->name());
 					dlc.setAttribute("stanza-number", lc->stanzaNumber());
-					dlc.setAttribute("associated-voice-idx", doc->sheetAt(sheetIdx)->voiceList().indexOf(lc->associatedVoice()));
+					dlc.setAttribute("associated-voice-idx", doc->sheetList()[sheetIdx]->voiceList().indexOf(lc->associatedVoice()));
 
 					QList<CASyllable*> syllables = lc->syllableList();
 					for (int i=0; i<syllables.size(); i++) {
@@ -149,8 +149,8 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 						s.setAttribute( "hyphen", syllables[i]->hyphenStart() );
 						s.setAttribute( "melisma", syllables[i]->melismaStart() );
 
-						if ( syllables[i]->associatedVoice() && doc->sheetAt(sheetIdx)->voiceList().contains(syllables[i]->associatedVoice()) ) {
-							s.setAttribute( "associated-voice-idx", doc->sheetAt(sheetIdx)->voiceList().indexOf(syllables[i]->associatedVoice()) );
+						if ( syllables[i]->associatedVoice() && doc->sheetList()[sheetIdx]->voiceList().contains(syllables[i]->associatedVoice()) ) {
+							s.setAttribute( "associated-voice-idx", doc->sheetList()[sheetIdx]->voiceList().indexOf(syllables[i]->associatedVoice()) );
 						}
 					}
 

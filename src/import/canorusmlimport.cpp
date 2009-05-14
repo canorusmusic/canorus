@@ -162,7 +162,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		QString sheetName = attributes.value("name");
 
 		if (sheetName.isEmpty())
-			sheetName = QObject::tr("Sheet%1").arg(_document->sheetCount()+1);
+			sheetName = QObject::tr("Sheet%1").arg(_document->sheetList().size()+1);
 		_curSheet = new CASheet(sheetName, _document);
 
 		_document->addSheet(_curSheet);
@@ -176,7 +176,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		}
 
 		if (staffName.isEmpty())
-			staffName = QObject::tr("Staff%1").arg(_curSheet->staffCount()+1);
+			staffName = QObject::tr("Staff%1").arg(_curSheet->staffList().size()+1);
 		_curContext = new CAStaff( staffName, _curSheet, attributes.value("number-of-lines").toInt());
 
 		_curSheet->addContext(_curContext);
@@ -190,7 +190,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		}
 
 		if (lcName.isEmpty())
-			lcName = QObject::tr("Lyrics Context %1").arg(_curSheet->contextCount()+1);
+			lcName = QObject::tr("Lyrics Context %1").arg(_curSheet->contextList().size()+1);
 		_curContext = new CALyricsContext( lcName, attributes.value("stanza-number").toInt(), _curSheet );
 
 		// voices are not neccesseraly completely read - store indices of the voices internally and then assign them at the end
@@ -208,7 +208,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		}
 
 		if (fmcName.isEmpty())
-			fmcName = QObject::tr("Function Mark Context %1").arg(_curSheet->contextCount()+1);
+			fmcName = QObject::tr("Function Mark Context %1").arg(_curSheet->contextList().size()+1);
 		_curContext = new CAFunctionMarkContext( fmcName, _curSheet );
 
 		_curSheet->addContext(_curContext);
@@ -226,7 +226,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 
 		CAStaff *staff = static_cast<CAStaff*>(_curContext);
 
-		int voiceNumber = staff->voiceCount()+1;
+		int voiceNumber = staff->voiceList().size()+1;
 
 		if (voiceName.isEmpty())
 			voiceName = QObject::tr("Voice%1").arg( voiceNumber );
@@ -474,9 +474,9 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		_version = _cha;
 	} else if (qName == "document") {
 		//fix voice errors like shared voice elements not being present in both voices etc.
-		for (int i=0; _document && i<_document->sheetCount(); i++) {
-			for (int j=0; j<_document->sheetAt(i)->staffCount(); j++) {
-				_document->sheetAt(i)->staffAt(j)->synchronizeVoices();
+		for (int i=0; _document && i<_document->sheetList().size(); i++) {
+			for (int j=0; j<_document->sheetList()[i]->staffList().size(); j++) {
+				_document->sheetList()[i]->staffList()[j]->synchronizeVoices();
 			}
 		}
 	} else if (qName == "sheet") {

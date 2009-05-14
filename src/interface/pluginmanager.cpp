@@ -188,9 +188,11 @@ bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
 		return true;
 
 	bool res = true;
-	for (int i=0; i<CACanorus::mainWinCount(); i++)
-		if (!plugin->action("onExit", CACanorus::mainWinAt(i)))
+	for (int i=0; i<CACanorus::mainWinList().size(); i++) {
+		if (!plugin->action("onExit", CACanorus::mainWinList()[i])) {
 			res = false;
+		}
+	}
 
 	plugin->setEnabled(false);
 

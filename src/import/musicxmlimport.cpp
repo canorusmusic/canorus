@@ -147,10 +147,10 @@ void CAMusicXmlImport::readScorePartwise() {
 		for (int j=0; j<_partMapStaff[_partMapStaff.keys()[i]].size(); j++) {
 			// go through all staffs with this partId
 			CAStaff *s = _partMapStaff[_partMapStaff.keys()[i]][j];
-			for (int k=0; k<s->voiceCount(); k++) {
+			for (int k=0; k<s->voiceList().size(); k++) {
 				// go through all voices in this staff
-				s->voiceAt(k)->setMidiProgram( _midiProgram[_partMapStaff.keys()[i]]-1 );
-				s->voiceAt(k)->setMidiChannel( _midiChannel[_partMapStaff.keys()[i]]-1 );
+				s->voiceList()[k]->setMidiProgram( _midiProgram[_partMapStaff.keys()[i]]-1 );
+				s->voiceList()[k]->setMidiChannel( _midiChannel[_partMapStaff.keys()[i]]-1 );
 			}
 		}
 	}
@@ -282,14 +282,14 @@ void CAMusicXmlImport::readMeasure( QString partId ) {
 	for (int staffIdx=0; staffIdx<_partMapStaff[partId].size(); staffIdx++) {
 		CAStaff *staff = _partMapStaff[partId][staffIdx];
 		int lastVoice=-1;
-		for (int i=0; i<staff->voiceCount(); i++) {
-			if ( lastVoice==-1 || staff->voiceAt(lastVoice)->lastTimeEnd() < staff->voiceAt(i)->lastTimeEnd() ) {
+		for (int i=0; i<staff->voiceList().size(); i++) {
+			if ( lastVoice==-1 || staff->voiceList()[lastVoice]->lastTimeEnd() < staff->voiceList()[i]->lastTimeEnd() ) {
 				lastVoice = i;
 			}
 		}
 
 		if (lastVoice!=-1) {
-			staff->voiceAt(lastVoice)->append( new CABarline( CABarline::Single, staff, 0 ) );
+			staff->voiceList()[lastVoice]->append( new CABarline( CABarline::Single, staff, 0 ) );
 			staff->synchronizeVoices();
 		}
 	}
@@ -515,13 +515,15 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 	if (lyricsNumber!=-1) {
 		while (lyricsNumber > v->lyricsContextList().size()) {
 			v->addLyricsContext( new CALyricsContext( v->name()+tr("Lyrics"), v->lyricsContextList().size()+1, v ) );
+			int idx=0;
 			if (v->lyricsContextList().size()==1) {
 				// Add the first lyrics right below the staff
-				_document->sheetAt(0)->insertContextAfter( v->staff(), v->lyricsContextList().last() );
+				idx = _document->sheetList()[0]->contextList().indexOf(v->staff())+1;
 			} else {
 				// Add next lyrics below the last lyrics line
-				_document->sheetAt(0)->insertContextAfter( v->lyricsContextList()[v->lyricsContextList().size()-2], v->lyricsContextList().last() );
+				idx = _document->sheetList()[0]->contextList().indexOf(v->lyricsContextList().last())+1;
 			}
+			_document->sheetList()[0]->insertContext( idx, v->lyricsContextList().last() );
 		}
 
 		v->lyricsContextList()[lyricsNumber-1]->addSyllable( new CASyllable(lyricsText, false, false, v->lyricsContextList()[lyricsNumber-1], p->timeStart(), p->timeLength() ) );
@@ -543,8 +545,8 @@ void CAMusicXmlImport::readSound( QString partId ) {
 */
 void CAMusicXmlImport::addStavesIfNeeded( QString partId, int staves ) {
 	for (int i=_partMapStaff[partId].size()+1; i<=staves && staves > _partMapStaff[partId].size(); i++) {
-		CAStaff *s = new CAStaff( tr("Staff%1").arg(_document->sheetAt(0)->staffCount()), _document->sheetAt(0) );
-		_document->sheetAt(0)->addContext(s);
+		CAStaff *s = new CAStaff( tr("Staff%1").arg(_document->sheetList()[0]->staffList().size()), _document->sheetList()[0] );
+		_document->sheetList()[0]->addContext(s);
 		_partMapStaff[partId].append( s );
 
 		if (_partMapKeySig[partId].contains(i)) {
@@ -570,8 +572,8 @@ CAVoice *CAMusicXmlImport::addVoiceIfNeeded( QString partId, int staff, int voic
 
 	if (!_partMapVoice[partId].contains(voice)) {
 		s = _partMapStaff[partId][staff-1];
-		v = new CAVoice( tr("Voice%1").arg(s->voiceCount()), s );
-		if (!s->voiceCount()) {
+		v = new CAVoice( tr("Voice%1").arg(s->voiceList().size()), s );
+		if (!s->voiceList().size()) {
 			if (_partMapClef[partId].contains(staff)) {
 				v->append(_partMapClef[partId][staff]);
 			} else if (_partMapClef[partId].contains(1)) { // add the default clef

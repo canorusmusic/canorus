@@ -79,41 +79,47 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 	QList<int> nonFirstVoiceIdxs;	//list of indexes of musStreamLists which the voices aren't the first voice. This is used later for determining should a sign be created or not (if it has been created in 1st voice already, don't recreate it in the other voices in the same staff).
 	QMap<CAContext*, CADrawableContext*> drawableContextMap;
 
-	for (int i=0; i < sheet->contextCount(); i++) {
-		if (sheet->contextAt(i)->contextType() == CAContext::Staff) {
+	for (int i=0; i < sheet->contextList().size(); i++) {
+		if (sheet->contextList()[i]->contextType() == CAContext::Staff) {
 			if (i>0) dy+=70;
 
-			CAStaff *staff = static_cast<CAStaff*>(sheet->contextAt(i));
+			CAStaff *staff = static_cast<CAStaff*>(sheet->contextList()[i]);
 			drawableContextMap[staff] = new CADrawableStaff(staff, 0, dy);
 			v->addCElement(drawableContextMap[staff]);
 
 			//add all the voices lists to the common list
-			for (int j=0; j < staff->voiceCount(); j++) {
-				musStreamList << staff->voiceAt(j)->musElementList();
+			for (int j=0; j < staff->voiceList().size(); j++) {
+				musStreamList << staff->voiceList()[j]->musElementList();
 				contexts << staff;
-				if (staff->voiceAt(j)->voiceNumber()!=1)
+				if (staff->voiceList()[j]->voiceNumber()!=1)
 					nonFirstVoiceIdxs << musStreamList.size()-1;
 			}
 			dy += drawableContextMap[staff]->height();
 		} else
-		if (sheet->contextAt(i)->contextType() == CAContext::LyricsContext) {
-			CALyricsContext *lyricsContext = static_cast<CALyricsContext*>(sheet->contextAt(i));
-			if (i>0 && (sheet->contextAt(i-1)->contextType() != CAContext::LyricsContext ||
-			    static_cast<CALyricsContext*>(sheet->contextAt(i-1))->associatedVoice()->staff()!=lyricsContext->associatedVoice()->staff())) {
+		if (sheet->contextList()[i]->contextType() == CAContext::LyricsContext) {
+			CALyricsContext *lyricsContext = static_cast<CALyricsContext*>(sheet->contextList()[i]);
+			if (i>0 && (sheet->contextList()[i-1]->contextType() != CAContext::LyricsContext ||
+			    static_cast<CALyricsContext*>(sheet->contextList()[i-1])->associatedVoice()->staff()!=lyricsContext->associatedVoice()->staff())) {
 				dy+=70; // the previous context wasn't lyrics or was not related to the current lyrics
 			}
 
 			drawableContextMap[lyricsContext] = new CADrawableLyricsContext(lyricsContext, 0, dy);
 			v->addCElement(drawableContextMap[lyricsContext]);
-			QList<CAMusElement*> syllableList = lyricsContext->musElementList();
+
+			// convert QList<CASyllable*> to QList<CAMusElement*>
+			QList<CAMusElement*> syllableList;
+			for (int i=0; i<lyricsContext->syllableList().size(); i++) {
+				syllableList << lyricsContext->syllableList()[i];
+			}
+
 			musStreamList << syllableList;
 			contexts << lyricsContext;
 			dy += drawableContextMap[lyricsContext]->height();
 		} else
-		if (sheet->contextAt(i)->contextType() == CAContext::FunctionMarkContext) {
+		if (sheet->contextList()[i]->contextType() == CAContext::FunctionMarkContext) {
 			if (i>0) dy+=70;
 
-			CAFunctionMarkContext *fmContext = static_cast<CAFunctionMarkContext*>(sheet->contextAt(i));
+			CAFunctionMarkContext *fmContext = static_cast<CAFunctionMarkContext*>(sheet->contextList()[i]);
 			drawableContextMap[fmContext] = new CADrawableFunctionMarkContext(fmContext, 0, dy);
 			v->addCElement(drawableContextMap[fmContext]);
 			QList<CAFunctionMark*> fmList = fmContext->functionMarkList();
