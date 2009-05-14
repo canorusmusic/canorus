@@ -235,6 +235,7 @@ SET(Canorus_Score_Srcs		# Score representation
 	score/slur.cpp
 	score/tuplet.cpp
 	score/rest.cpp
+	score/midinote.cpp
 	
 	score/mark.cpp
 	score/articulation.cpp
@@ -311,6 +312,7 @@ SET(Canorus_Layout_Srcs	# Drawable instances of the data
 	layout/drawableslur.cpp
 	layout/drawabletuplet.cpp
 	layout/drawablerest.cpp
+	layout/drawablemidinote.cpp
 	layout/drawableaccidental.cpp
 	layout/drawableclef.cpp
 	layout/drawablekeysignature.cpp

@@ -18,6 +18,7 @@
 #include "layout/drawableslur.h"
 #include "layout/drawabletuplet.h"
 #include "layout/drawablerest.h"
+#include "layout/drawablemidinote.h"
 #include "layout/drawablekeysignature.h"
 #include "layout/drawabletimesignature.h"
 #include "layout/drawablebarline.h"
@@ -39,11 +40,14 @@
 
 #include "score/note.h"
 #include "score/rest.h"
+#include "score/midinote.h"
 #include "score/lyricscontext.h"
 #include "score/syllable.h"
 
 #include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
+
+#include "interface/mididevice.h" // needed for midiPitch->diatonicPitch
 
 #define INITIAL_X_OFFSET 20 // space between the left border and the first music element
 #define MINIMUM_SPACE 10    // minimum space between the music elements
@@ -586,6 +590,14 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						}
 
 						placeMarks( newElt, v, i );
+
+						break;
+					}
+					case CAMusElement::MidiNote: {
+						CADrawableStaff* dStaff = static_cast<CADrawableStaff*>(drawableContext);
+						CAMidiNote *midiNote = static_cast<CAMidiNote*>(elt);
+						int pitch = CAMidiDevice::midiPitchToDiatonicPitch( midiNote->midiPitch() ).noteName();
+						newElt = new CADrawableMidiNote( midiNote, dStaff, streamsX[i], dStaff->calculateCenterYCoord( pitch, streamsX[i] ) );
 
 						break;
 					}

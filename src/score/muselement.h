@@ -23,6 +23,7 @@ public:
 		Undefined = 0,
 		Note,
 		Rest,
+		MidiNote,
 		Barline,
 		Clef,
 		TimeSignature,
