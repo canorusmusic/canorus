@@ -25,6 +25,7 @@ class CASwigPython {
 			// Canorus objects
 			Document,
 			Sheet,
+			Resource,
 			Context,
 			Voice,
 			MusElement,

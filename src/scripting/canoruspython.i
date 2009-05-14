@@ -128,6 +128,20 @@
 	
 	$result = list;
 }
+%typemap(out) const QList<CAVoice*>, QList<CAVoice*> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Voice));
+	
+	$result = list;
+}
+%typemap(out) const QList<CAVoice*>&, QList<CAVoice*>& {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1->size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1->at(i), CASwigPython::Voice));
+	
+	$result = list;
+}
 %typemap(out) const QList<CAContext*>, QList<CAContext*>,
               const QList<CAStaff*>, QList<CAStaff*>,
               const QList<CALyricsContext*>, QList<CALyricsContext*>,
@@ -148,10 +162,31 @@
 	
 	$result = list;
 }
-%typemap(out) const QList<CAVoice*>, QList<CAVoice*> {
+%typemap(out) const QList<CASheet*>, QList<CASheet*> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
-		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Voice));
+		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Sheet));
+	
+	$result = list;
+}
+%typemap(out) const QList<CASheet*>&, QList<CASheet*>& {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1->size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1->at(i), CASwigPython::Sheet));
+	
+	$result = list;
+}
+%typemap(out) const QList<CAResource*>, QList<CAResource*> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::Resource));
+	
+	$result = list;
+}
+%typemap(out) const QList<CAResource*>&, QList<CAResource*>& {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1->size(); i++)
+		PyList_Append(list, CASwigPython::toPythonObject($1->at(i), CASwigPython::Resource));
 	
 	$result = list;
 }
@@ -259,6 +294,10 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 		}
 		case CASwigPython::Document: {
 			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CADocument, 0);
+			break;
+		}
+		case CASwigPython::Resource: {
+			return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAResource, 0);
 			break;
 		}
 		case CASwigPython::Sheet: {
