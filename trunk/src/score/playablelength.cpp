@@ -149,7 +149,7 @@ const int CAPlayableLength::playableLengthToTimeLength( CAPlayableLength length 
 
 /*!
 	Compute for a given time length the CAPlayableLengths. In the general case
-	this could result in several notes. In the canorus GUI we have can have max. 4 dots.
+	this could result in several notes. In the canorus GUI we can have max. 4 dots.
 	By default longer notes appear first in the list, but with negating longNotesFirst
 	the short ones appear first. This is useful for end of bar notes.
 
@@ -171,7 +171,7 @@ QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t,
 	const int breveTime = playableLengthToTimeLength( Breve );
 
 	int leadingBreves = workTime & ~(2*breveTime-1);
-	while (leadingBreves>breveTime) {
+	while (leadingBreves>=breveTime) {
 		pl << CAPlayableLength( Breve );
 		leadingBreves -= breveTime;
 	}
