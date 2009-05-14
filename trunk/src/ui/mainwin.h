@@ -99,7 +99,7 @@ public:
 	inline void setMidiRecorderView( CAMidiRecorderView *v ) { _midiRecorderView = v; }
 	inline CAView *currentView() { return _currentView; }
 	inline void removeView(CAView* v) { _viewList.removeAll(v); }
-	inline QList<CAView*> viewList() { return _viewList; }
+	inline const QList<CAView*>& viewList() const { return _viewList; }
 
 	inline CAScoreView *currentScoreView() {
 		if (currentView()) return dynamic_cast<CAScoreView*>(currentView());

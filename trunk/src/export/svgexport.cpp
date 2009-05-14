@@ -80,7 +80,7 @@ void CASVGExport::finishExport()
 */
 void CASVGExport::exportDocumentImpl(CADocument *poDoc)
 {
-	if ( poDoc->sheetCount() < 1 ) {
+	if ( poDoc->sheetList().size() < 1 ) {
 		//TODO: no sheets, raise an error
 		return;
 	}

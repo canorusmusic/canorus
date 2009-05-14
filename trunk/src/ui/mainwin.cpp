@@ -219,7 +219,7 @@ CAMainWin::~CAMainWin()  {
 	if (_midiRecorderView)
 		delete _midiRecorderView;
 
-	if(!CACanorus::mainWinCount()) // closing down
+	if(!CACanorus::mainWinList().size()) // closing down
 		CACanorus::cleanUp();
 }
 
@@ -836,8 +836,8 @@ void CAMainWin::newDocument() {
 	rebuildUI();
 
 	// select the first context automatically
-	if ( document()->sheetCount() && document()->sheetAt(0)->contextCount() ) {
-		currentScoreView()->selectContext( document()->sheetAt(0)->contextAt(0) );
+	if ( document()->sheetList().size() && document()->sheetList()[0]->contextList().size() ) {
+		currentScoreView()->selectContext( document()->sheetList()[0]->contextList()[0] );
 	}
 
 	updateToolBars();
@@ -1236,24 +1236,24 @@ void CAMainWin::on_uiNewSheet_triggered() {
 */
 void CAMainWin::on_uiNewVoice_triggered() {
 	CAStaff *staff = currentStaff();
-	int voiceNumber = staff->voiceCount()+1;
+	int voiceNumber = staff->voiceList().size()+1;
 	CANote::CAStemDirection stemDirection;
 	if ( voiceNumber == 1 )
 		stemDirection = CANote::StemNeutral;
 	else {
-		staff->voiceAt(0)->setStemDirection( CANote::StemUp );
+		staff->voiceList()[0]->setStemDirection( CANote::StemUp );
 		stemDirection = CANote::StemDown;
 	}
 
 	CACanorus::undo()->createUndoCommand( document(), tr("new voice", "undo") );
 	if (staff) {
-		staff->addVoice(new CAVoice( staff->name() + tr("Voice%1").arg( staff->voiceCount()+1 ), staff, stemDirection, voiceNumber ));
+		staff->addVoice(new CAVoice( staff->name() + tr("Voice%1").arg( staff->voiceList().size()+1 ), staff, stemDirection, voiceNumber ));
 		staff->synchronizeVoices();
 	}
 
 	CACanorus::undo()->pushUndoCommand();
 	CACanorus::rebuildUI(document(), currentSheet());
-	uiVoiceNum->setRealValue( staff->voiceCount() );
+	uiVoiceNum->setRealValue( staff->voiceList().size() );
 }
 
 /*!
@@ -1263,7 +1263,7 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 	CAVoice *voice = currentVoice();
 	if (voice) {
 		// Last voice cannot be deleted
-		if (voice->staff()->voiceCount()==1) {
+		if (voice->staff()->voiceList().size()==1) {
 			int ret = QMessageBox::critical(
 				this, tr("Canorus"),
 				tr("Cannot delete the last voice in the staff!")
@@ -1281,7 +1281,7 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 			stopPlayback();
 			CACanorus::undo()->createUndoCommand( document(), tr("voice removal", "undo") );
 			currentScoreView()->clearSelection();
-			uiVoiceNum->setRealValue( voice->staff()->voiceCount()-1 );
+			uiVoiceNum->setRealValue( voice->staff()->voiceList().size()-1 );
 
 			voice->staff()->removeVoice(voice);
 			CACanorus::undo()->pushUndoCommand();
@@ -1487,8 +1487,8 @@ void CAMainWin::rebuildUI(bool repaint) {
 				worldCoordsList << static_cast<CAScoreView*>(_viewList[i])->worldCoords();
 
 		clearUI();
-		for (int i=0; i<document()->sheetCount(); i++) {
-			addSheet(document()->sheetAt(i));
+		for (int i=0; i<document()->sheetList().size(); i++) {
+			addSheet(document()->sheetList()[i]);
 
 			// restore the current state of Views
 			if ( _viewList[i]->viewType() == CAView::ScoreView &&
@@ -1563,7 +1563,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 		// voice number widget
 		if (v->currentContext()->context()->contextType() == CAContext::Staff) {
 			uiVoiceNum->setRealValue(0);
-			uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceCount());
+			uiVoiceNum->setMax(static_cast<CAStaff*>(v->currentContext()->context())->voiceList().size());
 		}
 	} else if ( prevContext != v->currentContext() && uiInsertPlayable->isChecked() ) { // but insert playable mode is active and context should remain the same
 		v->setCurrentContext( prevContext );
@@ -1619,14 +1619,14 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 			if (uiContextType->isChecked()) {
 				// Add new Context
 				CAContext *newContext;
-				CADrawableContext *dupContext = v->nearestUpContext(coords.x(), coords.y());
+				CADrawableContext *dupContext = v->nearestDownContext(coords.x(), coords.y());
 				switch(uiContextType->currentId()) {
 					case CAContext::Staff: {
 						CACanorus::undo()->createUndoCommand( document(), tr("new staff", "undo"));
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CAStaff(
-								tr("Staff%1").arg(v->sheet()->staffCount()+1),
+								tr("Staff%1").arg(v->sheet()->staffList().size()+1),
 								v->sheet()
 							)
 						);
@@ -1643,7 +1643,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CALyricsContext(
-								tr("LyricsContext%1").arg(v->sheet()->contextCount()+1),
+								tr("LyricsContext%1").arg(v->sheet()->contextList().size()+1),
 								1,
 								(v->sheet()->voiceList().size()?v->sheet()->voiceList().at(0):0)
 							)
@@ -1656,7 +1656,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
 							newContext = new CAFunctionMarkContext(
-								tr("FunctionMarkContext%1").arg(v->sheet()->contextCount()+1),
+								tr("FunctionMarkContext%1").arg(v->sheet()->contextList().size()+1),
 								v->sheet()
 							)
 						);
@@ -1962,7 +1962,7 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 				if ( right && right->isPlayable() )
 					static_cast<CAPlayable*>(right)->voice()->insert( right, bar );
 				else
-					staff->voiceAt(0)->insert( right, bar );
+					staff->voiceList()[0]->insert( right, bar );
 			}
 
 			staff->synchronizeVoices();
@@ -2839,12 +2839,12 @@ CADocument *CAMainWin::openDocument(CADocument *doc) {
 
 		uiCloseDocument->setEnabled(true);
 		rebuildUI(); // local rebuild only
-		if ( doc->sheetCount())
+		if ( doc->sheetList().size())
 			uiTabWidget->setCurrentIndex(0);
 
 		// select the first context automatically
-		if ( document() && document()->sheetCount() && document()->sheetAt(0)->contextCount() )
-			currentScoreView()->selectContext( document()->sheetAt(0)->contextAt(0) );
+		if ( document() && document()->sheetList().size() && document()->sheetList()[0]->contextList().size() )
+			currentScoreView()->selectContext( document()->sheetList()[0]->contextList()[0] );
 		updateToolBars();
 
 		return doc;
@@ -3039,8 +3039,8 @@ void CAMainWin::on_uiImportDocument_triggered() {
 
 
 	// select the first context automatically
-	if ( document() && document()->sheetCount() && document()->sheetAt(0)->contextCount() ) {
-		currentScoreView()->selectContext( document()->sheetAt(0)->contextAt(0) );
+	if ( document() && document()->sheetList().size() && document()->sheetList()[0]->contextList().size() ) {
+		currentScoreView()->selectContext( document()->sheetList()[0]->contextList()[0] );
 	}
 
 	updateToolBars();
@@ -3062,9 +3062,9 @@ void CAMainWin::on_uiVoiceNum_valChanged(int voiceNr) {
 		if ( voiceNr &&
 		     currentScoreView()->currentContext() &&
 		     currentScoreView()->currentContext()->context()->contextType() == CAContext::Staff &&
-		     voiceNr <= static_cast<CAStaff*>(currentScoreView()->currentContext()->context())->voiceCount()
+		     voiceNr <= static_cast<CAStaff*>(currentScoreView()->currentContext()->context())->voiceList().size()
 		   ) {
-			setCurrentVoice( static_cast<CAStaff*>(currentScoreView()->currentContext()->context())->voiceAt(voiceNr-1) );
+			setCurrentVoice( static_cast<CAStaff*>(currentScoreView()->currentContext()->context())->voiceList()[voiceNr-1] );
 		} else {
 			setCurrentVoice(0);
 		}
@@ -3826,7 +3826,7 @@ void CAMainWin::on_uiLilyPondSource_triggered() {
 	CAStaff *staff = 0;
 	if (staff = currentStaff()) {
 		int voiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
-		CAVoice *voice = staff->voiceAt( voiceNum );
+		CAVoice *voice = staff->voiceList()[ voiceNum ];
 		v = new CASourceView(voice, 0);
 	} else
 	if (context->contextType()==CAContext::LyricsContext) {
@@ -4068,11 +4068,11 @@ void CAMainWin::updateVoiceToolBar() {
 		CAStaff *staff = static_cast<CAStaff*>(context);
 		uiNewVoice->setVisible(true);
 		uiNewVoice->setEnabled(true);
-		if (staff->voiceCount()) {
-			uiVoiceNum->setMax(staff->voiceCount());
+		if (staff->voiceList().size()) {
+			uiVoiceNum->setMax(staff->voiceList().size());
 			int voiceNr = uiVoiceNum->getRealValue();
 			if (voiceNr) {
-				CAVoice *curVoice = (voiceNr<=staff->voiceCount()?staff->voiceAt(voiceNr-1):staff->voiceAt(0));
+				CAVoice *curVoice = (voiceNr<=staff->voiceList().size()?staff->voiceList()[voiceNr-1]:staff->voiceList()[0]);
 				uiVoiceName->setText(curVoice->name());
 				uiVoiceName->setEnabled(true);
 				uiVoiceInstrument->setEnabled(true);
@@ -4588,7 +4588,7 @@ void CAMainWin::copySelection( CAScoreView *v ) {
 		CASheet* currentSheet = v->sheet();
 		QHash<CAContext*, QList<CAMusElement*> > eltMap;
 		QList<CAContext*> contexts;
-		for(int i=0; i < currentSheet->contextCount(); i++)
+		for(int i=0; i < currentSheet->contextList().size(); i++)
 			contexts << 0;
 
 		foreach(CADrawableMusElement* drawable, v->selection()) {
@@ -4620,7 +4620,7 @@ void CAMainWin::copySelection( CAScoreView *v ) {
 			contexts[i] = newStaff;
 
 			QList<CAVoice*> voices;
-			for(int i=0; i<staff->voiceCount(); i++)
+			for(int i=0; i<staff->voiceList().size(); i++)
 				voices << 0;
 
 			// create voices
@@ -4629,7 +4629,7 @@ void CAMainWin::copySelection( CAScoreView *v ) {
 				if(!elt->isPlayable())
 					continue;
 				CAVoice* voice = static_cast<CAPlayable*>(elt)->voice();
-				int idx = staff->voiceIndex(voice);
+				int idx = staff->voiceList().indexOf(voice);
 				if(!voices[idx])
 					voiceMap[voice] = voices[idx] = new CAVoice("", newStaff);
 
@@ -4653,7 +4653,7 @@ void CAMainWin::copySelection( CAScoreView *v ) {
 				if(elt->isPlayable()) {
 					CAPlayable* pl = static_cast<CAPlayable*>(elt);
 					CAVoice* voice = pl->voice();
-					int idx = staff->voiceIndex(voice);
+					int idx = staff->voiceList().indexOf(voice);
 					bool addToChord = false;
 					int eltidx = eltMap[context].indexOf(elt);
 					CANote* note = (pl->musElementType() == CAMusElement::Note)?static_cast<CANote*>(pl):0;
@@ -4969,7 +4969,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 			if(context->contextType() == CAContext::Staff)
 				while(currentContext && currentContext->contextType() == CAContext::LyricsContext)
 					if(currentContext != currentSheet->contextList().last())
-						currentContext = currentSheet->contextAt(currentSheet->contextIndex(currentContext)+1);
+						currentContext = currentSheet->contextList()[currentSheet->contextList().indexOf(currentContext)+1];
 					else
 						currentContext = 0;
 
@@ -4980,7 +4980,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 				{
 					case CAContext::Staff: {
 						CAStaff* s = static_cast<CAStaff*>(context), *newStaff;
-						newContext = newStaff =  new CAStaff(tr("Staff%1").arg(v->sheet()->staffCount()+1), currentSheet);
+						newContext = newStaff =  new CAStaff(tr("Staff%1").arg(v->sheet()->staffList().size()+1), currentSheet);
 						break;
 					}
 					case CAContext::LyricsContext: {
@@ -4990,16 +4990,16 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 						 */
 						CAVoice* voice = voiceMap[static_cast<CALyricsContext*>(context)->associatedVoice()];
 						if(!voice && currentContext && currentContext->contextType() == CAContext::Staff)
-							voice = static_cast<CAStaff*>(currentContext)->voiceAt( (currentContext == v->currentContext()->context())? (uiVoiceNum->getRealValue()?uiVoiceNum->getRealValue()-1:uiVoiceNum->getRealValue()) : 1); // That is, if the currentContext is still the context that the user last clicked before pasting, use the current voice number. Otherwise, use the first voice.
+							voice = static_cast<CAStaff*>(currentContext)->voiceList()[ (currentContext == v->currentContext()->context())? (uiVoiceNum->getRealValue()?uiVoiceNum->getRealValue()-1:uiVoiceNum->getRealValue()) : 1]; // That is, if the currentContext is still the context that the user last clicked before pasting, use the current voice number. Otherwise, use the first voice.
 						if(!voice)
 							continue; // skipping lyrics - can't find a staff.
 
-						newContext = new CALyricsContext(tr("LyricsContext%1").arg(v->sheet()->contextCount()+1), 1, voice);
+						newContext = new CALyricsContext(tr("LyricsContext%1").arg(v->sheet()->contextList().size()+1), 1, voice);
 						insertAfter = voice->staff();
 						break;
 					}
 					case CAContext::FunctionMarkContext: {
-						newContext = new CAFunctionMarkContext(tr("FunctionMarkContext%1").arg(v->sheet()->contextCount()+1), currentSheet);
+						newContext = new CAFunctionMarkContext(tr("FunctionMarkContext%1").arg(v->sheet()->contextList().size()+1), currentSheet);
 						break;
 					}
 				}
@@ -5015,32 +5015,32 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 			if(context->contextType()==CAContext::Staff) {
 				CAStaff* staff = static_cast<CAStaff*>(currentContext), *cbstaff = static_cast<CAStaff*>(context);
 				int voice = uiVoiceNum->getRealValue() ? uiVoiceNum->getRealValue()-1 : uiVoiceNum->getRealValue();
-				for(int i=staff->voiceCount()-1; i < voice+cbstaff->voiceCount()-1; i++) {
+				for(int i=staff->voiceList().size()-1; i < voice+cbstaff->voiceList().size()-1; i++) {
 					staff->addVoice();
 				}
-				for(int i=voice; i<voice+cbstaff->voiceCount(); i++) {
+				for(int i=voice; i<voice+cbstaff->voiceList().size(); i++) {
 					int cbi = i-voice;
-					CADrawableMusElement *drawable = v->nearestRightElement(coords.x(), coords.y(), staff->voiceAt(i));
-					voiceMap[cbstaff->voiceAt(cbi)] = staff->voiceAt(i);
+					CADrawableMusElement *drawable = v->nearestRightElement(coords.x(), coords.y(), staff->voiceList()[i]);
+					voiceMap[cbstaff->voiceList()[cbi]] = staff->voiceList()[i];
 					CAMusElement* right = (drawable)?drawable->musElement():0;
 
 					// Can't have playables between two notes linked by a tie. Remove the tie in this case.
 					// FIXME this should be the behavior for insert as well.
 					CAMusElement* leftPl = right;
-				    while((leftPl = staff->voiceAt(i)->previous(leftPl)) && !leftPl->isPlayable());
+				    while((leftPl = staff->voiceList()[i]->previous(leftPl)) && !leftPl->isPlayable());
 					CANote* leftNote = (leftPl&&leftPl->musElementType()==CAMusElement::Note)?static_cast<CANote*>(leftPl):0;
 					CASlur* tie = leftNote?leftNote->tieStart():0;
 
 					if(tie)
 					{
-						if(tie->noteEnd() && staff->voiceAt(i)->musElementList().contains(tie->noteEnd()))
+						if(tie->noteEnd() && staff->voiceList()[i]->musElementList().contains(tie->noteEnd()))
 							// pasting between two tied notes - remove tie
 							delete tie; // resets notes' tieStart/tieEnd;
 						else {
 							// pasting after an "open" tie - if the first paste element is a note, connect them. Otherwise delete the tie.
 							int idx = 0;
-							for(;idx < cbstaff->voiceAt(cbi)->musElementList().size() && !cbstaff->voiceAt(cbi)->musElementList()[idx]->isPlayable();idx++);
-							CAPlayable* first = (idx!=cbstaff->voiceAt(cbi)->musElementList().size())?static_cast<CAPlayable*>(cbstaff->voiceAt(cbi)->musElementList()[idx]):0;
+							for(;idx < cbstaff->voiceList()[cbi]->musElementList().size() && !cbstaff->voiceList()[cbi]->musElementList()[idx]->isPlayable();idx++);
+							CAPlayable* first = (idx!=cbstaff->voiceList()[cbi]->musElementList().size())?static_cast<CAPlayable*>(cbstaff->voiceList()[cbi]->musElementList()[idx]):0;
 							if(first && first->musElementType() == CAMusElement::Note)
 								static_cast<CANote*>(first)->setTieEnd(tie);
 							else
@@ -5050,10 +5050,10 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 
 					QHash<CATuplet*, QList<CAPlayable*> > tupletMap;
 					QHash<CASlur*, CANote*> slurMap;
-					foreach(CAMusElement* elt, cbstaff->voiceAt(cbi)->musElementList()) {
-						CAMusElement* cloned = (elt->isPlayable())?static_cast<CAPlayable*>(elt)->clone(staff->voiceAt(i)):elt->clone(staff);
+					foreach(CAMusElement* elt, cbstaff->voiceList()[cbi]->musElementList()) {
+						CAMusElement* cloned = (elt->isPlayable())?static_cast<CAPlayable*>(elt)->clone(staff->voiceList()[i]):elt->clone(staff);
 						CANote* n = (elt->musElementType() == CAMusElement::Note)?static_cast<CANote*>(elt):0;
-						CAMusElement* prev = cbstaff->voiceAt(cbi)->previous(n);
+						CAMusElement* prev = cbstaff->voiceList()[cbi]->previous(n);
 						CANote* prevNote = (prev&&prev->musElementType() == CAMusElement::Note)?static_cast<CANote*>(prev):0;
 						bool chord = n && prevNote && prevNote->timeStart() == n->timeStart();
 						if(n)
@@ -5086,7 +5086,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 							}
 
 						}
-						staff->voiceAt(i)->insert(chord?newEltList.last():right, cloned, chord);
+						staff->voiceList()[i]->insert(chord?newEltList.last():right, cloned, chord);
 						newEltList << cloned;
 						if(elt->isPlayable())
 						{
@@ -5099,15 +5099,15 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 							}
 						}
 						// FIXME duplicated from CAMusElementFactory::configureNote.
-						if(n && staff->voiceAt(i)->lastNote() != static_cast<CANote*>(cloned)) {
-							foreach( CALyricsContext* context, staff->voiceAt(i)->lyricsContextList() )
+						if(n && staff->voiceList()[i]->lastNote() != static_cast<CANote*>(cloned)) {
+							foreach( CALyricsContext* context, staff->voiceList()[i]->lyricsContextList() )
 								context->addEmptySyllable(cloned->timeStart(), cloned->timeLength());
 							foreach( CAContext* context, currentSheet->contextList() )
 								if(context->contextType()==CAContext::FunctionMarkContext)
 									static_cast<CAFunctionMarkContext*>(context)->addEmptyFunction(cloned->timeStart(), cloned->timeLength());
 						}
 					}
-					foreach( CALyricsContext* context, staff->voiceAt(i)->lyricsContextList() )
+					foreach( CALyricsContext* context, staff->voiceList()[i]->lyricsContextList() )
 						context->repositSyllables();
 					foreach( CAContext* context, currentSheet->contextList() )
 						if(context->contextType()==CAContext::FunctionMarkContext)
@@ -5122,7 +5122,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 					CADrawableMusElement *drawable = 0;
 					if(currentContext == v->currentContext()->context()) // pasting where the user has clicked
                     	drawable = v->nearestRightElement(coords.x(), coords.y(), v->currentContext() );
-					int offset = lc->syllableAt(0)->timeStart() - (drawable ? drawable->musElement()->timeStart() : 0);
+					int offset = lc->syllableList()[0]->timeStart() - (drawable ? drawable->musElement()->timeStart() : 0);
 					// Add syllables until there are no more notes, [popping existing syllables on the right end?].
 					foreach(CASyllable* syl, lc->syllableList()) {
 						CASyllable* clone = syl->clone(currentLc);
@@ -5133,7 +5133,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 				}
 			}
 			int idx = currentSheet->contextList().indexOf(currentContext);
-			currentContext = (idx+1 < currentSheet->contextCount()) ? currentSheet->contextAt(idx+1) : 0;
+			currentContext = (idx+1 < currentSheet->contextList().size()) ? currentSheet->contextList()[idx+1] : 0;
 		}
 
 		CACanorus::undo()->pushUndoCommand();

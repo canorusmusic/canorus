@@ -58,7 +58,7 @@ CATranspose::~CATranspose() {
 }
 
 void CATranspose::addSheet( CASheet *s ) {
-	for (int i=0; i<s->contextCount(); i++) {
+	for (int i=0; i<s->contextList().size(); i++) {
 		addContext( s->contextList()[i] );
 	}
 }
@@ -67,7 +67,7 @@ void CATranspose::addContext( CAContext *context ) {
 	switch ( context->contextType() ) {
 	case CAContext::Staff: {
 		CAStaff *staff = static_cast<CAStaff*>(context);
-		for ( int j=0; j<staff->voiceCount(); j++) {
+		for ( int j=0; j<staff->voiceList().size(); j++) {
 			_elements.unite( QSet<CAMusElement*>::fromList( staff->voiceList()[j]->musElementList() ) );
 		}
 		break;

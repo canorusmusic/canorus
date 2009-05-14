@@ -407,6 +407,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	${Canorus_Export_Srcs}
 	${Canorus_Ctl_Srcs}
 	${Canorus_RtMidi_Srcs}
+	${Canorus_PMIDI_Srcs}
 	interface/rtmididevice.cpp
 	interface/mididevice.cpp
 	interface/playback.cpp
@@ -415,7 +416,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	interface/plugin.cpp
 	interface/pluginaction.cpp
 	interface/pluginmanager.cpp
-#	interface/plugins_swig.cpp
+	interface/plugins_swig.cpp
 	scripting/swigpython.cpp
 	scripting/swigruby.cpp
 	${Canorus_Core_MOC_Srcs}

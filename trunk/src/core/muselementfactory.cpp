@@ -141,9 +141,9 @@ bool CAMusElementFactory::configureClef( CAStaff *staff,
                                          CAMusElement *right )
 {
 	bool success = false;
-	if ( staff && staff->voiceCount() ) {
+	if ( staff && staff->voiceList().size() ) {
 		mpoMusElement = new CAClef( _eClef, staff, 0, _iClefOffset );
-		success = staff->voiceAt(0)->insert( right, mpoMusElement );
+		success = staff->voiceList()[0]->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem( true );
 	}
@@ -157,11 +157,11 @@ bool CAMusElementFactory::configureKeySignature( CAStaff *staff,
                                                  CAMusElement *right )
 {
 	bool success = false;
-	if ( staff && staff->voiceCount() ) {
+	if ( staff && staff->voiceList().size() ) {
 		mpoMusElement = new CAKeySignature( CADiatonicKey( _diatonicKeyNumberOfAccs, _diatonicKeyGender ),
 			                                staff,
 			                                0);
-		success = staff->voiceAt(0)->insert( right, mpoMusElement );
+		success = staff->voiceList()[0]->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem( true );
 	}
@@ -175,11 +175,11 @@ bool CAMusElementFactory::configureTimeSignature( CAStaff *staff,
                                                   CAMusElement *right )
 {
 	bool success = false;
-	if ( staff && staff->voiceCount() ) {
+	if ( staff && staff->voiceList().size() ) {
 		mpoMusElement = new CATimeSignature( _iTimeSigBeats, _iTimeSigBeat,
 			                             staff,
 			                             0);
-		success = staff->voiceAt(0)->insert( right, mpoMusElement );
+		success = staff->voiceList()[0]->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem( true );
 	}
@@ -193,11 +193,11 @@ bool CAMusElementFactory::configureBarline( CAStaff *staff,
                                             CAMusElement *right )
 {
 	bool success = false;
-	if ( staff && staff->voiceCount() ) {
+	if ( staff && staff->voiceList().size() ) {
 		mpoMusElement = new CABarline( _eBarlineType,
 			                             staff,
 			                             0);
-		success = staff->voiceAt(0)->insert( right, mpoMusElement );
+		success = staff->voiceList()[0]->insert( right, mpoMusElement );
 		if (!success)
 			removeMusElem( true );
 	}
@@ -245,9 +245,9 @@ bool CAMusElementFactory::configureNote( int pitch,
 			for (int i=0; i<voice->lyricsContextList().size(); i++) {
 				voice->lyricsContextList().at(i)->repositSyllables(); // adds an empty syllable or assigns the already placed at the end if it exists
 			}
-			for (int i=0; i<voice->staff()->sheet()->contextCount(); i++) {
-				if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkContext)
-					static_cast<CAFunctionMarkContext*>(voice->staff()->sheet()->contextAt(i))->repositFunctions();
+			for (int i=0; i<voice->staff()->sheet()->contextList().size(); i++) {
+				if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FunctionMarkContext)
+					static_cast<CAFunctionMarkContext*>(voice->staff()->sheet()->contextList()[i])->repositFunctions();
 			}
 		} else {
 			for (int i=0; i<voice->lyricsContextList().size(); i++) {
@@ -255,9 +255,9 @@ bool CAMusElementFactory::configureNote( int pitch,
 					mpoMusElement->timeStart(), mpoMusElement->timeLength()
 				);
 			}
-			for (int i=0; i<voice->staff()->sheet()->contextCount(); i++) {
-				if (voice->staff()->sheet()->contextAt(i)->contextType()==CAContext::FunctionMarkContext)
-					static_cast<CAFunctionMarkContext*>(voice->staff()->sheet()->contextAt(i))->addEmptyFunction(
+			for (int i=0; i<voice->staff()->sheet()->contextList().size(); i++) {
+				if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FunctionMarkContext)
+					static_cast<CAFunctionMarkContext*>(voice->staff()->sheet()->contextList()[i])->addEmptyFunction(
 						mpoMusElement->timeStart(), mpoMusElement->timeLength()
 					);
 			}

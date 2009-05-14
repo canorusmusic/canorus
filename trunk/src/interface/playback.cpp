@@ -124,11 +124,11 @@ void CAPlayback::run() {
 	QVector<unsigned char> message;	// midi 3-byte message sent to midi device
 
 	// initializes all the streams, indices, repeat barlines etc.
-	if ( !streamCount() ) {
+	if ( !streamList().size() ) {
 		initStreams( sheet() );
 	}
 
-	if ( !streamCount() )
+	if ( !streamList().size() )
 		stop();
 	else
 		setStop(false);
@@ -153,14 +153,14 @@ void CAPlayback::run() {
 			}
 		}
 
-		for (int i=0; i<streamCount(); i++) {
+		for (int i=0; i<streamList().size(); i++) {
 			loopUntilPlayable(i);
 		}
 
 		if (_stop) continue;	// no notes on anymore
 
 		minLength = -1;
-		for (int i=0; i<streamCount(); i++) {
+		for (int i=0; i<streamList().size(); i++) {
 			while ( streamAt(i).size() > streamIdx(i) &&
 			        streamAt(i).at(streamIdx(i))->timeStart() == _curTime
 			      ) {
@@ -357,20 +357,20 @@ void CAPlayback::stopNow()
 	Generates streams (elements lists) of playable elements (notes, rests) from the given sheet.
 */
 void CAPlayback::initStreams( CASheet *sheet ) {
-	for (int i=0; i < sheet->contextCount(); i++) {
-		if (sheet->contextAt(i)->contextType() == CAContext::Staff) {
-			CAStaff *staff = static_cast<CAStaff*>(sheet->contextAt(i));
+	for (int i=0; i < sheet->contextList().size(); i++) {
+		if (sheet->contextList()[i]->contextType() == CAContext::Staff) {
+			CAStaff *staff = static_cast<CAStaff*>(sheet->contextList()[i]);
 			// add all the voices lists to the common list stream
-			for (int j=0; j < staff->voiceCount(); j++) {
-				_stream << staff->voiceAt(j)->musElementList();
+			for (int j=0; j < staff->voiceList().size(); j++) {
+				_streamList << staff->voiceList()[j]->musElementList();
 
 				QVector<unsigned char> message;
-				message << (192 + staff->voiceAt(j)->midiChannel()); // change program
-				message << (staff->voiceAt(j)->midiProgram());
+				message << (192 + staff->voiceList()[j]->midiChannel()); // change program
+				message << (staff->voiceList()[j]->midiProgram());
 				midiDevice()->send(message, 0);
 				message.clear();
 
-				message << (176 + staff->voiceAt(j)->midiChannel()); // set volume
+				message << (176 + staff->voiceList()[j]->midiChannel()); // set volume
 				message << (7);
 				message << (100);
 				midiDevice()->send(message, 0);
@@ -378,11 +378,11 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 			}
 		}
 	}
-	_streamIdx = new int[streamCount()];
-	_lastRepeatOpenIdx = new int[streamCount()];
+	_streamIdx = new int[streamList().size()];
+	_lastRepeatOpenIdx = new int[streamList().size()];
 
 	// init streams indices, current times and last repeat barlines
-	for (int i=0; i<streamCount(); i++) {
+	for (int i=0; i<streamList().size(); i++) {
 		_curTime = getInitTimeStart();
 		streamIdx(i) = 0;
 		lastRepeatOpenIdx(i) = -1;

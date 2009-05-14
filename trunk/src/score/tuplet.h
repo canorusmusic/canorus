@@ -29,10 +29,10 @@ public:
 	inline int actualNumber() { return _actualNumber; }
 	inline void setActualNumber( int n ) { _actualNumber = n; }
 
-	inline QList<CAPlayable*>& noteList() { return _noteList; }
+	inline const QList<CAPlayable*>& noteList() { return _noteList; }
 	void addNote( CAPlayable* p );
-	inline void addNotes( QList<CAPlayable*> l ) { noteList() << l; }
-	inline void removeNote( CAPlayable* p ) { noteList().removeAll(p); }
+	inline void addNotes( QList<CAPlayable*> l ) { _noteList << l; }
+	inline void removeNote( CAPlayable* p ) { _noteList.removeAll(p); }
 	inline CAPlayable *firstNote() { return noteList().front(); }
 	inline CAPlayable *lastNote() { return noteList().back(); }
 	inline bool containsNote( CAPlayable *p ) { return noteList().contains(p); }

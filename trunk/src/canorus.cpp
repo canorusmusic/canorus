@@ -311,9 +311,9 @@ int CACanorus::mainWinCount(CADocument *doc) {
 	\sa rebuildUI(CADocument*), CAMainWin::rebuildUI()
 */
 void CACanorus::rebuildUI( CADocument *document, CASheet *sheet ) {
-	for (int i=0; i<mainWinCount(); i++)
-		if ( mainWinAt(i)->document()==document )
-			mainWinAt(i)->rebuildUI(sheet);
+	for (int i=0; i<mainWinList().size(); i++)
+		if ( mainWinList()[i]->document()==document )
+			mainWinList()[i]->rebuildUI(sheet);
 }
 
 /*!
@@ -323,11 +323,11 @@ void CACanorus::rebuildUI( CADocument *document, CASheet *sheet ) {
 	\sa rebuildUI(CADocument*, CASheet*), CAMainWin::rebuildUI()
 */
 void CACanorus::rebuildUI( CADocument *document ) {
-	for (int i=0; i<mainWinCount(); i++) {
-		if ( document && mainWinAt(i)->document()==document ) {
-			mainWinAt(i)->rebuildUI();
+	for (int i=0; i<mainWinList().size(); i++) {
+		if ( document && mainWinList()[i]->document()==document ) {
+			mainWinList()[i]->rebuildUI();
 		} else if ( !document )
-			mainWinAt(i)->rebuildUI();
+			mainWinList()[i]->rebuildUI();
 	}
 }
 
@@ -337,8 +337,8 @@ void CACanorus::rebuildUI( CADocument *document ) {
 	and the GUI should be repainted, but not rebuilt.
  */
 void CACanorus::repaintUI() {
-	for (int i=0; i<mainWinCount(); i++) {
-		mainWinAt(i)->repaint();
+	for (int i=0; i<mainWinList().size(); i++) {
+		mainWinList()[i]->repaint();
 	}
 }
 
@@ -347,9 +347,9 @@ void CACanorus::repaintUI() {
 */
 QList<CAMainWin*> CACanorus::findMainWin(CADocument *document) {
 	QList<CAMainWin*> mainWinList;
-	for (int i=0; i<mainWinCount(); i++)
-		if (mainWinAt(i)->document()==document)
-			mainWinList << mainWinAt(i);
+	for (int i=0; i<CACanorus::mainWinList().size(); i++)
+		if (CACanorus::mainWinList()[i]->document()==document)
+			mainWinList << CACanorus::mainWinList()[i];
 
 	return mainWinList;
 }

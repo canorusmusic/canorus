@@ -30,7 +30,7 @@ public:
 	QList<CAView*> unsplitAll();
 
 	inline bool contains(CAView* v) { return _viewMap.contains(v); }
-	inline QList<CAView*> viewList() { return _viewMap.keys(); }
+	inline const QList<CAView*> viewList() { return _viewMap.keys(); }
 
 	inline void setCurrentView( CAView *v ) { _currentView = v; }
 	inline CAView* currentView() { return _currentView; }

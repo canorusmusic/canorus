@@ -39,7 +39,7 @@ CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection st
 	_name = name;
 
 	if ( !voiceNumber && staff ) {
-		_voiceNumber = staff->voiceCount()+1;
+		_voiceNumber = staff->voiceList().size()+1;
 	} else {
 		_voiceNumber = voiceNumber;
 	}
@@ -101,7 +101,7 @@ void CAVoice::cloneVoiceProperties( CAVoice *voice ) {
 void CAVoice::clear() {
 	while ( _musElementList.size() ) {
 		// deletes an element only if it's not present in other voices or we're deleting the last voice
-		if ( _musElementList.front()->isPlayable() || staff() && staff()->voiceCount()<2 )
+		if ( _musElementList.front()->isPlayable() || staff() && staff()->voiceList().size()<2 )
 			delete _musElementList.front(); // CAMusElement's destructor removes it from the list
 		else
 			_musElementList.removeFirst();
@@ -299,8 +299,8 @@ CAKeySignature* CAVoice::getKeySig(CAMusElement *elt) {
 bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 	if ( _musElementList.contains(elt) ) {	// if the search element is found
 		if ( !elt->isPlayable() && staff() ) {          // element is shared - remove it from all the voices
-			for (int i=0; i<staff()->voiceCount(); i++) {
-				staff()->voiceAt(i)->musElementList().removeAll(elt);
+			for (int i=0; i<staff()->voiceList().size(); i++) {
+				staff()->voiceList()[i]->_musElementList.removeAll(elt);
 			}
 		} else {
 			// element is playable
@@ -335,7 +335,7 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 				updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
 			}
 
-			musElementList().removeAll(elt);          // removes the element from the voice music element list
+			_musElementList.removeAll(elt);          // removes the element from the voice music element list
 		}
 
 		return true;
@@ -352,7 +352,7 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 */
 bool CAVoice::insertMusElement( CAMusElement *eltAfter, CAMusElement *elt ) {
 	if (!eltAfter || !_musElementList.size()) {
-		musElementList().push_back(elt);
+		_musElementList.push_back(elt);
 		return true;
 	}
 
@@ -368,7 +368,7 @@ bool CAVoice::insertMusElement( CAMusElement *eltAfter, CAMusElement *elt ) {
 	}
 
 	// eltBefore found, insert it
-	musElementList().insert(i, elt);
+	_musElementList.insert(i, elt);
 
 	return true;
 }

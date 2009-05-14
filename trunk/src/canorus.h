@@ -43,14 +43,14 @@ public:
 
 	static int  fetaCodepoint(const QString& name);
 
-	inline static int mainWinCount() { return _mainWinList.size(); }
+	inline static const QList<CAMainWin*>& mainWinList() { return _mainWinList; }
+	inline static void addMainWin( CAMainWin *w ) { _mainWinList << w; }
+	inline static void removeMainWin(CAMainWin *w) { _mainWinList.removeAll(w); }
 	static int mainWinCount(CADocument *);
 	static QList<CAMainWin*> findMainWin(CADocument* document);
-	inline static CAMainWin* mainWinAt(int idx) { return _mainWinList[idx]; }
-	inline static void removeMainWin(CAMainWin *w) { _mainWinList.removeAll(w); }
-	inline static void removeView(CAView *v) { for (int i=0; i<mainWinCount(); i++) _mainWinList[i]->removeView(v); }
-	inline static void addMainWin( CAMainWin *w ) { _mainWinList << w; }
-	inline static void restartTimeEditedTimes(CADocument *doc) { for (int i=0; i<mainWinCount(); i++) if (mainWinAt(i)->document()==doc) mainWinAt(i)->restartTimeEditedTime(); }
+
+	inline static void removeView(CAView *v) { for (int i=0; i<mainWinList().size(); i++) _mainWinList[i]->removeView(v); }
+	inline static void restartTimeEditedTimes(CADocument *doc) { for (int i=0; i<mainWinList().size(); i++) if (mainWinList()[i]->document()==doc) mainWinList()[i]->restartTimeEditedTime(); }
 
 	inline static CAUndo *undo() { return _undo; }
 
@@ -72,7 +72,7 @@ public:
 
 	// Our own slot connection method
 	static void connectSlotsByName(QObject *pOS, const QObject *pOR);
-	
+
 	// Canorus specific names of const properties for actions
 	static const char *propCommand()     { return "Command"; }
 	static const char *propContext()     { return "Context"; }

@@ -84,7 +84,7 @@ public:
 	///////////////
 	// Selection //
 	///////////////
-	inline QList<CADrawableMusElement*>& selection() { return _selection; };
+	inline const QList<CADrawableMusElement*>& selection() { return _selection; };
 	QList<CAMusElement*>                 musElementSelection();
 	QList<CADrawableMusElement*>         musElementsAt(double x, double y);
 	CADrawableContext                   *selectCElement(double x, double y);
@@ -183,7 +183,7 @@ public:
 	void zoomToWidth(bool animate=false, bool force=false);
 	void zoomToHeight(bool animate=false, bool force=false);
 	void zoomToFit(bool animate=false, bool force=false);
-	
+
 	bool grabTabKey() { return _grabTabKey; }
 	void setGrabTabKey( bool g ) { _grabTabKey = g; }
 

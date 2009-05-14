@@ -67,9 +67,9 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiPreviewScoreView->setScrollBarVisible( CAScoreView::ScrollBarAlwaysHidden );
 	uiPreviewScoreView->rebuild();
 	uiPreviewScoreView->setZoom(0.6, 0, 0, false, false);
-	uiPreviewScoreView->setCurrentContext( uiPreviewScoreView->findCElement( _previewSheet->staffAt(0) ) );
+	uiPreviewScoreView->setCurrentContext( uiPreviewScoreView->findCElement( _previewSheet->staffList()[0] ) );
 	uiPreviewScoreView->addSelectionRegion( QRect(50, 40, 70, 90) );
-	uiPreviewScoreView->addToSelection( _previewSheet->staffAt(0)->voiceAt(0)->musElementList()[1] );
+	uiPreviewScoreView->addToSelection( _previewSheet->staffList()[0]->voiceList()[0]->musElementList()[1] );
 	uiPreviewScoreView->repaint();
 
 	// Commands Settings Page
@@ -190,7 +190,7 @@ void CASettingsDialog::buildActionsEditorPage()
 {
 	int i;
 	QWidget oSingleActions; // all actions added here
-	 QList<QAction *> &roSAList = CACanorus::settings()->getActionList();
+	const QList<QAction *> &roSAList = CACanorus::settings()->getActionList();
 	_commandsEditor = new CAActionsEditor( 0 );
 	// Read all elements from single action list (API requirement)
 	for(i=0; i< roSAList.size(); ++i)
@@ -202,8 +202,8 @@ void CASettingsDialog::buildActionsEditorPage()
 void CASettingsDialog::buildPreviewSheet() {
 	_previewSheet = new CASheet( "", 0 );
 	_previewSheet->addStaff();
-	_previewSheet->staffAt(0)->voiceAt(0)->append( new CAClef( CAClef::Treble, _previewSheet->staffAt(0), 0 ) );
-	_previewSheet->staffAt(0)->voiceAt(0)->append( new CATimeSignature( 2, 2, _previewSheet->staffAt(0), 0 ) );
+	_previewSheet->staffList()[0]->voiceList()[0]->append( new CAClef( CAClef::Treble, _previewSheet->staffList()[0], 0 ) );
+	_previewSheet->staffList()[0]->voiceList()[0]->append( new CATimeSignature( 2, 2, _previewSheet->staffList()[0], 0 ) );
 	_previewSheet->addStaff();
 }
 

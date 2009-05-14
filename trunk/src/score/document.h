@@ -23,20 +23,16 @@ public:
 	CADocument *clone();
 	void clear();
 
-	QList<CASheet*> sheetList() { return _sheetList; }
-	int sheetCount() { return _sheetList.size(); }
-	CASheet *sheet(const QString name);
-	CASheet *sheetAt(int i) { return _sheetList[i]; }
-	void setSheetAt(int i, CASheet *newSheet) { _sheetList[i]=newSheet; }
-
-	QList<CAResource*>& resourceList() { return _resourceList; }
-	inline void addResource(CAResource *r) { _resourceList << r; }
-	inline void removeResource(CAResource *r) { _resourceList.removeAll(r); }
-
+	const QList<CASheet*>& sheetList() { return _sheetList; }
 	CASheet *addSheetByName(const QString name);
-	void addSheet(CASheet *sheet);
+	inline void addSheet(CASheet *sheet) { _sheetList << sheet; }
 	CASheet *addSheet();
 	inline void removeSheet(CASheet *sheet) { _sheetList.removeAll(sheet); }
+	CASheet *findSheet(const QString name);
+
+	const QList<CAResource*>& resourceList() { return _resourceList; }
+	inline void addResource(CAResource *r) { _resourceList << r; }
+	inline void removeResource(CAResource *r) { _resourceList.removeAll(r); }
 
 	const QString title() { return _title; }
 	const QString subtitle() { return _subtitle; }
@@ -92,8 +88,11 @@ private:
 	unsigned int _timeEdited; // time the document has been edited in seconds
 	QString _comments;
 
-	QString _fileName;
-	bool    _modified; // unsaved changes
-	CAArchive *_archive;
+	////////////////////////////////////////////////////
+	// Temporary properties stored during the session //
+	////////////////////////////////////////////////////
+	QString _fileName;   // absolute filename of the document
+	bool    _modified;   // unsaved changes
+	CAArchive *_archive; // pointer to existing archive, if it exists
 };
 #endif /* DOCUMENT_H_ */

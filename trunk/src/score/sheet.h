@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -25,23 +25,16 @@ public:
 	CASheet *clone( CADocument *doc );
 	inline CASheet *clone() { return clone( document() ); }
 
-	CAContext *contextAt(int i) { return _contextList[i]; }
-	CAContext *context(const QString name);
-	inline QList<CAContext*>& contextList() { return _contextList; }
-	inline int contextIndex(CAContext* context) { return _contextList.indexOf(context); }
-	void insertContextAfter( CAContext *after, CAContext *c);
-	void addContext(CAContext *);
-	inline void removeContext(CAContext* c) { _contextList.removeAll(c); }
-	inline int contextCount() { return _contextList.size(); }
+	inline const QList<CAContext*>& contextList() { return _contextList; }
+	CAContext *findContext(const QString name);
+	inline void insertContext( int pos, CAContext *c) { _contextList.insert( pos, c ); }
+	void insertContextAfter( CAContext *after, CAContext *c );
+	inline void addContext( CAContext* c ) { _contextList << c; }
+	inline void removeContext( CAContext* c ) { _contextList.removeAll(c); }
 
 	CAStaff *addStaff();
-	int staffCount();
-	CAStaff *staffAt(int i);
-	QList<CAStaff*> staffList();
-
-	QList<CAVoice*> voiceList();
-	inline CAVoice *voiceAt(int i) { return voiceList().at(i); }
-	inline int voiceCount() { return voiceList().size(); }
+	QList<CAStaff*> staffList(); // generated list
+	QList<CAVoice*> voiceList(); // generated list
 
 	QList<CAPlayable*> getChord(int time);
 	CATempo           *getTempo(int time);

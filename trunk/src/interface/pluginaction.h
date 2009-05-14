@@ -23,7 +23,7 @@ public:
 	inline QString name() { return _name; }
 	inline QString lang() { return _lang; }
 	inline QString function() { return _function; }
-	inline QList<QString> args() { return _args; }
+	inline const QList<QString>& args() { return _args; }
 	inline QString filename() { return _filename; }
 	inline QString onAction() { return _onAction; }
 	inline QString exportFilter(QString lang) { return _exportFilter[lang]; }

@@ -89,58 +89,58 @@ void CAPropertiesDialog::buildTree() {
 		docItem->setIcon( 0, QIcon("images:document/document.svg") );
 		_documentItem = docItem;
 
-		for ( int i=0; i<_document->sheetCount(); i++) {
+		for ( int i=0; i<_document->sheetList().size(); i++) {
 			w = new CASheetProperties( this );
-			_sheetPropertiesWidget[ _document->sheetAt(i) ] = w;
+			_sheetPropertiesWidget[ _document->sheetList()[i] ] = w;
 			uiPropertiesWidget->addWidget( w );
-			updateSheetProperties( _document->sheetAt(i) );
+			updateSheetProperties( _document->sheetList()[i] );
 
 			QTreeWidgetItem *sheetItem=0;
 			sheetItem = new QTreeWidgetItem( docItem );
-			sheetItem->setText( 0, _document->sheetAt(i)->name() );
+			sheetItem->setText( 0, _document->sheetList()[i]->name() );
 			sheetItem->setIcon( 0, QIcon("images:document/sheet.svg") );
-			_sheetItem[ sheetItem ] = _document->sheetAt(i);
+			_sheetItem[ sheetItem ] = _document->sheetList()[i];
 
-			for ( int j=0; j<_document->sheetAt(i)->contextCount(); j++ ) {
+			for ( int j=0; j<_document->sheetList()[i]->contextList().size(); j++ ) {
 				QTreeWidgetItem *contextItem=0;
 				contextItem = new QTreeWidgetItem( sheetItem );
-				contextItem->setText( 0, _document->sheetAt(i)->contextAt(j)->name() );
-				_contextItem[ contextItem ] = _document->sheetAt(i)->contextAt(j);
+				contextItem->setText( 0, _document->sheetList()[i]->contextList()[j]->name() );
+				_contextItem[ contextItem ] = _document->sheetList()[i]->contextList()[j];
 
-				if (dynamic_cast<CAStaff*>( _document->sheetAt(i)->contextAt(j) )) {
+				if (dynamic_cast<CAStaff*>( _document->sheetList()[i]->contextList()[j] )) {
 					contextItem->setIcon( 0, QIcon("images:document/staff.svg") );
 					w = new CAStaffProperties( this );
 					uiPropertiesWidget->addWidget( w );
-					_contextPropertiesWidget[ _document->sheetAt(i)->contextAt(j) ] = w;
-					CAStaff *s = static_cast<CAStaff*>(_document->sheetAt(i)->contextAt(j));
+					_contextPropertiesWidget[ _document->sheetList()[i]->contextList()[j] ] = w;
+					CAStaff *s = static_cast<CAStaff*>(_document->sheetList()[i]->contextList()[j]);
 					updateStaffProperties( s );
 
-					for (int k=0; k<s->voiceCount(); k++) {
+					for (int k=0; k<s->voiceList().size(); k++) {
 						QWidget *v = new CAVoiceProperties( this );
 						uiPropertiesWidget->addWidget( v );
-						_voicePropertiesWidget[ s->voiceAt(k) ] = v;
-						updateVoiceProperties( s->voiceAt(k) );
+						_voicePropertiesWidget[ s->voiceList()[k] ] = v;
+						updateVoiceProperties( s->voiceList()[k] );
 
 						QTreeWidgetItem *voiceItem=0;
 						voiceItem = new QTreeWidgetItem( contextItem );
-						voiceItem->setText( 0, s->voiceAt(k)->name() );
+						voiceItem->setText( 0, s->voiceList()[k]->name() );
 						voiceItem->setIcon( 0, QIcon("images:document/voice.svg") );
-						_voiceItem[ voiceItem ] = s->voiceAt(k);
+						_voiceItem[ voiceItem ] = s->voiceList()[k];
 					}
 				} else
-				if (dynamic_cast<CALyricsContext*>( _document->sheetAt(i)->contextAt(j) )) {
+				if (dynamic_cast<CALyricsContext*>( _document->sheetList()[i]->contextList()[j] )) {
 					contextItem->setIcon( 0, QIcon("images:document/lyricscontext.svg") );
 					w = new CALyricsContextProperties( this );
 					uiPropertiesWidget->addWidget( w );
-					_contextPropertiesWidget[ _document->sheetAt(i)->contextAt(j) ] = w;
-					updateLyricsContextProperties( static_cast<CALyricsContext*>(_document->sheetAt(i)->contextAt(j)) );
+					_contextPropertiesWidget[ _document->sheetList()[i]->contextList()[j] ] = w;
+					updateLyricsContextProperties( static_cast<CALyricsContext*>(_document->sheetList()[i]->contextList()[j]) );
 				} else
-				if (dynamic_cast<CAFunctionMarkContext*>( _document->sheetAt(i)->contextAt(j) )) {
+				if (dynamic_cast<CAFunctionMarkContext*>( _document->sheetList()[i]->contextList()[j] )) {
 				contextItem->setIcon( 0, QIcon("images:document/fmcontext.svg") );
 				w = new CAFunctionMarkContextProperties( this );
 					uiPropertiesWidget->addWidget( w );
-					_contextPropertiesWidget[ _document->sheetAt(i)->contextAt(j) ] = w;
-					updateFunctionMarkContextProperties( static_cast<CAFunctionMarkContext*>(_document->sheetAt(i)->contextAt(j)) );
+					_contextPropertiesWidget[ _document->sheetList()[i]->contextList()[j] ] = w;
+					updateFunctionMarkContextProperties( static_cast<CAFunctionMarkContext*>(_document->sheetList()[i]->contextList()[j]) );
 				}
 
 			}
@@ -359,15 +359,15 @@ void CAPropertiesDialog::applyProperties() {
 	This method is usually called when applying the changes.
 */
 void CAPropertiesDialog::createDocumentFromTree() {
-	while ( _document->sheetCount() )
-		_document->removeSheet( _document->sheetAt(0) );
+	while ( _document->sheetList().size() )
+		_document->removeSheet( _document->sheetList()[0] );
 
 	QTreeWidgetItem *cur = uiDocumentTree->topLevelItem(0);
 
 	for ( int i=0; i<cur->childCount(); i++ ) {
 		CASheet *sheet = _sheetItem[cur->child(i)];
-		while ( sheet->contextCount() )
-			sheet->removeContext( sheet->contextAt(0) );
+		while ( sheet->contextList().size() )
+			sheet->removeContext( sheet->contextList()[0] );
 
 		_document->addSheet(sheet);
 
@@ -376,8 +376,8 @@ void CAPropertiesDialog::createDocumentFromTree() {
 			switch ( c->contextType() ) {
 				case CAContext::Staff: {
 					CAStaff *s = static_cast<CAStaff*>(c);
-					while ( s->voiceCount() )
-						s->removeVoice( s->voiceAt(0) );
+					while ( s->voiceList().size() )
+						s->removeVoice( s->voiceList()[0] );
 
 					for ( int k=0; k<cur->child(i)->child(j)->childCount(); k++ ) {
 						s->addVoice( _voiceItem[cur->child(i)->child(j)->child(k)] );

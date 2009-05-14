@@ -21,7 +21,6 @@ public:
 	CALyricsContext( const QString name, int stanzaNumber, CAVoice *v );
 	CALyricsContext( const QString name, int stanzaNumber, CASheet *s );
 	~CALyricsContext();
-	void clear();
 	CALyricsContext *clone( CASheet *s );
 	void cloneLyricsContextProperties( CALyricsContext* );
 
@@ -29,27 +28,18 @@ public:
 
 	CAMusElement* next(CAMusElement*);
 	CAMusElement* previous(CAMusElement*);
-	QList<CAMusElement*> musElementList();
 	bool remove( CAMusElement* );
-	void removeAt( int i );
+	void clear();
 
+	inline const QList<CASyllable*>& syllableList() { return _syllableList; }
 	bool addSyllable( CASyllable*, bool replace=true );
 	bool addEmptySyllable( int timeStart, int timeLength );
+	void removeSyllable( CASyllable* s ) { _syllableList.removeAll(s); }
 	CASyllable* removeSyllableAtTimeStart( int timeStart );
-	CASyllable* syllableAt( int idx ) { return _syllableList[idx]; }
 	CASyllable* syllableAtTimeStart( int timeStart );
-	inline QList<CASyllable*> syllableList() { return _syllableList; }
-	inline int syllableCount() { return _syllableList.size(); }
 
 	inline CAVoice *associatedVoice() { return _associatedVoice; }
-	inline void setAssociatedVoice( CAVoice *v ) {
-		if (_associatedVoice)
-			_associatedVoice->removeLyricsContext(this);
-		if (v)
-			v->addLyricsContext(this);
-		_associatedVoice = v;
-		repositSyllables();
-	}
+	void setAssociatedVoice( CAVoice *v );
 	inline int stanzaNumber() { return _stanzaNumber; }
 	inline void setStanzaNumber( int sn ) { _stanzaNumber = sn; }
 	inline QString customStanzaName() { return _customStanzaName; }
