@@ -18,6 +18,7 @@ class CADrawableMusElement : public CADrawable {
 		enum CADrawableMusElementType {
 			DrawableNote,
 			DrawableRest,
+			DrawableMidiNote,
 			DrawableClef,
 			DrawableKeySignature,
 			DrawableTimeSignature,

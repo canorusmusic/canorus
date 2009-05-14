@@ -33,6 +33,7 @@
 #include "score/timesignature.h"
 #include "score/note.h"
 #include "score/rest.h"
+#include "score/midinote.h"
 %}
 
 %include "score/document.h"
@@ -62,5 +63,6 @@
 %include "score/timesignature.h"
 %include "score/note.h"
 %include "score/rest.h"
+%include "score/midinote.h"
 
 %include "scripting/mark.i"
