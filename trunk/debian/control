@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: canorus
 Section: sound
 Priority: optional
-Architecture: i386
+Architecture: amd64 i386
 Essential: no
 Depends: libqt4-core (>=4.4.0), libqt4-gui (>=4.4.0), python (>=2.4)
 Recommends: lilypond (>=2.10)
