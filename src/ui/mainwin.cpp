@@ -2230,17 +2230,38 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 			break;
 		case Qt::Key_Tab:
 		case Qt::Key_Backtab: {
-			if (currentVoice() && mode()==InsertMode) {
-				int idx = currentSheet()->voiceList().indexOf(currentVoice());
-				if (e->key()==Qt::Key_Tab) {
-					idx++;
-				} else {
-					idx--;
-				}
-
-				if ( idx >= 0 && idx < currentSheet()->voiceList().size() ) {
+			int idx = -1;
+			if( e->modifiers() == Qt::ControlModifier ) // Control tab has different use
+				idx = uiTabWidget->currentIndex();
+			else
+				idx = currentSheet()->voiceList().indexOf(currentVoice());
+			if (e->key()==Qt::Key_Tab) {
+				idx++;
+			} else {
+				idx--;
+			}
+			// Next/Previous sheet selection
+			if( e->modifiers() == Qt::ControlModifier )
+			{
+				// Cycle if first or last sheet was reached
+				if( idx >= uiTabWidget->count() )
+					idx = 0;
+				else 
+				if( idx<0 )
+					idx = uiTabWidget->count() -1;
+				//if( idx >=0 && idx < uiTabWidget->count() )
+					uiTabWidget->setCurrentIndex(idx);				
+			}
+			else // Next/Previous Voice selection
+			if (currentVoice() && (mode()==InsertMode || mode()==EditMode)) {
+				// Cycle if first or last voice number was reached
+				if( idx >= currentSheet()->voiceList().size() )
+					idx = 0;
+				else 
+				if( idx<0 )
+					idx = currentSheet()->voiceList().size() -1;
+				//if ( idx >= 0 && idx < currentSheet()->voiceList().size() )
 					setCurrentVoice( currentSheet()->voiceList()[idx] );
-				}
 			}
 			break;
 		}
