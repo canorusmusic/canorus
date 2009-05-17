@@ -11,6 +11,8 @@
 #include <QString>
 #include <QStack>
 
+#include "core/muselementfactory.h"
+
 #include "score/voice.h"
 #include "score/rest.h"
 #include "score/keysignature.h"
@@ -46,6 +48,10 @@ public:
 	const QString readableStatus();
 
 private:
+	// Alternatives during developement
+	CASheet *importSheetImplOwnParser(CASheet *sheet);
+	CASheet *importSheetImplPmidiParser(CASheet *sheet);
+
 	void initMidiImport();
 
 	static const QRegExp WHITESPACE_DELIMITERS;
@@ -58,6 +64,7 @@ private:
 		int beat;
 	};
 
+private:
 	enum CALilyPondDepth {
 		Score,
 		Layout,
@@ -71,6 +78,15 @@ private:
 	const QString parseNextElement();
 	const QString peekNextElement();
 	void addError(QString description, int lineError = 0, int charError = 0);
+
+	CAMusElementFactory *_musElementFactory;
+	inline CAMusElementFactory *musElementFactory() { return _musElementFactory; }
+
+	// the next four objects should be moved to CADiatonicPitch, doubles are in CAKeybdInput
+	CADiatonicPitch _actualKeySignature;
+	signed char _actualKeySignatureAccs[7];
+	int _actualKeyAccidentalsSum;
+	CADiatonicPitch matchPitchToKey( CAVoice* voice, CADiatonicPitch p );
 
 	//////////////////////
 	// Helper functions //
@@ -141,6 +157,11 @@ private:
 	void exportNonChordsToOtherVoices();
 	void writeMidiFileEventsToScore( CASheet *sheet );
 	void writeMidiChannelEventsToVoice( int channel, CAStaff *staff, CAVoice *voice );
+	void writeMidiFileEventsToScore_New( CASheet *sheet );
+	void writeMidiChannelEventsToVoice_New( int channel, int voiceIndex, CAStaff *staff, CAVoice *voice );
+	QVector<int> _allChannelsMediumPitch;
+	QVector<CAClef*> _allChannelsClef;
+	QVector<CAKeySignature*> _allChannelsKeySignature;
 };
 
 #endif /* MIDIIMPORT_H_ */
