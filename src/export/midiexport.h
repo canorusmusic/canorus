@@ -58,6 +58,7 @@ public:
 private:
 	QByteArray writeTime(int time);
 	void exportDocumentImpl(CADocument *doc);
+	void exportSheetImpl(CASheet *sheet);
 	int midiTrackCount;
 	QByteArray trackChunk;					// for the time beeing we build one big track
 	int trackTime;							// which this is the time line for
