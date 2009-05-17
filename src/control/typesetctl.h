@@ -19,6 +19,7 @@
 class CAExternProgram;
 class CAExport;
 class CADocument;
+class CASheet;
 
 class CATypesetCtl : public QObject
 {
@@ -37,6 +38,7 @@ public:
 	inline void setExporter( CAExport *poExport ) { _poExport = poExport ; }
 	// Attention: .pdf automatically added and removed if it was added internally
 	void exportDocument( CADocument *poDoc );
+	void exportSheet( CASheet *poSheet );
 	void runTypesetter();
 
 	inline bool getPDFConversion() { return _bPDFConversion; }

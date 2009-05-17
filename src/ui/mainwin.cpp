@@ -2976,7 +2976,10 @@ void CAMainWin::on_uiExportDocument_triggered() {
 		if( _poExp )
 		{
 			_poExp->setStreamToFile( s );
-			_poExp->exportDocument( document() );
+			// @ToDo Complete document export is not supported currently
+			// Also when (context) to print current sheet and when the whole document ?
+			//_poExp->exportDocument( document() );
+			_poExp->exportSheet( currentSheet() );
 			_poExp->wait();
 			//delete _poExp;
 		}

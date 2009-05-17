@@ -67,7 +67,8 @@ void CAPrintCtl::printDocument()
 	// The exportDocument method defines the temporary file name and
 	// directory, so we can only read it after the creation
 	_poSVGExport->setStreamToFile( oTempFileName );
-	_poSVGExport->exportDocument( _poMainWin->document() );
+	//_poSVGExport->exportDocument( _poMainWin->document() );
+	_poSVGExport->exportSheet( _poMainWin->currentSheet() );
 	_poSVGExport->wait();
 	const QString roTempPath = _poSVGExport->getTempFilePath();
 	// Copy the name for later output on the printer

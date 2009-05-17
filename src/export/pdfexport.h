@@ -38,6 +38,8 @@ private:
 	void startExport();
 	void finishExport();
 	void exportDocumentImpl(CADocument *doc);
+	void exportSheetImpl(CASheet *poSheet);
+	void runTypesetter();
 
 protected:
 	CATypesetCtl *_poTypesetCtl;
