@@ -1619,7 +1619,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 			if (uiContextType->isChecked()) {
 				// Add new Context
 				CAContext *newContext;
-				CADrawableContext *dupContext = v->nearestDownContext(coords.x(), coords.y());
+				CADrawableContext *dupContext = v->nearestUpContext(coords.x(), coords.y());
 				switch(uiContextType->currentId()) {
 					case CAContext::Staff: {
 						CACanorus::undo()->createUndoCommand( document(), tr("new staff", "undo"));
