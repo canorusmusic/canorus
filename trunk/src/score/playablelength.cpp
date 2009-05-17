@@ -274,3 +274,42 @@ QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int
 	return list;
 }
 
+/*!
+	Split a playable to match a given bar border and bar length.
+*/
+QList<CAPlayableLength> CAPlayableLength::matchToBars( int timeLength, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit ) {
+
+	// If something is strange or undoable we prepare for returning an empty list!
+	QList<CAPlayableLength> unchanged; unchanged.clear();
+	if (!ts) return unchanged;
+
+	int beat = ts->beat();
+	switch (beat) {
+	case 2:
+	case 4:
+	case 8:		break;
+	default:	return unchanged;
+	}
+	int barLength = CAPlayableLength::playableLengthToTimeLength(
+				CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(ts->beat()) ) ) * ts->beats();
+	int barRest = ( lastBarline ? lastBarline->timeStart() : 0 ) + barLength - timeStart;
+	// no change when bar lengths are bogus
+	if (barRest < 0 || barRest > barLength) return unchanged;
+
+	int noteLen = timeLength;
+
+	// now we really do a split
+	QList<CAPlayableLength> list;
+	int tSplit = barRest ? barRest : barLength;
+	bool longNotesFirst = barRest ? false : true;
+	while (noteLen) {
+		tSplit = tSplit > noteLen ? noteLen : tSplit;
+		list << timeLengthToPlayableLengthList( tSplit, longNotesFirst, dotsLimit );
+		noteLen -= tSplit;
+		tSplit = noteLen > barLength ? barLength : noteLen;
+		longNotesFirst = true;
+	}
+
+	return list;
+}
+

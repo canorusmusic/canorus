@@ -49,6 +49,7 @@ public:
 	}
 	static QList<CAPlayableLength> timeLengthToPlayableLengthList( int timeLength, bool longNotesFirst = true, int dotsLimit = 4 );
 	static QList<CAPlayableLength> matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit = 4 );
+	static QList<CAPlayableLength> matchToBars( int timeLength, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit = 4 );
 
 private:
 	CAMusicLength _musicLength; // note, rest length (half, whole, quarter)
