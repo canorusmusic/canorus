@@ -101,9 +101,9 @@ void CALyricsContext::repositSyllables() {
 			_syllableList[j]->setTimeStart(_syllableList[j-1]->timeStart()+_syllableList[j-1]->timeLength());
 			_syllableList[j]->setTimeLength( 256 );
 		}
+		// remove empty "leftover" syllables from the end
 		for (j=firstEmpty; j<_syllableList.size() && j>0; j++) {
-			delete _syllableList[j];
-			_syllableList.removeAt(j); // remove empty "leftover" syllables from the end
+			delete _syllableList.takeAt(j);
 		}
 
 		for (; i<noteList.size(); i++) { // add empty syllables at the end, if missing
@@ -168,8 +168,7 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart ) {
 		for (int j=i+1; j<_syllableList.size(); j++)
 			_syllableList[j]->setTimeStart( _syllableList[j]->timeStart() - syllable->timeLength() );
 
-		delete _syllableList[i];
-		_syllableList.removeAt(i);
+		delete _syllableList.takeAt(i);
 		return syllable;
 	} else {
 		return 0;
@@ -187,9 +186,9 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart ) {
 bool CALyricsContext::addSyllable( CASyllable *syllable, bool replace ) {
 	int i;
 	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<syllable->timeStart(); i++);
-	if ( i!=_syllableList.size() && replace ) {
-		delete _syllableList[i];
-		_syllableList.removeAt(i);
+	int s = _syllableList.size();
+	if ( i<_syllableList.size() && replace ) {
+		delete _syllableList.takeAt(i);
 	}
 	_syllableList.insert(i, syllable);
 	for (i++; i<_syllableList.size(); i++)
