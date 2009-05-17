@@ -80,7 +80,7 @@ void CAMidiExport::send(QVector<unsigned char> message, int time)
 // FIXME: is not yet fixed and synchronized to midi playback and import:
 #define MULTIPLICATOR       (1*2*3*4*5*6*7) /* enable x-tuplets with x in {3,4,5,6,7,8,9,10} */
 #define QUARTER_LENGTH      ( 32*MULTIPLICATOR)
-#define TICKS_PER_QUARTER (3*128)
+#define TICKS_PER_QUARTER (256)
 
 #define MY2MIDITIME(t) ((unsigned int) ((((double) t) * (double) (TICKS_PER_QUARTER)) / ((double) (QUARTER_LENGTH))))
 
@@ -233,6 +233,49 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 	writeFile();
 }
 
+
+/*!
+	Exports the current document to Lilypond syntax as a complete .ly file.
+*/
+void CAMidiExport::exportSheetImpl(CASheet *sheet)
+{
+/*
+	if ( doc->sheetList().size() < 1 ) {
+		//TODO: no sheets, raise an error
+		return;
+	}
+
+
+	// In the header chunk we need to know the count of tracks.
+	// We export every non empty voice as separate track.
+	// For now we export only the first sheet.
+	CASheet *sheet = doc->sheetList()[ 0 ];
+*/
+	setCurSheet( sheet );
+	trackChunk.clear();
+
+	// Let's playback this sheet and dump that into a file,
+	// and for this we have our own midi driver.
+	CAPlayback *_playback = new CAPlayback(sheet, this );
+	_playback->run();
+
+	int count = 0;
+	for (int c = 0; c < sheet->contextList().size(); ++c ) {
+		switch (sheet->contextList()[c]->contextType()) {
+			case CAContext::Staff:
+				// exportStaffVoices( static_cast<CAStaff*>(sheet->contextList()[c]) );
+				CAStaff *staff = static_cast<CAStaff*>(sheet->contextList()[c]);
+				for ( int v = 0; v < staff->voiceList().size(); ++v ) {
+					setCurVoice( staff->voiceList()[v] );
+					count++;
+					//std::cout << "Hallo  " << c << " " << v << "\n" << std::endl;
+				}
+		}
+	}
+
+	writeFile();
+}
+
 void CAMidiExport::writeFile() {
 	// Header Chunk
 
@@ -244,8 +287,8 @@ void CAMidiExport::writeFile() {
 	headerChunk.append("MThd....");		// header and space for length
 	headerChunk.append(word16( 1 ));	// Midi-Format version
 	headerChunk.append(word16( 2 ));	// number of tracks, a control track and a music track for a trying out ...
-//	headerChunk.append(word16( 384 ));	// time division, should be TICKS_PER_QUARTER
-	headerChunk.append(word16( 512 ));  // time division 512 seems to work fine for us. Dunno why? -Matevz
+	headerChunk.append(word16( TICKS_PER_QUARTER ));	// time division, should be TICKS_PER_QUARTER
+//	headerChunk.append(word16( 512 ));  // time division 512 seems to work fine for us. Dunno why? -Matevz (256 is right, timelength of quarter, soon I'll fix tempo, Georg)
 	setChunkLength( &headerChunk );
 	out() << headerChunk;
 
