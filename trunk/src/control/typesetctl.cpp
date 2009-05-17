@@ -186,6 +186,44 @@ void CATypesetCtl::exportDocument( CADocument *poDoc )
 }
 
 /*!
+	Export the file to disk to be run by the typesetter
+
+	This method creates a random file name as a stream file name
+	for the exporter. Then it exports the sheet \a poSheet.
+
+	\sa setExpOption( QVariant oName, QVariant oValue )
+*/
+void CATypesetCtl::exportSheet( CASheet *poSheet )
+{
+	// @todo: Add export options to the document directly ?
+	if( _poExport )
+	{
+		if(  _poOutputFile )
+		{
+			delete _poOutputFile;
+			_poTypesetter->clearParameters();
+		}
+		_poOutputFile = new QTemporaryFile;
+		// Create the unique file as the file name is only defined when opening the file
+		_poOutputFile->open();
+		// Add the input file name as default parameter.
+		// @ToDo: There might be problems with typesetter expecting file extensions,
+		// if so, methods have to be added handling this
+		_oOutputFileName = _poOutputFile->fileName();
+		// Only add output file name as first parameter file name if it is needed
+		if( true == _bOutputFileNameFirst )
+			_poTypesetter->addParameter( _oOutputFileName, false );
+		_poExport->setStreamToDevice( _poOutputFile );
+		_poExport->exportSheet( poSheet );
+		// @ToDo use signal/slot mechanism to wait for the file
+		_poExport->wait();
+		_poOutputFile->close();
+	}
+	else
+	  qCritical("TypesetCtl: No export was done - no exporter defined");
+}
+
+/*!
 	Start the typesetter
 
 	This method runs the typesetter. Make sure that all the

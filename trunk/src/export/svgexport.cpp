@@ -90,6 +90,31 @@ void CASVGExport::exportDocumentImpl(CADocument *poDoc)
 	// The exportDocument method defines the temporary file name and
 	// directory, so we can only read it after the creation
 	_poTypesetCtl->exportDocument( poDoc );
+	// actual PDF creation is done now
+	runTypesetter();
+}
+
+/*!
+	Exports the sheet \a poSheet to LilyPond first and create a PDF from it
+	using the Typesetter instance.
+*/
+void CASVGExport::exportSheetImpl(CASheet *poSheet)
+{
+ 	// We cannot create the typesetter instance (a QProcess in the end)
+	// in the constructor as it's parent would be in a different thread!
+	startExport();
+	// The exportSheet method defines the temporary file name and
+	// directory, so we can only read it after the creation
+	_poTypesetCtl->exportSheet( poSheet );
+	// actual PDF creation is done now
+	runTypesetter();
+}
+
+/*!
+	Run creation of PDF file after deleting a potential old one
+*/
+void CASVGExport::runTypesetter()
+{
 	const QString roTempPath = _poTypesetCtl->getTempFilePath();
 	_poTypesetCtl->setTSetOption( QString("o"), roTempPath );
 	_poTypesetCtl->setTSetOption("dbackend","svg",false,false);

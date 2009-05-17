@@ -54,7 +54,8 @@ void CAPreviewCtl::on_uiPrintPreview_triggered()
 	// The exportDocument method defines the temporary file name and
 	// directory, so we can only read it after the creation
 	_poPDFExport->setStreamToFile( oTempFileName );
-	_poPDFExport->exportDocument( _poMainWin->document() );
+	//_poPDFExport->exportDocument( _poMainWin->document() );
+	_poPDFExport->exportSheet( _poMainWin->currentSheet() );
 	_poPDFExport->wait();
 	const QString roTempPath = _poPDFExport->getTempFilePath();
 	// Copy the name for later output on the printer
@@ -69,10 +70,10 @@ void CAPreviewCtl::showPDF( int iExitCode )
 	}
 
 	bool success;
-	// First version show the pdf file with the default pdf system viewer
+	// Show the pdf file with the default pdf system viewer
 	if ( CACanorus::settings()->useSystemDefaultPdfViewer() ) {
 		success = QDesktopServices::openUrl( QUrl( QString("file:")+QDir::tempPath()+"/preview.pdf" ) );
-	} else {
+	} else { // Use viewer specified in settings (location and command) to show the pdf file
 		success = QProcess::startDetached( CACanorus::settings()->pdfViewerLocation(), QStringList() << QDir::tempPath()+"/preview.pdf" );
 	}
 
