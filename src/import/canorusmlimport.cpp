@@ -104,6 +104,10 @@ CADocument* CACanorusMLImport::importDocumentImpl() {
 	reader->setErrorHandler( this );
 	reader->parse( src );
 
+	if (!_fileName.isEmpty()) {
+		document()->setFileName(_fileName);
+	}
+
 	delete reader;
 	delete src;
 

@@ -69,8 +69,10 @@ protected:
 	QTextStream& _in() { return *stream(); }
 #endif
 
-private:
+protected:
 	QString _fileName;
+
+private:
 	inline void setImportedDocument( CADocument *doc ) { _importedDocument = doc; }
 	inline void setImportedSheet( CASheet *sheet ) { _importedSheet = sheet; }
 	inline void setImportedStaff( CAStaff *staff ) { _importedStaff = staff; }

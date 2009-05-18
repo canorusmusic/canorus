@@ -116,6 +116,7 @@ void CAAutoRecovery::openRecovery() {
 		open.wait();
 		if ( open.importedDocument() ) {
 			open.importedDocument()->setModified(true); // warn that the file is unsaved, if closing
+			open.importedDocument()->setFileName("");
 
 			CAMainWin *mainWin = new CAMainWin();
 			documents.append( tr("- Document %1 last modified on %2.").arg(open.importedDocument()->title()).arg(open.importedDocument()->dateLastModified().toString()) + "\n" );

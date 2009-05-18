@@ -136,9 +136,11 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	widgets/resourceview.h
 	widgets/helpbrowser.h
 	widgets/actionseditor.h
+	widgets/progressstatusbar.h
 	
 	control/previewctl.h
 	control/printctl.h
+	control/mainwinprogressctl.h
 )
 
 SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
@@ -275,6 +277,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/resourceview.cpp
 	widgets/helpbrowser.cpp
 	widgets/actionseditor.cpp
+	widgets/progressstatusbar.cpp
 )
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
@@ -295,6 +298,7 @@ SET(Canorus_Ctl_Srcs            # Control instances for user interface or views 
 	control/externprogram.cpp
 	control/typesetctl.cpp
 	control/resourcectl.cpp
+	control/mainwinprogressctl.cpp
 )
 
 SET(Canorus_Layout_Srcs	# Drawable instances of the data
