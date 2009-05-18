@@ -31,7 +31,7 @@
 
 class CAMidiImportEvent {
 public:
-	CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length );
+	CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length, int tempo );
 	~CAMidiImportEvent();
 	bool _on;
 	int _channel;
@@ -42,9 +42,10 @@ public:
 	int _timeCorrection;
 	int _lengthCorrection;
 	int _nextTime;
+	int _tempo;		// beats per minute
 };
 
-CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0){
+CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0, int tempo = 120 ) {
 	_on = on;
 	_channel = channel;
 	_pitch = pitch;
@@ -54,6 +55,7 @@ CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int veloc
 	_timeCorrection = 0;
 	_lengthCorrection = 0;
 	_nextTime = time+length;
+	_tempo = tempo;
 }
 
 CAMidiImportEvent::~CAMidiImportEvent() {
@@ -164,13 +166,13 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			pmidi_out.length = (pmidi_out.length *256)/pmidi_out.time_base;
 			
 			// Get note to the right voice
-			voiceIndex=0;
 			for (voiceIndex=0;;) {
 				if (_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size() == 0 ||
 					_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->last()->_nextTime <= pmidi_out.time) {
 					// the note can be added
 					_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->append( new CAMidiImportEvent( true,
-							pmidi_out.chan, pmidi_out.note, pmidi_out.vel, pmidi_out.time, pmidi_out.length ));
+							pmidi_out.chan, pmidi_out.note, pmidi_out.vel, pmidi_out.time, pmidi_out.length,
+							60000000/pmidi_out.micro_tempo ));
 					break;
 				}
 				// if another voice is needed create it
@@ -450,6 +452,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 	CAStaff *staff;
 	CAVoice *voice;
 
+	// Calculate the medium pitch for every staff for the key selection later
 	for (int chanIndex=0;chanIndex<16;chanIndex++) {
 		int n=0;
 		_allChannelsMediumPitch[chanIndex]=0;
@@ -468,11 +471,25 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 
 	// Quantization on sixtyfourth of time starts and lengths by zeroing the msbits
 	for (int ch=0;ch<16;ch++) {
-
 		for (voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
 			for (int i=0;i< _allChannelsEvents[ch]->at(voiceIndex)->size();i++) {
 				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time &= ~7;
 				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length &= ~7;
+			}
+		}
+	}
+
+	// Zero _tempo when no tempo change, only in the first voice, so later we will set tempo at the remaining points.
+	// By the algorithm used tempo changes on a note will be placed already on the rest before it eventually.
+	for (int ch=0;ch<16;ch++) {
+		if (_allChannelsEvents[ch]->size() > 0 && _allChannelsEvents[ch]->at(0)->size() > 1) {
+			int te = _allChannelsEvents[ch]->at(0)->at(0)->_tempo;
+			for (int i=1;i< _allChannelsEvents[ch]->at(0)->size();i++) {
+				if( _allChannelsEvents[ch]->at(0)->at(i)->_tempo == te ) {
+					_allChannelsEvents[ch]->at(0)->at(i)->_tempo = 0;
+				} else {
+					te = _allChannelsEvents[ch]->at(0)->at(i)->_tempo;
+				}
 			}
 		}
 	}
@@ -586,6 +603,9 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 
 	for (int i=0; i<events->size(); i++ ) {
 
+		// we place a tempo only for the first voice
+		int tempo = voiceIndex == 0 ? events->at(i)->_tempo : 0;
+		
 		CABarline *b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline,
 			voice->lastMusElement()));
 		CATimeSignature *ts = static_cast<CATimeSignature*>(
@@ -600,6 +620,15 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			for (int j=0; j<lll.size(); j++) {
 				rest = new CARest( CARest::Normal, lll[j], voice, 0, -1 );
 				voice->append( rest, false );
+				if ( tempo ) {
+					CAMark *_curMark = new CATempo(
+							CAPlayableLength::Quarter, /* CAPlayableLength(), */
+							tempo, /* attributes.value("bpm").toInt(), */
+							rest /* _curMusElt */
+					);
+					rest->addMark(_curMark);
+					tempo = 0;
+				}
 			  	musElementFactory()->placeAutoBar( rest );
 			}
 			time += length;
@@ -623,6 +652,18 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				note = new CANote( diap, lll[j], voice, -1 );
 				// TODO note = new CANote( nonenharmonicPitch, tiemLayout[j], voice, -1 );
 				voice->append( note, false );
+				if ( tempo ) {
+					CAMark *_curMark = new CATempo(
+							CAPlayableLength::Quarter, /* CAPlayableLength(), */
+							tempo, /* attributes.value("bpm").toInt(), */
+							note /* _curMusElt */
+					);
+					note->addMark(_curMark);
+		            //CATempo *tempoEl = dynamic_cast<CATempo*>( v->selection().at(i)->musElement() );
+		            //CATempo *tempoEl = dynamic_cast<CATempo*>( note );
+                	//tempoEl->setBpm( tempo );
+					tempo = 0;
+				}
 			  	musElementFactory()->placeAutoBar( note );
 				if (previousNote) {
 					CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNote, note );

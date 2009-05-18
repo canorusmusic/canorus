@@ -62,7 +62,7 @@ int pmidi_parse_midi_file( void )
 		pmidi_out.time = el->element_time;
 
 		//snd_seq_event_t ev;
-		static struct seq_context_t *ctxp;
+		//static struct seq_context_t *ctxp;
 	
 		/* resulted in a crash, seems to to be needed:
 		seq_midi_event_init(ctxp, &ev, el->element_time, el->device_channel);
@@ -77,6 +77,8 @@ int pmidi_parse_midi_file( void )
 			pmidi_out.format    = MD_ROOT(el)->format;
 			pmidi_out.tracks    = MD_ROOT(el)->tracks;
 			pmidi_out.time_base = MD_ROOT(el)->time_base;
+			// Default tempo
+			pmidi_out.micro_tempo = 60000000 / 120;
 			return PMIDI_STATUS_ROOT;
 		case MD_TYPE_NOTE:
 			//printf("  at time: %6d   ", el->element_time );
