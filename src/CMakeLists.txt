@@ -384,11 +384,10 @@ SET(Canorus_Srcs
 	${Canorus_Import_Srcs}
 	${Canorus_RtMidi_Srcs}
 	${Canorus_Widget_Srcs}
+	${Canorus_PMIDI_Srcs}
 )
 IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-	SET(Canorus_Srcs ${Canorus_Srcs}
-		${Canorus_PMIDI_Srcs}
-	)
+	ADD_DEFINITIONS(-g)
 ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 
 SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module.
