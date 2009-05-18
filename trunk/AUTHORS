@@ -14,7 +14,7 @@ Sam Hernandez <merphant@yahoo.com>
 Erlend Aasland <erlenda@gmail.com>
   MacOSX port, small compatibility fixes and improvements
 Georg Rudolph <georg.rudolph@schwaben.de>
-  lots of ideas, tester and bughunter, LilyPond, Midi export
+  tester and bughunter, LilyPond, Midi import/export
 Erik Magnus Johansson <erik.magnus.johansson@telia.com>
   bughunter, musical terms
 Štefan Sakalík <rabbit6440@gmail.com>
@@ -53,3 +53,6 @@ RtMidi Library <http://www.music.mcgill.ca/~gary/rtmidi>
   Fast and portable Midi library
 zlib <http://www.zlib.net>
   Compression for our file format
+pmidi http://www.parabola.me.uk/alsa/pmidi.html
+  Parsing midi files
+
