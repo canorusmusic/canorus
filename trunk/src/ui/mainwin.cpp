@@ -134,7 +134,8 @@ QFileDialog *CAMainWin::uiExportDialog = 0;
 	Creates Canorus main window with parent \a oParent. Parent is usually null.
 */
 CAMainWin::CAMainWin(QMainWindow *oParent)
- : QMainWindow( oParent ) {
+ : QMainWindow( oParent ),
+   _mainWinProgressCtl(this) {
 	setAttribute( Qt::WA_DeleteOnClose );
 
 	// Create the GUI (actions, toolbars, menus etc.)
@@ -146,7 +147,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	setRebuildUILock( false );
 
 	// Initialize internal UI properties
-	_mode = SelectMode;
+	_mode = NoDocumentMode;
 	_playback = 0;
 	_playbackView = 0;
 	_repaintTimer = 0;
@@ -174,6 +175,8 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	_transposeView = new CATransposeView( this );
 	addDockWidget( Qt::RightDockWidgetArea, _transposeView );
 	_transposeView->hide();
+
+	_permanentStatusBar = statusBar();
 
 	setDocument( 0 );
 	_poExp = 0;
@@ -2246,18 +2249,18 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 				// Cycle if first or last sheet was reached
 				if( idx >= uiTabWidget->count() )
 					idx = 0;
-				else 
+				else
 				if( idx<0 )
 					idx = uiTabWidget->count() -1;
 				//if( idx >=0 && idx < uiTabWidget->count() )
-					uiTabWidget->setCurrentIndex(idx);				
+					uiTabWidget->setCurrentIndex(idx);
 			}
 			else // Next/Previous Voice selection
 			if (currentVoice() && (mode()==InsertMode || mode()==EditMode)) {
 				// Cycle if first or last voice number was reached
 				if( idx >= currentSheet()->voiceList().size() )
 					idx = 0;
-				else 
+				else
 				if( idx<0 )
 					idx = currentSheet()->voiceList().size() -1;
 				//if ( idx >= 0 && idx < currentSheet()->voiceList().size() )
@@ -2815,27 +2818,15 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 	} else if ( fileName.endsWith(".can") ) {
 		open = new CACanImport();
 		uiSaveDialog->selectFilter( CAFileFormats::CAN_FILTER );
-	} else
+	} else {
 		return 0; // FIXME Failing quietly, add error message
+	}
 
+	connect( open, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
 	open->setStreamFromFile( fileName );
 	open->importDocument();
-	open->wait();
 
-	if( open->importedDocument() ) {
-		CADocument *doc = open->importedDocument();
-		delete open;
-
-		doc->setFileName(fileName);
-		return openDocument( doc );
-	} else {
-		QMessageBox::critical(
-			this, tr("Canorus"),
-			tr("Error while opening the file!\nError %1: ").arg(open->status()) + open->readableStatus()
-		);
-		delete open;
-		return 0;
-	}
+	_mainWinProgressCtl.startProgress( open );
 }
 
 /*!
@@ -2862,6 +2853,8 @@ CADocument *CAMainWin::openDocument(CADocument *doc) {
 		rebuildUI(); // local rebuild only
 		if ( doc->sheetList().size())
 			uiTabWidget->setCurrentIndex(0);
+
+		setMode( SelectMode );
 
 		// select the first context automatically
 		if ( document() && document()->sheetList().size() && document()->sheetList()[0]->contextList().size() )
@@ -3025,17 +3018,14 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	stopPlayback();
 
 	QString s = fileNames[0];
-	CADocument *oldDocument = document();
 
-	bool success=false;
 	if (CAPluginManager::importFilterExists(uiImportDialog->selectedFilter())) {
+		// Import done using a scripting engine
 		setDocument(new CADocument());
 		CACanorus::undo()->createUndoStack( document() );
 		uiCloseDocument->setEnabled(true);
 
 		CAPluginManager::importAction(uiImportDialog->selectedFilter(), document(), fileNames[0]);
-
-		success=true;
 
 		CACanorus::rebuildUI( document() );
 	} else {
@@ -3051,23 +3041,32 @@ void CAMainWin::on_uiImportDocument_triggered() {
 
 		if (import) {
 			import->setStreamFromFile( s );
+			connect( import, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
 			import->importDocument();
-			import->wait();
-			success = (import->status()==0);
-		}
 
-		if (success) {
-			openDocument( import->importedDocument() );
+			_mainWinProgressCtl.startProgress( import );
 		}
 	}
+}
 
+void CAMainWin::on_import_done( int status ) {
+	CAImport *import = static_cast<CAImport*>(sender());
+	bool success = (import->status()==0);
 
-	// select the first context automatically
-	if ( document() && document()->sheetList().size() && document()->sheetList()[0]->contextList().size() ) {
-		currentScoreView()->selectContext( document()->sheetList()[0]->contextList()[0] );
+	if (success) {
+		openDocument( import->importedDocument() );
+
+		// select the first context automatically
+		if ( document() && document()->sheetList().size() && document()->sheetList()[0]->contextList().size() ) {
+			currentScoreView()->selectContext( document()->sheetList()[0]->contextList()[0] );
+		}
+
+		updateToolBars();
+	} else {
+		QMessageBox::critical( this, tr("Canorus"),
+		                       tr("Error while opening the file!\nError %1: ").arg(
+						          import->status()) + import->readableStatus());
 	}
-
-	updateToolBars();
 }
 
 /*!
@@ -3076,6 +3075,10 @@ void CAMainWin::on_uiImportDocument_triggered() {
 void CAMainWin::on_uiExportToPdf_triggered() {
 	uiExportDialog->setFilter( CAFileFormats::PDF_FILTER );
 	on_uiExportDocument_triggered();
+}
+
+void CAMainWin::on_export_done( int status ) {
+
 }
 
 /*!

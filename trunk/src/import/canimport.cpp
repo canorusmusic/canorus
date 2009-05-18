@@ -72,6 +72,10 @@ CADocument *CACanImport::importDocumentImpl() {
 		delete doc->archive();
 		doc->setArchive( arc );
 
+		if (!_fileName.isEmpty()) {
+			doc->setFileName(_fileName);
+		}
+
 		setStatus(0); // done
 		return doc;
 	} else {

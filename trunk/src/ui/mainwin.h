@@ -16,6 +16,8 @@
 
 #include "ui_mainwin.h"
 
+#include "control/mainwinprogressctl.h"
+
 #include "score/document.h"
 #include "score/muselement.h"
 #include "score/note.h"
@@ -38,6 +40,7 @@ class QComboBox;
 class QCheckBox;
 class QAction;
 
+class CAMainWinProgressCtl;
 class CAHelpBrowser;
 class CAMenuToolButton;
 class CAUndoToolButton;
@@ -59,9 +62,12 @@ class CAMainWin : public QMainWindow, private Ui::uiMainWindow
 {
 	Q_OBJECT
 
+	friend class CAMainWinProgressCtl;
+
 public:
 	enum CAMode {
 		NoDocumentMode,
+		ProgressMode,
 		InsertMode,
 		SelectMode,
 		EditMode,
@@ -312,6 +318,12 @@ private slots:
 	void onScoreViewSelectionChanged();
 	void onRepaintTimerTimeout();
 
+	////////////////////////////////
+	// Handle progress bar events //
+	////////////////////////////////
+	void on_import_done( int status );
+	void on_export_done( int status );
+
 private:
 	void playImmediately( QList<CAMusElement*> elements );
 
@@ -327,6 +339,9 @@ private:
 	CAResourceView *_resourceView;
 	CATransposeView *_transposeView;
 	CAMidiRecorderView *_midiRecorderView;
+
+	QStatusBar *_permanentStatusBar;
+	CAMainWinProgressCtl _mainWinProgressCtl;
 
 	void setMode(CAMode mode);
 	inline void setCurrentView( CAView *view ) { _currentView = view; }
