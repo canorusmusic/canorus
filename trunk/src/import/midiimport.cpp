@@ -25,9 +25,9 @@
 /*
 	For the moment only for Linux, and parts of pmidi in use are still dependant on alsa, so:
 */
-#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
+//#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
 #include "import/pmidi/wrapper.h"
-#endif
+//#endif
 
 class CAMidiImportEvent {
 public:
@@ -126,17 +126,17 @@ CADocument *CAMidiImport::importDocumentImpl() {
 
 CASheet *CAMidiImport::importSheetImpl() {
 	CASheet *sheet = new CASheet(tr("Midi imported sheet"), _document );
-#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
+//#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
 	return importSheetImplPmidiParser(sheet);
-#else
+//#else
 	return importSheetImplOwnParser(sheet);
-#endif
+//#endif
 }
 
 static int zaehler = 0;
 
 CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
-#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
+//#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
 	QByteArray s;
 	s.append(fileName());
 	pmidi_open_midi_file( s.constData() );
@@ -211,7 +211,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 		//std::cout<<p<<std::endl;
 
 	}
-#endif
+//#endif
 	writeMidiFileEventsToScore_New( sheet );
 	return sheet;
 }
