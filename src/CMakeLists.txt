@@ -365,7 +365,6 @@ SET(Canorus_PMIDI_Srcs		# PMIDI excerpts
 	import/pmidi/except.c
 	import/pmidi/mdutil.c
 	import/pmidi/midiread.c
-	import/pmidi/out_seqmidi.c
 	import/pmidi/wrapper.c
 )
 
@@ -390,7 +389,6 @@ IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 	SET(Canorus_Srcs ${Canorus_Srcs}
 		${Canorus_PMIDI_Srcs}
 	)
-	ADD_DEFINITIONS(-DHAVE_ALSA_ASOUNDLIB_H=1)
 ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 
 SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module.
