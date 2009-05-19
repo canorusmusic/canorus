@@ -166,7 +166,11 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			pmidi_out.length = (pmidi_out.length *256)/pmidi_out.time_base;
 			
 			// Get note to the right voice
-			for (voiceIndex=0;;) {
+			for (voiceIndex=0;voiceIndex<30;voiceIndex++) {		// we can't imagine that so many voices ar needed in any case so let's put a limit
+				// if another voice is needed and not yet there we create it
+				if (voiceIndex >= _allChannelsEvents[pmidi_out.chan]->size()) {
+					_allChannelsEvents[pmidi_out.chan]->append( new QList<CAMidiImportEvent*> );
+				}
 				if (_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size() == 0 ||
 					_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->last()->_nextTime <= pmidi_out.time) {
 					// the note can be added
@@ -175,11 +179,6 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 							60000000/pmidi_out.micro_tempo ));
 					break;
 				}
-				// if another voice is needed create it
-				if (++voiceIndex >= _allChannelsEvents[pmidi_out.chan]->size()) {
-					_allChannelsEvents[pmidi_out.chan]->append( new QList<CAMidiImportEvent*> );
-				}
-				if (voiceIndex>30) break;
 			}
 			break;
 		case PMIDI_STATUS_DUMMY:
@@ -469,12 +468,12 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		}
 	}
 
-	// Quantization on sixtyfourth of time starts and lengths by zeroing the msbits
+	// Quantization on hundredtwentyeighth of time starts and lengths by zeroing the msbits
 	for (int ch=0;ch<16;ch++) {
 		for (voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
 			for (int i=0;i< _allChannelsEvents[ch]->at(voiceIndex)->size();i++) {
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time &= ~7;
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length &= ~7;
+				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time &= ~7; // ~(CAPlayableLength::HundredTwentyEighth-1);   ????
+				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length &= ~7; // ~(CAPlayableLength::HundredTwentyEighth-1);
 			}
 		}
 	}
@@ -507,34 +506,33 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			staff = new CAStaff( "", sheet, 5);
 			sheet->addContext(staff);
 		}
+		CAMusElement *musElemClef;
+		CAMusElement *musElemKeySig;
+		CAMusElement *musElemTimeSig;
 		for (int voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
 			// voiceName = QObject::tr("Voice%1").arg( voiceNumber );
 			voice = new CAVoice( "", staff, CANote::StemNeutral, 1 );
 			staff->addVoice( voice );
+			setCurVoice(voice);
 
 			if (voiceIndex==0) {
-				CAMusElement *musElemClef;
 				if (_allChannelsMediumPitch[ch] < 50) {
 					musElemClef = new CAClef(CAClef::Bass, staff, 0, 0 );
-				} else
+				} else if (_allChannelsMediumPitch[ch] < 65) {
 					musElemClef = new CAClef(CAClef::Treble, staff, 0, -8 );
-				if (_allChannelsMediumPitch[ch] < 65) {
 				} else {
 					musElemClef = new CAClef(CAClef::Treble, staff, 0, 0 );
 				}
-				//bool success = staff->voiceAt(0)->insert( 0 /* right */, musElemClef );
-				bool success = staff->voiceList()[0]->insert( 0, musElemClef );
-			
 				CADiatonicKey dk = CADiatonicKey(
 					pmidi_out.key, pmidi_out.minor ? CADiatonicKey::Minor : CADiatonicKey::Major );
-				CAMusElement *musElemKeySig = new CAKeySignature( dk, staff, 0 );
-				success = staff->voiceList()[0]->insert( 0 /* musElemClef */, musElemKeySig );
+				musElemKeySig = new CAKeySignature( dk, staff, 0 );
 
-				CAMusElement *musElemTimeSig = new CATimeSignature( pmidi_out.top, pmidi_out.bottom, staff, 0 );
-				success = staff->voiceList()[0]->insert( 0 /* musElemClef */, musElemTimeSig );
+				musElemTimeSig = new CATimeSignature( pmidi_out.top, pmidi_out.bottom, staff, 0 );
 			}
+			voice->append( musElemClef, false );
+			voice->append( musElemKeySig, false );
+			voice->append( musElemTimeSig, false );
 
-			setCurVoice(voice);
 			writeMidiChannelEventsToVoice_New( ch, voiceIndex, staff, voice );
 			staff->synchronizeVoices();
 		}
@@ -581,6 +579,7 @@ void CAMidiImport::writeMidiFileEventsToScore( CASheet *sheet ) {
 	}
 }
 
+
 void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
 
 	QList<CAMidiImportEvent*> *events = _allChannelsEvents[channel]->at(voiceIndex);
@@ -599,7 +598,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	*/
 
 	// for debugging if (channel != 1 || voiceIndex != 0) return;
-	std::cout<< "Channel "<<channel<<" VoiceIndex "<<voiceIndex<<" Pointer auf Voice: "<<voice<<std::endl;
+	std::cout<< "Channel "<<channel<<" VoiceIndex "<<voiceIndex<<" Pointer auf Voice: "<<voice<<" "<<events->size()<<" Elemente"<<std::endl;
 
 	for (int i=0; i<events->size(); i++ ) {
 
@@ -621,15 +620,17 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				rest = new CARest( CARest::Normal, lll[j], voice, 0, -1 );
 				voice->append( rest, false );
 				if ( tempo ) {
-					CAMark *_curMark = new CATempo(
-							CAPlayableLength::Quarter, /* CAPlayableLength(), */
-							tempo, /* attributes.value("bpm").toInt(), */
-							rest /* _curMusElt */
-					);
+					CAMark *_curMark = new CATempo( CAPlayableLength::Quarter, tempo, rest);
 					rest->addMark(_curMark);
 					tempo = 0;
 				}
-			  	musElementFactory()->placeAutoBar( rest );
+				// Barlines are shared among voices, see we append an existing one, otherwise a new one
+				QList<CAMusElement*> foundBarlines = staff->getEltByType( CAMusElement::Barline, rest->timeEnd() );
+				if (foundBarlines.size()) {
+					voice->append( foundBarlines[0], false );
+				} else {
+			  		musElementFactory()->placeAutoBar( rest );
+				}
 			}
 			time += length;
 		}
@@ -643,28 +644,23 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 		lll.clear();
 		lll << px.matchToBars( length, voice->lastTimeEnd(), b, ts );
 
-		//std::cout<< i<<":"<<length<<"   "<<lll.size()<<std::endl;
 			previousNote = 0;
 			for (int j=0; j<lll.size();j++) {
-				//std::cout<< i<<" "<<j<<"    "<<time<<" "<<length<<std::endl;
 				CADiatonicPitch diap = matchPitchToKey( voice, CAMidiDevice::midiPitchToDiatonicPitch(pitch) );
-				//note = new CANote( CAMidiDevice::midiPitchToDiatonicPitch(pitch), lll[j], voice, -1 );
 				note = new CANote( diap, lll[j], voice, -1 );
-				// TODO note = new CANote( nonenharmonicPitch, tiemLayout[j], voice, -1 );
 				voice->append( note, false );
 				if ( tempo ) {
-					CAMark *_curMark = new CATempo(
-							CAPlayableLength::Quarter, /* CAPlayableLength(), */
-							tempo, /* attributes.value("bpm").toInt(), */
-							note /* _curMusElt */
-					);
+					CAMark *_curMark = new CATempo( CAPlayableLength::Quarter, tempo, note);
 					note->addMark(_curMark);
-		            //CATempo *tempoEl = dynamic_cast<CATempo*>( v->selection().at(i)->musElement() );
-		            //CATempo *tempoEl = dynamic_cast<CATempo*>( note );
-                	//tempoEl->setBpm( tempo );
 					tempo = 0;
 				}
-			  	musElementFactory()->placeAutoBar( note );
+				// Barlines are shared among voices, see we append an existing one, otherwise a new one
+				QList<CAMusElement*> foundBarlines = staff->getEltByType( CAMusElement::Barline, note->timeEnd() );
+				if (foundBarlines.size()) {
+					voice->append( foundBarlines[0], false );
+				} else {
+			  		musElementFactory()->placeAutoBar( note );
+				}
 				if (previousNote) {
 					CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNote, note );
 					previousNote->setTieStart( slur );
@@ -673,51 +669,6 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				previousNote = note;
 			}
 			time += length;
-		}
-	}
-	return;
-	// old variant:
-	for (int i=0; i<events->size(); i++ ) {
-//std::cout<<"Schleife 0 "<<i<<std::endl;
-		pitch = events->at(i)->_pitch;
-		if (events->at(i)->_on && events->at(i)->_velocity > 0 && pitch > 0 && events->at(i)->_length > 0) {
-//std::cout<<"Schleife 1 "<<i<<std::endl;
-			length = events->at(i)->_time - time;
-			if ( length > 0 ) {
-
-				CABarline *b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline,
-					voice->lastMusElement()));
-				CATimeSignature *ts = static_cast<CATimeSignature*>(
-					voice->previousByType( CAMusElement::TimeSignature, voice->lastPlayableElt() ));
-
-				QList<CAPlayableLength> lll;
-				CAPlayableLength px;
-				//lll << px.matchToBars( musElementFactory()->playableLength(), voice->lastTimeEnd(), b, ts );
-
-				timeLayout.clear();
-				timeLayout << dummy.timeLengthToPlayableLengthList( length );
-				for (int j=0; j<timeLayout.size();j++) {
-					rest = new CARest( voiceIndex==0 ? CARest::Normal : CARest::Hidden, timeLayout[j], voice, 0, -1 );
-					voice->append( rest, false );
-				}
-				time = events->at(i)->_time;
-			}
-			length = events->at(i)->_length;
-			timeLayout.clear();
-			timeLayout << dummy.timeLengthToPlayableLengthList( length );
-			previousNote = 0;
-			for (int j=0; j<timeLayout.size();j++) {
-				note = new CANote( CAMidiDevice::midiPitchToDiatonicPitch(pitch), timeLayout[j], voice, -1 );
-				// TODO note = new CANote( nonenharmonicPitch, tiemLayout[j], voice, -1 );
-				voice->append( note, false );
-				if (previousNote) {
-					CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNote, note );
-					previousNote->setTieStart( slur );
-					note->setTieEnd( slur );
-				}
-				previousNote = note;
-			}
-			time += events->at(i)->_length;
 		}
 	}
 }
