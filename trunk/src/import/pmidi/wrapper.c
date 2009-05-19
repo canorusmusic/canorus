@@ -98,6 +98,8 @@ int pmidi_parse_midi_file( void )
 		case MD_TYPE_PROGRAM:
 			//printf("  at time: %6d   ", el->element_time );
 			//seq_midi_program(ctxp, &ev, el->device_channel, MD_PROGRAM(el)->program);
+			pmidi_out.chan   = el->device_channel;
+			pmidi_out.program   = MD_PROGRAM(el)->program;
 			return PMIDI_STATUS_PROGRAM;
 		case MD_TYPE_TEMPO:
 			//printf("  at time: %6d   ", el->element_time );
