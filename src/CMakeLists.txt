@@ -292,13 +292,13 @@ SET(Canorus_Gui_Ctl_Srcs       # Control instances for user interface or views
 	control/previewctl.cpp
 	control/printctl.cpp
 	control/helpctl.cpp
+	control/mainwinprogressctl.cpp
 )
 
 SET(Canorus_Ctl_Srcs            # Control instances for user interface or views and core
 	control/externprogram.cpp
 	control/typesetctl.cpp
 	control/resourcectl.cpp
-	control/mainwinprogressctl.cpp
 )
 
 SET(Canorus_Layout_Srcs	# Drawable instances of the data
