@@ -165,17 +165,21 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			pmidi_out.time = (pmidi_out.time *256)/pmidi_out.time_base;			// 24 is "Clocks" ?
 			pmidi_out.length = (pmidi_out.length *256)/pmidi_out.time_base;
 
+			// Deal with unfinished notes. This is a note that get's keyed when the old same pitch note not yet expired.
+			// Pmidi does a printf message with those, don't know yet how it handles then.
+			// We do shorten them to the current time. This helps in many cases.
 			for (voiceIndex=0;voiceIndex<_allChannelsEvents[pmidi_out.chan]->size();voiceIndex++) {
 				bool lookedBackEnough = false;
 				for (int i=_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size()-1;i>=0;i--) {
 					if (pmidi_out.note == _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_pitch) {
 						if (pmidi_out.time < _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime) {
-							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_length = pmidi_out.time -
-							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time;
-							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime = pmidi_out.time;
-							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_length = 8;
-							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime = 
-								_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time + 8;
+							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_length = pmidi_out.time -
+							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time;
+							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime = pmidi_out.time;
+							// this would make them very short
+							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_length = 8;
+							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime = 
+							//	_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time + 8;
 						}
 						lookedBackEnough = true;
 						break;
@@ -207,7 +211,12 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 				<<"  Time Base: "<<pmidi_out.time_base<<std::endl;
 			break;
 		case PMIDI_STATUS_CONTROL:
+			break;
 		case PMIDI_STATUS_PROGRAM:
+			std::cout<<" Program: "<<pmidi_out.program
+				<<"  Channel: "<<pmidi_out.chan
+				<<std::endl;
+			break;
 		case PMIDI_STATUS_PITCH:
 		case PMIDI_STATUS_PRESSURE:
 		case PMIDI_STATUS_KEYTOUCH:
@@ -533,6 +542,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			voice = new CAVoice( "", staff, CANote::StemNeutral, 1 );
 			staff->addVoice( voice );
 			setCurVoice(voice);
+			voice->setMidiChannel( ch );
 
 			if (voiceIndex==0) {
 				if (_allChannelsMediumPitch[ch] < 50) {
