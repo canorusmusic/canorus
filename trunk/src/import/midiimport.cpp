@@ -164,6 +164,25 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			// Scale music time properly
 			pmidi_out.time = (pmidi_out.time *256)/pmidi_out.time_base;			// 24 is "Clocks" ?
 			pmidi_out.length = (pmidi_out.length *256)/pmidi_out.time_base;
+
+			for (voiceIndex=0;voiceIndex<_allChannelsEvents[pmidi_out.chan]->size();voiceIndex++) {
+				bool lookedBackEnough = false;
+				for (int i=_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size()-1;i>=0;i--) {
+					if (pmidi_out.note == _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_pitch) {
+						if (pmidi_out.time < _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime) {
+							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_length = pmidi_out.time -
+							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time;
+							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime = pmidi_out.time;
+							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_length = 8;
+							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime = 
+								_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time + 8;
+						}
+						lookedBackEnough = true;
+						break;
+					}
+				}
+				if (lookedBackEnough) break;
+			}
 			
 			// Get note to the right voice
 			for (voiceIndex=0;voiceIndex<30;voiceIndex++) {		// we can't imagine that so many voices ar needed in any case so let's put a limit
