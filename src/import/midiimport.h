@@ -162,6 +162,7 @@ private:
 	QVector<int> _allChannelsMediumPitch;
 	QVector<CAClef*> _allChannelsClef;
 	QVector<CAKeySignature*> _allChannelsKeySignature;
+	QVector<CAMidiImportEvent*> _allChannelsTimeSignatures;
 };
 
 #endif /* MIDIIMPORT_H_ */

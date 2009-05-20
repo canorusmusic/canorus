@@ -9,6 +9,7 @@
 #include <QRegExp>
 
 #include <iostream> // DEBUG
+#include <iomanip>
 
 #include "interface/mididevice.h"
 #include "import/midiimport.h"
@@ -43,6 +44,8 @@ public:
 	int _lengthCorrection;
 	int _nextTime;
 	int _tempo;		// beats per minute
+	int _top;
+	int _bottom;
 };
 
 CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0, int tempo = 120 ) {
@@ -133,7 +136,6 @@ CASheet *CAMidiImport::importSheetImpl() {
 //#endif
 }
 
-static int zaehler = 0;
 
 CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 //#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
@@ -142,14 +144,28 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 	pmidi_open_midi_file( s.constData() );
 	int voiceIndex;
 	int res = PMIDI_STATUS_DUMMY;
+	const int quarterLength = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter );
+
 	for (;res != PMIDI_STATUS_END;) {
-		//if (zaehler++ >4170) break;
+
 		res = pmidi_parse_midi_file();
+
 		switch (res) {
 		case PMIDI_STATUS_END:
 		case PMIDI_STATUS_VERSION:
 		case PMIDI_STATUS_TEXT:
+			break;
 		case PMIDI_STATUS_TIMESIG:
+			std::cout<<" Timesig "<<pmidi_out.top
+					<<"/"<<pmidi_out.bottom
+					<<" at "<<pmidi_out.time
+					<<std::endl;
+			// Scale music time properly
+			pmidi_out.time = (pmidi_out.time *quarterLength)/pmidi_out.time_base;
+			_allChannelsTimeSignatures << new CAMidiImportEvent( true, 0, 0, 0, pmidi_out.time, 0, 0 );
+			_allChannelsTimeSignatures[_allChannelsTimeSignatures.size()-1]->_top = pmidi_out.top;
+			_allChannelsTimeSignatures[_allChannelsTimeSignatures.size()-1]->_bottom = pmidi_out.bottom;
+			break;
 		case PMIDI_STATUS_TEMPO:
 			std::cout<<" Tempo "<<pmidi_out.micro_tempo
 				<<"  at "<<pmidi_out.time
@@ -162,8 +178,8 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 				<<" vel "<<pmidi_out.vel
 				<<" len "<<pmidi_out.length<<std::endl;
 			// Scale music time properly
-			pmidi_out.time = (pmidi_out.time *256)/pmidi_out.time_base;			// 24 is "Clocks" ?
-			pmidi_out.length = (pmidi_out.length *256)/pmidi_out.time_base;
+			pmidi_out.time = (pmidi_out.time *quarterLength)/pmidi_out.time_base;
+			pmidi_out.length = (pmidi_out.length *quarterLength)/pmidi_out.time_base;
 
 			// Deal with unfinished notes. This is a note that get's keyed when the old same pitch note not yet expired.
 			// Pmidi does a printf message with those, don't know yet how it handles then.
@@ -479,6 +495,16 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 	CAStaff *staff;
 	CAVoice *voice;
 
+	for (int i=0;i<_allChannelsTimeSignatures.size();i++) {
+		std::cout<<"Time signature "
+			<<_allChannelsTimeSignatures[i]->_top
+			<<"/"
+			<<_allChannelsTimeSignatures[i]->_bottom
+			<<" at "
+			<<_allChannelsTimeSignatures[i]->_time
+			<<std::endl;
+	}
+
 	// Calculate the medium pitch for every staff for the key selection later
 	for (int chanIndex=0;chanIndex<16;chanIndex++) {
 		int n=0;
@@ -627,7 +653,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	*/
 
 	// for debugging if (channel != 1 || voiceIndex != 0) return;
-	std::cout<< "Channel "<<channel<<" VoiceIndex "<<voiceIndex<<" Pointer auf Voice: "<<voice<<" "<<events->size()<<" Elemente"<<std::endl;
+	std::cout<< "Channel "<<channel<<" VoiceIndex "<<voiceIndex<<"  "<<std::setw(5)<<events->size()<<" elements"<<std::endl;
 
 	for (int i=0; i<events->size(); i++ ) {
 
