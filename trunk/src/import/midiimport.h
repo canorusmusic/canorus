@@ -166,6 +166,7 @@ private:
 	QVector<QList<CAMusElement*>*> _allTimeSignatureMusElements;
 	int _actualTimeSignatureIndex;
 	CAMusElement* getOrCreateTimeSignature( int time, int channel, int voiceIndex, CAStaff *staff, CAVoice *voice );
+	int _numberOfAllVoices;
 };
 
 #endif /* MIDIIMPORT_H_ */
