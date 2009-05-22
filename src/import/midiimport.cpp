@@ -522,12 +522,16 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		}
 	}
 
-	// Quantization on hundredtwentyeighth of time starts and lengths by zeroing the msbits
+	// Quantization on hundredtwentyeighths of time starts and lengths by zeroing the msbits
+	const int quant = CAPlayableLength::playableLengthToTimeLength( /* CAPlayableLength::HundredTwentyEighth */ CAPlayableLength::SixtyFourth );
 	for (int ch=0;ch<16;ch++) {
 		for (voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
 			for (int i=0;i< _allChannelsEvents[ch]->at(voiceIndex)->size();i++) {
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time &= ~7; // ~(CAPlayableLength::HundredTwentyEighth-1);   ????
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length &= ~7; // ~(CAPlayableLength::HundredTwentyEighth-1);
+				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time += quant/2;
+				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time &= ~(quant-1);
+				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length += quant/2;
+				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length += quant/4;
+				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length &= ~(quant-1);
 			}
 		}
 	}
@@ -547,6 +551,20 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		}
 	}
 
+	// Midi files support support only timesignatures for the all staffs, so, if one staff has a change, all change the same.
+	// Result: For time signatures we keep only one list for all staffs.
+	// Canorus has separate time signature elements for each staff, but shared vor all voices. Each voice gets a reference copy of the
+	// the associated time signature.
+	// Add a default time signature if there is none supplied by the imported file.
+	//
+	// Still missing: A check of time signature at time zero or duplicates.
+	//
+	if ( !_allChannelsTimeSignatures.size() ) {
+		_allChannelsTimeSignatures << new CAMidiImportEvent( true, 0, 0, 0, 0, 0, 0 );
+		_allChannelsTimeSignatures[_allChannelsTimeSignatures.size()-1]->_top = 4;
+		_allChannelsTimeSignatures[_allChannelsTimeSignatures.size()-1]->_bottom = 4;
+	}
+
 	for (int ch=0;ch<16;ch++) {
 
 		if (!_allChannelsEvents[ch]->size() || !_allChannelsEvents[ch]->first()->size())	/* staff or first voice empty */
@@ -559,6 +577,8 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			// create a new staff with 5 lines
 			staff = new CAStaff( "", sheet, 5);
 			sheet->addContext(staff);
+			// prepare corresponding list for time signatures in the staff
+			_allTimeSignatureMusElements << new QList<CAMusElement*>;
 		}
 		CAMusElement *musElemClef;
 		CAMusElement *musElemKeySig;
@@ -635,6 +655,15 @@ void CAMidiImport::writeMidiFileEventsToScore( CASheet *sheet ) {
 }
 
 
+
+CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int channel, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
+	//QVector<QList<CAMusElement*>*> _allTimeSignatureMusElements;
+	//if (_allTimeSignatureMusElements[staff->sheet()
+	CAMusElement* x;
+	return x;
+}
+
+
 void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
 
 	QList<CAMidiImportEvent*> *events = _allChannelsEvents[channel]->at(voiceIndex);
@@ -646,11 +675,17 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	int time = 0;			// current time in the loop, only increasing, for tracking notes and rests
 	int length;
 	int pitch;
+	
+	_actualTimeSignatureIndex = 0;	// for each voice we run down the list of time signatures of the sheet, all staffs.
 
 	/* TODO:
 	About tempo import: Beats (Quarters) per Minute = 60000000 / pmidi_out.micro_tempo.
 	60000000 is usec per minute, micro_tempo is duration of a quarter in usec.
 	*/
+
+	if (time == _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_time) {
+		
+	}
 
 	// for debugging if (channel != 1 || voiceIndex != 0) return;
 	std::cout<< "Channel "<<channel<<" VoiceIndex "<<voiceIndex<<"  "<<std::setw(5)<<events->size()<<" elements"<<std::endl;

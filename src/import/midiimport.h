@@ -163,6 +163,9 @@ private:
 	QVector<CAClef*> _allChannelsClef;
 	QVector<CAKeySignature*> _allChannelsKeySignature;
 	QVector<CAMidiImportEvent*> _allChannelsTimeSignatures;
+	QVector<QList<CAMusElement*>*> _allTimeSignatureMusElements;
+	int _actualTimeSignatureIndex;
+	CAMusElement* getOrCreateTimeSignature( int time, int channel, int voiceIndex, CAStaff *staff, CAVoice *voice );
 };
 
 #endif /* MIDIIMPORT_H_ */
