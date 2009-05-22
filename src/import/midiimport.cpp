@@ -506,9 +506,9 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 	}
 
 	// Calculate the medium pitch for every staff for the key selection later
+	_numberOfAllVoices = 2;	// plus one for preprocessing, thats calling pmidi, and one for postprocessing
 	for (int chanIndex=0;chanIndex<16;chanIndex++) {
 		int n=0;
-		_allChannelsMediumPitch[chanIndex]=0;
 		for (voiceIndex=0;voiceIndex<_allChannelsEvents[chanIndex]->size();voiceIndex++) {
 			for (int i=0;i<_allChannelsEvents[chanIndex]->at(voiceIndex)->size();i++) {
 				n++;
@@ -519,18 +519,19 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			_allChannelsMediumPitch[chanIndex]=_allChannelsMediumPitch[chanIndex]/n;
 			std::cout<<"Channel "<<chanIndex<<" has "<<_allChannelsEvents[chanIndex]->size()<<" Voices, Medium-Pitch "
 				<<_allChannelsMediumPitch[chanIndex]<<std::endl;
+			_numberOfAllVoices += _allChannelsEvents[chanIndex]->size();
 		}
 	}
 
-	// Quantization on hundredtwentyeighths of time starts and lengths by zeroing the msbits
-	const int quant = CAPlayableLength::playableLengthToTimeLength( /* CAPlayableLength::HundredTwentyEighth */ CAPlayableLength::SixtyFourth );
+	// Quantization on hundredtwentyeighths of time starts and lengths by zeroing the msbits, quant being always a power of two
+	const int quant = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::HundredTwentyEighth /* CAPlayableLength::SixtyFourth */ );
 	for (int ch=0;ch<16;ch++) {
 		for (voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
 			for (int i=0;i< _allChannelsEvents[ch]->at(voiceIndex)->size();i++) {
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time += quant/2;
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time &= ~(quant-1);
+				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time += quant/2;	// rounding
+				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time &= ~(quant-1);	// quant is power of two
 				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length += quant/2;
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length += quant/4;
+				//_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length += quant/4;	// preference not to shrink, but make a little longer
 				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length &= ~(quant-1);
 			}
 		}
@@ -564,6 +565,9 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		_allChannelsTimeSignatures[_allChannelsTimeSignatures.size()-1]->_top = 4;
 		_allChannelsTimeSignatures[_allChannelsTimeSignatures.size()-1]->_bottom = 4;
 	}
+
+	int nImportedVoices=1;	// one because preprocessing, ie calling pmidi, is already done
+	setProgress(_numberOfAllVoices ? nImportedVoices*100/_numberOfAllVoices : 50 );;
 
 	for (int ch=0;ch<16;ch++) {
 
@@ -609,6 +613,8 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			voice->append( musElemTimeSig, false );
 
 			writeMidiChannelEventsToVoice_New( ch, voiceIndex, staff, voice );
+			setProgress(_numberOfAllVoices ? nImportedVoices*100/_numberOfAllVoices : 50 );;
+			++nImportedVoices;
 			staff->synchronizeVoices();
 		}
 
