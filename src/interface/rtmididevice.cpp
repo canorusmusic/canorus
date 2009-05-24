@@ -156,7 +156,7 @@ CARtMidiDevice::~CARtMidiDevice() {
 /*!
 	Sends the given \a message to the midi device. \a offset is ignored because CARtMidiDevice is a realtime device.
 */
-void CARtMidiDevice::send(QVector<unsigned char> message, int offset) {
+void CARtMidiDevice::send(QVector<unsigned char> message, int offset, int timeLength) {
 	std::vector<unsigned char> messageVector = message.toStdVector();
 	if (_outOpen)
 		_out->sendMessage(&messageVector);
