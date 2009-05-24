@@ -76,7 +76,10 @@ public:
 	virtual bool openInputPort(int port) = 0;	// return true on success, false otherwise
 	virtual void closeOutputPort() = 0;
 	virtual void closeInputPort() = 0;
-	virtual void send(QVector<unsigned char> message, int mSeconds=0) = 0; // message and absolute time of the message in miliseconds
+	virtual void send(QVector<unsigned char> message, int mSeconds, int timeLength) = 0; // message and absolute time of the message in miliseconds,
+	                                                                                     // timeLength is the music length in canorus, 256 is a quarter
+	                                                                                     // independent of the tempo.
+	virtual void sendMetaEvent(int timeLength, int event, int a, int b, int c ) = 0; // music time of the meta event which is meant only for midi file export
 
 #ifndef SWIG
 signals:

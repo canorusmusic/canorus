@@ -48,12 +48,12 @@ CAMidiExport::CAMidiExport( QTextStream *out )
 	trackTime = 0;
 }
 
-void CAMidiExport::send(QVector<unsigned char> message, int time)
+void CAMidiExport::send(QVector<unsigned char> message, int time, int timeLength)
 {
 	int offset = 0;
-	if ( time > trackTime ) {
-		offset = time-trackTime;
-		trackTime = time;
+	if ( timeLength > trackTime ) {
+		offset = timeLength-trackTime;
+		trackTime = timeLength;
 	}
 	if ( message.size() ) trackChunk.append( writeTime( offset ));
 	char q;
@@ -61,6 +61,46 @@ void CAMidiExport::send(QVector<unsigned char> message, int time)
 		q = message[i];
 		trackChunk.append(q);
 	}
+	for (int i=0; i< message.size(); i++ ) {
+		q = message[i];
+	}
+}
+
+void CAMidiExport::sendMetaEvent(int timeLength, int event, int a, int b, int c )
+{
+	QByteArray tc;
+	if (event == CAMidiDevice::Meta_Timesig ) {
+		// we don't do a time check on timeLength
+		int lbBeat=0;
+		for (; lbBeat<5; lbBeat++ ) {	// smallest is 128th
+			if (1<<lbBeat >= b) break;
+		}
+		tc.append(writeTime(0));
+		tc.append(CAMidiDevice::Midi_Ctl_Event);
+		tc.append(event);
+		tc.append(variableLengthValue( 4 ));
+		tc.append(a);
+		tc.append(lbBeat);
+		tc.append(18);
+		tc.append(8);
+		trackChunk.append(tc);
+	} else
+	if (event == CAMidiDevice::Meta_Tempo ) {
+		int usPerQuarter = 60000000/a;
+		tc.append(writeTime(0));
+		tc.append(CAMidiDevice::Midi_Ctl_Event);
+		tc.append(event);
+		tc.append(variableLengthValue( 3 ));
+		char q;
+		q = char(usPerQuarter>>16);
+		tc.append(q);
+		q = char(usPerQuarter>> 8);
+		tc.append(q);
+		q = char(usPerQuarter>> 0);
+		tc.append(q);
+		trackChunk.append(tc);
+	}
+
 }
 
 // FIXME: these magic numbers should go into the midi class.
@@ -305,7 +345,7 @@ void CAMidiExport::writeFile() {
 	// trackChunk is already filled with midi data,
 	// let's add chunk header, in reverse, ...
 	trackChunk.prepend(keySignature());
-	trackChunk.prepend(timeSignature());
+	//trackChunk.prepend(timeSignature());
 	trackChunk.prepend("MTrk....");
 	// ... and add the tail:
 	trackChunk.append(trackEnd());
