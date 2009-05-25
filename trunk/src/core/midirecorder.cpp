@@ -54,6 +54,7 @@ void CAMidiRecorder::startRecording( int startTime ) {
 		_timer->start();
 		// the default time signature is a 4 quarters measure
 		_midiExport->sendMetaEvent( 0, CAMidiDevice::Meta_Timesig, 4, 4, 0 );
+		_midiExport->sendMetaEvent( 0, CAMidiDevice::Meta_Tempo, 120, 0, 0 );
 	} else {
 		_paused = false;
 	}
