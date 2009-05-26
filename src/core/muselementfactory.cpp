@@ -473,12 +473,19 @@ bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> noteList ) {
 	Places a barline in front of the element, if needed.
 
 	The function finds the last barline and places a new one, if the last bar is full.
+	It searches for the time signature in effect for the last bar, not to get fooled by
+	time signature(s) already present at a time signature change.
  */
 void CAMusElementFactory::placeAutoBar( CAPlayable* elt ) {
 	if ( !elt )
 		return;
 	CABarline *b = static_cast<CABarline*>(elt->voice()->previousByType( CAMusElement::Barline, elt ));
-	CATimeSignature *t = static_cast<CATimeSignature*>(elt->voice()->previousByType( CAMusElement::TimeSignature, elt ));
+	CATimeSignature *t;
+	CAMusElement *prevTimeSig = elt;
+	do {
+		prevTimeSig = elt->voice()->previousByType( CAMusElement::TimeSignature, prevTimeSig );
+		t = static_cast<CATimeSignature*>(prevTimeSig);
+	} while ( t && prevTimeSig->timeStart() == elt->timeStart() );	// not the time signature for a bar in the future
 
 	if (t) {
 		int barLength = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(t->beat()) ) ) * t->beats();
