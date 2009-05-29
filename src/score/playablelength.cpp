@@ -254,6 +254,9 @@ QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int
 	int barLength = CAPlayableLength::playableLengthToTimeLength(
 				CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(ts->beat()) ) ) * ts->beats();
 	int barRest = ( lastBarline ? lastBarline->timeStart() : 0 ) + barLength - timeStart;
+	if (!lastBarline || lastBarline->timeStart() < ts->timeStart() || timeStart == ts->timeStart())
+		barRest = 0;
+
 	// no change when bar lengths are bogus
 	if (barRest < 0 || barRest > barLength) return unchanged;
 
@@ -294,6 +297,8 @@ QList<CAPlayableLength> CAPlayableLength::matchToBars( int timeLength, int timeS
 				CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(ts->beat()) ) ) * ts->beats();
 	int barRest = ( lastBarline ? lastBarline->timeStart() : 0 ) + barLength - timeStart;
 	// no change when bar lengths are bogus
+	if (!lastBarline || lastBarline->timeStart() < ts->timeStart() || timeStart == ts->timeStart())
+		barRest = 0;
 	if (barRest < 0 || barRest > barLength) return unchanged;
 
 	int noteLen = timeLength;
