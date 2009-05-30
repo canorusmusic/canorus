@@ -724,13 +724,13 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	CANote *note;
 	CARest *rest;
 	CANote *previousNote;	// for sluring
-	QList<CAPlayableLength> timeLayout;
-	CAPlayableLength dummy;
+	QList<CAPlayableLength> lenList;	// work list when splitting notes and rests at barlines
+	CATimeSignature *ts = 0;
+	CABarline *b = 0;
 	int time = 0;			// current time in the loop, only increasing, for tracking notes and rests
 	int length;
 	int pitch;
-	CATimeSignature *ts = 0;
-	CABarline *b = 0;
+	int tempo = 0;
 
 	_actualTimeSignatureIndex = -1;	// for each voice we run down the list of time signatures of the sheet, all staffs.
 
@@ -738,14 +738,12 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 
 	for (int i=0; i<events->size(); i++ ) {
 
-		// we place a tempo only for the first voice
+		// we place a tempo mark only for the first voice, and if we don't place we set tempo null
 		int tempo = voiceIndex == 0 ? events->at(i)->_tempo : 0;
 		
 		b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline,
 			voice->lastMusElement()));
 
-		QList<CAPlayableLength> lll;
-		CAPlayableLength px;
 
 		CAMusElement *tsElem = getOrCreateTimeSignature( time, channel, voiceIndex, staff, voice );
 		if (tsElem) {
@@ -777,13 +775,13 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			// Hier wird eine vergangene Taktlinie zugewiesen:  b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
 			b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
 
-			lll.clear();
-			lll << px.matchToBars( length, voice->lastTimeEnd(), b, ts );
+			lenList.clear();
+			lenList << CAPlayableLength::matchToBars( length, voice->lastTimeEnd(), b, ts );
 
-			for (int j=0; j<lll.size(); j++) {
-				rest = new CARest( CARest::Normal, lll[j], voice, 0, -1 );
+			for (int j=0; j<lenList.size(); j++) {
+				rest = new CARest( CARest::Normal, lenList[j], voice, 0, -1 );
 				voice->append( rest, false );
-				int len = CAPlayableLength::playableLengthToTimeLength( lll[j] );
+				int len = CAPlayableLength::playableLengthToTimeLength( lenList[j] );
 				//std::cout<< "    Rest Length "<<len<<" at "<<time<<std::endl;
 				time += len;
 				length -= len;
@@ -828,14 +826,14 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			fB.clear();
 			b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
 			
-			lll.clear();
-			lll << px.matchToBars( length, voice->lastTimeEnd(), b, ts );
+			lenList.clear();
+			lenList << CAPlayableLength::matchToBars( length, voice->lastTimeEnd(), b, ts );
 
-			for (int j=0; j<lll.size();j++) {
-				CADiatonicPitch diap = matchPitchToKey( voice, CAMidiDevice::midiPitchToDiatonicPitch(pitch) );
-				note = new CANote( diap, lll[j], voice, -1 );
+			for (int j=0; j<lenList.size();j++) {
+				CADiatonicPitch diaPitch = matchPitchToKey( voice, CAMidiDevice::midiPitchToDiatonicPitch(pitch) );
+				note = new CANote( diaPitch, lenList[j], voice, -1 );
 				voice->append( note, false );
-				int len = CAPlayableLength::playableLengthToTimeLength( lll[j] );
+				int len = CAPlayableLength::playableLengthToTimeLength( lenList[j] );
 				//std::cout<< "    Note Length "<<len<<" at "<<time<<std::endl;
 				time += len;
 				length -= len;
@@ -906,7 +904,6 @@ void CAMidiImport::writeMidiChannelEventsToVoice( int channel, CAStaff *staff, C
 			previousNote = 0;
 			for (int j=0; j<timeLayout.size();j++) {
 				note = new CANote( CAMidiDevice::midiPitchToDiatonicPitch(pitch), timeLayout[j], voice, -1 );
-						// TODO: note = new CANote( nonenharmonicPitch, lll[i], voice, -1 );
 				voice->append( note, false );
 				if (previousNote) {
 					CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNote, note );
