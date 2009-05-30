@@ -759,19 +759,12 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 		while (length > 0) {
 
 			// This definitively needs clean up!!!
-			QList<CAMusElement*> fB = voice->getPreviousByType( CAMusElement::Barline, time );
-			if (fB.size()) {
-				b = static_cast<CABarline*>(fB[fB.size()-1]);
-					//std::cout<< "                 fB Barline at "<<time<<"  ";
-					for (int i=0;i<fB.size();i++) {
-						//std::cout<< " "<<fB[i]->timeStart();
-					}
-					//std::cout<<std::endl;
-					
+			CAMusElement *fB = voice->getOnePreviousByType( CAMusElement::Barline, time );
+			if (fB) {
+				b = static_cast<CABarline*>(fB);
 			} else {
 				b = 0;
 			}
-			fB.clear();
 			// Hier wird eine vergangene Taktlinie zugewiesen:  b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
 			b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
 
@@ -797,10 +790,11 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 					std::cout<< "    for a rest new time sig at "<<time<<" in "<<ts->beat()<<"/"<<ts->beats()<<std::endl;
 				}
 				// Barlines are shared among voices, see we append an existing one, otherwise a new one
-				QList<CAMusElement*> foundBarlines = staff->getEltByType( CAMusElement::Barline, rest->timeEnd() );
-				if (foundBarlines.size()) {
-					voice->append( foundBarlines[0], false );
-					b = static_cast<CABarline*>(foundBarlines[0]);
+				//QList<CAMusElement*> foundBarlines = staff->getEltByType( CAMusElement::Barline, rest->timeEnd() );
+				CAMusElement *bl = staff->getOneEltByType( CAMusElement::Barline, rest->timeEnd() );
+				if (bl) {
+					voice->append( bl, false );
+					b = static_cast<CABarline*>(bl);
 				} else {
 			  		musElementFactory()->placeAutoBar( rest );
 				}
@@ -817,13 +811,12 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 		while ( length > 0 && pitch > 0 && events->at(i)->_velocity > 0 ) {
 
 			// this needs clean up, definitevely
-			QList<CAMusElement*> fB = voice->getPreviousByType( CAMusElement::Barline, time );
-			if (fB.size()) {
-				b = static_cast<CABarline*>(fB[fB.size()-1]);
+			CAMusElement *fB = voice->getOnePreviousByType( CAMusElement::Barline, time );
+			if (fB) {
+				b = static_cast<CABarline*>(fB);
 			} else {
 				b = 0;
 			}
-			fB.clear();
 			b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
 			
 			lenList.clear();
@@ -849,10 +842,10 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 					//std::cout<< "    for a note new time sig at "<<time<<" in "<<ts->beat()<<"/"<<ts->beats()<<std::endl;
 				}
 				// Barlines are shared among voices, see we append an existing one, otherwise a new one
-				QList<CAMusElement*> foundBarlines = staff->getEltByType( CAMusElement::Barline, note->timeEnd() );
-				if (foundBarlines.size()) {
-					voice->append( foundBarlines[0], false );
-					b = static_cast<CABarline*>(foundBarlines[0]);
+				CAMusElement * bl = staff->getOneEltByType( CAMusElement::Barline, note->timeEnd() );
+				if (bl) {
+					voice->append( bl, false );
+					b = static_cast<CABarline*>(bl);
 				} else {
 			  		musElementFactory()->placeAutoBar( note );
 				}

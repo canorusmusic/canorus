@@ -62,7 +62,9 @@ public:
 	CAPlayable *nextPlayable(int timeStart);
 	CAPlayable *previousPlayable(int timeStart);
 
+	CAMusElement *getOneEltByType(CAMusElement::CAMusElementType type, int startTime);
 	QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
+	CAMusElement *getOnePreviousByType(CAMusElement::CAMusElementType type, int startTime);
 	QList<CAMusElement*> getPreviousByType(CAMusElement::CAMusElementType type, int startTime);
 
 	inline int lastTimeEnd() { return (musElementList().size()?musElementList().back()->timeEnd():0); }

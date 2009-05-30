@@ -469,6 +469,25 @@ CANote* CAVoice::lastNote() {
 }
 
 /*!
+	Returns a music element which has the given \a startTime and \a type.
+	This is useful for querying for eg. If a barline exists at the certain
+	point in time.
+*/
+CAMusElement *CAVoice::getOneEltByType(CAMusElement::CAMusElementType type, int startTime) {
+
+	int i;
+	for (i=0; i < _musElementList.size() && _musElementList[i]->timeStart() < startTime; i++);	// seek to the start of the music elements with the given time
+
+	while (i<_musElementList.size() && _musElementList[i]->timeStart()==startTime) {	// create a list of music elements with the given time
+		if (_musElementList[i]->musElementType() == type)
+			return _musElementList[i];
+		i++;
+	}
+
+	return 0;
+}
+
+/*!
 	Returns a list of pointers to actual music elements which have the given \a
 	startTime and are of given \a type.
 	This is useful for querying for eg. If a new key signature exists at the certain
@@ -487,6 +506,26 @@ QList<CAMusElement*> CAVoice::getEltByType(CAMusElement::CAMusElementType type, 
 	}
 
 	return eltList;
+}
+
+/*!
+	Returns a music elements which is at or left (not past)
+	the given \a startTime and of given \a type.
+	This is useful for querying for eg. which is the barline before a certain
+	point in time.
+
+*/
+CAMusElement *CAVoice::getOnePreviousByType(CAMusElement::CAMusElementType type, int startTime) {
+
+	int i;
+	for (i= _musElementList.size()-1;
+			i >= 0 && _musElementList[i]->timeStart() > startTime; i--);	// seek to the most right of the music elements with the given time
+	while (i >=0 && _musElementList[i]->timeStart() <= startTime) {	// create a list of music elements not past the given time
+		if (_musElementList[i]->musElementType() == type)
+			return _musElementList[i];
+		i--;
+	}
+	return 0;
 }
 
 /*!

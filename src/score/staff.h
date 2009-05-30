@@ -45,6 +45,7 @@ public:
 
 	int lastTimeEnd();
 	QList<CAMusElement*> getEltByType( CAMusElement::CAMusElementType type, int startTime );
+	CAMusElement *getOneEltByType( CAMusElement::CAMusElementType type, int startTime );
 
 	QList<CAPlayable*> getChord( int time );
 	CATempo           *getTempo( int time );
