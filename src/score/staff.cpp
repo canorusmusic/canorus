@@ -270,8 +270,23 @@ QList<CAMusElement*> CAStaff::getEltByType(CAMusElement::CAMusElementType type, 
 		curList = _voiceList[i]->getEltByType(type, startTime);
 		eltList += curList;
 	}
-
 	return eltList;
+}
+
+/*!
+	Returns one music element which has the given \a startTime and \a type.
+	This searches through all the voices of the staff.
+
+	\sa CASheet::getChord()
+*/
+CAMusElement *CAStaff::getOneEltByType(CAMusElement::CAMusElementType type, int startTime) {
+
+	for (int i=0; i<_voiceList.size(); i++) {
+		CAMusElement *elt;
+		elt = _voiceList[i]->getOneEltByType(type, startTime);
+		if (elt) return elt;
+	}
+	return 0;
 }
 
 /*!
