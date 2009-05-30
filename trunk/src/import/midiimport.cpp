@@ -7,6 +7,7 @@
 
 #include <QTextStream>
 #include <QRegExp>
+#include <QFileInfo>
 
 #include <iostream> // DEBUG
 #include <iomanip>
@@ -110,7 +111,6 @@ void CAMidiImport::initMidiImport() {
 	_curLine = _curChar = 0;
 	_curSlur = 0; _curPhrasingSlur = 0;
 	_document = 0;
-	_microSecondsPerMidiQuarternote = 0;
 }
 
 void CAMidiImport::addError(QString description, int curLine, int curChar) {
@@ -130,12 +130,11 @@ CADocument *CAMidiImport::importDocumentImpl() {
 
 
 CASheet *CAMidiImport::importSheetImpl() {
+	QFileInfo fi(fileName());
+	// Show filename as sheet name
+	//CASheet *sheet = new CASheet(fi.baseName(), _document );	// after next release to be activated
 	CASheet *sheet = new CASheet(tr("Midi imported sheet"), _document );
-//#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
 	return importSheetImplPmidiParser(sheet);
-//#else
-	return importSheetImplOwnParser(sheet);
-//#endif
 }
 
 
@@ -271,227 +270,6 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 	}
 //#endif
 	writeMidiFileEventsToScore_New( sheet );
-	return sheet;
-}
-
-CASheet *CAMidiImport::importSheetImplOwnParser(CASheet *sheet) {
-
-	QByteArray s;
-	s.append(fileName());
-
-
-	QString alles;
-	stream()->setCodec("Latin-1");	// Binary files like midi files need all codecs to be switched off. This does it!?!?
-	alles = stream()->readAll();
-	std::cout<<"              FIXME: did a sheet export. In-File ist leer: "<<alles.size()<<std::endl;
-	QByteArray peek;
-	peek.append( alles );
-	int z = 0;
-	QByteArray head;
-	int length;
-	int midiFormatVersion;
-	int midiTimeDivision;
-	int numberOfTracks;
-	int deltaTime;
-	int sharps;
-	int minor;
-	int pitch;
-	int velocity;
-	int control;
-	int controlValue;
-	int program;
-	int midiChannel;
-	int combinedEvent;
-	int event;
-	int metaEvent;
-	_dataIndex=0;
-	_nextTrackIndex=0;
-	int time = 0;
-	_parseError = false;
-
-	while (_dataIndex<peek.size() && !_parseError) {
-
-		head.clear();
-		head = getHead( &peek );
-		std::cout<<"Head read"<<std::endl;
-
-		if (head=="MThd") {
-
-			length = getWord32( &peek );
-			midiFormatVersion = getWord16( &peek );
-			numberOfTracks = getWord16( &peek );
-			midiTimeDivision = getWord16( &peek );
-			std::cout<<"MThd.... Länge: "<<length<<" Format/Version: "<<midiFormatVersion
-				<<" no. of Tracks: "<<numberOfTracks<<" MidiTimeDiv: "<<midiTimeDivision<<std::endl;
-
-		} else if (head=="MTrk") {
-
-			time = 0;	// FIXME: until we know better we restart time with every Track
-
-			length = getWord32( &peek );
-			std::cout<<" MTrk.... Länge: "<<length<<std::endl;
-
-			if (length<0) {
-				std::cout<<"  negative!"<<std::endl;
-				int a = _dataIndex-10<0 ? 0 : _dataIndex-10;
-				int b = _dataIndex+10>peek.size() ? peek.size() : _dataIndex+10;
-				printQByteArray(peek.mid(a,b-a));
-				printQByteArray(peek.mid(_dataIndex-4,4));
-				return 0;
-			}
-
-			_nextTrackIndex = _dataIndex + length;
-
-			while (_dataIndex < _nextTrackIndex && !_parseError) {
-				deltaTime = getVariableLength( &peek );
-				time += deltaTime;
-				event = getByte( &peek );
-
-				switch (event) {
-
-				case CAMidiDevice::Midi_Ctl_Event:
-
-					metaEvent = getByte( &peek );
-					std::cout<<"  MetaEvent "<<metaEvent<<std::endl;
-
-					switch (metaEvent) {
-					case CAMidiDevice::Meta_Text:
-						length = getVariableLength( &peek );
-						std::cout<<// " len "<<length<<" vorher "<<_dataIndex<<
-							"     "<<getString( &peek, length ).constData()<<::std::endl;
-						//	" nachher "<<_dataIndex<<std::endl;
-						break;
-					case CAMidiDevice::Meta_Tempo:	// FIXME
-						length = getByte( &peek );
-						if (length != 3) _parseError = true;
-						_microSecondsPerMidiQuarternote = getWord24( &peek );
-						std::cout<<"    Tempo: "<<_microSecondsPerMidiQuarternote<<" usec per midi quarter"<<std::endl;
-						break;
-
-					case CAMidiDevice::Meta_InstrName:	// FIXME
-					case CAMidiDevice::Meta_SeqTrkName: // 3
-						length = getVariableLength( &peek );
-						getString( &peek, length );
-						printf("    metaEv: %x   ", metaEvent);
-						for (int jj=0; jj<length; jj++ ) {
-							printf(" %2x", peek.at(_dataIndex-length+jj) & 0x0ff);
-						}
-						printf("\n");
-						break;
-					case CAMidiDevice::Meta_SMPTEOffs:	// FIXME
-						length = getVariableLength( &peek );
-						if (length != 5) {
-							std::cout<<"  wrong SMPTE Offset length"<<std::endl;
-							_parseError = true;
-							break;
-						}
-						printf("    metaEv: %x   SMPTE Offset:", metaEvent );
-						for (int i=0;i<next;i++) {
-							_smtpOffset[i] = getByte( &peek );
-						printf(" %d", _smtpOffset[i]);
-						}
-						printf("\n");
-						break;
-					case CAMidiDevice::Meta_Keysig:
-						length = getVariableLength( &peek );
-						sharps = getByte( &peek );
-						minor = getByte( &peek );	// four Bytes to be processed, todo
-						std::cout<<"     Keysig "<<sharps<<" "<<minor<<std::endl;
-						break;
-					case CAMidiDevice::Meta_Timesig:
-						length = getVariableLength( &peek );
-						length = getWord32( &peek );	// four Bytes to be processed, todo
-						std::cout<<"     Timesig "<<length<<" "<<minor<<std::endl;
-						break;
-					case CAMidiDevice::Meta_Track_End:
-						getByte( &peek );
-						break;
-
-					default:	// here we process events that have command + midi channel combined in one byte
-						std::cout<<"  unrecognized meta event "<<metaEvent<<" after event "<<event<<std::endl;
-						return 0;
-					}
-					break;
-				default:
-					// printQByteArray( peek.mid(_dataIndex,_dataIndex+16<peek.size()?16:0));
-
-					midiChannel = event & 0x0f;
-					combinedEvent = event & 0x0f0;
-
-					switch (combinedEvent) {
-					case CAMidiDevice::Midi_Note_On:
-						pitch = getByte( &peek );
-						velocity = getByte( &peek );
-						//std::cout<<"     note on "<<hex<<pitch<<" "<<hex<<velocity<<" at "<<time<<" ms"<<std::endl;
-						printf("     note on %x %x at %d ms    kanal %d\n", pitch, velocity, time, midiChannel );
-						noteOn( true, midiChannel, pitch, velocity, time );
-						break;
-					case CAMidiDevice::Midi_Note_Off:
-						pitch = getByte( &peek );
-						velocity = getByte( &peek );
-						std::cout<<"     note off "<<pitch<<" "<<velocity<<" ch "<<midiChannel<<std::endl;
-						noteOn( false, midiChannel, pitch, velocity, time );
-						break;
-					case CAMidiDevice::Midi_Prog_Change:
-						program = getByte( &peek );
-						std::cout<<"     prog change "<<program<<std::endl;
-						break;
-					case CAMidiDevice::Midi_Control_Chg:
-						control = getByte( &peek );
-						controlValue = getByte( &peek );
-						std::cout<<"     control change "<<control<<" val "<<controlValue<<std::endl;
-						break;
-					case CAMidiDevice::Midi_Ctl_Sustain:	// where in midi spec?
-						control = getByte( &peek );
-						controlValue = getByte( &peek );
-						std::cout<<"     control change "<<control<<" val "<<controlValue<<std::endl;
-						_parseError = true;
-						break;
-
-					//case CAMidiDevice::MIDI_CTL_REVERB:  ;
-					//case CAMidiDevice::MIDI_CTL_CHORUS:  ;
-					//case CAMidiDevice::MIDI_CTL_PAN:  ;
-					//case CAMidiDevice::MIDI_CTL_VOLUME:  ;
-					//case CAMidiDevice::MIDI_CTL_SUSTAIN: ;
-
-					default:	int a = _dataIndex-20 >=0 ? _dataIndex-20: 0;
-								printQByteArray( peek.mid(a,_dataIndex-a+1));
-								int b = _dataIndex+20 < peek.size() ? 20 : peek.size()-_dataIndex;
-								printQByteArray( peek.mid(_dataIndex, b ));
-								//std::cout<<"Hier, was ist zu tun?  Event: "<<hex<<int(event)<<" im File char "<<_dataIndex<<std::endl;
-								printf("Hier, was ist zu tun?  Event: %x im File char %d\n", event, _dataIndex);
-								_parseError = true;
-					}
-				}
-			} // end of track elements
-		} else { // end of track
-			std::cout<<"Track Header not recognized"<<std::endl;
-			int a = _dataIndex-10<0 ? 0 : _dataIndex-10;
-			int b = _dataIndex+10>peek.size() ? peek.size() : _dataIndex+10;
-			printQByteArray(peek.mid(a,b-a));
-			return 0;
-		}
-	} // end of file
-
-	combineMidiFileEvents();
-	quantizeMidiFileEvents();
-	exportNonChordsToOtherVoices();
-
-	writeMidiFileEventsToScore( sheet );
-	std::cout<<"------------------------------"<<std::endl;
-/*
-	for (int i=0;i<_events.size(); i++) {
-		std::cout<<"......   "<<_events[i]->_on
-						<<"  "<<_events[i]->_channel
-						<<"  "<<_events[i]->_pitch
-						<<"  "<<_events[i]->_velocity
-						<<"  "<<_events[i]->_time
-						<<" l "<<_events[i]->_length
-		<<std::endl;
-	}
-*/
-
-
 	return sheet;
 }
 
@@ -640,43 +418,6 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 	}
 }
 
-
-void CAMidiImport::writeMidiFileEventsToScore( CASheet *sheet ) {
-
-//	QList<CAPlayableLength> timeLengthToPlayableLengthList( int timeLength, bool longNotesFirst = true, int dotsLimit = 4 );
-//	QList<CAPlayableLength> matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit = 4 );
-
-
-	QString sheetName("imported");
-	//CASheet *sheet = new CASheet( sheetName, _document );
-	int numberOfStaffs = sheet->staffList().size();
-	int staffIndex = 0;
-	CAStaff *staff;
-	CAVoice *voice;
-
-	for (int ch=0;ch<16;ch++) {
-
-		if (!_allChannelsEvents[ch]->size())
-			continue;
-
-		if (staffIndex < numberOfStaffs) {
-			staff = sheet->staffList().at(staffIndex);
-			voice = staff->voiceList().first();
-		} else {
-			// create a new staff with 5 lines
-			staff = new CAStaff( "", sheet, 5);
-			sheet->addContext(staff);
-			// voiceName = QObject::tr("Voice%1").arg( voiceNumber );
-			voice = new CAVoice( "", staff, CANote::StemNeutral, 1 );
-			staff->addVoice( voice );
-		}
-
-		setCurVoice(voice);
-		writeMidiChannelEventsToVoice( ch, staff, voice );
-
-		staffIndex++;
-	}
-}
 
 /*!
 	Docu neeeded, definitively! rud
@@ -878,187 +619,10 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 }
 
 
-void CAMidiImport::writeMidiChannelEventsToVoice( int channel, CAStaff *staff, CAVoice *voice ) {
-
-	QList<CAMidiImportEvent*> *events = _allChannelsEvents[channel]->first();
-	CANote *note;
-	CARest *rest;
-	CANote *previousNote;	// for sluring
-	QList<CAPlayableLength> timeLayout;
-	CAPlayableLength dummy;
-	int time = 0;			// current time in the loop, only increasing, for tracking notes and rests
-	int length;
-	int pitch;
-	for (int i=0; i<events->size() && i<1000; i++ ) {	// FIXME: limit is for debugging only
-//std::cout<<"Schleife 0 "<<i<<std::endl;
-		pitch = events->at(i)->_pitch;
-		if (events->at(i)->_on && events->at(i)->_velocity > 0 && pitch > 0 && events->at(i)->_length > 0) {
-//std::cout<<"Schleife 1 "<<i<<std::endl;
-			length = events->at(i)->_time - time;
-			if ( length > 0 ) {
-				timeLayout.clear();
-				timeLayout << dummy.timeLengthToPlayableLengthList( length );
-				for (int j=0; j<timeLayout.size();j++) {
-					rest = new CARest( CARest::Normal, timeLayout[j], voice, 0, -1 );
-					voice->append( rest, false );
-				}
-				time = events->at(i)->_time;
-			}
-			length = events->at(i)->_length;
-			timeLayout.clear();
-			timeLayout << dummy.timeLengthToPlayableLengthList( length );
-			previousNote = 0;
-			for (int j=0; j<timeLayout.size();j++) {
-				note = new CANote( CAMidiDevice::midiPitchToDiatonicPitch(pitch), timeLayout[j], voice, -1 );
-				voice->append( note, false );
-				if (previousNote) {
-					CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNote, note );
-					previousNote->setTieStart( slur );
-					note->setTieEnd( slur );
-				}
-				previousNote = note;
-			}
-			time += events->at(i)->_length;
-		}
-	}
-}
-
-/*!
-	Combines the midi on/off events and reduces them to a note with a length.
-	Note off events are, which can also be a note on with velocity zero, are thus eaten up and
-	are invalidated by pitch -1.
-
-	todo: rounding fine grained note lenghts, dispersing small rests
-
-	todo: combine concurrent notes to chords or export concurrent notes to a next voice.
-*/
-void CAMidiImport::combineMidiFileEvents() {
-	for (int ch=0;ch<_allChannelsEvents.size();ch++) {
-
-		QList<CAMidiImportEvent*> *events = _allChannelsEvents[ch]->first();
-
-		for (int i=0;i<events->size();i++) {
-			if (events->at(i)->_on && events->at(i)->_velocity > 0 && events->at(i)->_pitch > 0) {
-				int j = i+1;
-				int pitch = events->at(i)->_pitch;
-				while ( j < events->size() ) {
-
-					if (events->at(j)->_pitch == pitch &&
-							(!events->at(j)->_on || events->at(j)->_velocity == 0)) {
-						events->at(i)->_length = events->at(j)->_time - events->at(i)->_time;
-						events->at(j)->_pitch = -1;
-						events->at(j)->_on = false;
-						break;
-					}
-					j++;
-				}
-			}
-		}
-		// no we cleanup unpaired note on's
-		for (int i=0;i<events->size();i++) {
-			if (events->at(i)->_on && events->at(i)->_length == 0 ) {
-						events->at(i)->_on = false;
-						events->at(i)->_pitch = -1;
-			}
-		}
-	}
-}
-
-/*!
-	Quantisize the notes and rests, don't affect the duration of the music.
-*/
-void CAMidiImport::quantizeMidiFileEvents() {
-
-	const int roundQuant = 32;
-
-	for (int ch=0;ch<_allChannelsEvents.size();ch++) {
-
-		QList<CAMidiImportEvent*> *events = _allChannelsEvents[ch]->first();
-
-		int nLostNotes = 0;
-
-		int prevTimeCorrection = 0;		// not yet in use
-		int prevLengthCorrection = 0;
-
-		for (int i=0;i<events->size();i++) {
-
-			events->at(i)->_timeCorrection = events->at(i)->_lengthCorrection = 0;
-
-			if (events->at(i)->_on && events->at(i)->_pitch > 0) {
-
-				int time = events->at(i)->_time;
-				int timeRounded = (time + roundQuant/2) / roundQuant;
-				timeRounded *= roundQuant;
-				events->at(i)->_time = timeRounded;
-				events->at(i)->_timeCorrection = timeRounded - time;
-
-				int length = events->at(i)->_length;
-				int lenRounded = (length + roundQuant/2) / roundQuant;
-				lenRounded *= roundQuant;
-				events->at(i)->_length = lenRounded;
-				events->at(i)->_lengthCorrection = lenRounded - length;
-				if (!lenRounded) {
-					events->at(i)->_on = false;
-					events->at(i)->_pitch = -1;
-					nLostNotes++;
-				}
-			}
-			if (nLostNotes) {
-				std::cout<<"Due to rounding "<<nLostNotes<<" Notes got lost in Midi Channel "<<i<<"."<<std::endl;
-			}
-		}
-	}
-}
-
-/*!
-	If not a chord move overlapping notes to other voices.
-
-	The algorithm is this: For every note on event we look if there are follow up events that overlap.
-	If there is a overlap the second note will be moved to a higher (index of the) voice,
-	so high, where it can stay without overlap.
-*/
-void CAMidiImport::exportNonChordsToOtherVoices() {
-
-	for (int ch=0;ch<_allChannelsEvents.size();ch++) {
-		QList<CAMidiImportEvent*> *events = _allChannelsEvents[ch]->first();
-		int erasedNote = 0;
-		for (int i=0;i<events->size() -1 ;i++) {
-			if (events->at(i)->_on) {
-				int time = events->at(i)->_time;
-				int timeEnd = time + events->at(i)->_length;
-				int next = events->at(i+1)->_time;
-std::cout<<"ch "<<ch<<" at "<<i<<" start "<<time<<" Ende "<<timeEnd<<" nächste "<<next<<std::endl;
-				int j = i;
-				while (true) {
-					j++;
-					if (j >= events->size())	// don't run out of the list
-						break;
-					if (!events->at(j)->_on)	// we look only on note on events
-						continue;
-					if (events->at(j)->_time >= timeEnd)
-						break;
-					// overlapping events are deleted
-					events->at(j)->_on = false;		// todo: this note should be moved to another voice
-					events->at(j)->_pitch = -1;
-std::cout<<"xx "<<ch<<" at "<<j<<" start "<<events->at(j)->_time<<std::endl;
-					erasedNote++;
-				}
-			}
-		}
-		std::cout<<"Erased "<<erasedNote<<" overlapping Notes on Channel "<<ch<<std::endl;
-	}
-
-}
-
 void CAMidiImport::closeFile() {
 	file()->close();
 }
 
-void CAMidiImport::noteOn( bool on, int channel, int pitch, int velocity, int time) {
-
-	// for now we put everything in the first voice of the channel
-	_allChannelsEvents[channel]->first()->append( new CAMidiImportEvent( on, channel, pitch, velocity, time ));
-}
 
 /*!
 	Returns the first element in input stream ended with one of the delimiters and shorten input stream for the element.
@@ -1365,93 +929,6 @@ const QString CAMidiImport::readableStatus() {
 	}
 }
 
-
-void CAMidiImport::printQByteArray( QByteArray x )
-{
-    for (int i=0; i<x.size(); i++ ) {
-        printf( " %02x", 0x0ff & x.at(i));
-    }
-    printf( "\n");
-}
-
-
-QByteArray CAMidiImport::getHead(QByteArray *x) {
-	QByteArray y;
-	if (_dataIndex<x->size()-3) {
-		y = x->mid(_dataIndex,4);
-		_dataIndex += 4;
-	} else {
-		_parseError = true;
-	}
-	return y;
-}
-
-int CAMidiImport::getWord32(QByteArray *x) {
-	unsigned int y;
-	y = getWord16( x )<<16;
-	y |= getWord16( x );
-	return y;
-}
-
-int CAMidiImport::getWord24(QByteArray *x) {
-
-	int y = getWord16( x )<<8;
-	y |= getByte( x );
-	return y;
-}
-
-int CAMidiImport::getWord16(QByteArray *x) {
-
-	int y = 0;
-	if (_dataIndex<x->size()-1) {
-		y = ((x->at(_dataIndex++)) & 0x0ff)<<8;
-		y |= (x->at(_dataIndex++)) & 0x0ff;
-	} else {
-		_parseError = true;
-	}
-	return y;
-}
-
-int CAMidiImport::getByte(QByteArray *x) {
-
-	int b = 0;
-	if (_dataIndex<x->size()) {
-		b = x->at(_dataIndex++);
-		b &= 0x0ff;
-	} else {
-		_parseError = true;
-	}
-	return b;
-}
-
-int CAMidiImport::getVariableLength(QByteArray *x) {
-
-	int byte;
-	unsigned int y = 0;
-
-	int startIndex = _dataIndex;
-	bool parsable = false;
-	bool next = _dataIndex < x->size();
-	_parseError |= not next;	// not shure if this covers all illegal lengths.
-	while (_dataIndex < x->size() && next ) {
-		byte = x->at(_dataIndex++) & 0x0ff;
-		y = (y << 7) | (byte & 0x7f);
-		next = (byte & 0x80) ? true : false;
-		parsable = false;
-	}
-	return y;
-}
-
-QByteArray CAMidiImport::getString(QByteArray *x, int len) {
-	QByteArray y;
-	if (_dataIndex+len < x->size()){
-		y = x->mid(_dataIndex,len);
-		_dataIndex += len;
-	} else {
-		_parseError = true;
-	}
-	return y;
-}
 
 
 /*!

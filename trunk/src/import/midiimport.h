@@ -49,7 +49,6 @@ public:
 
 private:
 	// Alternatives during developement
-	CASheet *importSheetImplOwnParser(CASheet *sheet);
 	CASheet *importSheetImplPmidiParser(CASheet *sheet);
 
 	void initMidiImport();
@@ -130,33 +129,10 @@ private:
 	//////////////////////
 	// Helper functions //
 	//////////////////////
-	int getVariableLength(QByteArray *x );
-	QByteArray getHead(QByteArray *x);
-	int getByte(QByteArray *x);
-	int getWord16(QByteArray *x);
-	int getWord24(QByteArray *x);
-	int getWord32(QByteArray *x);
-	QByteArray getString(QByteArray *x, int len);
-	void printQByteArray( QByteArray x );	// debugging only
-	int _dataIndex;
-	int _nextTrackIndex;
-	bool _parseError;
-	void noteOn( bool on, int channel, int pitch, int velocity, int time );
-
-	enum smtpOffsComponents {
-		hr, min, se, fr, ff, next
-	};
-	int _smtpOffset[next];
-	int _microSecondsPerMidiQuarternote;
 
 	CADocument *_document;
 	QVector<QList<QList<CAMidiImportEvent*>*>*> _allChannelsEvents;
 	QList<CAMidiImportEvent*> _eventsX;
-	void combineMidiFileEvents();
-	void quantizeMidiFileEvents();
-	void exportNonChordsToOtherVoices();
-	void writeMidiFileEventsToScore( CASheet *sheet );
-	void writeMidiChannelEventsToVoice( int channel, CAStaff *staff, CAVoice *voice );
 	void writeMidiFileEventsToScore_New( CASheet *sheet );
 	void writeMidiChannelEventsToVoice_New( int channel, int voiceIndex, CAStaff *staff, CAVoice *voice );
 	QVector<int> _allChannelsMediumPitch;
