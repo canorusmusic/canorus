@@ -32,7 +32,7 @@
 
 class CAMidiImportEvent {
 public:
-	CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length, int tempo );
+	CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length, int tempo, int program );
 	~CAMidiImportEvent();
 	bool _on;
 	int _channel;
@@ -46,9 +46,10 @@ public:
 	int _tempo;		// beats per minute
 	int _top;
 	int _bottom;
+	int _program;
 };
 
-CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0, int tempo = 120 ) {
+CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0, int tempo = 120, int program = 0 ) {
 	_on = on;
 	_channel = channel;
 	_pitch = pitch;
@@ -59,6 +60,7 @@ CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int veloc
 	_lengthCorrection = 0;
 	_nextTime = time+length;
 	_tempo = tempo;
+	_program = program;
 }
 
 CAMidiImportEvent::~CAMidiImportEvent() {
@@ -145,6 +147,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 	int voiceIndex;
 	int res = PMIDI_STATUS_DUMMY;
 	const int quarterLength = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter );
+	int programCache[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	for (;res != PMIDI_STATUS_END;) {
 
@@ -224,6 +227,9 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 					_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->append( new CAMidiImportEvent( true,
 							pmidi_out.chan, pmidi_out.note, pmidi_out.vel, pmidi_out.time, pmidi_out.length,
 							60000000/pmidi_out.micro_tempo ));
+					// attach the right program to the event
+					_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(
+						_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size()-1 )->_program = programCache[pmidi_out.chan];
 					break;
 				}
 			}
@@ -240,6 +246,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			std::cout<<" Program: "<<pmidi_out.program
 				<<"  Channel: "<<pmidi_out.chan
 				<<std::endl;
+			programCache[pmidi_out.chan] = pmidi_out.program;
 			break;
 		case PMIDI_STATUS_PITCH:
 		case PMIDI_STATUS_PRESSURE:
@@ -716,6 +723,9 @@ CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int channel, int
 
 /*!
 	Docu neeeded
+
+	Apropo program support at midi import: Now the last effective program assignement per voice will make it through.
+	A separation in voices regarding the midi program is note yet implemented.
 */
 
 void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
@@ -730,6 +740,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	int time = 0;			// current time in the loop, only increasing, for tracking notes and rests
 	int length;
 	int pitch;
+	int program;
 	int tempo = 0;
 
 	_actualTimeSignatureIndex = -1;	// for each voice we run down the list of time signatures of the sheet, all staffs.
@@ -807,6 +818,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 		// notes to be added
 		length = events->at(i)->_length;
 		pitch = events->at(i)->_pitch;
+		program = events->at(i)->_program;
 		previousNote = 0;
 		while ( length > 0 && pitch > 0 && events->at(i)->_velocity > 0 ) {
 
@@ -826,6 +838,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				CADiatonicPitch diaPitch = matchPitchToKey( voice, CAMidiDevice::midiPitchToDiatonicPitch(pitch) );
 				note = new CANote( diaPitch, lenList[j], voice, -1 );
 				voice->append( note, false );
+				voice->setMidiProgram( program );
 				int len = CAPlayableLength::playableLengthToTimeLength( lenList[j] );
 				//std::cout<< "    Note Length "<<len<<" at "<<time<<std::endl;
 				time += len;
