@@ -237,6 +237,7 @@ bool CAPlayableLength::operator!=( CAPlayableLength l ) {
 
 /*!
 	Split a playable to match a given bar border and bar length.
+	This function is used at music input with a midi keyboard.
 */
 QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit ) {
 
@@ -278,33 +279,46 @@ QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int
 }
 
 /*!
-	Split a playable to match a given bar border and bar length.
+	Split a playable length to match a virtual or real next barline by recognising a given previous barline
+	and bar length by a given time signature.
+	In lack of barline or timesignature asumptions are made, maybe resulting in returning an empty split list.
+
+	This function is used in midi import, could be used at mouse note input too, probably. See also \a matchToBars
+	with CAPlayableLength as parameter, which is used at midi keyboard input. This functions probably could be
+	merged.
 */
 QList<CAPlayableLength> CAPlayableLength::matchToBars( int timeLength, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit ) {
 
-	// If something is strange or undoable we prepare for returning an empty list!
-	QList<CAPlayableLength> unchanged; unchanged.clear();
-	if (!ts) return unchanged;
-
-	int beat = ts->beat();
-	switch (beat) {
-	case 2:
-	case 4:
-	case 8:		break;
-	default:	return unchanged;
-	}
-	int barLength = CAPlayableLength::playableLengthToTimeLength(
+	QList<CAPlayableLength> list;
+	// default time signature is 4/4
+	int barLength = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter ) * 4;
+	if (ts) {
+		int beat = ts->beat();
+		switch (beat) {
+		case 4:
+		case 2:
+		case 8:
+		case 16:
+		case 1:
+		case 32:	break;
+		default:	return list; // If something is strange or undoable we prepare for returning an empty list!
+		}
+		barLength = CAPlayableLength::playableLengthToTimeLength(
 				CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(ts->beat()) ) ) * ts->beats();
+	}
 	int barRest = ( lastBarline ? lastBarline->timeStart() : 0 ) + barLength - timeStart;
+
 	// no change when bar lengths are bogus
-	if (!lastBarline || lastBarline->timeStart() < ts->timeStart() || timeStart == ts->timeStart())
+	if (lastBarline && ts && (lastBarline->timeStart() < ts->timeStart()))
 		barRest = 0;
-	if (barRest < 0 || barRest > barLength) return unchanged;
+	if (ts && (timeStart == ts->timeStart()))
+		barRest = 0;
+	if (barRest < 0 || barRest > barLength)
+		barRest = 0;
 
 	int noteLen = timeLength;
 
 	// now we really do a split
-	QList<CAPlayableLength> list;
 	int tSplit = barRest ? barRest : barLength;
 	bool longNotesFirst = barRest ? false : true;
 	while (noteLen) {
