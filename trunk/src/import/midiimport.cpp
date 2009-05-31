@@ -130,11 +130,12 @@ CADocument *CAMidiImport::importDocumentImpl() {
 
 
 CASheet *CAMidiImport::importSheetImpl() {
-	QFileInfo fi(fileName());
-	// Show filename as sheet name
-	//CASheet *sheet = new CASheet(fi.baseName(), _document );	// after next release to be activated
 	CASheet *sheet = new CASheet(tr("Midi imported sheet"), _document );
-	return importSheetImplPmidiParser(sheet);
+	sheet = importSheetImplPmidiParser(sheet);
+	// Show filename as sheet name. The tr() string above should only be changed after a release.
+	QFileInfo fi(fileName());
+	sheet->setName(fi.baseName());
+	return sheet;
 }
 
 
