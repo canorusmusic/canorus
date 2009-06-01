@@ -149,7 +149,7 @@ void CAPlayback::run() {
 					message << (127);
 					if ((note->musElementType()!=CAMusElement::Rest ) &&		// first because rest has no tie
 							!(note->tieStart() && note->tieStart()->noteEnd()) )
-						midiDevice()->send(message, mSeconds, _curTime);
+						midiDevice()->send(message, _curTime);
 					message.clear();
 				}
 				_curPlaying.removeAt(i--);
@@ -193,13 +193,13 @@ void CAPlayback::run() {
 				    		message << (176 + note->voice()->midiChannel()); // set volume
 				    		message << (CAMidiDevice::Midi_Ctl_Volume /* 7 */ );
 				    		message << qRound(127 * static_cast<CADynamic*>(note->markList()[j])->volume()/100.0);
-				    		midiDevice()->send(message, mSeconds, _curTime);
+				    		midiDevice()->send(message, _curTime);
 				    		message.clear();
 				    	} else
 				    	if ( note->markList()[j]->markType()==CAMark::InstrumentChange ) {
 							message << (192 + note->voice()->midiChannel()); // change program
 							message << static_cast<unsigned char>(static_cast<CAInstrumentChange*>(note->markList()[j])->instrument());
-							midiDevice()->send(message, mSeconds, _curTime);
+							midiDevice()->send(message, _curTime);
 							message.clear();
 				    	} else
 				    	if ( note->markList()[j]->markType()==CAMark::Tempo ) {
@@ -213,7 +213,7 @@ void CAPlayback::run() {
 					message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
 					message << (127);
 					if ( !note->tieEnd() )
-						midiDevice()->send(message, mSeconds, _curTime);
+						midiDevice()->send(message, _curTime);
 					message.clear();
 				}
 
@@ -296,19 +296,19 @@ void CAPlayback::playSelectionImpl() {
 			// Note ON
 			message << (192 + note->voice()->midiChannel()); // change program
 			message << (note->voice()->midiProgram());
-			midiDevice()->send(message, 0, _curTime);
+			midiDevice()->send(message, _curTime);
 			message.clear();
 
 			message << (176 + note->voice()->midiChannel()); // set volume
 			message << (7);
 			message << (100);
-			midiDevice()->send(message, 0, _curTime);
+			midiDevice()->send(message, _curTime);
 			message.clear();
 
 			message << (144 + note->voice()->midiChannel()); // note on
 			message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
 			message << (127);
-			midiDevice()->send(message, 0, _curTime);
+			midiDevice()->send(message, _curTime);
 			message.clear();
 
 			_curPlaying << note;
@@ -324,7 +324,7 @@ void CAPlayback::playSelectionImpl() {
 					message << (128 + note->voice()->midiChannel()); // note off
 					message << ( CAMidiDevice::diatonicPitchToMidiPitch(note->diatonicPitch()) );
 					message << (127);
-					midiDevice()->send(message, 0, _curTime);
+					midiDevice()->send(message, _curTime);
 					message.clear();
 				}
 
@@ -386,13 +386,13 @@ void CAPlayback::initStreams( CASheet *sheet ) {
 				QVector<unsigned char> message;
 				message << (192 + staff->voiceList()[j]->midiChannel()); // change program
 				message << (staff->voiceList()[j]->midiProgram());
-				midiDevice()->send(message, 0, _curTime);
+				midiDevice()->send(message, _curTime);
 				message.clear();
 
 				message << (176 + staff->voiceList()[j]->midiChannel()); // set volume
 				message << (7);
 				message << (100);
-				midiDevice()->send(message, 0, _curTime);
+				midiDevice()->send(message, _curTime);
 				message.clear();
 			}
 		}

@@ -75,6 +75,6 @@ void CAMidiRecorder::pauseRecording() {
 
 void CAMidiRecorder::onMidiInEvent( QVector<unsigned char> messages ) {
 	if (_midiExport && !_paused) {
-		_midiExport->send( messages, _curTime, _curTime/2 );	// needs division somewhere else ...
+		_midiExport->send( messages, _curTime/2 );	// needs division somewhere else ...
 	}
 }
