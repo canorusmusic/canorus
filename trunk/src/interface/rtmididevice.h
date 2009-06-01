@@ -29,7 +29,7 @@ public:
 	bool openInputPort(int port);	// return true on success, false otherwise	
 	void closeOutputPort();
 	void closeInputPort();
-	void send(QVector<unsigned char> message, int offset, int timeLength);
+	void send(QVector<unsigned char> message, int timeLength);
 	void sendMetaEvent(int timeLength, int event, int a, int b, int c ) { ; }
 	
 private:
