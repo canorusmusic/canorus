@@ -45,7 +45,7 @@ public:
 	bool openInputPort(int port) { return true; }	// return true on success, false otherwise
 	void closeOutputPort() { }
 	void closeInputPort() { }
-	void send(QVector<unsigned char> message, int time, int timeLength);
+	void send(QVector<unsigned char> message, int time);
 	void sendMetaEvent(int timeLength, int event, int a, int b, int c);
 	void writeFile(); // direct access to the writing
 

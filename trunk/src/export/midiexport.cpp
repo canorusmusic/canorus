@@ -48,12 +48,12 @@ CAMidiExport::CAMidiExport( QTextStream *out )
 	trackTime = 0;
 }
 
-void CAMidiExport::send(QVector<unsigned char> message, int time, int timeLength)
+void CAMidiExport::send(QVector<unsigned char> message, int time)
 {
 	int offset = 0;
-	if ( timeLength > trackTime ) {
-		offset = timeLength-trackTime;
-		trackTime = timeLength;
+	if ( time > trackTime ) {
+		offset = time-trackTime;
+		trackTime = time;
 	}
 	if ( message.size() ) trackChunk.append( writeTime( offset ));
 	char q;
