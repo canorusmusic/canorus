@@ -3032,20 +3032,24 @@ void CAMainWin::on_uiImportDocument_triggered() {
 		CAImport *import=0;
 
 		if ( uiImportDialog->selectedFilter() == CAFileFormats::MIDI_FILTER ) {
-			std::cout<<" Work in progress: midi import from file "<<s.toAscii().constData()<<std::endl;
 			import = new CAMidiImport();
+			if (import) {
+				import->setStreamFromFile( s );
+				connect( import, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
+				import->importSheet();
+			}
 		} else
 		if ( uiImportDialog->selectedFilter() == CAFileFormats::MUSICXML_FILTER ) {
 			import = new CAMusicXmlImport();
+			if (import) {
+				import->setStreamFromFile( s );
+				connect( import, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
+				import->importDocument();
+	
+			}
 		}
-
-		if (import) {
-			import->setStreamFromFile( s );
-			connect( import, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
-			import->importDocument();
-
+		if (import)
 			_mainWinProgressCtl.startProgress( import );
-		}
 	}
 }
 
@@ -3054,7 +3058,15 @@ void CAMainWin::on_import_done( int status ) {
 	bool success = (import->status()==0);
 
 	if (success) {
-		openDocument( import->importedDocument() );
+		if ( import->importedDocument() ) {
+			openDocument( import->importedDocument() );
+		} else {
+			if ( import->importedSheet() ) {
+				addSheet(import->importedSheet());
+				document()->addSheet(import->importedSheet());
+				CACanorus::rebuildUI(document());
+			}
+		}
 
 		// select the first context automatically
 		if ( document() && document()->sheetList().size() && document()->sheetList()[0]->contextList().size() ) {
