@@ -404,7 +404,6 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	core/archive.cpp
 	core/midirecorder.cpp
 	core/typesetter.cpp
-	core/muselementfactory.cpp
 	${Canorus_Import_Srcs}
 	${Canorus_Export_Srcs}
 	${Canorus_Ctl_Srcs}
