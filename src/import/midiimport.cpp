@@ -24,12 +24,7 @@
 #include "score/sheet.h"
 #include "score/document.h"
 
-/*
-	For the moment only for Linux, and parts of pmidi in use are still dependant on alsa, so:
-*/
-//#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
 #include "import/pmidi/wrapper.h"
-//#endif
 
 class CAMidiImportEvent {
 public:
@@ -41,8 +36,6 @@ public:
 	int _velocity;
 	int _time;
 	int _length;
-	int _timeCorrection;
-	int _lengthCorrection;
 	int _nextTime;
 	int _tempo;		// beats per minute
 	int _top;
@@ -57,8 +50,6 @@ CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int veloc
 	_velocity = velocity;
 	_time = time;
 	_length = length;
-	_timeCorrection = 0;
-	_lengthCorrection = 0;
 	_nextTime = time+length;
 	_tempo = tempo;
 	_program = program;
@@ -96,7 +87,6 @@ const QRegExp CAMidiImport::DELIMITERS =
 CAMidiImport::CAMidiImport( QTextStream *in )
  : CAImport(in) {
 	initMidiImport();
-	std::cout<<"          FIXME: jetzt in midiimport!"<<std::endl;
 	for (int i=0;i<16; i++) {
 		_allChannelsEvents << new QList<QList<CAMidiImportEvent*>*>;
 		_allChannelsEvents[i]->append( new QList<CAMidiImportEvent*> );
@@ -138,9 +128,19 @@ CASheet *CAMidiImport::importSheetImpl() {
 	return sheet;
 }
 
+/*!
+	The midi file is opened by calling the pmidi wrapper function \a pmidi_open_midi_file(), then,
+	in a polling loop, the wrapper function pmidi_parse_midi_file() brings out the relevant midi events
+	which are stored in the array _allChannelsEvents[].
+	All time signatures are stored in the array _allChannelsTimeSignatures[].
+	The work of pmidi and the wrapper is done then.
 
+	All time values are scaled here to canorus' own music time scale.
+
+	Further processing is referred to function \a writeMidiFileEventsToScore_New().
+*/
 CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
-//#if defined(__linux__) && defined(__LINUX_ALSASEQ__)
+
 	QByteArray s;
 	s.append(fileName());
 	pmidi_open_midi_file( s.constData() );
@@ -265,24 +265,16 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 				<<" Subframes "<<pmidi_out.subframes<<std::endl;
 			break;
 		}
-
-		//std::cout<<p<<std::endl;
-
 	}
-//#endif
 	writeMidiFileEventsToScore_New( sheet );
 	return sheet;
 }
 
 
+/*!
+*/
 void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 
-//	QList<CAPlayableLength> timeLengthToPlayableLengthList( int timeLength, bool longNotesFirst = true, int dotsLimit = 4 );
-//	QList<CAPlayableLength> matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit = 4 );
-
-
-	QString sheetName("imported");
-	//CASheet *sheet = new CASheet( sheetName, _document );
 	int numberOfStaffs = sheet->staffList().size();
 	int staffIndex = 0;
 	int voiceIndex;
@@ -549,7 +541,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 					voice->append( bl, false );
 					b = static_cast<CABarline*>(bl);
 				} else {
-			  		musElementFactory()->placeAutoBar( rest );
+			  		staff->placeAutoBar( rest );
 				}
 				if (tsElem) {
 					;
@@ -602,7 +594,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 					voice->append( bl, false );
 					b = static_cast<CABarline*>(bl);
 				} else {
-			  		musElementFactory()->placeAutoBar( note );
+			  		staff->placeAutoBar( note );
 				}
 				if (previousNote) {
 					CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNote, note );

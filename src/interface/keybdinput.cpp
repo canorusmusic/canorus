@@ -86,9 +86,10 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 	if (voice) {
 
 		int cpitch = m[1];
-
-		// will publish this only when it's configurable. Habe only a four octave keyboard ...
 /*
+
+		// will publish this only when it's configurable. Have only a four octave keyboard ...
+
 		CAPlayableLength plength = CAPlayableLength::Undefined;
 		switch (cpitch) {
 		case 39:	plength = CAPlayableLength::Whole;		break;
@@ -106,6 +107,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 			v->repaint();
 			return;
 		}
+
 */
 
 		CADrawableContext *drawableContext = v->currentContext();
@@ -200,7 +202,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 						voice->append( note, appendToChord );
 						_noteLayout.append( voice->lastMusElement());
 						std::cout<<" -- "<<lll[i].musicLength()<<"."<<lll[i].dotted();
-			  			_mw->musElementFactory()->placeAutoBar( note );
+			  			CAStaff::placeAutoBar( note );
 						if (i>0) {
 							_mw->musElementFactory()->configureSlur( staff, prevNote, note );
 						}
@@ -228,9 +230,9 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 		// We make shure not to try to place a barline inside a chord or inside a tuplet
 		if ( CACanorus::settings()->autoBar() && !appendToChord && (!_tupPla || _tupPla->isFirstInTuplet())) {
 			if (note)
-			  	_mw->musElementFactory()->placeAutoBar( note );
+			  	CAStaff::placeAutoBar( note );
 			else
-			  	_mw->musElementFactory()->placeAutoBar( rest );
+			  	CAStaff::placeAutoBar( rest );
 		}
 
 		voice->synchronizeMusElements();	// probably not needed

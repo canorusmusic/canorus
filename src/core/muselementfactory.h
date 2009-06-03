@@ -74,8 +74,6 @@ public:
 	                    bool addToChord
 	                  );
 
-	static void placeAutoBar( CAPlayable* elt );
-
 	bool configureTuplet( QList<CAPlayable*> listOfNotes );
 
 	bool configureSlur( CAStaff *staff,
