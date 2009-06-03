@@ -2396,7 +2396,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, next, false );
 				if ( success && CACanorus::settings()->autoBar() )
-					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
+					CAStaff::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
 				if( success )
 					noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
@@ -2414,7 +2414,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, dright?dright->musElement():0, false );
 				if ( success && CACanorus::settings()->autoBar() )
-					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
+					CAStaff::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
 				if ( success && uiTupletType->isChecked() ) {
 					QList<CAPlayable*> elements;
@@ -2494,7 +2494,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 
 				success = musElementFactory()->configureRest( voice, next );
 				if ( success && CACanorus::settings()->autoBar() )
-					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
+					CAStaff::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
 				if( success )
 					noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
@@ -2509,7 +2509,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 
 				success = musElementFactory()->configureRest( voice, dright?dright->musElement():0 );
 				if ( success && CACanorus::settings()->autoBar() )
-					CAMusElementFactory::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
+					CAStaff::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 			}
 
 			if (success) {

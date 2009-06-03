@@ -52,6 +52,8 @@ public:
 
 	bool synchronizeVoices();
 
+	static void placeAutoBar( CAPlayable* elt );
+
 private:
 	QList<CAVoice *> _voiceList;
 
