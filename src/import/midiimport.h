@@ -11,7 +11,7 @@
 #include <QString>
 #include <QStack>
 
-#include "core/muselementfactory.h"
+//#include "core/muselementfactory.h"
 
 #include "score/voice.h"
 #include "score/rest.h"
@@ -74,12 +74,7 @@ private:
 	inline CAVoice *curVoice() { return _curVoice; }
 	inline void setCurVoice(CAVoice *voice) { _curVoice = voice; }
 
-	const QString parseNextElement();
-	const QString peekNextElement();
 	void addError(QString description, int lineError = 0, int charError = 0);
-
-	CAMusElementFactory *_musElementFactory;
-	inline CAMusElementFactory *musElementFactory() { return _musElementFactory; }
 
 	// the next four objects should be moved to CADiatonicPitch, doubles are in CAKeybdInput
 	CADiatonicPitch _actualKeySignature;
@@ -90,19 +85,6 @@ private:
 	//////////////////////
 	// Helper functions //
 	//////////////////////
-	CAPlayableLength playableLengthFromLilyPond( QString &playableElt, bool parse=false );
-
-	bool isNote(const QString elt);
-	CADiatonicPitch relativePitchFromLilyPond(QString &note, CADiatonicPitch prevPitch, bool parse=false);
-	bool isRest(const QString elt);
-	CARest::CARestType restTypeFromLilyPond(QString& rest, bool parse=false);
-	CAClef::CAPredefinedClefType predefinedClefTypeFromLilyPond( const QString clef );
-	int clefOffsetFromLilyPond( const QString clef );
-	CABarline::CABarlineType barlineTypeFromLilyPond(const QString bar);
-	CADiatonicKey::CAGender diatonicKeyGenderFromLilyPond(QString gender);
-	CATime timeSigFromLilyPond(QString time);
-
-	CAMusElement* findSharedElement(CAMusElement *elt);
 
 	///////////////////////////
 	// Getter/Setter methods //
