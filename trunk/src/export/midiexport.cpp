@@ -117,13 +117,6 @@ void CAMidiExport::sendMetaEvent(int timeLength, int event, int a, int b, int c 
 #define MIDI_CTL_VOLUME  0x07
 #define MIDI_CTL_SUSTAIN 0x40
 
-// FIXME: is not yet fixed and synchronized to midi playback and import:
-#define MULTIPLICATOR       (1*2*3*4*5*6*7) /* enable x-tuplets with x in {3,4,5,6,7,8,9,10} */
-#define QUARTER_LENGTH      ( 32*MULTIPLICATOR)
-#define TICKS_PER_QUARTER (256)
-
-#define MY2MIDITIME(t) ((unsigned int) ((((double) t) * (double) (TICKS_PER_QUARTER)) / ((double) (QUARTER_LENGTH))))
-
 
 QByteArray CAMidiExport::word16(int x) {
 	QByteArray ba;
@@ -320,15 +313,14 @@ void CAMidiExport::writeFile() {
 	// Header Chunk
 
 	// A midi file here is 8-Bit Ascii, so we need no coding translation,
-	// and this seems to switch it off, but I think there should be a null codec:   FIXME  !!
+	// and this seems to switch it off, but I think there should be a null codec, but obviously Qt doesn't have one.
 	(*stream()).setCodec("Latin-1");
 
 	QByteArray headerChunk;
 	headerChunk.append("MThd....");		// header and space for length
 	headerChunk.append(word16( 1 ));	// Midi-Format version
 	headerChunk.append(word16( 2 ));	// number of tracks, a control track and a music track for a trying out ...
-	headerChunk.append(word16( TICKS_PER_QUARTER ));	// time division, should be TICKS_PER_QUARTER
-//	headerChunk.append(word16( 512 ));  // time division 512 seems to work fine for us. Dunno why? -Matevz (256 is right, timelength of quarter, soon I'll fix tempo, Georg)
+	headerChunk.append(word16( CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter )));	// time division ticks per quarter
 	setChunkLength( &headerChunk );
 	out() << headerChunk;
 
