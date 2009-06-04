@@ -9,6 +9,7 @@
 #define RTMIDIDEVICE_H_
 
 #include "interface/mididevice.h"
+#include <string>
 
 class RtMidiOut;
 class RtMidiIn;
@@ -37,6 +38,9 @@ private:
 	RtMidiIn *_in;
 	bool _outOpen;
 	bool _inOpen;
+	qint64 _pid;
+	std::string _midiNameIn;
+	std::string _midiNameOut;
 };
 
 #endif /* RTMIDIDEVICE_H_ */
