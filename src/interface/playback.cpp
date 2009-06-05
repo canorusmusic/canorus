@@ -24,6 +24,7 @@
 #include "score/instrumentchange.h"
 #include "score/tempo.h"
 #include "score/timesignature.h"
+#include "score/keysignature.h"
 
 /*!
 	\class CAPlayback
@@ -435,6 +436,14 @@ void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
 			int beat = static_cast<CATimeSignature*>(streamAt(i).at(j))->beat();
 			//std::cout<<"  exportiere Time Signature    "<<_curTime<<" mit "<<beats<<"/"<<beat<<std::endl;
 		    midiDevice()->sendMetaEvent( _curTime, CAMidiDevice::Meta_Timesig, beats, beat, 0 );
+		}
+		if ( streamAt(i).at(j)->musElementType()==CAMusElement::KeySignature ) {
+			//int key = (static_cast<CAKeySignature*>(streamAt(i).at(j)))->diatonicKey()->numberOfAccs();
+			CAKeySignature *ks = dynamic_cast<CAKeySignature*>(streamAt(i).at(j));
+			CADiatonicKey dk = ks->diatonicKey();
+			int key = dk.numberOfAccs();
+			int minor = dk.gender() == CADiatonicKey::Minor ? 1 : 0;
+		    midiDevice()->sendMetaEvent( _curTime, CAMidiDevice::Meta_Keysig, key, minor, 0 );
 		}
 
 		if ( streamAt(i).at(j)->musElementType()==CAMusElement::Barline &&

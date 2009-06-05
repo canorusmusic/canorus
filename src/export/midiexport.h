@@ -62,7 +62,8 @@ private:
 	void exportSheetImpl(CASheet *sheet);
 	int midiTrackCount;
 	QByteArray trackChunk;					// for the time beeing we build one big track
-	int trackTime;							// which this is the time line for
+	int timeIncrement(int time);
+	int _trackTime;							// which this is the time line for
 	QVector<QByteArray> trackChunks;		// for the future
 	QVector<int> trackTimes;
 	void printQByteArray( QByteArray x );	// for debugging only
