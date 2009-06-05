@@ -843,7 +843,7 @@ void CAMainWin::newDocument() {
 		currentScoreView()->selectContext( document()->sheetList()[0]->contextList()[0] );
 	}
 
-	updateToolBars();
+	setMode(SelectMode);
 }
 
 /*!
@@ -3045,7 +3045,6 @@ void CAMainWin::on_uiImportDocument_triggered() {
 				import->setStreamFromFile( s );
 				connect( import, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
 				import->importDocument();
-	
 			}
 		}
 		if (import)
