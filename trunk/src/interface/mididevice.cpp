@@ -157,7 +157,7 @@ CAMidiDevice::CAMidiDevice()
 	at the moment it is sent.
 
 	Another example is CAMidiExport. This is a Midi file writer. The class is an example
-	of the non-real-time Midi classes. It needs the offset in miliseconds to write the
+	of the non-real-time Midi classes. It needs also the time to write the
 	midi event to a file.
 
 	\warning MIDI INPUT is not available for Swig and therefore scripting languages yet.

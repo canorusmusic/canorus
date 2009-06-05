@@ -45,17 +45,25 @@ CAMidiExport::CAMidiExport( QTextStream *out )
  : CAExport(out), CAMidiDevice() {
 	_midiDeviceType = MidiExportDevice;
 	setRealTime(false);
-	trackTime = 0;
+	_trackTime = 0;
+}
+
+/*!
+	Compute the time offset for a new event and update the current track time.
+*/
+int CAMidiExport::timeIncrement( int time )
+{
+	int offset = 0;
+	if ( time > _trackTime ) {
+		offset = time-_trackTime;
+		_trackTime = time;
+	}
+	return offset;
 }
 
 void CAMidiExport::send(QVector<unsigned char> message, int time)
 {
-	int offset = 0;
-	if ( time > trackTime ) {
-		offset = time-trackTime;
-		trackTime = time;
-	}
-	if ( message.size() ) trackChunk.append( writeTime( offset ));
+	if ( message.size() ) trackChunk.append( writeTime( timeIncrement( time )));
 	char q;
 	for (int i=0; i< message.size(); i++ ) {
 		q = message[i];
@@ -66,16 +74,26 @@ void CAMidiExport::send(QVector<unsigned char> message, int time)
 	}
 }
 
-void CAMidiExport::sendMetaEvent(int timeLength, int event, int a, int b, int c )
+void CAMidiExport::sendMetaEvent(int time, int event, int a, int b, int c )
 {
+	// We don't do a time check on time, and we compute
+	// only the time increment when we really send an event out.
 	QByteArray tc;
+	if (event == CAMidiDevice::Meta_Keysig ) {
+		tc.append(writeTime(timeIncrement(time)));
+		tc.append(CAMidiDevice::Midi_Ctl_Event);
+		tc.append(event);
+		tc.append(variableLengthValue( 2 ));
+		tc.append(a);
+		tc.append(b);
+		trackChunk.append(tc);
+	} else
 	if (event == CAMidiDevice::Meta_Timesig ) {
-		// we don't do a time check on timeLength
 		int lbBeat=0;
-		for (; lbBeat<5; lbBeat++ ) {	// smallest is 128th
+		for (; lbBeat<5; lbBeat++ ) {	// natural logarithm, smallest is 128th
 			if (1<<lbBeat >= b) break;
 		}
-		tc.append(writeTime(0));
+		tc.append(writeTime(timeIncrement(time)));
 		tc.append(CAMidiDevice::Midi_Ctl_Event);
 		tc.append(event);
 		tc.append(variableLengthValue( 4 ));
@@ -87,7 +105,7 @@ void CAMidiExport::sendMetaEvent(int timeLength, int event, int a, int b, int c 
 	} else
 	if (event == CAMidiDevice::Meta_Tempo ) {
 		int usPerQuarter = 60000000/a;
-		tc.append(writeTime(0));
+		tc.append(writeTime(timeIncrement(time)));
 		tc.append(CAMidiDevice::Midi_Ctl_Event);
 		tc.append(event);
 		tc.append(variableLengthValue( 3 ));
@@ -177,32 +195,6 @@ QByteArray CAMidiExport::writeTime(int time) {
 	b = time & 0x7f;
 	ba.append(b);
 	return ba;
-}
-
-
-QByteArray CAMidiExport::keySignature(void) {
-	QByteArray tc;
-	tc.append(writeTime(0));
-	tc.append(MIDI_CTL_EVENT);
-	tc.append(META_KEYSIG);
-	tc.append(variableLengthValue( 2 ));
-	tc.append((char)0);		// number of sharps, negative: number of flats positive
-	tc.append((char)0);		// 0: major 1: minor
-	return tc;
-}
-
-
-QByteArray CAMidiExport::timeSignature(void) {
-	QByteArray tc;
-	tc.append(writeTime(0));
-	tc.append(MIDI_CTL_EVENT);
-	tc.append(META_TIMESIG);
-	tc.append(variableLengthValue( 4 ));
-	tc.append(4);			// FIXME: this is just a fixed filled in numbers
-	tc.append(2);
-	tc.append(1);
-	tc.append(8);
-	return tc;
 }
 
 
@@ -328,7 +320,7 @@ void CAMidiExport::writeFile() {
 	QByteArray controlTrackChunk;
 	controlTrackChunk.append( "MTrk...." );
 	controlTrackChunk.append( textEvent(0, QString("Canorus Version ") + CANORUS_VERSION + " generated. "));
-	controlTrackChunk.append( textEvent(0, "Timebase and some midi controls not yet implemented."));
+	controlTrackChunk.append( textEvent(0, "It's still a work in progress."));
 	controlTrackChunk.append( trackEnd());
 	setChunkLength( &controlTrackChunk );
 	//printQByteArray( controlTrackChunk );
@@ -336,8 +328,6 @@ void CAMidiExport::writeFile() {
 
 	// trackChunk is already filled with midi data,
 	// let's add chunk header, in reverse, ...
-	trackChunk.prepend(keySignature());
-	//trackChunk.prepend(timeSignature());
 	trackChunk.prepend("MTrk....");
 	// ... and add the tail:
 	trackChunk.append(trackEnd());
