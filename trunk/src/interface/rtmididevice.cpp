@@ -43,16 +43,12 @@ CARtMidiDevice::CARtMidiDevice()
 
 	// create midi client names which hold the current pid
 	_pid = QCoreApplication::applicationPid();
-	std::string p;
-	std::stringstream str;
-	str << _pid;
-	str >> p;
-	_midiNameOut = std::string("Canorus Out (")+p+")";
-	_midiNameIn  = std::string("Canorus In (")+p+")";
+	_midiNameOut << "Canorus Out (" << _pid << ")";
+	_midiNameIn << "Canorus In (" << _pid << ")";
 
 	try {
-		_out = new RtMidiOut( _midiNameOut );
-		_in = new RtMidiIn( _midiNameIn );
+		_out = new RtMidiOut( _midiNameOut.str() );
+		_in = new RtMidiIn( _midiNameIn.str() );
 	}
 	catch (RtError &error) {
 		error.printMessage();
