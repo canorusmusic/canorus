@@ -53,6 +53,13 @@ public:
 		return interval;
 	}
 
+	bool operator==( CAInterval i ) {
+		return i.quality()==_qlt && i.quantity()==_qnt;
+	}
+	bool operator!=( CAInterval i ) {
+		return !(operator==(i));
+	}
+
 	inline const int quality() { return _qlt; }
 	inline const int quantity() { return _qnt; }
 

@@ -125,6 +125,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 	const int quarterLength = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter );
 	int programCache[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
+	setStatus(2);
 	for (;res != PMIDI_STATUS_END;) {
 
 		res = pmidi_parse_midi_file();
@@ -181,7 +182,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime = pmidi_out.time;
 							// this would make them very short
 							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_length = 8;
-							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime = 
+							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime =
 							//	_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time + 8;
 						}
 						lookedBackEnough = true;
@@ -190,7 +191,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 				}
 				if (lookedBackEnough) break;
 			}
-			
+
 			// Get note to the right voice
 			for (voiceIndex=0;voiceIndex<30;voiceIndex++) {		// we can't imagine that so many voices ar needed in any case so let's put a limit
 				// if another voice is needed and not yet there we create it
@@ -243,6 +244,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 		}
 	}
 	writeMidiFileEventsToScore_New( sheet );
+	fixAccidentals( sheet );
 	return sheet;
 }
 
@@ -257,6 +259,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 	CAStaff *staff;
 	CAVoice *voice;
 
+	setStatus(3);
 	// for debugging only:
 	for (int i=0;i<_allChannelsTimeSignatures.size();i++) {
 		std::cout<<"Time signature "
@@ -416,7 +419,7 @@ CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int channel, int
 			if (_allTimeSignatureMusElements[channel]->size() >= _actualTimeSignatureIndex+1) {
 				//voice->append( _allTimeSignatureMusElements[channel]->at( _actualTimeSignatureIndex ));
 				return _allTimeSignatureMusElements[channel]->at(_actualTimeSignatureIndex);
-			} else { 
+			} else {
 				int top = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_top;
 				int bottom = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_bottom;
 				_allTimeSignatureMusElements[channel]->append( new CATimeSignature( top, bottom, staff, 0 ));
@@ -461,7 +464,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 
 		// we place a tempo mark only for the first voice, and if we don't place we set tempo null
 		int tempo = voiceIndex == 0 ? events->at(i)->_tempo : 0;
-		
+
 		b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline,
 			voice->lastMusElement()));
 
@@ -540,7 +543,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				b = 0;
 			}
 			b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
-			
+
 			lenList.clear();
 			lenList << CAPlayableLength::matchToBars( length, voice->lastTimeEnd(), b, ts );
 
@@ -587,7 +590,6 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	}
 }
 
-
 void CAMidiImport::closeFile() {
 	file()->close();
 }
@@ -603,6 +605,12 @@ const QString CAMidiImport::readableStatus() {
 		return tr("Importing...");
 	case -1:
 		return tr("Error while importing!\nLine %1:%2.").arg(curLine()).arg(curChar());
+	case 2:
+		return tr("Importing Midi events...");
+	case 3:
+		return tr("Merging Midi events with the score...");
+	case 4:
+		return tr("Reinterpreting accidentals...");
 	}
 }
 
@@ -667,5 +675,36 @@ CADiatonicPitch CAMidiImport::matchPitchToKey( CAVoice* voice, CADiatonicPitch p
 	return p;
 }
 
+/*!
+	Tries to assume the correct accidental for the alien notes in the key signature.
+	Currently this function searches for disalterations (eg. cis -> c, where c is the
+	note in the scale).
+	The algorithm solves the toggling notes (eg. e es e -> e dis e) and transition
+	notes (eg. e dis d -> e es d).
+*/
+void CAMidiImport::fixAccidentals( CASheet *s ) {
+	setStatus(4);
+	QList<CAVoice*> voices = s->voiceList();
+	for ( int i=0; i<voices.size(); i++ ) {
+		QList<CANote*> noteList = voices[i]->getNoteList();
+		for (int j=0; j<noteList.size()-2; j++) {
+			CAInterval i1( noteList[j]->diatonicPitch(), noteList[j+1]->diatonicPitch(), false );
+			CAInterval i2( noteList[j]->diatonicPitch(), noteList[j+2]->diatonicPitch(), false );
 
-
+			// toggling notes
+			if ( i1==CAInterval(2, -1) && i2==CAInterval(0, 1) ) {
+				noteList[j+1]->setDiatonicPitch( noteList[j+1]->diatonicPitch()+CAInterval(-2,-2) );
+			} else
+			if ( i1==CAInterval(2, 1) && i2==CAInterval(0, 1) ) {
+				noteList[j+1]->setDiatonicPitch( noteList[j+1]->diatonicPitch()+CAInterval(-2,2) );
+			} else
+			// transition notes
+			if ( i1==CAInterval(2, 1) && i2!=CAInterval(1, 2) ) {
+				noteList[j]->setDiatonicPitch( noteList[j]->diatonicPitch()+CAInterval(-2,-2) );
+			} else
+			if ( i1==CAInterval(2, -1) && i2!=CAInterval(1, -2) ) {
+				noteList[j]->setDiatonicPitch( noteList[j]->diatonicPitch()+CAInterval(-2,2) );
+			}
+		}
+	}
+}
