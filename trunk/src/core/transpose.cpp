@@ -152,6 +152,7 @@ void CATranspose::reinterpretAccidentals( int type ) {
 				newPitch = static_cast<CANote*>(elt)->diatonicPitch() - CAInterval(-2, 2);
 			}
 			note->setDiatonicPitch( newPitch );
+			break;
 		}
 		case CAMusElement::KeySignature: {
 			CAKeySignature *keySig = static_cast<CAKeySignature*>(elt);
@@ -163,6 +164,7 @@ void CATranspose::reinterpretAccidentals( int type ) {
 				newDiatonicKey = CADiatonicKey(keySig->diatonicKey().diatonicPitch()-CAInterval(-2,2), keySig->diatonicKey().gender() );
 			}
 			keySig->setDiatonicKey( newDiatonicKey );
+			break;
 		}
 		}
 	}
