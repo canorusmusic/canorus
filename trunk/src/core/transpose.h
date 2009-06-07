@@ -31,6 +31,7 @@ public:
 	void transposeBySemitones( int semitones );
 	void transposeByInterval( CAInterval );
 	void transposeByKeySig( CADiatonicKey from, CADiatonicKey to, int direction );
+	void reinterpretAccidentals( int type );
 
 	void addSheet( CASheet *s );
 	void addContext( CAContext *context );

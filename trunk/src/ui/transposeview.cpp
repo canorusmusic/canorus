@@ -41,6 +41,7 @@ void CATransposeView::setupCustomUi() {
 	connect( uiByKeySig, SIGNAL(toggled(bool)), this, SLOT(updateUi(bool)) );
 	connect( uiByInterval, SIGNAL(toggled(bool)), this, SLOT(updateUi(bool)) );
 	connect( uiBySemitones, SIGNAL(toggled(bool)), this, SLOT(updateUi(bool)) );
+	connect( uiReinterpretAccidentals, SIGNAL(toggled(bool)), this, SLOT(updateUi(bool)) );
 }
 
 /*!
@@ -91,6 +92,8 @@ void CATransposeView::updateUi( bool ) {
 	uiIntervalDir->setEnabled( uiByInterval->isChecked() );
 
 	uiSemitones->setEnabled( uiBySemitones->isChecked() );
+
+	uiReinterpretType->setEnabled( uiReinterpretAccidentals->isChecked() );
 }
 
 /*!
@@ -162,6 +165,20 @@ void CATransposeView::on_uiApply_clicked( QAbstractButton *b ) {
 		} else
 		if ( uiBySemitones->isChecked() ) {
 			t.transposeBySemitones( uiSemitones->value() );
+		} else
+		if ( uiReinterpretAccidentals->isChecked() ) {
+			if (uiReinterpretType->currentIndex()==0) {
+				// sharps to flats
+				t.reinterpretAccidentals( 1 );
+			} else
+			if (uiReinterpretType->currentIndex()==1) {
+				// flats to sharps
+				t.reinterpretAccidentals( -1 );
+			} else
+			if (uiReinterpretType->currentIndex()==2) {
+				// invert
+				t.reinterpretAccidentals( 0 );
+			}
 		}
 
 		CACanorus::undo()->pushUndoCommand();
