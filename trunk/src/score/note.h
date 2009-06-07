@@ -32,7 +32,7 @@ public:
 	CAPlayableLength noteLength() { return _playableLength; }
 
 	inline CADiatonicPitch& diatonicPitch() { return _diatonicPitch; }
-	inline void setDiatonicPitch( CADiatonicPitch& pitch ) {
+	inline void setDiatonicPitch( CADiatonicPitch pitch ) {
 		_diatonicPitch = pitch;
 		updateTies();
 	}

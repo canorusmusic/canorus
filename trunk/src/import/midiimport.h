@@ -125,6 +125,7 @@ private:
 	int _actualTimeSignatureIndex;
 	CAMusElement* getOrCreateTimeSignature( int time, int channel, int voiceIndex, CAStaff *staff, CAVoice *voice );
 	int _numberOfAllVoices;
+	void fixAccidentals( CASheet *s );
 };
 
 #endif /* MIDIIMPORT_H_ */

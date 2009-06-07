@@ -23,7 +23,7 @@
 
 	\note Quantity can also be negative for intervals down.
 
-	Intervals can be compared with each other, summed with other intervals or diatonic
+	Intervals can be compared to each other, summed with other intervals or diatonic
 	pitches and inverted.
 
 	\sa CADiatonicPitch, operator~()
@@ -137,7 +137,10 @@ CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2, bool abs
 		setQuality( deltaQlt + pHigh.accs() - pLow.accs() );
 	}
 
-	if (!absolute && pitch1.noteName()>pitch2.noteName()) {
+	if (!absolute &&
+	    (pitch1.noteName()>pitch2.noteName() ||
+	     pitch1.noteName()==pitch2.noteName() && pitch1.accs()>pitch2.accs()
+	   )) {
 		setQuantity( -quantity() );
 	}
 }
