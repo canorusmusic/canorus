@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2009, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -2588,8 +2588,13 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 
 		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI(document(), v->sheet());
-		v->selectMElement( musElementFactory()->musElement() );
+		CADrawableMusElement *d = v->selectMElement( musElementFactory()->musElement() );
 		musElementFactory()->emptyMusElem();
+
+		// move the view to the right, if the right border was hit
+		if ( d->xPos() > v->worldX()+0.85*v->worldWidth() ) {
+			v->setWorldX( d->xPos()-v->worldWidth()/2, CACanorus::settings()->animatedScroll() );
+		}
 	}
 }
 
