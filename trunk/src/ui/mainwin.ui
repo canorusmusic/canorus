@@ -964,6 +964,21 @@
     <string>Resources view</string>
    </property>
   </action>
+  <action name="uiInsertFBM">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>images:figuredbass/insertfbm.svg</normaloff>images:figuredbass/insertfbm.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Figured bass mark...</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>

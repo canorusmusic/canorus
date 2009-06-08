@@ -6,7 +6,7 @@
 */
 
 #include "layout/drawablefiguredbasscontext.h"
-#include "layout/drawablefiguredbassmark.h"
+#include "layout/drawablefiguredbassnumber.h"
 #include <QBrush>
 #include <QPainter>
 
@@ -14,7 +14,7 @@ CADrawableFiguredBassContext::CADrawableFiguredBassContext(CAFiguredBassContext 
  : CADrawableContext(c, x, y) {
 	setDrawableContextType( DrawableFiguredBassContext );
 	setWidth( 0 );
- 	setHeight( 2*CADrawableFiguredBassMark::DEFAULT_NUMBER_SIZE );
+ 	setHeight( 2*CADrawableFiguredBassNumber::DEFAULT_NUMBER_SIZE );
 }
 
 CADrawableFiguredBassContext::~CADrawableFiguredBassContext() {
@@ -25,5 +25,5 @@ CADrawableFiguredBassContext* CADrawableFiguredBassContext::clone() {
 }
 
 void CADrawableFiguredBassContext::draw(QPainter *p, const CADrawSettings s) {
-	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(Qt::blue));
+	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(Qt::cyan));
 }

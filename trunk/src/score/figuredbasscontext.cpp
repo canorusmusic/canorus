@@ -24,6 +24,7 @@
 CAFiguredBassContext::CAFiguredBassContext( QString name, CASheet *sheet )
  : CAContext(name, sheet) {
 	setContextType( FiguredBassContext );
+	repositFiguredBassMarks();
 }
 
 CAFiguredBassContext::~CAFiguredBassContext() {
@@ -104,8 +105,21 @@ void CAFiguredBassContext::repositFiguredBassMarks() {
 
 	// updated times for the figured bass marks at the end (after the score)
 	for (; fbmIdx < _figuredBassMarkList.size(); fbmIdx++) {
-		_figuredBassMarkList[fbmIdx]->setTimeStart(((fbmIdx>0)?_figuredBassMarkList[fbmIdx-1]:0)->timeEnd());
+		_figuredBassMarkList[fbmIdx]->setTimeStart(((fbmIdx>0)?_figuredBassMarkList[fbmIdx-1]:_figuredBassMarkList[0])->timeEnd());
 		_figuredBassMarkList[fbmIdx]->setTimeLength(CAPlayableLength::Quarter);
+	}
+}
+
+/*!
+	Returns figured bass mark at the given \a time.
+ */
+CAFiguredBassMark *CAFiguredBassContext::figuredBassMarkAtTimeStart( int time ) {
+	int i;
+	for ( i=0; i<_figuredBassMarkList.size() && _figuredBassMarkList[i]->timeStart() <= time; i++);
+	if (i>0 && _figuredBassMarkList[--i]->timeEnd()>time) {
+		return _figuredBassMarkList[i];
+	} else {
+		return 0;
 	}
 }
 

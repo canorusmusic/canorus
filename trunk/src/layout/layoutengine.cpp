@@ -29,7 +29,7 @@
 #include "layout/drawablesyllable.h"
 
 #include "layout/drawablefiguredbasscontext.h"
-#include "layout/drawablefiguredbassmark.h"
+#include "layout/drawablefiguredbassnumber.h"
 
 #include "layout/drawablefunctionmarkcontext.h"
 #include "layout/drawablefunctionmark.h"
@@ -130,7 +130,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			musStreamList << musList;
 			contexts << fbContext;
 			dy += drawableContextMap[fbContext]->height();
-		}
+		} else
 		if (sheet->contextList()[i]->contextType() == CAContext::FunctionMarkContext) {
 			if (i>0) dy+=70;
 
@@ -192,6 +192,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			        (!elt->isPlayable()) &&
 			        (elt->musElementType() != CAMusElement::Barline) &&	//barlines should be aligned
 			        (elt->musElementType() != CAMusElement::FunctionMark) &&	//function marks are placed separately
+			        (elt->musElementType() != CAMusElement::FiguredBassMark) &&	//figured bass marks are placed separately
 			        (elt->musElementType() != CAMusElement::Syllable)	//syllables are placed separately
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
@@ -397,6 +398,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			while ( (streamsIdx[i] < musStreamList[i].size()) &&
 			        ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (elt->isPlayable() ||
+			         elt->musElementType()==CAMusElement::FiguredBassMark ||
 			         elt->musElementType()==CAMusElement::FunctionMark ||
 			         elt->musElementType()==CAMusElement::Syllable
 			        )
@@ -638,6 +640,24 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 						v->addMElement(newElt);
 						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
+						break;
+					}
+					case CAMusElement::FiguredBassMark: {
+						CAFiguredBassMark *fbm = static_cast<CAFiguredBassMark*>(elt);
+						for (int j=fbm->numbers().size()-1; j>=0; j--) {
+							newElt = new CADrawableFiguredBassNumber(
+								fbm,
+								fbm->numbers()[j],
+								static_cast<CADrawableFiguredBassContext*>(drawableContext),
+								// shift figured bass mark more right, if only one character
+								streamsX[i]+((!fbm->accs().contains(fbm->numbers()[j]) || fbm->numbers()[j]==0)?3:0),
+								drawableContext->yPos()+CADrawableFiguredBassNumber::DEFAULT_NUMBER_SIZE*(fbm->numbers().size()-1-j)
+							);
+
+							v->addMElement(newElt);
+						}
+
+						streamsX[i] += (newElt?newElt->neededWidth():0 + MINIMUM_SPACE);
 						break;
 					}
 					case CAMusElement::FunctionMark: {

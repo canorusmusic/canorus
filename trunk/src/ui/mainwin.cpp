@@ -60,6 +60,7 @@
 #include "layout/drawablemuselement.h"
 #include "layout/drawablenote.h"
 #include "layout/drawablekeysignature.h"
+#include "layout/drawablefiguredbassnumber.h"
 
 #include "canorus.h"
 #include "core/settings.h"
@@ -78,6 +79,7 @@
 #include "score/barline.h"
 #include "score/timesignature.h"
 #include "score/syllable.h"
+#include "score/figuredbassmark.h"
 #include "score/functionmark.h"
 #include "score/dynamic.h"
 #include "score/instrumentchange.h"
@@ -207,6 +209,7 @@ CAMainWin::~CAMainWin()  {
 	delete uiKeySigToolBar;
 	delete uiTimeSigToolBar;
 	delete uiClefToolBar;
+	delete uiFBMToolBar;
 	delete uiFMToolBar;
 	delete uiDynamicToolBar;
 	delete uiInstrumentToolBar;
@@ -418,6 +421,20 @@ void CAMainWin::createCustomActions() {
 		uiClefOffset->setMaximum( 22 );
 		uiClefOffset->setValue( 0 );
 		uiClefOffset->setToolTip( tr("Clef offset") );
+
+	uiFBMToolBar = new QToolBar( tr("Figured bass ToolBar"), this );
+	uiFBMNumber = new CAMenuToolButton( tr("Set/Unset Figured bass number"), 8, this );
+		uiFBMNumber->setObjectName( "uiFBMNumber" );
+		for (int i=1; i<=15; i++) {
+			uiFBMNumber->addButton( QIcon(QString("images:numbers/")+QString::number(i)+".svg"), i, "" );
+		}
+	uiFBMAccs = new CAMenuToolButton( tr("Set/Unset Figured bass accidentals"), 5, this );
+		uiFBMAccs->setObjectName( "uiFBMAccs" );
+		uiFBMAccs->addButton( QIcon("images:accidental/doubleflat.svg"), 0, tr("Double flat") );
+		uiFBMAccs->addButton( QIcon("images:accidental/flat.svg"), 1, tr("Flat") );
+		uiFBMAccs->addButton( QIcon("images:accidental/neutral.svg"), 2, tr("Neutral") );
+		uiFBMAccs->addButton( QIcon("images:accidental/sharp.svg"), 3, tr("Sharp") );
+		uiFBMAccs->addButton( QIcon("images:accidental/doublesharp.svg"), 4, tr("Double sharp") );
 
 	uiFMToolBar = new QToolBar( tr("Function mark ToolBar"), this );
 	uiFMFunction = new CAMenuToolButton( tr("Select Function Name"), 8, this );
@@ -635,6 +652,7 @@ void CAMainWin::setupCustomUi() {
 	uiArticulationType->setCurrentId( CAArticulation::Accent );
 	connect( uiInsertArticulation, SIGNAL( triggered() ), uiArticulationType, SLOT( click() ) );
 	uiInsertToolBar->addAction( uiInsertSyllable );
+	uiInsertToolBar->addAction( uiInsertFBM );
 	uiInsertToolBar->addAction( uiInsertFM );
 
 	if(qApp->isRightToLeft())
@@ -701,6 +719,19 @@ void CAMainWin::setupCustomUi() {
 	uiVoiceStemDirection->defaultAction()->setCheckable(false);
 	uiVoiceToolBar->addAction( uiVoiceProperties );
 	addToolBar(Qt::TopToolBarArea, uiVoiceToolBar);
+
+	// Figured bass Toolbar
+	uiFBMNumber->setDefaultAction( uiFBMToolBar->addWidget( uiFBMNumber ) );
+	uiFBMNumber->defaultAction()->setToolTip( tr("Figured bass number") );
+	uiFBMNumber->setCurrentId( 6 );
+	uiFBMNumber->defaultAction()->setCheckable( true );
+	uiFBMNumber->defaultAction()->setChecked( true );
+	uiFBMAccs->setDefaultAction( uiFBMToolBar->addWidget( uiFBMAccs ) );
+	uiFBMAccs->defaultAction()->setToolTip( tr("Figured bass accidentals") );
+	uiFBMAccs->setCurrentId( 2 );
+	uiFBMAccs->defaultAction()->setCheckable( true );
+	uiFBMAccs->defaultAction()->setChecked( false );
+	addToolBar(Qt::TopToolBarArea, uiFBMToolBar);
 
 	// Function mark Toolbar
 	uiFMFunction->setDefaultAction( uiFMToolBar->addWidget( uiFMFunction ) );
@@ -791,6 +822,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->addAction( uiArticulationType->defaultAction() );
 	uiInsertGroup->addAction( uiInsertArticulation );
 	uiInsertGroup->addAction( uiInsertSyllable );
+	uiInsertGroup->addAction( uiInsertFBM );
 	uiInsertGroup->addAction( uiInsertFM );
 	uiInsertGroup->setExclusive( true );
 
@@ -801,6 +833,7 @@ void CAMainWin::setupCustomUi() {
 	uiTimeSigToolBar->hide();
 	uiKeySigToolBar->hide();
 	uiClefToolBar->hide();
+	uiFBMToolBar->hide();
 	uiFMToolBar->hide();
 	uiDynamicToolBar->hide();
 	uiInstrumentToolBar->hide();
@@ -2575,6 +2608,21 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 			}
 			break;
 		}
+		case CAMusElement::FiguredBassMark: {
+			// Insert figured bass number
+			CADrawableMusElement *left = v->nearestLeftElement( coords.x(), coords.y() );
+			int timeStart = ((left && left->musElement())?left->musElement()->timeStart():0);
+
+			if ( drawableContext->context()->contextType()==CAContext::FiguredBassContext ) {
+				CAFiguredBassContext *fbc = static_cast<CAFiguredBassContext*>(drawableContext->context());
+				CAFiguredBassMark *fbm =fbc->figuredBassMarkAtTimeStart(timeStart);
+
+				if (fbm) {
+					success = musElementFactory()->configureFiguredBassNumber(fbm);
+				}
+			}
+			break;
+		}
 		case CAMusElement::FunctionMark: {
 			// Insert function mark
 			if (drawableContext->context()->contextType()==CAContext::FunctionMarkContext) {
@@ -2605,7 +2653,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 		musElementFactory()->emptyMusElem();
 
 		// move the view to the right, if the right border was hit
-		if ( d->xPos() > v->worldX()+0.85*v->worldWidth() ) {
+		if ( d && (d->xPos() > v->worldX()+0.85*v->worldWidth()) ) {
 			v->setWorldX( d->xPos()-v->worldWidth()/2, CACanorus::settings()->animatedScroll() );
 		}
 	}
@@ -3239,6 +3287,13 @@ void CAMainWin::on_uiInsertSyllable_toggled( bool checked ) {
 	}
 }
 
+void CAMainWin::on_uiInsertFBM_toggled(bool checked) {
+	if (checked) {
+		musElementFactory()->setMusElementType( CAMusElement::FiguredBassMark );
+		setMode( InsertMode );
+	}
+}
+
 void CAMainWin::on_uiInsertFM_toggled(bool checked) {
 	if (checked) {
 		musElementFactory()->setMusElementType( CAMusElement::FunctionMark );
@@ -3400,6 +3455,79 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 	// escape key - cancel
 	if (e->key()==Qt::Key_Escape) {
 		v->removeTextEdit();
+	}
+}
+
+void CAMainWin::on_uiFBMNumber_toggled( bool checked, int buttonId ) {
+	if (!checked && !uiFBMAccs->isChecked()) {
+		uiFBMNumber->setChecked(true);
+		return;
+	}
+
+	if ( mode()==InsertMode ) {
+		if (checked) {
+			musElementFactory()->setFBMNumber( buttonId );
+		} else {
+			musElementFactory()->setFBMNumber( 0 );
+		}
+	} else
+	if ( mode()==EditMode && currentScoreView() && currentScoreView()->selection().size()) {
+		CAScoreView *v = currentScoreView();
+		CACanorus::undo()->createUndoCommand( document(), tr("change figured bass", "undo") );
+
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAFiguredBassMark *fbm = dynamic_cast<CAFiguredBassMark*>( v->selection().at(i)->musElement() );
+
+			if ( fbm ) {
+				int number = static_cast<CADrawableFiguredBassNumber*>(v->selection().at(i))->number();
+				fbm->removeNumber(number);
+				if (uiFBMAccs->isChecked()) {
+					fbm->addNumber( (checked?(buttonId):0), uiFBMAccs->currentId()-2 );
+				} else {
+					fbm->addNumber( (checked?(buttonId):0) );
+				}
+			}
+		}
+
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+}
+
+void CAMainWin::on_uiFBMAccs_toggled( bool checked, int buttonId ) {
+	if (!checked && !uiFBMNumber->isChecked()) {
+		uiFBMAccs->setChecked(true);
+		return;
+	}
+
+	if ( mode()==InsertMode ) {
+		if (checked) {
+			musElementFactory()->setFBMAccs( buttonId-2 );
+			musElementFactory()->setFBMAccsVisible( true );
+		} else {
+			musElementFactory()->setFBMAccsVisible( false );
+		}
+	} else
+	if ( mode()==EditMode && currentScoreView() && currentScoreView()->selection().size()) {
+		CAScoreView *v = currentScoreView();
+		CACanorus::undo()->createUndoCommand( document(), tr("change figured bass", "undo") );
+
+		for ( int i=0; i<v->selection().size(); i++ ) {
+			CAFiguredBassMark *fbm = dynamic_cast<CAFiguredBassMark*>( v->selection().at(i)->musElement() );
+
+			if ( fbm ) {
+				int number = static_cast<CADrawableFiguredBassNumber*>(v->selection().at(i))->number();
+				fbm->removeNumber(number);
+				if (checked) {
+					fbm->addNumber( (uiFBMNumber->isChecked()?(uiFBMNumber->currentId()):0), buttonId-2 );
+				} else {
+					fbm->addNumber( (uiFBMNumber->isChecked()?(uiFBMNumber->currentId()):0) );
+				}
+			}
+		}
+
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
 	}
 }
 
@@ -4088,6 +4216,7 @@ void CAMainWin::updateToolBars() {
 	updateKeySigToolBar();
 	updateTimeSigToolBar();
 	updateClefToolBar();
+	updateFBMToolBar();
 	updateFMToolBar();
 	updateDynamicToolBar();
 	updateInstrumentToolBar();
@@ -4221,6 +4350,7 @@ void CAMainWin::updateInsertToolBar() {
 						uiArticulationType->defaultAction()->setVisible(true); uiArticulationType->defaultAction()->setEnabled(true);
 						uiInsertTimeSig->setVisible(true);
 						uiBarlineType->defaultAction()->setVisible(true); uiBarlineType->defaultAction()->setEnabled(true);
+						uiInsertFBM->setVisible(false);
 						uiInsertFM->setVisible(false);
 						uiInsertSyllable->setVisible(false);
 						break;
@@ -4237,6 +4367,7 @@ void CAMainWin::updateInsertToolBar() {
 						uiArticulationType->defaultAction()->setVisible(false);
 						uiInsertTimeSig->setVisible(false);
 						uiBarlineType->defaultAction()->setVisible(false);
+						uiInsertFBM->setVisible(false);
 						uiInsertFM->setVisible(true);
 						uiInsertSyllable->setVisible(false);
 						break;
@@ -4253,8 +4384,26 @@ void CAMainWin::updateInsertToolBar() {
 						uiArticulationType->defaultAction()->setVisible(false);
 						uiInsertTimeSig->setVisible(false);
 						uiBarlineType->defaultAction()->setVisible(false);
+						uiInsertFBM->setVisible(false);
 						uiInsertFM->setVisible(false);
 						uiInsertSyllable->setVisible(true);
+						break;
+					case CAContext::FiguredBassContext:
+						// lyrics context selected
+						uiInsertPlayable->setVisible(false);
+						uiSlurType->defaultAction()->setVisible(false);
+						uiInsertClef->setVisible(false); // menu
+						uiInsertBarline->setVisible(false); // menu
+						uiClefType->defaultAction()->setVisible(false);
+						uiTimeSigType->defaultAction()->setVisible(false);
+						uiInsertKeySig->setVisible(false);
+						uiMarkType->defaultAction()->setVisible(false);
+						uiArticulationType->defaultAction()->setVisible(false);
+						uiInsertTimeSig->setVisible(false);
+						uiBarlineType->defaultAction()->setVisible(false);
+						uiInsertFBM->setVisible(true);
+						uiInsertFM->setVisible(false);
+						uiInsertSyllable->setVisible(false);
 						break;
 				}
 			} else {
@@ -4270,6 +4419,7 @@ void CAMainWin::updateInsertToolBar() {
 				uiArticulationType->defaultAction()->setVisible(false);
 				uiInsertTimeSig->setVisible(false);
 				uiBarlineType->defaultAction()->setVisible(false);
+				uiInsertFBM->setVisible(false);
 				uiInsertFM->setVisible(false);
 				uiInsertSyllable->setVisible(false);
 			}
@@ -4290,6 +4440,7 @@ void CAMainWin::updateInsertToolBar() {
 		uiArticulationType->defaultAction()->setVisible(false);
 		uiInsertTimeSig->setVisible(false);
 		uiBarlineType->defaultAction()->setVisible(false);
+		uiInsertFBM->setVisible(false);
 		uiInsertFM->setVisible(false);
 		uiInsertSyllable->setVisible(false);
 	}
@@ -4420,6 +4571,48 @@ void CAMainWin::updateClefToolBar() {
 		}
 	} else
 		uiClefToolBar->hide();
+}
+
+/*!
+	Shows/Hides the figured bass mark properties tool bar according to the current state.
+*/
+void CAMainWin::updateFBMToolBar() {
+	if (uiInsertFBM->isChecked() && mode()==InsertMode) {
+		if ( musElementFactory()->fbmNumber() ) {
+			uiFBMNumber->setCurrentId( musElementFactory()->fbmNumber() );
+			uiFBMNumber->setChecked( true );
+		} else {
+			uiFBMNumber->setChecked( false );
+		}
+
+		uiFBMAccs->setCurrentId( musElementFactory()->fbmAccs()+2 );
+		uiFBMAccs->setChecked( musElementFactory()->fbmAccsVisible() );
+
+		uiFBMToolBar->show();
+	} else if ( mode()==EditMode && currentScoreView() &&
+	            currentScoreView()->selection().size() &&
+	            dynamic_cast<CAFiguredBassMark*>(currentScoreView()->selection().at(0)->musElement()) ) {
+		CAFiguredBassMark *fbm = dynamic_cast<CAFiguredBassMark*>(currentScoreView()->selection().at(0)->musElement());
+		int number = static_cast<CADrawableFiguredBassNumber*>(currentScoreView()->selection().at(0))->number();
+
+		if ( number ) {
+			uiFBMNumber->setCurrentId( number );
+			uiFBMNumber->setChecked( true );
+		} else {
+			uiFBMNumber->setChecked( false );
+		}
+
+		if ( fbm->accs().contains(number) ) {
+			uiFBMAccs->setCurrentId( fbm->accs()[number]+2 );
+			uiFBMAccs->setChecked( true );
+		} else {
+			uiFBMAccs->setChecked( false );
+		}
+
+		uiFBMToolBar->show();
+	} else {
+		uiFBMToolBar->hide();
+	}
 }
 
 /*!

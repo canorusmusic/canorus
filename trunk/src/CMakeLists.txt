@@ -328,7 +328,7 @@ SET(Canorus_Layout_Srcs	# Drawable instances of the data
 	layout/drawablebarline.cpp
 	layout/drawablemark.cpp
 	layout/drawablesyllable.cpp
-	layout/drawablefiguredbassmark.cpp
+	layout/drawablefiguredbassnumber.cpp
 	layout/drawablefunctionmark.cpp
 )
 
