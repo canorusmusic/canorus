@@ -187,6 +187,7 @@ private slots:
 	void on_uiMarkType_toggled(bool, int);
 	void on_uiArticulationType_toggled(bool, int);
 	void on_uiInsertSyllable_toggled(bool);
+	void on_uiInsertFBM_toggled(bool);
 	void on_uiInsertFM_toggled(bool);
 
 	// View
@@ -243,6 +244,10 @@ private slots:
 	void on_uiFMChordArea_toggled(bool, int);
 	void on_uiFMTonicDegree_toggled(bool, int);
 	void on_uiFMEllipse_toggled(bool);
+
+	// Figured bass marks
+	void on_uiFBMNumber_toggled(bool, int);
+	void on_uiFBMAccs_toggled(bool, int);
 
 	// Dynamic marks
 	void on_uiDynamicText_toggled(bool, int);
@@ -391,6 +396,7 @@ private:
 	void updateKeySigToolBar();
 	void updateTimeSigToolBar();
 	void updateClefToolBar();
+	void updateFBMToolBar();
 	void updateFMToolBar();
 	void updateDynamicToolBar();
 	void updateInstrumentToolBar();
@@ -422,6 +428,7 @@ private:
 			CAMenuToolButton *uiMarkType;
 			CAMenuToolButton *uiArticulationType;
 			// QAction       *uiInsertSyllable;  // made by Qt Designer
+			// QAction       *uiInsertFBM;  // made by Qt Designer
 			// QAction       *uiInsertFM;  // made by Qt Designer
 
 		QToolBar *uiSheetToolBar;
@@ -476,7 +483,7 @@ private:
 			// QAction          *uiHiddenRest; // made by Qt Designer
 
 		QToolBar *uiKeySigToolBar;
-			// CAKeySigPSP  *uiKeySigPSP;	            /// Key signature perspective. \todo Reimplement it.
+			// CAKeySigPSP  *uiKeySigPSP;	            // Key signature perspective. \todo Reimplement it.
 			QComboBox *uiKeySig;
 			// QComboBox    *uiKeySigGender;
 
@@ -489,6 +496,10 @@ private:
 			QLabel           *uiTimeSigSlash;
 			QSpinBox         *uiTimeSigBeat;
 			// CAMenuToolButton *uiTimeSigStyle; /// \todo Implement it. -Matevz
+
+		QToolBar *uiFBMToolBar;                      // figured bass tool bar
+			CAMenuToolButton *uiFBMNumber;
+			CAMenuToolButton *uiFBMAccs;
 
 		QToolBar *uiFMToolBar;                       // function mark tool bar
 			CAMenuToolButton  *uiFMFunction;

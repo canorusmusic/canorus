@@ -70,6 +70,10 @@ CAMusElementFactory::CAMusElementFactory() {
 	_eSlurType = CASlur::TieType;
 	_slurStyle = CASlur::SlurSolid;
 
+	_fbmNumber = 6;
+	_fbmAccs   = 0;
+	_fbmAccsVisible = false;
+
 	_fmFunction = CAFunctionMark::T; // Name of the function
 	_fmChordArea = CAFunctionMark::Undefined; // Chord area of the function
 	_fmTonicDegree = CAFunctionMark::T; // Tonic degree of the function
@@ -440,6 +444,24 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 		}
 	}
 	return success;
+}
+
+/*!
+	Configures a new figured bass mark with \a timeStart and \a timeLength in context \a fbc.
+*/
+bool CAMusElementFactory::configureFiguredBassNumber( CAFiguredBassMark *fbm ) {
+	if ( _fbmNumber==0 && (!_fbmAccsVisible) || (!fbm) ) {
+		return false;
+	}
+
+	if (_fbmAccsVisible) {
+		fbm->addNumber( _fbmNumber, _fbmAccs );
+	} else {
+		fbm->addNumber( _fbmNumber );
+	}
+	mpoMusElement = fbm;
+
+	return true;
 }
 
 /*!

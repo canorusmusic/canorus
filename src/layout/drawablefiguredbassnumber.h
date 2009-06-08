@@ -13,17 +13,20 @@
 
 class CADrawableFiguredBassContext;
 
-class CADrawableFiguredBassMark: public CADrawableMusElement {
+class CADrawableFiguredBassNumber: public CADrawableMusElement {
 public:
-	CADrawableFiguredBassMark( CAFiguredBassMark *m, CADrawableFiguredBassContext*, double x, double y );
-	virtual ~CADrawableFiguredBassMark();
+	CADrawableFiguredBassNumber( CAFiguredBassMark *m, int number, CADrawableFiguredBassContext*, double x, double y );
+	virtual ~CADrawableFiguredBassNumber();
 
-	CADrawableFiguredBassMark *clone(CADrawableContext *c);
+	CADrawableFiguredBassNumber *clone(CADrawableContext *c);
 	void draw(QPainter *p, const CADrawSettings s);
 
 	CAFiguredBassMark *figuredBassMark() { return static_cast<CAFiguredBassMark*>(musElement()); }
+	int number() { return _number; }
 
 	static const double DEFAULT_NUMBER_SIZE;
+private:
+	int _number;
 };
 
 #endif /* DRAWABLEFIGUREDBASSMARK_H_ */

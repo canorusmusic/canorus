@@ -25,6 +25,7 @@ public:
 	bool remove( CAMusElement *elt );
 
 	QList<CAFiguredBassMark*>& figuredBassMarkList() { return _figuredBassMarkList; }
+	CAFiguredBassMark *figuredBassMarkAtTimeStart( int timeStart );
 
 	void repositFiguredBassMarks();
 	void addFiguredBassMark( CAFiguredBassMark*, bool replace=true );

@@ -19,6 +19,7 @@
 #include "score/voice.h"
 #include "score/rest.h"
 #include "score/slur.h"
+#include "score/figuredbassmark.h"
 #include "score/functionmark.h"
 #include "score/lyricscontext.h"
 #include "score/syllable.h"
@@ -80,6 +81,8 @@ public:
 	                    CANote *noteStart, CANote *noteEnd );
 
 	bool configureMark( CAMusElement *elt );
+
+	bool configureFiguredBassNumber( CAFiguredBassMark *fbm );
 
 	bool configureFunctionMark( CAFunctionMarkContext *fmc,
 	                               int timeStart, int timeLength );
@@ -169,6 +172,13 @@ public:
 	inline CAArticulation::CAArticulationType articulationType() { return _articulationType; }
 	inline void setArticulationType( CAArticulation::CAArticulationType t ) { _articulationType = t; }
 
+	inline int fbmNumber() { return _fbmNumber; }
+	inline void setFBMNumber( int n ) { _fbmNumber = n; }
+	inline int fbmAccs() { return _fbmAccs; }
+	inline void setFBMAccs( int n ) { _fbmAccs= n; }
+	inline bool fbmAccsVisible() { return _fbmAccsVisible; }
+	inline void setFBMAccsVisible( int n ) { _fbmAccsVisible = n; }
+
 	inline CAFunctionMark::CAFunctionType fmFunction() { return _fmFunction; }
 	inline void setFMFunction( CAFunctionMark::CAFunctionType f ) { _fmFunction = f; }
 
@@ -257,6 +267,11 @@ private:
 	CAMark::CAMarkType _markType;                  // Type of the mark
 	CAArticulation::CAArticulationType _articulationType; // Type of the articulation mark
 	CASlur::CASlurStyle _slurStyle;                // Style of the slur (solid, dotted)
+
+	// Figured bass
+	int _fbmNumber;                                // Figured bass number
+	int _fbmAccs;                                  // Figured bass accidentals
+	bool _fbmAccsVisible;                          // Are accidentals visible
 
 	// Function Mark
 	CAFunctionMark::CAFunctionType _fmFunction;    // Name of the function
