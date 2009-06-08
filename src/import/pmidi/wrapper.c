@@ -1,17 +1,25 @@
+/*!
+   Copyright (c) 2007, Matevž Jekovec, Georg Rudolph, Canorus development team
+   All Rights Reserved. See AUTHORS for a complete list of authors.
+
+   Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
+*/
+
+
 #include "glib.h"
 #include "elements.h"
 
 #include <stdio.h>
 #include "midi.h"
 #include "md.h"
-//#include "seqlib.h"
 #include "wrapper.h"
 
 
 int pmidi_wrapper_status = PMIDI_STATUS_END;
 struct pmidi_outs pmidi_out;
 
-/* pmidi's structures while parsing the file
+/*
+	pmidi's structures while parsing the file
 */
 static struct rootElement *root;
 static struct sequenceState *seq;
@@ -24,27 +32,18 @@ static unsigned long end;
 */
 int pmidi_open_midi_file( const char *name )
 {
-	printf(" In pmidi ist der Filename angekommen: %s\n", name );
+	//printf("Filename arrived in pmidi: %s\n", name );
 	pmidi_wrapper_status = PMIDI_STATUS_END;
 	root = midi_read_file((char *)name);
 	seq = md_sequence_init(root);
 	return root ? 0 : 1;
 }
 
-char str[256];
-
 /*
 	Example for a callback function to bring data back to the calling party.
 */
 int pmidi_parse_midi_file( void )
 {
-	/* this worked to give a string back:
-	static int x = 0;
-	sprintf( str, "  Ausgabe von PMIDI: %d\n", x );
-	*p = str;
-	x++;
-	return pmidi_main( NULL );
-	*/
 
 	switch (pmidi_wrapper_status) {
 	case PMIDI_STATUS_END:
@@ -153,25 +152,6 @@ int pmidi_parse_midi_file( void )
 		}
 ////////////////////////////////////
 	}
-
-	/* Get the end time for the tracks and echo an event to
-	 * wake us up at that time
-	 */
-	// FIXME end = md_sequence_end_time(seq);
-	// FIXME seq_midi_echo(ctxp, end);
-
-#ifdef USE_DRAIN
-	// FIXME snd_seq_drain_output(seq_handle(ctxp));
-#else
-	// FIXME snd_seq_flush_output(seq_handle(ctxp));
-#endif
-
-	/* Wait for all the events to be played */
-	// FIXME snd_seq_event_input(seq_handle(ctxp), &ep);
-
-	/* Wait some extra time to allow for note to decay etc */
-	// FIXME sleep(delay);
-	// FIXME seq_stop_timer(ctxp);
 
 	md_free(MD_ELEMENT(root));
 
