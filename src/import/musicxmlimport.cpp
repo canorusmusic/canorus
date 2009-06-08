@@ -404,6 +404,8 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 	CADiatonicPitch pitch;
 	CANote::CAStemDirection stem = CANote::StemPreferred;
 	int lyricsNumber=-1;
+	bool hyphen = false;
+	bool melisma = false;
 	QString lyricsText;
 
 	if (!divisions) {
@@ -458,8 +460,19 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 					lyricsNumber = attributes().value("number").toString().toInt();
 				}
 
-				while (name()!="text") readNext();
-				lyricsText = readElementText();
+				while (!atEnd() && !(tokenType()==EndElement && name()=="lyric")) {
+					readNext();
+
+					if (tokenType()==StartElement) {
+						if (name()=="text") {
+							lyricsText = readElementText();
+						} else if (name()=="syllabic") {
+							hyphen = (readElementText()=="begin"||readElementText()=="middle");
+						} else if (name()=="extend") {
+							melisma = true;
+						}
+					}
+				}
 			} else if (name()=="tie") {
 				if ( attributes().value("type")=="stop" ) {
 					tieStop = true;
@@ -526,7 +539,7 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 			_document->sheetList()[0]->insertContext( idx, v->lyricsContextList().last() );
 		}
 
-		v->lyricsContextList()[lyricsNumber-1]->addSyllable( new CASyllable(lyricsText, false, false, v->lyricsContextList()[lyricsNumber-1], p->timeStart(), p->timeLength() ) );
+		v->lyricsContextList()[lyricsNumber-1]->addSyllable( new CASyllable(lyricsText, hyphen, melisma, v->lyricsContextList()[lyricsNumber-1], p->timeStart(), p->timeLength() ) );
 	}
 }
 
