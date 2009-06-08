@@ -15,6 +15,9 @@ CAFiguredBassMark::CAFiguredBassMark( CAFiguredBassContext *c, int timeStart, in
 }
 
 CAFiguredBassMark::~CAFiguredBassMark() {
+	if (_context) {
+		_context->remove( this );
+	}
 }
 
 /*!

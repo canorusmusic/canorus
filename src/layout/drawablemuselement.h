@@ -28,6 +28,7 @@ class CADrawableMusElement : public CADrawable {
 			DrawableTuplet,
 			DrawableSyllable,
 			DrawableFunctionMark, DrawableFunctionMarkSupport,
+			DrawableFiguredBassMark,
 			DrawableMark
 		};
 

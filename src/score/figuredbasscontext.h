@@ -24,8 +24,11 @@ public:
 	CAMusElement *previous(CAMusElement *elt);
 	bool remove( CAMusElement *elt );
 
+	QList<CAFiguredBassMark*>& figuredBassMarkList() { return _figuredBassMarkList; }
+
 	void repositFiguredBassMarks();
-	void addFiguredBassMark( CAFiguredBassMark * );
+	void addFiguredBassMark( CAFiguredBassMark*, bool replace=true );
+	void addEmptyFiguredBassMark( int timeStart, int timeLength );
 
 private:
 	QList<CAFiguredBassMark*> _figuredBassMarkList;

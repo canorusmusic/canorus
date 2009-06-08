@@ -28,6 +28,9 @@
 #include "layout/drawablelyricscontext.h"
 #include "layout/drawablesyllable.h"
 
+#include "layout/drawablefiguredbasscontext.h"
+#include "layout/drawablefiguredbassmark.h"
+
 #include "layout/drawablefunctionmarkcontext.h"
 #include "layout/drawablefunctionmark.h"
 
@@ -116,6 +119,18 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			contexts << lyricsContext;
 			dy += drawableContextMap[lyricsContext]->height();
 		} else
+		if (sheet->contextList()[i]->contextType() == CAContext::FiguredBassContext) {
+			if (i>0) dy+=70;
+
+			CAFiguredBassContext *fbContext = static_cast<CAFiguredBassContext*>(sheet->contextList()[i]);
+			drawableContextMap[fbContext] = new CADrawableFiguredBassContext(fbContext, 0, dy);
+			v->addCElement(drawableContextMap[fbContext]);
+			QList<CAFiguredBassMark*> fbmList = fbContext->figuredBassMarkList();
+			QList<CAMusElement*> musList; for (int i=0; i<fbmList.size(); i++) musList << fbmList[i];
+			musStreamList << musList;
+			contexts << fbContext;
+			dy += drawableContextMap[fbContext]->height();
+		}
 		if (sheet->contextList()[i]->contextType() == CAContext::FunctionMarkContext) {
 			if (i>0) dy+=70;
 
