@@ -21,8 +21,9 @@ public:
 
 	enum CAContextType {
 		Staff,
+		LyricsContext,
 		FunctionMarkContext,
-		LyricsContext
+		FiguredBassContext
 	};
 
 	const QString name() { return _name; }

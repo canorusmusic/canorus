@@ -32,6 +32,7 @@ public:
 		Tuplet,
 		Syllable,
 		FunctionMark,
+		FiguredBassMark,
 		Mark
 	};
 

@@ -52,7 +52,6 @@ CALyricsContext::~CALyricsContext() {
 void CALyricsContext::clear() {
 	while(!_syllableList.isEmpty())
 		delete _syllableList.takeFirst();
-	_syllableList.clear();
 }
 
 CALyricsContext *CALyricsContext::clone( CASheet *s ) {

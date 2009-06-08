@@ -66,6 +66,7 @@
 #include "score/sheet.h"
 #include "score/staff.h"
 #include "score/functionmarkcontext.h"
+#include "score/figuredbasscontext.h"
 #include "score/lyricscontext.h"
 #include "score/clef.h"
 #include "score/articulation.h"
@@ -238,6 +239,7 @@ void CAMainWin::createCustomActions() {
 		uiContextType->setObjectName( "uiContextType" );
 		uiContextType->addButton( QIcon("images:document/staffnew.svg"), CAContext::Staff, tr("New Staff") );
 		uiContextType->addButton( QIcon("images:document/lyricscontextnew.svg"), CAContext::LyricsContext, tr("New Lyrics context") );
+		uiContextType->addButton( QIcon("images:document/fbcontextnew.svg"), CAContext::FiguredBassContext, tr("New Figured Bass context") );
 		uiContextType->addButton( QIcon("images:document/fmcontextnew.svg"), CAContext::FunctionMarkContext, tr("New Function Mark context") );
 	uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this );
 		uiSlurType->setObjectName( "uiSlurType" );
@@ -1652,6 +1654,17 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 							)
 						);
 
+						break;
+					}
+					case CAContext::FiguredBassContext: {
+						CACanorus::undo()->createUndoCommand( document(), tr("new figured bass context", "undo"));
+						v->sheet()->insertContextAfter(
+							dupContext?dupContext->context():0,
+							newContext = new CAFiguredBassContext(
+								tr("FiguredBassContext%1").arg(v->sheet()->contextList().size()+1),
+								v->sheet()
+							)
+						);
 						break;
 					}
 					case CAContext::FunctionMarkContext: {
