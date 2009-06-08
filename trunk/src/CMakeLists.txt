@@ -224,6 +224,7 @@ SET(Canorus_Score_Srcs		# Score representation
 	score/context.cpp
 	score/staff.cpp
 	score/functionmarkcontext.cpp
+	score/figuredbasscontext.cpp
 	score/lyricscontext.cpp
 	
 	score/muselement.cpp
@@ -255,6 +256,8 @@ SET(Canorus_Score_Srcs		# Score representation
 	score/syllable.cpp
 	
 	score/functionmark.cpp
+	
+	score/figuredbassmark.cpp
 )
 
 SET(Canorus_Scripting_Srcs	# Sources meant for bridging C++<->scripting language

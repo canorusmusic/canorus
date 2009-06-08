@@ -34,7 +34,7 @@ public:
 	inline const QList<CASyllable*>& syllableList() { return _syllableList; }
 	bool addSyllable( CASyllable*, bool replace=true );
 	bool addEmptySyllable( int timeStart, int timeLength );
-	void removeSyllable( CASyllable* s ) { _syllableList.removeAll(s); }
+//	void removeSyllable( CASyllable* s ) { _syllableList.removeAll(s); }
 	CASyllable* removeSyllableAtTimeStart( int timeStart );
 	CASyllable* syllableAtTimeStart( int timeStart );
 
@@ -47,9 +47,9 @@ public:
 
 private:
 	QList< CASyllable* > _syllableList;
-	CAVoice *_associatedVoice;
-	int _stanzaNumber;
-	QString _customStanzaName;
+	CAVoice             *_associatedVoice;
+	int                  _stanzaNumber;
+	QString              _customStanzaName;
 };
 
 #endif /* LYRICSCONTEXT_H_ */

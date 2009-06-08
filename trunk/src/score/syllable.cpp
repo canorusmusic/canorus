@@ -51,9 +51,9 @@ void CASyllable::clear() {
 }
 
 /*!
- * Clone the syllable using the given new context.
- * If the given context is not a lyrics context, 0 is used instead.
- */
+	Clone the syllable using the given new context.
+	If the given context is not a lyrics context, 0 is used instead.
+*/
 CASyllable* CASyllable::clone(CAContext* context) {
 	CALyricsContext* newContext = 0;
 	if(context->contextType() == CAContext::LyricsContext)

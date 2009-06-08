@@ -13,6 +13,7 @@
 #include "score/staff.h"
 #include "score/voice.h"
 #include "score/functionmarkcontext.h"
+#include "score/figuredbasscontext.h"
 #include "score/lyricscontext.h"
 
 #include "score/playablelength.h"
@@ -43,6 +44,7 @@
 %include "score/staff.h"
 %include "score/voice.h"
 %include "score/functionmarkcontext.h"
+%include "score/figuredbasscontext.h"
 %include "score/lyricscontext.h"
 
 %include "score/playablelength.h"
