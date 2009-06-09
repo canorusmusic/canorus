@@ -132,7 +132,9 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			dy += drawableContextMap[fbContext]->height();
 		} else
 		if (sheet->contextList()[i]->contextType() == CAContext::FunctionMarkContext) {
-			if (i>0) dy+=70;
+			if (i>0 && sheet->contextList()[i-1]->contextType() != CAContext::FiguredBassContext) {
+				dy+=70;
+			}
 
 			CAFunctionMarkContext *fmContext = static_cast<CAFunctionMarkContext*>(sheet->contextList()[i]);
 			drawableContextMap[fmContext] = new CADrawableFunctionMarkContext(fmContext, 0, dy);
