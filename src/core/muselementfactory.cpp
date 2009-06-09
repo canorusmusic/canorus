@@ -9,6 +9,7 @@
 
 #include "core/muselementfactory.h"
 #include "score/functionmarkcontext.h"
+#include "score/figuredbasscontext.h"
 #include "score/sheet.h"
 #include "score/text.h"
 #include "score/bookmark.h"
@@ -250,8 +251,12 @@ bool CAMusElementFactory::configureNote( int pitch,
 				voice->lyricsContextList().at(i)->repositSyllables(); // adds an empty syllable or assigns the already placed at the end if it exists
 			}
 			for (int i=0; i<voice->staff()->sheet()->contextList().size(); i++) {
-				if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FunctionMarkContext)
+				if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FunctionMarkContext) {
 					static_cast<CAFunctionMarkContext*>(voice->staff()->sheet()->contextList()[i])->repositFunctions();
+				} else
+				if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FiguredBassContext) {
+					static_cast<CAFiguredBassContext*>(voice->staff()->sheet()->contextList()[i])->repositFiguredBassMarks();
+				}
 			}
 		} else {
 			for (int i=0; i<voice->lyricsContextList().size(); i++) {
@@ -260,10 +265,15 @@ bool CAMusElementFactory::configureNote( int pitch,
 				);
 			}
 			for (int i=0; i<voice->staff()->sheet()->contextList().size(); i++) {
-				if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FunctionMarkContext)
+				if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FunctionMarkContext) {
 					static_cast<CAFunctionMarkContext*>(voice->staff()->sheet()->contextList()[i])->addEmptyFunction(
 						mpoMusElement->timeStart(), mpoMusElement->timeLength()
 					);
+				} else if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FiguredBassContext) {
+					static_cast<CAFiguredBassContext*>(voice->staff()->sheet()->contextList()[i])->addEmptyFiguredBassMark(
+						mpoMusElement->timeStart(), mpoMusElement->timeLength()
+					);
+				}
 			}
 		}
 	}

@@ -72,8 +72,8 @@ void CAFiguredBassContext::repositFiguredBassMarks() {
 	int fbmIdx = 0;
 	while (chord.size()) {
 		int maxTimeStart = chord[0]->timeStart();
-		int minTimeLength = chord[0]->timeEnd();
-		bool notes = false; // notes present in the chord
+		int minTimeEnd = chord[0]->timeEnd();
+		bool notes = false; // are notes present in the chord or only rests?
 		for (int i=1; i<chord.size(); i++) {
 			if (chord[i]->musElementType()==CAMusElement::Note) {
 				notes = true;
@@ -82,25 +82,25 @@ void CAFiguredBassContext::repositFiguredBassMarks() {
 			if (chord[i]->timeStart() > maxTimeStart) {
 				maxTimeStart = chord[i]->timeStart();
 			}
-			if (chord[i]->timeLength() < minTimeLength) {
-				minTimeLength= chord[i]->timeLength();
+			if (chord[i]->timeEnd() < minTimeEnd) {
+				minTimeEnd = chord[i]->timeEnd();
 			}
-		}
-
-		// add new empty figured bass, if none exist
-		if ( fbmIdx==_figuredBassMarkList.size() ) {
-			addEmptyFiguredBassMark( maxTimeStart, minTimeLength );
 		}
 
 		// only assign figured bass marks under the notes
 		if (notes) {
+			// add new empty figured bass, if none exist
+			if ( fbmIdx==_figuredBassMarkList.size() ) {
+				addEmptyFiguredBassMark( maxTimeStart, minTimeEnd-maxTimeStart );
+			}
+
 			CAFiguredBassMark *mark = _figuredBassMarkList[fbmIdx];
 			mark->setTimeStart( maxTimeStart );
-			mark->setTimeLength( minTimeLength );
+			mark->setTimeLength( minTimeEnd-maxTimeStart );
 			fbmIdx++;
 		}
 
-		chord = sheet()->getChord(maxTimeStart+minTimeLength);
+		chord = sheet()->getChord(minTimeEnd);
 	}
 
 	// updated times for the figured bass marks at the end (after the score)

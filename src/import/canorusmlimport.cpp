@@ -44,6 +44,9 @@
 #include "score/lyricscontext.h"
 #include "score/syllable.h"
 
+#include "score/figuredbasscontext.h"
+#include "score/figuredbassmark.h"
+
 #include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
 
@@ -200,6 +203,20 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		// voices are not neccesseraly completely read - store indices of the voices internally and then assign them at the end
 		if (!attributes.value("associated-voice-idx").isEmpty())
 			_lcMap[static_cast<CALyricsContext*>(_curContext)] = attributes.value("associated-voice-idx").toInt();
+
+		_curSheet->addContext(_curContext);
+
+	} else if (qName == "figured-bass-context") {
+		// CAFiguredBassContext
+		QString fbcName = attributes.value("name");
+		if (!_curSheet) {
+			_errorMsg = "The sheet where to add the figured bass context doesn't exist yet!";
+			return false;
+		}
+
+		if (fbcName.isEmpty())
+			fbcName = QObject::tr("Figured Bass Context %1").arg(_curSheet->contextList().size()+1);
+		_curContext = new CAFiguredBassContext( fbcName, _curSheet );
 
 		_curSheet->addContext(_curContext);
 
@@ -417,6 +434,28 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			_syllableMap[s] = attributes.value("associated-voice-idx").toInt();
 		_curMusElt = s;
 		_curMusElt->setColor(_color);
+	} else if (qName == "figured-bass-mark") {
+		// CAFiguredBassMark
+		CAFiguredBassMark *f =
+			new CAFiguredBassMark(
+				static_cast<CAFiguredBassContext*>(_curContext),
+				attributes.value("time-start").toInt(),
+				attributes.value("time-length").toInt()
+			);
+
+		static_cast<CAFiguredBassContext*>(_curContext)->addFiguredBassMark(f);
+		_curMusElt = f;
+		_curMusElt->setColor(_color);
+
+	} else if (qName == "figured-bass-number") {
+		// CAFiguredBassMark
+		CAFiguredBassMark *f = static_cast<CAFiguredBassMark*>(_curMusElt);
+		if (attributes.value("accs").isEmpty()) {
+			f->addNumber( attributes.value("number").toInt() );
+		} else {
+			f->addNumber( attributes.value("number").toInt(), attributes.value("accs").toInt() );
+		}
+
 	} else if (qName == "function-mark" || _version.startsWith("0.5") && qName == "function-marking") {
 		// CAFunctionMark
 		CAFunctionMark *f =

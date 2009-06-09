@@ -43,6 +43,9 @@
 #include "score/lyricscontext.h"
 #include "score/syllable.h"
 
+#include "score/figuredbasscontext.h"
+#include "score/figuredbassmark.h"
+
 #include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
 
@@ -154,6 +157,10 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 						}
 					}
 
+					break;
+				}
+				case CAContext::FiguredBassContext: {
+					exportFiguredBass( static_cast<CAFiguredBassContext*>(c), dSheet );
 					break;
 				}
 				case CAContext::FunctionMarkContext: {
@@ -318,6 +325,27 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 		exportColor( curElt, dElt );
 
 		exportMarks( curElt, dElt );
+	}
+}
+
+void CACanorusMLExport::exportFiguredBass( CAFiguredBassContext *fbc, QDomElement& dSheet ) {
+	QDomElement dFbc = dSheet.ownerDocument().createElement("figured-bass-context"); dSheet.appendChild(dFbc);
+	dFbc.setAttribute("name", fbc->name());
+
+	QList<CAFiguredBassMark*> elts = fbc->figuredBassMarkList();
+	for (int i=0; i<elts.size(); i++) {
+		QDomElement dFbm = dSheet.ownerDocument().createElement("figured-bass-mark"); dFbc.appendChild(dFbm);
+		dFbm.setAttribute( "time-start", elts[i]->timeStart() );
+		dFbm.setAttribute( "time-length", elts[i]->timeLength() );
+		exportColor( elts[i], dFbm );
+
+		for (int j=0; j<elts[i]->numbers().size(); j++) {
+			QDomElement dFbn = dSheet.ownerDocument().createElement("figured-bass-number"); dFbm.appendChild(dFbn);
+			dFbn.setAttribute( "number", elts[i]->numbers()[j] );
+			if ( elts[i]->accs().contains(elts[i]->numbers()[j]) ) {
+				dFbn.setAttribute( "accs", elts[i]->accs()[elts[i]->numbers()[j]] );
+			}
+		}
 	}
 }
 
