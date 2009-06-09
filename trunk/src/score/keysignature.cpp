@@ -32,6 +32,7 @@
 CAKeySignature::CAKeySignature( CADiatonicKey k, CAStaff *staff, int timeStart )
  : CAMusElement(staff, timeStart) {
  	setMusElementType( CAMusElement::KeySignature );
+ 	for (int i=0; i<7; i++) _accidentals << 0;
 
  	setKeySignatureType( MajorMinor );
  	setDiatonicKey(k);
@@ -45,6 +46,7 @@ CAKeySignature::CAKeySignature( CADiatonicKey k, CAStaff *staff, int timeStart )
 CAKeySignature::CAKeySignature(CAModus m, CAStaff *staff, int timeStart)
  : CAMusElement(staff, timeStart) {
  	setMusElementType( CAMusElement::KeySignature );
+ 	for (int i=0; i<7; i++) _accidentals << 0;
 
  	setKeySignatureType( Modus );
  	setModus(m);

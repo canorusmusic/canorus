@@ -42,13 +42,11 @@
 }
 
 // convert Python's String to QString in UTF8 encoding
-%typemap(in) const QString {
+%typemap(in) const QString, QString {
 	$1 = QString::fromUtf8(PyString_AsString($input));
 }
-
-// non-const QString version
-%typemap(in) QString {
-	$1 = QString::fromUtf8(PyString_AsString($input));
+%typemap(in) const QString&, QString& {
+	(*$1) = QString::fromUtf8(PyString_AsString($input));
 }
 
 // convert returned QColor value to Python's tuple of RGBA integers
@@ -102,6 +100,22 @@
     	SWIG_ConvertPtr(PyList_GetItem( $input, i ), &listp,SWIGTYPE_p_CAPlugin, 0 |  0 );
     	$1.append(reinterpret_cast<CAPlugin*>(listp));
     }
+}
+
+// convert ordinary integers to python integers
+%typemap(out) const QList<int>, QList<int> {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++)
+		PyList_Append(list, PyInt_FromLong($1[i]));
+	
+	$result = list;
+}
+%typemap(out) const QList<int>&, QList<int>& {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1->size(); i++)
+		PyList_Append(list, PyInt_FromLong($1->at(i)));
+	
+	$result = list;
 }
 
 // convert QList to Python list
