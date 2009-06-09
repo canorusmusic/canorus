@@ -34,32 +34,37 @@ void CADrawableFiguredBassNumber::draw(QPainter *p, const CADrawSettings s) {
 	font.setPixelSize( qRound(DEFAULT_NUMBER_SIZE*s.z*1.3) );
 	p->setFont( font );
 
-	QString text;
+	QString accs;
 	if (figuredBassMark()->accs().contains(_number)) {
 		if (figuredBassMark()->accs()[_number]==-2) {
-			text += QString(CACanorus::fetaCodepoint("accidentals.flatflat"));
+			accs += QString(CACanorus::fetaCodepoint("accidentals.flatflat"));
 		} else
 		if (figuredBassMark()->accs()[_number]==-1) {
-			text += QString(CACanorus::fetaCodepoint("accidentals.flat"));
+			accs += QString(CACanorus::fetaCodepoint("accidentals.flat"));
 		} else
 		if (figuredBassMark()->accs()[_number]==0) {
-			text += QString(CACanorus::fetaCodepoint("accidentals.natural"));
+			accs += QString(CACanorus::fetaCodepoint("accidentals.natural"));
 		} else
 		if (figuredBassMark()->accs()[_number]==1) {
-			text += QString(CACanorus::fetaCodepoint("accidentals.sharp"));
+			accs += QString(CACanorus::fetaCodepoint("accidentals.sharp"));
 		} else
 		if (figuredBassMark()->accs()[_number]==2) {
-			text += QString(CACanorus::fetaCodepoint("accidentals.sharpsharp"));
+			accs += QString(CACanorus::fetaCodepoint("accidentals.doublesharp"));
 		}
 	}
 
+	if (!accs.isEmpty()) {
+		p->drawText( s.x, s.y+qRound(0.45*DEFAULT_NUMBER_SIZE*s.z), accs );
+	}
+
+	QString text;
 	if (_number) {
 		text += QString::number(_number);
 	} else {
 		text += " ";
 	}
 
-	p->drawText( s.x, s.y+qRound(0.8*DEFAULT_NUMBER_SIZE*s.z), text );
+	p->drawText( s.x+(accs.isEmpty()?0:(8*s.z)), s.y+qRound(0.8*DEFAULT_NUMBER_SIZE*s.z), text );
 }
 
 CADrawableFiguredBassNumber *CADrawableFiguredBassNumber::clone(CADrawableContext *c) {

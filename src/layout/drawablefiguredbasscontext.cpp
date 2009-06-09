@@ -14,7 +14,7 @@ CADrawableFiguredBassContext::CADrawableFiguredBassContext(CAFiguredBassContext 
  : CADrawableContext(c, x, y) {
 	setDrawableContextType( DrawableFiguredBassContext );
 	setWidth( 0 );
- 	setHeight( 2*CADrawableFiguredBassNumber::DEFAULT_NUMBER_SIZE );
+ 	setHeight( 3*CADrawableFiguredBassNumber::DEFAULT_NUMBER_SIZE );
 }
 
 CADrawableFiguredBassContext::~CADrawableFiguredBassContext() {

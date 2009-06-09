@@ -238,7 +238,7 @@ void CAMainWin::createCustomActions() {
 	uiRedo->setObjectName( "uiRedo" );
 
 	uiInsertToolBar = new QToolBar( tr("Insert ToolBar"), this );
-	uiContextType = new CAMenuToolButton( tr("Select Context" ), 3, this );
+	uiContextType = new CAMenuToolButton( tr("Select Context" ), 2, this );
 		uiContextType->setObjectName( "uiContextType" );
 		uiContextType->addButton( QIcon("images:document/staffnew.svg"), CAContext::Staff, tr("New Staff") );
 		uiContextType->addButton( QIcon("images:document/lyricscontextnew.svg"), CAContext::LyricsContext, tr("New Lyrics context") );
