@@ -4999,8 +4999,21 @@ void CAMainWin::deleteSelection( CAScoreView *v, bool deleteSyllables, bool dele
 			CACanorus::undo()->createUndoCommand( document(), tr("deletion of elements", "undo") );
 
 		QSet<CAMusElement*> musElemSet;
-		for (int i=0; i<v->selection().size(); i++)
+		QHash< CAFiguredBassMark*, QList<int> > numbersToDelete;
+		for (int i=0; i<v->selection().size(); i++) {
 			musElemSet << v->selection().at(i)->musElement();
+
+			// gather numbers to delete of figured bass numbers
+			if ( dynamic_cast<CADrawableFiguredBassNumber*>(v->selection().at(i)) ) {
+				CAFiguredBassMark *fbm = static_cast<CAFiguredBassMark*>(v->selection().at(i)->musElement());
+				if ( !numbersToDelete.contains( fbm ) ) {
+					numbersToDelete[fbm] = QList<int>();
+				}
+
+				numbersToDelete[fbm] <<
+					dynamic_cast<CADrawableFiguredBassNumber*>(v->selection().at(i))->number();
+			}
+		}
 
 		// cleans up the set - removes empty elements and elements which get deleted automatically (eg. slurs, if both notes are deleted, marks)
 		for (QSet<CAMusElement*>::iterator i=musElemSet.begin(); i!=musElemSet.end(); ) {
@@ -5169,6 +5182,18 @@ void CAMainWin::deleteSelection( CAScoreView *v, bool deleteSyllables, bool dele
 					lc->repositSyllables();
 				} else {
 					static_cast<CASyllable*>(*i)->clear(); // only clears syllable's text
+				}
+			} else if ( (*i)->musElementType()==CAMusElement::FiguredBassMark ) {
+				CAFiguredBassMark *fbm = static_cast<CAFiguredBassMark*>(*i);
+				CAFiguredBassContext *fbc = static_cast<CAFiguredBassContext*>(fbm->context());
+
+				if ( deleteSyllables && fbm->numbers().size()==numbersToDelete[fbm].size() ) {
+					(*i)->context()->remove(*i);  // actually removes the function if SHIFT is pressed
+					fbc->repositFiguredBassMarks();
+				} else {
+					for ( int j=0; j<numbersToDelete[fbm].size(); j++ ) {
+						fbm->removeNumber( numbersToDelete[fbm][j] );
+					}
 				}
 			} else if ( (*i)->musElementType()==CAMusElement::FunctionMark ) {
 				if ( deleteSyllables ) {

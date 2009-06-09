@@ -17,6 +17,7 @@
 #include "score/diatonickey.h"
 
 class CAMusElement;
+class CAFiguredBassContext;
 
 class CACanorusMLExport : public CAExport {
 public:
@@ -27,6 +28,7 @@ public:
 
 private:
 	void exportVoiceImpl( CAVoice* voice, QDomElement &dVoice );
+	void exportFiguredBass( CAFiguredBassContext *c, QDomElement &domParent );
 	void exportMarks( CAMusElement *associatedElt, QDomElement& domParent );
 	void exportPlayableLength( CAPlayableLength l, QDomElement& domParent );
 	void exportDiatonicPitch( CADiatonicPitch p, QDomElement& domParent );
