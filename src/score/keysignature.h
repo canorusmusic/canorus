@@ -53,7 +53,7 @@ public:
 	void setDiatonicKey(CADiatonicKey k) { _diatonicKey = k; updateAccidentals(); }
 	void setModus(CAModus modus) { _modus = modus; }
 
-	signed char *accidentals() { return _accidentals; }
+	QList<int>& accidentals() { return _accidentals; }
 
 	int compare(CAMusElement* elt);
 
@@ -69,6 +69,6 @@ private:
 	CAModus _modus;
 	CADiatonicKey _diatonicKey;
 
-	signed char _accidentals[7];	// Accidentals configuration for each level
+	QList<int> _accidentals;	// Accidentals matrix
 };
 #endif /* KEYSIGNATURE_H_ */
