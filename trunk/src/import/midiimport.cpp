@@ -6,7 +6,7 @@
 */
 
 #include <QTextStream>
-#include <QRegExp>
+//#include <QRegExp>
 #include <QFileInfo>
 
 #include <iostream> // DEBUG
@@ -60,8 +60,9 @@ CAMidiImportEvent::~CAMidiImportEvent() {
 }
 
 
-CAMidiImport::CAMidiImport( QTextStream *in )
+CAMidiImport::CAMidiImport( CADocument * document, QTextStream *in )
  : CAImport(in) {
+	_document = document;
 	initMidiImport();
 	for (int i=0;i<16; i++) {
 		_allChannelsEvents << new QList<QList<CAMidiImportEvent*>*>;
@@ -76,7 +77,6 @@ CAMidiImport::~CAMidiImport() {
 void CAMidiImport::initMidiImport() {
 	_curLine = _curChar = 0;
 	_curSlur = 0; _curPhrasingSlur = 0;
-	_document = 0;
 }
 
 void CAMidiImport::addError(QString description, int curLine, int curChar) {
@@ -382,6 +382,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 
 			writeMidiChannelEventsToVoice_New( ch, voiceIndex, staff, voice );
 			setProgress(_numberOfAllVoices ? nImportedVoices*100/_numberOfAllVoices : 50 );;
+
 			++nImportedVoices;
 			staff->synchronizeVoices();
 		}

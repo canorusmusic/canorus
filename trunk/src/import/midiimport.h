@@ -33,7 +33,7 @@ class CAMidiImportEvent;
 class CAMidiImport : public CAImport {
 public:
 	// Constructor
-	CAMidiImport( QTextStream *in=0 );
+	CAMidiImport( CADocument *document=0, QTextStream *in=0 );
 
 	// Destructor
 	virtual ~CAMidiImport();
