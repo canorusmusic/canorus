@@ -215,6 +215,34 @@ CAPlayable* CATuplet::nextTimed( CAPlayable *p ) {
 	return 0;
 }
 
+/*!
+	Returns the first note/rest in the first chord of the tuplet.
+*/
+CAPlayable* CATuplet::firstNote() {
+	if (noteList().isEmpty()) return 0;
+
+	if (noteList().first()->musElementType()==CAMusElement::Note &&
+			!static_cast<CANote*>(noteList().first())->getChord().isEmpty()) {
+		return static_cast<CANote*>(noteList().first())->getChord().first();
+	} else {
+		return noteList().first();
+	}
+}
+
+/*!
+	Returns the first note/rest in the last chord of the tuplet.
+*/
+CAPlayable* CATuplet::lastNote() {
+	if (noteList().isEmpty()) return 0;
+
+	if (noteList().last()->musElementType()==CAMusElement::Note &&
+			!static_cast<CANote*>(noteList().last())->getChord().isEmpty()) {
+		return static_cast<CANote*>(noteList().last())->getChord().first();
+	} else {
+		return noteList().last();
+	}
+}
+
 int CATuplet::timeLength() {
 	if (noteList().size()) {
 		return ( noteList().back()->timeEnd() - timeStart() );

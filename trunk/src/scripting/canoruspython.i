@@ -124,7 +124,10 @@
               const QList<CANote*>, QList<CANote*>,
               const QList<CARest*>, QList<CARest*>,
               const QList<CAMark*>, QList<CAMark*>,
-              const QList<CAPlayable*>, QList<CAPlayable*> {
+              const QList<CAPlayable*>, QList<CAPlayable*>,
+              const QList<CASyllable*>, QList<CASyllable*>,
+              const QList<CAFiguredBasMark*>, QList<CAFiguredBassMark*>,
+              const QList<CAFunctionMark*>, QList<CAFunctionMark*> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
 		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::MusElement));
@@ -135,7 +138,10 @@
               const QList<CANote*>&, QList<CANote*>&,
               const QList<CARest*>&, QList<CARest*>&,
               const QList<CAMark*>&, QList<CAMark*>&,
-              const QList<CAPlayable*>&, QList<CAPlayable*>& {
+              const QList<CAPlayable*>&, QList<CAPlayable*>&,
+              const QList<CASyllable*>&, QList<CASyllable*>&,
+              const QList<CAFiguredBassMark*>&, QList<CAFiguredBassMark*>&,
+              const QList<CAFunctionMark*>&, QList<CAFunctionMark*>& {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1->size(); i++)
 		PyList_Append(list, CASwigPython::toPythonObject($1->at(i), CASwigPython::MusElement));
@@ -159,6 +165,7 @@
 %typemap(out) const QList<CAContext*>, QList<CAContext*>,
               const QList<CAStaff*>, QList<CAStaff*>,
               const QList<CALyricsContext*>, QList<CALyricsContext*>,
+              const QList<CAFiguredBassContext*>, QList<CAFiguredBassContext*>,
               const QList<CAFunctionMarkContext*>, QList<CAFunctionMarkContext*> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
@@ -169,6 +176,7 @@
 %typemap(out) const QList<CAContext*>&, QList<CAContext*>&,
               const QList<CAStaff*>&, QList<CAStaff*>&,
               const QList<CALyricsContext*>&, QList<CALyricsContext*>&,
+              const QList<CAFiguredBassContext*>&, QList<CAFiguredBassContext*>&,
               const QList<CAFunctionMarkContext*>&, QList<CAFunctionMarkContext*>& {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1->size(); i++)
@@ -324,6 +332,8 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAStaff, 0);
 			case CAContext::LyricsContext:
 				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CALyricsContext, 0);
+			case CAContext::FiguredBassContext:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFiguredBassContext, 0);
 			case CAContext::FunctionMarkContext:
 				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMarkContext, 0);
 			default:
@@ -351,6 +361,8 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAClef, 0);
 			case CAMusElement::Barline:
 				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CABarline, 0);
+			case CAMusElement::FiguredBassMark:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFiguredBassMark, 0);
 			case CAMusElement::FunctionMark:
 				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAFunctionMark, 0);
 			case CAMusElement::Syllable:
