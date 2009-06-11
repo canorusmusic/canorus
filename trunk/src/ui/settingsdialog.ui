@@ -188,6 +188,16 @@
             </widget>
            </item>
            <item>
+            <widget class="QCheckBox" name="uiSplitAtQuarterBoundaries">
+             <property name="toolTip">
+              <string>When inserting notes and rests, split them automatically at quarter boundaries.</string>
+             </property>
+             <property name="text">
+              <string>Automatic splitting at quarter boundaries</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
