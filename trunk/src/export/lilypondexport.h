@@ -34,6 +34,7 @@ public:
 	// Setter methods are private!
 	inline CAVoice *curVoice() { return _curVoice; }
 	inline CASheet *curSheet() { return _curSheet; }
+	inline CADocument *curDocument() { return _curDocument; }
 	inline CAContext *curContext() { return _curContext; }
 	inline int curContextIndex() { return _curContextIndex; }
 	inline int curIndentLevel() { return _curIndentLevel; }
@@ -85,6 +86,7 @@ private:
 	inline void setCurSheet(CASheet *sheet) { _curSheet = sheet; }
 	inline void setCurContext(CAContext *context) { _curContext = context; }
 	inline void setCurContextIndex(int c) { _curContextIndex = c; }
+	inline void setCurDocument(CADocument *document) { _curDocument = document; }
 	inline void setIndentLevel( int level) { _curIndentLevel = level; }
 
 	/////////////
@@ -94,6 +96,7 @@ private:
 	CAVoice *_curVoice;
 	CASheet *_curSheet;
 	CAContext *_curContext;
+	CADocument *_curDocument;
 	int _curContextIndex;
 	int _curIndentLevel;
 
