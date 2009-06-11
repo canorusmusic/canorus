@@ -16,6 +16,7 @@ const bool CASettings::DEFAULT_FINALE_LYRICS_BEHAVIOUR = false;
 const bool CASettings::DEFAULT_SHADOW_NOTES_IN_OTHER_STAFFS = false;
 const bool CASettings::DEFAULT_PLAY_INSERTED_NOTES = true;
 const bool CASettings::DEFAULT_AUTO_BAR = true;
+const bool CASettings::DEFAULT_SPLIT_AT_QUARTER_BOUNDARIES = false;
 
 const QDir CASettings::DEFAULT_DOCUMENTS_DIRECTORY = QDir::home();
 const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFormats::Can;
@@ -103,6 +104,7 @@ void CASettings::writeSettings() {
 	setValue( "editor/shadownotesinotherstaffs", shadowNotesInOtherStaffs() );
 	setValue( "editor/playinsertednotes", playInsertedNotes() );
 	setValue( "editor/autobar", autoBar() );
+	setValue( "editor/splitatquarterboundaries", splitAtQuarterBoundaries() );
 
 	setValue( "files/documentsdirectory", documentsDirectory().absolutePath() );
 	setValue( "files/defaultsaveformat", defaultSaveFormat() );
@@ -162,6 +164,11 @@ int CASettings::readSettings() {
 		setAutoBar( value("editor/autobar").toBool() );
 	else
 		setAutoBar( DEFAULT_AUTO_BAR );
+
+	if ( contains("editor/splitatquarterboundaries") )
+		setSplitAtQuarterBoundaries( value("editor/splitatquarterboundaries").toBool() );
+	else
+		setSplitAtQuarterBoundaries( DEFAULT_SPLIT_AT_QUARTER_BOUNDARIES );
 
 	// Saving/Loading settings
 	if ( contains("files/documentsdirectory") )

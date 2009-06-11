@@ -43,7 +43,10 @@ public:
 	static const bool DEFAULT_PLAY_INSERTED_NOTES;
 	inline bool autoBar() { return _autoBar; }
 	inline void setAutoBar( bool b ) { _autoBar = b; }
+	inline bool splitAtQuarterBoundaries() { return _splitAtQuarterBoundaries; }
+	inline void setSplitAtQuarterBoundaries( bool b ) { _splitAtQuarterBoundaries = b; }
 	static const bool DEFAULT_AUTO_BAR;
+	static const bool DEFAULT_SPLIT_AT_QUARTER_BOUNDARIES;
 
 	/////////////////////////////
 	// Loading/Saving settings //
@@ -153,6 +156,7 @@ private:
 	bool _shadowNotesInOtherStaffs;
 	bool _playInsertedNotes;
 	bool _autoBar;
+	bool _splitAtQuarterBoundaries;
 
 	/////////////////////////////
 	// Loading/Saving settings //

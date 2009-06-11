@@ -51,6 +51,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiShadowNotesInOtherStaffs->setChecked( CACanorus::settings()->shadowNotesInOtherStaffs() );
 	uiPlayInsertedNotes->setChecked( CACanorus::settings()->playInsertedNotes() );
 	uiAutoBar->setChecked( CACanorus::settings()->autoBar() );
+	uiSplitAtQuarterBoundaries->setChecked( CACanorus::settings()->splitAtQuarterBoundaries() );
 
 	// Appearance Page
 	uiAntiAliasing->setChecked( CACanorus::settings()->antiAliasing() );
@@ -142,6 +143,7 @@ void CASettingsDialog::applySettings() {
 	CACanorus::settings()->setShadowNotesInOtherStaffs( uiShadowNotesInOtherStaffs->isChecked() );
 	CACanorus::settings()->setPlayInsertedNotes( uiPlayInsertedNotes->isChecked() );
 	CACanorus::settings()->setAutoBar( uiAutoBar->isChecked() );
+	CACanorus::settings()->setSplitAtQuarterBoundaries( uiSplitAtQuarterBoundaries->isChecked() );
 
 	// Saving/Loading Page
 	CACanorus::settings()->setDocumentsDirectory( uiDocumentsDirectory->text() );
