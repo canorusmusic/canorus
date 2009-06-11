@@ -3098,7 +3098,9 @@ void CAMainWin::on_uiImportDocument_triggered() {
 		CAImport *import=0;
 
 		if ( uiImportDialog->selectedFilter() == CAFileFormats::MIDI_FILTER ) {
-			import = new CAMidiImport();
+			if (!document())
+				newDocument();
+			import = new CAMidiImport( document() );
 			if (import) {
 				import->setStreamFromFile( s );
 				connect( import, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
