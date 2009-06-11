@@ -191,6 +191,25 @@ private:
 	bool                           _useSystemDefaultTypesetter;
 	QString                        _pdfViewerLocation;
 	bool                           _useSystemDefaultPdfViewer;
+
+/*
+% To adjust the size of notes and fonts in points, it can be done like this:
+% #(set-global-staff-size 16.0)
+
+% Some examples to adjust the page size:
+% \paper { #(set-paper-size "a3") } letter legal
+% \paper { #(set-paper-size "a4" 'landscape) }
+% For special size, like the screen, adjustments can be done like this:
+% \paper{
+%   paper-width = 16\cm
+%   line-width = 12\cm
+%   left-margin = 2\cm
+%   top-margin = 3\cm
+%   bottom-margin = 3\cm
+%   ragged-last-bottom = ##t
+% }
+*/
+
 	/////////////////////////////
 	// Action/Command settings //
 	/////////////////////////////
