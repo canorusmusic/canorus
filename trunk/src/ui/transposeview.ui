@@ -134,32 +134,35 @@
       </item>
       <item>
        <widget class="QComboBox" name="uiReinterpretType">
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
         <item>
          <property name="text">
           <string>Sharps to Flats</string>
          </property>
          <property name="icon">
-    	  <iconset>
-     	   <normaloff>images:accidental/sharpstoflats.svg</normaloff>images:accidental/sharpstoflats.svg</iconset>
-   		 </property>
+          <iconset>
+           <normaloff>images:accidental/sharpstoflats.svg</normaloff>images:accidental/sharpstoflats.svg</iconset>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Flats to Sharps</string>
          </property>
          <property name="icon">
-    	  <iconset>
-     	   <normaloff>images:accidental/flatstosharps.svg</normaloff>images:accidental/flatstosharps.svg</iconset>
-   		 </property>
+          <iconset>
+           <normaloff>images:accidental/flatstosharps.svg</normaloff>images:accidental/flatstosharps.svg</iconset>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Invert accidentals</string>
          </property>
          <property name="icon">
-    	  <iconset>
-     	   <normaloff>images:accidental/invert.svg</normaloff>images:accidental/invert.svg</iconset>
-   		 </property>
+          <iconset>
+           <normaloff>images:accidental/invert.svg</normaloff>images:accidental/invert.svg</iconset>
+         </property>
         </item>
        </widget>
       </item>
