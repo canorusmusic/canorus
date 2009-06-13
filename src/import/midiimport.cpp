@@ -42,6 +42,8 @@ public:
 	int _top;
 	int _bottom;
 	int _program;
+	int _chordVoice;	// working variables to look up chords, initially they are 0
+	int _chordIndex;
 };
 
 CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0, int tempo = 120, int program = 0 ) {
@@ -54,6 +56,8 @@ CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int veloc
 	_nextTime = time+length;
 	_tempo = tempo;
 	_program = program;
+	_chordVoice = -1;
+	_chordIndex = -1;
 }
 
 CAMidiImportEvent::~CAMidiImportEvent() {
@@ -307,6 +311,43 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		}
 	}
 
+	// Search for chords.
+	// For each note we look for a companion in the same staff with the same timing.
+	// Chord notes can be combined only from distinct voices, because our previous processing guaranties none overlapp
+	// inside a voice.
+	// Notes that are already chord members aren't considered again.
+	//
+	// To write a note into a chord it gets the proper _chordVoiceIndex and _chordVoiceNumber set.
+	//
+	for (int ch=0;ch<16;ch++) {
+		// loop through all voices, this is the current voice
+		for (voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
+			// loop through the voices below it:
+			for (int j=0;j<voiceIndex;j++) {
+				// loop through all elements in the current voice
+				for (int i=0;i< _allChannelsEvents[ch]->at(voiceIndex)->size();i++) {       /// FALSCH
+					// check against the elements in the voice below
+					for (int k=0;k< _allChannelsEvents[ch]->at(j)->size();k++) {
+
+						// don't look behind a certain time, the elements are time ordered
+						if ( _allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time < _allChannelsEvents[ch]->at(j)->at(k)->_time ) break;
+						// only match to base notes
+						if ( _allChannelsEvents[ch]->at(j)->at(k)->_chordVoice >= 0 ) continue;
+
+						// if time and length are the same, take note of the matching voice and element
+						if ( (_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time == _allChannelsEvents[ch]->at(j)->at(k)->_time)  &&
+							(_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length == _allChannelsEvents[ch]->at(j)->at(k)->_length) ) {
+							_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_chordVoice = j;
+							_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_chordIndex = k;
+							std::cout<<"                 Chord at voice "<<voiceIndex<<","<<i<<" with voice "<<j<<","<<k<<std::endl;
+						}
+					}
+				}
+			}
+		}
+	}
+
+
 	// Zero _tempo when no tempo change, only in the first voice, so later we will set tempo at the remaining points.
 	// By the algorithm used tempo changes on a note will be placed already on the rest before it eventually.
 	for (int ch=0;ch<16;ch++) {
@@ -322,7 +363,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		}
 	}
 
-	// Midi files support support only timesignatures for the all staffs, so, if one staff has a change, all change the same.
+	// Midi files support support only time signatures for the all staffs, so, if one staff has a change, all change the same.
 	// Result: For time signatures we keep only one list for all staffs.
 	// Canorus has separate time signature elements for each staff, but shared vor all voices. Each voice gets a reference copy of the
 	// the associated time signature.
@@ -436,6 +477,65 @@ CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int channel, int
 }
 
 /*!
+	Appends a note to an already existing chord
+*/
+void CAMidiImport::appendNoteToChord( QList<CAMidiImportEvent*> *events, int index, CAStaff *staff, CATimeSignature *ts ) {
+
+	int appendToVoiceIndex = events->at(index)->_chordVoice;
+	CAVoice *otherVoice = staff->voiceList()[appendToVoiceIndex];
+	CAMusElement *baseElem;
+
+	// notes to be added
+	int time = events->at(index)->_time;
+	int length = events->at(index)->_length;
+	int pitch = events->at(index)->_pitch;
+	int program = events->at(index)->_program;
+
+	std::cout<< "    Chord Note Index "<<index<<" at "<<time<<std::endl;
+
+	CANote *note;
+	CANote *previousNote = 0;	// for sluring
+	CABarline *b;
+	QList<CAPlayableLength> lenList;	// work list when splitting notes and rests at barlines
+
+	while ( length > 0 && pitch > 0 && events->at(index)->_velocity > 0 ) {
+
+		// this needs clean up, definitevely
+		CAMusElement *fB = otherVoice->getOnePreviousByType( CAMusElement::Barline, time );
+		if (fB) {
+			b = static_cast<CABarline*>(fB);
+		} else {
+			b = 0;
+		}
+		b = static_cast<CABarline*>( otherVoice->previousByType( CAMusElement::Barline, otherVoice->lastMusElement()));
+
+		lenList.clear();
+		lenList << CAPlayableLength::matchToBars( length, otherVoice->lastTimeEnd(), b, ts );
+
+		for (int j=0; j<lenList.size();j++) {
+			CADiatonicPitch diaPitch = matchPitchToKey( otherVoice, CAMidiDevice::midiPitchToDiatonicPitch(pitch) );
+			note = new CANote( diaPitch, lenList[j], otherVoice, -1 );
+			baseElem = otherVoice->getOneEltByType( CAMusElement::Note, time);
+			//int idx = othervoice->musElementList().indexOf(referenceNote);
+			otherVoice->insert( baseElem, note, true );
+			otherVoice->setMidiProgram( program );
+			int len = CAPlayableLength::playableLengthToTimeLength( lenList[j] );
+			//std::cout<< "    Note Length "<<len<<" at "<<time<<std::endl;
+			time += len;
+			length -= len;
+			std::cout<< "    Chord Note Index "<<index<<" now "<<time<<" put on voice "<<appendToVoiceIndex<<std::endl;
+			if (previousNote) {
+				CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNote, note );
+				previousNote->setTieStart( slur );
+				note->setTieEnd( slur );
+			}
+			previousNote = note;
+		}
+	}
+}
+
+
+/*!
 	Docu neeeded
 
 	Apropo program support at midi import: Now the last effective program assignement per voice will make it through.
@@ -463,6 +563,15 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 
 	for (int i=0; i<events->size(); i++ ) {
 
+		// append the note to a chord?
+		if (events->at(i)->_chordVoice >=0) {
+			/* works almost, so disabled for now
+			appendNoteToChord( events, i, staff, ts );
+			// if the note can be appended to an existing chord we can bypass time and signature updates
+			continue;
+			*/
+		}
+
 		// we place a tempo mark only for the first voice, and if we don't place we set tempo null
 		int tempo = voiceIndex == 0 ? events->at(i)->_tempo : 0;
 
@@ -481,6 +590,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 
 		// check if we need to add rests
 		length = events->at(i)->_time - time;
+
 		while (length > 0) {
 
 			// This definitively needs clean up!!!
@@ -534,6 +644,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 		pitch = events->at(i)->_pitch;
 		program = events->at(i)->_program;
 		previousNote = 0;
+
 		while ( length > 0 && pitch > 0 && events->at(i)->_velocity > 0 ) {
 
 			// this needs clean up, definitevely
