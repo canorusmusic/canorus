@@ -131,10 +131,13 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 					note = new CANote( nonenharmonicPitch, _mw->musElementFactory()->playableLength(), voice, -1 );
 		}
 
-		CACanorus::undo()->createUndoCommand( _mw->document(), QObject::tr("insert midi note", "undo") );
 
 		// if notes come in sufficiently close together we make a chord of them
 		bool appendToChord = _midiInChordTimer.isActive();
+
+		// we create undo only for chords as a whole
+		if (!appendToChord)
+			CACanorus::undo()->createUndoCommand( _mw->document(), QObject::tr("insert midi note", "undo") );
 
 		// If we are still in the processing of a tuplet, check if it's still there.
 		// Possibly editing on the GUI could have moved it around or away, and no crash please.
@@ -226,6 +229,8 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 				}
 			}
 		}
+		// TODO only compile test, note yet used
+		CACanorus::settings()->splitAtQuarterBoundaries();
 
 		// We make shure not to try to place a barline inside a chord or inside a tuplet
 		if ( CACanorus::settings()->autoBar() && !appendToChord && (!_tupPla || _tupPla->isFirstInTuplet())) {
