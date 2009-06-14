@@ -468,6 +468,27 @@ CANote* CAVoice::lastNote() {
 	return 0;
 }
 
+
+//! \A common binary search Algorithm with its pseudocode
+
+bool CAVoice::binarySearch_startTime(int time, int& position) {
+
+	int low = 0, high = _musElementList.size()-1, midpoint = 0;
+	while (low <= high) {
+		midpoint = (low + high) / 2;
+		if (time == _musElementList[midpoint]->timeStart()) {
+			position = midpoint;
+			return true;
+		}
+		else if (time < _musElementList[midpoint]->timeStart())
+			high = midpoint - 1;
+		else
+			low = midpoint + 1;
+	}
+	return false;
+}
+
+
 /*!
 	Returns a music element which has the given \a startTime and \a type.
 	This is useful for querying for eg. If a barline exists at the certain
