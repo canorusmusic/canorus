@@ -62,6 +62,8 @@ public:
 	CAPlayable *nextPlayable(int timeStart);
 	CAPlayable *previousPlayable(int timeStart);
 
+	bool binarySearch_startTime(int time, int& position);
+
 	CAMusElement *getOneEltByType(CAMusElement::CAMusElementType type, int startTime);
 	QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
 	CAMusElement *getOnePreviousByType(CAMusElement::CAMusElementType type, int startTime);
