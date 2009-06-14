@@ -31,12 +31,14 @@ public:
 	// Constructors
 	CALilyPondImport( const QString in );
 	CALilyPondImport( QTextStream *in=0 );
+	CALilyPondImport( CADocument *document, QTextStream *in=0 );
 	inline void setTemplateVoice( CAVoice *voice ) { _templateVoice = voice; }
 
 	// Destructor
 	virtual ~CALilyPondImport();
 
 	const QString readableStatus();
+	CASheet *importSheetImpl();
 
 private:
 	void initLilyPondImport();
@@ -107,6 +109,8 @@ private:
 
 	inline CAVoice *templateVoice() { return _templateVoice; }
 	CAVoice *_templateVoice; // used when importing voice to set the staff etc.
+
+	CADocument *_document;
 };
 
 #endif /* LILYPONDIMPORT_H_ */

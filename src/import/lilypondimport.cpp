@@ -7,6 +7,7 @@
 
 #include <QTextStream>
 #include <QRegExp>
+#include <QFileInfo>
 
 #include <iostream> // DEBUG
 
@@ -14,6 +15,7 @@
 #include "score/note.h"
 #include "score/playable.h"
 #include "score/slur.h"
+#include "score/sheet.h"
 
 /*!
 	Delimiters which separate various music elements in LilyPond syntax. These are new lines, tabs, blanks etc.
@@ -49,6 +51,12 @@ CALilyPondImport::CALilyPondImport( QTextStream *in )
 	initLilyPondImport();
 }
 
+CALilyPondImport::CALilyPondImport( CADocument *document, QTextStream *in )
+ : CAImport(in) {
+	_document = document;
+	initLilyPondImport();
+}
+
 CALilyPondImport::~CALilyPondImport() {
 }
 
@@ -63,6 +71,39 @@ void CALilyPondImport::addError(QString description, int curLine, int curChar) {
 	           .arg(curLine?curLine:_curLine)
 	           .arg(curChar?curChar:_curChar)
 	           + description + "<br>";
+}
+
+CASheet *CALilyPondImport::importSheetImpl() {
+	CASheet *sheet = new CASheet(tr("Lilypond imported sheet"), _document );
+	QFileInfo fi(fileName());
+	sheet->setName(fi.baseName());
+
+	(*stream()).setCodec("UTF-8");
+	QString text( *stream()->string() );
+
+	// To activate this import code uncomment in src/canorus.cpp this line:
+	//CAMainWin::uiImportDialog->setFilters( CAMainWin::uiImportDialog->filters() << CAFileFormats::LILYPOND_FILTER );
+
+	// FIXME this is work in progress. Why we get here a crash?
+	// std::cout << qPrintable( text );
+
+	
+	return sheet;
+
+	bool changed=false;
+
+	for (QString curElt = parseNextElement();
+		(!in().isEmpty());
+		curElt = ((curElt.size() && changed)?curElt:parseNextElement())) { // go to next element, if current one is empty or not changed
+			if (curElt.startsWith("\\header")) {
+			std::cout<<"lilyimport header"<<std::endl;
+			}
+			if (curElt.startsWith("\\relative")) {
+			std::cout<<"lilyimport relative"<<std::endl;
+			}
+			changed=true;
+	}
+	return sheet;
 }
 
 CAVoice *CALilyPondImport::importVoiceImpl() {

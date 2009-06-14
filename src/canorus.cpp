@@ -139,6 +139,7 @@ void CACanorus::initCommonGUI() {
 	CAMainWin::uiImportDialog->setAcceptMode( QFileDialog::AcceptOpen );
 	CAMainWin::uiImportDialog->setFilters( QStringList() << CAFileFormats::MUSICXML_FILTER );
 	CAMainWin::uiImportDialog->setFilters( CAMainWin::uiImportDialog->filters() << CAFileFormats::MIDI_FILTER );
+	// CAMainWin::uiImportDialog->setFilters( CAMainWin::uiImportDialog->filters() << CAFileFormats::LILYPOND_FILTER ); // activate when usable
 }
 
 /*!

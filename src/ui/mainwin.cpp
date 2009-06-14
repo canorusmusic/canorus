@@ -3107,6 +3107,17 @@ void CAMainWin::on_uiImportDocument_triggered() {
 				import->importSheet();
 			}
 		} else
+		if ( uiImportDialog->selectedFilter() == CAFileFormats::LILYPOND_FILTER ) {
+			// activate this filter in src/canorus.cpp when sheet import is usable
+			if (!document())
+				newDocument();
+			import = new CALilyPondImport( document() );
+			if (import) {
+				import->setStreamFromFile( s );
+				connect( import, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
+				import->importSheet();
+			}
+		} else
 		if ( uiImportDialog->selectedFilter() == CAFileFormats::MUSICXML_FILTER ) {
 			import = new CAMusicXmlImport();
 			if (import) {
