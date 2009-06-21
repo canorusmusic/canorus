@@ -119,11 +119,16 @@ private:
 	void writeMidiChannelEventsToVoice_New( int channel, int voiceIndex, CAStaff *staff, CAVoice *voice );
 	QVector<int> _allChannelsMediumPitch;
 	QVector<CAClef*> _allChannelsClef;
-	QVector<CAKeySignature*> _allChannelsKeySignature;
+	QVector<CAKeySignature*> _allChannelsKeySignatures;
 	QVector<CAMidiImportEvent*> _allChannelsTimeSignatures;
-	QVector<QList<CAMusElement*>*> _allTimeSignatureMusElements;
+
+	// When voices are built these functions are used to create or determine the current clef/signature
+	int _actualClefIndex;
+	CAMusElement* getOrCreateClef( int time, int voiceIndex, CAStaff *staff, CAVoice *voice );
+	int _actualKeySignatureIndex;
+	CAMusElement* getOrCreateKeySignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice );
 	int _actualTimeSignatureIndex;
-	CAMusElement* getOrCreateTimeSignature( int time, int channel, int voiceIndex, CAStaff *staff, CAVoice *voice );
+	CAMusElement* getOrCreateTimeSignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice );
 	int _numberOfAllVoices;
 	void fixAccidentals( CASheet *s );
 	void appendNoteToChord( QList<CAMidiImportEvent*> *events, int index, CAStaff *staff, CATimeSignature *ts );

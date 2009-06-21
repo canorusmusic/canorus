@@ -128,6 +128,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 	int res = PMIDI_STATUS_DUMMY;
 	const int quarterLength = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter );
 	int programCache[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	CADiatonicKey dk;
 
 	setStatus(2);
 	for (;res != PMIDI_STATUS_END;) {
@@ -235,8 +236,17 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 		case PMIDI_STATUS_SYSEX:
 			break;
 		case PMIDI_STATUS_KEYSIG:
+
+			// Scale music time properly
+			pmidi_out.time = (pmidi_out.time*quarterLength)/pmidi_out.time_base;
+			pmidi_out.length = (pmidi_out.length*quarterLength)/pmidi_out.time_base;
+
 			std::cout<<" Keys: "<<pmidi_out.key
 				<<"  Minor: "<<pmidi_out.minor<<std::endl;
+			dk = CADiatonicKey( pmidi_out.key, pmidi_out.minor ? CADiatonicKey::Minor : CADiatonicKey::Major );
+			if (!_allChannelsKeySignatures.size() || _allChannelsKeySignatures.last()->diatonicKey() != dk)
+				_allChannelsKeySignatures << new CAKeySignature( dk, 0, pmidi_out.time );
+			
 			break;
 		case PMIDI_STATUS_SMPTEOFFS:
 			std::cout<<"  Stunden "<<pmidi_out.hours
@@ -274,10 +284,6 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			<<_allChannelsTimeSignatures[i]->_time
 			<<std::endl;
 	}
-	// prepare corresponding lists for time signatures each possible staff, midiimport das a staff for each channel
-	for (int chanIndex=0;chanIndex<16;chanIndex++) {
-			_allTimeSignatureMusElements << new QList<CAMusElement*>;
-	}
 
 	// Calculate the medium pitch for every staff for the key selection later
 	_numberOfAllVoices = 2;	// plus one for preprocessing, thats calling pmidi, and one for postprocessing
@@ -310,6 +316,16 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			}
 		}
 	}
+	std::cout<<std::endl<<"Key signature ";
+	for (int i=0;i<_allChannelsKeySignatures.size();i++) {
+		int ksTime = _allChannelsKeySignatures[i]->timeStart();
+		ksTime += quant/2;
+		ksTime &= ~(quant-1);
+		_allChannelsKeySignatures[i]->setTimeStart( ksTime );
+		std::cout<< qPrintable( CADiatonicKey::diatonicKeyToString( _allChannelsKeySignatures[i]->diatonicKey() ));
+		std::cout<<" at "<<ksTime<<", ";
+	}
+	std::cout<<std::endl;
 
 	// Search for chords.
 	// For each note we look for a companion in the same staff with the same timing.
@@ -330,13 +346,15 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 					for (int k=0;k< _allChannelsEvents[ch]->at(j)->size();k++) {
 
 						// don't look behind a certain time, the elements are time ordered
-						if ( _allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time < _allChannelsEvents[ch]->at(j)->at(k)->_time ) break;
+						//if ( _allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time < _allChannelsEvents[ch]->at(j)->at(k)->_time ) break;
 						// only match to base notes
-						if ( _allChannelsEvents[ch]->at(j)->at(k)->_chordVoice >= 0 ) continue;
+						//if ( _allChannelsEvents[ch]->at(j)->at(k)->_chordVoice >= 0 ) continue;
 
 						// if time and length are the same, take note of the matching voice and element
 						if ( (_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time == _allChannelsEvents[ch]->at(j)->at(k)->_time)  &&
-							(_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length == _allChannelsEvents[ch]->at(j)->at(k)->_length) ) {
+							(_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length == _allChannelsEvents[ch]->at(j)->at(k)->_length) &&
+							( _allChannelsEvents[ch]->at(j)->at(k)->_chordVoice >= 0 ) ) {
+
 							_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_chordVoice = j;
 							_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_chordIndex = k;
 							std::cout<<"                 Chord at voice "<<voiceIndex<<","<<i<<" with voice "<<j<<","<<k<<std::endl;
@@ -394,7 +412,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			sheet->addContext(staff);
 		}
 		CAMusElement *musElemClef;
-		CAMusElement *musElemKeySig;
+		CAMusElement *musElemKeySig = 0;
 		CAMusElement *musElemTimeSig;
 		for (int voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
 			// voiceName = QObject::tr("Voice%1").arg( voiceNumber );
@@ -411,14 +429,18 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 				} else {
 					musElemClef = new CAClef(CAClef::Treble, staff, 0, 0 );
 				}
-				CADiatonicKey dk = CADiatonicKey(
-					pmidi_out.key, pmidi_out.minor ? CADiatonicKey::Minor : CADiatonicKey::Major );
-				musElemKeySig = new CAKeySignature( dk, staff, 0 );
+				if (pmidi_out.key == 0) {
+					CADiatonicKey dk = CADiatonicKey(
+						pmidi_out.key, pmidi_out.minor ? CADiatonicKey::Minor : CADiatonicKey::Major );
+					//musElemKeySig = new CAKeySignature( dk, staff, 0 );
+				}
 
 				musElemTimeSig = new CATimeSignature( pmidi_out.top, pmidi_out.bottom, staff, 0 );
 			}
 			voice->append( musElemClef, false );
-			voice->append( musElemKeySig, false );
+			if ( musElemKeySig ) {
+				voice->append( musElemKeySig, false );
+			}
 			//voice->append( musElemTimeSig, false );
 
 			writeMidiChannelEventsToVoice_New( ch, voiceIndex, staff, voice );
@@ -432,49 +454,67 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 	}
 }
 
+CAMusElement* CAMidiImport::getOrCreateClef( int time, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
+	return 0;
+}
+
+/*!
+	This function looks in the keySignatureReferences
+*/
+CAMusElement* CAMidiImport::getOrCreateKeySignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
+
+	if (_actualKeySignatureIndex+1 < _allChannelsKeySignatures.size() &&
+				// there are signatures ahead
+				time >= _allChannelsKeySignatures[_actualKeySignatureIndex+1]->timeStart() ) {
+
+		_actualKeySignatureIndex++;
+		if ( staff->keySignatureReferences().size() < _actualKeySignatureIndex+1 ) {
+			staff->addKeySignatureReference( new CAKeySignature( _allChannelsKeySignatures[_actualKeySignatureIndex]->diatonicKey(), staff, time ));
+		}
+		int jj = staff->keySignatureReferences().size();
+		return staff->keySignatureReferences()[_actualKeySignatureIndex];
+	}
+	return 0;
+}
 
 /*!
 	Docu neeeded, definitively! rud
 */
 
-CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int channel, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
+CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
 
-	int maxFill = -1;
-	int indexMaxFill;
-
-	if (!_allTimeSignatureMusElements[channel]->size()) {
+	if (!staff->timeSignatureReferences().size()) {
 		_actualTimeSignatureIndex = 0;
 		int top = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_top;
 		int bottom = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_bottom;
-		_allTimeSignatureMusElements[channel]->append( new CATimeSignature( top, bottom, staff, 0 ));
-		std::cout<<"                             neue Timesig at "<<time<<" in Channel "<<channel<<", es gibt "
+		staff->addTimeSignatureReference( new CATimeSignature( top, bottom, staff, 0 ));
+		std::cout<<"                             neue Timesig at "<<time<<", es gibt "
 																<<_allChannelsTimeSignatures.size()
 																<<std::endl;
-		//voice->append( _allTimeSignatureMusElements[channel]->at( _actualTimeSignatureIndex ));
-		return _allTimeSignatureMusElements[channel]->at(_actualTimeSignatureIndex);
+		// werden ersetzt:
+		return staff->timeSignatureReferences()[_actualTimeSignatureIndex];
 	}
 	// check if more than one time signature at all
 	if (_actualTimeSignatureIndex < 0 || _allChannelsTimeSignatures.size() > _actualTimeSignatureIndex+1) {
 		// is a new time signature already looming there?
 		if (time >= _allChannelsTimeSignatures[_actualTimeSignatureIndex+1]->_time) {
 			_actualTimeSignatureIndex++;	// for each voice we run down the list of time signatures of the sheet, all staffs.
-			if (_allTimeSignatureMusElements[channel]->size() >= _actualTimeSignatureIndex+1) {
-				//voice->append( _allTimeSignatureMusElements[channel]->at( _actualTimeSignatureIndex ));
-				return _allTimeSignatureMusElements[channel]->at(_actualTimeSignatureIndex);
+			if (staff->timeSignatureReferences().size() >= _actualTimeSignatureIndex+1) {
+				return staff->timeSignatureReferences()[_actualTimeSignatureIndex];
 			} else {
 				int top = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_top;
 				int bottom = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_bottom;
-				_allTimeSignatureMusElements[channel]->append( new CATimeSignature( top, bottom, staff, 0 ));
-				std::cout<<"                             neue Timesig at "<<time<<" in Channel "<<channel<<", es gibt "
+				staff->addTimeSignatureReference( new CATimeSignature( top, bottom, staff, 0 ));
+				std::cout<<"                             neue Timesig at "<<time<<", es gibt "
 																<<_allChannelsTimeSignatures.size()
 																<<std::endl;
-				//voice->append( _allTimeSignatureMusElements[channel]->at( _actualTimeSignatureIndex ));
-				return _allTimeSignatureMusElements[channel]->at(_actualTimeSignatureIndex);
+				return staff->timeSignatureReferences()[_actualTimeSignatureIndex];
 			}
 		}
 	}
 	return 0;
 }
+
 
 /*!
 	Appends a note to an already existing chord
@@ -557,6 +597,8 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	int program;
 	int tempo = 0;
 
+	_actualClefIndex = -1;	// for each voice we run down the list of time signatures of the sheet, all staffs.
+	_actualKeySignatureIndex = -1;	// for each voice we run down the list of time signatures of the sheet, all staffs.
 	_actualTimeSignatureIndex = -1;	// for each voice we run down the list of time signatures of the sheet, all staffs.
 
 	std::cout<< "Channel "<<channel<<" VoiceIndex "<<voiceIndex<<"  "<<std::setw(5)<<events->size()<<" elements"<<std::endl;
@@ -568,8 +610,17 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			/* works almost, so disabled for now
 			appendNoteToChord( events, i, staff, ts );
 			// if the note can be appended to an existing chord we can bypass time and signature updates
-			continue;
 			*/
+			continue;
+		}
+
+		if (time == 0) {
+			CAMusElement *ksElem = getOrCreateKeySignature( time, voiceIndex, staff, voice );
+			if (ksElem) {
+				std::cout<<" KeySig-MusElement "<<ksElem<<" at "<<ksElem->timeStart()<<" "<<
+					qPrintable( CADiatonicKey::diatonicKeyToString( (static_cast<CAKeySignature*>(ksElem))->diatonicKey() ))<<std::endl;
+				voice->append( ksElem, false );
+			}
 		}
 
 		// we place a tempo mark only for the first voice, and if we don't place we set tempo null
@@ -579,7 +630,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			voice->lastMusElement()));
 
 
-		CAMusElement *tsElem = getOrCreateTimeSignature( time, channel, voiceIndex, staff, voice );
+		CAMusElement *tsElem = getOrCreateTimeSignature( time, voiceIndex, staff, voice );
 		if (tsElem) {
 			voice->append( tsElem, false );
 			ts = static_cast<CATimeSignature*>(tsElem);
@@ -618,12 +669,21 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 					rest->addMark(_curMark);
 					tempo = 0;
 				}
-				tsElem = getOrCreateTimeSignature( time, channel, voiceIndex, staff, voice );
+				tsElem = getOrCreateTimeSignature( time, voiceIndex, staff, voice );
 				if (tsElem) {
 					voice->append( tsElem, false );
 					ts = static_cast<CATimeSignature*>(tsElem);
 					std::cout<< "    for a rest new time sig at "<<time<<" in "<<ts->beat()<<"/"<<ts->beats()<<std::endl;
 				}
+
+				// Time signatures are eventuelly placed before barlines
+				CAMusElement *ksElem = getOrCreateKeySignature( rest->timeEnd(), voiceIndex, staff, voice );
+				if (ksElem) {
+					std::cout<<" KeySig-MusElement "<<ksElem<<" at "<<ksElem->timeStart()<<" "<<
+							qPrintable( CADiatonicKey::diatonicKeyToString( (static_cast<CAKeySignature*>(ksElem))->diatonicKey() ))<<std::endl;
+					voice->append( ksElem, false );
+				}
+
 				// Barlines are shared among voices, see we append an existing one, otherwise a new one
 				//QList<CAMusElement*> foundBarlines = staff->getEltByType( CAMusElement::Barline, rest->timeEnd() );
 				CAMusElement *bl = staff->getOneEltByType( CAMusElement::Barline, rest->timeEnd() );
@@ -673,12 +733,21 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 					note->addMark(_curMark);
 					tempo = 0;
 				}
-				tsElem = getOrCreateTimeSignature( note->timeEnd(), channel, voiceIndex, staff, voice );
+				tsElem = getOrCreateTimeSignature( note->timeEnd(), voiceIndex, staff, voice );
 				if (tsElem) {
 					voice->append( tsElem, false );
 					ts = static_cast<CATimeSignature*>(tsElem);
 					//std::cout<< "    for a note new time sig at "<<time<<" in "<<ts->beat()<<"/"<<ts->beats()<<std::endl;
 				}
+
+				// Time signatures are eventuelly placed before barlines
+				CAMusElement *ksElem = getOrCreateKeySignature( note->timeEnd(), voiceIndex, staff, voice );
+				if (ksElem) {
+					std::cout<<" KeySig-MusElement "<<ksElem<<" at "<<ksElem->timeStart()<<" "<<
+						qPrintable( CADiatonicKey::diatonicKeyToString( (static_cast<CAKeySignature*>(ksElem))->diatonicKey() ))<<std::endl;
+					voice->append( ksElem, false );
+				}
+
 				// Barlines are shared among voices, see we append an existing one, otherwise a new one
 				CAMusElement * bl = staff->getOneEltByType( CAMusElement::Barline, note->timeEnd() );
 				if (bl) {
