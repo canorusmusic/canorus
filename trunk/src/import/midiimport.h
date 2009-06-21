@@ -126,6 +126,7 @@ private:
 	int _actualClefIndex;
 	CAMusElement* getOrCreateClef( int time, int voiceIndex, CAStaff *staff, CAVoice *voice );
 	int _actualKeySignatureIndex;
+	int getNextKeySignatureTime();
 	CAMusElement* getOrCreateKeySignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice );
 	int _actualTimeSignatureIndex;
 	CAMusElement* getOrCreateTimeSignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice );
