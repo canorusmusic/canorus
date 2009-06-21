@@ -54,9 +54,26 @@ public:
 
 	static void placeAutoBar( CAPlayable* elt );
 
+	// Functions to keep list of references of signature events for a faster look up.
+	// Currently only used in midi import. Remove not yet tested.
+	inline const QList<CAMusElement *>& clefReferences() { return _clefList; }
+	inline void addClefReference(CAMusElement *el) { _clefList << el; }
+	inline void removeClefReference(CAMusElement *el) { _clefList.removeAll(el); }
+	
+	inline const QList<CAMusElement *>& keySignatureReferences() { return _keySignatureList; }
+	inline void addKeySignatureReference(CAMusElement *el) { _keySignatureList << el; }
+	inline void removeKeySignatureReference(CAMusElement *el) { _keySignatureList.removeAll(el); }
+
+	inline const QList<CAMusElement *>& timeSignatureReferences() { return _timeSignatureList; }
+	inline void addTimeSignatureReference(CAMusElement *el) { _timeSignatureList << el; }
+	inline void removeTimeSignatureReference(CAMusElement *el) { _timeSignatureList.removeAll(el); }
 private:
 	QList<CAVoice *> _voiceList;
 
 	int _numberOfLines;
+
+	QList<CAMusElement *> _clefList;
+	QList<CAMusElement *> _keySignatureList;
+	QList<CAMusElement *> _timeSignatureList;
 };
 #endif /* STAFF_H_ */
