@@ -458,6 +458,19 @@ CAMusElement* CAMidiImport::getOrCreateClef( int time, int voiceIndex, CAStaff *
 	return 0;
 }
 
+
+/*!
+	This function looks in the keySignatureReferences
+*/
+			int getNextKeySignatureTime();
+int CAMidiImport::getNextKeySignatureTime() {
+	if (_actualKeySignatureIndex+1 < _allChannelsKeySignatures.size() )
+			// there are signatures ahead
+			return _allChannelsKeySignatures[_actualKeySignatureIndex+1]->timeStart();
+	return -1;
+}
+
+
 /*!
 	This function looks in the keySignatureReferences
 */
@@ -611,7 +624,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			appendNoteToChord( events, i, staff, ts );
 			// if the note can be appended to an existing chord we can bypass time and signature updates
 			*/
-			continue;
+			// continue;
 		}
 
 		if (time == 0) {
