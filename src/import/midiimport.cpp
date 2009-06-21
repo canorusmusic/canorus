@@ -462,7 +462,6 @@ CAMusElement* CAMidiImport::getOrCreateClef( int time, int voiceIndex, CAStaff *
 /*!
 	This function looks in the keySignatureReferences
 */
-			int getNextKeySignatureTime();
 int CAMidiImport::getNextKeySignatureTime() {
 	if (_actualKeySignatureIndex+1 < _allChannelsKeySignatures.size() )
 			// there are signatures ahead
