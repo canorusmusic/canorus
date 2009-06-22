@@ -244,6 +244,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			std::cout<<" Keys: "<<pmidi_out.key
 				<<"  Minor: "<<pmidi_out.minor<<std::endl;
 			dk = CADiatonicKey( pmidi_out.key, pmidi_out.minor ? CADiatonicKey::Minor : CADiatonicKey::Major );
+			// After the first key signature only changes are imported
 			if (!_allChannelsKeySignatures.size() || _allChannelsKeySignatures.last()->diatonicKey() != dk)
 				_allChannelsKeySignatures << new CAKeySignature( dk, 0, pmidi_out.time );
 			
@@ -316,6 +317,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			}
 		}
 	}
+	// Quantization of key signatures
 	std::cout<<std::endl<<"Key signature ";
 	for (int i=0;i<_allChannelsKeySignatures.size();i++) {
 		int ksTime = _allChannelsKeySignatures[i]->timeStart();
@@ -326,6 +328,11 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		std::cout<<" at "<<ksTime<<", ";
 	}
 	std::cout<<std::endl;
+	// Remove coincidenting key signatures. For this we have to make a decrementing loop, because we want to keep the later one.
+	for (int i=_allChannelsKeySignatures.size()-2;i>=0;i--) {
+		if( _allChannelsKeySignatures[i]->timeStart() == _allChannelsKeySignatures[i+1]->timeStart() )
+			_allChannelsKeySignatures.remove(i);
+	}
 
 	// Search for chords.
 	// For each note we look for a companion in the same staff with the same timing.
@@ -476,8 +483,8 @@ int CAMidiImport::getNextKeySignatureTime() {
 CAMusElement* CAMidiImport::getOrCreateKeySignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
 
 	if (_actualKeySignatureIndex+1 < _allChannelsKeySignatures.size() &&
-				// there are signatures ahead
-				time >= _allChannelsKeySignatures[_actualKeySignatureIndex+1]->timeStart() ) {
+				// there are signatures ahead, and time is exactly matched
+				time == _allChannelsKeySignatures[_actualKeySignatureIndex+1]->timeStart() ) {
 
 		_actualKeySignatureIndex++;
 		if ( staff->keySignatureReferences().size() < _actualKeySignatureIndex+1 ) {
@@ -549,6 +556,7 @@ void CAMidiImport::appendNoteToChord( QList<CAMidiImportEvent*> *events, int ind
 	CANote *previousNote = 0;	// for sluring
 	CABarline *b;
 	QList<CAPlayableLength> lenList;	// work list when splitting notes and rests at barlines
+	int nextKeySignatureTime;
 
 	while ( length > 0 && pitch > 0 && events->at(index)->_velocity > 0 ) {
 
@@ -562,7 +570,7 @@ void CAMidiImport::appendNoteToChord( QList<CAMidiImportEvent*> *events, int ind
 		b = static_cast<CABarline*>( otherVoice->previousByType( CAMusElement::Barline, otherVoice->lastMusElement()));
 
 		lenList.clear();
-		lenList << CAPlayableLength::matchToBars( length, otherVoice->lastTimeEnd(), b, ts );
+		lenList << CAPlayableLength::matchToBars( length, otherVoice->lastTimeEnd(), b, ts, 4, getNextKeySignatureTime() );
 
 		for (int j=0; j<lenList.size();j++) {
 			CADiatonicPitch diaPitch = matchPitchToKey( otherVoice, CAMidiDevice::midiPitchToDiatonicPitch(pitch) );
@@ -667,7 +675,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
 
 			lenList.clear();
-			lenList << CAPlayableLength::matchToBars( length, voice->lastTimeEnd(), b, ts );
+			lenList << CAPlayableLength::matchToBars( length, voice->lastTimeEnd(), b, ts, 4, getNextKeySignatureTime() );
 
 			for (int j=0; j<lenList.size(); j++) {
 				rest = new CARest( CARest::Normal, lenList[j], voice, 0, -1 );
@@ -729,7 +737,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
 
 			lenList.clear();
-			lenList << CAPlayableLength::matchToBars( length, voice->lastTimeEnd(), b, ts );
+			lenList << CAPlayableLength::matchToBars( length, voice->lastTimeEnd(), b, ts, 4, getNextKeySignatureTime() );
 
 			for (int j=0; j<lenList.size();j++) {
 				CADiatonicPitch diaPitch = matchPitchToKey( voice, CAMidiDevice::midiPitchToDiatonicPitch(pitch) );

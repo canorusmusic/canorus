@@ -283,11 +283,13 @@ QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int
 	and bar length by a given time signature.
 	In lack of barline or timesignature asumptions are made, maybe resulting in returning an empty split list.
 
+	separationTime is an additional splitting point, meant to do there key signature changes.
+
 	This function is used in midi import, could be used at mouse note input too, probably. See also \a matchToBars
 	with CAPlayableLength as parameter, which is used at midi keyboard input. This functions probably could be
 	merged.
 */
-QList<CAPlayableLength> CAPlayableLength::matchToBars( int timeLength, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit ) {
+QList<CAPlayableLength> CAPlayableLength::matchToBars( int timeLength, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit, int separationTime ) {
 
 	QList<CAPlayableLength> list;
 	// default time signature is 4/4
@@ -318,13 +320,20 @@ QList<CAPlayableLength> CAPlayableLength::matchToBars( int timeLength, int timeS
 
 	int noteLen = timeLength;
 
+	int sepRest = separationTime - timeStart;
+	if (sepRest < 0 || sepRest >= noteLen)
+		sepRest = 0;
+	//if (sepRest > 0 && barRest 
+
 	// now we really do a split
 	int tSplit = barRest ? barRest : barLength;
 	bool longNotesFirst = barRest ? false : true;
 	while (noteLen) {
 		tSplit = tSplit > noteLen ? noteLen : tSplit;
-		list << timeLengthToPlayableLengthList( tSplit, longNotesFirst, dotsLimit );
-		noteLen -= tSplit;
+		int decr = (tSplit < sepRest) || (sepRest <= 0) ? tSplit : sepRest;
+		list << timeLengthToPlayableLengthList( decr, longNotesFirst, dotsLimit );
+		noteLen -= decr;
+		sepRest -= decr;
 		tSplit = noteLen > barLength ? barLength : noteLen;
 		longNotesFirst = true;
 	}
