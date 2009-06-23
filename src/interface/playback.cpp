@@ -459,11 +459,9 @@ void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
 				// set the new index in ALL streams
 				for (int k=0; k<streamList().size(); k++) {
 					streamIdx(k) = lastRepeatOpenIdx(k)+1;
-					if (streamIdx(k)<streamAt(k).size()) {
-						_curTime = streamAt(k).at(streamIdx(k))->timeStart();
-					}
 				}
 
+				_curTime = streamAt(i).at(streamIdx(i))->timeStart();
 				j = streamIdx(i);
 				_repeating = true;
 			}
