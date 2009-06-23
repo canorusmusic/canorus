@@ -3133,6 +3133,11 @@ void CAMainWin::on_uiImportDocument_triggered() {
 
 void CAMainWin::on_import_done( int status ) {
 	CAImport *import = static_cast<CAImport*>(sender());
+
+	if (!import) {
+		return;
+	}
+
 	bool success = (import->status()==0);
 
 	if (success) {
