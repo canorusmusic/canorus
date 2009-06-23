@@ -17,6 +17,9 @@
 #include "score/staff.h"
 #include "score/voice.h"
 #include "score/mark.h"
+#include "score/articulation.h"
+#include "score/fingering.h"
+#include "score/dynamic.h"
 #include "score/text.h"
 #include "score/tuplet.h"
 
@@ -231,12 +234,44 @@ void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 			out() << "^\"" << static_cast<CAText*>(curMark)->text() << "\" ";
 			break;
 		}
+		case CAMark::Dynamic: {
+			CADynamic *d = static_cast<CADynamic*>(curMark);
+			if ( CADynamic::dynamicTextFromString(d->text())==CADynamic::Custom ) break;
+
+			out() << "\\";
+			out() << d->text();
+			out() << " ";
+			break;
+		}
 		case CAMark::RehersalMark: {
 			out() << "\\mark \\default ";
 			break;
 		}
 		case CAMark::Fermata: {
 			out() << "\\fermata ";
+			break;
+		}
+		case CAMark::Articulation: {
+			switch (static_cast<CAArticulation*>(curMark)->articulationType()) {
+			case CAArticulation::Accent:
+				out() << "-> "; break;
+			case CAArticulation::Marcato:
+				out() << "-^ "; break;
+			case CAArticulation::Staccato:
+				out() << "-. "; break;
+			case CAArticulation::Tenuto:
+				out() << "-- "; break;
+			}
+
+			break;
+		}
+		case CAMark::Fingering: {
+			CAFingering::CAFingerNumber n = static_cast<CAFingering*>(curMark)->finger();
+			if ( n<1 || n>5 ) break;
+
+			out() << "-";
+			out() << QString::number( static_cast<CAFingering*>(curMark)->finger() );
+			out() << " ";
 			break;
 		}
 		}
