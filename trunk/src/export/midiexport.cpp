@@ -56,8 +56,8 @@ int CAMidiExport::timeIncrement( int time )
 	int offset = 0;
 	if ( time > _trackTime ) {
 		offset = time-_trackTime;
-		_trackTime = time;
 	}
+	_trackTime = time;
 	return offset;
 }
 
