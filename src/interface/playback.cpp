@@ -179,7 +179,7 @@ void CAPlayback::run() {
 		    				midiDevice()->sendMetaEvent(_curTime, CAMidiDevice::Meta_Tempo, tempo->bpm(), 0, 0);
 						}
 					}
-					
+
 				}
 
 				// note on
@@ -455,11 +455,16 @@ void CAPlayback::loopUntilPlayable( int i, bool ignoreRepeats ) {
 		if ( streamAt(i).at(j)->musElementType()==CAMusElement::Barline &&
 		     static_cast<CABarline*>(streamAt(i).at(j))->barlineType()==CABarline::RepeatClose &&
 		     !ignoreRepeats ) {
-			if (_repeating) {
-				_repeating = false;
-			} else {
-				j = streamIdx(i) = lastRepeatOpenIdx(i)+1;
-				_curTime = streamAt(i).at(streamIdx(i))->timeStart();
+			if (!_repeating) {
+				// set the new index in ALL streams
+				for (int k=0; k<streamList().size(); k++) {
+					streamIdx(k) = lastRepeatOpenIdx(k)+1;
+					if (streamIdx(k)<streamAt(k).size()) {
+						_curTime = streamAt(k).at(streamIdx(k))->timeStart();
+					}
+				}
+
+				j = streamIdx(i);
 				_repeating = true;
 			}
 		}
