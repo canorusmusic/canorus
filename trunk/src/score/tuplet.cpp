@@ -230,14 +230,14 @@ CAPlayable* CATuplet::firstNote() {
 }
 
 /*!
-	Returns the first note/rest in the last chord of the tuplet.
+	Returns the last note/rest in the last chord of the tuplet.
 */
 CAPlayable* CATuplet::lastNote() {
 	if (noteList().isEmpty()) return 0;
 
 	if (noteList().last()->musElementType()==CAMusElement::Note &&
 			!static_cast<CANote*>(noteList().last())->getChord().isEmpty()) {
-		return static_cast<CANote*>(noteList().last())->getChord().first();
+		return static_cast<CANote*>(noteList().last())->getChord().last();
 	} else {
 		return noteList().last();
 	}
