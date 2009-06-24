@@ -157,6 +157,12 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 				newStaff->voiceList()[i]->append( newElt );
 				eltIdx[i]++;
 			}
+			// put the element in the related reference list
+			switch (newElt->musElementType()) {
+			case CAMusElement::KeySignature:    newStaff->addKeySignatureReference(newElt); break;
+			case CAMusElement::TimeSignature:   newStaff->addTimeSignatureReference(newElt); break;
+			case CAMusElement::Clef:            newStaff->addClefReference(newElt); break;
+			}
 		}
 
 		// check if we're at the end

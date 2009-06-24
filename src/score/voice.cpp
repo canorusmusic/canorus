@@ -302,6 +302,10 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 			for (int i=0; i<staff()->voiceList().size(); i++) {
 				staff()->voiceList()[i]->_musElementList.removeAll(elt);
 			}
+			// remove it from the references list
+			if (elt->musElementType() == CAMusElement::KeySignature )  staff()->removeKeySignatureReference( elt ); else
+			if (elt->musElementType() == CAMusElement::TimeSignature ) staff()->removeTimeSignatureReference( elt ); else
+			if (elt->musElementType() == CAMusElement::Clef )          staff()->removeClefReference( elt );
 		} else {
 			// element is playable
 			if ( elt->musElementType()==CAMusElement::Note ) {
