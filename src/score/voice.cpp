@@ -986,6 +986,134 @@ CATempo *CAVoice::getTempo( int time ) {
 }
 
 /*!
+	Returns a list of pointers to key signatures which have the given \a startTime.
+	This is useful for querying for eg. If a new key signature exists at the certain
+	point in time.
+*/
+QList<CAMusElement*> CAVoice::getKeySignature(int startTime) {
+
+	QList<CAMusElement*> eltList;
+	int i;
+	// seek to the start of the music elements with the given time
+	for (i=0; i < staff()->keySignatureReferences().size() && staff()->keySignatureReferences()[i]->timeStart() < startTime; i++);
+
+	// create a list of music elements with the given time
+	while (i<staff()->keySignatureReferences().size() && staff()->keySignatureReferences()[i]->timeStart()==startTime) {
+		eltList << staff()->keySignatureReferences()[i];
+		i++;
+	}
+
+	return eltList;
+}
+
+/*!
+	Returns a list of pointers to key signatures which have the given \a startTime.
+	This is useful for querying for eg. If a new key signature exists at the certain
+	point in time.
+*/
+QList<CAMusElement*> CAVoice::getTimeSignature(int startTime) {
+
+	QList<CAMusElement*> eltList;
+	int i;
+	// seek to the start of the music elements with the given time
+	for (i=0; i < staff()->timeSignatureReferences().size() && staff()->timeSignatureReferences()[i]->timeStart() < startTime; i++);
+
+	// create a list of music elements with the given time
+	while (i<staff()->timeSignatureReferences().size() && staff()->timeSignatureReferences()[i]->timeStart()==startTime) {
+		eltList << staff()->timeSignatureReferences()[i];
+		i++;
+	}
+
+	return eltList;
+}
+
+/*!
+	Returns a list of pointers to key signatures which have the given \a startTime.
+	This is useful for querying for eg. If a new key signature exists at the certain
+	point in time.
+*/
+QList<CAMusElement*> CAVoice::getClef(int startTime) {
+
+	QList<CAMusElement*> eltList;
+	int i;
+	// seek to the start of the music elements with the given time
+	for (i=0; i < staff()->clefReferences().size() && staff()->clefReferences()[i]->timeStart() < startTime; i++);
+
+	// create a list of music elements with the given time
+	while (i<staff()->clefReferences().size() && staff()->clefReferences()[i]->timeStart()==startTime) {
+		eltList << staff()->clefReferences()[i];
+		i++;
+	}
+
+	return eltList;
+}
+
+/*!
+	Returns a list of pointers to key signatures which are at or left (not past)
+	the given \a startTime.
+	This is useful for querying for eg. which key signature is in effect before a certain
+	point in time.
+*/
+QList<CAMusElement*> CAVoice::getPreviousKeySignature(int startTime) {
+
+	QList<CAMusElement*> eltList;
+	int i;
+	// seek to the most right of the music elements with the given time
+	for (i= staff()->keySignatureReferences().size()-1;
+			i >= 0 && staff()->keySignatureReferences()[i]->timeStart() > startTime; i--);
+	// create a list of music elements not past the given time
+	while (i >=0 && staff()->keySignatureReferences()[i]->timeStart() <= startTime) {
+		eltList.prepend(staff()->keySignatureReferences()[i]);
+		i--;
+	}
+	return eltList;
+}
+
+/*!
+	Returns a list of pointers to key signatures which are at or left (not past)
+	the given \a startTime.
+	This is useful for querying for eg. which key signature is in effect before a certain
+	point in time.
+*/
+QList<CAMusElement*> CAVoice::getPreviousTimeSignature(int startTime) {
+
+	QList<CAMusElement*> eltList;
+	int i;
+	// seek to the most right of the music elements with the given time
+	for (i= staff()->timeSignatureReferences().size()-1;
+			i >= 0 && staff()->timeSignatureReferences()[i]->timeStart() > startTime; i--);
+	// create a list of music elements not past the given time
+	while (i >=0 && staff()->timeSignatureReferences()[i]->timeStart() <= startTime) {
+		eltList.prepend(staff()->timeSignatureReferences()[i]);
+		i--;
+	}
+	return eltList;
+}
+
+/*!
+	Returns a list of pointers to clefs which are at or left (not past)
+	the given \a startTime.
+	This is useful for querying for eg. which clef is in effect before a certain
+	point in time.
+*/
+QList<CAMusElement*> CAVoice::getPreviousClef(int startTime) {
+
+	QList<CAMusElement*> eltList;
+	int i;
+	// seek to the most right of the music elements with the given time
+	for (i= staff()->clefReferences().size()-1;
+			i >= 0 && staff()->clefReferences()[i]->timeStart() > startTime; i--);
+	// create a list of music elements not past the given time
+	while (i >=0 && staff()->clefReferences()[i]->timeStart() <= startTime) {
+		eltList.prepend(staff()->clefReferences()[i]);
+		i--;
+	}
+	return eltList;
+}
+
+
+
+/*!
 	\fn void CAVoice::setStemDirection(CANote::CAStemDirection direction)
 
 	Sets the stem direction and update slur directions in all the notes in the voice.

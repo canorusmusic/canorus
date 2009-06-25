@@ -82,6 +82,13 @@ public:
 	QList<CAMusElement*> getBar( int time );
 	CATempo             *getTempo( int time );
 
+	QList<CAMusElement*> getKeySignature(int startTime);
+	QList<CAMusElement*> getTimeSignature(int startTime);
+	QList<CAMusElement*> getClef(int startTime);
+	QList<CAMusElement*> getPreviousKeySignature(int startTime);
+	QList<CAMusElement*> getPreviousTimeSignature(int startTime);
+	QList<CAMusElement*> getPreviousClef(int startTime);
+
 	////////////////
 	// Properties //
 	////////////////
