@@ -349,6 +349,10 @@ bool CAStaff::synchronizeVoices() {
 	int idx[voiceList().size()];                    for (int i=0; i<voiceList().size(); i++) idx[i]=-1;          // array of current indices of voices at current timeStart
 	CAMusElement *lastPlayable[voiceList().size()]; for (int i=0; i<voiceList().size(); i++) lastPlayable[i]=0;
 
+	_clefList.clear();
+	_keySignatureList.clear();
+	_timeSignatureList.clear();
+
 	int timeStart = 0;
 	bool done = false;
 	bool changesMade = false;
@@ -377,6 +381,13 @@ bool CAStaff::synchronizeVoices() {
 			for ( int i=0; i<voiceList().size(); i++ ) {
 				for ( int j=0; j<sharedList.size(); j++) {
 					voiceList()[i]->_musElementList.insert( idx[i]+1+j, sharedList[j] );
+					// shared elements from voice 0 get considered to go to the reference lists too
+					if (i==0)
+						switch (sharedList[j]->musElementType()) {
+						case CAMusElement::KeySignature:    addKeySignatureReference( sharedList[j] );  break;
+						case CAMusElement::TimeSignature:   addTimeSignatureReference( sharedList[j] ); break;
+						case CAMusElement::Clef:            addClefReference( sharedList[j] );          break;
+					}
 				}
 				idx[i]++; // jump to the first one inserted from the sharedList, if inserting shared elts for the first time
 				          // or the first one after the sharedList in second pass
