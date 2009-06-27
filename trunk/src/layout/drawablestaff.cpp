@@ -178,7 +178,7 @@ int CADrawableStaff::getAccs(double x, int pitch) {
 		return 0;
 	if (_drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableBarline ||
 	    _drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableKeySignature)
-		return (key?key->accidentals()[ pitch<0 ? 7-(-pitch)%7 : pitch%7 ]:0);	// watch: % operator with negative numbers is implementation dependent
+		return (key?key->accidentals()[ pitch<0 ? 6-(-pitch-1)%7 : pitch%7 ]:0);	// watch: % operator with negative numbers is implementation dependent
 	else // note before
 		return (static_cast<CANote*>(_drawableMusElementList[i]->musElement())->diatonicPitch().accs());
 }
