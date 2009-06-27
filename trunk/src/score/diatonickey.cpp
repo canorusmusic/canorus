@@ -225,7 +225,7 @@ QList<int> CADiatonicKey::accsMatrix() {
 	Eg. If we call noteAccs(17) in D-Major, it returns 1, because 17 is a note F and D-Major has Fis.
  */
 int CADiatonicKey::noteAccs( int noteName ) {
-	return accsMatrix()[noteName%7];
+	return accsMatrix()[ noteName<0 ? 7-(-noteName)%7 : noteName%7 ];
 }
 
 /*!
