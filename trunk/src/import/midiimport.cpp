@@ -129,6 +129,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 	const int quarterLength = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter );
 	int programCache[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	CADiatonicKey dk;
+	bool leftOverNote;
 
 	setStatus(2);
 	for (;res != PMIDI_STATUS_END;) {
@@ -174,31 +175,29 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			pmidi_out.time = (pmidi_out.time*quarterLength)/pmidi_out.time_base;
 			pmidi_out.length = (pmidi_out.length*quarterLength)/pmidi_out.time_base;
 
-			// Deal with unfinished notes. This is a note that get's keyed when the old same pitch note not yet expired.
-			// Pmidi does a printf message with those, don't know yet how it handles then.
-			// We do shorten them to the current time. This helps in many cases.
-			for (voiceIndex=0;voiceIndex<_allChannelsEvents[pmidi_out.chan]->size();voiceIndex++) {
-				bool lookedBackEnough = false;
-				for (int i=_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size()-1;i>=0;i--) {
-					if (pmidi_out.note == _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_pitch) {
-						if (pmidi_out.time < _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime) {
-							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_length = pmidi_out.time -
-							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time;
-							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime = pmidi_out.time;
-							// this would make them very short
-							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_length = 8;
-							//_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_nextTime =
-							//	_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time + 8;
-						}
-						lookedBackEnough = true;
-						break;
+			// Deal with unfinished notes. This is a note that get's keyed when the old same pitch note is not yet expired.
+			// Pmidi does a printf message with those. We adjust the length and next time of the original note according
+			// the new event, and we don't create a new note in our list.
+			leftOverNote = false;
+			for (voiceIndex=0; !leftOverNote && voiceIndex<_allChannelsEvents[pmidi_out.chan]->size();voiceIndex++) {
+
+				if (_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size()) {
+					int tnext = _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_nextTime;
+					if (pmidi_out.time < _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_nextTime &&
+						pmidi_out.note == _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_pitch ) {
+
+							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_length =
+								pmidi_out.time - _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_time + pmidi_out.length;
+							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_nextTime =
+								_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_time +
+								_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_length;
+							leftOverNote = true;
 					}
 				}
-				if (lookedBackEnough) break;
 			}
 
 			// Get note to the right voice
-			for (voiceIndex=0;voiceIndex<30;voiceIndex++) {		// we can't imagine that so many voices ar needed in any case so let's put a limit
+			for (voiceIndex=0; !leftOverNote && voiceIndex<30;voiceIndex++) {		// we can't imagine that so many voices ar needed in any case so let's put a limit
 				// if another voice is needed and not yet there we create it
 				if (voiceIndex >= _allChannelsEvents[pmidi_out.chan]->size()) {
 					_allChannelsEvents[pmidi_out.chan]->append( new QList<CAMidiImportEvent*> );
@@ -260,6 +259,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 	}
 	writeMidiFileEventsToScore_New( sheet );
 	fixAccidentals( sheet );
+	setStatus(5);
 	return sheet;
 }
 
@@ -439,7 +439,6 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 				if (pmidi_out.key == 0) {
 					CADiatonicKey dk = CADiatonicKey(
 						pmidi_out.key, pmidi_out.minor ? CADiatonicKey::Minor : CADiatonicKey::Major );
-					//musElemKeySig = new CAKeySignature( dk, staff, 0 );
 				}
 
 				musElemTimeSig = new CATimeSignature( pmidi_out.top, pmidi_out.bottom, staff, 0 );
@@ -448,7 +447,6 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			if ( musElemKeySig ) {
 				voice->append( musElemKeySig, false );
 			}
-			//voice->append( musElemTimeSig, false );
 
 			writeMidiChannelEventsToVoice_New( ch, voiceIndex, staff, voice );
 			setProgress(_numberOfAllVoices ? nImportedVoices*100/_numberOfAllVoices : 50 );;
@@ -812,6 +810,8 @@ const QString CAMidiImport::readableStatus() {
 		return tr("Merging Midi events with the score...");
 	case 4:
 		return tr("Reinterpreting accidentals...");
+	case 5:
+		return tr("Drawing score...");
 	}
 }
 
