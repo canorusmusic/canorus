@@ -326,8 +326,8 @@ private slots:
 	////////////////////////////////
 	// Handle progress bar events //
 	////////////////////////////////
-	void on_import_done( int status );
-	void on_export_done( int status );
+	void onImportDone( int status );
+	void onExportDone( int status );
 
 private:
 	void playImmediately( QList<CAMusElement*> elements );
