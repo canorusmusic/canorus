@@ -136,6 +136,21 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 
 		res = pmidi_parse_midi_file();
 
+		// Scale music time properly
+		pmidi_out.time = (pmidi_out.time*quarterLength)/pmidi_out.time_base;
+		pmidi_out.length = (pmidi_out.length*quarterLength)/pmidi_out.time_base;
+
+		//
+		// Quantization on hundredtwentyeighths of time starts and lengths by zeroing the msbits, quant being always a power of two
+		//
+		const int quant = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::HundredTwentyEighth /* CAPlayableLength::SixtyFourth */ );
+		int lengthEnd = pmidi_out.time+pmidi_out.length;
+		pmidi_out.time += quant/2;      // rounding
+		pmidi_out.time &= ~(quant-1);   // quant is power of two
+		lengthEnd += quant/2;
+		lengthEnd &= ~(quant-1);
+		pmidi_out.length = lengthEnd-pmidi_out.time;
+
 		switch (res) {
 		case PMIDI_STATUS_END:
 		case PMIDI_STATUS_VERSION:
@@ -146,8 +161,6 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 					<<"/"<<pmidi_out.bottom
 					<<" at "<<pmidi_out.time
 					<<std::endl;
-			// Scale music time properly
-			pmidi_out.time = (pmidi_out.time*quarterLength)/pmidi_out.time_base;
 
 			// We build the list (vector) of time signatures. If the occurence in time is the same last one wins.
 			if (!_allChannelsTimeSignatures.size() || _allChannelsTimeSignatures[_allChannelsTimeSignatures.size()-1]->_time != pmidi_out.time) {
@@ -171,9 +184,6 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 				<<" note "<<pmidi_out.note
 				<<" vel "<<pmidi_out.vel
 				<<" len "<<pmidi_out.length<<std::endl;
-			// Scale music time properly
-			pmidi_out.time = (pmidi_out.time*quarterLength)/pmidi_out.time_base;
-			pmidi_out.length = (pmidi_out.length*quarterLength)/pmidi_out.time_base;
 
 			// Deal with unfinished notes. This is a note that get's keyed when the old same pitch note is not yet expired.
 			// Pmidi does a printf message with those. We adjust the length and next time of the original note according
@@ -235,10 +245,6 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 		case PMIDI_STATUS_SYSEX:
 			break;
 		case PMIDI_STATUS_KEYSIG:
-
-			// Scale music time properly
-			pmidi_out.time = (pmidi_out.time*quarterLength)/pmidi_out.time_base;
-			pmidi_out.length = (pmidi_out.length*quarterLength)/pmidi_out.time_base;
 
 			std::cout<<" Keys: "<<pmidi_out.key
 				<<"  Minor: "<<pmidi_out.minor<<std::endl;
@@ -304,30 +310,6 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		}
 	}
 
-	// Quantization on hundredtwentyeighths of time starts and lengths by zeroing the msbits, quant being always a power of two
-	const int quant = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::HundredTwentyEighth /* CAPlayableLength::SixtyFourth */ );
-	for (int ch=0;ch<16;ch++) {
-		for (voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
-			for (int i=0;i< _allChannelsEvents[ch]->at(voiceIndex)->size();i++) {
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time += quant/2;	// rounding
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time &= ~(quant-1);	// quant is power of two
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length += quant/2;
-				//_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length += quant/4;	// preference not to shrink, but make a little longer
-				_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length &= ~(quant-1);
-			}
-		}
-	}
-	// Quantization of key signatures
-	std::cout<<std::endl<<"Key signature ";
-	for (int i=0;i<_allChannelsKeySignatures.size();i++) {
-		int ksTime = _allChannelsKeySignatures[i]->timeStart();
-		ksTime += quant/2;
-		ksTime &= ~(quant-1);
-		_allChannelsKeySignatures[i]->setTimeStart( ksTime );
-		std::cout<< qPrintable( CADiatonicKey::diatonicKeyToString( _allChannelsKeySignatures[i]->diatonicKey() ));
-		std::cout<<" at "<<ksTime<<", ";
-	}
-	std::cout<<std::endl;
 	// Remove coincidenting key signatures. For this we have to make a decrementing loop, because we want to keep the later one.
 	for (int i=_allChannelsKeySignatures.size()-2;i>=0;i--) {
 		if( _allChannelsKeySignatures[i]->timeStart() == _allChannelsKeySignatures[i+1]->timeStart() )
