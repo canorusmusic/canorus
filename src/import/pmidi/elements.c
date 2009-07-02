@@ -60,7 +60,7 @@ static void
 md_container_init(struct containerElement *e)
 {
 
-	e->elements = g_ptr_array_new();
+	e->elements = pmidi_ptr_array_new();
 }
 
 /*
@@ -373,7 +373,7 @@ md_smpteoffset_new(short hours, short minutes, short seconds, short frames,
 void 
 md_add(struct containerElement *c, struct element *e)
 {
-	g_ptr_array_add(c->elements, e);
+	pmidi_ptr_array_add(c->elements, e);
 }
 
 /*
@@ -391,7 +391,7 @@ md_free(struct element *el)
 			struct element *p = g_ptr_array_index(c->elements, i);
 			md_free(p);
 		}
-		g_ptr_array_free(c->elements, 1);
+		pmidi_ptr_array_free(c->elements, 1);
 	}
 	switch (el->type) {
 	case MD_TYPE_TEXT:

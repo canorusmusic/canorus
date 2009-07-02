@@ -1525,17 +1525,17 @@ void	 g_string_sprintfa  (GString	 *string,
  * order by moving the last element to the position of the removed 
  */
 
-#define g_array_append_val(a,v)	  g_array_append_vals (a, &v, 1)
+#define g_array_append_val(a,v)	  pmidi_array_append_vals (a, &v, 1)
 #define g_array_prepend_val(a,v)  g_array_prepend_vals (a, &v, 1)
 #define g_array_insert_val(a,i,v) g_array_insert_vals (a, i, &v, 1)
 #define g_array_index(a,t,i)      (((t*) (a)->data) [(i)])
 
-GArray* g_array_new	          (gboolean	    zero_terminated,
+GArray* pmidi_array_new	          (gboolean	    zero_terminated,
 				   gboolean	    clear,
 				   guint	    element_size);
-void	g_array_free	          (GArray	   *array,
+void	pmidi_array_free	          (GArray	   *array,
 				   gboolean	    free_segment);
-GArray* g_array_append_vals       (GArray	   *array,
+GArray* pmidi_array_append_vals       (GArray	   *array,
 				   gconstpointer    data,
 				   guint	    len);
 GArray* g_array_prepend_vals      (GArray	   *array,
@@ -1558,20 +1558,20 @@ GArray* g_array_remove_index_fast (GArray	   *array,
  * order.  
  */
 #define	    g_ptr_array_index(array,index) (array->pdata)[index]
-GPtrArray*  g_ptr_array_new		   (void);
-void	    g_ptr_array_free		   (GPtrArray	*array,
+GPtrArray*  pmidi_ptr_array_new		   (void);
+void	    pmidi_ptr_array_free		   (GPtrArray	*array,
 					    gboolean	 free_seg);
 void	    g_ptr_array_set_size	   (GPtrArray	*array,
 					    gint	 length);
 gpointer    g_ptr_array_remove_index	   (GPtrArray	*array,
 					    guint	 index);
-gpointer    g_ptr_array_remove_index_fast  (GPtrArray	*array,
+gpointer    pmidi_ptr_array_remove_index_fast  (GPtrArray	*array,
 					    guint	 index);
 gboolean    g_ptr_array_remove		   (GPtrArray	*array,
 					    gpointer	 data);
 gboolean    g_ptr_array_remove_fast        (GPtrArray	*array,
 					    gpointer	 data);
-void	    g_ptr_array_add		   (GPtrArray	*array,
+void	    pmidi_ptr_array_add		   (GPtrArray	*array,
 					    gpointer	 data);
 
 /* Byte arrays, an array of guint8.  Implemented as a GArray,
