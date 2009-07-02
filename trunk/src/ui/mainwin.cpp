@@ -2888,7 +2888,7 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 		return 0; // FIXME Failing quietly, add error message
 	}
 
-	connect( open, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
+	connect( open, SIGNAL(importDone(int)), this, SLOT(onImportDone(int)) );
 	open->setStreamFromFile( fileName );
 	open->importDocument();
 
@@ -3103,7 +3103,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 			import = new CAMidiImport( document() );
 			if (import) {
 				import->setStreamFromFile( s );
-				connect( import, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
+				connect( import, SIGNAL(importDone(int)), this, SLOT(onImportDone(int)) );
 				import->importSheet();
 			}
 		} else
@@ -3114,7 +3114,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 			import = new CALilyPondImport( document() );
 			if (import) {
 				import->setStreamFromFile( s );
-				connect( import, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
+				connect( import, SIGNAL(importDone(int)), this, SLOT(onImportDone(int)) );
 				import->importSheet();
 			}
 		} else
@@ -3122,7 +3122,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 			import = new CAMusicXmlImport();
 			if (import) {
 				import->setStreamFromFile( s );
-				connect( import, SIGNAL(importDone(int)), this, SLOT(on_import_done(int)) );
+				connect( import, SIGNAL(importDone(int)), this, SLOT(onImportDone(int)) );
 				import->importDocument();
 			}
 		}
@@ -3131,7 +3131,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	}
 }
 
-void CAMainWin::on_import_done( int status ) {
+void CAMainWin::onImportDone( int status ) {
 	CAImport *import = static_cast<CAImport*>(sender());
 
 	if (!import) {
@@ -3172,7 +3172,7 @@ void CAMainWin::on_uiExportToPdf_triggered() {
 	on_uiExportDocument_triggered();
 }
 
-void CAMainWin::on_export_done( int status ) {
+void CAMainWin::onExportDone( int status ) {
 
 }
 
