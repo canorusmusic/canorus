@@ -50,7 +50,7 @@ struct _GRealPtrArray
 
 
 GPtrArray*
-g_ptr_array_new(void)
+pmidi_ptr_array_new(void)
 {
 GRealPtrArray *array;
 
@@ -64,7 +64,7 @@ GRealPtrArray *array;
 }
 
 void
-g_ptr_array_free(GPtrArray   *array, gboolean  free_segment)
+pmidi_ptr_array_free(GPtrArray   *array, gboolean  free_segment)
 {
 
 	if (free_segment)
@@ -97,7 +97,7 @@ g_ptr_array_maybe_expand(GRealPtrArray *array, gint len)
 
 
 gpointer
-g_ptr_array_remove_index_fast(GPtrArray* farray, guint index)
+pmidi_ptr_array_remove_index_fast(GPtrArray* farray, guint index)
 {
 	GRealPtrArray* array = (GRealPtrArray*)farray;
 	gpointer result;
@@ -130,7 +130,7 @@ struct _GRealArray
 };
 
 void
-g_ptr_array_add(GPtrArray* farray, gpointer data)
+pmidi_ptr_array_add(GPtrArray* farray, gpointer data)
 {
 	GRealPtrArray* array = (GRealPtrArray*) farray;
 
@@ -157,7 +157,7 @@ g_array_maybe_expand (GRealArray *array, gint len)
 }
 
 GArray*
-g_array_new (gboolean zero_terminated, gboolean clear, guint elt_size)
+pmidi_array_new (gboolean zero_terminated, gboolean clear, guint elt_size)
 {
 	GRealArray *array;
 
@@ -174,7 +174,7 @@ g_array_new (gboolean zero_terminated, gboolean clear, guint elt_size)
 }
 
 void
-g_array_free (GArray  *array, gboolean free_segment)
+pmidi_array_free (GArray  *array, gboolean free_segment)
 {
 	if (free_segment)
 		g_free (array->data);
@@ -183,7 +183,7 @@ g_array_free (GArray  *array, gboolean free_segment)
 }
 
 GArray*
-g_array_append_vals(GArray *farray, gconstpointer data, guint len)
+pmidi_array_append_vals(GArray *farray, gconstpointer data, guint len)
 {
 	GRealArray *array = (GRealArray*) farray;
 

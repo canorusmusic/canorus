@@ -73,7 +73,7 @@ midi_read(FILE *fp)
 	msp = &mState;
 	msp->fp = fp;
 	msp->tempo_map = md_tempomap_new();
-	msp->notes = g_ptr_array_new();
+	msp->notes = pmidi_ptr_array_new();
 	msp->port = 0;
 
 	root = read_head(msp);
@@ -96,7 +96,7 @@ midi_read(FILE *fp)
 	g_ptr_array_index(MD_CONTAINER(root)->elements, 0) = msp->tempo_map;
 	msp->tempo_map = NULL;
 
-	g_ptr_array_free(msp->notes, 1);
+	pmidi_ptr_array_free(msp->notes, 1);
 
 	return root;
 }
@@ -550,7 +550,7 @@ save_note(struct midistate *msp, int note, int vel)
 	n = md_note_new(note, vel, -1); 
 
 	/* Save it so that we match up with the note off */
-	g_ptr_array_add(msp->notes, n);
+	pmidi_ptr_array_add(msp->notes, n);
 
 	return MD_ELEMENT(n);
 }
@@ -586,7 +586,7 @@ finish_note(struct midistate *msp, int note, int vel)
 					note, n->vel);
 				n->length = 0;
 			}
-			g_ptr_array_remove_index_fast(notes, i);
+			pmidi_ptr_array_remove_index_fast(notes, i);
 			break;
 		}
 	}

@@ -47,7 +47,7 @@ seq_create_context()
 	ctxp->client = snd_seq_client_id(ctxp->handle);
 	ctxp->queue = q;
 
-	ctxp->destlist = g_array_new(0, 0, sizeof(snd_seq_addr_t));
+	ctxp->destlist = pmidi_array_new(0, 0, sizeof(snd_seq_addr_t));
 
 	ctxp->queue = q;
 	ctxp->source.client = ctxp->client;
