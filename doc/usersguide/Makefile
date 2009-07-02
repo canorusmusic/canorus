@@ -1,17 +1,24 @@
-all: pdf html qthelp
+all: pdf qthelp
 
 tex:
 	lyx -e latex *.lyx
 
 pdf: tex
-	for i in *.tex; do pdflatex $$i; done
-	for i in *.tex; do pdflatex $$i; done # TOC
+	for i in *.tex; do pdflatex $$i && pdflatex $$i; done # Running twice for TOC
 
 html: tex
 	for i in *.tex; do htlatex $$i; done
 
-qthelp: html
-	for i in *.qhcp; do qcollectiongenerator $$i; done
+qthelpFiles: html
+	# Recreate qthelp project files (.qhp and .qhcp) - requires bash
+	if [ -x /bin/bash ]; then \
+		for i in *.lyx; do \
+			/bin/bash createQtHelp.sh $$(echo $$i | sed 's/.lyx$$//'); \
+		done \
+	fi
+
+qthelp: qthelpFiles
+	for i in $$(ls *.qhcp | grep -v template.qhcp); do qcollectiongenerator $$i; done
 
 clean: clean-tex clean-html clean-pdf clean-qthelp
 

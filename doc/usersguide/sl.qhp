@@ -8,8 +8,15 @@
 	<filterSection>
 		<filterAttribute>canorus</filterAttribute>
 		<toc>
-			<section title="Canorus Uporabniški priročnik" ref="sl.html">
-				<section title="Chapter 1" ref="sl.html#chapter1"/>
+			<section title="Uvod" ref="sl.html#x1-2000I"/>
+			<section title="Kratki uvod" ref="sl.html#x1-3000II">
+					<section title="Glavno okno" ref="sl.html#x1-40001"/>
+					<section title="Pisanje not" ref="sl.html#x1-50002"/>
+					<section title="Pisanje drugih elementov" ref="sl.html#x1-60003"/>
+					<section title="Spreminjanje elementov" ref="sl.html#x1-70004"/>
+					<section title="Novo &#x010D;rtovje, glas, besedilo" ref="sl.html#x1-80005"/>
+					<section title="Predvajanje" ref="sl.html#x1-90006"/>
+					<section title="Tiskanje" ref="sl.html#x1-100007"/>
 			</section>
 		</toc>
 		<!--<keywords>
