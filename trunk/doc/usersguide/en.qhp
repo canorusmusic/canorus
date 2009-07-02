@@ -8,8 +8,15 @@
 	<filterSection>
 		<filterAttribute>canorus</filterAttribute>
 		<toc>
-			<section title="Canorus User's guide" ref="en.html">
-				<section title="Chapter 1" ref="en.html#chapter1"/>
+			<section title="Introduction" ref="en.html#x1-2000I"/>
+			<section title="Quickstart" ref="en.html#x1-3000II">
+					<section title="Main window" ref="en.html#x1-40001"/>
+					<section title="Inserting notes" ref="en.html#x1-50002"/>
+					<section title="Inserting other music elements" ref="en.html#x1-60003"/>
+					<section title="Editing elements" ref="en.html#x1-70004"/>
+					<section title="New staff, voice, lyrics" ref="en.html#x1-80005"/>
+					<section title="Playback" ref="en.html#x1-90006"/>
+					<section title="Printing" ref="en.html#x1-100007"/>
 			</section>
 		</toc>
 		<!--<keywords>
