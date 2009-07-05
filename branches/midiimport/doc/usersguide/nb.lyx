@@ -1,0 +1,313 @@
+#LyX 1.6.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language norsk
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename images/canorus.png
+	width 70text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part
+Introduksjon
+\end_layout
+
+\begin_layout Standard
+Velkommen til Canorus v0.7, et åpent og platformuavhengig noteprogram.
+ Besøk vår nettside 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.canorus.org
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Part
+Hurtigstart
+\end_layout
+
+\begin_layout Section
+Hovedvindu
+\end_layout
+
+\begin_layout Standard
+Det første du møter når du åpner programmet er hovedvinduet.
+ Det ser omtrent slik ut:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/mainwin-en.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hovedvinduet består av en meny øverst, vertøylinje for innsetting av elementer
+ til venstre, generelle innstillinger og musikkinnstillinger under menylinja
+ øverst og en fanebasert notearkvisning.
+\end_layout
+
+\begin_layout Standard
+Hvert dokument kan ha ett eller flere noteark - et noteark er representert
+ ved en fane (lignende det du kan finne i skriveprogrammer).
+ Bruk av flere noteark kan være hensiksmessig for å skille ulike deler av
+ musikkstykket, ulike transponeringer, variasjoner eller bare som en midlertidig
+ plass til å skrive ned dine musikalske idéer.
+\end_layout
+
+\begin_layout Section
+Innsetting av noter
+\end_layout
+
+\begin_layout Standard
+For å sette inn noter eller pauser, klikk på notesystemet du vil legge til
+ et element i, velg stemmen øverst og klikk på 
+\begin_inset Quotes eld
+\end_inset
+
+Noter og pauser
+\begin_inset Quotes erd
+\end_inset
+
+-ikonet 
+\begin_inset Graphics
+	filename images/insertplayable.png
+	scale 40
+
+\end_inset
+
+ i den venstre verktøylinjen.
+ Den øverste verktøylinjen viser nå note-/pauselengde, synlighet, noteoppdeling
+ etc.
+\end_layout
+
+\begin_layout Standard
+Klikk deretter med venstre musetast på notesystemet der du vil legge til
+ en note.
+ For å legge til en pause, klikk med høyre musetast.
+ Hvis du vil heve/senke en note et halvt notesteg, bruk +/- knappene.
+ For å endre den innsatte noten, bruk opp/ned-knappene.
+ Klikk .
+ (punktum) hvis noten skal være punktert.
+\end_layout
+
+\begin_layout Section
+Innsetting av andre musikkelementer
+\end_layout
+
+\begin_layout Standard
+For å sette inn nøkler, toneart, taktart, taktstreker og andre musikkelementer,
+ bruk knappene i den venstre verktøylinja, bestem egenskapene i vertøylinja
+ øverst og klikk på notesystemet.
+ Venstre vertøylinje viser hvilke elementer som kan settes inn i valgt system
+ på notearket.
+ 
+\end_layout
+
+\begin_layout Standard
+For å sette inn en bue, velg først to eller flere noter og klikk på bueknappen
+ og velg type bue.
+\end_layout
+
+\begin_layout Standard
+En spesiell hurtigtast b setter manuelt inn en taktstrek i angitt posisjon
+ (f.eks for opptakter).
+\end_layout
+
+\begin_layout Section
+Redigering av elementer
+\end_layout
+
+\begin_layout Standard
+Hvis du vil endre et musikkelement som allerede er innsatt, må du gå inn
+ i Redigeringsmodus.
+ Dette gjør du med hurtigtast e eller ved å klikke den røde pilen i venstre
+ verktøylinje 
+\begin_inset Graphics
+	filename images/editmode.png
+	scale 40
+
+\end_inset
+
+.
+ Når du velger én eller flere elementer, vises deres egenskaper i den øverste
+ verktøylinja.
+\end_layout
+
+\begin_layout Standard
+Du kan forlate hvilken som helst modus og gå til Valgmodus ved å trykke
+ Esc-knappen.
+\end_layout
+
+\begin_layout Section
+Nytt notesystem, stemme, sangtekst
+\end_layout
+
+\begin_layout Standard
+For å sette inn et nytt system, klikk på 
+\begin_inset Quotes eld
+\end_inset
+
+Sett inn system
+\begin_inset Quotes erd
+\end_inset
+
+-valgknappen i venstre verktøylinje 
+\begin_inset Graphics
+	filename images/insertstaff.png
+	scale 40
+
+\end_inset
+
+, velg et system (notesystem, sangtekst, funksjonsanalyse) og klikk på notearket
+ der systemet skal settes inn.
+ 
+\end_layout
+
+\begin_layout Standard
+For å sette inn en ny stemme, velg et notesystem på notearket og klikk på
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Ny stemme
+\begin_inset Quotes erd
+\end_inset
+
+-knappen 
+\begin_inset Graphics
+	filename images/insertvoice.png
+	scale 40
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Avspilling
+\end_layout
+
+\begin_layout Standard
+For å spille av musikken du har skrevet, trykk space-knappen eller klikk
+ på den grønne avspillingsknappen 
+\begin_inset Graphics
+	filename images/playback.png
+	scale 40
+
+\end_inset
+
+.
+ Avspillingen starter fra nåværende eller valgt takt.
+ For å stoppe avspillingen, klikk på knappen en gang til.
+\end_layout
+
+\begin_layout Section
+Utskrift
+\end_layout
+
+\begin_layout Standard
+Canorus bruker programmet LilyPond for utskrift.
+ 
+\end_layout
+
+\begin_layout Standard
+Desverre følger ikke LilyPond med Canorus.
+ Det første du må gjøre er å installere LilyPond - gå til 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.lilypond.org
+\end_layout
+
+\end_inset
+
+ og last det ned.
+ Du kan også bruke din distribusjons pakkehåndterer for å installerer det
+ på Linux.
+\end_layout
+
+\begin_layout Standard
+For å bruke utskriftsvisning må du ha en PDF-fremviser installert på ditt
+ system.
+ Gå til Fil->Utskriftsvisning 
+\begin_inset Graphics
+	filename images/printpreview.png
+	scale 40
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Du kan skrive ut direkte ved å bruke Fil->Skriv ut eller du kan skrive ut
+ fra din PDF-fremviser (anbefalt).
+\end_layout
+
+\end_body
+\end_document

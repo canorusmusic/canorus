@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<QHelpCollectionProject version="1.0">
+	<assistant>
+		<title>Canorus Bedienhandbuch</title>
+		<startPage>qthelp://canorus/usersguide-de/de.html</startPage>
+		<currentFilter>Canorus</currentFilter>
+		<applicationIcon>images/canorushelpicon.png</applicationIcon>
+		<enableFilterFunctionality>false</enableFilterFunctionality>
+		<enableDocumentationManager>false</enableDocumentationManager>
+		<enableAddressBar visible="true">true</enableAddressBar>
+	</assistant>
+	<docFiles>
+		<generate>
+			<file>
+				<input>de.qhp</input>
+				<output>de.qch</output>
+			</file>
+		</generate>
+		<register>
+			<file>de.qch</file>
+		</register>
+	</docFiles>
+</QHelpCollectionProject>
+

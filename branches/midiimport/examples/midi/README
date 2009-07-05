@@ -1,0 +1,15 @@
+Remarks to these midi files:
+
+bach-menuet-01.mid:
+
+bach-menuet-03.mid:
+	This file doen't carry a time signature.
+	Canorus should import it without any time signature or barlines.
+	Please leave it like this :)
+
+bach-menuet-07.mid:
+
+BWV548_2.mid:
+
+handel-trio.mid:
+
