@@ -130,6 +130,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 	int programCache[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	CADiatonicKey dk;
 	bool leftOverNote;
+	bool timeSigAlreadyThere;
 
 	setStatus(2);
 	for (;res != PMIDI_STATUS_END;) {
@@ -162,8 +163,20 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 					<<" at "<<pmidi_out.time
 					<<std::endl;
 
-			// We build the list (vector) of time signatures. If the occurence in time is the same last one wins.
+			// We build the list of time signatures. We assume they are ordered in time.
+			// We don't allow doublets to sneak in.
+			timeSigAlreadyThere = false;
+			for (int i=0;i<_allChannelsTimeSignatures.size();i++) {
+				if (_allChannelsTimeSignatures[i]->_time == pmidi_out.time &&
+					_allChannelsTimeSignatures[i]->_top == pmidi_out.top &&
+					_allChannelsTimeSignatures[i]->_bottom == pmidi_out.bottom)
+						timeSigAlreadyThere = true;
+			}
+			if (timeSigAlreadyThere)
+				break;
+			// If at the same last time another signature comes in the latter one wins.
 			if (!_allChannelsTimeSignatures.size() || _allChannelsTimeSignatures[_allChannelsTimeSignatures.size()-1]->_time != pmidi_out.time) {
+				// Normal detection of time signature, store it.
 				_allChannelsTimeSignatures << new CAMidiImportEvent( true, 0, 0, 0, pmidi_out.time, 0, 0 );
 				_allChannelsTimeSignatures[_allChannelsTimeSignatures.size()-1]->_top = pmidi_out.top;
 				_allChannelsTimeSignatures[_allChannelsTimeSignatures.size()-1]->_bottom = pmidi_out.bottom;
@@ -635,7 +648,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			voice->append( tsElem, false );
 			ts = static_cast<CATimeSignature*>(tsElem);
 			if (channel==9 && voiceIndex > 1) {
-				//std::cout<< "    in advance new time sig at "<<time<<" in "<<ts->beat()<<"/"<<ts->beats()<<std::endl;
+				//std::cout<< "    in advance new time sig at "<<time<<" in "<<ts->beats()<<"/"<<ts->beat()<<std::endl;
 			}
 		}
 
@@ -673,7 +686,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				if (tsElem) {
 					voice->append( tsElem, false );
 					ts = static_cast<CATimeSignature*>(tsElem);
-					std::cout<< "    for a rest new time sig at "<<time<<" in "<<ts->beat()<<"/"<<ts->beats()<<std::endl;
+					std::cout<< "    for a rest new time sig at "<<time<<" in "<<ts->beats()<<"/"<<ts->beat()<<std::endl;
 				}
 
 				// Time signatures are eventuelly placed before barlines
@@ -737,7 +750,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				if (tsElem) {
 					voice->append( tsElem, false );
 					ts = static_cast<CATimeSignature*>(tsElem);
-					//std::cout<< "    for a note new time sig at "<<time<<" in "<<ts->beat()<<"/"<<ts->beats()<<std::endl;
+					//std::cout<< "    for a note new time sig at "<<time<<" in "<<ts->beats()<<"/"<<ts->beat()<<std::endl;
 				}
 
 				// Time signatures are eventuelly placed before barlines
