@@ -20,7 +20,7 @@
 
 struct except {
 	int  set;
-#ifdef Q_WS_WIN
+#ifdef __MINGW32__
 	jmp_buf     buf;
 #else
 	sigjmp_buf  buf;
