@@ -20,6 +20,9 @@
 
 struct except {
 	int  set;
+#ifdef Q_WS_WIN
+	jmp_buf     buf;
+#endif
 	sigjmp_buf  buf;
 };
 
