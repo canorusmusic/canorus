@@ -22,8 +22,9 @@ struct except {
 	int  set;
 #ifdef Q_WS_WIN
 	jmp_buf     buf;
-#endif
+#else
 	sigjmp_buf  buf;
+#endif
 };
 
 extern struct except *formatError;	/* Bad file format */
