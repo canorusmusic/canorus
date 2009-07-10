@@ -63,6 +63,8 @@ CACanorusMLExport::~CACanorusMLExport() {
 void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 	int depth = 0;
 
+	out().setCodec("UTF-8");
+	
 	// CADocument
 	QDomDocument dDoc("canorusml");
 

@@ -57,6 +57,8 @@ CAMusicXmlExport::~CAMusicXmlExport() {
  */
 void CAMusicXmlExport::exportDocumentImpl(CADocument *doc) {
 	int depth = 0;
+	
+	out().setCodec("UTF-8");
 
 	// CADocument
 	QDomDocument dDoc("musicxml");
