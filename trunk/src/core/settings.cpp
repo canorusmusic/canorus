@@ -44,7 +44,7 @@ const CATypesetter::CATypesetterType CASettings::DEFAULT_TYPESETTER = CATypesett
 const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "lilypond";
 #endif
 #ifdef Q_WS_WIN
-const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "C:/Program files/LilyPond/usr/bin/lilypond.exe";
+const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "C:/Program files/LilyPond/usr/bin/lilypond-windows.exe";
 #endif
 #ifdef Q_WS_MAC
 const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "/Applications/LilyPond.app/Contents/Resources/bin/lilypond";

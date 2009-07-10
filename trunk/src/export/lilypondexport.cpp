@@ -579,6 +579,7 @@ const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
 */
 void CALilyPondExport::exportDocumentImpl(CADocument *doc)
 {
+	out().setCodec("UTF-8");
 	if ( doc->sheetList().size() < 1 ) {
 		//TODO: no sheets, raise an error
 		return;
@@ -603,6 +604,7 @@ void CALilyPondExport::exportDocumentImpl(CADocument *doc)
 */
 void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 {
+	out().setCodec("UTF-8");
 	setCurSheet( sheet );
 
 	// we need to check if the document is not set, for example at exporting the first sheet
