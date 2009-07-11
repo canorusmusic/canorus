@@ -43,8 +43,6 @@ public:
 	int _top;
 	int _bottom;
 	int _program;
-	int _chordVoice;	// working variables to look up chords, initially they are 0
-	int _chordIndex;
 };
 
 CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0, int tempo = 120, int program = 0 ) {
@@ -59,8 +57,6 @@ CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int veloc
 	_nextTime = time+length;
 	_tempo = tempo;
 	_program = program;
-	_chordVoice = -1;
-	_chordIndex = -1;
 }
 
 CAMidiImportEvent::~CAMidiImportEvent() {
@@ -159,8 +155,9 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 		switch (res) {
 		case PMIDI_STATUS_END:
 		case PMIDI_STATUS_VERSION:
+			break;
 		case PMIDI_STATUS_TEXT:
-			std::cout<<" Text "<<std::endl;
+			std::cout<<" at "<<pmidi_out.time<<" type "<<pmidi_out.type<<" ("<<pmidi_out.name<<")         "<< pmidi_out.text<<std::endl;
 			break;
 		case PMIDI_STATUS_TIMESIG:
 			std::cout<<" Timesig "<<pmidi_out.top
@@ -197,11 +194,13 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 				<<std::endl;
 			break;
 		case PMIDI_STATUS_NOTE:
+			/*
 			std::cout<<" at "<<pmidi_out.time
 				<<"  chan "<<pmidi_out.chan
 				<<" note "<<pmidi_out.note
 				<<" vel "<<pmidi_out.vel
 				<<" len "<<pmidi_out.length<<std::endl;
+			*/
 
 			// Deal with unfinished notes. This is a note that get's keyed when the old same pitch note is not yet expired.
 			// Pmidi does a printf message with those. We adjust the length and next time of the original note according
@@ -288,11 +287,13 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			
 			break;
 		case PMIDI_STATUS_SMPTEOFFS:
+			/*
 			std::cout<<"  Stunden "<<pmidi_out.hours
 				<<" Minuten "<<pmidi_out.minutes
 				<<" Sekunden "<<pmidi_out.seconds
 				<<" Frames "<<pmidi_out.frames
 				<<" Subframes "<<pmidi_out.subframes<<std::endl;
+			*/
 			break;
 		}
 	}
@@ -348,45 +349,6 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		if( _allChannelsKeySignatures[i]->timeStart() == _allChannelsKeySignatures[i+1]->timeStart() )
 			_allChannelsKeySignatures.remove(i);
 	}
-
-	// Search for chords. FIXME: absolete
-	// For each note we look for a companion in the same staff with the same timing.
-	// Chord notes can be combined only from distinct voices, because our previous processing guaranties none overlapp
-	// inside a voice.
-	// Notes that are already chord members aren't considered again.
-	//
-	// To write a note into a chord it gets the proper _chordVoiceIndex and _chordVoiceNumber set.
-	//
-	for (int ch=0;ch<16;ch++) {
-		// loop through all voices, this is the current voice
-		for (voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
-			// loop through the voices below it:
-			for (int j=0;j<voiceIndex;j++) {
-				// loop through all elements in the current voice
-				for (int i=0;i< _allChannelsEvents[ch]->at(voiceIndex)->size();i++) {       /// FALSCH
-					// check against the elements in the voice below
-					for (int k=0;k< _allChannelsEvents[ch]->at(j)->size();k++) {
-
-						// don't look behind a certain time, the elements are time ordered
-						//if ( _allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time < _allChannelsEvents[ch]->at(j)->at(k)->_time ) break;
-						// only match to base notes
-						//if ( _allChannelsEvents[ch]->at(j)->at(k)->_chordVoice >= 0 ) continue;
-
-						// if time and length are the same, take note of the matching voice and element
-						if ( (_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time == _allChannelsEvents[ch]->at(j)->at(k)->_time)  &&
-							(_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length == _allChannelsEvents[ch]->at(j)->at(k)->_length) &&
-							( _allChannelsEvents[ch]->at(j)->at(k)->_chordVoice >= 0 ) ) {
-
-							_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_chordVoice = j;
-							_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_chordIndex = k;
-							std::cout<<"                 Chord at voice "<<voiceIndex<<","<<i<<" with voice "<<j<<","<<k<<std::endl;
-						}
-					}
-				}
-			}
-		}
-	}
-
 
 	// Zero _tempo when no tempo change, only in the first voice, so later we will set tempo at the remaining points.
 	// By the algorithm used tempo changes on a note will be placed already on the rest before it eventually.
@@ -520,7 +482,7 @@ CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int voiceIndex, 
 		int top = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_top;
 		int bottom = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_bottom;
 		staff->addTimeSignatureReference( new CATimeSignature( top, bottom, staff, 0 ));
-		std::cout<<"                             neue Timesig at "<<time<<", es gibt "
+		std::cout<<"                             neue Timesig at "<<time<<", there are "
 																<<_allChannelsTimeSignatures.size()
 																<<std::endl;
 		// werden ersetzt:
@@ -691,11 +653,11 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 					CADiatonicPitch diaPitch = matchPitchToKey( voice, CAMidiDevice::midiPitchToDiatonicPitch(events->at(i)->_pitchList[k]) );
 					noteList << new CANote( diaPitch, lenList[j], voice, -1 );
 					voice->append( noteList[k], k ? true : false );
+					noteList[k]->setStemDirection( CANote::StemPreferred );
 				}
 
 				voice->setMidiProgram( program );
 				int len = CAPlayableLength::playableLengthToTimeLength( lenList[j] );
-				//std::cout<< "    Note Length "<<len<<" at "<<time<<std::endl;
 				time += len;
 				length -= len;
 				if ( tempo ) {
