@@ -132,7 +132,6 @@ private:
 	CAMusElement* getOrCreateTimeSignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice );
 	int _numberOfAllVoices;
 	void fixAccidentals( CASheet *s );
-	void appendNoteToChord( QList<CAMidiImportEvent*> *events, int index, CAStaff *staff, CATimeSignature *ts );
 };
 
 #endif /* MIDIIMPORT_H_ */
