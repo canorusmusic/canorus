@@ -34,6 +34,7 @@ public:
 	bool _on;
 	int _channel;
 	int _pitch;
+	QList <int> _pitchList; 	// to build chords when neccessary
 	int _velocity;
 	int _time;
 	int _length;
@@ -42,22 +43,20 @@ public:
 	int _top;
 	int _bottom;
 	int _program;
-	int _chordVoice;	// working variables to look up chords, initially they are 0
-	int _chordIndex;
 };
 
 CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0, int tempo = 120, int program = 0 ) {
 	_on = on;
 	_channel = channel;
 	_pitch = pitch;
+	_pitchList.clear();
+	_pitchList << pitch;
 	_velocity = velocity;
 	_time = time;
 	_length = length;
 	_nextTime = time+length;
 	_tempo = tempo;
 	_program = program;
-	_chordVoice = -1;
-	_chordIndex = -1;
 }
 
 CAMidiImportEvent::~CAMidiImportEvent() {
@@ -130,6 +129,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 	int programCache[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	CADiatonicKey dk;
 	bool leftOverNote;
+	bool chordNote;
 	bool timeSigAlreadyThere;
 
 	setStatus(2);
@@ -155,7 +155,9 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 		switch (res) {
 		case PMIDI_STATUS_END:
 		case PMIDI_STATUS_VERSION:
+			break;
 		case PMIDI_STATUS_TEXT:
+			std::cout<<" at "<<pmidi_out.time<<" type "<<pmidi_out.type<<" ("<<pmidi_out.name<<")         "<< pmidi_out.text<<std::endl;
 			break;
 		case PMIDI_STATUS_TIMESIG:
 			std::cout<<" Timesig "<<pmidi_out.top
@@ -192,11 +194,13 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 				<<std::endl;
 			break;
 		case PMIDI_STATUS_NOTE:
+			/*
 			std::cout<<" at "<<pmidi_out.time
 				<<"  chan "<<pmidi_out.chan
 				<<" note "<<pmidi_out.note
 				<<" vel "<<pmidi_out.vel
 				<<" len "<<pmidi_out.length<<std::endl;
+			*/
 
 			// Deal with unfinished notes. This is a note that get's keyed when the old same pitch note is not yet expired.
 			// Pmidi does a printf message with those. We adjust the length and next time of the original note according
@@ -207,7 +211,7 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 				if (_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size()) {
 					int tnext = _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_nextTime;
 					if (pmidi_out.time < _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_nextTime &&
-						pmidi_out.note == _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_pitch ) {
+						pmidi_out.note == _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_pitch ) { // FIXME: look into chords
 
 							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_length =
 								pmidi_out.time - _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_time + pmidi_out.length;
@@ -219,8 +223,23 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 				}
 			}
 
+			// Check for building a chord
+			chordNote = false;
+			for (voiceIndex=0; !leftOverNote && !chordNote && voiceIndex<_allChannelsEvents[pmidi_out.chan]->size();voiceIndex++) {
+				for (int i=_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size()-1;i>=0;i--) {
+					// finish chord search when start is too early
+					if (_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time < pmidi_out.time) break;
+					if (_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_time == pmidi_out.time &&
+						_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_length == pmidi_out.length ) {
+
+						_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->at(i)->_pitchList << pmidi_out.note;
+						chordNote = true;
+					}
+				}
+			}
+
 			// Get note to the right voice
-			for (voiceIndex=0; !leftOverNote && voiceIndex<30;voiceIndex++) {		// we can't imagine that so many voices ar needed in any case so let's put a limit
+			for (voiceIndex=0; !leftOverNote && !chordNote && voiceIndex<30;voiceIndex++) {		// we can't imagine that so many voices ar needed in any case so let's put a limit
 				// if another voice is needed and not yet there we create it
 				if (voiceIndex >= _allChannelsEvents[pmidi_out.chan]->size()) {
 					_allChannelsEvents[pmidi_out.chan]->append( new QList<CAMidiImportEvent*> );
@@ -268,11 +287,13 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			
 			break;
 		case PMIDI_STATUS_SMPTEOFFS:
+			/*
 			std::cout<<"  Stunden "<<pmidi_out.hours
 				<<" Minuten "<<pmidi_out.minutes
 				<<" Sekunden "<<pmidi_out.seconds
 				<<" Frames "<<pmidi_out.frames
 				<<" Subframes "<<pmidi_out.subframes<<std::endl;
+			*/
 			break;
 		}
 	}
@@ -328,45 +349,6 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		if( _allChannelsKeySignatures[i]->timeStart() == _allChannelsKeySignatures[i+1]->timeStart() )
 			_allChannelsKeySignatures.remove(i);
 	}
-
-	// Search for chords.
-	// For each note we look for a companion in the same staff with the same timing.
-	// Chord notes can be combined only from distinct voices, because our previous processing guaranties none overlapp
-	// inside a voice.
-	// Notes that are already chord members aren't considered again.
-	//
-	// To write a note into a chord it gets the proper _chordVoiceIndex and _chordVoiceNumber set.
-	//
-	for (int ch=0;ch<16;ch++) {
-		// loop through all voices, this is the current voice
-		for (voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
-			// loop through the voices below it:
-			for (int j=0;j<voiceIndex;j++) {
-				// loop through all elements in the current voice
-				for (int i=0;i< _allChannelsEvents[ch]->at(voiceIndex)->size();i++) {       /// FALSCH
-					// check against the elements in the voice below
-					for (int k=0;k< _allChannelsEvents[ch]->at(j)->size();k++) {
-
-						// don't look behind a certain time, the elements are time ordered
-						//if ( _allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time < _allChannelsEvents[ch]->at(j)->at(k)->_time ) break;
-						// only match to base notes
-						//if ( _allChannelsEvents[ch]->at(j)->at(k)->_chordVoice >= 0 ) continue;
-
-						// if time and length are the same, take note of the matching voice and element
-						if ( (_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_time == _allChannelsEvents[ch]->at(j)->at(k)->_time)  &&
-							(_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_length == _allChannelsEvents[ch]->at(j)->at(k)->_length) &&
-							( _allChannelsEvents[ch]->at(j)->at(k)->_chordVoice >= 0 ) ) {
-
-							_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_chordVoice = j;
-							_allChannelsEvents[ch]->at(voiceIndex)->at(i)->_chordIndex = k;
-							std::cout<<"                 Chord at voice "<<voiceIndex<<","<<i<<" with voice "<<j<<","<<k<<std::endl;
-						}
-					}
-				}
-			}
-		}
-	}
-
 
 	// Zero _tempo when no tempo change, only in the first voice, so later we will set tempo at the remaining points.
 	// By the algorithm used tempo changes on a note will be placed already on the rest before it eventually.
@@ -500,7 +482,7 @@ CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int voiceIndex, 
 		int top = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_top;
 		int bottom = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_bottom;
 		staff->addTimeSignatureReference( new CATimeSignature( top, bottom, staff, 0 ));
-		std::cout<<"                             neue Timesig at "<<time<<", es gibt "
+		std::cout<<"                             neue Timesig at "<<time<<", there are "
 																<<_allChannelsTimeSignatures.size()
 																<<std::endl;
 		// werden ersetzt:
@@ -529,66 +511,6 @@ CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int voiceIndex, 
 
 
 /*!
-	Appends a note to an already existing chord
-*/
-void CAMidiImport::appendNoteToChord( QList<CAMidiImportEvent*> *events, int index, CAStaff *staff, CATimeSignature *ts ) {
-
-	int appendToVoiceIndex = events->at(index)->_chordVoice;
-	CAVoice *otherVoice = staff->voiceList()[appendToVoiceIndex];
-	CAMusElement *baseElem;
-
-	// notes to be added
-	int time = events->at(index)->_time;
-	int length = events->at(index)->_length;
-	int pitch = events->at(index)->_pitch;
-	int program = events->at(index)->_program;
-
-	std::cout<< "    Chord Note Index "<<index<<" at "<<time<<std::endl;
-
-	CANote *note;
-	CANote *previousNote = 0;	// for sluring
-	CABarline *b;
-	QList<CAPlayableLength> lenList;	// work list when splitting notes and rests at barlines
-	int nextKeySignatureTime;
-
-	while ( length > 0 && pitch > 0 && events->at(index)->_velocity > 0 ) {
-
-		// this needs clean up, definitevely
-		CAMusElement *fB = otherVoice->getOnePreviousByType( CAMusElement::Barline, time );
-		if (fB) {
-			b = static_cast<CABarline*>(fB);
-		} else {
-			b = 0;
-		}
-		b = static_cast<CABarline*>( otherVoice->previousByType( CAMusElement::Barline, otherVoice->lastMusElement()));
-
-		lenList.clear();
-		lenList << CAPlayableLength::matchToBars( length, otherVoice->lastTimeEnd(), b, ts, 4, getNextKeySignatureTime() );
-
-		for (int j=0; j<lenList.size();j++) {
-			CADiatonicPitch diaPitch = matchPitchToKey( otherVoice, CAMidiDevice::midiPitchToDiatonicPitch(pitch) );
-			note = new CANote( diaPitch, lenList[j], otherVoice, -1 );
-			baseElem = otherVoice->getOneEltByType( CAMusElement::Note, time);
-			//int idx = othervoice->musElementList().indexOf(referenceNote);
-			otherVoice->insert( baseElem, note, true );
-			otherVoice->setMidiProgram( program );
-			int len = CAPlayableLength::playableLengthToTimeLength( lenList[j] );
-			//std::cout<< "    Note Length "<<len<<" at "<<time<<std::endl;
-			time += len;
-			length -= len;
-			std::cout<< "    Chord Note Index "<<index<<" now "<<time<<" put on voice "<<appendToVoiceIndex<<std::endl;
-			if (previousNote) {
-				CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNote, note );
-				previousNote->setTieStart( slur );
-				note->setTieEnd( slur );
-			}
-			previousNote = note;
-		}
-	}
-}
-
-
-/*!
 	Docu neeeded
 
 	Apropo program support at midi import: Now the last effective program assignement per voice will make it through.
@@ -598,9 +520,9 @@ void CAMidiImport::appendNoteToChord( QList<CAMidiImportEvent*> *events, int ind
 void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
 
 	QList<CAMidiImportEvent*> *events = _allChannelsEvents[channel]->at(voiceIndex);
-	CANote *note;
+	QList<CANote *> noteList;
 	CARest *rest;
-	CANote *previousNote;	// for sluring
+	QList<CANote *> previousNotes;	// for sluring
 	QList<CAPlayableLength> lenList;	// work list when splitting notes and rests at barlines
 	CATimeSignature *ts = 0;
 	CABarline *b = 0;
@@ -617,15 +539,6 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	std::cout<< "Channel "<<channel<<" VoiceIndex "<<voiceIndex<<"  "<<std::setw(5)<<events->size()<<" elements"<<std::endl;
 
 	for (int i=0; i<events->size(); i++ ) {
-
-		// append the note to a chord?
-		if (events->at(i)->_chordVoice >=0) {
-			/* works almost, so disabled for now
-			appendNoteToChord( events, i, staff, ts );
-			// if the note can be appended to an existing chord we can bypass time and signature updates
-			*/
-			// continue;
-		}
 
 		if (time == 0) {
 			CAMusElement *ksElem = getOrCreateKeySignature( time, voiceIndex, staff, voice );
@@ -716,7 +629,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 		length = events->at(i)->_length;
 		pitch = events->at(i)->_pitch;
 		program = events->at(i)->_program;
-		previousNote = 0;
+		previousNotes.clear();
 
 		while ( length > 0 && pitch > 0 && events->at(i)->_velocity > 0 ) {
 
@@ -732,21 +645,27 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			lenList.clear();
 			lenList << CAPlayableLength::matchToBars( length, voice->lastTimeEnd(), b, ts, 4, getNextKeySignatureTime() );
 
+
 			for (int j=0; j<lenList.size();j++) {
-				CADiatonicPitch diaPitch = matchPitchToKey( voice, CAMidiDevice::midiPitchToDiatonicPitch(pitch) );
-				note = new CANote( diaPitch, lenList[j], voice, -1 );
-				voice->append( note, false );
+
+				noteList.clear();
+				for (int k=0; k<events->at(i)->_pitchList.size(); k++) {
+					CADiatonicPitch diaPitch = matchPitchToKey( voice, CAMidiDevice::midiPitchToDiatonicPitch(events->at(i)->_pitchList[k]) );
+					noteList << new CANote( diaPitch, lenList[j], voice, -1 );
+					voice->append( noteList[k], k ? true : false );
+					noteList[k]->setStemDirection( CANote::StemPreferred );
+				}
+
 				voice->setMidiProgram( program );
 				int len = CAPlayableLength::playableLengthToTimeLength( lenList[j] );
-				//std::cout<< "    Note Length "<<len<<" at "<<time<<std::endl;
 				time += len;
 				length -= len;
 				if ( tempo ) {
-					CAMark *_curMark = new CATempo( CAPlayableLength::Quarter, tempo, note);
-					note->addMark(_curMark);
+					CAMark *_curMark = new CATempo( CAPlayableLength::Quarter, tempo, noteList.first());
+					noteList.first()->addMark(_curMark);
 					tempo = 0;
 				}
-				tsElem = getOrCreateTimeSignature( note->timeEnd(), voiceIndex, staff, voice );
+				tsElem = getOrCreateTimeSignature( noteList.first()->timeEnd(), voiceIndex, staff, voice );
 				if (tsElem) {
 					voice->append( tsElem, false );
 					ts = static_cast<CATimeSignature*>(tsElem);
@@ -754,7 +673,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				}
 
 				// Time signatures are eventuelly placed before barlines
-				CAMusElement *ksElem = getOrCreateKeySignature( note->timeEnd(), voiceIndex, staff, voice );
+				CAMusElement *ksElem = getOrCreateKeySignature( noteList.first()->timeEnd(), voiceIndex, staff, voice );
 				if (ksElem) {
 					std::cout<<" KeySig-MusElement "<<ksElem<<" at "<<ksElem->timeStart()<<" "<<
 						qPrintable( CADiatonicKey::diatonicKeyToString( (static_cast<CAKeySignature*>(ksElem))->diatonicKey() ))<<std::endl;
@@ -762,19 +681,21 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				}
 
 				// Barlines are shared among voices, see we append an existing one, otherwise a new one
-				CAMusElement * bl = staff->getOneEltByType( CAMusElement::Barline, note->timeEnd() );
+				CAMusElement * bl = staff->getOneEltByType( CAMusElement::Barline, noteList.back()->timeEnd() );
 				if (bl) {
 					voice->append( bl, false );
 					b = static_cast<CABarline*>(bl);
 				} else {
-			  		staff->placeAutoBar( note );
+			  		staff->placeAutoBar( noteList.back() );
 				}
-				if (previousNote) {
-					CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNote, note );
-					previousNote->setTieStart( slur );
-					note->setTieEnd( slur );
+				for (int k=0; k<previousNotes.size(); k++) {
+					CASlur *slur = new CASlur( CASlur::TieType, CASlur::SlurPreferred, staff, previousNotes[k], noteList[k] );
+					previousNotes[k]->setTieStart( slur );
+					noteList[k]->setTieEnd( slur );
 				}
-				previousNote = note;
+				previousNotes.clear();
+				previousNotes << noteList;
+
 				if (tsElem) {
 					;
 					break;
