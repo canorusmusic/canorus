@@ -31,16 +31,16 @@
 #define PMIDI_STATUS_SMPTEOFFS  15
 
 extern struct pmidi_outs {
-	int format;    /* midi 1 or 2 */
+	int format;       /* midi 1 or 2 */
 	int tracks;
 	int time_base;
 
 	int micro_tempo;  /* micro secondes per quarter */
 
-	int time;       /* occurence of element */
-	int  type;      /* Type of text (lyric, copyright etc) */
-	char *name;     /* Type as text */
-	char *text;     /* actual text */
+	int time;         /* occurence of element */
+	int  type;        /* Type of text (lyric, copyright etc) */
+	char *name;       /* Type as text */
+	char *text;       /* actual text */
 
 	int key;       /* Key signature */
 	int minor;     /* Is this a minor key or not */
@@ -51,19 +51,19 @@ extern struct pmidi_outs {
 	int n32pq;    /* Thirtysecond notes per quarter */
 
 	int  program;   /* Program number */
-	int  chan;	/* Channel number */
+	int  chan;	   /* Channel number */
 
 	int  note;
 	int  vel;
-	int    length;
+	int  length;
 	int  offvel;	/* Note Off velocity */
 
 	int  control;	/* Controller number */
-	int  value;	/* Controller value */
+	int  value;	    /* Controller value */
 
-	int pitch;       /* Pitch bending */
+	int  pitch;     /* Pitch bending */
 
-	int  hours;    /* SMPTE-Offset */
+	int  hours;     /* SMPTE-Offset */
 	int  minutes;
 	int  seconds;
 	int  frames;
