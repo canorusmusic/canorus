@@ -67,7 +67,7 @@ int pmidi_parse_midi_file( void )
 		seq_midi_event_init(ctxp, &ev, el->element_time, el->device_channel);
 		*/
 	
-		printf("Hmm %2d   \n", el->type );
+		// printf("Hmm %2d   \n", el->type );
 	
 		switch (el->type) {
 		case MD_TYPE_ROOT:
@@ -127,6 +127,10 @@ int pmidi_parse_midi_file( void )
 		case MD_TYPE_TEXT:
 			//seq_midi_text(ctxp, &ev, MD_TEXT(el)->type, MD_TEXT(el)->name,
 			//	MD_TEXT(el)->text, MD_TEXT(el)->length);
+			pmidi_out.type      = MD_TEXT(el)->type;
+			pmidi_out.name      = MD_TEXT(el)->name;
+			pmidi_out.text      = MD_TEXT(el)->text;
+			pmidi_out.length    = MD_TEXT(el)->length;
 			return PMIDI_STATUS_TEXT;
 		case MD_TYPE_TIMESIG:
 			//seq_midi_timesig(ctxp, &ev, MD_TIMESIG(el)->top, MD_TIMESIG(el)->bottom,
