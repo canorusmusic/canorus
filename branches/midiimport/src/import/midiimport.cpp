@@ -33,7 +33,6 @@ public:
 	~CAMidiImportEvent();
 	bool _on;
 	int _channel;
-	int _pitch;
 	QList <int> _pitchList; 	// to build chords when neccessary
 	int _velocity;
 	int _time;
@@ -48,7 +47,6 @@ public:
 CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0, int tempo = 120, int program = 0 ) {
 	_on = on;
 	_channel = channel;
-	_pitch = pitch;
 	_pitchList.clear();
 	_pitchList << pitch;
 	_velocity = velocity;
@@ -211,7 +209,8 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 				if (_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size()) {
 					int tnext = _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_nextTime;
 					if (pmidi_out.time < _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_nextTime &&
-						pmidi_out.note == _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_pitch ) { // FIXME: look into chords
+						// pmidi_out.note == _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_pitch
+						_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_pitchList.indexOf( pmidi_out.note ) >= 0 ) {
 
 							_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_length =
 								pmidi_out.time - _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_time + pmidi_out.length;
@@ -333,7 +332,9 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		for (voiceIndex=0;voiceIndex<_allChannelsEvents[chanIndex]->size();voiceIndex++) {
 			for (int i=0;i<_allChannelsEvents[chanIndex]->at(voiceIndex)->size();i++) {
 				n++;
-				_allChannelsMediumPitch[chanIndex] += _allChannelsEvents[chanIndex]->at(voiceIndex)->at(i)->_pitch;
+				for (int k=0; k<_allChannelsEvents[chanIndex]->at(voiceIndex)->at(i)->_pitchList.size(); k++) {
+					_allChannelsMediumPitch[chanIndex] += _allChannelsEvents[chanIndex]->at(voiceIndex)->at(i)->_pitchList[k];
+				}
 			}
 		}
 		if (n>0) {
@@ -499,7 +500,7 @@ CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int voiceIndex, 
 				int top = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_top;
 				int bottom = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_bottom;
 				staff->addTimeSignatureReference( new CATimeSignature( top, bottom, staff, 0 ));
-				std::cout<<"                             neue Timesig at "<<time<<", es gibt "
+				std::cout<<"                             new Timesig at "<<time<<", there are "
 																<<_allChannelsTimeSignatures.size()
 																<<std::endl;
 				return staff->timeSignatureReferences()[_actualTimeSignatureIndex];
@@ -528,7 +529,6 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	CABarline *b = 0;
 	int time = 0;			// current time in the loop, only increasing, for tracking notes and rests
 	int length;
-	int pitch;
 	int program;
 	int tempo = 0;
 
@@ -627,11 +627,10 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 		}
 		// notes to be added
 		length = events->at(i)->_length;
-		pitch = events->at(i)->_pitch;
 		program = events->at(i)->_program;
 		previousNotes.clear();
 
-		while ( length > 0 && pitch > 0 && events->at(i)->_velocity > 0 ) {
+		while ( length > 0 && events->at(i)->_velocity > 0 ) {
 
 			// this needs clean up, definitevely
 			CAMusElement *fB = voice->getOnePreviousByType( CAMusElement::Barline, time );
