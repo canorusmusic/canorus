@@ -38,6 +38,10 @@ Compilation:
  $ cmake .
  $ make
  $ src/canorus(.exe)
+  To create a release build without debug info, run:
+ $ cmake -DCMAKE_BUILD_TYPE=Release
+  Note that this also causes QT_NO_DEBUG to be defined.
+
 
 Installation
 ============
