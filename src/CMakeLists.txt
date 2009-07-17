@@ -1,14 +1,23 @@
 # Define Sources of this Canorus directory
 
 INCLUDE(CheckLibraryExists)
+
 FIND_PACKAGE(Qt4)
 
 # This module is used to resolve the file dependencies
-# for QT files using an UI (User Unterface) Qt file
+# for QT files using an UI (User Interface) Qt file
 # created with the Qt4 designer
 # INCLUDE(AddFileDependencies)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
+IF(NOT CMAKE_BUILD_TYPE)
+	SET(CMAKE_BUILD_TYPE Debug)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
+SET(CMAKE_C_FLAGS_DEBUG "-O0 -g")
+SET(CMAKE_C_FLAGS_RELEASE "-O2")
+
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
 
 # Build universal binaries on Mac
 IF(APPLE)
@@ -395,9 +404,6 @@ SET(Canorus_Srcs
 	${Canorus_Widget_Srcs}
 	${Canorus_PMIDI_Srcs}
 )
-IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-	ADD_DEFINITIONS(-g)
-ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 
 SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module.
 	${Canorus_Score_Srcs}
