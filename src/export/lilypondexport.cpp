@@ -47,6 +47,9 @@ CALilyPondExport::CALilyPondExport( QTextStream *out )
  : CAExport(out) {
 	setIndentLevel( 0 );
 	setCurDocument( 0 );
+	_voltaFunctionWritten = false;
+	_voltaBracketFinishAtRepeat = false;
+	_voltaBracketFinishAtBar = false;
 }
 
 /*!
@@ -106,6 +109,17 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				// CABarline
 				CABarline *bar = static_cast<CABarline*>(v->musElementList()[i]);
 				if (bar->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+
+				if ( _voltaBracketFinishAtRepeat &&
+						(bar->barlineType() == CABarline::RepeatClose || bar->barlineType() == CABarline::RepeatCloseOpen)) {
+					out() << " \\set Score.repeatCommands = #'((volta #f))  ";
+					_voltaBracketFinishAtRepeat = false;
+				}
+				if ( _voltaBracketFinishAtBar ) {
+					out() << " \\set Score.repeatCommands = #'((volta #f))  ";
+					_voltaBracketFinishAtBar = false;
+				}
+	
 				if (bar->barlineType() == CABarline::Single)
 					out() << "| % bar " << barNumber << "\n	";
 				else
@@ -122,6 +136,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				doAnacrusisCheck( time );
 				anacrusisCheck = false;
 			}
+			exportVolta( v->musElementList()[i] );	// A volta bracket has to come before a playable
 			exportPlayable( static_cast<CAPlayable*>(v->musElementList()[i]) );
 		}
 
@@ -231,7 +246,14 @@ void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 
 		switch ( curMark->markType() ) {
 		case CAMark::Text: {
-			out() << "^\"" << static_cast<CAText*>(curMark)->text() << "\" ";
+
+			// don't export the mark when it is an volta bracket and was sent out already before the playable
+			QRegExp vr = QRegExp(_regExpVoltaRepeat);
+			QRegExp vb = QRegExp(_regExpVoltaBar);
+			if (vr.indexIn(  qPrintable( static_cast<CAText*>(curMark)->text()) ) < 0 &&
+				vb.indexIn(  qPrintable( static_cast<CAText*>(curMark)->text()) ) < 0) {
+				out() << "^\"" << static_cast<CAText*>(curMark)->text() << "\" ";
+			}
 			break;
 		}
 		case CAMark::Dynamic: {
@@ -272,6 +294,35 @@ void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 			out() << "-";
 			out() << QString::number( static_cast<CAFingering*>(curMark)->finger() );
 			out() << " ";
+			break;
+		}
+		}
+	}
+}
+
+/*!
+	Exports a volta bracket which is currently just a \a elt mark beginning with voltaBar or voltaRepeat.
+*/
+void CALilyPondExport::exportVolta( CAMusElement *elt ) {
+	for (int i=0; i<elt->markList().size(); i++) {
+		CAMark *curMark = elt->markList()[i];
+
+		switch ( curMark->markType() ) {
+		case CAMark::Text: {
+
+			QRegExp vr = QRegExp(_regExpVoltaRepeat);
+			QRegExp vb = QRegExp(_regExpVoltaBar);
+			QString txt;
+			if (vb.indexIn(  qPrintable( static_cast<CAText*>(curMark)->text()) ) >= 0) {
+				txt = vb.cap(1);
+				_voltaBracketFinishAtBar = true;
+			} else if (vr.indexIn(  qPrintable( static_cast<CAText*>(curMark)->text()) ) >= 0) {
+				txt = vr.cap(1);
+				_voltaBracketFinishAtRepeat = true;
+			}
+			if ( _voltaBracketFinishAtRepeat || _voltaBracketFinishAtBar ) {
+				out() << "\\voltaStart \\markup \\text { \""<< txt << "\" }  ";
+			};
 			break;
 		}
 		}
@@ -621,6 +672,10 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 
 	writeDocumentHeader();
 
+	// Write the volta helper function in case we need it
+	if (!_voltaFunctionWritten)
+		voltaFunction();
+
 	// Export voices as Lilypond variables: \StaffOneVoiceOne = \relative c { ... }
 	for ( int c = 0; c < sheet->contextList().size(); ++c ) {
 		setCurContextIndex( c );
@@ -915,3 +970,29 @@ void CALilyPondExport::spellNumbers( QString &s )
 	s.replace( "8" , "Eight" );
 	s.replace( "9" , "Nine" );
 }
+
+void CALilyPondExport::voltaFunction( void )
+{
+	out() << "\n";
+	out() << "% Volta: Read about a preliminary hack to export volta brackets to lilypond:\n";
+	out() << "% If you put a text mark with the name 'voltaRepeat xyz' or 'voltaBar xyz' on a note,\n";
+	out() << "% then a volta bracket will appear.\n";
+	out() << "% voltaRepeat lasts until the next repeat bar line, voltaBar until the next bar line.\n";
+	out() << "% See lilypond example voltaCustom.\n";
+	out() << "%\n";
+	out() << "voltaStart =\n";
+   	out() << "	#(define-music-function (parser location repMarkupA ) (markup? )\n";
+	out() << "		#{\n";
+	out() << "			\\set Score.repeatCommands = #(list (list 'volta $repMarkupA) )\n";
+	out() << "		#})\n";
+	out() << "% Usage in lilypond:\n";
+	out() << "% Start volta:      \\voltaStart \\markup \\text \\italic { \"first time\" }\n";
+	out() << "% End volta:        \\set Score.repeatCommands = #'((volta #f))\n";
+	out() << "\n";
+
+	_voltaFunctionWritten = true;
+}
+
+const QString CALilyPondExport::_regExpVoltaRepeat = QString("voltaRepeat (.*)");
+const QString CALilyPondExport::_regExpVoltaBar = QString("voltaBar (.*)");
+

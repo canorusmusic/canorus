@@ -48,6 +48,7 @@ private:
 	void exportLyricsContextBlock(CALyricsContext *lc);
 	void exportLyricsContextImpl(CALyricsContext* lc);
 	void exportMarks( CAMusElement* );
+	void exportVolta( CAMusElement* );
 	void exportPlayable( CAPlayable *elt );
 
 	void writeDocumentHeader();
@@ -104,6 +105,13 @@ private:
 	CADiatonicPitch _lastNotePitch;
 	CAPlayableLength _lastPlayableLength;
 	int _curStreamTime;
+
+	void voltaFunction( void );
+	bool _voltaFunctionWritten;
+	bool _voltaBracketFinishAtRepeat;
+	bool _voltaBracketFinishAtBar;
+	static const QString _regExpVoltaRepeat;
+	static const QString _regExpVoltaBar;
 };
 
 #endif /* LILYPONDEXPORT_H_*/
