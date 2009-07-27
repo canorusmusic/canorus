@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE canorusml>
 <canorus-document>
- <canorus-version>0.6svn</canorus-version>
- <document time-edited="161" date-last-modified="2008-06-09T16:52:40" date-created="2007-03-06T10:03:39" >
+ <canorus-version>0.7svn</canorus-version>
+ <document composer="Matevž Jekovec" time-edited="277" date-last-modified="2009-07-27T20:05:22" copyright="Public domain" date-created="2007-03-06T10:03:39" >
   <sheet name="List1" >
    <staff number-of-lines="5" name="Črtovje1" >
     <voice midi-channel="0" midi-program="0" name="Črtovje1Glas1" stem-direction="stem-up" >
@@ -20,7 +20,7 @@
       <playable-length music-length="eighth" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="1024" />
+     <barline barline-type="single" time-start="1024" color="#000000" />
      <note time-length="512" time-start="1024" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="32" accs="0" />
@@ -33,7 +33,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="30" accs="0" />
      </note>
-     <barline barline-type="single" time-start="2048" />
+     <barline barline-type="single" time-start="2048" color="#000000" />
      <note time-length="128" time-start="2048" >
       <playable-length music-length="eighth" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
@@ -58,7 +58,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="33" accs="0" />
      </note>
-     <barline barline-type="single" time-start="3072" />
+     <barline barline-type="single" time-start="3072" color="#000000" />
      <note time-length="768" time-start="3072" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="36" accs="0" />
@@ -67,12 +67,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="35" accs="0" />
      </note>
-     <barline barline-type="single" time-start="4096" />
+     <barline barline-type="single" time-start="4096" color="#000000" />
      <note time-length="1024" time-start="4096" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="33" accs="0" />
      </note>
-     <barline barline-type="single" time-start="5120" />
+     <barline barline-type="single" time-start="5120" color="#000000" />
      <note time-length="768" time-start="5120" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="34" accs="-1" />
@@ -81,7 +81,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="33" accs="0" />
      </note>
-     <barline barline-type="single" time-start="6144" />
+     <barline barline-type="single" time-start="6144" color="#000000" />
      <note time-length="512" time-start="6144" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="32" accs="0" />
@@ -90,7 +90,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="7168" />
+     <barline barline-type="single" time-start="7168" color="#000000" />
      <note time-length="512" time-start="7168" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="30" accs="0" />
@@ -99,7 +99,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="8192" />
+     <barline barline-type="single" time-start="8192" color="#000000" />
      <note time-length="384" time-start="8192" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="29" accs="0" />
@@ -116,12 +116,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="32" accs="0" />
      </note>
-     <barline barline-type="single" time-start="9216" />
+     <barline barline-type="single" time-start="9216" color="#000000" />
      <note time-length="1024" time-start="9216" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="30" accs="0" />
      </note>
-     <barline barline-type="single" time-start="10240" />
+     <barline barline-type="single" time-start="10240" color="#000000" />
      <note time-length="384" time-start="10240" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="31" accs="0" />
@@ -138,12 +138,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="11264" />
+     <barline barline-type="single" time-start="11264" color="#000000" />
      <note time-length="1024" time-start="11264" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="32" accs="0" />
      </note>
-     <barline barline-type="single" time-start="12288" />
+     <barline barline-type="single" time-start="12288" color="#000000" />
      <note time-length="256" time-start="12288" >
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="33" accs="0" />
@@ -156,7 +156,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="13312" />
+     <barline barline-type="single" time-start="13312" color="#000000" />
      <note time-length="768" time-start="13312" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="31" accs="0" />
@@ -165,7 +165,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="34" accs="-1" />
      </note>
-     <barline barline-type="single" time-start="14336" />
+     <barline barline-type="single" time-start="14336" color="#000000" />
      <note time-length="512" time-start="14336" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="35" accs="0" />
@@ -178,7 +178,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="33" accs="0" />
      </note>
-     <barline barline-type="single" time-start="15360" />
+     <barline barline-type="single" time-start="15360" color="#000000" />
      <note time-length="384" time-start="15360" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="36" accs="0" />
@@ -195,7 +195,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="34" accs="-1" />
      </note>
-     <barline barline-type="single" time-start="16384" />
+     <barline barline-type="single" time-start="16384" color="#000000" />
      <note time-length="512" time-start="16384" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="33" accs="0" />
@@ -204,17 +204,17 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="32" accs="0" />
      </note>
-     <barline barline-type="single" time-start="17408" />
+     <barline barline-type="single" time-start="17408" color="#000000" />
      <note time-length="1024" time-start="17408" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="18432" />
+     <barline barline-type="single" time-start="18432" color="#000000" />
      <note time-length="1024" time-start="18432" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="32" accs="0" />
      </note>
-     <barline barline-type="single" time-start="19456" />
+     <barline barline-type="single" time-start="19456" color="#000000" />
      <note time-length="512" time-start="19456" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
@@ -223,12 +223,12 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="30" accs="0" />
      </note>
-     <barline barline-type="single" time-start="20480" />
+     <barline barline-type="single" time-start="20480" color="#000000" />
      <note time-length="1024" time-start="20480" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="end" time-start="21504" />
+     <barline barline-type="end" time-start="21504" color="#000000" />
     </voice>
     <voice midi-channel="1" midi-program="0" name="Črtovje1Glas2" stem-direction="stem-down" >
      <clef c1="-2" offset="0" clef-type="G" time-start="0" />
@@ -245,7 +245,7 @@
       <playable-length music-length="eighth" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="1024" />
+     <barline barline-type="single" time-start="1024" color="#000000" />
      <note time-length="512" time-start="1024" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="30" accs="0" />
@@ -258,7 +258,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="27" accs="-1" />
      </note>
-     <barline barline-type="single" time-start="2048" />
+     <barline barline-type="single" time-start="2048" color="#000000" />
      <note time-length="128" time-start="2048" >
       <playable-length music-length="eighth" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
@@ -283,7 +283,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="3072" />
+     <barline barline-type="single" time-start="3072" color="#000000" />
      <note time-length="768" time-start="3072" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="31" accs="0" />
@@ -292,12 +292,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="30" accs="0" />
      </note>
-     <barline barline-type="single" time-start="4096" />
+     <barline barline-type="single" time-start="4096" color="#000000" />
      <note time-length="1024" time-start="4096" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="5120" />
+     <barline barline-type="single" time-start="5120" color="#000000" />
      <note time-length="768" time-start="5120" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="27" accs="-1" />
@@ -306,7 +306,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="6144" />
+     <barline barline-type="single" time-start="6144" color="#000000" />
      <note time-length="512" time-start="6144" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="27" accs="-1" />
@@ -315,7 +315,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="26" accs="0" />
      </note>
-     <barline barline-type="single" time-start="7168" />
+     <barline barline-type="single" time-start="7168" color="#000000" />
      <note time-length="512" time-start="7168" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
@@ -324,7 +324,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="8192" />
+     <barline barline-type="single" time-start="8192" color="#000000" />
      <note time-length="384" time-start="8192" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="27" accs="-1" />
@@ -341,12 +341,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="29" accs="0" />
      </note>
-     <barline barline-type="single" time-start="9216" />
+     <barline barline-type="single" time-start="9216" color="#000000" />
      <note time-length="1024" time-start="9216" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="10240" />
+     <barline barline-type="single" time-start="10240" color="#000000" />
      <note time-length="384" time-start="10240" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="28" accs="0" />
@@ -363,12 +363,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="26" accs="0" />
      </note>
-     <barline barline-type="single" time-start="11264" />
+     <barline barline-type="single" time-start="11264" color="#000000" />
      <note time-length="1024" time-start="11264" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="12288" />
+     <barline barline-type="single" time-start="12288" color="#000000" />
      <note time-length="256" time-start="12288" >
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="30" accs="0" />
@@ -381,7 +381,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="13312" />
+     <barline barline-type="single" time-start="13312" color="#000000" />
      <note time-length="768" time-start="13312" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="29" accs="0" />
@@ -390,7 +390,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="14336" />
+     <barline barline-type="single" time-start="14336" color="#000000" />
      <note time-length="512" time-start="14336" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="30" accs="0" />
@@ -403,7 +403,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="15360" />
+     <barline barline-type="single" time-start="15360" color="#000000" />
      <note time-length="384" time-start="15360" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="31" accs="0" />
@@ -420,7 +420,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="30" accs="0" />
      </note>
-     <barline barline-type="single" time-start="16384" />
+     <barline barline-type="single" time-start="16384" color="#000000" />
      <note time-length="512" time-start="16384" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
@@ -429,17 +429,17 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="30" accs="0" />
      </note>
-     <barline barline-type="single" time-start="17408" />
+     <barline barline-type="single" time-start="17408" color="#000000" />
      <note time-length="1024" time-start="17408" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="31" accs="0" />
      </note>
-     <barline barline-type="single" time-start="18432" />
+     <barline barline-type="single" time-start="18432" color="#000000" />
      <note time-length="1024" time-start="18432" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="29" accs="0" />
      </note>
-     <barline barline-type="single" time-start="19456" />
+     <barline barline-type="single" time-start="19456" color="#000000" />
      <note time-length="512" time-start="19456" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="27" accs="-1" />
@@ -448,12 +448,12 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="20480" />
+     <barline barline-type="single" time-start="20480" color="#000000" />
      <note time-length="1024" time-start="20480" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="end" time-start="21504" />
+     <barline barline-type="end" time-start="21504" color="#000000" />
     </voice>
    </staff>
    <staff number-of-lines="5" name="Črtovje2" >
@@ -472,7 +472,7 @@
       <playable-length music-length="eighth" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="1024" />
+     <barline barline-type="single" time-start="1024" color="#000000" />
      <note time-length="512" time-start="1024" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
@@ -485,7 +485,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="25" accs="0" />
      </note>
-     <barline barline-type="single" time-start="2048" />
+     <barline barline-type="single" time-start="2048" color="#000000" />
      <note time-length="128" time-start="2048" >
       <playable-length music-length="eighth" dotted="0" />
       <diatonic-pitch note-name="26" accs="0" />
@@ -510,7 +510,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="3072" />
+     <barline barline-type="single" time-start="3072" color="#000000" />
      <note time-length="768" time-start="3072" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="27" accs="-1" />
@@ -519,12 +519,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="25" accs="0" />
      </note>
-     <barline barline-type="single" time-start="4096" />
+     <barline barline-type="single" time-start="4096" color="#000000" />
      <note time-length="1024" time-start="4096" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="24" accs="0" />
      </note>
-     <barline barline-type="single" time-start="5120" />
+     <barline barline-type="single" time-start="5120" color="#000000" />
      <note time-length="768" time-start="5120" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="24" accs="0" />
@@ -533,7 +533,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="24" accs="0" />
      </note>
-     <barline barline-type="single" time-start="6144" />
+     <barline barline-type="single" time-start="6144" color="#000000" />
      <note time-length="512" time-start="6144" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="22" accs="0" />
@@ -542,7 +542,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="24" accs="0" />
      </note>
-     <barline barline-type="single" time-start="7168" />
+     <barline barline-type="single" time-start="7168" color="#000000" />
      <note time-length="512" time-start="7168" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="25" accs="0" />
@@ -551,7 +551,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="24" accs="0" />
      </note>
-     <barline barline-type="single" time-start="8192" />
+     <barline barline-type="single" time-start="8192" color="#000000" />
      <note time-length="384" time-start="8192" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="25" accs="0" />
@@ -568,12 +568,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="27" accs="-1" />
      </note>
-     <barline barline-type="single" time-start="9216" />
+     <barline barline-type="single" time-start="9216" color="#000000" />
      <note time-length="1024" time-start="9216" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="25" accs="0" />
      </note>
-     <barline barline-type="single" time-start="10240" />
+     <barline barline-type="single" time-start="10240" color="#000000" />
      <note time-length="384" time-start="10240" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="24" accs="0" />
@@ -590,12 +590,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="24" accs="0" />
      </note>
-     <barline barline-type="single" time-start="11264" />
+     <barline barline-type="single" time-start="11264" color="#000000" />
      <note time-length="1024" time-start="11264" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="23" accs="0" />
      </note>
-     <barline barline-type="single" time-start="12288" />
+     <barline barline-type="single" time-start="12288" color="#000000" />
      <note time-length="256" time-start="12288" >
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
@@ -608,7 +608,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="13312" />
+     <barline barline-type="single" time-start="13312" color="#000000" />
      <note time-length="768" time-start="13312" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="24" accs="0" />
@@ -617,7 +617,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="27" accs="-1" />
      </note>
-     <barline barline-type="single" time-start="14336" />
+     <barline barline-type="single" time-start="14336" color="#000000" />
      <note time-length="512" time-start="14336" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="26" accs="0" />
@@ -630,7 +630,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="15360" />
+     <barline barline-type="single" time-start="15360" color="#000000" />
      <note time-length="384" time-start="15360" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="27" accs="-1" />
@@ -647,7 +647,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="27" accs="-1" />
      </note>
-     <barline barline-type="single" time-start="16384" />
+     <barline barline-type="single" time-start="16384" color="#000000" />
      <note time-length="512" time-start="16384" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
@@ -656,17 +656,17 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="17408" />
+     <barline barline-type="single" time-start="17408" color="#000000" />
      <note time-length="1024" time-start="17408" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="28" accs="0" />
      </note>
-     <barline barline-type="single" time-start="18432" />
+     <barline barline-type="single" time-start="18432" color="#000000" />
      <note time-length="1024" time-start="18432" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="27" accs="-1" />
      </note>
-     <barline barline-type="single" time-start="19456" />
+     <barline barline-type="single" time-start="19456" color="#000000" />
      <note time-length="512" time-start="19456" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="27" accs="-1" />
@@ -675,12 +675,12 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="25" accs="0" />
      </note>
-     <barline barline-type="single" time-start="20480" />
+     <barline barline-type="single" time-start="20480" color="#000000" />
      <note time-length="1024" time-start="20480" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="26" accs="0" />
      </note>
-     <barline barline-type="end" time-start="21504" />
+     <barline barline-type="end" time-start="21504" color="#000000" />
     </voice>
     <voice midi-channel="3" midi-program="0" name="Staff2Voice2" stem-direction="stem-down" >
      <clef c1="10" offset="0" clef-type="F" time-start="0" />
@@ -697,7 +697,7 @@
       <playable-length music-length="eighth" dotted="0" />
       <diatonic-pitch note-name="19" accs="0" />
      </note>
-     <barline barline-type="single" time-start="1024" />
+     <barline barline-type="single" time-start="1024" color="#000000" />
      <note time-length="512" time-start="1024" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="21" accs="0" />
@@ -710,7 +710,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="25" accs="0" />
      </note>
-     <barline barline-type="single" time-start="2048" />
+     <barline barline-type="single" time-start="2048" color="#000000" />
      <note time-length="128" time-start="2048" >
       <playable-length music-length="eighth" dotted="0" />
       <diatonic-pitch note-name="24" accs="0" />
@@ -735,7 +735,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="19" accs="0" />
      </note>
-     <barline barline-type="single" time-start="3072" />
+     <barline barline-type="single" time-start="3072" color="#000000" />
      <note time-length="768" time-start="3072" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="20" accs="-1" />
@@ -744,12 +744,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="21" accs="0" />
      </note>
-     <barline barline-type="single" time-start="4096" />
+     <barline barline-type="single" time-start="4096" color="#000000" />
      <note time-length="1024" time-start="4096" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="24" accs="0" />
      </note>
-     <barline barline-type="single" time-start="5120" />
+     <barline barline-type="single" time-start="5120" color="#000000" />
      <note time-length="768" time-start="5120" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="22" accs="0" />
@@ -758,7 +758,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="17" accs="0" />
      </note>
-     <barline barline-type="single" time-start="6144" />
+     <barline barline-type="single" time-start="6144" color="#000000" />
      <note time-length="512" time-start="6144" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="20" accs="-1" />
@@ -767,7 +767,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="22" accs="0" />
      </note>
-     <barline barline-type="single" time-start="7168" />
+     <barline barline-type="single" time-start="7168" color="#000000" />
      <note time-length="512" time-start="7168" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="21" accs="0" />
@@ -776,7 +776,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="19" accs="0" />
      </note>
-     <barline barline-type="single" time-start="8192" />
+     <barline barline-type="single" time-start="8192" color="#000000" />
      <note time-length="384" time-start="8192" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="20" accs="-1" />
@@ -793,12 +793,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="20" accs="-1" />
      </note>
-     <barline barline-type="single" time-start="9216" />
+     <barline barline-type="single" time-start="9216" color="#000000" />
      <note time-length="1024" time-start="9216" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="21" accs="0" />
      </note>
-     <barline barline-type="single" time-start="10240" />
+     <barline barline-type="single" time-start="10240" color="#000000" />
      <note time-length="384" time-start="10240" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="19" accs="0" />
@@ -815,12 +815,12 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="22" accs="0" />
      </note>
-     <barline barline-type="single" time-start="11264" />
+     <barline barline-type="single" time-start="11264" color="#000000" />
      <note time-length="1024" time-start="11264" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="21" accs="0" />
      </note>
-     <barline barline-type="single" time-start="12288" />
+     <barline barline-type="single" time-start="12288" color="#000000" />
      <note time-length="256" time-start="12288" >
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="21" accs="0" />
@@ -833,7 +833,7 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="19" accs="0" />
      </note>
-     <barline barline-type="single" time-start="13312" />
+     <barline barline-type="single" time-start="13312" color="#000000" />
      <note time-length="768" time-start="13312" >
       <playable-length music-length="half" dotted="1" />
       <diatonic-pitch note-name="20" accs="-1" />
@@ -842,7 +842,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="22" accs="0" />
      </note>
-     <barline barline-type="single" time-start="14336" />
+     <barline barline-type="single" time-start="14336" color="#000000" />
      <note time-length="512" time-start="14336" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="21" accs="0" />
@@ -855,7 +855,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="17" accs="0" />
      </note>
-     <barline barline-type="single" time-start="15360" />
+     <barline barline-type="single" time-start="15360" color="#000000" />
      <note time-length="384" time-start="15360" >
       <playable-length music-length="quarter" dotted="1" />
       <diatonic-pitch note-name="20" accs="-1" />
@@ -872,7 +872,7 @@
       <playable-length music-length="quarter" dotted="0" />
       <diatonic-pitch note-name="18" accs="0" />
      </note>
-     <barline barline-type="single" time-start="16384" />
+     <barline barline-type="single" time-start="16384" color="#000000" />
      <note time-length="512" time-start="16384" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="17" accs="0" />
@@ -881,17 +881,17 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="18" accs="0" />
      </note>
-     <barline barline-type="single" time-start="17408" />
+     <barline barline-type="single" time-start="17408" color="#000000" />
      <note time-length="1024" time-start="17408" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="19" accs="0" />
      </note>
-     <barline barline-type="single" time-start="18432" />
+     <barline barline-type="single" time-start="18432" color="#000000" />
      <note time-length="1024" time-start="18432" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="20" accs="-1" />
      </note>
-     <barline barline-type="single" time-start="19456" />
+     <barline barline-type="single" time-start="19456" color="#000000" />
      <note time-length="512" time-start="19456" >
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="22" accs="0" />
@@ -900,12 +900,12 @@
       <playable-length music-length="half" dotted="0" />
       <diatonic-pitch note-name="21" accs="0" />
      </note>
-     <barline barline-type="single" time-start="20480" />
+     <barline barline-type="single" time-start="20480" color="#000000" />
      <note time-length="1024" time-start="20480" >
       <playable-length music-length="whole" dotted="0" />
       <diatonic-pitch note-name="17" accs="0" />
      </note>
-     <barline barline-type="end" time-start="21504" />
+     <barline barline-type="end" time-start="21504" color="#000000" />
     </voice>
    </staff>
   </sheet>
