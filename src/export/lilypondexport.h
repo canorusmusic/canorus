@@ -112,6 +112,7 @@ private:
 	bool _voltaBracketFinishAtBar;
 	static const QString _regExpVoltaRepeat;
 	static const QString _regExpVoltaBar;
+	bool _timeSignatureFound;
 };
 
 #endif /* LILYPONDEXPORT_H_*/
