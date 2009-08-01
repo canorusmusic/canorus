@@ -50,6 +50,7 @@ CALilyPondExport::CALilyPondExport( QTextStream *out )
 	_voltaFunctionWritten = false;
 	_voltaBracketFinishAtRepeat = false;
 	_voltaBracketFinishAtBar = false;
+	_timeSignatureFound = false;
 }
 
 /*!
@@ -102,6 +103,8 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				time = static_cast<CATimeSignature*>(v->musElementList()[i]);
 				if (time->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
 				out() << "\\time " << time->beats() << "/" << time->beat();
+				// set this flag to allow the time signature engraver
+				_timeSignatureFound = true;
 
 				break;
 			}
@@ -126,6 +129,8 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 					out() << "\\bar \"" << barlineTypeToLilyPond(bar->barlineType()) << "\"" << " % bar "<< barNumber << "\n	";
 				barNumber++;
 
+				// set this flag to allow the time signature engraver and bar line engraver
+				_timeSignatureFound = true;
 				break;
 			}
 		}
@@ -920,6 +925,19 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 
 	// End score block
 	out() << "}\n";
+
+	// Conditional layout block to supress default time signature and default bar lines.
+	if (!_timeSignatureFound) {
+
+		out() << "\n";
+		out() << "\\layout {\n";
+		out() << "	\\context {\n";
+		out() << "		\\Staff\n";
+		out() << "		\\remove \"Time_signature_engraver\"\n";
+		out() << "		\\remove \"Bar_engraver\"\n";
+		out() << "	}\n";
+		out() << "}\n";
+    }
 
 	// We put some syntax reminders how to adjust the music on the page.
 	// Can go away if we have a proper gui for setting this.
