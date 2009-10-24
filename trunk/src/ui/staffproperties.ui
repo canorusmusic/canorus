@@ -1,59 +1,64 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>uiStaffProperties</class>
- <widget class="QWidget" name="uiStaffProperties" >
-  <property name="geometry" >
+ <widget class="QWidget" name="uiStaffProperties">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>470</width>
-    <height>300</height>
+    <width>350</width>
+    <height>389</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Staff properties</string>
   </property>
-  <widget class="QWidget" name="layoutWidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>471</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" >
-    <item>
-     <widget class="QLabel" name="uiNumberOfLinesLabel" >
-      <property name="text" >
-       <string>Number of lines:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QSpinBox" name="uiNumberOfLines" >
-      <property name="maximum" >
-       <number>15</number>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeType" >
-       <enum>QSizePolicy::MinimumExpanding</enum>
-      </property>
-      <property name="sizeHint" >
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-   </layout>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="uiNumberOfLinesLabel">
+       <property name="text">
+        <string>Number of lines:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="uiNumberOfLines">
+       <property name="maximum">
+        <number>15</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>18</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>341</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

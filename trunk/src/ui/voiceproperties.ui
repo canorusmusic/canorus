@@ -1,62 +1,70 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>uiVoiceProperties</class>
- <widget class="QWidget" name="uiVoiceProperties" >
-  <property name="geometry" >
+ <widget class="QWidget" name="uiVoiceProperties">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
-    <height>378</height>
+    <width>444</width>
+    <height>405</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Voice properties</string>
   </property>
-  <widget class="QWidget" name="layoutWidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>471</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" >
-    <item>
-     <widget class="QLabel" name="uiMidiChanneLabel" >
-      <property name="text" >
-       <string>Midi channel:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QSpinBox" name="uiMidiChannel" >
-      <property name="minimum" >
-       <number>1</number>
-      </property>
-      <property name="maximum" >
-       <number>16</number>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <spacer>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeType" >
-       <enum>QSizePolicy::MinimumExpanding</enum>
-      </property>
-      <property name="sizeHint" stdset="0" >
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-   </layout>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QLabel" name="uiMidiChanneLabel">
+       <property name="text">
+        <string>Midi channel:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="uiMidiChannel">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>16</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::MinimumExpanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>357</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
