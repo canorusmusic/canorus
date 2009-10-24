@@ -1470,6 +1470,7 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 
 	setRebuildUILock( true );
 	if (document()) {
+		// update views
 		for (int i=0; i<_viewList.size(); i++) {
 			if (sheet && _viewList[i]->viewType()==CAView::ScoreView &&
 				    static_cast<CAScoreView*>(_viewList[i])->sheet()!=sheet)
@@ -1482,6 +1483,13 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 
 			if (repaint)
 				_viewList[i]->repaint();
+		}
+
+		// update tab name
+		for (int i=0; i<uiTabWidget->count(); i++) {
+			if ( _sheetMap[static_cast<CAViewContainer*>(uiTabWidget->widget(i))]==sheet ) {
+				uiTabWidget->setTabText(i, sheet->name());
+			}
 		}
 	} else {
 		clearUI();
