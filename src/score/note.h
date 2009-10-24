@@ -18,6 +18,7 @@ class CAVoice;
 class CANote : public CAPlayable {
 public:
 	enum CAStemDirection {
+		StemUndefined = -1,
 		StemNeutral,
 		StemUp,
 		StemDown,

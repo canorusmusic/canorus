@@ -341,6 +341,8 @@ CANote::CAStemDirection CANote::actualStemDirection() {
 					break;
 			}
 			break;
+		default:
+			return StemUndefined;
 	}
 }
 

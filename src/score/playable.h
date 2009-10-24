@@ -22,7 +22,7 @@ public:
 
 	inline CAPlayableLength& playableLength() { return _playableLength; }
 	inline void setPlayableLength( CAPlayableLength& l ) { _playableLength = l; }
-	virtual CAPlayable* clone(CAContext* context) { CAPlayable* pl = clone(); pl->setContext(context); }
+	virtual CAPlayable* clone(CAContext* context) { CAPlayable* pl = clone(); pl->setContext(context); return pl; }
 	virtual CAPlayable* clone(CAVoice* voice=0)=0;
 
 	CATuplet *tuplet() { return _tuplet; }

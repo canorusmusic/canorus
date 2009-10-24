@@ -45,7 +45,7 @@ public:
 	CAMusElementType musElementType() { return _musElementType; }
 
 	inline CAContext *context() { return _context; }
-	inline CAContext *setContext(CAContext *context) { _context = context; }
+	inline void setContext(CAContext *context) { _context = context; }
 
 	inline virtual int timeStart() { return _timeStart; }
 	inline void setTimeStart(int time) { _timeStart = time; }
