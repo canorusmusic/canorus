@@ -56,7 +56,7 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 			break;
 		case CAClef::PercussionHigh:
 		case CAClef::PercussionLow:
-		case CAClef::Tablature:  // TODO
+		case CAClef::Tab:  // TODO
 			setWidth( 23 );
 			setHeight( 34 );
 			break;
