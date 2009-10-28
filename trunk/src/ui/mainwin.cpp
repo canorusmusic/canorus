@@ -974,6 +974,33 @@ void CAMainWin::on_uiTabWidget_currentChanged(int idx) {
 	updateToolBars();
 }
 
+/*!
+	Appends a new sheet to the document.
+	This function is usually called when the user double clicks outside the tabs space.
+*/
+void CAMainWin::on_uiTabWidget_CANewTab() {
+	if (document()) {
+		on_uiNewSheet_triggered();
+	}
+}
+
+/*!
+	Changes the sheet order in the document.
+	This function is usually called when the user double clicks outside the tabs space.
+*/
+void CAMainWin::on_uiTabWidget_CAMoveTab(int from, int to) {
+	if (document() && document()->sheetList().count()>=2) {
+		CACanorus::undo()->createUndoCommand( document(), tr("change sheet order", "undo") );
+
+		CASheet *s = document()->sheetList()[from];
+		const_cast< QList<CASheet*>& >(document()->sheetList()).removeAt(from);
+		const_cast< QList<CASheet*>& >(document()->sheetList()).insert(to, s);
+
+		CACanorus::undo()->pushUndoCommand();
+		CACanorus::rebuildUI( document(), currentSheet() );
+	}
+}
+
 void CAMainWin::on_uiFullscreen_toggled(bool checked) {
 	if (checked)
 		this->showFullScreen();
@@ -1487,9 +1514,7 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 
 		// update tab name
 		for (int i=0; i<uiTabWidget->count(); i++) {
-			if ( _sheetMap[static_cast<CAViewContainer*>(uiTabWidget->widget(i))]==sheet ) {
-				uiTabWidget->setTabText(i, sheet->name());
-			}
+			uiTabWidget->setTabText(i, document()->sheetList()[i]->name());
 		}
 	} else {
 		clearUI();
@@ -4079,6 +4104,7 @@ void CAMainWin::on_uiRemoveSheet_triggered() {
 		document()->removeSheet(currentSheet());
 		removeSheet(sheet);
 		delete sheet;
+		CACanorus::rebuildUI( document(), currentSheet() );
 	}
 }
 
@@ -4262,12 +4288,30 @@ void CAMainWin::updateToolBars() {
 */
 void CAMainWin::updateSheetToolBar() {
 	CAScoreView *v = currentScoreView();
-	if (v && v->selection().isEmpty() && (!v->currentContext())) {
-		if (v->sheet())
-			uiSheetName->setText(v->sheet()->name());
-		uiSheetToolBar->show();
-	} else
+	if (document()) {
+		if (v) {
+			if (v->sheet() && v->selection().isEmpty() && (!v->currentContext())) {
+				// no track selected, show sheet actions
+				uiSheetName->setText(v->sheet()->name());
+				uiSheetName->setEnabled(true);
+				uiRemoveSheet->setVisible(true);
+				uiSheetProperties->setVisible(true);
+				uiSheetToolBar->show();
+			} else {
+				// other track or elements selected, hide sheet actions
+				uiSheetToolBar->hide();
+			}
+		} else {
+			// no sheet exist: hide everything except the new sheet button
+			uiSheetName->setEnabled(false);
+			uiRemoveSheet->setVisible(false);
+			uiSheetProperties->setVisible(false);
+			uiSheetToolBar->show();
+		}
+	} else {
+		// no document exists, hide sheet actions
 		uiSheetToolBar->hide();
+	}
 }
 
 /*!
@@ -5680,6 +5724,10 @@ void CAMainWin::on_uiOpenRecent_aboutToShow() {
 }
 
 void CAMainWin::onUiOpenRecentDocumentTriggered() {
+	if ( !handleUnsavedChanges() ) {
+		return;
+	}
+
 	bool success =
 		openDocument( CACanorus::recentDocumentList().at(
 				uiOpenRecent->actions().indexOf( static_cast<QAction*>(sender()) )
