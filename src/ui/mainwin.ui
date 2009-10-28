@@ -30,7 +30,7 @@
      <number>4</number>
     </property>
     <item row="0" column="0">
-     <widget class="QTabWidget" name="uiTabWidget">
+     <widget class="CATabWidget" name="uiTabWidget">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -53,7 +53,7 @@
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>30</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="uiMenuEdit">
@@ -980,6 +980,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CATabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>widgets/tabwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

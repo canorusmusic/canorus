@@ -146,6 +146,7 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	widgets/helpbrowser.h
 	widgets/actionseditor.h
 	widgets/progressstatusbar.h
+	widgets/tabwidget.h
 	
 	control/previewctl.h
 	control/printctl.h
@@ -290,6 +291,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/helpbrowser.cpp
 	widgets/actionseditor.cpp
 	widgets/progressstatusbar.cpp
+	widgets/tabwidget.cpp
 )
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files

@@ -304,6 +304,8 @@ private slots:
 	//////////////////////////////////
 	void keyPressEvent(QKeyEvent *);
 	void on_uiTabWidget_currentChanged(int);
+	void on_uiTabWidget_CANewTab();
+	void on_uiTabWidget_CAMoveTab(int from, int to);
 
 	void viewClicked();
 
