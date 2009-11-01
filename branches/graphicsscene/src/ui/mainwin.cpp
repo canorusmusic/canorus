@@ -1505,9 +1505,6 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 
 			_viewList[i]->rebuild();
 
-			if (_viewList[i]->viewType() == CAView::ScoreView)
-				static_cast<CAScoreView*>(_viewList[i])->checkScrollBars();
-
 			if (repaint)
 				_viewList[i]->repaint();
 		}
@@ -1552,10 +1549,10 @@ void CAMainWin::rebuildUI(bool repaint) {
 		int curIndex = uiTabWidget->currentIndex();
 
 		// save the current state of Views
-		QList<QRect> worldCoordsList;
+		QList<QRectF> worldCoordsList;
 		for (int i=0; i<_viewList.size(); i++)
 			if (_viewList[i]->viewType() == CAView::ScoreView)
-				worldCoordsList << static_cast<CAScoreView*>(_viewList[i])->worldCoords();
+				worldCoordsList << static_cast<CAScoreView*>(_viewList[i])->sceneRect();
 
 		clearUI();
 		for (int i=0; i<document()->sheetList().size(); i++) {
@@ -1564,14 +1561,11 @@ void CAMainWin::rebuildUI(bool repaint) {
 			// restore the current state of Views
 			if ( _viewList[i]->viewType() == CAView::ScoreView &&
 			     i < worldCoordsList.size() )
-				static_cast<CAScoreView*>(_viewList[i])->setWorldCoords(worldCoordsList[i]);
+				static_cast<CAScoreView*>(_viewList[i])->setSceneRect(worldCoordsList[i]);
 		}
 
 		for (int i=0; i<_viewList.size(); i++) {
 			_viewList[i]->rebuild();
-
-			if (_viewList[i]->viewType() == CAView::ScoreView)
-				static_cast<CAScoreView*>(_viewList[i])->checkScrollBars();
 
 			if (repaint)
 				_viewList[i]->repaint();
@@ -1956,16 +1950,16 @@ void CAMainWin::scoreViewWheel(QWheelEvent *e, QPoint coords) {
 	int val;
 	switch (e->modifiers()) {
 		case Qt::NoModifier:			//scroll horizontally
-			sv->setWorldX( sv->worldX() - (int)((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
+			sv->setSceneX( sv->sceneX() - ((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::AltModifier:			//scroll horizontally, fast
-			sv->setWorldX( sv->worldX() - (int)(e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
+			sv->setSceneX( sv->sceneX() - (e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::ShiftModifier:			//scroll vertically
-			sv->setWorldY( sv->worldY() - (int)((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
+			sv->setSceneY( sv->sceneY() - ((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
-			sv->setWorldY( sv->worldY() - (int)(e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
+			sv->setSceneY( sv->sceneY() - (e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::ControlModifier:		//zoom
 			if (e->delta() > 0)
@@ -2686,8 +2680,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 		musElementFactory()->emptyMusElem();
 
 		// move the view to the right, if the right border was hit
-		if ( d && (d->xPos() > v->worldX()+0.85*v->worldWidth()) ) {
-			v->setWorldX( d->xPos()-v->worldWidth()/2, CACanorus::settings()->animatedScroll() );
+		if ( d && (d->xPos() > v->sceneX()+0.85*v->sceneWidth()) ) {
+			v->setSceneX( d->xPos()-v->sceneWidth()/2, CACanorus::settings()->animatedScroll() );
 		}
 	}
 }
@@ -2801,8 +2795,8 @@ void CAMainWin::onRepaintTimerTimeout() {
 		if (_playback->curPlaying().at(i)->musElementType()==CAMusElement::Note) {
 			CADrawableMusElement *elt = sv->addToSelection( _playback->curPlaying()[i] );
 			if ( CACanorus::settings()->lockScrollPlayback() ) {
-				if ( elt && (elt->xPos() > (sv->worldX()+sv->worldWidth()) || elt->xPos() < sv->worldX()) ) {
-					sv->setWorldX( elt->xPos()-50, CACanorus::settings()->animatedScroll() );
+				if ( elt && (elt->xPos() > (sv->sceneX()+sv->sceneWidth()) || elt->xPos() < sv->sceneX()) ) {
+					sv->setSceneX( elt->xPos()-50, CACanorus::settings()->animatedScroll() );
 				}
 			}
 		}

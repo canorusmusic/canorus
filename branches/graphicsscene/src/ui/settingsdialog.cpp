@@ -65,9 +65,9 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiDisabledElementsColor->setPalette( QPalette( CACanorus::settings()->disabledElementsColor() ) );
 	uiPreviewScoreView->setSheet( _previewSheet );
 	uiPreviewScoreView->setGrabTabKey( false );
-	uiPreviewScoreView->setScrollBarVisible( CAScoreView::ScrollBarAlwaysHidden );
+	uiPreviewScoreView->setScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 	uiPreviewScoreView->rebuild();
-	uiPreviewScoreView->setZoom(0.6, 0, 0, false, false);
+	uiPreviewScoreView->setZoom(0.6, 0, 0, false);
 	uiPreviewScoreView->setCurrentContext( uiPreviewScoreView->findCElement( _previewSheet->staffList()[0] ) );
 	uiPreviewScoreView->addSelectionRegion( QRect(50, 40, 70, 90) );
 	uiPreviewScoreView->addToSelection( _previewSheet->staffList()[0]->voiceList()[0]->musElementList()[1] );

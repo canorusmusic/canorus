@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -7,6 +7,9 @@
 
 #ifndef SCOREVIEW_H_
 #define SCOREVIEW_H_
+
+#include <QGraphicsView>
+#include <QGraphicsScene>
 
 #include <QList>
 #include <QPen>
@@ -19,11 +22,9 @@
 #include "layout/kdtree.h"
 #include "score/note.h"
 
-class QScrollBar;
 class QMouseEvent;
 class QWheelEvent;
 class QTimer;
-class QGridLayout;
 
 class CADrawable;
 class CADrawableMusElement;
@@ -53,12 +54,6 @@ class CAScoreView : public CAView {
 Q_OBJECT
 
 public:
-	enum CAScrollBarVisibility {
-		ScrollBarAlwaysVisible,
-		ScrollBarAlwaysHidden,
-		ScrollBarShowIfNeeded
-	};
-
 	///////////////////
 	// Basic methods //
 	///////////////////
@@ -143,13 +138,8 @@ public:
 	////////////////
 	// Scrollbars //
 	////////////////
-	inline void setManualScroll(bool scroll) { _allowManualScroll = scroll; }
-	inline bool manualScroll() { return _allowManualScroll; }
-
-	void checkScrollBars();
-
-	inline CAScrollBarVisibility isScrollBarVisible() { return _scrollBarVisible;}
-	void setScrollBarVisible(CAScrollBarVisibility status);
+	Qt::ScrollBarPolicy scrollBarPolicy();
+	void setScrollBarPolicy(Qt::ScrollBarPolicy);
 
 	//////////////////////////////////////////////
 	// Scene appearance, properties and actions //
@@ -158,31 +148,31 @@ public:
 	inline const int drawableWidth() { return _canvas->width(); }
 	inline const int drawableHeight() { return _canvas->height(); }
 
-	void setWorldX(int x, bool animate=false, bool force=false);
-	void setWorldY(int y, bool animate=false, bool force=false);
-	void setWorldWidth(int w, bool force=false);
-	void setWorldHeight(int h, bool force=false);
+	inline const double zoom() { return _scene->width()/sceneRect().width(); }
 
-	inline const int worldX() { return _worldX; }
-	inline const int worldY() { return _worldY; }
-	inline const int worldWidth() { return _worldW; }
-	inline const int worldHeight() { return _worldH; }
-	inline const QRect worldCoords() { return QRect(worldX(), worldY(), worldWidth(), worldHeight()); }
+	inline const QRectF sceneRect() { return _canvas->sceneRect(); }
+	void setSceneRect(const QRectF& r, bool animate=false);
+	void setSceneRect(double x, double y, double w, double h, bool animate=false)  { setSceneRect( QRectF(x,y,w,h), animate); }
 
-	inline const float zoom() { return _zoom; }
+	double sceneX() { return _canvas->sceneRect().x(); }
+	double sceneY() { return _canvas->sceneRect().y(); }
+	double sceneWidth() { return _canvas->sceneRect().width(); }
+	double sceneHeight() { return _canvas->sceneRect().height(); }
 
-	void setWorldCoords(const QRect r, bool animate=false, bool force=false);
-	void setWorldCoords(double x, double y, double w, double h, bool animate=false, bool force=false)  { setWorldCoords( QRect(x,y,w,h), animate, force); }
+	void setSceneX(double x, bool animate=false) { setSceneRect( QRectF(x, sceneRect().y(), sceneRect().width(), sceneRect().height()), animate ); }
+	void setSceneY(double y, bool animate=false) { setSceneRect( QRectF(sceneRect().x(), y, sceneRect().width(), sceneRect().height()), animate ); }
+	void setSceneWidth(double w, bool animate=false) { setSceneRect( QRectF(sceneRect().x(), sceneRect().y(), w, sceneRect().height()), animate ); }
+	void setSceneHeight(double h, bool animate=false) { setSceneRect( QRectF(sceneRect().x(), sceneRect().x(), sceneRect().width(), h), animate ); }
 
-	void setCenterCoords(double x, double y, bool animate=false, bool force=false);
+	void centerOn(double x, double y, bool animate=false);
 
-	void setZoom(float z, double x=0, double y=0, bool animate=false, bool force = false);
-	void setZoom(float z, QPoint p,  bool animate=false, bool force = false) { setZoom(z, p.x(), p.y(), animate, force); }
+	void setZoom(double z, double x=0, double y=0, bool animate=false);
+	void setZoom(double z, QPointF p,  bool animate=false) { setZoom(z, p.x(), p.y(), animate); }
 
-	void zoomToSelection(bool animate=false, bool force=false);
-	void zoomToWidth(bool animate=false, bool force=false);
-	void zoomToHeight(bool animate=false, bool force=false);
-	void zoomToFit(bool animate=false, bool force=false);
+	void zoomToSelection(bool animate=false);
+	void zoomToWidth(bool animate=false);
+	void zoomToHeight(bool animate=false);
+	void zoomToFit(bool animate=false);
 
 	bool grabTabKey() { return _grabTabKey; }
 	void setGrabTabKey( bool g ) { _grabTabKey = g; }
@@ -207,9 +197,6 @@ public:
 
 	inline bool playing() { return _playing; }
 	inline void setPlaying(bool playing) { _playing = playing; }
-
-	inline void setRepaintArea(QRect *area) { _repaintArea = area; }
-	inline void clearRepaintArea() { if (_repaintArea) delete _repaintArea; _repaintArea=0; }
 
 	inline CAVoice *selectedVoice() { return _selectedVoice; }
 	inline void setSelectedVoice( CAVoice *selectedVoice ) { _selectedVoice = selectedVoice; }
@@ -245,9 +232,6 @@ private slots:
 	void wheelEvent(QWheelEvent *e);
 	void keyPressEvent(QKeyEvent *e);
 
-	void HScrollBarEvent(int val);
-	void VScrollBarEvent(int val);
-
 	void resizeEvent(QResizeEvent *e);
 	void paintEvent(QPaintEvent *p);
 	void leaveEvent(QEvent *e);
@@ -277,9 +261,8 @@ private:
 	//////////////////
 	// Core Widgets //
 	//////////////////
-	QGridLayout *_layout;    // Grid layout for placing the scrollbars at the right and the bottom.
-	QWidget *_canvas;        // Virtual canvas which represents the size of the drawable area. All its signals are forwarded to CAView.
-	QScrollBar *_hScrollBar, *_vScrollBar; // Horizontal/vertical scrollbars
+	QGraphicsView *_canvas;  // Virtual canvas which represents the size of the drawable area. All its signals are forwarded to CAView.
+	QGraphicsScene *_scene;  // Virtual scene which contains the graphical elements generated by the engraver
 
 	////////////////////////
 	// General properties //
@@ -299,7 +282,6 @@ private:
 	double _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the view is currently showing.
 	QPoint _lastMousePressCoords;           // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
 	inline void setLastMousePressCoords( QPoint p ) { _lastMousePressCoords = p; }
-	float _zoom;                            // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
 
 	CAVoice *_selectedVoice;        // Voice to be drawn normal colors, others are shaded
 
@@ -338,7 +320,6 @@ private:
 	////////////////
 	bool _grabTabKey;              // Pass the tab key to keyPressEvent() or treat it like the next item key
 	bool _drawBorder;              // Should the border be drawn or not.
-	QRect *_repaintArea;           // Area to be repainted on paintEvent().
 	QPen _borderPen;               // Pen which the border is drawn by.
 	QColor _backgroundColor;       // Color which the background is filled.
 	QColor _foregroundColor;       // Color which the music elements are painted.
@@ -357,15 +338,9 @@ private:
 	static const int ANIMATION_STEPS; // Number of steps used in animation
 	int _animationStep;               // Current step in the animation
 	double _targetWorldX, _targetWorldY, _targetWorldW, _targetWorldH;	// Absolute world coordinates of the area the view is currently showing.
-	float _targetZoom;                // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
+	double _targetZoom;                // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
 
 	void startAnimationTimer();
-
-	///////////////////////
-	// Widgets behaviour //
-	///////////////////////
-	CAScrollBarVisibility _scrollBarVisible;  // Are the scrollbars always visible/never/if needed. Use CAView::ScrollBarAlwaysVisible, CAView::ScrollBarAlwaysHidden or CAView::ScrollBarShowIfNeeded.
-	bool _allowManualScroll; // Does the scrollbars actually react on user actions - sometimes we only want the scrollbars to show the current location of the score and don't do anything
 
 	/////////////////////////
 	// Internal properties //
@@ -376,10 +351,6 @@ private:
 	int     _numberOfClicks;                            // Used for measuring doubleClick and tripleClick
 
 	double _xCursor, _yCursor;                             // Mouse cursor position in absolute world coords.
-	bool _holdRepaint;                                  // Flag to prevent multiple repaintings.
-	bool _checkScrollBarsDeadLock;                      // Flag to prevent recursive checkScrollBars() calls.
-	bool _hScrollBarDeadLock;                           // Flag to prevent recursive scrollbar calls when its value is manually changed.
-	bool _vScrollBarDeadLock;                           // Flag to prevent recursive scrollbar calls when its value is manually changed.
 };
 
 #endif /*SCOREVIEW_H_*/
