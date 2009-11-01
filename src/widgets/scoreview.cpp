@@ -5,7 +5,6 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-#include <QGridLayout>
 #include <QScrollBar>
 #include <QPainter>
 #include <QBrush>
@@ -113,31 +112,20 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	setViewType( ScoreView );
 
 	setSheet( sheet );
-	_worldX = _worldY = 0;
 	_worldW = _worldH = 0;
-	_zoom = 1.0;
-	_holdRepaint = false;
-	_hScrollBarDeadLock = false;
-	_vScrollBarDeadLock = false;
-	_checkScrollBarsDeadLock = false;
 	_playing = false;
 	_currentContext = 0;
 	_xCursor = _yCursor = 0;
 	setResizeDirection( CADrawable::Undefined );
 
+	// init graphics scene
+	_canvas = new QGraphicsView(this);
+	_scene = new QGraphicsScene();
+
 	// init layout
-	_layout = new QGridLayout(this);
-	_layout->setMargin(2);
-	_layout->setSpacing(2);
 	_drawBorder = false;
 	_grabTabKey = true;
 	setFocusPolicy( Qt::StrongFocus );
-
-	// init virtual canvas
-	_canvas = new QWidget(this);
-	setMouseTracking(true);
-	_canvas->setMouseTracking(true);
-	_repaintArea = 0;
 
 	// init animation stuff
 	_animationTimer = new QTimer(this);
@@ -159,26 +147,6 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	setDrawShadowNoteAccs( false );
 	setTextEdit( new CATextEdit( _canvas ) );
 	setTextEditVisible( false );
-
-	// init scrollbars
-	_vScrollBar = new QScrollBar(Qt::Vertical, this);
-	_hScrollBar = new QScrollBar(Qt::Horizontal, this);
-	_vScrollBar->setMinimum(0);
-	_hScrollBar->setMinimum(0);
-	_vScrollBar->setTracking(true); // trigger valueChanged() when dragging the slider, not only releasing it
-	_hScrollBar->setTracking(true);
-	_vScrollBar->hide();
-	_hScrollBar->hide();
-	_scrollBarVisible = ScrollBarShowIfNeeded;
-	_allowManualScroll = true;
-
-	connect(_hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(HScrollBarEvent(int)));
-	connect(_vScrollBar, SIGNAL(valueChanged(int)), this, SLOT(VScrollBarEvent(int)));
-
-	// connect layout and widgets
-	_layout->addWidget(_canvas, 0, 0);
-	_layout->addWidget(_vScrollBar, 0, 1);
-	_layout->addWidget(_hScrollBar, 1, 0);
 
 	_oldWorldW = 0; _oldWorldH = 0;
 
@@ -204,21 +172,20 @@ CAScoreView::~CAScoreView() {
 	_animationTimer->disconnect();
 	_animationTimer->stop();
 	delete _animationTimer;
-
-	_hScrollBar->disconnect();
-	_vScrollBar->disconnect();
 }
 
 void CAScoreView::on_animationTimer_timeout() {
 	_animationStep++;
+	double z = zoom();
+	QRectF r = sceneRect();
 
-	float newZoom = _zoom + (_targetZoom - _zoom) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
-	double newWorldX = _worldX + (_targetWorldX - _worldX) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
-	double newWorldY = _worldY + (_targetWorldY - _worldY) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
+	double newZoom = z + (_targetZoom - z) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
+	double newWorldX = r.x() + (_targetWorldX - r.x()) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
+	double newWorldY = r.y() + (_targetWorldY - r.y()) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
 	double newWorldW = drawableWidth() / newZoom;
 	double newWorldH = drawableHeight() / newZoom;
 
-	setWorldCoords(newWorldX, newWorldY, newWorldW, newWorldH);
+	setSceneRect(newWorldX, newWorldY, newWorldW, newWorldH);
 
 	if (_animationStep==ANIMATION_STEPS)
 		_animationTimer->stop();
@@ -544,184 +511,60 @@ void CAScoreView::rebuild() {
 
 	addToSelection(musElementSelection);
 
-	setWorldCoords( worldCoords() ); // needed to update the scrollbars
-	checkScrollBars();
 	updateHelpers();
-}
-
-/*!
-	Sets the world Top-Left X coordinate of the view. Animates the scroll, if \a animate is True.
-	If \a force is True, sets the value despite the potential illegal value (like negative coordinates).
-
-	\warning Repaint is not done automatically!
-*/
-void CAScoreView::setWorldX(int x, bool animate, bool force) {
-	if (!force) {
-		int maxX = (getMaxXExtended(_drawableMList) > getMaxXExtended(_drawableCList))?getMaxXExtended(_drawableMList) : getMaxXExtended(_drawableCList);
-		if (x > maxX - _worldW)
-			x = maxX - _worldW;
-		if (x < 0)
-			x = 0;
-	}
-
-	if (animate) {
-		_targetWorldX = x;
-		_targetWorldY = _worldY;
-		_targetZoom = _zoom;
-		startAnimationTimer();
-		return;
-	}
-
-	_oldWorldX = _worldX;
-	_worldX = x;
-	_hScrollBarDeadLock = true;
-	_hScrollBar->setValue(x);
-	_hScrollBarDeadLock = false;
-
-	checkScrollBars();
-	updateHelpers();
-}
-
-/*!
-	Sets the world Top-Left Y coordinate of the view. Animates the scroll, if \a animate is True.
-	If \a force is True, sets the value despite the potential illegal value (like negative coordinates).
-
-	\warning Repaint is not done automatically!
-*/
-void CAScoreView::setWorldY(int y, bool animate, bool force) {
-	if (!force) {
-		int maxY = getMaxYExtended(_drawableMList) > getMaxYExtended(_drawableCList)?getMaxYExtended(_drawableMList) : getMaxYExtended(_drawableCList);
-		if (y > maxY - _worldH)
-			y = maxY - _worldH;
-		if (y < 0)
-			y = 0;
-	}
-
-	if (animate) {
-		_targetWorldX = _worldX;
-		_targetWorldY = y;
-		_targetZoom = _zoom;
-		startAnimationTimer();
-		return;
-	}
-
-	_oldWorldY = _worldY;
-	_worldY = y;
-	_vScrollBarDeadLock = true;
-	_vScrollBar->setValue(y);
-	_vScrollBarDeadLock = false;
-
-	checkScrollBars();
-	updateHelpers();
-}
-
-/*!
-	Sets the world width of the view.
-	If \a force is True, sets the value despite the potential illegal value (like negative coordinates).
-
-	\warning Repaint is not done automatically!
-*/
-void CAScoreView::setWorldWidth(int w, bool force) {
-	if (!force) {
-		if (w < 1) return;
-	}
-
-	_oldWorldW = _worldW;
-	_worldW = w;
-
-	int scrollMax;
-	if ((scrollMax = ((getMaxXExtended(_drawableMList) > getMaxXExtended(_drawableCList))?getMaxXExtended(_drawableMList):getMaxXExtended(_drawableCList)) - _worldW) >= 0) {
-		if (scrollMax < _worldX)	//if you resize the widget at a large zoom level and if the getMax border has been reached
-			setWorldX(scrollMax);	//scroll the view away from the border
-
-		_hScrollBarDeadLock = true;
-		_hScrollBar->setMaximum(scrollMax);
-		_hScrollBar->setPageStep(_worldW);
-		_hScrollBarDeadLock = false;
-	}
-
-	_zoom = ((float)drawableWidth() / _worldW);
-
-	checkScrollBars();
-}
-
-/*!
-	Sets the world height of the view.
-	If \a force is True, sets the value despite the potential illegal value (like negative coordinates).
-
-	\warning Repaint is not done automatically!
-*/
-void CAScoreView::setWorldHeight(int h, bool force) {
-	if (!force) {
-		if (h < 1) return;
-	}
-
-	_oldWorldH = _worldH;
-	_worldH = h;
-
-	int scrollMax;
-	if ((scrollMax = ((getMaxYExtended(_drawableMList) > getMaxYExtended(_drawableCList))?getMaxYExtended(_drawableMList):getMaxYExtended(_drawableCList)) - _worldH) >= 0) {
-		if (scrollMax < _worldY)	//if you resize the widget at a large zoom level and if the getMax border has been reached
-			setWorldY(scrollMax);	//scroll the view away from the border
-
-		_vScrollBarDeadLock = true;
-		_vScrollBar->setMaximum(scrollMax);
-		_vScrollBar->setPageStep(_worldH);
-		_vScrollBarDeadLock = false;
-	}
-
-	_zoom = ((float)drawableHeight() / _worldH);
-
-	checkScrollBars();
 }
 
 /*!
 	Sets the world coordinates of the view to the given rectangle \a coords.
 	This is an overloaded member function, provided for convenience.
-
-	\warning Repaint is not done automatically!
 */
-void CAScoreView::setWorldCoords(QRect coords, bool animate, bool force) {
-	_checkScrollBarsDeadLock = true;
-
+void CAScoreView::setSceneRect(const QRectF& coords, bool animate) {
 	if (!drawableWidth() && !drawableHeight())
 		return;
 
-	float scale = (float)drawableWidth() / drawableHeight();	//always keep the world rectangle area in the same scale as the actual width/height of the drawable canvas
-	if (coords.height()) {	//avoid division by zero
-		if (coords.width() / coords.height() > scale)
-			coords.setHeight( coords.width() / scale );
-		else
-			coords.setWidth( coords.height() * scale );
-	} else
-		coords.setHeight( coords.width() / scale );
+	// set the actual new coords
+	double x = coords.x();
+	double y = coords.y();
+	double w = coords.width();
+	double h = coords.height();
+
+	// always keep the world rectangle area in the same scale as the actual width/height of the drawable canvas
+	double scale = drawableWidth() / drawableHeight();
+	if (coords.height()) {	// avoid division by zero
+		if (coords.width() / coords.height() > scale) {
+			h = coords.width() / scale;
+		} else {
+			w = coords.height() * scale;
+		}
+	} else {
+		h = coords.width() / scale;
+	}
 
 
-	setWorldWidth(coords.width(), force);
-	setWorldHeight(coords.height(), force);
-	setWorldX(coords.x(), animate, force);
-	setWorldY(coords.y(), animate, force);
-	_checkScrollBarsDeadLock = false;
 
-	checkScrollBars();
+	// check the limit for width and height
+	double scrollMax;
+	scrollMax = qMax(getMaxXExtended(_drawableMList), getMaxXExtended(_drawableCList));
+	_canvas->horizontalScrollBar()->setMaximum(scrollMax);
+	_canvas->horizontalScrollBar()->setPageStep(drawableWidth());
+
+	scrollMax = qMax(getMaxYExtended(_drawableMList), getMaxYExtended(_drawableCList));
+	_canvas->verticalScrollBar()->setMaximum(scrollMax);
+	_canvas->verticalScrollBar()->setPageStep(drawableHeight());
+
+	if (animate) {
+		_targetWorldX = x;
+		_targetWorldY = y;
+		_targetZoom = zoom();
+		startAnimationTimer();
+	} else {
+		_canvas->setSceneRect( QRectF( x, y, w, h) );
+	}
+
+	updateHelpers();
 }
 
-/*!
-	\fn void CAScoreView::setWorldCoords(int x, int y, int w, int h, bool animate, bool force)
-	Sets the world coordinates of the view.
-	This is an overloaded member function, provided for convenience.
-
-	\warning Repaint is not done automatically!
-
-	\param x Top-left X coordinate of the new view area in absolute world units.
-	\param y Top-left Y coordinate of the new view area in absolute world units.
-	\param w Width of the new view area in absolute world units.
-	\param h Height of the new view area in absolute world units.
-	\param animate Use animated scroll.
-	\param force Use the given world units despite their illegal values (like negative coordinates etc.).
-*/
-
-void CAScoreView::zoomToSelection(bool animate, bool force) {
+void CAScoreView::zoomToSelection(bool animate) {
 	if (!_selection.size())
 		return;
 
@@ -740,39 +583,35 @@ void CAScoreView::zoomToSelection(bool animate, bool force) {
 			rect.setHeight(_selection[i]->yPos() + _selection[i]->height() - rect.y());
 	}
 
-	setWorldCoords(rect, animate, force);
+	setSceneRect(rect, animate);
 }
 
-void CAScoreView::zoomToWidth(bool animate, bool force) {
-	int maxX = (getMaxXExtended(_drawableCList)>getMaxXExtended(_drawableMList))?getMaxXExtended(_drawableCList):getMaxXExtended(_drawableMList);
-	setWorldCoords(0,0,maxX,0,animate,force);
+void CAScoreView::zoomToWidth(bool animate) {
+	setSceneRect(0,0, qMax(getMaxXExtended(_drawableCList), getMaxXExtended(_drawableMList)), 0,animate);
 }
 
-void CAScoreView::zoomToHeight(bool animate, bool force) {
-	int maxY = (getMaxYExtended(_drawableCList)>getMaxYExtended(_drawableMList))?getMaxYExtended(_drawableCList):getMaxYExtended(_drawableMList);
-	setWorldCoords(0,0,0,maxY,animate,force);
+void CAScoreView::zoomToHeight(bool animate) {
+	setSceneRect(0,0,0, qMax(getMaxYExtended(_drawableCList), getMaxYExtended(_drawableMList)), animate);
 }
 
-void CAScoreView::zoomToFit(bool animate, bool force) {
-	int maxX = ((_drawableCList.getMaxX() > _drawableMList.getMaxX())?_drawableCList.getMaxX():_drawableMList.getMaxX());
-	int maxY = ((_drawableCList.getMaxY() > _drawableMList.getMaxY())?_drawableCList.getMaxY():_drawableMList.getMaxY());
-
-	setWorldCoords(0, 0, maxX, maxY, animate, force);
+void CAScoreView::zoomToFit(bool animate) {
+	setSceneRect(0,
+			     0,
+			     qMax(getMaxXExtended(_drawableCList), getMaxXExtended(_drawableMList)),
+	             qMax(getMaxYExtended(_drawableCList), getMaxYExtended(_drawableMList)),
+	             animate);
 }
 
 /*!
 	Sets the world coordinates of the view, so the given coordinates are the center of the new view area.
-	If the area has for eg. negative top-left coordinates, the area is moved to the (0,0) coordinates if \a force is False.
 	View's width and height stay intact.
-	\warning Repaint is not done automatically!
 */
-void CAScoreView::setCenterCoords(double x, double y, bool animate, bool force) {
-	_checkScrollBarsDeadLock = true;
-	setWorldX(x - 0.5*_worldW, animate, force);
-	setWorldY(y - 0.5*_worldH, animate, force);
-	_checkScrollBarsDeadLock = false;
-
-	checkScrollBars();
+void CAScoreView::centerOn(double x, double y, bool animate) {
+	setSceneRect(x - 0.5*sceneRect().width(),
+			     y - 0.5*sceneRect().height(),
+			     sceneRect().width(),
+			     sceneRect().height(),
+			     animate);
 }
 
 /*!
@@ -783,69 +622,47 @@ void CAScoreView::setCenterCoords(double x, double y, bool animate, bool force) 
 	\param x X coordinate of the point of the zoom direction.
 	\param y Y coordinate of the point of the zoom direction.
 	\param animate Use smooth animated zoom.
-	\param force Use the given world units despite their illegal values (like negative coordinates etc.).
 */
-void CAScoreView::setZoom(float z, double x, double y, bool animate, bool force) {
+void CAScoreView::setZoom(double z, double x, double y, bool animate) {
 	bool zoomOut = false;
-	if (_zoom - z > 0.0)
+	if (zoom() - z > 0.0)
 		zoomOut = true;
 
+	QRectF rect = sceneRect();
 	if (animate) {
 		if (!zoomOut) {
-			_targetWorldX = ( _worldX - (_worldW/2) + x ) / 2;
-			_targetWorldY = ( _worldY - (_worldH/2) + y ) / 2;
+			_targetWorldX = ( rect.x() - (rect.width()/2) + x ) / 2;
+			_targetWorldY = ( rect.y() - (rect.height()/2) + y ) / 2;
 			_targetZoom = z;
 			startAnimationTimer();
-			return;
 		} else {
-			_targetWorldX = 1.5*_worldX + 0.25*_worldW - 0.5*x;
-			_targetWorldY = 1.5*_worldY + 0.25*_worldH - 0.5*y;
+			_targetWorldX = 1.5*rect.x() + 0.25*rect.width() - 0.5*x;
+			_targetWorldY = 1.5*rect.y() + 0.25*rect.height() - 0.5*y;
 			_targetZoom = z;
 			startAnimationTimer();
-			return;
 		}
+	} else {
+		if (!zoomOut) { //zoom in
+			//the new view's center coordinates will become the middle point of the current view center coords and the mouse pointer coords
+			centerOn( ( rect.x() + (rect.width()/2) + x ) / 2,
+							 ( rect.y() + (rect.height()/2) + y ) / 2 );
+		} else { //zoom out
+			//the new view's center coordinates will become the middle point of the current view center coords and the mirrored over center pointer coords
+			//worldX_ + (worldW_/2) + (worldX_ + (worldW_/2) - x)/2
+			centerOn( 1.5*rect.x() + 0.75*rect.width() - 0.5*x,
+							 1.5*rect.y() + 0.75*rect.height() - 0.5*y );
+		}
+		updateHelpers();
 	}
-
-	//set the world width - updates the zoom level zoom_ as well
-	setWorldWidth(drawableWidth() / z);
-	setWorldHeight(drawableHeight() / z);
-
-	if (!zoomOut) { //zoom in
-		//the new view's center coordinates will become the middle point of the current view center coords and the mouse pointer coords
-		setCenterCoords( ( _worldX + (_worldW/2) + x ) / 2,
-		                 ( _worldY + (_worldH/2) + y ) / 2,
-		                 force );
-	} else { //zoom out
-		//the new view's center coordinates will become the middle point of the current view center coords and the mirrored over center pointer coords
-		//worldX_ + (worldW_/2) + (worldX_ + (worldW_/2) - x)/2
-		setCenterCoords( 1.5*_worldX + 0.75*_worldW - 0.5*x,
-		                 1.5*_worldY + 0.75*_worldH - 0.5*y,
-		                 force );
-	}
-
-	checkScrollBars();
-	updateHelpers();
 }
-
-/*!
-	\fn void CAScoreView::setZoom(float z, QPoint p, bool animate, bool force);
-	Zooms to the given level to given direction.
-	This is an overloaded member function, provided for convenience.
-	\warning Repaint is not done automatically, if \a animate is False!
-
-	\param z Zoom level. (1.0 = 100%, 1.5 = 150% etc.)
-	\param p QPoint of the zoom direction.
-	\param animate Use smooth animated zoom.
-	\param force Use the given world units despite their illegal values (like negative coordinates etc.).
-*/
 
 /*!
 	General Qt's paint event.
 	All the music elements get actually rendered in this method.
 */
 void CAScoreView::paintEvent(QPaintEvent *e) {
-	if (_holdRepaint)
-		return;
+//	if (_holdRepaint)
+//		return;
 
 	// draw the border
 	QPainter p(this);
@@ -855,54 +672,37 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 	}
 
 	p.setClipping(true);
-	if (_repaintArea) {
-		p.setClipRect(QRect(qRound((_repaintArea->x() - _worldX)*_zoom),
-		                    qRound((_repaintArea->y() - _worldY)*_zoom),
-		                    qRound(_repaintArea->width()*_zoom),
-		                    qRound(_repaintArea->height()*_zoom)),
-		              Qt::UniteClip);
-	} else {
-		p.setClipRect(QRect(_canvas->x(),
-		                    _canvas->y(),
-		                    _canvas->width(),
-		                    _canvas->height()),
-		              Qt::UniteClip);
-	}
+	p.setClipRect(QRect(_canvas->x(),
+						_canvas->y(),
+						_canvas->width(),
+						_canvas->height()),
+				  Qt::UniteClip);
 
 
 	// draw the background
-	if (_repaintArea)
-		p.fillRect(qRound((_repaintArea->x() - _worldX)*_zoom), qRound((_repaintArea->y() - _worldY)*_zoom), qRound(_repaintArea->width()*_zoom), qRound(_repaintArea->height()*_zoom), _backgroundColor);
-	else
-		p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundColor);
+	p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundColor);
 
 	// draw contexts
 	QList<CADrawableContext*> cList;
 	int j = _drawableCList.size();
-	if (_repaintArea)
-		cList = _drawableCList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
-	else
-		cList = _drawableCList.findInRange(_worldX, _worldY, _worldW, _worldH);
+	cList = _drawableCList.findInRange(sceneRect().x(), sceneRect().y(), _worldW, _worldH);
 
 	for (int i=0; i<cList.size(); i++) {
 		CADrawSettings s = {
-	    	           _zoom,
-	        	       qRound((cList[i]->xPos() - _worldX) * _zoom),
-		               qRound((cList[i]->yPos() - _worldY) * _zoom),
+	    	           zoom(),
+	        	       qRound((cList[i]->xPos() - sceneRect().x()) * zoom()),
+		               qRound((cList[i]->yPos() - sceneRect().y()) * zoom()),
 	            	   drawableWidth(), drawableHeight(),
 		               ((_currentContext == cList[i])?selectedContextColor():foregroundColor()),
-		               _worldX,
-		               _worldY
+		               sceneRect().x(),
+		               sceneRect().y()
 		};
 		cList[i]->draw(&p, s);
 	}
 
 	// draw music elements
 	QList<CADrawableMusElement*> mList;
-	if (_repaintArea)
-		mList = _drawableMList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
-	else
-		mList = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
+	mList = _drawableMList.findInRange(sceneRect().x(), sceneRect().y(), _worldW, _worldH);
 
 	p.setRenderHint( QPainter::Antialiasing, CACanorus::settings()->antiAliasing() );
 
@@ -948,13 +748,13 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		}
 
 		CADrawSettings s = {
-		               _zoom,
-		               qRound((mList[i]->xPos() - _worldX) * _zoom),
-		               qRound((mList[i]->yPos() - _worldY) * _zoom),
+		               zoom(),
+		               qRound((mList[i]->xPos() - sceneRect().x()) * zoom()),
+		               qRound((mList[i]->yPos() - sceneRect().y()) * zoom()),
 		               drawableWidth(), drawableHeight(),
 		               color,
-		               _worldX,
-		               _worldY
+		               sceneRect().x(),
+		               sceneRect().y()
 		               };
 		mList[i]->draw(&p, s);
 		if ( _selection.contains(mList[i]) && mList[i]->isHScalable() ) {
@@ -970,14 +770,14 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 	// draw selection regions
 	for (int i=0; i<selectionRegionList().size(); i++) {
 		CADrawSettings c = {
-			_zoom,
-			qRound( (selectionRegionList().at(i).x() - _worldX) * _zoom),
-			qRound( (selectionRegionList().at(i).y() - _worldY) * _zoom),
-			qRound( selectionRegionList().at(i).width() * _zoom),
-			qRound( selectionRegionList().at(i).height() * _zoom),
+			zoom(),
+			qRound( (selectionRegionList().at(i).x() - sceneRect().x()) * zoom()),
+			qRound( (selectionRegionList().at(i).y() - sceneRect().y()) * zoom()),
+			qRound( selectionRegionList().at(i).width() * zoom()),
+			qRound( selectionRegionList().at(i).height() * zoom()),
 			selectionAreaColor(),
-            _worldX,
-            _worldY
+            sceneRect().x(),
+            sceneRect().y()
 		};
 		drawSelectionRegion( &p, c );
 	}
@@ -987,21 +787,21 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		for (int i=0; i<_shadowDrawableNote.size(); i++) {
 			if ( CACanorus::settings()->shadowNotesInOtherStaffs() || _shadowDrawableNote[i]->drawableContext() == currentContext() ) {
 				CADrawSettings s = {
-					_zoom,
-					qRound((_shadowDrawableNote[i]->xPos() - _worldX - _shadowDrawableNote[i]->width()/2) * _zoom),
-					qRound((_shadowDrawableNote[i]->yPos() - _worldY) * _zoom),
+					zoom(),
+					qRound((_shadowDrawableNote[i]->xPos() - sceneRect().x() - _shadowDrawableNote[i]->width()/2) * zoom()),
+					qRound((_shadowDrawableNote[i]->yPos() - sceneRect().y()) * zoom()),
 					drawableWidth(), drawableHeight(),
 					disabledElementsColor(),
-	               _worldX,
-	               _worldY
+	               sceneRect().x(),
+	               sceneRect().y()
 				};
 
 				_shadowDrawableNote[i]->draw(&p, s);
 
 				if (_drawShadowNoteAccs) {
 					CADrawableAccidental acc(_shadowNoteAccs, 0, 0, 0, _shadowDrawableNote[i]->yCenter());
-					s.x -= qRound((acc.width()+2)*_zoom);
-					s.y = qRound((acc.yPos() - _worldY)*_zoom);
+					s.x -= qRound((acc.width()+2)*zoom());
+					s.y = qRound((acc.yPos() - sceneRect().y())*zoom());
 					acc.draw(&p, s);
 				}
 			}
@@ -1013,19 +813,13 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 			font.setPixelSize( 20 );
 			p.setFont(font);
 			p.setPen(disabledElementsColor());
-			p.drawText( qRound((_xCursor-_worldX+10) * _zoom), qRound((_yCursor-_worldY-10) * _zoom), CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
+			p.drawText( qRound((_xCursor-sceneRect().x()+10) * zoom()), qRound((_yCursor-sceneRect().y()-10) * zoom()), CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
 		}
 	}
 
 	// flush the oldWorld coordinates as they're needed for the first repaint only
-	_oldWorldX = _worldX; _oldWorldY = _worldY;
+	_oldWorldX = sceneRect().x(); _oldWorldY = sceneRect().y();
 	_oldWorldW = _worldW; _oldWorldH = _worldH;
-
-	if (_repaintArea) {
-		delete _repaintArea;
-		_repaintArea = 0;
-		p.setClipping(false);
-	}
 }
 
 void CAScoreView::updateHelpers() {
@@ -1051,8 +845,8 @@ void CAScoreView::updateHelpers() {
 	if ( textEditVisible() ) {
 		textEdit()->setFont( QFont("Century Schoolbook L", qRound(zoom()*(12-2))) );
 		textEdit()->setGeometry(
-			qRound( (textEditGeometry().x()-worldX())*zoom() ),
-			qRound( (textEditGeometry().y()-worldY())*zoom() ),
+			qRound( (textEditGeometry().x()-sceneRect().x())*zoom() ),
+			qRound( (textEditGeometry().y()-sceneRect().y())*zoom() ),
 			qRound( textEditGeometry().width()*zoom() ),
 			qRound( textEditGeometry().height()*zoom() )
 		);
@@ -1087,51 +881,8 @@ void CAScoreView::unsetBorder() {
 	Note that repaint() event is also triggered when the internal drawable canvas changes its size (for eg. when scrollbars are shown/hidden) and the size of the view does not change.
 */
 void CAScoreView::resizeEvent(QResizeEvent *e) {
-	setWorldCoords( _worldX, _worldY, drawableWidth() / _zoom, drawableHeight() / _zoom );
+	setSceneRect( sceneRect().x(), sceneRect().y(), drawableWidth() / zoom(), drawableHeight() / zoom() );
 	// setWorld methods already check for scrollbars
-}
-
-/*!
-	Checks whether the scrollbars are needed (the whole scene is not rendered) or not.
-	Scrollbars get shown or hidden here.
-	Repaint is done automatically, if needed.
-*/
-void CAScoreView::checkScrollBars() {
-	if ((isScrollBarVisible() != ScrollBarShowIfNeeded) || (_checkScrollBarsDeadLock))
-		return;
-
-	bool change = false;
-	_holdRepaint = true;	// disable repaint until the scrollbar values are set
-	_checkScrollBarsDeadLock = true;	// disable any further method calls until the method is over
-	if ((((getMaxXExtended(_drawableMList) > getMaxXExtended(_drawableCList))?getMaxXExtended(_drawableMList):getMaxXExtended(_drawableCList)) - worldWidth() > 0) || (_hScrollBar->value()!=0)) { //if scrollbar is needed
-		if (!_hScrollBar->isVisible()) {
-			_hScrollBar->show();
-			change = true;
-		}
-	} else // if the whole scene can be drawn on the canvas and the scrollbars are at position 0
-		if (_hScrollBar->isVisible()) {
-			_hScrollBar->hide();
-			change = true;
-		}
-
-	if ((((getMaxYExtended(_drawableMList) > getMaxYExtended(_drawableCList))?getMaxYExtended(_drawableMList):getMaxYExtended(_drawableCList)) - worldHeight() > 0) || (_vScrollBar->value()!=0)) { //if scrollbar is needed
-		if (!_vScrollBar->isVisible()) {
-			_vScrollBar->show();
-			change = true;
-		}
-	} else // if the whole scene can be drawn on the canvas and the scrollbars are at position 0
-		if (_vScrollBar->isVisible()) {
-			_vScrollBar->hide();
-			change = true;
-		}
-
-	if (change) {
-		setWorldHeight((int)(drawableHeight() / _zoom));
-		setWorldWidth((int)(drawableWidth() / _zoom));
-	}
-
-	_holdRepaint = false;
-	_checkScrollBarsDeadLock = false;
 }
 
 /*!
@@ -1154,7 +905,7 @@ bool CAScoreView::event( QEvent *event ) {
 */
 void CAScoreView::mousePressEvent(QMouseEvent *e) {
 	CAView::mousePressEvent(e);
-	QPoint coords(e->x() / _zoom + _worldX, e->y() / _zoom + _worldY);
+	QPoint coords(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y());
 	if ( selection().size() && selection()[0]->isHScalable() && coords.y()>=selection()[0]->yPos() && coords.y()<=selection()[0]->yPos()+selection()[0]->height() ) {
 		if ( coords.x()==selection()[0]->xPos()  ) {
 			setResizeDirection(CADrawable::Left);
@@ -1203,7 +954,7 @@ void CAScoreView::on_clickTimer_timeout() {
 	A new signal is emitted: CAMouseReleaseEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::mouseReleaseEvent(QMouseEvent *e) {
-	emit CAMouseReleaseEvent(e, QPoint(e->x() / _zoom + _worldX, e->y() / _zoom + _worldY));
+	emit CAMouseReleaseEvent(e, QPoint(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y()));
 	setResizeDirection( CADrawable::Undefined );
 }
 
@@ -1212,7 +963,7 @@ void CAScoreView::mouseReleaseEvent(QMouseEvent *e) {
 	A new signal is emitted: CAMouseMoveEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
-	QPoint coords(e->x() / _zoom + _worldX, e->y() / _zoom + _worldY);
+	QPoint coords(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y());
 
 	_xCursor = coords.x();
 	_yCursor = coords.y();
@@ -1248,12 +999,12 @@ void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
 	A new signal is emitted: CAWheelEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::wheelEvent(QWheelEvent *e) {
-	QPoint coords((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY);
+	QPoint coords((int)(e->x() / zoom()) + sceneRect().x(), (int)(e->y() / zoom()) + sceneRect().y());
 
 	emit CAWheelEvent(e, coords);
 
-	_xCursor = (int)(e->x() / _zoom) + _worldX;	//TODO: _xCursor and _yCursor are still the old one. Somehow, _zoom level and _worldX/Y are not updated when emmiting CAWheel event. -Matevz
-	_yCursor = (int)(e->y() / _zoom) + _worldY;
+	_xCursor = (int)(e->x() / zoom()) + sceneRect().x();	//TODO: _xCursor and _yCursor are still the old one. Somehow, zoom() level and sceneRect().x()/Y are not updated when emmiting CAWheel event. -Matevz
+	_yCursor = (int)(e->y() / zoom()) + sceneRect().y();
 }
 
 /*!
@@ -1264,44 +1015,13 @@ void CAScoreView::keyPressEvent(QKeyEvent *e) {
 	emit CAKeyPressEvent(e);
 }
 
-void CAScoreView::setScrollBarVisible(CAScrollBarVisibility status) {
-	_scrollBarVisible = status;
-
-	if ((status == ScrollBarAlwaysVisible) && (!_hScrollBar->isVisible())) {
-		_hScrollBar->show();
-		_vScrollBar->show();
-		return;
-	}
-
-	if ((status == ScrollBarAlwaysHidden) && (_hScrollBar->isVisible())) {
-		_hScrollBar->hide();
-		_vScrollBar->hide();
-		return;
-	}
-
-	checkScrollBars();
+Qt::ScrollBarPolicy CAScoreView::scrollBarPolicy() {
+	return _canvas->horizontalScrollBarPolicy();
 }
 
-/*!
-	Processes the Horizontal scroll bar event.
-	This method is called when the horizontal scrollbar changes its value, let it be internally or due to user interaction.
-*/
-void CAScoreView::HScrollBarEvent(int val) {
-	if ((_allowManualScroll) && (!_hScrollBarDeadLock)) {
-		setWorldX(val);
-		repaint();
-	}
-}
-
-/*!
-	Processes the Vertical scroll bar event.
-	This method is called when the horizontal scrollbar changes its value, let it be internally or due to user interaction.
-*/
-void CAScoreView::VScrollBarEvent(int val) {
-	if ((_allowManualScroll) && (!_vScrollBarDeadLock)) {
-		setWorldY(val);
-		repaint();
-	}
+void CAScoreView::setScrollBarPolicy(Qt::ScrollBarPolicy p) {
+	_canvas->setHorizontalScrollBarPolicy( p );
+	_canvas->setVerticalScrollBarPolicy( p );
 }
 
 void CAScoreView::leaveEvent(QEvent *e) {
@@ -1783,31 +1503,8 @@ QList<CAMusElement*> CAScoreView::musElementSelection() {
 */
 
 /*!
-	\enum CAScoreView::CAScrollBarVisibility
-	Different behaviour of the scroll bars:
-		- ScrollBarAlwaysVisible - scrollbars are always visible, no matter if the whole scene can be rendered on canvas or not
-		- ScrollBarAlwaysHidden - scrollbars are always hidden, no matter if the whole scene can be rendered on canvas or not
-		- ScrollBarShowIfNeeded - scrollbars are visible, if they are needed (the current view area is too small to render the whole
-		  scene), otherwise hidden. This is default behaviour.
-*/
-
-/*!
 	\fn float CAScoreView::zoom()
 	Returns the zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
-*/
-
-/*!
-	\fn void CAScoreView::setRepaintArea(QRect *area)
-	Sets the area to be repainted, not the whole widget.
-
-	\sa clearRepaintArea()
-*/
-
-/*!
-	\fn void CAScoreView::clearRepaintArea()
-	Disables and deletes the area to be repainted.
-
-	\sa setRepaintArea()
 */
 
 /*!
