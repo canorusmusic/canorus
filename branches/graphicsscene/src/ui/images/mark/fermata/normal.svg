@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="-336 -200 1000 1000"
+   id="svg19963"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   width="128"
+   height="128"
+   sodipodi:docname="fermata.svg"
+   sodipodi:docbase="/home/matevz/canorus/artwork/images"
+   inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/fermata.png"
+   inkscape:export-xdpi="120.95"
+   inkscape:export-ydpi="120.95"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   version="1.0">
+  <metadata
+     id="metadata19972">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs19970">
+    <linearGradient
+       id="linearGradient20853">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop20855" />
+      <stop
+         style="stop-color:#646464;stop-opacity:1;"
+         offset="1"
+         id="stop20857" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20853"
+       id="linearGradient20859"
+       x1="-335.13843"
+       y1="171.86571"
+       x2="335"
+       y2="171.86571"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20853"
+       id="linearGradient20861"
+       gradientUnits="userSpaceOnUse"
+       x1="-335.13843"
+       y1="171.86571"
+       x2="335"
+       y2="171.86571" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20853"
+       id="linearGradient5007"
+       gradientUnits="userSpaceOnUse"
+       x1="-335.13843"
+       y1="171.86571"
+       x2="335"
+       y2="171.86571" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20853"
+       id="linearGradient5009"
+       gradientUnits="userSpaceOnUse"
+       x1="-335.13843"
+       y1="171.86571"
+       x2="335"
+       y2="171.86571" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="978"
+     inkscape:window-width="1400"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="2.8431276"
+     inkscape:cx="129.07137"
+     inkscape:cy="90.456001"
+     inkscape:window-x="192"
+     inkscape:window-y="140"
+     inkscape:current-layer="svg19963"
+     width="128px"
+     height="128px" />
+  <g
+     id="g4991"
+     transform="matrix(5.7584759,0,0,5.7584759,-111.19629,-2783.5181)">
+    <g
+       id="g5001"
+       transform="translate(-280.28113,403.93456)">
+      <g
+         transform="matrix(0.234497,0,0,-0.234497,330.35954,173.35287)"
+         id="g20849"
+         style="fill:#000000;fill-opacity:0.39215686"
+         inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/fermata.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <path
+           d="M -20,365 C -18,366 -7,366 5,365 C 37,365 59,361 87,351 C 186,318 267,223 312,91 C 322,60 335,7 335,-4 C 335,-8 332,-14 329,-16 C 326,-19 319,-22 314,-22 C 306,-22 297,-17 293,-8 C 292,-7 291,-1 289,6 C 276,73 246,129 201,174 C 177,198 152,216 124,230 C 97,243 70,251 40,256 C 19,259 -19,259 -40,256 C -70,251 -97,243 -124,230 C -152,216 -177,198 -201,174 C -246,129 -276,73 -289,6 C -291,-1 -292,-7 -293,-8 C -299,-20 -312,-25 -323,-20 C -329,-17 -331,-15 -333,-11 C -336,-6 -336,-4 -332,14 C -317,90 -288,161 -250,218 C -217,267 -178,305 -133,331 C -103,348 -66,360 -33,364 C -28,365 -22,365 -20,365 z M -14,120 C 22,127 57,106 69,71 C 71,63 71,61 71,50 C 71,38 71,36 69,29 C 60,3 39,-16 13,-21 C -22,-27 -57,-6 -69,29 C -71,36 -71,38 -71,50 C -71,61 -71,63 -69,71 C -60,95 -39,115 -14,120 z "
+           id="path20851"
+           style="fill:#000000;fill-opacity:0.39215686" />
+      </g>
+      <g
+         transform="matrix(0.234497,0,0,-0.234497,325.81474,170.33137)"
+         id="g19965"
+         style="fill:url(#linearGradient5007);fill-opacity:1"
+         inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/fermata.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <path
+           d="M -20,365 C -18,366 -7,366 5,365 C 37,365 59,361 87,351 C 186,318 267,223 312,91 C 322,60 335,7 335,-4 C 335,-8 332,-14 329,-16 C 326,-19 319,-22 314,-22 C 306,-22 297,-17 293,-8 C 292,-7 291,-1 289,6 C 276,73 246,129 201,174 C 177,198 152,216 124,230 C 97,243 70,251 40,256 C 19,259 -19,259 -40,256 C -70,251 -97,243 -124,230 C -152,216 -177,198 -201,174 C -246,129 -276,73 -289,6 C -291,-1 -292,-7 -293,-8 C -299,-20 -312,-25 -323,-20 C -329,-17 -331,-15 -333,-11 C -336,-6 -336,-4 -332,14 C -317,90 -288,161 -250,218 C -217,267 -178,305 -133,331 C -103,348 -66,360 -33,364 C -28,365 -22,365 -20,365 z M -14,120 C 22,127 57,106 69,71 C 71,63 71,61 71,50 C 71,38 71,36 69,29 C 60,3 39,-16 13,-21 C -22,-27 -57,-6 -69,29 C -71,36 -71,38 -71,50 C -71,61 -71,63 -69,71 C -60,95 -39,115 -14,120 z "
+           id="path19967"
+           style="fill:url(#linearGradient5009);fill-opacity:1" />
+      </g>
+    </g>
+  </g>
+</svg>

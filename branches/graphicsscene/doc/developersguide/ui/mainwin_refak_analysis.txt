@@ -1,0 +1,383 @@
+Analysis of CAMainWin class for refactoring
+===========================================
+
+This documents analyses the CAMainWin class with the goal
+to refactor classes from it. Other refactorings will be
+looked into as well later.
+
+Methods and dependencies on other classes
+-----------------------------------------
+
+In this chapter all methods and their dependencies to
+other classes (methods) will be listed as well as those
+Canorus classes (methods) depending on it
+
+Methods marked with "*" are good candidates for refactoring
+(i.e. they are basically independent from UI stuff or
+ important control methods not only for one input (not only mouse))
+
+Also any method whose splitted content without UI depending
+commands, fitting into a single method, is larger than about 30
+lines of code should be considered as refactoring candidate.
+
+1) addSheet (New sheet with tab into tabwidget)
+  Depends on
+  a) CAScoreViewPort
+  b) method -> initViewPort
+  c) CAViewPortContainer (and list of these containers)
+  d) CASheet (Mapping with c)
+  e) UI: Tab Widget from main window
+  f) method -> updateToolBars
+  Is needed by
+  a) UI: menu function "new sheet" from main window
+  b) UI: toolbar button "new sheet"
+
+2) clearUI (clear user interface document but not the model)
+  Depends on
+  a) UI: tab widget from main window
+  b) CAViewPortContainer (and list of these containers)
+  c) CASheet (Mapping with b)
+  d) method -> setCurrentViewPort
+  e) UI: select mode action
+  Is needed by
+  a) UI: menu function "quit"
+  b) method -> closeEvent
+
+3) closeEvent (event when Canorus is quit)
+  Depends On
+  a) method -> handleUnsavedChanged
+  b) UI: Event handler
+  c) method -> clearUI
+  Is needed by
+  a) UI: menu function "quit"
+
+4) copySelection (backend edit->copy)  *
+  Depends on
+  a) CAScoreViewPort (input para)
+  b) CASheet (current sheet)
+  c) method -> foreach
+  d) CAMusElement (copy)
+  e) CADrawableMusElement (copy)
+  f) CAContext (selection ?/copy)
+  g) CAVoice (selection/copy)
+  h) CAStaff (copy)
+  i) CATuplet (copy)
+  j) CASlur (copy)
+  k) CAPlayable (copy)
+  l) CALyricsContext (copy)
+  m) CASyllable (copy)
+  n) CAMimeData (copied content)
+  Is needed by
+  a) UI: menu function "copy"
+
+5) createCustomActions (initialization)
+  Depends on
+  a) CAUndoToolButton
+  b) CAMenuToolButton
+  c) CASlur
+  d) CAClef
+  e) CALCDNumber
+  f) CACanorus
+  g) CAPlayableLength
+  i) CADrawableKeySignature
+  j) CADynamic
+  k) CARepeatMark
+  l) CAFingering
+  m) CAPyConsole
+  n) CAPyConsoleInterface
+  Is needed by
+  a) Constructor
+
+6) deleteSelection (menu: delete selected music elements)
+  Depends on
+  a) CAScoreViewPort (para)
+  b) CAMusElement (selection/delete)
+  c) CAPlayable (delete)
+  d) CARest (replaces deleted music elements/delete)
+  e) CASyllable (delete)
+  f) CATuplet (delete)
+  g) CAVoice (delete)
+  h) CAFunctionMarkContext
+  Is needed by
+  a) menu / toolbar function delete (?)
+
+7) floatViewPortClosed (closes floating view port) *
+  Depends on
+  a) CAViewPort
+  Is needed by
+
+8) handleUnsavedChanges (menu: handles close document) *
+  Depends on
+  a) CADocument
+  Is needed by
+  a) menu / toolbar / window close document (?)
+
+9) initViewPort (links new view port to main window)
+  Depends on
+  a) CAViewPort
+  b) CACanorus
+  c) CACommit
+  d) this (CAMainWin)
+  e) CAMode
+  Is needed by
+  a) Lilypond and Canorus Source View
+  b) Score View
+  c) new sheet
+  d) split view (horiz/vert)
+
+10) insertMusElementAt (places prepared music element to staff/voice) * 
+  Depends on
+  a) CAScoreViewPort
+  b) CADrawableContext
+  c) CAStaff
+  d) CADrawableStaff
+  e) CADrawableMusElement
+  f) CAMusElement
+  g) CACanorus
+  h) CAVoice
+  i) CATuplet
+  j) CAPlayable
+  k) CAPlayableLength
+  l) CARest
+  m) CANote
+  Is needed by
+  a) Insert Slur
+  b) Mouse press in view port
+Remark: Method too long and complicated!
+
+11) keyPressEvent
+unused ? -> to Delete
+
+12) newDocument (creates a new document (score))
+  Depends On
+  a) CADocument
+  b) CACanorus
+  c) PyObject (optional)
+  d) CASwigPython (optional)
+  Is needed by
+  a) Creating a new document (menu)
+
+13) onMidiInEvent (handles arriven midi event)
+  Depends On
+  a) ??? (Midi Classes)
+
+14) onRepaintTimerTimeout (called during playback to repaint score)
+  Depends On
+  a) CAScoreViewPort 
+  b) CAMusElement
+  c) CAPlayable ?
+
+15) onScoreViewPortSelectionChanged (called when selection in score view port is changed)
+  Depends On
+  a) ??? (Copy / Paste)
+  Is needed by
+  a) Menu / Toolbar
+
+16) onTextEditKeyPressEvent (for input of syllables) *
+  Depends On
+  a) CAScoreViewPort
+  b) CATextEdit
+  c) CAMusElement
+  d) CASyllable
+  e) CAVoice
+  f) CALyricsContext
+  g) CACanorus
+  h) CAMark
+  i) CABookMark
+  Is needed by
+  a) ViewPort / Widget (Editing)
+
+17) onTimeEditedTimerTimeout (increase internal edit time via timer)
+  Depends On: -
+  Is needed by: saveDocument method
+
+18) onUiOpenRecentDocumentTriggered (Opens a recent document)
+  Depends On: CACanorus
+  Is needed by: Menu
+
+19) on_uiAboutCanorus_triggered / on_uiAboutQt_triggered (Infos)
+  Depends On: -
+  Is needed by: Menu
+
+20) on_uiAnimatedScroll_toggled (activate animated scroll)
+  Depends On: -
+  Is needed by: Menu/Toolbar
+
+21) on_uiArticulationType_toggled (change articulation type) *
+  Depends On
+  a) CAArticulation
+  b) CAMusElement
+  c) CAMark
+  d) CAMusElementFactory
+  e) Mode
+  Is needed by: Menu/Toolbar
+
+22) on_uiAssociatedVoice_activated (sets associated voice of current lyrics context) *
+  Depends On
+  a) CAContext
+  b) CACanorus
+  c) CALyricsContext
+  Is needed by: Menu/Toolbar
+
+23) on_uiBarlineType_toggled (change barline type) *
+  Depends On
+  a) CAMusElementFactory
+  b) CABarline
+  c) Mode
+  Is needed by: Menu/Toolbar
+
+24) on_uiCanorusMLSource_triggered (shows current score in CanorusML syntax)
+  Depends On
+  a) CASourceViewPort
+  b) CAViewPortContainer
+  Is needed by: Menu/Toolbar
+
+25) on_uiClefOffset_valueChanged (offset of clef changed) *
+  Depends On
+  a) Mode
+  b) CAScoreViewPort
+  c) CAMusElementFactory
+  d) CACanorus
+  e) CAClef
+  f) CAMusElement
+  Is needed by: Mouse/Keyboard input
+
+26) on_uiClefType_toggled (clef type change) *
+  Depends On
+  a) CAClef
+  b) CAMusElementFactory
+  c) CAMusElement
+  d) Mode
+  Is needed by: Menu/Toolbar
+
+27) on_uiCloseCurrentView_triggered (view closed)
+  Depends On
+  a) CAViewPort
+  b) CAViewPortContainer
+  Is needed by: Mouse/Keyboard activation
+
+28) on_uiCloseDocument_triggered (document closed)
+  Depends On
+  a) CAViewPort
+  b) CAViewPortContainer
+  Is needed by: Menu/Toolbar
+
+29) on_uiContextName_returnPressed (context name changed)
+  Depends On
+  a) CAContext
+  b) CACanorus
+  Is needed by: Keyboard input
+
+30) on_uiContextProperties_triggered (shows properties dialog)
+  Depends On
+  a) CAPropertiesDialog
+  b) CAContext
+  c) CAMainWin
+  Is needed by: Menu/Toolbar
+
+31) on_uiContextType_toggled (change context type) *
+  Depends On: CAMode
+  Is needed by: Menu/Toolbar
+
+32) on_uiCopy_triggered (copy selection)
+  Depends On: CAScoreViewPort
+  Is needed by: Menu/Toolbar 
+
+33) on_uiCut_triggered (cut selection)
+  Depends On
+  a) CAScoreViewPort
+  b) CACanorus
+  Is needed by
+
+34) on_uiDocumentProperties_triggered (show properties dialog)
+  Depends On: CAPropertiesDialog
+  Is needed by: Menu
+
+35) on_uiDynamicCustomText_returnPressed (accept edited custom text)
+  Depends On
+  a) CADynamic
+  b) Mode
+  c) CAMusElementFactory
+  d) CAMusElement
+  e) CAScoreViewPort
+  f) CACanorus
+  Is needed by: Keyboard input
+
+36) on_uiDynamicText_toggled (activate dynamic text)
+  Depends On
+  a) CADynamic
+  b) Mode
+  c) CAScoreViewPort
+  d) CACanorus
+  Is needed by: Menu/Toolbar
+
+37) on_uiDynamicVolume_valueChanged (change value of dynamic volume) *
+  Depends On
+  a) Mode
+  b) CAScoreViewPort
+  c) CAMusElementFactory
+  d) CAMusElement
+  e) CADynamic
+  f) CACanorus
+  Is needed by: Mouse/Keyboard
+
+38) on_uiEditMode_toggled (activate edit mode)
+  Depends On: Mode
+  Is needed by: Menu/Toolbar
+
+39) on_uiExportDocument_triggered (export a document) *
+  Depends On
+  a) CAExportDialog
+  b) CAExport
+  c) CAPluginManager
+  d) CAMidiExport
+  e) CALilypondExport
+  f) CAMusicXmlExport
+  g) CAPDFExport
+  h) CASVGExport
+  Is needed by: Menu
+
+40) on_uiExportToPdf_triggered (export PDF)
+  Depends On: CAExportDialog
+  Is needed by: Menu
+
+41) on_uiFMChordArea_toggled
+  Depends On
+  Is needed by
+
+27) on_uiCloseCurrentView_triggered
+  Depends On
+  Is needed by
+
+27) on_uiCloseCurrentView_triggered
+  Depends On
+  Is needed by
+
+27) on_uiCloseCurrentView_triggered
+  Depends On
+  Is needed by
+
+27) on_uiCloseCurrentView_triggered
+  Depends On
+  Is needed by
+
+27) on_uiCloseCurrentView_triggered
+  Depends On
+  Is needed by
+
+27) on_uiCloseCurrentView_triggered
+  Depends On
+  Is needed by
+
+27) on_uiCloseCurrentView_triggered
+  Depends On
+  Is needed by
+
+27) on_uiCloseCurrentView_triggered
+  Depends On
+  Is needed by
+
+27) on_uiCloseCurrentView_triggered
+  Depends On
+  Is needed by
+

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="128"
+   height="128"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   version="1.0"
+   sodipodi:docbase="/home/matevz/canorus/trunk/src/ui/images"
+   sodipodi:docname="floppy.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3152">
+      <stop
+         style="stop-color:#e6e6e6;stop-opacity:1;"
+         offset="0"
+         id="stop3154" />
+      <stop
+         style="stop-color:#808080;stop-opacity:1;"
+         offset="1"
+         id="stop3156" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3152"
+       id="linearGradient3158"
+       x1="30"
+       y1="12.5"
+       x2="70"
+       y2="37.5"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.3140732,0,0,1.3140732,-3.2968856,-2.7945452)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.0000001"
+     inkscape:cx="16.347435"
+     inkscape:cy="58.632673"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     width="128px"
+     height="128px"
+     inkscape:window-width="918"
+     inkscape:window-height="709"
+     inkscape:window-x="-36"
+     inkscape:window-y="191" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Floppy Disk Icon</dc:title>
+        <dc:date>16 June 2007</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>King of Hearts</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>Wikimedia Commons</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:description>A simple diagram of a floppy disk; can be used as an icon.</dc:description>
+        <cc:license
+           rdf:resource="http://web.resource.org/cc/PublicDomain" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://web.resource.org/cc/PublicDomain">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:nodetypes="cccccc"
+       id="rect2167"
+       d="M 20,17.5 L 85,17.5 L 90,22.5 L 90,92.5 L 20,92.5 L 20,17.5 z "
+       style="fill:#000000;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:0.70954359"
+       transform="matrix(1.3140732,0,0,1.3140732,-3.2968856,-2.7945452)" />
+    <path
+       style="fill:#f8d45f;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 16.414213,13.631371 L 101.82898,13.631371 L 108.39934,20.201737 L 108.39934,112.18687 L 16.414213,112.18687 L 16.414213,13.631371 z "
+       id="rect2160"
+       sodipodi:nodetypes="cccccc" />
+    <rect
+       style="fill:url(#linearGradient3158);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="rect2163"
+       width="52.562927"
+       height="32.85183"
+       x="36.125309"
+       y="13.631371" />
+    <rect
+       style="fill:#f8d45f;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="rect2165"
+       width="13.140732"
+       height="26.281464"
+       x="68.97715"
+       y="16.916553" />
+    <rect
+       style="fill:#ececec;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="rect3158"
+       width="72.274025"
+       height="52.562927"
+       x="26.269764"
+       y="59.62394" />
+    <rect
+       style="fill:#666666;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="rect2169"
+       width="5.2562933"
+       height="3.94222"
+       x="18.385324"
+       y="104.95944" />
+    <rect
+       style="fill:#666666;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="rect2171"
+       width="5.2562933"
+       height="3.94222"
+       x="101.17193"
+       y="104.95944" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.65706974;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 29.883463,69.150948 L 94.930091,69.150948"
+       id="path3145" />
+    <path
+       id="path3147"
+       d="M 29.883463,75.721315 L 94.930091,75.721315"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.65706974;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       id="path3150"
+       d="M 29.883463,82.291682 L 94.930091,82.291682"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.65706974;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.65706974;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 29.883463,88.862052 L 94.930091,88.862052"
+       id="path3152" />
+    <path
+       id="path3154"
+       d="M 29.883463,95.432417 L 94.930091,95.432417"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.65706974;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.65706974;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 29.883463,102.00278 L 94.930091,102.00278"
+       id="path3156" />
+  </g>
+</svg>
