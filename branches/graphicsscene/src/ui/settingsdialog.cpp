@@ -223,14 +223,14 @@ void CASettingsDialog::on_uiBackgroundColor_clicked(bool) {
 	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiBackgroundColor->palette().color(QPalette::Window).rgba(), 0, this ));
 	if (c.isValid()) {
 		uiBackgroundColor->setPalette( QPalette(c) );
-		uiPreviewScoreView->setBackgroundColor(c);
+		uiPreviewScoreView->setBackgroundBrush(c);
 		uiPreviewScoreView->repaint();
 	}
 }
 
 void CASettingsDialog::on_uiBackgroundRevert_clicked(bool) {
 	uiBackgroundColor->setPalette( QPalette(CASettings::DEFAULT_BACKGROUND_COLOR) );
-	uiPreviewScoreView->setBackgroundColor(CASettings::DEFAULT_BACKGROUND_COLOR);
+	uiPreviewScoreView->setBackgroundBrush(CASettings::DEFAULT_BACKGROUND_COLOR);
 	uiPreviewScoreView->repaint();
 }
 
@@ -268,14 +268,14 @@ void CASettingsDialog::on_uiSelectionAreaColor_clicked(bool) {
 	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiSelectionAreaColor->palette().color(QPalette::Window).rgba(), 0, this ));
 	if (c.isValid()) {
 		uiSelectionAreaColor->setPalette( QPalette(c) );
-		uiPreviewScoreView->setSelectionAreaColor(c);
+		uiPreviewScoreView->setSelectionAreaBrush(c);
 		uiPreviewScoreView->repaint();
 	}
 }
 
 void CASettingsDialog::on_uiSelectionAreaRevert_clicked(bool) {
 	uiSelectionAreaColor->setPalette( QPalette(CASettings::DEFAULT_SELECTION_AREA_COLOR) );
-	uiPreviewScoreView->setSelectionAreaColor(CASettings::DEFAULT_SELECTION_AREA_COLOR);
+	uiPreviewScoreView->setSelectionAreaBrush(CASettings::DEFAULT_SELECTION_AREA_COLOR);
 	uiPreviewScoreView->repaint();
 }
 

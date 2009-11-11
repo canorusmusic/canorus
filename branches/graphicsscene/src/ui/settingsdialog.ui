@@ -124,7 +124,7 @@
           </font>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Box</enum>
+          <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Plain</enum>
@@ -584,7 +584,7 @@
             </widget>
            </item>
            <item>
-            <widget class="CAScoreView" name="uiPreviewScoreView" native="true"/>
+            <widget class="CAScoreView" name="uiPreviewScoreView"/>
            </item>
           </layout>
          </widget>
@@ -948,7 +948,7 @@
  <customwidgets>
   <customwidget>
    <class>CAScoreView</class>
-   <extends>QWidget</extends>
+   <extends>QGraphicsView</extends>
    <header>widgets/scoreview.h</header>
   </customwidget>
  </customwidgets>

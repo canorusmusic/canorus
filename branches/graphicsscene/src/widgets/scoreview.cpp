@@ -112,7 +112,6 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	setViewType( ScoreView );
 
 	setSheet( sheet );
-	_worldW = _worldH = 0;
 	_playing = false;
 	_currentContext = 0;
 	_xCursor = _yCursor = 0;
@@ -121,6 +120,7 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	// init graphics scene
 	_canvas = new QGraphicsView(this);
 	_scene = new QGraphicsScene();
+	_canvas->setScene( _scene );
 
 	// init layout
 	_drawBorder = false;
@@ -148,12 +148,10 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	setTextEdit( new CATextEdit( _canvas ) );
 	setTextEditVisible( false );
 
-	_oldWorldW = 0; _oldWorldH = 0;
-
-	setBackgroundColor( CACanorus::settings()->backgroundColor() );
-	setForegroundColor( CACanorus::settings()->foregroundColor() );
+	setBackgroundBrush( CACanorus::settings()->backgroundColor() );
+	setForegroundColor( CACanorus::settings()->backgroundColor() );
 	setSelectionColor( CACanorus::settings()->selectionColor() );
-	setSelectionAreaColor( CACanorus::settings()->selectionAreaColor() );
+	setSelectionAreaBrush( CACanorus::settings()->selectionAreaColor() );
 	setSelectedContextColor( CACanorus::settings()->selectedContextColor() );
 	setHiddenElementsColor( CACanorus::settings()->hiddenElementsColor() );
 	setDisabledElementsColor( CACanorus::settings()->disabledElementsColor() );
@@ -221,6 +219,7 @@ void CAScoreView::addMElement(CADrawableMusElement *elt, bool select) {
 	}
 
 	elt->drawableContext()->addMElement(elt);
+	_scene->addItem( elt );
 	emit selectionChanged();
 }
 
@@ -238,6 +237,7 @@ void CAScoreView::addCElement(CADrawableContext *elt, bool select) {
 		_shadowNote << new CANote( CADiatonicPitch(), CAPlayableLength(CAPlayableLength::Quarter, 0), static_cast<CAStaff*>(elt->context())->voiceList()[0], 0 );
 		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), elt, 0, 0, true);
 	}
+	_scene->addItem( elt );
 }
 
 /*!
@@ -497,6 +497,7 @@ void CAScoreView::rebuild() {
 	_drawableMList.clear(true);
 	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	// remember the index of last used context
 	_drawableCList.clear(true);
+	_scene->clear();
 
 	CALayoutEngine::reposit(this);
 
@@ -660,10 +661,7 @@ void CAScoreView::setZoom(double z, double x, double y, bool animate) {
 	General Qt's paint event.
 	All the music elements get actually rendered in this method.
 */
-void CAScoreView::paintEvent(QPaintEvent *e) {
-//	if (_holdRepaint)
-//		return;
-
+/*void CAScoreView::paintEvent(QPaintEvent *e) {
 	// draw the border
 	QPainter p(this);
 	if (_drawBorder) {
@@ -821,7 +819,7 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 	_oldWorldX = sceneRect().x(); _oldWorldY = sceneRect().y();
 	_oldWorldW = _worldW; _oldWorldH = _worldH;
 }
-
+*/
 void CAScoreView::updateHelpers() {
 	// Shadow notes
 	if (currentContext()?(currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0) {
@@ -878,11 +876,9 @@ void CAScoreView::unsetBorder() {
 
 /*!
 	Called when the user resizes the widget.
-	Note that repaint() event is also triggered when the internal drawable canvas changes its size (for eg. when scrollbars are shown/hidden) and the size of the view does not change.
 */
 void CAScoreView::resizeEvent(QResizeEvent *e) {
-	setSceneRect( sceneRect().x(), sceneRect().y(), drawableWidth() / zoom(), drawableHeight() / zoom() );
-	// setWorld methods already check for scrollbars
+	_canvas->resize(e->size());
 }
 
 /*!
@@ -896,7 +892,7 @@ bool CAScoreView::event( QEvent *event ) {
 			return true;
 		}
 	}
-	return QWidget::event(event);
+	return CAView::event(event);
 }
 
 /*!

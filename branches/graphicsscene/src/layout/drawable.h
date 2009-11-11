@@ -9,6 +9,7 @@
 #define DRAWABLE_H_
 
 #include <QRect>
+#include <QGraphicsItem>
 #include <QColor>
 
 class QPainter;
@@ -24,7 +25,7 @@ struct CADrawSettings {
 		double worldY; // y coordinate of the view
 };
 
-class CADrawable {
+class CADrawable : public QGraphicsItem {
 public:
 	enum CADrawableType {
 		DrawableMusElement,
@@ -45,6 +46,8 @@ public:
 
 	CADrawable( double x, double y );	// x and y position of an element in absolute world units
 	virtual ~CADrawable() { }
+
+	void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget=0 );
 	virtual void draw(QPainter *p, const CADrawSettings s) = 0;
 	virtual CADrawable *clone();
 
@@ -62,7 +65,7 @@ public:
 	inline double neededHeight() { return _height+_neededSpaceHeight; }
 	inline double xCenter() { return _xPos + (_width)/2; }
 	inline double yCenter() { return _yPos + (_height)/2; }
-	inline const QRect bBox() { return QRect(_xPos, _yPos, _width, _height); }
+	inline QRectF boundingRect () const { return QRectF(_xPos, _yPos, _width, _height); }
 	inline bool isVisible() { return _visible; }
 	inline bool isSelectable() { return _selectable; }
 	inline bool isHScalable() { return _hScalable; }

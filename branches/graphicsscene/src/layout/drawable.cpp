@@ -40,3 +40,17 @@ void CADrawable::drawVScaleHandles( QPainter *p, CADrawSettings s ) {
 	p->drawRect( s.x + qRound((width()*s.z)/2 - (SCALE_HANDLES_SIZE*s.z)/2), s.y + qRound(((height() - SCALE_HANDLES_SIZE/2.0)*s.z)),
 			     qRound(SCALE_HANDLES_SIZE*s.z), qRound(SCALE_HANDLES_SIZE*s.z) );
 }
+
+void CADrawable::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget ) {
+	//TODO
+	CADrawSettings s = {
+	            1.0,
+	            xPos(),
+	            yPos(),
+	            1000.0, 1000.0,
+	            Qt::black,
+	            0,
+	            0
+	            };
+	draw(painter, s);
+}
