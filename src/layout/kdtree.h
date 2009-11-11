@@ -121,7 +121,7 @@ template <typename T>
 T CAKDTree<T>::removeElement(double x, double y, bool autoDelete) {
 	T elt;
 	for (int i=0; i<_list.size(); i++) {
-		if (static_cast<CADrawable*>(_list.at(i))->bBox().contains(x,y)) {
+		if (static_cast<CADrawable*>(_list.at(i))->boundingRect().contains(x,y)) {
 			elt = _list[i];
 			_list.removeAt(i);
 			if (autoDelete) delete elt;

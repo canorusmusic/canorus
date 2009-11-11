@@ -180,20 +180,20 @@ public:
 	void setBorder(const QPen pen);
 	void unsetBorder();
 	inline QPen border() { return _borderPen; }
-	inline QColor backgroundColor() { return _backgroundColor; }
-	inline void setBackgroundColor( const QColor c ) { _backgroundColor = c; }
+	inline QBrush backgroundBrush() { return _canvas->backgroundBrush(); }
+	inline void setBackgroundBrush( const QBrush c ) { _canvas->setBackgroundBrush(c); }
 	inline QColor foregroundColor() { return _foregroundColor; }
-	inline void setForegroundColor( const QColor c ) { _foregroundColor = c; }
+	inline void setForegroundColor( const QColor& c ) { _foregroundColor = c; }
 	inline QColor selectionColor() { return _selectionColor; }
-	inline void setSelectionColor( const QColor c ) { _selectionColor = c; }
-	inline QColor selectionAreaColor() { return _selectionAreaColor; }
-	inline void setSelectionAreaColor( const QColor c ) { _selectionAreaColor = c; }
+	inline void setSelectionColor( const QColor& c ) { _selectionColor = c; }
+	inline QBrush selectionAreaBrush() { return _selectionAreaBrush; }
+	inline void setSelectionAreaBrush( const QBrush c ) { _selectionAreaBrush = c; }
 	inline QColor selectedContextColor() { return _selectedContextColor; }
-	inline void setSelectedContextColor( const QColor c ) { _selectedContextColor = c; }
+	inline void setSelectedContextColor( const QColor& c ) { _selectedContextColor = c; }
 	inline QColor hiddenElementsColor() { return _hiddenElementsColor; }
-	inline void setHiddenElementsColor( const QColor c ) { _hiddenElementsColor = c; }
+	inline void setHiddenElementsColor( const QColor& c ) { _hiddenElementsColor = c; }
 	inline QColor disabledElementsColor() { return _disabledElementsColor; }
-	inline void setDisabledElementsColor( const QColor c ) { _disabledElementsColor = c; }
+	inline void setDisabledElementsColor( const QColor& c ) { _disabledElementsColor = c; }
 
 	inline bool playing() { return _playing; }
 	inline void setPlaying(bool playing) { _playing = playing; }
@@ -233,7 +233,7 @@ private slots:
 	void keyPressEvent(QKeyEvent *e);
 
 	void resizeEvent(QResizeEvent *e);
-	void paintEvent(QPaintEvent *p);
+//	void paintEvent(QPaintEvent *p);
 	void leaveEvent(QEvent *e);
 	void enterEvent(QEvent *e);
 	void on_animationTimer_timeout();
@@ -279,7 +279,6 @@ private:
 	template <typename T> int getMaxXExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
 	template <typename T> int getMaxYExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting below easies
 
-	double _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the view is currently showing.
 	QPoint _lastMousePressCoords;           // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
 	inline void setLastMousePressCoords( QPoint p ) { _lastMousePressCoords = p; }
 
@@ -321,10 +320,9 @@ private:
 	bool _grabTabKey;              // Pass the tab key to keyPressEvent() or treat it like the next item key
 	bool _drawBorder;              // Should the border be drawn or not.
 	QPen _borderPen;               // Pen which the border is drawn by.
-	QColor _backgroundColor;       // Color which the background is filled.
-	QColor _foregroundColor;       // Color which the music elements are painted.
+	QColor _foregroundColor;       // Color which the normal music elements are painted.
 	QColor _selectionColor;        // Color which the selected music elements are painted.
-	QColor _selectionAreaColor;    // Color which the selection area background is filled.
+	QBrush _selectionAreaBrush;    // Color which the selection area background is filled.
 	QColor _selectedContextColor;  // Color which the current context is painted.
 	QColor _disabledElementsColor; // Color which the elements in non-selected voice are painted.
 	QColor _hiddenElementsColor;   // Color which the invisible elements are painted in current-voice-only mode.
@@ -345,7 +343,6 @@ private:
 	/////////////////////////
 	// Internal properties //
 	/////////////////////////
-	double _oldWorldX, _oldWorldY, _oldWorldW, _oldWorldH; // Old coordinates used before the repaint. This is needed so only the new part of the view gets repainted when panning.
 	bool _playing;                                      // Set to on, when in Playback mode
 	QTimer *_clickTimer;                                // Used for measuring doubleClick and tripleClick
 	int     _numberOfClicks;                            // Used for measuring doubleClick and tripleClick
