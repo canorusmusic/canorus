@@ -14,25 +14,10 @@ class CAMusElement;
 class CADrawableContext;
 
 class CADrawableMusElement : public CADrawable {
+	enum CADrawableMusElementType {
+	};
 	public:
-		enum CADrawableMusElementType {
-			DrawableNote,
-			DrawableRest,
-			DrawableMidiNote,
-			DrawableClef,
-			DrawableKeySignature,
-			DrawableTimeSignature,
-			DrawableBarline,
-			DrawableAccidental,
-			DrawableSlur,
-			DrawableTuplet,
-			DrawableSyllable,
-			DrawableFunctionMark, DrawableFunctionMarkSupport,
-			DrawableFiguredBassNumber,
-			DrawableMark
-		};
-
-		CADrawableMusElement(CAMusElement *musElement, CADrawableContext *drawableContext, double x, double y);
+		CADrawableMusElement(CAMusElement *musElement, CADrawableContext *drawableContext, CADrawableType t, double x, double y);
 
 		CADrawableMusElementType drawableMusElementType() { return _drawableMusElementType; }
 		inline CAMusElement *musElement() { return _musElement; }
@@ -45,7 +30,6 @@ class CADrawableMusElement : public CADrawable {
 
 		CADrawableMusElementType _drawableMusElementType;	// CADrawableMusElement type
 		CADrawableContext *_drawableContext;
-		CAMusElement *_musElement;
 		bool _selectable;
 };
 

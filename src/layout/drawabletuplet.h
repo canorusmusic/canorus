@@ -18,7 +18,6 @@ public:
 
 	CATuplet *tuplet() { return static_cast<CATuplet*>(_musElement); }
 
-	void draw(QPainter *p, const CADrawSettings s);
 	CADrawableTuplet *clone(CADrawableContext* newContext = 0);
 
 	inline double x1() { return _x1; }

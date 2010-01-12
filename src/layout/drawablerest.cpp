@@ -14,84 +14,82 @@
 #include <QPainter>
 
 CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext, double x, double y)
- : CADrawableMusElement(rest, drawableContext, x, y) {
-	_drawableMusElementType = CADrawableMusElement::DrawableRest;
-
+ : CADrawableMusElement(rest, drawableContext, DrawableRest, x, y) {
 	if (drawableContext->drawableContextType() != CADrawableContext::DrawableStaff)
 		return;
 
 	switch ( rest->playableLength().musicLength() ) {
 	case CAPlayableLength::HundredTwentyEighth:
-		setWidth( 16 );
+/*		setWidth( 16 );
 		setHeight( 49 );
-		break;
+*/		break;
 
 	case CAPlayableLength::SixtyFourth:
-		setWidth( 14 );
+/*		setWidth( 14 );
 		setHeight( 41 );
-		break;
+*/		break;
 
 	case CAPlayableLength::ThirtySecond:
-		setWidth( 12 );
+/*		setWidth( 12 );
 		setHeight( 33 );
 		setYPos(y + 2);
-		break;
+*/		break;
 
 	case CAPlayableLength::Sixteenth:
-		setWidth( 10 );
+/*		setWidth( 10 );
 		setHeight( 24 );
 		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-		break;
+*/		break;
 
 	case CAPlayableLength::Eighth:
-		setWidth( 8 );
+/*		setWidth( 8 );
 		setHeight( 17 );
 		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-		break;
+*/		break;
 
 	case CAPlayableLength::Quarter:
-		setWidth( 8 );
+/*		setWidth( 8 );
 		setHeight( 20 );
 		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-		break;
+*/		break;
 
 	case CAPlayableLength::Half:
-		setWidth( 12 );
+/*		setWidth( 12 );
 		setHeight( 5 );
 		setYPos(y + 1.5*static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-		break;
+*/		break;
 
 	case CAPlayableLength::Whole:
-		setWidth( 12 );
+/*		setWidth( 12 );
 		setHeight( 5 );
 		//values in constructor are the notehead center coords. yPos represents the top of the stem.
 		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-		break;
+*/		break;
 
 	case CAPlayableLength::Breve:
-		setWidth( 4 );
+/*		setWidth( 4 );
 		setHeight( 9 );
 		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-		break;
+*/		break;
 	}
 
-	_restWidth = _width;
+/*	_restWidth = _width;
 
 	if (rest->playableLength().dotted()) {
 		setWidth( width() + 3 );
 		for (int i=0; i<rest->playableLength().dotted(); i++)
 			setWidth( width() + 2 );
 	}
-}
+*/}
 
 CADrawableRest::~CADrawableRest() {
 }
 
 CADrawableRest *CADrawableRest::clone(CADrawableContext* newContext) {
-	return new CADrawableRest(rest(), (newContext)?newContext:_drawableContext, xPos(), yPos());
-}
+/*	return new CADrawableRest(rest(), (newContext)?newContext:_drawableContext, xPos(), yPos());
+*/}
 
-void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
+/*void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
 	QFont font("Emmentaler");
 	font.setPixelSize(qRound(35*s.z));
 
@@ -151,4 +149,4 @@ void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
 		delta += 3*s.z;
 	}
 
-}
+}*/

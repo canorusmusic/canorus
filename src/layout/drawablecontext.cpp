@@ -7,9 +7,8 @@
 
 #include "layout/drawablecontext.h"
 
-CADrawableContext::CADrawableContext(CAContext *c, double x, double y)
- : CADrawable(x, y), _context(c) {
-	setDrawableType(CADrawable::DrawableContext);
+CADrawableContext::CADrawableContext(CAContext *c, CADrawableType t, double x, double y)
+ : CADrawable(c, t) {
 }
 
 /*!
@@ -23,8 +22,8 @@ QList<CADrawableMusElement*> CADrawableContext::findInRange( double x1, double x
 	int i;
 	QList<CADrawableMusElement*> list;
 	for (int i=0; i<_drawableMusElementList.size(); i++) {
-		if ( static_cast<CADrawable*>(_drawableMusElementList[i])->xPos() <= x2 &&                       // The object is normal and fits into the area
-		     static_cast<CADrawable*>(_drawableMusElementList[i])->xPos() + static_cast<CADrawable*>(_drawableMusElementList[i])->width() >= x1
+		if ( static_cast<CADrawable*>(_drawableMusElementList[i])->pos().x() <= x2 &&                       // The object is normal and fits into the area
+		     static_cast<CADrawable*>(_drawableMusElementList[i])->pos().x() + static_cast<CADrawable*>(_drawableMusElementList[i])->boundingRect().width() >= x1
 		    ) {
 			list << _drawableMusElementList[i];
 		}

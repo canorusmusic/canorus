@@ -17,7 +17,6 @@ class CADrawableMidiNote: public CADrawableMusElement {
 public:
 	CADrawableMidiNote( CAMidiNote *midiNote, CADrawableStaff* c, double x, double y );
 	virtual ~CADrawableMidiNote();
-	void draw(QPainter *p, CADrawSettings s);
 	CADrawableMidiNote* clone(CADrawableContext* newContext);
 };
 

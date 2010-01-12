@@ -95,10 +95,10 @@ template <typename T>
 void CAKDTree<T>::addElement(T elt) {
 	_list << elt;
 
-	if (static_cast<CADrawable*>(elt)->xPos() + static_cast<CADrawable*>(elt)->width() > _maxX)
+/*	if (static_cast<CADrawable*>(elt)->xPos() + static_cast<CADrawable*>(elt)->width() > _maxX)
 		_maxX = static_cast<CADrawable*>(elt)->xPos() + static_cast<CADrawable*>(elt)->width();
 	if (static_cast<CADrawable*>(elt)->yPos() + static_cast<CADrawable*>(elt)->height() > _maxY)
-		_maxY = static_cast<CADrawable*>(elt)->yPos() + static_cast<CADrawable*>(elt)->height();
+		_maxY = static_cast<CADrawable*>(elt)->yPos() + static_cast<CADrawable*>(elt)->height();*/
 }
 
 /*!
@@ -157,7 +157,7 @@ template <typename T>
 QList<T> CAKDTree<T>::findInRange(double x, double y, double w, double h) {
 	QList<T> l;
 
-	for (int i=0; i<_list.size(); i++) {
+/*	for (int i=0; i<_list.size(); i++) {
 		if ( ((static_cast<CADrawable*>(_list[i])->xPos() <= x+w) &&                       // The object is normal and fits into the area
 		      (static_cast<CADrawable*>(_list[i])->yPos() <= y+h) &&
 		      (static_cast<CADrawable*>(_list[i])->xPos() + static_cast<CADrawable*>(_list[i])->width() >= x) &&
@@ -172,7 +172,7 @@ QList<T> CAKDTree<T>::findInRange(double x, double y, double w, double h) {
 			l << _list[i];
 		}
 	}
-
+*/
 	return l;
 }
 
@@ -201,7 +201,7 @@ T CAKDTree<T>::findNearestLeft(double x, bool timeBased, CADrawableContext *cont
 
 	CADrawable *elt=0;
 	int i;
-	for (i=0; i < _list.size(); i++) {
+/*	for (i=0; i < _list.size(); i++) {
 		if ( static_cast<CADrawableMusElement*>(_list[i])->musElement() && // drawable must have a music element
 			( !elt || (timeBased?(static_cast<CADrawable*>(_list[i]))->xPos():(static_cast<CADrawable*>(_list[i]))->xPos()) > (timeBased?elt->xPos():elt->xPos()) ) && // element's X is lesser than the already found element's X
 		     ( ( timeBased?(static_cast<CADrawable*>(_list[i]))->xPos():(static_cast<CADrawable*>(_list[i]))->xPos() ) < x) && // element's X is lesser than the given X
@@ -218,7 +218,7 @@ T CAKDTree<T>::findNearestLeft(double x, bool timeBased, CADrawableContext *cont
 		   ) {
 			elt = static_cast<CADrawable*>(_list[i]);
 		}
-	}
+	}*/
 
 	return static_cast<T>(elt);
 }
@@ -238,7 +238,7 @@ T CAKDTree<T>::findNearestRight(double x, bool timeBased, CADrawableContext *con
 
 	CADrawable *elt=0;
 	int i;
-	for (i=0; i < _list.size(); i++) {
+/*	for (i=0; i < _list.size(); i++) {
 		if ( static_cast<CADrawableMusElement*>(_list[i])->musElement() && // drawable must have a music element
 			 ( !elt || (timeBased?(static_cast<CADrawable*>(_list[i]))->xPos():(static_cast<CADrawable*>(_list[i]))->xPos()) < (timeBased?elt->xPos():elt->xPos()) ) && // element's X is greater than the already found element's X
 		     ( ( timeBased?(static_cast<CADrawable*>(_list[i]))->xPos():(static_cast<CADrawable*>(_list[i]))->xPos() ) > x) && // element's X is lesser than the given X
@@ -255,7 +255,7 @@ T CAKDTree<T>::findNearestRight(double x, bool timeBased, CADrawableContext *con
 		   ) {
 			elt = static_cast<CADrawable*>(_list[i]);
 		}
-	}
+	}*/
 
 	return static_cast<T>(elt);
 }
@@ -275,12 +275,12 @@ T CAKDTree<T>::findNearestUp(double y) {
 
 	CADrawable *elt=0;
 	int i;
-	for (i=0; i<_list.size(); i++) {
+/*	for (i=0; i<_list.size(); i++) {
 		if ( ((!elt) || ((static_cast<CADrawable*>(_list[i])->yPos() + static_cast<CADrawable*>(_list[i])->height()) > (elt->yPos() + elt->height())))
 		      && ((static_cast<CADrawable*>(_list[i])->yPos()+ static_cast<CADrawable*>(_list[i])->height()) < y) ) {
 			elt = static_cast<CADrawable*>(_list[i]);
 		}
-	}
+	}*/
 	return static_cast<T>(elt);
 
 }
@@ -300,12 +300,12 @@ T CAKDTree<T>::findNearestDown(double y) {
 
 	CADrawable *elt=0;
 	int i;
-	for (i=0; i<_list.size(); i++) {
+/*	for (i=0; i<_list.size(); i++) {
 		if ( ((!elt) || (static_cast<CADrawable*>(_list[i])->yPos() < elt->yPos())) && (static_cast<CADrawable*>(_list[i])->yPos() > y) ) {
 			elt = static_cast<CADrawable*>(_list[i]);
 		}
 	}
-
+*/
 	return static_cast<T>(elt);
 }
 
@@ -336,12 +336,12 @@ template <typename T>
 void CAKDTree<T>::calculateMaxXY() {
 	_maxX = 0;
 	_maxY = 0;
-	for (int i=0; i<_list.size(); i++) {
+/*	for (int i=0; i<_list.size(); i++) {
 		if (static_cast<CADrawable*>(_list[i])->xPos() + static_cast<CADrawable*>(_list[i])->width() > _maxX)
 			_maxX = static_cast<CADrawable*>(_list[i])->xPos() + static_cast<CADrawable*>(_list[i])->width();
 		if (static_cast<CADrawable*>(_list[i])->yPos() + static_cast<CADrawable*>(_list[i])->height() > _maxY)
 			_maxY = static_cast<CADrawable*>(_list[i])->yPos() + static_cast<CADrawable*>(_list[i])->height();
-	}
+	}*/
 }
 
 /*!

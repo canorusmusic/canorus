@@ -18,7 +18,6 @@ public:
 	CADrawableFiguredBassContext( CAFiguredBassContext *c, double x, double y );
 	virtual ~CADrawableFiguredBassContext();
 	CADrawableFiguredBassContext* clone();
-	void draw(QPainter *p, const CADrawSettings s);
 
 	CAFiguredBassContext *figuredBassContext() { return static_cast<CAFiguredBassContext*>(context()); }
 };

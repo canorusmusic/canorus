@@ -19,7 +19,6 @@ public:
 	virtual ~CADrawableFiguredBassNumber();
 
 	CADrawableFiguredBassNumber *clone(CADrawableContext *c);
-	void draw(QPainter *p, const CADrawSettings s);
 
 	CAFiguredBassMark *figuredBassMark() { return static_cast<CAFiguredBassMark*>(musElement()); }
 	int number() { return _number; }

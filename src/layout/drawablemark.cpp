@@ -45,8 +45,7 @@ const double CADrawableMark::DEFAULT_PIXMAP_SIZE = 25;
 	\param y Bottom border of the mark.
 */
 CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, double x, double y)
- : CADrawableMusElement( mark, dContext, x, y ) {
-	setDrawableMusElementType( CADrawableMusElement::DrawableMark );
+ : CADrawableMusElement( mark, dContext, DrawableMark, x, y ) {
 	_tempoNote = 0;
 	_tempoDNote = 0;
 	_pixmap = 0;
@@ -58,9 +57,9 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, doubl
 		QFontMetrics fm(font);
 
 		int textWidth = fm.width( static_cast<CAText*>(this->mark())->text() );
-		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
+/*		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		break;
+*/		break;
 	}
 	case CAMark::BookMark: {
 		QFont font("FreeSans");
@@ -68,9 +67,9 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, doubl
 		QFontMetrics fm(font);
 
 		int textWidth = fm.width( static_cast<CABookMark*>(this->mark())->text() );
-		setWidth( DEFAULT_PIXMAP_SIZE + textWidth );
+/*		setWidth( DEFAULT_PIXMAP_SIZE + textWidth );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		_pixmap = new QPixmap( "images:mark/bookmark.svg" );
+*/		_pixmap = new QPixmap( "images:mark/bookmark.svg" );
 		break;
 	}
 	case CAMark::Dynamic: {
@@ -79,26 +78,26 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, doubl
 		QFontMetrics fm(font);
 
 		int textWidth = fm.width( static_cast<CADynamic*>(this->mark())->text() );
-		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
+/*		setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		break;
+*/		break;
 	}
 	case CAMark::Crescendo: {
-		setWidth( mark->timeLength()/10 );
+/*		setWidth( mark->timeLength()/10 );
 		setHeight( static_cast<CACrescendo*>(mark)->finalVolume()/10 );
-		setHScalable(true);
+*/		setHScalable(true);
 		break;
 	}
 	case CAMark::Pedal: {
-		setWidth( mark->timeLength()/10 );
+/*		setWidth( mark->timeLength()/10 );
 		setHeight( 20 );
-		setHScalable(true);
+*/		setHScalable(true);
 		break;
 	}
 	case CAMark::Fermata: {
-		setWidth( 20 );
+/*		setWidth( 20 );
 		setHeight( 15 );
-		break;
+*/		break;
 	}
 	case CAMark::InstrumentChange: {
 		QFont font("FreeSans");
@@ -108,42 +107,42 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, doubl
 
 		_pixmap = new QPixmap( "images:mark/instrumentchange.svg" );
 		int textWidth = fm.width( CACanorus::midiDevice()->GM_INSTRUMENTS[static_cast<CAInstrumentChange*>(this->mark())->instrument()] );
-		setWidth( DEFAULT_PIXMAP_SIZE + textWidth ); // set minimum text width at least 11 points
+/*		setWidth( DEFAULT_PIXMAP_SIZE + textWidth ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		break;
+*/		break;
 	}
 	case CAMark::RehersalMark: {
-		setWidth( 11 );
+/*		setWidth( 11 );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		break;
+*/		break;
 	}
 	case CAMark::Tempo: {
-		setWidth( 40 );
+/*		setWidth( 40 );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		_tempoNote = new CANote( CADiatonicPitch(), static_cast<CATempo*>(mark)->beat(), 0, 0 );
+*/		_tempoNote = new CANote( CADiatonicPitch(), static_cast<CATempo*>(mark)->beat(), 0, 0 );
 		_tempoDNote = new CADrawableNote( _tempoNote, dContext, x, y );
 		break;
 	}
 	case CAMark::Ritardando: {
-		setWidth( mark->timeLength()/10 );
+/*		setWidth( mark->timeLength()/10 );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		setHScalable(true);
+*/		setHScalable(true);
 		break;
 	}
 	case CAMark::Fingering: {
-		setXPos( xPos()+6 );
-		QFont font("Emmentaler");
+/*		setXPos( xPos()+6 );
+*/		QFont font("Emmentaler");
 		font.setPixelSize( 11 );
 		QFontMetrics fm(font);
 
 		QString text = fingerListToString( static_cast<CAFingering*>(mark)->fingerList() );
-		setWidth( fm.width( text ) ); // set minimum text width at least 11 points
+/*		setWidth( fm.width( text ) ); // set minimum text width at least 11 points
 		setHeight( 11 );
-
+*/
 		break;
 	}
 	case CAMark::RepeatMark: {
-		if (static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::Volta)
+/*		if (static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::Volta)
 			setWidth( 50 );
 		else if ( static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::DalCoda ||
 				  static_cast<CARepeatMark*>(mark)->repeatMarkType()==CARepeatMark::DalSegno ||
@@ -152,12 +151,12 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, doubl
 		else
 			setWidth( 25 );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		break;
+*/		break;
 	}
 	default: {
-		setWidth( 11 ); // set minimum text width at least 11 points
+/*		setWidth( 11 ); // set minimum text width at least 11 points
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		break;
+*/		break;
 	}
 	}
 }
@@ -168,7 +167,7 @@ CADrawableMark::~CADrawableMark() {
 	if ( _pixmap ) delete _pixmap;
 }
 
-void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
+/*void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 	p->setPen(QPen(s.color));
 
 	switch ( mark()->markType() ) {
@@ -361,11 +360,11 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		break;
 	}
 	}
-}
+}*/
 
 CADrawableMark* CADrawableMark::clone( CADrawableContext* newContext ) {
-	return new CADrawableMark( mark(), newContext?newContext:drawableContext(), xPos(), yPos() );
-}
+/*	return new CADrawableMark( mark(), newContext?newContext:drawableContext(), xPos(), yPos() );
+*/}
 
 /*!
 	Converts the list of fingers to Emmentaler string.

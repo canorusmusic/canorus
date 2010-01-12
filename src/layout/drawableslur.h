@@ -20,7 +20,6 @@ public:
 
 	CASlur *slur() { return static_cast<CASlur*>(_musElement); }
 
-	void draw(QPainter *p, const CADrawSettings s);
 	CADrawableSlur *clone(CADrawableContext* newContext = 0);
 
 	inline double x1() { return _x1; }

@@ -32,8 +32,7 @@ const double CADrawableNote::HALF_YPOS_DELTA = 23;
 	\param y coordinate represents the center of the notehead.
 */
 CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, double x, double y, bool shadowNote, CADrawableAccidental *drawableAcc)
- : CADrawableMusElement(n, drawableContext, x, y) {
-	_drawableMusElementType = CADrawableMusElement::DrawableNote;
+ : CADrawableMusElement(n, drawableContext, CADrawable::DrawableNote, x, y) {
 	_drawableAcc = drawableAcc;
 
 	_stemDirection = note()->actualStemDirection();
@@ -48,34 +47,34 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, do
 	case CAPlayableLength::Quarter:
 		_noteHeadGlyphName = "noteheads.s2";
 		_penWidth = 1.2;
-		setWidth( 11 );
+/*		setWidth( 11 );
 		setHeight( 10 );
-		break;
+*/		break;
 
 	case CAPlayableLength::Half:
 		_noteHeadGlyphName = "noteheads.s1";
 		_penWidth = 1.3;
-		setWidth( 12 );
+/*		setWidth( 12 );
 		setHeight( 10 );
-		break;
+*/		break;
 
 	case CAPlayableLength::Whole:
 		_noteHeadGlyphName = "noteheads.s0";
 		_penWidth = 0;
-		setWidth( 17 );
+/*		setWidth( 17 );
 		setHeight( 8 );
-		break;
+*/		break;
 
 	case CAPlayableLength::Breve:
 		_noteHeadGlyphName = "noteheads.sM1";
 		_penWidth = 0;
-		setWidth( 18 );
+/*		setWidth( 18 );
 		setHeight( 8 );
-		break;
+*/		break;
 	}
-	setYPos( y - height()/2.0 );
+/*	setYPos( y - height()/2.0 );
 	setXPos( x );
-
+*/
 	switch (n->playableLength().musicLength()) {
 	case CAPlayableLength::HundredTwentyEighth:
 		/// \todo Emmentaler font doesn't have 128th, 64th flag is drawn instead! Need to somehow compose the 128th flag? -Matevz
@@ -111,14 +110,14 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, do
 		break;
 	}
 
-	_noteHeadWidth = width();
+/*	_noteHeadWidth = width();
 
 	if (n->playableLength().dotted()) {
 		setWidth( width()+3 );
 		for (int i=0; i<n->playableLength().dotted(); i++)
 			setWidth( width()+2 );
 	}
-
+*/
 	_shadowNote = shadowNote;
 
 	_drawLedgerLines = true;
@@ -127,7 +126,7 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, do
 CADrawableNote::~CADrawableNote() {
 }
 
-void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
+/*void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 	QFont font("Emmentaler");
 	font.setPixelSize(qRound(35*s.z));
 
@@ -206,7 +205,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 
 	s.x += qRound(delta);
 }
-
+*/
 CADrawableNote *CADrawableNote::clone(CADrawableContext* newContext) {
-	return new CADrawableNote(note(), (newContext)?newContext:_drawableContext, xPos(), yPos() + height()/2);
-}
+/*	return new CADrawableNote(note(), (newContext)?newContext:_drawableContext, xPos(), yPos() + height()/2);
+*/}

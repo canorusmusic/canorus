@@ -17,7 +17,6 @@ class CADrawableFunctionMarkContext : public CADrawableContext {
 		CADrawableFunctionMarkContext(CAFunctionMarkContext *c, double x, double y, int numberOfLines=2);
 		~CADrawableFunctionMarkContext();
 
-		void draw(QPainter *p, const CADrawSettings s);
 		CADrawableFunctionMarkContext *clone();
 
 		void setNumberOfLines(int number) { _numberOfLines = number; }

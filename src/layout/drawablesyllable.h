@@ -18,7 +18,6 @@ class CADrawableSyllable : public CADrawableMusElement {
 public:
 	CADrawableSyllable( CASyllable*, CADrawableLyricsContext*, double x, double y );
 	~CADrawableSyllable();
-	void draw(QPainter *p, const CADrawSettings s);
 	CADrawableSyllable *clone(CADrawableContext *c=0);
 
 	CASyllable *syllable() { return static_cast<CASyllable*>(musElement()); }

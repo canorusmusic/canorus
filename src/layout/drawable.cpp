@@ -13,19 +13,21 @@
 
 const int CADrawable::SCALE_HANDLES_SIZE = 2;
 
-CADrawable::CADrawable(double x, double y)
- : _xPos(x), _yPos(y),
-   _neededSpaceWidth(0), _neededSpaceHeight(0),
-   _visible(true), _selectable(true),
-   _hScalable(false), _vScalable(false) {
+CADrawable::CADrawable( CAMusElement *elt, CADrawableType drawableType )
+ : QGraphicsItemGroup(),
+   _drawableType( drawableType ),
+   _hScalable(false), _vScalable(false),
+   _musElement(elt) {
 }
 
-CADrawable* CADrawable::clone() {
-	// We only reach CADrawable::clone() if this is a CADrawableMusElement, otherwise CADrawableContext::clone() will be called (this is a non-pure virtual function).
-	return static_cast<CADrawableMusElement*>(this)->clone();
+CADrawable::CADrawable( CAContext *elt, CADrawableType drawableType )
+ : QGraphicsItemGroup(),
+   _drawableType( drawableType ),
+   _hScalable(false), _vScalable(false),
+   _context(elt) {
 }
 
-void CADrawable::drawHScaleHandles( QPainter *p, CADrawSettings s ) {
+/*void CADrawable::drawHScaleHandles( QPainter *p, CADrawSettings s ) {
 	p->setPen(QPen(s.color));
 	p->drawRect( s.x - qRound((SCALE_HANDLES_SIZE*s.z)/2), s.y + qRound((height()*s.z)/2 - (SCALE_HANDLES_SIZE*s.z)/2),
 			     qRound(SCALE_HANDLES_SIZE*s.z), qRound(SCALE_HANDLES_SIZE*s.z) );
@@ -40,17 +42,4 @@ void CADrawable::drawVScaleHandles( QPainter *p, CADrawSettings s ) {
 	p->drawRect( s.x + qRound((width()*s.z)/2 - (SCALE_HANDLES_SIZE*s.z)/2), s.y + qRound(((height() - SCALE_HANDLES_SIZE/2.0)*s.z)),
 			     qRound(SCALE_HANDLES_SIZE*s.z), qRound(SCALE_HANDLES_SIZE*s.z) );
 }
-
-void CADrawable::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget ) {
-	//TODO
-	CADrawSettings s = {
-	            1.0,
-	            xPos(),
-	            yPos(),
-	            1000.0, 1000.0,
-	            Qt::black,
-	            0,
-	            0
-	            };
-	draw(painter, s);
-}
+*/

@@ -1656,8 +1656,8 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 				}
 
 				// debug
-				std::cout << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << std::endl;
-				std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", context=" << elt->context();
+/*				std::cout << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << std::endl;
+*/				std::cout << "musElement: " << elt << ", timeStart=" << elt->timeStart() << ", timeEnd=" << elt->timeEnd() << ", context=" << elt->context();
 				if (elt->isPlayable()) {
 					std::cout << ", voice=" << ((CAPlayable*)elt)->voice() << ", voiceNr=" << ((CAPlayable*)elt)->voice()->voiceNumber() << ", idxInVoice=" << ((CAPlayable*)elt)->voice()->musElementList().indexOf(elt);
 					std::cout << ", voiceStaff=" << ((CAPlayable*)elt)->voice()->staff();
@@ -1810,15 +1810,15 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
 		time -= (time % CAPlayableLength::musicLengthToTimeLength(CAPlayableLength::Sixteenth)); // round timelength to eighth notes length
 		if ( c->resizeDirection()==CADrawable::Right && (time > c->selection().at(0)->musElement()->timeStart()) ) {
 			c->selection().at(0)->musElement()->setTimeLength( time - c->selection().at(0)->musElement()->timeStart() );
-			c->selection().at(0)->setWidth( c->timeToCoords(time) - c->selection().at(0)->xPos() );
-			c->repaint();
+/*			c->selection().at(0)->setWidth( c->timeToCoords(time) - c->selection().at(0)->xPos() );
+*/			c->repaint();
 		} else
 		if ( c->resizeDirection()==CADrawable::Left && (time < c->selection().at(0)->musElement()->timeEnd()) ) {
 			c->selection().at(0)->musElement()->setTimeLength( c->selection().at(0)->musElement()->timeEnd() - time );
 			c->selection().at(0)->musElement()->setTimeStart( time );
-			c->selection().at(0)->setXPos( c->timeToCoords(time) );
+/*			c->selection().at(0)->setXPos( c->timeToCoords(time) );
 			c->selection().at(0)->setWidth( c->timeToCoords(c->selection().at(0)->musElement()->timeEnd()) - c->timeToCoords(time) );
-			c->repaint();
+*/			c->repaint();
 		}
 	} else
 	if ( (mode() == InsertMode && musElementFactory()->musElementType() == CAMusElement::Note) ) {
@@ -1859,9 +1859,9 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
 					musEltList.removeAt(j--);
 
 			if (musEltList.size()) {
-				c->addSelectionRegion( QRect(musEltList.front()->xPos(), dcList[i]->yPos(),
+/*				c->addSelectionRegion( QRect(musEltList.front()->xPos(), dcList[i]->yPos(),
 				                             musEltList.back()->xPos()+musEltList.back()->width()-musEltList.front()->xPos(), dcList[i]->height()) );
-			}
+*/			}
 		}
 		c->repaint();
 	}
@@ -1924,13 +1924,13 @@ void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPoint coords) {
 			if ( c->selectedVoice() && dcList[i]->context()!=c->selectedVoice()->staff() )
 				continue;
 
-			for (int j=0; j<musEltList.size(); j++)
+/*			for (int j=0; j<musEltList.size(); j++)
 				if ((!musEltList[j]->isSelectable()) ||
 					(c->selectedVoice() && musEltList[j]->musElement()->isPlayable() &&
 						static_cast<CAPlayable*>(musEltList[j]->musElement())->voice()!=c->selectedVoice()) ||
 					(musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
 				)
-					musEltList.removeAt(j--);
+					musEltList.removeAt(j--);*/
 			c->addToSelection(musEltList);
 		}
 		c->repaint();
@@ -2407,7 +2407,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 				success = musElementFactory()->configureMark( v->musElementsAt( coords.x(), coords.y() )[0]->musElement() );
 			break;
 		}
-		case CAMusElement::Note: { // Do we really need to do all that here??
+/*		case CAMusElement::Note: { // Do we really need to do all that here??
 			CAVoice *voice = currentVoice();
 
 			if ( !voice )
@@ -2591,7 +2591,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 			}
 
 			break;
-		}
+		}*/
 		case CAMusElement::Slur: {
 			// Insert tie, slur or phrasing slur
 			if ( v->selection().size() ) { // start note has to always be selected
@@ -2680,10 +2680,10 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 		musElementFactory()->emptyMusElem();
 
 		// move the view to the right, if the right border was hit
-		if ( d && (d->xPos() > v->sceneX()+0.85*v->sceneWidth()) ) {
+/*		if ( d && (d->xPos() > v->sceneX()+0.85*v->sceneWidth()) ) {
 			v->setSceneX( d->xPos()-v->sceneWidth()/2, CACanorus::settings()->animatedScroll() );
 		}
-	}
+*/	}
 }
 
 /*!
@@ -2795,10 +2795,10 @@ void CAMainWin::onRepaintTimerTimeout() {
 		if (_playback->curPlaying().at(i)->musElementType()==CAMusElement::Note) {
 			CADrawableMusElement *elt = sv->addToSelection( _playback->curPlaying()[i] );
 			if ( CACanorus::settings()->lockScrollPlayback() ) {
-				if ( elt && (elt->xPos() > (sv->sceneX()+sv->sceneWidth()) || elt->xPos() < sv->sceneX()) ) {
+/*				if ( elt && (elt->xPos() > (sv->sceneX()+sv->sceneWidth()) || elt->xPos() < sv->sceneX()) ) {
 					sv->setSceneX( elt->xPos()-50, CACanorus::settings()->animatedScroll() );
 				}
-			}
+*/			}
 		}
 	}
 
