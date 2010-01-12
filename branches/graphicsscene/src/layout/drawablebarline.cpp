@@ -21,41 +21,39 @@ const float CADrawableBarline::BOLD_BARLINE_WIDTH = 4;
 const float CADrawableBarline::REPEAT_DOTS_WIDTH = 3;
 
 CADrawableBarline::CADrawableBarline(CABarline *m, CADrawableStaff *staff, double x, double y)
- : CADrawableMusElement(m, staff, x, y) {
- 	setDrawableMusElementType( CADrawableMusElement::DrawableBarline );
-
+ : CADrawableMusElement(m, staff, DrawableBarline, x, y) {
  	switch (m->barlineType()) {
  		case CABarline::Single:
- 			setWidth( BARLINE_WIDTH );
- 			break;
+/* 			setWidth( BARLINE_WIDTH );
+*/ 			break;
  		case CABarline::Double:
- 			setWidth( 2*BARLINE_WIDTH + SPACE_BETWEEN_BARLINES );
- 			break;
+/* 			setWidth( 2*BARLINE_WIDTH + SPACE_BETWEEN_BARLINES );
+*/ 			break;
  		case CABarline::End:
- 			setWidth( BARLINE_WIDTH + SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH );
- 			break;
+/* 			setWidth( BARLINE_WIDTH + SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH );
+*/ 			break;
  		case CABarline::RepeatOpen:
- 			setWidth( BOLD_BARLINE_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH + REPEAT_DOTS_WIDTH );
- 			break;
+/* 			setWidth( BOLD_BARLINE_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH + REPEAT_DOTS_WIDTH );
+*/ 			break;
  		case CABarline::RepeatClose:
- 			setWidth( REPEAT_DOTS_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH + BOLD_BARLINE_WIDTH );
- 			break;
+/* 			setWidth( REPEAT_DOTS_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH + BOLD_BARLINE_WIDTH );
+*/ 			break;
  		case CABarline::RepeatCloseOpen:
- 			setWidth( 2*REPEAT_DOTS_WIDTH + 3*SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH + 2*BARLINE_WIDTH);
- 			break;
+/* 			setWidth( 2*REPEAT_DOTS_WIDTH + 3*SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH + 2*BARLINE_WIDTH);
+*/ 			break;
  		case CABarline::Dotted:
- 			setWidth( DOTTED_BARLINE_WIDTH );
- 			break;
+/* 			setWidth( DOTTED_BARLINE_WIDTH );
+*/ 			break;
  	}
 
-	setHeight( staff->height() );
+/*	setHeight( staff->height() );
 	setNeededSpaceWidth(4);
-}
+*/}
 
 CADrawableBarline::~CADrawableBarline() {
 }
 
-void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
+/*void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 	QPen pen(s.color);
 	pen.setCapStyle(Qt::FlatCap);
 	QBrush brush(s.color, Qt::SolidPattern);
@@ -183,8 +181,8 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 	}
 
 	p->setBrush(QBrush(s.color, Qt::NoBrush)); // reset the painter's brush
-}
+}*/
 
 CADrawableBarline* CADrawableBarline::clone(CADrawableContext* newContext) {
-	return new CADrawableBarline((CABarline*)_musElement, (CADrawableStaff*)((newContext)?newContext:_drawableContext), _xPos, _yPos);
-}
+/*	return new CADrawableBarline((CABarline*)_musElement, (CADrawableStaff*)((newContext)?newContext:_drawableContext), _xPos, _yPos);
+*/}

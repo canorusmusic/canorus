@@ -20,9 +20,7 @@
 	\a y marks the top line Y coordinate of the staff in absolute world units.
 */
 CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawableStaff *drawableStaff, double x, double y)
- : CADrawableMusElement(keySig, drawableStaff, x, y) {
-	setDrawableMusElementType( CADrawableMusElement::DrawableKeySignature );
-
+ : CADrawableMusElement(keySig, drawableStaff, DrawableKeySignature, x, y) {
 	double newX = x;
 	CAClef *clef = drawableStaff->getClef(x);
 	int idx, idx2; // pitches of accidentals
@@ -54,13 +52,13 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 
  			_drawableAccidentalList << acc;
 
- 			newX += (acc->width() + 5);
+/* 			newX += (acc->width() + 5);
 
  			if ( acc->yPos() < minY )
  				minY = acc->yPos();
  			if ( acc->yPos() + acc->height() > maxY )
  				maxY = acc->yPos() + acc->height();
- 		}
+*/ 		}
 
 		// get initial neutral-flat position
 		idx = 6;
@@ -85,12 +83,12 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 
 			_drawableAccidentalList << acc;
 
-			newX += (acc->width() + 5);
+/*			newX += (acc->width() + 5);
 
 			if ( acc->yPos() < minY )
 				minY = acc->yPos();
 			if ( acc->yPos() + acc->height() > maxY )
-				maxY = acc->yPos() + acc->height();
+				maxY = acc->yPos() + acc->height();*/
 		}
 	}
 
@@ -117,12 +115,12 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 
 		_drawableAccidentalList << acc;
 
-		newX += (acc->width() + 5);
+/*		newX += (acc->width() + 5);
 
 		if ( acc->yPos() < minY )
 			minY = acc->yPos();
 		if ( acc->yPos() + acc->height() > maxY )
-			maxY = acc->yPos() + acc->height();
+			maxY = acc->yPos() + acc->height();*/
 	}
 
 	// get initial flat position
@@ -147,18 +145,18 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 
 		_drawableAccidentalList << acc;
 
-		newX += (acc->width() + 5);
+/*		newX += (acc->width() + 5);
 
 		if ( acc->yPos() < minY )
 			minY = acc->yPos();
 		if ( acc->yPos() + acc->height() > maxY )
 			maxY = acc->yPos() + acc->height();
-	}
+*/	}
 
-	setWidth( newX - x );
+/*	setWidth( newX - x );
 	setHeight( maxY - minY );
  	setYPos( minY );
-}
+*/}
 
 CADrawableKeySignature::~CADrawableKeySignature() {
 	for (int i=0; i<_drawableAccidentalList.size(); i++)
@@ -167,7 +165,7 @@ CADrawableKeySignature::~CADrawableKeySignature() {
 	_drawableAccidentalList.clear();
 }
 
-void CADrawableKeySignature::draw(QPainter *p, CADrawSettings s) {
+/*void CADrawableKeySignature::draw(QPainter *p, CADrawSettings s) {
 	int xOrig = s.x;
 	int yOrig = s.y;
 
@@ -178,10 +176,10 @@ void CADrawableKeySignature::draw(QPainter *p, CADrawSettings s) {
 
 	}
 }
-
+*/
 CADrawableKeySignature* CADrawableKeySignature::clone(CADrawableContext* newContext) {
-	return (new CADrawableKeySignature(keySignature(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext), xPos(), _drawableContext->yPos()));
-}
+/*	return (new CADrawableKeySignature(keySignature(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext), xPos(), _drawableContext->yPos()));
+*/}
 
 /*!
 	This function adds key signatures to the given combobox in order

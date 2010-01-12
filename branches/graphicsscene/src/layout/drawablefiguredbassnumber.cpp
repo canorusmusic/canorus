@@ -15,17 +15,16 @@
 const double CADrawableFiguredBassNumber::DEFAULT_NUMBER_SIZE = 17;
 
 CADrawableFiguredBassNumber::CADrawableFiguredBassNumber( CAFiguredBassMark *f, int number, CADrawableFiguredBassContext *context, double x, double y )
- : CADrawableMusElement(f, context, x, y), _number(number) {
-	setDrawableMusElementType( DrawableFiguredBassNumber );
+ : CADrawableMusElement(f, context, DrawableFiguredBassNumber, x, y), _number(number) {
 	int textWidth = 11;
-	setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
+/*	setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 	setHeight( qRound(DEFAULT_NUMBER_SIZE)*figuredBassMark()->numbers().size() );
-}
+*/}
 
 CADrawableFiguredBassNumber::~CADrawableFiguredBassNumber() {
 }
 
-void CADrawableFiguredBassNumber::draw(QPainter *p, const CADrawSettings s) {
+/*void CADrawableFiguredBassNumber::draw(QPainter *p, const CADrawSettings s) {
 	QPen pen(s.color);
 	pen.setWidth( qRound(1.2*s.z) );
 	pen.setCapStyle( Qt::RoundCap );
@@ -65,14 +64,14 @@ void CADrawableFiguredBassNumber::draw(QPainter *p, const CADrawSettings s) {
 	}
 
 	p->drawText( s.x+(accs.isEmpty()?0:(8*s.z)), s.y+qRound(0.8*DEFAULT_NUMBER_SIZE*s.z), text );
-}
+}*/
 
 CADrawableFiguredBassNumber *CADrawableFiguredBassNumber::clone(CADrawableContext *c) {
-	return new CADrawableFiguredBassNumber(
+/*	return new CADrawableFiguredBassNumber(
 		figuredBassMark(),
 		_number,
 		(c?static_cast<CADrawableFiguredBassContext*>(c):static_cast<CADrawableFiguredBassContext*>(drawableContext())),
 		xPos(),
 		yPos()
 	);
-}
+*/}

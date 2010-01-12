@@ -18,19 +18,15 @@ class CAContext;
 class CADrawableContext : public CADrawable {
 public:
 	enum CADrawableContextType {
-		DrawableStaff,
-		DrawableLyricsContext,
-		DrawableFiguredBassContext,
-		DrawableFunctionMarkContext
 	};
 
-	CADrawableContext(CAContext *c, double x, double y);
+	CADrawableContext(CAContext *c, CADrawableType t, double x, double y);
 	inline CAContext *context() { return _context; }
 	CADrawableContextType drawableContextType() { return _drawableContextType; }
 	inline virtual void addMElement(CADrawableMusElement *elt) {
-		int i;
+/*		int i;
 		for (i=_drawableMusElementList.size()-1; (i>=0) && _drawableMusElementList[i]->xPos()>elt->xPos(); i--);
-		_drawableMusElementList.insert( ++i, elt);
+		_drawableMusElementList.insert( ++i, elt);*/
 	}
 	virtual int removeMElement(CADrawableMusElement *elt) { return _drawableMusElementList.removeAll(elt); }
 	CADrawableMusElement *lastDrawableMusElement() { if (_drawableMusElementList.size()) return _drawableMusElementList.last(); else return 0; }
@@ -50,7 +46,6 @@ protected:
 	void setDrawableContextType( CADrawableContextType type ) { _drawableContextType = type; }
 
 	CADrawableContextType _drawableContextType;
-	CAContext *_context;
 	QList<CADrawableMusElement *> _drawableMusElementList;	// List of all the drawable musElements in this context sorted by their left borders
 };
 

@@ -12,28 +12,26 @@
 #include "score/functionmarkcontext.h"
 
 CADrawableFunctionMarkContext::CADrawableFunctionMarkContext(CAFunctionMarkContext *context, double x, double y, int numberOfLines)
- : CADrawableContext(context, x, y) {
- 	setDrawableContextType( CADrawableContext::DrawableFunctionMarkContext );
-
+ : CADrawableContext(context, CADrawable::DrawableFunctionMarkContext, x, y) {
  	_numberOfLines = numberOfLines;
  	_currentLineIdx = 0;
- 	setWidth( 0 );
+ /*	setWidth( 0 );
  	setHeight( 45*numberOfLines - 10*(numberOfLines-1) );
-}
+*/}
 
 CADrawableFunctionMarkContext::~CADrawableFunctionMarkContext() {
 }
 
-void CADrawableFunctionMarkContext::draw(QPainter *p, const CADrawSettings s) {
+/*void CADrawableFunctionMarkContext::draw(QPainter *p, const CADrawSettings s) {
 	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(Qt::yellow));
 }
-
+*/
 CADrawableFunctionMarkContext *CADrawableFunctionMarkContext::clone() {
-	return new CADrawableFunctionMarkContext((CAFunctionMarkContext*)_context, xPos(), yPos());
-}
+/*	return new CADrawableFunctionMarkContext((CAFunctionMarkContext*)_context, xPos(), yPos());
+*/}
 
 double CADrawableFunctionMarkContext::yPosLine(CAFunctionMarkLine part) {
-	double y = yPos();
+	double y = pos().y();
 	for (int i=0; i<_currentLineIdx; i++) {
 		y += 35;	//height of a single line
 	}

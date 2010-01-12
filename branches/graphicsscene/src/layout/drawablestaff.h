@@ -22,11 +22,10 @@ class CADrawableTimeSignature;
 class CADrawableStaff : public CADrawableContext {
 public:
 	CADrawableStaff(CAStaff* staff, double x, double y);
-	void draw(QPainter *, const CADrawSettings s);
 	CADrawableStaff *clone();
 	inline CAStaff *staff() { return static_cast<CAStaff*>(_context); }
 
-	inline double lineSpace() { return (staff()->numberOfLines()?height()/(staff()->numberOfLines()-1):0); }
+	inline double lineSpace() { return (staff()->numberOfLines()?boundingRect().height()/(staff()->numberOfLines()-1):0); }
 
 	double calculateCenterYCoord(int pitch, CAClef *clef);
 	double calculateCenterYCoord(CANote *note, CAClef *clef);

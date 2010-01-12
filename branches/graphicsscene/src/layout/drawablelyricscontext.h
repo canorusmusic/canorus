@@ -19,7 +19,6 @@ public:
 	~CADrawableLyricsContext();
 
 	CADrawableLyricsContext* clone();
-	void draw(QPainter *p, const CADrawSettings s);
 
 	CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(context()); }
 

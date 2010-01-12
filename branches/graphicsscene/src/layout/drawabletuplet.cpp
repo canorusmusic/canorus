@@ -12,18 +12,16 @@
 #include <QFont>
 
 CADrawableTuplet::CADrawableTuplet( CATuplet *tuplet, CADrawableContext *c, double x1, double y1, double x2, double y2 )
- : CADrawableMusElement( tuplet, c, x1, 0 ) {
-	setDrawableMusElementType( DrawableTuplet );
-
-	setWidth( x2-x1 );
+ : CADrawableMusElement( tuplet, c, DrawableTuplet, x1, 0 ) {
+/*	setWidth( x2-x1 );
 	setHeight( (abs(y2-y1)>5)?abs(y2-y1):8 );
 	setYPos( (c && qMin(y1, y2)>c->yPos())?qMin(y1, y2):(qMin(y1,y2)-height()) );
-}
+*/}
 
 CADrawableTuplet::~CADrawableTuplet() {
 }
 
-void CADrawableTuplet::draw(QPainter *p, const CADrawSettings s) {
+/*void CADrawableTuplet::draw(QPainter *p, const CADrawSettings s) {
 	QPen pen(s.color);
 	pen.setWidth( qRound(1.2*s.z) );
 	pen.setCapStyle( Qt::RoundCap );
@@ -68,8 +66,8 @@ void CADrawableTuplet::draw(QPainter *p, const CADrawSettings s) {
 	font.setItalic( true );
 	p->setFont(font);
 	p->drawText( s.x + qRound((width()/2.0-3)*s.z), s.y + qRound((height()/2.0+9)*s.z), QString::number( tuplet()->number() ) );
-}
+}*/
 
 CADrawableTuplet *CADrawableTuplet::clone(CADrawableContext* newContext) {
-	return new CADrawableTuplet( tuplet(), newContext?newContext:drawableContext(), x1(), y1(), x2(), y2() );
-}
+/*	return new CADrawableTuplet( tuplet(), newContext?newContext:drawableContext(), x1(), y1(), x2(), y2() );
+*/}

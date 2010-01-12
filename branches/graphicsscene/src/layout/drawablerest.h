@@ -17,8 +17,6 @@ class CADrawableRest : public CADrawableMusElement {
 		CADrawableRest *clone(CADrawableContext* newContext = 0);
 		~CADrawableRest();
 
-		void draw(QPainter *p, CADrawSettings s);
-
 		inline CARest* rest() { return static_cast<CARest*>(_musElement); }
 
 	private:

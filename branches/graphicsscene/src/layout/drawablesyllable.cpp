@@ -18,20 +18,19 @@ const double CADrawableSyllable::DEFAULT_TEXT_SIZE = 16;
 const double CADrawableSyllable::DEFAULT_DASH_LENGTH = 5;
 
 CADrawableSyllable::CADrawableSyllable( CASyllable* s, CADrawableLyricsContext* c, double x, double y )
- : CADrawableMusElement(s, c, x, y) {
-	setDrawableMusElementType( DrawableSyllable );
+ : CADrawableMusElement(s, c, DrawableSyllable, x, y) {
 	QFont font("Century Schoolbook L");
 	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
 	QFontMetrics fm(font);
 	int textWidth = fm.width( textToDrawableText(s->text()) );
-	setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
+/*	setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 	setHeight( qRound(DEFAULT_TEXT_SIZE) );
-}
+*/}
 
 CADrawableSyllable::~CADrawableSyllable() {
 }
 
-void CADrawableSyllable::draw(QPainter *p, const CADrawSettings s) {
+/*void CADrawableSyllable::draw(QPainter *p, const CADrawSettings s) {
 	QPen pen(s.color);
 	pen.setWidth( qRound(1.2*s.z) );
 	pen.setCapStyle( Qt::RoundCap );
@@ -50,13 +49,13 @@ void CADrawableSyllable::draw(QPainter *p, const CADrawSettings s) {
 		p->drawLine( qRound(s.x + textWidth), s.y + qRound(height()*s.z),
 		             qRound(s.x + width()*s.z), s.y + qRound(height()*s.z));
 	}
-}
+}*/
 
 CADrawableSyllable *CADrawableSyllable::clone(CADrawableContext *c) {
-	return new CADrawableSyllable(
+/*	return new CADrawableSyllable(
 		syllable(),
 		(c?static_cast<CADrawableLyricsContext*>(c):static_cast<CADrawableLyricsContext*>(drawableContext())),
 		xPos(),
 		yPos()
 	);
-}
+*/}

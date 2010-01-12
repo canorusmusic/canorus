@@ -148,6 +148,7 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	setTextEdit( new CATextEdit( _canvas ) );
 	setTextEditVisible( false );
 
+	// set default parameters
 	setBackgroundBrush( CACanorus::settings()->backgroundColor() );
 	setForegroundColor( CACanorus::settings()->backgroundColor() );
 	setSelectionColor( CACanorus::settings()->selectionColor() );
@@ -272,9 +273,9 @@ void CAScoreView::setLastMousePressCoordsAfter(const QList<CAMusElement*> list) 
 	double maxX = 0;
 	for( int i=0; i < _drawableMList.size(); i++) {
 		CADrawableMusElement* delt = _drawableMList.at(i);
-		if(list.contains(delt->musElement()))
+/*		if(list.contains(delt->musElement()))
 			maxX = qMax(delt->xPos() + delt->width(), maxX);
-	}
+*/	}
 	QPoint newCoords(lastMousePressCoords());
 	newCoords.setX(maxX);
 	setLastMousePressCoords(newCoords);
@@ -306,10 +307,10 @@ CADrawableContext* CAScoreView::selectCElement(double x, double y) {
 */
 QList<CADrawableMusElement*> CAScoreView::musElementsAt(double x, double y) {
 	QList<CADrawableMusElement *> l = _drawableMList.findInRange(x,y);
-	for (int i=0; i<l.size(); i++)
+/*	for (int i=0; i<l.size(); i++)
 		if ( !l[i]->isSelectable() || selectedVoice() && l[i]->musElement() && l[i]->musElement()->isPlayable() && static_cast<CAPlayable*>(l[i]->musElement())->voice()!=selectedVoice() )
 			l.removeAt(i--);
-
+*/
 	return l;
 }
 
@@ -325,10 +326,10 @@ CADrawableMusElement* CAScoreView::selectMElement(CAMusElement *elt) {
 	_selection.clear();
 
 	for (int i=0; i<_drawableMList.size(); i++) {
-		if ( _drawableMList.at(i)->musElement() == elt && _drawableMList.at(i)->isSelectable() ) {
+/*		if ( _drawableMList.at(i)->musElement() == elt && _drawableMList.at(i)->isSelectable() ) {
 			addToSelection(_drawableMList.at(i));
 		}
-	}
+*/	}
 
 	emit selectionChanged();
 
@@ -571,18 +572,18 @@ void CAScoreView::zoomToSelection(bool animate) {
 
 	QRect rect;
 
-	rect.setX(_selection[0]->xPos()); rect.setY(_selection[0]->yPos());
-	rect.setWidth(_selection[0]->width()); rect.setHeight(_selection[0]->height());
-	for (int i=1; i<_selection.size(); i++) {
-		if (_selection[i]->xPos() < rect.x())
-			rect.setX(_selection[i]->xPos());
-		if (_selection[i]->yPos() < rect.y())
-			rect.setY(_selection[i]->yPos());
-		if (_selection[i]->xPos() + _selection[i]->width() > rect.x() + rect.width())
-			rect.setWidth(_selection[i]->xPos() + _selection[i]->width() - rect.x());
-		if (_selection[i]->yPos() + _selection[i]->height() > rect.y() + rect.height())
-			rect.setHeight(_selection[i]->yPos() + _selection[i]->height() - rect.y());
-	}
+	rect.setX(_selection[0]->pos().x()); rect.setY(_selection[0]->pos().y());
+/*	rect.setWidth(_selection[0]->width()); rect.setHeight(_selection[0]->height());
+*/	for (int i=1; i<_selection.size(); i++) {
+		if (_selection[i]->pos().x() < rect.x())
+			rect.setX(_selection[i]->pos().x());
+		if (_selection[i]->pos().y() < rect.y())
+			rect.setY(_selection[i]->pos().y());
+/*		if (_selection[i]->pos().x() + _selection[i]->width() > rect.x() + rect.width())
+			rect.setWidth(_selection[i]->pos().x() + _selection[i]->width() - rect.x());
+		if (_selection[i]->pos().y() + _selection[i]->height() > rect.y() + rect.height())
+			rect.setHeight(_selection[i]->pos().y() + _selection[i]->height() - rect.y());
+*/	}
 
 	setSceneRect(rect, animate);
 }
@@ -688,8 +689,8 @@ void CAScoreView::setZoom(double z, double x, double y, bool animate) {
 	for (int i=0; i<cList.size(); i++) {
 		CADrawSettings s = {
 	    	           zoom(),
-	        	       qRound((cList[i]->xPos() - sceneRect().x()) * zoom()),
-		               qRound((cList[i]->yPos() - sceneRect().y()) * zoom()),
+	        	       qRound((cList[i]->pos().x() - sceneRect().x()) * zoom()),
+		               qRound((cList[i]->pos().y() - sceneRect().y()) * zoom()),
 	            	   drawableWidth(), drawableHeight(),
 		               ((_currentContext == cList[i])?selectedContextColor():foregroundColor()),
 		               sceneRect().x(),
@@ -747,8 +748,8 @@ void CAScoreView::setZoom(double z, double x, double y, bool animate) {
 
 		CADrawSettings s = {
 		               zoom(),
-		               qRound((mList[i]->xPos() - sceneRect().x()) * zoom()),
-		               qRound((mList[i]->yPos() - sceneRect().y()) * zoom()),
+		               qRound((mList[i]->pos().x() - sceneRect().x()) * zoom()),
+		               qRound((mList[i]->pos().y() - sceneRect().y()) * zoom()),
 		               drawableWidth(), drawableHeight(),
 		               color,
 		               sceneRect().x(),
@@ -786,8 +787,8 @@ void CAScoreView::setZoom(double z, double x, double y, bool animate) {
 			if ( CACanorus::settings()->shadowNotesInOtherStaffs() || _shadowDrawableNote[i]->drawableContext() == currentContext() ) {
 				CADrawSettings s = {
 					zoom(),
-					qRound((_shadowDrawableNote[i]->xPos() - sceneRect().x() - _shadowDrawableNote[i]->width()/2) * zoom()),
-					qRound((_shadowDrawableNote[i]->yPos() - sceneRect().y()) * zoom()),
+					qRound((_shadowDrawableNote[i]->pos().x() - sceneRect().x() - _shadowDrawableNote[i]->width()/2) * zoom()),
+					qRound((_shadowDrawableNote[i]->pos().y() - sceneRect().y()) * zoom()),
 					drawableWidth(), drawableHeight(),
 					disabledElementsColor(),
 	               sceneRect().x(),
@@ -799,7 +800,7 @@ void CAScoreView::setZoom(double z, double x, double y, bool animate) {
 				if (_drawShadowNoteAccs) {
 					CADrawableAccidental acc(_shadowNoteAccs, 0, 0, 0, _shadowDrawableNote[i]->yCenter());
 					s.x -= qRound((acc.width()+2)*zoom());
-					s.y = qRound((acc.yPos() - sceneRect().y())*zoom());
+					s.y = qRound((acc.pos().y() - sceneRect().y())*zoom());
 					acc.draw(&p, s);
 				}
 			}
@@ -854,10 +855,10 @@ void CAScoreView::updateHelpers() {
 	}
 }
 
-void CAScoreView::drawSelectionRegion( QPainter *p, CADrawSettings s ) {
+/*void CAScoreView::drawSelectionRegion( QPainter *p, CADrawSettings s ) {
 	p->fillRect(s.x, s.y, s.w, s.h, QBrush(s.color));
 }
-
+*/
 /*!
 	Draws the border with the given pen style, color, width and other pen settings.
 	Enables border.
@@ -902,20 +903,20 @@ bool CAScoreView::event( QEvent *event ) {
 void CAScoreView::mousePressEvent(QMouseEvent *e) {
 	CAView::mousePressEvent(e);
 	QPoint coords(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y());
-	if ( selection().size() && selection()[0]->isHScalable() && coords.y()>=selection()[0]->yPos() && coords.y()<=selection()[0]->yPos()+selection()[0]->height() ) {
-		if ( coords.x()==selection()[0]->xPos()  ) {
+/*	if ( selection().size() && selection()[0]->isHScalable() && coords.y()>=selection()[0]->pos().y() && coords.y()<=selection()[0]->pos().y()+selection()[0]->height() ) {
+		if ( coords.x()==selection()[0]->pos().x()  ) {
 			setResizeDirection(CADrawable::Left);
-		} else if ( coords.x()==selection()[0]->xPos()+selection()[0]->width() ) {
+		} else if ( coords.x()==selection()[0]->pos().x()+selection()[0]->width() ) {
 			setResizeDirection(CADrawable::Right);
 		}
-	} else if ( selection().size() && selection().at(0)->isVScalable() && coords.x()>=selection()[0]->xPos() && coords.x()<=selection()[0]->xPos()+selection()[0]->width() ) {
-		if ( coords.y()==selection()[0]->yPos() ) {
+	} else if ( selection().size() && selection().at(0)->isVScalable() && coords.x()>=selection()[0]->pos().x() && coords.x()<=selection()[0]->pos().x()+selection()[0]->width() ) {
+		if ( coords.y()==selection()[0]->pos().y() ) {
 			setResizeDirection(CADrawable::Top);
-		} else if ( coords.y()==selection()[0]->yPos()+selection()[0]->height() ) {
+		} else if ( coords.y()==selection()[0]->pos().y()+selection()[0]->height() ) {
 			setResizeDirection(CADrawable::Bottom);
 		}
 	}
-
+*/
 	if ( !_clickTimer->isActive() || coords!=lastMousePressCoords() ) {
 		_clickTimer->start();
 	}
@@ -965,21 +966,21 @@ void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
 	_yCursor = coords.y();
 
 	bool isHScalable = false;
-	for ( int i=0; i<selection().size() && !isHScalable; i++) {
-		if ( selection()[i]->isHScalable() && (coords.x()==selection()[i]->xPos() || coords.x()==selection()[i]->xPos()+selection()[i]->width()) &&
-		     coords.y()>=selection()[i]->yPos() && coords.y()<=selection()[i]->yPos()+selection()[i]->height()
+/*	for ( int i=0; i<selection().size() && !isHScalable; i++) {
+		if ( selection()[i]->isHScalable() && (coords.x()==selection()[i]->pos().x() || coords.x()==selection()[i]->pos().x()+selection()[i]->width()) &&
+		     coords.y()>=selection()[i]->pos().y() && coords.y()<=selection()[i]->pos().y()+selection()[i]->height()
 		   )
 			isHScalable = true;
 	}
-
+*/
 	bool isVScalable = false;
-	for ( int i=0; i<selection().size() && !isVScalable; i++) {
-		if ( selection()[i]->isVScalable() && (coords.y()==selection()[i]->yPos() || coords.y()==selection()[i]->yPos()+selection()[i]->height()) &&
-		     coords.x()>=selection()[i]->xPos() && coords.x()<=selection()[i]->xPos()+selection()[i]->width()
+/*	for ( int i=0; i<selection().size() && !isVScalable; i++) {
+		if ( selection()[i]->isVScalable() && (coords.y()==selection()[i]->pos().y() || coords.y()==selection()[i]->pos().y()+selection()[i]->height()) &&
+		     coords.x()>=selection()[i]->pos().x() && coords.x()<=selection()[i]->pos().x()+selection()[i]->width()
 		   )
 			isVScalable = true;
 	}
-
+*/
 	if (isHScalable)
 		setCursor(Qt::SizeHorCursor);
 	else if (isVScalable)
@@ -1123,11 +1124,11 @@ CADrawableMusElement *CAScoreView::selectDownMusElement() {
 */
 void CAScoreView::addToSelection( CADrawableMusElement *elt, bool triggerSignal ) {
 	int i;
-	for (i=0; i<_selection.size() && _selection[i]->xPos() < elt->xPos(); i++);
+	for (i=0; i<_selection.size() && _selection[i]->pos().x() < elt->pos().x(); i++);
 
-	if ( elt->isSelectable() )
+/*	if ( elt->isSelectable() )
 		_selection.insert( i, elt );
-
+*/
 	if ( triggerSignal )
 		emit selectionChanged();
 }
@@ -1137,9 +1138,9 @@ void CAScoreView::addToSelection( CADrawableMusElement *elt, bool triggerSignal 
 */
 void CAScoreView::addToSelection(const QList<CADrawableMusElement*> list, bool selectableOnly ) {
 	for (int i=0; i<list.size(); i++) {
-		if ( !selectableOnly || selectableOnly && list[i]->isSelectable() )
+/*		if ( !selectableOnly || selectableOnly && list[i]->isSelectable() )
 			addToSelection(list[i], false);
-	}
+*/	}
 
 	emit selectionChanged();
 }
@@ -1163,13 +1164,13 @@ CADrawableMusElement *CAScoreView::addToSelection(CAMusElement *elt) {
 */
 void CAScoreView::addToSelection(const QList<CAMusElement*> elts) {
 	for (int i=0; i<_drawableMList.size(); i++) {
-		if ( _drawableMList.at(i)->isSelectable() ) {
+/*		if ( _drawableMList.at(i)->isSelectable() ) {
 			for (int j=0; j<elts.size(); j++) {
 				if ( elts[j] == static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement() )
 					addToSelection(static_cast<CADrawableMusElement*>(_drawableMList.at(i)), false);
 			}
 		}
-	}
+*/	}
 
 	emit selectionChanged();
 }
@@ -1273,7 +1274,7 @@ CATextEdit *CAScoreView::createTextEdit( CADrawableMusElement *dMusElt ) {
 	if ( !dMusElt || !dMusElt->musElement() )
 		return 0;
 
-	int xPos=dMusElt->xPos(), yPos=dMusElt->yPos(),
+	int xPos=dMusElt->pos().x(), yPos=dMusElt->pos().y(),
 	    width=100, height=25;
 	QString text;
 	if ( dMusElt->musElement()->musElementType()==CAMusElement::Syllable ) {
@@ -1283,7 +1284,7 @@ CATextEdit *CAScoreView::createTextEdit( CADrawableMusElement *dMusElt ) {
 
 		CADrawableMusElement *dRight = findMElement( dlc->lyricsContext()->next( syllable ) );
 		if (dRight)
-			width = dRight->xPos() - dMusElt->xPos();
+			width = dRight->pos().x() - dMusElt->pos().x();
 
 		text = syllable->text();
 		if (syllable->hyphenStart()) text+="-";
@@ -1366,9 +1367,9 @@ int CAScoreView::coordsToTime( double x ) {
 	}
 
 	if ( d1 && d2 && d1->musElement() && d2->musElement() ) {
-		int delta = (d2->xPos() - d1->xPos());
+		int delta = (d2->pos().x() - d1->pos().x());
 		if (!delta) delta=1;
-		return qRound(d1->musElement()->timeStart() + ( d2->musElement()->timeStart() - d1->musElement()->timeStart() ) * ( (x - d1->xPos()) / (float)delta ) );
+		return qRound(d1->musElement()->timeStart() + ( d2->musElement()->timeStart() - d1->musElement()->timeStart() ) * ( (x - d1->pos().x()) / (float)delta ) );
 	} else if ( d1 && d1->musElement() )
 		return ( d1->musElement()->timeEnd() );
 	else
@@ -1390,13 +1391,13 @@ double CAScoreView::timeToCoordsSimpleVersion( int time ) {
 		//}
 		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeStart() <= time && (
 				!leftElt || _drawableMList.at(i)->musElement()->timeStart() > leftElt->musElement()->timeStart() ||
-		         _drawableMList.at(i)->xPos() > leftElt->xPos() ) // get the right-most element of that time
+		         _drawableMList.at(i)->pos().x() > leftElt->pos().x() ) // get the right-most element of that time
 		   )
 			leftElt = _drawableMList.at(i);
 
 		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeStart() >= time && (
 				!rightElt || _drawableMList.at(i)->musElement()->timeStart() < rightElt->musElement()->timeStart() ||
-		        _drawableMList.at(i)->xPos() < rightElt->xPos() ) // get the left-most element of that time
+		        _drawableMList.at(i)->pos().x() < rightElt->pos().x() ) // get the left-most element of that time
 		   )
 			rightElt = _drawableMList.at(i);
 	}
@@ -1405,11 +1406,11 @@ double CAScoreView::timeToCoordsSimpleVersion( int time ) {
 /*
 		int delta = (rightElt->musElement()->timeStart() - leftElt->musElement()->timeStart());
 		if (!delta) delta=1;
-		return qRound(leftElt->xPos() + ( rightElt->xPos() - leftElt->xPos() ) *
+		return qRound(leftElt->pos().x() + ( rightElt->pos().x() - leftElt->pos().x() ) *
 		              ( ((float)time - leftElt->musElement()->timeStart()) / delta )
 		             );
 */
-		return leftElt->xPos();
+		return leftElt->pos().x();
 	} else {
 		return -1;
 	}
@@ -1427,13 +1428,13 @@ double CAScoreView::timeToCoords( int time ) {
 			continue;
 		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeStart() <= time && (
 				!leftElt || _drawableMList.at(i)->musElement()->timeStart() > leftElt->musElement()->timeStart() ||
-		         _drawableMList.at(i)->xPos() > leftElt->xPos() ) // get the right-most element of that time
+		         _drawableMList.at(i)->pos().x() > leftElt->pos().x() ) // get the right-most element of that time
 		   )
 			leftElt = _drawableMList.at(i);
 
 		if ( _drawableMList.at(i)->musElement() && _drawableMList.at(i)->musElement()->timeStart() >= time && (
 				!rightElt || _drawableMList.at(i)->musElement()->timeStart() < rightElt->musElement()->timeStart() ||
-		        _drawableMList.at(i)->xPos() < rightElt->xPos() ) // get the left-most element of that time
+		        _drawableMList.at(i)->pos().x() < rightElt->pos().x() ) // get the left-most element of that time
 		   )
 			rightElt = _drawableMList.at(i);
 	}
@@ -1441,7 +1442,7 @@ double CAScoreView::timeToCoords( int time ) {
 	if ( leftElt && rightElt && leftElt->musElement() && rightElt->musElement() ) {
 		int delta = (rightElt->musElement()->timeStart() - leftElt->musElement()->timeStart());
 		if (!delta) delta=1;
-		return leftElt->xPos() + ( rightElt->xPos() - leftElt->xPos() ) *
+		return leftElt->pos().x() + ( rightElt->pos().x() - leftElt->pos().x() ) *
 		              ( ((double)time - leftElt->musElement()->timeStart()) / delta );
 	} else {
 		return -1;

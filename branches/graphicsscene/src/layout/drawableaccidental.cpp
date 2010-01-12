@@ -24,15 +24,14 @@
 	\param y Center Y-coordinate of the accidental.
 */
 CADrawableAccidental::CADrawableAccidental(signed char accs, CAMusElement *musElement, CADrawableContext *drawableContext, double x, double y)
- : CADrawableMusElement(musElement, drawableContext, x, y) {
- 	setDrawableMusElementType( DrawableAccidental );
- 	setSelectable( false );
+ : CADrawableMusElement(musElement, drawableContext, DrawableAccidental, x, y) {
+/* 	setSelectable( false );
 
  	setWidth( 8 );
  	setHeight( 14 );
- 	_accs = accs;
+*/ 	_accs = accs;
 
- 	if (accs==0) {
+/* 	if (accs==0) {
  		setYPos( y - height()/2 );
  	} else if (accs==1) {
  		setYPos( y - height()/2 );
@@ -49,12 +48,12 @@ CADrawableAccidental::CADrawableAccidental(signed char accs, CAMusElement *musEl
 
  	_centerX = x;
  	_centerY = y;
-}
+*/}
 
 CADrawableAccidental::~CADrawableAccidental() {
 }
 
-void CADrawableAccidental::draw(QPainter *p, CADrawSettings s) {
+/*void CADrawableAccidental::draw(QPainter *p, CADrawSettings s) {
 	QFont font("Emmentaler");
 	font.setPixelSize(qRound(34*s.z));
 	p->setPen(QPen(s.color));
@@ -77,8 +76,8 @@ void CADrawableAccidental::draw(QPainter *p, CADrawSettings s) {
 			p->drawText(s.x, s.y + qRound((height()/2 + 5)*s.z), QString(CACanorus::fetaCodepoint("accidentals.flatflat")));
 			break;
 	}
-}
+}*/
 
 CADrawableAccidental *CADrawableAccidental::clone(CADrawableContext* newContext) {
-	return new CADrawableAccidental(_accs, _musElement, (newContext)?newContext:_drawableContext, _centerX, _centerY);
-}
+/*	return new CADrawableAccidental(_accs, _musElement, (newContext)?newContext:_drawableContext, _centerX, _centerY);
+*/}

@@ -20,8 +20,6 @@ class CADrawableNote : public CADrawableMusElement {
 
 		~CADrawableNote();
 
-		void draw(QPainter *p, CADrawSettings s);
-
 		inline CANote* note() { return static_cast<CANote*>(_musElement); }
 
 		CADrawableNote *clone(CADrawableContext* newContext = 0);

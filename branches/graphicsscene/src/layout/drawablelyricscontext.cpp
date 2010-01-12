@@ -23,19 +23,19 @@ const double CADrawableLyricsContext::DEFAULT_TEXT_VERTICAL_SPACING = 3;
 	\sa CALyricsContext
 */
 CADrawableLyricsContext::CADrawableLyricsContext(CALyricsContext *c, double x, double y)
- : CADrawableContext(c, x, y) {
-	setDrawableContextType( DrawableLyricsContext );
-	setWidth( 0 );
+ : CADrawableContext(c, CADrawable::DrawableLyricsContext, x, y) {
+/*	setWidth( 0 );
  	setHeight( CADrawableSyllable::DEFAULT_TEXT_SIZE + 2*DEFAULT_TEXT_VERTICAL_SPACING );
-}
+*/}
 
 CADrawableLyricsContext::~CADrawableLyricsContext() {
 }
 
 CADrawableLyricsContext* CADrawableLyricsContext::clone() {
-	return new CADrawableLyricsContext( lyricsContext(), xPos(), yPos() );
-}
+/*	return new CADrawableLyricsContext( lyricsContext(), xPos(), yPos() );
+*/}
 
-void CADrawableLyricsContext::draw(QPainter *p, const CADrawSettings s) {
+/*void CADrawableLyricsContext::draw(QPainter *p, const CADrawSettings s) {
 	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(Qt::green));
 }
+*/

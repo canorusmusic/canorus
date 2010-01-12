@@ -7,9 +7,8 @@
 
 #include "layout/drawablemuselement.h"
 
-CADrawableMusElement::CADrawableMusElement(CAMusElement *m, CADrawableContext *drawableContext, double x, double y)
- : CADrawable(x, y) {
- 	setDrawableType( CADrawable::DrawableMusElement );
+CADrawableMusElement::CADrawableMusElement(CAMusElement *m, CADrawableContext *drawableContext, CADrawableType t, double x, double y)
+ : CADrawable(m, t) {
 	_musElement = m;
 	_drawableContext = drawableContext;
 }

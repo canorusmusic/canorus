@@ -312,8 +312,8 @@ private:
 
 	// Selection regions
 	QList<QRect> _selectionRegionList;
-	void drawSelectionRegion( QPainter *p, CADrawSettings s );
-
+/*	void drawSelectionRegion( QPainter *p, CADrawSettings s );
+*/
 	////////////////
 	// Appearance //
 	////////////////

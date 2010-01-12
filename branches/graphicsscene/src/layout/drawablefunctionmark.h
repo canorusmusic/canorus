@@ -19,7 +19,6 @@ public:
 	CADrawableFunctionMark(CAFunctionMark *function, CADrawableFunctionMarkContext *context, double x, double y);
 	~CADrawableFunctionMark();
 
-	void draw(QPainter *p, const CADrawSettings s);
 	CADrawableFunctionMark *clone(CADrawableContext* newContext = 0);
 
 	inline CAFunctionMark *functionMark() { return (CAFunctionMark*)_musElement; };
@@ -55,14 +54,13 @@ public:
 
 	~CADrawableFunctionMarkSupport();
 
-	void draw(QPainter *p, const CADrawSettings s);
 	CADrawableFunctionMarkSupport *clone(CADrawableContext* newContext = 0);
 	CADrawableFunctionMarkSupportType drawableFunctionMarkSupportType() { return _drawableFunctionMarkSupportType; }
 
 	bool isExtenderLineVisible() { return _extenderLineVisible; }
 	void setExtenderLineVisible(bool visible) { _extenderLineVisible = visible; }
 	bool rectWider() { return _rectWider; }
-	void setRectWider(bool wider) { if (!_rectWider) { _rectWider = wider; _yPos -= 3; _height += 6; } }
+	void setRectWider(bool wider) { if (!_rectWider) { _rectWider = wider; moveBy( 0, -3 ); /*_height += 6;*/ } }
 
 private:
 	CADrawableFunctionMarkSupportType _drawableFunctionMarkSupportType;

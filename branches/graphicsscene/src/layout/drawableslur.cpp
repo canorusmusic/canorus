@@ -9,8 +9,7 @@
 #include <QPainter>
 
 CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, double x1, double y1, double xMid, double yMid, double x2, double y2  )
- : CADrawableMusElement( slur, c, x1, 0) {
- 	setDrawableMusElementType( DrawableSlur );
+ : CADrawableMusElement( slur, c, DrawableSlur, x1, 0) {
  	setX1( x1 );
  	setY1( y1 );
 	setXMid( xMid );
@@ -20,20 +19,20 @@ CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, double x1, d
 
  	updateGeometry(); // sets width, height, xPos, yPos
 
-	setNeededSpaceWidth( 0 );
+/*	setNeededSpaceWidth( 0 );
 	setNeededSpaceHeight( 0 );
-}
+*/}
 
 CADrawableSlur::~CADrawableSlur() {
 }
 
 void CADrawableSlur::updateGeometry() {
-	setXPos( min(x1(), xMid(), x2()) );
+/*	setXPos( min(x1(), xMid(), x2()) );
 	setWidth( max(x1(), xMid(), x2()) - xPos() );
 
 	setYPos( min(y1(), yMid(), y2()) );
 	setHeight( max(y1(), yMid(), y2()) - yPos() );
-}
+*/}
 
 /*!
 	Returns the minimum of all the three integers given.
@@ -59,7 +58,7 @@ double CADrawableSlur::max(double x, double y, double z) {
 		return z;
 }
 
-void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
+/*void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 	QPen pen(s.color);
 	pen.setWidth( qRound(1.2*s.z) );
 	pen.setCapStyle( Qt::RoundCap );
@@ -113,8 +112,8 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 	p->drawPolyline(points, 21);
 
 	p->setRenderHint( QPainter::Antialiasing, aliasing );
-}
+}*/
 
 CADrawableSlur *CADrawableSlur::clone(CADrawableContext* newContext) {
-	return new CADrawableSlur( slur(), newContext?newContext:drawableContext(), xPos(), y1(), xMid(), yMid(), xPos()+width(), y2() );
-}
+/*	return new CADrawableSlur( slur(), newContext?newContext:drawableContext(), xPos(), y1(), xMid(), yMid(), xPos()+width(), y2() );
+*/}

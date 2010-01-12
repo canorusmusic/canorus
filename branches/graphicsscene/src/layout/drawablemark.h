@@ -21,7 +21,6 @@ public:
 	CADrawableMark( CAMark *mark, CADrawableContext *drawableContext, double x, double y);
 	virtual ~CADrawableMark();
 
-	void draw( QPainter *p, CADrawSettings s );
 	CADrawableMark *clone( CADrawableContext* newContext = 0 );
 	inline CAMark *mark() { return static_cast<CAMark*>(musElement()); }
 
