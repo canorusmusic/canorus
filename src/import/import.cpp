@@ -194,10 +194,10 @@ void CAImport::importFunctionMarkContext() {
 const QString CAImport::readableStatus() {
 	switch (status()) {
 	case 1:
-		return tr("Importing...");
+		return tr("Importing");
 	case 0:
-		return tr("Ready.");
+		return tr("Ready");
 	case -1:
-		return tr("File not found or data stream not defined.");
+		return tr("Unable to open file for reading");
 	}
 }

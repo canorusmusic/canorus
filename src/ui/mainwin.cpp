@@ -2871,6 +2871,10 @@ void CAMainWin::on_uiOpenDocument_triggered() {
 	}
 }
 
+/**
+	Calls the save document method or save as, if the document doesn't exist yet.
+	Returns True, if the document was saved; False otherwise.
+*/
 bool CAMainWin::on_uiSaveDocument_triggered() {
 	QString s;
 	if (document()) {
@@ -2882,6 +2886,10 @@ bool CAMainWin::on_uiSaveDocument_triggered() {
 	}
 }
 
+/**
+	Calls the save document method.
+	Returns True, if the document was saved; False otherwise.
+*/
 bool CAMainWin::on_uiSaveDocumentAs_triggered() {
 	if ( document() &&
 	     CAMainWin::uiSaveDialog->exec() && CAMainWin::uiSaveDialog->selectedFiles().size()
@@ -2992,7 +3000,7 @@ bool CAMainWin::saveDocument( QString fileName ) {
 		save->exportDocument( document() );
 		save->wait();
 
-		if ( save->exportedDocument() ) {
+		if ( save->status()==0 ) {
 			document()->setFileName( fileName );
 			CACanorus::insertRecentDocument( fileName );
 			delete save;
@@ -3000,9 +3008,23 @@ bool CAMainWin::saveDocument( QString fileName ) {
 			document()->setModified( false );
 			updateWindowTitle();
 			return true;
+		} else {
+			QMessageBox::critical(
+				this,
+				tr("Error while saving document"),
+				tr("The document was not saved!\nError number %1 %2.").arg(save->status()).arg(save->readableStatus())
+			);
+
+			delete save;
+			return false;
 		}
 	}
 
+	QMessageBox::critical(
+		this,
+		tr("Error while saving document"),
+		tr("Unknown file format %1.").arg(uiSaveDialog->selectedFilter())
+	);
 	return false;
 }
 
