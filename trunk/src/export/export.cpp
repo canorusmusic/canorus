@@ -151,10 +151,10 @@ void CAExport::exportFunctionMarkContext( CAFunctionMarkContext *fmc ) {
 const QString CAExport::readableStatus() {
 	switch (status()) {
 	case 1:
-		return tr("Exporting...");
+		return tr("Exporting");
 	case 0:
-		return tr("Ready.");
+		return tr("Ready");
 	case -1:
-		return tr("Data stream not defined.");
+		return tr("Unable to open file for writing");
 	}
 }
