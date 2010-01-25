@@ -25,7 +25,7 @@ public:
 	CADrawableStaff *clone();
 	inline CAStaff *staff() { return static_cast<CAStaff*>(_context); }
 
-	inline double lineSpace() { return (staff()->numberOfLines()?boundingRect().height()/(staff()->numberOfLines()-1):0); }
+	inline double lineSpace() { return (staff()->numberOfLines()?_height/(staff()->numberOfLines()-1):0); }
 
 	double calculateCenterYCoord(int pitch, CAClef *clef);
 	double calculateCenterYCoord(CANote *note, CAClef *clef);
@@ -55,7 +55,13 @@ private:
 	QList<CADrawableClef *> _drawableClefList;                   // List of all the drawable clefs. Used for fast look-up with the given key - X-coordinate usually.
 	QList<CADrawableKeySignature *> _drawableKeySignatureList;   // List of all the drawable key signatures. Used for fast look-up with the given key - X-coordinate usually.
 	QList<CADrawableTimeSignature *> _drawableTimeSignatureList; // List of all the drawable time signatures. Used for fast look-up with the given key - X-coordinate usually.
+
+	double _height; // staff height
+	double _width;
+
 	static const double STAFFLINE_WIDTH;                         // Width of the staffs' lines. Defined in drawablestaff.cpp
+	static const double STAFF_HEIGHT;                            // Default height of the staff
+	static const double STAFF_WIDTH;
 };
 
 #endif /* DRAWABLESTAFF_H_ */

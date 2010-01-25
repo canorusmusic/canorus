@@ -88,6 +88,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 			CAStaff *staff = static_cast<CAStaff*>(sheet->contextList()[i]);
 			drawableContextMap[staff] = new CADrawableStaff(staff, 0, dy);
+
 			v->addCElement(drawableContextMap[staff]);
 
 			//add all the voices lists to the common list
@@ -200,7 +201,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 				drawableContext = drawableContextMap[elt->context()];
 
 				//place signs in first voices
-				if ( (drawableContext->drawableContextType() == CADrawableContext::DrawableStaff) &&
+				if ( (drawableContext->drawableType() == CADrawable::DrawableStaff) &&
 				     (!nonFirstVoiceIdxs.contains(i)) ) {
 					switch ( elt->musElementType() ) {
 						case CAMusElement::Clef: {

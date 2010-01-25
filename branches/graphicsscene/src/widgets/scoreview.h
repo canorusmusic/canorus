@@ -229,12 +229,12 @@ private slots:
 	void mousePressEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);
 	void mouseReleaseEvent(QMouseEvent *e);
-	void wheelEvent(QWheelEvent *e);
-	void keyPressEvent(QKeyEvent *e);
+/*	void wheelEvent(QWheelEvent *e);
+*/	void keyPressEvent(QKeyEvent *e);
 
 	void resizeEvent(QResizeEvent *e);
-//	void paintEvent(QPaintEvent *p);
-	void leaveEvent(QEvent *e);
+/*	void paintEvent(QPaintEvent *p);
+*/	void leaveEvent(QEvent *e);
 	void enterEvent(QEvent *e);
 	void on_animationTimer_timeout();
 	void on_clickTimer_timeout();
@@ -347,7 +347,7 @@ private:
 	QTimer *_clickTimer;                                // Used for measuring doubleClick and tripleClick
 	int     _numberOfClicks;                            // Used for measuring doubleClick and tripleClick
 
-	double _xCursor, _yCursor;                             // Mouse cursor position in absolute world coords.
-};
+/*	double _xCursor, _yCursor;                             // Mouse cursor position in absolute world coords.
+*/};
 
 #endif /*SCOREVIEW_H_*/
