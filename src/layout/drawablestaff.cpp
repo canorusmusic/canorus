@@ -18,11 +18,26 @@
 #include "score/timesignature.h"
 
 const double CADrawableStaff::STAFFLINE_WIDTH = 0.8;
+const double CADrawableStaff::STAFF_HEIGHT = 37;
+const double CADrawableStaff::STAFF_WIDTH = 200;
 
-CADrawableStaff::CADrawableStaff(CAStaff *s, double x, double y) : CADrawableContext(s, CADrawable::DrawableStaff, x, y) {
-/*	setWidth( 0 );
-	setHeight( 37 );
-*/}
+CADrawableStaff::CADrawableStaff(CAStaff *s, double x, double y)
+ : CADrawableContext(s, CADrawable::DrawableStaff, x, y),
+   _height(STAFF_HEIGHT), _width(STAFF_WIDTH) {
+	QPen pen;
+	pen.setWidthF(STAFFLINE_WIDTH);
+	pen.setCapStyle(Qt::RoundCap);
+	pen.setColor(Qt::black);
+	qreal dy = lineSpace();
+	for (int i=0; i<staff()->numberOfLines(); i++) {
+		QGraphicsLineItem *line = new QGraphicsLineItem(this);
+		line->setLine(0, dy*i, 1000, dy*i);
+		line->setPen(pen);
+		addToGroup(line);
+	}
+
+	moveBy( x, y );
+}
 
 /*void CADrawableStaff::draw(QPainter *p, const CADrawSettings s) {
 	QPen pen;

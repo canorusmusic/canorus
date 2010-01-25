@@ -60,10 +60,15 @@ public:
 	virtual CADrawable *clone() { return 0; }
 	virtual void setColor( QColor& ) { } // used for selected items
 
+
+
 /*	void drawHScaleHandles( QPainter *p, const CADrawSettings s );
 	void drawVScaleHandles( QPainter *p, const CADrawSettings s );
 */
 	inline CADrawableType& drawableType() { return _drawableType; }
+
+	virtual void setWidth() { }
+	virtual void setHeight() { }
 
 	inline bool isHScalable() { return _hScalable; }
 	inline bool isVScalable() { return _vScalable; }
@@ -76,10 +81,8 @@ protected:
 	bool _hScalable;              // Can the element be streched horizontally
 	bool _vScalable;              // Can the element be streched vertically
 
-	union {
-		CAMusElement *_musElement;
-		CAContext    *_context;
-	};
+	CAMusElement *_musElement;
+	CAContext    *_context;
 
 	static const int SCALE_HANDLES_SIZE; // Width and Height of the scale handles squares in pixels
 };

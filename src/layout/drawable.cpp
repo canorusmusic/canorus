@@ -17,14 +17,14 @@ CADrawable::CADrawable( CAMusElement *elt, CADrawableType drawableType )
  : QGraphicsItemGroup(),
    _drawableType( drawableType ),
    _hScalable(false), _vScalable(false),
-   _musElement(elt) {
+   _musElement(elt), _context(0) {
 }
 
 CADrawable::CADrawable( CAContext *elt, CADrawableType drawableType )
  : QGraphicsItemGroup(),
    _drawableType( drawableType ),
    _hScalable(false), _vScalable(false),
-   _context(elt) {
+   _context(elt), _musElement(0) {
 }
 
 /*void CADrawable::drawHScaleHandles( QPainter *p, CADrawSettings s ) {

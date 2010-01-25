@@ -114,8 +114,8 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	setSheet( sheet );
 	_playing = false;
 	_currentContext = 0;
-	_xCursor = _yCursor = 0;
-	setResizeDirection( CADrawable::Undefined );
+/*	_xCursor = _yCursor = 0;
+*/	setResizeDirection( CADrawable::Undefined );
 
 	// init graphics scene
 	_canvas = new QGraphicsView(this);
@@ -824,9 +824,8 @@ void CAScoreView::setZoom(double z, double x, double y, bool animate) {
 void CAScoreView::updateHelpers() {
 	// Shadow notes
 	if (currentContext()?(currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0) {
-		int pitch = (static_cast<CADrawableStaff*>(currentContext()))->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
-		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
-			CAClef *clef = (static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext()))->getClef( _xCursor );
+		int pitch = 0;/*(static_cast<CADrawableStaff*>(currentContext()))->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
+		*/for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
 			CADiatonicPitch dPitch(pitch, 0);
 			_shadowNote[i]->setDiatonicPitch( dPitch );
 
@@ -835,9 +834,9 @@ void CAScoreView::updateHelpers() {
 			}
 
 			CADrawableContext *c = _shadowDrawableNote[i]->drawableContext();
-			delete _shadowDrawableNote[i];
+/*			delete _shadowDrawableNote[i];
 			_shadowDrawableNote[i] = new CADrawableNote(_shadowNote[i], c, _xCursor, static_cast<CADrawableStaff*>(c)->calculateCenterYCoord(pitch, _xCursor), true);
-		}
+*/		}
 	}
 
 	// Text edit widget
@@ -962,9 +961,9 @@ void CAScoreView::mouseReleaseEvent(QMouseEvent *e) {
 void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
 	QPoint coords(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y());
 
-	_xCursor = coords.x();
+/*	_xCursor = coords.x();
 	_yCursor = coords.y();
-
+*/
 	bool isHScalable = false;
 /*	for ( int i=0; i<selection().size() && !isHScalable; i++) {
 		if ( selection()[i]->isHScalable() && (coords.x()==selection()[i]->pos().x() || coords.x()==selection()[i]->pos().x()+selection()[i]->width()) &&
@@ -995,7 +994,7 @@ void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
 	Processes the wheelEvent().
 	A new signal is emitted: CAWheelEvent(), which usually gets processed by the parent class then.
 */
-void CAScoreView::wheelEvent(QWheelEvent *e) {
+/*void CAScoreView::wheelEvent(QWheelEvent *e) {
 	QPoint coords((int)(e->x() / zoom()) + sceneRect().x(), (int)(e->y() / zoom()) + sceneRect().y());
 
 	emit CAWheelEvent(e, coords);
@@ -1003,7 +1002,7 @@ void CAScoreView::wheelEvent(QWheelEvent *e) {
 	_xCursor = (int)(e->x() / zoom()) + sceneRect().x();	//TODO: _xCursor and _yCursor are still the old one. Somehow, zoom() level and sceneRect().x()/Y are not updated when emmiting CAWheel event. -Matevz
 	_yCursor = (int)(e->y() / zoom()) + sceneRect().y();
 }
-
+*/
 /*!
 	Processes the keyPressEvent().
 	A new signal is emitted: CAKeyPressEvent(), which usually gets processed by the parent class then.

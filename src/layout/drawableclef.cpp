@@ -39,19 +39,39 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 	//	There are two glyphs for each clef type: a normal clef (placed at the beginning of the system) and a smaller one (at the center of the system, key change).
 	//	clefs.G, clefs.G_change, ...
 	QGraphicsSimpleTextItem *item = new QGraphicsSimpleTextItem(this);
-	item->setText(QString(CACanorus::fetaCodepoint("clefs.F")));
 	QFont font("Emmentaler");
-	font.setPixelSize(qRound(35*/*s.z*/1.0));
-	item->setFont(font);
+	font.setPixelSize( 35 );
+	item->setFont( font );
+
+	switch (clef()->clefType()) {
+		case CAClef::G:
+			item->setText(QString(CACanorus::fetaCodepoint("clefs.G")));
+			break;
+		case CAClef::F:
+			item->setText(QString(CACanorus::fetaCodepoint("clefs.F")));
+			break;
+		case CAClef::C:
+			item->setText(QString(CACanorus::fetaCodepoint("clefs.C")));
+			break;
+	}
+
+	addToGroup( item );
 
 	// add ^8va, _8va numbers
 	if (clef()->offset()) {
 		QGraphicsSimpleTextItem *numberItem = new QGraphicsSimpleTextItem(this);
-		numberItem->setText(QString::number(clef()->offset()+1));
-		QFont numberFont("Century Schoolbook L");
-		numberFont.setPixelSize( qRound((CLEF_EIGHT_SIZE+5)) );
+		numberItem->setText( QString::number(clef()->offset()+1) );
+		QFont numberFont( "Century Schoolbook L" );
+		numberFont.setPixelSize( qRound(CLEF_EIGHT_SIZE+5) );
 		numberFont.setStyle( QFont::StyleItalic );
 		numberItem->setFont( numberFont );
+		addToGroup( numberItem );
+
+		if ( clef()->offset()>0 ) {
+			numberItem->moveBy( 2, -3 );
+		} else {
+			numberItem->moveBy( 2, 25 );
+		}
 	}
 
 /*	switch (clef()->clefType()) {
@@ -84,6 +104,8 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 
 	if ( clef()->offset() > 0 )
 		setYPos( yPos()-CLEF_EIGHT_SIZE );*/
+
+	moveBy( x, y );
 }
 
 /*void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
