@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -14,8 +14,8 @@
 
 #include "score/timesignature.h"
 
-CADrawableTimeSignature::CADrawableTimeSignature(CATimeSignature *timeSig, CADrawableStaff *drawableStaff, double x, double y)
- : CADrawableMusElement(timeSig, drawableStaff, DrawableTimeSignature, x, y) {
+CADrawableTimeSignature::CADrawableTimeSignature(CATimeSignature *timeSig, CADrawableStaff *drawableStaff)
+ : CADrawableMusElement(timeSig, drawableStaff, DrawableTimeSignature) {
  	if ((timeSignature()->timeSignatureType() == CATimeSignature::Classical) && (timeSignature()->beat() == 4) && (timeSignature()->beats() == 4)) {
 /*		setWidth( 16 );
 		setHeight( 20 );

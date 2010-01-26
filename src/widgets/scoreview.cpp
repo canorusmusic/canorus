@@ -236,7 +236,7 @@ void CAScoreView::addCElement(CADrawableContext *elt, bool select) {
 	if (elt->drawableContextType() == CADrawableContext::DrawableStaff &&
 	    static_cast<CAStaff*>(elt->context())->voiceList().size()) {
 		_shadowNote << new CANote( CADiatonicPitch(), CAPlayableLength(CAPlayableLength::Quarter, 0), static_cast<CAStaff*>(elt->context())->voiceList()[0], 0 );
-		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), elt, 0, 0, true);
+		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), elt, true);
 	}
 	_scene->addItem( elt );
 }

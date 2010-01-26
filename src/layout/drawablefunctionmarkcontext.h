@@ -14,7 +14,7 @@ class CAFunctionMarkContext;
 
 class CADrawableFunctionMarkContext : public CADrawableContext {
 	public:
-		CADrawableFunctionMarkContext(CAFunctionMarkContext *c, double x, double y, int numberOfLines=2);
+		CADrawableFunctionMarkContext( CAFunctionMarkContext *c, int numberOfLines=2 );
 		~CADrawableFunctionMarkContext();
 
 		CADrawableFunctionMarkContext *clone();

@@ -17,8 +17,8 @@
 const double CADrawableSyllable::DEFAULT_TEXT_SIZE = 16;
 const double CADrawableSyllable::DEFAULT_DASH_LENGTH = 5;
 
-CADrawableSyllable::CADrawableSyllable( CASyllable* s, CADrawableLyricsContext* c, double x, double y )
- : CADrawableMusElement(s, c, DrawableSyllable, x, y) {
+CADrawableSyllable::CADrawableSyllable( CASyllable* s, CADrawableLyricsContext* c )
+ : CADrawableMusElement(s, c, DrawableSyllable) {
 	QFont font("Century Schoolbook L");
 	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
 	QFontMetrics fm(font);

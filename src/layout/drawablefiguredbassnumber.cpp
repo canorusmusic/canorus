@@ -14,8 +14,8 @@
 
 const double CADrawableFiguredBassNumber::DEFAULT_NUMBER_SIZE = 17;
 
-CADrawableFiguredBassNumber::CADrawableFiguredBassNumber( CAFiguredBassMark *f, int number, CADrawableFiguredBassContext *context, double x, double y )
- : CADrawableMusElement(f, context, DrawableFiguredBassNumber, x, y), _number(number) {
+CADrawableFiguredBassNumber::CADrawableFiguredBassNumber( CAFiguredBassMark *f, int number, CADrawableFiguredBassContext *context )
+ : CADrawableMusElement(f, context, DrawableFiguredBassNumber), _number(number) {
 	int textWidth = 11;
 /*	setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
 	setHeight( qRound(DEFAULT_NUMBER_SIZE)*figuredBassMark()->numbers().size() );

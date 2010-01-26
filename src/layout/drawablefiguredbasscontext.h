@@ -15,7 +15,7 @@ class CAFiguredBassContext;
 
 class CADrawableFiguredBassContext: public CADrawableContext {
 public:
-	CADrawableFiguredBassContext( CAFiguredBassContext *c, double x, double y );
+	CADrawableFiguredBassContext( CAFiguredBassContext *c );
 	virtual ~CADrawableFiguredBassContext();
 	CADrawableFiguredBassContext* clone();
 

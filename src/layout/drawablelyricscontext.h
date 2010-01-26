@@ -15,7 +15,7 @@ class CALyricsContext;
 
 class CADrawableLyricsContext : public CADrawableContext {
 public:
-	CADrawableLyricsContext(CALyricsContext *c, double x, double y);
+	CADrawableLyricsContext(CALyricsContext *c);
 	~CADrawableLyricsContext();
 
 	CADrawableLyricsContext* clone();

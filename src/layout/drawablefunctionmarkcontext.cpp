@@ -11,8 +11,8 @@
 #include "layout/drawablefunctionmarkcontext.h"
 #include "score/functionmarkcontext.h"
 
-CADrawableFunctionMarkContext::CADrawableFunctionMarkContext(CAFunctionMarkContext *context, double x, double y, int numberOfLines)
- : CADrawableContext(context, CADrawable::DrawableFunctionMarkContext, x, y) {
+CADrawableFunctionMarkContext::CADrawableFunctionMarkContext(CAFunctionMarkContext *context, int numberOfLines)
+ : CADrawableContext(context, DrawableFunctionMarkContext) {
  	_numberOfLines = numberOfLines;
  	_currentLineIdx = 0;
  /*	setWidth( 0 );

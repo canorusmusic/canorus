@@ -22,8 +22,8 @@ const double CADrawableLyricsContext::DEFAULT_TEXT_VERTICAL_SPACING = 3;
 
 	\sa CALyricsContext
 */
-CADrawableLyricsContext::CADrawableLyricsContext(CALyricsContext *c, double x, double y)
- : CADrawableContext(c, CADrawable::DrawableLyricsContext, x, y) {
+CADrawableLyricsContext::CADrawableLyricsContext(CALyricsContext *c)
+ : CADrawableContext(c, DrawableLyricsContext) {
 /*	setWidth( 0 );
  	setHeight( CADrawableSyllable::DEFAULT_TEXT_SIZE + 2*DEFAULT_TEXT_VERTICAL_SPACING );
 */}
