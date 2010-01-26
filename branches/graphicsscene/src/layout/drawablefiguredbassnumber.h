@@ -15,7 +15,7 @@ class CADrawableFiguredBassContext;
 
 class CADrawableFiguredBassNumber: public CADrawableMusElement {
 public:
-	CADrawableFiguredBassNumber( CAFiguredBassMark *m, int number, CADrawableFiguredBassContext*, double x, double y );
+	CADrawableFiguredBassNumber( CAFiguredBassMark *m, int number, CADrawableFiguredBassContext* );
 	virtual ~CADrawableFiguredBassNumber();
 
 	CADrawableFiguredBassNumber *clone(CADrawableContext *c);

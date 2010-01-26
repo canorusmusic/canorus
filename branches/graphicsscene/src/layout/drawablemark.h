@@ -18,7 +18,7 @@ class CADrawableNote;
 
 class CADrawableMark : public CADrawableMusElement {
 public:
-	CADrawableMark( CAMark *mark, CADrawableContext *drawableContext, double x, double y);
+	CADrawableMark( CAMark *mark, CADrawableContext *drawableContext );
 	virtual ~CADrawableMark();
 
 	CADrawableMark *clone( CADrawableContext* newContext = 0 );

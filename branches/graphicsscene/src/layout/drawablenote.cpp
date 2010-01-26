@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -31,8 +31,8 @@ const double CADrawableNote::HALF_YPOS_DELTA = 23;
 	\param x coordinate represents the left border of the notehead.
 	\param y coordinate represents the center of the notehead.
 */
-CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, double x, double y, bool shadowNote, CADrawableAccidental *drawableAcc)
- : CADrawableMusElement(n, drawableContext, CADrawable::DrawableNote, x, y) {
+CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, bool shadowNote, CADrawableAccidental *drawableAcc)
+ : CADrawableMusElement(n, drawableContext, DrawableNote) {
 	_drawableAcc = drawableAcc;
 
 	_stemDirection = note()->actualStemDirection();
@@ -109,6 +109,14 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, do
 		_stemLength = HALF_STEM_LENGTH;
 		break;
 	}
+
+	QFont font("Emmentaler");
+	font.setPixelSize(qRound(35));
+
+	QGraphicsSimpleTextItem *noteHead = new QGraphicsSimpleTextItem(this);
+	noteHead->setFont(font);
+	noteHead->setText(QString(CACanorus::fetaCodepoint(_noteHeadGlyphName)));
+	addToGroup(noteHead);
 
 /*	_noteHeadWidth = width();
 

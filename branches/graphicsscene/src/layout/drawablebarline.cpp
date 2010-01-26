@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -20,8 +20,8 @@ const float CADrawableBarline::DOTTED_BARLINE_WIDTH = 2;
 const float CADrawableBarline::BOLD_BARLINE_WIDTH = 4;
 const float CADrawableBarline::REPEAT_DOTS_WIDTH = 3;
 
-CADrawableBarline::CADrawableBarline(CABarline *m, CADrawableStaff *staff, double x, double y)
- : CADrawableMusElement(m, staff, DrawableBarline, x, y) {
+CADrawableBarline::CADrawableBarline(CABarline *m, CADrawableStaff *staff)
+ : CADrawableMusElement(m, staff, DrawableBarline) {
  	switch (m->barlineType()) {
  		case CABarline::Single:
 /* 			setWidth( BARLINE_WIDTH );
@@ -46,6 +46,8 @@ CADrawableBarline::CADrawableBarline(CABarline *m, CADrawableStaff *staff, doubl
 */ 			break;
  	}
 
+ 	QGraphicsLineItem *b = new QGraphicsLineItem(0, 0, 0, staff->boundingRect().height(), this);
+ 	addToGroup(b);
 /*	setHeight( staff->height() );
 	setNeededSpaceWidth(4);
 */}

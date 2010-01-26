@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -7,8 +7,9 @@
 
 #include "layout/drawablecontext.h"
 
-CADrawableContext::CADrawableContext(CAContext *c, CADrawableType t, double x, double y)
- : CADrawable(c, t) {
+CADrawableContext::CADrawableContext(CAContext *c, const CADrawableContextType& t)
+ : CADrawable(DrawableContext),
+   _context(c), _drawableContextType(t) {
 }
 
 /*!

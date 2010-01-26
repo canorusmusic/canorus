@@ -10,8 +10,8 @@
 #include <QBrush>
 #include <QPainter>
 
-CADrawableFiguredBassContext::CADrawableFiguredBassContext(CAFiguredBassContext *c, double x, double y)
- : CADrawableContext(c, CADrawable::DrawableFiguredBassContext, x, y) {
+CADrawableFiguredBassContext::CADrawableFiguredBassContext(CAFiguredBassContext *c)
+ : CADrawableContext(c, DrawableFiguredBassContext) {
 /*	setWidth( 0 );
  	setHeight( 3*CADrawableFiguredBassNumber::DEFAULT_NUMBER_SIZE );
 */}

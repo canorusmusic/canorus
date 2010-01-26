@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -9,7 +9,7 @@
 #include <QPainter>
 
 CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, double x1, double y1, double xMid, double yMid, double x2, double y2  )
- : CADrawableMusElement( slur, c, DrawableSlur, x1, 0) {
+ : CADrawableMusElement( slur, c, DrawableSlur ) {
  	setX1( x1 );
  	setY1( y1 );
 	setXMid( xMid );

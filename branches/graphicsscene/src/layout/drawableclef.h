@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -15,7 +15,7 @@ class CADrawableStaff;
 
 class CADrawableClef : public CADrawableMusElement {
 public:
-	CADrawableClef(CAClef *clef, CADrawableStaff *drawableStaff, double x, double y);
+	CADrawableClef(CAClef *clef, CADrawableStaff *drawableStaff);
 
 	CADrawableClef *clone(CADrawableContext* newContext = 0);
 	inline CAClef *clef() { return (CAClef*)_musElement; }

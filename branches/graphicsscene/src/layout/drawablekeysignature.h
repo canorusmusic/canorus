@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -19,7 +19,7 @@ class QComboBox;
 
 class CADrawableKeySignature : public CADrawableMusElement {
 	public:
-		CADrawableKeySignature(CAKeySignature *keySig, CADrawableStaff *staff, double x, double y);
+		CADrawableKeySignature( CAKeySignature *keySig, CADrawableStaff *staff );
 		~CADrawableKeySignature();
 
 		CADrawableKeySignature *clone(CADrawableContext* newContext = 0);

@@ -16,7 +16,7 @@ class CADrawableLyricsContext;
 
 class CADrawableSyllable : public CADrawableMusElement {
 public:
-	CADrawableSyllable( CASyllable*, CADrawableLyricsContext*, double x, double y );
+	CADrawableSyllable( CASyllable*, CADrawableLyricsContext* );
 	~CADrawableSyllable();
 	CADrawableSyllable *clone(CADrawableContext *c=0);
 

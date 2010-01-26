@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -13,18 +13,10 @@
 
 const int CADrawable::SCALE_HANDLES_SIZE = 2;
 
-CADrawable::CADrawable( CAMusElement *elt, CADrawableType drawableType )
+CADrawable::CADrawable( const CADrawableType& drawableType )
  : QGraphicsItemGroup(),
    _drawableType( drawableType ),
-   _hScalable(false), _vScalable(false),
-   _musElement(elt), _context(0) {
-}
-
-CADrawable::CADrawable( CAContext *elt, CADrawableType drawableType )
- : QGraphicsItemGroup(),
-   _drawableType( drawableType ),
-   _hScalable(false), _vScalable(false),
-   _context(elt), _musElement(0) {
+   _hScalable(false), _vScalable(false) {
 }
 
 /*void CADrawable::drawHScaleHandles( QPainter *p, CADrawSettings s ) {

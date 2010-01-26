@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -16,7 +16,7 @@ class CADrawableFunctionMarkContext;
 
 class CADrawableFunctionMark : public CADrawableMusElement {
 public:
-	CADrawableFunctionMark(CAFunctionMark *function, CADrawableFunctionMarkContext *context, double x, double y);
+	CADrawableFunctionMark(CAFunctionMark *function, CADrawableFunctionMarkContext *context);
 	~CADrawableFunctionMark();
 
 	CADrawableFunctionMark *clone(CADrawableContext* newContext = 0);
@@ -46,11 +46,11 @@ public:
 		Alterations
 	};
 	// Key constructor
-	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, const QString key, CADrawableContext *c, double x, double y);
+	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, const QString key, CADrawableContext *c);
 	// Rectangle, ChordArea, Tonicization, Ellipse constructor
-	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, CADrawableFunctionMark *function, CADrawableContext *c, double x, double y, CADrawableFunctionMark *function2=0);
+	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, CADrawableFunctionMark *function, CADrawableContext *c, CADrawableFunctionMark *function2=0);
 	// Alterations consructor
-	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, CAFunctionMark *function, CADrawableContext *c, double x, double y);
+	CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType, CAFunctionMark *function, CADrawableContext *c);
 
 	~CADrawableFunctionMarkSupport();
 

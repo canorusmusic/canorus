@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -21,8 +21,8 @@ const double CADrawableStaff::STAFFLINE_WIDTH = 0.8;
 const double CADrawableStaff::STAFF_HEIGHT = 37;
 const double CADrawableStaff::STAFF_WIDTH = 200;
 
-CADrawableStaff::CADrawableStaff(CAStaff *s, double x, double y)
- : CADrawableContext(s, CADrawable::DrawableStaff, x, y),
+CADrawableStaff::CADrawableStaff(CAStaff *s)
+ : CADrawableContext(s, CADrawableContext::DrawableStaff),
    _height(STAFF_HEIGHT), _width(STAFF_WIDTH) {
 	QPen pen;
 	pen.setWidthF(STAFFLINE_WIDTH);
@@ -35,8 +35,6 @@ CADrawableStaff::CADrawableStaff(CAStaff *s, double x, double y)
 		line->setPen(pen);
 		addToGroup(line);
 	}
-
-	moveBy( x, y );
 }
 
 /*void CADrawableStaff::draw(QPainter *p, const CADrawSettings s) {

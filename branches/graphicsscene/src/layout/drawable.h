@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -19,27 +19,8 @@ class CAContext;
 class CADrawable : public QGraphicsItemGroup {
 public:
 	enum CADrawableType {
-		DrawableUndefined = -1,
-
-		DrawableStaff,
-		DrawableLyricsContext,
-		DrawableFiguredBassContext,
-		DrawableFunctionMarkContext,
-
-		DrawableNote,
-		DrawableRest,
-		DrawableMidiNote,
-		DrawableClef,
-		DrawableKeySignature,
-		DrawableTimeSignature,
-		DrawableBarline,
-		DrawableAccidental,
-		DrawableSlur,
-		DrawableTuplet,
-		DrawableSyllable,
-		DrawableFunctionMark, DrawableFunctionMarkSupport,
-		DrawableFiguredBassNumber,
-		DrawableMark
+		DrawableContext,
+		DrawableMusElement
 	};
 
 	enum CADirection {
@@ -54,8 +35,7 @@ public:
 		BottomRight
 	};
 
-	CADrawable( CAMusElement *elt, CADrawableType drawableType=DrawableUndefined );
-	CADrawable( CAContext *elt, CADrawableType drawableType=DrawableUndefined );
+	CADrawable( const CADrawableType& drawableType );
 	virtual ~CADrawable() { }
 	virtual CADrawable *clone() { return 0; }
 
@@ -80,9 +60,6 @@ protected:
 	CADrawableType _drawableType; // DrawableMusElement or DrawableContext.
 	bool _hScalable;              // Can the element be streched horizontally
 	bool _vScalable;              // Can the element be streched vertically
-
-	CAMusElement *_musElement;
-	CAContext    *_context;
 
 	static const int SCALE_HANDLES_SIZE; // Width and Height of the scale handles squares in pixels
 };

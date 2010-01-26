@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -18,9 +18,13 @@ class CAContext;
 class CADrawableContext : public CADrawable {
 public:
 	enum CADrawableContextType {
+		DrawableStaff,
+		DrawableLyricsContext,
+		DrawableFiguredBassContext,
+		DrawableFunctionMarkContext,
 	};
 
-	CADrawableContext(CAContext *c, CADrawableType t, double x, double y);
+	CADrawableContext(CAContext *c, const CADrawableContextType& t);
 	inline CAContext *context() { return _context; }
 	CADrawableContextType drawableContextType() { return _drawableContextType; }
 	inline virtual void addMElement(CADrawableMusElement *elt) {
@@ -44,6 +48,7 @@ public:
 
 protected:
 	void setDrawableContextType( CADrawableContextType type ) { _drawableContextType = type; }
+	CAContext    *_context; // model context
 
 	CADrawableContextType _drawableContextType;
 	QList<CADrawableMusElement *> _drawableMusElementList;	// List of all the drawable musElements in this context sorted by their left borders

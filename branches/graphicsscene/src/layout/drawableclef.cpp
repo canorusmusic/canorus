@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -31,8 +31,8 @@ const int CADrawableClef::CLEF_EIGHT_SIZE = 8;
 	\param x X coordinate of the left-margin of the clef.
 	\param y Y coordinate of the top of the staff. (WARNING! Not top of the clef!)
 */
-CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaff, double x, double y)
- : CADrawableMusElement(musElement, drawableStaff, DrawableClef, x, y) {
+CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaff)
+ : CADrawableMusElement(musElement, drawableStaff, DrawableClef) {
 	double lineSpace = drawableStaff->lineSpace();
 /*	double bottom = drawableStaff->yPos()+drawableStaff->height();
 */
@@ -104,8 +104,6 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 
 	if ( clef()->offset() > 0 )
 		setYPos( yPos()-CLEF_EIGHT_SIZE );*/
-
-	moveBy( x, y );
 }
 
 /*void CADrawableClef::draw(QPainter *p, CADrawSettings s) {

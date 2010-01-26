@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -13,8 +13,8 @@
 
 #include <QPainter>
 
-CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext, double x, double y)
- : CADrawableMusElement(rest, drawableContext, DrawableRest, x, y) {
+CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext)
+ : CADrawableMusElement(rest, drawableContext, DrawableRest) {
 	if (drawableContext->drawableContextType() != CADrawableContext::DrawableStaff)
 		return;
 

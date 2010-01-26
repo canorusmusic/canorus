@@ -13,8 +13,8 @@
 #include "layout/drawablestaff.h"
 #include "score/midinote.h"
 
-CADrawableMidiNote::CADrawableMidiNote( CAMidiNote *midiNote, CADrawableStaff* c, double x, double y )
- : CADrawableMusElement( midiNote, c, DrawableMidiNote, x, y) {
+CADrawableMidiNote::CADrawableMidiNote( CAMidiNote *midiNote, CADrawableStaff* c )
+ : CADrawableMusElement( midiNote, c, DrawableMidiNote ) {
 /*	setNeededSpaceWidth( midiNote->timeLength()/8.0 );
 	setNeededSpaceHeight( c->lineSpace() );
 */}

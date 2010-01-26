@@ -44,8 +44,8 @@ const double CADrawableMark::DEFAULT_PIXMAP_SIZE = 25;
 	\param x Left border of the associated element.
 	\param y Bottom border of the mark.
 */
-CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, double x, double y)
- : CADrawableMusElement( mark, dContext, DrawableMark, x, y ) {
+CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext )
+ : CADrawableMusElement( mark, dContext, DrawableMark ) {
 	_tempoNote = 0;
 	_tempoDNote = 0;
 	_pixmap = 0;
@@ -120,7 +120,7 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, doubl
 /*		setWidth( 40 );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
 */		_tempoNote = new CANote( CADiatonicPitch(), static_cast<CATempo*>(mark)->beat(), 0, 0 );
-		_tempoDNote = new CADrawableNote( _tempoNote, dContext, x, y );
+		_tempoDNote = new CADrawableNote( _tempoNote, dContext );
 		break;
 	}
 	case CAMark::Ritardando: {

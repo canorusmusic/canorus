@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -20,8 +20,8 @@
 	\sa CADrawableFunctionMarkSupport
 */
 
-CADrawableFunctionMark::CADrawableFunctionMark(CAFunctionMark *function, CADrawableFunctionMarkContext *context, double x, double y)
- : CADrawableMusElement(function, context, DrawableFunctionMark, x, y) {
+CADrawableFunctionMark::CADrawableFunctionMark(CAFunctionMark *function, CADrawableFunctionMarkContext *context)
+ : CADrawableMusElement(function, context, DrawableFunctionMark) {
  	_extenderLineVisible = false;
  	_extenderLineOnly = false;
  	CAMusElement *prevMusElt;
@@ -120,8 +120,8 @@ CADrawableFunctionMark *CADrawableFunctionMark::clone(CADrawableContext* newCont
 /*!
 	KeyName constructor.
 */
-CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType type, const QString key, CADrawableContext *c, double x, double y)
- : CADrawableMusElement(0, c, DrawableFunctionMarkSupport, x, y) {	// support functions point to no music element
+CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType type, const QString key, CADrawableContext *c)
+ : CADrawableMusElement(0, c, DrawableFunctionMarkSupport) {	// support functions point to no music element
 	_drawableFunctionMarkSupportType = type;
 	_key = key;
 	_function1=0; _function2=0;
@@ -156,8 +156,8 @@ CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionM
 /*!
 	ChordArea, Tonicization, Modulation/ChordArea Rectangle, Ellipse constructor.
 */
-CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType type, CADrawableFunctionMark *f1, CADrawableContext *c, double x, double y, CADrawableFunctionMark *f2)
- : CADrawableMusElement(0, c, DrawableFunctionMarkSupport, x, y) {	// support functions point to no music element
+CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType type, CADrawableFunctionMark *f1, CADrawableContext *c, CADrawableFunctionMark *f2)
+ : CADrawableMusElement(0, c, DrawableFunctionMarkSupport) {	// support functions point to no music element
 	_drawableFunctionMarkSupportType = type;
 	_function1 = f1;
 	_function2 = f2;
@@ -217,8 +217,8 @@ CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionM
 /*!
 	Alterations constructor.
 */
-CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType type, CAFunctionMark *function, CADrawableContext *c, double x, double y)
- : CADrawableMusElement(function, c, DrawableFunctionMarkSupport, x, y) {
+CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType type, CAFunctionMark *function, CADrawableContext *c)
+ : CADrawableMusElement(function, c, DrawableFunctionMarkSupport) {
 	_drawableFunctionMarkSupportType = type;
 	_function1=0;
 	_function2=0;

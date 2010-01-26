@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -12,7 +12,7 @@
 #include <QFont>
 
 CADrawableTuplet::CADrawableTuplet( CATuplet *tuplet, CADrawableContext *c, double x1, double y1, double x2, double y2 )
- : CADrawableMusElement( tuplet, c, DrawableTuplet, x1, 0 ) {
+ : CADrawableMusElement( tuplet, c, DrawableTuplet ) {
 /*	setWidth( x2-x1 );
 	setHeight( (abs(y2-y1)>5)?abs(y2-y1):8 );
 	setYPos( (c && qMin(y1, y2)>c->yPos())?qMin(y1, y2):(qMin(y1,y2)-height()) );
