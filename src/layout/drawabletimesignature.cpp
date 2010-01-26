@@ -36,6 +36,63 @@ CADrawableTimeSignature::CADrawableTimeSignature(CATimeSignature *timeSig, CADra
 		}
 /*		setHeight( drawableStaff->height() );
 */ 	}
+
+ 	QFont font("Emmentaler");
+	font.setPixelSize(qRound(37));
+
+	// Time signature emmentaler numbers glyphs:
+	// - timesig.C44: C 4/4 classical key signature - y0 is the center of the glyph
+	// - timesig.C22: C| 2/2 classical key signature - y0 is the center of the glyph
+	// - 0..9: y0 is the bottom of the glyph
+	//
+	switch (timeSignature()->timeSignatureType()) {
+		case CATimeSignature::Classical: {	//draw C or C| only, otherwise don't berak, go to Number then
+			if ((timeSignature()->beat() == 4) && (timeSignature()->beats() == 4)) {
+				QGraphicsSimpleTextItem *numberItem = new QGraphicsSimpleTextItem(this);
+				numberItem->setText( QString(CACanorus::fetaCodepoint("timesig.C44")) );
+				numberItem->setFont(font);
+				addToGroup( numberItem );
+				break;
+			} else if ((timeSignature()->beat() == 2) && (timeSignature()->beats() == 2)) {
+				QGraphicsSimpleTextItem *numberItem = new QGraphicsSimpleTextItem(this);
+				numberItem->setText( QString(CACanorus::fetaCodepoint("timesig.C22")) );
+				numberItem->setFont(font);
+				addToGroup( numberItem );
+				break;
+			}
+		}
+		case CATimeSignature::Number: {
+			//write the numbers one by one, first, the number of beats
+			QString curBeats = QString::number(timeSignature()->beats());
+			QString curBeat = QString::number(timeSignature()->beat());
+
+			QGraphicsSimpleTextItem *numberItem = new QGraphicsSimpleTextItem(this);
+			numberItem->setText( curBeats );
+			numberItem->moveBy( 0, -15 );
+			numberItem->setFont(font);
+			addToGroup( numberItem );
+
+			numberItem = new QGraphicsSimpleTextItem(this);
+			numberItem->setText( curBeat );
+			numberItem->moveBy( 0, 15 );
+			numberItem->setFont(font);
+			addToGroup( numberItem );
+
+/*			double curX = s.x;
+			while (!curBeats.isEmpty() || !curBeat.isEmpty()) {
+				if (!curBeats.isEmpty())
+					p->drawText(qRound(curX), qRound(s.y + 0.5*drawableContext()->height()*s.z), QString(curBeats[0]));
+				if (!curBeat.isEmpty())
+					p->drawText(qRound(curX), qRound(s.y + drawableContext()->height()*s.z), QString(curBeat[0]));
+
+				curX += (14*s.z);
+				curBeats = curBeats.mid(1);	//trim-off the left-most character
+				curBeat = curBeat.mid(1);	//trim-off the left-most character
+			}
+
+*/			break;
+		}
+	}
 }
 
 CADrawableTimeSignature::~CADrawableTimeSignature() {

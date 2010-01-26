@@ -58,17 +58,17 @@ public:
 	CADrawable( CAContext *elt, CADrawableType drawableType=DrawableUndefined );
 	virtual ~CADrawable() { }
 	virtual CADrawable *clone() { return 0; }
+
 	virtual void setColor( QColor& ) { } // used for selected items
 
+	virtual void setWidth() { }
+	virtual void setHeight() { }
 
 
 /*	void drawHScaleHandles( QPainter *p, const CADrawSettings s );
 	void drawVScaleHandles( QPainter *p, const CADrawSettings s );
 */
 	inline CADrawableType& drawableType() { return _drawableType; }
-
-	virtual void setWidth() { }
-	virtual void setHeight() { }
 
 	inline bool isHScalable() { return _hScalable; }
 	inline bool isVScalable() { return _vScalable; }
