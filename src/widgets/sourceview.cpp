@@ -48,8 +48,7 @@ class CASourceView::CATextEdit : public QTextEdit {
 	\todo This should be merged in the future with other formats.
 */
 CASourceView::CASourceView(CADocument *doc, QWidget *parent)
- : CAView(parent) {
- 	setViewType( SourceView );
+ : CAView(SourceView, parent) {
  	setSourceViewType( CanorusML );
  	_document = doc;
  	_voice = 0;
@@ -64,8 +63,7 @@ CASourceView::CASourceView(CADocument *doc, QWidget *parent)
 	\todo This should be merged in the future with other formats.
 */
 CASourceView::CASourceView(CAVoice *voice, QWidget *parent)
- : CAView(parent) {
- 	setViewType( SourceView );
+ : CAView(SourceView, parent) {
  	setSourceViewType( LilyPond );
  	_document = 0;
  	_voice = voice;
@@ -80,8 +78,7 @@ CASourceView::CASourceView(CAVoice *voice, QWidget *parent)
 	\todo This should be merged in the future with other formats.
 */
 CASourceView::CASourceView(CALyricsContext *lc, QWidget *parent)
- : CAView(parent) {
- 	setViewType( SourceView );
+ : CAView(SourceView, parent) {
   	setSourceViewType( LilyPond );
  	_document = 0;
  	_voice = 0;

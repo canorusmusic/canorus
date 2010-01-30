@@ -6,7 +6,6 @@
 */
 
 #include <QList>
-#include <QMap>
 #include <iostream>	//debug
 #include "layout/layoutengine.h"
 
@@ -52,14 +51,12 @@
 
 #include "interface/mididevice.h" // needed for midiPitch->diatonicPitch
 
-#define INITIAL_X_OFFSET 20 // space between the left border and the first music element
-#define MINIMUM_SPACE 10    // minimum space between the music elements
-
-QList<CADrawableMusElement*> CALayoutEngine::scalableElts;
-int *CALayoutEngine::streamsRehersalMarks;
+const double CALayoutEngine::INITIAL_X_OFFSET = 20;
+const double CALayoutEngine::RIGHT_X_OFFSET = 100;
+const double CALayoutEngine::MINIMUM_SPACE = 10;
 
 /*!
-	\class CAEngraver
+	\class CALayoutEngine
 	\brief Class for correctly placing the abstract notes to the score canvas.
 
 	This class is a bridge between the data part of Canorus and the UI.
@@ -67,12 +64,19 @@ int *CALayoutEngine::streamsRehersalMarks;
 */
 
 /*!
+	Default constructor.
+ */
+CALayoutEngine::CALayoutEngine( CAScoreView *v )
+ : _scoreView(v) {
+}
+
+/*!
 	Repositions the notes in the abstract sheet of the given score view \a v so they fit nicely.
 	This function doesn't clear the view, but only adds the elements.
 */
-void CALayoutEngine::reposit( CAScoreView *v ) {
+void CALayoutEngine::reposit() {
 	int i;
-	CASheet *sheet = v->sheet();
+	CASheet *sheet = _scoreView->sheet();
 
 	//list of all the music element lists (ie. streams) taken from all the contexts
 	QList< QList<CAMusElement*> > musStreamList; // streams music elements
@@ -80,16 +84,16 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 	int dy = 50;
 	QList<int> nonFirstVoiceIdxs;	//list of indexes of musStreamLists which the voices aren't the first voice. This is used later for determining should a sign be created or not (if it has been created in 1st voice already, don't recreate it in the other voices in the same staff).
-	QMap<CAContext*, CADrawableContext*> drawableContextMap;
+	_drawableContextMap.clear();
 
 	for (int i=0; i < sheet->contextList().size(); i++) {
 		if (sheet->contextList()[i]->contextType() == CAContext::Staff) {
 			if (i>0) dy+=70;
 
 			CAStaff *staff = static_cast<CAStaff*>(sheet->contextList()[i]);
-			drawableContextMap[staff] = new CADrawableStaff(staff);
-			v->addCElement(drawableContextMap[staff]);
-			drawableContextMap[staff]->setPos( 0, dy );
+			_drawableContextMap[staff] = new CADrawableStaff(staff);
+			_scoreView->addCElement(_drawableContextMap[staff]);
+			_drawableContextMap[staff]->setPos( 0, dy );
 
 			//add all the voices lists to the common list
 			for (int j=0; j < staff->voiceList().size(); j++) {
@@ -98,7 +102,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 				if (staff->voiceList()[j]->voiceNumber()!=1)
 					nonFirstVoiceIdxs << musStreamList.size()-1;
 			}
-			dy += drawableContextMap[staff]->boundingRect().height();
+			dy += _drawableContextMap[staff]->boundingRect().height();
 		} else
 		if (sheet->contextList()[i]->contextType() == CAContext::LyricsContext) {
 			CALyricsContext *lyricsContext = static_cast<CALyricsContext*>(sheet->contextList()[i]);
@@ -107,9 +111,9 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 				dy+=70; // the previous context wasn't lyrics or was not related to the current lyrics
 			}
 
-			drawableContextMap[lyricsContext] = new CADrawableLyricsContext(lyricsContext);
-			v->addCElement(drawableContextMap[lyricsContext]);
-			drawableContextMap[lyricsContext]->setPos(0, dy);
+			_drawableContextMap[lyricsContext] = new CADrawableLyricsContext(lyricsContext);
+			_scoreView->addCElement(_drawableContextMap[lyricsContext]);
+			_drawableContextMap[lyricsContext]->setPos(0, dy);
 
 			// convert QList<CASyllable*> to QList<CAMusElement*>
 			QList<CAMusElement*> syllableList;
@@ -119,20 +123,20 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 			musStreamList << syllableList;
 			contexts << lyricsContext;
-			dy += drawableContextMap[lyricsContext]->boundingRect().height();
+			dy += _drawableContextMap[lyricsContext]->boundingRect().height();
 		} else
 		if (sheet->contextList()[i]->contextType() == CAContext::FiguredBassContext) {
 			if (i>0) dy+=70;
 
 			CAFiguredBassContext *fbContext = static_cast<CAFiguredBassContext*>(sheet->contextList()[i]);
-			drawableContextMap[fbContext] = new CADrawableFiguredBassContext(fbContext);
-			v->addCElement(drawableContextMap[fbContext]);
-			drawableContextMap[fbContext]->setPos(0, dy);
+			_drawableContextMap[fbContext] = new CADrawableFiguredBassContext(fbContext);
+			_scoreView->addCElement(_drawableContextMap[fbContext]);
+			_drawableContextMap[fbContext]->setPos(0, dy);
 			QList<CAFiguredBassMark*> fbmList = fbContext->figuredBassMarkList();
 			QList<CAMusElement*> musList; for (int i=0; i<fbmList.size(); i++) musList << fbmList[i];
 			musStreamList << musList;
 			contexts << fbContext;
-			dy += drawableContextMap[fbContext]->boundingRect().height();
+			dy += _drawableContextMap[fbContext]->boundingRect().height();
 		} else
 		if (sheet->contextList()[i]->contextType() == CAContext::FunctionMarkContext) {
 			if (i>0 && sheet->contextList()[i-1]->contextType() != CAContext::FiguredBassContext) {
@@ -140,14 +144,14 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			}
 
 			CAFunctionMarkContext *fmContext = static_cast<CAFunctionMarkContext*>(sheet->contextList()[i]);
-			drawableContextMap[fmContext] = new CADrawableFunctionMarkContext(fmContext);
-			v->addCElement(drawableContextMap[fmContext]);
-			drawableContextMap[fmContext]->setPos(0, dy);
+			_drawableContextMap[fmContext] = new CADrawableFunctionMarkContext(fmContext);
+			_scoreView->addCElement(_drawableContextMap[fmContext]);
+			_drawableContextMap[fmContext]->setPos(0, dy);
 			QList<CAFunctionMark*> fmList = fmContext->functionMarkList();
 			QList<CAMusElement*> musList; for (int i=0; i<fmList.size(); i++) musList << fmList[i];
 			musStreamList << musList;
 			contexts << fmContext;
-			dy += drawableContextMap[fmContext]->boundingRect().height();
+			dy += _drawableContextMap[fmContext]->boundingRect().height();
 		}
 	}
 
@@ -155,11 +159,11 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 	int streamsIdx[streams]; for (int i=0; i<streams; i++) streamsIdx[i] = 0;
 	int streamsX[streams]; for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
 	int streamsRehersalMarks[streams]; for (int i=0; i<streams; i++) streamsRehersalMarks[i] = 0;
-	CALayoutEngine::streamsRehersalMarks = streamsRehersalMarks;
+	_streamsRehersalMarks = streamsRehersalMarks;
 	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
 	CAKeySignature *lastKeySig[streams]; for (int i=0; i<streams; i++) lastKeySig[i] = 0;
 	CATimeSignature *lastTimeSig[streams]; for (int i=0; i<streams; i++) lastTimeSig[i] = 0;
-	scalableElts.clear();
+	_scalableElts.clear();
 
 	int timeStart = 0;
 	bool done = false;
@@ -201,7 +205,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			        (elt->musElementType() != CAMusElement::FiguredBassMark) &&	//figured bass marks are placed separately
 			        (elt->musElementType() != CAMusElement::Syllable)	//syllables are placed separately
 			      ) {
-				drawableContext = drawableContextMap[elt->context()];
+				drawableContext = _drawableContextMap[elt->context()];
 
 				//place signs in first voices
 				if ( (drawableContext->drawableContextType() == CADrawableContext::DrawableStaff) &&
@@ -213,7 +217,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 								static_cast<CADrawableStaff*>(drawableContext)
 							);
 
-							v->addMElement(clef);
+							_scoreView->addMElement(clef);
 							clef->setPos( streamsX[i], drawableContext->pos().y() );
 
 							// set the last clefs in all voices in the same staff
@@ -224,7 +228,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							streamsX[i] += (clef->boundingRect().width() + MINIMUM_SPACE);
 							placedSymbol = true;
 
-							placeMarks( clef, v, i );
+							placeMarks( clef, i );
 
 							break;
 						}
@@ -234,7 +238,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 								static_cast<CADrawableStaff*>(drawableContext)
 							);
 
-							v->addMElement(keySig);
+							_scoreView->addMElement(keySig);
 							keySig->setPos( streamsX[i], drawableContext->pos().y() );
 
 							// set the last key sigs in all voices in the same staff
@@ -245,7 +249,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							streamsX[i] += (keySig->boundingRect().width() + MINIMUM_SPACE);
 							placedSymbol = true;
 
-							placeMarks( keySig, v, i );
+							placeMarks( keySig, i );
 
 							break;
 						}
@@ -255,7 +259,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 								static_cast<CADrawableStaff*>(drawableContext)
 							);
 
-							v->addMElement(timeSig);
+							_scoreView->addMElement(timeSig);
 							timeSig->setPos( streamsX[i], drawableContext->pos().y() );
 
 							// set the last time signatures in all voices in the same staff
@@ -266,7 +270,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							streamsX[i] += (timeSig->boundingRect().width() + MINIMUM_SPACE);
 							placedSymbol = true;
 
-							placeMarks( timeSig, v, i );
+							placeMarks( timeSig, i );
 
 							break;
 						}
@@ -286,7 +290,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			 i++) {
 			CAMusElement *elt = musStreamList[i].at(streamsIdx[i]);
 			if (elt->musElementType()==CAMusElement::FunctionMark && ((CAFunctionMark*)elt)->function()!=CAFunctionMark::Undefined) {
-				drawableContext = drawableContextMap[elt->context()];
+				drawableContext = _drawableContextMap[elt->context()];
 				if (streamsIdx[i]-1<0 ||
 				    ((CAFunctionMark*)musStreamList[i].at(streamsIdx[i]-1))->key() != ((CAFunctionMark*)elt)->key()
 				   ) {
@@ -297,7 +301,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						drawableContext
 					);
 					streamsX[i] += (support->boundingRect().width());
-					v->addMElement(support);
+					_scoreView->addMElement(support);
 					support->setPos( streamsX[i], static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Middle) );
 					lastDFMKeyNames << support;
 				}
@@ -323,19 +327,19 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 					continue;
 				}
 
-				drawableContext = drawableContextMap[elt->context()];
+				drawableContext = _drawableContextMap[elt->context()];
 				CADrawableBarline *bar = new CADrawableBarline(
 					static_cast<CABarline*>(elt),
 					static_cast<CADrawableStaff*>(drawableContext)
 				);
 
-				v->addMElement(bar);
+				_scoreView->addMElement(bar);
 				bar->setPos( streamsX[i], drawableContext->pos().y() );
 				placedSymbol = true;
 				streamsX[i] += (bar->boundingRect().width() + MINIMUM_SPACE);
 				streamsIdx[i] = streamsIdx[i] + 1;
 
-				placeMarks( bar, v, i );
+				placeMarks( bar, i );
 			}
 		}
 
@@ -352,7 +356,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			        ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (elt->isPlayable())
 			      ) {
-				drawableContext = drawableContextMap[elt->context()];
+				drawableContext = _drawableContextMap[elt->context()];
 
 				if (elt->musElementType()==CAMusElement::Note &&
 				    ((CADrawableStaff*)drawableContext)->getAccs(streamsX[i], static_cast<CANote*>(elt)->diatonicPitch().noteName()) != static_cast<CANote*>(elt)->diatonicPitch().accs()
@@ -363,7 +367,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							static_cast<CADrawableStaff*>(drawableContext)
 						);
 
-						v->addMElement(newElt);
+						_scoreView->addMElement(newElt);
 						newElt->setPos( streamsX[i], static_cast<CADrawableStaff*>(drawableContext)->calculateCenterYCoord(static_cast<CANote*>(elt), lastClef[i]) );
 
 						lastAccidentals << static_cast<CADrawableAccidental*>(newElt);
@@ -404,7 +408,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			         elt->musElementType()==CAMusElement::Syllable
 			        )
 			      ) {
-				drawableContext = drawableContextMap[elt->context()];
+				drawableContext = _drawableContextMap[elt->context()];
 				CADrawableMusElement *newElt=0;
 
 				switch ( elt->musElementType() ) {
@@ -436,7 +440,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 									newElt->pos().x() + 40, newElt->pos().y()	+ newElt->boundingRect().height()
 								);
 							}
-							v->addMElement(tie);
+							_scoreView->addMElement(tie);
 							tie->setPos(newElt->pos().x()+newElt->boundingRect().width(), newElt->pos().y());
 						}
 						if ( static_cast<CADrawableNote*>(newElt)->note()->tieEnd() ) {
@@ -444,7 +448,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->tieEnd()->slurDirection();
 							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
 								dir = static_cast<CADrawableNote*>(newElt)->note()->tieEnd()->noteStart()->actualSlurDirection();
-							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tieEnd()));
+							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(_scoreView->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tieEnd()));
 							dSlur->setX2( newElt->pos().x() );
 							dSlur->setXMid( qRound(0.5*dSlur->pos().x() + 0.5*newElt->pos().x()) );
 							if ( dir==CASlur::SlurUp ) {
@@ -480,7 +484,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 									newElt->pos().x() + 40, newElt->pos().y()	+ newElt->boundingRect().height()
 								);
 							}
-							v->addMElement(slur);
+							_scoreView->addMElement(slur);
 							slur->setPos(newElt->pos().x()+newElt->boundingRect().width(), newElt->pos().y());
 						}
 						if ( static_cast<CADrawableNote*>(newElt)->note()->slurEnd() ) {
@@ -488,7 +492,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->slurEnd()->slurDirection();
 							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
 								dir = static_cast<CADrawableNote*>(newElt)->note()->slurEnd()->noteStart()->actualSlurDirection();
-							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->slurEnd()));
+							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(_scoreView->findMElement(static_cast<CADrawableNote*>(newElt)->note()->slurEnd()));
 							dSlur->setX2( newElt->pos().x() );
 							dSlur->setXMid( qRound(0.5*dSlur->pos().x() + 0.5*newElt->pos().x()) );
 							if ( dir==CASlur::SlurUp ) {
@@ -523,7 +527,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 									newElt->pos().x() + 40, newElt->pos().y()	+ newElt->boundingRect().height()
 								);
 							}
-							v->addMElement(phrasingSlur);
+							_scoreView->addMElement(phrasingSlur);
 							phrasingSlur->setPos(newElt->pos().x()+newElt->boundingRect().width(), newElt->pos().y());
 						}
 						if ( static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd() ) {
@@ -531,7 +535,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd()->slurDirection();
 							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
 								dir = static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd()->noteStart()->actualSlurDirection();
-							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd()));
+							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(_scoreView->findMElement(static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurEnd()));
 							dSlur->setX2( newElt->pos().x() );
 							dSlur->setXMid( qRound(0.5*dSlur->pos().x() + 0.5*newElt->pos().x()) );
 							if ( dir==CASlur::SlurUp ) {
@@ -544,14 +548,14 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							}
 						}
 
-						v->addMElement(newElt);
+						_scoreView->addMElement(newElt);
 						newElt->setPos( streamsX[i], static_cast<CADrawableStaff*>(drawableContext)->calculateCenterYCoord(static_cast<CANote*>(elt), lastClef[i]) );
 
 						// add tuplet - same as for the rests
 						if ( static_cast<CADrawableNote*>(newElt)->note()->isLastInTuplet() ) {
-							int x1 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->pos().x();
+							int x1 = _scoreView->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->pos().x();
 							int x2 = newElt->pos().x() + newElt->boundingRect().width();
-							int y1 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->pos().y();
+							int y1 = _scoreView->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->pos().y();
 							if ( y1 > drawableContext->pos().y() && y1 < drawableContext->pos().y()+drawableContext->boundingRect().height() ) {
 								y1 = drawableContext->pos().y()+drawableContext->boundingRect().height() + 10; // inside the staff
 							} else if ( y1 < drawableContext->pos().y() ){
@@ -559,7 +563,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							} else {
 								y1 += 10; // under the staff
 							}
-							int y2 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->lastNote())->pos().y();
+							int y2 = _scoreView->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->lastNote())->pos().y();
 							if ( y2 > drawableContext->pos().y() && y2 < drawableContext->pos().y()+drawableContext->boundingRect().height() ) {
 								y2 = drawableContext->pos().y()+drawableContext->boundingRect().height() + 10; // inside the staff
 							} else if ( y2 < drawableContext->pos().y() ){
@@ -569,14 +573,14 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							}
 
 							CADrawableTuplet *dTuplet = new CADrawableTuplet( static_cast<CADrawableNote*>(newElt)->note()->tuplet(), drawableContext, x1, y1, x2, y2 );
-							v->addMElement(dTuplet);
+							_scoreView->addMElement(dTuplet);
 							dTuplet->setPos( x1, y1 );
 						}
 
 						if ( static_cast<CANote*>(elt)->isLastInChord() )
 							streamsX[i] += (newElt->boundingRect().width() + MINIMUM_SPACE);
 
-						placeMarks( newElt, v, i );
+						placeMarks( newElt, i );
 
 						break;
 					}
@@ -586,15 +590,15 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							drawableContext
 						);
 
-						v->addMElement(newElt);
+						_scoreView->addMElement(newElt);
 						newElt->setPos( streamsX[i], drawableContext->pos().y() );
 						streamsX[i] += (newElt->boundingRect().width() + MINIMUM_SPACE);
 
 						// add tuplet - same as for the notes
 						if ( static_cast<CADrawableRest*>(newElt)->rest()->isLastInTuplet() ) {
-							int x1 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->firstNote())->pos().x();
+							int x1 = _scoreView->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->firstNote())->pos().x();
 							int x2 = newElt->pos().x() + newElt->boundingRect().width();
-							int y1 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->firstNote())->pos().y();
+							int y1 = _scoreView->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->firstNote())->pos().y();
 							if ( y1 > drawableContext->pos().y() && y1 < drawableContext->pos().y()+drawableContext->boundingRect().height() ) {
 								y1 = drawableContext->pos().y()+drawableContext->boundingRect().height() + 10; // inside the staff
 							} else if ( y1 < drawableContext->pos().y() ){
@@ -602,7 +606,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							} else {
 								y1 += 10; // under the staff
 							}
-							int y2 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->lastNote())->pos().y();
+							int y2 = _scoreView->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->lastNote())->pos().y();
 							if ( y2 > drawableContext->pos().y() && y2 < drawableContext->pos().y()+drawableContext->boundingRect().height() ) {
 								y2 = drawableContext->pos().y()+drawableContext->boundingRect().height() + 10; // inside the staff
 							} else if ( y2 < drawableContext->pos().y() ){
@@ -612,10 +616,10 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							}
 
 							CADrawableTuplet *dTuplet = new CADrawableTuplet( static_cast<CADrawableRest*>(newElt)->rest()->tuplet(), drawableContext, x1, y1, x2, y2 );
-							v->addMElement(dTuplet);
+							_scoreView->addMElement(dTuplet);
 						}
 
-						placeMarks( newElt, v, i );
+						placeMarks( newElt, i );
 
 						break;
 					}
@@ -625,7 +629,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						int pitch = CAMidiDevice::midiPitchToDiatonicPitch( midiNote->midiPitch() ).noteName();
 
 						newElt = new CADrawableMidiNote( midiNote, dStaff );
-						v->addMElement(newElt);
+						_scoreView->addMElement(newElt);
 						newElt->setPos( streamsX[i], dStaff->calculateCenterYCoord( pitch, streamsX[i] ) );
 						break;
 					}
@@ -636,12 +640,12 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						);
 
 						CAMusElement *prevSyllable = drawableContext->context()->previous(elt);
-						CADrawableMusElement *prevDSyllable = (prevSyllable?v->findMElement(prevSyllable):0);
+						CADrawableMusElement *prevDSyllable = (prevSyllable?_scoreView->findMElement(prevSyllable):0);
 						if (prevDSyllable) {
 /*							prevDSyllable->setWidth( newElt->pos().x() - prevDSyllable->pos().x() );*/
 						}
 
-						v->addMElement(newElt);
+						_scoreView->addMElement(newElt);
 						newElt->setPos( streamsX[i], drawableContext->pos().y() + qRound(CADrawableLyricsContext::DEFAULT_TEXT_VERTICAL_SPACING) );
 
 						streamsX[i] += (newElt->boundingRect().width() + MINIMUM_SPACE);
@@ -656,7 +660,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 								static_cast<CADrawableFiguredBassContext*>(drawableContext)
 							);
 
-							v->addMElement(newElt);
+							_scoreView->addMElement(newElt);
 							newElt->setPos(
 								// shift figured bass mark more right, if only one character
 								streamsX[i]+((!fbm->accs().contains(fbm->numbers()[j]) || fbm->numbers()[j]==0)?3:0),
@@ -680,7 +684,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 								drawableContext
 							);
 /*							newKey->setXPos(streamsX[i]-newKey->boundingRect().width()-2);
-*/							v->addMElement(newKey);
+*/							_scoreView->addMElement(newKey);
 							newKey->setPos(streamsX[i], static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Middle));
 						}
 
@@ -903,39 +907,39 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						}
 
 						if (newElt) {
-							v->addMElement(newElt);	// when only alterations are made and no function placed, IF is needed
+							_scoreView->addMElement(newElt);	// when only alterations are made and no function placed, IF is needed
 							newElt->setPos(streamsX[i],
 							(function->tonicDegree()==CAFunctionMark::T && (!function->isPartOfEllipse()))?
 								static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Middle):
 								static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Upper));
 						}
 						if (tonicization) {
-							v->addMElement(tonicization);
+							_scoreView->addMElement(tonicization);
 							tonicization->setPos( left->pos().x(), static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Middle) );
 							lastDFMTonicizations[i]=tonicization;
 						}
 						if (ellipse) {
-							v->addMElement(ellipse);
+							_scoreView->addMElement(ellipse);
 							ellipse->setPos( left->pos().x(), static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Lower) );
 						}
 						if (hModulationRect) {
-							v->addMElement(hModulationRect);
+							_scoreView->addMElement(hModulationRect);
 							hModulationRect->setPos( left->pos().x(), left->pos().y() );
 						}
 						if (vModulationRect) {
-							v->addMElement(vModulationRect);
+							_scoreView->addMElement(vModulationRect);
 							vModulationRect->setPos( left->pos().x(), left->pos().y() );
 						}
 						if (hChordAreaRect) {
-							v->addMElement(hChordAreaRect);
+							_scoreView->addMElement(hChordAreaRect);
 							hChordAreaRect->setPos( left->pos().x(), left->pos().y() );
 						}
 						if (chordArea) {
-							v->addMElement(chordArea);
+							_scoreView->addMElement(chordArea);
 							chordArea->setPos( streamsX[i], static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Lower) );
 						}
 						if (alterations) {
-							v->addMElement(alterations);
+							_scoreView->addMElement(alterations);
 							alterations->setPos( streamsX[i], static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Lower)+3 );
 						}
 
@@ -954,17 +958,20 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 	}
 
 	// reposit the scalable elements (eg. crescendo)
-	for (int i=0; i<scalableElts.size(); i++) {
-/*		scalableElts[i]->setXPos( v->timeToCoords(scalableElts[i]->musElement()->timeStart()) );
-		scalableElts[i]->setWidth( v->timeToCoords(scalableElts[i]->musElement()->timeEnd()) - scalableElts[i]->pos().x() );
-*/		v->addMElement(scalableElts[i]);
+	for (int i=0; i<_scalableElts.size(); i++) {
+/*		_scalableElts[i]->setXPos( _scoreView->timeToCoords(_scalableElts[i]->musElement()->timeStart()) );
+		_scalableElts[i]->setWidth( _scoreView->timeToCoords(_scalableElts[i]->musElement()->timeEnd()) - _scalableElts[i]->pos().x() );
+*/		_scoreView->addMElement(_scalableElts[i]);
 	}
+
+	// set correct width for the contexts, to fit all the containing elements
+	updateContextsWidth();
 }
 
 /*!
 	Place marks for the given music element.
 */
-void CALayoutEngine::placeMarks( CADrawableMusElement *e, CAScoreView *v, int streamIdx ) {
+void CALayoutEngine::placeMarks( CADrawableMusElement *e, int streamIdx ) {
 	CAMusElement *elt = e->musElement();
 	int xCoord = e->pos().x();
 
@@ -1006,13 +1013,36 @@ void CALayoutEngine::placeMarks( CADrawableMusElement *e, CAScoreView *v, int st
 		CADrawableMark *m = new CADrawableMark( mark, e->drawableContext() );
 
 		if ( mark->markType()==CAMark::RehersalMark )
-			m->setRehersalMarkNumber( streamsRehersalMarks[ streamIdx ]++ );
+			m->setRehersalMarkNumber( _streamsRehersalMarks[ streamIdx ]++ );
 
 		if (m->isHScalable() || m->isVScalable()) {
-			scalableElts << m;
+			_scalableElts << m;
 		} else {
-			v->addMElement( m );
+			_scoreView->addMElement( m );
 			m->setPos(xCoord, yCoord);
 		}
+	}
+}
+
+/*!
+	Updates all the context widths to fit the last drawable element width + offset.
+*/
+void CALayoutEngine::updateContextsWidth() {
+	double maxWidth = 0;
+
+	// first calculate the max width
+	for (int i=0; i<_drawableContextMap.values().size(); i++) {
+		CADrawableContext *dc = _drawableContextMap.values()[i];
+		CADrawableMusElement *elt = dc->lastDrawableMusElement();
+		if (!elt) { continue; }
+
+		double width = elt->pos().x() + elt->boundingRect().width() + RIGHT_X_OFFSET;
+		if ( width > maxWidth ) { maxWidth = width; }
+	}
+
+	// apply the max width to all contexts
+	for (int i=0; i<_drawableContextMap.values().size(); i++) {
+		CADrawableContext *dc = _drawableContextMap.values()[i];
+		dc->setWidth( maxWidth );
 	}
 }

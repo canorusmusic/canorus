@@ -34,6 +34,18 @@ CADrawableStaff::CADrawableStaff(CAStaff *s)
 		line->setLine(0, dy*i, 1000, dy*i);
 		line->setPen(pen);
 		addToGroup(line);
+		_lines << line;
+	}
+}
+
+void CADrawableStaff::setWidth( double width ) {
+	for (int i=0; i<_lines.size(); i++) {
+		_lines[i]->setLine(
+			_lines[i]->line().x1(),
+			_lines[i]->line().y1(),
+			_lines[i]->line().x1()+width,
+			_lines[i]->line().y2()
+		);
 	}
 }
 
@@ -252,13 +264,13 @@ CATimeSignature* CADrawableStaff::getTimeSignature(double x) {
 void CADrawableStaff::addMElement(CADrawableMusElement *elt) {
 	switch (elt->drawableMusElementType()) {
 		case CADrawableMusElement::DrawableClef:
-			addClef((CADrawableClef*)elt);
+			addClef(static_cast<CADrawableClef*>(elt));
 			break;
 		case CADrawableMusElement::DrawableKeySignature:
-			addKeySignature((CADrawableKeySignature*)elt);
+			addKeySignature(static_cast<CADrawableKeySignature*>(elt));
 			break;
 		case CADrawableMusElement::DrawableTimeSignature:
-			addTimeSignature((CADrawableTimeSignature*)elt);
+			addTimeSignature(static_cast<CADrawableTimeSignature*>(elt));
 			break;
 	}
 
