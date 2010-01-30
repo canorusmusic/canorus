@@ -16,14 +16,13 @@ class CAView : public QWidget {
 Q_OBJECT
 
 public:
-	CAView(QWidget *parent=0);
-
-	virtual ~CAView();
-
 	enum CAViewType {
 		ScoreView,
 		SourceView
 	};
+
+	CAView(const CAViewType&, QWidget *parent=0);
+	virtual ~CAView();
 
 	inline CAViewType viewType() { return _viewType; }
 

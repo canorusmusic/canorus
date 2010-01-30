@@ -41,8 +41,8 @@ public:
 
 	virtual void setColor( QColor& ) { } // used for selected items
 
-	virtual void setWidth() { }
-	virtual void setHeight() { }
+	virtual void setWidth( double ) { }
+	virtual void setHeight( double ) { }
 
 
 /*	void drawHScaleHandles( QPainter *p, const CADrawSettings s );

@@ -79,38 +79,45 @@ void CATextEdit::keyPressEvent( QKeyEvent *e ) {
 
 /*!
 	\class CAScoreView
-	Widget for rendering the score.
+	\brief Widget for rendering and interacting with the score.
 
-	This class represents the widget capable of rendering the score. It is usually used as a central widget in the main window, but might be used
-	for example, in a list of possible harmonization or improvization solutions, score layout window and more as an independent widget or only as
-	a drawable content on a button.
+	This class represents the widget capable of rendering the score. It is
+	usually used as a central widget in the main window, but might be used for
+	example, in a list of possible harmonization or improvization solutions,
+	score layout or preview window, a drawable score inside the pushbutton etc.
 
-	Score view consists of a virtual workspace full of drawable elements which represent the abstract music elements or contexts. Every drawable
-	element has its absolute X, Y, Width and Height geometry properties. Score view also shows usually a small part of the whole workspace
-	(depending on scroll bars values and a zoom level). When drawable elements are drawn, their CADrawable::draw() methods are called with the
-	views X and Y coordinates, zoom level, pen color and other properties needed to correctly draw an element to the score view's canvas.
+	Score view consists of a virtual graphics scene (QGraphicsScene) containing
+	drawable elements above the given model. The model are music elements
+	(CAMusElement) or contexts (CAContext). Drawable elements inherit
+	QGraphicsItem.
 
-	Note that this widget is only capable of correctly rendering the drawable elements. No Control part of the MVC model is implemented here. The
-	view logic is implemented outside of this class (usually main window). Score view only provides various signals to communicate with
-	outer world. However, this class provides various modes (eg. drawing the shadow notes when inserting music elements, coloring only one voice,
-	hiding certain staffs, animating the scroll etc.) the controller might use.
+	Apart from the model elements, the view consists of additional helper
+	elements. These are text edit widget for editing lyrics, shadow notes for
+	inserting new notes etc.
 
-	This widget also provides horizontal and vertical scrollbars (see _hScrollBar and _vScrollBar).
+	The score view widgets offers various options for rendering the score, for
+	example, hiding of certain staffs, animating the scroll, showing/hiding
+	helpers etc.
+
+	This widget is a wrapper around QGraphicsView for rendering the scene (see
+	_canvas and _scene). No controller part in terms of MVC paradigm should be
+	done here (but usually in main window or its helpers). For communication
+	with controller, score view provides various signals to communicate with
+	outer world (eg. mouse and keypress events, selection changes etc. - see
+	signals block in the header file).
 */
 
 CAScoreView::CAScoreView( CASheet *sheet, QWidget *parent )
- : CAView(parent) {
+ : CAView(ScoreView, parent) {
 	initScoreView( sheet );
 }
 
 CAScoreView::CAScoreView( QWidget *parent )
- : CAView(parent) {
+ : CAView(ScoreView, parent) {
 	initScoreView( 0 );
 }
 
 void CAScoreView::initScoreView( CASheet *sheet ) {
-	setViewType( ScoreView );
-
 	setSheet( sheet );
 	_playing = false;
 	_currentContext = 0;
@@ -121,6 +128,7 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	_canvas = new QGraphicsView(this);
 	_scene = new QGraphicsScene();
 	_canvas->setScene( _scene );
+	_layoutEngine = new CALayoutEngine( this );
 
 	// init layout
 	_drawBorder = false;
@@ -500,7 +508,7 @@ void CAScoreView::rebuild() {
 	_drawableCList.clear(true);
 	_scene->clear();
 
-	CALayoutEngine::reposit(this);
+	_layoutEngine->reposit();
 
 	for (int i=0; i<_shadowNote.size(); i++) {
 		_shadowNote[i]->setPlayableLength(l);

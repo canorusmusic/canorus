@@ -25,6 +25,7 @@ public:
 	CADrawableStaff *clone();
 	inline CAStaff *staff() { return static_cast<CAStaff*>(_context); }
 
+	void setWidth( double width );
 	inline double lineSpace() { return (staff()->numberOfLines()?_height/(staff()->numberOfLines()-1):0); }
 
 	double calculateCenterYCoord(int pitch, CAClef *clef);
@@ -58,6 +59,8 @@ private:
 
 	double _height; // staff height
 	double _width;
+
+	QList<QGraphicsLineItem*> _lines; // drawable instances of lines
 
 	static const double STAFFLINE_WIDTH;                         // Width of the staffs' lines. Defined in drawablestaff.cpp
 	static const double STAFF_HEIGHT;                            // Default height of the staff

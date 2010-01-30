@@ -28,9 +28,7 @@ public:
 	inline CAContext *context() { return _context; }
 	CADrawableContextType drawableContextType() { return _drawableContextType; }
 	inline virtual void addMElement(CADrawableMusElement *elt) {
-/*		int i;
-		for (i=_drawableMusElementList.size()-1; (i>=0) && _drawableMusElementList[i]->xPos()>elt->xPos(); i--);
-		_drawableMusElementList.insert( ++i, elt);*/
+		_drawableMusElementList << elt;
 	}
 	virtual int removeMElement(CADrawableMusElement *elt) { return _drawableMusElementList.removeAll(elt); }
 	CADrawableMusElement *lastDrawableMusElement() { if (_drawableMusElementList.size()) return _drawableMusElementList.last(); else return 0; }

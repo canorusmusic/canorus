@@ -23,8 +23,8 @@ const int CAView::DEFAULT_VIEW_HEIGHT = 400;
 	The default constructor.
 	Creates a widget with the parent widget \a p.
 */
-CAView::CAView(QWidget *p)
- : QWidget(p) {
+CAView::CAView(const CAViewType& t, QWidget *p)
+ : QWidget(p), _viewType(t) {
  	setGeometry( 0, 0, 0, 0 );
 }
 
