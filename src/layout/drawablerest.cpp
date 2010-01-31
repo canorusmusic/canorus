@@ -11,76 +11,92 @@
 #include "score/rest.h"
 #include "canorus.h"
 
-#include <QPainter>
+CADrawableRest::CADrawableRest(CARest *r, CADrawableContext *drawableContext)
+ : CADrawableMusElement(r, drawableContext, DrawableRest) {
+	QFont font("Emmentaler");
+	font.setPixelSize(35);
 
-CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext)
- : CADrawableMusElement(rest, drawableContext, DrawableRest) {
-	if (drawableContext->drawableContextType() != CADrawableContext::DrawableStaff)
-		return;
-
-	switch ( rest->playableLength().musicLength() ) {
-	case CAPlayableLength::HundredTwentyEighth:
-/*		setWidth( 16 );
-		setHeight( 49 );
-*/		break;
-
-	case CAPlayableLength::SixtyFourth:
-/*		setWidth( 14 );
-		setHeight( 41 );
-*/		break;
-
-	case CAPlayableLength::ThirtySecond:
-/*		setWidth( 12 );
-		setHeight( 33 );
-		setYPos(y + 2);
-*/		break;
-
-	case CAPlayableLength::Sixteenth:
-/*		setWidth( 10 );
-		setHeight( 24 );
-		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-*/		break;
-
-	case CAPlayableLength::Eighth:
-/*		setWidth( 8 );
-		setHeight( 17 );
-		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-*/		break;
-
-	case CAPlayableLength::Quarter:
-/*		setWidth( 8 );
-		setHeight( 20 );
-		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-*/		break;
-
-	case CAPlayableLength::Half:
-/*		setWidth( 12 );
-		setHeight( 5 );
-		setYPos(y + 1.5*static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-*/		break;
-
-	case CAPlayableLength::Whole:
-/*		setWidth( 12 );
-		setHeight( 5 );
-		//values in constructor are the notehead center coords. yPos represents the top of the stem.
-		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-*/		break;
-
-	case CAPlayableLength::Breve:
-/*		setWidth( 4 );
-		setHeight( 9 );
-		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
-*/		break;
+	// Draw rest
+	QGraphicsSimpleTextItem *item = 0;
+	switch ( rest()->playableLength().musicLength() ) {
+	case CAPlayableLength::HundredTwentyEighth: {
+		item = new QGraphicsSimpleTextItem(QString(CACanorus::fetaCodepoint("rests.7")), this);
+		item->setFont(font);
+		addToGroup(item);
+		item->setPos(4, 2.6*static_cast<CADrawableStaff*>(_drawableContext)->lineSpace());
+		break;
+	}
+	case CAPlayableLength::SixtyFourth: {
+		item = new QGraphicsSimpleTextItem(QString(CACanorus::fetaCodepoint("rests.6")), this);
+		item->setFont(font);
+		addToGroup(item);
+		item->setPos(3, 1.75*static_cast<CADrawableStaff*>(_drawableContext)->lineSpace());
+		break;
+	}
+	case CAPlayableLength::ThirtySecond: {
+		item = new QGraphicsSimpleTextItem(QString(CACanorus::fetaCodepoint("rests.5")), this);
+		item->setFont(font);
+		addToGroup(item);
+		item->setPos(2.5, 1.8*static_cast<CADrawableStaff*>(_drawableContext)->lineSpace());
+		break;
+	}
+	case CAPlayableLength::Sixteenth: {
+		item = new QGraphicsSimpleTextItem(QString(CACanorus::fetaCodepoint("rests.4")), this);
+		item->setFont(font);
+		addToGroup(item);
+		item->setPos(1.0, static_cast<CADrawableStaff*>(_drawableContext)->lineSpace()-0.9);
+		break;
+	}
+	case CAPlayableLength::Eighth: {
+		item = new QGraphicsSimpleTextItem(QString(CACanorus::fetaCodepoint("rests.3")), this);
+		item->setFont(font);
+		addToGroup(item);
+		item->setPos(0, static_cast<CADrawableStaff*>(_drawableContext)->lineSpace()-0.9);
+		break;
+	}
+	case CAPlayableLength::Quarter: {
+		item = new QGraphicsSimpleTextItem(QString(CACanorus::fetaCodepoint("rests.2")), this);
+		item->setFont(font);
+		addToGroup(item);
+		item->setPos(0, 0.5*item->boundingRect().height());
+		break;
+	}
+	case CAPlayableLength::Half: {
+		item = new QGraphicsSimpleTextItem(QString(CACanorus::fetaCodepoint("rests.1")), this);
+		item->setFont(font);
+		addToGroup(item);
+		item->setPos(0, item->boundingRect().height() + 0.5);
+		break;
+	}
+	case CAPlayableLength::Whole: {
+		item = new QGraphicsSimpleTextItem(QString(CACanorus::fetaCodepoint("rests.0")), this);
+		item->setFont(font);
+		addToGroup(item);
+		break;
+	}
+	case CAPlayableLength::Breve: {
+		item = new QGraphicsSimpleTextItem(QString(CACanorus::fetaCodepoint("rests.M1")), this);
+		item->setFont(font);
+		addToGroup(item);
+		item->setPos(0, item->boundingRect().height());
+		break;
+	}
 	}
 
-/*	_restWidth = _width;
-
-	if (rest->playableLength().dotted()) {
-		setWidth( width() + 3 );
-		for (int i=0; i<rest->playableLength().dotted(); i++)
-			setWidth( width() + 2 );
+	if (item) {
+		item->moveBy(0, -47);
 	}
-*/}
+
+	// Draw dots
+	double dotOffset = 3;
+	double dotWidth  = 2.5;
+	QBrush dotBrush(Qt::SolidPattern);
+	for (int i=0; i<rest()->playableLength().dotted(); i++) {
+		QGraphicsEllipseItem *item = new QGraphicsEllipseItem(boundingRect().width() + dotOffset, -2.5, dotWidth, dotWidth, this);
+		item->setBrush(dotBrush);
+		addToGroup(item);
+	}
+}
 
 CADrawableRest::~CADrawableRest() {
 }

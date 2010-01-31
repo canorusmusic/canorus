@@ -6,51 +6,124 @@
 */
 
 #include <QPen>
-#include <QPainter>
 
 #include "layout/drawablebarline.h"
 #include "layout/drawablestaff.h"
 
 #include "score/barline.h"
 
-const float CADrawableBarline::SPACE_BETWEEN_BARLINES = 3;
+const double CADrawableBarline::SPACE_BETWEEN_BARLINES = 3.0;
 
-const float CADrawableBarline::BARLINE_WIDTH = 1.5;
-const float CADrawableBarline::DOTTED_BARLINE_WIDTH = 2;
-const float CADrawableBarline::BOLD_BARLINE_WIDTH = 4;
-const float CADrawableBarline::REPEAT_DOTS_WIDTH = 3;
+const double CADrawableBarline::BARLINE_WIDTH = 1.5;
+const double CADrawableBarline::DOTTED_BARLINE_WIDTH = 2.0;
+const double CADrawableBarline::BOLD_BARLINE_WIDTH = 4.0;
+const double CADrawableBarline::REPEAT_DOTS_Y_OFFSET = 8.0;
+const double CADrawableBarline::REPEAT_DOTS_WIDTH = 3.0;
 
 CADrawableBarline::CADrawableBarline(CABarline *m, CADrawableStaff *staff)
  : CADrawableMusElement(m, staff, DrawableBarline) {
- 	switch (m->barlineType()) {
- 		case CABarline::Single:
-/* 			setWidth( BARLINE_WIDTH );
-*/ 			break;
- 		case CABarline::Double:
-/* 			setWidth( 2*BARLINE_WIDTH + SPACE_BETWEEN_BARLINES );
-*/ 			break;
- 		case CABarline::End:
-/* 			setWidth( BARLINE_WIDTH + SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH );
-*/ 			break;
- 		case CABarline::RepeatOpen:
-/* 			setWidth( BOLD_BARLINE_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH + REPEAT_DOTS_WIDTH );
-*/ 			break;
- 		case CABarline::RepeatClose:
-/* 			setWidth( REPEAT_DOTS_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH + BOLD_BARLINE_WIDTH );
-*/ 			break;
- 		case CABarline::RepeatCloseOpen:
-/* 			setWidth( 2*REPEAT_DOTS_WIDTH + 3*SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH + 2*BARLINE_WIDTH);
-*/ 			break;
- 		case CABarline::Dotted:
-/* 			setWidth( DOTTED_BARLINE_WIDTH );
-*/ 			break;
- 	}
+	QPen pen;
+	pen.setCapStyle(Qt::FlatCap);
 
- 	QGraphicsLineItem *b = new QGraphicsLineItem(0, 0, 0, staff->boundingRect().height(), this);
- 	addToGroup(b);
-/*	setHeight( staff->height() );
-	setNeededSpaceWidth(4);
-*/}
+	double height = staff->boundingRect().height();
+
+	switch (barline()->barlineType()) {
+	case CABarline::Single:
+		pen.setWidth(BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(0, 0, 0, height, this);
+		_lines.back()->setPen(pen);
+		break;
+	case CABarline::Double:
+		pen.setWidth(BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(0, 0, 0, height, this);
+		_lines.back()->setPen(pen);
+		_lines << new QGraphicsLineItem(BARLINE_WIDTH+SPACE_BETWEEN_BARLINES, 0,
+		                                BARLINE_WIDTH+SPACE_BETWEEN_BARLINES, height, this);
+		_lines.back()->setPen(pen);
+		break;
+	case CABarline::End:
+		pen.setWidth(BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(0, 0, 0, height, this);
+		_lines.back()->setPen(pen);
+
+		pen.setWidth(BOLD_BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(BARLINE_WIDTH+SPACE_BETWEEN_BARLINES, 0,
+		                                BARLINE_WIDTH+SPACE_BETWEEN_BARLINES, height, this);
+		_lines.back()->setPen(pen);
+		break;
+	case CABarline::RepeatOpen:
+		pen.setWidth(BOLD_BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(0, 0, 0, height, this);
+		_lines.back()->setPen(pen);
+
+		pen.setWidth(BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(0.5*BOLD_BARLINE_WIDTH + SPACE_BETWEEN_BARLINES + 0.5*BARLINE_WIDTH, 0,
+		                                0.5*BOLD_BARLINE_WIDTH + SPACE_BETWEEN_BARLINES + 0.5*BARLINE_WIDTH, height, this);
+		_lines.back()->setPen(pen);
+
+		_dots << new QGraphicsEllipseItem(0.5*BOLD_BARLINE_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH, REPEAT_DOTS_Y_OFFSET,
+		                                  REPEAT_DOTS_WIDTH, REPEAT_DOTS_WIDTH, this);
+		_dots << new QGraphicsEllipseItem(0.5*BOLD_BARLINE_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH, height-REPEAT_DOTS_Y_OFFSET,
+		                                  REPEAT_DOTS_WIDTH, REPEAT_DOTS_WIDTH, this);
+		break;
+	case CABarline::RepeatClose:
+		_dots << new QGraphicsEllipseItem(0, REPEAT_DOTS_Y_OFFSET,
+		                                  0, REPEAT_DOTS_WIDTH, this);
+		_dots << new QGraphicsEllipseItem(0, height-REPEAT_DOTS_Y_OFFSET,
+		                                  0, REPEAT_DOTS_WIDTH, this);
+
+		pen.setWidth(BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(REPEAT_DOTS_WIDTH + SPACE_BETWEEN_BARLINES + 0.5*BARLINE_WIDTH, 0,
+		                                REPEAT_DOTS_WIDTH + SPACE_BETWEEN_BARLINES + 0.5*BARLINE_WIDTH, height, this);
+		_lines.back()->setPen(pen);
+
+		pen.setWidth(BOLD_BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(REPEAT_DOTS_WIDTH + 2*SPACE_BETWEEN_BARLINES + 0.5*BOLD_BARLINE_WIDTH, 0,
+		                                REPEAT_DOTS_WIDTH + 2*SPACE_BETWEEN_BARLINES + 0.5*BOLD_BARLINE_WIDTH, height, this);
+		_lines.back()->setPen(pen);
+		break;
+	case CABarline::RepeatCloseOpen:
+		_dots << new QGraphicsEllipseItem(0, REPEAT_DOTS_Y_OFFSET,
+		                                  0, REPEAT_DOTS_WIDTH, this);
+		_dots << new QGraphicsEllipseItem(0, height-REPEAT_DOTS_Y_OFFSET,
+		                                  0, REPEAT_DOTS_WIDTH, this);
+
+		pen.setWidth(BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(REPEAT_DOTS_WIDTH + SPACE_BETWEEN_BARLINES + 0.5*BARLINE_WIDTH, 0,
+		                               REPEAT_DOTS_WIDTH + SPACE_BETWEEN_BARLINES + 0.5*BARLINE_WIDTH, height, this);
+		_lines.back()->setPen(pen);
+
+		pen.setWidth(BOLD_BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(REPEAT_DOTS_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH + 0.5*BOLD_BARLINE_WIDTH, 0,
+		                                REPEAT_DOTS_WIDTH + 2*SPACE_BETWEEN_BARLINES + BARLINE_WIDTH + 0.5*BOLD_BARLINE_WIDTH, height, this);
+		_lines.back()->setPen(pen);
+
+		pen.setWidth(BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(REPEAT_DOTS_WIDTH + 3*SPACE_BETWEEN_BARLINES + 1.5*BARLINE_WIDTH + BOLD_BARLINE_WIDTH, 0,
+		                               REPEAT_DOTS_WIDTH + 3*SPACE_BETWEEN_BARLINES + 1.5*BARLINE_WIDTH + BOLD_BARLINE_WIDTH, height, this);
+		_lines.back()->setPen(pen);
+
+		_dots << new QGraphicsEllipseItem(REPEAT_DOTS_WIDTH + 4*SPACE_BETWEEN_BARLINES + 2*BARLINE_WIDTH + BOLD_BARLINE_WIDTH, REPEAT_DOTS_Y_OFFSET,
+		                                  REPEAT_DOTS_WIDTH + 4*SPACE_BETWEEN_BARLINES + 2*BARLINE_WIDTH + BOLD_BARLINE_WIDTH, REPEAT_DOTS_WIDTH, this);
+		_dots << new QGraphicsEllipseItem(REPEAT_DOTS_WIDTH + 4*SPACE_BETWEEN_BARLINES + 2*BARLINE_WIDTH + BOLD_BARLINE_WIDTH, height-REPEAT_DOTS_Y_OFFSET,
+		                                  REPEAT_DOTS_WIDTH + 4*SPACE_BETWEEN_BARLINES + 2*BARLINE_WIDTH + BOLD_BARLINE_WIDTH, REPEAT_DOTS_WIDTH, this);
+		break;
+	case CABarline::Dotted:
+		pen.setStyle( Qt::DotLine );
+		pen.setCapStyle(Qt::RoundCap);
+		pen.setWidth(DOTTED_BARLINE_WIDTH);
+		_lines << new QGraphicsLineItem(0, 0, 0, height);
+		_lines.back()->setPen(pen);
+		break;
+	}
+
+	for (int i=0; i<_lines.size(); i++) {
+		addToGroup(_lines[i]);
+	}
+	for (int i=0; i<_dots.size(); i++) {
+		addToGroup(_dots[i]);
+	}
+}
 
 CADrawableBarline::~CADrawableBarline() {
 }
@@ -186,5 +259,5 @@ CADrawableBarline::~CADrawableBarline() {
 }*/
 
 CADrawableBarline* CADrawableBarline::clone(CADrawableContext* newContext) {
-/*	return new CADrawableBarline((CABarline*)_musElement, (CADrawableStaff*)((newContext)?newContext:_drawableContext), _xPos, _yPos);
-*/}
+	return new CADrawableBarline(barline(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext));
+}

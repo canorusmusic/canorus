@@ -5,7 +5,6 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include <QPainter>
 #include <iostream>
 #include "layout/drawablestaff.h"
 #include "layout/drawableclef.h"
@@ -18,20 +17,19 @@
 #include "score/timesignature.h"
 
 const double CADrawableStaff::STAFFLINE_WIDTH = 0.8;
-const double CADrawableStaff::STAFF_HEIGHT = 37;
+const double CADrawableStaff::LINE_SPACE = 10;
 const double CADrawableStaff::STAFF_WIDTH = 200;
 
 CADrawableStaff::CADrawableStaff(CAStaff *s)
- : CADrawableContext(s, CADrawableContext::DrawableStaff),
-   _height(STAFF_HEIGHT), _width(STAFF_WIDTH) {
+ : CADrawableContext(s, CADrawableContext::DrawableStaff) {
 	QPen pen;
 	pen.setWidthF(STAFFLINE_WIDTH);
 	pen.setCapStyle(Qt::RoundCap);
 	pen.setColor(Qt::black);
-	qreal dy = lineSpace();
+
 	for (int i=0; i<staff()->numberOfLines(); i++) {
 		QGraphicsLineItem *line = new QGraphicsLineItem(this);
-		line->setLine(0, dy*i, 1000, dy*i);
+		line->setLine(0, LINE_SPACE*i, STAFF_WIDTH, LINE_SPACE*i);
 		line->setPen(pen);
 		addToGroup(line);
 		_lines << line;
@@ -69,17 +67,18 @@ CADrawableStaff *CADrawableStaff::clone() {
 */}
 
 /*!
-	Returns the center Y coordinate of the given note in this staff.
+	Returns the center Y coordinate of the given note in relative coordinates of
+	this staff.
 
 	\param pitch Note pitch which the following coordinates are being calculated for.
 	\param clef Corresponding clef.
-	\return Center of a space/line of a staff in absolute world units.
+	\return Center of a space/line of a staff in relative staff coordinates.
 */
 double CADrawableStaff::calculateCenterYCoord(int pitch, CAClef *clef) {
 	// middle c in logical pitch is 28.
-/*	return yPos() + height() -
+	return boundingRect().height() -
 		(((pitch - 28) + (clef?clef->c1():-2))/2.0)*lineSpace();
-*/}
+}
 
 /*!
 	This is an overloaded member function, provided for convenience.
@@ -128,12 +127,12 @@ double CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
 	\return Center of the nearest space/line of a staff, whichever is closer in absolute world units.
 */
 double CADrawableStaff::calculateCenterYCoord(double y) {
-/*	double newY = (y - yPos()) / (lineSpace()/2);
-	newY += 0.5*((y-yPos()<0)?-1:1);	//round to nearest line/space
+	double newY = (y - pos().y()) / (lineSpace()/2);
+	newY += 0.5*((y-pos().y()<0)?-1:1);	//round to nearest line/space
 	newY = (double)((int)newY);
 
-	return yPos() + ((newY) * (lineSpace()/2));
-*/}
+	return pos().y() + ((newY) * (lineSpace()/2));
+}
 
 /*!
 	Calculates the note pitch on the given clef and absolute world Y coordinate.
@@ -143,21 +142,21 @@ double CADrawableStaff::calculateCenterYCoord(double y) {
 	\return Note pitch in logical units.
 */
 int CADrawableStaff::calculatePitch(double x, double y) {
-/*	CAClef *clef = getClef(x);
-	double yC1 = yPos() + height() - (clef?clef->c1():-2)*(lineSpace()/2); // Y coordinate of c1 of the current staff
+	CAClef *clef = getClef(x);
+	double yC1 = pos().y() + boundingRect().height() - (clef?clef->c1():-2)*(lineSpace()/2); // Y coordinate of c1 of the current staff
 
 	// middle c = 28
 	return qRound( 28 - (y - yC1)/(lineSpace()/2.0) );
-*/}
+}
 
 /*!
 	Adds a clef \a clef to the clef list for faster search of the current clef in the staff.
 */
 void CADrawableStaff::addClef(CADrawableClef *clef) {
-/*	int i;
-	for (i=0; ((i<_drawableClefList.size()) && (clef->xPos() > _drawableClefList[i]->xPos())); i++);
+	int i;
+	for (i=0; ((i<_drawableClefList.size()) && (clef->pos().x() > _drawableClefList[i]->pos().x())); i++);
 	_drawableClefList.insert(i, clef);
-*/}
+}
 
 /*!
 	Removes the given clef from the clefs-lookup list.
@@ -171,11 +170,11 @@ bool CADrawableStaff::removeClef(CADrawableClef *clef) {
 	Returns the pointer to the last clef placed before the given X-coordinate.
 */
 CAClef* CADrawableStaff::getClef(double x) {
-/*	int i;
-	for (i=0; ((i<_drawableClefList.size()) && (x > _drawableClefList[i]->xPos())); i++);
+	int i;
+	for (i=0; ((i<_drawableClefList.size()) && (x > _drawableClefList[i]->pos().x())); i++);
 
 	return ((--i<0)?0:_drawableClefList[i]->clef());
-*/}
+}
 
 /*!
 	Returns accidentals at the given X-coordinate and pitch. eg. -1 for one flat, 2 for two sharps.
@@ -183,10 +182,10 @@ CAClef* CADrawableStaff::getClef(double x) {
 	if accidentals have been placed before.
 */
 int CADrawableStaff::getAccs(double x, int pitch) {
-/*	CAKeySignature *key = getKeySignature(x);
+	CAKeySignature *key = getKeySignature(x);
 
 	//find nearest left element
-	int i; for (i=0; i<_drawableMusElementList.size() && _drawableMusElementList[i]->xPos() < x; i++); i--;
+	int i; for (i=0; i<_drawableMusElementList.size() && _drawableMusElementList[i]->pos().x() < x; i++); i--;
 
 	while (i>=0 &&
 	       _drawableMusElementList[i]->drawableMusElementType() != CADrawableMusElement::DrawableBarline &&
@@ -205,16 +204,16 @@ int CADrawableStaff::getAccs(double x, int pitch) {
 		return (key?key->accidentals()[ pitch<0 ? 6-(-pitch-1)%7 : pitch%7 ]:0);	// watch: % operator with negative numbers is implementation dependent
 	else // note before
 		return (static_cast<CANote*>(_drawableMusElementList[i]->musElement())->diatonicPitch().accs());
-*/}
+}
 
 /*!
 	Adds a key signature \a keySig to the key signatures list for faster search of the current key signature in the staff.
 */
 void CADrawableStaff::addKeySignature(CADrawableKeySignature *keySig) {
-/*	int i;
-	for (i=0; ((i<_drawableKeySignatureList.size()) && (keySig->xPos() > _drawableKeySignatureList[i]->xPos())); i++);
+	int i;
+	for (i=0; ((i<_drawableKeySignatureList.size()) && (keySig->pos().x() > _drawableKeySignatureList[i]->pos().x())); i++);
 	_drawableKeySignatureList.insert(i, keySig);
-*/}
+}
 
 /*!
 	Removes the given key signature from the key signatures-lookup list.
@@ -228,20 +227,20 @@ bool CADrawableStaff::removeKeySignature(CADrawableKeySignature *keySig) {
 	Returns the pointer to the last key signature placed before the given X-coordinate.
 */
 CAKeySignature* CADrawableStaff::getKeySignature(double x) {
-/*	int i;
-	for (i=0; ((i<_drawableKeySignatureList.size()) && (x > _drawableKeySignatureList[i]->xPos())); i++);
+	int i;
+	for (i=0; ((i<_drawableKeySignatureList.size()) && (x > _drawableKeySignatureList[i]->pos().x())); i++);
 
 	return ((--i<0)?0:_drawableKeySignatureList[i]->keySignature());
-*/}
+}
 
 /*!
 	Adds a time signature \a timeSig to the time signatures list for faster search of the current time signature in the staff.
 */
 void CADrawableStaff::addTimeSignature(CADrawableTimeSignature *timeSig) {
-/*	int i;
-	for (i=0; ((i<_drawableTimeSignatureList.size()) && (timeSig->xPos() > _drawableTimeSignatureList[i]->xPos())); i++);
+	int i;
+	for (i=0; ((i<_drawableTimeSignatureList.size()) && (timeSig->pos().x() > _drawableTimeSignatureList[i]->pos().x())); i++);
 	_drawableTimeSignatureList.insert(i, timeSig);
-*/}
+}
 
 /*!
 	Removes the given time signature from the time signatures-lookup list.
@@ -255,11 +254,11 @@ bool CADrawableStaff::removeTimeSignature(CADrawableTimeSignature *timeSig) {
 	Returns the pointer to the last time signature placed before the given X-coordinate.
 */
 CATimeSignature* CADrawableStaff::getTimeSignature(double x) {
-/*	int i;
-	for (i=0; ((i<_drawableTimeSignatureList.size()) && (x > _drawableTimeSignatureList[i]->xPos())); i++);
+	int i;
+	for (i=0; ((i<_drawableTimeSignatureList.size()) && (x > _drawableTimeSignatureList[i]->pos().x())); i++);
 
 	return ((--i<0)?0:_drawableTimeSignatureList[i]->timeSignature());
-*/}
+}
 
 void CADrawableStaff::addMElement(CADrawableMusElement *elt) {
 	switch (elt->drawableMusElementType()) {

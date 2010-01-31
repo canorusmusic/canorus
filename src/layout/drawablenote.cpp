@@ -5,8 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include <QPainter>
-#include <iostream>
+#include <QPen>
+
 #include "layout/drawablestaff.h"
 #include "layout/drawablenote.h"
 #include "layout/drawablecontext.h"
@@ -31,107 +31,172 @@ const double CADrawableNote::HALF_YPOS_DELTA = 23;
 	\param x coordinate represents the left border of the notehead.
 	\param y coordinate represents the center of the notehead.
 */
-CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, bool shadowNote, CADrawableAccidental *drawableAcc)
- : CADrawableMusElement(n, drawableContext, DrawableNote) {
-	_drawableAcc = drawableAcc;
+CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, CADrawableAccidental *drawableAcc)
+ : CADrawableMusElement(n, drawableContext, DrawableNote),
+   _noteHead(0), _drawableAcc(drawableAcc), _stem(0), _flag(0) {
+	double stemLength = 0;
+	QString flagUpGlyphName, flagDownGlyphName, noteHeadGlyphName; // Feta glyph name for the notehead symbol and stems
 
-	_stemDirection = note()->actualStemDirection();
-
-	// Notehead widths are hardcoded below; it's possible to determine them at runtime using QFontMetrics, if necessary.
-	switch (n->playableLength().musicLength()) {
-	case CAPlayableLength::HundredTwentyEighth:
-	case CAPlayableLength::SixtyFourth:
-	case CAPlayableLength::ThirtySecond:
-	case CAPlayableLength::Sixteenth:
-	case CAPlayableLength::Eighth:
-	case CAPlayableLength::Quarter:
-		_noteHeadGlyphName = "noteheads.s2";
-		_penWidth = 1.2;
-/*		setWidth( 11 );
-		setHeight( 10 );
-*/		break;
-
-	case CAPlayableLength::Half:
-		_noteHeadGlyphName = "noteheads.s1";
-		_penWidth = 1.3;
-/*		setWidth( 12 );
-		setHeight( 10 );
-*/		break;
-
-	case CAPlayableLength::Whole:
-		_noteHeadGlyphName = "noteheads.s0";
-		_penWidth = 0;
-/*		setWidth( 17 );
-		setHeight( 8 );
-*/		break;
-
-	case CAPlayableLength::Breve:
-		_noteHeadGlyphName = "noteheads.sM1";
-		_penWidth = 0;
-/*		setWidth( 18 );
-		setHeight( 8 );
-*/		break;
-	}
-/*	setYPos( y - height()/2.0 );
-	setXPos( x );
-*/
+	// Set note settings
 	switch (n->playableLength().musicLength()) {
 	case CAPlayableLength::HundredTwentyEighth:
 		/// \todo Emmentaler font doesn't have 128th, 64th flag is drawn instead! Need to somehow compose the 128th flag? -Matevz
-		_stemLength = HUNDREDTWENTYEIGHTH_STEM_LENGTH;
-		_flagUpGlyphName = "flags.u7";
-		_flagDownGlyphName = "flags.d7";
+		stemLength = HUNDREDTWENTYEIGHTH_STEM_LENGTH;
+		flagUpGlyphName = "flags.u7";
+		flagDownGlyphName = "flags.d7";
+		noteHeadGlyphName = "noteheads.s2";
 		break;
 	case CAPlayableLength::SixtyFourth:
-		_stemLength = SIXTYFOURTH_STEM_LENGTH;
-		_flagUpGlyphName = "flags.u6";
-		_flagDownGlyphName = "flags.d6";
+		stemLength = SIXTYFOURTH_STEM_LENGTH;
+		flagUpGlyphName = "flags.u6";
+		flagDownGlyphName = "flags.d6";
+		noteHeadGlyphName = "noteheads.s2";
 		break;
 	case CAPlayableLength::ThirtySecond:
-		_stemLength = THIRTYSECOND_STEM_LENGTH;
-		_flagUpGlyphName = "flags.u5";
-		_flagDownGlyphName = "flags.d5";
+		stemLength = THIRTYSECOND_STEM_LENGTH;
+		flagUpGlyphName = "flags.u5";
+		flagDownGlyphName = "flags.d5";
+		noteHeadGlyphName = "noteheads.s2";
 		break;
 	case CAPlayableLength::Sixteenth:
-		_stemLength = SIXTEENTH_STEM_LENGTH;
-		_flagUpGlyphName = "flags.u4";
-		_flagDownGlyphName = "flags.d4";
+		stemLength = SIXTEENTH_STEM_LENGTH;
+		flagUpGlyphName = "flags.u4";
+		flagDownGlyphName = "flags.d4";
+		noteHeadGlyphName = "noteheads.s2";
 		break;
 	case CAPlayableLength::Eighth:
-		_stemLength = EIGHTH_STEM_LENGTH;
-		_flagUpGlyphName = "flags.u3";
-		_flagDownGlyphName = "flags.d3";
+		stemLength = EIGHTH_STEM_LENGTH;
+		flagUpGlyphName = "flags.u3";
+		flagDownGlyphName = "flags.d3";
+		noteHeadGlyphName = "noteheads.s2";
 		break;
 	case CAPlayableLength::Quarter:
-		_stemLength = QUARTER_STEM_LENGTH;
+		stemLength = QUARTER_STEM_LENGTH;
+		noteHeadGlyphName = "noteheads.s2";
 		break;
 	case CAPlayableLength::Half:
-		_stemLength = HALF_STEM_LENGTH;
+		stemLength = HALF_STEM_LENGTH;
+		noteHeadGlyphName = "noteheads.s1";
+		break;
+	case CAPlayableLength::Whole:
+		noteHeadGlyphName = "noteheads.s0";
+		break;
+	case CAPlayableLength::Breve:
+		noteHeadGlyphName = "noteheads.sM1";
 		break;
 	}
 
+	// Draw notehead
 	QFont font("Emmentaler");
 	font.setPixelSize(qRound(35));
 
-	QGraphicsSimpleTextItem *noteHead = new QGraphicsSimpleTextItem(this);
-	noteHead->setFont(font);
-	noteHead->setText(QString(CACanorus::fetaCodepoint(_noteHeadGlyphName)));
-	addToGroup(noteHead);
+	_noteHead = new QGraphicsSimpleTextItem(QString(CACanorus::fetaCodepoint(noteHeadGlyphName)), this);
+	_noteHead->setFont(font);
+	_noteHead->setPos(0, -47);
+	addToGroup(_noteHead);
 
-/*	_noteHeadWidth = width();
+	// Draw ledger lines
+	updateLedgerLines();
 
-	if (n->playableLength().dotted()) {
-		setWidth( width()+3 );
-		for (int i=0; i<n->playableLength().dotted(); i++)
-			setWidth( width()+2 );
+	// Draw Dots
+	double dotOffset = 3;
+	double dotWidth  = 2.5;
+	QBrush dotBrush(Qt::SolidPattern);
+	for (int i=0; i<note()->playableLength().dotted(); i++) {
+		QGraphicsEllipseItem *item = new QGraphicsEllipseItem(boundingRect().width() + dotOffset, -2.5, dotWidth, dotWidth, this);
+		item->setBrush(dotBrush);
+		addToGroup(item);
 	}
-*/
-	_shadowNote = shadowNote;
 
-	_drawLedgerLines = true;
+	// Draw stem (and flag)
+	if (note()->noteLength().musicLength() >= CAPlayableLength::Half) {
+		QPen pen;
+		pen.setCapStyle(Qt::RoundCap);
+		pen.setWidthF(1.5);
+		QFont flagFont("Emmentaler");
+		flagFont.setPixelSize(qRound(35));
+
+		if (note()->actualStemDirection() == CANote::StemUp) {
+			_stem = new QGraphicsLineItem( _noteHead->boundingRect().width()-0.8, -1.5, _noteHead->boundingRect().width(), -stemLength, this );
+			if(note()->noteLength().musicLength() >= CAPlayableLength::Eighth) {
+				_flag = new QGraphicsSimpleTextItem( QString(CACanorus::fetaCodepoint(flagUpGlyphName)), this );
+				_flag->setFont(flagFont);
+				addToGroup(_flag);
+				_flag->setPos( _noteHead->boundingRect().width(), -stemLength - 47 );
+			}
+		} else {
+			_stem = new QGraphicsLineItem( 0.8, 1.5, 0.6, stemLength, this );
+			if(note()->noteLength().musicLength() >= CAPlayableLength::Eighth) {
+				_flag = new QGraphicsSimpleTextItem( QString(CACanorus::fetaCodepoint(flagDownGlyphName)), this );
+				_flag->setFont(flagFont);
+				addToGroup(_flag);
+				_flag->setPos( 0.5, stemLength - 42 );
+			}
+		}
+		addToGroup(_stem);
+		_stem->setPen(pen);
+	}
 }
 
 CADrawableNote::~CADrawableNote() {
+}
+
+/*!
+	Updates the ledger lines positions and adds/removes them from the group.
+ */
+void CADrawableNote::updateLedgerLines() {
+	// Cleans up the existing ledger lines, if any
+	while (_ledgerLines.size()) {
+		removeFromGroup(_ledgerLines[0]);
+		delete _ledgerLines.takeFirst();
+	}
+
+	// Generate ledger lines, if needed
+	if ( drawableContext() && drawableContext()->drawableContextType()==CADrawableContext::DrawableStaff &&
+	     note() && note()->voice() && note()->voice()->staff() &&
+	     ( (note()->notePosition() <= -2) ||	// note is below the staff
+	       (note()->notePosition() >= note()->voice()->staff()->numberOfLines()*2)	// note is above the staff
+	     )
+	   ) {
+	   	int direction = (note()->notePosition() > 0 ? 1 : -1);	// 1 falling, -1 rising
+	   	double ledgerDist = static_cast<CADrawableStaff*>(drawableContext())->lineSpace();	// distance between the ledger lines - notehead height
+
+	   	// draw ledger lines in direction from the notehead to staff
+		double dy = ((note()->notePosition()%2)?(ledgerDist*0.5*direction):0);
+		QPen pen;
+		pen.setWidthF(1.0);
+
+	   	for (int i=0;
+	   	     i < ((note()->notePosition()*direction -
+	   	          ((direction>0)?((note()->voice()->staff()->numberOfLines()-1)*2):0))/2);
+	   	     i++
+	   	    )
+		{
+			QGraphicsLineItem *line = new QGraphicsLineItem(-3.5, dy, _noteHead->boundingRect().width() + 2.5, dy, this);
+			line->setPen(pen);
+			_ledgerLines << line;
+			addToGroup(line);
+			dy += ledgerDist*direction;
+		}
+	}
+}
+
+/*!
+	Sets/Unsets the drawable accidental in front of the note and adds/removes
+	it from the group.
+*/
+void CADrawableNote::setDrawableAccidental( CADrawableAccidental *acc ) {
+	if (acc==_drawableAcc) { return; }
+
+	if (_drawableAcc) {
+		removeFromGroup(_drawableAcc);
+	}
+
+	if (acc) {
+		addToGroup(acc);
+	}
+
+	_drawableAcc = acc;
 }
 
 /*void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
@@ -214,6 +279,7 @@ CADrawableNote::~CADrawableNote() {
 	s.x += qRound(delta);
 }
 */
+
 CADrawableNote *CADrawableNote::clone(CADrawableContext* newContext) {
-/*	return new CADrawableNote(note(), (newContext)?newContext:_drawableContext, xPos(), yPos() + height()/2);
-*/}
+	return new CADrawableNote(note(), (newContext)?newContext:_drawableContext );
+}

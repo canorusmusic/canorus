@@ -19,14 +19,12 @@
 
 	\a y marks the top line Y coordinate of the staff in absolute world units.
 */
-CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawableStaff *drawableStaff)
+CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawableStaff *drawableStaff, CAClef *clef, CAKeySignature *prevKeySig)
  : CADrawableMusElement(keySig, drawableStaff, DrawableKeySignature) {
-/*	double newX = x;
-	CAClef *clef = drawableStaff->getClef(x);
+	double newX = 0;
 	int idx, idx2; // pitches of accidentals
-	double minY=y, maxY=y;
+	double minY=0, maxY=0;
 
-	CAKeySignature *prevKeySig = drawableStaff->getKeySignature(x);
 	if (prevKeySig) {
 		// get initial neutral-sharp position
 		idx = 3;
@@ -48,16 +46,17 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 			if ( curIdx + (clef?clef->c1():-2) - 28  > drawableStaff->staff()->numberOfLines()*2-1 )
 				curIdx-=7;
 
- 			CADrawableAccidental *acc = new CADrawableAccidental(0, keySig, drawableStaff, newX, drawableStaff->calculateCenterYCoord(curIdx, x));
+ 			CADrawableAccidental *acc = new CADrawableAccidental(0, keySig, drawableStaff);
+ 			acc->setPos(newX, drawableStaff->calculateCenterYCoord(curIdx, clef));
+ 			addToGroup(acc);
+			_drawableAccidentalList << acc;
 
- 			_drawableAccidentalList << acc;
+ 			newX += (acc->boundingRect().width() + 5);
 
- 			newX += (acc->width() + 5);
-
- 			if ( acc->yPos() < minY )
- 				minY = acc->yPos();
- 			if ( acc->yPos() + acc->height() > maxY )
- 				maxY = acc->yPos() + acc->height();
+ 			if ( acc->boundingRect().y() < minY )
+ 				minY = acc->boundingRect().y();
+ 			if ( acc->boundingRect().y() + acc->boundingRect().height() > maxY )
+ 				maxY = acc->boundingRect().y() + acc->boundingRect().height();
  		}
 
 		// get initial neutral-flat position
@@ -79,16 +78,17 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 			if ( curIdx + (clef?clef->c1():-2) - 28  > drawableStaff->staff()->numberOfLines()*2-1 )
 				curIdx-=7;
 
-			CADrawableAccidental *acc = new CADrawableAccidental(0, keySig, drawableStaff, newX, drawableStaff->calculateCenterYCoord(curIdx, x));
-
+			CADrawableAccidental *acc = new CADrawableAccidental(0, keySig, drawableStaff);
+			acc->setPos( newX, drawableStaff->calculateCenterYCoord(curIdx, clef) );
+			addToGroup(acc);
 			_drawableAccidentalList << acc;
 
-			newX += (acc->width() + 5);
+			newX += (acc->boundingRect().width() + 5);
 
-			if ( acc->yPos() < minY )
-				minY = acc->yPos();
-			if ( acc->yPos() + acc->height() > maxY )
-				maxY = acc->yPos() + acc->height();
+ 			if ( acc->boundingRect().y() < minY )
+ 				minY = acc->boundingRect().y();
+ 			if ( acc->boundingRect().y() + acc->boundingRect().height() > maxY )
+ 				maxY = acc->boundingRect().y() + acc->boundingRect().height();
 		}
 	}
 
@@ -111,16 +111,17 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 		if ( curIdx + (clef?clef->c1():-2) - 28  > drawableStaff->staff()->numberOfLines()*2-1 )
 			curIdx-=7;
 
-			CADrawableAccidental *acc = new CADrawableAccidental(1, keySig, drawableStaff, newX, drawableStaff->calculateCenterYCoord(curIdx, x));
-
+		CADrawableAccidental *acc = new CADrawableAccidental(1, keySig, drawableStaff);
+		acc->setPos( newX, drawableStaff->calculateCenterYCoord(curIdx, clef) );
+		addToGroup(acc);
 		_drawableAccidentalList << acc;
 
-		newX += (acc->width() + 5);
+		newX += (acc->boundingRect().width() + 5);
 
-		if ( acc->yPos() < minY )
-			minY = acc->yPos();
-		if ( acc->yPos() + acc->height() > maxY )
-			maxY = acc->yPos() + acc->height();
+		if ( acc->boundingRect().y() < minY )
+			minY = acc->boundingRect().y();
+		if ( acc->boundingRect().y() + acc->boundingRect().height() > maxY )
+			maxY = acc->boundingRect().y() + acc->boundingRect().height();
 	}
 
 	// get initial flat position
@@ -141,28 +142,24 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 		if ( (curIdx + (clef?clef->c1():-2) - 28)  > (drawableStaff->staff()->numberOfLines()*2-1) )
 			curIdx-=7;
 
-		CADrawableAccidental *acc = new CADrawableAccidental(-1, keySig, drawableStaff, newX, drawableStaff->calculateCenterYCoord(curIdx, x));
-
+		CADrawableAccidental *acc = new CADrawableAccidental(-1, keySig, drawableStaff);
+		addToGroup(acc);
+		acc->setPos(newX, drawableStaff->calculateCenterYCoord(curIdx, clef));
 		_drawableAccidentalList << acc;
 
-		newX += (acc->width() + 5);
+		newX += (acc->boundingRect().width() + 5);
 
-		if ( acc->yPos() < minY )
-			minY = acc->yPos();
-		if ( acc->yPos() + acc->height() > maxY )
-			maxY = acc->yPos() + acc->height();
+		if ( acc->boundingRect().y() < minY )
+			minY = acc->boundingRect().y();
+		if ( acc->boundingRect().y() + acc->boundingRect().height() > maxY )
+			maxY = acc->boundingRect().y() + acc->boundingRect().height();
 	}
-
-	setWidth( newX - x );
-	setHeight( maxY - minY );
- 	setYPos( minY );
-*/}
+}
 
 CADrawableKeySignature::~CADrawableKeySignature() {
-	for (int i=0; i<_drawableAccidentalList.size(); i++)
-		delete _drawableAccidentalList[i];
-
-	_drawableAccidentalList.clear();
+	while (_drawableAccidentalList.size()) {
+		delete _drawableAccidentalList.takeFirst();
+	}
 }
 
 /*void CADrawableKeySignature::draw(QPainter *p, CADrawSettings s) {
@@ -178,8 +175,8 @@ CADrawableKeySignature::~CADrawableKeySignature() {
 }
 */
 CADrawableKeySignature* CADrawableKeySignature::clone(CADrawableContext* newContext) {
-/*	return (new CADrawableKeySignature(keySignature(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext), xPos(), _drawableContext->yPos()));
-*/}
+	return new CADrawableKeySignature(keySignature(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext));
+}
 
 /*!
 	This function adds key signatures to the given combobox in order

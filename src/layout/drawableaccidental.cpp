@@ -20,18 +20,42 @@
 	\param accs Type of the accidental: 0 - natural, -1 - flat, +1 - sharp, -2 doubleflat, +2 - cross etc.
 	\param musElement Pointer to the according musElement which the accidental represents (usually a CANote or CAKeySignature).
 	\param drawableContext Pointer to the according drawable context which the accidental belongs to (usually CADrawableStaff or CADrawableFiguredBass).
-	\param x Left X-coordinate of the accidental.
-	\param y Center Y-coordinate of the accidental.
 */
 CADrawableAccidental::CADrawableAccidental(signed char accs, CAMusElement *musElement, CADrawableContext *drawableContext)
- : CADrawableMusElement(musElement, drawableContext, DrawableAccidental) {
-/* 	setSelectable( false );
+ : CADrawableMusElement(musElement, drawableContext, DrawableAccidental),
+   _accs(accs) {
+
+	QFont font("Emmentaler");
+	font.setPixelSize(34);
+	QGraphicsSimpleTextItem *item = 0;
+
+	switch (_accs) {
+		case 0:
+			item = new QGraphicsSimpleTextItem( QString(CACanorus::fetaCodepoint("accidentals.natural")), this);
+			break;
+		case 1:
+			item = new QGraphicsSimpleTextItem( QString(CACanorus::fetaCodepoint("accidentals.sharp")), this);
+			break;
+		case -1:
+			item = new QGraphicsSimpleTextItem( QString(CACanorus::fetaCodepoint("accidentals.flat")), this);
+			break;
+		case 2:
+			item = new QGraphicsSimpleTextItem( QString(CACanorus::fetaCodepoint("accidentals.doublesharp")), this);
+			break;
+		case -2:
+			item = new QGraphicsSimpleTextItem( QString(CACanorus::fetaCodepoint("accidentals.flatflat")), this);
+			break;
+	}
+	item->setFont(font);
+	addToGroup(item);
+	item->setPos(0, -47);
+
+	/* 	setSelectable( false );
 
  	setWidth( 8 );
  	setHeight( 14 );
-*/ 	_accs = accs;
 
-/* 	if (accs==0) {
+ 	if (accs==0) {
  		setYPos( y - height()/2 );
  	} else if (accs==1) {
  		setYPos( y - height()/2 );
@@ -79,5 +103,5 @@ CADrawableAccidental::~CADrawableAccidental() {
 }*/
 
 CADrawableAccidental *CADrawableAccidental::clone(CADrawableContext* newContext) {
-/*	return new CADrawableAccidental(_accs, _musElement, (newContext)?newContext:_drawableContext, _centerX, _centerY);
-*/}
+	return new CADrawableAccidental(_accs, _musElement, (newContext)?newContext:_drawableContext);
+}

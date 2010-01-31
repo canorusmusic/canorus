@@ -235,7 +235,9 @@ void CALayoutEngine::reposit() {
 						case CAMusElement::KeySignature: {
 							CADrawableKeySignature *keySig = new CADrawableKeySignature(
 								static_cast<CAKeySignature*>(elt),
-								static_cast<CADrawableStaff*>(drawableContext)
+								static_cast<CADrawableStaff*>(drawableContext),
+								lastClef[i],
+								lastKeySig[i]
 							);
 
 							_scoreView->addMElement(keySig);
@@ -361,6 +363,7 @@ void CALayoutEngine::reposit() {
 				if (elt->musElementType()==CAMusElement::Note &&
 				    ((CADrawableStaff*)drawableContext)->getAccs(streamsX[i], static_cast<CANote*>(elt)->diatonicPitch().noteName()) != static_cast<CANote*>(elt)->diatonicPitch().accs()
 				   ) {
+						QList<CANote*> chord = static_cast<CANote*>(elt)->getChord();
 						newElt = new CADrawableAccidental(
 							static_cast<CANote*>(elt)->diatonicPitch().accs(),
 							static_cast<CANote*>(elt),
@@ -368,7 +371,14 @@ void CALayoutEngine::reposit() {
 						);
 
 						_scoreView->addMElement(newElt);
-						newElt->setPos( streamsX[i], static_cast<CADrawableStaff*>(drawableContext)->calculateCenterYCoord(static_cast<CANote*>(elt), lastClef[i]) );
+
+						// shift every second accidental to the left, to avoid clashing in chord
+						double x = streamsX[i];
+						int idx = chord.indexOf(static_cast<CANote*>(elt));
+						if (idx>0 && idx%2 && ((CADrawableStaff*)drawableContext)->getAccs(streamsX[i], chord[idx-1]->diatonicPitch().noteName()) != chord[idx-1]->diatonicPitch().accs()) {
+							x -= 9.0 + (idx%4?1.5:-1.0);
+						}
+						newElt->setPos( x, drawableContext->pos().y()+static_cast<CADrawableStaff*>(drawableContext)->calculateCenterYCoord(static_cast<CANote*>(elt), lastClef[i]) );
 
 						lastAccidentals << static_cast<CADrawableAccidental*>(newElt);
 						if (newElt->boundingRect().width() > maxWidth)
@@ -549,7 +559,7 @@ void CALayoutEngine::reposit() {
 						}
 
 						_scoreView->addMElement(newElt);
-						newElt->setPos( streamsX[i], static_cast<CADrawableStaff*>(drawableContext)->calculateCenterYCoord(static_cast<CANote*>(elt), lastClef[i]) );
+						newElt->setPos( streamsX[i], drawableContext->pos().y()+static_cast<CADrawableStaff*>(drawableContext)->calculateCenterYCoord(static_cast<CANote*>(elt), lastClef[i]) );
 
 						// add tuplet - same as for the rests
 						if ( static_cast<CADrawableNote*>(newElt)->note()->isLastInTuplet() ) {
@@ -630,7 +640,7 @@ void CALayoutEngine::reposit() {
 
 						newElt = new CADrawableMidiNote( midiNote, dStaff );
 						_scoreView->addMElement(newElt);
-						newElt->setPos( streamsX[i], dStaff->calculateCenterYCoord( pitch, streamsX[i] ) );
+						newElt->setPos( streamsX[i], dStaff->pos().y() + dStaff->calculateCenterYCoord( pitch, streamsX[i] ) );
 						break;
 					}
 					case CAMusElement::Syllable: {

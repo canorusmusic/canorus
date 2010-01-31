@@ -26,7 +26,7 @@ public:
 	inline CAStaff *staff() { return static_cast<CAStaff*>(_context); }
 
 	void setWidth( double width );
-	inline double lineSpace() { return (staff()->numberOfLines()?_height/(staff()->numberOfLines()-1):0); }
+	inline double lineSpace() { return LINE_SPACE; }
 
 	double calculateCenterYCoord(int pitch, CAClef *clef);
 	double calculateCenterYCoord(CANote *note, CAClef *clef);
@@ -62,9 +62,9 @@ private:
 
 	QList<QGraphicsLineItem*> _lines; // drawable instances of lines
 
-	static const double STAFFLINE_WIDTH;                         // Width of the staffs' lines. Defined in drawablestaff.cpp
-	static const double STAFF_HEIGHT;                            // Default height of the staff
-	static const double STAFF_WIDTH;
+	static const double STAFFLINE_WIDTH; // Width of the staffs' lines
+	static const double STAFF_WIDTH;     // Minimum width of the staff
+	static const double LINE_SPACE;      // Space between lines
 };
 
 #endif /* DRAWABLESTAFF_H_ */
