@@ -38,6 +38,7 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 */
 	//	There are two glyphs for each clef type: a normal clef (placed at the beginning of the system) and a smaller one (at the center of the system, key change).
 	//	clefs.G, clefs.G_change, ...
+
 	QGraphicsSimpleTextItem *item = new QGraphicsSimpleTextItem(this);
 	QFont font("Emmentaler");
 	font.setPixelSize( 35 );
@@ -46,15 +47,17 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 	switch (clef()->clefType()) {
 		case CAClef::G:
 			item->setText(QString(CACanorus::fetaCodepoint("clefs.G")));
+			item->setPos(0, drawableStaff->boundingRect().height() - (((clef()->c1() + clef()->offset())/2.0) * drawableStaff->lineSpace()) - 67);
 			break;
 		case CAClef::F:
 			item->setText(QString(CACanorus::fetaCodepoint("clefs.F")));
+			item->setPos(0, drawableStaff->boundingRect().height() - (((clef()->c1() + clef()->offset())/2.0) * drawableStaff->lineSpace()) - 27);
 			break;
 		case CAClef::C:
 			item->setText(QString(CACanorus::fetaCodepoint("clefs.C")));
+			item->setPos(0, drawableStaff->boundingRect().height() - (((clef()->c1() + clef()->offset())/2.0) * drawableStaff->lineSpace()) - 50); // TODO: y offset?
 			break;
 	}
-
 	addToGroup( item );
 
 	// add ^8va, _8va numbers
@@ -62,48 +65,17 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 		QGraphicsSimpleTextItem *numberItem = new QGraphicsSimpleTextItem(this);
 		numberItem->setText( QString::number(clef()->offset()+1) );
 		QFont numberFont( "Century Schoolbook L" );
-		numberFont.setPixelSize( qRound(CLEF_EIGHT_SIZE+5) );
+		numberFont.setPixelSize( CLEF_EIGHT_SIZE+5 );
 		numberFont.setStyle( QFont::StyleItalic );
 		numberItem->setFont( numberFont );
 		addToGroup( numberItem );
 
 		if ( clef()->offset()>0 ) {
-			numberItem->moveBy( 2, -3 );
+			numberItem->setPos( 2, item->pos().y()-numberItem->boundingRect().height() - 55 );
 		} else {
-			numberItem->moveBy( 2, 25 );
+			numberItem->setPos( 2, item->boundingRect().height() - 55 );
 		}
 	}
-
-/*	switch (clef()->clefType()) {
-		case CAClef::G:
-			setWidth( 21 );
-			setHeight( 68 );
-			setYPos( bottom - (((clef()->c1() + clef()->offset())/2.0) * lineSpace) - 0.89*height() );
-			break;
-		case CAClef::F:
-			setWidth( 22 );
-			setHeight( 26 );
-			setYPos( bottom - (((clef()->c1() + clef()->offset())/2.0) * lineSpace) + 1.1*lineSpace );
-			break;
-		case CAClef::C:
-			setWidth( 23 );
-			setHeight( 34 );
-			setYPos( bottom - (((clef()->c1() + clef()->offset())/2.0) * lineSpace) - 0.5*height() );
-			break;
-		case CAClef::PercussionHigh:
-		case CAClef::PercussionLow:
-		case CAClef::Tab:  // TODO
-			setWidth( 23 );
-			setHeight( 34 );
-			break;
-	}
-
-	// make space for little 8 above/below, if needed
-	if ( clef()->offset() )
-		setHeight( height()+CLEF_EIGHT_SIZE) ;
-
-	if ( clef()->offset() > 0 )
-		setYPos( yPos()-CLEF_EIGHT_SIZE );*/
 }
 
 /*void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
@@ -140,5 +112,5 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 }*/
 
 CADrawableClef* CADrawableClef::clone(CADrawableContext* newContext) {
-//	return (new CADrawableClef(clef(), (CADrawableStaff*)((newContext)?newContext:_drawableContext), xPos(), _drawableContext->yPos()));
+	return (new CADrawableClef(clef(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext)));
 }

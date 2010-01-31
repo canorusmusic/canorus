@@ -13,13 +13,14 @@
 
 class CADrawableStaff;
 class CAKeySignature;
+class CAClef;
 class CADrawableAccidental;
 
 class QComboBox;
 
 class CADrawableKeySignature : public CADrawableMusElement {
 	public:
-		CADrawableKeySignature( CAKeySignature *keySig, CADrawableStaff *staff );
+		CADrawableKeySignature( CAKeySignature *keySig, CADrawableStaff *staff, CAClef *lastClef=0, CAKeySignature *lastKeySig=0 );
 		~CADrawableKeySignature();
 
 		CADrawableKeySignature *clone(CADrawableContext* newContext = 0);

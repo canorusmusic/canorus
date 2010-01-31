@@ -22,12 +22,16 @@ class CADrawableBarline : public CADrawableMusElement {
 		inline CABarline *barline() { return (CABarline*)_musElement; }
 
 	private:
-		static const float SPACE_BETWEEN_BARLINES;
+		static const double SPACE_BETWEEN_BARLINES;
 
-		static const float BARLINE_WIDTH;
-		static const float BOLD_BARLINE_WIDTH;
-		static const float REPEAT_DOTS_WIDTH;
-		static const float DOTTED_BARLINE_WIDTH;
+		static const double BARLINE_WIDTH;
+		static const double BOLD_BARLINE_WIDTH;
+		static const double REPEAT_DOTS_Y_OFFSET;
+		static const double REPEAT_DOTS_WIDTH;
+		static const double DOTTED_BARLINE_WIDTH;
+
+		QList<QGraphicsLineItem*>    _lines;
+		QList<QGraphicsEllipseItem*> _dots;
 };
 
 #endif /*DRAWABLEBARLINE_H_*/
