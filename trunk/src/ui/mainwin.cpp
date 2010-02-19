@@ -2095,8 +2095,8 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 		}
 
 		case Qt::Key_Down: {
-			if (mode() == SelectMode) {	// select the upper music element
-				v->selectUpMusElement();
+			if (mode() == SelectMode) {	// select the lower music element
+				v->selectDownMusElement();
 				v->repaint();
 			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
 				bool rebuild = false;
