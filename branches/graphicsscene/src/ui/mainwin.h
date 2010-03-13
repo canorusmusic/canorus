@@ -86,11 +86,11 @@ public:
 	void newDocument();
 	void addSheet(CASheet *s);
 	void removeSheet(CASheet *s);
-	void insertMusElementAt( const QPoint coords, CAScoreView *v );
+	void insertMusElementAt( const QPointF coords, CAScoreView *v );
 	void restartTimeEditedTime() { _timeEditedTime = 0; };
 	void deleteSelection( CAScoreView *v, bool deleteSyllable, bool deleteNotes, bool undo );
 	void copySelection( CAScoreView *v );
-	void pasteAt( const QPoint coords, CAScoreView *v );
+	void pasteAt( const QPointF coords, CAScoreView *v );
 
 	CADocument *openDocument( const QString& fileName );
 	CADocument *openDocument( CADocument* doc );
@@ -309,12 +309,12 @@ private slots:
 
 	void viewClicked();
 
-	void scoreViewMousePress(QMouseEvent *e, const QPoint coords);
-	void scoreViewMouseMove(QMouseEvent *e, const QPoint coords);
-	void scoreViewMouseRelease(QMouseEvent *e, const QPoint coords);
-	void scoreViewDoubleClick(QMouseEvent *e, const QPoint coords);
-	void scoreViewTripleClick(QMouseEvent *e, const QPoint coords);
-	void scoreViewWheel(QWheelEvent *e, const QPoint coords);
+	void scoreViewMousePress(QMouseEvent *e, const QPointF coords);
+	void scoreViewMouseMove(QMouseEvent *e, const QPointF coords);
+	void scoreViewMouseRelease(QMouseEvent *e, const QPointF coords);
+	void scoreViewDoubleClick(QMouseEvent *e, const QPointF coords);
+	void scoreViewTripleClick(QMouseEvent *e, const QPointF coords);
+	void scoreViewWheel(QWheelEvent *e, const QPointF coords);
 	void scoreViewKeyPress(QKeyEvent *e);
 	void sourceViewCommit(QString inputString);
 	void floatViewClosed(CAView*);

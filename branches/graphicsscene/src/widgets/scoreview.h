@@ -86,7 +86,7 @@ public:
 	CADrawableContext                   *selectCElement(double x, double y);
 	CADrawableMusElement                *selectMElement(CAMusElement *elt);
 	CADrawableContext                   *selectContext(CAContext *context);
-	inline QPoint                        lastMousePressCoords() { return _lastMousePressCoords; }
+	inline QPointF                       lastMousePressCoords() { return _lastMousePressCoords; }
 	void                                 setLastMousePressCoordsAfter(const QList<CAMusElement*> list);
 
 	inline CADrawableContext *currentContext() { return _currentContext; }
@@ -230,8 +230,8 @@ private slots:
 	void mousePressEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);
 	void mouseReleaseEvent(QMouseEvent *e);
-/*	void wheelEvent(QWheelEvent *e);
-*/	void keyPressEvent(QKeyEvent *e);
+	void wheelEvent(QWheelEvent *e);
+	void keyPressEvent(QKeyEvent *e);
 
 	void resizeEvent(QResizeEvent *e);
 /*	void paintEvent(QPaintEvent *p);
@@ -241,12 +241,12 @@ private slots:
 	void on_clickTimer_timeout();
 
 signals:
-	void CATripleClickEvent( QMouseEvent *e, QPoint p );
-	void CADoubleClickEvent( QMouseEvent *e, QPoint p );
-	void CAMousePressEvent( QMouseEvent *e, QPoint p );
-	void CAMouseReleaseEvent( QMouseEvent *e, QPoint p );
-	void CAMouseMoveEvent( QMouseEvent *e, QPoint p );
-	void CAWheelEvent( QWheelEvent *e, QPoint p );
+	void CATripleClickEvent( QMouseEvent *e, QPointF p );
+	void CADoubleClickEvent( QMouseEvent *e, QPointF p );
+	void CAMousePressEvent( QMouseEvent *e, QPointF p );
+	void CAMouseReleaseEvent( QMouseEvent *e, QPointF p );
+	void CAMouseMoveEvent( QMouseEvent *e, QPointF p );
+	void CAWheelEvent( QWheelEvent *e, QPointF p );
 	void CAKeyPressEvent( QKeyEvent *e );
 	void selectionChanged();
 
@@ -281,8 +281,8 @@ private:
 	template <typename T> int getMaxXExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
 	template <typename T> int getMaxYExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting below easies
 
-	QPoint _lastMousePressCoords;           // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
-	inline void setLastMousePressCoords( QPoint p ) { _lastMousePressCoords = p; }
+	QPointF _lastMousePressCoords;           // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
+	inline void setLastMousePressCoords( QPointF p ) { _lastMousePressCoords = p; }
 
 	CAVoice *_selectedVoice;        // Voice to be drawn normal colors, others are shaded
 
