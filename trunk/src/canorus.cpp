@@ -386,13 +386,14 @@ void CACanorus::connectSlotsByName(QObject *pOS, const QObject *pOR)
         Q_ASSERT(slot);
         if (slot[0] != 'o' || slot[1] != 'n' || slot[2] != '_')
             continue;
-        bool foundIt = false;
+        bool foundIt = false, foundObj = false;
         for(int j = 0; j < list.count(); ++j) {
             const QObject *co = list.at(j);
             QByteArray objName = co->objectName().toAscii();
             int len = objName.length();
             if (!len || qstrncmp(slot + 3, objName.data(), len) || slot[len+3] != '_')
                 continue;
+            foundObj = true;
             const QMetaObject *smo = co->metaObject();
             int sigIndex = smo->indexOfMethod(slot + len + 4);
             if (sigIndex < 0) { // search for compatible signals
@@ -419,7 +420,10 @@ void CACanorus::connectSlotsByName(QObject *pOS, const QObject *pOR)
             while (mo->method(i + 1).attributes() & QMetaMethod::Cloned)
                   ++i;
         } else if (!(mo->method(i).attributes() & QMetaMethod::Cloned)) {
-            qWarning("QMetaObject::connectSlotsByName: No matching signal for %s", slot);
+            if( foundObj )
+                qWarning("CACanorus::connectSlotsByName: No matching signal for %s", slot);
+            else
+                qWarning("CACanorus::connectSlotsByName: No matching object for %s", slot);
         }
     }
 }
