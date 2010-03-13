@@ -284,7 +284,7 @@ void CAScoreView::setLastMousePressCoordsAfter(const QList<CAMusElement*> list) 
 /*		if(list.contains(delt->musElement()))
 			maxX = qMax(delt->xPos() + delt->width(), maxX);
 */	}
-	QPoint newCoords(lastMousePressCoords());
+	QPointF newCoords(lastMousePressCoords());
 	newCoords.setX(maxX);
 	setLastMousePressCoords(newCoords);
 }
@@ -533,24 +533,12 @@ void CAScoreView::setSceneRect(const QRectF& coords, bool animate) {
 		return;
 
 	// set the actual new coords
+	_canvas->setSceneRect(coords);
+	return;
 	double x = coords.x();
 	double y = coords.y();
 	double w = coords.width();
 	double h = coords.height();
-
-	// always keep the world rectangle area in the same scale as the actual width/height of the drawable canvas
-	double scale = drawableWidth() / drawableHeight();
-	if (coords.height()) {	// avoid division by zero
-		if (coords.width() / coords.height() > scale) {
-			h = coords.width() / scale;
-		} else {
-			w = coords.height() * scale;
-		}
-	} else {
-		h = coords.width() / scale;
-	}
-
-
 
 	// check the limit for width and height
 	double scrollMax;
@@ -634,6 +622,11 @@ void CAScoreView::centerOn(double x, double y, bool animate) {
 	\param animate Use smooth animated zoom.
 */
 void CAScoreView::setZoom(double z, double x, double y, bool animate) {
+	// set minimum zoom to 10% and maxiumum to 1000%
+	if (z<0.1 || z>10) {
+		return;
+	}
+
 	bool zoomOut = false;
 	if (zoom() - z > 0.0)
 		zoomOut = true;
@@ -909,7 +902,7 @@ bool CAScoreView::event( QEvent *event ) {
 */
 void CAScoreView::mousePressEvent(QMouseEvent *e) {
 	CAView::mousePressEvent(e);
-	QPoint coords(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y());
+	QPointF coords(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y());
 /*	if ( selection().size() && selection()[0]->isHScalable() && coords.y()>=selection()[0]->pos().y() && coords.y()<=selection()[0]->pos().y()+selection()[0]->height() ) {
 		if ( coords.x()==selection()[0]->pos().x()  ) {
 			setResizeDirection(CADrawable::Left);
@@ -958,7 +951,7 @@ void CAScoreView::on_clickTimer_timeout() {
 	A new signal is emitted: CAMouseReleaseEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::mouseReleaseEvent(QMouseEvent *e) {
-	emit CAMouseReleaseEvent(e, QPoint(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y()));
+	emit CAMouseReleaseEvent(e, QPointF(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y()));
 	setResizeDirection( CADrawable::Undefined );
 }
 
@@ -967,7 +960,7 @@ void CAScoreView::mouseReleaseEvent(QMouseEvent *e) {
 	A new signal is emitted: CAMouseMoveEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
-	QPoint coords(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y());
+	QPointF coords(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y());
 
 /*	_xCursor = coords.x();
 	_yCursor = coords.y();
@@ -1002,15 +995,14 @@ void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
 	Processes the wheelEvent().
 	A new signal is emitted: CAWheelEvent(), which usually gets processed by the parent class then.
 */
-/*void CAScoreView::wheelEvent(QWheelEvent *e) {
-	QPoint coords((int)(e->x() / zoom()) + sceneRect().x(), (int)(e->y() / zoom()) + sceneRect().y());
+void CAScoreView::wheelEvent(QWheelEvent *e) {
+	std::cout << "x=" << _canvas->mapToScene(e->pos()).x() << std::endl;
+	emit CAWheelEvent( e, _canvas->mapToScene(e->pos()) );
 
-	emit CAWheelEvent(e, coords);
-
-	_xCursor = (int)(e->x() / zoom()) + sceneRect().x();	//TODO: _xCursor and _yCursor are still the old one. Somehow, zoom() level and sceneRect().x()/Y are not updated when emmiting CAWheel event. -Matevz
+/*	_xCursor = (int)(e->x() / zoom()) + sceneRect().x();	//TODO: _xCursor and _yCursor are still the old one. Somehow, zoom() level and sceneRect().x()/Y are not updated when emmiting CAWheel event. -Matevz
 	_yCursor = (int)(e->y() / zoom()) + sceneRect().y();
-}
-*/
+*/}
+
 /*!
 	Processes the keyPressEvent().
 	A new signal is emitted: CAKeyPressEvent(), which usually gets processed by the parent class then.

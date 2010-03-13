@@ -1141,18 +1141,18 @@ void CAMainWin::initView(CAView *v) {
 	connect( v, SIGNAL(clicked()), this, SLOT(viewClicked()) );
 	switch (v->viewType()) {
 		case CAView::ScoreView: {
-			connect( v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPoint)),
-			         this, SLOT(scoreViewMousePress(QMouseEvent *, QPoint)) );
-			connect( v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPoint)),
-			         this, SLOT(scoreViewMouseMove(QMouseEvent *, QPoint)) );
-			connect( v, SIGNAL(CAMouseReleaseEvent(QMouseEvent *, QPoint)),
-			         this, SLOT(scoreViewMouseRelease(QMouseEvent *, QPoint)) );
-			connect( v, SIGNAL(CADoubleClickEvent(QMouseEvent *, QPoint)),
-			         this, SLOT(scoreViewDoubleClick(QMouseEvent *, QPoint)) );
-			connect( v, SIGNAL(CATripleClickEvent(QMouseEvent *, QPoint)),
-			         this, SLOT(scoreViewTripleClick(QMouseEvent *, QPoint)) );
-			connect( v, SIGNAL(CAWheelEvent(QWheelEvent *, QPoint)),
-			         this, SLOT(scoreViewWheel(QWheelEvent *, QPoint)) );
+			connect( v, SIGNAL(CAMousePressEvent(QMouseEvent *, QPointF)),
+			         this, SLOT(scoreViewMousePress(QMouseEvent *, QPointF)) );
+			connect( v, SIGNAL(CAMouseMoveEvent(QMouseEvent *, QPointF)),
+			         this, SLOT(scoreViewMouseMove(QMouseEvent *, QPointF)) );
+			connect( v, SIGNAL(CAMouseReleaseEvent(QMouseEvent *, QPointF)),
+			         this, SLOT(scoreViewMouseRelease(QMouseEvent *, QPointF)) );
+			connect( v, SIGNAL(CADoubleClickEvent(QMouseEvent *, QPointF)),
+			         this, SLOT(scoreViewDoubleClick(QMouseEvent *, QPointF)) );
+			connect( v, SIGNAL(CATripleClickEvent(QMouseEvent *, QPointF)),
+			         this, SLOT(scoreViewTripleClick(QMouseEvent *, QPointF)) );
+			connect( v, SIGNAL(CAWheelEvent(QWheelEvent *, QPointF)),
+			         this, SLOT(scoreViewWheel(QWheelEvent *, QPointF)) );
 			connect( v, SIGNAL(CAKeyPressEvent(QKeyEvent *)),
 			         this, SLOT(scoreViewKeyPress(QKeyEvent *)) );
 			connect( static_cast<CAScoreView*>(v)->textEdit(), SIGNAL(CAKeyPressEvent(QKeyEvent*)),
@@ -1592,7 +1592,7 @@ void CAMainWin::rebuildUI(bool repaint) {
 
 	\sa CAScoreView::mousePressEvent(), scoreViewMouseMove(), scoreViewWheel(), scoreViewKeyPress()
 */
-void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
+void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPointF coords) {
 	CAScoreView *v = static_cast<CAScoreView*>(sender());
 
 	CADrawableContext *prevContext = v->currentContext();
@@ -1803,7 +1803,7 @@ void CAMainWin::viewClicked() {
 
 	\sa CAScoreView::mouseMoveEvent(), scoreViewMousePress(), scoreViewWheel(), scoreViewKeyPress()
 */
-void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
+void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPointF coords) {
 	CAScoreView *c = static_cast<CAScoreView*>(sender());
 	if ( mode() == SelectMode && c->resizeDirection()!=CADrawable::Undefined ) {
 		int time = c->coordsToTime(coords.x());
@@ -1873,7 +1873,7 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
 
 	\sa CAScoreView::selectAllCurBar()
  */
-void CAMainWin::scoreViewDoubleClick( QMouseEvent *e, const QPoint coords ) {
+void CAMainWin::scoreViewDoubleClick( QMouseEvent *e, const QPointF coords ) {
 	if (mode() == SelectMode) {
 		static_cast<CAScoreView*>(sender())->selectAllCurBar();
 		static_cast<CAScoreView*>(sender())->repaint();
@@ -1886,7 +1886,7 @@ void CAMainWin::scoreViewDoubleClick( QMouseEvent *e, const QPoint coords ) {
 
 	\sa CAScoreView::selectAllCurContext()
  */
-void CAMainWin::scoreViewTripleClick( QMouseEvent *e, const QPoint coords ) {
+void CAMainWin::scoreViewTripleClick( QMouseEvent *e, const QPointF coords ) {
 	if (mode() == SelectMode) {
 		static_cast<CAScoreView*>(sender())->selectAllCurContext();
 		static_cast<CAScoreView*>(sender())->repaint();
@@ -1899,7 +1899,7 @@ void CAMainWin::scoreViewTripleClick( QMouseEvent *e, const QPoint coords ) {
 
 	\sa CAScoreView::mouseReleaseEvent(), scoreViewMousePress(), scoreViewMouseMove(), scoreViewWheel(), scoreViewKeyPress()
 */
-void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPoint coords) {
+void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPointF coords) {
 	CAScoreView *c = static_cast<CAScoreView*>(sender());
 	if ( c->resizeDirection()!=CADrawable::Undefined ) {
 		CACanorus::undo()->pushUndoCommand();
@@ -1943,7 +1943,7 @@ void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPoint coords) {
 
 	\sa CAScoreView::wheelEvent(), scoreViewMousePress(), scoreViewMouseMove(), scoreViewKeyPress()
 */
-void CAMainWin::scoreViewWheel(QWheelEvent *e, QPoint coords) {
+void CAMainWin::scoreViewWheel(QWheelEvent *e, QPointF coords) {
 	CAScoreView *sv = static_cast<CAScoreView*>(sender());
 	setCurrentView( sv );
 
@@ -2358,7 +2358,7 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 	This method places the currently prepared music element in CAMusElementFactory to the staff or
 	voice, dependent on the music element type and the View coordinates.
 */
-void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
+void CAMainWin::insertMusElementAt(const QPointF coords, CAScoreView *v) {
 	CADrawableContext *drawableContext = v->currentContext();
 
 	CAStaff *staff=0;
@@ -5288,7 +5288,7 @@ void CAMainWin::deleteSelection( CAScoreView *v, bool deleteSyllables, bool dele
 /*!
 	Backend for Edit->Paste.
 */
-void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
+void CAMainWin::pasteAt( const QPointF coords, CAScoreView *v ) {
 	if ( QApplication::clipboard()->mimeData() &&
 	     dynamic_cast<const CAMimeData*>(QApplication::clipboard()->mimeData()) &&
 	     v->currentContext() ) {
