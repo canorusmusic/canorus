@@ -30,6 +30,10 @@
 #include "ui/propertiesdialog.h"
 #include "ui/transposeview.h"
 
+#include "scoreui/keysignatureui.h"
+
+#include "scorectl/keysignaturectl.h"
+
 #include "control/previewctl.h"
 #include "control/printctl.h"
 #include "control/helpctl.h"
@@ -140,6 +144,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
  : QMainWindow( oParent ),
    _mainWinProgressCtl(this) {
 	setAttribute( Qt::WA_DeleteOnClose );
+	_iNumAllowed = 1;
 
 	// Create the GUI (actions, toolbars, menus etc.)
 	createCustomActions();
@@ -206,7 +211,6 @@ CAMainWin::~CAMainWin()  {
 
 	delete uiVoiceToolBar;
 	delete uiPlayableToolBar;
-	delete uiKeySigToolBar;
 	delete uiTimeSigToolBar;
 	delete uiClefToolBar;
 	delete uiFBMToolBar;
@@ -225,6 +229,7 @@ CAMainWin::~CAMainWin()  {
 
 	if (_midiRecorderView)
 		delete _midiRecorderView;
+		
 
 	if(!CACanorus::mainWinList().size()) // closing down
 		CACanorus::cleanUp();
@@ -393,11 +398,6 @@ void CAMainWin::createCustomActions() {
 		uiTupletActualNumber->setMinimum( 1 );
 		uiTupletActualNumber->setValue( 2 );
 		uiTupletActualNumber->setToolTip( tr("Actual number of notes") );
-
-	uiKeySigToolBar = new QToolBar( tr("Key Signature ToolBar"), this );
-	uiKeySig = new QComboBox( this );
-		uiKeySig->setObjectName("uiKeySig");
-		CADrawableKeySignature::populateComboBox( uiKeySig );
 
 	uiTimeSigToolBar = new QToolBar( tr("Time Signature ToolBar"), this );
 	uiTimeSigBeats = new QSpinBox(this);
@@ -596,6 +596,7 @@ void CAMainWin::setupCustomUi() {
 
 	_poPrintPreviewCtl = new CAPreviewCtl( this );
 	_poPrintCtl = new CAPrintCtl( this );
+
 	//uiPrint->setEnabled( false );
 	// Standard Toolbar
 	uiUndo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiUndo ) );
@@ -694,10 +695,6 @@ void CAMainWin::setupCustomUi() {
 	uiPlayableToolBar->addAction( uiHiddenRest );
 	addToolBar(Qt::TopToolBarArea, uiPlayableToolBar);
 
-	// KeySig Toolbar
-	uiKeySigToolBar->addWidget( uiKeySig );
-	addToolBar(Qt::TopToolBarArea, uiKeySigToolBar);
-
 	// Clef Toolbar
 	uiClefToolBar->addWidget( uiClefOffset );
 	addToolBar(Qt::TopToolBarArea, uiClefToolBar);
@@ -748,7 +745,6 @@ void CAMainWin::setupCustomUi() {
 	uiFMTonicDegree->setCurrentId( CAFunctionMark::T );
 	uiFMToolBar->addAction( uiFMEllipse );
 	uiFMToolBar->addWidget( uiFMKeySig );
-	connect( uiFMKeySig, SIGNAL( activated(int) ), this, SLOT( on_uiKeySig_activated(int) ) );
 	addToolBar(Qt::TopToolBarArea, uiFMToolBar);
 
 	// Dynamic marks toolbar
@@ -802,6 +798,10 @@ void CAMainWin::setupCustomUi() {
 	addDockWidget( (qApp->isLeftToRight()) ? Qt::RightDockWidgetArea : Qt::LeftDockWidgetArea, uiHelpDock);
 	uiHelpDock->hide();
 
+	// Score UI Interface
+	_poKeySignatureUI = new CAKeySignatureUI( this, createModeHash() ); // Control object is created here!
+	connect( uiFMKeySig, SIGNAL( activated(int) ), &_poKeySignatureUI->ctl(), SLOT( on_uiKeySig_activated(int) ) );
+
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
 	uiInsertGroup->addAction( uiSelectMode );
@@ -831,7 +831,6 @@ void CAMainWin::setupCustomUi() {
 	uiContextToolBar->hide();
 	uiPlayableToolBar->hide();
 	uiTimeSigToolBar->hide();
-	uiKeySigToolBar->hide();
 	uiClefToolBar->hide();
 	uiFBMToolBar->hide();
 	uiFMToolBar->hide();
@@ -1398,6 +1397,16 @@ void CAMainWin::on_uiEditMode_toggled(bool checked) {
 }
 
 /*!
+	Allows to set the current mode from priviledged (ui/ctl) objects 
+ */
+void CAMainWin::setMode(CAMode mode, const QString &oModeHash) {
+	int iAllowed = _modeHash[oModeHash];
+	qWarning("Allowed %d, max allowed %d, modeHash %s",iAllowed,_iNumAllowed,oModeHash.toAscii().constData()); 
+	if( iAllowed > 0 && iAllowed < _iNumAllowed )
+		setMode( mode );
+}
+
+/*!
 	Sets the current mode and updates the GUI and toolbars.
 */
 void CAMainWin::setMode(CAMode mode) {
@@ -1474,6 +1483,16 @@ void CAMainWin::setMode(CAMode mode) {
 	if ( currentScoreView() && !currentScoreView()->textEditVisible() ||
 	     !currentScoreView() && currentView() )
 		currentView()->setFocus();
+}
+
+/*!
+	Create hash to allow changing the current mode from priviledged (ui/ctl) objects 
+ */
+QString CAMainWin::createModeHash()
+{
+	QString oHash = QUuid::createUuid().toString();
+	_modeHash.insert( oHash, _iNumAllowed++ );
+	return oHash;
 }
 
 /*!
@@ -3256,38 +3275,6 @@ void CAMainWin::on_uiVoiceProperties_triggered() {
 }
 
 /*!
-	Changes the number of accidentals.
-*/
-void CAMainWin::on_uiKeySig_activated( int row ) {
-	CADiatonicKey key = CADrawableKeySignature::comboBoxRowToDiatonicKey( row );
-
-	if (mode()==InsertMode) {
-		musElementFactory()->setDiatonicKeyNumberOfAccs( key.numberOfAccs() );
-		musElementFactory()->setDiatonicKeyGender( key.gender() );
-	} else
-	if ( mode()==EditMode && currentScoreView() && currentScoreView()->selection().size() ) {
-		QList<CADrawableMusElement*> list = currentScoreView()->selection();
-		CACanorus::undo()->createUndoCommand( document(), tr("change key signature", "undo") );
-
-		for ( int i=0; i<list.size(); i++ ) {
-			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(list[i]->musElement());
-			CAFunctionMark *fm = dynamic_cast<CAFunctionMark*>(list[i]->musElement());
-
-			if ( keySig ) {
-				keySig->setDiatonicKey( key );
-			}
-
-			if ( fm ) {
-				fm->setKey( CADiatonicKey::diatonicKeyToString( key ) );
-			}
-		}
-
-		CACanorus::undo()->pushUndoCommand();
-		CACanorus::rebuildUI(document(), currentSheet());
-	}
-}
-
-/*!
 	Changes the offset of the clef.
 */
 void CAMainWin::on_uiClefOffset_valueChanged( int newOffset ) {
@@ -3925,13 +3912,6 @@ void CAMainWin::on_uiTupletActualNumber_valueChanged(int value) {
 	musElementFactory()->setTupletActualNumber( value );
 }
 
-void CAMainWin::on_uiInsertKeySig_toggled(bool checked) {
-	if (checked) {
-		musElementFactory()->setMusElementType( CAMusElement::KeySignature );
-		setMode( InsertMode );
-	}
-}
-
 void CAMainWin::on_uiBarlineType_toggled(bool checked, int buttonId) {
 	if (checked) {
 		musElementFactory()->setMusElementType( CAMusElement::Barline );
@@ -4287,7 +4267,7 @@ void CAMainWin::updateToolBars() {
 	updateContextToolBar();
 	updateVoiceToolBar();
 	updatePlayableToolBar();
-	updateKeySigToolBar();
+	_poKeySignatureUI->updateKeySigToolBar();
 	updateTimeSigToolBar();
 	updateClefToolBar();
 	updateFBMToolBar();
@@ -4617,29 +4597,6 @@ void CAMainWin::updateTimeSigToolBar() {
 		}
 	} else
 		uiTimeSigToolBar->hide();
-}
-
-/*!
-	Shows/Hides the key signature properties tool bar according to the current state.
-*/
-void CAMainWin::updateKeySigToolBar() {
-	if (uiInsertKeySig->isChecked() && mode()==InsertMode) {
-		uiKeySig->setCurrentIndex((musElementFactory()->diatonicKeyNumberOfAccs()+7)*2 + ((musElementFactory()->diatonicKeyGender()==CADiatonicKey::Minor)?1:0) );
-		uiKeySigToolBar->show();
-	} else if ( mode()==EditMode && currentScoreView() &&
-	            currentScoreView()->selection().size() &&
-	            dynamic_cast<CAKeySignature*>(currentScoreView()->selection().at(0)->musElement()) ) {
-		CAScoreView *v = currentScoreView();
-		if (v && v->selection().size()) {
-			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(v->selection().at(0)->musElement());
-			if (keySig) {
-				uiKeySig->setCurrentIndex( CADrawableKeySignature::diatonicKeyToRow( keySig->diatonicKey() ) );
-				uiKeySigToolBar->show();
-			} else
-				uiKeySigToolBar->hide();
-		}
-	} else
-		uiKeySigToolBar->hide();
 }
 
 /*!
