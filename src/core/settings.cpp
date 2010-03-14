@@ -19,6 +19,7 @@ const bool CASettings::DEFAULT_AUTO_BAR = true;
 const bool CASettings::DEFAULT_SPLIT_AT_QUARTER_BOUNDARIES = false;
 
 const QDir CASettings::DEFAULT_DOCUMENTS_DIRECTORY = QDir::home();
+const QDir CASettings::DEFAULT_SHORTCUTS_DIRECTORY = QDir( QDir::homePath() + "/.config/Canorus" );
 const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFormats::Can;
 const int CASettings::DEFAULT_AUTO_RECOVERY_INTERVAL = 1;
 const int CASettings::DEFAULT_MAX_RECENT_DOCUMENTS = 15;
@@ -83,6 +84,7 @@ const bool                           CASettings::DEFAULT_USE_SYSTEM_PDF_VIEWER =
  */
 CASettings::CASettings(const QString & fileName, QObject * parent)
  : QSettings(fileName, QSettings::IniFormat, parent) {
+	 initSettings();
 }
 
 /*!
@@ -90,10 +92,19 @@ CASettings::CASettings(const QString & fileName, QObject * parent)
  */
 CASettings::CASettings( QObject * parent )
  : QSettings( defaultSettingsPath()+"/canorus.ini", QSettings::IniFormat, parent) {
+	 initSettings();
+}
+
+void CASettings::initSettings()
+{
+	_poEmptyEntry = new QAction( this );
 }
 
 CASettings::~CASettings() {
 	writeSettings();
+	if( _poEmptyEntry )
+	  delete _poEmptyEntry;
+	_poEmptyEntry = 0;
 }
 
 /*!
@@ -297,6 +308,12 @@ int CASettings::readSettings() {
 		setUseSystemDefaultPdfViewer( DEFAULT_USE_SYSTEM_PDF_VIEWER );
 
 	return settingsPage;
+
+	// Action / Command settings
+	if ( contains("action/shortcutsdirectory") )
+		setLatestShortcutsDirectory( value("action/shortcutsdirectory").toString() );
+	else
+		setLatestShortcutsDirectory( DEFAULT_SHORTCUTS_DIRECTORY );
 }
 
 void CASettings::setMidiInPort(int in) {
@@ -311,24 +328,76 @@ void CASettings::setMidiInPort(int in) {
 
 #ifndef SWIGCPP
 
-QAction &CASettings::getSingleAction(QString oCommand)
+/*!
+  Search one single action in the list of actions (-1: entry not found)
+  Returns an empty action element when the command was not found
+*/
+int CASettings::getSingleAction(QString oCommand, QAction *&poResAction)
 {
+	for (int i=0; i < _oActionList.count(); i++) {
+		poResAction = &getSingleAction(i, _oActionList);
+		if( poResAction->objectName() == oCommand )
+			return i;
+	}
+	poResAction = _poEmptyEntry;
+	return -1;
 }
 
-void CASettings::setSingleAction(QAction oSingleAction)
+/*!
+ Updates an action in the action list
+ Return 'true' if the update was successfull
+ Warning: The action cannot be copied!
+*/
+bool CASettings::setSingleAction(QAction oSingleAction, int iPos)
 {
+	bool bRet = false;
+	if( iPos >= 0 && iPos < _oActionList.count() ) {
+		_oActionList[iPos] = &oSingleAction;
+		bRet = true;
+	}
+	return bRet;
 }
 
+/*!
+ Takes a complete action list as it's own
+ Manually: Removes all elements and copies every single in the own list
+ Else: According to Qt doc "assigns the other list to this list"
+ Warning: The actions themselves cannot be copied!
+*/
 void CASettings::setActionList(QList<QAction *> &oActionList)
 {
+#ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
+	_oActionList.clear();
+	for (int i=0; i < oActionList.count(); i++) {
+		poResAction = &getSingleAction(i, oActionList);
+		addSingleAction(*poResAction);
+	}
+#else
+	_oActionList = oActionList;
+#endif
 }
 
+/*!
+ Adds a single action to the action list
+ Warning: The action cannot be copied!
+*/
 void CASettings::addSingleAction(QAction oSingleAction)
 {
+	_oActionList.append( &oSingleAction );
 }
 
-void CASettings::deleteSingleAction(QString oCommand)
+/*!
+ Removes a single action from the action list
+ Return 'true' when succesfull
+ Warning: The action itself cannot be deleted!
+*/
+bool CASettings::deleteSingleAction(QString oCommand)
 {
+	QAction *poResAction;
+	bool bRet = false;
+	int iPos = getSingleAction(oCommand, poResAction);
+	if( iPos >= 0 ) // Double entries should not be in the list
+		_oActionList.removeOne( poResAction );
 }
 
 void CASettings::readRecentDocuments() {

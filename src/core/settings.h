@@ -22,6 +22,7 @@ class CASettings : public QSettings {
 public:
 	CASettings( QObject * parent = 0 );
 	CASettings( const QString & fileName, QObject * parent = 0 );
+	void initSettings();
 	virtual ~CASettings();
 
 	int readSettings();
@@ -134,13 +135,22 @@ public:
 	///////////////////////////////
 	inline QDir latestShortcutsDirectory() { return _latestShortcutsDirectory; }
 	inline void setLatestShortcutsDirectory( QDir d ) { _latestShortcutsDirectory = d; }
+	static const QDir DEFAULT_SHORTCUTS_DIRECTORY;
 #ifndef SWIG
-	QAction &getSingleAction(QString oCommand);
-	void setSingleAction(QAction oSingleAction);
-	inline const QList<QAction*>& getActionList() { return _actionList; }
+	int getSingleAction(QString oCommand, QAction *&poResAction);
+	/*!
+	  Re one single action in the list of actions
+	  Does not check for the correct position in the list to be fast!
+	 */
+	inline QAction &getSingleAction(int iPos, QList<QAction *> &oActionList) {
+		QAction *poResAction = static_cast<QAction*> (oActionList[iPos]);	
+		return *poResAction; }
+
+	bool setSingleAction(QAction oSingleAction, int iPos);
+	inline const QList<QAction*>& getActionList() { return _oActionList; }
 	void setActionList(QList<QAction *> &oActionList);
 	void addSingleAction(QAction oSingleAction);
-	void deleteSingleAction(QString oCommand);
+	bool deleteSingleAction(QString oCommand);
 #endif
 
 private:
@@ -220,7 +230,8 @@ private:
 	QDir _latestShortcutsDirectory; // save location of shortcuts/midi commands
 	// @ToDo: QAction can be exported to SWIG ? Abstract interface but requires QObject
 #ifndef SWIG
-    QList<QAction *> _actionList;
+    QList<QAction *> _oActionList;
+    QAction         *_poEmptyEntry; // Entry is unused for search function
 #endif
 };
 
