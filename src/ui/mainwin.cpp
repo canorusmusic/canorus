@@ -1959,7 +1959,7 @@ void CAMainWin::scoreViewWheel(QWheelEvent *e, QPointF coords) {
 			sv->setSceneY( sv->sceneY() - ((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
-			sv->setSceneY( sv->sceneY() - (e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
+			sv->setSceneY( sv->sceneY() - (0.5*e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::ControlModifier:		//zoom
 			if (e->delta() > 0)

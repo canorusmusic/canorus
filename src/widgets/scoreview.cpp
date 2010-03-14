@@ -77,6 +77,15 @@ void CATextEdit::keyPressEvent( QKeyEvent *e ) {
 	emit CAKeyPressEvent(e);
 }
 
+CAGraphicsView::CAGraphicsView( QWidget *parent )
+ : QGraphicsView(parent) {
+}
+
+void CAGraphicsView::wheelEvent( QWheelEvent *e ) {
+	e->ignore();
+}
+
+
 /*!
 	\class CAScoreView
 	\brief Widget for rendering and interacting with the score.
@@ -125,7 +134,7 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 */	setResizeDirection( CADrawable::Undefined );
 
 	// init graphics scene
-	_canvas = new QGraphicsView(this);
+	_canvas = new CAGraphicsView(this);
 	_scene = new QGraphicsScene();
 	_canvas->setScene( _scene );
 	_layoutEngine = new CALayoutEngine( this );
@@ -533,22 +542,23 @@ void CAScoreView::setSceneRect(const QRectF& coords, bool animate) {
 		return;
 
 	// set the actual new coords
-	_canvas->setSceneRect(coords);
-	return;
-	double x = coords.x();
-	double y = coords.y();
-	double w = coords.width();
-	double h = coords.height();
+	qreal x = coords.x();
+	qreal y = coords.y();
+	qreal w = coords.width();
+	qreal h = coords.height();
+
+	std::cout << "x=" << x << " y=" << y << " w=" << w << " h=" << h << std::endl;
+	std::cout << "scene x=" << _scene->sceneRect().x() << " y=" << _scene->sceneRect().y() << " w=" << _scene->sceneRect().width() << " h=" << _scene->sceneRect().height() << std::endl;
 
 	// check the limit for width and height
-	double scrollMax;
-	scrollMax = qMax(getMaxXExtended(_drawableMList), getMaxXExtended(_drawableCList));
-	_canvas->horizontalScrollBar()->setMaximum(scrollMax);
-	_canvas->horizontalScrollBar()->setPageStep(drawableWidth());
+//	double scrollMax;
+//	scrollMax = getMaxXExtended();
+//	_canvas->horizontalScrollBar()->setMaximum(scrollMax);
+//	_canvas->horizontalScrollBar()->setPageStep(_canvas->sceneRect().width());
 
-	scrollMax = qMax(getMaxYExtended(_drawableMList), getMaxYExtended(_drawableCList));
-	_canvas->verticalScrollBar()->setMaximum(scrollMax);
-	_canvas->verticalScrollBar()->setPageStep(drawableHeight());
+//	scrollMax = getMaxYExtended();
+//	_canvas->verticalScrollBar()->setMaximum(scrollMax);
+//	_canvas->verticalScrollBar()->setPageStep(_canvas->sceneRect().height());
 
 	if (animate) {
 		_targetWorldX = x;
@@ -556,7 +566,7 @@ void CAScoreView::setSceneRect(const QRectF& coords, bool animate) {
 		_targetZoom = zoom();
 		startAnimationTimer();
 	} else {
-		_canvas->setSceneRect( QRectF( x, y, w, h) );
+		_canvas->setSceneRect( x, y, w, h );
 	}
 
 	updateHelpers();
@@ -585,18 +595,18 @@ void CAScoreView::zoomToSelection(bool animate) {
 }
 
 void CAScoreView::zoomToWidth(bool animate) {
-	setSceneRect(0,0, qMax(getMaxXExtended(_drawableCList), getMaxXExtended(_drawableMList)), 0,animate);
+	setSceneRect(0,0, getMaxXExtended(), 0, animate);
 }
 
 void CAScoreView::zoomToHeight(bool animate) {
-	setSceneRect(0,0,0, qMax(getMaxYExtended(_drawableCList), getMaxYExtended(_drawableMList)), animate);
+	setSceneRect(0,0,0, getMaxYExtended(), animate);
 }
 
 void CAScoreView::zoomToFit(bool animate) {
 	setSceneRect(0,
 			     0,
-			     qMax(getMaxXExtended(_drawableCList), getMaxXExtended(_drawableMList)),
-	             qMax(getMaxYExtended(_drawableCList), getMaxYExtended(_drawableMList)),
+			    getMaxXExtended(),
+	            getMaxYExtended(),
 	             animate);
 }
 
@@ -880,6 +890,9 @@ void CAScoreView::unsetBorder() {
 */
 void CAScoreView::resizeEvent(QResizeEvent *e) {
 	_canvas->resize(e->size());
+	QRectF sceneRect = _canvas->sceneRect();
+	QPointF bounds = _canvas->mapToScene(e->size().width(), e->size().height());
+	setSceneRect( sceneRect.x(), sceneRect.y(), bounds.x()-sceneRect.x(), bounds.y()-sceneRect.y() );
 }
 
 /*!
@@ -996,12 +1009,12 @@ void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
 	A new signal is emitted: CAWheelEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::wheelEvent(QWheelEvent *e) {
-	std::cout << "x=" << _canvas->mapToScene(e->pos()).x() << std::endl;
+	e->ignore();
 	emit CAWheelEvent( e, _canvas->mapToScene(e->pos()) );
 
-/*	_xCursor = (int)(e->x() / zoom()) + sceneRect().x();	//TODO: _xCursor and _yCursor are still the old one. Somehow, zoom() level and sceneRect().x()/Y are not updated when emmiting CAWheel event. -Matevz
-	_yCursor = (int)(e->y() / zoom()) + sceneRect().y();
-*/}
+//	_xCursor = (int)(e->x() / zoom()) + sceneRect().x();	//TODO: _xCursor and _yCursor are still the old one. Somehow, zoom() level and sceneRect().x()/Y are not updated when emmiting CAWheel event. -Matevz
+//	_yCursor = (int)(e->y() / zoom()) + sceneRect().y();
+}
 
 /*!
 	Processes the keyPressEvent().
@@ -1319,17 +1332,15 @@ void CAScoreView::removeTextEdit() {
 /*!
 	Returns the maximum X of the viewable World a little bigger to make insertion at the end easy.
 */
-template <typename T>
-int CAScoreView::getMaxXExtended(CAKDTree<T> &v) {
-	return v.getMaxX() + RIGHT_EXTRA_SPACE;
+int CAScoreView::getMaxXExtended() {
+	return _scene->sceneRect().x() + RIGHT_EXTRA_SPACE;
 }
 
 /*!
 	Returns the maximum Y of the viewable World a little bigger to make insertion at the end easy.
 */
-template <typename T>
-int CAScoreView::getMaxYExtended(CAKDTree<T> &v) {
-	return v.getMaxY() + BOTTOM_EXTRA_SPACE;
+int CAScoreView::getMaxYExtended() {
+	return _scene->sceneRect().y() + BOTTOM_EXTRA_SPACE;
 }
 
 /*!
