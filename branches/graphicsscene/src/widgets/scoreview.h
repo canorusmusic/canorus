@@ -51,6 +51,16 @@ public slots:
 	void keyPressEvent( QKeyEvent * );
 };
 
+class CAGraphicsView : public QGraphicsView {
+Q_OBJECT
+
+public:
+	CAGraphicsView( QWidget *parent=0 );
+
+public slots:
+	void wheelEvent( QWheelEvent *e );
+};
+
 class CAScoreView : public CAView {
 Q_OBJECT
 
@@ -149,7 +159,7 @@ public:
 	inline const int drawableWidth() { return _canvas->width(); }
 	inline const int drawableHeight() { return _canvas->height(); }
 
-	inline const double zoom() { return _scene->width()/sceneRect().width(); }
+	inline const double zoom() { return _canvas->width()/sceneRect().width(); }
 
 	inline const QRectF sceneRect() { return _canvas->sceneRect(); }
 	void setSceneRect(const QRectF& r, bool animate=false);
@@ -278,8 +288,8 @@ private:
 
 	static const int RIGHT_EXTRA_SPACE;	  // Extra space at the right end to insert new music
 	static const int BOTTOM_EXTRA_SPACE;  // Extra space at the bottom end to insert new music
-	template <typename T> int getMaxXExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
-	template <typename T> int getMaxYExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting below easies
+	int getMaxXExtended();                // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
+	int getMaxYExtended();                // Make the viewable World a little bigger (stuffed) to make inserting below easies
 
 	QPointF _lastMousePressCoords;           // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
 	inline void setLastMousePressCoords( QPointF p ) { _lastMousePressCoords = p; }
