@@ -387,6 +387,8 @@ void CACanorus::connectSlotsByName(QObject *pOS, const QObject *pOR)
         if (slot[0] != 'o' || slot[1] != 'n' || slot[2] != '_')
             continue;
         bool foundIt = false, foundObj = false;
+        if( list.isEmpty() )
+			qWarning("CACanorus::connectSlotsByName: Object list empty!");
         for(int j = 0; j < list.count(); ++j) {
             const QObject *co = list.at(j);
             QByteArray objName = co->objectName().toAscii();
