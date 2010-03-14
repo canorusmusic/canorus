@@ -124,6 +124,8 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 # Define the MOC source files used by Canorus
 SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (in order for events, signals, slots and other macros to work)
 	core/autorecovery.h
+
+	scoreui/keysignatureui.h
 	
 	ui/mainwin.h
 	ui/settingsdialog.h
@@ -151,6 +153,8 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	control/previewctl.h
 	control/printctl.h
 	control/mainwinprogressctl.h
+
+	scorectl/keysignaturectl.h
 )
 
 SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
@@ -300,6 +304,8 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/propertiesdialog.cpp
 	ui/transposeview.cpp
 	ui/singleaction.cpp
+
+	scoreui/keysignatureui.cpp
 )
 
 SET(Canorus_Gui_Ctl_Srcs       # Control instances for user interface or views 
@@ -307,6 +313,8 @@ SET(Canorus_Gui_Ctl_Srcs       # Control instances for user interface or views
 	control/printctl.cpp
 	control/helpctl.cpp
 	control/mainwinprogressctl.cpp
+
+	scorectl/keysignaturectl.cpp
 )
 
 SET(Canorus_Ctl_Srcs            # Control instances for user interface or views and core

@@ -40,6 +40,8 @@ class QComboBox;
 class QCheckBox;
 class QAction;
 
+class CAKeySignatureUI;
+
 class CAMainWinProgressCtl;
 class CAHelpBrowser;
 class CAMenuToolButton;
@@ -96,6 +98,7 @@ public:
 	CADocument *openDocument( CADocument* doc );
 	bool saveDocument( QString fileName );
 
+	void setMode(CAMode mode, const QString &oModeHash);
 	inline CAMode mode() { return _mode; }
 	inline QFileDialog *exportDialog() { return uiExportDialog; }
 	inline QFileDialog *importDialog() { return uiImportDialog; }
@@ -131,6 +134,7 @@ public:
 	inline CADocument *document() { return _document; }
 
 	inline void setDocument(CADocument *document) { _document = document; _resourceView->setDocument( document ); }
+	inline bool isInsertKeySigChecked() { return uiInsertKeySig->isChecked(); }
 
 	// Dialogs, Windows
 	static QFileDialog *uiSaveDialog;
@@ -179,7 +183,6 @@ private slots:
 	void on_uiNewVoice_triggered();
 	void on_uiContextType_toggled(bool, int);
 	void on_uiClefType_toggled(bool, int);
-	void on_uiInsertKeySig_toggled(bool);
 	void on_uiTimeSigType_toggled(bool, int);
 	void on_uiBarlineType_toggled(bool, int);
 	void on_uiInsertPlayable_toggled(bool);
@@ -225,9 +228,6 @@ private slots:
 	void on_uiNoteStemDirection_toggled(bool, int);
 	void on_uiHiddenRest_toggled( bool checked );
 	void onMidiInEvent( QVector<unsigned char> message );
-
-	// Key Signature
-	void on_uiKeySig_activated( int );
 
 	// Time Signature
 	void on_uiTimeSigBeats_valueChanged(int);
@@ -351,6 +351,7 @@ private:
 	CAMainWinProgressCtl _mainWinProgressCtl;
 
 	void setMode(CAMode mode);
+	QString createModeHash();
 	inline void setCurrentView( CAView *view ) { _currentView = view; }
 	inline void setCurrentViewContainer( CAViewContainer *vpc )
 		{ _currentViewContainer = vpc; }
@@ -360,6 +361,8 @@ private:
 
 	QList<CAView *> _viewList;
 	QHash<CAViewContainer*, CASheet*> _sheetMap;
+	QHash<QString, int> _modeHash;
+	int _iNumAllowed;
 	CAView *_currentView;
 	CAView *_playbackView;
 	QList<CADrawableMusElement*> _prePlaybackSelection;
@@ -395,7 +398,6 @@ private:
 	void updateVoiceToolBar();
 	void updateInsertToolBar();
 	void updatePlayableToolBar();
-	void updateKeySigToolBar();
 	void updateTimeSigToolBar();
 	void updateClefToolBar();
 	void updateFBMToolBar();
@@ -484,10 +486,7 @@ private:
 			// QLabel        *uiPlayableDotted; // same as note properties
 			// QAction          *uiHiddenRest; // made by Qt Designer
 
-		QToolBar *uiKeySigToolBar;
-			// CAKeySigPSP  *uiKeySigPSP;	            // Key signature perspective. \todo Reimplement it.
-			QComboBox *uiKeySig;
-			// QComboBox    *uiKeySigGender;
+		CAKeySignatureUI *_poKeySignatureUI; // Key signature UI parts
 
 		QToolBar *uiClefToolBar;
 			QSpinBox *uiClefOffset;
