@@ -13,6 +13,7 @@
 #include <QPalette>
 #include <QColor>
 #include <QTimer>
+#include <QGridLayout>
 
 #include <math.h>	// needed for square root in animated scrolls/zoom
 
@@ -134,7 +135,9 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 */	setResizeDirection( CADrawable::Undefined );
 
 	// init graphics scene
+	_layout = new QGridLayout( this );
 	_canvas = new CAGraphicsView(this);
+	_layout->addWidget(_canvas);
 	_scene = new QGraphicsScene();
 	_canvas->setScene( _scene );
 	_layoutEngine = new CALayoutEngine( this );
@@ -888,13 +891,13 @@ void CAScoreView::unsetBorder() {
 /*!
 	Called when the user resizes the widget.
 */
-void CAScoreView::resizeEvent(QResizeEvent *e) {
+/*void CAScoreView::resizeEvent(QResizeEvent *e) {
 	_canvas->resize(e->size());
 	QRectF sceneRect = _canvas->sceneRect();
 	QPointF bounds = _canvas->mapToScene(e->size().width(), e->size().height());
 	setSceneRect( sceneRect.x(), sceneRect.y(), bounds.x()-sceneRect.x(), bounds.y()-sceneRect.y() );
 }
-
+*/
 /*!
 	This functions forward the Tab and Shift+Tab keys to keyPressEvent(), if grabTabKey is True.
 */
