@@ -82,7 +82,7 @@ void CALayoutEngine::reposit() {
 	QList< QList<CAMusElement*> > musStreamList; // streams music elements
 	QList<CAContext*> contexts; // which context does the stream belong to
 
-	int dy = 50;
+	double dy = 50;
 	QList<int> nonFirstVoiceIdxs;	//list of indexes of musStreamLists which the voices aren't the first voice. This is used later for determining should a sign be created or not (if it has been created in 1st voice already, don't recreate it in the other voices in the same staff).
 	_drawableContextMap.clear();
 
