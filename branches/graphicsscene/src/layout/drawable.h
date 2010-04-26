@@ -39,7 +39,7 @@ public:
 	virtual ~CADrawable() { }
 	virtual CADrawable *clone() { return 0; }
 
-	virtual void setColor( QColor& ) { } // used for selected items
+	virtual void setColor( QColor ) { } // used for selected items
 
 	virtual void setWidth( double ) { }
 	virtual void setHeight( double ) { }
@@ -62,6 +62,9 @@ protected:
 	bool _vScalable;              // Can the element be streched vertically
 
 	static const int SCALE_HANDLES_SIZE; // Width and Height of the scale handles squares in pixels
+
+protected slots:
+	void mousePressEvent( QGraphicsSceneMouseEvent * event );
 };
 
 #endif /* DRAWABLE_H_ */

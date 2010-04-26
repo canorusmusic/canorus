@@ -76,6 +76,8 @@ public:
 	CAScoreView *clone(QWidget *parent);
 	inline CASheet  *sheet() { return _sheet; }
 	inline void setSheet( CASheet *sheet ) { _sheet = sheet; }
+	inline QGraphicsView *canvas() { return _canvas; }
+	inline QGraphicsScene *scene() { return _scene; }
 
 	////////////////////////////////////////////
 	// Addition, removal of drawable elements //

@@ -17,6 +17,12 @@ CADrawable::CADrawable( const CADrawableType& drawableType )
  : QGraphicsItemGroup(),
    _drawableType( drawableType ),
    _hScalable(false), _vScalable(false) {
+	setFlags( QGraphicsItem::ItemIsSelectable );
+}
+
+void CADrawable::mousePressEvent( QGraphicsSceneMouseEvent * event ) {
+	setColor( Qt::red );
+	QGraphicsItemGroup::mousePressEvent(event);
 }
 
 /*void CADrawable::drawHScaleHandles( QPainter *p, CADrawSettings s ) {

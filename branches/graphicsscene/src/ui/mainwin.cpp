@@ -1950,23 +1950,23 @@ void CAMainWin::scoreViewWheel(QWheelEvent *e, QPointF coords) {
 	int val;
 	switch (e->modifiers()) {
 		case Qt::NoModifier:			//scroll horizontally
-			sv->setSceneX( sv->sceneX() - ((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
+//			sv->setSceneX( sv->sceneX() - ((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::AltModifier:			//scroll horizontally, fast
-			sv->setSceneX( sv->sceneX() - (e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
+//			sv->setSceneX( sv->sceneX() - (e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::ShiftModifier:			//scroll vertically
-			sv->setSceneY( sv->sceneY() - ((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
+//			sv->setSceneY( sv->sceneY() - ((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
-			sv->setSceneY( sv->sceneY() - (0.5*e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
+//			sv->setSceneY( sv->sceneY() - (0.5*e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::ControlModifier:		//zoom
-			if (e->delta() > 0)
+/*			if (e->delta() > 0)
 				sv->setZoom( sv->zoom()*1.1, coords.x(), coords.y(), CACanorus::settings()->animatedScroll() );
 			else
 				sv->setZoom( sv->zoom()/1.1, coords.x(), coords.y(), CACanorus::settings()->animatedScroll() );
-
+*/
 			break;
 	}
 

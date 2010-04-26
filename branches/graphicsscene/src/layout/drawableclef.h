@@ -20,6 +20,8 @@ public:
 	CADrawableClef *clone(CADrawableContext* newContext = 0);
 	inline CAClef *clef() { return (CAClef*)_musElement; }
 
+	void setColor( QColor );
+
 	static const int CLEF_EIGHT_SIZE;
 };
 
