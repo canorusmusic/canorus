@@ -33,6 +33,7 @@ public:
 	};
 
 	CADrawableMusElement( CAMusElement *musElement, CADrawableContext *drawableContext, const CADrawableMusElementType& t );
+	QVariant itemChange( GraphicsItemChange change, const QVariant &value );
 
 	CADrawableMusElementType drawableMusElementType() { return _drawableMusElementType; }
 	inline CAMusElement *musElement() { return _musElement; }

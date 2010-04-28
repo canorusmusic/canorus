@@ -6,6 +6,8 @@
 */
 
 #include "layout/drawablecontext.h"
+#include "canorus.h"
+#include "core/settings.h"
 
 CADrawableContext::CADrawableContext(CAContext *c, const CADrawableContextType& t)
  : CADrawable(DrawableContext),
@@ -30,4 +32,17 @@ QList<CADrawableMusElement*> CADrawableContext::findInRange( double x1, double x
 		}
 	}
 	return list;
+}
+
+QVariant CADrawableContext::itemChange( GraphicsItemChange change, const QVariant & value ) {
+	switch (change) {
+	case QGraphicsItem::ItemSelectedChange:
+		if (value==true) {
+			setColor( CACanorus::settings()->selectedContextColor() );
+		} else {
+			setColor( CACanorus::settings()->foregroundColor() );
+		}
+		break;
+	}
+	return CADrawable::itemChange( change, value );
 }
