@@ -26,6 +26,7 @@ public:
 
 	CADrawableContext(CAContext *c, const CADrawableContextType& t);
 	inline CAContext *context() { return _context; }
+	QVariant itemChange( GraphicsItemChange change, const QVariant &value );
 	CADrawableContextType drawableContextType() { return _drawableContextType; }
 	inline virtual void addMElement(CADrawableMusElement *elt) {
 		_drawableMusElementList << elt;

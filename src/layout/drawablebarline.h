@@ -17,7 +17,6 @@ class CADrawableBarline : public CADrawableMusElement {
 	public:
 		CADrawableBarline(CABarline *m, CADrawableStaff *staff);
 		~CADrawableBarline();
-
 		CADrawableBarline *clone(CADrawableContext* newContext = 0);
 		inline CABarline *barline() { return (CABarline*)_musElement; }
 

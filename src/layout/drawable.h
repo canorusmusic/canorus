@@ -9,7 +9,7 @@
 #define DRAWABLE_H_
 
 #include <QRect>
-#include <QGraphicsItem>
+#include <QGraphicsItemGroup>
 #include <QColor>
 
 class QPainter;
@@ -37,9 +37,10 @@ public:
 
 	CADrawable( const CADrawableType& drawableType );
 	virtual ~CADrawable() { }
+	void paint ( QPainter*, const QStyleOptionGraphicsItem*, QWidget* = 0 );
 	virtual CADrawable *clone() { return 0; }
 
-	virtual void setColor( QColor ) { } // used for selected items
+	virtual void setColor( QColor );
 
 	virtual void setWidth( double ) { }
 	virtual void setHeight( double ) { }

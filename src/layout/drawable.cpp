@@ -6,6 +6,9 @@
 */
 
 #include <QPainter>
+#include <QStyleOptionGraphicsItem>
+#include <QGraphicsSimpleTextItem>
+#include <QGraphicsLineItem>
 
 #include "layout/drawable.h"
 #include "layout/drawablemuselement.h"
@@ -21,8 +24,28 @@ CADrawable::CADrawable( const CADrawableType& drawableType )
 }
 
 void CADrawable::mousePressEvent( QGraphicsSceneMouseEvent * event ) {
-	setColor( Qt::red );
 	QGraphicsItemGroup::mousePressEvent(event);
+}
+
+void CADrawable::paint(QPainter *p, const QStyleOptionGraphicsItem *o, QWidget *w) {
+	QStyleOptionGraphicsItem *_o = const_cast<QStyleOptionGraphicsItem*> (o);
+	_o->state &= ~QStyle::State_Selected;
+	QGraphicsItemGroup::paint(p, _o, w);
+}
+
+/*!
+	Reimplement this method and itemChange() to paint the selected elements differently.
+	By default it paints all child items to the given color.
+ */
+void CADrawable::setColor( QColor color ) {
+	for (int i=0; i<childItems().size(); i++) {
+		if (dynamic_cast<QGraphicsSimpleTextItem*>(childItems()[i])) {
+			static_cast<QGraphicsSimpleTextItem*>(childItems()[i])->setBrush( QBrush(color) );
+		} else
+		if (dynamic_cast<QGraphicsLineItem*>(childItems()[i])) {
+			static_cast<QGraphicsLineItem*>(childItems()[i])->setPen( QPen(color) );
+		}
+	}
 }
 
 /*void CADrawable::drawHScaleHandles( QPainter *p, CADrawSettings s ) {

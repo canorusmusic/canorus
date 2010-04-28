@@ -8,7 +8,6 @@
 #include <iostream>
 
 #include <QFont>
-#include <QPainter>
 
 #include "layout/drawableclef.h"
 #include "layout/drawablestaff.h"
@@ -115,6 +114,3 @@ CADrawableClef* CADrawableClef::clone(CADrawableContext* newContext) {
 	return (new CADrawableClef(clef(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext)));
 }
 
-void CADrawableClef::setColor( QColor c ) {
-	static_cast<QGraphicsSimpleTextItem*>(childItems()[0])->setPen( QPen(c) );
-}
