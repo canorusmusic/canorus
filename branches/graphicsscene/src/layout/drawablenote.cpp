@@ -279,7 +279,3 @@ void CADrawableNote::setDrawableAccidental( CADrawableAccidental *acc ) {
 	s.x += qRound(delta);
 }
 */
-
-CADrawableNote *CADrawableNote::clone(CADrawableContext* newContext) {
-	return new CADrawableNote(note(), (newContext)?newContext:_drawableContext );
-}

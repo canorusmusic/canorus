@@ -18,8 +18,6 @@ public:
 
 	CATuplet *tuplet() { return static_cast<CATuplet*>(_musElement); }
 
-	CADrawableTuplet *clone(CADrawableContext* newContext = 0);
-
 	inline double x1() { return _x1; }
 	inline double y1() { return _y1; }
 	inline double x2() { return _x2; }

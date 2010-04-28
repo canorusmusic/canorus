@@ -27,6 +27,3 @@ CADrawableMidiNote::~CADrawableMidiNote() {
 	p->fillRect( s.x, s.y, qRound(neededSpaceWidth()*s.z), qRound(neededSpaceHeight()*s.z), brush );
 }
 */
-CADrawableMidiNote* CADrawableMidiNote::clone(CADrawableContext* newContext) {
-/*	return new CADrawableMidiNote(static_cast<CAMidiNote*>(_musElement), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext), _xPos, _yPos);
-*/}

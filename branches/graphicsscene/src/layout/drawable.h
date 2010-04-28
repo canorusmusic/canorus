@@ -38,7 +38,6 @@ public:
 	CADrawable( const CADrawableType& drawableType );
 	virtual ~CADrawable() { }
 	void paint ( QPainter*, const QStyleOptionGraphicsItem*, QWidget* = 0 );
-	virtual CADrawable *clone() { return 0; }
 
 	virtual void setColor( QColor );
 

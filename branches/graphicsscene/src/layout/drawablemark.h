@@ -21,7 +21,6 @@ public:
 	CADrawableMark( CAMark *mark, CADrawableContext *drawableContext );
 	virtual ~CADrawableMark();
 
-	CADrawableMark *clone( CADrawableContext* newContext = 0 );
 	inline CAMark *mark() { return static_cast<CAMark*>(musElement()); }
 
 	inline void setRehersalMarkNumber( int n ) { _rehersalMarkNumber = n; }

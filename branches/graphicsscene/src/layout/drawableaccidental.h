@@ -15,8 +15,6 @@ public:
 	CADrawableAccidental(signed char accs, CAMusElement *musElement, CADrawableContext *drawableContext);
 	~CADrawableAccidental();
 
-	CADrawableAccidental *clone(CADrawableContext* newContext = 0);
-
 private:
 	signed char _accs;
 	double _centerX, _centerY; // easier to do clone(), otherwise not needed

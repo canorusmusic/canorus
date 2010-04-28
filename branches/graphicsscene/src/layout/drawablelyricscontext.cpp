@@ -31,10 +31,6 @@ CADrawableLyricsContext::CADrawableLyricsContext(CALyricsContext *c)
 CADrawableLyricsContext::~CADrawableLyricsContext() {
 }
 
-CADrawableLyricsContext* CADrawableLyricsContext::clone() {
-/*	return new CADrawableLyricsContext( lyricsContext(), xPos(), yPos() );
-*/}
-
 /*void CADrawableLyricsContext::draw(QPainter *p, const CADrawSettings s) {
 	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(Qt::green));
 }

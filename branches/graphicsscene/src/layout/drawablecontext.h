@@ -33,7 +33,6 @@ public:
 	}
 	virtual int removeMElement(CADrawableMusElement *elt) { return _drawableMusElementList.removeAll(elt); }
 	CADrawableMusElement *lastDrawableMusElement() { if (_drawableMusElementList.size()) return _drawableMusElementList.last(); else return 0; }
-	virtual CADrawableContext* clone() = 0;
 	QList<CADrawableMusElement*>& drawableMusElementList() { return _drawableMusElementList; }
 
 	inline CADrawableMusElement *findMElement(CAMusElement* elt) {

@@ -20,8 +20,6 @@ public:
 
 	CASlur *slur() { return static_cast<CASlur*>(_musElement); }
 
-	CADrawableSlur *clone(CADrawableContext* newContext = 0);
-
 	inline double x1() { return _x1; }
 	inline double y1() { return _y1; }
 	inline double xMid() { return _xMid; }

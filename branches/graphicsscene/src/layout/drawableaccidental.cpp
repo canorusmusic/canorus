@@ -101,7 +101,3 @@ CADrawableAccidental::~CADrawableAccidental() {
 			break;
 	}
 }*/
-
-CADrawableAccidental *CADrawableAccidental::clone(CADrawableContext* newContext) {
-	return new CADrawableAccidental(_accs, _musElement, (newContext)?newContext:_drawableContext);
-}

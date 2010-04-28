@@ -18,8 +18,6 @@ public:
 	CADrawableFiguredBassNumber( CAFiguredBassMark *m, int number, CADrawableFiguredBassContext* );
 	virtual ~CADrawableFiguredBassNumber();
 
-	CADrawableFiguredBassNumber *clone(CADrawableContext *c);
-
 	CAFiguredBassMark *figuredBassMark() { return static_cast<CAFiguredBassMark*>(musElement()); }
 	int number() { return _number; }
 

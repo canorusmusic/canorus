@@ -17,9 +17,8 @@ class CADrawableFiguredBassContext: public CADrawableContext {
 public:
 	CADrawableFiguredBassContext( CAFiguredBassContext *c );
 	virtual ~CADrawableFiguredBassContext();
-	CADrawableFiguredBassContext* clone();
 
-	CAFiguredBassContext *figuredBassContext() { return static_cast<CAFiguredBassContext*>(context()); }
+	CAFiguredBassContext *figuredBassContext() { return static_cast<CAFiguredBassContext*>(_context); }
 };
 
 #endif /* DRAWABLEFIGUREDBASSCONTEXT_H_ */

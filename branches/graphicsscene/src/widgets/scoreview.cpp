@@ -214,16 +214,14 @@ void CAScoreView::on_animationTimer_timeout() {
 
 CAScoreView *CAScoreView::clone() {
 	CAScoreView *v = new CAScoreView(_sheet, static_cast<QWidget*>(parent()));
-
-	v->importElements(&_drawableMList, &_drawableCList);
+	v->rebuild();
 
 	return v;
 }
 
 CAScoreView *CAScoreView::clone(QWidget *parent) {
 	CAScoreView *v = new CAScoreView(_sheet, parent);
-
-	v->importElements(&_drawableMList, &_drawableCList);
+	v->rebuild();
 
 	return v;
 }
@@ -382,34 +380,6 @@ CAMusElement *CAScoreView::removeMElement(double x, double y) {
 	}
 
 	return 0;
-}
-
-void CAScoreView::importElements(CAKDTree<CADrawableMusElement*> *drawableMList, CAKDTree<CADrawableContext*> *drawableCList)
-{
-	for (int i=0; i<drawableCList->size(); i++)
-		addCElement(((CADrawableContext*)drawableCList->at(i))->clone());
-	for (int i=0; i<drawableMList->size(); i++)
-	{
-		CADrawableContext* target;
-		int idx = drawableCList->list().indexOf(((CADrawableMusElement*)drawableMList->at(i))->drawableContext());
-		if(idx == -1)
-		{
-			printf("Error!! Music element %p is not in its context!\n", drawableMList->at(i));
-			target = 0;
-		} else
-			target = (CADrawableContext*)_drawableCList.at(idx);
-		addMElement(((CADrawableMusElement*)drawableMList->at(i))->clone(target));
-	}
-}
-
-void CAScoreView::importMElements(CAKDTree<CADrawableMusElement*> *elts) {
-	for (int i=0; i<elts->size(); i++)
-		addMElement((CADrawableMusElement*)elts->at(i)->clone());
-}
-
-void CAScoreView::importCElements(CAKDTree<CADrawableContext*> *elts) {
-	for (int i=0; i<elts->size(); i++)
-		addCElement((CADrawableContext*)elts->at(i)->clone());
 }
 
 /*!

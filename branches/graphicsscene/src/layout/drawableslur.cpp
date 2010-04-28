@@ -113,7 +113,3 @@ double CADrawableSlur::max(double x, double y, double z) {
 
 	p->setRenderHint( QPainter::Antialiasing, aliasing );
 }*/
-
-CADrawableSlur *CADrawableSlur::clone(CADrawableContext* newContext) {
-/*	return new CADrawableSlur( slur(), newContext?newContext:drawableContext(), xPos(), y1(), xMid(), yMid(), xPos()+width(), y2() );
-*/}

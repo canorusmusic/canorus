@@ -60,12 +60,6 @@ void CADrawableStaff::setWidth( double width ) {
 	}
 }*/
 
-CADrawableStaff *CADrawableStaff::clone() {
-/*	CADrawableStaff *d = new CADrawableStaff(staff(), xPos(), yPos());
-
-	return d;
-*/}
-
 /*!
 	Returns the center Y coordinate of the given note in relative coordinates of
 	this staff.

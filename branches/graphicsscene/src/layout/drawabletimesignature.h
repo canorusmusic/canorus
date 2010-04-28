@@ -18,7 +18,6 @@ class CADrawableTimeSignature : public CADrawableMusElement {
 	public:
 		CADrawableTimeSignature(CATimeSignature *timeSig, CADrawableStaff *drawableStaff); // y coordinate is a top of the staff
 		~CADrawableTimeSignature();
-		CADrawableTimeSignature *clone(CADrawableContext* newContext = 0);
 		inline CATimeSignature *timeSignature() { return static_cast<CATimeSignature*>(_musElement); }
 };
 

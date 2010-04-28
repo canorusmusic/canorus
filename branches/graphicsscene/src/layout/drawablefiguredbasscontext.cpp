@@ -19,10 +19,6 @@ CADrawableFiguredBassContext::CADrawableFiguredBassContext(CAFiguredBassContext 
 CADrawableFiguredBassContext::~CADrawableFiguredBassContext() {
 }
 
-CADrawableFiguredBassContext* CADrawableFiguredBassContext::clone() {
-/*	return new CADrawableFiguredBassContext( figuredBassContext(), xPos(), yPos() );
-*/}
-
 /*void CADrawableFiguredBassContext::draw(QPainter *p, const CADrawSettings s) {
 	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(Qt::cyan));
 }

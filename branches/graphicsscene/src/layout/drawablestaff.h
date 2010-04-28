@@ -22,7 +22,6 @@ class CADrawableTimeSignature;
 class CADrawableStaff : public CADrawableContext {
 public:
 	CADrawableStaff(CAStaff* staff);
-	CADrawableStaff *clone();
 	inline CAStaff *staff() { return static_cast<CAStaff*>(_context); }
 
 	void setWidth( double width );

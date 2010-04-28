@@ -17,7 +17,6 @@ class CADrawableMidiNote: public CADrawableMusElement {
 public:
 	CADrawableMidiNote( CAMidiNote *midiNote, CADrawableStaff* c );
 	virtual ~CADrawableMidiNote();
-	CADrawableMidiNote* clone(CADrawableContext* newContext);
 };
 
 #endif /* DRAWABLEMIDINOTE_H_ */

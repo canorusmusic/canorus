@@ -9,7 +9,6 @@
 #include <QBrush>
 
 #include "layout/drawablefunctionmarkcontext.h"
-#include "score/functionmarkcontext.h"
 
 CADrawableFunctionMarkContext::CADrawableFunctionMarkContext(CAFunctionMarkContext *context, int numberOfLines)
  : CADrawableContext(context, DrawableFunctionMarkContext) {
@@ -26,9 +25,6 @@ CADrawableFunctionMarkContext::~CADrawableFunctionMarkContext() {
 	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(Qt::yellow));
 }
 */
-CADrawableFunctionMarkContext *CADrawableFunctionMarkContext::clone() {
-/*	return new CADrawableFunctionMarkContext((CAFunctionMarkContext*)_context, xPos(), yPos());
-*/}
 
 double CADrawableFunctionMarkContext::yPosLine(CAFunctionMarkLine part) {
 	double y = pos().y();

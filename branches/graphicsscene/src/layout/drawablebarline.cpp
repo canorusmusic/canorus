@@ -257,7 +257,3 @@ CADrawableBarline::~CADrawableBarline() {
 
 	p->setBrush(QBrush(s.color, Qt::NoBrush)); // reset the painter's brush
 }*/
-
-CADrawableBarline* CADrawableBarline::clone(CADrawableContext* newContext) {
-	return new CADrawableBarline(barline(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext));
-}

@@ -104,10 +104,6 @@ CADrawableFunctionMark::~CADrawableFunctionMark() {
 		             rightBorder, s.y+qRound( (_height/2.0)*s.z ) );
 }*/
 
-CADrawableFunctionMark *CADrawableFunctionMark::clone(CADrawableContext* newContext) {
-/*	return new CADrawableFunctionMark(functionMark(), (newContext)?(CADrawableFunctionMarkContext*)newContext:drawableFunctionMarkContext(), ((CAFunctionMark*)_musElement)->isMinor()?xPos()+6:xPos(), yPos());
-*/}
-
 /*!
 	\class CADrawableFunctionMarkSupport
 	\brief Rectangles, key names, numbers below/above function, lines etc.
