@@ -39,7 +39,6 @@ public:
 	inline CAMusElement *musElement() { return _musElement; }
 	CADrawableContext *drawableContext() { return _drawableContext; }
 	void setDrawableContext(CADrawableContext *context) { _drawableContext = context; }
-	virtual CADrawableMusElement* clone(CADrawableContext* newContext = 0) = 0;
 
 protected:
 	void setDrawableMusElementType( CADrawableMusElementType t ) { _drawableMusElementType = t; }

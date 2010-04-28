@@ -34,7 +34,6 @@ public:
 	void addElement(T elt);
 	bool removeElement(T elt);
 	T removeElement(double x, double y, bool autoDelete=true);
-	void import(CAKDTree *tree);
 
 	QList<T> findInRange(double x, double y, double w=0, double h=0);
 	QList<T> findInRange(QRect &area);
@@ -342,18 +341,6 @@ void CAKDTree<T>::calculateMaxXY() {
 		if (static_cast<CADrawable*>(_list[i])->yPos() + static_cast<CADrawable*>(_list[i])->height() > _maxY)
 			_maxY = static_cast<CADrawable*>(_list[i])->yPos() + static_cast<CADrawable*>(_list[i])->height();
 	}*/
-}
-
-/*!
-	Imports all the elements from the given \a tree.
-	It actually merges the given tree with this one.
-*/
-template <typename T>
-void CAKDTree<T>::import(CAKDTree *tree) {
-	for (int i=0; i<tree->list().size(); i++)
-		_list += tree->list().at(i)->clone();
-
-	calculateMaxXY();
 }
 #endif
 

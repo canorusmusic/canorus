@@ -14,7 +14,6 @@
 class CADrawableRest : public CADrawableMusElement {
 	public:
 		CADrawableRest( CARest *rest, CADrawableContext *drawableContext );
-		CADrawableRest *clone(CADrawableContext* newContext = 0);
 		~CADrawableRest();
 
 		inline CARest* rest() { return static_cast<CARest*>(_musElement); }

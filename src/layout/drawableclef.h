@@ -17,7 +17,6 @@ class CADrawableClef : public CADrawableMusElement {
 public:
 	CADrawableClef(CAClef *clef, CADrawableStaff *drawableStaff);
 
-	CADrawableClef *clone(CADrawableContext* newContext = 0);
 	inline CAClef *clef() { return (CAClef*)_musElement; }
 
 	static const int CLEF_EIGHT_SIZE;

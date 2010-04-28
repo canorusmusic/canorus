@@ -65,13 +65,3 @@ CADrawableFiguredBassNumber::~CADrawableFiguredBassNumber() {
 
 	p->drawText( s.x+(accs.isEmpty()?0:(8*s.z)), s.y+qRound(0.8*DEFAULT_NUMBER_SIZE*s.z), text );
 }*/
-
-CADrawableFiguredBassNumber *CADrawableFiguredBassNumber::clone(CADrawableContext *c) {
-/*	return new CADrawableFiguredBassNumber(
-		figuredBassMark(),
-		_number,
-		(c?static_cast<CADrawableFiguredBassContext*>(c):static_cast<CADrawableFiguredBassContext*>(drawableContext())),
-		xPos(),
-		yPos()
-	);
-*/}

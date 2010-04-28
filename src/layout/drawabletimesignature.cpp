@@ -103,7 +103,3 @@ CADrawableTimeSignature::~CADrawableTimeSignature() {
 		}
 	}
 }*/
-
-CADrawableTimeSignature* CADrawableTimeSignature::clone(CADrawableContext* newContext) {
-	return (new CADrawableTimeSignature(timeSignature(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext)));
-}

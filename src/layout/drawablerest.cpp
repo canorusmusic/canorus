@@ -101,10 +101,6 @@ CADrawableRest::CADrawableRest(CARest *r, CADrawableContext *drawableContext)
 CADrawableRest::~CADrawableRest() {
 }
 
-CADrawableRest *CADrawableRest::clone(CADrawableContext* newContext) {
-/*	return new CADrawableRest(rest(), (newContext)?newContext:_drawableContext, xPos(), yPos());
-*/}
-
 /*void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
 	QFont font("Emmentaler");
 	font.setPixelSize(qRound(35*s.z));

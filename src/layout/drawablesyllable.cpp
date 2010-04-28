@@ -50,12 +50,3 @@ CADrawableSyllable::~CADrawableSyllable() {
 		             qRound(s.x + width()*s.z), s.y + qRound(height()*s.z));
 	}
 }*/
-
-CADrawableSyllable *CADrawableSyllable::clone(CADrawableContext *c) {
-/*	return new CADrawableSyllable(
-		syllable(),
-		(c?static_cast<CADrawableLyricsContext*>(c):static_cast<CADrawableLyricsContext*>(drawableContext())),
-		xPos(),
-		yPos()
-	);
-*/}

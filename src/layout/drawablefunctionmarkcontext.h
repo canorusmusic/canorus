@@ -9,15 +9,14 @@
 #define DRAWABLEFUNCTIONMARKCONTEXT_H_
 
 #include "layout/drawablecontext.h"
-
-class CAFunctionMarkContext;
+#include "score/functionmarkcontext.h"
 
 class CADrawableFunctionMarkContext : public CADrawableContext {
 	public:
 		CADrawableFunctionMarkContext( CAFunctionMarkContext *c, int numberOfLines=2 );
 		~CADrawableFunctionMarkContext();
 
-		CADrawableFunctionMarkContext *clone();
+		inline CAFunctionMarkContext *functionMarkContext() { return static_cast<CAFunctionMarkContext*>(_context); }
 
 		void setNumberOfLines(int number) { _numberOfLines = number; }
 		int numberOfLines() { return _numberOfLines; }

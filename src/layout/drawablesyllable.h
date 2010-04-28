@@ -18,7 +18,6 @@ class CADrawableSyllable : public CADrawableMusElement {
 public:
 	CADrawableSyllable( CASyllable*, CADrawableLyricsContext* );
 	~CADrawableSyllable();
-	CADrawableSyllable *clone(CADrawableContext *c=0);
 
 	CASyllable *syllable() { return static_cast<CASyllable*>(musElement()); }
 

@@ -174,9 +174,6 @@ CADrawableKeySignature::~CADrawableKeySignature() {
 	}
 }
 */
-CADrawableKeySignature* CADrawableKeySignature::clone(CADrawableContext* newContext) {
-	return new CADrawableKeySignature(keySignature(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext));
-}
 
 /*!
 	This function adds key signatures to the given combobox in order

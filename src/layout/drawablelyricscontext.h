@@ -18,9 +18,7 @@ public:
 	CADrawableLyricsContext(CALyricsContext *c);
 	~CADrawableLyricsContext();
 
-	CADrawableLyricsContext* clone();
-
-	CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(context()); }
+	CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(_context); }
 
 	static const double DEFAULT_TEXT_VERTICAL_SPACING;
 };

@@ -67,7 +67,3 @@ CADrawableTuplet::~CADrawableTuplet() {
 	p->setFont(font);
 	p->drawText( s.x + qRound((width()/2.0-3)*s.z), s.y + qRound((height()/2.0+9)*s.z), QString::number( tuplet()->number() ) );
 }*/
-
-CADrawableTuplet *CADrawableTuplet::clone(CADrawableContext* newContext) {
-/*	return new CADrawableTuplet( tuplet(), newContext?newContext:drawableContext(), x1(), y1(), x2(), y2() );
-*/}

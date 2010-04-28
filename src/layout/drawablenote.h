@@ -19,7 +19,6 @@ class CADrawableNote : public CADrawableMusElement {
 		CADrawableNote(CANote *note, CADrawableContext *drawableContext, CADrawableAccidental *acc=0);
 		~CADrawableNote();
 		inline CANote* note() { return static_cast<CANote*>(_musElement); }
-		CADrawableNote *clone(CADrawableContext* newContext = 0);
 
 		void updateLedgerLines();
 		void setDrawableAccidental(CADrawableAccidental *acc);

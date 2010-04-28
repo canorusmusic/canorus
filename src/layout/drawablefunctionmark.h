@@ -19,8 +19,6 @@ public:
 	CADrawableFunctionMark(CAFunctionMark *function, CADrawableFunctionMarkContext *context);
 	~CADrawableFunctionMark();
 
-	CADrawableFunctionMark *clone(CADrawableContext* newContext = 0);
-
 	inline CAFunctionMark *functionMark() { return (CAFunctionMark*)_musElement; };
 	inline CADrawableFunctionMarkContext *drawableFunctionMarkContext() { return (CADrawableFunctionMarkContext*)_drawableContext; };
 

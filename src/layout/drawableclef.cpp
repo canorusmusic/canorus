@@ -109,8 +109,3 @@ CADrawableClef::CADrawableClef(CAClef *musElement, CADrawableStaff *drawableStaf
 		}
 	}
 }*/
-
-CADrawableClef* CADrawableClef::clone(CADrawableContext* newContext) {
-	return (new CADrawableClef(clef(), static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext)));
-}
-

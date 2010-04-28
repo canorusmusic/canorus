@@ -362,10 +362,6 @@ CADrawableMark::~CADrawableMark() {
 	}
 }*/
 
-CADrawableMark* CADrawableMark::clone( CADrawableContext* newContext ) {
-/*	return new CADrawableMark( mark(), newContext?newContext:drawableContext(), xPos(), yPos() );
-*/}
-
 /*!
 	Converts the list of fingers to Emmentaler string.
 */

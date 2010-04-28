@@ -23,7 +23,6 @@ class CADrawableKeySignature : public CADrawableMusElement {
 		CADrawableKeySignature( CAKeySignature *keySig, CADrawableStaff *staff, CAClef *lastClef=0, CAKeySignature *lastKeySig=0 );
 		~CADrawableKeySignature();
 
-		CADrawableKeySignature *clone(CADrawableContext* newContext = 0);
 		inline CAKeySignature *keySignature() { return (CAKeySignature*)_musElement; }
 
 		static void populateComboBox( QComboBox *c );

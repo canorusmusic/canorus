@@ -86,10 +86,6 @@ public:
 	void addCElement(CADrawableContext *elt, bool select=false);
 	CAMusElement *removeMElement(double x, double y);
 
-	void importElements(CAKDTree<CADrawableMusElement*> *drawableMList, CAKDTree<CADrawableContext*> *drawableCList);
-	void importMElements(CAKDTree<CADrawableMusElement*> *elts);
-	void importCElements(CAKDTree<CADrawableContext*> *elts);
-
 	///////////////
 	// Selection //
 	///////////////
