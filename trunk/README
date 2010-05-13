@@ -19,6 +19,7 @@ The latest version of Qt4, Swig and CMake is prefered.
 - g++ >=4, make (http://gcc.gnu.org, http://www.mingw.org)
 - cmake >=2.6.2 (http://www.cmake.org)
 - Python development package =2.5.x (http://www.python.org)
+- (optional) Lyx, tex4ht (user's guide)
 
 Runtime dependencies:
 =====================

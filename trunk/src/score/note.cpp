@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -16,6 +16,9 @@
 	\brief Represents a note in the score.
 
 	This class represents every note in the score. It inherits the base class CAPlayable.
+
+	Chords in Canorus don't have its own class, but are represented as a list of notes.
+	The first note in the chord identifies it and contains chord-level marks.
 */
 
 /*!

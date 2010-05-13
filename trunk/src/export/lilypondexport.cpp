@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -78,74 +78,73 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	for (int i=0; i<v->musElementList().size(); i++, out() << " ") { // append blank after each element
 		// (CAMusElement)
 		switch (v->musElementList()[i]->musElementType()) {
-			case CAMusElement::Clef: {
-				// CAClef
-				CAClef *clef = static_cast<CAClef*>(v->musElementList()[i]);
-				if (clef->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
-				out() << "\\clef \"";
-				out() << clefTypeToLilyPond( clef->clefType(), clef->c1(), clef->offset() );
-				out() << "\"";
+		case CAMusElement::Clef: {
+			// CAClef
+			CAClef *clef = static_cast<CAClef*>(v->musElementList()[i]);
+			if (clef->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+			out() << "\\clef \"";
+			out() << clefTypeToLilyPond( clef->clefType(), clef->c1(), clef->offset() );
+			out() << "\"";
 
-				break;
+			break;
+		}
+		case CAMusElement::KeySignature: {
+			// CAKeySignature
+			CAKeySignature *key = static_cast<CAKeySignature*>(v->musElementList()[i]);
+			if (key->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+			out() << "\\key "
+				<< diatonicPitchToLilyPond( key->diatonicKey().diatonicPitch() ) << " "
+				<< diatonicKeyGenderToLilyPond( key->diatonicKey().gender() );
+
+			break;
+		}
+		case CAMusElement::TimeSignature: {
+			// CATimeSignature, remember for anacrusis processing
+			time = static_cast<CATimeSignature*>(v->musElementList()[i]);
+			if (time->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+			out() << "\\time " << time->beats() << "/" << time->beat();
+			// set this flag to allow the time signature engraver
+			_timeSignatureFound = true;
+
+			break;
+		}
+		case CAMusElement::Barline: {
+			// CABarline
+			CABarline *bar = static_cast<CABarline*>(v->musElementList()[i]);
+			if (bar->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+
+			if ( _voltaBracketFinishAtRepeat &&
+					(bar->barlineType() == CABarline::RepeatClose || bar->barlineType() == CABarline::RepeatCloseOpen)) {
+				out() << " \\set Score.repeatCommands = #'((volta #f))  ";
+				_voltaBracketFinishAtRepeat = false;
 			}
-			case CAMusElement::KeySignature: {
-				// CAKeySignature
-				CAKeySignature *key = static_cast<CAKeySignature*>(v->musElementList()[i]);
-				if (key->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
-				out() << "\\key "
-				    << diatonicPitchToLilyPond( key->diatonicKey().diatonicPitch() ) << " "
-				    << diatonicKeyGenderToLilyPond( key->diatonicKey().gender() );
-
-				break;
+			if ( _voltaBracketFinishAtBar ) {
+				out() << " \\set Score.repeatCommands = #'((volta #f))  ";
+				_voltaBracketFinishAtBar = false;
 			}
-			case CAMusElement::TimeSignature: {
-				// CATimeSignature, remember for anacrusis processing
-				time = static_cast<CATimeSignature*>(v->musElementList()[i]);
-				if (time->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
-				out() << "\\time " << time->beats() << "/" << time->beat();
-				// set this flag to allow the time signature engraver
-				_timeSignatureFound = true;
 
-				break;
-			}
-			case CAMusElement::Barline: {
-				// CABarline
-				CABarline *bar = static_cast<CABarline*>(v->musElementList()[i]);
-				if (bar->timeStart()!=_curStreamTime) break;	//! \todo If the time isn't the same, insert hidden rests to fill the needed time
+			if (bar->barlineType() == CABarline::Single)
+				out() << "| % bar " << barNumber << "\n	";
+			else
+				out() << "\\bar \"" << barlineTypeToLilyPond(bar->barlineType()) << "\"" << " % bar "<< barNumber << "\n	";
+			barNumber++;
 
-				if ( _voltaBracketFinishAtRepeat &&
-						(bar->barlineType() == CABarline::RepeatClose || bar->barlineType() == CABarline::RepeatCloseOpen)) {
-					out() << " \\set Score.repeatCommands = #'((volta #f))  ";
-					_voltaBracketFinishAtRepeat = false;
-				}
-				if ( _voltaBracketFinishAtBar ) {
-					out() << " \\set Score.repeatCommands = #'((volta #f))  ";
-					_voltaBracketFinishAtBar = false;
-				}
-	
-				if (bar->barlineType() == CABarline::Single)
-					out() << "| % bar " << barNumber << "\n	";
-				else
-					out() << "\\bar \"" << barlineTypeToLilyPond(bar->barlineType()) << "\"" << " % bar "<< barNumber << "\n	";
-				barNumber++;
-
-				// set this flag to allow the time signature engraver and bar line engraver
-				_timeSignatureFound = true;
-				break;
-			}
+			// set this flag to allow the time signature engraver and bar line engraver
+			_timeSignatureFound = true;
+			break;
+		}
 		}
 
 		if ( v->musElementList()[i]->isPlayable() ) {
-
 			if (anacrusisCheck) {			// first check upbeat bar, only once
 				doAnacrusisCheck( time );
 				anacrusisCheck = false;
 			}
 			exportVolta( v->musElementList()[i] );	// A volta bracket has to come before a playable
 			exportPlayable( static_cast<CAPlayable*>(v->musElementList()[i]) );
+		} else {
+			exportMarks(v->musElementList()[i]);
 		}
-
-		exportMarks(v->musElementList()[i]);
 	}
 
 	// end of the voice block
@@ -177,6 +176,9 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 
 		if (note->tieStart())
 			out() << "~";
+
+		// export note-specific marks
+		exportNoteMarks( note );
 
 		_lastNotePitch = note->diatonicPitch();
 		if (!note->isPartOfChord())
@@ -212,6 +214,11 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 			out() << "\\(";
 		}
 
+		// export chord marks at the end
+		if (!note->isPartOfChord() || note->isLastInChord()) {
+			exportMarks( note->getChord()[0] );
+		}
+
 		// add to the stream time, if the note is not part of the chord or is the last one in the chord
 		if (!note->isPartOfChord() ||
 		    (note->isPartOfChord() && note->isLastInChord()) )
@@ -230,6 +237,8 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 			out() << playableLengthToLilyPond( rest->playableLength() );
 		}
 
+		exportMarks( rest );
+
 		_lastPlayableLength = rest->playableLength();
 		_curStreamTime += rest->timeLength();
 
@@ -243,7 +252,12 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 }
 
 /*!
-	Exports the music element's \a elt marks.
+	Exports the marks for the given \a elt chord, rest or non-playable music
+	element.
+
+	For exporting note-specific marks (eg. fingering), see exportNoteMarks().
+
+	\sa exportNoteMarks()
 */
 void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 	for (int i=0; i<elt->markList().size(); i++) {
@@ -292,6 +306,20 @@ void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 
 			break;
 		}
+		}
+	}
+}
+
+/*!
+	Exports the note-specific marks like fingering.
+
+	\sa exportMarks()
+ */
+void CALilyPondExport::exportNoteMarks( CANote *elt ) {
+	for (int i=0; i<elt->markList().size(); i++) {
+		CAMark *curMark = elt->markList()[i];
+
+		switch ( curMark->markType() ) {
 		case CAMark::Fingering: {
 			CAFingering::CAFingerNumber n = static_cast<CAFingering*>(curMark)->finger();
 			if ( n<1 || n>5 ) break;
