@@ -86,6 +86,21 @@ void CAGraphicsView::wheelEvent( QWheelEvent *e ) {
 	e->ignore();
 }
 
+void CAGraphicsView::mousePressEvent( QMouseEvent *e ) {
+	e->ignore();
+}
+
+void CAGraphicsView::mouseReleaseEvent( QMouseEvent *e ) {
+	e->ignore();
+}
+
+void CAGraphicsView::mouseMoveEvent( QMouseEvent *e ) {
+	e->ignore();
+}
+
+void CAGraphicsView::keyPressEvent( QKeyEvent *e ) {
+	e->ignore();
+}
 
 /*!
 	\class CAScoreView
@@ -129,10 +144,12 @@ CAScoreView::CAScoreView( QWidget *parent )
 
 void CAScoreView::initScoreView( CASheet *sheet ) {
 	setSheet( sheet );
+	// init zero values
 	_playing = false;
 	_currentContext = 0;
-/*	_xCursor = _yCursor = 0;
-*/	setResizeDirection( CADrawable::Undefined );
+	_lastMouseMoveCoords = QPointF(0.0, 0.0);
+	_lastMousePressCoords = QPointF(0.0, 0.0);
+	_resizeDirection = CADrawable::Undefined;
 
 	// init graphics scene
 	_layout = new QGridLayout( this );
@@ -796,7 +813,7 @@ void CAScoreView::setZoom(double z, double x, double y, bool animate) {
 			font.setPixelSize( 20 );
 			p.setFont(font);
 			p.setPen(disabledElementsColor());
-			p.drawText( qRound((_xCursor-sceneRect().x()+10) * zoom()), qRound((_yCursor-sceneRect().y()-10) * zoom()), CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
+			p.drawText( qRound((_lastMouseMoveCoords.x()-sceneRect().x()+10) * zoom()), qRound((_yCursor-sceneRect().y()-10) * zoom()), CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
 		}
 	}
 
@@ -808,8 +825,9 @@ void CAScoreView::setZoom(double z, double x, double y, bool animate) {
 void CAScoreView::updateHelpers() {
 	// Shadow notes
 	if (currentContext()?(currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0) {
-		int pitch = 0;/*(static_cast<CADrawableStaff*>(currentContext()))->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
-		*/for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
+		// the current staff has the real pitch we need
+		int pitch = (static_cast<CADrawableStaff*>(currentContext()))->calculatePitch(_lastMouseMoveCoords);
+		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
 			CADiatonicPitch dPitch(pitch, 0);
 			_shadowNote[i]->setDiatonicPitch( dPitch );
 
@@ -818,9 +836,10 @@ void CAScoreView::updateHelpers() {
 			}
 
 			CADrawableContext *c = _shadowDrawableNote[i]->drawableContext();
-/*			delete _shadowDrawableNote[i];
-			_shadowDrawableNote[i] = new CADrawableNote(_shadowNote[i], c, _xCursor, static_cast<CADrawableStaff*>(c)->calculateCenterYCoord(pitch, _xCursor), true);
-*/		}
+			delete _shadowDrawableNote[i];
+			_shadowDrawableNote[i] = new CADrawableNote(_shadowNote[i], c);
+			_shadowDrawableNote[i]->setPos(_lastMouseMoveCoords.x(), static_cast<CADrawableStaff*>(c)->calculateCenterYCoord(pitch, _lastMouseMoveCoords.x()));
+		}
 	}
 
 	// Text edit widget
@@ -858,16 +877,16 @@ void CAScoreView::unsetBorder() {
 	_drawBorder = false;
 }
 
-/*!
-	Called when the user resizes the widget.
-*/
-/*void CAScoreView::resizeEvent(QResizeEvent *e) {
-	_canvas->resize(e->size());
-	QRectF sceneRect = _canvas->sceneRect();
-	QPointF bounds = _canvas->mapToScene(e->size().width(), e->size().height());
-	setSceneRect( sceneRect.x(), sceneRect.y(), bounds.x()-sceneRect.x(), bounds.y()-sceneRect.y() );
+bool CAScoreView::isInsideCanvas( QPointF& p ) {
+	QPoint coordsCanvas = _canvas->mapFromScene(p);
+	// use clicked outside the canvas
+	if (coordsCanvas.x()<0 || coordsCanvas.y()<0 || coordsCanvas.x()>_canvas->width() || coordsCanvas.y()>_canvas->height()) {
+		return false;
+	} else {
+		return true;
+	}
 }
-*/
+
 /*!
 	This functions forward the Tab and Shift+Tab keys to keyPressEvent(), if grabTabKey is True.
 */
@@ -883,12 +902,31 @@ bool CAScoreView::event( QEvent *event ) {
 }
 
 /*!
+	\fn void CAScoreView::CAMousePressEvent(QMouseEvent *e, QPointF p)
+
+	This signal is emitted when mousePressEvent() is called. Parent class is usually connected to this event.
+	It adds another two arguments to the mousePressEvent() function - pointer to this view and coordinates
+	in world coordinates where user used the mouse.
+	This is useful when a parent class wants to know which class the signal was emmitted by.
+
+	\param e Mouse event which gets processed.
+	\param p Coordinates of the mouse cursor in absolute world values.
+	\param v Pointer to this view (the view which emmitted the signal).
+*/
+
+/*!
 	Processes the mousePressEvent().
 	A new signal is emitted: CAMousePressEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::mousePressEvent(QMouseEvent *e) {
 	CAView::mousePressEvent(e);
-	QPointF coords(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y());
+	QPointF coords = _canvas->mapToScene(e->pos()-_canvas->pos());
+	if (!isInsideCanvas(coords)) {
+		e->ignore();
+		return;
+	}
+
+	std::cout << "coords=" << coords.x() << " " << coords.y() << std::endl;
 /*	if ( selection().size() && selection()[0]->isHScalable() && coords.y()>=selection()[0]->pos().y() && coords.y()<=selection()[0]->pos().y()+selection()[0]->height() ) {
 		if ( coords.x()==selection()[0]->pos().x()  ) {
 			setResizeDirection(CADrawable::Left);
@@ -933,6 +971,19 @@ void CAScoreView::on_clickTimer_timeout() {
 }
 
 /*!
+	\fn void CAScoreView::CAMouseReleaseEvent(QMouseEvent *e, QPointF p)
+
+	This signal is emitted when mouseReleaseEvent() is called. Parent class is usually connected to this event.
+	It adds another two arguments to the mouseReleaseEvent() function - pointer to this score view and coordinates
+	in world coordinates where user used the mouse.
+	This is useful when a parent class wants to know which class the signal was emmitted by.
+
+	\param e Mouse event which gets processed.
+	\param p Coordinates of the mouse cursor in absolute world values.
+	\param v Pointer to this view (the view which emmitted the signal).
+*/
+
+/*!
 	Processes the mouseReleaseEvent().
 	A new signal is emitted: CAMouseReleaseEvent(), which usually gets processed by the parent class then.
 */
@@ -942,15 +993,31 @@ void CAScoreView::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 /*!
+	\fn void CAScoreView::CAMouseMoveEvent(QMouseEvent *e, QPointF p)
+
+	This signal is emitted when mouseMoveEvent() is called. Parent class is usually connected to this event.
+	It adds another two arguments to the mouseMoveEvent() function - pointer to this view and coordinates
+	in world coordinates where user used the mouse.
+	This is useful when a parent class wants to know which class the signal was emmitted by.
+
+	\param e Mouse event which gets processed.
+	\param p Coordinates of the mouse cursor in absolute world values.
+	\param v Pointer to this view (the view which emmitted the signal).
+*/
+
+/*!
 	Processes the mouseMoveEvent().
 	A new signal is emitted: CAMouseMoveEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
-	QPointF coords(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y());
+	QPointF coords = _canvas->mapToScene(e->pos());
+	if (!isInsideCanvas(coords)) {
+		e->ignore();
+		return;
+	}
 
-/*	_xCursor = coords.x();
-	_yCursor = coords.y();
-*/
+	_lastMouseMoveCoords = coords;
+
 	bool isHScalable = false;
 /*	for ( int i=0; i<selection().size() && !isHScalable; i++) {
 		if ( selection()[i]->isHScalable() && (coords.x()==selection()[i]->pos().x() || coords.x()==selection()[i]->pos().x()+selection()[i]->width()) &&
@@ -977,17 +1044,45 @@ void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
 	emit CAMouseMoveEvent(e, coords);
 }
 
+
+/*!
+	\fn void CAScoreView::CAWheelEvent(QWheelEvent *e, QPointF p)
+
+	This signal is emitted when wheelEvent() is called. Parent class is usually connected to this event.
+	It adds another two arguments to the wheelEvent() function - pointer to this score view and coordinates
+	in world coordinates where user used the mouse.
+	This is useful when a parent class wants to know which class the signal was emmitted by.
+
+	\param e Wheel event which gets processed.
+	\param p Coordinates of the mouse cursor in absolute world values.
+	\param v Pointer to this view (the view which emmitted the signal).
+*/
+
 /*!
 	Processes the wheelEvent().
 	A new signal is emitted: CAWheelEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::wheelEvent(QWheelEvent *e) {
-	e->ignore();
-	emit CAWheelEvent( e, _canvas->mapToScene(e->pos()) );
-
-//	_xCursor = (int)(e->x() / zoom()) + sceneRect().x();	//TODO: _xCursor and _yCursor are still the old one. Somehow, zoom() level and sceneRect().x()/Y are not updated when emmiting CAWheel event. -Matevz
-//	_yCursor = (int)(e->y() / zoom()) + sceneRect().y();
+	QPointF coords = _canvas->mapToScene(e->pos());
+	if (!isInsideCanvas(coords)) {
+		e->ignore();
+		return;
+	} else {
+		emit CAWheelEvent( e, _canvas->mapToScene(e->pos()) );
+	}
 }
+
+
+/*!
+	\fn void CAScoreView::CAKeyPressEvent(QKeyEvent *e)
+
+	This signal is emitted when keyPressEvent() is called. Parent class is usually connected to this event.
+	It adds another two arguments to the wheelEvent() function - pointer to this score view.
+	This is useful when a parent class wants to know which class the signal was emmitted by.
+
+	\param e Wheel event which gets processed.
+	\param v Pointer to this view (the view which emmitted the signal).
+*/
 
 /*!
 	Processes the keyPressEvent().
@@ -1485,67 +1580,4 @@ QList<CAMusElement*> CAScoreView::musElementSelection() {
 /*!
 	\fn float CAScoreView::zoom()
 	Returns the zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
-*/
-
-/*!
-	\fn void CAScoreView::CAMousePressEvent(QMouseEvent *e, QPoint p, CAScoreView *v)
-
-	This signal is emitted when mousePressEvent() is called. Parent class is usually connected to this event.
-	It adds another two arguments to the mousePressEvent() function - pointer to this view and coordinates
-	in world coordinates where user used the mouse.
-	This is useful when a parent class wants to know which class the signal was emmitted by.
-
-	\param e Mouse event which gets processed.
-	\param p Coordinates of the mouse cursor in absolute world values.
-	\param v Pointer to this view (the view which emmitted the signal).
-*/
-
-/*!
-	\fn void CAScoreView::CAMouseMoveEvent(QMouseEvent *e, QPoint p, CAScoreView *v)
-
-	This signal is emitted when mouseMoveEvent() is called. Parent class is usually connected to this event.
-	It adds another two arguments to the mouseMoveEvent() function - pointer to this view and coordinates
-	in world coordinates where user used the mouse.
-	This is useful when a parent class wants to know which class the signal was emmitted by.
-
-	\param e Mouse event which gets processed.
-	\param p Coordinates of the mouse cursor in absolute world values.
-	\param v Pointer to this view (the view which emmitted the signal).
-*/
-
-/*!
-	\fn void CAScoreView::CAMouseReleaseEvent(QMouseEvent *e, QPoint p, CAScoreView *v)
-
-	This signal is emitted when mouseReleaseEvent() is called. Parent class is usually connected to this event.
-	It adds another two arguments to the mouseReleaseEvent() function - pointer to this score view and coordinates
-	in world coordinates where user used the mouse.
-	This is useful when a parent class wants to know which class the signal was emmitted by.
-
-	\param e Mouse event which gets processed.
-	\param p Coordinates of the mouse cursor in absolute world values.
-	\param v Pointer to this view (the view which emmitted the signal).
-*/
-
-/*!
-	\fn void CAScoreView::CAWheelEvent(QWheelEvent *e, QPoint p, CAScoreView *v)
-
-	This signal is emitted when wheelEvent() is called. Parent class is usually connected to this event.
-	It adds another two arguments to the wheelEvent() function - pointer to this score view and coordinates
-	in world coordinates where user used the mouse.
-	This is useful when a parent class wants to know which class the signal was emmitted by.
-
-	\param e Wheel event which gets processed.
-	\param p Coordinates of the mouse cursor in absolute world values.
-	\param v Pointer to this view (the view which emmitted the signal).
-*/
-
-/*!
-	\fn void CAScoreView::CAKeyPressEvent(QKeyEvent *e, CAScoreView *v)
-
-	This signal is emitted when keyPressEvent() is called. Parent class is usually connected to this event.
-	It adds another two arguments to the wheelEvent() function - pointer to this score view.
-	This is useful when a parent class wants to know which class the signal was emmitted by.
-
-	\param e Wheel event which gets processed.
-	\param v Pointer to this view (the view which emmitted the signal).
 */

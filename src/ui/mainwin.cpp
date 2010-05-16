@@ -1834,7 +1834,7 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPointF coords) {
         }
 
 		// calculate the musical pitch out of absolute world coordinates and the current clef
-		int pitch = s->calculatePitch(coords.x(), coords.y());
+		int pitch = s->calculatePitch(coords);
 
 		// write into the main window's status bar the note pitch name
 		int iNoteAccs = s->getAccs(coords.x(), pitch) + musElementFactory()->noteExtraAccs();
