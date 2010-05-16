@@ -135,12 +135,12 @@ double CADrawableStaff::calculateCenterYCoord(double y) {
 	\param y Y coordinate in absolute world units.
 	\return Note pitch in logical units.
 */
-int CADrawableStaff::calculatePitch(double x, double y) {
-	CAClef *clef = getClef(x);
+int CADrawableStaff::calculatePitch(QPointF p) {
+	CAClef *clef = getClef(p.x());
 	double yC1 = pos().y() + boundingRect().height() - (clef?clef->c1():-2)*(lineSpace()/2); // Y coordinate of c1 of the current staff
 
 	// middle c = 28
-	return qRound( 28 - (y - yC1)/(lineSpace()/2.0) );
+	return qRound( 28 - (p.y() - yC1)/(lineSpace()/2.0) );
 }
 
 /*!

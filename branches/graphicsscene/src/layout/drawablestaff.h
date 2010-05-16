@@ -33,7 +33,7 @@ public:
 	double calculateCenterYCoord(int pitch, double x);
 	double calculateCenterYCoord(double y);
 
-	int calculatePitch(double x, double y);
+	int calculatePitch(QPointF pos);
 
 	void addClef(CADrawableClef *clef);
 	void addKeySignature(CADrawableKeySignature *keySig);

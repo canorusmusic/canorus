@@ -59,7 +59,11 @@ public:
 	CAGraphicsView( QWidget *parent=0 );
 
 public slots:
-	void wheelEvent( QWheelEvent *e );
+	void mousePressEvent(QMouseEvent *e);
+	void mouseMoveEvent(QMouseEvent *e);
+	void mouseReleaseEvent(QMouseEvent *e);
+	void wheelEvent(QWheelEvent *e);
+	void keyPressEvent(QKeyEvent *e);
 };
 
 class CAScoreView : public CAView {
@@ -155,6 +159,7 @@ public:
 	// Scene appearance, properties and actions //
 	//////////////////////////////////////////////
 	void rebuild();
+	bool isInsideCanvas(QPointF&);
 	inline const int drawableWidth() { return _canvas->width(); }
 	inline const int drawableHeight() { return _canvas->height(); }
 
@@ -242,9 +247,7 @@ private slots:
 	void wheelEvent(QWheelEvent *e);
 	void keyPressEvent(QKeyEvent *e);
 
-/*	void resizeEvent(QResizeEvent *e);
-	void paintEvent(QPaintEvent *p);
-*/	void leaveEvent(QEvent *e);
+	void leaveEvent(QEvent *e);
 	void enterEvent(QEvent *e);
 	void on_animationTimer_timeout();
 	void on_clickTimer_timeout();
@@ -291,8 +294,11 @@ private:
 	int getMaxXExtended();                // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
 	int getMaxYExtended();                // Make the viewable World a little bigger (stuffed) to make inserting below easies
 
-	QPointF _lastMousePressCoords;           // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
+	QPointF _lastMousePressCoords;        // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
 	inline void setLastMousePressCoords( QPointF p ) { _lastMousePressCoords = p; }
+
+	QPointF _lastMouseMoveCoords;         // Used when updating helpers
+	inline void setLastMouseMoveCoords( QPointF p ) { _lastMouseMoveCoords = p; }
 
 	CAVoice *_selectedVoice;        // Voice to be drawn normal colors, others are shaded
 
@@ -358,8 +364,6 @@ private:
 	bool _playing;                                      // Set to on, when in Playback mode
 	QTimer *_clickTimer;                                // Used for measuring doubleClick and tripleClick
 	int     _numberOfClicks;                            // Used for measuring doubleClick and tripleClick
-
-/*	double _xCursor, _yCursor;                             // Mouse cursor position in absolute world coords.
-*/};
+};
 
 #endif /*SCOREVIEW_H_*/
