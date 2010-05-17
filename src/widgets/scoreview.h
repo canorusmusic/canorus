@@ -62,6 +62,7 @@ public slots:
 	void mousePressEvent(QMouseEvent *e);
 	void mouseMoveEvent(QMouseEvent *e);
 	void mouseReleaseEvent(QMouseEvent *e);
+	void mouseDoubleClickEvent(QMouseEvent *e);
 	void wheelEvent(QWheelEvent *e);
 	void keyPressEvent(QKeyEvent *e);
 };
@@ -95,10 +96,11 @@ public:
 	///////////////
 	inline const QList<CADrawableMusElement*>& selection() { return _selection; };
 	QList<CAMusElement*>                 musElementSelection();
-	QList<CADrawableMusElement*>         musElementsAt(double x, double y);
-	CADrawableContext                   *selectCElement(double x, double y);
+	QList<CADrawableMusElement*>         musElementsAt(const QPointF& p);
+	CADrawableContext                   *selectCElement(const QPointF& p);
 	CADrawableMusElement                *selectMElement(CAMusElement *elt);
 	CADrawableContext                   *selectContext(CAContext *context);
+	inline QPointF                       lastMouseMoveCoords() { return _lastMouseMoveCoords; }
 	inline QPointF                       lastMousePressCoords() { return _lastMousePressCoords; }
 	void                                 setLastMousePressCoordsAfter(const QList<CAMusElement*> list);
 
@@ -109,8 +111,8 @@ public:
 	void selectAllCurBar();
 	void selectAllCurContext();
 	void invertSelection();
-	inline void clearSelection() { _selection.clear(); emit selectionChanged(); }
-	inline bool removeFromSelection(CADrawableMusElement *elt) { return _selection.removeAll(elt); emit selectionChanged(); }
+	void clearSelection();
+	bool removeFromSelection(CADrawableMusElement *elt);
 
 	void                  addToSelection(CADrawableMusElement *elt, bool triggerSignal=true );
 	void                  addToSelection( const QList<CADrawableMusElement*> list, bool selectableOnly=true );

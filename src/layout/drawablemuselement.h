@@ -39,6 +39,7 @@ public:
 	inline CAMusElement *musElement() { return _musElement; }
 	CADrawableContext *drawableContext() { return _drawableContext; }
 	void setDrawableContext(CADrawableContext *context) { _drawableContext = context; }
+	bool isSelectable() { return flags() & QGraphicsItem::ItemIsSelectable; }
 
 protected:
 	void setDrawableMusElementType( CADrawableMusElementType t ) { _drawableMusElementType = t; }
