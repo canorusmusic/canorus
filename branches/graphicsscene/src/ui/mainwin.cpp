@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2010, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -1596,9 +1596,9 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPointF coords) {
 	CAScoreView *v = static_cast<CAScoreView*>(sender());
 
 	CADrawableContext *prevContext = v->currentContext();
-	v->selectCElement(coords.x(), coords.y());
+	v->selectCElement(coords);
 
-	QList<CADrawableMusElement*> l = v->musElementsAt( coords.x(), coords.y() );
+	QList<CADrawableMusElement*> l = v->musElementsAt( coords );
 	CADrawableMusElement *newlySelectedElement=0;
 	int idx=-1;
 
@@ -1894,7 +1894,7 @@ void CAMainWin::scoreViewTripleClick( QMouseEvent *e, const QPointF coords ) {
 }
 
 /*!
-	Processes the mouse move event \a e with coordinates \a coords.
+	Processes the mouse release event \a e with coordinates \a coords.
 	Any action happened in any of the Views are always linked to its main window slots.
 
 	\sa CAScoreView::mouseReleaseEvent(), scoreViewMousePress(), scoreViewMouseMove(), scoreViewWheel(), scoreViewKeyPress()
@@ -1906,14 +1906,15 @@ void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPointF coords) {
 		CACanorus::rebuildUI(document(), c->sheet());
 	}
 
+	std::cout << "last " << c->lastMousePressCoords().x() << " " << c->lastMousePressCoords().y() << " " << coords.x() << " " << coords.y() << std::endl;
 	if ( mode() != InsertMode  && c->lastMousePressCoords()!=coords ) { // area was selected
 		c->clearSelectionRegionList();
 
 		if (e->modifiers()==Qt::NoModifier)
 			c->clearSelection();
 
-		int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
-		    w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
+		double x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
+		       w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
 		if (w<0) { x+=w; w*=(-1); } // user selected from right to left
 		if (h<0) { y+=h; h*=(-1); } // user selected from bottom to top
 		QRect selectionRect( x, y, w, h );
@@ -2403,8 +2404,8 @@ void CAMainWin::insertMusElementAt(const QPointF coords, CAScoreView *v) {
 			break;
 		}
 		case CAMusElement::Mark: {
-			if ( v->musElementsAt( coords.x(), coords.y() ).size() )
-				success = musElementFactory()->configureMark( v->musElementsAt( coords.x(), coords.y() )[0]->musElement() );
+			if ( v->musElementsAt( coords ).size() )
+				success = musElementFactory()->configureMark( v->musElementsAt( coords )[0]->musElement() );
 			break;
 		}
 /*		case CAMusElement::Note: { // Do we really need to do all that here??

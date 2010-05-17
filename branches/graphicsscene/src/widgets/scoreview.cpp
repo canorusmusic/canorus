@@ -94,6 +94,10 @@ void CAGraphicsView::mouseReleaseEvent( QMouseEvent *e ) {
 	e->ignore();
 }
 
+void CAGraphicsView::mouseDoubleClickEvent( QMouseEvent *e ) {
+	e->ignore();
+}
+
 void CAGraphicsView::mouseMoveEvent( QMouseEvent *e ) {
 	e->ignore();
 }
@@ -250,7 +254,9 @@ CAScoreView *CAScoreView::clone(QWidget *parent) {
 void CAScoreView::addMElement(CADrawableMusElement *elt, bool select) {
 	_drawableMList.addElement(elt);
 	if (select) {
-		_selection.clear();
+		while (_selection.size()) {
+			_selection.takeFirst()->setSelected(false);
+		}
 		addToSelection(elt);
 	}
 
@@ -317,20 +323,56 @@ void CAScoreView::setLastMousePressCoordsAfter(const QList<CAMusElement*> list) 
 }
 
 /*!
+	Clears the current selection, unselects the elements and emits
+	selectionChanged() signal, if the previous selection was non-empty.
+ */
+void CAScoreView::clearSelection() {
+	bool nonEmpty = _selection.size();
+	while (_selection.size()) {
+		_selection.takeFirst()->setSelected(false);
+	}
+
+	if (nonEmpty) {
+		emit selectionChanged();
+	}
+}
+
+/*!
+	Removes the first occurance of the given element from the selection and
+	unselects it.
+
+	Returns True, if the element was removed; Otherwise False.
+ */
+bool CAScoreView::removeFromSelection( CADrawableMusElement *elt ) {
+	int idx = _selection.indexOf(elt);
+	if (idx!=-1) {
+		_selection[idx]->setSelected(false);
+		_selection.removeAt(idx);
+		emit selectionChanged();
+		return true;
+	}
+
+	return false;
+}
+
+/*!
 	Selects a drawable context element at the given coordinates, if it exists.
 	Returns a pointer to its abstract context element.
 	If multiple elements exist at the same coordinates, they are selected one by another if you click at the same coordinates multiple times.
 	If no elements are present at the coordinates, clear the selection.
 */
-CADrawableContext* CAScoreView::selectCElement(double x, double y) {
-	QList<CADrawableContext*> l = _drawableCList.findInRange(x,y);
+CADrawableContext* CAScoreView::selectCElement(const QPointF& pos) {
+	QList<QGraphicsItem*> l = _canvas->items(_canvas->mapFromScene(pos));
 
-	if (l.size()!=0) {
-		setCurrentContext(l.front());
-	} else
-		setCurrentContext(0);
+	for (int i=0; i<l.size(); i++) {
+		if (dynamic_cast<CADrawableContext*>(l[i])) {
+			setCurrentContext( static_cast<CADrawableContext*>(l[i]));
+			return static_cast<CADrawableContext*>(l[i]);
+		}
+	}
 
-	return currentContext();
+	setCurrentContext(0);
+	return 0;
 }
 
 /*!
@@ -340,13 +382,17 @@ CADrawableContext* CAScoreView::selectCElement(double x, double y) {
 
 	If there is a currently selected voice, only elements belonging to this voice are selected.
 */
-QList<CADrawableMusElement*> CAScoreView::musElementsAt(double x, double y) {
-	QList<CADrawableMusElement *> l = _drawableMList.findInRange(x,y);
-/*	for (int i=0; i<l.size(); i++)
-		if ( !l[i]->isSelectable() || selectedVoice() && l[i]->musElement() && l[i]->musElement()->isPlayable() && static_cast<CAPlayable*>(l[i]->musElement())->voice()!=selectedVoice() )
-			l.removeAt(i--);
-*/
-	return l;
+QList<CADrawableMusElement*> CAScoreView::musElementsAt(const QPointF& pos) {
+	QList<QGraphicsItem*> l = _canvas->items(_canvas->mapFromScene(pos));
+	QList<CADrawableMusElement*> elts;
+
+	for (int i=0; i<l.size(); i++) {
+		if (dynamic_cast<CADrawableMusElement*>(l[i])) {
+			elts << static_cast<CADrawableMusElement*>(l[i]);
+		}
+	}
+
+	return elts;
 }
 
 /*!
@@ -358,13 +404,15 @@ QList<CADrawableMusElement*> CAScoreView::musElementsAt(double x, double y) {
 	\sa selectCElement(CAContext*)
 */
 CADrawableMusElement* CAScoreView::selectMElement(CAMusElement *elt) {
-	_selection.clear();
+	while (_selection.size()) {
+		_selection.takeFirst()->setSelected(false);
+	}
 
 	for (int i=0; i<_drawableMList.size(); i++) {
-/*		if ( _drawableMList.at(i)->musElement() == elt && _drawableMList.at(i)->isSelectable() ) {
+		if ( _drawableMList.at(i)->musElement() == elt && _drawableMList.at(i)->isSelectable() ) {
 			addToSelection(_drawableMList.at(i));
 		}
-*/	}
+	}
 
 	emit selectionChanged();
 
@@ -496,6 +544,7 @@ void CAScoreView::rebuild() {
 
 	QList<CAMusElement*> musElementSelection;
 	for (int i=0; i<_selection.size(); i++) {
+		_selection[i]->setSelected(false);
 		if ( !musElementSelection.contains( _selection[i]->musElement() ) )
 			musElementSelection << _selection[i]->musElement();
 	}
@@ -988,7 +1037,7 @@ void CAScoreView::on_clickTimer_timeout() {
 	A new signal is emitted: CAMouseReleaseEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::mouseReleaseEvent(QMouseEvent *e) {
-	emit CAMouseReleaseEvent(e, QPointF(e->x() / zoom() + sceneRect().x(), e->y() / zoom() + sceneRect().y()));
+	emit CAMouseReleaseEvent(e, _canvas->mapToScene(e->pos() - _canvas->pos()));
 	setResizeDirection( CADrawable::Undefined );
 }
 
@@ -1206,9 +1255,11 @@ void CAScoreView::addToSelection( CADrawableMusElement *elt, bool triggerSignal 
 	int i;
 	for (i=0; i<_selection.size() && _selection[i]->pos().x() < elt->pos().x(); i++);
 
-/*	if ( elt->isSelectable() )
+	if ( elt->isSelectable() ) {
 		_selection.insert( i, elt );
-*/
+		elt->setSelected(true);
+	}
+
 	if ( triggerSignal )
 		emit selectionChanged();
 }
@@ -1218,9 +1269,9 @@ void CAScoreView::addToSelection( CADrawableMusElement *elt, bool triggerSignal 
 */
 void CAScoreView::addToSelection(const QList<CADrawableMusElement*> list, bool selectableOnly ) {
 	for (int i=0; i<list.size(); i++) {
-/*		if ( !selectableOnly || selectableOnly && list[i]->isSelectable() )
+		if ( !selectableOnly || selectableOnly && list[i]->isSelectable() )
 			addToSelection(list[i], false);
-*/	}
+	}
 
 	emit selectionChanged();
 }
@@ -1244,13 +1295,13 @@ CADrawableMusElement *CAScoreView::addToSelection(CAMusElement *elt) {
 */
 void CAScoreView::addToSelection(const QList<CAMusElement*> elts) {
 	for (int i=0; i<_drawableMList.size(); i++) {
-/*		if ( _drawableMList.at(i)->isSelectable() ) {
+		if ( _drawableMList.at(i)->isSelectable() ) {
 			for (int j=0; j<elts.size(); j++) {
 				if ( elts[j] == static_cast<CADrawableMusElement*>(_drawableMList.at(i))->musElement() )
 					addToSelection(static_cast<CADrawableMusElement*>(_drawableMList.at(i)), false);
 			}
 		}
-*/	}
+	}
 
 	emit selectionChanged();
 }
