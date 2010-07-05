@@ -397,7 +397,11 @@ bool CASettings::deleteSingleAction(QString oCommand)
 	bool bRet = false;
 	int iPos = getSingleAction(oCommand, poResAction);
 	if( iPos >= 0 ) // Double entries should not be in the list
+	{
 		_oActionList.removeOne( poResAction );
+		bRet = true;
+	}
+	return bRet;
 }
 
 void CASettings::readRecentDocuments() {
