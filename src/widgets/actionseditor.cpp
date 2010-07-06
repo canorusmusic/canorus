@@ -468,13 +468,20 @@ bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* =
 	QFile f( filename );
 	if ( f.open( QIODevice::WriteOnly ) ) {
 		QTextStream stream( &f );
+		QString accelText;
 		stream.setCodec("UTF-8");
 
+		// @ToDo: Pretty Format output by adding \t as necessary
 		for (int row=0; row < actionsTable->rowCount(); row++) {
 			stream << actionsTable->item(row, COL_COMMAND)->text() << "\t" 
                    << actionsTable->item(row, COL_CONTEXT)->text() << "\t";
 			if( bSCuts )
-            	stream << actionsTable->item(row, COL_SHORTCUT)->text() << "\t";
+			{
+				accelText = actionsTable->item(row, COL_SHORTCUT)->text();
+				if( accelText.isEmpty() )
+					accelText = "none";
+            	stream << accelText << "\t";
+			}
 			stream << actionsTable->item(row, COL_MIDI)->text() << "\n";
 		}
 		f.close();
@@ -536,6 +543,8 @@ bool CAActionsEditor::loadActionsTable(const QString & filename, bool bSCuts/* =
 				if( bSCuts )
 				{
 					accelText = rx.cap(3);
+					if( accelText == "none" )
+						accelText.clear();
 					midiText = rx.cap(4) + " " + rx.cap(5) + " " + rx.cap(6);
 					qDebug(" command: '%s' context: '%s' accel: '%s' midi: '%s'",
 				 command.toUtf8().data(), accelText.toUtf8().data(), midiText.toUtf8().data());
@@ -580,15 +589,19 @@ void CAActionsEditor::saveToConfig(QObject *o, QSettings *set) {
 
 	CASingleAction *action;
 	QList<CASingleAction *> actions = o->findChildren<CASingleAction *>();
+	QString accelText;
 	for (int n=0; n < actions.count(); n++) {
 		action = static_cast<CASingleAction*> (actions[n]);
 		if (!action->text().isEmpty() && !action->inherits("QWidgetAction")) {
 //#if USE_MULTIPLE_SHORTCUTS
-//			QString accelText = shortcutsToString(action->shortcuts());
+//			accelText = shortcutsToString(action->shortcuts());
 //#else
-			QString accelText = action->getShortCut();
+			accelText = action->getShortCut();
 //#endif
-			set->setValue(action->text(), accelText);
+			if( accelText.isEmpty() )
+				set->setValue(action->text(), "none");
+			else
+				set->setValue(action->text(), accelText);
 		}
     }
 
@@ -605,16 +618,20 @@ void CAActionsEditor::loadFromConfig(QObject *o, QSettings *set) {
 	QString accelText;
 
 	QList<CASingleAction *> actions = o->findChildren<CASingleAction *>();
+//#if USE_MULTIPLE_SHORTCUTS
+//	QString current;
+//#endif
 	for (int n=0; n < actions.count(); n++) {
 		action = static_cast<CASingleAction*> (actions[n]);
 		if (!action->objectName().isEmpty() && !action->inherits("QWidgetAction")) {
 //#if USE_MULTIPLE_SHORTCUTS
-//			QString current = shortcutsToString(action->shortcuts());
+//			current = shortcutsToString(action->shortcuts());
 //			accelText = set->value(action->objectName(), current).toString();
 //			action->setShortcuts( stringToShortcuts( accelText ) );
 //#else
 			accelText = set->value(action->text(), action->getShortCut()).toString();
-			action->setShortCut(QKeySequence(accelText));
+			if( accelText != "none" )
+				action->setShortCut(QKeySequence(accelText));
 //#endif
 		}
     }
