@@ -472,7 +472,7 @@ bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* =
 
 		for (int row=0; row < actionsTable->rowCount(); row++) {
 			stream << actionsTable->item(row, COL_COMMAND)->text() << "\t" 
-                   << actionsTable->item(row, COL_CONTEXT)->text() << "\n";
+                   << actionsTable->item(row, COL_CONTEXT)->text() << "\t";
 			if( bSCuts )
             	stream << actionsTable->item(row, COL_SHORTCUT)->text() << "\t";
 			stream << actionsTable->item(row, COL_MIDI)->text() << "\n";
@@ -487,7 +487,10 @@ void CAActionsEditor::loadActionsTable() {
 	QString sk;
 	bool bSCuts = false;
 	if( actionsTable->column( (QTableWidgetItem *)focusWidget() ) == COL_SHORTCUT )
+	{
 		sk = tr("Shortcut files") +" (*.cakey)";
+		bSCuts = true;
+	}
 	else
 		sk = tr("Midi command files") +" (*.camid)";
 	QString s = QFileDialog::getOpenFileName(
@@ -505,9 +508,10 @@ void CAActionsEditor::loadActionsTable() {
 	}
 }
 
-bool CAActionsEditor::loadActionsTable(const QString & filename) {
+bool CAActionsEditor::loadActionsTable(const QString & filename, bool bSCuts/* = true */) {
 	qDebug("CAActionsEditor::loadActions: '%s'", filename.toUtf8().data());
 
+	// Lines with '#' (comments) will be ignored
 	QRegExp rx("^(.*)\\t|\\s*(.*)\\t|\\s*(.*)\\t|\\s*(.*)\\t|\\s*(.*)\\t|\\s*(.*)");
 	int row;
 
@@ -522,21 +526,33 @@ bool CAActionsEditor::loadActionsTable(const QString & filename) {
 		stream.setCodec("UTF-8");
 
         QString line;
+		QString command, context, accelText, midiText;
         while ( !stream.atEnd() ) {
             line = stream.readLine();
 			qDebug("line: '%s'", line.toUtf8().data());
 			if (rx.indexIn(line) > -1) {
-				QString command = rx.cap(1);
-				QString accelText = rx.cap(2);
-				QString midiText = rx.cap(3) + " " + rx.cap(4) + " " + rx.cap(5);
-				qDebug(" command: '%s' context: '%s' accel: '%s' midi: '%s'",
+				command = rx.cap(1);
+				context = rx.cap(2);
+				if( bSCuts )
+				{
+					accelText = rx.cap(3);
+					midiText = rx.cap(4) + " " + rx.cap(5) + " " + rx.cap(6);
+					qDebug(" command: '%s' context: '%s' accel: '%s' midi: '%s'",
 				 command.toUtf8().data(), accelText.toUtf8().data(), midiText.toUtf8().data());
-				// @ToDo: command name is not identical to command identifier!
-				row = findActionCommand(command);
-				if (row > -1) {
-					qDebug("Action found!");
-					actionsTable->item(row, COL_SHORTCUT)->setText(accelText);
-				}				
+					// @ToDo: command name is not identical to command identifier!
+					row = findActionCommand(command);
+					if (row > -1) {
+						qDebug("Action found!");
+						actionsTable->item(row, COL_SHORTCUT)->setText(accelText);
+					}
+				}
+				else
+				{
+					midiText = rx.cap(3) + " " + rx.cap(4) + " " + rx.cap(5);
+					qDebug(" command: '%s' context: '%s' midi: '%s'",
+				 command.toUtf8().data(), accelText.toUtf8().data(), midiText.toUtf8().data());
+				}
+				actionsTable->item(row, COL_MIDI)->setText(accelText);
 			} else {
 				qDebug(" wrong line");
 			}

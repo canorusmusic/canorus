@@ -65,7 +65,7 @@ public slots:
 	bool saveActionsTable(const QString & filename, bool bSCuts = true);
 	// load action profile (shortcuts or midi commands) separately from disc
 	void loadActionsTable();
-	bool loadActionsTable(const QString & filename);
+	bool loadActionsTable(const QString & filename, bool bSCuts = true);
 
 	// Add all actions to the table widget
 	void updateView();
