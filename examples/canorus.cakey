@@ -2,6 +2,7 @@
 new_document 		file	Ctrl+N  		0 0 0
 new_document_wizard	file	Ctrl+W  		0 0 0
 open_document		file	Ctrl+O			1 3 0
+open_recent			file	Ctrl+R          0 0 0
 save_document		file	Ctrl+S			0 0 0
 save_document_as	file	Ctrl+Shift+S	0 0 0
 close_document		file	Ctrl+Shift+C	0 0 0
@@ -26,6 +27,16 @@ zoom_to_height		edit	Ctrl+Shift+H	0 0 0
 show_status_bar		view	Ctrl+Shift+B	0 0 0
 fullscreen			view	F11				0 0 0
 note_count			view	Ctrl+F12		0 0 0
+new_window			window	Ctrl+Shift+N	0 0 0
+split_horizontally	window	Ctrl+Shift+H	0 0 0
+split_vertically	window	Ctrl+Shift+V	0 0 0
+close_current_view	window	Ctrl+F4			0 0 0
+unsplit_all			window	Ctrl+U			0 0 0
 go_to_bar			tools	Ctrl+G			0 0 0
 settings			tools	Ctrl+Shift+O	0 0 0
+users_guide			help	F1				0 0 0
+whats_this			help	Ctrl+F1			0 0 0
+tip_of_the_day		help	Ctrl+Shift+F1	0 0 0
+about_canorus		help	none			0 0 0
+about_qt			help	none			0 0 0
 
