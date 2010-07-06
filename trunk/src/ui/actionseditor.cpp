@@ -434,10 +434,12 @@ bool CAActionsEditor::hasConflicts(bool bMidi) {
 
 void CAActionsEditor::saveActionsTable() {
 	QString sk, end;
+	bool bSCuts = false;
 	if( actionsTable->column( (QTableWidgetItem *)focusWidget() ) == COL_SHORTCUT )
 	{
 		sk = tr("Shortcut files") +" (*.cakey)" );
 		end = ".cakey"
+		bSCuts = true;
 	}
 	else
 	{
@@ -466,7 +468,7 @@ void CAActionsEditor::saveActionsTable() {
 			}
 		}
 		latest_dir = QFileInfo(s).absolutePath();
-		bool r = saveActionsTable(s);
+		bool r = saveActionsTable(s, bSCuts);
 		if (!r) {
 			QMessageBox::warning(this, tr("Error"), 
                tr("The file couldn't be saved"), 
@@ -475,7 +477,7 @@ void CAActionsEditor::saveActionsTable() {
 	} 
 }
 
-bool CAActionsEditor::saveActionsTable(const QString & filename) {
+bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* = true */) {
 	qDebug("CAActionsEditor::saveActions: '%s'", filename.toUtf8().data());
 
 	QFile f( filename );
@@ -483,10 +485,14 @@ bool CAActionsEditor::saveActionsTable(const QString & filename) {
 		QTextStream stream( &f );
 		stream.setCodec("UTF-8");
 
+		stream << "# Actions file for Canorus settings - Do not edit!\n";
+
 		for (int row=0; row < actionsTable->rowCount(); row++) {
-			stream << actionsTable->item(row, COL_COMMAND)->text() << "\t" 
-                   << actionsTable->item(row, COL_SHORTCUT)->text() << "\n";
-				   << actionsTable->item(row, COL_MIDI)->text() << "\n";
+			stream << actionsTable->item(row, COL_CONTEXT)->text() << "\t"
+                   << actionsTable->item(row, COL_COMMAND)->text() << "\t";
+			if( bSCuts )
+            	stream << actionsTable->item(row, COL_SHORTCUT)->text() << "\t";
+			stream << actionsTable->item(row, COL_MIDI)->text() << "\n";
 		}
 		f.close();
 		return true;
@@ -518,6 +524,7 @@ void CAActionsEditor::loadActionsTable() {
 bool CAActionsEditor::loadActionsTable(const QString & filename) {
 	qDebug("CAActionsEditor::loadActions: '%s'", filename.toUtf8().data());
 
+	// Lines with '#' (comments) will be ignored
 	QRegExp rx("^(.*)\\t|\\s*(.*)\\t|\\s*(.*)\\t|\\s*(.*)\\t|\\s*(.*)\\t|\\s*(.*)");
 	int row;
 
