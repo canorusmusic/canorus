@@ -62,7 +62,7 @@ public slots:
 	void applyChanges();
 	// save action profile (shortcuts or midi commands) separately to disc
 	void saveActionsTable();
-	bool saveActionsTable(const QString & filename);
+	bool saveActionsTable(const QString & filename, bool bSCuts = true);
 	// load action profile (shortcuts or midi commands) separately from disc
 	void loadActionsTable();
 	bool loadActionsTable(const QString & filename);

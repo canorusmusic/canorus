@@ -419,10 +419,12 @@ bool CAActionsEditor::hasConflicts(bool bMidi) {
 
 void CAActionsEditor::saveActionsTable() {
 	QString sk, end;
+	bool bSCuts = false;
 	if( actionsTable->column( (QTableWidgetItem *)focusWidget() ) == COL_SHORTCUT )
 	{
 		sk = tr("Shortcut files") +" (*.cakey)";
 		end = ".cakey";
+		bSCuts = true;
 	}
 	else
 	{
@@ -451,7 +453,7 @@ void CAActionsEditor::saveActionsTable() {
 			}
 		}
 		latest_dir = QFileInfo(s).absolutePath();
-		bool r = saveActionsTable(s);
+		bool r = saveActionsTable(s, bSCuts);
 		if (!r) {
 			QMessageBox::warning(this, tr("Error"), 
                tr("The file couldn't be saved"), 
@@ -460,7 +462,7 @@ void CAActionsEditor::saveActionsTable() {
 	} 
 }
 
-bool CAActionsEditor::saveActionsTable(const QString & filename) {
+bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* = true */) {
 	qDebug("CAActionsEditor::saveActions: '%s'", filename.toUtf8().data());
 
 	QFile f( filename );
@@ -470,7 +472,10 @@ bool CAActionsEditor::saveActionsTable(const QString & filename) {
 
 		for (int row=0; row < actionsTable->rowCount(); row++) {
 			stream << actionsTable->item(row, COL_COMMAND)->text() << "\t" 
-                   << actionsTable->item(row, COL_SHORTCUT)->text() << "\n";
+                   << actionsTable->item(row, COL_CONTEXT)->text() << "\n";
+			if( bSCuts )
+            	stream << actionsTable->item(row, COL_SHORTCUT)->text() << "\t";
+			stream << actionsTable->item(row, COL_MIDI)->text() << "\n";
 		}
 		f.close();
 		return true;
@@ -480,6 +485,7 @@ bool CAActionsEditor::saveActionsTable(const QString & filename) {
 
 void CAActionsEditor::loadActionsTable() {
 	QString sk;
+	bool bSCuts = false;
 	if( actionsTable->column( (QTableWidgetItem *)focusWidget() ) == COL_SHORTCUT )
 		sk = tr("Shortcut files") +" (*.cakey)";
 	else
