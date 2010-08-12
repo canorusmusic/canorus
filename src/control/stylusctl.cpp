@@ -87,7 +87,7 @@ QImage CAStylusCtl::cropImage( QImage &in ) {
 
 	for (int i=0; i<in.height(); i++) {
 		for (int j=0; j<in.width(); j++) {
-			if (in.pixelIndex( j, i )==1) {
+			if (qAlpha(in.pixel( j, i ))==255) {
 				if ( minX==-1 || minX > j ) {
 					minX = j;
 				}
@@ -125,8 +125,10 @@ QList<int> CAStylusCtl::corr( QImage& in ) {
 
 		for (int y=0; y<in.height(); y++) {
 			for (int x=0; x<in.width(); x++) {
-				if ( in.pixelIndex( x, y ) == _samples[i].pixelIndex( x, y ) ) {
+				if ( in.pixel( x, y ) == _samples[i].pixel( x, y ) ) {
 					score++;
+				} else {
+					score--;
 				}
 			}
 		}

@@ -156,7 +156,7 @@ void CAScoreViewPort::initScoreViewPort( CASheet *sheet ) {
 	setDrawShadowNoteAccs( false );
 	setTextEdit( new CATextEdit( _canvas ) );
 	setTextEditVisible( false );
-	_stylusMask = QImage( 300, 300, QImage::Format_Mono );
+	_stylusMask = QImage( 300, 300, QImage::Format_ARGB32 );
 	_stylusMask.setColor( 0, 0x00000000 ); // background color is transparent
 	_stylusMask.setColor( 1, 0xff000000 ); // foreground color is black
 	_stylusMask.fill(0);
@@ -1220,20 +1220,20 @@ void CAScoreViewPort::mouseMoveEvent(QMouseEvent *e) {
 			e->y() - ((_lastMousePressCoords.y()-_worldY) * _zoom - _stylusMask.height()/2)
 		);
 
-		_stylusMask.setPixel( coordInImage, 1 );
+		_stylusMask.setPixel( coordInImage, 0xff000000 );
 
 		coordInImage.setX( coordInImage.x()-1 );
-		_stylusMask.setPixel( coordInImage, 1 );
+		_stylusMask.setPixel( coordInImage, 0xff000000 );
 
 		coordInImage.setX( coordInImage.x()+2 );
-		_stylusMask.setPixel( coordInImage, 1 );
+		_stylusMask.setPixel( coordInImage, 0xff000000 );
 
 		coordInImage.setY( coordInImage.y()-1 );
 		coordInImage.setX( coordInImage.x()-1 );
-		_stylusMask.setPixel( coordInImage, 1 );
+		_stylusMask.setPixel( coordInImage, 0xff000000 );
 
 		coordInImage.setY( coordInImage.y()+2 );
-		_stylusMask.setPixel( coordInImage, 1 );
+		_stylusMask.setPixel( coordInImage, 0xff000000 );
 	}
 
 	emit CAMouseMoveEvent(e, coords);
