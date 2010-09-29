@@ -1209,7 +1209,6 @@ void CAMainWin::setCurrentVoice( CAVoice *v ) {
 		currentScoreView()->updateHelpers();
 
 		updateVoiceToolBar();
-		currentScoreView()->repaint();
 	}
 }
 
@@ -1437,7 +1436,6 @@ void CAMainWin::setMode(CAMode mode) {
 
 			if ( currentScoreView() ) {
 				currentScoreView()->setShadowNoteVisible((musElementFactory()->musElementType() == CAMusElement::Note) ? true : false); /// \todo Set other mouse cursors
-				currentScoreView()->repaint();
 			}
 
 			break;
@@ -1454,7 +1452,6 @@ void CAMainWin::setMode(CAMode mode) {
 						(sv->setBorder(p));
 
 					sv->setShadowNoteVisible(false);
-					sv->repaint();
 				}
 			}
 
@@ -1492,7 +1489,7 @@ void CAMainWin::setMode(CAMode mode) {
 	only created but not yet drawn. This is useful when multiple operations which could potentially change the
 	content are to happen and we want to actually draw it only at the end.
 */
-void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
+void CAMainWin::rebuildUI(CASheet *sheet) {
 	if (rebuildUILock()) return;
 
 	setRebuildUILock( true );
@@ -1504,9 +1501,6 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 				continue;
 
 			_viewList[i]->rebuild();
-
-			if (repaint)
-				_viewList[i]->repaint();
 		}
 
 		// update tab name
@@ -1541,7 +1535,7 @@ void CAMainWin::rebuildUI(CASheet *sheet, bool repaint) {
 	only created but not yet drawn. This is useful when multiple operations which could potentially change the
 	content are to happen and we want to actually draw it only at the end.
 */
-void CAMainWin::rebuildUI(bool repaint) {
+void CAMainWin::rebuildUI() {
 	if (rebuildUILock()) return;
 
 	setRebuildUILock( true );
@@ -1566,9 +1560,6 @@ void CAMainWin::rebuildUI(bool repaint) {
 
 		for (int i=0; i<_viewList.size(); i++) {
 			_viewList[i]->rebuild();
-
-			if (repaint)
-				_viewList[i]->repaint();
 		}
 
 		if ( curIndex<uiTabWidget->count() )
@@ -1748,7 +1739,6 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPointF coords) {
 					uiVoiceNum->setRealValue( 0 );
 				}
 				uiSelectMode->toggle();
-				v->repaint();
 				break;
 			} else
 			// Insert music element
@@ -1781,7 +1771,6 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPointF coords) {
 	CAPluginManager::action("onScoreViewClick", document(), 0, 0, this);
 
 	updateToolBars();
-	v->repaint();
 }
 
 /*!
@@ -1811,14 +1800,14 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPointF coords) {
 		if ( c->resizeDirection()==CADrawable::Right && (time > c->selection().at(0)->musElement()->timeStart()) ) {
 			c->selection().at(0)->musElement()->setTimeLength( time - c->selection().at(0)->musElement()->timeStart() );
 /*			c->selection().at(0)->setWidth( c->timeToCoords(time) - c->selection().at(0)->xPos() );
-*/			c->repaint();
+*/
 		} else
 		if ( c->resizeDirection()==CADrawable::Left && (time < c->selection().at(0)->musElement()->timeEnd()) ) {
 			c->selection().at(0)->musElement()->setTimeLength( c->selection().at(0)->musElement()->timeEnd() - time );
 			c->selection().at(0)->musElement()->setTimeStart( time );
 /*			c->selection().at(0)->setXPos( c->timeToCoords(time) );
 			c->selection().at(0)->setWidth( c->timeToCoords(c->selection().at(0)->musElement()->timeEnd()) - c->timeToCoords(time) );
-*/			c->repaint();
+*/
 		}
 	} else
 	if ( (mode() == InsertMode && musElementFactory()->musElementType() == CAMusElement::Note) ) {
@@ -1841,7 +1830,6 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPointF coords) {
 		musElementFactory()->setNoteAccs( iNoteAccs );
 		c->setShadowNoteAccs(iNoteAccs);
 		c->updateHelpers();
-		c->repaint();
 	} else
 	if ( mode()!=InsertMode  && e->buttons()==Qt::LeftButton ) { // multiple selection
 		c->clearSelectionRegionList();
@@ -1863,7 +1851,6 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPointF coords) {
 				                             musEltList.back()->xPos()+musEltList.back()->width()-musEltList.front()->xPos(), dcList[i]->height()) );
 */			}
 		}
-		c->repaint();
 	}
 }
 
@@ -1876,7 +1863,6 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPointF coords) {
 void CAMainWin::scoreViewDoubleClick( QMouseEvent *e, const QPointF coords ) {
 	if (mode() == SelectMode) {
 		static_cast<CAScoreView*>(sender())->selectAllCurBar();
-		static_cast<CAScoreView*>(sender())->repaint();
 	}
 }
 
@@ -1889,7 +1875,6 @@ void CAMainWin::scoreViewDoubleClick( QMouseEvent *e, const QPointF coords ) {
 void CAMainWin::scoreViewTripleClick( QMouseEvent *e, const QPointF coords ) {
 	if (mode() == SelectMode) {
 		static_cast<CAScoreView*>(sender())->selectAllCurContext();
-		static_cast<CAScoreView*>(sender())->repaint();
 	}
 }
 
@@ -1934,7 +1919,6 @@ void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPointF coords) {
 					musEltList.removeAt(j--);*/
 			c->addToSelection(musEltList);
 		}
-		c->repaint();
 	}
 }
 
@@ -1970,8 +1954,6 @@ void CAMainWin::scoreViewWheel(QWheelEvent *e, QPointF coords) {
 */
 			break;
 	}
-
-	sv->repaint();
 }
 
 /*!
@@ -1996,14 +1978,12 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 		case Qt::Key_Right: {
 			// select next music element
 			v->selectNextMusElement( e->modifiers()==Qt::ShiftModifier );
-			v->repaint();
 			break;
 		}
 
 		case Qt::Key_Left: {
 			// select previous music element
 			v->selectPrevMusElement( e->modifiers()==Qt::ShiftModifier );
-			v->repaint();
 			break;
 		}
 
@@ -2047,14 +2027,12 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 			CACanorus::undo()->pushUndoCommand();
 			CACanorus::rebuildUI(document(), v->sheet());
 			v->selectMElement(bar);
-			v->repaint();
 			break;
 		}
 
 		case Qt::Key_Up: {
 			if (mode() == SelectMode) {	// select the upper music element
 				v->selectUpMusElement();
-				v->repaint();
 			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
 				bool rebuild=false;
 				if (v->selection().size())
@@ -2092,7 +2070,6 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 		case Qt::Key_Down: {
 			if (mode() == SelectMode) {	// select the upper music element
 				v->selectUpMusElement();
-				v->repaint();
 			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
 				bool rebuild = false;
 				if (v->selection().size())
@@ -2131,7 +2108,6 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 				musElementFactory()->addNoteExtraAccs(1); musElementFactory()->addNoteAccs(1);
 				v->setDrawShadowNoteAccs(musElementFactory()->noteExtraAccs()!=0);
 				v->setShadowNoteAccs(musElementFactory()->noteAccs());
-				v->repaint();
 			} else if (mode()==EditMode) {
 				if (!v->selection().isEmpty()) {
 					QList<CAMusElement*> eltList;
@@ -2165,7 +2141,6 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 				musElementFactory()->subNoteExtraAccs(1); musElementFactory()->subNoteAccs(1);
 				v->setDrawShadowNoteAccs(musElementFactory()->noteExtraAccs()!=0);
 				v->setShadowNoteAccs(musElementFactory()->noteAccs());
-				v->repaint();
 			} else if (mode()==EditMode) {
 				if (!v->selection().isEmpty()) {
 					QList<CAMusElement*> eltList;
@@ -2199,7 +2174,6 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 				musElementFactory()->addPlayableDotted( 1, musElementFactory()->playableLength() );
 				currentScoreView()->setShadowNoteLength( musElementFactory()->playableLength() );
 				currentScoreView()->updateHelpers();
-				v->repaint();
 			} else if (mode()==EditMode) {
 				if (!((CAScoreView*)v)->selection().isEmpty()) {
 					CACanorus::undo()->createUndoCommand( document(), tr("set dotted", "undo") );
@@ -2349,7 +2323,6 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 		musElementFactory()->playableLength().setDotted( 0 );
 		v->setShadowNoteLength( musElementFactory()->playableLength() );
 		v->updateHelpers();
-		v->repaint();
 	}
 
 	updateToolBars();
@@ -2408,7 +2381,7 @@ void CAMainWin::insertMusElementAt(const QPointF coords, CAScoreView *v) {
 				success = musElementFactory()->configureMark( v->musElementsAt( coords )[0]->musElement() );
 			break;
 		}
-/*		case CAMusElement::Note: { // Do we really need to do all that here??
+/*		case CAMusElement::Note: { // TODO: fix this to use our new drawing api -Matevz
 			CAVoice *voice = currentVoice();
 
 			if ( !voice )
@@ -2817,13 +2790,11 @@ void CAMainWin::on_uiSelectAll_triggered() {
 		static_cast<CAScoreView*>(currentView())->selectAll();
 	else if(currentView()->viewType() == CAView::SourceView)
 		static_cast<CASourceView*>(currentView())->selectAll();
-	currentView()->repaint();
 }
 
 void CAMainWin::on_uiInvertSelection_triggered() {
 	if(currentView() && currentView()->viewType() == CAView::ScoreView) {
 		static_cast<CAScoreView*>(currentView())->invertSelection();
-		currentView()->repaint();
 	}
 }
 
@@ -5483,7 +5454,6 @@ void CAMainWin::pasteAt( const QPointF coords, CAScoreView *v ) {
 		for (int i=0; i<newEltList.size(); i++)
 			currentScoreView()->addToSelection( newEltList[i] );
 		currentScoreView()->setLastMousePressCoordsAfter( newEltList );
-		currentScoreView()->repaint();
 	}
 }
 

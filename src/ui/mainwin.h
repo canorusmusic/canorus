@@ -78,8 +78,8 @@ public:
 	~CAMainWin();
 
 	void clearUI();
-	void rebuildUI(CASheet *sheet, bool repaint=true);
-	void rebuildUI(bool repaint=true);
+	void rebuildUI(CASheet *sheet);
+	void rebuildUI();
 	inline bool rebuildUILock() { return _rebuildUILock; }
 	void updateWindowTitle();
 
