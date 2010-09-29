@@ -308,7 +308,8 @@ private:
 	// Helpers //
 	/////////////
 	// Shadow note
-	bool _shadowNoteVisible;        // Should the shadow notes be rendered or not
+	bool _shadowNoteVisible;            // Should the shadow notes be rendered or not
+        QGraphicsTextItem *_shadowNoteName; // Text showing the current shadow note pitch
 
 	bool _shadowNoteVisibleOnLeave; // When you leave the view, shadow note is always turned off. This property holds the value, if shadow note was enabled before you left the view.
 	inline bool shadowNoteVisibleOnLeave() { return _shadowNoteVisibleOnLeave; }

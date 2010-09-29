@@ -80,6 +80,7 @@ void CATextEdit::keyPressEvent( QKeyEvent *e ) {
 
 CAGraphicsView::CAGraphicsView( QWidget *parent )
  : QGraphicsView(parent) {
+	setMouseTracking(true); // enable mouse tracking for updating the helpers
 }
 
 void CAGraphicsView::wheelEvent( QWheelEvent *e ) {
@@ -184,10 +185,12 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	setShadowNoteVisible( false );
 	setShadowNoteVisibleOnLeave( false );
 	setShadowNoteAccs( 0 );
+	_shadowNoteName = 0;
 	setNoteNameVisible( false );
 	setDrawShadowNoteAccs( false );
 	setTextEdit( new CATextEdit( _canvas ) );
 	setTextEditVisible( false );
+	setMouseTracking(true); // enable this to fetch mouse move events
 
 	// set default parameters
 	setBackgroundBrush( CACanorus::settings()->backgroundColor() );
@@ -278,6 +281,13 @@ void CAScoreView::addCElement(CADrawableContext *elt, bool select) {
 	    static_cast<CAStaff*>(elt->context())->voiceList().size()) {
 		_shadowNote << new CANote( CADiatonicPitch(), CAPlayableLength(CAPlayableLength::Quarter, 0), static_cast<CAStaff*>(elt->context())->voiceList()[0], 0 );
 		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), elt);
+		
+		_shadowNoteName = new QGraphicsTextItem();
+		QFont font("FreeSans");
+		font.setPixelSize( 20 );
+		_shadowNoteName->setFont( font );
+		_scene->addItem(_shadowNoteName);
+//		_shadowNoteName->setPen(disabledElementsColor()); // TODO: how to set color? -Matevz
 	}
 	_scene->addItem( elt );
 }
@@ -541,6 +551,10 @@ void CAScoreView::rebuild() {
 	}
 	_shadowNote.clear();
 	_shadowDrawableNote.clear();
+	if (_shadowNoteName) {
+		delete _shadowNoteName;
+		_shadowNoteName = 0;
+	}
 
 	QList<CAMusElement*> musElementSelection;
 	for (int i=0; i<_selection.size(); i++) {
@@ -873,7 +887,8 @@ void CAScoreView::setZoom(double z, double x, double y, bool animate) {
 */
 void CAScoreView::updateHelpers() {
 	// Shadow notes
-	if (currentContext()?(currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0) {
+	if ((currentContext()?(currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0) &&
+             _shadowNoteVisible) {
 		// the current staff has the real pitch we need
 		int pitch = (static_cast<CADrawableStaff*>(currentContext()))->calculatePitch(_lastMouseMoveCoords);
 		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
@@ -887,7 +902,13 @@ void CAScoreView::updateHelpers() {
 			CADrawableContext *c = _shadowDrawableNote[i]->drawableContext();
 			delete _shadowDrawableNote[i];
 			_shadowDrawableNote[i] = new CADrawableNote(_shadowNote[i], c);
+			_scene->addItem(_shadowDrawableNote[i]);
 			_shadowDrawableNote[i]->setPos(_lastMouseMoveCoords.x(), static_cast<CADrawableStaff*>(c)->calculateCenterYCoord(pitch, _lastMouseMoveCoords.x()));
+		}
+
+		if (_shadowNoteName) {
+			_shadowNoteName->setPlainText( CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
+			_shadowNoteName->setPos(_lastMouseMoveCoords.x()+10, _lastMouseMoveCoords.y()-10);
 		}
 	}
 
@@ -1089,7 +1110,7 @@ void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
 		setCursor(Qt::SizeVerCursor);
 	else
 		setCursor(Qt::ArrowCursor);
-
+	
 	emit CAMouseMoveEvent(e, coords);
 }
 
