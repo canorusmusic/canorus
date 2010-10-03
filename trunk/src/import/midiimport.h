@@ -29,6 +29,7 @@
 class QTextStream;
 class CAMidiDevice;
 class CAMidiImportEvent;
+class CAMidiNote;
 
 class CAMidiImport : public CAImport {
 public:
@@ -44,12 +45,14 @@ public:
 	// where the real work is done
 	CADocument *importDocumentImpl();
 	CASheet *importSheetImpl();
-
+	QList< QList<CAMidiNote*> > importMidiNotes();
+	
 	const QString readableStatus();
 
 private:
 	// Alternatives during developement
 	CASheet *importSheetImplPmidiParser(CASheet *sheet);
+	void importMidiEvents();
 
 	void initMidiImport();
 

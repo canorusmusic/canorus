@@ -24,6 +24,7 @@
 #include "score/slur.h"
 #include "score/sheet.h"
 #include "score/document.h"
+#include "score/midinote.h"
 
 #include "import/pmidi/wrapper.h"
 
@@ -106,6 +107,32 @@ CASheet *CAMidiImport::importSheetImpl() {
 }
 
 /*!
+	Imports the given MIDI file and returns a list of CAMidiNote objects without
+	voices set per channel.
+
+	This function is usually called when raw MIDI operations are done and the
+	actual notes etc. aren't needed.
+ */
+QList< QList<CAMidiNote*> > CAMidiImport::importMidiNotes() {
+	importMidiEvents();
+	
+	QList< QList<CAMidiNote*> > midiNotes;
+	for (int i=0; i<_allChannelsEvents.size(); i++) {
+		midiNotes << QList<CAMidiNote*>();
+		for (int voiceIdx=0; voiceIdx<_allChannelsEvents[i]->size(); voiceIdx++) {
+			for (int j=0; j<_allChannelsEvents[i]->at(voiceIdx)->size(); j++) {
+				CAMidiImportEvent *event = _allChannelsEvents[i]->at(voiceIdx)->at(j);
+				for (int pitchIdx=0; pitchIdx<event->_pitchList.size(); pitchIdx++) {
+					midiNotes.last() << new CAMidiNote( event->_pitchList[pitchIdx], event->_time, event->_length, 0 );
+				}
+			}
+		}
+	}
+
+	return midiNotes;
+}
+
+/*!
 	The midi file is opened by calling the pmidi wrapper function \a pmidi_open_midi_file(), then,
 	in a polling loop, the wrapper function pmidi_parse_midi_file() brings out the relevant midi events
 	which are stored in the array _allChannelsEvents[].
@@ -116,8 +143,7 @@ CASheet *CAMidiImport::importSheetImpl() {
 
 	Further processing is referred to function \a writeMidiFileEventsToScore_New().
 */
-CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
-
+void CAMidiImport::importMidiEvents() {
 	QByteArray s;
 	s.append(fileName());
 	pmidi_open_midi_file( s.constData() );
@@ -155,13 +181,13 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 		case PMIDI_STATUS_VERSION:
 			break;
 		case PMIDI_STATUS_TEXT:
-			std::cout<<" at "<<pmidi_out.time<<" type "<<pmidi_out.type<<" ("<<pmidi_out.name<<")         "<< pmidi_out.text<<std::endl;
+//			std::cout<<" at "<<pmidi_out.time<<" type "<<pmidi_out.type<<" ("<<pmidi_out.name<<")         "<< pmidi_out.text<<std::endl;
 			break;
 		case PMIDI_STATUS_TIMESIG:
-			std::cout<<" Timesig "<<pmidi_out.top
-					<<"/"<<pmidi_out.bottom
-					<<" at "<<pmidi_out.time
-					<<std::endl;
+//			std::cout<<" Timesig "<<pmidi_out.top
+//					<<"/"<<pmidi_out.bottom
+//					<<" at "<<pmidi_out.time
+//					<<std::endl;
 
 			// We build the list of time signatures. We assume they are ordered in time.
 			// We don't allow doublets to sneak in.
@@ -187,9 +213,9 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			}
 			break;
 		case PMIDI_STATUS_TEMPO:
-			std::cout<<" Tempo "<<pmidi_out.micro_tempo
-				<<"  at "<<pmidi_out.time
-				<<std::endl;
+//			std::cout<<" Tempo "<<pmidi_out.micro_tempo
+//				<<"  at "<<pmidi_out.time
+//				<<std::endl;
 			break;
 		case PMIDI_STATUS_NOTE:
 			/*
@@ -258,16 +284,16 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			break;
 		case PMIDI_STATUS_DUMMY:
 		case PMIDI_STATUS_ROOT:
-			std::cout<<" Midi-Format: "<<pmidi_out.format
-				<<"  Tracks: "<<pmidi_out.tracks
-				<<"  Time Base: "<<pmidi_out.time_base<<std::endl;
+//			std::cout<<" Midi-Format: "<<pmidi_out.format
+//				<<"  Tracks: "<<pmidi_out.tracks
+//				<<"  Time Base: "<<pmidi_out.time_base<<std::endl;
 			break;
 		case PMIDI_STATUS_CONTROL:
 			break;
 		case PMIDI_STATUS_PROGRAM:
-			std::cout<<" Program: "<<pmidi_out.program
-				<<"  Channel: "<<pmidi_out.chan
-				<<std::endl;
+//			std::cout<<" Program: "<<pmidi_out.program
+//				<<"  Channel: "<<pmidi_out.chan
+//				<<std::endl;
 			programCache[pmidi_out.chan] = pmidi_out.program;
 			break;
 		case PMIDI_STATUS_PITCH:
@@ -277,13 +303,13 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			break;
 		case PMIDI_STATUS_KEYSIG:
 
-			std::cout<<" Keys: "<<pmidi_out.key
-				<<"  Minor: "<<pmidi_out.minor<<std::endl;
+//			std::cout<<" Keys: "<<pmidi_out.key
+//				<<"  Minor: "<<pmidi_out.minor<<std::endl;
 			dk = CADiatonicKey( pmidi_out.key, pmidi_out.minor ? CADiatonicKey::Minor : CADiatonicKey::Major );
 			// After the first key signature only changes are imported
 			if (!_allChannelsKeySignatures.size() || _allChannelsKeySignatures.last()->diatonicKey() != dk)
 				_allChannelsKeySignatures << new CAKeySignature( dk, 0, pmidi_out.time );
-			
+
 			break;
 		case PMIDI_STATUS_SMPTEOFFS:
 			/*
@@ -296,12 +322,15 @@ CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
 			break;
 		}
 	}
+}
+
+CASheet *CAMidiImport::importSheetImplPmidiParser(CASheet *sheet) {
+	importMidiEvents();
 	writeMidiFileEventsToScore_New( sheet );
 	fixAccidentals( sheet );
 	setStatus(5);
 	return sheet;
 }
-
 
 /*!
 */
@@ -316,13 +345,13 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 	setStatus(3);
 	// for debugging only:
 	for (int i=0;i<_allChannelsTimeSignatures.size();i++) {
-		std::cout<<"Time signature "
-			<<_allChannelsTimeSignatures[i]->_top
-			<<"/"
-			<<_allChannelsTimeSignatures[i]->_bottom
-			<<" at "
-			<<_allChannelsTimeSignatures[i]->_time
-			<<std::endl;
+//		std::cout<<"Time signature "
+//			<<_allChannelsTimeSignatures[i]->_top
+//			<<"/"
+//			<<_allChannelsTimeSignatures[i]->_bottom
+//			<<" at "
+//			<<_allChannelsTimeSignatures[i]->_time
+//			<<std::endl;
 	}
 
 	// Calculate the medium pitch for every staff for the key selection later
@@ -339,8 +368,8 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		}
 		if (n>0) {
 			_allChannelsMediumPitch[chanIndex]=_allChannelsMediumPitch[chanIndex]/n;
-			std::cout<<"Channel "<<chanIndex<<" has "<<_allChannelsEvents[chanIndex]->size()<<" Voices, Medium-Pitch "
-				<<_allChannelsMediumPitch[chanIndex]<<std::endl;
+//			std::cout<<"Channel "<<chanIndex<<" has "<<_allChannelsEvents[chanIndex]->size()<<" Voices, Medium-Pitch "
+//				<<_allChannelsMediumPitch[chanIndex]<<std::endl;
 			_numberOfAllVoices += _allChannelsEvents[chanIndex]->size();
 		}
 	}
@@ -483,9 +512,9 @@ CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int voiceIndex, 
 		int top = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_top;
 		int bottom = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_bottom;
 		staff->addTimeSignatureReference( new CATimeSignature( top, bottom, staff, 0 ));
-		std::cout<<"                             neue Timesig at "<<time<<", there are "
-																<<_allChannelsTimeSignatures.size()
-																<<std::endl;
+//		std::cout<<"                             neue Timesig at "<<time<<", there are "
+//																<<_allChannelsTimeSignatures.size()
+//																<<std::endl;
 		// werden ersetzt:
 		return staff->timeSignatureReferences()[_actualTimeSignatureIndex];
 	}
@@ -500,9 +529,9 @@ CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int voiceIndex, 
 				int top = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_top;
 				int bottom = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_bottom;
 				staff->addTimeSignatureReference( new CATimeSignature( top, bottom, staff, 0 ));
-				std::cout<<"                             new Timesig at "<<time<<", there are "
-																<<_allChannelsTimeSignatures.size()
-																<<std::endl;
+//				std::cout<<"                             new Timesig at "<<time<<", there are "
+//																<<_allChannelsTimeSignatures.size()
+//																<<std::endl;
 				return staff->timeSignatureReferences()[_actualTimeSignatureIndex];
 			}
 		}
@@ -536,15 +565,15 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	_actualKeySignatureIndex = -1;	// for each voice we run down the list of time signatures of the sheet, all staffs.
 	_actualTimeSignatureIndex = -1;	// for each voice we run down the list of time signatures of the sheet, all staffs.
 
-	std::cout<< "Channel "<<channel<<" VoiceIndex "<<voiceIndex<<"  "<<std::setw(5)<<events->size()<<" elements"<<std::endl;
+//	std::cout<< "Channel "<<channel<<" VoiceIndex "<<voiceIndex<<"  "<<std::setw(5)<<events->size()<<" elements"<<std::endl;
 
 	for (int i=0; i<events->size(); i++ ) {
 
 		if (time == 0) {
 			CAMusElement *ksElem = getOrCreateKeySignature( time, voiceIndex, staff, voice );
 			if (ksElem) {
-				std::cout<<" KeySig-MusElement "<<ksElem<<" at "<<ksElem->timeStart()<<" "<<
-					qPrintable( CADiatonicKey::diatonicKeyToString( (static_cast<CAKeySignature*>(ksElem))->diatonicKey() ))<<std::endl;
+//				std::cout<<" KeySig-MusElement "<<ksElem<<" at "<<ksElem->timeStart()<<" "<<
+//					qPrintable( CADiatonicKey::diatonicKeyToString( (static_cast<CAKeySignature*>(ksElem))->diatonicKey() ))<<std::endl;
 				voice->append( ksElem, false );
 			}
 		}
@@ -599,14 +628,14 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				if (tsElem) {
 					voice->append( tsElem, false );
 					ts = static_cast<CATimeSignature*>(tsElem);
-					std::cout<< "    for a rest new time sig at "<<time<<" in "<<ts->beats()<<"/"<<ts->beat()<<std::endl;
+//					std::cout<< "    for a rest new time sig at "<<time<<" in "<<ts->beats()<<"/"<<ts->beat()<<std::endl;
 				}
 
 				// Time signatures are eventuelly placed before barlines
 				CAMusElement *ksElem = getOrCreateKeySignature( rest->timeEnd(), voiceIndex, staff, voice );
 				if (ksElem) {
-					std::cout<<" KeySig-MusElement "<<ksElem<<" at "<<ksElem->timeStart()<<" "<<
-							qPrintable( CADiatonicKey::diatonicKeyToString( (static_cast<CAKeySignature*>(ksElem))->diatonicKey() ))<<std::endl;
+//					std::cout<<" KeySig-MusElement "<<ksElem<<" at "<<ksElem->timeStart()<<" "<<
+//							qPrintable( CADiatonicKey::diatonicKeyToString( (static_cast<CAKeySignature*>(ksElem))->diatonicKey() ))<<std::endl;
 					voice->append( ksElem, false );
 				}
 
@@ -674,8 +703,8 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				// Time signatures are eventuelly placed before barlines
 				CAMusElement *ksElem = getOrCreateKeySignature( noteList.first()->timeEnd(), voiceIndex, staff, voice );
 				if (ksElem) {
-					std::cout<<" KeySig-MusElement "<<ksElem<<" at "<<ksElem->timeStart()<<" "<<
-						qPrintable( CADiatonicKey::diatonicKeyToString( (static_cast<CAKeySignature*>(ksElem))->diatonicKey() ))<<std::endl;
+//					std::cout<<" KeySig-MusElement "<<ksElem<<" at "<<ksElem->timeStart()<<" "<<
+//						qPrintable( CADiatonicKey::diatonicKeyToString( (static_cast<CAKeySignature*>(ksElem))->diatonicKey() ))<<std::endl;
 					voice->append( ksElem, false );
 				}
 
