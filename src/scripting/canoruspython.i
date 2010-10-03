@@ -148,6 +148,18 @@
 	
 	$result = list;
 }
+%typemap(out) const QList< QList<CAMidiNote*> >, QList< QList<CAMidiNote*> > {
+	PyObject *list = PyList_New(0);
+	for (int i=0; i<$1.size(); i++) {
+            PyObject *curList = PyList_New(0);
+            for (int j=0; j<$1.at(i).size(); j++) {
+                PyList_Append(curList, CASwigPython::toPythonObject($1.at(i).at(j), CASwigPython::MusElement));
+            }
+            PyList_Append(list, curList);
+        }
+
+	$result = list;
+}
 %typemap(out) const QList<CAVoice*>, QList<CAVoice*> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
@@ -373,6 +385,8 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CASlur, 0);
 			case CAMusElement::Tuplet:
 				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CATuplet, 0);
+			case CAMusElement::MidiNote:
+				return SWIG_Python_NewPointerObj(object, SWIGTYPE_p_CAMidiNote, 0);
 			default:
 				std::cerr << "canoruspython.i: Wrong CAMusElement::musElementType()!" << std::endl;
 				return 0;
