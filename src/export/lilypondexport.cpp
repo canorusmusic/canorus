@@ -648,14 +648,19 @@ const QString CALilyPondExport::barlineTypeToLilyPond(CABarline::CABarlineType t
 }
 
 const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
-	QString ret = (s->text().isEmpty()?"_":s->text());
+	QString text = s->text();
+	// escape Lilys non-parsable characters
+	text = text.replace("\"", "\\\"");
+
+	// wrap the text with quotes
+	text = (text.isEmpty()?"_":QString("\"")+text+"\"");
 
 	if (s->hyphenStart())
-		ret += " --";
+		text += " --";
 	else if (s->melismaStart())
-		ret += " __";
+		text += " __";
 
-	return ret;
+	return text;
 }
 
 /*!
