@@ -80,6 +80,7 @@ void CACanorusMLImport::initCanorusMLImport() {
 	_curVoice   = 0;
 
 	_curMusElt       = 0;
+	_prevMusElt      = 0;
 	_curMark         = 0;
 	_curClef         = 0;
 	_curTimeSig      = 0;
@@ -357,6 +358,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			_curTie->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
 		if (!attributes.value("slur-direction").isEmpty())
 			_curTie->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
+		_prevMusElt = _curMusElt;
 		_curMusElt = _curTie;
 		_curMusElt->setColor(_color);
 	} else if (qName == "slur-start") {
@@ -366,6 +368,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			_curSlur->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
 		if (!attributes.value("slur-direction").isEmpty())
 			_curSlur->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
+		_prevMusElt = _curMusElt;
 		_curMusElt = _curSlur;
 		_curMusElt->setColor(_color);
 	} else if (qName == "slur-end") {
@@ -381,6 +384,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			_curPhrasingSlur->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
 		if (!attributes.value("slur-direction").isEmpty())
 			_curPhrasingSlur->setSlurDirection( CASlur::slurDirectionFromString( attributes.value("slur-direction") ) );
+		_prevMusElt = _curMusElt;
 		_curMusElt = _curPhrasingSlur;
 		_curMusElt->setColor(_color);
 	} else if (qName == "phrasing-slur-end") {
@@ -703,6 +707,11 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 
 	_cha = "";
 	_depth.pop();
+
+	if (_prevMusElt) {
+		_curMusElt = _prevMusElt;
+		_prevMusElt = 0;
+	}
 	return true;
 }
 

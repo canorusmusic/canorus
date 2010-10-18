@@ -71,6 +71,7 @@ private:
 	CANote          *_curNote;
 	CARest          *_curRest;
 	CAMusElement    *_curMusElt;
+	CAMusElement    *_prevMusElt; // previous musElt by depth
 	CAMark          *_curMark;
 	CASlur          *_curTie;
 	CASlur          *_curSlur;
