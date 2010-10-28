@@ -123,7 +123,7 @@ QList< QList<CAMidiNote*> > CAMidiImport::importMidiNotes() {
 			for (int j=0; j<_allChannelsEvents[i]->at(voiceIdx)->size(); j++) {
 				CAMidiImportEvent *event = _allChannelsEvents[i]->at(voiceIdx)->at(j);
 				for (int pitchIdx=0; pitchIdx<event->_pitchList.size(); pitchIdx++) {
-					midiNotes.last() << new CAMidiNote( event->_pitchList[pitchIdx], event->_time, event->_length, 0 );
+					midiNotes.last() << new CAMidiNote( event->_pitchList[pitchIdx], event->_time*(240/event->_tempo), event->_length*(240/event->_tempo), 0 );
 				}
 			}
 		}
