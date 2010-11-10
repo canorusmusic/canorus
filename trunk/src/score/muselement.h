@@ -53,6 +53,10 @@ public:
 	inline void setTimeLength(int length) { _timeLength = length; }
 	inline int timeEnd() { return timeStart() + timeLength(); }
 
+	inline virtual int realTimeStart() { return _timeStart; } // TODO: calculates and returns time in miliseconds
+	inline virtual int realTimeLength() { return _timeLength; } // TODO: calculates and returns time in miliseconds
+	inline int realTimeEnd() { return realTimeStart() + realTimeLength(); } // TODO: calculates and returns time in miliseconds
+
 	inline const QString name() { return _name; }
 	inline void setName(const QString name) { _name = name; }
 
