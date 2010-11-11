@@ -107,8 +107,8 @@ CASheet *CAMidiImport::importSheetImpl() {
 }
 
 /*!
-	Imports the given MIDI file and returns a list of CAMidiNote objects without
-	voices set per channel.
+	Imports the given MIDI file and returns a list of CAMidiNote objects sorted
+	by timeStart per channel.
 
 	This function is usually called when raw MIDI operations are done and the
 	actual notes etc. aren't needed.
@@ -123,7 +123,11 @@ QList< QList<CAMidiNote*> > CAMidiImport::importMidiNotes() {
 			for (int j=0; j<_allChannelsEvents[i]->at(voiceIdx)->size(); j++) {
 				CAMidiImportEvent *event = _allChannelsEvents[i]->at(voiceIdx)->at(j);
 				for (int pitchIdx=0; pitchIdx<event->_pitchList.size(); pitchIdx++) {
-					midiNotes.last() << new CAMidiNote( event->_pitchList[pitchIdx], event->_time*(240/event->_tempo), event->_length*(240/event->_tempo), 0 );
+					// temporary solutionsort midi events by time
+					int timeStart = qRound(event->_time*(240/event->_tempo));
+					int k;
+					for (k=0; k<midiNotes.last().size() && midiNotes.last()[k]->timeStart()<timeStart; k++);
+					midiNotes.last().insert(k, new CAMidiNote( event->_pitchList[pitchIdx], timeStart, event->_length*(240/event->_tempo), 0 ));
 				}
 			}
 		}
