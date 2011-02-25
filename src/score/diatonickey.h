@@ -58,6 +58,7 @@ public:
 	int numberOfAccs();
 	QList<int> accsMatrix();
 	int noteAccs( int noteName );
+	bool containsPitch( const CADiatonicPitch& p );
 
 private:
 	CADiatonicPitch _diatonicPitch; // pitch of the key

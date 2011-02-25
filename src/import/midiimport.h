@@ -83,7 +83,7 @@ private:
 	CADiatonicPitch _actualKeySignature;
 	signed char _actualKeySignatureAccs[7];
 	int _actualKeyAccidentalsSum;
-	CADiatonicPitch matchPitchToKey( CAVoice* voice, CADiatonicPitch p );
+	CADiatonicPitch matchPitchToKey( CAVoice* voice, int midiPitch );
 
 	//////////////////////
 	// Helper functions //

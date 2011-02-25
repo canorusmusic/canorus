@@ -68,7 +68,7 @@ void CAKeybdInput::onMidiInEvent( QVector<unsigned char> m ) {
 	event = m[0];
 	velocity = m[2];
 	if ( event == CAMidiDevice::Midi_Note_On && velocity !=0 ) {
-		CADiatonicPitch x = CAMidiDevice::midiPitchToDiatonicPitch( m[1] );
+		CADiatonicPitch x = CADiatonicPitch::diatonicPitchFromMidiPitch( m[1] );
 		midiInEventToScore( _mw->currentScoreView(), m );
 	}
 }
@@ -79,7 +79,7 @@ void CAKeybdInput::onMidiInEvent( QVector<unsigned char> m ) {
 void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) {
 
 	int i;
-	CADiatonicPitch p = CAMidiDevice::midiPitchToDiatonicPitch( m[1] );
+	CADiatonicPitch p = CADiatonicPitch::diatonicPitchFromMidiPitch( m[1] );
 	CADiatonicPitch nonenharmonicPitch;
 
 	CAVoice *voice = _mw->currentVoice();

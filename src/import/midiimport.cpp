@@ -682,7 +682,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 
 				noteList.clear();
 				for (int k=0; k<events->at(i)->_pitchList.size(); k++) {
-					CADiatonicPitch diaPitch = matchPitchToKey( voice, CAMidiDevice::midiPitchToDiatonicPitch(events->at(i)->_pitchList[k]) );
+					CADiatonicPitch diaPitch = matchPitchToKey( voice, events->at(i)->_pitchList[k] );
 					noteList << new CANote( diaPitch, lenList[j], voice, -1 );
 					voice->append( noteList[k], k ? true : false );
 					noteList[k]->setStemDirection( CANote::StemPreferred );
@@ -772,7 +772,7 @@ const QString CAMidiImport::readableStatus() {
 
 	This function should be somewhere else, maybe in \a CADiatonicPitch ?
 */
-CADiatonicPitch CAMidiImport::matchPitchToKey( CAVoice* voice, CADiatonicPitch p ) {
+CADiatonicPitch CAMidiImport::matchPitchToKey( CAVoice* voice, int midiPitch ) {
 
 	// Default actual Key Signature is C
 	_actualKeySignature = CADiatonicPitch ( CADiatonicPitch::C );
@@ -789,39 +789,10 @@ CADiatonicPitch CAMidiImport::matchPitchToKey( CAVoice* voice, CADiatonicPitch p
 	if (keyList.size()) {
 		// set the note name and its accidental and the accidentals of the scale
 		CAKeySignature* effSig = (CAKeySignature*) keyList.last();
-		_actualKeySignature = effSig->diatonicKey().diatonicPitch();
-		_actualKeyAccidentalsSum = 0;
-		for(i=0;i<7;i++) {
-			_actualKeySignatureAccs[i] = (effSig->accidentals())[i];
-			_actualKeyAccidentalsSum += _actualKeySignatureAccs[i];
-		}
+		return CADiatonicPitch::diatonicPitchFromMidiPitchKey(midiPitch, effSig->diatonicKey());
+	} else {
+		return CADiatonicPitch::diatonicPitchFromMidiPitch(midiPitch);
 	}
-
-	// f and s (flat/sharp) are enharmonic pitches for p
-	CADiatonicPitch f = p + CAInterval( CAInterval::Diminished, CAInterval::Second );
-	CADiatonicPitch s = p - CAInterval( CAInterval::Diminished, CAInterval::Second );
-
-	// If the pitch appears in the keys scale we are done
-	if (p.accs() == _actualKeySignatureAccs[p.noteName()%7] ) {
-		return p;
-	}
-	// When the key is with flats we don't want sharps
-	if (_actualKeyAccidentalsSum < 0) {
-		if (f.accs() == _actualKeySignatureAccs[f.noteName()%7] )
-			return f;
- 		if (p.accs() > 0)
-			return f;
-	}
-	// When the key is with sharps we don't want flats
-	if (_actualKeyAccidentalsSum > 0) {
-		if (s.accs() == _actualKeySignatureAccs[s.noteName()%7] ) {
-			return s;
-		}
- 		if (p.accs() < 0) {
-			return s;
-		}
-	}
-	return p;
 }
 
 /*!

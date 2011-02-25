@@ -186,58 +186,6 @@ unsigned char CAMidiDevice::freeMidiChannel( CASheet* s ) {
 }
 
 /*!
-	Converts the given internal Canorus \a pitch with accidentals \a acc to
-	standard unsigned 7-bit MIDI pitch.
-
-	\sa _pitch, midiPitchToPitch()
-*/
-int CAMidiDevice::diatonicPitchToMidiPitch( CADiatonicPitch pitch ) {
-	float step = (float)12/7;
-
-	// +0.3 - rounding factor for 7/12 that exactly underlays every tone in octave, if rounded
-	// +12 - our logical pitch starts at Sub-contra C, midi counting starts one octave lower
-	return qRound( pitch.noteName()*step + 0.3 + 12) + pitch.accs();
-}
-
-/*!
-	Converts the given standard unsigned 7-bit MIDI pitch to internal Canorus pitch.
-
-	\todo This method currently doesn't do anything. Problem is determination of sharp/flat from MIDI. -Matevz
-
-	\sa _pitch, pitchToMidiPitch()
-*/
-CADiatonicPitch CAMidiDevice::midiPitchToDiatonicPitch(int midiPitch) {
-	CADiatonicKey cm;	// Default is here C Major
-	return midiPitchToDiatonicPitch(midiPitch, cm);
-}
-/*!
-
-	Converts the given standard unsigned 7-bit MIDI pitch to internal Canorus pitch dependent on the
-	diatonic key k.
-
-	\todo This method currently only assumes the diatonic key c.
-
-	\sa _pitch, pitchToMidiPitch()
-*/
-CADiatonicPitch CAMidiDevice::midiPitchToDiatonicPitch(int midiPitch, CADiatonicKey k) {
-	float step =(float)7/12;
-
-	int oktave = midiPitch /12 - 1;
-	int rest = midiPitch %12;
-	CADiatonicPitch y;
-	// todo: Some more explanation of the algorithm.
-	y.setNoteName( qRound( step*rest -0.5 + 1.0/7 ));
-	y.setAccs( 0 );
-	y.setAccs( (diatonicPitchToMidiPitch( y )%12) == rest ? 0 : 1 );
-
-	CADiatonicPitch x;
-	x.setNoteName(y.noteName()+oktave*7);
-	x.setAccs(y.accs());
-	return x;
-}
-
-
-/*!
 	\var CAMidiDevice::GM_INSTRUMENTS
 	Human names for General Midi Instruments.
 */
