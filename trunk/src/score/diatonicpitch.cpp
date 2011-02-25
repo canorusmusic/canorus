@@ -6,6 +6,7 @@
 */
 
 #include "score/diatonicpitch.h"
+#include "score/diatonickey.h"
 
 /*!
 	\class CADiatonicPitch
@@ -181,4 +182,119 @@ CADiatonicPitch CADiatonicPitch::operator+( CAInterval i ) {
 */
 CADiatonicPitch CADiatonicPitch::diatonicPitchFromString( const QString s ) {
 	return CADiatonicPitch( s );
+}
+
+/*!
+	This function is provided for convenience.
+	
+	\sa diatonicPitchFromMidiPitchKey()
+*/
+CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitch( int midiPitch, CAMidiPitchMode mode ) {
+	return diatonicPitchFromMidiPitchKey(midiPitch, CADiatonicKey("C"), mode);
+}
+
+/*!
+	Generates prefered diatonic pitch for the given \a midiPitch.
+	\a key tells generally which accidentals and note pitches to use.
+	\a mode tells which accidental is the preferred one, if the diatonic pitch
+	is unknown to the given key. If the auto mode is set, then degrees C#, Eb,
+	F#, Ab and Bb are taken.
+
+	\sa CAMidiPitchMode, diatonicPitchToMidiPitch
+*/
+CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, CADiatonicKey key, CAMidiPitchMode mode ) {
+	int notePitch=0, accs=0;
+
+	float step =(float)7/12;
+
+	int octave = midiPitch/12 - 1;
+	int rest = midiPitch%12;
+	// calculate pitch to be a white key or a black key with sharp
+	CADiatonicPitch p;
+	p.setNoteName(qRound( step*rest -0.5 + 1.0/7 + octave*7 ));
+	p.setAccs( (diatonicPitchToMidiPitch( p )%12) == rest ? 0 : 1 );
+
+	// return the pitch, if it's natural to the key
+	if (key.containsPitch(p)) {
+		return p;
+	}
+	
+	// try the degree lower / higher and adjust accidentals to have the same pitch
+	CADiatonicPitch pLower = p - CAInterval( CAInterval::Diminished, CAInterval::Second );
+	if (key.containsPitch(pLower)) {
+		return pLower;
+	}
+	CADiatonicPitch pHigher = p + CAInterval( CAInterval::Diminished, CAInterval::Second );
+	if (key.containsPitch(pHigher)) {
+		return pHigher;
+	}
+
+	// pitch not found naturally in the key, set the diatonic pitch according to the mode parameter
+	switch (midiPitch%12) {
+		case 0: notePitch = 0; accs = 0; break;
+		
+		case 1:
+		switch (mode) {
+			case CADiatonicPitch::PreferAuto:
+			case CADiatonicPitch::PreferSharps: notePitch = 0; accs = 1; break;
+			case CADiatonicPitch::PreferFlats: notePitch = 1; accs = -1; break;
+		}
+		break;
+		
+		case 2: notePitch = 1; accs = 0; break;
+
+		case 3:
+		switch (mode) {
+			case CADiatonicPitch::PreferSharps: notePitch = 1; accs = 1; break;
+			case CADiatonicPitch::PreferAuto:
+			case CADiatonicPitch::PreferFlats: notePitch = 2; accs = -1; break;
+		}
+		break;
+		
+		case 4: notePitch = 2; accs = 0; break;
+
+		case 5: notePitch = 3; accs = 0; break;
+		
+		case 6:
+		switch (mode) {
+			case CADiatonicPitch::PreferAuto:
+			case CADiatonicPitch::PreferSharps: notePitch = 3; accs = 1; break;
+			case CADiatonicPitch::PreferFlats: notePitch = 4; accs = -1; break;
+		}
+		break;
+
+		case 7: notePitch = 4; accs = 0; break;
+
+		case 8:
+		switch (mode) {
+			case CADiatonicPitch::PreferSharps: notePitch = 4; accs = 1; break;
+			case CADiatonicPitch::PreferAuto:
+			case CADiatonicPitch::PreferFlats: notePitch = 5; accs = -1; break;
+		}
+
+		case 9: notePitch = 5; accs = 0; break;
+
+		case 10:
+		switch (mode) {
+			case CADiatonicPitch::PreferSharps: notePitch = 5; accs = 1; break;
+			case CADiatonicPitch::PreferAuto:
+			case CADiatonicPitch::PreferFlats: notePitch = 6; accs = -1; break;
+		}
+		
+		case 11: notePitch = 6; accs = 0; break;
+	}
+
+	notePitch += octave*7;
+	
+	return CADiatonicPitch( notePitch, accs );
+}
+
+/*!
+	Converts the given diatonic pitch (note name with octave and accidental) to
+	standard unsigned 7-bit MIDI pitch.
+*/
+int CADiatonicPitch::diatonicPitchToMidiPitch( const CADiatonicPitch& pitch ) {
+	// +0.3 - rounding factor for 7/12 that exactly underlays every tone in octave, if rounded
+	// +12 - our logical pitch starts at Sub-contra C, midi counting starts one octave lower
+	return qRound(pitch.noteName()*((float)12/7) + 0.3 + 12) + pitch.accs();
 }

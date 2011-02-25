@@ -11,6 +11,8 @@
 #include "score/interval.h"
 #include <QString>
 
+class CADiatonicKey;
+
 class CADiatonicPitch {
 public:
 	enum CANoteName {
@@ -22,6 +24,12 @@ public:
 		G = 4,
 		A = 5,
 		B = 6
+	};
+
+	enum CAMidiPitchMode {
+		PreferAuto = 0,
+		PreferSharps = 1,
+		PreferFlats = -1
 	};
 
 	CADiatonicPitch();
@@ -39,14 +47,18 @@ public:
 		return operator+( CAInterval( i.quality(), i.quantity()*(-1) ) );
 	}
 
-	inline const int noteName() { return _noteName; }
-	inline const int accs() { return _accs; }
+	inline const int noteName() const { return _noteName; }
+	inline const int accs() const { return _accs; }
 
 	inline void setNoteName( const int noteName ) { _noteName = noteName; }
 	inline void setAccs( const int accs ) { _accs = accs; }
 
 	static const QString diatonicPitchToString( CADiatonicPitch p );
 	static CADiatonicPitch diatonicPitchFromString( const QString s );
+
+	static CADiatonicPitch diatonicPitchFromMidiPitch( int midiPitch, CAMidiPitchMode m = PreferAuto );
+	static CADiatonicPitch diatonicPitchFromMidiPitchKey( int midiPitch, CADiatonicKey k, CAMidiPitchMode m = PreferAuto );
+	static int diatonicPitchToMidiPitch( const CADiatonicPitch& dp );
 
 private:
 	int _noteName; // 0-sub-contra C, 1-D, 2-E etc.

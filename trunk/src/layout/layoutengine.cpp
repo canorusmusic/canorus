@@ -621,7 +621,12 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 					case CAMusElement::MidiNote: {
 						CADrawableStaff* dStaff = static_cast<CADrawableStaff*>(drawableContext);
 						CAMidiNote *midiNote = static_cast<CAMidiNote*>(elt);
-						int pitch = CAMidiDevice::midiPitchToDiatonicPitch( midiNote->midiPitch() ).noteName();
+						int pitch = 0;
+						if (lastKeySig[i]) {
+							pitch = CADiatonicPitch::diatonicPitchFromMidiPitchKey( midiNote->midiPitch(), lastKeySig[i]->diatonicKey() ).noteName();
+						} else {
+							pitch = CADiatonicPitch::diatonicPitchFromMidiPitch( midiNote->midiPitch() ).noteName();
+						}
 						newElt = new CADrawableMidiNote( midiNote, dStaff, streamsX[i], dStaff->calculateCenterYCoord( pitch, streamsX[i] ) );
 
 						break;

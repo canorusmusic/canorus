@@ -229,6 +229,16 @@ int CADiatonicKey::noteAccs( int noteName ) {
 }
 
 /*!
+	Returns true, if the given pitch \a p is a natural note in the key
+	signature; False otherwise.
+	
+	eg. F# is a natural note in G-major, but not in C-major (ie. F).
+*/
+bool CADiatonicKey::containsPitch( const CADiatonicPitch& p ) {
+	return (accsMatrix()[p.noteName()%7] == p.accs());
+}
+
+/*!
 	\enum CADiatonicKey::CAGender
 	The lower tetrachord of the scale - gender:
 		- Major

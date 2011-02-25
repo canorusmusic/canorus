@@ -84,11 +84,6 @@ signals:
 	void midiInEvent( QVector< unsigned char > message );
 #endif
 
-public:
-	static int diatonicPitchToMidiPitch( CADiatonicPitch );
-	static CADiatonicPitch midiPitchToDiatonicPitch( int );
-	static CADiatonicPitch midiPitchToDiatonicPitch( int, CADiatonicKey k );
-
 protected:
 	void setRealTime( bool r ) { _realTime = r; }
 	inline void setMidiDeviceType( CAMidiDeviceType t ) { _midiDeviceType = t; }
