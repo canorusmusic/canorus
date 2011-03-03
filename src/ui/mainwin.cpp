@@ -354,7 +354,7 @@ void CAMainWin::createCustomActions() {
 	uiVoiceInstrument = new QComboBox( this );
 		uiVoiceInstrument->setObjectName("uiVoiceInstrument");
 		uiVoiceInstrument->setToolTip(tr("Voice instrument"));
-		uiVoiceInstrument->addItems( CACanorus::midiDevice()->GM_INSTRUMENTS );
+		uiVoiceInstrument->addItems( CAMidiDevice::instrumentNames() );
 	uiVoiceName = new QLineEdit( this );
 		uiVoiceName->setObjectName( "uiVoiceName" );
 		uiVoiceName->setToolTip(tr("Voice name"));
@@ -515,7 +515,7 @@ void CAMainWin::createCustomActions() {
 	uiInstrumentChange = new QComboBox( this );
 		uiInstrumentChange->setObjectName("uiInstrumentChange");
 		uiInstrumentChange->setToolTip(tr("Instrument Change"));
-		uiInstrumentChange->addItems( CACanorus::midiDevice()->GM_INSTRUMENTS );
+		uiInstrumentChange->addItems( CAMidiDevice::instrumentNames() );
 
 	uiTempoToolBar = new QToolBar( tr("Tempo ToolBar"), this );
 	uiTempoBeat = new CAMenuToolButton( tr("Select Beat"), 3, this );

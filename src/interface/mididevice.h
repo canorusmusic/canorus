@@ -61,7 +61,11 @@ public:
 	};
 
 
-	QStringList GM_INSTRUMENTS;
+	static QStringList gmInstrumentList() { return CAMidiDevice::GM_INSTRUMENTS; }
+	
+	static QString instrumentName( int midiProgram );
+	static QStringList instrumentNames();
+	
 	static unsigned char freeMidiChannel( CASheet* );
 
 	virtual ~CAMidiDevice() {};
@@ -89,6 +93,9 @@ protected:
 	inline void setMidiDeviceType( CAMidiDeviceType t ) { _midiDeviceType = t; }
 	CAMidiDeviceType _midiDeviceType;
 	bool _realTime;  // is the device
+	
+private:
+	static QStringList GM_INSTRUMENTS;
 };
 
 #endif /* MIDIDEVICE_H_ */
