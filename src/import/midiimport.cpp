@@ -307,7 +307,6 @@ void CAMidiImport::importMidiEvents() {
 			programCache[pmidi_out.chan] = pmidi_out.program;
 
 			// store the first instrument in the channel to _midiProgramList variable
-			std::cout << pmidi_out.chan << std::endl;
 			if ( _midiProgramList[pmidi_out.chan] == -1 ) {
 				_midiProgramList[pmidi_out.chan] = pmidi_out.program;
 			}
