@@ -71,9 +71,15 @@ CAMidiImport::CAMidiImport( CADocument * document, QTextStream *in )
 		_allChannelsEvents[i]->append( new QList<CAMidiImportEvent*> );
 		_allChannelsMediumPitch << 0;
 	}
+
+	// fill the midi program list with zeros
+	for (int i=0; i<16; i++) {
+		_midiProgramList << -1;
+	}
 }
 
 CAMidiImport::~CAMidiImport() {
+
 }
 
 void CAMidiImport::initMidiImport() {
@@ -299,6 +305,13 @@ void CAMidiImport::importMidiEvents() {
 //				<<"  Channel: "<<pmidi_out.chan
 //				<<std::endl;
 			programCache[pmidi_out.chan] = pmidi_out.program;
+
+			// store the first instrument in the channel to _midiProgramList variable
+			std::cout << pmidi_out.chan << std::endl;
+			if ( _midiProgramList[pmidi_out.chan] == -1 ) {
+				_midiProgramList[pmidi_out.chan] = pmidi_out.program;
+			}
+			
 			break;
 		case PMIDI_STATUS_PITCH:
 		case PMIDI_STATUS_PRESSURE:

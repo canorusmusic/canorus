@@ -11,10 +11,9 @@
 #include "score/diatonickey.h"
 #include "score/diatonicpitch.h"
 
-CAMidiDevice::CAMidiDevice()
- : QObject()
-{
-	GM_INSTRUMENTS = QStringList() <<
+QStringList CAMidiDevice::GM_INSTRUMENTS = QStringList() <<
+	// tr() function actually does nothing here, because translator is not initialized yet.
+	// However, this is needed for .ts files to be generated!
 	QObject::tr("Acoustic Grand Piano", "instrument") <<
 	QObject::tr("Bright Acoustic Piano", "instrument") <<
 	QObject::tr("Electric Grand Piano", "instrument") <<
@@ -143,7 +142,6 @@ CAMidiDevice::CAMidiDevice()
 	QObject::tr("Helicopter", "instrument") <<
 	QObject::tr("Applause", "instrument") <<
 	QObject::tr("Gunshot", "instrument");
-}
 
 /*!
 	\class CAMidiDevice
@@ -162,6 +160,35 @@ CAMidiDevice::CAMidiDevice()
 
 	\warning MIDI INPUT is not available for Swig and therefore scripting languages yet.
 */
+
+
+CAMidiDevice::CAMidiDevice()
+ : QObject()
+{
+}
+
+/*!
+	This function returns translated instrument name for the given MIDI program.
+
+	\sa instrumentNames(), GM_INSTRUMENTS
+*/
+QString CAMidiDevice::instrumentName( int midiProgram ) {
+	return QObject::tr(CAMidiDevice::GM_INSTRUMENTS[ midiProgram ].toStdString().c_str(), "instrument");
+}
+
+/*!
+	This function returns a list of translated GM instruments.
+	
+	\sa instrumentName(), GM_INSTRUMENTS
+*/
+QStringList CAMidiDevice::instrumentNames() {
+	QStringList trInstruments;
+	for (int i=0; i<CAMidiDevice::GM_INSTRUMENTS.size(); i++) {
+		trInstruments << QObject::tr(CAMidiDevice::GM_INSTRUMENTS[i].toStdString().c_str(), "instrument");
+	}
+	
+	return trInstruments;
+}
 
 /*!
 	Returns the first midi channel that isn't occupied by voices in the given sheet \a s yet.
@@ -187,5 +214,6 @@ unsigned char CAMidiDevice::freeMidiChannel( CASheet* s ) {
 
 /*!
 	\var CAMidiDevice::GM_INSTRUMENTS
-	Human names for General Midi Instruments.
+	Original General Midi Instruments (program) names.
+	Call instrumentName() or instrumentNames() to get translated strings.
 */

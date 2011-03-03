@@ -48,6 +48,7 @@ public:
 	QList< QList<CAMidiNote*> > importMidiNotes();
 	
 	const QString readableStatus();
+	QList<int> midiProgramList() { return _midiProgramList; }
 
 private:
 	// Alternatives during developement
@@ -107,6 +108,7 @@ private:
 	int _curLine, _curChar;
 	QList<QString> _errors;
 	QList<QString> _warnings;
+	QList<int> _midiProgramList; // list of first instruments in the channel or -1, if not defined
 
 	//inline CAVoice *templateVoice() { return _templateVoice; }
 	//CAVoice *_templateVoice; // used when importing voice to set the staff etc.
