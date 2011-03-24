@@ -52,6 +52,7 @@ public:
 
 	inline void setNoteName( const int noteName ) { _noteName = noteName; }
 	inline void setAccs( const int accs ) { _accs = accs; }
+	inline int midiPitch() { return CADiatonicPitch::diatonicPitchToMidiPitch(*this); }
 
 	static const QString diatonicPitchToString( CADiatonicPitch p );
 	static CADiatonicPitch diatonicPitchFromString( const QString s );
