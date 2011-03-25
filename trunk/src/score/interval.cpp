@@ -168,16 +168,16 @@ CAInterval CAInterval::operator+( CAInterval i ) {
 
 	return CAInterval( p1, p2 );
 }
-
+#include<iostream>
 /*!
 	Returns the number of semitones in the interval.
 
 	This is a surjective mapping.
  */
 int CAInterval::semitones() {
-	int semitones;
+	int semitones=0;
 	int absQuantity = ((qAbs(quantity())-1) % 7) + 1;
-
+	
 	// major and perfect intervals are default
 	switch (absQuantity) {
 	case Prime: semitones=0; break;
@@ -199,7 +199,7 @@ int CAInterval::semitones() {
 	}
 
 	// octaves
-	semitones += 12 * (qAbs(quantity())-1) / 7;
+	semitones += 12 * ((qAbs(quantity())-1) / 7);
 
 	// invert semitones for negative quantity
 	if (quantity()<0)
