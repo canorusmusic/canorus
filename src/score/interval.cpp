@@ -168,7 +168,7 @@ CAInterval CAInterval::operator+( CAInterval i ) {
 
 	return CAInterval( p1, p2 );
 }
-#include<iostream>
+
 /*!
 	Returns the number of semitones in the interval.
 
