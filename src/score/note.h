@@ -37,6 +37,7 @@ public:
 		_diatonicPitch = pitch;
 		updateTies();
 	}
+	inline int midiPitch() { return _diatonicPitch.midiPitch(); }
 
 	CAStemDirection stemDirection() { return _stemDirection; }
 	void setStemDirection(CAStemDirection direction);
