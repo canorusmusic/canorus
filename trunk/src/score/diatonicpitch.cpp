@@ -271,6 +271,7 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, C
 			case CADiatonicPitch::PreferAuto:
 			case CADiatonicPitch::PreferFlats: notePitch = 5; accs = -1; break;
 		}
+		break;
 
 		case 9: notePitch = 5; accs = 0; break;
 
@@ -280,6 +281,7 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, C
 			case CADiatonicPitch::PreferAuto:
 			case CADiatonicPitch::PreferFlats: notePitch = 6; accs = -1; break;
 		}
+		break;
 		
 		case 11: notePitch = 6; accs = 0; break;
 	}
