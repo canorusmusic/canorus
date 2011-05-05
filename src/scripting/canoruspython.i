@@ -242,10 +242,12 @@
 
 void markDelete( PyObject* ); // function used to delete Canorus objects inside Python
 const char* tr( const char * sourceText, const char * comment = 0, int n = -1 );
+bool hasGui();
+
+// the following functions work when a plugin is launched inside Canorus:
 void rebuildUi();
 void repaintUi();
-bool hasGui();
-void setSelection( QList<CAMusElement*> elements ); // selects the given \a elements. Works only in GUI!
+void setSelection( QList<CAMusElement*> elements, bool centerOn=false );
 
 %include "scripting/canoruslibrary.i"
 
@@ -294,7 +296,11 @@ bool hasGui() {
 #endif
 }
 
-void setSelection( QList<CAMusElement*> elements ) {
+/*!
+    Selects the given elements in the current score view and optionally scrolls
+    the view to center them.
+*/
+void setSelection( QList<CAMusElement*> elements, bool centerOn ) {
 #ifndef SWIGCPP
 	if (!elements.size() || !elements[0]->context() || !elements[0]->context()->sheet() || !elements[0]->context()->sheet()->document()) {
 		return;
@@ -309,6 +315,19 @@ void setSelection( QList<CAMusElement*> elements ) {
 	
 	mainwins[0]->currentScoreView()->clearSelection();
 	mainwins[0]->currentScoreView()->addToSelection(elements);
+
+        if (centerOn) {
+            CADrawableMusElement *firstElement = mainwins[0]->currentScoreView()->selection()[0];
+            mainwins[0]->currentScoreView()->setCenterCoords(
+                firstElement->xPos(),
+                firstElement->yPos(),
+                false
+            );
+            mainwins[0]->currentScoreView()->setWorldX(
+                firstElement->xPos()-12,
+                false
+            );
+        }
 #else
 	guiError();
 #endif
