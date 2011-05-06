@@ -8,6 +8,7 @@
 #include "core/file.h"
 #include <QTextStream>
 #include <QFile>
+#include <QBuffer>
 
 /*!
 	\class CAFile
@@ -104,7 +105,36 @@ void CAFile::setStreamToDevice(QIODevice* device) {
 	}
 }
 
-/**
+/*!
+	Creates and sets a new virtual IO device usually used for exporting document
+	to a string when QTextStream/QIODevice API is not available (eg. when
+	writing external Python plugins).
+	
+	\sa getStreamAsString()
+*/
+void CAFile::setStreamToString() {
+	QBuffer *score = new QBuffer();
+	setStreamToDevice(score);
+}
+
+/*!
+	This function is provided for convenience when QTextStream/QIODevice API is
+	not available (eg. when writing external Python plugins).
+
+	It returns the exported value as UTF-8 encoded string. To use this function
+	first initialize the export filter using setStreamToString().
+
+	\sa setStreamToString()
+*/
+QString CAFile::getStreamAsString() {
+	if (!stream()) {
+		return "";
+	} else {
+		return QString::fromUtf8(static_cast<QBuffer*>(stream()->device())->data());
+	}
+}
+
+/*!
 	Creates and sets the stream from the given device.
 	Read-only if the device is not already open.
 */
