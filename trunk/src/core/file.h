@@ -26,6 +26,9 @@ public:
 	void setStreamFromDevice( QIODevice* device );
 	void setStreamToDevice( QIODevice* device );
 
+	void setStreamToString();
+	QString getStreamAsString();
+
 protected:
 	inline void setStatus( const int status ) { _status = status; }
 	inline void setProgress( const int progress ) { _progress = progress; }
