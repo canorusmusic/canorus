@@ -118,6 +118,10 @@ CASheet *CAMidiImport::importSheetImpl() {
 
 	This function is usually called when raw MIDI operations are done and the
 	actual notes etc. aren't needed.
+
+	\warning This function returns notes only (without rests).
+	\warning Only abstract note times are preserved. Real MIDI note times (in
+	miliseconds) are lost.
  */
 QList< QList<CAMidiNote*> > CAMidiImport::importMidiNotes() {
 	importMidiEvents();
@@ -130,8 +134,8 @@ QList< QList<CAMidiNote*> > CAMidiImport::importMidiNotes() {
 				CAMidiImportEvent *event = _allChannelsEvents[i]->at(voiceIdx)->at(j);
 				for (int pitchIdx=0; pitchIdx<event->_pitchList.size(); pitchIdx++) {
 					// temporary solutionsort midi events by time
-					int timeStart = qRound(event->_time*(240.0/event->_tempo));
-					int timeLength = qRound(event->_length*(240.0/event->_tempo));
+					int timeStart = qRound(event->_time);
+					int timeLength = qRound(event->_length);
 					int k;
 					for (k=0; k<midiNotes.last().size() && midiNotes.last()[k]->timeStart()<timeStart; k++);
 					midiNotes.last().insert(k, new CAMidiNote( event->_pitchList[pitchIdx], timeStart, timeLength, 0 ));
