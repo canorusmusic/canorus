@@ -191,7 +191,14 @@ int CAInterval::semitones() {
 
 	// minor or diminished/augmented
 	switch ( quality() ) {
-	case Diminished:
+	case Diminished: {
+		if (absQuantity==Second||absQuantity==Third||absQuantity==Sixth||absQuantity==Seventh) {
+			semitones -= 2;
+		} else {
+			semitones -= 1;
+		}
+		break;
+	}
 	case Minor:
 		semitones -= 1; break;
 	case Augmented:
