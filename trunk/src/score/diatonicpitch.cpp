@@ -197,8 +197,9 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitch( int midiPitch, CAMi
 	Generates prefered diatonic pitch for the given \a midiPitch.
 	\a key tells generally which accidentals and note pitches to use.
 	\a mode tells which accidental is the preferred one, if the diatonic pitch
-	is unknown to the given key. If the auto mode is set, then degrees C#, Eb,
-	F#, Ab and Bb are taken.
+	is unknown to the given key. If the auto mode is set, then C-major degrees
+	C#, D#, F#, G# and Bb are taken for the given key. These are the only
+	possible major thirds or minor sevenths of the Dominant chords of degrees.
 
 	\sa CAMidiPitchMode, diatonicPitchToMidiPitch
 */
@@ -230,7 +231,14 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, C
 	}
 
 	// pitch not found naturally in the key, set the diatonic pitch according to the mode parameter
-	switch (midiPitch%12) {
+	// first transpose the pitch to C-Major
+	CAInterval transposeInterval(CADiatonicPitch(0,0), key.diatonicPitch());
+	if (key.gender()==CADiatonicKey::Minor) {
+		transposeInterval = transposeInterval + CAInterval(CAInterval::Major, CAInterval::Sixth); // interpret minor keys as major
+	}
+	transposeInterval.setQuantity( ((transposeInterval.quantity()-1)%7)+1 );
+	octave = (midiPitch-transposeInterval.semitones())/12 - 1; // redefine octave with new key base
+	switch ((midiPitch+(12-transposeInterval.semitones()))%12) {
 		case 0: notePitch = 0; accs = 0; break;
 		
 		case 1:
@@ -245,8 +253,8 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, C
 
 		case 3:
 		switch (mode) {
-			case CADiatonicPitch::PreferSharps: notePitch = 1; accs = 1; break;
 			case CADiatonicPitch::PreferAuto:
+			case CADiatonicPitch::PreferSharps: notePitch = 1; accs = 1; break;
 			case CADiatonicPitch::PreferFlats: notePitch = 2; accs = -1; break;
 		}
 		break;
@@ -267,8 +275,8 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, C
 
 		case 8:
 		switch (mode) {
-			case CADiatonicPitch::PreferSharps: notePitch = 4; accs = 1; break;
 			case CADiatonicPitch::PreferAuto:
+			case CADiatonicPitch::PreferSharps: notePitch = 4; accs = 1; break;
 			case CADiatonicPitch::PreferFlats: notePitch = 5; accs = -1; break;
 		}
 		break;
@@ -288,7 +296,7 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, C
 
 	notePitch += octave*7;
 	
-	return CADiatonicPitch( notePitch, accs );
+	return CADiatonicPitch( notePitch, accs )+transposeInterval;
 }
 
 /*!
