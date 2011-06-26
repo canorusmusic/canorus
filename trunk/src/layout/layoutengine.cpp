@@ -490,15 +490,18 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
 								dir = static_cast<CADrawableNote*>(newElt)->note()->slurEnd()->noteStart()->actualSlurDirection();
 							CADrawableSlur *dSlur = static_cast<CADrawableSlur*>(v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->slurEnd()));
-							dSlur->setX2( newElt->xPos() );
-							dSlur->setXMid( qRound(0.5*dSlur->xPos() + 0.5*newElt->xPos()) );
-							if ( dir==CASlur::SlurUp ) {
-								dSlur->setY2( newElt->yPos() );
-								dSlur->setYMid( qMin( dSlur->y2(), dSlur->y1() ) - 15 );
-							} else
-							if ( dir==CASlur::SlurDown ) {
-								dSlur->setY2( newElt->yPos() + newElt->height() );
-								dSlur->setYMid( qMax( dSlur->y2(), dSlur->y1() ) + 15 );
+							if( dSlur )
+							{
+								dSlur->setX2( newElt->xPos() );
+								dSlur->setXMid( qRound(0.5*dSlur->xPos() + 0.5*newElt->xPos()) );
+								if ( dir==CASlur::SlurUp ) {
+									dSlur->setY2( newElt->yPos() );
+									dSlur->setYMid( qMin( dSlur->y2(), dSlur->y1() ) - 15 );
+								} else
+								if ( dir==CASlur::SlurDown ) {
+									dSlur->setY2( newElt->yPos() + newElt->height() );
+									dSlur->setYMid( qMax( dSlur->y2(), dSlur->y1() ) + 15 );
+								}
 							}
 						}
 
