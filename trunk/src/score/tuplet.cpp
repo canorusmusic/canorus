@@ -76,6 +76,32 @@ int CATuplet::compare(CAMusElement* elt) {
 }
 
 /*!
+	Generates a list of pointers to slurs (slur start, slur end, phrasing slur
+	start, phrasing slur end) per each note index.
+	
+	If tuplet contains a rest, no slurs are present at that index.
+*/
+QList< QList<CASlur*> > CATuplet::getNoteSlurs() {
+	QList< QList<CASlur*> > noteSlurs;
+	for (int i=0; i<noteList().size(); i++) {
+		noteSlurs << QList<CASlur*>();
+		if (noteList()[i]->musElementType()==Note) {
+			noteSlurs.back() << static_cast<CANote*>(noteList()[i])->slurStart();
+			noteSlurs.back() << static_cast<CANote*>(noteList()[i])->slurEnd();
+			noteSlurs.back() << static_cast<CANote*>(noteList()[i])->phrasingSlurStart();
+			noteSlurs.back() << static_cast<CANote*>(noteList()[i])->phrasingSlurEnd();
+
+			static_cast<CANote*>(noteList()[i])->setSlurStart(0);
+			static_cast<CANote*>(noteList()[i])->setSlurEnd(0);
+			static_cast<CANote*>(noteList()[i])->setPhrasingSlurStart(0);
+			static_cast<CANote*>(noteList()[i])->setPhrasingSlurEnd(0);
+		}
+	}
+
+	return noteSlurs;
+}
+
+/*!
 	Transforms note times to tuplet-affected times.
 
 	The use case should be somewhat this:
@@ -99,6 +125,9 @@ void CATuplet::assignTimes() {
 	}
 
 	// removes notes from the voice
+	// but first remember the slurs and phrasing slurs
+	QList< QList<CASlur*> > noteSlurs = getNoteSlurs();
+
 	for (int i=noteList().size()-1; i>=0; i--) {
 		noteList()[i]->setTuplet(0);
 		voice->remove( noteList()[i] );
@@ -130,6 +159,16 @@ void CATuplet::assignTimes() {
 		i+=(j-1);
 	}
 
+	// assign previously remembered slurs
+	for (int i=0; i<noteSlurs.size(); i++) {
+		if (noteSlurs[i].size()) {
+			static_cast<CANote*>(noteList()[i])->setSlurStart( noteSlurs[i][0] );
+			static_cast<CANote*>(noteList()[i])->setSlurEnd( noteSlurs[i][1] );
+			static_cast<CANote*>(noteList()[i])->setPhrasingSlurStart( noteSlurs[i][2] );
+			static_cast<CANote*>(noteList()[i])->setPhrasingSlurEnd( noteSlurs[i][3] );
+		}
+	}
+
 	setTimeLength( noteList().last()->timeEnd() - noteList().front()->timeStart() );
 
 	for (int i=0; i<noteList().size(); i++) {
@@ -159,6 +198,9 @@ void CATuplet::resetTimes() {
 	}
 
 	// removes notes from the voice
+	// but first remember the slurs and phrasing slurs
+	QList< QList<CASlur*> > noteSlurs = getNoteSlurs();
+
 	for (int i=noteList().size()-1; i>=0; i--) {
 		noteList()[i]->setTuplet(0);
 		voice->remove( noteList()[i] );
@@ -189,6 +231,16 @@ void CATuplet::resetTimes() {
 			voice->insert( noteList()[i], noteList()[i+j], true );
 		}
 		i+=(j-1);
+	}
+	
+	// assign previously remembered slurs
+	for (int i=0; i<noteSlurs.size(); i++) {
+		if (noteSlurs[i].size()) {
+			static_cast<CANote*>(noteList()[i])->setSlurStart( noteSlurs[i][0] );
+			static_cast<CANote*>(noteList()[i])->setSlurEnd( noteSlurs[i][1] );
+			static_cast<CANote*>(noteList()[i])->setPhrasingSlurStart( noteSlurs[i][2] );
+			static_cast<CANote*>(noteList()[i])->setPhrasingSlurEnd( noteSlurs[i][3] );
+		}
 	}
 }
 
