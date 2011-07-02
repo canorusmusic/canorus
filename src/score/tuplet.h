@@ -12,6 +12,7 @@
 
 class CAContext;
 class CAVoice;
+class CASlur;
 
 class CATuplet : public CAMusElement {
 public:
@@ -45,6 +46,7 @@ public:
 
 private:
 	void resetTimes();
+	QList< QList<CASlur*> > getNoteSlurs();
 
 	int _number;
 	int _actualNumber;
