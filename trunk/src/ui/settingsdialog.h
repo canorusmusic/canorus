@@ -28,6 +28,7 @@ public:
 		ActionSettings = 2,
 		LoadSaveSettings = 3,
 		PlaybackSettings = 4,
+		PrintingSettings = 5,
 	};
 
 	CASettingsDialog( CASettingsPage currentPage, QWidget *parent=0 );

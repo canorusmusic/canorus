@@ -149,11 +149,14 @@ void CASettings::writeSettings() {
 
 /*!
 	Opens the settings stored in a config file and sets the local values.
-	Returns Undefined, if everything went fine or appropriate settings page, if a file or value wasn't set
-	and settings window should be shown (eg. setup the MIDI devices the first time).
+	This function is usually called on application startup to read and validate
+	various settings and show the settings window, if needed (eg. setup the MIDI
+	devices the first time).
+	
+	\return 0, if settings validated fine; -1 for playback settings errors.
 */
 int CASettings::readSettings() {
-	int settingsPage = -1;
+	int settingsPage = 0;
 
 	// Editor settings
 	if ( contains("editor/finalelyricsbehaviour") )
@@ -267,7 +270,7 @@ int CASettings::readSettings() {
 		setMidiInPort( value("rtmidi/midiinport").toInt() );
 	} else {
 		setMidiInPort( DEFAULT_MIDI_IN_PORT );
-		settingsPage = 3;
+		settingsPage = -1;
 	}
 
 	if ( contains("rtmidi/midioutport")
@@ -278,7 +281,7 @@ int CASettings::readSettings() {
 		setMidiOutPort( value("rtmidi/midioutport").toInt() );
 	} else {
 		setMidiOutPort( DEFAULT_MIDI_OUT_PORT );
-		settingsPage = 3;
+		settingsPage = -1;
 	}
 
 	// Printing settings
