@@ -877,7 +877,7 @@ bool CAVoice::updateTimes( int idx, int length, bool signsToo ) {
 				CAMark *m = musElementList()[i]->markList()[j];
 				if ( !m->isCommon() || musElementList()[i]->musElementType()!=CAMusElement::Note ||
 				     static_cast<CANote*>(musElementList()[i])->isFirstInChord() )
-					m->setTimeStart( musElementList()[i]->timeStart() + length );
+					m->setTimeStart( musElementList()[i]->timeStart() );
 			}
 		}
 }
