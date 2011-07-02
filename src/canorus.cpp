@@ -160,7 +160,12 @@ void CACanorus::initPlayback() {
 CASettingsDialog::CASettingsPage CACanorus::initSettings() {
 	_settings = new CASettings();
 
-	return static_cast<CASettingsDialog::CASettingsPage>(_settings->readSettings());
+	switch (_settings->readSettings()) {
+	case -1:
+		return CASettingsDialog::PlaybackSettings;
+	default:
+		return CASettingsDialog::UndefinedSettings;
+	}
 }
 
 /*!
