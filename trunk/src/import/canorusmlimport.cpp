@@ -375,6 +375,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		if(_curSlur) {
 			_curNote->setSlurEnd( _curSlur );
 			_curSlur->setNoteEnd( _curNote );
+			_curSlur->setTimeLength( _curNote->timeStart() - _curSlur->noteStart()->timeStart() );
 			_curSlur = 0;
 		}
 	} else if (qName == "phrasing-slur-start") {
@@ -391,6 +392,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		if(_curPhrasingSlur) {
 			_curNote->setPhrasingSlurEnd( _curPhrasingSlur );
 			_curPhrasingSlur->setNoteEnd( _curNote );
+			_curPhrasingSlur->setTimeLength( _curNote->timeStart() - _curPhrasingSlur->noteStart()->timeStart() );
 			_curPhrasingSlur = 0;
 		}
 	} else if ( qName == "tuplet" ) {

@@ -80,6 +80,8 @@ int CATuplet::compare(CAMusElement* elt) {
 	start, phrasing slur end) per each note index.
 	
 	If tuplet contains a rest, no slurs are present at that index.
+
+	\sa assignNoteSlurs()
 */
 QList< QList<CASlur*> > CATuplet::getNoteSlurs() {
 	QList< QList<CASlur*> > noteSlurs;
@@ -99,6 +101,47 @@ QList< QList<CASlur*> > CATuplet::getNoteSlurs() {
 	}
 
 	return noteSlurs;
+}
+
+/*!
+	Assigns the given list of slurs per note index.
+
+	This function is usually called in combination with getNoteSlurs() when
+	managing note timeStarts and notes are removed/readded to voices.
+
+	\sa getNoteSlurs()
+*/
+void CATuplet::assignNoteSlurs( QList< QList<CASlur*> > noteSlurs ) {
+	// assign previously remembered slurs
+	for (int i=0; i<noteSlurs.size(); i++) {
+		if (noteSlurs[i].size()) {
+			if (noteSlurs[i][0]) {
+				static_cast<CANote*>(noteList()[i])->setSlurStart( noteSlurs[i][0] );
+				
+				noteSlurs[i][0]->setTimeStart(noteList()[i]->timeStart());
+				noteSlurs[i][0]->setTimeLength(noteSlurs[i][0]->timeEnd() - noteList()[i]->timeStart());
+			}
+
+			if (noteSlurs[i][1]) {
+				static_cast<CANote*>(noteList()[i])->setSlurEnd( noteSlurs[i][1] );
+				
+				noteSlurs[i][1]->setTimeLength(noteList()[i]->timeStart() - noteSlurs[i][1]->noteStart()->timeStart());
+			}
+
+			if (noteSlurs[i][2]) {
+				static_cast<CANote*>(noteList()[i])->setPhrasingSlurStart( noteSlurs[i][2] );
+
+				noteSlurs[i][2]->setTimeStart(noteList()[i]->timeStart());
+				noteSlurs[i][2]->setTimeLength(noteSlurs[i][2]->timeEnd() - noteList()[i]->timeStart());
+			}
+
+			if (noteSlurs[i][3]) {
+				static_cast<CANote*>(noteList()[i])->setPhrasingSlurEnd( noteSlurs[i][3] );
+
+				noteSlurs[i][3]->setTimeLength(noteList()[i]->timeStart() - noteSlurs[i][3]->noteStart()->timeStart());
+			}
+		}
+	}
 }
 
 /*!
@@ -160,14 +203,7 @@ void CATuplet::assignTimes() {
 	}
 
 	// assign previously remembered slurs
-	for (int i=0; i<noteSlurs.size(); i++) {
-		if (noteSlurs[i].size()) {
-			static_cast<CANote*>(noteList()[i])->setSlurStart( noteSlurs[i][0] );
-			static_cast<CANote*>(noteList()[i])->setSlurEnd( noteSlurs[i][1] );
-			static_cast<CANote*>(noteList()[i])->setPhrasingSlurStart( noteSlurs[i][2] );
-			static_cast<CANote*>(noteList()[i])->setPhrasingSlurEnd( noteSlurs[i][3] );
-		}
-	}
+	assignNoteSlurs( noteSlurs );
 
 	setTimeLength( noteList().last()->timeEnd() - noteList().front()->timeStart() );
 
@@ -234,14 +270,7 @@ void CATuplet::resetTimes() {
 	}
 	
 	// assign previously remembered slurs
-	for (int i=0; i<noteSlurs.size(); i++) {
-		if (noteSlurs[i].size()) {
-			static_cast<CANote*>(noteList()[i])->setSlurStart( noteSlurs[i][0] );
-			static_cast<CANote*>(noteList()[i])->setSlurEnd( noteSlurs[i][1] );
-			static_cast<CANote*>(noteList()[i])->setPhrasingSlurStart( noteSlurs[i][2] );
-			static_cast<CANote*>(noteList()[i])->setPhrasingSlurEnd( noteSlurs[i][3] );
-		}
-	}
+	assignNoteSlurs( noteSlurs );
 }
 
 /*!
