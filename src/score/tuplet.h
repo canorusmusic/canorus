@@ -47,6 +47,7 @@ public:
 private:
 	void resetTimes();
 	QList< QList<CASlur*> > getNoteSlurs();
+	void assignNoteSlurs( QList< QList<CASlur*> > );
 
 	int _number;
 	int _actualNumber;
