@@ -14,6 +14,7 @@
 #include <QColor>
 #include <QTimer>
 #include <QGridLayout>
+#include <QTransform> // used for graphicsview management
 
 #include <math.h>	// needed for square root in animated scrolls/zoom
 
@@ -601,7 +602,7 @@ void CAScoreView::setSceneRect(const QRectF& coords, bool animate) {
 	qreal h = coords.height();
 
 	std::cout << "x=" << x << " y=" << y << " w=" << w << " h=" << h << std::endl;
-	std::cout << "scene x=" << _scene->sceneRect().x() << " y=" << _scene->sceneRect().y() << " w=" << _scene->sceneRect().width() << " h=" << _scene->sceneRect().height() << std::endl;
+	std::cout << "current view x=" << sceneRect().x() << " y=" << sceneRect().y() << " w=" << sceneRect().width() << " h=" << sceneRect().height() << std::endl;
 
 	// check the limit for width and height
 //	double scrollMax;
@@ -619,7 +620,10 @@ void CAScoreView::setSceneRect(const QRectF& coords, bool animate) {
 		_targetZoom = zoom();
 		startAnimationTimer();
 	} else {
-		_canvas->setSceneRect( x, y, w, h );
+		QTransform matrix;
+		matrix.scale( w/_canvas->width(), h/_canvas->height() ).translate( -x, -y );
+		_canvas->setTransform( matrix );
+		std::cout << "new view x=" << sceneRect().x() << " y=" << sceneRect().y() << " w=" << sceneRect().width() << " h=" << sceneRect().height() << std::endl;
 	}
 
 	updateHelpers();
