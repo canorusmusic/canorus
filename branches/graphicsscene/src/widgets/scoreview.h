@@ -167,7 +167,7 @@ public:
 
 	inline const double zoom() { return _canvas->width()/sceneRect().width(); }
 
-	inline const QRectF sceneRect() { return _canvas->sceneRect(); }
+	inline const QRectF sceneRect() { return _canvas->mapToScene(0, 0, _canvas->width(), _canvas->height()).boundingRect(); }
 	void setSceneRect(const QRectF& r, bool animate=false);
 	void setSceneRect(double x, double y, double w, double h, bool animate=false)  { setSceneRect( QRectF(x,y,w,h), animate); }
 
