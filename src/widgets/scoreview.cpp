@@ -226,8 +226,8 @@ void CAScoreView::on_animationTimer_timeout() {
 	double newZoom = z + (_targetZoom - z) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
 	double newWorldX = r.x() + (_targetWorldX - r.x()) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
 	double newWorldY = r.y() + (_targetWorldY - r.y()) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
-	double newWorldW = drawableWidth() / newZoom;
-	double newWorldH = drawableHeight() / newZoom;
+	double newWorldW = _canvas->width() / newZoom;
+	double newWorldH = _canvas->height() / newZoom;
 
 	setSceneRect(newWorldX, newWorldY, newWorldW, newWorldH);
 
@@ -592,9 +592,6 @@ void CAScoreView::rebuild() {
 	This is an overloaded member function, provided for convenience.
 */
 void CAScoreView::setSceneRect(const QRectF& coords, bool animate) {
-	if (!drawableWidth() && !drawableHeight())
-		return;
-
 	// set the actual new coords
 	qreal x = coords.x();
 	qreal y = coords.y();
@@ -621,9 +618,10 @@ void CAScoreView::setSceneRect(const QRectF& coords, bool animate) {
 		startAnimationTimer();
 	} else {
 		QTransform matrix;
-		matrix.scale( w/_canvas->width(), h/_canvas->height() ).translate( -x, -y );
+		matrix.translate( -x, -y ).scale( w/_canvas->width(), h/_canvas->height() );
 		_canvas->setTransform( matrix );
 		std::cout << "new view x=" << sceneRect().x() << " y=" << sceneRect().y() << " w=" << sceneRect().width() << " h=" << sceneRect().height() << std::endl;
+		std::cout << "scene rect x=" << _canvas->sceneRect().x() << " y=" << _canvas->sceneRect().y() << " w=" << _canvas->sceneRect().width() << " h=" << _canvas->sceneRect().height() << std::endl;
 	}
 
 	updateHelpers();

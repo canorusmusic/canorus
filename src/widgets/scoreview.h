@@ -162,8 +162,6 @@ public:
 	//////////////////////////////////////////////
 	void rebuild();
 	bool isInsideCanvas(QPointF&);
-	inline const int drawableWidth() { return _canvas->width(); }
-	inline const int drawableHeight() { return _canvas->height(); }
 
 	inline const double zoom() { return _canvas->width()/sceneRect().width(); }
 
@@ -171,10 +169,10 @@ public:
 	void setSceneRect(const QRectF& r, bool animate=false);
 	void setSceneRect(double x, double y, double w, double h, bool animate=false)  { setSceneRect( QRectF(x,y,w,h), animate); }
 
-	double sceneX() { return _canvas->sceneRect().x(); }
-	double sceneY() { return _canvas->sceneRect().y(); }
-	double sceneWidth() { return _canvas->sceneRect().width(); }
-	double sceneHeight() { return _canvas->sceneRect().height(); }
+	double sceneX() { return sceneRect().x(); }
+	double sceneY() { return sceneRect().y(); }
+	double sceneWidth() { return sceneRect().width(); }
+	double sceneHeight() { return sceneRect().height(); }
 
 	void setSceneX(double x, bool animate=false) { setSceneRect( QRectF(x, sceneRect().y(), sceneRect().width(), sceneRect().height()), animate ); }
 	void setSceneY(double y, bool animate=false) { setSceneRect( QRectF(sceneRect().x(), y, sceneRect().width(), sceneRect().height()), animate ); }
