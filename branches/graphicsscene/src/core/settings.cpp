@@ -34,6 +34,7 @@ const QColor CASettings::DEFAULT_SELECTION_AREA_COLOR = QColor( 255, 0, 80, 70 )
 const QColor CASettings::DEFAULT_SELECTED_CONTEXT_COLOR = Qt::blue;
 const QColor CASettings::DEFAULT_HIDDEN_ELEMENTS_COLOR = Qt::green;
 const QColor CASettings::DEFAULT_DISABLED_ELEMENTS_COLOR = Qt::gray;
+const QColor CASettings::DEFAULT_HELPER_ELEMENTS_COLOR = Qt::gray;
 #endif
 
 const int CASettings::DEFAULT_MIDI_IN_PORT = -1;
@@ -123,6 +124,7 @@ void CASettings::writeSettings() {
 	setValue( "appearance/selectedcontextcolor", selectedContextColor() );
 	setValue( "appearance/hiddenelementscolor",hiddenElementsColor() );
 	setValue( "appearance/disabledelementscolor", disabledElementsColor() );
+	setValue( "appearance/helperelementscolor", helperElementsColor() );
 #endif
 	setValue( "rtmidi/midioutport", midiOutPort() );
 	setValue( "rtmidi/midiinport", midiInPort() );
@@ -245,6 +247,11 @@ int CASettings::readSettings() {
 		setDisabledElementsColor( value("appearance/disabledelementscolor").value<QColor>() );
 	else
 		setDisabledElementsColor( DEFAULT_DISABLED_ELEMENTS_COLOR );
+
+	if ( contains("appearance/helperelementscolor") )
+		setHelperElementsColor( value("appearance/helperelementscolor").value<QColor>() );
+	else
+		setHelperElementsColor( DEFAULT_HELPER_ELEMENTS_COLOR );
 
 #endif
 	// Playback settings

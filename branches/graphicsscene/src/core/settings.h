@@ -93,11 +93,14 @@ public:
 	inline void setSelectedContextColor( QColor selectedContextColor ) { _selectedContextColor = selectedContextColor; }
 	static const QColor DEFAULT_SELECTED_CONTEXT_COLOR;
 	inline QColor hiddenElementsColor() { return _hiddenElementsColor; }
-	inline void setDisabledElementsColor( QColor disabledElementsColor ) { _disabledElementsColor = disabledElementsColor; }
+	inline void setHiddenElementsColor( QColor hiddenElementsColor ) { _hiddenElementsColor = hiddenElementsColor; }
 	static const QColor DEFAULT_HIDDEN_ELEMENTS_COLOR;
 	inline QColor disabledElementsColor() { return _disabledElementsColor; }
-	inline void setHiddenElementsColor( QColor hiddenElementsColor ) { _hiddenElementsColor = hiddenElementsColor; }
+	inline void setDisabledElementsColor( QColor disabledElementsColor ) { _disabledElementsColor = disabledElementsColor; }
 	static const QColor DEFAULT_DISABLED_ELEMENTS_COLOR;
+	inline QColor helperElementsColor() { return _helperElementsColor; }
+	inline void setHelperElementsColor( QColor helperElementsColor ) { _helperElementsColor = helperElementsColor; }
+	static const QColor DEFAULT_HELPER_ELEMENTS_COLOR;
 #endif
 
 	///////////////////////
@@ -180,6 +183,7 @@ private:
 	QColor _selectedContextColor;
 	QColor _hiddenElementsColor;
 	QColor _disabledElementsColor;
+	QColor _helperElementsColor;
 #endif
 	///////////////////////
 	// Playback settings //
