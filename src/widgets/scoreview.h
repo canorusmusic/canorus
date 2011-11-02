@@ -105,7 +105,7 @@ public:
 	void                                 setLastMousePressCoordsAfter(const QList<CAMusElement*> list);
 
 	inline CADrawableContext *currentContext() { return _currentContext; }
-	inline void setCurrentContext(CADrawableContext *c) { _currentContext = c; }
+	void setCurrentContext(CADrawableContext *c);
 
 	void selectAll();
 	void selectAllCurBar();
@@ -219,6 +219,9 @@ public:
 	inline bool shadowNoteVisible() { return _shadowNoteVisible; }
 	inline void setShadowNoteVisible(bool visible) { _shadowNoteVisible = visible; setShadowNoteVisibleOnLeave(visible); }
 
+	inline const QColor shadowNoteColor() { return _shadowNoteColor; }
+	inline void setShadowNoteColor(const QColor color) { _shadowNoteColor = color; }
+
 	inline bool drawShadowNoteAccs() { return _drawShadowNoteAccs; }
 	inline void setDrawShadowNoteAccs(bool draw) { _drawShadowNoteAccs = draw; }
 
@@ -307,7 +310,8 @@ private:
 	/////////////
 	// Shadow note
 	bool _shadowNoteVisible;            // Should the shadow notes be rendered or not
-        QGraphicsTextItem *_shadowNoteName; // Text showing the current shadow note pitch
+	QColor _shadowNoteColor;            // Shadow note color
+	QGraphicsTextItem *_shadowNoteName; // Text showing the current shadow note pitch
 
 	bool _shadowNoteVisibleOnLeave; // When you leave the view, shadow note is always turned off. This property holds the value, if shadow note was enabled before you left the view.
 	inline bool shadowNoteVisibleOnLeave() { return _shadowNoteVisibleOnLeave; }

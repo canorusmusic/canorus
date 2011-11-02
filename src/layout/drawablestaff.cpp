@@ -18,7 +18,7 @@
 
 const double CADrawableStaff::STAFFLINE_WIDTH = 0.8;
 const double CADrawableStaff::LINE_SPACE = 10;
-const double CADrawableStaff::STAFF_WIDTH = 200;
+const double CADrawableStaff::STAFF_WIDTH = 700;
 
 CADrawableStaff::CADrawableStaff(CAStaff *s)
  : CADrawableContext(s, CADrawableContext::DrawableStaff) {

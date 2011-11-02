@@ -2381,7 +2381,7 @@ void CAMainWin::insertMusElementAt(const QPointF coords, CAScoreView *v) {
 				success = musElementFactory()->configureMark( v->musElementsAt( coords )[0]->musElement() );
 			break;
 		}
-/*		case CAMusElement::Note: { // TODO: fix this to use our new drawing api -Matevz
+		case CAMusElement::Note: {
 			CAVoice *voice = currentVoice();
 
 			if ( !voice )
@@ -2391,17 +2391,17 @@ void CAMainWin::insertMusElementAt(const QPointF coords, CAScoreView *v) {
 			CADrawableMusElement *dright = v->nearestRightElement( coords.x(), coords.y(), voice );
 
 			if ( left && left->musElement() && left->musElement()->musElementType() == CAMusElement::Note &&
-			     left->xPos() <= coords.x() && (left->width() + left->xPos() >= coords.x()) ) {
+			     left->x() <= coords.x() && (left->boundingRect().width() + left->x() >= coords.x()) ) {
 
 				// user clicked inside x borders of the note - add a note to the chord
 
-				if ( voice->containsPitch( drawableStaff->calculatePitch(coords.x(), coords.y()), left->musElement()->timeStart() ) )
+				if ( voice->containsPitch( drawableStaff->calculatePitch(QPointF(coords.x(), coords.y())), left->musElement()->timeStart() ) )
 					break;	// user clicked on an already placed note or wanted to place illegal length (not the one the chord is of) - return and do nothing
 
-				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, left->musElement(), true );
+				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(QPointF(coords.x(), coords.y())), voice, left->musElement(), true );
 			} else
 			if ( left && left->musElement() && left->musElement()->musElementType() == CAMusElement::Rest &&
-			     left->xPos() <= coords.x() && (left->width() + left->xPos() >= coords.x()) ) {
+			     left->x() <= coords.x() && (left->boundingRect().width() + left->x() >= coords.x()) ) {
 
 				// user clicked inside x borders of the rest - replace the rest/rests with the note
 				// same code for the Rest insertion
@@ -2441,7 +2441,7 @@ void CAMainWin::insertMusElementAt(const QPointF coords, CAScoreView *v) {
 					next = rests[rests.size()-1];
 				}
 
-				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, next, false );
+				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(QPointF(coords.x(), coords.y())), voice, next, false );
 				if ( success && CACanorus::settings()->autoBar() )
 					CAStaff::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
@@ -2459,7 +2459,7 @@ void CAMainWin::insertMusElementAt(const QPointF coords, CAScoreView *v) {
 					delete static_cast<CAPlayable*>(dright->musElement())->tuplet();
 				}
 
-				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, dright?dright->musElement():0, false );
+				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(QPointF(coords.x(), coords.y())), voice, dright?dright->musElement():0, false );
 				if ( success && CACanorus::settings()->autoBar() )
 					CAStaff::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
@@ -2499,7 +2499,7 @@ void CAMainWin::insertMusElementAt(const QPointF coords, CAScoreView *v) {
 			CADrawableMusElement *dright = v->nearestRightElement( coords.x(), coords.y(), voice );
 
 			if ( left && left->musElement() && left->musElement()->isPlayable() &&
-			     left->xPos() <= coords.x() && (left->width() + left->xPos() >= coords.x()) ) {
+			     left->x() <= coords.x() && (left->boundingRect().width() + left->x() >= coords.x()) ) {
 
 				// user clicked inside x borders of the rest or note - replace the rest/rests with the rest
 				// same code for the Note insertion
@@ -2565,7 +2565,7 @@ void CAMainWin::insertMusElementAt(const QPointF coords, CAScoreView *v) {
 			}
 
 			break;
-		}*/
+		}
 		case CAMusElement::Slur: {
 			// Insert tie, slur or phrasing slur
 			if ( v->selection().size() ) { // start note has to always be selected

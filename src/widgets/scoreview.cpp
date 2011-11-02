@@ -195,12 +195,13 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 
 	// set default parameters
 	setBackgroundBrush( CACanorus::settings()->backgroundColor() );
-	setForegroundColor( CACanorus::settings()->backgroundColor() );
+	setForegroundColor( CACanorus::settings()->foregroundColor() );
 	setSelectionColor( CACanorus::settings()->selectionColor() );
 	setSelectionAreaBrush( CACanorus::settings()->selectionAreaColor() );
 	setSelectedContextColor( CACanorus::settings()->selectedContextColor() );
 	setHiddenElementsColor( CACanorus::settings()->hiddenElementsColor() );
 	setDisabledElementsColor( CACanorus::settings()->disabledElementsColor() );
+	setShadowNoteColor( CACanorus::settings()->helperElementsColor() );
 }
 
 CAScoreView::~CAScoreView() {
@@ -284,6 +285,7 @@ void CAScoreView::addCElement(CADrawableContext *elt, bool select) {
 		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), elt);
 		
 		_shadowNoteName = new QGraphicsTextItem();
+		_shadowNoteName->setDefaultTextColor( shadowNoteColor() );
 		QFont font("FreeSans");
 		font.setPixelSize( 20 );
 		_shadowNoteName->setFont( font );
@@ -316,6 +318,18 @@ CADrawableContext *CAScoreView::selectContext(CAContext *context) {
 	}
 
 	return 0;
+}
+
+void CAScoreView::setCurrentContext(CADrawableContext *c) {
+	_currentContext = c;
+	
+	for (int i=0; i<_drawableCList.size(); i++) {
+		_drawableCList.at(i)->setColor( foregroundColor() );
+	}
+	
+	if (c) {
+		c->setColor( selectedContextColor() );
+	}
 }
 
 /*!
@@ -904,14 +918,22 @@ void CAScoreView::updateHelpers() {
 			CADrawableContext *c = _shadowDrawableNote[i]->drawableContext();
 			delete _shadowDrawableNote[i];
 			_shadowDrawableNote[i] = new CADrawableNote(_shadowNote[i], c);
+			_shadowDrawableNote[i]->setColor( shadowNoteColor() );
 			_scene->addItem(_shadowDrawableNote[i]);
-			_shadowDrawableNote[i]->setPos(_lastMouseMoveCoords.x(), static_cast<CADrawableStaff*>(c)->calculateCenterYCoord(pitch, _lastMouseMoveCoords.x()));
+			_shadowDrawableNote[i]->setPos(_lastMouseMoveCoords.x(), static_cast<CADrawableStaff*>(c)->y()+static_cast<CADrawableStaff*>(c)->calculateCenterYCoord(pitch, _lastMouseMoveCoords.x()));
 		}
 
 		if (_shadowNoteName) {
 			_shadowNoteName->setPlainText( CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
 			_shadowNoteName->setPos(_lastMouseMoveCoords.x()+10, _lastMouseMoveCoords.y()-10);
+			_shadowNoteName->show();
 		}
+	} else {
+		// clear shadow notes
+		for (int i=0; i<_shadowNote.size(); i++) {
+			_shadowDrawableNote[i]->hide();
+		}
+		_shadowNoteName->hide();
 	}
 
 	// Text edit widget
