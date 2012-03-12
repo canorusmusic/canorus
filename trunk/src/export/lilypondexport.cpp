@@ -653,7 +653,7 @@ const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
 	text = text.replace("\"", "\\\"");
 
 	// wrap the text with quotes
-	text = (text.isEmpty()?"_":QString("\"")+text+"\"");
+	text = (QString("\"")+text+"\"");
 
 	if (s->hyphenStart())
 		text += " --";
@@ -879,6 +879,12 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 							curVoiceLilyCommand.setNum( v + 1 );
 							curVoiceLilyCommand = "\\voice" + curVoiceLilyCommand;
 							spellNumbers( curVoiceLilyCommand );
+						}
+						
+						// disable autoBeam, if lyrics applied to voice because beams mean melisma singing for singers
+						if ( s->voiceList()[v]->lyricsContextList().size() ) {
+							if (!curVoiceLilyCommand.isEmpty()) { curVoiceLilyCommand += " "; }
+							curVoiceLilyCommand += "\\autoBeamOff";
 						}
 
 						// Print Lily variable name
