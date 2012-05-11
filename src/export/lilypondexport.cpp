@@ -169,6 +169,9 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 
 		// write the note name
 		out() << relativePitchToString( note->diatonicPitch(), _lastNotePitch);
+		if (note->forceAccidentals()) {
+			out() << "!";
+		}
 
 		if ( !note->isPartOfChord() && _lastPlayableLength != note->playableLength() ) {
 			out() << playableLengthToLilyPond( note->playableLength() );
@@ -655,6 +658,9 @@ const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
 	// wrap the text with quotes
 	text = (QString("\"")+text+"\"");
 
+	// replace underscore with space
+	text = text.replace("_", " ");
+	
 	if (s->hyphenStart())
 		text += " --";
 	else if (s->melismaStart())
