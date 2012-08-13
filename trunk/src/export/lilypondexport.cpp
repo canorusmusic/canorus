@@ -703,8 +703,7 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 	setCurSheet( sheet );
 
 	// we need to check if the document is not set, for example at exporting the first sheet
-	if (!curDocument()) {
-
+	if (sheet->document()) {
 		setCurDocument( sheet->document() );
 	}
 
@@ -742,7 +741,6 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 void CALilyPondExport::writeDocumentHeader() {
 	out() << "\n\\header {\n";
 	indentMore();
-
 	indent(); out() << "title          = " << markupString( curDocument()->title() ) << "\n";
 	indent(); out() << "subtitle       = " << markupString( curDocument()->subtitle() ) << "\n";
 	indent(); out() << "composer       = " << markupString( curDocument()->composer() ) << "\n";

@@ -56,8 +56,11 @@ CADocument *CADocument::clone() {
 	newDocument->setComments( comments() );
 	newDocument->setFileName( fileName() );
 
-	for (int i=0; i<sheetList().size(); i++)
-		newDocument->addSheet( sheetList()[i]->clone() );
+	for (int i=0; i<sheetList().size(); i++) {
+		CASheet *newSheet = sheetList()[i]->clone();
+		newSheet->setDocument( newDocument );
+		newDocument->addSheet( newSheet );
+	}
 
 	for (int i=0; i<resourceList().size(); i++) {
 		newDocument->addResource( resourceList()[i] );
