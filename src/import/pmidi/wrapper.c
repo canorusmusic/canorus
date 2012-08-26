@@ -23,7 +23,7 @@ struct pmidi_outs pmidi_out;
 */
 static struct rootElement *root;
 static struct sequenceState *seq;
-static unsigned long end;
+//static unsigned long end;
 //static snd_seq_event_t *ep;
 
 /*
