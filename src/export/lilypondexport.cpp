@@ -133,6 +133,17 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			_timeSignatureFound = true;
 			break;
 		}
+		case CAMusElement::Note:
+		case CAMusElement::Rest:
+		case CAMusElement::MidiNote:
+		case CAMusElement::Slur:
+		case CAMusElement::Tuplet:
+		case CAMusElement::Syllable:
+		case CAMusElement::FunctionMark:
+		case CAMusElement::FiguredBassMark:
+		case CAMusElement::Mark:
+		case CAMusElement::Undefined:
+			break;
 		}
 
 		if ( v->musElementList()[i]->isPlayable() ) {
@@ -200,20 +211,20 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 		}
 
 		// place slurs and phrasing slurs
-		if (!note->isPartOfChord() && note->slurEnd() ||
-		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurEnd() ) {
+		if ((!note->isPartOfChord() && note->slurEnd()) ||
+		   ( note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurEnd() ) ) {
 			out() << ")";
 		}
-		if (!note->isPartOfChord() && note->phrasingSlurEnd() ||
-		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurEnd() ) {
+		if ((!note->isPartOfChord() && note->phrasingSlurEnd()) ||
+		   ( note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurEnd() ) ) {
 			out() << "\\)";
 		}
-		if (!note->isPartOfChord() && note->slurStart() ||
-		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurStart() ) {
+		if ((!note->isPartOfChord() && note->slurStart()) ||
+		   ( note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->slurStart() ) ) {
 			out() << "(";
 		}
-		if (!note->isPartOfChord() && note->phrasingSlurStart() ||
-		    note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurStart() ) {
+		if ((!note->isPartOfChord() && note->phrasingSlurStart()) ||
+		   ( note->isPartOfChord() && note->isLastInChord() && note->getChord().at(0)->phrasingSlurStart() ) ) {
 			out() << "\\(";
 		}
 
@@ -247,6 +258,19 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 
 		break;
 	}
+	case CAMusElement::Clef:
+	case CAMusElement::Barline:
+	case CAMusElement::TimeSignature:
+	case CAMusElement::KeySignature:
+	case CAMusElement::MidiNote:
+	case CAMusElement::Slur:
+	case CAMusElement::Tuplet:
+	case CAMusElement::Syllable:
+	case CAMusElement::FunctionMark:
+	case CAMusElement::FiguredBassMark:
+	case CAMusElement::Mark:
+	case CAMusElement::Undefined:
+		break;
 	}
 
 	if ( elt->isLastInTuplet() ) {
@@ -305,10 +329,44 @@ void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 				out() << "-. "; break;
 			case CAArticulation::Tenuto:
 				out() << "-- "; break;
+			case CAArticulation::Staccatissimo:
+			case CAArticulation::Espressivo:
+			case CAArticulation::Portato:	
+			case CAArticulation::UpBow:	
+			case CAArticulation::DownBow:	
+			case CAArticulation::Flageolet:	
+			case CAArticulation::Open:	
+			case CAArticulation::Stopped:	
+			case CAArticulation::Turn:
+			case CAArticulation::ReverseTurn:
+			case CAArticulation::Trill:
+			case CAArticulation::Prall:
+			case CAArticulation::Mordent:
+			case CAArticulation::PrallMordent:
+			case CAArticulation::PrallPrall:
+			case CAArticulation::DownPrall:
+			case CAArticulation::UpPrall:
+			case CAArticulation::UpMordent:
+			case CAArticulation::DownMordent:
+			case CAArticulation::PrallDown:
+			case CAArticulation::PrallUp:
+			case CAArticulation::LinePrall:
+			case CAArticulation::Undefined:
+				break;
 			}
 
 			break;
 		}
+		case CAMark::Tempo:
+		case CAMark::Ritardando:
+		case CAMark::Crescendo:
+		case CAMark::Pedal:
+		case CAMark::InstrumentChange:
+		case CAMark::Undefined:
+		case CAMark::BookMark:
+		case CAMark::RepeatMark:
+		case CAMark::Fingering:
+			break;
 		}
 	}
 }
@@ -332,6 +390,20 @@ void CALilyPondExport::exportNoteMarks( CANote *elt ) {
 			out() << " ";
 			break;
 		}
+		case CAMark::Text:
+		case CAMark::Tempo:
+		case CAMark::Ritardando:
+		case CAMark::Crescendo:
+		case CAMark::Pedal:
+		case CAMark::InstrumentChange:
+		case CAMark::Undefined:
+		case CAMark::BookMark:
+		case CAMark::RepeatMark:
+		case CAMark::Dynamic:
+		case CAMark::RehersalMark:
+		case CAMark::Articulation:
+		case CAMark::Fermata:
+			break;
 		}
 	}
 }
@@ -361,6 +433,20 @@ void CALilyPondExport::exportVolta( CAMusElement *elt ) {
 			};
 			break;
 		}
+		case CAMark::Fingering:
+		case CAMark::Tempo:
+		case CAMark::Ritardando:
+		case CAMark::Crescendo:
+		case CAMark::Pedal:
+		case CAMark::InstrumentChange:
+		case CAMark::Undefined:
+		case CAMark::BookMark:
+		case CAMark::RepeatMark:
+		case CAMark::Dynamic:
+		case CAMark::RehersalMark:
+		case CAMark::Articulation:
+		case CAMark::Fermata:
+			break;
 		}
 	}
 }
@@ -544,7 +630,7 @@ const QString CALilyPondExport::diatonicKeyGenderToLilyPond( CADiatonicKey::CAGe
 	Converts the note length to LilyPond syntax.
 */
 const QString CALilyPondExport::playableLengthToLilyPond( CAPlayableLength playableLength ) {
-	QString length;
+	QString length = "4";
 	switch (playableLength.musicLength()) {
 		case CAPlayableLength::Breve:
 			length = "\\breve";
@@ -572,6 +658,9 @@ const QString CALilyPondExport::playableLengthToLilyPond( CAPlayableLength playa
 			break;
 		case CAPlayableLength::HundredTwentyEighth:
 			length = "128";
+			break;
+		case CAPlayableLength::Undefined:
+			length = "4";
 			break;
 	}
 
@@ -618,7 +707,11 @@ const QString CALilyPondExport::restTypeToLilyPond(CARest::CARestType type) {
 		case CARest::Hidden:
 			return "s";
 			break;
+		case CARest::Undefined:
+			return "r";
+			break;
 	}
+	return "r";
 }
 
 /*!
@@ -647,7 +740,11 @@ const QString CALilyPondExport::barlineTypeToLilyPond(CABarline::CABarlineType t
 		case CABarline::Dotted:
 			return ":";
 			break;
+		case CABarline::Undefined:
+			return "|";
+			break;
 	}
+	return "|";
 }
 
 const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
@@ -728,6 +825,9 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 				break;
 			case CAContext::LyricsContext:
 				exportLyricsContextBlock( static_cast<CALyricsContext*>(sheet->contextList()[c]) );
+				break;
+			case CAContext::FunctionMarkContext:
+			case CAContext::FiguredBassContext:
 				break;
 		}
 	}
@@ -924,6 +1024,9 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 
 					break;
 				}
+				case CAContext::FunctionMarkContext:
+				case CAContext::FiguredBassContext:
+					break;
 			}
 
 		} // for(contexts)
@@ -941,7 +1044,8 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 			}
 
 			CALyricsContext *lc;
-			if (lc = dynamic_cast<CALyricsContext*>(sheet->contextList()[ i ])) {
+			lc = dynamic_cast<CALyricsContext*>(sheet->contextList()[ i ]);
+			if (lc) {
 				QString lcName = lc->name();
 				spellNumbers(lcName);
 
