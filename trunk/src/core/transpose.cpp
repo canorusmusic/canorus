@@ -79,6 +79,9 @@ void CATranspose::addContext( CAContext *context ) {
 		}
 		break;
 	}
+	case CAContext::LyricsContext: // ToDo
+	case CAContext::FiguredBassContext: // ToDo
+		break;
 	}
 }
 
@@ -96,8 +99,8 @@ void CATranspose::transposeBySemitones( int semitones ) {
  */
 void CATranspose::transposeByKeySig( CADiatonicKey from, CADiatonicKey to, int direction ) {
 	CAInterval interval( from.diatonicPitch(), to.diatonicPitch() );
-	if ( (direction<0) && (to.diatonicPitch().noteName()-from.diatonicPitch().noteName()>0) ||
-	     (direction>0) && (to.diatonicPitch().noteName()-from.diatonicPitch().noteName()<0) ) {
+	if ( ( (direction<0) && (to.diatonicPitch().noteName()-from.diatonicPitch().noteName()>0) ) ||
+	     ( (direction>0) && (to.diatonicPitch().noteName()-from.diatonicPitch().noteName()<0) ) ) {
 		interval = ~interval;
 	}
 
@@ -125,6 +128,18 @@ void CATranspose::transposeByInterval( CAInterval interval ) {
 			break;
 		case CAMusElement::FunctionMark:
 			static_cast<CAFunctionMark*>(elt)->setKey( static_cast<CAFunctionMark*>(elt)->key() + interval );
+			break;
+		case CAMusElement::MidiNote: // ToDo
+		case CAMusElement::Clef: // ToDo
+		case CAMusElement::FiguredBassMark: // ToDo
+		case CAMusElement::Rest:
+		case CAMusElement::Barline:
+		case CAMusElement::TimeSignature:
+		case CAMusElement::Slur:
+		case CAMusElement::Tuplet:
+		case CAMusElement::Syllable:
+		case CAMusElement::Mark:
+		case CAMusElement::Undefined:
 			break;
 		}
 	}
@@ -166,6 +181,19 @@ void CATranspose::reinterpretAccidentals( int type ) {
 			keySig->setDiatonicKey( newDiatonicKey );
 			break;
 		}
+		case CAMusElement::MidiNote:
+		case CAMusElement::Clef:
+		case CAMusElement::FunctionMark:
+		case CAMusElement::FiguredBassMark:
+		case CAMusElement::Rest:
+		case CAMusElement::Barline:
+		case CAMusElement::TimeSignature:
+		case CAMusElement::Slur:
+		case CAMusElement::Tuplet:
+		case CAMusElement::Syllable:
+		case CAMusElement::Mark:
+		case CAMusElement::Undefined:
+			break;
 		}
 	}
 }
