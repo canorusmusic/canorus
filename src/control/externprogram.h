@@ -44,7 +44,7 @@ public:
 	void addParameter( const QString &roParam, bool bAddDelimiter = true );
 	inline void clearParameters() { _oParameters.clear(); }
 	bool execProgram( const QString &roCwd = "." );
-	inline bool waitForFinished ( int iMSecs ) { _poExternProgram->waitForFinished( iMSecs ); }
+	inline bool waitForFinished ( int iMSecs ) { return _poExternProgram->waitForFinished( iMSecs ); }
 
 signals:
 	void nextOutput( const QByteArray &roData );
