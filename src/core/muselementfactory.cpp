@@ -135,7 +135,7 @@ void CAMusElementFactory::addPlayableDotted( int add, CAPlayableLength l ) {
 	case CAPlayableLength::Sixteenth:    if (_playableLength.dotted() > 2) _playableLength.setDotted(0); break;
 	case CAPlayableLength::ThirtySecond: if (_playableLength.dotted() > 1) _playableLength.setDotted(0); break;
 	case CAPlayableLength::SixtyFourth:  if (_playableLength.dotted() > 0) _playableLength.setDotted(0); break;
-	default:						;
+	default:	break;					;
 	}
 };
 
@@ -422,6 +422,10 @@ bool CAMusElementFactory::configureMark( CAMusElement *elt ) {
 		}
 		break;
 	}
+	case CAMark::Undefined: {
+		fprintf(stderr,"Warning: CAMusElementFactory::configureMark - Undefined Mark");
+		break;
+	}
 	}
 
 	if (success) {
@@ -460,7 +464,7 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 	Configures a new figured bass mark with \a timeStart and \a timeLength in context \a fbc.
 */
 bool CAMusElementFactory::configureFiguredBassNumber( CAFiguredBassMark *fbm ) {
-	if ( _fbmNumber==0 && (!_fbmAccsVisible) || (!fbm) ) {
+	if ( (_fbmNumber==0 && (!_fbmAccsVisible)) || (!fbm) ) {
 		return false;
 	}
 
@@ -498,7 +502,7 @@ bool CAMusElementFactory::configureFunctionMark( CAFunctionMarkContext *fmc, int
 	Configures a new tuplet containing the given \a noteList.
  */
 bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> noteList ) {
-
+	return false;
 }
 
 /*!
