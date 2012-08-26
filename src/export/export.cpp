@@ -157,4 +157,5 @@ const QString CAExport::readableStatus() {
 	case -1:
 		return tr("Unable to open file for writing");
 	}
+	return tr("Ready");
 }
