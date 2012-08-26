@@ -61,7 +61,7 @@ CACanorusMLExport::~CACanorusMLExport() {
 	It uses DOM object internally for writing the XML output.
 */
 void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
-	int depth = 0;
+	//int depth = 0;
 
 	out().setCodec("UTF-8");
 	
@@ -321,6 +321,15 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 
 				break;
 			}
+			case CAMusElement::MidiNote:
+			case CAMusElement::Slur:
+			case CAMusElement::Tuplet:
+			case CAMusElement::Syllable:
+			case CAMusElement::FunctionMark:
+			case CAMusElement::FiguredBassMark:
+			case CAMusElement::Mark:
+			case CAMusElement::Undefined:
+				break;
 		}
 
 		exportTime( curElt, dElt );
@@ -355,7 +364,7 @@ void CACanorusMLExport::exportMarks( CAMusElement *elt, QDomElement& domElt ) {
 	for (int i=0; i<elt->markList().size(); i++) {
 		CAMark *mark = elt->markList()[i];
 		if ( !mark->isCommon() || elt->musElementType()!=CAMusElement::Note ||
-		     elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->isFirstInChord() ) {
+		     ( elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->isFirstInChord() ) ) {
 			QDomElement dMark = domElt.ownerDocument().createElement("mark"); domElt.appendChild(dMark);
 			dMark.setAttribute("time-start", mark->timeStart());
 			dMark.setAttribute("time-length", mark->timeLength());
@@ -434,6 +443,8 @@ void CACanorusMLExport::exportMarks( CAMusElement *elt, QDomElement& domElt ) {
 					dMark.setAttribute(QString("finger%1").arg(i), CAFingering::fingerNumberToString(f->fingerList()[i]));
 				break;
 			}
+			case CAMark::Undefined:
+				break;
 			}
 
 			exportColor( mark, dMark );
