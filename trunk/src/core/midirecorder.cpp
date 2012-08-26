@@ -25,7 +25,7 @@
 	   close the stream.
  */
 CAMidiRecorder::CAMidiRecorder( CAResource *r, CAMidiDevice *d )
- : QObject(), _resource(r), _curTime(0), _midiExport(0) {
+ : QObject(), _resource(r), _midiExport(0), _curTime(0) {
 	_paused = false;
 
 	connect( d, SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(onMidiInEvent( QVector<unsigned char> )) );
