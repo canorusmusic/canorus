@@ -18,6 +18,9 @@
 #include <QUndoStack>
 #include <QHash>
 
+//Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
+//#include "duma.h"
+
 class CASettings;
 class CAMidiDevice;
 class CADocument;
