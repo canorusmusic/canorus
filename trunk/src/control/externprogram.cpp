@@ -217,19 +217,19 @@ void CAExternProgram::programExited()
 {
 	if( getRunning() )
 	{
-		qCritical("ExternProgram: program %s reported error %s!",
-              QString( "%1 " + _poExternProgram->errorString() ).arg( _poExternProgram->error() ).toAscii().constData() );
+		qCritical("%s",
+              QString( "ExternProgram: program %1 reported error %2!" + _poExternProgram->errorString() ).arg( _poExternProgram->error() ).toAscii().constData() );
 		return;
 	}
 	// Check if the program exited normally else put out error message
 	if( _poExternProgram->exitStatus() != QProcess::NormalExit ) {
-		qCritical("ExternProgram: program %s didn't finish correctly! Exit code %d", _oProgramName.toAscii().constData(),
+		qCritical("ExternProgram: program %s didn't finish correctly! Exit code %s", _oProgramName.toAscii().constData(),
               QString( _poExternProgram->exitCode() + " " + _poExternProgram->errorString() ).toAscii().constData() );
 		emit programExited( _poExternProgram->exitCode() );
 	}
 
 	if( _poExternProgram->error() == QProcess::FailedToStart ) {
-		qCritical("ExternProgram: program %s didn't start correctly! Error code %d", _oProgramName.toAscii().constData(),
+		qCritical("ExternProgram: program %s didn't start correctly! Error code %s", _oProgramName.toAscii().constData(),
               QString( _poExternProgram->error() + " " + _poExternProgram->errorString() ).toAscii().constData() );
 		emit programExited( -1 );
 	}
