@@ -272,7 +272,7 @@ void CATypesetCtl::rcvTypesetterOutput( const QByteArray &roData )
 */
 bool CATypesetCtl::waitForFinished ( int iMSecs )
 {
-	_poTypesetter->waitForFinished( iMSecs );
+	return _poTypesetter->waitForFinished( iMSecs );
 }
 
 /*!
