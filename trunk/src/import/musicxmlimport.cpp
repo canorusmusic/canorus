@@ -95,6 +95,15 @@ CADocument* CAMusicXmlImport::importDocumentImpl() {
 			}
 			break;
 		}
+		case ProcessingInstruction:
+		case EntityReference:
+		case Comment:
+		case Characters:
+		case EndElement:
+		case EndDocument:
+		case Invalid:
+		case NoToken:
+			break;
 		}
 	}
 
@@ -210,7 +219,7 @@ void CAMusicXmlImport::readIdentification() {
 void CAMusicXmlImport::readPartList() {
 	if (name()!="part-list") return;
 
-	CASheet *sheet = _document->addSheet();
+	//CASheet *sheet = _document->addSheet();
 
 	while (!atEnd() && !(tokenType()==EndElement && name()=="part-list")) {
 		readNext();
@@ -402,7 +411,7 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 	int staff = 1;
 	CAPlayableLength length;
 	CADiatonicPitch pitch;
-	CANote::CAStemDirection stem = CANote::StemPreferred;
+	//CANote::CAStemDirection stem = CANote::StemPreferred;
 	int lyricsNumber=-1;
 	bool hyphen = false;
 	bool melisma = false;
@@ -426,8 +435,8 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 				length = CAPlayableLength::timeLengthToPlayableLengthList( (duration/(float)divisions) * 256 ).first();
 			} else if (name()=="stem") {
 				QString s = readElementText();
-				if (s=="up") stem = CANote::StemUp;
-				else if (s=="down") stem = CANote::StemDown;
+				//if (s=="up") stem = CANote::StemUp;
+				//else if (s=="down") stem = CANote::StemDown;
 			} else if (name()=="pitch") {
 				int alter = 0;
 				QString step;
