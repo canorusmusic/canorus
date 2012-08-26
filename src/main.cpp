@@ -21,6 +21,10 @@
 
 #ifdef Q_WS_X11
 #include <signal.h>
+
+//Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
+//#include "duma.h"
+
 void catch_sig(int)
 {
 	qApp->quit();
