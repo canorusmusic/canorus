@@ -23,8 +23,8 @@
 	This class can create and read tar archives, which allow concatenation of multiple files (with directory structure) into a single file.
 	
 	The archive must be opened using \a open() before writing, and closed with close() when writing is done. Don't forget to close() the archive when you're done!
-
 	For more info on the Tar format see <http://en.wikipedia.org/wiki/Tar_(file_format)>.
+
 */
 
 const int CATar::CHUNK = 16384; 
@@ -134,11 +134,12 @@ void CATar::parse(QIODevice& tar)
 		tempfile = new QTemporaryFile;
 		tempfile->open();
 		file->data = tempfile;
-		for(int i=0; i < file->hdr.size / CHUNK; i++)
+		for(unsigned int i=0; i < file->hdr.size / CHUNK; i++)
 			file->data->write(tar.read(CHUNK));
 		file->data->write(tar.read(file->hdr.size % CHUNK));
 		file->data->flush();
-		if(pad = file->hdr.size%512)
+		pad = file->hdr.size%512;
+		if(pad>0)
 			tar.read(512-pad);
 		_files << file;
 	}
@@ -323,10 +324,10 @@ qint64 CATar::write(QIODevice& dest)
 */
 qint64 CATar::write(QIODevice& dest, qint64 chunk)
 {
-	bool close = false;
+	//bool close = false;
 	int ret, pad;
 	qint64 total = 0; // Bytes written.
-	qint64 first_pos;
+	//qint64 first_pos;
 	
 	if(chunk < 512)
 		return -1;
@@ -338,7 +339,7 @@ qint64 CATar::write(QIODevice& dest, qint64 chunk)
 		return -2; // dest was not open()'d.
 	
 	CATarBufInfo& pos = _pos[&dest];
-	first_pos = pos.pos;
+	//first_pos = pos.pos;
 	
 	if(!dest.isOpen()) {
 		if(!dest.open( QIODevice::WriteOnly ))
@@ -373,7 +374,8 @@ qint64 CATar::write(QIODevice& dest, qint64 chunk)
 
 		if(chunk == 0)
 			break;
-		if(pad = f->data->size()%512) {
+		pad = f->data->size()%512;
+		if(pad>0) {
 			ret = dest.write(QByteArray(qMin(chunk,qint64(512-pad)), (char)0)); // Fill up the 512-block with nulls.
 			pos.pos += ret;
 			total += ret;
@@ -402,7 +404,7 @@ qint64 CATar::write(QIODevice& dest, qint64 chunk)
 */
 bool CATar::eof(QIODevice& dest)
 {
-	qint64 bufsize = _files.last()->data->size();
+	//qint64 bufsize = _files.last()->data->size();
 	if(!_pos.contains(&dest))
 		return false;
 	CATarBufInfo& pos = _pos[&dest];
@@ -424,8 +426,8 @@ char *CATar::bufncpy(char* dest, const char *src, size_t len, int bufsize)
 {
 	if(bufsize == -1)
 		bufsize = len;
-	if(len<0) return dest;	
-	while(bufsize-- > len)
+	if((int)len<0) return dest;	
+	while(bufsize-- > (int)len)
 		dest[bufsize] = 0;
 	while(len--)
 		dest[len] = src[len];
@@ -448,7 +450,7 @@ char *CATar::numToOct(char* buf, long long num, int width)
 	if(num >= pow(8, width)) return 0; // Crash somewhere else.
 	if(num < pow(8,(width-1))) // null fits
 	{
-		char len[5];
+		char len[10];
 		sprintf(len, "%%0%do", width-1);
 		snprintf(buf, width, len, num); // adds null
 	} else {
