@@ -245,6 +245,7 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 	for (int c = 0; c < doc->sheetList()[0]->contextList().size(); ++c ) {
 		switch (sheet->contextList()[c]->contextType()) {
 			case CAContext::Staff:
+			{
 				// exportStaffVoices( static_cast<CAStaff*>(sheet->contextList()[c]) );
 				CAStaff *staff = static_cast<CAStaff*>(sheet->contextList()[c]);
 				for ( int v = 0; v < staff->voiceList().size(); ++v ) {
@@ -252,6 +253,12 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 					count++;
 					//std::cout << "Hallo  " << c << " " << v << "\n" << std::endl;
 				}
+				break;
+			}
+			case CAContext::LyricsContext:
+			case CAContext::FunctionMarkContext:
+			case CAContext::FiguredBassContext:
+				break;
 		}
 	}
 
@@ -288,6 +295,7 @@ void CAMidiExport::exportSheetImpl(CASheet *sheet)
 	for (int c = 0; c < sheet->contextList().size(); ++c ) {
 		switch (sheet->contextList()[c]->contextType()) {
 			case CAContext::Staff:
+			{
 				// exportStaffVoices( static_cast<CAStaff*>(sheet->contextList()[c]) );
 				CAStaff *staff = static_cast<CAStaff*>(sheet->contextList()[c]);
 				for ( int v = 0; v < staff->voiceList().size(); ++v ) {
@@ -295,6 +303,12 @@ void CAMidiExport::exportSheetImpl(CASheet *sheet)
 					count++;
 					//std::cout << "Hallo  " << c << " " << v << "\n" << std::endl;
 				}
+				break;
+			}
+			case CAContext::LyricsContext:
+			case CAContext::FunctionMarkContext:
+			case CAContext::FiguredBassContext:
+				break;
 		}
 	}
 
