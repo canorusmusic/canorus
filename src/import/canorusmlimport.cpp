@@ -308,6 +308,8 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 								           );
 			break;
 		}
+		case CAKeySignature::Custom:
+			break;
 		}
 
 		_curMusElt = _curKeySig;
@@ -462,7 +464,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			f->addNumber( attributes.value("number").toInt(), attributes.value("accs").toInt() );
 		}
 
-	} else if (qName == "function-mark" || _version.startsWith("0.5") && qName == "function-marking") {
+	} else if (qName == "function-mark" || ( _version.startsWith("0.5") && qName == "function-marking") ) {
 		// CAFunctionMark
 		CAFunctionMark *f =
 			new CAFunctionMark(
@@ -588,6 +590,9 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		switch (_curKeySig->keySignatureType()) {
 		case CAKeySignature::MajorMinor:
 			_curKeySig->setDiatonicKey( _curDiatonicKey );
+			break;
+		case CAKeySignature::Modus:
+		case CAKeySignature::Custom:
 			break;
 		}
 
@@ -862,6 +867,8 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		);
 		break;
 	}
+	case CAMark::Undefined:
+		break;
 	}
 
 	if (_curMark) {
