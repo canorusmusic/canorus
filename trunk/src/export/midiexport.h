@@ -38,8 +38,8 @@ public:
     // Interface to file export //
     //////////////////////////////
 */
-	QMap<int, QString> getOutputPorts() { };
-	QMap<int, QString> getInputPorts() { };
+	QMap<int, QString> getOutputPorts() { return m_InputPorts; }
+	QMap<int, QString> getInputPorts() { return m_OutputPorts; }
 
 	bool openOutputPort(int port) { return true; }	// return true on success, false otherwise
 	bool openInputPort(int port) { return true; }	// return true on success, false otherwise
@@ -95,6 +95,11 @@ private:
 */
 	CAVoice *_curVoice;
 	CASheet *_curSheet;
+
+	// Dummy members for getOutputPorts/getInputPorts
+	QMap<int, QString> m_InputPorts;
+	QMap<int, QString> m_OutputPorts;
+
 /*
 	CAContext *_curContext;
 	int _curContextIndex;
