@@ -553,7 +553,7 @@ CAPlayableLength CALilyPondImport::playableLengthFromLilyPond(QString& elt, bool
 		return ret;
 	else {            // length written
 		// count dots
-		int d=0;
+		//int d=0;
 		int dStart;
 		for (int i = dStart = elt.indexOf(".",start);
 		     i!=-1 && i<elt.size() && elt[i]=='.';
@@ -686,4 +686,5 @@ const QString CALilyPondImport::readableStatus() {
 	case -1:
 		return tr("Error while importing!\nLine %1:%2.").arg(curLine()).arg(curChar());
 	}
+	return "Ready";
 }
