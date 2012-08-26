@@ -248,7 +248,7 @@ void CAMidiImport::importMidiEvents() {
 			for (voiceIndex=0; !leftOverNote && voiceIndex<_allChannelsEvents[pmidi_out.chan]->size();voiceIndex++) {
 
 				if (_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->size()) {
-					int tnext = _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_nextTime;
+					//int tnext = _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_nextTime;
 					if (pmidi_out.time < _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_nextTime &&
 						// pmidi_out.note == _allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_pitch
 						_allChannelsEvents[pmidi_out.chan]->at(voiceIndex)->back()->_pitchList.indexOf( pmidi_out.note ) >= 0 ) {
@@ -467,6 +467,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 				if (pmidi_out.key == 0) {
 					CADiatonicKey dk = CADiatonicKey(
 						pmidi_out.key, pmidi_out.minor ? CADiatonicKey::Minor : CADiatonicKey::Major );
+					musElemKeySig = new CAKeySignature( dk, staff, 0 );
 				}
 
 				musElemTimeSig = new CATimeSignature( pmidi_out.top, pmidi_out.bottom, staff, 0 );
@@ -474,6 +475,9 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			voice->append( musElemClef, false );
 			if ( musElemKeySig ) {
 				voice->append( musElemKeySig, false );
+			}
+			if ( musElemTimeSig ) {
+				voice->append( musElemTimeSig, false );
 			}
 
 			writeMidiChannelEventsToVoice_New( ch, voiceIndex, staff, voice );
@@ -516,7 +520,7 @@ CAMusElement* CAMidiImport::getOrCreateKeySignature( int time, int voiceIndex, C
 		if ( staff->keySignatureReferences().size() < _actualKeySignatureIndex+1 ) {
 			staff->addKeySignatureReference( new CAKeySignature( _allChannelsKeySignatures[_actualKeySignatureIndex]->diatonicKey(), staff, time ));
 		}
-		int jj = staff->keySignatureReferences().size();
+		//int jj = staff->keySignatureReferences().size();
 		return staff->keySignatureReferences()[_actualKeySignatureIndex];
 	}
 	return 0;
@@ -580,7 +584,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	int time = 0;			// current time in the loop, only increasing, for tracking notes and rests
 	int length;
 	int program;
-	int tempo = 0;
+	//int tempo = 0;
 
 	_actualClefIndex = -1;	// for each voice we run down the list of time signatures of the sheet, all staffs.
 	_actualKeySignatureIndex = -1;	// for each voice we run down the list of time signatures of the sheet, all staffs.
@@ -778,6 +782,7 @@ const QString CAMidiImport::readableStatus() {
 	case 5:
 		return tr("Drawing score...");
 	}
+	return "Ready";
 }
 
 
