@@ -144,6 +144,8 @@ void CAImport::run() {
 			emit functionMarkContextImported( fmc );
 			break;
 		}
+		case Undefined:
+			break;
 		}
 		
 		if (status()>0) { // error - bad implemented filter
@@ -200,4 +202,5 @@ const QString CAImport::readableStatus() {
 	case -1:
 		return tr("Unable to open file for reading");
 	}
+	return "Ready";
 }
