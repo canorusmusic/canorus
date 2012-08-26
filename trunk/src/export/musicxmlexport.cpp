@@ -56,7 +56,7 @@ CAMusicXmlExport::~CAMusicXmlExport() {
 	It uses DOM object internally for writing the XML output.
  */
 void CAMusicXmlExport::exportDocumentImpl(CADocument *doc) {
-	int depth = 0;
+	//int depth = 0;
 	
 	out().setCodec("UTF-8");
 
