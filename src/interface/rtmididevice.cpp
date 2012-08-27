@@ -59,7 +59,7 @@ bool CARtMidiDevice::openOutputPort(int port) {
 	if (port==-1 || _outOpen)
 		return false;
 
-	if (_out && _out->getPortCount() > port) {	// check outputs
+	if (_out && (int)_out->getPortCount() > port) {	// check outputs
 		try {
 			_out->openPort(port);
 		} catch (RtError &error) {
@@ -78,7 +78,7 @@ bool CARtMidiDevice::openInputPort(int port) {
 	if (port==-1 || _inOpen)
 		return false;
 
-	if (_in && _in->getPortCount() > port) {	// check outputs
+	if (_in && (int)_in->getPortCount() > port) {	// check outputs
 		try {
 			_in->openPort(port);
 		} catch (RtError &error) {
@@ -130,7 +130,7 @@ void CARtMidiDevice::closeInputPort() {
 QMap<int, QString> CARtMidiDevice::getOutputPorts() {
 	QMap<int, QString> outPorts;
 	try {
-		for (int i=0; _out && i<_out->getPortCount(); i++)
+		for (int i=0; _out && i<(int)_out->getPortCount(); i++)
 			outPorts.insert(i, QString::fromStdString(_out->getPortName(i)));
 	} catch (RtError &error) {
 		error.printMessage();
@@ -142,7 +142,7 @@ QMap<int, QString> CARtMidiDevice::getOutputPorts() {
 QMap<int, QString> CARtMidiDevice::getInputPorts() {
 	QMap<int, QString> inPorts;
 	try {
-		for (int i=0; _in && i<_in->getPortCount(); i++)
+		for (int i=0; _in && i<(int)_in->getPortCount(); i++)
 			inPorts.insert(i, QString::fromStdString(_in->getPortName(i)));
 	} catch (RtError &error) {
 		error.printMessage();
