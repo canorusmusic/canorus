@@ -39,7 +39,7 @@ public:
 	void setLang(QString lang) { _lang = lang; }
 	void setFunction(QString function) { _function = function; }
 	void addArgument(QString arg) { _args << arg; }
-	bool removeArgument(QString arg) { _args.removeAll(arg); }
+	bool removeArgument(QString arg) { return _args.removeAll(arg); }
 	void setFilename(QString filename) { _filename = filename; }
 	void setOnAction(QString onAction) { _onAction = onAction; }
 	void setExportFilter(QString lang, QString value) { _exportFilter[lang] = value; }
