@@ -21,7 +21,7 @@ void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, 
 class CARtMidiDevice : public CAMidiDevice {
 public:
 	CARtMidiDevice();
-	~CARtMidiDevice();
+	virtual ~CARtMidiDevice();
 	
 	QMap<int, QString> getOutputPorts();
 	QMap<int, QString> getInputPorts();
