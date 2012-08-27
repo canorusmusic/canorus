@@ -80,6 +80,10 @@ bool CAPlugin::action(QString onAction, CAMainWin *mainWin, CADocument *document
 
 bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument *document, QEvent *evt, QPoint *coords, QString filename) {
 	bool error=false;
+#ifndef SWIGCPP
+	bool rebuildDocument = false;
+#endif
+
 #ifdef USE_RUBY
 	QList<VALUE> rubyArgs;
 #endif
@@ -87,7 +91,6 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 	QList<PyObject*> pythonArgs;
 #endif
 
-	bool rebuildDocument = false;
 
 	// Convert arguments to its needed scripting language types
 	QList<QString> args = action->args();
@@ -96,7 +99,9 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 
 		// Currently selected document
 		if (val=="document") {
+#ifndef SWIGCPP
 			rebuildDocument = true;
+#endif
 #ifdef USE_RUBY
 			if (action->lang()=="ruby") {
 				rubyArgs << CASwigRuby::toRubyObject(document, CASwigRuby::Document);
@@ -263,7 +268,7 @@ bool CAPlugin::callAction(CAPluginAction *action, CAMainWin *mainWin, CADocument
 
 #ifndef SWIGCPP
 	if (action->refresh()) {
-		if (rebuildDocument)
+		if (rebuildDocument == true)
 			CACanorus::rebuildUI(document);
 		else
 			CACanorus::rebuildUI(document, mainWin->currentSheet());
