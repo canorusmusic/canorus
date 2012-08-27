@@ -68,7 +68,7 @@ void CAKeybdInput::onMidiInEvent( QVector<unsigned char> m ) {
 	event = m[0];
 	velocity = m[2];
 	if ( event == CAMidiDevice::Midi_Note_On && velocity !=0 ) {
-		CADiatonicPitch x = CADiatonicPitch::diatonicPitchFromMidiPitch( m[1] );
+		//CADiatonicPitch x = CADiatonicPitch::diatonicPitchFromMidiPitch( m[1] );
 		midiInEventToScore( _mw->currentScoreView(), m );
 	}
 }
@@ -112,9 +112,9 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 
 		CADrawableContext *drawableContext = v->currentContext();
 		CAStaff *staff=0;
-		CADrawableStaff *drawableStaff = 0;
+		//CADrawableStaff *drawableStaff = 0;
 		if (drawableContext) {
-			drawableStaff = dynamic_cast<CADrawableStaff*>(drawableContext);
+			//drawableStaff = dynamic_cast<CADrawableStaff*>(drawableContext);
 			staff = dynamic_cast<CAStaff*>(drawableContext->context());
 		}
 
@@ -187,7 +187,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 						delete note;
 					}
 
-					CAMusElement *elt = voice->lastMusElement();
+					//CAMusElement *elt = voice->lastMusElement();
 					CABarline *b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline,
 														voice->lastMusElement()));
 					//CABarline *b = static_cast<CABarline*>(
