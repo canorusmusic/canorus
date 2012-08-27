@@ -21,7 +21,7 @@ public:
 	char* bufferedInput(char* prompt);	// Input goes to script
 	void bufferedOutput(char* bufInp, bool bStdErr);
 #else
-	char* bufferedInput(char* prompt) {}
+	char* bufferedInput(char* prompt) { return 0; }
 	void bufferedOutput(char* bufInp, bool bStdErr) {}
 #endif	
 	CAPyConsoleInterface () {}
