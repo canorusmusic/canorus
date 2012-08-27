@@ -1,0 +1,202 @@
+Hi,
+
+I added a number of warning flags and mark warning as errors so they get fixed.
+I did a large work fixing all the warning I got due to that change. One hope
+was to find the reason why Canorus crashes on exit. I use the currently widely
+spread gcc 4.4.3 (4.4.4/4.5.1 is the latest available) on Ubuntu 10.04 LTS.
+
+Also I tried to integrate duma into Canorus but on start I got an error happening
+inside the libORBit called from the Gnome settings system (might be related to
+the fact that I use Gnome desktop, so this bug would not necessarily occur on
+every system). Duma is a library to detect heap space errors (heap protection,
+i.e. overruns are detected (or underruns alternatively). I remember to have
+seen an option that ignores errors in libraries not directly belonging to the
+application so I will try that out as well in the hope to find more potential
+problems.
+
+I need your help, to look into all the changes I did, as I might have accidently
+introduces bugs. Especially places where I added additionally braces on mixed &&
+and || conditions, but also for return values which were missing all over the place.
+
+Changes done when fixing warnings
+=================================
+
+export: 
+midiexport.h: getIn/OutputPorts return dummy ports as temporary fix
+export.cpp: Return tr("Ready") in readableStatus for unknown status
+midiexport.cpp: 
+  - Added missing cases for exportDocumentImpl (why was there a case in the first place ?)
+  - Added missing cases for exportSheetImpl (why was there a case in the first place ?)
+lilypondexport.cpp:
+  - Bug ? exportVoiceImpl missing several cases of music elements
+  - && / || warning logic solved with additional braces
+  - Bug ? exportPlayable missing many cases of music elements
+  - Bug ? exportMarks missing many cases of (articulation) marks
+  - Bug ? exportNoteMarks missing nearly all cases of (note ?) marks
+  - Fix bug in playableLengthToLilyPond by setting length to default value
+  - Fix bug in restTypeToLilyPond by returning a default rest
+  - Fix bug in barlineTypeToLilyPond by returning a default rest
+  - Bug ? exportSheetImpl missing many cases of context types
+  - Bug ? exportSheetImpl missing many cases of context types
+  - Bug ? exportScoreBlock missing many cases of context types
+  - No assignment in if!
+  - CANORUS_VERSION is undefined and leads to error
+    -> make cannot be used inside "src" folder ? 
+canorusmlexport.cpp:
+  - unused variable commented
+  - Bug ? exportVoiceImpl missing several cases of music elements
+  - && / || warning logic solved with additional braces
+  - Bug ? Undefined marks not handled in exportMarks
+musicxmlexport.cpp: unused variable commented
+
+import:
+imort.cpp:
+  - not all cases handled (run)
+  - Return "Ready" in readableStatus for unknown status
+  - Unfixed: Status isn't translated
+lilypondimport.cpp:
+  - unused variable commented
+  - Return "Ready" in readableStatus for unknown status
+  - Unfixed: Status isn't translated
+midiimport.cpp:
+  - Unused variables commented
+  - Return "Ready" in readableStatus for unknown status
+  - Bugfix: Keysig / Timesig was not assigned properly - please check and test
+  - Unfixed: Status isn't translated
+canorusmlimport.cpp:
+  - Return values not defined in all cases (importMark)
+  - Bug ? Custom case not handled in startElement
+  - && / || warning logic solved with additional braces
+  - Added missing cases for endElement (why was there a case in the first place ?)
+musicxmlimport.cpp:
+  - Bug ? importDocumentImpl does not handle several cases
+  - Bug: stem assigned but never used - don't know how to fix it (commented)
+  - Unused variable commented
+import/pmidi:
+wrapper.c:
+  - Commented unused variable
+
+interface:
+pluginaction.h: removeArgument return the removeAll result value
+pyconsoleinterface.h: bufferedInput did not return a value (now "0" pointer)
+plugin.cpp: Fix rebuildDocument used outside SWIGCPP #define
+keybdinput.cpp: Variables x, drawableStaff defined but not used
+
+layout:
+drawablefunctionmarkcontext: Move method implementation from header to avoid
+        compiler problem with possible undefined member
+drawablekeysignature.cpp: && / || warning logic solved with additional braces
+drawablemark.cpp: Added missing cases that were not handled
+drawablenote.cpp: Added missing cases that were not handled
+drawablerest.cpp: Added missing cases that were not handled
+drawabeslur.cpp:  Added missing cases that were not handled
+drawabletimesignature.cpp: Added missing break in some cases
+kdtree.h: && / || warning logic solved with additional braces
+layoutengine.cpp:
+  - && / || warning logic solved with additional braces
+  - Unused variable commented
+  - Added missing cases that were not handled
+  - Possible bug due to unused variable placedSymbol
+
+score:
+articulation.h setAssociatedNote - additionally return 'n'
+interval.cpp: 
+  - && / || warning logic solved with additional braces
+  - Unused variable commented
+  - Return values not defined in all cases (qualityToReadable)
+clef.cpp: Arrays on stack moved to heap to avoid potential stack overflow
+muselement.cpp: Several music element types were not handled
+functionmarkcontext.cpp: && / || warning logic solved with additional braces
+figuredbasscontext.cpp: unused variable commented
+lyricscontext.cpp: unused variable commented
+voice.cpp: 
+  - && / || warning logic solved with additional braces
+  - Unused variable commented
+  - Fixed bug where synchronizeMusElements did not return any result
+note.cpp: return values not well defined in all cases (stem)
+keysignature.cpp: 
+  - Added missing cases for clone (why was there a case in the first place ?)
+  - return values not defined in all cases (bufferedInput)
+timesignature.cpp: return values not defined in all cases (timeSignatureTypeML)
+slur.cpp: Added missing cases for slurStyleToString
+tuplet.cpp: Changed initialization sequence
+fermata.cpp: Return NormalFermata in fermataTypeFromString for unknown strings
+repeatmark.cpp: Return Undefined in repeatMarkTypeFromString for unknown strings
+ritardando.cpp: Return Ritardando in ritardandoTypeFromString for unknown strings
+fingering.cpp: return values not defined in all cases (fingerNumberToString)
+dynamic.cpp: return values not defined in all cases (dynamicTextToString)
+crescendo.cpp: Return Crescendo in crescendoTypeFromString for unknown strings
+
+core:
+transpose.cpp:
+  - Bug: LyricsContext, FiguredBassContext not handled (marked ToDo)
+  - && / || warning logic solved with additional braces
+  - Bug: Some music elements not handled (those marked as ToDo)
+tar.cpp:
+  - Signed/unsigned comparison (resolved unsigned)
+  - No assignment in if!
+    Possible bug! tar.read/dest.write only done when pad > 0 ?  
+  - Unused variables commented
+  - Signed/unsigned comparison (resolved signed)
+  - Bug: Comparison "< 0" against unsigned variable. Temporary fix
+    was to cast this variable to signed.
+  - Enlarging buffer size for stack protection
+  - Commented some unused variables (including possible assignments)
+muselementfactory.cpp:
+  - Several music element types were not handled
+  - Try to make && and || logic definite (compiler)
+  - Return false in configureTuplet method (not implemented)
+
+midirecorder.cpp: Changed initialization sequence
+
+control:
+externprogram.h: Fixed bug that waitForFinished did not return a value
+externprogram.cpp: Fixed several output format bugs (error cases) in programExited
+typesetctl.cpp:  Fixed bug that waitForFinished did not return a value
+
+rtmidi:
+rtmidi.cpp
+  - Updated tp 1.0.15
+  - Signed/unsigned comparison (resolved signed)
+  - Removed check for warnings due to ALSA API generating warning
+    that cannot be resolved without breaking ALSA API itself.
+
+scripting: 
+canoruspython.i: Workaround for problem compiling with new swig version 2
+swigpython.h: Add method and structure from swig for above workaround
+             -> I haven't any quick good idea how to fix the problem properly
+swigpython.cpp: Bugfix: Add missing return value to callPycli
+
+pluginmanager
+
+ui:
+mainwin.cpp:
+  - Commented unused variables
+  - && / || warning logic solved with additional braces
+  - Added missing cases that were not handled
+  - Save document did not return true or false without document
+  - Open document did not return the document!
+  - Possible bug: variables stanza, rebuild set but never used
+propertiesdialog.cpp: 
+  - Several context types not handled
+  - Commented unused item
+  - Bug: Sheet properties supposed to be stored are not stored at all!
+         Code currently commented to compile
+         Also never defines variables inside a loop
+
+widgets
+actionseditor.cpp:
+  - Bug: Assignment instead of comparison
+  - Problem: bSCuts not yet used (need to check)
+menutoolbutton.cpp: ^ / | warning logic solved with additional braces
+resourceview.cpp: No assignment in if!
+scoreview.cpp: && / || warning logic solved with additional braces
+
+I also consider to check our code with some more advanced compiler checker to
+find potential problems like Codan, the new code analysis tool from the latest
+Eclipse Helios Edition. We could also add cppcheck to our nightly build section.
+and send results to either the developer or some other dedicated mailing list.
+
+BTW: The most annyoing thing were unhandled cases. Please take more care about
+that in the future. Thanks in advance.
+
