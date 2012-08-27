@@ -87,7 +87,7 @@ void CAPluginManager::readPlugins() {
 
 	// search the plugins paths and creates a list of directories for each plugin
 	QDir curDir(systemPluginsPath);
-	for (int j=0; j<curDir.count(); j++) {
+	for (int j=0; j<(int)curDir.count(); j++) {
 		pluginPaths << curDir.absolutePath() + "/" + curDir[j];
 	}
 
@@ -221,6 +221,7 @@ bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
 */
 bool CAPluginManager::installPlugin(QString path) {
 	/// \todo zlib needed
+	return false;
 }
 
 /*!
