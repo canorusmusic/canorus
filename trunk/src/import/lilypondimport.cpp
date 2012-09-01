@@ -389,7 +389,6 @@ CALyricsContext *CALilyPondImport::importLyricsContextImpl() {
 	\todo Only one-character syntax delimiters are supported so far.
 	\sa peekNextElement()
 */
-#include<iostream>
 const QString CALilyPondImport::parseNextElement() {
 	// find the first non-whitespace character
 	int start = in().indexOf(QRegExp("\\S"));
