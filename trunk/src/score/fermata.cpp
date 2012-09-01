@@ -60,6 +60,7 @@ const QString CAFermata::fermataTypeToString( CAFermataType t ) {
 	case VeryLongFermata:
 		return "VeryLongFermata";
 	}
+	return "NormalFermata";
 }
 
 CAFermata::CAFermataType CAFermata::fermataTypeFromString( const QString r ) {
@@ -75,4 +76,6 @@ CAFermata::CAFermataType CAFermata::fermataTypeFromString( const QString r ) {
 	if (r=="VeryLongFermata") {
 		return VeryLongFermata;
 	}
+	return NormalFermata;
 }
+
