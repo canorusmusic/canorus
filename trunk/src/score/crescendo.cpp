@@ -54,6 +54,7 @@ const QString CACrescendo::crescendoTypeToString( CACrescendoType t ) {
 	case Decrescendo:
 		return "Decrescendo";
 	}
+	return "Crescendo";
 }
 
 CACrescendo::CACrescendoType CACrescendo::crescendoTypeFromString( const QString c ) {
@@ -63,4 +64,6 @@ CACrescendo::CACrescendoType CACrescendo::crescendoTypeFromString( const QString
 	if (c=="Decrescendo") {
 		return Decrescendo;
 	}
+	return Crescendo;
 }
+
