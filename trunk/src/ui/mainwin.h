@@ -380,6 +380,7 @@ private:
 	inline bool stopPlayback() {
 			if(_playback && _playback->isRunning())
 				_playback->stopNow();
+			return true;
 		}
 
 	bool handleUnsavedChanges();
