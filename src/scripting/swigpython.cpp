@@ -234,6 +234,7 @@ void *CASwigPython::callPycli(void*) {
     PyEval_ReleaseLock();
 
 //	pthread_exit((void*)NULL);
+    return ret;
 }
 
 /*
