@@ -97,6 +97,8 @@ const QString CASlur::slurStyleToString( CASlur::CASlurStyle style ) {
 		case SlurDotted:
 			return "slur-dotted";
 			break;
+		case Undefined:
+			break;
 	}
 
 	return "";
