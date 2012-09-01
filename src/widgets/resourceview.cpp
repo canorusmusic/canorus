@@ -117,8 +117,8 @@ void CAResourceView::contextMenuEvent( QContextMenuEvent *e ) {
 		QAction *remove = new QAction(tr("Remove"), this);
 		actions << remove;
 
-		QAction *selectedAction;
-		if ( selectedAction = QMenu::exec( actions, e->globalPos() ) ) {
+		QAction *selectedAction = QMenu::exec( actions, e->globalPos() );
+		if ( selectedAction  ) {
 			if (selectedAction==rename) {
 				editItem( selection[0], 0 );
 			} else
