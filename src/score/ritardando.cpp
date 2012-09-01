@@ -56,6 +56,7 @@ const QString CARitardando::ritardandoTypeToString( CARitardandoType t ) {
 	case Accellerando:
 		return "Accellerando";
 	}
+	return "Ritardando";
 }
 
 CARitardando::CARitardandoType CARitardando::ritardandoTypeFromString( const QString r ) {
@@ -65,4 +66,6 @@ CARitardando::CARitardandoType CARitardando::ritardandoTypeFromString( const QSt
 	if (r=="Accellerando") {
 		return Accellerando;
 	}
+	return Ritardando;
 }
+
