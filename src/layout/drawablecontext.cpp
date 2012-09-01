@@ -20,7 +20,7 @@ CADrawableContext::CADrawableContext(CAContext *c, double x, double y)
 	right border is larger than \a x2.
 */
 QList<CADrawableMusElement*> CADrawableContext::findInRange( double x1, double x2 ) {
-	int i;
+	//int i;
 	QList<CADrawableMusElement*> list;
 	for (int i=0; i<_drawableMusElementList.size(); i++) {
 		if ( static_cast<CADrawable*>(_drawableMusElementList[i])->xPos() <= x2 &&                       // The object is normal and fits into the area
