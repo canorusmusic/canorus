@@ -13,7 +13,7 @@ IF(NOT CMAKE_BUILD_TYPE)
 	SET(CMAKE_BUILD_TYPE Debug)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-SET(CMAKE_C_FLAGS_DEBUG "-O0 -g")
+SET(CMAKE_C_FLAGS_DEBUG "-O0 -g -fstack-protector-all -Wall -Werror -Wuninitialized -Wtype-limits -Wstack-protector")
 SET(CMAKE_C_FLAGS_RELEASE "-O2")
 
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
@@ -455,6 +455,9 @@ SET( Canorus_Images "ui/images" )
 
 SET( Canorus_Examples "../examples" )
 
+set_source_files_properties(${Canorus_RtMidi_Srcs} PROPERTIES COMPILE_FLAGS -Wno-stack-protector)
+set_source_files_properties(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES COMPILE_FLAGS -Wno-error)
+
 # Set translation files
 FILE(GLOB Canorus_Translation_Srcs "lang/*.ts") # lang/*.ts -> Canorus_Translation_Srcs
 STRING(REGEX REPLACE "\\.ts" ".qm" Canorus_Translation_Bins "${Canorus_Translation_Srcs}") # Set Canorus_Translation_Bins to same values as Canorus_Translation_Srcs with different extensions
@@ -612,6 +615,8 @@ ENDIF(USE_PYTHON)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
 # Add ${POPPLERQT4_LIBRARY} ${POPPLER_LIBRARY} to reactivate poppler libraries
 TARGET_LINK_LIBRARIES(canorus ${QT_LIBRARIES} ${RUBY_LIBRARY} ${PYTHON_LIBRARY} )
+# Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
+# duma )
 
 ############################
 # RtMIDI Library additions #
