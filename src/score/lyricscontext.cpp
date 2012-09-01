@@ -185,7 +185,7 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart ) {
 bool CALyricsContext::addSyllable( CASyllable *syllable, bool replace ) {
 	int i;
 	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<syllable->timeStart(); i++);
-	int s = _syllableList.size();
+	//int s = _syllableList.size();
 	if ( i<_syllableList.size() && replace ) {
 		delete _syllableList.takeAt(i);
 	}
