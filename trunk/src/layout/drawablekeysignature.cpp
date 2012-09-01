@@ -41,7 +41,7 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 
  		for ( int i=0; i<7; idx += (i%2?4:-3), i++ ) {	// place neutrals for sharps
 			if ( (prevKeySig->accidentals()[idx%7]!=1) ||
-			     (prevKeySig->accidentals()[idx%7]==1) && (keySig->accidentals()[idx%7]==1) )
+			     ((prevKeySig->accidentals()[idx%7]==1) && (keySig->accidentals()[idx%7]==1)) )
 				continue;
 
 			int curIdx=idx;
@@ -72,7 +72,7 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 		}
 		for ( int i=0; i<7; idx += (i%2?-4:3), i++ ) {	// place neutrals for flats
 			if ( (prevKeySig->accidentals()[idx%7]!=-1) ||
-			     (prevKeySig->accidentals()[idx%7]==-1) && (keySig->accidentals()[idx%7]==-1) )
+			     ((prevKeySig->accidentals()[idx%7]==-1) && (keySig->accidentals()[idx%7]==-1)) )
 				continue;
 
 			int curIdx=idx;
