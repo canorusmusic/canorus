@@ -12,11 +12,11 @@
 #include "score/functionmarkcontext.h"
 
 CADrawableFunctionMarkContext::CADrawableFunctionMarkContext(CAFunctionMarkContext *context, double x, double y, int numberOfLines)
- : CADrawableContext(context, x, y) {
+ : CADrawableContext(context, x, y), 
+ 	 _numberOfLines(numberOfLines),
+   _currentLineIdx(0) {
  	setDrawableContextType( CADrawableContext::DrawableFunctionMarkContext );
 
- 	_numberOfLines = numberOfLines;
- 	_currentLineIdx = 0;
  	setWidth( 0 );
  	setHeight( 45*numberOfLines - 10*(numberOfLines-1) );
 }
@@ -43,4 +43,9 @@ double CADrawableFunctionMarkContext::yPosLine(CAFunctionMarkLine part) {
 		y += 30;
 
 	return y;
+}
+
+void CADrawableFunctionMarkContext::nextLine() { 
+   ++_currentLineIdx;
+  _currentLineIdx = _currentLineIdx % _numberOfLines; 
 }
