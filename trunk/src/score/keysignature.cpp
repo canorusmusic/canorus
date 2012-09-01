@@ -112,6 +112,10 @@ CAKeySignature* CAKeySignature::clone(CAContext* context) {
 	switch (keySignatureType()) {
 	case MajorMinor:
 		k = new CAKeySignature( diatonicKey(), static_cast<CAStaff*>(context), timeStart());
+		break;
+	case Modus:
+	case Custom:
+		break;
 	}
 
 	for (int i=0; i<markList().size(); i++) {
@@ -159,6 +163,7 @@ const QString CAKeySignature::keySignatureTypeToString(const CAKeySignatureType 
 	case Custom:
 		return "custom";
 	}
+	return "";
 }
 
 const QString CAKeySignature::modusToString(CAModus modus) {
