@@ -62,6 +62,7 @@ const QString CARepeatMark::repeatMarkTypeToString( CARepeatMarkType t ) {
 	case (DalVarCoda):
 		return "DalVarCoda";
 	}
+	return "Undefined";
 }
 
 CARepeatMark::CARepeatMarkType CARepeatMark::repeatMarkTypeFromString( const QString r ) {
@@ -88,4 +89,6 @@ CARepeatMark::CARepeatMarkType CARepeatMark::repeatMarkTypeFromString( const QSt
 	else
 	if (r=="DalVarCoda")
 		return DalVarCoda;
+	return Undefined;
 }
+
