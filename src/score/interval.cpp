@@ -55,7 +55,7 @@ CAInterval::CAInterval() {
 CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2, bool absolute ) {
 	CADiatonicPitch pLow, pHigh;
 	if ( pitch1.noteName() < pitch2.noteName() ||
-	     pitch1.noteName() == pitch2.noteName() && pitch1.accs() <= pitch2.accs() ) {
+	     ( pitch1.noteName() == pitch2.noteName() && pitch1.accs() <= pitch2.accs() ) ) {
 		pLow = pitch1; pHigh = pitch2;
 	} else {
 		pLow = pitch2; pHigh = pitch1;
@@ -63,7 +63,7 @@ CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2, bool abs
 
 	setQuantity( pHigh.noteName() - pLow.noteName() + 1);
 	int relQnt = ((quantity()-1)%7)+1;
-	int relPLow = pLow.noteName()%7, relPHigh = pHigh.noteName()%7;
+	int relPLow = pLow.noteName()%7/*, relPHigh = pHigh.noteName()%7*/;
 
 	int deltaQlt;
 	switch (relQnt) {
@@ -110,15 +110,15 @@ CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2, bool abs
 
 	// prime, fourth, fifth are perfect, diminished or augmented
 	if ( relQnt==1 || relQnt==4 || relQnt==5 ) {
-		if ( deltaQlt==2 && pHigh.accs()-pLow.accs()==-1 ||
-		     deltaQlt==0 && pHigh.accs()-pLow.accs()<=-1 ) {
+		if ( ( deltaQlt==2 && pHigh.accs()-pLow.accs()==-1 ) ||
+		     ( deltaQlt==0 && pHigh.accs()-pLow.accs()<=-1 ) ) {
 			setQuality( deltaQlt + pHigh.accs() - pLow.accs() - 1 );
 		} else
 		if ( deltaQlt==2 && pHigh.accs() - pLow.accs() < -1 ) {
 			setQuality( deltaQlt + pHigh.accs() - pLow.accs() - 2 );
 		} else
-		if ( deltaQlt==-2 && pHigh.accs()-pLow.accs()==1 ||
-		     deltaQlt==0 && pHigh.accs()-pLow.accs()>=1 ) {
+		if ( ( deltaQlt==-2 && pHigh.accs()-pLow.accs()==1 ) ||
+		     ( deltaQlt==0 && pHigh.accs()-pLow.accs()>=1 ) ) {
 			setQuality( deltaQlt + pHigh.accs() - pLow.accs() + 1 );
 		} else
 		if ( deltaQlt==-2 && pHigh.accs() - pLow.accs() > 1 ) {
@@ -139,7 +139,7 @@ CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2, bool abs
 
 	if (!absolute &&
 	    (pitch1.noteName()>pitch2.noteName() ||
-	     pitch1.noteName()==pitch2.noteName() && pitch1.accs()>pitch2.accs()
+	     ( pitch1.noteName()==pitch2.noteName() && pitch1.accs()>pitch2.accs() )
 	   )) {
 		setQuantity( -quantity() );
 	}
@@ -261,7 +261,7 @@ const QString CAInterval::qualityToReadable( int k ) {
 	case -1: return QObject::tr( "Minor", "interval" );
 	case 2: return QObject::tr( "Augmented", "interval" );
 	case -2: return QObject::tr( "Diminished", "interval" );
-	default: QString::number(k);
+	default: return QString::number(k);
 	}
 }
 
