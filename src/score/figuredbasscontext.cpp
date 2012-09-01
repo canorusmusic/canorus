@@ -38,7 +38,7 @@ CAFiguredBassContext::~CAFiguredBassContext() {
 void CAFiguredBassContext::addFiguredBassMark( CAFiguredBassMark *m, bool replace ) {
 	int i;
 	for (i=0; i<_figuredBassMarkList.size() && _figuredBassMarkList[i]->timeStart()<m->timeStart(); i++);
-	int s = _figuredBassMarkList.size();
+	//int s = _figuredBassMarkList.size();
 	if ( i<_figuredBassMarkList.size() && replace ) {
 		delete _figuredBassMarkList.takeAt(i);
 	}
