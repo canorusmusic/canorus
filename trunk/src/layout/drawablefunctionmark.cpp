@@ -7,6 +7,7 @@
 
 #include <QPainter>
 #include <QFont>
+#include <stdio.h>
 
 #include "layout/drawablefunctionmark.h"
 #include "layout/drawablefunctionmarkcontext.h"
@@ -26,7 +27,7 @@ CADrawableFunctionMark::CADrawableFunctionMark(CAFunctionMark *function, CADrawa
 
  	_extenderLineVisible = false;
  	_extenderLineOnly = false;
- 	CAMusElement *prevMusElt;
+ 	//CAMusElement *prevMusElt;
  	setWidth( 11 ); // default width
  	// function mark is stable
  	if (// tonic degree is tonic
@@ -50,6 +51,8 @@ CADrawableFunctionMark::CADrawableFunctionMark(CAFunctionMark *function, CADrawa
 			case CAFunctionMark::N:		_text="N"; _width=14; break;
 			case CAFunctionMark::L:		_text="L"; _width=11; break;
 			case CAFunctionMark::K:		_text="K"; _width=12; break;
+			case CAFunctionMark::Undefined:
+				break;
 		}
 	else
 	// function mark is not stable - its tonic degree is not Tonic
@@ -69,6 +72,8 @@ CADrawableFunctionMark::CADrawableFunctionMark(CAFunctionMark *function, CADrawa
 			case CAFunctionMark::N:		_text="N"; _width=12; break;
 			case CAFunctionMark::L:		_text="L"; _width=9; break;
 			case CAFunctionMark::K:		_text="K"; _width=10; break;
+			case CAFunctionMark::Undefined:
+				break;
 		}
 
 	if (function->isMinor()) { //prepend a small circle
@@ -196,6 +201,13 @@ CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionM
 				case CAFunctionMark::T:		_width+=10; break;
 				case CAFunctionMark::S:		_width+=11; break;
 				case CAFunctionMark::D:		_width+=12; break;
+				case CAFunctionMark::F:
+				case CAFunctionMark::K:
+				case CAFunctionMark::L:
+				case CAFunctionMark::N:
+				case CAFunctionMark::Undefined:
+					fprintf(stderr,"Warning: CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport - Unhandled mark %d",f1->functionMark()->tonicDegree());
+					break;
 			}
 		} else {
 			_width = f2->xPos() + f2->width() - f1->xPos();		// multiple tonicization
@@ -272,6 +284,8 @@ void CADrawableFunctionMarkSupport::draw(QPainter *p, const CADrawSettings s) {
 		case Alterations:
 			font.setPixelSize(qRound( 9*s.z ));
 			break;
+		case Rectangle:
+			break;
 	}
 
 	// fill in the text values for functions
@@ -292,6 +306,8 @@ void CADrawableFunctionMarkSupport::draw(QPainter *p, const CADrawSettings s) {
 			case CAFunctionMark::N:		text="N"; break;
 			case CAFunctionMark::L:		text="L"; break;
 			case CAFunctionMark::K:		text="K"; break;
+			case CAFunctionMark::Undefined:
+				break;
 		}
 
 		if (minor)
@@ -399,5 +415,7 @@ CADrawableFunctionMarkSupport *CADrawableFunctionMarkSupport::clone(CADrawableCo
 		case Alterations:
 			return new CADrawableFunctionMarkSupport(Alterations, (CAFunctionMark*)(_musElement), (newContext)?newContext:_drawableContext, _xPos, _yPos);
 			break;
+		default:
+			return 0;
 	}
 }
