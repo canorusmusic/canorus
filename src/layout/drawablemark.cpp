@@ -291,6 +291,10 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 			case CARepeatMark::DalCoda:    p->drawText( s.x, s.y, QString(CACanorus::fetaCodepoint("scripts.coda")) ); break;
 			case CARepeatMark::VarCoda:
 			case CARepeatMark::DalVarCoda: p->drawText( s.x, s.y, QString(CACanorus::fetaCodepoint("scripts.varcoda")) ); break;
+			case CARepeatMark::Volta:
+			case CARepeatMark::Undefined:
+				fprintf(stderr,"Warning: CADrawableMark::draw - Unhandled RM-Type %d",static_cast<CARepeatMark*>(mark())->repeatMarkType());
+				break;
 		}
 
 		if (r->repeatMarkType()==CARepeatMark::Volta) {
@@ -355,11 +359,17 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 			case CAArticulation::PrallDown:     p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.pralldown")) ); break;
 			case CAArticulation::PrallUp:       p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.prallup")) ); break;
 			case CAArticulation::LinePrall:     p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.lineprall")) ); break;
+			case CAArticulation::Undefined:
+				fprintf(stderr,"Warning: CADrawableMark::draw - Unhandled A-Type %d",static_cast<CAArticulation*>(mark())->articulationType());
+				break;
 
 		}
 
 		break;
 	}
+	case CAMark::Undefined:
+		fprintf(stderr,"Warning: CADrawableMark::draw - Unhandled Type %d",mark()->markType());
+		break;
 	}
 }
 
