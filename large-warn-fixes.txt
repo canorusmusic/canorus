@@ -77,29 +77,49 @@ wrapper.c:
   - Commented unused variable
 
 interface:
+rtmididevice.cpp: Cast count to integer for comparison (and for for loop)
+rtmididevice.h: Destruktor is now virtual
 pluginaction.h: removeArgument return the removeAll result value
 pyconsoleinterface.h: bufferedInput did not return a value (now "0" pointer)
 plugin.cpp: Fix rebuildDocument used outside SWIGCPP #define
+pluginmanager.cpp: 
+  - Cast to integer in for loop
+  - Fixed: New method installPlugin needs to return a value
 keybdinput.cpp: Variables x, drawableStaff defined but not used
 
 layout:
-drawablefunctionmarkcontext: Move method implementation from header to avoid
-        compiler problem with possible undefined member
+drawablebarline.cpp: Added missing cases that were not handled
+drawableclef.cpp:    Added missing cases that were not handled
+drawablecontext.cpp: Unused variable commented
+drawablefunctionmark.cpp: 
+  - Unused variable commented
+  - Added missing cases that were not handled
+  - clone: Return a value for default case
+drawablefunctionmarkcontext.cpp: 
+  - Move method implementation from header to avoid
+      compiler problem with possible undefined member
+  - Move some member default initialisation to head of constructor
 drawablekeysignature.cpp: && / || warning logic solved with additional braces
 drawablemark.cpp: Added missing cases that were not handled
 drawablenote.cpp: Added missing cases that were not handled
 drawablerest.cpp: Added missing cases that were not handled
 drawabeslur.cpp:  Added missing cases that were not handled
-drawabletimesignature.cpp: Added missing break in some cases
+drawabestaff.cpp:  Added missing cases that were not handled
+drawabletimesignature.cpp: 
+  - Added missing break in some cases
+  - Added missing cases that were not handled
 kdtree.h: && / || warning logic solved with additional braces
 layoutengine.cpp:
   - && / || warning logic solved with additional braces
   - Unused variable commented
   - Added missing cases that were not handled
   - Possible bug due to unused variable placedSymbol
+  - Fixed local buffer (array) problems by allocating them on the heap.
+      (performance might need to be improved)
 
 score:
 articulation.h setAssociatedNote - additionally return 'n'
+  (might cause or fix a bug)
 interval.cpp: 
   - && / || warning logic solved with additional braces
   - Unused variable commented
@@ -113,11 +133,16 @@ voice.cpp:
   - && / || warning logic solved with additional braces
   - Unused variable commented
   - Fixed bug where synchronizeMusElements did not return any result
-note.cpp: return values not well defined in all cases (stem)
+note.cpp: return values not well defined in all cases (stem, empty string removed!)
 keysignature.cpp: 
   - Added missing cases for clone (why was there a case in the first place ?)
   - return values not defined in all cases (bufferedInput)
 timesignature.cpp: return values not defined in all cases (timeSignatureTypeML)
+    -> no default value!
+staff.cpp: 
+  - Fixed local buffer (array) problems by allocating them on the heap.
+      (performance might need to be improved)
+  - Add default case for all the other music element types not handled here
 slur.cpp: Added missing cases for slurStyleToString
 tuplet.cpp: Changed initialization sequence
 fermata.cpp: Return NormalFermata in fermataTypeFromString for unknown strings
@@ -163,13 +188,12 @@ rtmidi.cpp
 
 scripting: 
 canoruspython.i: Workaround for problem compiling with new swig version 2
-swigpython.h: Add method and structure from swig for above workaround
-             -> I haven't any quick good idea how to fix the problem properly
 swigpython.cpp: Bugfix: Add missing return value to callPycli
 
 pluginmanager
 
 ui:
+mainwin.h: stopPlayback never returned a value (ToDo?).
 mainwin.cpp:
   - Commented unused variables
   - && / || warning logic solved with additional braces
@@ -186,11 +210,13 @@ propertiesdialog.cpp:
 
 widgets
 actionseditor.cpp:
-  - Bug: Assignment instead of comparison
+  - Bugfix: Assignment instead of comparison
   - Problem: bSCuts not yet used (need to check)
 menutoolbutton.cpp: ^ / | warning logic solved with additional braces
 resourceview.cpp: No assignment in if!
-scoreview.cpp: && / || warning logic solved with additional braces
+scoreview.cpp: 
+  - && / || warning logic solved with additional braces
+  - Commented unused variable
 
 I also consider to check our code with some more advanced compiler checker to
 find potential problems like Codan, the new code analysis tool from the latest
