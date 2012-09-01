@@ -283,9 +283,10 @@ const QString CANote::stemDirectionToString(CANote::CAStemDirection dir) {
 			return "stem-neutral";
 		case CANote::StemPreferred:
 			return "stem-preferred";
-		default:
-			return "";
+		case CANote::StemUndefined:
+			return "stem-preferred";
 	}
+	return "stem-preferred";
 }
 
 /*!
@@ -342,6 +343,8 @@ CANote::CAStemDirection CANote::actualStemDirection() {
 					else
 						return StemDown;
 					break;
+				default: // We should always have a defined stem here
+					return StemUndefined;
 			}
 			break;
 		default:
