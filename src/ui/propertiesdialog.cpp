@@ -256,6 +256,9 @@ void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *
 			case CAContext::FunctionMarkContext:
 				updateFunctionMarkContextProperties( static_cast<CAFunctionMarkContext*>( _contextItem[cur] ) );
 				break;
+			case CAContext::FiguredBassContext:
+				fprintf(stderr,"Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type %d",_contextItem[cur]->contextType());
+				break;
 		}
 
 		// update uiUp/uiDown buttons
@@ -298,7 +301,7 @@ void CAPropertiesDialog::on_uiButtonBox_clicked( QAbstractButton* button ) {
 	Called when "Apply" button is clicked.
 */
 void CAPropertiesDialog::applyProperties() {
-	QTreeWidgetItem *item = uiDocumentTree->topLevelItem(0);
+	//QTreeWidgetItem *item = uiDocumentTree->topLevelItem(0);
 
 	CACanorus::undo()->createUndoCommand( _document, tr("apply properties", "undo") );
 	CACanorus::undo()->pushUndoCommand();
@@ -318,9 +321,9 @@ void CAPropertiesDialog::applyProperties() {
 	_document->setComments( dp->uiComments->toPlainText() );
 
 	// store Sheet properties
-	for (int i=0; i<_sheetPropertiesWidget.keys().size(); i++) {
+	/*for (int i=0; i<_sheetPropertiesWidget.keys().size(); i++) {
 		CASheet *s = _sheetPropertiesWidget.keys().at(i);
-	}
+	}*/
 
 	// store Context properties
 	for (int i=0; i<_contextPropertiesWidget.keys().size(); i++) {
@@ -338,6 +341,9 @@ void CAPropertiesDialog::applyProperties() {
 			case CAContext::FunctionMarkContext: {
 				break;
 			}
+			case CAContext::FiguredBassContext:
+				fprintf(stderr,"Warning: CAPropertiesDialog::applyProperties - Unhandled Type %d",c->contextType());
+				break;
 		}
 	}
 
