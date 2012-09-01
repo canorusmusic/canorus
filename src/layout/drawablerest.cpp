@@ -73,6 +73,11 @@ CADrawableRest::CADrawableRest(CARest *rest, CADrawableContext *drawableContext,
 		setHeight( 9 );
 		setYPos(y + static_cast<CADrawableStaff*>(drawableContext)->lineSpace());
 		break;
+
+	case CAPlayableLength::Undefined:
+		fprintf(stderr,"Warning: CADrawableRest::CADrawableRest - Unhandled Length %d",rest->playableLength().musicLength());
+		break;
+
 	}
 
 	_restWidth = _width;
@@ -136,6 +141,9 @@ void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
 		p->drawText(s.x, qRound(s.y + height()*s.z), QString(CACanorus::fetaCodepoint("rests.M1")));
 		break;
 	}
+	case CAPlayableLength::Undefined:
+		fprintf(stderr,"Warning: CADrawableRest::draw - Unhandled Length %d",rest()->playableLength().musicLength());
+		break;
 	}
 
 	///////////////
