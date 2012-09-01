@@ -92,7 +92,13 @@ const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementTyp
 		case (Slur): return "slur"; break;
 		case (FunctionMark): return "function-mark"; break;
 		case (Syllable): return "syllable"; break;
+		case (MidiNote): return "midi-note"; break;
+		case (Tuplet): return "tuplet"; break;
+		case (Mark): return "mark"; break;
+		case (FiguredBassMark): return "figured-bass-mark"; break;
 	}
+	// Do not add a default case as else newly added elements might be forgotten here!
+	return QString();
 }
 
 /*!
@@ -111,6 +117,11 @@ CAMusElement::CAMusElementType CAMusElement::musElementTypeFromString(const QStr
 	if ( type=="slur" ) return Slur;
 	if ( type=="function-mark" ) return FunctionMark;
 	if ( type=="syllable" ) return Syllable;
+	if ( type=="mark" ) return Mark;
+	if ( type=="figured-bass-mark" ) return FiguredBassMark;
+	if ( type=="tuplet" ) return Tuplet;
+	if ( type=="midi-note" ) return MidiNote;
+	return Undefined;
 }
 
 /*!
