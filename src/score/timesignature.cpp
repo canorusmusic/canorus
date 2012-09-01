@@ -87,6 +87,7 @@ const QString CATimeSignature::timeSignatureTypeML() {
 		case Baroque:
 			return QString("baroque");
 	}
+	return "";
 }
 
 /*!
