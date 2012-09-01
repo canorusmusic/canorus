@@ -1311,7 +1311,7 @@ void CAMainWin::on_uiNewVoice_triggered() {
 
 	CACanorus::undo()->createUndoCommand( document(), tr("new voice", "undo") );
 	if (staff) {
-		staff->addVoice(new CAVoice( staff->name() + tr("Voice%1").arg( staff->voiceList().size()+1 ), staff, stemDirection, voiceNumber ));
+		staff->addVoice(new CAVoice( staff->name() + tr("Voice%1").arg( staff->voiceList().size()+1 ), staff, stemDirection ));
 		staff->synchronizeVoices();
 	}
 
@@ -3981,9 +3981,10 @@ void CAMainWin::sourceViewCommit(QString inputString) {
 		li.wait();
 
 		CAVoice *newVoice = li.importedVoice();
+		int voiceNumber = oldVoice->voiceNumber();
 		oldVoice->staff()->removeVoice(oldVoice);
 
-		newVoice->staff()->addVoice( newVoice );
+		newVoice->staff()->insertVoice( voiceNumber-1, newVoice );
 		newVoice->staff()->synchronizeVoices();
 
 		// FIXME any way to avoid this?

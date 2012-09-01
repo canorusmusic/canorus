@@ -451,7 +451,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 		CAMusElement *musElemTimeSig;
 		for (int voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
 			// voiceName = QObject::tr("Voice%1").arg( voiceNumber );
-			voice = new CAVoice( "", staff, CANote::StemNeutral, 1 );
+			voice = new CAVoice( "", staff, CANote::StemNeutral );
 			staff->addVoice( voice );
 			setCurVoice(voice);
 			voice->setMidiChannel( ch );

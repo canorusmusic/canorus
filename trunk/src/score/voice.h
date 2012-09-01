@@ -24,7 +24,7 @@ class CAVoice {
 	friend class CAStaff; // used for insertion of music elements and updateTimes() when inserting elements and synchronizing voices
 
 public:
-	CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection=CANote::StemNeutral, int voiceNumber=0 );
+	CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection=CANote::StemNeutral );
 	~CAVoice();
 	inline CAStaff *staff() { return _staff; }
 	inline void setStaff(CAStaff *staff) { _staff = staff; }
@@ -120,7 +120,6 @@ private:
 
 	QList<CAMusElement *> _musElementList;
 	CAStaff *_staff; // parent staff
-	int _voiceNumber; // voice number starting at 1
 	CANote::CAStemDirection _stemDirection;
 	QList<CALyricsContext*> _lyricsContextList;
 
