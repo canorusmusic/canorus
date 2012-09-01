@@ -30,10 +30,12 @@ class CADrawableFunctionMarkContext : public CADrawableContext {
 		};
 
 		double yPosLine(CAFunctionMarkLine part); // Returns the Y coordinate of the top of the given line
-		void nextLine() { _currentLineIdx = ++_currentLineIdx % _numberOfLines; }
+		void nextLine();
 		int currentLineIdx() { return _currentLineIdx; }
 
 	private:
+    CADrawableFunctionMarkContext() : CADrawableContext(NULL, 0, 0), 
+      _numberOfLines(0), _currentLineIdx(0)  {}
 		int _numberOfLines;	// Number of lines the context can consist. Usually, this number is 2. But when doing research on scores, this could be expanded
 		int _currentLineIdx;
 };
