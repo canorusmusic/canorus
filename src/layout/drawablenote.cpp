@@ -72,6 +72,9 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, do
 		setWidth( 18 );
 		setHeight( 8 );
 		break;
+	case CAPlayableLength::Undefined:
+		fprintf(stderr,"Warning: CADrawableNote::CADrawableNote - Unhandled Length %d",n->playableLength().musicLength());
+		break;
 	}
 	setYPos( y - height()/2.0 );
 	setXPos( x );
@@ -109,6 +112,12 @@ CADrawableNote::CADrawableNote(CANote *n, CADrawableContext *drawableContext, do
 	case CAPlayableLength::Half:
 		_stemLength = HALF_STEM_LENGTH;
 		break;
+	case CAPlayableLength::Whole:
+	case CAPlayableLength::Breve:
+	case CAPlayableLength::Undefined:
+		fprintf(stderr,"Warning: CADrawableNote::CADrawableNote - Unhandled length %d",n->playableLength().musicLength());
+		break;
+
 	}
 
 	_noteHeadWidth = width();
