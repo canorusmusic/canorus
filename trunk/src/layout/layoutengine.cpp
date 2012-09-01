@@ -71,7 +71,7 @@ int *CALayoutEngine::streamsRehersalMarks;
 	This function doesn't clear the view, but only adds the elements.
 */
 void CALayoutEngine::reposit( CAScoreView *v ) {
-	int i;
+	//int i;
 	CASheet *sheet = v->sheet();
 
 	//list of all the music element lists (ie. streams) taken from all the contexts
@@ -148,18 +148,25 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 	}
 
 	int streams = musStreamList.size();
-	int streamsIdx[streams]; for (int i=0; i<streams; i++) streamsIdx[i] = 0;
-	int streamsX[streams]; for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
-	int streamsRehersalMarks[streams]; for (int i=0; i<streams; i++) streamsRehersalMarks[i] = 0;
+	int *streamsIdx = new int[streams];
+	for (int i=0; i<streams; i++) streamsIdx[i] = 0;
+	int *streamsX = new int(streams);
+	for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
+	int *streamsRehersalMarks = new int(streams);
+	for (int i=0; i<streams; i++) streamsRehersalMarks[i] = 0;
 	CALayoutEngine::streamsRehersalMarks = streamsRehersalMarks;
-	CAClef *lastClef[streams]; for (int i=0; i<streams; i++) lastClef[i] = 0;
-	CAKeySignature *lastKeySig[streams]; for (int i=0; i<streams; i++) lastKeySig[i] = 0;
-	CATimeSignature *lastTimeSig[streams]; for (int i=0; i<streams; i++) lastTimeSig[i] = 0;
+	CAClef **lastClef = new CAClef *[streams];
+	for (int i=0; i<streams; i++) lastClef[i] = 0;
+	CAKeySignature **lastKeySig = new CAKeySignature *[streams];
+	for (int i=0; i<streams; i++) lastKeySig[i] = 0;
+	CATimeSignature **lastTimeSig = new CATimeSignature *[streams];
+	for (int i=0; i<streams; i++) lastTimeSig[i] = 0;
 	scalableElts.clear();
 
 	int timeStart = 0;
 	bool done = false;
-	CADrawableFunctionMarkSupport *lastDFMTonicizations[streams]; for (int i=0; i<streams; i++) lastDFMTonicizations[i]=0;
+	CADrawableFunctionMarkSupport **lastDFMTonicizations = new CADrawableFunctionMarkSupport *[streams];
+	for (int i=0; i<streams; i++) lastDFMTonicizations[i]=0;
 	while (!done) {
 		//if all the indices are at the end of the streams, finish.
 		int idx;
@@ -185,7 +192,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 		//go through all the streams and check if the following element has this time
 		CAMusElement *elt;
 		CADrawableContext *drawableContext;
-		bool placedSymbol = false;	//used if waiting for notes to gather and a non-time-consuming symbol has been placed
+		//bool placedSymbol = false;	//used if waiting for notes to gather and a non-time-consuming symbol has been placed
 		for (int i=0; i < streams; i++) {
 			//loop until the first playable element
 			//multiple elements can have the same start time. eg. Clef + Key signature + Time signature + First note
@@ -219,7 +226,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 									lastClef[j] = clef->clef();
 
 							streamsX[i] += (clef->neededWidth() + MINIMUM_SPACE);
-							placedSymbol = true;
+							//placedSymbol = true;
 
 							placeMarks( clef, v, i );
 
@@ -241,7 +248,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 									lastKeySig[j] = keySig->keySignature();
 
 							streamsX[i] += (keySig->neededWidth() + MINIMUM_SPACE);
-							placedSymbol = true;
+							//placedSymbol = true;
 
 							placeMarks( keySig, v, i );
 
@@ -263,15 +270,29 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 									lastTimeSig[j] = timeSig->timeSignature();
 
 							streamsX[i] += (timeSig->neededWidth() + MINIMUM_SPACE);
-							placedSymbol = true;
+							//placedSymbol = true;
 
 							placeMarks( timeSig, v, i );
 
 							break;
 						}
-					} /* SWITCH */
+						case CAMusElement::Rest:
+						case CAMusElement::Note:
+						case CAMusElement::MidiNote:
+						case CAMusElement::Barline:
+						case CAMusElement::Slur:
+						case CAMusElement::Tuplet:
+						case CAMusElement::Syllable:
+						case CAMusElement::FunctionMark:
+						case CAMusElement::FiguredBassMark:
+						case CAMusElement::Mark:
+						case CAMusElement::Undefined: {
+							fprintf(stderr,"Warning: CALayoutEngine::reposit - Unhandled Element %d",elt->musElementType());
+							break;
+						}
+					} // SWITCH
 
-				} /* IF firstVoice */
+				} // IF firstVoice
 				streamsIdx[i]++;
 			}
 		}
@@ -332,7 +353,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 				);
 
 				v->addMElement(bar);
-				placedSymbol = true;
+				//placedSymbol = true;
 				streamsX[i] += (bar->neededWidth() + MINIMUM_SPACE);
 				streamsIdx[i] = streamsIdx[i] + 1;
 
@@ -727,7 +748,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						    // always place tonicization, if ellipse is present
 						    //|| ((CAFunctionMark*)musStreamList[i].at(j))->isPartOfEllipse()
 						)) {
-							CAFunctionMark::CAFunctionType type = ((CAFunctionMark*)musStreamList[i].at(j))->tonicDegree();
+							//CAFunctionMark::CAFunctionType type = ((CAFunctionMark*)musStreamList[i].at(j))->tonicDegree();
 							CAFunctionMark *right = (CAFunctionMark*)musStreamList[i].at(j);
 
 							// find the n-th element back
@@ -801,7 +822,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						CADrawableFunctionMarkSupport *hChordAreaRect=0;
 						if (j>=0 && // don't draw rectangle, if the current element would still be in the rectangle
 						    (
-						     ((CAFunctionMark*)musStreamList[i].at(j))->key()==function->key() && ((CAFunctionMark*)musStreamList[i].at(j))->function()!=function->function() && ((CAFunctionMark*)musStreamList[i].at(j))->function()!=function->chordArea() && ((CAFunctionMark*)musStreamList[i].at(j))->chordArea()!=function->chordArea()
+						     (((CAFunctionMark*)musStreamList[i].at(j))->key()==function->key() && ((CAFunctionMark*)musStreamList[i].at(j))->function()!=function->function() && ((CAFunctionMark*)musStreamList[i].at(j))->function()!=function->chordArea() && ((CAFunctionMark*)musStreamList[i].at(j))->chordArea()!=function->chordArea())
 						     || ((CAFunctionMark*)musStreamList[i].at(j))->key()!=function->key()
 						     || j==musStreamList[i].size()
 						    )
@@ -838,19 +859,19 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						    function->chordArea()!=CAFunctionMark::Undefined &&
 						    function->chordArea()!=function->function() && // chord area is the same as function name - don't draw chordarea then
 						    (j-1<0 ||
-						     (((CAFunctionMark*)musStreamList[i].at(j-1))->key()==function->key() &&
+						     ((((CAFunctionMark*)musStreamList[i].at(j-1))->key()==function->key() &&
 						      ((CAFunctionMark*)musStreamList[i].at(j-1))->chordArea()!=function->chordArea() &&
 						      ((CAFunctionMark*)musStreamList[i].at(j-1))->function()!=function->chordArea() &&
-						      ((CAFunctionMark*)musStreamList[i].at(j-1))->chordArea()!=function->function() ||
+						      ((CAFunctionMark*)musStreamList[i].at(j-1))->chordArea()!=function->function()) ||
 						      ((CAFunctionMark*)musStreamList[i].at(j-1))->tonicDegree()!=function->tonicDegree() ||
 						      ((CAFunctionMark*)musStreamList[i].at(j-1))->key()!=function->key()
 						     )
 						    ) &&
 						    (j+1>=musStreamList[i].size() ||
-						     (((CAFunctionMark*)musStreamList[i].at(j+1))->key()==function->key() &&
+						     ((((CAFunctionMark*)musStreamList[i].at(j+1))->key()==function->key() &&
 						      ((CAFunctionMark*)musStreamList[i].at(j+1))->chordArea()!=function->chordArea() &&
 						      ((CAFunctionMark*)musStreamList[i].at(j+1))->function()!=function->chordArea() &&
-						      ((CAFunctionMark*)musStreamList[i].at(j+1))->chordArea()!=function->function() ||
+						      ((CAFunctionMark*)musStreamList[i].at(j+1))->chordArea()!=function->function()) ||
 						      ((CAFunctionMark*)musStreamList[i].at(j+1))->tonicDegree()!=function->tonicDegree() ||
 						      ((CAFunctionMark*)musStreamList[i].at(j+1))->key()!=function->key()
 						     )
@@ -939,6 +960,17 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 						break;
 					}
+					case CAMusElement::Barline:
+					case CAMusElement::Slur:
+					case CAMusElement::Tuplet:
+					case CAMusElement::Mark:
+					case CAMusElement::KeySignature:
+					case CAMusElement::TimeSignature:
+					case CAMusElement::Clef:
+					case CAMusElement::Undefined: {
+						fprintf(stderr,"Warning: CALayoutEngine::reposit2 - Unhandled Element %d",elt->musElementType());
+						break;
+					}
 				}
 
 				streamsIdx[i]++;
@@ -953,6 +985,13 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 		scalableElts[i]->setWidth( v->timeToCoords(scalableElts[i]->musElement()->timeEnd()) - scalableElts[i]->xPos() );
 		v->addMElement(scalableElts[i]);
 	}
+	delete [] streamsIdx;
+	delete [] streamsX;
+	delete [] streamsRehersalMarks;
+	delete [] lastClef;
+	delete [] lastKeySig;
+	delete [] lastTimeSig;
+	delete [] lastDFMTonicizations;
 }
 
 /*!
@@ -973,9 +1012,9 @@ void CALayoutEngine::placeMarks( CADrawableMusElement *e, CAScoreView *v, int st
 
 		int yCoord;
 		if ( mark->markType()==CAMark::Pedal ||
-		     ( mark->markType()==CAMark::Fingering && (static_cast<CAFingering*>(mark)->fingerList()[0]==CAFingering::LHeel || static_cast<CAFingering*>(mark)->fingerList()[0]==CAFingering::LToe )) ||
-		     elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->actualSlurDirection()==CASlur::SlurDown &&
-		       (mark->markType()==CAMark::Text || mark->markType()==CAMark::Fermata || mark->markType()==CAMark::Articulation || mark->markType()==CAMark::Fingering && static_cast<CAFingering*>(mark)->fingerList()[0]!=CAFingering::LHeel && static_cast<CAFingering*>(mark)->fingerList()[0]!=CAFingering::LToe ))  {
+		     (((mark->markType()==CAMark::Fingering && (static_cast<CAFingering*>(mark)->fingerList()[0]==CAFingering::LHeel)) || static_cast<CAFingering*>(mark)->fingerList()[0]==CAFingering::LToe )) ||
+		     (elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->actualSlurDirection()==CASlur::SlurDown &&
+		       ((mark->markType()==CAMark::Text) || (mark->markType()==CAMark::Fermata) || (mark->markType()==CAMark::Articulation) || (mark->markType()==CAMark::Fingering && static_cast<CAFingering*>(mark)->fingerList()[0]!=CAFingering::LHeel && static_cast<CAFingering*>(mark)->fingerList()[0]!=CAFingering::LToe ))))  {
 			// place mark below
 			xCoord = e->xPos();
 			yCoord = qMax(e->yPos()+e->height(),e->drawableContext()->yPos()+e->drawableContext()->height())+20*(k+1);
