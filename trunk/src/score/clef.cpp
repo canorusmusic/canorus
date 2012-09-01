@@ -88,6 +88,10 @@ void CAClef::setPredefinedType( CAPredefinedClefType type ) {
 			setClefType(F);
 			_c1 = 12 - offset();
 			break;
+		case Undefined:
+		case Percussion:
+		case Tablature:
+			break;
 	}
 }
 
@@ -103,6 +107,10 @@ void CAClef::setClefType(CAClefType type) {
 	case G: _centerPitch=32; break;
 	case F: _centerPitch=24; break;
 	case C: _centerPitch=28; break;
+	case PercussionHigh:
+	case PercussionLow:
+	case Tab:
+		break;
 	}
 
 	_centerPitch += offset();
