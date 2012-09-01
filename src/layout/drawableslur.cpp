@@ -7,6 +7,7 @@
 
 #include "layout/drawableslur.h"
 #include <QPainter>
+#include <stdio.h>
 
 CADrawableSlur::CADrawableSlur( CASlur *slur, CADrawableContext *c, double x1, double y1, double xMid, double yMid, double x2, double y2  )
  : CADrawableMusElement( slur, c, x1, 0) {
@@ -69,6 +70,9 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 			break;
 		case CASlur::SlurDotted:
 			pen.setStyle( Qt::DotLine );
+			break;
+		case CASlur::Undefined:
+			fprintf(stderr,"Warning: CADrawableSlur::draw - Unhandled Style %d",slur()->slurStyle());
 			break;
 	}
 	p->setPen( pen );
