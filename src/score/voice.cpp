@@ -34,15 +34,9 @@
 	Creates a new voice named \a name, in \a staff, \a voiceNumber and \a stemDirection of notes stems.
 	Voice number starts at 1.
 */
-CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection, int voiceNumber ) {
+CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection ) {
 	_staff = staff;
 	_name = name;
-
-	if ( !voiceNumber && staff ) {
-		_voiceNumber = staff->voiceList().size()+1;
-	} else {
-		_voiceNumber = voiceNumber;
-	}
 	_stemDirection = stemDirection;
 
 	_midiChannel = ((staff && staff->sheet()) ? CAMidiDevice::freeMidiChannel( staff->sheet() ) : 0);
@@ -1121,13 +1115,6 @@ QList<CAMusElement*> CAVoice::getPreviousClef(int startTime) {
 	\fn void CAVoice::setStemDirection(CANote::CAStemDirection direction)
 
 	Sets the stem direction and update slur directions in all the notes in the voice.
-*/
-
-/*!
-	\var CAVoice::_voiceNumber
-	Preferred direction of stems for the notes inside the voice. This should be Neutral, if the voice is alone, Up, if the voice is the first voice, Down, if not. Preferred is not used here.
-
-	\sa CANote::CAStemDirection
 */
 
 /*!

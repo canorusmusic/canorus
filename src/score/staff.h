@@ -34,6 +34,7 @@ public:
 
 	inline const QList<CAVoice*>& voiceList() { return _voiceList; }
 	inline void addVoice(CAVoice *voice) { _voiceList << voice; }
+	inline void insertVoice(int idx, CAVoice *voice) { _voiceList.insert(idx, voice); }
 	CAVoice* addVoice();
 	inline void removeVoice(CAVoice *voice) { _voiceList.removeAll(voice); }
 	CAVoice *findVoice(const QString name);
