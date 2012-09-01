@@ -64,6 +64,7 @@ void CADrawableTimeSignature::draw(QPainter *p, CADrawSettings s) {
 				p->drawText(s.x, qRound(s.y + 0.5*height()*s.z), QString(CACanorus::fetaCodepoint("timesig.C22")));
 				break;
 			}
+			break;
 		}
 		case CATimeSignature::Number: {
 			//write the numbers one by one, first, the number of beats
@@ -83,6 +84,11 @@ void CADrawableTimeSignature::draw(QPainter *p, CADrawSettings s) {
 
 			break;
 		}
+		case CATimeSignature::Baroque:
+		case CATimeSignature::Neomensural:
+		case CATimeSignature::Mensural:
+			fprintf(stderr,"Warning: CADrawableTimeSignature::draw - Unhandled type %d",timeSignature()->timeSignatureType());
+			break;
 	}
 }
 
