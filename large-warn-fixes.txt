@@ -1,12 +1,18 @@
 Hi,
 
-I added a number of warning flags and mark warning as errors so they get fixed.
-I did a large work fixing all the warning I got due to that change. One hope
-was to find the reason why Canorus crashes on exit. I use the currently widely
-spread gcc 4.4.3 (4.4.4/4.5.1 is the latest available) on Ubuntu 10.04 LTS.
+I added a number of warning flags and mark warning as errors so they get
+fixed. I did a large work fixing all the warning I got due to that change.
+One hope was to find the reason why Canorus crashes on exit. I used the
+currently widely spread gcc 4.4.3 (4.4.4/4.5.1 was the latest available at
+that time) on Ubuntu 10.04 LTS. 
+
+In August I continued to fix all the warnings occuring with the current
+4.6.3 Compiler. 4.7.x is not yet supported but if you use that compiler
+and want to fix potential warnings then I'd be glad to integrate your
+patch!
 
 Also I tried to integrate duma into Canorus but on start I got an error happening
-inside the libORBit called from the Gnome settings system (might be related to
+inside the libfontconfig called from the Gnome system (might be related to
 the fact that I use Gnome desktop, so this bug would not necessarily occur on
 every system). Duma is a library to detect heap space errors (heap protection,
 i.e. overruns are detected (or underruns alternatively). I remember to have
@@ -219,8 +225,8 @@ scoreview.cpp:
   - Commented unused variable
 
 I also consider to check our code with some more advanced compiler checker to
-find potential problems like Codan, the new code analysis tool from the latest
-Eclipse Helios Edition. We could also add cppcheck to our nightly build section.
+find potential problems like Codan, the new code analysis tool from the 
+Eclipse Indigo Edition. We could also add cppcheck to our nightly build section.
 and send results to either the developer or some other dedicated mailing list.
 
 BTW: The most annyoing thing were unhandled cases. Please take more care about
