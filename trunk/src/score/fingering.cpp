@@ -84,6 +84,7 @@ const QString CAFingering::fingerNumberToString( CAFingerNumber n ) {
 	case Undefined:
 		return "Undefined";
 	}
+	return "Undefined";
 }
 
 CAFingering::CAFingerNumber CAFingering::fingerNumberFromString( const QString f ) {
