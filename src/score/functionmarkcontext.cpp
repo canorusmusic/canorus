@@ -104,7 +104,7 @@ void CAFunctionMarkContext::repositFunctions() {
 	int TS, TL;
 	int curIdx;
 	QList<CAPlayable*> chord;
-	for ( TS=0, curIdx=0; sheet() && (chord=sheet()->getChord(TS)).size() || curIdx<_functionMarkList.size(); TS+=TL ) {
+	for ( TS=0, curIdx=0; ( sheet() && (chord=sheet()->getChord(TS)).size() ) || curIdx<_functionMarkList.size(); TS+=TL ) {
 		TL = (chord.size()?chord[0]->timeLength():256);
 		for ( int i=0; i<chord.size(); i++ )
 			if (chord[i]->timeLength()<TL)
@@ -116,7 +116,7 @@ void CAFunctionMarkContext::repositFunctions() {
 		}
 
 		// apply timestart and length to existing function marks
-		for ( int startIdx = curIdx; curIdx==0 || curIdx < _functionMarkList.size() && _functionMarkList[curIdx]->timeStart()==_functionMarkList[startIdx]->timeStart(); curIdx++ ) {
+		for ( int startIdx = curIdx; curIdx==0 || ( curIdx < _functionMarkList.size() && _functionMarkList[curIdx]->timeStart()==_functionMarkList[startIdx]->timeStart() ); curIdx++ ) {
 			_functionMarkList[curIdx]->setTimeLength( TL );
 			_functionMarkList[curIdx]->setTimeStart( TS );
 		}
