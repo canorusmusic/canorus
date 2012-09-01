@@ -64,6 +64,7 @@ const QString CADynamic::dynamicTextToString( CADynamicText t ) {
 		case sp: return "sp";
 		case Custom: return "";
 	}
+	return "";
 }
 
 CADynamic::CADynamicText CADynamic::dynamicTextFromString( const QString t ) {
