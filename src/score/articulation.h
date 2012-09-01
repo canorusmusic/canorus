@@ -50,7 +50,7 @@ public:
 	int compare(CAMusElement *elt);
 
 	inline CANote *associatedNote() { return static_cast<CANote*>(associatedElement()); }
-	inline void *setAssociatedNote( CANote* n ) { setAssociatedElement(n); }
+	inline void *setAssociatedNote( CANote* n ) { setAssociatedElement(n); return n; }
 
 	inline CAArticulationType articulationType() { return _articulationType; }
 	inline void setArticulationType( CAArticulationType t ) { _articulationType = t; }
