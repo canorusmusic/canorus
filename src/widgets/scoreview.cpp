@@ -340,7 +340,7 @@ CADrawableContext* CAScoreView::selectCElement(double x, double y) {
 QList<CADrawableMusElement*> CAScoreView::musElementsAt(double x, double y) {
 	QList<CADrawableMusElement *> l = _drawableMList.findInRange(x,y);
 	for (int i=0; i<l.size(); i++)
-		if ( !l[i]->isSelectable() || selectedVoice() && l[i]->musElement() && l[i]->musElement()->isPlayable() && static_cast<CAPlayable*>(l[i]->musElement())->voice()!=selectedVoice() )
+		if ( !l[i]->isSelectable() || (selectedVoice() && l[i]->musElement() && l[i]->musElement()->isPlayable() && static_cast<CAPlayable*>(l[i]->musElement())->voice()!=selectedVoice()) )
 			l.removeAt(i--);
 
 	return l;
@@ -878,7 +878,7 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 
 	// draw contexts
 	QList<CADrawableContext*> cList;
-	int j = _drawableCList.size();
+	//int j = _drawableCList.size();
 	if (_repaintArea)
 		cList = _drawableCList.findInRange(_repaintArea->x(), _repaintArea->y(), _repaintArea->width(),_repaintArea->height());
 	else
@@ -913,13 +913,13 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		if ( _selection.contains(mList[i])) {
 			color = selectionColor();
 		} else
-		if ( selectedVoice() &&
-		     (elt &&
-		      (elt->isPlayable() && static_cast<CAPlayable*>(elt)->voice()==selectedVoice() ||
+		if ( (selectedVoice() &&
+		     ((elt &&
+		      ((elt->isPlayable() && static_cast<CAPlayable*>(elt)->voice()==selectedVoice()) ||
 		       (!elt->isPlayable() && elt->context()==selectedVoice()->staff()) ||
-		       elt->context()!=selectedVoice()->staff()) ||
-		      !elt && mList[i]->drawableContext()->context()==selectedVoice()->staff()
-		     ) ||
+		       elt->context()!=selectedVoice()->staff())) ||
+		      (!elt && mList[i]->drawableContext()->context()==selectedVoice()->staff())
+		     )) ||
 		     (!selectedVoice())
 		   ) {
 			if ( elt && elt->musElementType()==CAMusElement::Rest &&
@@ -927,9 +927,9 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 			     static_cast<CARest*>(elt)->restType()==CARest::Hidden
 			   ) {
 			   	color = hiddenElementsColor();
-			} else if ( elt && elt->musElementType()==CAMusElement::Rest &&
-			            static_cast<CARest*>(elt)->restType()==CARest::Hidden ||
-			            elt && !elt->isVisible()
+			} else if ( (elt && elt->musElementType()==CAMusElement::Rest &&
+			            static_cast<CARest*>(elt)->restType()==CARest::Hidden) ||
+			            (elt && !elt->isVisible())
 			          ) {
 			   	color = QColor(0,0,0,0); // transparent color
 			} else if ( elt && elt->color()!=QColor(0,0,0,0) ) {
@@ -1033,7 +1033,7 @@ void CAScoreView::updateHelpers() {
 	if (currentContext()?(currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0) {
 		int pitch = (static_cast<CADrawableStaff*>(currentContext()))->calculatePitch(_xCursor, _yCursor);	// the current staff has the real pitch we need
 		for (int i=0; i<_shadowNote.size(); i++) {	// apply this pitch to all shadow notes in all staffs
-			CAClef *clef = (static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext()))->getClef( _xCursor );
+			//CAClef *clef = (static_cast<CADrawableStaff*>(_shadowDrawableNote[i]->drawableContext()))->getClef( _xCursor );
 			CADiatonicPitch dPitch(pitch, 0);
 			_shadowNote[i]->setDiatonicPitch( dPitch );
 
@@ -1421,7 +1421,7 @@ void CAScoreView::addToSelection( CADrawableMusElement *elt, bool triggerSignal 
 */
 void CAScoreView::addToSelection(const QList<CADrawableMusElement*> list, bool selectableOnly ) {
 	for (int i=0; i<list.size(); i++) {
-		if ( !selectableOnly || selectableOnly && list[i]->isSelectable() )
+		if ( !selectableOnly || (selectableOnly && list[i]->isSelectable()) )
 			addToSelection(list[i], false);
 	}
 
