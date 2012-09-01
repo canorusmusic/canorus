@@ -23,7 +23,7 @@ void CAGroupBoxToolButton::paintEvent( QPaintEvent* ) {
 		QStyleOptionToolButton opt;
 		initStyleOption(&opt);
 		if(!isChecked() && (opt.state & QStyle::State_Sunken))
-			opt.state = opt.state ^ QStyle::State_Sunken | QStyle::State_Raised;
+			opt.state = (opt.state ^ QStyle::State_Sunken) | QStyle::State_Raised;
 		p.drawComplexControl(QStyle::CC_ToolButton, opt);
 }
 
