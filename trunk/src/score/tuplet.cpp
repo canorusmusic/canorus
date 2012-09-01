@@ -32,7 +32,7 @@
 	should already be part of the voice.
  */
 CATuplet::CATuplet( int number, int actualNumber, QList<CAPlayable*> noteList )
- : CAMusElement( noteList.front()->context(), noteList.front()->timeStart(), 0 ), _noteList(noteList), _number(number), _actualNumber(actualNumber) {
+ : CAMusElement( noteList.front()->context(), noteList.front()->timeStart(), 0 ), _number(number), _actualNumber(actualNumber), _noteList(noteList) {
 	setMusElementType( Tuplet );
 
 	assignTimes();
