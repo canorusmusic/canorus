@@ -46,6 +46,8 @@ CADrawableBarline::CADrawableBarline(CABarline *m, CADrawableStaff *staff, doubl
  		case CABarline::Dotted:
  			setWidth( DOTTED_BARLINE_WIDTH );
  			break;
+ 		case CABarline::Undefined:
+ 			break;
  	}
 
 	setHeight( staff->height() );
@@ -179,6 +181,8 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 			p->setPen(pen);
 			p->drawLine( qRound(s.x), s.y,
 			             qRound(s.x), qRound(s.y + height()*s.z) );
+			break;
+		case CABarline::Undefined:
 			break;
 	}
 
