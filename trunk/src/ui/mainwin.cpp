@@ -1328,7 +1328,7 @@ void CAMainWin::on_uiRemoveVoice_triggered() {
 	if (voice) {
 		// Last voice cannot be deleted
 		if (voice->staff()->voiceList().size()==1) {
-			int ret = QMessageBox::critical(
+			/*int ret =*/ QMessageBox::critical(
 				this, tr("Canorus"),
 				tr("Cannot delete the last voice in the staff!")
 			);
@@ -1470,7 +1470,7 @@ void CAMainWin::setMode(CAMode mode) {
 			if (currentScoreView() && currentScoreView()->selection().size()) {
 				CAMusElement *elt = currentScoreView()->selection().front()->musElement();
 				if ( elt->musElementType()==CAMusElement::Syllable ||
-				     elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
+				     ((elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text)) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
 				) {
 					currentScoreView()->createTextEdit(currentScoreView()->selection().front());
 				} else {
@@ -1478,10 +1478,15 @@ void CAMainWin::setMode(CAMode mode) {
 				}
 			}
 		}
+		case ReadOnlyMode:
+		case ProgressMode:
+		case NoDocumentMode:
+			fprintf(stderr,"Warning: CAMainWin::setMode - Unhandled mode %d",mode);
+			break;
 	}	// switch (mode)
 	updateToolBars();
-	if ( currentScoreView() && !currentScoreView()->textEditVisible() ||
-	     !currentScoreView() && currentView() )
+	if ( (currentScoreView() && !currentScoreView()->textEditVisible()) ||
+	     (!currentScoreView() && currentView()) )
 		currentView()->setFocus();
 }
 
@@ -1675,7 +1680,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 				if (!elt) break;
 
 				if ( mode()==EditMode &&
-				     (elt->musElementType()==CAMusElement::Syllable || elt->musElementType()==CAMusElement::Mark && static_cast<CAMark*>(elt)->markType()==CAMark::Text)
+				     (elt->musElementType()==CAMusElement::Syllable || (elt->musElementType()==CAMusElement::Mark && static_cast<CAMark*>(elt)->markType()==CAMark::Text))
 				   ){
 					v->createTextEdit( dElt );
 				}
@@ -1726,9 +1731,9 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 					case CAContext::LyricsContext: {
 						CACanorus::undo()->createUndoCommand( document(), tr("new lyrics context", "undo"));
 
-						int stanza=1;
-						if (dupContext && dupContext->context() && dupContext->context()->contextType()==CAContext::LyricsContext)
-							stanza = static_cast<CALyricsContext*>(dupContext->context())->stanzaNumber()+1;
+						//int stanza=1;
+						/*if (dupContext && dupContext->context() && dupContext->context()->contextType()==CAContext::LyricsContext)
+							stanza = static_cast<CALyricsContext*>(dupContext->context())->stanzaNumber()+1;*/
 
 						v->sheet()->insertContextAfter(
 							dupContext?dupContext->context():0,
@@ -1801,6 +1806,11 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 
 			break;
 		}
+		case ReadOnlyMode:
+		case ProgressMode:
+		case NoDocumentMode:
+			fprintf(stderr,"Warning: CAMainWin::scoreViewMousePress - Unhandled mode %d",mode());
+			break;
 	}
 
 	CAPluginManager::action("onScoreViewClick", document(), 0, 0, this);
@@ -1972,7 +1982,7 @@ void CAMainWin::scoreViewWheel(QWheelEvent *e, QPoint coords) {
 	CAScoreView *sv = static_cast<CAScoreView*>(sender());
 	setCurrentView( sv );
 
-	int val;
+	//int val;
 	switch (e->modifiers()) {
 		case Qt::NoModifier:			//scroll horizontally
 			sv->setWorldX( sv->worldX() - (int)((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
@@ -2118,7 +2128,7 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 				v->selectDownMusElement();
 				v->repaint();
 			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
-				bool rebuild = false;
+				//bool rebuild = false;
 				if (v->selection().size())
 					CACanorus::undo()->createUndoCommand( document(), tr("lower note", "undo") );
 
@@ -2136,7 +2146,7 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 						CADiatonicPitch pitch( note->diatonicPitch().noteName()-1, key.noteAccs(note->diatonicPitch().noteName()-1) );
 						note->setDiatonicPitch( pitch );
 						CACanorus::undo()->pushUndoCommand();
-						rebuild = true;
+						//rebuild = true;
 						eltList << note;
 					}
 				}
@@ -2648,12 +2658,12 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 					QList<CANote*> noteList = noteStart->voice()->getNoteList();
 					int end = noteList.indexOf(noteEnd);
 					for (int i=noteList.indexOf(noteStart); i<=end; i++)
-						if ( musElementFactory()->slurType()==CASlur::SlurType && (noteList[i]->slurStart() || noteList[i]->slurEnd()) ||
-						     musElementFactory()->slurType()==CASlur::PhrasingSlurType && (noteList[i]->phrasingSlurStart() || noteList[i]->phrasingSlurEnd()) )
+						if (((musElementFactory()->slurType()==CASlur::SlurType && (noteList[i]->slurStart())) || noteList[i]->slurEnd()) ||
+						     (((musElementFactory()->slurType()==CASlur::PhrasingSlurType && (noteList[i]->phrasingSlurStart()))) || noteList[i]->phrasingSlurEnd()) )
 							return;
 
-					if (musElementFactory()->slurType()==CASlur::SlurType && (noteStart->slurStart() || noteEnd->slurEnd()) ||
-					    musElementFactory()->slurType()==CASlur::PhrasingSlurType && (noteStart->phrasingSlurStart() || noteEnd->phrasingSlurEnd()))
+					if (((musElementFactory()->slurType()==CASlur::SlurType && (noteStart->slurStart())) || noteEnd->slurEnd()) ||
+					    (((musElementFactory()->slurType()==CASlur::PhrasingSlurType && (noteStart->phrasingSlurStart()))) || noteEnd->phrasingSlurEnd()))
 						break; // return, if the slur already exist
 					success = musElementFactory()->configureSlur( staff, noteStart, noteEnd );
 				}
@@ -2693,6 +2703,12 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 			}
 			break;
 		}
+		case CAMusElement::MidiNote:
+		case CAMusElement::Syllable:
+		case CAMusElement::Tuplet:
+		case CAMusElement::Undefined:
+			fprintf(stderr,"Warning: CAMainWin::insertMusElementAt - Unhandled Element %d",musElementFactory()->musElementType());
+			break;
 	}
 
 	if (success) {
@@ -2903,6 +2919,7 @@ bool CAMainWin::on_uiSaveDocument_triggered() {
 			return saveDocument(s);
 		}
 	}
+	return false;
 }
 
 /**
@@ -2915,7 +2932,7 @@ bool CAMainWin::on_uiSaveDocumentAs_triggered() {
 	   ) {
 		QString s = CAMainWin::uiSaveDialog->selectedFiles().at(0);
 		// append the extension, if the filename doesn't contain a dot
-		int i;
+		//int i;
 		if (!s.contains('.')) {
 			int left = uiSaveDialog->selectedFilter().indexOf("(*.") + 2;
 			int len = uiSaveDialog->selectedFilter().size() - left - 1;
@@ -2953,6 +2970,7 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 	open->importDocument();
 
 	_mainWinProgressCtl.startProgress( open );
+	return open->importedDocument();
 }
 
 /*!
@@ -3442,7 +3460,7 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 	CATextEdit *textEdit = static_cast<CATextEdit*>(sender());
 
 	CAScoreView *v = currentScoreView();
-	CADrawableContext *dContext = v->currentContext();
+	//CADrawableContext *dContext = v->currentContext();
 	CAMusElement *elt = (v->selection().size()?v->selection().front()->musElement():0);
 
 	if ( elt->musElementType()==CAMusElement::Syllable ) {
@@ -3456,16 +3474,16 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 		bool melisma = false;
 		if (text.right(1)=="_") { melisma = true; text.chop(1); }
 
-		CAVoice *voice = 0; /// \todo GUI for syllable specific associated voice - current is the default lyrics context's one
+		//CAVoice *voice = 0; /// \todo GUI for syllable specific associated voice - current is the default lyrics context's one
 
-		CALyricsContext *lc = static_cast<CALyricsContext*>(dContext->context());
+		//CALyricsContext *lc = static_cast<CALyricsContext*>(dContext->context());
 
 		// create or edit syllable
 		if ( e->key()==Qt::Key_Space  ||
 		     e->key()==Qt::Key_Return ||
-		     e->key()==Qt::Key_Right && textEdit->cursorPosition()==textEdit->text().size() ||
-		     (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && textEdit->cursorPosition()==0 ||
-		     CACanorus::settings()->finaleLyricsBehaviour() && e->key()==Qt::Key_Minus
+		     (e->key()==Qt::Key_Right && textEdit->cursorPosition()==textEdit->text().size()) ||
+		     ((e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && textEdit->cursorPosition()==0) ||
+		     (CACanorus::settings()->finaleLyricsBehaviour() && e->key()==Qt::Key_Minus)
 		) {
 			CACanorus::undo()->createUndoCommand( document(), tr("lyrics edit", "undo") );
 			syllable->setText(text);
@@ -3474,7 +3492,7 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 
 			v->removeTextEdit();
 
-			CAVoice *voice = (syllable->associatedVoice()?syllable->associatedVoice():lc->associatedVoice());
+			//CAVoice *voice = (syllable->associatedVoice()?syllable->associatedVoice():lc->associatedVoice());
 			CAMusElement *nextSyllable = 0;
 			if (syllable) {
 				if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) { // next right note
@@ -3495,7 +3513,7 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 				}
 			}
 		}
-	} else if (elt->musElementType()==CAMusElement::Mark && static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark) {
+	} else if ((elt->musElementType()==CAMusElement::Mark && static_cast<CAMark*>(elt)->markType()==CAMark::Text) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark) {
 		if (e->key()==Qt::Key_Return) {
 			CAMark *mark = static_cast<CAMark*>(elt);
 			CACanorus::undo()->createUndoCommand( document(), tr("text edit", "undo") );
@@ -4060,8 +4078,8 @@ void CAMainWin::on_uiLilyPondSource_triggered() {
 		return;
 
 	CASourceView *v=0;
-	CAStaff *staff = 0;
-	if (staff = currentStaff()) {
+	CAStaff *staff = currentStaff();
+	if (staff) {
 		int voiceNum = uiVoiceNum->getRealValue()-1<0?0:uiVoiceNum->getRealValue()-1;
 		CAVoice *voice = staff->voiceList()[ voiceNum ];
 		v = new CASourceView(voice, 0);
@@ -4389,6 +4407,8 @@ void CAMainWin::updateContextToolBar() {
 				uiAssociatedVoiceAction->setVisible(false);
 				break;
 			}
+			case CAContext::FiguredBassContext:
+				break;
 		}
 		uiContextName->setText(context->name());
 	} else
@@ -4960,7 +4980,7 @@ void CAMainWin::copySelection( CAScoreView *v ) {
 						for(int previdx = eltidx-1; previdx >= 0; previdx--) {
 							if((prev = eltMap[context][previdx]) && prev->musElementType() == CAMusElement::Note
 									&& pl->voice() == static_cast<CAPlayable*>(prev)->voice()) {
-								CANote *prevNote = static_cast<CANote*>(prev);
+								//CANote *prevNote = static_cast<CANote*>(prev);
 								addToChord = prev->timeStart() == note->timeStart();
 								break;
 							}
@@ -5011,7 +5031,7 @@ void CAMainWin::copySelection( CAScoreView *v ) {
 			if(voices.isEmpty())
 				voices << defaultVoice;
 
-			CAStaff *last = static_cast<CAStaff*>(currentSheet->contextList().last());
+			//CAStaff *last = static_cast<CAStaff*>(currentSheet->contextList().last());
 			foreach(CAVoice* voice, voices)
 				newStaff->addVoice(voice);
 		}
@@ -5067,9 +5087,9 @@ void CAMainWin::deleteSelection( CAScoreView *v, bool deleteSyllables, bool dele
 		// cleans up the set - removes empty elements and elements which get deleted automatically (eg. slurs, if both notes are deleted, marks)
 		for (QSet<CAMusElement*>::iterator i=musElemSet.begin(); i!=musElemSet.end(); ) {
 			if (!(*i) ||
-			     (*i)->musElementType()==CAMusElement::Slur && musElemSet.contains(static_cast<CASlur*>(*i)->noteStart()) ||
-			     (*i)->musElementType()==CAMusElement::Slur && musElemSet.contains(static_cast<CASlur*>(*i)->noteEnd()) ||
-			     (*i)->musElementType()==CAMusElement::Mark && musElemSet.contains(static_cast<CAMark*>(*i)->associatedElement()) ) {
+			     ((*i)->musElementType()==CAMusElement::Slur && musElemSet.contains(static_cast<CASlur*>(*i)->noteStart())) ||
+			     ((*i)->musElementType()==CAMusElement::Slur && musElemSet.contains(static_cast<CASlur*>(*i)->noteEnd())) ||
+			     ((*i)->musElementType()==CAMusElement::Mark && musElemSet.contains(static_cast<CAMark*>(*i)->associatedElement())) ) {
 				i = musElemSet.erase(i);
 			} else {
 				i++;
@@ -5104,8 +5124,8 @@ void CAMainWin::deleteSelection( CAScoreView *v, bool deleteSyllables, bool dele
 
 							if ( !current && restsInOtherVoices.size() &&
 								( restsInOtherVoices.back()->voice()!=chord[chordIdx]->voice() ||
-								  restsInOtherVoices.back()->voice()==chord[chordIdx]->voice() &&
-								  restsInOtherVoices.back()->timeEnd() < p->timeEnd() )
+								  (restsInOtherVoices.back()->voice()==chord[chordIdx]->voice() &&
+								  restsInOtherVoices.back()->timeEnd() < p->timeEnd()) )
 							   ) {
 								deleteNotes = false;
 								break;
@@ -5302,7 +5322,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 				switch(context->contextType())
 				{
 					case CAContext::Staff: {
-						CAStaff* s = static_cast<CAStaff*>(context), *newStaff;
+						CAStaff/* * s = static_cast<CAStaff*>(context),*/ *newStaff;
 						newContext = newStaff =  new CAStaff(tr("Staff%1").arg(v->sheet()->staffList().size()+1), currentSheet);
 						break;
 					}
@@ -5325,6 +5345,8 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 						newContext = new CAFunctionMarkContext(tr("FunctionMarkContext%1").arg(v->sheet()->contextList().size()+1), currentSheet);
 						break;
 					}
+					case CAContext::FiguredBassContext:
+						break;
 				}
 				if(insertAfter) {
 					currentSheet->insertContextAfter(insertAfter, newContext);
