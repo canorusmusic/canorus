@@ -319,7 +319,7 @@ void CAActionsEditor::validateAction(QTableWidgetItem * i) {
 		// @ToDo: Only optional beep ?
 		if (hasConflicts()) qApp->beep();
 	}
-	else if (iCol = COL_MIDI)
+	else if (iCol == COL_MIDI)
 	{
 	    QString midiText = i->text();
 
@@ -492,11 +492,11 @@ bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* =
 
 void CAActionsEditor::loadActionsTable() {
 	QString sk;
-	bool bSCuts = false;
+	//bool bSCuts = false;
 	if( actionsTable->column( (QTableWidgetItem *)focusWidget() ) == COL_SHORTCUT )
 	{
 		sk = tr("Shortcut files") +" (*.cakey)";
-		bSCuts = true;
+		//bSCuts = true;
 	}
 	else
 		sk = tr("Midi command files") +" (*.camid)";
@@ -547,7 +547,8 @@ bool CAActionsEditor::loadActionsTable(const QString & filename, bool bSCuts/* =
 						accelText.clear();
 					midiText = rx.cap(4) + " " + rx.cap(5) + " " + rx.cap(6);
 					qDebug(" command: '%s' context: '%s' accel: '%s' midi: '%s'",
-				 command.toUtf8().data(), accelText.toUtf8().data(), midiText.toUtf8().data());
+						command.toUtf8().data(), context.toUtf8().data(),
+						accelText.toUtf8().data(), midiText.toUtf8().data());
 					// @ToDo: command name is not identical to command identifier!
 					row = findActionCommand(command);
 					if (row > -1) {
