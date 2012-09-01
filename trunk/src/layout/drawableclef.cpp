@@ -90,6 +90,11 @@ void CADrawableClef::draw(QPainter *p, CADrawSettings s) {
 		case CAClef::C:
 			p->drawText(s.x, qRound(s.y + (clef()->offset()>0?CLEF_EIGHT_SIZE*s.z:0) + 0.5*(height() - (clef()->offset()?CLEF_EIGHT_SIZE:0))*s.z), QString(CACanorus::fetaCodepoint("clefs.C")));
 			break;
+		case CAClef::Tab:
+		case CAClef::PercussionHigh:
+		case CAClef::PercussionLow:
+			fprintf(stderr,"Warning: CADrawableClef::draw - Unhandled type %d",clef()->clefType());
+			break;
 	}
 
 	if (clef()->offset()) {
