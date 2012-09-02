@@ -1172,6 +1172,36 @@ void CAMainWin::initView(CAView *v) {
 	setMode(mode());	// updates the new View border settings
 }
 
+
+/*!
+	Returns the currently selected sheet in the current view or 0, if no such view exists.
+*/
+CASheet *CAMainWin::currentSheet() {
+	if (!currentView()) {
+		return 0;
+	}
+	
+	switch (currentView()->viewType()) {
+	case CAView::ScoreView: {
+		CAScoreView *v = currentScoreView();
+		if (v) return v->sheet();
+		break;
+	}
+	case CAView::SourceView: {
+		CASourceView *v = static_cast<CASourceView*>(currentView());
+		if (v->voice() && v->voice()->staff()) {
+			return v->voice()->staff()->sheet();
+		} else
+		if (v->lyricsContext()) {
+			return v->lyricsContext()->sheet();
+		}
+		break;
+	}
+	}
+
+	return 0;
+}
+
 /*!
 	Returns the currently selected context in the current view port or 0 if no contexts are selected.
 */
@@ -1239,7 +1269,6 @@ void CAMainWin::on_uiUndo_toggled( bool checked, int row ) {
 		}
 
 		CACanorus::rebuildUI( document(), 0 );
-
 		if (curVoiceIdx>=0 && curVoiceIdx<currentSheet()->voiceList().size()) {
 			setCurrentVoice( currentSheet()->voiceList()[curVoiceIdx] );
 		}
