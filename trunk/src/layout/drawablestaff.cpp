@@ -260,7 +260,8 @@ void CADrawableStaff::addMElement(CADrawableMusElement *elt) {
 		case CADrawableMusElement::DrawableFunctionMarkSupport:
 		case CADrawableMusElement::DrawableFiguredBassNumber:
 		case CADrawableMusElement::DrawableMark:
-			fprintf(stderr,"Warning: CADrawableStaff::addMElement - Unhandled element %d",elt->drawableMusElementType());
+			// These elements are just added to the list but not handled specifically
+			//fprintf(stderr,"Warning: CADrawableStaff::addMElement - Unhandled element %d\n",elt->drawableMusElementType());
 			break;
 	}
 
