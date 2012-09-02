@@ -1011,17 +1011,18 @@ void CALayoutEngine::placeMarks( CADrawableMusElement *e, CAScoreView *v, int st
 		CAMark *mark = elt->markList()[i];
 
 		int yCoord;
+		CAFingering *fingering = dynamic_cast<CAFingering*>(mark);
 		if ( mark->markType()==CAMark::Pedal ||
-		     (((mark->markType()==CAMark::Fingering && (static_cast<CAFingering*>(mark)->fingerList()[0]==CAFingering::LHeel)) || static_cast<CAFingering*>(mark)->fingerList()[0]==CAFingering::LToe )) ||
-		     (elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->actualSlurDirection()==CASlur::SlurDown &&
-		       ((mark->markType()==CAMark::Text) || (mark->markType()==CAMark::Fermata) || (mark->markType()==CAMark::Articulation) || (mark->markType()==CAMark::Fingering && static_cast<CAFingering*>(mark)->fingerList()[0]!=CAFingering::LHeel && static_cast<CAFingering*>(mark)->fingerList()[0]!=CAFingering::LToe ))))  {
+			 (fingering && (fingering->fingerList()[0]==CAFingering::LHeel || fingering->fingerList()[0]==CAFingering::LToe)) ||
+			 (elt->musElementType()==CAMusElement::Note && static_cast<CANote*>(elt)->actualSlurDirection()==CASlur::SlurDown &&
+			   ((mark->markType()==CAMark::Text) || (mark->markType()==CAMark::Fermata) || (mark->markType()==CAMark::Articulation) ))) {
 			// place mark below
 			xCoord = e->xPos();
 			yCoord = qMax(e->yPos()+e->height(),e->drawableContext()->yPos()+e->drawableContext()->height())+20*(k+1);
 			k++;
 		} else if ( elt->musElementType()==CAMusElement::Note &&
-				    static_cast<CANote*>(elt)->isPartOfChord() &&
-		            mark->markType()==CAMark::Fingering && static_cast<CAFingering*>(mark)->fingerList()[0] < 6 ) {
+					static_cast<CANote*>(elt)->isPartOfChord() &&
+					fingering && fingering->fingerList()[0] < 6 ) {
 			// place mark beside the note
 			xCoord = e->xPos() + e->width();
 			yCoord = e->yPos() - 2;
