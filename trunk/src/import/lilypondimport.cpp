@@ -375,6 +375,17 @@ CALyricsContext *CALilyPondImport::importLyricsContextImpl() {
 		if (lastSyllable && text=="__") {
 			lastSyllable->setMelismaStart(true);
 		} else {
+			if (text.length()>0 && text[0]=='"') {
+				while (!text.endsWith('"') && peekNextElement()!="") {
+					text += QString(" ")+parseNextElement();
+				}
+				text.remove(0,1);
+				if (text.endsWith('"')) {
+					text.chop(1);
+				}
+				text.replace("\\\"", "\"");
+				text.replace(" ", "_");
+			}
 			lc->addSyllable( lastSyllable = new CASyllable( text, false, false, lc, timeSDummy, 0 ) );
 		}
 	}
@@ -397,7 +408,14 @@ const QString CALilyPondImport::parseNextElement() {
 	} else if (in().mid(start,1)=="%") {
 		// handle comments
 		start = in().indexOf(QRegExp("[\n\r]"), start);
-		start = in().indexOf(QRegExp("\\S"), start);
+		if (start==-1) {
+			start = in().size();
+		} else {
+			start = in().indexOf(QRegExp("\\S"), start);
+			if (start==-1) {
+				start = in().size();
+			}
+		}
 	}
 
 	int i = in().indexOf(DELIMITERS, start);
@@ -427,8 +445,20 @@ const QString CALilyPondImport::parseNextElement() {
 const QString CALilyPondImport::peekNextElement() {
 	// find the first non-whitespace character
 	int start = in().indexOf(QRegExp("\\S"));
-	if (start==-1)
+	if (start==-1) {
 		start = 0;
+	} else if (in().mid(start,1)=="%") {
+		// handle comments
+		start = in().indexOf(QRegExp("[\n\r]"), start);
+		if (start==-1) {
+			start = in().size();
+		} else {
+			start = in().indexOf(QRegExp("\\S"), start);
+			if (start==-1) {
+				start = in().size();
+			}
+		}
+	}
 
 	int i = in().indexOf(DELIMITERS, start);
 	if (i==-1)
