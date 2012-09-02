@@ -396,7 +396,7 @@ const QString CALilyPondImport::parseNextElement() {
 		start = 0;
 	} else if (in().mid(start,1)=="%") {
 		// handle comments
-		start = in().indexOf("\n", start);
+		start = in().indexOf(QRegExp("[\n\r]"), start);
 		start = in().indexOf(QRegExp("\\S"), start);
 	}
 
