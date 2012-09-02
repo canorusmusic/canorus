@@ -1,3 +1,66 @@
+0.7.1
+=====
+- Updated translations
+- Add support for ignoring Lilypond comments when importing it
+- Fix problem that undo command doesn't correctly update the cloned sheet
+- Fix crash when undoing source commits for the first time
+- Fix Lilypond comments import when parsing newlines (cr/lf)
+- Fix crash when importing lilypond lyrics
+- Fix warnings throughout the code with newer gcc compiler versions
+  (See separate file large-warn-fixes.txt for technical details)
+- Break compilation when warning occurs
+- Fixed Lilypond melismatic lyrics when used in combination with hyphens
+- Set autobeamOff for printing when lyrics is applied to the voice
+- Added Lilypond export for forced accidentals
+- Added underscores as spaces in Lilypond export
+- Fixed compilation errors using Swig2
+- Fixed note marks time start calculation
+- Fixed importing of slurs times inside the tuplet
+- Fixed importing of canorus files containing tuplet+slur combination
+- Fixed settings dialog page on startup, if playback device not available anymore
+- Fixed crash in reposit method, check for valid slur during creation
+- Implemented degree-based accidentals detection for the given diatonic midi key
+- Fixed semitiones calculation of diminished intervals
+- Fixed midi notes import real times and for tempo > 240bmp
+- Fixed wrong calculation from midi pitch to diatonic pitch
+- Added parameter for scrolling the score view on newly selected music elements
+- Fixed wrong semitones interval calculation
+- Add midi support for (GM) instruments
+- Fixed midi time and length calculation for midi import
+- Fixed brackets and quotes lilypond export
+- Fixed importing the tempo mark on a slured element
+- Add notes, events to midi import and allow control via scripting
+- Add list of shortcuts (midi and UI) in a special file to be used for
+  user defined shortcuts
+- Start work on backend for editing shortcuts (loading/saving/parsing)
+- Fixed exporting text on chords to lilypond
+- Added preliminary documentation of canorus libraries
+- Fix problem that make it impossible to save the document (#16606)
+- Added support for moving sheets using drag&drop and double click
+- Fixed unsaved changes warning dialog when opening recent documents
+- Fixed sheet properties toolbar when removing the last sheet.
+- Fix update of the sheet tab name when renaming the sheet
+- Fixed properties dialog layout
+- Fixed default note stem direction
+- Fix that no time signature/barlines are shown when there are none in the score
+- Fix licensing issues with examples (and remove example with undefined license)
+- Renamed license file to COPYING
+- Add volta bracket support through special text mark
+- Add release build possibility (including compiler optimizations)
+- Fix problem on text display with cleanup and chord creation
+- Enforce UTF-8 encoding for the canorus and lilypond formats
+- Fix midi time scaling and quantisation for all events
+- Fix crash when opening an empty XML file
+- Fix crash with using certain styles in GNOME environment
+- Fix midi import adjustment of notes being left over
+- Added articulation, fingering, dynamic marks to lilypond export
+- Fix problem with tuplet export by returning the last note of a chort
+  instead of the first
+- Fix freeze in the GUI during import
+- Fix Midi export and repeats
+- Fix repeat in multiple staffs
+- Fix arbitrary placed key signature changes
+
 0.7
 ===
 - Added support for printing and preview of score.
