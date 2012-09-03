@@ -139,18 +139,18 @@ Následující dokumenty byly opět obnoveny:
     <message>
         <location filename="../export/export.cpp" line="154"/>
         <source>Exporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyvedení</translation>
     </message>
     <message>
         <location filename="../export/export.cpp" line="156"/>
         <location filename="../export/export.cpp" line="160"/>
         <source>Ready</source>
-        <translation type="unfinished">Připraven</translation>
+        <translation>Připraven</translation>
     </message>
     <message>
         <location filename="../export/export.cpp" line="158"/>
         <source>Unable to open file for writing</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze otevřít soubor pro zápis</translation>
     </message>
 </context>
 <context>
@@ -158,17 +158,17 @@ Následující dokumenty byly opět obnoveny:
     <message>
         <location filename="../import/import.cpp" line="199"/>
         <source>Importing</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavedení</translation>
     </message>
     <message>
         <location filename="../import/import.cpp" line="201"/>
         <source>Ready</source>
-        <translation type="unfinished">Připraven</translation>
+        <translation>Připraven</translation>
     </message>
     <message>
         <location filename="../import/import.cpp" line="203"/>
         <source>Unable to open file for reading</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze otevřít soubor pro čtení</translation>
     </message>
 </context>
 <context>
@@ -177,7 +177,7 @@ Následující dokumenty byly opět obnoveny:
         <location filename="../scorectl/keysignaturectl.cpp" line="68"/>
         <source>change key signature</source>
         <comment>undo</comment>
-        <translation type="unfinished">Změnit předznamenání</translation>
+        <translation>Změnit předznamenání</translation>
     </message>
 </context>
 <context>
@@ -185,7 +185,7 @@ Následující dokumenty byly opět obnoveny:
     <message>
         <location filename="../scoreui/keysignatureui.cpp" line="38"/>
         <source>Key Signature ToolBar</source>
-        <translation type="unfinished">Nástrojový panel pro výběr předznamenání</translation>
+        <translation>Nástrojový panel pro výběr předznamenání</translation>
     </message>
 </context>
 <context>
@@ -202,20 +202,20 @@ Následující dokumenty byly opět obnoveny:
     <message>
         <location filename="../import/lilypondimport.cpp" line="77"/>
         <source>Lilypond imported sheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavedený list LilyPond</translation>
     </message>
     <message>
-        <location filename="../import/lilypondimport.cpp" line="683"/>
+        <location filename="../import/lilypondimport.cpp" line="719"/>
         <source>Ready</source>
         <translation>Připraven</translation>
     </message>
     <message>
-        <location filename="../import/lilypondimport.cpp" line="685"/>
+        <location filename="../import/lilypondimport.cpp" line="721"/>
         <source>Importing...</source>
         <translation>Zavádí se...</translation>
     </message>
     <message>
-        <location filename="../import/lilypondimport.cpp" line="687"/>
+        <location filename="../import/lilypondimport.cpp" line="723"/>
         <source>Error while importing!
 Line %1:%2.</source>
         <translation>Během zavedení došlo k chybě!
@@ -280,43 +280,43 @@ Line %1:%2.</source>
         <translation>Výběr směru nožiček u not</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4016"/>
+        <location filename="../ui/mainwin.cpp" line="4064"/>
         <source>About Qt</source>
         <translation>O Qt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4020"/>
+        <location filename="../ui/mainwin.cpp" line="4068"/>
         <source>About Canorus</source>
         <translation>O Canoru</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1719"/>
-        <location filename="../ui/mainwin.cpp" line="5306"/>
+        <location filename="../ui/mainwin.cpp" line="1753"/>
+        <location filename="../ui/mainwin.cpp" line="5356"/>
         <source>Staff%1</source>
         <translation>Notová osnova %1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1314"/>
+        <location filename="../ui/mainwin.cpp" line="1343"/>
         <source>Voice%1</source>
         <translation>Hlas %1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1332"/>
-        <location filename="../ui/mainwin.cpp" line="1339"/>
-        <location filename="../ui/mainwin.cpp" line="1367"/>
-        <location filename="../ui/mainwin.cpp" line="3235"/>
+        <location filename="../ui/mainwin.cpp" line="1361"/>
+        <location filename="../ui/mainwin.cpp" line="1368"/>
+        <location filename="../ui/mainwin.cpp" line="1396"/>
+        <location filename="../ui/mainwin.cpp" line="3282"/>
         <source>Canorus</source>
         <translation>Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1340"/>
+        <location filename="../ui/mainwin.cpp" line="1369"/>
         <source>Are you sure do you want to delete voice
 %1 and all its notes?</source>
         <translation>Jste si jist, že chcete smazat hlas
 %1 i se všemi jeho notami?</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1368"/>
+        <location filename="../ui/mainwin.cpp" line="1397"/>
         <source>Are you sure do you want to delete context
 %1 and all its contents?</source>
         <translation>Jste si jist, že chcete smazat prostředí
@@ -358,7 +358,7 @@ Line %1:%2.</source>
         <translation>Nástrojový panel pro listy</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1333"/>
+        <location filename="../ui/mainwin.cpp" line="1362"/>
         <source>Cannot delete the last voice in the staff!</source>
         <translation>Nelze smazat poslední hlas v  notové osnově!</translation>
     </message>
@@ -597,8 +597,8 @@ Line %1:%2.</source>
         <translation>Nové prostředí textu písně</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1736"/>
-        <location filename="../ui/mainwin.cpp" line="5320"/>
+        <location filename="../ui/mainwin.cpp" line="1770"/>
+        <location filename="../ui/mainwin.cpp" line="5370"/>
         <source>LyricsContext%1</source>
         <translation>Prostředí textu písně %1</translation>
     </message>
@@ -613,152 +613,152 @@ Line %1:%2.</source>
         <translation>Spojený hlas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1291"/>
+        <location filename="../ui/mainwin.cpp" line="1320"/>
         <source>new sheet</source>
         <comment>undo</comment>
         <translation>Nový list</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1312"/>
+        <location filename="../ui/mainwin.cpp" line="1341"/>
         <source>new voice</source>
         <comment>undo</comment>
         <translation>Nový hlas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1346"/>
+        <location filename="../ui/mainwin.cpp" line="1375"/>
         <source>voice removal</source>
         <comment>undo</comment>
         <translation>Odstranění hlasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1374"/>
+        <location filename="../ui/mainwin.cpp" line="1403"/>
         <source>context removal</source>
         <comment>undo</comment>
         <translation>Odstranění prostředí</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1715"/>
+        <location filename="../ui/mainwin.cpp" line="1749"/>
         <source>new staff</source>
         <comment>undo</comment>
         <translation>Nová notová osnova</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1727"/>
+        <location filename="../ui/mainwin.cpp" line="1761"/>
         <source>new lyrics context</source>
         <comment>undo</comment>
         <translation>Nové prostředí textu písně</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2053"/>
+        <location filename="../ui/mainwin.cpp" line="2092"/>
         <source>insert barline</source>
         <comment>undo</comment>
         <translation>Vložit taktovou čáru</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2085"/>
+        <location filename="../ui/mainwin.cpp" line="2124"/>
         <source>rise note</source>
         <comment>undo</comment>
         <translation>Zvýšit notu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2123"/>
+        <location filename="../ui/mainwin.cpp" line="2162"/>
         <source>lower note</source>
         <comment>undo</comment>
         <translation>Snížit notu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2168"/>
+        <location filename="../ui/mainwin.cpp" line="2207"/>
         <source>add sharp</source>
         <comment>undo</comment>
         <translation>Přidat křížek</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2202"/>
+        <location filename="../ui/mainwin.cpp" line="2241"/>
         <source>add flat</source>
         <comment>undo</comment>
         <translation>Přidat béčko</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2229"/>
+        <location filename="../ui/mainwin.cpp" line="2268"/>
         <source>set dotted</source>
         <comment>undo</comment>
         <translation>Nastavit tečkované</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5048"/>
+        <location filename="../ui/mainwin.cpp" line="5098"/>
         <source>deletion of elements</source>
         <comment>undo</comment>
         <translation>Smazat prvky</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2407"/>
+        <location filename="../ui/mainwin.cpp" line="2446"/>
         <source>insertion of music element</source>
         <comment>undo</comment>
         <translation>Vložit noty a pauzy</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3314"/>
+        <location filename="../ui/mainwin.cpp" line="3361"/>
         <source>change voice name</source>
         <comment>undo</comment>
         <translation>Změnit název hlasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3470"/>
+        <location filename="../ui/mainwin.cpp" line="3517"/>
         <source>lyrics edit</source>
         <comment>undo</comment>
         <translation>Upravit text písně</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3932"/>
+        <location filename="../ui/mainwin.cpp" line="3979"/>
         <source>commit CanorusML source</source>
         <comment>undo</comment>
         <translation>Zapsat data CanorusML</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3951"/>
-        <location filename="../ui/mainwin.cpp" line="3986"/>
+        <location filename="../ui/mainwin.cpp" line="3998"/>
+        <location filename="../ui/mainwin.cpp" line="4034"/>
         <source>commit LilyPond source</source>
         <comment>undo</comment>
         <translation>Zapsat data LilyPond</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4104"/>
+        <location filename="../ui/mainwin.cpp" line="4152"/>
         <source>deletion of the sheet</source>
         <comment>undo</comment>
         <translation>Smazat list</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4163"/>
+        <location filename="../ui/mainwin.cpp" line="4211"/>
         <source>change sheet name</source>
         <comment>undo</comment>
         <translation>Změnit název listu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4183"/>
+        <location filename="../ui/mainwin.cpp" line="4231"/>
         <source>change context name</source>
         <comment>undo</comment>
         <translation>Změnit název prostředí</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4202"/>
+        <location filename="../ui/mainwin.cpp" line="4250"/>
         <source>change stanza number</source>
         <comment>undo</comment>
         <translation>Změnit číslo sloky</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4214"/>
+        <location filename="../ui/mainwin.cpp" line="4262"/>
         <source>change associated voice</source>
         <comment>undo</comment>
         <translation>Změnit spojený hlas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4225"/>
+        <location filename="../ui/mainwin.cpp" line="4273"/>
         <source>change voice stem direction</source>
         <comment>undo</comment>
         <translation>Změnit směr nožiček u hlasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4242"/>
+        <location filename="../ui/mainwin.cpp" line="4290"/>
         <source>change note stem direction</source>
         <comment>undo</comment>
         <translation>Změnit směr nožiček u not</translation>
@@ -824,19 +824,19 @@ Line %1:%2.</source>
         <translation>Znovu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3296"/>
+        <location filename="../ui/mainwin.cpp" line="3343"/>
         <source>change clef offset</source>
         <comment>undo</comment>
         <translation>Změnit posunutí klíče</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4865"/>
+        <location filename="../ui/mainwin.cpp" line="4915"/>
         <source>cut</source>
         <comment>undo</comment>
         <translation>Vyjmout</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5280"/>
+        <location filename="../ui/mainwin.cpp" line="5330"/>
         <source>paste</source>
         <comment>undo</comment>
         <translation>Vložit</translation>
@@ -848,31 +848,31 @@ Line %1:%2.</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3601"/>
+        <location filename="../ui/mainwin.cpp" line="3648"/>
         <source>change function</source>
         <comment>undo</comment>
         <translation>Změnit funkci</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3624"/>
+        <location filename="../ui/mainwin.cpp" line="3671"/>
         <source>change chord area</source>
         <comment>undo</comment>
         <translation>Změnit oblast akordu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3647"/>
+        <location filename="../ui/mainwin.cpp" line="3694"/>
         <source>change tonic degree</source>
         <comment>undo</comment>
         <translation>Změnit první stupeň tóniny</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3669"/>
+        <location filename="../ui/mainwin.cpp" line="3716"/>
         <source>set/unset ellipse</source>
         <comment>undo</comment>
         <translation>Zapnout/Vypnout elipsu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3378"/>
+        <location filename="../ui/mainwin.cpp" line="3425"/>
         <source>change playable length</source>
         <comment>undo</comment>
         <translation>Změnit hratelnou délku</translation>
@@ -951,7 +951,7 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="250"/>
         <source>New Figured Bass context</source>
-        <translation type="unfinished"></translation>
+        <translation>Prostředí nového číslovaného basu</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="251"/>
@@ -1137,42 +1137,42 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="425"/>
         <source>Figured bass ToolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>Nástrojový panel pro číslovaný bas</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="426"/>
         <source>Set/Unset Figured bass number</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit/Zrušit nastavení čísla číslovaného basu</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="431"/>
         <source>Set/Unset Figured bass accidentals</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit/Zrušit nastavení posuvek číslovaného basu</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="433"/>
         <source>Double flat</source>
-        <translation type="unfinished"></translation>
+        <translation>Dvojité béčko</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="434"/>
         <source>Flat</source>
-        <translation type="unfinished"></translation>
+        <translation>Béčko</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="435"/>
         <source>Neutral</source>
-        <translation type="unfinished"></translation>
+        <translation>Odrážka</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="436"/>
         <source>Sharp</source>
-        <translation type="unfinished"></translation>
+        <translation>Křížek</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="437"/>
         <source>Double sharp</source>
-        <translation type="unfinished"></translation>
+        <translation>Dvojitý křížek</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="439"/>
@@ -1461,12 +1461,12 @@ Line %1:%2.</source>
     <message>
         <location filename="../ui/mainwin.cpp" line="722"/>
         <source>Figured bass number</source>
-        <translation type="unfinished"></translation>
+        <translation>Číslo číslovaného basu</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="727"/>
         <source>Figured bass accidentals</source>
-        <translation type="unfinished"></translation>
+        <translation>Posuvky číslovaného basu</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="735"/>
@@ -1507,7 +1507,7 @@ Line %1:%2.</source>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="893"/>
-        <location filename="../ui/mainwin.cpp" line="3058"/>
+        <location filename="../ui/mainwin.cpp" line="3105"/>
         <source>Untitled</source>
         <translation>Bez názvu</translation>
     </message>
@@ -1515,7 +1515,7 @@ Line %1:%2.</source>
         <location filename="../ui/mainwin.cpp" line="992"/>
         <source>change sheet order</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation>Změnit pořadí listu</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="1016"/>
@@ -1524,110 +1524,111 @@ Line %1:%2.</source>
         <translation>Změnit skrytou pomlku</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1663"/>
+        <location filename="../ui/mainwin.cpp" line="1697"/>
         <source>resize</source>
         <comment>undo</comment>
         <translation>Změnit velikost</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1745"/>
+        <location filename="../ui/mainwin.cpp" line="1779"/>
         <source>new figured bass context</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation>Prostředí nového číslovaného basu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1749"/>
+        <location filename="../ui/mainwin.cpp" line="1783"/>
         <source>FiguredBassContext%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Prostředí číslovaného basu %1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1756"/>
+        <location filename="../ui/mainwin.cpp" line="1790"/>
         <source>new function mark context</source>
         <comment>undo</comment>
         <translation>Prostředí nové funkční značky</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1760"/>
-        <location filename="../ui/mainwin.cpp" line="5325"/>
+        <location filename="../ui/mainwin.cpp" line="1794"/>
+        <location filename="../ui/mainwin.cpp" line="5375"/>
         <source>FunctionMarkContext%1</source>
         <translation>Prostředí značky funkce %1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3033"/>
-        <location filename="../ui/mainwin.cpp" line="3044"/>
+        <location filename="../ui/mainwin.cpp" line="3080"/>
+        <location filename="../ui/mainwin.cpp" line="3091"/>
         <source>Error while saving document</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při ukládání dokumentu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3034"/>
+        <location filename="../ui/mainwin.cpp" line="3081"/>
         <source>The document was not saved!
 Error number %1 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokument nebyl uložen!
+Chyba s číslem %1 %2.</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3045"/>
+        <location filename="../ui/mainwin.cpp" line="3092"/>
         <source>Unknown file format %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Neznámý formát souboru %1.</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3064"/>
+        <location filename="../ui/mainwin.cpp" line="3111"/>
         <source>(modified)</source>
         <translation>(změněno)</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3095"/>
+        <location filename="../ui/mainwin.cpp" line="3142"/>
         <source>No file name</source>
         <translation>Žádný název souboru</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3095"/>
+        <location filename="../ui/mainwin.cpp" line="3142"/>
         <source>Warning: No file name for export specified.</source>
         <translation>Varování: Pro vyvedení nebyl zadán žádný název souboru.</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3328"/>
+        <location filename="../ui/mainwin.cpp" line="3375"/>
         <source>change voice instrument</source>
         <comment>undo</comment>
         <translation>Změnit nástroj hlasu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3536"/>
-        <location filename="../ui/mainwin.cpp" line="3573"/>
+        <location filename="../ui/mainwin.cpp" line="3583"/>
+        <location filename="../ui/mainwin.cpp" line="3620"/>
         <source>change figured bass</source>
         <comment>undo</comment>
-        <translation type="unfinished"></translation>
+        <translation>Změnit číslovaný bas</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3866"/>
+        <location filename="../ui/mainwin.cpp" line="3913"/>
         <source>insert tuplet</source>
         <comment>undo</comment>
         <translation>Vložit rytmickou notovou skupinu</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4021"/>
+        <location filename="../ui/mainwin.cpp" line="4069"/>
         <source>&lt;p&gt;&lt;b&gt;Canorus - The next generation music score editor&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Version %1&lt;br&gt;(C) 2006-2009 Canorus Development team. All rights reserved.&lt;br&gt;See the file AUTHORS for the list of Canorus developers&lt;br&gt;&lt;br&gt;This program is licensed under the GNU General Public License (GPL).&lt;br&gt;See the file LICENSE.GPL for details.&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.canorus.org&quot;&gt;http://www.canorus.org&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Canorus - Hudební editor notového zápisu další generace&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Verze %1&lt;br&gt;(C) 2006-2012 Vývojářská skupina Canoru. Všechna práva vyhrazena.&lt;br&gt;Seznam vývojářů Canoru najdete v souboru AUTHORS&lt;br&gt;&lt;br&gt;Tento program je licencován pod GNU General Public License (GPL).&lt;br&gt;Podrobnosti najdete v souboru LICENSE.GPL.&lt;br&gt;&lt;br&gt;Stránky: &lt;a href=&quot;http://www.canorus.org&quot;&gt;http://www.canorus.org&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4037"/>
+        <location filename="../ui/mainwin.cpp" line="4085"/>
         <source>Recorded Midi file</source>
         <translation>Nahraný soubor MIDI</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5533"/>
-        <location filename="../ui/mainwin.cpp" line="5556"/>
+        <location filename="../ui/mainwin.cpp" line="5585"/>
+        <location filename="../ui/mainwin.cpp" line="5608"/>
         <source>change fermata type</source>
         <comment>undo</comment>
         <translation>Změnit druh koruny (fermaty)</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5656"/>
+        <location filename="../ui/mainwin.cpp" line="5708"/>
         <source>change tempo beat</source>
         <comment>undo</comment>
         <translation>Změnit rytmus tempa</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5679"/>
+        <location filename="../ui/mainwin.cpp" line="5731"/>
         <source>change tempo bpm</source>
         <comment>undo</comment>
         <translation>Změnit počet úderů za minutu tempa</translation>
@@ -1643,7 +1644,7 @@ Error number %1 %2.</source>
         <translation>Druh fermaty</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3236"/>
+        <location filename="../ui/mainwin.cpp" line="3283"/>
         <source>Error while opening the file!
 Error %1: </source>
         <translation>Při otevírání souboru došlo k chybě!
@@ -1720,13 +1721,13 @@ Chyba %1: </translation>
         <translation>Značka opakování</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5632"/>
+        <location filename="../ui/mainwin.cpp" line="5684"/>
         <source>change repeat mark</source>
         <comment>undo</comment>
         <translation>Změnit značku opakování</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3501"/>
+        <location filename="../ui/mainwin.cpp" line="3548"/>
         <source>text edit</source>
         <comment>undo</comment>
         <translation>Upravit text</translation>
@@ -1819,13 +1820,13 @@ Chyba %1: </translation>
         <translation>Prstoklad</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5579"/>
+        <location filename="../ui/mainwin.cpp" line="5631"/>
         <source>change finger</source>
         <comment>undo</comment>
         <translation>Změnit prstoklad</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5600"/>
+        <location filename="../ui/mainwin.cpp" line="5652"/>
         <source>change finger original property</source>
         <comment>undo</comment>
         <translation>Změnit původní prstoklad</translation>
@@ -1858,22 +1859,22 @@ Line %1:%2.</source>
     <message>
         <location filename="../import/midiimport.cpp" line="777"/>
         <source>Importing Midi events...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavádí se události MIDI...</translation>
     </message>
     <message>
         <location filename="../import/midiimport.cpp" line="779"/>
         <source>Merging Midi events with the score...</source>
-        <translation type="unfinished"></translation>
+        <translation>Slučují se události MIDI s notovým zápisem...</translation>
     </message>
     <message>
         <location filename="../import/midiimport.cpp" line="781"/>
         <source>Reinterpreting accidentals...</source>
-        <translation type="unfinished"></translation>
+        <translation>Znovu se vykládají posuvky...</translation>
     </message>
     <message>
         <location filename="../import/midiimport.cpp" line="783"/>
         <source>Drawing score...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreslí se notový zápis...</translation>
     </message>
 </context>
 <context>
@@ -1948,7 +1949,7 @@ Nainstalujte, prosím, LilyPond (navštivte stránky http://www.lilypond.org) a 
     <message>
         <location filename="../widgets/progressstatusbar.cpp" line="18"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrušit</translation>
     </message>
 </context>
 <context>
@@ -1959,7 +1960,7 @@ Nainstalujte, prosím, LilyPond (navštivte stránky http://www.lilypond.org) a 
         <translation>Dokument</translation>
     </message>
     <message>
-        <location filename="../ui/propertiesdialog.cpp" line="303"/>
+        <location filename="../ui/propertiesdialog.cpp" line="306"/>
         <source>apply properties</source>
         <comment>undo</comment>
         <translation>Použít vlastnosti</translation>
@@ -2094,7 +2095,7 @@ Smazání nelze vrátit zpět!</translation>
         <translation>List %1</translation>
     </message>
     <message>
-        <location filename="../score/staff.cpp" line="206"/>
+        <location filename="../score/staff.cpp" line="209"/>
         <location filename="../import/canorusmlimport.cpp" line="254"/>
         <source>Voice%1</source>
         <translation>Hlas %1</translation>
@@ -2107,7 +2108,7 @@ Smazání nelze vrátit zpět!</translation>
     <message>
         <location filename="../import/canorusmlimport.cpp" line="219"/>
         <source>Figured Bass Context %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Prostředí číslovaného basu %1</translation>
     </message>
     <message>
         <location filename="../import/canorusmlimport.cpp" line="233"/>
@@ -3746,7 +3747,7 @@ Smazání nelze vrátit zpět!</translation>
     <message>
         <location filename="../ui_mainwin.h" line="722"/>
         <source>Figured bass mark...</source>
-        <translation type="unfinished"></translation>
+        <translation>Značka číslovaného basu...</translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="726"/>
@@ -4010,12 +4011,12 @@ Smazání nelze vrátit zpět!</translation>
     <message>
         <location filename="../ui_settingsdialog.h" line="793"/>
         <source>When inserting notes and rests, split them automatically at quarter boundaries.</source>
-        <translation type="unfinished"></translation>
+        <translation>Při vkládání not a pomlk je automaticky rozdělit na hranicích čtvrtin.</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="795"/>
         <source>Automatic splitting at quarter boundaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatické rozdělení na hranicích čtvrtin</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="797"/>
@@ -4030,7 +4031,7 @@ Smazání nelze vrátit zpět!</translation>
     <message>
         <location filename="../ui_settingsdialog.h" line="800"/>
         <source>Use animated scroll</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít projíždění notovým zápisem</translation>
     </message>
     <message>
         <location filename="../ui_settingsdialog.h" line="804"/>
@@ -4217,22 +4218,22 @@ Smazání nelze vrátit zpět!</translation>
     <message>
         <location filename="../ui_transposeview.h" line="219"/>
         <source>Reinterpret accidentals</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyložit posuvky znovu</translation>
     </message>
     <message>
         <location filename="../ui_transposeview.h" line="220"/>
         <source>Sharps to Flats</source>
-        <translation type="unfinished"></translation>
+        <translation>Křížky na béčka</translation>
     </message>
     <message>
         <location filename="../ui_transposeview.h" line="221"/>
         <source>Flats to Sharps</source>
-        <translation type="unfinished"></translation>
+        <translation>Béčka na křížky</translation>
     </message>
     <message>
         <location filename="../ui_transposeview.h" line="222"/>
         <source>Invert accidentals</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit posuvky</translation>
     </message>
 </context>
 <context>
