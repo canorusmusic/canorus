@@ -1510,7 +1510,7 @@ void CAMainWin::setMode(CAMode mode) {
 		case ReadOnlyMode:
 		case ProgressMode:
 		case NoDocumentMode:
-			fprintf(stderr,"Warning: CAMainWin::setMode - Unhandled mode %d",mode);
+			fprintf(stderr,"Warning: CAMainWin::setMode - Unhandled mode %d\n",mode);
 			break;
 	}	// switch (mode)
 	updateToolBars();
@@ -1838,7 +1838,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 		case ReadOnlyMode:
 		case ProgressMode:
 		case NoDocumentMode:
-			fprintf(stderr,"Warning: CAMainWin::scoreViewMousePress - Unhandled mode %d",mode());
+			fprintf(stderr,"Warning: CAMainWin::scoreViewMousePress - Unhandled mode %d\n",mode());
 			break;
 	}
 
@@ -2736,7 +2736,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 		case CAMusElement::Syllable:
 		case CAMusElement::Tuplet:
 		case CAMusElement::Undefined:
-			fprintf(stderr,"Warning: CAMainWin::insertMusElementAt - Unhandled Element %d",musElementFactory()->musElementType());
+			fprintf(stderr,"Warning: CAMainWin::insertMusElementAt - Unhandled Element %d\n",musElementFactory()->musElementType());
 			break;
 	}
 
