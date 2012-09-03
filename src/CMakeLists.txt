@@ -516,6 +516,12 @@ ADD_DEFINITIONS(-DCANORUS_VERSION=\"${CANORUS_VERSION}\")
 
 # Define Scripting parameters
 IF(USE_SWIG)
+  IF("${SWIG_VERSION}" VERSION_EQUAL "2.0.4" OR "${SWIG_VERSION}" VERSION_GREATER "2.0.4")
+    CONFIGURE_FILE(scripting/canoruspython_2.i scripting/canoruspython.i COPYONLY)
+  ELSE("${SWIG_VERSION}" VERSION_EQUAL "2.0.4" OR "${SWIG_VERSION}" VERSION_GREATER "2.0.4")
+    CONFIGURE_FILE(scripting/canoruspython_1.i scripting/canoruspython.i COPYONLY)
+    	MESSAGE("Warning: Python Swig 1.x support is deprecated")
+  ENDIF("${SWIG_VERSION}" VERSION_EQUAL "2.0.4" OR "${SWIG_VERSION}" VERSION_GREATER "2.0.4")
 	ADD_DEFINITIONS(-DUSE_SWIG)
 ENDIF(USE_SWIG)
 IF(USE_RUBY)
