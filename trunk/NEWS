@@ -1,6 +1,7 @@
 0.7.1
 =====
 - Updated translations
+- Deprecate version 1 usage of swig, we no longer maintain this.
 - Add support for ignoring Lilypond comments when importing it
 - Fix problem that undo command doesn't correctly update the cloned sheet
 - Fix crash when undoing source commits for the first time
@@ -60,6 +61,25 @@
 - Fix Midi export and repeats
 - Fix repeat in multiple staffs
 - Fix arbitrary placed key signature changes
+- Midi support of key signature changes
+- Add more examples
+- Create undo only for a whole chord at midi keyboard input
+- Fixed tuplet and chords saving
+- Expand scripting engine for figured bass
+- Add some user interface settings
+- Allow midi import with no document opened
+- Fix minor problems on lilypond export
+- Add GUI, support, load/save for figured bass marks
+- Update documentation
+- Add support for melisma and syllabic lyrics in MusicXML import
+- Move view to the right if right border is hit on insert of new elements
+- Fix crash when reinterpreting accidentals
+- Added reinterpret accidentals in transpose view
+- Support for key signature in midi export/playback
+- Fixed default mode for the toolbar when creating a new document.
+- Improve midi device (names)
+- Use base name of midi imported file as sheet name
+- Add support for time signatures in midi import
 
 0.7
 ===
