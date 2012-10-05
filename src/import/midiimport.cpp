@@ -444,7 +444,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			staff = new CAStaff( "", sheet, 5);
 			sheet->addContext(staff);
 		}
-		CAMusElement *musElemClef;
+		CAMusElement *musElemClef = 0;
 		for (int voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
 			// voiceName = QObject::tr("Voice%1").arg( voiceNumber );
 			voice = new CAVoice( "", staff, CANote::StemNeutral );
@@ -459,10 +459,6 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 					musElemClef = new CAClef(CAClef::Treble, staff, 0, -8 );
 				} else {
 					musElemClef = new CAClef(CAClef::Treble, staff, 0, 0 );
-				}
-				if (pmidi_out.key == 0) {
-					CADiatonicKey dk = CADiatonicKey(
-						pmidi_out.key, pmidi_out.minor ? CADiatonicKey::Minor : CADiatonicKey::Major );
 				}
 			}
 			voice->append( musElemClef, false );
