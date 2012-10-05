@@ -1,0 +1,42 @@
+CADrawable inherits QGraphicsItemGroup
+- every CADrawable has besides integrated childItems() its own variables for storing eg. staff lines, note heads/stem, barline line etc.
+- CADrawableStaff also has sharedElements list of CADrawableMusElements sorted by xPos
+- CADrawableStaff also has voiceElements list of CADrawablePlayableElements per voice sorted by xPos
+
+CADrawableContext is a QGraphicsItemGroup containing CADrawableMusElements!
+- why? easier to implement selection area!
+
+- painting:
+ - add CADrawable::setFocus(Focused/Unfocused/General)
+ - dMusElt->setFocus(Focused):
+     hidden rests: go green
+     rests/notes: go black
+ - dMusElt->setFocus(Unfocused):
+     hidden rests: go invisible QGraphicsItem::setVisible(false)
+     rests/nots: go gray
+ - dMusElt->setFocus(General):
+     hidden rests: go invisible QGraphicsItem::setVisible(false)
+     rests/nots: go black
+  
+ - add CADrawable::setSelected(true/false)
+
+- add CAScoreViewCtl for handling modes reactions in mainwin<->score view:
+ - shadow notes
+  - add shadow notes when correct mode gets selected
+  - move around shadow notes on mouse move
+ - selection area
+  - draw rectangle from top bounding box CADrawableContext border to bottom border over all crossed drawable contexts
+ - call dMusElt->setActive, sMusElt->setSelected
+
+ - HUD: if we need it some time - reimplement QGraphicsView::drawForeground()
+
+- interaction:
+ - clicks implemented in mousePressEvent:
+   - call QGraphicsScene::items(x,y) and filter all the compatible elements at that point
+
+- labour work:
+ - implement new CADrawableStaff::calculatePitch(), calculateCenterYCoord() - mapToScene()
+                                  getTimeSignature(x,y), removeTimeSignature(x,y)
+                                  getClef(x,y), removeClef(x,y)
+                                  getKeySignature(x,y), removeKeySignature(x,y)
+ - efficient implementation of CADrawableContext::findInRange() (using findNearestLeft+1, pass until x2 reached)
