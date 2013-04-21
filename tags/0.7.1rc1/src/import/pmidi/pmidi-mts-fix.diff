@@ -1,0 +1,14 @@
+--- src/midiread.c.orig	2001-08-17 08:27:09.000000000 +0900
++++ src/midiread.c	2007-03-08 11:36:51.000000000 +0900
+@@ -258,9 +258,9 @@
+ 	 * Do not set the device if the type is 0xf0 as these commands are
+ 	 * not channel specific
+ 	 */
+-	device = 0;
++	device = msp->port<<4;
+ 	if (type != 0xf0)
+-		device = (msp->port<<4) + ch;
++		device += ch;
+ 	msp->device = device;
+ 
+ 	el = NULL;

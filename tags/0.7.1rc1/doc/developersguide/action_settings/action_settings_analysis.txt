@@ -1,0 +1,53 @@
+Keyboard Preferences smplayer
+=============================
+
+smplayer Keyboard / Mouse preferences can be changed via 
+Options -> Preferences -> Mouse and Keyboard
+
+prefinput.ui:
+Keyboard tab is empty in UI file
+Mouse tab is filled with some UI stuff
+(work done in prefinput.cpp)
+
+actioneditor.h/cpp
+Based originally on qq14 (qt3) this is now a qt4
+class used to load/save and edit the keyboard settings
+
+Keyboard dialog:
+for input of a new shortcut shortcutgetter.h/cpp is used
+
+Canorus Action settings
+=======================
+Save is done in CASettings (currently only one method)
+CAActionEditor (not CAKeyboardEditor)
+(alternative CAControlEditor)
+
+Midi settings:
+3-4 separate parameters for one command
+input could be changed below the action list
+
+Grouping: Group selection via Combobox list ?
+Groups could even be editable somewhen
+
+Profile:
+Save/Load of profiles for
+a) Keyboard settingssu
+b) Midi instrument settings
+
+Tooltips: Every command is explained via tooltip.
+-> No separate column needed for explanation
+
+Editing of shortcut alternatives:
+a) double click opens a shortcut dialog
+b) open kind of sub menu for editing inside table/listview
+c) edit line: below table/listview there is one line similar to dialog from a)
+dependent on context (keyboard/midi editing) only keyboard or midi
+profile can be save (label should state the context)
+context change via combox or radio buttons 
+
+
+Context of command has to be taken care of too so shortcuts
+can be used more than one time (group ?) like edit/play mode
+
+Macros have to be listed as well
+

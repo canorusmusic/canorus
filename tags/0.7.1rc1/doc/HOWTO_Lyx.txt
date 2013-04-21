@@ -1,0 +1,14 @@
+
+Hints for using lyx for Canorus documentation
+=============================================
+
+Canorus Style ? (LaTeX, Logo etc.) for every doc for identification
+License ? (Common License type similar to GPL)
+
+Main document:
+- Contains all documents (including plugin docs etc.)
+- Using "include" way to integrate sub documents
+- New page for every sub document automatically created
+- includeonly line can be created by cmake if some plugins
+  or parts of canorus are not built.
+
