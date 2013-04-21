@@ -4068,7 +4068,7 @@ void CAMainWin::on_uiAboutCanorus_triggered() {
 	QMessageBox::about( this, tr("About Canorus"),
 	tr("<p><b>Canorus - The next generation music score editor</b></p>\
 <p>Version %1<br>\
-(C) 2006-2009 Canorus Development team. All rights reserved.<br>\
+(C) 2006-2013 Canorus Development team. All rights reserved.<br>\
 See the file AUTHORS for the list of Canorus developers<br><br>\
 This program is licensed under the GNU General Public License (GPL).<br>\
 See the file LICENSE.GPL for details.<br><br>\
