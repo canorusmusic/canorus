@@ -1,0 +1,24 @@
+Canorus: Default keyboard bindings
+
+Cursor left    previos music element
+       right   next music element
+       up      Select mode: upper music element
+               Edit/Insert mode: change pitch by one diatonic step up
+       down    Select mode: lower music element (in code: currently upper?!?)
+               Edit/Insert mode: change pitch by one diatonic step down
+
+   Normal                           Shift
+A 
+B  place barline
+C  
+D
+E
+F
+G
+H
+
++ Insert mode: add extra accelerator to note
+  Edit mode: add sharp to note (can lead to diatonic step!)
+- Insert mode: substract extra accelerator to note
+  Edit mode: add flat to note (can lead to diatonic step!)
+
