@@ -1,0 +1,81 @@
+              User Interface in Canorus
+              =========================
+
+Short desription of flows from user interface in Canorus to the model
+entry (usually CADocument / CAExport etc.). Some rough ideas on how to
+divide it into many smaller parts similar to how the model, drawable and
+(at least in parts) interface and views are already designed.
+
+a) CAMainWin: Has currently all the following tasks:
+001 Creation of menus (using desinger UI)
+002 Creation of toolbar, toolbar elements, actions (including loading their images)
+(03- Creation of additional plugin toolbar/menu entries via Plugin Manager)
+004 Creation of additional toolbars and special widgets as toolbar elements
+005 Control of user interface elements (toolbars, menus)
+006 Signal/Slot Midi In
+007 Timer control (every second) for document "increase" (update on playback ?)
+008 menu entry to add a Sheet
+009 clean up user interface when a document is deleted
+010 changing of a sheet via tab widget
+011 menu entry to toggle full screen on/off
+012 menu entry to toggle a hidden rest on/off
+013 menu entries to (un)split a view horizontally or vertically
+014 menu entries to create/close a view and init (signal/slot connections)
+015 menu entries to create/close a document
+016 menu entries to show the canorus/lilypond sources
+017 
+
+b) Elements used by several actions inside CAMainWin
+001 CAMode - Mode of a Canorus window (due to residing inside CAMainWin the
+    mode can be changed only throughout complete Canorus!)
+002 Document - Document beeing edited, similar restriction currently like CAMode
+003 ViewPort - current graphical element where the document is visualized (score/source)
+004 ViewPortContainer - current control object for viewports and their "position" inside
+    the splitter management
+005 ViewPortlist - contains all view ports (<=> ViewPortContainer ?)
+006 ViewPortContainerlist - contains all view port containers
+007 SheetMap - Contains keys in which view port container which sheet is being displayed
+008 AnimatedScroll - Flag to turn on mouse scroll/zoom
+009 PlaybackViewPort - ViewPort used for playback. Similar restrictions to 001 apply.
+010 PrePlaybackSelection: Selected score part when playback starts ?
+011 RebuildUILock - Flag to be set/checked when user interface is newly drawn
+012 MusElementFactory - Creator of music elements
+013 All the Toolbars (see above for some details)
+014 All the Toolbuttons ("  "    "   "      "   )
+015 All the ActionGroups
+016 LineEdits for the current sheet/context/voice name
+017 Spinboxes for Stanza number, Clef offset, time signature beats/beat etc.
+018 Comboboxes for associated voice, voice instrument, key signature etc.
+019 custom widget for voice number
+
+c) Rules
+001 Logic of window management must be outside of control / view / model classes for
+    one single window (so either CAMainWin are cloned or a CAEditorWin)
+002 Control function should not be part of a window class
+003 View functions should not be part of a control class
+004 data should be always stored in the model (or a separate new model)
+005 Only read from user interface objects when changed by user (or other UI signals)
+    (i.e. every object having a value need to have a corresponding members)
+
+d) Possible function parts (more strict than nowadays), independent of directory structure!
+001 Core Model
+    - Document (containing Sheet, Context, Notes, Lyrics etc.)
+002 Core Control
+003 Core User Interface (QtMainWin clone, toolbars, menus, settings ?)
+    - Undo / Redo, Cut / Copy / Paste
+    - Mode, Sheet, Context, Voice, Stanza
+    - (current) Key, Time signature, Clef
+    - Notes, Rests, Keyboard
+    - Dynamics, Note Stem, Bar line, Marking, Articulation
+    - Text, Syllable, Lyrics
+    - Playable, Midi (Input)
+    - Printing / Preview => 007
+    - File, Export, Import => 004
+004 File Handling and Import/Export 
+    - Canorus ML modules
+    - Import / Export modules
+    - Control and view of file handling
+005 Views and Drawables
+006 Plugins and Skripting
+007 Printing and Preview
+
