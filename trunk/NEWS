@@ -1,15 +1,15 @@
 0.7.1
 =====
 - Updated translations
-- Deprecate version 1 usage of swig, we no longer maintain this.
-- Add support for ignoring Lilypond comments when importing it
-- Fix problem that undo command doesn't correctly update the cloned sheet
-- Fix crash when undoing source commits for the first time
-- Fix Lilypond comments import when parsing newlines (cr/lf)
-- Fix crash when importing lilypond lyrics
-- Fix warnings throughout the code with newer gcc compiler versions
+- Deprecated version 1 usage of swig, we no longer maintain this.
+- Added support for ignoring Lilypond comments when importing it
+- Fixed problem that undo command doesn't correctly update the cloned sheet
+- Fixed crash when undoing source commits for the first time
+- Fixed Lilypond comments import when parsing newlines (cr/lf)
+- Fixed crash when importing lilypond lyrics
+- Fixed warnings throughout the code with newer gcc compiler versions
   (See separate file large-warn-fixes.txt for technical details)
-- Break compilation when warning occurs
+- Added Break of Compilation when warning occurs
 - Fixed Lilypond melismatic lyrics when used in combination with hyphens
 - Set autobeamOff for printing when lyrics is applied to the voice
 - Added Lilypond export for forced accidentals
@@ -26,60 +26,101 @@
 - Fixed wrong calculation from midi pitch to diatonic pitch
 - Added parameter for scrolling the score view on newly selected music elements
 - Fixed wrong semitones interval calculation
-- Add midi support for (GM) instruments
+- Added midi support for (GM) instruments
 - Fixed midi time and length calculation for midi import
 - Fixed brackets and quotes lilypond export
 - Fixed importing the tempo mark on a slured element
-- Add notes, events to midi import and allow control via scripting
-- Add list of shortcuts (midi and UI) in a special file to be used for
+- Added notes, events to midi import and allow control via scripting
+- Added list of shortcuts (midi and UI) in a special file to be used for
   user defined shortcuts
-- Start work on backend for editing shortcuts (loading/saving/parsing)
+- Started work on backend for editing shortcuts (loading/saving/parsing)
 - Fixed exporting text on chords to lilypond
 - Added preliminary documentation of canorus libraries
-- Fix problem that make it impossible to save the document (#16606)
+- Fixed problem that make it impossible to save the document (#16606)
 - Added support for moving sheets using drag&drop and double click
 - Fixed unsaved changes warning dialog when opening recent documents
 - Fixed sheet properties toolbar when removing the last sheet.
-- Fix update of the sheet tab name when renaming the sheet
+- Fixed update of the sheet tab name when renaming the sheet
 - Fixed properties dialog layout
 - Fixed default note stem direction
-- Fix that no time signature/barlines are shown when there are none in the score
-- Fix licensing issues with examples (and remove example with undefined license)
+- Fixed that no time signature/barlines are shown when there are none in the score
+- Fixed licensing issues with examples (and remove example with undefined license)
 - Renamed license file to COPYING
-- Add volta bracket support through special text mark
-- Add release build possibility (including compiler optimizations)
-- Fix problem on text display with cleanup and chord creation
+- Added volta bracket support through special text mark
+- Added release build possibility (including compiler optimizations)
+- Fixed problem on text display with cleanup and chord creation
 - Enforce UTF-8 encoding for the canorus and lilypond formats
-- Fix midi time scaling and quantisation for all events
-- Fix crash when opening an empty XML file
-- Fix crash with using certain styles in GNOME environment
-- Fix midi import adjustment of notes being left over
+- Fixed midi time scaling and quantisation for all events
+- Fixed crash when opening an empty XML file
+- Fixed crash with using certain styles in GNOME environment
+- Fixed midi import adjustment of notes being left over
 - Added articulation, fingering, dynamic marks to lilypond export
-- Fix problem with tuplet export by returning the last note of a chort
+- Fixed problem with tuplet export by returning the last note of a chort
   instead of the first
-- Fix freeze in the GUI during import
-- Fix Midi export and repeats
-- Fix repeat in multiple staffs
-- Fix arbitrary placed key signature changes
-- Midi support of key signature changes
-- Add more examples
-- Create undo only for a whole chord at midi keyboard input
+- Fixed freeze in the GUI during import
+- Fixed Midi export and repeats
+- Fixed repeat in multiple staffs
+- Fixed arbitrary placed key signature changes
+- Added Midi support of key signature changes
+- Added more examples
+- Created undo only for a whole chord at midi keyboard input
 - Fixed tuplet and chords saving
-- Expand scripting engine for figured bass
-- Add some user interface settings
-- Allow midi import with no document opened
-- Fix minor problems on lilypond export
-- Add GUI, support, load/save for figured bass marks
-- Update documentation
-- Add support for melisma and syllabic lyrics in MusicXML import
-- Move view to the right if right border is hit on insert of new elements
-- Fix crash when reinterpreting accidentals
+- Expanded scripting engine for figured bass
+- Added some user interface settings
+- Allowed midi import with no document opened
+- Fixed minor problems on lilypond export
+- Added GUI, support, load/save for figured bass marks
+- Updated documentation
+- Added support for melisma and syllabic lyrics in MusicXML import
+- Moved view to the right if right border is hit on insert of new elements
+- Fixed crash when reinterpreting accidentals
 - Added reinterpret accidentals in transpose view
-- Support for key signature in midi export/playback
+- Added support for key signature in midi export/playback
 - Fixed default mode for the toolbar when creating a new document.
-- Improve midi device (names)
+- Improved midi device (names)
 - Use base name of midi imported file as sheet name
-- Add support for time signatures in midi import
+- Added support for time signatures in midi import
+- Added factoring of music elements to scripting library
+- Fixed automatic bar placement to work with future time signatures
+- Added default time signature (midi recorder)
+- Improvement for midi export: music length and tempo
+- Now using newer RtMidi-1.0.9 library.
+- Preserved midi channels and fixed hangover notes (midi import)
+- Added multiple voices and tempo to midi import
+- Added progress bar for opening and importing documents
+- Use PMidi on all platforms
+- Added some self-made midi examples
+- Added Midi Import based on PMidi
+- Fixed handling of sheets for midi export
+- Added shortcut for cycling through sheets
+- "Print Preview" is used for the current sheet only (same as for printing)
+- Fixed problems when adding lyrics
+- Added debian (ubuntu) build support (amd64)
+- Started adding support for all kind of actions in Canorus
+- Improved layout of properties dialog
+- Added project file for the smallish IDE geany
+- Fixed tempo for playback when starting outside of the beginning
+- Fixed breve syntax in lilypond export
+- Fixed back-scroll for repeats
+- Moved "Use animated scroll" to settings dialog
+- Fixed, lock (optionally, default), store scroll (position) on playback 
+- Fixed playback of multiple voices with different timelengths
+- Fixed MusicXML import (midi, grace notes)
+- Added ArgoUML sources of the score model
+- Parse movement title of MusicXML scores
+- Fixed MusicXML import crash on multiple staffs and clefs and on unset <attributes>
+- Added Czesh translation
+- Started adding the action editor (to be finished in 0.7.2)
+- Added support for Tab/Shift-Tab keys in Insert mode for voices
+- Fixed crash when manipilating a slured chord
+- Fixed dots offset and tuplet settings when editing the first time
+- Fixed transposition bug in UI
+- Fixed a crash when closing the document
+- Removed some special characters on example file names.
+- Added support for fermata in lilypond export
+- Fixed a pasting problem
+- Fixed UTF-8 file names in archives
+- Added examples to the installer
 
 0.7
 ===
