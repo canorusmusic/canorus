@@ -142,7 +142,12 @@ QFileDialog *CAMainWin::uiExportDialog = 0;
 */
 CAMainWin::CAMainWin(QMainWindow *oParent)
  : QMainWindow( oParent ),
-   _mainWinProgressCtl(this) {
+   _mode(NoDocumentMode),
+   _mainWinProgressCtl(this),
+   _playbackView(0),
+   _repaintTimer(0),
+   _playback(0)
+{
 	setAttribute( Qt::WA_DeleteOnClose );
 	_iNumAllowed = 1;
 
@@ -155,10 +160,6 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	setRebuildUILock( false );
 
 	// Initialize internal UI properties
-	_mode = NoDocumentMode;
-	_playback = 0;
-	_playbackView = 0;
-	_repaintTimer = 0;
 	uiLockScrollPlayback->setChecked( CACanorus::settings()->lockScrollPlayback() );
 
 	// Create plugins menus and toolbars in this main window
