@@ -150,9 +150,9 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 	int streams = musStreamList.size();
 	int *streamsIdx = new int[streams];
 	for (int i=0; i<streams; i++) streamsIdx[i] = 0;
-	int *streamsX = new int(streams);
+	int *streamsX = new int[streams];
 	for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
-	int *streamsRehersalMarks = new int(streams);
+	int *streamsRehersalMarks = new int[streams];
 	for (int i=0; i<streams; i++) streamsRehersalMarks[i] = 0;
 	CALayoutEngine::streamsRehersalMarks = streamsRehersalMarks;
 	CAClef **lastClef = new CAClef *[streams];
