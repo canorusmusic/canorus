@@ -1594,4 +1594,8 @@ GByteArray* g_byte_array_remove_index	   (GByteArray	 *array,
 GByteArray* g_byte_array_remove_index_fast (GByteArray	 *array,
 					    guint	  index);
 
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
 #endif /* __G_LIB_H__ */
