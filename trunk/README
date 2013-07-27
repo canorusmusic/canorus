@@ -14,7 +14,7 @@ Build dependencies:
 ===================
 The latest version of Qt4, Swig and CMake is prefered.
 
-- Qt development package >=4.4 (http://www.trolltech.com)
+- Qt development package >=4.4 (http://www.qt-project.org)
 - Swig >=2 (http://www.swig.org)
 - g++ >=4, make (http://gcc.gnu.org, http://www.mingw.org)
 - cmake >=2.6.2 (http://www.cmake.org)
@@ -71,6 +71,10 @@ Then you have to run cmake with the following switch:
 
 IMPORTANT: Do not run cmake again before removing the cache files
 CMakeCache.txt and the directory CMakeFiles!
+
+If you use gcc 4.8.x with Qt < 4.8.5 you will get an error. This can
+be fixed by editing the header qt4/QtCore/qtconcurrentfilter.h and
+removing the line that caused the error (the fix Qt Team performed too).
 
 -------------------------------------------------------------------------------
 
