@@ -620,7 +620,7 @@ ENDIF(USE_PYTHON)
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
 # Add ${POPPLERQT4_LIBRARY} ${POPPLER_LIBRARY} to reactivate poppler libraries
-TARGET_LINK_LIBRARIES(canorus ${QT_LIBRARIES} ${RUBY_LIBRARY} ${PYTHON_LIBRARY} )
+TARGET_LINK_LIBRARIES(canorus ${QT_LIBRARIES} ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
 # Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
 # duma )
 
