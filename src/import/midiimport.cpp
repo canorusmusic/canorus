@@ -441,13 +441,13 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			voice = staff->voiceList().first();
 		} else {
 			// create a new staff with 5 lines
-			staff = new CAStaff( "", sheet, 5);
+			staff = new CAStaff( QString("Ch%1").arg(staffIndex), sheet, 5);		// Todo: string to build with QObject::tr()
 			sheet->addContext(staff);
 		}
 		CAMusElement *musElemClef = 0;
 		for (int voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
 			// voiceName = QObject::tr("Voice%1").arg( voiceNumber );
-			voice = new CAVoice( "", staff, CANote::StemNeutral );
+			voice = new CAVoice( QString("Ch%1V%2").arg(staffIndex).arg(voiceIndex), staff, CANote::StemNeutral );		// Todo: string to build with QObject::tr()
 			staff->addVoice( voice );
 			setCurVoice(voice);
 			voice->setMidiChannel( ch );
