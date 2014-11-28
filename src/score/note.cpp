@@ -100,7 +100,19 @@ CANote *CANote::clone( CAVoice *voice ) {
 	- -2 - first ledger line below the staff (eg. C1 in treble clef)
 */
 int CANote::notePosition() {
-	CAClef *clef = (voice()?voice()->getClef(this):0);
+	CAClef *clef=0;
+	if (voice() && voice()->staff()) {
+		// find the corresponding clef
+		int i=0;
+		while (i < voice()->staff()->clefReferences().size() && staff()->clefReferences()[i]->timeStart() <= timeStart()) {
+			i++;
+		}
+		i--;
+		
+		if (i>=0) {
+			clef = static_cast<CAClef*>(voice()->staff()->clefReferences()[i]);
+		}
+	}
 
 	return (diatonicPitch().noteName() + (clef?clef->c1():-2) - 28);
 }

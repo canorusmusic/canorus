@@ -239,6 +239,10 @@ CAPlayable* CAVoice::insertInTupletAndVoiceAt( CAPlayable *reference, CAPlayable
 /*!
 	Returns a pointer to the clef which the given \a elt belongs to.
 	Returns 0, if no clefs placed yet.
+
+	Warning! This operation is slow (linear time), but always returns the
+	correct clef depending on the order of the musElementList. If a timeBased
+	result suffices, use CAStaff::getClef(time).
 */
 CAClef* CAVoice::getClef(CAMusElement *elt) {
 	if (!elt || !musElementList().contains(elt))
@@ -252,6 +256,10 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 /*!
 	Returns a pointer to the time signature which the given \a elt belongs to.
 	Returns 0, if no time signatures placed yet.
+
+	Warning! This operation is slow (linear time), but always returns the
+	correct timeSig depending on the order of the musElementList. If a timeBased
+	result suffices, use CAStaff::getClef(time).
 */
 CATimeSignature* CAVoice::getTimeSig(CAMusElement *elt) {
 	if (!elt || !musElementList().contains(elt))
@@ -265,6 +273,10 @@ CATimeSignature* CAVoice::getTimeSig(CAMusElement *elt) {
 /*!
 	Returns a pointer to the key signature which the given \a elt belongs to.
 	Returns 0, if no key signatures placed yet.
+
+	Warning! This operation is slow (linear time), but always returns the
+	correct keySig depending on the order of the musElementList. If a timeBased
+	result suffices, use CAStaff::getClef(time).
 */
 CAKeySignature* CAVoice::getKeySig(CAMusElement *elt) {
 	if (!elt || !musElementList().contains(elt))
