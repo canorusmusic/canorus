@@ -17,6 +17,7 @@
 #include <QTextCodec>
 #include <QMetaMethod>
 #include <QFontDatabase>
+#include <iostream> // verbose stuff
 
 #include "interface/rtmididevice.h"
 #include "ui/settingsdialog.h"

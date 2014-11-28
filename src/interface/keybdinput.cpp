@@ -7,6 +7,7 @@
 */
 
 #include <QObject>
+#include <iostream> //debugging
 
 #include "interface/keybdinput.h"
 #include "interface/mididevice.h"
