@@ -47,9 +47,9 @@ public:
 	inline CAContext *context() { return _context; }
 	inline void setContext(CAContext *context) { _context = context; }
 
-	inline virtual int timeStart() { return _timeStart; }
+	inline virtual int timeStart() const { return _timeStart; }
 	inline void setTimeStart(int time) { _timeStart = time; }
-	inline virtual int timeLength() { return _timeLength; }
+	inline virtual int timeLength() const { return _timeLength; }
 	inline void setTimeLength(int length) { _timeLength = length; }
 	inline int timeEnd() { return timeStart() + timeLength(); }
 

@@ -14,6 +14,7 @@
 #include <QRect>
 #include <QLineEdit>
 #include <QTimer>
+#include <QMultiMap>
 
 #include "widgets/view.h"
 #include "layout/kdtree.h"
@@ -75,11 +76,8 @@ public:
 	////////////////////////////////////////////
 	void addMElement(CADrawableMusElement *elt, bool select=false);
 	void addCElement(CADrawableContext *elt, bool select=false);
-	CAMusElement *removeMElement(double x, double y);
 
 	void importElements(CAKDTree<CADrawableMusElement*> *drawableMList, CAKDTree<CADrawableContext*> *drawableCList);
-	void importMElements(CAKDTree<CADrawableMusElement*> *elts);
-	void importCElements(CAKDTree<CADrawableContext*> *elts);
 
 	///////////////
 	// Selection //
@@ -132,6 +130,8 @@ public:
 	int coordsToTime( double x );
 	double timeToCoords( int time );
 	double timeToCoordsSimpleVersion( int time );
+	static bool musElementTimeLessThan(const CAMusElement* a, const int b);
+	static bool timeMusElementLessThan(const int a, const CAMusElement* b);
 
 	CADrawableContext *nearestUpContext(double x, double y);
 	CADrawableContext *nearestDownContext(double x, double y);
@@ -286,6 +286,7 @@ private:
 	////////////////////////
 	CAKDTree<CADrawableMusElement*> _drawableMList;  // The list of music elements stored in a tree for faster lookup and other operations. Every view has its own list of drawable elements and drawable objects themselves!
 	CAKDTree<CADrawableContext*>    _drawableCList;  // The list of context drawable elements (staffs, lyrics etc.). Every view has its own list of drawable elements and drawable objects themselves!
+	QMultiMap<void*, CADrawable*>   _mapDrawable;    // Mapping of all music elements/contexts in the score -> drawable elements on canvas
 	CASheet                        *_sheet;          // Pointer to the CASheet which the view represents.
 
 	QList<CADrawableMusElement *>   _selection;      // The set of elements being selected.
@@ -297,9 +298,9 @@ private:
 	template <typename T> int getMaxYExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting below easies
 
 	double _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the view is currently showing.
-	QPoint _lastMousePressCoords;           // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
+	QPoint _lastMousePressCoords;               // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
 	inline void setLastMousePressCoords( QPoint p ) { _lastMousePressCoords = p; }
-	float _zoom;                            // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
+	float _zoom;                                // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
 
 	CAVoice *_selectedVoice;        // Voice to be drawn normal colors, others are shaded
 
