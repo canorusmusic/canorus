@@ -8,7 +8,7 @@
 #ifndef VOICE_H_
 #define VOICE_H_
 
-#include <QList>
+#include <QList> // music elements container
 
 #include "score/muselement.h"
 #include "score/note.h"
@@ -118,8 +118,10 @@ private:
 	bool insertMusElement( CAMusElement *before, CAMusElement *elt );
 	bool updateTimes( int idx, int length, bool signsToo=false );
 
+	// list of all the music elements
 	QList<CAMusElement *> _musElementList;
 	CAStaff *_staff; // parent staff
+	
 	CANote::CAStemDirection _stemDirection;
 	QList<CALyricsContext*> _lyricsContextList;
 

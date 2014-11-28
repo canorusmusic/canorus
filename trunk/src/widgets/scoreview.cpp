@@ -822,6 +822,8 @@ void CAScoreView::setZoom(float z, double x, double y, bool animate, bool force)
 	General Qt's paint event.
 	All the music elements get actually rendered in this method.
 */
+#include <time.h> //benchmarking
+#include <sys/time.h> //benchmarking
 void CAScoreView::paintEvent(QPaintEvent *e) {
 	if (_holdRepaint)
 		return;
@@ -856,6 +858,8 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		p.fillRect(_canvas->x(), _canvas->y(), _canvas->width(), _canvas->height(), _backgroundColor);
 
 	// draw contexts
+	timeval timeStart, timeEnd, timeEnd2;
+	gettimeofday(&timeStart, NULL);
 	QList<CADrawableContext*> cList;
 	//int j = _drawableCList.size();
 	if (_repaintArea)
@@ -883,12 +887,15 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 	else
 		mList = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
 
+	gettimeofday(&timeEnd, NULL);
+
 	p.setRenderHint( QPainter::Antialiasing, CACanorus::settings()->antiAliasing() );
 
 	for (int i=0; i<mList.size(); i++) {
 		QColor color;
 		CAMusElement *elt = mList[i]->musElement();
-
+		
+		// determine element color (based on selection, current mode, active voice etc.)
 		if ( _selection.contains(mList[i])) {
 			color = selectionColor();
 		} else
@@ -995,6 +1002,10 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 			p.drawText( qRound((_xCursor-_worldX+10) * _zoom), qRound((_yCursor-_worldY-10) * _zoom), CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
 		}
 	}
+	gettimeofday(&timeEnd2, NULL);
+	
+//	std::cout << "finding elements to draw took " << timeEnd.tv_sec-timeStart.tv_sec+(timeEnd.tv_usec-timeStart.tv_usec)/1000000.0 << "s." << std::endl;
+//	std::cout << "painting " << mList.size() << " elements took " << timeEnd2.tv_sec-timeEnd.tv_sec+(timeEnd2.tv_usec-timeEnd.tv_usec)/1000000.0 << "s." << std::endl;
 
 	// flush the oldWorld coordinates as they're needed for the first repaint only
 	_oldWorldX = _worldX; _oldWorldY = _worldY;

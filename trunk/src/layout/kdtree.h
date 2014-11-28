@@ -160,9 +160,18 @@ QList<T> CAKDTree<T>::findInRange(QRect &rect) {
 */
 template <typename T>
 T CAKDTree<T>::findNearestLeft(double x, bool timeBased, CADrawableContext *context, CAVoice *voice) {
-	typename QMultiMap<double, T>::const_iterator it = _mapX.upperBound(x);
-	if (it!=_mapX.constBegin() && it.value()->xPos()==x) {
+	if (_mapX.size()==0) {
+		return 0;
+	}
+	
+	typename QMultiMap<double, T>::const_iterator it = _mapX.lowerBound(x); // returns constEnd, if not found
+	while (it!=_mapX.constBegin() && (it==_mapX.constEnd() || it.value()->xPos()>=x)) {
 		it--;
+	}
+	
+	if (it.value()->xPos()>=x) {
+		// no elements to the left at all
+		return 0;
 	}
 	
 	do {
@@ -184,9 +193,9 @@ T CAKDTree<T>::findNearestLeft(double x, bool timeBased, CADrawableContext *cont
 			) {
 			return static_cast<T>(it.value());
 		}
-	} while (it!=_mapX.constBegin());
+	} while ((it--)!=_mapX.constBegin());
 	
-	// no elements to the left exists
+	// no regular elements to the left exists
 	return 0;
 }
 
@@ -200,10 +209,7 @@ T CAKDTree<T>::findNearestLeft(double x, bool timeBased, CADrawableContext *cont
 */
 template <typename T>
 T CAKDTree<T>::findNearestRight(double x, bool timeBased, CADrawableContext *context, CAVoice *voice) {
-	typename QMultiMap<double, T>::const_iterator it = _mapX.lowerBound(x);
-	if (it!=_mapX.constEnd() && it.value()->xPos()==x) {
-		it++;
-	}
+	typename QMultiMap<double, T>::const_iterator it = _mapX.upperBound(x);
 	
 	for (; it!=_mapX.constEnd(); it++) {
 		if (
@@ -226,7 +232,7 @@ T CAKDTree<T>::findNearestRight(double x, bool timeBased, CADrawableContext *con
 		}
 	}
 	
-	// no elements to the left exists
+	// no elements to the right exists
 	return 0;
 }
 
