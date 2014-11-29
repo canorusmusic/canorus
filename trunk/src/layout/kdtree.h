@@ -289,7 +289,15 @@ T CAKDTree<T>::findNearestDown(double y) {
 */
 template <typename T>
 double CAKDTree<T>::getMaxX() {
-	return (--_mapXW.constEnd()).key();
+	for (typename QMultiMap<double, T>::const_iterator it=(--_mapXW.constEnd());
+	     it!=_mapXW.constBegin();
+	     it--) {
+		if (it.key()!=std::numeric_limits<double>::max()) {
+			// don't take contexts unlimited length into account
+			return it.key();
+		}
+	}
+	return 0;
 }
 
 /*!
