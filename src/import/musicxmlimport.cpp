@@ -219,7 +219,7 @@ void CAMusicXmlImport::readIdentification() {
 void CAMusicXmlImport::readPartList() {
 	if (name()!="part-list") return;
 
-	//CASheet *sheet = _document->addSheet();
+	_document->addSheet();
 
 	while (!atEnd() && !(tokenType()==EndElement && name()=="part-list")) {
 		readNext();
