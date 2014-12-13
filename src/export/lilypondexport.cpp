@@ -882,7 +882,7 @@ void CALilyPondExport::exportStaffVoices(CAStaff *staff)
 		// Print Canorus voice name as a comment to help with debugging/tweaking
 		indent();
 		out() << "\n% " << curVoice()->name() << "\n";
-
+		
 		// Write out the voice name and the equals signexportVoice
 		// Variable name is staff index and voice index
 		QString voiceName;
@@ -945,7 +945,8 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 	else {
 		// open multiple contexts
 		indent();
-		out() <<  "<<\n" ;
+		out() <<  "<<\n";
+		out() << "\\set Score.markFormatter = #format-mark-box-alphabet\n"; // draw nice box around rehersal marks as in Canorus GUI
 		indentMore();
 
 		// Output each staff
@@ -959,6 +960,7 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 					indent();
 					out() <<  "\\new Staff {\n" ;
 					indentMore();
+					out() << "\\set Staff.instrumentName = #\"" << escapeWeirdChars( s->name() ) << "\"\n";
 
 					// More than one voice? Add simultaneous symbol
 					int voiceCount = s->voiceList().size();
