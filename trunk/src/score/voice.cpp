@@ -41,6 +41,7 @@ CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection st
 
 	_midiChannel = ((staff && staff->sheet()) ? CAMidiDevice::freeMidiChannel( staff->sheet() ) : 0);
 	_midiProgram = 0;
+	_midiPitchOffset = 0;
 }
 
 /*!
@@ -83,6 +84,7 @@ void CAVoice::cloneVoiceProperties( CAVoice *voice ) {
 	setStemDirection( voice->stemDirection() );
 	setMidiChannel( voice->midiChannel() );
 	setMidiProgram( voice->midiProgram() );
+	setMidiPitchOffset( voice->midiPitchOffset() );
 	setLyricsContexts( voice->lyricsContextList() );
 }
 

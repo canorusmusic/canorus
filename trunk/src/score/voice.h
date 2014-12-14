@@ -107,6 +107,9 @@ public:
 	inline unsigned char midiProgram() { return _midiProgram; }
 	inline void setMidiProgram(const unsigned char program) { _midiProgram = program; }
 
+	inline char midiPitchOffset() { return _midiPitchOffset; }
+	inline void setMidiPitchOffset(const char midiPitchOffset) { _midiPitchOffset = midiPitchOffset; }
+
 	inline const QList<CALyricsContext*>& lyricsContextList() { return _lyricsContextList; }
 	inline void addLyricsContext( CALyricsContext *lc ) { _lyricsContextList << lc; }
 	inline void setLyricsContexts( QList<CALyricsContext*> list ) { _lyricsContextList = list; }
@@ -132,5 +135,6 @@ private:
 	/////////////////////
 	unsigned char _midiChannel;
 	unsigned char _midiProgram;
+	char _midiPitchOffset;
 };
 #endif /* VOICE_H_ */

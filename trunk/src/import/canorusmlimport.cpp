@@ -264,6 +264,9 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		if (!attributes.value("midi-program").isEmpty()) {
 			_curVoice->setMidiProgram(attributes.value("midi-program").toInt());
 		}
+		if (!attributes.value("midi-pitch-offset").isEmpty()) {
+			_curVoice->setMidiPitchOffset(attributes.value("midi-pitch-offset").toInt());
+		}
 
 		staff->addVoice( _curVoice );
 

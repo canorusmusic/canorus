@@ -146,7 +146,7 @@ void CAPlayback::run() {
 				CANote *note = dynamic_cast<CANote*>(_curPlaying[i]);
 				if (note) {
 					message << (128 + note->voice()->midiChannel()); // note off
-					message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) );
+					message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
 					message << (127);
 					if ((note->musElementType()!=CAMusElement::Rest ) &&		// first because rest has no tie
 							!(note->tieStart() && note->tieStart()->noteEnd()) )
@@ -211,7 +211,7 @@ void CAPlayback::run() {
 				    }
 
 					message << (144 + note->voice()->midiChannel()); // note on
-					message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) );
+					message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
 					message << (127);
 					if ( !note->tieEnd() )
 						midiDevice()->send(message, _curTime);
@@ -307,7 +307,7 @@ void CAPlayback::playSelectionImpl() {
 			message.clear();
 
 			message << (144 + note->voice()->midiChannel()); // note on
-			message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) );
+			message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
 			message << (127);
 			midiDevice()->send(message, _curTime);
 			message.clear();
@@ -323,7 +323,7 @@ void CAPlayback::playSelectionImpl() {
 					CANote *note = static_cast<CANote*>(_curPlaying[i]);
 
 					message << (128 + note->voice()->midiChannel()); // note off
-					message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) );
+					message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
 					message << (127);
 					midiDevice()->send(message, _curTime);
 					message.clear();

@@ -130,6 +130,7 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 						dVoice.setAttribute("name", v->name());
 						dVoice.setAttribute("midi-channel", v->midiChannel());
 						dVoice.setAttribute("midi-program", v->midiProgram());
+						dVoice.setAttribute("midi-pitch-offset", v->midiPitchOffset());
 						dVoice.setAttribute("stem-direction", CANote::stemDirectionToString(v->stemDirection()));
 
 						exportVoiceImpl( v, dVoice ); // writes notes, clefs etc.
