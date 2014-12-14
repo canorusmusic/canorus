@@ -946,7 +946,8 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 		// open multiple contexts
 		indent();
 		out() <<  "<<\n";
-		out() << "\\set Score.markFormatter = #format-mark-box-alphabet\n"; // draw nice box around rehersal marks as in Canorus GUI
+		indent(); out() << "\\pointAndClickOff\n"; // remove point-and-click to decrease PDF size
+		indent(); out() << "\\set Score.markFormatter = #format-mark-box-alphabet\n"; // draw nice box around rehersal marks as in Canorus GUI
 		indentMore();
 
 		// Output each staff
@@ -960,7 +961,7 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 					indent();
 					out() <<  "\\new Staff {\n" ;
 					indentMore();
-					out() << "\\set Staff.instrumentName = #\"" << escapeWeirdChars( s->name() ) << "\"\n";
+					indent(); out() << "\\set Staff.instrumentName = #\"" << escapeWeirdChars( s->name() ) << "\"\n";
 
 					// More than one voice? Add simultaneous symbol
 					int voiceCount = s->voiceList().size();
@@ -1105,6 +1106,7 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 	out() << "%	top-margin = 3\\cm\n";
 	out() << "%	bottom-margin = 3\\cm\n";
 	out() << "%	ragged-last-bottom = ##t\n";
+	out() << "%	page-count = #2\n";
 	out() << "% }\n\n";
 }
 
