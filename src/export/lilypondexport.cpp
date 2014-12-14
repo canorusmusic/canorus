@@ -21,6 +21,8 @@
 #include "score/fingering.h"
 #include "score/dynamic.h"
 #include "score/text.h"
+#include "score/tempo.h"
+#include "score/ritardando.h"
 #include "score/tuplet.h"
 
 /*!
@@ -357,8 +359,18 @@ void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 
 			break;
 		}
-		case CAMark::Tempo:
-		case CAMark::Ritardando:
+		case CAMark::Tempo: {
+			CATempo *t = static_cast<CATempo*>(curMark);
+			out() << "\\tempo " << playableLengthToLilyPond(t->beat()) << " = " << t->bpm() << " ";
+			
+			break;
+		}
+		case CAMark::Ritardando: {
+			CARitardando *r = static_cast<CARitardando*>(curMark);
+			out() << "^\\markup{ \\text \\italic \"" << ((r->ritardandoType()==CARitardando::Ritardando)?"rit.":"accel.") << "\"} ";
+			
+			break;
+		}
 		case CAMark::Crescendo:
 		case CAMark::Pedal:
 		case CAMark::InstrumentChange:
