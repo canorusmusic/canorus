@@ -23,12 +23,9 @@ public:
 	inline void setBpm( int bpm ) { _bpm = bpm; }
 	inline CAPlayableLength beat() { return _beat; }
 	inline void setBeat( CAPlayableLength l ) { _beat = l; }
-	inline int beatDotted() { return _beatDotted; }
-	inline void setBeatDotted( int dotted ) { _beatDotted = dotted; }
 
 private:
 	CAPlayableLength _beat;
-	int _beatDotted;
 	int _bpm; // beats per minute
 };
 

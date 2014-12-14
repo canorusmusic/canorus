@@ -1708,7 +1708,7 @@ double CAScoreView::timeToCoords( int time ) {
 		if (it!=voiceList[i]->musElementList().constEnd()) {
 			if (_mapDrawable.contains(*it)) {
 				CADrawableMusElement *dElt = static_cast<CADrawableMusElement*>(_mapDrawable.values(*it).last());
-				if (leftElt->xPos()<dElt->xPos()) {
+				if (!leftElt || leftElt->xPos()<dElt->xPos()) {
 					leftElt = dElt;
 				}
 			} else {
@@ -1721,7 +1721,7 @@ double CAScoreView::timeToCoords( int time ) {
 		if (it!=voiceList[i]->musElementList().constEnd()) {
 			if (_mapDrawable.contains(*it)) {
 				CADrawableMusElement *dElt = static_cast<CADrawableMusElement*>(_mapDrawable.values(*it).first());
-				if (rightElt->xPos()>dElt->xPos()) {
+				if (!rightElt || rightElt->xPos()>dElt->xPos()) {
 					rightElt = dElt;
 				}
 			} else {

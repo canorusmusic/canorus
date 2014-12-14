@@ -37,8 +37,6 @@ int CATempo::compare( CAMusElement *elt ) {
 		return 1;
 	else if (static_cast<CATempo*>(elt)->beat()!=beat())
 		return 2;
-	else if (static_cast<CATempo*>(elt)->beatDotted()!=beatDotted())
-		return 3;
 	else
 		return 0;
 }
