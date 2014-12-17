@@ -40,7 +40,6 @@ public:
 	inline int curIndentLevel() { return _curIndentLevel; }
 
 private:
-	void exportDocumentImpl(CADocument *doc);
 	void exportSheetImpl(CASheet *sheet);
 	void exportScoreBlock(CASheet *sheet);
 	void exportStaffVoices(CAStaff *staff);
