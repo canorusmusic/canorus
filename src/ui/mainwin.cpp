@@ -868,8 +868,27 @@ void CAMainWin::newDocument() {
 	QList<PyObject*> argsPython;
 	argsPython << CASwigPython::toPythonObject(document(), CASwigPython::Document);
 	CASwigPython::callFunction(QFileInfo("scripts:newdocument.py").absoluteFilePath(), "newDefaultDocument", argsPython);
+#else
+	// fallback: add basic sheet with two staffs
+	CASheet *sheet1 = document()->addSheet();
+	CAStaff *staff1 = sheet1->addStaff();
+	staff1->addVoice();
+	staff1->voiceList()[0]->setStemDirection( CANote::StemUp );
+	staff1->voiceList()[1]->setStemDirection( CANote::StemDown );
+	staff1->voiceList()[0]->append( new CAClef( CAClef::Treble, staff1, 0 ) );
+	staff1->voiceList()[0]->append( new CATimeSignature( 4, 4, staff1, 0 ) );
+	
+	CAStaff *staff2 = sheet1->addStaff();
+	staff2->addVoice();
+	staff2->voiceList()[0]->setStemDirection( CANote::StemUp );
+	staff2->voiceList()[1]->setStemDirection( CANote::StemDown );
+	staff2->voiceList()[0]->append( new CAClef( CAClef::Bass, staff2, 0 ) );
+	staff2->voiceList()[0]->append( new CATimeSignature( 4, 4, staff2, 0 ) );
+	
+	staff1->synchronizeVoices();
+	staff2->synchronizeVoices();
 #endif
-
+	
 	// call local rebuild only because no other main windows share the new document
 	rebuildUI();
 
@@ -4066,14 +4085,17 @@ void CAMainWin::on_uiAboutQt_triggered() {
 }
 
 void CAMainWin::on_uiAboutCanorus_triggered() {
-	QMessageBox::about( this, tr("About Canorus"),
-	tr("<p><b>Canorus - The next generation music score editor</b></p>\
+	QString about=tr("<p><b>Canorus - The next generation music score editor</b></p>\
 <p>Version %1<br>\
 (C) 2006-2013 Canorus Development team. All rights reserved.<br>\
 See the file AUTHORS for the list of Canorus developers<br><br>\
 This program is licensed under the GNU General Public License (GPL).<br>\
 See the file LICENSE.GPL for details.<br><br>\
-Homepage: <a href=\"http://www.canorus.org\">http://www.canorus.org</a></p>").arg(CANORUS_VERSION) );
+Homepage: <a href=\"http://www.canorus.org\">http://www.canorus.org</a></p>").arg(CANORUS_VERSION);
+#ifdef USE_PYTHON
+	about += "<p>"+tr("Canorus is compiled with Python support.");
+#endif
+	QMessageBox::about( this, tr("About Canorus"), about);
 }
 
 void CAMainWin::on_uiSettings_triggered() {
