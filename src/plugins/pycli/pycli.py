@@ -22,7 +22,7 @@ __all__ = ["InteractiveInterpreter", "InteractiveConsole", "interact",
            "compile_command"]
 
 def init(pluginDir, canorusInterface):
-	print "Python CLI initialized"
+	print("Python CLI initialized")
 
 def pycli(document, canorusInterface):
 	canorusInterface.pluginInit();
@@ -155,7 +155,7 @@ class InteractiveInterpreter:
 
         """
         try:
-            exec code in self.locals
+            exec(code, locale=self.locals)
         except SystemExit:
             raise
         except:
