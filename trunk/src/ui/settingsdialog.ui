@@ -74,7 +74,11 @@
        </item>
        <item>
         <property name="text">
-         <string>Commands</string>
+         <string>Shortcuts</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>images:settings/shortcuts.svg</normaloff>images:settings/shortcuts.svg</iconset>
         </property>
        </item>
        <item>
