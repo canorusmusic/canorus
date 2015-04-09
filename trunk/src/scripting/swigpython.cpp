@@ -30,7 +30,7 @@ PyThreadState * CASwigPython::mainThreadState;
 PyThreadState * CASwigPython::pycliThreadState;
 
 /// Load 'CanorusPython' module and initialize classes - defined in SWIG wrapper class
-extern "C" void init_CanorusPython();
+extern "C" void PyInit__CanorusPython();
 
 /*!
 	Initializes Python and loads base 'CanorusPython' module. Call this before any other
@@ -41,9 +41,9 @@ void CASwigPython::init() {
 
 	Py_Initialize();
 	PyEval_InitThreads(); // our python will use GIL
-
-	init_CanorusPython();
-    PyRun_SimpleString("import sys");
+	
+	PyInit__CanorusPython();
+	PyRun_SimpleString("import sys");
 
 	// add path to scripts to Scripting path
 	if (QDir::searchPaths("scripts").size()) {
@@ -141,9 +141,9 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	PyObject *pyModule;
 	if (autoReload) {
 		PyObject *moduleDict = PyImport_GetModuleDict(); // borrowed ref.
-		PyObject *ourModuleName = PyString_FromString((char*)moduleName.toStdString().c_str()); // new ref.
+		PyObject *ourModuleName = PyBytes_FromString((char*)moduleName.toStdString().c_str()); // new ref.
 		pyModule = PyDict_GetItem(moduleDict, ourModuleName); // borrowed ref.
-		Py_DECREF(ourModuleName);
+//		Py_DECREF(ourModuleName); // -Matevz
 
 		if (pyModule == NULL) // not imported yet
 			pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
@@ -166,11 +166,11 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 		ret = PyEval_CallObject(pyFunction, NULL);
 	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
 
-	Py_DECREF(pyFunction);
-	Py_DECREF(pyModule);
+//	Py_DECREF(pyFunction); // -Matevz
+//	Py_DECREF(pyModule); // -Matevz
 //	Py_DECREF(pyArgs); /// \todo Crashes if uncommented?!
-	for (int i=0; i<args.size(); i++)
-		Py_DECREF(args[i]);
+//	for (int i=0; i<args.size(); i++)
+//		Py_DECREF(args[i]); // -Matevz
 
     PyEval_ReleaseLock();
 	return ret;
@@ -223,11 +223,11 @@ void *CASwigPython::callPycli(void*) {
 	ret = PyEval_CallObject(pyFunction, pyArgs);
 	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
 
-	Py_DECREF(pyFunction);
+//	Py_DECREF(pyFunction); // -Matevz
 //	Py_DECREF(pyArgs); /// \todo Crashes if uncommented?!d
-	Py_DECREF(pyModule);
-	for (int i=0; i<args.size(); i++)
-		Py_DECREF(args[i]);
+//	Py_DECREF(pyModule); // -Matevz
+//	for (int i=0; i<args.size(); i++)
+//		Py_DECREF(args[i]); // -Matevz
 
 
     PyThreadState_Swap(mainThreadState);
