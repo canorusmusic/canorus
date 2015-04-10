@@ -835,22 +835,6 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		p.drawRect(0,0,width()-1,height()-1);
 	}
 
-	p.setClipping(true);
-	if (_repaintArea) {
-		p.setClipRect(QRect(qRound((_repaintArea->x() - _worldX)*_zoom),
-		                    qRound((_repaintArea->y() - _worldY)*_zoom),
-		                    qRound(_repaintArea->width()*_zoom),
-		                    qRound(_repaintArea->height()*_zoom)),
-		              Qt::UniteClip);
-	} else {
-		p.setClipRect(QRect(_canvas->x(),
-		                    _canvas->y(),
-		                    _canvas->width(),
-		                    _canvas->height()),
-		              Qt::UniteClip);
-	}
-
-
 	// draw the background
 	if (_repaintArea)
 		p.fillRect(qRound((_repaintArea->x() - _worldX)*_zoom), qRound((_repaintArea->y() - _worldY)*_zoom), qRound(_repaintArea->width()*_zoom), qRound(_repaintArea->height()*_zoom), _backgroundColor);
@@ -1014,7 +998,6 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 	if (_repaintArea) {
 		delete _repaintArea;
 		_repaintArea = 0;
-		p.setClipping(false);
 	}
 }
 
