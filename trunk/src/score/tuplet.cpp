@@ -186,7 +186,7 @@ void CATuplet::assignTimes() {
 			j++;
 		}
 		if ( j < noteList().size() ) {
-			noteList()[i]->setTimeLength( qRound( noteList()[j]->timeStart() - noteList()[i]->timeStart() ) );
+			noteList()[i]->setTimeLength( noteList()[j]->timeStart() - noteList()[i]->timeStart() );
 		} else {
 			noteList()[i]->setTimeLength( qRound( CAPlayableLength::playableLengthToTimeLength( noteList()[i]->playableLength() ) * ((float)actualNumber() / number()) ) );
 		}

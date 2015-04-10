@@ -41,7 +41,7 @@ void CADrawableTuplet::draw(QPainter *p, const CADrawSettings s) {
 
 	// generate an array of points for the rounded slur using the exponent shape
 	QPoint points[9];
-	points[0] = QPoint( qRound(s.x), qRound(yLeft) );
+	points[0] = QPoint( s.x, qRound(yLeft) );
 	points[1] = QPoint( qRound(s.x + 0.1*deltaX1), qRound(yLeft + deltaY1*0.34) );
 	points[2] = QPoint( qRound(s.x + 0.2*deltaX1), qRound(yLeft + deltaY1*0.53) );
 	points[3] = QPoint( qRound(s.x + 0.3*deltaX1), qRound(yLeft + deltaY1*0.71) );

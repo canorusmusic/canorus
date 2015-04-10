@@ -168,16 +168,16 @@ bool CAExternProgram::execProgram( const QString &roCwd /* = "." */ )
 	if( _oProgramPath.isEmpty() )
 	{
 		_poExternProgram->start( _oProgramName, _oParameters );
-		qDebug("Started %s with parameters %s", _oProgramName.toAscii().data(),
-				      _oParameters.join(" ").toAscii().data() );
+		qDebug("Started %s with parameters %s", _oProgramName.toLatin1().data(),
+				      _oParameters.join(" ").toLatin1().data() );
 	}
 	else
 		_poExternProgram->start( _oProgramPath+"/"+_oProgramName, _oParameters );
 	// Wa it until program was started
 	if( !_poExternProgram->waitForStarted() )
 	{
-		qCritical("ExternProgram: Could not run program %s! Error %s", _oProgramName.toAscii().constData(),
-              QString( "%1 " + _poExternProgram->errorString() ).arg( _poExternProgram->error() ).toAscii().constData() );
+		qCritical("ExternProgram: Could not run program %s! Error %s", _oProgramName.toLatin1().constData(),
+              QString( "%1 " + _poExternProgram->errorString() ).arg( _poExternProgram->error() ).toLatin1().constData() );
 		return false;
 	}
 	return true;
@@ -218,19 +218,19 @@ void CAExternProgram::programExited()
 	if( getRunning() )
 	{
 		qCritical("%s",
-              QString( "ExternProgram: program %1 reported error %2!" + _poExternProgram->errorString() ).arg( _poExternProgram->error() ).toAscii().constData() );
+              QString( "ExternProgram: program %1 reported error %2!" + _poExternProgram->errorString() ).arg( _poExternProgram->error() ).toLatin1().constData() );
 		return;
 	}
 	// Check if the program exited normally else put out error message
 	if( _poExternProgram->exitStatus() != QProcess::NormalExit ) {
-		qCritical("ExternProgram: program %s didn't finish correctly! Exit code %s", _oProgramName.toAscii().constData(),
-              QString( _poExternProgram->exitCode() + " " + _poExternProgram->errorString() ).toAscii().constData() );
+		qCritical("ExternProgram: program %s didn't finish correctly! Exit code %s", _oProgramName.toLatin1().constData(),
+              QString( _poExternProgram->exitCode() + " " + _poExternProgram->errorString() ).toLatin1().constData() );
 		emit programExited( _poExternProgram->exitCode() );
 	}
 
 	if( _poExternProgram->error() == QProcess::FailedToStart ) {
-		qCritical("ExternProgram: program %s didn't start correctly! Error code %s", _oProgramName.toAscii().constData(),
-              QString( _poExternProgram->error() + " " + _poExternProgram->errorString() ).toAscii().constData() );
+		qCritical("ExternProgram: program %s didn't start correctly! Error code %s", _oProgramName.toLatin1().constData(),
+              QString( _poExternProgram->error() + " " + _poExternProgram->errorString() ).toLatin1().constData() );
 		emit programExited( -1 );
 	}
 

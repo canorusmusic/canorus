@@ -68,15 +68,15 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 			// draw single barline
 			pen.setWidth(qRound(BARLINE_WIDTH*s.z));
 			p->setPen(pen);
-			p->drawLine(qRound(s.x), s.y,
-			            qRound(s.x), qRound(s.y + height()*s.z));
+			p->drawLine(s.x, s.y,
+			            s.x, qRound(s.y + height()*s.z));
 			break;
 		case CABarline::Double:
 			// draw double barline
 			pen.setWidth((int)(BARLINE_WIDTH*s.z));
 			p->setPen(pen);
-			p->drawLine(qRound(s.x), s.y,
-			            qRound(s.x), qRound(s.y + height()*s.z));
+			p->drawLine(s.x, s.y,
+			            s.x, qRound(s.y + height()*s.z));
 			p->drawLine(qRound(s.x + BARLINE_WIDTH*s.z + SPACE_BETWEEN_BARLINES*s.z), s.y,
 			            qRound(s.x + BARLINE_WIDTH*s.z + SPACE_BETWEEN_BARLINES*s.z), qRound(s.y + height()*s.z));
 			break;
@@ -84,8 +84,8 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 			// draw thin barline
 			pen.setWidth(qRound(BARLINE_WIDTH*s.z));
 			p->setPen(pen);
-			p->drawLine(qRound(s.x), s.y,
-			            qRound(s.x), qRound(s.y + height()*s.z));
+			p->drawLine(s.x, s.y,
+			            s.x, qRound(s.y + height()*s.z));
 			// draw bold barline
 			pen.setWidth(qRound(BOLD_BARLINE_WIDTH*s.z));
 			p->setPen(pen);
@@ -96,21 +96,21 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 			pen.setWidth(qRound(BOLD_BARLINE_WIDTH*s.z));
 			p->setPen(pen);
 			// draw bold barline
-			p->drawLine( qRound(s.x), s.y,
-			             qRound(s.x), qRound(s.y + height()*s.z));
+			p->drawLine( s.x, s.y,
+			             s.x, qRound(s.y + height()*s.z));
 			s.x += qRound((BOLD_BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES + BARLINE_WIDTH/2)*s.z);
 			// draw single barline
 			pen.setWidth(qRound(BARLINE_WIDTH*s.z));
 			p->setPen(pen);
-			p->drawLine(qRound(s.x), s.y,
-			            qRound(s.x), qRound(s.y + height()*s.z));
+			p->drawLine(s.x, s.y,
+			            s.x, qRound(s.y + height()*s.z));
 			s.x += qRound((BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES)*s.z);
 			// draw upper dot
-			p->drawEllipse( qRound(s.x),
+			p->drawEllipse( s.x,
 			                qRound(s.y + 4*SPACE_BETWEEN_BARLINES*s.z),
 			                qRound(REPEAT_DOTS_WIDTH*s.z), qRound(REPEAT_DOTS_WIDTH*s.z) );
 			// draw lower dot
-			p->drawEllipse( qRound(s.x),
+			p->drawEllipse( s.x,
 			                qRound(s.y + (height()-REPEAT_DOTS_WIDTH-4*SPACE_BETWEEN_BARLINES)*s.z),
 			                qRound(REPEAT_DOTS_WIDTH*s.z), qRound(REPEAT_DOTS_WIDTH*s.z) );
 			break;
@@ -118,58 +118,58 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 			pen.setWidth(qRound(BARLINE_WIDTH*s.z));
 			p->setPen(pen);
 			// draw upper dot
-			p->drawEllipse( qRound(s.x),
+			p->drawEllipse( s.x,
 			                qRound(s.y + 4*SPACE_BETWEEN_BARLINES*s.z),
 			                qRound(REPEAT_DOTS_WIDTH*s.z), qRound(REPEAT_DOTS_WIDTH*s.z) );
 			// draw lower dot
-			p->drawEllipse( qRound(s.x),
+			p->drawEllipse( s.x,
 			                qRound(s.y + (height()-REPEAT_DOTS_WIDTH-4*SPACE_BETWEEN_BARLINES)*s.z),
 			                qRound(REPEAT_DOTS_WIDTH*s.z), qRound(REPEAT_DOTS_WIDTH*s.z) );
 			s.x += qRound((REPEAT_DOTS_WIDTH + SPACE_BETWEEN_BARLINES + BARLINE_WIDTH/2)*s.z);
 			// draw single barline
-			p->drawLine(qRound(s.x), s.y,
-			            qRound(s.x), qRound(s.y + height()*s.z));
+			p->drawLine(s.x, s.y,
+			            s.x, qRound(s.y + height()*s.z));
 			s.x += qRound((BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH/2)*s.z);
 			// draw bold barline
 			pen.setWidth(qRound(BOLD_BARLINE_WIDTH*s.z));
 			p->setPen(pen);
-			p->drawLine( qRound(s.x), s.y,
-			             qRound(s.x), qRound(s.y + height()*s.z));
+			p->drawLine( s.x, s.y,
+			             s.x, qRound(s.y + height()*s.z));
 			break;
 		case CABarline::RepeatCloseOpen:
 			pen.setWidth(qRound(BARLINE_WIDTH*s.z));
 			p->setPen(pen);
 			// draw upper dot
-			p->drawEllipse( qRound(s.x),
+			p->drawEllipse( s.x,
 			                qRound(s.y + 4*SPACE_BETWEEN_BARLINES*s.z),
 			                qRound(REPEAT_DOTS_WIDTH*s.z), qRound(REPEAT_DOTS_WIDTH*s.z) );
 			// draw lower dot
-			p->drawEllipse( qRound(s.x),
+			p->drawEllipse( s.x,
 			                qRound(s.y + (height()-REPEAT_DOTS_WIDTH-4*SPACE_BETWEEN_BARLINES)*s.z),
 			                qRound(REPEAT_DOTS_WIDTH*s.z), qRound(REPEAT_DOTS_WIDTH*s.z) );
 			s.x += qRound((REPEAT_DOTS_WIDTH + SPACE_BETWEEN_BARLINES + BARLINE_WIDTH/2)*s.z);
 			// draw single barline
-			p->drawLine(qRound(s.x), s.y,
-			            qRound(s.x), qRound(s.y + height()*s.z));
+			p->drawLine(s.x, s.y,
+			            s.x, qRound(s.y + height()*s.z));
 			s.x += qRound((BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES + BOLD_BARLINE_WIDTH/2)*s.z);
 			// draw bold barline
 			pen.setWidth(qRound(BOLD_BARLINE_WIDTH*s.z));
 			p->setPen(pen);
-			p->drawLine( qRound(s.x), s.y,
-			             qRound(s.x), qRound(s.y + height()*s.z));
+			p->drawLine( s.x, s.y,
+			             s.x, qRound(s.y + height()*s.z));
 			s.x += qRound((BOLD_BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES + BARLINE_WIDTH/2)*s.z);
 			pen.setWidth(qRound(BARLINE_WIDTH*s.z));
 			p->setPen(pen);
 			// draw single barline
-			p->drawLine(qRound(s.x), s.y,
-			            qRound(s.x), qRound(s.y + height()*s.z));
+			p->drawLine(s.x, s.y,
+			            s.x, qRound(s.y + height()*s.z));
 			s.x += qRound((BARLINE_WIDTH/2 + SPACE_BETWEEN_BARLINES)*s.z);
 			// draw upper dot
-			p->drawEllipse( qRound(s.x),
+			p->drawEllipse( s.x,
 			                qRound(s.y + 4*SPACE_BETWEEN_BARLINES*s.z),
 			                qRound(REPEAT_DOTS_WIDTH*s.z), qRound(REPEAT_DOTS_WIDTH*s.z) );
 			// draw lower dot
-			p->drawEllipse( qRound(s.x),
+			p->drawEllipse( s.x,
 			                qRound(s.y + (height()-REPEAT_DOTS_WIDTH-4*SPACE_BETWEEN_BARLINES)*s.z),
 			                qRound(REPEAT_DOTS_WIDTH*s.z), qRound(REPEAT_DOTS_WIDTH*s.z) );
 
@@ -179,8 +179,8 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 			pen.setCapStyle(Qt::RoundCap);
 			pen.setWidth(qRound(DOTTED_BARLINE_WIDTH*s.z));
 			p->setPen(pen);
-			p->drawLine( qRound(s.x), s.y,
-			             qRound(s.x), qRound(s.y + height()*s.z) );
+			p->drawLine( s.x, s.y,
+			             s.x, qRound(s.y + height()*s.z) );
 			break;
 		case CABarline::Undefined:
 			break;

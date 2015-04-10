@@ -59,8 +59,8 @@ void CAPrintCtl::printDocument()
 	QString oTempFileName( oPath.absolutePath ()+"/print.svg" );
 	if( !oTempFile.remove() )
 	{
-		qWarning("PrintCtl: Could not remove old print file %s, error %s", oTempFile.fileName().toAscii().constData(),
-		oTempFile.errorString().toAscii().constData() );
+		qWarning("PrintCtl: Could not remove old print file %s, error %s", oTempFile.fileName().toLatin1().constData(),
+		oTempFile.errorString().toLatin1().constData() );
 		oTempFile.unsetError();
 	}
 	qDebug("PrintCtl: Print triggered via main window");

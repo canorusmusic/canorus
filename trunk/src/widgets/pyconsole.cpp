@@ -317,7 +317,7 @@ PyThreadState_Swap(CASwigPython::pycliThreadState);
 
 	QString *str = new QString(_bufSend);	//put contents of _bufSend into buffer \todo: synch
 	if (_bufSend == "html") {
-		std::cout << toHtml().toAscii().data() << std::endl;
+		std::cout << toHtml().toLatin1().data() << std::endl;
 	}
 	_bufSend = "";
 

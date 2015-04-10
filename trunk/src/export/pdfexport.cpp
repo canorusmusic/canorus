@@ -147,7 +147,7 @@ void CAPDFExport::pdfFinished( int iExitCode )
 	setStatus( iExitCode );
 	QFile oTempFile( getTempFilePath()+".pdf" );
 	oTempFile.setFileName( getTempFilePath()+".pdf" );
-	qDebug("Exporting PDF file %s", file()->fileName().toAscii().data());
+	qDebug("Exporting PDF file %s", file()->fileName().toLatin1().data());
 	if( !iExitCode && !oTempFile.copy( file()->fileName() ) ) // Rename it, so we can delete the temporary file
 	{
 		qCritical("PDFExport: Could not copy temporary file %s, error %s", qPrintable( oTempFile.fileName() ),

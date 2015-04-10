@@ -78,7 +78,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	// Loading Saving Page
 	uiDocumentsDirectory->setText( CACanorus::settings()->documentsDirectory().absolutePath() );
 
-	uiDefaultSaveComboBox->addItems( CAMainWin::uiSaveDialog->filters() );
+	uiDefaultSaveComboBox->addItems( CAMainWin::uiSaveDialog->nameFilters() );
 	uiDefaultSaveComboBox->setCurrentIndex(
 		uiDefaultSaveComboBox->findText(
 			CAFileFormats::getFilter(CACanorus::settings()->defaultSaveFormat())
@@ -152,7 +152,7 @@ void CASettingsDialog::applySettings() {
 	CAMainWin::uiImportDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
 	CAMainWin::uiExportDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
 	CACanorus::settings()->setDefaultSaveFormat( CAFileFormats::getType( uiDefaultSaveComboBox->currentText() ) );
-	CAMainWin::uiSaveDialog->selectFilter( uiDefaultSaveComboBox->currentText() );
+	CAMainWin::uiSaveDialog->selectNameFilter( uiDefaultSaveComboBox->currentText() );
 	CACanorus::settings()->setAutoRecoveryInterval( uiAutoRecoverySpinBox->value() );
 	CACanorus::autoRecovery()->updateTimer();
 

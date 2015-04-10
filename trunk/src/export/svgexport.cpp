@@ -149,7 +149,7 @@ void CASVGExport::svgFinished( int iExitCode )
 	setStatus( iExitCode );
 	QFile oTempFile( getTempFilePath()+".svg" );
 	oTempFile.setFileName( getTempFilePath()+".svg" );
-	qDebug("Exporting SVG file %s", file()->fileName().toAscii().data());
+	qDebug("Exporting SVG file %s", file()->fileName().toLatin1().data());
 	if( !iExitCode && !oTempFile.copy( file()->fileName() ) ) // Rename it, so we can delete the temporary file
 	{
 		qCritical("SVGExport: Could not copy temporary file %s, error %s", qPrintable( oTempFile.fileName() ),

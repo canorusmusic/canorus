@@ -144,7 +144,7 @@ void CATypesetCtl::setTSetOption( const QVariant &roName, const QVariant &roValu
 	}
 	else
 	  qWarning("TypesetCtl: Ignoring typesetter option name being empty! %s/%s",
-			           roName.toString().toAscii().data(), roValue.toString().toAscii().data() );
+			           roName.toString().toLatin1().data(), roValue.toString().toLatin1().data() );
 }
 
 /*!

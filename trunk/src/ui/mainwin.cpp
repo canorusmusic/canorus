@@ -11,6 +11,7 @@
 #endif
 
 #include <QtGui>
+#include <QMessageBox>
 #include <QSlider>
 #include <QComboBox>
 #include <QMouseEvent>
@@ -19,6 +20,7 @@
 #include <QKeyEvent>
 #include <QString>
 #include <QTextStream>
+#include <QToolBar>
 #include <QXmlInputSource>
 #include <QComboBox>
 #include <QCheckBox>
@@ -602,11 +604,11 @@ void CAMainWin::setupCustomUi() {
 	// Standard Toolbar
 	uiUndo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiUndo ) );
 	uiUndo->defaultAction()->setText(tr("Undo"));
-    uiUndo->defaultAction()->setShortcut(QApplication::translate("uiMainWindow", "Ctrl+Z", 0, QApplication::UnicodeUTF8));
+    uiUndo->defaultAction()->setShortcut(QApplication::translate("uiMainWindow", "Ctrl+Z", 0 /*, QApplication::UnicodeUTF8*/));
 	uiMenuEdit->insertAction( uiCut, uiUndo->defaultAction() );
 	QList<QKeySequence> redoShortcuts;
-	redoShortcuts << QApplication::translate("uiMainWindow", "Ctrl+Y", 0, QApplication::UnicodeUTF8);
-	redoShortcuts << QApplication::translate("uiMainWindow", "Ctrl+Shift+Z", 0, QApplication::UnicodeUTF8);
+	redoShortcuts << QApplication::translate("uiMainWindow", "Ctrl+Y", 0 /*, QApplication::UnicodeUTF8*/ );
+	redoShortcuts << QApplication::translate("uiMainWindow", "Ctrl+Shift+Z", 0 /*, QApplication::UnicodeUTF8*/ );
 	uiRedo->setDefaultAction( uiStandardToolBar->insertWidget( uiCut, uiRedo ) );
 	uiRedo->defaultAction()->setText(tr("Redo"));
     uiRedo->defaultAction()->setShortcuts(redoShortcuts);
@@ -1450,7 +1452,7 @@ void CAMainWin::on_uiEditMode_toggled(bool checked) {
  */
 void CAMainWin::setMode(CAMode mode, const QString &oModeHash) {
 	int iAllowed = _modeHash[oModeHash];
-	qWarning("Allowed %d, max allowed %d, modeHash %s",iAllowed,_iNumAllowed,oModeHash.toAscii().constData()); 
+	qWarning("Allowed %d, max allowed %d, modeHash %s",iAllowed,_iNumAllowed,oModeHash.toLatin1().constData()); 
 	if( iAllowed > 0 && iAllowed < _iNumAllowed )
 		setMode( mode );
 }
@@ -2983,9 +2985,9 @@ bool CAMainWin::on_uiSaveDocumentAs_triggered() {
 		// append the extension, if the filename doesn't contain a dot
 		//int i;
 		if (!s.contains('.')) {
-			int left = uiSaveDialog->selectedFilter().indexOf("(*.") + 2;
-			int len = uiSaveDialog->selectedFilter().size() - left - 1;
-			s.append( uiSaveDialog->selectedFilter().mid( left, len ) );
+			int left = uiSaveDialog->selectedNameFilter().indexOf("(*.") + 2;
+			int len = uiSaveDialog->selectedNameFilter().size() - left - 1;
+			s.append( uiSaveDialog->selectedNameFilter().mid( left, len ) );
 		}
 
 		return saveDocument(s);
@@ -3006,10 +3008,10 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 	CAImport *open = 0;
 	if ( fileName.endsWith(".xml") ) {
 		open = new CACanorusMLImport();
-		uiSaveDialog->selectFilter( CAFileFormats::CANORUSML_FILTER );
+		uiSaveDialog->selectNameFilter( CAFileFormats::CANORUSML_FILTER );
 	} else if ( fileName.endsWith(".can") ) {
 		open = new CACanImport();
-		uiSaveDialog->selectFilter( CAFileFormats::CAN_FILTER );
+		uiSaveDialog->selectNameFilter( CAFileFormats::CAN_FILTER );
 	} else {
 		return 0; // FIXME Failing quietly, add error message
 	}
@@ -3075,9 +3077,9 @@ bool CAMainWin::saveDocument( QString fileName ) {
 	CACanorus::restartTimeEditedTimes( document() );
 
 	CAExport *save=0;
-	if ( uiSaveDialog->selectedFilter()==CAFileFormats::CANORUSML_FILTER ) {
+	if ( uiSaveDialog->selectedNameFilter()==CAFileFormats::CANORUSML_FILTER ) {
 		save = new CACanorusMLExport();
-	} else if ( uiSaveDialog->selectedFilter()==CAFileFormats::CAN_FILTER ) {
+	} else if ( uiSaveDialog->selectedNameFilter()==CAFileFormats::CAN_FILTER ) {
 		save = new CACanExport();
 	}
 
@@ -3109,7 +3111,7 @@ bool CAMainWin::saveDocument( QString fileName ) {
 	QMessageBox::critical(
 		this,
 		tr("Error while saving document"),
-		tr("Unknown file format %1.").arg(uiSaveDialog->selectedFilter())
+		tr("Unknown file format %1.").arg(uiSaveDialog->selectedNameFilter())
 	);
 	return false;
 }
@@ -3164,30 +3166,30 @@ void CAMainWin::on_uiExportDocument_triggered() {
 	}
 
 	if (!s.contains('.')) {
-		int left = uiExportDialog->selectedFilter().indexOf("(*.") + 2;
-		int len = uiExportDialog->selectedFilter().size() - left - 1;
-		fileExtString = uiExportDialog->selectedFilter().mid( left, len );
+		int left = uiExportDialog->selectedNameFilter().indexOf("(*.") + 2;
+		int len = uiExportDialog->selectedNameFilter().size() - left - 1;
+		fileExtString = uiExportDialog->selectedNameFilter().mid( left, len );
 		// the default file extension is the first one:
 		fileExtList = fileExtString.split( " " );
 		s.append( fileExtList[0] );
 	}
 
-	if (CAPluginManager::exportFilterExists(uiExportDialog->selectedFilter())) {
-		CAPluginManager::exportAction(uiExportDialog->selectedFilter(), document(), s);
+	if (CAPluginManager::exportFilterExists(uiExportDialog->selectedNameFilter())) {
+		CAPluginManager::exportAction(uiExportDialog->selectedNameFilter(), document(), s);
 	} else {
-		if ( uiExportDialog->selectedFilter() == CAFileFormats::MIDI_FILTER ) {
+		if ( uiExportDialog->selectedNameFilter() == CAFileFormats::MIDI_FILTER ) {
 			CAMidiExport *pme = new CAMidiExport;
 			_poExp = pme;
-		} else if ( uiExportDialog->selectedFilter() == CAFileFormats::LILYPOND_FILTER ) {
+		} else if ( uiExportDialog->selectedNameFilter() == CAFileFormats::LILYPOND_FILTER ) {
 			CALilyPondExport *ple = new CALilyPondExport;
 			_poExp = ple;
-		} else if ( uiExportDialog->selectedFilter() == CAFileFormats::MUSICXML_FILTER ) {
+		} else if ( uiExportDialog->selectedNameFilter() == CAFileFormats::MUSICXML_FILTER ) {
 			CAMusicXmlExport *musicxml = new CAMusicXmlExport;
 			_poExp = musicxml;
-		} else if ( uiExportDialog->selectedFilter() == CAFileFormats::PDF_FILTER ) {
+		} else if ( uiExportDialog->selectedNameFilter() == CAFileFormats::PDF_FILTER ) {
 			CAPDFExport *ppe = new CAPDFExport;
 			_poExp = ppe;
-		} else if ( uiExportDialog->selectedFilter() == CAFileFormats::SVG_FILTER ) {
+		} else if ( uiExportDialog->selectedNameFilter() == CAFileFormats::SVG_FILTER ) {
 			CASVGExport *pse = new CASVGExport;
 			_poExp = pse;
 		} else {
@@ -3226,19 +3228,19 @@ void CAMainWin::on_uiImportDocument_triggered() {
 
 	QString s = fileNames[0];
 
-	if (CAPluginManager::importFilterExists(uiImportDialog->selectedFilter())) {
+	if (CAPluginManager::importFilterExists(uiImportDialog->selectedNameFilter())) {
 		// Import done using a scripting engine
 		setDocument(new CADocument());
 		CACanorus::undo()->createUndoStack( document() );
 		uiCloseDocument->setEnabled(true);
 
-		CAPluginManager::importAction(uiImportDialog->selectedFilter(), document(), fileNames[0]);
+		CAPluginManager::importAction(uiImportDialog->selectedNameFilter(), document(), fileNames[0]);
 
 		CACanorus::rebuildUI( document() );
 	} else {
 		CAImport *import=0;
 
-		if ( uiImportDialog->selectedFilter() == CAFileFormats::MIDI_FILTER ) {
+		if ( uiImportDialog->selectedNameFilter() == CAFileFormats::MIDI_FILTER ) {
 			if (!document())
 				newDocument();
 			import = new CAMidiImport( document() );
@@ -3248,7 +3250,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 				import->importSheet();
 			}
 		} else
-		if ( uiImportDialog->selectedFilter() == CAFileFormats::LILYPOND_FILTER ) {
+		if ( uiImportDialog->selectedNameFilter() == CAFileFormats::LILYPOND_FILTER ) {
 			// activate this filter in src/canorus.cpp when sheet import is usable
 			if (!document())
 				newDocument();
@@ -3259,7 +3261,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 				import->importSheet();
 			}
 		} else
-		if ( uiImportDialog->selectedFilter() == CAFileFormats::MUSICXML_FILTER ) {
+		if ( uiImportDialog->selectedNameFilter() == CAFileFormats::MUSICXML_FILTER ) {
 			import = new CAMusicXmlImport();
 			if (import) {
 				import->setStreamFromFile( s );
@@ -3309,7 +3311,7 @@ void CAMainWin::onImportDone( int status ) {
 	Called when Export directly to PDF action is clicked.
 */
 void CAMainWin::on_uiExportToPdf_triggered() {
-	uiExportDialog->setFilter( CAFileFormats::PDF_FILTER );
+	uiExportDialog->setNameFilter( CAFileFormats::PDF_FILTER );
 	on_uiExportDocument_triggered();
 }
 

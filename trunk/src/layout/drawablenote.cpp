@@ -177,7 +177,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 
 	// Draw notehead
 	s.y += height()*s.z/2;
-	p->drawText(s.x, qRound(s.y), QString(CACanorus::fetaCodepoint(_noteHeadGlyphName)));
+	p->drawText(s.x, s.y, QString(CACanorus::fetaCodepoint(_noteHeadGlyphName)));
 
 	if (note()->noteLength().musicLength() >= CAPlayableLength::Half) {
 		// Draw stem and flag

@@ -41,14 +41,12 @@ const int CASettings::DEFAULT_MIDI_IN_PORT = -1;
 const int CASettings::DEFAULT_MIDI_OUT_PORT = -1;
 
 const CATypesetter::CATypesetterType CASettings::DEFAULT_TYPESETTER = CATypesetter::LilyPond;
-#ifdef Q_WS_X11
-const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "lilypond";
-#endif
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "C:/Program files/LilyPond/usr/bin/lilypond-windows.exe";
-#endif
-#ifdef Q_WS_MAC
+#elif Q_OS_MAC
 const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "/Applications/LilyPond.app/Contents/Resources/bin/lilypond";
+#else
+const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "lilypond";
 #endif
 const bool                           CASettings::DEFAULT_USE_SYSTEM_TYPESETTER = true;
 const QString                        CASettings::DEFAULT_PDF_VIEWER_LOCATION = "";
