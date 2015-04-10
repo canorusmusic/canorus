@@ -68,6 +68,11 @@ public:
 	inline const QList<CAMusElement *>& timeSignatureReferences() { return _timeSignatureList; }
 	inline void addTimeSignatureReference(CAMusElement *el) { _timeSignatureList << el; }
 	inline int removeTimeSignatureReference(CAMusElement *el) { return _timeSignatureList.removeAll(el); }
+
+	inline const QList<CAMusElement *>& barReferences() { return _barList; }
+	inline void addBarReference(CAMusElement *el) { _barList << el; }
+	inline int removeBarReference(CAMusElement *el) { return _barList.removeAll(el); }
+
 private:
 	QList<CAVoice *> _voiceList;
 
@@ -76,5 +81,6 @@ private:
 	QList<CAMusElement *> _clefList;
 	QList<CAMusElement *> _keySignatureList;
 	QList<CAMusElement *> _timeSignatureList;
+	QList<CAMusElement *> _barList;
 };
 #endif /* STAFF_H_ */
