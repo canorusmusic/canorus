@@ -98,9 +98,14 @@ CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 	actionsTable->setSelectionMode( QAbstractItemView::SingleSelection );
 	actionsTable->verticalHeader()->hide();
 
+#if QT_VERSION >= 0x050000
 	actionsTable->horizontalHeader()->setSectionResizeMode(COL_COMMAND, QHeaderView::Stretch);
 	actionsTable->horizontalHeader()->setSectionResizeMode(COL_CONTEXT, QHeaderView::Stretch);
-
+#else
+	actionsTable->horizontalHeader()->setResizeMode(COL_COMMAND, QHeaderView::Stretch);
+	actionsTable->horizontalHeader()->setResizeMode(COL_CONTEXT, QHeaderView::Stretch);
+#endif
+	
 	actionsTable->setAlternatingRowColors(true);
 //#if USE_SHORTCUTGETTER
 //	actionsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
