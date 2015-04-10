@@ -134,8 +134,8 @@ QList< QList<CAMidiNote*> > CAMidiImport::importMidiNotes() {
 				CAMidiImportEvent *event = _allChannelsEvents[i]->at(voiceIdx)->at(j);
 				for (int pitchIdx=0; pitchIdx<event->_pitchList.size(); pitchIdx++) {
 					// temporary solutionsort midi events by time
-					int timeStart = qRound(event->_time);
-					int timeLength = qRound(event->_length);
+					int timeStart = event->_time;
+					int timeLength = event->_length;
 					int k;
 					for (k=0; k<midiNotes.last().size() && midiNotes.last()[k]->timeStart()<timeStart; k++);
 					midiNotes.last().insert(k, new CAMidiNote( event->_pitchList[pitchIdx], timeStart, timeLength, 0 ));

@@ -19,7 +19,7 @@
 
 #include <iostream>
 
-#ifdef Q_WS_X11
+#ifndef Q_OS_WIN
 #include <signal.h>
 
 //Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)

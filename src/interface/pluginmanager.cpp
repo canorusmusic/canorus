@@ -342,7 +342,7 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			for (int i=0; i<filters.size(); i++) {
 				_exportFilterMap[filters[i]] = action;
 				#ifndef SWIGCPP
-				_mainWin->exportDialog()->setFilters(_mainWin->exportDialog()->filters() << filters[i]);
+				_mainWin->exportDialog()->setNameFilters(_mainWin->exportDialog()->nameFilters() << filters[i]);
 				#else
 				// TODO
 				#endif
@@ -352,7 +352,7 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			for (int i=0; i<filters.size(); i++) {
 				_importFilterMap[filters[i]] = action;
 				#ifndef SWIGCPP
-				_mainWin->importDialog()->setFilters(_mainWin->importDialog()->filters() << filters[i]);
+				_mainWin->importDialog()->setNameFilters(_mainWin->importDialog()->nameFilters() << filters[i]);
 				#else
 				// TODO
 				#endif

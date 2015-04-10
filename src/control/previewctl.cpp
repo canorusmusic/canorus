@@ -46,8 +46,8 @@ void CAPreviewCtl::on_uiPrintPreview_triggered()
 	QString oTempFileName( oPath.absolutePath()+"/preview.pdf" );
 	if( !oTempFile.remove() )
  	{
-		qWarning("PreviewCtl: Could not remove old preview file %s, error %s", oTempFile.fileName().toAscii().constData(),
-             oTempFile.errorString().toAscii().constData() );
+		qWarning("PreviewCtl: Could not remove old preview file %s, error %s", oTempFile.fileName().toLatin1().constData(),
+             oTempFile.errorString().toLatin1().constData() );
 		oTempFile.unsetError();
  	}
 	qDebug("PreviewCtl: Preview triggered via main window");

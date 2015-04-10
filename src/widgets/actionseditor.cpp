@@ -98,8 +98,8 @@ CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 	actionsTable->setSelectionMode( QAbstractItemView::SingleSelection );
 	actionsTable->verticalHeader()->hide();
 
-	actionsTable->horizontalHeader()->setResizeMode(COL_COMMAND, QHeaderView::Stretch);
-	actionsTable->horizontalHeader()->setResizeMode(COL_CONTEXT, QHeaderView::Stretch);
+	actionsTable->horizontalHeader()->setSectionResizeMode(COL_COMMAND, QHeaderView::Stretch);
+	actionsTable->horizontalHeader()->setSectionResizeMode(COL_CONTEXT, QHeaderView::Stretch);
 
 	actionsTable->setAlternatingRowColors(true);
 //#if USE_SHORTCUTGETTER
@@ -279,7 +279,7 @@ void CAActionsEditor::applyChanges() {
 //#else
 		// @ToDo Update Midi/Shortcut corresponding but
 		// Update our own list of settings
-		action->setShortCut( QKeySequence(i->text()) );
+		action->setShortCut( QKeySequence(i->text()).toString() );
 //#endif
 	}
 }
@@ -632,7 +632,7 @@ void CAActionsEditor::loadFromConfig(QObject *o, QSettings *set) {
 //#else
 			accelText = set->value(action->text(), action->getShortCut()).toString();
 			if( accelText != "none" )
-				action->setShortCut(QKeySequence(accelText));
+				action->setShortCut( QKeySequence(accelText).toString() );
 //#endif
 		}
     }

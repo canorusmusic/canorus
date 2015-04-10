@@ -108,39 +108,39 @@ void CACanorus::initCommonGUI() {
 	CAMainWin::uiSaveDialog = new QFileDialog(0, QObject::tr("Choose a file to save"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiSaveDialog->setFileMode(QFileDialog::AnyFile);
 	CAMainWin::uiSaveDialog->setAcceptMode( QFileDialog::AcceptSave );
-	CAMainWin::uiSaveDialog->setFilters( QStringList() << CAFileFormats::CANORUSML_FILTER );
-	CAMainWin::uiSaveDialog->setFilters( CAMainWin::uiSaveDialog->filters() << CAFileFormats::CAN_FILTER );
-	CAMainWin::uiSaveDialog->selectFilter( CAFileFormats::getFilter( settings()->defaultSaveFormat() ) );
+	CAMainWin::uiSaveDialog->setNameFilters( QStringList() << CAFileFormats::CANORUSML_FILTER );
+	CAMainWin::uiSaveDialog->setNameFilters( CAMainWin::uiSaveDialog->nameFilters() << CAFileFormats::CAN_FILTER );
+	CAMainWin::uiSaveDialog->selectNameFilter( CAFileFormats::getFilter( settings()->defaultSaveFormat() ) );
 
 	CAMainWin::uiOpenDialog = new QFileDialog(0, QObject::tr("Choose a file to open"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiOpenDialog->setFileMode( QFileDialog::ExistingFile );
 	CAMainWin::uiOpenDialog->setAcceptMode( QFileDialog::AcceptOpen );
-	CAMainWin::uiOpenDialog->setFilters( QStringList() << CAFileFormats::CANORUSML_FILTER ); // clear the * filter
-	CAMainWin::uiOpenDialog->setFilters( CAMainWin::uiOpenDialog->filters() << CAFileFormats::CAN_FILTER );
+	CAMainWin::uiOpenDialog->setNameFilters( QStringList() << CAFileFormats::CANORUSML_FILTER ); // clear the * filter
+	CAMainWin::uiOpenDialog->setNameFilters( CAMainWin::uiOpenDialog->nameFilters() << CAFileFormats::CAN_FILTER );
 	QString allFilters; // generate list of all files
-	for (int i=0; i<CAMainWin::uiOpenDialog->filters().size(); i++) {
-		QString curFilter = CAMainWin::uiOpenDialog->filters()[i];
+	for (int i=0; i<CAMainWin::uiOpenDialog->nameFilters().size(); i++) {
+		QString curFilter = CAMainWin::uiOpenDialog->nameFilters()[i];
 		int left = curFilter.indexOf('(')+1;
 		allFilters += curFilter.mid( left, curFilter.size()-left-1 ) + " ";
 	}
 	allFilters.chop(1);
-	CAMainWin::uiOpenDialog->setFilters( QStringList() << QString(QObject::tr("All supported formats (%1)").arg(allFilters)) << CAMainWin::uiOpenDialog->filters() );
+	CAMainWin::uiOpenDialog->setNameFilters( QStringList() << QString(QObject::tr("All supported formats (%1)").arg(allFilters)) << CAMainWin::uiOpenDialog->nameFilters() );
 
 	CAMainWin::uiExportDialog = new QFileDialog(0, QObject::tr("Choose a file to export"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiExportDialog->setFileMode(QFileDialog::AnyFile);
 	CAMainWin::uiExportDialog->setAcceptMode( QFileDialog::AcceptSave );
-	CAMainWin::uiExportDialog->setFilters( QStringList() << CAFileFormats::LILYPOND_FILTER );
-	CAMainWin::uiExportDialog->setFilters( CAMainWin::uiExportDialog->filters() << CAFileFormats::MUSICXML_FILTER );
-	CAMainWin::uiExportDialog->setFilters( CAMainWin::uiExportDialog->filters() << CAFileFormats::MIDI_FILTER );
-	CAMainWin::uiExportDialog->setFilters( CAMainWin::uiExportDialog->filters() << CAFileFormats::PDF_FILTER );
-	CAMainWin::uiExportDialog->setFilters( CAMainWin::uiExportDialog->filters() << CAFileFormats::SVG_FILTER );
+	CAMainWin::uiExportDialog->setNameFilters( QStringList() << CAFileFormats::LILYPOND_FILTER );
+	CAMainWin::uiExportDialog->setNameFilters( CAMainWin::uiExportDialog->nameFilters() << CAFileFormats::MUSICXML_FILTER );
+	CAMainWin::uiExportDialog->setNameFilters( CAMainWin::uiExportDialog->nameFilters() << CAFileFormats::MIDI_FILTER );
+	CAMainWin::uiExportDialog->setNameFilters( CAMainWin::uiExportDialog->nameFilters() << CAFileFormats::PDF_FILTER );
+	CAMainWin::uiExportDialog->setNameFilters( CAMainWin::uiExportDialog->nameFilters() << CAFileFormats::SVG_FILTER );
 
 	CAMainWin::uiImportDialog = new QFileDialog(0, QObject::tr("Choose a file to import"), settings()->documentsDirectory().absolutePath());
 	CAMainWin::uiImportDialog->setFileMode( QFileDialog::ExistingFile );
 	CAMainWin::uiImportDialog->setAcceptMode( QFileDialog::AcceptOpen );
-	CAMainWin::uiImportDialog->setFilters( QStringList() << CAFileFormats::MUSICXML_FILTER );
-	CAMainWin::uiImportDialog->setFilters( CAMainWin::uiImportDialog->filters() << CAFileFormats::MIDI_FILTER );
-	// CAMainWin::uiImportDialog->setFilters( CAMainWin::uiImportDialog->filters() << CAFileFormats::LILYPOND_FILTER ); // activate when usable
+	CAMainWin::uiImportDialog->setNameFilters( QStringList() << CAFileFormats::MUSICXML_FILTER );
+	CAMainWin::uiImportDialog->setNameFilters( CAMainWin::uiImportDialog->nameFilters() << CAFileFormats::MIDI_FILTER );
+	// CAMainWin::uiImportDialog->setNameFilters( CAMainWin::uiImportDialog->nameFilters() << CAFileFormats::LILYPOND_FILTER ); // activate when usable
 }
 
 /*!
@@ -386,9 +386,13 @@ void CACanorus::connectSlotsByName(QObject *pOS, const QObject *pOR)
         return;
     const QMetaObject *mo = pOR->metaObject();
     Q_ASSERT(mo);
-    const QObjectList list = qFindChildren<QObject *>(pOS, QString());
+    const QObjectList list = pOS->findChildren<QObject *>(QString());
     for (int i = 0; i < mo->methodCount(); ++i) {
+#if QT_VERSION >= 0x050000
+        const char *slot = mo->method(i).methodSignature().data();
+#else
         const char *slot = mo->method(i).signature();
+#endif
         Q_ASSERT(slot);
         if (slot[0] != 'o' || slot[1] != 'n' || slot[2] != '_')
             continue;
@@ -397,7 +401,7 @@ void CACanorus::connectSlotsByName(QObject *pOS, const QObject *pOR)
 			qWarning("CACanorus::connectSlotsByName: Object list empty!");
         for(int j = 0; j < list.count(); ++j) {
             const QObject *co = list.at(j);
-            QByteArray objName = co->objectName().toAscii();
+            QByteArray objName = co->objectName().toLatin1();
             int len = objName.length();
             if (!len || qstrncmp(slot + 3, objName.data(), len) || slot[len+3] != '_')
                 continue;
@@ -410,7 +414,11 @@ void CACanorus::connectSlotsByName(QObject *pOS, const QObject *pOR)
                     if (smo->method(k).methodType() != QMetaMethod::Signal)
                         continue;
 
+#if QT_VERSION >= 0x050000
+                    if (!qstrncmp(smo->method(k).methodSignature().data(), slot + len + 4, slotlen)) {
+#else
                     if (!qstrncmp(smo->method(k).signature(), slot + len + 4, slotlen)) {
+#endif
                         sigIndex = k;
                         break;
                     }

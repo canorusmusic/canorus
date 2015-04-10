@@ -23,7 +23,7 @@ void CASwigRuby::init() {
 	if (QDir::searchPaths("scripts").size())
 		rb_eval_string((QString("$: << '") + QDir::searchPaths("scripts")[0] + "'").toStdString().c_str());
 	// add path to CanorusRuby module to Scripting path
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 	if (QFileInfo("base:CanorusRuby.dll").exists())
 		rb_eval_string((QString("$: << '") + QFileInfo("base:CanorusRuby.dll").absolutePath() + "'").toStdString().c_str());
 #else

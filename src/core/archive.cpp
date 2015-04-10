@@ -245,14 +245,13 @@ qint64 CAArchive::write(QIODevice& dest)
 
 int CAArchive::getOS()
 {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 	if(QSysInfo::WindowsVersion & QSysInfo::WV_NT_based)
 		return 11; // rfc 1952: "NTFS filesystem (NT)"
 	else
 		return 0; // rfc 1952: "FAT filesystem (MS-DOS, OS/2, NT/Win32"
-#elif defined(Q_WS_X11) // Mac or Linux/Unix/FreeBSD/...
+#else // Mac or Linux/Unix/FreeBSD/...
 	return 3;  // rfc 1952: "Unix". That what gzip does on Darwin (though there's 7 for "Macintosh").
-#else
-	return 255; // rfc 1952: "unknown".
 #endif
 }
+

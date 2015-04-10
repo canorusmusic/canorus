@@ -47,7 +47,7 @@ void CADrawableSyllable::draw(QPainter *p, const CADrawSettings s) {
 		             qRound(s.x + width()*s.z*0.5 + 0.5*textWidth + 0.5*s.z*DEFAULT_DASH_LENGTH), s.y + qRound(height()*s.z*0.7));
 	} else
 	if ( syllable()->melismaStart() && (width()*s.z - textWidth) > qRound(DEFAULT_DASH_LENGTH*s.z) ) {
-		p->drawLine( qRound(s.x + textWidth), s.y + qRound(height()*s.z),
+		p->drawLine( s.x + textWidth, s.y + qRound(height()*s.z),
 		             qRound(s.x + width()*s.z), s.y + qRound(height()*s.z));
 	}
 }

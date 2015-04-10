@@ -57,7 +57,7 @@ void CASwigPython::init() {
 		PyRun_SimpleString((QString("sys.path.append('")+QFileInfo("base:CanorusPython.py").absolutePath()+"')").toStdString().c_str());
 	}
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 	if ( QFileInfo("base:_CanorusPython.dll").exists() ) {
 		PyRun_SimpleString((QString("sys.path.append('")+QFileInfo("base:_CanorusPython.dll").absolutePath()+"')").toStdString().c_str());
 	} else {
