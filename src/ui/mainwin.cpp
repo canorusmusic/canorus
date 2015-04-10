@@ -862,6 +862,7 @@ void CAMainWin::newDocument() {
 	}
 
 	setDocument(new CADocument());
+	setMode(SelectMode);
 	uiCloseDocument->setEnabled(true);
 	CACanorus::undo()->createUndoStack( document() );
 	restartTimeEditedTime();
