@@ -740,14 +740,14 @@ const QString CALilyPondExport::barlineTypeToLilyPond(CABarline::CABarlineType t
 		case CABarline::End:
 			return "|.";
 			break;
-		case CABarline::RepeatOpen:
-			return "|:";
+		case CABarline::RepeatOpen:	// possible repeat bar lines: ".|:" ":..:" ":|.|:" ":|.:"  ":|."
+			return ".|:";
 			break;
 		case CABarline::RepeatClose:
-			return ":|";
+			return ":|.";
 			break;
 		case CABarline::RepeatCloseOpen:
-			return ":|:";
+			return ":|.|:";
 			break;
 		case CABarline::Dotted:
 			return ":";
