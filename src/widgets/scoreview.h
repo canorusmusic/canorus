@@ -294,6 +294,7 @@ private:
 
 	static const int RIGHT_EXTRA_SPACE;	  // Extra space at the right end to insert new music
 	static const int BOTTOM_EXTRA_SPACE;  // Extra space at the bottom end to insert new music
+	static const int RULER_HEIGHT;        // Ruler height in pixels
 	template <typename T> int getMaxXExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
 	template <typename T> int getMaxYExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting below easies
 

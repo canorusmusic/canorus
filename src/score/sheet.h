@@ -38,7 +38,7 @@ public:
 
 	QList<CAPlayable*> getChord(int time);
 	CATempo           *getTempo(int time);
-
+	
 	inline CADocument *document() { return _document; }
 	inline void setDocument(CADocument *doc) { _document = doc; }
 

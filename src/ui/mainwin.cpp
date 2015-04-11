@@ -797,6 +797,9 @@ void CAMainWin::setupCustomUi() {
 	uiPyConsoleDock->hide();
 #endif
 
+	// View
+	uiShowRuler->setChecked( CACanorus::settings()->showRuler() );
+	
 	// Help
 	addDockWidget( (qApp->isLeftToRight()) ? Qt::RightDockWidgetArea : Qt::LeftDockWidgetArea, uiHelpDock);
 	uiHelpDock->hide();
@@ -1129,6 +1132,17 @@ void CAMainWin::on_uiResourceView_toggled(bool checked) {
 	}
 }
 
+/*!
+	Toggles the visibility of the ruler.
+ */
+void CAMainWin::on_uiShowRuler_toggled(bool checked) {
+	if (checked) {
+		CACanorus::settings()->setShowRuler(true);
+	} else {
+		CACanorus::settings()->setShowRuler(false);
+	}
+	CACanorus::settings()->writeSettings();
+}
 
 /*!
 	Called when a floating view port is closed

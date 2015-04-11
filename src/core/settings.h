@@ -44,9 +44,9 @@ public:
 	static const bool DEFAULT_PLAY_INSERTED_NOTES;
 	inline bool autoBar() { return _autoBar; }
 	inline void setAutoBar( bool b ) { _autoBar = b; }
+	static const bool DEFAULT_AUTO_BAR;
 	inline bool splitAtQuarterBoundaries() { return _splitAtQuarterBoundaries; }
 	inline void setSplitAtQuarterBoundaries( bool b ) { _splitAtQuarterBoundaries = b; }
-	static const bool DEFAULT_AUTO_BAR;
 	static const bool DEFAULT_SPLIT_AT_QUARTER_BOUNDARIES;
 
 	/////////////////////////////
@@ -78,6 +78,9 @@ public:
 	inline bool antiAliasing() { return _antiAliasing; }
 	inline void setAntiAliasing( bool a ) { _antiAliasing = a; }
 	static const bool DEFAULT_ANTIALIASING;
+	inline bool showRuler() { return _showRuler; }
+	inline void setShowRuler( bool b ) { _showRuler = b; }
+	static const bool DEFAULT_SHOW_RULER;
 	inline QColor backgroundColor() { return _backgroundColor; }
 	inline void setBackgroundColor( QColor backgroundColor ) { _backgroundColor = backgroundColor; }
 	static const QColor DEFAULT_BACKGROUND_COLOR;
@@ -183,6 +186,7 @@ private:
 	bool   _lockScrollPlayback;
 	bool   _animatedScroll;
 	bool   _antiAliasing;
+	bool   _showRuler;
 	QColor _backgroundColor;
 	QColor _foregroundColor;
 	QColor _selectionColor;

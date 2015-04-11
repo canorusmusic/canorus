@@ -200,6 +200,7 @@ private slots:
 	void on_uiLilyPondSource_triggered();
 	void on_uiCanorusMLSource_triggered();
 	void on_uiResourceView_toggled(bool);
+	void on_uiShowRuler_toggled(bool);
 
 	// Sheet
 	void on_uiRemoveSheet_triggered();

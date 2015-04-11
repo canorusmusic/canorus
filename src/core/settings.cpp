@@ -28,6 +28,7 @@ const int CASettings::DEFAULT_MAX_RECENT_DOCUMENTS = 15;
 const bool   CASettings::DEFAULT_LOCK_SCROLL_PLAYBACK = true; // scroll while playing
 const bool   CASettings::DEFAULT_ANIMATED_SCROLL = true;
 const bool   CASettings::DEFAULT_ANTIALIASING = true;
+const bool   CASettings::DEFAULT_SHOW_RULER = true;
 const QColor CASettings::DEFAULT_BACKGROUND_COLOR = QColor(255, 255, 240);
 const QColor CASettings::DEFAULT_FOREGROUND_COLOR = Qt::black;
 const QColor CASettings::DEFAULT_SELECTION_COLOR = Qt::red;
@@ -114,6 +115,7 @@ void CASettings::writeSettings() {
 	setValue( "editor/playinsertednotes", playInsertedNotes() );
 	setValue( "editor/autobar", autoBar() );
 	setValue( "editor/splitatquarterboundaries", splitAtQuarterBoundaries() );
+	setValue( "editor/showruler", showRuler() );
 
 	setValue( "files/documentsdirectory", documentsDirectory().absolutePath() );
 	setValue( "files/defaultsaveformat", defaultSaveFormat() );
@@ -182,6 +184,11 @@ int CASettings::readSettings() {
 	else
 		setSplitAtQuarterBoundaries( DEFAULT_SPLIT_AT_QUARTER_BOUNDARIES );
 
+	if ( contains("editor/showruler") )
+		setShowRuler( value("editor/showruler").toBool() );
+	else
+		setShowRuler( DEFAULT_SHOW_RULER );
+	
 	// Saving/Loading settings
 	if ( contains("files/documentsdirectory") )
 		setDocumentsDirectory( value("files/documentsdirectory").toString() );

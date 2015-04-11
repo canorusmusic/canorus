@@ -52,21 +52,21 @@ public:
 	void drawVScaleHandles( QPainter *p, const CADrawSettings s );
 
 	inline CADrawableType drawableType() { return _drawableType; }
-	inline double xPos() { return _xPos; }
-	inline double yPos() { return _yPos; }
-	inline double width() { return _width; }
-	inline double height() { return _height; }
-	inline double neededSpaceWidth() { return _neededSpaceWidth; }
-	inline double neededSpaceHeight() { return _neededSpaceHeight; }
-	inline double neededWidth() { return _width+_neededSpaceWidth; }
-	inline double neededHeight() { return _height+_neededSpaceHeight; }
-	inline double xCenter() { return _xPos + (_width)/2; }
-	inline double yCenter() { return _yPos + (_height)/2; }
-	inline const QRect bBox() { return QRect(_xPos, _yPos, _width, _height); }
-	inline bool isVisible() { return _visible; }
-	inline bool isSelectable() { return _selectable; }
-	inline bool isHScalable() { return _hScalable; }
-	inline bool isVScalable() { return _vScalable; }
+	inline double xPos() const { return _xPos; }
+	inline double yPos() const { return _yPos; }
+	inline double width() const { return _width; }
+	inline double height() const { return _height; }
+	inline double neededSpaceWidth() const { return _neededSpaceWidth; }
+	inline double neededSpaceHeight() const { return _neededSpaceHeight; }
+	inline double neededWidth() const { return _width+_neededSpaceWidth; }
+	inline double neededHeight() const { return _height+_neededSpaceHeight; }
+	inline double xCenter() const { return _xPos + (_width)/2; }
+	inline double yCenter() const { return _yPos + (_height)/2; }
+	inline const QRect bBox() const { return QRect(_xPos, _yPos, _width, _height); }
+	inline bool isVisible() const { return _visible; }
+	inline bool isSelectable() const { return _selectable; }
+	inline bool isHScalable() const { return _hScalable; }
+	inline bool isVScalable() const { return _vScalable; }
 
 	inline void setXPos(double xPos) { _xPos = xPos; }
 	inline void setYPos(double yPos) { _yPos = yPos; }

@@ -27,6 +27,7 @@
 #include "layout/drawablestaff.h"
 #include "layout/drawablenote.h"
 #include "layout/drawableaccidental.h"
+#include "layout/drawablebarline.h"
 
 #include "layout/layoutengine.h"
 #include "score/document.h"
@@ -46,6 +47,7 @@
 
 const int CAScoreView::RIGHT_EXTRA_SPACE = 100;	// Gives some space after the music so you're able to insert music elements after the last element
 const int CAScoreView::BOTTOM_EXTRA_SPACE = 30; // Gives some space after the music so you're able to insert new contexts below the last context
+const int CAScoreView::RULER_HEIGHT = 15;
 const int CAScoreView::ANIMATION_STEPS = 7;
 
 /*!
@@ -937,6 +939,41 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		}
 	}
 
+	// draw ruler
+	if (CACanorus::settings()->showRuler()) {
+		p.fillRect(0, 0, width(), RULER_HEIGHT, QColor::fromRgb(200, 200, 200, 128));
+		p.setPen(Qt::lightGray);
+		// find a staff with most barlines
+		QList<CADrawableContext*> dContextList = _drawableCList.list();
+		CADrawableStaff *dStaff = 0;
+		for (int i=0; i<dContextList.size(); i++) {
+			if ((dContextList[i]->drawableContextType()==CADrawableContext::DrawableStaff) &&
+				(!dStaff || dStaff->drawableBarlineList().size()<static_cast<CADrawableStaff*>(dContextList[i])->drawableBarlineList().size())) {
+				dStaff = static_cast<CADrawableStaff*>(dContextList[i]);
+			}
+		}
+		
+		QFont font("FreeSans");
+		font.setPixelSize( qRound(RULER_HEIGHT*0.8) );
+		p.setFont(font);
+		p.setPen(Qt::black);
+		
+		// draw the barline marks
+		CABarline *curBarline = dStaff->getBarline(_worldX+_worldW);
+		CADrawableBarline *curDBarline = (curBarline?static_cast<CADrawableBarline*>(_mapDrawable.values( dStaff->getBarline(_worldX+width()/_zoom) )[0]):0);
+		int dBarlineIdx = dStaff->drawableBarlineList().indexOf(curDBarline);
+		while ( curDBarline && curDBarline->xPos()>_worldX ) {
+			int center = qRound((curDBarline->xPos()-_worldX)*_zoom);
+			p.drawText( center-1, RULER_HEIGHT-2, QString::number(dBarlineIdx+1) );
+			
+			dBarlineIdx--;
+			curDBarline = (dBarlineIdx>=0?dStaff->drawableBarlineList()[dBarlineIdx]:0);
+		}
+		
+		// draw the time marks
+		
+	}
+	
 	// draw selection regions
 	for (int i=0; i<selectionRegionList().size(); i++) {
 		CADrawSettings c = {
@@ -986,6 +1023,7 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 			p.drawText( qRound((_xCursor-_worldX+10) * _zoom), qRound((_yCursor-_worldY-10) * _zoom), CANote::generateNoteName(_shadowNote[0]->diatonicPitch().noteName(), _shadowNoteAccs) );
 		}
 	}
+	
 	gettimeofday(&timeEnd2, NULL);
 	
 //	std::cout << "finding elements to draw took " << timeEnd.tv_sec-timeStart.tv_sec+(timeEnd.tv_usec-timeStart.tv_usec)/1000000.0 << "s." << std::endl;
