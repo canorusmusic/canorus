@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2015, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -4104,7 +4104,7 @@ void CAMainWin::on_uiAboutQt_triggered() {
 void CAMainWin::on_uiAboutCanorus_triggered() {
 	QString about=tr("<p><b>Canorus - The next generation music score editor</b></p>\
 <p>Version %1<br>\
-(C) 2006-2013 Canorus Development team. All rights reserved.<br>\
+(C) 2006-2015 Canorus Development team. All rights reserved.<br>\
 See the file AUTHORS for the list of Canorus developers<br><br>\
 This program is licensed under the GNU General Public License (GPL).<br>\
 See the file LICENSE.GPL for details.<br><br>\
