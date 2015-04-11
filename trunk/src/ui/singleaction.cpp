@@ -13,6 +13,7 @@
 CASingleAction::CASingleAction( QObject *parent )
  : QAction( parent )
 {
+    _bMidiShortCutCombined = false;
 }
 
 CASingleAction::~CASingleAction()
@@ -52,8 +53,11 @@ void CASingleAction::setShortCut( QString oShortCut )
 	}
 }
 
-void CASingleAction::setMidiCommand( QString oMidiCommand )
+void CASingleAction::setMidiCommand( QString oMidiCommand, bool combined )
 {
 	if( !oMidiCommand.isEmpty() )
+    {
 		_oMidiCommand = oMidiCommand;
+        _bMidiShortCutCombined = combined;
+    }
 }

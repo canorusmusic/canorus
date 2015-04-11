@@ -29,13 +29,14 @@ public:
 	inline QString getDescription() { return _oDescription; }
 	inline QString getShortCut()    { return _oShortCut; }
 	inline QString getMidiCommand() { return _oMidiCommand; }
+    inline bool    getMidiShortCutCombined() { return _bMidiShortCutCombined; }
 	
 	// Setter methods
 	void setCommand( QString oCommand );
 	void setContext( QString oContext );
 	void setDescription( QString oDescription );
 	void setShortCut( QString oShortCut );
-	void setMidiCommand( QString oMidiCommand );
+    void setMidiCommand( QString oMidiCommand, bool combined = false );
 
 protected:
 	QString _oCommand;
@@ -43,6 +44,7 @@ protected:
 	QString _oDescription;
 	QString _oShortCut;
 	QString _oMidiCommand;
+    bool    _bMidiShortCutCombined;
 };
 
 #endif // _CASINGLEACTION_H_
