@@ -415,28 +415,20 @@ bool CAActionsEditor::hasConflicts(bool bMidi) {
 }
 
 void CAActionsEditor::saveActionsTable() {
-	QString sk, end;
-	bool bSCuts = false;
-	if( actionsTable->column( (QTableWidgetItem *)focusWidget() ) == COL_SHORTCUT )
-	{
-		sk = tr("Shortcut files") +" (*.cakey)";
-		end = ".cakey";
-		bSCuts = true;
-	}
-	else
-	{
-		sk = tr("Midi command files") +" (*.camid)";
-		end = ".camid";
-	}
+    QString sk;
+    sk = tr("Shortcut files") +" (*.cakey *.camid)";
+
 	QString s = QFileDialog::getSaveFileName(
                     this, tr("Choose a filename"), 
                     latest_dir, sk );
 
+    QFileInfo shortCutFileInfo(s);
+
 	if (!s.isEmpty()) {
 		// If filename has no extension, add it
-		if (QFileInfo(s).suffix().isEmpty()) {
+        /*if (QFileInfo(s).completeSuffix().isEmpty()) {
 			s = s + end;
-		}
+        }*/
 		if (QFileInfo(s).exists()) {
 			int res = QMessageBox::question( this,
 					tr("Confirm overwrite?"),
@@ -450,7 +442,7 @@ void CAActionsEditor::saveActionsTable() {
 			}
 		}
 		latest_dir = QFileInfo(s).absolutePath();
-		bool r = saveActionsTable(s, bSCuts);
+        bool r = saveActionsTable(s, shortCutFileInfo.completeSuffix() == "cakey" ? true : false);
 		if (!r) {
 			QMessageBox::warning(this, tr("Error"), 
                tr("The file couldn't be saved"), 
@@ -490,13 +482,14 @@ bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* =
 void CAActionsEditor::loadActionsTable() {
 	QString sk;
     sk = tr("Shortcut files") +" (*.cakey *.camid)";
-	QString s = QFileDialog::getOpenFileName(
+    QString s = QFileDialog::getOpenFileName(
                     this, tr("Choose a file"),
                     latest_dir, sk );
 
+    QFileInfo shortCutFileInfo(s);
     if (!s.isEmpty()) {
 		latest_dir = QFileInfo(s).absolutePath();
-		bool r = loadActionsTable(s);
+        bool r = loadActionsTable(s, shortCutFileInfo.completeSuffix() == "cakey" ? true : false);
 		if (!r) {
 			QMessageBox::warning(this, tr("Error"), 
                tr("The file couldn't be loaded"), 
