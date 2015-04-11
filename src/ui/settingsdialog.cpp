@@ -195,7 +195,7 @@ void CASettingsDialog::buildActionsEditorPage()
 	QWidget oSingleActions; // all actions added here
 	const QList<QAction *> &roSAList = CACanorus::settings()->getActionList();
 	_commandsEditor = new CAActionsEditor( 0 );
-    _commandsEditor->setObjectName(QStringLiteral("commandsEditor"));
+    _commandsEditor->setObjectName(QString::fromUtf8("commandsEditor"));
     commandsSettingsVBoxLayout->addWidget(_commandsEditor);
 
 	// Read all elements from single action list (API requirement)
