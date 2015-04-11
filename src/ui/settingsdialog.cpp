@@ -8,6 +8,7 @@
 #include <QSettings>
 #include <QDir>
 #include <QFileDialog>
+#include <QBoxLayout>
 
 // Python.h needs to be loaded first!
 #include "canorus.h"
@@ -194,6 +195,9 @@ void CASettingsDialog::buildActionsEditorPage()
 	QWidget oSingleActions; // all actions added here
 	const QList<QAction *> &roSAList = CACanorus::settings()->getActionList();
 	_commandsEditor = new CAActionsEditor( 0 );
+    _commandsEditor->setObjectName(QStringLiteral("commandsEditor"));
+    commandsSettingsVBoxLayout->addWidget(_commandsEditor);
+
 	// Read all elements from single action list (API requirement)
 	for(i=0; i< roSAList.size(); ++i)
 		oSingleActions.addAction( roSAList[i] );
