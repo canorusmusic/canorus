@@ -35,8 +35,8 @@
 #include "canorus.h"
 #include "core/settings.h"
 
-// Number of columns used: Conflicts, Command, Context, Shortcut, Midi Command
-#define COL_NUM 5
+// Number of columns used: Command, Context, Shortcut, Midi Command
+#define COL_NUM 4
 
 /*
 #if USE_MULTIPLE_SHORTCUTS
@@ -83,11 +83,11 @@ QList <QKeySequence> ActionsEditor::stringToShortcuts(QString shortcuts) {
 */
 
 // Definition of column positionst
-#define COL_CONFLICTS 0 // indicates a conflict with other shortcut
-#define COL_COMMAND 1   // name of the command (not internal!)
-#define COL_CONTEXT 2   // Context of the command like mode
-#define COL_SHORTCUT 3  // Keyboard shortcut
-#define COL_MIDI 4      // Midi command
+//#define COL_CONFLICTS 0 // indicates a conflict (will be done with a color of the conflicting line)
+#define COL_COMMAND 1       // name of the command (not internal!)
+#define COL_DESCRIPTION 2   // Context of the command like mode
+#define COL_SHORTCUT 3      // Keyboard shortcut
+#define COL_MIDI 4          // Midi command
 
 CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 	: QWidget(parent, f)
@@ -100,7 +100,7 @@ CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 
 #if QT_VERSION >= 0x050000
 	actionsTable->horizontalHeader()->setSectionResizeMode(COL_COMMAND, QHeaderView::Stretch);
-	actionsTable->horizontalHeader()->setSectionResizeMode(COL_CONTEXT, QHeaderView::Stretch);
+    actionsTable->horizontalHeader()->setSectionResizeMode(COL_DESCRIPTION, QHeaderView::Stretch);
 #else
 	actionsTable->horizontalHeader()->setResizeMode(COL_COMMAND, QHeaderView::Stretch);
 	actionsTable->horizontalHeader()->setResizeMode(COL_CONTEXT, QHeaderView::Stretch);
@@ -156,10 +156,10 @@ CAActionsEditor::~CAActionsEditor() {
 }
 
 void CAActionsEditor::retranslateStrings() {
-	actionsTable->setHorizontalHeaderLabels( QStringList() << "" <<
-		tr("Shortcut") << tr("Description") << tr("Name") );
+    actionsTable->setHorizontalHeaderLabels( QStringList() <<
+        tr("Name") << tr("Description") << tr("Shortcut") << tr("Midi Command") );
 
-	//saveButton->setIcon(Images::icon("save"));
+    //saveButton->setIcon(Images::icon("save"));
 	//loadButton->setIcon(Images::icon("open"));
 
     saveButton->setText(tr("&Save shortcuts"));
@@ -244,9 +244,9 @@ void CAActionsEditor::updateView() {
 //#endif
 
 		// Add items to table
-		actionsTable->setItem(n, COL_CONFLICTS, i_conf );
-		actionsTable->setItem(n, COL_COMMAND, i_command );
-		actionsTable->setItem(n, COL_CONTEXT, i_context );
+        //actionsTable->setItem(n, COL_CONFLICTS, i_conf );
+        actionsTable->setItem(n, COL_COMMAND, i_command );
+        actionsTable->setItem(n, COL_DESCRIPTION, i_context );
 		actionsTable->setItem(n, COL_SHORTCUT, i_shortcut );
 		actionsTable->setItem(n, COL_MIDI, i_midi );
 
@@ -392,8 +392,7 @@ bool CAActionsEditor::hasConflicts(bool bMidi) {
 	QTableWidgetItem *i;
 
 	for (int n=0; n < actionsTable->rowCount(); n++) {
-		//actionsTable->setText( n, COL_CONFLICTS, " ");
-		i = actionsTable->item( n, COL_CONFLICTS );
+		//i = actionsTable->item( n, COL_CONFLICTS );
 		if (i) i->setIcon( QPixmap() );
 
 		i = actionsTable->item(n, iType );
@@ -463,7 +462,7 @@ bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* =
 		// @ToDo: Pretty Format output by adding \t as necessary
 		for (int row=0; row < actionsTable->rowCount(); row++) {
 			stream << actionsTable->item(row, COL_COMMAND)->text() << "\t" 
-                   << actionsTable->item(row, COL_CONTEXT)->text() << "\t";
+                   << actionsTable->item(row, COL_DESCRIPTION)->text() << "\t";
 			if( bSCuts )
 			{
 				accelText = actionsTable->item(row, COL_SHORTCUT)->text();
