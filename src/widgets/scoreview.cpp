@@ -539,9 +539,9 @@ void CAScoreView::rebuild() {
 
 	\warning Repaint is not done automatically!
 */
-void CAScoreView::setWorldX(int x, bool animate, bool force) {
+void CAScoreView::setWorldX(double x, bool animate, bool force) {
 	if (!force) {
-		int maxX = (getMaxXExtended(_drawableMList) > getMaxXExtended(_drawableCList))?getMaxXExtended(_drawableMList) : getMaxXExtended(_drawableCList);
+		double maxX = (getMaxXExtended(_drawableMList) > getMaxXExtended(_drawableCList))?getMaxXExtended(_drawableMList) : getMaxXExtended(_drawableCList);
 		if (x > maxX - _worldW)
 			x = maxX - _worldW;
 		if (x < 0)
@@ -572,7 +572,7 @@ void CAScoreView::setWorldX(int x, bool animate, bool force) {
 
 	\warning Repaint is not done automatically!
 */
-void CAScoreView::setWorldY(int y, bool animate, bool force) {
+void CAScoreView::setWorldY(double y, bool animate, bool force) {
 	if (!force) {
 		int maxY = getMaxYExtended(_drawableMList) > getMaxYExtended(_drawableCList)?getMaxYExtended(_drawableMList) : getMaxYExtended(_drawableCList);
 		if (y > maxY - _worldH)
@@ -605,7 +605,7 @@ void CAScoreView::setWorldY(int y, bool animate, bool force) {
 
 	\warning Repaint is not done automatically!
 */
-void CAScoreView::setWorldWidth(int w, bool force) {
+void CAScoreView::setWorldWidth(double w, bool force) {
 	if (!force) {
 		if (w < 1) return;
 	}
@@ -613,7 +613,7 @@ void CAScoreView::setWorldWidth(int w, bool force) {
 	_oldWorldW = _worldW;
 	_worldW = w;
 
-	int scrollMax;
+	double scrollMax;
 	if ((scrollMax = ((getMaxXExtended(_drawableMList) > getMaxXExtended(_drawableCList))?getMaxXExtended(_drawableMList):getMaxXExtended(_drawableCList)) - _worldW) >= 0) {
 		if (scrollMax < _worldX)	//if you resize the widget at a large zoom level and if the getMax border has been reached
 			setWorldX(scrollMax);	//scroll the view away from the border
@@ -635,7 +635,7 @@ void CAScoreView::setWorldWidth(int w, bool force) {
 
 	\warning Repaint is not done automatically!
 */
-void CAScoreView::setWorldHeight(int h, bool force) {
+void CAScoreView::setWorldHeight(double h, bool force) {
 	if (!force) {
 		if (h < 1) return;
 	}
@@ -643,7 +643,7 @@ void CAScoreView::setWorldHeight(int h, bool force) {
 	_oldWorldH = _worldH;
 	_worldH = h;
 
-	int scrollMax;
+	double scrollMax;
 	if ((scrollMax = ((getMaxYExtended(_drawableMList) > getMaxYExtended(_drawableCList))?getMaxYExtended(_drawableMList):getMaxYExtended(_drawableCList)) - _worldH) >= 0) {
 		if (scrollMax < _worldY)	//if you resize the widget at a large zoom level and if the getMax border has been reached
 			setWorldY(scrollMax);	//scroll the view away from the border
@@ -665,7 +665,7 @@ void CAScoreView::setWorldHeight(int h, bool force) {
 
 	\warning Repaint is not done automatically!
 */
-void CAScoreView::setWorldCoords(QRect coords, bool animate, bool force) {
+void CAScoreView::setWorldCoords(QRectF coords, bool animate, bool force) {
 	_checkScrollBarsDeadLock = true;
 
 	if (!drawableWidth() && !drawableHeight())
@@ -751,10 +751,10 @@ void CAScoreView::zoomToFit(bool animate, bool force) {
 	\warning Repaint is not done automatically!
 */
 void CAScoreView::setCenterCoords(double x, double y, bool animate, bool force) {
-	_checkScrollBarsDeadLock = true;
+//	_checkScrollBarsDeadLock = true;
 	setWorldX(x - 0.5*_worldW, animate, force);
 	setWorldY(y - 0.5*_worldH, animate, force);
-	_checkScrollBarsDeadLock = false;
+//	_checkScrollBarsDeadLock = false;
 
 	checkScrollBars();
 }
@@ -967,7 +967,7 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		
 		// determine the barline number + do we have a pickup measure in the beginning
 		int dBarlineIdx = dStaff->drawableBarlineList().indexOf(curDBarline);
-		CADrawableTimeSignature *firstDTimeSig = dStaff->drawableTimeSignature()[0];
+		CADrawableTimeSignature *firstDTimeSig = (dStaff->drawableTimeSignatureList().size()?dStaff->drawableTimeSignatureList()[0]:0);
 		int barlineOffset = 2;
 		if (curDBarline && firstDTimeSig &&
 		    dStaff->drawableBarlineList()[0]->barline()->timeStart() < (CAPlayableLength::musicLengthToTimeLength(static_cast<CAPlayableLength::CAMusicLength>(firstDTimeSig->timeSignature()->beat()))*firstDTimeSig->timeSignature()->beats()) ) {
@@ -1631,7 +1631,7 @@ void CAScoreView::removeTextEdit() {
 	Returns the maximum X of the viewable World a little bigger to make insertion at the end easy.
 */
 template <typename T>
-int CAScoreView::getMaxXExtended(CAKDTree<T> &v) {
+double CAScoreView::getMaxXExtended(CAKDTree<T> &v) {
 	return v.getMaxX() + RIGHT_EXTRA_SPACE;
 }
 
@@ -1639,7 +1639,7 @@ int CAScoreView::getMaxXExtended(CAKDTree<T> &v) {
 	Returns the maximum Y of the viewable World a little bigger to make insertion at the end easy.
 */
 template <typename T>
-int CAScoreView::getMaxYExtended(CAKDTree<T> &v) {
+double CAScoreView::getMaxYExtended(CAKDTree<T> &v) {
 	return v.getMaxY() + BOTTOM_EXTRA_SPACE;
 }
 

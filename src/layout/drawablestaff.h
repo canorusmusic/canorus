@@ -50,7 +50,7 @@ public:
 
 	CAClef *getClef(double x);
 	CAKeySignature *getKeySignature(double x);
-	QList<CADrawableTimeSignature *>& drawableTimeSignature() { return _drawableTimeSignatureList; }
+	QList<CADrawableTimeSignature *>& drawableTimeSignatureList() { return _drawableTimeSignatureList; }
 	CATimeSignature *getTimeSignature(double x);
 	QList<CADrawableBarline *>& drawableBarlineList() { return _drawableBarlineList; }
 	CABarline *getBarline(double x);

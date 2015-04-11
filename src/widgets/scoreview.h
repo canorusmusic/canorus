@@ -158,20 +158,20 @@ public:
 	inline const int drawableWidth() { return _canvas->width(); }
 	inline const int drawableHeight() { return _canvas->height(); }
 
-	void setWorldX(int x, bool animate=false, bool force=false);
-	void setWorldY(int y, bool animate=false, bool force=false);
-	void setWorldWidth(int w, bool force=false);
-	void setWorldHeight(int h, bool force=false);
+	void setWorldX(double x, bool animate=false, bool force=false);
+	void setWorldY(double y, bool animate=false, bool force=false);
+	void setWorldWidth(double w, bool force=false);
+	void setWorldHeight(double h, bool force=false);
 
-	inline const int worldX() { return _worldX; }
-	inline const int worldY() { return _worldY; }
-	inline const int worldWidth() { return _worldW; }
-	inline const int worldHeight() { return _worldH; }
-	inline const QRect worldCoords() { return QRect(worldX(), worldY(), worldWidth(), worldHeight()); }
+	inline const double worldX() { return _worldX; }
+	inline const double worldY() { return _worldY; }
+	inline const double worldWidth() { return _worldW; }
+	inline const double worldHeight() { return _worldH; }
+	inline const QRectF worldCoords() { return QRectF(worldX(), worldY(), worldWidth(), worldHeight()); }
 
 	inline const float zoom() { return _zoom; }
 
-	void setWorldCoords(const QRect r, bool animate=false, bool force=false);
+	void setWorldCoords(const QRectF r, bool animate=false, bool force=false);
 	void setWorldCoords(double x, double y, double w, double h, bool animate=false, bool force=false)  { setWorldCoords( QRect(x,y,w,h), animate, force); }
 
 	void setCenterCoords(double x, double y, bool animate=false, bool force=false);
@@ -295,8 +295,8 @@ private:
 	static const int RIGHT_EXTRA_SPACE;	  // Extra space at the right end to insert new music
 	static const int BOTTOM_EXTRA_SPACE;  // Extra space at the bottom end to insert new music
 	static const int RULER_HEIGHT;        // Ruler height in pixels
-	template <typename T> int getMaxXExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
-	template <typename T> int getMaxYExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting below easies
+	template <typename T> double getMaxXExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting at the end easier
+	template <typename T> double getMaxYExtended(CAKDTree<T> &v);  // Make the viewable World a little bigger (stuffed) to make inserting below easies
 
 	double _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the view is currently showing.
 	QPoint _lastMousePressCoords;               // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
