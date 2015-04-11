@@ -11,11 +11,13 @@
 #include "layout/drawableclef.h"
 #include "layout/drawablekeysignature.h"
 #include "layout/drawabletimesignature.h"
+#include "layout/drawablebarline.h"
 
 #include "score/note.h"
 #include "score/clef.h"
 #include "score/keysignature.h"
 #include "score/timesignature.h"
+#include "score/barline.h"
 
 const double CADrawableStaff::STAFFLINE_WIDTH = 0.8;
 
@@ -200,6 +202,43 @@ bool CADrawableStaff::removeKeySignature(CADrawableKeySignature *keySig) {
 	return _drawableKeySignatureList.removeAll(keySig);
 }
 
+/*!
+ * Helper function for getBarline() when doing the binary search over elements.
+ */
+bool CADrawableStaff::xDrawableBarlineLessThan(const CADrawableBarline* a, const double x) {
+     return (a->xPos() < x);
+}
+
+/*
+	Returns the pointer to the last barline placed before the given X-coordinate.
+	This function is usually called when drawing the ruler.
+*/
+CABarline* CADrawableStaff::getBarline(double x) {
+	QList<CADrawableBarline*>::const_iterator it = qLowerBound(_drawableBarlineList.constBegin(), _drawableBarlineList.constEnd(), x, CADrawableStaff::xDrawableBarlineLessThan);
+	if (it!=_drawableBarlineList.constBegin()) {
+		it--;
+	}
+	
+	return ((it!=_drawableBarlineList.constEnd())?((*it)->barline()):0);
+}
+
+/*!
+	Adds a barline \a barlineto the barline list for faster search when drawing the ruler.
+*/
+void CADrawableStaff::addBarline(CADrawableBarline *barline) {
+	int i;
+	for (i=0; ((i<_drawableBarlineList.size()) && (barline->xPos() > _drawableBarlineList[i]->xPos())); i++);
+	_drawableBarlineList.insert(i, barline);
+}
+
+/*!
+	Removes the given barline from the barline-lookup list.
+	Returns True, if the barline was successfully removed, False otherwise.
+*/
+bool CADrawableStaff::removeBarline(CADrawableBarline *barline) {
+	return _drawableBarlineList.removeAll(barline);
+}
+
 /*
 	Returns the pointer to the last key signature placed before the given X-coordinate.
 */
@@ -240,18 +279,20 @@ CATimeSignature* CADrawableStaff::getTimeSignature(double x) {
 void CADrawableStaff::addMElement(CADrawableMusElement *elt) {
 	switch (elt->drawableMusElementType()) {
 		case CADrawableMusElement::DrawableClef:
-			addClef((CADrawableClef*)elt);
+			addClef(static_cast<CADrawableClef*>(elt));
 			break;
 		case CADrawableMusElement::DrawableKeySignature:
-			addKeySignature((CADrawableKeySignature*)elt);
+			addKeySignature(static_cast<CADrawableKeySignature*>(elt));
 			break;
 		case CADrawableMusElement::DrawableTimeSignature:
-			addTimeSignature((CADrawableTimeSignature*)elt);
+			addTimeSignature(static_cast<CADrawableTimeSignature*>(elt));
+			break;
+		case CADrawableMusElement::DrawableBarline:
+			addBarline(static_cast<CADrawableBarline*>(elt));
 			break;
 		case CADrawableMusElement::DrawableNote:
 		case CADrawableMusElement::DrawableRest:
 		case CADrawableMusElement::DrawableMidiNote:
-		case CADrawableMusElement::DrawableBarline:
 		case CADrawableMusElement::DrawableAccidental:
 		case CADrawableMusElement::DrawableSlur:
 		case CADrawableMusElement::DrawableTuplet:
