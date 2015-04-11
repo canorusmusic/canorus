@@ -1691,6 +1691,11 @@ Error number %1 %2.</source>
         <translation>Füge Tuplet ein</translation>
     </message>
     <message>
+        <location filename="../ui/mainwin.cpp" line="4105"/>
+        <source>&lt;p&gt;&lt;b&gt;Canorus - The next generation music score editor&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Version %1&lt;br&gt;(C) 2006-2015 Canorus Development team. All rights reserved.&lt;br&gt;See the file AUTHORS for the list of Canorus developers&lt;br&gt;&lt;br&gt;This program is licensed under the GNU General Public License (GPL).&lt;br&gt;See the file LICENSE.GPL for details.&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.canorus.org&quot;&gt;http://www.canorus.org&lt;/a&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;Canorus - Ein Musiknoten-Editor neuer Generation&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Version %1&lt;br&gt;(C) 2006-2013 Canorus Entwicklerteam. Alle Rechte vorbehalten.&lt;br&gt;Siehe Datei AUTHORS mit den Namen der Canorus Entwickler.&lt;br&gt;&lt;br&gt;Dieses Programm ist mit der GNU General Public License (GPL) lizensiert.&lt;br&gt;Details siehe Datei LICENSE.GPL.&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.canorus.org&quot;&gt;http://www.canorus.org&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
         <location filename="../ui/mainwin.cpp" line="4113"/>
         <source>Canorus is compiled with Python support.</source>
         <translation>Canorus ist mit Python-Unterstützung übersetzt.</translation>
@@ -1821,11 +1826,6 @@ Error number %1 %2.</source>
         <comment>undo</comment>
         <translatorcomment>rückgängig</translatorcomment>
         <translation>variiere Dauer</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="4105"/>
-        <source>&lt;p&gt;&lt;b&gt;Canorus - The next generation music score editor&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Version %1&lt;br&gt;(C) 2006-2013 Canorus Development team. All rights reserved.&lt;br&gt;See the file AUTHORS for the list of Canorus developers&lt;br&gt;&lt;br&gt;This program is licensed under the GNU General Public License (GPL).&lt;br&gt;See the file LICENSE.GPL for details.&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.canorus.org&quot;&gt;http://www.canorus.org&lt;/a&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;b&gt;Canorus - Ein Musiknoten-Editor neuer Generation&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Version %1&lt;br&gt;(C) 2006-2013 Canorus Entwicklerteam. Alle Rechte vorbehalten.&lt;br&gt;Siehe Datei AUTHORS mit den Namen der Canorus Entwickler.&lt;br&gt;&lt;br&gt;Dieses Programm ist mit der GNU General Public License (GPL) lizensiert.&lt;br&gt;Für Details siehe Datei LICENSE.GPL .&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.canorus.org&quot;&gt;http://www.canorus.org&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="5625"/>
