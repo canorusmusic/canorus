@@ -252,7 +252,7 @@ CAMusElement *CAStaff::previous( CAMusElement *elt ) {
 bool CAStaff::remove( CAMusElement *elt, bool updateSignTimes ) {
 	if ( !elt || !voiceList().size() )
 		return false;
-
+	
 	return voiceList()[0]->remove( elt, updateSignTimes);
 }
 
