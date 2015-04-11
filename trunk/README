@@ -18,8 +18,13 @@ The latest version of Qt4, Swig and CMake is prefered.
 - Swig >=2 (http://www.swig.org)
 - g++ >=4, make (http://gcc.gnu.org, http://www.mingw.org)
 - cmake >=2.6.2 (http://www.cmake.org)
-- Python development package >=2.5 (http://www.python.org)
+- Python development package >=3.0 (http://www.python.org)
 - (optional) Lyx, tex4ht (user's guide)
+
+Qt5 Build (Experimental, not tested with Qt 5.4.x)
+- Qt development package 5.3.2 (http://www.qt-project.org)
+- Swig, g++, cmake, python, lyx as above
+- copy the CMakeListQt5.txt files (main folder and src) to CMakeList.txt
 
 Runtime dependencies:
 =====================
