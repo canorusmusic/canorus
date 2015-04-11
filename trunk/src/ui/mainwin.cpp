@@ -26,6 +26,7 @@
 #include <QCheckBox>
 #include <QThread>
 #include <iostream>
+#include <limits>
 
 #include "ui/mainwin.h"
 #include "ui/settingsdialog.h"
@@ -1642,7 +1643,7 @@ void CAMainWin::rebuildUI(bool repaint) {
 		int curIndex = uiTabWidget->currentIndex();
 
 		// save the current state of Views
-		QList<QRect> worldCoordsList;
+		QList<QRectF> worldCoordsList;
 		for (int i=0; i<_viewList.size(); i++)
 			if (_viewList[i]->viewType() == CAView::ScoreView)
 				worldCoordsList << static_cast<CAScoreView*>(_viewList[i])->worldCoords();
@@ -2051,16 +2052,16 @@ void CAMainWin::scoreViewWheel(QWheelEvent *e, QPoint coords) {
 	//int val;
 	switch (e->modifiers()) {
 		case Qt::NoModifier:			//scroll horizontally
-			sv->setWorldX( sv->worldX() - (int)((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
+			sv->setWorldX( sv->worldX() - (0.5*e->delta()) / sv->zoom(), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::AltModifier:			//scroll horizontally, fast
-			sv->setWorldX( sv->worldX() - (int)(e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
+			sv->setWorldX( sv->worldX() - e->delta() / sv->zoom(), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::ShiftModifier:			//scroll vertically
-			sv->setWorldY( sv->worldY() - (int)((0.5*e->delta()) / sv->zoom()), CACanorus::settings()->animatedScroll() );
+			sv->setWorldY( sv->worldY() - (0.5*e->delta()) / sv->zoom(), CACanorus::settings()->animatedScroll() );
 			break;
 		case 0x0A000000://SHIFT+ALT		//scroll vertically, fast
-			sv->setWorldY( sv->worldY() - (int)(e->delta() / sv->zoom()), CACanorus::settings()->animatedScroll() );
+			sv->setWorldY( sv->worldY() - e->delta() / sv->zoom(), CACanorus::settings()->animatedScroll() );
 			break;
 		case Qt::ControlModifier:		//zoom
 			if (e->delta() > 0)
@@ -2225,7 +2226,31 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 			}
 			break;
 		}
+		
+		case Qt::Key_PageDown: {
+			v->setWorldX(v->worldX() + v->worldWidth(), CACanorus::settings()->animatedScroll());
+			v->repaint();
+			break;
+		}
+		
+		case Qt::Key_PageUp: {
+			v->setWorldX(v->worldX() - v->worldWidth(), CACanorus::settings()->animatedScroll());
+			v->repaint();
+			break;
+		}
+		
+		case Qt::Key_End: {
+			v->setWorldX(std::numeric_limits<double>::max(), CACanorus::settings()->animatedScroll());
+			v->repaint();
+			break;
+		}
 
+		case Qt::Key_Home: {
+			v->setWorldX(0, CACanorus::settings()->animatedScroll());
+			v->repaint();
+			break;
+		}
+		
 		case Qt::Key_Plus: {
 			if (mode()==InsertMode) {
 				musElementFactory()->addNoteExtraAccs(1); musElementFactory()->addNoteAccs(1);
