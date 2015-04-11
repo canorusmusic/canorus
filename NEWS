@@ -1,3 +1,37 @@
+0.7.2
+=====
+- Set SelectMode instead of NoDocumentMode when a new document.was created
+- Added ruler to show the bar number on top of the score view
+- Updated translations
+- Fix some issues to get Canorus running with Qt5
+- Introduced official support for Qt5
+- Bar reference list added to CAStaff
+- Fixed Repeat bar lines in lilypond export 
+- Removed obsolete clipping from CAScoreView
+- Add icon for upcoming shortcuts feature
+- Added newDocument() fallback for environment without Python.
+- Added "Canorus is compiled with Python support." to about dialog box.
+- Requires Python 3.x; updated corresponding bindings
+- Added basic MusicXML export. 
+- CATempo: Removed obsolete dotted property
+- Lilypond export: Added support for CATempo and CARitardando.
+- Scoreview: Fixed crash when adding lines marks
+- Added MIDI pitch offset property to voice
+- Lilypond export: Fixed indentination
+- Lilypond export: Export instrument names.
+- Lilypond export: Set rehersal marks drawn in box. 
+- Fixed horizontal scrolling regression introduced with new speed optimizations.
+- Fixed MusicXML import regression introduced in R1282.
+- Significant speed improvement for getting the current clef.
+- Fixed crash in KDTree when adding notes.
+- Significant speed improvement for finding elements in range for canvas.
+- Moved drawable map from KDTree to ScoreView.
+- Removed several obsolete KDTree functions.
+- Removed several obsolete ScoreView functions
+- Midi import gives staffs and voices a name
+- Compatibility fix with recent Qt4
+- Skipped 0.7.1 Release
+
 0.7.1
 =====
 - Updated translations

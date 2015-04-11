@@ -4,7 +4,7 @@
 Name Canorus
 # Defines
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 0.7.1rc1
+!define VERSION 0.7.2
 !define COMPANY "Matevž Jekovec, Canorus development team"
 !define URL http://www.canorus.org
 
