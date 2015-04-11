@@ -1,0 +1,32 @@
+<plugin>
+	<canorus-version>0.2.0</canorus-version>
+	<name>pyCLI</name>
+	<description>Python CLI</description>
+	<version>0.0.1</version>
+
+
+	<action>
+		<name>pcInit</name>
+		<on-action>onInit</on-action>
+		<lang>python</lang>
+		<filename>pycli.py</filename>
+		<function>init</function>
+		<args>pluginDir</args>
+	</action>
+
+	<menu>
+		<name>pcMenu</name>
+		<title>CLI</title>
+	</menu>
+
+	<action>
+		<parent-menu>pcMenu</parent-menu>
+		<name>pcSubMenu</name>
+		<text>Invoke Python CLI</text>
+		<lang>python</lang>
+		<filename>pycli.py</filename>
+		<function>pycli</function>
+		<args>document</args>
+		<refresh/>
+	</action>
+</plugin>

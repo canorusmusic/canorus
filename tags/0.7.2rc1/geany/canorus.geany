@@ -1,0 +1,17 @@
+
+[indentation]
+indent_width=4
+indent_type=1
+indent_hard_tab_width=8
+detect_indent=false
+indent_mode=2
+
+[project]
+name=canorus
+base_path=/home/suamor/projekte/canorus/trunk
+make_in_base_path=true
+description=
+run_cmd=
+
+[files]
+current_page=-1
