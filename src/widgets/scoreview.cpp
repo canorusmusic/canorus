@@ -233,16 +233,20 @@ void CAScoreView::on_animationTimer_timeout() {
 
 CAScoreView *CAScoreView::clone() {
 	CAScoreView *v = new CAScoreView(_sheet, static_cast<QWidget*>(parent()));
-
-	v->importElements(&_drawableMList, &_drawableCList);
+	v->rebuild();
+	v->setWorldX( worldX(), false );
+	v->setWorldY( worldY(), false );
+	v->repaint();
 
 	return v;
 }
 
 CAScoreView *CAScoreView::clone(QWidget *parent) {
 	CAScoreView *v = new CAScoreView(_sheet, parent);
-
-	v->importElements(&_drawableMList, &_drawableCList);
+	v->rebuild();
+	v->setWorldX( worldX(), false );
+	v->setWorldY( worldY(), false );
+	v->repaint();
 
 	return v;
 }
@@ -383,6 +387,13 @@ CADrawableMusElement* CAScoreView::selectMElement(CAMusElement *elt) {
 		return 0;
 }
 
+/**!
+ * This function clones the given drawable instances of musElements and contexts.
+ * 
+ * \obsolete This Function was used in the past when cloning the views to also clone the
+ * elements. This behaviour was replaced for creating a new drawable instances
+ * from the scene from scratch.
+ */
 void CAScoreView::importElements(CAKDTree<CADrawableMusElement*> *origDMusElts, CAKDTree<CADrawableContext*> *origDContexts)
 {
 	QList<CADrawableContext*> drawableContexts = origDContexts->list();
@@ -1151,8 +1162,8 @@ void CAScoreView::checkScrollBars() {
 		}
 
 	if (change) {
-		setWorldHeight((int)(drawableHeight() / _zoom));
-		setWorldWidth((int)(drawableWidth() / _zoom));
+		setWorldHeight(drawableHeight() / _zoom);
+		setWorldWidth(drawableWidth() / _zoom);
 	}
 
 	_holdRepaint = false;
