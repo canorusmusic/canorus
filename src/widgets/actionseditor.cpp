@@ -35,8 +35,8 @@
 #include "canorus.h"
 #include "core/settings.h"
 
-// Number of columns used: Command, Context, Shortcut, Midi Command
-#define COL_NUM 4
+// Number of columns used: Command, Context, Shortcut, Midi Command, Combined
+#define COL_NUM 5
 
 /*
 #if USE_MULTIPLE_SHORTCUTS
@@ -88,6 +88,7 @@ QList <QKeySequence> ActionsEditor::stringToShortcuts(QString shortcuts) {
 #define COL_DESCRIPTION 2   // Context of the command like mode
 #define COL_SHORTCUT 3      // Keyboard shortcut
 #define COL_MIDI 4          // Midi command
+#define COL_MIDISCUT 5      // Requires Midi and Shortcut at one time to be used
 
 CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 	: QWidget(parent, f)
@@ -123,8 +124,8 @@ CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 //            this, SLOT(editShortcut()) );
 //#endif
 
-	saveButton = new QPushButton(this);
-	loadButton = new QPushButton(this);
+    saveButton = new QPushButton(this);
+    loadButton = new QPushButton(this);
 
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveActionsTable()));
 	connect(loadButton, SIGNAL(clicked()), this, SLOT(loadActionsTable()));
@@ -157,13 +158,13 @@ CAActionsEditor::~CAActionsEditor() {
 
 void CAActionsEditor::retranslateStrings() {
     actionsTable->setHorizontalHeaderLabels( QStringList() <<
-        tr("Name") << tr("Description") << tr("Shortcut") << tr("Midi Command") );
+        tr("Name") << tr("Description") << tr("Shortcut") << tr("Midi Command") << tr("Combined") );
 
     //saveButton->setIcon(Images::icon("save"));
 	//loadButton->setIcon(Images::icon("open"));
 
-    saveButton->setText(tr("&Save shortcuts"));
-    loadButton->setText(tr("&Load shortcuts"));
+    saveButton->setText(tr("&Save shortcuts..."));
+    loadButton->setText(tr("&Load shortcuts..."));
 
 //#if USE_SHORTCUTGETTER
 //	editButton->setText(tr("&Change shortcut..."));
@@ -249,6 +250,7 @@ void CAActionsEditor::updateView() {
         actionsTable->setItem(n, COL_DESCRIPTION, i_context );
 		actionsTable->setItem(n, COL_SHORTCUT, i_shortcut );
 		actionsTable->setItem(n, COL_MIDI, i_midi );
+        actionsTable->setItem(n, COL_MIDISCUT, i_midi );
 
 	}
 	hasConflicts(); // Check for conflicts
