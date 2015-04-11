@@ -162,16 +162,8 @@ void CAActionsEditor::retranslateStrings() {
 	//saveButton->setIcon(Images::icon("save"));
 	//loadButton->setIcon(Images::icon("open"));
 
-	if( actionsTable->column( (QTableWidgetItem *)focusWidget() ) == COL_SHORTCUT )
-	{
-		saveButton->setText(tr("&Save shortcuts"));
-		loadButton->setText(tr("&Load shortcuts"));
-	}
-	else
-	{
-		saveButton->setText(tr("&Save midi commands"));
-		loadButton->setText(tr("&Load midi commands"));
-	}
+    saveButton->setText(tr("&Save shortcuts"));
+    loadButton->setText(tr("&Load shortcuts"));
 
 //#if USE_SHORTCUTGETTER
 //	editButton->setText(tr("&Change shortcut..."));
@@ -497,19 +489,12 @@ bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* =
 
 void CAActionsEditor::loadActionsTable() {
 	QString sk;
-	//bool bSCuts = false;
-	if( actionsTable->column( (QTableWidgetItem *)focusWidget() ) == COL_SHORTCUT )
-	{
-		sk = tr("Shortcut files") +" (*.cakey)";
-		//bSCuts = true;
-	}
-	else
-		sk = tr("Midi command files") +" (*.camid)";
+    sk = tr("Shortcut files") +" (*.cakey *.camid)";
 	QString s = QFileDialog::getOpenFileName(
                     this, tr("Choose a file"),
                     latest_dir, sk );
 
-	if (!s.isEmpty()) {
+    if (!s.isEmpty()) {
 		latest_dir = QFileInfo(s).absolutePath();
 		bool r = loadActionsTable(s);
 		if (!r) {
