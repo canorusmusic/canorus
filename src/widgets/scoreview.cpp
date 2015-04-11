@@ -20,6 +20,7 @@
 #include <iostream>
 
 #include "widgets/scoreview.h"
+#include "layout/layoutengine.h"
 #include "layout/drawable.h"
 #include "layout/drawablecontext.h"
 #include "layout/drawablelyricscontext.h" // syllable edit creation
@@ -28,8 +29,8 @@
 #include "layout/drawablenote.h"
 #include "layout/drawableaccidental.h"
 #include "layout/drawablebarline.h"
+#include "layout/drawabletimesignature.h"
 
-#include "layout/layoutengine.h"
 #include "score/document.h"
 #include "score/sheet.h"
 #include "score/context.h"
@@ -42,6 +43,8 @@
 #include "score/syllable.h"
 #include "score/text.h"
 #include "score/bookmark.h"
+#include "score/timesignature.h"
+#include "score/barline.h"
 #include "canorus.h"
 #include "core/settings.h"
 
@@ -961,10 +964,21 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		// draw the barline marks
 		CABarline *curBarline = dStaff->getBarline(_worldX+_worldW);
 		CADrawableBarline *curDBarline = (curBarline?static_cast<CADrawableBarline*>(_mapDrawable.values( dStaff->getBarline(_worldX+width()/_zoom) )[0]):0);
+		
+		// determine the barline number + do we have a pickup measure in the beginning
 		int dBarlineIdx = dStaff->drawableBarlineList().indexOf(curDBarline);
+		CADrawableTimeSignature *firstDTimeSig = dStaff->drawableTimeSignature()[0];
+		int barlineOffset = 2;
+		if (curDBarline && firstDTimeSig &&
+		    dStaff->drawableBarlineList()[0]->barline()->timeStart() < (CAPlayableLength::musicLengthToTimeLength(static_cast<CAPlayableLength::CAMusicLength>(firstDTimeSig->timeSignature()->beat()))*firstDTimeSig->timeSignature()->beats()) ) {
+			barlineOffset = 1;
+		}
+			
 		while ( curDBarline && curDBarline->xPos()>_worldX ) {
 			int center = qRound((curDBarline->xPos()-_worldX)*_zoom);
-			p.drawText( center-1, RULER_HEIGHT-2, QString::number(dBarlineIdx+1) );
+			if (dBarlineIdx!=dStaff->drawableBarlineList().size()-1) { // don't draw the last bar number
+				p.drawText( center-1, RULER_HEIGHT-2, QString::number(dBarlineIdx+barlineOffset) );
+			}
 			
 			dBarlineIdx--;
 			curDBarline = (dBarlineIdx>=0?dStaff->drawableBarlineList()[dBarlineIdx]:0);
