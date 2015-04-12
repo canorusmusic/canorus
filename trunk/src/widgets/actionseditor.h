@@ -30,6 +30,16 @@ class CAActionsEditor : public QWidget
     Q_OBJECT
 
 public:
+
+    // Definition of file type
+    enum fileType
+    {
+    //FT_COMPLETE     = 0,       // All together like when stored in settings
+      FT_SHORTCUT     = 1,       // Keyboard shortcut
+      FT_MIDI         = 2,       // Midi command
+      FT_MIDISCUT     = 3        // Requires Midi and Shortcut at one time to be used
+    };
+
 	// Constructor
 	// Parameters are standard QWidget parameters
 	CAActionsEditor( QWidget * parent = 0, Qt::WindowFlags f = 0 );
@@ -60,12 +70,14 @@ public:
 public slots:
 	// save changes from editing (shortcut or midi command)
 	void applyChanges();
-	// save action profile (shortcuts or midi commands) separately to disc
+    // Get file type from suffix
+    enum fileType getFType(const QString &suffix);
+    // save action profile (shortcuts or midi commands) separately to disc
 	void saveActionsTable();
-	bool saveActionsTable(const QString & filename, bool bSCuts = true);
+    bool saveActionsTable(const QString & filename, enum fileType type = FT_SHORTCUT);
 	// load action profile (shortcuts or midi commands) separately from disc
 	void loadActionsTable();
-	bool loadActionsTable(const QString & filename, bool bSCuts = true);
+    bool loadActionsTable(const QString & filename, enum fileType type = FT_SHORTCUT);
 
 	// Add all actions to the table widget
 	void updateView();
