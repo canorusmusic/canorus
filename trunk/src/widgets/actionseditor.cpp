@@ -104,7 +104,7 @@ CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
     actionsTable->horizontalHeader()->setSectionResizeMode(COL_DESCRIPTION, QHeaderView::Stretch);
 #else
 	actionsTable->horizontalHeader()->setResizeMode(COL_COMMAND, QHeaderView::Stretch);
-	actionsTable->horizontalHeader()->setResizeMode(COL_CONTEXT, QHeaderView::Stretch);
+	actionsTable->horizontalHeader()->setResizeMode(COL_DESCRIPTION, QHeaderView::Stretch);
 #endif
 	
 	actionsTable->setAlternatingRowColors(true);
