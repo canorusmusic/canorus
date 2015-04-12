@@ -104,13 +104,13 @@ int CANote::notePosition() {
 	if (voice() && voice()->staff()) {
 		// find the corresponding clef
 		int i=0;
-		while (i < voice()->staff()->clefReferences().size() && staff()->clefReferences()[i]->timeStart() <= timeStart()) {
+		while (i < voice()->staff()->clefRefs().size() && staff()->clefRefs()[i]->timeStart() <= timeStart()) {
 			i++;
 		}
 		i--;
 		
 		if (i>=0) {
-			clef = static_cast<CAClef*>(voice()->staff()->clefReferences()[i]);
+			clef = static_cast<CAClef*>(voice()->staff()->clefRefs()[i]);
 		}
 	}
 

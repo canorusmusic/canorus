@@ -18,6 +18,7 @@ class CALayoutEngine {
 		static void reposit(CAScoreView *v);
 	private:
 		static void placeMarks( CADrawableMusElement*, CAScoreView*, int );
+		static void placeNoteCheckerErrors( CADrawableMusElement*, CAScoreView* );
 		static int *streamsRehersalMarks;
 		static QList<CADrawableMusElement*> scalableElts;
 };

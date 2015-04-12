@@ -158,13 +158,6 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 				newStaff->voiceList()[i]->append( newElt );
 				peltIdx[i]++;
 			}
-			// put the element in the related reference list
-			switch (newElt->musElementType()) {
-			case CAMusElement::KeySignature:    newStaff->addKeySignatureReference(newElt); break;
-			case CAMusElement::TimeSignature:   newStaff->addTimeSignatureReference(newElt); break;
-			case CAMusElement::Clef:            newStaff->addClefReference(newElt); break;
-			default: break;
-			}
 		}
 
 		// check if we're at the end
@@ -357,6 +350,7 @@ bool CAStaff::synchronizeVoices() {
 	_clefList.clear();
 	_keySignatureList.clear();
 	_timeSignatureList.clear();
+	_barlineList.clear();
 
 	int timeStart = 0;
 	bool done = false;
@@ -386,18 +380,22 @@ bool CAStaff::synchronizeVoices() {
 			for ( int i=0; i<voiceList().size(); i++ ) {
 				for ( int j=0; j<sharedList.size(); j++) {
 					voiceList()[i]->_musElementList.insert( pidx[i]+1+j, sharedList[j] );
-					// shared elements from voice 0 get considered to go to the reference lists too
-					if (i==0)
-						switch (sharedList[j]->musElementType()) {
-						case CAMusElement::KeySignature:    addKeySignatureReference( sharedList[j] );  break;
-						case CAMusElement::TimeSignature:   addTimeSignatureReference( sharedList[j] ); break;
-						case CAMusElement::Clef:            addClefReference( sharedList[j] );          break;
-						default: break;
-					}
 				}
 				pidx[i]++; // jump to the first one inserted from the sharedList, if inserting shared elts for the first time
 				          // or the first one after the sharedList in second pass
 			}
+			
+			// populate the references lists
+			for ( int j=0; j<sharedList.size(); j++) {
+				switch (sharedList[j]->musElementType()) {
+					case CAMusElement::KeySignature: _keySignatureList << sharedList[j]; break;
+					case CAMusElement::TimeSignature: _timeSignatureList << sharedList[j]; break;
+					case CAMusElement::Clef: _clefList << sharedList[j]; break;
+					case CAMusElement::Barline: _barlineList << sharedList[j]; break;
+					default: break;
+				}
+			}
+
 		} else {
 			for ( int i=0; i<voiceList().size(); i++ ) {
 				if ( pidx[i] < voiceList()[i]->musElementList().size()-1 && ( voiceList()[i]->musElementList()[pidx[i]+1]->timeStart() == timeStart ) ) {
@@ -506,4 +504,3 @@ void CAStaff::placeAutoBar( CAPlayable* elt ) {
 		}
 	}
 }
-

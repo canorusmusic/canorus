@@ -56,23 +56,11 @@ public:
 	static void placeAutoBar( CAPlayable* elt );
 
 	// Functions to keep list of references of signature events for a faster look up.
-	// Currently only used in midi import. Remove not yet tested.
-	inline const QList<CAMusElement *>& clefReferences() { return _clefList; }
-	inline void addClefReference(CAMusElement *el) { _clefList << el; }
-	inline int removeClefReference(CAMusElement *el) { return _clefList.removeAll(el); }
+	inline QList<CAMusElement *>& clefRefs() { return _clefList; }
+	inline QList<CAMusElement *>& keySignatureRefs() { return _keySignatureList; }
+	inline QList<CAMusElement *>& timeSignatureRefs() { return _timeSignatureList; }
+	inline QList<CAMusElement *>& barlineRefs() { return _barlineList; }
 	
-	inline const QList<CAMusElement *>& keySignatureReferences() { return _keySignatureList; }
-	inline void addKeySignatureReference(CAMusElement *el) { _keySignatureList << el; }
-	inline int removeKeySignatureReference(CAMusElement *el) { return _keySignatureList.removeAll(el); }
-
-	inline const QList<CAMusElement *>& timeSignatureReferences() { return _timeSignatureList; }
-	inline void addTimeSignatureReference(CAMusElement *el) { _timeSignatureList << el; }
-	inline int removeTimeSignatureReference(CAMusElement *el) { return _timeSignatureList.removeAll(el); }
-
-	inline const QList<CAMusElement *>& barReferences() { return _barList; }
-	inline void addBarReference(CAMusElement *el) { _barList << el; }
-	inline int removeBarReference(CAMusElement *el) { return _barList.removeAll(el); }
-
 private:
 	QList<CAVoice *> _voiceList;
 
@@ -81,6 +69,6 @@ private:
 	QList<CAMusElement *> _clefList;
 	QList<CAMusElement *> _keySignatureList;
 	QList<CAMusElement *> _timeSignatureList;
-	QList<CAMusElement *> _barList;
+	QList<CAMusElement *> _barlineList;
 };
 #endif /* STAFF_H_ */

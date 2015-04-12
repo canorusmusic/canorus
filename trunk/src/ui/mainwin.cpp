@@ -116,6 +116,7 @@
 #include "import/canimport.h"
 #include "import/midiimport.h"
 #include "import/musicxmlimport.h"
+#include "core/notechecker.h"
 
 /*!
 	\class CAMainWin
@@ -2807,10 +2808,13 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 			staff->synchronizeVoices();
 
 		CACanorus::undo()->pushUndoCommand();
+		if (CACanorus::settings()->useNoteChecker()) {
+			_noteChecker.checkSheet(v->sheet());
+		}
 		CACanorus::rebuildUI(document(), v->sheet());
 		CADrawableMusElement *d = v->selectMElement( musElementFactory()->musElement() );
 		musElementFactory()->emptyMusElem();
-
+		
 		// move the view to the right, if the right border was hit
 		if ( d && (d->xPos() > v->worldX()+0.85*v->worldWidth()) ) {
 			v->setWorldX( d->xPos()-v->worldWidth()/2, CACanorus::settings()->animatedScroll() );
@@ -3085,6 +3089,11 @@ CADocument *CAMainWin::openDocument(CADocument *doc) {
 		CACanorus::undo()->createUndoStack( document() );
 
 		uiCloseDocument->setEnabled(true);
+		if (CACanorus::settings()->useNoteChecker()) {
+			for (int i=0; i<doc->sheetList().size(); i++) {
+				_noteChecker.checkSheet(doc->sheetList()[i]);
+			}
+		}
 		rebuildUI(); // local rebuild only
 		if ( doc->sheetList().size())
 			uiTabWidget->setCurrentIndex(0);
@@ -3330,6 +3339,9 @@ void CAMainWin::onImportDone( int status ) {
 			if ( import->importedSheet() ) {
 				addSheet(import->importedSheet());
 				document()->addSheet(import->importedSheet());
+				if (CACanorus::settings()->useNoteChecker()) {
+					_noteChecker.checkSheet(import->importedSheet());
+				}
 				CACanorus::rebuildUI(document());
 			}
 		}
@@ -3521,13 +3533,17 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 				} else {
 					p->staff()->synchronizeVoices();
 				}
-
+				
 				for (int j=0; j<p->voice()->lyricsContextList().size(); j++) { // reposit syllables
 					p->voice()->lyricsContextList().at(j)->repositSyllables();
 				}
 			}
 		}
 
+		if (CACanorus::settings()->useNoteChecker()) {
+			_noteChecker.checkSheet(v->sheet());
+		}
+		
 		CACanorus::undo()->pushUndoCommand();
 		CACanorus::rebuildUI( document(), currentSheet() );
 	}
@@ -4142,6 +4158,17 @@ Homepage: <a href=\"http://www.canorus.org\">http://www.canorus.org</a></p>").ar
 
 void CAMainWin::on_uiSettings_triggered() {
 	CASettingsDialog( CASettingsDialog::EditorSettings, this );
+	
+	if (CACanorus::settings()->useNoteChecker()) {
+		for (int i=0; i<document()->sheetList().size(); i++) {
+			_noteChecker.checkSheet( document()->sheetList()[i] );
+		}
+	} else {
+		for (int i=0; i<document()->sheetList().size(); i++) {
+			document()->sheetList()[i]->clearNoteCheckerErrors();
+		}
+	}
+	
 	CACanorus::rebuildUI();
 }
 
@@ -5379,7 +5406,11 @@ void CAMainWin::deleteSelection( CAScoreView *v, bool deleteSyllables, bool dele
 		}
 		if (doUndo)
 			CACanorus::undo()->pushUndoCommand();
-
+		
+		if (CACanorus::settings()->useNoteChecker()) {
+		_noteChecker.checkSheet(v->sheet());
+		}
+		
 		v->clearSelection();
 		CACanorus::rebuildUI(document(), v->sheet());
 	}

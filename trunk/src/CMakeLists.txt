@@ -224,6 +224,7 @@ SET(Canorus_Core_Srcs		# Core sources
 	core/midirecorder.cpp
 	core/muselementfactory.cpp
 	core/transpose.cpp
+	core/notechecker.cpp
 )
 
 SET(Canorus_Score_Srcs		# Score representation
@@ -235,6 +236,7 @@ SET(Canorus_Score_Srcs		# Score representation
 	score/document.cpp
 	score/resource.cpp
 	score/sheet.cpp
+	score/notecheckererror.cpp
 	score/context.cpp
 	score/staff.cpp
 	score/functionmarkcontext.cpp
@@ -329,6 +331,7 @@ SET(Canorus_Layout_Srcs	# Drawable instances of the data
 	layout/drawable.cpp
 
 	layout/drawablecontext.cpp
+	layout/drawablenotecheckererror.cpp
 	layout/drawablestaff.cpp
 	layout/drawablelyricscontext.cpp
 	layout/drawablefiguredbasscontext.cpp
