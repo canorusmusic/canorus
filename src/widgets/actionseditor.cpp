@@ -215,10 +215,10 @@ void CAActionsEditor::updateView() {
 //#if USE_MULTIPLE_SHORTCUTS
 //		accelText = shortcutsToString( action->shortcuts() );
 //#else
-		accelText = action->getShortCut();
+		accelText = action->getShortCutAsString();
 //#endif
 		context  = action->getContext();
-		midi_com = action->getMidiCommand();
+        midi_com = action->getMidiKeySequence();
 		
 		QTableWidgetItem * i_conf = new QTableWidgetItem();
 
@@ -281,7 +281,7 @@ void CAActionsEditor::applyChanges() {
 //#else
 		// @ToDo Update Midi/Shortcut corresponding but
 		// Update our own list of settings
-		action->setShortCut( QKeySequence(i->text()).toString() );
+		action->setShortCutAsString( QKeySequence(i->text()).toString() );
 //#endif
     }
 }
@@ -601,7 +601,7 @@ void CAActionsEditor::saveToConfig(QObject *o, QSettings *set) {
 //#if USE_MULTIPLE_SHORTCUTS
 //			accelText = shortcutsToString(action->shortcuts());
 //#else
-			accelText = action->getShortCut();
+			accelText = action->getShortCutAsString();
 //#endif
 			if( accelText.isEmpty() )
 				set->setValue(action->text(), "none");
@@ -634,9 +634,9 @@ void CAActionsEditor::loadFromConfig(QObject *o, QSettings *set) {
 //			accelText = set->value(action->objectName(), current).toString();
 //			action->setShortcuts( stringToShortcuts( accelText ) );
 //#else
-			accelText = set->value(action->text(), action->getShortCut()).toString();
+			accelText = set->value(action->text(), action->getShortCutAsString()).toString();
 			if( accelText != "none" )
-				action->setShortCut( QKeySequence(accelText).toString() );
+				action->setShortCutAsString( QKeySequence(accelText).toString() );
 //#endif
 		}
     }
