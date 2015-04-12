@@ -15,9 +15,9 @@ Build dependencies:
 The latest version of Qt4, Swig and CMake is prefered.
 
 - Qt development package >=4.4 (http://www.qt-project.org)
-- Swig >=2 (http://www.swig.org)
+- Swig >=2 (http://www.swig.org). Swig 3.x is not officially supported, but might work
 - g++ >=4, make (http://gcc.gnu.org, http://www.mingw.org)
-- cmake >=2.6.2 (http://www.cmake.org)
+- cmake >=2.6.2 (http://www.cmake.org). CMake 3.x is not supported (does not work on SuSE)
 - Python development package >=3.0 (http://www.python.org)
 - (optional) Lyx, tex4ht (user's guide)
 
