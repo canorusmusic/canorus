@@ -417,7 +417,7 @@ bool CAActionsEditor::hasConflicts(bool bMidi) {
 
 void CAActionsEditor::saveActionsTable() {
     QString sk;
-    sk = tr("Shortcut files") +" (*.cakey *.camid)";
+    sk = tr("Shortcut files") +" (*.cakey);;" + tr("Midi Key files") + " (*.cakmid);;" + tr("Combined Key Sequence files") + "(*.cacks)";
 
 	QString s = QFileDialog::getSaveFileName(
                     this, tr("Choose a filename"), 
@@ -482,7 +482,7 @@ bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* =
 
 void CAActionsEditor::loadActionsTable() {
 	QString sk;
-    sk = tr("Shortcut files") +" (*.cakey *.camid)";
+    sk = tr("Shortcut files") +" (*.cakey *.cakmid *.cacks)";
     QString s = QFileDialog::getOpenFileName(
                     this, tr("Choose a file"),
                     latest_dir, sk );
