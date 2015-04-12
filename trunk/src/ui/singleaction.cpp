@@ -20,12 +20,12 @@ CASingleAction::~CASingleAction()
 {
 }
 
-void CASingleAction::setCommand( QString oCommand )
+void CASingleAction::setCommandName( QString oCommandName )
 {
-	if( !oCommand.isEmpty() )
+    if( !oCommandName.isEmpty() )
 	{
-		_oCommand = oCommand;
-		setText( oCommand );
+        _oCommandName = oCommandName;
+        setText( oCommandName );
 	}
 }
 
@@ -44,20 +44,28 @@ void CASingleAction::setDescription( QString oDescription )
 	}
 }
 
-void CASingleAction::setShortCut( QString oShortCut )
+void CASingleAction::setShortCutAsString( QString oShortCut )
 {
 	if( !oShortCut.isEmpty() )
 	{
 		_oShortCut = oShortCut;
 		QAction::setShortcut( oShortCut );
+        _oSysShortCut = shortcut();
 	}
 }
 
-void CASingleAction::setMidiCommand( QString oMidiCommand, bool combined )
+void CASingleAction::setMidiKeySequence( QString oMidiKeySequence, bool combined )
 {
-	if( !oMidiCommand.isEmpty() )
+    if( !oMidiKeySequence.isEmpty() )
     {
-		_oMidiCommand = oMidiCommand;
+        _oMidiKeySequence = oMidiKeySequence;
         _bMidiShortCutCombined = combined;
+        QStringList mksList = oMidiKeySequence.split(" ");
+        QString le;
+        _oMidiKeyParameters.clear();
+        foreach(le,mksList)
+        {
+            _oMidiKeyParameters.push_back(le.toInt());
+        }
     }
 }

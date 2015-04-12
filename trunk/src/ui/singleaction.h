@@ -9,6 +9,7 @@
 #define _CASINGLEACTION_H_
 
 #include <QAction>
+#include <QShortcut>
 
 class QString;
 
@@ -24,27 +25,35 @@ public:
 	~CASingleAction();
 
 	// Getter methods for all single action parameters
-	inline QString getCommand()     { return _oCommand; }
+    inline QString getCommandName()     { return _oCommandName; }
 	inline QString getContext()     { return _oContext; }
 	inline QString getDescription() { return _oDescription; }
-	inline QString getShortCut()    { return _oShortCut; }
-	inline QString getMidiCommand() { return _oMidiCommand; }
+    inline QString getShortCutAsString() { return _oShortCut; }
+    inline QString getMidiKeySequence() { return _oMidiKeySequence; }
     inline bool    getMidiShortCutCombined() { return _bMidiShortCutCombined; }
+    // Application-specific Getter (Refs, so no Setter required)
+    inline QAction      &getAction() { return (QAction &)*this; }
+    inline QKeySequence &getSysShortCut() { return _oSysShortCut; }
+    inline QList<int>   &getMidiKeyParameters() { return _oMidiKeyParameters; }
 	
 	// Setter methods
-	void setCommand( QString oCommand );
+    void setCommandName( QString oCommandName );
 	void setContext( QString oContext );
 	void setDescription( QString oDescription );
-	void setShortCut( QString oShortCut );
-    void setMidiCommand( QString oMidiCommand, bool combined = false );
+    void setShortCutAsString( QString oShortCut );
+    void setMidiKeySequence( QString oMidiKeySequence, bool combined = false );
 
 protected:
-	QString _oCommand;
+    // Action parameters to be stored / loaded via Settings Dialog
+    QString _oCommandName;
 	QString _oContext;
 	QString _oDescription;
 	QString _oShortCut;
-	QString _oMidiCommand;
+    QString _oMidiKeySequence;
     bool    _bMidiShortCutCombined;
+    // ShortCut, Midi Key Sequence for the application
+    QKeySequence _oSysShortCut;
+    QList<int>   _oMidiKeyParameters;
 };
 
 #endif // _CASINGLEACTION_H_
