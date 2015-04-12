@@ -17,6 +17,7 @@
 class CADocument;
 class CAPlayable;
 class CATempo;
+class CANoteCheckerError;
 
 class CASheet {
 public:
@@ -45,11 +46,16 @@ public:
 	inline const QString name() { return _name; }
 	inline void setName(const QString name) { _name = name; }
 
+	inline void addNoteCheckerError(CANoteCheckerError *nce) { _noteCheckerErrorList << nce; }
+	void clearNoteCheckerErrors();
+	inline QList<CANoteCheckerError*>& noteCheckerErrorList() { return _noteCheckerErrorList; }
+	
 	void clear();
 
 private:
 	QList<CAContext *> _contextList;
 	CADocument *_document;
+	QList<CANoteCheckerError*> _noteCheckerErrorList;
 
 	QString _name;
 };

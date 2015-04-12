@@ -16,7 +16,7 @@ const bool CASettings::DEFAULT_FINALE_LYRICS_BEHAVIOUR = false;
 const bool CASettings::DEFAULT_SHADOW_NOTES_IN_OTHER_STAFFS = false;
 const bool CASettings::DEFAULT_PLAY_INSERTED_NOTES = true;
 const bool CASettings::DEFAULT_AUTO_BAR = true;
-const bool CASettings::DEFAULT_SPLIT_AT_QUARTER_BOUNDARIES = false;
+const bool CASettings::DEFAULT_USE_NOTE_CHECKER = true;
 
 const QDir CASettings::DEFAULT_DOCUMENTS_DIRECTORY = QDir::home();
 const QDir CASettings::DEFAULT_SHORTCUTS_DIRECTORY = QDir( QDir::homePath() + "/.config/Canorus" );
@@ -114,8 +114,8 @@ void CASettings::writeSettings() {
 	setValue( "editor/shadownotesinotherstaffs", shadowNotesInOtherStaffs() );
 	setValue( "editor/playinsertednotes", playInsertedNotes() );
 	setValue( "editor/autobar", autoBar() );
-	setValue( "editor/splitatquarterboundaries", splitAtQuarterBoundaries() );
-	setValue( "editor/showruler", showRuler() );
+	setValue( "editor/usenotechecker", useNoteChecker() );
+	setValue( "appearance/showruler", showRuler() );
 
 	setValue( "files/documentsdirectory", documentsDirectory().absolutePath() );
 	setValue( "files/defaultsaveformat", defaultSaveFormat() );
@@ -179,16 +179,11 @@ int CASettings::readSettings() {
 	else
 		setAutoBar( DEFAULT_AUTO_BAR );
 
-	if ( contains("editor/splitatquarterboundaries") )
-		setSplitAtQuarterBoundaries( value("editor/splitatquarterboundaries").toBool() );
+	if ( contains("editor/usenotechecker") )
+		setUseNoteChecker( value("editor/usenotechecker").toBool() );
 	else
-		setSplitAtQuarterBoundaries( DEFAULT_SPLIT_AT_QUARTER_BOUNDARIES );
+		setUseNoteChecker( DEFAULT_USE_NOTE_CHECKER );
 
-	if ( contains("editor/showruler") )
-		setShowRuler( value("editor/showruler").toBool() );
-	else
-		setShowRuler( DEFAULT_SHOW_RULER );
-	
 	// Saving/Loading settings
 	if ( contains("files/documentsdirectory") )
 		setDocumentsDirectory( value("files/documentsdirectory").toString() );
@@ -264,6 +259,11 @@ int CASettings::readSettings() {
 		setDisabledElementsColor( value("appearance/disabledelementscolor").value<QColor>() );
 	else
 		setDisabledElementsColor( DEFAULT_DISABLED_ELEMENTS_COLOR );
+	
+	if ( contains("appearance/showruler") )
+		setShowRuler( value("appearance/showruler").toBool() );
+	else
+		setShowRuler( DEFAULT_SHOW_RULER );
 
 #endif
 	// Playback settings

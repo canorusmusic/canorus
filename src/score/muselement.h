@@ -16,6 +16,7 @@ class CAContext;
 class CAMusElement;
 class CAPlayable;
 class CAMark;
+class CANoteCheckerError;
 
 class CAMusElement {
 public:
@@ -70,6 +71,10 @@ public:
 	void addMark( CAMark *mark );
 	void addMarks( QList<CAMark*> marks );
 	inline void removeMark( CAMark* mark ) { _markList.removeAll(mark); }
+	
+	inline const QList<CANoteCheckerError*>& noteCheckerErrorList() { return _noteCheckerErrorList; };
+	inline void addNoteCheckerError( CANoteCheckerError* nce ) { _noteCheckerErrorList << nce; }
+	inline void removeNoteCheckerError( CANoteCheckerError* nce ) { _noteCheckerErrorList.removeAll(nce); }
 
 	bool isPlayable();
 
@@ -79,8 +84,9 @@ public:
 protected:
 	inline void setMusElementType( CAMusElementType type ) { _musElementType = type; }
 
-	QList< CAMark* > _markList;
 	CAMusElementType _musElementType;
+	QList< CAMark* > _markList;
+	QList< CANoteCheckerError* > _noteCheckerErrorList;
 	CAContext *_context;
 	int _timeStart;
 	int _timeLength;

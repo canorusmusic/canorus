@@ -200,6 +200,7 @@ CAScoreView::~CAScoreView() {
 	// Delete the drawable elements/contexts
 	_drawableMList.clear(true);
 	_drawableCList.clear(true);
+	_drawableNCEList.clear(true);
 
 	while(!_shadowNote.isEmpty()) {
 		delete _shadowNote.takeFirst();
@@ -282,6 +283,14 @@ void CAScoreView::addCElement(CADrawableContext *elt, bool select) {
 		_shadowNote << new CANote( CADiatonicPitch(), CAPlayableLength(CAPlayableLength::Quarter, 0), static_cast<CAStaff*>(elt->context())->voiceList()[0], 0 );
 		_shadowDrawableNote << new CADrawableNote(_shadowNote.back(), elt, 0, 0, true);
 	}
+}
+
+/*!
+	Adds a drawable music element \a elt to the score view and selects it, if \a select is true.
+*/
+void CAScoreView::addDrawableNoteCheckerError(CADrawableNoteCheckerError *dnce) {
+	_drawableNCEList.addElement(dnce);
+	_mapDrawable.insertMulti(0, dnce);
 }
 
 /*!
@@ -524,6 +533,7 @@ void CAScoreView::rebuild() {
 	_drawableMList.clear(true);
 	int contextIdx = (_currentContext ? _drawableCList.list().indexOf(_currentContext) : -1);	// remember the index of last used context
 	_drawableCList.clear(true);
+	_drawableNCEList.clear(true);
 	_mapDrawable.clear();
 
 	CALayoutEngine::reposit(this);
@@ -981,7 +991,7 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		CADrawableTimeSignature *firstDTimeSig = (dStaff->drawableTimeSignatureList().size()?dStaff->drawableTimeSignatureList()[0]:0);
 		int barlineOffset = 2;
 		if (curDBarline && firstDTimeSig &&
-		    dStaff->drawableBarlineList()[0]->barline()->timeStart() < (CAPlayableLength::musicLengthToTimeLength(static_cast<CAPlayableLength::CAMusicLength>(firstDTimeSig->timeSignature()->beat()))*firstDTimeSig->timeSignature()->beats()) ) {
+		    dStaff->drawableBarlineList()[0]->barline()->timeStart() < firstDTimeSig->timeSignature()->barDuration() ) {
 			barlineOffset = 1;
 		}
 			
@@ -995,8 +1005,24 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 			curDBarline = (dBarlineIdx>=0?dStaff->drawableBarlineList()[dBarlineIdx]:0);
 		}
 		
-		// draw the time marks
-		
+		// TODO: draw the time marks
+	}
+	
+	// draw note checker errors
+	{
+		QList<CADrawableNoteCheckerError*> dnceList = _drawableNCEList.findInRange(_worldX, _worldY, _worldW, _worldH);
+		for (int i=0; i<dnceList.size(); i++) {
+			CADrawSettings c = {
+				_zoom,
+				qRound((dnceList[i]->xPos() - _worldX) * _zoom),
+				qRound((dnceList[i]->yPos() - _worldY) * _zoom),
+				drawableWidth(), drawableHeight(),
+				Qt::red,
+				_worldX,
+				_worldY
+			};
+			dnceList[i]->draw( &p, c );
+		}
 	}
 	
 	// draw selection regions

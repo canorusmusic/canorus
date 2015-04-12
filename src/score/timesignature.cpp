@@ -8,6 +8,7 @@
 #include "score/timesignature.h"
 #include "score/staff.h"
 #include "score/mark.h"
+#include "score/playablelength.h"
 
 /*!
 	\class CATimeSignature
@@ -134,6 +135,13 @@ CATimeSignature::CATimeSignatureType CATimeSignature::timeSignatureTypeFromStrin
 	if (type=="neomensural") return Neomensural; else
 	if (type=="baroque") return Baroque;
 	else return Classical;
+}
+
+/*!
+ * Returns the duration of a full measure in time units.
+ */
+int CATimeSignature::barDuration() {
+	return CAPlayableLength::musicLengthToTimeLength(static_cast<CAPlayableLength::CAMusicLength>(_beat))*_beats;
 }
 
 /*!

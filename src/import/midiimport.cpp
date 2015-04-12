@@ -499,10 +499,10 @@ CAMusElement* CAMidiImport::getOrCreateKeySignature( int time, int voiceIndex, C
 				time == _allChannelsKeySignatures[_actualKeySignatureIndex+1]->timeStart() ) {
 
 		_actualKeySignatureIndex++;
-		if ( staff->keySignatureReferences().size() < _actualKeySignatureIndex+1 ) {
-			staff->addKeySignatureReference( new CAKeySignature( _allChannelsKeySignatures[_actualKeySignatureIndex]->diatonicKey(), staff, time ));
+		if ( staff->keySignatureRefs().size() < _actualKeySignatureIndex+1 ) {
+			staff->keySignatureRefs() << new CAKeySignature( _allChannelsKeySignatures[_actualKeySignatureIndex]->diatonicKey(), staff, time );
 		}
-		return staff->keySignatureReferences()[_actualKeySignatureIndex];
+		return staff->keySignatureRefs()[_actualKeySignatureIndex];
 	}
 	return 0;
 }
@@ -513,32 +513,32 @@ CAMusElement* CAMidiImport::getOrCreateKeySignature( int time, int voiceIndex, C
 
 CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
 
-	if (!staff->timeSignatureReferences().size()) {
+	if (!staff->timeSignatureRefs().size()) {
 		_actualTimeSignatureIndex = 0;
 		int top = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_top;
 		int bottom = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_bottom;
-		staff->addTimeSignatureReference( new CATimeSignature( top, bottom, staff, 0 ));
+		staff->timeSignatureRefs() << new CATimeSignature( top, bottom, staff, 0 );
 //		std::cout<<"                             neue Timesig at "<<time<<", there are "
 //																<<_allChannelsTimeSignatures.size()
 //																<<std::endl;
 		// werden ersetzt:
-		return staff->timeSignatureReferences()[_actualTimeSignatureIndex];
+		return staff->timeSignatureRefs()[_actualTimeSignatureIndex];
 	}
 	// check if more than one time signature at all
 	if (_actualTimeSignatureIndex < 0 || _allChannelsTimeSignatures.size() > _actualTimeSignatureIndex+1) {
 		// is a new time signature already looming there?
 		if (time >= _allChannelsTimeSignatures[_actualTimeSignatureIndex+1]->_time) {
 			_actualTimeSignatureIndex++;	// for each voice we run down the list of time signatures of the sheet, all staffs.
-			if (staff->timeSignatureReferences().size() >= _actualTimeSignatureIndex+1) {
-				return staff->timeSignatureReferences()[_actualTimeSignatureIndex];
+			if (staff->timeSignatureRefs().size() >= _actualTimeSignatureIndex+1) {
+				return staff->timeSignatureRefs()[_actualTimeSignatureIndex];
 			} else {
 				int top = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_top;
 				int bottom = _allChannelsTimeSignatures[_actualTimeSignatureIndex]->_bottom;
-				staff->addTimeSignatureReference( new CATimeSignature( top, bottom, staff, 0 ));
+				staff->timeSignatureRefs() << new CATimeSignature( top, bottom, staff, 0 );
 //				std::cout<<"                             new Timesig at "<<time<<", there are "
 //																<<_allChannelsTimeSignatures.size()
 //																<<std::endl;
-				return staff->timeSignatureReferences()[_actualTimeSignatureIndex];
+				return staff->timeSignatureRefs()[_actualTimeSignatureIndex];
 			}
 		}
 	}

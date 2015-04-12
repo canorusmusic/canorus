@@ -45,9 +45,9 @@ public:
 	inline bool autoBar() { return _autoBar; }
 	inline void setAutoBar( bool b ) { _autoBar = b; }
 	static const bool DEFAULT_AUTO_BAR;
-	inline bool splitAtQuarterBoundaries() { return _splitAtQuarterBoundaries; }
-	inline void setSplitAtQuarterBoundaries( bool b ) { _splitAtQuarterBoundaries = b; }
-	static const bool DEFAULT_SPLIT_AT_QUARTER_BOUNDARIES;
+	inline bool useNoteChecker() { return _useNoteChecker; }
+	inline void setUseNoteChecker( bool b ) { _useNoteChecker = b; }
+	static const bool DEFAULT_USE_NOTE_CHECKER;
 
 	/////////////////////////////
 	// Loading/Saving settings //
@@ -169,7 +169,7 @@ private:
 	bool _shadowNotesInOtherStaffs;
 	bool _playInsertedNotes;
 	bool _autoBar;
-	bool _splitAtQuarterBoundaries;
+	bool _useNoteChecker;
 
 	/////////////////////////////
 	// Loading/Saving settings //

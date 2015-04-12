@@ -230,8 +230,6 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 				}
 			}
 		}
-		// TODO only compile test, note yet used
-		CACanorus::settings()->splitAtQuarterBoundaries();
 
 		// We make shure not to try to place a barline inside a chord or inside a tuplet
 		if ( CACanorus::settings()->autoBar() && !appendToChord && (!_tupPla || _tupPla->isFirstInTuplet())) {

@@ -311,9 +311,10 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 				staff()->voiceList()[i]->_musElementList.removeAll(elt);
 			}
 			// remove it from the references list
-			if (elt->musElementType() == CAMusElement::KeySignature )  staff()->removeKeySignatureReference( elt ); else
-			if (elt->musElementType() == CAMusElement::TimeSignature ) staff()->removeTimeSignatureReference( elt ); else
-			if (elt->musElementType() == CAMusElement::Clef )          staff()->removeClefReference( elt );
+			if (elt->musElementType() == CAMusElement::KeySignature )  staff()->keySignatureRefs().removeAll( elt ); else
+			if (elt->musElementType() == CAMusElement::TimeSignature ) staff()->timeSignatureRefs().removeAll( elt ); else
+			if (elt->musElementType() == CAMusElement::Clef )          staff()->clefRefs().removeAll( elt ); else
+			if (elt->musElementType() == CAMusElement::Barline )       staff()->barlineRefs().removeAll( elt );
 		} else {
 			// element is playable
 			if ( elt->musElementType()==CAMusElement::Note ) {
@@ -365,23 +366,43 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 bool CAVoice::insertMusElement( CAMusElement *eltAfter, CAMusElement *elt ) {
 	if (!eltAfter || !_musElementList.size()) {
 		_musElementList.push_back(elt);
-		return true;
+	} else {
+		int i = musElementList().indexOf( eltAfter );
+
+		// if element wasn't found and the element before is slur
+		if ( eltAfter->musElementType()==CAMusElement::Slur && i==-1 )
+			i = musElementList().indexOf( static_cast<CASlur*>(eltAfter)->noteEnd() );
+
+		if (i==-1) {
+			// eltBefore still wasn't found, return False
+			return false;
+		}
+		
+		// eltBefore found, insert it
+		_musElementList.insert(i, elt);
 	}
+	
+	CAMusElement *next = nextByType(elt->musElementType(), elt);
+	QList<CAMusElement *> *refs = 0;
+	
+	// update staff references
+	if (elt->musElementType() == CAMusElement::KeySignature )  { refs = &staff()->keySignatureRefs(); } else
+	if (elt->musElementType() == CAMusElement::TimeSignature ) { refs = &staff()->timeSignatureRefs(); } else
+	if (elt->musElementType() == CAMusElement::Clef )          { refs = &staff()->clefRefs(); } else
+	if (elt->musElementType() == CAMusElement::Barline )       { refs = &staff()->barlineRefs(); }
+	
+	if (refs) {
+		int idxInRefs = refs->indexOf(next);
+		if (idxInRefs==-1) {
+			// we want to append the element
+			idxInRefs = refs->size();
+		}
 
-	int i = musElementList().indexOf( eltAfter );
-
-	// if element wasn't found and the element before is slur
-	if ( eltAfter->musElementType()==CAMusElement::Slur && i==-1 )
-		i = musElementList().indexOf( static_cast<CASlur*>(eltAfter)->noteEnd() );
-
-	if (i==-1) {
-		// eltBefore still wasn't found, return False
-		return false;
+		if (!refs->contains(elt)) {
+			refs->insert(idxInRefs, elt);
+		}
 	}
-
-	// eltBefore found, insert it
-	_musElementList.insert(i, elt);
-
+	
 	return true;
 }
 
@@ -1007,11 +1028,11 @@ QList<CAMusElement*> CAVoice::getKeySignature(int startTime) {
 	QList<CAMusElement*> eltList;
 	int i;
 	// seek to the start of the music elements with the given time
-	for (i=0; i < staff()->keySignatureReferences().size() && staff()->keySignatureReferences()[i]->timeStart() < startTime; i++);
+	for (i=0; i < staff()->keySignatureRefs().size() && staff()->keySignatureRefs()[i]->timeStart() < startTime; i++);
 
 	// create a list of music elements with the given time
-	while (i<staff()->keySignatureReferences().size() && staff()->keySignatureReferences()[i]->timeStart()==startTime) {
-		eltList << staff()->keySignatureReferences()[i];
+	while (i<staff()->keySignatureRefs().size() && staff()->keySignatureRefs()[i]->timeStart()==startTime) {
+		eltList << staff()->keySignatureRefs()[i];
 		i++;
 	}
 
@@ -1028,11 +1049,11 @@ QList<CAMusElement*> CAVoice::getTimeSignature(int startTime) {
 	QList<CAMusElement*> eltList;
 	int i;
 	// seek to the start of the music elements with the given time
-	for (i=0; i < staff()->timeSignatureReferences().size() && staff()->timeSignatureReferences()[i]->timeStart() < startTime; i++);
+	for (i=0; i < staff()->timeSignatureRefs().size() && staff()->timeSignatureRefs()[i]->timeStart() < startTime; i++);
 
 	// create a list of music elements with the given time
-	while (i<staff()->timeSignatureReferences().size() && staff()->timeSignatureReferences()[i]->timeStart()==startTime) {
-		eltList << staff()->timeSignatureReferences()[i];
+	while (i<staff()->timeSignatureRefs().size() && staff()->timeSignatureRefs()[i]->timeStart()==startTime) {
+		eltList << staff()->timeSignatureRefs()[i];
 		i++;
 	}
 
@@ -1049,11 +1070,11 @@ QList<CAMusElement*> CAVoice::getClef(int startTime) {
 	QList<CAMusElement*> eltList;
 	int i;
 	// seek to the start of the music elements with the given time
-	for (i=0; i < staff()->clefReferences().size() && staff()->clefReferences()[i]->timeStart() < startTime; i++);
+	for (i=0; i < staff()->clefRefs().size() && staff()->clefRefs()[i]->timeStart() < startTime; i++);
 
 	// create a list of music elements with the given time
-	while (i<staff()->clefReferences().size() && staff()->clefReferences()[i]->timeStart()==startTime) {
-		eltList << staff()->clefReferences()[i];
+	while (i<staff()->clefRefs().size() && staff()->clefRefs()[i]->timeStart()==startTime) {
+		eltList << staff()->clefRefs()[i];
 		i++;
 	}
 
@@ -1071,11 +1092,11 @@ QList<CAMusElement*> CAVoice::getPreviousKeySignature(int startTime) {
 	QList<CAMusElement*> eltList;
 	int i;
 	// seek to the most right of the music elements with the given time
-	for (i= staff()->keySignatureReferences().size()-1;
-			i >= 0 && staff()->keySignatureReferences()[i]->timeStart() > startTime; i--);
+	for (i= staff()->keySignatureRefs().size()-1;
+			i >= 0 && staff()->keySignatureRefs()[i]->timeStart() > startTime; i--);
 	// create a list of music elements not past the given time
-	while (i >=0 && staff()->keySignatureReferences()[i]->timeStart() <= startTime) {
-		eltList.prepend(staff()->keySignatureReferences()[i]);
+	while (i >=0 && staff()->keySignatureRefs()[i]->timeStart() <= startTime) {
+		eltList.prepend(staff()->keySignatureRefs()[i]);
 		i--;
 	}
 	return eltList;
@@ -1092,11 +1113,11 @@ QList<CAMusElement*> CAVoice::getPreviousTimeSignature(int startTime) {
 	QList<CAMusElement*> eltList;
 	int i;
 	// seek to the most right of the music elements with the given time
-	for (i= staff()->timeSignatureReferences().size()-1;
-			i >= 0 && staff()->timeSignatureReferences()[i]->timeStart() > startTime; i--);
+	for (i= staff()->timeSignatureRefs().size()-1;
+			i >= 0 && staff()->timeSignatureRefs()[i]->timeStart() > startTime; i--);
 	// create a list of music elements not past the given time
-	while (i >=0 && staff()->timeSignatureReferences()[i]->timeStart() <= startTime) {
-		eltList.prepend(staff()->timeSignatureReferences()[i]);
+	while (i >=0 && staff()->timeSignatureRefs()[i]->timeStart() <= startTime) {
+		eltList.prepend(staff()->timeSignatureRefs()[i]);
 		i--;
 	}
 	return eltList;
@@ -1113,17 +1134,15 @@ QList<CAMusElement*> CAVoice::getPreviousClef(int startTime) {
 	QList<CAMusElement*> eltList;
 	int i;
 	// seek to the most right of the music elements with the given time
-	for (i= staff()->clefReferences().size()-1;
-			i >= 0 && staff()->clefReferences()[i]->timeStart() > startTime; i--);
+	for (i= staff()->clefRefs().size()-1;
+			i >= 0 && staff()->clefRefs()[i]->timeStart() > startTime; i--);
 	// create a list of music elements not past the given time
-	while (i >=0 && staff()->clefReferences()[i]->timeStart() <= startTime) {
-		eltList.prepend(staff()->clefReferences()[i]);
+	while (i >=0 && staff()->clefRefs()[i]->timeStart() <= startTime) {
+		eltList.prepend(staff()->clefRefs()[i]);
 		i--;
 	}
 	return eltList;
 }
-
-
 
 /*!
 	\fn void CAVoice::setStemDirection(CANote::CAStemDirection direction)

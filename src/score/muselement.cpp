@@ -11,6 +11,7 @@
 #include "score/playable.h"
 #include "score/mark.h"
 #include "score/articulation.h"
+#include "score/notecheckererror.h"
 
 /*!
 	\class CAMusElement
@@ -61,6 +62,10 @@ CAMusElement::~CAMusElement() {
 	// needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
 	if( context() && !isPlayable() )
 		context()->remove( this );
+	
+	while (_noteCheckerErrorList.size()) {
+		delete _noteCheckerErrorList.front(); // also removes instances from _noteCheckerErrorList and CASheet->noteCheckerErrorList
+	}
 }
 
 /*!

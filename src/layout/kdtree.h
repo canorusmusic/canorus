@@ -16,6 +16,7 @@
 #include "layout/drawable.h"
 #include "layout/drawablecontext.h"
 #include "layout/drawablemuselement.h"
+#include "layout/drawablenotecheckererror.h"
 
 #include "score/muselement.h"
 #include "score/playable.h"

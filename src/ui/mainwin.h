@@ -18,6 +18,8 @@
 
 #include "control/mainwinprogressctl.h"
 
+#include "core/notechecker.h"
+
 #include "score/document.h"
 #include "score/muselement.h"
 #include "score/note.h"
@@ -371,6 +373,7 @@ private:
 	QTimer _timeEditedTimer;
 	unsigned int  _timeEditedTime;
 	CAMusElementFactory *_musElementFactory;
+	CANoteChecker _noteChecker;
 public:
 	inline CAMusElementFactory *musElementFactory() { return _musElementFactory; }
 private:

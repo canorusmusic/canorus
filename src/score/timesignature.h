@@ -36,7 +36,9 @@ class CATimeSignature : public CAMusElement {
 
 		int beat() { return _beat; }
 		void setBeat(int beat) { _beat = beat; }
-
+		
+		int barDuration();
+		
 		CATimeSignatureType timeSignatureType() { return _timeSignatureType; }
 
 		const QString timeSignatureML();  // Deprecated

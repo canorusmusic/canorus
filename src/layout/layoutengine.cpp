@@ -24,6 +24,7 @@
 #include "layout/drawablebarline.h"
 #include "layout/drawablemark.h"
 #include "layout/drawableaccidental.h"
+#include "layout/drawablenotecheckererror.h"
 
 #include "layout/drawablelyricscontext.h"
 #include "layout/drawablesyllable.h"
@@ -358,6 +359,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 				streamsIdx[i] = streamsIdx[i] + 1;
 
 				placeMarks( bar, v, i );
+				placeNoteCheckerErrors( bar, v );
 			}
 		}
 
@@ -1047,5 +1049,14 @@ void CALayoutEngine::placeMarks( CADrawableMusElement *e, CAScoreView *v, int st
 		} else {
 			v->addMElement( m );
 		}
+	}
+}
+
+void CALayoutEngine::placeNoteCheckerErrors( CADrawableMusElement* dMusElt, CAScoreView* v ) {
+	QList<CANoteCheckerError*> ncErrors = dMusElt->musElement()->noteCheckerErrorList();
+	for (int i=0; i<ncErrors.size(); i++) {
+		v->addDrawableNoteCheckerError(
+			new CADrawableNoteCheckerError(ncErrors[i], dMusElt)
+		);
 	}
 }
