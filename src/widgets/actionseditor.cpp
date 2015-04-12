@@ -38,6 +38,17 @@
 // Number of columns used: Command, Context, Shortcut, Midi Command, Combined
 #define COL_NUM 5
 
+// Definition of column positions
+enum actionCol
+{
+//COL_CONFLICTS    = 0    // indicates a conflict (will be done with a color of the conflicting line)
+  COL_COMMAND      = 1,   // name of the command (not internal!)
+  COL_DESCRIPTION  = 2,   // Context of the command like mode
+  COL_SHORTCUT     = 3,   // Keyboard shortcut
+  COL_MIDI         = 4,   // Midi command
+  COL_MIDISCUT     = 5    // Requires Midi and Shortcut at one time to be used
+};
+
 /*
 #if USE_MULTIPLE_SHORTCUTS
 QString ActionsEditor::shortcutsToString(QList <QKeySequence> shortcuts_list) {
@@ -82,14 +93,6 @@ QList <QKeySequence> ActionsEditor::stringToShortcuts(QString shortcuts) {
 #endif
 */
 
-// Definition of column positionst
-//#define COL_CONFLICTS 0 // indicates a conflict (will be done with a color of the conflicting line)
-#define COL_COMMAND 1       // name of the command (not internal!)
-#define COL_DESCRIPTION 2   // Context of the command like mode
-#define COL_SHORTCUT 3      // Keyboard shortcut
-#define COL_MIDI 4          // Midi command
-#define COL_MIDISCUT 5      // Requires Midi and Shortcut at one time to be used
-
 CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 	: QWidget(parent, f)
 {
@@ -104,7 +107,7 @@ CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
     actionsTable->horizontalHeader()->setSectionResizeMode(COL_DESCRIPTION, QHeaderView::Stretch);
 #else
 	actionsTable->horizontalHeader()->setResizeMode(COL_COMMAND, QHeaderView::Stretch);
-	actionsTable->horizontalHeader()->setResizeMode(COL_DESCRIPTION, QHeaderView::Stretch);
+    actionsTable->horizontalHeader()->setResizeMode(COL_DESCRIPTION, QHeaderView::Stretch);
 #endif
 	
 	actionsTable->setAlternatingRowColors(true);
@@ -280,7 +283,19 @@ void CAActionsEditor::applyChanges() {
 		// Update our own list of settings
 		action->setShortCut( QKeySequence(i->text()).toString() );
 //#endif
-	}
+    }
+}
+
+CAActionsEditor::fileType CAActionsEditor::getFType(const QString &suffix)
+{
+    CAActionsEditor::fileType type;
+    if( suffix == "cakey" )
+        type = FT_SHORTCUT;
+    if( suffix == "cakmid" )
+        type = FT_MIDI;
+    if( suffix == "cacks" )
+        type = FT_MIDISCUT;
+    return type;
 }
 
 //#if !USE_SHORTCUTGETTER
@@ -417,7 +432,7 @@ bool CAActionsEditor::hasConflicts(bool bMidi) {
 
 void CAActionsEditor::saveActionsTable() {
     QString sk;
-    sk = tr("Shortcut files") +" (*.cakey);;" + tr("Midi Key files") + " (*.cakmid);;" + tr("Combined Key Sequence files") + "(*.cacks)";
+    sk = tr("Shortcut files") +" (*.cakey);;" + tr("Midi Key Sequence files") + " (*.cakmid);;" + tr("Combined Key Sequence files") + "(*.cacks)";
 
 	QString s = QFileDialog::getSaveFileName(
                     this, tr("Choose a filename"), 
@@ -443,7 +458,10 @@ void CAActionsEditor::saveActionsTable() {
 			}
 		}
 		latest_dir = QFileInfo(s).absolutePath();
-        bool r = saveActionsTable(s, shortCutFileInfo.completeSuffix() == "cakey" ? true : false);
+
+        enum fileType type = getFType( shortCutFileInfo.completeSuffix() );
+
+        bool r = saveActionsTable(s, type);
 		if (!r) {
 			QMessageBox::warning(this, tr("Error"), 
                tr("The file couldn't be saved"), 
@@ -452,7 +470,7 @@ void CAActionsEditor::saveActionsTable() {
 	} 
 }
 
-bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* = true */) {
+bool CAActionsEditor::saveActionsTable(const QString & filename, enum fileType type /* = FT_SHORTCUT */) {
 	qDebug("CAActionsEditor::saveActions: '%s'", filename.toUtf8().data());
 
 	QFile f( filename );
@@ -465,7 +483,7 @@ bool CAActionsEditor::saveActionsTable(const QString & filename, bool bSCuts/* =
 		for (int row=0; row < actionsTable->rowCount(); row++) {
 			stream << actionsTable->item(row, COL_COMMAND)->text() << "\t" 
                    << actionsTable->item(row, COL_DESCRIPTION)->text() << "\t";
-			if( bSCuts )
+            if( type == FT_SHORTCUT /*|| type == FT_MIDISCUT*/)
 			{
 				accelText = actionsTable->item(row, COL_SHORTCUT)->text();
 				if( accelText.isEmpty() )
@@ -487,10 +505,12 @@ void CAActionsEditor::loadActionsTable() {
                     this, tr("Choose a file"),
                     latest_dir, sk );
 
-    QFileInfo shortCutFileInfo(s);
+    QFileInfo shortCutFileInfo(s);    
+    enum fileType type = getFType( shortCutFileInfo.completeSuffix() );
+
     if (!s.isEmpty()) {
 		latest_dir = QFileInfo(s).absolutePath();
-        bool r = loadActionsTable(s, shortCutFileInfo.completeSuffix() == "cakey" ? true : false);
+        bool r = loadActionsTable(s, type);
 		if (!r) {
 			QMessageBox::warning(this, tr("Error"), 
                tr("The file couldn't be loaded"), 
@@ -499,7 +519,7 @@ void CAActionsEditor::loadActionsTable() {
 	}
 }
 
-bool CAActionsEditor::loadActionsTable(const QString & filename, bool bSCuts/* = true */) {
+bool CAActionsEditor::loadActionsTable(const QString & filename, enum fileType type /* = FT_SHORTCUT */) {
 	qDebug("CAActionsEditor::loadActions: '%s'", filename.toUtf8().data());
 
 	// Lines with '#' (comments) will be ignored
@@ -524,7 +544,7 @@ bool CAActionsEditor::loadActionsTable(const QString & filename, bool bSCuts/* =
 			if (rx.indexIn(line) > -1) {
 				command = rx.cap(1);
 				context = rx.cap(2);
-				if( bSCuts )
+                if( type == FT_SHORTCUT /*|| type == FT_MIDISCUT*/ )
 				{
 					accelText = rx.cap(3);
 					if( accelText == "none" )
@@ -540,7 +560,7 @@ bool CAActionsEditor::loadActionsTable(const QString & filename, bool bSCuts/* =
 						actionsTable->item(row, COL_SHORTCUT)->setText(accelText);
 					}
 				}
-				else
+                if( type == FT_MIDI /*|| type == FT_MIDISCUT*/ )
 				{
 					midiText = rx.cap(3) + " " + rx.cap(4) + " " + rx.cap(5);
 					qDebug(" command: '%s' context: '%s' midi: '%s'",
