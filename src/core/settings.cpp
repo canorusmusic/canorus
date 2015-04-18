@@ -96,7 +96,7 @@ CASettings::CASettings( QObject * parent )
 
 void CASettings::initSettings()
 {
-	_poEmptyEntry = new QAction( this );
+    _poEmptyEntry = new CASingleAction( this );
 }
 
 CASettings::~CASettings() {
@@ -104,6 +104,16 @@ CASettings::~CASettings() {
 	if( _poEmptyEntry )
 	  delete _poEmptyEntry;
 	_poEmptyEntry = 0;
+    if( false == _oActionList.isEmpty() )
+    {
+        CASingleAction *poActionEntry;
+        foreach(poActionEntry, _oActionList)
+        {
+            delete poActionEntry;
+            poActionEntry = 0;
+        }
+        _oActionList.clear();
+    }
 }
 
 /*!
@@ -340,27 +350,49 @@ void CASettings::setMidiInPort(int in) {
   Search one single action in the list of actions (-1: entry not found)
   Returns an empty action element when the command was not found
 */
-int CASettings::getSingleAction(QString oCommand, QAction *&poResAction)
+int CASettings::getSingleAction(QString oCommandName, QAction *&poResAction)
 {
+    CASingleAction *poEntryAction;
 	for (int i=0; i < _oActionList.count(); i++) {
-		poResAction = &getSingleAction(i, _oActionList);
-		if( poResAction->objectName() == oCommand )
+        poEntryAction = _oActionList[i];
+        if( poEntryAction->getCommandName() == oCommandName )
+        {
+            poResAction = poEntryAction;
 			return i;
+        }
 	}
 	poResAction = _poEmptyEntry;
-	return -1;
+    return -1;
+}
+
+int CASettings::getSingleAction(QString oCommandName, CASingleAction *&poResAction)
+{
+    CASingleAction *poEntryAction;
+    for (int i=0; i < _oActionList.count(); i++) {
+        poEntryAction = _oActionList[i];
+        if( poEntryAction->getCommandName() == oCommandName )
+        {
+            poResAction = poEntryAction;
+            return i;
+        }
+    }
+    poResAction = _poEmptyEntry;
+    return -1;
 }
 
 /*!
  Updates an action in the action list
  Return 'true' if the update was successfull
- Warning: The action cannot be copied!
+ Warning: 1) The action will not be copied
+          2) Only shortcut and no midi information is updated
+          3) Description cannot be updated
 */
 bool CASettings::setSingleAction(QAction oSingleAction, int iPos)
 {
 	bool bRet = false;
 	if( iPos >= 0 && iPos < _oActionList.count() ) {
-		_oActionList[iPos] = &oSingleAction;
+        _oActionList[iPos]->setCommandName( oSingleAction.objectName() );
+        _oActionList[iPos]->setShortCutAsString( oSingleAction.shortcut().toString() );
 		bRet = true;
 	}
 	return bRet;
@@ -372,13 +404,14 @@ bool CASettings::setSingleAction(QAction oSingleAction, int iPos)
  Else: According to Qt doc "assigns the other list to this list"
  Warning: The actions themselves cannot be copied!
 */
-void CASettings::setActionList(QList<QAction *> &oActionList)
+void CASettings::setActionList(QList<CASingleAction *> &oActionList)
 {
 #ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
 	_oActionList.clear();
+    CASingleAction *pActionEntry;
 	for (int i=0; i < oActionList.count(); i++) {
-		poResAction = &getSingleAction(i, oActionList);
-		addSingleAction(*poResAction);
+        pActionEntry = &getSingleAction(i, oActionList);
+        addSingleAction(*pActionEntry);
 	}
 #else
 	_oActionList = oActionList;
@@ -387,21 +420,35 @@ void CASettings::setActionList(QList<QAction *> &oActionList)
 
 /*!
  Adds a single action to the action list
- Warning: The action cannot be copied!
+ Warning: The action will be referenced!
 */
-void CASettings::addSingleAction(QAction oSingleAction)
+void CASettings::addSingleAction(CASingleAction &oSingleAction)
 {
-	_oActionList.append( &oSingleAction );
+    CASingleAction *pActionEntry = new CASingleAction(0); // parent ?
+    pActionEntry->setCommandName( oSingleAction.getCommandName() );
+    pActionEntry->setDescription( oSingleAction.getDescription() );
+    pActionEntry->setShortCutAsString( oSingleAction.getShortCutAsString() );
+    pActionEntry->setMidiKeySequence( oSingleAction.getMidiKeySequence() );
+    pActionEntry->setActionGroup( oSingleAction.actionGroup() );
+    pActionEntry->setAutoRepeat( oSingleAction.autoRepeat() );
+    pActionEntry->setCheckable( oSingleAction.isCheckable() );
+    pActionEntry->setChecked( oSingleAction.isChecked() );
+    pActionEntry->setData( oSingleAction.data() );
+#ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
+    _oActionList.append( pActionEntry );
+#else
+    _oActionList.append( &oSingleAction );
+#endif
 }
 
 /*!
  Removes a single action from the action list
  Return 'true' when succesfull
- Warning: The action itself cannot be deleted!
+ Warning: The action itself is not deleted!
 */
 bool CASettings::deleteSingleAction(QString oCommand)
 {
-	QAction *poResAction;
+    CASingleAction *poResAction;
 	bool bRet = false;
 	int iPos = getSingleAction(oCommand, poResAction);
 	if( iPos >= 0 ) // Double entries should not be in the list
@@ -409,6 +456,9 @@ bool CASettings::deleteSingleAction(QString oCommand)
 		_oActionList.removeOne( poResAction );
 		bRet = true;
 	}
+#ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
+    delete poResAction;
+#endif
 	return bRet;
 }
 

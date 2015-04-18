@@ -193,7 +193,7 @@ void CASettingsDialog::buildActionsEditorPage()
 {
 	int i;
 	QWidget oSingleActions; // all actions added here
-	const QList<QAction *> &roSAList = CACanorus::settings()->getActionList();
+    const QList<CASingleAction *> &roSAList = CACanorus::settings()->getActionList();
 	_commandsEditor = new CAActionsEditor( 0 );
     _commandsEditor->setObjectName(QString::fromUtf8("commandsEditor"));
     commandsSettingsVBoxLayout->addWidget(_commandsEditor);
