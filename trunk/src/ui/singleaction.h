@@ -26,7 +26,6 @@ public:
 
 	// Getter methods for all single action parameters
     inline QString getCommandName()     { return _oCommandName; }
-	inline QString getContext()     { return _oContext; }
 	inline QString getDescription() { return _oDescription; }
     inline QString getShortCutAsString() { return _oShortCut; }
     inline QString getMidiKeySequence() { return _oMidiKeySequence; }
@@ -38,7 +37,6 @@ public:
 	
 	// Setter methods
     void setCommandName( QString oCommandName );
-	void setContext( QString oContext );
 	void setDescription( QString oDescription );
     void setShortCutAsString( QString oShortCut );
     void setMidiKeySequence( QString oMidiKeySequence, bool combined = false );
@@ -46,7 +44,6 @@ public:
 protected:
     // Action parameters to be stored / loaded via Settings Dialog
     QString _oCommandName;
-	QString _oContext;
 	QString _oDescription;
 	QString _oShortCut;
     QString _oMidiKeySequence;

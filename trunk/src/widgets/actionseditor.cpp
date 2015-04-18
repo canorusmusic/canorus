@@ -201,7 +201,7 @@ void CAActionsEditor::updateView() {
 	actionsTable->setRowCount( actionsList.count() );
 
     CASingleAction *action;
-	QString accelText, midi_com, context;
+    QString accelText, midi_com, description;
 
 //#if !USE_SHORTCUTGETTER
 	dont_validate = true;
@@ -217,7 +217,7 @@ void CAActionsEditor::updateView() {
 //#else
 		accelText = action->getShortCutAsString();
 //#endif
-		context  = action->getContext();
+        description  = action->getDescription();
         midi_com = action->getMidiKeySequence();
 		
 		QTableWidgetItem * i_conf = new QTableWidgetItem();
@@ -226,7 +226,7 @@ void CAActionsEditor::updateView() {
 		QTableWidgetItem * i_command = new QTableWidgetItem(action->text());
 
 		// Context column
-		QTableWidgetItem * i_context = new QTableWidgetItem( context );
+        QTableWidgetItem * i_context = new QTableWidgetItem( description );
 
 		// Shortcut column
 		QTableWidgetItem * i_shortcut = new QTableWidgetItem(accelText);

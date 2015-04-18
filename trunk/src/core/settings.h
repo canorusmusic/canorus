@@ -11,8 +11,8 @@
 #include <QSettings>
 #ifndef SWIG
 #include <QColor>
-//#include "ui/singleaction.h"
-#include <QAction>
+#include "ui/singleaction.h"
+//#include <QAction>
 #endif
 #include <QDir>
 #include "core/fileformats.h"
@@ -140,8 +140,9 @@ public:
 	inline void setLatestShortcutsDirectory( QDir d ) { _latestShortcutsDirectory = d; }
 	static const QDir DEFAULT_SHORTCUTS_DIRECTORY;
 #ifndef SWIG
-	int getSingleAction(QString oCommand, QAction *&poResAction);
-	/*!
+    int getSingleAction(QString oCommandName, QAction *&poResAction);
+    int getSingleAction(QString oCommandName, CASingleAction *&poResAction);
+    /*!
 	  Re one single action in the list of actions
 	  Does not check for the correct position in the list to be fast!
 	 */
@@ -150,10 +151,10 @@ public:
 		return *poResAction; }
 
 	bool setSingleAction(QAction oSingleAction, int iPos);
-	inline const QList<QAction*>& getActionList() { return _oActionList; }
-	void setActionList(QList<QAction *> &oActionList);
-	void addSingleAction(QAction oSingleAction);
-	bool deleteSingleAction(QString oCommand);
+    inline const QList<CASingleAction*>& getActionList() { return _oActionList; }
+    void setActionList(QList<CASingleAction *> &oActionList);
+    void addSingleAction(CASingleAction &oSingleAction);
+    bool deleteSingleAction(QString oCommandName);
 #endif
 
 private:
@@ -234,8 +235,8 @@ private:
 	QDir _latestShortcutsDirectory; // save location of shortcuts/midi commands
 	// @ToDo: QAction can be exported to SWIG ? Abstract interface but requires QObject
 #ifndef SWIG
-    QList<QAction *> _oActionList;
-    QAction         *_poEmptyEntry; // Entry is unused for search function
+    QList<CASingleAction *> _oActionList;
+    CASingleAction         *_poEmptyEntry; // Entry is unused for search function
 #endif
 };
 

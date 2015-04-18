@@ -29,12 +29,6 @@ void CASingleAction::setCommandName( QString oCommandName )
 	}
 }
 
-void CASingleAction::setContext( QString oContext )
-{
-	if( !oContext.isEmpty() )
-		_oContext = oContext;
-}
-
 void CASingleAction::setDescription( QString oDescription )
 {
 	if( !oDescription.isEmpty() )
