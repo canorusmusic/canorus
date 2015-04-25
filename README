@@ -55,6 +55,9 @@ Installation
 
 Debian based distributions:
 ===========================
+One-liner to install build dependencies:
+ $ sudo apt-get install libqt5-webkit5-dev libqt5svg-dev qtbase5-dev qttools5-dev
+
 Download the SVN/release version of canorus, go to Canorus root directory and run:
  $ debian/rules binary
  
