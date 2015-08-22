@@ -3912,6 +3912,10 @@ void CAMainWin::on_uiTimeSigBeats_valueChanged(int beats) {
 			CATimeSignature *timeSig = dynamic_cast<CATimeSignature*>(v->selection().at(0)->musElement());
 			if ( timeSig ) {
 				timeSig->setBeats( beats );
+				if (CACanorus::settings()->useNoteChecker()) {
+					_noteChecker.checkSheet(v->sheet());
+				}
+				
 				CACanorus::rebuildUI(document(), currentSheet());
 			}
 		}
