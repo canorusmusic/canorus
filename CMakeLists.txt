@@ -38,13 +38,14 @@ STRING(REGEX REPLACE "\n" "" CANORUS_VERSION "${CANORUS_VERSION}") # get rid of 
 # Under M$ Windows this is C:\Program files\Canorus 
 # On Mac OS X it is /Applications for the .app and /Library/Fonts for the fonts, but see note below
 IF(MINGW)
+	cmake_policy(SET CMP0020 NEW)
+	
 	IF (NOT CMAKE_INSTALL_PREFIX)
 		SET(CMAKE_INSTALL_PREFIX "C:/Program files/Canorus")
 	ENDIF (NOT CMAKE_INSTALL_PREFIX)
 	SET(CANORUS_INSTALL_DATA_DIR "")
 	SET(CANORUS_INSTALL_BIN_DIR "")
 	SET(CANORUS_INSTALL_LIB_DIR "")
-
 ELSE(MINGW)
 IF(APPLE)
 	# This is where OSX-specific resources and scripts live.
