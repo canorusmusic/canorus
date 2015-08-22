@@ -736,13 +736,13 @@ INSTALL( DIRECTORY ${Canorus_Examples} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CA
 
 IF(MINGW)
 	# Install Qt libs
-	INSTALL( FILES ${QT_BIN_DIR}/QtCore4.dll ${QT_BIN_DIR}/QtGui4.dll ${QT_BIN_DIR}/QtSvg4.dll ${QT_BIN_DIR}/QtXml4.dll ${QT_BIN_DIR}/QtHelp4.dll ${QT_BIN_DIR}/QtSql4.dll ${QT_BIN_DIR}/QtNetwork4.dll ${QT_BIN_DIR}/QtCLucene4.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
+	INSTALL( FILES ${QT_BIN_DIR}/Qt5Core.dll ${QT_BIN_DIR}/Qt5Gui.dll ${QT_BIN_DIR}/Qt5Svg.dll ${QT_BIN_DIR}/Qt5Xml.dll ${QT_BIN_DIR}/Qt5Help.dll ${QT_BIN_DIR}/Qt5Sql.dll ${QT_BIN_DIR}/Qt5Network.dll ${QT_BIN_DIR}/Qt5CLucene.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
 	
 	# Install qsvg plugin for rendering SVG icons
-	INSTALL( FILES ${QT_PLUGINS_DIR}/iconengines/qsvgicon4.dll DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR}/iconengines" )
+	INSTALL( FILES ${QT_PLUGINS_DIR}/iconengines/qsvgicon.dll DESTINATION "${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR}/iconengines" )
 	
-	# Install mingwm10.dll
-	INSTALL( FILES ${MINGW_BIN_DIR}/mingwm10.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
+	# Install mingwm10.dll - not required anymore?
+	#INSTALL( FILES ${MINGW_BIN_DIR}/mingwm10.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
 	
 	# Install Python libs
 	IF(USE_PYTHON)
