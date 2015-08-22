@@ -4,7 +4,7 @@
 Name Canorus
 # Defines
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 0.7.2rc1
+!define /file VERSION "..\VERSION"
 !define COMPANY "Matevž Jekovec, Canorus development team"
 !define URL http://www.canorus.org
 
@@ -30,7 +30,7 @@ Var StartMenuGroup
 
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE ..\LICENSE.GPL
+!insertmacro MUI_PAGE_LICENSE ..\COPYING
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
 !insertmacro MUI_PAGE_INSTFILES
