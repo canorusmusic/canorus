@@ -5,7 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-#include <QHash>
+#include <QHash>   // used for mapping when cloning the sheet to a new sheet
+#include <QObject> // QObject::tr
 
 #include "score/document.h"
 #include "score/context.h"
