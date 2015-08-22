@@ -24,7 +24,7 @@ IF(MINGW)
 	STRING(REGEX REPLACE "\\\\" "/" MINGW_BIN_DIR "${MINGW_BIN_DIR}") # Replace back slashes to slashes
 ENDIF(MINGW)
 
-# Set Qt4 bin dir to find QtCore4.dll and other libs to install
+# Set Qt5 bin dir to find QtCore5.dll and other libs to install
 STRING(REGEX REPLACE "([^ ]+)[/\\].*" "\\1" QT_BIN_DIR "${QT_QMAKE_EXECUTABLE}")
 STRING(REGEX REPLACE "\\\\" "/" QT_BIN_DIR "${QT_BIN_DIR}")  # Replace back slashes to slashes
 
@@ -73,11 +73,18 @@ ENDIF(APPLE)
 ENDIF(MINGW)
 
 #-----------------------------------------------------------------------------
-# Search for Qt4. We need the latest version of Qt
-SET(QT_MIN_VERSION "4.4.0")
+# Search for Qt5. We need the latest version of Qt
+SET(QT_MIN_VERSION "5.3.2")
 
-# this line includes FindQt4.cmake, which searches the Qt library and headers
-FIND_PACKAGE(Qt4 REQUIRED)
+# this line includes FindQt.cmake, which searches the Qt library and headers
+FIND_PACKAGE(Qt5Core REQUIRED)
+FIND_PACKAGE(Qt5Gui REQUIRED)
+FIND_PACKAGE(Qt5Svg REQUIRED)
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+FIND_PACKAGE(Qt5LinguistTools REQUIRED)
+FIND_PACKAGE(Qt5Xml REQUIRED)
+FIND_PACKAGE(Qt5Help REQUIRED)
+FIND_PACKAGE(Qt5PrintSupport REQUIRED)
 
 # in the following lines all the requires include directories are added
 INCLUDE_DIRECTORIES(src)

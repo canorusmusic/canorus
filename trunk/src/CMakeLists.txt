@@ -2,7 +2,7 @@
 
 INCLUDE(CheckLibraryExists)
 
-FIND_PACKAGE(Qt4)
+#FIND_PACKAGE(Qt5)
 
 # This module is used to resolve the file dependencies
 # for QT files using an UI (User Interface) Qt file
@@ -50,7 +50,10 @@ ELSE(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
 	SET(RUBY_LIBRARY "")
 ENDIF(RUBY_INCLUDE_PATH AND NOT NO_RUBY)
 
-FIND_PACKAGE(PythonLibs 3.0)
+set(Python_ADDITIONAL_VERSIONS 3.4) # Required for Ubuntu LTS 14.04
+
+FIND_PACKAGE(PythonLibs 3)
+
 IF(PYTHON_INCLUDE_DIRS AND NOT NO_PYTHON)
 	MESSAGE("Python Library and Development files found. Python extensions enabled.")
 	# PYTHON_LIBRARY points to C:\PythonXY\pythonXY.dll
@@ -192,20 +195,20 @@ SET(QT_USE_QTWEBKIT True) # Inline help browser
 # The result of it is stored into Canorus_Resrcs_Srcs
 # variable. This has to be included later in the
 # add_executable line.
-QT4_ADD_RESOURCES(Canorus_Resrcs_Srcs ${Canorus_Resrcs})
+QT5_ADD_RESOURCES(Canorus_Resrcs_Srcs ${Canorus_Resrcs})
 
 # This scripts runs the user interface compiler uic.
 # The result of it is stored into Canorus_UIC_Srcs
 # variable. This has to be included later in the
 # add_executable line.
-QT4_WRAP_UI(Canorus_UIC_Srcs ${Canorus_UIs})
+QT5_WRAP_UI(Canorus_UIC_Srcs ${Canorus_UIs})
 
 # This script runs the meta object compiler moc.
 # The result of it is stored into Canorus_Gui_MOC_Srcs and Canorus_Core_MOC_Srcs
 # variable. This has to be included later in the
 # add_executable line.
-QT4_WRAP_CPP(Canorus_Gui_MOC_Srcs ${Canorus_Gui_MOCs})
-QT4_WRAP_CPP(Canorus_Core_MOC_Srcs ${Canorus_Core_MOCs})
+QT5_WRAP_CPP(Canorus_Gui_MOC_Srcs ${Canorus_Gui_MOCs})
+QT5_WRAP_CPP(Canorus_Core_MOC_Srcs ${Canorus_Core_MOCs})
 
 #########################
 # List of other sources #
@@ -479,10 +482,11 @@ IF(APPLE)
 	SET(Canorus_OSX_Info ${CANORUS_OSX_DIR}/files/Info.plist)
 
 	SET(Canorus_OSX_Qt_libs
-		${QT_QTCORE_LIBRARY}/Versions/4/QtCore
-		${QT_QTGUI_LIBRARY}/Versions/4/QtGui
-		${QT_QTXML_LIBRARY}/Versions/4/QtXml
-		${QT_QTSVG_LIBRARY}/Versions/4/QtSvg
+		${QT_QTCORE_LIBRARY}/Versions/5/QtCore
+		${QT_QTGUI_LIBRARY}/Versions/5/QtGui
+		${QT_QTWIDGETS_LIBRARY}/Versions/5/QtWidgets
+		${QT_QTXML_LIBRARY}/Versions/5/QtXml
+		${QT_QTSVG_LIBRARY}/Versions/5/QtSvg
 		)
 ENDIF(APPLE)
 
@@ -543,9 +547,20 @@ ENDIF(USE_PYTHON)
 # This needs to be added in order for #include to work inside .cpp files - it adds src/ to include path
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-# This line adds the include path of the Qt
-# directory to the compiler include path
-INCLUDE(${QT_USE_FILE})
+# These lines add the include paths of the Qt
+# directory to the compiler include paths
+INCLUDE_DIRECTORIES(${Qt5Core_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt5Gui_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt5Svg_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt5Widgets_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt5Xml_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt5Help_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Qt5PrintSupport_INCLUDE_DIRS})
+
+# FIX: Qt was built with -reduce-relocations
+if (Qt5_POSITION_INDEPENDENT_CODE)
+	SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
 
 IF(USE_SWIG)
 	INCLUDE(${SWIG_USE_FILE})
@@ -623,7 +638,7 @@ ENDIF(USE_PYTHON)
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
 # Add ${POPPLERQT4_LIBRARY} ${POPPLER_LIBRARY} to reactivate poppler libraries
-TARGET_LINK_LIBRARIES(canorus ${QT_LIBRARIES} ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
+TARGET_LINK_LIBRARIES(canorus Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::Svg Qt5::Help Qt5::PrintSupport ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
 # Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
 # duma )
 
@@ -671,13 +686,15 @@ ENDIF(MINGW)
 ADD_CUSTOM_COMMAND(
 	TARGET canorus
 	PRE_BUILD
-	COMMAND ${QT_BINARY_DIR}/lupdate
+	#COMMAND ${QT_BINARY_DIR}/lupdate
+  COMMAND lupdate
 	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
 ADD_CUSTOM_COMMAND(
 	TARGET canorus
 	PRE_BUILD
-	COMMAND ${QT_BINARY_DIR}/lrelease
+	#COMMAND ${QT_BINARY_DIR}/lrelease
+  COMMAND lrelease
 	ARGS ${Canorus_Translation_Srcs}
 )
 
