@@ -141,7 +141,6 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	// init virtual canvas
 	_canvas = new QWidget(this);
 	setMouseTracking(true);
-	_canvas->setMouseTracking(true);
 	_repaintArea = 0;
 
 	// init animation stuff
@@ -230,6 +229,15 @@ void CAScoreView::on_animationTimer_timeout() {
 		_animationTimer->stop();
 
 	repaint();
+}
+
+/**
+	Reimplementation of the original QWidget's setMouseTracking to set both the
+	widget and the _canvas mouse tracking property.
+ */
+void CAScoreView::setMouseTracking(bool mt) {
+	CAView::setMouseTracking(mt);
+	_canvas->setMouseTracking(mt);
 }
 
 CAScoreView *CAScoreView::clone() {

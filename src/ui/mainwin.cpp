@@ -1908,6 +1908,8 @@ void CAMainWin::viewClicked() {
 */
 void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
 	CAScoreView *c = static_cast<CAScoreView*>(sender());
+	c->setMouseTracking(false); // disable mouse move events until we finish with drawing
+	
 	if ( mode() == SelectMode && c->resizeDirection()!=CADrawable::Undefined ) {
 		int time = c->coordsToTime(coords.x());
 		time -= (time % CAPlayableLength::musicLengthToTimeLength(CAPlayableLength::Sixteenth)); // round timelength to eighth notes length
@@ -1968,6 +1970,7 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
 		}
 		c->repaint();
 	}
+	c->setMouseTracking(true); // re-enable mouse move events, we finished rendering
 }
 
 /*!
