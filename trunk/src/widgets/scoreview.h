@@ -157,6 +157,7 @@ public:
 	// Scene appearance, properties and actions //
 	//////////////////////////////////////////////
 	void rebuild();
+	void setMouseTracking(bool); // reimplemented!
 	inline const int drawableWidth() { return _canvas->width(); }
 	inline const int drawableHeight() { return _canvas->height(); }
 
