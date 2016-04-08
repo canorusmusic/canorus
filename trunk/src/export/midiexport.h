@@ -66,7 +66,7 @@ private:
 	int _trackTime;							// which this is the time line for
 	QVector<QByteArray> trackChunks;		// for the future
 	QVector<int> trackTimes;
-	void printQByteArray( QByteArray x );	// for debugging only
+	void streamQByteArray( QByteArray x );	// streaming binary data to midi file, possibly with print for debugging
 	QByteArray variableLengthValue(int value);
 	QByteArray word16(int x);
 	QByteArray textEvent(int time, QString s);
