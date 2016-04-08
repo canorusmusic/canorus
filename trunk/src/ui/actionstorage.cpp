@@ -84,7 +84,6 @@ void CAActionStorage::storeActionsFromMainWindow(CAMainWin &mainWin)
     storeAction(mainWin.uiInsertPlayable);
     storeAction(mainWin.uiInsertFM);
     storeAction(mainWin.uiInsertClef);
-    storeAction(mainWin.uiSelectMode);
     storeAction(mainWin.uiRemoveVoice);
     storeAction(mainWin.uiVoiceProperties);
     storeAction(mainWin.uiAccsVisible);
