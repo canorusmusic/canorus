@@ -600,6 +600,7 @@ void CAMainWin::setupCustomUi() {
 	_musElementFactory = new CAMusElementFactory();
 
 	_poPrintPreviewCtl = new CAPreviewCtl( this );
+	connect(uiPrintPreview, SIGNAL(triggered()), _poPrintPreviewCtl, SLOT(on_uiPrintPreview_triggered()));
 	_poPrintCtl = new CAPrintCtl( this );
 
 	//uiPrint->setEnabled( false );
