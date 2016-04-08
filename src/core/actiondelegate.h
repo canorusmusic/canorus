@@ -5,8 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#ifndef DYNAMICKEYBOARD_H_
-#define DYNAMICKEYBOARD_H_
+#ifndef ACTIONDELEGATE_H_
+#define ACTIONDELEGATE_H_
 
 #include <QString>
 #include <QAction>
@@ -27,13 +27,13 @@ public:
     void updateMainWinActions();
 
 protected:
-    void addSingleAction(const QString &oCommandName, const QString &oDescription, QAction &oAction);
+    void addSingleAction(const QString &oCommandName, const QString &oDescription, const QAction &oAction);
     void updateSingleAction(CASingleAction &oSource, QAction &oAction);
 
 private:
     CAMainWin *_mainWin;
 };
 
-#endif // DYNAMICKEYBOARD_H_
+#endif // ACTIONDELEGATE_H_
 
 

@@ -5,11 +5,15 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
+#include <QDebug>
+
 #include "core/settings.h"
 #ifndef SWIGCPP
 #include "canorus.h"
 #endif
 #include "interface/rtmididevice.h"
+
+//#define COPY_ACTIONLIST_ELEMS_MANUALLY 1
 
 // Define default settings
 const bool CASettings::DEFAULT_FINALE_LYRICS_BEHAVIOUR = false;
@@ -355,22 +359,22 @@ void CASettings::setMidiInPort(int in) {
   Search one single action in the list of actions (-1: entry not found)
   Returns an empty action element when the command was not found
 */
-int CASettings::getSingleAction(QString oCommandName, QAction *&poResAction)
+int CASettings::getSingleAction(const QString &oCommandName, QAction *&poResAction)
 {
     CASingleAction *poEntryAction;
 	for (int i=0; i < _oActionList.count(); i++) {
         poEntryAction = _oActionList[i];
         if( poEntryAction->getCommandName() == oCommandName )
         {
-            poResAction = poEntryAction;
+            poResAction = poEntryAction->getAction();
 			return i;
         }
 	}
-	poResAction = _poEmptyEntry;
+    poResAction = _poEmptyEntry->getAction();
     return -1;
 }
 
-int CASettings::getSingleAction(QString oCommandName, CASingleAction *&poResAction)
+int CASettings::getSingleAction(const QString &oCommandName, CASingleAction *&poResAction)
 {
     CASingleAction *poEntryAction;
     for (int i=0; i < _oActionList.count(); i++) {
@@ -429,21 +433,26 @@ void CASettings::setActionList(QList<CASingleAction *> &oActionList)
 */
 void CASettings::addSingleAction(CASingleAction &oSingleAction)
 {
+    qWarning() << "CASettings::addSingleAction" << endl;
+#ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
     CASingleAction *pActionEntry = new CASingleAction(0); // parent ?
     pActionEntry->setCommandName( oSingleAction.getCommandName() );
     pActionEntry->setDescription( oSingleAction.getDescription() );
     pActionEntry->setShortCutAsString( oSingleAction.getShortCutAsString() );
     pActionEntry->setMidiKeySequence( oSingleAction.getMidiKeySequence() );
-    pActionEntry->setActionGroup( oSingleAction.actionGroup() );
-    pActionEntry->setAutoRepeat( oSingleAction.autoRepeat() );
-    pActionEntry->setCheckable( oSingleAction.isCheckable() );
-    pActionEntry->setChecked( oSingleAction.isChecked() );
-    pActionEntry->setData( oSingleAction.data() );
-#ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
+    pActionEntry->newAction( oSingleAction.getAction()->parent() );
+    pActionEntry->getAction()->setObjectName( oSingleAction.getAction()->objectName() );
+    pActionEntry->getAction()->setActionGroup( oSingleAction.getAction()->actionGroup() );
+    pActionEntry->getAction()->setAutoRepeat( oSingleAction.getAction()->autoRepeat() );
+    pActionEntry->getAction()->setCheckable( oSingleAction.getAction()->isCheckable() );
+    pActionEntry->getAction()->setChecked( oSingleAction.getAction()->isChecked() );
+    pActionEntry->getAction()->setData( oSingleAction.getAction()->data() );
+    pActionEntry->setAction( oSingleAction.getAction() );
     _oActionList.append( pActionEntry );
 #else
     _oActionList.append( &oSingleAction );
 #endif
+    qWarning() << "New size is " << _oActionList.size() << endl;
 }
 
 /*!
@@ -451,9 +460,8 @@ void CASettings::addSingleAction(CASingleAction &oSingleAction)
  Return 'true' when succesfull
  Warning: The action itself is not deleted!
 */
-bool CASettings::deleteSingleAction(QString oCommand)
+bool CASettings::deleteSingleAction(QString oCommand, CASingleAction *&poResAction)
 {
-    CASingleAction *poResAction;
 	bool bRet = false;
 	int iPos = getSingleAction(oCommand, poResAction);
 	if( iPos >= 0 ) // Double entries should not be in the list
@@ -463,6 +471,7 @@ bool CASettings::deleteSingleAction(QString oCommand)
 	}
 #ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
     delete poResAction;
+    poResAction = 0;
 #endif
 	return bRet;
 }

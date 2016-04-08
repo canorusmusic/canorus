@@ -191,18 +191,23 @@ void CASettingsDialog::applySettings() {
 
 void CASettingsDialog::buildActionsEditorPage()
 {
-	int i;
-	QWidget oSingleActions; // all actions added here
+    //int i;
+    //QWidget oSingleActions; // all actions added here
     const QList<CASingleAction *> &roSAList = CACanorus::settings()->getActionList();
+    if(roSAList.size() <= 0)
+    {
+        qWarning("List of Actions is empty!");
+        return;
+    }
 	_commandsEditor = new CAActionsEditor( 0 );
     _commandsEditor->setObjectName(QString::fromUtf8("commandsEditor"));
     commandsSettingsVBoxLayout->addWidget(_commandsEditor);
 
-	// Read all elements from single action list (API requirement)
-	for(i=0; i< roSAList.size(); ++i)
-		oSingleActions.addAction( roSAList[i] );
-	// Add all command actions (loading happens earlier in Canorus)
-	_commandsEditor->addActions( &oSingleActions );
+    // Read all elements from single action list (API requirement)
+    //for(i=0; i< roSAList.size(); ++i)
+    //    oSingleActions.addAction( roSAList[i]->getAction() );
+    // Add all command actions (loading happens earlier in Canorus)
+    _commandsEditor->addActions( roSAList );
 }
 
 void CASettingsDialog::buildPreviewSheet() {

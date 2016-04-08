@@ -32,6 +32,7 @@
 #include "ui/settingsdialog.h"
 #include "ui/propertiesdialog.h"
 #include "ui/transposeview.h"
+#include "ui/actionstorage.h"
 
 #include "scoreui/keysignatureui.h"
 
@@ -158,6 +159,7 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
 	// Create the GUI (actions, toolbars, menus etc.)
 	createCustomActions();
 	setupUi( this ); // initialize elements created by Qt Designer
+    actionStorage = new CAActionStorage(); // Shortcut System
 	setupCustomUi();
 
 	// Explicitly initialize this so it isn't true sometimes
@@ -849,6 +851,9 @@ void CAMainWin::setupCustomUi() {
 	uiFermataToolBar->hide();
 	uiRepeatMarkToolBar->hide();
 	uiFingeringToolBar->hide();
+
+    actionStorage->storeActionsFromMainWindow(*this);
+    actionStorage->addWinActions();
 }
 
 void CAMainWin::newDocument() {

@@ -30,6 +30,7 @@
 #include <QRegExp>
 #include <QApplication>
 #include <QAction>
+#include <QDebug>
 
 //#include "images.h"
 #include "canorus.h"
@@ -177,31 +178,37 @@ void CAActionsEditor::retranslateStrings() {
 }
 
 bool CAActionsEditor::isEmpty() {
-	return actionsList.isEmpty();
+    return m_actionsList.isEmpty();
 }
 
 void CAActionsEditor::clear() {
-	actionsList.clear();
+    m_actionsList.clear();
 }
 
-void CAActionsEditor::addActions(QWidget *widget) {
+void CAActionsEditor::addActions(const QList<CASingleAction *> &actionList) {
 	CASingleAction *action;
 
-	QList<CASingleAction *> actions = widget->findChildren<CASingleAction *>();
-	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<CASingleAction*> (actions[n]);
-		if (!action->objectName().isEmpty() && !action->inherits("QWidgetAction"))
-	        actionsList.append(action);
+    // Issue: Actions not associated to objects anymore due to
+    // Step that converts QAction -> CASingleAction
+    //QList<CASingleAction *> actions = widget->findChildren<CASingleAction *>();
+    //qWarning() << "CAActionsEditor::addActions - size " << actions.size() << " orig size " << widget->actions().size() << endl;
+    //QList<QAction *> actions = widget->actions();
+    for (int n=0; n < actionList.size(); n++) {
+        action = actionList[n];
+        //action->getAction()->setParent(this);
+        qWarning() << "CAActionsEditor::addActions - objectName " << action->getAction()->objectName() << " inherits " << action->getAction()->inherits("QWidgetAction") << endl;
+        if (!action->getAction()->objectName().isEmpty() && !action->getAction()->inherits("QWidgetAction"))
+            m_actionsList.append(action);
     }
 
 	updateView();
 }
 
 void CAActionsEditor::updateView() {
-	actionsTable->setRowCount( actionsList.count() );
+    actionsTable->setRowCount( m_actionsList.count() );
 
     CASingleAction *action;
-    QString accelText, midi_com, description;
+    QString accelText, midi_com, midi_scut, description;
 
 //#if !USE_SHORTCUTGETTER
 	dont_validate = true;
@@ -209,8 +216,8 @@ void CAActionsEditor::updateView() {
 	//actionsTable->setSortingEnabled(false);
 
 // @ToDo: Replace with our own list of Canorus actions
-	for (int n=0; n < actionsList.count(); n++) {
-		action = static_cast<CASingleAction*> (actionsList[n]);
+    for (int n=0; n < m_actionsList.count(); n++) {
+        action = m_actionsList[n];
 
 //#if USE_MULTIPLE_SHORTCUTS
 //		accelText = shortcutsToString( action->shortcuts() );
@@ -219,11 +226,12 @@ void CAActionsEditor::updateView() {
 //#endif
         description  = action->getDescription();
         midi_com = action->getMidiKeySequence();
+        midi_scut = action->getMidiShortCutCombined();
 		
 		QTableWidgetItem * i_conf = new QTableWidgetItem();
 
 		// Command column
-		QTableWidgetItem * i_command = new QTableWidgetItem(action->text());
+        QTableWidgetItem * i_command = new QTableWidgetItem(action->getAction()->text());
 
 		// Context column
         QTableWidgetItem * i_context = new QTableWidgetItem( description );
@@ -233,7 +241,10 @@ void CAActionsEditor::updateView() {
 
 		// Midi command
 		QTableWidgetItem * i_midi = new QTableWidgetItem(midi_com);
-		
+
+        // Midi command
+        QTableWidgetItem * i_midiscut = new QTableWidgetItem(midi_com);
+
 		// Set flags
 //#if !USE_SHORTCUTGETTER
 //		i_conf->setFlags(Qt::ItemIsEnabled);
@@ -253,7 +264,7 @@ void CAActionsEditor::updateView() {
         actionsTable->setItem(n, COL_DESCRIPTION, i_context );
 		actionsTable->setItem(n, COL_SHORTCUT, i_shortcut );
 		actionsTable->setItem(n, COL_MIDI, i_midi );
-        actionsTable->setItem(n, COL_MIDISCUT, i_midi );
+        actionsTable->setItem(n, COL_MIDISCUT, i_midiscut );
 
 	}
 	hasConflicts(); // Check for conflicts
@@ -272,8 +283,8 @@ void CAActionsEditor::updateView() {
 void CAActionsEditor::applyChanges() {
 	qDebug("CAActionsEditor::applyChanges");
 
-	for (int row = 0; row < (int)actionsList.size(); ++row) {
-		CASingleAction *action = actionsList[row];
+    for (int row = 0; row < (int)m_actionsList.size(); ++row) {
+        CASingleAction *action = m_actionsList[row];
 		QTableWidgetItem *i = actionsTable->item(row, COL_SHORTCUT);
 
 //#if USE_MULTIPLE_SHORTCUTS
@@ -406,13 +417,13 @@ bool CAActionsEditor::hasConflicts(bool bMidi) {
 	bool conflict = false;
 
 	QString accelText;
-	QTableWidgetItem *i;
+    QTableWidgetItem *i;
 
 	for (int n=0; n < actionsTable->rowCount(); n++) {
 		//i = actionsTable->item( n, COL_CONFLICTS );
-		if (i) i->setIcon( QPixmap() );
+        i = actionsTable->item(n, iType );
+        if (i) i->setIcon( QPixmap() );
 
-		i = actionsTable->item(n, iType );
 		if (i) {
 			accelText = i->text();
 			if (!accelText.isEmpty()) {
@@ -587,26 +598,29 @@ bool CAActionsEditor::loadActionsTable(const QString & filename, enum fileType t
 
 // Static functions
 
-void CAActionsEditor::saveToConfig(QObject *o, QSettings *set) {
+void CAActionsEditor::saveToConfig(QWidget *widget, QSettings *set) {
 	qDebug("ActionsEditor::saveToConfig");
 
 	set->beginGroup("actions");
 
 	CASingleAction *action;
-	QList<CASingleAction *> actions = o->findChildren<CASingleAction *>();
+    // Issue: Actions not associated to objects anymore due to
+    // Step that converts QAction -> CASingleAction
+    //QList<CASingleAction *> actions = o->findChildren<CASingleAction *>();
 	QString accelText;
+    QList<QAction *> actions = widget->actions();
 	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<CASingleAction*> (actions[n]);
-		if (!action->text().isEmpty() && !action->inherits("QWidgetAction")) {
+        action = reinterpret_cast<CASingleAction*> (actions[n]);
+        if (!action->getAction()->text().isEmpty() && !action->getAction()->inherits("QWidgetAction")) {
 //#if USE_MULTIPLE_SHORTCUTS
 //			accelText = shortcutsToString(action->shortcuts());
 //#else
 			accelText = action->getShortCutAsString();
 //#endif
 			if( accelText.isEmpty() )
-				set->setValue(action->text(), "none");
+                set->setValue(action->getAction()->text(), "none");
 			else
-				set->setValue(action->text(), accelText);
+                set->setValue(action->getAction()->text(), accelText);
 		}
     }
 
@@ -614,7 +628,7 @@ void CAActionsEditor::saveToConfig(QObject *o, QSettings *set) {
 }
 
 
-void CAActionsEditor::loadFromConfig(QObject *o, QSettings *set) {
+void CAActionsEditor::loadFromConfig(QWidget *widget, QSettings *set) {
 	qDebug("ActionsEditor::loadFromConfig");
 
 	set->beginGroup("actions");
@@ -622,19 +636,22 @@ void CAActionsEditor::loadFromConfig(QObject *o, QSettings *set) {
 	CASingleAction *action;
 	QString accelText;
 
-	QList<CASingleAction *> actions = o->findChildren<CASingleAction *>();
+    // Issue: Actions not associated to objects anymore due to
+    // Step that converts QAction -> CASingleAction
+    //QList<CASingleAction *> actions = o->findChildren<CASingleAction *>();
 //#if USE_MULTIPLE_SHORTCUTS
 //	QString current;
 //#endif
-	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<CASingleAction*> (actions[n]);
-		if (!action->objectName().isEmpty() && !action->inherits("QWidgetAction")) {
+    QList<QAction *> actions = widget->actions();
+    for (int n=0; n < actions.count(); n++) {
+        action = reinterpret_cast<CASingleAction*> (actions[n]);
+        if (!action->getAction()->objectName().isEmpty() && !action->getAction()->inherits("QWidgetAction")) {
 //#if USE_MULTIPLE_SHORTCUTS
 //			current = shortcutsToString(action->shortcuts());
 //			accelText = set->value(action->objectName(), current).toString();
 //			action->setShortcuts( stringToShortcuts( accelText ) );
 //#else
-			accelText = set->value(action->text(), action->getShortCutAsString()).toString();
+            accelText = set->value(action->getAction()->text(), action->getShortCutAsString()).toString();
 			if( accelText != "none" )
 				action->setShortCutAsString( QKeySequence(accelText).toString() );
 //#endif
@@ -644,30 +661,36 @@ void CAActionsEditor::loadFromConfig(QObject *o, QSettings *set) {
 	set->endGroup();
 }
 
-CASingleAction * CAActionsEditor::findAction(QObject *o, const QString & name) {
+CASingleAction * CAActionsEditor::findAction(QWidget *widget, const QString & name) {
 	CASingleAction *action;
 
-	QList<CASingleAction *> actions = o->findChildren<CASingleAction *>();
-	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<CASingleAction*> (actions[n]);
-		if (name == action->objectName()) return action;
+    // Issue: Actions not associated to objects anymore due to
+    // Step that converts QAction -> CASingleAction
+    //QList<CASingleAction *> actions = o->findChildren<CASingleAction *>();
+    QList<QAction *> actions = widget->actions();
+    for (int n=0; n < actions.count(); n++) {
+        action = reinterpret_cast<CASingleAction*> (actions[n]);
+        if (name == action->getAction()->objectName()) return action;
     }
 
 	return 0;
 }
 
-QStringList CAActionsEditor::actionsNames(QObject *o) {
+QStringList CAActionsEditor::actionsNames(QWidget *widget) {
 	QStringList l;
 
 	CASingleAction *action;
 
-	QList<CASingleAction *> actions = o->findChildren<CASingleAction *>();
-	for (int n=0; n < actions.count(); n++) {
-		action = static_cast<CASingleAction*> (actions[n]);
+    // Issue: Actions not associated to objects anymore due to
+    // Step that converts QAction -> CASingleAction
+    //QList<CASingleAction *> actions = o->findChildren<CASingleAction *>();
+    QList<QAction *> actions = widget->actions();
+    for (int n=0; n < actions.count(); n++) {
+        action = reinterpret_cast<CASingleAction*> (actions[n]);
 		//qDebug("action name: '%s'", action->objectName().toUtf8().data());
 		//qDebug("action name: '%s'", action->text().toUtf8().data());
-		if (!action->text().isEmpty())
-			l.append( action->text() );
+        if (!action->getAction()->text().isEmpty())
+            l.append( action->getAction()->text() );
     }
 
 	return l;

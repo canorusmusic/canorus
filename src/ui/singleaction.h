@@ -15,14 +15,12 @@ class QString;
 
 // One action based on QAction, Midi and QString. Contains all
 // information (including description) for one control command
-class CASingleAction : public QAction
+class CASingleAction
 {
-    Q_OBJECT
-
 public:
 	// Constructor / Desctructor
 	CASingleAction( QObject * );
-	~CASingleAction();
+    virtual ~CASingleAction();
 
 	// Getter methods for all single action parameters
     inline QString getCommandName()     { return _oCommandName; }
@@ -31,7 +29,7 @@ public:
     inline QString getMidiKeySequence() { return _oMidiKeySequence; }
     inline bool    getMidiShortCutCombined() { return _bMidiShortCutCombined; }
     // Application-specific Getter (Refs, so no Setter required)
-    inline QAction      &getAction() { return (QAction &)*this; }
+    inline QAction      *getAction() { return _pAction; }
     inline QKeySequence &getSysShortCut() { return _oSysShortCut; }
     inline QList<int>   &getMidiKeyParameters() { return _oMidiKeyParameters; }
 	
@@ -40,17 +38,23 @@ public:
 	void setDescription( QString oDescription );
     void setShortCutAsString( QString oShortCut );
     void setMidiKeySequence( QString oMidiKeySequence, bool combined = false );
+    //void setAction(QAction *pAction);
+
+    QAction    *newAction(QObject *parent = 0);
+    static void fromQAction(const QAction &action, CASingleAction &sAction);
 
 protected:
     // Action parameters to be stored / loaded via Settings Dialog
-    QString _oCommandName;
-	QString _oDescription;
-	QString _oShortCut;
-    QString _oMidiKeySequence;
-    bool    _bMidiShortCutCombined;
+    QString   _oCommandName;
+    QString   _oDescription;
+    QString   _oShortCut;
+    QString   _oMidiKeySequence;
+    bool      _bMidiShortCutCombined;
+    QAction  *_pAction;
     // ShortCut, Midi Key Sequence for the application
     QKeySequence _oSysShortCut;
     QList<int>   _oMidiKeyParameters;
+    bool      m_localCreated = false;
 };
 
 #endif // _CASINGLEACTION_H_
