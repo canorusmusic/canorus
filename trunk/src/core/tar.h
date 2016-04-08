@@ -13,11 +13,11 @@
 #include <QFile>
 #include <QHash>
 #include <memory>
-using std::auto_ptr;
+using std::unique_ptr;
 
 class QIODevice;
 
-typedef auto_ptr<QIODevice> CAIOPtr;
+typedef unique_ptr<QIODevice> CAIOPtr;
 
 class CATar
 {
