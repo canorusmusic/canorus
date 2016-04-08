@@ -118,6 +118,7 @@ public:
 	inline void removeSelectionRegion(QRect r) { _selectionRegionList.removeAll(r); }
 	inline void clearSelectionRegionList() { _selectionRegionList.clear(); }
 	inline CADrawable::CADirection resizeDirection() { return _resizeDirection; }
+	bool mouseDragActivated();
 
 	/////////////////////////////////////////////////////////////////////
 	// Music elements and contexts query, space calculation and access //
@@ -338,7 +339,10 @@ private:
 	// Selection regions
 	QList<QRect> _selectionRegionList;
 	void drawSelectionRegion( QPainter *p, CADrawSettings s );
-
+public:
+	static const int SELECTION_REGION_THRESHOLD; // Threshold in px for mouse move until the selection region is activated
+	
+private:
 	////////////////
 	// Appearance //
 	////////////////

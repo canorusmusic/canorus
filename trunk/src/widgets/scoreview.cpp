@@ -52,6 +52,7 @@ const int CAScoreView::RIGHT_EXTRA_SPACE = 100;	// Gives some space after the mu
 const int CAScoreView::BOTTOM_EXTRA_SPACE = 30; // Gives some space after the music so you're able to insert new contexts below the last context
 const int CAScoreView::RULER_HEIGHT = 15;
 const int CAScoreView::ANIMATION_STEPS = 7;
+const int CAScoreView::SELECTION_REGION_THRESHOLD = 10;
 
 /*!
 	\class CATextEdit
@@ -1313,6 +1314,16 @@ void CAScoreView::mouseMoveEvent(QMouseEvent *e) {
 		setCursor(Qt::ArrowCursor);
 
 	emit CAMouseMoveEvent(e, coords);
+}
+
+/*!
+	Calculates the distance between the start of the mouse drag and the current position
+	in world coordinates and returns true, if it is larger than SELECTION_REGION_THRESHOLD.
+	 
+	@return True, if the selection region should be activated; False otherwise.
+ */
+bool CAScoreView::mouseDragActivated() {
+	return qMax(qAbs(_xCursor-_lastMousePressCoords.x()), qAbs(_yCursor-_lastMousePressCoords.y()))*_zoom >= SELECTION_REGION_THRESHOLD;
 }
 
 /*!
