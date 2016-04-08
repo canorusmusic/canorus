@@ -1936,7 +1936,7 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
 				c->repaint();
 			}
 		} else
-		if (e->buttons()==Qt::LeftButton) {
+		if (e->buttons()==Qt::LeftButton && c->mouseDragActivated()) {
 			// multiple selection
 			c->clearSelectionRegionList();
 			int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
@@ -2002,7 +2002,7 @@ void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPoint coords) {
 		CACanorus::rebuildUI(document(), c->sheet());
 	}
 
-	if ( mode() != InsertMode  && c->lastMousePressCoords()!=coords ) { // area was selected
+	if ( mode() != InsertMode  && c->mouseDragActivated() ) { // area was selected
 		c->clearSelectionRegionList();
 
 		if (e->modifiers()==Qt::NoModifier)
