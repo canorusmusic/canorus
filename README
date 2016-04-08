@@ -88,19 +88,19 @@ removing the line that caused the error (the fix Qt Team performed too).
 
 If you get the error "swig not found" then you have the problem
 that FindSWIG.cmake does not match your system configuration. On
-my system swig files are in /usr/share/swig2.x.y, so I needed to
-create a link to it from swig2.x:
+my system swig files are in /usr/share/swig3.x.y, so I needed to
+create a link to it from swig3.x:
 
- $ ln -s /usr/share/swig2.x.y /usr/share/swig2.x
+ $ ln -s /usr/share/swig3.x.y /usr/share/swig3.x
 
-Replace 2.x.y with the real version f.e. 2.0.4.
+Replace 3.x.y with the real version f.e. 3.0.8.
 
 -------------------------------------------------------------------------------
 
 If you get the following error:
 "libpython.a: undefined reference to openpty"
 your system requires the util library to be included to the
-Canorus link libaries. To do this edit src/CMakeFile.txt file
+Canorus link libaries. To do this edit src/CMakeLists.txt file
 and search for the line containing TARGET_LINK_LIBRARIES.
 Add " util" as last library to the line f.e. like this:
 
