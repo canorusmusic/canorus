@@ -172,6 +172,7 @@ SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 	interface/mididevice.h
 	interface/playback.h
 	core/midirecorder.h
+	core/settings.h
 
 	interface/pluginaction.h
 )
@@ -571,14 +572,14 @@ IF(USE_RUBY)
 	INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES CPLUSPLUS ON)
 			
-	SET(CANORUS_RUBY_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusrubyRUBY_wrap.cxx)
+	SET(CANORUS_RUBY_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/canorusrubyRUBY_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_RUBY_WRAP_CXX} PROPERTIES GENERATED TRUE)
 	
 	SWIG_ADD_MODULE(CanorusRuby ruby
 		${Canorus_Swig_Srcs}
 		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
 	)
-	SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARY} ${QT_LIBRARIES})
+	SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::Help Qt5::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusRuby_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
 ENDIF(USE_RUBY)
 
@@ -586,14 +587,14 @@ IF(USE_PYTHON)
 	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i PROPERTIES CPLUSPLUS ON)
 	
-	SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspythonPYTHON_wrap.cxx)
+	SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/canoruspythonPYTHON_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES GENERATED TRUE)
 	
 	SWIG_ADD_MODULE(CanorusPython python 		# Warning! CMake renames CanorusPython automatically to _CanorusPython
 		${Canorus_Swig_Srcs}
 		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i
 	)
-	SWIG_LINK_LIBRARIES(CanorusPython ${PYTHON_LIBRARY} ${QT_LIBRARIES})
+	SWIG_LINK_LIBRARIES(CanorusPython ${PYTHON_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::Help Qt5::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusPython_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
 ENDIF(USE_PYTHON)
 
@@ -638,7 +639,7 @@ ENDIF(USE_PYTHON)
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
 # Add ${POPPLERQT4_LIBRARY} ${POPPLER_LIBRARY} to reactivate poppler libraries
-TARGET_LINK_LIBRARIES(canorus Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::Svg Qt5::Help Qt5::PrintSupport ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
+TARGET_LINK_LIBRARIES(canorus Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::Help Qt5::PrintSupport ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
 # Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
 # duma )
 

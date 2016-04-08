@@ -19,6 +19,9 @@
 #include "core/typesetter.h"
 
 class CASettings : public QSettings {
+#ifndef SWIG
+	Q_OBJECT
+#endif
 public:
 	CASettings( QObject * parent = 0 );
 	CASettings( const QString & fileName, QObject * parent = 0 );

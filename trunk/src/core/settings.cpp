@@ -96,7 +96,9 @@ CASettings::CASettings( QObject * parent )
 
 void CASettings::initSettings()
 {
+#ifndef SWIGCPP
     _poEmptyEntry = new CASingleAction( this );
+#endif
 }
 
 CASettings::~CASettings() {
@@ -104,6 +106,8 @@ CASettings::~CASettings() {
 	if( _poEmptyEntry )
 	  delete _poEmptyEntry;
 	_poEmptyEntry = 0;
+
+#ifndef SWIGCPP
     if( false == _oActionList.isEmpty() )
     {
         CASingleAction *poActionEntry;
@@ -114,6 +118,7 @@ CASettings::~CASettings() {
         }
         _oActionList.clear();
     }
+#endif
 }
 
 /*!
@@ -466,9 +471,7 @@ void CASettings::readRecentDocuments() {
 	for ( int i=0; contains( QString("files/recentdocument") + QString::number(i) ); i++ )
 		CACanorus::addRecentDocument( value(QString("files/recentdocument") + QString::number(i)).toString() );
 }
-#endif
 
-#ifndef SWIGCPP
 void CASettings::writeRecentDocuments() {
 	for ( int i=0; contains( QString("files/recentdocument") + QString::number(i) ); i++ )
 		remove( QString("files/recentdocument") + QString::number(i) );
@@ -476,7 +479,7 @@ void CASettings::writeRecentDocuments() {
 	for ( int i=0; i<CACanorus::recentDocumentList().size(); i++ )
 		setValue( QString("files/recentdocument") + QString::number(i), CACanorus::recentDocumentList()[i] );
 }
-#endif
+#endif // SWIGCPP
 
 /*!
 	Returns the default settings path. This function is static and is used when no config
