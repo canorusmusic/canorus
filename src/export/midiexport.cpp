@@ -316,11 +316,6 @@ void CAMidiExport::exportSheetImpl(CASheet *sheet)
 }
 
 void CAMidiExport::writeFile() {
-	// Header Chunk
-
-	// A midi file here is 8-Bit Ascii, so we need no coding translation,
-	// and this seems to switch it off, but I think there should be a null codec, but obviously Qt doesn't have one.
-	(*stream()).setCodec("Latin-1");
 
 	QByteArray headerChunk;
 	headerChunk.append("MThd....");		// header and space for length
@@ -328,7 +323,7 @@ void CAMidiExport::writeFile() {
 	headerChunk.append(word16( 2 ));	// number of tracks, a control track and a music track for a trying out ...
 	headerChunk.append(word16( CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter )));	// time division ticks per quarter
 	setChunkLength( &headerChunk );
-	out() << headerChunk;
+	streamQByteArray( headerChunk );
 
 
 	QByteArray controlTrackChunk;
@@ -337,8 +332,8 @@ void CAMidiExport::writeFile() {
 	controlTrackChunk.append( textEvent(0, "It's still a work in progress."));
 	controlTrackChunk.append( trackEnd());
 	setChunkLength( &controlTrackChunk );
-	//printQByteArray( controlTrackChunk );
-	out() << controlTrackChunk;
+	streamQByteArray( controlTrackChunk );
+	//for (int i=0;i<controlTrackChunk.length();i++) out().device()->putChar(controlTrackChunk[i]);
 
 	// trackChunk is already filled with midi data,
 	// let's add chunk header, in reverse, ...
@@ -346,8 +341,7 @@ void CAMidiExport::writeFile() {
 	// ... and add the tail:
 	trackChunk.append(trackEnd());
 	setChunkLength( &trackChunk );
-	//printQByteArray( trackChunk );
-	out() << trackChunk;
+	streamQByteArray( trackChunk );
 }
 
 void CAMidiExport::setChunkLength( QByteArray *x ) {
@@ -358,8 +352,12 @@ void CAMidiExport::setChunkLength( QByteArray *x ) {
 }
 
 
-void CAMidiExport::printQByteArray( QByteArray x )
+void CAMidiExport::streamQByteArray( QByteArray x )
 {
+	for (int i=0;i<x.length();i++)	// here we pass binary data through QTextStream
+		out().device()->putChar(x[i]);
+	return;	// when no debugging
+
 	for (int i=0; i<x.size(); i++ ) {
 		printf( " %02x", 0x0ff & x.at(i));
 	}
