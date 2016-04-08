@@ -76,7 +76,6 @@ public:
 		NoDocumentMode,
 		ProgressMode,
 		InsertMode,
-		SelectMode,
 		EditMode,
 		ReadOnlyMode
 	};
@@ -178,7 +177,6 @@ private slots:
 	void on_uiDocumentProperties_triggered();
 
 	// Insert
-	void on_uiSelectMode_toggled(bool);
 	void on_uiEditMode_toggled(bool);
 	void on_uiNewSheet_triggered();
 	void on_uiNewVoice_triggered();
@@ -424,7 +422,6 @@ private:
 		// Insert toolbar
 		QToolBar     *uiInsertToolBar;
 			QActionGroup *uiInsertGroup;           // Group for mutual exclusive selection of music elements
-			// QAction       *uiSelectMode; // made by Qt Designer
 			// QAction       *uiNewSheet; // made by Qt Designer
 			CAMenuToolButton *uiContextType;
 

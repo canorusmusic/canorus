@@ -626,7 +626,6 @@ void CAMainWin::setupCustomUi() {
 	uiStandardToolBar->updateGeometry();
 
 	// Insert Toolbar
-	uiInsertToolBar->addAction( uiSelectMode );
 	uiInsertToolBar->addAction( uiEditMode );
 	uiInsertToolBar->addSeparator();
 	uiContextType->setDefaultAction( uiInsertToolBar->addWidget( uiContextType ) );
@@ -815,7 +814,6 @@ void CAMainWin::setupCustomUi() {
 
 	// Mutual exclusive groups
 	uiInsertGroup = new QActionGroup( this );
-	uiInsertGroup->addAction( uiSelectMode );
 	uiInsertGroup->addAction( uiEditMode );
 	uiInsertGroup->addAction( uiNewContext );
 	uiInsertGroup->addAction( uiContextType->defaultAction() );
@@ -873,7 +871,7 @@ void CAMainWin::newDocument() {
 	}
 
 	setDocument(new CADocument());
-	setMode(SelectMode);
+	setMode(EditMode);
 	uiCloseDocument->setEnabled(true);
 	CACanorus::undo()->createUndoStack( document() );
 	restartTimeEditedTime();
@@ -911,7 +909,7 @@ void CAMainWin::newDocument() {
 		currentScoreView()->selectContext( document()->sheetList()[0]->contextList()[0] );
 	}
 
-	setMode(SelectMode);
+	setMode(EditMode);
 }
 
 /*!
@@ -992,7 +990,7 @@ void CAMainWin::clearUI() {
 		delete _midiRecorderView;
 	}
 
-	uiSelectMode->trigger(); // select mode
+	uiEditMode->trigger(); // select mode
 }
 
 /*!
@@ -1456,13 +1454,10 @@ void CAMainWin::on_uiRemoveContext_triggered() {
 }
 
 void CAMainWin::on_uiContextType_toggled(bool checked, int buttonId) {
-	if (checked)
+	if (checked) {
+		musElementFactory()->setMusElementType( CAMusElement::Undefined );
 		setMode( InsertMode );
-}
-
-void CAMainWin::on_uiSelectMode_toggled(bool checked) {
-	if (checked)
-		setMode( SelectMode );
+	}
 }
 
 void CAMainWin::on_uiEditMode_toggled(bool checked) {
@@ -1471,7 +1466,7 @@ void CAMainWin::on_uiEditMode_toggled(bool checked) {
 }
 
 /*!
-	Allows to set the current mode from priviledged (ui/ctl) objects 
+	Allows to set the current mode from privileged (ui/ctl) objects 
  */
 void CAMainWin::setMode(CAMode mode, const QString &oModeHash) {
 	int iAllowed = _modeHash[oModeHash];
@@ -1487,24 +1482,6 @@ void CAMainWin::setMode(CAMode mode) {
 	_mode = mode;
 
 	switch (mode) {
-		case SelectMode: {
-			for (int i=0; i<_viewList.size(); i++) {
-				if ( _viewList[i]->viewType()==CAView::ScoreView ) {
-					CAScoreView *v = static_cast<CAScoreView*>(_viewList[i]);
-					if ( !v->playing())
-						v->unsetBorder();
-
-					v->setShadowNoteVisible(false);
-					if ( v->textEditVisible())
-						v->removeTextEdit();
-				}
-			}
-
-			musElementFactory()->setMusElementType( CAMusElement::Undefined );
-			uiVoiceNum->setRealValue( 0 );
-
-			break;
-		}
 		case InsertMode: {
 			QPen p;
 			p.setColor(Qt::blue);
@@ -1519,7 +1496,7 @@ void CAMainWin::setMode(CAMode mode) {
 			}
 
 			if ( currentScoreView() ) {
-				currentScoreView()->setShadowNoteVisible((musElementFactory()->musElementType() == CAMusElement::Note) ? true : false); /// \todo Set other mouse cursors
+				currentScoreView()->setShadowNoteVisible(musElementFactory()->musElementType() == CAMusElement::Note); /// \todo Set other mouse cursors
 				currentScoreView()->repaint();
 			}
 
@@ -1534,22 +1511,27 @@ void CAMainWin::setMode(CAMode mode) {
 				if (_viewList[i]->viewType()==CAView::ScoreView) {
 					CAScoreView *sv = static_cast<CAScoreView*>(_viewList[i]);
 					if (!sv->playing())
-						(sv->setBorder(p));
+						(sv->unsetBorder());
 
 					sv->setShadowNoteVisible(false);
 					sv->repaint();
 				}
 			}
 
-			if (currentScoreView() && currentScoreView()->selection().size()) {
-				CAMusElement *elt = currentScoreView()->selection().front()->musElement();
-				if ( elt->musElementType()==CAMusElement::Syllable ||
-				     ((elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text)) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
-				) {
-					currentScoreView()->createTextEdit(currentScoreView()->selection().front());
+			if (currentScoreView()) {
+				if (currentScoreView()->selection().size()) {
+					CAMusElement *elt = currentScoreView()->selection().front()->musElement();
+					if ( elt->musElementType()==CAMusElement::Syllable ||
+						((elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text)) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
+					) {
+						currentScoreView()->createTextEdit(currentScoreView()->selection().front());
+					} else {
+						currentScoreView()->removeTextEdit();
+					}
 				} else {
-					currentScoreView()->removeTextEdit();
+					musElementFactory()->setMusElementType( CAMusElement::Undefined );
 				}
+				uiVoiceNum->setRealValue( 0 );
 			}
 		}
 		case ReadOnlyMode:
@@ -1743,10 +1725,8 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 	}
 
 	switch ( mode() ) {
-		case SelectMode:
 		case EditMode: {
 			v->clearSelectionRegionList();
-
 
 			if ( v->selection().size() ) {
 				CADrawableMusElement *dElt = v->selection().front();
@@ -1851,7 +1831,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 					uiVoiceNum->setMax( 1 );
 					uiVoiceNum->setRealValue( 0 );
 				}
-				uiSelectMode->toggle();
+				uiEditMode->toggle();
 				v->repaint();
 				break;
 			} else
@@ -1916,22 +1896,6 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
 	CAScoreView *c = static_cast<CAScoreView*>(sender());
 	c->setMouseTracking(false); // disable mouse move events until we finish with drawing
 	
-	if ( mode() == SelectMode && c->resizeDirection()!=CADrawable::Undefined ) {
-		int time = c->coordsToTime(coords.x());
-		time -= (time % CAPlayableLength::musicLengthToTimeLength(CAPlayableLength::Sixteenth)); // round timelength to eighth notes length
-		if ( c->resizeDirection()==CADrawable::Right && (time > c->selection().at(0)->musElement()->timeStart()) ) {
-			c->selection().at(0)->musElement()->setTimeLength( time - c->selection().at(0)->musElement()->timeStart() );
-			c->selection().at(0)->setWidth( c->timeToCoords(time) - c->selection().at(0)->xPos() );
-			c->repaint();
-		} else
-		if ( c->resizeDirection()==CADrawable::Left && (time < c->selection().at(0)->musElement()->timeEnd()) ) {
-			c->selection().at(0)->musElement()->setTimeLength( c->selection().at(0)->musElement()->timeEnd() - time );
-			c->selection().at(0)->musElement()->setTimeStart( time );
-			c->selection().at(0)->setXPos( c->timeToCoords(time) );
-			c->selection().at(0)->setWidth( c->timeToCoords(c->selection().at(0)->musElement()->timeEnd()) - c->timeToCoords(time) );
-			c->repaint();
-		}
-	} else
 	if ( (mode() == InsertMode && musElementFactory()->musElementType() == CAMusElement::Note) ) {
 		CADrawableStaff *s;
 		if (c->currentContext()?(c->currentContext()->drawableContextType() == CADrawableContext::DrawableStaff):0)
@@ -1954,27 +1918,47 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
 		c->updateHelpers();
 		c->repaint();
 	} else
-	if ( mode()!=InsertMode  && e->buttons()==Qt::LeftButton ) { // multiple selection
-		c->clearSelectionRegionList();
-		int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
-		    w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
-		if (w<0) { x+=w; w*=(-1); } // user selected from right to left
-		if (h<0) { y+=h; h*=(-1); } // user selected from bottom to top
-		QRect selectionRect( x, y, w, h );
-
-		QList<CADrawableContext*> dcList = c->findContextsInRegion( selectionRect );
-		for (int i=0; i<dcList.size(); i++) {
-			QList<CADrawableMusElement*> musEltList = dcList[i]->findInRange( selectionRect.x(), selectionRect.x() + selectionRect.width() );
-			for (int j=0; j<musEltList.size(); j++)
-				if (musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
-					musEltList.removeAt(j--);
-
-			if (musEltList.size()) {
-				c->addSelectionRegion( QRect(musEltList.front()->xPos(), dcList[i]->yPos(),
-				                             musEltList.back()->xPos()+musEltList.back()->width()-musEltList.front()->xPos(), dcList[i]->height()) );
+	if ( mode()!=InsertMode ) {
+		if (c->resizeDirection()!=CADrawable::Undefined) {
+			// resize element
+			int time = c->coordsToTime(coords.x());
+			time -= (time % CAPlayableLength::musicLengthToTimeLength(CAPlayableLength::Sixteenth)); // round timelength to eighth notes length
+			if ( c->resizeDirection()==CADrawable::Right && (time > c->selection().at(0)->musElement()->timeStart()) ) {
+				c->selection().at(0)->musElement()->setTimeLength( time - c->selection().at(0)->musElement()->timeStart() );
+				c->selection().at(0)->setWidth( c->timeToCoords(time) - c->selection().at(0)->xPos() );
+				c->repaint();
+			} else
+			if ( c->resizeDirection()==CADrawable::Left && (time < c->selection().at(0)->musElement()->timeEnd()) ) {
+				c->selection().at(0)->musElement()->setTimeLength( c->selection().at(0)->musElement()->timeEnd() - time );
+				c->selection().at(0)->musElement()->setTimeStart( time );
+				c->selection().at(0)->setXPos( c->timeToCoords(time) );
+				c->selection().at(0)->setWidth( c->timeToCoords(c->selection().at(0)->musElement()->timeEnd()) - c->timeToCoords(time) );
+				c->repaint();
 			}
+		} else
+		if (e->buttons()==Qt::LeftButton) {
+			// multiple selection
+			c->clearSelectionRegionList();
+			int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
+				w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
+			if (w<0) { x+=w; w*=(-1); } // user selected from right to left
+			if (h<0) { y+=h; h*=(-1); } // user selected from bottom to top
+			QRect selectionRect( x, y, w, h );
+
+			QList<CADrawableContext*> dcList = c->findContextsInRegion( selectionRect );
+			for (int i=0; i<dcList.size(); i++) {
+				QList<CADrawableMusElement*> musEltList = dcList[i]->findInRange( selectionRect.x(), selectionRect.x() + selectionRect.width() );
+				for (int j=0; j<musEltList.size(); j++)
+					if (musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
+						musEltList.removeAt(j--);
+
+				if (musEltList.size()) {
+					c->addSelectionRegion( QRect(musEltList.front()->xPos(), dcList[i]->yPos(),
+												musEltList.back()->xPos()+musEltList.back()->width()-musEltList.front()->xPos(), dcList[i]->height()) );
+				}
+			}
+			c->repaint();
 		}
-		c->repaint();
 	}
 	c->setMouseTracking(true); // re-enable mouse move events, we finished rendering
 }
@@ -1986,7 +1970,7 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
 	\sa CAScoreView::selectAllCurBar()
  */
 void CAMainWin::scoreViewDoubleClick( QMouseEvent *e, const QPoint coords ) {
-	if (mode() == SelectMode) {
+	if (mode() == EditMode) {
 		static_cast<CAScoreView*>(sender())->selectAllCurBar();
 		static_cast<CAScoreView*>(sender())->repaint();
 	}
@@ -1999,7 +1983,7 @@ void CAMainWin::scoreViewDoubleClick( QMouseEvent *e, const QPoint coords ) {
 	\sa CAScoreView::selectAllCurContext()
  */
 void CAMainWin::scoreViewTripleClick( QMouseEvent *e, const QPoint coords ) {
-	if (mode() == SelectMode) {
+	if (mode() == EditMode) {
 		static_cast<CAScoreView*>(sender())->selectAllCurContext();
 		static_cast<CAScoreView*>(sender())->repaint();
 	}
@@ -2097,7 +2081,8 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 
 	// go to Insert mode (if in Select mode) before changing note length
 	if(e->key() >= Qt::Key_0 && e->key() <= Qt::Key_9 && e->key() != Qt::Key_3) {
-		if (mode()!=EditMode && currentScoreView()->currentContext()) {
+		if (currentScoreView()->currentContext() && currentScoreView()->currentContext()->context()->contextType()==CAContext::Staff &&
+		    v->selection().size()==0) {
 			uiInsertPlayable->setChecked(true);
 		}
 	}
@@ -2163,10 +2148,7 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 		}
 
 		case Qt::Key_Up: {
-			if (mode() == SelectMode) {	// select the upper music element
-				v->selectUpMusElement();
-				v->repaint();
-			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
+			if ((mode() == InsertMode) || (mode() == EditMode)) {
 				bool rebuild=false;
 				if (v->selection().size())
 					CACanorus::undo()->createUndoCommand( document(), tr("rise note", "undo") );
@@ -2201,10 +2183,7 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 		}
 
 		case Qt::Key_Down: {
-			if (mode() == SelectMode) {	// select the lower music element
-				v->selectDownMusElement();
-				v->repaint();
-			} else if ((mode() == InsertMode) || (mode() == EditMode)) {
+			if ((mode() == InsertMode) || (mode() == EditMode)) {
 				//bool rebuild = false;
 				if (v->selection().size())
 					CACanorus::undo()->createUndoCommand( document(), tr("lower note", "undo") );
@@ -2392,12 +2371,11 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 
 		// Mode keys
 		case Qt::Key_Escape:
-			if (mode()==SelectMode) {
+			if (mode()==EditMode) {
 				v->clearSelection();
 				v->setCurrentContext( 0 );
 			}
-			uiVoiceNum->setRealValue( 0 );
-			uiSelectMode->trigger();
+			uiEditMode->trigger();
 			break;
 		case Qt::Key_I:
 			uiInsertPlayable->trigger();
@@ -2472,8 +2450,8 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 				else
 				if( idx<0 )
 					idx = currentSheet()->voiceList().size() -1;
-				//if ( idx >= 0 && idx < currentSheet()->voiceList().size() )
-					setCurrentVoice( currentSheet()->voiceList()[idx] );
+				
+				setCurrentVoice( currentSheet()->voiceList()[idx] );
 			}
 			break;
 		}
@@ -3107,7 +3085,7 @@ CADocument *CAMainWin::openDocument(CADocument *doc) {
 		if ( doc->sheetList().size())
 			uiTabWidget->setCurrentIndex(0);
 
-		setMode( SelectMode );
+		setMode( EditMode );
 
 		// select the first context automatically
 		if ( document() && document()->sheetList().size() && document()->sheetList()[0]->contextList().size() )
@@ -4391,7 +4369,7 @@ void CAMainWin::on_uiNoteStemDirection_toggled(bool checked, int id) {
 	CANote::CAStemDirection direction = static_cast<CANote::CAStemDirection>(id);
 	if (mode()==InsertMode)
 		musElementFactory()->setNoteStemDirection( direction );
-	else if (mode()==SelectMode || mode()==EditMode) {
+	else if (mode()==EditMode) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change note stem direction", "undo") );
 		CAScoreView *v = currentScoreView();
 		bool changed=false;
@@ -4474,14 +4452,16 @@ void CAMainWin::updateSheetToolBar() {
 */
 void CAMainWin::updateVoiceToolBar() {
 	CAContext *context = currentContext();
-	if ( mode()==SelectMode && context && context->contextType() == CAContext::Staff ) {
+	if ( context && context->contextType() == CAContext::Staff && currentScoreView() &&
+		 ((mode()==EditMode && currentScoreView()->selection().size()==0) ||
+		  mode()==InsertMode) ) {
 		CAStaff *staff = static_cast<CAStaff*>(context);
 		uiNewVoice->setVisible(true);
 		uiNewVoice->setEnabled(true);
 		if (staff->voiceList().size()) {
 			uiVoiceNum->setMax(staff->voiceList().size());
 			int voiceNr = uiVoiceNum->getRealValue();
-			if (voiceNr) {
+			if (currentVoice() && voiceNr) {
 				CAVoice *curVoice = (voiceNr<=staff->voiceList().size()?staff->voiceList()[voiceNr-1]:staff->voiceList()[0]);
 				uiVoiceName->setText(curVoice->name());
 				uiVoiceName->setEnabled(true);
@@ -4512,7 +4492,9 @@ void CAMainWin::updateVoiceToolBar() {
 */
 void CAMainWin::updateContextToolBar() {
 	CAContext *context = currentContext();
-	if (mode()==SelectMode && context) {
+	if (mode()==EditMode &&
+		currentScoreView() && currentScoreView()->selection().size()==0 &&
+		context) {
 		if (!uiInsertPlayable->isChecked())
 			uiContextToolBar->show();
 
@@ -4546,8 +4528,9 @@ void CAMainWin::updateContextToolBar() {
 				break;
 		}
 		uiContextName->setText(context->name());
-	} else
+	} else {
 		uiContextToolBar->hide();
+	}
 }
 
 /*!
@@ -4556,102 +4539,97 @@ void CAMainWin::updateContextToolBar() {
 void CAMainWin::updateInsertToolBar() {
 	if ( currentSheet() ) {
 		uiNewContext->setVisible(true);
-		if (mode()==EditMode) {
-			uiInsertToolBar->show();
-		} else {
-			uiInsertToolBar->show();
-			CAContext *context = currentContext();
-			if (context) {
-				switch (context->contextType()) {
-					case CAContext::Staff:
-						// staff selected
-						uiInsertPlayable->setVisible(true);
-						uiSlurType->defaultAction()->setVisible(true); uiSlurType->defaultAction()->setEnabled(true);
-						//uiSlurType->setVisible(true); // \todo This is needed in order for actions to hide?! -Matevz
-						uiInsertClef->setVisible(true); // menu
-						uiInsertBarline->setVisible(true); // menu
-						uiClefType->defaultAction()->setVisible(true); uiClefType->defaultAction()->setEnabled(true);
-						uiTimeSigType->defaultAction()->setVisible(true); uiTimeSigType->defaultAction()->setEnabled(true);
-						uiInsertKeySig->setVisible(true);
-						uiMarkType->defaultAction()->setVisible(true); uiMarkType->defaultAction()->setEnabled(true);
-						uiArticulationType->defaultAction()->setVisible(true); uiArticulationType->defaultAction()->setEnabled(true);
-						uiInsertTimeSig->setVisible(true);
-						uiBarlineType->defaultAction()->setVisible(true); uiBarlineType->defaultAction()->setEnabled(true);
-						uiInsertFBM->setVisible(false);
-						uiInsertFM->setVisible(false);
-						uiInsertSyllable->setVisible(false);
-						break;
-					case CAContext::FunctionMarkContext:
-						// function mark context selected
-						uiInsertPlayable->setVisible(false);
-						uiSlurType->defaultAction()->setVisible(false);
-						uiInsertClef->setVisible(false); // menu
-						uiInsertBarline->setVisible(false); // menu
-						uiClefType->defaultAction()->setVisible(false);
-						uiTimeSigType->defaultAction()->setVisible(false);
-						uiInsertKeySig->setVisible(false);
-						uiMarkType->defaultAction()->setVisible(false);
-						uiArticulationType->defaultAction()->setVisible(false);
-						uiInsertTimeSig->setVisible(false);
-						uiBarlineType->defaultAction()->setVisible(false);
-						uiInsertFBM->setVisible(false);
-						uiInsertFM->setVisible(true);
-						uiInsertSyllable->setVisible(false);
-						break;
-					case CAContext::LyricsContext:
-						// lyrics context selected
-						uiInsertPlayable->setVisible(false);
-						uiSlurType->defaultAction()->setVisible(false);
-						uiInsertClef->setVisible(false); // menu
-						uiInsertBarline->setVisible(false); // menu
-						uiClefType->defaultAction()->setVisible(false);
-						uiTimeSigType->defaultAction()->setVisible(false);
-						uiInsertKeySig->setVisible(false);
-						uiMarkType->defaultAction()->setVisible(false);
-						uiArticulationType->defaultAction()->setVisible(false);
-						uiInsertTimeSig->setVisible(false);
-						uiBarlineType->defaultAction()->setVisible(false);
-						uiInsertFBM->setVisible(false);
-						uiInsertFM->setVisible(false);
-						uiInsertSyllable->setVisible(true);
-						break;
-					case CAContext::FiguredBassContext:
-						// lyrics context selected
-						uiInsertPlayable->setVisible(false);
-						uiSlurType->defaultAction()->setVisible(false);
-						uiInsertClef->setVisible(false); // menu
-						uiInsertBarline->setVisible(false); // menu
-						uiClefType->defaultAction()->setVisible(false);
-						uiTimeSigType->defaultAction()->setVisible(false);
-						uiInsertKeySig->setVisible(false);
-						uiMarkType->defaultAction()->setVisible(false);
-						uiArticulationType->defaultAction()->setVisible(false);
-						uiInsertTimeSig->setVisible(false);
-						uiBarlineType->defaultAction()->setVisible(false);
-						uiInsertFBM->setVisible(true);
-						uiInsertFM->setVisible(false);
-						uiInsertSyllable->setVisible(false);
-						break;
-				}
-			} else {
-				// no contexts selected
-				uiInsertPlayable->setVisible(false);
-				uiSlurType->defaultAction()->setVisible(false);
-				uiInsertClef->setVisible(false); // menu
-				uiInsertBarline->setVisible(false); // menu
-				uiClefType->defaultAction()->setVisible(false);
-				uiTimeSigType->defaultAction()->setVisible(false);
-				uiInsertKeySig->setVisible(false);
-				uiMarkType->defaultAction()->setVisible(false);
-				uiArticulationType->defaultAction()->setVisible(false);
-				uiInsertTimeSig->setVisible(false);
-				uiBarlineType->defaultAction()->setVisible(false);
-				uiInsertFBM->setVisible(false);
-				uiInsertFM->setVisible(false);
-				uiInsertSyllable->setVisible(false);
+		uiInsertToolBar->show();
+		CAContext *context = currentContext();
+		if (context) {
+			switch (context->contextType()) {
+				case CAContext::Staff:
+					// staff selected
+					uiInsertPlayable->setVisible(true);
+					uiSlurType->defaultAction()->setVisible(true); uiSlurType->defaultAction()->setEnabled(true);
+					//uiSlurType->setVisible(true); // \todo This is needed in order for actions to hide?! -Matevz
+					uiInsertClef->setVisible(true); // menu
+					uiInsertBarline->setVisible(true); // menu
+					uiClefType->defaultAction()->setVisible(true); uiClefType->defaultAction()->setEnabled(true);
+					uiTimeSigType->defaultAction()->setVisible(true); uiTimeSigType->defaultAction()->setEnabled(true);
+					uiInsertKeySig->setVisible(true);
+					uiMarkType->defaultAction()->setVisible(true); uiMarkType->defaultAction()->setEnabled(true);
+					uiArticulationType->defaultAction()->setVisible(true); uiArticulationType->defaultAction()->setEnabled(true);
+					uiInsertTimeSig->setVisible(true);
+					uiBarlineType->defaultAction()->setVisible(true); uiBarlineType->defaultAction()->setEnabled(true);
+					uiInsertFBM->setVisible(false);
+					uiInsertFM->setVisible(false);
+					uiInsertSyllable->setVisible(false);
+					break;
+				case CAContext::FunctionMarkContext:
+					// function mark context selected
+					uiInsertPlayable->setVisible(false);
+					uiSlurType->defaultAction()->setVisible(false);
+					uiInsertClef->setVisible(false); // menu
+					uiInsertBarline->setVisible(false); // menu
+					uiClefType->defaultAction()->setVisible(false);
+					uiTimeSigType->defaultAction()->setVisible(false);
+					uiInsertKeySig->setVisible(false);
+					uiMarkType->defaultAction()->setVisible(false);
+					uiArticulationType->defaultAction()->setVisible(false);
+					uiInsertTimeSig->setVisible(false);
+					uiBarlineType->defaultAction()->setVisible(false);
+					uiInsertFBM->setVisible(false);
+					uiInsertFM->setVisible(true);
+					uiInsertSyllable->setVisible(false);
+					break;
+				case CAContext::LyricsContext:
+					// lyrics context selected
+					uiInsertPlayable->setVisible(false);
+					uiSlurType->defaultAction()->setVisible(false);
+					uiInsertClef->setVisible(false); // menu
+					uiInsertBarline->setVisible(false); // menu
+					uiClefType->defaultAction()->setVisible(false);
+					uiTimeSigType->defaultAction()->setVisible(false);
+					uiInsertKeySig->setVisible(false);
+					uiMarkType->defaultAction()->setVisible(false);
+					uiArticulationType->defaultAction()->setVisible(false);
+					uiInsertTimeSig->setVisible(false);
+					uiBarlineType->defaultAction()->setVisible(false);
+					uiInsertFBM->setVisible(false);
+					uiInsertFM->setVisible(false);
+					uiInsertSyllable->setVisible(true);
+					break;
+				case CAContext::FiguredBassContext:
+					// lyrics context selected
+					uiInsertPlayable->setVisible(false);
+					uiSlurType->defaultAction()->setVisible(false);
+					uiInsertClef->setVisible(false); // menu
+					uiInsertBarline->setVisible(false); // menu
+					uiClefType->defaultAction()->setVisible(false);
+					uiTimeSigType->defaultAction()->setVisible(false);
+					uiInsertKeySig->setVisible(false);
+					uiMarkType->defaultAction()->setVisible(false);
+					uiArticulationType->defaultAction()->setVisible(false);
+					uiInsertTimeSig->setVisible(false);
+					uiBarlineType->defaultAction()->setVisible(false);
+					uiInsertFBM->setVisible(true);
+					uiInsertFM->setVisible(false);
+					uiInsertSyllable->setVisible(false);
+					break;
 			}
+		} else {
+			// no contexts selected
+			uiInsertPlayable->setVisible(false);
+			uiSlurType->defaultAction()->setVisible(false);
+			uiInsertClef->setVisible(false); // menu
+			uiInsertBarline->setVisible(false); // menu
+			uiClefType->defaultAction()->setVisible(false);
+			uiTimeSigType->defaultAction()->setVisible(false);
+			uiInsertKeySig->setVisible(false);
+			uiMarkType->defaultAction()->setVisible(false);
+			uiArticulationType->defaultAction()->setVisible(false);
+			uiInsertTimeSig->setVisible(false);
+			uiBarlineType->defaultAction()->setVisible(false);
+			uiInsertFBM->setVisible(false);
+			uiInsertFM->setVisible(false);
+			uiInsertSyllable->setVisible(false);
 		}
-
 	} else {
 		uiInsertToolBar->hide();
 		uiNewContext->setVisible(false);
@@ -4713,7 +4691,6 @@ void CAMainWin::updatePlayableToolBar() {
 					uiHiddenRest->setChecked(rest->restType()==CARest::Hidden);
 				}
 				uiPlayableToolBar->show();
-				uiVoiceNum->setRealValue( playable->voice()->voiceNumber() );
 			} else {
 				uiPlayableToolBar->hide();
 				uiHiddenRest->setEnabled(false);
