@@ -5,9 +5,11 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
+#include <QDebug>
+
 #include "ui/singleaction.h"
 #include "ui/mainwin.h"
-#include "dynamickeyboard.h"
+#include "actiondelegate.h"
 #include "canorus.h"
 #include "settings.h"
 
@@ -17,21 +19,17 @@ CAActionDelegate::CAActionDelegate(CAMainWin *mainWin)
 }
 
 // Add a single action to the list of actions from Settings (copy action parameters)
-void CAActionDelegate::addSingleAction(const QString &oCommandName, const QString &oDescription, QAction &oAction)
+void CAActionDelegate::addSingleAction(const QString &oCommandName, const QString &oDescription, const QAction &oAction)
 {
     CASingleAction *pMainAction = new CASingleAction(_mainWin);
     if( pMainAction ) {
+        //pMainAction->setAction( &oAction );
+        pMainAction->newAction();
+        pMainAction->fromQAction(oAction,*pMainAction);
         pMainAction->setCommandName(oCommandName);
         pMainAction->setDescription(oDescription);
-        pMainAction->setShortcut(oAction.shortcut());
         pMainAction->setShortCutAsString( oAction.shortcut().toString() );
         //pMainAction->setMidiKeySequence( oMidiKeySequence ); // ToDo
-        pMainAction->setObjectName(oAction.objectName());
-        pMainAction->setActionGroup( oAction.actionGroup() );
-        pMainAction->setAutoRepeat( oAction.autoRepeat() );
-        pMainAction->setCheckable( oAction.isCheckable() );
-        pMainAction->setChecked( oAction.isChecked() );
-        pMainAction->setData( oAction.data() );
         CACanorus::settings()->addSingleAction(*pMainAction);
     }
 }
@@ -41,14 +39,14 @@ void CAActionDelegate::updateSingleAction(CASingleAction &oSource, QAction &oAct
 {
     oAction.setText(oSource.getCommandName());
     oAction.setStatusTip(oSource.getDescription());
-    oAction.setShortcut(oSource.shortcut());
+    oAction.setShortcut(oSource.getAction()->shortcut());
     //oAction->setMidiKeySequence( oSource.getMidiKeySequence ); // ToDo
-    oAction.setObjectName( oSource.objectName() );
-    oAction.setActionGroup( oSource.actionGroup() );
-    oAction.setAutoRepeat( oSource.autoRepeat() );
-    oAction.setCheckable( oSource.isCheckable() );
-    oAction.setChecked( oSource.isChecked() );
-    oAction.setData( oSource.data() );
+    oAction.setObjectName( oSource.getAction()->objectName() );
+    oAction.setActionGroup( oSource.getAction()->actionGroup() );
+    oAction.setAutoRepeat( oSource.getAction()->autoRepeat() );
+    oAction.setCheckable( oSource.getAction()->isCheckable() );
+    oAction.setChecked( oSource.getAction()->isChecked() );
+    oAction.setData( oSource.getAction()->data() );
 }
 
 // Add Actions from CAMainWin to the list of actions of the settings (initialization)
@@ -57,8 +55,10 @@ void CAActionDelegate::addWinActions(QWidget &widget)
     // Hard coded description could be changed to Status Tip Text (if available)
     //addSingleAction(_mainWin->uiQuit->text(),_mainWin->tr("Exit program"),*_mainWin->uiQuit);
     QList<QAction *> actionList = widget.actions();
+    qWarning() << "Delegate: Adding " << actionList.size() << " actions ";
     QAction *actionEntry;
     foreach(actionEntry, actionList) {
+        qWarning("Adding new action %s to shortcut list of size %d", actionEntry->text().toLatin1().constData(),widget.actions().size());
         addSingleAction( actionEntry->text(), actionEntry->toolTip(), *actionEntry);
     }
 }

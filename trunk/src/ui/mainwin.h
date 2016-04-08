@@ -61,12 +61,15 @@ class CATransposeView;
 class CAMidiRecorderView;
 class CAKeybdInput;
 class CAExport;
+class CAActionStorage;
 
 class CAMainWin : public QMainWindow, private Ui::uiMainWindow
 {
 	Q_OBJECT
 
 	friend class CAMainWinProgressCtl;
+    friend class CAActionDelegate;
+    friend class CAActionStorage;
 
 public:
 	enum CAMode {
@@ -440,51 +443,52 @@ private:
 			// QAction        *uiNewSheet; // made by Qt Designer
 			QLineEdit         *uiSheetName;
 			// QAction        *uiRemoveSheet; // made by Qt Designer
-			// QAction        *uiSheetProperties; // made by Qt Designer
+            // QAction        *uiSheetProperties; // made by Qt Designer
 
 		QToolBar *uiContextToolBar;
 			// CAContext
-			QLineEdit        *uiContextName;
-			//QAction          *uiRemoveContext; // made by Qt Designer
-			//QAction          *uiContextProperties; // made by Qt Designer
+            QLineEdit         *uiContextName;
+            //QAction         *uiRemoveContext; // made by Qt Designer
+            //QAction         *uiContextProperties; // made by Qt Designer
 			// CAStaff
 			// CALyricsContext
-			QSpinBox         *uiStanzaNumber;
-			QAction          *uiStanzaNumberAction;
-			QComboBox        *uiAssociatedVoice;
-			QAction          *uiAssociatedVoiceAction;
+            QSpinBox          *uiStanzaNumber;
+            QAction           *uiStanzaNumberAction;
+            QComboBox         *uiAssociatedVoice;
+            QAction           *uiAssociatedVoiceAction;
 			// CAFunctionMarkContext
 
 		QToolBar *uiVoiceToolBar;
-			// QAction       *uiNewVoice;  // made by Qt Designer
-			CALCDNumber      *uiVoiceNum;
-			QLineEdit        *uiVoiceName;
-			QComboBox        *uiVoiceInstrument;
-			// QAction       *uiRemoveVoice; // made by Qt Designer
-			CAMenuToolButton *uiVoiceStemDirection;
-			// QAction       *uiVoiceProperties; // made by Qt Designer
+            // QAction        *uiNewVoice;  // made by Qt Designer
+            CALCDNumber       *uiVoiceNum;
+            QLineEdit         *uiVoiceName;
+            QComboBox         *uiVoiceInstrument;
+            // QAction        *uiRemoveVoice; // made by Qt Designer
+            CAMenuToolButton  *uiVoiceStemDirection;
+            // QAction        *uiVoiceProperties; // made by Qt Designer
 
 		QToolBar *uiPlayableToolBar; // note and rest properties are merged for the time being
 			// Note properties
-			CAMenuToolButton *uiPlayableLength;
-			CAMenuToolButton *uiNoteAccs;
-			CAMenuToolButton *uiSlurType;
+            CAMenuToolButton  *uiPlayableLength;
+            CAMenuToolButton  *uiNoteAccs;
+            CAMenuToolButton  *uiSlurType;
 public:		// Because CAKeyboardInput (input with midi keyboard) needs to operate these widgets to
 			// provide gui feedback, these, probably even more, should become public.
 			// Some clean interface would be appropriate.
-			CAMenuToolButton *uiTupletType;
-			QSpinBox         *uiTupletNumber;
-			QSpinBox         *uiTupletActualNumber;
+            CAMenuToolButton  *uiTupletType;
+            QSpinBox          *uiTupletNumber;
+            QSpinBox          *uiTupletActualNumber;
 private:
-			QAction          *uiTupletNumberAction;
-			QLabel           *uiTupletInsteadOf;
-			QAction          *uiTupletInsteadOfAction;
-			QAction          *uiTupletActualNumberAction;
-			// QAction       *uiNoteAccsVisible; // made by Qt Designer
-			CAMenuToolButton *uiNoteStemDirection;
+            QAction           *uiTupletNumberAction;
+            QLabel            *uiTupletInsteadOf;
+            QAction           *uiTupletInsteadOfAction;
+            QAction           *uiTupletActualNumberAction;
+            // QAction        *uiNoteAccsVisible; // made by Qt Designer
+            CAMenuToolButton  *uiNoteStemDirection;
+            CAActionStorage   *actionStorage;
 			// Rest properties
 			// CAMenuToolButton *uiPlayableLength; // same as note properties
-			// QLabel        *uiPlayableDotted; // same as note properties
+            // QLabel           *uiPlayableDotted; // same as note properties
 			// QAction          *uiHiddenRest; // made by Qt Designer
 
 		CAKeySignatureUI *_poKeySignatureUI; // Key signature UI parts

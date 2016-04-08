@@ -16,8 +16,8 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 SET(CMAKE_C_FLAGS_DEBUG "-O0 -g -fstack-protector-all -Wall -Werror -Wuninitialized -Wtype-limits -Wstack-protector")
 SET(CMAKE_C_FLAGS_RELEASE "-O2")
 
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -std=c++11")
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c++11")
 
 # Build universal binaries on Mac
 IF(APPLE)
@@ -229,6 +229,7 @@ SET(Canorus_Core_Srcs		# Core sources
 	core/muselementfactory.cpp
 	core/transpose.cpp
 	core/notechecker.cpp
+	core/actiondelegate.cpp
 )
 
 SET(Canorus_Score_Srcs		# Score representation
@@ -310,6 +311,7 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/propertiesdialog.cpp
 	ui/transposeview.cpp
 	ui/singleaction.cpp
+        ui/actionstorage.cpp
 
 	scoreui/keysignatureui.cpp
 )
@@ -546,7 +548,12 @@ ENDIF(USE_PYTHON)
 # Include paths and set up targets #
 ####################################
 # This needs to be added in order for #include to work inside .cpp files - it adds src/ to include path
+#TARGET_INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/core")
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/ui")
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/widgets")
+INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/import")
 
 # These lines add the include paths of the Qt
 # directory to the compiler include paths
@@ -570,9 +577,9 @@ ENDIF(USE_SWIG)
 
 IF(USE_RUBY)
 	INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
-	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES CPLUSPLUS ON)
+        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES CPLUSPLUS ON)
 			
-	SET(CANORUS_RUBY_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/canorusrubyRUBY_wrap.cxx)
+        SET(CANORUS_RUBY_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/canorusrubyRUBY_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_RUBY_WRAP_CXX} PROPERTIES GENERATED TRUE)
 	
 	SWIG_ADD_MODULE(CanorusRuby ruby
@@ -587,7 +594,7 @@ IF(USE_PYTHON)
 	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i PROPERTIES CPLUSPLUS ON)
 	
-	SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/canoruspythonPYTHON_wrap.cxx)
+        SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/canoruspythonPYTHON_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES GENERATED TRUE)
 	
 	SWIG_ADD_MODULE(CanorusPython python 		# Warning! CMake renames CanorusPython automatically to _CanorusPython

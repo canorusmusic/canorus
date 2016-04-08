@@ -53,14 +53,14 @@ public:
 	bool isEmpty();
 
 	// See QWidget documentation
-	void addActions(QWidget * widget);
+    void addActions(const QList<CASingleAction *> &actionList);
 
 	// Static functions
-	static CASingleAction * findAction(QObject *o, const QString & name);
-	static QStringList actionsNames(QObject *o);
+    static CASingleAction * findAction(QWidget *widget, const QString & name);
+    static QStringList actionsNames(QWidget *widget);
 
-	static void saveToConfig(QObject *o, QSettings *set);
-	static void loadFromConfig(QObject *o, QSettings *set);
+    static void saveToConfig(QWidget *widget, QSettings *set);
+    static void loadFromConfig(QWidget *widget, QSettings *set);
 
 //#if USE_MULTIPLE_SHORTCUTS
 //	static QString shortcutsToString(QList <QKeySequence> shortcuts_list);
@@ -107,7 +107,7 @@ protected slots:
 
 private:
 	QTableWidget *actionsTable;
-    QList<CASingleAction *> actionsList;
+    QList<CASingleAction *> m_actionsList;
 	QPushButton *saveButton;
 	QPushButton *loadButton;
 	QString latest_dir;

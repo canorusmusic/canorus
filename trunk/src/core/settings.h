@@ -143,21 +143,21 @@ public:
 	inline void setLatestShortcutsDirectory( QDir d ) { _latestShortcutsDirectory = d; }
 	static const QDir DEFAULT_SHORTCUTS_DIRECTORY;
 #ifndef SWIG
-    int getSingleAction(QString oCommandName, QAction *&poResAction);
-    int getSingleAction(QString oCommandName, CASingleAction *&poResAction);
+    int getSingleAction(const QString &oCommandName, QAction *&poResAction);
+    int getSingleAction(const QString &oCommandName, CASingleAction *&poResAction);
     /*!
 	  Re one single action in the list of actions
 	  Does not check for the correct position in the list to be fast!
 	 */
-	inline QAction &getSingleAction(int iPos, QList<QAction *> &oActionList) {
-		QAction *poResAction = static_cast<QAction*> (oActionList[iPos]);	
+    inline CASingleAction &getSingleAction(int iPos, QList<CASingleAction *> &oActionList) {
+        CASingleAction *poResAction = static_cast<CASingleAction*> (oActionList[iPos]);
 		return *poResAction; }
 
 	bool setSingleAction(QAction oSingleAction, int iPos);
     inline const QList<CASingleAction*>& getActionList() { return _oActionList; }
     void setActionList(QList<CASingleAction *> &oActionList);
-    void addSingleAction(CASingleAction &oSingleAction);
-    bool deleteSingleAction(QString oCommandName);
+    void addSingleAction(CASingleAction &oAction);
+    bool deleteSingleAction(QString oCommandName, CASingleAction *&poResAction);
 #endif
 
 private:
