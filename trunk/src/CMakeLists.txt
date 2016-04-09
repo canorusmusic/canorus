@@ -29,14 +29,22 @@ ENDIF(APPLE)
 # Scripting detection #
 #######################
 # The following lines detect scripting environments (SWIG, Ruby, Python etc.)
-FIND_PACKAGE(SWIG QUIET)
+FIND_PACKAGE(SWIG 3.0.3 QUIET)
+MESSAGE("Swig version ${SWIG_VERSION}")
 IF(SWIG_FOUND AND NOT NO_SWIG)
 	SET(USE_SWIG True)
 	MESSAGE("SWIG found, using scripting extensions.")
 ELSE(SWIG_FOUND AND NOT NO_SWIG)
-	MESSAGE("SWIG version >=3 *not* found, disabling SWIG!")
-	SET(NO_RUBY True)
-	SET(NO_PYTHON True)
+        # Try again with version 2
+        FIND_PACKAGE(SWIG 2.0.12 QUIET)
+        IF(SWIG_FOUND AND NOT NO_SWIG)
+                SET(USE_SWIG True)
+                MESSAGE("SWIG found, using scripting extensions.")
+        ELSE(SWIG_FOUND AND NOT NO_SWIG)
+                MESSAGE("SWIG version >=2.0.12 or >= 3.0.3 *not* found, version is ${SWIG_VERSION}, disabling SWIG!")
+                SET(NO_RUBY True)
+                SET(NO_PYTHON True)
+        ENDIF(SWIG_FOUND AND NOT NO_SWIG)
 ENDIF(SWIG_FOUND AND NOT NO_SWIG)
 
 FIND_PACKAGE(Ruby)	#Setup RUBY_INCLUDE_PATH and RUBY_LIBRARIES
