@@ -230,7 +230,7 @@ void CAActionsEditor::updateView() {
 		QTableWidgetItem * i_conf = new QTableWidgetItem();
 
 		// Command column
-        QTableWidgetItem * i_command = new QTableWidgetItem(action->getCommandName());
+        QTableWidgetItem * i_command = new QTableWidgetItem(action->getCommandName(true));
 
 		// Context column
         QTableWidgetItem * i_context = new QTableWidgetItem( description );

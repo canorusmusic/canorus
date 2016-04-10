@@ -31,6 +31,8 @@ void CASingleAction::setCommandName( QString oCommandName )
         if(_pAction) {
             _pAction->setText( oCommandName );
         }
+        _oCommandNameNoAmpersand = _oCommandName;
+        _oCommandNameNoAmpersand.remove("&");
 	}
 }
 
