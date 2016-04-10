@@ -23,7 +23,7 @@ public:
     virtual ~CASingleAction();
 
 	// Getter methods for all single action parameters
-    inline QString getCommandName()     { return _oCommandName; }
+    inline QString getCommandName(bool ampersand = false)     { return ampersand ? _oCommandNameNoAmpersand : _oCommandName; }
 	inline QString getDescription() { return _oDescription; }
     inline QString getShortCutAsString() { return _oShortCut; }
     inline QString getMidiKeySequence() { return _oMidiKeySequence; }
@@ -46,6 +46,7 @@ public:
 protected:
     // Action parameters to be stored / loaded via Settings Dialog
     QString   _oCommandName;
+    QString   _oCommandNameNoAmpersand;
     QString   _oDescription;
     QString   _oShortCut;
     QString   _oMidiKeySequence;
