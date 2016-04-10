@@ -42,12 +42,11 @@
 // Definition of column positions
 enum actionCol
 {
-//COL_CONFLICTS    = 0    // indicates a conflict (will be done with a color of the conflicting line)
-  COL_COMMAND      = 1,   // name of the command (not internal!)
-  COL_DESCRIPTION  = 2,   // Context of the command like mode
-  COL_SHORTCUT     = 3,   // Keyboard shortcut
-  COL_MIDI         = 4,   // Midi command
-  COL_MIDISCUT     = 5    // Requires Midi and Shortcut at one time to be used
+  COL_COMMAND      = 0,   // name of the command (not internal!)
+  COL_DESCRIPTION  = 1,   // Context of the command like mode
+  COL_SHORTCUT     = 2,   // Keyboard shortcut
+  COL_MIDI         = 3,   // Midi command
+  COL_MIDISCUT     = 4    // Requires Midi and Shortcut at one time to be used
 };
 
 /*
@@ -231,7 +230,7 @@ void CAActionsEditor::updateView() {
 		QTableWidgetItem * i_conf = new QTableWidgetItem();
 
 		// Command column
-        QTableWidgetItem * i_command = new QTableWidgetItem(action->getAction()->text());
+        QTableWidgetItem * i_command = new QTableWidgetItem(action->getCommandName());
 
 		// Context column
         QTableWidgetItem * i_context = new QTableWidgetItem( description );
@@ -243,7 +242,7 @@ void CAActionsEditor::updateView() {
 		QTableWidgetItem * i_midi = new QTableWidgetItem(midi_com);
 
         // Midi command
-        QTableWidgetItem * i_midiscut = new QTableWidgetItem(midi_com);
+        QTableWidgetItem * i_midiscut = new QTableWidgetItem(midi_scut);
 
 		// Set flags
 //#if !USE_SHORTCUTGETTER
@@ -256,14 +255,14 @@ void CAActionsEditor::updateView() {
 		i_context->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		i_shortcut->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		i_midi->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+        i_midiscut->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 //#endif
 
 		// Add items to table
-        //actionsTable->setItem(n, COL_CONFLICTS, i_conf );
         actionsTable->setItem(n, COL_COMMAND, i_command );
         actionsTable->setItem(n, COL_DESCRIPTION, i_context );
-		actionsTable->setItem(n, COL_SHORTCUT, i_shortcut );
-		actionsTable->setItem(n, COL_MIDI, i_midi );
+        actionsTable->setItem(n, COL_SHORTCUT, i_shortcut );
+        actionsTable->setItem(n, COL_MIDI, i_midi );
         actionsTable->setItem(n, COL_MIDISCUT, i_midiscut );
 
 	}
@@ -431,8 +430,6 @@ bool CAActionsEditor::hasConflicts(bool bMidi) {
 				                findActionAccel( accelText, n );
 				if ( (found != -1) && (found != n) ) {
 					conflict = true;
-					//actionsTable->setText( n, COL_CONFLICTS, "!");
-					//actionsTable->item( n, COL_CONFLICTS )->setIcon( Images::icon("conflict") );
 				}
 			}
 		}
