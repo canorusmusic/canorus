@@ -1,0 +1,24 @@
+Bugs I encountered when starting to try out keyboard shortcuts
+==============================================================
+- Conflicts: No conflict column; instead show dialog when conflict
+  occurs (ToDo)
+- Conflicts:  When reading settings, show one (or a list of)
+  commands with conflicting shortcuts. Tell that these got removed.
+  Handling: First wins ?!
+  Remaining conflicts: Mark red, delete shortcut
+  -> Red marking:  Would be removed when either Ok or Apply is pressed
+- Conflicts: If happens while loading application
+  -> Popup settings dialog
+
+- Editing: Seems not to work (dialogue is not opened)
+- Focus: The whole line should be selected instead of only column
+- Focus: Tab on SettingsDialog changes to button instead of editor
+  (Tab Sequence is not correct)
+- Pressing Enter does not open the Edit Shortcut dialog
+- On this dialog pressing "Cancel" should not cancel whole Settings
+  (Same of course for "Ok")
+
+- Midi: No default midi commands are shown (Somewhere in MidiImport?)
+- Midi: No midi shortcuts are shown (same)
+- Midi Input: Not connected to editor yet (MidiImport too)
+
