@@ -26,6 +26,14 @@ IF(APPLE)
 ENDIF(APPLE)
 
 #######################
+# Linux: Detect Alsa  #
+#######################
+IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+        FIND_PACKAGE(ALSA REQUIRED)
+ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+
+
+#######################
 # Scripting detection #
 #######################
 # The following lines detect scripting environments (SWIG, Ruby, Python etc.)
