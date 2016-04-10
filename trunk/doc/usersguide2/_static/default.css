@@ -15,8 +15,8 @@ body {
     padding: 0;
     border: 1px solid #aaa;
 
-    margin: 0px 80px 0px 80px;
-    min-width: 740px;
+    margin: 0 0 0 0;
+/*    min-width: 740px; */
 }
 
 a {
@@ -166,6 +166,10 @@ div.documentwrapper {
 
 div.clearer {
     clear: both;
+}
+
+.related {
+    display: none;
 }
 
 div.related h3 {

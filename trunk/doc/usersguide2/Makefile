@@ -1,4 +1,4 @@
-languages = en
+languages = en sl
 SPHINX_BUILD_COMMAND = sphinx-build
 RM_COMMAND = rm -rf
 
