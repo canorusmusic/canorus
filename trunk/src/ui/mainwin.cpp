@@ -1302,7 +1302,7 @@ void CAMainWin::on_uiNewDocument_triggered() {
 void CAMainWin::on_uiUndo_toggled( bool checked, int row ) {
 	stopPlayback();
 	if ( document() ) {
-		int curVoiceIdx = 0;
+		int curVoiceIdx = -1;
 		if (currentVoice() && currentVoice()->staff() && currentVoice()->staff()->sheet()) {
 			curVoiceIdx = currentVoice()->staff()->sheet()->voiceList().indexOf(currentVoice());
 		}
@@ -1311,6 +1311,12 @@ void CAMainWin::on_uiUndo_toggled( bool checked, int row ) {
 			CACanorus::undo()->undo( document() );
 		}
 
+		if (CACanorus::settings()->useNoteChecker()) {
+			for (int i=0; i<document()->sheetList().size(); i++) {
+				_noteChecker.checkSheet(document()->sheetList()[i]);
+			}
+		}
+		
 		CACanorus::rebuildUI( document(), 0 );
 		if (curVoiceIdx>=0 && curVoiceIdx<currentSheet()->voiceList().size()) {
 			setCurrentVoice( currentSheet()->voiceList()[curVoiceIdx] );
@@ -1321,7 +1327,7 @@ void CAMainWin::on_uiUndo_toggled( bool checked, int row ) {
 void CAMainWin::on_uiRedo_toggled( bool checked, int row ) {
 	stopPlayback();
 	if ( document() ) {
-		int curVoiceIdx = 0;
+		int curVoiceIdx = -1;
 		if (currentVoice() && currentVoice()->staff() && currentVoice()->staff()->sheet()) {
 			curVoiceIdx = currentVoice()->staff()->sheet()->voiceList().indexOf(currentVoice());
 		}
@@ -1330,6 +1336,12 @@ void CAMainWin::on_uiRedo_toggled( bool checked, int row ) {
 			CACanorus::undo()->redo( document() );
 		}
 
+		if (CACanorus::settings()->useNoteChecker()) {
+			for (int i=0; i<document()->sheetList().size(); i++) {
+				_noteChecker.checkSheet(document()->sheetList()[i]);
+			}
+		}
+		
 		CACanorus::rebuildUI( document(), 0 );
 
 		if (curVoiceIdx>=0 && curVoiceIdx<currentSheet()->voiceList().size()) {
@@ -1533,6 +1545,8 @@ void CAMainWin::setMode(CAMode mode) {
 				}
 				uiVoiceNum->setRealValue( 0 );
 			}
+			
+			break;
 		}
 		case ReadOnlyMode:
 		case ProgressMode:
@@ -2372,8 +2386,12 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 		// Mode keys
 		case Qt::Key_Escape:
 			if (mode()==EditMode) {
-				v->clearSelection();
-				v->setCurrentContext( 0 );
+				if (v->selection().size()) {
+					v->clearSelection();
+				} else {
+					v->setCurrentContext( 0 );
+				}
+				v->repaint();
 			}
 			uiEditMode->trigger();
 			break;
@@ -3446,6 +3464,8 @@ void CAMainWin::on_uiInsertPlayable_toggled(bool checked) {
 
 		musElementFactory()->setMusElementType( CAMusElement::Note );
 		setMode( InsertMode );
+		
+		on_uiPlayableLength_toggled(uiPlayableLength->isChecked(), uiPlayableLength->currentId() );
 	}
 }
 
@@ -5398,7 +5418,7 @@ void CAMainWin::deleteSelection( CAScoreView *v, bool deleteSyllables, bool dele
 			CACanorus::undo()->pushUndoCommand();
 		
 		if (CACanorus::settings()->useNoteChecker()) {
-		_noteChecker.checkSheet(v->sheet());
+			_noteChecker.checkSheet(v->sheet());
 		}
 		
 		v->clearSelection();
