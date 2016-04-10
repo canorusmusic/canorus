@@ -75,7 +75,7 @@ ENDIF(MINGW)
 
 #-----------------------------------------------------------------------------
 # Search for Qt5. We need the latest version of Qt
-SET(QT_MIN_VERSION "5.3.2")
+SET(QT_MIN_VERSION "5.2.1")
 
 # this line includes FindQt.cmake, which searches the Qt library and headers
 FIND_PACKAGE(Qt5Core REQUIRED)

@@ -16,7 +16,7 @@ The latest version of Qt5, Swig and CMake is preferred.
 Canorus supports the current "LTS" version 5.6.0
 
 - Qt development package >=5.3 (http://www.qt-project.org)
-- Swig >=2.0.12 (http://www.swig.org). Swig >= 3.0.3 is working too.
+- Swig >=2.0.12 (http://www.swig.org). Swig >= 3.0.8 is working too.
   (cmake does not support parallel installations of swig)
 - g++ >=4.8, make (http://gcc.gnu.org, http://www.mingw.org)
 - cmake >=2.8 (http://www.cmake.org). CMake 3.x is not supported (does not work on SuSE)
