@@ -333,7 +333,6 @@ void CAMidiExport::writeFile() {
 	controlTrackChunk.append( trackEnd());
 	setChunkLength( &controlTrackChunk );
 	streamQByteArray( controlTrackChunk );
-	//for (int i=0;i<controlTrackChunk.length();i++) out().device()->putChar(controlTrackChunk[i]);
 
 	// trackChunk is already filled with midi data,
 	// let's add chunk header, in reverse, ...
@@ -354,7 +353,7 @@ void CAMidiExport::setChunkLength( QByteArray *x ) {
 
 void CAMidiExport::streamQByteArray( QByteArray x )
 {
-	for (int i=0;i<x.length();i++)	// here we pass binary data through QTextStream
+	for (int i=0;i<x.size();i++)	// here we pass binary data through QTextStream
 		out().device()->putChar(x[i]);
 	return;	// when no debugging
 
