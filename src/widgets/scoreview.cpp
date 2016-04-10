@@ -1774,7 +1774,7 @@ double CAScoreView::timeToCoordsSimpleVersion( int time ) {
 		if (it!=voiceList[i]->musElementList().constEnd()) {
 			if (_mapDrawable.contains(*it)) {
 				CADrawableMusElement *dElt = static_cast<CADrawableMusElement*>(_mapDrawable.values(*it).last());
-				if (leftElt->xPos()<dElt->xPos()) {
+                if (leftElt && leftElt->xPos()<dElt->xPos()) {
 					leftElt = dElt;
 				}
 			} else {
