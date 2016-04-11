@@ -100,6 +100,7 @@ CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 	latest_dir = CACanorus::settings()->latestShortcutsDirectory().dirName();
     actionsTable = new QTableWidget(0, COL_NUM, this);
 	actionsTable->setSelectionMode( QAbstractItemView::SingleSelection );
+    actionsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 	actionsTable->verticalHeader()->hide();
 
 #if QT_VERSION >= 0x050000
