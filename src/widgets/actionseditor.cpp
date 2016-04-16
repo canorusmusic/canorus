@@ -30,6 +30,8 @@
 #include <QRegExp>
 #include <QApplication>
 #include <QAction>
+#include <QLineEdit>
+#include <QKeyEvent>
 #include <QDebug>
 
 //#include "images.h"
@@ -113,8 +115,8 @@ CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 	
 	actionsTable->setAlternatingRowColors(true);
 //#if USE_SHORTCUTGETTER
-//	actionsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-//	actionsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
+//  actionsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    actionsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
 //#endif
 	//actionsTable->setItemDelegateForColumn( COL_SHORTCUT, new MyDelegate(actionsTable) );
 
@@ -124,8 +126,8 @@ CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 	connect(actionsTable, SIGNAL(itemChanged(QTableWidgetItem *)),
             this, SLOT(validateAction(QTableWidgetItem *)) );
 //#else
-//	connect(actionsTable, SIGNAL(itemActivated(QTableWidgetItem *)),
-//            this, SLOT(editShortcut()) );
+    connect(actionsTable, SIGNAL(itemActivated(QTableWidgetItem *)),
+            this, SLOT(editShortcut()) );
 //#endif
 
     saveButton = new QPushButton(this);
@@ -135,14 +137,14 @@ CAActionsEditor::CAActionsEditor(QWidget * parent, Qt::WindowFlags f)
 	connect(loadButton, SIGNAL(clicked()), this, SLOT(loadActionsTable()));
 
 //#if USE_SHORTCUTGETTER
-//	editButton = new QPushButton(this);
-//	connect( editButton, SIGNAL(clicked()), this, SLOT(editShortcut()) );
+    editButton = new QPushButton(this);
+    connect( editButton, SIGNAL(clicked()), this, SLOT(editShortcut()) );
 //#endif
 
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->setSpacing(8);
 //#if USE_SHORTCUTGETTER
-//	buttonLayout->addWidget(editButton);
+    buttonLayout->addWidget(editButton);
 //#endif
     buttonLayout->addStretch(1);
 	buttonLayout->addWidget(loadButton);
@@ -171,7 +173,7 @@ void CAActionsEditor::retranslateStrings() {
     loadButton->setText(tr("&Load shortcuts..."));
 
 //#if USE_SHORTCUTGETTER
-//	editButton->setText(tr("&Change shortcut..."));
+    editButton->setText(tr("&Change shortcut..."));
 //#endif
 
 	//updateView(); // The actions are translated later, so it's useless
@@ -211,7 +213,7 @@ void CAActionsEditor::updateView() {
     QString accelText, midi_com, midi_scut, description;
 
 //#if !USE_SHORTCUTGETTER
-	dont_validate = true;
+//	dont_validate = true;
 //#endif
 	//actionsTable->setSortingEnabled(false);
 
@@ -254,7 +256,7 @@ void CAActionsEditor::updateView() {
 		i_conf->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		i_command->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		i_context->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		i_shortcut->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+        i_shortcut->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEnabled);
 		i_midi->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
         i_midiscut->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 //#endif
@@ -363,8 +365,6 @@ void CAActionsEditor::validateAction(QTableWidgetItem * i) {
 	}
 }
 
-/* #else
-
 void CAActionsEditor::editShortcut() {
 	QTableWidgetItem * i = actionsTable->item( actionsTable->currentRow(), COL_SHORTCUT );
 	if (i) {
@@ -378,7 +378,6 @@ void CAActionsEditor::editShortcut() {
 		}
 	}
 }
-#endif */
 
 int CAActionsEditor::findActionCommand(const QString & name) {
 	for (int row=0; row < actionsTable->rowCount(); row++) {
@@ -704,5 +703,196 @@ void CAActionsEditor::changeEvent(QEvent *e) {
 	}
 }
 
-// Why include this ?? :-) we have moc
-//#include "moc_actionseditor.cxx"
+static QString keyToString(int k)
+{
+      if (  k == Qt::Key_Shift || k == Qt::Key_Control || k == Qt::Key_Meta ||
+                  k == Qt::Key_Alt || k == Qt::Key_AltGr )
+            return QString::null;
+
+      return QKeySequence(k).toString();
+}
+
+static QStringList modToString(Qt::KeyboardModifiers k)
+{
+      //qDebug("modToString: k: %x", (int) k);
+
+      QStringList l;
+
+      if ( k & Qt::ShiftModifier )
+            l << "Shift";
+      if ( k & Qt::ControlModifier )
+            l << "Ctrl";
+      if ( k & Qt::AltModifier )
+            l << "Alt";
+      if ( k & Qt::MetaModifier )
+            l << "Meta";
+      if ( k & Qt::GroupSwitchModifier )
+            ;
+      if ( k & Qt::KeypadModifier )
+            ;
+
+      return l;
+}
+
+
+ShortcutGetter::ShortcutGetter(QWidget *parent) : QDialog(parent)
+{
+      setWindowTitle(tr("Modify shortcut"));
+
+
+      QVBoxLayout *vbox = new QVBoxLayout(this);
+      vbox->setMargin(2);
+      vbox->setSpacing(4);
+
+      QLabel *l = new QLabel(this);
+      l->setText(tr("Press the key combination you want to assign"));
+      vbox->addWidget(l);
+
+      leKey = new QLineEdit(this);
+
+      leKey->installEventFilter(this);
+      vbox->addWidget(leKey);
+
+      // Change by rvm: use a QDialogButtonBox instead of QPushButtons
+      // and add a clear button
+      setCaptureKeyboard(true);
+      QDialogButtonBox * buttonbox = new QDialogButtonBox(QDialogButtonBox::Ok |
+                                                     QDialogButtonBox::Cancel |
+                                                     QDialogButtonBox::Reset );
+      QPushButton * clearbutton = buttonbox->button(QDialogButtonBox::Reset);
+      clearbutton->setText( tr("Clear") );
+
+      QPushButton * captureButton = new QPushButton(tr("Capture"), this);
+      captureButton->setToolTip( tr("Capture keystrokes") );
+      captureButton->setCheckable( captureKeyboard() );
+      captureButton->setChecked( captureKeyboard() );
+      connect(captureButton, SIGNAL(toggled(bool)),
+            this, SLOT(setCaptureKeyboard(bool)));
+
+
+      buttonbox->addButton(captureButton, QDialogButtonBox::ActionRole);
+
+      connect( buttonbox, SIGNAL(accepted()), this, SLOT(accept()) );
+      connect( buttonbox, SIGNAL(rejected()), this, SLOT(reject()) );
+      connect( clearbutton, SIGNAL(clicked()), leKey, SLOT(clear()) );
+      vbox->addWidget(buttonbox);
+}
+
+void ShortcutGetter::setCaptureKeyboard(bool b) {
+      capture = b;
+      leKey->setReadOnly(b);
+      leKey->setFocus();
+}
+
+
+QString ShortcutGetter::exec(const QString& s)
+{
+      bStop = false;
+      leKey->setText(s);
+
+      if ( QDialog::exec() == QDialog::Accepted )
+            return leKey->text();
+
+      return QString();
+}
+
+bool ShortcutGetter::event(QEvent *e)
+{
+      if (!capture) return QDialog::event(e);
+
+
+      QString key;
+      QStringList mods;
+      QKeyEvent *k = static_cast<QKeyEvent *>(e);
+
+      switch ( e->type() )
+      {
+            case QEvent::KeyPress :
+
+            if ( bStop )
+            {
+                  lKeys.clear();
+                  bStop = false;
+            }
+
+            key = keyToString(k->key());
+            mods = modToString(k->modifiers());
+
+            //qDebug("event: key.count: %d, mods.count: %d", key.count(), mods.count());
+
+            if ( key.count() || mods.count() )
+            {
+
+                  if ( key.count() && !lKeys.contains(key) )
+                        lKeys << key;
+
+                  foreach ( key, mods )
+                        if ( !lKeys.contains(key) )
+                              lKeys << key;
+
+                  } else {
+                        key = k->text();
+
+                        if ( !lKeys.contains(key) )
+                              lKeys << key;
+                  }
+
+                  setText();
+                  break;
+
+            case QEvent::KeyRelease :
+
+                  bStop = true;
+                  break;
+
+                  /*
+            case QEvent::ShortcutOverride :
+                  leKey->setText("Shortcut override");
+                  break;
+                  */
+
+            default:
+                  return QDialog::event(e);
+                  break;
+      }
+
+      return true;
+}
+
+bool ShortcutGetter::eventFilter(QObject *o, QEvent *e)
+{
+      if (!capture) return QDialog::eventFilter(o, e);
+
+      if (  e->type() == QEvent::KeyPress ||
+                  e->type() ==QEvent::KeyRelease )
+            return event(e);
+      else
+            return QDialog::eventFilter(o, e);
+}
+
+void ShortcutGetter::setText()
+{
+      QStringList seq;
+
+      if ( lKeys.contains("Shift") )
+            seq << "Shift";
+
+      if ( lKeys.contains("Ctrl") )
+            seq << "Ctrl";
+
+      if ( lKeys.contains("Alt") )
+            seq << "Alt";
+
+      if ( lKeys.contains("Meta") )
+            seq << "Meta";
+
+      foreach ( QString s, lKeys ) {
+            //qDebug("setText: s: '%s'", s.toUtf8().data());
+            if ( s != "Shift" && s != "Ctrl"
+                  && s != "Alt" && s != "Meta" )
+                  seq << s;
+      }
+
+      leKey->setText(seq.join("+"));
+      //leKey->selectAll();
+}

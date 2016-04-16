@@ -14,7 +14,7 @@
 #ifndef _CAACTIONSEDITOR_H_
 #define _CAACTIONSEDITOR_H_
 
-#include <QWidget>
+#include <QDialog>
 #include <QList>
 #include <QStringList>
 #include "ui/singleaction.h"
@@ -23,6 +23,7 @@ class QTableWidget;
 class QTableWidgetItem;
 class CASingleAction;
 class QSettings;
+class QLineEdit;
 class QPushButton;
 
 class CAActionsEditor : public QWidget
@@ -102,7 +103,7 @@ protected slots:
 	// Easy check of edited shortcut / midi command
 	void validateAction(QTableWidgetItem*);
 //#else
-//	void editShortcut();
+    void editShortcut();
 //#endif
 
 private:
@@ -113,12 +114,39 @@ private:
 	QString latest_dir;
 
 //#if USE_SHORTCUTGETTER
-//	QPushButton *editButton;
+    QPushButton *editButton;
 //#else
 	QString oldAccelText;
 	QString oldMidiText;
 	bool dont_validate;   // Lock validate during update
 //#endif
 };
+
+class ShortcutGetter : public QDialog
+{
+      Q_OBJECT
+
+public:
+      ShortcutGetter(QWidget *parent = 0);
+
+      QString exec(const QString& s);
+
+protected slots:
+      void setCaptureKeyboard(bool b);
+
+protected:
+      bool captureKeyboard() { return capture; }
+
+      bool event(QEvent *e);
+      bool eventFilter(QObject *o, QEvent *e);
+      void setText();
+
+private:
+      bool bStop;
+      QLineEdit *leKey;
+      QStringList lKeys;
+      bool capture;
+};
+
 
 #endif
