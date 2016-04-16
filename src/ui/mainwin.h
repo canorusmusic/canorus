@@ -238,6 +238,7 @@ private slots:
 
 	// Lyrics
 	void onTextEditKeyPressEvent(QKeyEvent *);
+	void confirmTextEdit(CAScoreView *v, CATextEdit *textEdit, CAMusElement *elt);
 
 	// Function marks
 	void on_uiFMFunction_toggled(bool, int);
