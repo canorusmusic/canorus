@@ -1536,7 +1536,9 @@ void CAMainWin::setMode(CAMode mode) {
 					if ( elt->musElementType()==CAMusElement::Syllable ||
 						((elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text)) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
 					) {
-						currentScoreView()->createTextEdit(currentScoreView()->selection().front());
+						if (!currentScoreView()->textEditVisible()) {
+							currentScoreView()->createTextEdit(currentScoreView()->selection().front());
+						}
 					} else {
 						currentScoreView()->removeTextEdit();
 					}
@@ -1694,7 +1696,8 @@ void CAMainWin::rebuildUI(bool repaint) {
 */
 void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 	CAScoreView *v = static_cast<CAScoreView*>(sender());
-
+	QList<CADrawableMusElement*> oldSelection = v->selection();
+	
 	CADrawableContext *prevContext = v->currentContext();
 	v->selectCElement(coords.x(), coords.y());
 
@@ -1742,16 +1745,13 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 		case EditMode: {
 			v->clearSelectionRegionList();
 
+			CADrawableMusElement *dElt = 0;
+			CAMusElement *elt = 0;
+			
 			if ( v->selection().size() ) {
-				CADrawableMusElement *dElt = v->selection().front();
-				CAMusElement *elt = dElt->musElement();
+				dElt = v->selection().front();
+				elt = dElt->musElement();
 				if (!elt) break;
-
-				if ( mode()==EditMode &&
-				     (elt->musElementType()==CAMusElement::Syllable || (elt->musElementType()==CAMusElement::Mark && static_cast<CAMark*>(elt)->markType()==CAMark::Text))
-				   ){
-					v->createTextEdit( dElt );
-				}
 
 				// debug
 				std::cout << "drawableMusElement: " << dElt << ", x,y=" << dElt->xPos() << "," << dElt->yPos() << ", w,h=" << dElt->width() << "," << dElt->height() << ", dContext=" << dElt->drawableContext() << std::endl;
@@ -1771,8 +1771,19 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 					std::cout << "noteStart=" << static_cast<CASlur*>(elt)->noteStart() << ", noteEnd=" << static_cast<CASlur*>(elt)->noteStart();
 				}
 				std::cout << std::endl;
+			}
+			
+			// lyrics, texts, book
+			if ( elt &&
+				(elt->musElementType()==CAMusElement::Syllable ||
+				 (elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark))
+				)
+			   ) {
+				v->createTextEdit( dElt );
 			} else {
-				v->removeTextEdit();
+				if (v->textEditVisible() && oldSelection.size() && oldSelection.front()->musElement()) {
+					confirmTextEdit(v, v->textEdit(), oldSelection.front()->musElement());
+				}
 			}
 
 			break;
@@ -3577,7 +3588,61 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 	//CADrawableContext *dContext = v->currentContext();
 	CAMusElement *elt = (v->selection().size()?v->selection().front()->musElement():0);
 
+	if ( elt ) {
+		if (elt->musElementType()==CAMusElement::Syllable ) {
+			CASyllable *syllable = static_cast<CASyllable*>(elt);
+
+			if ( e->key()==Qt::Key_Space  ||
+				e->key()==Qt::Key_Return ||
+				(e->key()==Qt::Key_Right && textEdit->cursorPosition()==textEdit->text().size()) ||
+				((e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && textEdit->cursorPosition()==0) ||
+				(CACanorus::settings()->finaleLyricsBehaviour() && e->key()==Qt::Key_Minus)
+			) {
+				// create or edit syllable
+				confirmTextEdit(currentScoreView(), textEdit, elt);
+
+				//CAVoice *voice = (syllable->associatedVoice()?syllable->associatedVoice():lc->associatedVoice());
+				CAMusElement *nextSyllable = 0;
+				if (syllable) {
+					if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) { // next right note
+						nextSyllable = syllable->lyricsContext()->next(syllable);
+					} else  if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) {                  // next left note
+						nextSyllable = syllable->lyricsContext()->previous(syllable);
+					} else if (e->key()==Qt::Key_Minus) {
+						syllable->setHyphenStart(true);
+						nextSyllable = syllable->lyricsContext()->next(syllable);
+					}
+					if (nextSyllable) {
+						CADrawableMusElement *dNextSyllable = v->selectMElement(nextSyllable);
+						v->createTextEdit( dNextSyllable );
+						if ( e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return ) {
+							v->textEdit()->setCursorPosition(0); // go to the beginning if moving to the right next syllable
+						}
+						
+						if ( dNextSyllable && (dNextSyllable->xPos() > v->worldX()+0.85*v->worldWidth()) ) {
+							v->setWorldX( dNextSyllable->xPos()-v->worldWidth()/2, CACanorus::settings()->animatedScroll() );
+						}
+					}
+				}
+			}
+		} else {
+			// ((elt->musElementType()==CAMusElement::Mark &&
+			//   static_cast<CAMark*>(elt)->markType()==CAMark::Text) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
+			if (e->key()==Qt::Key_Return) {
+				confirmTextEdit(currentScoreView(),textEdit, elt);
+			}
+		}
+	}
+	
+	// escape key - cancel
+	if (e->key()==Qt::Key_Escape) {
+		v->removeTextEdit();
+	}
+}
+
+void CAMainWin::confirmTextEdit(CAScoreView *v, CATextEdit *textEdit, CAMusElement *elt) {
 	if ( elt->musElementType()==CAMusElement::Syllable ) {
+		// create or edit syllable
 		CASyllable *syllable = static_cast<CASyllable*>(elt);
 
 		QString text = textEdit->text().simplified(); // remove any trailing whitespaces
@@ -3592,44 +3657,17 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 
 		//CALyricsContext *lc = static_cast<CALyricsContext*>(dContext->context());
 
-		// create or edit syllable
-		if ( e->key()==Qt::Key_Space  ||
-		     e->key()==Qt::Key_Return ||
-		     (e->key()==Qt::Key_Right && textEdit->cursorPosition()==textEdit->text().size()) ||
-		     ((e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && textEdit->cursorPosition()==0) ||
-		     (CACanorus::settings()->finaleLyricsBehaviour() && e->key()==Qt::Key_Minus)
-		) {
-			CACanorus::undo()->createUndoCommand( document(), tr("lyrics edit", "undo") );
-			syllable->setText(text);
-			syllable->setHyphenStart(hyphen);
-			syllable->setMelismaStart(melisma);
+		CACanorus::undo()->createUndoCommand( document(), tr("lyrics edit", "undo") );
+		syllable->setText(text);
+		syllable->setHyphenStart(hyphen);
+		syllable->setMelismaStart(melisma);
 
-			v->removeTextEdit();
-
-			//CAVoice *voice = (syllable->associatedVoice()?syllable->associatedVoice():lc->associatedVoice());
-			CAMusElement *nextSyllable = 0;
-			if (syllable) {
-				if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) { // next right note
-					nextSyllable = syllable->lyricsContext()->next(syllable);
-				} else  if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) {                  // next left note
-					nextSyllable = syllable->lyricsContext()->previous(syllable);
-				} else if (e->key()==Qt::Key_Minus) {
-					syllable->setHyphenStart(true);
-					nextSyllable = syllable->lyricsContext()->next(syllable);
-				}
-				CACanorus::undo()->pushUndoCommand();
-				CACanorus::rebuildUI( document(), currentSheet() );
-				if (nextSyllable) {
-					CADrawableMusElement *dNextSyllable = v->selectMElement(nextSyllable);
-					v->createTextEdit( dNextSyllable );
-					if ( e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return )
-						v->textEdit()->setCursorPosition(0); // go to the beginning if moving to the right next syllable
-				}
-			}
-		}
-	} else if ((elt->musElementType()==CAMusElement::Mark && static_cast<CAMark*>(elt)->markType()==CAMark::Text) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark) {
-		if (e->key()==Qt::Key_Return) {
-			CAMark *mark = static_cast<CAMark*>(elt);
+		v->removeTextEdit();
+	} else {
+		// ((elt->musElementType()==CAMusElement::Mark &&
+		//   static_cast<CAMark*>(elt)->markType()==CAMark::Text) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
+		CAMark *mark = static_cast<CAMark*>(elt);
+		if (!textEdit->text().isEmpty() || mark->markType()==CAMark::BookMark) {
 			CACanorus::undo()->createUndoCommand( document(), tr("text edit", "undo") );
 			if (mark->markType()==CAMark::Text) {
 				static_cast<CAText*>(mark)->setText( textEdit->text() );
@@ -3637,17 +3675,16 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 				static_cast<CABookMark*>(mark)->setText( textEdit->text() );
 			}
 			v->removeTextEdit();
-			CACanorus::undo()->pushUndoCommand();
-			CACanorus::rebuildUI( document(), currentSheet() );
+		} else {
+			// remove text sign with empty content, if it's not a bookmark
+			CACanorus::undo()->createUndoCommand( document(), tr("text edit", "delete") );
+			v->removeTextEdit();
+			delete mark;
 		}
-	} else {
-		v->removeTextEdit();
 	}
-
-	// escape key - cancel
-	if (e->key()==Qt::Key_Escape) {
-		v->removeTextEdit();
-	}
+	
+	CACanorus::undo()->pushUndoCommand();
+	CACanorus::rebuildUI( document(), currentSheet() );
 }
 
 void CAMainWin::on_uiFBMNumber_toggled( bool checked, int buttonId ) {
