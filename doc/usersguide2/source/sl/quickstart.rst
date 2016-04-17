@@ -8,7 +8,7 @@ Ob zagonu se pojavi glavno okno aplikacije. Izgledati bi moralo
 (odvisno od operacijskega sistema in jezika) približno takole:
 
 .. image:: ../../images/mainwin.sl.png
-   :width: 700px
+   :width: 350px
 
 Glavno okno je zgrajeno iz menija na vrhu, orodjarne za vstavljanje
 na levi, splošne lastnosti elementov na vrhu in pogleda črtovja.

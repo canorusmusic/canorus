@@ -8,7 +8,7 @@ The first thing you'll notice when starting the application is the
 main window. It should look something like this:
 
 .. image:: ../../images/mainwin.en.png
-   :width: 700px
+   :width: 350px
 
 The main window consists of a menu at the top, insert toolbar on the
 left, general and music properties on the top and a tabbed score view.
