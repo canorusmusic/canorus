@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2015, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2016, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -805,7 +805,7 @@ void CAMainWin::setupCustomUi() {
 	uiShowRuler->setChecked( CACanorus::settings()->showRuler() );
 	
 	// Help
-	addDockWidget( (qApp->isLeftToRight()) ? Qt::RightDockWidgetArea : Qt::LeftDockWidgetArea, uiHelpDock);
+	addDockWidget( (qApp->isLeftToRight()) ? Qt::RightDockWidgetArea : Qt::LeftDockWidgetArea, uiHelpDock );
 	uiHelpDock->hide();
 
 	// Score UI Interface
@@ -1773,17 +1773,9 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 				std::cout << std::endl;
 			}
 			
-			// lyrics, texts, book
-			if ( elt &&
-				(elt->musElementType()==CAMusElement::Syllable ||
-				 (elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark))
-				)
-			   ) {
-				v->createTextEdit( dElt );
-			} else {
-				if (v->textEditVisible() && oldSelection.size() && oldSelection.front()->musElement()) {
-					confirmTextEdit(v, v->textEdit(), oldSelection.front()->musElement());
-				}
+			// lyrics, texts, bookmarks
+			if (v->textEditVisible() && oldSelection.size() && oldSelection.front()->musElement()) {
+				confirmTextEdit(v, v->textEdit(), oldSelection.front()->musElement());
 			}
 
 			break;
@@ -2021,40 +2013,60 @@ void CAMainWin::scoreViewTripleClick( QMouseEvent *e, const QPoint coords ) {
 	\sa CAScoreView::mouseReleaseEvent(), scoreViewMousePress(), scoreViewMouseMove(), scoreViewWheel(), scoreViewKeyPress()
 */
 void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPoint coords) {
-	CAScoreView *c = static_cast<CAScoreView*>(sender());
-	if ( c->resizeDirection()!=CADrawable::Undefined ) {
+	CAScoreView *v = static_cast<CAScoreView*>(sender());
+	if ( v->resizeDirection()!=CADrawable::Undefined ) {
 		CACanorus::undo()->pushUndoCommand();
-		CACanorus::rebuildUI(document(), c->sheet());
+		CACanorus::rebuildUI(document(), v->sheet());
 	}
 
-	if ( mode() != InsertMode  && c->mouseDragActivated() ) { // area was selected
-		c->clearSelectionRegionList();
+	if ( mode() != InsertMode ) {
+		if ( v->mouseDragActivated() ) {
+			// area was selected
+			v->clearSelectionRegionList();
 
-		if (e->modifiers()==Qt::NoModifier)
-			c->clearSelection();
+			if (e->modifiers()==Qt::NoModifier)
+				v->clearSelection();
 
-		int x=c->lastMousePressCoords().x(), y=c->lastMousePressCoords().y(),
-		    w=coords.x()-c->lastMousePressCoords().x(), h=coords.y()-c->lastMousePressCoords().y();
-		if (w<0) { x+=w; w*=(-1); } // user selected from right to left
-		if (h<0) { y+=h; h*=(-1); } // user selected from bottom to top
-		QRect selectionRect( x, y, w, h );
+			int x=v->lastMousePressCoords().x(), y=v->lastMousePressCoords().y(),
+				w=coords.x()-v->lastMousePressCoords().x(), h=coords.y()-v->lastMousePressCoords().y();
+			if (w<0) { x+=w; w*=(-1); } // user selected from right to left
+			if (h<0) { y+=h; h*=(-1); } // user selected from bottom to top
+			QRect selectionRect( x, y, w, h );
 
-		QList<CADrawableContext*> dcList = c->findContextsInRegion( selectionRect );
-		for (int i=0; i<dcList.size(); i++) {
-			QList<CADrawableMusElement*> musEltList = dcList[i]->findInRange( selectionRect.x(), selectionRect.x() + selectionRect.width() );
-			if ( c->selectedVoice() && dcList[i]->context()!=c->selectedVoice()->staff() )
-				continue;
+			QList<CADrawableContext*> dcList = v->findContextsInRegion( selectionRect );
+			for (int i=0; i<dcList.size(); i++) {
+				QList<CADrawableMusElement*> musEltList = dcList[i]->findInRange( selectionRect.x(), selectionRect.x() + selectionRect.width() );
+				if ( v->selectedVoice() && dcList[i]->context()!=v->selectedVoice()->staff() )
+					continue;
 
-			for (int j=0; j<musEltList.size(); j++)
-				if ((!musEltList[j]->isSelectable()) ||
-					(c->selectedVoice() && musEltList[j]->musElement()->isPlayable() &&
-						static_cast<CAPlayable*>(musEltList[j]->musElement())->voice()!=c->selectedVoice()) ||
-					(musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
+				for (int j=0; j<musEltList.size(); j++)
+					if ((!musEltList[j]->isSelectable()) ||
+						(v->selectedVoice() && musEltList[j]->musElement()->isPlayable() &&
+							static_cast<CAPlayable*>(musEltList[j]->musElement())->voice()!=v->selectedVoice()) ||
+						(musEltList[j]->drawableMusElementType()==CADrawableMusElement::DrawableSlur)
+					)
+						musEltList.removeAt(j--);
+				v->addToSelection(musEltList);
+			}
+		} else {
+			// single element or none selected
+			CADrawableMusElement *dElt = 0;
+			CAMusElement *elt = 0;
+			
+			if (v->selection().size()) {
+				dElt = v->selection().front();
+				elt = dElt->musElement();
+			}
+			
+			if ( elt &&
+				(elt->musElementType()==CAMusElement::Syllable ||
+				(elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark))
 				)
-					musEltList.removeAt(j--);
-			c->addToSelection(musEltList);
+			) {
+				v->createTextEdit( dElt );
+			}
 		}
-		c->repaint();
+		v->repaint();
 	}
 }
 
