@@ -9,7 +9,6 @@
 #ifndef HELPBROWSER_H_
 #define HELPBROWSER_H_
 
-//#include <QTextBrowser>
 #if QT_VERSION >= 0x050500
 #include <QWebEngineView>
 #else
@@ -23,7 +22,6 @@ class CAHelpBrowser
 : public QWebView
 #endif
 {
-//class CAHelpBrowser : public QTextBrowser {
 	Q_OBJECT
 	public:
 		CAHelpBrowser(QWidget* parent = 0);
