@@ -581,6 +581,7 @@ void CAMainWin::createCustomActions() {
 	// User's guide and other Help
 	uiHelpDock = new QDockWidget(tr("Help"), this);
 	uiHelpDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	uiHelpDock->setMaximumWidth(400);
 	uiHelpWidget = new CAHelpBrowser( uiHelpDock );
 	uiHelpDock->setWidget( uiHelpWidget );
 
@@ -4195,7 +4196,7 @@ void CAMainWin::sourceViewCommit(QString inputString) {
 }
 
 void CAMainWin::on_uiUsersGuide_triggered() {
-	CACanorus::help()->showUsersGuide( "", this );
+	CACanorus::help()->showUsersGuide( "playback", this );
 }
 
 void CAMainWin::on_uiAboutQt_triggered() {
