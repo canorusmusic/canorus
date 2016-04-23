@@ -1,12 +1,11 @@
 /*!
-        Copyright (c) 2009, Matevž Jekovec, Canorus development team
+        Copyright (c) 2009, 2016 Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
 
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
 #include <QStringList>
-#include <QHelpEngine>
 #include <QDockWidget>
 
 #include "canorus.h"
@@ -22,60 +21,72 @@
 /*!
 	Initializes Help and loads User's guide.
  */
-CAHelpCtl::CAHelpCtl()
- : _helpEngine(0) {
-	QString lang = usersGuideLanguage();
-
-	if (!lang.isEmpty()) {
-		_helpEngine = new QHelpEngine( QFileInfo("doc:usersguide/"+lang+".qhc").absoluteFilePath() );
-	}
+CAHelpCtl::CAHelpCtl() {
+	_homeUrl = detectHomeUrl();
 }
 
 CAHelpCtl::~CAHelpCtl() {
 }
 
 /*!
-	Helper function which returns the existent User's guide language.
+	Helper function which returns the preferred User's guide language.
  */
-QString CAHelpCtl::usersGuideLanguage() {
-	if ( QFileInfo("doc:usersguide/"+QLocale::system().name()+".qhc").exists() ) {
-		return QLocale::system().name();
-	} else
-	if ( QFileInfo("doc:usersguide/"+QLocale::system().name().left(2)+".qhc").exists() ) {
-		return QLocale::system().name().left(2);
-	} else
-	if ( QFileInfo("doc:usersguide/en.qhc").exists() ) {
-		return "en";
-	} else {
-		return "";
+QUrl CAHelpCtl::detectHomeUrl() {
+	QUrl url;
+	QFileInfo i;
+	
+	i=QFileInfo("doc:usersguide2/build/"+QLocale::system().name()+"/index.html");
+	
+	if ( !i.exists() ) {
+		i=QFileInfo("doc:usersguide2/"+QLocale::system().name()+"/index.html");
 	}
+	
+	if ( !i.exists() ) {
+		i=QFileInfo("doc:usersguide2/build/"+QLocale::system().name().left(2)+"/index.html");
+	}
+	
+	if ( !i.exists() ) {
+		i=QFileInfo("doc:usersguide2/"+QLocale::system().name().left(2)+"/index.html");
+	}
+	
+	if ( !i.exists() ) {
+		i=QFileInfo("doc:usersguide2/build/en/index.html");
+	}
+
+	if ( !i.exists() ) {
+		i=QFileInfo("doc:usersguide2/en/index.html");
+	}
+	
+	if ( i.exists() ) {
+		url = QUrl::fromLocalFile(i.absoluteFilePath());
+	}
+	
+	return url;
 }
 
 /*!
-	Loads user's guide file
+	Show user's guide at the given chapter.
+    
+	\return True, if a user's guide was found and shown; False otherwise.
  */
-void CAHelpCtl::showUsersGuide( QString chapter, QWidget *helpWidget ) {
-	QUrl url;
-
-	if (!_helpEngine) {
-		return;
+bool CAHelpCtl::showUsersGuide( QString chapter, QWidget *helpWidget ) {
+	QUrl url = _homeUrl;
+	
+	if (!chapter.isEmpty()) {
+		url.setFragment(chapter);
 	}
-
-	if (chapter.isEmpty()) {
-		if (!usersGuideLanguage().isEmpty())
-			url = "qthelp://canorus/usersguide-"+usersGuideLanguage()+"/"+usersGuideLanguage()+".html";
-		else 
-			return;
-	} else {
-		QMap<QString, QUrl> links = _helpEngine->linksForIdentifier(chapter);
-		if (links.count()) {
-			url = links.constBegin().value();
-		}
+	
+	if (!url.path().isEmpty()) {
+		displayHelp( url, helpWidget );
+		return true;
 	}
-
-	displayHelp( url, helpWidget );
+	
+	return false;
 }
 
+/*!
+	Activates the user's guide help at the given url.
+ */
 void CAHelpCtl::displayHelp( QUrl url, QWidget *helpWidget ) {
 	CAHelpBrowser *browser=0;
 	if ( !helpWidget ) {
@@ -88,7 +99,6 @@ void CAHelpCtl::displayHelp( QUrl url, QWidget *helpWidget ) {
 	}
 
 	if (browser) {
-		browser->setHelpEngine( _helpEngine );
-		browser->setSource( url );
+		browser->setUrl( url );
 	}
 }

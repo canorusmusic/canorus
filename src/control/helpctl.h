@@ -1,5 +1,5 @@
 /*!
-        Copyright (c) 2009, Matevž Jekovec, Canorus development team
+        Copyright (c) 2009, 2016 Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
 
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -19,13 +19,13 @@ public:
 	CAHelpCtl();
 	virtual ~CAHelpCtl();
 
-	void showUsersGuide( QString chapter="", QWidget *helpWidget=0 );
+	bool showUsersGuide( QString chapter="", QWidget *helpWidget=0 );
 
 private:
+	QUrl _homeUrl;
+	
+	QUrl detectHomeUrl();
 	void displayHelp( QUrl url, QWidget *helpWidget );
-	QString usersGuideLanguage();
-
-	QHelpEngine *_helpEngine;
 };
 
 #endif /* HELPCTL_H_ */
