@@ -11,23 +11,19 @@ Is generated out from Canorus source code using doxygen.
 Doxygen generates html files.
 
 User's guide:
-Is written in Lyx. To edit or translate User's guide open
-your_language.lyx.
+Is generated using Sphinx, a python-based documentation generator. To edit or
+translate User's guide go to source/your_language/ directory and edit .rst
+files, one file per chapter.
 
-You can then compile it to:
- - Latex (needed for anything below!)
+Usually you want to compile User's guide to:
+ - HTML (for viewing on-line, also used by Canorus built-in web engine)
  - PDF (for printing)
- - HTML (for viewing on-line, needed for QtHelp)
- - QtHelp (for viewing inside Canorus)
 
-For generating Latex source, Lyx is required.
-For generating PDF files latex, ps2pdf and friends are required.
-For generating HTML files htlatex is required.
-For generating QtHelp (qch and qhc files) HTML files are compressed
-into QtHelp format using Qt development tool qcollectiongenerator.
+Sphinx-build supports generating HTML out of the box.
+For generating PDF files latex, rst2pdf builder for sphinx is required (pip install rst2pdf).
 
 
-Matevz Jekovec
+Matevž Jekovec
 Canorus development team
-<matevz@jekovec.net>
+<matevz.jekovec@gmail.com>
 
