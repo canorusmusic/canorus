@@ -9,14 +9,14 @@
 #ifndef HELPBROWSER_H_
 #define HELPBROWSER_H_
 
-#if QT_VERSION >= 0x050500
+#if QT_VERSION >= 0x050600
 #include <QWebEngineView>
 #else
 #include <QWebView>
 #endif
 
 class CAHelpBrowser
-#if QT_VERSION >= 0x050500
+#if QT_VERSION >= 0x050600
 : public QWebEngineView
 #else
 : public QWebView
