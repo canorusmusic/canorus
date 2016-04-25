@@ -92,7 +92,7 @@ public:
 	void newDocument();
 	void addSheet(CASheet *s);
 	void removeSheet(CASheet *s);
-	void insertMusElementAt( const QPoint coords, CAScoreView *v );
+	bool insertMusElementAt( const QPoint coords, CAScoreView *v );
 	void restartTimeEditedTime() { _timeEditedTime = 0; };
 	void deleteSelection( CAScoreView *v, bool deleteSyllable, bool deleteNotes, bool undo );
 	void copySelection( CAScoreView *v );
