@@ -99,7 +99,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'classic'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -245,6 +245,8 @@ texinfo_documents = [
    'Matevž Jekovec', 'CanorusUsersGuide', 'One line description of project.',
    'Miscellaneous'),
 ]
+
+pdf_documents = [('index', 'rst2pdf', 'Uporabniški priročnik Canorus', 'Matevž Jekovec'),]
 
 # Documents to append as an appendix to all manuals.
 #texinfo_appendices = []
