@@ -13,6 +13,8 @@
 	\brief Text sign
 
 	Arbitrary text above or below playable elements.
+	Playable elements are required since Lilypond is not able to easily assign
+	arbitrary text on non-playable ones.
 */
 
 CAText::CAText( const QString s, CAPlayable *t )

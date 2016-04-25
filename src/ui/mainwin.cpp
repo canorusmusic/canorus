@@ -1532,18 +1532,7 @@ void CAMainWin::setMode(CAMode mode) {
 			}
 
 			if (currentScoreView()) {
-				if (currentScoreView()->selection().size()) {
-					CAMusElement *elt = currentScoreView()->selection().front()->musElement();
-					if ( elt->musElementType()==CAMusElement::Syllable ||
-						((elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text)) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
-					) {
-						if (!currentScoreView()->textEditVisible()) {
-							currentScoreView()->createTextEdit(currentScoreView()->selection().front());
-						}
-					} else {
-						currentScoreView()->removeTextEdit();
-					}
-				} else {
+				if (!currentScoreView()->selection().size()) {
 					musElementFactory()->setMusElementType( CAMusElement::Undefined );
 				}
 				uiVoiceNum->setRealValue( 0 );
@@ -1864,13 +1853,14 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 				currentScoreView()->updateHelpers();
 			}
 
-			insertMusElementAt( coords, v );
+			// Insert playable/music element
+			bool success = insertMusElementAt( coords, v );
 
 			if ( musElementFactory()->musElementType()==CAMusElement::Rest )
 			     musElementFactory()->setMusElementType( CAMusElement::Note );
 
 			// Insert Syllable or Text
-			if ( (uiInsertSyllable->isChecked() || (uiMarkType->isChecked() && (musElementFactory()->markType()==CAMark::Text || musElementFactory()->markType()==CAMark::BookMark))) && !v->selection().isEmpty() ) {
+			if ( (uiInsertSyllable->isChecked() || (uiMarkType->isChecked() && (musElementFactory()->markType()==CAMark::Text || musElementFactory()->markType()==CAMark::BookMark) && success)) && !v->selection().isEmpty() ) {
 				v->createTextEdit( v->selection().front() );
 			} else {
 				v->removeTextEdit();
@@ -2054,7 +2044,7 @@ void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPoint coords) {
 			CADrawableMusElement *dElt = 0;
 			CAMusElement *elt = 0;
 			
-			if (v->selection().size()) {
+			if (v->selection().size()==1) {
 				dElt = v->selection().front();
 				elt = dElt->musElement();
 			}
@@ -2513,8 +2503,11 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 /*!
 	This method places the currently prepared music element in CAMusElementFactory to the staff or
 	voice, dependent on the music element type and the View coordinates.
+	
+	\return True, if a new element of any kind was inserted; False, if an
+	element was just edited or not handled at all.
 */
-void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
+bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 	CADrawableContext *drawableContext = v->currentContext();
 
 	CAStaff *staff=0;
@@ -2533,7 +2526,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 	bool success=false;
 
 	if (!drawableContext)
-		return;
+		return false;
 
 	CACanorus::undo()->createUndoCommand( document(), tr("insertion of music element", "undo") );
 
@@ -2781,7 +2774,7 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 					for (int i=noteList.indexOf(noteStart); i<=end; i++)
 						if (((musElementFactory()->slurType()==CASlur::SlurType && (noteList[i]->slurStart())) || noteList[i]->slurEnd()) ||
 						     (((musElementFactory()->slurType()==CASlur::PhrasingSlurType && (noteList[i]->phrasingSlurStart()))) || noteList[i]->phrasingSlurEnd()) )
-							return;
+							return false;
 
 					if (((musElementFactory()->slurType()==CASlur::SlurType && (noteStart->slurStart())) || noteEnd->slurEnd()) ||
 					    (((musElementFactory()->slurType()==CASlur::PhrasingSlurType && (noteStart->phrasingSlurStart()))) || noteEnd->phrasingSlurEnd()))
@@ -2849,6 +2842,8 @@ void CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 			v->setWorldX( d->xPos()-v->worldWidth()/2, CACanorus::settings()->animatedScroll() );
 		}
 	}
+	
+	return success;
 }
 
 /*!
@@ -4523,8 +4518,8 @@ void CAMainWin::updateSheetToolBar() {
 void CAMainWin::updateVoiceToolBar() {
 	CAContext *context = currentContext();
 	if ( context && context->contextType() == CAContext::Staff && currentScoreView() &&
-		 ((mode()==EditMode && currentScoreView()->selection().size()==0) ||
-		  mode()==InsertMode) ) {
+		 ( (mode()==EditMode && currentScoreView()->selection().size()==0) ||
+		   (mode()==InsertMode && uiInsertPlayable->isChecked()) ) ) {
 		CAStaff *staff = static_cast<CAStaff*>(context);
 		uiNewVoice->setVisible(true);
 		uiNewVoice->setEnabled(true);
