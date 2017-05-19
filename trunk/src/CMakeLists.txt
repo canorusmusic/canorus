@@ -199,7 +199,6 @@ SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 # Enable needed Qt modules for Canorus
 SET(QT_USE_QTXML True) # Save/Load
 SET(QT_USE_QTSVG True) # Icons, Images etc.
-SET(QT_USE_QTWEBKIT True) # Inline help browser
 
 # Add all resources to Canorus_Resrcs (icons, html files etc.)
 #SET(Canorus_Resrcs ui/mainwin.qrc) # not needed, all resources are loaded on-the-fly
@@ -578,7 +577,6 @@ INCLUDE_DIRECTORIES(${Qt5Svg_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(${Qt5Widgets_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(${Qt5Xml_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(${Qt5PrintSupport_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${Qt5WebKitWidgets_INCLUDE_DIRS})
 
 # FIX: Qt was built with -reduce-relocations
 if (Qt5_POSITION_INDEPENDENT_CODE)
@@ -661,7 +659,7 @@ ENDIF(USE_PYTHON)
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
 # Add ${POPPLERQT4_LIBRARY} ${POPPLER_LIBRARY} to reactivate poppler libraries
-TARGET_LINK_LIBRARIES(canorus Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport Qt5::WebKitWidgets ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
+TARGET_LINK_LIBRARIES(canorus Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport Qt5::WebEngineWidgets ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
 # Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
 # duma )
 
@@ -706,20 +704,11 @@ ENDIF(MINGW)
 ###############
 # Translation #
 ###############
-ADD_CUSTOM_COMMAND(
-	TARGET canorus
-	PRE_BUILD
-	#COMMAND ${QT_BINARY_DIR}/lupdate
-  COMMAND lupdate
-	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
-)
-ADD_CUSTOM_COMMAND(
-	TARGET canorus
-	PRE_BUILD
-	#COMMAND ${QT_BINARY_DIR}/lrelease
-  COMMAND lrelease
-	ARGS ${Canorus_Translation_Srcs}
-)
+qt5_create_translation(CANORUS_MSG_FILES ${Canorus_UIC_Srcs} ${Canorus_Srcs})
+qt5_add_translation(CANORUS_QM_FILES ${Canorus_Translation_Srcs} lang/template.ts )
+ADD_CUSTOM_TARGET(canorus_msg DEPENDS ${CANORUS_MSG_FILES})
+ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${CANORUS_QM_FILES})
+ADD_DEPENDENCIES(canorus canorus_msg canorus_qm)
 
 ################
 # Installation #
@@ -759,7 +748,7 @@ INSTALL( DIRECTORY ${Canorus_Examples} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CA
 
 IF(MINGW)
 	# Install Qt libs
-	INSTALL( FILES ${QT_BIN_DIR}/Qt5Core.dll ${QT_BIN_DIR}/Qt5Gui.dll ${QT_BIN_DIR}/Qt5Widgets.dll ${QT_BIN_DIR}/Qt5Svg.dll ${QT_BIN_DIR}/Qt5Xml.dll ${QT_BIN_DIR}/Qt5Sql.dll ${QT_BIN_DIR}/Qt5Network.dll ${QT_BIN_DIR}/Qt5CLucene.dll ${QT_BIN_DIR}/Qt5PrintSupport.dll ${QT_BIN_DIR}/Qt5WebKitWidgets.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
+        INSTALL( FILES ${QT_BIN_DIR}/Qt5Core.dll ${QT_BIN_DIR}/Qt5Gui.dll ${QT_BIN_DIR}/Qt5Widgets.dll ${QT_BIN_DIR}/Qt5Svg.dll ${QT_BIN_DIR}/Qt5Xml.dll ${QT_BIN_DIR}/Qt5Sql.dll ${QT_BIN_DIR}/Qt5Network.dll ${QT_BIN_DIR}/Qt5CLucene.dll ${QT_BIN_DIR}/Qt5PrintSupport.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
 	
 	# Install qsvg plugin for rendering SVG icons
 	get_target_property(QSvgIcon_loc Qt5::QSvgIconPlugin LOCATION)

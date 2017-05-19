@@ -82,31 +82,34 @@ CAPluginManager::~CAPluginManager() {
 	\sa enablePlugin(), enablePlugins()
 */
 void CAPluginManager::readPlugins() {
-	QString systemPluginsPath = QDir::searchPaths("plugins")[0];
-	QList<QString> pluginPaths;
+    if(QDir::searchPaths("plugins").size() > 0)
+    {
+        QString systemPluginsPath = QDir::searchPaths("plugins")[0];
+        QList<QString> pluginPaths;
 
-	// search the plugins paths and creates a list of directories for each plugin
-	QDir curDir(systemPluginsPath);
-	for (int j=0; j<(int)curDir.count(); j++) {
-		pluginPaths << curDir.absolutePath() + "/" + curDir[j];
-	}
+        // search the plugins paths and creates a list of directories for each plugin
+        QDir curDir(systemPluginsPath);
+        for (int j=0; j<(int)curDir.count(); j++) {
+            pluginPaths << curDir.absolutePath() + "/" + curDir[j];
+        }
 
-	for (int i=0; i<pluginPaths.size(); i++) {
-		QXmlSimpleReader reader;
-		QFile *file = new QFile(pluginPaths[i] + "/canorusplugin.xml");
-		file->open(QIODevice::ReadOnly);
+        for (int i=0; i<pluginPaths.size(); i++) {
+            QXmlSimpleReader reader;
+            QFile *file = new QFile(pluginPaths[i] + "/canorusplugin.xml");
+            file->open(QIODevice::ReadOnly);
 
-		// test if the descriptor file can be opened
-		if (!file->isOpen()) {
-			delete file;
-			continue;
-		}
+            // test if the descriptor file can be opened
+            if (!file->isOpen()) {
+                delete file;
+                continue;
+            }
 
-		delete file;
-		CAPlugin *plugin = new CAPlugin();
-		plugin->setDirName(pluginPaths[i]);
-		_pluginList << plugin;
-	}
+            delete file;
+            CAPlugin *plugin = new CAPlugin();
+            plugin->setDirName(pluginPaths[i]);
+            _pluginList << plugin;
+        }
+    }
 }
 
 /*!
