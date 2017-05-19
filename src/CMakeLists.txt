@@ -704,7 +704,7 @@ ENDIF(MINGW)
 ###############
 # Translation #
 ###############
-qt5_create_translation(CANORUS_QM_FILES ${Canorus_UIC_Srcs} ${Canorus_Srcs} lang/template.ts OPTIONS -noobsolete)
+qt5_create_translation(CANORUS_QM_FILES ${Canorus_UIC_Srcs} ${Canorus_Srcs} ${Canorus_Translation_Srcs} lang/template.ts)
 qt5_add_translation(CANORUS_QM_FILES ${Canorus_Translation_Srcs} )
 ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${CANORUS_QM_FILES})
 ADD_DEPENDENCIES(canorus canorus_qm)
