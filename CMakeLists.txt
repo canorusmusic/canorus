@@ -86,6 +86,7 @@ FIND_PACKAGE(Qt5LinguistTools REQUIRED)
 FIND_PACKAGE(Qt5Xml REQUIRED)
 FIND_PACKAGE(Qt5Help REQUIRED)
 FIND_PACKAGE(Qt5PrintSupport REQUIRED)
+FIND_PACKAGE(Qt5WebEngineWidgets REQUIRED)
 
 # in the following lines all the requires include directories are added
 INCLUDE_DIRECTORIES(src)
