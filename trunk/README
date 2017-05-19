@@ -13,25 +13,49 @@ word! Canorus runs on Linux, Windows, MacOSX and others!
 Build dependencies:
 ===================
 The latest version of Qt5, Swig and CMake is preferred.
-Canorus supports the current "LTS" version 5.6.0
+Canorus requires the current "LTS" version 5.6 or later.
 
 - Qt development package >=5.3 (http://www.qt-project.org)
 - Swig >=2.0.12 (http://www.swig.org). Swig >= 3.0.8 is working too.
   (cmake does not support parallel installations of swig)
-- g++ >=4.8, make (http://gcc.gnu.org, http://www.mingw.org)
-- cmake >=2.8 (http://www.cmake.org). CMake 3.x is not supported (does not work on SuSE)
+- g++ >=5, make (http://gcc.gnu.org, http://www.mingw.org)
+- cmake >=3.5 (http://www.cmake.org). 
 - Python development package >=3.0 (http://www.python.org)
 - (optional) Lyx, tex4ht (user's guide)     
 
-Qt5 Build (tested up to version 5.6.0)
-- Get Qt development package 5.6.0 (http://www.qt.io)
+Qt5 Build (tested with version 5.6.2)
+- Get original Qt development package 5.6.2 (http://www.qt.io)
+- It is strongly recommended not to use Qt coming with your distribution
 - Get Swig, g++, cmake, python, lyx as specified above
   (make sure to remove Swig 2.0 before using Swig 3.0)
 - Run cmake with prefix to the Qt installation path (f.e. "/opt/Qt")
-  $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64 . 
-  (the prefix option can be skipped on most Linux distributions)
+- Create a build folder, outside the source folder and "cd" into it
+  $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64 ../canorus/trunk
 - Ignore the warning about the missing ruby package
-- make -j4 (for dual-core use -j2 switch)
+- make -j4 (for dual-core use -j2 switch), on Intel i7 use -j8 / -j4
+
+Note that if you use the old way of building canorus you have to
+disable the local installation of Canorus when calling cmake:
+- $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64 -DCANORUS_DEV_INSTALL=False
+
+Set it to true to do a test installation for a Release version, f.e.
+- $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64 -DCMAKE_BUILD_TYPE=Release -DCANORUS_DEV_INSTALL=False
+
+Testing Canorus
+===============
+If you built the development version of Canorus, an install folder is
+created containing a local installation of Canorus.
+
+To run it, first set the library path to the Qt libraries, f.e.
+$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/Qt/5.6/gcc_64/lib
+
+Change into resources folder:
+$ cd install/share/canorus
+
+Run canorus from the bin folder:
+$ ../../bin/canorus
+
+You need to run it from here so Canorus finds it's libraries, images etc.
 
 Runtime dependencies:
 =====================

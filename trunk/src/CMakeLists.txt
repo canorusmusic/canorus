@@ -704,11 +704,22 @@ ENDIF(MINGW)
 ###############
 # Translation #
 ###############
-qt5_create_translation(CANORUS_MSG_FILES ${Canorus_UIC_Srcs} ${Canorus_Srcs})
+qt5_create_translation(CANORUS_QM_FILES ${Canorus_UIC_Srcs} ${Canorus_Srcs})
 qt5_add_translation(CANORUS_QM_FILES ${Canorus_Translation_Srcs} lang/template.ts )
-ADD_CUSTOM_TARGET(canorus_msg DEPENDS ${CANORUS_MSG_FILES})
 ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${CANORUS_QM_FILES})
-ADD_DEPENDENCIES(canorus canorus_msg canorus_qm)
+ADD_DEPENDENCIES(canorus canorus_qm)
+
+###############
+# Dev Install #
+###############
+message("CANORUS_DEV_INSTALL " ${CANORUS_DEV_INSTALL})
+IF(${CANORUS_DEV_INSTALL} MATCHES True)
+    ADD_CUSTOM_COMMAND(
+        TARGET canorus
+        POST_BUILD
+        COMMAND make install
+    )
+ENDIF(${CANORUS_DEV_INSTALL} MATCHES True)
 
 ################
 # Installation #
