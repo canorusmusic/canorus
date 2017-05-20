@@ -568,6 +568,7 @@ INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/core")
 INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/ui")
 INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/widgets")
 INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/import")
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 # These lines add the include paths of the Qt
 # directory to the compiler include paths
@@ -705,6 +706,10 @@ ENDIF(MINGW)
 # Translation #
 ###############
 qt5_create_translation(CANORUS_QM_FILES ${Canorus_UIC_Srcs} ${Canorus_Srcs} ${Canorus_Translation_Srcs} lang/template.ts)
+# Workaround for issue of duplicate ts files getting generated
+# Please write on the Canorus Dev List for a better
+SET(TSFOLDER ${CMAKE_SOURCE_DIR}/src/lang)
+FILE(REMOVE ${TSFOLDER}/*_*.ts)
 qt5_add_translation(CANORUS_QM_FILES ${Canorus_Translation_Srcs} )
 ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${CANORUS_QM_FILES})
 ADD_DEPENDENCIES(canorus canorus_qm)
