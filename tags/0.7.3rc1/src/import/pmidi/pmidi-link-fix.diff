@@ -1,0 +1,11 @@
+--- src/Makefile.am-dist	2007-03-27 17:15:38.000000000 +0200
++++ src/Makefile.am	2007-03-27 17:15:43.000000000 +0200
+@@ -29,7 +29,7 @@
+ # Link with the following if specified "included GLIB" support
+ #
+ if GLIB
+-pmidi_LDADD	= glib.o @ALSA_LDFLAGS@
++pmidi_LDADD	= glib.o @ALSA_LIBS@
+ else
+ pmidi_LDADD	= @ALSA_LIBS@
+ endif

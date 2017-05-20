@@ -1,0 +1,63 @@
+canorus (0.7-1ubuntu1) intrepid; urgency=low
+
+  * new upstream release
+  * intrepid port
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 07 Mar 2009 23:55:22 +0100
+
+canorus (0.6-1ubuntu1) hardy; urgency=low
+
+  * new upstream release
+  * hardy port
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 25 Nov 2008 01:30:24 +0100
+
+canorus (0.5-1ubuntu1) gutsy; urgency=low
+
+  * new upstream release
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Wed, 27 Jan 2008 22:30:52 +0100
+
+canorus (0.4-1ubuntu1) gutsy; urgency=low
+
+  * gutsy port
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Wed, 24 Oct 2007 18:08:12 +0100
+
+canorus (0.4-1ubuntu1) feisty; urgency=low
+
+  * new upstream release
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 28 Sep 2007 12:48:12 +0100
+
+canorus (0.3.1-1ubuntu1) feisty; urgency=low
+
+  * new upstream release
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 05 Jun 2007 18:48:15 +0100
+
+canorus (0.3-1ubuntu1) feisty; urgency=low
+
+  * new upstream release
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Sat, 12 May 2007 22:39:07 +0100
+
+canorus (0.2.5svn-1ubuntu1) edgy; urgency=low 
+
+  * new upstream release
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 20 Mar 2007 04:34:07 +0100
+
+canorus (0.1.0svn-1ubuntu1) edgy; urgency=low
+
+  * new upstream release
+  * tested on fresh Ubuntu Edgy, works great
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Mon, 27 Nov 2006 15:37:27 +0100
+
+canorus (0.0.99svn-0.1ubuntu1) edgy; urgency=low
+
+  * initial .deb package
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Mon, 20 Nov 2006 01:18:27 +0100
+
