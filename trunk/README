@@ -30,16 +30,16 @@ Qt5 Build (tested with version 5.6.2)
   (make sure to remove Swig 2.0 before using Swig 3.0)
 - Run cmake with prefix to the Qt installation path (f.e. "/opt/Qt")
 - Create a build folder, outside the source folder and "cd" into it
-  $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64 ../canorus/trunk
+  $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64/lib/cmake ../canorus/trunk
 - Ignore the warning about the missing ruby package
 - make -j4 (for dual-core use -j2 switch), on Intel i7 use -j8 / -j4
 
 Note that if you use the old way of building canorus you have to
 disable the local installation of Canorus when calling cmake:
-- $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64 -DCANORUS_DEV_INSTALL=False
+- $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64/lib/cmake -DCANORUS_DEV_INSTALL=False
 
 Set it to true to do a test installation for a Release version, f.e.
-- $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64 -DCMAKE_BUILD_TYPE=Release -DCANORUS_DEV_INSTALL=False
+- $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64/lib/cmake -DCMAKE_BUILD_TYPE=Release -DCANORUS_DEV_INSTALL=False
 
 Testing Canorus
 ===============
