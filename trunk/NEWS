@@ -1,3 +1,65 @@
+0.7.3
+=====
+- Translation Updates
+- GPLv3 compatibility
+- Official compiler used for builds is gcc/mingw 5.3 / 5.4
+- Fixes in offset to measure numberings and pickup measures
+- Command Settings updates
+- Small updates to View setWorld functions regarding types
+- Bindings for page movement (up, down, home, end)
+- Fix for Appearence Dialog
+- Qt4 no longer supported officially
+- Adjustments for Qt4 after API fixes for Qt5
+  (not removed except for helper dialog due to drop of webkit by Qt5.6)
+- Other minor changes Midi/Shortcut
+- Load Dialog Fix (shortcut settings)
+- No longer differentiate before showing Load Dialog (settings)
+- Save Dialog updated to behave same as Load Dialog (settings)
+- Various fixes for shortcut settings
+- Fix for cloning View
+- Support Qt5 for Windows (build), adjusted build instructions
+- Fix Windows Qt5 DLL installation
+- Integrate Shortcut Settings finally into Settings View
+- Support several types of shortcut settings
+- Readme now contains several updates to reflect compatibility with
+  older dependent packages like swig and cmake
+- added note checker
+- note checker and midi command support for shortcut settings
+- fixed some compilation issues on other platforms
+- fix issue with new sheet;
+- add dynamic keyboard helper for shortcut settings
+- Add version information to installer
+- Qt4 build settings separated
+- Fixed mouse move lagging
+- AutoConnect issue fixed for Print Preview
+- Pass binary midi data directly to QTextStream, fixes midi export again.
+- Add support for C++11 build (and later, depending on recent compiler used)
+- Unified Edit mode with Select mode. Default mode now is Edit mode.
+- Fixed missing uiSelectMode in CAActionStorage.
+- Fixed showing selection area, if a user had a shaky hand
+- New more simple help system (HTML) documentation system based on sphinx
+- Migrated several guides to sphinx (sorry, the german guide needs still to be done)
+- Fix when inserting note on empty bar line when already having edited
+  some notes on a different bar line
+- Add check for alsa on Linux for rtmidi;
+- Fixed old GUI bug: On Undo, On New document, Note checker not activated on Undo.
+- On first Escape, the selection is cleared. On second Escape, we a context is deselected.
+- Fixed console logging: No mode handled.
+- Fixed edit text hiding when clicked on an existing music element.
+- Fixed Text/Lyrics/Bookmarks saving when clicked outside of the text edit. Only Esc key explicitly cancels the editing.
+- Fixed editing bookmarks.
+- Fixed Text/Lyrics/Bookmarks lost when switching from Insert mode to Edit mode without confirming text edit content.
+- Added panning the view forward when writing lyrics at the end of the screen.
+- Added behaviour to text edit: Blank content deletes the text element.
+- Lyrics, text and bookmarks: Text edit shows on mouse release to allows multiple selection.
+- Fixed insert playable icon to be more meaningful.
+- Fixed toolbars: When inserting clefs, time sigs, key sigs etc. the voice toolbar should not be visible.
+- Fixed fake text edit, if adding a text illegaly to non-playable element.
+- Fixed text edit popping back up, when switching from insert to edit mode.
+- Show text edit when exactly one element is selected, otherwise, confirm any opened text edits and hide it.
+- fix for pluginmanager when no plugins are available
+- Streamline Translation with 5.6 (use official macros)
+
 0.7.2
 =====
 - Set SelectMode instead of NoDocumentMode when a new document.was created

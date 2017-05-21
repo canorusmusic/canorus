@@ -39,7 +39,7 @@ disable the local installation of Canorus when calling cmake:
 - $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64/lib/cmake -DCANORUS_DEV_INSTALL=False
 
 Set it to true to do a test installation for a Release version, f.e.
-- $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64/lib/cmake -DCMAKE_BUILD_TYPE=Release -DCANORUS_DEV_INSTALL=False
+- $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64/lib/cmake -DCMAKE_BUILD_TYPE=Release -DCANORUS_DEV_INSTALL=True
 
 Testing Canorus
 ===============
