@@ -3,6 +3,17 @@
 # and to the root binary directory of the project as ${CANORUS_BINARY_DIR}.
 PROJECT(Canorus)
 
+# Assume that Debug build is only done by developers -> install in build folder
+# However be aware that this only works in a separate build folder!
+IF("${CMAKE_BUILD_TYPE}" MATCHES "Debug")
+  SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+  SET(CANORUS_DEV_INSTALL True)
+ELSE("${CMAKE_BUILD_TYPE}" MATCHES "Debug") # Release
+  IF(${CANORUS_DEV_INSTALL} MATCHES True)
+    SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+  ENDIF(${CANORUS_DEV_INSTALL} MATCHES True)
+ENDIF("${CMAKE_BUILD_TYPE}" MATCHES "Debug")
+
 # Don't build anything unless the version of CMake is high enough.
 cmake_minimum_required(VERSION 2.6)
 

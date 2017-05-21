@@ -3,7 +3,7 @@ Main developers:
 Matevž Jekovec <matevz.jekovec@gmail.com>
   lead developer, Windows port, Debian/Ubuntu packages, cmake, Wiki site
 Reinhard Katzmann <suamor@web.de>
-  Qt4 GUI maestro, cmake, programming patterns
+  Qt4, Qt5 senior expert, cmake, developing with patterns, refactorings
 Itay Perl <itay.perl@gmail.com>
   bughunter, lots of GUI fixes and additions
 
