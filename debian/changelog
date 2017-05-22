@@ -1,3 +1,10 @@
+canorus (0.7.3~rc1-1ubuntu1) intrepid; urgency=low
+
+  * new upstream release
+  * xenial port
+
+ -- Matevz Jekovec <matevz.jekovec@gmail.com>  Tue, 22 May 2017 14:55:22 +0100
+
 canorus (0.7-1ubuntu1) intrepid; urgency=low
 
   * new upstream release

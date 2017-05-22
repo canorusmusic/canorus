@@ -1,12 +1,17 @@
-This package was debianized by Matevž Jekovec <matevz.jekovec@gmail.com> on
+This package was originally debianized by Matevž Jekovec <matevz.jekovec@gmail.com> on
 Sun,  19 Nov 2006 23:56:38 +0100.
 
-It was downloaded from http://canorus.berlios.de/
+It was downloaded from http://canorus.sourceforge.net/
 
 Upstream Authors: Matevž Jekovec <matevz.jekovec@gmail.com>,
                   Reinhard Katzmann <suamor@web.de>,
+                  All persons from AUTHORS
 
-Copyright by authors mentioned above.
+Copyright 2006-2017 by authors mentioned above.
 
-Released under the GNU GPL.
-Please see /usr/share/common-licenses/GPL for the full license.
+Released under the GNU GPL v2 and GNU GPL v3.
+Please see /usr/share/common-licenses/GPL-3 for the full license.
+
+QT5.6 binaries for Linux are part of the Qt binary delivery.
+They are redistributable under the LGPL v2 and LGPL v3 license.
+See http://doc.qt.io/qt-5.6/licensing.html for license details.
