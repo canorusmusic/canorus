@@ -1,0 +1,146 @@
+[DEBREATE-0.7.13]
+<<CTRL>>
+Package: canorus
+Version: 0.7.3~rc1
+Maintainer: Matevz Jekovec <matevz.jekovec@gmail.com>
+Section: sound
+Source: canorus
+Homepage: http://canorus.org
+Architecture: amd64
+Priority: optional
+Suggests: timidity | fluidsynth
+Depends: python (>=3.4), libc (>=6)
+Recommends: lilypond (>=2.10)
+Description: Free cross-platform music score editor
+ Canorus is a free next generation cross-platform music score editor
+ written in Qt5. It is a sequel of the well-known music score editor
+ for Linux, NoteEdit.
+ .
+ Canorus is extensible by using plugins written in Python or native C++,
+ offers a fast and straight-forward user interface written in Qt5,
+ a number of import and export filters for LilyPond, MusicXML, Midi,
+ NoteEdit and others.
+
+<</CTRL>>
+<<FILES>>
+1
+/home/suamor/projekte/canorus/release/build-0.7.3rc1-ubu64/install/share/canorus -> canorus -> /usr/share
+/home/suamor/projekte/canorus/release/build-0.7.3rc1-ubu64/install/lib/_CanorusPython.so -> _CanorusPython.so -> /usr/lib
+/home/suamor/projekte/canorus/release/build-0.7.3rc1-ubu64/install/lib/CanorusPython.py -> CanorusPython.py -> /usr/lib
+/home/suamor/projekte/canorus/release/build-0.7.3rc1-ubu64/install/bin/canorus* -> canorus -> /usr/bin
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Svg.so* -> libQt5Svg.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Svg.so.5* -> libQt5Svg.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Svg.so.5.6* -> libQt5Svg.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Svg.so.5.6.2* -> libQt5Svg.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Test.so* -> libQt5Test.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Test.so.5* -> libQt5Test.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Test.so.5.6* -> libQt5Test.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Test.so.5.6.2* -> libQt5Test.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5PrintSupport.so* -> libQt5PrintSupport.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5PrintSupport.so.5* -> libQt5PrintSupport.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5PrintSupport.so.5.6* -> libQt5PrintSupport.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5PrintSupport.so.5.6.2* -> libQt5PrintSupport.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebEngineWidgets.so* -> libQt5WebEngineWidgets.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebEngineWidgets.so.5* -> libQt5WebEngineWidgets.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebEngineWidgets.so.5.6* -> libQt5WebEngineWidgets.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebEngineWidgets.so.5.6.2* -> libQt5WebEngineWidgets.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebEngineCore.so* -> libQt5WebEngineCore.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebEngineCore.so.5* -> libQt5WebEngineCore.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebEngineCore.so.5.6* -> libQt5WebEngineCore.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebEngineCore.so.5.6.2* -> libQt5WebEngineCore.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Widgets.so* -> libQt5Widgets.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Widgets.so.5* -> libQt5Widgets.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Widgets.so.5.6* -> libQt5Widgets.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Widgets.so.5.6.2* -> libQt5Widgets.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Gui.so* -> libQt5Gui.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Gui.so.5* -> libQt5Gui.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Gui.so.5.6* -> libQt5Gui.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Gui.so.5.6.2* -> libQt5Gui.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5MultimediaQuick_p.so* -> libQt5MultimediaQuick_p.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Qml.so* -> libQt5Qml.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Qml.so.5* -> libQt5Qml.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Qml.so.5.6* -> libQt5Qml.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Qml.so.5.6.2* -> libQt5Qml.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Core.so* -> libQt5Core.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Core.so.5* -> libQt5Core.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Core.so.5.6* -> libQt5Core.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Core.so.5.6.2* -> libQt5Core.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Quick.so* -> libQt5Quick.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Quick.so.5* -> libQt5Quick.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Quick.so.5.6* -> libQt5Quick.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Quick.so.5.6.2* -> libQt5Quick.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebChannel.so* -> libQt5WebChannel.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebChannel.so.5* -> libQt5WebChannel.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebChannel.so.5.6* -> libQt5WebChannel.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5WebChannel.so.5.6.2* -> libQt5WebChannel.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Network.so* -> libQt5Network.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Network.so.5* -> libQt5Network.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Network.so.5.6* -> libQt5Network.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Network.so.5.6.2* -> libQt5Network.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Positioning.so* -> libQt5Positioning.so -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Positioning.so.5* -> libQt5Positioning.so.5 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Positioning.so.5.6* -> libQt5Positioning.so.5.6 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libQt5Positioning.so.5.6.2* -> libQt5Positioning.so.5.6.2 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libicudata.so.56* -> libicudata.so.56 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libicudata.so.56.1* -> libicudata.so.56.1 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libicui18n.so.56* -> libicui18n.so.56 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libicui18n.so.56.1* -> libicui18n.so.56.1 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libicuuc.so.56* -> libicuuc.so.56 -> /opt/qt/lib/x86_64-linux-gnu/
+/home/suamor/Qt/5.6/gcc_64/lib/libicuuc.so.56.1* -> libicuuc.so.56.1 -> /opt/qt/lib/x86_64-linux-gnu/
+<</FILES>>
+<<SCRIPTS>>
+<<PREINST>>
+0
+<</PREINST>>
+<<POSTINST>>
+0
+<</POSTINST>>
+<<PRERM>>
+0
+<</PRERM>>
+<<POSTRM>>
+0
+<</POSTRM>>
+<</SCRIPTS>>
+<<CHANGELOG>>
+<<DEST>>DEFAULT<</DEST>>
+
+<</CHANGELOG>>
+<<COPYRIGHT>>
+This package was originally debianized by Matevž Jekovec <matevz.jekovec@gmail.com> on
+Sun,  19 Nov 2006 23:56:38 +0100.
+
+It was downloaded from http://canorus.sourceforge.net/
+
+Upstream Authors: Matevž Jekovec <matevz.jekovec@gmail.com>,
+                  Reinhard Katzmann <suamor@web.de>,
+                  All persons from AUTHORS
+
+Copyright 2006-2017 by authors mentioned above.
+
+Released under the GNU GPL v2 and GNU GPL v3.
+Please see /usr/share/common-licenses/GPL-3 for the full license.
+
+QT5.6 binaries for Linux are part of the Qt binary delivery.
+They are redistributable under the LGPL v2 and LGPL v3 license.
+See http://doc.qt.io/qt-5.6/licensing.html for license details.
+<</COPYRIGHT>>
+<<MENU>>
+1
+Name=Canorus
+Version=1.0
+Exec=/usr/bin/canorus
+Comment=Canorus - Music Score Editor
+Icon=/usr/share/canorus/images/clogosm.png
+Type=Application
+Terminal=false
+StartupNotify=true
+Encoding=UTF-8
+Categories=Audio;Qt;
+<</MENU>>
+<<BUILD>>
+1
+1
+1
+strip
+<</BUILD>>
