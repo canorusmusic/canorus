@@ -280,8 +280,7 @@ void CATuplet::addNote( CAPlayable *p ) {
 	int i;
 	for (i=0; i<noteList().size() && noteList()[i]->timeStart() <= p->timeStart() &&
 	     (noteList()[i]->musElementType()!=Note || noteList()[i]->timeStart() != p->timeStart() || static_cast<CANote*>(noteList()[i])->diatonicPitch().noteName() < static_cast<CANote*>(p)->diatonicPitch().noteName() ); i++);
-
-	 _noteList.insert(i, p);
+	_noteList.insert(i, p);
 }
 
 /*!
