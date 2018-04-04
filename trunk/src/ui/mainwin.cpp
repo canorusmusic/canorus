@@ -5490,12 +5490,13 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 		foreach( CAContext* context, contexts ) {
 			// create a new context if there isn't one of the right type.
 			// exception: if the context is a staff, skip lyrics contexts instead of inserting a staff before a lyrics context.
-			if(context->contextType() == CAContext::Staff)
+			if(context->contextType() == CAContext::Staff) {
 				while(currentContext && currentContext->contextType() == CAContext::LyricsContext)
 					if(currentContext != currentSheet->contextList().last())
 						currentContext = currentSheet->contextList()[currentSheet->contextList().indexOf(currentContext)+1];
 					else
 						currentContext = 0;
+			}
 
 			if(!currentContext || context->contextType() != currentContext->contextType())
 			{
@@ -5553,7 +5554,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 					// Can't have playables between two notes linked by a tie. Remove the tie in this case.
 					// FIXME this should be the behavior for insert as well.
 					CAMusElement* leftPl = right;
-				    while((leftPl = staff->voiceList()[i]->previous(leftPl)) && !leftPl->isPlayable());
+					while((leftPl = staff->voiceList()[i]->previous(leftPl)) && !leftPl->isPlayable());
 					CANote* leftNote = (leftPl&&leftPl->musElementType()==CAMusElement::Note)?static_cast<CANote*>(leftPl):0;
 					CASlur* tie = leftNote?leftNote->tieStart():0;
 

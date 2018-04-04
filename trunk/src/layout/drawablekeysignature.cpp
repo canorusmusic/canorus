@@ -113,7 +113,7 @@ CADrawableKeySignature::CADrawableKeySignature(CAKeySignature *keySig, CADrawabl
 		if ( curIdx + (clef?clef->c1():-2) - 28  > drawableStaff->staff()->numberOfLines()*2-1 )
 			curIdx-=7;
 
-			CADrawableAccidental *acc = new CADrawableAccidental(1, keySig, drawableStaff, newX, drawableStaff->calculateCenterYCoord(curIdx, x));
+		CADrawableAccidental *acc = new CADrawableAccidental(1, keySig, drawableStaff, newX, drawableStaff->calculateCenterYCoord(curIdx, x));
 
 		_drawableAccidentalList << acc;
 

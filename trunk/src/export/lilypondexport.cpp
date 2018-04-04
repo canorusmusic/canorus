@@ -240,7 +240,7 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 		    (note->isPartOfChord() && note->isLastInChord()) )
 			_curStreamTime += note->timeLength();
 
-			break;
+		break;
 	}
 	case CAMusElement::Rest: {
 		// CARest
