@@ -3150,9 +3150,9 @@ bool CAMainWin::saveDocument( QString fileName ) {
 	CACanorus::restartTimeEditedTimes( document() );
 
 	CAExport *save=0;
-	if ( uiSaveDialog->selectedNameFilter()==CAFileFormats::CANORUSML_FILTER ) {
+	if ( fileName.endsWith(".xml") ) { // check the filename extension directly without accessing the uiSaveDialog object due to a bug in Qt. -Matevz
 		save = new CACanorusMLExport();
-	} else if ( uiSaveDialog->selectedNameFilter()==CAFileFormats::CAN_FILTER ) {
+	} else if ( fileName.endsWith(".can") ) {
 		save = new CACanExport();
 	}
 
