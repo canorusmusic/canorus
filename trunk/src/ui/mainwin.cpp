@@ -2744,8 +2744,23 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 		case CAMusElement::Slur: {
 			// Insert tie, slur or phrasing slur
 			if ( v->selection().size() ) { // start note has to always be selected
-				CANote *noteStart = (currentScoreView()->selection().front()->musElement()?dynamic_cast<CANote*>(currentScoreView()->selection().front()->musElement()):0);
-				CANote *noteEnd = (currentScoreView()->selection().back()->musElement()?dynamic_cast<CANote*>(currentScoreView()->selection().back()->musElement()):0);
+				CAMusElement *eltStart = currentScoreView()->selection().front()->musElement();
+				CANote *noteStart = 0;
+				if (eltStart->musElementType()==CAMusElement::Note) {
+					noteStart = static_cast<CANote*>(eltStart);
+				} else
+				if (eltStart->musElementType()==CAMusElement::Mark) {
+					noteStart = dynamic_cast<CANote*>(static_cast<CAMark*>(eltStart)->associatedElement());
+				}
+				
+				CAMusElement *eltEnd = currentScoreView()->selection().back()->musElement();
+				CANote *noteEnd = 0;
+				if (eltEnd->musElementType()==CAMusElement::Note) {
+					noteEnd = static_cast<CANote*>(eltEnd);
+				} else
+				if (eltEnd->musElementType()==CAMusElement::Mark) {
+					noteEnd = dynamic_cast<CANote*>(static_cast<CAMark*>(eltEnd)->associatedElement());
+				}
 
 				// Insert Tie
 				if ( noteStart && musElementFactory()->slurType()==CASlur::TieType ) {
@@ -2772,8 +2787,8 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 					QList<CANote*> noteList = noteStart->voice()->getNoteList();
 					int end = noteList.indexOf(noteEnd);
 					for (int i=noteList.indexOf(noteStart); i<=end; i++)
-						if (((musElementFactory()->slurType()==CASlur::SlurType && (noteList[i]->slurStart())) || noteList[i]->slurEnd()) ||
-						     (((musElementFactory()->slurType()==CASlur::PhrasingSlurType && (noteList[i]->phrasingSlurStart()))) || noteList[i]->phrasingSlurEnd()) )
+						if ((musElementFactory()->slurType()==CASlur::SlurType && (noteList[i]->slurStart() || noteList[i]->slurEnd())) ||
+						    (musElementFactory()->slurType()==CASlur::PhrasingSlurType && (noteList[i]->phrasingSlurStart() || noteList[i]->phrasingSlurEnd())) )
 							return false;
 
 					if (((musElementFactory()->slurType()==CASlur::SlurType && (noteStart->slurStart())) || noteEnd->slurEnd()) ||
