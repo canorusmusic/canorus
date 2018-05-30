@@ -150,7 +150,7 @@ void CATransposeView::on_uiApply_clicked( QAbstractButton *b ) {
 		if ( uiByKeySig->isChecked() ) {
 			t.transposeByKeySig( CADrawableKeySignature::comboBoxRowToDiatonicKey(uiKeySigFrom->currentIndex()),
 					             CADrawableKeySignature::comboBoxRowToDiatonicKey(uiKeySigTo->currentIndex()),
-					             uiIntervalDir->currentIndex()?(-1):1 );
+					             uiKeySigDir->currentIndex()?(-1):1 );
 		} else
 		if ( uiByInterval->isChecked() ) {
 			CAInterval i;
