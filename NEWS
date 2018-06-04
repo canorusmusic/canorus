@@ -59,6 +59,10 @@
 - Show text edit when exactly one element is selected, otherwise, confirm any opened text edits and hide it.
 - fix for pluginmanager when no plugins are available
 - Streamline Translation with 5.6 (use official macros)
+- Support for latest gcc 7 (fix compilation)
+- Fix issue when opening recent files and saving showing "unknown file format"
+- Fix: If a non-playable is on first notem a slur could not be made
+- Fix issue on not working Key Signature based transposition downwards
 
 0.7.2
 =====

@@ -15,7 +15,7 @@ Build dependencies:
 The latest version of Qt5, Swig and CMake is preferred.
 Canorus requires the current "LTS" version 5.6 or later.
 
-- Qt development package >=5.3 (http://www.qt-project.org)
+- Qt development package >=5.6 (http://www.qt-project.org)
 - Swig >=2.0.12 (http://www.swig.org). Swig >= 3.0.8 is working too.
   (cmake does not support parallel installations of swig)
 - g++ >=5, make (http://gcc.gnu.org, http://www.mingw.org)
@@ -23,8 +23,8 @@ Canorus requires the current "LTS" version 5.6 or later.
 - Python development package >=3.0 (http://www.python.org)
 - (optional) Lyx, tex4ht (user's guide)     
 
-Qt5 Build (tested with version 5.6.2)
-- Get original Qt development package 5.6.2 (http://www.qt.io)
+Qt5 Build (tested with version 5.6.2 and 5.9.5)
+- Get original Qt development package 5.6.2 or 5.9.5 (http://www.qt.io)
 - It is strongly recommended not to use Qt coming with your distribution
 - Get Swig, g++, cmake, python, lyx as specified above
   (make sure to remove Swig 2.0 before using Swig 3.0)
@@ -32,7 +32,9 @@ Qt5 Build (tested with version 5.6.2)
 - Create a build folder, outside the source folder and "cd" into it
   $ cmake -DCMAKE_PREFIX_PATH=/opt/Qt/5.6/gcc_64/lib/cmake ../canorus/trunk
 - Ignore the warning about the missing ruby package
-- make -j4 (for dual-core use -j2 switch), on Intel i7 use -j8 / -j4
+- make -j4 (for dual-core use -j2 switch)
+  on AMD Ryzen or Intel i7 use -j8 / -j4 
+  depending on your available memory you may need to reduce the number
 
 Note that if you use the old way of building canorus you have to
 disable the local installation of Canorus when calling cmake:
@@ -86,8 +88,12 @@ Installation
 
 Compilation under Debian/Ubuntu:
 ===========================
-One-liner to install build dependencies on Ubuntu 17.10 Artful Aardvark:
+One-liner to install build dependencies on Ubuntu 17.10 Artful Aardvark if you don't use the original Qt development environment:
  $ sudo apt install cmake g++ make libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qtwebengine5-dev
+
+If you had installed the Ubuntu qt5 environment and wish to switch to (latest) Qt we
+recommend to first uninstall the above dev files (include QtCreator):
+ $ sudo apt remove libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qtwebengine5-dev
 
 Download the SVN/release version of canorus, go to Canorus root directory and run:
  $ debian/rules binary
@@ -97,6 +103,7 @@ Install the created .deb package.
 Debian based shipped binaries
 =============================
 We distribute binaries compiled with the official Qt 5.6 version. Built on xenial.
+In the near future we will switch to Qt 5.9 version, built on bionic.
 
 The debian package has a wrapper script canorus-qt.sh for the debian package
 that includes the libraries. 
@@ -109,6 +116,9 @@ installer in the /opt/Qt folder, precisely /opt/Qt/5.6/gcc_64/lib.
 
 They also may work with libraries of Qt 5.6 from your Distribution.
 Avoid using these with later versions (f.e. 5.7/5.8/5.9) of Qt, instead rebuild.
+
+There is an unofficial PPA for Ubuntu containing binaries for current Ubuntu series:
+https://launchpad.net/~ichthyo/+archive/ubuntu/music
 
 Troubleshooting:
 ================
