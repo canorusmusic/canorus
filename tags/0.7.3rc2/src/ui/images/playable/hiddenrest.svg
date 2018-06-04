@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="128"
+   height="128"
+   id="svg2165"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   sodipodi:modified="true"
+   version="1.0">
+  <defs
+     id="defs2167">
+    <linearGradient
+       id="linearGradient2301">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop2303" />
+      <stop
+         style="stop-color:#646464;stop-opacity:1;"
+         offset="1"
+         id="stop2305" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="310.03867"
+     inkscape:cy="0.92803443"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     width="128px"
+     height="128px"
+     inkscape:window-width="827"
+     inkscape:window-height="591"
+     inkscape:window-x="412"
+     inkscape:window-y="185" />
+  <metadata
+     id="metadata2170">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       transform="matrix(0.1659427,0,0,-0.1659427,49.443491,71.654379)"
+       id="g75041"
+       style="fill:#000000;fill-opacity:0.39215686"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/r4.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         d="M 66,396 C 71,399 75,398 80,396 C 83,395 102,372 160,304 C 201,254 237,211 239,208 C 247,197 248,184 241,170 C 234,154 222,142 186,112 C 175,102 163,92 159,88 C 122,53 112,-2 134,-45 C 141,-58 139,-56 201,-129 C 216,-146 229,-162 230,-164 C 232,-169 232,-173 230,-178 C 228,-183 225,-186 220,-188 C 212,-192 206,-190 199,-183 C 182,-165 147,-152 115,-150 C 94,-149 78,-154 69,-163 C 54,-180 51,-220 61,-259 C 66,-278 73,-293 82,-305 C 86,-310 86,-314 82,-318 C 78,-322 74,-322 70,-318 C 62,-311 36,-274 23,-251 C 16,-238 2,-211 -4,-197 C -10,-183 -18,-157 -21,-143 C -24,-129 -24,-108 -22,-100 C -18,-89 -11,-81 -1,-78 C 8,-76 27,-76 44,-77 C 67,-80 88,-85 116,-94 L 129,-99 L 124,-93 L 25,24 C -5,60 -8,64 -9,76 C -10,95 4,114 50,154 C 78,177 85,184 92,193 C 120,231 122,282 97,321 C 95,324 85,336 75,348 C 57,369 54,374 54,379 C 54,386 59,393 66,396 z "
+         id="path75043"
+         style="fill:#000000;fill-opacity:0.39215686" />
+    </g>
+    <g
+       transform="matrix(0.1659435,0,0,-0.1659435,45.854561,68.238839)"
+       id="g74157"
+       style="fill:#0000ff;fill-opacity:0.48547716"
+       inkscape:export-filename="/home/matevz/apps/canorus/branches/matevz/src/fonts/r4.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         d="M 66,396 C 71,399 75,398 80,396 C 83,395 102,372 160,304 C 201,254 237,211 239,208 C 247,197 248,184 241,170 C 234,154 222,142 186,112 C 175,102 163,92 159,88 C 122,53 112,-2 134,-45 C 141,-58 139,-56 201,-129 C 216,-146 229,-162 230,-164 C 232,-169 232,-173 230,-178 C 228,-183 225,-186 220,-188 C 212,-192 206,-190 199,-183 C 182,-165 147,-152 115,-150 C 94,-149 78,-154 69,-163 C 54,-180 51,-220 61,-259 C 66,-278 73,-293 82,-305 C 86,-310 86,-314 82,-318 C 78,-322 74,-322 70,-318 C 62,-311 36,-274 23,-251 C 16,-238 2,-211 -4,-197 C -10,-183 -18,-157 -21,-143 C -24,-129 -24,-108 -22,-100 C -18,-89 -11,-81 -1,-78 C 8,-76 27,-76 44,-77 C 67,-80 88,-85 116,-94 L 129,-99 L 124,-93 L 25,24 C -5,60 -8,64 -9,76 C -10,95 4,114 50,154 C 78,177 85,184 92,193 C 120,231 122,282 97,321 C 95,324 85,336 75,348 C 57,369 54,374 54,379 C 54,386 59,393 66,396 z "
+         id="path74159"
+         style="fill:#0000ff;fill-opacity:0.48547716" />
+    </g>
+  </g>
+</svg>

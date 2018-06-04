@@ -1,0 +1,209 @@
+Overview of Canorus Libraries
+=============================
+
+This documents describes the available Canorus libs that can
+be used by plugins or scripts to integrate parts of the
+Canorus code.
+
+You might ask why plugins as it is a only a shared library.
+Actually you could create a browser plugin for displaying
+scores. More useful though is the access to Canorus objects
+not available this easily via the swig interface.
+
+This way you can create and manipulate your own Canorus 
+objects which should avoid the reeinvention or duplication
+of code normally not directly accessible via the swig
+interface as we need to keep it clean from Qt dependencies.
+
+The description is based on the description of the classes
+(one line per class) but I want to avoid class names due to
+the many class refactorings to be done (goal is that one class
+has one job - like read tar.gz, write tar.gz, create tar.gz,
+create tar, read tar -> 5 classes)
+
+Descriptions of IO, Ctl (and possible UI) usually belong to one
+single library (like FileIO, FileCtl -> libCanorusFile.dll) with
+export/import being one exception (-> libCanorusImpExp.dll)
+
+01) FileIO - High level operations on files and streams
+
+Manipulation (read/write) of tar.gz archives
+Create or read tar files (split up further ?)
+Autorecovery of files on abnormal application exit (kill/crash)
+Tools for manipulating streams and files
+Reading, Writing, Manipulation of Canorus settings*
+Create can archive files
+Read can archive files
+
+02) FileCtl - Controller for files and streams
+
+Filters shown in the file dialogs (f.e. open, export, import)
+QMimeData based extension for music elements (f.e. copy/paste)
+Typesetter types (could be integrated to Canorus settings)
+Creation, import, removal of (new) resources out of files or URLs
+zlib for archive manipulation, compression library
+
+03) ScoreHandling - Manipulation of the current score
+
+Creation, removal, configuration of music elements (factory)
+Transposing a set of notes for the given interval
+
+04) ExpImpCtl - General controllers for import and export
+
+base functionality for specific export filter
+base functionality for specific import filter
+
+05) Export - Export generators
+
+Lilypond export filter
+MusicXML export filter
+Midi export filter
+PDF export filter
+SVG export filterCreate can archive files
+
+06) Import - Import parsers to internal Canorus score
+
+Lilypond import filter
+Midi import filter
+MusicXML import filter
+
+07) MidiIO - High level operations on midi streams
+
+Generic midi interface for midi wrappers
+Live recording of midi events
+Non realtime music input for (midi) keyboards
+Playback events for music elements to be sent to a midi device
+  (could later be abstracted to a generic playback interface)
+
+08) RtMidi - Low level operations on midi streams
+
+Wrapper for RtMidi (static) library
+Cross-Plattform RtMidi implementation itself 
+
+09) EditHandling - Operations of edit functions
+
+Single Undo and Redo action (currently with some low level UI 
+  update operations)
+Undo and Redo command execution and stack handling
+
+10) ProgramExecution - Handling of external programs
+
+Run program as extern background (possibly blocking) process
+Shows the user guide of Canorus
+Runs a typesetter to create a pdf/svg document from an exported
+  document in the typsetter's format
+
+11) UIDialogs - Dialogs used for all kind of interaction or information
+
+Editor for changing actions (short cut, midi command, accel)
+Document properties dialog (title, composer, arranger etc.)
+Several property widgets embedded in document properties like
+  function mark, lyrics, voice or staff properties
+Midi Recorder view integrated in main window (dock widget)
+Settings Dialog (Editor, Appearance, Playback etc.)
+Transpose settings (integrated as dock widget)
+
+12) UICtl - Dialog control of interactions of information (updates)
+
+Updates a progress control during a long running user interface action
+Triggers actions to finally show a pdf document of the current score
+Triggers actions to print a document (SVG based output)
+single action (short cut, midi command, accel) for action editor
+
+13) DrawableBase - Interface or Abstractions for drawable elements
+
+Abstraction of drawing music elements
+Interface for drawing context (for music elements)
+Generic abstraction of all drawable types (currently music elements
+  and context)
+
+14) DrawableElems - Layout and drawing of music elements in their context
+
+Layouting and draw of accidental, barline, clef, figured bass context,
+  figured bass number, function mark context, function mark,
+  key signature, lyrics context, mark, midi note, note, rest, slur,
+  staff, syllable, time signature, tuplet
+
+15) UIWidgets - Single widgets used in editor and dialogs/properties etc.
+
+Help browser (showing user guide)
+LCD Number (for voice number representation)
+Group Box Tool button
+Menu Tool button (shows a "tool" menu on button click)
+Progress control integrated into status bar
+Tool button with a menu at the side
+Container for the tool button popup
+
+16) UIViews - Different representations of Canorus score
+
+Abstraction for different views (used by source or score view)
+Score view - Rendering the score itself (horizontal layout)
+Text edit view - Inside score editing of text (one line/word)
+Source view - Show score in lilypond, canorus or other formats
+Tab widget for the score view (stores multiple sheets)
+View container for score or source views (includes splitter)
+
+17) ScoreModelBase - "Database" of the score itself
+
+Abstraction for all music elements
+A context is a line of music elements in a score
+Document as top most score hierarchy consisting of multiple sheets
+Wraper for any resource added to a file (attached to a document)
+A single sheet of paper in a document containing different contexts
+A staff in the sheet - n-line staff (infinite long)
+A voice in the staff (containing the music elements)
+
+18) ScoreModelMusElem - Music element primitives
+
+Articulation (Accent, Marcato, Staccato, Trill, Portato etc.)
+Bar line (single, double, repeat etc.)
+Clef (Treble, Bass, Alto, Tenor etc.)
+(De)Crescendo
+Dynamic (pp, ff, sfz etc.)
+Fermata (length is variable)
+Figured bass number(s)
+Fingering (Thumb, RToe etc.)
+A note in the score (may be part of a chord)
+A rest in the score (may be hidden)
+Slur, Tie, Phrasing slur and Laissez vibrer tie
+Lyrics above/below a note (f.e. single/list of syllable(s) or words)
+
+19) ScoreModelCtlElem - Music elements for score or element control
+
+Bookmark shortcut (viak shortcut key)
+Musical presentation of a (musical) key
+Musical presentation of a note pitch
+Container for the figured bass
+Context to hold various function marks
+Function mark (subdominant, napolitan, cadenze chort etc.)
+  describing harmony flow of a scorec
+Music interval expressed with diatonical quality and quantity
+Single stanza of lyrics consisting of various syllables
+Mark that depends on other music elements like text signs or fingering
+
+20) ScorePlayback - Music elements for playback operation
+
+Change voice instrument for playback
+Midi note represents a note with custom length and midi defined pitch
+Playable instances of music elements
+Musical length of notes and rests (Breve, Whole, Quarter, Sixtyfourth etc.)
+Non-ordinary repeat signs like coda, segno and volta
+Ritardando and Accelerando changing the tempo linearily
+Tempo mark consisting of note(beat) and beats per minute
+
+21) Scripting
+
+Swig wrapper for Python
+Swig wrapper for Ruby
+(Swig wrapper for Prolog)
+
+22) PluginCtl - Plugin operations (including IO)
+
+Action Interface for a plugin (name, script language, function etc.)
+Control Interface for a plugin (name, actions, author, menu entry etc.)
+Backend for loading, unloading, installing, removing  and executing plugins
+Proxy and simple wrapper for python CLI and console and it's interface
+
+*This needs to be split up into two classes for IO and Ctl
+ so parts of it will move to the FileCtl library
+
