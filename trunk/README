@@ -88,12 +88,16 @@ Installation
 
 Compilation under Debian/Ubuntu:
 ===========================
-One-liner to install build dependencies on Ubuntu 17.10 Artful Aardvark if you don't use the original Qt development environment:
- $ sudo apt install cmake g++ make libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qtwebengine5-dev
+One-liner to install build dependencies on Ubuntu 17.10 Artful Aardvark:
+ $ sudo apt install cmake g++ make libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qtwebengine5-dev libasound2-dev
 
-If you had installed the Ubuntu qt5 environment and wish to switch to (latest) Qt we
-recommend to first uninstall the above dev files (include QtCreator):
- $ sudo apt remove libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qtwebengine5-dev
+For python scripting support, add:
+ $ sudo apt install python3-dev swig
+
+NOTE: If you had installed the Ubuntu qt5 environment and wish to switch to
+      (newer) Qt we recommend to first uninstall the above dev files (include
+      QtCreator):
+$ sudo apt purge libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qtwebengine5-dev
 
 Download the SVN/release version of canorus, go to Canorus root directory and run:
  $ debian/rules binary
