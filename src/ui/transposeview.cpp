@@ -71,17 +71,13 @@ void CATransposeView::show() {
 		}
 
 		if (k) { // key signature is placed
-			uiKeySigFrom->setCurrentIndex(
-				uiKeySigFrom->findData(
-					CADiatonicKey::diatonicKeyToString(k->diatonicKey())
-				)
-			);
+			int idx = uiKeySigFrom->findData(CADiatonicKey::diatonicKeyToString(k->diatonicKey()));
+			uiKeySigFrom->setCurrentIndex(idx);
+			uiKeySigTo->setCurrentIndex(idx);
 		} else { // set the key signature to empty (C-Major by default)
-			uiKeySigFrom->setCurrentIndex(
-				uiKeySigFrom->findData(
-					CADiatonicKey::diatonicKeyToString(CADiatonicKey())
-				)
-			);
+			int idx = uiKeySigFrom->findData(CADiatonicKey::diatonicKeyToString(CADiatonicKey()));
+			uiKeySigFrom->setCurrentIndex(idx);
+			uiKeySigTo->setCurrentIndex(idx);
 		}
 	}
 
