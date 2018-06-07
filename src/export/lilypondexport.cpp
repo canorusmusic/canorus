@@ -153,10 +153,10 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				doAnacrusisCheck( time );
 				anacrusisCheck = false;
 			}
-			exportVolta( v->musElementList()[i] );	// A volta bracket has to come before a playable
+			exportMarksBeforeElement( v->musElementList()[i] );	// A volta bracket has to come before a playable
 			exportPlayable( static_cast<CAPlayable*>(v->musElementList()[i]) );
 		} else {
-			exportMarks(v->musElementList()[i]);
+			exportMarksAfterElement(v->musElementList()[i]);
 		}
 	}
 
@@ -232,7 +232,7 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 
 		// export chord marks at the end
 		if (!note->isPartOfChord() || note->isLastInChord()) {
-			exportMarks( note->getChord()[0] );
+			exportMarksAfterElement( note->getChord()[0] );
 		}
 
 		// add to the stream time, if the note is not part of the chord or is the last one in the chord
@@ -253,7 +253,7 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 			out() << playableLengthToLilyPond( rest->playableLength() );
 		}
 
-		exportMarks( rest );
+		exportMarksAfterElement( rest );
 
 		_lastPlayableLength = rest->playableLength();
 		_curStreamTime += rest->timeLength();
@@ -288,7 +288,7 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 
 	\sa exportNoteMarks()
 */
-void CALilyPondExport::exportMarks( CAMusElement *elt ) {
+void CALilyPondExport::exportMarksAfterElement( CAMusElement *elt ) {
 	for (int i=0; i<elt->markList().size(); i++) {
 		CAMark *curMark = elt->markList()[i];
 
@@ -359,18 +359,13 @@ void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 
 			break;
 		}
-		case CAMark::Tempo: {
-			CATempo *t = static_cast<CATempo*>(curMark);
-			out() << "\\tempo " << playableLengthToLilyPond(t->beat()) << " = " << t->bpm() << " ";
-			
-			break;
-		}
 		case CAMark::Ritardando: {
 			CARitardando *r = static_cast<CARitardando*>(curMark);
 			out() << "^\\markup{ \\text \\italic \"" << ((r->ritardandoType()==CARitardando::Ritardando)?"rit.":"accel.") << "\"} ";
 			
 			break;
 		}
+		case CAMark::Tempo:
 		case CAMark::Crescendo:
 		case CAMark::Pedal:
 		case CAMark::InstrumentChange:
@@ -386,7 +381,7 @@ void CALilyPondExport::exportMarks( CAMusElement *elt ) {
 /*!
 	Exports the note-specific marks like fingering.
 
-	\sa exportMarks()
+	\sa exportMarksAfterElement()
  */
 void CALilyPondExport::exportNoteMarks( CANote *elt ) {
 	for (int i=0; i<elt->markList().size(); i++) {
@@ -423,7 +418,7 @@ void CALilyPondExport::exportNoteMarks( CANote *elt ) {
 /*!
 	Exports a volta bracket which is currently just a \a elt mark beginning with voltaBar or voltaRepeat.
 */
-void CALilyPondExport::exportVolta( CAMusElement *elt ) {
+void CALilyPondExport::exportMarksBeforeElement( CAMusElement *elt ) {
 	for (int i=0; i<elt->markList().size(); i++) {
 		CAMark *curMark = elt->markList()[i];
 
@@ -445,8 +440,14 @@ void CALilyPondExport::exportVolta( CAMusElement *elt ) {
 			};
 			break;
 		}
-		case CAMark::Fingering:
-		case CAMark::Tempo:
+		case CAMark::Tempo: {
+			CATempo *t = static_cast<CATempo*>(curMark);
+			out() << "\\tempo " << playableLengthToLilyPond(t->beat()) << " = " << t->bpm() << " ";
+			
+			break;
+                }
+
+                case CAMark::Fingering:
 		case CAMark::Ritardando:
 		case CAMark::Crescendo:
 		case CAMark::Pedal:

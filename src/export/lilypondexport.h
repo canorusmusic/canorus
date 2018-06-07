@@ -46,9 +46,9 @@ private:
 	void exportVoiceImpl(CAVoice *voice);
 	void exportLyricsContextBlock(CALyricsContext *lc);
 	void exportLyricsContextImpl(CALyricsContext* lc);
-	void exportMarks( CAMusElement* );
+	void exportMarksBeforeElement( CAMusElement* );
 	void exportNoteMarks( CANote* );
-	void exportVolta( CAMusElement* );
+	void exportMarksAfterElement( CAMusElement* );
 	void exportPlayable( CAPlayable *elt );
 
 	void writeDocumentHeader();

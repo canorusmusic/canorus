@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE canorusml>
+<canorus-document>
+ <canorus-version>0.7.3rc2</canorus-version>
+ <document date-created="2018-06-07T12:31:51" time-edited="316" date-last-modified="2018-06-07T12:56:22">
+  <sheet name="Sheet1">
+   <staff name="Staff1" number-of-lines="5">
+    <voice name="Staff1Voice1" stem-direction="stem-up" midi-pitch-offset="0" midi-program="0" midi-channel="0">
+     <clef offset="0" c1="-2" time-start="0" clef-type="G" color="#00000000"/>
+     <time-signature time-signature-type="classical" time-start="0" beat="4" beats="4" color="#00000000"/>
+     <note time-start="0" color="#00000000" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="39"/>
+      <mark time-start="0" mark-type="Tempo" bpm="72" color="#00000000" time-length="256">
+       <playable-length music-length="half" dotted="0"/>
+      </mark>
+      <mark text="Tempo mark 1" time-start="0" mark-type="Text" color="#00000000" time-length="256"/>
+     </note>
+     <note time-start="256" color="#00000000" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="38"/>
+     </note>
+     <note time-start="512" color="#00000000" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="35"/>
+     </note>
+     <note time-start="768" color="#00000000" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="36"/>
+     </note>
+     <barline time-start="1024" barline-type="single" color="#00000000"/>
+     <note time-start="1024" color="#00000000" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="36"/>
+     </note>
+     <note time-start="1280" color="#00000000" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="35"/>
+     </note>
+     <note time-start="1536" color="#00000000" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="33"/>
+     </note>
+     <note time-start="1792" color="#00000000" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="33"/>
+      <mark time-start="1792" mark-type="Tempo" bpm="80" color="#00000000" time-length="256">
+       <playable-length music-length="half" dotted="0"/>
+      </mark>
+      <mark text="Tempo mark 2" time-start="1792" mark-type="Text" color="#00000000" time-length="256"/>
+     </note>
+     <barline time-start="2048" barline-type="single" color="#00000000"/>
+     <note time-start="2048" color="#00000000" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="33"/>
+     </note>
+     <note time-start="2304" color="#00000000" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="33"/>
+     </note>
+    </voice>
+   </staff>
+  </sheet>
+ </document>
+</canorus-document>
