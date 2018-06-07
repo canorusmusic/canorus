@@ -410,6 +410,10 @@ SET(Canorus_RtMidi_Srcs		# RtMIDI library
 	rtmidi/RtMidi.cpp
 )
 
+SET(Canorus_ZIP_Srcs
+    zip/zip.c
+)
+
 SET(Canorus_PMIDI_Srcs		# PMIDI excerpts
 	import/pmidi/glib.c
 	import/pmidi/elements.c
@@ -434,7 +438,8 @@ SET(Canorus_Srcs
 	${Canorus_Export_Srcs}
 	${Canorus_Import_Srcs}
 	${Canorus_RtMidi_Srcs}
-	${Canorus_Widget_Srcs}
+        ${Canorus_ZIP_Srcs}
+        ${Canorus_Widget_Srcs}
 	${Canorus_PMIDI_Srcs}
 )
 
@@ -452,7 +457,8 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	${Canorus_Export_Srcs}
 	${Canorus_Ctl_Srcs}
 	${Canorus_RtMidi_Srcs}
-	${Canorus_PMIDI_Srcs}
+        ${Canorus_ZIP_Srcs}
+        ${Canorus_PMIDI_Srcs}
 	interface/rtmididevice.cpp
 	interface/mididevice.cpp
 	interface/playback.cpp
