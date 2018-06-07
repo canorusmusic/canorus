@@ -483,7 +483,7 @@ void CAMainWin::createCustomActions() {
 		uiFMTonicDegree->addButton( QIcon("images:functionmark/fmvii.svg"), CAFunctionMark::VII, tr("VII") );
 	uiFMKeySig = new QComboBox( this );
 		uiFMKeySig->setObjectName("uiFMKeySig");
-		CADrawableKeySignature::populateComboBox( uiFMKeySig );
+		CAKeySignatureUI::populateComboBox( uiFMKeySig );
 
 	uiDynamicToolBar = new QToolBar( tr("Dynamic marks ToolBar"), this );
 	uiDynamicText = new CAMenuToolButton( tr("Select Dynamic"), 5, this );
@@ -4916,7 +4916,11 @@ void CAMainWin::updateFMToolBar() {
 		uiFMTonicDegree->setCurrentId( fm->tonicDegree()*(fm->isTonicDegreeMinor()?-1:1) );
 		uiFMEllipse->setChecked( fm->isPartOfEllipse() );
 
-		uiFMKeySig->setCurrentIndex( CADrawableKeySignature::diatonicKeyToRow(fm->key()) );
+		uiFMKeySig->setCurrentIndex(
+			uiFMKeySig->findData(
+				CADiatonicKey::diatonicKeyToString(fm->key())
+			)
+		);
 
 		uiFMToolBar->show();
 	} else {

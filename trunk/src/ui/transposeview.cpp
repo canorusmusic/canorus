@@ -7,6 +7,7 @@
 
 #include "ui/transposeview.h"
 #include "ui/mainwin.h"
+#include "scoreui/keysignatureui.h"
 #include "core/undo.h"
 #include "canorus.h"
 
@@ -27,16 +28,16 @@ CATransposeView::~CATransposeView() {
 
 void CATransposeView::setupCustomUi() {
 	// populate Key signatures
-	CADrawableKeySignature::populateComboBox( uiKeySigFrom );
-	CADrawableKeySignature::populateComboBox( uiKeySigTo );
-	CADrawableKeySignature::populateComboBoxDirection( uiKeySigDir );
+	CAKeySignatureUI::populateComboBox( uiKeySigFrom );
+	CAKeySignatureUI::populateComboBox( uiKeySigTo );
+	CAKeySignatureUI::populateComboBoxDirection( uiKeySigDir );
 
 	// populate Intervals
 	for (int i=1; i<9; i++) {
 		// also triggers currentIndexChanged() and populates uiIntervalQuality
 		uiIntervalQuantity->addItem( CAInterval::quantityToReadable(i) );
 	}
-	CADrawableKeySignature::populateComboBoxDirection( uiIntervalDir );
+	CAKeySignatureUI::populateComboBoxDirection( uiIntervalDir );
 
 	connect( uiByKeySig, SIGNAL(toggled(bool)), this, SLOT(updateUi(bool)) );
 	connect( uiByInterval, SIGNAL(toggled(bool)), this, SLOT(updateUi(bool)) );
@@ -70,9 +71,17 @@ void CATransposeView::show() {
 		}
 
 		if (k) { // key signature is placed
-			uiKeySigFrom->setCurrentIndex( CADrawableKeySignature::diatonicKeyToRow( k->diatonicKey() ) );
+			uiKeySigFrom->setCurrentIndex(
+				uiKeySigFrom->findData(
+					CADiatonicKey::diatonicKeyToString(k->diatonicKey())
+				)
+			);
 		} else { // set the key signature to empty (C-Major by default)
-			uiKeySigFrom->setCurrentIndex( CADrawableKeySignature::diatonicKeyToRow( CADiatonicKey() ) );
+			uiKeySigFrom->setCurrentIndex(
+				uiKeySigFrom->findData(
+					CADiatonicKey::diatonicKeyToString(CADiatonicKey())
+				)
+			);
 		}
 	}
 
@@ -148,8 +157,8 @@ void CATransposeView::on_uiApply_clicked( QAbstractButton *b ) {
 
 		// do the transpose dependent on the current transpose mode
 		if ( uiByKeySig->isChecked() ) {
-			t.transposeByKeySig( CADrawableKeySignature::comboBoxRowToDiatonicKey(uiKeySigFrom->currentIndex()),
-					             CADrawableKeySignature::comboBoxRowToDiatonicKey(uiKeySigTo->currentIndex()),
+			t.transposeByKeySig( CADiatonicKey(uiKeySigFrom->currentData().toString()),
+								 CADiatonicKey(uiKeySigTo->currentData().toString()),
 					             uiKeySigDir->currentIndex()?(-1):1 );
 		} else
 		if ( uiByInterval->isChecked() ) {

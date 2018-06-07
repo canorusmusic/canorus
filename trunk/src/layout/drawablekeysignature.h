@@ -26,11 +26,6 @@ class CADrawableKeySignature : public CADrawableMusElement {
 		CADrawableKeySignature *clone(CADrawableContext* newContext = 0);
 		inline CAKeySignature *keySignature() { return (CAKeySignature*)_musElement; }
 
-		static void populateComboBox( QComboBox *c );
-		static CADiatonicKey comboBoxRowToDiatonicKey( int row );
-		static int diatonicKeyToRow( CADiatonicKey k );
-		static void populateComboBoxDirection( QComboBox *c );
-
 	private:
 		QList<CADrawableAccidental*> _drawableAccidentalList;	///List of actual drawable accidentals
 };

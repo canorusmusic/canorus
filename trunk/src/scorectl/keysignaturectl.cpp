@@ -56,7 +56,8 @@ CAKeySignatureCtl::~CAKeySignatureCtl()
 	Changes the number of accidentals.
 */
 void CAKeySignatureCtl::on_uiKeySig_activated( int row ) {
-	CADiatonicKey key = CADrawableKeySignature::comboBoxRowToDiatonicKey( row );
+        
+	CADiatonicKey key(static_cast<QComboBox*>(sender())->itemData(row).toString());
 
 	if (_poMainWin->mode()==CAMainWin::InsertMode) {
 		_poMainWin->musElementFactory()->setDiatonicKeyNumberOfAccs( key.numberOfAccs() );
@@ -92,4 +93,3 @@ void CAKeySignatureCtl::on_uiInsertKeySig_toggled(bool checked) {
 		_poMainWin->setMode( CAMainWin::InsertMode, _oHash );
 	}
 }
-
