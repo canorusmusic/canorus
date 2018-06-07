@@ -30,6 +30,9 @@ public:
 	void updateKeySigToolBar();
 	inline CAKeySignatureCtl &ctl() { return *_poKeySignatureCtl; }
 
+	static void populateComboBox( QComboBox *c );
+	static void populateComboBoxDirection( QComboBox *c );
+
 protected:
 	CAMainWin    	  *_poMainWin;
 	CAKeySignatureCtl *_poKeySignatureCtl;
