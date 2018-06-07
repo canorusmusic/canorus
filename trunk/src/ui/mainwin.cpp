@@ -2454,37 +2454,55 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 		case Qt::Key_Backtab: {
 			int idx = -1;
 			if( e->modifiers() == Qt::ControlModifier ) // Control tab has different use
-				idx = uiTabWidget->currentIndex();
-			else
-				idx = currentSheet()->voiceList().indexOf(currentVoice());
+                            idx = uiTabWidget->currentIndex();
+			else if (currentVoice())
+                            idx = currentSheet()->voiceList().indexOf(currentVoice());
+                        else
+                            idx = currentSheet()->contextList().indexOf(currentContext());
+                        
 			if (e->key()==Qt::Key_Tab) {
 				idx++;
 			} else {
 				idx--;
 			}
+                        
 			// Next/Previous sheet selection
 			if( e->modifiers() == Qt::ControlModifier )
 			{
 				// Cycle if first or last sheet was reached
-				if( idx >= uiTabWidget->count() )
-					idx = 0;
+				if ( idx >= uiTabWidget->count() )
+                                    idx = 0;
 				else
-				if( idx<0 )
-					idx = uiTabWidget->count() -1;
+				if ( idx<0 )
+                                    idx = uiTabWidget->count() -1;
 				//if( idx >=0 && idx < uiTabWidget->count() )
 					uiTabWidget->setCurrentIndex(idx);
 			}
 			else // Next/Previous Voice selection
 			if (currentVoice() && (mode()==InsertMode || mode()==EditMode)) {
 				// Cycle if first or last voice number was reached
-				if( idx >= currentSheet()->voiceList().size() )
-					idx = 0;
+				if ( idx >= currentSheet()->voiceList().size() )
+                                    idx = 0;
 				else
-				if( idx<0 )
-					idx = currentSheet()->voiceList().size() -1;
+				if ( idx<0 )
+                                    idx = currentSheet()->voiceList().size()-1;
 				
-				setCurrentVoice( currentSheet()->voiceList()[idx] );
+                                CAVoice *v = currentSheet()->voiceList()[idx];
+                                currentScoreView()->selectContext( v->staff() );
+                                uiVoiceNum->setRealValue( v->voiceNumber() ); // also calls setCurrentVoice and updates the UI
 			}
+                        else // Next/Previous Context, if selection is empty
+                        if (currentScoreView()->selection().size()==0)
+                        {
+                            if ( idx >= currentSheet()->contextList().size() )
+                                idx = 0 ;
+                            else
+                            if ( idx<0 )
+                                idx = currentSheet()->contextList().size()-1;
+                            currentScoreView()->selectContext( currentSheet()->contextList()[idx] );
+                            updateToolBars();
+                            currentScoreView()->repaint();
+                        }
 			break;
 		}
 	}
