@@ -16,13 +16,13 @@
 
 	<menu>
 		<name>pcMenu</name>
-		<title>CLI</title>
+		<title>&CLI</title>
 	</menu>
 
 	<action>
 		<parent-menu>pcMenu</parent-menu>
 		<name>pcSubMenu</name>
-		<text>Invoke Python CLI</text>
+		<text>&Invoke Python CLI</text>
 		<lang>python</lang>
 		<filename>pycli.py</filename>
 		<function>pycli</function>
