@@ -305,7 +305,7 @@ void CAMainWin::createCustomActions() {
 		uiMarkType->addButton( QIcon("images:mark/dynamic/decrescendo.svg"),   CAMark::Crescendo*(-1), tr("Decrescendo") );
 		uiMarkType->addButton( QIcon("images:mark/fermata/normal.svg"),        CAMark::Fermata, tr("Fermata") );
 		uiMarkType->addButton( QIcon("images:mark/text.svg"),                  CAMark::Text, tr("Arbitrary Text") );
-		uiMarkType->addButton( QIcon("images:mark/repeatmark/coda.svg"),       CAMark::RepeatMark, tr("Repeat Mark") );
+		uiMarkType->addButton( QIcon("images:mark/repeatmark/volta1.svg"),       CAMark::RepeatMark, tr("Repeat Mark") );
 		uiMarkType->addButton( QIcon("images:mark/pedal.svg"),                 CAMark::Pedal, tr("Pedal Mark") );
 		uiMarkType->addButton( QIcon("images:mark/bookmark.svg"),              CAMark::BookMark, tr("Bookmark") );
 		uiMarkType->addButton( QIcon("images:mark/rehersalmark.svg"),          CAMark::RehersalMark, tr("Rehersal Mark") );
@@ -554,15 +554,15 @@ void CAMainWin::createCustomActions() {
 	uiRepeatMarkToolBar = new QToolBar( tr("Repeat Mark ToolBar"), this );
 	uiRepeatMarkType = new CAMenuToolButton( tr("Repeat Mark Type"), 3, this );
 		uiRepeatMarkType->setObjectName("uiRepeatMarkType");
+		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/volta1.svg"), -2, tr("Volta 1st", "repeat mark") ); // -1 can't be used?!
+		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/volta2.svg"), -3, tr("Volta 2nd", "repeat mark") );
+		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/volta3.svg"), -4, tr("Volta 3rd", "repeat mark") );
 		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/segno.svg"), CARepeatMark::Segno, tr("Segno", "repeat mark") );
 		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/coda.svg"), CARepeatMark::Coda, tr("Coda", "repeat mark") );
 		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/varcoda.svg"), CARepeatMark::VarCoda, tr("VarCoda", "repeat mark") );
 		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/dalsegno.svg"), CARepeatMark::DalSegno, tr("Dal Segno", "repeat mark") );
 		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/dalcoda.svg"), CARepeatMark::DalCoda, tr("Dal Coda", "repeat mark") );
 		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/dalvarcoda.svg"), CARepeatMark::DalVarCoda, tr("Dal VarCoda", "repeat mark") );
-		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/volta1.svg"), -2, tr("Volta 1st", "repeat mark") ); // -1 can't be used?!
-		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/volta2.svg"), -3, tr("Volta 2nd", "repeat mark") );
-		uiRepeatMarkType->addButton( QIcon("images:mark/repeatmark/volta3.svg"), -4, tr("Volta 3rd", "repeat mark") );
 
 	uiFingeringToolBar = new QToolBar( tr("Fingering ToolBar"), this );
 	uiFinger = new CAMenuToolButton( tr("Finger"), 5, this );
