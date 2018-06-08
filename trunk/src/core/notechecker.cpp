@@ -12,6 +12,7 @@
 #include "score/staff.h"
 #include "score/playablelength.h"
 #include "score/timesignature.h"
+#include "score/barline.h"
 #include "score/notecheckererror.h"
 
 /*!
@@ -49,6 +50,10 @@ void CANoteChecker::checkSheet(CASheet *sheet) {
 		int lastTimeSigRequiredDuration = static_cast<CATimeSignature*>(timeSigs[lastTimeSigIdx])->barDuration();
 		int lastBarlineTime = -1;
 		for (int j=0; j<barlines.size(); j++) {
+			if (static_cast<CABarline*>(barlines[j])->barlineType()==CABarline::Dotted) {
+				continue;
+			}
+
 			if (((lastTimeSigIdx+1)<timeSigs.size()) && barlines[j]->timeStart()>timeSigs[lastTimeSigIdx]->timeStart() ) {
 				// go to next time sig
 				lastTimeSigIdx++;
