@@ -97,7 +97,7 @@ CAMusElementFactory::CAMusElementFactory() {
 	_crescendoFinalVolume = 50;
 	_crescendoType = CACrescendo::Crescendo;
 
-	_repeatMarkType = CARepeatMark::Segno;
+	_repeatMarkType = CARepeatMark::Volta;
 	_repeatMarkVoltaNumber = 1;
 
 	_fingeringFinger = CAFingering::First;
