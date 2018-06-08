@@ -23,7 +23,16 @@
   </property>
   <widget class="QWidget" name="uiCentralWidget">
    <layout class="QGridLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>6</number>
+    </property>
+    <property name="topMargin">
+     <number>6</number>
+    </property>
+    <property name="rightMargin">
+     <number>6</number>
+    </property>
+    <property name="bottomMargin">
      <number>6</number>
     </property>
     <property name="spacing">
@@ -53,7 +62,7 @@
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>26</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="uiMenuEdit">
@@ -74,7 +83,7 @@
     <property name="title">
      <string>&amp;Tools</string>
     </property>
-    <addaction name="uiGotoBar"/>
+    <addaction name="uiJumpTo"/>
     <addaction name="uiTranspose"/>
     <addaction name="uiNoteCount"/>
     <addaction name="uiMidiRecorder"/>
@@ -436,15 +445,12 @@
     <string>Fit to &amp;width</string>
    </property>
   </action>
-  <action name="uiGotoBar">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
+  <action name="uiJumpTo">
    <property name="text">
     <string>&amp;Goto bar...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+G</string>
+    <string>Ctrl+J</string>
    </property>
   </action>
   <action name="uiShowStatusBar">
@@ -937,7 +943,7 @@
   </action>
   <action name="actionRecent_documents">
    <property name="text">
-    <string>recent documents dummy</string>
+    <string>&amp;recent documents dummy</string>
    </property>
   </action>
   <action name="uiMidiRecorder">

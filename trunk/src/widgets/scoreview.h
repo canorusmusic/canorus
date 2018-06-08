@@ -30,6 +30,7 @@ class CADrawable;
 class CADrawableMusElement;
 class CADrawableContext;
 class CADrawableNote;
+class CADrawableBarline;
 class CAMusElement;
 class CAContext;
 class CASheet;
@@ -140,6 +141,7 @@ public:
 	CADrawableContext *nearestDownContext(double x, double y);
 
 	int calculateTime(double x, double y);
+	QMap<int, CADrawableBarline*> computeBarlinePositions(bool dotted=false);
 
 	CAContext *contextCollision(double x, double y);
 

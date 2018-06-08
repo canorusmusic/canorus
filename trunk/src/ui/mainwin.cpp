@@ -32,6 +32,7 @@
 #include "ui/settingsdialog.h"
 #include "ui/propertiesdialog.h"
 #include "ui/transposeview.h"
+#include "ui/jumptoview.h"
 #include "ui/actionstorage.h"
 
 #include "scoreui/keysignatureui.h"
@@ -185,15 +186,18 @@ CAMainWin::CAMainWin(QMainWindow *oParent)
     _resourceView = new CAResourceView( nullptr, nullptr );
 	_resourceView->hide();
 
-    _midiRecorderView = nullptr;
+	// Tools
+	_midiRecorderView = nullptr;
 
 	_transposeView = new CATransposeView( this );
 	addDockWidget( Qt::RightDockWidgetArea, _transposeView );
 	_transposeView->hide();
 
+	_jumpToView = new CAJumpToView( this );
+
 	_permanentStatusBar = statusBar();
 
-    setDocument( nullptr );
+	setDocument( nullptr );
     _poExp = nullptr;
 	CACanorus::addMainWin( this );
 }
@@ -4283,6 +4287,12 @@ void CAMainWin::on_uiMidiRecorder_triggered() {
 void CAMainWin::on_uiTranspose_triggered() {
 	if (document()) {
 		_transposeView->show();
+	}
+}
+
+void CAMainWin::on_uiJumpTo_triggered() {
+	if (document() && currentSheet()) {
+		_jumpToView->show();
 	}
 }
 

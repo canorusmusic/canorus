@@ -504,6 +504,58 @@ int CAScoreView::calculateTime(double x, double y) {
 }
 
 /*!
+	Creates a map of a bar number -> drawable barline in the score of a staff
+	with most barlines and enumerates them.
+
+	This function is usually called when drawing a ruler or jumping to specific bar.
+
+	\param dotted Also include dotted barlines in the list (which are usually ignored in the bar count)
+	\return Map of bar number -> drawable barline of the staff with most barlines
+*/
+QMap<int, CADrawableBarline*> CAScoreView::computeBarlinePositions(bool dotted) {
+	QList<CADrawableContext*> dContextList = _drawableCList.list();
+	QMap<int, CADrawableBarline*> result;
+
+	// determine staff with most barlines
+	CADrawableStaff *dStaff = 0;
+	for (int i=0; i<dContextList.size(); i++) {
+		if ((dContextList[i]->drawableContextType()==CADrawableContext::DrawableStaff) &&
+			(!dStaff || dStaff->drawableBarlineList().size()<static_cast<CADrawableStaff*>(dContextList[i])->drawableBarlineList().size())) {
+			dStaff = static_cast<CADrawableStaff*>(dContextList[i]);
+		}
+	}
+
+	QList<CADrawableBarline *> drawableBarlineList = dStaff->drawableBarlineList();
+
+	// remove dotted barlines, if dotted=false
+	if (!dotted) {
+		for (int i=0; i<drawableBarlineList.size(); i++) { // filter out dotted barlines
+			if (drawableBarlineList[i]->barline()->barlineType()==CABarline::Dotted) {
+				drawableBarlineList.removeAt(i);
+				i--;
+			}
+		}
+	}
+
+	if(dStaff && !drawableBarlineList.isEmpty())
+	{
+		// determine the bar number + do we have a pickup measure in the beginning
+		CADrawableTimeSignature *firstDTimeSig = (dStaff->drawableTimeSignatureList().size()?dStaff->drawableTimeSignatureList()[0]:0);
+		int barlineOffset = 2;
+		if (firstDTimeSig &&
+			drawableBarlineList[0]->barline()->timeStart() < firstDTimeSig->timeSignature()->barDuration() ) {
+			barlineOffset = 1;
+		}
+
+		for (int i=0; i<drawableBarlineList.size(); i++) {
+			result[i+barlineOffset] = drawableBarlineList[i];
+		}
+	}
+
+	return result;
+}
+
+/*!
 	If the given coordinates hit any of the contexts, returns that context.
 */
 CAContext *CAScoreView::contextCollision(double x, double y) {
@@ -976,56 +1028,31 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 	if (CACanorus::settings()->showRuler()) {
 		p.fillRect(0, 0, width(), RULER_HEIGHT, QColor::fromRgb(200, 200, 200, 128));
 		p.setPen(Qt::lightGray);
-		// find a staff with most barlines
-		QList<CADrawableContext*> dContextList = _drawableCList.list();
-		CADrawableStaff *dStaff = 0;
-		for (int i=0; i<dContextList.size(); i++) {
-			if ((dContextList[i]->drawableContextType()==CADrawableContext::DrawableStaff) &&
-				(!dStaff || dStaff->drawableBarlineList().size()<static_cast<CADrawableStaff*>(dContextList[i])->drawableBarlineList().size())) {
-				dStaff = static_cast<CADrawableStaff*>(dContextList[i]);
-			}
-		}
-		
+
 		QFont font("FreeSans");
 		font.setPixelSize( qRound(RULER_HEIGHT*0.8) );
 		p.setFont(font);
 		p.setPen(Qt::black);
-		
-		// draw the barline marks
 
-		QList<CADrawableBarline *> drawableBarlineList = dStaff->drawableBarlineList();
-		for (int i=0; i<drawableBarlineList.size(); i++) { // filter out dotted barlines
-			if (drawableBarlineList[i]->barline()->barlineType()==CABarline::Dotted) {
-				drawableBarlineList.removeAt(i);
-				i--;
+		QMap<int, CADrawableBarline*> dBarlineMap = computeBarlinePositions(false);
+
+		if (!dBarlineMap.isEmpty()) {
+			int curBarlineNumber;
+			for (curBarlineNumber=dBarlineMap.firstKey(); curBarlineNumber<=dBarlineMap.lastKey() && dBarlineMap[curBarlineNumber]->xPos()<_worldX; curBarlineNumber++);
+
+			for (; curBarlineNumber<=dBarlineMap.lastKey() &&
+				   dBarlineMap[curBarlineNumber]->xPos()>_worldX &&
+				   dBarlineMap[curBarlineNumber]->xPos()+dBarlineMap[curBarlineNumber]->width()<_worldX+_worldW;
+				 curBarlineNumber++) {
+				CADrawableBarline *curDBarline = dBarlineMap[curBarlineNumber];
+				if (dBarlineMap.contains(curBarlineNumber+1)) { // don't draw the last bar number
+					double center = qRound((curDBarline->xPos()-_worldX)*_zoom);
+					p.drawText( center-1, RULER_HEIGHT-2, QString::number(curBarlineNumber) );
+				}
 			}
 		}
 
-		if(dStaff)
-		{
-			CABarline *curBarline = dStaff->getBarline(_worldX+_worldW);
-			CADrawableBarline *curDBarline = (curBarline?static_cast<CADrawableBarline*>(_mapDrawable.values( dStaff->getBarline(_worldX+width()/_zoom) )[0]):0);
-		
-			// determine the barline number + do we have a pickup measure in the beginning
-			int dBarlineIdx = drawableBarlineList.indexOf(curDBarline);
-			CADrawableTimeSignature *firstDTimeSig = (dStaff->drawableTimeSignatureList().size()?dStaff->drawableTimeSignatureList()[0]:0);
-			int barlineOffset = 2;
-			if (curDBarline && firstDTimeSig &&
-				drawableBarlineList[0]->barline()->timeStart() < firstDTimeSig->timeSignature()->barDuration() ) {
-				barlineOffset = 1;
-			}
-			
-			while ( curDBarline && curDBarline->xPos()>_worldX ) {
-				int center = qRound((curDBarline->xPos()-_worldX)*_zoom);
-				if (dBarlineIdx!=drawableBarlineList.size()-1) { // don't draw the last bar number
-					p.drawText( center-1, RULER_HEIGHT-2, QString::number(dBarlineIdx+barlineOffset) );
-				}
-				
-				dBarlineIdx--;
-				curDBarline = (dBarlineIdx>=0?drawableBarlineList[dBarlineIdx]:0);
-			}
-		}		
-		// TODO: draw the time marks
+		// TODO: draw the time marks on the left as in NoteEdit
 	}
 	
 	// draw note checker errors
