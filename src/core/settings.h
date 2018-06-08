@@ -113,9 +113,15 @@ public:
 	inline int midiInPort() { return _midiInPort; }
 	void setMidiInPort( int in );
 	static const int DEFAULT_MIDI_IN_PORT;
+	inline int midiInNumDevices() { return _midiInNumDevices; }
+	void setMidiInNumDevices( int inNum ) { _midiInNumDevices = inNum; }
+	static const int DEFAULT_MIDI_IN_NUM_DEVICES;
 	inline int midiOutPort() { return _midiOutPort; }
 	inline void setMidiOutPort( int out ) { _midiOutPort = out; }
 	static const int DEFAULT_MIDI_OUT_PORT;
+	inline int midiOutNumDevices() { return _midiOutNumDevices; }
+	void setMidiOutNumDevices( int outNum ) { _midiOutNumDevices = outNum; }
+	static const int DEFAULT_MIDI_OUT_NUM_DEVICES;
 
 	///////////////////////
 	// Printing settings //
@@ -204,6 +210,8 @@ private:
 	///////////////////////
 	int _midiOutPort; // -1 disabled, 0+ port number
 	int _midiInPort;  // -1 disabled, 0+ port number
+	int _midiOutNumDevices; // last number of MIDI out ports
+	int _midiInNumDevices;  // last number of MIDI in ports
 
 	///////////////////////
 	// Printing settings //
