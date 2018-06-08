@@ -44,6 +44,8 @@ const QColor CASettings::DEFAULT_DISABLED_ELEMENTS_COLOR = Qt::gray;
 
 const int CASettings::DEFAULT_MIDI_IN_PORT = -1;
 const int CASettings::DEFAULT_MIDI_OUT_PORT = -1;
+const int CASettings::DEFAULT_MIDI_IN_NUM_DEVICES = 0;
+const int CASettings::DEFAULT_MIDI_OUT_NUM_DEVICES = 0;
 
 const CATypesetter::CATypesetterType CASettings::DEFAULT_TYPESETTER = CATypesetter::LilyPond;
 #ifdef Q_OS_WIN
@@ -156,6 +158,8 @@ void CASettings::writeSettings() {
 #endif
 	setValue( "rtmidi/midioutport", midiOutPort() );
 	setValue( "rtmidi/midiinport", midiInPort() );
+	setValue( "rtmidi/midioutnumdevices", midiOutNumDevices() );
+	setValue( "rtmidi/midiinnumdevices", midiInNumDevices() );
 
 	setValue( "printing/typesetter", typesetter() );
 	setValue( "printing/typesetterlocation", typesetterLocation() );
@@ -297,6 +301,19 @@ int CASettings::readSettings() {
 		settingsPage = -1;
 	}
 
+	if ( contains("rtmidi/midiinnumdevices") ) {
+#ifndef SWIGCPP
+		if (value("rtmidi/midiinnumdevices").toInt() != CACanorus::midiDevice()->getInputPorts().count())
+			settingsPage = -1;
+		setMidiInNumDevices( CACanorus::midiDevice()->getInputPorts().count() );
+#endif
+	} else {
+		setMidiInNumDevices( DEFAULT_MIDI_IN_NUM_DEVICES );
+		settingsPage = -1;
+	}
+
+
+
 	if ( contains("rtmidi/midioutport")
 #ifndef SWIGCPP
 		 && value("rtmidi/midioutport").toInt() < CACanorus::midiDevice()->getOutputPorts().count()
@@ -305,6 +322,17 @@ int CASettings::readSettings() {
 		setMidiOutPort( value("rtmidi/midioutport").toInt() );
 	} else {
 		setMidiOutPort( DEFAULT_MIDI_OUT_PORT );
+		settingsPage = -1;
+	}
+
+	if ( contains("rtmidi/midioutnumdevices") ) {
+#ifndef SWIGCPP
+		if (value("rtmidi/midioutnumdevices").toInt() != CACanorus::midiDevice()->getOutputPorts().count())
+			settingsPage = -1;
+		setMidiOutNumDevices( CACanorus::midiDevice()->getOutputPorts().count() );
+#endif
+	} else {
+		setMidiOutNumDevices( DEFAULT_MIDI_OUT_NUM_DEVICES );
 		settingsPage = -1;
 	}
 
