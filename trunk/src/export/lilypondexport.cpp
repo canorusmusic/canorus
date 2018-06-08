@@ -800,9 +800,10 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 
 	writeDocumentHeader();
 
-	// Write the volta helper function in case we need it
+	/* Write the volta helper function in case we need it
 	if (!_voltaFunctionWritten)
 		voltaFunction();
+	 */
 
 	// Export voices as Lilypond variables: \StaffOneVoiceOne = \relative c { ... }
 	for ( int c = 0; c < sheet->contextList().size(); ++c ) {
