@@ -5,6 +5,7 @@ PROJECT(Canorus)
 
 # Assume that Debug build is only done by developers -> install in build folder
 # However be aware that this only works in a separate build folder!
+#SET(CMAKE_BUILD_TYPE "Debug")
 IF("${CMAKE_BUILD_TYPE}" MATCHES "Debug")
   SET(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
   SET(CANORUS_DEV_INSTALL True)
