@@ -58,6 +58,7 @@ class CAPrintCtl;
 class CAPreviewCtl;
 class CAPyConsole;
 class CATransposeView;
+class CAJumpToView;
 class CAMidiRecorderView;
 class CAKeybdInput;
 class CAExport;
@@ -275,6 +276,7 @@ private slots:
 	// Tools
 	void on_uiSettings_triggered();
 	void on_uiTranspose_triggered();
+	void on_uiJumpTo_triggered();
 	void on_uiMidiRecorder_triggered();
 
 	// Voice
@@ -346,6 +348,7 @@ private:
 	CAExport *_poExp; // abstract export instance
 	CAResourceView *_resourceView;
 	CATransposeView *_transposeView;
+	CAJumpToView *_jumpToView;
 	CAMidiRecorderView *_midiRecorderView;
 
 	QStatusBar *_permanentStatusBar;
