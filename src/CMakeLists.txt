@@ -38,16 +38,15 @@ ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 #######################
 # The following lines detect scripting environments (SWIG, Ruby, Python etc.)
 FIND_PACKAGE(SWIG 3.0.8 QUIET)
-MESSAGE("Swig version ${SWIG_VERSION}")
 IF(SWIG_FOUND AND NOT NO_SWIG)
 	SET(USE_SWIG True)
-	MESSAGE("SWIG found, using scripting extensions.")
+	MESSAGE("SWIG version ${SWIG_VERSION} found, using scripting extensions.")
 ELSE(SWIG_FOUND AND NOT NO_SWIG)
         # Try again with version 2
         FIND_PACKAGE(SWIG 2.0.12 QUIET)
         IF(SWIG_FOUND AND NOT NO_SWIG)
                 SET(USE_SWIG True)
-                MESSAGE("SWIG found, using scripting extensions.")
+		MESSAGE("SWIG version ${SWIG_VERSION} found, using scripting extensions.")
         ELSE(SWIG_FOUND AND NOT NO_SWIG)
                 MESSAGE("SWIG version >=2.0.12 or >= 3.0.3 *not* found, version is ${SWIG_VERSION}, disabling SWIG!")
                 SET(NO_RUBY True)
@@ -604,9 +603,9 @@ IF(USE_RUBY)
         SET(CANORUS_RUBY_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/canorusrubyRUBY_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_RUBY_WRAP_CXX} PROPERTIES GENERATED TRUE)
 	
-	SWIG_ADD_MODULE(CanorusRuby ruby
-		${Canorus_Swig_Srcs}
-		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
+	SWIG_ADD_LIBRARY(CanorusRuby
+		LANGUAGE ruby
+		SOURCES ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
 	)
 	SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusRuby_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
@@ -619,9 +618,9 @@ IF(USE_PYTHON)
         SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/canoruspythonPYTHON_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES GENERATED TRUE)
 	
-	SWIG_ADD_MODULE(CanorusPython python 		# Warning! CMake renames CanorusPython automatically to _CanorusPython
-		${Canorus_Swig_Srcs}
-		${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i
+	SWIG_ADD_LIBRARY(CanorusPython
+		LANGUAGE python
+		SOURCES ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i
 	)
 	SWIG_LINK_LIBRARIES(CanorusPython ${PYTHON_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusPython_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
