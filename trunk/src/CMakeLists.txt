@@ -492,8 +492,6 @@ set_source_files_properties(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES COMPILE_FLAGS 
 
 # Set translation files
 FILE(GLOB Canorus_Translation_Srcs "lang/*.ts") # lang/*.ts -> Canorus_Translation_Srcs
-#STRING(REGEX REPLACE "\\.ts" ".qm" Canorus_Translation_Bins "${Canorus_Translation_Srcs}") # Set Canorus_Translation_Bins to same values as Canorus_Translation_Srcs with different extensions
-FILE(GLOB Canorus_Translation_Bins ${CMAKE_BINARY_DIR}"/*.qm") # lang/*.ts -> Canorus_Translation_Srcs
 
 SET(Canorus_Fonts	# Music fonts needed by Canorus
 	fonts/CenturySchL-BoldItal.ttf	# Century family needed for numbers and signs
@@ -715,19 +713,23 @@ ENDIF(MINGW)
 ###############
 # Translation #
 ###############
-qt5_create_translation(CANORUS_QM_FILES ${Canorus_UIC_Srcs} ${Canorus_Srcs} ${Canorus_Translation_Srcs} lang/template.ts)
-# Workaround for issue of duplicate ts files getting generated
-# Please write on the Canorus Dev List for a better
-SET(TSFOLDER ${CMAKE_SOURCE_DIR}/src/lang)
-FILE(REMOVE ${TSFOLDER}/*_*.ts)
-qt5_add_translation(CANORUS_QM_FILES ${Canorus_Translation_Srcs} )
-ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${CANORUS_QM_FILES})
+# Do not use qt5_create_translation since make clean will delete all previous
+# .ts files. Use custom command instead:
+#qt5_create_translation(Canorus_Translation_Bins ${Canorus_UIC_Srcs} ${Canorus_Srcs} lang/template.ts)
+ADD_CUSTOM_COMMAND(
+	TARGET canorus
+	PRE_BUILD
+	COMMAND ${Qt5_LUPDATE_EXECUTABLE}
+	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
+)
+qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
+
+ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${Canorus_Translation_Bins})
 ADD_DEPENDENCIES(canorus canorus_qm)
 
 ###############
 # Dev Install #
 ###############
-message("CANORUS_DEV_INSTALL " ${CANORUS_DEV_INSTALL} " CANORUS_INSTALL_PREFIX " ${CANORUS_INSTALL_PREFIX})
 IF(${CANORUS_DEV_INSTALL} MATCHES True)
     ADD_CUSTOM_COMMAND(
         TARGET canorus
