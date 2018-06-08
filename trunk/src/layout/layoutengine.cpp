@@ -363,6 +363,13 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			}
 		}
 
+		// Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
+		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+		for (int i=0; i<streams; i++)
+			if (musStreamList[i].size() &&
+				musStreamList[i].last()->musElementType()!=CAMusElement::FunctionMark)
+				streamsX[i] = maxX;
+
 		// Place accidentals and key names of the function marks, if needed.
 		// These elements are so called Support elements. They can't be selected and they're not really connected usually to any logical element, but they're needed when drawing.
 		int maxWidth = 0;
@@ -379,7 +386,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 				drawableContext = drawableContextMap[elt->context()];
 
 				if (elt->musElementType()==CAMusElement::Note &&
-				    ((CADrawableStaff*)drawableContext)->getAccs(streamsX[i], static_cast<CANote*>(elt)->diatonicPitch().noteName()) != static_cast<CANote*>(elt)->diatonicPitch().accs()
+					((CADrawableStaff*)drawableContext)->getAccs(streamsX[i], static_cast<CANote*>(elt)->diatonicPitch().noteName()) != static_cast<CANote*>(elt)->diatonicPitch().accs()
 				   ) {
 						newElt = new CADrawableAccidental(
 							((CANote*)elt)->diatonicPitch().accs(),
