@@ -138,6 +138,7 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 	
 	ui/midirecorder.ui
 	ui/transposeview.ui
+	ui/jumptoview.ui
 )
 
 # Define the MOC source files used by Canorus
@@ -150,6 +151,7 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	ui/settingsdialog.h
 	ui/propertiesdialog.h
 	ui/transposeview.h
+	ui/jumptoview.h
 	ui/singleaction.h
 
 	widgets/lcdnumber.h
@@ -324,6 +326,7 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/settingsdialog.cpp
 	ui/propertiesdialog.cpp
 	ui/transposeview.cpp
+	ui/jumptoview.cpp
 	ui/singleaction.cpp
         ui/actionstorage.cpp
 
