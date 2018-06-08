@@ -45,7 +45,7 @@ void CAActionStorage::storeActionsFromMainWindow(CAMainWin &mainWin)
     storeAction(mainWin.uiSelectAll);
     storeAction(mainWin.uiInvertSelection);
     storeAction(mainWin.uiZoomToWidth);
-    storeAction(mainWin.uiGotoBar);
+	storeAction(mainWin.uiJumpTo);
     storeAction(mainWin.uiShowStatusBar);
     storeAction(mainWin.uiFullscreen);
     storeAction(mainWin.uiInsertTimeSig);
