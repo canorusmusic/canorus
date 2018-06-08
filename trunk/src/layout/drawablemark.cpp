@@ -291,7 +291,7 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 			case CARepeatMark::DalCoda:    p->drawText( s.x, s.y, QString(CACanorus::fetaCodepoint("scripts.coda")) ); break;
 			case CARepeatMark::VarCoda:
 			case CARepeatMark::DalVarCoda: p->drawText( s.x, s.y, QString(CACanorus::fetaCodepoint("scripts.varcoda")) ); break;
-			case CARepeatMark::Volta:
+			case CARepeatMark::Volta: break;
 			case CARepeatMark::Undefined:
 				fprintf(stderr,"Warning: CADrawableMark::draw - Unhandled RM-Type %d",static_cast<CARepeatMark*>(mark())->repeatMarkType());
 				break;
