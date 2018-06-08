@@ -992,28 +992,37 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		p.setPen(Qt::black);
 		
 		// draw the barline marks
+
+		QList<CADrawableBarline *> drawableBarlineList = dStaff->drawableBarlineList();
+		for (int i=0; i<drawableBarlineList.size(); i++) { // filter out dotted barlines
+			if (drawableBarlineList[i]->barline()->barlineType()==CABarline::Dotted) {
+				drawableBarlineList.removeAt(i);
+				i--;
+			}
+		}
+
 		if(dStaff)
 		{
 			CABarline *curBarline = dStaff->getBarline(_worldX+_worldW);
 			CADrawableBarline *curDBarline = (curBarline?static_cast<CADrawableBarline*>(_mapDrawable.values( dStaff->getBarline(_worldX+width()/_zoom) )[0]):0);
 		
 			// determine the barline number + do we have a pickup measure in the beginning
-			int dBarlineIdx = dStaff->drawableBarlineList().indexOf(curDBarline);
+			int dBarlineIdx = drawableBarlineList.indexOf(curDBarline);
 			CADrawableTimeSignature *firstDTimeSig = (dStaff->drawableTimeSignatureList().size()?dStaff->drawableTimeSignatureList()[0]:0);
 			int barlineOffset = 2;
 			if (curDBarline && firstDTimeSig &&
-				dStaff->drawableBarlineList()[0]->barline()->timeStart() < firstDTimeSig->timeSignature()->barDuration() ) {
+				drawableBarlineList[0]->barline()->timeStart() < firstDTimeSig->timeSignature()->barDuration() ) {
 				barlineOffset = 1;
 			}
 			
 			while ( curDBarline && curDBarline->xPos()>_worldX ) {
 				int center = qRound((curDBarline->xPos()-_worldX)*_zoom);
-				if (dBarlineIdx!=dStaff->drawableBarlineList().size()-1) { // don't draw the last bar number
+				if (dBarlineIdx!=drawableBarlineList.size()-1) { // don't draw the last bar number
 					p.drawText( center-1, RULER_HEIGHT-2, QString::number(dBarlineIdx+barlineOffset) );
 				}
 				
 				dBarlineIdx--;
-				curDBarline = (dBarlineIdx>=0?dStaff->drawableBarlineList()[dBarlineIdx]:0);
+				curDBarline = (dBarlineIdx>=0?drawableBarlineList[dBarlineIdx]:0);
 			}
 		}		
 		// TODO: draw the time marks
