@@ -718,6 +718,7 @@ ENDIF(MINGW)
 ADD_CUSTOM_COMMAND(
 	TARGET canorus
 	PRE_BUILD
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	COMMAND ${Qt5_LUPDATE_EXECUTABLE}
 	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
