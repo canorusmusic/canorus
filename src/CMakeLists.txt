@@ -176,6 +176,10 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	scorectl/keysignaturectl.h
 )
 
+IF(Qt5WebEngineWidgets_LIBRARIES)
+    SET(Canorus_Gui_MOCs ${Canorus_Gui_MOCs} widgets/helpbrowser.h)
+ENDIF(Qt5WebEngineWidgets_LIBRARIES)
+
 SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 	import/import.h
 	export/export.h
@@ -192,11 +196,6 @@ SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 
 	interface/pluginaction.h
 )
-
-IF(Qt5WebEngineWidgets_LIBRARIES)
-    SET(Canorus_Gui_MOCs ${Canorus_Gui_MOCs} widgets/helpbrowser.h)
-    SET(Canorus_Widget_Srcs ${Canorus_Widget_Srcs} widgets/helpbrowser.cpp)
-ENDIF(Qt5WebEngineWidgets_LIBRARIES)
 
 ################
 # Qt5 settings #
@@ -322,6 +321,10 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/progressstatusbar.cpp
 	widgets/tabwidget.cpp
 )
+
+IF(Qt5WebEngineWidgets_LIBRARIES)
+    SET(Canorus_Widget_Srcs ${Canorus_Widget_Srcs} widgets/helpbrowser.cpp)
+ENDIF(Qt5WebEngineWidgets_LIBRARIES)
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
 	ui/mainwin.cpp
@@ -477,6 +480,7 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	scripting/swigruby.cpp
 	${Canorus_Core_MOC_Srcs}
 )
+
 IF(MINGW) # Append ZLIB srcs to Swig srcs on Windows
 	SET( Canorus_Swig_Srcs ${Canorus_Swig_Srcs} ${ZLIB_Srcs} )
 ENDIF(MINGW)
@@ -670,10 +674,7 @@ ENDIF(USE_PYTHON)
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
 # Add ${POPPLERQT4_LIBRARY} ${POPPLER_LIBRARY} to reactivate poppler libraries
-TARGET_LINK_LIBRARIES(canorus Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
-IF(Qt5WebEngineWidgets_LIBRARIES)
-    TARGET_LINK_LIBRARIES(canorus Qt5::WebEngineWidgets)
-ENDIF(Qt5WebEngineWidgets_LIBRARIES)
+TARGET_LINK_LIBRARIES(canorus Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport ${Qt5WebEngineWidgets_LIBRARIES} ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
 # Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
 # duma )
 
@@ -724,7 +725,7 @@ ENDIF(MINGW)
 ADD_CUSTOM_COMMAND(
 	TARGET canorus
 	PRE_BUILD
-	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
 	COMMAND ${Qt5_LUPDATE_EXECUTABLE}
 	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
