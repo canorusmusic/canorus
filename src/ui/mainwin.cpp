@@ -2611,7 +2611,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 				// same code for the Rest insertion
 
 				CATuplet *tuplet = static_cast<CAPlayable*>(left->musElement())->tuplet();
-				QList<CAPlayable*> noteList; int number; int actualNumber;
+				QList<CAPlayable*> noteList; int number=0; int actualNumber=0;
 				if ( tuplet  ) {
 					noteList = tuplet->noteList();
 					number = tuplet->number();
@@ -2646,14 +2646,16 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 				}
 
 				success = musElementFactory()->configureNote( drawableStaff->calculatePitch(coords.x(), coords.y()), voice, next, false );
-				if ( success && CACanorus::settings()->autoBar() )
-					CAStaff::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
 				if( success )
 					noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
 				if ( success && tuplet ) {
 					new CATuplet( number, actualNumber, noteList );
+				}
+
+				if ( success && CACanorus::settings()->autoBar() ) {
+					CAStaff::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 				}
 			} else {
 
@@ -2709,7 +2711,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 				// same code for the Note insertion
 
 				CATuplet *tuplet = static_cast<CAPlayable*>(left->musElement())->tuplet();
-				QList<CAPlayable*> noteList; int number; int actualNumber;
+				QList<CAPlayable*> noteList; int number=0; int actualNumber=0;
 				if ( tuplet  ) {
 					noteList = tuplet->noteList();
 					number = tuplet->number();
@@ -2744,14 +2746,17 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 				}
 
 				success = musElementFactory()->configureRest( voice, next );
-				if ( success && CACanorus::settings()->autoBar() )
-					CAStaff::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 
-				if( success )
+				if( success ) {
 					noteList.insert( tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()) );
+				}
 
 				if( success && tuplet ) {
 					new CATuplet( number, actualNumber, noteList );
+				}
+
+				if ( success && CACanorus::settings()->autoBar() ) {
+					CAStaff::placeAutoBar( static_cast<CAPlayable*>(musElementFactory()->musElement()) );
 				}
 			} else {
 				if ( dright && dright->musElement() && dright->musElement()->isPlayable() && static_cast<CAPlayable*>(dright->musElement())->tuplet() && !static_cast<CAPlayable*>(dright->musElement())->isFirstInTuplet() ) {

@@ -53,7 +53,7 @@ public:
 
 	bool synchronizeVoices();
 
-	static void placeAutoBar( CAPlayable* elt );
+	static bool placeAutoBar( CAPlayable* elt );
 
 	// Functions to keep list of references of signature events for a faster look up.
 	inline QList<CAMusElement *>& clefRefs() { return _clefList; }

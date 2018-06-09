@@ -479,28 +479,42 @@ bool CAStaff::synchronizeVoices() {
 }
 
 /*!
-	Places a barline in front of the element, if needed.
+	Places a barline in front of the element, if needed and the element is the
+	last element in the staff.
 
 	The function finds the last barline and places a new one, if the last bar is full.
 	It searches for the time signature in effect for the last bar, not to get fooled by
 	time signature(s) already present at a time signature change.
+
+	\return True, if a new barline was placed; otherwise False.
  */
-void CAStaff::placeAutoBar( CAPlayable* elt ) {
+bool CAStaff::placeAutoBar( CAPlayable* elt ) {
 	if ( !elt )
-		return;
+		return false;
 	CABarline *b = static_cast<CABarline*>(elt->voice()->previousByType( CAMusElement::Barline, elt ));
 	CATimeSignature *t;
 	CAMusElement *prevTimeSig = elt;
+
+	// do not place autobar, if the element was inserted somewhere in the middle
+	for (int i=0; i<elt->voice()->staff()->voiceList().size(); i++) {
+		if (elt->voice()->staff()->voiceList()[i]->lastTimeEnd()>elt->timeEnd()) {
+			return false;
+		}
+	}
+
 	do {
 		prevTimeSig = elt->voice()->previousByType( CAMusElement::TimeSignature, prevTimeSig );
 		t = static_cast<CATimeSignature*>(prevTimeSig);
 	} while ( t && prevTimeSig->timeStart() == elt->timeStart() );	// not the time signature for a bar in the future
 
 	if (t) {
-		int barLength = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(t->beat()) ) ) * t->beats();
-		if ( (b?(b->timeStart()):0) + barLength <= elt->timeStart() ) {
+		if ( (b?(b->timeStart()):0) + t->barDuration() <= elt->timeStart() ) {
 			elt->voice()->insert( elt, new CABarline( CABarline::Single, elt->staff(), elt->timeStart() ) );
 			elt->staff()->synchronizeVoices();
+
+			return true;
 		}
 	}
+
+	return false;
 }
