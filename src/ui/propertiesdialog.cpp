@@ -9,6 +9,7 @@
 #include <QDateTime>
 #include <QHeaderView> // needed to hide header widget from document tree
 #include <QDate>
+#include <QDebug>
 
 #include "ui/propertiesdialog.h"
 
@@ -46,6 +47,7 @@ CAPropertiesDialog::CAPropertiesDialog( CADocument *doc, QWidget *parent )
 
 	uiDocumentTree->header()->hide();
 	buildTree();
+    setWindowFlags(Qt::Window);
 }
 
 CAPropertiesDialog::~CAPropertiesDialog() {
@@ -148,6 +150,8 @@ void CAPropertiesDialog::buildTree() {
 
 		uiDocumentTree->addTopLevelItem( docItem );
 		uiDocumentTree->expandAll();
+
+        qDebug() << "Header 0: " << uiDocumentTree->header()->sectionSize(0) << "Header 1: " << uiDocumentTree->header()->sectionSize(0);
 	}
 
 	// updates to the current item
