@@ -62,7 +62,7 @@ void CANoteChecker::checkSheet(CASheet *sheet) {
 			
 			// check the bar duration.
 			// If first bar is partial, the length should be shorter or equal to time sig.
-			if ((lastBarlineTime == -1 && barlines[j]->timeStart()>lastBarlineTime+lastTimeSigRequiredDuration) ||
+			if ((lastBarlineTime == -1 && barlines[j]->timeStart()>lastTimeSigRequiredDuration) ||
 				(lastBarlineTime != -1 && barlines[j]->timeStart()!=lastBarlineTime+lastTimeSigRequiredDuration)) {
 				CANoteCheckerError *nce = new CANoteCheckerError(barlines[j], QObject::tr("Bar duration incorrect."));
 				sheet->addNoteCheckerError(nce);
