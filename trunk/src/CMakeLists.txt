@@ -165,7 +165,6 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	widgets/pyconsole.h
 	widgets/midirecorderview.h
 	widgets/resourceview.h
-	widgets/helpbrowser.h
 	widgets/actionseditor.h
 	widgets/progressstatusbar.h
 	widgets/tabwidget.h
@@ -194,8 +193,13 @@ SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 	interface/pluginaction.h
 )
 
+IF(Qt5WebEngineWidgets_LIBRARIES)
+    SET(Canorus_Gui_MOCs ${Canorus_Gui_MOCs} widgets/helpbrowser.h)
+    SET(Canorus_Widget_Srcs ${Canorus_Widget_Srcs} widgets/helpbrowser.cpp)
+ENDIF(Qt5WebEngineWidgets_LIBRARIES)
+
 ################
-# Qt4 settings #
+# Qt5 settings #
 ################
 # Enable needed Qt modules for Canorus
 SET(QT_USE_QTXML True) # Save/Load
@@ -314,7 +318,6 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 	widgets/pyconsole.cpp
 	widgets/midirecorderview.cpp
 	widgets/resourceview.cpp
-	widgets/helpbrowser.cpp
 	widgets/actionseditor.cpp
 	widgets/progressstatusbar.cpp
 	widgets/tabwidget.cpp
@@ -335,8 +338,8 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 SET(Canorus_Gui_Ctl_Srcs       # Control instances for user interface or views 
 	control/previewctl.cpp
 	control/printctl.cpp
-	control/helpctl.cpp
 	control/mainwinprogressctl.cpp
+        control/helpctl.cpp
 
 	scorectl/keysignaturectl.cpp
 )
@@ -667,7 +670,10 @@ ENDIF(USE_PYTHON)
 # command. Never remove that line :-)
 # Add ${QT_QTTEST_LIBRARY} below to add the Qt Test library as well
 # Add ${POPPLERQT4_LIBRARY} ${POPPLER_LIBRARY} to reactivate poppler libraries
-TARGET_LINK_LIBRARIES(canorus Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport Qt5::WebEngineWidgets ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
+TARGET_LINK_LIBRARIES(canorus Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport ${RUBY_LIBRARY} ${PYTHON_LIBRARY} z pthread )
+IF(Qt5WebEngineWidgets_LIBRARIES)
+    TARGET_LINK_LIBRARIES(canorus Qt5::WebEngineWidgets)
+ENDIF(Qt5WebEngineWidgets_LIBRARIES)
 # Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
 # duma )
 
@@ -734,7 +740,7 @@ IF(${CANORUS_DEV_INSTALL} MATCHES True)
     ADD_CUSTOM_COMMAND(
         TARGET canorus
         POST_BUILD
-        COMMAND make install
+        COMMAND ${CMAKE_MAKE_PROGRAM} install
     )
 ENDIF(${CANORUS_DEV_INSTALL} MATCHES True)
 
@@ -776,7 +782,7 @@ INSTALL( DIRECTORY ${Canorus_Examples} DESTINATION "${CMAKE_INSTALL_PREFIX}/${CA
 
 IF(MINGW)
 	# Install Qt libs
-        INSTALL( FILES ${QT_BIN_DIR}/Qt5Core.dll ${QT_BIN_DIR}/Qt5Gui.dll ${QT_BIN_DIR}/Qt5Widgets.dll ${QT_BIN_DIR}/Qt5Svg.dll ${QT_BIN_DIR}/Qt5Xml.dll ${QT_BIN_DIR}/Qt5Sql.dll ${QT_BIN_DIR}/Qt5Network.dll ${QT_BIN_DIR}/Qt5CLucene.dll ${QT_BIN_DIR}/Qt5PrintSupport.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
+        INSTALL( FILES ${QT_BIN_DIR}/Qt5Core.dll ${QT_BIN_DIR}/Qt5Gui.dll ${QT_BIN_DIR}/Qt5Widgets.dll ${QT_BIN_DIR}/Qt5Svg.dll ${QT_BIN_DIR}/Qt5Xml.dll ${QT_BIN_DIR}/Qt5Sql.dll ${QT_BIN_DIR}/Qt5Network.dll ${QT_BIN_DIR}/Qt5PrintSupport.dll DESTINATION ${CMAKE_INSTALL_PREFIX}/${CANORUS_INSTALL_BIN_DIR} )
 	
 	# Install qsvg plugin for rendering SVG icons
 	get_target_property(QSvgIcon_loc Qt5::QSvgIconPlugin LOCATION)

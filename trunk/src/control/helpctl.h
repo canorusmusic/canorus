@@ -11,7 +11,6 @@
 #include <QString>
 #include <QUrl>
 
-class QHelpEngine;
 class QWidget;
 
 class CAHelpCtl {
@@ -19,7 +18,7 @@ public:
 	CAHelpCtl();
 	virtual ~CAHelpCtl();
 
-	bool showUsersGuide( QString chapter="", QWidget *helpWidget=0 );
+	bool showUsersGuide( QString chapter="", QWidget *helpWidget=nullptr );
 
 private:
 	QUrl _homeUrl;

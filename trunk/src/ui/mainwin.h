@@ -45,7 +45,11 @@ class QAction;
 class CAKeySignatureUI;
 
 class CAMainWinProgressCtl;
+
+#ifdef QT_WEBENGINEWIDGETS_LIB
 class CAHelpBrowser;
+#endif
+
 class CAMenuToolButton;
 class CAUndoToolButton;
 class CALCDNumber;
@@ -148,8 +152,9 @@ public:
 	CAPyConsoleInterface* pyConsoleIface;
 
 	QDockWidget *helpDock() { return uiHelpDock; }
+#ifdef QT_WEBENGINEWIDGETS_LIB
 	CAHelpBrowser *helpWidget() { return uiHelpWidget; }
-
+#endif
 private slots:
 	///////////////////////////
 	// ToolBar/Menus actions //
@@ -541,6 +546,8 @@ private:
 
 		// Help widget
 		QDockWidget *uiHelpDock;
+#ifdef QT_WEBENGINEWIDGETS_LIB
 		CAHelpBrowser   *uiHelpWidget;
+#endif
 };
 #endif /* MAINWIN_H_ */
