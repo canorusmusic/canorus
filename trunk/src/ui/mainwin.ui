@@ -62,7 +62,7 @@
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>30</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="uiMenuEdit">
@@ -447,7 +447,7 @@
   </action>
   <action name="uiJumpTo">
    <property name="text">
-    <string>&amp;Goto bar...</string>
+    <string>&amp;Jump to...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+J</string>
