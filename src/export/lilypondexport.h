@@ -52,6 +52,7 @@ private:
 	void exportPlayable( CAPlayable *elt );
 
 	void writeDocumentHeader();
+	void scanForRepeats(CAStaff *staff);
 	CADiatonicPitch writeRelativeIntro();
 	void doAnacrusisCheck(CATimeSignature *time);
 
