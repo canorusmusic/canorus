@@ -54,7 +54,9 @@
 #include "widgets/undotoolbutton.h"
 #include "widgets/lcdnumber.h"
 #include "widgets/midirecorderview.h"
+#ifdef QT_WEBENGINEWIDGETS_LIB
 #include "widgets/helpbrowser.h"
+#endif
 
 #include "widgets/view.h"
 #include "widgets/viewcontainer.h"
@@ -586,8 +588,10 @@ void CAMainWin::createCustomActions() {
 	uiHelpDock = new QDockWidget(tr("Help"), this);
 	uiHelpDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	uiHelpDock->setMaximumWidth(400);
+#ifdef QT_WEBENGINEWIDGETS_LIB
 	uiHelpWidget = new CAHelpBrowser( uiHelpDock );
 	uiHelpDock->setWidget( uiHelpWidget );
+#endif
 
 #ifdef USE_PYTHON
 	uiPyConsoleDock = new QDockWidget(tr("Canorus console"), this);
@@ -4231,7 +4235,11 @@ void CAMainWin::sourceViewCommit(QString inputString) {
 }
 
 void CAMainWin::on_uiUsersGuide_triggered() {
+#ifdef QT_WEBENGINEWIDGETS_LIB
 	CACanorus::help()->showUsersGuide( "playback", this );
+#else
+	CACanorus::help()->showUsersGuide( "playback" );
+#endif
 }
 
 void CAMainWin::on_uiAboutQt_triggered() {

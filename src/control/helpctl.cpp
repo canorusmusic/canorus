@@ -7,11 +7,15 @@
 
 #include <QStringList>
 #include <QDockWidget>
+#include <QDesktopServices>
 
 #include "canorus.h"
 #include "control/helpctl.h"
 #include "ui/mainwin.h"
+
+#ifdef QT_WEBENGINEWIDGETS_LIB
 #include "widgets/helpbrowser.h"
+#endif
 
 /*!
 	\class CAHelpCtl
@@ -77,7 +81,11 @@ bool CAHelpCtl::showUsersGuide( QString chapter, QWidget *helpWidget ) {
 	}
 	
 	if (!url.path().isEmpty()) {
+#ifdef QT_WEBENGINEWIDGETS_LIB
 		displayHelp( url, helpWidget );
+#else
+		QDesktopServices::openUrl( url );
+#endif
 		return true;
 	}
 	
@@ -88,6 +96,7 @@ bool CAHelpCtl::showUsersGuide( QString chapter, QWidget *helpWidget ) {
 	Activates the user's guide help at the given url.
  */
 void CAHelpCtl::displayHelp( QUrl url, QWidget *helpWidget ) {
+#ifdef QT_WEBENGINEWIDGETS_LIB
 	CAHelpBrowser *browser=0;
 	if ( !helpWidget ) {
 		browser = new CAHelpBrowser;
@@ -101,4 +110,5 @@ void CAHelpCtl::displayHelp( QUrl url, QWidget *helpWidget ) {
 	if (browser) {
 		browser->setUrl( url );
 	}
+#endif
 }
