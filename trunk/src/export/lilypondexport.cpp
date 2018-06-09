@@ -24,6 +24,8 @@
 #include "score/tempo.h"
 #include "score/ritardando.h"
 #include "score/tuplet.h"
+#include "score/barline.h"
+#include "score/repeatmark.h"
 
 /*!
 	\class CALilyPondExport
@@ -800,6 +802,14 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 
 	writeDocumentHeader();
 
+
+	for ( int c = 0; c < sheet->contextList().size(); ++c ) {
+		if (sheet->contextList()[c]->contextType() == CAContext::Staff) {
+			scanForRepeats(static_cast<CAStaff*>(sheet->contextList()[c]));
+			break;
+		}
+	}
+
 	/* Write the volta helper function in case we need it
 	if (!_voltaFunctionWritten)
 		voltaFunction();
@@ -841,6 +851,37 @@ void CALilyPondExport::writeDocumentHeader() {
 	indentLess();
 
 	out() << "}\n";
+}
+
+/*!
+	Export document title, subtitle, composer, copyright etc.
+*/
+void CALilyPondExport::scanForRepeats(CAStaff *staff) {
+	out() << "\n % \\repeat volta xxx \n";
+
+	CABarline *bl;
+	QList<CAMark*> ml;
+
+	// barlineRefs aus score/staff.h
+	for (int b = 0; b < staff->barlineRefs().size(); b++ ) {
+		out() << "% " << (staff->barlineRefs()[b])->musElementType() << "  " ;
+		bl = static_cast<CABarline*>(staff->barlineRefs()[b]);
+		bl->barlineType();
+		out() << CABarline::barlineTypeToString(bl->barlineType());
+		if (	bl->barlineType()==CABarline::RepeatClose ||
+			bl->barlineType()==CABarline::RepeatOpen ||
+			bl->barlineType()==CABarline::RepeatCloseOpen ) {
+			out() << "\n % \\repeat volta X " << CABarline::barlineTypeToString( bl->barlineType()) << "\n";
+		}
+		ml = bl->markList();
+		for (int e = 0; e < ml.size(); e++ ) {
+			if ( ml[e]->markType() == CAMark::RepeatMark && static_cast<CARepeatMark*>(ml[e])->repeatMarkType() == CARepeatMark::Volta) {
+				out() << "\n % \\repeat volta X " << CARepeatMark::repeatMarkTypeToString( static_cast<CARepeatMark*>(ml[e])->repeatMarkType()) << "\n";
+			}
+		}
+		
+	}
+	// inline QList<CAMusElement *>& barlineRefs() { return _barlineList; }
 }
 
 /*!
