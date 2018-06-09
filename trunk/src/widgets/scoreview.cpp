@@ -517,12 +517,16 @@ QMap<int, CADrawableBarline*> CAScoreView::computeBarlinePositions(bool dotted) 
 	QMap<int, CADrawableBarline*> result;
 
 	// determine staff with most barlines
-	CADrawableStaff *dStaff = 0;
+	CADrawableStaff *dStaff = nullptr;
 	for (int i=0; i<dContextList.size(); i++) {
 		if ((dContextList[i]->drawableContextType()==CADrawableContext::DrawableStaff) &&
 			(!dStaff || dStaff->drawableBarlineList().size()<static_cast<CADrawableStaff*>(dContextList[i])->drawableBarlineList().size())) {
 			dStaff = static_cast<CADrawableStaff*>(dContextList[i]);
 		}
+	}
+	
+	if (!dStaff) {
+		return result;
 	}
 
 	QList<CADrawableBarline *> drawableBarlineList = dStaff->drawableBarlineList();
