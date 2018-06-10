@@ -17,6 +17,7 @@ public:
 		Can        = 2,
 		LilyPond   = 3,
 		MusicXML   = 4,
+        MXL        = 16,
 		ABCMusic   = 5,
 		NoteEdit   = 6,
 		MUP        = 7,
@@ -34,6 +35,7 @@ public:
 	static const QString CANORUSML_FILTER;
 	static const QString CAN_FILTER;
 	static const QString MUSICXML_FILTER;
+    static const QString MXL_FILTER;
 	static const QString NOTEEDIT_FILTER;
 	static const QString ABCMUSIC_FILTER;
 	static const QString FINALE_FILTER;

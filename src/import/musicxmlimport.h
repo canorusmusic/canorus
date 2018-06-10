@@ -34,9 +34,11 @@ public:
 
 	const QString readableStatus();
 
+protected:
+    CADocument* importDocumentImpl();
+
 private:
-	void initMusicXmlImport();
-	CADocument* importDocumentImpl();
+    void initMusicXmlImport();
 
 	void readHeader();
 	void readScorePartwise();

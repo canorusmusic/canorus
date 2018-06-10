@@ -412,6 +412,7 @@ SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus
 	import/canorusmlimport.cpp
 	import/canimport.cpp
 	import/musicxmlimport.cpp
+    import/mxlimport.cpp
 )
 
 SET(Canorus_RtMidi_Srcs		# RtMIDI library
@@ -446,8 +447,8 @@ SET(Canorus_Srcs
 	${Canorus_Export_Srcs}
 	${Canorus_Import_Srcs}
 	${Canorus_RtMidi_Srcs}
-        ${Canorus_ZIP_Srcs}
-        ${Canorus_Widget_Srcs}
+	${Canorus_ZIP_Srcs}
+	${Canorus_Widget_Srcs}
 	${Canorus_PMIDI_Srcs}
 )
 
@@ -465,8 +466,8 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	${Canorus_Export_Srcs}
 	${Canorus_Ctl_Srcs}
 	${Canorus_RtMidi_Srcs}
-        ${Canorus_ZIP_Srcs}
-        ${Canorus_PMIDI_Srcs}
+	${Canorus_ZIP_Srcs}
+	${Canorus_PMIDI_Srcs}
 	interface/rtmididevice.cpp
 	interface/mididevice.cpp
 	interface/playback.cpp
