@@ -120,6 +120,7 @@
 #include "import/canimport.h"
 #include "import/midiimport.h"
 #include "import/musicxmlimport.h"
+#include "import/mxlimport.h"
 #include "core/notechecker.h"
 
 /*!
@@ -3391,6 +3392,15 @@ void CAMainWin::on_uiImportDocument_triggered() {
 				import->importDocument();
 			}
 		}
+        else
+        if ( uiImportDialog->selectedNameFilter() == CAFileFormats::MXL_FILTER ) {
+            import = new CAMXLImport();
+            if (import) {
+                import->setStreamFromFile( s );
+                connect( import, SIGNAL(importDone(int)), this, SLOT(onImportDone(int)) );
+                import->importDocument();
+            }
+        }
 		if (import)
 			_mainWinProgressCtl.startProgress( import );
 	}
