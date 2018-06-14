@@ -883,6 +883,9 @@
    <property name="text">
     <string>&amp;Transpose...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
   </action>
   <action name="uiFMEllipse">
    <property name="checkable">
