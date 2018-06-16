@@ -26,7 +26,7 @@
 - added note checker
 - note checker and midi command support for shortcut settings
 - fixed some compilation issues on other platforms
-- fix issue with new sheet;
+- fix issues with new sheet;
 - add dynamic keyboard helper for shortcut settings
 - Add version information to installer
 - Qt4 build settings separated
@@ -63,6 +63,26 @@
 - Fix issue when opening recent files and saving showing "unknown file format"
 - Fix: If a non-playable is on first notem a slur could not be made
 - Fix issue on not working Key Signature based transposition downwards
+- Fix issue on voice number not updated when using tab key to walk over voices
+- Added support for walking through contexts using tab key
+- Set new MusicXML extension (.xml -> .musicxml) and change examples too
+- Fixes and improvements on LilyPondExport (text, tempo, mark)
+- Add support for importing compressed musicxml (only with metainfo)
+- Fix Menu Shortcuts with ALT missing
+- Fix order of keys
+- Set key signature to autodetect values when transposing
+- Fix issue that accidentals not shown in the second voice over barline
+- Fix issues with dotted barlines and bars
+- Add support for debug output that is only shown with debug build
+- Add go to (jump to) bar
+- Fix replace mark icon by volta
+- Fix issues with creating/installing translation files
+- Fix some swig warnings and debug output
+- Show midi warnings dialog on startup
+- Make properties dialog resizable (inkl. "grab" button)
+- Show bar length error, if it is too long.
+- Do not place autobars if inserting in the middle of the score
+- Ctrl-T can now be used as shortcut for transpose
 
 0.7.2
 =====
