@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE canorusml>
+<canorus-document>
+ <canorus-version>0.7.3rc2</canorus-version>
+ <document date-last-modified="2018-06-08T09:41:08" time-edited="1512" date-created="2018-06-08T08:10:17">
+  <sheet name="Sheet1">
+   <staff number-of-lines="5" name="Staff1">
+    <voice midi-pitch-offset="0" stem-direction="stem-up" name="Staff1Voice1" midi-program="0" midi-channel="0">
+     <clef c1="-2" offset="0" color="#00000000" time-start="0" clef-type="G"/>
+     <time-signature time-signature-type="classical" beats="4" color="#00000000" time-start="0" beat="4"/>
+     <rest time-length="1024" rest-type="normal" color="#00000000" time-start="0">
+      <playable-length music-length="whole" dotted="0"/>
+     </rest>
+     <barline barline-type="single" color="#00000000" time-start="1024"/>
+     <rest time-length="1024" rest-type="normal" color="#00000000" time-start="1024">
+      <playable-length music-length="whole" dotted="0"/>
+     </rest>
+     <barline barline-type="single" color="#00000000" time-start="2048"/>
+    </voice>
+    <voice midi-pitch-offset="0" stem-direction="stem-down" name="Staff1Voice2" midi-program="0" midi-channel="1">
+     <clef c1="-2" offset="0" color="#00000000" time-start="0" clef-type="G"/>
+     <time-signature time-signature-type="classical" beats="4" color="#00000000" time-start="0" beat="4"/>
+     <note time-length="1024" color="#00000000" time-start="0">
+      <playable-length music-length="whole" dotted="0"/>
+      <diatonic-pitch accs="1" note-name="32"/>
+     </note>
+     <barline barline-type="single" color="#00000000" time-start="1024"/>
+     <note time-length="1024" color="#00000000" time-start="1024">
+      <playable-length music-length="whole" dotted="0"/>
+      <diatonic-pitch accs="1" note-name="32"/>
+     </note>
+     <barline barline-type="single" color="#00000000" time-start="2048"/>
+    </voice>
+   </staff>
+  </sheet>
+ </document>
+</canorus-document>
