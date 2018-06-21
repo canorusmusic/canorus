@@ -5,6 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
+#include <QtDebug>
+
 #include <QPainter>
 #include <iostream>
 
@@ -425,7 +427,11 @@ bool CAStaff::synchronizeVoices() {
 					for ( int k=0; k < restList.size(); k++ )
 						voiceList()[i]->_musElementList.insert( pidx[i]++, restList[k] ); // insert the missing rests, rests are added in back, pidx++
 					voiceList()[i]->updateTimes( pidx[i], gapLength, false );              // increase playable timeStarts
-					plastPlayable[ i ] = restList.last();
+					if (restList.size()) {
+						plastPlayable[ i ] = restList.last();
+					} else {
+						qDebug() << "ERROR CAStaff::synchronizeVoices(): Cannot compose rests of length " << gapLength << endl;
+					}
 
 					changesMade = true;
 				}
@@ -442,7 +448,11 @@ bool CAStaff::synchronizeVoices() {
 				for ( int k=0; k < restList.size(); k++ )
 					voiceList()[j]->_musElementList.insert( pidx[j]++, restList[k] ); // insert the missing rests, rests are added in back, pidx++
 				voiceList()[j]->updateTimes( pidx[j], gapLength, false );              // increase playable timeStarts
-				plastPlayable[ j ] = restList.last();
+				if (restList.size()) {
+					plastPlayable[ j ] = restList.last();
+				} else {
+					qDebug() << "ERROR CAStaff::synchronizeVoices(): Cannot compose rests of length " << gapLength << endl;
+				}
 				changesMade = true;
 			}
 		}
