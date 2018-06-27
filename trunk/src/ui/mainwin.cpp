@@ -808,7 +808,6 @@ void CAMainWin::setupCustomUi() {
 #ifdef USE_PYTHON
 	// Python console dock widget
 	addDockWidget(Qt::BottomDockWidgetArea, uiPyConsoleDock);
-	uiPyConsoleDock->hide();
 #endif
 
 	// View
