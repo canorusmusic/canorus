@@ -69,6 +69,15 @@ CAPyConsole::CAPyConsole( CADocument *doc, QWidget *parent) : QTextEdit(parent) 
 	setUndoRedoEnabled(false);
 	setFontFamily("Courier 10 Pitch");
 	setFontPointSize(9);
+  auto txt = "Welcome to the Python CLI. In addition to standard python CLI, you can use\n"
+             "  /callscript path_to_script.py    to call external script\n"
+             "  /entryfunc entry_function        to set or display entry function in script ran by /callscript\n"
+             "  document                         variable to manipulate canorus itself\n"
+             "  CanorusPython                    library to create Canorus objects\n"
+             "\n"
+             ">>> ";
+  setText(txt);
+  _iCurStart = strlen(txt);
 
 	_fmtStderr = _fmtStdout = _fmtNormal = currentCharFormat();
 	_fmtStdout.setForeground(QColor(0,0,255));
@@ -475,9 +484,12 @@ void CAPyConsole::keyPressEvent (QKeyEvent * e) {
 // internal commands start with "/"
 // none of this works, because of some threading issues
 
+
 bool CAPyConsole::cmdIntern(QString strCmd) {
-    if (!strCmd.startsWith("/"))
-        return false;
+    // TODO(stefan): we are handling everything with cmdIntern now. If this works we can completely remove the old pycli.
+    // Handle all txt input this method.
+    // if (!strCmd.startsWith("/"))
+    //     return false;
     
     if (strCmd == "/i") {
         txtAppend("[Can't reset PyCLI]\n");
@@ -511,7 +523,6 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         
         argsPython << CASwigPython::toPythonObject(static_cast<CAMainWin*>(curObject)->document(), CASwigPython::Document);        
 
-//		if (strCmd.length() != 12) {		// entryfunc specified explicitly
         CASwigPython::callFunction(QFileInfo("scripts:" + strCmd.mid(12)).absoluteFilePath(), _strEntryFunc, argsPython, true);
         emit sig_txtAppend(">>> ",txtNormal);		// if not emitted, error from python and this are not in order
         return true;
@@ -526,11 +537,20 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         _strEntryFunc = strCmd.mid(11);
         txtAppend(">>> ",txtNormal);
     }
+    else {
+        // TODO(stefan): DRY this from the other if condition.
+        QList<PyObject*> argsPython;
+        QObject *curObject = this;
+        while (dynamic_cast<CAMainWin*>(curObject)==0 && curObject!=0) // find the parent which is mainwindow
+            curObject = curObject->parent();
+        argsPython << CASwigPython::toPythonObject(static_cast<CAMainWin*>(curObject)->document(), CASwigPython::Document);        
+        argsPython << PyUnicode_FromString(strCmd.toStdString().c_str());
 
-	else {
-		txtAppend("Error: no such command\n", txtStderr);
-		txtAppend(">>> ", txtNormal);
-	}    
+        // Can't autoreload because we are using global objects in pycl2.py that would get overwritten.
+        auto ret = CASwigPython::callFunction(QFileInfo("scripts:pycl2.py").absoluteFilePath(), "main", argsPython, false);
+        emit sig_txtAppend(PyUnicode_AsUTF8(ret), txtNormal);
+        return true;
+    }
 
     return true;
 }
