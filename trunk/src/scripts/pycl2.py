@@ -3,17 +3,18 @@
 # TODO(stefan): if pycl2 works, remove pycli and all python threading stuff from canorus.
 
 import CanorusPython
-import code, io, sys
+import code, io, os, sys
 
 console = code.InteractiveConsole()
+devnull = open(os.devnull, 'r')
 
 # main is called every time user enters a text.
 def main(document, cmd):
     console.locals['document'] = document
     console.locals['CanorusPython'] = CanorusPython
-    oldStdout, oldStderr = sys.stdout, sys.stderr
+    oldStdin, oldStdout, oldStderr = sys.stdin, sys.stdout, sys.stderr
     newStdout, newStderr = io.StringIO(), io.StringIO()
-    sys.stdout, sys.stderr = newStdout, newStderr
+    sys.stdin, sys.stdout, sys.stderr = devnull, newStdout, newStderr
 
     if console.push(cmd):
         # console requires more input.
@@ -21,5 +22,5 @@ def main(document, cmd):
     else:
         prompt = ">>>"
 
-    sys.stdout = oldStdout
+    sys.stdin, sys.stdout, sys.stderr = oldStdin, oldStdout, oldStderr
     return "%s%s%s " % (newStdout.getvalue(), newStderr.getvalue(), prompt)
