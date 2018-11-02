@@ -333,6 +333,35 @@ void CALilyPondExport::exportMarksAfterElement( CAMusElement *elt ) {
 				out() << "-. "; break;
 			case CAArticulation::Tenuto:
 				out() << "-- "; break;
+			case CAArticulation::Prall:
+				out() << "\\prall "; break;
+			case CAArticulation::PrallUp:
+				out() << "\\prallup "; break;
+			case CAArticulation::PrallDown:
+				out() << "\\pralldown "; break;
+			case CAArticulation::UpPrall:
+				out() << "\\upprall "; break;
+			case CAArticulation::DownPrall:
+				out() << "\\downprall "; break;
+			case CAArticulation::PrallPrall:
+				out() << "\\prallprall "; break;
+			case CAArticulation::LinePrall:
+				out() << "\\lineprall "; break;
+			case CAArticulation::PrallMordent:
+				out() << "\\prallmordent "; break;
+			case CAArticulation::Mordent:
+				out() << "\\mordent "; break;
+			case CAArticulation::UpMordent:
+				out() << "\\upmordent "; break;
+			case CAArticulation::DownMordent:
+				out() << "\\downmordent "; break;
+			case CAArticulation::Trill:
+				out() << "\\trill "; break;
+			case CAArticulation::Turn:
+				out() << "\\turn "; break;
+			case CAArticulation::ReverseTurn:
+				out() << "\\reverseturn "; break;
+
 			case CAArticulation::Staccatissimo:
 			case CAArticulation::Espressivo:
 			case CAArticulation::Portato:	
@@ -341,20 +370,6 @@ void CALilyPondExport::exportMarksAfterElement( CAMusElement *elt ) {
 			case CAArticulation::Flageolet:	
 			case CAArticulation::Open:	
 			case CAArticulation::Stopped:	
-			case CAArticulation::Turn:
-			case CAArticulation::ReverseTurn:
-			case CAArticulation::Trill:
-			case CAArticulation::Prall:
-			case CAArticulation::Mordent:
-			case CAArticulation::PrallMordent:
-			case CAArticulation::PrallPrall:
-			case CAArticulation::DownPrall:
-			case CAArticulation::UpPrall:
-			case CAArticulation::UpMordent:
-			case CAArticulation::DownMordent:
-			case CAArticulation::PrallDown:
-			case CAArticulation::PrallUp:
-			case CAArticulation::LinePrall:
 			case CAArticulation::Undefined:
 				break;
 			}
