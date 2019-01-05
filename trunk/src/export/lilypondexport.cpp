@@ -361,6 +361,8 @@ void CALilyPondExport::exportMarksAfterElement( CAMusElement *elt ) {
 				out() << "\\turn "; break;
 			case CAArticulation::ReverseTurn:
 				out() << "\\reverseturn "; break;
+            case CAArticulation::Breath:
+                out() << "\\breathe "; break;
 
 			case CAArticulation::Staccatissimo:
 			case CAArticulation::Espressivo:
