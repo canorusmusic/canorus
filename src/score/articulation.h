@@ -22,6 +22,7 @@ public:
 		Staccato,
 		Tenuto,
 		Portato,
+        Breath,
 		UpBow,
 		DownBow,
 		Flageolet,
