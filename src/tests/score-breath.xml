@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE canorusml>
+<canorus-document>
+ <canorus-version>0.7.3rc3</canorus-version>
+ <document date-created="2019-01-05T16:35:26" time-edited="118" date-last-modified="2019-01-05T16:37:25">
+  <sheet name="List1">
+   <staff number-of-lines="5" name="Črtovje1">
+    <voice midi-program="73" midi-channel="0" stem-direction="stem-up" name="Črtovje1Glas1" midi-pitch-offset="0">
+     <clef offset="0" time-start="0" c1="-2" clef-type="G" color="#00000000"/>
+     <time-signature time-signature-type="classical" time-start="0" beats="4" beat="4" color="#00000000"/>
+     <note time-length="256" time-start="0" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="32"/>
+     </note>
+     <barline time-start="256" barline-type="single" color="#00000000"/>
+     <note time-length="256" time-start="256" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="35"/>
+     </note>
+     <note time-length="256" time-start="512" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="36"/>
+     </note>
+     <note time-length="256" time-start="768" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="37"/>
+      <mark articulation-type="Breath" mark-type="Articulation" time-length="256" time-start="768" color="#00000000"/>
+     </note>
+     <note time-length="256" time-start="1024" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="37"/>
+     </note>
+     <barline time-start="1280" barline-type="single" color="#00000000"/>
+     <note time-length="256" time-start="1280" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="38"/>
+     </note>
+     <note time-length="256" time-start="1536" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="37"/>
+     </note>
+     <note time-length="256" time-start="1792" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="36"/>
+      <mark articulation-type="Breath" mark-type="Articulation" time-length="256" time-start="1792" color="#00000000"/>
+     </note>
+     <note time-length="256" time-start="2048" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="36"/>
+     </note>
+     <barline time-start="2304" barline-type="single" color="#00000000"/>
+     <note time-length="256" time-start="2304" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="35"/>
+      <mark articulation-type="Breath" mark-type="Articulation" time-length="256" time-start="2304" color="#00000000"/>
+     </note>
+     <note time-length="256" time-start="2560" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="34"/>
+      <mark articulation-type="Breath" mark-type="Articulation" time-length="256" time-start="2560" color="#00000000"/>
+     </note>
+     <note time-length="256" time-start="2816" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="33"/>
+      <mark articulation-type="Breath" mark-type="Articulation" time-length="256" time-start="2816" color="#00000000"/>
+     </note>
+     <note time-length="256" time-start="3072" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="32"/>
+      <mark articulation-type="Breath" mark-type="Articulation" time-length="256" time-start="3072" color="#00000000"/>
+     </note>
+     <barline time-start="3328" barline-type="single" color="#00000000"/>
+     <note time-length="256" time-start="3328" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="33"/>
+     </note>
+     <note time-length="256" time-start="3584" color="#00000000">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="34"/>
+     </note>
+     <note time-length="512" time-start="3840" color="#00000000">
+      <playable-length music-length="half" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="35"/>
+     </note>
+     <barline time-start="4352" barline-type="end" color="#00000000"/>
+    </voice>
+   </staff>
+  </sheet>
+ </document>
+</canorus-document>
