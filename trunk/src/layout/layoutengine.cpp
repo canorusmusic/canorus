@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+    Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -47,6 +47,8 @@
 #include "score/midinote.h"
 #include "score/lyricscontext.h"
 #include "score/syllable.h"
+#include "score/mark.h"
+#include "score/articulation.h"
 
 #include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
@@ -1008,9 +1010,9 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 */
 void CALayoutEngine::placeMarks( CADrawableMusElement *e, CAScoreView *v, int streamIdx ) {
 	CAMusElement *elt = e->musElement();
-	int xCoord = e->xPos();
+    double xCoord = e->xPos();
 
-	for ( int i=0,j=0,k=0; i < elt->markList().size(); i++ ) {
+    for ( int i=0,j=0,k=0; i < elt->markList().size(); i++ ) { // j/k are vertical offsets above/below the staff
 		if ( elt->markList()[i]->isCommon() &&
 		     elt->musElementType()==CAMusElement::Note &&
 		     !static_cast<CANote*>(elt)->isFirstInChord() ) {
@@ -1019,7 +1021,7 @@ void CALayoutEngine::placeMarks( CADrawableMusElement *e, CAScoreView *v, int st
 
 		CAMark *mark = elt->markList()[i];
 
-		int yCoord;
+        double yCoord;
 		CAFingering *fingering = dynamic_cast<CAFingering*>(mark);
 		if ( mark->markType()==CAMark::Pedal ||
 			 (fingering && (fingering->fingerList()[0]==CAFingering::LHeel || fingering->fingerList()[0]==CAFingering::LToe)) ||
@@ -1035,15 +1037,21 @@ void CALayoutEngine::placeMarks( CADrawableMusElement *e, CAScoreView *v, int st
 			// place mark beside the note
 			xCoord = e->xPos() + e->width();
 			yCoord = e->yPos() - 2;
-		} else {
+        } else if ( mark->markType()==CAMark::Articulation &&
+                    static_cast<CAArticulation*>(mark)->articulationType()==CAArticulation::Breath ) {
+            // place breath mark above right
+            xCoord = e->xPos() + 1.2*e->width();
+            yCoord = qMin(e->yPos()-2.5*e->height(), e->drawableContext()->yPos()-20);
+        } else if ( mark->markType()==CAMark::Articulation ) {
+            // place other articulation marks above center
+            xCoord = e->xPos() + e->width()/2.0 - 3;
+            yCoord = qMin(e->yPos(),e->drawableContext()->yPos())-20*(j+1);
+            j++;
+        } else {
 			// place mark above
 			xCoord = e->xPos();
 			yCoord = qMin(e->yPos(),e->drawableContext()->yPos())-20*(j+1);
 			j++;
-		}
-
-		if ( mark->markType()==CAMark::Articulation ) {
-			xCoord = e->xPos() + qRound(e->width()/2.0) - 3;
 		}
 
 		CADrawableMark *m = new CADrawableMark( mark, e->drawableContext(), xCoord, yCoord );
