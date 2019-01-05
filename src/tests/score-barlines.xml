@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE canorusml>
+<canorus-document>
+ <canorus-version>0.7.3rc1</canorus-version>
+ <document date-created="2018-05-30T22:22:01" time-edited="364" date-last-modified="2018-05-30T22:31:13">
+  <sheet name="List1">
+   <staff name="Črtovje1" number-of-lines="5">
+    <voice midi-pitch-offset="0" name="Črtovje1Glas1" stem-direction="stem-up" midi-program="0" midi-channel="0">
+     <barline time-start="0" color="#00000000" barline-type="single"/>
+     <barline time-start="0" color="#00000000" barline-type="double"/>
+     <barline time-start="0" color="#00000000" barline-type="end"/>
+     <barline time-start="0" color="#00000000" barline-type="dotted"/>
+     <barline time-start="0" color="#00000000" barline-type="repeat-open"/>
+     <barline time-start="0" color="#00000000" barline-type="repeat-close"/>
+     <barline time-start="0" color="#00000000" barline-type="repeat-close-open"/>
+     <barline time-start="0" color="#00000000" barline-type="single"/>
+    </voice>
+   </staff>
+  </sheet>
+ </document>
+</canorus-document>
