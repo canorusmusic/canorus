@@ -323,7 +323,8 @@ void CAMainWin::createCustomActions() {
 		uiArticulationType->addButton( QIcon("images:mark/articulation/staccato.svg"),      CAArticulation::Staccato,      tr("Staccato") );
 		uiArticulationType->addButton( QIcon("images:mark/articulation/tenuto.svg"),        CAArticulation::Tenuto,        tr("Tenuto") );
 		uiArticulationType->addButton( QIcon("images:mark/articulation/portato.svg"),       CAArticulation::Portato,       tr("Portato") );
-		uiArticulationType->addButton( QIcon("images:mark/articulation/upbow.svg"),         CAArticulation::UpBow,         tr("UpBow") );
+        uiArticulationType->addButton( QIcon("images:mark/articulation/breath.svg"),        CAArticulation::Breath,        tr("Breath") );
+        uiArticulationType->addButton( QIcon("images:mark/articulation/upbow.svg"),         CAArticulation::UpBow,         tr("UpBow") );
 		uiArticulationType->addButton( QIcon("images:mark/articulation/downbow.svg"),       CAArticulation::DownBow,       tr("DownBow") );
 		uiArticulationType->addButton( QIcon("images:mark/articulation/flageolet.svg"),     CAArticulation::Flageolet,     tr("Flageloet") );
 		uiArticulationType->addButton( QIcon("images:mark/articulation/open.svg"),          CAArticulation::Open,          tr("Open") );

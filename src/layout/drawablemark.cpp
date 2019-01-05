@@ -339,7 +339,8 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 			case CAArticulation::Espressivo:    p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.espr")) ); break;
 			case CAArticulation::Staccato:      p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.staccato")) ); break;
 			case CAArticulation::Tenuto:        p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.tenuto")) ); break;
-			case CAArticulation::Portato:       p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.uportato")) ); break;
+            case CAArticulation::Breath:        p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.rcomma")) ); break;
+            case CAArticulation::Portato:       p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.uportato")) ); break;
 			case CAArticulation::UpBow:         p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.upbow")) ); break;
 			case CAArticulation::DownBow:       p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.downbow")) ); break;
 			case CAArticulation::Flageolet:     p->drawText( x, y, QString(CACanorus::fetaCodepoint("scripts.flageolet")) ); break;
