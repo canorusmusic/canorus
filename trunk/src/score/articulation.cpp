@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+    Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -50,7 +50,9 @@ const QString CAArticulation::articulationTypeToString( CAArticulationType t ) {
 		return "Tenuto";
 	case Portato:
 		return "Portato";
-	case UpBow:
+    case Breath:
+        return "Breath";
+    case UpBow:
 		return "UpBow";
 	case DownBow:
 		return "DownBow";
@@ -115,7 +117,10 @@ CAArticulation::CAArticulationType CAArticulation::articulationTypeFromString( c
 	if ( s=="Portato" )
 		return Portato;
 	else
-	if ( s=="UpBow" )
+    if ( s=="Breath" )
+        return Breath;
+    else
+    if ( s=="UpBow" )
 		return UpBow;
 	else
 	if ( s=="DownBow" )
