@@ -5,11 +5,12 @@ This directory contains translation files for all the supported languages by
 Canorus. All translation files having *.ts extension are automatically detected
 and compiled into the application.
 
-To add a new translation, simply copy template.ts to a file named your ISO
-language code and optionally region with .ts suffix (eg. de.ts or de_DE.ts for
-German-speaking Germans) and translate it using Qt Linguist or other compatible
-tool. After rebuilding the project the new translation should become immediately
-visible when running Canorus with appropriate locale variables set.
+To add a new translation, compile Canorus, copy the generated template.ts to a
+file named your ISO language code and optionally region with .ts suffix (eg.
+fr.ts or fr_TN.ts for French-speaking Tunisians) and translate it using Qt
+Linguist or other compatible tool. After rebuilding the project the new
+translation should become immediately visible when running Canorus with
+appropriate locale variables set (e.g. LANG=fr ./canorus).
 
 Thanks for your effort!
 
