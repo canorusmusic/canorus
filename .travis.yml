@@ -1,0 +1,5 @@
+language: cpp
+before_install:
+  - sudo apt-get install -y cmake g++ make libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qtwebengine5-dev libasound2-dev
+script:
+  - cmake . && make install
