@@ -1,6 +1,6 @@
 /** @file interface/pluginmanager.cpp
  *
- * Copyright (c) 2006, 2007 Matevž Jekovec, Canorus development team
+ * Copyright (c) 2006-2019 Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  *
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -482,7 +482,7 @@ void CAPluginManager::exportAction(QString filter, CADocument *document, QString
 	\sa exportAction()
 */
 void CAPluginManager::importAction(QString filter, CADocument *document, QString filename) {
-	_importFilterMap[filter]->plugin()->callAction(_importFilterMap[filter], 0, document, 0, 0, filename);
+	_importFilterMap[filter]->plugin()->callAction(_importFilterMap[filter], nullptr, document, nullptr, nullptr, filename);
 }
 
 /*!

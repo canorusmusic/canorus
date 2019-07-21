@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -21,7 +21,7 @@
 	Default constructor.
 */
 CAPluginAction::CAPluginAction(CAPlugin *plugin, QString name, QString lang, QString function, QList<QString> args, QString filename)
- : QAction(0) {
+ : QAction(nullptr) {
 	_plugin = plugin;
 	_name = name;
 	_lang = lang;
@@ -39,11 +39,12 @@ CAPluginAction::CAPluginAction(CAPlugin *plugin, QString name, QString lang, QSt
 	Canorus GUI signals.
 */
 void CAPluginAction::triggeredSlot(bool on) {
+    (void)on;
 #ifndef SWIGCPP
 	QObject *curObject = this;
-	while (dynamic_cast<CAMainWin*>(curObject)==0 && curObject!=0) // find the parent which is mainwindow
+	while (dynamic_cast<CAMainWin*>(curObject)==nullptr && curObject!=nullptr) // find the parent which is mainwindow
 		curObject = curObject->parent();
 
-	_plugin->callAction(this, static_cast<CAMainWin*>(curObject), static_cast<CAMainWin*>(curObject)->document(), 0, 0);
+	_plugin->callAction(this, static_cast<CAMainWin*>(curObject), static_cast<CAMainWin*>(curObject)->document(), nullptr, nullptr);
 #endif
 }

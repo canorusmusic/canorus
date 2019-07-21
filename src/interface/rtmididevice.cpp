@@ -59,9 +59,9 @@ bool CARtMidiDevice::openOutputPort(int port) {
 	if (port==-1 || _outOpen)
 		return false;
 
-	if (_out && (int)_out->getPortCount() > port) {	// check outputs
+	if (_out && static_cast<int>(_out->getPortCount()) > port) {	// check outputs
 		try {
-			_out->openPort(port);
+			_out->openPort(static_cast<unsigned int>(port));
 		} catch (RtError &error) {
 			error.printMessage();
 			return false;	// error when opening the port
@@ -78,9 +78,9 @@ bool CARtMidiDevice::openInputPort(int port) {
 	if (port==-1 || _inOpen)
 		return false;
 
-	if (_in && (int)_in->getPortCount() > port) {	// check outputs
+	if (_in && static_cast<int>(_in->getPortCount()) > port) {	// check outputs
 		try {
-			_in->openPort(port);
+			_in->openPort(static_cast<unsigned int>(port));
 		} catch (RtError &error) {
 			error.printMessage();
 			return false;	// error when opening the port
@@ -97,7 +97,10 @@ bool CARtMidiDevice::openInputPort(int port) {
 /*!
 	Callback function which gets called by RtMidi automatically when an information on MidiIn device has come.
 */
-void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData ) {
+void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData )
+{
+    (void)deltatime;
+    (void)userData;
 #ifndef SWIGCPP
 	emit CACanorus::midiDevice()->midiInEvent( QVector< unsigned char >::fromStdVector(*message) );
 #else
@@ -130,8 +133,8 @@ void CARtMidiDevice::closeInputPort() {
 QMap<int, QString> CARtMidiDevice::getOutputPorts() {
 	QMap<int, QString> outPorts;
 	try {
-		for (int i=0; _out && i<(int)_out->getPortCount(); i++)
-			outPorts.insert(i, QString::fromStdString(_out->getPortName(i)));
+		for (int i=0; _out && i<static_cast<int>(_out->getPortCount()); i++)
+			outPorts.insert(i, QString::fromStdString(_out->getPortName(static_cast<unsigned int>(i))));
 	} catch (RtError &error) {
 		error.printMessage();
 	}
@@ -142,8 +145,8 @@ QMap<int, QString> CARtMidiDevice::getOutputPorts() {
 QMap<int, QString> CARtMidiDevice::getInputPorts() {
 	QMap<int, QString> inPorts;
 	try {
-		for (int i=0; _in && i<(int)_in->getPortCount(); i++)
-			inPorts.insert(i, QString::fromStdString(_in->getPortName(i)));
+		for (int i=0; _in && i<static_cast<int>(_in->getPortCount()); i++)
+			inPorts.insert(i, QString::fromStdString(_in->getPortName(static_cast<unsigned int>(i))));
 	} catch (RtError &error) {
 		error.printMessage();
 	}

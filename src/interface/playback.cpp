@@ -176,7 +176,7 @@ void CAPlayback::run() {
 				    for (int j=0; j<me->markList().size(); j++) {
 				    	if ( me->markList()[j]->markType()==CAMark::Tempo ) {
 				    		CATempo *tempo = static_cast<CATempo*>(me->markList()[j]);
-		    				midiDevice()->sendMetaEvent(_curTime, CAMidiDevice::Meta_Tempo, tempo->bpm(), 0, 0);
+		    				midiDevice()->sendMetaEvent(_curTime, CAMidiDevice::Meta_Tempo, static_cast<char>(tempo->bpm()), 0, 0);
 						}
 					}
 

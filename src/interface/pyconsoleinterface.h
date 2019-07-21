@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Štefan Sakalík, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2019, Štefan Sakalík, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -21,8 +21,8 @@ public:
 	char* bufferedInput(char* prompt);	// Input goes to script
 	void bufferedOutput(char* bufInp, bool bStdErr);
 #else
-	char* bufferedInput(char* prompt) { return 0; }
-	void bufferedOutput(char* bufInp, bool bStdErr) {}
+	char* bufferedInput(char* prompt) { (void)prompt; return nullptr; }
+	void bufferedOutput(char* bufInp, bool bStdErr) { (void)bufInp; (void)bStdErr; }
 #endif	
 	CAPyConsoleInterface () {}
 	void pluginInit(void);			// when script initializes

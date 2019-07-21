@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Reinahrd Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2019, Reinahrd Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -22,7 +22,7 @@ class CASVGExport : public CAExport {
 #endif
 
 public:
-	CASVGExport( QTextStream *stream=0 );
+	CASVGExport( QTextStream *stream=nullptr );
 	~CASVGExport();
 
 	QString getTempFilePath();
