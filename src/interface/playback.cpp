@@ -72,15 +72,15 @@ CAPlayback::CAPlayback( CAMidiDevice *m ) {
 */
 void CAPlayback::initPlayback() {
 	_repeating=0;
-	_lastRepeatOpenIdx=0;
+	_lastRepeatOpenIdx=nullptr;
 	_curTime=0;
-	_streamIdx=0;
+	_streamIdx=nullptr;
 	_stop = false;
 	_stopLock = false;
 
 	// override this settings in actual constructor
-	_sheet = 0;
-	_midiDevice = 0;
+	_sheet = nullptr;
+	_midiDevice = nullptr;
 	_playSelectionOnly = false;
 	_initTimeStart = 0;
 	_sleepFactor = 1.0; // set by tempo to determine the miliseconds for sleep

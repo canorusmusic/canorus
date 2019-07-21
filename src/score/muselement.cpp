@@ -87,20 +87,20 @@ bool CAMusElement::isPlayable()
 */
 const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementType type) {
 	switch ( type ) {
-		case (Undefined): return "undefined"; break;
-		case (Note): return "note"; break;
-		case (Rest): return "rest"; break;
-		case (Barline): return "barline"; break;
-		case (Clef): return "clef"; break;
-		case (TimeSignature): return "time-signature"; break;
-		case (KeySignature): return "key-signature"; break;
-		case (Slur): return "slur"; break;
-		case (FunctionMark): return "function-mark"; break;
-		case (Syllable): return "syllable"; break;
-		case (MidiNote): return "midi-note"; break;
-		case (Tuplet): return "tuplet"; break;
-		case (Mark): return "mark"; break;
-		case (FiguredBassMark): return "figured-bass-mark"; break;
+		case (Undefined): return "undefined";
+		case (Note): return "note";
+		case (Rest): return "rest";
+		case (Barline): return "barline";
+		case (Clef): return "clef";
+		case (TimeSignature): return "time-signature";
+		case (KeySignature): return "key-signature";
+		case (Slur): return "slur";
+		case (FunctionMark): return "function-mark";
+		case (Syllable): return "syllable";
+		case (MidiNote): return "midi-note";
+		case (Tuplet): return "tuplet";
+		case (Mark): return "mark";
+		case (FiguredBassMark): return "figured-bass-mark";
 	}
 	// Do not add a default case as else newly added elements might be forgotten here!
 	return QString();

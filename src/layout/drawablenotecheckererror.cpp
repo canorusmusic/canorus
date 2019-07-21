@@ -11,7 +11,8 @@
 #include "layout/drawablenotecheckererror.h"
 
 CADrawableNoteCheckerError::CADrawableNoteCheckerError(CANoteCheckerError *nce, CADrawable *dTarget)
- : CADrawable(dTarget->xPos()-5, dTarget->yPos()+dTarget->height()+5), _noteCheckerError(nce) {
+ : CADrawable(dTarget->xPos()-5, dTarget->yPos()+dTarget->height()+5) {
+    (void)nce;
 	setWidth( dTarget->width()+10 );
 	setHeight( 5 );
 }
@@ -41,5 +42,5 @@ void CADrawableNoteCheckerError::draw(QPainter *p, const CADrawSettings s) {
 }
 
 CADrawable *CADrawableNoteCheckerError::clone() {
-	return 0; //TODO: Kinda tricky, we require the instance of the new cloned drawable target
+	return nullptr; //TODO: Kinda tricky, we require the instance of the new cloned drawable target
 }

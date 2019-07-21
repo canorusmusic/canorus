@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006, Reinhard Katzmann, Canorus development team
+	Copyright (c) 2006-2019, Reinhard Katzmann, Canorus development team
 	              2007, Matevž Jekovec, Canorus development team
 
 	All Rights Reserved. See AUTHORS for a complete list of authors.
@@ -83,7 +83,7 @@ CAMusElementFactory::CAMusElementFactory() {
 	_fmTonicDegreeMinor = false;
 	_fmEllipse = false;
 	_musElementType = CAMusElement::Undefined;
-	mpoEmpty = new CANote( CADiatonicPitch(), CAPlayableLength(), NULL, 0 ); // dummy element
+	mpoEmpty = new CANote( CADiatonicPitch(), CAPlayableLength(), nullptr, 0 ); // dummy element
 	mpoMusElement = mpoEmpty;
 
 	_dynamicText = "mf";
@@ -502,6 +502,7 @@ bool CAMusElementFactory::configureFunctionMark( CAFunctionMarkContext *fmc, int
 	Configures a new tuplet containing the given \a noteList.
  */
 bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> noteList ) {
+    (void)noteList;
 	return false;
 }
 

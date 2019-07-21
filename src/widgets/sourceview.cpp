@@ -52,8 +52,8 @@ CASourceView::CASourceView(CADocument *doc, QWidget *parent)
  	setViewType( SourceView );
  	setSourceViewType( CanorusML );
  	_document = doc;
- 	_voice = 0;
-  	_lyricsContext = 0;
+ 	_voice = nullptr;
+  	_lyricsContext = nullptr;
 
  	setupUI();
 }
@@ -67,9 +67,9 @@ CASourceView::CASourceView(CAVoice *voice, QWidget *parent)
  : CAView(parent) {
  	setViewType( SourceView );
  	setSourceViewType( LilyPond );
- 	_document = 0;
+ 	_document = nullptr;
  	_voice = voice;
- 	_lyricsContext = 0;
+ 	_lyricsContext = nullptr;
 
  	setupUI();
 }
@@ -83,8 +83,8 @@ CASourceView::CASourceView(CALyricsContext *lc, QWidget *parent)
  : CAView(parent) {
  	setViewType( SourceView );
   	setSourceViewType( LilyPond );
- 	_document = 0;
- 	_voice = 0;
+ 	_document = nullptr;
+ 	_voice = nullptr;
   	_lyricsContext = lc;
 
  	setupUI();
@@ -119,7 +119,7 @@ void CASourceView::on_commit_clicked() {
 }
 
 CASourceView *CASourceView::clone() {
-	CASourceView *v;
+	CASourceView *v = nullptr;
 	if ( document() )
 		v = new CASourceView( document(), static_cast<QWidget*>(parent()) );
 	else if ( voice() )
@@ -131,7 +131,7 @@ CASourceView *CASourceView::clone() {
 }
 
 CASourceView *CASourceView::clone(QWidget *parent) {
-	CASourceView *v;
+	CASourceView *v = nullptr;
 	if ( document() )
 		v = new CASourceView( document(), parent );
 	else if ( voice() )

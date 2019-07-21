@@ -1,12 +1,12 @@
 /*!
-        Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+        Copyright (c) 2006-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
 
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#ifndef _EXTERN_PROGRAM_H_
-#define _EXTERN_PROGRAM_H_
+#ifndef EXTERN_PROGRAM_H
+#define EXTERN_PROGRAM_H
 
 // Includes
 #include <QObject>
@@ -69,5 +69,4 @@ protected:
 	bool         _bRcvStdErr;            // 'true': Receive program output from stderr
 };
 
-#endif // _EXTERN_PROGRAM_
-
+#endif // EXTERN_PROGRAM

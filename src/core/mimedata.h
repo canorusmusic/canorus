@@ -20,6 +20,7 @@ public:
 	CAMimeData( QList<CAContext*> list );
 	virtual ~CAMimeData();
 
+    using QMimeData::hasFormat;
 	bool hasFormat(const QString) const;
 	QStringList formats() const;
 

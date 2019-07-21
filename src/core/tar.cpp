@@ -1,5 +1,5 @@
 /*! 
-	Copyright (c) 2007, Itay Perl, Canorus development team
+	Copyright (c) 2007-2019, Itay Perl, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -182,14 +182,14 @@ bool CATar::addFile(const QString& filename, QIODevice& data, bool replace /* = 
 	//QString basename = filename.right(filename.lastIndexOf("/")); // \todo slash in windows? win32 tar?
 	//bufncpy(file->hdr.name, basename.toUtf8(), basename.toUtf8().size(), 100);
 	
-	bufncpy(file->hdr.name, filename.toUtf8(), filename.toUtf8().size(), 100);
+	bufncpy(file->hdr.name, filename.toUtf8(), static_cast<size_t>(filename.toUtf8().size()), 100);
 	
 	file->hdr.mode = 0644; // file permissions. set read/write for user, read only for everyone else.
-	file->hdr.size = data.size();
+	file->hdr.size = static_cast<size_t>(data.size());
 	file->hdr.mtime = QDateTime::currentDateTime().toTime_t();  //FIXME
 	file->hdr.chksum = 0; // later
 	file->hdr.typeflag = '0'; // normal file
-	bufncpy(file->hdr.linkname, NULL, 0, 100);
+	bufncpy(file->hdr.linkname, nullptr, 0, 100);
 
 	// Leave user/group info out. Not required AFAICT.
 	file->hdr.uid = file->hdr.gid = 0;
@@ -197,7 +197,7 @@ bool CATar::addFile(const QString& filename, QIODevice& data, bool replace /* = 
 	bufncpy(file->hdr.gname, "", 0, 32);
 
 	/* if there's need for larger file names with many nested directories, put the directory path (or part of it?) in prefix */
-	bufncpy(file->hdr.prefix, NULL,  0, 155);
+	bufncpy(file->hdr.prefix, nullptr,  0, 155);
 	QTemporaryFile *tempfile = new QTemporaryFile;
 	tempfile->open();
 	file->data = tempfile;
@@ -223,7 +223,7 @@ bool CATar::addFile(const QString& filename, QIODevice& data, bool replace /* = 
 */
 bool CATar::addFile(const QString& filename, QByteArray data, bool replace)
 {
-	QBuffer buf(&data, 0);
+	QBuffer buf(&data, nullptr);
 	return addFile(filename, buf, replace);
 }
 
@@ -269,7 +269,7 @@ void CATar::writeHeader(QIODevice& dest, int file)
 	CATarFile *f = _files[file];
 	char header[513];
 	char *p = header;
-	int chksum = 0;
+	quint64 chksum = 0;
 	bufncpyi(p, f->hdr.name, 100);		// Filename
 	numToOcti(p, f->hdr.mode, 8);		// File permissions
 	numToOcti(p, f->hdr.uid, 8);		// User ID
@@ -283,12 +283,12 @@ void CATar::writeHeader(QIODevice& dest, int file)
 	bufncpyi(p, "00", 2);				// Version
 	bufncpyi(p, f->hdr.uname, 32);		// User name
 	bufncpyi(p, f->hdr.gname, 32);		// Group name
-	bufncpyi(p, NULL, 0, 16); // devminor/devmajor (what are these anyway?)
+	bufncpyi(p, nullptr, 0, 16); // devminor/devmajor (what are these anyway?)
 	bufncpyi(p, f->hdr.prefix, 155);	// Prefix
-	bufncpyi(p, NULL, 0, 12);			// Padding to 512 bytes.
+	bufncpyi(p, nullptr, 0, 12);			// Padding to 512 bytes.
 		
 	for(int i=0; i<500; i++)
-		chksum += header[i]; // See above.
+		chksum += static_cast<quint64>(header[i]); // See above.
 	numToOct(header+148, chksum, 8); // Insert real checksum.
 	
 	dest.write(header, 512); 
@@ -325,7 +325,7 @@ qint64 CATar::write(QIODevice& dest)
 qint64 CATar::write(QIODevice& dest, qint64 chunk)
 {
 	//bool close = false;
-	int ret, pad;
+	qint64 ret, pad;
 	qint64 total = 0; // Bytes written.
 	//qint64 first_pos;
 	
@@ -376,12 +376,23 @@ qint64 CATar::write(QIODevice& dest, qint64 chunk)
 			break;
 		pad = f->data->size()%512;
 		if(pad>0) {
-			ret = dest.write(QByteArray(qMin(chunk,qint64(512-pad)), (char)0)); // Fill up the 512-block with nulls.
+            // QByteArray is limited to max. sizeof(int)
+            int minSize = 1;
+            if( sizeof(qMin(chunk,qint64(512-pad))) > sizeof(int) )
+            {
+                qCritical() << "QByteArray size exceeded! " << qMin(chunk,qint64(512-pad)) / pow(1024,2)
+                            << " kb. Limited to 2GB.";
+                minSize = sizeof(int);
+            }
+            else
+            {
+                minSize =  static_cast<int>(qMin(chunk,qint64(512-pad)));
+            }
+			ret = dest.write(QByteArray(minSize, 0)); // Fill up the 512-block with nulls.
 			pos.pos += ret;
 			total += ret;
 			chunk -= ret;
 		}
-		
 		//proceed to next file.
 		if(pos.file == _files.size()-1)
 		{
@@ -422,22 +433,22 @@ bool CATar::eof(QIODevice& dest)
 
 	If bufsize is -1 (the default), no NULs are added.
 */
-char *CATar::bufncpy(char* dest, const char *src, size_t len, int bufsize)
+char *CATar::bufncpy(char* dest, const char *src, size_t len, size_t bufsize)
 {
-	if(bufsize == -1)
+	if(bufsize == 0)
 		bufsize = len;
-	if((int)len<0) return dest;	
-	while(bufsize-- > (int)len)
+	if(static_cast<int>(len)<0) return dest;
+	while(bufsize-- > len)
 		dest[bufsize] = 0;
 	while(len--)
 		dest[len] = src[len];
 	return dest;
 }
 
-char *CATar::bufncpyi(char*& dest, const char *src, size_t len, int bufsize)
+char *CATar::bufncpyi(char*& dest, const char *src, size_t len, size_t bufsize)
 {
 	bufncpy(dest, src, len, bufsize);
-	return (dest += ((bufsize == -1) ? len : bufsize));
+	return (dest += ((bufsize == 0) ? len : bufsize));
 }
 
 /*!
@@ -445,18 +456,27 @@ char *CATar::bufncpyi(char*& dest, const char *src, size_t len, int bufsize)
 	Similar to snprintf but wihtout enforcing null termination. Null is inserted if it fits.
 */
 
-char *CATar::numToOct(char* buf, long long num, int width)
+char *CATar::numToOct(char* buf, quint64 num, size_t width)
 {
-	if(num >= pow(8, width)) return 0; // Crash somewhere else.
+    if(num >= pow(8, width) || buf == nullptr)
+    {
+        return nullptr; // Crash somewhere else.
+    }
 	if(num < pow(8,(width-1))) // null fits
 	{
 		char len[10];
-		sprintf(len, "%%0%do", width-1);
-		snprintf(buf, width, len, num); // adds null
-	} else {
+        // \todo This code looks broken. width is put to the string instead of num
+		sprintf(len, "%%0%ldo", width-1);
+        // \todo This code looks broken. num cannot be added to the string
+		snprintf(buf, static_cast<size_t>(width), len, num); // adds null
+        // Correct code could be
+        // sprintf(len, "%%0%do", num-1);
+        // snprintf(buf, static_cast<size_t>(width), "%s", len); // adds null
+	} else
+    {
 		while(num)
 		{
-			int digit = num%8;
+			char digit = num%8;
 			buf[--width] = '0'+digit;
 			num = num/8;
 		}
@@ -464,7 +484,7 @@ char *CATar::numToOct(char* buf, long long num, int width)
 	return buf;
 }
 
-char *CATar::numToOcti(char*& buf, long long num, int width)
+char *CATar::numToOcti(char*& buf, quint64 num, size_t width)
 {
 	numToOct(buf, num, width);
 	return (buf += width);

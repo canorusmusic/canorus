@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -47,7 +47,7 @@
 
 CAMusicXmlExport::CAMusicXmlExport( QTextStream *stream )
  : CAExport(stream) {
-	_xmlDoc = 0;
+	_xmlDoc = nullptr;
 }
 
 CAMusicXmlExport::~CAMusicXmlExport() {
@@ -156,7 +156,7 @@ void CAMusicXmlExport::exportMeasure(QList<CAVoice*>& voiceList, int *curIndex, 
 	// find the target barline which closes the measure
 	// since barlines are common to all voices, scanning the first voice suffices
 	// meanwhile, remember any clef/key/time changes
-	CABarline *targetBarline = 0;
+	CABarline *targetBarline = nullptr;
 	int j=curIndex[0]+1;
 	while (j<voiceList[0]->musElementList().size() &&
 			voiceList[0]->musElementList()[j]->musElementType()!=CAMusElement::Barline ) {
@@ -261,7 +261,6 @@ void CAMusicXmlExport::exportClef(CAClef* clef, QDomElement& xmlClef) {
 		case CAClef::PercussionLow: sign = "percussion"; line=0; break;
 		case CAClef::Tab: sign = "TAB"; line=5; break;
 		case CAClef::C: sign = "C"; line = (clef->c1()+clef->offset())/2 + 1; break;
-		default: break;
 	}
 	if (sign.size()) {
 		QDomElement xmlSign = _xmlDoc->createElement("sign");
@@ -379,6 +378,7 @@ void CAMusicXmlExport::exportNote(CANote* note, QDomElement& xmlNote) {
 }
 
 void CAMusicXmlExport::exportRest(CARest* rest, QDomElement& xmlNote) {
+    (void)rest;
 	QDomElement xmlRest = _xmlDoc->createElement("rest");
 	xmlNote.appendChild(xmlRest);
 }

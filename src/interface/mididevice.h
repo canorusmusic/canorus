@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -68,9 +68,9 @@ public:
 	
 	static unsigned char freeMidiChannel( CASheet* );
 
-	virtual ~CAMidiDevice() {};
+	virtual ~CAMidiDevice() {}
 
-	inline CAMidiDeviceType midiDeviceType() { return _midiDeviceType; };
+	inline CAMidiDeviceType midiDeviceType() { return _midiDeviceType; }
 
 	bool isRealTime() { return _realTime; }
 	virtual QMap<int, QString> getOutputPorts() = 0;
@@ -81,7 +81,7 @@ public:
 	virtual void closeOutputPort() = 0;
 	virtual void closeInputPort() = 0;
 	virtual void send(QVector<unsigned char> message, int time) = 0;     // message and absolute canorus time (independent of tempo)
-	virtual void sendMetaEvent(int time, int event, int a, int b, int c ) = 0; // absolute time of the meta event which is meant only for midi file export
+	virtual void sendMetaEvent(int time, char event, char a, char b, int c ) = 0; // absolute time of the meta event which is meant only for midi file export
 
 #ifndef SWIG
 signals:

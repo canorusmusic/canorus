@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -56,7 +56,7 @@ CAResourceCtl::~CAResourceCtl() {
 	is copied and registered.
  */
 CAResource *CAResourceCtl::importResource( QString name, QString fileName, bool isLinked, CADocument *parent, CAResource::CAResourceType t ) {
-	CAResource *r=0;
+	CAResource *r=nullptr;
 	if (isLinked) {
 		r = new CAResource( fileName, name, true, t, parent );
 	} else {

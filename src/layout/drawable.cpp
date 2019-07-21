@@ -20,11 +20,6 @@ CADrawable::CADrawable(double x, double y)
    _hScalable(false), _vScalable(false) {
 }
 
-CADrawable* CADrawable::clone() {
-	// We only reach CADrawable::clone() if this is a CADrawableMusElement, otherwise CADrawableContext::clone() will be called (this is a non-pure virtual function).
-	return static_cast<CADrawableMusElement*>(this)->clone();
-}
-
 void CADrawable::drawHScaleHandles( QPainter *p, CADrawSettings s ) {
 	p->setPen(QPen(s.color));
 	p->drawRect( s.x - qRound((SCALE_HANDLES_SIZE*s.z)/2), s.y + qRound((height()*s.z)/2 - (SCALE_HANDLES_SIZE*s.z)/2),
@@ -40,3 +35,4 @@ void CADrawable::drawVScaleHandles( QPainter *p, CADrawSettings s ) {
 	p->drawRect( s.x + qRound((width()*s.z)/2 - (SCALE_HANDLES_SIZE*s.z)/2), s.y + qRound(((height() - SCALE_HANDLES_SIZE/2.0)*s.z)),
 			     qRound(SCALE_HANDLES_SIZE*s.z), qRound(SCALE_HANDLES_SIZE*s.z) );
 }
+

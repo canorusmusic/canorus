@@ -127,8 +127,9 @@ class ShortcutGetter : public QDialog
       Q_OBJECT
 
 public:
-      ShortcutGetter(QWidget *parent = 0);
+      ShortcutGetter(QWidget *parent = nullptr);
 
+      int exec() override { return QDialog::exec(); }
       QString exec(const QString& s);
 
 protected slots:
@@ -137,8 +138,8 @@ protected slots:
 protected:
       bool captureKeyboard() { return capture; }
 
-      bool event(QEvent *e);
-      bool eventFilter(QObject *o, QEvent *e);
+      bool event(QEvent *e) override;
+      bool eventFilter(QObject *o, QEvent *e) override;
       void setText();
 
 private:

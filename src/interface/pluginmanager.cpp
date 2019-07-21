@@ -89,7 +89,7 @@ void CAPluginManager::readPlugins() {
 
         // search the plugins paths and creates a list of directories for each plugin
         QDir curDir(systemPluginsPath);
-        for (int j=0; j<(int)curDir.count(); j++) {
+        for (int j=0; j<static_cast<int>(curDir.count()); j++) {
             pluginPaths << curDir.absolutePath() + "/" + curDir[j];
         }
 
@@ -223,6 +223,7 @@ bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
 	\sa removePlugin()
 */
 bool CAPluginManager::installPlugin(QString path) {
+    (void)path;
 	/// \todo zlib needed
 	return false;
 }
@@ -241,6 +242,8 @@ bool CAPluginManager::removePlugin(CAPlugin *plugin) {
 }
 
 bool CAPluginManager::startElement(const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes) {
+    (void)namespaceURI;
+    (void)localName;
 	_tree.push(qName);
 
 	if (qName == "plugin") {
@@ -287,6 +290,8 @@ bool CAPluginManager::startElement(const QString& namespaceURI, const QString& l
 }
 
 bool CAPluginManager::endElement(const QString& namespaceURI, const QString& localName, const QString& qName) {
+    (void)namespaceURI;
+    (void)localName;
 	_tree.pop();
 
 	if (_curPlugin) {
@@ -336,7 +341,8 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			action->setTexts(_curActionText);
 			action->setRefresh(_curActionRefresh);
 
-			if (!_curActionParentToolbar.isEmpty());
+			if (!_curActionParentToolbar.isEmpty())
+                ;
 				// TODO: add action to toolbar
 
 			// Add import and export filters to the generic list for faster lookup
@@ -430,6 +436,7 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 }
 
 bool CAPluginManager::fatalError(const QXmlParseException& exception) {
+    (void)exception;
 	return false;
 }
 
@@ -455,7 +462,7 @@ bool CAPluginManager::characters(const QString& ch) {
 	\sa importAction()
  */
 void CAPluginManager::exportAction(QString filter, CADocument *document, QString filename) {
-	_exportFilterMap[filter]->plugin()->callAction(_exportFilterMap[filter], 0, document, 0, 0, filename);
+	_exportFilterMap[filter]->plugin()->callAction(_exportFilterMap[filter], nullptr, document, nullptr, nullptr, filename);
 }
 
 /*!

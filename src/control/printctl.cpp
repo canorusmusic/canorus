@@ -1,5 +1,5 @@
 /*!
-        Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+        Copyright (c) 2006-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
 
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -26,7 +26,7 @@ CAPrintCtl::CAPrintCtl( CAMainWin *poMainWin )
 	_poMainWin = poMainWin;
 	_poSVGExport = new CASVGExport();
 	_showDialog = true;
-	if( poMainWin == 0 )
+	if( poMainWin == nullptr )
 		qCritical("PrintCtl: No mainwindow instance available!");
 	else
 		 CACanorus::connectSlotsByName(_poMainWin, this);
@@ -39,7 +39,7 @@ CAPrintCtl::~CAPrintCtl()
 	if( _poSVGExport ) {
 		delete _poSVGExport;
 	}
-	_poSVGExport = 0;
+	_poSVGExport = nullptr;
 }
 
 void CAPrintCtl::on_uiPrint_triggered() {

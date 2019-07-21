@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2015, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2015-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -72,7 +72,7 @@ void CAActionDelegate::removeMainWinActions()
         if( poAction ) {
             CACanorus::settings()->deleteSingleAction( poAction->getCommandName(), poAction );
             delete poAction;
-            poAction = 0;
+            poAction = nullptr;
         }
     }
 }

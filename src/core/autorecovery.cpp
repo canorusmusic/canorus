@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -46,7 +46,7 @@
 	Initializes autosave. Reads the autosave timer settings from the CASettings class.
 */
 CAAutoRecovery::CAAutoRecovery()
- : _saveAfterRecoveryTimer(0) {
+ : _saveAfterRecoveryTimer(nullptr) {
 	_autoRecoveryTimer = new QTimer(this);
 	_autoRecoveryTimer->setSingleShot( false );
 	connect( _autoRecoveryTimer, SIGNAL(timeout()), this, SLOT(saveRecovery()) );

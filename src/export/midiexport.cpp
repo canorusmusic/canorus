@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -66,22 +66,23 @@ void CAMidiExport::send(QVector<unsigned char> message, int time)
 	if ( message.size() ) trackChunk.append( writeTime( timeIncrement( time )));
 	char q;
 	for (int i=0; i< message.size(); i++ ) {
-		q = message[i];
+		q = static_cast<char>(message[i]);
 		trackChunk.append(q);
 	}
 	for (int i=0; i< message.size(); i++ ) {
-		q = message[i];
+		q = static_cast<char>(message[i]);
 	}
 }
 
-void CAMidiExport::sendMetaEvent(int time, int event, int a, int b, int c )
+void CAMidiExport::sendMetaEvent(int time, char event, char a, char b, int c )
 {
+    (void)c;
 	// We don't do a time check on time, and we compute
 	// only the time increment when we really send an event out.
 	QByteArray tc;
 	if (event == CAMidiDevice::Meta_Keysig ) {
 		tc.append(writeTime(timeIncrement(time)));
-		tc.append(CAMidiDevice::Midi_Ctl_Event);
+		tc.append(static_cast<char>(CAMidiDevice::Midi_Ctl_Event));
 		tc.append(event);
 		tc.append(variableLengthValue( 2 ));
 		tc.append(a);
@@ -89,12 +90,12 @@ void CAMidiExport::sendMetaEvent(int time, int event, int a, int b, int c )
 		trackChunk.append(tc);
 	} else
 	if (event == CAMidiDevice::Meta_Timesig ) {
-		int lbBeat=0;
+		char lbBeat=0;
 		for (; lbBeat<5; lbBeat++ ) {	// natural logarithm, smallest is 128th
 			if (1<<lbBeat >= b) break;
 		}
 		tc.append(writeTime(timeIncrement(time)));
-		tc.append(CAMidiDevice::Midi_Ctl_Event);
+		tc.append(static_cast<char>(CAMidiDevice::Midi_Ctl_Event));
 		tc.append(event);
 		tc.append(variableLengthValue( 4 ));
 		tc.append(a);
@@ -106,7 +107,7 @@ void CAMidiExport::sendMetaEvent(int time, int event, int a, int b, int c )
 	if (event == CAMidiDevice::Meta_Tempo ) {
 		int usPerQuarter = 60000000/a;
 		tc.append(writeTime(timeIncrement(time)));
-		tc.append(CAMidiDevice::Midi_Ctl_Event);
+		tc.append(static_cast<char>(CAMidiDevice::Midi_Ctl_Event));
 		tc.append(event);
 		tc.append(variableLengthValue( 3 ));
 		char q;
@@ -118,10 +119,9 @@ void CAMidiExport::sendMetaEvent(int time, int event, int a, int b, int c )
 		tc.append(q);
 		trackChunk.append(tc);
 	}
-
 }
 
-// FIXME: these magic numbers should go into the midi class.
+// @todo: replace with enum midiCommands
 #define META_TEXT        0x01
 #define META_TIMESIG     0x58
 #define META_KEYSIG      0x59
@@ -136,14 +136,12 @@ void CAMidiExport::sendMetaEvent(int time, int event, int a, int b, int c )
 #define MIDI_CTL_SUSTAIN 0x40
 
 
-QByteArray CAMidiExport::word16(int x) {
+QByteArray CAMidiExport::word16(char x) {
 	QByteArray ba;
 	ba.append(x >> 8);
 	ba.append(x);
 	return ba;
 }
-
-
 
 QByteArray CAMidiExport::variableLengthValue(int value) {
 
@@ -170,10 +168,8 @@ QByteArray CAMidiExport::variableLengthValue(int value) {
 	return chunk;
 }
 
-
-
 QByteArray CAMidiExport::writeTime(int time) {
-	unsigned char b;
+	char b;
 	bool byteswritten = false;
 	QByteArray ba;
 
@@ -201,9 +197,10 @@ QByteArray CAMidiExport::writeTime(int time) {
 QByteArray CAMidiExport::trackEnd(void) {
 	QByteArray tc;
 	tc.append(writeTime(0));
+    // @todo replace with enum
 	tc.append(MIDI_CTL_EVENT);
 	tc.append(META_TRACK_END);
-	tc.append((char)0);
+	tc.append(static_cast<char>(0));
 	return tc;
 }
 
@@ -211,6 +208,7 @@ QByteArray CAMidiExport::trackEnd(void) {
 QByteArray CAMidiExport::textEvent(int time, QString s) {
 	QByteArray tc;
 	tc.append(writeTime(time));
+    // @todo replace with enum
 	tc.append(MIDI_CTL_EVENT);
 	tc.append(META_TEXT);
 	tc.append(variableLengthValue(s.length()));
@@ -321,6 +319,7 @@ void CAMidiExport::writeFile() {
 	headerChunk.append("MThd....");		// header and space for length
 	headerChunk.append(word16( 1 ));	// Midi-Format version
 	headerChunk.append(word16( 2 ));	// number of tracks, a control track and a music track for a trying out ...
+    // @todo QByteArray does not support char values > 0x7f
 	headerChunk.append(word16( CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter )));	// time division ticks per quarter
 	setChunkLength( &headerChunk );
 	streamQByteArray( headerChunk );
@@ -344,12 +343,12 @@ void CAMidiExport::writeFile() {
 }
 
 void CAMidiExport::setChunkLength( QByteArray *x ) {
-	quint32 l = (*x).size() - 8;	// subtract header length
+    // @todo QByteArray does not support char values > 0x7f
+	qint32 l = (*x).size() - 8;	// subtract header length
 	for (int i=0; i<4; i++ ) {
 		(*x )[7-i] = l >> (8*i);
 	}
 }
-
 
 void CAMidiExport::streamQByteArray( QByteArray x )
 {
@@ -357,11 +356,9 @@ void CAMidiExport::streamQByteArray( QByteArray x )
 		out().device()->putChar(x[i]);
 	return;	// when no debugging
 
-	for (int i=0; i<x.size(); i++ ) {
-		printf( " %02x", 0x0ff & x.at(i));
-	}
-	printf( "\n");
+// @todo Code will never be executed
+//	for (int i=0; i<x.size(); i++ ) {
+//		printf( " %02x", 0x0ff & x.at(i));
+//	}
+//	printf( "\n");
 }
-
-
-

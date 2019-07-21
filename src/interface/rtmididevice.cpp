@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -35,8 +35,8 @@
 CARtMidiDevice::CARtMidiDevice()
  : CAMidiDevice() {
 	_midiDeviceType = RtMidiDevice;
-	_out = 0;
-	_in = 0;
+	_out = nullptr;
+	_in = nullptr;
 	_outOpen=false;
 	_inOpen=false;
 	setRealTime(true);
@@ -164,6 +164,7 @@ CARtMidiDevice::~CARtMidiDevice() {
 	Sends the given \a message to the midi device. \a offset is ignored because CARtMidiDevice is a realtime device.
 */
 void CARtMidiDevice::send(QVector<unsigned char> message, int time) {
+    (void)time;
 	std::vector<unsigned char> messageVector = message.toStdVector();
 	if (_outOpen)
 		_out->sendMessage(&messageVector);

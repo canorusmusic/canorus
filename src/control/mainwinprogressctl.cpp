@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2009-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -13,7 +13,7 @@
 #include "widgets/progressstatusbar.h"
 
 CAMainWinProgressCtl::CAMainWinProgressCtl( CAMainWin *mainWin )
- : _mainWin(mainWin), _bar(0), _updateTimer(0), _file(0) {
+ : _mainWin(mainWin), _bar(nullptr), _updateTimer(nullptr), _file(nullptr) {
 }
 
 CAMainWinProgressCtl::~CAMainWinProgressCtl() {
@@ -47,7 +47,7 @@ void CAMainWinProgressCtl::on_cancelButton_clicked(bool) {
 void CAMainWinProgressCtl::restoreStatusBar() {
 	_mainWin->statusBar()->removeWidget(_bar);
 	delete _bar;
-	_bar=0;
+	_bar=nullptr;
 }
 
 void CAMainWinProgressCtl::startProgress( CAFile *f ) {

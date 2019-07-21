@@ -63,7 +63,7 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
     boxSizePolicy.setHeightForWidth( widgetSizePolicy.hasHeightForWidth() );
     
     // Visual group box for the button menu
-	_groupBox = new QGroupBox( title, 0 );
+	_groupBox = new QGroupBox( title, nullptr );
     boxSizePolicy.setHeightForWidth( _groupBox->sizePolicy().hasHeightForWidth() );
     _groupBox->setSizePolicy( boxSizePolicy );
 	_groupBox->setBackgroundRole( QPalette::Button );
@@ -82,7 +82,7 @@ CAMenuToolButton::CAMenuToolButton( QString title, int numIconsRow, QWidget * pa
 	connect( _buttonGroup, SIGNAL(buttonPressed( int )), 
 	         this, SLOT( onButtonPressed( int ) ) );
 
-	QToolButton::setDefaultAction( 0 );
+	QToolButton::setDefaultAction( nullptr );
     
 	// Actual positions of the buttons in the button menu layout
 	_buttonXPos = _buttonYPos = 0;

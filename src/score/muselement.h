@@ -40,7 +40,7 @@ public:
 	CAMusElement(CAContext *context, int timeStart, int timeLength=0);
 	virtual ~CAMusElement();
 
-	virtual CAMusElement* clone(CAContext* context=0) = 0;
+	virtual CAMusElement* clone(CAContext* context=nullptr) = 0;
 	virtual int compare(CAMusElement *elt) = 0;
 
 	CAMusElementType musElementType() { return _musElementType; }
@@ -61,7 +61,7 @@ public:
 	inline const QString name() { return _name; }
 	inline void setName(const QString name) { _name = name; }
 
-	inline const bool isVisible() { return _visible; }
+	inline bool isVisible() { return _visible; }
 	inline void setVisible( const bool v ) { _visible = v; }
 
 	inline const QColor color() { return _color; }
@@ -72,7 +72,7 @@ public:
 	void addMarks( QList<CAMark*> marks );
 	inline void removeMark( CAMark* mark ) { _markList.removeAll(mark); }
 	
-	inline const QList<CANoteCheckerError*>& noteCheckerErrorList() { return _noteCheckerErrorList; };
+	inline const QList<CANoteCheckerError*>& noteCheckerErrorList() { return _noteCheckerErrorList; }
 	inline void addNoteCheckerError( CANoteCheckerError* nce ) { _noteCheckerErrorList << nce; }
 	inline void removeNoteCheckerError( CANoteCheckerError* nce ) { _noteCheckerErrorList.removeAll(nce); }
 

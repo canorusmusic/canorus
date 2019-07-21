@@ -17,9 +17,6 @@ public:
 	CADrawableNoteCheckerError(CANoteCheckerError *nce, CADrawable *dTarget);
 	void draw(QPainter *p, const CADrawSettings s);
 	CADrawable *clone();
-	
-private:
-	CANoteCheckerError *_noteCheckerError;
 };
 
 #endif /* DRAWABLECONTEXT_H_ */

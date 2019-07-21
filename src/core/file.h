@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -18,8 +18,8 @@ public:
 	CAFile();
 	virtual ~CAFile();
 
-	inline const int status() { return _status; }
-	inline const int progress() { return _progress; }
+	inline int status() { return _status; }
+	inline int progress() { return _progress; }
 	virtual const QString readableStatus() = 0;
 	void setStreamFromFile( const QString filename );
 	void setStreamToFile( const QString filename );

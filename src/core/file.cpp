@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -28,8 +28,8 @@
 CAFile::CAFile() : QThread() {
 	setProgress( 0 );
 	setStatus( 0 );
-	setStream( 0 );
-	setFile( 0 );
+	setStream( nullptr );
+	setFile( nullptr );
 	_deleteStream = false;
 }
 
@@ -75,7 +75,7 @@ void CAFile::setStreamFromFile( const QString filename ) {
 void CAFile::setStreamToFile( const QString filename ) {
 	if (stream() && _deleteStream) {
 		delete stream();
-		setStream(0);
+		setStream(nullptr);
 	}
 	setFile( new QFile( filename ) );
 
@@ -92,7 +92,7 @@ void CAFile::setStreamToFile( const QString filename ) {
 void CAFile::setStreamToDevice(QIODevice* device) {
 	if (stream() && _deleteStream) {
 		delete stream();
-		setStream(0);
+		setStream(nullptr);
 	}
 
 	if (!device->isOpen()) {
@@ -141,7 +141,7 @@ QString CAFile::getStreamAsString() {
 void CAFile::setStreamFromDevice(QIODevice* device) {
 	if (stream() && _deleteStream) {
 		delete stream();
-		setStream(0);
+		setStream(nullptr);
 	}
 
 	if (!device->isOpen()) {

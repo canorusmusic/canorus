@@ -1,11 +1,12 @@
 /*!
-	Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
 // Includes
+#include <QDebug>
 #include "control/externprogram.h"
 
 /*!	\class CAExternProgram
@@ -114,7 +115,7 @@ int CAExternProgram::getExitState()
   if( getRunning() )
 	  qWarning("ExternProgram: Getting exit state while program is still running!");
 	else
-	  iExitStatus = (int)_poExternProgram->exitStatus();
+	  iExitStatus = static_cast<int>(_poExternProgram->exitStatus());
   return iExitStatus;
 }
 
@@ -223,14 +224,14 @@ void CAExternProgram::programExited()
 	}
 	// Check if the program exited normally else put out error message
 	if( _poExternProgram->exitStatus() != QProcess::NormalExit ) {
-		qCritical("ExternProgram: program %s didn't finish correctly! Exit code %s", _oProgramName.toLatin1().constData(),
-              QString( _poExternProgram->exitCode() + " " + _poExternProgram->errorString() ).toLatin1().constData() );
+		qCritical() << "ExternProgram: program" << _oProgramName << " didn't finish correctly! Exit code"
+                    <<_poExternProgram->exitCode() << " " << _poExternProgram->errorString();
 		emit programExited( _poExternProgram->exitCode() );
 	}
 
 	if( _poExternProgram->error() == QProcess::FailedToStart ) {
-		qCritical("ExternProgram: program %s didn't start correctly! Error code %s", _oProgramName.toLatin1().constData(),
-              QString( _poExternProgram->error() + " " + _poExternProgram->errorString() ).toLatin1().constData() );
+		qCritical() << "ExternProgram: program" << _oProgramName << "didn't start correctly! Error code"
+                    << _poExternProgram->error() << " " << _poExternProgram->errorString();
 		emit programExited( -1 );
 	}
 

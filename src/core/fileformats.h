@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -46,7 +46,7 @@ public:
 	static const QString SVG_FILTER;
 
 	static const QString getFilter( const CAFileFormatType );
-	static const CAFileFormatType getType( const QString );
+	static CAFileFormatType getType( const QString );
 };
 
 #endif /*FILEFORMATS_H_*/

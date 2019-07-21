@@ -26,8 +26,8 @@ private:
 	CAMainWin* _mw;
 	void midiInEventToScore(CAScoreView *v, QVector<unsigned char> m);
 	QTimer _midiInChordTimer;
-	CASheet *_lastMidiInSheet;
-	CAStaff *_lastMidiInStaff;
+	//CASheet *_lastMidiInSheet;
+	//CAStaff *_lastMidiInStaff;
 	CAVoice *_lastMidiInVoice;
 	CADiatonicPitch _actualKeySignature;
 	signed char _actualKeySignatureAccs[7];
