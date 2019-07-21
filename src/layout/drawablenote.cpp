@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -205,7 +205,7 @@ void CADrawableNote::draw(QPainter *p, CADrawSettings s) {
 	}
 
 	// Draw Dots
-	float delta=4*s.z;
+	double delta=4*s.z;
 	for (int i=0; i<note()->playableLength().dotted(); i++) {
 		pen.setWidth(qRound(2.7*s.z) + 1);
 		pen.setCapStyle(Qt::RoundCap);

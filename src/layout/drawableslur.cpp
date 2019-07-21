@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -102,7 +102,7 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 	points[7] = QPoint( qRound(s.x + 0.7*deltaX1), qRound(yLeft + deltaY1*0.94) );
 	points[8] = QPoint( qRound(s.x + 0.8*deltaX1), qRound(yLeft + deltaY1*0.95) );
 	points[9] = QPoint( qRound(s.x + 0.9*deltaX1), qRound(yLeft + deltaY1*0.97) );
-	points[10] = QPoint( xMidl, qRound(yMidl + deltaY2*0.02) );
+	points[10] = QPoint( static_cast<int>(xMidl), qRound(yMidl + deltaY2*0.02) );
 	points[11] = QPoint( qRound(xMidl + 0.1*deltaX2), qRound(yMidl + deltaY2*0.03) );
 	points[12] = QPoint( qRound(xMidl + 0.2*deltaX2), qRound(yMidl + deltaY2*0.05) );
 	points[13] = QPoint( qRound(xMidl + 0.3*deltaX2), qRound(yMidl + deltaY2*0.06) );
@@ -112,7 +112,7 @@ void CADrawableSlur::draw(QPainter *p, const CADrawSettings s) {
 	points[17] = QPoint( qRound(xMidl + 0.7*deltaX2), qRound(yMidl + deltaY2*0.29) );
 	points[18] = QPoint( qRound(xMidl + 0.8*deltaX2), qRound(yMidl + deltaY2*0.47) );
 	points[19] = QPoint( qRound(xMidl + 0.9*deltaX2), qRound(yMidl + deltaY2*0.66) );
-	points[20] = QPoint( qRound(s.x+width()*s.z), yRight );
+	points[20] = QPoint( qRound(s.x+width()*s.z), static_cast<int>(yRight) );
 
 	p->drawPolyline(points, 21);
 

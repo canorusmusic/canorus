@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -22,7 +22,7 @@ public:
 	virtual ~CADrawableMark();
 
 	void draw( QPainter *p, CADrawSettings s );
-	CADrawableMark *clone( CADrawableContext* newContext = 0 );
+	CADrawableMark *clone( CADrawableContext* newContext = nullptr );
 	inline CAMark *mark() { return static_cast<CAMark*>(musElement()); }
 
 	inline void setRehersalMarkNumber( int n ) { _rehersalMarkNumber = n; }

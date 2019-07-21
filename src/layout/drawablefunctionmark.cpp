@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -7,6 +7,7 @@
 
 #include <QPainter>
 #include <QFont>
+#include <QDebug>
 #include <stdio.h>
 
 #include "layout/drawablefunctionmark.h"
@@ -112,7 +113,7 @@ void CADrawableFunctionMark::draw(QPainter *p, CADrawSettings s) {
 }
 
 CADrawableFunctionMark *CADrawableFunctionMark::clone(CADrawableContext* newContext) {
-	return new CADrawableFunctionMark(functionMark(), (newContext)?(CADrawableFunctionMarkContext*)newContext:drawableFunctionMarkContext(), ((CAFunctionMark*)_musElement)->isMinor()?xPos()+6:xPos(), yPos());
+	return new CADrawableFunctionMark(functionMark(), (newContext)?static_cast<CADrawableFunctionMarkContext*>(newContext):drawableFunctionMarkContext(), (static_cast<CAFunctionMark*>(_musElement))->isMinor()?xPos()+6:xPos(), yPos());
 }
 
 /*!
@@ -128,11 +129,11 @@ CADrawableFunctionMark *CADrawableFunctionMark::clone(CADrawableContext* newCont
 	KeyName constructor.
 */
 CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType type, const QString key, CADrawableContext *c, double x, double y)
- : CADrawableMusElement(0, c, x, y) {	// support functions point to no music element
+ : CADrawableMusElement(nullptr, c, x, y) {	// support functions point to no music element
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkSupport;
 	_drawableFunctionMarkSupportType = type;
 	_key = key;
-	_function1=0; _function2=0;
+	_function1=nullptr; _function2=nullptr;
 
 	if (type==Key) {
 		setWidth( 0 );  /// \todo Width determination should be done automatically using QPainter::boundingRect() method
@@ -165,7 +166,7 @@ CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionM
 	ChordArea, Tonicization, Modulation/ChordArea Rectangle, Ellipse constructor.
 */
 CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionMarkSupportType type, CADrawableFunctionMark *f1, CADrawableContext *c, double x, double y, CADrawableFunctionMark *f2)
- : CADrawableMusElement(0, c, x, y) {	// support functions point to no music element
+ : CADrawableMusElement(nullptr, c, x, y) {	// support functions point to no music element
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkSupport;
 	_drawableFunctionMarkSupportType = type;
 	_function1 = f1;
@@ -237,8 +238,8 @@ CADrawableFunctionMarkSupport::CADrawableFunctionMarkSupport(CADrawableFunctionM
  : CADrawableMusElement(function, c, x, y) {
 	_drawableMusElementType = CADrawableMusElement::DrawableFunctionMarkSupport;
 	_drawableFunctionMarkSupportType = type;
-	_function1=0;
-	_function2=0;
+	_function1=nullptr;
+	_function2=nullptr;
 
 	_extenderLineVisible = false;
 	_rectWider = false;
@@ -260,8 +261,8 @@ CADrawableFunctionMarkSupport::~CADrawableFunctionMarkSupport() {
 void CADrawableFunctionMarkSupport::draw(QPainter *p, const CADrawSettings s) {
 	QFont font("FreeSans");
 	QString text;
-	CAFunctionMark::CAFunctionType type;
-	bool minor;
+	CAFunctionMark::CAFunctionType type = CAFunctionMark::CAFunctionType::Undefined;
+	bool minor = false;
 
 	//prepare drawing stuff
 	switch (_drawableFunctionMarkSupportType) {
@@ -365,7 +366,7 @@ void CADrawableFunctionMarkSupport::draw(QPainter *p, const CADrawSettings s) {
 			break;
 
 		case Alterations:
-			CAFunctionMark *f1 = (CAFunctionMark*)(_musElement);
+			CAFunctionMark *f1 = static_cast<CAFunctionMark*>(_musElement);
 			int curX = s.x, curY = s.y;
 
 			if (f1->function()==CAFunctionMark::Undefined)
@@ -401,21 +402,16 @@ CADrawableFunctionMarkSupport *CADrawableFunctionMarkSupport::clone(CADrawableCo
 	switch (_drawableFunctionMarkSupportType) {
 		case Key:
 			return new CADrawableFunctionMarkSupport(Key, _key, (newContext)?newContext:_drawableContext, _xPos, _yPos);
-			break;
 		case ChordArea:
 		case Tonicization:
 			return new CADrawableFunctionMarkSupport(_drawableFunctionMarkSupportType, _function1, (newContext)?newContext:_drawableContext, _xPos, _yPos, _function2);
-			break;
 		case Ellipse:
 			return new CADrawableFunctionMarkSupport(Ellipse, _function1, (newContext)?newContext:_drawableContext, qRound(_xPos - _function1->width()/2.0), _yPos, _function2);
-			break;
 		case Rectangle:
 			return new CADrawableFunctionMarkSupport(Rectangle, _function1, (newContext)?newContext:_drawableContext, _xPos+3, _yPos+3, _function2);
-			break;
 		case Alterations:
-			return new CADrawableFunctionMarkSupport(Alterations, (CAFunctionMark*)(_musElement), (newContext)?newContext:_drawableContext, _xPos, _yPos);
-			break;
-		default:
-			return 0;
+			return new CADrawableFunctionMarkSupport(Alterations, static_cast<CAFunctionMark*>(_musElement), (newContext)?newContext:_drawableContext, _xPos, _yPos);
 	}
+    qWarning() << "clone: unknown drawableFunctionMarkSupportType " << _drawableFunctionMarkSupportType;
+    return nullptr;
 }

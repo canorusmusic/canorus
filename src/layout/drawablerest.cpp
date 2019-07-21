@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -106,23 +106,23 @@ void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
 	QPen pen;
 	switch ( rest()->playableLength().musicLength() ) {
 	case CAPlayableLength::HundredTwentyEighth: {
-		p->drawText(qRound(s.x + 4*s.z), qRound(s.y + (2.6*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z), QString(CACanorus::fetaCodepoint("rests.7")));
+		p->drawText(qRound(s.x + 4*s.z), qRound(s.y + (2.6*(static_cast<CADrawableStaff*>(_drawableContext))->lineSpace())*s.z), QString(CACanorus::fetaCodepoint("rests.7")));
 		break;
 	}
 	case CAPlayableLength::SixtyFourth: {
-		p->drawText(qRound(s.x + 3*s.z), qRound(s.y + (1.75*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z), QString(CACanorus::fetaCodepoint("rests.6")));
+		p->drawText(qRound(s.x + 3*s.z), qRound(s.y + (1.75*(static_cast<CADrawableStaff*>(_drawableContext))->lineSpace())*s.z), QString(CACanorus::fetaCodepoint("rests.6")));
 		break;
 	}
 	case CAPlayableLength::ThirtySecond: {
-		p->drawText(qRound(s.x + 2.5*s.z), qRound(s.y + (1.8*((CADrawableStaff*)_drawableContext)->lineSpace())*s.z), QString(CACanorus::fetaCodepoint("rests.5")));
+		p->drawText(qRound(s.x + 2.5*s.z), qRound(s.y + (1.8*(static_cast<CADrawableStaff*>(_drawableContext))->lineSpace())*s.z), QString(CACanorus::fetaCodepoint("rests.5")));
 		break;
 	}
 	case CAPlayableLength::Sixteenth: {
-		p->drawText(qRound(s.x + 1*s.z), qRound(s.y + (((CADrawableStaff*)_drawableContext)->lineSpace()-0.9)*s.z), QString(CACanorus::fetaCodepoint("rests.4")));
+		p->drawText(qRound(s.x + 1*s.z), qRound(s.y + ((static_cast<CADrawableStaff*>(_drawableContext))->lineSpace()-0.9)*s.z), QString(CACanorus::fetaCodepoint("rests.4")));
 		break;
 	}
 	case CAPlayableLength::Eighth: {
-		p->drawText(s.x, qRound(s.y + (((CADrawableStaff*)_drawableContext)->lineSpace()-0.9)*s.z), QString(CACanorus::fetaCodepoint("rests.3")));
+		p->drawText(s.x, qRound(s.y + ((static_cast<CADrawableStaff*>(_drawableContext))->lineSpace()-0.9)*s.z), QString(CACanorus::fetaCodepoint("rests.3")));
 		break;
 	}
 	case CAPlayableLength::Quarter: {
@@ -149,7 +149,7 @@ void CADrawableRest::draw(QPainter *p, CADrawSettings s) {
 	///////////////
 	// Draw Dots //
 	///////////////
-	float delta=4*s.z;
+	double delta=4*s.z;
 	for (int i=0; i<rest()->playableLength().dotted(); i++) {
 		pen.setWidth(qRound(2.7*s.z+0.5) + 1);
 		pen.setCapStyle(Qt::RoundCap);
