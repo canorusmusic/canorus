@@ -995,8 +995,8 @@ void CAScoreView::paintEvent(QPaintEvent *) {
 			            static_cast<CARest*>(elt)->restType()==CARest::Hidden) ||
 			            (elt && !elt->isVisible())
 			          ) {
-			   	color = QColor(0,0,0,0); // transparent color
-			} else if ( elt && elt->color()!=QColor(0,0,0,0) ) {
+				color = QColor(0,0,0,0); // transparent color
+			} else if ( elt && elt->color()!=QColor() ) {
 				color = elt->color(); // set elements color, if defined
 			} else {
 				color = foregroundColor(); // set default color for foreground elements
@@ -1034,7 +1034,6 @@ void CAScoreView::paintEvent(QPaintEvent *) {
 	// draw ruler
 	if (CACanorus::settings()->showRuler()) {
 		p.fillRect(0, 0, width(), RULER_HEIGHT, QColor::fromRgb(200, 200, 200, 128));
-		p.setPen(Qt::lightGray);
 
 		QFont font("FreeSans");
 		font.setPixelSize( qRound(RULER_HEIGHT*0.8) );

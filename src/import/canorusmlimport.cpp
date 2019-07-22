@@ -9,6 +9,7 @@
 #include <QIODevice>
 #include <QVariant>
 #include <QFileInfo>
+#include <QVersionNumber>
 
 #include "import/canorusmlimport.h"
 
@@ -146,6 +147,10 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
     (void) localName;
 	if ( attributes.value("color")!="" ) {
 		_color = QVariant(attributes.value("color")).value<QColor>();
+		if (_version <= QVersionNumber(0,7,3) && _color==QColor(0,0,0)) {
+			// before Canorus 0.7.4, color was incorrectly saved (always #000000)
+			_color = QColor();
+		}
 	} else {
 		_color = QColor();
 	}
@@ -330,7 +335,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 	}
 	else if (qName == "note") {
 		// CANote
-		if ( _version.startsWith("0.5") ) {
+		if ( QVersionNumber(0,5).isPrefixOf(_version) ) {
 		_curNote = new CANote( CADiatonicPitch( attributes.value("pitch").toInt(), attributes.value("accs").toInt() ),
 		                       CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("playable-length")), attributes.value("dotted").toInt()),
 		                      _curVoice,
@@ -407,7 +412,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curTuplet->setColor(_color);
 	} else if (qName == "rest") {
 		// CARest
-		if ( _version.startsWith("0.5") ) {
+		if ( QVersionNumber(0,5).isPrefixOf(_version) ) {
 			_curRest = new CARest( CARest::restTypeFromString(attributes.value("rest-type")),
 			                       CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("playable-length")), attributes.value("dotted").toInt()),
 			                      _curVoice,
@@ -469,13 +474,13 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			f->addNumber( attributes.value("number").toInt(), attributes.value("accs").toInt() );
 		}
 
-	} else if (qName == "function-mark" || ( _version.startsWith("0.5") && qName == "function-marking") ) {
+	} else if (qName == "function-mark" || ( QVersionNumber(0,5).isPrefixOf(_version) && qName == "function-marking") ) {
 		// CAFunctionMark
 		CAFunctionMark *f =
 			new CAFunctionMark(
 				CAFunctionMark::functionTypeFromString(attributes.value("function")),
 				(attributes.value("minor")=="1"?true:false),
-				(_version.startsWith("0.5")?(attributes.value("key").isEmpty()?"C":attributes.value("key")):CADiatonicKey()),
+				(QVersionNumber(0,5).isPrefixOf(_version)?(attributes.value("key").isEmpty()?"C":attributes.value("key")):CADiatonicKey()),
 				static_cast<CAFunctionMarkContext*>(_curContext),
 				attributes.value("time-start").toInt(),
 				attributes.value("time-length").toInt(),
@@ -529,7 +534,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
     (void) localName;
 	if (qName == "canorus-version") {
 		// version of Canorus which saved the document
-		_version = _cha;
+		_version = QVersionNumber::fromString(_cha);
 	} else if (qName == "document") {
 		//fix voice errors like shared voice elements not being present in both voices etc.
 		for (int i=0; _document && i<_document->sheetList().size(); i++) {
@@ -674,7 +679,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		}
 	} else if (qName == "note") {
 		// CANote
-		if ( _version.startsWith("0.5") ) {
+		if ( QVersionNumber(0,5).isPrefixOf(_version) ) {
 		} else {
 			_curNote->setPlayableLength( _curPlayableLength );
 			if ( !_curNote->tuplet() ) {
@@ -697,7 +702,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		_curTuplet = nullptr;
 	} else if (qName == "rest") {
 		// CARest
-		if ( _version.startsWith("0.5") ) {
+		if ( QVersionNumber(0,5).isPrefixOf(_version) ) {
 		} else {
 			_curRest->setPlayableLength( _curPlayableLength );
 			if ( !_curRest->tuplet() ) {
@@ -708,11 +713,11 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		_curVoice->append( _curRest );
 		_curRest = nullptr;
 	} else if (qName == "mark") {
-		if ( !_version.startsWith("0.5") && _curMark->markType()==CAMark::Tempo ) {
+		if ( !QVersionNumber(0,5).isPrefixOf(_version) && _curMark->markType()==CAMark::Tempo ) {
 			static_cast<CATempo*>(_curMark)->setBeat( _curTempoPlayableLength );
 		}
 	} else if (qName == "function-mark") {
-		if ( !_version.startsWith("0.5") && _curMusElt->musElementType()==CAMusElement::FunctionMark ) {
+		if ( !QVersionNumber(0,5).isPrefixOf(_version) && _curMusElt->musElementType()==CAMusElement::FunctionMark ) {
 			static_cast<CAFunctionMark*>(_curMusElt)->setKey( _curDiatonicKey );
 		}
 	} else if (qName == "diatonic-key" ) {
@@ -761,7 +766,7 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		break;
 	}
 	case CAMark::Tempo: {
-		if ( _version.startsWith("0.5") ) {
+		if ( QVersionNumber(0,5).isPrefixOf(_version) ) {
 			_curMark = new CATempo(
 					CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("beat")), attributes.value("beat-dotted").toInt() ),
 					attributes.value("bpm").toUtf8()[0],

@@ -42,7 +42,7 @@ CAMusElement::CAMusElement(CAContext *context, int time, int length) {
 	_timeLength = length;
 	_musElementType = CAMusElement::Undefined;
 	_visible = true;
-	_color = QColor( 0, 0, 0, 0 );
+	_color = QColor(); // invalid color by default
 }
 
 /*!
