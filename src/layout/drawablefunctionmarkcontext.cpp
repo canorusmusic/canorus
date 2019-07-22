@@ -25,7 +25,9 @@ CADrawableFunctionMarkContext::~CADrawableFunctionMarkContext() {
 }
 
 void CADrawableFunctionMarkContext::draw(QPainter *p, const CADrawSettings s) {
-	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(Qt::yellow));
+	QColor bColor = Qt::yellow;
+	bColor.setAlphaF(0.2);
+	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(bColor));
 }
 
 CADrawableFunctionMarkContext *CADrawableFunctionMarkContext::clone() {

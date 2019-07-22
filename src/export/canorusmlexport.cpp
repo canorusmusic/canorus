@@ -455,7 +455,7 @@ void CACanorusMLExport::exportMarks( CAMusElement *elt, QDomElement& domElt ) {
 }
 
 void CACanorusMLExport::exportColor( CAMusElement *elt, QDomElement& domParent ) {
-	if ( elt->color()!=QColor() ) {
+	if ( elt->color().isValid() ) {
 		domParent.setAttribute( "color", QVariant(elt->color()).toString() );
 	}
 }

@@ -8,10 +8,11 @@
 #ifndef CANORUSMLIMPORT_H_
 #define CANORUSMLIMPORT_H_
 
-#include <QStack>
-#include <QHash>
-#include <QXmlDefaultHandler>
 #include <QColor>
+#include <QHash>
+#include <QStack>
+#include <QXmlDefaultHandler>
+#include <QVersionNumber>
 
 #include "import/import.h"
 
@@ -56,7 +57,7 @@ private:
 	inline CADocument *document() { return _document; }
 	CADocument     *_document;
 
-	QString         _version;
+	QVersionNumber  _version; // version of Canorus the imported file was created with
 	QString         _errorMsg;
 	QStack<QString> _depth;
 
