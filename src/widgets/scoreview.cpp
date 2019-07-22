@@ -996,7 +996,7 @@ void CAScoreView::paintEvent(QPaintEvent *) {
 			            (elt && !elt->isVisible())
 			          ) {
 				color = QColor(0,0,0,0); // transparent color
-			} else if ( elt && elt->color()!=QColor() ) {
+			} else if ( elt && elt->color().isValid() ) {
 				color = elt->color(); // set elements color, if defined
 			} else {
 				color = foregroundColor(); // set default color for foreground elements
