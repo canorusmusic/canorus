@@ -732,7 +732,7 @@ ENDIF(MINGW)
 ADD_CUSTOM_TARGET(tr
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
 	DEPENDS ${Canorus_UIC_Srcs}
-	COMMAND ${Qt5_LUPDATE_EXECUTABLE} -no-ui-lines -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
+	COMMAND ${Qt5_LUPDATE_EXECUTABLE} -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
 qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
 
