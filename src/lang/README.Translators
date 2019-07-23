@@ -10,10 +10,10 @@ To synchronize translations with the terms in the source, run
 make tr
 ```
 
-This will update all existing translations and also generate template.ts used
-as a template for a new language. To add a new language, copy template.ts to
-ISO language code and optionally region with .ts suffix (eg. fr.ts or fr_TN.ts
-for French-speaking Tunisians) and translate it using Qt Linguist or other
+This will update all existing translations and update template.ts used as a
+template for a new language. To add a new language, copy template.ts to ISO
+language code and optionally region with .ts suffix (eg. fr.ts or fr_TN.ts for
+French-speaking Tunisians) and translate it using Qt Linguist or other
 compatible tool. After rebuilding the project with
 ```bash
 make
