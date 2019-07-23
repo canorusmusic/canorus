@@ -29,6 +29,32 @@
 #include "score/repeatmark.h"
 
 /*!
+ * Helper class to store scan results for repeat syntax 
+ */
+class CARepeatSyntax {
+public:
+	CARepeatSyntax( int startTime, bool repeatStart, int voltaNumber, bool repeatEnd, bool alternativeStart, bool alternativeNext, bool alternativeEnd );
+	~CARepeatSyntax();
+	int _startTime;
+	bool _repeatStart;
+	int _voltaNumber;
+	bool _repeatEnd;
+	bool _alternativeStart;
+	bool _alternativeNext;
+	bool _alternativeEnd;
+};
+
+CARepeatSyntax::CARepeatSyntax( int startTime, bool repeatStart, int voltaNumber, bool repeatEnd, bool alternativeStart, bool alternativeNext, bool alternativeEnd ) {
+	_startTime = startTime;
+	_repeatStart = repeatStart;
+	_voltaNumber = voltaNumber;
+	_repeatEnd = repeatEnd;
+	_alternativeStart = alternativeStart;
+	_alternativeNext = alternativeNext;
+	_alternativeEnd = alternativeEnd;
+}
+
+/*!
 	\class CALilyPondExport
 	\brief LilyPond export filter
 	This class is used to export the document or parts of the document to LilyPond syntax.
@@ -87,6 +113,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 		// If yes, output \repeat volta x ...
 		// In any case set after search searchForRepeatOpen false:
 		if ( searchForRepeatOpen ) {
+
 			for (int r=i; r<v->musElementList().size(); r++ ) {
 				switch (v->musElementList()[r]->musElementType()) {
 					case CAMusElement::Barline:	{
@@ -102,7 +129,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 							if (bbar->markList()[g]->markType()==CAMark::RepeatMark) {
 								CARepeatMark *rm = static_cast<CARepeatMark*>(bbar->markList()[g]);
 								if (bbar->markList()[g]->markType()==CAMark::RepeatMark) {
-									qWarning() << " found volta numer " << rm->voltaNumber();
+									qWarning() << " found volta number " << rm->voltaNumber();
 								}
 							}
 						}
@@ -111,6 +138,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 					default:			break;
 				}
 			}
+			// The search is done once. When
 			searchForRepeatOpen = false;
 		}
 

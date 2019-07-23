@@ -10,6 +10,7 @@
 
 #include <QTextStream>
 #include <QString>
+#include <QStack>
 
 #include "score/keysignature.h"
 #include "score/timesignature.h"
@@ -23,6 +24,8 @@
 #include "score/syllable.h"
 
 #include "export/export.h"
+
+class CARepeatSyntax;
 
 class CALilyPondExport : public CAExport {
 public:
@@ -114,6 +117,7 @@ private:
 	static const QString _regExpVoltaRepeat;
 	static const QString _regExpVoltaBar;
 	bool _timeSignatureFound;
+	QVector<CARepeatSyntax*> _repeatSyntaxElem;
 };
 
 #endif /* LILYPONDEXPORT_H_*/
