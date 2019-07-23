@@ -93,10 +93,18 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 						CABarline *bbar = static_cast<CABarline*>(v->musElementList()[r]);
 						if (bbar->barlineType() == CABarline::RepeatClose) {
 							// out() << " \\repeat volta 2 { ";
-						qWarning() << " RepeatClose at Element " << r << endl;
+							qWarning() << " RepeatClose at Element " << r << endl;
 						}
 						if (bbar->barlineType() == CABarline::RepeatCloseOpen) {
-						qWarning() << " boolean 2 " << searchForRepeatOpen << endl;
+							qWarning() << " boolean 2 " << searchForRepeatOpen << endl;
+						}
+						for (int g=0; g<bbar->markList().size();g++) {
+							if (bbar->markList()[g]->markType()==CAMark::RepeatMark) {
+								CARepeatMark *rm = static_cast<CARepeatMark*>(bbar->markList()[g]);
+								if (bbar->markList()[g]->markType()==CAMark::RepeatMark) {
+									qWarning() << " found volta numer " << rm->voltaNumber();
+								}
+							}
 						}
 						break;
 					}
@@ -452,8 +460,6 @@ void CALilyPondExport::exportNoteMarks( CANote *elt ) {
 		case CAMark::Undefined:
 		case CAMark::BookMark:
 		case CAMark::RepeatMark:
-			out() << "      >>>>>   hlksjdlfkjsldfj  >>>>>>     " << curMark->voltaNumber() << "  XX ";
-			break;
 		case CAMark::Dynamic:
 		case CAMark::RehersalMark:
 		case CAMark::Articulation:
