@@ -2345,7 +2345,9 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 			break;
 		}
 
-		case Qt::Key_Period: {
+		case Qt::Key_Period:
+		case Qt::Key_Colon:
+		case Qt::Key_Greater: {
 			if (mode()==InsertMode) {
 				musElementFactory()->addPlayableDotted( 1, musElementFactory()->playableLength() );
 				currentScoreView()->setShadowNoteLength( musElementFactory()->playableLength() );
@@ -2359,12 +2361,16 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 					if (p) {
 						CAMusElement *next=nullptr;
 						int oldLength = p->timeLength();
+						int dots = p->playableLength().dotted()+(e->modifiers()==Qt::ShiftModifier?-1:1);
+						if (dots<0) { dots+=4; }
+						else { dots %= 4; }
+
 						if ( p->musElementType()==CAMusElement::Note ) {                   // change the length of the whole chord
 							QList<CANote*> chord = static_cast<CANote*>(p)->getChord();
 							for (int i=0; i<chord.size(); i++) {
 								next = p->voice()->next(p);
 								p->voice()->remove(chord[i]);
-								chord[i]->playableLength().setDotted( (p->playableLength().dotted()+1)%4 );
+								chord[i]->playableLength().setDotted( dots );
 								chord[i]->calculateTimeLength();
 							}
 							p->voice()->insert( next, chord[0] );
@@ -2374,7 +2380,7 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 						} else if ( p->musElementType()==CAMusElement::Rest ) {
 							next = p->voice()->next(p);
 							p->voice()->remove(p);
-							p->playableLength().setDotted( (p->playableLength().dotted()+1)%4 );
+							p->playableLength().setDotted( dots );
 							p->calculateTimeLength();
 							p->voice()->insert( next, p );
 						}
@@ -2391,6 +2397,10 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 
 						for (int j=0; j<p->voice()->lyricsContextList().size(); j++) { // reposit syllables
 							p->voice()->lyricsContextList().at(j)->repositSyllables();
+						}
+
+						if (CACanorus::settings()->useNoteChecker()) {
+							_noteChecker.checkSheet(v->sheet());
 						}
 
 						CACanorus::undo()->pushUndoCommand();
