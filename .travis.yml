@@ -3,4 +3,20 @@ dist: bionic
 before_install:
   - sudo apt-get install -y cmake g++ make libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qttools5-dev-tools libasound2-dev
 script:
-  - cmake -D CMAKE_INSTALL_PREFIX=~/.local . && make -j4 && make install
+  - cmake -D CMAKE_INSTALL_PREFIX=~/.local . && make -j4 && make tr && make install
+
+before_deploy:
+  # Set up git user name and tag this commit
+  #  - git config --local user.name "YOUR GIT USER NAME"
+  #  - git config --local user.email "YOUR GIT USER EMAIL"
+  - export TRAVIS_TAG=8bd6251bad61aff5792d75d300f0ef977832f0f0
+  #  - git tag $TRAVIS_TAG
+
+deploy:
+  provider: releases
+  api_key: "293b2e3ef6773c8118cb465833384beb08ae3154"
+  file: "src/lang/template.ts"
+  skip_cleanup: true
+  overwrite: true
+  draft: true
+
