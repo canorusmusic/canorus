@@ -9,6 +9,7 @@
 #include <QList>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QDebug>
 
 #include "export/lilypondexport.h"
 
@@ -70,6 +71,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	bool anacrusisCheck = true;	// process upbeat eventually
 	CATimeSignature *time = 0;
 	int barNumber = 1;
+	bool searchForRepeatOpen = true;
 
 	// Write \relative note for the first note
 	_lastNotePitch = writeRelativeIntro();
@@ -80,6 +82,31 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	indent();
 
 	for (int i=0; i<v->musElementList().size(); i++, out() << " ") { // append blank after each element
+		// 
+		// Check if a repeat opening is neccessary.
+		// If yes, output \repeat volta x ...
+		// In any case set after search searchForRepeatOpen false:
+		if ( searchForRepeatOpen ) {
+			for (int r=i; r<v->musElementList().size(); r++ ) {
+				switch (v->musElementList()[r]->musElementType()) {
+					case CAMusElement::Barline:	{
+						CABarline *bbar = static_cast<CABarline*>(v->musElementList()[r]);
+						if (bbar->barlineType() == CABarline::RepeatClose) {
+							// out() << " \\repeat volta 2 { ";
+						qWarning() << " RepeatClose at Element " << r << endl;
+						}
+						if (bbar->barlineType() == CABarline::RepeatCloseOpen) {
+						qWarning() << " boolean 2 " << searchForRepeatOpen << endl;
+						}
+						break;
+					}
+					default:			break;
+				}
+			}
+			searchForRepeatOpen = false;
+		}
+
+		///////////////////////////////////////////////////////////////
 		// (CAMusElement)
 		switch (v->musElementList()[i]->musElementType()) {
 		case CAMusElement::Clef: {
@@ -425,6 +452,8 @@ void CALilyPondExport::exportNoteMarks( CANote *elt ) {
 		case CAMark::Undefined:
 		case CAMark::BookMark:
 		case CAMark::RepeatMark:
+			out() << "      >>>>>   hlksjdlfkjsldfj  >>>>>>     " << curMark->voltaNumber() << "  XX ";
+			break;
 		case CAMark::Dynamic:
 		case CAMark::RehersalMark:
 		case CAMark::Articulation:
