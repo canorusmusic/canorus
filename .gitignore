@@ -1,0 +1,23 @@
+# CMake stuff
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+cmake_uninstall.cmake
+CMakeFiles
+
+# Executable targets
+src/canorus
+_CanorusPython.so
+
+# MOCs, UIs
+ui_*.h
+moc_*.cpp*
+
+# Translations
+*.qm
+
+# Scripting stuff
+*.cxx
+*.pyc
+CanorusPython.py
+
