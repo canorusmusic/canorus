@@ -31,27 +31,53 @@
 /*!
  * Helper class to store scan results for repeat syntax 
  */
-class CARepeatSyntax {
+class CARepeatBrace {
 public:
-	CARepeatSyntax( int startTime, bool repeatStart, int voltaNumber, bool repeatEnd, bool alternativeStart, bool alternativeNext, bool alternativeEnd );
-	~CARepeatSyntax();
-	int _startTime;
-	bool _repeatStart;
+	enum CABraceStart {
+		noStart,
+		repeat,
+		alternative,
+		alternativeNext,
+	};
+	enum CABraceEnd {
+		noEnd,
+		repeatEnd,
+		alternativeEnd,
+	};
+	CARepeatBrace( int timeStart, CABraceStart t, CABraceEnd e, int voltaNumber = 0 );
+	virtual ~CARepeatBrace();
+
+	inline void setTimeStart( int t ) { _timeStart = t; }
+	inline int getTimeStart() { return _timeStart; }
+
+	inline void setBraceStart( CABraceStart t ) { _braceStart = t; }
+	inline CABraceStart getBraceStart() { return _braceStart; }
+
+	inline void setBraceEnd( CABraceEnd braceEnd ) { _braceEnd = braceEnd; }
+	inline CABraceEnd braceEnd() { return _braceEnd; }
+
+	inline void setVoltaNumber( int voltaNumber ) { _voltaNumber = voltaNumber; }
+	inline int getVoltaNumber() { return _voltaNumber; }
+
+	inline void setRepeatTime( int repeatTime ) { _repeatTime = repeatTime; }
+	inline int getRepeatTime() { return _repeatTime; }
+
+private:
+	int _timeStart;
+	CABraceStart _braceStart;
+	CABraceEnd _braceEnd;
 	int _voltaNumber;
-	bool _repeatEnd;
-	bool _alternativeStart;
-	bool _alternativeNext;
-	bool _alternativeEnd;
+	int _repeatTime;	// when you want to play back jump to this time
 };
 
-CARepeatSyntax::CARepeatSyntax( int startTime, bool repeatStart, int voltaNumber, bool repeatEnd, bool alternativeStart, bool alternativeNext, bool alternativeEnd ) {
-	_startTime = startTime;
-	_repeatStart = repeatStart;
-	_voltaNumber = voltaNumber;
-	_repeatEnd = repeatEnd;
-	_alternativeStart = alternativeStart;
-	_alternativeNext = alternativeNext;
-	_alternativeEnd = alternativeEnd;
+CARepeatBrace::CARepeatBrace( int timeStart, CABraceStart b, CABraceEnd e, int voltaNumber ) {
+	setTimeStart( timeStart );
+	setBraceStart( b );
+	setBraceEnd( e );
+	setVoltaNumber( voltaNumber );
+}
+
+CARepeatBrace::~CARepeatBrace(){
 }
 
 /*!
@@ -97,7 +123,11 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	bool anacrusisCheck = true;	// process upbeat eventually
 	CATimeSignature *time = 0;
 	int barNumber = 1;
+
 	bool searchForRepeatOpen = true;
+	_repeatSyntaxElem.clear();
+	bool insideRepeat = false;
+	int currentRepeatTime = 0;
 
 	// Write \relative note for the first note
 	_lastNotePitch = writeRelativeIntro();
@@ -117,13 +147,25 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			for (int r=i; r<v->musElementList().size(); r++ ) {
 				switch (v->musElementList()[r]->musElementType()) {
 					case CAMusElement::Barline:	{
+						int st = v->musElementList()[r]->timeStart();
 						CABarline *bbar = static_cast<CABarline*>(v->musElementList()[r]);
 						if (bbar->barlineType() == CABarline::RepeatClose) {
 							// out() << " \\repeat volta 2 { ";
 							qWarning() << " RepeatClose at Element " << r << endl;
-						}
-						if (bbar->barlineType() == CABarline::RepeatCloseOpen) {
+							if (!insideRepeat) {
+								_repeatSyntaxElem << new CARepeatBrace( currentRepeatTime, CARepeatBrace::repeat, CARepeatBrace::noEnd, 2 );
+							}
+							_repeatSyntaxElem << new CARepeatBrace( st, CARepeatBrace::noStart, CARepeatBrace::repeatEnd, 2 );
+							currentRepeatTime = st;
+							qWarning() << " currentRepeatTime " << currentRepeatTime << endl;
+						} else if (bbar->barlineType() == CABarline::RepeatCloseOpen) {
 							qWarning() << " boolean 2 " << searchForRepeatOpen << endl;
+							if (!insideRepeat) {
+								_repeatSyntaxElem << new CARepeatBrace( currentRepeatTime, CARepeatBrace::repeat, CARepeatBrace::noEnd, 2 );
+							}
+							_repeatSyntaxElem << new CARepeatBrace( st, CARepeatBrace::repeat, CARepeatBrace::repeatEnd, 2 );
+							currentRepeatTime = st;
+							qWarning() << " currentRepeatTime " << currentRepeatTime << endl;
 						}
 						for (int g=0; g<bbar->markList().size();g++) {
 							if (bbar->markList()[g]->markType()==CAMark::RepeatMark) {
