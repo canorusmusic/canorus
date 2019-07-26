@@ -31,53 +31,55 @@
 /*!
  * Helper class to store scan results for repeat syntax 
  */
-class CARepeatBrace {
+class TimeRange {
 public:
-	enum CABraceStart {
-		noStart,
-		repeat,
-		alternative,
-		alternativeNext,
-	};
-	enum CABraceEnd {
-		noEnd,
-		repeatEnd,
-		alternativeEnd,
-	};
-	CARepeatBrace( int timeStart, CABraceStart t, CABraceEnd e, int voltaNumber = 0 );
-	virtual ~CARepeatBrace();
-
-	inline void setTimeStart( int t ) { _timeStart = t; }
-	inline int getTimeStart() { return _timeStart; }
-
-	inline void setBraceStart( CABraceStart t ) { _braceStart = t; }
-	inline CABraceStart getBraceStart() { return _braceStart; }
-
-	inline void setBraceEnd( CABraceEnd braceEnd ) { _braceEnd = braceEnd; }
-	inline CABraceEnd braceEnd() { return _braceEnd; }
-
-	inline void setVoltaNumber( int voltaNumber ) { _voltaNumber = voltaNumber; }
-	inline int getVoltaNumber() { return _voltaNumber; }
-
-	inline void setRepeatTime( int repeatTime ) { _repeatTime = repeatTime; }
-	inline int getRepeatTime() { return _repeatTime; }
-
-private:
-	int _timeStart;
-	CABraceStart _braceStart;
-	CABraceEnd _braceEnd;
-	int _voltaNumber;
-	int _repeatTime;	// when you want to play back jump to this time
+	int start;
+	int end;
+	TimeRange( int s, int e ) { start = s; end = e; };
+	virtual ~TimeRange();
 };
 
-CARepeatBrace::CARepeatBrace( int timeStart, CABraceStart b, CABraceEnd e, int voltaNumber ) {
-	setTimeStart( timeStart );
-	setBraceStart( b );
-	setBraceEnd( e );
-	setVoltaNumber( voltaNumber );
+TimeRange::~TimeRange(){
 }
 
-CARepeatBrace::~CARepeatBrace(){
+
+class CARepeat {
+public:
+	CARepeat( int timeStart, int timeEnd, int voltaNumber );
+	virtual ~CARepeat();
+	QPair<int,int> time;
+	int voltaNumber;
+	QVector<TimeRange*> alternatives;	// start and end times of alternatives
+	bool closePreviousEventually( CARepeat* r, int time );
+};
+
+CARepeat::CARepeat( int start, int end, int v = 0 ) {
+	time.first = start;
+	time.second = end;
+	voltaNumber = v;
+	alternatives.clear();
+}
+
+CARepeat::~CARepeat(){
+}
+
+bool CARepeat::closePreviousEventually( CARepeat* r, int currentTime ) {
+	int a = (*r).alternatives.size();
+	switch (a) {
+	case 0:
+			if ((r->time.second == 0) && (r->time.first != currentTime) ) {
+				r->time.second = currentTime;
+				return true;
+			}
+			return false;
+	default:
+			int l = a-1;
+			if (((r->alternatives[l])->end == 0) && (r->alternatives[l]->start != currentTime)) {
+				r->alternatives[l]->end = currentTime;
+				return true;
+			}
+			return false;
+	}
 }
 
 /*!
@@ -125,9 +127,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	int barNumber = 1;
 
 	bool searchForRepeatOpen = true;
-	_repeatSyntaxElem.clear();
-	bool insideRepeat = false;
-	int currentRepeatTime = 0;
+	_repeats.clear();
 
 	// Write \relative note for the first note
 	_lastNotePitch = writeRelativeIntro();
@@ -147,34 +147,53 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			for (int r=i; r<v->musElementList().size(); r++ ) {
 				switch (v->musElementList()[r]->musElementType()) {
 					case CAMusElement::Barline:	{
-						int st = v->musElementList()[r]->timeStart();
+						int time = v->musElementList()[r]->timeStart();
 						CABarline *bbar = static_cast<CABarline*>(v->musElementList()[r]);
+						if (bbar->barlineType() == CABarline::RepeatOpen) {
+							_repeats << new CARepeat( time, 0, 2 );			// new repeat with timeEnd unknown
+						}
 						if (bbar->barlineType() == CABarline::RepeatClose) {
-							// out() << " \\repeat volta 2 { ";
 							qWarning() << " RepeatClose at Element " << r << endl;
-							if (!insideRepeat) {
-								_repeatSyntaxElem << new CARepeatBrace( currentRepeatTime, CARepeatBrace::repeat, CARepeatBrace::noEnd, 2 );
+							if (_repeats.size() == 0) {
+								_repeats << new CARepeat( 0, time, 2 );
+								qWarning() << " neuer Repeat bei t=" << time;
+							} else if (_repeats.last()->time.second == 0 ) {
+								_repeats.last()->time.second = time;
+								_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
 							}
-							_repeatSyntaxElem << new CARepeatBrace( st, CARepeatBrace::noStart, CARepeatBrace::repeatEnd, 2 );
-							currentRepeatTime = st;
-							qWarning() << " currentRepeatTime " << currentRepeatTime << endl;
-						} else if (bbar->barlineType() == CABarline::RepeatCloseOpen) {
-							qWarning() << " boolean 2 " << searchForRepeatOpen << endl;
-							if (!insideRepeat) {
-								_repeatSyntaxElem << new CARepeatBrace( currentRepeatTime, CARepeatBrace::repeat, CARepeatBrace::noEnd, 2 );
+						}
+						if (bbar->barlineType() == CABarline::RepeatCloseOpen) {
+							if (_repeats.size() == 0) {
+								_repeats << new CARepeat( 0, time, 2 );
 							}
-							_repeatSyntaxElem << new CARepeatBrace( st, CARepeatBrace::repeat, CARepeatBrace::repeatEnd, 2 );
-							currentRepeatTime = st;
-							qWarning() << " currentRepeatTime " << currentRepeatTime << endl;
+							qWarning() << " neuer Repeat bei t=" << time;
+							_repeats << new CARepeat( time, 0, 2 );
 						}
 						for (int g=0; g<bbar->markList().size();g++) {
 							if (bbar->markList()[g]->markType()==CAMark::RepeatMark) {
 								CARepeatMark *rm = static_cast<CARepeatMark*>(bbar->markList()[g]);
 								if (bbar->markList()[g]->markType()==CAMark::RepeatMark) {
 									qWarning() << " found volta number " << rm->voltaNumber();
+									if (_repeats.size() == 0) {
+										qWarning() << " Repeat:  neue Alternative bei t=" << time;
+										_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
+										_repeats << new CARepeat( 0, time, 2 );
+										_repeats.last()->alternatives << new TimeRange( time, 0 );
+										_repeats.last()->voltaNumber = rm->voltaNumber();
+									} else {
+										if (_repeats.last()->alternatives.size()) {
+										_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
+										}
+										_repeats.last()->alternatives << new TimeRange( time, 0 );
+										if (_repeats.last()->alternatives.size()) {
+										_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
+										}
+										_repeats.last()->voltaNumber = rm->voltaNumber();
+									}
 								}
 							}
 						}
+						_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
 						break;
 					}
 					default:			break;
@@ -183,6 +202,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			// The search is done once. When
 			searchForRepeatOpen = false;
 		}
+
 
 		///////////////////////////////////////////////////////////////
 		// (CAMusElement)
@@ -266,6 +286,19 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			exportMarksAfterElement(v->musElementList()[i]);
 		}
 	}
+
+
+		qWarning() << "              Repeat start analysis";
+		for (int r=0; r < _repeats.size(); r++ ) {
+			qWarning() << " Repeat size " << _repeats.size() << " timeStart " << _repeats[r]->time.first << " timeEnd " << _repeats[r]->time.second <<
+																						" volta " << _repeats[r]->voltaNumber << "\n"; 
+			for (int a=0; a < _repeats[r]->alternatives.size(); a++ ) {
+				qWarning() << "  Repeat:   Alternative size " << _repeats[r]->alternatives.size() << "  timeStart " << _repeats[r]->alternatives[a]->start <<
+																						" timeEnd " << _repeats[r]->alternatives[a]->end << "\n";
+			}
+				//_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
+		}
+		qWarning() << "              Repeat end analysis";
 
 	// end of the voice block
 	indentLess();
