@@ -25,7 +25,7 @@
 
 #include "export/export.h"
 
-class CARepeatBrace;
+class CARepeat;
 
 class CALilyPondExport : public CAExport {
 public:
@@ -117,7 +117,7 @@ private:
 	static const QString _regExpVoltaRepeat;
 	static const QString _regExpVoltaBar;
 	bool _timeSignatureFound;
-	QVector<CARepeatBrace*> _repeatSyntaxElem;
+	QVector<CARepeat*> _repeats;
 };
 
 #endif /* LILYPONDEXPORT_H_*/
