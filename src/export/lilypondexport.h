@@ -116,6 +116,7 @@ private:
 	bool _voltaBracketFinishAtBar;
 	static const QString _regExpVoltaRepeat;
 	static const QString _regExpVoltaBar;
+	static const QString _altOpening;
 	bool _timeSignatureFound;
 	QVector<CARepeat*> _repeats;
 };

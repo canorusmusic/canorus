@@ -35,9 +35,13 @@ class TimeRange {
 public:
 	int start;
 	int end;
-	TimeRange( int s, int e ) { start = s; end = e; };
+	TimeRange( int s, int e );
 	virtual ~TimeRange();
 };
+TimeRange::TimeRange( int s, int e ) {
+	start = s;
+	end = e;
+}
 
 TimeRange::~TimeRange(){
 }
@@ -51,13 +55,42 @@ public:
 	int voltaNumber;
 	QVector<TimeRange*> alternatives;	// start and end times of alternatives
 	bool closePreviousEventually( CARepeat* r, int time );
+	QPair<int,int> pointer;
+	QString outString(QVector<CARepeat*> *r, int time);
+private:
+	int _matchTime;
+	int _repIdx;
+	int _altIdx;
 };
+
+QString CARepeat::outString( QVector<CARepeat*> *r, int time ) {
+
+	if (time == 0) {
+		_repIdx = 0;
+		_altIdx = 0;
+		if (r->size()== 0) {
+			_matchTime = 0;
+			return QString("");
+		}
+		_matchTime = (*r)[_repIdx]->time.first;
+		if (time == _matchTime) {
+			return QString(" \repeat volta 2 { " );
+		}
+	}
+
+	// if (time==_matchTime
+
+
+	return QString("hallo");
+}
 
 CARepeat::CARepeat( int start, int end, int v = 0 ) {
 	time.first = start;
 	time.second = end;
 	voltaNumber = v;
 	alternatives.clear();
+	_repIdx = 0;
+	_altIdx = 0;
 }
 
 CARepeat::~CARepeat(){
@@ -126,7 +159,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	CATimeSignature *time = 0;
 	int barNumber = 1;
 
-	bool searchForRepeatOpen = true;
+	bool searchForRepeatEvents = true;
 	_repeats.clear();
 
 	// Write \relative note for the first note
@@ -136,13 +169,14 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	out() << "{\n";
 	indentMore();
 	indent();
+	QList<QPair<int,QString>> oStr;
 
 	for (int i=0; i<v->musElementList().size(); i++, out() << " ") { // append blank after each element
 		// 
 		// Check if a repeat opening is neccessary.
 		// If yes, output \repeat volta x ...
-		// In any case set after search searchForRepeatOpen false:
-		if ( searchForRepeatOpen ) {
+		// In any case set after search searchForRepeatEvents false:
+		if ( searchForRepeatEvents ) {
 
 			for (int r=i; r<v->musElementList().size(); r++ ) {
 				switch (v->musElementList()[r]->musElementType()) {
@@ -181,6 +215,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 										_repeats.last()->alternatives << new TimeRange( time, 0 );
 										_repeats.last()->voltaNumber = rm->voltaNumber();
 									} else {
+										_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
 										if (_repeats.last()->alternatives.size()) {
 										_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
 										}
@@ -200,7 +235,29 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 				}
 			}
 			// The search is done once. When
-			searchForRepeatOpen = false;
+			searchForRepeatEvents = false;
+
+			for (int r=0;r<_repeats.size();r++) {
+				oStr.append(qMakePair( _repeats[r]->time.first, QString(" \repeat volta 2 { ")));
+				oStr.append(qMakePair( _repeats[r]->time.second, QString(        " } ")));
+				int aSize = _repeats[r]->alternatives.size();
+				switch (aSize) {
+				case 0:		break;
+				case 1:		oStr.append(qMakePair( (((_repeats[r])->alternatives)[0])->start, QString(" \alternatives { ")));
+							oStr.append(qMakePair( (((_repeats[r])->alternatives)[0])->end,   QString(              " } ")));
+							break;
+				default:	for (int a=0;a<aSize;a++) {
+								if (a==0) {
+									oStr.append(qMakePair( (((_repeats[r])->alternatives)[a])->start, _altOpening ));
+								} else if (a==(aSize-1)) {
+									oStr.append(qMakePair( (((_repeats[r])->alternatives)[a])->start, QString(              " } { ")));
+									oStr.append(qMakePair( (((_repeats[r])->alternatives)[a])->end,   QString(              " } } ")));
+								} else {
+									oStr.append(qMakePair( (((_repeats[r])->alternatives)[a])->start, QString(              " } { ")));
+								}
+							}
+				}
+			}
 		}
 
 
@@ -288,17 +345,20 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	}
 
 
-		qWarning() << "              Repeat start analysis";
-		for (int r=0; r < _repeats.size(); r++ ) {
-			qWarning() << " Repeat size " << _repeats.size() << " timeStart " << _repeats[r]->time.first << " timeEnd " << _repeats[r]->time.second <<
+	qWarning() << "              Repeat start analysis";
+	for (int r=0; r < _repeats.size(); r++ ) {
+		qWarning() << " Repeat size " << _repeats.size() << " timeStart " << _repeats[r]->time.first << " timeEnd " << _repeats[r]->time.second <<
 																						" volta " << _repeats[r]->voltaNumber << "\n"; 
-			for (int a=0; a < _repeats[r]->alternatives.size(); a++ ) {
-				qWarning() << "  Repeat:   Alternative size " << _repeats[r]->alternatives.size() << "  timeStart " << _repeats[r]->alternatives[a]->start <<
+		for (int a=0; a < _repeats[r]->alternatives.size(); a++ ) {
+			qWarning() << "  Repeat:   Alternative size " << _repeats[r]->alternatives.size() << "  timeStart " << _repeats[r]->alternatives[a]->start <<
 																						" timeEnd " << _repeats[r]->alternatives[a]->end << "\n";
-			}
-				//_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
 		}
-		qWarning() << "              Repeat end analysis";
+	}
+	//QList<QPair<int,QString*>> oStr;
+	for (int ol=0; ol<oStr.length(); ol++) {
+		qWarning() << oStr[ol].first << (oStr[ol].second);
+	}
+	qWarning() << "              Repeat end analysis";
 
 	// end of the voice block
 	indentLess();
@@ -960,7 +1020,7 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 
 	for ( int c = 0; c < sheet->contextList().size(); ++c ) {
 		if (sheet->contextList()[c]->contextType() == CAContext::Staff) {
-			scanForRepeats(static_cast<CAStaff*>(sheet->contextList()[c]));
+			//scanForRepeats(static_cast<CAStaff*>(sheet->contextList()[c]));
 			break;
 		}
 	}
@@ -1347,6 +1407,7 @@ void CALilyPondExport::voltaFunction( void )
 	_voltaFunctionWritten = true;
 }
 
+const QString CALilyPondExport::_altOpening = QString(" \alternatives { { ");
 const QString CALilyPondExport::_regExpVoltaRepeat = QString("voltaRepeat (.*)");
 const QString CALilyPondExport::_regExpVoltaBar = QString("voltaBar (.*)");
 
