@@ -239,12 +239,12 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 
 			for (int r=0;r<_repeats.size();r++) {
 				oStr.append(qMakePair( _repeats[r]->time.first, QString(" \repeat volta 2 { ")));
-				oStr.append(qMakePair( _repeats[r]->time.second, QString(        " } ")));
 				int aSize = _repeats[r]->alternatives.size();
 				switch (aSize) {
-				case 0:		break;
-				case 1:		oStr.append(qMakePair( (((_repeats[r])->alternatives)[0])->start, QString(" \alternatives { ")));
-							oStr.append(qMakePair( (((_repeats[r])->alternatives)[0])->end,   QString(              " } ")));
+				case 0:		oStr.append(qMakePair( _repeats[r]->time.second, QString(        " } ")));
+							break;
+				case 1:		oStr.append(qMakePair( (((_repeats[r])->alternatives)[0])->start, _altOpening ));
+							oStr.append(qMakePair( (((_repeats[r])->alternatives)[0])->end,   QString( " } ")));
 							break;
 				default:	for (int a=0;a<aSize;a++) {
 								if (a==0) {
@@ -1407,7 +1407,7 @@ void CALilyPondExport::voltaFunction( void )
 	_voltaFunctionWritten = true;
 }
 
-const QString CALilyPondExport::_altOpening = QString(" \alternatives { { ");
+const QString CALilyPondExport::_altOpening = QString(" } \alternatives { { ");
 const QString CALilyPondExport::_regExpVoltaRepeat = QString("voltaRepeat (.*)");
 const QString CALilyPondExport::_regExpVoltaBar = QString("voltaBar (.*)");
 
