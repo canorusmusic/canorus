@@ -30,8 +30,8 @@
 	\sa CASettings
 */
 
-CASettingsDialog::CASettingsDialog( CASettingsPage currentPage, QWidget *parent )
- : QDialog( parent ) {
+CASettingsDialog::CASettingsDialog( CASettingsPage currentPage, CAMainWin *parent )
+ : QDialog( parent ), _mainWin(parent) {
 	setupUi( this );
 
 	buildPreviewSheet();
@@ -79,7 +79,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	// Loading Saving Page
 	uiDocumentsDirectory->setText( CACanorus::settings()->documentsDirectory().absolutePath() );
 
-	uiDefaultSaveComboBox->addItems( CAMainWin::uiSaveDialog->nameFilters() );
+	uiDefaultSaveComboBox->addItems( _mainWin->saveDialog()->nameFilters() );
 	uiDefaultSaveComboBox->setCurrentIndex(
 		uiDefaultSaveComboBox->findText(
 			CAFileFormats::getFilter(CACanorus::settings()->defaultSaveFormat())
@@ -148,12 +148,12 @@ void CASettingsDialog::applySettings() {
 
 	// Saving/Loading Page
 	CACanorus::settings()->setDocumentsDirectory( uiDocumentsDirectory->text() );
-	CAMainWin::uiOpenDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
-	CAMainWin::uiSaveDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
-	CAMainWin::uiImportDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
-	CAMainWin::uiExportDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
+	_mainWin->uiOpenDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
+	_mainWin->uiSaveDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
+	_mainWin->uiImportDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
+	_mainWin->uiExportDialog->setDirectory( CACanorus::settings()->documentsDirectory() );
 	CACanorus::settings()->setDefaultSaveFormat( CAFileFormats::getType( uiDefaultSaveComboBox->currentText() ) );
-	CAMainWin::uiSaveDialog->selectNameFilter( uiDefaultSaveComboBox->currentText() );
+	_mainWin->uiSaveDialog->selectNameFilter( uiDefaultSaveComboBox->currentText() );
 	CACanorus::settings()->setAutoRecoveryInterval( uiAutoRecoverySpinBox->value() );
 	CACanorus::autoRecovery()->updateTimer();
 

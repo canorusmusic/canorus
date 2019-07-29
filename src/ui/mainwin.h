@@ -109,8 +109,10 @@ public:
 
 	void setMode(CAMode mode, const QString &oModeHash);
 	inline CAMode mode() { return _mode; }
-	inline QFileDialog *exportDialog() { return uiExportDialog; }
-	inline QFileDialog *importDialog() { return uiImportDialog; }
+    inline QFileDialog *saveDialog() { return uiSaveDialog.get(); }
+    inline QFileDialog *openDialog() { return uiOpenDialog.get(); }
+	inline QFileDialog *exportDialog() { return uiExportDialog.get(); }
+	inline QFileDialog *importDialog() { return uiImportDialog.get(); }
 	inline CAResourceView *resourceView() { return _resourceView; }
 	inline QAction        *resourceViewAction() { return uiResourceView; }
 	inline CAMidiRecorderView *midiRecorderView() { return _midiRecorderView; }
@@ -142,10 +144,10 @@ public:
 	inline bool isInsertKeySigChecked() { return uiInsertKeySig->isChecked(); }
 
 	// Dialogs, Windows
-	static QFileDialog *uiSaveDialog;
-	static QFileDialog *uiOpenDialog;
-	static QFileDialog *uiExportDialog;
-	static QFileDialog *uiImportDialog;
+	std::unique_ptr<QFileDialog> uiSaveDialog;
+	std::unique_ptr<QFileDialog> uiOpenDialog;
+	std::unique_ptr<QFileDialog> uiExportDialog;
+	std::unique_ptr<QFileDialog> uiImportDialog;
 
 	// Python Console
 	CAPyConsole *pyConsole;

@@ -140,11 +140,6 @@
 	\sa CAView, CACanorus
 */
 
-QFileDialog *CAMainWin::uiOpenDialog = nullptr;
-QFileDialog *CAMainWin::uiSaveDialog = nullptr;
-QFileDialog *CAMainWin::uiImportDialog = nullptr;
-QFileDialog *CAMainWin::uiExportDialog = nullptr;
-
 /*!
 	Default constructor.
 	Creates Canorus main window with parent \a oParent. Parent is usually null.

@@ -17,6 +17,7 @@
 #include <QList>
 #include <QUndoStack>
 #include <QHash>
+#include <memory>
 
 //Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
 //#include "duma.h"
@@ -32,7 +33,10 @@ public:
 	static void initMain( int argc=0, char *argv[]=0 );
 	static CASettingsDialog::CASettingsPage initSettings();
 	static void initTranslations();
-	static void initCommonGUI();
+	static void initCommonGUI(std::unique_ptr<QFileDialog> &uiSaveDialog,
+                              std::unique_ptr<QFileDialog> &uiOpenDialog,
+                              std::unique_ptr<QFileDialog> &uiExportDialog,
+                              std::unique_ptr<QFileDialog> &uiImportDialog);
 	static void initPlayback();
 	static bool parseSettingsArguments(int argc, char *argv[]);
 	static void initScripting();

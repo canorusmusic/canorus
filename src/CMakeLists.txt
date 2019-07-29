@@ -16,8 +16,10 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 SET(CMAKE_C_FLAGS_DEBUG "-O0 -g -fstack-protector-all -Wall -Werror -Wuninitialized -Wtype-limits -Wstack-protector")
 SET(CMAKE_C_FLAGS_RELEASE "-O2")
 
-SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -std=c++11")
-SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c++11")
+SET(CMAKE_CXX_STANDARD 14)
+
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
 
 # Build universal binaries on Mac
 IF(APPLE)
@@ -728,7 +730,7 @@ ADD_CUSTOM_COMMAND(
 	PRE_BUILD
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
 	COMMAND ${Qt5_LUPDATE_EXECUTABLE}
-	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
+	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts -I. -Icore
 )
 qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
 
