@@ -113,12 +113,20 @@ void CAAutoRecovery::openRecovery() {
 		CACanorusMLImport open;
 		open.setStreamFromFile( CASettings::defaultSettingsPath()+"/recovery"+QString::number(i) );
 		open.importDocument();
-		open.wait();
+		open.wait(120000);
 		if ( open.importedDocument() ) {
 			open.importedDocument()->setModified(true); // warn that the file is unsaved, if closing
 			open.importedDocument()->setFileName("");
 
+            // ToDo: Only one place of mainwin creation / initialization
 			CAMainWin *mainWin = new CAMainWin();
+
+            // Init dialogs etc.
+            CACanorus::initCommonGUI(mainWin->uiSaveDialog,
+                                     mainWin->uiOpenDialog,
+                                     mainWin->uiExportDialog,
+                                     mainWin->uiImportDialog);
+
 			documents.append( tr("- Document %1 last modified on %2.").arg(open.importedDocument()->title()).arg(open.importedDocument()->dateLastModified().toString()) + "\n" );
 			mainWin->openDocument( open.importedDocument() );
 			mainWin->show();

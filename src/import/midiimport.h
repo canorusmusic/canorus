@@ -10,6 +10,7 @@
 
 #include <QString>
 #include <QStack>
+#include <QTextStream>
 
 //#include "core/muselementfactory.h"
 
@@ -32,6 +33,9 @@ class CAMidiImportEvent;
 class CAMidiNote;
 
 class CAMidiImport : public CAImport {
+#ifndef SWIG
+	Q_OBJECT
+#endif
 public:
 	// Constructor
 	CAMidiImport( CADocument *document=0, QTextStream *in=0 );

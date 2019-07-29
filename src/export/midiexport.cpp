@@ -198,7 +198,7 @@ QByteArray CAMidiExport::trackEnd(void) {
 	QByteArray tc;
 	tc.append(writeTime(0));
     // @todo replace with enum
-	tc.append(MIDI_CTL_EVENT);
+	tc.append(static_cast<char>(MIDI_CTL_EVENT));
 	tc.append(META_TRACK_END);
 	tc.append(static_cast<char>(0));
 	return tc;
@@ -209,7 +209,7 @@ QByteArray CAMidiExport::textEvent(int time, QString s) {
 	QByteArray tc;
 	tc.append(writeTime(time));
     // @todo replace with enum
-	tc.append(MIDI_CTL_EVENT);
+	tc.append(static_cast<char>(MIDI_CTL_EVENT));
 	tc.append(META_TEXT);
 	tc.append(variableLengthValue(s.length()));
 	tc.append(s);
@@ -320,7 +320,7 @@ void CAMidiExport::writeFile() {
 	headerChunk.append(word16( 1 ));	// Midi-Format version
 	headerChunk.append(word16( 2 ));	// number of tracks, a control track and a music track for a trying out ...
     // @todo QByteArray does not support char values > 0x7f
-	headerChunk.append(word16( CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter )));	// time division ticks per quarter
+	headerChunk.append(word16( static_cast<char>(CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter ))));	// time division ticks per quarter
 	setChunkLength( &headerChunk );
 	streamQByteArray( headerChunk );
 
@@ -346,7 +346,7 @@ void CAMidiExport::setChunkLength( QByteArray *x ) {
     // @todo QByteArray does not support char values > 0x7f
 	qint32 l = (*x).size() - 8;	// subtract header length
 	for (int i=0; i<4; i++ ) {
-		(*x )[7-i] = l >> (8*i);
+		(*x )[7-i] = static_cast<char>((l >> (8*i)));
 	}
 }
 

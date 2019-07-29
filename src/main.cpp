@@ -116,7 +116,14 @@ int main(int argc, char *argv[]) {
 	// If no file to open is passed in command line, create a new default main window. It's shown automatically by CACanorus::addMainWin().
 	if (!CACanorus::mainWinList().size()) {
 		CAMainWin *mainWin = new CAMainWin();
-		mainWin->newDocument();
+
+        // Init dialogs etc.
+        CACanorus::initCommonGUI(mainWin->uiSaveDialog,
+                                 mainWin->uiOpenDialog,
+                                 mainWin->uiExportDialog,
+                                 mainWin->uiImportDialog);
+
+        mainWin->newDocument();
 		mainWin->show();
 
         // Init dialogs etc.

@@ -184,7 +184,11 @@ ENDIF(Qt5WebEngineWidgets_LIBRARIES)
 
 SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 	import/import.h
+    import/lilypondimport.h
+    import/midiimport.h
+    import/musicxmlimport.h
 	export/export.h
+    export/lilypondexport.h
 	export/pdfexport.h
 	export/svgexport.h
 

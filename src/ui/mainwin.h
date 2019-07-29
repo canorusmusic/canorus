@@ -85,7 +85,7 @@ public:
 		ReadOnlyMode
 	};
 
-	CAMainWin(QMainWindow *oParent = 0);
+	CAMainWin(QMainWindow *oParent = nullptr);
 	~CAMainWin();
 
 	void clearUI();
@@ -98,7 +98,7 @@ public:
 	void addSheet(CASheet *s);
 	void removeSheet(CASheet *s);
 	bool insertMusElementAt( const QPoint coords, CAScoreView *v );
-	void restartTimeEditedTime() { _timeEditedTime = 0; };
+	void restartTimeEditedTime() { _timeEditedTime = 0; }
 	void deleteSelection( CAScoreView *v, bool deleteSyllable, bool deleteNotes, bool undo );
 	void copySelection( CAScoreView *v );
 	void pasteAt( const QPoint coords, CAScoreView *v );
@@ -123,7 +123,7 @@ public:
 
 	inline CAScoreView *currentScoreView() {
 		if (currentView()) return dynamic_cast<CAScoreView*>(currentView());
-		else return 0;
+		else return nullptr;
 	}
 
 	CASheet *currentSheet();
@@ -131,7 +131,7 @@ public:
 	inline CAStaff *currentStaff() {
 		CAContext *context = currentContext();
 		if (context && context->contextType()==CAContext::Staff) return static_cast<CAStaff*>(context);
-		else return 0;
+		else return nullptr;
 	}
 
 	CAContext *currentContext();

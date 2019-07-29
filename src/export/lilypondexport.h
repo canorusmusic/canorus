@@ -25,6 +25,9 @@
 #include "export/export.h"
 
 class CALilyPondExport : public CAExport {
+#ifndef SWIG
+	Q_OBJECT
+#endif
 public:
 	CALilyPondExport( QTextStream *out=0 );
 

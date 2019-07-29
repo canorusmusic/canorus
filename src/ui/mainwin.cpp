@@ -3113,22 +3113,33 @@ bool CAMainWin::on_uiSaveDocument_triggered() {
 	Returns True, if the document was saved; False otherwise.
 */
 bool CAMainWin::on_uiSaveDocumentAs_triggered() {
-	if ( document() &&
-	     CAMainWin::uiSaveDialog->exec() && CAMainWin::uiSaveDialog->selectedFiles().size()
+    if ( document() ) {
+        if (CAMainWin::uiSaveDialog) {
+            CAMainWin::uiSaveDialog->exec();
+	        if (CAMainWin::uiSaveDialog->selectedFiles().size()
 	   ) {
 		QString s = CAMainWin::uiSaveDialog->selectedFiles().at(0);
 		// append the extension, if the filename doesn't contain a dot
 		//int i;
-		if (!s.contains('.')) {
-			int left = uiSaveDialog->selectedNameFilter().indexOf("(*.") + 2;
-			int len = uiSaveDialog->selectedNameFilter().size() - left - 1;
-			s.append( uiSaveDialog->selectedNameFilter().mid( left, len ) );
-		}
+            if (!s.contains('.')) {
+                int left = uiSaveDialog->selectedNameFilter().indexOf("(*.") + 2;
+                int len = uiSaveDialog->selectedNameFilter().size() - left - 1;
+                s.append( uiSaveDialog->selectedNameFilter().mid( left, len ) );
+            }
 
-		return saveDocument(s);
-	} else {
-		return false;
-	}
+            return saveDocument(s);
+        } else {
+            qWarning() << "Save Document: No file selected.";
+            return false;
+        }
+    } else {
+        qWarning() << "Save Document: Save Dialog does not exist.";
+        return false;
+    }
+    } else {
+        qWarning() << "Save Document: Missing ressources to create Save Dialog.";
+        return false;
+    }
 }
 
 /*!

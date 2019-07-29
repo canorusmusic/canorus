@@ -31,7 +31,7 @@ public:
 	void closeOutputPort();
 	void closeInputPort();
 	void send(QVector<unsigned char> message, int time);
-	void sendMetaEvent(int, char, char, char, int) { ; }
+	void sendMetaEvent(int, char, char, char, int) { }
 	
 private:
 	RtMidiOut *_out;

@@ -9,6 +9,7 @@
 #include "scripting/swigpython.h"
 #include "canorus.h"
 
+#include <QDebug>
 #include <QFileInfo>
 #include <QDir>
 #include <QCoreApplication>
@@ -109,6 +110,7 @@ void CACanorus::initCommonGUI(std::unique_ptr<QFileDialog> &uiSaveDialog,
                               std::unique_ptr<QFileDialog> &uiExportDialog,
                               std::unique_ptr<QFileDialog> &uiImportDialog) {
 	// Initialize main window's load/save/import/export dialogs
+    qInfo() << "Entered initCommonGUI";
 	uiSaveDialog = std::make_unique<QFileDialog>(nullptr, QObject::tr("Choose a file to save"), settings()->documentsDirectory().absolutePath());
 	uiSaveDialog->setFileMode(QFileDialog::AnyFile);
 	uiSaveDialog->setAcceptMode( QFileDialog::AcceptSave );

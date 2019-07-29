@@ -74,24 +74,24 @@ CACanorusMLImport::~CACanorusMLImport() {
 }
 
 void CACanorusMLImport::initCanorusMLImport() {
-	_document   = 0;
-	_curSheet   = 0;
-	_curContext = 0;
-	_curVoice   = 0;
+	_document   = nullptr;
+	_curSheet   = nullptr;
+	_curContext = nullptr;
+	_curVoice   = nullptr;
 
-	_curMusElt       = 0;
-	_prevMusElt      = 0;
-	_curMark         = 0;
-	_curClef         = 0;
-	_curTimeSig      = 0;
-	_curKeySig       = 0;
-	_curBarline      = 0;
-	_curNote         = 0;
-	_curRest         = 0;
-	_curTie          = 0;
-	_curSlur         = 0;
-	_curPhrasingSlur = 0;
-	_curTuplet       = 0;
+	_curMusElt       = nullptr;
+	_prevMusElt      = nullptr;
+	_curMark         = nullptr;
+	_curClef         = nullptr;
+	_curTimeSig      = nullptr;
+	_curKeySig       = nullptr;
+	_curBarline      = nullptr;
+	_curNote         = nullptr;
+	_curRest         = nullptr;
+	_curTie          = nullptr;
+	_curSlur         = nullptr;
+	_curPhrasingSlur = nullptr;
+	_curTuplet       = nullptr;
 }
 
 CADocument* CACanorusMLImport::importDocumentImpl() {
@@ -142,6 +142,8 @@ bool CACanorusMLImport::fatalError ( const QXmlParseException & exception ) {
 	\sa endElement()
 */
 bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes ) {
+    (void) namespaceURI;
+    (void) localName;
 	if ( attributes.value("color")!="" ) {
 		_color = QVariant(attributes.value("color")).value<QColor>();
 	} else {
@@ -259,13 +261,13 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 
 		_curVoice = new CAVoice( voiceName, staff, stemDir );
 		if (!attributes.value("midi-channel").isEmpty()) {
-			_curVoice->setMidiChannel(attributes.value("midi-channel").toInt());
+			_curVoice->setMidiChannel(attributes.value("midi-channel").toUtf8()[0]);
 		}
 		if (!attributes.value("midi-program").isEmpty()) {
-			_curVoice->setMidiProgram(attributes.value("midi-program").toInt());
+			_curVoice->setMidiProgram(attributes.value("midi-program").toUtf8()[0]);
 		}
 		if (!attributes.value("midi-pitch-offset").isEmpty()) {
-			_curVoice->setMidiPitchOffset(attributes.value("midi-pitch-offset").toInt());
+			_curVoice->setMidiPitchOffset(attributes.value("midi-pitch-offset").toUtf8()[0]);
 		}
 
 		staff->addVoice( _curVoice );
@@ -357,7 +359,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curMusElt->setColor(_color);
 	}
 	else if (qName == "tie") {
-		_curTie = new CASlur( CASlur::TieType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
+		_curTie = new CASlur( CASlur::TieType, CASlur::SlurPreferred, _curNote->staff(), _curNote, nullptr );
 		_curNote->setTieStart( _curTie );
 		if (!attributes.value("slur-style").isEmpty())
 			_curTie->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
@@ -367,7 +369,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		_curMusElt = _curTie;
 		_curMusElt->setColor(_color);
 	} else if (qName == "slur-start") {
-		_curSlur = new CASlur( CASlur::SlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
+		_curSlur = new CASlur( CASlur::SlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, nullptr );
 		_curNote->setSlurStart( _curSlur );
 		if (!attributes.value("slur-style").isEmpty())
 			_curSlur->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
@@ -381,10 +383,10 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			_curNote->setSlurEnd( _curSlur );
 			_curSlur->setNoteEnd( _curNote );
 			_curSlur->setTimeLength( _curNote->timeStart() - _curSlur->noteStart()->timeStart() );
-			_curSlur = 0;
+			_curSlur = nullptr;
 		}
 	} else if (qName == "phrasing-slur-start") {
-		_curPhrasingSlur = new CASlur( CASlur::PhrasingSlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, 0 );
+		_curPhrasingSlur = new CASlur( CASlur::PhrasingSlurType, CASlur::SlurPreferred, _curNote->staff(), _curNote, nullptr );
 		_curNote->setPhrasingSlurStart( _curPhrasingSlur );
 		if (!attributes.value("slur-style").isEmpty())
 			_curPhrasingSlur->setSlurStyle( CASlur::slurStyleFromString( attributes.value("slur-style") ) );
@@ -398,7 +400,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 			_curNote->setPhrasingSlurEnd( _curPhrasingSlur );
 			_curPhrasingSlur->setNoteEnd( _curNote );
 			_curPhrasingSlur->setTimeLength( _curNote->timeStart() - _curPhrasingSlur->noteStart()->timeStart() );
-			_curPhrasingSlur = 0;
+			_curPhrasingSlur = nullptr;
 		}
 	} else if ( qName == "tuplet" ) {
 		_curTuplet = new CATuplet( attributes.value("number").toInt(), attributes.value("actual-number").toInt() );
@@ -523,6 +525,8 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 	\sa startElement()
 */
 bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& localName, const QString& qName ) {
+    (void) namespaceURI;
+    (void) localName;
 	if (qName == "canorus-version") {
 		// version of Canorus which saved the document
 		_version = _cha;
@@ -549,13 +553,13 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 
 		_lcMap.clear();
 		_syllableMap.clear();
-		_curSheet = 0;
+		_curSheet = nullptr;
 	} else if (qName == "staff") {
 		// CAStaff
-		_curContext = 0;
+		_curContext = nullptr;
 	} else if (qName == "voice") {
 		// CAVoice
-		_curVoice = 0;
+		_curVoice = nullptr;
 	}
 	// Every voice *must* contain signs on their own (eg. a clef is placed in all voices, not just the first one).
 	// The following code finds a sign with the same properties at the same time in other voices. If such a sign exists, only place a pointer to this sign in the current voice. Otherwise, add a sign to all the voices read so far.
@@ -567,7 +571,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 
 		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::Clef, _curClef->timeStart());
-		CAMusElement *sign=0;
+		CAMusElement *sign=nullptr;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curClef))	      // element has exactly the same properties
 				if (!_curVoice->musElementList().contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
@@ -582,7 +586,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		} else {
 			//the element was found, insert only a reference to the current voice
 			_curVoice->append( sign );
-			delete _curClef; _curClef = 0;
+			delete _curClef; _curClef = nullptr;
 		}
 	} else if (qName == "key-signature") {
 		// CAKeySignature
@@ -601,7 +605,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 
 		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::KeySignature, _curKeySig->timeStart());
-		CAMusElement *sign=0;
+		CAMusElement *sign=nullptr;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curKeySig))	      // element has exactly the same properties
 				if (!_curVoice->musElementList().contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
@@ -616,7 +620,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		} else {
 			// the element was found, insert only a reference to the current voice
 			_curVoice->append( sign );
-			delete _curKeySig; _curKeySig = 0;
+			delete _curKeySig; _curKeySig = nullptr;
 		}
 	} else if (qName == "time-signature") {
 		// CATimeSignature
@@ -626,7 +630,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 
 		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::TimeSignature, _curTimeSig->timeStart());
-		CAMusElement *sign=0;
+		CAMusElement *sign=nullptr;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curTimeSig))	  // element has exactly the same properties
 				if (!_curVoice->musElementList().contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
@@ -641,7 +645,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		} else {
 			// the element was found, insert only a reference to the current voice
 			_curVoice->append( sign );
-			delete _curTimeSig; _curTimeSig = 0;
+			delete _curTimeSig; _curTimeSig = nullptr;
 		}
 	} else if (qName == "barline") {
 		// CABarline
@@ -651,7 +655,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 
 		// lookup an element with the same type at the same time
 		QList<CAMusElement*> foundElts = static_cast<CAStaff*>(_curContext)->getEltByType(CAMusElement::Barline, _curBarline->timeStart());
-		CAMusElement *sign=0;
+		CAMusElement *sign=nullptr;
 		for (int i=0; i<foundElts.size(); i++) {
 			if (!foundElts[i]->compare(_curBarline))	  // element has exactly the same properties
 				if (!_curVoice->musElementList().contains(foundElts[i]))	{ // if such an element already exists, it means there are two different with the same timestart
@@ -666,7 +670,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		} else {
 			// the element was found, insert only a reference to the current voice
 			_curVoice->append( sign );
-			delete _curBarline; _curBarline = 0;
+			delete _curBarline; _curBarline = nullptr;
 		}
 	} else if (qName == "note") {
 		// CANote
@@ -685,12 +689,12 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 			_curVoice->append( _curNote, false );
 
 		_curNote->updateTies();
-		_curNote = 0;
+		_curNote = nullptr;
 	} else if (qName == "tie") {
 		// CASlur - tie
 	} else if ( qName == "tuplet" ) {
 		_curTuplet->assignTimes();
-		_curTuplet = 0;
+		_curTuplet = nullptr;
 	} else if (qName == "rest") {
 		// CARest
 		if ( _version.startsWith("0.5") ) {
@@ -702,7 +706,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		}
 
 		_curVoice->append( _curRest );
-		_curRest = 0;
+		_curRest = nullptr;
 	} else if (qName == "mark") {
 		if ( !_version.startsWith("0.5") && _curMark->markType()==CAMark::Tempo ) {
 			static_cast<CATempo*>(_curMark)->setBeat( _curTempoPlayableLength );
@@ -720,7 +724,7 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 
 	if (_prevMusElt) {
 		_curMusElt = _prevMusElt;
-		_prevMusElt = 0;
+		_prevMusElt = nullptr;
 	}
 	return true;
 }
@@ -746,7 +750,7 @@ bool CACanorusMLImport::characters( const QString& ch ) {
 
 void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 	CAMark::CAMarkType type = CAMark::markTypeFromString(attributes.value("mark-type"));
-	_curMark = 0;
+	_curMark = nullptr;
 
 	switch (type) {
 	case CAMark::Text: {
@@ -760,13 +764,13 @@ void CACanorusMLImport::importMark( const QXmlAttributes& attributes ) {
 		if ( _version.startsWith("0.5") ) {
 			_curMark = new CATempo(
 					CAPlayableLength( CAPlayableLength::musicLengthFromString(attributes.value("beat")), attributes.value("beat-dotted").toInt() ),
-					attributes.value("bpm").toInt(),
+					attributes.value("bpm").toUtf8()[0],
 					_curMusElt
 			);
 		} else {
 			_curMark = new CATempo(
 					CAPlayableLength(),
-					attributes.value("bpm").toInt(),
+					attributes.value("bpm").toUtf8()[0],
 					_curMusElt
 			);
 		}

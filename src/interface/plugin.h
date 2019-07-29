@@ -39,7 +39,7 @@ class CAPlugin {
 		 * @param coords Pointer to the coords in absolute world units, if a click on Score happened.
 		 * @return True, if all the actions were successfully called, False otherwise.
 		 */
-		bool action(QString onAction, CAMainWin *mainWin=0, CADocument *document=0, QEvent *evt=0, QPoint *coords=0);
+		bool action(QString onAction, CAMainWin *mainWin=nullptr, CADocument *document=nullptr, QEvent *evt=nullptr, QPoint *coords=nullptr);
 
 		/**
 		 * This function calls a specific action. This is used for export, import and custom actions which aren't called by Canorus automatically.
@@ -50,7 +50,7 @@ class CAPlugin {
 		 * @param coords Pointer to the coords in absolute world units, if a click on Score happened.
 		 * @return True, if the action succeeded, False otherwise.
 		 */
-		bool callAction(CAPluginAction *action, CAMainWin *mainWin=0, CADocument *document=0, QEvent *evt=0, QPoint *coords=0, QString filename="");
+		bool callAction(CAPluginAction *action, CAMainWin *mainWin=nullptr, CADocument *document=nullptr, QEvent *evt=nullptr, QPoint *coords=nullptr, QString filename="");
 
 		/**
 		 * Adds an action to the plugin, if the actionName&action aren't present yet.

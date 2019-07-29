@@ -55,12 +55,12 @@ CAImport::CAImport( QTextStream *stream )
 	setStream( stream );
 	setImportPart( Undefined );
 	
-	setImportedDocument( 0 );
-	setImportedSheet( 0 );
-	setImportedStaff( 0 );
-	setImportedVoice( 0 );
-	setImportedLyricsContext( 0 );
-	setImportedFunctionMarkContext( 0 );
+	setImportedDocument( nullptr );
+	setImportedSheet( nullptr );
+	setImportedStaff( nullptr );
+	setImportedVoice( nullptr );
+	setImportedLyricsContext( nullptr );
+	setImportedFunctionMarkContext( nullptr );
 	_fileName.clear();
 }
 
@@ -69,12 +69,12 @@ CAImport::CAImport( const QString stream )
 	setStream( new QTextStream( new QString(stream)) );
 	setImportPart( Undefined );
 	
-	setImportedDocument( 0 );
-	setImportedSheet( 0 );
-	setImportedStaff( 0 );
-	setImportedVoice( 0 );
-	setImportedLyricsContext( 0 );
-	setImportedFunctionMarkContext( 0 );
+	setImportedDocument( nullptr );
+	setImportedSheet( nullptr );
+	setImportedStaff( nullptr );
+	setImportedVoice( nullptr );
+	setImportedLyricsContext( nullptr );
+	setImportedFunctionMarkContext( nullptr );
 }
 
 CAImport::~CAImport() {

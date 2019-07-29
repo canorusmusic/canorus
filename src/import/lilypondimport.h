@@ -10,6 +10,7 @@
 
 #include <QString>
 #include <QStack>
+#include <QTextStream>
 
 #include "score/voice.h"
 #include "score/rest.h"
@@ -27,6 +28,9 @@
 class QTextStream;
 
 class CALilyPondImport : public CAImport {
+#ifndef SWIG
+	Q_OBJECT
+#endif
 public:
 	// Constructors
 	CALilyPondImport( const QString in );

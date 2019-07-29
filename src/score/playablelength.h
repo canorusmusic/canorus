@@ -31,8 +31,8 @@ public:
 	CAPlayableLength();
 	CAPlayableLength( CAMusicLength l, int dotted=0 );
 
-	inline const CAMusicLength musicLength() { return _musicLength; }
-	inline const int dotted() { return _dotted; }
+	inline CAMusicLength musicLength() { return _musicLength; }
+	inline int dotted() { return _dotted; }
 
 	inline void setMusicLength( const CAMusicLength l ) { _musicLength = l; }
 	inline void setDotted( const int d ) { _dotted = d; }
@@ -43,8 +43,8 @@ public:
 	static const QString musicLengthToString( CAMusicLength length );
 	static CAMusicLength musicLengthFromString( const QString length );
 
-	static const int playableLengthToTimeLength( CAPlayableLength length );
-	inline static const int musicLengthToTimeLength( CAMusicLength l ) {
+	static int playableLengthToTimeLength( CAPlayableLength length );
+	inline static int musicLengthToTimeLength( CAMusicLength l ) {
 		return playableLengthToTimeLength( CAPlayableLength(l) );
 	}
 	static QList<CAPlayableLength> timeLengthToPlayableLengthList( int timeLength, bool longNotesFirst = true, int dotsLimit = 4 );

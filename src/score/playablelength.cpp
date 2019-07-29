@@ -94,9 +94,8 @@ const QString CAPlayableLength::musicLengthToString(CAPlayableLength::CAMusicLen
 			return "sixty-fourth";
 		case HundredTwentyEighth:
 			return "hundred-twenty-eighth";
-		default:
-			return "";
 	}
+    return "";
 }
 
 /*!
@@ -104,7 +103,7 @@ const QString CAPlayableLength::musicLengthToString(CAPlayableLength::CAMusicLen
 
 	\sa CARest::composeRests()
 */
-const int CAPlayableLength::playableLengthToTimeLength( CAPlayableLength length ) {
+int CAPlayableLength::playableLengthToTimeLength( CAPlayableLength length ) {
 	int timeLength;
 
 	switch ( length.musicLength() ) {
@@ -184,7 +183,7 @@ QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t,
 
 	int currentTime = breveTime;
 	int logCurrentMusLenPlusOne = 0;
-	int dots;
+	int dots = 0;
 	bool findNote = true;
 	while (workTime && (currentTime >= musicLengthToTimeLength( HundredTwentyEighth ))) {
 

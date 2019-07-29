@@ -19,8 +19,8 @@ class CADrawableBarline : public CADrawableMusElement {
 		~CADrawableBarline();
 
 		void draw(QPainter *p, CADrawSettings s);
-		CADrawableBarline *clone(CADrawableContext* newContext = 0);
-		inline CABarline *barline() { return (CABarline*)_musElement; }
+		CADrawableBarline *clone(CADrawableContext* newContext = nullptr);
+		inline CABarline *barline() { return static_cast<CABarline*>(_musElement); }
 
 	private:
 		static const double SPACE_BETWEEN_BARLINES;
