@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+    Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -10,7 +10,7 @@
 #include <sstream>
 
 #include "interface/rtmididevice.h"
-#include "rtmidi/RtMidi.h"
+#include "../lib/rtmidi-4.0.0/RtMidi.h"
 
 #ifndef SWIGCPP
 #include "canorus.h"
@@ -47,10 +47,10 @@ CARtMidiDevice::CARtMidiDevice()
 	_midiNameIn << "Canorus In (" << _pid << ")";
 
 	try {
-		_out = new RtMidiOut( _midiNameOut.str() );
-		_in = new RtMidiIn( _midiNameIn.str() );
+        _out = new RtMidiOut( RtMidi::UNSPECIFIED, _midiNameOut.str() );
+        _in = new RtMidiIn( RtMidi::UNSPECIFIED, _midiNameIn.str() );
 	}
-	catch (RtError &error) {
+    catch (RtMidiError &error) {
 		error.printMessage();
 	}
 }
@@ -62,7 +62,7 @@ bool CARtMidiDevice::openOutputPort(int port) {
 	if (_out && (int)_out->getPortCount() > port) {	// check outputs
 		try {
 			_out->openPort(port);
-		} catch (RtError &error) {
+        } catch (RtMidiError &error) {
 			error.printMessage();
 			return false;	// error when opening the port
 		}
@@ -81,7 +81,7 @@ bool CARtMidiDevice::openInputPort(int port) {
 	if (_in && (int)_in->getPortCount() > port) {	// check outputs
 		try {
 			_in->openPort(port);
-		} catch (RtError &error) {
+        } catch (RtMidiError &error) {
 			error.printMessage();
 			return false;	// error when opening the port
 		}
@@ -109,7 +109,7 @@ void CARtMidiDevice::closeOutputPort() {
 	try {
 		if (_outOpen)
 			_out->closePort();
-	} catch (RtError &error) {
+    } catch (RtMidiError &error) {
 		error.printMessage();
 	}
 	_outOpen=false;
@@ -121,7 +121,7 @@ void CARtMidiDevice::closeInputPort() {
 			_in->cancelCallback();
 			_in->closePort();
 		}
-	} catch (RtError &error) {
+    } catch (RtMidiError &error) {
 		error.printMessage();
 	}
 	_inOpen=false;
@@ -132,7 +132,7 @@ QMap<int, QString> CARtMidiDevice::getOutputPorts() {
 	try {
 		for (int i=0; _out && i<(int)_out->getPortCount(); i++)
 			outPorts.insert(i, QString::fromStdString(_out->getPortName(i)));
-	} catch (RtError &error) {
+    } catch (RtMidiError &error) {
 		error.printMessage();
 	}
 
@@ -144,7 +144,7 @@ QMap<int, QString> CARtMidiDevice::getInputPorts() {
 	try {
 		for (int i=0; _in && i<(int)_in->getPortCount(); i++)
 			inPorts.insert(i, QString::fromStdString(_in->getPortName(i)));
-	} catch (RtError &error) {
+    } catch (RtMidiError &error) {
 		error.printMessage();
 	}
 

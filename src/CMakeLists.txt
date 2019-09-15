@@ -117,7 +117,7 @@ ENDIF(PYTHON_INCLUDE_DIRS AND NOT NO_PYTHON)
 #ENDIF(POPPLER_INCLUDE_PATH AND POPPLER_LIBRARY AND POPPLERQT4_LIBRARY)
 
 # Set ZLib sources on windows
-FILE(GLOB ZLIB_Srcs "zlib/*.c")
+FILE(GLOB ZLIB_Srcs "../lib/zlib-1.2.3/*.c")
 
 ##############################
 # List of Qt4-parsed sources #
@@ -416,7 +416,7 @@ SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus
 )
 
 SET(Canorus_RtMidi_Srcs		# RtMIDI library
-	rtmidi/RtMidi.cpp
+	../lib/rtmidi-4.0.0/RtMidi.cpp
 )
 
 SET(Canorus_ZIP_Srcs
@@ -527,7 +527,7 @@ ENDIF(APPLE)
 #########################
 # RtMidi cross-platform definitions
 IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux") #IF(LINUX) isn't supported by CMake yet
-	ADD_DEFINITIONS(-D__LINUX_ALSASEQ__)
+	ADD_DEFINITIONS(-D__LINUX_ALSA__)
 ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 IF(APPLE)
 	ADD_DEFINITIONS(-D__MACOSX_CORE__)
