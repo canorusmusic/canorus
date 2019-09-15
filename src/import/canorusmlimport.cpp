@@ -145,7 +145,7 @@ bool CACanorusMLImport::fatalError ( const QXmlParseException & exception ) {
 bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes ) {
 	if ( attributes.value("color")!="" ) {
 		_color = QVariant(attributes.value("color")).value<QColor>();
-		if (_version <= QVersionNumber(0,7,3) && _color==QColor(0,0,0)) {
+		if (_version <= QVersionNumber(0,7,3)) {
 			// before Canorus 0.7.4, color was incorrectly saved (always #000000)
 			_color = QColor();
 		}
