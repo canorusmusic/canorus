@@ -1430,7 +1430,7 @@ Line %1:%2.</source>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="935"/>
-        <location filename="../ui/mainwin.cpp" line="3269"/>
+        <location filename="../ui/mainwin.cpp" line="3279"/>
         <source>Untitled</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1467,7 +1467,7 @@ Line %1:%2.</source>
         <location filename="../ui/mainwin.cpp" line="1426"/>
         <location filename="../ui/mainwin.cpp" line="1433"/>
         <location filename="../ui/mainwin.cpp" line="1461"/>
-        <location filename="../ui/mainwin.cpp" line="3458"/>
+        <location filename="../ui/mainwin.cpp" line="3468"/>
         <source>Canorus</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1514,7 +1514,7 @@ Line %1:%2.</source>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="1797"/>
-        <location filename="../ui/mainwin.cpp" line="5600"/>
+        <location filename="../ui/mainwin.cpp" line="5610"/>
         <source>Staff%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1526,7 +1526,7 @@ Line %1:%2.</source>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="1814"/>
-        <location filename="../ui/mainwin.cpp" line="5614"/>
+        <location filename="../ui/mainwin.cpp" line="5624"/>
         <source>LyricsContext%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1549,7 +1549,7 @@ Line %1:%2.</source>
     </message>
     <message>
         <location filename="../ui/mainwin.cpp" line="1838"/>
-        <location filename="../ui/mainwin.cpp" line="5619"/>
+        <location filename="../ui/mainwin.cpp" line="5629"/>
         <source>FunctionMarkContext%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1584,265 +1584,265 @@ Line %1:%2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2359"/>
+        <location filename="../ui/mainwin.cpp" line="2361"/>
         <source>set dotted</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2561"/>
+        <location filename="../ui/mainwin.cpp" line="2571"/>
         <source>insertion of music element</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3244"/>
-        <location filename="../ui/mainwin.cpp" line="3255"/>
+        <location filename="../ui/mainwin.cpp" line="3254"/>
+        <location filename="../ui/mainwin.cpp" line="3265"/>
         <source>Error while saving document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3245"/>
+        <location filename="../ui/mainwin.cpp" line="3255"/>
         <source>The document was not saved!
 Error number %1 %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3256"/>
+        <location filename="../ui/mainwin.cpp" line="3266"/>
         <source>Unknown file format %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3275"/>
+        <location filename="../ui/mainwin.cpp" line="3285"/>
         <source>(modified)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3306"/>
+        <location filename="../ui/mainwin.cpp" line="3316"/>
         <source>No file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3306"/>
+        <location filename="../ui/mainwin.cpp" line="3316"/>
         <source>Warning: No file name for export specified.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3459"/>
+        <location filename="../ui/mainwin.cpp" line="3469"/>
         <source>Error while opening the file!
 Error %1: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3519"/>
+        <location filename="../ui/mainwin.cpp" line="3529"/>
         <source>change clef offset</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3537"/>
+        <location filename="../ui/mainwin.cpp" line="3547"/>
         <source>change voice name</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3551"/>
+        <location filename="../ui/mainwin.cpp" line="3561"/>
         <source>change voice instrument</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3603"/>
+        <location filename="../ui/mainwin.cpp" line="3613"/>
         <source>change playable length</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3746"/>
+        <location filename="../ui/mainwin.cpp" line="3756"/>
         <source>lyrics edit</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3757"/>
+        <location filename="../ui/mainwin.cpp" line="3767"/>
         <source>text edit</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3766"/>
+        <location filename="../ui/mainwin.cpp" line="3776"/>
         <source>text edit</source>
         <comment>delete</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3791"/>
-        <location filename="../ui/mainwin.cpp" line="3828"/>
+        <location filename="../ui/mainwin.cpp" line="3801"/>
+        <location filename="../ui/mainwin.cpp" line="3838"/>
         <source>change figured bass</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3856"/>
+        <location filename="../ui/mainwin.cpp" line="3866"/>
         <source>change function</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3879"/>
+        <location filename="../ui/mainwin.cpp" line="3889"/>
         <source>change chord area</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3902"/>
+        <location filename="../ui/mainwin.cpp" line="3912"/>
         <source>change tonic degree</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3924"/>
+        <location filename="../ui/mainwin.cpp" line="3934"/>
         <source>set/unset ellipse</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4125"/>
+        <location filename="../ui/mainwin.cpp" line="4135"/>
         <source>insert tuplet</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4191"/>
+        <location filename="../ui/mainwin.cpp" line="4201"/>
         <source>commit CanorusML source</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4210"/>
-        <location filename="../ui/mainwin.cpp" line="4246"/>
+        <location filename="../ui/mainwin.cpp" line="4220"/>
+        <location filename="../ui/mainwin.cpp" line="4256"/>
         <source>commit LilyPond source</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4280"/>
+        <location filename="../ui/mainwin.cpp" line="4290"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4284"/>
+        <location filename="../ui/mainwin.cpp" line="4294"/>
         <source>&lt;p&gt;&lt;b&gt;Canorus - The next generation music score editor&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Version %1&lt;br&gt;(C) 2006-2015 Canorus Development team. All rights reserved.&lt;br&gt;See the file AUTHORS for the list of Canorus developers&lt;br&gt;&lt;br&gt;This program is licensed under the GNU General Public License (GPL).&lt;br&gt;See the file LICENSE.GPL for details.&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.canorus.org&quot;&gt;http://www.canorus.org&lt;/a&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4292"/>
+        <location filename="../ui/mainwin.cpp" line="4302"/>
         <source>Canorus is compiled with Python support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4294"/>
+        <location filename="../ui/mainwin.cpp" line="4304"/>
         <source>About Canorus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4315"/>
+        <location filename="../ui/mainwin.cpp" line="4325"/>
         <source>Recorded Midi file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4388"/>
+        <location filename="../ui/mainwin.cpp" line="4398"/>
         <source>deletion of the sheet</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4447"/>
+        <location filename="../ui/mainwin.cpp" line="4457"/>
         <source>change sheet name</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4467"/>
+        <location filename="../ui/mainwin.cpp" line="4477"/>
         <source>change context name</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4486"/>
+        <location filename="../ui/mainwin.cpp" line="4496"/>
         <source>change stanza number</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4498"/>
+        <location filename="../ui/mainwin.cpp" line="4508"/>
         <source>change associated voice</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4509"/>
+        <location filename="../ui/mainwin.cpp" line="4519"/>
         <source>change voice stem direction</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4526"/>
+        <location filename="../ui/mainwin.cpp" line="4536"/>
         <source>change note stem direction</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5154"/>
+        <location filename="../ui/mainwin.cpp" line="5164"/>
         <source>cut</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5337"/>
+        <location filename="../ui/mainwin.cpp" line="5347"/>
         <source>deletion of elements</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5573"/>
+        <location filename="../ui/mainwin.cpp" line="5583"/>
         <source>paste</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5829"/>
-        <location filename="../ui/mainwin.cpp" line="5852"/>
+        <location filename="../ui/mainwin.cpp" line="5839"/>
+        <location filename="../ui/mainwin.cpp" line="5862"/>
         <source>change fermata type</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5875"/>
+        <location filename="../ui/mainwin.cpp" line="5885"/>
         <source>change finger</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5896"/>
+        <location filename="../ui/mainwin.cpp" line="5906"/>
         <source>change finger original property</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5928"/>
+        <location filename="../ui/mainwin.cpp" line="5938"/>
         <source>change repeat mark</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5952"/>
+        <location filename="../ui/mainwin.cpp" line="5962"/>
         <source>change tempo beat</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="5975"/>
+        <location filename="../ui/mainwin.cpp" line="5985"/>
         <source>change tempo bpm</source>
         <comment>undo</comment>
         <translation type="unfinished"></translation>
@@ -2318,19 +2318,19 @@ Deletion cannot be undone!</source>
     </message>
     <message>
         <location filename="../score/document.cpp" line="125"/>
-        <location filename="../import/canorusmlimport.cpp" line="173"/>
+        <location filename="../import/canorusmlimport.cpp" line="178"/>
         <source>Sheet%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../score/sheet.cpp" line="84"/>
-        <location filename="../import/canorusmlimport.cpp" line="187"/>
+        <location filename="../import/canorusmlimport.cpp" line="192"/>
         <source>Staff%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../score/staff.cpp" line="204"/>
-        <location filename="../import/canorusmlimport.cpp" line="254"/>
+        <location filename="../import/canorusmlimport.cpp" line="259"/>
         <source>Voice%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3275,17 +3275,17 @@ Deletion cannot be undone!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../import/canorusmlimport.cpp" line="201"/>
+        <location filename="../import/canorusmlimport.cpp" line="206"/>
         <source>Lyrics Context %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../import/canorusmlimport.cpp" line="219"/>
+        <location filename="../import/canorusmlimport.cpp" line="224"/>
         <source>Figured Bass Context %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../import/canorusmlimport.cpp" line="233"/>
+        <location filename="../import/canorusmlimport.cpp" line="238"/>
         <source>Function Mark Context %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3554,12 +3554,12 @@ Deletion cannot be undone!</source>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="680"/>
-        <source>&amp;Jump to...</source>
+        <source>&amp;Go to...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ui_mainwin.h" line="682"/>
-        <source>Ctrl+J</source>
+        <source>Ctrl+G</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3982,250 +3982,250 @@ Deletion cannot be undone!</source>
 <context>
     <name>uiSettingsDialog</name>
     <message>
-        <location filename="../ui_settingsdialog.h" line="768"/>
+        <location filename="../ui_settingsdialog.h" line="748"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="773"/>
+        <location filename="../ui_settingsdialog.h" line="753"/>
         <source>Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="775"/>
+        <location filename="../ui_settingsdialog.h" line="755"/>
         <source>Appearance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="777"/>
+        <location filename="../ui_settingsdialog.h" line="757"/>
         <source>Shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="779"/>
+        <location filename="../ui_settingsdialog.h" line="759"/>
         <source>Load/Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="781"/>
+        <location filename="../ui_settingsdialog.h" line="761"/>
         <source>Playback</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="783"/>
+        <location filename="../ui_settingsdialog.h" line="763"/>
         <source>Printing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="786"/>
+        <location filename="../ui_settingsdialog.h" line="766"/>
         <source>Current page name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="788"/>
+        <location filename="../ui_settingsdialog.h" line="768"/>
         <source>When making hyphen, immediately jump to the next syllable without hitting space bar key.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="790"/>
+        <location filename="../ui_settingsdialog.h" line="770"/>
         <source>Use Finale/Sibelius lyrics behaviour</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="792"/>
+        <location filename="../ui_settingsdialog.h" line="772"/>
         <source>When inserting notes, show the helper notes in all staffs, not only in the active one.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="794"/>
+        <location filename="../ui_settingsdialog.h" line="774"/>
         <source>Show helper notes in other staffs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="796"/>
+        <location filename="../ui_settingsdialog.h" line="776"/>
         <source>When inserting notes or changing existing notes pitch, play the new notes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="798"/>
+        <location filename="../ui_settingsdialog.h" line="778"/>
         <source>Play inserted notes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="800"/>
+        <location filename="../ui_settingsdialog.h" line="780"/>
         <source>When inserting notes and rests, place a barline automatically, if the last bar is full.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="802"/>
+        <location filename="../ui_settingsdialog.h" line="782"/>
         <source>Automatic bar placement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="804"/>
+        <location filename="../ui_settingsdialog.h" line="784"/>
         <source>When inserting notes and rests, split them automatically at quarter boundaries.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="806"/>
+        <location filename="../ui_settingsdialog.h" line="786"/>
         <source>Note checker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="808"/>
+        <location filename="../ui_settingsdialog.h" line="788"/>
         <source>Use anti-aliased fonts for drawing the score. Looks nicer, but slower.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="810"/>
+        <location filename="../ui_settingsdialog.h" line="790"/>
         <source>Use anti-aliased fonts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="811"/>
+        <location filename="../ui_settingsdialog.h" line="791"/>
         <source>Use animated scroll</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="813"/>
+        <location filename="../ui_settingsdialog.h" line="793"/>
         <source>Color which the background is filled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="815"/>
+        <location filename="../ui_settingsdialog.h" line="795"/>
         <source>Background color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="818"/>
+        <location filename="../ui_settingsdialog.h" line="798"/>
         <source>Color which the music elements are painted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="820"/>
+        <location filename="../ui_settingsdialog.h" line="800"/>
         <source>Foreground color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="823"/>
+        <location filename="../ui_settingsdialog.h" line="803"/>
         <source>Color which the selected music elements are painted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="825"/>
+        <location filename="../ui_settingsdialog.h" line="805"/>
         <source>Selected elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="828"/>
+        <location filename="../ui_settingsdialog.h" line="808"/>
         <source>Color which the current context is painted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="830"/>
+        <location filename="../ui_settingsdialog.h" line="810"/>
         <source>Selected context</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="833"/>
+        <location filename="../ui_settingsdialog.h" line="813"/>
         <source>Color which the selection area background is filled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="835"/>
+        <location filename="../ui_settingsdialog.h" line="815"/>
         <source>Selection area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="838"/>
+        <location filename="../ui_settingsdialog.h" line="818"/>
         <source>Color which the invisible elements are painted in current-voice-only mode.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="840"/>
+        <location filename="../ui_settingsdialog.h" line="820"/>
         <source>Hidden elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="843"/>
+        <location filename="../ui_settingsdialog.h" line="823"/>
         <source>Color which the elements in non-selected voice are painted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="845"/>
+        <location filename="../ui_settingsdialog.h" line="825"/>
         <source>Disabled elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="847"/>
+        <location filename="../ui_settingsdialog.h" line="827"/>
         <source>Preview:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="848"/>
+        <location filename="../ui_settingsdialog.h" line="828"/>
         <source>Default documents location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="849"/>
+        <location filename="../ui_settingsdialog.h" line="829"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="850"/>
+        <location filename="../ui_settingsdialog.h" line="830"/>
         <source>Default file format for saving:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="851"/>
+        <location filename="../ui_settingsdialog.h" line="831"/>
         <source>Recovery saving interval in minutes:</source>
         <comment>Auto save every %n minutes.</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="853"/>
+        <location filename="../ui_settingsdialog.h" line="833"/>
         <source>Automatically make recovery documents every specified number of ellapsed minutes. 0 to disable recovery saving.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="855"/>
+        <location filename="../ui_settingsdialog.h" line="835"/>
         <source>MIDI IN devices:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="856"/>
+        <location filename="../ui_settingsdialog.h" line="836"/>
         <source>MIDI OUT devices:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="857"/>
+        <location filename="../ui_settingsdialog.h" line="837"/>
         <source>Default typesetter:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="858"/>
+        <location filename="../ui_settingsdialog.h" line="838"/>
         <source>LilyPond</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="860"/>
+        <location filename="../ui_settingsdialog.h" line="840"/>
         <source>Typesetter location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="861"/>
-        <location filename="../ui_settingsdialog.h" line="864"/>
+        <location filename="../ui_settingsdialog.h" line="841"/>
+        <location filename="../ui_settingsdialog.h" line="844"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="862"/>
-        <location filename="../ui_settingsdialog.h" line="865"/>
+        <location filename="../ui_settingsdialog.h" line="842"/>
+        <location filename="../ui_settingsdialog.h" line="845"/>
         <source>Use system default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="863"/>
+        <location filename="../ui_settingsdialog.h" line="843"/>
         <source>PDF viewer location:</source>
         <translation type="unfinished"></translation>
     </message>
