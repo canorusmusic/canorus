@@ -262,6 +262,7 @@ void CAMainWin::createCustomActions() {
 		uiContextType->setObjectName( "uiContextType" );
 		uiContextType->addButton( QIcon("images:document/staffnew.svg"), CAContext::Staff, tr("New Staff") );
 		uiContextType->addButton( QIcon("images:document/lyricscontextnew.svg"), CAContext::LyricsContext, tr("New Lyrics context") );
+        uiContextType->addButton( QIcon("images:document/chordnamecontextnew.svg"), CAContext::ChordNameContext, tr("New Chord Name context") );
 		uiContextType->addButton( QIcon("images:document/fbcontextnew.svg"), CAContext::FiguredBassContext, tr("New Figured Bass context") );
 		uiContextType->addButton( QIcon("images:document/fmcontextnew.svg"), CAContext::FunctionMarkContext, tr("New Function Mark context") );
 	uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this );
@@ -674,6 +675,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertToolBar->addAction( uiInsertSyllable );
 	uiInsertToolBar->addAction( uiInsertFBM );
 	uiInsertToolBar->addAction( uiInsertFM );
+    uiInsertToolBar->addAction( uiInsertChordName );
 
 	if(qApp->isRightToLeft())
 		addToolBar(Qt::RightToolBarArea, uiInsertToolBar);
