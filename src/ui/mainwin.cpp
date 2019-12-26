@@ -80,6 +80,7 @@
 #include "score/functionmarkcontext.h"
 #include "score/figuredbasscontext.h"
 #include "score/lyricscontext.h"
+#include "score/chordnamecontext.h"
 #include "score/clef.h"
 #include "score/articulation.h"
 #include "score/keysignature.h"
@@ -2899,6 +2900,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 		case CAMusElement::MidiNote:
 		case CAMusElement::Syllable:
 		case CAMusElement::Tuplet:
+        case CAMusElement::ChordName:
 		case CAMusElement::Undefined:
 			fprintf(stderr,"Warning: CAMainWin::insertMusElementAt - Unhandled Element %d\n",musElementFactory()->musElementType());
 			break;
@@ -4688,7 +4690,11 @@ void CAMainWin::updateContextToolBar() {
 				break;
 			}
 			case CAContext::FiguredBassContext:
-				break;
+            case CAContext::ChordNameContext: {
+                uiStanzaNumberAction->setVisible(false);
+                uiAssociatedVoiceAction->setVisible(false);
+                break;
+            }
 		}
 		uiContextName->setText(context->name());
 	} else {
@@ -4723,6 +4729,7 @@ void CAMainWin::updateInsertToolBar() {
 					uiInsertFBM->setVisible(false);
 					uiInsertFM->setVisible(false);
 					uiInsertSyllable->setVisible(false);
+                    uiInsertChordName->setVisible(false);
 					break;
 				case CAContext::FunctionMarkContext:
 					// function mark context selected
@@ -4740,6 +4747,7 @@ void CAMainWin::updateInsertToolBar() {
 					uiInsertFBM->setVisible(false);
 					uiInsertFM->setVisible(true);
 					uiInsertSyllable->setVisible(false);
+                    uiInsertChordName->setVisible(false);
 					break;
 				case CAContext::LyricsContext:
 					// lyrics context selected
@@ -4757,6 +4765,7 @@ void CAMainWin::updateInsertToolBar() {
 					uiInsertFBM->setVisible(false);
 					uiInsertFM->setVisible(false);
 					uiInsertSyllable->setVisible(true);
+                    uiInsertChordName->setVisible(false);
 					break;
 				case CAContext::FiguredBassContext:
 					// lyrics context selected
@@ -4774,7 +4783,26 @@ void CAMainWin::updateInsertToolBar() {
 					uiInsertFBM->setVisible(true);
 					uiInsertFM->setVisible(false);
 					uiInsertSyllable->setVisible(false);
+                    uiInsertChordName->setVisible(false);
 					break;
+                case CAContext::ChordNameContext:
+                    // chord name context selected
+                    uiInsertPlayable->setVisible(false);
+                    uiSlurType->defaultAction()->setVisible(false);
+                    uiInsertClef->setVisible(false); // menu
+                    uiInsertBarline->setVisible(false); // menu
+                    uiClefType->defaultAction()->setVisible(false);
+                    uiTimeSigType->defaultAction()->setVisible(false);
+                    uiInsertKeySig->setVisible(false);
+                    uiMarkType->defaultAction()->setVisible(false);
+                    uiArticulationType->defaultAction()->setVisible(false);
+                    uiInsertTimeSig->setVisible(false);
+                    uiBarlineType->defaultAction()->setVisible(false);
+                    uiInsertFBM->setVisible(false);
+                    uiInsertFM->setVisible(false);
+                    uiInsertSyllable->setVisible(false);
+                    uiInsertChordName->setVisible(true);
+                    break;
 			}
 		} else {
 			// no contexts selected
@@ -4792,6 +4820,7 @@ void CAMainWin::updateInsertToolBar() {
 			uiInsertFBM->setVisible(false);
 			uiInsertFM->setVisible(false);
 			uiInsertSyllable->setVisible(false);
+            uiInsertChordName->setVisible(false);
 		}
 	} else {
 		uiInsertToolBar->hide();
@@ -4811,6 +4840,7 @@ void CAMainWin::updateInsertToolBar() {
 		uiInsertFBM->setVisible(false);
 		uiInsertFM->setVisible(false);
 		uiInsertSyllable->setVisible(false);
+        uiInsertChordName->setVisible(false);
 	}
 }
 
@@ -5631,6 +5661,9 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 					}
 					case CAContext::FiguredBassContext:
 						break;
+                    case CAContext::ChordNameContext:
+                        newContext = new CAChordNameContext(tr("ChordNameContext%1").arg(v->sheet()->contextList().size()+1), currentSheet);
+                        break;
 				}
 				if(insertAfter) {
 					currentSheet->insertContextAfter(insertAfter, newContext);

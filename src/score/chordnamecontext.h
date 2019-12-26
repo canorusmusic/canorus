@@ -24,7 +24,7 @@ public:
 	CAMusElement *previous(CAMusElement *elt);
 	bool remove( CAMusElement *elt );
 
-	QList<CAChordNameContext*>& chordNameList() { return _chordNameList; }
+	QList<CAChordName*>& chordNameList() { return _chordNameList; }
 	CAChordName *chordNameAtTimeStart( int timeStart );
 
 	void repositChordNames();

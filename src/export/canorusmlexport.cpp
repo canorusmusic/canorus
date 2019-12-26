@@ -49,6 +49,9 @@
 #include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
 
+#include "score/chordnamecontext.h"
+#include "score/chordname.h"
+
 CACanorusMLExport::CACanorusMLExport( QTextStream *stream )
  : CAExport(stream) {
 }
@@ -188,6 +191,21 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 						//dFm.setAttribute( "added-degrees", elts[i]->addedDegrees() );
 						dFm.setAttribute( "ellipse", elts[i]->isPartOfEllipse() );
 					}
+				}
+				case CAContext::ChordNameContext: {
+				    // CAChordNameContext
+				    CAChordNameContext *cnc = static_cast<CAChordNameContext*>(c);
+                    QDomElement dCnc = dDoc.createElement("chord-name-context"); dSheet.appendChild(dCnc);
+                    dCnc.setAttribute("name", cnc->name());
+
+                    QList<CAChordName*> elts = cnc->chordNameList();
+                    for (int i=0; i<elts.size(); i++) {
+                        QDomElement dCn = dDoc.createElement("chord-name"); dCnc.appendChild(dCn);
+                        dCn.setAttribute( "time-start", elts[i]->timeStart() );
+                        dCn.setAttribute( "time-length", elts[i]->timeLength() );
+                        exportDiatonicPitch( elts[i]->diatonicPitch(), dCn );
+                        dCn.setAttribute( "quality-modifier", elts[i]->qualityModifier() );
+                    }
 				}
 			}
 		}
@@ -329,6 +347,7 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 			case CAMusElement::FunctionMark:
 			case CAMusElement::FiguredBassMark:
 			case CAMusElement::Mark:
+			case CAMusElement::ChordName:
 			case CAMusElement::Undefined:
 				break;
 		}

@@ -367,6 +367,7 @@ SET(Canorus_Layout_Srcs	# Drawable instances of the data
 	layout/drawablelyricscontext.cpp
 	layout/drawablefiguredbasscontext.cpp
 	layout/drawablefunctionmarkcontext.cpp
+	layout/drawablechordnamecontext.cpp
 
 	layout/drawablemuselement.cpp
 	layout/drawablenote.cpp
@@ -383,6 +384,7 @@ SET(Canorus_Layout_Srcs	# Drawable instances of the data
 	layout/drawablesyllable.cpp
 	layout/drawablefiguredbassnumber.cpp
 	layout/drawablefunctionmark.cpp
+	layout/drawablechordname.cpp
 )
 
 SET(Canorus_Interface_Srcs	# Other interfaces like Engraver, Playback, Plugin manager and others belong here.

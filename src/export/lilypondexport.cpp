@@ -146,6 +146,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 		case CAMusElement::FunctionMark:
 		case CAMusElement::FiguredBassMark:
 		case CAMusElement::Mark:
+		case CAMusElement::ChordName:
 		case CAMusElement::Undefined:
 			break;
 		}
@@ -273,6 +274,7 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 	case CAMusElement::FunctionMark:
 	case CAMusElement::FiguredBassMark:
 	case CAMusElement::Mark:
+	case CAMusElement::ChordName:
 	case CAMusElement::Undefined:
 		break;
 	}
@@ -842,6 +844,8 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 			case CAContext::LyricsContext:
 				exportLyricsContextBlock( static_cast<CALyricsContext*>(sheet->contextList()[c]) );
 				break;
+            case CAContext::ChordNameContext:
+                break; // TODO
 			case CAContext::FunctionMarkContext:
 			case CAContext::FiguredBassContext:
 				break;
@@ -1074,6 +1078,8 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 
 					break;
 				}
+                case CAContext::ChordNameContext:
+                    break; // TODO
 				case CAContext::FunctionMarkContext:
 				case CAContext::FiguredBassContext:
 					break;

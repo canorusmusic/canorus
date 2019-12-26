@@ -35,6 +35,9 @@
 #include "layout/drawablefunctionmarkcontext.h"
 #include "layout/drawablefunctionmark.h"
 
+#include "layout/drawablechordnamecontext.h"
+#include "layout/drawablechordname.h"
+
 #include "score/sheet.h"
 
 #include "score/staff.h"
@@ -52,6 +55,9 @@
 
 #include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
+
+#include "score/chordnamecontext.h"
+#include "score/chordname.h"
 
 #include "interface/mididevice.h" // needed for midiPitch->diatonicPitch
 
@@ -289,6 +295,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						case CAMusElement::FunctionMark:
 						case CAMusElement::FiguredBassMark:
 						case CAMusElement::Mark:
+						case CAMusElement::ChordName:
 						case CAMusElement::Undefined: {
 							fprintf(stderr,"Warning: CALayoutEngine::reposit - Unhandled Element %d",elt->musElementType());
 							break;
@@ -434,7 +441,8 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			        (elt->isPlayable() ||
 			         elt->musElementType()==CAMusElement::FiguredBassMark ||
 			         elt->musElementType()==CAMusElement::FunctionMark ||
-			         elt->musElementType()==CAMusElement::Syllable
+			         elt->musElementType()==CAMusElement::Syllable ||
+			         elt->musElementType()==CAMusElement::ChordName
 			        )
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
@@ -971,7 +979,26 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 						break;
 					}
-					case CAMusElement::Barline:
+                    case CAMusElement::ChordName: {
+                        newElt = new CADrawableChordName(
+                                static_cast<CAChordName*>(elt),
+                                static_cast<CADrawableChordNameContext*>(drawableContext),
+                                streamsX[i],
+                                drawableContext->yPos() + qRound(CADrawableChordNameContext::DEFAULT_CHORDNAME_VERTICAL_SPACING)
+                        );
+
+                        CAMusElement *prevChordName = drawableContext->context()->previous(elt);
+                        CADrawableMusElement *prevDChordName = (prevChordName?v->findMElement(prevChordName):0);
+                        if (prevDChordName) {
+                            prevDChordName->setWidth( newElt->xPos() - prevDChordName->xPos() );
+                        }
+
+                        v->addMElement(newElt);
+                        streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
+                        break;
+                    }
+
+                    case CAMusElement::Barline:
 					case CAMusElement::Slur:
 					case CAMusElement::Tuplet:
 					case CAMusElement::Mark:

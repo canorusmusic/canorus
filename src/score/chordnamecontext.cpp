@@ -35,7 +35,7 @@ CAChordNameContext::~CAChordNameContext() {
 	Inserts the given chord name \a m according to its timeStart.
 	Replaces any existing chord name at that time, if \a replace is True (default).
  */
-void CAChordNameContext::addChordName( CAFiguredBassMark *m, bool replace ) {
+void CAChordNameContext::addChordName( CAChordName *m, bool replace ) {
 	int i;
 	for (i=0; i<_chordNameList.size() && _chordNameList[i]->timeStart()<m->timeStart(); i++);
 	//int s = _figuredBassMarkList.size();
@@ -54,7 +54,7 @@ void CAChordNameContext::addChordName( CAFiguredBassMark *m, bool replace ) {
 void CAChordNameContext::addEmptyChordName( int timeStart, int timeLength ) {
 	int i;
 	for (i=0; i<_chordNameList.size() && _chordNameList[i]->timeStart()<timeStart; i++);
-	_chordNameList.insert(i, (new CAChordName( this, timeStart, timeLength )));
+	_chordNameList.insert(i, (new CAChordName( CADiatonicPitch::Undefined, "", this, timeStart, timeLength )));
 	for (i++; i<_chordNameList.size(); i++)
 		_chordNameList[i]->setTimeStart( _chordNameList[i]->timeStart() + timeLength );
 }
@@ -142,7 +142,7 @@ CAMusElement* CAChordNameContext::next( CAMusElement* elt ) {
 	if (elt->musElementType()!=CAMusElement::ChordName)
 		return 0;
 
-	int i = _chordNameList.indexOf(static_cast<CAChordNAme*>(elt));
+	int i = _chordNameList.indexOf(static_cast<CAChordName*>(elt));
 	if (i!=-1 && ++i<_chordNameList.size())
 		return _chordNameList[i];
 	else

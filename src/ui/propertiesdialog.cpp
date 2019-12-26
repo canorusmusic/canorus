@@ -261,8 +261,11 @@ void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *
 				updateFunctionMarkContextProperties( static_cast<CAFunctionMarkContext*>( _contextItem[cur] ) );
 				break;
 			case CAContext::FiguredBassContext:
-				fprintf(stderr,"Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type %d",_contextItem[cur]->contextType());
+				qDebug() << "Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type " <<_contextItem[cur]->contextType();
 				break;
+            case CAContext::ChordNameContext:
+                qDebug() << "Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type " <<_contextItem[cur]->contextType();
+                break;
 		}
 
 		// update uiUp/uiDown buttons
@@ -346,8 +349,11 @@ void CAPropertiesDialog::applyProperties() {
 				break;
 			}
 			case CAContext::FiguredBassContext:
-				fprintf(stderr,"Warning: CAPropertiesDialog::applyProperties - Unhandled Type %d",c->contextType());
+				qDebug() << "Warning: CAPropertiesDialog::applyProperties - Unhandled Type " << c->contextType();
 				break;
+            case CAContext::ChordNameContext:
+                qDebug() << "Warning: CAPropertiesDialog::applyProperties - Unhandled Type " << c->contextType();
+                break;
 		}
 	}
 
