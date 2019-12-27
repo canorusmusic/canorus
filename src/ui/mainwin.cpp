@@ -1844,9 +1844,27 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 						);
 						break;
 					}
+                    case CAContext::ChordNameContext: {
+                        CACanorus::undo()->createUndoCommand( document(), tr("new chord name context", "undo"));
+
+                        v->sheet()->insertContextAfter(
+                                dupContext?dupContext->context():nullptr,
+                                newContext = new CAChordNameContext(
+                                        tr("ChordNameContext%1").arg(v->sheet()->contextList().size()+1),
+                                        v->sheet()
+                                )
+                        );
+
+                        break;
+                    }
 				}
 				CACanorus::undo()->pushUndoCommand();
 				CACanorus::rebuildUI(document(), v->sheet());
+
+				if (!newContext) {
+				    qDebug() << "Error: newContext empty";
+				    break;
+				}
 
 				v->selectContext(newContext);
 				if (newContext->contextType()==CAContext::Staff) {
