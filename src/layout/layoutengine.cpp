@@ -92,68 +92,94 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 	QMap<CAContext*, CADrawableContext*> drawableContextMap;
 
 	for (int i=0; i < sheet->contextList().size(); i++) {
-		if (sheet->contextList()[i]->contextType() == CAContext::Staff) {
-			if (i>0) dy+=70;
+        switch (sheet->contextList()[i]->contextType()) {
+            case CAContext::Staff: {
+                if (i > 0) dy += 70;
 
-			CAStaff *staff = static_cast<CAStaff*>(sheet->contextList()[i]);
-			drawableContextMap[staff] = new CADrawableStaff(staff, 0, dy);
-			v->addCElement(drawableContextMap[staff]);
+                CAStaff *staff = static_cast<CAStaff *>(sheet->contextList()[i]);
+                drawableContextMap[staff] = new CADrawableStaff(staff, 0, dy);
+                v->addCElement(drawableContextMap[staff]);
 
-			//add all the voices lists to the common list
-			for (int j=0; j < staff->voiceList().size(); j++) {
-				musStreamList << staff->voiceList()[j]->musElementList();
-				contexts << staff;
-				if (staff->voiceList()[j]->voiceNumber()!=1)
-					nonFirstVoiceIdxs << musStreamList.size()-1;
-			}
-			dy += drawableContextMap[staff]->height();
-		} else
-		if (sheet->contextList()[i]->contextType() == CAContext::LyricsContext) {
-			CALyricsContext *lyricsContext = static_cast<CALyricsContext*>(sheet->contextList()[i]);
-			if (i>0 && (sheet->contextList()[i-1]->contextType() != CAContext::LyricsContext ||
-			    static_cast<CALyricsContext*>(sheet->contextList()[i-1])->associatedVoice()->staff()!=lyricsContext->associatedVoice()->staff())) {
-				dy+=70; // the previous context wasn't lyrics or was not related to the current lyrics
-			}
+                //add all the voices lists to the common list
+                for (int j = 0; j < staff->voiceList().size(); j++) {
+                    musStreamList << staff->voiceList()[j]->musElementList();
+                    contexts << staff;
+                    if (staff->voiceList()[j]->voiceNumber() != 1)
+                        nonFirstVoiceIdxs << musStreamList.size() - 1;
+                }
+                dy += drawableContextMap[staff]->height();
+                break;
+            }
+            case CAContext::LyricsContext: {
+                CALyricsContext *lyricsContext = static_cast<CALyricsContext *>(sheet->contextList()[i]);
+                if (i > 0 && (sheet->contextList()[i - 1]->contextType() != CAContext::LyricsContext ||
+                              static_cast<CALyricsContext *>(sheet->contextList()[i - 1])->associatedVoice()->staff() !=
+                              lyricsContext->associatedVoice()->staff())) {
+                    dy += 70; // the previous context wasn't lyrics or was not related to the current lyrics
+                }
 
-			drawableContextMap[lyricsContext] = new CADrawableLyricsContext(lyricsContext, 0, dy);
-			v->addCElement(drawableContextMap[lyricsContext]);
+                drawableContextMap[lyricsContext] = new CADrawableLyricsContext(lyricsContext, 0, dy);
+                v->addCElement(drawableContextMap[lyricsContext]);
 
-			// convert QList<CASyllable*> to QList<CAMusElement*>
-			QList<CAMusElement*> syllableList;
-			for (int i=0; i<lyricsContext->syllableList().size(); i++) {
-				syllableList << lyricsContext->syllableList()[i];
-			}
+                // convert QList<CASyllable*> to QList<CAMusElement*>
+                QList<CAMusElement *> syllableList;
+                for (int i = 0; i < lyricsContext->syllableList().size(); i++) {
+                    syllableList << lyricsContext->syllableList()[i];
+                }
 
-			musStreamList << syllableList;
-			contexts << lyricsContext;
-			dy += drawableContextMap[lyricsContext]->height();
-		} else
-		if (sheet->contextList()[i]->contextType() == CAContext::FiguredBassContext) {
-			if (i>0) dy+=70;
+                musStreamList << syllableList;
+                contexts << lyricsContext;
+                dy += drawableContextMap[lyricsContext]->height();
+                break;
+            }
+            case CAContext::FiguredBassContext: {
+                if (i > 0) dy += 70;
 
-			CAFiguredBassContext *fbContext = static_cast<CAFiguredBassContext*>(sheet->contextList()[i]);
-			drawableContextMap[fbContext] = new CADrawableFiguredBassContext(fbContext, 0, dy);
-			v->addCElement(drawableContextMap[fbContext]);
-			QList<CAFiguredBassMark*> fbmList = fbContext->figuredBassMarkList();
-			QList<CAMusElement*> musList; for (int i=0; i<fbmList.size(); i++) musList << fbmList[i];
-			musStreamList << musList;
-			contexts << fbContext;
-			dy += drawableContextMap[fbContext]->height();
-		} else
-		if (sheet->contextList()[i]->contextType() == CAContext::FunctionMarkContext) {
-			if (i>0 && sheet->contextList()[i-1]->contextType() != CAContext::FiguredBassContext) {
-				dy+=70;
-			}
+                CAFiguredBassContext *fbContext = static_cast<CAFiguredBassContext *>(sheet->contextList()[i]);
+                drawableContextMap[fbContext] = new CADrawableFiguredBassContext(fbContext, 0, dy);
+                v->addCElement(drawableContextMap[fbContext]);
+                QList<CAFiguredBassMark *> fbmList = fbContext->figuredBassMarkList();
+                // TODO: Is there a faster way to cast QList<CAFiguredBassMark*> to QList<CAMusElement*>?
+                QList<CAMusElement *> musList;
+                for (int j = 0; j < fbmList.size(); j++) musList << fbmList[j];
+                musStreamList << musList;
+                contexts << fbContext;
+                dy += drawableContextMap[fbContext]->height();
+                break;
+            }
+            case CAContext::FunctionMarkContext: {
+                if (i > 0 && sheet->contextList()[i - 1]->contextType() != CAContext::FiguredBassContext) {
+                    dy += 70;
+                }
 
-			CAFunctionMarkContext *fmContext = static_cast<CAFunctionMarkContext*>(sheet->contextList()[i]);
-			drawableContextMap[fmContext] = new CADrawableFunctionMarkContext(fmContext, 0, dy);
-			v->addCElement(drawableContextMap[fmContext]);
-			QList<CAFunctionMark*> fmList = fmContext->functionMarkList();
-			QList<CAMusElement*> musList; for (int i=0; i<fmList.size(); i++) musList << fmList[i];
-			musStreamList << musList;
-			contexts << fmContext;
-			dy += drawableContextMap[fmContext]->height();
-		}
+                CAFunctionMarkContext *fmContext = static_cast<CAFunctionMarkContext *>(sheet->contextList()[i]);
+                drawableContextMap[fmContext] = new CADrawableFunctionMarkContext(fmContext, 0, dy);
+                v->addCElement(drawableContextMap[fmContext]);
+                QList<CAFunctionMark *> fmList = fmContext->functionMarkList();
+                // TODO: Is there a faster way to cast QList<CAFunctionMark*> to QList<CAMusElement*>?
+                QList<CAMusElement *> musList;
+                for (int j = 0; j < fmList.size(); j++) musList << fmList[j];
+                musStreamList << musList;
+                contexts << fmContext;
+                dy += drawableContextMap[fmContext]->height();
+                break;
+            }
+            case CAContext::ChordNameContext: {
+                if (i > 0) dy += 70;
+
+                CAChordNameContext *cnContext = static_cast<CAChordNameContext *>(sheet->contextList()[i]);
+                drawableContextMap[cnContext] = new CADrawableChordNameContext(cnContext, 0, dy);
+                v->addCElement(drawableContextMap[cnContext]);
+                QList<CAChordName *> cnList = cnContext->chordNameList();
+                // TODO: Is there a faster way to cast QList<CAChordName*> to QList<CAMusElement*>?
+                QList<CAMusElement *> musList;
+                for (int j = 0; j < cnList.size(); j++) musList << cnList[j];
+                musStreamList << musList;
+                contexts << cnContext;
+                dy += drawableContextMap[cnContext]->height();
+                break;
+            }
+        }
 	}
 
 	int streams = musStreamList.size();
@@ -161,9 +187,8 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 	for (int i=0; i<streams; i++) streamsIdx[i] = 0;
 	int *streamsX = new int[streams];
 	for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
-	int *streamsRehersalMarks = new int[streams];
+    CALayoutEngine::streamsRehersalMarks = new int[streams];
 	for (int i=0; i<streams; i++) streamsRehersalMarks[i] = 0;
-	CALayoutEngine::streamsRehersalMarks = streamsRehersalMarks;
 	CAClef **lastClef = new CAClef *[streams];
 	for (int i=0; i<streams; i++) lastClef[i] = 0;
 	CAKeySignature **lastKeySig = new CAKeySignature *[streams];

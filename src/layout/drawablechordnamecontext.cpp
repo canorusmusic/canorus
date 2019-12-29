@@ -37,7 +37,7 @@ CADrawableChordNameContext* CADrawableChordNameContext::clone() {
 }
 
 void CADrawableChordNameContext::draw(QPainter *p, const CADrawSettings s) {
-	QColor bColor = Qt::white;
-	bColor.setAlphaF(0.2);
-	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(bColor));
+    QColor bColor = Qt::darkBlue;
+    bColor.setAlphaF(0.2);
+    p->fillRect(0, s.y, s.w, qRound(height() * s.z), QBrush(bColor));
 }

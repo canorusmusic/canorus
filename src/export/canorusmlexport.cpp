@@ -181,17 +181,18 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 						dFm.setAttribute( "time-start", elts[i]->timeStart() );
 						dFm.setAttribute( "time-length", elts[i]->timeLength() );
 						dFm.setAttribute( "function", CAFunctionMark::functionTypeToString(elts[i]->function()) );
-						dFm.setAttribute( "minor", elts[i]->isMinor() );
-						dFm.setAttribute( "chord-area", CAFunctionMark::functionTypeToString(elts[i]->chordArea()) );
-						dFm.setAttribute( "chord-area-minor", elts[i]->isChordAreaMinor() );
-						dFm.setAttribute( "tonic-degree", CAFunctionMark::functionTypeToString(elts[i]->tonicDegree()) );
-						dFm.setAttribute( "tonic-degree-minor", elts[i]->isTonicDegreeMinor() );
-						exportDiatonicKey( elts[i]->key(), dFm );
-						//dFm.setAttribute( "altered-degrees", elts[i]->alteredDegrees() );
-						//dFm.setAttribute( "added-degrees", elts[i]->addedDegrees() );
-						dFm.setAttribute( "ellipse", elts[i]->isPartOfEllipse() );
-					}
-				}
+                        dFm.setAttribute("minor", elts[i]->isMinor());
+                        dFm.setAttribute("chord-area", CAFunctionMark::functionTypeToString(elts[i]->chordArea()));
+                        dFm.setAttribute("chord-area-minor", elts[i]->isChordAreaMinor());
+                        dFm.setAttribute("tonic-degree", CAFunctionMark::functionTypeToString(elts[i]->tonicDegree()));
+                        dFm.setAttribute("tonic-degree-minor", elts[i]->isTonicDegreeMinor());
+                        exportDiatonicKey(elts[i]->key(), dFm);
+                        //dFm.setAttribute( "altered-degrees", elts[i]->alteredDegrees() );
+                        //dFm.setAttribute( "added-degrees", elts[i]->addedDegrees() );
+                        dFm.setAttribute("ellipse", elts[i]->isPartOfEllipse());
+                    }
+                    break;
+                }
 				case CAContext::ChordNameContext: {
 				    // CAChordNameContext
 				    CAChordNameContext *cnc = static_cast<CAChordNameContext*>(c);
@@ -206,6 +207,7 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
                         exportDiatonicPitch( elts[i]->diatonicPitch(), dCn );
                         dCn.setAttribute( "quality-modifier", elts[i]->qualityModifier() );
                     }
+                    break;
 				}
 			}
 		}
