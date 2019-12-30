@@ -341,7 +341,7 @@ CATempo *CAStaff::getTempo( int time ) {
 	insertions and synchronization of the voices every time a new element is inserted would considerably
 	slow down the import filter.
 
-	Returns True, if everything was ok. False, if fixes were needed.
+	\return True, if everything was ok. False, if fixes were needed.
 */
 bool CAStaff::synchronizeVoices() {
 	int *pidx = new int[voiceList().size()];

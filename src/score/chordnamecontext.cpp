@@ -60,53 +60,32 @@ void CAChordNameContext::addEmptyChordName( int timeStart, int timeLength ) {
 }
 
 /*!
-	Updates timeStarts and timeLength of all figured bass marks according to the chords they belong.
-	Adds new empty figured bass marks at the end, if needed.
- */
+	It repositions the existing chord names (sets timeStart and timeLength) one by one according to the playable music
+	elements above the context.
+
+ 	\sa CALyricsContext::repositSyllables(), CAFiguredBassContext::repositFiguredBassMarks(), CAFunctionMarkContext::repositFunctions()
+*/
 void CAChordNameContext::repositChordNames() {
-	if ( !sheet() ) {
-		return;
-	}
+	int ts, tl;
+	int curIdx; // contains current position in _chordNameList
+	QList<CAPlayable *> chord;
+	for (ts = 0, curIdx = 0;
+	     (sheet() && (chord = sheet()->getChord(ts)).size()) || curIdx < _chordNameList.size(); ts += tl) {
+		tl = (chord.size() ? chord[0]->timeLength() : 256);
+		for (int i = 0; i < chord.size(); i++)
+			if (chord[i]->timeLength() < tl)
+				tl = chord[i]->timeLength();
 
-	QList<CAPlayable*> chord = sheet()->getChord(0);
-	int fbmIdx = 0;
-	while (chord.size()) {
-		int maxTimeStart = chord[0]->timeStart();
-		int minTimeEnd = chord[0]->timeEnd();
-		bool notes = false; // are notes present in the chord or only rests?
-		for (int i=1; i<chord.size(); i++) {
-			if (chord[i]->musElementType()==CAMusElement::Note) {
-				notes = true;
-			}
-
-			if (chord[i]->timeStart() > maxTimeStart) {
-				maxTimeStart = chord[i]->timeStart();
-			}
-			if (chord[i]->timeEnd() < minTimeEnd) {
-				minTimeEnd = chord[i]->timeEnd();
-			}
+		if (curIdx == _chordNameList.size()) { // add new empty chord names, if playables still exist above
+			addEmptyChordName(ts, tl);
+			curIdx++;
 		}
 
-		// only assign figured bass marks under the notes
-		if (notes) {
-			// add new empty chord name, if none exist
-			if ( fbmIdx==_chordNameList.size() ) {
-				addEmptyChordName( maxTimeStart, minTimeEnd-maxTimeStart );
-			}
-
-			CAChordName *chordName = _chordNameList[fbmIdx];
-			chordName->setTimeStart( maxTimeStart );
-			chordName->setTimeLength( minTimeEnd-maxTimeStart );
-			fbmIdx++;
+		// apply timeStart and timeLength to existing chord names
+		if (curIdx < _chordNameList.size()) {
+			_chordNameList[curIdx]->setTimeLength(tl);
+			_chordNameList[curIdx]->setTimeStart(ts);
 		}
-
-		chord = sheet()->getChord(minTimeEnd);
-	}
-
-	// updated times for the chord names at the end (after the score)
-	for (; fbmIdx < _chordNameList.size(); fbmIdx++) {
-		_chordNameList[fbmIdx]->setTimeStart(((fbmIdx>0)?_chordNameList[fbmIdx-1]:_chordNameList[0])->timeEnd());
-		_chordNameList[fbmIdx]->setTimeLength(CAPlayableLength::Quarter);
 	}
 }
 

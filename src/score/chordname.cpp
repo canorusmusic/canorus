@@ -12,12 +12,12 @@
 	\class CAChordName
 	\brief Chord name
 
-	Chord name inside the CAChordNameContext.
+	Chord name (e.g. C, F#m, Gsus4 etc.) inside the CAChordNameContext.
 */
 
 CAChordName::CAChordName( CADiatonicPitch pitch, QString qualityModifier, CAChordNameContext* c, int timeStart, int timeLength )
 : CAMusElement ( c, timeStart, timeLength ) {
-	//setText()
+	setMusElementType(ChordName);
 }
 
 CAChordName::~CAChordName() {
