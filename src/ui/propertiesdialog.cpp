@@ -261,10 +261,10 @@ void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *
 				updateFunctionMarkContextProperties( static_cast<CAFunctionMarkContext*>( _contextItem[cur] ) );
 				break;
 			case CAContext::FiguredBassContext:
-				qDebug() << "Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type " <<_contextItem[cur]->contextType();
+				qDebug() << "Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type" <<_contextItem[cur]->contextType();
 				break;
             case CAContext::ChordNameContext:
-                qDebug() << "Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type " <<_contextItem[cur]->contextType();
+				qDebug() << "Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type" <<_contextItem[cur]->contextType();
                 break;
 		}
 

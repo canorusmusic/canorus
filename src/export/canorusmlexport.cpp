@@ -352,7 +352,7 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 			case CAMusElement::Mark:
 			case CAMusElement::ChordName:
 			case CAMusElement::Undefined:
-				qDebug() << "Error: Element " << curElt << " should not be member of the voice. musElementType: " << curElt->musElementType();
+				qDebug() << "Error: Element" << curElt << "should not be member of the voice. musElementType:" << curElt->musElementType();
 				break;
 		}
 

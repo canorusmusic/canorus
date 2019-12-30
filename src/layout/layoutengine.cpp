@@ -313,21 +313,9 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 							break;
 						}
-						case CAMusElement::Rest:
-						case CAMusElement::Note:
-						case CAMusElement::MidiNote:
-						case CAMusElement::Barline:
-						case CAMusElement::Slur:
-						case CAMusElement::Tuplet:
-						case CAMusElement::Syllable:
-						case CAMusElement::FunctionMark:
-						case CAMusElement::FiguredBassMark:
-						case CAMusElement::Mark:
-						case CAMusElement::ChordName:
-						case CAMusElement::Undefined: {
-							qDebug() << "Warning: CALayoutEngine::reposit - Unhandled Element " << elt->musElementType();
+						default:
+							qDebug() << "Warning: CALayoutEngine::reposit - Unhandled Element" << elt->musElementType();
 							break;
-						}
 					} // SWITCH
 
 				} // IF firstVoice
@@ -1032,17 +1020,9 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
                         break;
                     }
 
-                    case CAMusElement::Barline:
-					case CAMusElement::Slur:
-					case CAMusElement::Tuplet:
-					case CAMusElement::Mark:
-					case CAMusElement::KeySignature:
-					case CAMusElement::TimeSignature:
-					case CAMusElement::Clef:
-					case CAMusElement::Undefined: {
-						qDebug() << "Warning: CALayoutEngine::reposit2 - Unhandled Element " << elt->musElementType();
+					default:
+						qDebug() << "Warning: CALayoutEngine::reposit2 - Unhandled Element" << elt->musElementType();
 						break;
-					}
 				}
 
 				streamsIdx[i]++;

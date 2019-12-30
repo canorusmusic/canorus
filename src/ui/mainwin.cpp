@@ -2931,7 +2931,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 		case CAMusElement::Tuplet:
         case CAMusElement::ChordName:
 		case CAMusElement::Undefined:
-			qDebug() << "Warning: CAMainWin::insertMusElementAt - Unhandled Element " << musElementFactory()->musElementType();
+			qDebug() << "Warning: CAMainWin::insertMusElementAt - Unhandled Element" << musElementFactory()->musElementType();
 			break;
 	}
 
@@ -3835,7 +3835,7 @@ void CAMainWin::confirmTextEdit(CAScoreView *v, CATextEdit *textEdit, CAMusEleme
 	case CAMusElement::FunctionMark:
 	case CAMusElement::FiguredBassMark:
 	case CAMusElement::Undefined:
-		qDebug() << "Error: confirmTextEdit() called on element of type " << elt->musElementType();
+		qDebug() << "Error: confirmTextEdit() called on element of type" << elt->musElementType();
 		break;
 	}
 	

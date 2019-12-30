@@ -430,7 +430,7 @@ bool CAStaff::synchronizeVoices() {
 					if (restList.size()) {
 						plastPlayable[ i ] = restList.last();
 					} else {
-						qDebug() << "ERROR CAStaff::synchronizeVoices(): Cannot compose rests of length " << gapLength << endl;
+						qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
 					}
 
 					changesMade = true;
@@ -451,7 +451,7 @@ bool CAStaff::synchronizeVoices() {
 				if (restList.size()) {
 					plastPlayable[ j ] = restList.last();
 				} else {
-					qDebug() << "ERROR CAStaff::synchronizeVoices(): Cannot compose rests of length " << gapLength << endl;
+					qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
 				}
 				changesMade = true;
 			}

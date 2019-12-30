@@ -1728,13 +1728,13 @@ CATextEdit *CAScoreView::createTextEdit( CADrawableMusElement *dMusElt ) {
 		break;
 	}
 	default:
-		qDebug() << "Error: CATextEdit should not be created for music element of type " << dMusElt->musElement()->musElementType();
+		qDebug() << "Error: CATextEdit should not be created for music element of type" << dMusElt->musElement()->musElementType();
 		break;
 	}
 
 	textEdit()->setText(text);
 	setTextEditVisible( true );
-	setTextEditGeometry( QRect(xPos-2, yPos, width+2, height) );
+	setTextEditGeometry( QRect(static_cast<int>(xPos-2.0), static_cast<int>(yPos), static_cast<int>(width+2.0), static_cast<int>(height)) );
 	updateHelpers(); // show it
 	textEdit()->setFocus();
 

@@ -335,7 +335,7 @@ int CADrawableStaff::removeMElement(CADrawableMusElement *elt) {
 		case CADrawableMusElement::DrawableFiguredBassNumber:
 		case CADrawableMusElement::DrawableMark:
 		case CADrawableMusElement::DrawableChordName:
-			qDebug() << "Warning: CADrawableStaff::removeMElement - Unhandled element " << elt->drawableMusElementType();
+			qDebug() << "Warning: CADrawableStaff::removeMElement - Unhandled element" << elt->drawableMusElementType();
 			break;
 	}
 
