@@ -52,5 +52,5 @@ CADrawableChordName *CADrawableChordName::clone(CADrawableContext *c) {
 
 QString CADrawableChordName::drawableText() {
     // TODO: don't print quality modifier, if it's empty
-    return CADiatonicPitch::diatonicPitchToString(chordName()->diatonicPitch()) + ":" + chordName()->qualityModifier();
+	return CADiatonicPitch::diatonicPitchToString(chordName()->diatonicPitch()) + ":" + chordName()->qualityModifier();
 }

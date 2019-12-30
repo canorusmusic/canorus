@@ -7,7 +7,8 @@
 
 #include <QList>
 #include <QMap>
-#include <iostream>	//debug
+#include <QDebug>
+
 #include "layout/layoutengine.h"
 
 #include "widgets/scoreview.h"
@@ -52,6 +53,7 @@
 #include "score/syllable.h"
 #include "score/mark.h"
 #include "score/articulation.h"
+#include "score/barline.h"
 
 #include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
@@ -190,17 +192,17 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
     CALayoutEngine::streamsRehersalMarks = new int[streams];
 	for (int i=0; i<streams; i++) streamsRehersalMarks[i] = 0;
 	CAClef **lastClef = new CAClef *[streams];
-	for (int i=0; i<streams; i++) lastClef[i] = 0;
+	for (int i=0; i<streams; i++) lastClef[i] = nullptr;
 	CAKeySignature **lastKeySig = new CAKeySignature *[streams];
-	for (int i=0; i<streams; i++) lastKeySig[i] = 0;
+	for (int i=0; i<streams; i++) lastKeySig[i] = nullptr;
 	CATimeSignature **lastTimeSig = new CATimeSignature *[streams];
-	for (int i=0; i<streams; i++) lastTimeSig[i] = 0;
+	for (int i=0; i<streams; i++) lastTimeSig[i] = nullptr;
 	scalableElts.clear();
 
 	int timeStart = 0;
 	bool done = false;
 	CADrawableFunctionMarkSupport **lastDFMTonicizations = new CADrawableFunctionMarkSupport *[streams];
-	for (int i=0; i<streams; i++) lastDFMTonicizations[i]=0;
+	for (int i=0; i<streams; i++) lastDFMTonicizations[i] = nullptr;
 	while (!done) {
 		//if all the indices are at the end of the streams, finish.
 		int idx;
@@ -233,11 +235,12 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			while ( (streamsIdx[i] < musStreamList[i].size()) &&
 			        ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (!elt->isPlayable()) &&
-			        (elt->musElementType() != CAMusElement::Barline) &&	//barlines should be aligned
+					(elt->musElementType() != CAMusElement::Barline) &&	        //barlines should be aligned
 			        (elt->musElementType() != CAMusElement::FunctionMark) &&	//function marks are placed separately
 			        (elt->musElementType() != CAMusElement::FiguredBassMark) &&	//figured bass marks are placed separately
-			        (elt->musElementType() != CAMusElement::Syllable)	//syllables are placed separately
-			      ) {
+					(elt->musElementType() != CAMusElement::Syllable) &&	    //syllables are placed separately
+					(elt->musElementType() != CAMusElement::ChordName)	        //chord names are placed separately
+				  ) {
 				drawableContext = drawableContextMap[elt->context()];
 
 				//place signs in first voices
@@ -246,8 +249,8 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 					switch ( elt->musElementType() ) {
 						case CAMusElement::Clef: {
 							CADrawableClef *clef = new CADrawableClef(
-								(CAClef*)elt,
-								(CADrawableStaff*)drawableContext,
+								static_cast<CAClef*>(elt),
+								static_cast<CADrawableStaff*>(drawableContext),
 								streamsX[i],
 								drawableContext->yPos()
 							);
@@ -268,8 +271,8 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						}
 						case CAMusElement::KeySignature: {
 							CADrawableKeySignature *keySig = new CADrawableKeySignature(
-								(CAKeySignature*)elt,
-								(CADrawableStaff*)drawableContext,
+								static_cast<CAKeySignature*>(elt),
+								static_cast<CADrawableStaff*>(drawableContext),
 								streamsX[i],
 								drawableContext->yPos()
 							);
@@ -290,8 +293,8 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						}
 						case CAMusElement::TimeSignature: {
 							CADrawableTimeSignature *timeSig = new CADrawableTimeSignature(
-								(CATimeSignature*)elt,
-								(CADrawableStaff*)drawableContext,
+								static_cast<CATimeSignature*>(elt),
+								static_cast<CADrawableStaff*>(drawableContext),
 								streamsX[i],
 								drawableContext->yPos()
 							);
@@ -322,7 +325,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						case CAMusElement::Mark:
 						case CAMusElement::ChordName:
 						case CAMusElement::Undefined: {
-							fprintf(stderr,"Warning: CALayoutEngine::reposit - Unhandled Element %d",elt->musElementType());
+							qDebug() << "Warning: CALayoutEngine::reposit - Unhandled Element " << elt->musElementType();
 							break;
 						}
 					} // SWITCH
@@ -340,10 +343,10 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			 (musStreamList[i].at(streamsIdx[i])->timeStart() == timeStart);
 			 i++) {
 			CAMusElement *elt = musStreamList[i].at(streamsIdx[i]);
-			if (elt->musElementType()==CAMusElement::FunctionMark && ((CAFunctionMark*)elt)->function()!=CAFunctionMark::Undefined) {
+			if (elt->musElementType()==CAMusElement::FunctionMark && (static_cast<CAFunctionMark*>(elt))->function()!=CAFunctionMark::Undefined) {
 				drawableContext = drawableContextMap[elt->context()];
 				if (streamsIdx[i]-1<0 ||
-				    ((CAFunctionMark*)musStreamList[i].at(streamsIdx[i]-1))->key() != ((CAFunctionMark*)elt)->key()
+					static_cast<CAFunctionMark*>(musStreamList[i].at(streamsIdx[i]-1))->key() != static_cast<CAFunctionMark*>(elt)->key()
 				   ) {
 					//draw new function mark key, if it was changed or if it's the first function in the score
 					CADrawableFunctionMarkSupport *support = new CADrawableFunctionMarkSupport(
@@ -351,7 +354,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						CADiatonicKey::diatonicKeyToString(static_cast<CAFunctionMark*>(elt)->key()),
 						drawableContext,
 						streamsX[i],
-						((CADrawableFunctionMarkContext*)drawableContext)->yPosLine(CADrawableFunctionMarkContext::Middle)
+						static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Middle)
 					);
 					streamsX[i] += (support->neededWidth());
 					v->addMElement(support);
@@ -381,8 +384,8 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 				drawableContext = drawableContextMap[elt->context()];
 				CADrawableBarline *bar = new CADrawableBarline(
-					(CABarline*)elt,
-					(CADrawableStaff*)drawableContext,
+					static_cast<CABarline*>(elt),
+					static_cast<CADrawableStaff*>(drawableContext),
 					streamsX[i],
 					drawableContext->yPos()
 				);
@@ -406,12 +409,12 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 		// Place accidentals and key names of the function marks, if needed.
 		// These elements are so called Support elements. They can't be selected and they're not really connected usually to any logical element, but they're needed when drawing.
-		int maxWidth = 0;
-		int maxAccidentalXEnd = 0;
+		double maxWidth = 0;
+		double maxAccidentalXEnd = 0;
 		QList<CADrawableAccidental*> lastAccidentals;
 		for (int i=0; i < streams; i++) {
 			// loop until the element has come, which has bigger timeStart
-			CADrawableMusElement *newElt=0;
+			CADrawableMusElement *newElt = nullptr;
 			int oldStreamIdx = streamsIdx[i];
 			while ( (streamsIdx[i] < musStreamList[i].size()) &&
 			        ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() == timeStart) &&
@@ -442,7 +445,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			}
 			streamsIdx[i] = oldStreamIdx;
 
-			streamsX[i] += (maxWidth?maxWidth+1:0);	// append the needed space for the last used note
+			streamsX[i] += ((maxWidth!=0.0)?(maxWidth+1):0);	// append the needed space for the last used note
 		}
 
 		// Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
@@ -453,7 +456,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 		for (int i=0; i<lastDFMKeyNames.size(); i++)
 			lastDFMKeyNames[i]->setXPos(maxX - lastDFMKeyNames[i]->neededWidth() - 2);
 
-		int deltaXPos = maxX - maxAccidentalXEnd;
+		double deltaXPos = maxX - maxAccidentalXEnd;
 		for (int i=0; i<lastAccidentals.size(); i++) {
 			lastAccidentals[i]->setXPos(lastAccidentals[i]->xPos()+deltaXPos-1);
 		}
@@ -471,7 +474,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 			        )
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
-				CADrawableMusElement *newElt=0;
+				CADrawableMusElement *newElt=nullptr;
 
 				switch ( elt->musElementType() ) {
 					case CAMusElement::Note: {
@@ -487,7 +490,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->tieStart()->slurDirection();
 							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
 								dir = static_cast<CADrawableNote*>(newElt)->note()->actualSlurDirection();
-							CADrawableSlur *tie=0;
+							CADrawableSlur *tie=nullptr;
 							if (dir==CASlur::SlurUp) {
 								tie = new CADrawableSlur(
 									static_cast<CADrawableNote*>(newElt)->note()->tieStart(), drawableContext,
@@ -530,7 +533,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->slurStart()->slurDirection();
 							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral )
 								dir = static_cast<CADrawableNote*>(newElt)->note()->actualSlurDirection();
-							CADrawableSlur *slur=0;
+							CADrawableSlur *slur=nullptr;
 							if (dir==CASlur::SlurUp) {
 								slur = new CADrawableSlur(
 									static_cast<CADrawableNote*>(newElt)->note()->slurStart(), drawableContext,
@@ -575,7 +578,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							CASlur::CASlurDirection dir = static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurStart()->slurDirection();
 							if ( dir==CASlur::SlurPreferred || dir==CASlur::SlurNeutral)
 								dir = static_cast<CADrawableNote*>(newElt)->note()->actualSlurDirection();
-							CADrawableSlur *phrasingSlur=0;
+							CADrawableSlur *phrasingSlur=nullptr;
 							if (dir==CASlur::SlurUp) {
 								phrasingSlur = new CADrawableSlur(
 									static_cast<CADrawableNote*>(newElt)->note()->phrasingSlurStart(), drawableContext,
@@ -616,9 +619,9 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 						// add tuplet - same as for the rests
 						if ( static_cast<CADrawableNote*>(newElt)->note()->isLastInTuplet() ) {
-							int x1 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->xPos();
-							int x2 = newElt->xPos() + newElt->width();
-							int y1 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->yPos();
+							double x1 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->xPos();
+							double x2 = newElt->xPos() + newElt->width();
+							double y1 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->firstNote())->yPos();
 							if ( y1 > drawableContext->yPos() && y1 < drawableContext->yPos()+drawableContext->height() ) {
 								y1 = drawableContext->yPos()+drawableContext->height() + 10; // inside the staff
 							} else if ( y1 < drawableContext->yPos() ){
@@ -626,7 +629,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							} else {
 								y1 += 10; // under the staff
 							}
-							int y2 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->lastNote())->yPos();
+							double y2 = v->findMElement(static_cast<CADrawableNote*>(newElt)->note()->tuplet()->lastNote())->yPos();
 							if ( y2 > drawableContext->yPos() && y2 < drawableContext->yPos()+drawableContext->height() ) {
 								y2 = drawableContext->yPos()+drawableContext->height() + 10; // inside the staff
 							} else if ( y2 < drawableContext->yPos() ){
@@ -648,7 +651,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 					}
 					case CAMusElement::Rest: {
 						newElt = new CADrawableRest(
-							(CARest*)elt,
+							static_cast<CARest*>(elt),
 							drawableContext,
 							streamsX[i],
 							drawableContext->yPos()
@@ -659,9 +662,9 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 						// add tuplet - same as for the notes
 						if ( static_cast<CADrawableRest*>(newElt)->rest()->isLastInTuplet() ) {
-							int x1 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->firstNote())->xPos();
-							int x2 = newElt->xPos() + newElt->width();
-							int y1 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->firstNote())->yPos();
+							double x1 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->firstNote())->xPos();
+							double x2 = newElt->xPos() + newElt->width();
+							double y1 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->firstNote())->yPos();
 							if ( y1 > drawableContext->yPos() && y1 < drawableContext->yPos()+drawableContext->height() ) {
 								y1 = drawableContext->yPos()+drawableContext->height() + 10; // inside the staff
 							} else if ( y1 < drawableContext->yPos() ){
@@ -669,7 +672,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							} else {
 								y1 += 10; // under the staff
 							}
-							int y2 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->lastNote())->yPos();
+							double y2 = v->findMElement(static_cast<CADrawableRest*>(newElt)->rest()->tuplet()->lastNote())->yPos();
 							if ( y2 > drawableContext->yPos() && y2 < drawableContext->yPos()+drawableContext->height() ) {
 								y2 = drawableContext->yPos()+drawableContext->height() + 10; // inside the staff
 							} else if ( y2 < drawableContext->yPos() ){
@@ -708,7 +711,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						);
 
 						CAMusElement *prevSyllable = drawableContext->context()->previous(elt);
-						CADrawableMusElement *prevDSyllable = (prevSyllable?v->findMElement(prevSyllable):0);
+						CADrawableMusElement *prevDSyllable = (prevSyllable?v->findMElement(prevSyllable):nullptr);
 						if (prevDSyllable) {
 							prevDSyllable->setWidth( newElt->xPos() - prevDSyllable->xPos() );
 						}
@@ -763,7 +766,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						);
 
 						// Place alterations
-						CADrawableFunctionMarkSupport *alterations=0;
+						CADrawableFunctionMarkSupport *alterations=nullptr;
 						if (function->addedDegrees().size() || function->alteredDegrees().size()) {
 							alterations = new CADrawableFunctionMarkSupport(
 								CADrawableFunctionMarkSupport::Alterations,
@@ -781,7 +784,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 						// Place tonicization. The same tonicization is always placed from streamsIdx[i]-nth to streamsIdx[i]-1th element, where streamsIdx[i] is the current index.
 						int j=streamsIdx[i]-1;	//index of the previous elt
-						CADrawableFunctionMarkSupport *tonicization=0;
+						CADrawableFunctionMarkSupport *tonicization=nullptr;
 						for (; j>=0 && ((CAFunctionMark*)musStreamList[i].at(j))->function()==CAFunctionMark::Undefined; j--);	//ignore any alterations back there
 						if (j>=0 && (
 						    // place tonicization, if tonic degree is not default
@@ -823,7 +826,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 						// Place horizontal modulation rectangle, if needed
 						j=streamsIdx[i]-1;
-						CADrawableFunctionMarkSupport *hModulationRect=0;
+						CADrawableFunctionMarkSupport *hModulationRect=nullptr;
 						if (newElt && j>=0) {
 							if (((CAFunctionMark*)musStreamList[i].at(j))->key()!=function->key() &&
 							    ((CAFunctionMark*)musStreamList[i].at(j))->timeStart()!=function->timeStart()) {
@@ -844,7 +847,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						// Place vertical modulation rectangle, if needed
 						// This must be done *before* the extender lines are placed!
 						j=streamsIdx[i]-1;
-						CADrawableFunctionMarkSupport *vModulationRect=0;
+						CADrawableFunctionMarkSupport *vModulationRect=nullptr;
 						while (--j>=0 &&
 						       ((CAFunctionMark*)musStreamList[i].at(j))->key()!=((CAFunctionMark*)musStreamList[i].at(j+1))->key() &&
 						       ((CAFunctionMark*)musStreamList[i].at(j))->timeStart()==((CAFunctionMark*)musStreamList[i].at(j+1))->timeStart()
@@ -863,7 +866,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 						// Place horizontal chord area rectangle for the previous elements, if element neighbours are of the same chordarea/function
 						j=streamsIdx[i]-1;
-						CADrawableFunctionMarkSupport *hChordAreaRect=0;
+						CADrawableFunctionMarkSupport *hChordAreaRect=nullptr;
 						if (j>=0 && // don't draw rectangle, if the current element would still be in the rectangle
 						    (
 						     (((CAFunctionMark*)musStreamList[i].at(j))->key()==function->key() && ((CAFunctionMark*)musStreamList[i].at(j))->function()!=function->function() && ((CAFunctionMark*)musStreamList[i].at(j))->function()!=function->chordArea() && ((CAFunctionMark*)musStreamList[i].at(j))->chordArea()!=function->chordArea())
@@ -897,7 +900,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						}
 
 						// Place chordarea mark below in paranthesis, if no neighbours are of same chordarea
-						CADrawableFunctionMarkSupport *chordArea=0;
+						CADrawableFunctionMarkSupport *chordArea=nullptr;
 						j=streamsIdx[i];
 						if (newElt &&
 						    function->chordArea()!=CAFunctionMark::Undefined &&
@@ -933,7 +936,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 						// Place ellipse
 						j=streamsIdx[i]-1;
-						CADrawableFunctionMarkSupport *ellipse=0;
+						CADrawableFunctionMarkSupport *ellipse=nullptr;
 						if (j>=0 && ((CAFunctionMark*)musStreamList[i].at(j))->isPartOfEllipse()	//place ellipse, if it has it
 							&& (!function->isPartOfEllipse()) ) {	//and it's not lasting anymore
 							//find the n-th element back
@@ -1013,7 +1016,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
                         );
 
                         CAMusElement *prevChordName = drawableContext->context()->previous(elt);
-                        CADrawableMusElement *prevDChordName = (prevChordName?v->findMElement(prevChordName):0);
+						CADrawableMusElement *prevDChordName = (prevChordName?v->findMElement(prevChordName):nullptr);
                         if (prevDChordName) {
                             prevDChordName->setWidth( newElt->xPos() - prevDChordName->xPos() );
                         }
@@ -1031,7 +1034,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 					case CAMusElement::TimeSignature:
 					case CAMusElement::Clef:
 					case CAMusElement::Undefined: {
-						fprintf(stderr,"Warning: CALayoutEngine::reposit2 - Unhandled Element %d",elt->musElementType());
+						qDebug() << "Warning: CALayoutEngine::reposit2 - Unhandled Element " << elt->musElementType();
 						break;
 					}
 				}
