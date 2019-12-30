@@ -28,6 +28,8 @@ public:
 	CAChordName* clone(CAContext* c);
 	int compare(CAMusElement *elt);
 
+	bool importFromString(const QString &text);
+
 private:
 	CADiatonicPitch _diatonicPitch;
 	QString _qualityModifier;

@@ -100,6 +100,7 @@
 #include "score/ritardando.h"
 #include "score/bookmark.h"
 #include "score/fingering.h"
+#include "score/chordname.h"
 #include "core/muselementfactory.h"
 #include "core/mimedata.h"
 #include "core/undo.h"
@@ -1779,7 +1780,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
                 qDebug().noquote() << debugStr;
 			}
 			
-			// lyrics, texts, bookmarks
+			// lyrics, texts, bookmarks, chord names
 			if (v->textEditVisible() && oldSelection.size() && oldSelection.front()->musElement()) {
 				confirmTextEdit(v, v->textEdit(), oldSelection.front()->musElement());
 			}
@@ -1851,8 +1852,8 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
                         v->sheet()->insertContextAfter(
                                 dupContext?dupContext->context():nullptr,
                                 newContext = new CAChordNameContext(
-                                        tr("ChordNameContext%1").arg(v->sheet()->contextList().size()+1),
-                                        v->sheet()
+									tr("ChordNameContext%1").arg(v->sheet()->contextList().size()+1),
+									v->sheet()
                                 )
                         );
 
@@ -1893,8 +1894,14 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 			if ( musElementFactory()->musElementType()==CAMusElement::Rest )
 			     musElementFactory()->setMusElementType( CAMusElement::Note );
 
-			// Insert Syllable or Text
-			if ( (uiInsertSyllable->isChecked() || (uiMarkType->isChecked() && (musElementFactory()->markType()==CAMark::Text || musElementFactory()->markType()==CAMark::BookMark) && success)) && !v->selection().isEmpty() ) {
+			// Insert Syllable, Text, or ChordName
+			if (!v->selection().isEmpty() &&
+				(uiInsertSyllable->isChecked() ||
+				 uiInsertChordName->isChecked() ||
+				 (uiMarkType->isChecked() && success &&
+				  (musElementFactory()->markType()==CAMark::Text || musElementFactory()->markType()==CAMark::BookMark))
+				)
+			   ) {
 				v->createTextEdit( v->selection().front() );
 			} else {
 				v->removeTextEdit();
@@ -2085,7 +2092,8 @@ void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPoint coords) {
 			
 			if ( elt &&
 				(elt->musElementType()==CAMusElement::Syllable ||
-				(elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark))
+				 elt->musElementType()==CAMusElement::ChordName ||
+				 (elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark))
 				)
 			) {
 				v->createTextEdit( dElt );
@@ -2572,8 +2580,8 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 	CADrawableContext *drawableContext = v->currentContext();
 
-	CAStaff *staff=0;
-	CADrawableStaff *drawableStaff = 0;
+	CAStaff *staff = nullptr;
+	CADrawableStaff *drawableStaff = nullptr;
 	if (drawableContext) {
 		drawableStaff = dynamic_cast<CADrawableStaff*>(drawableContext);
 		staff = dynamic_cast<CAStaff*>(drawableContext->context());
@@ -2581,11 +2589,11 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 
 	CADrawableMusElement *drawableRight = v->nearestRightElement(coords.x(), coords.y(), v->currentContext());
 
-	CAMusElement *right=0;
+	CAMusElement *right = nullptr;
 	if ( drawableRight )
 		right = drawableRight->musElement();
 
-	bool success=false;
+	bool success = false;
 
 	if (!drawableContext)
 		return false;
@@ -2923,7 +2931,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 		case CAMusElement::Tuplet:
         case CAMusElement::ChordName:
 		case CAMusElement::Undefined:
-			fprintf(stderr,"Warning: CAMainWin::insertMusElementAt - Unhandled Element %d\n",musElementFactory()->musElementType());
+			qDebug() << "Warning: CAMainWin::insertMusElementAt - Unhandled Element " << musElementFactory()->musElementType();
 			break;
 	}
 
@@ -3760,7 +3768,8 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 }
 
 void CAMainWin::confirmTextEdit(CAScoreView *v, CATextEdit *textEdit, CAMusElement *elt) {
-	if ( elt->musElementType()==CAMusElement::Syllable ) {
+	switch (elt->musElementType()) {
+	case CAMusElement::Syllable: {
 		// create or edit syllable
 		CASyllable *syllable = static_cast<CASyllable*>(elt);
 
@@ -3782,9 +3791,9 @@ void CAMainWin::confirmTextEdit(CAScoreView *v, CATextEdit *textEdit, CAMusEleme
 		syllable->setMelismaStart(melisma);
 
 		v->removeTextEdit();
-	} else {
-		// ((elt->musElementType()==CAMusElement::Mark &&
-		//   static_cast<CAMark*>(elt)->markType()==CAMark::Text) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
+		break;
+	}
+	case CAMusElement::Mark: {
 		CAMark *mark = static_cast<CAMark*>(elt);
 		if (!textEdit->text().isEmpty() || mark->markType()==CAMark::BookMark) {
 			CACanorus::undo()->createUndoCommand( document(), tr("text edit", "undo") );
@@ -3800,6 +3809,34 @@ void CAMainWin::confirmTextEdit(CAScoreView *v, CATextEdit *textEdit, CAMusEleme
 			v->removeTextEdit();
 			delete mark;
 		}
+		break;
+	}
+	case CAMusElement::ChordName: {
+		// create or edit chord name
+		CAChordName *cn = static_cast<CAChordName*>(elt);
+
+		CACanorus::undo()->createUndoCommand( document(), tr("chord name edit", "undo") );
+
+		cn->importFromString(textEdit->text());
+		_noteChecker.checkSheet(v->sheet());
+
+		v->removeTextEdit();
+		break;
+	}
+	case CAMusElement::Note:
+	case CAMusElement::Rest:
+	case CAMusElement::MidiNote:
+	case CAMusElement::Barline:
+	case CAMusElement::Clef:
+	case CAMusElement::TimeSignature:
+	case CAMusElement::KeySignature:
+	case CAMusElement::Slur:
+	case CAMusElement::Tuplet:
+	case CAMusElement::FunctionMark:
+	case CAMusElement::FiguredBassMark:
+	case CAMusElement::Undefined:
+		qDebug() << "Error: confirmTextEdit() called on element of type " << elt->musElementType();
+		break;
 	}
 	
 	CACanorus::undo()->pushUndoCommand();

@@ -19,11 +19,23 @@ const double CADrawableChordName::DEFAULT_TEXT_SIZE = 16;
 CADrawableChordName::CADrawableChordName( CAChordName* s, CADrawableChordNameContext* c, double x, double y )
  : CADrawableMusElement(s, c, x, y) {
 	setDrawableMusElementType( DrawableChordName );
+
+	// some work to compute the drawable width
 	QFont font("Century Schoolbook L");
 	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE) );
-	QFontMetrics fm(font);
-	int textWidth = fm.width( drawableText() );
+	QFontMetricsF fm(font);
+	qreal textWidth;
+	if (!drawableDiatonicPitch().isEmpty()) {
+		textWidth = fm.width( drawableDiatonicPitch() );
+		font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*0.75) );
+		fm = QFontMetricsF(font);
+		textWidth += fm.width( chordName()->qualityModifier() );
+	} else {
+		// syntax error, print qualityModifier() which includes everything
+		textWidth = fm.width( chordName()->qualityModifier() );
+	}
 	setWidth( textWidth < 11 ? 11 : textWidth ); // set minimum text width at least 11 points
+
 	setHeight( qRound(DEFAULT_TEXT_SIZE) );
 }
 
@@ -38,7 +50,20 @@ void CADrawableChordName::draw(QPainter *p, const CADrawSettings s) {
 	QFont font("Century Schoolbook L");
 	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z) );
 	p->setFont( font );
-	p->drawText( s.x, s.y+qRound(height()*s.z), drawableText() );
+	QString dChordPitch = drawableDiatonicPitch();
+	if (dChordPitch.isEmpty()) {
+		// syntax error, print qualityModifier() which includes everything
+		p->drawText( s.x, s.y+qRound(height()*s.z), chordName()->qualityModifier() );
+		return;
+	}
+
+	p->drawText( s.x, s.y+qRound(height()*s.z), dChordPitch );
+	QFontMetricsF fm(font);
+	qreal w = fm.width( dChordPitch );
+
+	font.setPixelSize( qRound(DEFAULT_TEXT_SIZE*s.z*0.75) );
+	p->setFont( font );
+	p->drawText( s.x+w, s.y+qRound(height()*s.z*0.5), chordName()->qualityModifier() );
 }
 
 CADrawableChordName *CADrawableChordName::clone(CADrawableContext *c) {
@@ -50,7 +75,24 @@ CADrawableChordName *CADrawableChordName::clone(CADrawableContext *c) {
 	);
 }
 
-QString CADrawableChordName::drawableText() {
-    // TODO: don't print quality modifier, if it's empty
-	return CADiatonicPitch::diatonicPitchToString(chordName()->diatonicPitch()) + ":" + chordName()->qualityModifier();
+/*!
+ * \brief Converts CADiatonicPitch to a chord-style pitch, e.g. "cis" -> "C#"
+ * \return Chord-style pitch as QString
+ */
+QString CADrawableChordName::drawableDiatonicPitch() {
+	QString chordPitch = CADiatonicPitch::diatonicPitchToString(chordName()->diatonicPitch());
+	if (chordPitch.isEmpty()) {
+		return "";
+	}
+
+	chordPitch = chordPitch[0].toUpper(); // chord-style pitch is upper case
+
+	// now add sharps or flats
+	if (chordName()->diatonicPitch().accs()<0) {
+		chordPitch += QString("b").repeated(chordName()->diatonicPitch().accs()*(-1));
+	} else
+	if (chordName()->diatonicPitch().accs()>0) {
+		chordPitch += QString("#").repeated(chordName()->diatonicPitch().accs());
+	}
+	return chordPitch;
 }

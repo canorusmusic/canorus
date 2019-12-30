@@ -514,14 +514,13 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		// CAChordName
 		CAChordName *cn =
 			new CAChordName(
-				CADiatonicPitch( attributes.value("pitch").toInt(), attributes.value("accs").toInt() ),
+				CADiatonicPitch(),
 				attributes.value("quality-modifier"),
 				static_cast<CAChordNameContext*>(_curContext),
 				attributes.value("time-start").toInt(),
 				attributes.value("time-length").toInt()
 			);
 
-		static_cast<CAChordNameContext*>(_curContext)->addChordName(cn);
 		_curMusElt = cn;
 		_curMusElt->setColor(_color);
 	} else if (qName == "mark") {
@@ -747,8 +746,12 @@ bool CACanorusMLImport::endElement( const QString& namespaceURI, const QString& 
 		if ( !QVersionNumber(0,5).isPrefixOf(_version) && _curMusElt->musElementType()==CAMusElement::FunctionMark ) {
 			static_cast<CAFunctionMark*>(_curMusElt)->setKey( _curDiatonicKey );
 		}
-	} else if (qName == "diatonic-key" ) {
+	} else if (qName == "diatonic-key") {
 		_curDiatonicKey.setDiatonicPitch( _curDiatonicPitch );
+	} else if (qName == "chord-name") {
+		CAChordName *cn = static_cast<CAChordName*>(_curMusElt);
+		cn->setDiatonicPitch( _curDiatonicPitch );
+		static_cast<CAChordNameContext*>(_curContext)->addChordName(cn);
 	}
 
 	_cha = "";

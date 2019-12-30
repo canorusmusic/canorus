@@ -4,6 +4,7 @@
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
+#include <QDebug>
 
 #include "score/chordnamecontext.h"
 #include "score/chordname.h"
@@ -38,13 +39,13 @@ CAChordNameContext::~CAChordNameContext() {
 void CAChordNameContext::addChordName( CAChordName *m, bool replace ) {
 	int i;
 	for (i=0; i<_chordNameList.size() && _chordNameList[i]->timeStart()<m->timeStart(); i++);
-	//int s = _figuredBassMarkList.size();
 	if ( i<_chordNameList.size() && replace ) {
 		delete _chordNameList.takeAt(i);
 	}
 	_chordNameList.insert(i, m);
-	for (i++; i<_chordNameList.size(); i++)
+	for (i++; i<_chordNameList.size(); i++) {
 		_chordNameList[i]->setTimeStart( _chordNameList[i]->timeStart() + m->timeLength() );
+	}
 }
 
 /*!

@@ -1025,7 +1025,10 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
                         }
 
                         v->addMElement(newElt);
-                        streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
+
+						placeNoteCheckerErrors( newElt, v );
+
+						streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
                         break;
                     }
 

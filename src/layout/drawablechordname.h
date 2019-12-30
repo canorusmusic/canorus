@@ -24,7 +24,7 @@ public:
 
 	static const double DEFAULT_TEXT_SIZE;
 private:
-    QString drawableText();
+	QString drawableDiatonicPitch();
 };
 
 #endif /* DRAWABLECHORDNAME_H_ */

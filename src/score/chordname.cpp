@@ -18,6 +18,9 @@
 CAChordName::CAChordName( CADiatonicPitch pitch, QString qualityModifier, CAChordNameContext* c, int timeStart, int timeLength )
 : CAMusElement ( c, timeStart, timeLength ) {
 	setMusElementType(ChordName);
+
+	setDiatonicPitch(pitch);
+	setQualityModifier(qualityModifier);
 }
 
 CAChordName::~CAChordName() {
@@ -48,4 +51,28 @@ int CAChordName::compare(CAMusElement *elt) {
 		return 2;
 
 	return 0;
+}
+
+/*!
+ * \brief CAChordName::importFromLilyPond parses lilypondish syntax for chord name and applies it
+ * \param text chord name in lilypond syntax, for example "cis:m"
+ * \return True, if no errors encountered during parsing; False otherwise.
+ */
+bool CAChordName::importFromString(const QString &text) {
+	int d = text.indexOf(':');
+	_diatonicPitch = CADiatonicPitch((d==-1)?text:text.left(d));
+
+	if (_diatonicPitch.noteName()==CADiatonicPitch::Undefined) {
+		// syntax error
+		_qualityModifier = text;
+		return false;
+	}
+
+	if (d!=-1) {
+		_qualityModifier = text.mid(d+1);
+	} else {
+		_qualityModifier = "";
+	}
+
+	return true;
 }
