@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2016, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -846,6 +846,7 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->addAction( uiInsertSyllable );
 	uiInsertGroup->addAction( uiInsertFBM );
 	uiInsertGroup->addAction( uiInsertFM );
+	uiInsertGroup->addAction( uiInsertChordName );
 	uiInsertGroup->setExclusive( true );
 
 	uiInsertToolBar->hide();

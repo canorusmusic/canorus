@@ -990,6 +990,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>images:chordname/chordname.svg</normaloff>images:chordname/chordname.svg</iconset>
+   </property>
    <property name="text">
     <string>Chord na&amp;me</string>
    </property>

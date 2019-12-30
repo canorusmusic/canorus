@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -50,6 +50,9 @@
 
 #include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
+
+#include "score/chordnamecontext.h"
+#include "score/chordname.h"
 
 /*!
 	\class CACanorusMLImport
@@ -203,7 +206,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		}
 
 		if (lcName.isEmpty())
-			lcName = QObject::tr("Lyrics Context %1").arg(_curSheet->contextList().size()+1);
+			lcName = QObject::tr("LyricsContext%1").arg(_curSheet->contextList().size()+1);
 		_curContext = new CALyricsContext( lcName, attributes.value("stanza-number").toInt(), _curSheet );
 
 		// voices are not neccesseraly completely read - store indices of the voices internally and then assign them at the end
@@ -221,7 +224,7 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		}
 
 		if (fbcName.isEmpty())
-			fbcName = QObject::tr("Figured Bass Context %1").arg(_curSheet->contextList().size()+1);
+			fbcName = QObject::tr("FiguredBassContext%1").arg(_curSheet->contextList().size()+1);
 		_curContext = new CAFiguredBassContext( fbcName, _curSheet );
 
 		_curSheet->addContext(_curContext);
@@ -235,8 +238,22 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 		}
 
 		if (fmcName.isEmpty())
-			fmcName = QObject::tr("Function Mark Context %1").arg(_curSheet->contextList().size()+1);
+			fmcName = QObject::tr("FunctionMarkContext%1").arg(_curSheet->contextList().size()+1);
 		_curContext = new CAFunctionMarkContext( fmcName, _curSheet );
+
+		_curSheet->addContext(_curContext);
+
+	} else if (qName == "chord-name-context") {
+		// CAChordNameContext
+		QString cncName = attributes.value("name");
+		if (!_curSheet) {
+			_errorMsg = "The sheet where to add the chord name context doesn't exist yet!";
+			return false;
+		}
+
+		if (cncName.isEmpty())
+			cncName = QObject::tr("ChordNameContext%1").arg(_curSheet->contextList().size()+1);
+		_curContext = new CAChordNameContext( cncName, _curSheet );
 
 		_curSheet->addContext(_curContext);
 
@@ -492,6 +509,20 @@ bool CACanorusMLImport::startElement( const QString& namespaceURI, const QString
 
 		static_cast<CAFunctionMarkContext*>(_curContext)->addFunctionMark(f);
 		_curMusElt = f;
+		_curMusElt->setColor(_color);
+	} else if (qName == "chord-name") {
+		// CAChordName
+		CAChordName *cn =
+			new CAChordName(
+				CADiatonicPitch( attributes.value("pitch").toInt(), attributes.value("accs").toInt() ),
+				attributes.value("quality-modifier"),
+				static_cast<CAChordNameContext*>(_curContext),
+				attributes.value("time-start").toInt(),
+				attributes.value("time-length").toInt()
+			);
+
+		static_cast<CAChordNameContext*>(_curContext)->addChordName(cn);
+		_curMusElt = cn;
 		_curMusElt->setColor(_color);
 	} else if (qName == "mark") {
 		// CAMark and subvariants
