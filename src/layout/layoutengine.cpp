@@ -849,18 +849,18 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						j=streamsIdx[i]-1;
 						CADrawableFunctionMarkSupport *vModulationRect=nullptr;
 						while (--j>=0 &&
-						       ((CAFunctionMark*)musStreamList[i].at(j))->key()!=((CAFunctionMark*)musStreamList[i].at(j+1))->key() &&
-						       ((CAFunctionMark*)musStreamList[i].at(j))->timeStart()==((CAFunctionMark*)musStreamList[i].at(j+1))->timeStart()
+							   static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()!=static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->key() &&
+							   static_cast<CAFunctionMark*>(musStreamList[i].at(j))->timeStart()==static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->timeStart()
 						      );
 						if (++j>=0 && j!=streamsIdx[i]-1) {
-							CADrawableFunctionMark *left = (CADrawableFunctionMark*)drawableContext->findMElement(musStreamList[i].at(j));
+							CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[i].at(j)));
 							vModulationRect = new CADrawableFunctionMarkSupport(
 								CADrawableFunctionMarkSupport::Rectangle,
 								left,
-								(CADrawableFunctionMarkContext*)drawableContext,
+								static_cast<CADrawableFunctionMarkContext*>(drawableContext),
 								left->xPos(),
 								left->yPos(),
-								(CADrawableFunctionMark*)drawableContext->findMElement(musStreamList[i].at(streamsIdx[i]-1))
+								static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[i].at(streamsIdx[i]-1)))
 							);
 						}
 
@@ -869,32 +869,35 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						CADrawableFunctionMarkSupport *hChordAreaRect=nullptr;
 						if (j>=0 && // don't draw rectangle, if the current element would still be in the rectangle
 						    (
-						     (((CAFunctionMark*)musStreamList[i].at(j))->key()==function->key() && ((CAFunctionMark*)musStreamList[i].at(j))->function()!=function->function() && ((CAFunctionMark*)musStreamList[i].at(j))->function()!=function->chordArea() && ((CAFunctionMark*)musStreamList[i].at(j))->chordArea()!=function->chordArea())
-						     || ((CAFunctionMark*)musStreamList[i].at(j))->key()!=function->key()
+							 (static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()==function->key() &&
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()!=function->function() &&
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()!=function->chordArea() &&
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j))->chordArea()!=function->chordArea())
+							 || static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()!=function->key()
 						     || j==musStreamList[i].size()
 						    )
 						   ) {
 							bool oneFunctionOnly=true;
 							while (--j>=0 &&
-							       ((CAFunctionMark*)musStreamList[i].at(j+1))->chordArea()!=CAFunctionMark::Undefined &&
-							       ((CAFunctionMark*)musStreamList[i].at(j))->key()==((CAFunctionMark*)musStreamList[i].at(j+1))->key() &&
-							        (((CAFunctionMark*)musStreamList[i].at(j))->chordArea()==((CAFunctionMark*)musStreamList[i].at(j+1))->chordArea() ||
-							         ((CAFunctionMark*)musStreamList[i].at(j))->function()==((CAFunctionMark*)musStreamList[i].at(j+1))->chordArea() ||
-							         ((CAFunctionMark*)musStreamList[i].at(j))->chordArea()==((CAFunctionMark*)musStreamList[i].at(j+1))->function()
+								   static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->chordArea()!=CAFunctionMark::Undefined &&
+								   static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()==static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->key() &&
+									(static_cast<CAFunctionMark*>(musStreamList[i].at(j))->chordArea()==static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->chordArea() ||
+									 static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()==static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->chordArea() ||
+									 static_cast<CAFunctionMark*>(musStreamList[i].at(j))->chordArea()==static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->function()
 							        )
 							      )
-								if ( ((CAFunctionMark*)musStreamList[i].at(j))->function()!=((CAFunctionMark*)musStreamList[i].at(j+1))->function() )
+								if ( static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()!=static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->function() )
 									oneFunctionOnly = false;
 
 							if ( ++j != streamsIdx[i]-1 && !oneFunctionOnly ) {
-								CADrawableFunctionMark *left = (CADrawableFunctionMark*)drawableContext->findMElement(musStreamList[i].at(j));
+								CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[i].at(j)));
 								hChordAreaRect = new CADrawableFunctionMarkSupport(
 									CADrawableFunctionMarkSupport::Rectangle,
 									left,
-									(CADrawableFunctionMarkContext*)drawableContext,
+									static_cast<CADrawableFunctionMarkContext*>(drawableContext),
 									left->xPos(),
 									left->yPos(),
-									(CADrawableFunctionMark*)drawableContext->findMElement(musStreamList[i].at(streamsIdx[i]-1))
+									static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[i].at(streamsIdx[i]-1)))
 								);
 							}
 						}
@@ -906,50 +909,50 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						    function->chordArea()!=CAFunctionMark::Undefined &&
 						    function->chordArea()!=function->function() && // chord area is the same as function name - don't draw chordarea then
 						    (j-1<0 ||
-						     ((((CAFunctionMark*)musStreamList[i].at(j-1))->key()==function->key() &&
-						      ((CAFunctionMark*)musStreamList[i].at(j-1))->chordArea()!=function->chordArea() &&
-						      ((CAFunctionMark*)musStreamList[i].at(j-1))->function()!=function->chordArea() &&
-						      ((CAFunctionMark*)musStreamList[i].at(j-1))->chordArea()!=function->function()) ||
-						      ((CAFunctionMark*)musStreamList[i].at(j-1))->tonicDegree()!=function->tonicDegree() ||
-						      ((CAFunctionMark*)musStreamList[i].at(j-1))->key()!=function->key()
+							 ((static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->key()==function->key() &&
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->chordArea()!=function->chordArea() &&
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->function()!=function->chordArea() &&
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->chordArea()!=function->function()) ||
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->tonicDegree()!=function->tonicDegree() ||
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->key()!=function->key()
 						     )
 						    ) &&
 						    (j+1>=musStreamList[i].size() ||
-						     ((((CAFunctionMark*)musStreamList[i].at(j+1))->key()==function->key() &&
-						      ((CAFunctionMark*)musStreamList[i].at(j+1))->chordArea()!=function->chordArea() &&
-						      ((CAFunctionMark*)musStreamList[i].at(j+1))->function()!=function->chordArea() &&
-						      ((CAFunctionMark*)musStreamList[i].at(j+1))->chordArea()!=function->function()) ||
-						      ((CAFunctionMark*)musStreamList[i].at(j+1))->tonicDegree()!=function->tonicDegree() ||
-						      ((CAFunctionMark*)musStreamList[i].at(j+1))->key()!=function->key()
+							 ((static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->key()==function->key() &&
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->chordArea()!=function->chordArea() &&
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->function()!=function->chordArea() &&
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->chordArea()!=function->function()) ||
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->tonicDegree()!=function->tonicDegree() ||
+							  static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->key()!=function->key()
 						     )
 						    )
 						   ) {
 							chordArea = new CADrawableFunctionMarkSupport(
 								CADrawableFunctionMarkSupport::ChordArea,
-								(CADrawableFunctionMark*)newElt,
-								(CADrawableFunctionMarkContext*)drawableContext,
+								static_cast<CADrawableFunctionMark*>(newElt),
+								static_cast<CADrawableFunctionMarkContext*>(drawableContext),
 								streamsX[i],
-								((CADrawableFunctionMarkContext*)drawableContext)->yPosLine(CADrawableFunctionMarkContext::Lower)
+								static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Lower)
 							);
-							chordArea->setXPos((int)(newElt->xPos()-(chordArea->width()-newElt->width())/2.0 + 0.5));
+							chordArea->setXPos(newElt->xPos()-(chordArea->width()-newElt->width())/2.0 + 0.5);
 						}
 
 						// Place ellipse
 						j=streamsIdx[i]-1;
 						CADrawableFunctionMarkSupport *ellipse=nullptr;
-						if (j>=0 && ((CAFunctionMark*)musStreamList[i].at(j))->isPartOfEllipse()	//place ellipse, if it has it
+						if (j>=0 && static_cast<CAFunctionMark*>(musStreamList[i].at(j))->isPartOfEllipse()	//place ellipse, if it has it
 							&& (!function->isPartOfEllipse()) ) {	//and it's not lasting anymore
 							//find the n-th element back
-							while (--j>=0 && ((CAFunctionMark*)musStreamList[i].at(j))->isPartOfEllipse());
-							CAFunctionMark *ellipseStart = (CAFunctionMark*)musStreamList[i].at(++j);
-							CADrawableFunctionMark *left = (CADrawableFunctionMark*)drawableContext->findMElement(ellipseStart);
+							while (--j>=0 && static_cast<CAFunctionMark*>(musStreamList[i].at(j))->isPartOfEllipse());
+							CAFunctionMark *ellipseStart = static_cast<CAFunctionMark*>(musStreamList[i].at(++j));
+							CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(ellipseStart));
 							ellipse = new CADrawableFunctionMarkSupport(
 								CADrawableFunctionMarkSupport::Ellipse,
 								left,
-								(CADrawableFunctionMarkContext*)drawableContext,
+								static_cast<CADrawableFunctionMarkContext*>(drawableContext),
 								left->xPos(),
-								((CADrawableFunctionMarkContext*)drawableContext)->yPosLine(CADrawableFunctionMarkContext::Lower),
-								(CADrawableFunctionMark*)drawableContext->findMElement((CAMusElement*)musStreamList[i].at(streamsIdx[i]-1))
+								static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Lower),
+								static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(static_cast<CAMusElement*>(musStreamList[i].at(streamsIdx[i]-1))))
 							);
 						}
 
