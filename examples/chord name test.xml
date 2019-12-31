@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE canorusml>
+<canorus-document>
+ <canorus-version>0.7.3rc3</canorus-version>
+ <document date-created="2019-12-30T23:22:23" date-last-modified="2019-12-31T10:10:15" time-edited="160">
+  <sheet name="Sheet1">
+   <staff number-of-lines="5" name="Staff1">
+    <voice midi-program="0" midi-channel="0" stem-direction="stem-up" name="Staff1Voice1" midi-pitch-offset="0">
+     <clef offset="0" c1="-2" clef-type="G" time-start="0"/>
+     <time-signature beats="4" time-start="0" time-signature-type="classical" beat="4"/>
+     <note time-start="0" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="29"/>
+     </note>
+     <note time-start="256" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="30"/>
+     </note>
+     <note time-start="512" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="36"/>
+     </note>
+     <note time-start="768" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="36"/>
+     </note>
+     <barline barline-type="single" time-start="1024"/>
+     <note time-start="1024" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="36"/>
+     </note>
+     <note time-start="1280" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="36"/>
+     </note>
+     <note time-start="1536" time-length="512">
+      <playable-length music-length="half" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="32"/>
+     </note>
+     <barline barline-type="single" time-start="2048"/>
+    </voice>
+    <voice midi-program="0" midi-channel="1" stem-direction="stem-down" name="Staff1Voice2" midi-pitch-offset="0">
+     <clef offset="0" c1="-2" clef-type="G" time-start="0"/>
+     <time-signature beats="4" time-start="0" time-signature-type="classical" beat="4"/>
+     <rest rest-type="hidden" time-start="0" time-length="1024">
+      <playable-length music-length="whole" dotted="0"/>
+     </rest>
+     <barline barline-type="single" time-start="1024"/>
+     <rest rest-type="hidden" time-start="1024" time-length="1024">
+      <playable-length music-length="whole" dotted="0"/>
+     </rest>
+     <barline barline-type="single" time-start="2048"/>
+    </voice>
+   </staff>
+   <chord-name-context name="ChordNameContext3">
+    <chord-name time-start="0" quality-modifier="" time-length="256">
+     <diatonic-pitch accs="0" note-name="-1"/>
+    </chord-name>
+    <chord-name time-start="256" quality-modifier="m" time-length="256">
+     <diatonic-pitch accs="0" note-name="5"/>
+    </chord-name>
+    <chord-name time-start="512" quality-modifier="" time-length="256">
+     <diatonic-pitch accs="1" note-name="0"/>
+    </chord-name>
+    <chord-name time-start="768" quality-modifier="sus4" time-length="256">
+     <diatonic-pitch accs="1" note-name="0"/>
+    </chord-name>
+    <chord-name time-start="1024" quality-modifier="" time-length="256">
+     <diatonic-pitch accs="0" note-name="-1"/>
+    </chord-name>
+    <chord-name time-start="1280" quality-modifier="" time-length="256">
+     <diatonic-pitch accs="-1" note-name="1"/>
+    </chord-name>
+    <chord-name time-start="3072" quality-modifier="" time-length="512">
+     <diatonic-pitch accs="0" note-name="-1"/>
+    </chord-name>
+   </chord-name-context>
+   <staff number-of-lines="5" name="Staff2">
+    <voice midi-program="0" midi-channel="2" stem-direction="stem-up" name="Staff2Voice1" midi-pitch-offset="0">
+     <clef offset="0" c1="10" clef-type="F" time-start="0"/>
+     <time-signature beats="4" time-start="0" time-signature-type="classical" beat="4"/>
+     <note time-start="0" time-length="512">
+      <playable-length music-length="half" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="22"/>
+     </note>
+     <note time-start="512" time-length="512">
+      <playable-length music-length="half" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="23"/>
+     </note>
+     <barline barline-type="single" time-start="1024"/>
+     <note time-start="1024" time-length="512">
+      <playable-length music-length="half" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="19"/>
+     </note>
+     <note time-start="1536" time-length="512">
+      <playable-length music-length="half" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="20"/>
+     </note>
+     <barline barline-type="single" time-start="2048"/>
+    </voice>
+    <voice midi-program="0" midi-channel="3" stem-direction="stem-down" name="Staff2Voice2" midi-pitch-offset="0">
+     <clef offset="0" c1="10" clef-type="F" time-start="0"/>
+     <time-signature beats="4" time-start="0" time-signature-type="classical" beat="4"/>
+     <rest rest-type="hidden" time-start="0" time-length="1024">
+      <playable-length music-length="whole" dotted="0"/>
+     </rest>
+     <barline barline-type="single" time-start="1024"/>
+     <rest rest-type="hidden" time-start="1024" time-length="1024">
+      <playable-length music-length="whole" dotted="0"/>
+     </rest>
+     <barline barline-type="single" time-start="2048"/>
+    </voice>
+   </staff>
+  </sheet>
+ </document>
+</canorus-document>

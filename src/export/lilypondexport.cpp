@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2010, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -16,6 +16,8 @@
 #include "score/sheet.h"
 #include "score/staff.h"
 #include "score/voice.h"
+#include "score/chordnamecontext.h"
+
 #include "score/mark.h"
 #include "score/articulation.h"
 #include "score/fingering.h"
@@ -26,6 +28,7 @@
 #include "score/tuplet.h"
 #include "score/barline.h"
 #include "score/repeatmark.h"
+#include "score/chordname.h"
 
 /*!
 	\class CALilyPondExport
@@ -487,7 +490,7 @@ void CALilyPondExport::exportMarksBeforeElement( CAMusElement *elt ) {
 
 /*!
 	Exports the lyrics in form:
-	SopranoLyricsOne = {
+	SopranoLyricsOne = \\lyricmode {
 		My bu -- ny is o -- ver the o -- cean __ My bu -- ny.
 	}
 */
@@ -508,12 +511,72 @@ void CALilyPondExport::exportLyricsContextBlock( CALyricsContext *lc ) {
 }
 
 /*!
-	Exports the syllables only without the SopranoLyircsOne = {} frame.
+	Exports the syllables only without the \\lyricmode {} frame.
 */
 void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
 	for (int i=0; i<lc->syllableList().size(); i++) {
 		if (i>0) out() << " "; // space between syllables
 		out() << syllableToLilyPond(lc->syllableList()[i]);
+	}
+}
+
+/*!
+	Exports the chord names in form:
+	ChordNamesOne = \\chordmode {
+		c2 f4:m cis:sus4
+	}
+*/
+void CALilyPondExport::exportChordNameContextBlock( CAChordNameContext *cnc ) {
+	indent();
+	out() << "\n% " << cnc->name() << "\n";
+	QString name = cnc->name();
+	spellNumbers(name);
+	out() << name << " = \\chordmode {\n";
+	indentMore();
+
+	indent();
+	exportChordNameContextImpl(cnc);
+
+	indentLess();
+	out() << "\n}\n";
+}
+
+/*!
+	Exports the chord names without the \\chordmode {} wrappers.
+*/
+void CALilyPondExport::exportChordNameContextImpl( CAChordNameContext *cnc ) {
+	CAChordName *lastCn = nullptr;
+	for (int i=0; i<cnc->chordNameList().size(); i++) {
+		if (i>0) out() << " "; // space between syllables
+
+		CAChordName *cn = cnc->chordNameList()[i];
+
+		// determine length
+		// TODO: How do we treat tuplets?
+		QList<CAPlayableLength> pl = CAPlayableLength::timeLengthToPlayableLengthList(cn->timeLength());
+
+		if (pl.size()) {
+			if (cn->diatonicPitch().noteName()!=CADiatonicPitch::Undefined) {
+				// chord change
+				out() << CADiatonicPitch::diatonicPitchToString(cn->diatonicPitch()) << playableLengthToLilyPond(pl[0]);
+				out() << ":" << cn->qualityModifier();
+				lastCn = cn;
+			} else {
+				if (cn->qualityModifier().isEmpty()) {
+					if (lastCn != nullptr) {
+						// extend previous chord
+						out() << CADiatonicPitch::diatonicPitchToString(lastCn->diatonicPitch()) << playableLengthToLilyPond(pl[0]);
+						out() << ":" << lastCn->qualityModifier();
+					} else {
+						// if this is beginning, insert chord rest
+						out() << "r" << playableLengthToLilyPond(pl[0]);
+					}
+				} else {
+					// syntax error or unknown chord to Canorus
+					out() << cn->qualityModifier();
+				}
+			}
+		}
 	}
 }
 
@@ -845,7 +908,8 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 				exportLyricsContextBlock( static_cast<CALyricsContext*>(sheet->contextList()[c]) );
 				break;
             case CAContext::ChordNameContext:
-                break; // TODO
+				exportChordNameContextBlock( static_cast<CAChordNameContext*>(sheet->contextList()[c]) );
+				break;
 			case CAContext::FunctionMarkContext:
 			case CAContext::FiguredBassContext:
 				break;
@@ -1078,8 +1142,25 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 
 					break;
 				}
-                case CAContext::ChordNameContext:
-                    break; // TODO
+				case CAContext::ChordNameContext: {
+					CAChordNameContext *cnc = static_cast<CAChordNameContext*>(curContext());
+					QString cncName = cnc->name();
+					spellNumbers( cncName );
+
+					indent();
+					out() << "% " << cnc->name() << "\n";
+					indent();
+					out() << "\\new ChordNames {\n";
+					indentMore();
+					indent();
+					out() << "\\set chordChanges = ##t\n";
+					indent();
+					out() << "\\" << cncName << "\n";
+					indentLess();
+					indent();
+					out() << "}\n";
+					break;
+				}
 				case CAContext::FunctionMarkContext:
 				case CAContext::FiguredBassContext:
 					break;
