@@ -469,9 +469,9 @@ void CALilyPondExport::exportMarksBeforeElement( CAMusElement *elt ) {
 			out() << "\\tempo " << playableLengthToLilyPond(t->beat()) << " = " << t->bpm() << " ";
 			
 			break;
-                }
+		}
 
-                case CAMark::Fingering:
+		case CAMark::Fingering:
 		case CAMark::Ritardando:
 		case CAMark::Crescendo:
 		case CAMark::Pedal:
@@ -490,9 +490,11 @@ void CALilyPondExport::exportMarksBeforeElement( CAMusElement *elt ) {
 
 /*!
 	Exports the lyrics in form:
+	\code
 	SopranoLyricsOne = \\lyricmode {
 		My bu -- ny is o -- ver the o -- cean __ My bu -- ny.
 	}
+	\endcode
 */
 void CALilyPondExport::exportLyricsContextBlock( CALyricsContext *lc ) {
 	// Print Canorus voice name as a comment to help with debugging/tweaking
@@ -522,9 +524,11 @@ void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
 
 /*!
 	Exports the chord names in form:
+	\code
 	ChordNamesOne = \\chordmode {
 		c2 f4:m cis:sus4
 	}
+	\endcode
 */
 void CALilyPondExport::exportChordNameContextBlock( CAChordNameContext *cnc ) {
 	indent();
@@ -542,17 +546,16 @@ void CALilyPondExport::exportChordNameContextBlock( CAChordNameContext *cnc ) {
 }
 
 /*!
-	Exports the chord names without the \\chordmode {} wrappers.
+	Exports the chord names of \a cnc without the \\chordmode {} wrappers.
 */
 void CALilyPondExport::exportChordNameContextImpl( CAChordNameContext *cnc ) {
-	CAChordName *lastCn = nullptr;
 	for (int i=0; i<cnc->chordNameList().size(); i++) {
-		if (i>0) out() << " "; // space between syllables
+		if (i>0) out() << " "; // space between chord names
 
 		CAChordName *cn = cnc->chordNameList()[i];
 
 		// determine length
-		// TODO: How do we treat tuplets?
+		//! \todo How do we treat tuplets?
 		QList<CAPlayableLength> pl = CAPlayableLength::timeLengthToPlayableLengthList(cn->timeLength());
 
 		if (pl.size()) {
@@ -560,21 +563,10 @@ void CALilyPondExport::exportChordNameContextImpl( CAChordNameContext *cnc ) {
 				// chord change
 				out() << CADiatonicPitch::diatonicPitchToString(cn->diatonicPitch()) << playableLengthToLilyPond(pl[0]);
 				out() << ":" << cn->qualityModifier();
-				lastCn = cn;
 			} else {
-				if (cn->qualityModifier().isEmpty()) {
-					if (lastCn != nullptr) {
-						// extend previous chord
-						out() << CADiatonicPitch::diatonicPitchToString(lastCn->diatonicPitch()) << playableLengthToLilyPond(pl[0]);
-						out() << ":" << lastCn->qualityModifier();
-					} else {
-						// if this is beginning, insert chord rest
-						out() << "r" << playableLengthToLilyPond(pl[0]);
-					}
-				} else {
-					// syntax error or unknown chord to Canorus
-					out() << cn->qualityModifier();
-				}
+				// diatonicPitch is Undefined - either chord name is empty or a syntax error.
+				// In either case, don't print the chord.
+				out() << "s" << playableLengthToLilyPond(pl[0]);
 			}
 		}
 	}
@@ -864,7 +856,7 @@ const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
 }
 
 /*!
-	Exports the current sheet to Lilypond syntax.
+	Exports the current sheet to LilyPond syntax.
 */
 void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 {
@@ -970,7 +962,7 @@ void CALilyPondExport::scanForRepeats(CAStaff *staff) {
 }
 
 /*!
-	Encapsulates the given string into \markup {}.
+	Encapsulates the given string into \\markup {}.
 */
 QString CALilyPondExport::markupString( QString in ) {
 	return QString("\\markup {\"") + escapeWeirdChars( in ) + QString("\"}");
@@ -1027,7 +1019,7 @@ void CALilyPondExport::voiceVariableName( QString &name, int staffNum, int voice
 
 
 /*!
-	Exports the \score block for LilyPond from the current sheet.
+	Exports the \\score block for LilyPond from the current sheet.
 	Looks like this:
 
 	\code
@@ -1152,8 +1144,6 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 					indent();
 					out() << "\\new ChordNames {\n";
 					indentMore();
-					indent();
-					out() << "\\set chordChanges = ##t\n";
 					indent();
 					out() << "\\" << cncName << "\n";
 					indentLess();
