@@ -1658,7 +1658,7 @@ CADrawableMusElement *CAScoreView::findMElement(CAMusElement *elt) {
 	if (hits.size()) {
 		return static_cast<CADrawableMusElement*>(hits[0]);
 	}
-	return 0;
+	return nullptr;
 }
 
 /*!
@@ -1671,11 +1671,11 @@ CADrawableContext *CAScoreView::findCElement(CAContext *context) {
 	if (hits.size()) {
 		return static_cast<CADrawableContext*>(hits[0]);
 	}
-	return 0;
+	return nullptr;
 }
 
 /*!
-	Creates a CATextEdit widget over the existing drawable syllable \a dMusElt.
+	Creates a CATextEdit widget over the existing drawable syllable or chord name \a dMusElt.
 	Returns the pointer to the created widget.
 
 	\sa createTextEdit( QRect geometry )
@@ -1684,20 +1684,20 @@ CATextEdit *CAScoreView::createTextEdit( CADrawableMusElement *dMusElt ) {
 	if ( !dMusElt || !dMusElt->musElement() )
 		return nullptr;
 
-	double xPos=dMusElt->xPos(), yPos=dMusElt->yPos(),
-	    width=100, height=25;
+	CAMusElement *musElt = dMusElt->musElement();
+	double xPos=dMusElt->xPos(), yPos=dMusElt->yPos(), width=100, height=25;
 	QString text;
+
+	// extend the edit widget width to the right neighbor, if the music element is part of the context.
+	if (musElt->context()) {
+		CADrawableMusElement *dRight = findMElement( musElt->context()->next( musElt ) );
+		if (dRight)
+			width = dRight->xPos() - dMusElt->xPos();
+	}
 
 	switch (dMusElt->musElement()->musElementType()) {
 	case CAMusElement::Syllable: {
-		CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(dMusElt->drawableContext());
 		CASyllable *syllable = static_cast<CASyllable*>(dMusElt->musElement());
-		if (!dlc || !syllable) return nullptr;
-
-		CADrawableMusElement *dRight = findMElement( dlc->lyricsContext()->next( syllable ) );
-		if (dRight)
-			width = dRight->xPos() - dMusElt->xPos();
-
 		text = syllable->text();
 		if (syllable->hyphenStart()) text+="-";
 		else if (syllable->melismaStart()) text+="_";
@@ -1711,6 +1711,7 @@ CATextEdit *CAScoreView::createTextEdit( CADrawableMusElement *dMusElt ) {
 		} else if ( mark->markType()==CAMark::BookMark ) {
 			text = static_cast<CABookMark*>(mark)->text();
 		}
+
 		break;
 	}
 	case CAMusElement::ChordName: {
@@ -1725,6 +1726,7 @@ CATextEdit *CAScoreView::createTextEdit( CADrawableMusElement *dMusElt ) {
 				text += QString(":") + cn->qualityModifier();
 			}
 		}
+
 		break;
 	}
 	default:
