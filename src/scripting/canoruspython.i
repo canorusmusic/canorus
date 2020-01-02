@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -107,14 +107,14 @@
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
 		PyList_Append(list, PyInt_FromLong($1[i]));
-
+	
 	$result = list;
 }
 %typemap(out) const QList<int>&, QList<int>& {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1->size(); i++)
 		PyList_Append(list, PyInt_FromLong($1->at(i)));
-
+	
 	$result = list;
 }
 
@@ -129,11 +129,11 @@
               const QList<CASyllable*>, QList<CASyllable*>,
               const QList<CAFiguredBasMark*>, QList<CAFiguredBassMark*>,
               const QList<CAFunctionMark*>, QList<CAFunctionMark*>,
-			  const QList<CAChordName*>, QList<CAChordName*> {
+              const QList<CAChordName*>, QList<CAChordName*> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
 		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::MusElement));
-
+	
 	$result = list;
 }
 %typemap(out) const QList<CAMusElement*>&, QList<CAMusElement*>&,
@@ -143,12 +143,12 @@
               const QList<CAPlayable*>&, QList<CAPlayable*>&,
               const QList<CASyllable*>&, QList<CASyllable*>&,
               const QList<CAFiguredBassMark*>&, QList<CAFiguredBassMark*>&,
-			  const QList<CAFunctionMark*>&, QList<CAFunctionMark*>&,
+              const QList<CAFunctionMark*>&, QList<CAFunctionMark*>&,
               const QList<CAChordName*>&, QList<CAChordName*>& {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1->size(); i++)
 		PyList_Append(list, CASwigPython::toPythonObject($1->at(i), CASwigPython::MusElement));
-
+	
 	$result = list;
 }
 %typemap(out) const QList< QList<CAMidiNote*> >, QList< QList<CAMidiNote*> > {
