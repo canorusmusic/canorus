@@ -1659,6 +1659,10 @@ void CAScoreView::invertSelection() {
 	\sa findCElement()
 */
 CADrawableMusElement *CAScoreView::findMElement(CAMusElement *elt) {
+	if (!elt) {
+		return nullptr;
+	}
+
 	QList<CADrawable*> hits = _mapDrawable.values(elt);
 	if (hits.size()) {
 		return static_cast<CADrawableMusElement*>(hits[0]);
@@ -1672,6 +1676,10 @@ CADrawableMusElement *CAScoreView::findMElement(CAMusElement *elt) {
 	\sa findMElement()
 */
 CADrawableContext *CAScoreView::findCElement(CAContext *context) {
+	if (!context) {
+		return nullptr;
+	}
+
 	QList<CADrawable*> hits = _mapDrawable.values(context);
 	if (hits.size()) {
 		return static_cast<CADrawableContext*>(hits[0]);

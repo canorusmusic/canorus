@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2nullptr07, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -17,7 +17,7 @@
 	sorted by their timeStarts.
 
 	Every LyricsContext has its associated voice. This is the voice which the syllables are assigned to (one syllable per chord).
-	Assocciated voice is a common LilyPond syntax \lyricsto.
+	Assocciated voice is a common LilyPond syntax \\lyricsto.
 
 	If the user wants to create multiple stanzas, it should create multiple lyrics contexts - one for each stanza.
 
