@@ -42,7 +42,8 @@ CADiatonicPitch::CADiatonicPitch( const QString& pitch ) {
 	}
 
 	int curPitch = (noteName[0].toLatin1() - 'a' + 5) % 7;
-	noteName.remove(0, 1); // remove one-letter note name
+	if (!noteName.startsWith("as") && !noteName.startsWith("es"))
+		noteName.remove(0, 1); // remove one-letter note name
 
 	// determine accidentals
 	int curAccs = 0;
