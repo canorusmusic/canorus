@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -10,6 +10,7 @@
 #include <QTextStream>
 #include <QVariant>
 #include <QDir>
+#include <QDebug>
 
 #include "export/canorusmlexport.h"
 
@@ -48,6 +49,9 @@
 
 #include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
+
+#include "score/chordnamecontext.h"
+#include "score/chordname.h"
 
 CACanorusMLExport::CACanorusMLExport( QTextStream *stream )
  : CAExport(stream) {
@@ -178,16 +182,33 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 						dFm.setAttribute( "time-start", elts[i]->timeStart() );
 						dFm.setAttribute( "time-length", elts[i]->timeLength() );
 						dFm.setAttribute( "function", CAFunctionMark::functionTypeToString(elts[i]->function()) );
-						dFm.setAttribute( "minor", elts[i]->isMinor() );
-						dFm.setAttribute( "chord-area", CAFunctionMark::functionTypeToString(elts[i]->chordArea()) );
-						dFm.setAttribute( "chord-area-minor", elts[i]->isChordAreaMinor() );
-						dFm.setAttribute( "tonic-degree", CAFunctionMark::functionTypeToString(elts[i]->tonicDegree()) );
-						dFm.setAttribute( "tonic-degree-minor", elts[i]->isTonicDegreeMinor() );
-						exportDiatonicKey( elts[i]->key(), dFm );
-						//dFm.setAttribute( "altered-degrees", elts[i]->alteredDegrees() );
-						//dFm.setAttribute( "added-degrees", elts[i]->addedDegrees() );
-						dFm.setAttribute( "ellipse", elts[i]->isPartOfEllipse() );
-					}
+                        dFm.setAttribute("minor", elts[i]->isMinor());
+                        dFm.setAttribute("chord-area", CAFunctionMark::functionTypeToString(elts[i]->chordArea()));
+                        dFm.setAttribute("chord-area-minor", elts[i]->isChordAreaMinor());
+                        dFm.setAttribute("tonic-degree", CAFunctionMark::functionTypeToString(elts[i]->tonicDegree()));
+                        dFm.setAttribute("tonic-degree-minor", elts[i]->isTonicDegreeMinor());
+                        exportDiatonicKey(elts[i]->key(), dFm);
+                        //dFm.setAttribute( "altered-degrees", elts[i]->alteredDegrees() );
+                        //dFm.setAttribute( "added-degrees", elts[i]->addedDegrees() );
+                        dFm.setAttribute("ellipse", elts[i]->isPartOfEllipse());
+                    }
+                    break;
+                }
+				case CAContext::ChordNameContext: {
+				    // CAChordNameContext
+				    CAChordNameContext *cnc = static_cast<CAChordNameContext*>(c);
+                    QDomElement dCnc = dDoc.createElement("chord-name-context"); dSheet.appendChild(dCnc);
+                    dCnc.setAttribute("name", cnc->name());
+
+                    QList<CAChordName*> elts = cnc->chordNameList();
+                    for (int i=0; i<elts.size(); i++) {
+                        QDomElement dCn = dDoc.createElement("chord-name"); dCnc.appendChild(dCn);
+                        dCn.setAttribute( "time-start", elts[i]->timeStart() );
+                        dCn.setAttribute( "time-length", elts[i]->timeLength() );
+                        exportDiatonicPitch( elts[i]->diatonicPitch(), dCn );
+                        dCn.setAttribute( "quality-modifier", elts[i]->qualityModifier() );
+                    }
+                    break;
 				}
 			}
 		}
@@ -329,7 +350,9 @@ void CACanorusMLExport::exportVoiceImpl( CAVoice* voice, QDomElement& dVoice ) {
 			case CAMusElement::FunctionMark:
 			case CAMusElement::FiguredBassMark:
 			case CAMusElement::Mark:
+			case CAMusElement::ChordName:
 			case CAMusElement::Undefined:
+				qDebug() << "Error: Element" << curElt << "should not be member of the voice. musElementType:" << curElt->musElementType();
 				break;
 		}
 
