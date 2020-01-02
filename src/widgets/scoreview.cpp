@@ -14,6 +14,7 @@
 #include <QPalette>
 #include <QColor>
 #include <QTimer>
+#include <QDebug>
 
 #include <math.h>	// needed for square root in animated scrolls/zoom
 
@@ -45,6 +46,8 @@
 #include "score/bookmark.h"
 #include "score/timesignature.h"
 #include "score/barline.h"
+#include "score/chordname.h"
+
 #include "canorus.h"
 #include "core/settings.h"
 
@@ -1677,7 +1680,7 @@ CADrawableContext *CAScoreView::findCElement(CAContext *context) {
 }
 
 /*!
-	Creates a CATextEdit widget over the existing drawable syllable \a dMusElt.
+	Creates a CATextEdit widget over the existing drawable syllable or chord name \a dMusElt.
 	Returns the pointer to the created widget.
 
 	\sa createTextEdit( QRect geometry )
@@ -1686,34 +1689,59 @@ CATextEdit *CAScoreView::createTextEdit( CADrawableMusElement *dMusElt ) {
 	if ( !dMusElt || !dMusElt->musElement() )
 		return nullptr;
 
-    // Note Reinhard as above: Do you want to floor, upper or round here ?
-	int xPos=dMusElt->xPos(), yPos=dMusElt->yPos(),
-	    width=100, height=25;
+	CAMusElement *musElt = dMusElt->musElement();
+	double xPos=dMusElt->xPos(), yPos=dMusElt->yPos(), width=100, height=25;
 	QString text;
-	if ( dMusElt->musElement()->musElementType()==CAMusElement::Syllable ) {
-		CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(dMusElt->drawableContext());
-		CASyllable *syllable = static_cast<CASyllable*>(dMusElt->musElement());
-		if (!dlc || !syllable) return nullptr;
 
-		CADrawableMusElement *dRight = findMElement( dlc->lyricsContext()->next( syllable ) );
+	// extend the edit widget width to the right neighbor, if the music element is part of the context.
+	if (musElt->context()) {
+		CADrawableMusElement *dRight = findMElement( musElt->context()->next( musElt ) );
 		if (dRight)
 			width = dRight->xPos() - dMusElt->xPos();
+	}
 
+	switch (dMusElt->musElement()->musElementType()) {
+	case CAMusElement::Syllable: {
+		CASyllable *syllable = static_cast<CASyllable*>(dMusElt->musElement());
 		text = syllable->text();
 		if (syllable->hyphenStart()) text+="-";
 		else if (syllable->melismaStart()) text+="_";
-	} else if ( dMusElt->musElement()->musElementType()==CAMusElement::Mark ) {
-		CAMusElement *elt = dMusElt->musElement();
-		if ( static_cast<CAMark*>(elt)->markType()==CAMark::Text ) {
-			text = static_cast<CAText*>(elt)->text();
-		} else if ( static_cast<CAMark*>(elt)->markType()==CAMark::BookMark ) {
-			text = static_cast<CABookMark*>(elt)->text();
+
+		break;
+	}
+	case CAMusElement::Mark: {
+		CAMark *mark = static_cast<CAMark*>(dMusElt->musElement());
+		if ( mark->markType()==CAMark::Text ) {
+			text = static_cast<CAText*>(mark)->text();
+		} else if ( mark->markType()==CAMark::BookMark ) {
+			text = static_cast<CABookMark*>(mark)->text();
 		}
+
+		break;
+	}
+	case CAMusElement::ChordName: {
+		CAChordName *cn = static_cast<CAChordName*>(dMusElt->musElement());
+		if (cn->diatonicPitch().noteName()==CADiatonicPitch::Undefined) {
+			if (!cn->qualityModifier().isEmpty()) {
+				text = cn->qualityModifier();
+			}
+		} else {
+			text = CADiatonicPitch::diatonicPitchToString(cn->diatonicPitch());
+			if (!cn->qualityModifier().isEmpty()) {
+				text += QString(":") + cn->qualityModifier();
+			}
+		}
+
+		break;
+	}
+	default:
+		qDebug() << "Error: CATextEdit should not be created for music element of type" << dMusElt->musElement()->musElementType();
+		break;
 	}
 
 	textEdit()->setText(text);
 	setTextEditVisible( true );
-	setTextEditGeometry( QRect(xPos-2, yPos, width+2, height) );
+	setTextEditGeometry( QRect(static_cast<int>(xPos-2.0), static_cast<int>(yPos), static_cast<int>(width+2.0), static_cast<int>(height)) );
 	updateHelpers(); // show it
 	textEdit()->setFocus();
 

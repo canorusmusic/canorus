@@ -62,7 +62,7 @@
      <x>0</x>
      <y>0</y>
      <width>905</width>
-     <height>30</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="uiMenuEdit">
@@ -192,6 +192,7 @@
     <addaction name="uiInsertBarline"/>
     <addaction name="uiInsertSyllable"/>
     <addaction name="uiInsertFM"/>
+    <addaction name="uiInsertChordName"/>
    </widget>
    <addaction name="uiMenuFile"/>
    <addaction name="uiMenuEdit"/>
@@ -983,6 +984,18 @@
    </property>
    <property name="text">
     <string>R&amp;uler</string>
+   </property>
+  </action>
+  <action name="uiInsertChordName">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>images:chordname/chordname.svg</normaloff>images:chordname/chordname.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Chord na&amp;me</string>
    </property>
   </action>
  </widget>

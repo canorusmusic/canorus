@@ -32,9 +32,17 @@ CADiatonicPitch::CADiatonicPitch() {
 }
 
 CADiatonicPitch::CADiatonicPitch( const QString& pitch ) {
+	setNoteName( Undefined );
+	setAccs( 0 );
+
 	QString noteName = pitch.toLower();
+	if (noteName[0].toLatin1() - 'a' > 6) {
+		// syntax error
+		return;
+	}
 
 	int curPitch = (noteName[0].toLatin1() - 'a' + 5) % 7;
+	noteName.remove(0, 1); // remove one-letter note name
 
 	// determine accidentals
 	int curAccs = 0;
@@ -45,6 +53,11 @@ CADiatonicPitch::CADiatonicPitch( const QString& pitch ) {
 	while ((noteName.indexOf("es") != -1) || (noteName.indexOf("as") != -1)) {
 		curAccs--;
 		noteName.remove(0, ((noteName.indexOf("es")==-1) ? (noteName.indexOf("as")+2) : (noteName.indexOf("es")+2)) );
+	}
+
+	if (noteName.size()>0) {
+		// syntax error
+		return;
 	}
 
 	setNoteName( curPitch );
@@ -74,6 +87,10 @@ bool CADiatonicPitch::operator==(int p) {
 	Converts the music pitch to string.
 */
 const QString CADiatonicPitch::diatonicPitchToString( CADiatonicPitch pitch ) {
+	if (pitch==Undefined) {
+		return "";
+	}
+
 	QString name;
 
 	name = static_cast<char>((pitch.noteName()+2)%7 + 'a');
@@ -212,7 +229,7 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, C
 	int rest = midiPitch%12;
 	// calculate pitch to be a white key or a black key with sharp
 	CADiatonicPitch p;
-	p.setNoteName(qRound( step*rest -0.5 + 1.0/7 + octave*7 ));
+	p.setNoteName(qRound( step*static_cast<double>(rest) -0.5 + 1.0/7 + octave*7 ));
 	p.setAccs( (diatonicPitchToMidiPitch( p )%12) == rest ? 0 : 1 );
 
 	// return the pitch, if it's natural to the key
