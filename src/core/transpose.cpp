@@ -15,6 +15,7 @@
 #include "score/keysignature.h"
 #include "score/functionmark.h"
 #include "score/note.h"
+#include "score/chordname.h"
 #include "score/diatonicpitch.h"
 
 /*!
@@ -81,6 +82,7 @@ void CATranspose::addContext( CAContext *context ) {
 	}
 	case CAContext::LyricsContext: // ToDo
 	case CAContext::FiguredBassContext: // ToDo
+    case CAContext::ChordNameContext: // ToDo
 		break;
 	}
 }
@@ -118,9 +120,25 @@ void CATranspose::transposeByKeySig( CADiatonicKey from, CADiatonicKey to, int d
 void CATranspose::transposeByInterval( CAInterval interval ) {
 	foreach ( CAMusElement *elt, _elements ) {
 		switch ( elt->musElementType() ) {
-		case CAMusElement::Note: {
-			CADiatonicPitch newPitch = static_cast<CANote*>(elt)->diatonicPitch() + interval;
-			static_cast<CANote*>(elt)->setDiatonicPitch( newPitch );
+		case CAMusElement::Note:
+		case CAMusElement::ChordName: {
+			CADiatonicPitch newPitch;
+			if (elt->musElementType()==CAMusElement::Note) {
+			    newPitch = static_cast<CANote*>(elt)->diatonicPitch();
+			} else
+            if (elt->musElementType()==CAMusElement::ChordName) {
+                newPitch = static_cast<CAChordName*>(elt)->diatonicPitch();
+            }
+
+            newPitch = newPitch + interval;
+
+            if (elt->musElementType()==CAMusElement::Note) {
+                static_cast<CANote*>(elt)->setDiatonicPitch(newPitch);
+            } else
+            if (elt->musElementType()==CAMusElement::ChordName) {
+                static_cast<CAChordName*>(elt)->setDiatonicPitch(newPitch);
+            }
+
 			break;
 		}
 		case CAMusElement::KeySignature:
@@ -157,16 +175,30 @@ void CATranspose::transposeByInterval( CAInterval interval ) {
 void CATranspose::reinterpretAccidentals( int type ) {
 	foreach ( CAMusElement *elt, _elements ) {
 		switch ( elt->musElementType() ) {
-		case CAMusElement::Note: {
-			CANote *note = static_cast<CANote*>(elt);
-			CADiatonicPitch newPitch = static_cast<CANote*>(elt)->diatonicPitch();
-			if ( type >= 0 && note->diatonicPitch().accs() > 0 ) {
-				newPitch = static_cast<CANote*>(elt)->diatonicPitch() + CAInterval(-2, 2);
+		case CAMusElement::Note:
+		case CAMusElement::ChordName: {
+            CADiatonicPitch newPitch;
+		    if (elt->musElementType()==CAMusElement::Note) {
+		        newPitch = static_cast<CANote*>(elt)->diatonicPitch();
+		    } else
+            if (elt->musElementType()==CAMusElement::ChordName) {
+                newPitch = static_cast<CAChordName*>(elt)->diatonicPitch();
+		    }
+
+			if ( type >= 0 && newPitch.accs() > 0 ) {
+				newPitch = newPitch + CAInterval(-2, 2);
 			} else
-			if ( type <= 0 && note->diatonicPitch().accs() < 0 ) {
-				newPitch = static_cast<CANote*>(elt)->diatonicPitch() - CAInterval(-2, 2);
+			if ( type <= 0 && newPitch.accs() < 0 ) {
+				newPitch = newPitch - CAInterval(-2, 2);
 			}
-			note->setDiatonicPitch( newPitch );
+
+            if (elt->musElementType()==CAMusElement::Note) {
+                static_cast<CANote*>(elt)->setDiatonicPitch(newPitch);
+            } else
+            if (elt->musElementType()==CAMusElement::ChordName) {
+                static_cast<CAChordName*>(elt)->setDiatonicPitch(newPitch);
+            }
+
 			break;
 		}
 		case CAMusElement::KeySignature: {
