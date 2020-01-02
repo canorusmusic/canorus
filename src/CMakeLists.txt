@@ -721,6 +721,7 @@ ADD_CUSTOM_TARGET(tr
 	DEPENDS ${Canorus_UIC_Srcs}
 	COMMAND ${Qt5_LUPDATE_EXECUTABLE} -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
+set_source_files_properties(${Canorus_Translation_Srcs} PROPERTIES OUTPUT_LOCATION "lang")
 qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
 
 ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${Canorus_Translation_Bins})
