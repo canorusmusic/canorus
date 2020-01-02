@@ -63,7 +63,7 @@ void CAPropertiesDialog::buildTree() {
 
 	// get current item
 	QTreeWidgetItem *curItem=uiDocumentTree->currentItem();
-	CADocument *curDocument=0; CASheet *curSheet=0; CAContext *curContext=0; CAVoice *curVoice=0;
+	CADocument *curDocument=nullptr; CASheet *curSheet=nullptr; CAContext *curContext=nullptr; CAVoice *curVoice=nullptr;
 	if ( curItem ) {
 		if ( _documentItem==curItem )
 			curDocument = _document;

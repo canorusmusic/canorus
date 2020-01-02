@@ -30,9 +30,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="109.4027"
-     inkscape:cy="23.16007"
+     inkscape:zoom="5.6"
+     inkscape:cx="44.77569"
+     inkscape:cy="65.891878"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="128px"
@@ -51,7 +51,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -60,33 +60,33 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:0.48547716;fill-rule:nonzero;stroke:none;stroke-width:2.29999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:#000080;fill-opacity:0.23529412;fill-rule:nonzero;stroke:none;stroke-width:2.29999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect2160"
        width="128"
        height="74.285713"
-       x="-0.71428573"
-       y="51.57143" />
+       x="0"
+       y="28.714287" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:0%;font-family:FreeSans;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="5.5776019"
-       y="103.00001"
+       y="79.964294"
        id="text3133"><tspan
          sodipodi:role="line"
          id="tspan3135"
          x="5.5776019"
-         y="103.00001"
+         y="79.964294"
          style="font-size:40px;line-height:1.25">C F#</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:17.29626083px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.43240651"
        x="92.324127"
-       y="81.464767"
+       y="58.429054"
        id="text4541"><tspan
          sodipodi:role="line"
          id="tspan4539"
          x="92.324127"
-         y="81.464767"
+         y="58.429054"
          style="stroke-width:0.43240651">dim</tspan></text>
   </g>
 </svg>
