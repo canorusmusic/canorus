@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2009-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -121,7 +121,7 @@ CAFiguredBassMark *CAFiguredBassContext::figuredBassMarkAtTimeStart( int time ) 
 	if (i>0 && _figuredBassMarkList[--i]->timeEnd()>time) {
 		return _figuredBassMarkList[i];
 	} else {
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -142,24 +142,24 @@ void CAFiguredBassContext::clear() {
 
 CAMusElement* CAFiguredBassContext::next( CAMusElement* elt ) {
 	if (elt->musElementType()!=CAMusElement::FiguredBassMark)
-		return 0;
+		return nullptr;
 
 	int i = _figuredBassMarkList.indexOf(static_cast<CAFiguredBassMark*>(elt));
 	if (i!=-1 && ++i<_figuredBassMarkList.size())
 		return _figuredBassMarkList[i];
 	else
-		return 0;
+		return nullptr;
 }
 
 CAMusElement* CAFiguredBassContext::previous( CAMusElement* elt ) {
 	if (elt->musElementType()!=CAMusElement::FiguredBassMark)
-		return 0;
+		return nullptr;
 
 	int i = _figuredBassMarkList.indexOf(static_cast<CAFiguredBassMark*>(elt));
 	if (i!=-1 && --i>-1)
 		return _figuredBassMarkList[i];
 	else
-		return 0;
+		return nullptr;
 }
 
 bool CAFiguredBassContext::remove( CAMusElement *elt ) {

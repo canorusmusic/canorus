@@ -99,7 +99,7 @@ CAChordName *CAChordNameContext::chordNameAtTimeStart( int time ) {
 	if (i>0 && _chordNameList[--i]->timeEnd()>time) {
 		return _chordNameList[i];
 	} else {
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -120,24 +120,24 @@ void CAChordNameContext::clear() {
 
 CAMusElement* CAChordNameContext::next( CAMusElement* elt ) {
 	if (elt->musElementType()!=CAMusElement::ChordName)
-		return 0;
+		return nullptr;
 
 	int i = _chordNameList.indexOf(static_cast<CAChordName*>(elt));
-	if (i!=-1 && ++i<_chordNameList.size())
+	if ((i!=-1) && (++i<_chordNameList.size()))
 		return _chordNameList[i];
 	else
-		return 0;
+		return nullptr;
 }
 
 CAMusElement* CAChordNameContext::previous( CAMusElement* elt ) {
 	if (elt->musElementType()!=CAMusElement::ChordName)
-		return 0;
+		return nullptr;
 
 	int i = _chordNameList.indexOf(static_cast<CAChordName*>(elt));
 	if (i!=-1 && --i>-1)
 		return _chordNameList[i];
 	else
-		return 0;
+		return nullptr;
 }
 
 bool CAChordNameContext::remove( CAMusElement *elt ) {

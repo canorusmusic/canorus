@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -17,7 +17,7 @@
 	sorted by their timeStarts.
 
 	Every LyricsContext has its associated voice. This is the voice which the syllables are assigned to (one syllable per chord).
-	Assocciated voice is a common LilyPond syntax \lyricsto.
+	Assocciated voice is a common LilyPond syntax \\lyricsto.
 
 	If the user wants to create multiple stanzas, it should create multiple lyrics contexts - one for each stanza.
 
@@ -25,10 +25,10 @@
 */
 
 CALyricsContext::CALyricsContext( const QString name, int stanzaNumber, CAVoice *v )
- : CAContext( name, (v && v->staff())? v->staff()->sheet() : 0 ) {
+ : CAContext( name, (v && v->staff())? v->staff()->sheet() : nullptr ) {
 	setContextType( LyricsContext );
 
-	_associatedVoice = 0;
+	_associatedVoice = nullptr;
 	setAssociatedVoice( v ); // also reposits syllables
 	setStanzaNumber(stanzaNumber);
 }
@@ -37,8 +37,8 @@ CALyricsContext::CALyricsContext( const QString name, int stanzaNumber, CASheet 
  : CAContext( name, s ) {
 	setContextType( LyricsContext );
 
-	_associatedVoice = 0;
-	setAssociatedVoice( 0 ); // also reposits syllables
+	_associatedVoice = nullptr;
+	setAssociatedVoice( nullptr ); // also reposits syllables
 	setStanzaNumber(stanzaNumber);
 }
 
@@ -117,24 +117,24 @@ void CALyricsContext::repositSyllables() {
 
 CAMusElement* CALyricsContext::next( CAMusElement* elt ) {
 	if (elt->musElementType()!=CAMusElement::Syllable)
-		return 0;
+		return nullptr;
 
 	int i = _syllableList.indexOf(static_cast<CASyllable*>(elt));
 	if (i!=-1 && ++i<_syllableList.size())
 		return _syllableList[i];
 	else
-		return 0;
+		return nullptr;
 }
 
 CAMusElement* CALyricsContext::previous( CAMusElement* elt ) {
 	if (elt->musElementType()!=CAMusElement::Syllable)
-		return 0;
+		return nullptr;
 
 	int i = _syllableList.indexOf(static_cast<CASyllable*>(elt));
 	if (i!=-1 && --i>-1)
 		return _syllableList[i];
 	else
-		return 0;
+		return nullptr;
 }
 
 /*!
@@ -172,7 +172,7 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart ) {
 		delete _syllableList.takeAt(i);
 		return syllable;
 	} else {
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -223,7 +223,7 @@ CASyllable *CALyricsContext::syllableAtTimeStart( int timeStart ) {
 	if (i<_syllableList.size())
 		return _syllableList[i];
 	else
-		return 0;
+		return nullptr;
 }
 
 /*!

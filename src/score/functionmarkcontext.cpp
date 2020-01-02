@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -69,10 +69,10 @@ void CAFunctionMarkContext::addFunctionMark( CAFunctionMark *function, bool repl
 CAMusElement *CAFunctionMarkContext::next(CAMusElement *elt) {
 	int idx = _functionMarkList.indexOf( static_cast<CAFunctionMark*>(elt) );
 	if (idx==-1)
-		return 0;
+		return nullptr;
 
 	if (++idx>=_functionMarkList.size())
-		return 0;
+		return nullptr;
 	else
 		return _functionMarkList[idx];
 }
@@ -80,10 +80,10 @@ CAMusElement *CAFunctionMarkContext::next(CAMusElement *elt) {
 CAMusElement *CAFunctionMarkContext::previous(CAMusElement *elt) {
 	int idx = _functionMarkList.indexOf( static_cast<CAFunctionMark*>(elt) );
 	if (idx==-1)
-		return 0;
+		return nullptr;
 
 	if (--idx<0)
-		return 0;
+		return nullptr;
 	else
 		return _functionMarkList[idx];
 }
