@@ -3814,7 +3814,7 @@ void CAMainWin::confirmTextEdit(CAScoreView *v, CATextEdit *textEdit, CAMusEleme
 	}
 	case CAMusElement::ChordName: {
 		// create or edit chord name
-		CAChordName *cn = static_cast<CAChordName*>(elt);
+	CAChordName* cn = static_cast<CAChordName*>(elt);
 
 		CACanorus::undo()->createUndoCommand( document(), tr("chord name edit", "undo") );
 

@@ -134,7 +134,8 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 	ui/voiceproperties.ui
 	ui/lyricscontextproperties.ui
 	ui/functionmarkcontextproperties.ui
-	
+	ui/chordnamecontextproperties.ui
+
 	ui/midirecorder.ui
 	ui/transposeview.ui
 	ui/jumptoview.ui
