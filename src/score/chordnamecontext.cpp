@@ -71,15 +71,15 @@ void CAChordNameContext::repositChordNames() {
 	int curIdx; // contains current position in _chordNameList
 	QList<CAPlayable *> chord;
 	for (ts = 0, curIdx = 0;
-	     (sheet() && (chord = sheet()->getChord(ts)).size()) || curIdx < _chordNameList.size(); ts += tl) {
+		 (sheet() && (chord = sheet()->getChord(ts)).size()) || curIdx < _chordNameList.size(); ts += tl, curIdx++) {
 		tl = (chord.size() ? chord[0]->timeLength() : 256);
 		for (int i = 0; i < chord.size(); i++)
 			if (chord[i]->timeLength() < tl)
 				tl = chord[i]->timeLength();
 
-		if (curIdx == _chordNameList.size()) { // add new empty chord names, if playables still exist above
+		// add new empty chord names, if playables still exist above
+		if (curIdx == _chordNameList.size()) {
 			addEmptyChordName(ts, tl);
-			curIdx++;
 		}
 
 		// apply timeStart and timeLength to existing chord names
