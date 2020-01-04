@@ -838,9 +838,9 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						j=streamsIdx[i]-1;
 						CADrawableFunctionMarkSupport *vModulationRect=nullptr;
 						while (--j>=0 &&
-							static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->timeStart()==
-							static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->timeStart()
-							);
+							   static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()!=static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->key() &&
+							   static_cast<CAFunctionMark*>(musStreamList[i].at(j))->timeStart()==static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->timeStart()
+						      );
 						if (++j>=0 && j!=streamsIdx[i]-1) {
 							CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[i].at(j)));
 							vModulationRect = new CADrawableFunctionMarkSupport(
@@ -857,7 +857,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						j=streamsIdx[i]-1;
 						CADrawableFunctionMarkSupport *hChordAreaRect=nullptr;
 						if (j>=0 && // don't draw rectangle, if the current element would still be in the rectangle
-							(
+						    (
 							 (static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()==function->key() &&
 							  static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()!=function->function() &&
 							  static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()!=function->chordArea() &&
