@@ -30,7 +30,7 @@ class CAHelpCtl;
 
 class CACanorus {
 public:
-	static void initMain( int argc=0, char *argv[]=0 );
+	static void initMain( int argc=0, char *argv[]=nullptr );
 	static CASettingsDialog::CASettingsPage initSettings();
 	static void initTranslations();
 	static void initCommonGUI(std::unique_ptr<QFileDialog> &uiSaveDialog,
@@ -74,7 +74,7 @@ public:
 	inline static CAHelpCtl *help() { return _help; }
 
 	static void rebuildUI( CADocument *document, CASheet *sheet );
-	static void rebuildUI( CADocument *document=0 );
+	static void rebuildUI( CADocument *document=nullptr );
 	static void repaintUI();
 
 	// Our own slot connection method

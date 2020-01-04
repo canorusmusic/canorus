@@ -75,8 +75,8 @@ void CACanorus::initSearchPaths()
 /*!
 	Initializes application properties like application name, home page etc.
 */
-void CACanorus::initMain( int argc, char *argv[] ) {
-	_autoRecovery = 0;
+void CACanorus::initMain( int, char *[] ) {
+	_autoRecovery = nullptr;
 
 	// Init main application properties
 	QCoreApplication::setOrganizationName("Canorus");
@@ -405,14 +405,14 @@ void CACanorus::connectSlotsByName(QObject *pOS, const QObject *pOR)
         for(int j = 0; j < list.count(); ++j) {
             const QObject *co = list.at(j);
             QByteArray objName = co->objectName().toLatin1();
-            int len = objName.length();
+            unsigned int len = static_cast<unsigned int>(objName.length());
             if (!len || qstrncmp(slot + 3, objName.data(), len) || slot[len+3] != '_')
                 continue;
             foundObj = true;
             const QMetaObject *smo = co->metaObject();
             int sigIndex = smo->indexOfMethod(slot + len + 4);
             if (sigIndex < 0) { // search for compatible signals
-                int slotlen = qstrlen(slot + len + 4) - 1;
+                unsigned int slotlen = qstrlen(slot + len + 4) - 1;
                 for (int k = 0; k < co->metaObject()->methodCount(); ++k) {
                     if (smo->method(k).methodType() != QMetaMethod::Signal)
                         continue;

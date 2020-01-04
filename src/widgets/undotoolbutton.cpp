@@ -35,7 +35,7 @@ CAUndoToolButton::~CAUndoToolButton() {
 	delete _listWidget;
 }
 
-void CAUndoToolButton::wheelEvent( QWheelEvent *e ) {
+void CAUndoToolButton::wheelEvent( QWheelEvent * ) {
 	// do nothing!
 }
 

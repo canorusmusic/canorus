@@ -21,12 +21,12 @@ public:
 	CAViewContainer( QWidget *p );
 	~CAViewContainer();
 
-	void addView( CAView *v, QSplitter *s=0 );
+	void addView( CAView *v, QSplitter *s=nullptr );
 	void removeView( CAView *v );
-	CAView* splitHorizontally( CAView *v = 0 );
-	CAView* splitVertically( CAView *v = 0 );
+	CAView* splitHorizontally( CAView *v = nullptr );
+	CAView* splitVertically( CAView *v = nullptr );
 
-	CAView* unsplit( CAView *v = 0 );
+	CAView* unsplit( CAView *v = nullptr );
 	QList<CAView*> unsplitAll();
 
 	inline bool contains(CAView* v) { return _viewMap.contains(v); }

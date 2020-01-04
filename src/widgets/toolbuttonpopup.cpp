@@ -17,7 +17,7 @@
 	This container sets the correct popup behavior for tool button floating widgets.
 */
 
-CAToolButtonPopup::CAToolButtonPopup(QWidget* parent) : QWidget(parent), _widget(0) {
+CAToolButtonPopup::CAToolButtonPopup(QWidget* parent) : QWidget(parent), _widget(nullptr) {
 	setWindowFlags( Qt::Popup );
 }
 

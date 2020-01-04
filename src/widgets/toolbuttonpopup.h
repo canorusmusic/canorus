@@ -13,7 +13,7 @@
 class CAToolButtonPopup: public QWidget {
 Q_OBJECT
 public:
-		CAToolButtonPopup(QWidget* parent = 0);
+		CAToolButtonPopup(QWidget* parent = nullptr);
 		~CAToolButtonPopup() { /* widget is not destroyed! */ } 
 		inline void setWidget(QWidget* w) { _widget = w; w->setParent(this); }
 		inline QWidget* widget() { return _widget; }

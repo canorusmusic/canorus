@@ -28,7 +28,7 @@
 
 CAToolButton::CAToolButton( QWidget *parent )
  : QToolButton( parent ) {
-	setMainWin( parent?dynamic_cast<CAMainWin*>(parent):0 );
+	setMainWin( parent?dynamic_cast<CAMainWin*>(parent):nullptr );
 	setPopupMode( QToolButton::MenuButtonPopup );	
 	_popupWidget = new CAToolButtonPopup();
 }
