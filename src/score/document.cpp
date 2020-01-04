@@ -137,6 +137,6 @@ CASheet *CADocument::findSheet(const QString name) {
 			return _sheetList[i];
 	}
 
-	return 0;
+	return nullptr;
 }
 

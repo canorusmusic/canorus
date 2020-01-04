@@ -36,7 +36,7 @@ public:
 	virtual ~CAMark();
 
 	virtual CAMark *clone(CAContext* context) { CAMark* c = clone(); c->setContext(context); return c; }
-	virtual CAMark *clone(CAMusElement* elt=0);
+	virtual CAMark *clone(CAMusElement* elt=nullptr);
 	virtual int compare( CAMusElement* elt );
 
 	inline CAMusElement *associatedElement() { return _associatedElt; }

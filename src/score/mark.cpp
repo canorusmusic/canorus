@@ -32,7 +32,7 @@ CAMark::CAMark( CAMarkType type, CAContext *c, int timeStart, int timeLength )
                  timeLength ) {
 	setMusElementType( Mark );
 	setMarkType( type );
-	setAssociatedElement( 0 );
+	setAssociatedElement( nullptr );
 	setCommon( true );
 }
 

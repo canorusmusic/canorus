@@ -41,7 +41,7 @@ public:
 	CAKeySignature(CADiatonicKey k, CAStaff *staff, int timeStart);
 	CAKeySignature(CAModus m, CAStaff *staff, int timeStart);
 	~CAKeySignature();
-	CAKeySignature *clone(CAContext* context=0);
+	CAKeySignature *clone(CAContext* context=nullptr);
 	CAStaff *staff() { return static_cast<CAStaff*>(context()); }
 
 	inline CAKeySignatureType keySignatureType() { return _keySignatureType; }

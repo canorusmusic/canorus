@@ -23,7 +23,7 @@ using namespace std;
 
 class CAPyconsoleThread : public QThread {
 protected:
-	void run() { CASwigPython::callPycli(NULL); }
+	void run() { CASwigPython::callPycli(nullptr); }
 };
 
 PyThreadState * CASwigPython::mainThreadState;
@@ -102,8 +102,8 @@ PyEval_ReleaseLock();
 */
 
 
-//pthread_t *tid=NULL;
-QThread *qtid=NULL;
+//pthread_t *tid=nullptr;
+QThread *qtid=nullptr;
 QString thr_fileName;
 QString thr_function;
 QList<PyObject*> thr_args;
@@ -111,7 +111,7 @@ QList<PyObject*> thr_args;
 PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args, bool autoReload) {
 
 	if (!QFile::exists(fileName))
-		return 0;
+		return nullptr;
 
 	// run pycli in pthread, this is temporary solution
 	if (fileName.contains("pycli") && (!function.contains("init"))) {
@@ -121,14 +121,14 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 		thr_args = args;
 		thr_function = function;
 		qtid->start();
-		//pthread_create(tid, NULL, &callPycli, NULL);
+		//pthread_create(tid, nullptr, &callPycli, nullptr);
 
 		return args.first();
 	}
 
 	PyObject *pyArgs = PyTuple_New(args.size());
 	if (!pyArgs)
-		return NULL;
+		return nullptr;
 	for(int i=0; i<args.size(); i++)
 		PyTuple_SetItem(pyArgs, i, args[i]);
 
@@ -141,30 +141,30 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	PyObject *pyModule;
 	if (autoReload) {
 		PyObject *moduleDict = PyImport_GetModuleDict(); // borrowed ref.
-		PyObject *ourModuleName = PyBytes_FromString((char*)moduleName.toStdString().c_str()); // new ref.
+		PyObject *ourModuleName = PyBytes_FromString(static_cast<const char*>(moduleName.toStdString().c_str())); // new ref.
 		pyModule = PyDict_GetItem(moduleDict, ourModuleName); // borrowed ref.
 //		Py_DECREF(ourModuleName); // -Matevz
 
-		if (pyModule == NULL) // not imported yet
-			pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
+		if (pyModule == nullptr) // not imported yet
+			pyModule = PyImport_ImportModule(static_cast<const char*>(moduleName.toStdString().c_str()));
 		else
 			Py_XDECREF(PyImport_ReloadModule(pyModule)); // we don't need the reference returned from ReloadModule
 	} else {
-		pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
+		pyModule = PyImport_ImportModule(static_cast<const char*>(moduleName.toStdString().c_str()));
 	}
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
 
 	// Get function object
-	PyObject *pyFunction = PyObject_GetAttrString(pyModule, (char*)function.toStdString().c_str());
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
+	PyObject *pyFunction = PyObject_GetAttrString(pyModule, static_cast<const char*>(function.toStdString().c_str()));
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
 
 	// Call the actual function
 	PyObject *ret;
 	if (args.size())
 		ret = PyEval_CallObject(pyFunction, pyArgs);
 	else
-		ret = PyEval_CallObject(pyFunction, NULL);
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
+		ret = PyEval_CallObject(pyFunction, nullptr);
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
 
 //	Py_DECREF(pyFunction); // -Matevz
 //	Py_DECREF(pyModule); // -Matevz
@@ -197,7 +197,7 @@ void *CASwigPython::callPycli(void*) {
 	QList<PyObject*> args = thr_args;
 
 	if (!QFile::exists(fileName)){
-//		pthread_exit((void*)NULL);
+//		pthread_exit((void*)nullptr);
 	}
 
 	PyObject *pyArgs = Py_BuildValue("(OO)", args[0], args[1]);
@@ -206,22 +206,22 @@ void *CASwigPython::callPycli(void*) {
 	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
 	moduleName = moduleName.remove(0, moduleName.lastIndexOf("/")+1);
 
-	PyObject *pyModule = PyImport_ImportModule((char*)moduleName.toStdString().c_str());
+	PyObject *pyModule = PyImport_ImportModule(static_cast<const char*>(moduleName.toStdString().c_str()));
 
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
 
 	// Get function object
 
 	//PyObject *pyFunction = PyObject_GetAttrString(pyModule, "pycli");
-	PyObject *pyFunction = PyObject_GetAttrString(pyModule, (char*)function.toStdString().c_str());
+	PyObject *pyFunction = PyObject_GetAttrString(pyModule, static_cast<const char*>(function.toStdString().c_str()));
 
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
 
 	// Call the actual function
 	//
 	PyObject *ret;
 	ret = PyEval_CallObject(pyFunction, pyArgs);
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return NULL; }
+	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
 
 //	Py_DECREF(pyFunction); // -Matevz
 //	Py_DECREF(pyArgs); /// \todo Crashes if uncommented?!d
@@ -233,7 +233,7 @@ void *CASwigPython::callPycli(void*) {
     PyThreadState_Swap(mainThreadState);
     PyEval_ReleaseLock();
 
-//	pthread_exit((void*)NULL);
+//	pthread_exit((void*)nullptr);
     return ret;
 }
 

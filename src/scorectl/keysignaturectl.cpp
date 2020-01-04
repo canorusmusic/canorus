@@ -37,7 +37,7 @@ CAKeySignatureCtl::CAKeySignatureCtl( CAMainWin *poMainWin, const QString &oHash
 {
 	setObjectName("oDummyCtl");
 	_poMainWin = poMainWin;
-	if( poMainWin == 0 )
+	if( poMainWin == nullptr )
 		qCritical("DummyCtl: No mainwindow instance available!");
 }
 

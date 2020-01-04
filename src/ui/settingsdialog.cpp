@@ -68,7 +68,7 @@ void CASettingsDialog::setupPages( CASettingsPage currentPage ) {
 	uiPreviewScoreView->setGrabTabKey( false );
 	uiPreviewScoreView->setScrollBarVisible( CAScoreView::ScrollBarAlwaysHidden );
 	uiPreviewScoreView->rebuild();
-	uiPreviewScoreView->setZoom(0.6, 0, 0, false, false);
+	uiPreviewScoreView->setZoom(0.6f, 0, 0, false, false);
 	uiPreviewScoreView->setCurrentContext( uiPreviewScoreView->findCElement( _previewSheet->staffList()[0] ) );
 	uiPreviewScoreView->addSelectionRegion( QRect(50, 40, 70, 90) );
 	uiPreviewScoreView->addToSelection( _previewSheet->staffList()[0]->voiceList()[0]->musElementList()[1] );
@@ -133,7 +133,7 @@ void CASettingsDialog::on_uiButtonBox_clicked( QAbstractButton *button ) {
 	}
 }
 
-void CASettingsDialog::on_uiSettingsList_currentItemChanged( QListWidgetItem * current, QListWidgetItem * previous ) {
+void CASettingsDialog::on_uiSettingsList_currentItemChanged( QListWidgetItem * current, QListWidgetItem * ) {
 	uiPageNameLabel->setText( current->text() );
 	uiStackedWidget->setCurrentIndex( uiSettingsList->row(current) );
 }
@@ -199,7 +199,7 @@ void CASettingsDialog::buildActionsEditorPage()
         qWarning("List of Actions is empty!");
         return;
     }
-	_commandsEditor = new CAActionsEditor( 0 );
+	_commandsEditor = new CAActionsEditor( nullptr );
     _commandsEditor->setObjectName(QString::fromUtf8("commandsEditor"));
     commandsSettingsVBoxLayout->addWidget(_commandsEditor);
 
@@ -211,7 +211,7 @@ void CASettingsDialog::buildActionsEditorPage()
 }
 
 void CASettingsDialog::buildPreviewSheet() {
-	_previewSheet = new CASheet( "", 0 );
+	_previewSheet = new CASheet( "", nullptr );
 	_previewSheet->addStaff();
 	_previewSheet->staffList()[0]->voiceList()[0]->append( new CAClef( CAClef::Treble, _previewSheet->staffList()[0], 0 ) );
 	_previewSheet->staffList()[0]->voiceList()[0]->append( new CATimeSignature( 2, 2, _previewSheet->staffList()[0], 0 ) );
@@ -229,7 +229,7 @@ void CASettingsDialog::on_uiDocumentsDirectoryRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiBackgroundColor_clicked(bool) {
-	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiBackgroundColor->palette().color(QPalette::Window).rgba(), 0, this ));
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiBackgroundColor->palette().color(QPalette::Window).rgba(), nullptr, this ));
 	if (c.isValid()) {
 		uiBackgroundColor->setPalette( QPalette(c) );
 		uiPreviewScoreView->setBackgroundColor(c);
@@ -244,7 +244,7 @@ void CASettingsDialog::on_uiBackgroundRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiForegroundColor_clicked(bool) {
-	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiForegroundColor->palette().color(QPalette::Window).rgba(), 0, this ));
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiForegroundColor->palette().color(QPalette::Window).rgba(), nullptr, this ));
 	if (c.isValid()) {
 		uiForegroundColor->setPalette( QPalette(c) );
 		uiPreviewScoreView->setForegroundColor(c);
@@ -259,7 +259,7 @@ void CASettingsDialog::on_uiForegroundRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiSelectionColor_clicked(bool) {
-	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiSelectionColor->palette().color(QPalette::Window).rgba(), 0, this ));
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiSelectionColor->palette().color(QPalette::Window).rgba(), nullptr, this ));
 	if (c.isValid()) {
 		uiSelectionColor->setPalette( QPalette(c) );
 		uiPreviewScoreView->setSelectionColor(c);
@@ -274,7 +274,7 @@ void CASettingsDialog::on_uiSelectionRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiSelectionAreaColor_clicked(bool) {
-	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiSelectionAreaColor->palette().color(QPalette::Window).rgba(), 0, this ));
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiSelectionAreaColor->palette().color(QPalette::Window).rgba(), nullptr, this ));
 	if (c.isValid()) {
 		uiSelectionAreaColor->setPalette( QPalette(c) );
 		uiPreviewScoreView->setSelectionAreaColor(c);
@@ -289,7 +289,7 @@ void CASettingsDialog::on_uiSelectionAreaRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiSelectedContextColor_clicked(bool) {
-	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiSelectedContextColor->palette().color(QPalette::Window).rgba(), 0, this ));
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiSelectedContextColor->palette().color(QPalette::Window).rgba(), nullptr, this ));
 	if (c.isValid()) {
 		uiSelectedContextColor->setPalette( QPalette(c) );
 		uiPreviewScoreView->setSelectedContextColor(c);
@@ -304,7 +304,7 @@ void CASettingsDialog::on_uiSelectedContextRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiHiddenElementsColor_clicked(bool) {
-	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiHiddenElementsColor->palette().color(QPalette::Window).rgba(), 0, this ));
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiHiddenElementsColor->palette().color(QPalette::Window).rgba(), nullptr, this ));
 	if (c.isValid()) {
 		uiHiddenElementsColor->setPalette( QPalette(c) );
 		uiPreviewScoreView->setHiddenElementsColor(c);
@@ -319,7 +319,7 @@ void CASettingsDialog::on_uiHiddenElementsRevert_clicked(bool) {
 }
 
 void CASettingsDialog::on_uiDisabledElementsColor_clicked(bool) {
-	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiDisabledElementsColor->palette().color(QPalette::Window).rgba(), 0, this ));
+	QColor c = QColor::fromRgba(QColorDialog::getRgba( uiDisabledElementsColor->palette().color(QPalette::Window).rgba(), nullptr, this ));
 	if (c.isValid()) {
 		uiDisabledElementsColor->setPalette( QPalette(c) );
 		uiPreviewScoreView->setDisabledElementsColor(c);

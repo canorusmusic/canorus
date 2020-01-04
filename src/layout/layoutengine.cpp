@@ -150,45 +150,46 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 		}
 	}
 
-	int streams = musStreamList.size();
+	unsigned int streams = static_cast<unsigned int>(musStreamList.size());
 	int *streamsIdx = new int[streams];
-	for (int i=0; i<streams; i++) streamsIdx[i] = 0;
+	for (unsigned int i=0; i<streams; i++) streamsIdx[i] = 0;
 	int *streamsX = new int[streams];
-	for (int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
+	for (unsigned int i=0; i<streams; i++) streamsX[i] = INITIAL_X_OFFSET;
 	int *streamsRehersalMarks = new int[streams];
-	for (int i=0; i<streams; i++) streamsRehersalMarks[i] = 0;
+	for (unsigned int i=0; i<streams; i++) streamsRehersalMarks[i] = 0;
 	CALayoutEngine::streamsRehersalMarks = streamsRehersalMarks;
 	CAClef **lastClef = new CAClef *[streams];
-	for (int i=0; i<streams; i++) lastClef[i] = nullptr;
+	for (unsigned int i=0; i<streams; i++) lastClef[i] = nullptr;
 	CAKeySignature **lastKeySig = new CAKeySignature *[streams];
-	for (int i=0; i<streams; i++) lastKeySig[i] = nullptr;
+	for (unsigned int i=0; i<streams; i++) lastKeySig[i] = nullptr;
 	CATimeSignature **lastTimeSig = new CATimeSignature *[streams];
-	for (int i=0; i<streams; i++) lastTimeSig[i] = nullptr;
+	for (unsigned int i=0; i<streams; i++) lastTimeSig[i] = nullptr;
 	scalableElts.clear();
 
 	int timeStart = 0;
 	bool done = false;
 	CADrawableFunctionMarkSupport **lastDFMTonicizations = new CADrawableFunctionMarkSupport *[streams];
-	for (int i=0; i<streams; i++) lastDFMTonicizations[i]=nullptr;
+	for (unsigned int i=0; i<streams; i++) lastDFMTonicizations[i]=nullptr;
 	while (!done) {
 		//if all the indices are at the end of the streams, finish.
-		int idx;
-		for (idx=0; (idx < streams) && (streamsIdx[idx] == musStreamList[idx].size()); idx++);
+		unsigned int idx;
+		for (idx=0; (idx < streams) && (streamsIdx[idx] == musStreamList[static_cast<int>(idx)].size()); idx++);
 		if (idx==streams) { done=true; continue; }
 
 		//Synchronize minimum X-es between the contexts
 		int maxX = 0;
-		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
-		for (int i=0; i<streams; i++)
-			if (musStreamList[i].size() &&
-			    musStreamList[i].last()->musElementType()!=CAMusElement::FunctionMark)
+		for (unsigned int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+		for (unsigned int i=0; i<streams; i++)
+			if (musStreamList[static_cast<int>(i)].size() &&
+			    musStreamList[static_cast<int>(i)].last()->musElementType()!=CAMusElement::FunctionMark)
 				streamsX[i] = maxX;
 
 		//go through all the streams and remember the time of the soonest element that will happen
 		timeStart = -1;	//reset the timeStart - the next one minimum will be set in the following loop
-		for (int idx=0; idx < streams; idx++) {
-			if ( (musStreamList[idx].size() > streamsIdx[idx]) && ((timeStart==-1) || (musStreamList[idx].at(streamsIdx[idx])->timeStart() < timeStart)) )
-				timeStart = musStreamList[idx].at(streamsIdx[idx])->timeStart();
+		for (unsigned int idx=0; idx < streams; idx++) {
+			if ( (musStreamList[static_cast<int>(idx)].size() > streamsIdx[idx]) &&
+                 ((timeStart==-1) || (musStreamList[static_cast<int>(idx)].at(streamsIdx[idx])->timeStart() < timeStart)) )
+				timeStart = musStreamList[static_cast<int>(idx)].at(streamsIdx[idx])->timeStart();
 		}
 		//timeStart now holds the nearest next time we're going to draw
 
@@ -196,11 +197,11 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 		CAMusElement *elt;
 		CADrawableContext *drawableContext;
 		//bool placedSymbol = false;	//used if waiting for notes to gather and a non-time-consuming symbol has been placed
-		for (int i=0; i < streams; i++) {
+		for (unsigned int i=0; i < streams; i++) {
 			//loop until the first playable element
 			//multiple elements can have the same start time. eg. Clef + Key signature + Time signature + First note
-			while ( (streamsIdx[i] < musStreamList[i].size()) &&
-			        ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() == timeStart) &&
+			while ( (streamsIdx[i] < musStreamList[static_cast<int>(i)].size()) &&
+			        ((elt = musStreamList[static_cast<int>(i)].at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (!elt->isPlayable()) &&
 			        (elt->musElementType() != CAMusElement::Barline) &&	//barlines should be aligned
 			        (elt->musElementType() != CAMusElement::FunctionMark) &&	//function marks are placed separately
@@ -211,7 +212,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 				//place signs in first voices
 				if ( (drawableContext->drawableContextType() == CADrawableContext::DrawableStaff) &&
-				     (!nonFirstVoiceIdxs.contains(i)) ) {
+				     (!nonFirstVoiceIdxs.contains(static_cast<int>(i))) ) {
 					switch ( elt->musElementType() ) {
 						case CAMusElement::Clef: {
 							CADrawableClef *clef = new CADrawableClef(
@@ -225,13 +226,13 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 							// set the last clefs in all voices in the same staff
 							for (int j=0; j<contexts.size(); j++)
-								if (contexts[j]==contexts[i])
+								if (contexts[j]==contexts[static_cast<int>(i)])
 									lastClef[j] = clef->clef();
 
 							streamsX[i] += (clef->neededWidth() + MINIMUM_SPACE);
 							//placedSymbol = true;
 
-							placeMarks( clef, v, i );
+							placeMarks( clef, v, static_cast<int>(i) );
 
 							break;
 						}
@@ -247,13 +248,13 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 							// set the last key sigs in all voices in the same staff
 							for (int j=0; j<contexts.size(); j++)
-								if (contexts[j]==contexts[i])
+								if (contexts[j]==contexts[static_cast<int>(i)])
 									lastKeySig[j] = keySig->keySignature();
 
 							streamsX[i] += (keySig->neededWidth() + MINIMUM_SPACE);
 							//placedSymbol = true;
 
-							placeMarks( keySig, v, i );
+							placeMarks( keySig, v, static_cast<int>(i) );
 
 							break;
 						}
@@ -269,13 +270,13 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 							// set the last time signatures in all voices in the same staff
 							for (int j=0; j<contexts.size(); j++)
-								if (contexts[j]==contexts[i])
+								if (contexts[j]==contexts[static_cast<int>(i)])
 									lastTimeSig[j] = timeSig->timeSignature();
 
 							streamsX[i] += (timeSig->neededWidth() + MINIMUM_SPACE);
 							//placedSymbol = true;
 
-							placeMarks( timeSig, v, i );
+							placeMarks( timeSig, v, static_cast<int>(i) );
 
 							break;
 						}
@@ -302,16 +303,16 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 
 		// Draw function key name, if needed
 		QList<CADrawableFunctionMarkSupport*> lastDFMKeyNames;
-		for (int i=0;
+		for (unsigned int i=0;
 		     (i<streams) &&
-		     (streamsIdx[i] < musStreamList[i].size()) &&
-			 (musStreamList[i].at(streamsIdx[i])->timeStart() == timeStart);
+		     (streamsIdx[i] < musStreamList[static_cast<int>(i)].size()) &&
+			 (musStreamList[static_cast<int>(i)].at(streamsIdx[i])->timeStart() == timeStart);
 			 i++) {
-			CAMusElement *elt = musStreamList[i].at(streamsIdx[i]);
+			CAMusElement *elt = musStreamList[static_cast<int>(i)].at(streamsIdx[i]);
 			if (elt->musElementType()==CAMusElement::FunctionMark && (static_cast<CAFunctionMark*>(elt))->function()!=CAFunctionMark::Undefined) {
 				drawableContext = drawableContextMap[elt->context()];
 				if (streamsIdx[i]-1<0 ||
-				    (static_cast<CAFunctionMark*>(musStreamList[i].at(streamsIdx[i]-1)))->key() != (static_cast<CAFunctionMark*>(elt))->key()
+				    (static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(streamsIdx[i]-1)))->key() != (static_cast<CAFunctionMark*>(elt))->key()
 				   ) {
 					//draw new function mark key, if it was changed or if it's the first function in the score
 					CADrawableFunctionMarkSupport *support = new CADrawableFunctionMarkSupport(
@@ -329,20 +330,20 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 		}
 
 		// Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
-		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
-		for (int i=0; i<streams; i++)
-			if (musStreamList[i].size() &&
-			    musStreamList[i].last()->musElementType()!=CAMusElement::FunctionMark)
+		for (unsigned int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+		for (unsigned int i=0; i<streams; i++)
+			if (musStreamList[static_cast<int>(i)].size() &&
+			    musStreamList[static_cast<int>(i)].last()->musElementType()!=CAMusElement::FunctionMark)
 				streamsX[i] = maxX;
 
 		// Place barlines
-		for (int i=0; i<streams; i++) {
-			if (!(musStreamList[i].size() > streamsIdx[i]) ||	//if the stream is already at the end, continue to the next stream
-			    ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() != timeStart))
+		for (unsigned int i=0; i<streams; i++) {
+			if (!(musStreamList[static_cast<int>(i)].size() > streamsIdx[i]) ||	//if the stream is already at the end, continue to the next stream
+			    ((elt = musStreamList[static_cast<int>(i)].at(streamsIdx[i]))->timeStart() != timeStart))
 				continue;
 
-			if ((elt = musStreamList[i].at(streamsIdx[i]))->musElementType() == CAMusElement::Barline) {
-				if (nonFirstVoiceIdxs.contains(i))	{ //if the current stream is non-first voice, continue, as the barlines are drawn from the first voice only
+			if ((elt = musStreamList[static_cast<int>(i)].at(streamsIdx[i]))->musElementType() == CAMusElement::Barline) {
+				if (nonFirstVoiceIdxs.contains(static_cast<int>(i)))	{ //if the current stream is non-first voice, continue, as the barlines are drawn from the first voice only
 					streamsIdx[i] = streamsIdx[i] + 1;
 					continue;
 				}
@@ -360,16 +361,16 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 				streamsX[i] += (bar->neededWidth() + MINIMUM_SPACE);
 				streamsIdx[i] = streamsIdx[i] + 1;
 
-				placeMarks( bar, v, i );
+				placeMarks( bar, v, static_cast<int>(i) );
 				placeNoteCheckerErrors( bar, v );
 			}
 		}
 
 		// Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
-		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
-		for (int i=0; i<streams; i++)
-			if (musStreamList[i].size() &&
-				musStreamList[i].last()->musElementType()!=CAMusElement::FunctionMark)
+		for (unsigned int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+		for (unsigned int i=0; i<streams; i++)
+			if (musStreamList[static_cast<int>(i)].size() &&
+				musStreamList[static_cast<int>(i)].last()->musElementType()!=CAMusElement::FunctionMark)
 				streamsX[i] = maxX;
 
 		// Place accidentals and key names of the function marks, if needed.
@@ -377,12 +378,12 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 		int maxWidth = 0;
 		int maxAccidentalXEnd = 0;
 		QList<CADrawableAccidental*> lastAccidentals;
-		for (int i=0; i < streams; i++) {
+		for (unsigned int i=0; i < streams; i++) {
 			// loop until the element has come, which has bigger timeStart
 			CADrawableMusElement *newElt=nullptr;
 			int oldStreamIdx = streamsIdx[i];
-			while ( (streamsIdx[i] < musStreamList[i].size()) &&
-			        ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() == timeStart) &&
+			while ( (streamsIdx[i] < musStreamList[static_cast<int>(i)].size()) &&
+			        ((elt = musStreamList[static_cast<int>(i)].at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (elt->isPlayable())
 			      ) {
 				drawableContext = drawableContextMap[elt->context()];
@@ -414,8 +415,8 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 		}
 
 		// Synchronize minimum X-es between the contexts - all the noteheads or barlines should be horizontally aligned.
-		for (int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
-		for (int i=0; i<streams; i++) streamsX[i] = maxX;
+		for (unsigned int i=0; i<streams; i++) maxX = (streamsX[i] > maxX) ? streamsX[i] : maxX;
+		for (unsigned int i=0; i<streams; i++) streamsX[i] = maxX;
 
 		// Align support elements (accidentals, function key names) to the right
 		for (int i=0; i<lastDFMKeyNames.size(); i++)
@@ -427,10 +428,10 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 		}
 
 		// Place noteheads and other elements aligned to noteheads (syllables, function marks)
-		for (int i=0; i < streams; i++) {
+		for (unsigned int i=0; i < streams; i++) {
 			// loop until the element has come, which has bigger timeStart
-			while ( (streamsIdx[i] < musStreamList[i].size()) &&
-			        ((elt = musStreamList[i].at(streamsIdx[i]))->timeStart() == timeStart) &&
+			while ( (streamsIdx[i] < musStreamList[static_cast<int>(i)].size()) &&
+			        ((elt = musStreamList[static_cast<int>(i)].at(streamsIdx[i]))->timeStart() == timeStart) &&
 			        (elt->isPlayable() ||
 			         elt->musElementType()==CAMusElement::FiguredBassMark ||
 			         elt->musElementType()==CAMusElement::FunctionMark ||
@@ -609,7 +610,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						if ( static_cast<CANote*>(elt)->isLastInChord() )
 							streamsX[i] += (newElt->neededWidth() + MINIMUM_SPACE);
 
-						placeMarks( newElt, v, i );
+						placeMarks( newElt, v, static_cast<int>(i) );
 
 						break;
 					}
@@ -649,7 +650,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 							v->addMElement(dTuplet);
 						}
 
-						placeMarks( newElt, v, i );
+						placeMarks( newElt, v, static_cast<int>(i) );
 
 						break;
 					}
@@ -706,7 +707,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						CAFunctionMark *function = static_cast<CAFunctionMark*>(elt);
 
 						// Make a new line, if parallel function present
-						if (streamsIdx[i]-1>=0 && musStreamList[i].at(streamsIdx[i]-1)->timeStart()==musStreamList[i].at(streamsIdx[i])->timeStart()) {
+						if (streamsIdx[i]-1>=0 && musStreamList[static_cast<int>(i)].at(streamsIdx[i]-1)->timeStart()==musStreamList[static_cast<int>(i)].at(streamsIdx[i])->timeStart()) {
 							(static_cast<CADrawableFunctionMarkContext*>(drawableContext)->nextLine());
 							CADrawableFunctionMarkSupport *newKey = new CADrawableFunctionMarkSupport(
 								CADrawableFunctionMarkSupport::Key,
@@ -753,29 +754,29 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						// Place tonicization. The same tonicization is always placed from streamsIdx[i]-nth to streamsIdx[i]-1th element, where streamsIdx[i] is the current index.
 						int j=streamsIdx[i]-1;	//index of the previous elt
 						CADrawableFunctionMarkSupport *tonicization=nullptr;
-						for (; j>=0 && static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()==CAFunctionMark::Undefined; j--);	//ignore any alterations back there
+						for (; j>=0 && static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->function()==CAFunctionMark::Undefined; j--);	//ignore any alterations back there
 						if (j>=0 && (
 							// place tonicization, if tonic degree is not default
-							static_cast<CAFunctionMark*>(musStreamList[i].at(j))->tonicDegree()!=CAFunctionMark::T &&
-							static_cast<CAFunctionMark*>(musStreamList[i].at(j))->tonicDegree()!=CAFunctionMark::Undefined
+							static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->tonicDegree()!=CAFunctionMark::T &&
+							static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->tonicDegree()!=CAFunctionMark::Undefined
 							// and it's not still the same
-							&& (function->tonicDegree()!=static_cast<CAFunctionMark*>(musStreamList[i].at(j))->tonicDegree() ||
-								function->key()!=static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key())
+							&& (function->tonicDegree()!=static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->tonicDegree() ||
+								function->key()!=static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->key())
 							// always place tonicization, if ellipse is present
-							//|| static_cast<CAFunctionMark*>(musStreamList[i].at(j))->isPartOfEllipse()
+							//|| static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->isPartOfEllipse()
 						)) {
-							//CAFunctionMark::CAFunctionType type = static_cast<CAFunctionMark*>(musStreamList[i].at(j))->tonicDegree();
-							CAFunctionMark *right = static_cast<CAFunctionMark*>(musStreamList[i].at(j));
+							//CAFunctionMark::CAFunctionType type = static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->tonicDegree();
+							CAFunctionMark *right = static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j));
 
 							// find the n-th element back
-							while (--j>=0 && static_cast<CAFunctionMark*>(musStreamList[i].at(j))->tonicDegree()==
-								static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->tonicDegree() &&
-								static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()==
-								static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->key())
+							while (--j>=0 && static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->tonicDegree()==
+								static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->tonicDegree() &&
+								static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->key()==
+								static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->key())
 							;
-							CAFunctionMark *tonicStart = static_cast<CAFunctionMark*>(musStreamList[i].at(++j));
+							CAFunctionMark *tonicStart = static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(++j));
 							CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(tonicStart));
-							if (tonicStart!=static_cast<CAMusElement*>(musStreamList[i].at(streamsIdx[i]-1))) {	// tonicization isn't single (more than 1 tonic element)
+							if (tonicStart!=static_cast<CAMusElement*>(musStreamList[static_cast<int>(i)].at(streamsIdx[i]-1))) {	// tonicization isn't single (more than 1 tonic element)
 								tonicization = new CADrawableFunctionMarkSupport(
 									CADrawableFunctionMarkSupport::Tonicization,
 									left,
@@ -800,9 +801,9 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						j=streamsIdx[i]-1;
 						CADrawableFunctionMarkSupport *hModulationRect=nullptr;
 						if (newElt && j>=0) {
-							if (static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()!=function->key() &&
-							    static_cast<CAFunctionMark*>(musStreamList[i].at(j))->timeStart()!=function->timeStart()) {
-								CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[i].at(j)));
+							if (static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->key()!=function->key() &&
+							    static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->timeStart()!=function->timeStart()) {
+								CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[static_cast<int>(i)].at(j)));
 								hModulationRect = new CADrawableFunctionMarkSupport(
 									CADrawableFunctionMarkSupport::Rectangle,
 									left,
@@ -821,20 +822,20 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						j=streamsIdx[i]-1;
 						CADrawableFunctionMarkSupport *vModulationRect=nullptr;
 						while (--j>=0 &&
-							static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()!=
-							static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->key() &&
-							static_cast<CAFunctionMark*>(musStreamList[i].at(j))->timeStart()==
-							static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->timeStart()
+							static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->key()!=
+							static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->key() &&
+							static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->timeStart()==
+							static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->timeStart()
 							);
 						if (++j>=0 && j!=streamsIdx[i]-1) {
-							CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[i].at(j)));
+							CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[static_cast<int>(i)].at(j)));
 							vModulationRect = new CADrawableFunctionMarkSupport(
 								CADrawableFunctionMarkSupport::Rectangle,
 								left,
 								static_cast<CADrawableFunctionMarkContext*>(drawableContext),
 								left->xPos(),
 								left->yPos(),
-								static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[i].at(streamsIdx[i]-1)))
+								static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[static_cast<int>(i)].at(streamsIdx[i]-1)))
 							);
 						}
 
@@ -843,35 +844,35 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						CADrawableFunctionMarkSupport *hChordAreaRect=nullptr;
 						if (j>=0 && // don't draw rectangle, if the current element would still be in the rectangle
 							(
-							 (static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()==function->key() &&
-							  static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()!=function->function() &&
-							  static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()!=function->chordArea() &&
-							  static_cast<CAFunctionMark*>(musStreamList[i].at(j))->chordArea()!=function->chordArea())
-							|| static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()!=function->key()
-							|| j==musStreamList[i].size()
+							 (static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->key()==function->key() &&
+							  static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->function()!=function->function() &&
+							  static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->function()!=function->chordArea() &&
+							  static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->chordArea()!=function->chordArea())
+							|| static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->key()!=function->key()
+							|| j==musStreamList[static_cast<int>(i)].size()
 						    )
 						   ) {
 							bool oneFunctionOnly=true;
 							while (--j>=0 &&
-							       static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->chordArea()!=CAFunctionMark::Undefined &&
-							       static_cast<CAFunctionMark*>(musStreamList[i].at(j))->key()==static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->key() &&
-							        (static_cast<CAFunctionMark*>(musStreamList[i].at(j))->chordArea()==static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->chordArea() ||
-							         static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()==static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->chordArea() ||
-							         static_cast<CAFunctionMark*>(musStreamList[i].at(j))->chordArea()==static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->function()
+							       static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->chordArea()!=CAFunctionMark::Undefined &&
+							       static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->key()==static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->key() &&
+							        (static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->chordArea()==static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->chordArea() ||
+							         static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->function()==static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->chordArea() ||
+							         static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->chordArea()==static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->function()
 							        )
 							      )
-								if ( static_cast<CAFunctionMark*>(musStreamList[i].at(j))->function()!=static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->function() )
+								if ( static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->function()!=static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->function() )
 									oneFunctionOnly = false;
 
 							if ( ++j != streamsIdx[i]-1 && !oneFunctionOnly ) {
-								CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[i].at(j)));
+								CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[static_cast<int>(i)].at(j)));
 								hChordAreaRect = new CADrawableFunctionMarkSupport(
 									CADrawableFunctionMarkSupport::Rectangle,
 									left,
 									static_cast<CADrawableFunctionMarkContext*>(drawableContext),
 									left->xPos(),
 									left->yPos(),
-									static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[i].at(streamsIdx[i]-1)))
+									static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(musStreamList[static_cast<int>(i)].at(streamsIdx[i]-1)))
 								);
 							}
 						}
@@ -883,21 +884,21 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						    function->chordArea()!=CAFunctionMark::Undefined &&
 						    function->chordArea()!=function->function() && // chord area is the same as function name - don't draw chordarea then
 						    (j-1<0 ||
-						     ((static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->key()==function->key() &&
-						      static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->chordArea()!=function->chordArea() &&
-						      static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->function()!=function->chordArea() &&
-						      static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->chordArea()!=function->function()) ||
-						      static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->tonicDegree()!=function->tonicDegree() ||
-						      static_cast<CAFunctionMark*>(musStreamList[i].at(j-1))->key()!=function->key()
+						     ((static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j-1))->key()==function->key() &&
+						      static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j-1))->chordArea()!=function->chordArea() &&
+						      static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j-1))->function()!=function->chordArea() &&
+						      static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j-1))->chordArea()!=function->function()) ||
+						      static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j-1))->tonicDegree()!=function->tonicDegree() ||
+						      static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j-1))->key()!=function->key()
 						     )
 						    ) &&
-						    (j+1>=musStreamList[i].size() ||
-						     ((static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->key()==function->key() &&
-						      static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->chordArea()!=function->chordArea() &&
-						      static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->function()!=function->chordArea() &&
-						      static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->chordArea()!=function->function()) ||
-						      static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->tonicDegree()!=function->tonicDegree() ||
-						      static_cast<CAFunctionMark*>(musStreamList[i].at(j+1))->key()!=function->key()
+						    (j+1>=musStreamList[static_cast<int>(i)].size() ||
+						     ((static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->key()==function->key() &&
+						      static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->chordArea()!=function->chordArea() &&
+						      static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->function()!=function->chordArea() &&
+						      static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->chordArea()!=function->function()) ||
+						      static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->tonicDegree()!=function->tonicDegree() ||
+						      static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j+1))->key()!=function->key()
 						     )
 						    )
 						   ) {
@@ -914,11 +915,11 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						// Place ellipse
 						j=streamsIdx[i]-1;
 						CADrawableFunctionMarkSupport *ellipse=nullptr;
-						if (j>=0 && static_cast<CAFunctionMark*>(musStreamList[i].at(j))->isPartOfEllipse()	//place ellipse, if it has it
+						if (j>=0 && static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->isPartOfEllipse()	//place ellipse, if it has it
 							&& (!function->isPartOfEllipse()) ) {	//and it's not lasting anymore
 							//find the n-th element back
-							while (--j>=0 && static_cast<CAFunctionMark*>(musStreamList[i].at(j))->isPartOfEllipse());
-							CAFunctionMark *ellipseStart = static_cast<CAFunctionMark*>(musStreamList[i].at(++j));
+							while (--j>=0 && static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(j))->isPartOfEllipse());
+							CAFunctionMark *ellipseStart = static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(++j));
 							CADrawableFunctionMark *left = static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(ellipseStart));
 							ellipse = new CADrawableFunctionMarkSupport(
 								CADrawableFunctionMarkSupport::Ellipse,
@@ -926,13 +927,13 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 								static_cast<CADrawableFunctionMarkContext*>(drawableContext),
 								left->xPos(),
 								static_cast<CADrawableFunctionMarkContext*>(drawableContext)->yPosLine(CADrawableFunctionMarkContext::Lower),
-								static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(static_cast<CAMusElement*>(musStreamList[i].at(streamsIdx[i]-1))))
+								static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(static_cast<CAMusElement*>(musStreamList[static_cast<int>(i)].at(streamsIdx[i]-1))))
 							);
 						}
 
 						// Set extender line and change the width of the previous function mark
-						if ( newElt && streamsIdx[i]-1>=0 && musStreamList[i].at(streamsIdx[i]-1)->timeStart()!=musStreamList[i].at(streamsIdx[i])->timeStart() ) {
-							CAFunctionMark *prevElt = static_cast<CAFunctionMark*>(musStreamList[i].at(streamsIdx[i]-1));
+						if ( newElt && streamsIdx[i]-1>=0 && musStreamList[static_cast<int>(i)].at(streamsIdx[i]-1)->timeStart()!=musStreamList[static_cast<int>(i)].at(streamsIdx[i])->timeStart() ) {
+							CAFunctionMark *prevElt = static_cast<CAFunctionMark*>(musStreamList[static_cast<int>(i)].at(streamsIdx[i]-1));
 							CADrawableFunctionMark *prevDFM =
 								static_cast<CADrawableFunctionMark*>(drawableContext->findMElement(prevElt));
 
@@ -979,7 +980,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 						if (chordArea) v->addMElement(chordArea);
 						if (alterations) v->addMElement(alterations);
 
-						if (newElt && streamsIdx[i]+1<musStreamList[i].size() && musStreamList[i].at(streamsIdx[i]+1)->timeStart()!=musStreamList[i].at(streamsIdx[i])->timeStart())
+						if (newElt && streamsIdx[i]+1<musStreamList[static_cast<int>(i)].size() && musStreamList[static_cast<int>(i)].at(streamsIdx[i]+1)->timeStart()!=musStreamList[static_cast<int>(i)].at(streamsIdx[i])->timeStart())
 							streamsX[i] += (newElt->neededWidth());
 
 						break;

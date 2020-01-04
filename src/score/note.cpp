@@ -34,19 +34,19 @@ CANote::CANote( CADiatonicPitch pitch, CAPlayableLength length, CAVoice *voice, 
 	_forceAccidentals = false;
 	_stemDirection = StemPreferred;
 
-	setTieStart( 0 );
-	setSlurStart( 0 );
-	setPhrasingSlurStart( 0 );
-	setTieEnd( 0 );
-	setSlurEnd( 0 );
-	setPhrasingSlurEnd( 0 );
+	setTieStart( nullptr );
+	setSlurStart( nullptr );
+	setPhrasingSlurStart( nullptr );
+	setTieEnd( nullptr );
+	setSlurEnd( nullptr );
+	setPhrasingSlurEnd( nullptr );
 
 	setDiatonicPitch(pitch);
 }
 
 CANote::~CANote() {
 	if ( tieStart() ) delete tieStart();      // slurs destructor also disconnects itself from the notes
-	if ( tieEnd() ) tieEnd()->setNoteEnd( 0 );
+	if ( tieEnd() ) tieEnd()->setNoteEnd( nullptr );
 
 	// other slurs are removed or moved in CAVoice::removeElement()
 
@@ -100,7 +100,7 @@ CANote *CANote::clone( CAVoice *voice ) {
 	- -2 - first ledger line below the staff (eg. C1 in treble clef)
 */
 int CANote::notePosition() {
-	CAClef *clef=0;
+	CAClef *clef=nullptr;
 	if (voice() && voice()->staff()) {
 		// find the corresponding clef
 		int i=0;
@@ -127,7 +127,7 @@ int CANote::notePosition() {
 const QString CANote::generateNoteName(int pitch, int accs) {
 	QString name;
 
-	name = (char)(((pitch<0?pitch*(-1):pitch)+2)%7 + 'a');
+	name = static_cast<char>(((pitch<0?pitch*(-1):pitch)+2)%7 + 'a');
 	while (accs>0) { name += "is"; accs--; }
 	while (accs<0) { if (name!="e" && name!="a") name+="es"; else name+="s"; accs++; }
 
@@ -238,14 +238,14 @@ void CANote::updateTies() {
 	if ( tieStart() && tieStart()->noteEnd() &&
 	     diatonicPitch()!=tieStart()->noteEnd()->diatonicPitch() ) {
 		// break the tie, if the first note isn't the same pitch
-		tieStart()->noteEnd()->setTieEnd( 0 );
-		tieStart()->setNoteEnd( 0 );
+		tieStart()->noteEnd()->setTieEnd( nullptr );
+		tieStart()->setNoteEnd( nullptr );
 	}
 	if ( tieEnd() && tieEnd()->noteStart() &&
 	     diatonicPitch()!=tieEnd()->noteStart()->diatonicPitch() ) {
 		// break the tie, if the next note isn't the same pitch
-		tieEnd()->setNoteEnd( 0 );
-		setTieEnd( 0 );
+		tieEnd()->setNoteEnd( nullptr );
+		setTieEnd( nullptr );
 	}
 
 	// fix/create a tie, if needed
@@ -253,7 +253,7 @@ void CANote::updateTies() {
 	if (voice()) noteList = voice()->getNoteList();
 
 	// checks a tie of the potential left note
-	CANote *leftNote = 0;
+	CANote *leftNote = nullptr;
 	for (int i=0; i<noteList.count() && noteList[i]->timeEnd()<=timeStart(); i++) { // get the left note
 		if ( noteList[i]->timeEnd()==timeStart() && noteList[i]->diatonicPitch()==diatonicPitch() ) {
 			leftNote = noteList[i];
@@ -266,7 +266,7 @@ void CANote::updateTies() {
 	}
 
 	// checks a tie of the potential right note
-	CANote *rightNote = 0;
+	CANote *rightNote = nullptr;
 	for (int i=0; i<noteList.count() && noteList[i]->timeStart()<=timeEnd(); i++) { // get the right note
 		if ( noteList[i]->timeStart()==timeEnd() && noteList[i]->diatonicPitch()==diatonicPitch() ) {
 			rightNote = noteList[i];
@@ -331,14 +331,12 @@ CANote::CAStemDirection CANote::actualStemDirection() {
 		case StemUp:
 		case StemDown:
 			return stemDirection();
-			break;
 
 		case StemNeutral:
 			if ( staff() && notePosition() < staff()->numberOfLines()-1 )	// position from 0 to half of the number of lines - where position has step of 2 per line
 				return StemUp;
 			else
 				return StemDown;
-			break;
 
 		case StemPreferred:
 			if (!voice()) { return StemUp; }
@@ -347,18 +345,15 @@ CANote::CAStemDirection CANote::actualStemDirection() {
 				case StemUp:
 				case StemDown:
 					return voice()->stemDirection();
-					break;
 
 				case StemNeutral:
 					if ( staff() && notePosition() < staff()->numberOfLines()-1 )	// position from 0 to half of the number of lines - where position has step of 2 per line
 						return StemUp;
 					else
 						return StemDown;
-					break;
 				default: // We should always have a defined stem here
 					return StemUndefined;
 			}
-			break;
 		default:
 			return StemUndefined;
 	}

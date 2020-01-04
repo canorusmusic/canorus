@@ -29,7 +29,7 @@ class CAFunctionMarkContext;
 class CADocumentProperties : public QWidget, public Ui::uiDocumentProperties {
 	Q_OBJECT
 public:
-	CADocumentProperties( CADocument *doc, QWidget *parent=0 ) : QWidget( parent ) { _document = doc; setupUi(this); }
+	CADocumentProperties( CADocument *doc, QWidget *parent=nullptr ) : QWidget( parent ) { _document = doc; setupUi(this); }
 public slots:
 	void on_uiComposer_editingFinished();
 private:
@@ -38,34 +38,34 @@ private:
 
 class CASheetProperties : public QWidget, public Ui::uiSheetProperties {
 public:
-	CASheetProperties( QWidget *parent=0 ) : QWidget( parent ) { setupUi(this); }
+	CASheetProperties( QWidget *parent=nullptr ) : QWidget( parent ) { setupUi(this); }
 };
 
 class CAStaffProperties : public QWidget, public Ui::uiStaffProperties {
 public:
-	CAStaffProperties( QWidget *parent=0 ) : QWidget( parent ) { setupUi(this); }
+	CAStaffProperties( QWidget *parent=nullptr ) : QWidget( parent ) { setupUi(this); }
 };
 
 class CAVoiceProperties : public QWidget, public Ui::uiVoiceProperties {
 public:
-	CAVoiceProperties( QWidget *parent=0 ) : QWidget( parent ) { setupUi(this); }
+	CAVoiceProperties( QWidget *parent=nullptr ) : QWidget( parent ) { setupUi(this); }
 };
 
 class CALyricsContextProperties : public QWidget, public Ui::uiLyricsContextProperties {
 public:
-	CALyricsContextProperties( QWidget *parent=0 ) : QWidget( parent ) { setupUi(this); }
+	CALyricsContextProperties( QWidget *parent=nullptr ) : QWidget( parent ) { setupUi(this); }
 };
 
 class CAFunctionMarkContextProperties : public QWidget, public Ui::uiFunctionMarkContextProperties {
 public:
-	CAFunctionMarkContextProperties( QWidget *parent=0 ) : QWidget( parent ) { setupUi(this); }
+	CAFunctionMarkContextProperties( QWidget *parent=nullptr ) : QWidget( parent ) { setupUi(this); }
 };
 
 class CAPropertiesDialog : public QDialog, private Ui::uiPropertiesDialog
 {
 	Q_OBJECT
 public:
-	CAPropertiesDialog( CADocument *doc, QWidget *parent=0 );
+	CAPropertiesDialog( CADocument *doc, QWidget *parent=nullptr );
 	virtual ~CAPropertiesDialog();
 	static void documentProperties( CADocument *doc, QWidget *parent );
 	static void sheetProperties( CASheet *sheet, QWidget *parent );

@@ -26,7 +26,7 @@ public:
 	CAFermata( CABarline *b,  CAFermataType t = NormalFermata );
 	virtual ~CAFermata();
 
-	CAFermata *clone(CAMusElement* elt=0);
+	CAFermata *clone(CAMusElement* elt=nullptr);
 	int compare( CAMusElement* );
 
 	inline CAFermataType fermataType() { return _fermataType; }

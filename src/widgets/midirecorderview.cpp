@@ -25,11 +25,11 @@ CAMidiRecorderView::CAMidiRecorderView( CAMidiRecorder *r, QWidget *parent )
 CAMidiRecorderView::~CAMidiRecorderView() {
 	if (midiRecorder()) {
 		delete midiRecorder();
-		setMidiRecorder(0);
+		setMidiRecorder(nullptr);
 	}
 
 	if (parent() && dynamic_cast<CAMainWin*>(parent())) {
-		static_cast<CAMainWin*>(parent())->setMidiRecorderView(0);
+		static_cast<CAMainWin*>(parent())->setMidiRecorderView(nullptr);
 	}
 }
 
@@ -59,7 +59,7 @@ void CAMidiRecorderView::onTimerTimeout() {
 	}
 }
 
-void CAMidiRecorderView::on_uiPause_clicked(bool checked) {
+void CAMidiRecorderView::on_uiPause_clicked(bool) {
 	uiPause->setVisible( false );
 	uiRecord->setVisible( true );
 
@@ -67,7 +67,7 @@ void CAMidiRecorderView::on_uiPause_clicked(bool checked) {
 	_status = Pause;
 }
 
-void CAMidiRecorderView::on_uiStop_clicked(bool checked) {
+void CAMidiRecorderView::on_uiStop_clicked(bool) {
 	uiRecord->setVisible( true );
 	uiPause->setVisible( false );
 	uiStop->setEnabled( false );
@@ -76,7 +76,7 @@ void CAMidiRecorderView::on_uiStop_clicked(bool checked) {
 	_status = Idle;
 }
 
-void CAMidiRecorderView::on_uiRecord_clicked(bool checked) {
+void CAMidiRecorderView::on_uiRecord_clicked(bool) {
 	uiRecord->setVisible( false );
 	uiPause->setVisible( true );
 	uiStop->setEnabled( true );

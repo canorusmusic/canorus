@@ -55,7 +55,7 @@ void CASyllable::clear() {
 	If the given context is not a lyrics context, 0 is used instead.
 */
 CASyllable* CASyllable::clone(CAContext* context) {
-	CALyricsContext* newContext = 0;
+	CALyricsContext* newContext = nullptr;
 	if(context->contextType() == CAContext::LyricsContext)
 		newContext = static_cast<CALyricsContext*>(context);
 	CASyllable *s = new CASyllable( text(), hyphenStart(), melismaStart(), newContext, timeStart(), timeLength(), associatedVoice() );

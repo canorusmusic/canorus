@@ -17,7 +17,7 @@ public:
 	CAMidiNote( int pitch, int timeStart, int timeLength, CAVoice *v );
 	virtual ~CAMidiNote();
 
-	CAMidiNote* clone(CAVoice* voice=0);
+	CAMidiNote* clone(CAVoice* voice=nullptr);
 	int compare(CAMusElement* elt);
 
 	int midiPitch() { return _midiPitch; }

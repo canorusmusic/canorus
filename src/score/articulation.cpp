@@ -27,10 +27,10 @@ CAArticulation::~CAArticulation() {
 }
 
 CAArticulation* CAArticulation::clone(CAMusElement* elt) {
-	return new CAArticulation( articulationType(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0 );
+	return new CAArticulation( articulationType(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):nullptr );
 }
 
-int CAArticulation::compare(CAMusElement *elt) {
+int CAArticulation::compare(CAMusElement *) {
 	return 0;
 }
 

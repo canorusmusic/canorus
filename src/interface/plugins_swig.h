@@ -14,15 +14,15 @@ class CAMainWin { //: public QObject {
 //   -> musElementSelection ok
 //
 public:
-	CAMainWin () { pyConsoleIface = NULL; };
+	CAMainWin () {}
 	CASheet *currentSheet() {
 		//CAScoreViewPort *v = currentScoreViewPort();
 		//if (v) return v->sheet();
 		//else return 0;
-		return NULL;
-	};
+		return nullptr;
+	}
 
-	CAPyConsoleInterface* pyConsoleIface;
+	CAPyConsoleInterface* pyConsoleIface = nullptr;
 };
 
 // Needs refactoring!

@@ -76,7 +76,7 @@ bool CADiatonicPitch::operator==(int p) {
 const QString CADiatonicPitch::diatonicPitchToString( CADiatonicPitch pitch ) {
 	QString name;
 
-	name = (char)((pitch.noteName()+2)%7 + 'a');
+	name = static_cast<char>((pitch.noteName()+2)%7 + 'a');
 
 	for (int i=0; i < pitch.accs(); i++)
 		name += "is";	// append as many -is-es as necessary
@@ -206,7 +206,7 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitch( int midiPitch, CAMi
 CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, CADiatonicKey key, CAMidiPitchMode mode ) {
 	int notePitch=0, accs=0;
 
-	float step =(float)7/12;
+	double step =7/12.0;
 
 	int octave = midiPitch/12 - 1;
 	int rest = midiPitch%12;
@@ -306,5 +306,5 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, C
 int CADiatonicPitch::diatonicPitchToMidiPitch( const CADiatonicPitch& pitch ) {
 	// +0.3 - rounding factor for 7/12 that exactly underlays every tone in octave, if rounded
 	// +12 - our logical pitch starts at Sub-contra C, midi counting starts one octave lower
-	return qRound(pitch.noteName()*((float)12/7) + 0.3 + 12) + pitch.accs();
+	return qRound(pitch.noteName()*(12/7.0) + 0.3 + 12) + pitch.accs();
 }

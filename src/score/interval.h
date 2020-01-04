@@ -60,8 +60,8 @@ public:
 		return !(operator==(i));
 	}
 
-	inline const int quality() { return _qlt; }
-	inline const int quantity() { return _qnt; }
+	inline int quality() { return _qlt; }
+	inline int quantity() { return _qnt; }
 
 	inline void setQuality( const int qlt ) { _qlt = qlt; }
 	inline void setQuantity( const int qnt ) { _qnt = qnt; }

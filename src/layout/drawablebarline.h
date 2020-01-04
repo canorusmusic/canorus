@@ -9,9 +9,9 @@
 #define DRAWABLEBARLINE_H_
 
 #include "layout/drawablemuselement.h"
+#include "score/barline.h"
 
 class CADrawableStaff;
-class CABarline;
 
 class CADrawableBarline : public CADrawableMusElement {
 	public:

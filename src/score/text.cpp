@@ -26,7 +26,7 @@ CAText::~CAText() {
 }
 
 CAText* CAText::clone(CAMusElement* elt) {
-	return new CAText( text(), (elt->isPlayable())?static_cast<CAPlayable*>(elt):0 );
+	return new CAText( text(), (elt->isPlayable())?static_cast<CAPlayable*>(elt):nullptr );
 }
 
 int CAText::compare(CAMusElement *elt) {

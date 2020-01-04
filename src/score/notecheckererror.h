@@ -8,6 +8,8 @@
 #ifndef NOTECHECKERERROR_H_
 #define NOTECHECKERERROR_H_
 
+#include <QString>
+
 class CAMusElement;
 
 class CANoteCheckerError {

@@ -456,7 +456,7 @@ void CALilyPondExport::exportMarksBeforeElement( CAMusElement *elt ) {
 			}
 			if ( _voltaBracketFinishAtRepeat || _voltaBracketFinishAtBar ) {
 				out() << "\\voltaStart \\markup \\text { \""<< txt << "\" }  ";
-			};
+			}
 			break;
 		}
 		case CAMark::Tempo: {

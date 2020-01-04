@@ -27,7 +27,7 @@ CAInstrumentChange::~CAInstrumentChange() {
 }
 
 CAInstrumentChange* CAInstrumentChange::clone(CAMusElement* elt) {
-	return new CAInstrumentChange( instrument(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0 );
+	return new CAInstrumentChange( instrument(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):nullptr );
 }
 
 int CAInstrumentChange::compare( CAMusElement *elt ) {

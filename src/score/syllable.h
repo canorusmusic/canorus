@@ -18,7 +18,7 @@ class CAContext;
 
 class CASyllable : public CAMusElement {
 public:
-	CASyllable(QString text, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice=0);
+	CASyllable(QString text, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice=nullptr);
 	~CASyllable();
 	void clear();
 

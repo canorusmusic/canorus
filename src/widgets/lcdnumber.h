@@ -47,7 +47,7 @@ public:
 	* @param oText        name of the widget
 	*
 	*/
-	CALCDNumber (int iMin, int iMax, QWidget * poParent=0, QString oText = "");
+	CALCDNumber (int iMin, int iMax, QWidget * poParent=nullptr, QString oText = "");
 
 	/**
 	* Sets the current value of the number display
@@ -110,7 +110,7 @@ protected:
 	 * \param poEvt	Pointer to event info.
 	 * 
 	 */
-	virtual inline void contextMenuEvent(QContextMenuEvent *poEvt) { }
+	virtual inline void contextMenuEvent(QContextMenuEvent *) { }
 private:
 	int min_, max_;
 	QAction *numDisplay_;

@@ -112,7 +112,7 @@ CAScoreView::CAScoreView( CASheet *sheet, QWidget *parent )
 
 CAScoreView::CAScoreView( QWidget *parent )
  : CAView(parent) {
-	initScoreView( 0 );
+	initScoreView( nullptr );
 }
 
 void CAScoreView::initScoreView( CASheet *sheet ) {
@@ -127,7 +127,7 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	_vScrollBarDeadLock = false;
 	_checkScrollBarsDeadLock = false;
 	_playing = false;
-	_currentContext = 0;
+	_currentContext = nullptr;
 	_xCursor = _yCursor = 0;
 	setResizeDirection( CADrawable::Undefined );
 
@@ -142,7 +142,7 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	// init virtual canvas
 	_canvas = new QWidget(this);
 	setMouseTracking(true);
-	_repaintArea = 0;
+	_repaintArea = nullptr;
 
 	// init animation stuff
 	_animationTimer = new QTimer(this);
@@ -156,7 +156,7 @@ void CAScoreView::initScoreView( CASheet *sheet ) {
 	connect( _clickTimer, SIGNAL(timeout()), this, SLOT(on_clickTimer_timeout()) );
 
 	// init helpers
-	setSelectedVoice( 0 );
+	setSelectedVoice( nullptr );
 	setShadowNoteVisible( false );
 	setShadowNoteVisibleOnLeave( false );
 	setShadowNoteAccs( 0 );
@@ -218,9 +218,9 @@ CAScoreView::~CAScoreView() {
 void CAScoreView::on_animationTimer_timeout() {
 	_animationStep++;
 
-	float newZoom = _zoom + (_targetZoom - _zoom) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
-	double newWorldX = _worldX + (_targetWorldX - _worldX) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
-	double newWorldY = _worldY + (_targetWorldY - _worldY) * sqrt(((double)_animationStep)/ANIMATION_STEPS);
+	double newZoom = _zoom + (_targetZoom - _zoom) * sqrt(static_cast<double>(_animationStep)/ANIMATION_STEPS);
+	double newWorldX = _worldX + (_targetWorldX - _worldX) * sqrt(static_cast<double>(_animationStep)/ANIMATION_STEPS);
+	double newWorldY = _worldY + (_targetWorldY - _worldY) * sqrt(static_cast<double>(_animationStep)/ANIMATION_STEPS);
 	double newWorldW = drawableWidth() / newZoom;
 	double newWorldH = drawableHeight() / newZoom;
 
@@ -299,21 +299,21 @@ void CAScoreView::addCElement(CADrawableContext *elt, bool select) {
 */
 void CAScoreView::addDrawableNoteCheckerError(CADrawableNoteCheckerError *dnce) {
 	_drawableNCEList.addElement(dnce);
-	_mapDrawable.insertMulti(0, dnce);
+	_mapDrawable.insertMulti(nullptr, dnce);
 }
 
 /*!
 	Selects the drawable context of the given abstract context.
 	If there are multiple drawable elements representing a single abstract element, selects the first one.
 
-	Returns a pointer to the drawable instance of the given context or 0 if the context was not found.
+	Returns a pointer to the drawable instance of the given context or nullptr if the context was not found.
 
 	\sa selectMElement(CAMusElement*)
 */
 CADrawableContext *CAScoreView::selectContext(CAContext *context) {
 	if (!context) {
-		setCurrentContext(0);
-		return 0;
+		setCurrentContext(nullptr);
+		return nullptr;
 	}
 	
 	QList<CADrawableContext*> drawableContexts = _drawableCList.list();
@@ -325,7 +325,7 @@ CADrawableContext *CAScoreView::selectContext(CAContext *context) {
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 /*!
@@ -340,6 +340,9 @@ void CAScoreView::setLastMousePressCoordsAfter(const QList<CAMusElement*> list) 
 		}
 	}
 	QPoint newCoords(lastMousePressCoords());
+    // Note Reinhard: I see a lot of coordinate conversions. A simple cast is probably not what you want.
+    // Do you want to have the same result (0) for 0.2 and 0.8 ? also the floor, round etc. methods
+    // probably have a better performance (they are fpu commands).
 	newCoords.setX(maxX);
 	setLastMousePressCoords(newCoords);
 }
@@ -356,7 +359,7 @@ CADrawableContext* CAScoreView::selectCElement(double x, double y) {
 	if (l.size()!=0) {
 		setCurrentContext(l.front());
 	} else
-		setCurrentContext(0);
+		setCurrentContext(nullptr);
 
 	return currentContext();
 }
@@ -402,7 +405,7 @@ CADrawableMusElement* CAScoreView::selectMElement(CAMusElement *elt) {
 	if ( selection().size() )
 		return selection().back();
 	else
-		return 0;
+		return nullptr;
 }
 
 /**!
@@ -441,7 +444,7 @@ void CAScoreView::importElements(CAKDTree<CADrawableMusElement*> *origDMusElts, 
 	Drawable elements left borders are taken into account.
 	If \a context is non-zero, returns the nearest element in the given context only.
 */
-CADrawableMusElement *CAScoreView::nearestLeftElement(double x, double y, CADrawableContext* context) {
+CADrawableMusElement *CAScoreView::nearestLeftElement(double x, double, CADrawableContext* context) {
 	return _drawableMList.findNearestLeft(x, true, context);
 }
 
@@ -450,8 +453,8 @@ CADrawableMusElement *CAScoreView::nearestLeftElement(double x, double y, CADraw
 	largest startTime in the given voice.
 	Drawable elements left borders are taken into account.
 */
-CADrawableMusElement *CAScoreView::nearestLeftElement(double x, double y, CAVoice *voice) {
-	return _drawableMList.findNearestLeft(x, true, 0, voice);
+CADrawableMusElement *CAScoreView::nearestLeftElement(double x, double, CAVoice *voice) {
+	return _drawableMList.findNearestLeft(x, true, nullptr, voice);
 }
 
 /*!
@@ -459,7 +462,7 @@ CADrawableMusElement *CAScoreView::nearestLeftElement(double x, double y, CAVoic
 	Drawable elements left borders are taken into account.
 	If \a context is non-zero, returns the nearest element in the given context only.
 */
-CADrawableMusElement *CAScoreView::nearestRightElement(double x, double y, CADrawableContext* context) {
+CADrawableMusElement *CAScoreView::nearestRightElement(double x, double, CADrawableContext* context) {
 	return _drawableMList.findNearestRight(x, true, context);
 }
 
@@ -468,15 +471,15 @@ CADrawableMusElement *CAScoreView::nearestRightElement(double x, double y, CADra
 	largest startTime in the given voice.
 	Drawable elements left borders are taken into account.
 */
-CADrawableMusElement *CAScoreView::nearestRightElement(double x, double y, CAVoice *voice) {
-	return _drawableMList.findNearestRight(x, true, 0, voice);
+CADrawableMusElement *CAScoreView::nearestRightElement(double x, double, CAVoice *voice) {
+	return _drawableMList.findNearestRight(x, true, nullptr, voice);
 }
 
 /*!
 	Returns a pointer to the nearest upper drawable context from the given coordinates.
 	\todo Also look at X coordinate
 */
-CADrawableContext *CAScoreView::nearestUpContext(double x, double y) {
+CADrawableContext *CAScoreView::nearestUpContext(double, double y) {
 	return static_cast<CADrawableContext*>(_drawableCList.findNearestUp(y));
 }
 
@@ -484,14 +487,14 @@ CADrawableContext *CAScoreView::nearestUpContext(double x, double y) {
 	Returns a pointer to the nearest upper drawable context from the given coordinates.
 	\todo Also look at X coordinate
 */
-CADrawableContext *CAScoreView::nearestDownContext(double x, double y) {
+CADrawableContext *CAScoreView::nearestDownContext(double, double y) {
 	return static_cast<CADrawableContext*>(_drawableCList.findNearestDown(y));
 }
 
 /*!
 	Calculates the logical time at the given coordinates \a x and \a y.
 */
-int CAScoreView::calculateTime(double x, double y) {
+int CAScoreView::calculateTime(double x, double) {
 	CADrawableMusElement *left = _drawableMList.findNearestLeft(x, true);
 	CADrawableMusElement *right = _drawableMList.findNearestRight(x, true);
 
@@ -544,7 +547,7 @@ QMap<int, CADrawableBarline*> CAScoreView::computeBarlinePositions(bool dotted) 
 	if(dStaff && !drawableBarlineList.isEmpty())
 	{
 		// determine the bar number + do we have a pickup measure in the beginning
-		CADrawableTimeSignature *firstDTimeSig = (dStaff->drawableTimeSignatureList().size()?dStaff->drawableTimeSignatureList()[0]:0);
+		CADrawableTimeSignature *firstDTimeSig = (dStaff->drawableTimeSignatureList().size()?dStaff->drawableTimeSignatureList()[0]:nullptr);
 		int barlineOffset = 2;
 		if (firstDTimeSig &&
 			drawableBarlineList[0]->barline()->timeStart() < firstDTimeSig->timeSignature()->barDuration() ) {
@@ -565,7 +568,7 @@ QMap<int, CADrawableBarline*> CAScoreView::computeBarlinePositions(bool dotted) 
 CAContext *CAScoreView::contextCollision(double x, double y) {
 	QList<CADrawableContext*> l = _drawableCList.findInRange(x, y, 0, 0);
 	if (l.size() == 0) {
-		return 0;
+		return nullptr;
 	} else {
 		CAContext *context = l.front()->context();
 		return context;
@@ -608,9 +611,9 @@ void CAScoreView::rebuild() {
 	}
 
 	if (contextIdx != -1)	// restore the last used context
-		setCurrentContext((CADrawableContext*)((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):0));
+		setCurrentContext(static_cast<CADrawableContext*>((_drawableCList.size() > contextIdx)?_drawableCList.list().at(contextIdx):nullptr));
 	else
-		setCurrentContext(0);
+		setCurrentContext(nullptr);
 
 	addToSelection(musElementSelection);
 
@@ -710,7 +713,7 @@ void CAScoreView::setWorldWidth(double w, bool force) {
 		_hScrollBarDeadLock = false;
 	}
 
-	_zoom = ((float)drawableWidth() / _worldW);
+	_zoom = static_cast<double>(drawableWidth() / _worldW);
 
 	checkScrollBars();
 }
@@ -740,7 +743,7 @@ void CAScoreView::setWorldHeight(double h, bool force) {
 		_vScrollBarDeadLock = false;
 	}
 
-	_zoom = ((float)drawableHeight() / _worldH);
+	_zoom = static_cast<double>(drawableHeight() / _worldH);
 
 	checkScrollBars();
 }
@@ -757,7 +760,7 @@ void CAScoreView::setWorldCoords(QRectF coords, bool animate, bool force) {
 	if (!drawableWidth() && !drawableHeight())
 		return;
 
-	float scale = (float)drawableWidth() / drawableHeight();	//always keep the world rectangle area in the same scale as the actual width/height of the drawable canvas
+	double scale = static_cast<double>(drawableWidth()) / drawableHeight();	//always keep the world rectangle area in the same scale as the actual width/height of the drawable canvas
 	if (coords.height()) {	//avoid division by zero
 		if (coords.width() / coords.height() > scale)
 			coords.setHeight( coords.width() / scale );
@@ -915,7 +918,7 @@ void CAScoreView::setZoom(float z, double x, double y, bool animate, bool force)
 */
 #include <time.h> //benchmarking
 #include <sys/time.h> //benchmarking
-void CAScoreView::paintEvent(QPaintEvent *e) {
+void CAScoreView::paintEvent(QPaintEvent *) {
 	if (_holdRepaint)
 		return;
 
@@ -934,7 +937,7 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 
 	// draw contexts
 	timeval timeStart, timeEnd, timeEnd2;
-	gettimeofday(&timeStart, NULL);
+	gettimeofday(&timeStart, nullptr);
 	QList<CADrawableContext*> cList;
 	//int j = _drawableCList.size();
 	if (_repaintArea)
@@ -962,7 +965,7 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 	else
 		mList = _drawableMList.findInRange(_worldX, _worldY, _worldW, _worldH);
 
-	gettimeofday(&timeEnd, NULL);
+	gettimeofday(&timeEnd, nullptr);
 
 	p.setRenderHint( QPainter::Antialiasing, CACanorus::settings()->antiAliasing() );
 
@@ -1108,7 +1111,7 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 				_shadowDrawableNote[i]->draw(&p, s);
 
 				if (_drawShadowNoteAccs) {
-					CADrawableAccidental acc(_shadowNoteAccs, 0, 0, 0, _shadowDrawableNote[i]->yCenter());
+					CADrawableAccidental acc(_shadowNoteAccs, nullptr, nullptr, 0, _shadowDrawableNote[i]->yCenter());
 					s.x -= qRound((acc.width()+2)*_zoom);
 					s.y = qRound((acc.yPos() - _worldY)*_zoom);
 					acc.draw(&p, s);
@@ -1126,7 +1129,7 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 		}
 	}
 	
-	gettimeofday(&timeEnd2, NULL);
+	gettimeofday(&timeEnd2, nullptr);
 	
 //	std::cout << "finding elements to draw took " << timeEnd.tv_sec-timeStart.tv_sec+(timeEnd.tv_usec-timeStart.tv_usec)/1000000.0 << "s." << std::endl;
 //	std::cout << "painting " << mList.size() << " elements took " << timeEnd2.tv_sec-timeEnd.tv_sec+(timeEnd2.tv_usec-timeEnd.tv_usec)/1000000.0 << "s." << std::endl;
@@ -1137,7 +1140,7 @@ void CAScoreView::paintEvent(QPaintEvent *e) {
 
 	if (_repaintArea) {
 		delete _repaintArea;
-		_repaintArea = 0;
+		_repaintArea = nullptr;
 	}
 }
 
@@ -1199,7 +1202,7 @@ void CAScoreView::unsetBorder() {
 	Called when the user resizes the widget.
 	Note that repaint() event is also triggered when the internal drawable canvas changes its size (for eg. when scrollbars are shown/hidden) and the size of the view does not change.
 */
-void CAScoreView::resizeEvent(QResizeEvent *e) {
+void CAScoreView::resizeEvent(QResizeEvent *) {
 	setWorldCoords( _worldX, _worldY, drawableWidth() / _zoom, drawableHeight() / _zoom );
 	// setWorld methods already check for scrollbars
 }
@@ -1371,12 +1374,14 @@ bool CAScoreView::mouseDragActivated() {
 	A new signal is emitted: CAWheelEvent(), which usually gets processed by the parent class then.
 */
 void CAScoreView::wheelEvent(QWheelEvent *e) {
-	QPoint coords((int)(e->x() / _zoom) + _worldX, (int)(e->y() / _zoom) + _worldY);
+	QPoint coords(static_cast<int>(e->x() / _zoom + _worldX), static_cast<int>(e->y() / _zoom + _worldY));
 
 	emit CAWheelEvent(e, coords);
 
-	_xCursor = (int)(e->x() / _zoom) + _worldX;	//TODO: _xCursor and _yCursor are still the old one. Somehow, _zoom level and _worldX/Y are not updated when emmiting CAWheel event. -Matevz
-	_yCursor = (int)(e->y() / _zoom) + _worldY;
+    // Note Reinhard 01/20: Casting to int removed, does not make sense to me (actual cast is done above).
+    // Use faster upper, floor, round etc. if needed in that part (as long as worldX is stored in double)
+	_xCursor = (e->x() / _zoom) + _worldX;	//TODO: _xCursor and _yCursor are still the old one. Somehow, _zoom level and _worldX/Y are not updated when emmiting CAWheel event. -Matevz
+	_yCursor = (e->y() / _zoom) + _worldY;
 }
 
 /*!
@@ -1427,13 +1432,13 @@ void CAScoreView::VScrollBarEvent(int val) {
 	}
 }
 
-void CAScoreView::leaveEvent(QEvent *e) {
+void CAScoreView::leaveEvent(QEvent *) {
 	_shadowNoteVisibleOnLeave = _shadowNoteVisible;
 	_shadowNoteVisible = false;
 	repaint();
 }
 
-void CAScoreView::enterEvent(QEvent *e) {
+void CAScoreView::enterEvent(QEvent *) {
 	_shadowNoteVisible = _shadowNoteVisibleOnLeave;
 	repaint();
 }
@@ -1448,13 +1453,13 @@ void CAScoreView::startAnimationTimer() {
 /*!
 	Selects the next music element in the current context (voice, if selectedVoice is set) or appends the next music element
 	to the selection, if \a append is True.
-	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
+	Returns a pointer to the newly selected drawable music element or nullptr, if such an element doesn't exist or the selection is empty.
 
 	This method is usually called when using the right arrow key.
 */
 CADrawableMusElement *CAScoreView::selectNextMusElement( bool append ) {
 	if (_selection.isEmpty())
-		return 0;
+		return nullptr;
 
 	CAMusElement *musElement = _selection.back()->musElement();
 	if ( selectedVoice() )
@@ -1463,7 +1468,7 @@ CADrawableMusElement *CAScoreView::selectNextMusElement( bool append ) {
 		musElement = musElement->context()->next(musElement);
 
 	if (!musElement)
-		return 0;
+		return nullptr;
 
 	if (append)
 		return addToSelection( musElement );
@@ -1474,13 +1479,13 @@ CADrawableMusElement *CAScoreView::selectNextMusElement( bool append ) {
 /*!
 	Selects the next music element in the current context (voice, if selectedVoice is set) or appends the next music element
 	to the selection, if \a append is True.
-	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
+	Returns a pointer to the newly selected drawable music element or nullptr, if such an element doesn't exist or the selection is empty.
 
 	This method is usually called when using the left arrow key.
 */
 CADrawableMusElement *CAScoreView::selectPrevMusElement( bool append ) {
 	if (_selection.isEmpty())
-		return 0;
+		return nullptr;
 
 	CAMusElement *musElement = _selection.front()->musElement();
 	if ( selectedVoice() )
@@ -1489,7 +1494,7 @@ CADrawableMusElement *CAScoreView::selectPrevMusElement( bool append ) {
 		musElement = musElement->context()->previous(musElement);
 
 	if (!musElement)
-		return 0;
+		return nullptr;
 
 	if (append)
 		return addToSelection( musElement );
@@ -1499,28 +1504,28 @@ CADrawableMusElement *CAScoreView::selectPrevMusElement( bool append ) {
 
 /*!
 	Selects the upper music element in the current context.
-	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
+	Returns a pointer to the newly selected drawable music element or nullptr, if such an element doesn't exist or the selection is empty.
 
 	This method is usually called when using the up arrow key.
 	\todo Still needs to be written. Currently, it only returns the currently selected element.
 */
 CADrawableMusElement *CAScoreView::selectUpMusElement() {
 	if (_selection.isEmpty())
-		return 0;
+		return nullptr;
 
 	return _selection.front();
 }
 
 /*!
 	Selects the lower music element in the current context.
-	Returns a pointer to the newly selected drawable music element or 0, if such an element doesn't exist or the selection is empty.
+	Returns a pointer to the newly selected drawable music element or nullptr, if such an element doesn't exist or the selection is empty.
 
 	This method is usually called when using the up arrow key.
 	\todo Still needs to be written. Currently, it only returns the currently selected element.
 */
 CADrawableMusElement *CAScoreView::selectDownMusElement() {
 	if (_selection.isEmpty())
-		return 0;
+		return nullptr;
 
 	return _selection.front();
 }
@@ -1656,7 +1661,7 @@ CADrawableMusElement *CAScoreView::findMElement(CAMusElement *elt) {
 	if (hits.size()) {
 		return static_cast<CADrawableMusElement*>(hits[0]);
 	}
-	return 0;
+	return nullptr;
 }
 
 /*!
@@ -1669,7 +1674,7 @@ CADrawableContext *CAScoreView::findCElement(CAContext *context) {
 	if (hits.size()) {
 		return static_cast<CADrawableContext*>(hits[0]);
 	}
-	return 0;
+	return nullptr;
 }
 
 /*!
@@ -1680,15 +1685,16 @@ CADrawableContext *CAScoreView::findCElement(CAContext *context) {
 */
 CATextEdit *CAScoreView::createTextEdit( CADrawableMusElement *dMusElt ) {
 	if ( !dMusElt || !dMusElt->musElement() )
-		return 0;
+		return nullptr;
 
+    // Note Reinhard as above: Do you want to floor, upper or round here ?
 	int xPos=dMusElt->xPos(), yPos=dMusElt->yPos(),
 	    width=100, height=25;
 	QString text;
 	if ( dMusElt->musElement()->musElementType()==CAMusElement::Syllable ) {
 		CADrawableLyricsContext *dlc = static_cast<CADrawableLyricsContext*>(dMusElt->drawableContext());
 		CASyllable *syllable = static_cast<CASyllable*>(dMusElt->musElement());
-		if (!dlc || !syllable) return 0;
+		if (!dlc || !syllable) return nullptr;
 
 		CADrawableMusElement *dRight = findMElement( dlc->lyricsContext()->next( syllable ) );
 		if (dRight)
@@ -1773,7 +1779,8 @@ int CAScoreView::coordsToTime( double x ) {
 	if ( d1 && d2 && d1->musElement() && d2->musElement() ) {
 		int delta = (d2->xPos() - d1->xPos());
 		if (!delta) delta=1;
-		return qRound(d1->musElement()->timeStart() + ( d2->musElement()->timeStart() - d1->musElement()->timeStart() ) * ( (x - d1->xPos()) / (float)delta ) );
+        // Note Reinhard: Removed explizite float conversion (qRound uses double anyway)
+		return qRound(d1->musElement()->timeStart() + ( d2->musElement()->timeStart() - d1->musElement()->timeStart() ) * ( (x - d1->xPos()) / delta ) );
 	} else if ( d1 && d1->musElement() )
 		return ( d1->musElement()->timeEnd() );
 	else
@@ -1805,7 +1812,7 @@ bool CAScoreView::timeMusElementLessThan(const int a, const CAMusElement* b) {
 	Returns -1, if such a time doesn't exist in the score.
 */
 double CAScoreView::timeToCoordsSimpleVersion( int time ) {
-	CADrawableMusElement *leftElt = 0;
+	CADrawableMusElement *leftElt = nullptr;
 	
 	QList<CAVoice*> voiceList = _sheet->voiceList();
 	for (int i=0; i<voiceList.size(); i++) {
@@ -1831,8 +1838,8 @@ double CAScoreView::timeToCoordsSimpleVersion( int time ) {
 	Returns -1, if such a time doesn't exist in the score.
 */
 double CAScoreView::timeToCoords( int time ) {
-	CADrawableMusElement *leftElt = 0;
-	CADrawableMusElement *rightElt = 0;
+	CADrawableMusElement *leftElt = nullptr;
+	CADrawableMusElement *rightElt = nullptr;
 	
 	QList<CAVoice*> voiceList = _sheet->voiceList();
 	for (int i=0; i<voiceList.size(); i++) {
@@ -1868,8 +1875,10 @@ double CAScoreView::timeToCoords( int time ) {
 	if ( leftElt && rightElt && leftElt->musElement() && rightElt->musElement() ) {
 		int delta = (rightElt->musElement()->timeStart() - leftElt->musElement()->timeStart());
 		if (!delta) delta=1;
+        // Note Reinhard: Fixed conversion to double
+        // I assume that division by delta should result in double value
 		return leftElt->xPos() + ( rightElt->xPos() - leftElt->xPos() ) *
-		              ( ((double)time - leftElt->musElement()->timeStart()) / delta );
+		              static_cast<double>(time - leftElt->musElement()->timeStart() / static_cast<double>(delta) );
 	} else {
 		return -1;
 	}

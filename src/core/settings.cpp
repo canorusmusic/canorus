@@ -362,13 +362,13 @@ int CASettings::readSettings() {
 	else
 		setUseSystemDefaultPdfViewer( DEFAULT_USE_SYSTEM_PDF_VIEWER );
 
-	return settingsPage;
-
 	// Action / Command settings
 	if ( contains("action/shortcutsdirectory") )
 		setLatestShortcutsDirectory( value("action/shortcutsdirectory").toString() );
 	else
 		setLatestShortcutsDirectory( DEFAULT_SHORTCUTS_DIRECTORY );
+
+    return settingsPage;
 }
 
 void CASettings::setMidiInPort(int in) {

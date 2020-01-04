@@ -58,11 +58,11 @@ CAPropertiesDialog::~CAPropertiesDialog() {
 	Tree always shows the whole Document structure.
 */
 void CAPropertiesDialog::buildTree() {
-	QWidget *w=0;
+	QWidget *w=nullptr;
 
 	// get current item
 	QTreeWidgetItem *curItem=uiDocumentTree->currentItem();
-	CADocument *curDocument=0; CASheet *curSheet=0; CAContext *curContext=0; CAVoice *curVoice=0;
+	CADocument *curDocument=nullptr; CASheet *curSheet=nullptr; CAContext *curContext=nullptr; CAVoice *curVoice=nullptr;
 	if ( curItem ) {
 		if ( _documentItem==curItem )
 			curDocument = _document;
@@ -77,9 +77,9 @@ void CAPropertiesDialog::buildTree() {
 			curVoice= _voiceItem[curItem];
 	}
 
-	QTreeWidgetItem *docItem=0;
+	QTreeWidgetItem *docItem=nullptr;
 	uiDocumentTree->clear();
-	_documentItem=0; _sheetItem.clear(); _contextItem.clear(); _voiceItem.clear();
+	_documentItem=nullptr; _sheetItem.clear(); _contextItem.clear(); _voiceItem.clear();
 	if (_document) {
 		w = new CADocumentProperties( _document, this );
 		_documentPropertiesWidget = w;
@@ -97,14 +97,14 @@ void CAPropertiesDialog::buildTree() {
 			uiPropertiesWidget->addWidget( w );
 			updateSheetProperties( _document->sheetList()[i] );
 
-			QTreeWidgetItem *sheetItem=0;
+			QTreeWidgetItem *sheetItem=nullptr;
 			sheetItem = new QTreeWidgetItem( docItem );
 			sheetItem->setText( 0, _document->sheetList()[i]->name() );
 			sheetItem->setIcon( 0, QIcon("images:document/sheet.svg") );
 			_sheetItem[ sheetItem ] = _document->sheetList()[i];
 
 			for ( int j=0; j<_document->sheetList()[i]->contextList().size(); j++ ) {
-				QTreeWidgetItem *contextItem=0;
+				QTreeWidgetItem *contextItem=nullptr;
 				contextItem = new QTreeWidgetItem( sheetItem );
 				contextItem->setText( 0, _document->sheetList()[i]->contextList()[j]->name() );
 				_contextItem[ contextItem ] = _document->sheetList()[i]->contextList()[j];
@@ -123,7 +123,7 @@ void CAPropertiesDialog::buildTree() {
 						_voicePropertiesWidget[ s->voiceList()[k] ] = v;
 						updateVoiceProperties( s->voiceList()[k] );
 
-						QTreeWidgetItem *voiceItem=0;
+						QTreeWidgetItem *voiceItem=nullptr;
 						voiceItem = new QTreeWidgetItem( contextItem );
 						voiceItem->setText( 0, s->voiceList()[k]->name() );
 						voiceItem->setIcon( 0, QIcon("images:document/voice.svg") );
@@ -224,7 +224,7 @@ void CADocumentProperties::on_uiComposer_editingFinished() {
 	uiCopyright->setEditText( curText );
 }
 
-void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *cur, QTreeWidgetItem *prev ) {
+void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *cur, QTreeWidgetItem * ) {
 	if (!cur)
 		return;
 
@@ -384,25 +384,26 @@ void CAPropertiesDialog::createDocumentFromTree() {
 
 		for ( int j=0; j<cur->child(i)->childCount(); j++ ) {
 			CAContext *c = _contextItem[cur->child(i)->child(j)];
-			switch ( c->contextType() ) {
-				case CAContext::Staff: {
-					CAStaff *s = static_cast<CAStaff*>(c);
-					while ( s->voiceList().size() )
-						s->removeVoice( s->voiceList()[0] );
+			if( c->contextType() == CAContext::Staff )
+            {
+                CAStaff *s = static_cast<CAStaff*>(c);
+                while ( s->voiceList().size() )
+                    s->removeVoice( s->voiceList()[0] );
 
-					for ( int k=0; k<cur->child(i)->child(j)->childCount(); k++ ) {
-						s->addVoice( _voiceItem[cur->child(i)->child(j)->child(k)] );
-					}
-				}
-				default:
-					sheet->addContext(c);
-					break;
+                for ( int k=0; k<cur->child(i)->child(j)->childCount(); k++ ) {
+                    s->addVoice( _voiceItem[cur->child(i)->child(j)->child(k)] );
+                }
+            }
+            else
+            {
+                sheet->addContext(c);
+                break;
 			}
 		}
 	}
 }
 
-void CAPropertiesDialog::on_uiUp_clicked( bool down ) {
+void CAPropertiesDialog::on_uiUp_clicked( bool ) {
 	QTreeWidgetItem *cur = uiDocumentTree->currentItem();
 	QTreeWidgetItem *parent = cur->parent();
 	int idx;
@@ -416,7 +417,7 @@ void CAPropertiesDialog::on_uiUp_clicked( bool down ) {
 	uiDocumentTree->expandAll();
 }
 
-void CAPropertiesDialog::on_uiDown_clicked( bool down ) {
+void CAPropertiesDialog::on_uiDown_clicked( bool ) {
 	QTreeWidgetItem *cur = uiDocumentTree->currentItem();
 	QTreeWidgetItem *parent = cur->parent();
 	int idx;

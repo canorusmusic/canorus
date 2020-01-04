@@ -19,7 +19,7 @@ public:
 	inline const QString text() { return _text; }
 	inline void setText( const QString t ) { _text = t; }
 
-	CAText* clone(CAMusElement* elt=0);
+	CAText* clone(CAMusElement* elt=nullptr);
 	int compare(CAMusElement *elt);
 
 private:

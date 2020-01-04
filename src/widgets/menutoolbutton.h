@@ -28,7 +28,7 @@ class CAMenuToolButton : public CAToolButton {
 	Q_OBJECT
 public:
 	CAMenuToolButton( QString title, int numIconsRow = 4, QWidget * parent = nullptr );
-	~CAMenuToolButton();
+	~CAMenuToolButton() override;
 
 	void addButton( const QIcon icon, int buttonId, const QString toolTip="" );
 	inline QAbstractButton *getButton( int buttonId ) { return _buttonGroup->button( buttonId ); }

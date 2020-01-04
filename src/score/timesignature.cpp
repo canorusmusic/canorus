@@ -63,7 +63,7 @@ CATimeSignature::~CATimeSignature() {
 }
 
 CATimeSignature *CATimeSignature::clone(CAContext* context) {
-	CATimeSignature *t = new CATimeSignature(_beats, _beat, (CAStaff*)context, _timeStart, _timeSignatureType);
+	CATimeSignature *t = new CATimeSignature(_beats, _beat, static_cast<CAStaff*>(context), _timeStart, _timeSignatureType);
 
 	for (int i=0; i<markList().size(); i++) {
 		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(t));
@@ -104,9 +104,9 @@ int CATimeSignature::compare(CAMusElement *elt) {
 		return -1;
 
 	int diffs=0;
-	if (_timeSignatureType!=((CATimeSignature*)elt)->timeSignatureType()) diffs++;
-	if (_beat!=((CATimeSignature*)elt)->beat()) diffs++;
-	if (_beats!=((CATimeSignature*)elt)->beats()) diffs++;
+	if (_timeSignatureType!=static_cast<CATimeSignature*>(elt)->timeSignatureType()) diffs++;
+	if (_beat!=static_cast<CATimeSignature*>(elt)->beat()) diffs++;
+	if (_beats!=static_cast<CATimeSignature*>(elt)->beats()) diffs++;
 
 	return diffs;
 }
@@ -123,9 +123,8 @@ const QString CATimeSignature::timeSignatureTypeToString(CATimeSignatureType typ
 			return "neomensural";
 		case Baroque:
 			return "baroque";
-		default:
-			return "";
 	}
+    return "";
 }
 
 CATimeSignature::CATimeSignatureType CATimeSignature::timeSignatureTypeFromString(const QString type) {

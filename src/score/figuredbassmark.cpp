@@ -72,7 +72,7 @@ void CAFiguredBassMark::insertNumber( int number ) {
 
 CAMusElement* CAFiguredBassMark::clone(CAContext* context) {
 	if (context && context->contextType() != CAContext::FiguredBassContext) {
-		return 0;
+        return nullptr;
 	}
 
 	CAFiguredBassMark *fbm = new CAFiguredBassMark( static_cast<CAFiguredBassContext*>(context), timeStart(), timeLength() );

@@ -29,7 +29,7 @@ public:
 	inline CAStaff *staff() { return _staff; }
 	inline void setStaff(CAStaff *staff) { _staff = staff; }
 	void clear();
-	CAVoice *clone( CAStaff *newStaff = 0 );
+	CAVoice *clone( CAStaff *newStaff = nullptr );
 	void cloneVoiceProperties( CAVoice* v );
 
 	/////////////////////////////////////////
@@ -71,7 +71,7 @@ public:
 
 	inline int lastTimeEnd() { return (musElementList().size()?musElementList().back()->timeEnd():0); }
 	inline int lastTimeStart() { return (musElementList().size()?musElementList().back()->timeStart():0); }
-	inline CAMusElement *lastMusElement() { return musElementList().size()?musElementList().back():0; }
+	inline CAMusElement *lastMusElement() { return musElementList().size()?musElementList().back():nullptr; }
 	CADiatonicPitch lastNotePitch(bool inChord=false);
 	CAPlayable* lastPlayableElt();
 	CANote*     lastNote();

@@ -43,7 +43,7 @@ public:
 
 	// Constructor
 	// Parameters are standard QWidget parameters
-	CAActionsEditor( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+	CAActionsEditor( QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
 	// Destructor
 	~CAActionsEditor();
 

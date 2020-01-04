@@ -55,7 +55,7 @@ bool CAFunctionMark::isSideDegree() {
 
 CAFunctionMark *CAFunctionMark::clone(CAContext* context) {
 	CAFunctionMark *newElt;
-	newElt = new CAFunctionMark(function(), isMinor(), key(), (CAFunctionMarkContext*)context, timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
+	newElt = new CAFunctionMark(function(), isMinor(), key(), static_cast<CAFunctionMarkContext*>(context), timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
 	newElt->setAlteredDegrees(_alteredDegrees);
 	newElt->setAddedDegrees(_addedDegrees);
 
@@ -140,21 +140,21 @@ void CAFunctionMark::setAlterations(const QString alterations) {
 
 const QString CAFunctionMark::functionTypeToString(CAFunctionMark::CAFunctionType type) {
 	switch (type) {
-		case T:         return "T"; break;
-		case S:         return "S"; break;
-		case D:         return "D"; break;
-		case I:         return "I";	break;
-		case II:        return "II"; break;
-		case III:       return "III"; break;
-		case IV:        return "IV"; break;
-		case V:         return "V"; break;
-		case VI:        return "VI"; break;
-		case VII:       return "VII"; break;
-		case N:         return "N";	break;
-		case F:         return "F"; break;
-		case L:         return "L"; break;
-		case K:         return "K"; break;
-		case Undefined: return "undefined"; break;
+		case T:         return "T";
+		case S:         return "S";
+		case D:         return "D";
+		case I:         return "I";
+		case II:        return "II";
+		case III:       return "III";
+		case IV:        return "IV";
+		case V:         return "V";
+		case VI:        return "VI";
+		case VII:       return "VII";
+		case N:         return "N";
+		case F:         return "F";
+		case L:         return "L";
+		case K:         return "K";
+		case Undefined: return "undefined";
 	}
 
 	return "undefined";

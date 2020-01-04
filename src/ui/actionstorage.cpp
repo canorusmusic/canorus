@@ -14,7 +14,7 @@
 #include "core/actiondelegate.h"
 
 CAActionStorage::CAActionStorage() :
-    _actionDelegate(0)
+    _actionDelegate(nullptr)
 {
     _actionWidget.actions().clear();
 }
@@ -22,9 +22,9 @@ CAActionStorage::CAActionStorage() :
 CAActionStorage::~CAActionStorage()
 {
     _actionWidget.actions().clear();
-    if( 0 != _actionDelegate )
+    if( nullptr != _actionDelegate )
         delete _actionDelegate;
-    _actionDelegate = 0;
+    _actionDelegate = nullptr;
 }
 
 void CAActionStorage::storeActionsFromMainWindow(CAMainWin &mainWin)

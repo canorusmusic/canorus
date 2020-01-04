@@ -19,7 +19,7 @@ public:
 	CAFiguredBassMark( CAFiguredBassContext *c, int timeStart, int timeLength );
 	~CAFiguredBassMark();
 
-	CAMusElement* clone(CAContext* context=0);
+	CAMusElement* clone(CAContext* context=nullptr);
 	int compare(CAMusElement *elt);
 
 	void addNumber( int number );

@@ -26,8 +26,8 @@ CATypesetCtl::CATypesetCtl()
 {
 	_poTypesetter = new CAExternProgram;
 	_poConvPS2PDF = new CAExternProgram;
-	_poExport = 0;
-	_poOutputFile = 0;
+	_poExport = nullptr;
+	_poOutputFile = nullptr;
 	_bPDFConversion = false;
 	_bOutputFileNameFirst = false;
 	connect( _poTypesetter, SIGNAL( programExited( int ) ), this, SLOT( typsetterExited( int ) ) );
@@ -39,13 +39,13 @@ CATypesetCtl::~CATypesetCtl()
 {
 	if( _poTypesetter )
 		delete _poTypesetter;
-	_poTypesetter = 0;
+	_poTypesetter = nullptr;
 	if( _poConvPS2PDF )
 		delete _poConvPS2PDF;
-	_poConvPS2PDF = 0;
+	_poConvPS2PDF = nullptr;
 	if( _poOutputFile )
 		delete _poOutputFile;
-	_poOutputFile = 0;
+	_poOutputFile = nullptr;
 }
 
 /*!

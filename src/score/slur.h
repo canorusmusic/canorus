@@ -36,10 +36,10 @@ public:
 		PhrasingSlurType
 	};
 
-	CASlur( CASlurType, CASlurDirection, CAContext *c, CANote *noteStart, CANote *noteEnd=0, CASlurStyle style=SlurSolid );
+	CASlur( CASlurType, CASlurDirection, CAContext *c, CANote *noteStart, CANote *noteEnd=nullptr, CASlurStyle style=SlurSolid );
 	virtual ~CASlur();
 
-	CASlur *clone(CAContext* context=0);
+	CASlur *clone(CAContext* context=nullptr);
 	CASlur *clone(CAContext* context, CANote* noteStart, CANote* noteEnd);
 	int compare( CAMusElement *elt );
 

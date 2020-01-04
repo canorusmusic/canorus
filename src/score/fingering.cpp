@@ -38,7 +38,7 @@ CAFingering::~CAFingering() {
 }
 
 CAFingering *CAFingering::clone(CAMusElement* elt) {
-	return new CAFingering( fingerList(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0, isOriginal() );
+	return new CAFingering( fingerList(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):nullptr, isOriginal() );
 }
 
 int CAFingering::compare( CAMusElement *elt ) {

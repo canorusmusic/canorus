@@ -24,7 +24,7 @@ public:
 		txtStderr
 	};
 
-	CAPyConsole ( CADocument *doc, QWidget *parent=0);
+	CAPyConsole ( CADocument *doc, QWidget *parent=nullptr);
 
 	QString asyncBufferedInput(QString prompt);
 	void asyncBufferedOutput(QString bufInp, bool bStdErr);

@@ -69,10 +69,10 @@ void CAFunctionMarkContext::addFunctionMark( CAFunctionMark *function, bool repl
 CAMusElement *CAFunctionMarkContext::next(CAMusElement *elt) {
 	int idx = _functionMarkList.indexOf( static_cast<CAFunctionMark*>(elt) );
 	if (idx==-1)
-		return 0;
+		return nullptr;
 
 	if (++idx>=_functionMarkList.size())
-		return 0;
+		return nullptr;
 	else
 		return _functionMarkList[idx];
 }
@@ -80,10 +80,10 @@ CAMusElement *CAFunctionMarkContext::next(CAMusElement *elt) {
 CAMusElement *CAFunctionMarkContext::previous(CAMusElement *elt) {
 	int idx = _functionMarkList.indexOf( static_cast<CAFunctionMark*>(elt) );
 	if (idx==-1)
-		return 0;
+		return nullptr;
 
 	if (--idx<0)
-		return 0;
+		return nullptr;
 	else
 		return _functionMarkList[idx];
 }

@@ -30,7 +30,7 @@ CARitardando::~CARitardando() {
 }
 
 CARitardando* CARitardando::clone(CAMusElement* elt) {
-	return new CARitardando( finalTempo(), (elt->isPlayable())?static_cast<CAPlayable*>(elt):0, timeLength(), ritardandoType() );
+	return new CARitardando( finalTempo(), (elt->isPlayable())?static_cast<CAPlayable*>(elt):nullptr, timeLength(), ritardandoType() );
 }
 
 int CARitardando::compare( CAMusElement *elt ) {

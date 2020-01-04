@@ -219,7 +219,7 @@ CAMusElement *CAStaff::next( CAMusElement *elt ) {
 		}
 	}
 
-	return 0;	// the element doesn't exist in any of the voices, return 0
+	return nullptr;	// the element doesn't exist in any of the voices, return nullptr
 }
 
 /*!
@@ -234,7 +234,7 @@ CAMusElement *CAStaff::previous( CAMusElement *elt ) {
 		}
 	}
 
-	return 0;	// the element doesn't exist in any of the voices, return 0
+	return nullptr;	// the element doesn't exist in any of the voices, return nullptr
 }
 
 /*!
@@ -259,7 +259,7 @@ CAVoice *CAStaff::findVoice(const QString name) {
 		if (_voiceList[i]->name() == name)
 			return _voiceList[i];
 
-	return 0;
+	return nullptr;
 }
 
 /*!
@@ -293,7 +293,7 @@ CAMusElement *CAStaff::getOneEltByType(CAMusElement::CAMusElementType type, int 
 		elt = _voiceList[i]->getOneEltByType(type, startTime);
 		if (elt) return elt;
 	}
-	return 0;
+	return nullptr;
 }
 
 /*!
@@ -316,7 +316,7 @@ QList<CAPlayable*> CAStaff::getChord(int time) {
 	Returns the Tempo element active at the given time.
  */
 CATempo *CAStaff::getTempo( int time ) {
-	CATempo *tempo = 0;
+	CATempo *tempo = nullptr;
 	for (int i=0; i<voiceList().size(); i++) {
 		CATempo *t = voiceList()[i]->getTempo(time);
 		if ( t && (!tempo || t->timeStart() > tempo->timeStart()) ) {
@@ -347,7 +347,7 @@ bool CAStaff::synchronizeVoices() {
 	int *pidx = new int[voiceList().size()];
         for (int i=0; i<voiceList().size(); i++) pidx[i]=-1;          // array of current indices of voices at current timeStart
 	CAMusElement **plastPlayable = new CAMusElement*[voiceList().size()];
- 	for (int i=0; i<voiceList().size(); i++) plastPlayable[i]=0;
+ 	for (int i=0; i<voiceList().size(); i++) plastPlayable[i]=nullptr;
 
 	_clefList.clear();
 	_keySignatureList.clear();

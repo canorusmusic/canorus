@@ -34,7 +34,7 @@ CAFermata *CAFermata::clone(CAMusElement* elt) {
 	if (elt->isPlayable()) {
 		return new CAFermata( static_cast<CAPlayable*>(elt), fermataType() );
 	} else {
-		return new CAFermata( (elt->musElementType()==Barline)?static_cast<CABarline*>(elt):0, fermataType() );
+		return new CAFermata( (elt->musElementType()==Barline)?static_cast<CABarline*>(elt):nullptr, fermataType() );
 	}
 }
 

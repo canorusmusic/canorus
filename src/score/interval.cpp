@@ -65,7 +65,7 @@ CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2, bool abs
 	int relQnt = ((quantity()-1)%7)+1;
 	int relPLow = pLow.noteName()%7/*, relPHigh = pHigh.noteName()%7*/;
 
-	int deltaQlt;
+	int deltaQlt = 0;
 	switch (relQnt) {
 	case 1: // prime
 		deltaQlt = 0;

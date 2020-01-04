@@ -22,12 +22,12 @@ public:
 	CARitardando( int finalTempo, CAPlayable *p, int timeLength, CARitardandoType t=Ritardando );
 	virtual ~CARitardando();
 
-	CARitardando *clone(CAMusElement* elt=0);
+	CARitardando *clone(CAMusElement* elt=nullptr);
 	int compare( CAMusElement* );
 
-	inline const int finalTempo() { return _finalTempo; }
+	inline int finalTempo() { return _finalTempo; }
 	inline void setFinalTempo( const int t ) { _finalTempo = t; }
-	inline const CARitardandoType ritardandoType() { return _ritardandoType; }
+	inline CARitardandoType ritardandoType() { return _ritardandoType; }
 	inline void setRitardandoType( CARitardandoType t ) { _ritardandoType = t; }
 
 	static const QString ritardandoTypeToString( CARitardandoType t );

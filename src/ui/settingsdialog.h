@@ -34,7 +34,7 @@ public:
 		PrintingSettings = 5,
 	};
 
-	CASettingsDialog( CASettingsPage currentPage, CAMainWin *parent=0 );
+	CASettingsDialog( CASettingsPage currentPage, CAMainWin *parent=nullptr );
 	~CASettingsDialog();
 
 private slots:

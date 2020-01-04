@@ -77,7 +77,8 @@ CAPyConsole::CAPyConsole( CADocument *doc, QWidget *parent) : QTextEdit(parent) 
              "\n"
              ">>> ";
   setText(txt);
-  _iCurStart = strlen(txt);
+  // Above string obviously is smaller then sizeof(int)
+  _iCurStart = static_cast<int>(strlen(txt));
 
 	_fmtStderr = _fmtStdout = _fmtNormal = currentCharFormat();
 	_fmtStdout.setForeground(QColor(0,0,255));
@@ -292,7 +293,7 @@ void CAPyConsole::on_fmtChanged() {
 	\todo: is this approach safe? (future)
 */
 void CAPyConsole::syncPluginInit(void) {
-	if(_parent != NULL)
+	if(_parent != nullptr)
 		_parent->show();
 	setFocus(Qt::OtherFocusReason);
 }
@@ -518,7 +519,7 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         QList<PyObject*> argsPython;
         
         QObject *curObject = this;
-        while (dynamic_cast<CAMainWin*>(curObject)==0 && curObject!=0) // find the parent which is mainwindow
+        while (dynamic_cast<CAMainWin*>(curObject)==nullptr && curObject!=nullptr) // find the parent which is mainwindow
             curObject = curObject->parent();
         
         argsPython << CASwigPython::toPythonObject(static_cast<CAMainWin*>(curObject)->document(), CASwigPython::Document);        
@@ -541,7 +542,7 @@ bool CAPyConsole::cmdIntern(QString strCmd) {
         // TODO(stefan): DRY this from the other if condition.
         QList<PyObject*> argsPython;
         QObject *curObject = this;
-        while (dynamic_cast<CAMainWin*>(curObject)==0 && curObject!=0) // find the parent which is mainwindow
+        while (dynamic_cast<CAMainWin*>(curObject)==nullptr && curObject!=nullptr) // find the parent which is mainwindow
             curObject = curObject->parent();
         argsPython << CASwigPython::toPythonObject(static_cast<CAMainWin*>(curObject)->document(), CASwigPython::Document);        
         argsPython << PyUnicode_FromString(strCmd.toStdString().c_str());

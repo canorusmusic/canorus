@@ -25,7 +25,7 @@ CADynamic::~CADynamic() {
 }
 
 CADynamic* CADynamic::clone(CAMusElement *elt) {
-	return new CADynamic( text(), volume(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0 );
+	return new CADynamic( text(), volume(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):nullptr );
 }
 
 int CADynamic::compare( CAMusElement *elt ) {

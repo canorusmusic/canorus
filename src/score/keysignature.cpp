@@ -107,7 +107,7 @@ CAKeySignature::~CAKeySignature() {
 }
 
 CAKeySignature* CAKeySignature::clone(CAContext* context) {
-	CAKeySignature *k = 0;
+	CAKeySignature *k = nullptr;
 
 	switch (keySignatureType()) {
 	case MajorMinor:
@@ -179,8 +179,8 @@ const QString CAKeySignature::modusToString(CAModus modus) {
 		case Hypolydian: return "hypolydian";
 		case Hypomixolydian: return "hypomixolydian";
 		case Hypophrygian: return "hypophrygian";
-		default: return "";
 	}
+    return "";
 }
 
 CAKeySignature::CAModus CAKeySignature::modusFromString(const QString modus) {
