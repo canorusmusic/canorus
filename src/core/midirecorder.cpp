@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008-2019, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -41,7 +41,7 @@ void CAMidiRecorder::timerTimeout() {
 	}
 }
 
-void CAMidiRecorder::startRecording( int startTime ) {
+void CAMidiRecorder::startRecording( int ) {
     (void)startTime;
 	if (!_paused) {
 		_midiExport = new CAMidiExport();

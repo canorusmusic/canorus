@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008-2019, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -100,7 +100,7 @@ CAResource *CAResourceCtl::createEmptyResource( QString name, CADocument *parent
 	f.open();
 	QString fileName = QFileInfo(f).absoluteFilePath();
 	f.close();
-	CAResource *r = new CAResource( fileName, name, false, t, parent );
+	CAResource *r = new CAResource( QUrl::fromLocalFile(fileName), name, false, t, parent );
 
 	if (parent) {
 #ifndef SWIGCPP
