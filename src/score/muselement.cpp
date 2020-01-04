@@ -101,7 +101,7 @@ const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementTyp
 		case (Tuplet): return "tuplet";
 		case (Mark): return "mark";
 		case (FiguredBassMark): return "figured-bass-mark";
-		case (ChordName): return "chord-name"; break;
+		case (ChordName): return "chord-name";
 	}
 	// Do not add a default case as else newly added elements might be forgotten here!
 	return QString();

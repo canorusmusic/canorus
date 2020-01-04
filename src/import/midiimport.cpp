@@ -28,13 +28,13 @@
 
 #include "import/pmidi/wrapper.h"
 
+// Note Reinhard Padding Size with 3 bytes to alignment boundary due to "bool" member
 class CAMidiImportEvent {
 public:
 	CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length, int tempo, int program );
 	~CAMidiImportEvent();
-	bool _on;
+    QList <int> _pitchList; 	// to build chords when neccessary
 	int _channel;
-	QList <int> _pitchList; 	// to build chords when neccessary
 	int _velocity;
 	int _time;
 	int _length;
@@ -43,6 +43,7 @@ public:
 	int _top;
 	int _bottom;
 	int _program;
+    bool _on;
 };
 
 CAMidiImportEvent::CAMidiImportEvent( bool on, int channel, int pitch, int velocity, int time, int length = 0, int tempo = 120, int program = 0 ) {
@@ -84,7 +85,7 @@ CAMidiImport::~CAMidiImport() {
 
 void CAMidiImport::initMidiImport() {
 	_curLine = _curChar = 0;
-	_curSlur = 0; _curPhrasingSlur = 0;
+	_curSlur = nullptr; _curPhrasingSlur = nullptr;
 }
 
 void CAMidiImport::addError(QString description, int curLine, int curChar) {
@@ -138,7 +139,7 @@ QList< QList<CAMidiNote*> > CAMidiImport::importMidiNotes() {
 					int timeLength = event->_length;
 					int k;
 					for (k=0; k<midiNotes.last().size() && midiNotes.last()[k]->timeStart()<timeStart; k++);
-					midiNotes.last().insert(k, new CAMidiNote( event->_pitchList[pitchIdx], timeStart, timeLength, 0 ));
+					midiNotes.last().insert(k, new CAMidiNote( event->_pitchList[pitchIdx], timeStart, timeLength, nullptr ));
 				}
 			}
 		}
@@ -327,7 +328,7 @@ void CAMidiImport::importMidiEvents() {
 			dk = CADiatonicKey( pmidi_out.key, pmidi_out.minor ? CADiatonicKey::Minor : CADiatonicKey::Major );
 			// After the first key signature only changes are imported
 			if (!_allChannelsKeySignatures.size() || _allChannelsKeySignatures.last()->diatonicKey() != dk)
-				_allChannelsKeySignatures << new CAKeySignature( dk, 0, pmidi_out.time );
+				_allChannelsKeySignatures << new CAKeySignature( dk, nullptr, pmidi_out.time );
 
 			break;
 		case PMIDI_STATUS_SMPTEOFFS:
@@ -429,9 +430,9 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 	}
 
 	int nImportedVoices=1;	// one because preprocessing, ie calling pmidi, is already done
-	setProgress(_numberOfAllVoices ? nImportedVoices*100/_numberOfAllVoices : 50 );;
+	setProgress(_numberOfAllVoices ? nImportedVoices*100/_numberOfAllVoices : 50 );
 
-	for (int ch=0;ch<16;ch++) {
+	for (unsigned char ch=0;ch<16;ch++) {
 
 		if (!_allChannelsEvents[ch]->size() || !_allChannelsEvents[ch]->first()->size())	/* staff or first voice empty */
 			continue;
@@ -444,7 +445,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			staff = new CAStaff( QString("Ch%1").arg(staffIndex), sheet, 5);		// Todo: string to build with QObject::tr()
 			sheet->addContext(staff);
 		}
-		CAMusElement *musElemClef = 0;
+		CAMusElement *musElemClef = nullptr;
 		for (int voiceIndex=0;voiceIndex<_allChannelsEvents[ch]->size();voiceIndex++) {
 			// voiceName = QObject::tr("Voice%1").arg( voiceNumber );
 			voice = new CAVoice( QString("Ch%1V%2").arg(staffIndex).arg(voiceIndex), staff, CANote::StemNeutral );		// Todo: string to build with QObject::tr()
@@ -463,7 +464,7 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 			}
 			voice->append( musElemClef, false );
 			writeMidiChannelEventsToVoice_New( ch, voiceIndex, staff, voice );
-			setProgress(_numberOfAllVoices ? nImportedVoices*100/_numberOfAllVoices : 50 );;
+			setProgress(_numberOfAllVoices ? nImportedVoices*100/_numberOfAllVoices : 50 );
 
 			++nImportedVoices;
 			staff->synchronizeVoices();
@@ -473,8 +474,8 @@ void CAMidiImport::writeMidiFileEventsToScore_New( CASheet *sheet ) {
 	}
 }
 
-CAMusElement* CAMidiImport::getOrCreateClef( int time, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
-	return 0;
+CAMusElement* CAMidiImport::getOrCreateClef( int , int , CAStaff *, CAVoice * ) {
+	return nullptr;
 }
 
 
@@ -492,7 +493,7 @@ int CAMidiImport::getNextKeySignatureTime() {
 /*!
 	This function looks in the keySignatureReferences
 */
-CAMusElement* CAMidiImport::getOrCreateKeySignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
+CAMusElement* CAMidiImport::getOrCreateKeySignature( int time, int, CAStaff *staff, CAVoice * ) {
 
 	if (_actualKeySignatureIndex+1 < _allChannelsKeySignatures.size() &&
 				// there are signatures ahead, and time is exactly matched
@@ -504,14 +505,14 @@ CAMusElement* CAMidiImport::getOrCreateKeySignature( int time, int voiceIndex, C
 		}
 		return staff->keySignatureRefs()[_actualKeySignatureIndex];
 	}
-	return 0;
+	return nullptr;
 }
 
 /*!
 	Docu neeeded, definitively! rud
 */
 
-CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int voiceIndex, CAStaff *staff, CAVoice *voice ) {
+CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int, CAStaff *staff, CAVoice * ) {
 
 	if (!staff->timeSignatureRefs().size()) {
 		_actualTimeSignatureIndex = 0;
@@ -542,7 +543,7 @@ CAMusElement* CAMidiImport::getOrCreateTimeSignature( int time, int voiceIndex, 
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 
@@ -560,8 +561,8 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 	CARest *rest;
 	QList<CANote *> previousNotes;	// for sluring
 	QList<CAPlayableLength> lenList;	// work list when splitting notes and rests at barlines
-	CATimeSignature *ts = 0;
-	CABarline *b = 0;
+	CATimeSignature *ts = nullptr;
+	CABarline *b = nullptr;
 	int time = 0;			// current time in the loop, only increasing, for tracking notes and rests
 	int length;
 	int program;
@@ -609,7 +610,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			if (fB) {
 				b = static_cast<CABarline*>(fB);
 			} else {
-				b = 0;
+				b = nullptr;
 			}
 			// Hier wird eine vergangene Taktlinie zugewiesen:  b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
 			b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
@@ -625,6 +626,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				time += len;
 				length -= len;
 				if ( tempo ) {
+                    // Note Reinhard: Not sure if tempo cannot exceed 256, "int" is used everywhere
 					CAMark *_curMark = new CATempo( CAPlayableLength::Quarter, tempo, rest);
 					rest->addMark(_curMark);
 					tempo = 0;
@@ -654,7 +656,6 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			  		staff->placeAutoBar( rest );
 				}
 				if (tsElem) {
-					;
 					break;
 				}
 			}
@@ -671,7 +672,7 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 			if (fB) {
 				b = static_cast<CABarline*>(fB);
 			} else {
-				b = 0;
+				b = nullptr;
 			}
 			b = static_cast<CABarline*>( voice->previousByType( CAMusElement::Barline, voice->lastMusElement()));
 
@@ -689,11 +690,13 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 					noteList[k]->setStemDirection( CANote::StemPreferred );
 				}
 
+                // Note Reinhard: Not sure if program cannot exceed 256, "int" is used everywhere
 				voice->setMidiProgram( program );
 				int len = CAPlayableLength::playableLengthToTimeLength( lenList[j] );
 				time += len;
 				length -= len;
 				if ( tempo ) {
+                    // Note Reinhard: Not sure if tempo cannot exceed 256, "int" is used everywhere
 					CAMark *_curMark = new CATempo( CAPlayableLength::Quarter, tempo, noteList.first());
 					noteList.first()->addMark(_curMark);
 					tempo = 0;
@@ -730,7 +733,6 @@ void CAMidiImport::writeMidiChannelEventsToVoice_New( int channel, int voiceInde
 				previousNotes << noteList;
 
 				if (tsElem) {
-					;
 					break;
 				}
 			}
@@ -790,7 +792,7 @@ CADiatonicPitch CAMidiImport::matchPitchToKey( CAVoice* voice, int midiPitch ) {
 							CAMusElement::KeySignature, voice->lastTimeEnd());
 	if (keyList.size()) {
 		// set the note name and its accidental and the accidentals of the scale
-		CAKeySignature* effSig = (CAKeySignature*) keyList.last();
+		CAKeySignature* effSig = static_cast<CAKeySignature*>(keyList.last());
 		return CADiatonicPitch::diatonicPitchFromMidiPitchKey(midiPitch, effSig->diatonicKey());
 	} else {
 		return CADiatonicPitch::diatonicPitchFromMidiPitch(midiPitch);

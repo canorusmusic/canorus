@@ -28,7 +28,7 @@ CAChordName::~CAChordName() {
 
 CAChordName* CAChordName::clone(CAContext* context) {
 	if (context && context->contextType() != CAContext::ChordNameContext) {
-		return 0;
+		return nullptr;
 	}
 
 	return new CAChordName(

@@ -158,6 +158,7 @@ void CAMusicXmlImport::readScorePartwise() {
 			CAStaff *s = _partMapStaff[_partMapStaff.keys()[i]][j];
 			for (int k=0; k<s->voiceList().size(); k++) {
 				// go through all voices in this staff
+                // Note Reinhard: Not sure if program and channel cannot exceed 256, "int" is used everywhere
 				s->voiceList()[k]->setMidiProgram( _midiProgram[_partMapStaff.keys()[i]]-1 );
 				s->voiceList()[k]->setMidiChannel( _midiChannel[_partMapStaff.keys()[i]]-1 );
 			}

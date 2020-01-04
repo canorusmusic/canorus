@@ -147,7 +147,6 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 	ui/propertiesdialog.h
 	ui/transposeview.h
 	ui/jumptoview.h
-	ui/singleaction.h
 
 	widgets/lcdnumber.h
 	widgets/view.h
@@ -728,7 +727,7 @@ ADD_CUSTOM_TARGET(tr
 	COMMAND ${Qt5_LUPDATE_EXECUTABLE} -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
 set_source_files_properties(${Canorus_Translation_Srcs} PROPERTIES OUTPUT_LOCATION "lang")
-qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
+#qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
 
 ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${Canorus_Translation_Bins})
 ADD_DEPENDENCIES(canorus canorus_qm)

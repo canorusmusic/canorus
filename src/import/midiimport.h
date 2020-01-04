@@ -38,7 +38,7 @@ class CAMidiImport : public CAImport {
 #endif
 public:
 	// Constructor
-	CAMidiImport( CADocument *document=0, QTextStream *in=0 );
+	CAMidiImport( CADocument *document=nullptr, QTextStream *in=nullptr );
 
 	// Destructor
 	virtual ~CAMidiImport();
