@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2009, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -56,7 +56,7 @@ CAResourceCtl::~CAResourceCtl() {
 	is copied and registered.
  */
 CAResource *CAResourceCtl::importResource( QString name, QString fileName, bool isLinked, CADocument *parent, CAResource::CAResourceType t ) {
-	CAResource *r=nullptr;
+	CAResource *r=0;
 	if (isLinked) {
 		r = new CAResource( fileName, name, true, t, parent );
 	} else {
@@ -100,7 +100,7 @@ CAResource *CAResourceCtl::createEmptyResource( QString name, CADocument *parent
 	f.open();
 	QString fileName = QFileInfo(f).absoluteFilePath();
 	f.close();
-	CAResource *r = new CAResource( QUrl::fromLocalFile(fileName), name, false, t, parent );
+	CAResource *r = new CAResource( fileName, name, false, t, parent );
 
 	if (parent) {
 #ifndef SWIGCPP

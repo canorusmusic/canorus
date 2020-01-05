@@ -44,9 +44,16 @@ IF(SWIG_FOUND AND NOT NO_SWIG)
 	SET(USE_SWIG True)
 	MESSAGE("SWIG version ${SWIG_VERSION} found, using scripting extensions.")
 ELSE(SWIG_FOUND AND NOT NO_SWIG)
-	MESSAGE("SWIG version >= 3.0.8 *not* found, version is ${SWIG_VERSION}, disabling SWIG!")
-	SET(NO_RUBY True)
-	SET(NO_PYTHON True)
+        # Try again with version 2
+        FIND_PACKAGE(SWIG 2.0.12 QUIET)
+        IF(SWIG_FOUND AND NOT NO_SWIG)
+                SET(USE_SWIG True)
+		MESSAGE("SWIG version ${SWIG_VERSION} found, using scripting extensions.")
+        ELSE(SWIG_FOUND AND NOT NO_SWIG)
+                MESSAGE("SWIG version >=2.0.12 or >= 3.0.3 *not* found, version is ${SWIG_VERSION}, disabling SWIG!")
+                SET(NO_RUBY True)
+                SET(NO_PYTHON True)
+        ENDIF(SWIG_FOUND AND NOT NO_SWIG)
 ENDIF(SWIG_FOUND AND NOT NO_SWIG)
 
 FIND_PACKAGE(Ruby)	#Setup RUBY_INCLUDE_PATH and RUBY_LIBRARIES
@@ -129,8 +136,7 @@ SET(Canorus_UIs		# List of .ui forms drawn by qt-designer that need to be compil
 	ui/voiceproperties.ui
 	ui/lyricscontextproperties.ui
 	ui/functionmarkcontextproperties.ui
-	ui/chordnamecontextproperties.ui
-
+	
 	ui/midirecorder.ui
 	ui/transposeview.ui
 	ui/jumptoview.ui
@@ -264,7 +270,6 @@ SET(Canorus_Score_Srcs		# Score representation
 	score/functionmarkcontext.cpp
 	score/figuredbasscontext.cpp
 	score/lyricscontext.cpp
-	score/chordnamecontext.cpp
 	
 	score/muselement.cpp
 	score/voice.cpp
@@ -297,8 +302,6 @@ SET(Canorus_Score_Srcs		# Score representation
 	score/functionmark.cpp
 	
 	score/figuredbassmark.cpp
-
-	score/chordname.cpp
 )
 
 SET(Canorus_Scripting_Srcs	# Sources meant for bridging C++<->scripting language
@@ -366,7 +369,6 @@ SET(Canorus_Layout_Srcs	# Drawable instances of the data
 	layout/drawablelyricscontext.cpp
 	layout/drawablefiguredbasscontext.cpp
 	layout/drawablefunctionmarkcontext.cpp
-	layout/drawablechordnamecontext.cpp
 
 	layout/drawablemuselement.cpp
 	layout/drawablenote.cpp
@@ -383,7 +385,6 @@ SET(Canorus_Layout_Srcs	# Drawable instances of the data
 	layout/drawablesyllable.cpp
 	layout/drawablefiguredbassnumber.cpp
 	layout/drawablefunctionmark.cpp
-	layout/drawablechordname.cpp
 )
 
 SET(Canorus_Interface_Srcs	# Other interfaces like Engraver, Playback, Plugin manager and others belong here.
@@ -559,6 +560,12 @@ ADD_DEFINITIONS(-DCANORUS_VERSION=\"${CANORUS_VERSION}\")
 
 # Define Scripting parameters
 IF(USE_SWIG)
+  IF("${SWIG_VERSION}" VERSION_EQUAL "2.0.4" OR "${SWIG_VERSION}" VERSION_GREATER "2.0.4")
+    CONFIGURE_FILE(scripting/canoruspython_2.i scripting/canoruspython.i COPYONLY)
+  ELSE("${SWIG_VERSION}" VERSION_EQUAL "2.0.4" OR "${SWIG_VERSION}" VERSION_GREATER "2.0.4")
+    CONFIGURE_FILE(scripting/canoruspython_1.i scripting/canoruspython.i COPYONLY)
+    	MESSAGE("Warning: Python Swig 1.x support is deprecated")
+  ENDIF("${SWIG_VERSION}" VERSION_EQUAL "2.0.4" OR "${SWIG_VERSION}" VERSION_GREATER "2.0.4")
 	ADD_DEFINITIONS(-DUSE_SWIG)
 ENDIF(USE_SWIG)
 IF(USE_RUBY)

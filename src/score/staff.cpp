@@ -259,7 +259,7 @@ CAVoice *CAStaff::findVoice(const QString name) {
 		if (_voiceList[i]->name() == name)
 			return _voiceList[i];
 
-	return nullptr;
+	return 0;
 }
 
 /*!
@@ -293,7 +293,7 @@ CAMusElement *CAStaff::getOneEltByType(CAMusElement::CAMusElementType type, int 
 		elt = _voiceList[i]->getOneEltByType(type, startTime);
 		if (elt) return elt;
 	}
-	return nullptr;
+	return 0;
 }
 
 /*!
@@ -316,7 +316,7 @@ QList<CAPlayable*> CAStaff::getChord(int time) {
 	Returns the Tempo element active at the given time.
  */
 CATempo *CAStaff::getTempo( int time ) {
-	CATempo *tempo = nullptr;
+	CATempo *tempo = 0;
 	for (int i=0; i<voiceList().size(); i++) {
 		CATempo *t = voiceList()[i]->getTempo(time);
 		if ( t && (!tempo || t->timeStart() > tempo->timeStart()) ) {
@@ -341,7 +341,7 @@ CATempo *CAStaff::getTempo( int time ) {
 	insertions and synchronization of the voices every time a new element is inserted would considerably
 	slow down the import filter.
 
-	\return True, if everything was ok. False, if fixes were needed.
+	Returns True, if everything was ok. False, if fixes were needed.
 */
 bool CAStaff::synchronizeVoices() {
 	int *pidx = new int[voiceList().size()];
@@ -430,7 +430,7 @@ bool CAStaff::synchronizeVoices() {
 					if (restList.size()) {
 						plastPlayable[ i ] = restList.last();
 					} else {
-						qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
+						qDebug() << "ERROR CAStaff::synchronizeVoices(): Cannot compose rests of length " << gapLength << endl;
 					}
 
 					changesMade = true;
@@ -451,7 +451,7 @@ bool CAStaff::synchronizeVoices() {
 				if (restList.size()) {
 					plastPlayable[ j ] = restList.last();
 				} else {
-					qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
+					qDebug() << "ERROR CAStaff::synchronizeVoices(): Cannot compose rests of length " << gapLength << endl;
 				}
 				changesMade = true;
 			}

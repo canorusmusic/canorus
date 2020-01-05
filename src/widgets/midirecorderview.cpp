@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -25,11 +25,11 @@ CAMidiRecorderView::CAMidiRecorderView( CAMidiRecorder *r, QWidget *parent )
 CAMidiRecorderView::~CAMidiRecorderView() {
 	if (midiRecorder()) {
 		delete midiRecorder();
-		setMidiRecorder(nullptr);
+		setMidiRecorder(0);
 	}
 
 	if (parent() && dynamic_cast<CAMainWin*>(parent())) {
-		static_cast<CAMainWin*>(parent())->setMidiRecorderView(nullptr);
+		static_cast<CAMainWin*>(parent())->setMidiRecorderView(0);
 	}
 }
 
@@ -59,7 +59,7 @@ void CAMidiRecorderView::onTimerTimeout() {
 	}
 }
 
-void CAMidiRecorderView::on_uiPause_clicked(bool) {
+void CAMidiRecorderView::on_uiPause_clicked(bool checked) {
 	uiPause->setVisible( false );
 	uiRecord->setVisible( true );
 
@@ -67,7 +67,7 @@ void CAMidiRecorderView::on_uiPause_clicked(bool) {
 	_status = Pause;
 }
 
-void CAMidiRecorderView::on_uiStop_clicked(bool) {
+void CAMidiRecorderView::on_uiStop_clicked(bool checked) {
 	uiRecord->setVisible( true );
 	uiPause->setVisible( false );
 	uiStop->setEnabled( false );
@@ -76,7 +76,7 @@ void CAMidiRecorderView::on_uiStop_clicked(bool) {
 	_status = Idle;
 }
 
-void CAMidiRecorderView::on_uiRecord_clicked(bool) {
+void CAMidiRecorderView::on_uiRecord_clicked(bool checked) {
 	uiRecord->setVisible( false );
 	uiPause->setVisible( true );
 	uiStop->setEnabled( true );
