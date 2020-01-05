@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2020, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2016, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -80,7 +80,6 @@
 #include "score/functionmarkcontext.h"
 #include "score/figuredbasscontext.h"
 #include "score/lyricscontext.h"
-#include "score/chordnamecontext.h"
 #include "score/clef.h"
 #include "score/articulation.h"
 #include "score/keysignature.h"
@@ -100,7 +99,6 @@
 #include "score/ritardando.h"
 #include "score/bookmark.h"
 #include "score/fingering.h"
-#include "score/chordname.h"
 #include "core/muselementfactory.h"
 #include "core/mimedata.h"
 #include "core/undo.h"
@@ -263,7 +261,6 @@ void CAMainWin::createCustomActions() {
 		uiContextType->setObjectName( "uiContextType" );
 		uiContextType->addButton( QIcon("images:document/staffnew.svg"), CAContext::Staff, tr("New Staff") );
 		uiContextType->addButton( QIcon("images:document/lyricscontextnew.svg"), CAContext::LyricsContext, tr("New Lyrics context") );
-		uiContextType->addButton( QIcon("images:document/chordnamecontextnew.svg"), CAContext::ChordNameContext, tr("New Chord Name context") );
 		uiContextType->addButton( QIcon("images:document/fbcontextnew.svg"), CAContext::FiguredBassContext, tr("New Figured Bass context") );
 		uiContextType->addButton( QIcon("images:document/fmcontextnew.svg"), CAContext::FunctionMarkContext, tr("New Function Mark context") );
 	uiSlurType = new CAMenuToolButton( tr("Select Slur Type"), 3, this );
@@ -676,7 +673,6 @@ void CAMainWin::setupCustomUi() {
 	uiInsertToolBar->addAction( uiInsertSyllable );
 	uiInsertToolBar->addAction( uiInsertFBM );
 	uiInsertToolBar->addAction( uiInsertFM );
-    uiInsertToolBar->addAction( uiInsertChordName );
 
 	if(qApp->isRightToLeft())
 		addToolBar(Qt::RightToolBarArea, uiInsertToolBar);
@@ -847,7 +843,6 @@ void CAMainWin::setupCustomUi() {
 	uiInsertGroup->addAction( uiInsertSyllable );
 	uiInsertGroup->addAction( uiInsertFBM );
 	uiInsertGroup->addAction( uiInsertFM );
-	uiInsertGroup->addAction( uiInsertChordName );
 	uiInsertGroup->setExclusive( true );
 
 	uiInsertToolBar->hide();
@@ -1780,7 +1775,7 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
                 qDebug().noquote() << debugStr;
 			}
 			
-			// lyrics, texts, bookmarks, chord names
+			// lyrics, texts, bookmarks
 			if (v->textEditVisible() && oldSelection.size() && oldSelection.front()->musElement()) {
 				confirmTextEdit(v, v->textEdit(), oldSelection.front()->musElement());
 			}
@@ -1846,27 +1841,9 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 						);
 						break;
 					}
-                    case CAContext::ChordNameContext: {
-                        CACanorus::undo()->createUndoCommand( document(), tr("new chord name context", "undo"));
-
-                        v->sheet()->insertContextAfter(
-                                dupContext?dupContext->context():nullptr,
-                                newContext = new CAChordNameContext(
-									tr("ChordNameContext%1").arg(v->sheet()->contextList().size()+1),
-									v->sheet()
-                                )
-                        );
-
-                        break;
-                    }
 				}
 				CACanorus::undo()->pushUndoCommand();
 				CACanorus::rebuildUI(document(), v->sheet());
-
-				if (!newContext) {
-				    qDebug() << "Error: newContext empty";
-				    break;
-				}
 
 				v->selectContext(newContext);
 				if (newContext->contextType()==CAContext::Staff) {
@@ -1894,14 +1871,8 @@ void CAMainWin::scoreViewMousePress(QMouseEvent *e, const QPoint coords) {
 			if ( musElementFactory()->musElementType()==CAMusElement::Rest )
 			     musElementFactory()->setMusElementType( CAMusElement::Note );
 
-			// Insert Syllable, Text, or ChordName
-			if (!v->selection().isEmpty() &&
-				(uiInsertSyllable->isChecked() ||
-				 uiInsertChordName->isChecked() ||
-				 (uiMarkType->isChecked() && success &&
-				  (musElementFactory()->markType()==CAMark::Text || musElementFactory()->markType()==CAMark::BookMark))
-				)
-			   ) {
+			// Insert Syllable or Text
+			if ( (uiInsertSyllable->isChecked() || (uiMarkType->isChecked() && (musElementFactory()->markType()==CAMark::Text || musElementFactory()->markType()==CAMark::BookMark) && success)) && !v->selection().isEmpty() ) {
 				v->createTextEdit( v->selection().front() );
 			} else {
 				v->removeTextEdit();
@@ -2092,8 +2063,7 @@ void CAMainWin::scoreViewMouseRelease(QMouseEvent *e, QPoint coords) {
 			
 			if ( elt &&
 				(elt->musElementType()==CAMusElement::Syllable ||
-				 elt->musElementType()==CAMusElement::ChordName ||
-				 (elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark))
+				(elt->musElementType()==CAMusElement::Mark && (static_cast<CAMark*>(elt)->markType()==CAMark::Text || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark))
 				)
 			) {
 				v->createTextEdit( dElt );
@@ -2580,8 +2550,8 @@ void CAMainWin::scoreViewKeyPress(QKeyEvent *e) {
 bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 	CADrawableContext *drawableContext = v->currentContext();
 
-	CAStaff *staff = nullptr;
-	CADrawableStaff *drawableStaff = nullptr;
+	CAStaff *staff=0;
+	CADrawableStaff *drawableStaff = 0;
 	if (drawableContext) {
 		drawableStaff = dynamic_cast<CADrawableStaff*>(drawableContext);
 		staff = dynamic_cast<CAStaff*>(drawableContext->context());
@@ -2589,11 +2559,11 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 
 	CADrawableMusElement *drawableRight = v->nearestRightElement(coords.x(), coords.y(), v->currentContext());
 
-	CAMusElement *right = nullptr;
+	CAMusElement *right=0;
 	if ( drawableRight )
 		right = drawableRight->musElement();
 
-	bool success = false;
+	bool success=false;
 
 	if (!drawableContext)
 		return false;
@@ -2929,9 +2899,8 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 		case CAMusElement::MidiNote:
 		case CAMusElement::Syllable:
 		case CAMusElement::Tuplet:
-        case CAMusElement::ChordName:
 		case CAMusElement::Undefined:
-			qDebug() << "Warning: CAMainWin::insertMusElementAt - Unhandled Element" << musElementFactory()->musElementType();
+			fprintf(stderr,"Warning: CAMainWin::insertMusElementAt - Unhandled Element %d\n",musElementFactory()->musElementType());
 			break;
 	}
 
@@ -3696,15 +3665,15 @@ void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
 }
 
 /*!
-	Function called when user types the text of the syllable or chord name.
+	Function called when user types the text of the syllable or hits control keys.
 
 	The following behaviour is implemented:
 		- alphanumeric keys are pressed - writes text
-		- spacebar is pressed - creates the current syllable/chord name and jumps to the next syllable
-		- return is pressed - creates the current syllable/chord name and hides the edit widget
-		- left key is pressed - if cursorPosition()==0, jumps to the previous syllable/chord name
+		- spacebar is pressed - creates the current syllable and jumps to the next syllable
+		- return is pressed - creates the current syllable and hides the syllable edit widget
+		- left key is pressed - if cursorPosition()==0, jumps to the previous syllable
 		- right key is pressed - if cursorPosition()==length(), same as spacebar
-		- escape key is pressed - hides the edit widget and cancels any changes to syllable/chord name
+		- escape key is pressed - hides the syllable edit and cancels any changes to syllable
 
 */
 void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
@@ -3712,58 +3681,53 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 	CATextEdit *textEdit = static_cast<CATextEdit*>(sender());
 
 	CAScoreView *v = currentScoreView();
-	CAMusElement *elt = (v->selection().size()?v->selection().front()->musElement():nullptr);
+	//CADrawableContext *dContext = v->currentContext();
+	CAMusElement *elt = (v->selection().size()?v->selection().front()->musElement():0);
 
-	if ( !elt ) return;
+	if ( elt ) {
+		if (elt->musElementType()==CAMusElement::Syllable ) {
+			CASyllable *syllable = static_cast<CASyllable*>(elt);
 
-	switch (elt->musElementType()) {
-	case CAMusElement::Syllable:
-	case CAMusElement::ChordName: {
-		if (e->key()==Qt::Key_Space  ||
-			e->key()==Qt::Key_Return ||
-			(e->key()==Qt::Key_Right && textEdit->cursorPosition()==textEdit->text().size()) ||
-			((e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && textEdit->cursorPosition()==0) ||
-			(elt->musElementType()==CAMusElement::Syllable && CACanorus::settings()->finaleLyricsBehaviour() && e->key()==Qt::Key_Minus)
-		) {
-			// one of control keys were hit, create or edit syllable/chord name
-			confirmTextEdit(currentScoreView(), textEdit, elt);
+			if ( e->key()==Qt::Key_Space  ||
+				e->key()==Qt::Key_Return ||
+				(e->key()==Qt::Key_Right && textEdit->cursorPosition()==textEdit->text().size()) ||
+				((e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && textEdit->cursorPosition()==0) ||
+				(CACanorus::settings()->finaleLyricsBehaviour() && e->key()==Qt::Key_Minus)
+			) {
+				// create or edit syllable
+				confirmTextEdit(currentScoreView(), textEdit, elt);
 
-			CAMusElement *next = nullptr;
-			if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) {
-				// move to the right neighbor
-				next = elt->context()->next(elt);
-			} else if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) {
-				// move to the left neighbor
-				next = elt->context()->previous(elt);
-			} else if (e->key()==Qt::Key_Minus && elt->musElementType()==CAMusElement::Syllable) {
-				// move to the right neighbor + set hyphen
-				static_cast<CASyllable*>(elt)->setHyphenStart(true);
-				next = elt->context()->next(elt);
+				//CAVoice *voice = (syllable->associatedVoice()?syllable->associatedVoice():lc->associatedVoice());
+				CAMusElement *nextSyllable = 0;
+				if (syllable) {
+					if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) { // next right note
+						nextSyllable = syllable->lyricsContext()->next(syllable);
+					} else  if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) {                  // next left note
+						nextSyllable = syllable->lyricsContext()->previous(syllable);
+					} else if (e->key()==Qt::Key_Minus) {
+						syllable->setHyphenStart(true);
+						nextSyllable = syllable->lyricsContext()->next(syllable);
+					}
+					if (nextSyllable) {
+						CADrawableMusElement *dNextSyllable = v->selectMElement(nextSyllable);
+						v->createTextEdit( dNextSyllable );
+						if ( e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return ) {
+							v->textEdit()->setCursorPosition(0); // go to the beginning if moving to the right next syllable
+						}
+						
+						if ( dNextSyllable && (dNextSyllable->xPos() > v->worldX()+0.85*v->worldWidth()) ) {
+							v->setWorldX( dNextSyllable->xPos()-v->worldWidth()/2, CACanorus::settings()->animatedScroll() );
+						}
+					}
+				}
 			}
-			if (next) {
-				CADrawableMusElement *dNext = v->selectMElement(next);
-				v->createTextEdit( dNext );
-				if ( e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return ) {
-					// edit widget cursor is at the end by default. go to the beginning, if moving to the right neighbor.
-					v->textEdit()->setCursorPosition(0);
-				}
-
-				if ( dNext && (dNext->xPos() > v->worldX()+0.85*v->worldWidth()) ) {
-					v->setWorldX( dNext->xPos()-v->worldWidth()/2, CACanorus::settings()->animatedScroll() );
-				}
+		} else {
+			// ((elt->musElementType()==CAMusElement::Mark &&
+			//   static_cast<CAMark*>(elt)->markType()==CAMark::Text) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
+			if (e->key()==Qt::Key_Return) {
+				confirmTextEdit(currentScoreView(),textEdit, elt);
 			}
 		}
-		break;
-	}
-	case CAMusElement::Mark: {
-		// CAMark::Text and CAMark::BookMark
-		if (e->key()==Qt::Key_Return) {
-			confirmTextEdit(currentScoreView(),textEdit, elt);
-		}
-		break;
-	default:
-		break;
-	}
 	}
 	
 	// escape key - cancel
@@ -3773,8 +3737,7 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 }
 
 void CAMainWin::confirmTextEdit(CAScoreView *v, CATextEdit *textEdit, CAMusElement *elt) {
-	switch (elt->musElementType()) {
-	case CAMusElement::Syllable: {
+	if ( elt->musElementType()==CAMusElement::Syllable ) {
 		// create or edit syllable
 		CASyllable *syllable = static_cast<CASyllable*>(elt);
 
@@ -3786,15 +3749,19 @@ void CAMainWin::confirmTextEdit(CAScoreView *v, CATextEdit *textEdit, CAMusEleme
 		bool melisma = false;
 		if (text.right(1)=="_") { melisma = true; text.chop(1); }
 
+		//CAVoice *voice = 0; /// \todo GUI for syllable specific associated voice - current is the default lyrics context's one
+
+		//CALyricsContext *lc = static_cast<CALyricsContext*>(dContext->context());
+
 		CACanorus::undo()->createUndoCommand( document(), tr("lyrics edit", "undo") );
 		syllable->setText(text);
 		syllable->setHyphenStart(hyphen);
 		syllable->setMelismaStart(melisma);
 
 		v->removeTextEdit();
-		break;
-	}
-	case CAMusElement::Mark: {
+	} else {
+		// ((elt->musElementType()==CAMusElement::Mark &&
+		//   static_cast<CAMark*>(elt)->markType()==CAMark::Text) || static_cast<CAMark*>(elt)->markType()==CAMark::BookMark)
 		CAMark *mark = static_cast<CAMark*>(elt);
 		if (!textEdit->text().isEmpty() || mark->markType()==CAMark::BookMark) {
 			CACanorus::undo()->createUndoCommand( document(), tr("text edit", "undo") );
@@ -3810,35 +3777,6 @@ void CAMainWin::confirmTextEdit(CAScoreView *v, CATextEdit *textEdit, CAMusEleme
 			v->removeTextEdit();
 			delete mark;
 		}
-		break;
-	}
-	case CAMusElement::ChordName: {
-		// create or edit chord name
-	CAChordName* cn = static_cast<CAChordName*>(elt);
-
-		CACanorus::undo()->createUndoCommand( document(), tr("chord name edit", "undo") );
-
-		QString text = textEdit->text().simplified(); // remove any trailing whitespaces
-		cn->importFromString(text);
-		_noteChecker.checkSheet(v->sheet());
-
-		v->removeTextEdit();
-		break;
-	}
-	case CAMusElement::Note:
-	case CAMusElement::Rest:
-	case CAMusElement::MidiNote:
-	case CAMusElement::Barline:
-	case CAMusElement::Clef:
-	case CAMusElement::TimeSignature:
-	case CAMusElement::KeySignature:
-	case CAMusElement::Slur:
-	case CAMusElement::Tuplet:
-	case CAMusElement::FunctionMark:
-	case CAMusElement::FiguredBassMark:
-	case CAMusElement::Undefined:
-		qDebug() << "Error: confirmTextEdit() called on element of type" << elt->musElementType();
-		break;
 	}
 	
 	CACanorus::undo()->pushUndoCommand();
@@ -4750,11 +4688,7 @@ void CAMainWin::updateContextToolBar() {
 				break;
 			}
 			case CAContext::FiguredBassContext:
-            case CAContext::ChordNameContext: {
-                uiStanzaNumberAction->setVisible(false);
-                uiAssociatedVoiceAction->setVisible(false);
-                break;
-            }
+				break;
 		}
 		uiContextName->setText(context->name());
 	} else {
@@ -4789,7 +4723,6 @@ void CAMainWin::updateInsertToolBar() {
 					uiInsertFBM->setVisible(false);
 					uiInsertFM->setVisible(false);
 					uiInsertSyllable->setVisible(false);
-                    uiInsertChordName->setVisible(false);
 					break;
 				case CAContext::FunctionMarkContext:
 					// function mark context selected
@@ -4807,7 +4740,6 @@ void CAMainWin::updateInsertToolBar() {
 					uiInsertFBM->setVisible(false);
 					uiInsertFM->setVisible(true);
 					uiInsertSyllable->setVisible(false);
-                    uiInsertChordName->setVisible(false);
 					break;
 				case CAContext::LyricsContext:
 					// lyrics context selected
@@ -4825,7 +4757,6 @@ void CAMainWin::updateInsertToolBar() {
 					uiInsertFBM->setVisible(false);
 					uiInsertFM->setVisible(false);
 					uiInsertSyllable->setVisible(true);
-                    uiInsertChordName->setVisible(false);
 					break;
 				case CAContext::FiguredBassContext:
 					// lyrics context selected
@@ -4843,26 +4774,7 @@ void CAMainWin::updateInsertToolBar() {
 					uiInsertFBM->setVisible(true);
 					uiInsertFM->setVisible(false);
 					uiInsertSyllable->setVisible(false);
-                    uiInsertChordName->setVisible(false);
 					break;
-                case CAContext::ChordNameContext:
-                    // chord name context selected
-                    uiInsertPlayable->setVisible(false);
-                    uiSlurType->defaultAction()->setVisible(false);
-                    uiInsertClef->setVisible(false); // menu
-                    uiInsertBarline->setVisible(false); // menu
-                    uiClefType->defaultAction()->setVisible(false);
-                    uiTimeSigType->defaultAction()->setVisible(false);
-                    uiInsertKeySig->setVisible(false);
-                    uiMarkType->defaultAction()->setVisible(false);
-                    uiArticulationType->defaultAction()->setVisible(false);
-                    uiInsertTimeSig->setVisible(false);
-                    uiBarlineType->defaultAction()->setVisible(false);
-                    uiInsertFBM->setVisible(false);
-                    uiInsertFM->setVisible(false);
-                    uiInsertSyllable->setVisible(false);
-                    uiInsertChordName->setVisible(true);
-                    break;
 			}
 		} else {
 			// no contexts selected
@@ -4880,7 +4792,6 @@ void CAMainWin::updateInsertToolBar() {
 			uiInsertFBM->setVisible(false);
 			uiInsertFM->setVisible(false);
 			uiInsertSyllable->setVisible(false);
-            uiInsertChordName->setVisible(false);
 		}
 	} else {
 		uiInsertToolBar->hide();
@@ -4900,7 +4811,6 @@ void CAMainWin::updateInsertToolBar() {
 		uiInsertFBM->setVisible(false);
 		uiInsertFM->setVisible(false);
 		uiInsertSyllable->setVisible(false);
-        uiInsertChordName->setVisible(false);
 	}
 }
 
@@ -5721,9 +5631,6 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 					}
 					case CAContext::FiguredBassContext:
 						break;
-                    case CAContext::ChordNameContext:
-                        newContext = new CAChordNameContext(tr("ChordNameContext%1").arg(v->sheet()->contextList().size()+1), currentSheet);
-                        break;
 				}
 				if(insertAfter) {
 					currentSheet->insertContextAfter(insertAfter, newContext);

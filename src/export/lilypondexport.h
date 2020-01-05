@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -24,8 +24,6 @@
 
 #include "export/export.h"
 
-class CAChordNameContext;
-
 class CALilyPondExport : public CAExport {
 public:
 	CALilyPondExport( QTextStream *out=0 );
@@ -48,8 +46,6 @@ private:
 	void exportVoiceImpl(CAVoice *voice);
 	void exportLyricsContextBlock(CALyricsContext *lc);
 	void exportLyricsContextImpl(CALyricsContext* lc);
-	void exportChordNameContextBlock(CAChordNameContext*);
-	void exportChordNameContextImpl(CAChordNameContext*);
 	void exportMarksBeforeElement( CAMusElement* );
 	void exportNoteMarks( CANote* );
 	void exportMarksAfterElement( CAMusElement* );

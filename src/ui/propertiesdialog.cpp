@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -22,7 +22,6 @@
 #include "score/voice.h"
 #include "score/lyricscontext.h"
 #include "score/functionmarkcontext.h"
-#include "score/chordnamecontext.h"
 
 /*!
 	\class CAPropertiesDialog
@@ -59,11 +58,11 @@ CAPropertiesDialog::~CAPropertiesDialog() {
 	Tree always shows the whole Document structure.
 */
 void CAPropertiesDialog::buildTree() {
-	QWidget *w=nullptr;
+	QWidget *w=0;
 
 	// get current item
 	QTreeWidgetItem *curItem=uiDocumentTree->currentItem();
-	CADocument *curDocument=nullptr; CASheet *curSheet=nullptr; CAContext *curContext=nullptr; CAVoice *curVoice=nullptr;
+	CADocument *curDocument=0; CASheet *curSheet=0; CAContext *curContext=0; CAVoice *curVoice=0;
 	if ( curItem ) {
 		if ( _documentItem==curItem )
 			curDocument = _document;
@@ -78,9 +77,9 @@ void CAPropertiesDialog::buildTree() {
 			curVoice= _voiceItem[curItem];
 	}
 
-	QTreeWidgetItem *docItem=nullptr;
+	QTreeWidgetItem *docItem=0;
 	uiDocumentTree->clear();
-	_documentItem=nullptr; _sheetItem.clear(); _contextItem.clear(); _voiceItem.clear();
+	_documentItem=0; _sheetItem.clear(); _contextItem.clear(); _voiceItem.clear();
 	if (_document) {
 		w = new CADocumentProperties( _document, this );
 		_documentPropertiesWidget = w;
@@ -98,20 +97,19 @@ void CAPropertiesDialog::buildTree() {
 			uiPropertiesWidget->addWidget( w );
 			updateSheetProperties( _document->sheetList()[i] );
 
-			QTreeWidgetItem *sheetItem=nullptr;
+			QTreeWidgetItem *sheetItem=0;
 			sheetItem = new QTreeWidgetItem( docItem );
 			sheetItem->setText( 0, _document->sheetList()[i]->name() );
 			sheetItem->setIcon( 0, QIcon("images:document/sheet.svg") );
 			_sheetItem[ sheetItem ] = _document->sheetList()[i];
 
 			for ( int j=0; j<_document->sheetList()[i]->contextList().size(); j++ ) {
-				QTreeWidgetItem *contextItem=nullptr;
+				QTreeWidgetItem *contextItem=0;
 				contextItem = new QTreeWidgetItem( sheetItem );
 				contextItem->setText( 0, _document->sheetList()[i]->contextList()[j]->name() );
 				_contextItem[ contextItem ] = _document->sheetList()[i]->contextList()[j];
 
-				switch (_document->sheetList()[i]->contextList()[j]->contextType()) {
-				case CAContext::Staff: {
+				if (dynamic_cast<CAStaff*>( _document->sheetList()[i]->contextList()[j] )) {
 					contextItem->setIcon( 0, QIcon("images:document/staff.svg") );
 					w = new CAStaffProperties( this );
 					uiPropertiesWidget->addWidget( w );
@@ -125,43 +123,28 @@ void CAPropertiesDialog::buildTree() {
 						_voicePropertiesWidget[ s->voiceList()[k] ] = v;
 						updateVoiceProperties( s->voiceList()[k] );
 
-						QTreeWidgetItem *voiceItem=nullptr;
+						QTreeWidgetItem *voiceItem=0;
 						voiceItem = new QTreeWidgetItem( contextItem );
 						voiceItem->setText( 0, s->voiceList()[k]->name() );
 						voiceItem->setIcon( 0, QIcon("images:document/voice.svg") );
 						_voiceItem[ voiceItem ] = s->voiceList()[k];
 					}
-
-					break;
-				}
-				case CAContext::LyricsContext: {
+				} else
+				if (dynamic_cast<CALyricsContext*>( _document->sheetList()[i]->contextList()[j] )) {
 					contextItem->setIcon( 0, QIcon("images:document/lyricscontext.svg") );
 					w = new CALyricsContextProperties( this );
 					uiPropertiesWidget->addWidget( w );
 					_contextPropertiesWidget[ _document->sheetList()[i]->contextList()[j] ] = w;
 					updateLyricsContextProperties( static_cast<CALyricsContext*>(_document->sheetList()[i]->contextList()[j]) );
-					break;
+				} else
+				if (dynamic_cast<CAFunctionMarkContext*>( _document->sheetList()[i]->contextList()[j] )) {
+				contextItem->setIcon( 0, QIcon("images:document/fmcontext.svg") );
+				w = new CAFunctionMarkContextProperties( this );
+					uiPropertiesWidget->addWidget( w );
+					_contextPropertiesWidget[ _document->sheetList()[i]->contextList()[j] ] = w;
+					updateFunctionMarkContextProperties( static_cast<CAFunctionMarkContext*>(_document->sheetList()[i]->contextList()[j]) );
 				}
-				case CAContext::FunctionMarkContext: {
-					contextItem->setIcon( 0, QIcon("images:document/fmcontext.svg") );
-					w = new CAFunctionMarkContextProperties( this );
-						uiPropertiesWidget->addWidget( w );
-						_contextPropertiesWidget[ _document->sheetList()[i]->contextList()[j] ] = w;
-						updateFunctionMarkContextProperties( static_cast<CAFunctionMarkContext*>(_document->sheetList()[i]->contextList()[j]) );
-					break;
-				}
-				case CAContext::ChordNameContext: {
-					contextItem->setIcon( 0, QIcon("images:document/chordnamecontext.svg") );
-					w = new CAChordNameContextProperties( this );
-						uiPropertiesWidget->addWidget( w );
-						_contextPropertiesWidget[ _document->sheetList()[i]->contextList()[j] ] = w;
-						updateChordNameContextProperties( static_cast<CAChordNameContext*>(_document->sheetList()[i]->contextList()[j]) );
-					break;
-				}
-				case CAContext::FiguredBassContext: {
-					break;
-				}
-				}
+
 			}
 		}
 
@@ -278,11 +261,8 @@ void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *
 				updateFunctionMarkContextProperties( static_cast<CAFunctionMarkContext*>( _contextItem[cur] ) );
 				break;
 			case CAContext::FiguredBassContext:
-				qDebug() << "Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type" <<_contextItem[cur]->contextType();
+				fprintf(stderr,"Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type %d",_contextItem[cur]->contextType());
 				break;
-            case CAContext::ChordNameContext:
-				updateChordNameContextProperties( static_cast<CAChordNameContext*>( _contextItem[cur] ) );
-                break;
 		}
 
 		// update uiUp/uiDown buttons
@@ -366,11 +346,8 @@ void CAPropertiesDialog::applyProperties() {
 				break;
 			}
 			case CAContext::FiguredBassContext:
-				qDebug() << "Warning: CAPropertiesDialog::applyProperties - Unhandled Type " << c->contextType();
+				fprintf(stderr,"Warning: CAPropertiesDialog::applyProperties - Unhandled Type %d",c->contextType());
 				break;
-            case CAContext::ChordNameContext:
-                qDebug() << "Warning: CAPropertiesDialog::applyProperties - Unhandled Type " << c->contextType();
-                break;
 		}
 	}
 
@@ -494,8 +471,4 @@ void CAPropertiesDialog::updateLyricsContextProperties( CALyricsContext *lc ) {
 
 void CAPropertiesDialog::updateFunctionMarkContextProperties( CAFunctionMarkContext *fmc ) {
 	uiPropertiesWidget->setCurrentWidget( _contextPropertiesWidget[fmc] );
-}
-
-void CAPropertiesDialog::updateChordNameContextProperties( CAChordNameContext *cnc ) {
-	uiPropertiesWidget->setCurrentWidget( _contextPropertiesWidget[cnc] );
 }

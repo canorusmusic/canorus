@@ -101,7 +101,6 @@ const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementTyp
 		case (Tuplet): return "tuplet"; break;
 		case (Mark): return "mark"; break;
 		case (FiguredBassMark): return "figured-bass-mark"; break;
-		case (ChordName): return "chord-name"; break;
 	}
 	// Do not add a default case as else newly added elements might be forgotten here!
 	return QString();
@@ -127,7 +126,6 @@ CAMusElement::CAMusElementType CAMusElement::musElementTypeFromString(const QStr
 	if ( type=="figured-bass-mark" ) return FiguredBassMark;
 	if ( type=="tuplet" ) return Tuplet;
 	if ( type=="midi-note" ) return MidiNote;
-	if ( type=="chord-name" ) return ChordName;
 	return Undefined;
 }
 
@@ -175,7 +173,7 @@ void CAMusElement::addMarks( QList<CAMark*> marks ) {
 		- ExpressionMark - A music element which represents any technical text marks about how the score should be played - CAExpressionMark (eg. Legato)
 		- VolumeSign - A music element which represents any volue sign (forte, piano etc.).
 		- Text - A music element which represents any text notes and authors additions to the score. (eg. These 3 measures still need to be fixed)
-        - ChordName - A music elements which represents a chord name CAChordName (e.g. Cm, d#:dim)
+
 	\sa musElementType()
 */
 
