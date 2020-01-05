@@ -54,6 +54,8 @@ CALilyPondExport::CALilyPondExport( QTextStream *out )
  : CAExport(out) {
 	setIndentLevel( 0 );
 	setCurDocument( nullptr );
+	_voltaBracketOccured = false;
+	_voltaBracketIsOpen = false;
 	_voltaFunctionWritten = false;
 	_voltaBracketFinishAtRepeat = false;
 	_voltaBracketFinishAtBar = false;
@@ -138,6 +140,14 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 
 			// set this flag to allow the time signature engraver and bar line engraver
 			_timeSignatureFound = true;
+
+			if (bar->barlineType() == CABarline::RepeatOpen || bar->barlineType() == CABarline::RepeatCloseOpen) {
+				_voltaBracketOccured = false;
+			}
+			if (_voltaBracketIsOpen) {
+				out() << " \\set Score.repeatCommands = #'((volta #f))  ";
+				_voltaBracketIsOpen = false;
+			}
 			break;
 		}
 		case CAMusElement::Note:
@@ -395,7 +405,21 @@ void CALilyPondExport::exportMarksAfterElement( CAMusElement *elt ) {
 		case CAMark::InstrumentChange:
 		case CAMark::Undefined:
 		case CAMark::BookMark:
-		case CAMark::RepeatMark:
+		case CAMark::RepeatMark: {
+			CARepeatMark *v = static_cast<CARepeatMark*>(curMark);
+			if (v->repeatMarkType() == CARepeatMark::Volta) {
+				int vn = v->voltaNumber();
+				if (_voltaBracketIsOpen || _voltaBracketOccured) {
+					out() << " \\set Score.repeatCommands = #'((volta #f) (volta \"" << vn << "\")) ";
+					_voltaBracketIsOpen = true;
+				} else {
+					out() << " \\set Score.repeatCommands = #'((volta \"" << vn << "\"))";
+					_voltaBracketIsOpen = true;
+					_voltaBracketOccured = true;
+				}
+			}
+		    break;
+			}
 		case CAMark::Fingering:
 			break;
 		}
@@ -868,7 +892,7 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 
 	for ( int c = 0; c < sheet->contextList().size(); ++c ) {
 		if (sheet->contextList()[c]->contextType() == CAContext::Staff) {
-			scanForRepeats(static_cast<CAStaff*>(sheet->contextList()[c]));
+			// scanForRepeats(static_cast<CAStaff*>(sheet->contextList()[c]));
 			break;
 		}
 	}
