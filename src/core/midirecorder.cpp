@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -25,7 +25,7 @@
 	   close the stream.
  */
 CAMidiRecorder::CAMidiRecorder( CAResource *r, CAMidiDevice *d )
- : QObject(), _resource(r), _midiExport(0), _curTime(0) {
+ : QObject(), _resource(r), _midiExport(nullptr), _curTime(0) {
 	_paused = false;
 
 	connect( d, SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(onMidiInEvent( QVector<unsigned char> )) );
@@ -41,7 +41,7 @@ void CAMidiRecorder::timerTimeout() {
 	}
 }
 
-void CAMidiRecorder::startRecording( int startTime ) {
+void CAMidiRecorder::startRecording( int ) {
 	if (!_paused) {
 		_midiExport = new CAMidiExport();
 		_midiExport->setStreamToFile( _resource->url().toLocalFile() );
@@ -64,7 +64,7 @@ void CAMidiRecorder::stopRecording() {
 	_midiExport->writeFile();
 
 	delete _midiExport;
-	_midiExport = 0;
+	_midiExport = nullptr;
 	_timer->stop();
 	_timer->disconnect();
 }

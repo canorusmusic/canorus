@@ -526,6 +526,8 @@ bool CALilyPondImport::isRest(const QString elt) {
 /*!
 	Generates the note pitch and number of accidentals from the note written in LilyPond syntax.
 
+	\param parse If true, constNName will be trimmed for the first element - the relative pitch
+
 	\sa playableLengthFromLilyPond()
 */
 CADiatonicPitch CALilyPondImport::relativePitchFromLilyPond(QString& constNName, CADiatonicPitch prevPitch, bool parse) {

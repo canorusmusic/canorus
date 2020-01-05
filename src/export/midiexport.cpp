@@ -255,6 +255,8 @@ void CAMidiExport::exportDocumentImpl(CADocument *doc)
 				}
 				break;
 			}
+            case CAContext::ChordNameContext:
+                break; // TODO
 			case CAContext::LyricsContext:
 			case CAContext::FunctionMarkContext:
 			case CAContext::FiguredBassContext:
@@ -308,6 +310,7 @@ void CAMidiExport::exportSheetImpl(CASheet *sheet)
 			case CAContext::LyricsContext:
 			case CAContext::FunctionMarkContext:
 			case CAContext::FiguredBassContext:
+			case CAContext::ChordNameContext:
 				break;
 		}
 	}
