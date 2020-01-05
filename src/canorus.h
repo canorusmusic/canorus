@@ -8,6 +8,11 @@
 #ifndef CANORUS_H_
 #define CANORUS_H_
 
+// std::unique_ptr for old Qt LTS 5.9.x
+// Do not move below mainwin!
+#include <iostream> // verbose stuff
+#include <memory>
+
 // Python.h needs to be loaded first!
 #include "ui/settingsdialog.h"
 #include "ui/mainwin.h"
