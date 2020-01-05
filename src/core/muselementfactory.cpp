@@ -526,8 +526,7 @@ bool CAMusElementFactory::configureFunctionMark( CAFunctionMarkContext *fmc, int
 /*!
 	Configures a new tuplet containing the given \a noteList.
  */
-bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> noteList ) {
-    (void)noteList;
+bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> ) {
 	return false;
 }
 

@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2009, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2009-2020, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.

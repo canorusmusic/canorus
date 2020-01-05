@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -113,7 +113,7 @@ void CAAutoRecovery::openRecovery() {
 		CACanorusMLImport open;
 		open.setStreamFromFile( CASettings::defaultSettingsPath()+"/recovery"+QString::number(i) );
 		open.importDocument();
-		open.wait(120000);
+		open.wait(_recoveryTimeout);
 		if ( open.importedDocument() ) {
 			open.importedDocument()->setModified(true); // warn that the file is unsaved, if closing
 			open.importedDocument()->setFileName("");
