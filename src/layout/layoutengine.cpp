@@ -202,7 +202,7 @@ void CALayoutEngine::reposit( CAScoreView *v ) {
 	int timeStart = 0;
 	bool done = false;
 	CADrawableFunctionMarkSupport **lastDFMTonicizations = new CADrawableFunctionMarkSupport *[streams];
-	for (int i=0; i<streams; i++) lastDFMTonicizations[i] = nullptr;
+	for (unsigned int i=0; i<streams; i++) lastDFMTonicizations[i] = nullptr;
 	while (!done) {
 		//if all the indices are at the end of the streams, finish.
 		unsigned int idx;
