@@ -107,6 +107,9 @@ private:
 	CAPlayableLength _lastPlayableLength;
 	int _curStreamTime;
 
+	bool _voltaBracketIsOpen;
+	bool _voltaBracketOccured;
+
 	void voltaFunction( void );
 	bool _voltaFunctionWritten;
 	bool _voltaBracketFinishAtRepeat;
