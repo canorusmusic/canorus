@@ -722,12 +722,12 @@ ENDIF(MINGW)
 # .ts files. Use custom command instead:
 #qt5_create_translation(Canorus_Translation_Bins ${Canorus_UIC_Srcs} ${Canorus_Srcs} lang/template.ts)
 ADD_CUSTOM_TARGET(tr
-	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
+	WORKING_DIRECTORY ${CMAKE_BINARY_DIR_DIR}/src
 	DEPENDS ${Canorus_UIC_Srcs}
 	COMMAND ${Qt5_LUPDATE_EXECUTABLE} -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
-set_source_files_properties(${Canorus_Translation_Srcs} PROPERTIES OUTPUT_LOCATION "lang")
-#qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
+set_source_files_properties(${Canorus_Translation_Srcs} PROPERTIES OUTPUT_LOCATION ${CMAKE_BINARY_DIR}/lang)
+qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
 
 ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${Canorus_Translation_Bins})
 ADD_DEPENDENCIES(canorus canorus_qm)
