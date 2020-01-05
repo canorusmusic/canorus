@@ -19,6 +19,7 @@
 #include <QMetaMethod>
 #include <QFontDatabase>
 #include <iostream> // verbose stuff
+#include <memory> // unique_ptr
 
 #include "interface/rtmididevice.h"
 #include "ui/settingsdialog.h"

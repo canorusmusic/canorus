@@ -172,16 +172,16 @@ SET(Canorus_Gui_MOCs	# List of classes which Qt needs to produce MOCs for them (
 )
 
 IF(Qt5WebEngineWidgets_LIBRARIES)
-    SET(Canorus_Gui_MOCs ${Canorus_Gui_MOCs} widgets/helpbrowser.h)
+	SET(Canorus_Gui_MOCs ${Canorus_Gui_MOCs} widgets/helpbrowser.h)
 ENDIF(Qt5WebEngineWidgets_LIBRARIES)
 
 SET(Canorus_Core_MOCs # MOCs compiled into scripting library as well
 	import/import.h
-    import/lilypondimport.h
-    import/midiimport.h
-    import/musicxmlimport.h
+	import/lilypondimport.h
+	import/midiimport.h
+	import/musicxmlimport.h
 	export/export.h
-    export/lilypondexport.h
+	export/lilypondexport.h
 	export/pdfexport.h
 	export/svgexport.h
 
@@ -325,7 +325,7 @@ SET(Canorus_Widget_Srcs  	# Sources for all custom widgets present in Canorus
 )
 
 IF(Qt5WebEngineWidgets_LIBRARIES)
-    SET(Canorus_Widget_Srcs ${Canorus_Widget_Srcs} widgets/helpbrowser.cpp)
+	SET(Canorus_Widget_Srcs ${Canorus_Widget_Srcs} widgets/helpbrowser.cpp)
 ENDIF(Qt5WebEngineWidgets_LIBRARIES)
 
 SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-designer files
@@ -335,7 +335,7 @@ SET(Canorus_Ui_Srcs		# Implementations of widgets that have their own .ui qt-des
 	ui/transposeview.cpp
 	ui/jumptoview.cpp
 	ui/singleaction.cpp
-        ui/actionstorage.cpp
+	ui/actionstorage.cpp
 
 	scoreui/keysignatureui.cpp
 )
@@ -344,7 +344,7 @@ SET(Canorus_Gui_Ctl_Srcs       # Control instances for user interface or views
 	control/previewctl.cpp
 	control/printctl.cpp
 	control/mainwinprogressctl.cpp
-        control/helpctl.cpp
+	control/helpctl.cpp
 
 	scorectl/keysignaturectl.cpp
 )
@@ -416,7 +416,7 @@ SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus
 	import/canorusmlimport.cpp
 	import/canimport.cpp
 	import/musicxmlimport.cpp
-    import/mxlimport.cpp
+	import/mxlimport.cpp
 )
 
 SET(Canorus_RtMidi_Srcs		# RtMIDI library
@@ -604,14 +604,15 @@ ENDIF(USE_SWIG)
 
 IF(USE_RUBY)
 	INCLUDE_DIRECTORIES(${RUBY_INCLUDE_PATH})
-        SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES CPLUSPLUS ON)
+	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i PROPERTIES CPLUSPLUS ON)
 			
-        SET(CANORUS_RUBY_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/canorusrubyRUBY_wrap.cxx)
+	SET(CANORUS_RUBY_WRAP_CXX ${CMAKE_CURRENT_BINARY_DIR}/canorusrubyRUBY_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_RUBY_WRAP_CXX} PROPERTIES GENERATED TRUE)
-	
+
 	SWIG_ADD_LIBRARY(CanorusRuby
 		LANGUAGE ruby
 		SOURCES ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
+		OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
 	)
 	SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusRuby_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
@@ -621,12 +622,13 @@ IF(USE_PYTHON)
 	INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 	SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i PROPERTIES CPLUSPLUS ON)
 	
-        SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_SOURCE_DIR}/canoruspythonPYTHON_wrap.cxx)
+	SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_BINARY_DIR}/canoruspythonPYTHON_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES GENERATED TRUE)
 	
 	SWIG_ADD_LIBRARY(CanorusPython
 		LANGUAGE python
 		SOURCES ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i
+		OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
 	)
 	SWIG_LINK_LIBRARIES(CanorusPython ${PYTHON_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusPython_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
