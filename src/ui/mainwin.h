@@ -32,6 +32,10 @@
 #include "widgets/scoreview.h"
 #include "widgets/resourceview.h"
 
+// std::unique_ptr for old Qt LTS 5.9.x
+#include <iostream> // verbose stuff
+#include <memory>
+
 class QKeyEvent;
 class QSlider;
 class QSpinBox;

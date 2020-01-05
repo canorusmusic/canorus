@@ -24,10 +24,6 @@
 #include <QHash>
 #include <memory>
 
-// std::unique_ptr for old Qt LTS 5.9.x
-#include <iostream> // verbose stuff
-#include <memory>
-
 //Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
 //#include "duma.h"
 
