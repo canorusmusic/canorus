@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -118,7 +118,8 @@
 	$result = list;
 }
 
-// convert QList to Python list
+// Swig has default bindings only for converting std::vector<> and other STL types.
+// Here we convert Qt's QList to Python list.
 // Note - C++ references (QList<T>&) are pointers in Python (QList<T>*).
 %typemap(out) const QList<CAMusElement*>, QList<CAMusElement*>,
               const QList<CANote*>, QList<CANote*>,
@@ -127,7 +128,8 @@
               const QList<CAPlayable*>, QList<CAPlayable*>,
               const QList<CASyllable*>, QList<CASyllable*>,
               const QList<CAFiguredBasMark*>, QList<CAFiguredBassMark*>,
-              const QList<CAFunctionMark*>, QList<CAFunctionMark*> {
+              const QList<CAFunctionMark*>, QList<CAFunctionMark*>,
+              const QList<CAChordName*>, QList<CAChordName*> {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1.size(); i++)
 		PyList_Append(list, CASwigPython::toPythonObject($1.at(i), CASwigPython::MusElement));
@@ -141,7 +143,8 @@
               const QList<CAPlayable*>&, QList<CAPlayable*>&,
               const QList<CASyllable*>&, QList<CASyllable*>&,
               const QList<CAFiguredBassMark*>&, QList<CAFiguredBassMark*>&,
-              const QList<CAFunctionMark*>&, QList<CAFunctionMark*>& {
+              const QList<CAFunctionMark*>&, QList<CAFunctionMark*>&,
+              const QList<CAChordName*>&, QList<CAChordName*>& {
 	PyObject *list = PyList_New(0);
 	for (int i=0; i<$1->size(); i++)
 		PyList_Append(list, CASwigPython::toPythonObject($1->at(i), CASwigPython::MusElement));
@@ -367,6 +370,8 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAFiguredBassContext, 0);
 			case CAContext::FunctionMarkContext:
 				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAFunctionMarkContext, 0);
+			case CAContext::ChordNameContext:
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAChordNameContext, 0);
 			default:
 				std::cerr << "canoruspython.i: Wrong CAContext::contextType()!" << std::endl;
 				return 0;
@@ -406,6 +411,8 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CATuplet, 0);
 			case CAMusElement::MidiNote:
 				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAMidiNote, 0);
+			case CAMusElement::ChordName:
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAChordName, 0);
 			default:
 				std::cerr << "canoruspython.i: Wrong CAMusElement::musElementType()!" << std::endl;
 				return 0;
