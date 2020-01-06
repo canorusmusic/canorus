@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2010, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -9,6 +9,7 @@
 #include <QList>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QDebug>
 
 #include "export/lilypondexport.h"
 
@@ -16,8 +17,6 @@
 #include "score/sheet.h"
 #include "score/staff.h"
 #include "score/voice.h"
-#include "score/chordnamecontext.h"
-
 #include "score/mark.h"
 #include "score/articulation.h"
 #include "score/fingering.h"
@@ -28,7 +27,93 @@
 #include "score/tuplet.h"
 #include "score/barline.h"
 #include "score/repeatmark.h"
-#include "score/chordname.h"
+
+/*!
+ * Helper class to store scan results for repeat syntax 
+ */
+class TimeRange {
+public:
+	int start;
+	int end;
+	TimeRange( int s, int e );
+	virtual ~TimeRange();
+};
+TimeRange::TimeRange( int s, int e ) {
+	start = s;
+	end = e;
+}
+
+TimeRange::~TimeRange(){
+}
+
+
+class CARepeat {
+public:
+	CARepeat( int timeStart, int timeEnd, int voltaNumber );
+	virtual ~CARepeat();
+	QPair<int,int> time;
+	int voltaNumber;
+	QVector<TimeRange*> alternatives;	// start and end times of alternatives
+	bool closePreviousEventually( CARepeat* r, int time );
+	QPair<int,int> pointer;
+	QString outString(QVector<CARepeat*> *r, int time);
+private:
+	int _matchTime;
+	int _repIdx;
+	int _altIdx;
+};
+
+QString CARepeat::outString( QVector<CARepeat*> *r, int time ) {
+
+	if (time == 0) {
+		_repIdx = 0;
+		_altIdx = 0;
+		if (r->size()== 0) {
+			_matchTime = 0;
+			return QString("");
+		}
+		_matchTime = (*r)[_repIdx]->time.first;
+		if (time == _matchTime) {
+			return QString(" \repeat volta 2 { " );
+		}
+	}
+
+	// if (time==_matchTime
+
+
+	return QString("hallo");
+}
+
+CARepeat::CARepeat( int start, int end, int v = 0 ) {
+	time.first = start;
+	time.second = end;
+	voltaNumber = v;
+	alternatives.clear();
+	_repIdx = 0;
+	_altIdx = 0;
+}
+
+CARepeat::~CARepeat(){
+}
+
+bool CARepeat::closePreviousEventually( CARepeat* r, int currentTime ) {
+	int a = (*r).alternatives.size();
+	switch (a) {
+	case 0:
+			if ((r->time.second == 0) && (r->time.first != currentTime) ) {
+				r->time.second = currentTime;
+				return true;
+			}
+			return false;
+	default:
+			int l = a-1;
+			if (((r->alternatives[l])->end == 0) && (r->alternatives[l]->start != currentTime)) {
+				r->alternatives[l]->end = currentTime;
+				return true;
+			}
+			return false;
+	}
+}
 
 /*!
 	\class CALilyPondExport
@@ -53,7 +138,7 @@
 CALilyPondExport::CALilyPondExport( QTextStream *out )
  : CAExport(out) {
 	setIndentLevel( 0 );
-	setCurDocument( nullptr );
+	setCurDocument( 0 );
 	_voltaBracketOccured = false;
 	_voltaBracketIsOpen = false;
 	_voltaFunctionWritten = false;
@@ -73,8 +158,11 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	_curStreamTime = 0;
 	_lastPlayableLength = CAPlayableLength::Undefined;
 	bool anacrusisCheck = true;	// process upbeat eventually
-	CATimeSignature *time = nullptr;
+	CATimeSignature *time = 0;
 	int barNumber = 1;
+
+	bool searchForRepeatEvents = true;
+	_repeats.clear();
 
 	// Write \relative note for the first note
 	_lastNotePitch = writeRelativeIntro();
@@ -83,8 +171,99 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	out() << "{\n";
 	indentMore();
 	indent();
+	QList<QPair<int,QString>> oStr;
 
 	for (int i=0; i<v->musElementList().size(); i++, out() << " ") { // append blank after each element
+		// 
+		// Check if a repeat opening is neccessary.
+		// If yes, output \repeat volta x ...
+		// In any case set after search searchForRepeatEvents false:
+		if ( searchForRepeatEvents ) {
+
+			for (int r=i; r<v->musElementList().size(); r++ ) {
+				switch (v->musElementList()[r]->musElementType()) {
+					case CAMusElement::Barline:	{
+						int time = v->musElementList()[r]->timeStart();
+						CABarline *bbar = static_cast<CABarline*>(v->musElementList()[r]);
+						if (bbar->barlineType() == CABarline::RepeatOpen) {
+							_repeats << new CARepeat( time, 0, 2 );			// new repeat with timeEnd unknown
+						}
+						if (bbar->barlineType() == CABarline::RepeatClose) {
+							qWarning() << " RepeatClose at Element " << r << endl;
+							if (_repeats.size() == 0) {
+								_repeats << new CARepeat( 0, time, 2 );
+								qWarning() << " neuer Repeat bei t=" << time;
+							} else if (_repeats.last()->time.second == 0 ) {
+								_repeats.last()->time.second = time;
+								_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
+							}
+						}
+						if (bbar->barlineType() == CABarline::RepeatCloseOpen) {
+							if (_repeats.size() == 0) {
+								_repeats << new CARepeat( 0, time, 2 );
+							}
+							qWarning() << " neuer Repeat bei t=" << time;
+							_repeats << new CARepeat( time, 0, 2 );
+						}
+						for (int g=0; g<bbar->markList().size();g++) {
+							if (bbar->markList()[g]->markType()==CAMark::RepeatMark) {
+								CARepeatMark *rm = static_cast<CARepeatMark*>(bbar->markList()[g]);
+								if (bbar->markList()[g]->markType()==CAMark::RepeatMark) {
+									qWarning() << " found volta number " << rm->voltaNumber();
+									if (_repeats.size() == 0) {
+										qWarning() << " Repeat:  neue Alternative bei t=" << time;
+										_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
+										_repeats << new CARepeat( 0, time, 2 );
+										_repeats.last()->alternatives << new TimeRange( time, 0 );
+										_repeats.last()->voltaNumber = rm->voltaNumber();
+									} else {
+										_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
+										if (_repeats.last()->alternatives.size()) {
+										_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
+										}
+										_repeats.last()->alternatives << new TimeRange( time, 0 );
+										if (_repeats.last()->alternatives.size()) {
+										_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
+										}
+										_repeats.last()->voltaNumber = rm->voltaNumber();
+									}
+								}
+							}
+						}
+						_repeats.last()->closePreviousEventually( _repeats.last(), time );	// maybe an alternative is open
+						break;
+					}
+					default:			break;
+				}
+			}
+			// The search is done once. When
+			searchForRepeatEvents = false;
+
+			for (int r=0;r<_repeats.size();r++) {
+				oStr.append(qMakePair( _repeats[r]->time.first, QString(" \repeat volta 2 { ")));
+				int aSize = _repeats[r]->alternatives.size();
+				switch (aSize) {
+				case 0:		oStr.append(qMakePair( _repeats[r]->time.second, QString(        " } ")));
+							break;
+				case 1:		oStr.append(qMakePair( (((_repeats[r])->alternatives)[0])->start, _altOpening ));
+							oStr.append(qMakePair( (((_repeats[r])->alternatives)[0])->end,   QString( " } ")));
+							break;
+				default:	for (int a=0;a<aSize;a++) {
+								if (a==0) {
+									oStr.append(qMakePair( (((_repeats[r])->alternatives)[a])->start, _altOpening ));
+								} else if (a==(aSize-1)) {
+									oStr.append(qMakePair( (((_repeats[r])->alternatives)[a])->start, QString(              " } { ")));
+									oStr.append(qMakePair( (((_repeats[r])->alternatives)[a])->end,   QString(              " } } ")));
+								} else {
+									oStr.append(qMakePair( (((_repeats[r])->alternatives)[a])->start, QString(              " } { ")));
+								}
+							}
+				}
+			}
+		}
+
+
+		///////////////////////////////////////////////////////////////
 		// (CAMusElement)
 		switch (v->musElementList()[i]->musElementType()) {
 		case CAMusElement::Clef: {
@@ -159,7 +338,6 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 		case CAMusElement::FunctionMark:
 		case CAMusElement::FiguredBassMark:
 		case CAMusElement::Mark:
-		case CAMusElement::ChordName:
 		case CAMusElement::Undefined:
 			break;
 		}
@@ -175,6 +353,22 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 			exportMarksAfterElement(v->musElementList()[i]);
 		}
 	}
+
+
+	qWarning() << "              Repeat start analysis";
+	for (int r=0; r < _repeats.size(); r++ ) {
+		qWarning() << " Repeat size " << _repeats.size() << " timeStart " << _repeats[r]->time.first << " timeEnd " << _repeats[r]->time.second <<
+																						" volta " << _repeats[r]->voltaNumber << "\n"; 
+		for (int a=0; a < _repeats[r]->alternatives.size(); a++ ) {
+			qWarning() << "  Repeat:   Alternative size " << _repeats[r]->alternatives.size() << "  timeStart " << _repeats[r]->alternatives[a]->start <<
+																						" timeEnd " << _repeats[r]->alternatives[a]->end << "\n";
+		}
+	}
+	//QList<QPair<int,QString*>> oStr;
+	for (int ol=0; ol<oStr.length(); ol++) {
+		qWarning() << oStr[ol].first << (oStr[ol].second);
+	}
+	qWarning() << "              Repeat end analysis";
 
 	// end of the voice block
 	indentLess();
@@ -287,7 +481,6 @@ void CALilyPondExport::exportPlayable( CAPlayable *elt ) {
 	case CAMusElement::FunctionMark:
 	case CAMusElement::FiguredBassMark:
 	case CAMusElement::Mark:
-	case CAMusElement::ChordName:
 	case CAMusElement::Undefined:
 		break;
 	}
@@ -409,11 +602,20 @@ void CALilyPondExport::exportMarksAfterElement( CAMusElement *elt ) {
 			CARepeatMark *v = static_cast<CARepeatMark*>(curMark);
 			if (v->repeatMarkType() == CARepeatMark::Volta) {
 				int vn = v->voltaNumber();
+<<<<<<< HEAD
+				out() << "\n% Es ist RepeatMark (after): " << CARepeatMark::repeatMarkTypeToString(v->repeatMarkType()) << " " << vn << "\n";
+				if (_voltaBracketIsOpen || _voltaBracketOccured) {
+					out() << "\n \\set Score.repeatCommands = #'((volta #f) (volta \"" << vn << "\"))\n";
+					_voltaBracketIsOpen = true;
+				} else {
+					out() << "\n \\set Score.repeatCommands = #'((volta \"" << vn << "\"))\n";
+=======
 				if (_voltaBracketIsOpen || _voltaBracketOccured) {
 					out() << " \\set Score.repeatCommands = #'((volta #f) (volta \"" << vn << "\")) ";
 					_voltaBracketIsOpen = true;
 				} else {
 					out() << " \\set Score.repeatCommands = #'((volta \"" << vn << "\"))";
+>>>>>>> master
 					_voltaBracketIsOpen = true;
 					_voltaBracketOccured = true;
 				}
@@ -485,7 +687,7 @@ void CALilyPondExport::exportMarksBeforeElement( CAMusElement *elt ) {
 			}
 			if ( _voltaBracketFinishAtRepeat || _voltaBracketFinishAtBar ) {
 				out() << "\\voltaStart \\markup \\text { \""<< txt << "\" }  ";
-			}
+			};
 			break;
 		}
 		case CAMark::Tempo: {
@@ -493,9 +695,9 @@ void CALilyPondExport::exportMarksBeforeElement( CAMusElement *elt ) {
 			out() << "\\tempo " << playableLengthToLilyPond(t->beat()) << " = " << t->bpm() << " ";
 			
 			break;
-		}
+                }
 
-		case CAMark::Fingering:
+                case CAMark::Fingering:
 		case CAMark::Ritardando:
 		case CAMark::Crescendo:
 		case CAMark::Pedal:
@@ -514,11 +716,9 @@ void CALilyPondExport::exportMarksBeforeElement( CAMusElement *elt ) {
 
 /*!
 	Exports the lyrics in form:
-	\code
-	SopranoLyricsOne = \\lyricmode {
+	SopranoLyricsOne = {
 		My bu -- ny is o -- ver the o -- cean __ My bu -- ny.
 	}
-	\endcode
 */
 void CALilyPondExport::exportLyricsContextBlock( CALyricsContext *lc ) {
 	// Print Canorus voice name as a comment to help with debugging/tweaking
@@ -537,62 +737,12 @@ void CALilyPondExport::exportLyricsContextBlock( CALyricsContext *lc ) {
 }
 
 /*!
-	Exports the syllables only without the \\lyricmode {} frame.
+	Exports the syllables only without the SopranoLyircsOne = {} frame.
 */
 void CALilyPondExport::exportLyricsContextImpl( CALyricsContext *lc ) {
 	for (int i=0; i<lc->syllableList().size(); i++) {
 		if (i>0) out() << " "; // space between syllables
 		out() << syllableToLilyPond(lc->syllableList()[i]);
-	}
-}
-
-/*!
-	Exports the chord names in form:
-	\code
-	ChordNamesOne = \\chordmode {
-		c2 f4:m cis:sus4
-	}
-	\endcode
-*/
-void CALilyPondExport::exportChordNameContextBlock( CAChordNameContext *cnc ) {
-	indent();
-	out() << "\n% " << cnc->name() << "\n";
-	QString name = cnc->name();
-	spellNumbers(name);
-	out() << name << " = \\chordmode {\n";
-	indentMore();
-
-	indent();
-	exportChordNameContextImpl(cnc);
-
-	indentLess();
-	out() << "\n}\n";
-}
-
-/*!
-	Exports the chord names of \a cnc without the \\chordmode {} wrappers.
-*/
-void CALilyPondExport::exportChordNameContextImpl( CAChordNameContext *cnc ) {
-	for (int i=0; i<cnc->chordNameList().size(); i++) {
-		if (i>0) out() << " "; // space between chord names
-
-		CAChordName *cn = cnc->chordNameList()[i];
-
-		// determine length
-		//! \todo How do we treat tuplets?
-		QList<CAPlayableLength> pl = CAPlayableLength::timeLengthToPlayableLengthList(cn->timeLength());
-
-		if (pl.size()) {
-			if (cn->diatonicPitch().noteName()!=CADiatonicPitch::Undefined) {
-				// chord change
-				out() << CADiatonicPitch::diatonicPitchToString(cn->diatonicPitch()) << playableLengthToLilyPond(pl[0]);
-				out() << ":" << cn->qualityModifier();
-			} else {
-				// diatonicPitch is Undefined - either chord name is empty or a syntax error.
-				// In either case, don't print the chord.
-				out() << "s" << playableLengthToLilyPond(pl[0]);
-			}
-		}
 	}
 }
 
@@ -788,7 +938,7 @@ const QString CALilyPondExport::playableLengthToLilyPond( CAPlayableLength playa
 const QString CALilyPondExport::diatonicPitchToLilyPond( CADiatonicPitch pitch ) {
 	QString name;
 
-	name = static_cast<char>(((pitch.noteName()+2)%7 + 'a'));
+	name = (char)((pitch.noteName()+2)%7 + 'a');
 
 	for (int i=0; i < pitch.accs(); i++)
 		name += "is";	// append as many -is-es as necessary
@@ -816,10 +966,13 @@ const QString CALilyPondExport::restTypeToLilyPond(CARest::CARestType type) {
 	switch (type) {
 		case CARest::Normal:
 			return "r";
+			break;
 		case CARest::Hidden:
 			return "s";
+			break;
 		case CARest::Undefined:
 			return "r";
+			break;
 	}
 	return "r";
 }
@@ -831,20 +984,28 @@ const QString CALilyPondExport::barlineTypeToLilyPond(CABarline::CABarlineType t
 	switch (type) {
 		case CABarline::Single:
 			return "|";
+			break;
 		case CABarline::Double:
 			return "||";
+			break;
 		case CABarline::End:
 			return "|.";
+			break;
 		case CABarline::RepeatOpen:	// possible repeat bar lines: ".|:" ":..:" ":|.|:" ":|.:"  ":|."
 			return ".|:";
+			break;
 		case CABarline::RepeatClose:
 			return ":|.";
+			break;
 		case CABarline::RepeatCloseOpen:
 			return ":|.|:";
+			break;
 		case CABarline::Dotted:
 			return ":";
+			break;
 		case CABarline::Undefined:
 			return "|";
+			break;
 	}
 	return "|";
 }
@@ -869,7 +1030,7 @@ const QString CALilyPondExport::syllableToLilyPond( CASyllable *s ) {
 }
 
 /*!
-	Exports the current sheet to LilyPond syntax.
+	Exports the current sheet to Lilypond syntax.
 */
 void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 {
@@ -892,7 +1053,11 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 
 	for ( int c = 0; c < sheet->contextList().size(); ++c ) {
 		if (sheet->contextList()[c]->contextType() == CAContext::Staff) {
+<<<<<<< HEAD
+			//scanForRepeats(static_cast<CAStaff*>(sheet->contextList()[c]));
+=======
 			// scanForRepeats(static_cast<CAStaff*>(sheet->contextList()[c]));
+>>>>>>> master
 			break;
 		}
 	}
@@ -911,9 +1076,6 @@ void CALilyPondExport::exportSheetImpl(CASheet *sheet)
 				break;
 			case CAContext::LyricsContext:
 				exportLyricsContextBlock( static_cast<CALyricsContext*>(sheet->contextList()[c]) );
-				break;
-            case CAContext::ChordNameContext:
-				exportChordNameContextBlock( static_cast<CAChordNameContext*>(sheet->contextList()[c]) );
 				break;
 			case CAContext::FunctionMarkContext:
 			case CAContext::FiguredBassContext:
@@ -975,7 +1137,7 @@ void CALilyPondExport::scanForRepeats(CAStaff *staff) {
 }
 
 /*!
-	Encapsulates the given string into \\markup {}.
+	Encapsulates the given string into \markup {}.
 */
 QString CALilyPondExport::markupString( QString in ) {
 	return QString("\\markup {\"") + escapeWeirdChars( in ) + QString("\"}");
@@ -1032,7 +1194,7 @@ void CALilyPondExport::voiceVariableName( QString &name, int staffNum, int voice
 
 
 /*!
-	Exports the \\score block for LilyPond from the current sheet.
+	Exports the \score block for LilyPond from the current sheet.
 	Looks like this:
 
 	\code
@@ -1145,23 +1307,6 @@ void CALilyPondExport::exportScoreBlock( CASheet *sheet ) {
 					indent();
 					out() << "\\new Lyrics = \"" << lcName << "Virtual\"\n";
 
-					break;
-				}
-				case CAContext::ChordNameContext: {
-					CAChordNameContext *cnc = static_cast<CAChordNameContext*>(curContext());
-					QString cncName = cnc->name();
-					spellNumbers( cncName );
-
-					indent();
-					out() << "% " << cnc->name() << "\n";
-					indent();
-					out() << "\\new ChordNames {\n";
-					indentMore();
-					indent();
-					out() << "\\" << cncName << "\n";
-					indentLess();
-					indent();
-					out() << "}\n";
 					break;
 				}
 				case CAContext::FunctionMarkContext:
@@ -1299,6 +1444,7 @@ void CALilyPondExport::voltaFunction( void )
 	_voltaFunctionWritten = true;
 }
 
+const QString CALilyPondExport::_altOpening = QString(" } \alternatives { { ");
 const QString CALilyPondExport::_regExpVoltaRepeat = QString("voltaRepeat (.*)");
 const QString CALilyPondExport::_regExpVoltaBar = QString("voltaBar (.*)");
 

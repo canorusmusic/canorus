@@ -29,7 +29,8 @@ class CADrawableMusElement : public CADrawable {
 			DrawableSyllable,
 			DrawableFunctionMark, DrawableFunctionMarkSupport,
 			DrawableFiguredBassNumber,
-			DrawableMark
+			DrawableMark,
+			DrawableChordName,
 		};
 
 		CADrawableMusElement(CAMusElement *musElement, CADrawableContext *drawableContext, double x, double y);

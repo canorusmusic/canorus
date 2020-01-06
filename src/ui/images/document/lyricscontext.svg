@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -12,10 +13,9 @@
    height="128"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    version="1.0"
-   sodipodi:docbase="/home/matevz/canorus/trunk/src/ui/images"
-   sodipodi:docname="lyricscontextnew.svg"
+   sodipodi:docname="lyricscontext.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:modified="true">
   <defs
@@ -31,7 +31,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.959798"
-     inkscape:cx="96.817507"
+     inkscape:cx="44.794651"
      inkscape:cy="43.974659"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -39,8 +39,10 @@
      height="128px"
      inkscape:window-width="1400"
      inkscape:window-height="982"
-     inkscape:window-x="0"
-     inkscape:window-y="0" />
+     inkscape:window-x="-4"
+     inkscape:window-y="0"
+     showgrid="false"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -56,6 +58,13 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="opacity:1;fill:#00ff00;fill-opacity:0.23529412;fill-rule:nonzero;stroke:none;stroke-width:2.29999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2160"
+       width="128"
+       height="74.285713"
+       x="0"
+       y="28.714287" />
     <g
        id="g3304"
        transform="translate(-1.2708017e-6,-2.225814)">
@@ -64,24 +73,26 @@
          id="g3276">
         <text
            xml:space="preserve"
-           style="font-size:30.04405594px;font-style:normal;font-weight:normal;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Century Schoolbook L"
+           style="font-style:normal;font-weight:normal;line-height:0%;font-family:'Century Schoolbook L';text-align:justify;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            x="2.7108302"
            y="74.845901"
            id="text2295"><tspan
              sodipodi:role="line"
              id="tspan2297"
              x="2.7108302"
-             y="74.845901">La - la la</tspan></text>
+             y="74.845901"
+             style="font-size:30.04405594px;line-height:1.25">La - la la</tspan></text>
         <text
            xml:space="preserve"
-           style="font-size:30.04405594px;font-style:normal;font-weight:normal;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:0.59751042;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Century Schoolbook L"
+           style="font-style:normal;font-weight:normal;line-height:0%;font-family:'Century Schoolbook L';text-align:justify;text-anchor:start;fill:#000000;fill-opacity:0.59751042;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            x="3.8656695"
            y="75.458832"
            id="text2303"><tspan
              sodipodi:role="line"
              id="tspan2305"
              x="3.8656695"
-             y="75.458832">La - la la</tspan></text>
+             y="75.458832"
+             style="font-size:30.04405594px;line-height:1.25">La - la la</tspan></text>
       </g>
       <g
          transform="translate(2.3470717,-10.354064)"
@@ -90,22 +101,24 @@
            id="text3284"
            y="102.9213"
            x="0.078172743"
-           style="font-size:31.04213524px;font-style:normal;font-weight:normal;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Century Schoolbook L"
+           style="font-style:normal;font-weight:normal;line-height:0%;font-family:'Century Schoolbook L';text-align:justify;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            xml:space="preserve"><tspan
              y="102.9213"
              x="0.078172743"
              id="tspan3286"
-             sodipodi:role="line">Le____lo</tspan></text>
+             sodipodi:role="line"
+             style="font-size:31.04213524px;line-height:1.25">Le____lo</tspan></text>
         <text
            id="text3288"
            y="103.55459"
            x="1.2713764"
-           style="font-size:31.04213524px;font-style:normal;font-weight:normal;text-align:justify;text-anchor:start;fill:#000000;fill-opacity:0.59751042;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Century Schoolbook L"
+           style="font-style:normal;font-weight:normal;line-height:0%;font-family:'Century Schoolbook L';text-align:justify;text-anchor:start;fill:#000000;fill-opacity:0.59751042;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            xml:space="preserve"><tspan
              y="103.55459"
              x="1.2713764"
              id="tspan3290"
-             sodipodi:role="line">Le____lo</tspan></text>
+             sodipodi:role="line"
+             style="font-size:31.04213524px;line-height:1.25">Le____lo</tspan></text>
       </g>
     </g>
   </g>
