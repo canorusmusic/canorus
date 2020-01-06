@@ -7,7 +7,7 @@ Glavno okno
 Ob zagonu se pojavi glavno okno aplikacije. Izgledati bi moralo
 (odvisno od operacijskega sistema in jezika) približno takole:
 
-.. image:: ../../images/mainwin.sl.png
+.. image:: images/mainwin.sl.png
    :width: 350px
 
 Glavno okno je zgrajeno iz menija na vrhu, orodjarne za vstavljanje
@@ -32,7 +32,7 @@ Za pavze uporabite desni klik. Za dodajanje predznakov uporabite tipki
 +/-. Za popravljanje višine že vstavljene note uporabite tipki gor/dol.
 Za vstavljanje pike uporabite tipko.
 
-.. |INSERT_PLAYABLE| image:: ../../images/insertplayable.svg
+.. |INSERT_PLAYABLE| image:: images/insertplayable.svg
    :height: 20px
 
 Pisanje drugih elementov
@@ -59,7 +59,7 @@ puščico |ARROW| v levi orodjarni.
 Ko izberete določen element v črtovju, se v zgornji orodjarni pojavijo
 njegove lastnosti, ki jih lahko po želji spreminjate.
 
-.. |ARROW| image:: ../../images/arrow.svg
+.. |ARROW| image:: images/arrow.svg
    :height: 20px
 
 \section{Novo črtovje, glas, besedilo}
@@ -68,13 +68,13 @@ Za vstavljanje novega črtovja kliknite na ikono ``Vstavi sled``
 |STAFF_NEW| v levi orodjarni, izberite tip (črtovje, besedilo or funkcijske oznake) in kliknite
 na pogled črtovja.
 
-.. |STAFF_NEW| image:: ../../images/staffnew.svg
+.. |STAFF_NEW| image:: images/staffnew.svg
    :height: 20px
 
 Za dodajanje novega glasu izberite črtovje in kliknite na ikono ``Nov
 glas`` |VOICE_NEW| v vrhnji orodjarni.
 
-.. |VOICE_NEW| image:: ../../images/voicenew.svg
+.. |VOICE_NEW| image:: images/voicenew.svg
    :height: 20px
 
 Predvajanje
@@ -84,7 +84,7 @@ Za predvajanje od trenutne izbire dalje pritisnite preslednico ali
 kliknite na zeleno ikono ``Predvajaj`` |PLAY| v vrhnji orodjarni.
 Za ustavitev pritisnite še enkrat.
 
-.. |PLAY| image:: ../../images/play.svg
+.. |PLAY| image:: images/play.svg
    :height: 20px
 
 Tiskanje
@@ -100,7 +100,7 @@ namestitev.
 Za predogled tiska je potreben PDF pregledovalnik. Uporabite meni
 Datoteka->Predogled tiska |PRINT_PREVIEW|.
 
-.. |PRINT_PREVIEW| image:: ../../images/fileprintpreview.png
+.. |PRINT_PREVIEW| image:: images/fileprintpreview.png
    :height: 20px
 
 Dokument lahko natisnete neposredno s klikom na meni Datoteka->Tiskanje
