@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -56,16 +56,16 @@ CASlur::CASlur( CASlurType type, CASlurDirection dir, CAContext *c, CANote *note
 CASlur::~CASlur() {
 	switch (slurType()) {
 		case TieType:
-			if ( noteStart() ) noteStart()->setTieStart( 0 );
-			if ( noteEnd() ) noteEnd()->setTieEnd( 0 );
+			if ( noteStart() ) noteStart()->setTieStart( nullptr );
+			if ( noteEnd() ) noteEnd()->setTieEnd( nullptr );
 			break;
 		case SlurType:
-			if ( noteStart() ) noteStart()->setSlurStart( 0 );
-			if ( noteEnd() ) noteEnd()->setSlurEnd( 0 );
+			if ( noteStart() ) noteStart()->setSlurStart( nullptr );
+			if ( noteEnd() ) noteEnd()->setSlurEnd( nullptr );
 			break;
 		case PhrasingSlurType:
-			if ( noteStart() ) noteStart()->setPhrasingSlurStart( 0 );
-			if ( noteEnd() ) noteEnd()->setPhrasingSlurEnd( 0 );
+			if ( noteStart() ) noteStart()->setPhrasingSlurStart( nullptr );
+			if ( noteEnd() ) noteEnd()->setPhrasingSlurEnd( nullptr );
 			break;
 	}
 }
@@ -93,10 +93,8 @@ const QString CASlur::slurStyleToString( CASlur::CASlurStyle style ) {
 	switch (style) {
 		case SlurSolid:
 			return "slur-solid";
-			break;
 		case SlurDotted:
 			return "slur-dotted";
-			break;
 		case Undefined:
 			break;
 	}
@@ -117,16 +115,12 @@ const QString CASlur::slurDirectionToString( CASlur::CASlurDirection dir ) {
 	switch (dir) {
 		case SlurUp:
 			return "slur-up";
-			break;
 		case SlurDown:
 			return "slur-down";
-			break;
 		case SlurNeutral:
 			return "slur-neutral";
-			break;
 		case SlurPreferred:
 			return "slur-preferred";
-			break;
 	}
 
 	return "";

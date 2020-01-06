@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -35,7 +35,7 @@ CAUndoToolButton::~CAUndoToolButton() {
 	delete _listWidget;
 }
 
-void CAUndoToolButton::wheelEvent( QWheelEvent *e ) {
+void CAUndoToolButton::wheelEvent( QWheelEvent * ) {
 	// do nothing!
 }
 

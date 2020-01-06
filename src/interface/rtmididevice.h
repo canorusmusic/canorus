@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -31,7 +31,7 @@ public:
 	void closeOutputPort();
 	void closeInputPort();
 	void send(QVector<unsigned char> message, int time);
-	void sendMetaEvent(int time, int event, int a, int b, int c ) { ; }
+	void sendMetaEvent(int, char, char, char, int) { }
 	
 private:
 	RtMidiOut *_out;

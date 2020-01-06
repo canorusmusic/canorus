@@ -23,7 +23,7 @@ public:
 		Other         // other resources
 	};
 
-	CAResource( QUrl fileName, QString name, bool linked=false, CAResourceType t=Other, CADocument *c=0 );
+	CAResource( QUrl fileName, QString name, bool linked=false, CAResourceType t=Other, CADocument *c=nullptr );
 	virtual ~CAResource();
 
 	inline void setName( const QString n ) { _name = n; }
@@ -36,7 +36,7 @@ public:
 	inline const QUrl url() { return _url; }
 
 	inline void setResourceType( const CAResourceType t ) { _resType = t; }
-	inline const CAResourceType resourceType() { return _resType; }
+	inline CAResourceType resourceType() { return _resType; }
 
 	inline void setLinked( bool l ) { _linked = l; }
 	inline bool isLinked() { return _linked; }

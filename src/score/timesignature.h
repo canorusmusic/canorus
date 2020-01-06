@@ -27,7 +27,7 @@ class CATimeSignature : public CAMusElement {
 
 		CATimeSignature(int beats, int beat, CAStaff *staff, int startTime, CATimeSignatureType type = Classical);
 
-		CATimeSignature *clone(CAContext* context=0);
+		CATimeSignature *clone(CAContext* context=nullptr);
 		~CATimeSignature();
 		CAStaff *staff() { return static_cast<CAStaff*>(context()); }
 

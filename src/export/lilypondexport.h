@@ -27,6 +27,9 @@
 class CAChordNameContext;
 
 class CALilyPondExport : public CAExport {
+#ifndef SWIG
+	Q_OBJECT
+#endif
 public:
 	CALilyPondExport( QTextStream *out=0 );
 
@@ -98,7 +101,6 @@ private:
 	/////////////
 	// Members //
 	/////////////
-	QTextStream *_out;
 	CAVoice *_curVoice;
 	CASheet *_curSheet;
 	CAContext *_curContext;

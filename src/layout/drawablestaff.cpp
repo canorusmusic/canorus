@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -109,7 +109,7 @@ double CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
 double CADrawableStaff::calculateCenterYCoord(double y) {
 	double newY = (y - yPos()) / (lineSpace()/2);
 	newY += 0.5*((y-yPos()<0)?-1:1);	//round to nearest line/space
-	newY = (double)((int)newY);
+	newY = static_cast<double>(static_cast<int>(newY));
 
 	return yPos() + ((newY) * (lineSpace()/2));
 }
@@ -153,7 +153,7 @@ CAClef* CADrawableStaff::getClef(double x) {
 	int i;
 	for (i=0; ((i<_drawableClefList.size()) && (x > _drawableClefList[i]->xPos())); i++);
 
-	return ((--i<0)?0:_drawableClefList[i]->clef());
+	return ((--i<0)?nullptr:_drawableClefList[i]->clef());
 }
 
 /*!
@@ -165,7 +165,9 @@ int CADrawableStaff::getAccs(double x, int pitch) {
 	CAKeySignature *key = getKeySignature(x);
 
 	//find nearest left element
-	int i; for (i=0; i<_drawableMusElementList.size() && _drawableMusElementList[i]->xPos() < x; i++); i--;
+	int i; for (i=0; i<_drawableMusElementList.size() && _drawableMusElementList[i]->xPos() < x; i++)
+        ;
+    i--;
 
 	while (i>=0 &&
 	       _drawableMusElementList[i]->drawableMusElementType() != CADrawableMusElement::DrawableBarline &&
@@ -220,7 +222,7 @@ CABarline* CADrawableStaff::getBarline(double x) {
 		it--;
 	}
 	
-	return ((it!=_drawableBarlineList.constEnd())?((*it)->barline()):0);
+	return ((it!=_drawableBarlineList.constEnd())?((*it)->barline()):nullptr);
 }
 
 /*!
@@ -247,7 +249,7 @@ CAKeySignature* CADrawableStaff::getKeySignature(double x) {
 	int i;
 	for (i=0; ((i<_drawableKeySignatureList.size()) && (x > _drawableKeySignatureList[i]->xPos())); i++);
 
-	return ((--i<0)?0:_drawableKeySignatureList[i]->keySignature());
+	return ((--i<0)?nullptr:_drawableKeySignatureList[i]->keySignature());
 }
 
 /*!
@@ -274,7 +276,7 @@ CATimeSignature* CADrawableStaff::getTimeSignature(double x) {
 	int i;
 	for (i=0; ((i<_drawableTimeSignatureList.size()) && (x > _drawableTimeSignatureList[i]->xPos())); i++);
 
-	return ((--i<0)?0:_drawableTimeSignatureList[i]->timeSignature());
+	return ((--i<0)?nullptr:_drawableTimeSignatureList[i]->timeSignature());
 }
 
 void CADrawableStaff::addMElement(CADrawableMusElement *elt) {
@@ -314,13 +316,13 @@ void CADrawableStaff::addMElement(CADrawableMusElement *elt) {
 int CADrawableStaff::removeMElement(CADrawableMusElement *elt) {
 	switch (elt->drawableMusElementType()) {
 		case CADrawableMusElement::DrawableClef:
-			removeClef((CADrawableClef*)elt);
+			removeClef(static_cast<CADrawableClef*>(elt));
 			break;
 		case CADrawableMusElement::DrawableKeySignature:
-			removeKeySignature((CADrawableKeySignature*)elt);
+			removeKeySignature(static_cast<CADrawableKeySignature*>(elt));
 			break;
 		case CADrawableMusElement::DrawableTimeSignature:
-			removeTimeSignature((CADrawableTimeSignature*)elt);
+			removeTimeSignature(static_cast<CADrawableTimeSignature*>(elt));
 			break;
 		case CADrawableMusElement::DrawableNote:
 		case CADrawableMusElement::DrawableRest:

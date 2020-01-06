@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	Copyright (c) 2008, Georg Rudolph
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
@@ -46,9 +46,9 @@ CAKeybdInput::CAKeybdInput (CAMainWin *mw) {
 	// Initialize keyboad input chord timer
 	_midiInChordTimer.stop();
 	_midiInChordTimer.setSingleShot(true);
-	_tupPla = 0;
-	_tup = 0;
-	_lastMidiInVoice = 0;
+	_tupPla = nullptr;
+	_tup = nullptr;
+	_lastMidiInVoice = nullptr;
 	_noteLayout.clear();
 }
 
@@ -62,7 +62,7 @@ void CAKeybdInput::onMidiInEvent( QVector<unsigned char> m ) {
 	unsigned char event, velocity;
  	std::cout << "MidiInEvent: ";
  	for (int i=0; i<m.size(); i++)
- 		std::cout << (int)m[i] << " ";
+ 		std::cout << static_cast<int>(m[i]) << " ";
  	std::cout << std::endl;
 	if (m.size()<3)		// only note on/off here which are 3 bytes
 		return;
@@ -112,15 +112,15 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 */
 
 		CADrawableContext *drawableContext = v->currentContext();
-		CAStaff *staff=0;
-		//CADrawableStaff *drawableStaff = 0;
+		CAStaff *staff=nullptr;
+		//CADrawableStaff *drawableStaff = nullptr;
 		if (drawableContext) {
 			//drawableStaff = dynamic_cast<CADrawableStaff*>(drawableContext);
 			staff = dynamic_cast<CAStaff*>(drawableContext->context());
 		}
 
-		CANote *note = 0;
-		CARest *rest = 0;
+		CANote *note = nullptr;
+		CARest *rest = nullptr;
 
 		switch (cpitch) {
 //		case 37:	std::cout << "  Pause" << std::endl;
@@ -142,7 +142,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 
 		// If we are still in the processing of a tuplet, check if it's still there.
 		// Possibly editing on the GUI could have moved it around or away, and no crash please.
-		if ( _tupPla && ( !voice->musElementList().contains(_tupPla) || _tupPla->tuplet() != _tup )) _tupPla = 0;
+		if ( _tupPla && ( !voice->musElementList().contains(_tupPla) || _tupPla->tuplet() != _tup )) _tupPla = nullptr;
 
 		// Where to put the note? When in a tuplet, do a chord in the tuplet or the nex not in the tuplet.
 		if ( _tupPla &&!appendToChord ) {
@@ -163,7 +163,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 			} else
 				elements << static_cast<CAPlayable*>(rest);
 			for (int i=1; i<_mw->uiTupletNumber->value(); i++) {
-				_mw->musElementFactory()->configureRest( voice, 0 );
+				_mw->musElementFactory()->configureRest( voice, nullptr );
 				elements << static_cast<CAPlayable*>(_mw->musElementFactory()->musElement());
 			}
 			_tup = new CATuplet( _mw->uiTupletNumber->value(), _mw->uiTupletActualNumber->value(), elements );
@@ -174,7 +174,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 
 				//voice->append( note, appendToChord );
 				if (appendToChord && _noteLayout.size()) {
-					CANote *prevNote = 0;
+					CANote *prevNote = nullptr;
 					for (i=0;i<_noteLayout.size();i++) {
 						note = new CANote( nonenharmonicPitch, static_cast<CAPlayable*>(_noteLayout[i])->playableLength(), voice, -1 );
 						voice->insert( _noteLayout[i], note, appendToChord );
@@ -198,7 +198,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 					QList<CAPlayableLength> lll;
 					CAPlayableLength px;
 					lll << px.matchToBars( _mw->musElementFactory()->playableLength(), voice->lastTimeEnd(), b, ts );
-					CANote *prevNote = 0;
+					CANote *prevNote = nullptr;
 					_noteLayout.clear();
 					for (i=0;i<lll.size();i++) {
 
@@ -259,7 +259,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreView *v, QVector<unsigned char> m) 
 
 		// scene tracking
 		QRectF scene = v->worldCoords();
-		int xlast = v->timeToCoordsSimpleVersion( voice->lastTimeStart() );
+		double xlast = v->timeToCoordsSimpleVersion( voice->lastTimeStart() );
 		if ( ((xlast+50) > scene.right()) ) {	// the magic number 50 should be defined, ist the width of an element
 			scene.translate( scene.width()/2, 0 );
 			v->setWorldCoords(scene, false, true );
@@ -298,7 +298,7 @@ CADiatonicPitch CAKeybdInput::matchPitchToKey( CAVoice* voice, CADiatonicPitch p
 							CAMusElement::KeySignature, voice->lastTimeEnd());
 	if (keyList.size()) {
 		// set the note name and its accidental and the accidentals of the scale
-		CAKeySignature* effSig = (CAKeySignature*) keyList.last();
+		CAKeySignature* effSig = static_cast<CAKeySignature*>(keyList.last());
 		_actualKeySignature = effSig->diatonicKey().diatonicPitch();
 		_actualKeyAccidentalsSum = 0;
 		for(i=0;i<7;i++) {

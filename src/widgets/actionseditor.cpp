@@ -1,5 +1,5 @@
 /*!
-        Copyright (c) 2006-2007, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+        Copyright (c) 2006-2020, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
 
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -285,7 +285,7 @@ void CAActionsEditor::updateView() {
 void CAActionsEditor::applyChanges() {
 	qDebug("CAActionsEditor::applyChanges");
 
-    for (int row = 0; row < (int)m_actionsList.size(); ++row) {
+    for (int row = 0; row < m_actionsList.size(); ++row) {
         CASingleAction *action = m_actionsList[row];
 		QTableWidgetItem *i = actionsTable->item(row, COL_SHORTCUT);
 
@@ -301,7 +301,7 @@ void CAActionsEditor::applyChanges() {
 
 CAActionsEditor::fileType CAActionsEditor::getFType(const QString &suffix)
 {
-    CAActionsEditor::fileType type;
+    CAActionsEditor::fileType type = FT_SHORTCUT;
     if( suffix == "cakey" )
         type = FT_SHORTCUT;
     if( suffix == "cakmid" )
@@ -532,7 +532,7 @@ bool CAActionsEditor::loadActionsTable(const QString & filename, enum fileType t
 
 	// Lines with '#' (comments) will be ignored
 	QRegExp rx("^(.*)\\t|\\s*(.*)\\t|\\s*(.*)\\t|\\s*(.*)\\t|\\s*(.*)\\t|\\s*(.*)");
-	int row;
+	int row = -1;
 
     QFile f( filename );
     if ( f.open( QIODevice::ReadOnly ) ) {
@@ -670,7 +670,7 @@ CASingleAction * CAActionsEditor::findAction(QWidget *widget, const QString & na
         if (name == action->getAction()->objectName()) return action;
     }
 
-	return 0;
+	return nullptr;
 }
 
 QStringList CAActionsEditor::actionsNames(QWidget *widget) {
@@ -853,7 +853,6 @@ bool ShortcutGetter::event(QEvent *e)
 
             default:
                   return QDialog::event(e);
-                  break;
       }
 
       return true;

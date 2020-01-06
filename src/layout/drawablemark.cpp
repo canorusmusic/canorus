@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -47,9 +47,9 @@ const double CADrawableMark::DEFAULT_PIXMAP_SIZE = 25;
 CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, double x, double y)
  : CADrawableMusElement( mark, dContext, x, y ) {
 	setDrawableMusElementType( CADrawableMusElement::DrawableMark );
-	_tempoNote = 0;
-	_tempoDNote = 0;
-	_pixmap = 0;
+	_tempoNote = nullptr;
+	_tempoDNote = nullptr;
+	_pixmap = nullptr;
 
 	switch (mark->markType()) {
 	case CAMark::Text: {
@@ -120,7 +120,7 @@ CADrawableMark::CADrawableMark( CAMark *mark, CADrawableContext *dContext, doubl
 	case CAMark::Tempo: {
 		setWidth( 40 );
 		setHeight( qRound(DEFAULT_TEXT_SIZE) );
-		_tempoNote = new CANote( CADiatonicPitch(), static_cast<CATempo*>(mark)->beat(), 0, 0 );
+		_tempoNote = new CANote( CADiatonicPitch(), static_cast<CATempo*>(mark)->beat(), nullptr, 0 );
 		_tempoDNote = new CADrawableNote( _tempoNote, dContext, x, y );
 		break;
 	}
@@ -214,7 +214,7 @@ void CADrawableMark::draw(QPainter *p, CADrawSettings s) {
 		p->setFont(font);
 
 		p->drawRect( s.x, s.y, qRound(width()*s.z), qRound(height()*s.z) );
-		p->drawText( s.x, s.y+qRound(height()*s.z), QString((char)('A'+rehersalMarkNumber())) );
+		p->drawText( s.x, s.y+qRound(height()*s.z), QString(static_cast<char>('A'+rehersalMarkNumber())) );
 		break;
 	}
 	case CAMark::InstrumentChange: {

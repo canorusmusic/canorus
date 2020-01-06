@@ -9,6 +9,7 @@
 #include "scripting/swigpython.h"
 #include "canorus.h"
 
+#include <QDebug>
 #include <QFileInfo>
 #include <QDir>
 #include <QCoreApplication>
@@ -17,7 +18,6 @@
 #include <QTextCodec>
 #include <QMetaMethod>
 #include <QFontDatabase>
-#include <iostream> // verbose stuff
 
 #include "interface/rtmididevice.h"
 #include "ui/settingsdialog.h"
@@ -74,8 +74,8 @@ void CACanorus::initSearchPaths()
 /*!
 	Initializes application properties like application name, home page etc.
 */
-void CACanorus::initMain( int argc, char *argv[] ) {
-	_autoRecovery = 0;
+void CACanorus::initMain( int, char *[] ) {
+	_autoRecovery = nullptr;
 
 	// Init main application properties
 	QCoreApplication::setOrganizationName("Canorus");
@@ -87,61 +87,66 @@ void CACanorus::initMain( int argc, char *argv[] ) {
 	Initializes language specific settings like the translation file for the GUI,
 	text flow (left-to-right or right-to-left), default string encoding etc.
  */
-void CACanorus::initTranslations() {
+void CACanorus::initTranslations(/*QTranslator &translator*/) {
 	QString translationFile = "lang:" + QLocale::system().name() + ".qm"; // load language_COUNTRY.qm
 	if(!QFileInfo(translationFile).exists())
 		translationFile = "lang:" + QLocale::system().name().left(2) + ".qm"; // if not found, load language.qm
 
-	QTranslator *translator = new QTranslator(); // translators are destroyed when application closes anyway
+    std::unique_ptr<QTranslator> translator(new QTranslator);
 	if(QFileInfo(translationFile).exists()) {
+        //QApplication::instance()->removeTranslator(translator.get());
 		translator->load(QFileInfo(translationFile).absoluteFilePath());
-		static_cast<QApplication*>(QApplication::instance())->installTranslator(translator);
+		static_cast<QApplication*>(QApplication::instance())->installTranslator(translator.get());
 	}
 
-	if(QLocale::system().language() == QLocale::Hebrew) { // \todo add Arabic, etc.
+	if(QLocale::system().language() == QLocale::Hebrew) { /// \todo add Arabic, etc.
 		static_cast<QApplication*>(QApplication::instance())->setLayoutDirection(Qt::RightToLeft);
 	}
 }
 
-void CACanorus::initCommonGUI() {
+void CACanorus::initCommonGUI(std::unique_ptr<QFileDialog> &uiSaveDialog,
+                              std::unique_ptr<QFileDialog> &uiOpenDialog,
+                              std::unique_ptr<QFileDialog> &uiExportDialog,
+                              std::unique_ptr<QFileDialog> &uiImportDialog) {
 	// Initialize main window's load/save/import/export dialogs
-	CAMainWin::uiSaveDialog = new QFileDialog(nullptr, QObject::tr("Choose a file to save"), settings()->documentsDirectory().absolutePath());
-	CAMainWin::uiSaveDialog->setFileMode(QFileDialog::AnyFile);
-	CAMainWin::uiSaveDialog->setAcceptMode( QFileDialog::AcceptSave );
-	CAMainWin::uiSaveDialog->setNameFilters( QStringList() << CAFileFormats::CANORUSML_FILTER );
-	CAMainWin::uiSaveDialog->setNameFilters( CAMainWin::uiSaveDialog->nameFilters() << CAFileFormats::CAN_FILTER );
-	CAMainWin::uiSaveDialog->selectNameFilter( CAFileFormats::getFilter( settings()->defaultSaveFormat() ) );
+    qInfo() << "Entered initCommonGUI";
+	uiSaveDialog = std::make_unique<QFileDialog>(nullptr, QObject::tr("Choose a file to save"), settings()->documentsDirectory().absolutePath());
+	uiSaveDialog->setFileMode(QFileDialog::AnyFile);
+	uiSaveDialog->setAcceptMode( QFileDialog::AcceptSave );
+	uiSaveDialog->setNameFilters( QStringList() << CAFileFormats::CANORUSML_FILTER );
+	uiSaveDialog->setNameFilters( uiSaveDialog->nameFilters() << CAFileFormats::CAN_FILTER );
+	uiSaveDialog->selectNameFilter( CAFileFormats::getFilter( settings()->defaultSaveFormat() ) );
 
-	CAMainWin::uiOpenDialog = new QFileDialog(nullptr, QObject::tr("Choose a file to open"), settings()->documentsDirectory().absolutePath());
-	CAMainWin::uiOpenDialog->setFileMode( QFileDialog::ExistingFile );
-	CAMainWin::uiOpenDialog->setAcceptMode( QFileDialog::AcceptOpen );
-	CAMainWin::uiOpenDialog->setNameFilters( QStringList() << CAFileFormats::CANORUSML_FILTER ); // clear the * filter
-	CAMainWin::uiOpenDialog->setNameFilters( CAMainWin::uiOpenDialog->nameFilters() << CAFileFormats::CAN_FILTER );
+	uiOpenDialog = std::make_unique<QFileDialog>(nullptr, QObject::tr("Choose a file to open"), settings()->documentsDirectory().absolutePath());
+	uiOpenDialog->setFileMode( QFileDialog::ExistingFile );
+	uiOpenDialog->setAcceptMode( QFileDialog::AcceptOpen );
+	uiOpenDialog->setNameFilters( QStringList() << CAFileFormats::CANORUSML_FILTER ); // clear the * filter
+	uiOpenDialog->setNameFilters( uiOpenDialog->nameFilters() << CAFileFormats::CAN_FILTER );
 	QString allFilters; // generate list of all files
-	for (int i=0; i<CAMainWin::uiOpenDialog->nameFilters().size(); i++) {
-		QString curFilter = CAMainWin::uiOpenDialog->nameFilters()[i];
+	for (int i=0; i<uiOpenDialog->nameFilters().size(); i++) {
+		QString curFilter = uiOpenDialog->nameFilters()[i];
 		int left = curFilter.indexOf('(')+1;
 		allFilters += curFilter.mid( left, curFilter.size()-left-1 ) + " ";
 	}
 	allFilters.chop(1);
-	CAMainWin::uiOpenDialog->setNameFilters( QStringList() << QString(QObject::tr("All supported formats (%1)").arg(allFilters)) << CAMainWin::uiOpenDialog->nameFilters() );
+	uiOpenDialog->setNameFilters( QStringList() << QString(QObject::tr("All supported formats (%1)").arg(allFilters)) << uiOpenDialog->nameFilters() );
 
-	CAMainWin::uiExportDialog = new QFileDialog(nullptr, QObject::tr("Choose a file to export"), settings()->documentsDirectory().absolutePath());
-	CAMainWin::uiExportDialog->setFileMode(QFileDialog::AnyFile);
-	CAMainWin::uiExportDialog->setAcceptMode( QFileDialog::AcceptSave );
-	CAMainWin::uiExportDialog->setNameFilters( QStringList() << CAFileFormats::LILYPOND_FILTER );
-	CAMainWin::uiExportDialog->setNameFilters( CAMainWin::uiExportDialog->nameFilters() << CAFileFormats::MUSICXML_FILTER );
-	CAMainWin::uiExportDialog->setNameFilters( CAMainWin::uiExportDialog->nameFilters() << CAFileFormats::MIDI_FILTER );
-	CAMainWin::uiExportDialog->setNameFilters( CAMainWin::uiExportDialog->nameFilters() << CAFileFormats::PDF_FILTER );
-	CAMainWin::uiExportDialog->setNameFilters( CAMainWin::uiExportDialog->nameFilters() << CAFileFormats::SVG_FILTER );
+	uiExportDialog = std::make_unique<QFileDialog>(nullptr, QObject::tr("Choose a file to export"), settings()->documentsDirectory().absolutePath());
+	uiExportDialog->setFileMode(QFileDialog::AnyFile);
+	uiExportDialog->setAcceptMode( QFileDialog::AcceptSave );
+	uiExportDialog->setNameFilters( QStringList() << CAFileFormats::LILYPOND_FILTER );
+	uiExportDialog->setNameFilters( uiExportDialog->nameFilters() << CAFileFormats::MUSICXML_FILTER );
+	uiExportDialog->setNameFilters( uiExportDialog->nameFilters() << CAFileFormats::MIDI_FILTER );
+	uiExportDialog->setNameFilters( uiExportDialog->nameFilters() << CAFileFormats::PDF_FILTER );
+	uiExportDialog->setNameFilters( uiExportDialog->nameFilters() << CAFileFormats::SVG_FILTER );
 
-	CAMainWin::uiImportDialog = new QFileDialog(nullptr, QObject::tr("Choose a file to import"), settings()->documentsDirectory().absolutePath());
-	CAMainWin::uiImportDialog->setFileMode( QFileDialog::ExistingFile );
-	CAMainWin::uiImportDialog->setAcceptMode( QFileDialog::AcceptOpen );
-	CAMainWin::uiImportDialog->setNameFilters( QStringList() << CAFileFormats::MUSICXML_FILTER );
-    CAMainWin::uiImportDialog->setNameFilters( CAMainWin::uiImportDialog->nameFilters() << CAFileFormats::MXL_FILTER );
-	CAMainWin::uiImportDialog->setNameFilters( CAMainWin::uiImportDialog->nameFilters() << CAFileFormats::MIDI_FILTER );
-	// CAMainWin::uiImportDialog->setNameFilters( CAMainWin::uiImportDialog->nameFilters() << CAFileFormats::LILYPOND_FILTER ); // activate when usable
+	uiImportDialog = std::make_unique<QFileDialog>(nullptr, QObject::tr("Choose a file to import"), settings()->documentsDirectory().absolutePath());
+	uiImportDialog->setFileMode( QFileDialog::ExistingFile );
+	uiImportDialog->setAcceptMode( QFileDialog::AcceptOpen );
+	uiImportDialog->setNameFilters( QStringList() << CAFileFormats::MUSICXML_FILTER );
+    uiImportDialog->setNameFilters( uiImportDialog->nameFilters() << CAFileFormats::MXL_FILTER );
+	uiImportDialog->setNameFilters( uiImportDialog->nameFilters() << CAFileFormats::MIDI_FILTER );
+	// uiImportDialog->setNameFilters( uiImportDialog->nameFilters() << CAFileFormats::LILYPOND_FILTER ); // activate when usable
 }
 
 /*!
@@ -242,10 +247,6 @@ void CACanorus::removeRecentDocument( QString filename ) {
 void CACanorus::cleanUp()
 {
 	delete _settings;
-	delete CAMainWin::uiSaveDialog;
-	delete CAMainWin::uiOpenDialog;
-	delete CAMainWin::uiExportDialog;
-	delete CAMainWin::uiImportDialog;
 	delete _midiDevice;
 	autoRecovery()->cleanupRecovery();
 	delete _autoRecovery;
@@ -403,14 +404,14 @@ void CACanorus::connectSlotsByName(QObject *pOS, const QObject *pOR)
         for(int j = 0; j < list.count(); ++j) {
             const QObject *co = list.at(j);
             QByteArray objName = co->objectName().toLatin1();
-            int len = objName.length();
+            unsigned int len = static_cast<unsigned int>(objName.length());
             if (!len || qstrncmp(slot + 3, objName.data(), len) || slot[len+3] != '_')
                 continue;
             foundObj = true;
             const QMetaObject *smo = co->metaObject();
             int sigIndex = smo->indexOfMethod(slot + len + 4);
             if (sigIndex < 0) { // search for compatible signals
-                int slotlen = qstrlen(slot + len + 4) - 1;
+                unsigned int slotlen = qstrlen(slot + len + 4) - 1;
                 for (int k = 0; k < co->metaObject()->methodCount(); ++k) {
                     if (smo->method(k).methodType() != QMetaMethod::Signal)
                         continue;

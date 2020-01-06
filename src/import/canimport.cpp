@@ -39,7 +39,7 @@ CADocument *CACanImport::importDocumentImpl() {
 
 		if (!doc) {
 			setStatus(-1);
-			return 0;
+			return nullptr;
 		}
 
 		// extract each resource and correct resource path
@@ -80,6 +80,6 @@ CADocument *CACanImport::importDocumentImpl() {
 		return doc;
 	} else {
 		setStatus(-1);
-		return 0;
+		return nullptr;
 	}
 }

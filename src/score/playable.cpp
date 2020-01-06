@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -30,14 +30,14 @@
 	\sa CAPlayableLength, CAVoice, CAMusElement
 */
 CAPlayable::CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength )
- : CAMusElement(voice?(voice->staff()):0, timeStart, timeLength) {
+ : CAMusElement(voice?(voice->staff()):nullptr, timeStart, timeLength) {
 	setVoice( voice );
 	setPlayableLength( length );
 	if ( timeLength==-1 ) {
 		calculateTimeLength();
 	}
 
-	setTuplet( 0 );
+	setTuplet( nullptr );
 }
 
 /*!
@@ -56,7 +56,7 @@ CAPlayable::~CAPlayable() {
 }
 
 void CAPlayable::setVoice(CAVoice *voice) {
-	_voice = voice; _context = voice?voice->staff():0;
+	_voice = voice; _context = voice?voice->staff():nullptr;
 }
 
 /*!

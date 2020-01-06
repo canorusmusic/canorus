@@ -28,9 +28,9 @@ class CASourceView : public CAView {
 	};
 
 public:
-	CASourceView(CADocument *doc, QWidget *parent=0);
-	CASourceView(CAVoice *voice, QWidget *parent=0);
-	CASourceView(CALyricsContext *lc, QWidget *parent=0);
+	CASourceView(CADocument *doc, QWidget *parent=nullptr);
+	CASourceView(CAVoice *voice, QWidget *parent=nullptr);
+	CASourceView(CALyricsContext *lc, QWidget *parent=nullptr);
 	virtual ~CASourceView();
 
 	CASourceView *clone();
@@ -39,7 +39,7 @@ public:
 	inline CASourceViewType sourceViewType() { return _sourceViewType; }
 	inline void setSourceViewType( CASourceViewType t ) { _sourceViewType = t; }
 
-	inline CADocument *document() { return _document; };
+	inline CADocument *document() { return _document; }
 	inline CAVoice *voice() { return _voice; }
 	inline CALyricsContext *lyricsContext() { return _lyricsContext; }
 	inline void setDocument( CADocument *doc ) { _document = doc; }

@@ -16,7 +16,7 @@ class CAHelpBrowser
 {
 	Q_OBJECT
 	public:
-		CAHelpBrowser(QWidget* parent = 0);
+		CAHelpBrowser(QWidget* parent = nullptr);
 		~CAHelpBrowser() {}
 };
 

@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -28,7 +28,7 @@ CACrescendo::~CACrescendo() {
 }
 
 CACrescendo* CACrescendo::clone(CAMusElement* elt) {
-	return new CACrescendo( finalVolume(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0, crescendoType(), timeStart(), timeLength() );
+	return new CACrescendo( finalVolume(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):nullptr, crescendoType(), timeStart(), timeLength() );
 }
 
 int CACrescendo::compare( CAMusElement *elt ) {

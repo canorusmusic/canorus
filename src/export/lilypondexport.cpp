@@ -53,7 +53,7 @@
 CALilyPondExport::CALilyPondExport( QTextStream *out )
  : CAExport(out) {
 	setIndentLevel( 0 );
-	setCurDocument( 0 );
+	setCurDocument( nullptr );
 	_voltaBracketOccured = false;
 	_voltaBracketIsOpen = false;
 	_voltaFunctionWritten = false;
@@ -73,7 +73,7 @@ void CALilyPondExport::exportVoiceImpl(CAVoice *v) {
 	_curStreamTime = 0;
 	_lastPlayableLength = CAPlayableLength::Undefined;
 	bool anacrusisCheck = true;	// process upbeat eventually
-	CATimeSignature *time = 0;
+	CATimeSignature *time = nullptr;
 	int barNumber = 1;
 
 	// Write \relative note for the first note
@@ -485,7 +485,7 @@ void CALilyPondExport::exportMarksBeforeElement( CAMusElement *elt ) {
 			}
 			if ( _voltaBracketFinishAtRepeat || _voltaBracketFinishAtBar ) {
 				out() << "\\voltaStart \\markup \\text { \""<< txt << "\" }  ";
-			};
+			}
 			break;
 		}
 		case CAMark::Tempo: {
@@ -788,7 +788,7 @@ const QString CALilyPondExport::playableLengthToLilyPond( CAPlayableLength playa
 const QString CALilyPondExport::diatonicPitchToLilyPond( CADiatonicPitch pitch ) {
 	QString name;
 
-	name = (char)((pitch.noteName()+2)%7 + 'a');
+	name = static_cast<char>(((pitch.noteName()+2)%7 + 'a'));
 
 	for (int i=0; i < pitch.accs(); i++)
 		name += "is";	// append as many -is-es as necessary
@@ -816,13 +816,10 @@ const QString CALilyPondExport::restTypeToLilyPond(CARest::CARestType type) {
 	switch (type) {
 		case CARest::Normal:
 			return "r";
-			break;
 		case CARest::Hidden:
 			return "s";
-			break;
 		case CARest::Undefined:
 			return "r";
-			break;
 	}
 	return "r";
 }
@@ -834,28 +831,20 @@ const QString CALilyPondExport::barlineTypeToLilyPond(CABarline::CABarlineType t
 	switch (type) {
 		case CABarline::Single:
 			return "|";
-			break;
 		case CABarline::Double:
 			return "||";
-			break;
 		case CABarline::End:
 			return "|.";
-			break;
 		case CABarline::RepeatOpen:	// possible repeat bar lines: ".|:" ":..:" ":|.|:" ":|.:"  ":|."
 			return ".|:";
-			break;
 		case CABarline::RepeatClose:
 			return ":|.";
-			break;
 		case CABarline::RepeatCloseOpen:
 			return ":|.|:";
-			break;
 		case CABarline::Dotted:
 			return ":";
-			break;
 		case CABarline::Undefined:
 			return "|";
-			break;
 	}
 	return "|";
 }

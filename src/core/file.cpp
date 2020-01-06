@@ -28,8 +28,8 @@
 CAFile::CAFile() : QThread() {
 	setProgress( 0 );
 	setStatus( 0 );
-	setStream( 0 );
-	setFile( 0 );
+	setStream( nullptr );
+	setFile( nullptr );
 	_deleteStream = false;
 }
 
@@ -92,7 +92,7 @@ void CAFile::setStreamToFile( const QString filename ) {
 void CAFile::setStreamToDevice(QIODevice* device) {
 	if (stream() && _deleteStream) {
 		delete stream();
-		setStream(0);
+		setStream(nullptr);
 	}
 
 	if (!device->isOpen()) {
@@ -141,7 +141,7 @@ QString CAFile::getStreamAsString() {
 void CAFile::setStreamFromDevice(QIODevice* device) {
 	if (stream() && _deleteStream) {
 		delete stream();
-		setStream(0);
+		setStream(nullptr);
 	}
 
 	if (!device->isOpen()) {

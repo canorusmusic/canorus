@@ -32,6 +32,10 @@
 #include "widgets/scoreview.h"
 #include "widgets/resourceview.h"
 
+// std::unique_ptr for old Qt LTS 5.9.x
+#include <iostream> // verbose stuff
+#include <memory>
+
 class QKeyEvent;
 class QSlider;
 class QSpinBox;
@@ -85,7 +89,7 @@ public:
 		ReadOnlyMode
 	};
 
-	CAMainWin(QMainWindow *oParent = 0);
+	CAMainWin(QMainWindow *oParent = nullptr);
 	~CAMainWin();
 
 	void clearUI();
@@ -98,7 +102,7 @@ public:
 	void addSheet(CASheet *s);
 	void removeSheet(CASheet *s);
 	bool insertMusElementAt( const QPoint coords, CAScoreView *v );
-	void restartTimeEditedTime() { _timeEditedTime = 0; };
+	void restartTimeEditedTime() { _timeEditedTime = 0; }
 	void deleteSelection( CAScoreView *v, bool deleteSyllable, bool deleteNotes, bool undo );
 	void copySelection( CAScoreView *v );
 	void pasteAt( const QPoint coords, CAScoreView *v );
@@ -109,8 +113,10 @@ public:
 
 	void setMode(CAMode mode, const QString &oModeHash);
 	inline CAMode mode() { return _mode; }
-	inline QFileDialog *exportDialog() { return uiExportDialog; }
-	inline QFileDialog *importDialog() { return uiImportDialog; }
+    inline QFileDialog *saveDialog() { return uiSaveDialog.get(); }
+    inline QFileDialog *openDialog() { return uiOpenDialog.get(); }
+	inline QFileDialog *exportDialog() { return uiExportDialog.get(); }
+	inline QFileDialog *importDialog() { return uiImportDialog.get(); }
 	inline CAResourceView *resourceView() { return _resourceView; }
 	inline QAction        *resourceViewAction() { return uiResourceView; }
 	inline CAMidiRecorderView *midiRecorderView() { return _midiRecorderView; }
@@ -121,7 +127,7 @@ public:
 
 	inline CAScoreView *currentScoreView() {
 		if (currentView()) return dynamic_cast<CAScoreView*>(currentView());
-		else return 0;
+		else return nullptr;
 	}
 
 	CASheet *currentSheet();
@@ -129,7 +135,7 @@ public:
 	inline CAStaff *currentStaff() {
 		CAContext *context = currentContext();
 		if (context && context->contextType()==CAContext::Staff) return static_cast<CAStaff*>(context);
-		else return 0;
+		else return nullptr;
 	}
 
 	CAContext *currentContext();
@@ -142,10 +148,10 @@ public:
 	inline bool isInsertKeySigChecked() { return uiInsertKeySig->isChecked(); }
 
 	// Dialogs, Windows
-	static QFileDialog *uiSaveDialog;
-	static QFileDialog *uiOpenDialog;
-	static QFileDialog *uiExportDialog;
-	static QFileDialog *uiImportDialog;
+	std::unique_ptr<QFileDialog> uiSaveDialog;
+	std::unique_ptr<QFileDialog> uiOpenDialog;
+	std::unique_ptr<QFileDialog> uiExportDialog;
+	std::unique_ptr<QFileDialog> uiImportDialog;
 
 	// Python Console
 	CAPyConsole *pyConsole;

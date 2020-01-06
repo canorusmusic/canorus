@@ -20,7 +20,7 @@ public:
 	CATuplet( int number, int actualNumber );
 	virtual ~CATuplet();
 
-	CATuplet* clone(CAContext* context=0);
+	CATuplet* clone(CAContext* context=nullptr);
 	CATuplet* clone(QList<CAPlayable*> newList);
 	int compare(CAMusElement*);
 
@@ -30,7 +30,7 @@ public:
 	inline int actualNumber() { return _actualNumber; }
 	inline void setActualNumber( int n ) { _actualNumber = n; }
 
-	inline const QList<CAPlayable*>& noteList() { return _noteList; }
+	inline const QList<CAPlayable*>& noteList() const { return _noteList; }
 	void addNote( CAPlayable* p );
 	inline void addNotes( QList<CAPlayable*> l ) { _noteList << l; }
 	inline void removeNote( CAPlayable* p ) { _noteList.removeAll(p); }
@@ -39,8 +39,8 @@ public:
 	inline bool containsNote( CAPlayable *p ) { return noteList().contains(p); }
 	CAPlayable *nextTimed( CAPlayable *p );
 
-	int timeLength();
-	int timeStart();
+	int timeLength() const;
+	int timeStart() const;
 
 	void assignTimes();
 

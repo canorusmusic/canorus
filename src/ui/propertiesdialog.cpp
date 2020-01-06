@@ -241,7 +241,7 @@ void CADocumentProperties::on_uiComposer_editingFinished() {
 	uiCopyright->setEditText( curText );
 }
 
-void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *cur, QTreeWidgetItem *prev ) {
+void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged( QTreeWidgetItem *cur, QTreeWidgetItem * ) {
 	if (!cur)
 		return;
 
@@ -407,25 +407,26 @@ void CAPropertiesDialog::createDocumentFromTree() {
 
 		for ( int j=0; j<cur->child(i)->childCount(); j++ ) {
 			CAContext *c = _contextItem[cur->child(i)->child(j)];
-			switch ( c->contextType() ) {
-				case CAContext::Staff: {
-					CAStaff *s = static_cast<CAStaff*>(c);
-					while ( s->voiceList().size() )
-						s->removeVoice( s->voiceList()[0] );
+			if( c->contextType() == CAContext::Staff )
+            {
+                CAStaff *s = static_cast<CAStaff*>(c);
+                while ( s->voiceList().size() )
+                    s->removeVoice( s->voiceList()[0] );
 
-					for ( int k=0; k<cur->child(i)->child(j)->childCount(); k++ ) {
-						s->addVoice( _voiceItem[cur->child(i)->child(j)->child(k)] );
-					}
-				}
-				default:
-					sheet->addContext(c);
-					break;
+                for ( int k=0; k<cur->child(i)->child(j)->childCount(); k++ ) {
+                    s->addVoice( _voiceItem[cur->child(i)->child(j)->child(k)] );
+                }
+            }
+            else
+            {
+                sheet->addContext(c);
+                break;
 			}
 		}
 	}
 }
 
-void CAPropertiesDialog::on_uiUp_clicked( bool down ) {
+void CAPropertiesDialog::on_uiUp_clicked( bool ) {
 	QTreeWidgetItem *cur = uiDocumentTree->currentItem();
 	QTreeWidgetItem *parent = cur->parent();
 	int idx;
@@ -439,7 +440,7 @@ void CAPropertiesDialog::on_uiUp_clicked( bool down ) {
 	uiDocumentTree->expandAll();
 }
 
-void CAPropertiesDialog::on_uiDown_clicked( bool down ) {
+void CAPropertiesDialog::on_uiDown_clicked( bool ) {
 	QTreeWidgetItem *cur = uiDocumentTree->currentItem();
 	QTreeWidgetItem *parent = cur->parent();
 	int idx;

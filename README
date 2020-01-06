@@ -144,6 +144,10 @@ If you use gcc 4.8.x with Qt < 4.8.5 you will get an error. This can
 be fixed by editing the header qt4/QtCore/qtconcurrentfilter.h and
 removing the line that caused the error (the fix Qt Team performed too).
 
+If you use gcc 8.x you may be unable to use python plugins with swig.
+Reason is an issue that was fixed after release of 3.0.12 that may
+have not been patched by your distribution.
+
 -------------------------------------------------------------------------------
 
 If you get the error "swig not found" then you have the problem

@@ -42,7 +42,7 @@ class CATextEdit : public QLineEdit {
 Q_OBJECT
 
 public:
-	CATextEdit( QWidget *parent=0 );
+	CATextEdit( QWidget *parent=nullptr );
 	~CATextEdit();
 
 signals:
@@ -65,8 +65,8 @@ public:
 	///////////////////
 	// Basic methods //
 	///////////////////
-	CAScoreView(QWidget *parent=0);
-	CAScoreView(CASheet *sheet, QWidget *parent=0);
+	CAScoreView(QWidget *parent=nullptr);
+	CAScoreView(CASheet *sheet, QWidget *parent=nullptr);
 	virtual ~CAScoreView();
 	CAScoreView *clone();
 	CAScoreView *clone(QWidget *parent);
@@ -85,7 +85,7 @@ public:
 	///////////////
 	// Selection //
 	///////////////
-	inline const QList<CADrawableMusElement*>& selection() { return _selection; };
+	inline const QList<CADrawableMusElement*>& selection() { return _selection; }
 	QList<CAMusElement*>                 musElementSelection();
 	QList<CADrawableMusElement*>         musElementsAt(double x, double y);
 	CADrawableContext                   *selectCElement(double x, double y);
@@ -102,6 +102,7 @@ public:
 	void selectAllCurContext();
 	void invertSelection();
 	inline void clearSelection() { _selection.clear(); emit selectionChanged(); }
+    // Note Reinhard: This code does not make sense
 	inline bool removeFromSelection(CADrawableMusElement *elt) { return _selection.removeAll(elt); emit selectionChanged(); }
 
 	void                  addToSelection(CADrawableMusElement *elt, bool triggerSignal=true );
@@ -127,9 +128,9 @@ public:
 	CADrawableMusElement     *findMElement(CAMusElement*);
 	CADrawableContext        *findCElement(CAContext*);
 	QList<CADrawableContext*> findContextsInRegion(QRect &reg);
-	CADrawableMusElement     *nearestLeftElement(double x, double y, CADrawableContext* context=0);
+	CADrawableMusElement     *nearestLeftElement(double x, double y, CADrawableContext* context=nullptr);
 	CADrawableMusElement     *nearestLeftElement(double x, double y, CAVoice *voice);
-	CADrawableMusElement     *nearestRightElement(double x, double y, CADrawableContext* context=0);
+	CADrawableMusElement     *nearestRightElement(double x, double y, CADrawableContext* context=nullptr);
 	CADrawableMusElement     *nearestRightElement(double x, double y, CAVoice *voice);
 	int coordsToTime( double x );
 	double timeToCoords( int time );
@@ -161,21 +162,21 @@ public:
 	//////////////////////////////////////////////
 	void rebuild();
 	void setMouseTracking(bool); // reimplemented!
-	inline const int drawableWidth() { return _canvas->width(); }
-	inline const int drawableHeight() { return _canvas->height(); }
+	inline int drawableWidth() { return _canvas->width(); }
+	inline int drawableHeight() { return _canvas->height(); }
 
 	void setWorldX(double x, bool animate=false, bool force=false);
 	void setWorldY(double y, bool animate=false, bool force=false);
 	void setWorldWidth(double w, bool force=false);
 	void setWorldHeight(double h, bool force=false);
 
-	inline const double worldX() { return _worldX; }
-	inline const double worldY() { return _worldY; }
-	inline const double worldWidth() { return _worldW; }
-	inline const double worldHeight() { return _worldH; }
+	inline double worldX() { return _worldX; }
+	inline double worldY() { return _worldY; }
+	inline double worldWidth() { return _worldW; }
+	inline double worldHeight() { return _worldH; }
 	inline const QRectF worldCoords() { return QRectF(worldX(), worldY(), worldWidth(), worldHeight()); }
 
-	inline const float zoom() { return _zoom; }
+	inline float zoom() { return _zoom; }
 
 	void setWorldCoords(const QRectF r, bool animate=false, bool force=false);
 	void setWorldCoords(double x, double y, double w, double h, bool animate=false, bool force=false)  { setWorldCoords( QRect(x,y,w,h), animate, force); }
@@ -215,7 +216,7 @@ public:
 	inline void setPlaying(bool playing) { _playing = playing; }
 
 	inline void setRepaintArea(QRect *area) { _repaintArea = area; }
-	inline void clearRepaintArea() { if (_repaintArea) delete _repaintArea; _repaintArea=0; }
+	inline void clearRepaintArea() { if (_repaintArea) delete _repaintArea; _repaintArea=nullptr; }
 
 	inline CAVoice *selectedVoice() { return _selectedVoice; }
 	inline void setSelectedVoice( CAVoice *selectedVoice ) { _selectedVoice = selectedVoice; }
@@ -308,7 +309,7 @@ private:
 	double _worldX, _worldY, _worldW, _worldH;	// Absolute world coordinates of the area the view is currently showing.
 	QPoint _lastMousePressCoords;               // Used in multiple selection - coordinates of the upper-left point of the rectangle the user drags in world coordinates
 	inline void setLastMousePressCoords( QPoint p ) { _lastMousePressCoords = p; }
-	float _zoom;                                // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
+	double _zoom;                                // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
 
 	CAVoice *_selectedVoice;        // Voice to be drawn normal colors, others are shaded
 
@@ -369,7 +370,7 @@ private:
 	static const int ANIMATION_STEPS; // Number of steps used in animation
 	int _animationStep;               // Current step in the animation
 	double _targetWorldX, _targetWorldY, _targetWorldW, _targetWorldH;	// Absolute world coordinates of the area the view is currently showing.
-	float _targetZoom;                // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
+	double _targetZoom;                // Zoom level of the view (1.0 = 100%, 1.5 = 150% etc.).
 
 	void startAnimationTimer();
 

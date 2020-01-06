@@ -1,5 +1,5 @@
 /*!
-        Copyright (c) 2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+        Copyright (c) 2008-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
 
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -33,7 +33,7 @@
 CASVGExport::CASVGExport( QTextStream *stream )
  : CAExport(stream)
 {
-	_poTypesetCtl = 0;
+	_poTypesetCtl = nullptr;
 }
 
 // Destructor
@@ -43,7 +43,7 @@ CASVGExport::~CASVGExport()
 		delete _poTypesetCtl->getExporter();
 		delete _poTypesetCtl;
 	}
-	_poTypesetCtl = 0;
+	_poTypesetCtl = nullptr;
 }
 
 void CASVGExport::startExport()
@@ -70,7 +70,7 @@ void CASVGExport::finishExport()
 		disconnect( _poTypesetCtl, SIGNAL( nextOutput( const QByteArray & ) ), this, SLOT( outputTypsetterOutput( const QByteArray & ) ) );
 		disconnect( _poTypesetCtl, SIGNAL( typesetterFinished( int ) ), this, SLOT( svgFinished( int ) ) );
 		delete _poTypesetCtl;
-		_poTypesetCtl = 0; // Destruktor may not delete the same object again
+		_poTypesetCtl = nullptr; // Destruktor may not delete the same object again
 	}
 }
 

@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -13,18 +13,19 @@
 
 #include "score/barline.h"
 
-const float CADrawableBarline::SPACE_BETWEEN_BARLINES = 3;
+const double CADrawableBarline::SPACE_BETWEEN_BARLINES = 3;
 
-const float CADrawableBarline::BARLINE_WIDTH = 1.5;
-const float CADrawableBarline::DOTTED_BARLINE_WIDTH = 2;
-const float CADrawableBarline::BOLD_BARLINE_WIDTH = 4;
-const float CADrawableBarline::REPEAT_DOTS_WIDTH = 3;
+const double CADrawableBarline::BARLINE_WIDTH = 1.5;
+const double CADrawableBarline::DOTTED_BARLINE_WIDTH = 2;
+const double CADrawableBarline::BOLD_BARLINE_WIDTH = 4;
+const double CADrawableBarline::REPEAT_DOTS_WIDTH = 3;
 
 CADrawableBarline::CADrawableBarline(CABarline *m, CADrawableStaff *staff, double x, double y)
  : CADrawableMusElement(m, staff, x, y) {
  	setDrawableMusElementType( CADrawableMusElement::DrawableBarline );
 
- 	switch (m->barlineType()) {
+ 	switch (m->barlineType())
+    {
  		case CABarline::Single:
  			setWidth( BARLINE_WIDTH );
  			break;
@@ -190,5 +191,6 @@ void CADrawableBarline::draw(QPainter *p, CADrawSettings s) {
 }
 
 CADrawableBarline* CADrawableBarline::clone(CADrawableContext* newContext) {
-	return new CADrawableBarline((CABarline*)_musElement, (CADrawableStaff*)((newContext)?newContext:_drawableContext), _xPos, _yPos);
+	return new CADrawableBarline(static_cast<CABarline*>(_musElement),
+                                 static_cast<CADrawableStaff*>((newContext)?newContext:_drawableContext), _xPos, _yPos);
 }

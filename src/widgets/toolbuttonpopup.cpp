@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Itay Perl, Canorus development team
+	Copyright (c) 2007-2020, Itay Perl, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -17,7 +17,7 @@
 	This container sets the correct popup behavior for tool button floating widgets.
 */
 
-CAToolButtonPopup::CAToolButtonPopup(QWidget* parent) : QWidget(parent), _widget(0) {
+CAToolButtonPopup::CAToolButtonPopup(QWidget* parent) : QWidget(parent), _widget(nullptr) {
 	setWindowFlags( Qt::Popup );
 }
 

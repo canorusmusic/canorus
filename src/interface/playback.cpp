@@ -72,15 +72,15 @@ CAPlayback::CAPlayback( CAMidiDevice *m ) {
 */
 void CAPlayback::initPlayback() {
 	_repeating=0;
-	_lastRepeatOpenIdx=0;
+	_lastRepeatOpenIdx=nullptr;
 	_curTime=0;
-	_streamIdx=0;
+	_streamIdx=nullptr;
 	_stop = false;
 	_stopLock = false;
 
 	// override this settings in actual constructor
-	_sheet = 0;
-	_midiDevice = 0;
+	_sheet = nullptr;
+	_midiDevice = nullptr;
 	_playSelectionOnly = false;
 	_initTimeStart = 0;
 	_sleepFactor = 1.0; // set by tempo to determine the miliseconds for sleep
@@ -146,7 +146,7 @@ void CAPlayback::run() {
 				CANote *note = dynamic_cast<CANote*>(_curPlaying[i]);
 				if (note) {
 					message << (128 + note->voice()->midiChannel()); // note off
-					message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
+					message << static_cast<uchar>( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
 					message << (127);
 					if ((note->musElementType()!=CAMusElement::Rest ) &&		// first because rest has no tie
 							!(note->tieStart() && note->tieStart()->noteEnd()) )
@@ -176,7 +176,7 @@ void CAPlayback::run() {
 				    for (int j=0; j<me->markList().size(); j++) {
 				    	if ( me->markList()[j]->markType()==CAMark::Tempo ) {
 				    		CATempo *tempo = static_cast<CATempo*>(me->markList()[j]);
-		    				midiDevice()->sendMetaEvent(_curTime, CAMidiDevice::Meta_Tempo, tempo->bpm(), 0, 0);
+		    				midiDevice()->sendMetaEvent(_curTime, CAMidiDevice::Meta_Tempo, static_cast<char>(tempo->bpm()), 0, 0);
 						}
 					}
 
@@ -193,7 +193,7 @@ void CAPlayback::run() {
 				    	if ( note->markList()[j]->markType()==CAMark::Dynamic ) {
 				    		message << (176 + note->voice()->midiChannel()); // set volume
 				    		message << (CAMidiDevice::Midi_Ctl_Volume /* 7 */ );
-				    		message << qRound(127 * static_cast<CADynamic*>(note->markList()[j])->volume()/100.0);
+				    		message << static_cast<uchar>(qRound(127 * static_cast<CADynamic*>(note->markList()[j])->volume()/100.0));
 				    		midiDevice()->send(message, _curTime);
 				    		message.clear();
 				    	} else
@@ -211,7 +211,7 @@ void CAPlayback::run() {
 				    }
 
 					message << (144 + note->voice()->midiChannel()); // note on
-					message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
+					message << static_cast<uchar>( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
 					message << (127);
 					if ( !note->tieEnd() )
 						midiDevice()->send(message, _curTime);
@@ -250,7 +250,7 @@ void CAPlayback::run() {
 			mSeconds += qRound(minLength*_sleepFactor);
 
 			if ( midiDevice()->isRealTime() )
-				msleep( qRound(minLength*_sleepFactor) );
+				msleep( static_cast<ulong>(qRound(minLength*_sleepFactor) ));
 
 			_curTime += minLength;
 		}
@@ -266,7 +266,7 @@ void CAPlayback::run() {
  */
 void CAPlayback::updateSleepFactor( CATempo *t ) {
 	if (t) {
-		_sleepFactor = 60000.0 /
+		_sleepFactor = 60000.0f /
 		              ( CAPlayableLength::playableLengthToTimeLength( t->beat() ) * t->bpm() );
 	}
 }
@@ -307,7 +307,7 @@ void CAPlayback::playSelectionImpl() {
 			message.clear();
 
 			message << (144 + note->voice()->midiChannel()); // note on
-			message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
+			message << static_cast<uchar>( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
 			message << (127);
 			midiDevice()->send(message, _curTime);
 			message.clear();
@@ -323,7 +323,7 @@ void CAPlayback::playSelectionImpl() {
 					CANote *note = static_cast<CANote*>(_curPlaying[i]);
 
 					message << (128 + note->voice()->midiChannel()); // note off
-					message << ( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
+					message << static_cast<uchar>( CADiatonicPitch::diatonicPitchToMidiPitch(note->diatonicPitch()) + note->voice()->midiPitchOffset() );
 					message << (127);
 					midiDevice()->send(message, _curTime);
 					message.clear();
@@ -335,7 +335,7 @@ void CAPlayback::playSelectionImpl() {
 			}
 		}
 
-		msleep( waitTime );
+		msleep( static_cast<ulong>(waitTime ));
 		curTime += waitTime;
 	}
 

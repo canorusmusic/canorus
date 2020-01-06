@@ -62,8 +62,8 @@ CALilyPondImport::~CALilyPondImport() {
 
 void CALilyPondImport::initLilyPondImport() {
 	_curLine = _curChar = 0;
-	_curSlur = 0; _curPhrasingSlur = 0;
-	_templateVoice = 0;
+	_curSlur = nullptr; _curPhrasingSlur = nullptr;
+	_templateVoice = nullptr;
 }
 
 void CALilyPondImport::addError(QString description, int curLine, int curChar) {
@@ -88,7 +88,8 @@ CASheet *CALilyPondImport::importSheetImpl() {
 	// std::cout << qPrintable( text );
 
 	
-	return sheet;
+    // Note Reinhard: broken code, merge issue ?
+	//return sheet;
 
 	bool changed=false;
 
@@ -107,7 +108,7 @@ CASheet *CALilyPondImport::importSheetImpl() {
 }
 
 CAVoice *CALilyPondImport::importVoiceImpl() {
-	CAVoice *voice = new CAVoice( "", 0 );
+	CAVoice *voice = new CAVoice( "", nullptr );
 
 	if (templateVoice())
 		voice->cloneVoiceProperties( templateVoice() );
@@ -163,7 +164,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
 				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement());
 				note->setTieStart(
-					new CASlur( CASlur::TieType, CASlur::SlurPreferred, note->staff(), note, 0 )
+					new CASlur( CASlur::TieType, CASlur::SlurPreferred, note->staff(), note, nullptr )
 				);
 			} else {
 				addError(QString("Tie symbol must be right after the note and not %1. Tie ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
@@ -173,7 +174,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 		if (curElt.startsWith("(")) {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
 				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0);
-				_curSlur = new CASlur( CASlur::SlurType, CASlur::SlurPreferred, note->staff(), note, 0 );
+				_curSlur = new CASlur( CASlur::SlurType, CASlur::SlurPreferred, note->staff(), note, nullptr );
 				note->setSlurStart(_curSlur);
 			} else {
 				addError(QString("Slur symbol must be right after the note and not %1. Slur ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
@@ -185,7 +186,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0);
 				note->setSlurEnd(_curSlur);
 				_curSlur->setNoteEnd(note);
-				_curSlur=0;
+				_curSlur=nullptr;
 			} else {
 				addError(QString("Slur symbol must be right after the note and not %1. Slur ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
 			}
@@ -194,7 +195,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 		if (curElt.startsWith("\\(")) {
 			if ( curVoice()->lastMusElement()->musElementType()==CAMusElement::Note ) {
 				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0);
-				_curPhrasingSlur = new CASlur( CASlur::PhrasingSlurType, CASlur::SlurPreferred, note->staff(), note, 0 );
+				_curPhrasingSlur = new CASlur( CASlur::PhrasingSlurType, CASlur::SlurPreferred, note->staff(), note, nullptr );
 				note->setPhrasingSlurStart(_curPhrasingSlur);
 			} else {
 				addError(QString("Phrasing slur symbol must be right after the note and not %1. Phrasing slur ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
@@ -206,7 +207,7 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 				CANote *note = static_cast<CANote*>(curVoice()->lastMusElement())->getChord().at(0);
 				note->setPhrasingSlurEnd(_curPhrasingSlur);
 				_curPhrasingSlur->setNoteEnd(note);
-				_curPhrasingSlur=0;
+				_curPhrasingSlur=nullptr;
 			} else {
 				addError(QString("Phrasing slur symbol must be right after the note and not %1. Phrasing slur ignored.").arg(CAMusElement::musElementTypeToString(curVoice()->lastMusElement()->musElementType())));
 			}
@@ -360,9 +361,9 @@ CAVoice *CALilyPondImport::importVoiceImpl() {
 }
 
 CALyricsContext *CALilyPondImport::importLyricsContextImpl() {
-	CALyricsContext *lc = new CALyricsContext( "", 1, static_cast<CASheet*>(0) );
+	CALyricsContext *lc = new CALyricsContext( "", 1, static_cast<CASheet*>(nullptr) );
 
-	CASyllable *lastSyllable = 0;
+	CASyllable *lastSyllable = nullptr;
 	int timeSDummy=0; // dummy timestart to keep the order of inserted syllables. Real timeStarts are sets when repositSyllables() is called
 	for (QString curElt = parseNextElement(); (!in().isEmpty() || !curElt.isEmpty() ); curElt = parseNextElement(), timeSDummy++) {
 		QString text = curElt;
@@ -426,7 +427,7 @@ const QString CALilyPondImport::parseNextElement() {
 	QString ret;
 	if (i==start) {
 		// syntax delimiter only
-		ret = in().mid(start,1); // \todo Support for syntax delimiters longer than 1 character
+		ret = in().mid(start,1); /// \todo Support for syntax delimiters longer than 1 character
 		in().remove(0, start+1);
 	} else {
 		// ordinary whitespace/syntax delimiter
@@ -467,7 +468,7 @@ const QString CALilyPondImport::peekNextElement() {
 	QString ret;
 	if (i==start) {
 		// syntax delimiter only
-		ret = in().left(1); // \todo
+		ret = in().left(1); /// \todo
 	} else {
 		// ordinary whitespace/syntax delimiter
 		ret = in().mid(start, i-start);
@@ -491,7 +492,7 @@ const QString CALilyPondImport::peekNextElement() {
 */
 CAMusElement* CALilyPondImport::findSharedElement(CAMusElement *elt) {
 	if ( !curVoice() || !curVoice()->staff() )
-		return 0;
+		return nullptr;
 
 	// gather a list of all the music elements of that type in the staff at that time
 	QList<CAMusElement*> foundElts = curVoice()->staff()->getEltByType( elt->musElementType(), elt->timeStart() );
@@ -502,7 +503,7 @@ CAMusElement* CALilyPondImport::findSharedElement(CAMusElement *elt) {
 			if (!curVoice()->musElementList().contains(foundElts[i])) // element isn't present in the voice yet
 				return foundElts[i];
 
-	return 0;
+	return nullptr;
 }
 
 /*!

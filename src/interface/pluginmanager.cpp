@@ -1,6 +1,6 @@
 /** @file interface/pluginmanager.cpp
  *
- * Copyright (c) 2006, 2007 Matevž Jekovec, Canorus development team
+ * Copyright (c) 2006-2020 Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  *
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -89,7 +89,7 @@ void CAPluginManager::readPlugins() {
 
         // search the plugins paths and creates a list of directories for each plugin
         QDir curDir(systemPluginsPath);
-        for (int j=0; j<(int)curDir.count(); j++) {
+        for (int j=0; j<static_cast<int>(curDir.count()); j++) {
             pluginPaths << curDir.absolutePath() + "/" + curDir[j];
         }
 
@@ -222,7 +222,8 @@ bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
 
 	\sa removePlugin()
 */
-bool CAPluginManager::installPlugin(QString path) {
+bool CAPluginManager::installPlugin(QString) {
+    // Note Reinhard: zlib is there
 	/// \todo zlib needed
 	return false;
 }
@@ -240,7 +241,7 @@ bool CAPluginManager::removePlugin(CAPlugin *plugin) {
 	return res;
 }
 
-bool CAPluginManager::startElement(const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes) {
+bool CAPluginManager::startElement(const QString&, const QString&, const QString& qName, const QXmlAttributes& attributes) {
 	_tree.push(qName);
 
 	if (qName == "plugin") {
@@ -286,7 +287,7 @@ bool CAPluginManager::startElement(const QString& namespaceURI, const QString& l
 	return true;
 }
 
-bool CAPluginManager::endElement(const QString& namespaceURI, const QString& localName, const QString& qName) {
+bool CAPluginManager::endElement(const QString&, const QString&, const QString& qName) {
 	_tree.pop();
 
 	if (_curPlugin) {
@@ -336,7 +337,8 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			action->setTexts(_curActionText);
 			action->setRefresh(_curActionRefresh);
 
-			if (!_curActionParentToolbar.isEmpty());
+			if (!_curActionParentToolbar.isEmpty())
+				;
 				// TODO: add action to toolbar
 
 			// Add import and export filters to the generic list for faster lookup
@@ -367,7 +369,7 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			#ifndef SWIGCPP
 			QMenu *menu;
 			if (_curMenuParentMenu.isEmpty()) {
-				// no parent menu set, add it to the top-level mainwindow's menu before the Help menu
+				// no parefnt menu set, add it to the top-level mainwindow's menu before the Help menu
 				menu = new QMenu(_mainWin->menuBar());
 				_mainWin->menuBar()->insertMenu(_mainWin->menuBar()->actions().last(), menu);
 			} else {
@@ -429,7 +431,7 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 	return true;
 }
 
-bool CAPluginManager::fatalError(const QXmlParseException& exception) {
+bool CAPluginManager::fatalError(const QXmlParseException&) {
 	return false;
 }
 
@@ -455,7 +457,7 @@ bool CAPluginManager::characters(const QString& ch) {
 	\sa importAction()
  */
 void CAPluginManager::exportAction(QString filter, CADocument *document, QString filename) {
-	_exportFilterMap[filter]->plugin()->callAction(_exportFilterMap[filter], 0, document, 0, 0, filename);
+	_exportFilterMap[filter]->plugin()->callAction(_exportFilterMap[filter], nullptr, document, nullptr, nullptr, filename);
 }
 
 /*!
@@ -475,7 +477,7 @@ void CAPluginManager::exportAction(QString filter, CADocument *document, QString
 	\sa exportAction()
 */
 void CAPluginManager::importAction(QString filter, CADocument *document, QString filename) {
-	_importFilterMap[filter]->plugin()->callAction(_importFilterMap[filter], 0, document, 0, 0, filename);
+	_importFilterMap[filter]->plugin()->callAction(_importFilterMap[filter], nullptr, document, nullptr, nullptr, filename);
 }
 
 /*!

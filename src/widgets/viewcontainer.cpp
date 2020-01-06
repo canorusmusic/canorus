@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Itay Perl, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Itay Perl, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -36,7 +36,7 @@
 CAViewContainer::CAViewContainer( QWidget *parent )
  : QSplitter( parent ) {
 	setOrientation( Qt::Vertical ); // not side by side
-	setCurrentView( 0 );
+	setCurrentView( nullptr );
 }
 
 /*!
@@ -54,17 +54,17 @@ CAViewContainer::~CAViewContainer() {
 */
 CAView* CAViewContainer::splitVertically(CAView *v) {
 	if ( !v && !(v = currentView()))
-		return 0;
+		return nullptr;
 
 	QSplitter *splitter = _viewMap[v];
-	CAView *newView = v->clone(0);
+	CAView *newView = v->clone(nullptr);
 	if ( splitter->orientation()==Qt::Horizontal ) {
 		addView( newView, splitter );
 	} else if ( splitter->count()==1 ) {
 		splitter->setOrientation( Qt::Horizontal );
 		addView( newView, splitter );
 	} else {
-		QSplitter *newSplitter = new QSplitter( Qt::Horizontal, 0 );
+		QSplitter *newSplitter = new QSplitter( Qt::Horizontal, nullptr );
 		int idx = splitter->indexOf(v);
 		addView( v, newSplitter);
 		addView( newView, newSplitter);
@@ -81,17 +81,17 @@ CAView* CAViewContainer::splitVertically(CAView *v) {
 */
 CAView* CAViewContainer::splitHorizontally(CAView *v) {
 	if ( !v && !(v = currentView()))
-		return 0;
+		return nullptr;
 
 	QSplitter *splitter = _viewMap[v];
-	CAView *newView = v->clone(0);
+	CAView *newView = v->clone(nullptr);
 	if ( splitter->orientation()==Qt::Vertical ) {
 		addView( newView, splitter );
 	} else if (splitter->count()==1) {
 		splitter->setOrientation( Qt::Vertical );
 		addView( newView, splitter );
 	} else {
-		QSplitter *newSplitter = new QSplitter( Qt::Vertical, 0 );
+		QSplitter *newSplitter = new QSplitter( Qt::Vertical, nullptr );
 		int idx = splitter->indexOf(v);
 		addView( v, newSplitter);
 		addView( newView, newSplitter);
@@ -105,18 +105,18 @@ CAView* CAViewContainer::splitHorizontally(CAView *v) {
 	Unsplits the views so the given view \a v is removed.
 	If no view is given, removes the last active one.
 
-	\return The pointer to the view which was removed. If none was removed (ie. the given view was not found or there are no views left) returns 0.
+	\return The pointer to the view which was removed. If none was removed (ie. the given view was not found or there are no views left) returns nullptr.
 */
 CAView* CAViewContainer::unsplit(CAView *v) {
 	if (!v && !(v = currentView()))
-		return 0;
+		return nullptr;
 
 	QSplitter *s = _viewMap[v];
 	switch( s->count() )
 	{
 		case 1:
 			// if (s==this). otherwise it'd never get here.
-			return 0;
+			return nullptr;
 		case 2:
 		{
 			QWidget* other = s->widget( 1 - s->indexOf( v ) ); // find the other view
@@ -143,7 +143,10 @@ CAView* CAViewContainer::unsplit(CAView *v) {
 				delete sp; //delete the splitter after moving the view ports.
 			}
 		}
-		// falls through only if s == this
+        // Note Reinhard fallthrough is only a C++17 feature
+        // Currently we depend on gcc for build
+        // [[fallthrough]]
+		// [[clang::fallthrough]]; // falls through only if s == this
 		default:
 			removeView(v);
 			return v;

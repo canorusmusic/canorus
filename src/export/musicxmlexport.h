@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -9,6 +9,8 @@
 #define MUSICXMLEXPORT_H_
 
 #include "export/export.h"
+
+#include <QDomElement>
 
 class CAContext;
 class CADocument;
@@ -22,7 +24,7 @@ class CARest;
 
 class CAMusicXmlExport : public CAExport {
 public:
-	CAMusicXmlExport( QTextStream *stream=0 );
+	CAMusicXmlExport( QTextStream *stream=nullptr );
 	virtual ~CAMusicXmlExport();
 
 	inline CAVoice *curVoice() { return _curVoice; }
@@ -33,6 +35,7 @@ public:
 	
 private:
 	void exportSheetImpl(CASheet *s);
+    using CAExport::exportStaffImpl;
 	void exportStaffImpl( CAStaff*, QDomElement& );
 	void exportMeasure( QList<CAVoice*>&, int*, QDomElement& );
 	

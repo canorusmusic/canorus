@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -38,7 +38,7 @@ CAFingering::~CAFingering() {
 }
 
 CAFingering *CAFingering::clone(CAMusElement* elt) {
-	return new CAFingering( fingerList(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0, isOriginal() );
+	return new CAFingering( fingerList(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):nullptr, isOriginal() );
 }
 
 int CAFingering::compare( CAMusElement *elt ) {

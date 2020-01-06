@@ -27,8 +27,8 @@ protected:
 class CAMenuToolButton : public CAToolButton {
 	Q_OBJECT
 public:
-	CAMenuToolButton( QString title, int numIconsRow = 4, QWidget * parent = 0 );
-	~CAMenuToolButton();
+	CAMenuToolButton( QString title, int numIconsRow = 4, QWidget * parent = nullptr );
+	~CAMenuToolButton() override;
 
 	void addButton( const QIcon icon, int buttonId, const QString toolTip="" );
 	inline QAbstractButton *getButton( int buttonId ) { return _buttonGroup->button( buttonId ); }
@@ -44,14 +44,15 @@ public:
 	inline void setLayoutMargin(int margin) { _layoutMargin = margin; }
 	inline void setMargin(int margin) { _margin = margin; }
 	inline void setNumIconsPerRow( int numIconsRow )  { _numIconsRow = numIconsRow; }
-	void setCurrentId(int id, bool triggerSignal=false);
-	void showButtons();
+    void setCurrentId(int id) override { setCurrentId(id, false); }
+	void setCurrentId(int id, bool triggerSignal);
+	void showButtons() override;
 
 public slots:
 	void onButtonPressed( int );
 
 private:
-	void wheelEvent(QWheelEvent*);
+	void wheelEvent(QWheelEvent*) override;
 
 	QButtonGroup       *_buttonGroup;     // Abstract group for the button actions
 	QGroupBox          *_groupBox;        // Group box containing title and buttons

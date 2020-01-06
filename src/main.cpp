@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -73,9 +73,6 @@ int main(int argc, char *argv[]) {
 	bool firstTime = !QFile::exists(CASettings::defaultSettingsPath()+"/canorus.ini");
 	CASettingsDialog::CASettingsPage showSettingsPage = CACanorus::initSettings();
 
-	// Init dialogs etc.
-	CACanorus::initCommonGUI();
-
 	// Enable scripting and plugins subsystem
 	splash.showMessage( QObject::tr("Initializing Scripting engine", "splashScreen"), Qt::AlignBottom|Qt::AlignLeft, Qt::white );
 	mainApp.processEvents();
@@ -119,12 +116,26 @@ int main(int argc, char *argv[]) {
 	// If no file to open is passed in command line, create a new default main window. It's shown automatically by CACanorus::addMainWin().
 	if (!CACanorus::mainWinList().size()) {
 		CAMainWin *mainWin = new CAMainWin();
-		mainWin->newDocument();
+
+        // Init dialogs etc.
+        CACanorus::initCommonGUI(mainWin->uiSaveDialog,
+                                 mainWin->uiOpenDialog,
+                                 mainWin->uiExportDialog,
+                                 mainWin->uiImportDialog);
+
+        mainWin->newDocument();
 		mainWin->show();
+
+        // Init dialogs etc.
+        CACanorus::initCommonGUI(mainWin->uiSaveDialog,
+                                 mainWin->uiOpenDialog,
+                                 mainWin->uiExportDialog,
+                                 mainWin->uiImportDialog);
 
 		if (firstTime) {
 			mainWin->on_uiUsersGuide_triggered();
 		}
+
 	}
 	splash.close();
 

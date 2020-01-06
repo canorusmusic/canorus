@@ -16,7 +16,7 @@ based on Qt4, uses CMake as project management tool, swig for scripting
 the cross platform rtmidi library for the MIDI playback.
 
 Canorus is searching for developers with experience in the fields C++,
-Ruby, Qt4, XML, Parsing, User Interfaces, Music Composition and Theory,
+Ruby, Qt5, XML, Parsing, User Interfaces, Music Composition and Theory,
 Translators, Score Editing Unit Tests.
 
 Some of the tasks are:

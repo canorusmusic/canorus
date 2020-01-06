@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -87,21 +87,21 @@ bool CAMusElement::isPlayable()
 */
 const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementType type) {
 	switch ( type ) {
-		case (Undefined): return "undefined"; break;
-		case (Note): return "note"; break;
-		case (Rest): return "rest"; break;
-		case (Barline): return "barline"; break;
-		case (Clef): return "clef"; break;
-		case (TimeSignature): return "time-signature"; break;
-		case (KeySignature): return "key-signature"; break;
-		case (Slur): return "slur"; break;
-		case (FunctionMark): return "function-mark"; break;
-		case (Syllable): return "syllable"; break;
-		case (MidiNote): return "midi-note"; break;
-		case (Tuplet): return "tuplet"; break;
-		case (Mark): return "mark"; break;
-		case (FiguredBassMark): return "figured-bass-mark"; break;
-		case (ChordName): return "chord-name"; break;
+		case (Undefined): return "undefined";
+		case (Note): return "note";
+		case (Rest): return "rest";
+		case (Barline): return "barline";
+		case (Clef): return "clef";
+		case (TimeSignature): return "time-signature";
+		case (KeySignature): return "key-signature";
+		case (Slur): return "slur";
+		case (FunctionMark): return "function-mark";
+		case (Syllable): return "syllable";
+		case (MidiNote): return "midi-note";
+		case (Tuplet): return "tuplet";
+		case (Mark): return "mark";
+		case (FiguredBassMark): return "figured-bass-mark";
+		case (ChordName): return "chord-name";
 	}
 	// Do not add a default case as else newly added elements might be forgotten here!
 	return QString();

@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -55,7 +55,7 @@ CAVoice::~CAVoice() {
 
 	QList<CALyricsContext*> lc = lyricsContextList();
 	for (int i=0; i<lc.size(); i++) {
-		lc[i]->setAssociatedVoice( 0 );
+		lc[i]->setAssociatedVoice( nullptr );
 	}
 
 	if (staff()) {
@@ -118,7 +118,7 @@ void CAVoice::clear() {
 	\sa insert()
 */
 void CAVoice::append( CAMusElement *elt, bool addToChord ) {
-	CAMusElement *last = (musElementList().size()?musElementList().last():0);
+	CAMusElement *last = (musElementList().size()?musElementList().last():nullptr);
 
 	if ( elt->musElementType()==CAMusElement::Note && last &&
 	     last->musElementType()==CAMusElement::Note &&
@@ -127,7 +127,7 @@ void CAVoice::append( CAMusElement *elt, bool addToChord ) {
 		addNoteToChord( static_cast<CANote*>(elt), static_cast<CANote*>(last) );
 	} else {
 		elt->setTimeStart( last?last->timeEnd():0 );
-		insertMusElement( 0, elt );
+		insertMusElement( nullptr, elt );
 	}
 }
 
@@ -218,7 +218,7 @@ CAPlayable* CAVoice::insertInTupletAndVoiceAt( CAPlayable *reference, CAPlayable
 
 		if ( tup ) { // remove the rest from the tuplet and add the note
 			tup->removeNote(reference);
-			reference->setTuplet(0);
+			reference->setTuplet(nullptr);
 			tup->addNote(p);
 
 			reference->voice()->remove( reference, true );
@@ -240,7 +240,7 @@ CAPlayable* CAVoice::insertInTupletAndVoiceAt( CAPlayable *reference, CAPlayable
 
 /*!
 	Returns a pointer to the clef which the given \a elt belongs to.
-	Returns 0, if no clefs placed yet.
+	Returns nullptr, if no clefs placed yet.
 
 	Warning! This operation is slow (linear time), but always returns the
 	correct clef depending on the order of the musElementList. If a timeBased
@@ -257,7 +257,7 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 
 /*!
 	Returns a pointer to the time signature which the given \a elt belongs to.
-	Returns 0, if no time signatures placed yet.
+	Returns nullptr, if no time signatures placed yet.
 
 	Warning! This operation is slow (linear time), but always returns the
 	correct timeSig depending on the order of the musElementList. If a timeBased
@@ -274,7 +274,7 @@ CATimeSignature* CAVoice::getTimeSig(CAMusElement *elt) {
 
 /*!
 	Returns a pointer to the key signature which the given \a elt belongs to.
-	Returns 0, if no key signatures placed yet.
+	Returns nullptr, if no key signatures placed yet.
 
 	Warning! This operation is slow (linear time), but always returns the
 	correct keySig depending on the order of the musElementList. If a timeBased
@@ -383,7 +383,7 @@ bool CAVoice::insertMusElement( CAMusElement *eltAfter, CAMusElement *elt ) {
 	}
 	
 	CAMusElement *next = nextByType(elt->musElementType(), elt);
-	QList<CAMusElement *> *refs = 0;
+	QList<CAMusElement *> *refs = nullptr;
 	
 	// update staff references
 	if (elt->musElementType() == CAMusElement::KeySignature )  { refs = &staff()->keySignatureRefs(); } else
@@ -453,7 +453,7 @@ bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 CADiatonicPitch CAVoice::lastNotePitch(bool inChord) {
 	for (int i=_musElementList.size()-1; i>=0; i--) {
 		if (_musElementList[i]->musElementType()==CAMusElement::Note) {
-			if (!((CANote*)_musElementList[i])->isPartOfChord() || !inChord)	// the note is not part of the chord
+			if (!static_cast<CANote*>(_musElementList[i])->isPartOfChord() || !inChord)	// the note is not part of the chord
 				return (static_cast<CANote*>(_musElementList[i])->diatonicPitch() );
 			else {
 				int chordTimeStart = _musElementList[i]->timeStart();
@@ -467,7 +467,7 @@ CADiatonicPitch CAVoice::lastNotePitch(bool inChord) {
 
 		}
 		else if (_musElementList[i]->musElementType()==CAMusElement::Clef)
-			return (((CAClef*)_musElementList[i])->centerPitch());
+			return (static_cast<CAClef*>(_musElementList[i])->centerPitch());
 	}
 
 	return -1;
@@ -484,7 +484,7 @@ CAPlayable* CAVoice::lastPlayableElt() {
 			return static_cast<CAPlayable*>(_musElementList[i]);
 	}
 
-	return 0;
+	return nullptr;
 }
 
 /*!
@@ -498,7 +498,7 @@ CANote* CAVoice::lastNote() {
 			return static_cast<CANote*>(_musElementList[i]);
 	}
 
-	return 0;
+	return nullptr;
 }
 
 
@@ -538,7 +538,7 @@ CAMusElement *CAVoice::getOneEltByType(CAMusElement::CAMusElementType type, int 
 		i++;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 /*!
@@ -579,7 +579,7 @@ CAMusElement *CAVoice::getOnePreviousByType(CAMusElement::CAMusElementType type,
 			return _musElementList[i];
 		i--;
 	}
-	return 0;
+	return nullptr;
 }
 
 /*!
@@ -629,7 +629,7 @@ QList<CAPlayable*> CAVoice::getChord(int time) {
 		}
 		else {	// music element is a rest
 			QList<CAPlayable*> ret;
-			ret << (CARest*)_musElementList[i];
+			ret << static_cast<CARest*>(_musElementList[i]);
 			return ret;
 		}
 	}
@@ -684,7 +684,7 @@ QList<CANote*> CAVoice::getNoteList() {
 	QList<CANote*> list;
 	for (int i=0; i<_musElementList.size(); i++)
 		if (_musElementList[i]->musElementType()==CAMusElement::Note)
-			list << ((CANote*)_musElementList[i]);
+			list << static_cast<CANote*>(_musElementList[i]);
 
 	return list;
 }
@@ -712,15 +712,15 @@ QList<CAMusElement*> CAVoice::getSignList() {
 */
 CAMusElement *CAVoice::next(CAMusElement *elt) {
 	if(musElementList().isEmpty())
-		return 0;
+		return nullptr;
 	if (elt) {
 		int idx = _musElementList.indexOf(elt);
 
 		if (idx==-1) //the element wasn't found
-			return 0;
+			return nullptr;
 
 		if (++idx==_musElementList.size())	//last element in the list
-			return 0;
+			return nullptr;
 
 		return _musElementList[idx];
 	} else {
@@ -764,12 +764,12 @@ CAMusElement *CAVoice::previousByType( CAMusElement::CAMusElementType type, CAMu
 */
 CAMusElement *CAVoice::previous(CAMusElement *elt) {
 	if(musElementList().isEmpty())
-		return 0;
+		return nullptr;
 	if (elt) {
 		int idx = _musElementList.indexOf(elt);
 
 		if (--idx<0) //if the element wasn't found or was the first element
-			return 0;
+			return nullptr;
 
 		return _musElementList[idx];
 	} else {
@@ -779,7 +779,7 @@ CAMusElement *CAVoice::previous(CAMusElement *elt) {
 
 /*!
 	Returns a pointer to the next note with the strictly higher timeStart than the given one.
-	Returns 0, if the such a note doesn't exist.
+	Returns nullptr, if the such a note doesn't exist.
 */
 CANote *CAVoice::nextNote( int timeStart ) {
 	int i;
@@ -793,12 +793,12 @@ CANote *CAVoice::nextNote( int timeStart ) {
 	if (i<_musElementList.size())
 		return static_cast<CANote*>(_musElementList[i]);
 	else
-		return 0;
+		return nullptr;
 }
 
 /*!
 	Returns a pointer to the previous note with the strictly lower timeStart than the given one.
-	Returns 0, if the such a note doesn't exist.
+	Returns nullptr, if the such a note doesn't exist.
 */
 CANote *CAVoice::previousNote( int timeStart ) {
 	int i;
@@ -812,12 +812,12 @@ CANote *CAVoice::previousNote( int timeStart ) {
 	if (i>-1)
 		return static_cast<CANote*>(_musElementList[i]);
 	else
-		return 0;
+		return nullptr;
 }
 
 /*!
 	Returns a pointer to the next rest with the strictly higher timeStart than the given one.
-	Returns 0, if the such a note doesn't exist.
+	Returns nullptr, if the such a note doesn't exist.
 */
 CARest *CAVoice::nextRest(int timeStart) {
 	int i;
@@ -831,12 +831,12 @@ CARest *CAVoice::nextRest(int timeStart) {
 	if (i<_musElementList.size())
 		return static_cast<CARest*>(_musElementList[i]);
 	else
-		return 0;
+		return nullptr;
 }
 
 /*!
 	Returns a pointer to the previous rest with the strictly lower timeStart than the given one.
-	Returns 0, if the such a note doesn't exist.
+	Returns nullptr, if the such a note doesn't exist.
 */
 CARest *CAVoice::previousRest(int timeStart) {
 	int i;
@@ -850,12 +850,12 @@ CARest *CAVoice::previousRest(int timeStart) {
 	if (i>-1)
 		return static_cast<CARest*>(_musElementList[i]);
 	else
-		return 0;
+		return nullptr;
 }
 
 /*!
 	Returns a pointer to the next playable element with the strictly higher timeStart than the given one.
-	Returns 0, if the such a note doesn't exist.
+	Returns nullptr, if the such a note doesn't exist.
 */
 CAPlayable *CAVoice::nextPlayable(int timeStart) {
 	int i;
@@ -869,12 +869,12 @@ CAPlayable *CAVoice::nextPlayable(int timeStart) {
 	if (i<_musElementList.size())
 		return static_cast<CAPlayable*>(_musElementList[i]);
 	else
-		return 0;
+		return nullptr;
 }
 
 /*!
 	Returns a pointer to the previous playable with the strictly lower timeStart than the given one.
-	Returns 0, if the such a note doesn't exist.
+	Returns nullptr, if the such a note doesn't exist.
 */
 CAPlayable *CAVoice::previousPlayable(int timeStart) {
 	int i;
@@ -888,7 +888,7 @@ CAPlayable *CAVoice::previousPlayable(int timeStart) {
 	if (i>-1)
 		return static_cast<CAPlayable*>(_musElementList[i]);
 	else
-		return 0;
+		return nullptr;
 }
 
 /*!
@@ -1005,7 +1005,7 @@ CATempo *CAVoice::getTempo( int time ) {
 		curElt = musElementList().indexOf(chord.last());
 	}
 
-	CATempo *tempo = 0;
+	CATempo *tempo = nullptr;
 	while (!tempo && curElt>=0) {
 		for (int i=0; i<musElementList()[curElt]->markList().size(); i++) {
 			if (musElementList()[curElt]->markList()[i]->markType()==CAMark::Tempo) {

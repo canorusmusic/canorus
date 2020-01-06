@@ -48,7 +48,7 @@ void CACanExport::exportDocumentImpl( CADocument* doc ) {
 		}
 	}
 
-	// \todo fix relative paths
+	/// \todo fix relative paths
 	for (int i=0; i<doc->resourceList().size(); i++) {
 		CAResource *r = doc->resourceList()[i];
 		if (r->isLinked()) {

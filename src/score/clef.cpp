@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -152,8 +152,8 @@ const QString CAClef::clefTypeToString(CAClefType type) {
 		case PercussionHigh: return "percussion-high";
 		case PercussionLow: return "percussion-low";
 		case Tab: return "tab";
-		default: return "";
 	}
+    return "";
 }
 
 /*!
@@ -182,7 +182,7 @@ CAClef::CAClefType CAClef::clefTypeFromString(const QString type) {
 
 	\sa offsetFromReadable()
 */
-const int CAClef::offsetToReadable( const int offsetInterval ) {
+int CAClef::offsetToReadable( const int offsetInterval ) {
 	if ( !offsetInterval )
 		return 0;
 
@@ -195,7 +195,7 @@ const int CAClef::offsetToReadable( const int offsetInterval ) {
 
 	\sa offsetToReadable()
 */
-const int CAClef::offsetFromReadable( const int offset ) {
+int CAClef::offsetFromReadable( const int offset ) {
 	if ( qAbs(offset)==1 || !offset )
 		return 0;
 

@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -18,11 +18,6 @@ CADrawable::CADrawable(double x, double y)
    _neededSpaceWidth(0), _neededSpaceHeight(0),
    _visible(true), _selectable(true),
    _hScalable(false), _vScalable(false) {
-}
-
-CADrawable* CADrawable::clone() {
-	// We only reach CADrawable::clone() if this is a CADrawableMusElement, otherwise CADrawableContext::clone() will be called (this is a non-pure virtual function).
-	return static_cast<CADrawableMusElement*>(this)->clone();
 }
 
 void CADrawable::drawHScaleHandles( QPainter *p, CADrawSettings s ) {

@@ -23,7 +23,7 @@ public:
 	CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength=-1);
 	~CARest();
 
-	CARest *clone(CAVoice* voice = 0);
+	CARest *clone(CAVoice* voice = nullptr);
 
 	CARestType restType() { return _restType; }
 	void setRestType( CARestType type ) { _restType = type; }
@@ -32,7 +32,7 @@ public:
 
 	static const QString restTypeToString(CARestType);
 	static CARestType restTypeFromString(const QString);
-	static QList<CARest*> composeRests( int timeLength, int timeStart, CAVoice* voice=0, CARestType=Hidden );
+	static QList<CARest*> composeRests( int timeLength, int timeStart, CAVoice* voice=nullptr, CARestType=Hidden );
 
 private:
 	CARestType _restType;

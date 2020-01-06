@@ -24,7 +24,7 @@ class CAMidiRecorderView : public QDockWidget, private Ui::uiMidiRecorder {
 	Q_OBJECT
 
 public:
-	CAMidiRecorderView( CAMidiRecorder *recorder, QWidget *parent=0 );
+	CAMidiRecorderView( CAMidiRecorder *recorder, QWidget *parent=nullptr );
 	virtual ~CAMidiRecorderView();
 
 	void setMidiRecorder( CAMidiRecorder *r ) { _midiRecorder = r; }

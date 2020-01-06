@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -65,7 +65,7 @@ CAInterval::CAInterval( CADiatonicPitch pitch1, CADiatonicPitch pitch2, bool abs
 	int relQnt = ((quantity()-1)%7)+1;
 	int relPLow = pLow.noteName()%7/*, relPHigh = pHigh.noteName()%7*/;
 
-	int deltaQlt;
+	int deltaQlt = 0;
 	switch (relQnt) {
 	case 1: // prime
 		deltaQlt = 0;

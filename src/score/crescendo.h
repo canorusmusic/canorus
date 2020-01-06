@@ -22,12 +22,12 @@ public:
 	CACrescendo( int finalVolume, CANote *note, CACrescendoType t=Crescendo, int timeStart=-1, int timeLength=-1 );
 	virtual ~CACrescendo();
 
-	CACrescendo *clone(CAMusElement* elt=0);
+	CACrescendo *clone(CAMusElement* elt=nullptr);
 	int compare( CAMusElement* );
 
-	inline const int finalVolume() { return _finalVolume; }
+	inline int finalVolume() { return _finalVolume; }
 	inline void setFinalVolume( const int v ) { _finalVolume = v; }
-	inline const CACrescendoType crescendoType() { return _crescendoType; }
+	inline CACrescendoType crescendoType() { return _crescendoType; }
 	inline void setCrescendoType( CACrescendoType t ) { _crescendoType = t; }
 
 	static const QString crescendoTypeToString( CACrescendoType t );

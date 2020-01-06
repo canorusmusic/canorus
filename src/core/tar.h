@@ -1,5 +1,5 @@
 /*! 
-	Copyright (c) 2007, Itay Perl, Canorus development team
+	Copyright (c) 2007-2019, Itay Perl, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -71,10 +71,10 @@ protected:
 	} CATarBufInfo;
 	QHash<QIODevice*, CATarBufInfo> _pos;
 	// helper functions
-	char *bufncpy(char*, const char*, size_t, int = -1);
-	char *bufncpyi(char*&, const char*, size_t, int = -1);
-	char *numToOct(char*, qint64, int);
-	char *numToOcti(char*&, qint64, int);
+	char *bufncpy(char*, const char*, size_t, size_t bufsize = 0);
+	char *bufncpyi(char*&, const char*, size_t, size_t bufsize = 0);
+	char *numToOct(char*, quint64, size_t);
+	char *numToOcti(char*&, quint64, size_t);
 	void writeHeader(QIODevice& dest, int file);
 };
 

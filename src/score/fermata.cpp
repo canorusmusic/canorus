@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -34,7 +34,7 @@ CAFermata *CAFermata::clone(CAMusElement* elt) {
 	if (elt->isPlayable()) {
 		return new CAFermata( static_cast<CAPlayable*>(elt), fermataType() );
 	} else {
-		return new CAFermata( (elt->musElementType()==Barline)?static_cast<CABarline*>(elt):0, fermataType() );
+		return new CAFermata( (elt->musElementType()==Barline)?static_cast<CABarline*>(elt):nullptr, fermataType() );
 	}
 }
 

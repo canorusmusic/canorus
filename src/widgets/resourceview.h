@@ -19,7 +19,7 @@ class CAResourceView : public QTreeWidget {
 Q_OBJECT
 
 public:
-	CAResourceView( CADocument *doc, QWidget *parent=0 );
+	CAResourceView( CADocument *doc, QWidget *parent=nullptr );
 	~CAResourceView();
 
 	void rebuildUi();

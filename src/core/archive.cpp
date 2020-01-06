@@ -1,5 +1,5 @@
-/*! 
-	Copyright (c) 2007, Itay Perl, Canorus development team
+/*!
+	Copyright (c) 2007-2020, Itay Perl, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -67,7 +67,7 @@ void CAArchive::parse(QIODevice& arch)
 	z_stream strm;
 	QTemporaryFile tar;
 	QBuffer in, out;
-	gz_header header = {0};
+	gz_header header = gz_header();
 
 	in.buffer().resize(CHUNK);
 	out.buffer().resize(CHUNK);
@@ -108,10 +108,14 @@ void CAArchive::parse(QIODevice& arch)
 		strm.avail_in = arch.read(in.buffer().data(), CHUNK);
 		if(strm.avail_in == 0)
 			break;
-		strm.next_in = (unsigned char*)in.buffer().data();
+		// The code purposely could cut contents of the array.
+		// For strings it would only work with ASCII code nothing else
+		strm.next_in = reinterpret_cast<Bytef *>(in.buffer().data());
 		do {
 			strm.avail_out = CHUNK;
-			strm.next_out = (unsigned char*)out.buffer().data();
+            // The code purposely could cut contents of the array.
+            // For strings it would only work with ASCII code nothing else
+			strm.next_out = reinterpret_cast<Bytef *>(out.buffer().data());
 			ret = inflate(&strm, Z_NO_FLUSH);
 			if((ret != Z_OK && ret != Z_STREAM_END && ret != Z_BUF_ERROR) || // buffer error is not fatal
 				tar.write(out.buffer().data(), CHUNK - strm.avail_out) != CHUNK - strm.avail_out) {
@@ -128,7 +132,9 @@ void CAArchive::parse(QIODevice& arch)
 	
 	if(!_err) {
 		QRegExp re("Canorus Archive v(\\d+\\.\\d+)");
-		if(re.indexIn((char*)header.comment) != -1)
+        // The code purposely could cut contents of the array.
+        // For strings it would only work with ASCII code nothing else
+		if(re.indexIn(reinterpret_cast<char*>(header.comment)) != -1)
 			_version = re.cap(1);
 		else {
 			_err = true;
@@ -154,7 +160,7 @@ qint64 CAArchive::write(QIODevice& dest)
 	int ret, flush;
 	qint64 total = 0, read;
 	z_stream strm;
-	gz_header header = {0};
+	gz_header header = gz_header();
 	QBuffer in, out;
 
 	if(!dest.isOpen())
@@ -173,7 +179,9 @@ qint64 CAArchive::write(QIODevice& dest)
 	
 	header.os = getOS(); 
 	header.comment = new unsigned char[COMMENT.size()+1];
-	strcpy((char*)header.comment, COMMENT.toLatin1().data());
+    // The code purposely could cut contents of the array.
+    // For strings it would only work with ASCII code nothing else
+	strcpy(reinterpret_cast<char*>(header.comment), COMMENT.toLatin1().data());
 	
 	in.open(QIODevice::ReadWrite);
 	out.open(QIODevice::ReadWrite);
@@ -207,10 +215,14 @@ qint64 CAArchive::write(QIODevice& dest)
 		}
 		flush = _tar->eof(in) ? Z_FINISH : Z_NO_FLUSH;
 		strm.avail_in = ret;
-		strm.next_in = (unsigned char*)in.buffer().data();
+        // The code purposely could cut contents of the array.
+        // For strings it would only work with ASCII code nothing else
+		strm.next_in = reinterpret_cast<unsigned char*>(in.buffer().data());
 		do {
 			strm.avail_out = CHUNK;
-			strm.next_out = (unsigned char*)out.buffer().data();
+            // The code purposely could cut contents of the array.
+            // For strings it would only work with ASCII code nothing else
+			strm.next_out = reinterpret_cast<unsigned char*>(out.buffer().data());
 			ret = deflate(&strm, flush);
 			if(ret == Z_STREAM_ERROR)
 				_err = true;

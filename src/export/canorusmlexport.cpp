@@ -109,7 +109,7 @@ void CACanorusMLExport::exportDocumentImpl( CADocument *doc ) {
 	dDocument.setAttribute( "time-edited", doc->timeEdited() );
 
 	for (int sheetIdx=0; sheetIdx < doc->sheetList().size(); sheetIdx++) {
-		setProgress( qRound(((float)sheetIdx / doc->sheetList().size()) * 100) );
+		setProgress( qRound((static_cast<float>(sheetIdx) / doc->sheetList().size()) * 100) );
 
 		// CASheet
 		QDomElement dSheet = dDoc.createElement("sheet"); dDocument.appendChild(dSheet);

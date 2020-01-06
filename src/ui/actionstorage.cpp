@@ -1,5 +1,5 @@
 /*!
-    Copyright (c) 2015, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+    Copyright (c) 2015-2020, Reinhard Katzmann, Matevž Jekovec, Canorus development team
     All Rights Reserved. See AUTHORS for a complete list of authors.
 
     Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -14,7 +14,7 @@
 #include "core/actiondelegate.h"
 
 CAActionStorage::CAActionStorage() :
-    _actionDelegate(0)
+    _actionDelegate(nullptr)
 {
     _actionWidget.actions().clear();
 }
@@ -22,9 +22,9 @@ CAActionStorage::CAActionStorage() :
 CAActionStorage::~CAActionStorage()
 {
     _actionWidget.actions().clear();
-    if( 0 != _actionDelegate )
+    if( nullptr != _actionDelegate )
         delete _actionDelegate;
-    _actionDelegate = 0;
+    _actionDelegate = nullptr;
 }
 
 void CAActionStorage::storeActionsFromMainWindow(CAMainWin &mainWin)

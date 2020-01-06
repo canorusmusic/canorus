@@ -28,6 +28,8 @@ public slots:
 private:
 	QTimer *_autoRecoveryTimer;
 	QTimer *_saveAfterRecoveryTimer;
+
+    const int _recoveryTimeout = 120000;
 };
 
 #endif /* AUTOSAVE_H_ */

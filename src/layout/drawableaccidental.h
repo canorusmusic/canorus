@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -15,7 +15,7 @@ class CADrawableAccidental : public CADrawableMusElement {
 		CADrawableAccidental(signed char accs, CAMusElement *musElement, CADrawableContext *drawableContext, double x, double y);
 		~CADrawableAccidental();
 		void draw(QPainter *p, CADrawSettings s);
-		CADrawableAccidental *clone(CADrawableContext* newContext = 0);
+		CADrawableAccidental *clone(CADrawableContext* newContext = nullptr);
 
 	private:
 		signed char _accs;

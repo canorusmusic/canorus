@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2009, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2009-2020, Reinhard Katzmann, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -9,8 +9,8 @@
 
 #include "singleaction.h"
 
-CASingleAction::CASingleAction( QObject *parent )
- : _pAction(0)
+CASingleAction::CASingleAction( QObject * )
+ : _pAction(nullptr)
 {
     _bMidiShortCutCombined = false;
 }
@@ -20,7 +20,7 @@ CASingleAction::~CASingleAction()
     if(m_localCreated) {
         delete _pAction;
     }
-    _pAction = 0;
+    _pAction = nullptr;
 }
 
 void CASingleAction::setCommandName( QString oCommandName )
@@ -77,7 +77,7 @@ void CASingleAction::setMidiKeySequence( QString oMidiKeySequence, bool combined
 
 //void CASingleAction::setAction(QAction *pAction)
 //{
-//    if(pAction == 0)
+//    if(pAction == nullptr)
 //    {
 //        qWarning("Not overwriting action with Null-Pointer");
 //        return;

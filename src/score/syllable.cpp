@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -55,7 +55,7 @@ void CASyllable::clear() {
 	If the given context is not a lyrics context, 0 is used instead.
 */
 CASyllable* CASyllable::clone(CAContext* context) {
-	CALyricsContext* newContext = 0;
+	CALyricsContext* newContext = nullptr;
 	if(context->contextType() == CAContext::LyricsContext)
 		newContext = static_cast<CALyricsContext*>(context);
 	CASyllable *s = new CASyllable( text(), hyphenStart(), melismaStart(), newContext, timeStart(), timeLength(), associatedVoice() );

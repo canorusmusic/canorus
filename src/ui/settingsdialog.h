@@ -12,6 +12,9 @@
 #include <QPoint>
 #include <QColorDialog>
 
+// Parent of Settings
+#include "mainwin.h"
+
 #include "ui_settingsdialog.h"
 
 class CASheet;
@@ -31,7 +34,7 @@ public:
 		PrintingSettings = 5,
 	};
 
-	CASettingsDialog( CASettingsPage currentPage, QWidget *parent=0 );
+	CASettingsDialog( CASettingsPage currentPage, CAMainWin *parent=nullptr );
 	~CASettingsDialog();
 
 private slots:
@@ -72,5 +75,6 @@ private:
 	CAActionsEditor *_commandsEditor;
 	QMap<int, QString> _midiInPorts;
 	QMap<int, QString> _midiOutPorts;
+    CAMainWin *_mainWin; // access to file dialogs instances
 };
 #endif /* MIDISETUPDIALOG_H_ */

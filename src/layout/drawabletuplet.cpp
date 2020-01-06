@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -60,7 +60,7 @@ void CADrawableTuplet::draw(QPainter *p, const CADrawSettings s) {
 	points[5] = QPoint( qRound(xMidl + 0.7*deltaX2), qRound(yMidl + deltaY2*0.29) );
 	points[6] = QPoint( qRound(xMidl + 0.8*deltaX2), qRound(yMidl + deltaY2*0.47) );
 	points[7] = QPoint( qRound(xMidl + 0.9*deltaX2), qRound(yMidl + deltaY2*0.66) );
-	points[8] = QPoint( qRound(s.x+width()*s.z), yRight );
+	points[8] = QPoint( qRound(s.x+width()*s.z), static_cast<int>(yRight) );
 	p->drawPolyline(points, 9);
 
 	QFont font("Emmentaler");

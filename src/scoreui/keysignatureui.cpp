@@ -1,5 +1,5 @@
 /*!
-        Copyright (c) 2006-2010, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+        Copyright (c) 2006-2020, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
 
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -39,7 +39,7 @@ CAKeySignatureUI::CAKeySignatureUI( CAMainWin *poMainWin, const QString &oHash )
 	uiKeySig = new QComboBox( poMainWin );
 		uiKeySig->setObjectName("uiKeySig");
 		CAKeySignatureUI::populateComboBox( uiKeySig );
-	if( poMainWin == 0 )
+	if( poMainWin == nullptr )
 		qCritical("KeySignatureUI: No mainwindow instance available!");
 	// KeySig Toolbar
 	uiKeySigToolBar->addWidget( uiKeySig );
@@ -57,8 +57,8 @@ CAKeySignatureUI::~CAKeySignatureUI()
 	if( uiKeySig ) {
 		delete uiKeySig;
 	}
-	uiKeySigToolBar = 0;
-	uiKeySig = 0;
+	uiKeySigToolBar = nullptr;
+	uiKeySig = nullptr;
 }
 
 /*!

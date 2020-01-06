@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -224,7 +224,7 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitch( int midiPitch, CAMi
 CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, CADiatonicKey key, CAMidiPitchMode mode ) {
 	int notePitch=0, accs=0;
 
-	double step = static_cast<double>(7)/12;
+	double step =7/12.0;
 
 	int octave = midiPitch/12 - 1;
 	int rest = midiPitch%12;
@@ -324,5 +324,5 @@ CADiatonicPitch CADiatonicPitch::diatonicPitchFromMidiPitchKey( int midiPitch, C
 int CADiatonicPitch::diatonicPitchToMidiPitch( const CADiatonicPitch& pitch ) {
 	// +0.3 - rounding factor for 7/12 that exactly underlays every tone in octave, if rounded
 	// +12 - our logical pitch starts at Sub-contra C, midi counting starts one octave lower
-	return qRound(pitch.noteName()*(static_cast<double>(12)/7) + 0.3 + 12) + pitch.accs();
+	return qRound(pitch.noteName()*(12/7.0) + 0.3 + 12) + pitch.accs();
 }

@@ -22,7 +22,7 @@ class CAImport : public CAFile {
 	Q_OBJECT
 #endif
 public:
-	CAImport( QTextStream *stream=0 );
+	CAImport( QTextStream *stream=nullptr );
 	CAImport( const QString stream );
 	virtual ~CAImport();
 
@@ -57,12 +57,12 @@ signals:
 #endif
 
 protected:
-	virtual CADocument      *importDocumentImpl()      { setStatus(0); return 0; }
-	virtual CASheet         *importSheetImpl()         { setStatus(0); return 0; }
-	virtual CAStaff         *importStaffImpl()         { setStatus(0); return 0; }
-	virtual CAVoice         *importVoiceImpl()         { setStatus(0); return 0; }
-	virtual CALyricsContext *importLyricsContextImpl() { setStatus(0); return 0; }
-	virtual CAFunctionMarkContext *importFunctionMarkContextImpl() { setStatus(0); return 0; }
+	virtual CADocument      *importDocumentImpl()      { setStatus(0); return nullptr; }
+	virtual CASheet         *importSheetImpl()         { setStatus(0); return nullptr; }
+	virtual CAStaff         *importStaffImpl()         { setStatus(0); return nullptr; }
+	virtual CAVoice         *importVoiceImpl()         { setStatus(0); return nullptr; }
+	virtual CALyricsContext *importLyricsContextImpl() { setStatus(0); return nullptr; }
+	virtual CAFunctionMarkContext *importFunctionMarkContextImpl() { setStatus(0); return nullptr; }
 #ifndef SWIG
 	QTextStream& in() { return *stream(); }
 #else

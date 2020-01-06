@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -59,11 +59,10 @@ void CADrawableTimeSignature::draw(QPainter *p, CADrawSettings s) {
 		case CATimeSignature::Classical: {	//draw C or C| only, otherwise don't break, go to Number then!
 			if ((timeSignature()->beat() == 4) && (timeSignature()->beats() == 4)) {
 				p->drawText(s.x, qRound(s.y + 0.5*height()*s.z), QString(CACanorus::fetaCodepoint("timesig.C44")));
-				break;
 			} else if ((timeSignature()->beat() == 2) && (timeSignature()->beats() == 2)) {
 				p->drawText(s.x, qRound(s.y + 0.5*height()*s.z), QString(CACanorus::fetaCodepoint("timesig.C22")));
-				break;
 			}
+            break;
 		}
 		case CATimeSignature::Number: {
 			//write the numbers one by one, first, the number of beats
@@ -92,5 +91,5 @@ void CADrawableTimeSignature::draw(QPainter *p, CADrawSettings s) {
 }
 
 CADrawableTimeSignature* CADrawableTimeSignature::clone(CADrawableContext* newContext) {
-	return (new CADrawableTimeSignature(timeSignature(), (CADrawableStaff*)((newContext)?newContext:_drawableContext), xPos(), _drawableContext->yPos()));
+	return (new CADrawableTimeSignature(timeSignature(), newContext?static_cast<CADrawableStaff*>(newContext):static_cast<CADrawableStaff*>(_drawableContext), xPos(), _drawableContext->yPos()));
 }

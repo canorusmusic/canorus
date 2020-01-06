@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -122,8 +122,8 @@ const QString CADiatonicKey::genderToString( CAGender gender ) {
 	switch (gender) {
 		case Major: return "major";
 		case Minor: return "minor";
-		default: return "";
 	}
+    return "";
 }
 
 CADiatonicKey::CAGender CADiatonicKey::genderFromString( const QString gender ) {
@@ -137,8 +137,8 @@ const QString CADiatonicKey::shapeToString( CAShape shape ) {
 		case Natural: return "natural";
 		case Harmonic: return "harmonic";
 		case Melodic: return "melodic";
-		default: return "";
 	}
+    return "";
 }
 
 CADiatonicKey::CAShape CADiatonicKey::shapeFromString( const QString shape ) {
@@ -176,7 +176,7 @@ const QString CADiatonicKey::diatonicKeyToString( CADiatonicKey k ) {
 
 	QString name;
 
-	name = (char)((pitch+2)%7 + 'a');
+	name = static_cast<char>((pitch+2)%7 + 'a');
 
 	for (int i=0; i < accs; i++)
 		name += "is";	// append as many -is-es as necessary

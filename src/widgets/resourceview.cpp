@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008-2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -82,7 +82,7 @@ void CAResourceView::rebuildUi() {
 	}
 }
 
-void CAResourceView::showEvent( QShowEvent *event ) {
+void CAResourceView::showEvent( QShowEvent * ) {
 	QList<CAMainWin*> mainWins = CACanorus::findMainWin( document() );
 
 	for (int i=0; i<mainWins.size(); i++) {
@@ -90,7 +90,7 @@ void CAResourceView::showEvent( QShowEvent *event ) {
 	}
 }
 
-void CAResourceView::closeEvent( QCloseEvent *event ) {
+void CAResourceView::closeEvent( QCloseEvent * ) {
 	QList<CAMainWin*> mainWins = CACanorus::findMainWin( document() );
 
 	for (int i=0; i<mainWins.size(); i++) {
@@ -108,7 +108,7 @@ void CAResourceView::contextMenuEvent( QContextMenuEvent *e ) {
 		QAction *rename = new QAction(tr("Rename"), this);
 		actions << rename;
 
-		QAction *saveAs = 0;
+		QAction *saveAs = nullptr;
 		if ( !resource->isLinked() ) {
 			saveAs = new QAction(tr("Save as..."), this);
 			actions << saveAs;
@@ -136,7 +136,7 @@ void CAResourceView::contextMenuEvent( QContextMenuEvent *e ) {
 	}
 }
 
-void CAResourceView::on_itemChanged( QTreeWidgetItem *i, int column ) {
+void CAResourceView::on_itemChanged( QTreeWidgetItem *i, int ) {
 	if ( _items[i] ) {
 		_items[i]->setName( i->text(0) );
 	}

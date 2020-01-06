@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -219,7 +219,7 @@ CAMusElement *CAStaff::next( CAMusElement *elt ) {
 		}
 	}
 
-	return nullptr;	// the element doesn't exist in any of the voices, return 0
+	return nullptr;	// the element doesn't exist in any of the voices, return nullptr
 }
 
 /*!
@@ -234,7 +234,7 @@ CAMusElement *CAStaff::previous( CAMusElement *elt ) {
 		}
 	}
 
-	return nullptr;	// the element doesn't exist in any of the voices, return 0
+	return nullptr;	// the element doesn't exist in any of the voices, return nullptr
 }
 
 /*!
@@ -347,7 +347,7 @@ bool CAStaff::synchronizeVoices() {
 	int *pidx = new int[voiceList().size()];
         for (int i=0; i<voiceList().size(); i++) pidx[i]=-1;          // array of current indices of voices at current timeStart
 	CAMusElement **plastPlayable = new CAMusElement*[voiceList().size()];
-	for (int i=0; i<voiceList().size(); i++) plastPlayable[i]=nullptr;
+ 	for (int i=0; i<voiceList().size(); i++) plastPlayable[i]=nullptr;
 
 	_clefList.clear();
 	_keySignatureList.clear();

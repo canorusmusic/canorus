@@ -25,12 +25,12 @@ public:
 	CADynamic( QString text, int volume, CANote *note );
 	virtual ~CADynamic();
 
-	CADynamic *clone(CAMusElement* elt=0);
+	CADynamic *clone(CAMusElement* elt=nullptr);
 	int compare( CAMusElement* );
 
 	inline const QString text() { return _text; }
 	inline void setText( const QString t ) { _text = t; }
-	inline const int volume() { return _volume; }
+	inline int volume() { return _volume; }
 	inline void setVolume( const int v ) { _volume = v; }
 
 	static const QString dynamicTextToString( CADynamicText t );

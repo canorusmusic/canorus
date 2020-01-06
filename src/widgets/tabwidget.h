@@ -15,7 +15,7 @@ class QMouseEvent;
 class CATabWidget : public QTabWidget {
 	Q_OBJECT
 public:
-	CATabWidget( QWidget *parent=0 );
+	CATabWidget( QWidget *parent=nullptr );
 	virtual ~CATabWidget();
 
 signals:

@@ -32,7 +32,7 @@ public:
 
 	void playImmediately( QList<CAMusElement*> elts, int port );
 
-	inline const int getInitTimeStart() { return _initTimeStart; }
+	inline int getInitTimeStart() { return _initTimeStart; }
 	inline void setInitTimeStart(int t) { _initTimeStart = t; }
 	inline CAMidiDevice *midiDevice() { return _midiDevice; }
 	inline CASheet *sheet() { return _sheet; }

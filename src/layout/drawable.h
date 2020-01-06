@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -8,13 +8,13 @@
 #ifndef DRAWABLE_H_
 #define DRAWABLE_H_
 
-#include <QRect>
+#include <QRectF>
 #include <QColor>
 
 class QPainter;
 
 struct CADrawSettings {
-		float z;       // zoom level
+		double z;      // zoom level
 		int x;         // painter x pos in pixels
 		int y;         // painter y pos in pixels
 		int w;         // canvas width in pixels
@@ -24,7 +24,8 @@ struct CADrawSettings {
 		double worldY; // y coordinate of the view
 };
 
-class CADrawable {
+class CADrawable
+{
 public:
 	enum CADrawableType {
 		DrawableMusElement,
@@ -46,7 +47,7 @@ public:
 	CADrawable( double x, double y );	// x and y position of an element in absolute world units
 	virtual ~CADrawable() { }
 	virtual void draw(QPainter *p, const CADrawSettings s) = 0;
-	virtual CADrawable *clone();
+	virtual CADrawable *clone() = 0;
 
 	void drawHScaleHandles( QPainter *p, const CADrawSettings s );
 	void drawVScaleHandles( QPainter *p, const CADrawSettings s );
@@ -62,7 +63,7 @@ public:
 	inline double neededHeight() const { return _height+_neededSpaceHeight; }
 	inline double xCenter() const { return _xPos + (_width)/2; }
 	inline double yCenter() const { return _yPos + (_height)/2; }
-	inline const QRect bBox() const { return QRect(_xPos, _yPos, _width, _height); }
+	inline const QRectF bBox() const { return QRectF(_xPos, _yPos, _width, _height); }
 	inline bool isVisible() const { return _visible; }
 	inline bool isSelectable() const { return _selectable; }
 	inline bool isHScalable() const { return _hScalable; }
@@ -80,7 +81,7 @@ public:
 	inline void setVScalable(bool s) { _vScalable = s; }
 
 protected:
-	void setDrawableType( CADrawableType t ) { _drawableType = t; };
+	void setDrawableType( CADrawableType t ) { _drawableType = t; }
 
 	CADrawableType _drawableType; // DrawableMusElement or DrawableContext.
 	double _xPos;

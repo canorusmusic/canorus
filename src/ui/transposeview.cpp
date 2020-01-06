@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -52,7 +52,7 @@ void CATransposeView::show() {
 	CAScoreView *v = static_cast<CAMainWin*>(parent())->currentScoreView();
 
 	if (v) {
-		CAKeySignature *k = 0;
+		CAKeySignature *k = nullptr;
 
 		if (v->selection().size()) {
 			for (int i=0; !k && i<v->selection().size(); i++) {
@@ -66,7 +66,7 @@ void CATransposeView::show() {
 		// the key signature wasn't found yet - find the first key sig in the score
 		for (int i=0; !k && i<v->sheet()->staffList().size(); i++) {
 			if ( v->sheet()->staffList()[i]->voiceList().size() ) {
-				k = v->sheet()->staffList()[i]->voiceList()[0]->getKeySig( 0 );
+				k = v->sheet()->staffList()[i]->voiceList()[0]->getKeySig( nullptr );
 			}
 		}
 
@@ -131,7 +131,7 @@ void CATransposeView::on_uiIntervalQuantity_currentIndexChanged( int newIndex ) 
 	}
 }
 
-void CATransposeView::on_uiApply_clicked( QAbstractButton *b ) {
+void CATransposeView::on_uiApply_clicked( QAbstractButton * ) {
 	if ( dynamic_cast<CAMainWin*>(parent()) &&
 	     static_cast<CAMainWin*>(parent())->currentScoreView() ) {
 		CACanorus::undo()->createUndoCommand( static_cast<CAMainWin*>(parent())->document(), tr("transposition", "undo") );

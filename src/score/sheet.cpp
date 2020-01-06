@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -106,7 +106,7 @@ CAContext *CASheet::findContext(const QString name) {
 		if (_contextList[i]->name() == name)
 			return _contextList[i];
 
-	return 0;
+	return nullptr;
 }
 
 /*!
@@ -131,7 +131,7 @@ QList<CAPlayable*> CASheet::getChord(int time) {
 	Returns the Tempo element active at the given time.
  */
 CATempo *CASheet::getTempo( int time ) {
-	CATempo *tempo = 0;
+	CATempo *tempo = nullptr;
 	for (int i=0; i<staffList().size(); i++) {
 		CATempo *t = staffList()[i]->getTempo(time);
 		if ( t && (!tempo || t->timeStart() > tempo->timeStart()) ) {

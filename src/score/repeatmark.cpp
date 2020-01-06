@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -27,7 +27,7 @@ CARepeatMark::~CARepeatMark() {
 }
 
 CARepeatMark *CARepeatMark::clone(CAMusElement* elt) {
-	return new CARepeatMark( (elt->musElementType()==CAMusElement::Barline)?static_cast<CABarline*>(elt):0, repeatMarkType(), voltaNumber() );
+	return new CARepeatMark( (elt->musElementType()==CAMusElement::Barline)?static_cast<CABarline*>(elt):nullptr, repeatMarkType(), voltaNumber() );
 }
 
 int CARepeatMark::compare( CAMusElement *elt ) {

@@ -8,6 +8,11 @@
 #ifndef CANORUS_H_
 #define CANORUS_H_
 
+// std::unique_ptr for old Qt LTS 5.9.x
+// Do not move below mainwin!
+#include <iostream> // verbose stuff
+#include <memory>
+
 // Python.h needs to be loaded first!
 #include "ui/settingsdialog.h"
 #include "ui/mainwin.h"
@@ -17,6 +22,7 @@
 #include <QList>
 #include <QUndoStack>
 #include <QHash>
+#include <memory>
 
 //Duma leads to a crash on libfontconfig with Ubuntu (10.04/12.04)
 //#include "duma.h"
@@ -29,10 +35,13 @@ class CAHelpCtl;
 
 class CACanorus {
 public:
-	static void initMain( int argc=0, char *argv[]=0 );
+	static void initMain( int argc=0, char *argv[]=nullptr );
 	static CASettingsDialog::CASettingsPage initSettings();
 	static void initTranslations();
-	static void initCommonGUI();
+	static void initCommonGUI(std::unique_ptr<QFileDialog> &uiSaveDialog,
+                              std::unique_ptr<QFileDialog> &uiOpenDialog,
+                              std::unique_ptr<QFileDialog> &uiExportDialog,
+                              std::unique_ptr<QFileDialog> &uiImportDialog);
 	static void initPlayback();
 	static bool parseSettingsArguments(int argc, char *argv[]);
 	static void initScripting();
@@ -70,7 +79,7 @@ public:
 	inline static CAHelpCtl *help() { return _help; }
 
 	static void rebuildUI( CADocument *document, CASheet *sheet );
-	static void rebuildUI( CADocument *document=0 );
+	static void rebuildUI( CADocument *document=nullptr );
 	static void repaintUI();
 
 	// Our own slot connection method

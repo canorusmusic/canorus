@@ -1,5 +1,5 @@
 /*!
-        Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+        Copyright (c) 2006-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
 
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -23,7 +23,7 @@ CAPreviewCtl::CAPreviewCtl( CAMainWin *poMainWin )
 	setObjectName("oPreviewCtl");
 	_poMainWin = poMainWin;
 	_poPDFExport = new CAPDFExport();
-	if( poMainWin == 0 )
+	if( poMainWin == nullptr )
 		qCritical("PreviewCtl: No mainwindow instance available!");
 	else
 		 CACanorus::connectSlotsByName(_poMainWin, this);
@@ -36,7 +36,7 @@ CAPreviewCtl::~CAPreviewCtl()
 	if( _poPDFExport ) {
 		delete _poPDFExport;
 	}
-	_poPDFExport = 0;
+	_poPDFExport = nullptr;
 }
 
 void CAPreviewCtl::on_uiPrintPreview_triggered()

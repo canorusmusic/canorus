@@ -1,12 +1,12 @@
 /*!
-        Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+        Copyright (c) 2006-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
         
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#ifndef _PREVIEW_CTL_H_
-#define _PREVIEW_CTL_H_
+#ifndef PREVIEW_CTL_H
+#define PREVIEW_CTL_H
 
 // Includes
 #include <QObject>
@@ -39,5 +39,4 @@ protected:
 	QString           _oOutputPDFName;
 };
 
-#endif // _PREVIEW_CTL_H
-
+#endif // PREVIEW_CTL_H

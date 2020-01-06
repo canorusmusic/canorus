@@ -1,5 +1,5 @@
 /*!
-    Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -35,8 +35,8 @@
 CARtMidiDevice::CARtMidiDevice()
  : CAMidiDevice() {
 	_midiDeviceType = RtMidiDevice;
-	_out = 0;
-	_in = 0;
+	_out = nullptr;
+	_in = nullptr;
 	_outOpen=false;
 	_inOpen=false;
 	setRealTime(true);
@@ -59,9 +59,9 @@ bool CARtMidiDevice::openOutputPort(int port) {
 	if (port==-1 || _outOpen)
 		return false;
 
-	if (_out && (int)_out->getPortCount() > port) {	// check outputs
+	if (_out && static_cast<int>(_out->getPortCount()) > port) {	// check outputs
 		try {
-			_out->openPort(port);
+			_out->openPort(static_cast<unsigned int>(port));
         } catch (RtMidiError &error) {
 			error.printMessage();
 			return false;	// error when opening the port
@@ -78,9 +78,9 @@ bool CARtMidiDevice::openInputPort(int port) {
 	if (port==-1 || _inOpen)
 		return false;
 
-	if (_in && (int)_in->getPortCount() > port) {	// check outputs
+	if (_in && static_cast<int>(_in->getPortCount()) > port) {	// check outputs
 		try {
-			_in->openPort(port);
+			_in->openPort(static_cast<unsigned int>(port));
         } catch (RtMidiError &error) {
 			error.printMessage();
 			return false;	// error when opening the port
@@ -97,7 +97,9 @@ bool CARtMidiDevice::openInputPort(int port) {
 /*!
 	Callback function which gets called by RtMidi automatically when an information on MidiIn device has come.
 */
-void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData ) {
+void rtMidiInCallback( double, std::vector< unsigned char > *message, void * )
+{
+    (void)message; // Only used in with SWIGCPP
 #ifndef SWIGCPP
 	emit CACanorus::midiDevice()->midiInEvent( QVector< unsigned char >::fromStdVector(*message) );
 #else
@@ -130,8 +132,8 @@ void CARtMidiDevice::closeInputPort() {
 QMap<int, QString> CARtMidiDevice::getOutputPorts() {
 	QMap<int, QString> outPorts;
 	try {
-		for (int i=0; _out && i<(int)_out->getPortCount(); i++)
-			outPorts.insert(i, QString::fromStdString(_out->getPortName(i)));
+		for (int i=0; _out && i<static_cast<int>(_out->getPortCount()); i++)
+			outPorts.insert(i, QString::fromStdString(_out->getPortName(static_cast<unsigned int>(i))));
     } catch (RtMidiError &error) {
 		error.printMessage();
 	}
@@ -142,8 +144,8 @@ QMap<int, QString> CARtMidiDevice::getOutputPorts() {
 QMap<int, QString> CARtMidiDevice::getInputPorts() {
 	QMap<int, QString> inPorts;
 	try {
-		for (int i=0; _in && i<(int)_in->getPortCount(); i++)
-			inPorts.insert(i, QString::fromStdString(_in->getPortName(i)));
+		for (int i=0; _in && i<static_cast<int>(_in->getPortCount()); i++)
+			inPorts.insert(i, QString::fromStdString(_in->getPortName(static_cast<unsigned int>(i))));
     } catch (RtMidiError &error) {
 		error.printMessage();
 	}
@@ -163,7 +165,7 @@ CARtMidiDevice::~CARtMidiDevice() {
 /*!
 	Sends the given \a message to the midi device. \a offset is ignored because CARtMidiDevice is a realtime device.
 */
-void CARtMidiDevice::send(QVector<unsigned char> message, int time) {
+void CARtMidiDevice::send(QVector<unsigned char> message, int) {
 	std::vector<unsigned char> messageVector = message.toStdVector();
 	if (_outOpen)
 		_out->sendMessage(&messageVector);

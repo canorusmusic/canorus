@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -27,7 +27,7 @@ CAInstrumentChange::~CAInstrumentChange() {
 }
 
 CAInstrumentChange* CAInstrumentChange::clone(CAMusElement* elt) {
-	return new CAInstrumentChange( instrument(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):0 );
+	return new CAInstrumentChange( instrument(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):nullptr );
 }
 
 int CAInstrumentChange::compare( CAMusElement *elt ) {

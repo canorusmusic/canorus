@@ -59,7 +59,7 @@ CAMusicXmlImport::~CAMusicXmlImport() {
 }
 
 void CAMusicXmlImport::initMusicXmlImport() {
-	_document = 0;
+	_document = nullptr;
 	_tempoBpm = -1;
 }
 
@@ -158,6 +158,7 @@ void CAMusicXmlImport::readScorePartwise() {
 			CAStaff *s = _partMapStaff[_partMapStaff.keys()[i]][j];
 			for (int k=0; k<s->voiceList().size(); k++) {
 				// go through all voices in this staff
+                // Note Reinhard: Not sure if program and channel cannot exceed 256, "int" is used everywhere
 				s->voiceList()[k]->setMidiProgram( _midiProgram[_partMapStaff.keys()[i]]-1 );
 				s->voiceList()[k]->setMidiChannel( _midiChannel[_partMapStaff.keys()[i]]-1 );
 			}
@@ -341,7 +342,7 @@ void CAMusicXmlImport::readAttributes( QString partId ) {
 				if (_partMapStaff[partId].size()>=number) {
 					_partMapKeySig[partId][number] = new CAKeySignature( CADiatonicKey( accs, gender ), _partMapStaff[partId][number-1], 0 );
 				} else {
-					_partMapKeySig[partId][number] = new CAKeySignature( CADiatonicKey( accs, gender ), 0, 0 );
+					_partMapKeySig[partId][number] = new CAKeySignature( CADiatonicKey( accs, gender ), nullptr, 0 );
 				}
 
 			} else if (name()=="time") {
@@ -366,7 +367,7 @@ void CAMusicXmlImport::readAttributes( QString partId ) {
 				if (_partMapStaff[partId].size()>=number) {
 					_partMapTimeSig[partId][number] = new CATimeSignature( beats, beat, _partMapStaff[partId][number-1], 0 );
 				} else {
-					_partMapTimeSig[partId][number] = new CATimeSignature( beats, beat, 0, 0 );
+					_partMapTimeSig[partId][number] = new CATimeSignature( beats, beat, nullptr, 0 );
 				}
 
 			} else if (name()=="clef") {
@@ -387,11 +388,12 @@ void CAMusicXmlImport::readAttributes( QString partId ) {
 				CAClef::CAPredefinedClefType t;
 				if (sign=="G") t=CAClef::Treble; // only treble and bass clefs are supported for now
 				else if (sign=="F") t=CAClef::Bass;
+                else t=CAClef::Undefined;
 
 				if (_partMapStaff[partId].size()>=number) {
 					_partMapClef[partId][number] = new CAClef( t, _partMapStaff[partId][number-1], 0 );
 				} else {
-					_partMapClef[partId][number] = new CAClef( t, 0, 0 );
+					_partMapClef[partId][number] = new CAClef( t, nullptr, 0 );
 				}
 
 			}
@@ -432,7 +434,8 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 				isPartOfChord = true;
 			} else if (name()=="duration") {
 				int duration = readElementText().toInt();
-				length = CAPlayableLength::timeLengthToPlayableLengthList( (duration/(float)divisions) * 256 ).first();
+                float fDivisions = divisions;
+				length = CAPlayableLength::timeLengthToPlayableLengthList( static_cast<int>((duration/fDivisions) * 256) ).first();
 			} else if (name()=="stem") {
 				QString s = readElementText();
 				//if (s=="up") stem = CANote::StemUp;
@@ -457,7 +460,7 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 
 				pitch = CADiatonicPitch::diatonicPitchFromString( step );
 				pitch.setNoteName( pitch.noteName()+(octave*7) );
-				pitch.setAccs( alter );
+				pitch.setAccs( static_cast<char>(alter) );
 			} else if (name()=="voice") {
 				voice = readElementText().toInt();
 			} else if (name()=="staff") {
@@ -498,11 +501,11 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 		return;
 	}
 
-	CAPlayable *p=0;
+	CAPlayable *p=nullptr;
 	if (!isRest) {
 		p = new CANote( pitch, length, v, 0 );
 		if (_tempoBpm!=-1) {
-			p->addMark( new CATempo( CAPlayableLength::Quarter, _tempoBpm, p ) );
+			p->addMark( new CATempo( CAPlayableLength::Quarter, static_cast<uchar>(_tempoBpm), p ) );
 			_tempoBpm = -1;
 		}
 	} else {
@@ -514,7 +517,7 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 	// create ties
 	if (tieStop) {
 		CANote *noteEnd = static_cast<CANote*>(p);
-		CANote *noteStart = 0;
+		CANote *noteStart = nullptr;
 		CANote *prevNote = v->previousNote(p->timeStart());
 		if (prevNote) {
 			QList<CANote*> prevChord = prevNote->getChord();
@@ -553,6 +556,7 @@ void CAMusicXmlImport::readNote( QString partId, int divisions ) {
 }
 
 void CAMusicXmlImport::readSound( QString partId ) {
+    (void) partId;
 	if (name()!="sound") return;
 
 	if ( !attributes().value("tempo").isEmpty() ) {
@@ -589,8 +593,8 @@ void CAMusicXmlImport::addStavesIfNeeded( QString partId, int staves ) {
 	to the new voice.
 */
 CAVoice *CAMusicXmlImport::addVoiceIfNeeded( QString partId, int staff, int voice ) {
-	CAVoice *v = 0;
-	CAStaff *s = 0;
+	CAVoice *v = nullptr;
+	CAStaff *s = nullptr;
 
 	if (!_partMapVoice[partId].contains(voice)) {
 		s = _partMapStaff[partId][staff-1];
@@ -638,7 +642,8 @@ void CAMusicXmlImport::readForward( QString partId, int divisions ) {
 
 		if (tokenType()==StartElement) {
 			if (name()=="duration") {
-				length = (int)((readElementText().toInt()/(float)divisions) * 256);
+                float fDivisions = divisions;
+				length = static_cast<int>((readElementText().toInt()/fDivisions) * 256);
 			} else if (name()=="voice") {
 				voice = readElementText().toInt();
 			} else if (name()=="staff") {

@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2009, Matevž Jekovec, Canorus development team
+	Copyright (c) 2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -64,7 +64,7 @@ void CADrawableFiguredBassNumber::draw(QPainter *p, const CADrawSettings s) {
 		text += " ";
 	}
 
-	p->drawText( s.x+(accs.isEmpty()?0:(8*s.z)), s.y+qRound(0.8*DEFAULT_NUMBER_SIZE*s.z), text );
+	p->drawText( s.x+(accs.isEmpty()?0:(static_cast<int>(8*s.z))), s.y+qRound(0.8*DEFAULT_NUMBER_SIZE*s.z), text );
 }
 
 CADrawableFiguredBassNumber *CADrawableFiguredBassNumber::clone(CADrawableContext *c) {

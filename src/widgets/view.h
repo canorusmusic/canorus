@@ -16,7 +16,7 @@ class CAView : public QWidget {
 Q_OBJECT
 
 public:
-	CAView(QWidget *parent=0);
+	CAView(QWidget *parent=nullptr);
 
 	virtual ~CAView();
 

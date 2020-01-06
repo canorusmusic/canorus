@@ -44,13 +44,13 @@ public:
 
 	CAClef( CAPredefinedClefType type, CAStaff *staff, int time, int offsetInterval=0 );
 	CAClef( CAClefType type, int c1, CAStaff *staff, int time, int offset=0 );
-	CAClef *clone(CAContext* context=0);
+	CAClef *clone(CAContext* context=nullptr);
 	CAStaff *staff() { return static_cast<CAStaff*>(context()); }
 
 	void setPredefinedType( CAPredefinedClefType type );
 	CAClefType clefType() { return _clefType; }
-	const int c1() { return _c1; }
-	const int centerPitch() { return _centerPitch; }
+	int c1() { return _c1; }
+	int centerPitch() { return _centerPitch; }
 	int compare(CAMusElement *elt);
 
 	void setClefType(CAClefType type);
@@ -61,8 +61,8 @@ public:
 	static const QString clefTypeToString(CAClefType);
 	static CAClefType clefTypeFromString(const QString);
 
-	static const int offsetFromReadable( const int offsetInterval );
-	static const int offsetToReadable( const int offset );
+	static int offsetFromReadable( const int offsetInterval );
+	static int offsetToReadable( const int offset );
 
 private:
 	CAClefType _clefType;

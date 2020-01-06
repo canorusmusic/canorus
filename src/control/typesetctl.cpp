@@ -1,5 +1,5 @@
 /*!
-        Copyright (c) 2006-2008, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+        Copyright (c) 2006-2019, Reinhard Katzmann, Matevž Jekovec, Canorus development team
         All Rights Reserved. See AUTHORS for a complete list of authors.
 
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -26,8 +26,8 @@ CATypesetCtl::CATypesetCtl()
 {
 	_poTypesetter = new CAExternProgram;
 	_poConvPS2PDF = new CAExternProgram;
-	_poExport = 0;
-	_poOutputFile = 0;
+	_poExport = nullptr;
+	_poOutputFile = nullptr;
 	_bPDFConversion = false;
 	_bOutputFileNameFirst = false;
 	connect( _poTypesetter, SIGNAL( programExited( int ) ), this, SLOT( typsetterExited( int ) ) );
@@ -39,13 +39,13 @@ CATypesetCtl::~CATypesetCtl()
 {
 	if( _poTypesetter )
 		delete _poTypesetter;
-	_poTypesetter = 0;
+	_poTypesetter = nullptr;
 	if( _poConvPS2PDF )
 		delete _poConvPS2PDF;
-	_poConvPS2PDF = 0;
+	_poConvPS2PDF = nullptr;
 	if( _poOutputFile )
 		delete _poOutputFile;
-	_poOutputFile = 0;
+	_poOutputFile = nullptr;
 }
 
 /*!
@@ -157,7 +157,7 @@ void CATypesetCtl::setTSetOption( const QVariant &roName, const QVariant &roValu
 */
 void CATypesetCtl::exportDocument( CADocument *poDoc )
 {
-	// @todo: Add export options to the document directly ?
+	/// \todo: Add export options to the document directly ?
 	if( _poExport )
 	{
 		if(  _poOutputFile )
@@ -195,7 +195,7 @@ void CATypesetCtl::exportDocument( CADocument *poDoc )
 */
 void CATypesetCtl::exportSheet( CASheet *poSheet )
 {
-	// @todo: Add export options to the document directly ?
+	/// \todo: Add export options to the document directly ?
 	if( _poExport )
 	{
 		if(  _poOutputFile )

@@ -27,6 +27,9 @@ class CATimeSignature;
 class CATempo;
 
 class CAMusicXmlImport: public CAImport, private QXmlStreamReader {
+#ifndef SWIG
+	Q_OBJECT
+#endif
 public:
 	CAMusicXmlImport( QTextStream *stream=0 );
 	CAMusicXmlImport( const QString stream );

@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -45,7 +45,7 @@ CATuplet::CATuplet( int number, int actualNumber, QList<CAPlayable*> noteList )
 	Call assignTimes() to apply the actual times then.
  */
 CATuplet::CATuplet( int number, int actualNumber )
- : CAMusElement( 0, 0, 0 ), _number(number), _actualNumber(actualNumber) {
+ : CAMusElement( nullptr, 0, 0 ), _number(number), _actualNumber(actualNumber) {
 	setMusElementType( Tuplet );
 }
 
@@ -53,11 +53,13 @@ CATuplet::~CATuplet() {
 	resetTimes();
 }
 
-CATuplet* CATuplet::clone(CAContext* context) { // context is ignored. this method should not be used. FIXME.
+CATuplet* CATuplet::clone(CAContext*) { // context is ignored. this method should not be used. FIXME.
+	/// \todo replace raw pointer with shared or unique pointer
 	return new CATuplet( number(), actualNumber(), noteList() );
 }
 
 CATuplet* CATuplet::clone(QList<CAPlayable*> newList) {
+    /// \todo replace raw pointer with shared or unique pointer
 	return new CATuplet( number(), actualNumber(), newList );
 }
 
@@ -93,10 +95,10 @@ QList< QList<CASlur*> > CATuplet::getNoteSlurs() {
 			noteSlurs.back() << static_cast<CANote*>(noteList()[i])->phrasingSlurStart();
 			noteSlurs.back() << static_cast<CANote*>(noteList()[i])->phrasingSlurEnd();
 
-			static_cast<CANote*>(noteList()[i])->setSlurStart(0);
-			static_cast<CANote*>(noteList()[i])->setSlurEnd(0);
-			static_cast<CANote*>(noteList()[i])->setPhrasingSlurStart(0);
-			static_cast<CANote*>(noteList()[i])->setPhrasingSlurEnd(0);
+			static_cast<CANote*>(noteList()[i])->setSlurStart(nullptr);
+			static_cast<CANote*>(noteList()[i])->setSlurEnd(nullptr);
+			static_cast<CANote*>(noteList()[i])->setPhrasingSlurStart(nullptr);
+			static_cast<CANote*>(noteList()[i])->setPhrasingSlurEnd(nullptr);
 		}
 	}
 
@@ -160,7 +162,7 @@ void CATuplet::assignTimes() {
 	resetTimes();
 
 	CAVoice *voice = noteList().front()->voice();
-	CAMusElement *next = 0;
+	CAMusElement *next = nullptr;
 	if ( noteList().back()->musElementType()==Note && static_cast<CANote*>(noteList().back())->getChord().size() ) {
 		next = voice->next( static_cast<CANote*>(noteList().back())->getChord().back() );
 	} else { // rest
@@ -172,12 +174,12 @@ void CATuplet::assignTimes() {
 	QList< QList<CASlur*> > noteSlurs = getNoteSlurs();
 
 	for (int i=noteList().size()-1; i>=0; i--) {
-		noteList()[i]->setTuplet(0);
+		noteList()[i]->setTuplet(nullptr);
 		voice->remove( noteList()[i] );
 	}
 
 	for (int i=0; i<noteList().size(); i++) {
-		noteList()[i]->setTimeStart( qRound( firstNote()->timeStart() + (noteList()[i]->timeStart() - firstNote()->timeStart()) * ((float)actualNumber() / number()) ) );
+		noteList()[i]->setTimeStart( qRound( firstNote()->timeStart() + (noteList()[i]->timeStart() - firstNote()->timeStart()) * (static_cast<float>(actualNumber()) / number()) ) );
 	}
 
 	for (int i=0; i<noteList().size(); i++) {
@@ -188,7 +190,7 @@ void CATuplet::assignTimes() {
 		if ( j < noteList().size() ) {
 			noteList()[i]->setTimeLength( noteList()[j]->timeStart() - noteList()[i]->timeStart() );
 		} else {
-			noteList()[i]->setTimeLength( qRound( CAPlayableLength::playableLengthToTimeLength( noteList()[i]->playableLength() ) * ((float)actualNumber() / number()) ) );
+			noteList()[i]->setTimeLength( qRound( CAPlayableLength::playableLengthToTimeLength( noteList()[i]->playableLength() ) * (static_cast<float>(actualNumber()) / number()) ) );
 		}
 	}
 
@@ -226,7 +228,7 @@ void CATuplet::resetTimes() {
 	if(noteList().isEmpty())
 		return;
 	CAVoice *voice = noteList().front()->voice();
-	CAMusElement *next = 0;
+	CAMusElement *next = nullptr;
 	if ( noteList().back()->musElementType()==Note && static_cast<CANote*>(noteList().back())->getChord().size() ) {
 		next = voice->next( static_cast<CANote*>(noteList().back())->getChord().back() );
 	} else { // rest
@@ -238,7 +240,7 @@ void CATuplet::resetTimes() {
 	QList< QList<CASlur*> > noteSlurs = getNoteSlurs();
 
 	for (int i=noteList().size()-1; i>=0; i--) {
-		noteList()[i]->setTuplet(0);
+		noteList()[i]->setTuplet(nullptr);
 		voice->remove( noteList()[i] );
 	}
 
@@ -285,21 +287,21 @@ void CATuplet::addNote( CAPlayable *p ) {
 
 /*!
 	Returns a pointer to the next member of tuplet with a greater timeStart.
-	If it doesn't exist it returns 0.
+	If it doesn't exist it returns nullptr.
  */
 CAPlayable* CATuplet::nextTimed( CAPlayable *p ) {
 	int t = p->timeStart();
 	for (int i=0;i<noteList().size(); i++){
 		if( noteList()[i]->timeStart() > t ) return noteList()[i];
 	}
-	return 0;
+	return nullptr;
 }
 
 /*!
 	Returns the first note/rest in the first chord of the tuplet.
 */
 CAPlayable* CATuplet::firstNote() {
-	if (noteList().isEmpty()) return 0;
+	if (noteList().isEmpty()) return nullptr;
 
 	if (noteList().first()->musElementType()==CAMusElement::Note &&
 			!static_cast<CANote*>(noteList().first())->getChord().isEmpty()) {
@@ -313,7 +315,7 @@ CAPlayable* CATuplet::firstNote() {
 	Returns the last note/rest in the last chord of the tuplet.
 */
 CAPlayable* CATuplet::lastNote() {
-	if (noteList().isEmpty()) return 0;
+	if (noteList().isEmpty()) return nullptr;
 
 	if (noteList().last()->musElementType()==CAMusElement::Note &&
 			!static_cast<CANote*>(noteList().last())->getChord().isEmpty()) {
@@ -323,7 +325,7 @@ CAPlayable* CATuplet::lastNote() {
 	}
 }
 
-int CATuplet::timeLength() {
+int CATuplet::timeLength() const {
 	if (noteList().size()) {
 		return ( noteList().back()->timeEnd() - timeStart() );
 	} else {
@@ -331,7 +333,7 @@ int CATuplet::timeLength() {
 	}
 }
 
-int CATuplet::timeStart() {
+int CATuplet::timeStart() const {
 	if (noteList().size()) {
 		return noteList()[0]->timeStart();
 	} else {

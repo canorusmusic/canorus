@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -39,7 +39,7 @@
 */
 
 CAUndo::CAUndo() {
-	_undoCommand = 0;
+	_undoCommand = nullptr;
 }
 
 CAUndo::~CAUndo() {
@@ -112,7 +112,7 @@ void CAUndo::pushUndoCommand() {
 	_undoCommand->getRedoDocument()->setModified( true );
 
 	QList<CAUndoCommand*> *s = _undoStack[d];
-	CAUndoCommand *prevUndoCommand = (undoIndex(d)<s->size() && undoIndex(d)>=0?s->at(undoIndex(d)):0);
+	CAUndoCommand *prevUndoCommand = (undoIndex(d)<s->size() && undoIndex(d)>=0?s->at(undoIndex(d)):nullptr);
 
 	// delete undo commands after the new one, if any (eg. 3x changes, 2x undo, 1x change => removes last 2 undos when making a change)
 	for (int i=undoIndex(d)+1; i<s->size();) {
@@ -129,7 +129,7 @@ void CAUndo::pushUndoCommand() {
 	s->append( _undoCommand ); // push the command on stack
 	_undoStack[ _undoCommand->getUndoDocument() ] = s;
 	undoIndex(d) = _undoStack[d]->size()-1;
-	_undoCommand = 0;
+	_undoCommand = nullptr;
 }
 
 /*!
@@ -169,7 +169,7 @@ bool CAUndo::canRedo( CADocument* d ) {
 void CAUndo::clearUndoCommand() {
 	if ( _undoCommand ) {
 		delete _undoCommand;
-		_undoCommand = 0;
+		_undoCommand = nullptr;
 	}
 }
 

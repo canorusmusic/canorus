@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -28,7 +28,7 @@
 
 CAToolButton::CAToolButton( QWidget *parent )
  : QToolButton( parent ) {
-	setMainWin( parent?dynamic_cast<CAMainWin*>(parent):0 );
+	setMainWin( parent?dynamic_cast<CAMainWin*>(parent):nullptr );
 	setPopupMode( QToolButton::MenuButtonPopup );	
 	_popupWidget = new CAToolButtonPopup();
 }

@@ -40,7 +40,7 @@ public:
     void setMidiKeySequence( QString oMidiKeySequence, bool combined = false );
     //void setAction(QAction *pAction);
 
-    QAction    *newAction(QObject *parent = 0);
+    QAction    *newAction(QObject *parent = nullptr);
     static void fromQAction(const QAction &action, CASingleAction &sAction);
 
 protected:

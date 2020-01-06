@@ -83,7 +83,7 @@ CAMusElementFactory::CAMusElementFactory() {
 	_fmTonicDegreeMinor = false;
 	_fmEllipse = false;
 	_musElementType = CAMusElement::Undefined;
-	mpoEmpty = new CANote( CADiatonicPitch(), CAPlayableLength(), NULL, 0 ); // dummy element
+	mpoEmpty = new CANote( CADiatonicPitch(), CAPlayableLength(), nullptr, 0 ); // dummy element
 	mpoMusElement = mpoEmpty;
 
 	_dynamicText = "mf";
@@ -526,7 +526,7 @@ bool CAMusElementFactory::configureFunctionMark( CAFunctionMarkContext *fmc, int
 /*!
 	Configures a new tuplet containing the given \a noteList.
  */
-bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> noteList ) {
+bool CAMusElementFactory::configureTuplet( QList<CAPlayable*> ) {
 	return false;
 }
 

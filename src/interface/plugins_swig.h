@@ -1,3 +1,9 @@
+/*!
+    Copyright (c) 2009-2020, Štefan Sakalík, Canorus development team
+	All Rights Reserved. See AUTHORS for a complete list of authors.
+
+	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
+*/
 #include <QObject>
 #include "score/sheet.h"
 #include "score/document.h"
@@ -14,15 +20,15 @@ class CAMainWin { //: public QObject {
 //   -> musElementSelection ok
 //
 public:
-	CAMainWin () { pyConsoleIface = NULL; };
+	CAMainWin () {}
 	CASheet *currentSheet() {
 		//CAScoreViewPort *v = currentScoreViewPort();
 		//if (v) return v->sheet();
 		//else return 0;
-		return NULL;
-	};
+		return nullptr;
+	}
 
-	CAPyConsoleInterface* pyConsoleIface;
+	CAPyConsoleInterface* pyConsoleIface = nullptr;
 };
 
 // Needs refactoring!

@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -47,11 +47,11 @@ public:
 		return operator+( CAInterval( i.quality(), i.quantity()*(-1) ) );
 	}
 
-	inline const int noteName() const { return _noteName; }
-	inline const int accs() const { return _accs; }
+	inline int noteName() const { return _noteName; }
+	inline signed char accs() const { return _accs; }
 
 	inline void setNoteName( const int noteName ) { _noteName = noteName; }
-	inline void setAccs( const int accs ) { _accs = accs; }
+	inline void setAccs( const signed char accs ) { _accs = accs; }
 	inline int midiPitch() { return CADiatonicPitch::diatonicPitchToMidiPitch(*this); }
 
 	static const QString diatonicPitchToString( CADiatonicPitch p );
@@ -63,6 +63,6 @@ public:
 
 private:
 	int _noteName; // 0-sub-contra C, 1-D, 2-E etc.
-	int _accs;     // 0-neutral, 1-sharp, -1-flat etc.
+	signed char _accs;     // 0-neutral, 1-sharp, -1-flat etc.
 };
 #endif /* DIATONICPITCH_H_ */

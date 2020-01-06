@@ -110,7 +110,7 @@ void CATranspose::transposeByKeySig( CADiatonicKey from, CADiatonicKey to, int d
 		interval.setQuantity( interval.quantity()*(-1) );
 	}
 
-	transposeByInterval( interval ); // \todo Notes should be transposed differently when transposing from major -> minor for example
+	transposeByInterval( interval ); /// \todo Notes should be transposed differently when transposing from major -> minor for example
 }
 
 /*!

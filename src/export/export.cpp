@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -39,12 +39,12 @@ CAExport::CAExport( QTextStream *stream )
  : CAFile() {
 	setStream( stream );
 
-	setExportedDocument(0);
-	setExportedSheet(0);
-	setExportedStaff(0);
-	setExportedVoice(0);
-	setExportedLyricsContext(0);
-	setExportedFunctionMarkContext(0);
+	setExportedDocument(nullptr);
+	setExportedSheet(nullptr);
+	setExportedStaff(nullptr);
+	setExportedVoice(nullptr);
+	setExportedLyricsContext(nullptr);
+	setExportedFunctionMarkContext(nullptr);
 }
 
 CAExport::~CAExport() {

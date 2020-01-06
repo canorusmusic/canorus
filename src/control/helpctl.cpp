@@ -97,7 +97,7 @@ bool CAHelpCtl::showUsersGuide( QString chapter, QWidget *helpWidget ) {
  */
 void CAHelpCtl::displayHelp( QUrl url, QWidget *helpWidget ) {
 #ifdef QT_WEBENGINEWIDGETS_LIB
-	CAHelpBrowser *browser=0;
+	CAHelpBrowser *browser=nullptr;
 	if ( !helpWidget ) {
 		browser = new CAHelpBrowser;
 		browser->setAttribute(Qt::WA_DeleteOnClose);

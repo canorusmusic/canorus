@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -41,12 +41,12 @@ public:
 	QMap<int, QString> getOutputPorts() { return m_InputPorts; }
 	QMap<int, QString> getInputPorts() { return m_OutputPorts; }
 
-	bool openOutputPort(int port) { return true; }	// return true on success, false otherwise
-	bool openInputPort(int port) { return true; }	// return true on success, false otherwise
+	bool openOutputPort(int) { return true; }	// return true on success, false otherwise
+	bool openInputPort(int) { return true; }	// return true on success, false otherwise
 	void closeOutputPort() { }
 	void closeInputPort() { }
 	void send(QVector<unsigned char> message, int time);
-	void sendMetaEvent(int timeLength, int event, int a, int b, int c);
+	void sendMetaEvent(int timeLength, char event, char a, char b, int c);
 	void writeFile(); // direct access to the writing
 
 /*
@@ -68,7 +68,7 @@ private:
 	QVector<int> trackTimes;
 	void streamQByteArray( QByteArray x );	// streaming binary data to midi file, possibly with print for debugging
 	QByteArray variableLengthValue(int value);
-	QByteArray word16(int x);
+	QByteArray word16(char x);
 	QByteArray textEvent(int time, QString s);
 	QByteArray trackEnd(void);
 	QByteArray timeSignature(void);

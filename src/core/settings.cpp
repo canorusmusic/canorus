@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -50,7 +50,7 @@ const int CASettings::DEFAULT_MIDI_OUT_NUM_DEVICES = 0;
 const CATypesetter::CATypesetterType CASettings::DEFAULT_TYPESETTER = CATypesetter::LilyPond;
 #ifdef Q_OS_WIN
 const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "LilyPond/usr/bin/lilypond.exe";
-#elif Q_OS_MAC
+#elif defined(Q_OS_MAC)
 const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "/Applications/LilyPond.app/Contents/Resources/bin/lilypond";
 #else
 const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "lilypond";
@@ -111,7 +111,7 @@ CASettings::~CASettings() {
 	writeSettings();
 	if( _poEmptyEntry )
 	  delete _poEmptyEntry;
-	_poEmptyEntry = 0;
+	_poEmptyEntry = nullptr;
 
 #ifndef SWIGCPP
     if( false == _oActionList.isEmpty() )
@@ -120,7 +120,7 @@ CASettings::~CASettings() {
         foreach(poActionEntry, _oActionList)
         {
             delete poActionEntry;
-            poActionEntry = 0;
+            poActionEntry = nullptr;
         }
         _oActionList.clear();
     }
@@ -362,13 +362,13 @@ int CASettings::readSettings() {
 	else
 		setUseSystemDefaultPdfViewer( DEFAULT_USE_SYSTEM_PDF_VIEWER );
 
-	return settingsPage;
-
 	// Action / Command settings
 	if ( contains("action/shortcutsdirectory") )
 		setLatestShortcutsDirectory( value("action/shortcutsdirectory").toString() );
 	else
 		setLatestShortcutsDirectory( DEFAULT_SHORTCUTS_DIRECTORY );
+
+    return settingsPage;
 }
 
 void CASettings::setMidiInPort(int in) {

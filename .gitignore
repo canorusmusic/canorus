@@ -1,23 +1,6 @@
 # CMake stuff
-CMakeCache.txt
-Makefile
-cmake_install.cmake
-cmake_uninstall.cmake
-CMakeFiles
-
-# Executable targets
-src/canorus
-_CanorusPython.so
-
-# MOCs, UIs
-ui_*.h
-moc_*.cpp*
-
-# Translations
-*.qm
-
-# Scripting stuff
-*.cxx
-*.pyc
-CanorusPython.py
+CMakeLists.txt.user*
+# Do not add CMake generated files here
+# You want to see these changes to your repository.
+# Please build in a separate build folder outside sources.
 
