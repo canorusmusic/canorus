@@ -2,5 +2,6 @@ language: cpp
 dist: bionic
 before_install:
   - sudo apt-get install -y cmake g++ make libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qttools5-dev-tools libasound2-dev
-script: canorus/travis-build.sh
+script: 
+  - pwd && source ./travis-build.sh
 

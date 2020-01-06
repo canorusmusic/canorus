@@ -2,7 +2,7 @@
 cd
 mkdir -p build
 cd build
-cmake ../canorus -D CMAKE_INSTALL_PREFIX=~/.local
+cmake -D CMAKE_INSTALL_PREFIX=~/.local ../canorus
 make -j4 
 make tr
 make install
