@@ -8,14 +8,14 @@
 // Includes
 #include <QMessageBox>
 
-#include "ui/mainwin.h"
+#include "canorus.h"
 #include "core/muselementfactory.h"
 #include "core/undo.h"
 #include "layout/drawablekeysignature.h"
-#include "scorectl/keysignaturectl.h"
 #include "score/keysignature.h"
 #include "score/sheet.h"
-#include "canorus.h"
+#include "scorectl/keysignaturectl.h"
+#include "ui/mainwin.h"
 
 /*! 
 	\class CAKeySignatureCtl
@@ -32,19 +32,19 @@
 	least one signal called dummyToggle.
 	We connect this signal manually to our slot myToggle.
 */
-CAKeySignatureCtl::CAKeySignatureCtl( CAMainWin *poMainWin, const QString &oHash )
- : _oHash( oHash )
+CAKeySignatureCtl::CAKeySignatureCtl(CAMainWin* poMainWin, const QString& oHash)
+    : _oHash(oHash)
 {
-	setObjectName("oDummyCtl");
-	_poMainWin = poMainWin;
-	if( poMainWin == nullptr )
-		qCritical("DummyCtl: No mainwindow instance available!");
+    setObjectName("oDummyCtl");
+    _poMainWin = poMainWin;
+    if (poMainWin == nullptr)
+        qCritical("DummyCtl: No mainwindow instance available!");
 }
 
 void CAKeySignatureCtl::setupActions()
 {
-	CACanorus::connectSlotsByName(_poMainWin, this);
-	//connect( _poDummy, SIGNAL( dummyToggle( int ) ), this, SLOT( myToggle( int ) ) );
+    CACanorus::connectSlotsByName(_poMainWin, this);
+    //connect( _poDummy, SIGNAL( dummyToggle( int ) ), this, SLOT( myToggle( int ) ) );
 }
 
 // Destructor
@@ -55,41 +55,41 @@ CAKeySignatureCtl::~CAKeySignatureCtl()
 /*!
 	Changes the number of accidentals.
 */
-void CAKeySignatureCtl::on_uiKeySig_activated( int row ) {
-        
-	CADiatonicKey key(static_cast<QComboBox*>(sender())->itemData(row).toString());
+void CAKeySignatureCtl::on_uiKeySig_activated(int row)
+{
 
-	if (_poMainWin->mode()==CAMainWin::InsertMode) {
-		_poMainWin->musElementFactory()->setDiatonicKeyNumberOfAccs( key.numberOfAccs() );
-		_poMainWin->musElementFactory()->setDiatonicKeyGender( key.gender() );
-	} else
-	if ( _poMainWin->mode()==CAMainWin::EditMode && _poMainWin->currentScoreView() && 
-	     _poMainWin->currentScoreView()->selection().size() ) {
-		QList<CADrawableMusElement*> list = _poMainWin->currentScoreView()->selection();
-		CACanorus::undo()->createUndoCommand( _poMainWin->document(), tr("change key signature", "undo") );
+    CADiatonicKey key(static_cast<QComboBox*>(sender())->itemData(row).toString());
 
-		for ( int i=0; i<list.size(); i++ ) {
-			CAKeySignature *keySig = dynamic_cast<CAKeySignature*>(list[i]->musElement());
-			CAFunctionMark *fm = dynamic_cast<CAFunctionMark*>(list[i]->musElement());
+    if (_poMainWin->mode() == CAMainWin::InsertMode) {
+        _poMainWin->musElementFactory()->setDiatonicKeyNumberOfAccs(key.numberOfAccs());
+        _poMainWin->musElementFactory()->setDiatonicKeyGender(key.gender());
+    } else if (_poMainWin->mode() == CAMainWin::EditMode && _poMainWin->currentScoreView() && _poMainWin->currentScoreView()->selection().size()) {
+        QList<CADrawableMusElement*> list = _poMainWin->currentScoreView()->selection();
+        CACanorus::undo()->createUndoCommand(_poMainWin->document(), tr("change key signature", "undo"));
 
-			if ( keySig ) {
-				keySig->setDiatonicKey( key );
-			}
+        for (int i = 0; i < list.size(); i++) {
+            CAKeySignature* keySig = dynamic_cast<CAKeySignature*>(list[i]->musElement());
+            CAFunctionMark* fm = dynamic_cast<CAFunctionMark*>(list[i]->musElement());
 
-			if ( fm ) {
-				fm->setKey( CADiatonicKey::diatonicKeyToString( key ) );
-			}
-		}
+            if (keySig) {
+                keySig->setDiatonicKey(key);
+            }
 
-		CACanorus::undo()->pushUndoCommand();
-		CACanorus::rebuildUI(_poMainWin->document(), _poMainWin->currentSheet());
-	}
+            if (fm) {
+                fm->setKey(CADiatonicKey::diatonicKeyToString(key));
+            }
+        }
+
+        CACanorus::undo()->pushUndoCommand();
+        CACanorus::rebuildUI(_poMainWin->document(), _poMainWin->currentSheet());
+    }
 }
 
 // Changes the toolbar entries for key signature input
-void CAKeySignatureCtl::on_uiInsertKeySig_toggled(bool checked) {
-	if (checked) {
-		_poMainWin->musElementFactory()->setMusElementType( CAMusElement::KeySignature );
-		_poMainWin->setMode( CAMainWin::InsertMode, _oHash );
-	}
+void CAKeySignatureCtl::on_uiInsertKeySig_toggled(bool checked)
+{
+    if (checked) {
+        _poMainWin->musElementFactory()->setMusElementType(CAMusElement::KeySignature);
+        _poMainWin->setMode(CAMainWin::InsertMode, _oHash);
+    }
 }

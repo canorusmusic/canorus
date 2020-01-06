@@ -10,12 +10,12 @@
 
 class CATypesetter {
 public:
-	enum CATypesetterType { // used for storing the default typesetter in settings
-		LilyPond = 1
-	};
+    enum CATypesetterType { // used for storing the default typesetter in settings
+        LilyPond = 1
+    };
 
-	CATypesetter();
-	virtual ~CATypesetter();
+    CATypesetter();
+    virtual ~CATypesetter();
 };
 
 #endif /* TYPESETTER_H_ */

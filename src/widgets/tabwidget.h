@@ -13,21 +13,21 @@
 class QMouseEvent;
 
 class CATabWidget : public QTabWidget {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	CATabWidget( QWidget *parent=nullptr );
-	virtual ~CATabWidget();
+    CATabWidget(QWidget* parent = nullptr);
+    virtual ~CATabWidget();
 
 signals:
-	void CANewTab();
-	void CAMoveTab( int from, int to );
+    void CANewTab();
+    void CAMoveTab(int from, int to);
 
 protected slots:
-	void mouseDoubleClickEvent( QMouseEvent * event );
+    void mouseDoubleClickEvent(QMouseEvent* event);
 
 protected:
-	void tabInserted(int);
-	void tabRemoved(int);
+    void tabInserted(int);
+    void tabRemoved(int);
 };
 
 #endif /* TABWIDGET_H_ */

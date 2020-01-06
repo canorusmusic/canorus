@@ -10,12 +10,12 @@
 #include <QPainter>
 #include <iostream>
 
-#include "score/voice.h"
-#include "score/staff.h"
 #include "score/note.h"
 #include "score/rest.h" // used for voice synchronization
-#include "score/tuplet.h"
+#include "score/staff.h"
 #include "score/tempo.h"
+#include "score/tuplet.h"
+#include "score/voice.h"
 
 #include "score/barline.h"
 #include "score/timesignature.h"
@@ -38,142 +38,145 @@
 	\warning By default, no voices are created where music elements can be put. Use addVoice() to
 	append a new voice.
 */
-CAStaff::CAStaff( const QString name, CASheet *s, int numberOfLines) : CAContext( name, s ) {
-	_contextType = CAContext::Staff;
-	_numberOfLines = numberOfLines;
-	_name = name;
+CAStaff::CAStaff(const QString name, CASheet* s, int numberOfLines)
+    : CAContext(name, s)
+{
+    _contextType = CAContext::Staff;
+    _numberOfLines = numberOfLines;
+    _name = name;
 }
 
-CAStaff::~CAStaff() {
-	clear();
+CAStaff::~CAStaff()
+{
+    clear();
 }
 
-CAStaff *CAStaff::clone( CASheet *s ) {
-	CAStaff *newStaff = new CAStaff( name(), s, numberOfLines() );
+CAStaff* CAStaff::clone(CASheet* s)
+{
+    CAStaff* newStaff = new CAStaff(name(), s, numberOfLines());
 
-	// create empty voices
-	for (int i=0; i<voiceList().size(); i++) {
-		newStaff->addVoice( voiceList()[i]->clone(newStaff) );
-	}
+    // create empty voices
+    for (int i = 0; i < voiceList().size(); i++) {
+        newStaff->addVoice(voiceList()[i]->clone(newStaff));
+    }
 
-	int *peltIdx = new int[voiceList().size()];
-	for (int i=0; i<voiceList().size(); i++) peltIdx[i]=0;
-	QList<CANote*> tiedOrigNotes; // original notes having opened tie
-	QList<CANote*> sluredOrigNotes; // original notes having opened slur
-	QList<CANote*> phrasingSluredOrigNotes; // original notes having opened phrasing slur
-	QList<CANote*> tiedClonedNotes; // cloned notes having opened tie
-	QList<CANote*> sluredClonedNotes; // cloned notes having opened slur
-	QList<CANote*> phrasingSluredClonedNotes; // cloned notes having opened phrasing slur
+    int* peltIdx = new int[voiceList().size()];
+    for (int i = 0; i < voiceList().size(); i++)
+        peltIdx[i] = 0;
+    QList<CANote*> tiedOrigNotes; // original notes having opened tie
+    QList<CANote*> sluredOrigNotes; // original notes having opened slur
+    QList<CANote*> phrasingSluredOrigNotes; // original notes having opened phrasing slur
+    QList<CANote*> tiedClonedNotes; // cloned notes having opened tie
+    QList<CANote*> sluredClonedNotes; // cloned notes having opened slur
+    QList<CANote*> phrasingSluredClonedNotes; // cloned notes having opened phrasing slur
 
-	bool done=false;
-	while (!done) {
-		// append playable elements
-		for (int i=0; i<voiceList().size(); i++) {
-			QList<CAPlayable*> elementsUnderTuplet;
+    bool done = false;
+    while (!done) {
+        // append playable elements
+        for (int i = 0; i < voiceList().size(); i++) {
+            QList<CAPlayable*> elementsUnderTuplet;
 
-			// clone elements in the current voice until the non-playable element is reached
-			while ( peltIdx[i]<voiceList()[i]->musElementList().size() && voiceList()[i]->musElementList()[peltIdx[i]]->isPlayable() ) {
-				CAPlayable *origElt = static_cast<CAPlayable*>(voiceList()[i]->musElementList()[peltIdx[i]]);
-				CAPlayable *clonedElt = origElt->clone( newStaff->voiceList()[i] );
-				newStaff->voiceList()[i]->append( clonedElt,
-					voiceList()[i]->musElementList()[peltIdx[i]]->musElementType()==CAMusElement::Note &&
-					static_cast<CANote*>(origElt)->isPartOfChord() &&
-					!static_cast<CANote*>(origElt)->isFirstInChord() );
+            // clone elements in the current voice until the non-playable element is reached
+            while (peltIdx[i] < voiceList()[i]->musElementList().size() && voiceList()[i]->musElementList()[peltIdx[i]]->isPlayable()) {
+                CAPlayable* origElt = static_cast<CAPlayable*>(voiceList()[i]->musElementList()[peltIdx[i]]);
+                CAPlayable* clonedElt = origElt->clone(newStaff->voiceList()[i]);
+                newStaff->voiceList()[i]->append(clonedElt,
+                    voiceList()[i]->musElementList()[peltIdx[i]]->musElementType() == CAMusElement::Note && static_cast<CANote*>(origElt)->isPartOfChord() && !static_cast<CANote*>(origElt)->isFirstInChord());
 
-				if ( origElt->musElementType()==CAMusElement::Note ) {
-					CANote *origNote = static_cast<CANote*>(origElt);
-					CANote *clonedNote = static_cast<CANote*>(clonedElt);
+                if (origElt->musElementType() == CAMusElement::Note) {
+                    CANote* origNote = static_cast<CANote*>(origElt);
+                    CANote* clonedNote = static_cast<CANote*>(clonedElt);
 
-					// check starting ties, slurs, prasing slurs
-					for ( int i=0; i<tiedOrigNotes.size(); i++ ) {
-						if ( tiedOrigNotes[i]->tieStart()->noteEnd()==origNote ) {
-							CASlur *newTie = tiedOrigNotes[i]->tieStart()->clone(newStaff);
-							tiedClonedNotes[i]->setTieStart( newTie );
-							newTie->setNoteStart(tiedClonedNotes[i]);
-							newTie->setNoteEnd(clonedNote);
-							clonedNote->setTieEnd(newTie);
+                    // check starting ties, slurs, prasing slurs
+                    for (int i = 0; i < tiedOrigNotes.size(); i++) {
+                        if (tiedOrigNotes[i]->tieStart()->noteEnd() == origNote) {
+                            CASlur* newTie = tiedOrigNotes[i]->tieStart()->clone(newStaff);
+                            tiedClonedNotes[i]->setTieStart(newTie);
+                            newTie->setNoteStart(tiedClonedNotes[i]);
+                            newTie->setNoteEnd(clonedNote);
+                            clonedNote->setTieEnd(newTie);
 
-							tiedOrigNotes.removeAt(i);
-							tiedClonedNotes.removeAt(i);
-						}
-					}
-					for ( int i=0; i<sluredOrigNotes.size(); i++ ) {
-						if ( sluredOrigNotes[i]->slurStart()->noteEnd()==origNote ) {
-							CASlur *newSlur = sluredOrigNotes[i]->slurStart()->clone(newStaff);
-							sluredClonedNotes[i]->setSlurStart( newSlur );
-							newSlur->setNoteStart(sluredClonedNotes[i]);
-							newSlur->setNoteEnd(clonedNote);
-							clonedNote->setSlurEnd(newSlur);
+                            tiedOrigNotes.removeAt(i);
+                            tiedClonedNotes.removeAt(i);
+                        }
+                    }
+                    for (int i = 0; i < sluredOrigNotes.size(); i++) {
+                        if (sluredOrigNotes[i]->slurStart()->noteEnd() == origNote) {
+                            CASlur* newSlur = sluredOrigNotes[i]->slurStart()->clone(newStaff);
+                            sluredClonedNotes[i]->setSlurStart(newSlur);
+                            newSlur->setNoteStart(sluredClonedNotes[i]);
+                            newSlur->setNoteEnd(clonedNote);
+                            clonedNote->setSlurEnd(newSlur);
 
-							sluredOrigNotes.removeAt(i);
-							sluredClonedNotes.removeAt(i);
-						}
-					}
-					for ( int i=0; i<phrasingSluredOrigNotes.size(); i++ ) {
-						if ( phrasingSluredOrigNotes[i]->phrasingSlurStart()->noteEnd()==origNote ) {
-							CASlur *newPhrasingSlur = phrasingSluredOrigNotes[i]->phrasingSlurStart()->clone(newStaff);
-							phrasingSluredClonedNotes[i]->setPhrasingSlurStart( newPhrasingSlur );
-							newPhrasingSlur->setNoteStart(phrasingSluredClonedNotes[i]);
-							newPhrasingSlur->setNoteEnd(clonedNote);
-							clonedNote->setPhrasingSlurEnd(newPhrasingSlur);
+                            sluredOrigNotes.removeAt(i);
+                            sluredClonedNotes.removeAt(i);
+                        }
+                    }
+                    for (int i = 0; i < phrasingSluredOrigNotes.size(); i++) {
+                        if (phrasingSluredOrigNotes[i]->phrasingSlurStart()->noteEnd() == origNote) {
+                            CASlur* newPhrasingSlur = phrasingSluredOrigNotes[i]->phrasingSlurStart()->clone(newStaff);
+                            phrasingSluredClonedNotes[i]->setPhrasingSlurStart(newPhrasingSlur);
+                            newPhrasingSlur->setNoteStart(phrasingSluredClonedNotes[i]);
+                            newPhrasingSlur->setNoteEnd(clonedNote);
+                            clonedNote->setPhrasingSlurEnd(newPhrasingSlur);
 
-							phrasingSluredOrigNotes.removeAt(i);
-							phrasingSluredClonedNotes.removeAt(i);
-						}
-					}
+                            phrasingSluredOrigNotes.removeAt(i);
+                            phrasingSluredClonedNotes.removeAt(i);
+                        }
+                    }
 
-					// check ending ties, slurs, phrasing slurs
-					if ( origNote->tieStart() ) {
-						tiedOrigNotes << origNote;
-						tiedClonedNotes << static_cast<CANote*>(clonedElt);
-					}
-					if ( origNote->slurStart() ) {
-						sluredOrigNotes << origNote;
-						sluredClonedNotes << static_cast<CANote*>(clonedElt);
-					}
-					if ( origNote->phrasingSlurStart() ) {
-						phrasingSluredOrigNotes << origNote;
-						phrasingSluredClonedNotes << static_cast<CANote*>(clonedElt);
-					}
-				}
+                    // check ending ties, slurs, phrasing slurs
+                    if (origNote->tieStart()) {
+                        tiedOrigNotes << origNote;
+                        tiedClonedNotes << static_cast<CANote*>(clonedElt);
+                    }
+                    if (origNote->slurStart()) {
+                        sluredOrigNotes << origNote;
+                        sluredClonedNotes << static_cast<CANote*>(clonedElt);
+                    }
+                    if (origNote->phrasingSlurStart()) {
+                        phrasingSluredOrigNotes << origNote;
+                        phrasingSluredClonedNotes << static_cast<CANote*>(clonedElt);
+                    }
+                }
 
-				// check tuplets
-				if ( origElt->tuplet() ) {
-					elementsUnderTuplet << clonedElt;
-				}
+                // check tuplets
+                if (origElt->tuplet()) {
+                    elementsUnderTuplet << clonedElt;
+                }
 
-				if ( origElt->isLastInTuplet() ) {
-					new CATuplet( origElt->tuplet()->number(), origElt->tuplet()->actualNumber(), elementsUnderTuplet );
-					elementsUnderTuplet.clear();
-				}
+                if (origElt->isLastInTuplet()) {
+                    new CATuplet(origElt->tuplet()->number(), origElt->tuplet()->actualNumber(), elementsUnderTuplet);
+                    elementsUnderTuplet.clear();
+                }
 
-				peltIdx[i]++;
-			}
-			newStaff->voiceList()[i]->synchronizeMusElements();
-		}
+                peltIdx[i]++;
+            }
+            newStaff->voiceList()[i]->synchronizeMusElements();
+        }
 
-		// append non-playable elements (shared by all voices - only create clone of the first voice element and append it to all)
-		if ( peltIdx[0]<voiceList()[0]->musElementList().size() ) {
-			CAMusElement *newElt = voiceList()[0]->musElementList()[peltIdx[0]]->clone( newStaff );
+        // append non-playable elements (shared by all voices - only create clone of the first voice element and append it to all)
+        if (peltIdx[0] < voiceList()[0]->musElementList().size()) {
+            CAMusElement* newElt = voiceList()[0]->musElementList()[peltIdx[0]]->clone(newStaff);
 
-			for (int i=0; i<voiceList().size(); i++) {
-				newStaff->voiceList()[i]->append( newElt );
-				peltIdx[i]++;
-			}
-		}
+            for (int i = 0; i < voiceList().size(); i++) {
+                newStaff->voiceList()[i]->append(newElt);
+                peltIdx[i]++;
+            }
+        }
 
-		// check if we're at the end
-		done = true;
-		for (int i=0; i<voiceList().size(); i++) {
-			if (peltIdx[i]<voiceList()[i]->musElementList().size()) {
-				done = false;
-				break;
-			}
-		}
-	}
+        // check if we're at the end
+        done = true;
+        for (int i = 0; i < voiceList().size(); i++) {
+            if (peltIdx[i] < voiceList()[i]->musElementList().size()) {
+                done = false;
+                break;
+            }
+        }
+    }
 
-	delete [] peltIdx;
-	return newStaff;
+    delete[] peltIdx;
+    return newStaff;
 }
 
 /*!
@@ -181,30 +184,33 @@ CAStaff *CAStaff::clone( CASheet *s ) {
 
 	\sa CAVoice::lastTimeEnd()
 */
-int CAStaff::lastTimeEnd() {
-	int maxTime = 0;
-	for (int i=0; i<_voiceList.size(); i++)
-		if (_voiceList[i]->lastTimeEnd() > maxTime)
-			maxTime = _voiceList[i]->lastTimeEnd();
+int CAStaff::lastTimeEnd()
+{
+    int maxTime = 0;
+    for (int i = 0; i < _voiceList.size(); i++)
+        if (_voiceList[i]->lastTimeEnd() > maxTime)
+            maxTime = _voiceList[i]->lastTimeEnd();
 
-	return maxTime;
+    return maxTime;
 }
 
-void CAStaff::clear() {
-	while (_voiceList.size()) {
-		delete _voiceList.front(); // CAVoice's destructor removes the voice from the list.
-	}
+void CAStaff::clear()
+{
+    while (_voiceList.size()) {
+        delete _voiceList.front(); // CAVoice's destructor removes the voice from the list.
+    }
 }
 
 /*!
 	Adds an empty voice to the staff.
 	Call synchronizeVoices() manually to synchronize a new voice with other voices.
 */
-CAVoice *CAStaff::addVoice() {
-	CAVoice *voice = new CAVoice( name()+QObject::tr("Voice%1").arg( voiceList().size()+1 ), this );
-	addVoice( voice );
+CAVoice* CAStaff::addVoice()
+{
+    CAVoice* voice = new CAVoice(name() + QObject::tr("Voice%1").arg(voiceList().size() + 1), this);
+    addVoice(voice);
 
-	return voice;
+    return voice;
 }
 
 /*!
@@ -212,14 +218,15 @@ CAVoice *CAStaff::addVoice() {
 
 	\sa next()
 */
-CAMusElement *CAStaff::next( CAMusElement *elt ) {
-	for ( int i=0; i<voiceList().size(); i++ ) {	// go through all the voices and check, if any of them includes the given element
-		if ( voiceList()[i]->musElementList().contains(elt) ) {
-			return voiceList()[i]->next(elt);
-		}
-	}
+CAMusElement* CAStaff::next(CAMusElement* elt)
+{
+    for (int i = 0; i < voiceList().size(); i++) { // go through all the voices and check, if any of them includes the given element
+        if (voiceList()[i]->musElementList().contains(elt)) {
+            return voiceList()[i]->next(elt);
+        }
+    }
 
-	return nullptr;	// the element doesn't exist in any of the voices, return nullptr
+    return nullptr; // the element doesn't exist in any of the voices, return nullptr
 }
 
 /*!
@@ -227,14 +234,15 @@ CAMusElement *CAStaff::next( CAMusElement *elt ) {
 
 	\sa previous()
 */
-CAMusElement *CAStaff::previous( CAMusElement *elt ) {
-	for ( int i=0; i<voiceList().size(); i++ ) {	// go through all the voices and check, if any of them includes the given element
-		if ( voiceList()[i]->musElementList().contains(elt) ) {
-			return voiceList()[i]->previous(elt);
-		}
-	}
+CAMusElement* CAStaff::previous(CAMusElement* elt)
+{
+    for (int i = 0; i < voiceList().size(); i++) { // go through all the voices and check, if any of them includes the given element
+        if (voiceList()[i]->musElementList().contains(elt)) {
+            return voiceList()[i]->previous(elt);
+        }
+    }
 
-	return nullptr;	// the element doesn't exist in any of the voices, return nullptr
+    return nullptr; // the element doesn't exist in any of the voices, return nullptr
 }
 
 /*!
@@ -244,22 +252,24 @@ CAMusElement *CAStaff::previous( CAMusElement *elt ) {
 
 	Eventually does the same as CAVoice::remove(), but checks for any voices present in the staff.
 */
-bool CAStaff::remove( CAMusElement *elt, bool updateSignTimes ) {
-	if ( !elt || !voiceList().size() )
-		return false;
-	
-	return voiceList()[0]->remove( elt, updateSignTimes);
+bool CAStaff::remove(CAMusElement* elt, bool updateSignTimes)
+{
+    if (!elt || !voiceList().size())
+        return false;
+
+    return voiceList()[0]->remove(elt, updateSignTimes);
 }
 
 /*!
 	Returns the first voice with the given \a name or Null, if such a voice doesn't exist.
 */
-CAVoice *CAStaff::findVoice(const QString name) {
-	for (int i=0; i<_voiceList.size(); i++)
-		if (_voiceList[i]->name() == name)
-			return _voiceList[i];
+CAVoice* CAStaff::findVoice(const QString name)
+{
+    for (int i = 0; i < _voiceList.size(); i++)
+        if (_voiceList[i]->name() == name)
+            return _voiceList[i];
 
-	return nullptr;
+    return nullptr;
 }
 
 /*!
@@ -269,15 +279,16 @@ CAVoice *CAStaff::findVoice(const QString name) {
 
 	\sa CASheet::getChord()
 */
-QList<CAMusElement*> CAStaff::getEltByType(CAMusElement::CAMusElementType type, int startTime) {
-	QList<CAMusElement*> eltList;
+QList<CAMusElement*> CAStaff::getEltByType(CAMusElement::CAMusElementType type, int startTime)
+{
+    QList<CAMusElement*> eltList;
 
-	for (int i=0; i<_voiceList.size(); i++) {
-		QList<CAMusElement*> curList;
-		curList = _voiceList[i]->getEltByType(type, startTime);
-		eltList += curList;
-	}
-	return eltList;
+    for (int i = 0; i < _voiceList.size(); i++) {
+        QList<CAMusElement*> curList;
+        curList = _voiceList[i]->getEltByType(type, startTime);
+        eltList += curList;
+    }
+    return eltList;
 }
 
 /*!
@@ -286,14 +297,16 @@ QList<CAMusElement*> CAStaff::getEltByType(CAMusElement::CAMusElementType type, 
 
 	\sa CASheet::getChord()
 */
-CAMusElement *CAStaff::getOneEltByType(CAMusElement::CAMusElementType type, int startTime) {
+CAMusElement* CAStaff::getOneEltByType(CAMusElement::CAMusElementType type, int startTime)
+{
 
-	for (int i=0; i<_voiceList.size(); i++) {
-		CAMusElement *elt;
-		elt = _voiceList[i]->getOneEltByType(type, startTime);
-		if (elt) return elt;
-	}
-	return nullptr;
+    for (int i = 0; i < _voiceList.size(); i++) {
+        CAMusElement* elt;
+        elt = _voiceList[i]->getOneEltByType(type, startTime);
+        if (elt)
+            return elt;
+    }
+    return nullptr;
 }
 
 /*!
@@ -304,27 +317,29 @@ CAMusElement *CAStaff::getOneEltByType(CAMusElement::CAMusElementType type, int 
 
 	\sa CASheet:getChord(), CAVoice::getChord()
 */
-QList<CAPlayable*> CAStaff::getChord(int time) {
-	QList<CAPlayable*> chord;
-	for (int i=voiceList().size()-1; i>=0; i--)
-		chord << voiceList()[i]->getChord(time);
+QList<CAPlayable*> CAStaff::getChord(int time)
+{
+    QList<CAPlayable*> chord;
+    for (int i = voiceList().size() - 1; i >= 0; i--)
+        chord << voiceList()[i]->getChord(time);
 
-	return chord;
+    return chord;
 }
 
 /*!
 	Returns the Tempo element active at the given time.
  */
-CATempo *CAStaff::getTempo( int time ) {
-	CATempo *tempo = nullptr;
-	for (int i=0; i<voiceList().size(); i++) {
-		CATempo *t = voiceList()[i]->getTempo(time);
-		if ( t && (!tempo || t->timeStart() > tempo->timeStart()) ) {
-			tempo = t;
-		}
-	}
+CATempo* CAStaff::getTempo(int time)
+{
+    CATempo* tempo = nullptr;
+    for (int i = 0; i < voiceList().size(); i++) {
+        CATempo* t = voiceList()[i]->getTempo(time);
+        if (t && (!tempo || t->timeStart() > tempo->timeStart())) {
+            tempo = t;
+        }
+    }
 
-	return tempo;
+    return tempo;
 }
 
 /*!
@@ -343,149 +358,158 @@ CATempo *CAStaff::getTempo( int time ) {
 
 	\return True, if everything was ok. False, if fixes were needed.
 */
-bool CAStaff::synchronizeVoices() {
-	int *pidx = new int[voiceList().size()];
-        for (int i=0; i<voiceList().size(); i++) pidx[i]=-1;          // array of current indices of voices at current timeStart
-	CAMusElement **plastPlayable = new CAMusElement*[voiceList().size()];
- 	for (int i=0; i<voiceList().size(); i++) plastPlayable[i]=nullptr;
+bool CAStaff::synchronizeVoices()
+{
+    int* pidx = new int[voiceList().size()];
+    for (int i = 0; i < voiceList().size(); i++)
+        pidx[i] = -1; // array of current indices of voices at current timeStart
+    CAMusElement** plastPlayable = new CAMusElement*[voiceList().size()];
+    for (int i = 0; i < voiceList().size(); i++)
+        plastPlayable[i] = nullptr;
 
-	_clefList.clear();
-	_keySignatureList.clear();
-	_timeSignatureList.clear();
-	_barlineList.clear();
+    _clefList.clear();
+    _keySignatureList.clear();
+    _timeSignatureList.clear();
+    _barlineList.clear();
 
-	int timeStart = 0;
-	bool done = false;
-	bool changesMade = false;
+    int timeStart = 0;
+    bool done = false;
+    bool changesMade = false;
 
-	// first fix any inconsistencies inside a voice
-	for (int i=0; i<voiceList().size(); i++)
-		voiceList()[i]->synchronizeMusElements();
+    // first fix any inconsistencies inside a voice
+    for (int i = 0; i < voiceList().size(); i++)
+        voiceList()[i]->synchronizeMusElements();
 
-	while (!done) {
-		QList<CAMusElement*> sharedList; // list of shared music elements having the same time-start sorted by voice number
+    while (!done) {
+        QList<CAMusElement*> sharedList; // list of shared music elements having the same time-start sorted by voice number
 
-		// gather shared elements into sharedList and remove them from the voice at new timeStart
-		for ( int i=0; i<voiceList().size(); i++ ) {
-			// don't increase pidx[i], if the next element is not-playable
-			while ( pidx[i] < voiceList()[i]->musElementList().size()-1 && !voiceList()[i]->musElementList()[pidx[i]+1]->isPlayable() && ( voiceList()[i]->musElementList()[pidx[i]+1]->timeStart() == timeStart )) {
-				if ( !sharedList.contains(voiceList()[i]->musElementList()[ pidx[i]+1 ]) ) {
-					sharedList << voiceList()[i]->musElementList()[ pidx[i]+1 ];
-				}
-				voiceList()[i]->_musElementList.removeAt( pidx[i]+1 );
-			}
-		}
+        // gather shared elements into sharedList and remove them from the voice at new timeStart
+        for (int i = 0; i < voiceList().size(); i++) {
+            // don't increase pidx[i], if the next element is not-playable
+            while (pidx[i] < voiceList()[i]->musElementList().size() - 1 && !voiceList()[i]->musElementList()[pidx[i] + 1]->isPlayable() && (voiceList()[i]->musElementList()[pidx[i] + 1]->timeStart() == timeStart)) {
+                if (!sharedList.contains(voiceList()[i]->musElementList()[pidx[i] + 1])) {
+                    sharedList << voiceList()[i]->musElementList()[pidx[i] + 1];
+                }
+                voiceList()[i]->_musElementList.removeAt(pidx[i] + 1);
+            }
+        }
 
-		// insert all elements from sharedList into all voices
-		// OR increase pidx[i] for 1 in all voices, if their new element is playable and new timeStart is correct
-		if ( sharedList.size() ) {
-			for ( int i=0; i<voiceList().size(); i++ ) {
-				for ( int j=0; j<sharedList.size(); j++) {
-					voiceList()[i]->_musElementList.insert( pidx[i]+1+j, sharedList[j] );
-				}
-				pidx[i]++; // jump to the first one inserted from the sharedList, if inserting shared elts for the first time
-				          // or the first one after the sharedList in second pass
-			}
-			
-			// populate the references lists
-			for ( int j=0; j<sharedList.size(); j++) {
-				switch (sharedList[j]->musElementType()) {
-					case CAMusElement::KeySignature: _keySignatureList << sharedList[j]; break;
-					case CAMusElement::TimeSignature: _timeSignatureList << sharedList[j]; break;
-					case CAMusElement::Clef: _clefList << sharedList[j]; break;
-					case CAMusElement::Barline: _barlineList << sharedList[j]; break;
-					default: break;
-				}
-			}
+        // insert all elements from sharedList into all voices
+        // OR increase pidx[i] for 1 in all voices, if their new element is playable and new timeStart is correct
+        if (sharedList.size()) {
+            for (int i = 0; i < voiceList().size(); i++) {
+                for (int j = 0; j < sharedList.size(); j++) {
+                    voiceList()[i]->_musElementList.insert(pidx[i] + 1 + j, sharedList[j]);
+                }
+                pidx[i]++; // jump to the first one inserted from the sharedList, if inserting shared elts for the first time
+                    // or the first one after the sharedList in second pass
+            }
 
-		} else {
-			for ( int i=0; i<voiceList().size(); i++ ) {
-				if ( pidx[i] < voiceList()[i]->musElementList().size()-1 && ( voiceList()[i]->musElementList()[pidx[i]+1]->timeStart() == timeStart ) ) {
-					if ( voiceList()[i]->musElementList()[pidx[i]+1]->isPlayable() ) {
-						pidx[i]++;
-						plastPlayable[i] = voiceList()[i]->musElementList()[pidx[i]];
-					}
-				}
-			}
-		}
+            // populate the references lists
+            for (int j = 0; j < sharedList.size(); j++) {
+                switch (sharedList[j]->musElementType()) {
+                case CAMusElement::KeySignature:
+                    _keySignatureList << sharedList[j];
+                    break;
+                case CAMusElement::TimeSignature:
+                    _timeSignatureList << sharedList[j];
+                    break;
+                case CAMusElement::Clef:
+                    _clefList << sharedList[j];
+                    break;
+                case CAMusElement::Barline:
+                    _barlineList << sharedList[j];
+                    break;
+                default:
+                    break;
+                }
+            }
 
-		// if the shared element overlaps any of the chords in other voices, insert rests (shift the shared sign forward) to that voice
-		for (int i=0; i<voiceList().size(); i++) {
-			if ( pidx[i]==-1 || voiceList()[i]->musElementList()[pidx[i]]->isPlayable() ) // only legal pidx[i] and non-playable elements
-				continue;
+        } else {
+            for (int i = 0; i < voiceList().size(); i++) {
+                if (pidx[i] < voiceList()[i]->musElementList().size() - 1 && (voiceList()[i]->musElementList()[pidx[i] + 1]->timeStart() == timeStart)) {
+                    if (voiceList()[i]->musElementList()[pidx[i] + 1]->isPlayable()) {
+                        pidx[i]++;
+                        plastPlayable[i] = voiceList()[i]->musElementList()[pidx[i]];
+                    }
+                }
+            }
+        }
 
-			for (int j=0; j<voiceList().size(); j++) {
-				if (i==j) continue;
+        // if the shared element overlaps any of the chords in other voices, insert rests (shift the shared sign forward) to that voice
+        for (int i = 0; i < voiceList().size(); i++) {
+            if (pidx[i] == -1 || voiceList()[i]->musElementList()[pidx[i]]->isPlayable()) // only legal pidx[i] and non-playable elements
+                continue;
 
-				// fix the overlapped chord, rests are inserted later in non-linearity check
-				if ( pidx[j] != -1 && voiceList()[i]->musElementList()[pidx[i]]->timeStart() == timeStart &&
-				     plastPlayable[j] && plastPlayable[j]->timeStart() < timeStart && plastPlayable[j]->timeEnd() > timeStart ) {
-					int gapLength = plastPlayable[j]->timeEnd() - timeStart;
-					QList<CARest*> restList = CARest::composeRests( gapLength, voiceList()[i]->musElementList()[pidx[i]]->timeStart(), voiceList()[i] );
+            for (int j = 0; j < voiceList().size(); j++) {
+                if (i == j)
+                    continue;
 
-					voiceList()[i]->musElementList()[pidx[i]]->setTimeStart( plastPlayable[j]->timeEnd() );
-					for ( int k=0; k < restList.size(); k++ )
-						voiceList()[i]->_musElementList.insert( pidx[i]++, restList[k] ); // insert the missing rests, rests are added in back, pidx++
-					voiceList()[i]->updateTimes( pidx[i], gapLength, false );              // increase playable timeStarts
-					if (restList.size()) {
-						plastPlayable[ i ] = restList.last();
-					} else {
-						qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
-					}
+                // fix the overlapped chord, rests are inserted later in non-linearity check
+                if (pidx[j] != -1 && voiceList()[i]->musElementList()[pidx[i]]->timeStart() == timeStart && plastPlayable[j] && plastPlayable[j]->timeStart() < timeStart && plastPlayable[j]->timeEnd() > timeStart) {
+                    int gapLength = plastPlayable[j]->timeEnd() - timeStart;
+                    QList<CARest*> restList = CARest::composeRests(gapLength, voiceList()[i]->musElementList()[pidx[i]]->timeStart(), voiceList()[i]);
 
-					changesMade = true;
-				}
-			}
-		}
+                    voiceList()[i]->musElementList()[pidx[i]]->setTimeStart(plastPlayable[j]->timeEnd());
+                    for (int k = 0; k < restList.size(); k++)
+                        voiceList()[i]->_musElementList.insert(pidx[i]++, restList[k]); // insert the missing rests, rests are added in back, pidx++
+                    voiceList()[i]->updateTimes(pidx[i], gapLength, false); // increase playable timeStarts
+                    if (restList.size()) {
+                        plastPlayable[i] = restList.last();
+                    } else {
+                        qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
+                    }
 
-		// if the elements times are not linear (every N-th element's timeEnd should be N+1-th timeStart), insert rests to achieve it
-		for (int j=0; j<voiceList().size(); j++) {
-			// fix the non-linearity
-			if ( pidx[j]!=-1 && !voiceList()[j]->musElementList()[pidx[j]]->isPlayable() && voiceList()[j]->musElementList()[pidx[j]]->timeStart()==timeStart
-			     && (plastPlayable[j]?plastPlayable[ j ]->timeEnd():0) < timeStart ) {
-				int gapLength = timeStart - ( (pidx[j]==-1||!plastPlayable[j])?0:plastPlayable[ j ]->timeEnd() );
-				QList<CARest*> restList = CARest::composeRests( gapLength, (pidx[j]==-1||!plastPlayable[j])?0:plastPlayable[ j ]->timeEnd(), voiceList()[j] );
-				for ( int k=0; k < restList.size(); k++ )
-					voiceList()[j]->_musElementList.insert( pidx[j]++, restList[k] ); // insert the missing rests, rests are added in back, pidx++
-				voiceList()[j]->updateTimes( pidx[j], gapLength, false );              // increase playable timeStarts
-				if (restList.size()) {
-					plastPlayable[ j ] = restList.last();
-				} else {
-					qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
-				}
-				changesMade = true;
-			}
-		}
+                    changesMade = true;
+                }
+            }
+        }
 
-		// jump to the last inserted from the sharedList
-		if ( sharedList.size() ) {
-			for ( int i=0; i<voiceList().size(); i++ ) {
-				pidx[i]+=(sharedList.size()-1);
-			}
-		}
+        // if the elements times are not linear (every N-th element's timeEnd should be N+1-th timeStart), insert rests to achieve it
+        for (int j = 0; j < voiceList().size(); j++) {
+            // fix the non-linearity
+            if (pidx[j] != -1 && !voiceList()[j]->musElementList()[pidx[j]]->isPlayable() && voiceList()[j]->musElementList()[pidx[j]]->timeStart() == timeStart
+                && (plastPlayable[j] ? plastPlayable[j]->timeEnd() : 0) < timeStart) {
+                int gapLength = timeStart - ((pidx[j] == -1 || !plastPlayable[j]) ? 0 : plastPlayable[j]->timeEnd());
+                QList<CARest*> restList = CARest::composeRests(gapLength, (pidx[j] == -1 || !plastPlayable[j]) ? 0 : plastPlayable[j]->timeEnd(), voiceList()[j]);
+                for (int k = 0; k < restList.size(); k++)
+                    voiceList()[j]->_musElementList.insert(pidx[j]++, restList[k]); // insert the missing rests, rests are added in back, pidx++
+                voiceList()[j]->updateTimes(pidx[j], gapLength, false); // increase playable timeStarts
+                if (restList.size()) {
+                    plastPlayable[j] = restList.last();
+                } else {
+                    qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
+                }
+                changesMade = true;
+            }
+        }
 
-		// shortest time is delta between the current elements and the nearest one in the future
-		int shortestTime=-1;
+        // jump to the last inserted from the sharedList
+        if (sharedList.size()) {
+            for (int i = 0; i < voiceList().size(); i++) {
+                pidx[i] += (sharedList.size() - 1);
+            }
+        }
 
-		for ( int i=0; i<voiceList().size(); i++ ) {
-			if ( pidx[i] < (voiceList()[i]->musElementList().size()-1) &&
-			     ( shortestTime==-1 ||
-			       voiceList()[i]->musElementList()[ pidx[i]+1 ]->timeStart() - timeStart < shortestTime )
-			   )
-				shortestTime = voiceList()[i]->musElementList()[ pidx[i]+1 ]->timeStart() - timeStart;
-		}
-		int deltaTime = ((shortestTime!=-1)?shortestTime:0);
-		timeStart += deltaTime; // increase timeStart
+        // shortest time is delta between the current elements and the nearest one in the future
+        int shortestTime = -1;
 
-		// if all voices are at the end, finish
-		done = (deltaTime==0); // last pass is only meant to linearize
-		for ( int i=0; i<voiceList().size(); i++ )
-			if ( pidx[i] < voiceList()[i]->musElementList().size()-1 )
-				done = false;
-	}
+        for (int i = 0; i < voiceList().size(); i++) {
+            if (pidx[i] < (voiceList()[i]->musElementList().size() - 1) && (shortestTime == -1 || voiceList()[i]->musElementList()[pidx[i] + 1]->timeStart() - timeStart < shortestTime))
+                shortestTime = voiceList()[i]->musElementList()[pidx[i] + 1]->timeStart() - timeStart;
+        }
+        int deltaTime = ((shortestTime != -1) ? shortestTime : 0);
+        timeStart += deltaTime; // increase timeStart
 
-	delete [] pidx;
-	return changesMade;
+        // if all voices are at the end, finish
+        done = (deltaTime == 0); // last pass is only meant to linearize
+        for (int i = 0; i < voiceList().size(); i++)
+            if (pidx[i] < voiceList()[i]->musElementList().size() - 1)
+                done = false;
+    }
+
+    delete[] pidx;
+    return changesMade;
 }
 
 /*!
@@ -498,33 +522,34 @@ bool CAStaff::synchronizeVoices() {
 
 	\return True, if a new barline was placed; otherwise False.
  */
-bool CAStaff::placeAutoBar( CAPlayable* elt ) {
-	if ( !elt )
-		return false;
-	CABarline *b = static_cast<CABarline*>(elt->voice()->previousByType( CAMusElement::Barline, elt ));
-	CATimeSignature *t;
-	CAMusElement *prevTimeSig = elt;
+bool CAStaff::placeAutoBar(CAPlayable* elt)
+{
+    if (!elt)
+        return false;
+    CABarline* b = static_cast<CABarline*>(elt->voice()->previousByType(CAMusElement::Barline, elt));
+    CATimeSignature* t;
+    CAMusElement* prevTimeSig = elt;
 
-	// do not place autobar, if the element was inserted somewhere in the middle
-	for (int i=0; i<elt->voice()->staff()->voiceList().size(); i++) {
-		if (elt->voice()->staff()->voiceList()[i]->lastTimeEnd()>elt->timeEnd()) {
-			return false;
-		}
-	}
+    // do not place autobar, if the element was inserted somewhere in the middle
+    for (int i = 0; i < elt->voice()->staff()->voiceList().size(); i++) {
+        if (elt->voice()->staff()->voiceList()[i]->lastTimeEnd() > elt->timeEnd()) {
+            return false;
+        }
+    }
 
-	do {
-		prevTimeSig = elt->voice()->previousByType( CAMusElement::TimeSignature, prevTimeSig );
-		t = static_cast<CATimeSignature*>(prevTimeSig);
-	} while ( t && prevTimeSig->timeStart() == elt->timeStart() );	// not the time signature for a bar in the future
+    do {
+        prevTimeSig = elt->voice()->previousByType(CAMusElement::TimeSignature, prevTimeSig);
+        t = static_cast<CATimeSignature*>(prevTimeSig);
+    } while (t && prevTimeSig->timeStart() == elt->timeStart()); // not the time signature for a bar in the future
 
-	if (t) {
-		if ( (b?(b->timeStart()):0) + t->barDuration() <= elt->timeStart() ) {
-			elt->voice()->insert( elt, new CABarline( CABarline::Single, elt->staff(), elt->timeStart() ) );
-			elt->staff()->synchronizeVoices();
+    if (t) {
+        if ((b ? (b->timeStart()) : 0) + t->barDuration() <= elt->timeStart()) {
+            elt->voice()->insert(elt, new CABarline(CABarline::Single, elt->staff(), elt->timeStart()));
+            elt->staff()->synchronizeVoices();
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }

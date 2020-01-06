@@ -14,21 +14,21 @@
 class CADrawableStaff;
 
 class CADrawableBarline : public CADrawableMusElement {
-	public:
-		CADrawableBarline(CABarline *m, CADrawableStaff *staff, double x, double y);
-		~CADrawableBarline();
+public:
+    CADrawableBarline(CABarline* m, CADrawableStaff* staff, double x, double y);
+    ~CADrawableBarline();
 
-		void draw(QPainter *p, CADrawSettings s);
-		CADrawableBarline *clone(CADrawableContext* newContext = nullptr);
-		inline CABarline *barline() { return static_cast<CABarline*>(_musElement); }
+    void draw(QPainter* p, CADrawSettings s);
+    CADrawableBarline* clone(CADrawableContext* newContext = nullptr);
+    inline CABarline* barline() { return static_cast<CABarline*>(_musElement); }
 
-	private:
-		static const double SPACE_BETWEEN_BARLINES;
+private:
+    static const double SPACE_BETWEEN_BARLINES;
 
-		static const double BARLINE_WIDTH;
-		static const double BOLD_BARLINE_WIDTH;
-		static const double REPEAT_DOTS_WIDTH;
-		static const double DOTTED_BARLINE_WIDTH;
+    static const double BARLINE_WIDTH;
+    static const double BOLD_BARLINE_WIDTH;
+    static const double REPEAT_DOTS_WIDTH;
+    static const double DOTTED_BARLINE_WIDTH;
 };
 
 #endif /*DRAWABLEBARLINE_H_*/

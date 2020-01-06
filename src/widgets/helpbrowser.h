@@ -12,13 +12,11 @@
 #include <QtWebEngineWidgets/QWebEngineView>
 
 class CAHelpBrowser
-: public QWebEngineView
-{
-	Q_OBJECT
-	public:
-		CAHelpBrowser(QWidget* parent = nullptr);
-		~CAHelpBrowser() {}
+    : public QWebEngineView {
+    Q_OBJECT
+public:
+    CAHelpBrowser(QWidget* parent = nullptr);
+    ~CAHelpBrowser() {}
 };
 
 #endif /* HELPBROWSER_H_ */
-

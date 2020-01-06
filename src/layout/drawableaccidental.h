@@ -11,15 +11,15 @@
 #include "layout/drawablemuselement.h"
 
 class CADrawableAccidental : public CADrawableMusElement {
-	public:
-		CADrawableAccidental(signed char accs, CAMusElement *musElement, CADrawableContext *drawableContext, double x, double y);
-		~CADrawableAccidental();
-		void draw(QPainter *p, CADrawSettings s);
-		CADrawableAccidental *clone(CADrawableContext* newContext = nullptr);
+public:
+    CADrawableAccidental(signed char accs, CAMusElement* musElement, CADrawableContext* drawableContext, double x, double y);
+    ~CADrawableAccidental();
+    void draw(QPainter* p, CADrawSettings s);
+    CADrawableAccidental* clone(CADrawableContext* newContext = nullptr);
 
-	private:
-		signed char _accs;
-		double _centerX, _centerY; // easier to do clone(), otherwise not needed
+private:
+    signed char _accs;
+    double _centerX, _centerY; // easier to do clone(), otherwise not needed
 };
 
 #endif /* DRAWABLEACCIDENTAL_H_ */

@@ -5,17 +5,17 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include <QPainter>
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QPushButton>
 #include <QGridLayout>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QWheelEvent>
 
-#include "widgets/viewcontainer.h"
-#include "widgets/view.h"
-#include "score/sheet.h"
 #include "score/note.h"
+#include "score/sheet.h"
 #include "score/staff.h"
+#include "widgets/view.h"
+#include "widgets/viewcontainer.h"
 
 /*!
 	\class CAViewContainer
@@ -33,18 +33,20 @@
 /*!
 	Constructs the initial container having \a v as the initial view and a parent widget \a p.
 */
-CAViewContainer::CAViewContainer( QWidget *parent )
- : QSplitter( parent ) {
-	setOrientation( Qt::Vertical ); // not side by side
-	setCurrentView( nullptr );
+CAViewContainer::CAViewContainer(QWidget* parent)
+    : QSplitter(parent)
+{
+    setOrientation(Qt::Vertical); // not side by side
+    setCurrentView(nullptr);
 }
 
 /*!
 	Removes all the views and finally destroys container.
 	\warning This destructor also deletes the views!
 */
-CAViewContainer::~CAViewContainer() {
-	// automatically deletes all the children including the splitters
+CAViewContainer::~CAViewContainer()
+{
+    // automatically deletes all the children including the splitters
 }
 
 /*!
@@ -52,26 +54,27 @@ CAViewContainer::~CAViewContainer() {
 	Vertical split uses horizontal splitter.
 	Returns the newly created view.
 */
-CAView* CAViewContainer::splitVertically(CAView *v) {
-	if ( !v && !(v = currentView()))
-		return nullptr;
+CAView* CAViewContainer::splitVertically(CAView* v)
+{
+    if (!v && !(v = currentView()))
+        return nullptr;
 
-	QSplitter *splitter = _viewMap[v];
-	CAView *newView = v->clone(nullptr);
-	if ( splitter->orientation()==Qt::Horizontal ) {
-		addView( newView, splitter );
-	} else if ( splitter->count()==1 ) {
-		splitter->setOrientation( Qt::Horizontal );
-		addView( newView, splitter );
-	} else {
-		QSplitter *newSplitter = new QSplitter( Qt::Horizontal, nullptr );
-		int idx = splitter->indexOf(v);
-		addView( v, newSplitter);
-		addView( newView, newSplitter);
-		splitter->insertWidget( idx, newSplitter );
-	}
+    QSplitter* splitter = _viewMap[v];
+    CAView* newView = v->clone(nullptr);
+    if (splitter->orientation() == Qt::Horizontal) {
+        addView(newView, splitter);
+    } else if (splitter->count() == 1) {
+        splitter->setOrientation(Qt::Horizontal);
+        addView(newView, splitter);
+    } else {
+        QSplitter* newSplitter = new QSplitter(Qt::Horizontal, nullptr);
+        int idx = splitter->indexOf(v);
+        addView(v, newSplitter);
+        addView(newView, newSplitter);
+        splitter->insertWidget(idx, newSplitter);
+    }
 
-	return newView;
+    return newView;
 }
 
 /*!
@@ -79,26 +82,27 @@ CAView* CAViewContainer::splitVertically(CAView *v) {
 	Horizontal split uses vertical splitter.
 	Returns the newly created view.
 */
-CAView* CAViewContainer::splitHorizontally(CAView *v) {
-	if ( !v && !(v = currentView()))
-		return nullptr;
+CAView* CAViewContainer::splitHorizontally(CAView* v)
+{
+    if (!v && !(v = currentView()))
+        return nullptr;
 
-	QSplitter *splitter = _viewMap[v];
-	CAView *newView = v->clone(nullptr);
-	if ( splitter->orientation()==Qt::Vertical ) {
-		addView( newView, splitter );
-	} else if (splitter->count()==1) {
-		splitter->setOrientation( Qt::Vertical );
-		addView( newView, splitter );
-	} else {
-		QSplitter *newSplitter = new QSplitter( Qt::Vertical, nullptr );
-		int idx = splitter->indexOf(v);
-		addView( v, newSplitter);
-		addView( newView, newSplitter);
-		splitter->insertWidget( idx, newSplitter );
-	}
+    QSplitter* splitter = _viewMap[v];
+    CAView* newView = v->clone(nullptr);
+    if (splitter->orientation() == Qt::Vertical) {
+        addView(newView, splitter);
+    } else if (splitter->count() == 1) {
+        splitter->setOrientation(Qt::Vertical);
+        addView(newView, splitter);
+    } else {
+        QSplitter* newSplitter = new QSplitter(Qt::Vertical, nullptr);
+        int idx = splitter->indexOf(v);
+        addView(v, newSplitter);
+        addView(newView, newSplitter);
+        splitter->insertWidget(idx, newSplitter);
+    }
 
-	return newView;
+    return newView;
 }
 
 /*!
@@ -107,85 +111,85 @@ CAView* CAViewContainer::splitHorizontally(CAView *v) {
 
 	\return The pointer to the view which was removed. If none was removed (ie. the given view was not found or there are no views left) returns nullptr.
 */
-CAView* CAViewContainer::unsplit(CAView *v) {
-	if (!v && !(v = currentView()))
-		return nullptr;
+CAView* CAViewContainer::unsplit(CAView* v)
+{
+    if (!v && !(v = currentView()))
+        return nullptr;
 
-	QSplitter *s = _viewMap[v];
-	switch( s->count() )
-	{
-		case 1:
-			// if (s==this). otherwise it'd never get here.
-			return nullptr;
-		case 2:
-		{
-			QWidget* other = s->widget( 1 - s->indexOf( v ) ); // find the other view
-			CAView* otherView = dynamic_cast<CAView*>(other);
-			if( s != this)
-			{
-				other->setParent( s->parentWidget() );
-				if(otherView)
-					_viewMap[otherView] = static_cast<QSplitter*>(s->parent());
-				removeView(v);
-				delete s; // delete the splitter
-				return v;
-			} else if( !otherView )
-			{
-				// the following is needed to prevent the situation where a splitter is the only child of the view container - it causes some problems. -Itay
-				QSplitter *sp = static_cast<QSplitter*>(other);
-				setOrientation(sp->orientation());
-				while(sp->count()) {
-					CAView* view = dynamic_cast<CAView*>(sp->widget(0));
-					sp->widget(0)->setParent( this );
-					if(view)
-						_viewMap[view] = this;
-				}
-				delete sp; //delete the splitter after moving the view ports.
-			}
-		}
+    QSplitter* s = _viewMap[v];
+    switch (s->count()) {
+    case 1:
+        // if (s==this). otherwise it'd never get here.
+        return nullptr;
+    case 2: {
+        QWidget* other = s->widget(1 - s->indexOf(v)); // find the other view
+        CAView* otherView = dynamic_cast<CAView*>(other);
+        if (s != this) {
+            other->setParent(s->parentWidget());
+            if (otherView)
+                _viewMap[otherView] = static_cast<QSplitter*>(s->parent());
+            removeView(v);
+            delete s; // delete the splitter
+            return v;
+        } else if (!otherView) {
+            // the following is needed to prevent the situation where a splitter is the only child of the view container - it causes some problems. -Itay
+            QSplitter* sp = static_cast<QSplitter*>(other);
+            setOrientation(sp->orientation());
+            while (sp->count()) {
+                CAView* view = dynamic_cast<CAView*>(sp->widget(0));
+                sp->widget(0)->setParent(this);
+                if (view)
+                    _viewMap[view] = this;
+            }
+            delete sp; //delete the splitter after moving the view ports.
+        }
+    }
         // Note Reinhard fallthrough is only a C++17 feature
         // Currently we depend on gcc for build
         // [[fallthrough]]
-		// [[clang::fallthrough]]; // falls through only if s == this
-		default:
-			removeView(v);
-			return v;
-	}
+        // [[clang::fallthrough]]; // falls through only if s == this
+    default:
+        removeView(v);
+        return v;
+    }
 }
 
 /*!
 	Unsplits all the views except the last active one.
 */
-QList<CAView*> CAViewContainer::unsplitAll() {
-	QList<CAView*> list;
-	while(count() > 1)
-		list << unsplit();
+QList<CAView*> CAViewContainer::unsplitAll()
+{
+    QList<CAView*> list;
+    while (count() > 1)
+        list << unsplit();
 
-	return list;
+    return list;
 }
 
 /*!
 	Adds and registers the given view \a v to the splitter \a s or the top splitter if not specified.
 */
-void CAViewContainer::addView( CAView *v, QSplitter *s ) {
-	if (!s)
-		s = this;
-	_viewMap[v] = s;
+void CAViewContainer::addView(CAView* v, QSplitter* s)
+{
+    if (!s)
+        s = this;
+    _viewMap[v] = s;
 
-	s->addWidget( v );
+    s->addWidget(v);
 
-	setCurrentView( v );
+    setCurrentView(v);
 }
 
 /*!
 	Removes the given view from internal list and reselects the current view if the currentView() points to deleted view.
 */
-void CAViewContainer::removeView( CAView *v ) {
-	_viewMap.remove( v );
-	delete v;
+void CAViewContainer::removeView(CAView* v)
+{
+    _viewMap.remove(v);
+    delete v;
 
-	if ( v==currentView() )
-		setCurrentView( _viewMap.keys().last() );
+    if (v == currentView())
+        setCurrentView(_viewMap.keys().last());
 }
 
 /*!

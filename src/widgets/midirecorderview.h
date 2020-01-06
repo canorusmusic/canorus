@@ -8,8 +8,8 @@
 #ifndef MIDIRECORDERVIEW_H_
 #define MIDIRECORDERVIEW_H_
 
-#include <QTimer>
 #include <QDockWidget>
+#include <QTimer>
 
 #include "ui_midirecorder.h"
 
@@ -21,34 +21,34 @@ class QWidget;
 class CAMidiRecorder;
 
 class CAMidiRecorderView : public QDockWidget, private Ui::uiMidiRecorder {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	CAMidiRecorderView( CAMidiRecorder *recorder, QWidget *parent=nullptr );
-	virtual ~CAMidiRecorderView();
+    CAMidiRecorderView(CAMidiRecorder* recorder, QWidget* parent = nullptr);
+    virtual ~CAMidiRecorderView();
 
-	void setMidiRecorder( CAMidiRecorder *r ) { _midiRecorder = r; }
-	CAMidiRecorder *midiRecorder() { return _midiRecorder; }
+    void setMidiRecorder(CAMidiRecorder* r) { _midiRecorder = r; }
+    CAMidiRecorder* midiRecorder() { return _midiRecorder; }
 
-	enum CARecorderStatus {
-		Idle,
-		Pause,
-		Recording
-	};
+    enum CARecorderStatus {
+        Idle,
+        Pause,
+        Recording
+    };
 
 private slots:
-	void on_uiRecord_clicked(bool);
-	void on_uiPause_clicked(bool);
-	void on_uiStop_clicked(bool);
-	void onTimerTimeout();
+    void on_uiRecord_clicked(bool);
+    void on_uiPause_clicked(bool);
+    void on_uiStop_clicked(bool);
+    void onTimerTimeout();
 
 private:
-	void setupCustomUi();
+    void setupCustomUi();
 
-	QTimer   *_timer;
+    QTimer* _timer;
 
-	CAMidiRecorder *_midiRecorder;
-	CARecorderStatus _status;
+    CAMidiRecorder* _midiRecorder;
+    CARecorderStatus _status;
 };
 
 #endif /* MIDIRECORDERVIEW_H_ */

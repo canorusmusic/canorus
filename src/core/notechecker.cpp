@@ -10,14 +10,14 @@
 #include "core/notechecker.h"
 #include "score/notecheckererror.h"
 
+#include "score/chordnamecontext.h"
 #include "score/sheet.h"
 #include "score/staff.h"
-#include "score/chordnamecontext.h"
 
-#include "score/playablelength.h"
-#include "score/timesignature.h"
 #include "score/barline.h"
 #include "score/chordname.h"
+#include "score/playablelength.h"
+#include "score/timesignature.h"
 
 /*!
 	\class CANoteChecker
@@ -28,72 +28,74 @@
 	and similar.
 */
 
-CANoteChecker::CANoteChecker() {
+CANoteChecker::CANoteChecker()
+{
 }
 
-CANoteChecker::~CANoteChecker() {
+CANoteChecker::~CANoteChecker()
+{
 }
 
 /*!
 	Parse/decompress an existing archive
 */
-void CANoteChecker::checkSheet(CASheet *sheet) {
-	sheet->clearNoteCheckerErrors();
-	
-	// check for incomplete bars
-	QList<CAContext*> contexts = sheet->contextList();
-	for (int i=0; i<contexts.size(); i++) {
-		switch (contexts[i]->contextType()) {
-		case CAContext::Staff: {
-			CAStaff *staff = static_cast<CAStaff*>(contexts[i]);
-			QList<CAMusElement*> timeSigs = staff->timeSignatureRefs();
-			QList<CAMusElement*> barlines = staff->barlineRefs();
+void CANoteChecker::checkSheet(CASheet* sheet)
+{
+    sheet->clearNoteCheckerErrors();
 
-			if (!timeSigs.size()) {
-				continue;
-			}
+    // check for incomplete bars
+    QList<CAContext*> contexts = sheet->contextList();
+    for (int i = 0; i < contexts.size(); i++) {
+        switch (contexts[i]->contextType()) {
+        case CAContext::Staff: {
+            CAStaff* staff = static_cast<CAStaff*>(contexts[i]);
+            QList<CAMusElement*> timeSigs = staff->timeSignatureRefs();
+            QList<CAMusElement*> barlines = staff->barlineRefs();
 
-			int lastTimeSigIdx = 0;
-			int lastTimeSigRequiredDuration = static_cast<CATimeSignature*>(timeSigs[lastTimeSigIdx])->barDuration();
-			int lastBarlineTime = -1;
-			for (int j=0; j<barlines.size(); j++) {
-				if (static_cast<CABarline*>(barlines[j])->barlineType()==CABarline::Dotted) {
-					continue;
-				}
+            if (!timeSigs.size()) {
+                continue;
+            }
 
-				if (((lastTimeSigIdx+1)<timeSigs.size()) && barlines[j]->timeStart()>timeSigs[lastTimeSigIdx]->timeStart() ) {
-					// go to next time sig
-					lastTimeSigIdx++;
-					lastTimeSigRequiredDuration = static_cast<CATimeSignature*>(timeSigs[lastTimeSigIdx])->barDuration();
-				}
+            int lastTimeSigIdx = 0;
+            int lastTimeSigRequiredDuration = static_cast<CATimeSignature*>(timeSigs[lastTimeSigIdx])->barDuration();
+            int lastBarlineTime = -1;
+            for (int j = 0; j < barlines.size(); j++) {
+                if (static_cast<CABarline*>(barlines[j])->barlineType() == CABarline::Dotted) {
+                    continue;
+                }
 
-				// check the bar duration.
-				// If first bar is partial, the length should be shorter or equal to time sig.
-				if ((lastBarlineTime == -1 && barlines[j]->timeStart()>lastTimeSigRequiredDuration) ||
-					(lastBarlineTime != -1 && barlines[j]->timeStart()!=lastBarlineTime+lastTimeSigRequiredDuration)) {
-					CANoteCheckerError *nce = new CANoteCheckerError(barlines[j], QObject::tr("Bar duration incorrect."));
-					sheet->addNoteCheckerError(nce);
-				}
+                if (((lastTimeSigIdx + 1) < timeSigs.size()) && barlines[j]->timeStart() > timeSigs[lastTimeSigIdx]->timeStart()) {
+                    // go to next time sig
+                    lastTimeSigIdx++;
+                    lastTimeSigRequiredDuration = static_cast<CATimeSignature*>(timeSigs[lastTimeSigIdx])->barDuration();
+                }
 
-				lastBarlineTime = barlines[j]->timeStart();
-			}
-			break;
-		}
-		case CAContext::ChordNameContext: {
-			CAChordNameContext *cnc = static_cast<CAChordNameContext*>(contexts[i]);
-			for (int j=0; j<cnc->chordNameList().size(); j++) {
-				CAChordName *cn = cnc->chordNameList()[j];
-				if (cn->diatonicPitch().noteName()==CADiatonicPitch::Undefined && !cn->qualityModifier().isEmpty()) {
-					CANoteCheckerError *nce = new CANoteCheckerError(cn, QObject::tr("Invalid chord name syntax. Please use chord pitch and optionally ':' and quality modifier. e.g. cis:m"));
-					sheet->addNoteCheckerError(nce);
-				}
-			}
-			break;
-		}
-		case CAContext::LyricsContext:
-		case CAContext::FunctionMarkContext:
-		case CAContext::FiguredBassContext:
-			break;
-		}
-	}
+                // check the bar duration.
+                // If first bar is partial, the length should be shorter or equal to time sig.
+                if ((lastBarlineTime == -1 && barlines[j]->timeStart() > lastTimeSigRequiredDuration) || (lastBarlineTime != -1 && barlines[j]->timeStart() != lastBarlineTime + lastTimeSigRequiredDuration)) {
+                    CANoteCheckerError* nce = new CANoteCheckerError(barlines[j], QObject::tr("Bar duration incorrect."));
+                    sheet->addNoteCheckerError(nce);
+                }
+
+                lastBarlineTime = barlines[j]->timeStart();
+            }
+            break;
+        }
+        case CAContext::ChordNameContext: {
+            CAChordNameContext* cnc = static_cast<CAChordNameContext*>(contexts[i]);
+            for (int j = 0; j < cnc->chordNameList().size(); j++) {
+                CAChordName* cn = cnc->chordNameList()[j];
+                if (cn->diatonicPitch().noteName() == CADiatonicPitch::Undefined && !cn->qualityModifier().isEmpty()) {
+                    CANoteCheckerError* nce = new CANoteCheckerError(cn, QObject::tr("Invalid chord name syntax. Please use chord pitch and optionally ':' and quality modifier. e.g. cis:m"));
+                    sheet->addNoteCheckerError(nce);
+                }
+            }
+            break;
+        }
+        case CAContext::LyricsContext:
+        case CAContext::FunctionMarkContext:
+        case CAContext::FiguredBassContext:
+            break;
+        }
+    }
 }

@@ -6,8 +6,8 @@
 */
 
 #include "score/keysignature.h"
-#include "score/staff.h"
 #include "score/mark.h"
+#include "score/staff.h"
 
 /*!
 	\class CAKeySignature
@@ -29,13 +29,15 @@
 		- -1 - F-Major
 		- +7 - Cis-Major etc.
 */
-CAKeySignature::CAKeySignature( CADiatonicKey k, CAStaff *staff, int timeStart )
- : CAMusElement(staff, timeStart) {
- 	setMusElementType( CAMusElement::KeySignature );
- 	for (int i=0; i<7; i++) _accidentals << 0;
+CAKeySignature::CAKeySignature(CADiatonicKey k, CAStaff* staff, int timeStart)
+    : CAMusElement(staff, timeStart)
+{
+    setMusElementType(CAMusElement::KeySignature);
+    for (int i = 0; i < 7; i++)
+        _accidentals << 0;
 
- 	setKeySignatureType( MajorMinor );
- 	setDiatonicKey(k);
+    setKeySignatureType(MajorMinor);
+    setDiatonicKey(k);
 }
 
 /*!
@@ -43,13 +45,15 @@ CAKeySignature::CAKeySignature( CADiatonicKey k, CAStaff *staff, int timeStart )
 
 	\todo Modus on different pitches
 */
-CAKeySignature::CAKeySignature(CAModus m, CAStaff *staff, int timeStart)
- : CAMusElement(staff, timeStart) {
- 	setMusElementType( CAMusElement::KeySignature );
- 	for (int i=0; i<7; i++) _accidentals << 0;
+CAKeySignature::CAKeySignature(CAModus m, CAStaff* staff, int timeStart)
+    : CAMusElement(staff, timeStart)
+{
+    setMusElementType(CAMusElement::KeySignature);
+    for (int i = 0; i < 7; i++)
+        _accidentals << 0;
 
- 	setKeySignatureType( Modus );
- 	setModus(m);
+    setKeySignatureType(Modus);
+    setModus(m);
 }
 
 /*!
@@ -82,120 +86,150 @@ CAKeySignature::CAKeySignature(CAModus m, CAStaff *staff, int timeStart)
 /*!
 	\todo Implement non major-minor types
 */
-void CAKeySignature::updateAccidentals() {
-	if (keySignatureType() == MajorMinor) {
-		for (int i=0; i<7; i++)	// clean up the _accidentals array
-			_accidentals[i] = 0;
+void CAKeySignature::updateAccidentals()
+{
+    if (keySignatureType() == MajorMinor) {
+        for (int i = 0; i < 7; i++) // clean up the _accidentals array
+            _accidentals[i] = 0;
 
-		// generate the _accidentals array according to the given number of the accidentals
-		// eg. _accidentals[3] = -1; means flat on the 3rd note (counting from 0), this means this key signature has Fes instead of F.
-		int idx = 3;
-		for (int i=0; i<_diatonicKey.numberOfAccs(); i++) { // key signatures with sharps
-			_accidentals[idx] = 1;
-			idx = (idx+4)%7; // the circle of fifths in positive direction - add a Fifth
-		}
+        // generate the _accidentals array according to the given number of the accidentals
+        // eg. _accidentals[3] = -1; means flat on the 3rd note (counting from 0), this means this key signature has Fes instead of F.
+        int idx = 3;
+        for (int i = 0; i < _diatonicKey.numberOfAccs(); i++) { // key signatures with sharps
+            _accidentals[idx] = 1;
+            idx = (idx + 4) % 7; // the circle of fifths in positive direction - add a Fifth
+        }
 
-		idx = 6;
-		for (int i=0; i>_diatonicKey.numberOfAccs(); i--) { // key signatures with flats
-			_accidentals[idx] = -1;
-			idx = (idx+3)%7; // the circle of fifths in negative direction - add a Fourth
-		}
-	}
+        idx = 6;
+        for (int i = 0; i > _diatonicKey.numberOfAccs(); i--) { // key signatures with flats
+            _accidentals[idx] = -1;
+            idx = (idx + 3) % 7; // the circle of fifths in negative direction - add a Fourth
+        }
+    }
 }
 
-CAKeySignature::~CAKeySignature() {
+CAKeySignature::~CAKeySignature()
+{
 }
 
-CAKeySignature* CAKeySignature::clone(CAContext* context) {
-	CAKeySignature *k = nullptr;
+CAKeySignature* CAKeySignature::clone(CAContext* context)
+{
+    CAKeySignature* k = nullptr;
 
-	switch (keySignatureType()) {
-	case MajorMinor:
-		k = new CAKeySignature( diatonicKey(), static_cast<CAStaff*>(context), timeStart());
-		break;
-	case Modus:
-	case Custom:
-		break;
-	}
+    switch (keySignatureType()) {
+    case MajorMinor:
+        k = new CAKeySignature(diatonicKey(), static_cast<CAStaff*>(context), timeStart());
+        break;
+    case Modus:
+    case Custom:
+        break;
+    }
 
-	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(k));
-		k->addMark( m );
-	}
+    for (int i = 0; i < markList().size(); i++) {
+        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(k));
+        k->addMark(m);
+    }
 
-	return k;
+    return k;
 }
 
-int CAKeySignature::compare(CAMusElement *elt) {
-	if (elt->musElementType()!=CAMusElement::KeySignature)
-		return -1;
+int CAKeySignature::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::KeySignature)
+        return -1;
 
-	int diffs=0;
-	if ( keySignatureType()!=static_cast<CAKeySignature*>(elt)->keySignatureType()) diffs++;
-	else {
-		if ( keySignatureType()==MajorMinor )
-			if ( diatonicKey()!=static_cast<CAKeySignature*>(elt)->diatonicKey() )
-				diffs++;
-	}
+    int diffs = 0;
+    if (keySignatureType() != static_cast<CAKeySignature*>(elt)->keySignatureType())
+        diffs++;
+    else {
+        if (keySignatureType() == MajorMinor)
+            if (diatonicKey() != static_cast<CAKeySignature*>(elt)->diatonicKey())
+                diffs++;
+    }
 
-	return diffs;
+    return diffs;
 }
 
-CAKeySignature::CAKeySignatureType CAKeySignature::keySignatureTypeFromString(const QString type) {
-	if (type=="major-minor") {
-		return MajorMinor;
-	} else
-	if (type=="modus") {
-		return Modus;
-	} else
-	if (type=="custom") {
-		return Custom;
-	} else
-		return Custom;
+CAKeySignature::CAKeySignatureType CAKeySignature::keySignatureTypeFromString(const QString type)
+{
+    if (type == "major-minor") {
+        return MajorMinor;
+    } else if (type == "modus") {
+        return Modus;
+    } else if (type == "custom") {
+        return Custom;
+    } else
+        return Custom;
 }
 
-const QString CAKeySignature::keySignatureTypeToString(const CAKeySignatureType type) {
-	switch (type) {
-	case MajorMinor:
-		return "major-minor";
-	case Modus:
-		return "modus";
-	case Custom:
-		return "custom";
-	}
-	return "";
-}
-
-const QString CAKeySignature::modusToString(CAModus modus) {
-	switch (modus) {
-		case Ionian: return "ionian";
-		case Dorian: return "dorian";
-		case Phrygian: return "phrygian";
-		case Lydian: return "lydian";
-		case Mixolydian: return "mixolydian";
-		case Aeolian: return "aeolian";
-		case Locrian: return "locrian";
-		case Hypodorian: return "hypodorian";
-		case Hypolydian: return "hypolydian";
-		case Hypomixolydian: return "hypomixolydian";
-		case Hypophrygian: return "hypophrygian";
-	}
+const QString CAKeySignature::keySignatureTypeToString(const CAKeySignatureType type)
+{
+    switch (type) {
+    case MajorMinor:
+        return "major-minor";
+    case Modus:
+        return "modus";
+    case Custom:
+        return "custom";
+    }
     return "";
 }
 
-CAKeySignature::CAModus CAKeySignature::modusFromString(const QString modus) {
-	if (modus=="ionian") return Ionian; else
-	if (modus=="dorian") return Dorian; else
-	if (modus=="phrygian") return Phrygian; else
-	if (modus=="lydian") return Lydian; else
-	if (modus=="mixolydian") return Mixolydian; else
-	if (modus=="aeolian") return Aeolian; else
-	if (modus=="locrian") return Locrian; else
-	if (modus=="hypodorian") return Hypodorian; else
-	if (modus=="hypolydian") return Hypolydian; else
-	if (modus=="hypomixolydian") return Hypomixolydian; else
-	if (modus=="hypophrygian") return Hypophrygian;
-	else return Ionian;
+const QString CAKeySignature::modusToString(CAModus modus)
+{
+    switch (modus) {
+    case Ionian:
+        return "ionian";
+    case Dorian:
+        return "dorian";
+    case Phrygian:
+        return "phrygian";
+    case Lydian:
+        return "lydian";
+    case Mixolydian:
+        return "mixolydian";
+    case Aeolian:
+        return "aeolian";
+    case Locrian:
+        return "locrian";
+    case Hypodorian:
+        return "hypodorian";
+    case Hypolydian:
+        return "hypolydian";
+    case Hypomixolydian:
+        return "hypomixolydian";
+    case Hypophrygian:
+        return "hypophrygian";
+    }
+    return "";
+}
+
+CAKeySignature::CAModus CAKeySignature::modusFromString(const QString modus)
+{
+    if (modus == "ionian")
+        return Ionian;
+    else if (modus == "dorian")
+        return Dorian;
+    else if (modus == "phrygian")
+        return Phrygian;
+    else if (modus == "lydian")
+        return Lydian;
+    else if (modus == "mixolydian")
+        return Mixolydian;
+    else if (modus == "aeolian")
+        return Aeolian;
+    else if (modus == "locrian")
+        return Locrian;
+    else if (modus == "hypodorian")
+        return Hypodorian;
+    else if (modus == "hypolydian")
+        return Hypolydian;
+    else if (modus == "hypomixolydian")
+        return Hypomixolydian;
+    else if (modus == "hypophrygian")
+        return Hypophrygian;
+    else
+        return Ionian;
 }
 
 /*!

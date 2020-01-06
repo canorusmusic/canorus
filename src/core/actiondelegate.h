@@ -8,8 +8,8 @@
 #ifndef ACTIONDELEGATE_H_
 #define ACTIONDELEGATE_H_
 
-#include <QString>
 #include <QAction>
+#include <QString>
 
 // Helper methods to reduce code ballast in mainwin class
 // Keyboard (Midi) Shortcuts that can be changed dynamically
@@ -17,23 +17,20 @@
 class CAMainWin;
 class CASingleAction;
 
-class CAActionDelegate
-{
+class CAActionDelegate {
 public:
-    CAActionDelegate(CAMainWin *mainWin);
+    CAActionDelegate(CAMainWin* mainWin);
 
-    void addWinActions(QWidget &widget);
+    void addWinActions(QWidget& widget);
     void removeMainWinActions();
     void updateMainWinActions();
 
 protected:
-    void addSingleAction(const QString &oCommandName, const QString &oDescription, const QAction &oAction);
-    void updateSingleAction(CASingleAction &oSource, QAction &oAction);
+    void addSingleAction(const QString& oCommandName, const QString& oDescription, const QAction& oAction);
+    void updateSingleAction(CASingleAction& oSource, QAction& oAction);
 
 private:
-    CAMainWin *_mainWin;
+    CAMainWin* _mainWin;
 };
 
 #endif // ACTIONDELEGATE_H_
-
-

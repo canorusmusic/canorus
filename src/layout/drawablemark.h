@@ -18,25 +18,25 @@ class CADrawableNote;
 
 class CADrawableMark : public CADrawableMusElement {
 public:
-	CADrawableMark( CAMark *mark, CADrawableContext *drawableContext, double x, double y);
-	virtual ~CADrawableMark();
+    CADrawableMark(CAMark* mark, CADrawableContext* drawableContext, double x, double y);
+    virtual ~CADrawableMark();
 
-	void draw( QPainter *p, CADrawSettings s );
-	CADrawableMark *clone( CADrawableContext* newContext = nullptr );
-	inline CAMark *mark() { return static_cast<CAMark*>(musElement()); }
+    void draw(QPainter* p, CADrawSettings s);
+    CADrawableMark* clone(CADrawableContext* newContext = nullptr);
+    inline CAMark* mark() { return static_cast<CAMark*>(musElement()); }
 
-	inline void setRehersalMarkNumber( int n ) { _rehersalMarkNumber = n; }
-	inline int rehersalMarkNumber() { return _rehersalMarkNumber; }
+    inline void setRehersalMarkNumber(int n) { _rehersalMarkNumber = n; }
+    inline int rehersalMarkNumber() { return _rehersalMarkNumber; }
 
-	static QString fingerListToString( const QList<CAFingering::CAFingerNumber> list );
+    static QString fingerListToString(const QList<CAFingering::CAFingerNumber> list);
 
 private:
-	static const double DEFAULT_TEXT_SIZE;
-	static const double DEFAULT_PIXMAP_SIZE;
-	CANote         *_tempoNote;
-	CADrawableNote *_tempoDNote;
-	QPixmap        *_pixmap;
-	int             _rehersalMarkNumber;
+    static const double DEFAULT_TEXT_SIZE;
+    static const double DEFAULT_PIXMAP_SIZE;
+    CANote* _tempoNote;
+    CADrawableNote* _tempoDNote;
+    QPixmap* _pixmap;
+    int _rehersalMarkNumber;
 };
 
 #endif /* DRAWABLEMARK_H_ */

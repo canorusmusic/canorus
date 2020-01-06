@@ -5,9 +5,9 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-#include "score/muselement.h"
 #include "score/notecheckererror.h"
 #include "context.h"
+#include "score/muselement.h"
 #include "sheet.h"
 
 /*!
@@ -20,16 +20,19 @@
 	\sa CANoteChecker, CADrawableNoteCheckerError
 */
 
-CANoteCheckerError::CANoteCheckerError(CAMusElement *targetElement, QString message)
- : _targetElement(targetElement), _message(message) {
-	targetElement->addNoteCheckerError(this);
+CANoteCheckerError::CANoteCheckerError(CAMusElement* targetElement, QString message)
+    : _targetElement(targetElement)
+    , _message(message)
+{
+    targetElement->addNoteCheckerError(this);
 }
 
-CANoteCheckerError::~CANoteCheckerError() {
-	if (_targetElement) {
-		_targetElement->removeNoteCheckerError(this);
-		if (_targetElement->context() && _targetElement->context()->sheet()) {
-			_targetElement->context()->sheet()->noteCheckerErrorList().removeAll(this);
-		}
-	}
+CANoteCheckerError::~CANoteCheckerError()
+{
+    if (_targetElement) {
+        _targetElement->removeNoteCheckerError(this);
+        if (_targetElement->context() && _targetElement->context()->sheet()) {
+            _targetElement->context()->sheet()->noteCheckerErrorList().removeAll(this);
+        }
+    }
 }

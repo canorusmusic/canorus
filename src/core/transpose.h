@@ -11,8 +11,8 @@
 #include <QList>
 #include <QSet>
 
-#include "score/interval.h"
 #include "score/diatonickey.h"
+#include "score/interval.h"
 
 class CAMusElement;
 class CASheet;
@@ -20,25 +20,25 @@ class CAContext;
 
 class CATranspose {
 public:
-	CATranspose();
-	CATranspose( CASheet *sheet );
+    CATranspose();
+    CATranspose(CASheet* sheet);
 #ifndef SWIG
-	CATranspose( QList<CAContext*> contexts );
+    CATranspose(QList<CAContext*> contexts);
 #endif
-	CATranspose( QList<CAMusElement*> selection );
-	~CATranspose();
+    CATranspose(QList<CAMusElement*> selection);
+    ~CATranspose();
 
-	void transposeBySemitones( int semitones );
-	void transposeByInterval( CAInterval );
-	void transposeByKeySig( CADiatonicKey from, CADiatonicKey to, int direction );
-	void reinterpretAccidentals( int type );
+    void transposeBySemitones(int semitones);
+    void transposeByInterval(CAInterval);
+    void transposeByKeySig(CADiatonicKey from, CADiatonicKey to, int direction);
+    void reinterpretAccidentals(int type);
 
-	void addSheet( CASheet *s );
-	void addContext( CAContext *context );
-	void addMusElement( CAMusElement *musElt) { _elements << musElt; }
+    void addSheet(CASheet* s);
+    void addContext(CAContext* context);
+    void addMusElement(CAMusElement* musElt) { _elements << musElt; }
 
 private:
-	QSet<CAMusElement*> _elements;
+    QSet<CAMusElement*> _elements;
 };
 
 #endif /* TRANSPOSE_H_ */

@@ -8,8 +8,8 @@
 #ifndef SYLLABLE_H_
 #define SYLLABLE_H_
 
-#include "score/muselement.h"
 #include "score/lyricscontext.h"
+#include "score/muselement.h"
 
 #include <QString>
 
@@ -18,28 +18,28 @@ class CAContext;
 
 class CASyllable : public CAMusElement {
 public:
-	CASyllable(QString text, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice=nullptr);
-	~CASyllable();
-	void clear();
+    CASyllable(QString text, bool hyphen, bool melisma, CALyricsContext* context, int timeStart, int timeLength, CAVoice* voice = nullptr);
+    ~CASyllable();
+    void clear();
 
-	inline bool hyphenStart() { return _hyphenStart; }
-	inline void setHyphenStart(bool h) { _hyphenStart = h; }
-	inline bool melismaStart() { return _melismaStart; }
-	inline void setMelismaStart(bool m) { _melismaStart = m; }
-	inline QString text() { return _text; }
-	inline void setText(QString text) { _text = text; }
-	inline CAVoice *associatedVoice() { return _associatedVoice; }
-	inline void setAssociatedVoice(CAVoice* v) { _associatedVoice = v; }
+    inline bool hyphenStart() { return _hyphenStart; }
+    inline void setHyphenStart(bool h) { _hyphenStart = h; }
+    inline bool melismaStart() { return _melismaStart; }
+    inline void setMelismaStart(bool m) { _melismaStart = m; }
+    inline QString text() { return _text; }
+    inline void setText(QString text) { _text = text; }
+    inline CAVoice* associatedVoice() { return _associatedVoice; }
+    inline void setAssociatedVoice(CAVoice* v) { _associatedVoice = v; }
 
-	inline CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(_context); }
+    inline CALyricsContext* lyricsContext() { return static_cast<CALyricsContext*>(_context); }
 
-	CASyllable* clone(CAContext* context);
-	int compare(CAMusElement*);
+    CASyllable* clone(CAContext* context);
+    int compare(CAMusElement*);
 
 private:
-	bool _hyphenStart, _melismaStart;
-	QString _text;
-	CAVoice *_associatedVoice; // per-syllable associated voice, 0 if preferred (parent's voice)
+    bool _hyphenStart, _melismaStart;
+    QString _text;
+    CAVoice* _associatedVoice; // per-syllable associated voice, 0 if preferred (parent's voice)
 };
 
 #endif /* SYLLABLE_H_ */

@@ -17,24 +17,22 @@ class CADummy;
 
 // Dummy control is an example class for implementing UI controls
 // Such controls are created via the Canorus mainwindow (currently)
-class CADummyCtl : public QObject
-{
-	Q_OBJECT
+class CADummyCtl : public QObject {
+    Q_OBJECT
 
 public:
-	CADummyCtl( CAMainWin *poMainWin );
-	~CADummyCtl();
+    CADummyCtl(CAMainWin* poMainWin);
+    ~CADummyCtl();
 
 public slots:
-	void on_uiDummy_triggered();
- 
+    void on_uiDummy_triggered();
+
 protected slots:
-	void myToggle( int iOn );
-	
+    void myToggle(int iOn);
+
 protected:
-	CAMainWin    *_poMainWin;
-	CADummy      *_poDummy;
+    CAMainWin* _poMainWin;
+    CADummy* _poDummy;
 };
 
 #endif // _DUMMY_CTL_H
-

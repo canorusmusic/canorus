@@ -9,38 +9,43 @@
 #define PLAYABLE_H_
 
 #include "score/muselement.h"
-#include "score/staff.h"
 #include "score/playablelength.h"
+#include "score/staff.h"
 #include "score/tuplet.h"
 
 class CAVoice;
 
 class CAPlayable : public CAMusElement {
 public:
-	CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength=-1 );
-	virtual ~CAPlayable();
+    CAPlayable(CAPlayableLength length, CAVoice* voice, int timeStart, int timeLength = -1);
+    virtual ~CAPlayable();
 
-	inline CAPlayableLength& playableLength() { return _playableLength; }
-	inline void setPlayableLength( CAPlayableLength& l ) { _playableLength = l; }
-	virtual CAPlayable* clone(CAContext* context) { CAPlayable* pl = clone(); pl->setContext(context); return pl; }
-	virtual CAPlayable* clone(CAVoice* voice=nullptr)=0;
+    inline CAPlayableLength& playableLength() { return _playableLength; }
+    inline void setPlayableLength(CAPlayableLength& l) { _playableLength = l; }
+    virtual CAPlayable* clone(CAContext* context)
+    {
+        CAPlayable* pl = clone();
+        pl->setContext(context);
+        return pl;
+    }
+    virtual CAPlayable* clone(CAVoice* voice = nullptr) = 0;
 
-	CATuplet *tuplet() { return _tuplet; }
-	void setTuplet( CATuplet *t ) { _tuplet = t; }
+    CATuplet* tuplet() { return _tuplet; }
+    void setTuplet(CATuplet* t) { _tuplet = t; }
 
-	inline CAVoice *voice() { return _voice; }
-	void setVoice(CAVoice *v);
-	inline CAStaff* staff() { return static_cast<CAStaff*>(_context); }
+    inline CAVoice* voice() { return _voice; }
+    void setVoice(CAVoice* v);
+    inline CAStaff* staff() { return static_cast<CAStaff*>(_context); }
 
-	inline bool isFirstInTuplet() { return ( _tuplet && _tuplet->firstNote()==this); }
-	inline bool isLastInTuplet() { return ( _tuplet && _tuplet->lastNote()==this); }
+    inline bool isFirstInTuplet() { return (_tuplet && _tuplet->firstNote() == this); }
+    inline bool isLastInTuplet() { return (_tuplet && _tuplet->lastNote() == this); }
 
-	void resetTime();
-	void calculateTimeLength();
+    void resetTime();
+    void calculateTimeLength();
 
 protected:
-	CAPlayableLength _playableLength;
-	CAVoice *_voice;
-	CATuplet *_tuplet;
+    CAPlayableLength _playableLength;
+    CAVoice* _voice;
+    CATuplet* _tuplet;
 };
 #endif /* PLAYABLE_H_ */

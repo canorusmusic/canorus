@@ -15,32 +15,32 @@
 class QUndoStack;
 
 class CAUndoToolButton : public CAToolButton {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	enum CAUndoToolButtonType {
-		Undo,
-		Redo
-	};
-	
-	CAUndoToolButton( QIcon icon, CAUndoToolButtonType t, QWidget *parent );
-	~CAUndoToolButton();
-	void setDefaultAction( QAction* );
-	
-	inline CAUndoToolButtonType undoType() { return _type; }
-	inline void setUndoType( CAUndoToolButtonType type ) { _type = type; }
-	void showButtons();
-	
+    enum CAUndoToolButtonType {
+        Undo,
+        Redo
+    };
+
+    CAUndoToolButton(QIcon icon, CAUndoToolButtonType t, QWidget* parent);
+    ~CAUndoToolButton();
+    void setDefaultAction(QAction*);
+
+    inline CAUndoToolButtonType undoType() { return _type; }
+    inline void setUndoType(CAUndoToolButtonType type) { _type = type; }
+    void showButtons();
+
 public slots:
-	void onListWidgetItemClicked( QListWidgetItem* );
-	void onListWidgetItemEntered( QListWidgetItem* );
-	
+    void onListWidgetItemClicked(QListWidgetItem*);
+    void onListWidgetItemEntered(QListWidgetItem*);
+
 protected:
-	void wheelEvent(QWheelEvent*);
-	
+    void wheelEvent(QWheelEvent*);
+
 private:
-	QListWidget         *_listWidget;
-	CAUndoToolButtonType _type;
-	QIcon                _icon;
+    QListWidget* _listWidget;
+    CAUndoToolButtonType _type;
+    QIcon _icon;
 };
 
 #endif /* UNDOTOOLBUTTON_H_ */

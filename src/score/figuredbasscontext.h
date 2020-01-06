@@ -13,26 +13,26 @@
 
 class CAFiguredBassMark;
 
-class CAFiguredBassContext: public CAContext {
+class CAFiguredBassContext : public CAContext {
 public:
-	CAFiguredBassContext( QString name, CASheet *sheet );
-	~CAFiguredBassContext();
+    CAFiguredBassContext(QString name, CASheet* sheet);
+    ~CAFiguredBassContext();
 
-	CAContext* clone( CASheet* );
-	void clear();
-	CAMusElement *next(CAMusElement *elt);
-	CAMusElement *previous(CAMusElement *elt);
-	bool remove( CAMusElement *elt );
+    CAContext* clone(CASheet*);
+    void clear();
+    CAMusElement* next(CAMusElement* elt);
+    CAMusElement* previous(CAMusElement* elt);
+    bool remove(CAMusElement* elt);
 
-	QList<CAFiguredBassMark*>& figuredBassMarkList() { return _figuredBassMarkList; }
-	CAFiguredBassMark *figuredBassMarkAtTimeStart( int timeStart );
+    QList<CAFiguredBassMark*>& figuredBassMarkList() { return _figuredBassMarkList; }
+    CAFiguredBassMark* figuredBassMarkAtTimeStart(int timeStart);
 
-	void repositFiguredBassMarks();
-	void addFiguredBassMark( CAFiguredBassMark*, bool replace=true );
-	void addEmptyFiguredBassMark( int timeStart, int timeLength );
+    void repositFiguredBassMarks();
+    void addFiguredBassMark(CAFiguredBassMark*, bool replace = true);
+    void addEmptyFiguredBassMark(int timeStart, int timeLength);
 
 private:
-	QList<CAFiguredBassMark*> _figuredBassMarkList;
+    QList<CAFiguredBassMark*> _figuredBassMarkList;
 };
 
 #endif /* FIGUREDBASSCONTEXT_H_ */

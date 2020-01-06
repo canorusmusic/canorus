@@ -7,14 +7,14 @@
 
 #include "core/autorecovery.h"
 
-#include <QSet>
-#include <QTimer>
-#include <QFile>
-#include <QMessageBox>
-#include "export/canorusmlexport.h"
-#include "import/canorusmlimport.h"
 #include "canorus.h"
 #include "core/settings.h"
+#include "export/canorusmlexport.h"
+#include "import/canorusmlimport.h"
+#include <QFile>
+#include <QMessageBox>
+#include <QSet>
+#include <QTimer>
 
 /*!
 	\class CAAutoRecovery
@@ -46,108 +46,115 @@
 	Initializes autosave. Reads the autosave timer settings from the CASettings class.
 */
 CAAutoRecovery::CAAutoRecovery()
- : _saveAfterRecoveryTimer(nullptr) {
-	_autoRecoveryTimer = new QTimer(this);
-	_autoRecoveryTimer->setSingleShot( false );
-	connect( _autoRecoveryTimer, SIGNAL(timeout()), this, SLOT(saveRecovery()) );
-	updateTimer(); // reads interval from settings and starts the timer
+    : _saveAfterRecoveryTimer(nullptr)
+{
+    _autoRecoveryTimer = new QTimer(this);
+    _autoRecoveryTimer->setSingleShot(false);
+    connect(_autoRecoveryTimer, SIGNAL(timeout()), this, SLOT(saveRecovery()));
+    updateTimer(); // reads interval from settings and starts the timer
 }
 
-CAAutoRecovery::~CAAutoRecovery() {
-	delete _autoRecoveryTimer;
+CAAutoRecovery::~CAAutoRecovery()
+{
+    delete _autoRecoveryTimer;
 }
 
 /*!
 	Sets auto recovery interval to \a msec miliseconds.
 */
-void CAAutoRecovery::updateTimer() {
-	_autoRecoveryTimer->stop();
-	_autoRecoveryTimer->setInterval( CACanorus::settings()->autoRecoveryInterval()*60000 );
-	if ( CACanorus::settings()->autoRecoveryInterval() )
-		_autoRecoveryTimer->start();
+void CAAutoRecovery::updateTimer()
+{
+    _autoRecoveryTimer->stop();
+    _autoRecoveryTimer->setInterval(CACanorus::settings()->autoRecoveryInterval() * 60000);
+    if (CACanorus::settings()->autoRecoveryInterval())
+        _autoRecoveryTimer->start();
 }
 
 /*!
 	Saves the currently opened documents into settings folder named recovery0, recovery1 etc.
 */
-void CAAutoRecovery::saveRecovery() {
-	cleanupRecovery();
+void CAAutoRecovery::saveRecovery()
+{
+    cleanupRecovery();
 
-	QSet<CADocument*> documents;
-	for (int i=0; i<CACanorus::mainWinList().size(); i++)
-		documents << CACanorus::mainWinList()[i]->document();
+    QSet<CADocument*> documents;
+    for (int i = 0; i < CACanorus::mainWinList().size(); i++)
+        documents << CACanorus::mainWinList()[i]->document();
 
-	int c=0;
-	for (QSet<CADocument*>::const_iterator i=documents.constBegin(); i!=documents.constEnd(); i++, c++) {
-		CACanorusMLExport save;
-		save.setStreamToFile( CASettings::defaultSettingsPath()+"/recovery"+QString::number(c) );
-		save.exportDocument( *i );
-		save.wait();
-	}
+    int c = 0;
+    for (QSet<CADocument*>::const_iterator i = documents.constBegin(); i != documents.constEnd(); i++, c++) {
+        CACanorusMLExport save;
+        save.setStreamToFile(CASettings::defaultSettingsPath() + "/recovery" + QString::number(c));
+        save.exportDocument(*i);
+        save.wait();
+    }
 }
 
 /*!
 	Deletes recovery files.
 	This method is usually called when successfully quiting Canorus.
 */
-void CAAutoRecovery::cleanupRecovery() {
-	for ( int i=0; QFile::exists(CASettings::defaultSettingsPath()+"/recovery"+QString::number(i)); i++ ) {
-		QString fileName = CASettings::defaultSettingsPath()+"/recovery"+QString::number(i);
-		QFile::remove(fileName);
-		if(QDir(fileName+" files").exists()) {
-			foreach(QString entry, QDir(fileName+" files").entryList(QDir::Files)) {
-				QFile::remove(fileName+" files/"+entry);
-			}
-			QDir().rmdir(fileName+" files");
-		}
-	}
+void CAAutoRecovery::cleanupRecovery()
+{
+    for (int i = 0; QFile::exists(CASettings::defaultSettingsPath() + "/recovery" + QString::number(i)); i++) {
+        QString fileName = CASettings::defaultSettingsPath() + "/recovery" + QString::number(i);
+        QFile::remove(fileName);
+        if (QDir(fileName + " files").exists()) {
+            foreach (QString entry, QDir(fileName + " files").entryList(QDir::Files)) {
+                QFile::remove(fileName + " files/" + entry);
+            }
+            QDir().rmdir(fileName + " files");
+        }
+    }
 }
 
 /*!
 	Searches for any not-cleaned up recovery files and opens them.
 	Also shows the recovery message.
 */
-void CAAutoRecovery::openRecovery() {
-	QString documents;
-	for ( int i=0; QFile::exists(CASettings::defaultSettingsPath()+"/recovery"+QString::number(i)); i++ ) {
-		CACanorusMLImport open;
-		open.setStreamFromFile( CASettings::defaultSettingsPath()+"/recovery"+QString::number(i) );
-		open.importDocument();
-		open.wait(_recoveryTimeout);
-		if ( open.importedDocument() ) {
-			open.importedDocument()->setModified(true); // warn that the file is unsaved, if closing
-			open.importedDocument()->setFileName("");
+void CAAutoRecovery::openRecovery()
+{
+    QString documents;
+    for (int i = 0; QFile::exists(CASettings::defaultSettingsPath() + "/recovery" + QString::number(i)); i++) {
+        CACanorusMLImport open;
+        open.setStreamFromFile(CASettings::defaultSettingsPath() + "/recovery" + QString::number(i));
+        open.importDocument();
+        open.wait(_recoveryTimeout);
+        if (open.importedDocument()) {
+            open.importedDocument()->setModified(true); // warn that the file is unsaved, if closing
+            open.importedDocument()->setFileName("");
 
             // ToDo: Only one place of mainwin creation / initialization
-			CAMainWin *mainWin = new CAMainWin();
+            CAMainWin* mainWin = new CAMainWin();
 
             // Init dialogs etc.
             CACanorus::initCommonGUI(mainWin->uiSaveDialog,
-                                     mainWin->uiOpenDialog,
-                                     mainWin->uiExportDialog,
-                                     mainWin->uiImportDialog);
+                mainWin->uiOpenDialog,
+                mainWin->uiExportDialog,
+                mainWin->uiImportDialog);
 
-			documents.append( tr("- Document %1 last modified on %2.").arg(open.importedDocument()->title()).arg(open.importedDocument()->dateLastModified().toString()) + "\n" );
-			mainWin->openDocument( open.importedDocument() );
-			mainWin->show();
-		}
-	}
+            documents.append(tr("- Document %1 last modified on %2.").arg(open.importedDocument()->title()).arg(open.importedDocument()->dateLastModified().toString()) + "\n");
+            mainWin->openDocument(open.importedDocument());
+            mainWin->show();
+        }
+    }
 
-	cleanupRecovery();
+    cleanupRecovery();
 
-	if (!documents.isEmpty()) {
-		if (_saveAfterRecoveryTimer ) delete _saveAfterRecoveryTimer;
-		_saveAfterRecoveryTimer = new QTimer();
-		_saveAfterRecoveryTimer->setInterval( 4000 );
-		_saveAfterRecoveryTimer->setSingleShot( true );
-		connect( _saveAfterRecoveryTimer, SIGNAL(timeout()), this, SLOT(saveRecovery()) );
-		_saveAfterRecoveryTimer->start();
+    if (!documents.isEmpty()) {
+        if (_saveAfterRecoveryTimer)
+            delete _saveAfterRecoveryTimer;
+        _saveAfterRecoveryTimer = new QTimer();
+        _saveAfterRecoveryTimer->setInterval(4000);
+        _saveAfterRecoveryTimer->setSingleShot(true);
+        connect(_saveAfterRecoveryTimer, SIGNAL(timeout()), this, SLOT(saveRecovery()));
+        _saveAfterRecoveryTimer->start();
 
-		QMessageBox::information(
-				CACanorus::mainWinList()[ CACanorus::mainWinList().size()-1 ],
-				tr("Document recovery"),
-				tr("Previous session of Canorus was unexpectedly closed.\n\n\
-The following documents were successfully recovered:\n%1").arg(documents)
-		);
-	}
+        QMessageBox::information(
+            CACanorus::mainWinList()[CACanorus::mainWinList().size() - 1],
+            tr("Document recovery"),
+            tr("Previous session of Canorus was unexpectedly closed.\n\n\
+The following documents were successfully recovered:\n%1")
+                .arg(documents));
+    }
 }

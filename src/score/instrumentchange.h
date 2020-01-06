@@ -8,24 +8,24 @@
 #ifndef INSTRUMENTCHANGE_H_
 #define INSTRUMENTCHANGE_H_
 
-#include <QString>
 #include "score/mark.h"
+#include <QString>
 
 class CANote;
 
-class CAInstrumentChange: public CAMark {
+class CAInstrumentChange : public CAMark {
 public:
-	CAInstrumentChange( int instrument, CANote *note );
-	virtual ~CAInstrumentChange();
+    CAInstrumentChange(int instrument, CANote* note);
+    virtual ~CAInstrumentChange();
 
-	CAInstrumentChange *clone(CAMusElement *elt=nullptr);
-	int compare( CAMusElement* );
+    CAInstrumentChange* clone(CAMusElement* elt = nullptr);
+    int compare(CAMusElement*);
 
-	inline int instrument() { return _instrument; }
-	inline void setInstrument( const int instrument ) { _instrument = instrument; }
+    inline int instrument() { return _instrument; }
+    inline void setInstrument(const int instrument) { _instrument = instrument; }
 
 private:
-	int _instrument;
+    int _instrument;
 };
 
 #endif /* INSTRUMENTCHANGE_H_ */

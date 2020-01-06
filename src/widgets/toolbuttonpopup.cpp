@@ -5,8 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include <QWidget>
 #include <QMouseEvent>
+#include <QWidget>
 
 #include "widgets/toolbuttonpopup.h"
 
@@ -17,13 +17,16 @@
 	This container sets the correct popup behavior for tool button floating widgets.
 */
 
-CAToolButtonPopup::CAToolButtonPopup(QWidget* parent) : QWidget(parent), _widget(nullptr) {
-	setWindowFlags( Qt::Popup );
+CAToolButtonPopup::CAToolButtonPopup(QWidget* parent)
+    : QWidget(parent)
+    , _widget(nullptr)
+{
+    setWindowFlags(Qt::Popup);
 }
 
 void CAToolButtonPopup::mousePressEvent(QMouseEvent* e)
 {
-	QWidget::mousePressEvent(e);
-	if(!QRect(x(), y(), width(), height()).contains(e->globalPos()))
-		hide();
+    QWidget::mousePressEvent(e);
+    if (!QRect(x(), y(), width(), height()).contains(e->globalPos()))
+        hide();
 }

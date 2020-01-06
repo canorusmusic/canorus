@@ -13,54 +13,58 @@
 
 class CAArticulation : public CAMark {
 public:
-	enum CAArticulationType {
-		Undefined = -1,
-		Accent,
-		Marcato,
-		Staccatissimo,
-		Espressivo,
-		Staccato,
-		Tenuto,
-		Portato,
+    enum CAArticulationType {
+        Undefined = -1,
+        Accent,
+        Marcato,
+        Staccatissimo,
+        Espressivo,
+        Staccato,
+        Tenuto,
+        Portato,
         Breath,
-		UpBow,
-		DownBow,
-		Flageolet,
-		Open,
-		Stopped,
-		Turn,
-		ReverseTurn,
-		Trill,
-		Prall,
-		Mordent,
-		PrallPrall,
-		PrallMordent,
-		UpPrall,
-		DownPrall,
-		UpMordent,
-		DownMordent,
-		PrallDown,
-		PrallUp,
-		LinePrall
-	};
+        UpBow,
+        DownBow,
+        Flageolet,
+        Open,
+        Stopped,
+        Turn,
+        ReverseTurn,
+        Trill,
+        Prall,
+        Mordent,
+        PrallPrall,
+        PrallMordent,
+        UpPrall,
+        DownPrall,
+        UpMordent,
+        DownMordent,
+        PrallDown,
+        PrallUp,
+        LinePrall
+    };
 
-	CAArticulation( CAArticulationType t, CANote *n );
-	virtual ~CAArticulation();
+    CAArticulation(CAArticulationType t, CANote* n);
+    virtual ~CAArticulation();
 
-	CAArticulation *clone(CAMusElement* elt);
-	int compare(CAMusElement *elt);
+    CAArticulation* clone(CAMusElement* elt);
+    int compare(CAMusElement* elt);
 
-	inline CANote *associatedNote() { return static_cast<CANote*>(associatedElement()); }
-	inline void *setAssociatedNote( CANote* n ) { setAssociatedElement(n); return n; }
+    inline CANote* associatedNote() { return static_cast<CANote*>(associatedElement()); }
+    inline void* setAssociatedNote(CANote* n)
+    {
+        setAssociatedElement(n);
+        return n;
+    }
 
-	inline CAArticulationType articulationType() { return _articulationType; }
-	inline void setArticulationType( CAArticulationType t ) { _articulationType = t; }
+    inline CAArticulationType articulationType() { return _articulationType; }
+    inline void setArticulationType(CAArticulationType t) { _articulationType = t; }
 
-	static const QString articulationTypeToString( CAArticulationType t );
-	static CAArticulationType articulationTypeFromString( const QString s );
+    static const QString articulationTypeToString(CAArticulationType t);
+    static CAArticulationType articulationTypeFromString(const QString s);
 
 private:
-	CAArticulationType _articulationType;
+    CAArticulationType _articulationType;
 };
 
 #endif /* ARTICULATION_H_ */

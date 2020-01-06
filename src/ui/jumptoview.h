@@ -15,17 +15,17 @@
 class CAMainWin;
 
 class CAJumpToView : public QDialog, private Ui::uiJumpToView {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	CAJumpToView( CAMainWin *parent );
-	virtual ~CAJumpToView();
+    CAJumpToView(CAMainWin* parent);
+    virtual ~CAJumpToView();
 
 public slots:
-	void show();
-	void accept();
+    void show();
+    void accept();
 
 private:
-	void setupCustomUi();
+    void setupCustomUi();
 };
 
 #endif /* JUMPTOVIEW_H_ */

@@ -6,8 +6,8 @@
 */
 
 #include "score/playable.h"
-#include "score/voice.h"
 #include "score/staff.h"
+#include "score/voice.h"
 
 /*!
 	\class CAPlayable
@@ -29,15 +29,16 @@
 
 	\sa CAPlayableLength, CAVoice, CAMusElement
 */
-CAPlayable::CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength )
- : CAMusElement(voice?(voice->staff()):nullptr, timeStart, timeLength) {
-	setVoice( voice );
-	setPlayableLength( length );
-	if ( timeLength==-1 ) {
-		calculateTimeLength();
-	}
+CAPlayable::CAPlayable(CAPlayableLength length, CAVoice* voice, int timeStart, int timeLength)
+    : CAMusElement(voice ? (voice->staff()) : nullptr, timeStart, timeLength)
+{
+    setVoice(voice);
+    setPlayableLength(length);
+    if (timeLength == -1) {
+        calculateTimeLength();
+    }
 
-	setTuplet( nullptr );
+    setTuplet(nullptr);
 }
 
 /*!
@@ -47,16 +48,19 @@ CAPlayable::CAPlayable( CAPlayableLength length, CAVoice *voice, int timeStart, 
 
 	\note Non-playable signs are not shifted back when removing the element from the voice.
 */
-CAPlayable::~CAPlayable() {
-	if (tuplet())
-		tuplet()->removeNote(this);
+CAPlayable::~CAPlayable()
+{
+    if (tuplet())
+        tuplet()->removeNote(this);
 
-	if (voice())
-		voice()->remove( this, false );
+    if (voice())
+        voice()->remove(this, false);
 }
 
-void CAPlayable::setVoice(CAVoice *voice) {
-	_voice = voice; _context = voice?voice->staff():nullptr;
+void CAPlayable::setVoice(CAVoice* voice)
+{
+    _voice = voice;
+    _context = voice ? voice->staff() : nullptr;
 }
 
 /*!
@@ -66,8 +70,9 @@ void CAPlayable::setVoice(CAVoice *voice) {
 
 	\sa playableLength(), resetTime()
 */
-void CAPlayable::calculateTimeLength() {
-	setTimeLength( CAPlayableLength::playableLengthToTimeLength(playableLength()) );
+void CAPlayable::calculateTimeLength()
+{
+    setTimeLength(CAPlayableLength::playableLengthToTimeLength(playableLength()));
 }
 
 /*!
@@ -80,13 +85,14 @@ void CAPlayable::calculateTimeLength() {
 
 	\sa calculateTimeLength()
  */
-void CAPlayable::resetTime() {
-	CAPlayable *p;
-	if ( voice() && (p = voice()->previousPlayable( timeStart() )) ) {
-		setTimeStart( p->timeEnd() );
-	} else {
-		setTimeStart( 0 );
-	}
+void CAPlayable::resetTime()
+{
+    CAPlayable* p;
+    if (voice() && (p = voice()->previousPlayable(timeStart()))) {
+        setTimeStart(p->timeEnd());
+    } else {
+        setTimeStart(0);
+    }
 
-	calculateTimeLength();
+    calculateTimeLength();
 }

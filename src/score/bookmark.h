@@ -8,22 +8,22 @@
 #ifndef BOOKMARK_H_
 #define BOOKMARK_H_
 
-#include <QString>
 #include "score/mark.h"
+#include <QString>
 
-class CABookMark: public CAMark {
+class CABookMark : public CAMark {
 public:
-	CABookMark( const QString text, CAMusElement *m );
-	virtual ~CABookMark();
+    CABookMark(const QString text, CAMusElement* m);
+    virtual ~CABookMark();
 
-	inline const QString text() { return _text; }
-	inline void setText( const QString t ) { _text = t; }
+    inline const QString text() { return _text; }
+    inline void setText(const QString t) { _text = t; }
 
-	CABookMark* clone(CAMusElement* elt=0);
-	int compare(CAMusElement *elt);
+    CABookMark* clone(CAMusElement* elt = 0);
+    int compare(CAMusElement* elt);
 
 private:
-	QString _text;
+    QString _text;
 };
 
 #endif /* BOOKMARK_H_ */

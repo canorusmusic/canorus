@@ -12,19 +12,19 @@
 
 class CAVoice;
 
-class CAMidiNote: public CAPlayable {
+class CAMidiNote : public CAPlayable {
 public:
-	CAMidiNote( int pitch, int timeStart, int timeLength, CAVoice *v );
-	virtual ~CAMidiNote();
+    CAMidiNote(int pitch, int timeStart, int timeLength, CAVoice* v);
+    virtual ~CAMidiNote();
 
-	CAMidiNote* clone(CAVoice* voice=nullptr);
-	int compare(CAMusElement* elt);
+    CAMidiNote* clone(CAVoice* voice = nullptr);
+    int compare(CAMusElement* elt);
 
-	int midiPitch() { return _midiPitch; }
-	void setMidiPitch( int m ) { _midiPitch = m; }
+    int midiPitch() { return _midiPitch; }
+    void setMidiPitch(int m) { _midiPitch = m; }
 
 private:
-	int _midiPitch;
+    int _midiPitch;
 };
 
 #endif /* MIDINOTE_H_ */

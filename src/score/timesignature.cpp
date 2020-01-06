@@ -6,9 +6,9 @@
 */
 
 #include "score/timesignature.h"
-#include "score/staff.h"
 #include "score/mark.h"
 #include "score/playablelength.h"
+#include "score/staff.h"
 
 /*!
 	\class CATimeSignature
@@ -50,97 +50,115 @@
 
 	eg. 3/4 time signature should be called new CATimeSignature(3, 4, staff, startTime);
 */
-CATimeSignature::CATimeSignature(int beats, int beat, CAStaff *staff, int startTime, CATimeSignatureType type)
- : CAMusElement(staff, startTime) {
- 	_musElementType = CAMusElement::TimeSignature;
+CATimeSignature::CATimeSignature(int beats, int beat, CAStaff* staff, int startTime, CATimeSignatureType type)
+    : CAMusElement(staff, startTime)
+{
+    _musElementType = CAMusElement::TimeSignature;
 
- 	_beats = beats;
- 	_beat = beat;
- 	_timeSignatureType = type;
+    _beats = beats;
+    _beat = beat;
+    _timeSignatureType = type;
 }
 
-CATimeSignature::~CATimeSignature() {
+CATimeSignature::~CATimeSignature()
+{
 }
 
-CATimeSignature *CATimeSignature::clone(CAContext* context) {
-	CATimeSignature *t = new CATimeSignature(_beats, _beat, static_cast<CAStaff*>(context), _timeStart, _timeSignatureType);
+CATimeSignature* CATimeSignature::clone(CAContext* context)
+{
+    CATimeSignature* t = new CATimeSignature(_beats, _beat, static_cast<CAStaff*>(context), _timeStart, _timeSignatureType);
 
-	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(t));
-		t->addMark( m );
-	}
+    for (int i = 0; i < markList().size(); i++) {
+        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(t));
+        t->addMark(m);
+    }
 
-	return t;
+    return t;
 }
 
 /*! \deprecated Use timeSignatureTypeToString() instead. This should be moved to LilyPond parser. 	-Matevz
 */
-const QString CATimeSignature::timeSignatureTypeML() {
-	switch (_timeSignatureType) {
-		case Classical:
-			return QString("classical");
-		case Number:
-			return QString("number");
-		case Mensural:
-			return QString("mensural");
-		case Neomensural:
-			return QString("neomensural");
-		case Baroque:
-			return QString("baroque");
-	}
-	return "";
+const QString CATimeSignature::timeSignatureTypeML()
+{
+    switch (_timeSignatureType) {
+    case Classical:
+        return QString("classical");
+    case Number:
+        return QString("number");
+    case Mensural:
+        return QString("mensural");
+    case Neomensural:
+        return QString("neomensural");
+    case Baroque:
+        return QString("baroque");
+    }
+    return "";
 }
 
 /*!
 	\deprecated New CanorusML parser uses beat and beats directly as integer. The following code
 	should be moved to LilyPond parser. -Matevz
 */
-const QString CATimeSignature::timeSignatureML() {
-	return (QString::number(_beats) + "/" + QString::number(_beat));
+const QString CATimeSignature::timeSignatureML()
+{
+    return (QString::number(_beats) + "/" + QString::number(_beat));
 }
 
-int CATimeSignature::compare(CAMusElement *elt) {
-	if (elt->musElementType()!=CAMusElement::TimeSignature)
-		return -1;
+int CATimeSignature::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::TimeSignature)
+        return -1;
 
-	int diffs=0;
-	if (_timeSignatureType!=static_cast<CATimeSignature*>(elt)->timeSignatureType()) diffs++;
-	if (_beat!=static_cast<CATimeSignature*>(elt)->beat()) diffs++;
-	if (_beats!=static_cast<CATimeSignature*>(elt)->beats()) diffs++;
+    int diffs = 0;
+    if (_timeSignatureType != static_cast<CATimeSignature*>(elt)->timeSignatureType())
+        diffs++;
+    if (_beat != static_cast<CATimeSignature*>(elt)->beat())
+        diffs++;
+    if (_beats != static_cast<CATimeSignature*>(elt)->beats())
+        diffs++;
 
-	return diffs;
+    return diffs;
 }
 
-const QString CATimeSignature::timeSignatureTypeToString(CATimeSignatureType type) {
-	switch (type) {
-		case Classical:
-			return "classical";
-		case Number:
-			return "number";
-		case Mensural:
-			return "mensural";
-		case Neomensural:
-			return "neomensural";
-		case Baroque:
-			return "baroque";
-	}
+const QString CATimeSignature::timeSignatureTypeToString(CATimeSignatureType type)
+{
+    switch (type) {
+    case Classical:
+        return "classical";
+    case Number:
+        return "number";
+    case Mensural:
+        return "mensural";
+    case Neomensural:
+        return "neomensural";
+    case Baroque:
+        return "baroque";
+    }
     return "";
 }
 
-CATimeSignature::CATimeSignatureType CATimeSignature::timeSignatureTypeFromString(const QString type) {
-	if (type=="classical") return Classical; else
-	if (type=="number") return Number; else
-	if (type=="mensural") return Mensural; else
-	if (type=="neomensural") return Neomensural; else
-	if (type=="baroque") return Baroque;
-	else return Classical;
+CATimeSignature::CATimeSignatureType CATimeSignature::timeSignatureTypeFromString(const QString type)
+{
+    if (type == "classical")
+        return Classical;
+    else if (type == "number")
+        return Number;
+    else if (type == "mensural")
+        return Mensural;
+    else if (type == "neomensural")
+        return Neomensural;
+    else if (type == "baroque")
+        return Baroque;
+    else
+        return Classical;
 }
 
 /*!
  * Returns the duration of a full measure in time units.
  */
-int CATimeSignature::barDuration() {
-	return CAPlayableLength::musicLengthToTimeLength(static_cast<CAPlayableLength::CAMusicLength>(_beat))*_beats;
+int CATimeSignature::barDuration()
+{
+    return CAPlayableLength::musicLengthToTimeLength(static_cast<CAPlayableLength::CAMusicLength>(_beat)) * _beats;
 }
 
 /*!

@@ -7,66 +7,75 @@
 
 #include <QTimer>
 
-#include "ui/mainwin.h"
-#include "core/file.h"
 #include "control/mainwinprogressctl.h"
+#include "core/file.h"
+#include "ui/mainwin.h"
 #include "widgets/progressstatusbar.h"
 
-CAMainWinProgressCtl::CAMainWinProgressCtl( CAMainWin *mainWin )
- : _mainWin(mainWin), _bar(nullptr), _updateTimer(nullptr), _file(nullptr) {
+CAMainWinProgressCtl::CAMainWinProgressCtl(CAMainWin* mainWin)
+    : _mainWin(mainWin)
+    , _bar(nullptr)
+    , _updateTimer(nullptr)
+    , _file(nullptr)
+{
 }
 
-CAMainWinProgressCtl::~CAMainWinProgressCtl() {
-	delete _updateTimer;
+CAMainWinProgressCtl::~CAMainWinProgressCtl()
+{
+    delete _updateTimer;
 }
 
-void CAMainWinProgressCtl::on_updateTimer_timeout() {
-	if (_file) {
-		_bar->setProgress( _file->readableStatus(), _file->progress() );
+void CAMainWinProgressCtl::on_updateTimer_timeout()
+{
+    if (_file) {
+        _bar->setProgress(_file->readableStatus(), _file->progress());
 
-		if ( _file->isFinished() ) {
-			restoreStatusBar();
-			_updateTimer->stop();
+        if (_file->isFinished()) {
+            restoreStatusBar();
+            _updateTimer->stop();
 
-			delete _file;
-		}
-	}
+            delete _file;
+        }
+    }
 }
 
-void CAMainWinProgressCtl::on_cancelButton_clicked(bool) {
-	if (_file) {
-		_file->exit();
-		restoreStatusBar();
-		_updateTimer->stop();
+void CAMainWinProgressCtl::on_cancelButton_clicked(bool)
+{
+    if (_file) {
+        _file->exit();
+        restoreStatusBar();
+        _updateTimer->stop();
 
-		_file->wait();
-		delete _file;
-	}
+        _file->wait();
+        delete _file;
+    }
 }
 
-void CAMainWinProgressCtl::restoreStatusBar() {
-	_mainWin->statusBar()->removeWidget(_bar);
-	delete _bar;
-	_bar=nullptr;
+void CAMainWinProgressCtl::restoreStatusBar()
+{
+    _mainWin->statusBar()->removeWidget(_bar);
+    delete _bar;
+    _bar = nullptr;
 }
 
-void CAMainWinProgressCtl::startProgress( CAFile *f ) {
-	_file = f;
-	_mainWin->setMode( CAMainWin::ProgressMode );
+void CAMainWinProgressCtl::startProgress(CAFile* f)
+{
+    _file = f;
+    _mainWin->setMode(CAMainWin::ProgressMode);
 
-	if (_updateTimer) {
-		delete _updateTimer;
-	}
+    if (_updateTimer) {
+        delete _updateTimer;
+    }
 
-	_updateTimer = new QTimer();
-	_updateTimer->setInterval( 150 );
-	_updateTimer->setSingleShot(false);
+    _updateTimer = new QTimer();
+    _updateTimer->setInterval(150);
+    _updateTimer->setSingleShot(false);
 
-	connect( _updateTimer, SIGNAL(timeout()), this, SLOT(on_updateTimer_timeout()) );
+    connect(_updateTimer, SIGNAL(timeout()), this, SLOT(on_updateTimer_timeout()));
 
-	_bar = new CAProgressStatusBar(_mainWin);
-	_mainWin->statusBar()->addWidget( _bar );
-	connect( _bar, SIGNAL(cancelButtonClicked(bool)), this, SLOT(on_cancelButton_clicked(bool)) );
+    _bar = new CAProgressStatusBar(_mainWin);
+    _mainWin->statusBar()->addWidget(_bar);
+    connect(_bar, SIGNAL(cancelButtonClicked(bool)), this, SLOT(on_cancelButton_clicked(bool)));
 
-	_updateTimer->start();
+    _updateTimer->start();
 }

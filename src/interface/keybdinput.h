@@ -9,8 +9,8 @@
 #ifndef KEYBDINPUT_H_
 #define KEYBDINPUT_H_
 
-#include <QThread>
 #include <QList>
+#include <QThread>
 
 #include "ui/mainwin.h"
 
@@ -18,26 +18,25 @@ class CAMainWin;
 
 class CAKeybdInput {
 public:
-	CAKeybdInput( CAMainWin* m);
-	~CAKeybdInput();
-	void onMidiInEvent( QVector<unsigned char> m );
+    CAKeybdInput(CAMainWin* m);
+    ~CAKeybdInput();
+    void onMidiInEvent(QVector<unsigned char> m);
 
 private:
-	CAMainWin* _mw;
-	void midiInEventToScore(CAScoreView *v, QVector<unsigned char> m);
-	QTimer _midiInChordTimer;
-	//CASheet *_lastMidiInSheet;
-	//CAStaff *_lastMidiInStaff;
-	CAVoice *_lastMidiInVoice;
-	CADiatonicPitch _actualKeySignature;
-	signed char _actualKeySignatureAccs[7];
-	int _actualKeyAccidentalsSum;
-	CADiatonicPitch matchPitchToKey( CAVoice *voice, CADiatonicPitch p );
+    CAMainWin* _mw;
+    void midiInEventToScore(CAScoreView* v, QVector<unsigned char> m);
+    QTimer _midiInChordTimer;
+    //CASheet *_lastMidiInSheet;
+    //CAStaff *_lastMidiInStaff;
+    CAVoice* _lastMidiInVoice;
+    CADiatonicPitch _actualKeySignature;
+    signed char _actualKeySignatureAccs[7];
+    int _actualKeyAccidentalsSum;
+    CADiatonicPitch matchPitchToKey(CAVoice* voice, CADiatonicPitch p);
 
-	CAPlayable* _tupPla;
-	CATuplet* _tup;
-	QList<CAMusElement*> _noteLayout;
-
+    CAPlayable* _tupPla;
+    CATuplet* _tup;
+    QList<CAMusElement*> _noteLayout;
 };
 
 #endif /* KEYBDINPUT_H_ */

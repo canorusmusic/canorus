@@ -5,31 +5,38 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include <QTextEdit>
 #include <QGridLayout>
-#include <QPushButton>
-#include <QTextStream>
 #include <QMouseEvent>
+#include <QPushButton>
+#include <QTextEdit>
+#include <QTextStream>
 
 #include "export/canorusmlexport.h"
-#include "widgets/sourceview.h"
 #include "score/document.h"
 #include "score/voice.h"
+#include "widgets/sourceview.h"
 
 #include "export/lilypondexport.h"
 #include "import/lilypondimport.h"
 
 class CASourceView::CATextEdit : public QTextEdit {
-	public:
-		CATextEdit(CASourceView* v) : QTextEdit(v), _view(v) {}
-	protected:
-		void focusInEvent(QFocusEvent* event) {
-			QTextEdit::focusInEvent(event);
-			QMouseEvent fake(QEvent::MouseButtonPress, QCursor::pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-			_view->mousePressEvent(&fake);
-		}
-	private:
-		CASourceView* _view;
+public:
+    CATextEdit(CASourceView* v)
+        : QTextEdit(v)
+        , _view(v)
+    {
+    }
+
+protected:
+    void focusInEvent(QFocusEvent* event)
+    {
+        QTextEdit::focusInEvent(event);
+        QMouseEvent fake(QEvent::MouseButtonPress, QCursor::pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+        _view->mousePressEvent(&fake);
+    }
+
+private:
+    CASourceView* _view;
 };
 
 /*!
@@ -47,15 +54,16 @@ class CASourceView::CATextEdit : public QTextEdit {
 
 	\todo This should be merged in the future with other formats.
 */
-CASourceView::CASourceView(CADocument *doc, QWidget *parent)
- : CAView(parent) {
- 	setViewType( SourceView );
- 	setSourceViewType( CanorusML );
- 	_document = doc;
- 	_voice = nullptr;
-  	_lyricsContext = nullptr;
+CASourceView::CASourceView(CADocument* doc, QWidget* parent)
+    : CAView(parent)
+{
+    setViewType(SourceView);
+    setSourceViewType(CanorusML);
+    _document = doc;
+    _voice = nullptr;
+    _lyricsContext = nullptr;
 
- 	setupUI();
+    setupUI();
 }
 
 /*!
@@ -63,15 +71,16 @@ CASourceView::CASourceView(CADocument *doc, QWidget *parent)
 
 	\todo This should be merged in the future with other formats.
 */
-CASourceView::CASourceView(CAVoice *voice, QWidget *parent)
- : CAView(parent) {
- 	setViewType( SourceView );
- 	setSourceViewType( LilyPond );
- 	_document = nullptr;
- 	_voice = voice;
- 	_lyricsContext = nullptr;
+CASourceView::CASourceView(CAVoice* voice, QWidget* parent)
+    : CAView(parent)
+{
+    setViewType(SourceView);
+    setSourceViewType(LilyPond);
+    _document = nullptr;
+    _voice = voice;
+    _lyricsContext = nullptr;
 
- 	setupUI();
+    setupUI();
 }
 
 /*!
@@ -79,97 +88,103 @@ CASourceView::CASourceView(CAVoice *voice, QWidget *parent)
 
 	\todo This should be merged in the future with other formats.
 */
-CASourceView::CASourceView(CALyricsContext *lc, QWidget *parent)
- : CAView(parent) {
- 	setViewType( SourceView );
-  	setSourceViewType( LilyPond );
- 	_document = nullptr;
- 	_voice = nullptr;
-  	_lyricsContext = lc;
+CASourceView::CASourceView(CALyricsContext* lc, QWidget* parent)
+    : CAView(parent)
+{
+    setViewType(SourceView);
+    setSourceViewType(LilyPond);
+    _document = nullptr;
+    _voice = nullptr;
+    _lyricsContext = lc;
 
- 	setupUI();
+    setupUI();
 }
 
-void CASourceView::setupUI() {
-	_layout = new QGridLayout(this);
-	_layout->addWidget(_textEdit = new CATextEdit(this));
-	_layout->addWidget(_commit = new QPushButton(tr("Commit changes")));
-	_layout->addWidget(_revert = new QPushButton(tr("Revert changes")));
+void CASourceView::setupUI()
+{
+    _layout = new QGridLayout(this);
+    _layout->addWidget(_textEdit = new CATextEdit(this));
+    _layout->addWidget(_commit = new QPushButton(tr("Commit changes")));
+    _layout->addWidget(_revert = new QPushButton(tr("Revert changes")));
 
-	connect(_commit, SIGNAL(clicked()), this, SLOT(on_commit_clicked()));
-	connect(_revert, SIGNAL(clicked()), this, SLOT(rebuild()));
+    connect(_commit, SIGNAL(clicked()), this, SLOT(on_commit_clicked()));
+    connect(_revert, SIGNAL(clicked()), this, SLOT(rebuild()));
 
-	rebuild();
+    rebuild();
 }
 
-CASourceView::~CASourceView() {
-	_textEdit->disconnect();
-	_commit->disconnect();
-	_revert->disconnect();
-	_layout->disconnect();
+CASourceView::~CASourceView()
+{
+    _textEdit->disconnect();
+    _commit->disconnect();
+    _revert->disconnect();
+    _layout->disconnect();
 
-	delete _textEdit;
-	delete _commit;
-	delete _revert;
-	delete _layout;
+    delete _textEdit;
+    delete _commit;
+    delete _revert;
+    delete _layout;
 }
 
-void CASourceView::on_commit_clicked() {
-	emit CACommit( _textEdit->toPlainText() );
+void CASourceView::on_commit_clicked()
+{
+    emit CACommit(_textEdit->toPlainText());
 }
 
-CASourceView *CASourceView::clone() {
-	CASourceView *v = nullptr;
-	if ( document() )
-		v = new CASourceView( document(), static_cast<QWidget*>(parent()) );
-	else if ( voice() )
-		v = new CASourceView( voice(), static_cast<QWidget*>(parent()) );
-	else if ( lyricsContext() )
-		v = new CASourceView( lyricsContext(), static_cast<QWidget*>(parent()) );
+CASourceView* CASourceView::clone()
+{
+    CASourceView* v = nullptr;
+    if (document())
+        v = new CASourceView(document(), static_cast<QWidget*>(parent()));
+    else if (voice())
+        v = new CASourceView(voice(), static_cast<QWidget*>(parent()));
+    else if (lyricsContext())
+        v = new CASourceView(lyricsContext(), static_cast<QWidget*>(parent()));
 
-	return v;
+    return v;
 }
 
-CASourceView *CASourceView::clone(QWidget *parent) {
-	CASourceView *v = nullptr;
-	if ( document() )
-		v = new CASourceView( document(), parent );
-	else if ( voice() )
-		v = new CASourceView( voice(), parent );
-	else if ( lyricsContext() )
-		v = new CASourceView( lyricsContext(), parent );
+CASourceView* CASourceView::clone(QWidget* parent)
+{
+    CASourceView* v = nullptr;
+    if (document())
+        v = new CASourceView(document(), parent);
+    else if (voice())
+        v = new CASourceView(voice(), parent);
+    else if (lyricsContext())
+        v = new CASourceView(lyricsContext(), parent);
 
-	return v;
+    return v;
 }
 
 /*!
 	Generates the score source from the current score and fill the text area with it.
 */
-void CASourceView::rebuild() {
-	_textEdit->clear();
+void CASourceView::rebuild()
+{
+    _textEdit->clear();
 
-	QString *value = new QString();
-	QTextStream stream(value);
+    QString* value = new QString();
+    QTextStream stream(value);
 
-	// CanorusML
-	if ( document() ) {
-		CACanorusMLExport save( &stream );
-		save.exportDocument( document() );
-		save.wait();
-	} else {
-		CALilyPondExport le( &stream );
-		// LilyPond
-		if (voice()) {
-			le.exportVoice( voice() );
-			le.wait();
-		} else
-		if (lyricsContext()) {
-			le.exportLyricsContext( lyricsContext() );
-			le.wait();
-		}
-	}
+    // CanorusML
+    if (document()) {
+        CACanorusMLExport save(&stream);
+        save.exportDocument(document());
+        save.wait();
+    } else {
+        CALilyPondExport le(&stream);
+        // LilyPond
+        if (voice()) {
+            le.exportVoice(voice());
+            le.wait();
+        } else if (lyricsContext()) {
+            le.exportLyricsContext(lyricsContext());
+            le.wait();
+        }
+    }
 
-	_textEdit->insertPlainText(*value);
+    _textEdit->insertPlainText(*value);
 
-	delete value;
+    delete value;
 }

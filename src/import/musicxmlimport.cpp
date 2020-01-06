@@ -5,563 +5,594 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
+#include "import/musicxmlimport.h"
 #include <QDebug>
 #include <QXmlStreamAttributes>
 #include <iostream> // debug
-#include "import/musicxmlimport.h"
 
 #include "import/canorusmlimport.h"
 
-#include "score/document.h"
-#include "score/sheet.h"
-#include "score/context.h"
-#include "score/staff.h"
-#include "score/voice.h"
-#include "score/playable.h"
-#include "score/note.h"
-#include "score/rest.h"
-#include "score/clef.h"
-#include "score/muselement.h"
-#include "score/keysignature.h"
-#include "score/timesignature.h"
 #include "score/barline.h"
+#include "score/clef.h"
+#include "score/context.h"
+#include "score/document.h"
+#include "score/keysignature.h"
+#include "score/muselement.h"
+#include "score/note.h"
+#include "score/playable.h"
+#include "score/rest.h"
+#include "score/sheet.h"
+#include "score/staff.h"
+#include "score/timesignature.h"
+#include "score/voice.h"
 
-#include "score/mark.h"
-#include "score/text.h"
-#include "score/tempo.h"
-#include "score/bookmark.h"
 #include "score/articulation.h"
+#include "score/bookmark.h"
 #include "score/crescendo.h"
-#include "score/instrumentchange.h"
 #include "score/dynamic.h"
-#include "score/ritardando.h"
 #include "score/fermata.h"
-#include "score/repeatmark.h"
 #include "score/fingering.h"
+#include "score/instrumentchange.h"
+#include "score/mark.h"
+#include "score/repeatmark.h"
+#include "score/ritardando.h"
+#include "score/tempo.h"
+#include "score/text.h"
 
 #include "score/lyricscontext.h"
 #include "score/syllable.h"
 
-#include "score/functionmarkcontext.h"
 #include "score/functionmark.h"
+#include "score/functionmarkcontext.h"
 
-CAMusicXmlImport::CAMusicXmlImport( QTextStream *stream )
- : CAImport(stream), QXmlStreamReader() {
-	initMusicXmlImport();
+CAMusicXmlImport::CAMusicXmlImport(QTextStream* stream)
+    : CAImport(stream)
+    , QXmlStreamReader()
+{
+    initMusicXmlImport();
 }
 
-CAMusicXmlImport::CAMusicXmlImport( const QString stream )
- : CAImport(stream), QXmlStreamReader() {
-	initMusicXmlImport();
+CAMusicXmlImport::CAMusicXmlImport(const QString stream)
+    : CAImport(stream)
+    , QXmlStreamReader()
+{
+    initMusicXmlImport();
 }
 
-CAMusicXmlImport::~CAMusicXmlImport() {
+CAMusicXmlImport::~CAMusicXmlImport()
+{
 }
 
-void CAMusicXmlImport::initMusicXmlImport() {
-	_document = nullptr;
-	_tempoBpm = -1;
+void CAMusicXmlImport::initMusicXmlImport()
+{
+    _document = nullptr;
+    _tempoBpm = -1;
 }
 
 /*!
 	Opens a MusicXML source \a in and creates a document out of it.
 	CAMusicXmlImport uses QXmlStreamReader and SAX model for reading.
 */
-CADocument* CAMusicXmlImport::importDocumentImpl() {
-	QXmlStreamReader::setDevice( stream()->device() );
+CADocument* CAMusicXmlImport::importDocumentImpl()
+{
+    QXmlStreamReader::setDevice(stream()->device());
 
-	while (!atEnd()) {
-		readNext();
+    while (!atEnd()) {
+        readNext();
 
-		if (error()) {
-			setStatus( -2 );
-			break;
-		}
+        if (error()) {
+            setStatus(-2);
+            break;
+        }
 
-		switch (tokenType()) {
-		case StartDocument:
-		case DTD: {
-			readHeader();
-			break;
-		}
-		case StartElement: {
-			if ( name()=="score-partwise" ) {
-				_musicXmlVersion=attributes().value("version").toString();
-				readScorePartwise();
-			} else
-			if ( name()=="score-timewise" ) {
-				_musicXmlVersion=attributes().value("version").toString();
-				readScoreTimewise();
-			}
-			break;
-		}
-		case ProcessingInstruction:
-		case EntityReference:
-		case Comment:
-		case Characters:
-		case EndElement:
-		case EndDocument:
-		case Invalid:
-		case NoToken:
-			break;
-		}
-	}
+        switch (tokenType()) {
+        case StartDocument:
+        case DTD: {
+            readHeader();
+            break;
+        }
+        case StartElement: {
+            if (name() == "score-partwise") {
+                _musicXmlVersion = attributes().value("version").toString();
+                readScorePartwise();
+            } else if (name() == "score-timewise") {
+                _musicXmlVersion = attributes().value("version").toString();
+                readScoreTimewise();
+            }
+            break;
+        }
+        case ProcessingInstruction:
+        case EntityReference:
+        case Comment:
+        case Characters:
+        case EndElement:
+        case EndDocument:
+        case Invalid:
+        case NoToken:
+            break;
+        }
+    }
 
-	return _document;
+    return _document;
 }
 
-const QString CAMusicXmlImport::readableStatus() {
-	if (status()==-2) {
-		return errorString();
-	} else {
-		return CAImport::readableStatus();
-	}
+const QString CAMusicXmlImport::readableStatus()
+{
+    if (status() == -2) {
+        return errorString();
+    } else {
+        return CAImport::readableStatus();
+    }
 }
 
-void CAMusicXmlImport::readHeader() {
-	if (tokenType()==DTD) {
-		if ( dtdName()!="score-partwise" && dtdName()!="score-timewise" ) {
-			raiseError( tr("File is not a correct MusicXML file.") );
-		}
-	}
+void CAMusicXmlImport::readHeader()
+{
+    if (tokenType() == DTD) {
+        if (dtdName() != "score-partwise" && dtdName() != "score-timewise") {
+            raiseError(tr("File is not a correct MusicXML file."));
+        }
+    }
 }
 
-void CAMusicXmlImport::readScorePartwise() {
-	if (name()!="score-partwise") return;
+void CAMusicXmlImport::readScorePartwise()
+{
+    if (name() != "score-partwise")
+        return;
 
-	_document = new CADocument();
+    _document = new CADocument();
 
-	while (!atEnd() && !(tokenType()==EndElement && name()=="score-partwise")) {
-		readNext();
+    while (!atEnd() && !(tokenType() == EndElement && name() == "score-partwise")) {
+        readNext();
 
-		if (tokenType()==StartElement) {
-			if (name()=="work") {
-				readWork();
-			} else if (name()=="movement-title") {
-				_document->setTitle( readElementText() );
-			} else if (name()=="identification") {
-				readIdentification();
-			} else if (name()=="defaults") {
-				readDefaults();
-			} else if (name()=="part-list") {
-				readPartList();
-			} else if (name()=="part") {
-				readPart();
-			}
-		}
-	}
+        if (tokenType() == StartElement) {
+            if (name() == "work") {
+                readWork();
+            } else if (name() == "movement-title") {
+                _document->setTitle(readElementText());
+            } else if (name() == "identification") {
+                readIdentification();
+            } else if (name() == "defaults") {
+                readDefaults();
+            } else if (name() == "part-list") {
+                readPartList();
+            } else if (name() == "part") {
+                readPart();
+            }
+        }
+    }
 
-	for (int i=0; i<_partMapStaff.keys().size(); i++) {
-		// go through all partIds
-		for (int j=0; j<_partMapStaff[_partMapStaff.keys()[i]].size(); j++) {
-			// go through all staffs with this partId
-			CAStaff *s = _partMapStaff[_partMapStaff.keys()[i]][j];
-			for (int k=0; k<s->voiceList().size(); k++) {
-				// go through all voices in this staff
+    for (int i = 0; i < _partMapStaff.keys().size(); i++) {
+        // go through all partIds
+        for (int j = 0; j < _partMapStaff[_partMapStaff.keys()[i]].size(); j++) {
+            // go through all staffs with this partId
+            CAStaff* s = _partMapStaff[_partMapStaff.keys()[i]][j];
+            for (int k = 0; k < s->voiceList().size(); k++) {
+                // go through all voices in this staff
                 // Note Reinhard: Not sure if program and channel cannot exceed 256, "int" is used everywhere
-				s->voiceList()[k]->setMidiProgram( _midiProgram[_partMapStaff.keys()[i]]-1 );
-				s->voiceList()[k]->setMidiChannel( _midiChannel[_partMapStaff.keys()[i]]-1 );
-			}
-		}
-	}
+                s->voiceList()[k]->setMidiProgram(_midiProgram[_partMapStaff.keys()[i]] - 1);
+                s->voiceList()[k]->setMidiChannel(_midiChannel[_partMapStaff.keys()[i]] - 1);
+            }
+        }
+    }
 }
 
-void CAMusicXmlImport::readScoreTimewise() {
-	if (name()!="score-timewise") return;
+void CAMusicXmlImport::readScoreTimewise()
+{
+    if (name() != "score-timewise")
+        return;
 
-	_document = new CADocument();
+    _document = new CADocument();
 
-	// TODO: No support for score-timewise yet
+    // TODO: No support for score-timewise yet
 }
 
-void CAMusicXmlImport::readWork() {
-	if (name()!="work") return;
+void CAMusicXmlImport::readWork()
+{
+    if (name() != "work")
+        return;
 
-	while (!atEnd() && !(tokenType()==EndElement && name()=="work")) {
-		readNext();
+    while (!atEnd() && !(tokenType() == EndElement && name() == "work")) {
+        readNext();
 
-		if (tokenType()==StartElement) {
-			if (name()=="work-title") {
-				_document->setTitle( readElementText() );
-			}
-		}
-	}
+        if (tokenType() == StartElement) {
+            if (name() == "work-title") {
+                _document->setTitle(readElementText());
+            }
+        }
+    }
 }
 
-void CAMusicXmlImport::readDefaults() {
-	if (name()!="defaults") return;
+void CAMusicXmlImport::readDefaults()
+{
+    if (name() != "defaults")
+        return;
 
-	// TODO: Currently this just ignores the defaults
-	while (!atEnd() && !(tokenType()==EndElement && name()=="defaults")) {
-		readNext();
-	}
+    // TODO: Currently this just ignores the defaults
+    while (!atEnd() && !(tokenType() == EndElement && name() == "defaults")) {
+        readNext();
+    }
 }
 
-void CAMusicXmlImport::readIdentification() {
-	if (name()!="identification") return;
+void CAMusicXmlImport::readIdentification()
+{
+    if (name() != "identification")
+        return;
 
-	while (!atEnd() && !(tokenType()==EndElement && name()=="identification")) {
-		readNext();
+    while (!atEnd() && !(tokenType() == EndElement && name() == "identification")) {
+        readNext();
 
-		if (tokenType()==StartElement) {
-			if (name()=="creator" && attributes().value("type")=="composer") {
-				_document->setComposer( readElementText() );
-			} else
-			if (name()=="creator" && attributes().value("type")=="lyricist") {
-				_document->setPoet( readElementText() );
-			}
-			if (name()=="rights") {
-				_document->setCopyright( readElementText() );
-			}
-		}
-	}
+        if (tokenType() == StartElement) {
+            if (name() == "creator" && attributes().value("type") == "composer") {
+                _document->setComposer(readElementText());
+            } else if (name() == "creator" && attributes().value("type") == "lyricist") {
+                _document->setPoet(readElementText());
+            }
+            if (name() == "rights") {
+                _document->setCopyright(readElementText());
+            }
+        }
+    }
 }
 
-void CAMusicXmlImport::readPartList() {
-	if (name()!="part-list") return;
+void CAMusicXmlImport::readPartList()
+{
+    if (name() != "part-list")
+        return;
 
-	_document->addSheet();
+    _document->addSheet();
 
-	while (!atEnd() && !(tokenType()==EndElement && name()=="part-list")) {
-		readNext();
+    while (!atEnd() && !(tokenType() == EndElement && name() == "part-list")) {
+        readNext();
 
-		if (tokenType()==StartElement) {
-			QString partId;
-			if (name()=="score-part") {
-				partId = attributes().value("id").toString();
+        if (tokenType() == StartElement) {
+            QString partId;
+            if (name() == "score-part") {
+                partId = attributes().value("id").toString();
 
-				while (!atEnd() && !(tokenType()==EndElement && name()=="score-part")) {
-					readNext();
+                while (!atEnd() && !(tokenType() == EndElement && name() == "score-part")) {
+                    readNext();
 
-					if (tokenType()==StartElement && name()=="part-name") {
-						_partName[partId] = readElementText();
-					} else if (tokenType()==StartElement && name()=="midi-channel") {
-						_midiChannel[partId] = readElementText().toInt();
-					} else if (tokenType()==StartElement && name()=="midi-program") {
-						_midiProgram[partId] = readElementText().toInt();
-					}
-				}
-			}
-		}
-	}
+                    if (tokenType() == StartElement && name() == "part-name") {
+                        _partName[partId] = readElementText();
+                    } else if (tokenType() == StartElement && name() == "midi-channel") {
+                        _midiChannel[partId] = readElementText().toInt();
+                    } else if (tokenType() == StartElement && name() == "midi-program") {
+                        _midiProgram[partId] = readElementText().toInt();
+                    }
+                }
+            }
+        }
+    }
 }
 
-void CAMusicXmlImport::readPart() {
-	if (name()!="part") return;
+void CAMusicXmlImport::readPart()
+{
+    if (name() != "part")
+        return;
 
-	QString partId = attributes().value("id").toString();
-	_partMapStaff[ partId ] = QList<CAStaff*>();
-	addStavesIfNeeded( partId, 1 );
-	_partMapClef[ partId ] = QHash<int, CAClef*>();
-	_partMapKeySig[ partId ] = QHash<int, CAKeySignature*>();
-	_partMapTimeSig[ partId ] = QHash<int, CATimeSignature*>();
+    QString partId = attributes().value("id").toString();
+    _partMapStaff[partId] = QList<CAStaff*>();
+    addStavesIfNeeded(partId, 1);
+    _partMapClef[partId] = QHash<int, CAClef*>();
+    _partMapKeySig[partId] = QHash<int, CAKeySignature*>();
+    _partMapTimeSig[partId] = QHash<int, CATimeSignature*>();
 
-	while (!atEnd() && !(tokenType()==EndElement && name()=="part")) {
-		readNext();
+    while (!atEnd() && !(tokenType() == EndElement && name() == "part")) {
+        readNext();
 
-		if (tokenType()==StartElement) {
-			if (name()=="measure") {
-				readMeasure(partId);
-			}
-		}
-	}
+        if (tokenType() == StartElement) {
+            if (name() == "measure") {
+                readMeasure(partId);
+            }
+        }
+    }
 }
 
-void CAMusicXmlImport::readMeasure( QString partId ) {
-	if (name()!="measure") return;
+void CAMusicXmlImport::readMeasure(QString partId)
+{
+    if (name() != "measure")
+        return;
 
-	while (!atEnd() && !(tokenType()==EndElement && name()=="measure")) {
-		readNext();
+    while (!atEnd() && !(tokenType() == EndElement && name() == "measure")) {
+        readNext();
 
-		if (tokenType()==StartElement) {
-			if (name()=="attributes") {
-				readAttributes( partId );
-			} else if (name()=="note") {
-				readNote( partId, _divisions[partId] );
-			} else if (name()=="forward") {
-				readForward( partId, _divisions[partId] );
-			} else if (name()=="direction") {
+        if (tokenType() == StartElement) {
+            if (name() == "attributes") {
+                readAttributes(partId);
+            } else if (name() == "note") {
+                readNote(partId, _divisions[partId]);
+            } else if (name() == "forward") {
+                readForward(partId, _divisions[partId]);
+            } else if (name() == "direction") {
 
-			} else if (name()=="sound") {
-				readSound( partId );
-			}
-		}
-	}
+            } else if (name() == "sound") {
+                readSound(partId);
+            }
+        }
+    }
 
-	// Finish the measure (add barlines to all staffs)
-	for (int staffIdx=0; staffIdx<_partMapStaff[partId].size(); staffIdx++) {
-		CAStaff *staff = _partMapStaff[partId][staffIdx];
-		int lastVoice=-1;
-		for (int i=0; i<staff->voiceList().size(); i++) {
-			if ( lastVoice==-1 || staff->voiceList()[lastVoice]->lastTimeEnd() < staff->voiceList()[i]->lastTimeEnd() ) {
-				lastVoice = i;
-			}
-		}
+    // Finish the measure (add barlines to all staffs)
+    for (int staffIdx = 0; staffIdx < _partMapStaff[partId].size(); staffIdx++) {
+        CAStaff* staff = _partMapStaff[partId][staffIdx];
+        int lastVoice = -1;
+        for (int i = 0; i < staff->voiceList().size(); i++) {
+            if (lastVoice == -1 || staff->voiceList()[lastVoice]->lastTimeEnd() < staff->voiceList()[i]->lastTimeEnd()) {
+                lastVoice = i;
+            }
+        }
 
-		if (lastVoice!=-1) {
-			staff->voiceList()[lastVoice]->append( new CABarline( CABarline::Single, staff, 0 ) );
-			staff->synchronizeVoices();
-		}
-	}
+        if (lastVoice != -1) {
+            staff->voiceList()[lastVoice]->append(new CABarline(CABarline::Single, staff, 0));
+            staff->synchronizeVoices();
+        }
+    }
 }
 
-void CAMusicXmlImport::readAttributes( QString partId ) {
-	if (name()!="attributes") return;
+void CAMusicXmlImport::readAttributes(QString partId)
+{
+    if (name() != "attributes")
+        return;
 
-	int staves=1;
+    int staves = 1;
 
-	while (!atEnd() && !(tokenType()==EndElement && name()=="attributes")) {
-		readNext();
+    while (!atEnd() && !(tokenType() == EndElement && name() == "attributes")) {
+        readNext();
 
-		if (tokenType()==StartElement) {
-			if (name()=="divisions") {
+        if (tokenType() == StartElement) {
+            if (name() == "divisions") {
 
-				_divisions[partId] = readElementText().toInt();
+                _divisions[partId] = readElementText().toInt();
 
-			} else if (name()=="staves") {
-				staves = readElementText().toInt();
-			} else if (name()=="key") {
+            } else if (name() == "staves") {
+                staves = readElementText().toInt();
+            } else if (name() == "key") {
 
-				int accs = 0;
-				int number = (attributes().value("number").toString().isEmpty()?1:attributes().value("number").toString().toInt());
-				CADiatonicKey::CAGender gender = CADiatonicKey::Major;
+                int accs = 0;
+                int number = (attributes().value("number").toString().isEmpty() ? 1 : attributes().value("number").toString().toInt());
+                CADiatonicKey::CAGender gender = CADiatonicKey::Major;
 
-				while (!atEnd() && !(tokenType()==EndElement && name()=="key")) {
-					readNext();
+                while (!atEnd() && !(tokenType() == EndElement && name() == "key")) {
+                    readNext();
 
-					if (tokenType()==StartElement) {
-						if ( name()=="fifths" ) {
-							accs = readElementText().toInt();
-						}
-						if ( name()=="mode" ) {
-							gender = CADiatonicKey::genderFromString( readElementText() );
-						}
-					}
-				}
+                    if (tokenType() == StartElement) {
+                        if (name() == "fifths") {
+                            accs = readElementText().toInt();
+                        }
+                        if (name() == "mode") {
+                            gender = CADiatonicKey::genderFromString(readElementText());
+                        }
+                    }
+                }
 
-				if (_partMapStaff[partId].size()>=number) {
-					_partMapKeySig[partId][number] = new CAKeySignature( CADiatonicKey( accs, gender ), _partMapStaff[partId][number-1], 0 );
-				} else {
-					_partMapKeySig[partId][number] = new CAKeySignature( CADiatonicKey( accs, gender ), nullptr, 0 );
-				}
+                if (_partMapStaff[partId].size() >= number) {
+                    _partMapKeySig[partId][number] = new CAKeySignature(CADiatonicKey(accs, gender), _partMapStaff[partId][number - 1], 0);
+                } else {
+                    _partMapKeySig[partId][number] = new CAKeySignature(CADiatonicKey(accs, gender), nullptr, 0);
+                }
 
-			} else if (name()=="time") {
+            } else if (name() == "time") {
 
-				int beats = 1;
-				int beat = 1;
-				int number = (attributes().value("number").toString().isEmpty()?1:attributes().value("number").toString().toInt());
+                int beats = 1;
+                int beat = 1;
+                int number = (attributes().value("number").toString().isEmpty() ? 1 : attributes().value("number").toString().toInt());
 
-				while (!atEnd() && !(tokenType()==EndElement && name()=="time")) {
-					readNext();
+                while (!atEnd() && !(tokenType() == EndElement && name() == "time")) {
+                    readNext();
 
-					if (tokenType()==StartElement) {
-						if ( name()=="beats" ) {
-							beats= readElementText().toInt();
-						}
-						if ( name()=="beat-type" ) {
-							beat = readElementText().toInt();
-						}
-					}
-				}
+                    if (tokenType() == StartElement) {
+                        if (name() == "beats") {
+                            beats = readElementText().toInt();
+                        }
+                        if (name() == "beat-type") {
+                            beat = readElementText().toInt();
+                        }
+                    }
+                }
 
-				if (_partMapStaff[partId].size()>=number) {
-					_partMapTimeSig[partId][number] = new CATimeSignature( beats, beat, _partMapStaff[partId][number-1], 0 );
-				} else {
-					_partMapTimeSig[partId][number] = new CATimeSignature( beats, beat, nullptr, 0 );
-				}
+                if (_partMapStaff[partId].size() >= number) {
+                    _partMapTimeSig[partId][number] = new CATimeSignature(beats, beat, _partMapStaff[partId][number - 1], 0);
+                } else {
+                    _partMapTimeSig[partId][number] = new CATimeSignature(beats, beat, nullptr, 0);
+                }
 
-			} else if (name()=="clef") {
+            } else if (name() == "clef") {
 
-				QString sign;
-				int number = (attributes().value("number").toString().isEmpty()?1:attributes().value("number").toString().toInt());
+                QString sign;
+                int number = (attributes().value("number").toString().isEmpty() ? 1 : attributes().value("number").toString().toInt());
 
-				while (!atEnd() && !(tokenType()==EndElement && name()=="clef")) {
-					readNext();
+                while (!atEnd() && !(tokenType() == EndElement && name() == "clef")) {
+                    readNext();
 
-					if (tokenType()==StartElement) {
-						if ( name()=="sign" ) {
-							sign = readElementText();
-						}
-					}
-				}
+                    if (tokenType() == StartElement) {
+                        if (name() == "sign") {
+                            sign = readElementText();
+                        }
+                    }
+                }
 
-				CAClef::CAPredefinedClefType t;
-				if (sign=="G") t=CAClef::Treble; // only treble and bass clefs are supported for now
-				else if (sign=="F") t=CAClef::Bass;
-                else t=CAClef::Undefined;
+                CAClef::CAPredefinedClefType t;
+                if (sign == "G")
+                    t = CAClef::Treble; // only treble and bass clefs are supported for now
+                else if (sign == "F")
+                    t = CAClef::Bass;
+                else
+                    t = CAClef::Undefined;
 
-				if (_partMapStaff[partId].size()>=number) {
-					_partMapClef[partId][number] = new CAClef( t, _partMapStaff[partId][number-1], 0 );
-				} else {
-					_partMapClef[partId][number] = new CAClef( t, nullptr, 0 );
-				}
+                if (_partMapStaff[partId].size() >= number) {
+                    _partMapClef[partId][number] = new CAClef(t, _partMapStaff[partId][number - 1], 0);
+                } else {
+                    _partMapClef[partId][number] = new CAClef(t, nullptr, 0);
+                }
+            }
+        }
+    }
 
-			}
-		}
-	}
-
-	addStavesIfNeeded( partId, staves );
+    addStavesIfNeeded(partId, staves);
 }
 
-void CAMusicXmlImport::readNote( QString partId, int divisions ) {
-	if (name()!="note") return;
+void CAMusicXmlImport::readNote(QString partId, int divisions)
+{
+    if (name() != "note")
+        return;
 
-	bool isRest = false;
-	bool isPartOfChord = false;
-	bool tieStop = false;
-	int voice = 1;
-	int staff = 1;
-	CAPlayableLength length;
-	CADiatonicPitch pitch;
-	//CANote::CAStemDirection stem = CANote::StemPreferred;
-	int lyricsNumber=-1;
-	bool hyphen = false;
-	bool melisma = false;
-	QString lyricsText;
+    bool isRest = false;
+    bool isPartOfChord = false;
+    bool tieStop = false;
+    int voice = 1;
+    int staff = 1;
+    CAPlayableLength length;
+    CADiatonicPitch pitch;
+    //CANote::CAStemDirection stem = CANote::StemPreferred;
+    int lyricsNumber = -1;
+    bool hyphen = false;
+    bool melisma = false;
+    QString lyricsText;
 
-	if (!divisions) {
-		std::cerr << "CAMusicXmlImport::readNote()- Error: divisions is 0, setting to 8" << std::endl;
-		divisions=8;
-	}
+    if (!divisions) {
+        std::cerr << "CAMusicXmlImport::readNote()- Error: divisions is 0, setting to 8" << std::endl;
+        divisions = 8;
+    }
 
-	while (!atEnd() && !(tokenType()==EndElement && name()=="note")) {
-		readNext();
+    while (!atEnd() && !(tokenType() == EndElement && name() == "note")) {
+        readNext();
 
-		if (tokenType()==StartElement) {
-			if (name()=="rest") {
-				isRest = true;
-			} else if (name()=="chord") {
-				isPartOfChord = true;
-			} else if (name()=="duration") {
-				int duration = readElementText().toInt();
+        if (tokenType() == StartElement) {
+            if (name() == "rest") {
+                isRest = true;
+            } else if (name() == "chord") {
+                isPartOfChord = true;
+            } else if (name() == "duration") {
+                int duration = readElementText().toInt();
                 float fDivisions = divisions;
-				length = CAPlayableLength::timeLengthToPlayableLengthList( static_cast<int>((duration/fDivisions) * 256) ).first();
-			} else if (name()=="stem") {
-				QString s = readElementText();
-				//if (s=="up") stem = CANote::StemUp;
-				//else if (s=="down") stem = CANote::StemDown;
-			} else if (name()=="pitch") {
-				int alter = 0;
-				QString step;
-				int octave = -1;
-				while (!atEnd() && !(tokenType()==EndElement && name()=="pitch")) {
-					readNext();
+                length = CAPlayableLength::timeLengthToPlayableLengthList(static_cast<int>((duration / fDivisions) * 256)).first();
+            } else if (name() == "stem") {
+                QString s = readElementText();
+                //if (s=="up") stem = CANote::StemUp;
+                //else if (s=="down") stem = CANote::StemDown;
+            } else if (name() == "pitch") {
+                int alter = 0;
+                QString step;
+                int octave = -1;
+                while (!atEnd() && !(tokenType() == EndElement && name() == "pitch")) {
+                    readNext();
 
-					if (tokenType()==StartElement) {
-						if (name()=="step") {
-							step = readElementText();
-						} else if (name()=="octave") {
-							octave = readElementText().toInt();
-						} else if (name()=="alter") {
-							alter = readElementText().toInt();
-						}
-					}
-				}
+                    if (tokenType() == StartElement) {
+                        if (name() == "step") {
+                            step = readElementText();
+                        } else if (name() == "octave") {
+                            octave = readElementText().toInt();
+                        } else if (name() == "alter") {
+                            alter = readElementText().toInt();
+                        }
+                    }
+                }
 
-				pitch = CADiatonicPitch::diatonicPitchFromString( step );
-				pitch.setNoteName( pitch.noteName()+(octave*7) );
-				pitch.setAccs( static_cast<char>(alter) );
-			} else if (name()=="voice") {
-				voice = readElementText().toInt();
-			} else if (name()=="staff") {
-				staff = readElementText().toInt();
-			} else if (name()=="lyric") {
-				lyricsNumber=1;
+                pitch = CADiatonicPitch::diatonicPitchFromString(step);
+                pitch.setNoteName(pitch.noteName() + (octave * 7));
+                pitch.setAccs(static_cast<char>(alter));
+            } else if (name() == "voice") {
+                voice = readElementText().toInt();
+            } else if (name() == "staff") {
+                staff = readElementText().toInt();
+            } else if (name() == "lyric") {
+                lyricsNumber = 1;
 
-				if ( !attributes().value("number").isEmpty() ) {
-					lyricsNumber = attributes().value("number").toString().toInt();
-				}
+                if (!attributes().value("number").isEmpty()) {
+                    lyricsNumber = attributes().value("number").toString().toInt();
+                }
 
-				while (!atEnd() && !(tokenType()==EndElement && name()=="lyric")) {
-					readNext();
+                while (!atEnd() && !(tokenType() == EndElement && name() == "lyric")) {
+                    readNext();
 
-					if (tokenType()==StartElement) {
-						if (name()=="text") {
-							lyricsText = readElementText();
-						} else if (name()=="syllabic") {
-							hyphen = (readElementText()=="begin"||readElementText()=="middle");
-						} else if (name()=="extend") {
-							melisma = true;
-						}
-					}
-				}
-			} else if (name()=="tie") {
-				if ( attributes().value("type")=="stop" ) {
-					tieStop = true;
-				}
-			}
-		}
-	}
+                    if (tokenType() == StartElement) {
+                        if (name() == "text") {
+                            lyricsText = readElementText();
+                        } else if (name() == "syllabic") {
+                            hyphen = (readElementText() == "begin" || readElementText() == "middle");
+                        } else if (name() == "extend") {
+                            melisma = true;
+                        }
+                    }
+                }
+            } else if (name() == "tie") {
+                if (attributes().value("type") == "stop") {
+                    tieStop = true;
+                }
+            }
+        }
+    }
 
-	CAVoice *v = addVoiceIfNeeded( partId, staff, voice );
+    CAVoice* v = addVoiceIfNeeded(partId, staff, voice);
 
-	// grace notes are not supported yet
-	if (length.musicLength()==CAPlayableLength::Undefined) {
-		// grace notes don't have musicLength set
-		return;
-	}
+    // grace notes are not supported yet
+    if (length.musicLength() == CAPlayableLength::Undefined) {
+        // grace notes don't have musicLength set
+        return;
+    }
 
-	CAPlayable *p=nullptr;
-	if (!isRest) {
-		p = new CANote( pitch, length, v, 0 );
-		if (_tempoBpm!=-1) {
-			p->addMark( new CATempo( CAPlayableLength::Quarter, static_cast<uchar>(_tempoBpm), p ) );
-			_tempoBpm = -1;
-		}
-	} else {
-		p = new CARest( CARest::Normal, length, v, 0 );
-	}
+    CAPlayable* p = nullptr;
+    if (!isRest) {
+        p = new CANote(pitch, length, v, 0);
+        if (_tempoBpm != -1) {
+            p->addMark(new CATempo(CAPlayableLength::Quarter, static_cast<uchar>(_tempoBpm), p));
+            _tempoBpm = -1;
+        }
+    } else {
+        p = new CARest(CARest::Normal, length, v, 0);
+    }
 
-	v->append( p, isPartOfChord );
+    v->append(p, isPartOfChord);
 
-	// create ties
-	if (tieStop) {
-		CANote *noteEnd = static_cast<CANote*>(p);
-		CANote *noteStart = nullptr;
-		CANote *prevNote = v->previousNote(p->timeStart());
-		if (prevNote) {
-			QList<CANote*> prevChord = prevNote->getChord();
-			for (int i=0; i<prevChord.size(); i++) {
-				if (static_cast<CANote*>(prevChord[i])->diatonicPitch()==noteEnd->diatonicPitch()) {
-					noteStart = static_cast<CANote*>(prevChord[i]);
-					break;
-				}
-			}
-		}
+    // create ties
+    if (tieStop) {
+        CANote* noteEnd = static_cast<CANote*>(p);
+        CANote* noteStart = nullptr;
+        CANote* prevNote = v->previousNote(p->timeStart());
+        if (prevNote) {
+            QList<CANote*> prevChord = prevNote->getChord();
+            for (int i = 0; i < prevChord.size(); i++) {
+                if (static_cast<CANote*>(prevChord[i])->diatonicPitch() == noteEnd->diatonicPitch()) {
+                    noteStart = static_cast<CANote*>(prevChord[i]);
+                    break;
+                }
+            }
+        }
 
-		if (noteStart) {
-			CASlur *tie = new CASlur( CASlur::TieType, CASlur::SlurPreferred, v->staff(), noteStart, noteEnd );
-			noteStart->setTieStart(tie);
-			noteEnd->setTieEnd(tie);
-		}
-	}
+        if (noteStart) {
+            CASlur* tie = new CASlur(CASlur::TieType, CASlur::SlurPreferred, v->staff(), noteStart, noteEnd);
+            noteStart->setTieStart(tie);
+            noteEnd->setTieEnd(tie);
+        }
+    }
 
-	// create lyrics
-	if (lyricsNumber!=-1) {
-		while (lyricsNumber > v->lyricsContextList().size()) {
-			v->addLyricsContext( new CALyricsContext( v->name()+tr("Lyrics"), v->lyricsContextList().size()+1, v ) );
-			int idx=0;
-			if (v->lyricsContextList().size()==1) {
-				// Add the first lyrics right below the staff
-				idx = _document->sheetList()[0]->contextList().indexOf(v->staff())+1;
-			} else {
-				// Add next lyrics below the last lyrics line
-				idx = _document->sheetList()[0]->contextList().indexOf(v->lyricsContextList().last())+1;
-			}
-			_document->sheetList()[0]->insertContext( idx, v->lyricsContextList().last() );
-		}
+    // create lyrics
+    if (lyricsNumber != -1) {
+        while (lyricsNumber > v->lyricsContextList().size()) {
+            v->addLyricsContext(new CALyricsContext(v->name() + tr("Lyrics"), v->lyricsContextList().size() + 1, v));
+            int idx = 0;
+            if (v->lyricsContextList().size() == 1) {
+                // Add the first lyrics right below the staff
+                idx = _document->sheetList()[0]->contextList().indexOf(v->staff()) + 1;
+            } else {
+                // Add next lyrics below the last lyrics line
+                idx = _document->sheetList()[0]->contextList().indexOf(v->lyricsContextList().last()) + 1;
+            }
+            _document->sheetList()[0]->insertContext(idx, v->lyricsContextList().last());
+        }
 
-		v->lyricsContextList()[lyricsNumber-1]->addSyllable( new CASyllable(lyricsText, hyphen, melisma, v->lyricsContextList()[lyricsNumber-1], p->timeStart(), p->timeLength() ) );
-	}
+        v->lyricsContextList()[lyricsNumber - 1]->addSyllable(new CASyllable(lyricsText, hyphen, melisma, v->lyricsContextList()[lyricsNumber - 1], p->timeStart(), p->timeLength()));
+    }
 }
 
-void CAMusicXmlImport::readSound( QString partId ) {
-    (void) partId;
-	if (name()!="sound") return;
+void CAMusicXmlImport::readSound(QString partId)
+{
+    (void)partId;
+    if (name() != "sound")
+        return;
 
-	if ( !attributes().value("tempo").isEmpty() ) {
-		_tempoBpm = attributes().value("tempo").toString().toInt();
-	}
+    if (!attributes().value("tempo").isEmpty()) {
+        _tempoBpm = attributes().value("tempo").toString().toInt();
+    }
 }
 
 /*!
@@ -569,22 +600,23 @@ void CAMusicXmlImport::readSound( QString partId ) {
 	Adds new staves, if needed and assings any clefs, key signatures or time signatures in the buffer
 	to the new staff, if their number is the number of the new staff.
 */
-void CAMusicXmlImport::addStavesIfNeeded( QString partId, int staves ) {
-	for (int i=_partMapStaff[partId].size()+1; i<=staves && staves > _partMapStaff[partId].size(); i++) {
-		CAStaff *s = new CAStaff( tr("Staff%1").arg(_document->sheetList()[0]->staffList().size()), _document->sheetList()[0] );
-		_document->sheetList()[0]->addContext(s);
-		_partMapStaff[partId].append( s );
+void CAMusicXmlImport::addStavesIfNeeded(QString partId, int staves)
+{
+    for (int i = _partMapStaff[partId].size() + 1; i <= staves && staves > _partMapStaff[partId].size(); i++) {
+        CAStaff* s = new CAStaff(tr("Staff%1").arg(_document->sheetList()[0]->staffList().size()), _document->sheetList()[0]);
+        _document->sheetList()[0]->addContext(s);
+        _partMapStaff[partId].append(s);
 
-		if (_partMapKeySig[partId].contains(i)) {
-			_partMapKeySig[partId][i]->setContext( s );
-		}
-		if (_partMapTimeSig[partId].contains(i)) {
-			_partMapTimeSig[partId][i]->setContext( s );
-		}
-		if (_partMapClef[partId].contains(i)) {
-			_partMapClef[partId][i]->setContext( s );
-		}
-	}
+        if (_partMapKeySig[partId].contains(i)) {
+            _partMapKeySig[partId][i]->setContext(s);
+        }
+        if (_partMapTimeSig[partId].contains(i)) {
+            _partMapTimeSig[partId][i]->setContext(s);
+        }
+        if (_partMapClef[partId].contains(i)) {
+            _partMapClef[partId][i]->setContext(s);
+        }
+    }
 }
 
 /*!
@@ -592,73 +624,76 @@ void CAMusicXmlImport::addStavesIfNeeded( QString partId, int staves ) {
 	Adds new voices, if needed and adds any clefs, key signatures or time signatures in the buffer
 	to the new voice.
 */
-CAVoice *CAMusicXmlImport::addVoiceIfNeeded( QString partId, int staff, int voice ) {
-	CAVoice *v = nullptr;
-	CAStaff *s = nullptr;
+CAVoice* CAMusicXmlImport::addVoiceIfNeeded(QString partId, int staff, int voice)
+{
+    CAVoice* v = nullptr;
+    CAStaff* s = nullptr;
 
-	if (!_partMapVoice[partId].contains(voice)) {
-		s = _partMapStaff[partId][staff-1];
-		v = new CAVoice( tr("Voice%1").arg(s->voiceList().size()), s );
-		if (!s->voiceList().size()) {
-			if (_partMapClef[partId].contains(staff)) {
-				v->append(_partMapClef[partId][staff]);
-			} else if (_partMapClef[partId].contains(1)) { // add the default clef
-				v->append(_partMapClef[partId][1]->clone(s));
-			}
+    if (!_partMapVoice[partId].contains(voice)) {
+        s = _partMapStaff[partId][staff - 1];
+        v = new CAVoice(tr("Voice%1").arg(s->voiceList().size()), s);
+        if (!s->voiceList().size()) {
+            if (_partMapClef[partId].contains(staff)) {
+                v->append(_partMapClef[partId][staff]);
+            } else if (_partMapClef[partId].contains(1)) { // add the default clef
+                v->append(_partMapClef[partId][1]->clone(s));
+            }
 
-			if (_partMapKeySig[partId].contains(staff)) {
-				v->append(_partMapKeySig[partId][staff]);
-			} else if (_partMapKeySig[partId].contains(1)) { // add the default keysig
-				v->append(_partMapKeySig[partId][1]->clone(s));
-			}
+            if (_partMapKeySig[partId].contains(staff)) {
+                v->append(_partMapKeySig[partId][staff]);
+            } else if (_partMapKeySig[partId].contains(1)) { // add the default keysig
+                v->append(_partMapKeySig[partId][1]->clone(s));
+            }
 
-			if (_partMapTimeSig[partId].contains(staff)) {
-				v->append(_partMapTimeSig[partId][staff]);
-			} else if (_partMapTimeSig[partId].contains(1)) { // add the default timesig
-				v->append(_partMapTimeSig[partId][1]->clone(s));
-			}
-		}
+            if (_partMapTimeSig[partId].contains(staff)) {
+                v->append(_partMapTimeSig[partId][staff]);
+            } else if (_partMapTimeSig[partId].contains(1)) { // add the default timesig
+                v->append(_partMapTimeSig[partId][1]->clone(s));
+            }
+        }
 
-		s->addVoice(v);
-		s->synchronizeVoices();
-		_partMapVoice[partId][voice] = v;
-	} else {
-		v = _partMapVoice[partId][voice];
-		s = v->staff();
-	}
+        s->addVoice(v);
+        s->synchronizeVoices();
+        _partMapVoice[partId][voice] = v;
+    } else {
+        v = _partMapVoice[partId][voice];
+        s = v->staff();
+    }
 
-	return v;
+    return v;
 }
 
-void CAMusicXmlImport::readForward( QString partId, int divisions ) {
-	if (name()!="forward") return;
+void CAMusicXmlImport::readForward(QString partId, int divisions)
+{
+    if (name() != "forward")
+        return;
 
-	int voice=-1;
-	int length=-1;
-	int staff=1;
+    int voice = -1;
+    int length = -1;
+    int staff = 1;
 
-	while (!atEnd() && !(tokenType()==EndElement && name()=="forward")) {
-		readNext();
+    while (!atEnd() && !(tokenType() == EndElement && name() == "forward")) {
+        readNext();
 
-		if (tokenType()==StartElement) {
-			if (name()=="duration") {
+        if (tokenType() == StartElement) {
+            if (name() == "duration") {
                 float fDivisions = divisions;
-				length = static_cast<int>((readElementText().toInt()/fDivisions) * 256);
-			} else if (name()=="voice") {
-				voice = readElementText().toInt();
-			} else if (name()=="staff") {
-				staff = readElementText().toInt();
-			}
-		}
-	}
+                length = static_cast<int>((readElementText().toInt() / fDivisions) * 256);
+            } else if (name() == "voice") {
+                voice = readElementText().toInt();
+            } else if (name() == "staff") {
+                staff = readElementText().toInt();
+            }
+        }
+    }
 
-	if (voice!=-1 && length!=-1) {
-		CAVoice *v = addVoiceIfNeeded( partId, staff, voice );
+    if (voice != -1 && length != -1) {
+        CAVoice* v = addVoiceIfNeeded(partId, staff, voice);
 
-		QList<CARest*> hiddenRests = CARest::composeRests( length, v->lastTimeEnd(), v );
+        QList<CARest*> hiddenRests = CARest::composeRests(length, v->lastTimeEnd(), v);
 
-		for (int i=0; i<hiddenRests.size(); i++) {
-			v->append( hiddenRests[i] );
-		}
-	}
+        for (int i = 0; i < hiddenRests.size(); i++) {
+            v->append(hiddenRests[i]);
+        }
+    }
 }

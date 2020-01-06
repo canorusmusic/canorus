@@ -5,10 +5,10 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include <iostream>
 #include "core/undo.h"
 #include "core/undocommand.h"
 #include "score/document.h" // needed for setting the modified flag
+#include <iostream>
 
 /*!
 	\class CAUndo
@@ -38,60 +38,66 @@
 	\sa CAUndoCommand
 */
 
-CAUndo::CAUndo() {
-	_undoCommand = nullptr;
+CAUndo::CAUndo()
+{
+    _undoCommand = nullptr;
 }
 
-CAUndo::~CAUndo() {
+CAUndo::~CAUndo()
+{
 }
 
 /*!
 	Creates a new undoStack for the given document.
 	This should be called at the beginning when the first main window for the given document is created.
 */
-void CAUndo::createUndoStack( CADocument *doc ) {
-	_undoStack[doc] = new QList<CAUndoCommand*>;
-	undoIndex(doc) = -1;
+void CAUndo::createUndoStack(CADocument* doc)
+{
+    _undoStack[doc] = new QList<CAUndoCommand*>;
+    undoIndex(doc) = -1;
 }
 
 /*!
 	Undoes the last change made to document.
 	This method already calls CAUndoCommand::undo().
 */
-void CAUndo::undo( CADocument *doc ) {
-	if (_undoStack[doc] && canUndo(doc)) {
-		_undoStack[doc]->at( undoIndex(doc) )->undo();
-		undoIndex(doc)--;
-	}
+void CAUndo::undo(CADocument* doc)
+{
+    if (_undoStack[doc] && canUndo(doc)) {
+        _undoStack[doc]->at(undoIndex(doc))->undo();
+        undoIndex(doc)--;
+    }
 }
 
 /*!
 	Redoes the last change made to document.
 	This method already calls CAUndoCommand::redo().
 */
-void CAUndo::redo( CADocument *doc ) {
-	if (_undoStack[doc] && canRedo(doc)) {
-		_undoStack[doc]->at( undoIndex(doc)+1 )->redo();
-		undoIndex(doc)++;
-	}
+void CAUndo::redo(CADocument* doc)
+{
+    if (_undoStack[doc] && canRedo(doc)) {
+        _undoStack[doc]->at(undoIndex(doc) + 1)->redo();
+        undoIndex(doc)++;
+    }
 }
 
 /*!
 	Deletes the undoStack object for the given document.
 	This should be called at the end where no main windows are pointing to the given document anymore.
 */
-void CAUndo::deleteUndoStack( CADocument *doc ) {
-	clearUndoCommand();
-	QList<CAUndoCommand*> *stack = undoStack(doc);
-	while(!stack->isEmpty()) {
-		delete stack->first();
-		stack->takeFirst();
-	}
-	delete stack;
+void CAUndo::deleteUndoStack(CADocument* doc)
+{
+    clearUndoCommand();
+    QList<CAUndoCommand*>* stack = undoStack(doc);
+    while (!stack->isEmpty()) {
+        delete stack->first();
+        stack->takeFirst();
+    }
+    delete stack;
 
-	QList<CADocument*> keys = _undoStack.keys(stack);
-	for (int i=0; i<keys.size(); i++)
-		removeUndoStack( keys[i] );
+    QList<CADocument*> keys = _undoStack.keys(stack);
+    for (int i = 0; i < keys.size(); i++)
+        removeUndoStack(keys[i]);
 }
 
 /*!
@@ -102,34 +108,35 @@ void CAUndo::deleteUndoStack( CADocument *doc ) {
 	\warning This function is not thread-safe. createUndoCommand() and pushUndoCommand() should be called
 	from the same thread and main window.
 */
-void CAUndo::pushUndoCommand() {
-	if ( !_undoCommand || !_undoCommand->getRedoDocument() || !_undoCommand->getUndoDocument() )
-		return;
+void CAUndo::pushUndoCommand()
+{
+    if (!_undoCommand || !_undoCommand->getRedoDocument() || !_undoCommand->getUndoDocument())
+        return;
 
-	CADocument *d = _undoCommand->getRedoDocument();
+    CADocument* d = _undoCommand->getRedoDocument();
 
-	_undoCommand->getUndoDocument()->setModified( true );
-	_undoCommand->getRedoDocument()->setModified( true );
+    _undoCommand->getUndoDocument()->setModified(true);
+    _undoCommand->getRedoDocument()->setModified(true);
 
-	QList<CAUndoCommand*> *s = _undoStack[d];
-	CAUndoCommand *prevUndoCommand = (undoIndex(d)<s->size() && undoIndex(d)>=0?s->at(undoIndex(d)):nullptr);
+    QList<CAUndoCommand*>* s = _undoStack[d];
+    CAUndoCommand* prevUndoCommand = (undoIndex(d) < s->size() && undoIndex(d) >= 0 ? s->at(undoIndex(d)) : nullptr);
 
-	// delete undo commands after the new one, if any (eg. 3x changes, 2x undo, 1x change => removes last 2 undos when making a change)
-	for (int i=undoIndex(d)+1; i<s->size();) {
-		_undoStack.remove( s->at(i)->getRedoDocument() );
-		delete s->at(i);
-		s->removeAt(i);
-	}
+    // delete undo commands after the new one, if any (eg. 3x changes, 2x undo, 1x change => removes last 2 undos when making a change)
+    for (int i = undoIndex(d) + 1; i < s->size();) {
+        _undoStack.remove(s->at(i)->getRedoDocument());
+        delete s->at(i);
+        s->removeAt(i);
+    }
 
-	if (prevUndoCommand) {
-		if (_undoCommand->getRedoDocument() && prevUndoCommand->getRedoDocument())
-			prevUndoCommand->setRedoDocument( _undoCommand->getUndoDocument() );
-	}
+    if (prevUndoCommand) {
+        if (_undoCommand->getRedoDocument() && prevUndoCommand->getRedoDocument())
+            prevUndoCommand->setRedoDocument(_undoCommand->getUndoDocument());
+    }
 
-	s->append( _undoCommand ); // push the command on stack
-	_undoStack[ _undoCommand->getUndoDocument() ] = s;
-	undoIndex(d) = _undoStack[d]->size()-1;
-	_undoCommand = nullptr;
+    s->append(_undoCommand); // push the command on stack
+    _undoStack[_undoCommand->getUndoDocument()] = s;
+    undoIndex(d) = _undoStack[d]->size() - 1;
+    _undoCommand = nullptr;
 }
 
 /*!
@@ -138,13 +145,12 @@ void CAUndo::pushUndoCommand() {
 
 	\sa canRedo()
 */
-bool CAUndo::canUndo( CADocument* d ) {
-	if ( _undoStack[d] &&
-	     _undoStack[d]->size() &&
-	     undoIndex(d)!=-1)
-		return true;
-	else
-		return false;
+bool CAUndo::canUndo(CADocument* d)
+{
+    if (_undoStack[d] && _undoStack[d]->size() && undoIndex(d) != -1)
+        return true;
+    else
+        return false;
 }
 
 /*!
@@ -153,24 +159,24 @@ bool CAUndo::canUndo( CADocument* d ) {
 
 	\sa canUndo()
 */
-bool CAUndo::canRedo( CADocument* d ) {
-	if ( _undoStack[d] &&
-	     _undoStack[d]->size() &&
-	     undoIndex(d)!=(_undoStack[d]->size()-1) )
-		return true;
-	else
-		return false;
+bool CAUndo::canRedo(CADocument* d)
+{
+    if (_undoStack[d] && _undoStack[d]->size() && undoIndex(d) != (_undoStack[d]->size() - 1))
+        return true;
+    else
+        return false;
 }
 
 /*!
 	Destroys the undo command if decided not to be put on the stack.
 	Does nothing if undo command is null.
 */
-void CAUndo::clearUndoCommand() {
-	if ( _undoCommand ) {
-		delete _undoCommand;
-		_undoCommand = nullptr;
-	}
+void CAUndo::clearUndoCommand()
+{
+    if (_undoCommand) {
+        delete _undoCommand;
+        _undoCommand = nullptr;
+    }
 }
 
 /*!
@@ -180,9 +186,10 @@ void CAUndo::clearUndoCommand() {
 
 	\warning This function is not thread-safe. createUndoCommand() and pushUndoCommand() should be called from the same thread.
 */
-void CAUndo::createUndoCommand( CADocument *d, QString text ) {
-	clearUndoCommand();
-	_undoCommand = new CAUndoCommand( d, text );
+void CAUndo::createUndoCommand(CADocument* d, QString text)
+{
+    clearUndoCommand();
+    _undoCommand = new CAUndoCommand(d, text);
 }
 
 /*!
@@ -190,12 +197,13 @@ void CAUndo::createUndoCommand( CADocument *d, QString text ) {
 	This function is called when the document is rebuilt, e.g. when a CanorusML view commits changes.
 */
 
-void CAUndo::changeDocument( CADocument *oldDoc, CADocument *newDoc) {
-	clearUndoCommand();
-	QList< CAUndoCommand* >* stack = _undoStack[oldDoc];
+void CAUndo::changeDocument(CADocument* oldDoc, CADocument* newDoc)
+{
+    clearUndoCommand();
+    QList<CAUndoCommand*>* stack = _undoStack[oldDoc];
 
-	_undoStack.remove(oldDoc);
-	_undoStack[newDoc] = stack;
+    _undoStack.remove(oldDoc);
+    _undoStack[newDoc] = stack;
 }
 
 /*!
@@ -203,22 +211,23 @@ void CAUndo::changeDocument( CADocument *oldDoc, CADocument *newDoc) {
 	This function is usually called when adding/removing a resource to/from a document.
 	Because resources are not undoable, they should be the same for all the documents.
  */
-QList<CADocument*> CAUndo::getAllDocuments( CADocument *d ) {
-	QList<CADocument*> documents;
+QList<CADocument*> CAUndo::getAllDocuments(CADocument* d)
+{
+    QList<CADocument*> documents;
 
-	QList<CAUndoCommand*>* undoCommands = _undoStack[d];
+    QList<CAUndoCommand*>* undoCommands = _undoStack[d];
 
-	if (undoCommands && undoCommands->size()) {
-		for (int i=0; i<undoCommands->size(); i++) {
-			documents << undoCommands->at(i)->getUndoDocument();
-		}
+    if (undoCommands && undoCommands->size()) {
+        for (int i = 0; i < undoCommands->size(); i++) {
+            documents << undoCommands->at(i)->getUndoDocument();
+        }
 
-		if (undoCommands->size()>0) {
-			documents << undoCommands->at(undoCommands->size()-1)->getRedoDocument();
-		}
-	} else {
-		documents << d;
-	}
+        if (undoCommands->size() > 0) {
+            documents << undoCommands->at(undoCommands->size() - 1)->getRedoDocument();
+        }
+    } else {
+        documents << d;
+    }
 
-	return documents;
+    return documents;
 }

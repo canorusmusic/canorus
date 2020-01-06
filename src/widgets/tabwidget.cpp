@@ -17,13 +17,15 @@
 	For now it offers double-click new sheet shortcut and movable tabs.
 */
 
-CATabWidget::CATabWidget( QWidget *parent )
- : QTabWidget(parent) {
-	setMovable(false);
-	connect( tabBar(), SIGNAL(tabMoved(int, int)), this, SIGNAL(CAMoveTab(int,int)) );
+CATabWidget::CATabWidget(QWidget* parent)
+    : QTabWidget(parent)
+{
+    setMovable(false);
+    connect(tabBar(), SIGNAL(tabMoved(int, int)), this, SIGNAL(CAMoveTab(int, int)));
 }
 
-CATabWidget::~CATabWidget() {
+CATabWidget::~CATabWidget()
+{
 }
 
 /*!
@@ -31,22 +33,25 @@ CATabWidget::~CATabWidget() {
 	The event needs to be implemented in the TabBar and not TabWidget to effect
 	the double clicks inside the tab area only.
 */
-void CATabWidget::mouseDoubleClickEvent( QMouseEvent * event ) {
-	if (event->y()>tabBar()->y() && tabBar()->tabAt(event->pos())==-1) {
-		emit CANewTab();
-	}
+void CATabWidget::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    if (event->y() > tabBar()->y() && tabBar()->tabAt(event->pos()) == -1) {
+        emit CANewTab();
+    }
 }
 
 /*!
 	Disable moving sheets, if only one present.
 */
-void CATabWidget::tabInserted(int) {
-	setMovable(count()>=2);
+void CATabWidget::tabInserted(int)
+{
+    setMovable(count() >= 2);
 }
 
 /*!
 	Disable moving sheets, if only one present.
 */
-void CATabWidget::tabRemoved(int) {
-	setMovable(count()>=2);
+void CATabWidget::tabRemoved(int)
+{
+    setMovable(count() >= 2);
 }

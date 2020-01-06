@@ -8,43 +8,43 @@
 #ifndef PYCONSOLE_H_
 #define PYCONSOLE_H_
 
+#include "score/document.h"
+#include <QMutex>
 #include <QObject>
 #include <QTextEdit>
-#include <QMutex>
-#include <QWaitCondition>
 #include <QToolBar>
-#include "score/document.h"
+#include <QWaitCondition>
 
 class CAPyConsole : public QTextEdit {
-	Q_OBJECT
+    Q_OBJECT
 public:
     enum TxtType {
-		txtNormal,
-		txtStdout,
-		txtStderr
-	};
+        txtNormal,
+        txtStdout,
+        txtStderr
+    };
 
-	CAPyConsole ( CADocument *doc, QWidget *parent=nullptr);
+    CAPyConsole(CADocument* doc, QWidget* parent = nullptr);
 
-	QString asyncBufferedInput(QString prompt);
-	void asyncBufferedOutput(QString bufInp, bool bStdErr);
-	void asyncPluginInit();
-	void asyncKeyboardInterrupt();
+    QString asyncBufferedInput(QString prompt);
+    void asyncBufferedOutput(QString bufInp, bool bStdErr);
+    void asyncPluginInit();
+    void asyncKeyboardInterrupt();
 
 protected:
-	void keyPressEvent (QKeyEvent * e);
+    void keyPressEvent(QKeyEvent* e);
 
 private slots:
-	void txtAppend(const QString & text, TxtType txtType = txtNormal );
-	void on_txtChanged();
-	void on_posChanged();
-	void on_selChanged();
-	void on_fmtChanged();
-	void syncPluginInit();
+    void txtAppend(const QString& text, TxtType txtType = txtNormal);
+    void on_txtChanged();
+    void on_posChanged();
+    void on_selChanged();
+    void on_fmtChanged();
+    void syncPluginInit();
 
 signals:
-	void sig_txtAppend(const QString & text, TxtType stdType);
-	void sig_syncPluginInit();
+    void sig_txtAppend(const QString& text, TxtType stdType);
+    void sig_syncPluginInit();
 
 private:
     enum HistLay {
@@ -53,50 +53,50 @@ private:
     };
 
     struct TxtFragment {
-		QString text;
-		TxtType type;
-	};
+        QString text;
+        TxtType type;
+    };
 
-	// void txtAppend(...) -> is in signals
-	void txtRevert();
-	QString txtGetInput(bool bReadText = false);
+    // void txtAppend(...) -> is in signals
+    void txtRevert();
+    QString txtGetInput(bool bReadText = false);
     void txtSetInput(QString input, bool bUpdateText = true);
 
-	void histAdd();
+    void histAdd();
     void histGet(HistLay histLay);
 
-	// text in the console
-	QTextCursor _curInput, _curNew;
-	int _iCurStart, _iCurNowOld, _iCurNow;
+    // text in the console
+    QTextCursor _curInput, _curNew;
+    int _iCurStart, _iCurNowOld, _iCurNow;
     bool _bIgnTxtChange;
 
-	TxtFragment *_tf;
-	QList<TxtFragment*> _txtFixed;
-	QString _strInput;
+    TxtFragment* _tf;
+    QList<TxtFragment*> _txtFixed;
+    QString _strInput;
 
-	// history
+    // history
     int _histIndex;
-	QList<QString> _histList;
-	QString _histOldInput;	// old _strInput
+    QList<QString> _histList;
+    QString _histOldInput; // old _strInput
 
-	QTextCharFormat _fmtNormal;
-	QTextCharFormat _fmtStdout;
-	QTextCharFormat _fmtStderr;
+    QTextCharFormat _fmtNormal;
+    QTextCharFormat _fmtStdout;
+    QTextCharFormat _fmtStderr;
 
-	// thread
-	QString _bufSend;
-	QMutex *_thrWaitMut;
-	QWaitCondition *_thrWait;
-	QMutex *_thrIntrWaitMut;
-	QWaitCondition *_thrIntrWait;
+    // thread
+    QString _bufSend;
+    QMutex* _thrWaitMut;
+    QWaitCondition* _thrWait;
+    QMutex* _thrIntrWaitMut;
+    QWaitCondition* _thrIntrWait;
 
-	// pyconsole '/' commands
-	bool cmdIntern(QString strCmd);
-	QString _strEntryFunc;
+    // pyconsole '/' commands
+    bool cmdIntern(QString strCmd);
+    QString _strEntryFunc;
 
     // rarely used
-	CADocument *_canorusDoc;
-	QWidget* _parent;
+    CADocument* _canorusDoc;
+    QWidget* _parent;
 };
 
 #endif /* PYCONSOLE_H_ */

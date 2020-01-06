@@ -7,9 +7,9 @@
 
 #include "score/figuredbasscontext.h"
 #include "score/figuredbassmark.h"
-#include "score/sheet.h"
 #include "score/playable.h"
 #include "score/playablelength.h"
+#include "score/sheet.h"
 
 /*!
 	\class CAFiguredBassContext
@@ -21,42 +21,48 @@
 	This is because exactly one figured bass mark is assigned to every chord.
  */
 
-CAFiguredBassContext::CAFiguredBassContext( QString name, CASheet *sheet )
- : CAContext(name, sheet) {
-	setContextType( FiguredBassContext );
-	repositFiguredBassMarks();
+CAFiguredBassContext::CAFiguredBassContext(QString name, CASheet* sheet)
+    : CAContext(name, sheet)
+{
+    setContextType(FiguredBassContext);
+    repositFiguredBassMarks();
 }
 
-CAFiguredBassContext::~CAFiguredBassContext() {
-	clear();
+CAFiguredBassContext::~CAFiguredBassContext()
+{
+    clear();
 }
 
 /*!
 	Inserts the given figured bass mark \a m according to its timeStart.
 	Replaces any existing figured bass marks at that time, if \a replace is True (default).
  */
-void CAFiguredBassContext::addFiguredBassMark( CAFiguredBassMark *m, bool replace ) {
-	int i;
-	for (i=0; i<_figuredBassMarkList.size() && _figuredBassMarkList[i]->timeStart()<m->timeStart(); i++);
-	//int s = _figuredBassMarkList.size();
-	if ( i<_figuredBassMarkList.size() && replace ) {
-		delete _figuredBassMarkList.takeAt(i);
-	}
-	_figuredBassMarkList.insert(i, m);
-	for (i++; i<_figuredBassMarkList.size(); i++)
-		_figuredBassMarkList[i]->setTimeStart( _figuredBassMarkList[i]->timeStart() + m->timeLength() );
+void CAFiguredBassContext::addFiguredBassMark(CAFiguredBassMark* m, bool replace)
+{
+    int i;
+    for (i = 0; i < _figuredBassMarkList.size() && _figuredBassMarkList[i]->timeStart() < m->timeStart(); i++)
+        ;
+    //int s = _figuredBassMarkList.size();
+    if (i < _figuredBassMarkList.size() && replace) {
+        delete _figuredBassMarkList.takeAt(i);
+    }
+    _figuredBassMarkList.insert(i, m);
+    for (i++; i < _figuredBassMarkList.size(); i++)
+        _figuredBassMarkList[i]->setTimeStart(_figuredBassMarkList[i]->timeStart() + m->timeLength());
 }
 
 /*!
 	Inserts an empty figured bass mark and shifts the marks after.
 	This function is usually called when initializing the context.
 */
-void CAFiguredBassContext::addEmptyFiguredBassMark( int timeStart, int timeLength ) {
-	int i;
-	for (i=0; i<_figuredBassMarkList.size() && _figuredBassMarkList[i]->timeStart()<timeStart; i++);
-	_figuredBassMarkList.insert(i, (new CAFiguredBassMark( this, timeStart, timeLength )));
-	for (i++; i<_figuredBassMarkList.size(); i++)
-		_figuredBassMarkList[i]->setTimeStart( _figuredBassMarkList[i]->timeStart() + timeLength );
+void CAFiguredBassContext::addEmptyFiguredBassMark(int timeStart, int timeLength)
+{
+    int i;
+    for (i = 0; i < _figuredBassMarkList.size() && _figuredBassMarkList[i]->timeStart() < timeStart; i++)
+        ;
+    _figuredBassMarkList.insert(i, (new CAFiguredBassMark(this, timeStart, timeLength)));
+    for (i++; i < _figuredBassMarkList.size(); i++)
+        _figuredBassMarkList[i]->setTimeStart(_figuredBassMarkList[i]->timeStart() + timeLength);
 }
 
 /*!
@@ -65,112 +71,120 @@ void CAFiguredBassContext::addEmptyFiguredBassMark( int timeStart, int timeLengt
 
  	\sa CALyricsContext::repositSyllables(), CAFunctionMarkContext::repositFunctions(), CAChordNameContext::repositChordNames()
  */
-void CAFiguredBassContext::repositFiguredBassMarks() {
-	if ( !sheet() ) {
-		return;
-	}
+void CAFiguredBassContext::repositFiguredBassMarks()
+{
+    if (!sheet()) {
+        return;
+    }
 
-	QList<CAPlayable*> chord = sheet()->getChord(0);
-	int fbmIdx = 0;
-	while (chord.size()) {
-		int maxTimeStart = chord[0]->timeStart();
-		int minTimeEnd = chord[0]->timeEnd();
-		bool notes = false; // are notes present in the chord or only rests?
-		for (int i=1; i<chord.size(); i++) {
-			if (chord[i]->musElementType()==CAMusElement::Note) {
-				notes = true;
-			}
+    QList<CAPlayable*> chord = sheet()->getChord(0);
+    int fbmIdx = 0;
+    while (chord.size()) {
+        int maxTimeStart = chord[0]->timeStart();
+        int minTimeEnd = chord[0]->timeEnd();
+        bool notes = false; // are notes present in the chord or only rests?
+        for (int i = 1; i < chord.size(); i++) {
+            if (chord[i]->musElementType() == CAMusElement::Note) {
+                notes = true;
+            }
 
-			if (chord[i]->timeStart() > maxTimeStart) {
-				maxTimeStart = chord[i]->timeStart();
-			}
-			if (chord[i]->timeEnd() < minTimeEnd) {
-				minTimeEnd = chord[i]->timeEnd();
-			}
-		}
+            if (chord[i]->timeStart() > maxTimeStart) {
+                maxTimeStart = chord[i]->timeStart();
+            }
+            if (chord[i]->timeEnd() < minTimeEnd) {
+                minTimeEnd = chord[i]->timeEnd();
+            }
+        }
 
-		// only assign figured bass marks under the notes
-		if (notes) {
-			// add new empty figured bass, if none exist
-			if ( fbmIdx==_figuredBassMarkList.size() ) {
-				addEmptyFiguredBassMark( maxTimeStart, minTimeEnd-maxTimeStart );
-			}
+        // only assign figured bass marks under the notes
+        if (notes) {
+            // add new empty figured bass, if none exist
+            if (fbmIdx == _figuredBassMarkList.size()) {
+                addEmptyFiguredBassMark(maxTimeStart, minTimeEnd - maxTimeStart);
+            }
 
-			CAFiguredBassMark *mark = _figuredBassMarkList[fbmIdx];
-			mark->setTimeStart( maxTimeStart );
-			mark->setTimeLength( minTimeEnd-maxTimeStart );
-			fbmIdx++;
-		}
+            CAFiguredBassMark* mark = _figuredBassMarkList[fbmIdx];
+            mark->setTimeStart(maxTimeStart);
+            mark->setTimeLength(minTimeEnd - maxTimeStart);
+            fbmIdx++;
+        }
 
-		chord = sheet()->getChord(minTimeEnd);
-	}
+        chord = sheet()->getChord(minTimeEnd);
+    }
 
-	// updated times for the figured bass marks at the end (after the score)
-	for (; fbmIdx < _figuredBassMarkList.size(); fbmIdx++) {
-		_figuredBassMarkList[fbmIdx]->setTimeStart(((fbmIdx>0)?_figuredBassMarkList[fbmIdx-1]:_figuredBassMarkList[0])->timeEnd());
-		_figuredBassMarkList[fbmIdx]->setTimeLength(CAPlayableLength::Quarter);
-	}
+    // updated times for the figured bass marks at the end (after the score)
+    for (; fbmIdx < _figuredBassMarkList.size(); fbmIdx++) {
+        _figuredBassMarkList[fbmIdx]->setTimeStart(((fbmIdx > 0) ? _figuredBassMarkList[fbmIdx - 1] : _figuredBassMarkList[0])->timeEnd());
+        _figuredBassMarkList[fbmIdx]->setTimeLength(CAPlayableLength::Quarter);
+    }
 }
 
 /*!
 	Returns figured bass mark at the given \a time.
  */
-CAFiguredBassMark *CAFiguredBassContext::figuredBassMarkAtTimeStart( int time ) {
-	int i;
-	for ( i=0; i<_figuredBassMarkList.size() && _figuredBassMarkList[i]->timeStart() <= time; i++);
-	if (i>0 && _figuredBassMarkList[--i]->timeEnd()>time) {
-		return _figuredBassMarkList[i];
-	} else {
-		return nullptr;
-	}
+CAFiguredBassMark* CAFiguredBassContext::figuredBassMarkAtTimeStart(int time)
+{
+    int i;
+    for (i = 0; i < _figuredBassMarkList.size() && _figuredBassMarkList[i]->timeStart() <= time; i++)
+        ;
+    if (i > 0 && _figuredBassMarkList[--i]->timeEnd() > time) {
+        return _figuredBassMarkList[i];
+    } else {
+        return nullptr;
+    }
 }
 
-CAContext* CAFiguredBassContext::clone( CASheet* s ) {
-	CAFiguredBassContext *newFbc = new CAFiguredBassContext( name(), s );
+CAContext* CAFiguredBassContext::clone(CASheet* s)
+{
+    CAFiguredBassContext* newFbc = new CAFiguredBassContext(name(), s);
 
-	for (int i=0; i<_figuredBassMarkList.size(); i++) {
-		CAFiguredBassMark *newFbm = static_cast<CAFiguredBassMark*>(_figuredBassMarkList[i]->clone(newFbc));
-		newFbc->addFiguredBassMark( newFbm );
-	}
-	return newFbc;
+    for (int i = 0; i < _figuredBassMarkList.size(); i++) {
+        CAFiguredBassMark* newFbm = static_cast<CAFiguredBassMark*>(_figuredBassMarkList[i]->clone(newFbc));
+        newFbc->addFiguredBassMark(newFbm);
+    }
+    return newFbc;
 }
 
-void CAFiguredBassContext::clear() {
-	while(!_figuredBassMarkList.isEmpty())
-		delete _figuredBassMarkList.takeFirst();
+void CAFiguredBassContext::clear()
+{
+    while (!_figuredBassMarkList.isEmpty())
+        delete _figuredBassMarkList.takeFirst();
 }
 
-CAMusElement* CAFiguredBassContext::next( CAMusElement* elt ) {
-	if (elt->musElementType()!=CAMusElement::FiguredBassMark)
-		return nullptr;
+CAMusElement* CAFiguredBassContext::next(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::FiguredBassMark)
+        return nullptr;
 
-	int i = _figuredBassMarkList.indexOf(static_cast<CAFiguredBassMark*>(elt));
-	if (i!=-1 && ++i<_figuredBassMarkList.size())
-		return _figuredBassMarkList[i];
-	else
-		return nullptr;
+    int i = _figuredBassMarkList.indexOf(static_cast<CAFiguredBassMark*>(elt));
+    if (i != -1 && ++i < _figuredBassMarkList.size())
+        return _figuredBassMarkList[i];
+    else
+        return nullptr;
 }
 
-CAMusElement* CAFiguredBassContext::previous( CAMusElement* elt ) {
-	if (elt->musElementType()!=CAMusElement::FiguredBassMark)
-		return nullptr;
+CAMusElement* CAFiguredBassContext::previous(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::FiguredBassMark)
+        return nullptr;
 
-	int i = _figuredBassMarkList.indexOf(static_cast<CAFiguredBassMark*>(elt));
-	if (i!=-1 && --i>-1)
-		return _figuredBassMarkList[i];
-	else
-		return nullptr;
+    int i = _figuredBassMarkList.indexOf(static_cast<CAFiguredBassMark*>(elt));
+    if (i != -1 && --i > -1)
+        return _figuredBassMarkList[i];
+    else
+        return nullptr;
 }
 
-bool CAFiguredBassContext::remove( CAMusElement *elt ) {
-	if (!elt || elt->musElementType()!=CAMusElement::FiguredBassMark)
-		return false;
+bool CAFiguredBassContext::remove(CAMusElement* elt)
+{
+    if (!elt || elt->musElementType() != CAMusElement::FiguredBassMark)
+        return false;
 
-	bool success=false;
-	success = _figuredBassMarkList.removeAll(static_cast<CAFiguredBassMark*>(elt));
+    bool success = false;
+    success = _figuredBassMarkList.removeAll(static_cast<CAFiguredBassMark*>(elt));
 
-	if(success)
-		delete elt;
+    if (success)
+        delete elt;
 
-	return success;
+    return success;
 }

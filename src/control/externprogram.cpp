@@ -6,8 +6,8 @@
 */
 
 // Includes
-#include <QDebug>
 #include "control/externprogram.h"
+#include <QDebug>
 
 /*!	\class CAExternProgram
 	\brief Start a program as extern background process
@@ -21,24 +21,24 @@
 	             has to be set to false.
 */
 
-CAExternProgram::CAExternProgram( bool bRcvStdErr /* = true */, bool bRcvStdOut /* = true */ )
+CAExternProgram::CAExternProgram(bool bRcvStdErr /* = true */, bool bRcvStdOut /* = true */)
 {
-	_bRcvStdErr = bRcvStdErr;
-	_poExternProgram = new QProcess();
-	_oParamDelimiter = " ";
-	connect( _poExternProgram, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( programError( QProcess::ProcessError ) ) );
-	connect( _poExternProgram, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( programFinished( int, QProcess::ExitStatus ) ) );
-  if( bRcvStdOut )
-		connect( _poExternProgram, SIGNAL( readyReadStandardOutput() ), this, SLOT( rcvProgramStdOut() ) );
-  if( bRcvStdErr )
-		connect( _poExternProgram, SIGNAL( readyReadStandardError() ), this, SLOT( rcvProgramStdErr() ) );
+    _bRcvStdErr = bRcvStdErr;
+    _poExternProgram = new QProcess();
+    _oParamDelimiter = " ";
+    connect(_poExternProgram, SIGNAL(error(QProcess::ProcessError)), this, SLOT(programError(QProcess::ProcessError)));
+    connect(_poExternProgram, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(programFinished(int, QProcess::ExitStatus)));
+    if (bRcvStdOut)
+        connect(_poExternProgram, SIGNAL(readyReadStandardOutput()), this, SLOT(rcvProgramStdOut()));
+    if (bRcvStdErr)
+        connect(_poExternProgram, SIGNAL(readyReadStandardError()), this, SLOT(rcvProgramStdErr()));
 }
 
 // Destructor
 CAExternProgram::~CAExternProgram()
 {
-  if( _poExternProgram )
-    delete _poExternProgram;
+    if (_poExternProgram)
+        delete _poExternProgram;
 }
 
 /*!
@@ -53,13 +53,13 @@ CAExternProgram::~CAExternProgram()
 	\sa setProgramPath( QString oPath )
 	\sa execProgram( QString oCwd )
 */
-void CAExternProgram::setProgramName( const QString &roProgram )
+void CAExternProgram::setProgramName(const QString& roProgram)
 {
-	// Make sure that the program name is defined
-	if( !roProgram.isEmpty() )
-		_oProgramName = roProgram;
-	else
-	  qWarning("ExternProgram: Ignoring program name being empty!");
+    // Make sure that the program name is defined
+    if (!roProgram.isEmpty())
+        _oProgramName = roProgram;
+    else
+        qWarning("ExternProgram: Ignoring program name being empty!");
 }
 
 /*!
@@ -71,13 +71,13 @@ void CAExternProgram::setProgramName( const QString &roProgram )
 
 	\sa setProgramName( QString oProgram )
 */
-void CAExternProgram::setProgramPath( const QString &roPath )
+void CAExternProgram::setProgramPath(const QString& roPath)
 {
-	// Make sure that the program path is defined
-	if( !roPath.isEmpty() )
-		_oProgramPath = roPath;
-	else
-	  qWarning("ExternProgram: Ignoring program path being empty!");
+    // Make sure that the program path is defined
+    if (!roPath.isEmpty())
+        _oProgramPath = roPath;
+    else
+        qWarning("ExternProgram: Ignoring program path being empty!");
 }
 
 /*!
@@ -91,13 +91,13 @@ void CAExternProgram::setProgramPath( const QString &roPath )
 	\sa addParameter( QString oParam, bool bAddSpaces = true )
 	\sa setProgramName( QString oProgram )
 */
-void CAExternProgram::setParameters( const QStringList &roParams )
+void CAExternProgram::setParameters(const QStringList& roParams)
 {
-	// Make sure that the parameters are defined
-	if( !roParams.isEmpty() )
-		_oParameters = roParams;
-	else
-	  qWarning("ExternProgram: Ignoring parameters being empty!");
+    // Make sure that the parameters are defined
+    if (!roParams.isEmpty())
+        _oParameters = roParams;
+    else
+        qWarning("ExternProgram: Ignoring parameters being empty!");
 }
 
 /*!
@@ -111,12 +111,12 @@ void CAExternProgram::setParameters( const QStringList &roParams )
 */
 int CAExternProgram::getExitState()
 {
-  int iExitStatus = -1;
-  if( getRunning() )
-	  qWarning("ExternProgram: Getting exit state while program is still running!");
-	else
-	  iExitStatus = static_cast<int>(_poExternProgram->exitStatus());
-  return iExitStatus;
+    int iExitStatus = -1;
+    if (getRunning())
+        qWarning("ExternProgram: Getting exit state while program is still running!");
+    else
+        iExitStatus = static_cast<int>(_poExternProgram->exitStatus());
+    return iExitStatus;
 }
 
 /*!
@@ -130,18 +130,16 @@ int CAExternProgram::getExitState()
 	\sa setParameters( QString oParams )
 	\sa setParamDelimiter( QString oDelimiter )
 */
-void CAExternProgram::addParameter( const QString &roParam, bool bAddDelimiter /* = true */ )
+void CAExternProgram::addParameter(const QString& roParam, bool bAddDelimiter /* = true */)
 {
-	// Make sure that the parameters are defined
-	if( !roParam.isEmpty() )
-	{
-		if( bAddDelimiter )
-			_oParameters += QString(_oParamDelimiter + roParam);
-		else
-			_oParameters += roParam;
-	}
-	else
-	 qWarning("ExternProgram: Ignoring additional parameter being empty!");
+    // Make sure that the parameters are defined
+    if (!roParam.isEmpty()) {
+        if (bAddDelimiter)
+            _oParameters += QString(_oParamDelimiter + roParam);
+        else
+            _oParameters += roParam;
+    } else
+        qWarning("ExternProgram: Ignoring additional parameter being empty!");
 }
 
 /*!
@@ -155,33 +153,29 @@ void CAExternProgram::addParameter( const QString &roParam, bool bAddDelimiter /
 	\sa setParameters( QString oParams )
 	\sa setProgram( QString oProgram )
 */
-bool CAExternProgram::execProgram( const QString &roCwd /* = "." */ )
+bool CAExternProgram::execProgram(const QString& roCwd /* = "." */)
 {
-  if( _oProgramName.isEmpty() )
-	{
-		qCritical("ExternProgram: Could not run program, no program name specified!");
-		return false;
-	}
-	if( !roCwd.isEmpty() )
-		_poExternProgram->setWorkingDirectory( roCwd );
+    if (_oProgramName.isEmpty()) {
+        qCritical("ExternProgram: Could not run program, no program name specified!");
+        return false;
+    }
+    if (!roCwd.isEmpty())
+        _poExternProgram->setWorkingDirectory(roCwd);
 
-	// Add optional path (including dash, so there doesn't need to be a dash at the end of the path)
-	if( _oProgramPath.isEmpty() )
-	{
-		_poExternProgram->start( _oProgramName, _oParameters );
-		qDebug("Started %s with parameters %s", _oProgramName.toLatin1().data(),
-				      _oParameters.join(" ").toLatin1().data() );
-	}
-	else
-		_poExternProgram->start( _oProgramPath+"/"+_oProgramName, _oParameters );
-	// Wa it until program was started
-	if( !_poExternProgram->waitForStarted() )
-	{
-		qCritical("ExternProgram: Could not run program %s! Error %s", _oProgramName.toLatin1().constData(),
-              QString( "%1 " + _poExternProgram->errorString() ).arg( _poExternProgram->error() ).toLatin1().constData() );
-		return false;
-	}
-	return true;
+    // Add optional path (including dash, so there doesn't need to be a dash at the end of the path)
+    if (_oProgramPath.isEmpty()) {
+        _poExternProgram->start(_oProgramName, _oParameters);
+        qDebug("Started %s with parameters %s", _oProgramName.toLatin1().data(),
+            _oParameters.join(" ").toLatin1().data());
+    } else
+        _poExternProgram->start(_oProgramPath + "/" + _oProgramName, _oParameters);
+    // Wa it until program was started
+    if (!_poExternProgram->waitForStarted()) {
+        qCritical("ExternProgram: Could not run program %s! Error %s", _oProgramName.toLatin1().constData(),
+            QString("%1 " + _poExternProgram->errorString()).arg(_poExternProgram->error()).toLatin1().constData());
+        return false;
+    }
+    return true;
 }
 
 /*!
@@ -195,14 +189,14 @@ bool CAExternProgram::execProgram( const QString &roCwd /* = "." */ )
 
 	\sa QProcess::setProgram( QString oProgram )
 */
-void CAExternProgram::rcvProgramOutput(  const QByteArray &roData  )
+void CAExternProgram::rcvProgramOutput(const QByteArray& roData)
 {
-	// The data is not stored but has to be immediately read by the using object
-	// Else the data ist lost.
-	// If you need a data caching please create a sub class from this class like
-	// CACacheExternProgram or include it in a CACacheProgramData class or use
-	// the cache class Qt provides named QCache for such a purpose.
-	emit nextOutput( roData );
+    // The data is not stored but has to be immediately read by the using object
+    // Else the data ist lost.
+    // If you need a data caching please create a sub class from this class like
+    // CACacheExternProgram or include it in a CACacheProgramData class or use
+    // the cache class Qt provides named QCache for such a purpose.
+    emit nextOutput(roData);
 }
 
 /*!
@@ -216,25 +210,23 @@ void CAExternProgram::rcvProgramOutput(  const QByteArray &roData  )
 */
 void CAExternProgram::programExited()
 {
-	if( getRunning() )
-	{
-		qCritical("%s",
-              QString( "ExternProgram: program %1 reported error %2!" + _poExternProgram->errorString() ).arg( _poExternProgram->error() ).toLatin1().constData() );
-		return;
-	}
-	// Check if the program exited normally else put out error message
-	if( _poExternProgram->exitStatus() != QProcess::NormalExit ) {
-		qCritical() << "ExternProgram: program" << _oProgramName << " didn't finish correctly! Exit code"
-                    <<_poExternProgram->exitCode() << " " << _poExternProgram->errorString();
-		emit programExited( _poExternProgram->exitCode() );
-	}
+    if (getRunning()) {
+        qCritical("%s",
+            QString("ExternProgram: program %1 reported error %2!" + _poExternProgram->errorString()).arg(_poExternProgram->error()).toLatin1().constData());
+        return;
+    }
+    // Check if the program exited normally else put out error message
+    if (_poExternProgram->exitStatus() != QProcess::NormalExit) {
+        qCritical() << "ExternProgram: program" << _oProgramName << " didn't finish correctly! Exit code"
+                    << _poExternProgram->exitCode() << " " << _poExternProgram->errorString();
+        emit programExited(_poExternProgram->exitCode());
+    }
 
-	if( _poExternProgram->error() == QProcess::FailedToStart ) {
-		qCritical() << "ExternProgram: program" << _oProgramName << "didn't start correctly! Error code"
+    if (_poExternProgram->error() == QProcess::FailedToStart) {
+        qCritical() << "ExternProgram: program" << _oProgramName << "didn't start correctly! Error code"
                     << _poExternProgram->error() << " " << _poExternProgram->errorString();
-		emit programExited( -1 );
-	}
+        emit programExited(-1);
+    }
 
-	emit programExited( _poExternProgram->exitCode() );
+    emit programExited(_poExternProgram->exitCode());
 }
-

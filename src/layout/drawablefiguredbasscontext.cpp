@@ -10,22 +10,26 @@
 #include <QBrush>
 #include <QPainter>
 
-CADrawableFiguredBassContext::CADrawableFiguredBassContext(CAFiguredBassContext *c, double x, double y)
- : CADrawableContext(c, x, y) {
-	setDrawableContextType( DrawableFiguredBassContext );
-	setWidth( 0 );
- 	setHeight( 3*CADrawableFiguredBassNumber::DEFAULT_NUMBER_SIZE );
+CADrawableFiguredBassContext::CADrawableFiguredBassContext(CAFiguredBassContext* c, double x, double y)
+    : CADrawableContext(c, x, y)
+{
+    setDrawableContextType(DrawableFiguredBassContext);
+    setWidth(0);
+    setHeight(3 * CADrawableFiguredBassNumber::DEFAULT_NUMBER_SIZE);
 }
 
-CADrawableFiguredBassContext::~CADrawableFiguredBassContext() {
+CADrawableFiguredBassContext::~CADrawableFiguredBassContext()
+{
 }
 
-CADrawableFiguredBassContext* CADrawableFiguredBassContext::clone() {
-	return new CADrawableFiguredBassContext( figuredBassContext(), xPos(), yPos() );
+CADrawableFiguredBassContext* CADrawableFiguredBassContext::clone()
+{
+    return new CADrawableFiguredBassContext(figuredBassContext(), xPos(), yPos());
 }
 
-void CADrawableFiguredBassContext::draw(QPainter *p, const CADrawSettings s) {
-	QColor bColor = Qt::cyan;
-	bColor.setAlphaF(0.2);
-	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(bColor));
+void CADrawableFiguredBassContext::draw(QPainter* p, const CADrawSettings s)
+{
+    QColor bColor = Qt::cyan;
+    bColor.setAlphaF(0.2);
+    p->fillRect(0, s.y, s.w, qRound(height() * s.z), QBrush(bColor));
 }

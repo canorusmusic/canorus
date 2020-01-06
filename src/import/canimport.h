@@ -14,17 +14,17 @@ class CAArchive;
 
 class CACanImport : public CAImport {
 public:
-	CACanImport( QTextStream *stream=0 );
-	~CACanImport();
-	
-	inline CAArchive *archive() { return _archive; }
-	inline void setArchive( CAArchive *a ) { _archive = a; }
-	
+    CACanImport(QTextStream* stream = 0);
+    ~CACanImport();
+
+    inline CAArchive* archive() { return _archive; }
+    inline void setArchive(CAArchive* a) { _archive = a; }
+
 protected:
-	CADocument *importDocumentImpl();
-	
+    CADocument* importDocumentImpl();
+
 private:
-	CAArchive *_archive;
+    CAArchive* _archive;
 };
 
 #endif /* CANIMPORT_H_ */

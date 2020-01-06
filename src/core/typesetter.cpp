@@ -7,8 +7,10 @@
 
 #include "core/typesetter.h"
 
-CATypesetter::CATypesetter() {
+CATypesetter::CATypesetter()
+{
 }
 
-CATypesetter::~CATypesetter() {
+CATypesetter::~CATypesetter()
+{
 }
