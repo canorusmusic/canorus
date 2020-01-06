@@ -7,14 +7,14 @@
 
 #include <QDebug>
 
-#include "mainwin.h"
-#include "widgets/undotoolbutton.h"
 #include "actionstorage.h"
-#include "singleaction.h"
 #include "core/actiondelegate.h"
+#include "mainwin.h"
+#include "singleaction.h"
+#include "widgets/undotoolbutton.h"
 
-CAActionStorage::CAActionStorage() :
-    _actionDelegate(nullptr)
+CAActionStorage::CAActionStorage()
+    : _actionDelegate(nullptr)
 {
     _actionWidget.actions().clear();
 }
@@ -22,12 +22,12 @@ CAActionStorage::CAActionStorage() :
 CAActionStorage::~CAActionStorage()
 {
     _actionWidget.actions().clear();
-    if( nullptr != _actionDelegate )
+    if (nullptr != _actionDelegate)
         delete _actionDelegate;
     _actionDelegate = nullptr;
 }
 
-void CAActionStorage::storeActionsFromMainWindow(CAMainWin &mainWin)
+void CAActionStorage::storeActionsFromMainWindow(CAMainWin& mainWin)
 {
     storeAction(mainWin.uiQuit);
     storeAction(mainWin.uiNewDocument);
@@ -45,7 +45,7 @@ void CAActionStorage::storeActionsFromMainWindow(CAMainWin &mainWin)
     storeAction(mainWin.uiSelectAll);
     storeAction(mainWin.uiInvertSelection);
     storeAction(mainWin.uiZoomToWidth);
-	storeAction(mainWin.uiJumpTo);
+    storeAction(mainWin.uiJumpTo);
     storeAction(mainWin.uiShowStatusBar);
     storeAction(mainWin.uiFullscreen);
     storeAction(mainWin.uiInsertTimeSig);
@@ -108,7 +108,7 @@ void CAActionStorage::storeActionsFromMainWindow(CAMainWin &mainWin)
     _actionDelegate = new CAActionDelegate(&mainWin);
 }
 
-void CAActionStorage::storeAction(QAction *action)
+void CAActionStorage::storeAction(QAction* action)
 {
     _actionWidget.addAction(action);
     qWarning() << "Storage: Added new action, stored " << _actionWidget.actions().size();
@@ -116,6 +116,6 @@ void CAActionStorage::storeAction(QAction *action)
 
 void CAActionStorage::addWinActions()
 {
-   _actionDelegate->addWinActions(_actionWidget);
-   _actionDelegate->updateMainWinActions();
+    _actionDelegate->addWinActions(_actionWidget);
+    _actionDelegate->updateMainWinActions();
 }

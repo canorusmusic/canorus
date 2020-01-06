@@ -13,42 +13,42 @@
 class QCloseEvent;
 
 class CAView : public QWidget {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-	CAView(QWidget *parent=nullptr);
+    CAView(QWidget* parent = nullptr);
 
-	virtual ~CAView();
+    virtual ~CAView();
 
-	enum CAViewType {
-		ScoreView,
-		SourceView
-	};
+    enum CAViewType {
+        ScoreView,
+        SourceView
+    };
 
-	inline CAViewType viewType() { return _viewType; }
+    inline CAViewType viewType() { return _viewType; }
 
-	virtual CAView *clone() = 0;
-	virtual CAView *clone(QWidget *parent) = 0;
+    virtual CAView* clone() = 0;
+    virtual CAView* clone(QWidget* parent) = 0;
 
-	virtual void rebuild() = 0;
+    virtual void rebuild() = 0;
 
-	static const int DEFAULT_VIEW_WIDTH;
-	static const int DEFAULT_VIEW_HEIGHT;
+    static const int DEFAULT_VIEW_WIDTH;
+    static const int DEFAULT_VIEW_HEIGHT;
 
 protected slots:
-	void mousePressEvent(QMouseEvent *e);
-	inline void closeEvent(QCloseEvent*) { emit closed(this); }
+    void mousePressEvent(QMouseEvent* e);
+    inline void closeEvent(QCloseEvent*) { emit closed(this); }
 
 signals:
-	void clicked();
-	void closed(CAView*);
+    void clicked();
+    void closed(CAView*);
 
 protected:
-	inline void setViewType(CAViewType t) { _viewType = t; }
+    inline void setViewType(CAViewType t) { _viewType = t; }
 
-	////////////////////////
-	// General properties //
-	////////////////////////
-	CAViewType _viewType;
+    ////////////////////////
+    // General properties //
+    ////////////////////////
+    CAViewType _viewType;
 };
 #endif

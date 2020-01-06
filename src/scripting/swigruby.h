@@ -11,44 +11,44 @@
 
 #include <ruby.h>
 
-#include <QString>
 #include <QList>
+#include <QString>
 
 class CASwigRuby {
-	public:
-		enum CAClassType {
-			// Qt objects
-			String,
+public:
+    enum CAClassType {
+        // Qt objects
+        String,
 
-			// Canorus objects
-			Document,
-			Sheet,
-			Context,
-			Staff,
-			Voice,
-			FunctionMarkContext,
-			MusElement,
-			Playable,
-			Note,
-			Rest,
-			KeySignature,
-			TimeSignature,
-			Clef,
-			Barline,
-			FunctionMark,
-			LyricsContext,
-			Syllable,
-			Mark,
-			Slur,
-			Tuplet,
+        // Canorus objects
+        Document,
+        Sheet,
+        Context,
+        Staff,
+        Voice,
+        FunctionMarkContext,
+        MusElement,
+        Playable,
+        Note,
+        Rest,
+        KeySignature,
+        TimeSignature,
+        Clef,
+        Barline,
+        FunctionMark,
+        LyricsContext,
+        Syllable,
+        Mark,
+        Slur,
+        Tuplet,
 
-			// Console
-			PyConsoleInterface
-		};
+        // Console
+        PyConsoleInterface
+    };
 
-		static void init();	///Initializes Ruby and loads base 'CanorusRuby' module. Call this before any other Ruby operations! Call this before calling toRubyObject() or any other conversation functions as well!
+    static void init(); ///Initializes Ruby and loads base 'CanorusRuby' module. Call this before any other Ruby operations! Call this before calling toRubyObject() or any other conversation functions as well!
 
-		/**
+    /**
 	 	 * Call an external Ruby function in the given module with the list of arguments and return its Ruby value.
 	 	 *
 	 	 * @param fileName Absolute path to the filename of the script
@@ -56,9 +56,9 @@ class CASwigRuby {
 	 	 * @param args List of arguments in Ruby's VALUE format. Use toRubyObject() to convert C++ classes to Ruby objects.
 	 	 * @return Ruby's function return value in Ruby VALUE format.
 	 	 */
-		static VALUE callFunction(QString fileName, QString function, QList<VALUE> args);
+    static VALUE callFunction(QString fileName, QString function, QList<VALUE> args);
 
-		/**
+    /**
  		 * Ruby uses different objects than C++. They are actually wrappers around the original ones, but still share different memory and structure.
  		 * Use this function to create a Ruby object out of the C++ one.
  		 *
@@ -66,7 +66,7 @@ class CASwigRuby {
  		 * @param objectType See CAClassType. C++ doesn't support figuring out the object type from the raw pointer - you have to pass its class type as well.
  		 * @return Pointer to the Ruby object in Ruby's VALUE format.
  		 */
-		static VALUE toRubyObject(void *object, CAClassType type);	//defined in scripting/canorusruby.i file
+    static VALUE toRubyObject(void* object, CAClassType type); //defined in scripting/canorusruby.i file
 };
 
 #endif /*SWIGRUBY_H_*/

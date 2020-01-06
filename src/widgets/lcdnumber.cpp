@@ -21,95 +21,108 @@
  *                                                                           
  */
 
-#include <stdio.h>
-#include <QToolTip>
-#include <QMouseEvent>
-#include <QAction>
 #include "lcdnumber.h"
+#include <QAction>
+#include <QMouseEvent>
+#include <QToolTip>
+#include <stdio.h>
 
-CALCDNumber::CALCDNumber (int iMin, int iMax, QWidget *poParent /* = 0 */ , 
-                          QString oText /* = "" */) 
-	: QLCDNumber(poParent) 
+CALCDNumber::CALCDNumber(int iMin, int iMax, QWidget* poParent /* = 0 */,
+    QString oText /* = "" */)
+    : QLCDNumber(poParent)
 {
-	 // Do not allow  a larger minimum than maximum
-	 if (iMin > iMax) iMin = iMax;
-	 min_ = iMin; max_ = iMax;
-	 setRealValue( 0 ); // 0 = All!
-	 //setMaximumSize (20, 60);
-	 setToolTip( oText );
+    // Do not allow  a larger minimum than maximum
+    if (iMin > iMax)
+        iMin = iMax;
+    min_ = iMin;
+    max_ = iMax;
+    setRealValue(0); // 0 = All!
+    //setMaximumSize (20, 60);
+    setToolTip(oText);
 }
 
-void CALCDNumber::setRealValue(int iVal) {
-	if ( (iVal <= max_) && (iVal >= 0) ) realValue_ = iVal;
-	// 0 = All => Display letter "A" from Hex
-	if( realValue_ == 0 )
-	{	 
-		QLCDNumber::setMode( QLCDNumber::Hex );
-		display( 10 );
-	}
-	else
-	{	 
-		QLCDNumber::setMode( QLCDNumber::Dec );
-		display( realValue_ );
-	}
-
-	emit valChanged(iVal);
-}
-
-int CALCDNumber::getRealValue() {
-	return realValue_;
-}
-			
-void CALCDNumber::setMin(int iMin) {
-	// Do not allow  a larger minimum than maximum
-	if (iMin > max_) return;
-	min_ = iMin;
-	if (min_ > getRealValue()) {
-		setRealValue(min_);
-	}
-}
-
-void CALCDNumber::setMax(int iMax) {
-	// Do not allow  a larger minimum than maximum
-	if (iMax < min_) return;
-	max_ = iMax;
-	if (max_ < getRealValue()) {
-		setRealValue(max_);
-	}
-}
-
-bool CALCDNumber::isZero() 
+void CALCDNumber::setRealValue(int iVal)
 {
-	return getRealValue() == 0;
+    if ((iVal <= max_) && (iVal >= 0))
+        realValue_ = iVal;
+    // 0 = All => Display letter "A" from Hex
+    if (realValue_ == 0) {
+        QLCDNumber::setMode(QLCDNumber::Hex);
+        display(10);
+    } else {
+        QLCDNumber::setMode(QLCDNumber::Dec);
+        display(realValue_);
+    }
+
+    emit valChanged(iVal);
 }
 
-void CALCDNumber::mousePressEvent(QMouseEvent *poEvt) {
-	int iNewVal;
-	switch (poEvt->button()) 
-	{
-		case Qt::LeftButton: iNewVal = getRealValue() + 1;
-				   if (iNewVal > max_) break;
-				   setRealValue(iNewVal);
-				   break;
-
-		default:	   iNewVal = getRealValue() - 1;
-				   if (iNewVal < min_) break;
-				   setRealValue(iNewVal);
-				   break;
-	}
+int CALCDNumber::getRealValue()
+{
+    return realValue_;
 }
 
-void CALCDNumber::wheelEvent(QWheelEvent *poEvt) {
-	int iNewVal;
-	if (poEvt->delta() < 0) {
-		iNewVal = getRealValue() + 1;
-		if (iNewVal > max_) return;
-		
-		setRealValue(iNewVal);
-	} else if (poEvt->delta() > 0) {
-		iNewVal = getRealValue() - 1;
-		if (iNewVal < min_) return;
-		
-		setRealValue(iNewVal);
-	}
+void CALCDNumber::setMin(int iMin)
+{
+    // Do not allow  a larger minimum than maximum
+    if (iMin > max_)
+        return;
+    min_ = iMin;
+    if (min_ > getRealValue()) {
+        setRealValue(min_);
+    }
+}
+
+void CALCDNumber::setMax(int iMax)
+{
+    // Do not allow  a larger minimum than maximum
+    if (iMax < min_)
+        return;
+    max_ = iMax;
+    if (max_ < getRealValue()) {
+        setRealValue(max_);
+    }
+}
+
+bool CALCDNumber::isZero()
+{
+    return getRealValue() == 0;
+}
+
+void CALCDNumber::mousePressEvent(QMouseEvent* poEvt)
+{
+    int iNewVal;
+    switch (poEvt->button()) {
+    case Qt::LeftButton:
+        iNewVal = getRealValue() + 1;
+        if (iNewVal > max_)
+            break;
+        setRealValue(iNewVal);
+        break;
+
+    default:
+        iNewVal = getRealValue() - 1;
+        if (iNewVal < min_)
+            break;
+        setRealValue(iNewVal);
+        break;
+    }
+}
+
+void CALCDNumber::wheelEvent(QWheelEvent* poEvt)
+{
+    int iNewVal;
+    if (poEvt->delta() < 0) {
+        iNewVal = getRealValue() + 1;
+        if (iNewVal > max_)
+            return;
+
+        setRealValue(iNewVal);
+    } else if (poEvt->delta() > 0) {
+        iNewVal = getRealValue() - 1;
+        if (iNewVal < min_)
+            return;
+
+        setRealValue(iNewVal);
+    }
 }

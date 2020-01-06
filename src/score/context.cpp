@@ -24,12 +24,14 @@
 /*!
 	Creates a context named \a name and with parent sheet \a s.
 */
-CAContext::CAContext( const QString name, CASheet *s ) {
-	_sheet = s;
-	_name = name;
+CAContext::CAContext(const QString name, CASheet* s)
+{
+    _sheet = s;
+    _name = name;
 }
 
-CAContext::~CAContext() {
+CAContext::~CAContext()
+{
 }
 
 /*!

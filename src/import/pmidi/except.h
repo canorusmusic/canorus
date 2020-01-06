@@ -19,16 +19,16 @@
 #include <setjmp.h>
 
 struct except {
-	int  set;
+    int set;
 #ifdef __MINGW32__
-	jmp_buf     buf;
+    jmp_buf buf;
 #else
-	sigjmp_buf  buf;
+    sigjmp_buf buf;
 #endif
 };
 
-extern struct except *formatError;	/* Bad file format */
-extern struct except *ioError;	/* Error reading/writing file */
-extern struct except *debugError;	/* Debugging 'shouldn't happen' errors */
+extern struct except* formatError; /* Bad file format */
+extern struct except* ioError; /* Error reading/writing file */
+extern struct except* debugError; /* Debugging 'shouldn't happen' errors */
 
-void except(struct except *e, char *message, ...);
+void except(struct except* e, char* message, ...);

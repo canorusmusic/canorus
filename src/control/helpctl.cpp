@@ -5,9 +5,9 @@
         Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include <QStringList>
-#include <QDockWidget>
 #include <QDesktopServices>
+#include <QDockWidget>
+#include <QStringList>
 
 #include "canorus.h"
 #include "control/helpctl.h"
@@ -25,47 +25,50 @@
 /*!
 	Initializes Help and loads User's guide.
  */
-CAHelpCtl::CAHelpCtl() {
-	_homeUrl = detectHomeUrl();
+CAHelpCtl::CAHelpCtl()
+{
+    _homeUrl = detectHomeUrl();
 }
 
-CAHelpCtl::~CAHelpCtl() {
+CAHelpCtl::~CAHelpCtl()
+{
 }
 
 /*!
 	Helper function which returns the preferred User's guide language.
  */
-QUrl CAHelpCtl::detectHomeUrl() {
-	QUrl url;
-	QFileInfo i;
-	
-	i=QFileInfo("doc:usersguide2/build/"+QLocale::system().name()+"/index.html");
-	
-	if ( !i.exists() ) {
-		i=QFileInfo("doc:usersguide2/"+QLocale::system().name()+"/index.html");
-	}
-	
-	if ( !i.exists() ) {
-		i=QFileInfo("doc:usersguide2/build/"+QLocale::system().name().left(2)+"/index.html");
-	}
-	
-	if ( !i.exists() ) {
-		i=QFileInfo("doc:usersguide2/"+QLocale::system().name().left(2)+"/index.html");
-	}
-	
-	if ( !i.exists() ) {
-		i=QFileInfo("doc:usersguide2/build/en/index.html");
-	}
+QUrl CAHelpCtl::detectHomeUrl()
+{
+    QUrl url;
+    QFileInfo i;
 
-	if ( !i.exists() ) {
-		i=QFileInfo("doc:usersguide2/en/index.html");
-	}
-	
-	if ( i.exists() ) {
-		url = QUrl::fromLocalFile(i.absoluteFilePath());
-	}
-	
-	return url;
+    i = QFileInfo("doc:usersguide2/build/" + QLocale::system().name() + "/index.html");
+
+    if (!i.exists()) {
+        i = QFileInfo("doc:usersguide2/" + QLocale::system().name() + "/index.html");
+    }
+
+    if (!i.exists()) {
+        i = QFileInfo("doc:usersguide2/build/" + QLocale::system().name().left(2) + "/index.html");
+    }
+
+    if (!i.exists()) {
+        i = QFileInfo("doc:usersguide2/" + QLocale::system().name().left(2) + "/index.html");
+    }
+
+    if (!i.exists()) {
+        i = QFileInfo("doc:usersguide2/build/en/index.html");
+    }
+
+    if (!i.exists()) {
+        i = QFileInfo("doc:usersguide2/en/index.html");
+    }
+
+    if (i.exists()) {
+        url = QUrl::fromLocalFile(i.absoluteFilePath());
+    }
+
+    return url;
 }
 
 /*!
@@ -73,42 +76,43 @@ QUrl CAHelpCtl::detectHomeUrl() {
     
 	\return True, if a user's guide was found and shown; False otherwise.
  */
-bool CAHelpCtl::showUsersGuide( QString chapter, QWidget *helpWidget ) {
-	QUrl url = _homeUrl;
-	
-	if (!chapter.isEmpty()) {
-		url.setFragment(chapter);
-	}
-	
-	if (!url.path().isEmpty()) {
+bool CAHelpCtl::showUsersGuide(QString chapter, QWidget* helpWidget)
+{
+    QUrl url = _homeUrl;
+
+    if (!chapter.isEmpty()) {
+        url.setFragment(chapter);
+    }
+
+    if (!url.path().isEmpty()) {
 #ifdef QT_WEBENGINEWIDGETS_LIB
-		displayHelp( url, helpWidget );
+        displayHelp(url, helpWidget);
 #else
-		QDesktopServices::openUrl( url );
+        QDesktopServices::openUrl(url);
 #endif
-		return true;
-	}
-	
-	return false;
+        return true;
+    }
+
+    return false;
 }
 
 /*!
 	Activates the user's guide help at the given url.
  */
-void CAHelpCtl::displayHelp( QUrl url, QWidget *helpWidget ) {
+void CAHelpCtl::displayHelp(QUrl url, QWidget* helpWidget)
+{
 #ifdef QT_WEBENGINEWIDGETS_LIB
-	CAHelpBrowser *browser=nullptr;
-	if ( !helpWidget ) {
-		browser = new CAHelpBrowser;
-		browser->setAttribute(Qt::WA_DeleteOnClose);
-	} else
-	if (dynamic_cast<CAMainWin*>(helpWidget)) {
-		browser = static_cast<CAMainWin*>(helpWidget)->helpWidget();
-		static_cast<CAMainWin*>(helpWidget)->helpDock()->show();
-	}
+    CAHelpBrowser* browser = nullptr;
+    if (!helpWidget) {
+        browser = new CAHelpBrowser;
+        browser->setAttribute(Qt::WA_DeleteOnClose);
+    } else if (dynamic_cast<CAMainWin*>(helpWidget)) {
+        browser = static_cast<CAMainWin*>(helpWidget)->helpWidget();
+        static_cast<CAMainWin*>(helpWidget)->helpDock()->show();
+    }
 
-	if (browser) {
-		browser->setUrl( url );
-	}
+    if (browser) {
+        browser->setUrl(url);
+    }
 #endif
 }

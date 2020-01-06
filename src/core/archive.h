@@ -8,8 +8,8 @@
 #ifndef ARCHIVE_H_
 #define ARCHIVE_H_
 
-#include <QBuffer>
 #include "core/tar.h"
+#include <QBuffer>
 #include <iostream>
 
 class QByteArray;
@@ -17,28 +17,51 @@ class QString;
 
 class CAArchive {
 public:
-	CAArchive();
-	CAArchive(QIODevice& arch);
-	qint64 write(QIODevice& dest);
-	virtual ~CAArchive();
+    CAArchive();
+    CAArchive(QIODevice& arch);
+    qint64 write(QIODevice& dest);
+    virtual ~CAArchive();
 
-	// interface to CATar
-	inline bool addFile(const QString& filename, QIODevice& data) { if(!error()) return _tar->addFile(filename, data); else return false; }
-	inline bool addFile(const QString& filename, QByteArray data) { if(!error()) return _tar->addFile(filename, data); else return false; }
-	inline void removeFile(const QString& filename) { if(!error()) _tar->removeFile(filename); }
-	inline CAIOPtr file(const QString& filename) { if(!error()) return _tar->file(filename); else return CAIOPtr(new QBuffer());  }
-	inline bool error() { return _err ||  _tar->error(); }	
-	inline const QString& version() { return _version; }
+    // interface to CATar
+    inline bool addFile(const QString& filename, QIODevice& data)
+    {
+        if (!error())
+            return _tar->addFile(filename, data);
+        else
+            return false;
+    }
+    inline bool addFile(const QString& filename, QByteArray data)
+    {
+        if (!error())
+            return _tar->addFile(filename, data);
+        else
+            return false;
+    }
+    inline void removeFile(const QString& filename)
+    {
+        if (!error())
+            _tar->removeFile(filename);
+    }
+    inline CAIOPtr file(const QString& filename)
+    {
+        if (!error())
+            return _tar->file(filename);
+        else
+            return CAIOPtr(new QBuffer());
+    }
+    inline bool error() { return _err || _tar->error(); }
+    inline const QString& version() { return _version; }
+
 protected:
-	static const int CHUNK;
-	static const QString COMMENT;
+    static const int CHUNK;
+    static const QString COMMENT;
 
-	QString _version;
-	bool _err;
-	void parse(QIODevice&);
-	int getOS();
+    QString _version;
+    bool _err;
+    void parse(QIODevice&);
+    int getOS();
 
-	CATar *_tar;
+    CATar* _tar;
 };
 
 #endif /* ARCHIVE_H_ */

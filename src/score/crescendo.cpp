@@ -18,52 +18,56 @@
 	to the final volume. Decrescendo decreases volume to the final volume.
 */
 
-CACrescendo::CACrescendo( int volume, CANote *note, CACrescendoType t, int timeStart, int timeLength )
- : CAMark( CAMark::Crescendo, note, timeStart, timeLength ) {
-	setFinalVolume(volume);
-	setCrescendoType(t);
+CACrescendo::CACrescendo(int volume, CANote* note, CACrescendoType t, int timeStart, int timeLength)
+    : CAMark(CAMark::Crescendo, note, timeStart, timeLength)
+{
+    setFinalVolume(volume);
+    setCrescendoType(t);
 }
 
-CACrescendo::~CACrescendo() {
+CACrescendo::~CACrescendo()
+{
 }
 
-CACrescendo* CACrescendo::clone(CAMusElement* elt) {
-	return new CACrescendo( finalVolume(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):nullptr, crescendoType(), timeStart(), timeLength() );
+CACrescendo* CACrescendo::clone(CAMusElement* elt)
+{
+    return new CACrescendo(finalVolume(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr, crescendoType(), timeStart(), timeLength());
 }
 
-int CACrescendo::compare( CAMusElement *elt ) {
-	if (elt->musElementType()!=CAMusElement::Mark)
-		return -2;
+int CACrescendo::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Mark)
+        return -2;
 
-	if (static_cast<CAMark*>(elt)->markType()!=CAMark::Crescendo)
-		return -1;
+    if (static_cast<CAMark*>(elt)->markType() != CAMark::Crescendo)
+        return -1;
 
-	if (static_cast<CACrescendo*>(elt)->finalVolume()!=finalVolume())
-		return 1;
+    if (static_cast<CACrescendo*>(elt)->finalVolume() != finalVolume())
+        return 1;
 
-	if (static_cast<CACrescendo*>(elt)->crescendoType()!=crescendoType())
-		return 1;
+    if (static_cast<CACrescendo*>(elt)->crescendoType() != crescendoType())
+        return 1;
 
-	return 0;
+    return 0;
 }
 
-const QString CACrescendo::crescendoTypeToString( CACrescendoType t ) {
-	switch (t) {
-	case Crescendo:
-		return "Crescendo";
-	case Decrescendo:
-		return "Decrescendo";
-	}
-	return "Crescendo";
+const QString CACrescendo::crescendoTypeToString(CACrescendoType t)
+{
+    switch (t) {
+    case Crescendo:
+        return "Crescendo";
+    case Decrescendo:
+        return "Decrescendo";
+    }
+    return "Crescendo";
 }
 
-CACrescendo::CACrescendoType CACrescendo::crescendoTypeFromString( const QString c ) {
-	if (c=="Crescendo") {
-		return Crescendo;
-	} else
-	if (c=="Decrescendo") {
-		return Decrescendo;
-	}
-	return Crescendo;
+CACrescendo::CACrescendoType CACrescendo::crescendoTypeFromString(const QString c)
+{
+    if (c == "Crescendo") {
+        return Crescendo;
+    } else if (c == "Decrescendo") {
+        return Decrescendo;
+    }
+    return Crescendo;
 }
-

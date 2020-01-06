@@ -18,26 +18,29 @@
 */
 
 #ifndef SWIGCPP
-CAPyConsoleInterface::CAPyConsoleInterface(CAPyConsole* pyConsole ) {
-	_pycons = pyConsole;
+CAPyConsoleInterface::CAPyConsoleInterface(CAPyConsole* pyConsole)
+{
+    _pycons = pyConsole;
 }
 #endif
 
-void CAPyConsoleInterface::pluginInit(void){
+void CAPyConsoleInterface::pluginInit(void)
+{
 #ifndef SWIGCPP
-	_pycons->asyncPluginInit();
+    _pycons->asyncPluginInit();
 #endif
 }
 
 #ifndef SWIGCPP
-char* CAPyConsoleInterface::bufferedInput(char* prompt) {
-	return (_pycons->asyncBufferedInput(QString(prompt))).toUtf8().data();
+char* CAPyConsoleInterface::bufferedInput(char* prompt)
+{
+    return (_pycons->asyncBufferedInput(QString(prompt))).toUtf8().data();
 }
 
-void CAPyConsoleInterface::bufferedOutput (char* str, bool bStdErr) {
-	QString *q_str = new QString(str);
-	_pycons->asyncBufferedOutput(*q_str, bStdErr);
+void CAPyConsoleInterface::bufferedOutput(char* str, bool bStdErr)
+{
+    QString* q_str = new QString(str);
+    _pycons->asyncBufferedOutput(*q_str, bStdErr);
 }
 #endif
 #endif
-

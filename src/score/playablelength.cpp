@@ -6,8 +6,8 @@
 */
 
 #include "score/playablelength.h"
-#include "score/timesignature.h"
 #include "score/barline.h"
+#include "score/timesignature.h"
 
 #include <iostream>
 
@@ -28,73 +28,68 @@
 	\sa playableLengthToTimeLength(), CARest::composeRests()
 */
 
-CAPlayableLength::CAPlayableLength() {
-	setMusicLength( Undefined );
-	setDotted( 0 );
+CAPlayableLength::CAPlayableLength()
+{
+    setMusicLength(Undefined);
+    setDotted(0);
 }
 
-CAPlayableLength::CAPlayableLength( CAMusicLength l, int dotted ) {
-	setMusicLength( l );
-	setDotted( dotted );
+CAPlayableLength::CAPlayableLength(CAMusicLength l, int dotted)
+{
+    setMusicLength(l);
+    setDotted(dotted);
 }
 
-CAPlayableLength::CAMusicLength CAPlayableLength::musicLengthFromString(const QString length) {
-	if (length=="undefined") {
-		return Undefined;
-	} else
-	if (length=="breve") {
-		return Breve;
-	} else
-	if (length=="whole") {
-		return Whole;
-	} else
-	if (length=="half") {
-		return Half;
-	} else
-	if (length=="quarter") {
-		return Quarter;
-	} else
-	if (length=="eighth") {
-		return Eighth;
-	} else
-	if (length=="sixteenth") {
-		return Sixteenth;
-	} else
-	if (length=="thirty-second") {
-		return ThirtySecond;
-	} else
-	if (length=="sixty-fourth") {
-		return SixtyFourth;
-	} else
-	if (length=="hundred-twenty-eighth") {
-		return HundredTwentyEighth;
-	} else
-		return Undefined;
+CAPlayableLength::CAMusicLength CAPlayableLength::musicLengthFromString(const QString length)
+{
+    if (length == "undefined") {
+        return Undefined;
+    } else if (length == "breve") {
+        return Breve;
+    } else if (length == "whole") {
+        return Whole;
+    } else if (length == "half") {
+        return Half;
+    } else if (length == "quarter") {
+        return Quarter;
+    } else if (length == "eighth") {
+        return Eighth;
+    } else if (length == "sixteenth") {
+        return Sixteenth;
+    } else if (length == "thirty-second") {
+        return ThirtySecond;
+    } else if (length == "sixty-fourth") {
+        return SixtyFourth;
+    } else if (length == "hundred-twenty-eighth") {
+        return HundredTwentyEighth;
+    } else
+        return Undefined;
 }
 
-const QString CAPlayableLength::musicLengthToString(CAPlayableLength::CAMusicLength length) {
-	switch ( length ) {
-		case Undefined:
-			return "undefined";
-		case Breve:
-			return "breve";
-		case Whole:
-			return "whole";
-		case Half:
-			return "half";
-		case Quarter:
-			return "quarter";
-		case Eighth:
-			return "eighth";
-		case Sixteenth:
-			return "sixteenth";
-		case ThirtySecond:
-			return "thirty-second";
-		case SixtyFourth:
-			return "sixty-fourth";
-		case HundredTwentyEighth:
-			return "hundred-twenty-eighth";
-	}
+const QString CAPlayableLength::musicLengthToString(CAPlayableLength::CAMusicLength length)
+{
+    switch (length) {
+    case Undefined:
+        return "undefined";
+    case Breve:
+        return "breve";
+    case Whole:
+        return "whole";
+    case Half:
+        return "half";
+    case Quarter:
+        return "quarter";
+    case Eighth:
+        return "eighth";
+    case Sixteenth:
+        return "sixteenth";
+    case ThirtySecond:
+        return "thirty-second";
+    case SixtyFourth:
+        return "sixty-fourth";
+    case HundredTwentyEighth:
+        return "hundred-twenty-eighth";
+    }
     return "";
 }
 
@@ -103,47 +98,49 @@ const QString CAPlayableLength::musicLengthToString(CAPlayableLength::CAMusicLen
 
 	\sa CARest::composeRests()
 */
-int CAPlayableLength::playableLengthToTimeLength( CAPlayableLength length ) {
-	int timeLength;
+int CAPlayableLength::playableLengthToTimeLength(CAPlayableLength length)
+{
+    int timeLength;
 
-	switch ( length.musicLength() ) {
-		case HundredTwentyEighth:
-			timeLength = 8;
-			break;
-		case SixtyFourth:
-			timeLength = 16;
-			break;
-		case ThirtySecond:
-			timeLength = 32;
-			break;
-		case Sixteenth:
-			timeLength = 64;
-			break;
-		case Eighth:
-			timeLength = 128;
-			break;
-		case Quarter:
-			timeLength = 256;
-			break;
-		case Half:
-			timeLength = 512;
-			break;
-		case Whole:
-			timeLength = 1024;
-			break;
-		case Breve:
-			timeLength = 2048;
-			break;
-		default:            // This should never occur!
-			timeLength = 0;
-			break;
-	}
+    switch (length.musicLength()) {
+    case HundredTwentyEighth:
+        timeLength = 8;
+        break;
+    case SixtyFourth:
+        timeLength = 16;
+        break;
+    case ThirtySecond:
+        timeLength = 32;
+        break;
+    case Sixteenth:
+        timeLength = 64;
+        break;
+    case Eighth:
+        timeLength = 128;
+        break;
+    case Quarter:
+        timeLength = 256;
+        break;
+    case Half:
+        timeLength = 512;
+        break;
+    case Whole:
+        timeLength = 1024;
+        break;
+    case Breve:
+        timeLength = 2048;
+        break;
+    default: // This should never occur!
+        timeLength = 0;
+        break;
+    }
 
-	float factor = 1.0, delta=0.5;
-	for (int i=0; i<length.dotted(); i++, factor+=delta, delta/=2); // calculate the length factor out of number of dots
-	timeLength = qRound(timeLength*factor);                         // increase the time length for the factor
+    float factor = 1.0, delta = 0.5;
+    for (int i = 0; i < length.dotted(); i++, factor += delta, delta /= 2)
+        ; // calculate the length factor out of number of dots
+    timeLength = qRound(timeLength * factor); // increase the time length for the factor
 
-	return timeLength;
+    return timeLength;
 }
 
 /*!
@@ -163,118 +160,131 @@ int CAPlayableLength::playableLengthToTimeLength( CAPlayableLength length ) {
 	Todo: Allow change of limitations as function parameters, which are longest note
 	and number of dots.
 */
-QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList( int t, bool longNotesFirst, int dotsLimit ) {
+QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList(int t, bool longNotesFirst, int dotsLimit)
+{
 
-	QList<CAPlayableLength> pl;
-	int workTime = t;	// this is the register that decreases for every item processed
-	const int breveTime = playableLengthToTimeLength( Breve );
+    QList<CAPlayableLength> pl;
+    int workTime = t; // this is the register that decreases for every item processed
+    const int breveTime = playableLengthToTimeLength(Breve);
 
-	int leadingBreves = workTime & ~(2*breveTime-1);
-	while (leadingBreves>=breveTime) {
-		pl << CAPlayableLength( Breve );
-		leadingBreves -= breveTime;
-	}
+    int leadingBreves = workTime & ~(2 * breveTime - 1);
+    while (leadingBreves >= breveTime) {
+        pl << CAPlayableLength(Breve);
+        leadingBreves -= breveTime;
+    }
 
-	// Now only maximum one breve with possibly many dots is left
-	workTime &= 2*breveTime-1;
-	// and as a safety measure we suppress time elements smaller than 128ths.
-	workTime &= ~(playableLengthToTimeLength( HundredTwentyEighth )-1);
-	if (dotsLimit > 4) dotsLimit = 4;
+    // Now only maximum one breve with possibly many dots is left
+    workTime &= 2 * breveTime - 1;
+    // and as a safety measure we suppress time elements smaller than 128ths.
+    workTime &= ~(playableLengthToTimeLength(HundredTwentyEighth) - 1);
+    if (dotsLimit > 4)
+        dotsLimit = 4;
 
-	int currentTime = breveTime;
-	int logCurrentMusLenPlusOne = 0;
-	int dots = 0;
-	bool findNote = true;
-	while (workTime && (currentTime >= musicLengthToTimeLength( HundredTwentyEighth ))) {
+    int currentTime = breveTime;
+    int logCurrentMusLenPlusOne = 0;
+    int dots = 0;
+    bool findNote = true;
+    while (workTime && (currentTime >= musicLengthToTimeLength(HundredTwentyEighth))) {
 
-		if (findNote) {
-			if (workTime & currentTime) {
-				// Now we reverse log2 and exponentiate and do the nonlinear mapping of breve (**)
-				// when the value 1 is erased by division with 2::
-				pl << CAPlayableLength( CAMusicLength( (1<<logCurrentMusLenPlusOne)/2 ));
-				dots = dotsLimit;
-				findNote = dotsLimit > 0 ? false : true;
-			} else {
-				findNote = true;
-			}
-		} else {
-			// try to find a dot for the current note
-			if (workTime & currentTime) {
-				pl.back().setDotted( pl.back().dotted() + 1 );
-				dots--;
-				findNote = dots > 0 ? false : true;
-			} else
-				findNote = true;
-		}
-		workTime &= ~currentTime;
-		currentTime /= 2;
-		logCurrentMusLenPlusOne++;
-	}
-	// If not short notes first, for example at the end of bar, we reverse the list.
-	int i,j;
-	if (!longNotesFirst) for( i=0, j=pl.size()-1; i<j ; i++,j-- ) pl.swap(i,j);
-	return pl;
+        if (findNote) {
+            if (workTime & currentTime) {
+                // Now we reverse log2 and exponentiate and do the nonlinear mapping of breve (**)
+                // when the value 1 is erased by division with 2::
+                pl << CAPlayableLength(CAMusicLength((1 << logCurrentMusLenPlusOne) / 2));
+                dots = dotsLimit;
+                findNote = dotsLimit > 0 ? false : true;
+            } else {
+                findNote = true;
+            }
+        } else {
+            // try to find a dot for the current note
+            if (workTime & currentTime) {
+                pl.back().setDotted(pl.back().dotted() + 1);
+                dots--;
+                findNote = dots > 0 ? false : true;
+            } else
+                findNote = true;
+        }
+        workTime &= ~currentTime;
+        currentTime /= 2;
+        logCurrentMusLenPlusOne++;
+    }
+    // If not short notes first, for example at the end of bar, we reverse the list.
+    int i, j;
+    if (!longNotesFirst)
+        for (i = 0, j = pl.size() - 1; i < j; i++, j--)
+            pl.swap(i, j);
+    return pl;
 }
 
 /*!
 	Compares two playable lengths.
 */
-bool CAPlayableLength::operator==( CAPlayableLength l ) {
-	if ( musicLength()==l.musicLength() && dotted()==l.dotted() )
-		return true;
-	else
-		return false;
+bool CAPlayableLength::operator==(CAPlayableLength l)
+{
+    if (musicLength() == l.musicLength() && dotted() == l.dotted())
+        return true;
+    else
+        return false;
 }
 
 /*!
 	Compares two playable lengths.
 */
-bool CAPlayableLength::operator!=( CAPlayableLength l ) {
+bool CAPlayableLength::operator!=(CAPlayableLength l)
+{
 
-	return (!operator==(l));
+    return (!operator==(l));
 }
 
 /*!
 	Split a playable to match a given bar border and bar length.
 	This function is used at music input with a midi keyboard.
 */
-QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit ) {
+QList<CAPlayableLength> CAPlayableLength::matchToBars(CAPlayableLength len, int timeStart, CABarline* lastBarline, CATimeSignature* ts, int dotsLimit)
+{
 
-	// If something is strange or undoable we prepare for returning the length unchanged.
-	QList<CAPlayableLength> unchanged; unchanged << len;
-	if (!ts) return unchanged;
+    // If something is strange or undoable we prepare for returning the length unchanged.
+    QList<CAPlayableLength> unchanged;
+    unchanged << len;
+    if (!ts)
+        return unchanged;
 
-	int beat = ts->beat();
-	switch (beat) {
-	case 2:
-	case 4:
-	case 8:		break;
-	default:	return unchanged;
-	}
-	int barLength = CAPlayableLength::playableLengthToTimeLength(
-				CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(ts->beat()) ) ) * ts->beats();
-	int barRest = ( lastBarline ? lastBarline->timeStart() : 0 ) + barLength - timeStart;
-	if (!lastBarline || lastBarline->timeStart() < ts->timeStart() || timeStart == ts->timeStart())
-		barRest = 0;
+    int beat = ts->beat();
+    switch (beat) {
+    case 2:
+    case 4:
+    case 8:
+        break;
+    default:
+        return unchanged;
+    }
+    int barLength = CAPlayableLength::playableLengthToTimeLength(
+                        CAPlayableLength(static_cast<CAPlayableLength::CAMusicLength>(ts->beat())))
+        * ts->beats();
+    int barRest = (lastBarline ? lastBarline->timeStart() : 0) + barLength - timeStart;
+    if (!lastBarline || lastBarline->timeStart() < ts->timeStart() || timeStart == ts->timeStart())
+        barRest = 0;
 
-	// no change when bar lengths are bogus
-	if (barRest < 0 || barRest > barLength) return unchanged;
+    // no change when bar lengths are bogus
+    if (barRest < 0 || barRest > barLength)
+        return unchanged;
 
-	int noteLen = len.playableLengthToTimeLength( len );
+    int noteLen = len.playableLengthToTimeLength(len);
 
-	// now we really do a split
-	QList<CAPlayableLength> list;
-	int tSplit = barRest ? barRest : barLength;
-	bool longNotesFirst = barRest ? false : true;
-	while (noteLen) {
-		tSplit = tSplit > noteLen ? noteLen : tSplit;
-		list << timeLengthToPlayableLengthList( tSplit, longNotesFirst, dotsLimit );
-		noteLen -= tSplit;
-		tSplit = noteLen > barLength ? barLength : noteLen;
-		longNotesFirst = true;
-	}
+    // now we really do a split
+    QList<CAPlayableLength> list;
+    int tSplit = barRest ? barRest : barLength;
+    bool longNotesFirst = barRest ? false : true;
+    while (noteLen) {
+        tSplit = tSplit > noteLen ? noteLen : tSplit;
+        list << timeLengthToPlayableLengthList(tSplit, longNotesFirst, dotsLimit);
+        noteLen -= tSplit;
+        tSplit = noteLen > barLength ? barLength : noteLen;
+        longNotesFirst = true;
+    }
 
-	return list;
+    return list;
 }
 
 /*!
@@ -288,55 +298,58 @@ QList<CAPlayableLength> CAPlayableLength::matchToBars( CAPlayableLength len, int
 	with CAPlayableLength as parameter, which is used at midi keyboard input. This functions probably could be
 	merged.
 */
-QList<CAPlayableLength> CAPlayableLength::matchToBars( int timeLength, int timeStart, CABarline *lastBarline, CATimeSignature *ts, int dotsLimit, int separationTime ) {
+QList<CAPlayableLength> CAPlayableLength::matchToBars(int timeLength, int timeStart, CABarline* lastBarline, CATimeSignature* ts, int dotsLimit, int separationTime)
+{
 
-	QList<CAPlayableLength> list;
-	// default time signature is 4/4
-	int barLength = CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter ) * 4;
-	if (ts) {
-		int beat = ts->beat();
-		switch (beat) {
-		case 4:
-		case 2:
-		case 8:
-		case 16:
-		case 1:
-		case 32:	break;
-		default:	return list; // If something is strange or undoable we prepare for returning an empty list!
-		}
-		barLength = CAPlayableLength::playableLengthToTimeLength(
-				CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(ts->beat()) ) ) * ts->beats();
-	}
-	int barRest = ( lastBarline ? lastBarline->timeStart() : 0 ) + barLength - timeStart;
+    QList<CAPlayableLength> list;
+    // default time signature is 4/4
+    int barLength = CAPlayableLength::playableLengthToTimeLength(CAPlayableLength::Quarter) * 4;
+    if (ts) {
+        int beat = ts->beat();
+        switch (beat) {
+        case 4:
+        case 2:
+        case 8:
+        case 16:
+        case 1:
+        case 32:
+            break;
+        default:
+            return list; // If something is strange or undoable we prepare for returning an empty list!
+        }
+        barLength = CAPlayableLength::playableLengthToTimeLength(
+                        CAPlayableLength(static_cast<CAPlayableLength::CAMusicLength>(ts->beat())))
+            * ts->beats();
+    }
+    int barRest = (lastBarline ? lastBarline->timeStart() : 0) + barLength - timeStart;
 
-	// no change when bar lengths are bogus
-	if (lastBarline && ts && (lastBarline->timeStart() < ts->timeStart()))
-		barRest = 0;
-	if (ts && (timeStart == ts->timeStart()))
-		barRest = 0;
-	if (barRest < 0 || barRest > barLength)
-		barRest = 0;
+    // no change when bar lengths are bogus
+    if (lastBarline && ts && (lastBarline->timeStart() < ts->timeStart()))
+        barRest = 0;
+    if (ts && (timeStart == ts->timeStart()))
+        barRest = 0;
+    if (barRest < 0 || barRest > barLength)
+        barRest = 0;
 
-	int noteLen = timeLength;
+    int noteLen = timeLength;
 
-	int sepRest = separationTime - timeStart;
-	if (sepRest < 0 || sepRest >= noteLen)
-		sepRest = 0;
-	//if (sepRest > 0 && barRest 
+    int sepRest = separationTime - timeStart;
+    if (sepRest < 0 || sepRest >= noteLen)
+        sepRest = 0;
+    //if (sepRest > 0 && barRest
 
-	// now we really do a split
-	int tSplit = barRest ? barRest : barLength;
-	bool longNotesFirst = barRest ? false : true;
-	while (noteLen) {
-		tSplit = tSplit > noteLen ? noteLen : tSplit;
-		int decr = (tSplit < sepRest) || (sepRest <= 0) ? tSplit : sepRest;
-		list << timeLengthToPlayableLengthList( decr, longNotesFirst, dotsLimit );
-		noteLen -= decr;
-		sepRest -= decr;
-		tSplit = noteLen > barLength ? barLength : noteLen;
-		longNotesFirst = true;
-	}
+    // now we really do a split
+    int tSplit = barRest ? barRest : barLength;
+    bool longNotesFirst = barRest ? false : true;
+    while (noteLen) {
+        tSplit = tSplit > noteLen ? noteLen : tSplit;
+        int decr = (tSplit < sepRest) || (sepRest <= 0) ? tSplit : sepRest;
+        list << timeLengthToPlayableLengthList(decr, longNotesFirst, dotsLimit);
+        noteLen -= decr;
+        sepRest -= decr;
+        tSplit = noteLen > barLength ? barLength : noteLen;
+        longNotesFirst = true;
+    }
 
-	return list;
+    return list;
 }
-

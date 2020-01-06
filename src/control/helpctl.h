@@ -15,16 +15,16 @@ class QWidget;
 
 class CAHelpCtl {
 public:
-	CAHelpCtl();
-	virtual ~CAHelpCtl();
+    CAHelpCtl();
+    virtual ~CAHelpCtl();
 
-	bool showUsersGuide( QString chapter="", QWidget *helpWidget=nullptr );
+    bool showUsersGuide(QString chapter = "", QWidget* helpWidget = nullptr);
 
 private:
-	QUrl _homeUrl;
-	
-	QUrl detectHomeUrl();
-	void displayHelp( QUrl url, QWidget *helpWidget );
+    QUrl _homeUrl;
+
+    QUrl detectHomeUrl();
+    void displayHelp(QUrl url, QWidget* helpWidget);
 };
 
 #endif /* HELPCTL_H_ */

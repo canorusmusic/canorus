@@ -15,28 +15,28 @@ class CABarline;
 
 class CAFermata : public CAMark {
 public:
-	enum CAFermataType {
-		NormalFermata,
-		ShortFermata,
-		LongFermata,
-		VeryLongFermata
-	};
+    enum CAFermataType {
+        NormalFermata,
+        ShortFermata,
+        LongFermata,
+        VeryLongFermata
+    };
 
-	CAFermata( CAPlayable *m, CAFermataType t = NormalFermata );
-	CAFermata( CABarline *b,  CAFermataType t = NormalFermata );
-	virtual ~CAFermata();
+    CAFermata(CAPlayable* m, CAFermataType t = NormalFermata);
+    CAFermata(CABarline* b, CAFermataType t = NormalFermata);
+    virtual ~CAFermata();
 
-	CAFermata *clone(CAMusElement* elt=nullptr);
-	int compare( CAMusElement* );
+    CAFermata* clone(CAMusElement* elt = nullptr);
+    int compare(CAMusElement*);
 
-	inline CAFermataType fermataType() { return _fermataType; }
-	inline void setFermataType( CAFermataType t ) { _fermataType = t; }
+    inline CAFermataType fermataType() { return _fermataType; }
+    inline void setFermataType(CAFermataType t) { _fermataType = t; }
 
-	static const QString fermataTypeToString( CAFermataType t );
-	static CAFermataType fermataTypeFromString( const QString r );
+    static const QString fermataTypeToString(CAFermataType t);
+    static CAFermataType fermataTypeFromString(const QString r);
 
 private:
-	CAFermataType _fermataType;
+    CAFermataType _fermataType;
 };
 
 #endif /* FERMATA_H_ */

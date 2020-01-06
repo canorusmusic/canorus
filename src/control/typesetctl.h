@@ -10,10 +10,10 @@
 
 // Includes
 #include <QObject>
-#include <QVariant>
-#include <QVector>
 #include <QStringList>
 #include <QTemporaryFile>
+#include <QVariant>
+#include <QVector>
 
 // Forward declarations
 class CAExternProgram;
@@ -21,53 +21,51 @@ class CAExport;
 class CADocument;
 class CASheet;
 
-class CATypesetCtl : public QObject
-{
-	Q_OBJECT
+class CATypesetCtl : public QObject {
+    Q_OBJECT
 
 public:
-	CATypesetCtl();
-	~CATypesetCtl();
+    CATypesetCtl();
+    ~CATypesetCtl();
 
-	void setTypesetter( const QString &roProgramName, const QString &roProgramPath = "" );
-	void setPS2PDF( const QString &roProgrammName, const QString &roProgramPath = "",
-                  const QStringList &roParams = (QStringList() << QString("") ) );
-	virtual void setExpOption( const QVariant &roName, const QVariant &roValue );
-	virtual void setTSetOption( const QVariant &roName, const QVariant &roValue, bool bSpace = false, bool bShortParam = true );
-	inline void setPDFConversion( bool bConversion ) { _bPDFConversion = bConversion; }
-	inline void setExporter( CAExport *poExport ) { _poExport = poExport ; }
-	// Attention: .pdf automatically added and removed if it was added internally
-	void exportDocument( CADocument *poDoc );
-	void exportSheet( CASheet *poSheet );
-	void runTypesetter();
+    void setTypesetter(const QString& roProgramName, const QString& roProgramPath = "");
+    void setPS2PDF(const QString& roProgrammName, const QString& roProgramPath = "",
+        const QStringList& roParams = (QStringList() << QString("")));
+    virtual void setExpOption(const QVariant& roName, const QVariant& roValue);
+    virtual void setTSetOption(const QVariant& roName, const QVariant& roValue, bool bSpace = false, bool bShortParam = true);
+    inline void setPDFConversion(bool bConversion) { _bPDFConversion = bConversion; }
+    inline void setExporter(CAExport* poExport) { _poExport = poExport; }
+    // Attention: .pdf automatically added and removed if it was added internally
+    void exportDocument(CADocument* poDoc);
+    void exportSheet(CASheet* poSheet);
+    void runTypesetter();
 
-	inline bool getPDFConversion() { return _bPDFConversion; }
-	inline CAExport *getExporter() { return _poExport; }
-	inline QString getTempFilePath() { return _oOutputFileName; }
-	bool waitForFinished ( int iMSecs );
+    inline bool getPDFConversion() { return _bPDFConversion; }
+    inline CAExport* getExporter() { return _poExport; }
+    inline QString getTempFilePath() { return _oOutputFileName; }
+    bool waitForFinished(int iMSecs);
 
 signals:
-	void nextOutput( const QByteArray &roData );
-	void nextStep();
-	void typesetterFinished( int iExitCode );
+    void nextOutput(const QByteArray& roData);
+    void nextStep();
+    void typesetterFinished(int iExitCode);
 
 protected slots:
-	void rcvTypesetterOutput( const QByteArray &roData );
-	void typsetterExited( int iExitCode );
+    void rcvTypesetterOutput(const QByteArray& roData);
+    void typsetterExited(int iExitCode);
 
 protected:
-	bool createPDF();
+    bool createPDF();
 
-	CAExternProgram    *_poTypesetter;      // Transforms exported file to pdf / postscript
-	CAExternProgram    *_poConvPS2PDF;   // Transforms postscripts files to pdf if needed
-	CAExport                *_poExport;            // Transforms canorus document to typesetter format
-	QVector<QVariant>   _oExpOptList;       // List of options for export
-	QVector<QVariant>   _oTSetOptList;      // List of options for typesetter
-	QTemporaryFile       *_poOutputFile;       // Output file for pdf (also used for exported file)
-	QString                    _oOutputFileName; // Output file name for pdf (temporary file deletes it on close)
-	bool                        _bPDFConversion;  // Do a conversion from postscript to pdf
-	bool                        _bOutputFileNameFirst; // File name as first parameter ? (Default: No)
+    CAExternProgram* _poTypesetter; // Transforms exported file to pdf / postscript
+    CAExternProgram* _poConvPS2PDF; // Transforms postscripts files to pdf if needed
+    CAExport* _poExport; // Transforms canorus document to typesetter format
+    QVector<QVariant> _oExpOptList; // List of options for export
+    QVector<QVariant> _oTSetOptList; // List of options for typesetter
+    QTemporaryFile* _poOutputFile; // Output file for pdf (also used for exported file)
+    QString _oOutputFileName; // Output file name for pdf (temporary file deletes it on close)
+    bool _bPDFConversion; // Do a conversion from postscript to pdf
+    bool _bOutputFileNameFirst; // File name as first parameter ? (Default: No)
 };
 
 #endif // TYPESET_CTL_H
-

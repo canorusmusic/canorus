@@ -18,33 +18,32 @@ class CATypesetCtl;
 // !! exportDocument does not support threading !!
 class CAPDFExport : public CAExport {
 #ifndef SWIG
-	Q_OBJECT
+    Q_OBJECT
 #endif
 
 public:
-	CAPDFExport( QTextStream *stream=0 );
-	~CAPDFExport();
+    CAPDFExport(QTextStream* stream = 0);
+    ~CAPDFExport();
 
-	QString getTempFilePath();
+    QString getTempFilePath();
 #ifndef SWIG
 signals:
-	void pdfIsFinished( int iExitCode );
+    void pdfIsFinished(int iExitCode);
 
 protected slots:
-	void outputTypsetterOutput( const QByteArray &roOutput );
-	void pdfFinished( int iExitCode );
+    void outputTypsetterOutput(const QByteArray& roOutput);
+    void pdfFinished(int iExitCode);
 
 private:
-	void startExport();
-	void finishExport();
-	void exportDocumentImpl(CADocument *doc);
-	void exportSheetImpl(CASheet *poSheet);
-	void runTypesetter();
+    void startExport();
+    void finishExport();
+    void exportDocumentImpl(CADocument* doc);
+    void exportSheetImpl(CASheet* poSheet);
+    void runTypesetter();
 
 protected:
-	CATypesetCtl *_poTypesetCtl;
+    CATypesetCtl* _poTypesetCtl;
 #endif
 };
 
 #endif // PDFEXPORT_H_
-

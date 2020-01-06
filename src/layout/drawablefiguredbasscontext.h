@@ -13,14 +13,14 @@
 
 class CAFiguredBassContext;
 
-class CADrawableFiguredBassContext: public CADrawableContext {
+class CADrawableFiguredBassContext : public CADrawableContext {
 public:
-	CADrawableFiguredBassContext( CAFiguredBassContext *c, double x, double y );
-	virtual ~CADrawableFiguredBassContext();
-	CADrawableFiguredBassContext* clone();
-	void draw(QPainter *p, const CADrawSettings s);
+    CADrawableFiguredBassContext(CAFiguredBassContext* c, double x, double y);
+    virtual ~CADrawableFiguredBassContext();
+    CADrawableFiguredBassContext* clone();
+    void draw(QPainter* p, const CADrawSettings s);
 
-	CAFiguredBassContext *figuredBassContext() { return static_cast<CAFiguredBassContext*>(context()); }
+    CAFiguredBassContext* figuredBassContext() { return static_cast<CAFiguredBassContext*>(context()); }
 };
 
 #endif /* DRAWABLEFIGUREDBASSCONTEXT_H_ */

@@ -15,13 +15,13 @@ class CADrawableStaff;
 
 class CADrawableClef : public CADrawableMusElement {
 public:
-	CADrawableClef(CAClef *clef, CADrawableStaff *drawableStaff, double x, double y);
+    CADrawableClef(CAClef* clef, CADrawableStaff* drawableStaff, double x, double y);
 
-	void draw(QPainter *p, CADrawSettings s);
-	CADrawableClef *clone(CADrawableContext* newContext = 0);
-	inline CAClef *clef() { return (CAClef*)_musElement; }
+    void draw(QPainter* p, CADrawSettings s);
+    CADrawableClef* clone(CADrawableContext* newContext = 0);
+    inline CAClef* clef() { return (CAClef*)_musElement; }
 
-	static const int CLEF_EIGHT_SIZE;
+    static const int CLEF_EIGHT_SIZE;
 };
 
 #endif /* DRAWABLECLEF_H_ */

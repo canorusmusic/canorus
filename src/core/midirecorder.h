@@ -17,31 +17,31 @@ class CAMidiDevice;
 
 class CAMidiRecorder : public QObject {
 #ifndef SWIG
-	Q_OBJECT
+    Q_OBJECT
 #endif
 public:
-	CAMidiRecorder( CAResource *r, CAMidiDevice *d );
-	virtual ~CAMidiRecorder();
+    CAMidiRecorder(CAResource* r, CAMidiDevice* d);
+    virtual ~CAMidiRecorder();
 
-	void startRecording( int time=0 );
-	void pauseRecording();
-	void stopRecording();
+    void startRecording(int time = 0);
+    void pauseRecording();
+    void stopRecording();
 
-	const unsigned int& curTime() const { return _curTime; }
+    const unsigned int& curTime() const { return _curTime; }
 
 #ifndef SWIG
 private slots:
-	void timerTimeout();
-	void onMidiInEvent( QVector<unsigned char> messages );
+    void timerTimeout();
+    void onMidiInEvent(QVector<unsigned char> messages);
 #endif
 
 private:
-	CAResource   *_resource;
-	CAMidiExport *_midiExport;
-	QTimer       *_timer;
-	unsigned int  _curTime;
+    CAResource* _resource;
+    CAMidiExport* _midiExport;
+    QTimer* _timer;
+    unsigned int _curTime;
 
-	bool          _paused;
+    bool _paused;
 };
 
 #endif /* MIDIRECORDER_H_ */

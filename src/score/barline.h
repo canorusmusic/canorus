@@ -5,7 +5,6 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-
 #ifndef BARLINE_H_
 #define BARLINE_H_
 
@@ -16,30 +15,30 @@ class CAContext;
 
 class CABarline : public CAMusElement {
 public:
-	enum CABarlineType {
-		Undefined = -1,
-		Single,
-		Double,
-		End,
-		RepeatOpen,
-		RepeatClose,
-		RepeatCloseOpen,
-		Dotted
-	};
+    enum CABarlineType {
+        Undefined = -1,
+        Single,
+        Double,
+        End,
+        RepeatOpen,
+        RepeatClose,
+        RepeatCloseOpen,
+        Dotted
+    };
 
-	CABarline(CABarlineType type, CAStaff *staff, int startTime);
-	virtual ~CABarline();
+    CABarline(CABarlineType type, CAStaff* staff, int startTime);
+    virtual ~CABarline();
 
-	CABarline *clone(CAContext* context=0);
-	int compare(CAMusElement* elt);
+    CABarline* clone(CAContext* context = 0);
+    int compare(CAMusElement* elt);
 
-	CABarlineType barlineType() { return _barlineType; }
-	void setBarlineType( CABarlineType t ) { _barlineType = t; }
+    CABarlineType barlineType() { return _barlineType; }
+    void setBarlineType(CABarlineType t) { _barlineType = t; }
 
-	static const QString barlineTypeToString( CABarlineType );
-	static CABarlineType barlineTypeFromString( const QString );
+    static const QString barlineTypeToString(CABarlineType);
+    static CABarlineType barlineTypeFromString(const QString);
 
 private:
-	CABarlineType _barlineType;
+    CABarlineType _barlineType;
 };
 #endif /* BARLINE_H_ */

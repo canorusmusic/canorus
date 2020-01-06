@@ -13,20 +13,20 @@
 
 class CATempo : public CAMark {
 public:
-	CATempo( CAPlayableLength l, unsigned char bpm, CAMusElement *m );
-	virtual ~CATempo();
+    CATempo(CAPlayableLength l, unsigned char bpm, CAMusElement* m);
+    virtual ~CATempo();
 
-	CATempo *clone(CAMusElement* elt=nullptr);
-	int compare( CAMusElement *elt );
+    CATempo* clone(CAMusElement* elt = nullptr);
+    int compare(CAMusElement* elt);
 
-	inline unsigned char bpm() { return _bpm; }
-	inline void setBpm( unsigned char bpm ) { _bpm = bpm; }
-	inline CAPlayableLength beat() { return _beat; }
-	inline void setBeat( CAPlayableLength l ) { _beat = l; }
+    inline unsigned char bpm() { return _bpm; }
+    inline void setBpm(unsigned char bpm) { _bpm = bpm; }
+    inline CAPlayableLength beat() { return _beat; }
+    inline void setBeat(CAPlayableLength l) { _beat = l; }
 
 private:
-	CAPlayableLength _beat;
-	unsigned char _bpm; // beats per minute
+    CAPlayableLength _beat;
+    unsigned char _bpm; // beats per minute
 };
 
 #endif /* TEMPO_H_ */

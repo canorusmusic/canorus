@@ -14,24 +14,33 @@ class CAPyConsole;
 
 class CAPyConsoleInterface {
 public:
-#if !defined( SWIG ) && !defined( SWIGCPP )
-	CAPyConsoleInterface (CAPyConsole* pyConsole);
+#if !defined(SWIG) && !defined(SWIGCPP)
+    CAPyConsoleInterface(CAPyConsole* pyConsole);
 
-	// API for pycli plugin
-	char* bufferedInput(char* prompt);	// Input goes to script
-	void bufferedOutput(char* bufInp, bool bStdErr);
+    // API for pycli plugin
+    char* bufferedInput(char* prompt); // Input goes to script
+    void bufferedOutput(char* bufInp, bool bStdErr);
 #else
-	char* bufferedInput(char* prompt) { (void)prompt; return nullptr; }
-	void bufferedOutput(char* bufInp, bool bStdErr) { (void)bufInp; (void)bStdErr; }
-#endif	
-	CAPyConsoleInterface () {}
-	void pluginInit(void);			// when script initializes
+    char* bufferedInput(char* prompt)
+    {
+        (void)prompt;
+        return nullptr;
+    }
+    void bufferedOutput(char* bufInp, bool bStdErr)
+    {
+        (void)bufInp;
+        (void)bStdErr;
+    }
+#endif
+    CAPyConsoleInterface()
+    {
+    }
+    void pluginInit(void); // when script initializes
 
 private:
-#if !defined( SWIG ) && !defined( SWIGCPP )
-	CAPyConsole* _pycons;
+#if !defined(SWIG) && !defined(SWIGCPP)
+    CAPyConsole* _pycons;
 #endif
-
 };
 
 #endif /* PYCONSOLEINTERFACE_H_ */

@@ -14,23 +14,23 @@ class CAMainWin;
 class QAbstractButton;
 
 class CATransposeView : public QDockWidget, private Ui::uiTransposeView {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	CATransposeView( CAMainWin *parent );
-	virtual ~CATransposeView();
+    CATransposeView(CAMainWin* parent);
+    virtual ~CATransposeView();
 
 public slots:
-	void show();
+    void show();
 
 private slots:
-	void updateUi( bool );
+    void updateUi(bool);
 
-	void on_uiApply_clicked( QAbstractButton *b );
-	void on_uiIntervalQuantity_currentIndexChanged(int);
+    void on_uiApply_clicked(QAbstractButton* b);
+    void on_uiIntervalQuantity_currentIndexChanged(int);
 
 private:
-	void setupCustomUi();
-	void updateKeySig1();
+    void setupCustomUi();
+    void updateKeySig1();
 };
 
 #endif /* TRANSPOSEVIEW_H_ */

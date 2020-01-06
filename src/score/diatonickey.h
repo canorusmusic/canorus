@@ -9,60 +9,60 @@
 #define DIATONICKEY_H_
 
 #include "score/diatonicpitch.h"
-#include <QString>
 #include <QList>
+#include <QString>
 
 class CADiatonicKey {
 public:
-	enum CAGender {
-		Major,
-		Minor
-	};
+    enum CAGender {
+        Major,
+        Minor
+    };
 
-	enum CAShape {
-		Natural,
-		Harmonic,
-		Melodic
-	};
+    enum CAShape {
+        Natural,
+        Harmonic,
+        Melodic
+    };
 
-	CADiatonicKey();
-	CADiatonicKey( const QString& key );
-	CADiatonicKey( const int& numberOfAccs, const CAGender& gender );
-	CADiatonicKey( const CADiatonicPitch& pitch, const CAGender& gender );
-	CADiatonicKey( const CADiatonicPitch& pitch, const CAGender& gender, const CAShape& shape );
+    CADiatonicKey();
+    CADiatonicKey(const QString& key);
+    CADiatonicKey(const int& numberOfAccs, const CAGender& gender);
+    CADiatonicKey(const CADiatonicPitch& pitch, const CAGender& gender);
+    CADiatonicKey(const CADiatonicPitch& pitch, const CAGender& gender, const CAShape& shape);
 
-	bool operator==(CADiatonicKey);
-	inline bool operator!=(CADiatonicKey p) { return !operator==(p); }
+    bool operator==(CADiatonicKey);
+    inline bool operator!=(CADiatonicKey p) { return !operator==(p); }
 #ifndef SWIG
-	void operator=(const QString& key);
+    void operator=(const QString& key);
 #endif
 
-	CADiatonicKey operator+(CAInterval);
+    CADiatonicKey operator+(CAInterval);
 
-	inline CADiatonicPitch diatonicPitch() { return _diatonicPitch; }
-	inline const CAGender gender() { return _gender; }
-	inline const CAShape shape() { return _shape; }
+    inline CADiatonicPitch diatonicPitch() { return _diatonicPitch; }
+    inline const CAGender gender() { return _gender; }
+    inline const CAShape shape() { return _shape; }
 
-	inline void setDiatonicPitch( const CADiatonicPitch p ) { _diatonicPitch = p; }
-	inline void setGender( const CAGender g ) { _gender = g; }
-	inline void setShape( const CAShape s ) { _shape = s; }
+    inline void setDiatonicPitch(const CADiatonicPitch p) { _diatonicPitch = p; }
+    inline void setGender(const CAGender g) { _gender = g; }
+    inline void setShape(const CAShape s) { _shape = s; }
 
-	static const QString shapeToString( CAShape );
-	static CAShape shapeFromString( const QString );
-	static const QString genderToString( CAGender );
-	static CAGender genderFromString( const QString );
+    static const QString shapeToString(CAShape);
+    static CAShape shapeFromString(const QString);
+    static const QString genderToString(CAGender);
+    static CAGender genderFromString(const QString);
 
-	static const QString diatonicKeyToString( CADiatonicKey k );
-	static CADiatonicKey diatonicKeyFromString( const QString );
+    static const QString diatonicKeyToString(CADiatonicKey k);
+    static CADiatonicKey diatonicKeyFromString(const QString);
 
-	int numberOfAccs();
-	QList<int> accsMatrix();
-	int noteAccs( int noteName );
-	bool containsPitch( const CADiatonicPitch& p );
+    int numberOfAccs();
+    QList<int> accsMatrix();
+    int noteAccs(int noteName);
+    bool containsPitch(const CADiatonicPitch& p);
 
 private:
-	CADiatonicPitch _diatonicPitch; // pitch of the key
-	CAGender        _gender;        // major, minor
-	CAShape         _shape;         // natural, harmonic, melodic
+    CADiatonicPitch _diatonicPitch; // pitch of the key
+    CAGender _gender; // major, minor
+    CAShape _shape; // natural, harmonic, melodic
 };
 #endif /* DIATONICKEY_H_ */

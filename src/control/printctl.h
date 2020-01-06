@@ -9,40 +9,38 @@
 #define _PRINT_CTL_H_
 
 // Includes
+#include <QFile>
 #include <QObject>
+#include <QPrinterInfo>
+#include <QStringList>
 #include <QVariant>
 #include <QVector>
-#include <QStringList>
-#include <QFile>
-#include <QPrinterInfo>
 
 // Forward declarations
 class CAMainWin;
 class CASVGExport;
 
-class CAPrintCtl : public QObject
-{
-	Q_OBJECT
+class CAPrintCtl : public QObject {
+    Q_OBJECT
 
 public:
-	CAPrintCtl( CAMainWin *poMainWin );
-	~CAPrintCtl();
+    CAPrintCtl(CAMainWin* poMainWin);
+    ~CAPrintCtl();
 
 public slots:
-	void on_uiPrint_triggered();
-	void on_uiPrintDirectly_triggered();
+    void on_uiPrint_triggered();
+    void on_uiPrintDirectly_triggered();
 
 protected slots:
-	void printSVG( int iExitCode );
+    void printSVG(int iExitCode);
 
 protected:
-	void printDocument();
+    void printDocument();
 
-	CAMainWin   *_poMainWin;
-	CASVGExport *_poSVGExport;
-	QString      _oOutputSVGName;
-	bool         _showDialog;  // used when printing directly
+    CAMainWin* _poMainWin;
+    CASVGExport* _poSVGExport;
+    QString _oOutputSVGName;
+    bool _showDialog; // used when printing directly
 };
 
 #endif // _PRINT_CTL_H
-

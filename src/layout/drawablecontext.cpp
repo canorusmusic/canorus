@@ -7,9 +7,11 @@
 
 #include "layout/drawablecontext.h"
 
-CADrawableContext::CADrawableContext(CAContext *c, double x, double y)
- : CADrawable(x, y), _context(c) {
-	setDrawableType(CADrawable::DrawableContext);
+CADrawableContext::CADrawableContext(CAContext* c, double x, double y)
+    : CADrawable(x, y)
+    , _context(c)
+{
+    setDrawableType(CADrawable::DrawableContext);
 }
 
 /*!
@@ -19,15 +21,15 @@ CADrawableContext::CADrawableContext(CAContext *c, double x, double y)
 	That is the first returned element's left border is smaller than \a x1 and the last returned element's
 	right border is larger than \a x2.
 */
-QList<CADrawableMusElement*> CADrawableContext::findInRange( double x1, double x2 ) {
-	//int i;
-	QList<CADrawableMusElement*> list;
-	for (int i=0; i<_drawableMusElementList.size(); i++) {
-		if ( static_cast<CADrawable*>(_drawableMusElementList[i])->xPos() <= x2 &&                       // The object is normal and fits into the area
-		     static_cast<CADrawable*>(_drawableMusElementList[i])->xPos() + static_cast<CADrawable*>(_drawableMusElementList[i])->width() >= x1
-		    ) {
-			list << _drawableMusElementList[i];
-		}
-	}
-	return list;
+QList<CADrawableMusElement*> CADrawableContext::findInRange(double x1, double x2)
+{
+    //int i;
+    QList<CADrawableMusElement*> list;
+    for (int i = 0; i < _drawableMusElementList.size(); i++) {
+        if (static_cast<CADrawable*>(_drawableMusElementList[i])->xPos() <= x2 && // The object is normal and fits into the area
+            static_cast<CADrawable*>(_drawableMusElementList[i])->xPos() + static_cast<CADrawable*>(_drawableMusElementList[i])->width() >= x1) {
+            list << _drawableMusElementList[i];
+        }
+    }
+    return list;
 }

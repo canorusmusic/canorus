@@ -16,24 +16,24 @@ class CAFile;
 class QTimer;
 
 class CAMainWinProgressCtl : public QObject {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	CAMainWinProgressCtl( CAMainWin *mainWin );
-	~CAMainWinProgressCtl();
+    CAMainWinProgressCtl(CAMainWin* mainWin);
+    ~CAMainWinProgressCtl();
 
-	void startProgress( CAFile *f );
+    void startProgress(CAFile* f);
 
 private slots:
-	void on_updateTimer_timeout();
-	void on_cancelButton_clicked(bool);
+    void on_updateTimer_timeout();
+    void on_cancelButton_clicked(bool);
 
 private:
-	void restoreStatusBar();
+    void restoreStatusBar();
 
-	CAMainWin *_mainWin;
-	CAProgressStatusBar *_bar;
-	QTimer    *_updateTimer;
-	CAFile    *_file;
+    CAMainWin* _mainWin;
+    CAProgressStatusBar* _bar;
+    QTimer* _updateTimer;
+    CAFile* _file;
 };
 
 #endif /* MAINWINPROGRESSCTL_H_ */

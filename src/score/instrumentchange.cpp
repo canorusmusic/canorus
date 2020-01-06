@@ -18,27 +18,31 @@
 	      (eg. into CAInstrument?).
 */
 
-CAInstrumentChange::CAInstrumentChange( int instrument, CANote *note )
- : CAMark( CAMark::InstrumentChange, note ) {
-	setInstrument(instrument);
+CAInstrumentChange::CAInstrumentChange(int instrument, CANote* note)
+    : CAMark(CAMark::InstrumentChange, note)
+{
+    setInstrument(instrument);
 }
 
-CAInstrumentChange::~CAInstrumentChange() {
+CAInstrumentChange::~CAInstrumentChange()
+{
 }
 
-CAInstrumentChange* CAInstrumentChange::clone(CAMusElement* elt) {
-	return new CAInstrumentChange( instrument(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):nullptr );
+CAInstrumentChange* CAInstrumentChange::clone(CAMusElement* elt)
+{
+    return new CAInstrumentChange(instrument(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr);
 }
 
-int CAInstrumentChange::compare( CAMusElement *elt ) {
-	if (elt->musElementType()!=CAMusElement::Mark)
-		return -2;
+int CAInstrumentChange::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Mark)
+        return -2;
 
-	if (static_cast<CAMark*>(elt)->markType()!=CAMark::InstrumentChange)
-		return -1;
+    if (static_cast<CAMark*>(elt)->markType() != CAMark::InstrumentChange)
+        return -1;
 
-	if (static_cast<CAInstrumentChange*>(elt)->instrument()!=instrument())
-		return 1;
+    if (static_cast<CAInstrumentChange*>(elt)->instrument() != instrument())
+        return 1;
 
-	return 0;
+    return 0;
 }

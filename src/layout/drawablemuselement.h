@@ -14,41 +14,42 @@ class CAMusElement;
 class CADrawableContext;
 
 class CADrawableMusElement : public CADrawable {
-	public:
-		enum CADrawableMusElementType {
-			DrawableNote,
-			DrawableRest,
-			DrawableMidiNote,
-			DrawableClef,
-			DrawableKeySignature,
-			DrawableTimeSignature,
-			DrawableBarline,
-			DrawableAccidental,
-			DrawableSlur,
-			DrawableTuplet,
-			DrawableSyllable,
-			DrawableFunctionMark, DrawableFunctionMarkSupport,
-			DrawableFiguredBassNumber,
-			DrawableMark,
-			DrawableChordName,
-		};
+public:
+    enum CADrawableMusElementType {
+        DrawableNote,
+        DrawableRest,
+        DrawableMidiNote,
+        DrawableClef,
+        DrawableKeySignature,
+        DrawableTimeSignature,
+        DrawableBarline,
+        DrawableAccidental,
+        DrawableSlur,
+        DrawableTuplet,
+        DrawableSyllable,
+        DrawableFunctionMark,
+        DrawableFunctionMarkSupport,
+        DrawableFiguredBassNumber,
+        DrawableMark,
+        DrawableChordName,
+    };
 
-		CADrawableMusElement(CAMusElement *musElement, CADrawableContext *drawableContext, double x, double y);
+    CADrawableMusElement(CAMusElement* musElement, CADrawableContext* drawableContext, double x, double y);
 
-		CADrawableMusElementType drawableMusElementType() { return _drawableMusElementType; }
-		inline CAMusElement *musElement() { return _musElement; }
-		CADrawableContext *drawableContext() { return _drawableContext; }
-		void setDrawableContext(CADrawableContext *context) { _drawableContext = context; }
-        virtual CADrawable *clone() { return clone(nullptr); }
-		virtual CADrawableMusElement* clone(CADrawableContext* newContext = nullptr) = 0;
+    CADrawableMusElementType drawableMusElementType() { return _drawableMusElementType; }
+    inline CAMusElement* musElement() { return _musElement; }
+    CADrawableContext* drawableContext() { return _drawableContext; }
+    void setDrawableContext(CADrawableContext* context) { _drawableContext = context; }
+    virtual CADrawable* clone() { return clone(nullptr); }
+    virtual CADrawableMusElement* clone(CADrawableContext* newContext = nullptr) = 0;
 
-	protected:
-		void setDrawableMusElementType( CADrawableMusElementType t ) { _drawableMusElementType = t; }
+protected:
+    void setDrawableMusElementType(CADrawableMusElementType t) { _drawableMusElementType = t; }
 
-		CADrawableMusElementType _drawableMusElementType;	// CADrawableMusElement type
-		CADrawableContext *_drawableContext;
-		CAMusElement *_musElement;
-		bool _selectable;
+    CADrawableMusElementType _drawableMusElementType; // CADrawableMusElement type
+    CADrawableContext* _drawableContext;
+    CAMusElement* _musElement;
+    bool _selectable;
 };
 
 #endif /* DRAWABLEMUSELEMENT_H_ */

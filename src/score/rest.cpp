@@ -6,8 +6,8 @@
 */
 
 #include "score/rest.h"
-#include "score/staff.h"
 #include "score/mark.h"
+#include "score/staff.h"
 
 /*!
 	\class CARest
@@ -22,37 +22,42 @@
 
 	\sa CARestType, CAPlayableLength, CAPlayable, CAVoice
 */
-CARest::CARest( CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength )
- : CAPlayable( length, voice, timeStart, timeLength ) {
- 	_musElementType = CAMusElement::Rest;
- 	_restType = type;
+CARest::CARest(CARestType type, CAPlayableLength length, CAVoice* voice, int timeStart, int timeLength)
+    : CAPlayable(length, voice, timeStart, timeLength)
+{
+    _musElementType = CAMusElement::Rest;
+    _restType = type;
 }
 
 /*!
 	Destroys the rest.
 */
-CARest::~CARest() {
+CARest::~CARest()
+{
 }
 
-CARest *CARest::clone( CAVoice *voice ) {
-	CARest *r = new CARest( restType(), playableLength(), voice, timeStart(), timeLength() );
+CARest* CARest::clone(CAVoice* voice)
+{
+    CARest* r = new CARest(restType(), playableLength(), voice, timeStart(), timeLength());
 
-	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(r));
-		r->addMark( m );
-	}
+    for (int i = 0; i < markList().size(); i++) {
+        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(r));
+        r->addMark(m);
+    }
 
-	return r;
+    return r;
 }
 
-int CARest::compare(CAMusElement *elt) {
-	if (elt->musElementType()!=CAMusElement::Rest)
-		return -1;
+int CARest::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Rest)
+        return -1;
 
-	int diffs=0;
-	if ( playableLength() != static_cast<CAPlayable*>(elt)->playableLength() ) diffs++;
+    int diffs = 0;
+    if (playableLength() != static_cast<CAPlayable*>(elt)->playableLength())
+        diffs++;
 
-	return diffs;
+    return diffs;
 }
 
 /*!
@@ -61,12 +66,16 @@ int CARest::compare(CAMusElement *elt) {
 
 	\sa CARestType, CACanorusML
 */
-const QString CARest::restTypeToString(CARestType type) {
-	switch (type) {
-		case Normal: return "normal";
-		case Hidden: return "hidden";
-		default: return "";
-	}
+const QString CARest::restTypeToString(CARestType type)
+{
+    switch (type) {
+    case Normal:
+        return "normal";
+    case Hidden:
+        return "hidden";
+    default:
+        return "";
+    }
 }
 
 /*!
@@ -75,11 +84,12 @@ const QString CARest::restTypeToString(CARestType type) {
 
 	\sa CARestType, CACanorusML
 */
-CARest::CARestType CARest::restTypeFromString(const QString type) {
-	if (type=="hidden") {
-		return Hidden;
-	} else
-		return Normal;
+CARest::CARestType CARest::restTypeFromString(const QString type)
+{
+    if (type == "hidden") {
+        return Hidden;
+    } else
+        return Normal;
 }
 
 /*!
@@ -93,22 +103,23 @@ CARest::CARestType CARest::restTypeFromString(const QString type) {
 
 	\note Only non-dotted rests are generated.
 */
-QList<CARest*> CARest::composeRests( int timeLength, int timeStart, CAVoice* voice, CARestType type ) {
-	QList<CARest*> list;
+QList<CARest*> CARest::composeRests(int timeLength, int timeStart, CAVoice* voice, CARestType type)
+{
+    QList<CARest*> list;
 
-	// 2048 is the longest rest (breve)
-	for ( ; timeLength > 2048; timeLength-= 2048, timeStart+=2048 )
-		list << new CARest( type, CAPlayableLength(CAPlayableLength::Breve), voice, timeStart );
+    // 2048 is the longest rest (breve)
+    for (; timeLength > 2048; timeLength -= 2048, timeStart += 2048)
+        list << new CARest(type, CAPlayableLength(CAPlayableLength::Breve), voice, timeStart);
 
-	for ( int i = 0, TL=2048; i<256; (i?i*=2:i++), TL/=2 ) {
-		if ( TL <= timeLength) {
-			list << new CARest( type, CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>(i) ), voice, timeStart );
-			timeLength -= TL;
-			timeStart += TL;
-		}
-	}
+    for (int i = 0, TL = 2048; i < 256; (i ? i *= 2 : i++), TL /= 2) {
+        if (TL <= timeLength) {
+            list << new CARest(type, CAPlayableLength(static_cast<CAPlayableLength::CAMusicLength>(i)), voice, timeStart);
+            timeLength -= TL;
+            timeStart += TL;
+        }
+    }
 
-	return list;
+    return list;
 }
 
 /*!

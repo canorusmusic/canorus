@@ -14,26 +14,26 @@
 
 class CAFiguredBassContext;
 
-class CAFiguredBassMark: public CAMusElement {
+class CAFiguredBassMark : public CAMusElement {
 public:
-	CAFiguredBassMark( CAFiguredBassContext *c, int timeStart, int timeLength );
-	~CAFiguredBassMark();
+    CAFiguredBassMark(CAFiguredBassContext* c, int timeStart, int timeLength);
+    ~CAFiguredBassMark();
 
-	CAMusElement* clone(CAContext* context=nullptr);
-	int compare(CAMusElement *elt);
+    CAMusElement* clone(CAContext* context = nullptr);
+    int compare(CAMusElement* elt);
 
-	void addNumber( int number );
-	void addNumber( int number, int accs );
-	void removeNumber( int number );
+    void addNumber(int number);
+    void addNumber(int number, int accs);
+    void removeNumber(int number);
 
-	QList<int>&      numbers() { return _numbers; }
-	QHash<int, int>& accs() { return _accs; }
+    QList<int>& numbers() { return _numbers; }
+    QHash<int, int>& accs() { return _accs; }
 
 private:
-	void insertNumber( int number );
+    void insertNumber(int number);
 
-	QList<int>      _numbers; // sorted numbers in the figured bass mark
-	QHash<int, int> _accs;
+    QList<int> _numbers; // sorted numbers in the figured bass mark
+    QHash<int, int> _accs;
 };
 
 #endif /* FIGUREDBASSMARK_H_ */

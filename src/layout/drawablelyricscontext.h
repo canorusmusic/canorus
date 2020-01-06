@@ -15,15 +15,15 @@ class CALyricsContext;
 
 class CADrawableLyricsContext : public CADrawableContext {
 public:
-	CADrawableLyricsContext(CALyricsContext *c, double x, double y);
-	~CADrawableLyricsContext();
+    CADrawableLyricsContext(CALyricsContext* c, double x, double y);
+    ~CADrawableLyricsContext();
 
-	CADrawableLyricsContext* clone();
-	void draw(QPainter *p, const CADrawSettings s);
+    CADrawableLyricsContext* clone();
+    void draw(QPainter* p, const CADrawSettings s);
 
-	CALyricsContext *lyricsContext() { return static_cast<CALyricsContext*>(context()); }
+    CALyricsContext* lyricsContext() { return static_cast<CALyricsContext*>(context()); }
 
-	static const double DEFAULT_TEXT_VERTICAL_SPACING;
+    static const double DEFAULT_TEXT_VERTICAL_SPACING;
 };
 
 #endif /* DRAWABLELYRICSCONTEXT_H_ */

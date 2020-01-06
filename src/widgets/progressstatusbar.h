@@ -15,27 +15,27 @@ class QPushButton;
 class QProgressBar;
 
 class CAProgressStatusBar : public QStatusBar {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	CAProgressStatusBar( QWidget *parent );
-	~CAProgressStatusBar();
+    CAProgressStatusBar(QWidget* parent);
+    ~CAProgressStatusBar();
 
 public slots:
-	void setProgress( QString label, int value );
-	void setProgress( int value );
-	void setProgress( QString label );
+    void setProgress(QString label, int value);
+    void setProgress(int value);
+    void setProgress(QString label);
 
 signals:
-	void cancelButtonClicked( bool );
+    void cancelButtonClicked(bool);
 
 private slots:
-	void on_cancelButton_clicked( bool );
+    void on_cancelButton_clicked(bool);
 
 private:
-	QLabel       *_progressLabel;
-	QProgressBar *_progressBar;
-	QPushButton  *_cancelButton;
+    QLabel* _progressLabel;
+    QProgressBar* _progressBar;
+    QPushButton* _cancelButton;
 };
 
 #endif /* PROGRESSSTATUSBAR_H_ */

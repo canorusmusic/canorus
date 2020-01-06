@@ -6,10 +6,10 @@
 */
 
 #include "score/note.h"
-#include "score/voice.h"
-#include "score/staff.h"
 #include "score/clef.h"
 #include "score/mark.h"
+#include "score/staff.h"
+#include "score/voice.h"
 
 /*!
 	\class CANote
@@ -28,31 +28,35 @@
 
 	\sa CAPlayableLength, CAPlayable, CAVoice, _pitch, _accs
 */
-CANote::CANote( CADiatonicPitch pitch, CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength )
- : CAPlayable( length, voice, timeStart, timeLength ) {
-	_musElementType = CAMusElement::Note;
-	_forceAccidentals = false;
-	_stemDirection = StemPreferred;
+CANote::CANote(CADiatonicPitch pitch, CAPlayableLength length, CAVoice* voice, int timeStart, int timeLength)
+    : CAPlayable(length, voice, timeStart, timeLength)
+{
+    _musElementType = CAMusElement::Note;
+    _forceAccidentals = false;
+    _stemDirection = StemPreferred;
 
-	setTieStart( nullptr );
-	setSlurStart( nullptr );
-	setPhrasingSlurStart( nullptr );
-	setTieEnd( nullptr );
-	setSlurEnd( nullptr );
-	setPhrasingSlurEnd( nullptr );
+    setTieStart(nullptr);
+    setSlurStart(nullptr);
+    setPhrasingSlurStart(nullptr);
+    setTieEnd(nullptr);
+    setSlurEnd(nullptr);
+    setPhrasingSlurEnd(nullptr);
 
-	setDiatonicPitch(pitch);
+    setDiatonicPitch(pitch);
 }
 
-CANote::~CANote() {
-	if ( tieStart() ) delete tieStart();      // slurs destructor also disconnects itself from the notes
-	if ( tieEnd() ) tieEnd()->setNoteEnd( nullptr );
+CANote::~CANote()
+{
+    if (tieStart())
+        delete tieStart(); // slurs destructor also disconnects itself from the notes
+    if (tieEnd())
+        tieEnd()->setNoteEnd(nullptr);
 
-	// other slurs are removed or moved in CAVoice::removeElement()
+    // other slurs are removed or moved in CAVoice::removeElement()
 
-	for (int i=0; i<markList().size(); i++) {
-		delete markList()[i--];
-	}
+    for (int i = 0; i < markList().size(); i++) {
+        delete markList()[i--];
+    }
 }
 
 /*!
@@ -78,16 +82,17 @@ CANote::~CANote() {
 	Clones the note with same pitch, voice, timeStart and other properties.
 	Does *not* create clones of ties, slurs and phrasing slurs!
 */
-CANote *CANote::clone( CAVoice *voice ) {
-	CANote *d = new CANote( diatonicPitch(), playableLength(), voice, timeStart(), timeLength() );
-	d->setStemDirection( stemDirection() );
+CANote* CANote::clone(CAVoice* voice)
+{
+    CANote* d = new CANote(diatonicPitch(), playableLength(), voice, timeStart(), timeLength());
+    d->setStemDirection(stemDirection());
 
-	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(d));
-		d->addMark( m );
-	}
+    for (int i = 0; i < markList().size(); i++) {
+        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(d));
+        d->addMark(m);
+    }
 
-	return d;
+    return d;
 }
 
 /*!
@@ -99,22 +104,23 @@ CANote *CANote::clone( CAVoice *voice ) {
 	- -1 - first space below the first line
 	- -2 - first ledger line below the staff (eg. C1 in treble clef)
 */
-int CANote::notePosition() {
-	CAClef *clef=nullptr;
-	if (voice() && voice()->staff()) {
-		// find the corresponding clef
-		int i=0;
-		while (i < voice()->staff()->clefRefs().size() && staff()->clefRefs()[i]->timeStart() <= timeStart()) {
-			i++;
-		}
-		i--;
-		
-		if (i>=0) {
-			clef = static_cast<CAClef*>(voice()->staff()->clefRefs()[i]);
-		}
-	}
+int CANote::notePosition()
+{
+    CAClef* clef = nullptr;
+    if (voice() && voice()->staff()) {
+        // find the corresponding clef
+        int i = 0;
+        while (i < voice()->staff()->clefRefs().size() && staff()->clefRefs()[i]->timeStart() <= timeStart()) {
+            i++;
+        }
+        i--;
 
-	return (diatonicPitch().noteName() + (clef?clef->c1():-2) - 28);
+        if (i >= 0) {
+            clef = static_cast<CAClef*>(voice()->staff()->clefRefs()[i]);
+        }
+    }
+
+    return (diatonicPitch().noteName() + (clef ? clef->c1() : -2) - 28);
 }
 
 /*!
@@ -124,66 +130,79 @@ int CANote::notePosition() {
 
 	\sa _pitch, _accs
 */
-const QString CANote::generateNoteName(int pitch, int accs) {
-	QString name;
+const QString CANote::generateNoteName(int pitch, int accs)
+{
+    QString name;
 
-	name = static_cast<char>(((pitch<0?pitch*(-1):pitch)+2)%7 + 'a');
-	while (accs>0) { name += "is"; accs--; }
-	while (accs<0) { if (name!="e" && name!="a") name+="es"; else name+="s"; accs++; }
+    name = static_cast<char>(((pitch < 0 ? pitch * (-1) : pitch) + 2) % 7 + 'a');
+    while (accs > 0) {
+        name += "is";
+        accs--;
+    }
+    while (accs < 0) {
+        if (name != "e" && name != "a")
+            name += "es";
+        else
+            name += "s";
+        accs++;
+    }
 
-	if (pitch < 21)
-		name = name.toUpper();
+    if (pitch < 21)
+        name = name.toUpper();
 
-	for (int i=0; i<(pitch-21)/7; i++)
-		name.append('\'');
+    for (int i = 0; i < (pitch - 21) / 7; i++)
+        name.append('\'');
 
-	for (int i=0; i<(pitch-20)/(-7); i++)
-		name.append(',');
+    for (int i = 0; i < (pitch - 20) / (-7); i++)
+        name.append(',');
 
-	return name;
+    return name;
 }
 
 /*!
 	Returns true, if the note is part of a chord; otherwise false.
 */
-bool CANote::isPartOfChord() {
-	int idx = voice()->musElementList().indexOf(this);
+bool CANote::isPartOfChord()
+{
+    int idx = voice()->musElementList().indexOf(this);
 
-	// is there a note with the same start time after ours?
-	if (idx+1<voice()->musElementList().size() && voice()->musElementList()[idx+1]->musElementType()==CAMusElement::Note && voice()->musElementList()[idx+1]->timeStart()==_timeStart)
-		return true;
+    // is there a note with the same start time after ours?
+    if (idx + 1 < voice()->musElementList().size() && voice()->musElementList()[idx + 1]->musElementType() == CAMusElement::Note && voice()->musElementList()[idx + 1]->timeStart() == _timeStart)
+        return true;
 
-	// is there a note with the same start time before ours?
-	if (idx>0 && voice()->musElementList()[idx-1]->musElementType()==CAMusElement::Note && voice()->musElementList()[idx-1]->timeStart()==_timeStart)
-		return true;
+    // is there a note with the same start time before ours?
+    if (idx > 0 && voice()->musElementList()[idx - 1]->musElementType() == CAMusElement::Note && voice()->musElementList()[idx - 1]->timeStart() == _timeStart)
+        return true;
 
-	return false;
+    return false;
 }
 
 /*!
 	Returns true, if the note is the first in the list of the chord; otherwise false.
 */
-bool CANote::isFirstInChord() {
-	int idx = voice()->musElementList().indexOf(this);
+bool CANote::isFirstInChord()
+{
+    int idx = voice()->musElementList().indexOf(this);
 
-	//is there a note with the same start time before ours?
-	if (idx>0 && voice()->musElementList()[idx-1]->musElementType()==CAMusElement::Note && voice()->musElementList()[idx-1]->timeStart()==_timeStart)
-		return false;
+    //is there a note with the same start time before ours?
+    if (idx > 0 && voice()->musElementList()[idx - 1]->musElementType() == CAMusElement::Note && voice()->musElementList()[idx - 1]->timeStart() == _timeStart)
+        return false;
 
-	return true;
+    return true;
 }
 
 /*!
 	Returns true, if the note is the last in the list of the chord; otherwise false.
 */
-bool CANote::isLastInChord() {
-	int idx = voice()->musElementList().indexOf(this);
+bool CANote::isLastInChord()
+{
+    int idx = voice()->musElementList().indexOf(this);
 
-	//is there a note with the same start time after ours?
-	if (idx+1<voice()->musElementList().size() && voice()->musElementList()[idx+1]->musElementType()==CAMusElement::Note && voice()->musElementList()[idx+1]->timeStart()==_timeStart)
-		return false;
+    //is there a note with the same start time after ours?
+    if (idx + 1 < voice()->musElementList().size() && voice()->musElementList()[idx + 1]->musElementType() == CAMusElement::Note && voice()->musElementList()[idx + 1]->timeStart() == _timeStart)
+        return false;
 
-	return true;
+    return true;
 }
 
 /*!
@@ -194,89 +213,92 @@ bool CANote::isLastInChord() {
 
 	\sa CAVoice::addNoteToChord()
 */
-QList<CANote*> CANote::getChord() {
-	QList<CANote*> list;
-	int idx = voice()->musElementList().indexOf(this) - 1;
+QList<CANote*> CANote::getChord()
+{
+    QList<CANote*> list;
+    int idx = voice()->musElementList().indexOf(this) - 1;
 
-	while (idx>=0 &&
-	       voice()->musElementList()[idx]->musElementType()==CAMusElement::Note &&
-	       voice()->musElementList()[idx]->timeStart()==timeStart())
-		idx--;
+    while (idx >= 0 && voice()->musElementList()[idx]->musElementType() == CAMusElement::Note && voice()->musElementList()[idx]->timeStart() == timeStart())
+        idx--;
 
-	for (idx++;
-	     (idx>=0 && idx<voice()->musElementList().size()) && (voice()->musElementList()[idx]->musElementType()==CAMusElement::Note) && (voice()->musElementList()[idx]->timeStart()==timeStart());
-	     idx++)
-		list << static_cast<CANote*>(voice()->musElementList()[idx]);
+    for (idx++;
+         (idx >= 0 && idx < voice()->musElementList().size()) && (voice()->musElementList()[idx]->musElementType() == CAMusElement::Note) && (voice()->musElementList()[idx]->timeStart() == timeStart());
+         idx++)
+        list << static_cast<CANote*>(voice()->musElementList()[idx]);
 
-	return list;
+    return list;
 }
 
-int CANote::compare(CAMusElement *elt) {
-	if (elt->musElementType()!=CAMusElement::Note)
-		return -1;
+int CANote::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Note)
+        return -1;
 
-	int diffs=0;
-	if ( diatonicPitch() != static_cast<CANote*>(elt)->diatonicPitch() )diffs++;
-	if ( playableLength() != static_cast<CAPlayable*>(elt)->playableLength() ) diffs++;
+    int diffs = 0;
+    if (diatonicPitch() != static_cast<CANote*>(elt)->diatonicPitch())
+        diffs++;
+    if (playableLength() != static_cast<CAPlayable*>(elt)->playableLength())
+        diffs++;
 
-	return diffs;
+    return diffs;
 }
 
 /*!
 	Sets the stem direction and update tie, slur and phrasing slur direction.
 */
-void CANote::setStemDirection( CAStemDirection dir ) {
-	_stemDirection = dir;
+void CANote::setStemDirection(CAStemDirection dir)
+{
+    _stemDirection = dir;
 }
 
 /*!
 	Looks at the tieStart() and tieEnd() ties and unties the note and tie if the
 	previous/next note pitch differs.
 */
-void CANote::updateTies() {
-	// break the tie, if needed
-	if ( tieStart() && tieStart()->noteEnd() &&
-	     diatonicPitch()!=tieStart()->noteEnd()->diatonicPitch() ) {
-		// break the tie, if the first note isn't the same pitch
-		tieStart()->noteEnd()->setTieEnd( nullptr );
-		tieStart()->setNoteEnd( nullptr );
-	}
-	if ( tieEnd() && tieEnd()->noteStart() &&
-	     diatonicPitch()!=tieEnd()->noteStart()->diatonicPitch() ) {
-		// break the tie, if the next note isn't the same pitch
-		tieEnd()->setNoteEnd( nullptr );
-		setTieEnd( nullptr );
-	}
+void CANote::updateTies()
+{
+    // break the tie, if needed
+    if (tieStart() && tieStart()->noteEnd() && diatonicPitch() != tieStart()->noteEnd()->diatonicPitch()) {
+        // break the tie, if the first note isn't the same pitch
+        tieStart()->noteEnd()->setTieEnd(nullptr);
+        tieStart()->setNoteEnd(nullptr);
+    }
+    if (tieEnd() && tieEnd()->noteStart() && diatonicPitch() != tieEnd()->noteStart()->diatonicPitch()) {
+        // break the tie, if the next note isn't the same pitch
+        tieEnd()->setNoteEnd(nullptr);
+        setTieEnd(nullptr);
+    }
 
-	// fix/create a tie, if needed
-	QList<CANote*> noteList;
-	if (voice()) noteList = voice()->getNoteList();
+    // fix/create a tie, if needed
+    QList<CANote*> noteList;
+    if (voice())
+        noteList = voice()->getNoteList();
 
-	// checks a tie of the potential left note
-	CANote *leftNote = nullptr;
-	for (int i=0; i<noteList.count() && noteList[i]->timeEnd()<=timeStart(); i++) { // get the left note
-		if ( noteList[i]->timeEnd()==timeStart() && noteList[i]->diatonicPitch()==diatonicPitch() ) {
-			leftNote = noteList[i];
-			break;
-		}
-	}
-	if ( leftNote && leftNote->tieStart() ) {
-		leftNote->tieStart()->setNoteEnd( this );
-		setTieEnd( leftNote->tieStart() );
-	}
+    // checks a tie of the potential left note
+    CANote* leftNote = nullptr;
+    for (int i = 0; i < noteList.count() && noteList[i]->timeEnd() <= timeStart(); i++) { // get the left note
+        if (noteList[i]->timeEnd() == timeStart() && noteList[i]->diatonicPitch() == diatonicPitch()) {
+            leftNote = noteList[i];
+            break;
+        }
+    }
+    if (leftNote && leftNote->tieStart()) {
+        leftNote->tieStart()->setNoteEnd(this);
+        setTieEnd(leftNote->tieStart());
+    }
 
-	// checks a tie of the potential right note
-	CANote *rightNote = nullptr;
-	for (int i=0; i<noteList.count() && noteList[i]->timeStart()<=timeEnd(); i++) { // get the right note
-		if ( noteList[i]->timeStart()==timeEnd() && noteList[i]->diatonicPitch()==diatonicPitch() ) {
-			rightNote = noteList[i];
-			break;
-		}
-	}
-	if ( rightNote && tieStart() ) {
-		rightNote->setTieEnd( tieStart() );
-		tieStart()->setNoteEnd( rightNote );
-	}
+    // checks a tie of the potential right note
+    CANote* rightNote = nullptr;
+    for (int i = 0; i < noteList.count() && noteList[i]->timeStart() <= timeEnd(); i++) { // get the right note
+        if (noteList[i]->timeStart() == timeEnd() && noteList[i]->diatonicPitch() == diatonicPitch()) {
+            rightNote = noteList[i];
+            break;
+        }
+    }
+    if (rightNote && tieStart()) {
+        rightNote->setTieEnd(tieStart());
+        tieStart()->setNoteEnd(rightNote);
+    }
 }
 
 /*!
@@ -285,20 +307,21 @@ void CANote::updateTies() {
 
 	\sa CAStemDirection, CACanorusML
 */
-const QString CANote::stemDirectionToString(CANote::CAStemDirection dir) {
-	switch (dir) {
-		case CANote::StemUp:
-			return "stem-up";
-		case CANote::StemDown:
-			return "stem-down";
-		case CANote::StemNeutral:
-			return "stem-neutral";
-		case CANote::StemPreferred:
-			return "stem-preferred";
-		case CANote::StemUndefined:
-			return "stem-preferred";
-	}
-	return "stem-preferred";
+const QString CANote::stemDirectionToString(CANote::CAStemDirection dir)
+{
+    switch (dir) {
+    case CANote::StemUp:
+        return "stem-up";
+    case CANote::StemDown:
+        return "stem-down";
+    case CANote::StemNeutral:
+        return "stem-neutral";
+    case CANote::StemPreferred:
+        return "stem-preferred";
+    case CANote::StemUndefined:
+        return "stem-preferred";
+    }
+    return "stem-preferred";
 }
 
 /*!
@@ -307,56 +330,57 @@ const QString CANote::stemDirectionToString(CANote::CAStemDirection dir) {
 
 	\sa CAStemDirection, CACanorusML
 */
-CANote::CAStemDirection CANote::stemDirectionFromString(const QString dir) {
-	if (dir=="stem-up") {
-		return CANote::StemUp;
-	} else
-	if (dir=="stem-down") {
-		return CANote::StemDown;
-	} else
-	if (dir=="stem-neutral") {
-		return CANote::StemNeutral;
-	} else
-	if (dir=="stem-preferred") {
-		return CANote::StemPreferred;
-	} else
-		return CANote::StemPreferred;
+CANote::CAStemDirection CANote::stemDirectionFromString(const QString dir)
+{
+    if (dir == "stem-up") {
+        return CANote::StemUp;
+    } else if (dir == "stem-down") {
+        return CANote::StemDown;
+    } else if (dir == "stem-neutral") {
+        return CANote::StemNeutral;
+    } else if (dir == "stem-preferred") {
+        return CANote::StemPreferred;
+    } else
+        return CANote::StemPreferred;
 }
 
 /*!
 	Returns the actual stem direction (the one which is drawn). Always returns stem up or stem down.
 */
-CANote::CAStemDirection CANote::actualStemDirection() {
-	switch ( stemDirection() ) {
-		case StemUp:
-		case StemDown:
-			return stemDirection();
+CANote::CAStemDirection CANote::actualStemDirection()
+{
+    switch (stemDirection()) {
+    case StemUp:
+    case StemDown:
+        return stemDirection();
 
-		case StemNeutral:
-			if ( staff() && notePosition() < staff()->numberOfLines()-1 )	// position from 0 to half of the number of lines - where position has step of 2 per line
-				return StemUp;
-			else
-				return StemDown;
+    case StemNeutral:
+        if (staff() && notePosition() < staff()->numberOfLines() - 1) // position from 0 to half of the number of lines - where position has step of 2 per line
+            return StemUp;
+        else
+            return StemDown;
 
-		case StemPreferred:
-			if (!voice()) { return StemUp; }
+    case StemPreferred:
+        if (!voice()) {
+            return StemUp;
+        }
 
-			switch ( voice()->stemDirection() ) {
-				case StemUp:
-				case StemDown:
-					return voice()->stemDirection();
+        switch (voice()->stemDirection()) {
+        case StemUp:
+        case StemDown:
+            return voice()->stemDirection();
 
-				case StemNeutral:
-					if ( staff() && notePosition() < staff()->numberOfLines()-1 )	// position from 0 to half of the number of lines - where position has step of 2 per line
-						return StemUp;
-					else
-						return StemDown;
-				default: // We should always have a defined stem here
-					return StemUndefined;
-			}
-		default:
-			return StemUndefined;
-	}
+        case StemNeutral:
+            if (staff() && notePosition() < staff()->numberOfLines() - 1) // position from 0 to half of the number of lines - where position has step of 2 per line
+                return StemUp;
+            else
+                return StemDown;
+        default: // We should always have a defined stem here
+            return StemUndefined;
+        }
+    default:
+        return StemUndefined;
+    }
 }
 
 /*!
@@ -364,16 +388,21 @@ CANote::CAStemDirection CANote::actualStemDirection() {
 	Slur should be on the other side of the stem, if the stem direction is neutral
 	or on the same side if the stem direction is set strictly to up and down (or preferred).
 */
-CASlur::CASlurDirection CANote::actualSlurDirection() {
-	CAStemDirection dir = actualStemDirection();
+CASlur::CASlurDirection CANote::actualSlurDirection()
+{
+    CAStemDirection dir = actualStemDirection();
 
-	if ( stemDirection()==StemNeutral || (stemDirection()==StemPreferred && voice() && voice()->stemDirection()==StemNeutral) ) {
-		if (dir==StemUp) return CASlur::SlurDown;
-		else return CASlur::SlurUp;
-	} else {
-		if (dir==StemUp) return CASlur::SlurUp;
-		else return CASlur::SlurDown;
-	}
+    if (stemDirection() == StemNeutral || (stemDirection() == StemPreferred && voice() && voice()->stemDirection() == StemNeutral)) {
+        if (dir == StemUp)
+            return CASlur::SlurDown;
+        else
+            return CASlur::SlurUp;
+    } else {
+        if (dir == StemUp)
+            return CASlur::SlurUp;
+        else
+            return CASlur::SlurDown;
+    }
 }
 
 /*!

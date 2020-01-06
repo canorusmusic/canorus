@@ -10,17 +10,24 @@
 
 #include <QWidget>
 
-class CAToolButtonPopup: public QWidget {
-Q_OBJECT
+class CAToolButtonPopup : public QWidget {
+    Q_OBJECT
 public:
-		CAToolButtonPopup(QWidget* parent = nullptr);
-		~CAToolButtonPopup() { /* widget is not destroyed! */ } 
-		inline void setWidget(QWidget* w) { _widget = w; w->setParent(this); }
-		inline QWidget* widget() { return _widget; }
-		inline QSize sizeHint() const { return (_widget)?_widget->sizeHint():QSize(0,0); } 
+    CAToolButtonPopup(QWidget* parent = nullptr);
+    ~CAToolButtonPopup()
+    { /* widget is not destroyed! */
+    }
+    inline void setWidget(QWidget* w)
+    {
+        _widget = w;
+        w->setParent(this);
+    }
+    inline QWidget* widget() { return _widget; }
+    inline QSize sizeHint() const { return (_widget) ? _widget->sizeHint() : QSize(0, 0); }
+
 protected:
-		void mousePressEvent(QMouseEvent* e);
-		QWidget* _widget;
+    void mousePressEvent(QMouseEvent* e);
+    QWidget* _widget;
 };
 
 #endif /* TOOLBUTTONPOPUP_H_ */

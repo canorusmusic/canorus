@@ -23,49 +23,49 @@ class CADrawableBarline;
 
 class CADrawableStaff : public CADrawableContext {
 public:
-	CADrawableStaff(CAStaff* staff, double x, double y);
-	void draw(QPainter *, const CADrawSettings s);
-	CADrawableStaff *clone();
-	inline CAStaff *staff() { return static_cast<CAStaff*>(_context); }
+    CADrawableStaff(CAStaff* staff, double x, double y);
+    void draw(QPainter*, const CADrawSettings s);
+    CADrawableStaff* clone();
+    inline CAStaff* staff() { return static_cast<CAStaff*>(_context); }
 
-	inline double lineSpace() { return (staff()->numberOfLines()?height()/(staff()->numberOfLines()-1):0); }
+    inline double lineSpace() { return (staff()->numberOfLines() ? height() / (staff()->numberOfLines() - 1) : 0); }
 
-	double calculateCenterYCoord(int pitch, CAClef *clef);
-	double calculateCenterYCoord(CANote *note, CAClef *clef);
-	double calculateCenterYCoord(CANote *note, double x);
-	double calculateCenterYCoord(int pitch, double x);
-	double calculateCenterYCoord(double y);
+    double calculateCenterYCoord(int pitch, CAClef* clef);
+    double calculateCenterYCoord(CANote* note, CAClef* clef);
+    double calculateCenterYCoord(CANote* note, double x);
+    double calculateCenterYCoord(int pitch, double x);
+    double calculateCenterYCoord(double y);
 
-	int calculatePitch(double x, double y);
+    int calculatePitch(double x, double y);
 
-	void addClef(CADrawableClef *clef);
-	void addKeySignature(CADrawableKeySignature *keySig);
-	void addTimeSignature(CADrawableTimeSignature *keySig);
-	void addBarline(CADrawableBarline *barline);
+    void addClef(CADrawableClef* clef);
+    void addKeySignature(CADrawableKeySignature* keySig);
+    void addTimeSignature(CADrawableTimeSignature* keySig);
+    void addBarline(CADrawableBarline* barline);
 
-	bool removeClef(CADrawableClef *clef);
-	bool removeKeySignature(CADrawableKeySignature *keySig);
-	bool removeTimeSignature(CADrawableTimeSignature *keySig);
-	bool removeBarline(CADrawableBarline *barline);
+    bool removeClef(CADrawableClef* clef);
+    bool removeKeySignature(CADrawableKeySignature* keySig);
+    bool removeTimeSignature(CADrawableTimeSignature* keySig);
+    bool removeBarline(CADrawableBarline* barline);
 
-	CAClef *getClef(double x);
-	CAKeySignature *getKeySignature(double x);
-	QList<CADrawableTimeSignature *>& drawableTimeSignatureList() { return _drawableTimeSignatureList; }
-	CATimeSignature *getTimeSignature(double x);
-	QList<CADrawableBarline *>& drawableBarlineList() { return _drawableBarlineList; }
-	CABarline *getBarline(double x);
-	static bool xDrawableBarlineLessThan(const CADrawableBarline* a, const double x);
+    CAClef* getClef(double x);
+    CAKeySignature* getKeySignature(double x);
+    QList<CADrawableTimeSignature*>& drawableTimeSignatureList() { return _drawableTimeSignatureList; }
+    CATimeSignature* getTimeSignature(double x);
+    QList<CADrawableBarline*>& drawableBarlineList() { return _drawableBarlineList; }
+    CABarline* getBarline(double x);
+    static bool xDrawableBarlineLessThan(const CADrawableBarline* a, const double x);
 
-	int getAccs(double x, int pitch);
-	void addMElement(CADrawableMusElement *elt);
-	int removeMElement(CADrawableMusElement* elt);
+    int getAccs(double x, int pitch);
+    void addMElement(CADrawableMusElement* elt);
+    int removeMElement(CADrawableMusElement* elt);
 
 private:
-	QList<CADrawableClef *> _drawableClefList;                   // List of all the drawable clefs. Used for fast look-up with the given key - X-coordinate usually.
-	QList<CADrawableKeySignature *> _drawableKeySignatureList;   // List of all the drawable key signatures. Used for fast look-up with the given key - X-coordinate usually.
-	QList<CADrawableTimeSignature *> _drawableTimeSignatureList; // List of all the drawable time signatures. Used for fast look-up with the given key - X-coordinate usually.
-	QList<CADrawableBarline *> _drawableBarlineList;             // List of all the barlines. Used for fast look-up with the given key - X-coordinate usually.
-	static const double STAFFLINE_WIDTH;                         // Width of the staffs' lines. Defined in drawablestaff.cpp
+    QList<CADrawableClef*> _drawableClefList; // List of all the drawable clefs. Used for fast look-up with the given key - X-coordinate usually.
+    QList<CADrawableKeySignature*> _drawableKeySignatureList; // List of all the drawable key signatures. Used for fast look-up with the given key - X-coordinate usually.
+    QList<CADrawableTimeSignature*> _drawableTimeSignatureList; // List of all the drawable time signatures. Used for fast look-up with the given key - X-coordinate usually.
+    QList<CADrawableBarline*> _drawableBarlineList; // List of all the barlines. Used for fast look-up with the given key - X-coordinate usually.
+    static const double STAFFLINE_WIDTH; // Width of the staffs' lines. Defined in drawablestaff.cpp
 };
 
 #endif /* DRAWABLESTAFF_H_ */

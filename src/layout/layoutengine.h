@@ -14,13 +14,14 @@ class CAScoreView;
 class CADrawableMusElement;
 
 class CALayoutEngine {
-	public:
-		static void reposit(CAScoreView *v);
-	private:
-		static void placeMarks( CADrawableMusElement*, CAScoreView*, int );
-		static void placeNoteCheckerErrors( CADrawableMusElement*, CAScoreView* );
-		static int *streamsRehersalMarks;
-		static QList<CADrawableMusElement*> scalableElts;
+public:
+    static void reposit(CAScoreView* v);
+
+private:
+    static void placeMarks(CADrawableMusElement*, CAScoreView*, int);
+    static void placeNoteCheckerErrors(CADrawableMusElement*, CAScoreView*);
+    static int* streamsRehersalMarks;
+    static QList<CADrawableMusElement*> scalableElts;
 };
 
 #endif /* LAYOUTENGINE_ */

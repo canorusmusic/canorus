@@ -5,34 +5,38 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-#include <QDir>
-#include <QDebug>
-#include <iostream> // debug
 #include "import/mxlimport.h"
+#include <QDebug>
+#include <QDir>
+#include <iostream> // debug
 
-CAMXLImport::CAMXLImport( QTextStream *stream )
- : CAMusicXmlImport(stream) {
+CAMXLImport::CAMXLImport(QTextStream* stream)
+    : CAMusicXmlImport(stream)
+{
 }
 
-CAMXLImport::CAMXLImport( const QString stream )
- : CAMusicXmlImport(stream) {
+CAMXLImport::CAMXLImport(const QString stream)
+    : CAMusicXmlImport(stream)
+{
 }
 
-CAMXLImport::~CAMXLImport() {
+CAMXLImport::~CAMXLImport()
+{
 }
 
-CADocument *CAMXLImport::importDocumentImpl()
+CADocument* CAMXLImport::importDocumentImpl()
 {
     int arg = 2;
     _zipArchivePath = fileName();
     // Extract whole archive to temp folder
-    zip_extract(fileName().toLatin1().constData(), QDir::tempPath().toLatin1().constData(), [](const char *filename, void *arg) {
+    zip_extract(fileName().toLatin1().constData(), QDir::tempPath().toLatin1().constData(), [](const char* filename, void* arg) {
         static int i = 0;
-        int n = *static_cast<int *>(arg);
+        int n = *static_cast<int*>(arg);
         qDebug().noquote() << "Extracted: " << filename << "(" << ++i << " of " << n << ")\n";
 
         return 0;
-    }, &arg);
+    },
+        &arg);
 
     QFileInfo containerInfo(QDir::tempPath() + QString("/META-INF/container.xml"));
     QString musicXMLFileName;
@@ -40,7 +44,7 @@ CADocument *CAMXLImport::importDocumentImpl()
     if (eocRes) {
         eocRes = readContainerInfo(musicXMLFileName);
         QFileInfo musicXMLFileInfo(QDir::tempPath() + "/" + musicXMLFileName);
-        if(musicXMLFileInfo.exists()) {
+        if (musicXMLFileInfo.exists()) {
             setStreamFromFile(musicXMLFileInfo.filePath());
             return CAMusicXmlImport::importDocumentImpl();
         }
@@ -49,7 +53,7 @@ CADocument *CAMXLImport::importDocumentImpl()
     return nullptr;
 }
 
-bool CAMXLImport::openContainer(const QFileInfo &containerInfo)
+bool CAMXLImport::openContainer(const QFileInfo& containerInfo)
 {
     if (containerInfo.exists()) {
         setStreamFromFile(containerInfo.filePath());
@@ -60,7 +64,7 @@ bool CAMXLImport::openContainer(const QFileInfo &containerInfo)
     return true;
 }
 
-bool CAMXLImport::readContainerInfo(QString &musicXMLFileName)
+bool CAMXLImport::readContainerInfo(QString& musicXMLFileName)
 {
     QString containerLine, rootFileLine, mediaTypeLine, fullPathLine;
     do {
@@ -68,7 +72,7 @@ bool CAMXLImport::readContainerInfo(QString &musicXMLFileName)
         if (containerLine.contains("<rootfiles")) {
             do { // No check for <rootfile> to make logic easier (strictly it's required)
                 rootFileLine = stream()->readLine();
-                if(rootFileLine.contains("full-path")) {
+                if (rootFileLine.contains("full-path")) {
                     fullPathLine = rootFileLine;
                     if (mediaTypeLine.contains("application/vnd.recordare.musicxml+xml")) {
                         break;
@@ -81,7 +85,7 @@ bool CAMXLImport::readContainerInfo(QString &musicXMLFileName)
                             fullPathLine.clear();
                             continue;
                         }
-                        if(!fullPathLine.isNull())
+                        if (!fullPathLine.isNull())
                             break;
                     }
                 }
@@ -94,9 +98,9 @@ bool CAMXLImport::readContainerInfo(QString &musicXMLFileName)
     }
     QString fullPathStr = "full-path";
     int pos = fullPathLine.lastIndexOf(fullPathStr) + fullPathStr.length();
-    int lastPos = fullPathLine.indexOf("\"", pos+2);
-    int num = lastPos - pos -2;
-    musicXMLFileName = fullPathLine.mid(pos+2, num);
+    int lastPos = fullPathLine.indexOf("\"", pos + 2);
+    int num = lastPos - pos - 2;
+    musicXMLFileName = fullPathLine.mid(pos + 2, num);
     //qDebug() << "pos " << pos << " num " << num << " last " << lastPos << " fileName " << musicXMLFileName;
     return true;
 }

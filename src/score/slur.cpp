@@ -37,104 +37,120 @@
 /*!
 	Default constructor.
 */
-CASlur::CASlur( CASlurType type, CASlurDirection dir, CAContext *c, CANote *noteStart, CANote *noteEnd, CASlurStyle style )
- : CAMusElement( c, noteStart->timeStart(), 0 ) {
- 	setMusElementType( CAMusElement::Slur );
-	setSlurDirection( dir );
-	setSlurType( type );
-	setSlurStyle( style );
+CASlur::CASlur(CASlurType type, CASlurDirection dir, CAContext* c, CANote* noteStart, CANote* noteEnd, CASlurStyle style)
+    : CAMusElement(c, noteStart->timeStart(), 0)
+{
+    setMusElementType(CAMusElement::Slur);
+    setSlurDirection(dir);
+    setSlurType(type);
+    setSlurStyle(style);
 
-	setNoteStart( noteStart );
-	setNoteEnd( noteEnd );
+    setNoteStart(noteStart);
+    setNoteEnd(noteEnd);
 
-	if (noteEnd)
-		setTimeLength( noteEnd->timeStart() - noteStart->timeStart() );
-	else
-		setTimeLength( noteStart->timeLength() );
+    if (noteEnd)
+        setTimeLength(noteEnd->timeStart() - noteStart->timeStart());
+    else
+        setTimeLength(noteStart->timeLength());
 }
 
-CASlur::~CASlur() {
-	switch (slurType()) {
-		case TieType:
-			if ( noteStart() ) noteStart()->setTieStart( nullptr );
-			if ( noteEnd() ) noteEnd()->setTieEnd( nullptr );
-			break;
-		case SlurType:
-			if ( noteStart() ) noteStart()->setSlurStart( nullptr );
-			if ( noteEnd() ) noteEnd()->setSlurEnd( nullptr );
-			break;
-		case PhrasingSlurType:
-			if ( noteStart() ) noteStart()->setPhrasingSlurStart( nullptr );
-			if ( noteEnd() ) noteEnd()->setPhrasingSlurEnd( nullptr );
-			break;
-	}
+CASlur::~CASlur()
+{
+    switch (slurType()) {
+    case TieType:
+        if (noteStart())
+            noteStart()->setTieStart(nullptr);
+        if (noteEnd())
+            noteEnd()->setTieEnd(nullptr);
+        break;
+    case SlurType:
+        if (noteStart())
+            noteStart()->setSlurStart(nullptr);
+        if (noteEnd())
+            noteEnd()->setSlurEnd(nullptr);
+        break;
+    case PhrasingSlurType:
+        if (noteStart())
+            noteStart()->setPhrasingSlurStart(nullptr);
+        if (noteEnd())
+            noteEnd()->setPhrasingSlurEnd(nullptr);
+        break;
+    }
 }
 
 // FIXME copying noteStart/End pointers.
-CASlur *CASlur::clone(CAContext* context) {
-	return new CASlur( slurType(), slurDirection(), context, noteStart(), noteEnd(), slurStyle() );
+CASlur* CASlur::clone(CAContext* context)
+{
+    return new CASlur(slurType(), slurDirection(), context, noteStart(), noteEnd(), slurStyle());
 }
 
-CASlur *CASlur::clone(CAContext* context, CANote* noteStart, CANote* noteEnd) {
-	return new CASlur( slurType(), slurDirection(), context, noteStart, noteEnd, slurStyle() );
+CASlur* CASlur::clone(CAContext* context, CANote* noteStart, CANote* noteEnd)
+{
+    return new CASlur(slurType(), slurDirection(), context, noteStart, noteEnd, slurStyle());
 }
 
-int CASlur::compare( CAMusElement *elt ) {
-	if (elt->musElementType()!=CAMusElement::Slur)
-		return -1;
+int CASlur::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Slur)
+        return -1;
 
-	int diffs=0;
-	if ( slurDirection() != static_cast<CASlur*>(elt)->slurDirection() ) diffs++;
+    int diffs = 0;
+    if (slurDirection() != static_cast<CASlur*>(elt)->slurDirection())
+        diffs++;
 
-	return diffs;
+    return diffs;
 }
 
-const QString CASlur::slurStyleToString( CASlur::CASlurStyle style ) {
-	switch (style) {
-		case SlurSolid:
-			return "slur-solid";
-		case SlurDotted:
-			return "slur-dotted";
-		case Undefined:
-			break;
-	}
+const QString CASlur::slurStyleToString(CASlur::CASlurStyle style)
+{
+    switch (style) {
+    case SlurSolid:
+        return "slur-solid";
+    case SlurDotted:
+        return "slur-dotted";
+    case Undefined:
+        break;
+    }
 
-	return "";
+    return "";
 }
 
-CASlur::CASlurStyle CASlur::slurStyleFromString( const QString style ) {
-	if ( style=="slur-solid" )
-		return SlurSolid;
-	else if ( style == "slur-dotted" )
-		return SlurDotted;
+CASlur::CASlurStyle CASlur::slurStyleFromString(const QString style)
+{
+    if (style == "slur-solid")
+        return SlurSolid;
+    else if (style == "slur-dotted")
+        return SlurDotted;
 
-	return Undefined;
+    return Undefined;
 }
 
-const QString CASlur::slurDirectionToString( CASlur::CASlurDirection dir ) {
-	switch (dir) {
-		case SlurUp:
-			return "slur-up";
-		case SlurDown:
-			return "slur-down";
-		case SlurNeutral:
-			return "slur-neutral";
-		case SlurPreferred:
-			return "slur-preferred";
-	}
+const QString CASlur::slurDirectionToString(CASlur::CASlurDirection dir)
+{
+    switch (dir) {
+    case SlurUp:
+        return "slur-up";
+    case SlurDown:
+        return "slur-down";
+    case SlurNeutral:
+        return "slur-neutral";
+    case SlurPreferred:
+        return "slur-preferred";
+    }
 
-	return "";
+    return "";
 }
 
-CASlur::CASlurDirection CASlur::slurDirectionFromString( const QString dir ) {
-	if ( dir=="slur-up" )
-		return SlurUp;
-	else if ( dir == "slur-down" )
-		return SlurDown;
-	else if ( dir == "slur-neutral" )
-		return SlurNeutral;
-	else if ( dir == "slur-pereferred" )
-		return SlurPreferred;
+CASlur::CASlurDirection CASlur::slurDirectionFromString(const QString dir)
+{
+    if (dir == "slur-up")
+        return SlurUp;
+    else if (dir == "slur-down")
+        return SlurDown;
+    else if (dir == "slur-neutral")
+        return SlurNeutral;
+    else if (dir == "slur-pereferred")
+        return SlurPreferred;
 
-	return SlurPreferred;
+    return SlurPreferred;
 }

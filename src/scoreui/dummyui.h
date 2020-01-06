@@ -18,21 +18,19 @@ class CADummyCtl;
 
 // Dummy ui is an example class for creating UI parts of the mainwindow
 // Such ui objects are created via the Canorus mainwindow (currently)
-class CADummyUI : public QObject
-{
-	Q_OBJECT
+class CADummyUI : public QObject {
+    Q_OBJECT
 
 public:
-	CADummyUI( CAMainWin *poMainWin );
-	~CADummyUI();
+    CADummyUI(CAMainWin* poMainWin);
+    ~CADummyUI();
 
 protected:
-	updateDummyUIObjs();
+    updateDummyUIObjs();
 
-	CAMainWin    *_poMainWin;
-	CADummyCtl   *_poDummyCtl;
-	CADummyUIObj *_poDummyUIObj;
+    CAMainWin* _poMainWin;
+    CADummyCtl* _poDummyCtl;
+    CADummyUIObj* _poDummyUIObj;
 };
 
 #endif // _DUMMY_UI_H
-

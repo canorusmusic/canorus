@@ -20,16 +20,17 @@
 /*!
 	Default constructor.
 */
-CAPluginAction::CAPluginAction(CAPlugin *plugin, QString name, QString lang, QString function, QList<QString> args, QString filename)
- : QAction(nullptr) {
-	_plugin = plugin;
-	_name = name;
-	_lang = lang;
-	_function = function;
-	_filename = filename;
-	_args = args;
+CAPluginAction::CAPluginAction(CAPlugin* plugin, QString name, QString lang, QString function, QList<QString> args, QString filename)
+    : QAction(nullptr)
+{
+    _plugin = plugin;
+    _name = name;
+    _lang = lang;
+    _function = function;
+    _filename = filename;
+    _args = args;
 
-	connect(this, SIGNAL(triggered(bool)), this, SLOT(triggeredSlot(bool)));
+    connect(this, SIGNAL(triggered(bool)), this, SLOT(triggeredSlot(bool)));
 }
 
 /*!
@@ -38,12 +39,13 @@ CAPluginAction::CAPluginAction(CAPlugin *plugin, QString name, QString lang, QSt
 	function slots. This function is a pretty elegant solution to connect plugin's reactions to internal
 	Canorus GUI signals.
 */
-void CAPluginAction::triggeredSlot(bool) {
+void CAPluginAction::triggeredSlot(bool)
+{
 #ifndef SWIGCPP
-	QObject *curObject = this;
-	while (dynamic_cast<CAMainWin*>(curObject)==nullptr && curObject!=nullptr) // find the parent which is mainwindow
-		curObject = curObject->parent();
+    QObject* curObject = this;
+    while (dynamic_cast<CAMainWin*>(curObject) == nullptr && curObject != nullptr) // find the parent which is mainwindow
+        curObject = curObject->parent();
 
-	_plugin->callAction(this, static_cast<CAMainWin*>(curObject), static_cast<CAMainWin*>(curObject)->document(), nullptr, nullptr);
+    _plugin->callAction(this, static_cast<CAMainWin*>(curObject), static_cast<CAMainWin*>(curObject)->document(), nullptr, nullptr);
 #endif
 }

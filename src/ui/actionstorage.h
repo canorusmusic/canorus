@@ -8,8 +8,8 @@
 #ifndef ACTIONSTORAGE_H_
 #define ACTIONSTORAGE_H_
 
-#include <QString>
 #include <QAction>
+#include <QString>
 
 // Helper class to reduce code ballast in mainwin class
 // Action instances from childs in CAMainWin are stored here for access
@@ -19,19 +19,18 @@ class CAMainWin;
 class CAActionDelegate;
 class CASingleAction;
 
-class CAActionStorage
-{
+class CAActionStorage {
 public:
     CAActionStorage();
     ~CAActionStorage();
 
-    void storeActionsFromMainWindow(CAMainWin &mainWin);
-    void storeAction(QAction *action);
+    void storeActionsFromMainWindow(CAMainWin& mainWin);
+    void storeAction(QAction* action);
     void addWinActions();
 
 protected:
-    QWidget           _actionWidget;
-    CAActionDelegate *_actionDelegate; // Requires parts of main win, so needs to be a member
+    QWidget _actionWidget;
+    CAActionDelegate* _actionDelegate; // Requires parts of main win, so needs to be a member
 };
 
 #endif // ACTIONSTORAGE_H_

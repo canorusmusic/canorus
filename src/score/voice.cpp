@@ -5,20 +5,20 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
 */
 
-#include "score/muselement.h"
 #include "score/voice.h"
-#include "score/staff.h"
-#include "score/keysignature.h"
-#include "score/timesignature.h"
-#include "score/clef.h"
-#include "score/note.h"
-#include "score/rest.h"
-#include "score/playable.h"
-#include "score/lyricscontext.h"
-#include "score/slur.h"
-#include "score/mark.h"
-#include "score/tempo.h"
 #include "interface/mididevice.h"
+#include "score/clef.h"
+#include "score/keysignature.h"
+#include "score/lyricscontext.h"
+#include "score/mark.h"
+#include "score/muselement.h"
+#include "score/note.h"
+#include "score/playable.h"
+#include "score/rest.h"
+#include "score/slur.h"
+#include "score/staff.h"
+#include "score/tempo.h"
+#include "score/timesignature.h"
 
 /*!
 	\class CAVoice
@@ -34,14 +34,15 @@
 	Creates a new voice named \a name, in \a staff, \a voiceNumber and \a stemDirection of notes stems.
 	Voice number starts at 1.
 */
-CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection stemDirection ) {
-	_staff = staff;
-	_name = name;
-	_stemDirection = stemDirection;
+CAVoice::CAVoice(const QString name, CAStaff* staff, CANote::CAStemDirection stemDirection)
+{
+    _staff = staff;
+    _name = name;
+    _stemDirection = stemDirection;
 
-	_midiChannel = ((staff && staff->sheet()) ? CAMidiDevice::freeMidiChannel( staff->sheet() ) : 0);
-	_midiProgram = 0;
-	_midiPitchOffset = 0;
+    _midiChannel = ((staff && staff->sheet()) ? CAMidiDevice::freeMidiChannel(staff->sheet()) : 0);
+    _midiProgram = 0;
+    _midiPitchOffset = 0;
 }
 
 /*!
@@ -50,42 +51,45 @@ CAVoice::CAVoice( const QString name, CAStaff *staff, CANote::CAStemDirection st
 
 	\sa clear()
 */
-CAVoice::~CAVoice() {
-	clear();
+CAVoice::~CAVoice()
+{
+    clear();
 
-	QList<CALyricsContext*> lc = lyricsContextList();
-	for (int i=0; i<lc.size(); i++) {
-		lc[i]->setAssociatedVoice( nullptr );
-	}
+    QList<CALyricsContext*> lc = lyricsContextList();
+    for (int i = 0; i < lc.size(); i++) {
+        lc[i]->setAssociatedVoice(nullptr);
+    }
 
-	if (staff()) {
-		staff()->removeVoice(this);
-	}
+    if (staff()) {
+        staff()->removeVoice(this);
+    }
 }
 
 /*!
 	Clones the current voice including all the music elements.
 	Sets the voice staff to \a newStaff. If none given, use the original staff.
 */
-CAVoice *CAVoice::clone( CAStaff* newStaff ) {
-	CAVoice *newVoice = new CAVoice( name(), newStaff );
-	newVoice->cloneVoiceProperties( this );
-	newVoice->setStaff( newStaff );
+CAVoice* CAVoice::clone(CAStaff* newStaff)
+{
+    CAVoice* newVoice = new CAVoice(name(), newStaff);
+    newVoice->cloneVoiceProperties(this);
+    newVoice->setStaff(newStaff);
 
-	return newVoice;
+    return newVoice;
 }
 
 /*!
 	Sets the properties of the given voice to this voice.
 */
-void CAVoice::cloneVoiceProperties( CAVoice *voice ) {
-	setName( voice->name() );
-	setStaff( voice->staff() );
-	setStemDirection( voice->stemDirection() );
-	setMidiChannel( voice->midiChannel() );
-	setMidiProgram( voice->midiProgram() );
-	setMidiPitchOffset( voice->midiPitchOffset() );
-	setLyricsContexts( voice->lyricsContextList() );
+void CAVoice::cloneVoiceProperties(CAVoice* voice)
+{
+    setName(voice->name());
+    setStaff(voice->staff());
+    setStemDirection(voice->stemDirection());
+    setMidiChannel(voice->midiChannel());
+    setMidiProgram(voice->midiProgram());
+    setMidiPitchOffset(voice->midiPitchOffset());
+    setLyricsContexts(voice->lyricsContextList());
 }
 
 /*!
@@ -94,14 +98,15 @@ void CAVoice::cloneVoiceProperties( CAVoice *voice ) {
 	When clearing the whole staff, make sure the voice is *deleted*.
 	It is automatically removed from the staff - in voice's destructor.
 */
-void CAVoice::clear() {
-	while ( _musElementList.size() ) {
-		// deletes an element only if it's not present in other voices or we're deleting the last voice
-		if ( _musElementList.front()->isPlayable() || ( staff() && staff()->voiceList().size()<2 ) )
-			delete _musElementList.front(); // CAMusElement's destructor removes it from the list
-		else
-			_musElementList.removeFirst();
-	}
+void CAVoice::clear()
+{
+    while (_musElementList.size()) {
+        // deletes an element only if it's not present in other voices or we're deleting the last voice
+        if (_musElementList.front()->isPlayable() || (staff() && staff()->voiceList().size() < 2))
+            delete _musElementList.front(); // CAMusElement's destructor removes it from the list
+        else
+            _musElementList.removeFirst();
+    }
 }
 
 /*!
@@ -117,18 +122,17 @@ void CAVoice::clear() {
 
 	\sa insert()
 */
-void CAVoice::append( CAMusElement *elt, bool addToChord ) {
-	CAMusElement *last = (musElementList().size()?musElementList().last():nullptr);
+void CAVoice::append(CAMusElement* elt, bool addToChord)
+{
+    CAMusElement* last = (musElementList().size() ? musElementList().last() : nullptr);
 
-	if ( elt->musElementType()==CAMusElement::Note && last &&
-	     last->musElementType()==CAMusElement::Note &&
-	     addToChord ) {
-		elt->setTimeStart( last->timeStart() );
-		addNoteToChord( static_cast<CANote*>(elt), static_cast<CANote*>(last) );
-	} else {
-		elt->setTimeStart( last?last->timeEnd():0 );
-		insertMusElement( nullptr, elt );
-	}
+    if (elt->musElementType() == CAMusElement::Note && last && last->musElementType() == CAMusElement::Note && addToChord) {
+        elt->setTimeStart(last->timeStart());
+        addNoteToChord(static_cast<CANote*>(elt), static_cast<CANote*>(last));
+    } else {
+        elt->setTimeStart(last ? last->timeEnd() : 0);
+        insertMusElement(nullptr, elt);
+    }
 }
 
 /*!
@@ -151,47 +155,46 @@ void CAVoice::append( CAMusElement *elt, bool addToChord ) {
 
 	\sa insertMusElement()
 */
-bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord ) {
-	if ( !elt )
-		return false;
+bool CAVoice::insert(CAMusElement* eltAfter, CAMusElement* elt, bool addToChord)
+{
+    if (!elt)
+        return false;
 
-	if ( eltAfter && eltAfter->musElementType()==CAMusElement::Note &&
-	     static_cast<CANote*>(eltAfter)->getChord().size() ) // if eltAfter is note, it should always be the FIRST note in the chord
-		eltAfter = static_cast<CANote*>(eltAfter)->getChord().front();
+    if (eltAfter && eltAfter->musElementType() == CAMusElement::Note && static_cast<CANote*>(eltAfter)->getChord().size()) // if eltAfter is note, it should always be the FIRST note in the chord
+        eltAfter = static_cast<CANote*>(eltAfter)->getChord().front();
 
-	bool res;
-	if ( !elt->isPlayable() ) {
+    bool res;
+    if (!elt->isPlayable()) {
 
-		// insert a sign
+        // insert a sign
 
-		elt->setTimeStart( eltAfter?eltAfter->timeStart():lastTimeEnd() );
-		res = insertMusElement( eltAfter, elt );
+        elt->setTimeStart(eltAfter ? eltAfter->timeStart() : lastTimeEnd());
+        res = insertMusElement(eltAfter, elt);
 
-		// calculate note positions in staff when inserting a new clef
-		if ( elt->musElementType()==CAMusElement::Clef ) {
-			for ( int i=musElementList().indexOf(elt)+1; i < musElementList().size(); i++ ) {
-				if ( musElementList()[i]->musElementType()==CAMusElement::Note )
-					static_cast<CANote*>(musElementList()[i])->setDiatonicPitch( static_cast<CANote*>(musElementList()[i])->diatonicPitch() );
-			}
-		}
+        // calculate note positions in staff when inserting a new clef
+        if (elt->musElementType() == CAMusElement::Clef) {
+            for (int i = musElementList().indexOf(elt) + 1; i < musElementList().size(); i++) {
+                if (musElementList()[i]->musElementType() == CAMusElement::Note)
+                    static_cast<CANote*>(musElementList()[i])->setDiatonicPitch(static_cast<CANote*>(musElementList()[i])->diatonicPitch());
+            }
+        }
 
-	} else if ( elt->musElementType()==CAMusElement::Note && eltAfter && eltAfter->musElementType()==CAMusElement::Note && addToChord ) {
+    } else if (elt->musElementType() == CAMusElement::Note && eltAfter && eltAfter->musElementType() == CAMusElement::Note && addToChord) {
 
-		// add a note to chord
+        // add a note to chord
 
-		res = addNoteToChord( static_cast<CANote*>(elt), static_cast<CANote*>(eltAfter) );
+        res = addNoteToChord(static_cast<CANote*>(elt), static_cast<CANote*>(eltAfter));
 
-	} else {
+    } else {
 
-		// insert a note somewhere in between, append or prepend
+        // insert a note somewhere in between, append or prepend
 
-		elt->setTimeStart( eltAfter?(eltAfter->timeStart()):lastTimeEnd() );
-		res = insertMusElement( eltAfter, elt );
-		updateTimes( musElementList().indexOf(elt)+1, elt->timeLength(), true );
+        elt->setTimeStart(eltAfter ? (eltAfter->timeStart()) : lastTimeEnd());
+        res = insertMusElement(eltAfter, elt);
+        updateTimes(musElementList().indexOf(elt) + 1, elt->timeLength(), true);
+    }
 
-	}
-
- 	return res;
+    return res;
 }
 
 /*!
@@ -201,42 +204,41 @@ bool CAVoice::insert( CAMusElement *eltAfter, CAMusElement *elt, bool addToChord
 
 	Currently only adding notes, and with the basic tuplet timelength are implemented.
 */
-CAPlayable* CAVoice::insertInTupletAndVoiceAt( CAPlayable *reference, CAPlayable *p ) {
-	int t = reference->timeStart();
-	int rtype = static_cast<CAMusElement*>(reference)->musElementType();
-	//int ptype = static_cast<CAMusElement*>(p)->musElementType();
-	CATuplet* tup = reference->tuplet();
+CAPlayable* CAVoice::insertInTupletAndVoiceAt(CAPlayable* reference, CAPlayable* p)
+{
+    int t = reference->timeStart();
+    int rtype = static_cast<CAMusElement*>(reference)->musElementType();
+    //int ptype = static_cast<CAMusElement*>(p)->musElementType();
+    CATuplet* tup = reference->tuplet();
 
-	CAVoice* voice = reference->voice();
-	CAMusElement* next = voice->next(static_cast<CAMusElement*>(reference));
-	p->setTimeStart( t );
+    CAVoice* voice = reference->voice();
+    CAMusElement* next = voice->next(static_cast<CAMusElement*>(reference));
+    p->setTimeStart(t);
 
-	if (rtype == CAMusElement::Rest) {
+    if (rtype == CAMusElement::Rest) {
 
-		voice->insert( next, static_cast<CAMusElement*>(p), false );
+        voice->insert(next, static_cast<CAMusElement*>(p), false);
 
+        if (tup) { // remove the rest from the tuplet and add the note
+            tup->removeNote(reference);
+            reference->setTuplet(nullptr);
+            tup->addNote(p);
 
-		if ( tup ) { // remove the rest from the tuplet and add the note
-			tup->removeNote(reference);
-			reference->setTuplet(nullptr);
-			tup->addNote(p);
+            reference->voice()->remove(reference, true);
+            tup->assignTimes();
+        }
 
-			reference->voice()->remove( reference, true );
-			tup->assignTimes();
-		}
+    } else {
+        // add the note to a chord
+        voice->insert(reference, static_cast<CAMusElement*>(p), true);
 
-	} else {
-		// add the note to a chord
-		voice->insert( reference, static_cast<CAMusElement*>(p), true );
-
-		if ( tup ) {
-			tup->addNote(p);
-			tup->assignTimes();
-		}
-	}
-	return p;
+        if (tup) {
+            tup->addNote(p);
+            tup->assignTimes();
+        }
+    }
+    return p;
 }
-
 
 /*!
 	Returns a pointer to the clef which the given \a elt belongs to.
@@ -246,13 +248,15 @@ CAPlayable* CAVoice::insertInTupletAndVoiceAt( CAPlayable *reference, CAPlayable
 	correct clef depending on the order of the musElementList. If a timeBased
 	result suffices, use CAStaff::getClef(time).
 */
-CAClef* CAVoice::getClef(CAMusElement *elt) {
-	if (!elt || !musElementList().contains(elt))
-		elt = lastMusElement();
+CAClef* CAVoice::getClef(CAMusElement* elt)
+{
+    if (!elt || !musElementList().contains(elt))
+        elt = lastMusElement();
 
-	while ( elt && (elt->musElementType() != CAMusElement::Clef) && (elt = previous(elt)) );
+    while (elt && (elt->musElementType() != CAMusElement::Clef) && (elt = previous(elt)))
+        ;
 
-	return static_cast<CAClef*>(elt);
+    return static_cast<CAClef*>(elt);
 }
 
 /*!
@@ -263,13 +267,15 @@ CAClef* CAVoice::getClef(CAMusElement *elt) {
 	correct timeSig depending on the order of the musElementList. If a timeBased
 	result suffices, use CAStaff::getClef(time).
 */
-CATimeSignature* CAVoice::getTimeSig(CAMusElement *elt) {
-	if (!elt || !musElementList().contains(elt))
-		elt = lastMusElement();
+CATimeSignature* CAVoice::getTimeSig(CAMusElement* elt)
+{
+    if (!elt || !musElementList().contains(elt))
+        elt = lastMusElement();
 
-	while ( elt && (elt->musElementType() != CAMusElement::TimeSignature) && (elt = previous(elt)) );
+    while (elt && (elt->musElementType() != CAMusElement::TimeSignature) && (elt = previous(elt)))
+        ;
 
-	return static_cast<CATimeSignature*>(elt);
+    return static_cast<CATimeSignature*>(elt);
 }
 
 /*!
@@ -280,13 +286,15 @@ CATimeSignature* CAVoice::getTimeSig(CAMusElement *elt) {
 	correct keySig depending on the order of the musElementList. If a timeBased
 	result suffices, use CAStaff::getClef(time).
 */
-CAKeySignature* CAVoice::getKeySig(CAMusElement *elt) {
-	if (!elt || !musElementList().contains(elt))
-		elt = lastMusElement();
+CAKeySignature* CAVoice::getKeySig(CAMusElement* elt)
+{
+    if (!elt || !musElementList().contains(elt))
+        elt = lastMusElement();
 
-	while ( elt && (elt->musElementType() != CAMusElement::KeySignature) && (elt = previous(elt)) );
+    while (elt && (elt->musElementType() != CAMusElement::KeySignature) && (elt = previous(elt)))
+        ;
 
-	return static_cast<CAKeySignature*>(elt);
+    return static_cast<CAKeySignature*>(elt);
 }
 
 /*!
@@ -304,57 +312,68 @@ CAKeySignature* CAVoice::getKeySig(CAMusElement *elt) {
 
 	Returns true, if the element was found and removed; otherwise false.
 */
-bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
-	if ( _musElementList.contains(elt) ) {	// if the search element is found
-		if ( !elt->isPlayable() && staff() ) {          // element is shared - remove it from all the voices
-			for (int i=0; i<staff()->voiceList().size(); i++) {
-				staff()->voiceList()[i]->_musElementList.removeAll(elt);
-			}
-			// remove it from the references list
-			if (elt->musElementType() == CAMusElement::KeySignature )  staff()->keySignatureRefs().removeAll( elt ); else
-			if (elt->musElementType() == CAMusElement::TimeSignature ) staff()->timeSignatureRefs().removeAll( elt ); else
-			if (elt->musElementType() == CAMusElement::Clef )          staff()->clefRefs().removeAll( elt ); else
-			if (elt->musElementType() == CAMusElement::Barline )       staff()->barlineRefs().removeAll( elt );
-		} else {
-			// element is playable
-			if ( elt->musElementType()==CAMusElement::Note ) {
-				CANote *n = static_cast<CANote*>(elt);
-				if ( n->isPartOfChord() && n->isFirstInChord() ) {
-					// if the note is the first in the chord, the slurs and marks should be relinked to the 2nd in the chord
-					CANote *prevNote = n->getChord().at(1);
-					prevNote->setSlurStart( n->slurStart() );
-					prevNote->setSlurEnd( n->slurEnd() );
-					prevNote->setPhrasingSlurStart( n->phrasingSlurStart() );
-					prevNote->setPhrasingSlurEnd( n->phrasingSlurEnd() );
+bool CAVoice::remove(CAMusElement* elt, bool updateSigns)
+{
+    if (_musElementList.contains(elt)) { // if the search element is found
+        if (!elt->isPlayable() && staff()) { // element is shared - remove it from all the voices
+            for (int i = 0; i < staff()->voiceList().size(); i++) {
+                staff()->voiceList()[i]->_musElementList.removeAll(elt);
+            }
+            // remove it from the references list
+            if (elt->musElementType() == CAMusElement::KeySignature)
+                staff()->keySignatureRefs().removeAll(elt);
+            else if (elt->musElementType() == CAMusElement::TimeSignature)
+                staff()->timeSignatureRefs().removeAll(elt);
+            else if (elt->musElementType() == CAMusElement::Clef)
+                staff()->clefRefs().removeAll(elt);
+            else if (elt->musElementType() == CAMusElement::Barline)
+                staff()->barlineRefs().removeAll(elt);
+        } else {
+            // element is playable
+            if (elt->musElementType() == CAMusElement::Note) {
+                CANote* n = static_cast<CANote*>(elt);
+                if (n->isPartOfChord() && n->isFirstInChord()) {
+                    // if the note is the first in the chord, the slurs and marks should be relinked to the 2nd in the chord
+                    CANote* prevNote = n->getChord().at(1);
+                    prevNote->setSlurStart(n->slurStart());
+                    prevNote->setSlurEnd(n->slurEnd());
+                    prevNote->setPhrasingSlurStart(n->phrasingSlurStart());
+                    prevNote->setPhrasingSlurEnd(n->phrasingSlurEnd());
 
-					for (int i=0; i<n->markList().size(); i++) {
-						if ( n->markList()[i]->isCommon() ) {
-							prevNote->addMark( n->markList()[i] );
-							n->markList()[i]->setAssociatedElement( prevNote );
-							n->removeMark( n->markList()[i--] );
-						}
-					}
-				} else if ( !(n->isPartOfChord()) ) {
-					if ( n->slurStart() ) delete n->slurStart();
-					if ( n->slurEnd() ) delete n->slurEnd();
-					if ( n->phrasingSlurStart() ) delete n->phrasingSlurStart();
-					if ( n->phrasingSlurEnd() ) delete n->phrasingSlurEnd();
-					if ( n->tuplet() ) delete n->tuplet();
+                    for (int i = 0; i < n->markList().size(); i++) {
+                        if (n->markList()[i]->isCommon()) {
+                            prevNote->addMark(n->markList()[i]);
+                            n->markList()[i]->setAssociatedElement(prevNote);
+                            n->removeMark(n->markList()[i--]);
+                        }
+                    }
+                } else if (!(n->isPartOfChord())) {
+                    if (n->slurStart())
+                        delete n->slurStart();
+                    if (n->slurEnd())
+                        delete n->slurEnd();
+                    if (n->phrasingSlurStart())
+                        delete n->phrasingSlurStart();
+                    if (n->phrasingSlurEnd())
+                        delete n->phrasingSlurEnd();
+                    if (n->tuplet())
+                        delete n->tuplet();
 
-					updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
-				}
-			} else {
-				if ( elt->isPlayable() && static_cast<CAPlayable*>(elt)->tuplet() ) delete static_cast<CAPlayable*>(elt)->tuplet();
-				updateTimes( musElementList().indexOf(elt)+1, elt->timeLength()*(-1), updateSigns ); // shift back timeStarts of playable elements after it
-			}
+                    updateTimes(musElementList().indexOf(elt) + 1, elt->timeLength() * (-1), updateSigns); // shift back timeStarts of playable elements after it
+                }
+            } else {
+                if (elt->isPlayable() && static_cast<CAPlayable*>(elt)->tuplet())
+                    delete static_cast<CAPlayable*>(elt)->tuplet();
+                updateTimes(musElementList().indexOf(elt) + 1, elt->timeLength() * (-1), updateSigns); // shift back timeStarts of playable elements after it
+            }
 
-			_musElementList.removeAll(elt);          // removes the element from the voice music element list
-		}
+            _musElementList.removeAll(elt); // removes the element from the voice music element list
+        }
 
-		return true;
-	} else {
-		return false;
-	}
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /*!
@@ -363,47 +382,53 @@ bool CAVoice::remove( CAMusElement *elt, bool updateSigns ) {
 
 	Returns True, if \a eltAfter was found and the elt was inserted/appended; otherwise False.
 */
-bool CAVoice::insertMusElement( CAMusElement *eltAfter, CAMusElement *elt ) {
-	if (!eltAfter || !_musElementList.size()) {
-		_musElementList.push_back(elt);
-	} else {
-		int i = musElementList().indexOf( eltAfter );
+bool CAVoice::insertMusElement(CAMusElement* eltAfter, CAMusElement* elt)
+{
+    if (!eltAfter || !_musElementList.size()) {
+        _musElementList.push_back(elt);
+    } else {
+        int i = musElementList().indexOf(eltAfter);
 
-		// if element wasn't found and the element before is slur
-		if ( eltAfter->musElementType()==CAMusElement::Slur && i==-1 )
-			i = musElementList().indexOf( static_cast<CASlur*>(eltAfter)->noteEnd() );
+        // if element wasn't found and the element before is slur
+        if (eltAfter->musElementType() == CAMusElement::Slur && i == -1)
+            i = musElementList().indexOf(static_cast<CASlur*>(eltAfter)->noteEnd());
 
-		if (i==-1) {
-			// eltBefore still wasn't found, return False
-			return false;
-		}
-		
-		// eltBefore found, insert it
-		_musElementList.insert(i, elt);
-	}
-	
-	CAMusElement *next = nextByType(elt->musElementType(), elt);
-	QList<CAMusElement *> *refs = nullptr;
-	
-	// update staff references
-	if (elt->musElementType() == CAMusElement::KeySignature )  { refs = &staff()->keySignatureRefs(); } else
-	if (elt->musElementType() == CAMusElement::TimeSignature ) { refs = &staff()->timeSignatureRefs(); } else
-	if (elt->musElementType() == CAMusElement::Clef )          { refs = &staff()->clefRefs(); } else
-	if (elt->musElementType() == CAMusElement::Barline )       { refs = &staff()->barlineRefs(); }
-	
-	if (refs) {
-		int idxInRefs = refs->indexOf(next);
-		if (idxInRefs==-1) {
-			// we want to append the element
-			idxInRefs = refs->size();
-		}
+        if (i == -1) {
+            // eltBefore still wasn't found, return False
+            return false;
+        }
 
-		if (!refs->contains(elt)) {
-			refs->insert(idxInRefs, elt);
-		}
-	}
-	
-	return true;
+        // eltBefore found, insert it
+        _musElementList.insert(i, elt);
+    }
+
+    CAMusElement* next = nextByType(elt->musElementType(), elt);
+    QList<CAMusElement*>* refs = nullptr;
+
+    // update staff references
+    if (elt->musElementType() == CAMusElement::KeySignature) {
+        refs = &staff()->keySignatureRefs();
+    } else if (elt->musElementType() == CAMusElement::TimeSignature) {
+        refs = &staff()->timeSignatureRefs();
+    } else if (elt->musElementType() == CAMusElement::Clef) {
+        refs = &staff()->clefRefs();
+    } else if (elt->musElementType() == CAMusElement::Barline) {
+        refs = &staff()->barlineRefs();
+    }
+
+    if (refs) {
+        int idxInRefs = refs->indexOf(next);
+        if (idxInRefs == -1) {
+            // we want to append the element
+            idxInRefs = refs->size();
+        }
+
+        if (!refs->contains(elt)) {
+            refs->insert(idxInRefs, elt);
+        }
+    }
+
+    return true;
 }
 
 /*!
@@ -420,25 +445,27 @@ bool CAVoice::insertMusElement( CAMusElement *eltAfter, CAMusElement *elt ) {
 
 	\sa CANote::chord()
 */
-bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
-	int idx = _musElementList.indexOf(referenceNote);
+bool CAVoice::addNoteToChord(CANote* note, CANote* referenceNote)
+{
+    int idx = _musElementList.indexOf(referenceNote);
 
-	if (idx==-1)
-		return false;
+    if (idx == -1)
+        return false;
 
-	QList<CANote*> chord = referenceNote->getChord();
-	idx = _musElementList.indexOf(chord.first());
+    QList<CANote*> chord = referenceNote->getChord();
+    idx = _musElementList.indexOf(chord.first());
 
-	int i;
-	for ( i=0; i<chord.size() && chord[i]->diatonicPitch().noteName() < note->diatonicPitch().noteName(); i++ );
+    int i;
+    for (i = 0; i < chord.size() && chord[i]->diatonicPitch().noteName() < note->diatonicPitch().noteName(); i++)
+        ;
 
-	_musElementList.insert( idx+i, note );
-	note->setPlayableLength( referenceNote->playableLength() );
-	note->setTimeLength( referenceNote->timeLength() );
-	note->setTimeStart( referenceNote->timeStart() );
-	note->setStemDirection( referenceNote->stemDirection() );
+    _musElementList.insert(idx + i, note);
+    note->setPlayableLength(referenceNote->playableLength());
+    note->setTimeLength(referenceNote->timeLength());
+    note->setTimeStart(referenceNote->timeStart());
+    note->setStemDirection(referenceNote->stemDirection());
 
-	return true;
+    return true;
 }
 
 /*!
@@ -450,27 +477,28 @@ bool CAVoice::addNoteToChord(CANote *note, CANote *referenceNote) {
 
 	\sa lastPlayableElt()
 */
-CADiatonicPitch CAVoice::lastNotePitch(bool inChord) {
-	for (int i=_musElementList.size()-1; i>=0; i--) {
-		if (_musElementList[i]->musElementType()==CAMusElement::Note) {
-			if (!static_cast<CANote*>(_musElementList[i])->isPartOfChord() || !inChord)	// the note is not part of the chord
-				return (static_cast<CANote*>(_musElementList[i])->diatonicPitch() );
-			else {
-				int chordTimeStart = _musElementList[i]->timeStart();
-				int j;
-				for (j=i;
-				     (j>=0 && _musElementList[j]->musElementType()==CAMusElement::Note && _musElementList[j]->timeStart()==chordTimeStart);
-				     j--);
+CADiatonicPitch CAVoice::lastNotePitch(bool inChord)
+{
+    for (int i = _musElementList.size() - 1; i >= 0; i--) {
+        if (_musElementList[i]->musElementType() == CAMusElement::Note) {
+            if (!static_cast<CANote*>(_musElementList[i])->isPartOfChord() || !inChord) // the note is not part of the chord
+                return (static_cast<CANote*>(_musElementList[i])->diatonicPitch());
+            else {
+                int chordTimeStart = _musElementList[i]->timeStart();
+                int j;
+                for (j = i;
+                     (j >= 0 && _musElementList[j]->musElementType() == CAMusElement::Note && _musElementList[j]->timeStart() == chordTimeStart);
+                     j--)
+                    ;
 
-				return (static_cast<CANote*>(_musElementList[j+1])->diatonicPitch() );
-			}
+                return (static_cast<CANote*>(_musElementList[j + 1])->diatonicPitch());
+            }
 
-		}
-		else if (_musElementList[i]->musElementType()==CAMusElement::Clef)
-			return (static_cast<CAClef*>(_musElementList[i])->centerPitch());
-	}
+        } else if (_musElementList[i]->musElementType() == CAMusElement::Clef)
+            return (static_cast<CAClef*>(_musElementList[i])->centerPitch());
+    }
 
-	return -1;
+    return -1;
 }
 
 /*!
@@ -478,13 +506,14 @@ CADiatonicPitch CAVoice::lastNotePitch(bool inChord) {
 
 	\sa lastNotePitch()
 */
-CAPlayable* CAVoice::lastPlayableElt() {
-	for (int i=_musElementList.size()-1; i>=0; i--) {
-		if (_musElementList[i]->isPlayable())
-			return static_cast<CAPlayable*>(_musElementList[i]);
-	}
+CAPlayable* CAVoice::lastPlayableElt()
+{
+    for (int i = _musElementList.size() - 1; i >= 0; i--) {
+        if (_musElementList[i]->isPlayable())
+            return static_cast<CAPlayable*>(_musElementList[i]);
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 /*!
@@ -492,53 +521,54 @@ CAPlayable* CAVoice::lastPlayableElt() {
 
 	\sa lastNotePitch()
 */
-CANote* CAVoice::lastNote() {
-	for (int i=_musElementList.size()-1; i>=0; i--) {
-		if (_musElementList[i]->musElementType()==CAMusElement::Note)
-			return static_cast<CANote*>(_musElementList[i]);
-	}
+CANote* CAVoice::lastNote()
+{
+    for (int i = _musElementList.size() - 1; i >= 0; i--) {
+        if (_musElementList[i]->musElementType() == CAMusElement::Note)
+            return static_cast<CANote*>(_musElementList[i]);
+    }
 
-	return nullptr;
+    return nullptr;
 }
-
 
 //! \A common binary search Algorithm with its pseudocode
 
-bool CAVoice::binarySearch_startTime(int time, int& position) {
+bool CAVoice::binarySearch_startTime(int time, int& position)
+{
 
-	int low = 0, high = _musElementList.size()-1, midpoint = 0;
-	while (low <= high) {
-		midpoint = (low + high) / 2;
-		if (time == _musElementList[midpoint]->timeStart()) {
-			position = midpoint;
-			return true;
-		}
-		else if (time < _musElementList[midpoint]->timeStart())
-			high = midpoint - 1;
-		else
-			low = midpoint + 1;
-	}
-	return false;
+    int low = 0, high = _musElementList.size() - 1, midpoint = 0;
+    while (low <= high) {
+        midpoint = (low + high) / 2;
+        if (time == _musElementList[midpoint]->timeStart()) {
+            position = midpoint;
+            return true;
+        } else if (time < _musElementList[midpoint]->timeStart())
+            high = midpoint - 1;
+        else
+            low = midpoint + 1;
+    }
+    return false;
 }
-
 
 /*!
 	Returns a music element which has the given \a startTime and \a type.
 	This is useful for querying for eg. If a barline exists at the certain
 	point in time.
 */
-CAMusElement *CAVoice::getOneEltByType(CAMusElement::CAMusElementType type, int startTime) {
+CAMusElement* CAVoice::getOneEltByType(CAMusElement::CAMusElementType type, int startTime)
+{
 
-	int i;
-	for (i=0; i < _musElementList.size() && _musElementList[i]->timeStart() < startTime; i++);	// seek to the start of the music elements with the given time
+    int i;
+    for (i = 0; i < _musElementList.size() && _musElementList[i]->timeStart() < startTime; i++)
+        ; // seek to the start of the music elements with the given time
 
-	while (i<_musElementList.size() && _musElementList[i]->timeStart()==startTime) {	// create a list of music elements with the given time
-		if (_musElementList[i]->musElementType() == type)
-			return _musElementList[i];
-		i++;
-	}
+    while (i < _musElementList.size() && _musElementList[i]->timeStart() == startTime) { // create a list of music elements with the given time
+        if (_musElementList[i]->musElementType() == type)
+            return _musElementList[i];
+        i++;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 /*!
@@ -547,19 +577,21 @@ CAMusElement *CAVoice::getOneEltByType(CAMusElement::CAMusElementType type, int 
 	This is useful for querying for eg. If a new key signature exists at the certain
 	point in time.
 */
-QList<CAMusElement*> CAVoice::getEltByType(CAMusElement::CAMusElementType type, int startTime) {
-	QList<CAMusElement*> eltList;
+QList<CAMusElement*> CAVoice::getEltByType(CAMusElement::CAMusElementType type, int startTime)
+{
+    QList<CAMusElement*> eltList;
 
-	int i;
-	for (i=0; i < _musElementList.size() && _musElementList[i]->timeStart() < startTime; i++);	// seek to the start of the music elements with the given time
+    int i;
+    for (i = 0; i < _musElementList.size() && _musElementList[i]->timeStart() < startTime; i++)
+        ; // seek to the start of the music elements with the given time
 
-	while (i<_musElementList.size() && _musElementList[i]->timeStart()==startTime) {	// create a list of music elements with the given time
-		if (_musElementList[i]->musElementType() == type)
-			eltList << _musElementList[i];
-		i++;
-	}
+    while (i < _musElementList.size() && _musElementList[i]->timeStart() == startTime) { // create a list of music elements with the given time
+        if (_musElementList[i]->musElementType() == type)
+            eltList << _musElementList[i];
+        i++;
+    }
 
-	return eltList;
+    return eltList;
 }
 
 /*!
@@ -569,17 +601,19 @@ QList<CAMusElement*> CAVoice::getEltByType(CAMusElement::CAMusElementType type, 
 	point in time.
 
 */
-CAMusElement *CAVoice::getOnePreviousByType(CAMusElement::CAMusElementType type, int startTime) {
+CAMusElement* CAVoice::getOnePreviousByType(CAMusElement::CAMusElementType type, int startTime)
+{
 
-	int i;
-	for (i= _musElementList.size()-1;
-			i >= 0 && _musElementList[i]->timeStart() > startTime; i--);	// seek to the most right of the music elements with the given time
-	while (i >=0 && _musElementList[i]->timeStart() <= startTime) {	// create a list of music elements not past the given time
-		if (_musElementList[i]->musElementType() == type)
-			return _musElementList[i];
-		i--;
-	}
-	return nullptr;
+    int i;
+    for (i = _musElementList.size() - 1;
+         i >= 0 && _musElementList[i]->timeStart() > startTime; i--)
+        ; // seek to the most right of the music elements with the given time
+    while (i >= 0 && _musElementList[i]->timeStart() <= startTime) { // create a list of music elements not past the given time
+        if (_musElementList[i]->musElementType() == type)
+            return _musElementList[i];
+        i--;
+    }
+    return nullptr;
 }
 
 /*!
@@ -591,20 +625,21 @@ CAMusElement *CAVoice::getOnePreviousByType(CAMusElement::CAMusElementType type,
 	A list from time 0 until startTime is created which is
 	questionable regarding need and efficiency.
 */
-QList<CAMusElement*> CAVoice::getPreviousByType(CAMusElement::CAMusElementType type, int startTime) {
-	QList<CAMusElement*> eltList;
+QList<CAMusElement*> CAVoice::getPreviousByType(CAMusElement::CAMusElementType type, int startTime)
+{
+    QList<CAMusElement*> eltList;
 
-	int i;
-	for (i= _musElementList.size()-1;
-			i >= 0 && _musElementList[i]->timeStart() > startTime; i--);	// seek to the most right of the music elements with the given time
-	while (i >=0 && _musElementList[i]->timeStart() <= startTime) {	// create a list of music elements not past the given time
-		if (_musElementList[i]->musElementType() == type)
-			eltList.prepend(_musElementList[i]);
-		i--;
-	}
+    int i;
+    for (i = _musElementList.size() - 1;
+         i >= 0 && _musElementList[i]->timeStart() > startTime; i--)
+        ; // seek to the most right of the music elements with the given time
+    while (i >= 0 && _musElementList[i]->timeStart() <= startTime) { // create a list of music elements not past the given time
+        if (_musElementList[i]->musElementType() == type)
+            eltList.prepend(_musElementList[i]);
+        i--;
+    }
 
-
-	return eltList;
+    return eltList;
 }
 
 /*!
@@ -615,26 +650,27 @@ QList<CAMusElement*> CAVoice::getPreviousByType(CAMusElement::CAMusElementType t
 
 	\sa CAStaff:getChord(), CASheet::getChord()
 */
-QList<CAPlayable*> CAVoice::getChord(int time) {
-	int i;
-	for (i=0; i<_musElementList.size() && (_musElementList[i]->timeEnd()<=time || !_musElementList[i]->isPlayable()); i++);
-	if (i!=_musElementList.size()) {
-		if (_musElementList[i]->musElementType()==CAMusElement::Note) {	// music element is a note
-			//! \todo Casting QList<CANote*> to QList<CAPlayable*> doesn't work?! :( Do the conversation manually. This is slow. -Matevz
-			QList<CANote*> list = static_cast<CANote*>(_musElementList[i])->getChord();
-			QList<CAPlayable*> ret;
-			for (int i=0; i<list.size(); i++)
-				ret << list[i];
-			return ret;
-		}
-		else {	// music element is a rest
-			QList<CAPlayable*> ret;
-			ret << static_cast<CARest*>(_musElementList[i]);
-			return ret;
-		}
-	}
+QList<CAPlayable*> CAVoice::getChord(int time)
+{
+    int i;
+    for (i = 0; i < _musElementList.size() && (_musElementList[i]->timeEnd() <= time || !_musElementList[i]->isPlayable()); i++)
+        ;
+    if (i != _musElementList.size()) {
+        if (_musElementList[i]->musElementType() == CAMusElement::Note) { // music element is a note
+            //! \todo Casting QList<CANote*> to QList<CAPlayable*> doesn't work?! :( Do the conversation manually. This is slow. -Matevz
+            QList<CANote*> list = static_cast<CANote*>(_musElementList[i])->getChord();
+            QList<CAPlayable*> ret;
+            for (int i = 0; i < list.size(); i++)
+                ret << list[i];
+            return ret;
+        } else { // music element is a rest
+            QList<CAPlayable*> ret;
+            ret << static_cast<CARest*>(_musElementList[i]);
+            return ret;
+        }
+    }
 
-	return QList<CAPlayable*>();
+    return QList<CAPlayable*>();
 }
 
 /*!
@@ -645,34 +681,35 @@ QList<CAPlayable*> CAVoice::getChord(int time) {
 
 	This function is usually called when double clicking on the score.
  */
-QList<CAMusElement*> CAVoice::getBar( int time ) {
-	QList<CAPlayable*> chord = getChord(time);
-	QList<CAMusElement*> ret;
+QList<CAMusElement*> CAVoice::getBar(int time)
+{
+    QList<CAPlayable*> chord = getChord(time);
+    QList<CAMusElement*> ret;
 
-	if ( !chord.size() ) {
-		return ret;
-	}
+    if (!chord.size()) {
+        return ret;
+    }
 
-	// search left
-	CAMusElement *curElt = previous( chord[0] );
-	while ( curElt && curElt->musElementType()!=CAMusElement::Barline ) {
-		ret.append( curElt );
-		curElt = previous(curElt);
-	}
+    // search left
+    CAMusElement* curElt = previous(chord[0]);
+    while (curElt && curElt->musElementType() != CAMusElement::Barline) {
+        ret.append(curElt);
+        curElt = previous(curElt);
+    }
 
-	ret.append( chord[0] );
+    ret.append(chord[0]);
 
-	curElt = next( chord[0] );
-	while ( curElt && curElt->musElementType()!=CAMusElement::Barline ) {
-		ret.append( curElt );
-		curElt = next(curElt);
-	}
+    curElt = next(chord[0]);
+    while (curElt && curElt->musElementType() != CAMusElement::Barline) {
+        ret.append(curElt);
+        curElt = next(curElt);
+    }
 
-	if (curElt) { // last elt is barline
-		ret.append( curElt );
-	}
+    if (curElt) { // last elt is barline
+        ret.append(curElt);
+    }
 
-	return ret;
+    return ret;
 }
 
 /*!
@@ -680,13 +717,14 @@ QList<CAMusElement*> CAVoice::getBar( int time ) {
 
 	This is useful for harmony analysis.
 */
-QList<CANote*> CAVoice::getNoteList() {
-	QList<CANote*> list;
-	for (int i=0; i<_musElementList.size(); i++)
-		if (_musElementList[i]->musElementType()==CAMusElement::Note)
-			list << static_cast<CANote*>(_musElementList[i]);
+QList<CANote*> CAVoice::getNoteList()
+{
+    QList<CANote*> list;
+    for (int i = 0; i < _musElementList.size(); i++)
+        if (_musElementList[i]->musElementType() == CAMusElement::Note)
+            list << static_cast<CANote*>(_musElementList[i]);
 
-	return list;
+    return list;
 }
 
 /*!
@@ -695,13 +733,14 @@ QList<CANote*> CAVoice::getNoteList() {
 	This is useful when importing a specific voice and all the shared elements should be
 	completely repositioned.
 */
-QList<CAMusElement*> CAVoice::getSignList() {
-	QList<CAMusElement*> list;
-	for (int i=0; i<_musElementList.size(); i++)
-		if ( !_musElementList[i]->isPlayable() )
-			list << _musElementList[i];
+QList<CAMusElement*> CAVoice::getSignList()
+{
+    QList<CAMusElement*> list;
+    for (int i = 0; i < _musElementList.size(); i++)
+        if (!_musElementList[i]->isPlayable())
+            list << _musElementList[i];
 
-	return list;
+    return list;
 }
 
 /*!
@@ -710,22 +749,23 @@ QList<CAMusElement*> CAVoice::getSignList() {
 
 	If \elt is null, it returns the first element in the voice.
 */
-CAMusElement *CAVoice::next(CAMusElement *elt) {
-	if(musElementList().isEmpty())
-		return nullptr;
-	if (elt) {
-		int idx = _musElementList.indexOf(elt);
+CAMusElement* CAVoice::next(CAMusElement* elt)
+{
+    if (musElementList().isEmpty())
+        return nullptr;
+    if (elt) {
+        int idx = _musElementList.indexOf(elt);
 
-		if (idx==-1) //the element wasn't found
-			return nullptr;
+        if (idx == -1) //the element wasn't found
+            return nullptr;
 
-		if (++idx==_musElementList.size())	//last element in the list
-			return nullptr;
+        if (++idx == _musElementList.size()) //last element in the list
+            return nullptr;
 
-		return _musElementList[idx];
-	} else {
-		return _musElementList.first();
-	}
+        return _musElementList[idx];
+    } else {
+        return _musElementList.first();
+    }
 }
 
 /*!
@@ -736,10 +776,12 @@ CAMusElement *CAVoice::next(CAMusElement *elt) {
 
 	\sa previousByType()
  */
-CAMusElement *CAVoice::nextByType( CAMusElement::CAMusElementType type, CAMusElement *elt ) {
-	while ( (elt = next(elt)) && (elt->musElementType() != type) );
+CAMusElement* CAVoice::nextByType(CAMusElement::CAMusElementType type, CAMusElement* elt)
+{
+    while ((elt = next(elt)) && (elt->musElementType() != type))
+        ;
 
-	return elt;
+    return elt;
 }
 
 /*!
@@ -750,10 +792,12 @@ CAMusElement *CAVoice::nextByType( CAMusElement::CAMusElementType type, CAMusEle
 
 	\sa previousByType()
  */
-CAMusElement *CAVoice::previousByType( CAMusElement::CAMusElementType type, CAMusElement *elt ) {
-	while ( (elt = previous(elt)) && (elt->musElementType() != type) );
+CAMusElement* CAVoice::previousByType(CAMusElement::CAMusElementType type, CAMusElement* elt)
+{
+    while ((elt = previous(elt)) && (elt->musElementType() != type))
+        ;
 
-	return elt;
+    return elt;
 }
 
 /*!
@@ -762,133 +806,128 @@ CAMusElement *CAVoice::previousByType( CAMusElement::CAMusElementType type, CAMu
 
 	If \elt is null, it returns the last element in the voice.
 */
-CAMusElement *CAVoice::previous(CAMusElement *elt) {
-	if(musElementList().isEmpty())
-		return nullptr;
-	if (elt) {
-		int idx = _musElementList.indexOf(elt);
+CAMusElement* CAVoice::previous(CAMusElement* elt)
+{
+    if (musElementList().isEmpty())
+        return nullptr;
+    if (elt) {
+        int idx = _musElementList.indexOf(elt);
 
-		if (--idx<0) //if the element wasn't found or was the first element
-			return nullptr;
+        if (--idx < 0) //if the element wasn't found or was the first element
+            return nullptr;
 
-		return _musElementList[idx];
-	} else {
-		return _musElementList.last();
-	}
+        return _musElementList[idx];
+    } else {
+        return _musElementList.last();
+    }
 }
 
 /*!
 	Returns a pointer to the next note with the strictly higher timeStart than the given one.
 	Returns nullptr, if the such a note doesn't exist.
 */
-CANote *CAVoice::nextNote( int timeStart ) {
-	int i;
-	for (i=0;
-	     i<_musElementList.size() &&
-	     	(_musElementList[i]->musElementType()!=CAMusElement::Note ||
-	     	 _musElementList[i]->timeStart()<=timeStart
-	     	);
-	     i++);
+CANote* CAVoice::nextNote(int timeStart)
+{
+    int i;
+    for (i = 0;
+         i < _musElementList.size() && (_musElementList[i]->musElementType() != CAMusElement::Note || _musElementList[i]->timeStart() <= timeStart);
+         i++)
+        ;
 
-	if (i<_musElementList.size())
-		return static_cast<CANote*>(_musElementList[i]);
-	else
-		return nullptr;
+    if (i < _musElementList.size())
+        return static_cast<CANote*>(_musElementList[i]);
+    else
+        return nullptr;
 }
 
 /*!
 	Returns a pointer to the previous note with the strictly lower timeStart than the given one.
 	Returns nullptr, if the such a note doesn't exist.
 */
-CANote *CAVoice::previousNote( int timeStart ) {
-	int i;
-	for (i=_musElementList.size()-1;
-	     i>-1 &&
-	     	(_musElementList[i]->musElementType()!=CAMusElement::Note ||
-	     	 _musElementList[i]->timeStart()>=timeStart
-	     	);
-	     i--);
+CANote* CAVoice::previousNote(int timeStart)
+{
+    int i;
+    for (i = _musElementList.size() - 1;
+         i > -1 && (_musElementList[i]->musElementType() != CAMusElement::Note || _musElementList[i]->timeStart() >= timeStart);
+         i--)
+        ;
 
-	if (i>-1)
-		return static_cast<CANote*>(_musElementList[i]);
-	else
-		return nullptr;
+    if (i > -1)
+        return static_cast<CANote*>(_musElementList[i]);
+    else
+        return nullptr;
 }
 
 /*!
 	Returns a pointer to the next rest with the strictly higher timeStart than the given one.
 	Returns nullptr, if the such a note doesn't exist.
 */
-CARest *CAVoice::nextRest(int timeStart) {
-	int i;
-	for (i=0;
-	     i<_musElementList.size() &&
-	     	(_musElementList[i]->musElementType()!=CAMusElement::Rest ||
-	     	 _musElementList[i]->timeStart()<=timeStart
-	     	);
-	     i++);
+CARest* CAVoice::nextRest(int timeStart)
+{
+    int i;
+    for (i = 0;
+         i < _musElementList.size() && (_musElementList[i]->musElementType() != CAMusElement::Rest || _musElementList[i]->timeStart() <= timeStart);
+         i++)
+        ;
 
-	if (i<_musElementList.size())
-		return static_cast<CARest*>(_musElementList[i]);
-	else
-		return nullptr;
+    if (i < _musElementList.size())
+        return static_cast<CARest*>(_musElementList[i]);
+    else
+        return nullptr;
 }
 
 /*!
 	Returns a pointer to the previous rest with the strictly lower timeStart than the given one.
 	Returns nullptr, if the such a note doesn't exist.
 */
-CARest *CAVoice::previousRest(int timeStart) {
-	int i;
-	for (i=_musElementList.size()-1;
-	     i>-1 &&
-	     	(_musElementList[i]->musElementType()!=CAMusElement::Rest ||
-	     	 _musElementList[i]->timeStart()>=timeStart
-	     	);
-	     i--);
+CARest* CAVoice::previousRest(int timeStart)
+{
+    int i;
+    for (i = _musElementList.size() - 1;
+         i > -1 && (_musElementList[i]->musElementType() != CAMusElement::Rest || _musElementList[i]->timeStart() >= timeStart);
+         i--)
+        ;
 
-	if (i>-1)
-		return static_cast<CARest*>(_musElementList[i]);
-	else
-		return nullptr;
+    if (i > -1)
+        return static_cast<CARest*>(_musElementList[i]);
+    else
+        return nullptr;
 }
 
 /*!
 	Returns a pointer to the next playable element with the strictly higher timeStart than the given one.
 	Returns nullptr, if the such a note doesn't exist.
 */
-CAPlayable *CAVoice::nextPlayable(int timeStart) {
-	int i;
-	for (i=0;
-	     i<_musElementList.size() &&
-	     	(!_musElementList[i]->isPlayable() ||
-	     	 _musElementList[i]->timeStart()<=timeStart
-	     	);
-	     i++);
+CAPlayable* CAVoice::nextPlayable(int timeStart)
+{
+    int i;
+    for (i = 0;
+         i < _musElementList.size() && (!_musElementList[i]->isPlayable() || _musElementList[i]->timeStart() <= timeStart);
+         i++)
+        ;
 
-	if (i<_musElementList.size())
-		return static_cast<CAPlayable*>(_musElementList[i]);
-	else
-		return nullptr;
+    if (i < _musElementList.size())
+        return static_cast<CAPlayable*>(_musElementList[i]);
+    else
+        return nullptr;
 }
 
 /*!
 	Returns a pointer to the previous playable with the strictly lower timeStart than the given one.
 	Returns nullptr, if the such a note doesn't exist.
 */
-CAPlayable *CAVoice::previousPlayable(int timeStart) {
-	int i;
-	for (i=_musElementList.size()-1;
-	     i>-1 &&
-	     	(!_musElementList[i]->isPlayable() ||
-	     	 _musElementList[i]->timeStart()>=timeStart
-	     	);
-	     i--);
+CAPlayable* CAVoice::previousPlayable(int timeStart)
+{
+    int i;
+    for (i = _musElementList.size() - 1;
+         i > -1 && (!_musElementList[i]->isPlayable() || _musElementList[i]->timeStart() >= timeStart);
+         i--)
+        ;
 
-	if (i>-1)
-		return static_cast<CAPlayable*>(_musElementList[i]);
-	else
-		return nullptr;
+    if (i > -1)
+        return static_cast<CAPlayable*>(_musElementList[i]);
+    else
+        return nullptr;
 }
 
 /*!
@@ -898,18 +937,18 @@ CAPlayable *CAVoice::previousPlayable(int timeStart) {
 	This method is usually called when inserting, removing or changing the music elements so they affect
 	others.
 */
-bool CAVoice::updateTimes( int idx, int length, bool signsToo ) {
-	for (int i=idx; i<musElementList().size(); i++)
-		if ( signsToo || musElementList()[i]->isPlayable() ) {
-			musElementList()[i]->setTimeStart( musElementList()[i]->timeStart() + length );
-			for (int j=0; j<musElementList()[i]->markList().size(); j++) {
-				CAMark *m = musElementList()[i]->markList()[j];
-				if ( !m->isCommon() || musElementList()[i]->musElementType()!=CAMusElement::Note ||
-				     static_cast<CANote*>(musElementList()[i])->isFirstInChord() )
-					m->setTimeStart( musElementList()[i]->timeStart() );
-			}
-		}
-	return true; // What to return ? Maybe if some music element times were actually set
+bool CAVoice::updateTimes(int idx, int length, bool signsToo)
+{
+    for (int i = idx; i < musElementList().size(); i++)
+        if (signsToo || musElementList()[i]->isPlayable()) {
+            musElementList()[i]->setTimeStart(musElementList()[i]->timeStart() + length);
+            for (int j = 0; j < musElementList()[i]->markList().size(); j++) {
+                CAMark* m = musElementList()[i]->markList()[j];
+                if (!m->isCommon() || musElementList()[i]->musElementType() != CAMusElement::Note || static_cast<CANote*>(musElementList()[i])->isFirstInChord())
+                    m->setTimeStart(musElementList()[i]->timeStart());
+            }
+        }
+    return true; // What to return ? Maybe if some music element times were actually set
 }
 
 /*!
@@ -920,40 +959,39 @@ bool CAVoice::updateTimes( int idx, int length, bool signsToo ) {
 
 	Returns True, if fixes were made or False otherwise.
 */
-bool CAVoice::synchronizeMusElements() {
-	bool fixesMade = false;
-	for (int i=0; i<musElementList().size(); i++) {
-		if ( musElementList()[i]->musElementType()==CAMusElement::Note &&
-		     musElementList()[i]->markList().size() &&
-		     static_cast<CANote*>(musElementList()[i])->isPartOfChord() ) {
-			QList<CAMark*> marks; // list of shared marks
-			QList<CANote*> chord = static_cast<CANote*>(musElementList()[i])->getChord();
+bool CAVoice::synchronizeMusElements()
+{
+    bool fixesMade = false;
+    for (int i = 0; i < musElementList().size(); i++) {
+        if (musElementList()[i]->musElementType() == CAMusElement::Note && musElementList()[i]->markList().size() && static_cast<CANote*>(musElementList()[i])->isPartOfChord()) {
+            QList<CAMark*> marks; // list of shared marks
+            QList<CANote*> chord = static_cast<CANote*>(musElementList()[i])->getChord();
 
-			// gather a list of marks and remove them from the chord
-			for ( int j=0; j<chord.size(); j++ ) {
-				for ( int k=0; k<chord[j]->markList().size(); k++ ) {
-					if ( chord[j]->markList()[k]->isCommon() ) {
-						chord[j]->markList()[k]->setAssociatedElement( chord.first() );
+            // gather a list of marks and remove them from the chord
+            for (int j = 0; j < chord.size(); j++) {
+                for (int k = 0; k < chord[j]->markList().size(); k++) {
+                    if (chord[j]->markList()[k]->isCommon()) {
+                        chord[j]->markList()[k]->setAssociatedElement(chord.first());
 
-						if ( !marks.contains(chord[j]->markList()[k]) )
-							marks << chord[j]->markList()[k];
+                        if (!marks.contains(chord[j]->markList()[k]))
+                            marks << chord[j]->markList()[k];
 
-						chord[j]->removeMark( chord[j]->markList()[k] );
-					}
-				}
-			}
+                        chord[j]->removeMark(chord[j]->markList()[k]);
+                    }
+                }
+            }
 
-			// add marks back to the chord
-			for (int k=0; k<marks.size(); k++) {
-				chord.first()->addMark(marks[k]);
-			}
+            // add marks back to the chord
+            for (int k = 0; k < marks.size(); k++) {
+                chord.first()->addMark(marks[k]);
+            }
 
-			// move at the end of the chord
-			i += (chord.size() - chord.indexOf( static_cast<CANote*>(musElementList()[i]) ));
-			fixesMade = true;
-		}
-	}
-	return fixesMade;
+            // move at the end of the chord
+            i += (chord.size() - chord.indexOf(static_cast<CANote*>(musElementList()[i])));
+            fixesMade = true;
+        }
+    }
+    return fixesMade;
 }
 
 /*!
@@ -964,15 +1002,14 @@ bool CAVoice::synchronizeMusElements() {
 	adding a note to a chord and the note is maybe already there. Note's accidentals
 	are ignored.
 */
-bool CAVoice::containsPitch( int noteName, int timeStart ) {
-	for (int i=0 ;i<_musElementList.size(); i++) {
-		if ( _musElementList[i]->timeStart()==timeStart &&
-		     _musElementList[i]->musElementType()==CAMusElement::Note &&
-		     static_cast<CANote*>(_musElementList[i])->diatonicPitch().noteName()==noteName )
-			return true;
-	}
+bool CAVoice::containsPitch(int noteName, int timeStart)
+{
+    for (int i = 0; i < _musElementList.size(); i++) {
+        if (_musElementList[i]->timeStart() == timeStart && _musElementList[i]->musElementType() == CAMusElement::Note && static_cast<CANote*>(_musElementList[i])->diatonicPitch().noteName() == noteName)
+            return true;
+    }
 
-	return false;
+    return false;
 }
 
 /*!
@@ -982,40 +1019,40 @@ bool CAVoice::containsPitch( int noteName, int timeStart ) {
 	This is useful when inserting a note and there needs to be determined if a user is
 	adding a note to a chord and the note is maybe already there.
 */
-bool CAVoice::containsPitch( CADiatonicPitch p, int timeStart ) {
-	for (int i=0 ;i<_musElementList.size(); i++) {
-		if ( _musElementList[i]->timeStart()==timeStart &&
-		     _musElementList[i]->musElementType()==CAMusElement::Note &&
-		     static_cast<CANote*>(_musElementList[i])->diatonicPitch()==p )
-			return true;
-	}
-	return false;
+bool CAVoice::containsPitch(CADiatonicPitch p, int timeStart)
+{
+    for (int i = 0; i < _musElementList.size(); i++) {
+        if (_musElementList[i]->timeStart() == timeStart && _musElementList[i]->musElementType() == CAMusElement::Note && static_cast<CANote*>(_musElementList[i])->diatonicPitch() == p)
+            return true;
+    }
+    return false;
 }
 
 /*!
 	Returns the Tempo element active at the given time.
  */
-CATempo *CAVoice::getTempo( int time ) {
-	QList<CAPlayable*> chord = getChord(time);
-	int curElt = -1;
+CATempo* CAVoice::getTempo(int time)
+{
+    QList<CAPlayable*> chord = getChord(time);
+    int curElt = -1;
 
-	if ( chord.isEmpty() ) {
-		curElt = musElementList().size()-1;
-	} else {
-		curElt = musElementList().indexOf(chord.last());
-	}
+    if (chord.isEmpty()) {
+        curElt = musElementList().size() - 1;
+    } else {
+        curElt = musElementList().indexOf(chord.last());
+    }
 
-	CATempo *tempo = nullptr;
-	while (!tempo && curElt>=0) {
-		for (int i=0; i<musElementList()[curElt]->markList().size(); i++) {
-			if (musElementList()[curElt]->markList()[i]->markType()==CAMark::Tempo) {
-				tempo = static_cast<CATempo*>(musElementList()[curElt]->markList()[i]);
-			}
-		}
-		curElt--;
-	}
+    CATempo* tempo = nullptr;
+    while (!tempo && curElt >= 0) {
+        for (int i = 0; i < musElementList()[curElt]->markList().size(); i++) {
+            if (musElementList()[curElt]->markList()[i]->markType() == CAMark::Tempo) {
+                tempo = static_cast<CATempo*>(musElementList()[curElt]->markList()[i]);
+            }
+        }
+        curElt--;
+    }
 
-	return tempo;
+    return tempo;
 }
 
 /*!
@@ -1023,20 +1060,22 @@ CATempo *CAVoice::getTempo( int time ) {
 	This is useful for querying for eg. If a new key signature exists at the certain
 	point in time.
 */
-QList<CAMusElement*> CAVoice::getKeySignature(int startTime) {
+QList<CAMusElement*> CAVoice::getKeySignature(int startTime)
+{
 
-	QList<CAMusElement*> eltList;
-	int i;
-	// seek to the start of the music elements with the given time
-	for (i=0; i < staff()->keySignatureRefs().size() && staff()->keySignatureRefs()[i]->timeStart() < startTime; i++);
+    QList<CAMusElement*> eltList;
+    int i;
+    // seek to the start of the music elements with the given time
+    for (i = 0; i < staff()->keySignatureRefs().size() && staff()->keySignatureRefs()[i]->timeStart() < startTime; i++)
+        ;
 
-	// create a list of music elements with the given time
-	while (i<staff()->keySignatureRefs().size() && staff()->keySignatureRefs()[i]->timeStart()==startTime) {
-		eltList << staff()->keySignatureRefs()[i];
-		i++;
-	}
+    // create a list of music elements with the given time
+    while (i < staff()->keySignatureRefs().size() && staff()->keySignatureRefs()[i]->timeStart() == startTime) {
+        eltList << staff()->keySignatureRefs()[i];
+        i++;
+    }
 
-	return eltList;
+    return eltList;
 }
 
 /*!
@@ -1044,20 +1083,22 @@ QList<CAMusElement*> CAVoice::getKeySignature(int startTime) {
 	This is useful for querying for eg. If a new key signature exists at the certain
 	point in time.
 */
-QList<CAMusElement*> CAVoice::getTimeSignature(int startTime) {
+QList<CAMusElement*> CAVoice::getTimeSignature(int startTime)
+{
 
-	QList<CAMusElement*> eltList;
-	int i;
-	// seek to the start of the music elements with the given time
-	for (i=0; i < staff()->timeSignatureRefs().size() && staff()->timeSignatureRefs()[i]->timeStart() < startTime; i++);
+    QList<CAMusElement*> eltList;
+    int i;
+    // seek to the start of the music elements with the given time
+    for (i = 0; i < staff()->timeSignatureRefs().size() && staff()->timeSignatureRefs()[i]->timeStart() < startTime; i++)
+        ;
 
-	// create a list of music elements with the given time
-	while (i<staff()->timeSignatureRefs().size() && staff()->timeSignatureRefs()[i]->timeStart()==startTime) {
-		eltList << staff()->timeSignatureRefs()[i];
-		i++;
-	}
+    // create a list of music elements with the given time
+    while (i < staff()->timeSignatureRefs().size() && staff()->timeSignatureRefs()[i]->timeStart() == startTime) {
+        eltList << staff()->timeSignatureRefs()[i];
+        i++;
+    }
 
-	return eltList;
+    return eltList;
 }
 
 /*!
@@ -1065,20 +1106,22 @@ QList<CAMusElement*> CAVoice::getTimeSignature(int startTime) {
 	This is useful for querying for eg. If a new key signature exists at the certain
 	point in time.
 */
-QList<CAMusElement*> CAVoice::getClef(int startTime) {
+QList<CAMusElement*> CAVoice::getClef(int startTime)
+{
 
-	QList<CAMusElement*> eltList;
-	int i;
-	// seek to the start of the music elements with the given time
-	for (i=0; i < staff()->clefRefs().size() && staff()->clefRefs()[i]->timeStart() < startTime; i++);
+    QList<CAMusElement*> eltList;
+    int i;
+    // seek to the start of the music elements with the given time
+    for (i = 0; i < staff()->clefRefs().size() && staff()->clefRefs()[i]->timeStart() < startTime; i++)
+        ;
 
-	// create a list of music elements with the given time
-	while (i<staff()->clefRefs().size() && staff()->clefRefs()[i]->timeStart()==startTime) {
-		eltList << staff()->clefRefs()[i];
-		i++;
-	}
+    // create a list of music elements with the given time
+    while (i < staff()->clefRefs().size() && staff()->clefRefs()[i]->timeStart() == startTime) {
+        eltList << staff()->clefRefs()[i];
+        i++;
+    }
 
-	return eltList;
+    return eltList;
 }
 
 /*!
@@ -1087,19 +1130,21 @@ QList<CAMusElement*> CAVoice::getClef(int startTime) {
 	This is useful for querying for eg. which key signature is in effect before a certain
 	point in time.
 */
-QList<CAMusElement*> CAVoice::getPreviousKeySignature(int startTime) {
+QList<CAMusElement*> CAVoice::getPreviousKeySignature(int startTime)
+{
 
-	QList<CAMusElement*> eltList;
-	int i;
-	// seek to the most right of the music elements with the given time
-	for (i= staff()->keySignatureRefs().size()-1;
-			i >= 0 && staff()->keySignatureRefs()[i]->timeStart() > startTime; i--);
-	// create a list of music elements not past the given time
-	while (i >=0 && staff()->keySignatureRefs()[i]->timeStart() <= startTime) {
-		eltList.prepend(staff()->keySignatureRefs()[i]);
-		i--;
-	}
-	return eltList;
+    QList<CAMusElement*> eltList;
+    int i;
+    // seek to the most right of the music elements with the given time
+    for (i = staff()->keySignatureRefs().size() - 1;
+         i >= 0 && staff()->keySignatureRefs()[i]->timeStart() > startTime; i--)
+        ;
+    // create a list of music elements not past the given time
+    while (i >= 0 && staff()->keySignatureRefs()[i]->timeStart() <= startTime) {
+        eltList.prepend(staff()->keySignatureRefs()[i]);
+        i--;
+    }
+    return eltList;
 }
 
 /*!
@@ -1108,19 +1153,21 @@ QList<CAMusElement*> CAVoice::getPreviousKeySignature(int startTime) {
 	This is useful for querying for eg. which key signature is in effect before a certain
 	point in time.
 */
-QList<CAMusElement*> CAVoice::getPreviousTimeSignature(int startTime) {
+QList<CAMusElement*> CAVoice::getPreviousTimeSignature(int startTime)
+{
 
-	QList<CAMusElement*> eltList;
-	int i;
-	// seek to the most right of the music elements with the given time
-	for (i= staff()->timeSignatureRefs().size()-1;
-			i >= 0 && staff()->timeSignatureRefs()[i]->timeStart() > startTime; i--);
-	// create a list of music elements not past the given time
-	while (i >=0 && staff()->timeSignatureRefs()[i]->timeStart() <= startTime) {
-		eltList.prepend(staff()->timeSignatureRefs()[i]);
-		i--;
-	}
-	return eltList;
+    QList<CAMusElement*> eltList;
+    int i;
+    // seek to the most right of the music elements with the given time
+    for (i = staff()->timeSignatureRefs().size() - 1;
+         i >= 0 && staff()->timeSignatureRefs()[i]->timeStart() > startTime; i--)
+        ;
+    // create a list of music elements not past the given time
+    while (i >= 0 && staff()->timeSignatureRefs()[i]->timeStart() <= startTime) {
+        eltList.prepend(staff()->timeSignatureRefs()[i]);
+        i--;
+    }
+    return eltList;
 }
 
 /*!
@@ -1129,19 +1176,21 @@ QList<CAMusElement*> CAVoice::getPreviousTimeSignature(int startTime) {
 	This is useful for querying for eg. which clef is in effect before a certain
 	point in time.
 */
-QList<CAMusElement*> CAVoice::getPreviousClef(int startTime) {
+QList<CAMusElement*> CAVoice::getPreviousClef(int startTime)
+{
 
-	QList<CAMusElement*> eltList;
-	int i;
-	// seek to the most right of the music elements with the given time
-	for (i= staff()->clefRefs().size()-1;
-			i >= 0 && staff()->clefRefs()[i]->timeStart() > startTime; i--);
-	// create a list of music elements not past the given time
-	while (i >=0 && staff()->clefRefs()[i]->timeStart() <= startTime) {
-		eltList.prepend(staff()->clefRefs()[i]);
-		i--;
-	}
-	return eltList;
+    QList<CAMusElement*> eltList;
+    int i;
+    // seek to the most right of the music elements with the given time
+    for (i = staff()->clefRefs().size() - 1;
+         i >= 0 && staff()->clefRefs()[i]->timeStart() > startTime; i--)
+        ;
+    // create a list of music elements not past the given time
+    while (i >= 0 && staff()->clefRefs()[i]->timeStart() <= startTime) {
+        eltList.prepend(staff()->clefRefs()[i]);
+        i--;
+    }
+    return eltList;
 }
 
 /*!

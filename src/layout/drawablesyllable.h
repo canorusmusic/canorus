@@ -16,18 +16,18 @@ class CADrawableLyricsContext;
 
 class CADrawableSyllable : public CADrawableMusElement {
 public:
-	CADrawableSyllable( CASyllable*, CADrawableLyricsContext*, double x, double y );
-	~CADrawableSyllable();
-	void draw(QPainter *p, const CADrawSettings s);
-	CADrawableSyllable *clone(CADrawableContext *c=nullptr);
+    CADrawableSyllable(CASyllable*, CADrawableLyricsContext*, double x, double y);
+    ~CADrawableSyllable();
+    void draw(QPainter* p, const CADrawSettings s);
+    CADrawableSyllable* clone(CADrawableContext* c = nullptr);
 
-	CASyllable *syllable() { return static_cast<CASyllable*>(musElement()); }
+    CASyllable* syllable() { return static_cast<CASyllable*>(musElement()); }
 
-	static const double DEFAULT_TEXT_SIZE;
-	static const double DEFAULT_DASH_LENGTH;
+    static const double DEFAULT_TEXT_SIZE;
+    static const double DEFAULT_DASH_LENGTH;
 
 private:
-	inline const QString textToDrawableText( QString in ) { return in.replace("_", " "); }
+    inline const QString textToDrawableText(QString in) { return in.replace("_", " "); }
 };
 
 #endif /* DRAWABLESYLLABLE_H_ */

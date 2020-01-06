@@ -14,27 +14,27 @@ class CAStaff;
 
 class CARest : public CAPlayable {
 public:
-	enum CARestType {
-		Undefined=-1,
-		Normal,
-		Hidden
-	};
+    enum CARestType {
+        Undefined = -1,
+        Normal,
+        Hidden
+    };
 
-	CARest(CARestType type, CAPlayableLength length, CAVoice *voice, int timeStart, int timeLength=-1);
-	~CARest();
+    CARest(CARestType type, CAPlayableLength length, CAVoice* voice, int timeStart, int timeLength = -1);
+    ~CARest();
 
-	CARest *clone(CAVoice* voice = nullptr);
+    CARest* clone(CAVoice* voice = nullptr);
 
-	CARestType restType() { return _restType; }
-	void setRestType( CARestType type ) { _restType = type; }
+    CARestType restType() { return _restType; }
+    void setRestType(CARestType type) { _restType = type; }
 
-	int compare(CAMusElement *elt);
+    int compare(CAMusElement* elt);
 
-	static const QString restTypeToString(CARestType);
-	static CARestType restTypeFromString(const QString);
-	static QList<CARest*> composeRests( int timeLength, int timeStart, CAVoice* voice=nullptr, CARestType=Hidden );
+    static const QString restTypeToString(CARestType);
+    static CARestType restTypeFromString(const QString);
+    static QList<CARest*> composeRests(int timeLength, int timeStart, CAVoice* voice = nullptr, CARestType = Hidden);
 
 private:
-	CARestType _restType;
+    CARestType _restType;
 };
 #endif /* REST_H_ */

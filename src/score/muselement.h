@@ -8,9 +8,9 @@
 #ifndef MUSELEMENT_H_
 #define MUSELEMENT_H_
 
-#include <QString>
-#include <QList>
 #include <QColor>
+#include <QList>
+#include <QString>
 
 class CAContext;
 class CAMusElement;
@@ -20,79 +20,79 @@ class CANoteCheckerError;
 
 class CAMusElement {
 public:
-	enum CAMusElementType {
-		Undefined = 0,
-		Note,
-		Rest,
-		MidiNote,
-		Barline,
-		Clef,
-		TimeSignature,
-		KeySignature,
-		Slur,
-		Tuplet,
-		Syllable,
-		FunctionMark,
-		FiguredBassMark,
-		Mark,
-		ChordName
-	};
+    enum CAMusElementType {
+        Undefined = 0,
+        Note,
+        Rest,
+        MidiNote,
+        Barline,
+        Clef,
+        TimeSignature,
+        KeySignature,
+        Slur,
+        Tuplet,
+        Syllable,
+        FunctionMark,
+        FiguredBassMark,
+        Mark,
+        ChordName
+    };
 
-	CAMusElement(CAContext *context, int timeStart, int timeLength=0);
-	virtual ~CAMusElement();
+    CAMusElement(CAContext* context, int timeStart, int timeLength = 0);
+    virtual ~CAMusElement();
 
-	virtual CAMusElement* clone(CAContext* context=nullptr) = 0;
-	virtual int compare(CAMusElement *elt) = 0;
+    virtual CAMusElement* clone(CAContext* context = nullptr) = 0;
+    virtual int compare(CAMusElement* elt) = 0;
 
-	CAMusElementType musElementType() { return _musElementType; }
+    CAMusElementType musElementType() { return _musElementType; }
 
-	inline CAContext *context() { return _context; }
-	inline void setContext(CAContext *context) { _context = context; }
+    inline CAContext* context() { return _context; }
+    inline void setContext(CAContext* context) { _context = context; }
 
-	inline virtual int timeStart() const { return _timeStart; }
-	inline void setTimeStart(int time) { _timeStart = time; }
-	inline virtual int timeLength() const { return _timeLength; }
-	inline void setTimeLength(int length) { _timeLength = length; }
-	inline int timeEnd() { return timeStart() + timeLength(); }
+    inline virtual int timeStart() const { return _timeStart; }
+    inline void setTimeStart(int time) { _timeStart = time; }
+    inline virtual int timeLength() const { return _timeLength; }
+    inline void setTimeLength(int length) { _timeLength = length; }
+    inline int timeEnd() { return timeStart() + timeLength(); }
 
-	inline virtual int realTimeStart() { return _timeStart; } // TODO: calculates and returns time in miliseconds
-	inline virtual int realTimeLength() { return _timeLength; } // TODO: calculates and returns time in miliseconds
-	inline int realTimeEnd() { return realTimeStart() + realTimeLength(); } // TODO: calculates and returns time in miliseconds
+    inline virtual int realTimeStart() { return _timeStart; } // TODO: calculates and returns time in miliseconds
+    inline virtual int realTimeLength() { return _timeLength; } // TODO: calculates and returns time in miliseconds
+    inline int realTimeEnd() { return realTimeStart() + realTimeLength(); } // TODO: calculates and returns time in miliseconds
 
-	inline const QString name() { return _name; }
-	inline void setName(const QString name) { _name = name; }
+    inline const QString name() { return _name; }
+    inline void setName(const QString name) { _name = name; }
 
-	inline bool isVisible() { return _visible; }
-	inline void setVisible( const bool v ) { _visible = v; }
+    inline bool isVisible() { return _visible; }
+    inline void setVisible(const bool v) { _visible = v; }
 
-	inline const QColor color() { return _color; }
-	inline void setColor( const QColor c ) { _color = c; }
+    inline const QColor color() { return _color; }
+    inline void setColor(const QColor c) { _color = c; }
 
-	inline const QList<CAMark*> markList() { return _markList; }
-	void addMark( CAMark *mark );
-	void addMarks( QList<CAMark*> marks );
-	inline void removeMark( CAMark* mark ) { _markList.removeAll(mark); }
-	
-	inline const QList<CANoteCheckerError*>& noteCheckerErrorList() { return _noteCheckerErrorList; }
-	inline void addNoteCheckerError( CANoteCheckerError* nce ) { _noteCheckerErrorList << nce; }
-	inline void removeNoteCheckerError( CANoteCheckerError* nce ) { _noteCheckerErrorList.removeAll(nce); }
+    inline const QList<CAMark*> markList() { return _markList; }
+    void addMark(CAMark* mark);
+    void addMarks(QList<CAMark*> marks);
+    inline void removeMark(CAMark* mark) { _markList.removeAll(mark); }
 
-	bool isPlayable();
+    inline const QList<CANoteCheckerError*>& noteCheckerErrorList() { return _noteCheckerErrorList; }
+    inline void addNoteCheckerError(CANoteCheckerError* nce) { _noteCheckerErrorList << nce; }
+    inline void removeNoteCheckerError(CANoteCheckerError* nce) { _noteCheckerErrorList.removeAll(nce); }
 
-	static const QString musElementTypeToString(CAMusElementType);
-	static CAMusElementType musElementTypeFromString(const QString);
+    bool isPlayable();
+
+    static const QString musElementTypeToString(CAMusElementType);
+    static CAMusElementType musElementTypeFromString(const QString);
 
 protected:
-	inline void setMusElementType( CAMusElementType type ) { _musElementType = type; }
+    inline void setMusElementType(CAMusElementType type) { _musElementType = type; }
 
-	CAMusElementType _musElementType;
-	QList< CAMark* > _markList;
-	QList< CANoteCheckerError* > _noteCheckerErrorList;
-	CAContext *_context;
-	int _timeStart;
-	int _timeLength;
-	bool _visible;
-	QColor _color;
-	QString _name;
+    CAMusElementType _musElementType;
+    QList<CAMark*> _markList;
+    QList<CANoteCheckerError*> _noteCheckerErrorList;
+    CAContext* _context;
+    int _timeStart;
+    int _timeLength;
+    bool _visible;
+    QColor _color;
+    QString _name;
 };
 #endif /* MUSELEMENT_H_ */

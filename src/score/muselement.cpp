@@ -6,12 +6,12 @@
 */
 
 #include "score/muselement.h"
-#include "score/context.h"
-#include "score/staff.h"
-#include "score/playable.h"
-#include "score/mark.h"
 #include "score/articulation.h"
+#include "score/context.h"
+#include "score/mark.h"
 #include "score/notecheckererror.h"
+#include "score/playable.h"
+#include "score/staff.h"
 
 /*!
 	\class CAMusElement
@@ -36,36 +36,37 @@
 	Constructs a music element with parent context (staff, lyrics, functionmarks) \a context,
 	start time \a time and length \a length.
 */
-CAMusElement::CAMusElement(CAContext *context, int time, int length) {
-	_context = context;
-	_timeStart = time;
-	_timeLength = length;
-	_musElementType = CAMusElement::Undefined;
-	_visible = true;
-	_color = QColor(); // invalid color by default
+CAMusElement::CAMusElement(CAContext* context, int time, int length)
+{
+    _context = context;
+    _timeStart = time;
+    _timeLength = length;
+    _musElementType = CAMusElement::Undefined;
+    _visible = true;
+    _color = QColor(); // invalid color by default
 }
 
 /*!
 	Destroys a music element.
 	This removes the music element from the parent context as well!
 */
-CAMusElement::~CAMusElement() {
-	while(!_markList.isEmpty()) {
-		if ( !_markList.first()->isCommon() ||
-		     musElementType()!=CAMusElement::Note ) {
-			delete _markList.takeFirst();
-		} else {
-			_markList.takeFirst();
-		}
-	}
+CAMusElement::~CAMusElement()
+{
+    while (!_markList.isEmpty()) {
+        if (!_markList.first()->isCommon() || musElementType() != CAMusElement::Note) {
+            delete _markList.takeFirst();
+        } else {
+            _markList.takeFirst();
+        }
+    }
 
-	// needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
-	if( context() && !isPlayable() )
-		context()->remove( this );
-	
-	while (_noteCheckerErrorList.size()) {
-		delete _noteCheckerErrorList.front(); // also removes instances from _noteCheckerErrorList and CASheet->noteCheckerErrorList
-	}
+    // needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
+    if (context() && !isPlayable())
+        context()->remove(this);
+
+    while (_noteCheckerErrorList.size()) {
+        delete _noteCheckerErrorList.front(); // also removes instances from _noteCheckerErrorList and CASheet->noteCheckerErrorList
+    }
 }
 
 /*!
@@ -77,7 +78,7 @@ CAMusElement::~CAMusElement() {
 */
 bool CAMusElement::isPlayable()
 {
-	return (musElementType()==Note || musElementType()==Rest);//dynamic_cast<CAPlayable*>(this);
+    return (musElementType() == Note || musElementType() == Rest); //dynamic_cast<CAPlayable*>(this);
 }
 
 /*!
@@ -85,26 +86,42 @@ bool CAMusElement::isPlayable()
 
 	\sa CAMusElementType, musElementTypeFromString()
 */
-const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementType type) {
-	switch ( type ) {
-		case (Undefined): return "undefined";
-		case (Note): return "note";
-		case (Rest): return "rest";
-		case (Barline): return "barline";
-		case (Clef): return "clef";
-		case (TimeSignature): return "time-signature";
-		case (KeySignature): return "key-signature";
-		case (Slur): return "slur";
-		case (FunctionMark): return "function-mark";
-		case (Syllable): return "syllable";
-		case (MidiNote): return "midi-note";
-		case (Tuplet): return "tuplet";
-		case (Mark): return "mark";
-		case (FiguredBassMark): return "figured-bass-mark";
-		case (ChordName): return "chord-name";
-	}
-	// Do not add a default case as else newly added elements might be forgotten here!
-	return QString();
+const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementType type)
+{
+    switch (type) {
+    case (Undefined):
+        return "undefined";
+    case (Note):
+        return "note";
+    case (Rest):
+        return "rest";
+    case (Barline):
+        return "barline";
+    case (Clef):
+        return "clef";
+    case (TimeSignature):
+        return "time-signature";
+    case (KeySignature):
+        return "key-signature";
+    case (Slur):
+        return "slur";
+    case (FunctionMark):
+        return "function-mark";
+    case (Syllable):
+        return "syllable";
+    case (MidiNote):
+        return "midi-note";
+    case (Tuplet):
+        return "tuplet";
+    case (Mark):
+        return "mark";
+    case (FiguredBassMark):
+        return "figured-bass-mark";
+    case (ChordName):
+        return "chord-name";
+    }
+    // Do not add a default case as else newly added elements might be forgotten here!
+    return QString();
 }
 
 /*!
@@ -112,49 +129,67 @@ const QString CAMusElement::musElementTypeToString(CAMusElement::CAMusElementTyp
 
 	\sa CAMusElementType, musElementTypeToString()
 */
-CAMusElement::CAMusElementType CAMusElement::musElementTypeFromString(const QString type) {
-	if ( type=="undefined" ) return Undefined;
-	if ( type=="note" ) return Note;
-	if ( type=="rest" ) return Rest;
-	if ( type=="barline" ) return Barline;
-	if ( type=="clef" ) return Clef;
-	if ( type=="time-signature" ) return TimeSignature;
-	if ( type=="key-signature" ) return KeySignature;
-	if ( type=="slur" ) return Slur;
-	if ( type=="function-mark" ) return FunctionMark;
-	if ( type=="syllable" ) return Syllable;
-	if ( type=="mark" ) return Mark;
-	if ( type=="figured-bass-mark" ) return FiguredBassMark;
-	if ( type=="tuplet" ) return Tuplet;
-	if ( type=="midi-note" ) return MidiNote;
-	if ( type=="chord-name" ) return ChordName;
-	return Undefined;
+CAMusElement::CAMusElementType CAMusElement::musElementTypeFromString(const QString type)
+{
+    if (type == "undefined")
+        return Undefined;
+    if (type == "note")
+        return Note;
+    if (type == "rest")
+        return Rest;
+    if (type == "barline")
+        return Barline;
+    if (type == "clef")
+        return Clef;
+    if (type == "time-signature")
+        return TimeSignature;
+    if (type == "key-signature")
+        return KeySignature;
+    if (type == "slur")
+        return Slur;
+    if (type == "function-mark")
+        return FunctionMark;
+    if (type == "syllable")
+        return Syllable;
+    if (type == "mark")
+        return Mark;
+    if (type == "figured-bass-mark")
+        return FiguredBassMark;
+    if (type == "tuplet")
+        return Tuplet;
+    if (type == "midi-note")
+        return MidiNote;
+    if (type == "chord-name")
+        return ChordName;
+    return Undefined;
 }
 
 /*!
 	Adds a \a mark to the mark list in correct order.
 */
-void CAMusElement::addMark( CAMark *mark ) {
-	if ( !mark || _markList.contains(mark) )
-		return;
+void CAMusElement::addMark(CAMark* mark)
+{
+    if (!mark || _markList.contains(mark))
+        return;
 
-	int l;
-	for ( l=0; l<markList().size() && mark->markType() < markList()[l]->markType(); l++ ); // marks should be sorted by their mark type
-	if ( mark->markType()==CAMark::Articulation ) {
-		for ( ; l<markList().size() &&
-		        markList()[l]->markType()==CAMark::Articulation &&
-		        static_cast<CAArticulation*>(mark)->articulationType() < static_cast<CAArticulation*>(markList()[l])->articulationType(); l++ ); // marks should be sorted by their mark type
-	}
+    int l;
+    for (l = 0; l < markList().size() && mark->markType() < markList()[l]->markType(); l++)
+        ; // marks should be sorted by their mark type
+    if (mark->markType() == CAMark::Articulation) {
+        for (; l < markList().size() && markList()[l]->markType() == CAMark::Articulation && static_cast<CAArticulation*>(mark)->articulationType() < static_cast<CAArticulation*>(markList()[l])->articulationType(); l++)
+            ; // marks should be sorted by their mark type
+    }
 
-	_markList.insert( l, mark );
+    _markList.insert(l, mark);
 }
 
 /*!
 	Adds a list of marks to the mark list in correct order.
 */
-void CAMusElement::addMarks( QList<CAMark*> marks ) {
-	for (int i=0; i<marks.size(); i++)
-		addMark( marks[i] );
+void CAMusElement::addMarks(QList<CAMark*> marks)
+{
+    for (int i = 0; i < marks.size(); i++)
+        addMark(marks[i]);
 }
 
 /*!

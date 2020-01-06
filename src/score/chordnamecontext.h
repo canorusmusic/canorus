@@ -13,26 +13,26 @@
 
 class CAChordName;
 
-class CAChordNameContext: public CAContext {
+class CAChordNameContext : public CAContext {
 public:
-	CAChordNameContext( QString name, CASheet *sheet );
-	~CAChordNameContext();
+    CAChordNameContext(QString name, CASheet* sheet);
+    ~CAChordNameContext();
 
-	CAContext* clone( CASheet* );
-	void clear();
-	CAMusElement *next(CAMusElement *elt);
-	CAMusElement *previous(CAMusElement *elt);
-	bool remove( CAMusElement *elt );
+    CAContext* clone(CASheet*);
+    void clear();
+    CAMusElement* next(CAMusElement* elt);
+    CAMusElement* previous(CAMusElement* elt);
+    bool remove(CAMusElement* elt);
 
-	QList<CAChordName*>& chordNameList() { return _chordNameList; }
-	CAChordName *chordNameAtTimeStart( int timeStart );
+    QList<CAChordName*>& chordNameList() { return _chordNameList; }
+    CAChordName* chordNameAtTimeStart(int timeStart);
 
-	void repositChordNames();
-	void addChordName( CAChordName*, bool replace=true );
-	void addEmptyChordName( int timeStart, int timeLength );
+    void repositChordNames();
+    void addChordName(CAChordName*, bool replace = true);
+    void addEmptyChordName(int timeStart, int timeLength);
 
 private:
-	QList<CAChordName*> _chordNameList;
+    QList<CAChordName*> _chordNameList;
 };
 
 #endif /* CHORDNAMECONTEXT_H_ */

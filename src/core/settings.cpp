@@ -23,20 +23,20 @@ const bool CASettings::DEFAULT_AUTO_BAR = true;
 const bool CASettings::DEFAULT_USE_NOTE_CHECKER = true;
 
 const QDir CASettings::DEFAULT_DOCUMENTS_DIRECTORY = QDir::home();
-const QDir CASettings::DEFAULT_SHORTCUTS_DIRECTORY = QDir( QDir::homePath() + "/.config/Canorus" );
+const QDir CASettings::DEFAULT_SHORTCUTS_DIRECTORY = QDir(QDir::homePath() + "/.config/Canorus");
 const CAFileFormats::CAFileFormatType CASettings::DEFAULT_SAVE_FORMAT = CAFileFormats::Can;
 const int CASettings::DEFAULT_AUTO_RECOVERY_INTERVAL = 1;
 const int CASettings::DEFAULT_MAX_RECENT_DOCUMENTS = 15;
 
 #ifndef SWIGCPP
-const bool   CASettings::DEFAULT_LOCK_SCROLL_PLAYBACK = true; // scroll while playing
-const bool   CASettings::DEFAULT_ANIMATED_SCROLL = true;
-const bool   CASettings::DEFAULT_ANTIALIASING = true;
-const bool   CASettings::DEFAULT_SHOW_RULER = true;
+const bool CASettings::DEFAULT_LOCK_SCROLL_PLAYBACK = true; // scroll while playing
+const bool CASettings::DEFAULT_ANIMATED_SCROLL = true;
+const bool CASettings::DEFAULT_ANTIALIASING = true;
+const bool CASettings::DEFAULT_SHOW_RULER = true;
 const QColor CASettings::DEFAULT_BACKGROUND_COLOR = QColor(255, 255, 240);
 const QColor CASettings::DEFAULT_FOREGROUND_COLOR = Qt::black;
 const QColor CASettings::DEFAULT_SELECTION_COLOR = Qt::red;
-const QColor CASettings::DEFAULT_SELECTION_AREA_COLOR = QColor( 255, 0, 80, 70 );
+const QColor CASettings::DEFAULT_SELECTION_AREA_COLOR = QColor(255, 0, 80, 70);
 const QColor CASettings::DEFAULT_SELECTED_CONTEXT_COLOR = Qt::blue;
 const QColor CASettings::DEFAULT_HIDDEN_ELEMENTS_COLOR = Qt::green;
 const QColor CASettings::DEFAULT_DISABLED_ELEMENTS_COLOR = Qt::gray;
@@ -49,15 +49,15 @@ const int CASettings::DEFAULT_MIDI_OUT_NUM_DEVICES = 0;
 
 const CATypesetter::CATypesetterType CASettings::DEFAULT_TYPESETTER = CATypesetter::LilyPond;
 #ifdef Q_OS_WIN
-const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "LilyPond/usr/bin/lilypond.exe";
+const QString CASettings::DEFAULT_TYPESETTER_LOCATION = "LilyPond/usr/bin/lilypond.exe";
 #elif defined(Q_OS_MAC)
-const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "/Applications/LilyPond.app/Contents/Resources/bin/lilypond";
+const QString CASettings::DEFAULT_TYPESETTER_LOCATION = "/Applications/LilyPond.app/Contents/Resources/bin/lilypond";
 #else
-const QString                        CASettings::DEFAULT_TYPESETTER_LOCATION = "lilypond";
+const QString CASettings::DEFAULT_TYPESETTER_LOCATION = "lilypond";
 #endif
-const bool                           CASettings::DEFAULT_USE_SYSTEM_TYPESETTER = true;
-const QString                        CASettings::DEFAULT_PDF_VIEWER_LOCATION = "";
-const bool                           CASettings::DEFAULT_USE_SYSTEM_PDF_VIEWER = true;
+const bool CASettings::DEFAULT_USE_SYSTEM_TYPESETTER = true;
+const QString CASettings::DEFAULT_PDF_VIEWER_LOCATION = "";
+const bool CASettings::DEFAULT_USE_SYSTEM_PDF_VIEWER = true;
 
 /*!
 	\class CASettings
@@ -87,38 +87,39 @@ const bool                           CASettings::DEFAULT_USE_SYSTEM_PDF_VIEWER =
 /*!
 	Create a new settings instance using the config file \a fileName.
  */
-CASettings::CASettings(const QString & fileName, QObject * parent)
- : QSettings(fileName, QSettings::IniFormat, parent) {
-	 initSettings();
+CASettings::CASettings(const QString& fileName, QObject* parent)
+    : QSettings(fileName, QSettings::IniFormat, parent)
+{
+    initSettings();
 }
 
 /*!
 	Create a new settings instance using the default config file for a local user.
  */
-CASettings::CASettings( QObject * parent )
- : QSettings( defaultSettingsPath()+"/canorus.ini", QSettings::IniFormat, parent) {
-	 initSettings();
+CASettings::CASettings(QObject* parent)
+    : QSettings(defaultSettingsPath() + "/canorus.ini", QSettings::IniFormat, parent)
+{
+    initSettings();
 }
 
 void CASettings::initSettings()
 {
 #ifndef SWIGCPP
-    _poEmptyEntry = new CASingleAction( this );
+    _poEmptyEntry = new CASingleAction(this);
 #endif
 }
 
-CASettings::~CASettings() {
-	writeSettings();
-	if( _poEmptyEntry )
-	  delete _poEmptyEntry;
-	_poEmptyEntry = nullptr;
+CASettings::~CASettings()
+{
+    writeSettings();
+    if (_poEmptyEntry)
+        delete _poEmptyEntry;
+    _poEmptyEntry = nullptr;
 
 #ifndef SWIGCPP
-    if( false == _oActionList.isEmpty() )
-    {
-        CASingleAction *poActionEntry;
-        foreach(poActionEntry, _oActionList)
-        {
+    if (false == _oActionList.isEmpty()) {
+        CASingleAction* poActionEntry;
+        foreach (poActionEntry, _oActionList) {
             delete poActionEntry;
             poActionEntry = nullptr;
         }
@@ -130,44 +131,45 @@ CASettings::~CASettings() {
 /*!
 	Writes the stored settings to a config file.
 */
-void CASettings::writeSettings() {
-	setValue( "editor/finalelyricsbehaviour", finaleLyricsBehaviour() );
-	setValue( "editor/shadownotesinotherstaffs", shadowNotesInOtherStaffs() );
-	setValue( "editor/playinsertednotes", playInsertedNotes() );
-	setValue( "editor/autobar", autoBar() );
-	setValue( "editor/usenotechecker", useNoteChecker() );
-	setValue( "appearance/showruler", showRuler() );
+void CASettings::writeSettings()
+{
+    setValue("editor/finalelyricsbehaviour", finaleLyricsBehaviour());
+    setValue("editor/shadownotesinotherstaffs", shadowNotesInOtherStaffs());
+    setValue("editor/playinsertednotes", playInsertedNotes());
+    setValue("editor/autobar", autoBar());
+    setValue("editor/usenotechecker", useNoteChecker());
+    setValue("appearance/showruler", showRuler());
 
-	setValue( "files/documentsdirectory", documentsDirectory().absolutePath() );
-	setValue( "files/defaultsaveformat", defaultSaveFormat() );
-	setValue( "files/autorecoveryinterval", autoRecoveryInterval() );
-	setValue( "files/maxrecentdocuments", maxRecentDocuments() );
+    setValue("files/documentsdirectory", documentsDirectory().absolutePath());
+    setValue("files/defaultsaveformat", defaultSaveFormat());
+    setValue("files/autorecoveryinterval", autoRecoveryInterval());
+    setValue("files/maxrecentdocuments", maxRecentDocuments());
 #ifndef SWIGCPP
-	writeRecentDocuments();
+    writeRecentDocuments();
 
-	setValue( "appearance/lockscrollplayback", lockScrollPlayback() );
-	setValue( "appearance/animatedscroll", animatedScroll() );
-	setValue( "appearance/antialiasing", antiAliasing() );
-	setValue( "appearance/backgroundcolor", backgroundColor() );
-	setValue( "appearance/foregroundcolor", foregroundColor() );
-	setValue( "appearance/selectioncolor", selectionColor() );
-	setValue( "appearance/selectionareacolor", selectionAreaColor() );
-	setValue( "appearance/selectedcontextcolor", selectedContextColor() );
-	setValue( "appearance/hiddenelementscolor",hiddenElementsColor() );
-	setValue( "appearance/disabledelementscolor", disabledElementsColor() );
+    setValue("appearance/lockscrollplayback", lockScrollPlayback());
+    setValue("appearance/animatedscroll", animatedScroll());
+    setValue("appearance/antialiasing", antiAliasing());
+    setValue("appearance/backgroundcolor", backgroundColor());
+    setValue("appearance/foregroundcolor", foregroundColor());
+    setValue("appearance/selectioncolor", selectionColor());
+    setValue("appearance/selectionareacolor", selectionAreaColor());
+    setValue("appearance/selectedcontextcolor", selectedContextColor());
+    setValue("appearance/hiddenelementscolor", hiddenElementsColor());
+    setValue("appearance/disabledelementscolor", disabledElementsColor());
 #endif
-	setValue( "rtmidi/midioutport", midiOutPort() );
-	setValue( "rtmidi/midiinport", midiInPort() );
-	setValue( "rtmidi/midioutnumdevices", midiOutNumDevices() );
-	setValue( "rtmidi/midiinnumdevices", midiInNumDevices() );
+    setValue("rtmidi/midioutport", midiOutPort());
+    setValue("rtmidi/midiinport", midiInPort());
+    setValue("rtmidi/midioutnumdevices", midiOutNumDevices());
+    setValue("rtmidi/midiinnumdevices", midiInNumDevices());
 
-	setValue( "printing/typesetter", typesetter() );
-	setValue( "printing/typesetterlocation", typesetterLocation() );
-	setValue( "printing/usesystemdefaulttypesetter", useSystemDefaultTypesetter() );
-	setValue( "printing/pdfviewerlocation", pdfViewerLocation() );
-	setValue( "printing/usesystemdefaultpdfviewer", useSystemDefaultPdfViewer() );
+    setValue("printing/typesetter", typesetter());
+    setValue("printing/typesetterlocation", typesetterLocation());
+    setValue("printing/usesystemdefaulttypesetter", useSystemDefaultTypesetter());
+    setValue("printing/pdfviewerlocation", pdfViewerLocation());
+    setValue("printing/usesystemdefaultpdfviewer", useSystemDefaultPdfViewer());
 
-	sync();
+    sync();
 }
 
 /*!
@@ -178,206 +180,206 @@ void CASettings::writeSettings() {
 	
 	\return 0, if settings validated fine; -1 for playback settings errors.
 */
-int CASettings::readSettings() {
-	int settingsPage = 0;
+int CASettings::readSettings()
+{
+    int settingsPage = 0;
 
-	// Editor settings
-	if ( contains("editor/finalelyricsbehaviour") )
-		setFinaleLyricsBehaviour( value("editor/finalelyricsbehaviour").toBool() );
-	else
-		setFinaleLyricsBehaviour( DEFAULT_FINALE_LYRICS_BEHAVIOUR );
+    // Editor settings
+    if (contains("editor/finalelyricsbehaviour"))
+        setFinaleLyricsBehaviour(value("editor/finalelyricsbehaviour").toBool());
+    else
+        setFinaleLyricsBehaviour(DEFAULT_FINALE_LYRICS_BEHAVIOUR);
 
-	if ( contains("editor/shadownotesinotherstaffs") )
-		setShadowNotesInOtherStaffs( value("editor/shadownotesinotherstaffs").toBool() );
-	else
-		setShadowNotesInOtherStaffs( DEFAULT_SHADOW_NOTES_IN_OTHER_STAFFS );
+    if (contains("editor/shadownotesinotherstaffs"))
+        setShadowNotesInOtherStaffs(value("editor/shadownotesinotherstaffs").toBool());
+    else
+        setShadowNotesInOtherStaffs(DEFAULT_SHADOW_NOTES_IN_OTHER_STAFFS);
 
-	if ( contains("editor/playinsertednotes") )
-		setPlayInsertedNotes( value("editor/playinsertednotes").toBool() );
-	else
-		setPlayInsertedNotes( DEFAULT_PLAY_INSERTED_NOTES );
+    if (contains("editor/playinsertednotes"))
+        setPlayInsertedNotes(value("editor/playinsertednotes").toBool());
+    else
+        setPlayInsertedNotes(DEFAULT_PLAY_INSERTED_NOTES);
 
-	if ( contains("editor/autobar") )
-		setAutoBar( value("editor/autobar").toBool() );
-	else
-		setAutoBar( DEFAULT_AUTO_BAR );
+    if (contains("editor/autobar"))
+        setAutoBar(value("editor/autobar").toBool());
+    else
+        setAutoBar(DEFAULT_AUTO_BAR);
 
-	if ( contains("editor/usenotechecker") )
-		setUseNoteChecker( value("editor/usenotechecker").toBool() );
-	else
-		setUseNoteChecker( DEFAULT_USE_NOTE_CHECKER );
+    if (contains("editor/usenotechecker"))
+        setUseNoteChecker(value("editor/usenotechecker").toBool());
+    else
+        setUseNoteChecker(DEFAULT_USE_NOTE_CHECKER);
 
-	// Saving/Loading settings
-	if ( contains("files/documentsdirectory") )
-		setDocumentsDirectory( value("files/documentsdirectory").toString() );
-	else
-		setDocumentsDirectory( DEFAULT_DOCUMENTS_DIRECTORY );
+    // Saving/Loading settings
+    if (contains("files/documentsdirectory"))
+        setDocumentsDirectory(value("files/documentsdirectory").toString());
+    else
+        setDocumentsDirectory(DEFAULT_DOCUMENTS_DIRECTORY);
 
-	if ( contains("files/defaultsaveformat") )
-		setDefaultSaveFormat( static_cast<CAFileFormats::CAFileFormatType>(value("files/defaultsaveformat").toInt()) );
-	else
-		setDefaultSaveFormat( DEFAULT_SAVE_FORMAT );
+    if (contains("files/defaultsaveformat"))
+        setDefaultSaveFormat(static_cast<CAFileFormats::CAFileFormatType>(value("files/defaultsaveformat").toInt()));
+    else
+        setDefaultSaveFormat(DEFAULT_SAVE_FORMAT);
 
-	if ( contains("files/autorecoveryinterval") )
-		setAutoRecoveryInterval( value("files/autorecoveryinterval").toInt() );
-	else
-		setAutoRecoveryInterval( DEFAULT_AUTO_RECOVERY_INTERVAL );
+    if (contains("files/autorecoveryinterval"))
+        setAutoRecoveryInterval(value("files/autorecoveryinterval").toInt());
+    else
+        setAutoRecoveryInterval(DEFAULT_AUTO_RECOVERY_INTERVAL);
 
-	// Recently opened files
-	if ( contains("files/maxrecentdocuments") )
-		setMaxRecentDocuments( value("files/maxrecentdocuments").toInt() );
-	else
-		setMaxRecentDocuments( DEFAULT_MAX_RECENT_DOCUMENTS );
+    // Recently opened files
+    if (contains("files/maxrecentdocuments"))
+        setMaxRecentDocuments(value("files/maxrecentdocuments").toInt());
+    else
+        setMaxRecentDocuments(DEFAULT_MAX_RECENT_DOCUMENTS);
 
 #ifndef SWIGCPP
-	readRecentDocuments();
+    readRecentDocuments();
 
-	// Appearance settings
-	if ( contains("appearance/lockscrollplayback") )
-		setLockScrollPlayback( value("appearance/lockscrollplayback").toBool() );
-	else
-		setLockScrollPlayback( DEFAULT_LOCK_SCROLL_PLAYBACK );
+    // Appearance settings
+    if (contains("appearance/lockscrollplayback"))
+        setLockScrollPlayback(value("appearance/lockscrollplayback").toBool());
+    else
+        setLockScrollPlayback(DEFAULT_LOCK_SCROLL_PLAYBACK);
 
-	if ( contains("appearance/animatedscroll") )
-		setAnimatedScroll( value("appearance/animatedscroll").toBool() );
-	else
-		setAnimatedScroll( DEFAULT_ANIMATED_SCROLL );
+    if (contains("appearance/animatedscroll"))
+        setAnimatedScroll(value("appearance/animatedscroll").toBool());
+    else
+        setAnimatedScroll(DEFAULT_ANIMATED_SCROLL);
 
-	if ( contains("appearance/antialiasing") )
-		setAntiAliasing( value("appearance/antialiasing").toBool() );
-	else
-		setAntiAliasing( DEFAULT_ANTIALIASING );
+    if (contains("appearance/antialiasing"))
+        setAntiAliasing(value("appearance/antialiasing").toBool());
+    else
+        setAntiAliasing(DEFAULT_ANTIALIASING);
 
-	if ( contains("appearance/backgroundcolor") )
-		setBackgroundColor( value("appearance/backgroundcolor").value<QColor>() );
-	else
-		setBackgroundColor( DEFAULT_BACKGROUND_COLOR );
+    if (contains("appearance/backgroundcolor"))
+        setBackgroundColor(value("appearance/backgroundcolor").value<QColor>());
+    else
+        setBackgroundColor(DEFAULT_BACKGROUND_COLOR);
 
-	if ( contains("appearance/foregroundcolor") )
-		setForegroundColor( value("appearance/foregroundcolor").value<QColor>() );
-	else
-		setForegroundColor( DEFAULT_FOREGROUND_COLOR );
+    if (contains("appearance/foregroundcolor"))
+        setForegroundColor(value("appearance/foregroundcolor").value<QColor>());
+    else
+        setForegroundColor(DEFAULT_FOREGROUND_COLOR);
 
-	if ( contains("appearance/selectioncolor") )
-		setSelectionColor( value("appearance/selectioncolor").value<QColor>() );
-	else
-		setSelectionColor( DEFAULT_SELECTION_COLOR );
+    if (contains("appearance/selectioncolor"))
+        setSelectionColor(value("appearance/selectioncolor").value<QColor>());
+    else
+        setSelectionColor(DEFAULT_SELECTION_COLOR);
 
-	if ( contains("appearance/selectionareacolor") )
-		setSelectionAreaColor( value("appearance/selectionareacolor").value<QColor>() );
-	else
-		setSelectionAreaColor( DEFAULT_SELECTION_AREA_COLOR );
+    if (contains("appearance/selectionareacolor"))
+        setSelectionAreaColor(value("appearance/selectionareacolor").value<QColor>());
+    else
+        setSelectionAreaColor(DEFAULT_SELECTION_AREA_COLOR);
 
-	if ( contains("appearance/selectedcontextcolor") )
-		setSelectedContextColor( value("appearance/selectedcontextcolor").value<QColor>() );
-	else
-		setSelectedContextColor( DEFAULT_SELECTED_CONTEXT_COLOR );
+    if (contains("appearance/selectedcontextcolor"))
+        setSelectedContextColor(value("appearance/selectedcontextcolor").value<QColor>());
+    else
+        setSelectedContextColor(DEFAULT_SELECTED_CONTEXT_COLOR);
 
-	if ( contains("appearance/hiddenelementscolor") )
-		setHiddenElementsColor( value("appearance/hiddenelementscolor").value<QColor>() );
-	else
-		setHiddenElementsColor( DEFAULT_HIDDEN_ELEMENTS_COLOR );
+    if (contains("appearance/hiddenelementscolor"))
+        setHiddenElementsColor(value("appearance/hiddenelementscolor").value<QColor>());
+    else
+        setHiddenElementsColor(DEFAULT_HIDDEN_ELEMENTS_COLOR);
 
-	if ( contains("appearance/disabledelementscolor") )
-		setDisabledElementsColor( value("appearance/disabledelementscolor").value<QColor>() );
-	else
-		setDisabledElementsColor( DEFAULT_DISABLED_ELEMENTS_COLOR );
-	
-	if ( contains("appearance/showruler") )
-		setShowRuler( value("appearance/showruler").toBool() );
-	else
-		setShowRuler( DEFAULT_SHOW_RULER );
+    if (contains("appearance/disabledelementscolor"))
+        setDisabledElementsColor(value("appearance/disabledelementscolor").value<QColor>());
+    else
+        setDisabledElementsColor(DEFAULT_DISABLED_ELEMENTS_COLOR);
+
+    if (contains("appearance/showruler"))
+        setShowRuler(value("appearance/showruler").toBool());
+    else
+        setShowRuler(DEFAULT_SHOW_RULER);
 
 #endif
-	// Playback settings
-	if ( contains("rtmidi/midiinport")
+    // Playback settings
+    if (contains("rtmidi/midiinport")
 #ifndef SWIGCPP
-		&& value("rtmidi/midiinport").toInt() < CACanorus::midiDevice()->getInputPorts().count()
+        && value("rtmidi/midiinport").toInt() < CACanorus::midiDevice()->getInputPorts().count()
 #endif
-	   ) {
-		setMidiInPort( value("rtmidi/midiinport").toInt() );
-	} else {
-		setMidiInPort( DEFAULT_MIDI_IN_PORT );
-		settingsPage = -1;
-	}
+    ) {
+        setMidiInPort(value("rtmidi/midiinport").toInt());
+    } else {
+        setMidiInPort(DEFAULT_MIDI_IN_PORT);
+        settingsPage = -1;
+    }
 
-	if ( contains("rtmidi/midiinnumdevices") ) {
+    if (contains("rtmidi/midiinnumdevices")) {
 #ifndef SWIGCPP
-		if (value("rtmidi/midiinnumdevices").toInt() != CACanorus::midiDevice()->getInputPorts().count())
-			settingsPage = -1;
-		setMidiInNumDevices( CACanorus::midiDevice()->getInputPorts().count() );
+        if (value("rtmidi/midiinnumdevices").toInt() != CACanorus::midiDevice()->getInputPorts().count())
+            settingsPage = -1;
+        setMidiInNumDevices(CACanorus::midiDevice()->getInputPorts().count());
 #endif
-	} else {
-		setMidiInNumDevices( DEFAULT_MIDI_IN_NUM_DEVICES );
-		settingsPage = -1;
-	}
+    } else {
+        setMidiInNumDevices(DEFAULT_MIDI_IN_NUM_DEVICES);
+        settingsPage = -1;
+    }
 
-
-
-	if ( contains("rtmidi/midioutport")
+    if (contains("rtmidi/midioutport")
 #ifndef SWIGCPP
-		 && value("rtmidi/midioutport").toInt() < CACanorus::midiDevice()->getOutputPorts().count()
+        && value("rtmidi/midioutport").toInt() < CACanorus::midiDevice()->getOutputPorts().count()
 #endif
-	   ) {
-		setMidiOutPort( value("rtmidi/midioutport").toInt() );
-	} else {
-		setMidiOutPort( DEFAULT_MIDI_OUT_PORT );
-		settingsPage = -1;
-	}
+    ) {
+        setMidiOutPort(value("rtmidi/midioutport").toInt());
+    } else {
+        setMidiOutPort(DEFAULT_MIDI_OUT_PORT);
+        settingsPage = -1;
+    }
 
-	if ( contains("rtmidi/midioutnumdevices") ) {
+    if (contains("rtmidi/midioutnumdevices")) {
 #ifndef SWIGCPP
-		if (value("rtmidi/midioutnumdevices").toInt() != CACanorus::midiDevice()->getOutputPorts().count())
-			settingsPage = -1;
-		setMidiOutNumDevices( CACanorus::midiDevice()->getOutputPorts().count() );
+        if (value("rtmidi/midioutnumdevices").toInt() != CACanorus::midiDevice()->getOutputPorts().count())
+            settingsPage = -1;
+        setMidiOutNumDevices(CACanorus::midiDevice()->getOutputPorts().count());
 #endif
-	} else {
-		setMidiOutNumDevices( DEFAULT_MIDI_OUT_NUM_DEVICES );
-		settingsPage = -1;
-	}
+    } else {
+        setMidiOutNumDevices(DEFAULT_MIDI_OUT_NUM_DEVICES);
+        settingsPage = -1;
+    }
 
-	// Printing settings
-	if ( contains("printing/typesetter") )
-		setTypesetter( static_cast<CATypesetter::CATypesetterType>(value("printing/typesetter").toInt()) );
-	else
-		setTypesetter( DEFAULT_TYPESETTER );
+    // Printing settings
+    if (contains("printing/typesetter"))
+        setTypesetter(static_cast<CATypesetter::CATypesetterType>(value("printing/typesetter").toInt()));
+    else
+        setTypesetter(DEFAULT_TYPESETTER);
 
-	if ( contains("printing/typesetterlocation") )
-		setTypesetterLocation( value("printing/typesetterlocation").toString() );
-	else
-		setTypesetterLocation( DEFAULT_TYPESETTER_LOCATION );
+    if (contains("printing/typesetterlocation"))
+        setTypesetterLocation(value("printing/typesetterlocation").toString());
+    else
+        setTypesetterLocation(DEFAULT_TYPESETTER_LOCATION);
 
-	if ( contains("printing/usesystemdefaulttypesetter") )
-		setUseSystemDefaultTypesetter( value("printing/usesystemdefaulttypesetter").toBool() );
-	else
-		setUseSystemDefaultTypesetter( DEFAULT_USE_SYSTEM_TYPESETTER );
+    if (contains("printing/usesystemdefaulttypesetter"))
+        setUseSystemDefaultTypesetter(value("printing/usesystemdefaulttypesetter").toBool());
+    else
+        setUseSystemDefaultTypesetter(DEFAULT_USE_SYSTEM_TYPESETTER);
 
-	if ( contains("printing/pdfviewerlocation") )
-		setPdfViewerLocation( value("printing/pdfviewerlocation").toString() );
-	else
-		setPdfViewerLocation( DEFAULT_PDF_VIEWER_LOCATION );
+    if (contains("printing/pdfviewerlocation"))
+        setPdfViewerLocation(value("printing/pdfviewerlocation").toString());
+    else
+        setPdfViewerLocation(DEFAULT_PDF_VIEWER_LOCATION);
 
-	if ( contains("printing/usesystemdefaultpdfviewer") )
-		setUseSystemDefaultPdfViewer( value("printing/usesystemdefaultpdfviewer").toBool() );
-	else
-		setUseSystemDefaultPdfViewer( DEFAULT_USE_SYSTEM_PDF_VIEWER );
+    if (contains("printing/usesystemdefaultpdfviewer"))
+        setUseSystemDefaultPdfViewer(value("printing/usesystemdefaultpdfviewer").toBool());
+    else
+        setUseSystemDefaultPdfViewer(DEFAULT_USE_SYSTEM_PDF_VIEWER);
 
-	// Action / Command settings
-	if ( contains("action/shortcutsdirectory") )
-		setLatestShortcutsDirectory( value("action/shortcutsdirectory").toString() );
-	else
-		setLatestShortcutsDirectory( DEFAULT_SHORTCUTS_DIRECTORY );
+    // Action / Command settings
+    if (contains("action/shortcutsdirectory"))
+        setLatestShortcutsDirectory(value("action/shortcutsdirectory").toString());
+    else
+        setLatestShortcutsDirectory(DEFAULT_SHORTCUTS_DIRECTORY);
 
     return settingsPage;
 }
 
-void CASettings::setMidiInPort(int in) {
-	_midiInPort = in;
+void CASettings::setMidiInPort(int in)
+{
+    _midiInPort = in;
 #ifndef SWIGCPP
-	if (CACanorus::midiDevice()) {
-		CACanorus::midiDevice()->closeInputPort();
-		CACanorus::midiDevice()->openInputPort( midiInPort() );
-	}
+    if (CACanorus::midiDevice()) {
+        CACanorus::midiDevice()->closeInputPort();
+        CACanorus::midiDevice()->openInputPort(midiInPort());
+    }
 #endif
 }
 
@@ -387,28 +389,26 @@ void CASettings::setMidiInPort(int in) {
   Search one single action in the list of actions (-1: entry not found)
   Returns an empty action element when the command was not found
 */
-int CASettings::getSingleAction(const QString &oCommandName, QAction *&poResAction)
+int CASettings::getSingleAction(const QString& oCommandName, QAction*& poResAction)
 {
-    CASingleAction *poEntryAction;
-	for (int i=0; i < _oActionList.count(); i++) {
+    CASingleAction* poEntryAction;
+    for (int i = 0; i < _oActionList.count(); i++) {
         poEntryAction = _oActionList[i];
-        if( poEntryAction->getCommandName() == oCommandName )
-        {
+        if (poEntryAction->getCommandName() == oCommandName) {
             poResAction = poEntryAction->getAction();
-			return i;
+            return i;
         }
-	}
+    }
     poResAction = _poEmptyEntry->getAction();
     return -1;
 }
 
-int CASettings::getSingleAction(const QString &oCommandName, CASingleAction *&poResAction)
+int CASettings::getSingleAction(const QString& oCommandName, CASingleAction*& poResAction)
 {
-    CASingleAction *poEntryAction;
-    for (int i=0; i < _oActionList.count(); i++) {
+    CASingleAction* poEntryAction;
+    for (int i = 0; i < _oActionList.count(); i++) {
         poEntryAction = _oActionList[i];
-        if( poEntryAction->getCommandName() == oCommandName )
-        {
+        if (poEntryAction->getCommandName() == oCommandName) {
             poResAction = poEntryAction;
             return i;
         }
@@ -426,13 +426,13 @@ int CASettings::getSingleAction(const QString &oCommandName, CASingleAction *&po
 */
 bool CASettings::setSingleAction(QAction oSingleAction, int iPos)
 {
-	bool bRet = false;
-	if( iPos >= 0 && iPos < _oActionList.count() ) {
-        _oActionList[iPos]->setCommandName( oSingleAction.objectName() );
-        _oActionList[iPos]->setShortCutAsString( oSingleAction.shortcut().toString() );
-		bRet = true;
-	}
-	return bRet;
+    bool bRet = false;
+    if (iPos >= 0 && iPos < _oActionList.count()) {
+        _oActionList[iPos]->setCommandName(oSingleAction.objectName());
+        _oActionList[iPos]->setShortCutAsString(oSingleAction.shortcut().toString());
+        bRet = true;
+    }
+    return bRet;
 }
 
 /*!
@@ -441,17 +441,17 @@ bool CASettings::setSingleAction(QAction oSingleAction, int iPos)
  Else: According to Qt doc "assigns the other list to this list"
  Warning: The actions themselves cannot be copied!
 */
-void CASettings::setActionList(QList<CASingleAction *> &oActionList)
+void CASettings::setActionList(QList<CASingleAction*>& oActionList)
 {
 #ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
-	_oActionList.clear();
-    CASingleAction *pActionEntry;
-	for (int i=0; i < oActionList.count(); i++) {
+    _oActionList.clear();
+    CASingleAction* pActionEntry;
+    for (int i = 0; i < oActionList.count(); i++) {
         pActionEntry = &getSingleAction(i, oActionList);
         addSingleAction(*pActionEntry);
-	}
+    }
 #else
-	_oActionList = oActionList;
+    _oActionList = oActionList;
 #endif
 }
 
@@ -459,26 +459,26 @@ void CASettings::setActionList(QList<CASingleAction *> &oActionList)
  Adds a single action to the action list
  Warning: The action will be referenced!
 */
-void CASettings::addSingleAction(CASingleAction &oSingleAction)
+void CASettings::addSingleAction(CASingleAction& oSingleAction)
 {
     qWarning() << "CASettings::addSingleAction" << endl;
 #ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
-    CASingleAction *pActionEntry = new CASingleAction(0); // parent ?
-    pActionEntry->setCommandName( oSingleAction.getCommandName() );
-    pActionEntry->setDescription( oSingleAction.getDescription() );
-    pActionEntry->setShortCutAsString( oSingleAction.getShortCutAsString() );
-    pActionEntry->setMidiKeySequence( oSingleAction.getMidiKeySequence() );
-    pActionEntry->newAction( oSingleAction.getAction()->parent() );
-    pActionEntry->getAction()->setObjectName( oSingleAction.getAction()->objectName() );
-    pActionEntry->getAction()->setActionGroup( oSingleAction.getAction()->actionGroup() );
-    pActionEntry->getAction()->setAutoRepeat( oSingleAction.getAction()->autoRepeat() );
-    pActionEntry->getAction()->setCheckable( oSingleAction.getAction()->isCheckable() );
-    pActionEntry->getAction()->setChecked( oSingleAction.getAction()->isChecked() );
-    pActionEntry->getAction()->setData( oSingleAction.getAction()->data() );
-    pActionEntry->setAction( oSingleAction.getAction() );
-    _oActionList.append( pActionEntry );
+    CASingleAction* pActionEntry = new CASingleAction(0); // parent ?
+    pActionEntry->setCommandName(oSingleAction.getCommandName());
+    pActionEntry->setDescription(oSingleAction.getDescription());
+    pActionEntry->setShortCutAsString(oSingleAction.getShortCutAsString());
+    pActionEntry->setMidiKeySequence(oSingleAction.getMidiKeySequence());
+    pActionEntry->newAction(oSingleAction.getAction()->parent());
+    pActionEntry->getAction()->setObjectName(oSingleAction.getAction()->objectName());
+    pActionEntry->getAction()->setActionGroup(oSingleAction.getAction()->actionGroup());
+    pActionEntry->getAction()->setAutoRepeat(oSingleAction.getAction()->autoRepeat());
+    pActionEntry->getAction()->setCheckable(oSingleAction.getAction()->isCheckable());
+    pActionEntry->getAction()->setChecked(oSingleAction.getAction()->isChecked());
+    pActionEntry->getAction()->setData(oSingleAction.getAction()->data());
+    pActionEntry->setAction(oSingleAction.getAction());
+    _oActionList.append(pActionEntry);
 #else
-    _oActionList.append( &oSingleAction );
+    _oActionList.append(&oSingleAction);
 #endif
     qWarning() << "New size is " << _oActionList.size() << endl;
 }
@@ -488,33 +488,35 @@ void CASettings::addSingleAction(CASingleAction &oSingleAction)
  Return 'true' when succesfull
  Warning: The action itself is not deleted!
 */
-bool CASettings::deleteSingleAction(QString oCommand, CASingleAction *&poResAction)
+bool CASettings::deleteSingleAction(QString oCommand, CASingleAction*& poResAction)
 {
-	bool bRet = false;
-	int iPos = getSingleAction(oCommand, poResAction);
-	if( iPos >= 0 ) // Double entries should not be in the list
-	{
-		_oActionList.removeOne( poResAction );
-		bRet = true;
-	}
+    bool bRet = false;
+    int iPos = getSingleAction(oCommand, poResAction);
+    if (iPos >= 0) // Double entries should not be in the list
+    {
+        _oActionList.removeOne(poResAction);
+        bRet = true;
+    }
 #ifdef COPY_ACTIONLIST_ELEMS_MANUALLY
     delete poResAction;
     poResAction = 0;
 #endif
-	return bRet;
+    return bRet;
 }
 
-void CASettings::readRecentDocuments() {
-	for ( int i=0; contains( QString("files/recentdocument") + QString::number(i) ); i++ )
-		CACanorus::addRecentDocument( value(QString("files/recentdocument") + QString::number(i)).toString() );
+void CASettings::readRecentDocuments()
+{
+    for (int i = 0; contains(QString("files/recentdocument") + QString::number(i)); i++)
+        CACanorus::addRecentDocument(value(QString("files/recentdocument") + QString::number(i)).toString());
 }
 
-void CASettings::writeRecentDocuments() {
-	for ( int i=0; contains( QString("files/recentdocument") + QString::number(i) ); i++ )
-		remove( QString("files/recentdocument") + QString::number(i) );
+void CASettings::writeRecentDocuments()
+{
+    for (int i = 0; contains(QString("files/recentdocument") + QString::number(i)); i++)
+        remove(QString("files/recentdocument") + QString::number(i));
 
-	for ( int i=0; i<CACanorus::recentDocumentList().size(); i++ )
-		setValue( QString("files/recentdocument") + QString::number(i), CACanorus::recentDocumentList()[i] );
+    for (int i = 0; i < CACanorus::recentDocumentList().size(); i++)
+        setValue(QString("files/recentdocument") + QString::number(i), CACanorus::recentDocumentList()[i]);
 }
 #endif // SWIGCPP
 
@@ -522,10 +524,11 @@ void CASettings::writeRecentDocuments() {
 	Returns the default settings path. This function is static and is used when no config
 	filename is specified or when a plugin wants a settings directory to store its own settings in.
  */
-const QString CASettings::defaultSettingsPath() {
-#ifdef Q_WS_WIN	// M$ is of course an exception
-	return QDir::homePath()+"/Application Data/Canorus";
-#else	// POSIX systems use the same config file path
-	return QDir::homePath()+"/.config/Canorus";
+const QString CASettings::defaultSettingsPath()
+{
+#ifdef Q_WS_WIN // M$ is of course an exception
+    return QDir::homePath() + "/Application Data/Canorus";
+#else // POSIX systems use the same config file path
+    return QDir::homePath() + "/.config/Canorus";
 #endif
 }

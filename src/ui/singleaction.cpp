@@ -9,67 +9,62 @@
 
 #include "singleaction.h"
 
-CASingleAction::CASingleAction( QObject * )
- : _pAction(nullptr)
+CASingleAction::CASingleAction(QObject*)
+    : _pAction(nullptr)
 {
     _bMidiShortCutCombined = false;
 }
 
 CASingleAction::~CASingleAction()
 {
-    if(m_localCreated) {
+    if (m_localCreated) {
         delete _pAction;
     }
     _pAction = nullptr;
 }
 
-void CASingleAction::setCommandName( QString oCommandName )
+void CASingleAction::setCommandName(QString oCommandName)
 {
-    if( !oCommandName.isEmpty() )
-	{
+    if (!oCommandName.isEmpty()) {
         _oCommandName = oCommandName;
-        if(_pAction) {
-            _pAction->setText( oCommandName );
+        if (_pAction) {
+            _pAction->setText(oCommandName);
         }
         _oCommandNameNoAmpersand = _oCommandName;
         _oCommandNameNoAmpersand.remove("&");
-	}
+    }
 }
 
-void CASingleAction::setDescription( QString oDescription )
+void CASingleAction::setDescription(QString oDescription)
 {
-	if( !oDescription.isEmpty() )
-	{
-		_oDescription = oDescription;
-        if(_pAction) {
-            _pAction->setToolTip( oDescription );
+    if (!oDescription.isEmpty()) {
+        _oDescription = oDescription;
+        if (_pAction) {
+            _pAction->setToolTip(oDescription);
         }
-	}
+    }
 }
 
-void CASingleAction::setShortCutAsString( QString oShortCut )
+void CASingleAction::setShortCutAsString(QString oShortCut)
 {
-	if( !oShortCut.isEmpty() )
-	{
-		_oShortCut = oShortCut;
-        if(_pAction) {
-            _pAction->setShortcut( oShortCut );
+    if (!oShortCut.isEmpty()) {
+        _oShortCut = oShortCut;
+        if (_pAction) {
+            _pAction->setShortcut(oShortCut);
         }
         //_oSysShortCut = shortcut();
-	}
+    }
 }
 
-void CASingleAction::setMidiKeySequence( QString oMidiKeySequence, bool combined )
+void CASingleAction::setMidiKeySequence(QString oMidiKeySequence, bool combined)
 {
-    if( !oMidiKeySequence.isEmpty() )
-    {
+    if (!oMidiKeySequence.isEmpty()) {
         _oMidiKeySequence = oMidiKeySequence;
         _bMidiShortCutCombined = combined;
         QStringList mksList = oMidiKeySequence.split(" ");
         QString le;
         _oMidiKeyParameters.clear();
-        foreach(le,mksList)
-        {
+        foreach (le, mksList) {
             _oMidiKeyParameters.push_back(le.toInt());
         }
     }
@@ -85,20 +80,20 @@ void CASingleAction::setMidiKeySequence( QString oMidiKeySequence, bool combined
 //    _pAction = pAction;
 //}
 
-QAction *CASingleAction::newAction(QObject *parent)
+QAction* CASingleAction::newAction(QObject* parent)
 {
-    if(_pAction && m_localCreated) {
+    if (_pAction && m_localCreated) {
         delete _pAction;
     }
     m_localCreated = true;
-    _pAction = new QAction(getCommandName(),parent);
-    _pAction->setText( getCommandName() );
-    _pAction->setShortcut( getShortCutAsString() );
-    _pAction->setToolTip( getDescription() );
+    _pAction = new QAction(getCommandName(), parent);
+    _pAction->setText(getCommandName());
+    _pAction->setShortcut(getShortCutAsString());
+    _pAction->setToolTip(getDescription());
     return _pAction;
 }
 
-void CASingleAction::fromQAction(const QAction &action, CASingleAction &sAction)
+void CASingleAction::fromQAction(const QAction& action, CASingleAction& sAction)
 {
     sAction.getAction()->setActionGroup(action.actionGroup());
     sAction.getAction()->setAutoRepeat(action.autoRepeat());
