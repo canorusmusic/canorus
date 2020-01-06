@@ -1,6 +1,6 @@
 /** @file interface/pluginmanager.cpp
  *
- * Copyright (c) 2006-2019 Matevž Jekovec, Canorus development team
+ * Copyright (c) 2006-2020 Matevž Jekovec, Canorus development team
  * All Rights Reserved. See AUTHORS for a complete list of authors.
  *
  * Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -222,8 +222,8 @@ bool CAPluginManager::disablePlugin(CAPlugin *plugin) {
 
 	\sa removePlugin()
 */
-bool CAPluginManager::installPlugin(QString path) {
-    (void)path;
+bool CAPluginManager::installPlugin(QString) {
+    // Note Reinhard: zlib is there
 	/// \todo zlib needed
 	return false;
 }
@@ -241,9 +241,7 @@ bool CAPluginManager::removePlugin(CAPlugin *plugin) {
 	return res;
 }
 
-bool CAPluginManager::startElement(const QString& namespaceURI, const QString& localName, const QString& qName, const QXmlAttributes& attributes) {
-    (void)namespaceURI;
-    (void)localName;
+bool CAPluginManager::startElement(const QString&, const QString&, const QString& qName, const QXmlAttributes& attributes) {
 	_tree.push(qName);
 
 	if (qName == "plugin") {
@@ -289,9 +287,7 @@ bool CAPluginManager::startElement(const QString& namespaceURI, const QString& l
 	return true;
 }
 
-bool CAPluginManager::endElement(const QString& namespaceURI, const QString& localName, const QString& qName) {
-    (void)namespaceURI;
-    (void)localName;
+bool CAPluginManager::endElement(const QString&, const QString&, const QString& qName) {
 	_tree.pop();
 
 	if (_curPlugin) {
@@ -342,7 +338,7 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			action->setRefresh(_curActionRefresh);
 
 			if (!_curActionParentToolbar.isEmpty())
-                ;
+				;
 				// TODO: add action to toolbar
 
 			// Add import and export filters to the generic list for faster lookup
@@ -373,7 +369,7 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 			#ifndef SWIGCPP
 			QMenu *menu;
 			if (_curMenuParentMenu.isEmpty()) {
-				// no parent menu set, add it to the top-level mainwindow's menu before the Help menu
+				// no parefnt menu set, add it to the top-level mainwindow's menu before the Help menu
 				menu = new QMenu(_mainWin->menuBar());
 				_mainWin->menuBar()->insertMenu(_mainWin->menuBar()->actions().last(), menu);
 			} else {
@@ -435,8 +431,7 @@ bool CAPluginManager::endElement(const QString& namespaceURI, const QString& loc
 	return true;
 }
 
-bool CAPluginManager::fatalError(const QXmlParseException& exception) {
-    (void)exception;
+bool CAPluginManager::fatalError(const QXmlParseException&) {
 	return false;
 }
 

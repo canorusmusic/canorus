@@ -1814,7 +1814,6 @@ int CAScoreView::coordsToTime( double x ) {
 	if ( d1 && d2 && d1->musElement() && d2->musElement() ) {
 		int delta = (d2->xPos() - d1->xPos());
 		if (!delta) delta=1;
-        // Note Reinhard: Removed explizite float conversion (qRound uses double anyway)
 		return qRound(d1->musElement()->timeStart() + ( d2->musElement()->timeStart() - d1->musElement()->timeStart() ) * ( (x - d1->xPos()) / delta ) );
 	} else if ( d1 && d1->musElement() )
 		return ( d1->musElement()->timeEnd() );

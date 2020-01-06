@@ -427,7 +427,7 @@ const QString CALilyPondImport::parseNextElement() {
 	QString ret;
 	if (i==start) {
 		// syntax delimiter only
-		ret = in().mid(start,1); // \todo Support for syntax delimiters longer than 1 character
+		ret = in().mid(start,1); /// \todo Support for syntax delimiters longer than 1 character
 		in().remove(0, start+1);
 	} else {
 		// ordinary whitespace/syntax delimiter
@@ -468,7 +468,7 @@ const QString CALilyPondImport::peekNextElement() {
 	QString ret;
 	if (i==start) {
 		// syntax delimiter only
-		ret = in().left(1); // \todo
+		ret = in().left(1); /// \todo
 	} else {
 		// ordinary whitespace/syntax delimiter
 		ret = in().mid(start, i-start);

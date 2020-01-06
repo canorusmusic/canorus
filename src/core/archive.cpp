@@ -1,5 +1,5 @@
-/*! 
-	Copyright (c) 2007-2019, Itay Perl, Canorus development team
+/*!
+	Copyright (c) 2007-2020, Itay Perl, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -108,8 +108,8 @@ void CAArchive::parse(QIODevice& arch)
 		strm.avail_in = arch.read(in.buffer().data(), CHUNK);
 		if(strm.avail_in == 0)
 			break;
-        // The code purposely could cut contents of the array.
-        // For strings it would only work with ASCII code nothing else
+		// The code purposely could cut contents of the array.
+		// For strings it would only work with ASCII code nothing else
 		strm.next_in = reinterpret_cast<Bytef *>(in.buffer().data());
 		do {
 			strm.avail_out = CHUNK;

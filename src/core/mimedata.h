@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -20,7 +20,7 @@ public:
 	CAMimeData( QList<CAContext*> list );
 	virtual ~CAMimeData();
 
-    using QMimeData::hasFormat;
+	using QMimeData::hasFormat;
 	bool hasFormat(const QString) const;
 	QStringList formats() const;
 

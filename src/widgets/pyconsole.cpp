@@ -34,18 +34,18 @@
 
 // --python shell emulation; script interaction--
 // document as parameter won't work (solved like in pluginaction.cpp)
-// \todo pycli: interactive help won't work. More sys.std* overrides?
-// \todo command queuing, when busy
-// \todo [CRLF on windows] in QTextEdit & python
-// \todo (design) remove unnecessary _fmtNormal changes
-// \todo processes
+/// \todo pycli: interactive help won't work. More sys.std* overrides?
+/// \todo command queuing, when busy
+/// \todo [CRLF on windows] in QTextEdit & python
+/// \todo (design) remove unnecessary _fmtNormal changes
+/// \todo processes
 
 // --Behaviour, internal commands (at the bottom of source)--
-// \todo redesign 2: CAPyConsole TextWidget (future)
-// \todo design: history <-> text edition <-> text changed signal <-> text Revert
-// \todo design: specify behaviour
+/// \todo redesign 2: CAPyConsole TextWidget (future)
+/// \todo design: history <-> text edition <-> text changed signal <-> text Revert
+/// \todo design: specify behaviour
 //
-// \todo maybe TABS? -> anyone wants this?
+/// \todo maybe TABS? -> anyone wants this?
 //
 //
 // Internal commands: are entered to python shell

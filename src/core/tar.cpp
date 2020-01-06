@@ -1,5 +1,5 @@
-/*! 
-	Copyright (c) 2007-2019, Itay Perl, Canorus development team
+/*!
+	Copyright (c) 2007-2020, Itay Perl, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -179,7 +179,8 @@ bool CATar::addFile(const QString& filename, QIODevice& data, bool replace /* = 
 	CATarFile *file = new CATarFile;
 	
 	// Basename only for use with prefix if ever required (see below).
-	//QString basename = filename.right(filename.lastIndexOf("/")); // \todo slash in windows? win32 tar?
+    /// \todo slash in windows? win32 tar?
+	//QString basename = filename.right(filename.lastIndexOf("/"));
 	//bufncpy(file->hdr.name, basename.toUtf8(), basename.toUtf8().size(), 100);
 	
 	bufncpy(file->hdr.name, filename.toUtf8(), static_cast<size_t>(filename.toUtf8().size()), 100);
@@ -385,9 +386,9 @@ qint64 CATar::write(QIODevice& dest, qint64 chunk)
                 minSize = sizeof(int);
             }
             else
-            {
-                minSize =  static_cast<int>(qMin(chunk,qint64(512-pad)));
-            }
+			{
+				minSize =  static_cast<int>(qMin(chunk,qint64(512-pad)));
+			}
 			ret = dest.write(QByteArray(minSize, 0)); // Fill up the 512-block with nulls.
 			pos.pos += ret;
 			total += ret;
@@ -465,9 +466,9 @@ char *CATar::numToOct(char* buf, quint64 num, size_t width)
 	if(num < pow(8,(width-1))) // null fits
 	{
 		char len[10];
-        // \todo This code looks broken. width is put to the string instead of num
+        /// \todo This code looks broken. width is put to the string instead of num
 		sprintf(len, "%%0%ldo", width-1);
-        // \todo This code looks broken. num cannot be added to the string
+        /// \todo This code looks broken. num cannot be added to the string
 		snprintf(buf, static_cast<size_t>(width), len, num); // adds null
         // Correct code could be
         // sprintf(len, "%%0%do", num-1);

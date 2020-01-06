@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -74,9 +74,8 @@ void CAMidiExport::send(QVector<unsigned char> message, int time)
 	}
 }
 
-void CAMidiExport::sendMetaEvent(int time, char event, char a, char b, int c )
+void CAMidiExport::sendMetaEvent(int time, char event, char a, char b, int )
 {
-    (void)c;
 	// We don't do a time check on time, and we compute
 	// only the time increment when we really send an event out.
 	QByteArray tc;
@@ -121,7 +120,7 @@ void CAMidiExport::sendMetaEvent(int time, char event, char a, char b, int c )
 	}
 }
 
-// @todo: replace with enum midiCommands
+/// \todo: replace with enum midiCommands
 #define META_TEXT        0x01
 #define META_TIMESIG     0x58
 #define META_KEYSIG      0x59
@@ -197,7 +196,7 @@ QByteArray CAMidiExport::writeTime(int time) {
 QByteArray CAMidiExport::trackEnd(void) {
 	QByteArray tc;
 	tc.append(writeTime(0));
-    // @todo replace with enum
+	/// \todo replace with enum
 	tc.append(static_cast<char>(MIDI_CTL_EVENT));
 	tc.append(META_TRACK_END);
 	tc.append(static_cast<char>(0));
@@ -208,7 +207,7 @@ QByteArray CAMidiExport::trackEnd(void) {
 QByteArray CAMidiExport::textEvent(int time, QString s) {
 	QByteArray tc;
 	tc.append(writeTime(time));
-    // @todo replace with enum
+	/// \todo replace with enum
 	tc.append(static_cast<char>(MIDI_CTL_EVENT));
 	tc.append(META_TEXT);
 	tc.append(variableLengthValue(s.length()));
@@ -322,7 +321,7 @@ void CAMidiExport::writeFile() {
 	headerChunk.append("MThd....");		// header and space for length
 	headerChunk.append(word16( 1 ));	// Midi-Format version
 	headerChunk.append(word16( 2 ));	// number of tracks, a control track and a music track for a trying out ...
-    // @todo QByteArray does not support char values > 0x7f
+    /// \todo QByteArray does not support char values > 0x7f
 	headerChunk.append(word16( static_cast<char>(CAPlayableLength::playableLengthToTimeLength( CAPlayableLength::Quarter ))));	// time division ticks per quarter
 	setChunkLength( &headerChunk );
 	streamQByteArray( headerChunk );
@@ -346,7 +345,7 @@ void CAMidiExport::writeFile() {
 }
 
 void CAMidiExport::setChunkLength( QByteArray *x ) {
-    // @todo QByteArray does not support char values > 0x7f
+	/// \todo QByteArray does not support char values > 0x7f
 	qint32 l = (*x).size() - 8;	// subtract header length
 	for (int i=0; i<4; i++ ) {
 		(*x )[7-i] = static_cast<char>((l >> (8*i)));
@@ -357,11 +356,13 @@ void CAMidiExport::streamQByteArray( QByteArray x )
 {
 	for (int i=0;i<x.size();i++)	// here we pass binary data through QTextStream
 		out().device()->putChar(x[i]);
-	return;	// when no debugging
 
-// @todo Code will never be executed
-//	for (int i=0; i<x.size(); i++ ) {
-//		printf( " %02x", 0x0ff & x.at(i));
-//	}
-//	printf( "\n");
+#ifdef QT_DEBUG
+	for (int i=0; i<x.size(); i++ ) {
+		printf( " %02x", 0x0ff & x.at(i));
+	}
+	printf( "\n");
+#endif
+
+	return;	// when no debugging
 }

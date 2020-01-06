@@ -53,12 +53,13 @@ CATuplet::~CATuplet() {
 	resetTimes();
 }
 
-CATuplet* CATuplet::clone(CAContext* context) { // context is ignored. this method should not be used. FIXME.
-    (void)context;
+CATuplet* CATuplet::clone(CAContext*) { // context is ignored. this method should not be used. FIXME.
+	/// \todo replace raw pointer with shared or unique pointer
 	return new CATuplet( number(), actualNumber(), noteList() );
 }
 
 CATuplet* CATuplet::clone(QList<CAPlayable*> newList) {
+    /// \todo replace raw pointer with shared or unique pointer
 	return new CATuplet( number(), actualNumber(), newList );
 }
 

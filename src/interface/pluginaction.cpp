@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2019, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -38,8 +38,7 @@ CAPluginAction::CAPluginAction(CAPlugin *plugin, QString name, QString lang, QSt
 	function slots. This function is a pretty elegant solution to connect plugin's reactions to internal
 	Canorus GUI signals.
 */
-void CAPluginAction::triggeredSlot(bool on) {
-    (void)on;
+void CAPluginAction::triggeredSlot(bool) {
 #ifndef SWIGCPP
 	QObject *curObject = this;
 	while (dynamic_cast<CAMainWin*>(curObject)==nullptr && curObject!=nullptr) // find the parent which is mainwindow

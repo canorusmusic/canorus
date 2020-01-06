@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -97,10 +97,9 @@ bool CARtMidiDevice::openInputPort(int port) {
 /*!
 	Callback function which gets called by RtMidi automatically when an information on MidiIn device has come.
 */
-void rtMidiInCallback( double deltatime, std::vector< unsigned char > *message, void *userData )
+void rtMidiInCallback( double, std::vector< unsigned char > *message, void * )
 {
-    (void)deltatime;
-    (void)userData;
+    (void)message; // Only used in with SWIGCPP
 #ifndef SWIGCPP
 	emit CACanorus::midiDevice()->midiInEvent( QVector< unsigned char >::fromStdVector(*message) );
 #else
@@ -166,8 +165,7 @@ CARtMidiDevice::~CARtMidiDevice() {
 /*!
 	Sends the given \a message to the midi device. \a offset is ignored because CARtMidiDevice is a realtime device.
 */
-void CARtMidiDevice::send(QVector<unsigned char> message, int time) {
-    (void)time;
+void CARtMidiDevice::send(QVector<unsigned char> message, int) {
 	std::vector<unsigned char> messageVector = message.toStdVector();
 	if (_outOpen)
 		_out->sendMessage(&messageVector);

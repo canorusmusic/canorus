@@ -99,7 +99,7 @@ void CACanorus::initTranslations(/*QTranslator &translator*/) {
 		static_cast<QApplication*>(QApplication::instance())->installTranslator(translator.get());
 	}
 
-	if(QLocale::system().language() == QLocale::Hebrew) { // \todo add Arabic, etc.
+	if(QLocale::system().language() == QLocale::Hebrew) { /// \todo add Arabic, etc.
 		static_cast<QApplication*>(QApplication::instance())->setLayoutDirection(Qt::RightToLeft);
 	}
 }

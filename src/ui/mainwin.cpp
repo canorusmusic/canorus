@@ -1518,7 +1518,8 @@ void CAMainWin::setMode(CAMode mode) {
 			}
 
 			if ( currentScoreView() ) {
-				currentScoreView()->setShadowNoteVisible(musElementFactory()->musElementType() == CAMusElement::Note); /// \todo Set other mouse cursors
+                 /// \todo Set other mouse cursors
+				currentScoreView()->setShadowNoteVisible(musElementFactory()->musElementType() == CAMusElement::Note);
 				currentScoreView()->repaint();
 			}
 
@@ -2013,8 +2014,7 @@ void CAMainWin::scoreViewMouseMove(QMouseEvent *e, QPoint coords) {
 
 	\sa CAScoreView::selectAllCurBar()
  */
-void CAMainWin::scoreViewDoubleClick( QMouseEvent *e, const QPoint ) {
-    (void)e;
+void CAMainWin::scoreViewDoubleClick( QMouseEvent *, const QPoint ) {
 	if (mode() == EditMode) {
 		static_cast<CAScoreView*>(sender())->selectAllCurBar();
 		static_cast<CAScoreView*>(sender())->repaint();
@@ -2027,8 +2027,7 @@ void CAMainWin::scoreViewDoubleClick( QMouseEvent *e, const QPoint ) {
 
 	\sa CAScoreView::selectAllCurContext()
  */
-void CAMainWin::scoreViewTripleClick( QMouseEvent *e, const QPoint ) {
-    (void)e;
+void CAMainWin::scoreViewTripleClick( QMouseEvent *, const QPoint ) {
 	if (mode() == EditMode) {
 		static_cast<CAScoreView*>(sender())->selectAllCurContext();
 		static_cast<CAScoreView*>(sender())->repaint();
@@ -2958,8 +2957,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView *v) {
 
 	\sa viewKeyPressEvent()
 */
-void CAMainWin::keyPressEvent(QKeyEvent *e) {
-    (void)e;
+void CAMainWin::keyPressEvent(QKeyEvent *) {
 }
 
 /*!
@@ -3000,8 +2998,10 @@ void CAMainWin::playbackFinished() {
 
 	if (_repaintTimer) {
 		_repaintTimer->stop();
-		//_repaintTimer->disconnect();	/// \todo crashes, if disconnected sometimes. -Matevz
-		//delete _repaintTimer;			/// \todo crashes, if deleted. -Matevz
+        /// \todo crashes, if disconnected sometimes. -Matevz
+		//_repaintTimer->disconnect();
+        /// \todo crashes, if deleted. -Matevz
+		//delete _repaintTimer;
 	}
 	CACanorus::midiDevice()->closeOutputPort();
 
@@ -3021,6 +3021,7 @@ void CAMainWin::playbackFinished() {
 */
 void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
 	if (checked && currentScoreView() && !_playback) {
+		/// \todo replace raw pointer with shared or unique pointer
 		_repaintTimer = new QTimer();
 		_repaintTimer->setInterval(100);
 		_repaintTimer->start();
@@ -3028,6 +3029,7 @@ void CAMainWin::on_uiPlayFromSelection_toggled(bool checked) {
 		connect( _repaintTimer, SIGNAL(timeout()), this, SLOT( onRepaintTimerTimeout() ) );
 
 		CACanorus::midiDevice()->openOutputPort( CACanorus::settings()->midiOutPort() );
+        /// \todo replace raw pointer with shared or unique pointer
 		_playback = new CAPlayback(currentSheet(), CACanorus::midiDevice() );
 		if ( currentScoreView()->selection().size() && currentScoreView()->selection().at(0)->musElement() )
 			_playback->setInitTimeStart( currentScoreView()->selection().at(0)->musElement()->timeStart() );
@@ -3194,9 +3196,11 @@ CADocument *CAMainWin::openDocument(const QString& fileName) {
 
 	CAImport *open = nullptr;
 	if ( fileName.endsWith(".xml") ) {
+        /// \todo replace raw pointer with shared or unique pointer
 		open = new CACanorusMLImport();
 		uiSaveDialog->selectNameFilter( CAFileFormats::CANORUSML_FILTER );
 	} else if ( fileName.endsWith(".can") ) {
+        /// \todo replace raw pointer with shared or unique pointer
 		open = new CACanImport();
 		uiSaveDialog->selectNameFilter( CAFileFormats::CAN_FILTER );
 	} else {
@@ -3270,8 +3274,10 @@ bool CAMainWin::saveDocument( QString fileName ) {
 
 	CAExport *save=nullptr;
 	if ( fileName.endsWith(".xml") ) { // check the filename extension directly without accessing the uiSaveDialog object due to a bug in Qt. -Matevz
+        /// \todo replace raw pointer with shared or unique pointer
 		save = new CACanorusMLExport();
 	} else if ( fileName.endsWith(".can") ) {
+        /// \todo replace raw pointer with shared or unique pointer
 		save = new CACanExport();
 	}
 
@@ -3344,7 +3350,7 @@ void CAMainWin::on_uiExportDocument_triggered() {
 
 	// ! Warning: If there is still a running export instance
 	// !               this will stop the old one (kill it actually)
-	// @todo: maybe block new export until the old is finished
+	/// \todo: maybe block new export until the old is finished
 	if( _poExp ) // Delete old export instance
 		delete _poExp;
 
@@ -3370,18 +3376,23 @@ void CAMainWin::on_uiExportDocument_triggered() {
 		CAPluginManager::exportAction(uiExportDialog->selectedNameFilter(), document(), s);
 	} else {
 		if ( uiExportDialog->selectedNameFilter() == CAFileFormats::MIDI_FILTER ) {
+			/// \todo replace raw pointer with shared or unique pointer
 			CAMidiExport *pme = new CAMidiExport;
 			_poExp = pme;
 		} else if ( uiExportDialog->selectedNameFilter() == CAFileFormats::LILYPOND_FILTER ) {
+			/// \todo replace raw pointer with shared or unique pointer
 			CALilyPondExport *ple = new CALilyPondExport;
 			_poExp = ple;
 		} else if ( uiExportDialog->selectedNameFilter() == CAFileFormats::MUSICXML_FILTER ) {
+			/// \todo replace raw pointer with shared or unique pointer
 			CAMusicXmlExport *musicxml = new CAMusicXmlExport;
 			_poExp = musicxml;
 		} else if ( uiExportDialog->selectedNameFilter() == CAFileFormats::PDF_FILTER ) {
+			/// \todo replace raw pointer with shared or unique pointer
 			CAPDFExport *ppe = new CAPDFExport;
 			_poExp = ppe;
 		} else if ( uiExportDialog->selectedNameFilter() == CAFileFormats::SVG_FILTER ) {
+			/// \todo replace raw pointer with shared or unique pointer
 			CASVGExport *pse = new CASVGExport;
 			_poExp = pse;
 		} else {
@@ -3422,6 +3433,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 
 	if (CAPluginManager::importFilterExists(uiImportDialog->selectedNameFilter())) {
 		// Import done using a scripting engine
+        /// \todo replace raw pointer with shared or unique pointer
 		setDocument(new CADocument());
 		CACanorus::undo()->createUndoStack( document() );
 		uiCloseDocument->setEnabled(true);
@@ -3435,6 +3447,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 		if ( uiImportDialog->selectedNameFilter() == CAFileFormats::MIDI_FILTER ) {
 			if (!document())
 				newDocument();
+			/// \todo replace raw pointer with shared or unique pointer
 			import = new CAMidiImport( document() );
 			if (import) {
 				import->setStreamFromFile( s );
@@ -3446,6 +3459,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 			// activate this filter in src/canorus.cpp when sheet import is usable
 			if (!document())
 				newDocument();
+			/// \todo replace raw pointer with shared or unique pointer
 			import = new CALilyPondImport( document() );
 			if (import) {
 				import->setStreamFromFile( s );
@@ -3454,6 +3468,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 			}
 		} else
 		if ( uiImportDialog->selectedNameFilter() == CAFileFormats::MUSICXML_FILTER ) {
+			/// \todo replace raw pointer with shared or unique pointer
 			import = new CAMusicXmlImport();
 			if (import) {
 				import->setStreamFromFile( s );
@@ -3475,8 +3490,7 @@ void CAMainWin::on_uiImportDocument_triggered() {
 	}
 }
 
-void CAMainWin::onImportDone( int status ) {
-    (void)status;
+void CAMainWin::onImportDone( int ) {
 	CAImport *import = static_cast<CAImport*>(sender());
 
 	if (!import) {
@@ -3520,8 +3534,7 @@ void CAMainWin::on_uiExportToPdf_triggered() {
 	on_uiExportDocument_triggered();
 }
 
-void CAMainWin::onExportDone( int status ) {
-    (void)status;
+void CAMainWin::onExportDone( int ) {
 }
 
 /*!
@@ -3637,8 +3650,7 @@ void CAMainWin::on_uiInsertFM_toggled(bool checked) {
 	}
 }
 
-void CAMainWin::on_uiPlayableLength_toggled(bool checked, int buttonId) {
-    (void)checked;
+void CAMainWin::on_uiPlayableLength_toggled(bool, int buttonId) {
 	// Read currently selected entry from tool button menu
 	CAPlayableLength length = CAPlayableLength(static_cast<CAPlayableLength::CAMusicLength>(buttonId));
 
@@ -3723,46 +3735,33 @@ void CAMainWin::onTextEditKeyPressEvent(QKeyEvent *e) {
 	CATextEdit *textEdit = static_cast<CATextEdit*>(sender());
 
 	CAScoreView *v = currentScoreView();
-	CAMusElement *elt = (v->selection().size()?v->selection().front()->musElement():0);
-	CAMusElement *elt = (v->selection().size()?v->selection().front()->musElement():0);
+	CAMusElement *elt = (v->selection().size()?v->selection().front()->musElement():nullptr);
 
-	if ( elt ) {
-		if (elt->musElementType()==CAMusElement::Syllable ) {
-			CASyllable *syllable = static_cast<CASyllable*>(elt);
+    if ( !elt ) return;
 
-			if ( e->key()==Qt::Key_Space  ||
-				e->key()==Qt::Key_Return ||
-				(e->key()==Qt::Key_Right && textEdit->cursorPosition()==textEdit->text().size()) ||
-				((e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && textEdit->cursorPosition()==0) ||
-				(CACanorus::settings()->finaleLyricsBehaviour() && e->key()==Qt::Key_Minus)
-			) {
-				// create or edit syllable
-				confirmTextEdit(currentScoreView(), textEdit, elt);
+    switch (elt->musElementType()) {
+    case CAMusElement::Syllable:
+    case CAMusElement::ChordName: {
+        if (e->key()==Qt::Key_Space  ||
+            e->key()==Qt::Key_Return ||
+            (e->key()==Qt::Key_Right && textEdit->cursorPosition()==textEdit->text().size()) ||
+            ((e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) && textEdit->cursorPosition()==0) ||
+            (elt->musElementType()==CAMusElement::Syllable && CACanorus::settings()->finaleLyricsBehaviour() && e->key()==Qt::Key_Minus)
+            ) {
+            // one of control keys were hit, create or edit syllable/chord name
+            confirmTextEdit(currentScoreView(), textEdit, elt);
 
-				//CAVoice *voice = (syllable->associatedVoice()?syllable->associatedVoice():lc->associatedVoice());
-				CAMusElement *nextSyllable = 0;
-				if (syllable) {
-					if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) { // next right note
-						nextSyllable = syllable->lyricsContext()->next(syllable);
-					} else  if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) {                  // next left note
-						nextSyllable = syllable->lyricsContext()->previous(syllable);
-					} else if (e->key()==Qt::Key_Minus) {
-						syllable->setHyphenStart(true);
-						nextSyllable = syllable->lyricsContext()->next(syllable);
-					}
-					if (nextSyllable) {
-						CADrawableMusElement *dNextSyllable = v->selectMElement(nextSyllable);
-						v->createTextEdit( dNextSyllable );
-						if ( e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return ) {
-							v->textEdit()->setCursorPosition(0); // go to the beginning if moving to the right next syllable
-						}
-						
-						if ( dNextSyllable && (dNextSyllable->xPos() > v->worldX()+0.85*v->worldWidth()) ) {
-							v->setWorldX( dNextSyllable->xPos()-v->worldWidth()/2, CACanorus::settings()->animatedScroll() );
-						}
-					}
-				}
-			}
+            CAMusElement *next = nullptr;
+            if (e->key()==Qt::Key_Space || e->key()==Qt::Key_Right || e->key()==Qt::Key_Return) {
+                // move to the right neighbor
+                next = elt->context()->next(elt);
+            } else if (e->key()==Qt::Key_Left || e->key()==Qt::Key_Backspace) {
+                // move to the left neighbor
+                next = elt->context()->previous(elt);
+            } else if (e->key()==Qt::Key_Minus && elt->musElementType()==CAMusElement::Syllable) {
+                // move to the right neighbor + set hyphen
+                static_cast<CASyllable*>(elt)->setHyphenStart(true);
+                next = elt->context()->next(elt);			}
 			if (next) {
 				CADrawableMusElement *dNext = v->selectMElement(next);
 				v->createTextEdit( dNext );
@@ -3941,8 +3940,7 @@ void CAMainWin::on_uiFBMAccs_toggled( bool checked, int buttonId ) {
 	}
 }
 
-void CAMainWin::on_uiFMFunction_toggled( bool checked, int buttonId ) {
-    (void)checked;
+void CAMainWin::on_uiFMFunction_toggled( bool, int buttonId ) {
 	if ( mode()==InsertMode ) {
 		musElementFactory()->setFMFunction( static_cast<CAFunctionMark::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
 		musElementFactory()->setFMFunctionMinor( buttonId<0 );
@@ -3965,8 +3963,7 @@ void CAMainWin::on_uiFMFunction_toggled( bool checked, int buttonId ) {
 	}
 }
 
-void CAMainWin::on_uiFMChordArea_toggled(bool checked, int buttonId) {
-    (void)checked;
+void CAMainWin::on_uiFMChordArea_toggled(bool, int buttonId) {
 	if ( mode()==InsertMode ) {
 		musElementFactory()->setFMChordArea( static_cast<CAFunctionMark::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
 		musElementFactory()->setFMChordAreaMinor( buttonId<0 );
@@ -3989,8 +3986,7 @@ void CAMainWin::on_uiFMChordArea_toggled(bool checked, int buttonId) {
 	}
 }
 
-void CAMainWin::on_uiFMTonicDegree_toggled(bool checked, int buttonId) {
-    (void)checked;
+void CAMainWin::on_uiFMTonicDegree_toggled(bool, int buttonId) {
 	if ( mode()==InsertMode ) {
 		musElementFactory()->setFMTonicDegree( static_cast<CAFunctionMark::CAFunctionType>( buttonId * (buttonId<0?-1:1) ));
 		musElementFactory()->setFMTonicDegreeMinor( buttonId<0 );
@@ -4034,8 +4030,7 @@ void CAMainWin::on_uiFMEllipse_toggled( bool checked ) {
 	}
 }
 
-void CAMainWin::on_uiSlurType_toggled( bool checked, int buttonId ) {
-    (void)checked;
+void CAMainWin::on_uiSlurType_toggled( bool, int buttonId ) {
 	// remember previous muselement type so we can return to previous state after
 	CAMusElement::CAMusElementType prevMusEltType =
 		musElementFactory()->musElementType();
@@ -4382,7 +4377,7 @@ void CAMainWin::on_uiAboutQt_triggered() {
 void CAMainWin::on_uiAboutCanorus_triggered() {
 	QString about=tr("<p><b>Canorus - The next generation music score editor</b></p>\
 <p>Version %1<br>\
-(C) 2006-2019 Canorus Development team. All rights reserved.<br>\
+(C) 2006-2020 Canorus Development team. All rights reserved.<br>\
 See the file AUTHORS for the list of Canorus developers<br><br>\
 This program is licensed under the GNU General Public License (GPL).<br>\
 See the file LICENSE.GPL for details.<br><br>\
@@ -4602,8 +4597,7 @@ void CAMainWin::on_uiAssociatedVoice_activated(int idx) {
 	}
 }
 
-void CAMainWin::on_uiVoiceStemDirection_toggled(bool checked, int direction) {
-    (void)checked;
+void CAMainWin::on_uiVoiceStemDirection_toggled(bool, int direction) {
 	CAVoice *voice = currentVoice();
 	if (voice) {
 		CACanorus::undo()->createUndoCommand( document(), tr("change voice stem direction", "undo") );
@@ -4618,8 +4612,7 @@ void CAMainWin::on_uiVoiceStemDirection_toggled(bool checked, int direction) {
 /*!
 	Sets the currently selected note stem direction if in insert/edit mode or the music elements factory note stem direction if in insert mode.
 */
-void CAMainWin::on_uiNoteStemDirection_toggled(bool checked, int id) {
-    (void)checked;
+void CAMainWin::on_uiNoteStemDirection_toggled(bool, int id) {
 	CANote::CAStemDirection direction = static_cast<CANote::CAStemDirection>(id);
 	if (mode()==InsertMode)
 		musElementFactory()->setNoteStemDirection( direction );
@@ -4805,7 +4798,8 @@ void CAMainWin::updateInsertToolBar() {
 					// staff selected
 					uiInsertPlayable->setVisible(true);
 					uiSlurType->defaultAction()->setVisible(true); uiSlurType->defaultAction()->setEnabled(true);
-					//uiSlurType->setVisible(true); // \todo This is needed in order for actions to hide?! -Matevz
+                    /// \todo This is needed in order for actions to hide?! -Matevz
+					//uiSlurType->setVisible(true);
 					uiInsertClef->setVisible(true); // menu
 					uiInsertBarline->setVisible(true); // menu
 					uiClefType->defaultAction()->setVisible(true); uiClefType->defaultAction()->setEnabled(true);
@@ -4916,7 +4910,8 @@ void CAMainWin::updateInsertToolBar() {
 		uiNewContext->setVisible(false);
 		uiInsertPlayable->setVisible(false);
 		uiSlurType->defaultAction()->setVisible(false);
-		//uiSlurType->setVisible(false); // \todo This is needed in order for actions to hide?! -Matevz
+        /// \todo This is needed in order for actions to hide?! -Matevz
+		//uiSlurType->setVisible(false);
 		uiInsertClef->setVisible(false); // menu
 		uiInsertBarline->setVisible(false); // menu
 		uiClefType->defaultAction()->setVisible(false);
@@ -5866,7 +5861,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 				}
 				staff->synchronizeVoices();
 			} else {
-				// \todo function mark copy&paste unimplemented
+				/// \todo function mark copy&paste unimplemented
 				if(context->contextType() == CAContext::LyricsContext) {
 					CALyricsContext* lc = static_cast<CALyricsContext*>(context);
 					CALyricsContext* currentLc = static_cast<CALyricsContext*>(currentContext);
@@ -5899,8 +5894,7 @@ void CAMainWin::pasteAt( const QPoint coords, CAScoreView *v ) {
 	}
 }
 
-void CAMainWin::on_uiDynamicText_toggled(bool checked, int t) {
-    (void)checked;
+void CAMainWin::on_uiDynamicText_toggled(bool, int t) {
 	if (t==CADynamic::Custom)
 		return;
 
@@ -5974,8 +5968,7 @@ void CAMainWin::on_uiInstrumentChange_activated( int index ) {
 	}
 }
 
-void CAMainWin::on_uiFermataType_toggled( bool checked, int t ) {
-    (void)checked;
+void CAMainWin::on_uiFermataType_toggled( bool, int t ) {
 	CAFermata::CAFermataType type = static_cast<CAFermata::CAFermataType>( t );
 
 	if ( mode()==InsertMode ) {
@@ -5998,8 +5991,7 @@ void CAMainWin::on_uiFermataType_toggled( bool checked, int t ) {
 	}
 }
 
-void CAMainWin::on_uiFinger_toggled( bool checked, int t ) {
-    (void)checked;
+void CAMainWin::on_uiFinger_toggled( bool, int t ) {
 	CAFingering::CAFingerNumber type = static_cast<CAFingering::CAFingerNumber>( t );
 
 	if ( mode()==InsertMode ) {
@@ -6043,8 +6035,7 @@ void CAMainWin::on_uiFingeringOriginal_toggled( bool checked ) {
 	}
 }
 
-void CAMainWin::on_uiRepeatMarkType_toggled( bool checked, int t ) {
-    (void)checked;
+void CAMainWin::on_uiRepeatMarkType_toggled( bool, int t ) {
 	CARepeatMark::CARepeatMarkType type;
 	int voltaNumber;
 	if (t >= 0) {
@@ -6077,8 +6068,7 @@ void CAMainWin::on_uiRepeatMarkType_toggled( bool checked, int t ) {
 	}
 }
 
-void CAMainWin::on_uiTempoBeat_toggled( bool checked, int t ) {
-    (void)checked;
+void CAMainWin::on_uiTempoBeat_toggled( bool, int t ) {
 	CAPlayableLength length = CAPlayableLength( static_cast<CAPlayableLength::CAMusicLength>( t<0?t*(-1):t ), t<0?1:0 );
 
 	if ( mode()==InsertMode ) {

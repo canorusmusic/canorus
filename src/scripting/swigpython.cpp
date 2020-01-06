@@ -168,7 +168,8 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 
 //	Py_DECREF(pyFunction); // -Matevz
 //	Py_DECREF(pyModule); // -Matevz
-//	Py_DECREF(pyArgs); /// \todo Crashes if uncommented?!
+/// \todo Crashes if uncommented?!
+//	Py_DECREF(pyArgs);
 //	for (int i=0; i<args.size(); i++)
 //		Py_DECREF(args[i]); // -Matevz
 
@@ -224,7 +225,8 @@ void *CASwigPython::callPycli(void*) {
 	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
 
 //	Py_DECREF(pyFunction); // -Matevz
-//	Py_DECREF(pyArgs); /// \todo Crashes if uncommented?!d
+/// \todo Crashes if uncommented?!
+//	Py_DECREF(pyArgs);
 //	Py_DECREF(pyModule); // -Matevz
 //	for (int i=0; i<args.size(); i++)
 //		Py_DECREF(args[i]); // -Matevz

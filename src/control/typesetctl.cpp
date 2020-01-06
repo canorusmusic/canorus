@@ -157,7 +157,7 @@ void CATypesetCtl::setTSetOption( const QVariant &roName, const QVariant &roValu
 */
 void CATypesetCtl::exportDocument( CADocument *poDoc )
 {
-	// @todo: Add export options to the document directly ?
+	/// \todo: Add export options to the document directly ?
 	if( _poExport )
 	{
 		if(  _poOutputFile )
@@ -195,7 +195,7 @@ void CATypesetCtl::exportDocument( CADocument *poDoc )
 */
 void CATypesetCtl::exportSheet( CASheet *poSheet )
 {
-	// @todo: Add export options to the document directly ?
+	/// \todo: Add export options to the document directly ?
 	if( _poExport )
 	{
 		if(  _poOutputFile )
