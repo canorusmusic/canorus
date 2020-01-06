@@ -1,5 +1,5 @@
 #!/bin/sh
-cd
+cd ..
 mkdir -p build
 cd build
 cmake -D CMAKE_INSTALL_PREFIX=~/.local ../canorus
