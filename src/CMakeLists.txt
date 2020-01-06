@@ -599,7 +599,7 @@ endif()
 
 IF(USE_SWIG)
 	INCLUDE(${SWIG_USE_FILE})
-	SET(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_SOURCE_DIR})
+	SET(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR})
 ENDIF(USE_SWIG)
 
 IF(USE_RUBY)
@@ -611,8 +611,8 @@ IF(USE_RUBY)
 
 	SWIG_ADD_LIBRARY(CanorusRuby
 		LANGUAGE ruby
-		SOURCES ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
 		OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
+		SOURCES ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canorusruby.i
 	)
 	SWIG_LINK_LIBRARIES(CanorusRuby ${RUBY_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusRuby_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
@@ -625,10 +625,12 @@ IF(USE_PYTHON)
 	SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_BINARY_DIR}/canoruspythonPYTHON_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES GENERATED TRUE)
 	
+    MESSAGE("##### ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i")
+
 	SWIG_ADD_LIBRARY(CanorusPython
 		LANGUAGE python
+        OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
 		SOURCES ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i
-		OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
 	)
 	SWIG_LINK_LIBRARIES(CanorusPython ${PYTHON_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusPython_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
@@ -724,11 +726,11 @@ ENDIF(MINGW)
 # .ts files. Use custom command instead:
 #qt5_create_translation(Canorus_Translation_Bins ${Canorus_UIC_Srcs} ${Canorus_Srcs} lang/template.ts)
 ADD_CUSTOM_TARGET(tr
-	WORKING_DIRECTORY ${CMAKE_BINARY_DIR_DIR}/src
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	DEPENDS ${Canorus_UIC_Srcs}
 	COMMAND ${Qt5_LUPDATE_EXECUTABLE} -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
-set_source_files_properties(${Canorus_Translation_Srcs} PROPERTIES OUTPUT_LOCATION ${CMAKE_BINARY_DIR}/lang)
+set_source_files_properties(${Canorus_Translation_Srcs} PROPERTIES OUTPUT_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/lang)
 qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
 
 ADD_CUSTOM_TARGET(canorus_qm DEPENDS ${Canorus_Translation_Bins})
