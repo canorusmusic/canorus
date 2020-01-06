@@ -20,103 +20,101 @@
 	making an arrangment) or regular. This property is stored in original().
 */
 
-CAFingering::CAFingering( CAFingerNumber finger, CANote *n, bool original )
- : CAMark( CAMark::Fingering, n ) {
-	addFinger( finger );
-	setOriginal( original);
-	setCommon( false );
+CAFingering::CAFingering(CAFingerNumber finger, CANote* n, bool original)
+    : CAMark(CAMark::Fingering, n)
+{
+    addFinger(finger);
+    setOriginal(original);
+    setCommon(false);
 }
 
-CAFingering::CAFingering( QList<CAFingerNumber> fingers, CANote *n, bool original )
- : CAMark( CAMark::Fingering, n ) {
-	_fingerList = fingers;
-	setOriginal( original );
-	setCommon( false );
+CAFingering::CAFingering(QList<CAFingerNumber> fingers, CANote* n, bool original)
+    : CAMark(CAMark::Fingering, n)
+{
+    _fingerList = fingers;
+    setOriginal(original);
+    setCommon(false);
 }
 
-CAFingering::~CAFingering() {
+CAFingering::~CAFingering()
+{
 }
 
-CAFingering *CAFingering::clone(CAMusElement* elt) {
-	return new CAFingering( fingerList(), (elt->musElementType()==CAMusElement::Note)?static_cast<CANote*>(elt):nullptr, isOriginal() );
+CAFingering* CAFingering::clone(CAMusElement* elt)
+{
+    return new CAFingering(fingerList(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr, isOriginal());
 }
 
-int CAFingering::compare( CAMusElement *elt ) {
-	if (elt->musElementType()!=CAMusElement::Mark)
-		return -2;
-	else if (static_cast<CAMark*>(elt)->markType()!=CAMark::Fingering)
-		return -1;
+int CAFingering::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Mark)
+        return -2;
+    else if (static_cast<CAMark*>(elt)->markType() != CAMark::Fingering)
+        return -1;
 
-	int differ=0;
-	CAFingering *f = static_cast<CAFingering*>(elt);
-	for (int i=0; i<f->fingerList().size() || i<fingerList().size(); i++) {
-		if ( i>=f->fingerList().size() || i>=fingerList().size() || f->fingerList().at(i)!=fingerList().at(i) )
-			differ++;
-	}
-	if (static_cast<CAFingering*>(elt)->isOriginal()!=isOriginal())
-		differ++;
+    int differ = 0;
+    CAFingering* f = static_cast<CAFingering*>(elt);
+    for (int i = 0; i < f->fingerList().size() || i < fingerList().size(); i++) {
+        if (i >= f->fingerList().size() || i >= fingerList().size() || f->fingerList().at(i) != fingerList().at(i))
+            differ++;
+    }
+    if (static_cast<CAFingering*>(elt)->isOriginal() != isOriginal())
+        differ++;
 
-	return differ;
+    return differ;
 }
 
-const QString CAFingering::fingerNumberToString( CAFingerNumber n ) {
-	switch (n) {
-	case First:
-		return "First";
-	case Second:
-		return "Second";
-	case Third:
-		return "Third";
-	case Fourth:
-		return "Fourth";
-	case Fifth:
-		return "Fifth";
-	case Thumb:
-		return "Thumb";
-	case LHeel:
-		return "LHeel";
-	case RHeel:
-		return "RHeel";
-	case LToe:
-		return "LToe";
-	case RToe:
-		return "RToe";
-	case Undefined:
-		return "Undefined";
-	}
-	return "Undefined";
+const QString CAFingering::fingerNumberToString(CAFingerNumber n)
+{
+    switch (n) {
+    case First:
+        return "First";
+    case Second:
+        return "Second";
+    case Third:
+        return "Third";
+    case Fourth:
+        return "Fourth";
+    case Fifth:
+        return "Fifth";
+    case Thumb:
+        return "Thumb";
+    case LHeel:
+        return "LHeel";
+    case RHeel:
+        return "RHeel";
+    case LToe:
+        return "LToe";
+    case RToe:
+        return "RToe";
+    case Undefined:
+        return "Undefined";
+    }
+    return "Undefined";
 }
 
-CAFingering::CAFingerNumber CAFingering::fingerNumberFromString( const QString f ) {
-	if (f=="First") {
-		return First;
-	} else
-	if (f=="Second") {
-		return Second;
-	} else
-	if (f=="Third") {
-		return Third;
-	} else
-	if (f=="Fourth") {
-		return Fourth;
-	} else
-	if (f=="Fifth") {
-		return Fifth;
-	} else
-	if (f=="Thumb") {
-		return Thumb;
-	} else
-	if (f=="LHeel") {
-		return LHeel;
-	} else
-	if (f=="RHeel") {
-		return RHeel;
-	} else
-	if (f=="LToe") {
-		return LToe;
-	} else
-	if (f=="RToe") {
-		return RToe;
-	} else
-		return Undefined;
+CAFingering::CAFingerNumber CAFingering::fingerNumberFromString(const QString f)
+{
+    if (f == "First") {
+        return First;
+    } else if (f == "Second") {
+        return Second;
+    } else if (f == "Third") {
+        return Third;
+    } else if (f == "Fourth") {
+        return Fourth;
+    } else if (f == "Fifth") {
+        return Fifth;
+    } else if (f == "Thumb") {
+        return Thumb;
+    } else if (f == "LHeel") {
+        return LHeel;
+    } else if (f == "RHeel") {
+        return RHeel;
+    } else if (f == "LToe") {
+        return LToe;
+    } else if (f == "RToe") {
+        return RToe;
+    } else
+        return Undefined;
 }

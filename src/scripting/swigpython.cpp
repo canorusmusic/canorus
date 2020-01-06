@@ -7,11 +7,11 @@
 
 #ifdef USE_PYTHON
 #include "scripting/swigpython.h"
-#include <QFile>
-#include <QThread>
 #include <QDebug>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
+#include <QThread>
 
 #ifndef SWIGCPP
 #include "canorus.h"
@@ -23,11 +23,11 @@ using namespace std;
 
 class CAPyconsoleThread : public QThread {
 protected:
-	void run() { CASwigPython::callPycli(nullptr); }
+    void run() { CASwigPython::callPycli(nullptr); }
 };
 
-PyThreadState * CASwigPython::mainThreadState;
-PyThreadState * CASwigPython::pycliThreadState;
+PyThreadState* CASwigPython::mainThreadState;
+PyThreadState* CASwigPython::pycliThreadState;
 
 /// Load 'CanorusPython' module and initialize classes - defined in SWIG wrapper class
 extern "C" void PyInit__CanorusPython();
@@ -37,57 +37,58 @@ extern "C" void PyInit__CanorusPython();
 	Python operations! Call this before calling toPythonObject() or any other conversation
 	functions as well!
 */
-void CASwigPython::init() {
+void CASwigPython::init()
+{
 
-	Py_Initialize();
-	PyEval_InitThreads(); // our python will use GIL
-	
-	PyInit__CanorusPython();
-	PyRun_SimpleString("import sys");
+    Py_Initialize();
+    PyEval_InitThreads(); // our python will use GIL
 
-	// add path to scripts to Scripting path
-	if (QDir::searchPaths("scripts").size()) {
-		PyRun_SimpleString((QString("sys.path.append('")+QDir::searchPaths("scripts")[0]+"')").toStdString().c_str());
-	} else {
-		std::cerr << "Error: scripts/ not found" << std::endl;
-	}
+    PyInit__CanorusPython();
+    PyRun_SimpleString("import sys");
 
-	// add path to CanorusPython modules to Scripting path
-	if (QFileInfo("base:CanorusPython.py").exists()) {
-		PyRun_SimpleString((QString("sys.path.append('")+QFileInfo("base:CanorusPython.py").absolutePath()+"')").toStdString().c_str());
-	}
+    // add path to scripts to Scripting path
+    if (QDir::searchPaths("scripts").size()) {
+        PyRun_SimpleString((QString("sys.path.append('") + QDir::searchPaths("scripts")[0] + "')").toStdString().c_str());
+    } else {
+        std::cerr << "Error: scripts/ not found" << std::endl;
+    }
+
+    // add path to CanorusPython modules to Scripting path
+    if (QFileInfo("base:CanorusPython.py").exists()) {
+        PyRun_SimpleString((QString("sys.path.append('") + QFileInfo("base:CanorusPython.py").absolutePath() + "')").toStdString().c_str());
+    }
 
 #ifdef Q_OS_WIN
-	if ( QFileInfo("base:_CanorusPython.dll").exists() ) {
-		PyRun_SimpleString((QString("sys.path.append('")+QFileInfo("base:_CanorusPython.dll").absolutePath()+"')").toStdString().c_str());
-	} else {
-		std::cerr << "Error: _CanorusPython.dll not found" << std::endl;
-	}
+    if (QFileInfo("base:_CanorusPython.dll").exists()) {
+        PyRun_SimpleString((QString("sys.path.append('") + QFileInfo("base:_CanorusPython.dll").absolutePath() + "')").toStdString().c_str());
+    } else {
+        std::cerr << "Error: _CanorusPython.dll not found" << std::endl;
+    }
 
-	if ( QDir("base:pythonLib").exists() ) {
-		PyRun_SimpleString((QString("sys.path.append('")+QDir("base:pythonLib").absolutePath()+"')").toStdString().c_str());
-	} else {
-		std::cerr << "Error: pythonLib/ not found" << std::endl;
-	}
+    if (QDir("base:pythonLib").exists()) {
+        PyRun_SimpleString((QString("sys.path.append('") + QDir("base:pythonLib").absolutePath() + "')").toStdString().c_str());
+    } else {
+        std::cerr << "Error: pythonLib/ not found" << std::endl;
+    }
 #else
-	if (QFileInfo("base:_CanorusPython.so").exists()) {
-		PyRun_SimpleString((QString("sys.path.append('")+QFileInfo("base:_CanorusPython.so").absolutePath()+"')").toStdString().c_str());
-	} else {
-		std::cerr << "Error: _CanorusPython.so not found" << std::endl;
-	}
+    if (QFileInfo("base:_CanorusPython.so").exists()) {
+        PyRun_SimpleString((QString("sys.path.append('") + QFileInfo("base:_CanorusPython.so").absolutePath() + "')").toStdString().c_str());
+    } else {
+        std::cerr << "Error: _CanorusPython.so not found" << std::endl;
+    }
 #endif
 
     mainThreadState = PyThreadState_Get();
     PyEval_ReleaseLock();
 
-       // my section with thread initialization
-PyEval_AcquireLock();
-    PyInterpreterState * mainInterpreterState = mainThreadState->interp;
+    // my section with thread initialization
+    PyEval_AcquireLock();
+    PyInterpreterState* mainInterpreterState = mainThreadState->interp;
 
     pycliThreadState = PyThreadState_New(mainInterpreterState);
     PyThreadState_Swap(mainThreadState);
 
-PyEval_ReleaseLock();
+    PyEval_ReleaseLock();
 }
 
 /*!
@@ -101,83 +102,93 @@ PyEval_ReleaseLock();
 	\warning You have to add path of the plugin to Python path before, manually! This is usually done by CAPlugin::callAction("onInit").
 */
 
-
 //pthread_t *tid=nullptr;
-QThread *qtid=nullptr;
+QThread* qtid = nullptr;
 QString thr_fileName;
 QString thr_function;
 QList<PyObject*> thr_args;
 
-PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args, bool autoReload) {
+PyObject* CASwigPython::callFunction(QString fileName, QString function, QList<PyObject*> args, bool autoReload)
+{
 
-	if (!QFile::exists(fileName))
-		return nullptr;
+    if (!QFile::exists(fileName))
+        return nullptr;
 
-	// run pycli in pthread, this is temporary solution
-	if (fileName.contains("pycli") && (!function.contains("init"))) {
-	    //tid = new pthread_t;
-		qtid = new CAPyconsoleThread();
-		thr_fileName = fileName;
-		thr_args = args;
-		thr_function = function;
-		qtid->start();
-		//pthread_create(tid, nullptr, &callPycli, nullptr);
+    // run pycli in pthread, this is temporary solution
+    if (fileName.contains("pycli") && (!function.contains("init"))) {
+        //tid = new pthread_t;
+        qtid = new CAPyconsoleThread();
+        thr_fileName = fileName;
+        thr_args = args;
+        thr_function = function;
+        qtid->start();
+        //pthread_create(tid, nullptr, &callPycli, nullptr);
 
-		return args.first();
-	}
+        return args.first();
+    }
 
-	PyObject *pyArgs = PyTuple_New(args.size());
-	if (!pyArgs)
-		return nullptr;
-	for(int i=0; i<args.size(); i++)
-		PyTuple_SetItem(pyArgs, i, args[i]);
+    PyObject* pyArgs = PyTuple_New(args.size());
+    if (!pyArgs)
+        return nullptr;
+    for (int i = 0; i < args.size(); i++)
+        PyTuple_SetItem(pyArgs, i, args[i]);
 
-	// Load module, if not yet
-	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
-	moduleName = moduleName.remove(0, moduleName.lastIndexOf("/")+1);
+    // Load module, if not yet
+    QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
+    moduleName = moduleName.remove(0, moduleName.lastIndexOf("/") + 1);
 
-	PyEval_AcquireLock();
-	
-	PyObject *pyModule;
-	if (autoReload) {
-		PyObject *moduleDict = PyImport_GetModuleDict(); // borrowed ref.
-		PyObject *ourModuleName = PyBytes_FromString(static_cast<const char*>(moduleName.toStdString().c_str())); // new ref.
-		pyModule = PyDict_GetItem(moduleDict, ourModuleName); // borrowed ref.
-//		Py_DECREF(ourModuleName); // -Matevz
+    PyEval_AcquireLock();
 
-		if (pyModule == nullptr) // not imported yet
-			pyModule = PyImport_ImportModule(static_cast<const char*>(moduleName.toStdString().c_str()));
-		else
-			Py_XDECREF(PyImport_ReloadModule(pyModule)); // we don't need the reference returned from ReloadModule
-	} else {
-		pyModule = PyImport_ImportModule(static_cast<const char*>(moduleName.toStdString().c_str()));
-	}
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
+    PyObject* pyModule;
+    if (autoReload) {
+        PyObject* moduleDict = PyImport_GetModuleDict(); // borrowed ref.
+        PyObject* ourModuleName = PyBytes_FromString(static_cast<const char*>(moduleName.toStdString().c_str())); // new ref.
+        pyModule = PyDict_GetItem(moduleDict, ourModuleName); // borrowed ref.
+        //		Py_DECREF(ourModuleName); // -Matevz
 
-	// Get function object
-	PyObject *pyFunction = PyObject_GetAttrString(pyModule, static_cast<const char*>(function.toStdString().c_str()));
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
+        if (pyModule == nullptr) // not imported yet
+            pyModule = PyImport_ImportModule(static_cast<const char*>(moduleName.toStdString().c_str()));
+        else
+            Py_XDECREF(PyImport_ReloadModule(pyModule)); // we don't need the reference returned from ReloadModule
+    } else {
+        pyModule = PyImport_ImportModule(static_cast<const char*>(moduleName.toStdString().c_str()));
+    }
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+        PyEval_ReleaseLock();
+        return nullptr;
+    }
 
-	// Call the actual function
-	PyObject *ret;
-	if (args.size())
-		ret = PyEval_CallObject(pyFunction, pyArgs);
-	else
-		ret = PyEval_CallObject(pyFunction, nullptr);
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
+    // Get function object
+    PyObject* pyFunction = PyObject_GetAttrString(pyModule, static_cast<const char*>(function.toStdString().c_str()));
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+        PyEval_ReleaseLock();
+        return nullptr;
+    }
 
-//	Py_DECREF(pyFunction); // -Matevz
-//	Py_DECREF(pyModule); // -Matevz
-/// \todo Crashes if uncommented?!
-//	Py_DECREF(pyArgs);
-//	for (int i=0; i<args.size(); i++)
-//		Py_DECREF(args[i]); // -Matevz
+    // Call the actual function
+    PyObject* ret;
+    if (args.size())
+        ret = PyEval_CallObject(pyFunction, pyArgs);
+    else
+        ret = PyEval_CallObject(pyFunction, nullptr);
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+        PyEval_ReleaseLock();
+        return nullptr;
+    }
+
+    //	Py_DECREF(pyFunction); // -Matevz
+    //	Py_DECREF(pyModule); // -Matevz
+    /// \todo Crashes if uncommented?!
+    //	Py_DECREF(pyArgs);
+    //	for (int i=0; i<args.size(); i++)
+    //		Py_DECREF(args[i]); // -Matevz
 
     PyEval_ReleaseLock();
-	return ret;
+    return ret;
 }
-
-
 
 /*!
 	Function for intializing python-CLI pycli, called asynchronously from 'callFunction' (it's a copy to avoid confusion)
@@ -187,55 +198,66 @@ PyObject *CASwigPython::callFunction(QString fileName, QString function, QList<P
 	\param args -> document reference, pyCli widget referece **
 
 */
-void *CASwigPython::callPycli(void*) {
-
+void* CASwigPython::callPycli(void*)
+{
 
     PyEval_AcquireLock();
     PyThreadState_Swap(pycliThreadState);
 
-	QString fileName = thr_fileName;
-	QString function = thr_function;
-	QList<PyObject*> args = thr_args;
+    QString fileName = thr_fileName;
+    QString function = thr_function;
+    QList<PyObject*> args = thr_args;
 
-	if (!QFile::exists(fileName)){
-//		pthread_exit((void*)nullptr);
-	}
+    if (!QFile::exists(fileName)) {
+        //		pthread_exit((void*)nullptr);
+    }
 
-	PyObject *pyArgs = Py_BuildValue("(OO)", args[0], args[1]);
+    PyObject* pyArgs = Py_BuildValue("(OO)", args[0], args[1]);
 
-	// Load module, if not yet
-	QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
-	moduleName = moduleName.remove(0, moduleName.lastIndexOf("/")+1);
+    // Load module, if not yet
+    QString moduleName = fileName.left(fileName.lastIndexOf(".py"));
+    moduleName = moduleName.remove(0, moduleName.lastIndexOf("/") + 1);
 
-	PyObject *pyModule = PyImport_ImportModule(static_cast<const char*>(moduleName.toStdString().c_str()));
+    PyObject* pyModule = PyImport_ImportModule(static_cast<const char*>(moduleName.toStdString().c_str()));
 
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+        PyEval_ReleaseLock();
+        return nullptr;
+    }
 
-	// Get function object
+    // Get function object
 
-	//PyObject *pyFunction = PyObject_GetAttrString(pyModule, "pycli");
-	PyObject *pyFunction = PyObject_GetAttrString(pyModule, static_cast<const char*>(function.toStdString().c_str()));
+    //PyObject *pyFunction = PyObject_GetAttrString(pyModule, "pycli");
+    PyObject* pyFunction = PyObject_GetAttrString(pyModule, static_cast<const char*>(function.toStdString().c_str()));
 
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+        PyEval_ReleaseLock();
+        return nullptr;
+    }
 
-	// Call the actual function
-	//
-	PyObject *ret;
-	ret = PyEval_CallObject(pyFunction, pyArgs);
-	if (PyErr_Occurred()) { PyErr_Print(); PyEval_ReleaseLock(); return nullptr; }
+    // Call the actual function
+    //
+    PyObject* ret;
+    ret = PyEval_CallObject(pyFunction, pyArgs);
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+        PyEval_ReleaseLock();
+        return nullptr;
+    }
 
-//	Py_DECREF(pyFunction); // -Matevz
-/// \todo Crashes if uncommented?!
-//	Py_DECREF(pyArgs);
-//	Py_DECREF(pyModule); // -Matevz
-//	for (int i=0; i<args.size(); i++)
-//		Py_DECREF(args[i]); // -Matevz
-
+    //	Py_DECREF(pyFunction); // -Matevz
+    /// \todo Crashes if uncommented?!
+    //	Py_DECREF(pyArgs);
+    //	Py_DECREF(pyModule); // -Matevz
+    //	for (int i=0; i<args.size(); i++)
+    //		Py_DECREF(args[i]); // -Matevz
 
     PyThreadState_Swap(mainThreadState);
     PyEval_ReleaseLock();
 
-//	pthread_exit((void*)nullptr);
+    //	pthread_exit((void*)nullptr);
     return ret;
 }
 
@@ -245,6 +267,5 @@ void *CASwigPython::callPycli(void*) {
 	Python uses its wrapper classes over C++ objects. Use this function to create a Python wrapper object out of the C++ one of type \a type.
 	See CAClassType for details on the types.
 */
-
 
 #endif

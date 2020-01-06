@@ -7,8 +7,8 @@
 
 #include "core/midirecorder.h"
 #include "export/midiexport.h"
-#include "score/resource.h"
 #include "interface/mididevice.h"
+#include "score/resource.h"
 
 /*!
 	\class CAMidiRecorder
@@ -24,57 +24,67 @@
 	3) Call stop() when recording is done. Class will write the midi data and
 	   close the stream.
  */
-CAMidiRecorder::CAMidiRecorder( CAResource *r, CAMidiDevice *d )
- : QObject(), _resource(r), _midiExport(nullptr), _curTime(0) {
-	_paused = false;
+CAMidiRecorder::CAMidiRecorder(CAResource* r, CAMidiDevice* d)
+    : QObject()
+    , _resource(r)
+    , _midiExport(nullptr)
+    , _curTime(0)
+{
+    _paused = false;
 
-	connect( d, SIGNAL(midiInEvent( QVector<unsigned char> )), this, SLOT(onMidiInEvent( QVector<unsigned char> )) );
+    connect(d, SIGNAL(midiInEvent(QVector<unsigned char>)), this, SLOT(onMidiInEvent(QVector<unsigned char>)));
 }
 
-CAMidiRecorder::~CAMidiRecorder() {
-	disconnect();
+CAMidiRecorder::~CAMidiRecorder()
+{
+    disconnect();
 }
 
-void CAMidiRecorder::timerTimeout() {
-	if (!_paused) {
-		_curTime+=10;
-	}
+void CAMidiRecorder::timerTimeout()
+{
+    if (!_paused) {
+        _curTime += 10;
+    }
 }
 
-void CAMidiRecorder::startRecording( int ) {
-	if (!_paused) {
-		_midiExport = new CAMidiExport();
-		_midiExport->setStreamToFile( _resource->url().toLocalFile() );
+void CAMidiRecorder::startRecording(int)
+{
+    if (!_paused) {
+        _midiExport = new CAMidiExport();
+        _midiExport->setStreamToFile(_resource->url().toLocalFile());
 
-		_curTime = 0;
+        _curTime = 0;
 
-		_timer = new QTimer();
-		_timer->setInterval(10);
-		connect( _timer, SIGNAL(timeout()), this, SLOT(timerTimeout()) );
-		_timer->start();
-		// the default time signature is a 4 quarters measure
-		_midiExport->sendMetaEvent( 0, CAMidiDevice::Meta_Timesig, 4, 4, 0 );
-		_midiExport->sendMetaEvent( 0, CAMidiDevice::Meta_Tempo, 120, 0, 0 );
-	} else {
-		_paused = false;
-	}
+        _timer = new QTimer();
+        _timer->setInterval(10);
+        connect(_timer, SIGNAL(timeout()), this, SLOT(timerTimeout()));
+        _timer->start();
+        // the default time signature is a 4 quarters measure
+        _midiExport->sendMetaEvent(0, CAMidiDevice::Meta_Timesig, 4, 4, 0);
+        _midiExport->sendMetaEvent(0, CAMidiDevice::Meta_Tempo, 120, 0, 0);
+    } else {
+        _paused = false;
+    }
 }
 
-void CAMidiRecorder::stopRecording() {
-	_midiExport->writeFile();
+void CAMidiRecorder::stopRecording()
+{
+    _midiExport->writeFile();
 
-	delete _midiExport;
-	_midiExport = nullptr;
-	_timer->stop();
-	_timer->disconnect();
+    delete _midiExport;
+    _midiExport = nullptr;
+    _timer->stop();
+    _timer->disconnect();
 }
 
-void CAMidiRecorder::pauseRecording() {
-	_paused=true;
+void CAMidiRecorder::pauseRecording()
+{
+    _paused = true;
 }
 
-void CAMidiRecorder::onMidiInEvent( QVector<unsigned char> messages ) {
-	if (_midiExport && !_paused) {
-		_midiExport->send( messages, _curTime/2 );	// needs division somewhere else ...
-	}
+void CAMidiRecorder::onMidiInEvent(QVector<unsigned char> messages)
+{
+    if (_midiExport && !_paused) {
+        _midiExport->send(messages, _curTime / 2); // needs division somewhere else ...
+    }
 }

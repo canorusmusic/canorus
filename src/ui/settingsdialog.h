@@ -8,9 +8,9 @@
 #ifndef MIDISETUPDIALOG_H_
 #define MIDISETUPDIALOG_H_
 
-#include <QWidget>
-#include <QPoint>
 #include <QColorDialog>
+#include <QPoint>
+#include <QWidget>
 
 // Parent of Settings
 #include "mainwin.h"
@@ -21,60 +21,60 @@ class CASheet;
 class CAActionsEditor;
 
 class CASettingsDialog : public QDialog, private Ui::uiSettingsDialog {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	enum CASettingsPage {
-		UndefinedSettings = -1,
-		EditorSettings = 0,
-		AppearanceSettings  = 1,
-		ActionSettings = 2,
-		LoadSaveSettings = 3,
-		PlaybackSettings = 4,
-		PrintingSettings = 5,
-	};
+    enum CASettingsPage {
+        UndefinedSettings = -1,
+        EditorSettings = 0,
+        AppearanceSettings = 1,
+        ActionSettings = 2,
+        LoadSaveSettings = 3,
+        PlaybackSettings = 4,
+        PrintingSettings = 5,
+    };
 
-	CASettingsDialog( CASettingsPage currentPage, CAMainWin *parent=nullptr );
-	~CASettingsDialog();
+    CASettingsDialog(CASettingsPage currentPage, CAMainWin* parent = nullptr);
+    ~CASettingsDialog();
 
 private slots:
-	void on_uiButtonBox_clicked( QAbstractButton* );
-	void on_uiSettingsList_currentItemChanged( QListWidgetItem*, QListWidgetItem* );
+    void on_uiButtonBox_clicked(QAbstractButton*);
+    void on_uiSettingsList_currentItemChanged(QListWidgetItem*, QListWidgetItem*);
 
-	void on_uiDocumentsDirectoryBrowse_clicked(bool);
-	void on_uiDocumentsDirectoryRevert_clicked(bool);
+    void on_uiDocumentsDirectoryBrowse_clicked(bool);
+    void on_uiDocumentsDirectoryRevert_clicked(bool);
 
-	void on_uiBackgroundColor_clicked(bool);
-	void on_uiBackgroundRevert_clicked(bool);
-	void on_uiForegroundColor_clicked(bool);
-	void on_uiForegroundRevert_clicked(bool);
-	void on_uiSelectionColor_clicked(bool);
-	void on_uiSelectionRevert_clicked(bool);
-	void on_uiSelectionAreaColor_clicked(bool);
-	void on_uiSelectionAreaRevert_clicked(bool);
-	void on_uiSelectedContextColor_clicked(bool);
-	void on_uiSelectedContextRevert_clicked(bool);
-	void on_uiHiddenElementsColor_clicked(bool);
-	void on_uiHiddenElementsRevert_clicked(bool);
-	void on_uiDisabledElementsColor_clicked(bool);
-	void on_uiDisabledElementsRevert_clicked(bool);
+    void on_uiBackgroundColor_clicked(bool);
+    void on_uiBackgroundRevert_clicked(bool);
+    void on_uiForegroundColor_clicked(bool);
+    void on_uiForegroundRevert_clicked(bool);
+    void on_uiSelectionColor_clicked(bool);
+    void on_uiSelectionRevert_clicked(bool);
+    void on_uiSelectionAreaColor_clicked(bool);
+    void on_uiSelectionAreaRevert_clicked(bool);
+    void on_uiSelectedContextColor_clicked(bool);
+    void on_uiSelectedContextRevert_clicked(bool);
+    void on_uiHiddenElementsColor_clicked(bool);
+    void on_uiHiddenElementsRevert_clicked(bool);
+    void on_uiDisabledElementsColor_clicked(bool);
+    void on_uiDisabledElementsRevert_clicked(bool);
 
-	void on_uiTypesetterBrowse_clicked(bool);
-	void on_uiPdfViewerBrowse_clicked(bool);
-	void on_uiTypesetterDefault_toggled(bool);
-	void on_uiPdfViewerDefault_toggled(bool);
+    void on_uiTypesetterBrowse_clicked(bool);
+    void on_uiPdfViewerBrowse_clicked(bool);
+    void on_uiTypesetterDefault_toggled(bool);
+    void on_uiPdfViewerDefault_toggled(bool);
 
 private:
-	void setupPages( CASettingsPage currentPage=EditorSettings );
-	void buildPreviewSheet();
-	void buildActionsEditorPage();
-	void applySettings();
+    void setupPages(CASettingsPage currentPage = EditorSettings);
+    void buildPreviewSheet();
+    void buildActionsEditorPage();
+    void applySettings();
 
-	// Pages temporary variables
-	CASheet *_previewSheet;
-	CAActionsEditor *_commandsEditor;
-	QMap<int, QString> _midiInPorts;
-	QMap<int, QString> _midiOutPorts;
-    CAMainWin *_mainWin; // access to file dialogs instances
+    // Pages temporary variables
+    CASheet* _previewSheet;
+    CAActionsEditor* _commandsEditor;
+    QMap<int, QString> _midiInPorts;
+    QMap<int, QString> _midiOutPorts;
+    CAMainWin* _mainWin; // access to file dialogs instances
 };
 #endif /* MIDISETUPDIALOG_H_ */

@@ -8,36 +8,36 @@
 #ifndef VIEWCONTAINER_H
 #define VIEWCONTAINER_H
 
-#include <QSplitter>
 #include <QHash>
+#include <QSplitter>
 
 class CAView;
 class CASheet;
 
 class CAViewContainer : public QSplitter {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-	CAViewContainer( QWidget *p );
-	~CAViewContainer();
+    CAViewContainer(QWidget* p);
+    ~CAViewContainer();
 
-	void addView( CAView *v, QSplitter *s=nullptr );
-	void removeView( CAView *v );
-	CAView* splitHorizontally( CAView *v = nullptr );
-	CAView* splitVertically( CAView *v = nullptr );
+    void addView(CAView* v, QSplitter* s = nullptr);
+    void removeView(CAView* v);
+    CAView* splitHorizontally(CAView* v = nullptr);
+    CAView* splitVertically(CAView* v = nullptr);
 
-	CAView* unsplit( CAView *v = nullptr );
-	QList<CAView*> unsplitAll();
+    CAView* unsplit(CAView* v = nullptr);
+    QList<CAView*> unsplitAll();
 
-	inline bool contains(CAView* v) { return _viewMap.contains(v); }
-	inline const QList<CAView*> viewList() { return _viewMap.keys(); }
+    inline bool contains(CAView* v) { return _viewMap.contains(v); }
+    inline const QList<CAView*> viewList() { return _viewMap.keys(); }
 
-	inline void setCurrentView( CAView *v ) { _currentView = v; }
-	inline CAView* currentView() { return _currentView; }
+    inline void setCurrentView(CAView* v) { _currentView = v; }
+    inline CAView* currentView() { return _currentView; }
 
 private:
-	QHash<CAView*, QSplitter*> _viewMap;
-	CAView *_currentView;
-	CASheet *_sheet;
+    QHash<CAView*, QSplitter*> _viewMap;
+    CAView* _currentView;
+    CASheet* _sheet;
 };
 #endif

@@ -25,18 +25,17 @@
 
 #define NUMBERDISPLAY_H
 
-#include <QLCDNumber> 
 #include <QContextMenuEvent>
+#include <QLCDNumber>
 
 class QAction;
 
 // LCD Number enhanced with the possibility to limit the number displayed in the LCD
-class CALCDNumber : public QLCDNumber 
-{
-	Q_OBJECT
+class CALCDNumber : public QLCDNumber {
+    Q_OBJECT
 
 public:
-	/**
+    /**
 	* Constructs the number display
 	* 
 	* @param iMin         minimal number
@@ -47,75 +46,77 @@ public:
 	* @param oText        name of the widget
 	*
 	*/
-	CALCDNumber (int iMin, int iMax, QWidget * poParent=nullptr, QString oText = "");
+    CALCDNumber(int iMin, int iMax, QWidget* poParent = nullptr, QString oText = "");
 
-	/**
+    /**
 	* Sets the current value of the number display
 	* 
 	* @param iVal         new value to be set
 	*
 	*/
-	void setRealValue(int val);
-	/**
+    void setRealValue(int val);
+    /**
 	* Gets the current value of the number display
 	* 
 	*/
-	int getRealValue();
-	/**
+    int getRealValue();
+    /**
 	* Sets the minimum value of the number display
 	* 
 	* @param iMin         new minimum value to be set
 	*
 	*/
-	void setMin(int iMin);
-	/**
+    void setMin(int iMin);
+    /**
 	* Sets the maximum value of the number display
 	* 
 	* @param iMax         new maximum value to be set
 	*
 	*/
-	void setMax(int iMax);
-	/**
+    void setMax(int iMax);
+    /**
 	* Checks if the value is 0 (or false if LCD number wasn't plugged)
 	* 
 	*/
-	bool isZero();
+    bool isZero();
 signals:
-	/**
+    /**
 	* Actually sends out the changed value if triggered via mouse press event
 	* 
 	* @param iVal     new value
 	*
 	*/
-	void valChanged(int iVal);
+    void valChanged(int iVal);
+
 protected:
-	/**
+    /**
 	* Event being performed when a mouse button was pressed
 	* 
 	* @param poEvt         Necessary information about the event
 	*
 	*/
-	virtual void mousePressEvent(QMouseEvent *poEvt); 
-	/**
+    virtual void mousePressEvent(QMouseEvent* poEvt);
+    /**
 	* Event being performed when a wheel was moved
 	* 
 	* @param poEvt         Necessary information about the event
 	*
 	*/
-	virtual void wheelEvent(QWheelEvent *poEvt); 
-	
-	/*!
+    virtual void wheelEvent(QWheelEvent* poEvt);
+
+    /*!
 	 * Overrides QMainWindow::contextMenuEvent() to prevent showing the context menu when the LCD widget is right-clicked (in a toolbar).
 	 * 
 	 * \param poEvt	Pointer to event info.
 	 * 
 	 */
-	virtual inline void contextMenuEvent(QContextMenuEvent *) { }
+    virtual inline void contextMenuEvent(QContextMenuEvent*) {}
+
 private:
-	int min_, max_;
-	QAction *numDisplay_;
-	int realValue_;
-	QString toolTipText_;
+    int min_, max_;
+    QAction* numDisplay_;
+    int realValue_;
+    QString toolTipText_;
 };
-		
-#endif /* NUMBERDISPLAY_H */ 
+
+#endif /* NUMBERDISPLAY_H */

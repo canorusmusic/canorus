@@ -20,63 +20,63 @@ class CAVoice;
 class CALyricsContext;
 
 class CASourceView : public CAView {
-	Q_OBJECT
+    Q_OBJECT
 
-	enum CASourceViewType {
-		LilyPond,
-		CanorusML
-	};
+    enum CASourceViewType {
+        LilyPond,
+        CanorusML
+    };
 
 public:
-	CASourceView(CADocument *doc, QWidget *parent=nullptr);
-	CASourceView(CAVoice *voice, QWidget *parent=nullptr);
-	CASourceView(CALyricsContext *lc, QWidget *parent=nullptr);
-	virtual ~CASourceView();
+    CASourceView(CADocument* doc, QWidget* parent = nullptr);
+    CASourceView(CAVoice* voice, QWidget* parent = nullptr);
+    CASourceView(CALyricsContext* lc, QWidget* parent = nullptr);
+    virtual ~CASourceView();
 
-	CASourceView *clone();
-	CASourceView *clone(QWidget *parent);
+    CASourceView* clone();
+    CASourceView* clone(QWidget* parent);
 
-	inline CASourceViewType sourceViewType() { return _sourceViewType; }
-	inline void setSourceViewType( CASourceViewType t ) { _sourceViewType = t; }
+    inline CASourceViewType sourceViewType() { return _sourceViewType; }
+    inline void setSourceViewType(CASourceViewType t) { _sourceViewType = t; }
 
-	inline CADocument *document() { return _document; }
-	inline CAVoice *voice() { return _voice; }
-	inline CALyricsContext *lyricsContext() { return _lyricsContext; }
-	inline void setDocument( CADocument *doc ) { _document = doc; }
-	inline void setVoice( CAVoice *voice ) { _voice = voice; }
-	inline void setLyricsContext( CALyricsContext *c ) { _lyricsContext = c; }
+    inline CADocument* document() { return _document; }
+    inline CAVoice* voice() { return _voice; }
+    inline CALyricsContext* lyricsContext() { return _lyricsContext; }
+    inline void setDocument(CADocument* doc) { _document = doc; }
+    inline void setVoice(CAVoice* voice) { _voice = voice; }
+    inline void setLyricsContext(CALyricsContext* c) { _lyricsContext = c; }
 
-	inline void selectAll() { _textEdit->selectAll(); }
+    inline void selectAll() { _textEdit->selectAll(); }
 signals:
-	void CACommit( QString documentString );
+    void CACommit(QString documentString);
 
 public slots:
-	void rebuild();
+    void rebuild();
 
 private slots:
-	void on_commit_clicked();
+    void on_commit_clicked();
 
 private:
-	void setupUI();
+    void setupUI();
 
-	class CATextEdit;
-	friend class CASourceView::CATextEdit;
+    class CATextEdit;
+    friend class CASourceView::CATextEdit;
 
-	/////////////
-	// Widgets //
-	/////////////
-	QTextEdit *_textEdit;
-	QPushButton *_commit;
-	QPushButton *_revert;
-	QGridLayout *_layout;
+    /////////////
+    // Widgets //
+    /////////////
+    QTextEdit* _textEdit;
+    QPushButton* _commit;
+    QPushButton* _revert;
+    QGridLayout* _layout;
 
-	////////////////
-	// Properties //
-	////////////////
-	CASourceViewType _sourceViewType;
-	CADocument *_document;
-	CAVoice *_voice;
-	CALyricsContext *_lyricsContext;
+    ////////////////
+    // Properties //
+    ////////////////
+    CASourceViewType _sourceViewType;
+    CADocument* _document;
+    CAVoice* _voice;
+    CALyricsContext* _lyricsContext;
 };
 
 #endif /* SOURCEVIEW_H_ */

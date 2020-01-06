@@ -14,11 +14,11 @@ class CAMusElement;
 
 class CANoteCheckerError {
 public:
-	CANoteCheckerError(CAMusElement *targetElement, QString message);
-	~CANoteCheckerError();
+    CANoteCheckerError(CAMusElement* targetElement, QString message);
+    ~CANoteCheckerError();
 
 private:
-	CAMusElement *_targetElement;
-	QString       _message;
+    CAMusElement* _targetElement;
+    QString _message;
 };
 #endif /* NOTECHECKERERROR_H_ */

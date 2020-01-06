@@ -24,55 +24,61 @@
 	\sa _syllableMap, CASyllable
 */
 
-CALyricsContext::CALyricsContext( const QString name, int stanzaNumber, CAVoice *v )
- : CAContext( name, (v && v->staff())? v->staff()->sheet() : nullptr ) {
-	setContextType( LyricsContext );
+CALyricsContext::CALyricsContext(const QString name, int stanzaNumber, CAVoice* v)
+    : CAContext(name, (v && v->staff()) ? v->staff()->sheet() : nullptr)
+{
+    setContextType(LyricsContext);
 
-	_associatedVoice = nullptr;
-	setAssociatedVoice( v ); // also reposits syllables
-	setStanzaNumber(stanzaNumber);
+    _associatedVoice = nullptr;
+    setAssociatedVoice(v); // also reposits syllables
+    setStanzaNumber(stanzaNumber);
 }
 
-CALyricsContext::CALyricsContext( const QString name, int stanzaNumber, CASheet *s )
- : CAContext( name, s ) {
-	setContextType( LyricsContext );
+CALyricsContext::CALyricsContext(const QString name, int stanzaNumber, CASheet* s)
+    : CAContext(name, s)
+{
+    setContextType(LyricsContext);
 
-	_associatedVoice = nullptr;
-	setAssociatedVoice( nullptr ); // also reposits syllables
-	setStanzaNumber(stanzaNumber);
+    _associatedVoice = nullptr;
+    setAssociatedVoice(nullptr); // also reposits syllables
+    setStanzaNumber(stanzaNumber);
 }
 
-CALyricsContext::~CALyricsContext() {
-	if (associatedVoice())
-		associatedVoice()->removeLyricsContext(this);
+CALyricsContext::~CALyricsContext()
+{
+    if (associatedVoice())
+        associatedVoice()->removeLyricsContext(this);
 
-	clear();
+    clear();
 }
 
-void CALyricsContext::clear() {
-	while(!_syllableList.isEmpty())
-		delete _syllableList.takeFirst();
+void CALyricsContext::clear()
+{
+    while (!_syllableList.isEmpty())
+        delete _syllableList.takeFirst();
 }
 
-CALyricsContext *CALyricsContext::clone( CASheet *s ) {
-	CALyricsContext *newLc = new CALyricsContext( name(), stanzaNumber(), s );
-	newLc->cloneLyricsContextProperties( this );
+CALyricsContext* CALyricsContext::clone(CASheet* s)
+{
+    CALyricsContext* newLc = new CALyricsContext(name(), stanzaNumber(), s);
+    newLc->cloneLyricsContextProperties(this);
 
-	for (int i=0; i<_syllableList.size(); i++) {
-		CASyllable *newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone(newLc));
-		newLc->addSyllable( newSyllable );
-	}
-	return newLc;
+    for (int i = 0; i < _syllableList.size(); i++) {
+        CASyllable* newSyllable = static_cast<CASyllable*>(_syllableList[i]->clone(newLc));
+        newLc->addSyllable(newSyllable);
+    }
+    return newLc;
 }
 
 /*!
 	Sets the properties of the given lyrics context to this lyrics context.
 */
-void CALyricsContext::cloneLyricsContextProperties( CALyricsContext *lc ) {
-	setName( lc->name() );
-	setStanzaNumber( lc->stanzaNumber() );
-	setSheet( lc->sheet() );
-	setAssociatedVoice( lc->associatedVoice() );
+void CALyricsContext::cloneLyricsContextProperties(CALyricsContext* lc)
+{
+    setName(lc->name());
+    setStanzaNumber(lc->stanzaNumber());
+    setSheet(lc->sheet());
+    setAssociatedVoice(lc->associatedVoice());
 }
 
 /*!
@@ -82,75 +88,79 @@ void CALyricsContext::cloneLyricsContextProperties( CALyricsContext *lc ) {
 
  	\sa CAFunctionMarkContext::repositFunctions(), CAFiguredBassContext::repositFiguredBassMarks(), CAChordNameContext::repositChordNames()
 */
-void CALyricsContext::repositSyllables() {
-	if (associatedVoice()) {
-		QList<CANote*> noteList = associatedVoice()->getNoteList();
-		int i,j;
-		for (i=0, j=0; i<noteList.size() && j<_syllableList.size(); i++, j++) {
-			if (i>0 && noteList[i-1]->timeStart()==noteList[i]->timeStart()) { // chord
-				i++;
-				continue;
-			}
-			_syllableList[j]->setTimeStart( noteList[i]->timeStart() );
-			_syllableList[j]->setTimeLength( noteList[i]->timeLength() );
-		}
-		int firstEmpty = j;
-		for (; j<_syllableList.size() && j>0; j++) { // add syllables at the end, if too much of them exist
-			if ( !_syllableList[j]->text().isEmpty() )
-				firstEmpty = j+1;
+void CALyricsContext::repositSyllables()
+{
+    if (associatedVoice()) {
+        QList<CANote*> noteList = associatedVoice()->getNoteList();
+        int i, j;
+        for (i = 0, j = 0; i < noteList.size() && j < _syllableList.size(); i++, j++) {
+            if (i > 0 && noteList[i - 1]->timeStart() == noteList[i]->timeStart()) { // chord
+                i++;
+                continue;
+            }
+            _syllableList[j]->setTimeStart(noteList[i]->timeStart());
+            _syllableList[j]->setTimeLength(noteList[i]->timeLength());
+        }
+        int firstEmpty = j;
+        for (; j < _syllableList.size() && j > 0; j++) { // add syllables at the end, if too much of them exist
+            if (!_syllableList[j]->text().isEmpty())
+                firstEmpty = j + 1;
 
-			_syllableList[j]->setTimeStart(_syllableList[j-1]->timeStart()+_syllableList[j-1]->timeLength());
-			_syllableList[j]->setTimeLength( 256 );
-		}
-		// remove empty "leftover" syllables from the end
-		for (j=firstEmpty; j<_syllableList.size() && j>0; j++) {
-			delete _syllableList.takeAt(j);
-		}
+            _syllableList[j]->setTimeStart(_syllableList[j - 1]->timeStart() + _syllableList[j - 1]->timeLength());
+            _syllableList[j]->setTimeLength(256);
+        }
+        // remove empty "leftover" syllables from the end
+        for (j = firstEmpty; j < _syllableList.size() && j > 0; j++) {
+            delete _syllableList.takeAt(j);
+        }
 
-		for (; i<noteList.size(); i++) { // add empty syllables at the end, if missing
-			if (i>0 && noteList[i]->timeStart()==noteList[i-1]->timeStart()) // chord
-				continue;
-			addEmptySyllable( noteList[i]->timeStart(), noteList[i]->timeLength() );
-		}
-	}
+        for (; i < noteList.size(); i++) { // add empty syllables at the end, if missing
+            if (i > 0 && noteList[i]->timeStart() == noteList[i - 1]->timeStart()) // chord
+                continue;
+            addEmptySyllable(noteList[i]->timeStart(), noteList[i]->timeLength());
+        }
+    }
 }
 
-CAMusElement* CALyricsContext::next( CAMusElement* elt ) {
-	if (elt->musElementType()!=CAMusElement::Syllable)
-		return nullptr;
+CAMusElement* CALyricsContext::next(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Syllable)
+        return nullptr;
 
-	int i = _syllableList.indexOf(static_cast<CASyllable*>(elt));
-	if (i!=-1 && ++i<_syllableList.size())
-		return _syllableList[i];
-	else
-		return nullptr;
+    int i = _syllableList.indexOf(static_cast<CASyllable*>(elt));
+    if (i != -1 && ++i < _syllableList.size())
+        return _syllableList[i];
+    else
+        return nullptr;
 }
 
-CAMusElement* CALyricsContext::previous( CAMusElement* elt ) {
-	if (elt->musElementType()!=CAMusElement::Syllable)
-		return nullptr;
+CAMusElement* CALyricsContext::previous(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Syllable)
+        return nullptr;
 
-	int i = _syllableList.indexOf(static_cast<CASyllable*>(elt));
-	if (i!=-1 && --i>-1)
-		return _syllableList[i];
-	else
-		return nullptr;
+    int i = _syllableList.indexOf(static_cast<CASyllable*>(elt));
+    if (i != -1 && --i > -1)
+        return _syllableList[i];
+    else
+        return nullptr;
 }
 
 /*!
 	Removes the given syllable from the list.
 */
-bool CALyricsContext::remove( CAMusElement* elt ) {
-	if (!elt || elt->musElementType()!=CAMusElement::Syllable)
-		return false;
+bool CALyricsContext::remove(CAMusElement* elt)
+{
+    if (!elt || elt->musElementType() != CAMusElement::Syllable)
+        return false;
 
-	bool success=false;
-	success = _syllableList.removeAll(static_cast<CASyllable*>(elt));
+    bool success = false;
+    success = _syllableList.removeAll(static_cast<CASyllable*>(elt));
 
-	if(success)
-		delete elt;
+    if (success)
+        delete elt;
 
-	return success;
+    return success;
 }
 
 /*!
@@ -159,21 +169,23 @@ bool CALyricsContext::remove( CAMusElement* elt ) {
 
 	Returns True if the syllable was found and removed; False otherwise.
 */
-CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart ) {
-	int i;
-	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()!=timeStart; i++);
-	if (i<_syllableList.size()) {
-		CASyllable *syllable = _syllableList[i];
+CASyllable* CALyricsContext::removeSyllableAtTimeStart(int timeStart)
+{
+    int i;
+    for (i = 0; i < _syllableList.size() && _syllableList[i]->timeStart() != timeStart; i++)
+        ;
+    if (i < _syllableList.size()) {
+        CASyllable* syllable = _syllableList[i];
 
-		// update times
-		for (int j=i+1; j<_syllableList.size(); j++)
-			_syllableList[j]->setTimeStart( _syllableList[j]->timeStart() - syllable->timeLength() );
+        // update times
+        for (int j = i + 1; j < _syllableList.size(); j++)
+            _syllableList[j]->setTimeStart(_syllableList[j]->timeStart() - syllable->timeLength());
 
-		delete _syllableList.takeAt(i);
-		return syllable;
-	} else {
-		return nullptr;
-	}
+        delete _syllableList.takeAt(i);
+        return syllable;
+    } else {
+        return nullptr;
+    }
 }
 
 /*!
@@ -184,18 +196,20 @@ CASyllable* CALyricsContext::removeSyllableAtTimeStart( int timeStart ) {
 
 	\sa _syllableList
 */
-bool CALyricsContext::addSyllable( CASyllable *syllable, bool replace ) {
-	int i;
-	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<syllable->timeStart(); i++);
-	//int s = _syllableList.size();
-	if ( i<_syllableList.size() && replace ) {
-		delete _syllableList.takeAt(i);
-	}
-	_syllableList.insert(i, syllable);
-	for (i++; i<_syllableList.size(); i++)
-		_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() + syllable->timeLength() );
+bool CALyricsContext::addSyllable(CASyllable* syllable, bool replace)
+{
+    int i;
+    for (i = 0; i < _syllableList.size() && _syllableList[i]->timeStart() < syllable->timeStart(); i++)
+        ;
+    //int s = _syllableList.size();
+    if (i < _syllableList.size() && replace) {
+        delete _syllableList.takeAt(i);
+    }
+    _syllableList.insert(i, syllable);
+    for (i++; i < _syllableList.size(); i++)
+        _syllableList[i]->setTimeStart(_syllableList[i]->timeStart() + syllable->timeLength());
 
-	return true;
+    return true;
 }
 
 /*!
@@ -203,39 +217,44 @@ bool CALyricsContext::addSyllable( CASyllable *syllable, bool replace ) {
 	This function is usually called when initializing the lyrics context
 	or inserting a new note.
 */
-bool CALyricsContext::addEmptySyllable( int timeStart, int timeLength ) {
-	int i;
-	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()<timeStart; i++);
-	_syllableList.insert(i, (new CASyllable( "", ((i>0)?(_syllableList[i-1]->hyphenStart()):(false)), ((i>0)?(_syllableList[i-1]->melismaStart()):(false)), this, timeStart, timeLength )));
-	for (i++; i<_syllableList.size(); i++)
-		_syllableList[i]->setTimeStart( _syllableList[i]->timeStart() + timeLength );
+bool CALyricsContext::addEmptySyllable(int timeStart, int timeLength)
+{
+    int i;
+    for (i = 0; i < _syllableList.size() && _syllableList[i]->timeStart() < timeStart; i++)
+        ;
+    _syllableList.insert(i, (new CASyllable("", ((i > 0) ? (_syllableList[i - 1]->hyphenStart()) : (false)), ((i > 0) ? (_syllableList[i - 1]->melismaStart()) : (false)), this, timeStart, timeLength)));
+    for (i++; i < _syllableList.size(); i++)
+        _syllableList[i]->setTimeStart(_syllableList[i]->timeStart() + timeLength);
 
-	return true;
+    return true;
 }
 
 /*!
 	Finds the syllable with exactly the given \a timeStart or Null, if such a
 	syllables doesn't exist.
  */
-CASyllable *CALyricsContext::syllableAtTimeStart( int timeStart ) {
-	int i;
-	for (i=0; i<_syllableList.size() && _syllableList[i]->timeStart()!=timeStart; i++);
-	if (i<_syllableList.size())
-		return _syllableList[i];
-	else
-		return nullptr;
+CASyllable* CALyricsContext::syllableAtTimeStart(int timeStart)
+{
+    int i;
+    for (i = 0; i < _syllableList.size() && _syllableList[i]->timeStart() != timeStart; i++)
+        ;
+    if (i < _syllableList.size())
+        return _syllableList[i];
+    else
+        return nullptr;
 }
 
 /*!
 	Sets a new associated voice and repositiones the syllables.
  */
-void CALyricsContext::setAssociatedVoice( CAVoice *v ) {
-	if (_associatedVoice)
-		_associatedVoice->removeLyricsContext(this);
+void CALyricsContext::setAssociatedVoice(CAVoice* v)
+{
+    if (_associatedVoice)
+        _associatedVoice->removeLyricsContext(this);
 
-	if (v)
-		v->addLyricsContext(this);
+    if (v)
+        v->addLyricsContext(this);
 
-	_associatedVoice = v;
-	repositSyllables();
+    _associatedVoice = v;
+    repositSyllables();
 }

@@ -15,16 +15,17 @@ class CADrawableChordNameContext;
 
 class CADrawableChordName : public CADrawableMusElement {
 public:
-	CADrawableChordName( CAChordName*, CADrawableChordNameContext*, double x, double y );
-	~CADrawableChordName();
-	void draw(QPainter *p, const CADrawSettings s);
-	CADrawableChordName *clone(CADrawableContext *c=0);
+    CADrawableChordName(CAChordName*, CADrawableChordNameContext*, double x, double y);
+    ~CADrawableChordName();
+    void draw(QPainter* p, const CADrawSettings s);
+    CADrawableChordName* clone(CADrawableContext* c = 0);
 
-	CAChordName *chordName() { return static_cast<CAChordName*>(musElement()); }
+    CAChordName* chordName() { return static_cast<CAChordName*>(musElement()); }
 
-	static const double DEFAULT_TEXT_SIZE;
+    static const double DEFAULT_TEXT_SIZE;
+
 private:
-	QString drawableDiatonicPitch();
+    QString drawableDiatonicPitch();
 };
 
 #endif /* DRAWABLECHORDNAME_H_ */

@@ -50,157 +50,168 @@
 	\note Both stream and string can be used both in Canorus and scripting. The example is only for illustration.
 */
 
-CAImport::CAImport( QTextStream *stream )
- : CAFile() {
-	setStream( stream );
-	setImportPart( Undefined );
-	
-	setImportedDocument( nullptr );
-	setImportedSheet( nullptr );
-	setImportedStaff( nullptr );
-	setImportedVoice( nullptr );
-	setImportedLyricsContext( nullptr );
-	setImportedFunctionMarkContext( nullptr );
-	_fileName.clear();
+CAImport::CAImport(QTextStream* stream)
+    : CAFile()
+{
+    setStream(stream);
+    setImportPart(Undefined);
+
+    setImportedDocument(nullptr);
+    setImportedSheet(nullptr);
+    setImportedStaff(nullptr);
+    setImportedVoice(nullptr);
+    setImportedLyricsContext(nullptr);
+    setImportedFunctionMarkContext(nullptr);
+    _fileName.clear();
 }
 
-CAImport::CAImport( const QString stream )
- : CAFile() {
-	setStream( new QTextStream( new QString(stream)) );
-	setImportPart( Undefined );
-	
-	setImportedDocument( nullptr );
-	setImportedSheet( nullptr );
-	setImportedStaff( nullptr );
-	setImportedVoice( nullptr );
-	setImportedLyricsContext( nullptr );
-	setImportedFunctionMarkContext( nullptr );
+CAImport::CAImport(const QString stream)
+    : CAFile()
+{
+    setStream(new QTextStream(new QString(stream)));
+    setImportPart(Undefined);
+
+    setImportedDocument(nullptr);
+    setImportedSheet(nullptr);
+    setImportedStaff(nullptr);
+    setImportedVoice(nullptr);
+    setImportedLyricsContext(nullptr);
+    setImportedFunctionMarkContext(nullptr);
 }
 
-CAImport::~CAImport() {
-	if ( stream() && stream()->string() )
-	{
-		delete stream()->string();
-	}
+CAImport::~CAImport()
+{
+    if (stream() && stream()->string()) {
+        delete stream()->string();
+    }
 }
 
 /*!
 	Extends CAFile::setStreamFromFile by storing the filename in a public variable
 	for use in the pmidi midi file parser.
 */
-void CAImport::setStreamFromFile( const QString filename ) {
-	_fileName = filename;
-	CAFile::setStreamFromFile( filename );
+void CAImport::setStreamFromFile(const QString filename)
+{
+    _fileName = filename;
+    CAFile::setStreamFromFile(filename);
 }
 
-QString CAImport::fileName() {
-	return _fileName;
+QString CAImport::fileName()
+{
+    return _fileName;
 }
-
 
 /*!
 	Executed when a new thread is dispatched.
 	It looks which part of the document should be imported and starts the procedure.
 	It emits the appropriate signal when the procedure is finished.
 */
-void CAImport::run() {
-	if ( !stream() ) {
-		setStatus(-1);
-	} else {
-		switch ( importPart() ) {
-		case Document: {
-			CADocument *doc = importDocumentImpl();
-			setImportedDocument( doc );
-			emit documentImported( doc );
-			break;
-		}
-		case Sheet: {
-			CASheet *sheet = importSheetImpl();
-			setImportedSheet( sheet );
-			emit sheetImported( sheet );
-			break;
-		}
-		case Staff: {
-			CAStaff *staff = importStaffImpl();
-			setImportedStaff( staff );
-			emit staffImported( staff );
-			break;
-		}
-		case Voice: {
-			CAVoice *voice = importVoiceImpl();
-			setImportedVoice( voice );
-			emit voiceImported( voice );
-			break;
-		}
-		case LyricsContext: {
-			CALyricsContext *lc = importLyricsContextImpl();
-			setImportedLyricsContext( lc );
-			emit lyricsContextImported( lc );
-			break;
-		}
-		case FunctionMarkContext: {
-			CAFunctionMarkContext *fmc = importFunctionMarkContextImpl();
-			setImportedFunctionMarkContext( fmc );
-			emit functionMarkContextImported( fmc );
-			break;
-		}
-		case Undefined:
-			break;
-		}
-		
-		if (status()>0) { // error - bad implemented filter
-			              // job is finished but status is still marked as working, set to Ready to prevent infinite loops
-			setStatus(0);
-		}
-	}
-	
-	emit importDone( status() );
+void CAImport::run()
+{
+    if (!stream()) {
+        setStatus(-1);
+    } else {
+        switch (importPart()) {
+        case Document: {
+            CADocument* doc = importDocumentImpl();
+            setImportedDocument(doc);
+            emit documentImported(doc);
+            break;
+        }
+        case Sheet: {
+            CASheet* sheet = importSheetImpl();
+            setImportedSheet(sheet);
+            emit sheetImported(sheet);
+            break;
+        }
+        case Staff: {
+            CAStaff* staff = importStaffImpl();
+            setImportedStaff(staff);
+            emit staffImported(staff);
+            break;
+        }
+        case Voice: {
+            CAVoice* voice = importVoiceImpl();
+            setImportedVoice(voice);
+            emit voiceImported(voice);
+            break;
+        }
+        case LyricsContext: {
+            CALyricsContext* lc = importLyricsContextImpl();
+            setImportedLyricsContext(lc);
+            emit lyricsContextImported(lc);
+            break;
+        }
+        case FunctionMarkContext: {
+            CAFunctionMarkContext* fmc = importFunctionMarkContextImpl();
+            setImportedFunctionMarkContext(fmc);
+            emit functionMarkContextImported(fmc);
+            break;
+        }
+        case Undefined:
+            break;
+        }
+
+        if (status() > 0) { // error - bad implemented filter
+            // job is finished but status is still marked as working, set to Ready to prevent infinite loops
+            setStatus(0);
+        }
+    }
+
+    emit importDone(status());
 }
 
-void CAImport::importDocument() {
-	setImportPart( Document );
-	setStatus( 1 ); // process started
-	start();
+void CAImport::importDocument()
+{
+    setImportPart(Document);
+    setStatus(1); // process started
+    start();
 }
 
-void CAImport::importSheet() {
-	setImportPart( Sheet );
-	setStatus( 1 ); // process started
-	start();
+void CAImport::importSheet()
+{
+    setImportPart(Sheet);
+    setStatus(1); // process started
+    start();
 }
 
-void CAImport::importStaff() {
-	setImportPart( Staff );
-	setStatus( 1 ); // process started
-	start();
+void CAImport::importStaff()
+{
+    setImportPart(Staff);
+    setStatus(1); // process started
+    start();
 }
 
-void CAImport::importVoice() {
-	setImportPart( Voice );
-	setStatus( 1 ); // process started
-	start();
+void CAImport::importVoice()
+{
+    setImportPart(Voice);
+    setStatus(1); // process started
+    start();
 }
 
-void CAImport::importLyricsContext() {
-	setImportPart( LyricsContext );
-	setStatus( 1 ); // process started
-	start();
+void CAImport::importLyricsContext()
+{
+    setImportPart(LyricsContext);
+    setStatus(1); // process started
+    start();
 }
 
-void CAImport::importFunctionMarkContext() {
-	setImportPart( FunctionMarkContext );
-	setStatus( 1 ); // process started
-	start();
+void CAImport::importFunctionMarkContext()
+{
+    setImportPart(FunctionMarkContext);
+    setStatus(1); // process started
+    start();
 }
 
-const QString CAImport::readableStatus() {
-	switch (status()) {
-	case 1:
-		return tr("Importing");
-	case 0:
-		return tr("Ready");
-	case -1:
-		return tr("Unable to open file for reading");
-	}
-	return "Ready";
+const QString CAImport::readableStatus()
+{
+    switch (status()) {
+    case 1:
+        return tr("Importing");
+    case 0:
+        return tr("Ready");
+    case -1:
+        return tr("Unable to open file for reading");
+    }
+    return "Ready";
 }

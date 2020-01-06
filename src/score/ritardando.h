@@ -12,30 +12,30 @@
 
 class CAPlayable;
 
-class CARitardando: public CAMark {
+class CARitardando : public CAMark {
 public:
-	enum CARitardandoType {
-		Ritardando,
-		Accellerando
-	};
+    enum CARitardandoType {
+        Ritardando,
+        Accellerando
+    };
 
-	CARitardando( int finalTempo, CAPlayable *p, int timeLength, CARitardandoType t=Ritardando );
-	virtual ~CARitardando();
+    CARitardando(int finalTempo, CAPlayable* p, int timeLength, CARitardandoType t = Ritardando);
+    virtual ~CARitardando();
 
-	CARitardando *clone(CAMusElement* elt=nullptr);
-	int compare( CAMusElement* );
+    CARitardando* clone(CAMusElement* elt = nullptr);
+    int compare(CAMusElement*);
 
-	inline int finalTempo() { return _finalTempo; }
-	inline void setFinalTempo( const int t ) { _finalTempo = t; }
-	inline CARitardandoType ritardandoType() { return _ritardandoType; }
-	inline void setRitardandoType( CARitardandoType t ) { _ritardandoType = t; }
+    inline int finalTempo() { return _finalTempo; }
+    inline void setFinalTempo(const int t) { _finalTempo = t; }
+    inline CARitardandoType ritardandoType() { return _ritardandoType; }
+    inline void setRitardandoType(CARitardandoType t) { _ritardandoType = t; }
 
-	static const QString ritardandoTypeToString( CARitardandoType t );
-	static CARitardandoType ritardandoTypeFromString( const QString r );
+    static const QString ritardandoTypeToString(CARitardandoType t);
+    static CARitardandoType ritardandoTypeFromString(const QString r);
 
 private:
-	int _finalTempo; // tempo bpm at the end
-	CARitardandoType _ritardandoType;
+    int _finalTempo; // tempo bpm at the end
+    CARitardandoType _ritardandoType;
 };
 
 #endif /* RITARDANDO_H_ */

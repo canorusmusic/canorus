@@ -20,26 +20,29 @@
 	display the recorded Midi events in the staff and nothing more.
 */
 
-CAMidiNote::CAMidiNote( int midiPitch, int timeStart, int timeLength, CAVoice *voice )
- : CAPlayable( CAPlayableLength::Undefined, voice, timeStart, timeLength ),
-   _midiPitch(midiPitch) {
-	setMusElementType( MidiNote );
+CAMidiNote::CAMidiNote(int midiPitch, int timeStart, int timeLength, CAVoice* voice)
+    : CAPlayable(CAPlayableLength::Undefined, voice, timeStart, timeLength)
+    , _midiPitch(midiPitch)
+{
+    setMusElementType(MidiNote);
 }
 
-CAMidiNote::~CAMidiNote() {
+CAMidiNote::~CAMidiNote()
+{
 }
 
-CAMidiNote *CAMidiNote::clone( CAVoice *v ) {
-	return new CAMidiNote( midiPitch(), timeStart(), timeLength(), v );
+CAMidiNote* CAMidiNote::clone(CAVoice* v)
+{
+    return new CAMidiNote(midiPitch(), timeStart(), timeLength(), v);
 }
 
-int CAMidiNote::compare( CAMusElement *elt ) {
-	if (elt->musElementType()!=CAMusElement::MidiNote) {
-		return -1;
-	} else
-	if (static_cast<CAMidiNote*>(elt)->midiPitch()!=midiPitch()) {
-		return 1;
-	} else {
-		return 0;
-	}
+int CAMidiNote::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::MidiNote) {
+        return -1;
+    } else if (static_cast<CAMidiNote*>(elt)->midiPitch() != midiPitch()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }

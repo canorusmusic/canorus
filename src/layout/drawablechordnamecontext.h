@@ -15,15 +15,15 @@ class CAChordNameContext;
 
 class CADrawableChordNameContext : public CADrawableContext {
 public:
-	CADrawableChordNameContext(CAChordNameContext *c, double x, double y);
-	~CADrawableChordNameContext();
+    CADrawableChordNameContext(CAChordNameContext* c, double x, double y);
+    ~CADrawableChordNameContext();
 
-	CADrawableChordNameContext *clone();
-	void draw(QPainter *p, const CADrawSettings s);
+    CADrawableChordNameContext* clone();
+    void draw(QPainter* p, const CADrawSettings s);
 
-	CAChordNameContext *chordNameContext() { return static_cast<CAChordNameContext*>(context()); }
+    CAChordNameContext* chordNameContext() { return static_cast<CAChordNameContext*>(context()); }
 
-	static const double DEFAULT_CHORDNAME_VERTICAL_SPACING;
+    static const double DEFAULT_CHORDNAME_VERTICAL_SPACING;
 };
 
 #endif /* DRAWABLECHORDNAMECONTEXT_H_ */

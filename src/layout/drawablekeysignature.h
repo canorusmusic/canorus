@@ -18,16 +18,16 @@ class CADrawableAccidental;
 class QComboBox;
 
 class CADrawableKeySignature : public CADrawableMusElement {
-	public:
-		CADrawableKeySignature(CAKeySignature *keySig, CADrawableStaff *staff, double x, double y);
-		~CADrawableKeySignature();
+public:
+    CADrawableKeySignature(CAKeySignature* keySig, CADrawableStaff* staff, double x, double y);
+    ~CADrawableKeySignature();
 
-		void draw(QPainter *p, CADrawSettings s);
-		CADrawableKeySignature *clone(CADrawableContext* newContext = 0);
-		inline CAKeySignature *keySignature() { return (CAKeySignature*)_musElement; }
+    void draw(QPainter* p, CADrawSettings s);
+    CADrawableKeySignature* clone(CADrawableContext* newContext = 0);
+    inline CAKeySignature* keySignature() { return (CAKeySignature*)_musElement; }
 
-	private:
-		QList<CADrawableAccidental*> _drawableAccidentalList;	///List of actual drawable accidentals
+private:
+    QList<CADrawableAccidental*> _drawableAccidentalList; ///List of actual drawable accidentals
 };
 
 #endif /*DRAWABLEKEYSIGNATURE_H_*/

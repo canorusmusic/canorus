@@ -18,26 +18,31 @@
 const QString CAMimeData::CANORUS_MIME_TYPE = "application/canorus-contexts";
 
 CAMimeData::CAMimeData()
- : QMimeData() {
+    : QMimeData()
+{
 }
 
-CAMimeData::CAMimeData( QList<CAContext*> list )
- : QMimeData() {
-	setContexts( list );
+CAMimeData::CAMimeData(QList<CAContext*> list)
+    : QMimeData()
+{
+    setContexts(list);
 }
 
-CAMimeData::~CAMimeData() {
-	for (int i=0; i<contexts().size(); i++)
-		delete contexts().at(i);
+CAMimeData::~CAMimeData()
+{
+    for (int i = 0; i < contexts().size(); i++)
+        delete contexts().at(i);
 }
 
-QStringList CAMimeData::formats() const {
-	QStringList curFormats = QMimeData::formats();
-	if ( hasContexts() )
-		curFormats << CANORUS_MIME_TYPE;
-	return curFormats;
+QStringList CAMimeData::formats() const
+{
+    QStringList curFormats = QMimeData::formats();
+    if (hasContexts())
+        curFormats << CANORUS_MIME_TYPE;
+    return curFormats;
 }
 
-bool CAMimeData::hasFormat(const QString format) const {
-	return formats().contains( format );
+bool CAMimeData::hasFormat(const QString format) const
+{
+    return formats().contains(format);
 }

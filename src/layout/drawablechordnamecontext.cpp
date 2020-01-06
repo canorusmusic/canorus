@@ -6,11 +6,11 @@
 */
 
 #include "layout/drawablechordnamecontext.h"
-#include "score/chordnamecontext.h"
 #include "layout/drawablechordname.h"
+#include "score/chordnamecontext.h"
 
-#include <QPainter>
 #include <QBrush>
+#include <QPainter>
 
 /*!
 	Vertical space between the top edge of the chord name context and the top border of the chord name.
@@ -22,21 +22,25 @@ const double CADrawableChordNameContext::DEFAULT_CHORDNAME_VERTICAL_SPACING = 2;
 
 	\sa CAChordNameContext
 */
-CADrawableChordNameContext::CADrawableChordNameContext(CAChordNameContext *c, double x, double y)
- : CADrawableContext(c, x, y) {
-	setDrawableContextType( DrawableChordNameContext );
-	setWidth( 0 );
-	setHeight( CADrawableChordName::DEFAULT_TEXT_SIZE + 2*DEFAULT_CHORDNAME_VERTICAL_SPACING );
+CADrawableChordNameContext::CADrawableChordNameContext(CAChordNameContext* c, double x, double y)
+    : CADrawableContext(c, x, y)
+{
+    setDrawableContextType(DrawableChordNameContext);
+    setWidth(0);
+    setHeight(CADrawableChordName::DEFAULT_TEXT_SIZE + 2 * DEFAULT_CHORDNAME_VERTICAL_SPACING);
 }
 
-CADrawableChordNameContext::~CADrawableChordNameContext() {
+CADrawableChordNameContext::~CADrawableChordNameContext()
+{
 }
 
-CADrawableChordNameContext* CADrawableChordNameContext::clone() {
-	return new CADrawableChordNameContext( chordNameContext(), xPos(), yPos() );
+CADrawableChordNameContext* CADrawableChordNameContext::clone()
+{
+    return new CADrawableChordNameContext(chordNameContext(), xPos(), yPos());
 }
 
-void CADrawableChordNameContext::draw(QPainter *p, const CADrawSettings s) {
+void CADrawableChordNameContext::draw(QPainter* p, const CADrawSettings s)
+{
     QColor bColor = Qt::darkBlue;
     bColor.setAlphaF(0.2);
     p->fillRect(0, s.y, s.w, qRound(height() * s.z), QBrush(bColor));

@@ -8,19 +8,19 @@
 #ifndef DRAWABLETIMESIGNATURE_H_
 #define DRAWABLETIMESIGNATURE_H_
 
+#include "canorus.h"
 #include "layout/drawablemuselement.h"
 #include "score/timesignature.h"
-#include "canorus.h"
 
 class CADrawableStaff;
 
 class CADrawableTimeSignature : public CADrawableMusElement {
-	public:
-		CADrawableTimeSignature(CATimeSignature *timeSig, CADrawableStaff *drawableStaff, double x, double y); /// y coordinate is a top of the staff
-		~CADrawableTimeSignature();
-		void draw(QPainter *p, CADrawSettings s);
-		CADrawableTimeSignature *clone(CADrawableContext* newContext = nullptr);
-		inline CATimeSignature *timeSignature() { return static_cast<CATimeSignature*>(_musElement); }
+public:
+    CADrawableTimeSignature(CATimeSignature* timeSig, CADrawableStaff* drawableStaff, double x, double y); /// y coordinate is a top of the staff
+    ~CADrawableTimeSignature();
+    void draw(QPainter* p, CADrawSettings s);
+    CADrawableTimeSignature* clone(CADrawableContext* newContext = nullptr);
+    inline CATimeSignature* timeSignature() { return static_cast<CATimeSignature*>(_musElement); }
 };
 
 #endif /*DRAWABLETIMESIGNATURE_H_*/

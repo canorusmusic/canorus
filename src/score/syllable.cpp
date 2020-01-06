@@ -26,17 +26,19 @@
 	Creates a new lyrics element with the given \a text, hyphenation \a hyphen and \a melisma properties, parent \a context,
 	\a timeStart and \a timeLength. \a voice is a special per-syllable associated voice (default 0 - takes parent's voice).
  */
-CASyllable::CASyllable( QString text, bool hyphen, bool melisma, CALyricsContext *context, int timeStart, int timeLength, CAVoice *voice)
- : CAMusElement(context, timeStart, timeLength) {
-	setMusElementType( Syllable );
+CASyllable::CASyllable(QString text, bool hyphen, bool melisma, CALyricsContext* context, int timeStart, int timeLength, CAVoice* voice)
+    : CAMusElement(context, timeStart, timeLength)
+{
+    setMusElementType(Syllable);
 
-	setText( text );
-	setHyphenStart( hyphen );
-	setMelismaStart( melisma );
-	setAssociatedVoice( voice );
+    setText(text);
+    setHyphenStart(hyphen);
+    setMelismaStart(melisma);
+    setAssociatedVoice(voice);
 }
 
-CASyllable::~CASyllable() {
+CASyllable::~CASyllable()
+{
 }
 
 /*!
@@ -44,33 +46,36 @@ CASyllable::~CASyllable() {
 	This function is usually called when directly deleting the syllable - it shouldn't be actually removed, but only its
 	text set to empty.
 */
-void CASyllable::clear() {
-	setText("");
-	setHyphenStart( false );
-	setMelismaStart( false );
+void CASyllable::clear()
+{
+    setText("");
+    setHyphenStart(false);
+    setMelismaStart(false);
 }
 
 /*!
 	Clone the syllable using the given new context.
 	If the given context is not a lyrics context, 0 is used instead.
 */
-CASyllable* CASyllable::clone(CAContext* context) {
-	CALyricsContext* newContext = nullptr;
-	if(context->contextType() == CAContext::LyricsContext)
-		newContext = static_cast<CALyricsContext*>(context);
-	CASyllable *s = new CASyllable( text(), hyphenStart(), melismaStart(), newContext, timeStart(), timeLength(), associatedVoice() );
+CASyllable* CASyllable::clone(CAContext* context)
+{
+    CALyricsContext* newContext = nullptr;
+    if (context->contextType() == CAContext::LyricsContext)
+        newContext = static_cast<CALyricsContext*>(context);
+    CASyllable* s = new CASyllable(text(), hyphenStart(), melismaStart(), newContext, timeStart(), timeLength(), associatedVoice());
 
-	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(s));
-		s->addMark( m );
-	}
+    for (int i = 0; i < markList().size(); i++) {
+        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(s));
+        s->addMark(m);
+    }
 
-	return s;
+    return s;
 }
 
-int CASyllable::compare(CAMusElement* c) {
-	if ( c->musElementType()==CAMusElement::Syllable )
-		return 0;
-	else
-		return 1;
+int CASyllable::compare(CAMusElement* c)
+{
+    if (c->musElementType() == CAMusElement::Syllable)
+        return 0;
+    else
+        return 1;
 }

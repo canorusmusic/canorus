@@ -6,8 +6,8 @@
 */
 
 #include "score/clef.h"
-#include "score/staff.h"
 #include "score/mark.h"
+#include "score/staff.h"
 
 /*!
 	\class CAClef
@@ -25,11 +25,13 @@
 
 	\sa CAPredefinedClefType, CAMusElement
 */
-CAClef::CAClef( CAPredefinedClefType type, CAStaff *staff, int time, int offsetInterval ) : CAMusElement( staff, time ) {
-	_musElementType = CAMusElement::Clef;
+CAClef::CAClef(CAPredefinedClefType type, CAStaff* staff, int time, int offsetInterval)
+    : CAMusElement(staff, time)
+{
+    _musElementType = CAMusElement::Clef;
 
-	_offset = CAClef::offsetFromReadable( offsetInterval );
-	setPredefinedType(type);
+    _offset = CAClef::offsetFromReadable(offsetInterval);
+    setPredefinedType(type);
 }
 
 /*!
@@ -38,61 +40,64 @@ CAClef::CAClef( CAPredefinedClefType type, CAStaff *staff, int time, int offsetI
 
 	\sa CAPredefinedClefType, CAMusElement
 */
-CAClef::CAClef( CAClefType type, int c1, CAStaff *staff, int time, int offset ) : CAMusElement( staff, time ) {
-	_musElementType = CAMusElement::Clef;
+CAClef::CAClef(CAClefType type, int c1, CAStaff* staff, int time, int offset)
+    : CAMusElement(staff, time)
+{
+    _musElementType = CAMusElement::Clef;
 
-	_c1 = c1;
-	_offset = offset;
-	setClefType(type);
+    _c1 = c1;
+    _offset = offset;
+    setClefType(type);
 }
 
-void CAClef::setPredefinedType( CAPredefinedClefType type ) {
-	switch (type) {
-		case Treble:
-			setClefType(G);
-			_c1 = -2 - offset();
-			break;
-		case Bass:
-			setClefType(F);
-			_c1 = 10 - offset();
-			break;
-		case French:
-			setClefType(G);
-			_c1 = -4 - offset();
-			break;
-		case Soprano:
-			setClefType(C);
-			_c1 = 0 - offset();
-			break;
-		case Mezzosoprano:
-			setClefType(C);
-			_c1 = 2 - offset();
-			break;
-		case Alto:
-			setClefType(C);
-			_c1 = 4 - offset();
-			break;
-		case Tenor:
-			setClefType(C);
-			_c1 = 6 - offset();
-			break;
-		case Baritone:
-			setClefType(C);
-			_c1 = 8 - offset();
-			break;
-		case Varbaritone:
-			setClefType(F);
-			_c1 = 8 - offset();
-			break;
-		case Subbass:
-			setClefType(F);
-			_c1 = 12 - offset();
-			break;
-		case Undefined:
-		case Percussion:
-		case Tablature:
-			break;
-	}
+void CAClef::setPredefinedType(CAPredefinedClefType type)
+{
+    switch (type) {
+    case Treble:
+        setClefType(G);
+        _c1 = -2 - offset();
+        break;
+    case Bass:
+        setClefType(F);
+        _c1 = 10 - offset();
+        break;
+    case French:
+        setClefType(G);
+        _c1 = -4 - offset();
+        break;
+    case Soprano:
+        setClefType(C);
+        _c1 = 0 - offset();
+        break;
+    case Mezzosoprano:
+        setClefType(C);
+        _c1 = 2 - offset();
+        break;
+    case Alto:
+        setClefType(C);
+        _c1 = 4 - offset();
+        break;
+    case Tenor:
+        setClefType(C);
+        _c1 = 6 - offset();
+        break;
+    case Baritone:
+        setClefType(C);
+        _c1 = 8 - offset();
+        break;
+    case Varbaritone:
+        setClefType(F);
+        _c1 = 8 - offset();
+        break;
+    case Subbass:
+        setClefType(F);
+        _c1 = 12 - offset();
+        break;
+    case Undefined:
+    case Percussion:
+    case Tablature:
+        break;
+    }
 }
 
 /*!
@@ -100,43 +105,55 @@ void CAClef::setPredefinedType( CAPredefinedClefType type ) {
 
 	\sa CAClefType, _clefType
 */
-void CAClef::setClefType(CAClefType type) {
-	_clefType = type;
+void CAClef::setClefType(CAClefType type)
+{
+    _clefType = type;
 
-	switch (type) {
-	case G: _centerPitch=32; break;
-	case F: _centerPitch=24; break;
-	case C: _centerPitch=28; break;
-	case PercussionHigh:
-	case PercussionLow:
-	case Tab:
-		break;
-	}
+    switch (type) {
+    case G:
+        _centerPitch = 32;
+        break;
+    case F:
+        _centerPitch = 24;
+        break;
+    case C:
+        _centerPitch = 28;
+        break;
+    case PercussionHigh:
+    case PercussionLow:
+    case Tab:
+        break;
+    }
 
-	_centerPitch += offset();
+    _centerPitch += offset();
 }
 
-CAClef* CAClef::clone(CAContext* context) {
-	CAClef *c = new CAClef( _clefType, _c1, static_cast<CAStaff*>(context), _timeStart, _offset);
+CAClef* CAClef::clone(CAContext* context)
+{
+    CAClef* c = new CAClef(_clefType, _c1, static_cast<CAStaff*>(context), _timeStart, _offset);
 
-	for (int i=0; i<markList().size(); i++) {
-		CAMark *m = static_cast<CAMark*>(markList()[i]->clone(c));
-		c->addMark( m );
-	}
+    for (int i = 0; i < markList().size(); i++) {
+        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(c));
+        c->addMark(m);
+    }
 
-	return c;
+    return c;
 }
 
-int CAClef::compare(CAMusElement *elt) {
-	if (elt->musElementType()!=CAMusElement::Clef)
-		return -1;
+int CAClef::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Clef)
+        return -1;
 
-	int diffs=0;
-	if ( _clefType!=static_cast<CAClef*>(elt)->clefType()) diffs++;
-	if ( _offset!=static_cast<CAClef*>(elt)->offset()) diffs++;
-	if ( _c1!=static_cast<CAClef*>(elt)->c1()) diffs++;
+    int diffs = 0;
+    if (_clefType != static_cast<CAClef*>(elt)->clefType())
+        diffs++;
+    if (_offset != static_cast<CAClef*>(elt)->offset())
+        diffs++;
+    if (_c1 != static_cast<CAClef*>(elt)->c1())
+        diffs++;
 
-	return diffs;
+    return diffs;
 }
 
 /*!
@@ -144,15 +161,22 @@ int CAClef::compare(CAMusElement *elt) {
 
 	\sa CAClefType, clefTypeFromString()
 */
-const QString CAClef::clefTypeToString(CAClefType type) {
-	switch (type) {
-		case G: return "G";
-		case F: return "F";
-		case C: return "C";
-		case PercussionHigh: return "percussion-high";
-		case PercussionLow: return "percussion-low";
-		case Tab: return "tab";
-	}
+const QString CAClef::clefTypeToString(CAClefType type)
+{
+    switch (type) {
+    case G:
+        return "G";
+    case F:
+        return "F";
+    case C:
+        return "C";
+    case PercussionHigh:
+        return "percussion-high";
+    case PercussionLow:
+        return "percussion-low";
+    case Tab:
+        return "tab";
+    }
     return "";
 }
 
@@ -161,14 +185,22 @@ const QString CAClef::clefTypeToString(CAClefType type) {
 
 	\sa CAClefType, clefTypeToString()
 */
-CAClef::CAClefType CAClef::clefTypeFromString(const QString type) {
-	if (type=="G") return G; else
-	if (type=="F") return F; else
-	if (type=="C") return C; else
-	if (type=="percussion-high") return PercussionHigh; else
-	if (type=="percussion-low") return PercussionLow; else
-	if (type=="tab") return Tab;
-	else return G;
+CAClef::CAClefType CAClef::clefTypeFromString(const QString type)
+{
+    if (type == "G")
+        return G;
+    else if (type == "F")
+        return F;
+    else if (type == "C")
+        return C;
+    else if (type == "percussion-high")
+        return PercussionHigh;
+    else if (type == "percussion-low")
+        return PercussionLow;
+    else if (type == "tab")
+        return Tab;
+    else
+        return G;
 }
 
 /*!
@@ -182,11 +214,12 @@ CAClef::CAClefType CAClef::clefTypeFromString(const QString type) {
 
 	\sa offsetFromReadable()
 */
-int CAClef::offsetToReadable( const int offsetInterval ) {
-	if ( !offsetInterval )
-		return 0;
+int CAClef::offsetToReadable(const int offsetInterval)
+{
+    if (!offsetInterval)
+        return 0;
 
-	return offsetInterval + offsetInterval/qAbs(offsetInterval);
+    return offsetInterval + offsetInterval / qAbs(offsetInterval);
 }
 
 /*!
@@ -195,11 +228,12 @@ int CAClef::offsetToReadable( const int offsetInterval ) {
 
 	\sa offsetToReadable()
 */
-int CAClef::offsetFromReadable( const int offset ) {
-	if ( qAbs(offset)==1 || !offset )
-		return 0;
+int CAClef::offsetFromReadable(const int offset)
+{
+    if (qAbs(offset) == 1 || !offset)
+        return 0;
 
-	return offset - offset/qAbs(offset);
+    return offset - offset / qAbs(offset);
 }
 
 /*!

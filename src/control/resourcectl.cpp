@@ -8,16 +8,16 @@
 #include "control/resourcectl.h"
 #include "score/document.h"
 #ifndef SWIGCPP
-#include "core/undo.h"
 #include "canorus.h"
+#include "core/undo.h"
 #endif
 
-#include <iostream> // debug
-#include <QUrl>
 #include <QDir>
 #include <QFile>
-#include <QTemporaryFile>
 #include <QFileInfo>
+#include <QTemporaryFile>
+#include <QUrl>
+#include <iostream> // debug
 
 /*!
 	\class CAResourceCtl
@@ -42,10 +42,12 @@
 /*!
 	Default constructor. Currently empty.
 */
-CAResourceCtl::CAResourceCtl() {
+CAResourceCtl::CAResourceCtl()
+{
 }
 
-CAResourceCtl::~CAResourceCtl() {
+CAResourceCtl::~CAResourceCtl()
+{
 }
 
 /*!
@@ -55,85 +57,88 @@ CAResourceCtl::~CAResourceCtl() {
 	If the resource is not linked, the \a fileName should be absolute path to the file, resource
 	is copied and registered.
  */
-CAResource *CAResourceCtl::importResource( QString name, QString fileName, bool isLinked, CADocument *parent, CAResource::CAResourceType t ) {
-	CAResource *r=nullptr;
-	if (isLinked) {
-		r = new CAResource( fileName, name, true, t, parent );
-	} else {
-		QTemporaryFile *f = new QTemporaryFile(QDir::tempPath()+"/"+name);
-		f->open();
-		QString targetFile = QFileInfo(*f).absoluteFilePath();
-		f->close();
-		delete f;
+CAResource* CAResourceCtl::importResource(QString name, QString fileName, bool isLinked, CADocument* parent, CAResource::CAResourceType t)
+{
+    CAResource* r = nullptr;
+    if (isLinked) {
+        r = new CAResource(fileName, name, true, t, parent);
+    } else {
+        QTemporaryFile* f = new QTemporaryFile(QDir::tempPath() + "/" + name);
+        f->open();
+        QString targetFile = QFileInfo(*f).absoluteFilePath();
+        f->close();
+        delete f;
 
-		if (QFile::exists(fileName)) {
-			QFile::copy( fileName, targetFile );
-			r = new CAResource( QUrl::fromLocalFile(targetFile), name, false, t, parent );
-		} else {
-			// file doesn't exist yet (eg. hasn't been extracted yet)
-			// create a dummy resource using fileName url
-			r = new CAResource( fileName, name, false, t, parent );
-		}
-	}
+        if (QFile::exists(fileName)) {
+            QFile::copy(fileName, targetFile);
+            r = new CAResource(QUrl::fromLocalFile(targetFile), name, false, t, parent);
+        } else {
+            // file doesn't exist yet (eg. hasn't been extracted yet)
+            // create a dummy resource using fileName url
+            r = new CAResource(fileName, name, false, t, parent);
+        }
+    }
 
-	if (parent) {
+    if (parent) {
 #ifndef SWIGCPP
-		QList<CADocument*> documents = CACanorus::undo()->getAllDocuments(parent);
+        QList<CADocument*> documents = CACanorus::undo()->getAllDocuments(parent);
 
-		for (int i=0; i<documents.size(); i++) {
-			documents[i]->addResource(r);
-		}
+        for (int i = 0; i < documents.size(); i++) {
+            documents[i]->addResource(r);
+        }
 #else
-		parent->addResource(r);
+        parent->addResource(r);
 #endif
-	}
+    }
 
-	return r;
+    return r;
 }
 
 /*!
 	Creates an empty resource file.
 	This function is usually called when launching Midi recorder.
  */
-CAResource *CAResourceCtl::createEmptyResource( QString name, CADocument *parent, CAResource::CAResourceType t ) {
-	QTemporaryFile f(QDir::tempPath()+"/"+name);
-	f.open();
-	QString fileName = QFileInfo(f).absoluteFilePath();
-	f.close();
-	CAResource *r = new CAResource( QUrl::fromLocalFile(fileName), name, false, t, parent );
+CAResource* CAResourceCtl::createEmptyResource(QString name, CADocument* parent, CAResource::CAResourceType t)
+{
+    QTemporaryFile f(QDir::tempPath() + "/" + name);
+    f.open();
+    QString fileName = QFileInfo(f).absoluteFilePath();
+    f.close();
+    CAResource* r = new CAResource(QUrl::fromLocalFile(fileName), name, false, t, parent);
 
-	if (parent) {
+    if (parent) {
 #ifndef SWIGCPP
-		QList<CADocument*> documents = CACanorus::undo()->getAllDocuments(parent);
+        QList<CADocument*> documents = CACanorus::undo()->getAllDocuments(parent);
 
-		for (int i=0; i<documents.size(); i++) {
-			documents[i]->addResource(r);
-		}
-		r->document()->setModified(true);
+        for (int i = 0; i < documents.size(); i++) {
+            documents[i]->addResource(r);
+        }
+        r->document()->setModified(true);
 #else
-		parent->addResource(r);
+        parent->addResource(r);
 #endif
-	}
+    }
 
-	return r;
+    return r;
 }
 
 /*!
 	Removes the given resource \a r from all the undo/redo document instances and destroys it.
  */
-void CAResourceCtl::deleteResource( CAResource *r ) {
-	if (r->document()) {
+void CAResourceCtl::deleteResource(CAResource* r)
+{
+    if (r->document()) {
 #ifndef SWIGCPP
-		QList<CADocument*> documents = CACanorus::undo()->getAllDocuments(r->document());
+        QList<CADocument*> documents = CACanorus::undo()->getAllDocuments(r->document());
 
-		for (int i=0; i<documents.size(); i++) {
-			documents[i]->removeResource(r);
-		}
-		r->document()->setModified(true);
+        for (int i = 0; i < documents.size(); i++) {
+            documents[i]->removeResource(r);
+        }
+        r->document()->setModified(true);
 #else
-		r->document()->removeResource(r);
+        r->document()->removeResource(r);
 #endif
-	}
+    }
 
-	delete r;
+    delete r;
 }

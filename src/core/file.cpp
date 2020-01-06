@@ -6,9 +6,9 @@
 */
 
 #include "core/file.h"
-#include <QTextStream>
-#include <QFile>
 #include <QBuffer>
+#include <QFile>
+#include <QTextStream>
 
 /*!
 	\class CAFile
@@ -25,23 +25,26 @@
 	\sa CAImport, CAExport
 */
 
-CAFile::CAFile() : QThread() {
-	setProgress( 0 );
-	setStatus( 0 );
-	setStream( nullptr );
-	setFile( nullptr );
-	_deleteStream = false;
+CAFile::CAFile()
+    : QThread()
+{
+    setProgress(0);
+    setStatus(0);
+    setStream(nullptr);
+    setFile(nullptr);
+    _deleteStream = false;
 }
 
 /*!
 	Destructor.
 	Also destroys the created stream and file, if set.
 */
-CAFile::~CAFile() {
-	if( stream() && _deleteStream )
-		delete stream();
-	if ( file() )
-		delete file();
+CAFile::~CAFile()
+{
+    if (stream() && _deleteStream)
+        delete stream();
+    if (file())
+        delete file();
 }
 
 /*!
@@ -51,16 +54,17 @@ CAFile::~CAFile() {
 	This method is also very important for python developers as they cannot directly
 	access QTextStream class, so they call this wrapper instead with a simple string as parameter.
 */
-void CAFile::setStreamFromFile( const QString filename ) {
-	setFile( new QFile( filename ) );
+void CAFile::setStreamFromFile(const QString filename)
+{
+    setFile(new QFile(filename));
 
-	if ( file()->open( QIODevice::ReadOnly ) ) {
-		if(stream() && _deleteStream) {
-			delete stream();
-		}
-		setStream( new QTextStream(file()) );
-		_deleteStream = true;
-	}
+    if (file()->open(QIODevice::ReadOnly)) {
+        if (stream() && _deleteStream) {
+            delete stream();
+        }
+        setStream(new QTextStream(file()));
+        _deleteStream = true;
+    }
 }
 
 #include <iostream>
@@ -72,37 +76,39 @@ void CAFile::setStreamFromFile( const QString filename ) {
 	This method is also very important for python developers as they cannot directly
 	access QTextStream class, so they call this wrapper instead with a simple string as parameter.
 */
-void CAFile::setStreamToFile( const QString filename ) {
-	if (stream() && _deleteStream) {
-		delete stream();
-		setStream(nullptr);
-	}
-	setFile( new QFile( filename ) );
+void CAFile::setStreamToFile(const QString filename)
+{
+    if (stream() && _deleteStream) {
+        delete stream();
+        setStream(nullptr);
+    }
+    setFile(new QFile(filename));
 
-	if ( file()->open( QIODevice::WriteOnly ) ) {
-		setStream( new QTextStream(file()) );
-		_deleteStream = true;
-	}
+    if (file()->open(QIODevice::WriteOnly)) {
+        setStream(new QTextStream(file()));
+        _deleteStream = true;
+    }
 }
 
 /*!
 	Creates and sets the stream from the given device.
 	Read-write if the given device is not already open.
 */
-void CAFile::setStreamToDevice(QIODevice* device) {
-	if (stream() && _deleteStream) {
-		delete stream();
-		setStream(nullptr);
-	}
+void CAFile::setStreamToDevice(QIODevice* device)
+{
+    if (stream() && _deleteStream) {
+        delete stream();
+        setStream(nullptr);
+    }
 
-	if (!device->isOpen()) {
-		device->open(QIODevice::ReadWrite);
-	}
+    if (!device->isOpen()) {
+        device->open(QIODevice::ReadWrite);
+    }
 
-	if (device->isOpen()) {
-		setStream(new QTextStream(device));
-		_deleteStream = true;
-	}
+    if (device->isOpen()) {
+        setStream(new QTextStream(device));
+        _deleteStream = true;
+    }
 }
 
 /*!
@@ -112,9 +118,10 @@ void CAFile::setStreamToDevice(QIODevice* device) {
 	
 	\sa getStreamAsString()
 */
-void CAFile::setStreamToString() {
-	QBuffer *score = new QBuffer();
-	setStreamToDevice(score);
+void CAFile::setStreamToString()
+{
+    QBuffer* score = new QBuffer();
+    setStreamToDevice(score);
 }
 
 /*!
@@ -126,32 +133,34 @@ void CAFile::setStreamToString() {
 
 	\sa setStreamToString()
 */
-QString CAFile::getStreamAsString() {
-	if (!stream()) {
-		return "";
-	} else {
-		return QString::fromUtf8(static_cast<QBuffer*>(stream()->device())->data());
-	}
+QString CAFile::getStreamAsString()
+{
+    if (!stream()) {
+        return "";
+    } else {
+        return QString::fromUtf8(static_cast<QBuffer*>(stream()->device())->data());
+    }
 }
 
 /*!
 	Creates and sets the stream from the given device.
 	Read-only if the device is not already open.
 */
-void CAFile::setStreamFromDevice(QIODevice* device) {
-	if (stream() && _deleteStream) {
-		delete stream();
-		setStream(nullptr);
-	}
+void CAFile::setStreamFromDevice(QIODevice* device)
+{
+    if (stream() && _deleteStream) {
+        delete stream();
+        setStream(nullptr);
+    }
 
-	if (!device->isOpen()) {
-		device->open(QIODevice::ReadOnly);
-	}
+    if (!device->isOpen()) {
+        device->open(QIODevice::ReadOnly);
+    }
 
-	if (device->isOpen()) {
-		CAFile::setStream(new QTextStream(device));
-		_deleteStream = true;
-	}
+    if (device->isOpen()) {
+        CAFile::setStream(new QTextStream(device));
+        _deleteStream = true;
+    }
 }
 
 /*!

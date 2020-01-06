@@ -17,58 +17,58 @@ class CANote;
 
 class CASlur : public CAMusElement {
 public:
-	enum CASlurDirection {
-		SlurUp,
-		SlurDown,
-		SlurNeutral,
-		SlurPreferred
-	};
+    enum CASlurDirection {
+        SlurUp,
+        SlurDown,
+        SlurNeutral,
+        SlurPreferred
+    };
 
-	enum CASlurStyle {
-		Undefined = 0,
-		SlurSolid,
-		SlurDotted
-	};
+    enum CASlurStyle {
+        Undefined = 0,
+        SlurSolid,
+        SlurDotted
+    };
 
-	enum CASlurType {
-		TieType,
-		SlurType,
-		PhrasingSlurType
-	};
+    enum CASlurType {
+        TieType,
+        SlurType,
+        PhrasingSlurType
+    };
 
-	CASlur( CASlurType, CASlurDirection, CAContext *c, CANote *noteStart, CANote *noteEnd=nullptr, CASlurStyle style=SlurSolid );
-	virtual ~CASlur();
+    CASlur(CASlurType, CASlurDirection, CAContext* c, CANote* noteStart, CANote* noteEnd = nullptr, CASlurStyle style = SlurSolid);
+    virtual ~CASlur();
 
-	CASlur *clone(CAContext* context=nullptr);
-	CASlur *clone(CAContext* context, CANote* noteStart, CANote* noteEnd);
-	int compare( CAMusElement *elt );
+    CASlur* clone(CAContext* context = nullptr);
+    CASlur* clone(CAContext* context, CANote* noteStart, CANote* noteEnd);
+    int compare(CAMusElement* elt);
 
-	inline CASlurDirection slurDirection() { return _slurDirection; }
-	inline void setSlurDirection(CASlurDirection dir) { _slurDirection = dir; }
+    inline CASlurDirection slurDirection() { return _slurDirection; }
+    inline void setSlurDirection(CASlurDirection dir) { _slurDirection = dir; }
 
-	inline CASlurType slurType() { return _slurType; }
-	inline CANote *noteStart() { return _noteStart; }
-	inline CANote *noteEnd() { return _noteEnd; }
-	inline CASlurStyle slurStyle() { return _slurStyle; }
-	inline void setNoteStart( CANote *noteStart ) { _noteStart = noteStart; }
-	inline void setNoteEnd( CANote *noteEnd ) { _noteEnd = noteEnd; }
-	inline void setSlurStyle( CASlurStyle slurStyle ) { _slurStyle = slurStyle; }
+    inline CASlurType slurType() { return _slurType; }
+    inline CANote* noteStart() { return _noteStart; }
+    inline CANote* noteEnd() { return _noteEnd; }
+    inline CASlurStyle slurStyle() { return _slurStyle; }
+    inline void setNoteStart(CANote* noteStart) { _noteStart = noteStart; }
+    inline void setNoteEnd(CANote* noteEnd) { _noteEnd = noteEnd; }
+    inline void setSlurStyle(CASlurStyle slurStyle) { _slurStyle = slurStyle; }
 
-	static const QString slurStyleToString( CASlurStyle style );
-	static CASlurStyle slurStyleFromString( const QString style );
+    static const QString slurStyleToString(CASlurStyle style);
+    static CASlurStyle slurStyleFromString(const QString style);
 
-	static const QString slurDirectionToString( CASlurDirection dir );
-	static CASlurDirection slurDirectionFromString( const QString dir );
+    static const QString slurDirectionToString(CASlurDirection dir);
+    static CASlurDirection slurDirectionFromString(const QString dir);
 
 private:
-	inline void setSlurType( CASlurType type ) { _slurType = type; }
+    inline void setSlurType(CASlurType type) { _slurType = type; }
 
-	CASlurDirection _slurDirection;
-	CASlurStyle _slurStyle;
-	CASlurType _slurType;
+    CASlurDirection _slurDirection;
+    CASlurStyle _slurStyle;
+    CASlurType _slurType;
 
-	CANote *_noteStart;
-	CANote *_noteEnd;
+    CANote* _noteStart;
+    CANote* _noteEnd;
 };
 
 #endif /*SLUR_H_*/

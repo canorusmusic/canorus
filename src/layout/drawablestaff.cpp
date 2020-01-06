@@ -8,43 +8,47 @@
 #include <QDebug>
 #include <QPainter>
 
-#include "layout/drawablestaff.h"
+#include "layout/drawablebarline.h"
 #include "layout/drawableclef.h"
 #include "layout/drawablekeysignature.h"
+#include "layout/drawablestaff.h"
 #include "layout/drawabletimesignature.h"
-#include "layout/drawablebarline.h"
 
-#include "score/note.h"
+#include "score/barline.h"
 #include "score/clef.h"
 #include "score/keysignature.h"
+#include "score/note.h"
 #include "score/timesignature.h"
-#include "score/barline.h"
 
 const double CADrawableStaff::STAFFLINE_WIDTH = 0.8;
 
-CADrawableStaff::CADrawableStaff(CAStaff *s, double x, double y) : CADrawableContext(s, x, y) {
-	_drawableContextType = CADrawableContext::DrawableStaff;
-	setWidth( 0 );
-	setHeight( 37 );
+CADrawableStaff::CADrawableStaff(CAStaff* s, double x, double y)
+    : CADrawableContext(s, x, y)
+{
+    _drawableContextType = CADrawableContext::DrawableStaff;
+    setWidth(0);
+    setHeight(37);
 }
 
-void CADrawableStaff::draw(QPainter *p, const CADrawSettings s) {
-	QPen pen;
-	pen.setWidthF(STAFFLINE_WIDTH*s.z);
-	pen.setCapStyle(Qt::RoundCap);
-	pen.setColor(s.color);
-	p->setPen(pen);
-	double dy = lineSpace()*s.z;
-	for (int i=0; i<staff()->numberOfLines(); i++) {
-		p->drawLine(0, qRound(s.y + dy*i),
-		            s.w, qRound(s.y + dy*i));
-	}
+void CADrawableStaff::draw(QPainter* p, const CADrawSettings s)
+{
+    QPen pen;
+    pen.setWidthF(STAFFLINE_WIDTH * s.z);
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setColor(s.color);
+    p->setPen(pen);
+    double dy = lineSpace() * s.z;
+    for (int i = 0; i < staff()->numberOfLines(); i++) {
+        p->drawLine(0, qRound(s.y + dy * i),
+            s.w, qRound(s.y + dy * i));
+    }
 }
 
-CADrawableStaff *CADrawableStaff::clone() {
-	CADrawableStaff *d = new CADrawableStaff(staff(), xPos(), yPos());
+CADrawableStaff* CADrawableStaff::clone()
+{
+    CADrawableStaff* d = new CADrawableStaff(staff(), xPos(), yPos());
 
-	return d;
+    return d;
 }
 
 /*!
@@ -54,10 +58,10 @@ CADrawableStaff *CADrawableStaff::clone() {
 	\param clef Corresponding clef.
 	\return Center of a space/line of a staff in absolute world units.
 */
-double CADrawableStaff::calculateCenterYCoord(int pitch, CAClef *clef) {
-	// middle c in logical pitch is 28.
-	return yPos() + height() -
-		(((pitch - 28) + (clef?clef->c1():-2))/2.0)*lineSpace();
+double CADrawableStaff::calculateCenterYCoord(int pitch, CAClef* clef)
+{
+    // middle c in logical pitch is 28.
+    return yPos() + height() - (((pitch - 28) + (clef ? clef->c1() : -2)) / 2.0) * lineSpace();
 }
 
 /*!
@@ -69,9 +73,10 @@ double CADrawableStaff::calculateCenterYCoord(int pitch, CAClef *clef) {
 	\param x X coordinate of the note.
 	\return Center of a space/line of a staff in absolute world units.
 */
-double CADrawableStaff::calculateCenterYCoord(CANote *note, double x) {
-	CAClef *clef = getClef(x);
-	return calculateCenterYCoord( note->diatonicPitch().noteName(), clef );
+double CADrawableStaff::calculateCenterYCoord(CANote* note, double x)
+{
+    CAClef* clef = getClef(x);
+    return calculateCenterYCoord(note->diatonicPitch().noteName(), clef);
 }
 
 /*!
@@ -83,9 +88,10 @@ double CADrawableStaff::calculateCenterYCoord(CANote *note, double x) {
 	\param x X coordinate of the note.
 	\return Center of a space/line of a staff in absolute world units.
 */
-double CADrawableStaff::calculateCenterYCoord(int pitch, double x) {
-	CAClef *clef = getClef(x);
-	return calculateCenterYCoord(pitch, clef);
+double CADrawableStaff::calculateCenterYCoord(int pitch, double x)
+{
+    CAClef* clef = getClef(x);
+    return calculateCenterYCoord(pitch, clef);
 }
 
 /*!
@@ -97,8 +103,9 @@ double CADrawableStaff::calculateCenterYCoord(int pitch, double x) {
 	\param clef Corresponding clef.
 	\return Center of a space/line of a staff in absolute world units.
 */
-double CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
-	return calculateCenterYCoord( note->diatonicPitch().noteName(), clef );
+double CADrawableStaff::calculateCenterYCoord(CANote* note, CAClef* clef)
+{
+    return calculateCenterYCoord(note->diatonicPitch().noteName(), clef);
 }
 
 /*!
@@ -106,12 +113,13 @@ double CADrawableStaff::calculateCenterYCoord(CANote *note, CAClef *clef) {
 
 	\return Center of the nearest space/line of a staff, whichever is closer in absolute world units.
 */
-double CADrawableStaff::calculateCenterYCoord(double y) {
-	double newY = (y - yPos()) / (lineSpace()/2);
-	newY += 0.5*((y-yPos()<0)?-1:1);	//round to nearest line/space
-	newY = static_cast<double>(static_cast<int>(newY));
+double CADrawableStaff::calculateCenterYCoord(double y)
+{
+    double newY = (y - yPos()) / (lineSpace() / 2);
+    newY += 0.5 * ((y - yPos() < 0) ? -1 : 1); //round to nearest line/space
+    newY = static_cast<double>(static_cast<int>(newY));
 
-	return yPos() + ((newY) * (lineSpace()/2));
+    return yPos() + ((newY) * (lineSpace() / 2));
 }
 
 /*!
@@ -121,39 +129,45 @@ double CADrawableStaff::calculateCenterYCoord(double y) {
 	\param y Y coordinate in absolute world units.
 	\return Note pitch in logical units.
 */
-int CADrawableStaff::calculatePitch(double x, double y) {
-	CAClef *clef = getClef(x);
-	double yC1 = yPos() + height() - (clef?clef->c1():-2)*(lineSpace()/2); // Y coordinate of c1 of the current staff
+int CADrawableStaff::calculatePitch(double x, double y)
+{
+    CAClef* clef = getClef(x);
+    double yC1 = yPos() + height() - (clef ? clef->c1() : -2) * (lineSpace() / 2); // Y coordinate of c1 of the current staff
 
-	// middle c = 28
-	return qRound( 28 - (y - yC1)/(lineSpace()/2.0) );
+    // middle c = 28
+    return qRound(28 - (y - yC1) / (lineSpace() / 2.0));
 }
 
 /*!
 	Adds a clef \a clef to the clef list for faster search of the current clef in the staff.
 */
-void CADrawableStaff::addClef(CADrawableClef *clef) {
-	int i;
-	for (i=0; ((i<_drawableClefList.size()) && (clef->xPos() > _drawableClefList[i]->xPos())); i++);
-	_drawableClefList.insert(i, clef);
+void CADrawableStaff::addClef(CADrawableClef* clef)
+{
+    int i;
+    for (i = 0; ((i < _drawableClefList.size()) && (clef->xPos() > _drawableClefList[i]->xPos())); i++)
+        ;
+    _drawableClefList.insert(i, clef);
 }
 
 /*!
 	Removes the given clef from the clefs-lookup list.
 	Returns True, if the clef was successfully removed, False otherwise.
 */
-bool CADrawableStaff::removeClef(CADrawableClef *clef) {
-	return _drawableClefList.removeAll(clef);
+bool CADrawableStaff::removeClef(CADrawableClef* clef)
+{
+    return _drawableClefList.removeAll(clef);
 }
 
 /*!
 	Returns the pointer to the last clef placed before the given X-coordinate.
 */
-CAClef* CADrawableStaff::getClef(double x) {
-	int i;
-	for (i=0; ((i<_drawableClefList.size()) && (x > _drawableClefList[i]->xPos())); i++);
+CAClef* CADrawableStaff::getClef(double x)
+{
+    int i;
+    for (i = 0; ((i < _drawableClefList.size()) && (x > _drawableClefList[i]->xPos())); i++)
+        ;
 
-	return ((--i<0)?nullptr:_drawableClefList[i]->clef());
+    return ((--i < 0) ? nullptr : _drawableClefList[i]->clef());
 }
 
 /*!
@@ -161,185 +175,197 @@ CAClef* CADrawableStaff::getClef(double x) {
 	This is useful to determine the note's pitch to be placed in certain measure or part of the measure,
 	if accidentals have been placed before.
 */
-int CADrawableStaff::getAccs(double x, int pitch) {
-	CAKeySignature *key = getKeySignature(x);
+int CADrawableStaff::getAccs(double x, int pitch)
+{
+    CAKeySignature* key = getKeySignature(x);
 
-	//find nearest left element
-	int i; for (i=0; i<_drawableMusElementList.size() && _drawableMusElementList[i]->xPos() < x; i++)
+    //find nearest left element
+    int i;
+    for (i = 0; i < _drawableMusElementList.size() && _drawableMusElementList[i]->xPos() < x; i++)
         ;
     i--;
 
-	while (i>=0 &&
-	       _drawableMusElementList[i]->drawableMusElementType() != CADrawableMusElement::DrawableBarline &&
-	       _drawableMusElementList[i]->drawableMusElementType() != CADrawableMusElement::DrawableKeySignature &&
-	       (!(_drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableNote &&
-	          (static_cast<CANote*>(_drawableMusElementList[i]->musElement())->diatonicPitch().noteName() == pitch)
-	         ))
-	      ) {	// go back until the barline, key signature or note with accidentals is found
-	      	i--;
-	}
+    while (i >= 0 && _drawableMusElementList[i]->drawableMusElementType() != CADrawableMusElement::DrawableBarline && _drawableMusElementList[i]->drawableMusElementType() != CADrawableMusElement::DrawableKeySignature && (!(_drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableNote && (static_cast<CANote*>(_drawableMusElementList[i]->musElement())->diatonicPitch().noteName() == pitch)))) { // go back until the barline, key signature or note with accidentals is found
+        i--;
+    }
 
-	if (i==-1)
-		return 0;
-	if (_drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableBarline ||
-	    _drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableKeySignature)
-		return (key?key->accidentals()[ pitch<0 ? 6-(-pitch-1)%7 : pitch%7 ]:0);	// watch: % operator with negative numbers is implementation dependent
-	else // note before
-		return (static_cast<CANote*>(_drawableMusElementList[i]->musElement())->diatonicPitch().accs());
+    if (i == -1)
+        return 0;
+    if (_drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableBarline || _drawableMusElementList[i]->drawableMusElementType() == CADrawableMusElement::DrawableKeySignature)
+        return (key ? key->accidentals()[pitch < 0 ? 6 - (-pitch - 1) % 7 : pitch % 7] : 0); // watch: % operator with negative numbers is implementation dependent
+    else // note before
+        return (static_cast<CANote*>(_drawableMusElementList[i]->musElement())->diatonicPitch().accs());
 }
 
 /*!
 	Adds a key signature \a keySig to the key signatures list for faster search of the current key signature in the staff.
 */
-void CADrawableStaff::addKeySignature(CADrawableKeySignature *keySig) {
-	int i;
-	for (i=0; ((i<_drawableKeySignatureList.size()) && (keySig->xPos() > _drawableKeySignatureList[i]->xPos())); i++);
-	_drawableKeySignatureList.insert(i, keySig);
+void CADrawableStaff::addKeySignature(CADrawableKeySignature* keySig)
+{
+    int i;
+    for (i = 0; ((i < _drawableKeySignatureList.size()) && (keySig->xPos() > _drawableKeySignatureList[i]->xPos())); i++)
+        ;
+    _drawableKeySignatureList.insert(i, keySig);
 }
 
 /*!
 	Removes the given key signature from the key signatures-lookup list.
 	Returns True, if the key signature was successfully removed, False otherwise.
 */
-bool CADrawableStaff::removeKeySignature(CADrawableKeySignature *keySig) {
-	return _drawableKeySignatureList.removeAll(keySig);
+bool CADrawableStaff::removeKeySignature(CADrawableKeySignature* keySig)
+{
+    return _drawableKeySignatureList.removeAll(keySig);
 }
 
 /*!
  * Helper function for getBarline() when doing the binary search over elements.
  */
-bool CADrawableStaff::xDrawableBarlineLessThan(const CADrawableBarline* a, const double x) {
-     return (a->xPos() < x);
+bool CADrawableStaff::xDrawableBarlineLessThan(const CADrawableBarline* a, const double x)
+{
+    return (a->xPos() < x);
 }
 
 /*
 	Returns the pointer to the last barline placed before the given X-coordinate.
 	This function is usually called when drawing the ruler.
 */
-CABarline* CADrawableStaff::getBarline(double x) {
-	QList<CADrawableBarline*>::const_iterator it = qLowerBound(_drawableBarlineList.constBegin(), _drawableBarlineList.constEnd(), x, CADrawableStaff::xDrawableBarlineLessThan);
-	if (it!=_drawableBarlineList.constBegin()) {
-		it--;
-	}
-	
-	return ((it!=_drawableBarlineList.constEnd())?((*it)->barline()):nullptr);
+CABarline* CADrawableStaff::getBarline(double x)
+{
+    QList<CADrawableBarline*>::const_iterator it = qLowerBound(_drawableBarlineList.constBegin(), _drawableBarlineList.constEnd(), x, CADrawableStaff::xDrawableBarlineLessThan);
+    if (it != _drawableBarlineList.constBegin()) {
+        it--;
+    }
+
+    return ((it != _drawableBarlineList.constEnd()) ? ((*it)->barline()) : nullptr);
 }
 
 /*!
 	Adds a barline \a barlineto the barline list for faster search when drawing the ruler.
 */
-void CADrawableStaff::addBarline(CADrawableBarline *barline) {
-	int i;
-	for (i=0; ((i<_drawableBarlineList.size()) && (barline->xPos() > _drawableBarlineList[i]->xPos())); i++);
-	_drawableBarlineList.insert(i, barline);
+void CADrawableStaff::addBarline(CADrawableBarline* barline)
+{
+    int i;
+    for (i = 0; ((i < _drawableBarlineList.size()) && (barline->xPos() > _drawableBarlineList[i]->xPos())); i++)
+        ;
+    _drawableBarlineList.insert(i, barline);
 }
 
 /*!
 	Removes the given barline from the barline-lookup list.
 	Returns True, if the barline was successfully removed, False otherwise.
 */
-bool CADrawableStaff::removeBarline(CADrawableBarline *barline) {
-	return _drawableBarlineList.removeAll(barline);
+bool CADrawableStaff::removeBarline(CADrawableBarline* barline)
+{
+    return _drawableBarlineList.removeAll(barline);
 }
 
 /*
 	Returns the pointer to the last key signature placed before the given X-coordinate.
 */
-CAKeySignature* CADrawableStaff::getKeySignature(double x) {
-	int i;
-	for (i=0; ((i<_drawableKeySignatureList.size()) && (x > _drawableKeySignatureList[i]->xPos())); i++);
+CAKeySignature* CADrawableStaff::getKeySignature(double x)
+{
+    int i;
+    for (i = 0; ((i < _drawableKeySignatureList.size()) && (x > _drawableKeySignatureList[i]->xPos())); i++)
+        ;
 
-	return ((--i<0)?nullptr:_drawableKeySignatureList[i]->keySignature());
+    return ((--i < 0) ? nullptr : _drawableKeySignatureList[i]->keySignature());
 }
 
 /*!
 	Adds a time signature \a timeSig to the time signatures list for faster search of the current time signature in the staff.
 */
-void CADrawableStaff::addTimeSignature(CADrawableTimeSignature *timeSig) {
-	int i;
-	for (i=0; ((i<_drawableTimeSignatureList.size()) && (timeSig->xPos() > _drawableTimeSignatureList[i]->xPos())); i++);
-	_drawableTimeSignatureList.insert(i, timeSig);
+void CADrawableStaff::addTimeSignature(CADrawableTimeSignature* timeSig)
+{
+    int i;
+    for (i = 0; ((i < _drawableTimeSignatureList.size()) && (timeSig->xPos() > _drawableTimeSignatureList[i]->xPos())); i++)
+        ;
+    _drawableTimeSignatureList.insert(i, timeSig);
 }
 
 /*!
 	Removes the given time signature from the time signatures-lookup list.
 	Returns True, if the time signature was successfully removed, False otherwise.
 */
-bool CADrawableStaff::removeTimeSignature(CADrawableTimeSignature *timeSig) {
-	return _drawableTimeSignatureList.removeAll(timeSig);
+bool CADrawableStaff::removeTimeSignature(CADrawableTimeSignature* timeSig)
+{
+    return _drawableTimeSignatureList.removeAll(timeSig);
 }
 
 /*!
 	Returns the pointer to the last time signature placed before the given X-coordinate.
 */
-CATimeSignature* CADrawableStaff::getTimeSignature(double x) {
-	int i;
-	for (i=0; ((i<_drawableTimeSignatureList.size()) && (x > _drawableTimeSignatureList[i]->xPos())); i++);
+CATimeSignature* CADrawableStaff::getTimeSignature(double x)
+{
+    int i;
+    for (i = 0; ((i < _drawableTimeSignatureList.size()) && (x > _drawableTimeSignatureList[i]->xPos())); i++)
+        ;
 
-	return ((--i<0)?nullptr:_drawableTimeSignatureList[i]->timeSignature());
+    return ((--i < 0) ? nullptr : _drawableTimeSignatureList[i]->timeSignature());
 }
 
-void CADrawableStaff::addMElement(CADrawableMusElement *elt) {
-	switch (elt->drawableMusElementType()) {
-		case CADrawableMusElement::DrawableClef:
-			addClef(static_cast<CADrawableClef*>(elt));
-			break;
-		case CADrawableMusElement::DrawableKeySignature:
-			addKeySignature(static_cast<CADrawableKeySignature*>(elt));
-			break;
-		case CADrawableMusElement::DrawableTimeSignature:
-			addTimeSignature(static_cast<CADrawableTimeSignature*>(elt));
-			break;
-		case CADrawableMusElement::DrawableBarline:
-			addBarline(static_cast<CADrawableBarline*>(elt));
-			break;
-		case CADrawableMusElement::DrawableNote:
-		case CADrawableMusElement::DrawableRest:
-		case CADrawableMusElement::DrawableMidiNote:
-		case CADrawableMusElement::DrawableAccidental:
-		case CADrawableMusElement::DrawableSlur:
-		case CADrawableMusElement::DrawableTuplet:
-		case CADrawableMusElement::DrawableSyllable:
-		case CADrawableMusElement::DrawableFunctionMark:
-		case CADrawableMusElement::DrawableFunctionMarkSupport:
-		case CADrawableMusElement::DrawableFiguredBassNumber:
-		case CADrawableMusElement::DrawableMark:
-		case CADrawableMusElement::DrawableChordName:
-			// These elements are just added to the list but not handled specifically
-			//fprintf(stderr,"Warning: CADrawableStaff::addMElement - Unhandled element %d\n",elt->drawableMusElementType());
-			break;
-	}
+void CADrawableStaff::addMElement(CADrawableMusElement* elt)
+{
+    switch (elt->drawableMusElementType()) {
+    case CADrawableMusElement::DrawableClef:
+        addClef(static_cast<CADrawableClef*>(elt));
+        break;
+    case CADrawableMusElement::DrawableKeySignature:
+        addKeySignature(static_cast<CADrawableKeySignature*>(elt));
+        break;
+    case CADrawableMusElement::DrawableTimeSignature:
+        addTimeSignature(static_cast<CADrawableTimeSignature*>(elt));
+        break;
+    case CADrawableMusElement::DrawableBarline:
+        addBarline(static_cast<CADrawableBarline*>(elt));
+        break;
+    case CADrawableMusElement::DrawableNote:
+    case CADrawableMusElement::DrawableRest:
+    case CADrawableMusElement::DrawableMidiNote:
+    case CADrawableMusElement::DrawableAccidental:
+    case CADrawableMusElement::DrawableSlur:
+    case CADrawableMusElement::DrawableTuplet:
+    case CADrawableMusElement::DrawableSyllable:
+    case CADrawableMusElement::DrawableFunctionMark:
+    case CADrawableMusElement::DrawableFunctionMarkSupport:
+    case CADrawableMusElement::DrawableFiguredBassNumber:
+    case CADrawableMusElement::DrawableMark:
+    case CADrawableMusElement::DrawableChordName:
+        // These elements are just added to the list but not handled specifically
+        //fprintf(stderr,"Warning: CADrawableStaff::addMElement - Unhandled element %d\n",elt->drawableMusElementType());
+        break;
+    }
 
-	_drawableMusElementList << elt;
+    _drawableMusElementList << elt;
 }
 
-int CADrawableStaff::removeMElement(CADrawableMusElement *elt) {
-	switch (elt->drawableMusElementType()) {
-		case CADrawableMusElement::DrawableClef:
-			removeClef(static_cast<CADrawableClef*>(elt));
-			break;
-		case CADrawableMusElement::DrawableKeySignature:
-			removeKeySignature(static_cast<CADrawableKeySignature*>(elt));
-			break;
-		case CADrawableMusElement::DrawableTimeSignature:
-			removeTimeSignature(static_cast<CADrawableTimeSignature*>(elt));
-			break;
-		case CADrawableMusElement::DrawableNote:
-		case CADrawableMusElement::DrawableRest:
-		case CADrawableMusElement::DrawableMidiNote:
-		case CADrawableMusElement::DrawableBarline:
-		case CADrawableMusElement::DrawableAccidental:
-		case CADrawableMusElement::DrawableSlur:
-		case CADrawableMusElement::DrawableTuplet:
-		case CADrawableMusElement::DrawableSyllable:
-		case CADrawableMusElement::DrawableFunctionMark:
-		case CADrawableMusElement::DrawableFunctionMarkSupport:
-		case CADrawableMusElement::DrawableFiguredBassNumber:
-		case CADrawableMusElement::DrawableMark:
-		case CADrawableMusElement::DrawableChordName:
-			qDebug() << "Warning: CADrawableStaff::removeMElement - Unhandled element" << elt->drawableMusElementType();
-			break;
-	}
+int CADrawableStaff::removeMElement(CADrawableMusElement* elt)
+{
+    switch (elt->drawableMusElementType()) {
+    case CADrawableMusElement::DrawableClef:
+        removeClef(static_cast<CADrawableClef*>(elt));
+        break;
+    case CADrawableMusElement::DrawableKeySignature:
+        removeKeySignature(static_cast<CADrawableKeySignature*>(elt));
+        break;
+    case CADrawableMusElement::DrawableTimeSignature:
+        removeTimeSignature(static_cast<CADrawableTimeSignature*>(elt));
+        break;
+    case CADrawableMusElement::DrawableNote:
+    case CADrawableMusElement::DrawableRest:
+    case CADrawableMusElement::DrawableMidiNote:
+    case CADrawableMusElement::DrawableBarline:
+    case CADrawableMusElement::DrawableAccidental:
+    case CADrawableMusElement::DrawableSlur:
+    case CADrawableMusElement::DrawableTuplet:
+    case CADrawableMusElement::DrawableSyllable:
+    case CADrawableMusElement::DrawableFunctionMark:
+    case CADrawableMusElement::DrawableFunctionMarkSupport:
+    case CADrawableMusElement::DrawableFiguredBassNumber:
+    case CADrawableMusElement::DrawableMark:
+    case CADrawableMusElement::DrawableChordName:
+        qDebug() << "Warning: CADrawableStaff::removeMElement - Unhandled element" << elt->drawableMusElementType();
+        break;
+    }
 
-	return _drawableMusElementList.removeAll(elt);
+    return _drawableMusElementList.removeAll(elt);
 }

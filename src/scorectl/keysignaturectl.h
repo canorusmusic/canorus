@@ -17,26 +17,24 @@ class CAMainWin;
 // Keysignature control is a class for implementing UI controls
 // for placing key signatures into a score document
 // It is created via the Canorus mainwindow (currently)
-class CAKeySignatureCtl : public QObject
-{
-	Q_OBJECT
+class CAKeySignatureCtl : public QObject {
+    Q_OBJECT
 
 public:
-	CAKeySignatureCtl( CAMainWin *poMainWin, const QString &oHash );
-	~CAKeySignatureCtl();
-	void setupActions();
-	
+    CAKeySignatureCtl(CAMainWin* poMainWin, const QString& oHash);
+    ~CAKeySignatureCtl();
+    void setupActions();
+
 protected:
-	CAMainWin    *_poMainWin;
+    CAMainWin* _poMainWin;
 
 public slots:
-	void on_uiInsertKeySig_toggled(bool);
-	// Key Signature
-	void on_uiKeySig_activated( int );
+    void on_uiInsertKeySig_toggled(bool);
+    // Key Signature
+    void on_uiKeySig_activated(int);
 
 private:
-	const QString _oHash;
+    const QString _oHash;
 };
 
 #endif // _KEYSIGNATURE_CTL_H
-

@@ -14,9 +14,9 @@ class CANoteCheckerError;
 
 class CADrawableNoteCheckerError : public CADrawable {
 public:
-	CADrawableNoteCheckerError(CANoteCheckerError *nce, CADrawable *dTarget);
-	void draw(QPainter *p, const CADrawSettings s);
-	CADrawable *clone();
+    CADrawableNoteCheckerError(CANoteCheckerError* nce, CADrawable* dTarget);
+    void draw(QPainter* p, const CADrawSettings s);
+    CADrawable* clone();
 };
 
 #endif /* DRAWABLECONTEXT_H_ */

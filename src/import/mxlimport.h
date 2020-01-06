@@ -12,27 +12,27 @@
 #include "import/musicxmlimport.h"
 #include "zip/zip.h"
 
-#include <QSharedPointer>
 #include <QFileInfo>
+#include <QSharedPointer>
 
-class CAMXLImport: public CAMusicXmlImport {
+class CAMXLImport : public CAMusicXmlImport {
 public:
-	CAMXLImport( QTextStream *stream=nullptr );
-	CAMXLImport( const QString stream );
-	virtual ~CAMXLImport();
+    CAMXLImport(QTextStream* stream = nullptr);
+    CAMXLImport(const QString stream);
+    virtual ~CAMXLImport();
 
-    inline QTextStream *txtStream() { return _txtStream; }
-	inline void setTxtStream( QTextStream *stream ) { _txtStream = stream; }
+    inline QTextStream* txtStream() { return _txtStream; }
+    inline void setTxtStream(QTextStream* stream) { _txtStream = stream; }
 
 protected:
-	CADocument *importDocumentImpl();
+    CADocument* importDocumentImpl();
 
 private:
-    bool openContainer(const QFileInfo &containerInfo);
-    bool readContainerInfo(QString &musicXMLFileName);
+    bool openContainer(const QFileInfo& containerInfo);
+    bool readContainerInfo(QString& musicXMLFileName);
 
-	QTextStream *_txtStream=nullptr;
-    QString     _zipArchivePath;
+    QTextStream* _txtStream = nullptr;
+    QString _zipArchivePath;
 };
 
 #endif /* MUSICXMLIMPORT_H_ */

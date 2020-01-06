@@ -11,39 +11,37 @@
 
 #include <Python.h>
 
-#include <QString>
 #include <QList>
-
-
+#include <QString>
 
 class CASwigPython {
-	public:
-		enum CAClassType {
-			// Qt objects
-			String,
+public:
+    enum CAClassType {
+        // Qt objects
+        String,
 
-			// Canorus objects
-			Document,
-			Sheet,
-			Resource,
-			Context,
-			Voice,
-			MusElement,
-			PlayableLength,
+        // Canorus objects
+        Document,
+        Sheet,
+        Resource,
+        Context,
+        Voice,
+        MusElement,
+        PlayableLength,
 
-			// Console
-			PyConsoleInterface,
+        // Console
+        PyConsoleInterface,
 
-			// Plugins
-			Plugin
-		};
+        // Plugins
+        Plugin
+    };
 
-		static void init();
-		static PyObject *callFunction(QString fileName, QString function, QList<PyObject*> args, bool autoReload = false);
-		static void *callPycli(void*);
-		static PyObject *toPythonObject(void *object, CAClassType type);	// defined in scripting/canoruspython.i
+    static void init();
+    static PyObject* callFunction(QString fileName, QString function, QList<PyObject*> args, bool autoReload = false);
+    static void* callPycli(void*);
+    static PyObject* toPythonObject(void* object, CAClassType type); // defined in scripting/canoruspython.i
 
-        static PyThreadState *mainThreadState, *pycliThreadState;
+    static PyThreadState *mainThreadState, *pycliThreadState;
 };
 
 #endif /*SWIGPYTHON_H_*/

@@ -8,22 +8,22 @@
 #ifndef TEXT_H_
 #define TEXT_H_
 
-#include <QString>
 #include "score/mark.h"
+#include <QString>
 
 class CAText : public CAMark {
 public:
-	CAText( const QString text, CAPlayable *m );
-	virtual ~CAText();
+    CAText(const QString text, CAPlayable* m);
+    virtual ~CAText();
 
-	inline const QString text() { return _text; }
-	inline void setText( const QString t ) { _text = t; }
+    inline const QString text() { return _text; }
+    inline void setText(const QString t) { _text = t; }
 
-	CAText* clone(CAMusElement* elt=nullptr);
-	int compare(CAMusElement *elt);
+    CAText* clone(CAMusElement* elt = nullptr);
+    int compare(CAMusElement* elt);
 
 private:
-	QString _text;
+    QString _text;
 };
 
 #endif /* TEXT_H_ */

@@ -11,39 +11,45 @@
 
 #include "widgets/progressstatusbar.h"
 
-CAProgressStatusBar::CAProgressStatusBar( QWidget *parent )
- : QStatusBar(parent),
-   _progressLabel(new QLabel("", this)),
-   _progressBar(new QProgressBar(this)),
-   _cancelButton(new QPushButton(tr("Cancel"), this)) {
-	addWidget( _progressLabel );
-	addWidget( _progressBar );
-	addWidget( _cancelButton );
+CAProgressStatusBar::CAProgressStatusBar(QWidget* parent)
+    : QStatusBar(parent)
+    , _progressLabel(new QLabel("", this))
+    , _progressBar(new QProgressBar(this))
+    , _cancelButton(new QPushButton(tr("Cancel"), this))
+{
+    addWidget(_progressLabel);
+    addWidget(_progressBar);
+    addWidget(_cancelButton);
 
-	connect( _cancelButton, SIGNAL(clicked(bool)), this, SLOT(on_cancelButton_clicked(bool)) );
+    connect(_cancelButton, SIGNAL(clicked(bool)), this, SLOT(on_cancelButton_clicked(bool)));
 }
 
-CAProgressStatusBar::~CAProgressStatusBar() {
-	delete _progressLabel;
-	delete _progressBar;
-	delete _cancelButton;
+CAProgressStatusBar::~CAProgressStatusBar()
+{
+    delete _progressLabel;
+    delete _progressBar;
+    delete _cancelButton;
 }
 
-void CAProgressStatusBar::on_cancelButton_clicked( bool c ) {
-	_cancelButton->setEnabled(false);
+void CAProgressStatusBar::on_cancelButton_clicked(bool c)
+{
+    _cancelButton->setEnabled(false);
 
-	emit( cancelButtonClicked(c) );
+    emit(cancelButtonClicked(c));
 }
 
-void CAProgressStatusBar::setProgress( QString label, int value ) {
-	_progressLabel->setText( label );
-	_progressBar->setValue( value );
+void CAProgressStatusBar::setProgress(QString label, int value)
+{
+    _progressLabel->setText(label);
+    _progressBar->setValue(value);
 }
 
-void CAProgressStatusBar::setProgress( int value ) {
-	_progressBar->setValue( value );
+void CAProgressStatusBar::setProgress(int value)
+{
+    _progressBar->setValue(value);
 }
 
-void CAProgressStatusBar::setProgress( QString label ) {
-	_progressLabel->setText( label );
+void CAProgressStatusBar::setProgress(QString label)
+{
+    _progressLabel->setText(label);
 }

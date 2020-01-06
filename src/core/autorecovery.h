@@ -13,21 +13,21 @@
 class QTimer;
 
 class CAAutoRecovery : public QObject {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	CAAutoRecovery();
-	~CAAutoRecovery();
-	void updateTimer();
-	void openRecovery();
+    CAAutoRecovery();
+    ~CAAutoRecovery();
+    void updateTimer();
+    void openRecovery();
 
 public slots:
-	void cleanupRecovery();
-	void saveRecovery();
+    void cleanupRecovery();
+    void saveRecovery();
 
 private:
-	QTimer *_autoRecoveryTimer;
-	QTimer *_saveAfterRecoveryTimer;
+    QTimer* _autoRecoveryTimer;
+    QTimer* _saveAfterRecoveryTimer;
 
     const int _recoveryTimeout = 120000;
 };

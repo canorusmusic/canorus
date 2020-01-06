@@ -13,12 +13,12 @@
 class CAMidiNote;
 class CADrawableStaff;
 
-class CADrawableMidiNote: public CADrawableMusElement {
+class CADrawableMidiNote : public CADrawableMusElement {
 public:
-	CADrawableMidiNote( CAMidiNote *midiNote, CADrawableStaff* c, double x, double y );
-	virtual ~CADrawableMidiNote();
-	void draw(QPainter *p, CADrawSettings s);
-	CADrawableMidiNote* clone(CADrawableContext* newContext);
+    CADrawableMidiNote(CAMidiNote* midiNote, CADrawableStaff* c, double x, double y);
+    virtual ~CADrawableMidiNote();
+    void draw(QPainter* p, CADrawSettings s);
+    CADrawableMidiNote* clone(CADrawableContext* newContext);
 };
 
 #endif /* DRAWABLEMIDINOTE_H_ */

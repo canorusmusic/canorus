@@ -24,51 +24,51 @@ class CATempo;
 
 class CAStaff : public CAContext {
 public:
-	CAStaff( const QString name, CASheet *s, int numberOfLines = 5);
-	~CAStaff();
+    CAStaff(const QString name, CASheet* s, int numberOfLines = 5);
+    ~CAStaff();
 
-	inline int numberOfLines() { return _numberOfLines; }
-	inline void setNumberOfLines(int val) { _numberOfLines = val; }
-	void clear();
-	CAStaff *clone( CASheet *s );
+    inline int numberOfLines() { return _numberOfLines; }
+    inline void setNumberOfLines(int val) { _numberOfLines = val; }
+    void clear();
+    CAStaff* clone(CASheet* s);
 
-	inline const QList<CAVoice*>& voiceList() { return _voiceList; }
-	inline void addVoice(CAVoice *voice) { _voiceList << voice; }
-	inline void insertVoice(int idx, CAVoice *voice) { _voiceList.insert(idx, voice); }
-	CAVoice* addVoice();
-	inline void removeVoice(CAVoice *voice) { _voiceList.removeAll(voice); }
-	CAVoice *findVoice(const QString name);
+    inline const QList<CAVoice*>& voiceList() { return _voiceList; }
+    inline void addVoice(CAVoice* voice) { _voiceList << voice; }
+    inline void insertVoice(int idx, CAVoice* voice) { _voiceList.insert(idx, voice); }
+    CAVoice* addVoice();
+    inline void removeVoice(CAVoice* voice) { _voiceList.removeAll(voice); }
+    CAVoice* findVoice(const QString name);
 
-	CAMusElement *next( CAMusElement *elt );
-	CAMusElement *previous( CAMusElement *elt );
-	bool remove( CAMusElement *elt, bool updateSignTimes );
-	bool remove( CAMusElement *elt ) { return remove(elt, true); }
+    CAMusElement* next(CAMusElement* elt);
+    CAMusElement* previous(CAMusElement* elt);
+    bool remove(CAMusElement* elt, bool updateSignTimes);
+    bool remove(CAMusElement* elt) { return remove(elt, true); }
 
-	int lastTimeEnd();
-	QList<CAMusElement*> getEltByType( CAMusElement::CAMusElementType type, int startTime );
-	CAMusElement *getOneEltByType( CAMusElement::CAMusElementType type, int startTime );
+    int lastTimeEnd();
+    QList<CAMusElement*> getEltByType(CAMusElement::CAMusElementType type, int startTime);
+    CAMusElement* getOneEltByType(CAMusElement::CAMusElementType type, int startTime);
 
-	QList<CAPlayable*> getChord( int time );
-	CATempo           *getTempo( int time );
+    QList<CAPlayable*> getChord(int time);
+    CATempo* getTempo(int time);
 
-	bool synchronizeVoices();
+    bool synchronizeVoices();
 
-	static bool placeAutoBar( CAPlayable* elt );
+    static bool placeAutoBar(CAPlayable* elt);
 
-	// Functions to keep list of references of signature events for a faster look up.
-	inline QList<CAMusElement *>& clefRefs() { return _clefList; }
-	inline QList<CAMusElement *>& keySignatureRefs() { return _keySignatureList; }
-	inline QList<CAMusElement *>& timeSignatureRefs() { return _timeSignatureList; }
-	inline QList<CAMusElement *>& barlineRefs() { return _barlineList; }
-	
+    // Functions to keep list of references of signature events for a faster look up.
+    inline QList<CAMusElement*>& clefRefs() { return _clefList; }
+    inline QList<CAMusElement*>& keySignatureRefs() { return _keySignatureList; }
+    inline QList<CAMusElement*>& timeSignatureRefs() { return _timeSignatureList; }
+    inline QList<CAMusElement*>& barlineRefs() { return _barlineList; }
+
 private:
-	QList<CAVoice *> _voiceList;
+    QList<CAVoice*> _voiceList;
 
-	int _numberOfLines;
+    int _numberOfLines;
 
-	QList<CAMusElement *> _clefList;
-	QList<CAMusElement *> _keySignatureList;
-	QList<CAMusElement *> _timeSignatureList;
-	QList<CAMusElement *> _barlineList;
+    QList<CAMusElement*> _clefList;
+    QList<CAMusElement*> _keySignatureList;
+    QList<CAMusElement*> _timeSignatureList;
+    QList<CAMusElement*> _barlineList;
 };
 #endif /* STAFF_H_ */

@@ -8,10 +8,10 @@
 // Includes
 #include <QMessageBox>
 
-#include "ui/mainwin.h"
+#include "canorus.h"
 #include "control/dummyctl.h"
 #include "dummy/dummy.h" // Does not exist, this is only a dummy example!
-#include "canorus.h"
+#include "ui/mainwin.h"
 
 /*! 
 	\class CADummyCtl
@@ -29,34 +29,33 @@
 	least one signal called dummyToggle.
 	We connect this signal manually to our slot myToggle.
 */
-CADummyCtl::CADummyCtl( CAMainWin *poMainWin )
+CADummyCtl::CADummyCtl(CAMainWin* poMainWin)
 {
-	setObjectName("oDummyCtl");
-	_poMainWin = poMainWin;
-	_poDummy = new Dummy();
-	if( poMainWin == 0 )
-		qCritical("DummyCtl: No mainwindow instance available!");
-	else
-		 CACanorus::connectSlotsByName(_poMainWin, this);
-	connect( _poDummy, SIGNAL( dummyToggle( int ) ), this, SLOT( myToggle( int ) ) );
+    setObjectName("oDummyCtl");
+    _poMainWin = poMainWin;
+    _poDummy = new Dummy();
+    if (poMainWin == 0)
+        qCritical("DummyCtl: No mainwindow instance available!");
+    else
+        CACanorus::connectSlotsByName(_poMainWin, this);
+    connect(_poDummy, SIGNAL(dummyToggle(int)), this, SLOT(myToggle(int)));
 }
 
 // Destructor
 CADummyCtl::~CADummyCtl()
 {
-	if( _poDummy ) {
-		delete _poDummy;
-	}
-	_poDummy = 0;
+    if (_poDummy) {
+        delete _poDummy;
+    }
+    _poDummy = 0;
 }
 
 void CADummyCtl::on_uiDummy_triggered()
 {
-	// Do something
+    // Do something
 }
 
-void CADummyCtl::myToggle( int iOn )
+void CADummyCtl::myToggle(int iOn)
 {
-	// Do something else
+    // Do something else
 }
-

@@ -4,31 +4,32 @@
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
-#include <QObject>
-#include "score/sheet.h"
-#include "score/document.h"
 #include "interface/pyconsoleinterface.h"
+#include "score/document.h"
+#include "score/sheet.h"
+#include <QObject>
 
 class CAMainWin { //: public QObject {
-// currentSheet (SHEET = OK)
+    // currentSheet (SHEET = OK)
 
-// CAScoreViewport(NOT_OK) {currentScoreViewport}
-//   -> selection.size = v->selection().front()->drawableMusElement::DrawableNote?  : BAD BAD BAD
-//   -> front()->musElement (OK)
+    // CAScoreViewport(NOT_OK) {currentScoreViewport}
+    //   -> selection.size = v->selection().front()->drawableMusElement::DrawableNote?  : BAD BAD BAD
+    //   -> front()->musElement (OK)
 
-// currentScoreViewport
-//   -> musElementSelection ok
-//
+    // currentScoreViewport
+    //   -> musElementSelection ok
+    //
 public:
-	CAMainWin () {}
-	CASheet *currentSheet() {
-		//CAScoreViewPort *v = currentScoreViewPort();
-		//if (v) return v->sheet();
-		//else return 0;
-		return nullptr;
-	}
+    CAMainWin() {}
+    CASheet* currentSheet()
+    {
+        //CAScoreViewPort *v = currentScoreViewPort();
+        //if (v) return v->sheet();
+        //else return 0;
+        return nullptr;
+    }
 
-	CAPyConsoleInterface* pyConsoleIface = nullptr;
+    CAPyConsoleInterface* pyConsoleIface = nullptr;
 };
 
 // Needs refactoring!
@@ -36,7 +37,8 @@ public:
 // scripting code (canoruspython.i and swigpython.cpp). -Matevz
 class CACanorus {
 public:
-	inline static QList<CAMainWin*>& mainWinList() { return _mainWinList; }
+    inline static QList<CAMainWin*>& mainWinList() { return _mainWinList; }
+
 private:
-	static QList<CAMainWin*> _mainWinList;
+    static QList<CAMainWin*> _mainWinList;
 };

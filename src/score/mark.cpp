@@ -16,24 +16,26 @@
 	text signs, dynamic marks, articulation, fingering, etc.
 */
 
-CAMark::CAMark( CAMarkType type, CAMusElement *associatedElt, int timeStart, int timeLength )
- : CAMusElement( associatedElt->context(),
-                 (timeStart==-1)?associatedElt->timeStart():timeStart,
-                 (timeLength==-1)?associatedElt->timeLength():timeLength ) {
-	setMusElementType( Mark );
-	setMarkType( type );
-	setAssociatedElement( associatedElt );
-	setCommon( true );
+CAMark::CAMark(CAMarkType type, CAMusElement* associatedElt, int timeStart, int timeLength)
+    : CAMusElement(associatedElt->context(),
+          (timeStart == -1) ? associatedElt->timeStart() : timeStart,
+          (timeLength == -1) ? associatedElt->timeLength() : timeLength)
+{
+    setMusElementType(Mark);
+    setMarkType(type);
+    setAssociatedElement(associatedElt);
+    setCommon(true);
 }
 
-CAMark::CAMark( CAMarkType type, CAContext *c, int timeStart, int timeLength )
- : CAMusElement( c,
-                 timeStart,
-                 timeLength ) {
-	setMusElementType( Mark );
-	setMarkType( type );
-	setAssociatedElement( nullptr );
-	setCommon( true );
+CAMark::CAMark(CAMarkType type, CAContext* c, int timeStart, int timeLength)
+    : CAMusElement(c,
+          timeStart,
+          timeLength)
+{
+    setMusElementType(Mark);
+    setMarkType(type);
+    setAssociatedElement(nullptr);
+    setCommon(true);
 }
 
 /*!
@@ -41,37 +43,38 @@ CAMark::CAMark( CAMarkType type, CAContext *c, int timeStart, int timeLength )
 
 	\sa markTypeFromString()
 */
-const QString CAMark::markTypeToString( CAMark::CAMarkType t ) {
-	switch (t) {
-		case Text:
-			return "Text";
-		case Tempo:
-			return "Tempo";
-		case Ritardando:
-			return "Ritardando";
-		case Dynamic:
-			return "Dynamic";
-		case Crescendo:
-			return "Crescendo";
-		case Pedal:
-			return "Pedal";
-		case InstrumentChange:
-			return "InstrumentChange";
-		case BookMark:
-			return "BookMark";
-		case RehersalMark:
-			return "RehersalMark";
-		case Fermata:
-			return "Fermata";
-		case RepeatMark:
-			return "RepeatMark";
-		case Articulation:
-			return "Articulation";
-		case Fingering:
-			return "Fingering";
-		default:
-			return "Undefined";
-	}
+const QString CAMark::markTypeToString(CAMark::CAMarkType t)
+{
+    switch (t) {
+    case Text:
+        return "Text";
+    case Tempo:
+        return "Tempo";
+    case Ritardando:
+        return "Ritardando";
+    case Dynamic:
+        return "Dynamic";
+    case Crescendo:
+        return "Crescendo";
+    case Pedal:
+        return "Pedal";
+    case InstrumentChange:
+        return "InstrumentChange";
+    case BookMark:
+        return "BookMark";
+    case RehersalMark:
+        return "RehersalMark";
+    case Fermata:
+        return "Fermata";
+    case RepeatMark:
+        return "RepeatMark";
+    case Articulation:
+        return "Articulation";
+    case Fingering:
+        return "Fingering";
+    default:
+        return "Undefined";
+    }
 }
 
 /*!
@@ -79,69 +82,60 @@ const QString CAMark::markTypeToString( CAMark::CAMarkType t ) {
 
 	\sa markTypeToString()
 */
-CAMark::CAMarkType CAMark::markTypeFromString( const QString s ) {
-	if ( s=="Text" ) {
-		return Text;
-	} else
-	if ( s=="Tempo" ) {
-		return Tempo;
-	} else
-	if ( s=="Ritardando" ) {
-		return Ritardando;
-	} else
-	if ( s=="Dynamic" ) {
-		return Dynamic;
-	} else
-	if ( s=="Crescendo" ) {
-		return Crescendo;
-	} else
-	if ( s=="Pedal" ) {
-		return Pedal;
-	} else
-	if ( s=="InstrumentChange" ) {
-		return InstrumentChange;
-	} else
-	if ( s=="BookMark" ) {
-		return BookMark;
-	} else
-	if ( s=="RehersalMark" ) {
-		return RehersalMark;
-	} else
-	if ( s=="Fermata" ) {
-		return Fermata;
-	} else
-	if ( s=="RepeatMark" ) {
-		return RepeatMark;
-	} else
-	if ( s=="Articulation" ) {
-		return Articulation;
-	} else
-	if ( s=="Fingering" ) {
-		return Fingering;
-	} else {
-		return Undefined;
-	}
+CAMark::CAMarkType CAMark::markTypeFromString(const QString s)
+{
+    if (s == "Text") {
+        return Text;
+    } else if (s == "Tempo") {
+        return Tempo;
+    } else if (s == "Ritardando") {
+        return Ritardando;
+    } else if (s == "Dynamic") {
+        return Dynamic;
+    } else if (s == "Crescendo") {
+        return Crescendo;
+    } else if (s == "Pedal") {
+        return Pedal;
+    } else if (s == "InstrumentChange") {
+        return InstrumentChange;
+    } else if (s == "BookMark") {
+        return BookMark;
+    } else if (s == "RehersalMark") {
+        return RehersalMark;
+    } else if (s == "Fermata") {
+        return Fermata;
+    } else if (s == "RepeatMark") {
+        return RepeatMark;
+    } else if (s == "Articulation") {
+        return Articulation;
+    } else if (s == "Fingering") {
+        return Fingering;
+    } else {
+        return Undefined;
+    }
 }
 
-CAMark::~CAMark() {
-	if (associatedElement()) {
-		associatedElement()->removeMark(this);
-	}
+CAMark::~CAMark()
+{
+    if (associatedElement()) {
+        associatedElement()->removeMark(this);
+    }
 }
 
-CAMark *CAMark::clone(CAMusElement* elt) {
-	return new CAMark( markType(), elt, timeStart(), timeLength() );
+CAMark* CAMark::clone(CAMusElement* elt)
+{
+    return new CAMark(markType(), elt, timeStart(), timeLength());
 }
 
-int CAMark::compare( CAMusElement *elt ) {
-	if (elt->musElementType()!=CAMusElement::Mark) {
-		return -1;
-	} else
-	if (static_cast<CAMark*>(elt)->markType()!=markType()) {
-		return -1;
-	} else {
-		return 0;
-	}
+int CAMark::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Mark) {
+        return -1;
+    } else if (static_cast<CAMark*>(elt)->markType() != markType()) {
+        return -1;
+    } else {
+        return 0;
+    }
 }
 
 /*!

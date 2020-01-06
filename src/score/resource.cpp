@@ -8,8 +8,8 @@
 #include <QFile>
 #include <iostream>
 
-#include "score/resource.h"
 #include "score/document.h"
+#include "score/resource.h"
 
 /*!
 	\class CAResource
@@ -34,58 +34,76 @@
 /*!
 	Default constructor.
 */
-CAResource::CAResource( QUrl url, QString name, bool linked, CAResourceType t, CADocument *parent ) {
-	setName(name);
-	setUrl(url);
-	setLinked(linked);
-	setResourceType(t);
-	setDocument(parent);
+CAResource::CAResource(QUrl url, QString name, bool linked, CAResourceType t, CADocument* parent)
+{
+    setName(name);
+    setUrl(url);
+    setLinked(linked);
+    setResourceType(t);
+    setDocument(parent);
 }
 
-CAResource::~CAResource() {
-	if (document()) {
-		document()->removeResource(this);
-	}
+CAResource::~CAResource()
+{
+    if (document()) {
+        document()->removeResource(this);
+    }
 
-	if (!isLinked()) {
-		QFile::remove( url().toLocalFile() );
-	}
+    if (!isLinked()) {
+        QFile::remove(url().toLocalFile());
+    }
 }
 
 /*!
 	Copies the resource to the specified \a fileName.
 	Overwrites the specified \a fileName, if the file already exists.
  */
-bool CAResource::copy( QString fileName ) {
-	if ( QFile::exists( fileName ) ) {
-		QFile::remove( fileName );
-	}
+bool CAResource::copy(QString fileName)
+{
+    if (QFile::exists(fileName)) {
+        QFile::remove(fileName);
+    }
 
-	return QFile::copy( url().toLocalFile(), fileName );
+    return QFile::copy(url().toLocalFile(), fileName);
 }
 
 /*!
 	Converts the given \a type to string. Usually called when saving the resource.
  */
-QString CAResource::resourceTypeToString( CAResourceType type ) {
-	switch (type) {
-	case Image:    return "image";
-	case Sound:    return "sound";
-	case Movie:    return "movie";
-	case Document: return "document";
-	case Other:    return "other";
-	default:       return "";
-	}
+QString CAResource::resourceTypeToString(CAResourceType type)
+{
+    switch (type) {
+    case Image:
+        return "image";
+    case Sound:
+        return "sound";
+    case Movie:
+        return "movie";
+    case Document:
+        return "document";
+    case Other:
+        return "other";
+    default:
+        return "";
+    }
 }
 
 /*!
 	Converts the given string \a type to CAResourceType. Usually called when opening the resource.
  */
-CAResource::CAResourceType CAResource::resourceTypeFromString( QString type ) {
-	if (type=="image")         { return Image; }
-	else if (type=="sound")    { return Sound; }
-	else if (type=="movie")    { return Movie; }
-	else if (type=="document") { return Document; }
-	else if (type=="other")    { return Other; }
-	else                       { return Undefined; }
+CAResource::CAResourceType CAResource::resourceTypeFromString(QString type)
+{
+    if (type == "image") {
+        return Image;
+    } else if (type == "sound") {
+        return Sound;
+    } else if (type == "movie") {
+        return Movie;
+    } else if (type == "document") {
+        return Document;
+    } else if (type == "other") {
+        return Other;
+    } else {
+        return Undefined;
+    }
 }

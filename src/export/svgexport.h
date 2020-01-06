@@ -18,34 +18,33 @@ class CATypesetCtl;
 // !! exportDocument does not support threading !!
 class CASVGExport : public CAExport {
 #ifndef SWIG
-	Q_OBJECT
+    Q_OBJECT
 #endif
 
 public:
-	CASVGExport( QTextStream *stream=nullptr );
-	~CASVGExport();
+    CASVGExport(QTextStream* stream = nullptr);
+    ~CASVGExport();
 
-	QString getTempFilePath();
+    QString getTempFilePath();
 
 #ifndef SWIG
 signals:
-	void svgIsFinished( int iExitCode );
+    void svgIsFinished(int iExitCode);
 
 protected slots:
-	void outputTypsetterOutput( const QByteArray &roOutput );
-	void svgFinished( int iExitCode );
+    void outputTypsetterOutput(const QByteArray& roOutput);
+    void svgFinished(int iExitCode);
 
 private:
-	void startExport();
-	void finishExport();
-	void exportDocumentImpl(CADocument *doc);
-	void exportSheetImpl(CASheet *poSheet);
-	void runTypesetter();
+    void startExport();
+    void finishExport();
+    void exportDocumentImpl(CADocument* doc);
+    void exportSheetImpl(CASheet* poSheet);
+    void runTypesetter();
 
 protected:
-	CATypesetCtl *_poTypesetCtl;
+    CATypesetCtl* _poTypesetCtl;
 #endif
 };
 
 #endif // SVGEXPORT_H_
-

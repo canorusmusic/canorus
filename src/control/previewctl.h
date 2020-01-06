@@ -9,34 +9,33 @@
 #define PREVIEW_CTL_H
 
 // Includes
+#include <QFile>
 #include <QObject>
+#include <QStringList>
 #include <QVariant>
 #include <QVector>
-#include <QStringList>
-#include <QFile>
 
 // Forward declarations
 class CAMainWin;
 class CAPDFExport;
 
-class CAPreviewCtl : public QObject
-{
-	Q_OBJECT
+class CAPreviewCtl : public QObject {
+    Q_OBJECT
 
 public:
-	CAPreviewCtl( CAMainWin *poMainWin );
-	~CAPreviewCtl();
+    CAPreviewCtl(CAMainWin* poMainWin);
+    ~CAPreviewCtl();
 
 public slots:
-	void on_uiPrintPreview_triggered();
- 
+    void on_uiPrintPreview_triggered();
+
 protected slots:
-	void showPDF( int iExitCode );
-	
+    void showPDF(int iExitCode);
+
 protected:
-	CAMainWin    *_poMainWin;
-	CAPDFExport *_poPDFExport;
-	QString           _oOutputPDFName;
+    CAMainWin* _poMainWin;
+    CAPDFExport* _poPDFExport;
+    QString _oOutputPDFName;
 };
 
 #endif // PREVIEW_CTL_H

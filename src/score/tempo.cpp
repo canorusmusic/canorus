@@ -15,28 +15,32 @@
 	It consists of the note (beat) and beats per minute number.
 */
 
-CATempo::CATempo( CAPlayableLength p, unsigned char bpm, CAMusElement *t )
- : CAMark( CAMark::Tempo, t ) {
-	setBeat( p );
-	setBpm( bpm );
+CATempo::CATempo(CAPlayableLength p, unsigned char bpm, CAMusElement* t)
+    : CAMark(CAMark::Tempo, t)
+{
+    setBeat(p);
+    setBpm(bpm);
 }
 
-CATempo::~CATempo() {
+CATempo::~CATempo()
+{
 }
 
-CATempo *CATempo::clone(CAMusElement* elt) {
-	return new CATempo( beat(), bpm(), elt );
+CATempo* CATempo::clone(CAMusElement* elt)
+{
+    return new CATempo(beat(), bpm(), elt);
 }
 
-int CATempo::compare( CAMusElement *elt ) {
-	if (elt->musElementType()!=CAMusElement::Mark)
-		return -2;
-	else if (static_cast<CAMark*>(elt)->markType()!=CAMark::Tempo)
-		return -1;
-	else if (static_cast<CATempo*>(elt)->bpm()!=bpm())
-		return 1;
-	else if (static_cast<CATempo*>(elt)->beat()!=beat())
-		return 2;
-	else
-		return 0;
+int CATempo::compare(CAMusElement* elt)
+{
+    if (elt->musElementType() != CAMusElement::Mark)
+        return -2;
+    else if (static_cast<CAMark*>(elt)->markType() != CAMark::Tempo)
+        return -1;
+    else if (static_cast<CATempo*>(elt)->bpm() != bpm())
+        return 1;
+    else if (static_cast<CATempo*>(elt)->beat() != beat())
+        return 2;
+    else
+        return 0;
 }

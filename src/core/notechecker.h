@@ -12,10 +12,10 @@ class CASheet;
 
 class CANoteChecker {
 public:
-	CANoteChecker();
-	virtual ~CANoteChecker();
-	
-	void checkSheet(CASheet*);
+    CANoteChecker();
+    virtual ~CANoteChecker();
+
+    void checkSheet(CASheet*);
 };
 
 #endif /* NOTECHECKER_H_ */

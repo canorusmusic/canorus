@@ -10,11 +10,11 @@
 #include <QFile>
 #include <QTextStream>
 
-CAHelpBrowser::CAHelpBrowser(QWidget* parent) 
+CAHelpBrowser::CAHelpBrowser(QWidget* parent)
 #if QT_VERSION >= 0x050600
-	: QWebEngineView(parent)
+    : QWebEngineView(parent)
 #else
-	: QWebView(parent)
+    : QWebView(parent)
 #endif
 {
 }

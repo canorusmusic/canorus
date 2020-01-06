@@ -8,19 +8,19 @@
 #ifndef RESOURCECTL_H_
 #define RESOURCECTL_H_
 
-#include <QString>
 #include <QList>
+#include <QString>
 
 #include "score/resource.h"
 
 class CAResourceCtl {
 public:
-	CAResourceCtl();
-	virtual ~CAResourceCtl();
+    CAResourceCtl();
+    virtual ~CAResourceCtl();
 
-	static CAResource *importResource( QString name, QString fileName, bool isLinked=false, CADocument *parent=nullptr, CAResource::CAResourceType t=CAResource::Other );
-	static CAResource *createEmptyResource( QString name, CADocument *parent=nullptr, CAResource::CAResourceType t=CAResource::Other );
-	static void deleteResource( CAResource* );
+    static CAResource* importResource(QString name, QString fileName, bool isLinked = false, CADocument* parent = nullptr, CAResource::CAResourceType t = CAResource::Other);
+    static CAResource* createEmptyResource(QString name, CADocument* parent = nullptr, CAResource::CAResourceType t = CAResource::Other);
+    static void deleteResource(CAResource*);
 };
 
 #endif /* RESOURCECTL_H_ */
