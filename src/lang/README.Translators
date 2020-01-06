@@ -1,21 +1,34 @@
+Instructions for translators
+============================
 
-== Quick instructions for translators ==
+This directory contains all currently supported translations of Canorus. Files
+having .ts extension are automatically detected and compiled into the
+application.
 
-This directory contains translation files for all the supported languages by
-Canorus. All translation files having *.ts extension are automatically detected
-and compiled into the application.
+To synchronize translations with the terms in the source, run
+```bash
+make tr
+```
 
-To add a new translation, compile Canorus, copy the generated template.ts to a
-file named your ISO language code and optionally region with .ts suffix (eg.
-fr.ts or fr_TN.ts for French-speaking Tunisians) and translate it using Qt
-Linguist or other compatible tool. After rebuilding the project the new
-translation should become immediately visible when running Canorus with
-appropriate locale variables set (e.g. LANG=fr ./canorus).
+This will update all existing translations and update template.ts used as a
+template for a new language. To add a new language, copy template.ts to ISO
+language code and optionally region with .ts suffix (eg. fr.ts or fr_TN.ts for
+French-speaking Tunisians) and translate it using Qt Linguist or other
+compatible tool. After rebuilding the project with
+```bash
+make
+```
+
+the new translation should become immediately visible when running Canorus
+with appropriate locale variables set, for example:
+```bash
+LANG=fr ./canorus
+```
 
 Thanks for your effort!
 
 Matevž Jekovec
 <matevz.jekovec@gmail.com>
 Canorus development team
-http://www.canorus.org
+www.canorus.org
 

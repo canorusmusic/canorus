@@ -1,19 +1,114 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="hu" version="2.1">
+<context>
+    <name>CAActionsEditor</name>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="167"/>
+        <source>Name</source>
+        <translation>Név</translation>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="167"/>
+        <source>Description</source>
+        <translation>Leírás</translation>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="167"/>
+        <source>Shortcut</source>
+        <translation>Gyorsbillentyű</translation>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="167"/>
+        <source>Midi Command</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="167"/>
+        <source>Combined</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="172"/>
+        <source>&amp;Save shortcuts...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="173"/>
+        <source>&amp;Load shortcuts...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="176"/>
+        <source>&amp;Change shortcut...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="443"/>
+        <location filename="src/widgets/actionseditor.cpp" line="511"/>
+        <source>Shortcut files</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="443"/>
+        <source>Midi Key Sequence files</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="443"/>
+        <source>Combined Key Sequence files</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="446"/>
+        <source>Choose a filename</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="458"/>
+        <source>Confirm overwrite?</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="459"/>
+        <source>The file %1 already exists.
+Do you want to overwrite?</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="474"/>
+        <location filename="src/widgets/actionseditor.cpp" line="523"/>
+        <source>Error</source>
+        <translation>Hiba</translation>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="475"/>
+        <source>The file couldn&apos;t be saved</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="513"/>
+        <source>Choose a file</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/actionseditor.cpp" line="524"/>
+        <source>The file couldn&apos;t be loaded</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
 <context>
     <name>CAAutoRecovery</name>
     <message>
-        <location filename="../core/autorecovery.cpp" line="104"/>
+        <location filename="src/core/autorecovery.cpp" line="122"/>
         <source>- Document %1 last modified on %2.</source>
         <translation>Dokumenum %1 utoljára módosítva %2.</translation>
     </message>
     <message>
-        <location filename="../core/autorecovery.cpp" line="115"/>
+        <location filename="src/core/autorecovery.cpp" line="140"/>
         <source>Document recovery</source>
         <translation>Dokumentum helyreállítva</translation>
     </message>
     <message>
-        <location filename="../core/autorecovery.cpp" line="117"/>
+        <location filename="src/core/autorecovery.cpp" line="141"/>
         <source>Previous session of Canorus was unexpectedly closed.
 
 The following documents were successfully recovered:
@@ -27,7 +122,7 @@ A következő dokumentum sikeresen helyreállítva:
 <context>
     <name>CADocumentProperties</name>
     <message>
-        <location filename="../ui/propertiesdialog.cpp" line="39"/>
+        <location filename="src/ui/propertiesdialog.cpp" line="220"/>
         <source>CC, Some rights reserved</source>
         <comment>copyright</comment>
         <translation>CC, Néhány jog fenntartva
@@ -35,13 +130,13 @@ A következő dokumentum sikeresen helyreállítva:
 </translation>
     </message>
     <message>
-        <location filename="../ui/propertiesdialog.cpp" line="40"/>
+        <location filename="src/ui/propertiesdialog.cpp" line="221"/>
         <source>Public domain</source>
         <comment>copyright</comment>
         <translation>Nyilvános tartomány</translation>
     </message>
     <message>
-        <location filename="../ui/propertiesdialog.cpp" line="41"/>
+        <location filename="src/ui/propertiesdialog.cpp" line="222"/>
         <source>All rights reserved</source>
         <comment>copyright</comment>
         <translation>Minden jog fenntartva</translation>
@@ -50,43 +145,61 @@ A következő dokumentum sikeresen helyreállítva:
 <context>
     <name>CAExport</name>
     <message>
-        <location filename="../export/export.cpp" line="135"/>
-        <source>Exporting...</source>
-        <translation>Kivitel...</translation>
+        <location filename="src/export/export.cpp" line="154"/>
+        <source>Exporting</source>
+        <translation>Exportálás</translation>
     </message>
     <message>
-        <location filename="../export/export.cpp" line="137"/>
-        <source>Ready.</source>
-        <translation>Kész.</translation>
+        <location filename="src/export/export.cpp" line="156"/>
+        <location filename="src/export/export.cpp" line="160"/>
+        <source>Ready</source>
+        <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../export/export.cpp" line="139"/>
-        <source>Data stream not defined.</source>
-        <translation>Meghatározatlan adat folyam.</translation>
+        <location filename="src/export/export.cpp" line="158"/>
+        <source>Unable to open file for writing</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>CAImport</name>
     <message>
-        <location filename="../import/import.cpp" line="182"/>
-        <source>Importing...</source>
-        <translation>Behozatal...</translation>
+        <location filename="src/import/import.cpp" line="199"/>
+        <source>Importing</source>
+        <translation>Behozatal</translation>
     </message>
     <message>
-        <location filename="../import/import.cpp" line="184"/>
-        <source>Ready.</source>
-        <translation>Kész.</translation>
+        <location filename="src/import/import.cpp" line="201"/>
+        <source>Ready</source>
+        <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../import/import.cpp" line="186"/>
-        <source>File not found or data stream not defined.</source>
-        <translation>Fájl nem talállható vagy meghatározatlan adatfolyam.</translation>
+        <location filename="src/import/import.cpp" line="203"/>
+        <source>Unable to open file for reading</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>CAKeySignatureCtl</name>
+    <message>
+        <location filename="src/scorectl/keysignaturectl.cpp" line="69"/>
+        <source>change key signature</source>
+        <comment>undo</comment>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>CAKeySignatureUI</name>
+    <message>
+        <location filename="src/scoreui/keysignatureui.cpp" line="38"/>
+        <source>Key Signature ToolBar</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>CALilyPondExport</name>
     <message>
-        <location filename="../export/lilypondexport.cpp" line="539"/>
+        <location filename="src/export/lilypondexport.cpp" line="863"/>
         <source>arr.</source>
         <comment>arrangement</comment>
         <translation>elrendezés.</translation>
@@ -95,17 +208,22 @@ A következő dokumentum sikeresen helyreállítva:
 <context>
     <name>CALilyPondImport</name>
     <message>
-        <location filename="../import/lilypondimport.cpp" line="671"/>
+        <location filename="src/import/lilypondimport.cpp" line="77"/>
+        <source>Lilypond imported sheet</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/import/lilypondimport.cpp" line="719"/>
         <source>Ready</source>
         <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../import/lilypondimport.cpp" line="673"/>
+        <location filename="src/import/lilypondimport.cpp" line="721"/>
         <source>Importing...</source>
         <translation>Behozatal...</translation>
     </message>
     <message>
-        <location filename="../import/lilypondimport.cpp" line="675"/>
+        <location filename="src/import/lilypondimport.cpp" line="723"/>
         <source>Error while importing!
 Line %1:%2.</source>
         <translation>Hiba behozatal közben! 
@@ -115,2584 +233,3192 @@ Sor %1:%2.</translation>
 <context>
     <name>CAMainWin</name>
     <message>
-        <location filename="../ui/mainwin.cpp" line="198"/>
+        <location filename="src/ui/mainwin.cpp" line="259"/>
         <source>Insert ToolBar</source>
         <translation>Eszköztár beszúrása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="199"/>
+        <location filename="src/ui/mainwin.cpp" line="260"/>
         <source>Select Context</source>
         <translation>Sáv választása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="201"/>
+        <location filename="src/ui/mainwin.cpp" line="262"/>
         <source>New Staff</source>
         <translation>Új ütemvonal</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="202"/>
+        <location filename="src/ui/mainwin.cpp" line="263"/>
         <source>New Lyrics context</source>
         <translation>Új dalszöveg sáv</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="203"/>
-        <source>New Function Marking context</source>
-        <translation>Új funkció jelölő sáv</translation>
+        <location filename="src/ui/mainwin.cpp" line="264"/>
+        <source>New Figured Bass context</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="204"/>
+        <location filename="src/ui/mainwin.cpp" line="265"/>
+        <source>New Function Mark context</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="266"/>
         <source>Select Slur Type</source>
         <translation>Kötőív típus választása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="206"/>
+        <location filename="src/ui/mainwin.cpp" line="268"/>
         <source>Tie</source>
         <translation>Kötés</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="207"/>
+        <location filename="src/ui/mainwin.cpp" line="269"/>
         <source>Slur</source>
         <translation>Átkötés</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="208"/>
+        <location filename="src/ui/mainwin.cpp" line="270"/>
         <source>Phrasing Slur</source>
         <translation>Átkötés tagoltság</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="209"/>
+        <location filename="src/ui/mainwin.cpp" line="271"/>
         <source>Select Clef</source>
         <translation>Hanjegykulcs választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="211"/>
+        <location filename="src/ui/mainwin.cpp" line="273"/>
         <source>Treble Clef</source>
         <translation>Treble hangjegykulcs</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="212"/>
+        <location filename="src/ui/mainwin.cpp" line="274"/>
         <source>French Clef</source>
         <translation>Francia hangjegykulcs</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="213"/>
+        <location filename="src/ui/mainwin.cpp" line="275"/>
         <source>Bass Clef</source>
         <translation>Basszus hangjegykulcs</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="214"/>
+        <location filename="src/ui/mainwin.cpp" line="276"/>
         <source>Varbaritone Clef</source>
         <translation>Varbaritone hangjegykulcs</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="215"/>
+        <location filename="src/ui/mainwin.cpp" line="277"/>
         <source>Subbass Clef</source>
         <translation>Subbasszus hangjegykulcs</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="216"/>
+        <location filename="src/ui/mainwin.cpp" line="278"/>
         <source>Soprano Clef</source>
         <translation>Szoprán hangjegykulcs</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="217"/>
+        <location filename="src/ui/mainwin.cpp" line="279"/>
         <source>Mezzosoprano Clef</source>
         <translation>Mezzoszoprán hangjegykulcs</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="218"/>
+        <location filename="src/ui/mainwin.cpp" line="280"/>
         <source>Alto Clef</source>
         <translation>Alt hangjegykulcs</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="219"/>
+        <location filename="src/ui/mainwin.cpp" line="281"/>
         <source>Tenor Clef</source>
         <translation>Tenor hangjegykulcs</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="220"/>
+        <location filename="src/ui/mainwin.cpp" line="282"/>
         <source>Baritone Clef</source>
         <translation>Baritone hanjegykulcs</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="221"/>
+        <location filename="src/ui/mainwin.cpp" line="283"/>
         <source>Select Time Signature</source>
         <translation>Ütemidő választása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="230"/>
+        <location filename="src/ui/mainwin.cpp" line="292"/>
         <source>Select Barline</source>
         <translation>Ütemvonal választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="232"/>
+        <location filename="src/ui/mainwin.cpp" line="294"/>
         <source>Single Barline</source>
         <translation>Ütemvonal</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="233"/>
+        <location filename="src/ui/mainwin.cpp" line="295"/>
         <source>Double Barline</source>
         <translation>Kettős ütemvonal</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="234"/>
+        <location filename="src/ui/mainwin.cpp" line="296"/>
         <source>End Barline</source>
         <translation>Lezáró ütemvonal</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="235"/>
+        <location filename="src/ui/mainwin.cpp" line="297"/>
         <source>Dotted Barline</source>
         <translation>Ismétlőjel</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="236"/>
+        <location filename="src/ui/mainwin.cpp" line="298"/>
         <source>Repeat Open</source>
         <translation>Ismétlés kezdés</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="237"/>
+        <location filename="src/ui/mainwin.cpp" line="299"/>
         <source>Repeat Closed</source>
         <translation>Ismétlés lezárás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="238"/>
+        <location filename="src/ui/mainwin.cpp" line="300"/>
         <source>Repeat Closed-Open</source>
         <translation>Ismétlés kezdés-lezárás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="239"/>
+        <location filename="src/ui/mainwin.cpp" line="301"/>
         <source>Select Mark</source>
         <translation>Jelzés választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="241"/>
+        <location filename="src/ui/mainwin.cpp" line="303"/>
         <source>Tempo</source>
         <translation>Tempó</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="242"/>
+        <location filename="src/ui/mainwin.cpp" line="304"/>
         <source>Ritardando</source>
         <translation>Lassítva/Ritardando</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="243"/>
+        <location filename="src/ui/mainwin.cpp" line="305"/>
         <source>Accellerando</source>
         <translation>Gyorsítva/Accellerado</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="244"/>
+        <location filename="src/ui/mainwin.cpp" line="306"/>
         <source>Dynamic</source>
         <translation>Dinamikusan/Dynamic</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="245"/>
+        <location filename="src/ui/mainwin.cpp" line="307"/>
         <source>Crescendo</source>
         <translation>Fokozatosan erősítve/Crescendo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="246"/>
+        <location filename="src/ui/mainwin.cpp" line="308"/>
         <source>Decrescendo</source>
         <translation>Fokozatosan halkulva/Decrescendo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="247"/>
+        <location filename="src/ui/mainwin.cpp" line="309"/>
         <source>Fermata</source>
         <translation>Korona</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="248"/>
+        <location filename="src/ui/mainwin.cpp" line="310"/>
         <source>Arbitrary Text</source>
         <translation>Tetszőleges szöveg</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="249"/>
+        <location filename="src/ui/mainwin.cpp" line="311"/>
         <source>Repeat Mark</source>
         <translation>Jelzés ismétlése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="501"/>
-        <source>Instrument Change</source>
-        <translation>Hangszer váltás</translation>
+        <location filename="src/ui/mainwin.cpp" line="312"/>
+        <source>Pedal Mark</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="251"/>
+        <location filename="src/ui/mainwin.cpp" line="313"/>
         <source>Bookmark</source>
         <translation>Könyvjelző</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="252"/>
+        <location filename="src/ui/mainwin.cpp" line="314"/>
         <source>Rehersal Mark</source>
         <translation>Esemény jelölő</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="253"/>
+        <location filename="src/ui/mainwin.cpp" line="315"/>
         <source>Fingering</source>
         <translation>Ujjrend</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="255"/>
+        <location filename="src/ui/mainwin.cpp" line="316"/>
+        <location filename="src/ui/mainwin.cpp" line="532"/>
+        <source>Instrument Change</source>
+        <translation>Hangszer váltás</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="317"/>
         <source>Articulation Mark</source>
         <translation>Tagoltság jelölő</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="257"/>
+        <location filename="src/ui/mainwin.cpp" line="319"/>
         <source>Accent</source>
         <translation>Hangsúly</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="258"/>
+        <location filename="src/ui/mainwin.cpp" line="320"/>
         <source>Marcato</source>
         <translation>Marcato</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="259"/>
+        <location filename="src/ui/mainwin.cpp" line="321"/>
         <source>Stacatissimo</source>
         <translation>Nagyon röviden/Stacatissimo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="260"/>
+        <location filename="src/ui/mainwin.cpp" line="322"/>
         <source>Espressivo</source>
         <translation>Érzéssel/Espressivo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="261"/>
+        <location filename="src/ui/mainwin.cpp" line="323"/>
         <source>Staccato</source>
         <translation>Röviden/Staccato</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="262"/>
+        <location filename="src/ui/mainwin.cpp" line="324"/>
         <source>Tenuto</source>
         <translation>Tartva/Tenuto</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="263"/>
+        <location filename="src/ui/mainwin.cpp" line="325"/>
         <source>Portato</source>
         <translation>Portato</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="264"/>
+        <location filename="src/ui/mainwin.cpp" line="326"/>
+        <source>Breath</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="327"/>
         <source>UpBow</source>
         <translation>Felsőhúzás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="265"/>
+        <location filename="src/ui/mainwin.cpp" line="328"/>
         <source>DownBow</source>
         <translation>Alsóhúzás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="266"/>
+        <location filename="src/ui/mainwin.cpp" line="329"/>
         <source>Flageloet</source>
         <translation>Flageloet</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="267"/>
+        <location filename="src/ui/mainwin.cpp" line="330"/>
         <source>Open</source>
         <translation>Nyitás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="268"/>
+        <location filename="src/ui/mainwin.cpp" line="331"/>
         <source>Stopped</source>
         <translation>Megállt</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="269"/>
+        <location filename="src/ui/mainwin.cpp" line="332"/>
         <source>Turn</source>
         <translation>Fordít</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="270"/>
+        <location filename="src/ui/mainwin.cpp" line="333"/>
         <source>ReverseTurn</source>
         <translation>Megfordít</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="271"/>
+        <location filename="src/ui/mainwin.cpp" line="334"/>
         <source>Trill</source>
         <translation>Pergés/Trill</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="272"/>
+        <location filename="src/ui/mainwin.cpp" line="335"/>
         <source>Prall</source>
         <translation>Prall</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="273"/>
+        <location filename="src/ui/mainwin.cpp" line="336"/>
         <source>Mordent</source>
         <translation>Mordent</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="274"/>
+        <location filename="src/ui/mainwin.cpp" line="337"/>
         <source>Prall-Prall</source>
         <translation>Prall-Prall</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="275"/>
+        <location filename="src/ui/mainwin.cpp" line="338"/>
         <source>Prall-Mordent</source>
         <translation>Prall-Mordent</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="276"/>
+        <location filename="src/ui/mainwin.cpp" line="339"/>
         <source>Up-Prall</source>
         <translation>Felső-Prall</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="277"/>
+        <location filename="src/ui/mainwin.cpp" line="340"/>
         <source>Down-Prall</source>
         <translation>Alsó-Prall</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="278"/>
+        <location filename="src/ui/mainwin.cpp" line="341"/>
         <source>Up-Mordent</source>
         <translation>Felső-Mordent</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="279"/>
+        <location filename="src/ui/mainwin.cpp" line="342"/>
         <source>Down-Mordent</source>
         <translation>Alsó-Mordent</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="280"/>
+        <location filename="src/ui/mainwin.cpp" line="343"/>
         <source>Prall-Down</source>
         <translation>Prall-le</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="281"/>
+        <location filename="src/ui/mainwin.cpp" line="344"/>
         <source>Prall-Up</source>
         <translation>Prall-fel</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="282"/>
+        <location filename="src/ui/mainwin.cpp" line="345"/>
         <source>Line-Prall</source>
         <translation>Sor-Prall</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="284"/>
+        <location filename="src/ui/mainwin.cpp" line="347"/>
         <source>Sheet ToolBar</source>
         <translation>Réteg eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="288"/>
+        <location filename="src/ui/mainwin.cpp" line="351"/>
         <source>Context ToolBar</source>
         <translation>Sáv eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="291"/>
+        <location filename="src/ui/mainwin.cpp" line="354"/>
         <source>Context name</source>
         <translation>Sáv név</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="294"/>
+        <location filename="src/ui/mainwin.cpp" line="357"/>
         <source>Stanza number</source>
         <translation>Versszak szám</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="299"/>
+        <location filename="src/ui/mainwin.cpp" line="362"/>
         <source>Associated voice</source>
         <translation>Összekapcsolt hang</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="302"/>
+        <location filename="src/ui/mainwin.cpp" line="365"/>
         <source>Voice ToolBar</source>
         <translation>Hang eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="305"/>
+        <location filename="src/ui/mainwin.cpp" line="368"/>
         <source>Current Voice number</source>
         <translation>Jelenlegi hang száma</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="308"/>
+        <location filename="src/ui/mainwin.cpp" line="371"/>
         <source>Voice instrument</source>
         <translation>Hangszer</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="312"/>
+        <location filename="src/ui/mainwin.cpp" line="375"/>
         <source>Voice name</source>
         <translation>Hang neve</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="313"/>
+        <location filename="src/ui/mainwin.cpp" line="376"/>
         <source>Select Voice Stem Direction</source>
         <translation>Hangszár irány választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="315"/>
+        <location filename="src/ui/mainwin.cpp" line="378"/>
         <source>Voice Stems Neutral</source>
         <translation>Semleges hangszárak</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="316"/>
+        <location filename="src/ui/mainwin.cpp" line="379"/>
         <source>Voice Stems Up</source>
         <translation>Hangszárak fölfelé</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="317"/>
+        <location filename="src/ui/mainwin.cpp" line="380"/>
         <source>Voice Stems Down</source>
         <translation>Hangszárak lefelé</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="319"/>
+        <location filename="src/ui/mainwin.cpp" line="382"/>
         <source>Playable ToolBar</source>
         <translation>Lejátszás eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="320"/>
+        <location filename="src/ui/mainwin.cpp" line="383"/>
         <source>Select Length</source>
         <translation>Hangjegy hossz választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="322"/>
+        <location filename="src/ui/mainwin.cpp" line="385"/>
         <source>Breve</source>
         <comment>note</comment>
         <translation>Breve</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="323"/>
+        <location filename="src/ui/mainwin.cpp" line="386"/>
         <source>Whole</source>
         <comment>note</comment>
         <translation>Egész</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="508"/>
+        <location filename="src/ui/mainwin.cpp" line="387"/>
+        <location filename="src/ui/mainwin.cpp" line="539"/>
         <source>Half</source>
         <comment>note</comment>
         <translation>Fél</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="507"/>
+        <location filename="src/ui/mainwin.cpp" line="388"/>
+        <location filename="src/ui/mainwin.cpp" line="538"/>
         <source>Quarter</source>
         <comment>note</comment>
         <translation>Negyed</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="509"/>
+        <location filename="src/ui/mainwin.cpp" line="389"/>
+        <location filename="src/ui/mainwin.cpp" line="540"/>
         <source>Eighth</source>
         <comment>note</comment>
         <translation>Nyolcad</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="327"/>
+        <location filename="src/ui/mainwin.cpp" line="390"/>
         <source>Sixteenth</source>
         <comment>note</comment>
         <translation>Tizenhatod</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="328"/>
+        <location filename="src/ui/mainwin.cpp" line="391"/>
         <source>ThirtySecond</source>
         <comment>note</comment>
         <translation>Harmincketted</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="329"/>
+        <location filename="src/ui/mainwin.cpp" line="392"/>
         <source>SixtyFourth</source>
         <comment>note</comment>
         <translation>Hatvannegyed</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="330"/>
+        <location filename="src/ui/mainwin.cpp" line="393"/>
+        <source>HundredTwentyEighth</source>
+        <comment>note</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="394"/>
         <source>Select Note Stem Direction</source>
         <translation>Hangjegyszár irány választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="332"/>
+        <location filename="src/ui/mainwin.cpp" line="396"/>
         <source>Note Stem Neutral</source>
         <translation>Semleges hangjegyszár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="333"/>
+        <location filename="src/ui/mainwin.cpp" line="397"/>
         <source>Note Stem Up</source>
         <translation>Hangjegyszár fölfelé</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="334"/>
+        <location filename="src/ui/mainwin.cpp" line="398"/>
         <source>Note Stem Down</source>
         <translation>Hangjegyszár lefelé</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="335"/>
+        <location filename="src/ui/mainwin.cpp" line="399"/>
         <source>Note Stem Preferred</source>
         <translation>Ajánlott hangjegyszár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="337"/>
-        <source>Key Signature ToolBar</source>
-        <translation>Hangjegykulcs eszköztár</translation>
+        <location filename="src/ui/mainwin.cpp" line="400"/>
+        <source>Select Tuplet Type</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="434"/>
-        <source>C-flat major</source>
-        <translation>Cesz dúr</translation>
+        <location filename="src/ui/mainwin.cpp" line="402"/>
+        <source>Triplet</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="435"/>
-        <source>a-flat minor</source>
-        <translation>asz moll</translation>
+        <location filename="src/ui/mainwin.cpp" line="403"/>
+        <source>Tuplet</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="436"/>
-        <source>G-flat major</source>
-        <translation>Gesz dúr</translation>
+        <location filename="src/ui/mainwin.cpp" line="408"/>
+        <source>Number of notes</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="437"/>
-        <source>e-flat minor</source>
-        <translation>esz moll</translation>
+        <location filename="src/ui/mainwin.cpp" line="409"/>
+        <source>instead of</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="438"/>
-        <source>D-flat major</source>
-        <translation>Desz dúr</translation>
+        <location filename="src/ui/mainwin.cpp" line="415"/>
+        <source>Actual number of notes</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="439"/>
-        <source>b-flat minor</source>
-        <translation>bé moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="440"/>
-        <source>A-flat major</source>
-        <translation>Asz dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="441"/>
-        <source>f minor</source>
-        <translation>f moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="442"/>
-        <source>E-flat major</source>
-        <translation>Esz dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="443"/>
-        <source>c minor</source>
-        <translation>c moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="444"/>
-        <source>B-flat major</source>
-        <translation>Bé dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="445"/>
-        <source>g minor</source>
-        <translation>g moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="446"/>
-        <source>F major</source>
-        <translation>F dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="447"/>
-        <source>d minor</source>
-        <translation>d moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="448"/>
-        <source>C major</source>
-        <translation>C dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="449"/>
-        <source>a minor</source>
-        <translation>a moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="450"/>
-        <source>G major</source>
-        <translation>G dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="451"/>
-        <source>e minor</source>
-        <translation>e moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="452"/>
-        <source>D major</source>
-        <translation>D dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="453"/>
-        <source>b minor</source>
-        <translation>b moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="454"/>
-        <source>A major</source>
-        <translation>A dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="455"/>
-        <source>f-sharp minor</source>
-        <translation>fisz moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="456"/>
-        <source>E major</source>
-        <translation>E dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="457"/>
-        <source>c-sharp minor</source>
-        <translation>cisz moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="458"/>
-        <source>B major</source>
-        <translation>B dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="459"/>
-        <source>g-sharp minor</source>
-        <translation>gisz moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="460"/>
-        <source>F-sharp major</source>
-        <translation>Fisz dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="461"/>
-        <source>d-sharp minor</source>
-        <translation>d-sharp moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="462"/>
-        <source>C-sharp major</source>
-        <translation>Cisz dúr</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="463"/>
-        <source>a-sharp minor</source>
-        <translation>aisz moll</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="371"/>
+        <location filename="src/ui/mainwin.cpp" line="417"/>
         <source>Time Signature ToolBar</source>
         <translation>Ütemidő eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="376"/>
+        <location filename="src/ui/mainwin.cpp" line="422"/>
         <source>Number of beats</source>
         <translation>Ütések száma</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="383"/>
+        <location filename="src/ui/mainwin.cpp" line="429"/>
         <source>Beat</source>
         <translation>Ütés</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="385"/>
+        <location filename="src/ui/mainwin.cpp" line="431"/>
         <source>Clef ToolBar</source>
         <translation>Hangjegykulcs eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="392"/>
+        <location filename="src/ui/mainwin.cpp" line="438"/>
         <source>Clef offset</source>
         <translation>Hangjegykulcs eltolás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="394"/>
-        <source>Function marking ToolBar</source>
-        <translation>Funkció jelölő eszköztár</translation>
+        <location filename="src/ui/mainwin.cpp" line="440"/>
+        <source>Figured bass ToolBar</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="395"/>
+        <location filename="src/ui/mainwin.cpp" line="441"/>
+        <source>Set/Unset Figured bass number</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="446"/>
+        <source>Set/Unset Figured bass accidentals</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="448"/>
+        <source>Double flat</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="449"/>
+        <source>Flat</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="450"/>
+        <source>Neutral</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="451"/>
+        <source>Sharp</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="452"/>
+        <source>Double sharp</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="454"/>
+        <source>Function mark ToolBar</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="455"/>
         <source>Select Function Name</source>
         <translation>Funkció név választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="423"/>
+        <location filename="src/ui/mainwin.cpp" line="457"/>
+        <location filename="src/ui/mainwin.cpp" line="475"/>
+        <location filename="src/ui/mainwin.cpp" line="483"/>
         <source>Tonic</source>
         <translation>Alaphang</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="425"/>
+        <location filename="src/ui/mainwin.cpp" line="458"/>
+        <location filename="src/ui/mainwin.cpp" line="476"/>
+        <location filename="src/ui/mainwin.cpp" line="485"/>
         <source>Subdominant</source>
         <translation>Mellékuralkodó</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="427"/>
+        <location filename="src/ui/mainwin.cpp" line="459"/>
+        <location filename="src/ui/mainwin.cpp" line="477"/>
+        <location filename="src/ui/mainwin.cpp" line="487"/>
         <source>Dominant</source>
         <translation>Uralkodó</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="428"/>
+        <location filename="src/ui/mainwin.cpp" line="460"/>
+        <location filename="src/ui/mainwin.cpp" line="488"/>
         <source>II</source>
         <translation>II</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="429"/>
+        <location filename="src/ui/mainwin.cpp" line="461"/>
+        <location filename="src/ui/mainwin.cpp" line="489"/>
         <source>III</source>
         <translation>III</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="430"/>
+        <location filename="src/ui/mainwin.cpp" line="462"/>
+        <location filename="src/ui/mainwin.cpp" line="490"/>
         <source>VI</source>
         <translation>VI</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="431"/>
+        <location filename="src/ui/mainwin.cpp" line="463"/>
+        <location filename="src/ui/mainwin.cpp" line="491"/>
         <source>VII</source>
         <translation>VII</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="404"/>
+        <location filename="src/ui/mainwin.cpp" line="464"/>
         <source>Cadenze</source>
         <translation>Cadenze</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="424"/>
+        <location filename="src/ui/mainwin.cpp" line="465"/>
+        <location filename="src/ui/mainwin.cpp" line="478"/>
+        <location filename="src/ui/mainwin.cpp" line="484"/>
         <source>minor Tonic</source>
         <translation>moll Alaphang</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="426"/>
+        <location filename="src/ui/mainwin.cpp" line="466"/>
+        <location filename="src/ui/mainwin.cpp" line="479"/>
+        <location filename="src/ui/mainwin.cpp" line="486"/>
         <source>minor Subdominant</source>
         <translation>moll Mellékuralkodó</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="407"/>
+        <location filename="src/ui/mainwin.cpp" line="467"/>
         <source>Napolitan</source>
         <translation>Napolitan</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="408"/>
+        <location filename="src/ui/mainwin.cpp" line="468"/>
         <source>Phrygian</source>
         <translation>Phrygian</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="409"/>
+        <location filename="src/ui/mainwin.cpp" line="469"/>
         <source>Lydian</source>
         <translation>Lydian</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="410"/>
+        <location filename="src/ui/mainwin.cpp" line="470"/>
         <source>IV</source>
         <translation>IV</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="411"/>
+        <location filename="src/ui/mainwin.cpp" line="471"/>
         <source>V</source>
         <translation>V</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="420"/>
+        <location filename="src/ui/mainwin.cpp" line="472"/>
+        <location filename="src/ui/mainwin.cpp" line="480"/>
         <source>None</source>
         <translation>Semmi</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="413"/>
+        <location filename="src/ui/mainwin.cpp" line="473"/>
         <source>Select Chord Area</source>
         <translation>Akkord terület választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="421"/>
+        <location filename="src/ui/mainwin.cpp" line="481"/>
         <source>Select Tonic Degree</source>
         <translation>Alaphang fokozat választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="465"/>
+        <location filename="src/ui/mainwin.cpp" line="496"/>
         <source>Dynamic marks ToolBar</source>
         <translation>Dinamikus jelölés eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="466"/>
+        <location filename="src/ui/mainwin.cpp" line="497"/>
         <source>Select Dynamic</source>
         <translation>Dinamika választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="468"/>
+        <location filename="src/ui/mainwin.cpp" line="499"/>
         <source>Piano</source>
         <comment>dynamics</comment>
         <translation>Halkan</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="472"/>
+        <location filename="src/ui/mainwin.cpp" line="500"/>
+        <location filename="src/ui/mainwin.cpp" line="501"/>
+        <location filename="src/ui/mainwin.cpp" line="502"/>
+        <location filename="src/ui/mainwin.cpp" line="503"/>
         <source>Pianissimo</source>
         <comment>dynamics</comment>
         <translation>Nagyon halkan</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="473"/>
+        <location filename="src/ui/mainwin.cpp" line="504"/>
         <source>Forte</source>
         <comment>dynamics</comment>
         <translation>Erősen/Hangosan</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="477"/>
+        <location filename="src/ui/mainwin.cpp" line="505"/>
+        <location filename="src/ui/mainwin.cpp" line="506"/>
+        <location filename="src/ui/mainwin.cpp" line="507"/>
+        <location filename="src/ui/mainwin.cpp" line="508"/>
         <source>Fortissimo</source>
         <comment>dynamics</comment>
         <translation>Nagyon erősen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="478"/>
+        <location filename="src/ui/mainwin.cpp" line="509"/>
         <source>Mezzo Forte</source>
         <comment>dynamics</comment>
         <translation>Félerősen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="479"/>
+        <location filename="src/ui/mainwin.cpp" line="510"/>
         <source>Mezzo Piano</source>
         <comment>dynamics</comment>
         <translation>Félhalkan</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="480"/>
+        <location filename="src/ui/mainwin.cpp" line="511"/>
         <source>Forte Piano</source>
         <comment>dynamics</comment>
         <translation>Erősen Halkan</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="481"/>
+        <location filename="src/ui/mainwin.cpp" line="512"/>
         <source>Sforzando Forte</source>
         <comment>dynamics</comment>
         <translation>Erősen kiemelve</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="482"/>
+        <location filename="src/ui/mainwin.cpp" line="513"/>
         <source>Sforzando Piano</source>
         <comment>dynamics</comment>
         <translation>Halkan kiemelve</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="483"/>
+        <location filename="src/ui/mainwin.cpp" line="514"/>
         <source>Sforzando</source>
         <comment>dynamics</comment>
         <translation>Kiemelve</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="484"/>
+        <location filename="src/ui/mainwin.cpp" line="515"/>
         <source>Rinforzando</source>
         <comment>dynamics</comment>
         <translation>Erősödve</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="485"/>
+        <location filename="src/ui/mainwin.cpp" line="516"/>
         <source>Sforzando Pianissimo</source>
         <comment>dynamics</comment>
         <translation>Nagyon halkan kiemelve</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="486"/>
+        <location filename="src/ui/mainwin.cpp" line="517"/>
         <source>Sforzando Fortissimo</source>
         <comment>dynamics</comment>
         <translation>Nagyon erősen kiemelve</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="487"/>
+        <location filename="src/ui/mainwin.cpp" line="518"/>
         <source>Custom</source>
         <comment>dynamics</comment>
         <translation>Tetszőlegesen</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="490"/>
+        <location filename="src/ui/mainwin.cpp" line="521"/>
         <source>Playback Volume</source>
         <translation>Visszajátszás hangerő</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="496"/>
+        <location filename="src/ui/mainwin.cpp" line="527"/>
         <source>Dynamic mark text</source>
         <translation>Dinamikus jelölő szöveg</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="498"/>
+        <location filename="src/ui/mainwin.cpp" line="529"/>
         <source>Instrument ToolBar</source>
         <translation>Hangszer eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="504"/>
+        <location filename="src/ui/mainwin.cpp" line="535"/>
         <source>Tempo ToolBar</source>
         <translation>Tempó eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="505"/>
+        <location filename="src/ui/mainwin.cpp" line="536"/>
         <source>Select Beat</source>
         <translation>Ütés választás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="510"/>
+        <location filename="src/ui/mainwin.cpp" line="541"/>
         <source>Dotted Quarter</source>
         <comment>note</comment>
         <translation>Pontozott negyed</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="511"/>
+        <location filename="src/ui/mainwin.cpp" line="542"/>
         <source>Dotted Half</source>
         <comment>note</comment>
         <translation>Pontozott fél</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="512"/>
+        <location filename="src/ui/mainwin.cpp" line="543"/>
         <source>Dotted Eighth</source>
         <comment>note</comment>
         <translation>Pontozott nyolcad</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="517"/>
+        <location filename="src/ui/mainwin.cpp" line="548"/>
         <source>Beats per minute</source>
         <comment>tempo</comment>
         <translation>Ütés per perc</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="519"/>
+        <location filename="src/ui/mainwin.cpp" line="550"/>
         <source>Fermata ToolBar</source>
         <translation>Korona eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="520"/>
+        <location filename="src/ui/mainwin.cpp" line="551"/>
         <source>Fermata Type</source>
         <translation>Korona típus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="522"/>
+        <location filename="src/ui/mainwin.cpp" line="553"/>
         <source>Short</source>
         <comment>fermata</comment>
         <translation>Rövid</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="523"/>
+        <location filename="src/ui/mainwin.cpp" line="554"/>
         <source>Normal</source>
         <comment>fermata</comment>
         <translation>Normális</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="524"/>
+        <location filename="src/ui/mainwin.cpp" line="555"/>
         <source>Long</source>
         <comment>fermata</comment>
         <translation>Hosszú</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="525"/>
+        <location filename="src/ui/mainwin.cpp" line="556"/>
         <source>Very Long</source>
         <comment>fermata</comment>
         <translation>Nagyon hosszú</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="527"/>
+        <location filename="src/ui/mainwin.cpp" line="558"/>
         <source>Repeat Mark ToolBar</source>
         <translation>Ismétlés jelölő eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="528"/>
+        <location filename="src/ui/mainwin.cpp" line="559"/>
         <source>Repeat Mark Type</source>
         <translation>Jelölés típus megismétlése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="530"/>
-        <source>Segno</source>
-        <comment>repeat mark</comment>
-        <translation>Jel/Segno</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="531"/>
-        <source>Coda</source>
-        <comment>repeat mark</comment>
-        <translation>Zárlat/Coda</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="532"/>
-        <source>VarCoda</source>
-        <comment>repeat mark</comment>
-        <translation>VarCoda</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="533"/>
-        <source>Dal Segno</source>
-        <comment>repeat mark</comment>
-        <translation>Dal Segno</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="534"/>
-        <source>Dal Coda</source>
-        <comment>repeat mark</comment>
-        <translation>Dal Coda</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="535"/>
-        <source>Dal VarCoda</source>
-        <comment>repeat mark</comment>
-        <translation>Dal VarCoda</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="536"/>
+        <location filename="src/ui/mainwin.cpp" line="561"/>
         <source>Volta 1st</source>
         <comment>repeat mark</comment>
         <translation>Először</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="537"/>
+        <location filename="src/ui/mainwin.cpp" line="562"/>
         <source>Volta 2nd</source>
         <comment>repeat mark</comment>
         <translation>Másodszor</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="538"/>
+        <location filename="src/ui/mainwin.cpp" line="563"/>
         <source>Volta 3rd</source>
         <comment>repeat mark</comment>
         <translation>Harmadszor</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="540"/>
+        <location filename="src/ui/mainwin.cpp" line="564"/>
+        <source>Segno</source>
+        <comment>repeat mark</comment>
+        <translation>Jel/Segno</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="565"/>
+        <source>Coda</source>
+        <comment>repeat mark</comment>
+        <translation>Zárlat/Coda</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="566"/>
+        <source>VarCoda</source>
+        <comment>repeat mark</comment>
+        <translation>VarCoda</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="567"/>
+        <source>Dal Segno</source>
+        <comment>repeat mark</comment>
+        <translation>Dal Segno</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="568"/>
+        <source>Dal Coda</source>
+        <comment>repeat mark</comment>
+        <translation>Dal Coda</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="569"/>
+        <source>Dal VarCoda</source>
+        <comment>repeat mark</comment>
+        <translation>Dal VarCoda</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="571"/>
         <source>Fingering ToolBar</source>
         <translation>Ujjrend eszköztár</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="541"/>
+        <location filename="src/ui/mainwin.cpp" line="572"/>
         <source>Finger</source>
         <translation>Ujj</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="543"/>
+        <location filename="src/ui/mainwin.cpp" line="574"/>
         <source>First</source>
         <comment>fingering</comment>
         <translation>Első</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="544"/>
+        <location filename="src/ui/mainwin.cpp" line="575"/>
         <source>Second</source>
         <comment>fingering</comment>
         <translation>Második</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="545"/>
+        <location filename="src/ui/mainwin.cpp" line="576"/>
         <source>Third</source>
         <comment>fingering</comment>
         <translation>Harmadik</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="546"/>
+        <location filename="src/ui/mainwin.cpp" line="577"/>
         <source>Fourth</source>
         <comment>fingering</comment>
         <translation>Negyedik</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="547"/>
+        <location filename="src/ui/mainwin.cpp" line="578"/>
         <source>Fifth</source>
         <comment>fingering</comment>
         <translation>Ötödik</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="548"/>
+        <location filename="src/ui/mainwin.cpp" line="579"/>
         <source>Thumb</source>
         <comment>fingering</comment>
         <translation>Hüvelykujj</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="549"/>
+        <location filename="src/ui/mainwin.cpp" line="580"/>
         <source>Left Heel</source>
         <comment>fingering</comment>
         <translation>Bal sarok</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="550"/>
+        <location filename="src/ui/mainwin.cpp" line="581"/>
         <source>Right Heel</source>
         <comment>fingering</comment>
         <translation>Jobb sarok</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="551"/>
+        <location filename="src/ui/mainwin.cpp" line="582"/>
         <source>Left Toe</source>
         <comment>fingering</comment>
         <translation>Bal rögzítés</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="552"/>
+        <location filename="src/ui/mainwin.cpp" line="583"/>
         <source>Right Toe</source>
         <comment>fingering</comment>
         <translation>Jobb rögzítés</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="553"/>
+        <location filename="src/ui/mainwin.cpp" line="585"/>
         <source>Original</source>
         <translation>Eredeti</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="555"/>
+        <location filename="src/ui/mainwin.cpp" line="587"/>
         <source>Is the fingering original by a composer (usually written italic)</source>
         <comment>fingering original checkbox</comment>
         <translation>A kottázó általi eredeti ujjrend (álltalában latinul írják)</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="567"/>
+        <location filename="src/ui/mainwin.cpp" line="590"/>
+        <source>Help</source>
+        <translation>Segítség</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="599"/>
+        <source>Canorus console</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="622"/>
         <source>Undo</source>
         <translation>Visszavonás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="571"/>
+        <location filename="src/ui/mainwin.cpp" line="629"/>
         <source>Redo</source>
         <translation>Visszaállítás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="586"/>
+        <location filename="src/ui/mainwin.cpp" line="643"/>
         <source>Insert context</source>
         <translation>Sáv beszúrása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="592"/>
+        <location filename="src/ui/mainwin.cpp" line="649"/>
         <source>Insert slur</source>
         <translation>Átkötés beszúrása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="596"/>
+        <location filename="src/ui/mainwin.cpp" line="653"/>
         <source>Insert clef</source>
         <translation>Hangjegykulcs beszúrása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="601"/>
+        <location filename="src/ui/mainwin.cpp" line="658"/>
         <source>Insert time signature</source>
         <translation>Ütemidő beszúrása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="605"/>
+        <location filename="src/ui/mainwin.cpp" line="662"/>
         <source>Insert barline</source>
         <translation>Ütemvonal beszúrása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="609"/>
+        <location filename="src/ui/mainwin.cpp" line="666"/>
         <source>Insert mark</source>
         <translation>Jel beszúrása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="613"/>
+        <location filename="src/ui/mainwin.cpp" line="670"/>
         <source>Insert articulation mark</source>
         <translation>Tagolás beszúrása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="641"/>
+        <location filename="src/ui/mainwin.cpp" line="699"/>
         <source>Playable length</source>
         <translation>Játszható hossz</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="646"/>
+        <location filename="src/ui/mainwin.cpp" line="704"/>
+        <source>Insert tuplet</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="710"/>
         <source>Note stem direction</source>
         <translation>Hangjegyszár irány</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="673"/>
+        <location filename="src/ui/mainwin.cpp" line="733"/>
         <source>Voice stem direction</source>
         <translation>Hangszár irány</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="680"/>
-        <source>Function marking</source>
-        <translation>Funkció jelölés</translation>
+        <location filename="src/ui/mainwin.cpp" line="740"/>
+        <source>Figured bass number</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="684"/>
-        <source>Function marking chord area</source>
-        <translation>Funkció jelölő akkord terület</translation>
+        <location filename="src/ui/mainwin.cpp" line="745"/>
+        <source>Figured bass accidentals</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="689"/>
-        <source>Function marking tonic degree</source>
-        <translation>Funkció jelölő alaphang fokozat</translation>
+        <location filename="src/ui/mainwin.cpp" line="753"/>
+        <source>Function mark</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="698"/>
+        <location filename="src/ui/mainwin.cpp" line="757"/>
+        <source>Function mark chord area</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="762"/>
+        <source>Function mark tonic degree</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="770"/>
         <source>Predefined dynamic mark</source>
         <translation>Újrameghatározott dimakus jel</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="712"/>
+        <location filename="src/ui/mainwin.cpp" line="784"/>
         <source>Beat</source>
         <comment>tempo</comment>
         <translation>Ütés</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="720"/>
+        <location filename="src/ui/mainwin.cpp" line="792"/>
         <source>Fermata Type</source>
         <comment>fermata</comment>
         <translation>Korona típus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="726"/>
+        <location filename="src/ui/mainwin.cpp" line="798"/>
         <source>Repeat Mark Type</source>
         <comment>repeat mark</comment>
         <translation>Jel típus ismétlése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="732"/>
+        <location filename="src/ui/mainwin.cpp" line="804"/>
         <source>Finger</source>
         <comment>fingering</comment>
         <translation>Ujj</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1086"/>
+        <location filename="src/ui/mainwin.cpp" line="935"/>
+        <source>Unsaved changes</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="935"/>
+        <source>Document &quot;%1&quot; was modified. Do you want to save the changes?</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="935"/>
+        <location filename="src/ui/mainwin.cpp" line="3269"/>
+        <source>Untitled</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="1034"/>
+        <source>change sheet order</source>
+        <comment>undo</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="1058"/>
+        <source>change hidden rest</source>
+        <comment>undo</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="1385"/>
         <source>new sheet</source>
         <comment>undo</comment>
         <translation>új réteg</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1087"/>
-        <source>Sheet%1</source>
-        <translation>Réteg%1</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="1107"/>
+        <location filename="src/ui/mainwin.cpp" line="1406"/>
         <source>new voice</source>
         <comment>undo</comment>
         <translation>új hang</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1109"/>
+        <location filename="src/ui/mainwin.cpp" line="1408"/>
         <source>Voice%1</source>
         <translation>Hang%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2396"/>
+        <location filename="src/ui/mainwin.cpp" line="1426"/>
+        <location filename="src/ui/mainwin.cpp" line="1433"/>
+        <location filename="src/ui/mainwin.cpp" line="1461"/>
+        <location filename="src/ui/mainwin.cpp" line="3458"/>
         <source>Canorus</source>
         <translation>Canorus</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1129"/>
+        <location filename="src/ui/mainwin.cpp" line="1427"/>
         <source>Cannot delete the last voice in the staff!</source>
         <translation>Nem törölhető az előző hang az ütemvonalból!</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1135"/>
+        <location filename="src/ui/mainwin.cpp" line="1434"/>
         <source>Are you sure do you want to delete voice
 %1 and all its notes?</source>
         <translation>Biztos hogy törölni akarod %1 hangot 
 és az összes hangjegyét?</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1141"/>
+        <location filename="src/ui/mainwin.cpp" line="1440"/>
         <source>voice removal</source>
         <comment>undo</comment>
         <translation>hang eltávolító</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1159"/>
+        <location filename="src/ui/mainwin.cpp" line="1462"/>
         <source>Are you sure do you want to delete context
 %1 and all its contents?</source>
         <translation>Biztos törölni akarod %1 sávot
 és az összes tartalmát?</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1165"/>
+        <location filename="src/ui/mainwin.cpp" line="1468"/>
         <source>context removal</source>
         <comment>undo</comment>
         <translation>sáv eltávolító</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1453"/>
+        <location filename="src/ui/mainwin.cpp" line="1740"/>
+        <source>resize</source>
+        <comment>undo</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="1793"/>
         <source>new staff</source>
         <comment>undo</comment>
         <translation>új ütemvonal</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1457"/>
+        <location filename="src/ui/mainwin.cpp" line="1797"/>
+        <location filename="src/ui/mainwin.cpp" line="5600"/>
         <source>Staff%1</source>
         <translation>Ütemvonal%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1465"/>
+        <location filename="src/ui/mainwin.cpp" line="1805"/>
         <source>new lyrics context</source>
         <comment>undo</comment>
         <translation>új dalszöveg sáv</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1474"/>
+        <location filename="src/ui/mainwin.cpp" line="1814"/>
+        <location filename="src/ui/mainwin.cpp" line="5614"/>
         <source>LyricsContext%1</source>
         <translation>Dalszövegsáv%1</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1483"/>
-        <source>new function marking context</source>
+        <location filename="src/ui/mainwin.cpp" line="1823"/>
+        <source>new figured bass context</source>
         <comment>undo</comment>
-        <translation>új funkció jelölő sáv</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1487"/>
-        <source>FunctionMarkingContext%1</source>
-        <translation>funkciójelölősáv%1</translation>
+        <location filename="src/ui/mainwin.cpp" line="1827"/>
+        <source>FiguredBassContext%1</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1718"/>
+        <location filename="src/ui/mainwin.cpp" line="1834"/>
+        <source>new function mark context</source>
+        <comment>undo</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="1838"/>
+        <location filename="src/ui/mainwin.cpp" line="5619"/>
+        <source>FunctionMarkContext%1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="2165"/>
         <source>insert barline</source>
         <comment>undo</comment>
         <translation>ütemvonal beszúrása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1750"/>
+        <location filename="src/ui/mainwin.cpp" line="2194"/>
         <source>rise note</source>
         <comment>undo</comment>
         <translation>elhajlított hangjegy</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1776"/>
+        <location filename="src/ui/mainwin.cpp" line="2229"/>
         <source>lower note</source>
         <comment>undo</comment>
         <translation>csökkentett hangjegy</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1804"/>
+        <location filename="src/ui/mainwin.cpp" line="2298"/>
         <source>add sharp</source>
         <comment>undo</comment>
         <translation>magasság növelése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1825"/>
+        <location filename="src/ui/mainwin.cpp" line="2332"/>
         <source>add flat</source>
         <comment>undo</comment>
         <translation>laposság növelése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1843"/>
+        <location filename="src/ui/mainwin.cpp" line="2359"/>
         <source>set dotted</source>
         <comment>undo</comment>
         <translation>pöttyözés beállítás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="1998"/>
+        <location filename="src/ui/mainwin.cpp" line="2561"/>
         <source>insertion of music element</source>
         <comment>undo</comment>
         <translation>zenei elem beszúrása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2397"/>
+        <location filename="src/ui/mainwin.cpp" line="3244"/>
+        <location filename="src/ui/mainwin.cpp" line="3255"/>
+        <source>Error while saving document</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="3245"/>
+        <source>The document was not saved!
+Error number %1 %2.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="3256"/>
+        <source>Unknown file format %1.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="3275"/>
+        <source>(modified)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="3306"/>
+        <source>No file name</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="3306"/>
+        <source>Warning: No file name for export specified.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="3459"/>
         <source>Error while opening the file!
 Error %1: </source>
         <translation>Hiba a fájl betöltése közben!
 Hiba%1: </translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2608"/>
-        <source>change key signature</source>
-        <comment>undo</comment>
-        <translation>hangjegykulcs megváltoztatása</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="2647"/>
+        <location filename="src/ui/mainwin.cpp" line="3519"/>
         <source>change clef offset</source>
         <comment>undo</comment>
         <translation>hangjegykulcs eltolásának megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2665"/>
+        <location filename="src/ui/mainwin.cpp" line="3537"/>
         <source>change voice name</source>
         <comment>undo</comment>
         <translation>hang nevének megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2715"/>
+        <location filename="src/ui/mainwin.cpp" line="3551"/>
+        <source>change voice instrument</source>
+        <comment>undo</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="3603"/>
         <source>change playable length</source>
         <comment>undo</comment>
         <translation>játszható hossz megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2805"/>
+        <location filename="src/ui/mainwin.cpp" line="3746"/>
         <source>lyrics edit</source>
         <comment>undo</comment>
         <translation>dalszöveg szerkesztése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2836"/>
+        <location filename="src/ui/mainwin.cpp" line="3757"/>
         <source>text edit</source>
         <comment>undo</comment>
         <translation>szöveg szerkesztése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2863"/>
+        <location filename="src/ui/mainwin.cpp" line="3766"/>
+        <source>text edit</source>
+        <comment>delete</comment>
+        <translation>szöveg szerkesztése</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="3791"/>
+        <location filename="src/ui/mainwin.cpp" line="3828"/>
+        <source>change figured bass</source>
+        <comment>undo</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="3856"/>
         <source>change function</source>
         <comment>undo</comment>
         <translation>funkció megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2886"/>
+        <location filename="src/ui/mainwin.cpp" line="3879"/>
         <source>change chord area</source>
         <comment>undo</comment>
         <translation>akkord terület megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2909"/>
+        <location filename="src/ui/mainwin.cpp" line="3902"/>
         <source>change tonic degree</source>
         <comment>undo</comment>
         <translation>alaphang fokozat megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="2931"/>
+        <location filename="src/ui/mainwin.cpp" line="3924"/>
         <source>set/unset ellipse</source>
         <comment>undo</comment>
         <translation>beállított/beállítatlan ellipszis</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3147"/>
+        <location filename="src/ui/mainwin.cpp" line="4125"/>
+        <source>insert tuplet</source>
+        <comment>undo</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="4191"/>
         <source>commit CanorusML source</source>
         <comment>undo</comment>
         <translation>CanorusML forrás lekérése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3199"/>
+        <location filename="src/ui/mainwin.cpp" line="4210"/>
+        <location filename="src/ui/mainwin.cpp" line="4246"/>
         <source>commit LilyPond source</source>
         <comment>undo</comment>
         <translation>LilyPond forrás lekérése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3225"/>
+        <location filename="src/ui/mainwin.cpp" line="4280"/>
         <source>About Qt</source>
         <translation>A Qt névjegye</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3229"/>
+        <location filename="src/ui/mainwin.cpp" line="4284"/>
+        <source>&lt;p&gt;&lt;b&gt;Canorus - The next generation music score editor&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Version %1&lt;br&gt;(C) 2006-2015 Canorus Development team. All rights reserved.&lt;br&gt;See the file AUTHORS for the list of Canorus developers&lt;br&gt;&lt;br&gt;This program is licensed under the GNU General Public License (GPL).&lt;br&gt;See the file LICENSE.GPL for details.&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.canorus.org&quot;&gt;http://www.canorus.org&lt;/a&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="4292"/>
+        <source>Canorus is compiled with Python support.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="4294"/>
         <source>About Canorus</source>
         <translation>A Canorus névjegye</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3236"/>
-        <source>Canorus - The next generation music score editor
-
-Version %1
-(C) 2006-2008 Canorus Development team. All rights reserved.
-See the file AUTHORS for the list of Canorus developers
-
-This program is licensed under the GNU General Public License (GPL).
-See the file LICENSE.GPL for details.
-
-Homepage: http://www.canorus.org</source>
-        <translation>Canorus - A következő generációs zenei kottaszerkesztő 
-
-Verzió %1
-(C) 2006-2008 Canorus Fejlesztő csapat. Minden jog fenntartva.
-
-Az AUTHORS fájlban láthatod a Canorus fejlesztőinek listáját
-
-Ez a program a GNU Általános Nyilvános Licenc (GPL) alatt lett kiadva.
-Nézd meg a LICENSE.GPL fájlt a részletekért.
-
-Honlap: http://www.canorus.org</translation>
+        <location filename="src/ui/mainwin.cpp" line="4315"/>
+        <source>Recorded Midi file</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3291"/>
+        <location filename="src/ui/mainwin.cpp" line="4388"/>
         <source>deletion of the sheet</source>
         <comment>undo</comment>
         <translation>réteg törlése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3349"/>
+        <location filename="src/ui/mainwin.cpp" line="4447"/>
         <source>change sheet name</source>
         <comment>undo</comment>
         <translation>réteg név megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3370"/>
+        <location filename="src/ui/mainwin.cpp" line="4467"/>
         <source>change context name</source>
         <comment>undo</comment>
         <translation>sáv név megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3389"/>
+        <location filename="src/ui/mainwin.cpp" line="4486"/>
         <source>change stanza number</source>
         <comment>undo</comment>
         <translation>versszak szám megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3401"/>
+        <location filename="src/ui/mainwin.cpp" line="4498"/>
         <source>change associated voice</source>
         <comment>undo</comment>
         <translation>összekapcsolt hang megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3412"/>
+        <location filename="src/ui/mainwin.cpp" line="4509"/>
         <source>change voice stem direction</source>
         <comment>undo</comment>
         <translation>hangszár irányának megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3429"/>
+        <location filename="src/ui/mainwin.cpp" line="4526"/>
         <source>change note stem direction</source>
         <comment>undo</comment>
         <translation>hangjegyszár irányának megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3955"/>
+        <location filename="src/ui/mainwin.cpp" line="5154"/>
         <source>cut</source>
         <comment>undo</comment>
         <translation>kivágás</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="3999"/>
+        <location filename="src/ui/mainwin.cpp" line="5337"/>
         <source>deletion of elements</source>
         <comment>undo</comment>
         <translation>elemek törlése</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4104"/>
+        <location filename="src/ui/mainwin.cpp" line="5573"/>
         <source>paste</source>
         <comment>undo</comment>
         <translation>beillesztés</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4231"/>
+        <location filename="src/ui/mainwin.cpp" line="5829"/>
+        <location filename="src/ui/mainwin.cpp" line="5852"/>
         <source>change fermata type</source>
         <comment>undo</comment>
         <translation>korona típus megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4254"/>
+        <location filename="src/ui/mainwin.cpp" line="5875"/>
         <source>change finger</source>
         <comment>undo</comment>
         <translation>ujj megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4275"/>
+        <location filename="src/ui/mainwin.cpp" line="5896"/>
         <source>change finger original property</source>
         <comment>undo</comment>
         <translation>ujj eredeti tulajdonságúra állítása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4307"/>
+        <location filename="src/ui/mainwin.cpp" line="5928"/>
         <source>change repeat mark</source>
         <comment>undo</comment>
         <translation>ismétlő jel megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4332"/>
+        <location filename="src/ui/mainwin.cpp" line="5952"/>
         <source>change tempo beat</source>
         <comment>undo</comment>
         <translation>tempó ütés megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="4356"/>
+        <location filename="src/ui/mainwin.cpp" line="5975"/>
         <source>change tempo bpm</source>
         <comment>undo</comment>
         <translation>tempó bpm megváltoztatása</translation>
     </message>
 </context>
 <context>
+    <name>CAMidiImport</name>
+    <message>
+        <location filename="src/import/midiimport.cpp" line="107"/>
+        <source>Midi imported sheet</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/import/midiimport.cpp" line="751"/>
+        <source>Ready</source>
+        <translation>Kész</translation>
+    </message>
+    <message>
+        <location filename="src/import/midiimport.cpp" line="753"/>
+        <source>Importing...</source>
+        <translation>Behozatal...</translation>
+    </message>
+    <message>
+        <location filename="src/import/midiimport.cpp" line="755"/>
+        <source>Error while importing!
+Line %1:%2.</source>
+        <translation>Hiba behozatal közben! 
+Sor %1:%2.</translation>
+    </message>
+    <message>
+        <location filename="src/import/midiimport.cpp" line="757"/>
+        <source>Importing Midi events...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/import/midiimport.cpp" line="759"/>
+        <source>Merging Midi events with the score...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/import/midiimport.cpp" line="761"/>
+        <source>Reinterpreting accidentals...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/import/midiimport.cpp" line="763"/>
+        <source>Drawing score...</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>CAMusicXmlImport</name>
+    <message>
+        <location filename="src/import/musicxmlimport.cpp" line="124"/>
+        <source>File is not a correct MusicXML file.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/import/musicxmlimport.cpp" line="539"/>
+        <source>Lyrics</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/import/musicxmlimport.cpp" line="570"/>
+        <source>Staff%1</source>
+        <translation>Ütemvonal%1</translation>
+    </message>
+    <message>
+        <location filename="src/import/musicxmlimport.cpp" line="597"/>
+        <source>Voice%1</source>
+        <translation>Hang%1</translation>
+    </message>
+</context>
+<context>
+    <name>CAPreviewCtl</name>
+    <message>
+        <location filename="src/control/previewctl.cpp" line="68"/>
+        <location filename="src/control/previewctl.cpp" line="81"/>
+        <source>Error running preview</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/control/previewctl.cpp" line="68"/>
+        <source>Error while running the typesetter.
+
+Please install LilyPond (visit http://www.lilypond.org) and check the settings.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/control/previewctl.cpp" line="81"/>
+        <source>Unable to show %1.
+
+Please install a PDF viewer and check the settings.</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>CAPrintCtl</name>
+    <message>
+        <location filename="src/control/printctl.cpp" line="81"/>
+        <source>Error while printing</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/control/printctl.cpp" line="81"/>
+        <source>Error while running the typesetter.
+
+Please install LilyPond (visit http://www.lilypond.org) and check the settings.</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>CAProgressStatusBar</name>
+    <message>
+        <location filename="src/widgets/progressstatusbar.cpp" line="18"/>
+        <source>Cancel</source>
+        <translation>Mégse</translation>
+    </message>
+</context>
+<context>
     <name>CAPropertiesDialog</name>
     <message>
-        <location filename="../ui/propertiesdialog.cpp" line="128"/>
+        <location filename="src/ui/propertiesdialog.cpp" line="90"/>
         <source>Document</source>
         <translation>Dokumentum</translation>
     </message>
     <message>
-        <location filename="../ui/propertiesdialog.cpp" line="324"/>
+        <location filename="src/ui/propertiesdialog.cpp" line="310"/>
         <source>apply properties</source>
         <comment>undo</comment>
         <translation>tulajdonságok alkalmazása</translation>
     </message>
 </context>
 <context>
+    <name>CAResourceView</name>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="41"/>
+        <source>Name</source>
+        <translation>Név</translation>
+    </message>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="41"/>
+        <source>Linked</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="42"/>
+        <source>Document Resources</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="64"/>
+        <source>Document</source>
+        <translation>Dokumentum</translation>
+    </message>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="69"/>
+        <source>yes</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="69"/>
+        <source>no</source>
+        <translation>nem</translation>
+    </message>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="108"/>
+        <source>Rename</source>
+        <translation>Átnevezés</translation>
+    </message>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="113"/>
+        <source>Save as...</source>
+        <translation>Mentés másként...</translation>
+    </message>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="117"/>
+        <source>Remove</source>
+        <translation>Eltávolítás</translation>
+    </message>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="125"/>
+        <source>Confirm deletion</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/resourceview.cpp" line="125"/>
+        <source>Do you want to remove resource &quot;%1&quot;?
+
+Deletion cannot be undone!</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>CASettingsDialog</name>
     <message>
-        <location filename="../ui/settingsdialog.cpp" line="98"/>
+        <location filename="src/ui/settingsdialog.cpp" line="95"/>
+        <location filename="src/ui/settingsdialog.cpp" line="104"/>
         <source>None</source>
         <translation>nincs</translation>
     </message>
     <message>
-        <location filename="../ui/settingsdialog.cpp" line="177"/>
+        <location filename="src/ui/settingsdialog.cpp" line="222"/>
         <source>Choose default documents directory</source>
         <translation>Alap dokumentum könyvtárra váltás</translation>
     </message>
-</context>
-<context>
-    <name>CASourceViewPort</name>
     <message>
-        <location filename="../widgets/sourceviewport.cpp" line="82"/>
-        <source>Commit changes</source>
-        <translation>Lekérés megváltoztatása</translation>
+        <location filename="src/ui/settingsdialog.cpp" line="337"/>
+        <source>Select typesetter executable</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../widgets/sourceviewport.cpp" line="83"/>
+        <location filename="src/ui/settingsdialog.cpp" line="344"/>
+        <source>Select PDF viewer executable</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>CASourceView</name>
+    <message>
+        <location filename="src/widgets/sourceview.cpp" line="96"/>
+        <source>Commit changes</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/widgets/sourceview.cpp" line="97"/>
         <source>Revert changes</source>
-        <translation>Változások visszatérítése</translation>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>CATransposeView</name>
+    <message>
+        <location filename="src/ui/transposeview.cpp" line="137"/>
+        <source>transposition</source>
+        <comment>undo</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="84"/>
+        <location filename="src/canorus.cpp" line="108"/>
+        <source>Choose a file to save</source>
+        <translation>Válassz elmentendő állományt</translation>
+    </message>
+    <message>
+        <location filename="src/canorus.cpp" line="115"/>
+        <source>Choose a file to open</source>
+        <translation>Válassz megnyitandó állományt</translation>
+    </message>
+    <message>
+        <location filename="src/canorus.cpp" line="127"/>
+        <source>All supported formats (%1)</source>
+        <translation>Minden támogatott formátum (%1)</translation>
+    </message>
+    <message>
+        <location filename="src/canorus.cpp" line="129"/>
+        <source>Choose a file to export</source>
+        <translation>Válassz kiviteli állományt</translation>
+    </message>
+    <message>
+        <location filename="src/canorus.cpp" line="138"/>
+        <source>Choose a file to import</source>
+        <translation>Válassz behozatali állományt</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="18"/>
+        <source>Canorus document (*.xml)</source>
+        <translation>Canorus dokumentum (*.xml)</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="19"/>
+        <source>Canorus archive (*.can)</source>
+        <translation>Canorus archive (*.can)</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="20"/>
+        <source>LilyPond document (*.ly)</source>
+        <translation>LilyPond dokumentum (*.ly)</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="21"/>
+        <source>MusicXML document (*.musicxml)</source>
+        <translation>MusicXML dokumentum (*.musicxml)</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="22"/>
+        <source>Compressed MusicXML document (*.mxl)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="23"/>
+        <source>NoteEdit document (*.not)</source>
+        <translation>NoteEdit dokumentum (*.not)</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="24"/>
+        <source>ABC music document (*.abc)</source>
+        <translation>ABC zenei dokumentum (*.abc)</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="25"/>
+        <source>Finale document (*.mus)</source>
+        <translation>Finale dokumentum (*.mus)</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="26"/>
+        <source>Sibelius document (*.sib)</source>
+        <translation>Sibelius dokumentum (*.sib)</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="27"/>
+        <source>Capella document (*.cap)</source>
+        <translation>Capella dokumentum (*.cap)</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="28"/>
+        <source>Midi file (*.mid *.midi)</source>
+        <translation>Midi állomány (*.mid *.midi)</translation>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="29"/>
+        <source>PDF file (*.pdf)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/core/fileformats.cpp" line="30"/>
+        <source>SVG file (*.svg)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/core/notechecker.cpp" line="67"/>
+        <source>Bar duration incorrect.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/import/canorusmlimport.cpp" line="173"/>
+        <location filename="src/score/document.cpp" line="125"/>
+        <source>Sheet%1</source>
+        <translation>Réteg%1</translation>
+    </message>
+    <message>
+        <location filename="src/import/canorusmlimport.cpp" line="187"/>
+        <location filename="src/score/sheet.cpp" line="84"/>
+        <source>Staff%1</source>
+        <translation>Ütemvonal%1</translation>
+    </message>
+    <message>
+        <location filename="src/import/canorusmlimport.cpp" line="201"/>
+        <source>Lyrics Context %1</source>
+        <translation>Dalszöveg sáv %1</translation>
+    </message>
+    <message>
+        <location filename="src/import/canorusmlimport.cpp" line="219"/>
+        <source>Figured Bass Context %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/import/canorusmlimport.cpp" line="233"/>
+        <source>Function Mark Context %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/import/canorusmlimport.cpp" line="254"/>
+        <location filename="src/score/staff.cpp" line="204"/>
+        <source>Voice%1</source>
+        <translation>Hang%1</translation>
+    </message>
+    <message>
+        <location filename="src/import/lilypondimport.cpp" line="70"/>
+        <location filename="src/import/midiimport.cpp" line="91"/>
+        <source>&lt;i&gt;Fatal error, line %1, char %2:&lt;/i&gt;&lt;br&gt;</source>
+        <translation>&lt;i&gt;Végzetes hiba, sor %1, karakter %2:&lt;/i&gt;&lt;br&gt;</translation>
+    </message>
+    <message>
+        <location filename="src/interface/keybdinput.cpp" line="141"/>
+        <source>insert midi note</source>
+        <comment>undo</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="17"/>
+        <source>Acoustic Grand Piano</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="18"/>
+        <source>Bright Acoustic Piano</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="19"/>
+        <source>Electric Grand Piano</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="20"/>
+        <source>Honky-tonk Piano</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="21"/>
+        <source>Electric Piano 1</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="22"/>
+        <source>Electric Piano 2</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="23"/>
+        <source>Harpsichord</source>
+        <comment>instrument</comment>
+        <translation>Csembaló</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="24"/>
+        <source>Clavi</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="25"/>
+        <source>Celesta</source>
+        <comment>instrument</comment>
+        <translation>Cseleszta</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="26"/>
+        <source>Glockenspiel</source>
+        <comment>instrument</comment>
+        <translation>Harangjáték</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="27"/>
+        <source>Music Box</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="28"/>
+        <source>Vibraphone</source>
+        <comment>instrument</comment>
+        <translation>Vibrafon</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="29"/>
+        <source>Marimba</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="30"/>
+        <source>Xylophone</source>
+        <comment>instrument</comment>
+        <translation>Xilofon</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="31"/>
+        <source>Tubular Bells</source>
+        <comment>instrument</comment>
+        <translation>Csőharang</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="32"/>
+        <source>Dulcimer</source>
+        <comment>instrument</comment>
+        <translation>Cimbalom</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="33"/>
+        <source>Drawbar Organ</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="34"/>
+        <source>Percussive Organ</source>
+        <comment>instrument</comment>
+        <translation>Perkusszív orgona</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="35"/>
+        <source>Rock Organ</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="36"/>
+        <source>Church Organ</source>
+        <comment>instrument</comment>
+        <translation>Templomi orgona</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="37"/>
+        <source>Reed Organ</source>
+        <comment>instrument</comment>
+        <translation>Nyelvsípos orgona</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="38"/>
+        <source>Accordion</source>
+        <comment>instrument</comment>
+        <translation>Harmonika</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="39"/>
+        <source>Harmonica</source>
+        <comment>instrument</comment>
+        <translation>Szájharmonika</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="40"/>
+        <source>Tango Accordion</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="41"/>
+        <source>Acoustic Guitar (nylon)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="42"/>
+        <source>Acoustic Guitar (steel)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="43"/>
+        <source>Electric Guitar (jazz)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="44"/>
+        <source>Electric Guitar (clean)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="45"/>
+        <source>Electric Guitar (muted)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="46"/>
+        <source>Overdriven Guitar</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="47"/>
+        <source>Distortion Guitar</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="48"/>
+        <source>Guitar harmonics</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="49"/>
+        <source>Acoustic Bass</source>
+        <comment>instrument</comment>
+        <translation>Akusztikus basszus</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="50"/>
+        <source>Electric Bass (finger)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="51"/>
+        <source>Electric Bass (pick)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="52"/>
+        <source>Fretless Bass</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="53"/>
+        <source>Slap Bass 1</source>
+        <comment>instrument</comment>
+        <translation>Slap basszus 1</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="54"/>
+        <source>Slap Bass 2</source>
+        <comment>instrument</comment>
+        <translation>Slap basszus 2</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="55"/>
+        <source>Synth Bass 1</source>
+        <comment>instrument</comment>
+        <translation>Szinti Basszus 1</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="56"/>
+        <source>Synth Bass 2</source>
+        <comment>instrument</comment>
+        <translation>Szinti Basszus 2</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="57"/>
+        <source>Violin</source>
+        <comment>instrument</comment>
+        <translation>Hegedű</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="58"/>
+        <source>Viola</source>
+        <comment>instrument</comment>
+        <translation>Brácsa</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="59"/>
+        <source>Cello</source>
+        <comment>instrument</comment>
+        <translation>Cselló</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="60"/>
+        <source>Contrabass</source>
+        <comment>instrument</comment>
+        <translation>Bőgő</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="61"/>
+        <source>Tremolo Strings</source>
+        <comment>instrument</comment>
+        <translation>Vonóstremoló</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="62"/>
+        <source>Pizzicato Strings</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="63"/>
+        <source>Orchestral Harp</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="64"/>
+        <source>Timpani</source>
+        <comment>instrument</comment>
+        <translation>Üstdob</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="65"/>
+        <source>String Ensemble 1</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="66"/>
+        <source>String Ensemble 2</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="67"/>
+        <source>SynthStrings 1</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="68"/>
+        <source>SynthStrings 2</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="69"/>
+        <source>Choir Aahs</source>
+        <comment>instrument</comment>
+        <translation>Kórus A</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="70"/>
+        <source>Voice Oohs</source>
+        <comment>instrument</comment>
+        <translation>Énekhang O</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="71"/>
+        <source>Synth Voice</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="72"/>
+        <source>Orchestra Hit</source>
+        <comment>instrument</comment>
+        <translation>Zenekari ütés</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="73"/>
+        <source>Trumpet</source>
+        <comment>instrument</comment>
+        <translation>Trombita</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="74"/>
+        <source>Trombone</source>
+        <comment>instrument</comment>
+        <translation>Harsona</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="75"/>
+        <source>Tuba</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="76"/>
+        <source>Muted Trumpet</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="77"/>
+        <source>French Horn</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="78"/>
+        <source>Brass Section</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="79"/>
+        <source>SynthBrass 1</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="80"/>
+        <source>SynthBrass 2</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="81"/>
+        <source>Soprano Sax</source>
+        <comment>instrument</comment>
+        <translation>Szopránszaxofon</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="82"/>
+        <source>Alto Sax</source>
+        <comment>instrument</comment>
+        <translation>Altszaxofon</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="83"/>
+        <source>Tenor Sax</source>
+        <comment>instrument</comment>
+        <translation>Tenorszaxofon</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="84"/>
+        <source>Baritone Sax</source>
+        <comment>instrument</comment>
+        <translation>Baritonszaxofon</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="85"/>
+        <source>Oboe</source>
+        <comment>instrument</comment>
+        <translation>Oboa</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="86"/>
+        <source>English Horn</source>
+        <comment>instrument</comment>
+        <translation>Angolkürt</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="87"/>
+        <source>Bassoon</source>
+        <comment>instrument</comment>
+        <translation>Fagott</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="88"/>
+        <source>Clarinet</source>
+        <comment>instrument</comment>
+        <translation>Klarinét</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="89"/>
+        <source>Piccolo</source>
+        <comment>instrument</comment>
+        <translation>Pikkoló</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="90"/>
+        <source>Flute</source>
+        <comment>instrument</comment>
+        <translation>Fuvola</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="91"/>
+        <source>Recorder</source>
+        <comment>instrument</comment>
+        <translation>Furulya</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="92"/>
+        <source>Pan Flute</source>
+        <comment>instrument</comment>
+        <translation>Pánsíp</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="93"/>
+        <source>Blown Bottle</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="94"/>
+        <source>Shakuhachi</source>
+        <comment>instrument</comment>
+        <translation>Sakuhacsi</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="95"/>
+        <source>Whistle</source>
+        <comment>instrument</comment>
+        <translation>Síp</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="96"/>
+        <source>Ocarina</source>
+        <comment>instrument</comment>
+        <translation>Okarina</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="97"/>
+        <source>Lead 1 (square)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="98"/>
+        <source>Lead 2 (sawtooth)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="99"/>
+        <source>Lead 3 (calliope)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="100"/>
+        <source>Lead 4 (chiff)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="101"/>
+        <source>Lead 5 (charang)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="102"/>
+        <source>Lead 6 (voice)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="103"/>
+        <source>Lead 7 (fifths)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="104"/>
+        <source>Lead 8 (bass + lead)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="105"/>
+        <source>Pad 1 (new age)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="106"/>
+        <source>Pad 2 (warm)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="107"/>
+        <source>Pad 3 (polysynth)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="108"/>
+        <source>Pad 4 (choir)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="109"/>
+        <source>Pad 5 (bowed)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="110"/>
+        <source>Pad 6 (metallic)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="111"/>
+        <source>Pad 7 (halo)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="112"/>
+        <source>Pad 8 (sweep)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="113"/>
+        <source>FX 1 (rain)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="114"/>
+        <source>FX 2 (soundtrack)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="115"/>
+        <source>FX 3 (crystal)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="116"/>
+        <source>FX 4 (atmosphere)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="117"/>
+        <source>FX 5 (brightness)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="118"/>
+        <source>FX 6 (goblins)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="119"/>
+        <source>FX 7 (echoes)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="120"/>
+        <source>FX 8 (sci-fi)</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="121"/>
+        <source>Sitar</source>
+        <comment>instrument</comment>
+        <translation>Szitár</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="122"/>
+        <source>Banjo</source>
+        <comment>instrument</comment>
+        <translation>Bendzsó</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="123"/>
+        <source>Shamisen</source>
+        <comment>instrument</comment>
+        <translation>Samiszen</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="124"/>
+        <source>Koto</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="125"/>
+        <source>Kalimba</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="126"/>
+        <source>Bag pipe</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="127"/>
+        <source>Fiddle</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="128"/>
+        <source>Shanai</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="129"/>
+        <source>Tinkle Bell</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="130"/>
+        <source>Agogo</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="131"/>
+        <source>Steel Drums</source>
+        <comment>instrument</comment>
+        <translation>Acéldob</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="132"/>
+        <source>Woodblock</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="133"/>
+        <source>Taiko Drum</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="134"/>
+        <source>Melodic Tom</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="135"/>
+        <source>Synth Drum</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="136"/>
+        <source>Reverse Cymbal</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="137"/>
+        <source>Guitar Fret Noise</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="138"/>
+        <source>Breath Noise</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="139"/>
+        <source>Seashore</source>
+        <comment>instrument</comment>
+        <translation>Tenger</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="140"/>
+        <source>Bird Tweet</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="141"/>
+        <source>Telephone Ring</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="142"/>
+        <source>Helicopter</source>
+        <comment>instrument</comment>
+        <translation>Helikopter</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="143"/>
+        <source>Applause</source>
+        <comment>instrument</comment>
+        <translation>Tapsvihar</translation>
+    </message>
+    <message>
+        <location filename="src/interface/mididevice.cpp" line="144"/>
+        <source>Gunshot</source>
+        <comment>instrument</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/main.cpp" line="80"/>
         <source>Initializing Scripting engine</source>
         <comment>splashScreen</comment>
         <translation>Skript motor elindítása</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="89"/>
+        <location filename="src/main.cpp" line="85"/>
         <source>Reading Plugins</source>
         <comment>splashScreen</comment>
         <translation>Beépülő modulok olvasása</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="94"/>
+        <location filename="src/main.cpp" line="90"/>
         <source>Initializing Automatic recovery</source>
         <comment>splashScreen</comment>
         <translation>Autómatikus helyreállítás elindítása</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="99"/>
+        <location filename="src/main.cpp" line="95"/>
+        <source>Initializing Help</source>
+        <comment>splashScreen</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/main.cpp" line="100"/>
         <source>Initializing Undo/Redo framework</source>
         <comment>splashScreen</comment>
         <translation>Visszavon/Visszaállít keretrendszer elindítása</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="104"/>
+        <location filename="src/main.cpp" line="105"/>
+        <source>Loading fonts</source>
+        <comment>splashScreen</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/main.cpp" line="110"/>
         <source>Searching for recovery documents</source>
         <comment>splashScreen</comment>
         <translation>Visszaállítot dokumentumok keresése</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="109"/>
+        <location filename="src/main.cpp" line="115"/>
         <source>Initializing Main window</source>
         <comment>splashScreen</comment>
         <translation>Fő ablak elindítása</translation>
     </message>
     <message>
-        <location filename="../canorus.cpp" line="112"/>
-        <source>Choose a file to save</source>
-        <translation>Válassz elmentendő állományt</translation>
+        <location filename="src/score/interval.cpp" line="259"/>
+        <source>Perfect</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../canorus.cpp" line="119"/>
-        <source>Choose a file to open</source>
-        <translation>Válassz megnyitandó állományt</translation>
+        <location filename="src/score/interval.cpp" line="260"/>
+        <source>Major</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../canorus.cpp" line="131"/>
-        <source>All supported formats (%1)</source>
-        <translation>Minden támogatott formátum (%1)</translation>
+        <location filename="src/score/interval.cpp" line="261"/>
+        <source>Minor</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../canorus.cpp" line="133"/>
-        <source>Choose a file to export</source>
-        <translation>Válassz kiviteli állományt</translation>
+        <location filename="src/score/interval.cpp" line="262"/>
+        <source>Augmented</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../canorus.cpp" line="139"/>
-        <source>Choose a file to import</source>
-        <translation>Válassz behozatali állományt</translation>
+        <location filename="src/score/interval.cpp" line="263"/>
+        <source>Diminished</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../core/fileformats.cpp" line="18"/>
-        <source>Canorus document (*.xml)</source>
-        <translation>Canorus dokumentum (*.xml)</translation>
+        <location filename="src/score/interval.cpp" line="270"/>
+        <source>Prime</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../core/fileformats.cpp" line="19"/>
-        <source>Canorus archive (*.can)</source>
-        <translation>Canorus archive (*.can)</translation>
+        <location filename="src/score/interval.cpp" line="271"/>
+        <source>Second</source>
+        <comment>interval</comment>
+        <translation>Második</translation>
     </message>
     <message>
-        <location filename="../core/fileformats.cpp" line="20"/>
-        <source>LilyPond document (*.ly)</source>
-        <translation>LilyPond dokumentum (*.ly)</translation>
+        <location filename="src/score/interval.cpp" line="272"/>
+        <source>Third</source>
+        <comment>interval</comment>
+        <translation>Harmadik</translation>
     </message>
     <message>
-        <location filename="../core/fileformats.cpp" line="21"/>
-        <source>MusicXML document (*.xml)</source>
-        <translation>MusicXML dokumentum (*.xml)</translation>
+        <location filename="src/score/interval.cpp" line="273"/>
+        <source>Fourth</source>
+        <comment>interval</comment>
+        <translation>Negyedik</translation>
     </message>
     <message>
-        <location filename="../core/fileformats.cpp" line="22"/>
-        <source>NoteEdit document (*.not)</source>
-        <translation>NoteEdit dokumentum (*.not)</translation>
+        <location filename="src/score/interval.cpp" line="274"/>
+        <source>Fifth</source>
+        <comment>interval</comment>
+        <translation>Ötödik</translation>
     </message>
     <message>
-        <location filename="../core/fileformats.cpp" line="23"/>
-        <source>ABC music document (*.abc)</source>
-        <translation>ABC zenei dokumentum (*.abc)</translation>
+        <location filename="src/score/interval.cpp" line="275"/>
+        <source>Sixth</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../core/fileformats.cpp" line="24"/>
-        <source>Finale document (*.mus)</source>
-        <translation>Finale dokumentum (*.mus)</translation>
+        <location filename="src/score/interval.cpp" line="276"/>
+        <source>Seventh</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../core/fileformats.cpp" line="25"/>
-        <source>Sibelius document (*.sib)</source>
-        <translation>Sibelius dokumentum (*.sib)</translation>
+        <location filename="src/score/interval.cpp" line="277"/>
+        <source>Octave</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../core/fileformats.cpp" line="26"/>
-        <source>Capella document (*.cap)</source>
-        <translation>Capella dokumentum (*.cap)</translation>
+        <location filename="src/score/interval.cpp" line="278"/>
+        <source>Nineth</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../core/fileformats.cpp" line="27"/>
-        <source>Midi file (*.mid *.midi)</source>
-        <translation>Midi állomány (*.mid *.midi)</translation>
+        <location filename="src/score/interval.cpp" line="279"/>
+        <source>Tenth</source>
+        <comment>interval</comment>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../import/canorusmlimport.cpp" line="148"/>
-        <source>Staff%1</source>
-        <translation>Ütemvonal%1</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="100"/>
+        <source>C major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../import/canorusmlimport.cpp" line="200"/>
-        <source>Voice%1</source>
-        <translation>Hang%1</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="101"/>
+        <source>C-sharp major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="17"/>
-        <source>Acoustic Grand Piano</source>
-        <comment>instrument</comment>
-        <translation>Acoustic Grand Piano</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="102"/>
+        <source>C-flat major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="18"/>
-        <source>Bright Acoustic Piano</source>
-        <comment>instrument</comment>
-        <translation>Bright Acoustic Piano</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="103"/>
+        <source>c minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="19"/>
-        <source>Electric Grand Piano</source>
-        <comment>instrument</comment>
-        <translation>Electric Grand Piano</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="104"/>
+        <source>c-sharp minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="20"/>
-        <source>Honky-tonk Piano</source>
-        <comment>instrument</comment>
-        <translation>Honky-tonk Piano</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="106"/>
+        <source>D major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="21"/>
-        <source>Electric Piano 1</source>
-        <comment>instrument</comment>
-        <translation>Electric Piano 1</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="107"/>
+        <source>D-flat major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="22"/>
-        <source>Electric Piano 2</source>
-        <comment>instrument</comment>
-        <translation>Electric Piano 2</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="108"/>
+        <source>d minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="23"/>
-        <source>Harpsichord</source>
-        <comment>instrument</comment>
-        <translation>Harpsichord</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="109"/>
+        <source>d-sharp minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="24"/>
-        <source>Clavi</source>
-        <comment>instrument</comment>
-        <translation>Clavi</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="111"/>
+        <source>E major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="25"/>
-        <source>Celesta</source>
-        <comment>instrument</comment>
-        <translation>Celesta</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="112"/>
+        <source>E-flat major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="26"/>
-        <source>Glockenspiel</source>
-        <comment>instrument</comment>
-        <translation>Glockenspiel</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="113"/>
+        <source>e minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="27"/>
-        <source>Music Box</source>
-        <comment>instrument</comment>
-        <translation>Music Box</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="114"/>
+        <source>e-flat minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="28"/>
-        <source>Vibraphone</source>
-        <comment>instrument</comment>
-        <translation>Vibraphone</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="116"/>
+        <source>F major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="29"/>
-        <source>Marimba</source>
-        <comment>instrument</comment>
-        <translation>Marimba</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="117"/>
+        <source>F-sharp major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="30"/>
-        <source>Xylophone</source>
-        <comment>instrument</comment>
-        <translation>Xylophone</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="118"/>
+        <source>f minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="31"/>
-        <source>Tubular Bells</source>
-        <comment>instrument</comment>
-        <translation>Tubular Bells</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="119"/>
+        <source>f-sharp minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="32"/>
-        <source>Dulcimer</source>
-        <comment>instrument</comment>
-        <translation>Dulcimer</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="121"/>
+        <source>G major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="33"/>
-        <source>Drawbar Organ</source>
-        <comment>instrument</comment>
-        <translation>Drawbar Organ</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="122"/>
+        <source>G-flat major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="34"/>
-        <source>Percussive Organ</source>
-        <comment>instrument</comment>
-        <translation>Percussive Organ</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="123"/>
+        <source>g minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="35"/>
-        <source>Rock Organ</source>
-        <comment>instrument</comment>
-        <translation>Rock Organ</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="124"/>
+        <source>g-sharp minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="36"/>
-        <source>Church Organ</source>
-        <comment>instrument</comment>
-        <translation>Church Organ</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="126"/>
+        <source>A major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="37"/>
-        <source>Reed Organ</source>
-        <comment>instrument</comment>
-        <translation>Reed Organ</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="127"/>
+        <source>A-flat major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="38"/>
-        <source>Accordion</source>
-        <comment>instrument</comment>
-        <translation>Accordion</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="128"/>
+        <source>a minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="39"/>
-        <source>Harmonica</source>
-        <comment>instrument</comment>
-        <translation>Harmonica</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="129"/>
+        <source>a-sharp minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="40"/>
-        <source>Tango Accordion</source>
-        <comment>instrument</comment>
-        <translation>Tango Accordion</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="130"/>
+        <source>a-flat minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="41"/>
-        <source>Acoustic Guitar (nylon)</source>
-        <comment>instrument</comment>
-        <translation>Acoustic Guitar (nylon)</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="132"/>
+        <source>B major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="42"/>
-        <source>Acoustic Guitar (steel)</source>
-        <comment>instrument</comment>
-        <translation>Acoustic Guitar (steel)</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="133"/>
+        <source>B-flat major</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="43"/>
-        <source>Electric Guitar (jazz)</source>
-        <comment>instrument</comment>
-        <translation>Electric Guitar (jazz)</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="134"/>
+        <source>b minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="44"/>
-        <source>Electric Guitar (clean)</source>
-        <comment>instrument</comment>
-        <translation>Electric Guitar (clean)</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="135"/>
+        <source>b-flat minor</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="45"/>
-        <source>Electric Guitar (muted)</source>
-        <comment>instrument</comment>
-        <translation>Electric Guitar (muted)</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="144"/>
+        <source>Up</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="46"/>
-        <source>Overdriven Guitar</source>
-        <comment>instrument</comment>
-        <translation>Overdriven Guitar</translation>
+        <location filename="src/scoreui/keysignatureui.cpp" line="145"/>
+        <source>Down</source>
+        <translation type="unfinished"/>
     </message>
+</context>
+<context>
+    <name>ShortcutGetter</name>
     <message>
-        <location filename="../interface/mididevice.cpp" line="47"/>
-        <source>Distortion Guitar</source>
-        <comment>instrument</comment>
-        <translation>Distortion Guitar</translation>
+        <location filename="src/widgets/actionseditor.cpp" line="740"/>
+        <source>Modify shortcut</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="48"/>
-        <source>Guitar harmonics</source>
-        <comment>instrument</comment>
-        <translation>Guitar harmonics</translation>
+        <location filename="src/widgets/actionseditor.cpp" line="748"/>
+        <source>Press the key combination you want to assign</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="49"/>
-        <source>Acoustic Bass</source>
-        <comment>instrument</comment>
-        <translation>Acoustic Bass</translation>
+        <location filename="src/widgets/actionseditor.cpp" line="763"/>
+        <source>Clear</source>
+        <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="50"/>
-        <source>Electric Bass (finger)</source>
-        <comment>instrument</comment>
-        <translation>Electric Bass (finger)</translation>
+        <location filename="src/widgets/actionseditor.cpp" line="765"/>
+        <source>Capture</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../interface/mididevice.cpp" line="51"/>
-        <source>Electric Bass (pick)</source>
-        <comment>instrument</comment>
-        <translation>Electric Bass (pick)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="52"/>
-        <source>Fretless Bass</source>
-        <comment>instrument</comment>
-        <translation>Fretless Bass</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="53"/>
-        <source>Slap Bass 1</source>
-        <comment>instrument</comment>
-        <translation>Slap Bass 1</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="54"/>
-        <source>Slap Bass 2</source>
-        <comment>instrument</comment>
-        <translation>Slap Bass 2</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="55"/>
-        <source>Synth Bass 1</source>
-        <comment>instrument</comment>
-        <translation>Synth Bass 1</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="56"/>
-        <source>Synth Bass 2</source>
-        <comment>instrument</comment>
-        <translation>Synth Bass 2</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="57"/>
-        <source>Violin</source>
-        <comment>instrument</comment>
-        <translation>Violin</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="58"/>
-        <source>Viola</source>
-        <comment>instrument</comment>
-        <translation>Viola</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="59"/>
-        <source>Cello</source>
-        <comment>instrument</comment>
-        <translation>Cello</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="60"/>
-        <source>Contrabass</source>
-        <comment>instrument</comment>
-        <translation>Contrabass</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="61"/>
-        <source>Tremolo Strings</source>
-        <comment>instrument</comment>
-        <translation>Tremolo Strings</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="62"/>
-        <source>Pizzicato Strings</source>
-        <comment>instrument</comment>
-        <translation>Pizzicato Strings</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="63"/>
-        <source>Orchestral Harp</source>
-        <comment>instrument</comment>
-        <translation>Orchestral Harp</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="64"/>
-        <source>Timpani</source>
-        <comment>instrument</comment>
-        <translation>Timpani</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="65"/>
-        <source>String Ensemble 1</source>
-        <comment>instrument</comment>
-        <translation>String Ensemble 1</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="66"/>
-        <source>String Ensemble 2</source>
-        <comment>instrument</comment>
-        <translation>String Ensemble 2</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="67"/>
-        <source>SynthStrings 1</source>
-        <comment>instrument</comment>
-        <translation>SynthStrings 1</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="68"/>
-        <source>SynthStrings 2</source>
-        <comment>instrument</comment>
-        <translation>SynthStrings 2</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="69"/>
-        <source>Choir Aahs</source>
-        <comment>instrument</comment>
-        <translation>Choir Aahs</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="70"/>
-        <source>Voice Oohs</source>
-        <comment>instrument</comment>
-        <translation>Voice Oohs</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="71"/>
-        <source>Synth Voice</source>
-        <comment>instrument</comment>
-        <translation>Synth Voice</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="72"/>
-        <source>Orchestra Hit</source>
-        <comment>instrument</comment>
-        <translation>Orchestra Hit</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="73"/>
-        <source>Trumpet</source>
-        <comment>instrument</comment>
-        <translation>Trumpet</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="74"/>
-        <source>Trombone</source>
-        <comment>instrument</comment>
-        <translation>Trombone</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="75"/>
-        <source>Tuba</source>
-        <comment>instrument</comment>
-        <translation>Tuba</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="76"/>
-        <source>Muted Trumpet</source>
-        <comment>instrument</comment>
-        <translation>Muted Trumpet</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="77"/>
-        <source>French Horn</source>
-        <comment>instrument</comment>
-        <translation>French Horn</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="78"/>
-        <source>Brass Section</source>
-        <comment>instrument</comment>
-        <translation>Brass Section</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="79"/>
-        <source>SynthBrass 1</source>
-        <comment>instrument</comment>
-        <translation>SynthBrass 1</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="80"/>
-        <source>SynthBrass 2</source>
-        <comment>instrument</comment>
-        <translation>SynthBrass 2</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="81"/>
-        <source>Soprano Sax</source>
-        <comment>instrument</comment>
-        <translation>Soprano Sax</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="82"/>
-        <source>Alto Sax</source>
-        <comment>instrument</comment>
-        <translation>Alto Sax</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="83"/>
-        <source>Tenor Sax</source>
-        <comment>instrument</comment>
-        <translation>Tenor Sax</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="84"/>
-        <source>Baritone Sax</source>
-        <comment>instrument</comment>
-        <translation>Baritone Sax</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="85"/>
-        <source>Oboe</source>
-        <comment>instrument</comment>
-        <translation>Oboe</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="86"/>
-        <source>English Horn</source>
-        <comment>instrument</comment>
-        <translation>English Horn</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="87"/>
-        <source>Bassoon</source>
-        <comment>instrument</comment>
-        <translation>Bassoon</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="88"/>
-        <source>Clarinet</source>
-        <comment>instrument</comment>
-        <translation>Clarinet</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="89"/>
-        <source>Piccolo</source>
-        <comment>instrument</comment>
-        <translation>Piccolo</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="90"/>
-        <source>Flute</source>
-        <comment>instrument</comment>
-        <translation>Flute</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="91"/>
-        <source>Recorder</source>
-        <comment>instrument</comment>
-        <translation>Recorder</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="92"/>
-        <source>Pan Flute</source>
-        <comment>instrument</comment>
-        <translation>Pan Flute</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="93"/>
-        <source>Blown Bottle</source>
-        <comment>instrument</comment>
-        <translation>Blown Bottle</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="94"/>
-        <source>Shakuhachi</source>
-        <comment>instrument</comment>
-        <translation>Shakuhachi</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="95"/>
-        <source>Whistle</source>
-        <comment>instrument</comment>
-        <translation>Whistle</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="96"/>
-        <source>Ocarina</source>
-        <comment>instrument</comment>
-        <translation>Ocarina</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="97"/>
-        <source>Lead 1 (square)</source>
-        <comment>instrument</comment>
-        <translation>Lead 1 (square)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="98"/>
-        <source>Lead 2 (sawtooth)</source>
-        <comment>instrument</comment>
-        <translation>Lead 2 (sawtooth)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="99"/>
-        <source>Lead 3 (calliope)</source>
-        <comment>instrument</comment>
-        <translation>Lead 3 (calliope)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="100"/>
-        <source>Lead 4 (chiff)</source>
-        <comment>instrument</comment>
-        <translation>Lead 4 (chiff)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="101"/>
-        <source>Lead 5 (charang)</source>
-        <comment>instrument</comment>
-        <translation>Lead 5 (charang)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="102"/>
-        <source>Lead 6 (voice)</source>
-        <comment>instrument</comment>
-        <translation>Lead 6 (voice)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="103"/>
-        <source>Lead 7 (fifths)</source>
-        <comment>instrument</comment>
-        <translation>Lead 7 (fifths)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="104"/>
-        <source>Lead 8 (bass + lead)</source>
-        <comment>instrument</comment>
-        <translation>Lead 8 (bass + lead)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="105"/>
-        <source>Pad 1 (new age)</source>
-        <comment>instrument</comment>
-        <translation>Pad 1 (new age)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="106"/>
-        <source>Pad 2 (warm)</source>
-        <comment>instrument</comment>
-        <translation>Pad 2 (warm)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="107"/>
-        <source>Pad 3 (polysynth)</source>
-        <comment>instrument</comment>
-        <translation>Pad 3 (polysynth)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="108"/>
-        <source>Pad 4 (choir)</source>
-        <comment>instrument</comment>
-        <translation>Pad 4 (choir)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="109"/>
-        <source>Pad 5 (bowed)</source>
-        <comment>instrument</comment>
-        <translation>Pad 5 (bowed)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="110"/>
-        <source>Pad 6 (metallic)</source>
-        <comment>instrument</comment>
-        <translation>Pad 6 (metallic)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="111"/>
-        <source>Pad 7 (halo)</source>
-        <comment>instrument</comment>
-        <translation>Pad 7 (halo)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="112"/>
-        <source>Pad 8 (sweep)</source>
-        <comment>instrument</comment>
-        <translation>Pad 8 (sweep)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="113"/>
-        <source>FX 1 (rain)</source>
-        <comment>instrument</comment>
-        <translation>FX 1 (rain)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="114"/>
-        <source>FX 2 (soundtrack)</source>
-        <comment>instrument</comment>
-        <translation>FX 2 (soundtrack)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="115"/>
-        <source>FX 3 (crystal)</source>
-        <comment>instrument</comment>
-        <translation>FX 3 (crystal)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="116"/>
-        <source>FX 4 (atmosphere)</source>
-        <comment>instrument</comment>
-        <translation>FX 4 (atmosphere)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="117"/>
-        <source>FX 5 (brightness)</source>
-        <comment>instrument</comment>
-        <translation>FX 5 (brightness)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="118"/>
-        <source>FX 6 (goblins)</source>
-        <comment>instrument</comment>
-        <translation>FX 6 (goblins)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="119"/>
-        <source>FX 7 (echoes)</source>
-        <comment>instrument</comment>
-        <translation>FX 7 (echoes)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="120"/>
-        <source>FX 8 (sci-fi)</source>
-        <comment>instrument</comment>
-        <translation>FX 8 (sci-fi)</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="121"/>
-        <source>Sitar</source>
-        <comment>instrument</comment>
-        <translation>Sitar</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="122"/>
-        <source>Banjo</source>
-        <comment>instrument</comment>
-        <translation>Banjo</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="123"/>
-        <source>Shamisen</source>
-        <comment>instrument</comment>
-        <translation>Shamisen</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="124"/>
-        <source>Koto</source>
-        <comment>instrument</comment>
-        <translation>Koto</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="125"/>
-        <source>Kalimba</source>
-        <comment>instrument</comment>
-        <translation>Kalimba</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="126"/>
-        <source>Bag pipe</source>
-        <comment>instrument</comment>
-        <translation>Bag pipe</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="127"/>
-        <source>Fiddle</source>
-        <comment>instrument</comment>
-        <translation>Fiddle</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="128"/>
-        <source>Shanai</source>
-        <comment>instrument</comment>
-        <translation>Shanai</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="129"/>
-        <source>Tinkle Bell</source>
-        <comment>instrument</comment>
-        <translation>Tinkle Bell</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="130"/>
-        <source>Agogo</source>
-        <comment>instrument</comment>
-        <translation>Agogo</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="131"/>
-        <source>Steel Drums</source>
-        <comment>instrument</comment>
-        <translation>Steel Drums</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="132"/>
-        <source>Woodblock</source>
-        <comment>instrument</comment>
-        <translation>Woodblock</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="133"/>
-        <source>Taiko Drum</source>
-        <comment>instrument</comment>
-        <translation>Taiko Drum</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="134"/>
-        <source>Melodic Tom</source>
-        <comment>instrument</comment>
-        <translation>Melodic Tom</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="135"/>
-        <source>Synth Drum</source>
-        <comment>instrument</comment>
-        <translation>Synth Drum</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="136"/>
-        <source>Reverse Cymbal</source>
-        <comment>instrument</comment>
-        <translation>Reverse Cymbal</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="137"/>
-        <source>Guitar Fret Noise</source>
-        <comment>instrument</comment>
-        <translation>Guitar Fret Noise</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="138"/>
-        <source>Breath Noise</source>
-        <comment>instrument</comment>
-        <translation>Breath Noise</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="139"/>
-        <source>Seashore</source>
-        <comment>instrument</comment>
-        <translation>Seashore</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="140"/>
-        <source>Bird Tweet</source>
-        <comment>instrument</comment>
-        <translation>Bird Tweet</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="141"/>
-        <source>Telephone Ring</source>
-        <comment>instrument</comment>
-        <translation>Telephone Ring</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="142"/>
-        <source>Helicopter</source>
-        <comment>instrument</comment>
-        <translation>Helicopter</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="143"/>
-        <source>Applause</source>
-        <comment>instrument</comment>
-        <translation>Applause</translation>
-    </message>
-    <message>
-        <location filename="../interface/mididevice.cpp" line="143"/>
-        <source>Gunshot</source>
-        <comment>instrument</comment>
-        <translation>Gunshot</translation>
-    </message>
-    <message>
-        <location filename="../import/lilypondimport.cpp" line="62"/>
-        <source>&lt;i&gt;Fatal error, line %1, char %2:&lt;/i&gt;&lt;br&gt;</source>
-        <translation>&lt;i&gt;Végzetes hiba, sor %1, karakter %2:&lt;/i&gt;&lt;br&gt;</translation>
-    </message>
-    <message>
-        <location filename="../import/canorusmlimport.cpp" line="133"/>
-        <source>Sheet%1</source>
-        <translation>Réteg%1</translation>
-    </message>
-    <message>
-        <location filename="../import/canorusmlimport.cpp" line="162"/>
-        <source>Lyrics Context %1</source>
-        <translation>Dalszöveg sáv %1</translation>
-    </message>
-    <message>
-        <location filename="../import/canorusmlimport.cpp" line="180"/>
-        <source>Function Marking Context %1</source>
-        <translation>Funkció jelölő sáv %1</translation>
+        <location filename="src/widgets/actionseditor.cpp" line="766"/>
+        <source>Capture keystrokes</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>uiDocumentProperties</name>
     <message>
-        <location filename="../ui_documentproperties.h" line="248"/>
+        <location filename="src/ui/documentproperties.ui" line="14"/>
         <source>Document properties</source>
         <translation>Dokumentum tulajdonságok</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="249"/>
-        <source>Title:</source>
-        <translation>Cím:</translation>
-    </message>
-    <message>
-        <location filename="../ui_documentproperties.h" line="250"/>
-        <source>Composer:</source>
-        <translation>Zeneszerző:</translation>
-    </message>
-    <message>
-        <location filename="../ui_documentproperties.h" line="251"/>
-        <source>Composer name and e-mail address in &lt;&gt; brackets</source>
-        <translation>Zeneszerző név és e-mail cím &lt;&gt; tartóban</translation>
-    </message>
-    <message>
-        <location filename="../ui_documentproperties.h" line="252"/>
-        <source>Arranger:</source>
-        <translation>Intéző:</translation>
-    </message>
-    <message>
-        <location filename="../ui_documentproperties.h" line="253"/>
-        <source>Poet:</source>
-        <translation>Költő:</translation>
-    </message>
-    <message>
-        <location filename="../ui_documentproperties.h" line="254"/>
+        <location filename="src/ui/documentproperties.ui" line="24"/>
         <source>General</source>
         <translation>Általános</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="255"/>
+        <location filename="src/ui/documentproperties.ui" line="32"/>
+        <source>Title:</source>
+        <translation>Cím:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/documentproperties.ui" line="46"/>
+        <source>Composer:</source>
+        <translation>Zeneszerző:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/documentproperties.ui" line="53"/>
+        <source>Composer name and e-mail address in &lt;&gt; brackets</source>
+        <translation>Zeneszerző név és e-mail cím &lt;&gt; tartóban</translation>
+    </message>
+    <message>
+        <location filename="src/ui/documentproperties.ui" line="64"/>
+        <source>Arranger:</source>
+        <translation>Intéző:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/documentproperties.ui" line="78"/>
+        <source>Poet:</source>
+        <translation>Költő:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/documentproperties.ui" line="104"/>
+        <source>Advanced</source>
+        <translation>Haladó</translation>
+    </message>
+    <message>
+        <location filename="src/ui/documentproperties.ui" line="112"/>
         <source>Subtitle:</source>
         <translation>Felirat:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="256"/>
+        <location filename="src/ui/documentproperties.ui" line="126"/>
         <source>Text translator:</source>
         <translation>Szöveg fordító:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="257"/>
+        <location filename="src/ui/documentproperties.ui" line="140"/>
         <source>Dedication:</source>
         <translation>Ajánlás:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="258"/>
+        <location filename="src/ui/documentproperties.ui" line="154"/>
         <source>Copyright:</source>
         <translation>Szerzői jog:</translation>
     </message>
     <message>
-        <location filename="../ui_documentproperties.h" line="259"/>
+        <location filename="src/ui/documentproperties.ui" line="178"/>
         <source>Extra comments:</source>
         <translation>Rendkívüli megjegyzés:</translation>
     </message>
+</context>
+<context>
+    <name>uiFunctionMarkContextProperties</name>
     <message>
-        <location filename="../ui_documentproperties.h" line="260"/>
-        <source>Advanced</source>
-        <translation>Haladó</translation>
+        <location filename="src/ui/functionmarkcontextproperties.ui" line="13"/>
+        <source>Function mark context properties</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
-    <name>uiFunctionMarkingContextProperties</name>
+    <name>uiJumpToView</name>
     <message>
-        <location filename="../ui_functionmarkingproperties.h" line="36"/>
-        <source>Function marking properties</source>
-        <translation>Funkció jelölő tulajdonságok</translation>
+        <location filename="src/ui/jumptoview.ui" line="14"/>
+        <source>Jump to...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/jumptoview.ui" line="22"/>
+        <source>Jump to bar:</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>uiLyricsContextProperties</name>
     <message>
-        <location filename="../ui_lyricscontextproperties.h" line="36"/>
+        <location filename="src/ui/lyricscontextproperties.ui" line="13"/>
         <source>Lyrics context properties</source>
         <translation>Dalszöveg sáv tulajdonságok</translation>
     </message>
@@ -2700,515 +3426,563 @@ Honlap: http://www.canorus.org</translation>
 <context>
     <name>uiMainWindow</name>
     <message>
-        <location filename="../ui_mainwin.h" line="530"/>
-        <source>Canorus - Score editor</source>
-        <translation>Canorus - Kotta szerkesztő</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="532"/>
-        <source>&amp;Quit</source>
-        <translation>&amp;Kilépés</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="533"/>
-        <source>Ctrl+Q</source>
-        <translation>Ctrl+Q</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="534"/>
-        <source>&amp;New</source>
-        <translation>&amp;Új</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="535"/>
-        <source>Ctrl+N</source>
-        <translation>Ctrl+N</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="536"/>
-        <source>&amp;Open...</source>
-        <translation>&amp;Megnyitás...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="537"/>
-        <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="538"/>
-        <source>&amp;Save</source>
-        <translation>&amp;Mentés</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="539"/>
-        <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="540"/>
-        <source>Save &amp;as...</source>
-        <translation>Mentés &amp;másként...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="541"/>
-        <source>&amp;Close</source>
-        <translation>&amp;Bezárás</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="542"/>
-        <source>&amp;Import...</source>
-        <translation>&amp;Behozatal...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="543"/>
-        <source>&amp;Export...</source>
-        <translation>&amp;Kivitel...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="544"/>
-        <source>Ctrl+E</source>
-        <translation>Ctrl+E</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="545"/>
-        <source>Print pre&amp;view...</source>
-        <translation>Nyomtatás elő&amp;nézet...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="546"/>
-        <source>&amp;Print...</source>
-        <translation>&amp;Nyomtatás...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="547"/>
-        <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="548"/>
-        <source>&amp;Copy</source>
-        <translation>&amp;Másol</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="549"/>
-        <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="550"/>
-        <source>C&amp;ut</source>
-        <translation>Ki&amp;vág</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="551"/>
-        <source>Ctrl+X</source>
-        <translation>Ctrl+X</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="552"/>
-        <source>&amp;Paste</source>
-        <translation>&amp;Beilleszt</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="553"/>
-        <source>Ctrl+V</source>
-        <translation>Ctrl+V</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="554"/>
-        <source>Select &amp;all</source>
-        <translation>Összes &amp;kijelölése</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="555"/>
-        <source>Ctrl+A</source>
-        <translation>Ctrl+A</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="556"/>
-        <source>Invert Selection</source>
-        <translation>Kijelölés megfordítása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="557"/>
-        <source>Fit to width</source>
-        <translation>Szélesség illesztése</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="558"/>
-        <source>Goto bar...</source>
-        <translation>Ugrás a következő ütemre...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="559"/>
-        <source>Ctrl+G</source>
-        <translation>Ctrl+G</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="560"/>
-        <source>St&amp;atus bar</source>
-        <translation>Áll&amp;apot sáv</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="561"/>
-        <source>&amp;Fullscreen</source>
-        <translation>&amp;Teljes képernyő</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="562"/>
-        <source>&amp;Time signature...</source>
-        <translation>&amp;Idő jelzése...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="563"/>
-        <source>&amp;Key signature...</source>
-        <translation>&amp;Kulcs jelzése...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="564"/>
-        <source>Barline...</source>
-        <translation>Ütemvonal...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="565"/>
-        <source>Note &amp;count...</source>
-        <translation>Hangjegy &amp;számlálás...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="566"/>
-        <source>&amp;Settings...</source>
-        <translation>&amp;Beállítások...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="567"/>
-        <source>User&apos;s guide...</source>
-        <translation>Felhasználói útmutató...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="568"/>
-        <source>What&apos;s &amp;this</source>
-        <translation>Mi &amp;ez</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="569"/>
-        <source>Tip of the &amp;day</source>
-        <translation>A nap &amp;tippje</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="570"/>
-        <source>About &amp;Canorus...</source>
-        <translation>&amp;A Canorus névjegye...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="571"/>
-        <source>About &amp;Qt...</source>
-        <translation>&amp;A Qt névjegye...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="572"/>
-        <source>Split view horizontally</source>
-        <translation>Nézet vizszintes felosztása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="573"/>
-        <source>Split view vertically</source>
-        <translation>Nézet függőleges felosztása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="574"/>
-        <source>Close current view</source>
-        <translation>Jelenlegi nézet bezárása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="575"/>
-        <source>Unsplit All</source>
-        <translation>Minden felosztás visszavonása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="576"/>
-        <source>New view</source>
-        <translation>Új nézet</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="577"/>
-        <source>New sheet</source>
-        <translation>Új réteg</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="578"/>
-        <source>New context...</source>
-        <translation>Új sáv...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="579"/>
-        <source>Play from selection</source>
-        <translation>Kiválasztottól játszás</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="580"/>
-        <source>Animated scroll</source>
-        <translation>Megelevenített scroll</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="581"/>
-        <source>Lock scroll while playback</source>
-        <translation>Scroll rögzítése visszajátszáskor</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="582"/>
-        <source>Fit to &amp;height</source>
-        <translation>&amp;Magasság illesztése</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="583"/>
-        <source>Best &amp;fit</source>
-        <translation>Legjobb &amp;illeszkedés</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="584"/>
-        <source>Fit to selection</source>
-        <translation>Kijelölt illesztése</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="585"/>
-        <source>New window</source>
-        <translation>Új ablak</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="586"/>
-        <source>Custom...</source>
-        <translation>Tetszőleges...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="587"/>
-        <source>Score view</source>
-        <translation>Kotta nézet</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="588"/>
-        <source>LilyPond source</source>
-        <translation>Lilypond forrás</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="589"/>
-        <source>CanorusML source</source>
-        <translation>CanorusML forrás</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="590"/>
-        <source>New voice</source>
-        <translation>Új hang</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="591"/>
-        <source>Document properties...</source>
-        <translation>Dokumentum tulajdonságok...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="592"/>
-        <source>Print directly</source>
-        <translation>Közvetlen nyomtatás</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="593"/>
-        <source>Export to PDF</source>
-        <translation>Kivitel PDF-be</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="594"/>
-        <source>New document &amp;wizard...</source>
-        <translation>Új dokumentum &amp;varázsló...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="595"/>
-        <source>Notes and Rests</source>
-        <translation>Hangjegyek és Szünetek</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="596"/>
-        <source>Function mark...</source>
-        <translation>Funkció jel...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="597"/>
-        <source>Clef...</source>
-        <translation>Hangjegykulcs...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="598"/>
-        <source>Select mode</source>
-        <translation>Hangnem választás</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="599"/>
-        <source>Remove Voice</source>
-        <translation>Hang eltávolítása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="600"/>
-        <source>Voice Properties</source>
-        <translation>Hang tulajdonságok</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="601"/>
-        <source>Accidentals Visible</source>
-        <translation>Hangsúlyozások megjelenítése</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="602"/>
-        <source>Hidden Rest</source>
-        <translation>Rejtett szünetek</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="603"/>
-        <source>Remove Context</source>
-        <translation>Sáv eltávolítása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="604"/>
-        <source>Context Properties</source>
-        <translation>Sáv tulajdonságok</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="605"/>
-        <source>Remove Sheet</source>
-        <translation>Réteg eltávolítása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="606"/>
-        <source>Sheet Properties</source>
-        <translation>Réteg tulajdonságok</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="607"/>
-        <source>&amp;Transpose...</source>
-        <translation>&amp;Felcserél...</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="608"/>
-        <source>Ellipse</source>
-        <translation>Ellipszis</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="609"/>
-        <source>Insert syllable</source>
-        <translation>Szótag beszúrása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="610"/>
-        <source>Edit mode</source>
-        <translation>Szerkesztés mód</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="611"/>
-        <source>Insert Mark</source>
-        <translation>Jel beszúrása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="612"/>
-        <source>Insert Articulation Mark</source>
-        <translation>Tagolás jel beszúrása</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="613"/>
-        <source>recent documents dummy</source>
-        <translation>modern báb dokumentumok</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="614"/>
-        <source>&amp;Edit</source>
-        <translation>&amp;Szerkesztés</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="615"/>
-        <source>&amp;Tools</source>
-        <translation>&amp;Eszközök</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="616"/>
-        <source>Window</source>
-        <translation>Ablak</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="617"/>
-        <source>&amp;Help</source>
-        <translation>&amp;Segítség</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="618"/>
-        <source>&amp;File</source>
-        <translation>&amp;Állomány</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="619"/>
-        <source>Open &amp;recent</source>
-        <translation>Megnyitás &amp;másként</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="620"/>
-        <source>&amp;View</source>
-        <translation>&amp;Nézet</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="621"/>
-        <source>Zoom</source>
-        <translation>Zoom</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="622"/>
-        <source>Source view</source>
-        <translation>Forrás nézet</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="623"/>
-        <source>&amp;Insert</source>
-        <translation>&amp;Beszúrás</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="624"/>
-        <source>Standard ToolBar</source>
-        <translation>Alap eszköztár</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="625"/>
-        <source>File ToolBar</source>
-        <translation>Állomány eszköztár</translation>
-    </message>
-    <message>
-        <location filename="../ui_mainwin.h" line="626"/>
-        <source>Print ToolBar</source>
-        <translation>Nyomtatás eszköztár</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwin.cpp" line="568"/>
+        <location filename="src/ui/mainwin.cpp" line="623"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../ui/mainwin.cpp" line="572"/>
+        <location filename="src/ui/mainwin.cpp" line="626"/>
         <source>Ctrl+Y</source>
         <translation>Ctrl+Y</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.cpp" line="627"/>
+        <source>Ctrl+Shift+Z</source>
+        <translation>Ctrl+Shift+Z</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="15"/>
+        <source>Canorus</source>
+        <translation>Canorus</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="70"/>
+        <source>&amp;Edit</source>
+        <translation>&amp;Szerkesztés</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="84"/>
+        <source>&amp;Tools</source>
+        <translation>&amp;Eszközök</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="95"/>
+        <source>&amp;Window</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="107"/>
+        <source>&amp;Help</source>
+        <translation>&amp;Segítség</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="118"/>
+        <source>&amp;File</source>
+        <translation>&amp;Állomány</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="122"/>
+        <source>Open &amp;recent</source>
+        <translation>Megnyitás &amp;másként</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="148"/>
+        <source>&amp;View</source>
+        <translation>&amp;Nézet</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="152"/>
+        <source>&amp;Zoom</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="163"/>
+        <source>&amp;Source view</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="182"/>
+        <source>&amp;Insert</source>
+        <translation>&amp;Beszúrás</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="207"/>
+        <source>Standard ToolBar</source>
+        <translation>Alap eszköztár</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="233"/>
+        <source>File ToolBar</source>
+        <translation>Állomány eszköztár</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="258"/>
+        <source>Print ToolBar</source>
+        <translation>Nyomtatás eszköztár</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="280"/>
+        <source>&amp;Quit</source>
+        <translation>&amp;Kilépés</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="283"/>
+        <source>Ctrl+Q</source>
+        <translation>Ctrl+Q</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="292"/>
+        <source>&amp;New document</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="295"/>
+        <source>Ctrl+N</source>
+        <translation>Ctrl+N</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="304"/>
+        <source>&amp;Open...</source>
+        <translation>&amp;Megnyitás...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="307"/>
+        <source>Ctrl+O</source>
+        <translation>Ctrl+O</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="316"/>
+        <source>&amp;Save</source>
+        <translation>&amp;Mentés</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="319"/>
+        <source>Ctrl+S</source>
+        <translation>Ctrl+S</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="328"/>
+        <source>Save &amp;as...</source>
+        <translation>Mentés &amp;másként...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="337"/>
+        <source>&amp;Close</source>
+        <translation>&amp;Bezárás</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="349"/>
+        <source>&amp;Import...</source>
+        <translation>&amp;Behozatal...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="358"/>
+        <source>&amp;Export...</source>
+        <translation>&amp;Kivitel...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="361"/>
+        <source>Ctrl+E</source>
+        <translation>Ctrl+E</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="373"/>
+        <source>Print pre&amp;view...</source>
+        <translation>Nyomtatás elő&amp;nézet...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="388"/>
+        <source>&amp;Print...</source>
+        <translation>&amp;Nyomtatás...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="391"/>
+        <source>Ctrl+P</source>
+        <translation>Ctrl+P</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="400"/>
+        <source>&amp;Copy</source>
+        <translation>&amp;Másol</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="403"/>
+        <source>Ctrl+C</source>
+        <translation>Ctrl+C</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="412"/>
+        <source>C&amp;ut</source>
+        <translation>Ki&amp;vág</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="415"/>
+        <source>Ctrl+X</source>
+        <translation>Ctrl+X</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="424"/>
+        <source>&amp;Paste</source>
+        <translation>&amp;Beilleszt</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="427"/>
+        <source>Ctrl+V</source>
+        <translation>Ctrl+V</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="432"/>
+        <source>Select &amp;all</source>
+        <translation>Összes &amp;kijelölése</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="435"/>
+        <source>Ctrl+A</source>
+        <translation>Ctrl+A</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="440"/>
+        <source>&amp;Invert Selection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="445"/>
+        <source>Fit to &amp;width</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="450"/>
+        <source>&amp;Jump to...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="453"/>
+        <source>Ctrl+J</source>
+        <translation>Ctrl+J</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="464"/>
+        <source>Status &amp;bar</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="476"/>
+        <source>&amp;Fullscreen</source>
+        <translation>&amp;Teljes képernyő</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="488"/>
+        <source>&amp;Time signature...</source>
+        <translation>&amp;Idő jelzése...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="500"/>
+        <source>&amp;Key signature...</source>
+        <translation>&amp;Kulcs jelzése...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="512"/>
+        <source>&amp;Barline...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="520"/>
+        <source>Note &amp;count...</source>
+        <translation>Hangjegy &amp;számlálás...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="529"/>
+        <source>&amp;Settings...</source>
+        <translation>&amp;Beállítások...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="534"/>
+        <source>&amp;User&apos;s guide...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="542"/>
+        <source>What&apos;s &amp;this</source>
+        <translation>Mi &amp;ez</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="553"/>
+        <source>Tip of the &amp;day</source>
+        <translation>A nap &amp;tippje</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="562"/>
+        <source>About &amp;Canorus...</source>
+        <translation>&amp;A Canorus névjegye...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="571"/>
+        <source>About &amp;Qt...</source>
+        <translation>&amp;A Qt névjegye...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="576"/>
+        <source>Split view &amp;horizontally</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="581"/>
+        <source>Split view &amp;vertically</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="589"/>
+        <source>&amp;Close current view</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="597"/>
+        <source>&amp;Unsplit All</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="602"/>
+        <source>&amp;New view</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="611"/>
+        <source>New &amp;sheet</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="623"/>
+        <source>New c&amp;ontext...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="635"/>
+        <source>Play from selection</source>
+        <translation>Kiválasztottól játszás</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="646"/>
+        <source>&amp;Animated scroll</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="657"/>
+        <source>&amp;Lock scroll while playback</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="662"/>
+        <source>Fit to &amp;height</source>
+        <translation>&amp;Magasság illesztése</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="667"/>
+        <source>&amp;Best fit</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="672"/>
+        <source>Fit to &amp;selection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="677"/>
+        <source>New &amp;window</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="682"/>
+        <source>&amp;Custom...</source>
+        <translation>&amp;Tetszőlegesen...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="687"/>
+        <source>Score &amp;view</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="696"/>
+        <source>&amp;LilyPond source</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="705"/>
+        <source>&amp;CanorusML source</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="714"/>
+        <source>New &amp;voice</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="723"/>
+        <source>&amp;Document properties...</source>
+        <translation>&amp;Dokumentum tulajdonságok...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="735"/>
+        <source>Print directly</source>
+        <translation>Közvetlen nyomtatás</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="747"/>
+        <source>Export to PDF</source>
+        <translation>Kivitel PDF-be</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="762"/>
+        <source>New document &amp;wizard...</source>
+        <translation>Új dokumentum &amp;varázsló...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="774"/>
+        <source>&amp;Notes and Rests</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="789"/>
+        <source>&amp;Function mark...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="801"/>
+        <source>&amp;Clef...</source>
+        <translation>&amp;Hangjegykulcs...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="810"/>
+        <source>Remove Voice</source>
+        <translation>Hang eltávolítása</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="819"/>
+        <source>Voice Properties</source>
+        <translation>Hang tulajdonságok</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="831"/>
+        <source>Accidentals Visible</source>
+        <translation>Hangsúlyozások megjelenítése</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="843"/>
+        <source>Hidden Rest</source>
+        <translation>Rejtett szünetek</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="852"/>
+        <source>Remove Context</source>
+        <translation>Sáv eltávolítása</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="861"/>
+        <source>Context Properties</source>
+        <translation>Sáv tulajdonságok</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="870"/>
+        <source>Remove Sheet</source>
+        <translation>Réteg eltávolítása</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="879"/>
+        <source>Sheet Properties</source>
+        <translation>Réteg tulajdonságok</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="884"/>
+        <source>&amp;Transpose...</source>
+        <translation>&amp;Felcserél...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="887"/>
+        <source>Ctrl+T</source>
+        <translation>Ctrl+T</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="899"/>
+        <source>Ellipse</source>
+        <translation>Ellipszis</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="911"/>
+        <source>Insert s&amp;yllable</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="926"/>
+        <source>Edit mode</source>
+        <translation>Szerkesztés mód</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="935"/>
+        <source>Insert Mark</source>
+        <translation>Jel beszúrása</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="944"/>
+        <source>Insert Articulation Mark</source>
+        <translation>Tagolás jel beszúrása</translation>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="949"/>
+        <source>&amp;recent documents dummy</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="954"/>
+        <source>&amp;Midi recorder</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="962"/>
+        <source>&amp;Resources view</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="977"/>
+        <source>Figured bass mark...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/mainwin.ui" line="985"/>
+        <source>R&amp;uler</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>uiMidiRecorder</name>
+    <message>
+        <location filename="src/ui/midirecorder.ui" line="19"/>
+        <source>Midi recorder</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/midirecorder.ui" line="32"/>
+        <source>Record</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/midirecorder.ui" line="52"/>
+        <source>Pause</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/midirecorder.ui" line="72"/>
+        <source>Stop</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>uiPropertiesDialog</name>
     <message>
-        <location filename="../ui_propertiesdialog.h" line="132"/>
+        <location filename="src/ui/propertiesdialog.ui" line="14"/>
         <source>Properties</source>
         <translation>Tulajdonságok</translation>
     </message>
     <message>
-        <location filename="../ui_propertiesdialog.h" line="133"/>
+        <location filename="src/ui/propertiesdialog.ui" line="43"/>
         <source>Move up</source>
         <translation>Mozgatás fel</translation>
     </message>
     <message>
-        <location filename="../ui_propertiesdialog.h" line="135"/>
+        <location filename="src/ui/propertiesdialog.ui" line="66"/>
         <source>Move down</source>
         <translation>Mozgatás le</translation>
     </message>
     <message>
-        <location filename="../ui_propertiesdialog.h" line="136"/>
+        <location filename="src/ui/propertiesdialog.ui" line="103"/>
         <source>Current element name</source>
         <translation>Jelenlegi elem név</translation>
     </message>
@@ -3216,137 +3990,202 @@ Honlap: http://www.canorus.org</translation>
 <context>
     <name>uiSettingsDialog</name>
     <message>
-        <location filename="../ui_settingsdialog.h" line="527"/>
+        <location filename="src/ui/settingsdialog.ui" line="14"/>
         <source>Settings</source>
         <translation>Beállítások</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="531"/>
+        <location filename="src/ui/settingsdialog.ui" line="59"/>
         <source>Editor</source>
         <translation>Szerkesztő</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="535"/>
+        <location filename="src/ui/settingsdialog.ui" line="68"/>
         <source>Appearance</source>
         <translation>Megjelenés</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="539"/>
+        <location filename="src/ui/settingsdialog.ui" line="77"/>
+        <source>Shortcuts</source>
+        <translation>Gyorsbillentyűk</translation>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="86"/>
         <source>Load/Save</source>
         <translation>Betöltés/Mentés</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="543"/>
+        <location filename="src/ui/settingsdialog.ui" line="95"/>
         <source>Playback</source>
         <translation>Visszajátszás</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="545"/>
+        <location filename="src/ui/settingsdialog.ui" line="104"/>
+        <source>Printing</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="137"/>
         <source>Current page name</source>
         <translation>Jelenlegi oldal név</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="546"/>
+        <location filename="src/ui/settingsdialog.ui" line="157"/>
         <source>When making hyphen, immediately jump to the next syllable without hitting space bar key.</source>
         <translation>Ha kötőjelet készítesz, rögtön ugorj a következő szótagra, anélkül hogy szóközt ütnél.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="547"/>
+        <location filename="src/ui/settingsdialog.ui" line="160"/>
         <source>Use Finale/Sibelius lyrics behaviour</source>
         <translation>Használld a Finale/Sibelius dalszöveg viselkedésmódot</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="548"/>
-        <source>Preview:</source>
-        <translation>Előnézet:</translation>
+        <location filename="src/ui/settingsdialog.ui" line="167"/>
+        <source>When inserting notes, show the helper notes in all staffs, not only in the active one.</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="549"/>
+        <location filename="src/ui/settingsdialog.ui" line="170"/>
+        <source>Show helper notes in other staffs</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="177"/>
+        <source>When inserting notes or changing existing notes pitch, play the new notes.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="180"/>
+        <source>Play inserted notes</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="187"/>
+        <source>When inserting notes and rests, place a barline automatically, if the last bar is full.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="190"/>
+        <source>Automatic bar placement</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="197"/>
+        <source>When inserting notes and rests, split them automatically at quarter boundaries.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="200"/>
+        <source>Note checker</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="232"/>
+        <source>Use anti-aliased fonts for drawing the score. Looks nicer, but slower.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="235"/>
+        <source>Use anti-aliased fonts</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="242"/>
+        <source>Use animated scroll</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="257"/>
         <source>Color which the background is filled.</source>
         <translation>Hátteret kitöltő szín.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="550"/>
+        <location filename="src/ui/settingsdialog.ui" line="260"/>
         <source>Background color</source>
         <translation>Háttérszín</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="552"/>
+        <location filename="src/ui/settingsdialog.ui" line="304"/>
         <source>Color which the music elements are painted.</source>
         <translation>Zenei elemeket kitöltő szín.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="553"/>
+        <location filename="src/ui/settingsdialog.ui" line="307"/>
         <source>Foreground color</source>
         <translation>Előtérszín</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="555"/>
+        <location filename="src/ui/settingsdialog.ui" line="351"/>
         <source>Color which the selected music elements are painted.</source>
         <translation>A kiválasztott elemeket kitöltő szín.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="556"/>
+        <location filename="src/ui/settingsdialog.ui" line="354"/>
         <source>Selected elements</source>
         <translation>Kiválasztott elemek</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="558"/>
+        <location filename="src/ui/settingsdialog.ui" line="398"/>
         <source>Color which the current context is painted.</source>
         <translation>A jelenlegi sávot kitöltő szín.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="559"/>
+        <location filename="src/ui/settingsdialog.ui" line="401"/>
         <source>Selected context</source>
         <translation>Kiválasztott sáv</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="561"/>
+        <location filename="src/ui/settingsdialog.ui" line="445"/>
         <source>Color which the selection area background is filled.</source>
         <translation>A kiválasztott területet kitöltő szín.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="562"/>
+        <location filename="src/ui/settingsdialog.ui" line="448"/>
         <source>Selection area</source>
         <translation>Terület kiválasztó</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="564"/>
+        <location filename="src/ui/settingsdialog.ui" line="492"/>
         <source>Color which the invisible elements are painted in current-voice-only mode.</source>
         <translation>A láthatatlan elemeket kitöltő szín csak-jelenlegi-hang módban.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="565"/>
+        <location filename="src/ui/settingsdialog.ui" line="495"/>
         <source>Hidden elements</source>
         <translation>Rejtett elemek</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="567"/>
+        <location filename="src/ui/settingsdialog.ui" line="539"/>
         <source>Color which the elements in non-selected voice are painted.</source>
         <translation>A nem-kiválasztott hang elemeket kitöltő szín.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="568"/>
+        <location filename="src/ui/settingsdialog.ui" line="542"/>
         <source>Disabled elements</source>
         <translation>Megbénított elemek</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="570"/>
+        <location filename="src/ui/settingsdialog.ui" line="586"/>
+        <source>Preview:</source>
+        <translation>Előnézet:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="615"/>
         <source>Default documents location:</source>
         <translation>Alapértelmezett dokumentum helyek:</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="571"/>
+        <location filename="src/ui/settingsdialog.ui" line="639"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="572"/>
+        <location filename="src/ui/settingsdialog.ui" line="672"/>
         <source>Default file format for saving:</source>
         <translation>Alapértelmezett mentési állomány: </translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="573"/>
+        <location filename="src/ui/settingsdialog.ui" line="705"/>
         <source>Recovery saving interval in minutes:</source>
         <comment>Auto save every %n minutes.</comment>
         <translation>Visszaállító mentések időtartama percben:
@@ -3354,25 +4193,57 @@ Honlap: http://www.canorus.org</translation>
 </translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="574"/>
+        <location filename="src/ui/settingsdialog.ui" line="718"/>
         <source>Automatically make recovery documents every specified number of ellapsed minutes. 0 to disable recovery saving.</source>
         <translation>Autómatikus mentések készítése a dokumentumokról meghatározott időközönként. 0 egyenlő visszaálítás kikapcsolása.</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="575"/>
+        <location filename="src/ui/settingsdialog.ui" line="765"/>
         <source>MIDI IN devices:</source>
         <translation>MIDI BE eszköz:</translation>
     </message>
     <message>
-        <location filename="../ui_settingsdialog.h" line="576"/>
+        <location filename="src/ui/settingsdialog.ui" line="792"/>
         <source>MIDI OUT devices:</source>
         <translation>MIDI KI eszköz:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="816"/>
+        <source>Default typesetter:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="824"/>
+        <source>LilyPond</source>
+        <translation>LilyPond</translation>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="843"/>
+        <source>Typesetter location:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="862"/>
+        <location filename="src/ui/settingsdialog.ui" line="907"/>
+        <source>Browse...</source>
+        <translation>Tallózás...</translation>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="871"/>
+        <location filename="src/ui/settingsdialog.ui" line="916"/>
+        <source>Use system default</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/settingsdialog.ui" line="888"/>
+        <source>PDF viewer location:</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>uiSheetProperties</name>
     <message>
-        <location filename="../ui_sheetproperties.h" line="36"/>
+        <location filename="src/ui/sheetproperties.ui" line="13"/>
         <source>Sheet properties</source>
         <translation>Réteg tulajdonságok</translation>
     </message>
@@ -3380,27 +4251,85 @@ Honlap: http://www.canorus.org</translation>
 <context>
     <name>uiStaffProperties</name>
     <message>
-        <location filename="../ui_staffproperties.h" line="66"/>
+        <location filename="src/ui/staffproperties.ui" line="14"/>
         <source>Staff properties</source>
         <translation>Ütemvonal tulajdonságok</translation>
     </message>
     <message>
-        <location filename="../ui_staffproperties.h" line="67"/>
+        <location filename="src/ui/staffproperties.ui" line="22"/>
         <source>Number of lines:</source>
         <translation>Sorok száma:</translation>
     </message>
 </context>
 <context>
+    <name>uiTransposeView</name>
+    <message>
+        <location filename="src/ui/transposeview.ui" line="20"/>
+        <source>Transpose</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/transposeview.ui" line="31"/>
+        <source>By interval</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/transposeview.ui" line="60"/>
+        <source>By key signature</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/transposeview.ui" line="78"/>
+        <source>To</source>
+        <translation>Eddig</translation>
+    </message>
+    <message>
+        <location filename="src/ui/transposeview.ui" line="104"/>
+        <source>By semitones</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/transposeview.ui" line="131"/>
+        <source>Reinterpret accidentals</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/transposeview.ui" line="142"/>
+        <source>Sharps to Flats</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/transposeview.ui" line="151"/>
+        <source>Flats to Sharps</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/transposeview.ui" line="160"/>
+        <source>Invert accidentals</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>uiVoiceProperties</name>
     <message>
-        <location filename="../ui_voiceproperties.h" line="66"/>
+        <location filename="src/ui/voiceproperties.ui" line="14"/>
         <source>Voice properties</source>
         <translation>Hang tulajdonságok</translation>
     </message>
     <message>
-        <location filename="../ui_voiceproperties.h" line="67"/>
+        <location filename="src/ui/voiceproperties.ui" line="22"/>
         <source>Midi channel:</source>
         <translation>Midi csatorna:</translation>
+    </message>
+    <message>
+        <location filename="src/ui/voiceproperties.ui" line="59"/>
+        <source>Midi pitch offset:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="src/ui/voiceproperties.ui" line="66"/>
+        <source> halftones</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>

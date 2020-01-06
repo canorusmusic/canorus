@@ -1,0 +1,7 @@
+language: cpp
+dist: bionic
+before_install:
+  - sudo apt-get install -y cmake g++ make libqt5webkit5-dev libqt5svg5-dev qtbase5-dev qttools5-dev qttools5-dev-tools libasound2-dev
+script:
+  - cmake -D CMAKE_INSTALL_PREFIX=~/.local . && make -j4 && make tr && make install
+

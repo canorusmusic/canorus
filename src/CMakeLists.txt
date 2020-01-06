@@ -117,7 +117,7 @@ ENDIF(PYTHON_INCLUDE_DIRS AND NOT NO_PYTHON)
 #ENDIF(POPPLER_INCLUDE_PATH AND POPPLER_LIBRARY AND POPPLERQT4_LIBRARY)
 
 # Set ZLib sources on windows
-FILE(GLOB ZLIB_Srcs "zlib/*.c")
+FILE(GLOB ZLIB_Srcs "../lib/zlib-1.2.3/*.c")
 
 ##############################
 # List of Qt4-parsed sources #
@@ -416,7 +416,7 @@ SET(Canorus_Import_Srcs     # Classes for import various file formats to Canorus
 )
 
 SET(Canorus_RtMidi_Srcs		# RtMIDI library
-	rtmidi/RtMidi.cpp
+	../lib/rtmidi-4.0.0/RtMidi.cpp
 )
 
 SET(Canorus_ZIP_Srcs
@@ -527,7 +527,7 @@ ENDIF(APPLE)
 #########################
 # RtMidi cross-platform definitions
 IF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux") #IF(LINUX) isn't supported by CMake yet
-	ADD_DEFINITIONS(-D__LINUX_ALSASEQ__)
+	ADD_DEFINITIONS(-D__LINUX_ALSA__)
 ENDIF("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
 IF(APPLE)
 	ADD_DEFINITIONS(-D__MACOSX_CORE__)
@@ -723,12 +723,10 @@ ENDIF(MINGW)
 # Do not use qt5_create_translation since make clean will delete all previous
 # .ts files. Use custom command instead:
 #qt5_create_translation(Canorus_Translation_Bins ${Canorus_UIC_Srcs} ${Canorus_Srcs} lang/template.ts)
-ADD_CUSTOM_COMMAND(
-	TARGET canorus
-	PRE_BUILD
+ADD_CUSTOM_TARGET(tr
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
-	COMMAND ${Qt5_LUPDATE_EXECUTABLE}
-	ARGS -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
+	DEPENDS ${Canorus_UIC_Srcs}
+	COMMAND ${Qt5_LUPDATE_EXECUTABLE} -noobsolete ${Canorus_UIC_Srcs} ${Canorus_Srcs} -ts ${Canorus_Translation_Srcs} lang/template.ts
 )
 qt5_add_translation(Canorus_Translation_Bins ${Canorus_Translation_Srcs})
 

@@ -37,5 +37,7 @@ CADrawableLyricsContext* CADrawableLyricsContext::clone() {
 }
 
 void CADrawableLyricsContext::draw(QPainter *p, const CADrawSettings s) {
-	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(Qt::green));
+	QColor bColor = Qt::green;
+	bColor.setAlphaF(0.2);
+	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(bColor));
 }

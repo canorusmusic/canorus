@@ -186,3 +186,8 @@ See windows/Readme.txt for details about building Canorus under Microsoft Window
 Mac OS X users
 ==============
 Check macosx/ directory and run Make.
+
+License
+=======
+Canorus is licensed under GPLv3. See COPYING for details. Consult documentation
+of other libraries in folder lib/ for their respective license.

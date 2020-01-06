@@ -25,5 +25,7 @@ CADrawableFiguredBassContext* CADrawableFiguredBassContext::clone() {
 }
 
 void CADrawableFiguredBassContext::draw(QPainter *p, const CADrawSettings s) {
-	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(Qt::cyan));
+	QColor bColor = Qt::cyan;
+	bColor.setAlphaF(0.2);
+	p->fillRect(0, s.y, s.w, qRound(height()*s.z), QBrush(bColor));
 }
