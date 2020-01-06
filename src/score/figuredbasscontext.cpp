@@ -62,8 +62,6 @@ void CAFiguredBassContext::addEmptyFiguredBassMark( int timeStart, int timeLengt
 /*!
 	Updates timeStarts and timeLength of all figured bass marks according to the chords they belong.
 	Adds new empty figured bass marks at the end, if needed.
-
- 	\sa CALyricsContext::repositSyllables(), CAFunctionMarkContext::repositFunctions(), CAChordNameContext::repositChordNames()
  */
 void CAFiguredBassContext::repositFiguredBassMarks() {
 	if ( !sheet() ) {

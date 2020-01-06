@@ -16,7 +16,7 @@ translate User's guide go to source/your_language/ directory and edit .rst
 files, one file per chapter.
 
 Usually you want to compile User's guide to:
- - HTML (for viewing on-line, also used by Canorus built-in web engine)
+ - HTML (for viewing on-line, also used when clicking Help in Canorus)
  - PDF (for printing)
 
 Sphinx-build supports generating HTML out of the box.

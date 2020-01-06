@@ -341,7 +341,7 @@ CATempo *CAStaff::getTempo( int time ) {
 	insertions and synchronization of the voices every time a new element is inserted would considerably
 	slow down the import filter.
 
-	\return True, if everything was ok. False, if fixes were needed.
+	Returns True, if everything was ok. False, if fixes were needed.
 */
 bool CAStaff::synchronizeVoices() {
 	int *pidx = new int[voiceList().size()];
@@ -430,7 +430,7 @@ bool CAStaff::synchronizeVoices() {
 					if (restList.size()) {
 						plastPlayable[ i ] = restList.last();
 					} else {
-						qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
+						qDebug() << "ERROR CAStaff::synchronizeVoices(): Cannot compose rests of length " << gapLength << endl;
 					}
 
 					changesMade = true;
@@ -451,7 +451,7 @@ bool CAStaff::synchronizeVoices() {
 				if (restList.size()) {
 					plastPlayable[ j ] = restList.last();
 				} else {
-					qDebug() << "Error in CAStaff::synchronizeVoices(): Cannot compose rests of length" << gapLength << endl;
+					qDebug() << "ERROR CAStaff::synchronizeVoices(): Cannot compose rests of length " << gapLength << endl;
 				}
 				changesMade = true;
 			}

@@ -79,8 +79,6 @@ void CALyricsContext::cloneLyricsContextProperties( CALyricsContext *lc ) {
 	Keeps the content and order of the syllables, but changes startTimes and lengths according to the notes in associatedVoice.
 	This function is usually called when associatedVoice is changed or the whole lyricsContext is initialized for the first time.
 	If the notes and syllables aren't synchronized (too little syllables for notes) it adds empty syllables.
-
- 	\sa CAFunctionMarkContext::repositFunctions(), CAFiguredBassContext::repositFiguredBassMarks(), CAChordNameContext::repositChordNames()
 */
 void CALyricsContext::repositSyllables() {
 	if (associatedVoice()) {

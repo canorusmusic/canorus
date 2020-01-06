@@ -93,36 +93,32 @@ bool CAFunctionMarkContext::remove( CAMusElement *elt ) {
 }
 
 /*!
+	This method is similar to CALyircsContext::repositFunctions().
 	It repositions the functions (sets timeStart and timeLength) one by one according to the chords
 	above the context.
 
 	If two functions contain the same timeStart, they are treated as modulation and will contain
 	the same timeStart after reposition is done as well!
-
- 	\sa CALyricsContext::repositSyllables(), CAFiguredBassContext::repositFiguredBassMarks(), CAChordNameContext::repositChordNames()
 */
 void CAFunctionMarkContext::repositFunctions() {
-	int ts, tl;
-	int curIdx; // contains current position in _functionMarkList
-	QList<CAPlayable *> chord;
-	for (ts = 0, curIdx = 0;
-	     (sheet() && (chord = sheet()->getChord(ts)).size()) || curIdx < _functionMarkList.size(); ts += tl) {
-		tl = (chord.size() ? chord[0]->timeLength() : 256);
-		for (int i = 0; i < chord.size(); i++)
-			if (chord[i]->timeLength() < tl)
-				tl = chord[i]->timeLength();
+	int TS, TL;
+	int curIdx;
+	QList<CAPlayable*> chord;
+	for ( TS=0, curIdx=0; ( sheet() && (chord=sheet()->getChord(TS)).size() ) || curIdx<_functionMarkList.size(); TS+=TL ) {
+		TL = (chord.size()?chord[0]->timeLength():256);
+		for ( int i=0; i<chord.size(); i++ )
+			if (chord[i]->timeLength()<TL)
+				TL = chord[i]->timeLength();
 
-		if (curIdx == _functionMarkList.size()) { // add new empty functions, if chords still exist
-			addEmptyFunction(ts, tl);
+		if ( curIdx == _functionMarkList.size() ) { // add new empty functions, if chords still exist
+			addEmptyFunction( TS, TL);
 			curIdx++;
 		}
 
-		// apply timeStart and timeLength to existing function marks
-		for (int startIdx = curIdx; curIdx == 0 || (curIdx < _functionMarkList.size() &&
-		                                            _functionMarkList[curIdx]->timeStart() ==
-		                                            _functionMarkList[startIdx]->timeStart()); curIdx++) {
-			_functionMarkList[curIdx]->setTimeLength(tl);
-			_functionMarkList[curIdx]->setTimeStart(ts);
+		// apply timestart and length to existing function marks
+		for ( int startIdx = curIdx; curIdx==0 || ( curIdx < _functionMarkList.size() && _functionMarkList[curIdx]->timeStart()==_functionMarkList[startIdx]->timeStart() ); curIdx++ ) {
+			_functionMarkList[curIdx]->setTimeLength( TL );
+			_functionMarkList[curIdx]->setTimeStart( TS );
 		}
 	}
 }

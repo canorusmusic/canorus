@@ -1,5 +1,6 @@
 /*!
-	Copyright (c) 2006-2020, Reinhard Katzmann, Matevž Jekovec, Canorus development team
+	Copyright (c) 2006, Reinhard Katzmann, Canorus development team
+	              2007, Matevž Jekovec, Canorus development team
 
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
@@ -9,7 +10,6 @@
 #include "core/muselementfactory.h"
 #include "score/functionmarkcontext.h"
 #include "score/figuredbasscontext.h"
-#include "score/chordnamecontext.h"
 #include "score/sheet.h"
 #include "score/text.h"
 #include "score/bookmark.h"
@@ -245,50 +245,34 @@ bool CAMusElementFactory::configureNote( int pitch,
 		static_cast<CANote*>(mpoMusElement)->setStemDirection( _eNoteStemDirection );
 		bSuccess = voice->insert( right, mpoMusElement, false );
 
+		// adds empty syllables, if syllable below the note doesn't exist or repositions the syllables, if it exists
 		if (voice->lastNote()==mpoMusElement) {
-			// note was appended, reposition elements in dependent contexts accordingly
-			for (CALyricsContext *lc: voice->lyricsContextList()) {
-				lc->repositSyllables();
+			for (int i=0; i<voice->lyricsContextList().size(); i++) {
+				voice->lyricsContextList().at(i)->repositSyllables(); // adds an empty syllable or assigns the already placed at the end if it exists
 			}
-			for (CAContext *context: voice->staff()->sheet()->contextList()) {
-				switch (context->contextType()) {
-				case CAContext::FunctionMarkContext:
-					static_cast<CAFunctionMarkContext*>(context)->repositFunctions();
-					break;
-				case CAContext::FiguredBassContext:
-					static_cast<CAFiguredBassContext*>(context)->repositFiguredBassMarks();
-					break;
-				case CAContext::ChordNameContext:
-					static_cast<CAChordNameContext*>(context)->repositChordNames();
-					break;
-				default:
-					break;
+			for (int i=0; i<voice->staff()->sheet()->contextList().size(); i++) {
+				if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FunctionMarkContext) {
+					static_cast<CAFunctionMarkContext*>(voice->staff()->sheet()->contextList()[i])->repositFunctions();
+				} else
+				if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FiguredBassContext) {
+					static_cast<CAFiguredBassContext*>(voice->staff()->sheet()->contextList()[i])->repositFiguredBassMarks();
 				}
 			}
 		} else {
-			// note was inserted somewhere inbetween, insert empty element in dependent contexts accordingly
-			for (CALyricsContext *lc: voice->lyricsContextList()) {
-				lc->addEmptySyllable( mpoMusElement->timeStart(), mpoMusElement->timeLength() );
+			for (int i=0; i<voice->lyricsContextList().size(); i++) {
+				voice->lyricsContextList().at(i)->addEmptySyllable(
+					mpoMusElement->timeStart(), mpoMusElement->timeLength()
+				);
 			}
-			for (CAContext *context: voice->staff()->sheet()->contextList()) {
-				switch (context->contextType()) {
-				case CAContext::FunctionMarkContext:
-					static_cast<CAFunctionMarkContext*>(context)->addEmptyFunction(
+			for (int i=0; i<voice->staff()->sheet()->contextList().size(); i++) {
+				if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FunctionMarkContext) {
+					static_cast<CAFunctionMarkContext*>(voice->staff()->sheet()->contextList()[i])->addEmptyFunction(
 						mpoMusElement->timeStart(), mpoMusElement->timeLength()
 					);
-					break;
-				case CAContext::FiguredBassContext:
-					static_cast<CAFiguredBassContext*>(context)->addEmptyFiguredBassMark(
+				} else if (voice->staff()->sheet()->contextList()[i]->contextType()==CAContext::FiguredBassContext) {
+					static_cast<CAFiguredBassContext*>(voice->staff()->sheet()->contextList()[i])->addEmptyFiguredBassMark(
 						mpoMusElement->timeStart(), mpoMusElement->timeLength()
 					);
-					break;
-				case CAContext::ChordNameContext:
-					static_cast<CAChordNameContext*>(context)->addEmptyChordName(
-						mpoMusElement->timeStart(), mpoMusElement->timeLength()
-					);
-					break;
-				default:
-					break;
 				}
 			}
 		}
@@ -468,17 +452,8 @@ bool CAMusElementFactory::configureRest( CAVoice *voice, CAMusElement *right ) {
 		if (!success)
 			removeMusElem(true);
 		else {
-			for (CALyricsContext* lc: voice->lyricsContextList()) {
-				lc->repositSyllables();
-			}
-			for (CAContext *context: voice->staff()->sheet()->contextList()) {
-				switch (context->contextType()) {
-				case CAContext::ChordNameContext:
-					static_cast<CAChordNameContext*>(context)->repositChordNames();
-					break;
-				default:
-					break;
-				}
+			foreach (CALyricsContext* lc, voice->lyricsContextList()) {
+				lc->repositSyllables(); // Move the syllables accordingly.
 			}
 		}
 	}

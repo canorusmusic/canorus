@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
+	Copyright (c) 2007, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -15,7 +15,6 @@
 #include "ui_voiceproperties.h"
 #include "ui_lyricscontextproperties.h"
 #include "ui_functionmarkcontextproperties.h"
-#include "ui_chordnamecontextproperties.h"
 
 class QTreeWidgetItem;
 
@@ -26,7 +25,6 @@ class CAContext;
 class CAVoice;
 class CALyricsContext;
 class CAFunctionMarkContext;
-class CAChordNameContext;
 
 class CADocumentProperties : public QWidget, public Ui::uiDocumentProperties {
 	Q_OBJECT
@@ -63,11 +61,6 @@ public:
 	CAFunctionMarkContextProperties( QWidget *parent=0 ) : QWidget( parent ) { setupUi(this); }
 };
 
-class CAChordNameContextProperties : public QWidget, public Ui::uiChordNameContextProperties {
-public:
-	CAChordNameContextProperties( QWidget *parent=nullptr ) : QWidget( parent ) { setupUi(this); }
-};
-
 class CAPropertiesDialog : public QDialog, private Ui::uiPropertiesDialog
 {
 	Q_OBJECT
@@ -102,8 +95,7 @@ private:
 	void updateVoiceProperties( CAVoice* );
 	void updateLyricsContextProperties( CALyricsContext* );
 	void updateFunctionMarkContextProperties( CAFunctionMarkContext* );
-	void updateChordNameContextProperties( CAChordNameContext* );
-
+	
 	CADocument                           *_document;
 	QTreeWidgetItem                      *_documentItem;             // Document => Document properties widget
 	QWidget                              *_documentPropertiesWidget; // Document item in tree widget => Document

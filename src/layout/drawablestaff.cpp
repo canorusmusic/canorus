@@ -5,9 +5,8 @@
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
 */
 
-#include <QDebug>
 #include <QPainter>
-
+#include <iostream>
 #include "layout/drawablestaff.h"
 #include "layout/drawableclef.h"
 #include "layout/drawablekeysignature.h"
@@ -304,7 +303,6 @@ void CADrawableStaff::addMElement(CADrawableMusElement *elt) {
 		case CADrawableMusElement::DrawableFunctionMarkSupport:
 		case CADrawableMusElement::DrawableFiguredBassNumber:
 		case CADrawableMusElement::DrawableMark:
-		case CADrawableMusElement::DrawableChordName:
 			// These elements are just added to the list but not handled specifically
 			//fprintf(stderr,"Warning: CADrawableStaff::addMElement - Unhandled element %d\n",elt->drawableMusElementType());
 			break;
@@ -336,8 +334,7 @@ int CADrawableStaff::removeMElement(CADrawableMusElement *elt) {
 		case CADrawableMusElement::DrawableFunctionMarkSupport:
 		case CADrawableMusElement::DrawableFiguredBassNumber:
 		case CADrawableMusElement::DrawableMark:
-		case CADrawableMusElement::DrawableChordName:
-			qDebug() << "Warning: CADrawableStaff::removeMElement - Unhandled element" << elt->drawableMusElementType();
+			fprintf(stderr,"Warning: CADrawableStaff::removeMElement - Unhandled element %d",elt->drawableMusElementType());
 			break;
 	}
 
