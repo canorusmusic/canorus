@@ -124,6 +124,11 @@ CADiatonicPitch CADiatonicPitch::operator+(CAInterval i)
 {
     CADiatonicPitch dp(noteName(), accs());
 
+    // Leave diatonic pitch alone, if it is Undefined.
+    if (noteName() == Undefined) {
+        return dp;
+    }
+
     // Only use positive intervals UP. If the interval is negative, inverse it:
     if (i.quantity() < 0) {
         if (i.quantity() != -1) {

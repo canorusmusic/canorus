@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008, Matevž Jekovec, Canorus development team
+	Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -8,6 +8,7 @@
 #include "core/transpose.h"
 
 #include "score/chordname.h"
+#include "score/chordnamecontext.h"
 #include "score/diatonicpitch.h"
 #include "score/functionmark.h"
 #include "score/functionmarkcontext.h"
@@ -82,13 +83,18 @@ void CATranspose::addContext(CAContext* context)
     case CAContext::FunctionMarkContext: {
         QList<CAFunctionMark*> markList = static_cast<CAFunctionMarkContext*>(context)->functionMarkList();
         for (int i = 0; i < markList.size(); i++) {
-            addMusElement(static_cast<CAMusElement*>(markList[i]));
+            addMusElement(markList[i]);
         }
         break;
     }
-    case CAContext::LyricsContext: // ToDo
-    case CAContext::FiguredBassContext: // ToDo
-    case CAContext::ChordNameContext: // ToDo
+    case CAContext::ChordNameContext: {
+        QList<CAChordName*> cnList = static_cast<CAChordNameContext*>(context)->chordNameList();
+        for (int i = 0; i < cnList.size(); i++) {
+            addMusElement(cnList[i]);
+        }
+        break;
+    }
+    default:
         break;
     }
 }
@@ -126,7 +132,7 @@ void CATranspose::transposeByKeySig(CADiatonicKey from, CADiatonicKey to, int di
  */
 void CATranspose::transposeByInterval(CAInterval interval)
 {
-    foreach (CAMusElement* elt, _elements) {
+    for (CAMusElement* elt : _elements) {
         switch (elt->musElementType()) {
         case CAMusElement::Note:
         case CAMusElement::ChordName: {
@@ -154,16 +160,8 @@ void CATranspose::transposeByInterval(CAInterval interval)
             static_cast<CAFunctionMark*>(elt)->setKey(static_cast<CAFunctionMark*>(elt)->key() + interval);
             break;
         case CAMusElement::MidiNote: // ToDo
-        case CAMusElement::Clef: // ToDo
-        case CAMusElement::FiguredBassMark: // ToDo
-        case CAMusElement::Rest:
-        case CAMusElement::Barline:
-        case CAMusElement::TimeSignature:
-        case CAMusElement::Slur:
-        case CAMusElement::Tuplet:
-        case CAMusElement::Syllable:
-        case CAMusElement::Mark:
-        case CAMusElement::Undefined:
+            break;
+        default:
             break;
         }
     }
@@ -180,7 +178,7 @@ void CATranspose::transposeByInterval(CAInterval interval)
 */
 void CATranspose::reinterpretAccidentals(int type)
 {
-    foreach (CAMusElement* elt, _elements) {
+    for (CAMusElement* elt : _elements) {
         switch (elt->musElementType()) {
         case CAMusElement::Note:
         case CAMusElement::ChordName: {
@@ -216,18 +214,7 @@ void CATranspose::reinterpretAccidentals(int type)
             keySig->setDiatonicKey(newDiatonicKey);
             break;
         }
-        case CAMusElement::MidiNote:
-        case CAMusElement::Clef:
-        case CAMusElement::FunctionMark:
-        case CAMusElement::FiguredBassMark:
-        case CAMusElement::Rest:
-        case CAMusElement::Barline:
-        case CAMusElement::TimeSignature:
-        case CAMusElement::Slur:
-        case CAMusElement::Tuplet:
-        case CAMusElement::Syllable:
-        case CAMusElement::Mark:
-        case CAMusElement::Undefined:
+        default:
             break;
         }
     }
