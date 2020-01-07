@@ -10,9 +10,10 @@ mkdir -p ../build
 cd ../build
 cmake -D CMAKE_INSTALL_PREFIX=~/.local ../canorus
 
-# Check, if code is formatted with "make fmt".
+echo "Check, if code is formatted with \"make fmt\"..."
 make fmt
 cd ../canorus
+git diff-index --name-status HEAD
 git diff-index --quiet HEAD
 cd ../build
 
