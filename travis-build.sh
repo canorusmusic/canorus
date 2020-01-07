@@ -13,8 +13,10 @@ cmake -D CMAKE_INSTALL_PREFIX=~/.local ../canorus
 echo "Check, if code is formatted with \"make fmt\"..."
 make fmt
 cd ../canorus
-git diff-index --name-status HEAD
-git diff-index --quiet HEAD
+# Output diff, if any.
+git diff
+# Abort, if there are any differences.
+git diff --quiet
 cd ../build
 
 make -j4 
