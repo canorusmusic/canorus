@@ -7,7 +7,6 @@
 
 // Python.h needs to be loaded first!
 #include "scripting/swigpython.h"
-#include "canorus.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -19,6 +18,7 @@
 #include <QTextCodec>
 #include <QTranslator>
 
+#include "canorus.h"
 #include "control/helpctl.h"
 #include "core/settings.h"
 #include "core/undo.h"

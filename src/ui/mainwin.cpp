@@ -3259,15 +3259,15 @@ CADocument* CAMainWin::openDocument(CADocument* doc)
         }
 
         setDocument(doc);
-		if ( !doc->fileName().isEmpty() ) {
+        if (!doc->fileName().isEmpty()) {
             CACanorus::insertRecentDocument(doc->fileName());
 
-			QDir dir( QFileInfo(doc->fileName()).absoluteDir() );
-			uiOpenDialog->setDirectory( dir );
-			uiSaveDialog->setDirectory( dir );
-			uiExportDialog->setDirectory( dir );
-			uiImportDialog->setDirectory( dir );
-		}
+            QDir dir(QFileInfo(doc->fileName()).absoluteDir());
+            uiOpenDialog->setDirectory(dir);
+            uiSaveDialog->setDirectory(dir);
+            uiExportDialog->setDirectory(dir);
+            uiImportDialog->setDirectory(dir);
+        }
         CACanorus::undo()->createUndoStack(document());
 
         uiCloseDocument->setEnabled(true);

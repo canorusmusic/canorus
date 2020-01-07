@@ -486,6 +486,23 @@ SET(Canorus_Swig_Srcs	# Sources which Swig needs to build its Python/Ruby module
 	${Canorus_Core_MOC_Srcs}
 )
 
+SET(Canorus_Fmt_Srcs    # All Canorus sources that need code style formatting.
+	main.cpp
+	canorus.cpp
+
+	${Canorus_Core_Srcs}
+	${Canorus_Score_Srcs}
+	${Canorus_Ctl_Srcs}
+	${Canorus_Gui_Ctl_Srcs}
+	${Canorus_Scripting_Srcs}
+	${Canorus_Layout_Srcs}
+	${Canorus_Ui_Srcs}
+	${Canorus_Interface_Srcs}
+	${Canorus_Export_Srcs}
+	${Canorus_Import_Srcs}
+	${Canorus_Widget_Srcs}
+)
+
 IF(MINGW) # Append ZLIB srcs to Swig srcs on Windows
 	SET( Canorus_Swig_Srcs ${Canorus_Swig_Srcs} ${ZLIB_Srcs} )
 ENDIF(MINGW)
@@ -625,8 +642,6 @@ IF(USE_PYTHON)
 	SET(CANORUS_PYTHON_WRAP_CXX ${CMAKE_CURRENT_BINARY_DIR}/canoruspythonPYTHON_wrap.cxx)
 	SET_SOURCE_FILES_PROPERTIES(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES GENERATED TRUE)
 	
-    MESSAGE("##### ${Canorus_Swig_Srcs} ${CMAKE_CURRENT_SOURCE_DIR}/scripting/canoruspython.i")
-
 	SWIG_ADD_LIBRARY(CanorusPython
 		LANGUAGE python
         OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
@@ -840,3 +855,13 @@ IF(APPLE)
 	#	FILE(APPEND ${OSX_installed_libs_file} "${file}\n")
 	#ENDFOREACH(file)
 ENDIF(APPLE)
+
+##########################
+# Automatic code styling #
+##########################
+# Applies code style formatting.
+ADD_CUSTOM_TARGET(fmt
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	COMMAND clang-format -i -style=Webkit ${Canorus_Fmt_Srcs}
+)
+

@@ -6,10 +6,11 @@
 */
 
 #include "scripting/swigpython.h" // Must be included first (includes Python.h).
-#include "widgets/pyconsole.h"
+
 #include "canorus.h"
 #include "interface/plugin.h"
 #include "interface/pluginmanager.h"
+#include "widgets/pyconsole.h"
 
 #include <QKeyEvent>
 #include <qwaitcondition.h>
