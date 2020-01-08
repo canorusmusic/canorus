@@ -24,7 +24,11 @@ CADrawableSyllable::CADrawableSyllable(CASyllable* s, CADrawableLyricsContext* c
     QFont font("Century Schoolbook L");
     font.setPixelSize(qRound(DEFAULT_TEXT_SIZE));
     QFontMetrics fm(font);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+    int textWidth = fm.horizontalAdvance(textToDrawableText(s->text()));
+#else
     int textWidth = fm.width(textToDrawableText(s->text()));
+#endif
     setWidth(textWidth < 11 ? 11 : textWidth); // set minimum text width at least 11 points
     setHeight(qRound(DEFAULT_TEXT_SIZE));
 }
@@ -44,7 +48,11 @@ void CADrawableSyllable::draw(QPainter* p, const CADrawSettings s)
     p->setFont(font);
     p->drawText(s.x, s.y + qRound(height() * s.z), textToDrawableText(syllable()->text()));
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+    int textWidth = QFontMetrics(font).horizontalAdvance(textToDrawableText(syllable()->text()));
+#else
     int textWidth = QFontMetrics(font).width(textToDrawableText(syllable()->text()));
+#endif
     if (syllable()->hyphenStart() && (width() * s.z - textWidth) > qRound(DEFAULT_DASH_LENGTH * s.z)) {
         p->drawLine(qRound(s.x + width() * s.z * 0.5 + 0.5 * textWidth - 0.5 * s.z * DEFAULT_DASH_LENGTH), s.y + qRound(height() * s.z * 0.7),
             qRound(s.x + width() * s.z * 0.5 + 0.5 * textWidth + 0.5 * s.z * DEFAULT_DASH_LENGTH), s.y + qRound(height() * s.z * 0.7));

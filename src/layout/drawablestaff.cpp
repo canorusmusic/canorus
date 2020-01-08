@@ -231,7 +231,7 @@ bool CADrawableStaff::xDrawableBarlineLessThan(const CADrawableBarline* a, const
 */
 CABarline* CADrawableStaff::getBarline(double x)
 {
-    QList<CADrawableBarline*>::const_iterator it = qLowerBound(_drawableBarlineList.constBegin(), _drawableBarlineList.constEnd(), x, CADrawableStaff::xDrawableBarlineLessThan);
+    QList<CADrawableBarline*>::const_iterator it = std::lower_bound(_drawableBarlineList.constBegin(), _drawableBarlineList.constEnd(), x, CADrawableStaff::xDrawableBarlineLessThan);
     if (it != _drawableBarlineList.constBegin()) {
         it--;
     }

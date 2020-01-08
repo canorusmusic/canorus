@@ -234,7 +234,7 @@ void CASettingsDialog::on_uiDocumentsDirectoryRevert_clicked(bool)
 
 void CASettingsDialog::on_uiBackgroundColor_clicked(bool)
 {
-    QColor c = QColor::fromRgba(QColorDialog::getRgba(uiBackgroundColor->palette().color(QPalette::Window).rgba(), nullptr, this));
+    QColor c = QColorDialog::getColor(uiBackgroundColor->palette().color(QPalette::Window), this, QString(), QColorDialog::ShowAlphaChannel);
     if (c.isValid()) {
         uiBackgroundColor->setPalette(QPalette(c));
         uiPreviewScoreView->setBackgroundColor(c);
@@ -251,7 +251,7 @@ void CASettingsDialog::on_uiBackgroundRevert_clicked(bool)
 
 void CASettingsDialog::on_uiForegroundColor_clicked(bool)
 {
-    QColor c = QColor::fromRgba(QColorDialog::getRgba(uiForegroundColor->palette().color(QPalette::Window).rgba(), nullptr, this));
+    QColor c = QColorDialog::getColor(uiForegroundColor->palette().color(QPalette::Window), this, QString(), QColorDialog::ShowAlphaChannel);
     if (c.isValid()) {
         uiForegroundColor->setPalette(QPalette(c));
         uiPreviewScoreView->setForegroundColor(c);
@@ -268,7 +268,7 @@ void CASettingsDialog::on_uiForegroundRevert_clicked(bool)
 
 void CASettingsDialog::on_uiSelectionColor_clicked(bool)
 {
-    QColor c = QColor::fromRgba(QColorDialog::getRgba(uiSelectionColor->palette().color(QPalette::Window).rgba(), nullptr, this));
+    QColor c = QColorDialog::getColor(uiSelectionColor->palette().color(QPalette::Window), this, QString(), QColorDialog::ShowAlphaChannel);
     if (c.isValid()) {
         uiSelectionColor->setPalette(QPalette(c));
         uiPreviewScoreView->setSelectionColor(c);
@@ -285,7 +285,7 @@ void CASettingsDialog::on_uiSelectionRevert_clicked(bool)
 
 void CASettingsDialog::on_uiSelectionAreaColor_clicked(bool)
 {
-    QColor c = QColor::fromRgba(QColorDialog::getRgba(uiSelectionAreaColor->palette().color(QPalette::Window).rgba(), nullptr, this));
+    QColor c = QColorDialog::getColor(uiSelectionAreaColor->palette().color(QPalette::Window), this, QString(), QColorDialog::ShowAlphaChannel);
     if (c.isValid()) {
         uiSelectionAreaColor->setPalette(QPalette(c));
         uiPreviewScoreView->setSelectionAreaColor(c);
@@ -302,7 +302,7 @@ void CASettingsDialog::on_uiSelectionAreaRevert_clicked(bool)
 
 void CASettingsDialog::on_uiSelectedContextColor_clicked(bool)
 {
-    QColor c = QColor::fromRgba(QColorDialog::getRgba(uiSelectedContextColor->palette().color(QPalette::Window).rgba(), nullptr, this));
+    QColor c = QColorDialog::getColor(uiSelectedContextColor->palette().color(QPalette::Window), this, QString(), QColorDialog::ShowAlphaChannel);
     if (c.isValid()) {
         uiSelectedContextColor->setPalette(QPalette(c));
         uiPreviewScoreView->setSelectedContextColor(c);
@@ -319,7 +319,7 @@ void CASettingsDialog::on_uiSelectedContextRevert_clicked(bool)
 
 void CASettingsDialog::on_uiHiddenElementsColor_clicked(bool)
 {
-    QColor c = QColor::fromRgba(QColorDialog::getRgba(uiHiddenElementsColor->palette().color(QPalette::Window).rgba(), nullptr, this));
+    QColor c = QColorDialog::getColor(uiHiddenElementsColor->palette().color(QPalette::Window), this, QString(), QColorDialog::ShowAlphaChannel);
     if (c.isValid()) {
         uiHiddenElementsColor->setPalette(QPalette(c));
         uiPreviewScoreView->setHiddenElementsColor(c);
@@ -336,7 +336,7 @@ void CASettingsDialog::on_uiHiddenElementsRevert_clicked(bool)
 
 void CASettingsDialog::on_uiDisabledElementsColor_clicked(bool)
 {
-    QColor c = QColor::fromRgba(QColorDialog::getRgba(uiDisabledElementsColor->palette().color(QPalette::Window).rgba(), nullptr, this));
+    QColor c = QColorDialog::getColor(uiDisabledElementsColor->palette().color(QPalette::Window), this, QString(), QColorDialog::ShowAlphaChannel);
     if (c.isValid()) {
         uiDisabledElementsColor->setPalette(QPalette(c));
         uiPreviewScoreView->setDisabledElementsColor(c);

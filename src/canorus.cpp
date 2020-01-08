@@ -417,11 +417,7 @@ void CACanorus::connectSlotsByName(QObject* pOS, const QObject* pOR)
     Q_ASSERT(mo);
     const QObjectList list = pOS->findChildren<QObject*>(QString());
     for (int i = 0; i < mo->methodCount(); ++i) {
-#if QT_VERSION >= 0x050000
         const char* slot = mo->method(i).methodSignature().data();
-#else
-        const char* slot = mo->method(i).signature();
-#endif
         Q_ASSERT(slot);
         if (slot[0] != 'o' || slot[1] != 'n' || slot[2] != '_')
             continue;
@@ -443,11 +439,7 @@ void CACanorus::connectSlotsByName(QObject* pOS, const QObject* pOR)
                     if (smo->method(k).methodType() != QMetaMethod::Signal)
                         continue;
 
-#if QT_VERSION >= 0x050000
                     if (!qstrncmp(smo->method(k).methodSignature().data(), slot + len + 4, slotlen)) {
-#else
-                    if (!qstrncmp(smo->method(k).signature(), slot + len + 4, slotlen)) {
-#endif
                         sigIndex = k;
                         break;
                     }

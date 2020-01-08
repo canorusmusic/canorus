@@ -11,6 +11,7 @@
 #include <QDesktopWidget>
 #include <QMainWindow>
 #include <QMouseEvent>
+#include <QScreen>
 #include <QStyle>
 #include <QStyleOptionToolButton>
 
@@ -135,7 +136,7 @@ QPoint CAToolButton::calculateTopLeft(QSize size)
     QToolBar* toolBar = dynamic_cast<QToolBar*>(parent());
     if (mainWin() && toolBar) {
         QPoint topLeft = mapToGlobal(QPoint(0, 0)); // get the absolute coordinates of top-left corner of the button
-        QPoint screenBottomRight = qApp->desktop()->screenGeometry().bottomRight();
+        QPoint screenBottomRight = QGuiApplication::primaryScreen()->availableGeometry().bottomRight();
 
         // Set popup menu coordinates which fit on screen.
         if (mainWin()->toolBarArea(toolBar) == Qt::LeftToolBarArea) {

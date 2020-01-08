@@ -1911,7 +1911,7 @@ double CAScoreView::timeToCoordsSimpleVersion(int time)
     QList<CAVoice*> voiceList = _sheet->voiceList();
     for (int i = 0; i < voiceList.size(); i++) {
         // get the element still smaller or equal, but nearest to time
-        QList<CAMusElement*>::const_iterator it = qLowerBound(voiceList[i]->musElementList().constBegin(), voiceList[i]->musElementList().constEnd(), time, CAScoreView::musElementTimeLessThan);
+        QList<CAMusElement*>::const_iterator it = std::lower_bound(voiceList[i]->musElementList().constBegin(), voiceList[i]->musElementList().constEnd(), time, CAScoreView::musElementTimeLessThan);
         if (it != voiceList[i]->musElementList().constEnd()) {
             if (_mapDrawable.contains(*it)) {
                 CADrawableMusElement* dElt = static_cast<CADrawableMusElement*>(_mapDrawable.values(*it).last());
@@ -1939,7 +1939,7 @@ double CAScoreView::timeToCoords(int time)
     QList<CAVoice*> voiceList = _sheet->voiceList();
     for (int i = 0; i < voiceList.size(); i++) {
         // get the element still smaller or equal, but nearest to time
-        QList<CAMusElement*>::const_iterator it = qLowerBound(voiceList[i]->musElementList().constBegin(), voiceList[i]->musElementList().constEnd(), time, CAScoreView::musElementTimeLessThan);
+        QList<CAMusElement*>::const_iterator it = std::lower_bound(voiceList[i]->musElementList().constBegin(), voiceList[i]->musElementList().constEnd(), time, CAScoreView::musElementTimeLessThan);
         if (it != voiceList[i]->musElementList().constEnd()) {
             if (_mapDrawable.contains(*it)) {
                 CADrawableMusElement* dElt = static_cast<CADrawableMusElement*>(_mapDrawable.values(*it).last());
@@ -1952,7 +1952,7 @@ double CAScoreView::timeToCoords(int time)
         }
 
         // and for the right element
-        it = qUpperBound(voiceList[i]->musElementList().constBegin(), voiceList[i]->musElementList().constEnd(), time, CAScoreView::timeMusElementLessThan);
+        it = std::upper_bound(voiceList[i]->musElementList().constBegin(), voiceList[i]->musElementList().constEnd(), time, CAScoreView::timeMusElementLessThan);
         if (it != voiceList[i]->musElementList().constEnd()) {
             if (_mapDrawable.contains(*it)) {
                 CADrawableMusElement* dElt = static_cast<CADrawableMusElement*>(_mapDrawable.values(*it).first());
