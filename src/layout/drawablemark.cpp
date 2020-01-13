@@ -58,7 +58,11 @@ CADrawableMark::CADrawableMark(CAMark* mark, CADrawableContext* dContext, double
         font.setPixelSize(qRound(DEFAULT_TEXT_SIZE));
         QFontMetrics fm(font);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+        int textWidth = fm.horizontalAdvance(static_cast<CAText*>(this->mark())->text());
+#else
         int textWidth = fm.width(static_cast<CAText*>(this->mark())->text());
+#endif
         setWidth(textWidth < 11 ? 11 : textWidth); // set minimum text width at least 11 points
         setHeight(qRound(DEFAULT_TEXT_SIZE));
         break;
@@ -68,7 +72,11 @@ CADrawableMark::CADrawableMark(CAMark* mark, CADrawableContext* dContext, double
         font.setPixelSize(qRound(DEFAULT_TEXT_SIZE));
         QFontMetrics fm(font);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+        int textWidth = fm.horizontalAdvance(static_cast<CABookMark*>(this->mark())->text());
+#else
         int textWidth = fm.width(static_cast<CABookMark*>(this->mark())->text());
+#endif
         setWidth(DEFAULT_PIXMAP_SIZE + textWidth);
         setHeight(qRound(DEFAULT_TEXT_SIZE));
         _pixmap = new QPixmap("images:mark/bookmark.svg");
@@ -79,7 +87,11 @@ CADrawableMark::CADrawableMark(CAMark* mark, CADrawableContext* dContext, double
         font.setPixelSize(qRound(DEFAULT_TEXT_SIZE));
         QFontMetrics fm(font);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+        int textWidth = fm.horizontalAdvance(static_cast<CADynamic*>(this->mark())->text());
+#else
         int textWidth = fm.width(static_cast<CADynamic*>(this->mark())->text());
+#endif
         setWidth(textWidth < 11 ? 11 : textWidth); // set minimum text width at least 11 points
         setHeight(qRound(DEFAULT_TEXT_SIZE));
         break;
@@ -108,7 +120,11 @@ CADrawableMark::CADrawableMark(CAMark* mark, CADrawableContext* dContext, double
         QFontMetrics fm(font);
 
         _pixmap = new QPixmap("images:mark/instrumentchange.svg");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+        int textWidth = fm.horizontalAdvance(CAMidiDevice::instrumentName(static_cast<CAInstrumentChange*>(this->mark())->instrument()));
+#else
         int textWidth = fm.width(CAMidiDevice::instrumentName(static_cast<CAInstrumentChange*>(this->mark())->instrument()));
+#endif
         setWidth(DEFAULT_PIXMAP_SIZE + textWidth); // set minimum text width at least 11 points
         setHeight(qRound(DEFAULT_TEXT_SIZE));
         break;
@@ -138,7 +154,11 @@ CADrawableMark::CADrawableMark(CAMark* mark, CADrawableContext* dContext, double
         QFontMetrics fm(font);
 
         QString text = fingerListToString(static_cast<CAFingering*>(mark)->fingerList());
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+        setWidth(fm.horizontalAdvance(text)); // set minimum text width at least 11 points
+#else
         setWidth(fm.width(text)); // set minimum text width at least 11 points
+#endif
         setHeight(11);
 
         break;

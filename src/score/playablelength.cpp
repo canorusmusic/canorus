@@ -213,7 +213,11 @@ QList<CAPlayableLength> CAPlayableLength::timeLengthToPlayableLengthList(int t, 
     int i, j;
     if (!longNotesFirst)
         for (i = 0, j = pl.size() - 1; i < j; i++, j--)
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 13, 0))
+            pl.swapItemsAt(i, j);
+#else
             pl.swap(i, j);
+#endif
     return pl;
 }
 
