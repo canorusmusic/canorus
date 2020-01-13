@@ -462,9 +462,9 @@ char* CATar::numToOct(char* buf, quint64 num, size_t width)
     {
         char len[10];
         /// \todo This code looks broken. width is put to the string instead of num
-        sprintf(len, "%%0%ldo", width - 1);
+        sprintf(len, "%%0%ldo", static_cast<unsigned long>(width - 1));
         /// \todo This code looks broken. num cannot be added to the string
-        snprintf(buf, static_cast<size_t>(width), len, num); // adds null
+        snprintf(buf, width, len, num); // adds null
         // Correct code could be
         // sprintf(len, "%%0%do", num-1);
         // snprintf(buf, static_cast<size_t>(width), "%s", len); // adds null
