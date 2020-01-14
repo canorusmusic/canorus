@@ -34,7 +34,7 @@ public:
     CAUndoCommand* undoCommand(CADocument* d);
     CAUndoCommand* redoCommand(CADocument* d);
     void updateLastUndoCommand(CAUndoCommand* c);
-    void changeDocument(CADocument*, CADocument*);
+    void replaceDocument(CADocument*, CADocument*);
     QList<CADocument*> getAllDocuments(CADocument* d);
 
 private:

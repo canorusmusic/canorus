@@ -7,7 +7,6 @@
 
 #include <QDate>
 #include <QDateTime>
-#include <QDebug>
 #include <QHeaderView> // needed to hide header widget from document tree
 #include <QTreeWidgetItem>
 
@@ -173,8 +172,6 @@ void CAPropertiesDialog::buildTree()
 
         uiDocumentTree->addTopLevelItem(docItem);
         uiDocumentTree->expandAll();
-
-        qDebug() << "Header 0: " << uiDocumentTree->header()->sectionSize(0) << "Header 1: " << uiDocumentTree->header()->sectionSize(0);
     }
 
     // updates to the current item
@@ -231,7 +228,7 @@ void CADocumentProperties::on_uiComposer_editingFinished()
     QString curText = uiCopyright->currentText();
     uiCopyright->clear();
 
-    QString startMsg = "(C)";
+    QString startMsg = "(C) ";
     int yearStart = _document->dateCreated().date().year();
     int yearCur = QDate::currentDate().year();
 
@@ -256,13 +253,13 @@ void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged(QTreeWidgetItem* c
     uiElementName->setText(cur->text(0));
 
     if (_documentItem == cur) {
-        updateDocumentProperties(_document);
+        uiPropertiesWidget->setCurrentWidget(_documentPropertiesWidget);
 
         // update uiUp/uiDown buttons
         uiUp->setEnabled(false);
         uiDown->setEnabled(false);
     } else if (_sheetItem.contains(cur)) {
-        updateSheetProperties(_sheetItem[cur]);
+        uiPropertiesWidget->setCurrentWidget(_sheetPropertiesWidget[_sheetItem[cur]]);
 
         // update uiUp/uiDown buttons
         uiUp->setEnabled(false);
@@ -273,23 +270,7 @@ void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged(QTreeWidgetItem* c
         if (cur->parent()->childCount() > 1 && cur->parent()->indexOfChild(cur) < cur->parent()->childCount() - 1)
             uiDown->setEnabled(true);
     } else if (_contextItem.contains(cur)) {
-        switch (_contextItem[cur]->contextType()) {
-        case CAContext::Staff:
-            updateStaffProperties(static_cast<CAStaff*>(_contextItem[cur]));
-            break;
-        case CAContext::LyricsContext:
-            updateLyricsContextProperties(static_cast<CALyricsContext*>(_contextItem[cur]));
-            break;
-        case CAContext::FunctionMarkContext:
-            updateFunctionMarkContextProperties(static_cast<CAFunctionMarkContext*>(_contextItem[cur]));
-            break;
-        case CAContext::FiguredBassContext:
-            qDebug() << "Warning: CAPropertiesDialog::on_uiDocumentTree_currentItemChanged - Unhandled Type" << _contextItem[cur]->contextType();
-            break;
-        case CAContext::ChordNameContext:
-            updateChordNameContextProperties(static_cast<CAChordNameContext*>(_contextItem[cur]));
-            break;
-        }
+        uiPropertiesWidget->setCurrentWidget(_contextPropertiesWidget[_contextItem[cur]]);
 
         // update uiUp/uiDown buttons
         uiUp->setEnabled(false);
@@ -300,7 +281,7 @@ void CAPropertiesDialog::on_uiDocumentTree_currentItemChanged(QTreeWidgetItem* c
         if (cur->parent()->childCount() > 1 && cur->parent()->indexOfChild(cur) < cur->parent()->childCount() - 1) // context has another context below
             uiDown->setEnabled(true);
     } else if (_voiceItem.contains(cur)) {
-        updateVoiceProperties(_voiceItem[cur]);
+        uiPropertiesWidget->setCurrentWidget(_voicePropertiesWidget[_voiceItem[cur]]);
 
         // update uiUp/uiDown buttons
         uiUp->setEnabled(false);
@@ -330,8 +311,6 @@ void CAPropertiesDialog::on_uiButtonBox_clicked(QAbstractButton* button)
 */
 void CAPropertiesDialog::applyProperties()
 {
-    //QTreeWidgetItem *item = uiDocumentTree->topLevelItem(0);
-
     CACanorus::undo()->createUndoCommand(_document, tr("apply properties", "undo"));
     CACanorus::undo()->pushUndoCommand();
 
@@ -348,11 +327,6 @@ void CAPropertiesDialog::applyProperties()
     _document->setDedication(dp->uiDedication->text());
     _document->setCopyright(dp->uiCopyright->currentText());
     _document->setComments(dp->uiComments->toPlainText());
-
-    // store Sheet properties
-    /*for (int i=0; i<_sheetPropertiesWidget.keys().size(); i++) {
-		CASheet *s = _sheetPropertiesWidget.keys().at(i);
-	}*/
 
     // store Context properties
     for (int i = 0; i < _contextPropertiesWidget.keys().size(); i++) {
@@ -371,10 +345,7 @@ void CAPropertiesDialog::applyProperties()
             break;
         }
         case CAContext::FiguredBassContext:
-            qDebug() << "Warning: CAPropertiesDialog::applyProperties - Unhandled Type " << c->contextType();
-            break;
         case CAContext::ChordNameContext:
-            qDebug() << "Warning: CAPropertiesDialog::applyProperties - Unhandled Type " << c->contextType();
             break;
         }
     }
@@ -392,9 +363,9 @@ void CAPropertiesDialog::applyProperties()
 }
 
 /*!
-	Repositiones document structure as placed in the document tree widget.
-	This is used when a user changes the order of document elements and the elements need to be
-	readded to its parent structures.
+    Repositions staffs, voices and other document structures so they match
+    the order in the document tree widget.
+
 	This method is usually called when applying the changes.
 */
 void CAPropertiesDialog::createDocumentFromTree()
@@ -413,6 +384,7 @@ void CAPropertiesDialog::createDocumentFromTree()
 
         for (int j = 0; j < cur->child(i)->childCount(); j++) {
             CAContext* c = _contextItem[cur->child(i)->child(j)];
+
             if (c->contextType() == CAContext::Staff) {
                 CAStaff* s = static_cast<CAStaff*>(c);
                 while (s->voiceList().size())
@@ -421,10 +393,9 @@ void CAPropertiesDialog::createDocumentFromTree()
                 for (int k = 0; k < cur->child(i)->child(j)->childCount(); k++) {
                     s->addVoice(_voiceItem[cur->child(i)->child(j)->child(k)]);
                 }
-            } else {
-                sheet->addContext(c);
-                break;
             }
+
+            sheet->addContext(c);
         }
     }
 }
@@ -473,42 +444,32 @@ void CAPropertiesDialog::updateDocumentProperties(CADocument* doc)
     dp->on_uiComposer_editingFinished();
     dp->uiCopyright->setEditText(doc->copyright());
     dp->uiComments->setText(doc->comments());
-
-    uiPropertiesWidget->setCurrentWidget(dp);
 }
 
 void CAPropertiesDialog::updateSheetProperties(CASheet* sheet)
 {
-    uiPropertiesWidget->setCurrentWidget(_sheetPropertiesWidget[sheet]);
 }
 
 void CAPropertiesDialog::updateStaffProperties(CAStaff* staff)
 {
     CAStaffProperties* sp = static_cast<CAStaffProperties*>(_contextPropertiesWidget[staff]);
     sp->uiNumberOfLines->setValue(staff->numberOfLines());
-
-    uiPropertiesWidget->setCurrentWidget(_contextPropertiesWidget[staff]);
 }
 
 void CAPropertiesDialog::updateVoiceProperties(CAVoice* voice)
 {
     static_cast<CAVoiceProperties*>(_voicePropertiesWidget[voice])->uiMidiChannel->setValue(voice->midiChannel() + 1);
     static_cast<CAVoiceProperties*>(_voicePropertiesWidget[voice])->uiMidiPitchOffset->setValue(voice->midiPitchOffset());
-
-    uiPropertiesWidget->setCurrentWidget(_voicePropertiesWidget[voice]);
 }
 
 void CAPropertiesDialog::updateLyricsContextProperties(CALyricsContext* lc)
 {
-    uiPropertiesWidget->setCurrentWidget(_contextPropertiesWidget[lc]);
 }
 
 void CAPropertiesDialog::updateFunctionMarkContextProperties(CAFunctionMarkContext* fmc)
 {
-    uiPropertiesWidget->setCurrentWidget(_contextPropertiesWidget[fmc]);
 }
 
 void CAPropertiesDialog::updateChordNameContextProperties(CAChordNameContext* cnc)
 {
-    uiPropertiesWidget->setCurrentWidget(_contextPropertiesWidget[cnc]);
 }
