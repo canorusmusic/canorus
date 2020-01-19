@@ -16,13 +16,18 @@
 
 	This class implements undo and redo Canorus functionality.
 
-	The object is usually created upon Canorus startup and is accessed via CACanorus::undo(). Every main
-	window which wants to have undo and redo capabilities should have one undo stack for its document. Undo
-	stack consists of one or more undo commands called upon undo/redo events (commands actions then make
-	changes to the actual documents).
+    This singleton object is created upon Canorus startup and is accessed via CACanorus::undo() getter.
+    In essence there is one undo stack for each opened file. When changes to the document are made, the
+    undo action is created and the current document is cloned. This copy is then used to replace the
+    active document in case of undo. A mapping of any document copy out there to the undo stack it
+    belongs to is stored in _undoStack.
 
-	Here, undo stack is implemented as a pair of QList<CAUndoCommand*> and an index of the current undo
-	command (ie. the command which gets called next time the user presses the Undo button).
+    Each main window has one undo stack or a shared undo stack, if multiple windows represent the same
+    document.
+
+    Undo stack contains one or more undo commands called upon undo/redo events (each undo command then
+    makes one change to the document). _undoIndex stores the current index of the undo command for each
+    undo stack (i.e. the command which gets called next time the user presses the Undo button).
 
 	Usage of undo/redo:
 	1) Create undo stack when creating/opening a new document by calling CAUndo::createUndoStack()
@@ -34,6 +39,9 @@
 	5) When destroying the document, also destroy the undo stack (which also destroys all its commands) by
 	   calling CAUndo::deleteUndoStack(). This is not done automatically because CADocument is part of the
 	   data model and CAUndo part of the controller.
+
+    If the user already created its own instance of the new document without calling CAUndo::createUndoCommand()
+    (e.g. when parsing the source-view of the whole document), he should use CAUndo::replaceDocument().
 
 	\sa CAUndoCommand
 */
@@ -193,11 +201,11 @@ void CAUndo::createUndoCommand(CADocument* d, QString text)
 }
 
 /*!
-	Change the document pointer of an undo stack.
-	This function is called when the document is rebuilt, e.g. when a CanorusML view commits changes.
+    Replace the document pointer to an undo stack.
+    This function is called when the document is rebuilt, e.g. when a CanorusML
+    view commits changes and the old document should be forgotten.
 */
-
-void CAUndo::changeDocument(CADocument* oldDoc, CADocument* newDoc)
+void CAUndo::replaceDocument(CADocument* oldDoc, CADocument* newDoc)
 {
     clearUndoCommand();
     QList<CAUndoCommand*>* stack = _undoStack[oldDoc];

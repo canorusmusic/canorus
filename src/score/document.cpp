@@ -59,8 +59,7 @@ CADocument* CADocument::clone()
     newDocument->setFileName(fileName());
 
     for (int i = 0; i < sheetList().size(); i++) {
-        CASheet* newSheet = sheetList()[i]->clone();
-        newSheet->setDocument(newDocument);
+        CASheet* newSheet = sheetList()[i]->clone(newDocument);
         newDocument->addSheet(newSheet);
     }
 

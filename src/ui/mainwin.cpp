@@ -4339,7 +4339,7 @@ void CAMainWin::sourceViewCommit(QString inputString)
         open.wait();
 
         if (open.importedDocument()) {
-            CACanorus::undo()->changeDocument(document(), open.importedDocument());
+            CACanorus::undo()->replaceDocument(document(), open.importedDocument());
             setDocument(open.importedDocument());
         }
         CACanorus::rebuildUI(document());
