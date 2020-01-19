@@ -71,7 +71,7 @@ void CAPreviewCtl::showPDF(int iExitCode)
     bool success;
     // Show the pdf file with the default pdf system viewer
     if (CACanorus::settings()->useSystemDefaultPdfViewer()) {
-        success = QDesktopServices::openUrl(QUrl(QString("file:") + QDir::tempPath() + "/preview.pdf"));
+        success = QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::tempPath() + "/preview.pdf"));
     } else { // Use viewer specified in settings (location and command) to show the pdf file
         success = QProcess::startDetached(CACanorus::settings()->pdfViewerLocation(), QStringList() << QDir::tempPath() + "/preview.pdf");
     }

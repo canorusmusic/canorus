@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2008-2009, Matevž Jekovec, Canorus development team
+    Copyright (c) 2008-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -52,7 +52,7 @@ public:
 private:
     QString _name;
     QString _description;
-    QUrl _url; // Absolute path to resource. Becomes relative if "file://" scheme when saved.
+    QUrl _url; // Absolute path to resource. Becomes relative if "file:" scheme when saved.
     CAResourceType _resType;
     bool _linked;
     CADocument* _document;

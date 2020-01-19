@@ -587,11 +587,11 @@ void CACanorusMLExport::exportResources(CADocument* doc, QDomElement& dCanorusDo
             r->copy(targetDir + "/" + targetFileName + " files/" + QFileInfo(r->url().toLocalFile()).fileName());
 
             // generates relative path
-            url = QString("file://") + targetFileName + " files/" + QFileInfo(r->url().toLocalFile()).fileName();
+            url = QUrl::fromLocalFile(targetFileName + " files/" + QFileInfo(r->url().toLocalFile()).fileName());
         } else {
             // saving to stream - usually when compressing to .can format
             // copying is done in CACanExport class
-            url = QString("file://content.xml files/") + QFileInfo(r->url().toLocalFile()).fileName();
+            url = QUrl::fromLocalFile(QString("content.xml files/") + QFileInfo(r->url().toLocalFile()).fileName());
         }
 
         QDomElement dResource = dCanorusDocument.ownerDocument().createElement("resource");
