@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Itay Perl, Canorus development team
+    Copyright (c) 2007-2020, Matevž Jekovec, Itay Perl, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -12,10 +12,10 @@
 
 #include "score/document.h"
 
+#include <QDebug>
 #include <QDir>
 #include <QTemporaryFile>
 #include <QTextStream>
-#include <iostream>
 
 CACanImport::CACanImport(QTextStream* stream)
     : CAImport(stream)
@@ -49,9 +49,9 @@ CADocument* CACanImport::importDocumentImpl()
             CAResource* r = doc->resourceList()[i];
             if (!r->isLinked()) {
                 // attached file - copy to /tmp
-                CAIOPtr rPtr = arc->file(r->url().toLocalFile().mid(2)); // chop the two leading slashes
+                CAIOPtr rPtr = arc->file(r->url().toLocalFile()); // chop the two leading slashes
                 if (!dynamic_cast<QFile*>(&*rPtr)) {
-                    std::cerr << "CACanImport: Resource \"" << r->url().toString().toStdString().c_str() << "\" not found in the file." << std::endl;
+                    qCritical() << "CACanImport: Resource \"" << r->url().toLocalFile() << "\" not found in the file.";
                     continue;
                 }
 

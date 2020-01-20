@@ -43,7 +43,7 @@ CATar::CATar()
 */
 CATar::~CATar()
 {
-    foreach (CATarFile* t, _files) {
+    for (CATarFile* t : _files) {
         delete t->data; // deletes temp file from disk
         delete t;
     }
@@ -157,7 +157,7 @@ void CATar::parse(QIODevice& tar)
 */
 bool CATar::contains(const QString& filename)
 {
-    foreach (CATarFile* t, _files) {
+    for (CATarFile* t : _files) {
         if (filename == t->hdr.name)
             return true;
     }
@@ -237,7 +237,7 @@ bool CATar::addFile(const QString& filename, QByteArray data, bool replace)
 */
 void CATar::removeFile(const QString& filename)
 {
-    foreach (CATarFile* t, _files) {
+    for (CATarFile* t : _files) {
         if (filename == t->hdr.name) {
             delete t;
             _files.removeAll(t);
@@ -256,7 +256,7 @@ CAIOPtr CATar::file(const QString& filename)
 {
     if (_files.isEmpty())
         return CAIOPtr(new QBuffer());
-    foreach (CATarFile* t, _files) {
+    for (CATarFile* t : _files) {
         if (filename == t->hdr.name) {
             QFile* f = new QFile(t->data->fileName());
             f->open(QIODevice::ReadWrite);
@@ -377,12 +377,11 @@ qint64 CATar::write(QIODevice& dest, qint64 chunk)
             break;
         pad = f->data->size() % 512;
         if (pad > 0) {
-            // QByteArray is limited to max. sizeof(int)
-            int minSize = 1;
-            if (sizeof(qMin(chunk, qint64(512 - pad))) > sizeof(int)) {
+            // QByteArray is limited to max. signed integer value
+            int minSize = static_cast<int>(pow(2, 31) - 1); // 2 GB-1 is a max size of a chunk.
+            if (chunk > minSize) {
                 qCritical() << "QByteArray size exceeded! " << qMin(chunk, qint64(512 - pad)) / pow(1024, 2)
                             << " kb. Limited to 2GB.";
-                minSize = sizeof(int);
             } else {
                 minSize = static_cast<int>(qMin(chunk, qint64(512 - pad)));
             }
