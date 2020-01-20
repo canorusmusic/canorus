@@ -3327,6 +3327,12 @@ bool CAMainWin::saveDocument(QString fileName)
             CACanorus::insertRecentDocument(fileName);
             delete save;
 
+            QDir dir(QFileInfo(fileName).absoluteDir());
+            uiOpenDialog->setDirectory(dir);
+            uiSaveDialog->setDirectory(dir);
+            uiExportDialog->setDirectory(dir);
+            uiImportDialog->setDirectory(dir);
+
             document()->setModified(false);
             updateWindowTitle();
             return true;
