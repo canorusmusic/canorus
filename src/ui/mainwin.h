@@ -126,8 +126,8 @@ public:
 
     inline CAScoreView* currentScoreView()
     {
-        if (currentView())
-            return dynamic_cast<CAScoreView*>(currentView());
+        if (currentView() && currentView()->viewType()==CAView::ScoreView)
+            return static_cast<CAScoreView*>(currentView());
         else
             return nullptr;
     }

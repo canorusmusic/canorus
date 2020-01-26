@@ -98,6 +98,9 @@ void CAUndoCommand::undoDocument(CADocument* current, CADocument* newDocument)
     if (newDocument->sheetList().size() != current->sheetList().size()) {
         for (int i = 0; i < mainWinList.size(); i++) {
             mainWinList[i]->setDocument(newDocument);
+            if (mainWinList[i]->currentScoreView()) {
+                mainWinList[i]->currentScoreView()->setCurrentContext(nullptr);
+            }
         }
         rebuildNeeded = true;
     } else {
@@ -110,6 +113,16 @@ void CAUndoCommand::undoDocument(CADocument* current, CADocument* newDocument)
                 case CAView::ScoreView: {
                     CAScoreView* sv = static_cast<CAScoreView*>(viewList[j]);
                     sv->setSheet(sheetMap[sv->sheet()]);
+                    if (sv->currentContext() && contextMap.contains(sv->currentContext()->context())) {
+                        sv->selectContext(contextMap[sv->currentContext()->context()]);
+                    } else {
+                        sv->selectContext(nullptr);
+                    }
+                    if (sv->selectedVoice() && voiceMap.contains(sv->selectedVoice())) {
+                        sv->setSelectedVoice(voiceMap[sv->selectedVoice()]);
+                    } else {
+                        sv->setSelectedVoice(nullptr);
+                    }
 
                     break;
                 }
