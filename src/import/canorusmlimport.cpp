@@ -291,13 +291,13 @@ bool CACanorusMLImport::startElement(const QString&, const QString&, const QStri
 
         _curVoice = new CAVoice(voiceName, staff, stemDir);
         if (!attributes.value("midi-channel").isEmpty()) {
-            _curVoice->setMidiChannel(attributes.value("midi-channel").toUtf8()[0]);
+            _curVoice->setMidiChannel(static_cast<unsigned char>(attributes.value("midi-channel").toUInt()));
         }
         if (!attributes.value("midi-program").isEmpty()) {
-            _curVoice->setMidiProgram(attributes.value("midi-program").toUtf8()[0]);
+            _curVoice->setMidiProgram(static_cast<unsigned char>(attributes.value("midi-program").toUInt()));
         }
         if (!attributes.value("midi-pitch-offset").isEmpty()) {
-            _curVoice->setMidiPitchOffset(attributes.value("midi-pitch-offset").toUtf8()[0]);
+            _curVoice->setMidiPitchOffset(static_cast<char>(attributes.value("midi-pitch-offset").toInt()));
         }
 
         staff->addVoice(_curVoice);
@@ -793,12 +793,12 @@ void CACanorusMLImport::importMark(const QXmlAttributes& attributes)
         if (QVersionNumber(0, 5).isPrefixOf(_version)) {
             _curMark = new CATempo(
                 CAPlayableLength(CAPlayableLength::musicLengthFromString(attributes.value("beat")), attributes.value("beat-dotted").toInt()),
-                attributes.value("bpm").toUtf8()[0],
+                static_cast<unsigned char>(attributes.value("bpm").toUInt()),
                 _curMusElt);
         } else {
             _curMark = new CATempo(
                 CAPlayableLength(),
-                attributes.value("bpm").toUtf8()[0],
+                static_cast<unsigned char>(attributes.value("bpm").toUInt()),
                 _curMusElt);
         }
         break;
