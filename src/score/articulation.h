@@ -22,7 +22,6 @@ public:
         Staccato,
         Tenuto,
         Portato,
-        Breath,
         UpBow,
         DownBow,
         Flageolet,
@@ -41,7 +40,8 @@ public:
         DownMordent,
         PrallDown,
         PrallUp,
-        LinePrall
+        LinePrall,
+        Breath
     };
 
     CAArticulation(CAArticulationType t, CANote* n);

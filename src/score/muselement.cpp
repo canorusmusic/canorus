@@ -173,11 +173,11 @@ void CAMusElement::addMark(CAMark* mark)
         return;
 
     int l;
-    for (l = 0; l < markList().size() && mark->markType() < markList()[l]->markType(); l++)
-        ; // marks should be sorted by their mark type
+    for (l = 0; l < markList().size() && mark->markType() > markList()[l]->markType(); l++)
+        ; // Marks must be sorted by their mark type.
     if (mark->markType() == CAMark::Articulation) {
-        for (; l < markList().size() && markList()[l]->markType() == CAMark::Articulation && static_cast<CAArticulation*>(mark)->articulationType() < static_cast<CAArticulation*>(markList()[l])->articulationType(); l++)
-            ; // marks should be sorted by their mark type
+        for (; l < markList().size() && markList()[l]->markType() == CAMark::Articulation && static_cast<CAArticulation*>(mark)->articulationType() > static_cast<CAArticulation*>(markList()[l])->articulationType(); l++)
+            ; // Articulation marks must be sorted by their articulation mark type.
     }
 
     _markList.insert(l, mark);

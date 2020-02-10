@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE canorusml>
+<canorus-document>
+ <canorus-version>0.8.0rc1</canorus-version>
+ <document time-edited="940" date-last-modified="2020-02-10T22:17:30" date-created="2020-02-10T21:07:33">
+  <sheet name="Sheet1">
+   <staff number-of-lines="5" name="Staff1">
+    <voice midi-program="0" midi-channel="0" name="Staff1Voice1" stem-direction="stem-neutral" midi-pitch-offset="0">
+     <clef clef-type="G" offset="0" c1="-2" time-start="0"/>
+     <time-signature beats="4" time-signature-type="classical" beat="4" time-start="0"/>
+     <note time-start="0" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="28"/>
+      <mark mark-type="Articulation" articulation-type="Accent" time-start="0" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Marcato" time-start="0" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Staccatissimo" time-start="0" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Espressivo" time-start="0" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Staccato" time-start="0" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Tenuto" time-start="0" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Portato" time-start="0" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Breath" time-start="0" time-length="256"/>
+     </note>
+     <note time-start="256" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="29"/>
+      <mark mark-type="Articulation" articulation-type="UpBow" time-start="256" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="DownBow" time-start="256" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Flageolet" time-start="256" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Open" time-start="256" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Stopped" time-start="256" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Breath" time-start="256" time-length="256"/>
+     </note>
+     <note time-start="512" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="30"/>
+      <mark mark-type="Articulation" articulation-type="Turn" time-start="512" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="ReverseTurn" time-start="512" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Trill" time-start="512" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Breath" time-start="512" time-length="256"/>
+     </note>
+     <note time-start="768" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="31"/>
+      <mark mark-type="Articulation" articulation-type="Prall" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Mordent" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="PrallPrall" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="PrallMordent" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="UpPrall" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="DownPrall" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="UpMordent" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="DownMordent" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="PrallDown" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="PrallUp" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="LinePrall" time-start="768" time-length="256"/>
+      <mark mark-type="Articulation" articulation-type="Breath" time-start="768" time-length="256"/>
+     </note>
+     <barline time-start="1024" barline-type="single"/>
+     <note time-start="1024" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="32"/>
+      <mark mark-type="Articulation" articulation-type="Breath" time-start="1024" time-length="256"/>
+     </note>
+     <note time-start="1280" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="33"/>
+      <mark mark-type="Articulation" articulation-type="Breath" time-start="1280" time-length="256"/>
+     </note>
+     <note time-start="1536" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="34"/>
+      <mark mark-type="Articulation" articulation-type="Breath" time-start="1536" time-length="256"/>
+     </note>
+     <note time-start="1792" time-length="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch accs="0" note-name="35"/>
+      <mark mark-type="Articulation" articulation-type="Breath" time-start="1792" time-length="256"/>
+     </note>
+     <barline time-start="2048" barline-type="double"/>
+    </voice>
+   </staff>
+  </sheet>
+ </document>
+</canorus-document>

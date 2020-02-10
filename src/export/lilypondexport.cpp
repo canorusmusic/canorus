@@ -311,13 +311,11 @@ void CALilyPondExport::exportPlayable(CAPlayable* elt)
 */
 void CALilyPondExport::exportMarksAfterElement(CAMusElement* elt)
 {
-    for (int i = 0; i < elt->markList().size(); i++) {
-        CAMark* curMark = elt->markList()[i];
-
+    for (CAMark* curMark : elt->markList()) {
         switch (curMark->markType()) {
         case CAMark::Text: {
 
-            // don't export the mark when it is an volta bracket and was sent out already before the playable
+            // Don't export the mark when it is an volta bracket and was sent out already before the playable.
             QRegExp vr = QRegExp(_regExpVoltaRepeat);
             QRegExp vb = QRegExp(_regExpVoltaBar);
             if (vr.indexIn(qPrintable(static_cast<CAText*>(curMark)->text())) < 0 && vb.indexIn(qPrintable(static_cast<CAText*>(curMark)->text())) < 0) {
@@ -400,9 +398,8 @@ void CALilyPondExport::exportMarksAfterElement(CAMusElement* elt)
                 out() << "\\reverseturn ";
                 break;
             case CAArticulation::Breath:
-                out() << "\\breathe ";
+                // Breath is handled at the very end.
                 break;
-
             case CAArticulation::Staccatissimo:
             case CAArticulation::Espressivo:
             case CAArticulation::Portato:
@@ -412,6 +409,7 @@ void CALilyPondExport::exportMarksAfterElement(CAMusElement* elt)
             case CAArticulation::Open:
             case CAArticulation::Stopped:
             case CAArticulation::Undefined:
+                // TODO: Not implemented yet.
                 break;
             }
 
@@ -423,12 +421,6 @@ void CALilyPondExport::exportMarksAfterElement(CAMusElement* elt)
 
             break;
         }
-        case CAMark::Tempo:
-        case CAMark::Crescendo:
-        case CAMark::Pedal:
-        case CAMark::InstrumentChange:
-        case CAMark::Undefined:
-        case CAMark::BookMark:
         case CAMark::RepeatMark: {
             CARepeatMark* v = static_cast<CARepeatMark*>(curMark);
             if (v->repeatMarkType() == CARepeatMark::Volta) {
@@ -444,7 +436,30 @@ void CALilyPondExport::exportMarksAfterElement(CAMusElement* elt)
             }
             break;
         }
+        case CAMark::Tempo:
+        case CAMark::Crescendo:
+        case CAMark::Pedal:
+        case CAMark::InstrumentChange:
+        case CAMark::Undefined:
+        case CAMark::BookMark:
         case CAMark::Fingering:
+            break;
+        }
+    }
+
+    // Export breath articulation mark at the very end. Otherwise Lilypond complains.
+    for (CAMark* curMark : elt->markList()) {
+        switch (curMark->markType()) {
+        case CAMark::Articulation: {
+            switch (static_cast<CAArticulation*>(curMark)->articulationType()) {
+            case CAArticulation::Breath:
+                out() << "\\breathe ";
+                break;
+            default:
+                break;
+            }
+        }
+        default:
             break;
         }
     }
