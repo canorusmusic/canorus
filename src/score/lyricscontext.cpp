@@ -19,7 +19,8 @@
 	Every LyricsContext has its associated voice. This is the voice which the syllables are assigned to (one syllable per chord).
 	Assocciated voice is a common LilyPond syntax \\lyricsto.
 
-	If the user wants to create multiple stanzas, it should create multiple lyrics contexts - one for each stanza.
+    If the user wants to create multiple stanzas, it should create multiple lyrics contexts - one for each stanza.
+    \param _stanzaNumber stores the stanza number. If _stanzaNumber equals 0, no number is printed (default).
 
 	\sa _syllableMap, CASyllable
 */

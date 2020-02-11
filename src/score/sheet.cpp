@@ -115,6 +115,24 @@ CAContext* CASheet::findContext(const QString name)
 }
 
 /*!
+ * Finds unique context name given the mask and starting with 1.
+ *
+ * This is used when inserting a new context and we want to assign it a unique name.
+ *
+ * \param mask Context name with %1 placeholder for unique number
+ * \return Unique context name
+ */
+QString CASheet::findUniqueContextName(const QString mask)
+{
+    int i = 1;
+    while (findContext(mask.arg(i))) {
+        i++;
+    }
+
+    return mask.arg(i);
+}
+
+/*!
 	Returns a list of notes and rests (chord) for all the voices in all the staffs
 	in the given time slice \a time.
 

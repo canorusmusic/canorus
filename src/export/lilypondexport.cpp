@@ -584,6 +584,9 @@ void CALilyPondExport::exportLyricsContextBlock(CALyricsContext* lc)
 */
 void CALilyPondExport::exportLyricsContextImpl(CALyricsContext* lc)
 {
+    if (lc->stanzaNumber() > 0) {
+        out() << "\\set stanza = \"" << lc->stanzaNumber() << ". \"\n";
+    }
     for (int i = 0; i < lc->syllableList().size(); i++) {
         if (i > 0)
             out() << " "; // space between syllables

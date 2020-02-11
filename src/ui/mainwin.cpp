@@ -353,6 +353,7 @@ void CAMainWin::createCustomActions()
     uiStanzaNumber = new QSpinBox(this);
     uiStanzaNumber->setObjectName("uiStanzaNumber");
     uiStanzaNumber->setToolTip(tr("Stanza number"));
+    uiStanzaNumber->setSpecialValueText(tr("none", "stanza number"));
     uiStanzaNumber->hide();
     uiAssociatedVoice = new QComboBox(this);
     // Warning! disconnect and reconnect is also done in updateContextToolBar()!
@@ -1823,57 +1824,46 @@ void CAMainWin::scoreViewMousePress(QMouseEvent* e, const QPoint coords)
             switch (uiContextType->currentId()) {
             case CAContext::Staff: {
                 CACanorus::undo()->createUndoCommand(document(), tr("new staff", "undo"));
+                QString name = v->sheet()->findUniqueContextName(tr("Staff%1"));
                 v->sheet()->insertContextAfter(
                     dupContext ? dupContext->context() : nullptr,
-                    newContext = new CAStaff(
-                        tr("Staff%1").arg(v->sheet()->staffList().size() + 1),
-                        v->sheet()));
+                    newContext = new CAStaff(name, v->sheet()));
                 static_cast<CAStaff*>(newContext)->addVoice();
                 break;
             }
             case CAContext::LyricsContext: {
                 CACanorus::undo()->createUndoCommand(document(), tr("new lyrics context", "undo"));
-
-                //int stanza=1;
-                /*if (dupContext && dupContext->context() && dupContext->context()->contextType()==CAContext::LyricsContext)
-							stanza = static_cast<CALyricsContext*>(dupContext->context())->stanzaNumber()+1;*/
-
+                QString name = v->sheet()->findUniqueContextName(tr("LyricsContext%1"));
                 v->sheet()->insertContextAfter(
                     dupContext ? dupContext->context() : nullptr,
                     newContext = new CALyricsContext(
-                        tr("LyricsContext%1").arg(v->sheet()->contextList().size() + 1),
-                        1,
+                        name,
+                        0, // No stanza number by default.
                         (v->sheet()->voiceList().size() ? v->sheet()->voiceList().at(0) : nullptr)));
-
                 break;
             }
             case CAContext::FiguredBassContext: {
                 CACanorus::undo()->createUndoCommand(document(), tr("new figured bass context", "undo"));
+                QString name = v->sheet()->findUniqueContextName(tr("FiguredBassContext%1"));
                 v->sheet()->insertContextAfter(
                     dupContext ? dupContext->context() : nullptr,
-                    newContext = new CAFiguredBassContext(
-                        tr("FiguredBassContext%1").arg(v->sheet()->contextList().size() + 1),
-                        v->sheet()));
+                    newContext = new CAFiguredBassContext(name, v->sheet()));
                 break;
             }
             case CAContext::FunctionMarkContext: {
                 CACanorus::undo()->createUndoCommand(document(), tr("new function mark context", "undo"));
+                QString name = v->sheet()->findUniqueContextName(tr("FunctionMarkContext%1"));
                 v->sheet()->insertContextAfter(
                     dupContext ? dupContext->context() : nullptr,
-                    newContext = new CAFunctionMarkContext(
-                        tr("FunctionMarkContext%1").arg(v->sheet()->contextList().size() + 1),
-                        v->sheet()));
+                    newContext = new CAFunctionMarkContext(name, v->sheet()));
                 break;
             }
             case CAContext::ChordNameContext: {
                 CACanorus::undo()->createUndoCommand(document(), tr("new chord name context", "undo"));
-
+                QString name = v->sheet()->findUniqueContextName(tr("ChordNameContext%1"));
                 v->sheet()->insertContextAfter(
                     dupContext ? dupContext->context() : nullptr,
-                    newContext = new CAChordNameContext(
-                        tr("ChordNameContext%1").arg(v->sheet()->contextList().size() + 1),
-                        v->sheet()));
-
+                    newContext = new CAChordNameContext(name, v->sheet()));
                 break;
             }
             }

@@ -32,6 +32,7 @@ public:
     void insertContextAfter(CAContext* after, CAContext* c);
     inline void addContext(CAContext* c) { _contextList << c; }
     inline void removeContext(CAContext* c) { _contextList.removeAll(c); }
+    QString findUniqueContextName(QString mask);
 
     CAStaff* addStaff();
     QList<CAStaff*> staffList(); // generated list
