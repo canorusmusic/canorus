@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006-2019, Matevž Jekovec, Canorus development team
+    Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See LICENSE.GPL for details.
@@ -7,12 +7,12 @@
 
 #include "layout/drawabletimesignature.h"
 #include "layout/drawablestaff.h"
+#include "score/timesignature.h"
+
+#include <QDebug>
 #include <QFont>
 #include <QPainter>
 #include <QString>
-#include <iostream>
-
-#include "score/timesignature.h"
 
 CADrawableTimeSignature::CADrawableTimeSignature(CATimeSignature* timeSig, CADrawableStaff* drawableStaff, double x, double y)
     : CADrawableMusElement(timeSig, drawableStaff, x, y)
@@ -59,16 +59,20 @@ void CADrawableTimeSignature::draw(QPainter* p, CADrawSettings s)
 	 * - 0..9: y0 is the bottom of the glyph
 	 */
     switch (timeSignature()->timeSignatureType()) {
-    case CATimeSignature::Classical: { //draw C or C| only, otherwise don't break, go to Number then!
-        if ((timeSignature()->beat() == 4) && (timeSignature()->beats() == 4)) {
-            p->drawText(s.x, qRound(s.y + 0.5 * height() * s.z), QString(CACanorus::fetaCodepoint("timesig.C44")));
-        } else if ((timeSignature()->beat() == 2) && (timeSignature()->beats() == 2)) {
-            p->drawText(s.x, qRound(s.y + 0.5 * height() * s.z), QString(CACanorus::fetaCodepoint("timesig.C22")));
-        }
-        break;
-    }
+    case CATimeSignature::Classical:
     case CATimeSignature::Number: {
-        //write the numbers one by one, first, the number of beats
+        // Draw C or C|, if needed.
+        if (timeSignature()->timeSignatureType() == CATimeSignature::Classical) {
+            if ((timeSignature()->beat() == 4) && (timeSignature()->beats() == 4)) {
+                p->drawText(s.x, qRound(s.y + 0.5 * height() * s.z), QString(CACanorus::fetaCodepoint("timesig.C44")));
+                break;
+            } else if ((timeSignature()->beat() == 2) && (timeSignature()->beats() == 2)) {
+                p->drawText(s.x, qRound(s.y + 0.5 * height() * s.z), QString(CACanorus::fetaCodepoint("timesig.C22")));
+                break;
+            }
+        }
+
+        // Write the numbers from top to bottom.
         QString curBeats = QString::number(timeSignature()->beats());
         QString curBeat = QString::number(timeSignature()->beat());
         double curX = s.x;
@@ -79,8 +83,10 @@ void CADrawableTimeSignature::draw(QPainter* p, CADrawSettings s)
                 p->drawText(qRound(curX), qRound(s.y + drawableContext()->height() * s.z), QString(curBeat[0]));
 
             curX += (14 * s.z);
-            curBeats = curBeats.mid(1); //trim-off the left-most character
-            curBeat = curBeat.mid(1); //trim-off the left-most character
+
+            // Trim-off the left-most characters.
+            curBeats = curBeats.mid(1);
+            curBeat = curBeat.mid(1);
         }
 
         break;
@@ -88,7 +94,7 @@ void CADrawableTimeSignature::draw(QPainter* p, CADrawSettings s)
     case CATimeSignature::Baroque:
     case CATimeSignature::Neomensural:
     case CATimeSignature::Mensural:
-        fprintf(stderr, "Warning: CADrawableTimeSignature::draw - Unhandled type %d", timeSignature()->timeSignatureType());
+        qWarning() << "CADrawableTimeSignature::draw - Unhandled type " << timeSignature()->timeSignatureType();
         break;
     }
 }
