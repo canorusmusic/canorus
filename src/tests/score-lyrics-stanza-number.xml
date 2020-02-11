@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE canorusml>
+<canorus-document>
+ <canorus-version>0.8.0rc1</canorus-version>
+ <document time-edited="303" date-created="2020-02-11T07:54:20" date-last-modified="2020-02-11T07:59:23">
+  <sheet name="Sheet1">
+   <staff name="Staff1" number-of-lines="5">
+    <voice name="Staff1Voice1" midi-program="0" midi-pitch-offset="0" midi-channel="0" stem-direction="stem-up">
+     <clef clef-type="G" offset="0" time-start="0" c1="-2"/>
+     <time-signature beat="4" time-signature-type="classical" beats="4" time-start="0"/>
+     <note time-length="256" time-start="0">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch note-name="28" accs="0"/>
+     </note>
+     <note time-length="256" time-start="256">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch note-name="30" accs="0"/>
+     </note>
+     <note time-length="256" time-start="512">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch note-name="31" accs="0"/>
+     </note>
+     <rest rest-type="normal" time-length="256" time-start="768">
+      <playable-length music-length="quarter" dotted="0"/>
+     </rest>
+     <barline barline-type="single" time-start="1024"/>
+     <note time-length="256" time-start="1024">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch note-name="32" accs="0"/>
+     </note>
+     <note time-length="256" time-start="1280">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch note-name="33" accs="0"/>
+     </note>
+     <note time-length="256" time-start="1536">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch note-name="34" accs="0"/>
+     </note>
+     <rest rest-type="normal" time-length="256" time-start="1792">
+      <playable-length music-length="quarter" dotted="0"/>
+     </rest>
+     <barline barline-type="repeat-close" time-start="2048"/>
+     <note time-length="512" time-start="2048">
+      <playable-length music-length="half" dotted="0"/>
+      <diatonic-pitch note-name="32" accs="0"/>
+     </note>
+     <note time-length="512" time-start="2560">
+      <playable-length music-length="half" dotted="0"/>
+      <diatonic-pitch note-name="33" accs="0"/>
+     </note>
+     <barline barline-type="single" time-start="3072"/>
+     <note time-length="256" time-start="3072">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch note-name="32" accs="0"/>
+     </note>
+     <note time-length="256" time-start="3328">
+      <playable-length music-length="quarter" dotted="0"/>
+      <diatonic-pitch note-name="32" accs="0"/>
+     </note>
+     <note time-length="512" time-start="3584">
+      <playable-length music-length="half" dotted="0"/>
+      <diatonic-pitch note-name="35" accs="0"/>
+     </note>
+     <barline barline-type="end" time-start="4096"/>
+    </voice>
+   </staff>
+   <lyrics-context stanza-number="1" name="LyricsContext3" associated-voice-idx="0">
+    <syllable text="a" time-length="256" melisma="0" hyphen="0" time-start="0"/>
+    <syllable text="b" time-length="256" melisma="0" hyphen="0" time-start="256"/>
+    <syllable text="c" time-length="256" melisma="0" hyphen="0" time-start="512"/>
+    <syllable text="d" time-length="256" melisma="0" hyphen="0" time-start="1024"/>
+    <syllable text="e" time-length="256" melisma="0" hyphen="0" time-start="1280"/>
+    <syllable text="f" time-length="256" melisma="0" hyphen="0" time-start="1536"/>
+    <syllable text="v" time-length="512" melisma="0" hyphen="0" time-start="2048"/>
+    <syllable text="w" time-length="512" melisma="0" hyphen="0" time-start="2560"/>
+    <syllable text="x" time-length="256" melisma="0" hyphen="0" time-start="3072"/>
+    <syllable text="y" time-length="256" melisma="0" hyphen="0" time-start="3584"/>
+    <syllable text="z!" time-length="512" melisma="0" hyphen="0" time-start="3840"/>
+   </lyrics-context>
+   <lyrics-context stanza-number="0" name="LyricsContext3" associated-voice-idx="0">
+    <syllable text="d" time-length="256" melisma="0" hyphen="0" time-start="0"/>
+    <syllable text="e" time-length="256" melisma="0" hyphen="0" time-start="256"/>
+    <syllable text="f" time-length="256" melisma="0" hyphen="0" time-start="512"/>
+    <syllable text="g" time-length="256" melisma="0" hyphen="0" time-start="1024"/>
+    <syllable text="h" time-length="256" melisma="0" hyphen="0" time-start="1280"/>
+    <syllable text="i" time-length="256" melisma="0" hyphen="0" time-start="1536"/>
+    <syllable text="" time-length="512" melisma="0" hyphen="0" time-start="2048"/>
+    <syllable text="" time-length="512" melisma="0" hyphen="0" time-start="2560"/>
+    <syllable text="" time-length="256" melisma="0" hyphen="0" time-start="3072"/>
+    <syllable text="" time-length="256" melisma="0" hyphen="0" time-start="3584"/>
+    <syllable text="" time-length="512" melisma="0" hyphen="0" time-start="3840"/>
+   </lyrics-context>
+   <lyrics-context stanza-number="2" name="LyricsContext4" associated-voice-idx="0">
+    <syllable text="j" time-length="256" melisma="0" hyphen="0" time-start="0"/>
+    <syllable text="k" time-length="256" melisma="0" hyphen="0" time-start="256"/>
+    <syllable text="l" time-length="256" melisma="0" hyphen="0" time-start="512"/>
+    <syllable text="m" time-length="256" melisma="0" hyphen="0" time-start="1024"/>
+    <syllable text="n" time-length="256" melisma="0" hyphen="0" time-start="1280"/>
+    <syllable text="o" time-length="256" melisma="0" hyphen="0" time-start="1536"/>
+    <syllable text="" time-length="512" melisma="0" hyphen="0" time-start="2048"/>
+    <syllable text="" time-length="512" melisma="0" hyphen="0" time-start="2560"/>
+    <syllable text="" time-length="256" melisma="0" hyphen="0" time-start="3072"/>
+    <syllable text="" time-length="256" melisma="0" hyphen="0" time-start="3584"/>
+    <syllable text="" time-length="512" melisma="0" hyphen="0" time-start="3840"/>
+   </lyrics-context>
+   <lyrics-context stanza-number="0" name="LyricsContext5" associated-voice-idx="0">
+    <syllable text="p" time-length="256" melisma="0" hyphen="0" time-start="0"/>
+    <syllable text="q" time-length="256" melisma="0" hyphen="0" time-start="256"/>
+    <syllable text="r" time-length="256" melisma="0" hyphen="0" time-start="512"/>
+    <syllable text="s" time-length="256" melisma="0" hyphen="0" time-start="1024"/>
+    <syllable text="t" time-length="256" melisma="0" hyphen="0" time-start="1280"/>
+    <syllable text="u" time-length="256" melisma="0" hyphen="0" time-start="1536"/>
+    <syllable text="" time-length="512" melisma="0" hyphen="0" time-start="2048"/>
+    <syllable text="" time-length="512" melisma="0" hyphen="0" time-start="2560"/>
+    <syllable text="" time-length="256" melisma="0" hyphen="0" time-start="3072"/>
+    <syllable text="" time-length="256" melisma="0" hyphen="0" time-start="3584"/>
+    <syllable text="" time-length="512" melisma="0" hyphen="0" time-start="3840"/>
+   </lyrics-context>
+  </sheet>
+ </document>
+</canorus-document>
