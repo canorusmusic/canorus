@@ -107,6 +107,7 @@ private:
     static CASettings* _settings;
     static CAUndo* _undo;
     static QList<QString> _recentDocumentList;
+    static std::unique_ptr<QTranslator> _translator;
     static QHash<QString, int> _fetaMap;
 
     // Playback output

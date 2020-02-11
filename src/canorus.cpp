@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2007, Matevž Jekovec, Canorus development team
+    Copyright (c) 2007-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -36,6 +36,7 @@ CAUndo* CACanorus::_undo;
 CAHelpCtl* CACanorus::_help;
 QList<QString> CACanorus::_recentDocumentList;
 QHash<QString, int> CACanorus::_fetaMap;
+std::unique_ptr<QTranslator> CACanorus::_translator;
 
 /*!
 	Add all search paths.
@@ -57,7 +58,7 @@ void CACanorus::initSearchPaths()
                << "doc"
                << "lang"
                << "base";
-    foreach (QString cat, categories) {
+    for (QString cat: categories) {
         // The "base" prefix is used by CASwigPython and CASwigRuby to find files which are not in a subdir.
         QString dirname = (cat == "base") ? "" : cat;
         if (QDir(QDir::currentPath() + "/" + dirname).exists())
@@ -94,17 +95,16 @@ void CACanorus::initMain(int, char* [])
 	Initializes language specific settings like the translation file for the GUI,
 	text flow (left-to-right or right-to-left), default string encoding etc.
  */
-void CACanorus::initTranslations(/*QTranslator &translator*/)
+void CACanorus::initTranslations()
 {
     QString translationFile = "lang:" + QLocale::system().name() + ".qm"; // load language_COUNTRY.qm
     if (!QFileInfo(translationFile).exists())
         translationFile = "lang:" + QLocale::system().name().left(2) + ".qm"; // if not found, load language.qm
 
-    std::unique_ptr<QTranslator> translator(new QTranslator);
     if (QFileInfo(translationFile).exists()) {
-        //QApplication::instance()->removeTranslator(translator.get());
-        translator->load(QFileInfo(translationFile).absoluteFilePath());
-        static_cast<QApplication*>(QApplication::instance())->installTranslator(translator.get());
+        CACanorus::_translator = std::unique_ptr<QTranslator>(new QTranslator);
+        CACanorus::_translator->load(QFileInfo(translationFile).absoluteFilePath());
+        static_cast<QApplication*>(QApplication::instance())->installTranslator(CACanorus::_translator.get());
     }
 
     if (QLocale::system().language() == QLocale::Hebrew) { /// \todo add Arabic, etc.
