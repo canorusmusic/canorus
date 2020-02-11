@@ -210,6 +210,12 @@ void CAUndo::replaceDocument(CADocument* oldDoc, CADocument* newDoc)
     clearUndoCommand();
     QList<CAUndoCommand*>* stack = _undoStack[oldDoc];
 
+    CAUndoCommand* prevUndoCommand = (undoIndex(oldDoc) < stack->size() && undoIndex(oldDoc) >= 0 ? stack->at(undoIndex(oldDoc)) : nullptr);
+    if (prevUndoCommand) {
+        if (prevUndoCommand->getRedoDocument() == oldDoc)
+            prevUndoCommand->setRedoDocument(newDoc);
+    }
+
     _undoStack.remove(oldDoc);
     _undoStack[newDoc] = stack;
 }

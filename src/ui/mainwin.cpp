@@ -984,6 +984,7 @@ void CAMainWin::addSheet(CASheet* s)
 */
 void CAMainWin::clearUI()
 {
+    setCurrentView(nullptr);
 
     // Delete all view port containers and view ports.
     while (uiTabWidget->count()) {
@@ -997,7 +998,6 @@ void CAMainWin::clearUI()
         delete _viewList.takeFirst();
 
     _sheetMap.clear();
-    setCurrentView(nullptr);
 
     if (_midiRecorderView) {
         delete _midiRecorderView;
@@ -1276,8 +1276,8 @@ CASheet* CAMainWin::currentSheet()
 */
 CAContext* CAMainWin::currentContext()
 {
-    if (currentView() && (currentView()->viewType() == CAView::ScoreView) && (static_cast<CAScoreView*>(currentView())->currentContext())) {
-        return static_cast<CAScoreView*>(currentView())->currentContext()->context();
+    if (currentScoreView() && currentScoreView()->currentContext()) {
+        return currentScoreView()->currentContext()->context();
     } else
         return nullptr;
 }
@@ -1346,7 +1346,7 @@ void CAMainWin::on_uiUndo_toggled(bool, int row)
             }
         }
 
-        CACanorus::rebuildUI(document(), nullptr);
+        CACanorus::rebuildUI(document());
         if (curVoiceIdx >= 0 && curVoiceIdx < currentSheet()->voiceList().size()) {
             setCurrentVoice(currentSheet()->voiceList()[curVoiceIdx]);
         }
@@ -4336,10 +4336,8 @@ void CAMainWin::sourceViewCommit(QString inputString)
         CACanorus::undo()->createUndoCommand(document(), tr("commit CanorusML source", "undo"));
 
         clearUI(); // clear GUI before clearing the data part!
-        if (document())
-            delete document();
+        CADocument* oldDoc = document();
 
-        CACanorus::undo()->pushUndoCommand();
         CACanorusMLImport open(inputString);
         open.importDocument();
         open.wait();
@@ -4347,8 +4345,21 @@ void CAMainWin::sourceViewCommit(QString inputString)
         if (open.importedDocument()) {
             CACanorus::undo()->replaceDocument(document(), open.importedDocument());
             setDocument(open.importedDocument());
+            // TODO UX: Set previous voice, set previous context.
         }
+
+        if (CACanorus::settings()->useNoteChecker()) {
+            for (int i = 0; i < document()->sheetList().size(); i++) {
+                _noteChecker.checkSheet(document()->sheetList()[i]);
+            }
+        }
+
+        CACanorus::undo()->pushUndoCommand();
         CACanorus::rebuildUI(document());
+
+        if (oldDoc) {
+            delete oldDoc;
+        }
     } else if (v->voice()) {
         // LilyPond voice source
         CACanorus::undo()->createUndoCommand(document(), tr("commit LilyPond source", "undo"));
@@ -4374,16 +4385,23 @@ void CAMainWin::sourceViewCommit(QString inputString)
 
         // FIXME any way to avoid this?
         CAScoreView* scorevp;
-        foreach (CAView* vp, _viewList) {
+        for (CAView* vp : _viewList) {
             if (vp->viewType() == CAView::ScoreView && (scorevp = static_cast<CAScoreView*>(vp))->selectedVoice() == oldVoice)
                 scorevp->setSelectedVoice(newVoice);
         }
 
         v->setVoice(newVoice);
+
+        if (CACanorus::settings()->useNoteChecker()) {
+            _noteChecker.checkSheet(newVoice->staff()->sheet());
+        }
+
         CACanorus::undo()->pushUndoCommand();
         CACanorus::rebuildUI(document(), newVoice->staff()->sheet());
-        oldVoice->staff()->addVoice(oldVoice);
-        delete oldVoice; // also removes voice from the staff
+        setCurrentView(v);
+
+        // oldVoice must be cleaned *after* rebuildUI(), because of shadow notes referencing it!
+        delete oldVoice;
     } else if (v->lyricsContext()) {
         // LilyPond lyrics source
         CACanorus::undo()->createUndoCommand(document(), tr("commit LilyPond source", "undo"));
@@ -4402,13 +4420,12 @@ void CAMainWin::sourceViewCommit(QString inputString)
         newLc->sheet()->insertContextAfter(oldLc, newLc);
         newLc->sheet()->removeContext(oldLc);
         v->setLyricsContext(newLc);
-        delete oldLc;
 
         CACanorus::undo()->pushUndoCommand();
         CACanorus::rebuildUI(document(), v->lyricsContext()->sheet());
+        setCurrentView(v);
+        delete oldLc;
     }
-
-    setCurrentView(v);
 }
 
 void CAMainWin::on_uiUsersGuide_triggered()
