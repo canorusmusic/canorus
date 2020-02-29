@@ -349,29 +349,29 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 			break;
 		}
 		case CASwigPython::Document: {
-			return SWIG_NewPointerObj(object, SWIGTYPE_p_CADocument, 0);
+			return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CADocument, 0);
 			break;
 		}
 		case CASwigPython::Resource: {
-			return SWIG_NewPointerObj(object, SWIGTYPE_p_CAResource, 0);
+			return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAResource, 0);
 			break;
 		}
 		case CASwigPython::Sheet: {
-			return SWIG_NewPointerObj(object, SWIGTYPE_p_CASheet, 0);
+			return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CASheet, 0);
 			break;
 		}
 		case CASwigPython::Context: {
 			switch (static_cast<CAContext*>(object)->contextType()) {
 			case CAContext::Staff:
-				return SWIG_NewPointerObj(object, SWIGTYPE_p_CAStaff, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAStaff, 0);
 			case CAContext::LyricsContext:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CALyricsContext, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CALyricsContext, 0);
 			case CAContext::FiguredBassContext:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CAFiguredBassContext, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAFiguredBassContext, 0);
 			case CAContext::FunctionMarkContext:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CAFunctionMarkContext, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAFunctionMarkContext, 0);
 			case CAContext::ChordNameContext:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CAChordNameContext, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAChordNameContext, 0);
 			default:
 				std::cerr << "canoruspython.i: Wrong CAContext::contextType()!" << std::endl;
 				return 0;
@@ -379,40 +379,40 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 			break;
 		}
 		case CASwigPython::Voice: {
-			return SWIG_NewPointerObj(object,SWIGTYPE_p_CAVoice, 0);
+			return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAVoice, 0);
 			break;
 		}
 		case CASwigPython::MusElement: {
 			CAMusElement *elt = static_cast<CAMusElement*>(object);
 			switch (elt->musElementType()) {
 			case CAMusElement::Note:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CANote, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CANote, 0);
 			case CAMusElement::Rest:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CARest, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CARest, 0);
 			case CAMusElement::KeySignature:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CAKeySignature, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAKeySignature, 0);
 			case CAMusElement::TimeSignature:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CATimeSignature, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CATimeSignature, 0);
 			case CAMusElement::Clef:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CAClef, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAClef, 0);
 			case CAMusElement::Barline:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CABarline, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CABarline, 0);
 			case CAMusElement::FiguredBassMark:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CAFiguredBassMark, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAFiguredBassMark, 0);
 			case CAMusElement::FunctionMark:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CAFunctionMark, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAFunctionMark, 0);
 			case CAMusElement::Syllable:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CASyllable, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CASyllable, 0);
 			case CAMusElement::Mark:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CAMark, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAMark, 0);
 			case CAMusElement::Slur:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CASlur, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CASlur, 0);
 			case CAMusElement::Tuplet:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CATuplet, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CATuplet, 0);
 			case CAMusElement::MidiNote:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CAMidiNote, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAMidiNote, 0);
 			case CAMusElement::ChordName:
-				return SWIG_NewPointerObj(object,SWIGTYPE_p_CAChordName, 0);
+				return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAChordName, 0);
 			default:
 				std::cerr << "canoruspython.i: Wrong CAMusElement::musElementType()!" << std::endl;
 				return 0;
@@ -420,15 +420,15 @@ PyObject *CASwigPython::toPythonObject(void *object, CASwigPython::CAClassType t
 			break;
 		}
 		case CASwigPython::PlayableLength: {
-			return SWIG_NewPointerObj(0, new CAPlayableLength(*(static_cast<CAPlayableLength*>(object))), SWIGTYPE_p_CAPlayableLength, 0);
+			return SWIG_Python_NewPointerObj(0, new CAPlayableLength(*(static_cast<CAPlayableLength*>(object))), SWIGTYPE_p_CAPlayableLength, 0);
 			break;
 		}
 		case CASwigPython::PyConsoleInterface: {
-			return SWIG_NewPointerObj(object,SWIGTYPE_p_CAPyConsoleInterface, 0);
+			return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAPyConsoleInterface, 0);
 			break;
 		}
         case CASwigPython::Plugin: {
-            return SWIG_NewPointerObj(object,SWIGTYPE_p_CAPlugin, 0);
+            return SWIG_Python_NewPointerObj(0, object, SWIGTYPE_p_CAPlugin, 0);
             break;
         }       
 		default: {
