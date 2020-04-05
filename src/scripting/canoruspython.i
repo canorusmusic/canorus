@@ -31,6 +31,7 @@
 	$1 = (PyString_Check($input)) ? 1 : 0; 
 }
 
+
 // convert returned QString value to Python's String format in UTF8 encoding
 %typemap(out) const QString {
 	$result = Py_BuildValue("s", $1.toUtf8().data());
@@ -43,10 +44,10 @@
 
 // convert Python's String to QString in UTF8 encoding
 %typemap(in) const QString, QString {
-	$1 = QString::fromUtf8(PyString_AsString($input));
+    $1 = QString::fromUtf8(PyUnicode_AsUTF8($input));
 }
 %typemap(in) const QString&, QString& {
-	(*$1) = QString::fromUtf8(PyString_AsString($input));
+    (*$1) = QString::fromUtf8(PyUnicode_AsUTF8($input));
 }
 
 // convert returned QColor value to Python's tuple of RGBA integers
