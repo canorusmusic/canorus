@@ -25,6 +25,12 @@ with appropriate locale variables set, for example:
 LANG=fr ./canorus
 ```
 
+## Translating using Transifex service
+
+If you prefer translating using the web interface, Canorus project has
+translations synchronized with [Transifex](https://www.transifex.com/canorus)
+service. Please join the team and contribute the translation for your language.
+
 Thanks for your effort!
 
 Matevž Jekovec
