@@ -251,6 +251,8 @@ bool hasGui();
 // the following functions work when a plugin is launched inside Canorus:
 void rebuildUi();
 void repaintUi();
+void acquireGIL();
+void releaseGIL();
 void setSelection( QList<CAMusElement*> elements, bool centerOn=false );
 
 %include "scripting/canoruslibrary.i"
@@ -298,6 +300,20 @@ bool hasGui() {
 #else
 	return false;
 #endif
+}
+
+/*!
+    Workaround for acquiring GIL while inside Canorus plugin, if signal-slot operations are required.
+*/
+void acquireGIL() {
+    PyEval_AcquireLock();
+}
+
+/*!
+    Workaround for releasing GIL while inside Canorus plugin, if signal-slot operations are required.
+*/
+void releaseGIL() {
+    PyEval_ReleaseLock();
 }
 
 /*!
