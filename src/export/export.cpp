@@ -83,6 +83,9 @@ void CAExport::run()
         }
 
         stream()->flush();
+        if (stream()->device()->isOpen()) {
+            stream()->device()->close();
+        }
         if (status() > 0) { // error - bad implemented filter
             // job is finished but status is still marked as working, set to Ready to prevent infinite loops
             setStatus(0);
