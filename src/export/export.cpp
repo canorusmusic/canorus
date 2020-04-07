@@ -83,7 +83,7 @@ void CAExport::run()
         }
 
         stream()->flush();
-        if (stream()->device()->isOpen()) {
+        if (stream()->device() && stream()->device()->isOpen()) {
             stream()->device()->close();
         }
         if (status() > 0) { // error - bad implemented filter
