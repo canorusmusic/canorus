@@ -67,7 +67,7 @@ private:
     QVector<int> trackTimes;
     void streamQByteArray(QByteArray x); // streaming binary data to midi file, possibly with print for debugging
     QByteArray variableLengthValue(int value);
-    QByteArray word16(char x);
+    QByteArray word16(short x);
     QByteArray textEvent(int time, QString s);
     QByteArray trackEnd(void);
     QByteArray timeSignature(void);

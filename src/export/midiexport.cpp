@@ -136,7 +136,10 @@ void CAMidiExport::sendMetaEvent(int time, char event, char a, char b, int)
 #define MIDI_CTL_VOLUME 0x07
 #define MIDI_CTL_SUSTAIN 0x40
 
-QByteArray CAMidiExport::word16(char x)
+/*!
+    Converts 16-bit number to big endian byte array.
+*/
+QByteArray CAMidiExport::word16(short x)
 {
     QByteArray ba;
     ba.append(x >> 8);
@@ -323,7 +326,7 @@ void CAMidiExport::writeFile()
     headerChunk.append(word16(1)); // Midi-Format version
     headerChunk.append(word16(2)); // number of tracks, a control track and a music track for a trying out ...
     /// \todo QByteArray does not support char values > 0x7f
-    headerChunk.append(word16(static_cast<char>(CAPlayableLength::playableLengthToTimeLength(CAPlayableLength::Quarter)))); // time division ticks per quarter
+    headerChunk.append(word16(static_cast<short>(CAPlayableLength::playableLengthToTimeLength(CAPlayableLength::Quarter)))); // time division ticks per quarter
     setChunkLength(&headerChunk);
     streamQByteArray(headerChunk);
 
