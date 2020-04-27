@@ -324,14 +324,14 @@ QString CAPyConsole::asyncBufferedInput(QString prompt)
 
     // blocking operation;
     PyThreadState_Swap(CASwigPython::mainThreadState);
-    PyEval_ReleaseLock();
+    PyEval_ReleaseThread(CASwigPython::mainThreadState);
 
     //Py_BEGIN_ALLOW_THREADS
     _thrWaitMut->lock();
     _thrWait->wait(_thrWaitMut);
     //Py_END_ALLOW_THREADS
 
-    PyEval_AcquireLock();
+    PyEval_RestoreThread(CASwigPython::mainThreadState);
     PyThreadState_Swap(CASwigPython::pycliThreadState);
 
     QString* str = new QString(_bufSend); //put contents of _bufSend into buffer \todo: synch
@@ -533,7 +533,9 @@ bool CAPyConsole::cmdIntern(QString strCmd)
         while (dynamic_cast<CAMainWin*>(curObject) == nullptr && curObject != nullptr) // find the parent which is mainwindow
             curObject = curObject->parent();
 
+        PyEval_RestoreThread(CASwigPython::mainThreadState);
         argsPython << CASwigPython::toPythonObject(static_cast<CAMainWin*>(curObject)->document(), CASwigPython::Document);
+        PyEval_ReleaseThread(CASwigPython::mainThreadState);
 
         CASwigPython::callFunction(QFileInfo("scripts:" + strCmd.mid(12)).absoluteFilePath(), _strEntryFunc, argsPython, true);
         emit sig_txtAppend(">>> ", txtNormal); // if not emitted, error from python and this are not in order
@@ -554,11 +556,17 @@ bool CAPyConsole::cmdIntern(QString strCmd)
         QObject* curObject = this;
         while (dynamic_cast<CAMainWin*>(curObject) == nullptr && curObject != nullptr) // find the parent which is mainwindow
             curObject = curObject->parent();
+        PyEval_RestoreThread(CASwigPython::mainThreadState);
         argsPython << CASwigPython::toPythonObject(static_cast<CAMainWin*>(curObject)->document(), CASwigPython::Document);
+        PyEval_ReleaseThread(CASwigPython::mainThreadState);
         argsPython << PyUnicode_FromString(strCmd.toStdString().c_str());
 
         // Can't autoreload because we are using global objects in pycl2.py that would get overwritten.
         auto ret = CASwigPython::callFunction(QFileInfo("scripts:pycl2.py").absoluteFilePath(), "main", argsPython, false);
+        if (ret==nullptr) {
+            return false;
+        }
+
         emit sig_txtAppend(PyUnicode_AsUTF8(ret), txtNormal);
         return true;
     }

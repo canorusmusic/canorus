@@ -113,7 +113,9 @@ bool CAPlugin::callAction(CAPluginAction* action, CAMainWin* mainWin, CADocument
 #endif
 #ifdef USE_PYTHON
             if (action->lang() == "python") {
+                PyEval_RestoreThread(CASwigPython::mainThreadState);
                 pythonArgs << CASwigPython::toPythonObject(document, CASwigPython::Document);
+                PyEval_ReleaseThread(CASwigPython::mainThreadState);
             }
 #endif
         } else
@@ -132,9 +134,11 @@ bool CAPlugin::callAction(CAPluginAction* action, CAMainWin* mainWin, CADocument
 #endif
 #ifdef USE_PYTHON
             if (action->lang() == "python") {
-                if (mainWin->currentSheet())
+                if (mainWin->currentSheet()) {
+                    PyEval_RestoreThread(CASwigPython::mainThreadState);
                     pythonArgs << CASwigPython::toPythonObject(mainWin->currentSheet(), CASwigPython::Sheet);
-                else {
+                    PyEval_ReleaseThread(CASwigPython::mainThreadState);
+                } else {
                     error = true;
                     break;
                 }
@@ -170,7 +174,9 @@ bool CAPlugin::callAction(CAPluginAction* action, CAMainWin* mainWin, CADocument
                         error = true;
                         break;
                     }
+                    PyEval_RestoreThread(CASwigPython::mainThreadState);
                     pythonArgs << CASwigPython::toPythonObject(v->selection().front()->musElement(), CASwigPython::MusElement);
+                    PyEval_ReleaseThread(CASwigPython::mainThreadState);
                 } else {
                     error = true;
                     break;
@@ -190,9 +196,11 @@ bool CAPlugin::callAction(CAPluginAction* action, CAMainWin* mainWin, CADocument
                 if (mainWin->currentScoreView()) {
                     QList<CAMusElement*> musElements = mainWin->currentScoreView()->musElementSelection();
                     PyObject* list = PyList_New(0);
+                    PyEval_RestoreThread(CASwigPython::mainThreadState);
                     for (int i = 0; i < musElements.size(); i++) {
                         PyList_Append(list, CASwigPython::toPythonObject(musElements[i], CASwigPython::MusElement));
                     }
+                    PyEval_ReleaseThread(CASwigPython::mainThreadState);
 
                     pythonArgs << list;
                 } else {
@@ -213,7 +221,9 @@ bool CAPlugin::callAction(CAPluginAction* action, CAMainWin* mainWin, CADocument
 #endif
 #ifdef USE_PYTHON
             if (action->lang() == "python") {
+                PyEval_RestoreThread(CASwigPython::mainThreadState);
                 pythonArgs << CASwigPython::toPythonObject(&_dirName, CASwigPython::String);
+                PyEval_ReleaseThread(CASwigPython::mainThreadState);
             }
 #endif
         } else
@@ -227,15 +237,20 @@ bool CAPlugin::callAction(CAPluginAction* action, CAMainWin* mainWin, CADocument
 #endif
 #ifdef USE_PYTHON
             if (action->lang() == "python") {
+                PyEval_RestoreThread(CASwigPython::mainThreadState);
                 pythonArgs << CASwigPython::toPythonObject(&filename, CASwigPython::String);
+                PyEval_ReleaseThread(CASwigPython::mainThreadState);
             }
 #endif
         }
     }
 #ifdef USE_PYTHON
     if (_name == "pyCLI") {
-        if (mainWin->pyConsoleIface)
+        if (mainWin->pyConsoleIface) {
+            PyEval_RestoreThread(CASwigPython::mainThreadState);
             pythonArgs << CASwigPython::toPythonObject(mainWin->pyConsoleIface, CASwigPython::PyConsoleInterface);
+            PyEval_ReleaseThread(CASwigPython::mainThreadState);
+        }
     }
 #endif
 
@@ -248,7 +263,9 @@ bool CAPlugin::callAction(CAPluginAction* action, CAMainWin* mainWin, CADocument
 #endif
 #ifdef USE_PYTHON
         if (action->lang() == "python") {
+            PyEval_RestoreThread(CASwigPython::mainThreadState);
             PyRun_SimpleString((QString("sys.path.append('") + dirName() + "')").toStdString().c_str());
+            PyEval_ReleaseThread(CASwigPython::mainThreadState);
         }
 #endif
     }

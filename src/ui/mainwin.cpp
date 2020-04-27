@@ -890,7 +890,9 @@ void CAMainWin::newDocument()
 
 #ifdef USE_PYTHON
     QList<PyObject*> argsPython;
+    PyEval_RestoreThread(CASwigPython::mainThreadState);
     argsPython << CASwigPython::toPythonObject(document(), CASwigPython::Document);
+    PyEval_ReleaseThread(CASwigPython::mainThreadState);
     CASwigPython::callFunction(QFileInfo("scripts:newdocument.py").absoluteFilePath(), "newDefaultDocument", argsPython);
 #else
     // fallback: add basic sheet with two staffs
