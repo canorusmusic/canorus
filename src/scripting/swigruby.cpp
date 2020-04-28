@@ -1,5 +1,5 @@
 /*!
-	Copyright (c) 2006, Matevž Jekovec, Canorus development team
+    Copyright (c) 2006-2020, Matevž Jekovec, Canorus development team
 	All Rights Reserved. See AUTHORS for a complete list of authors.
 	
 	Licensed under the GNU GENERAL PUBLIC LICENSE. See COPYING for details.
@@ -39,7 +39,7 @@ VALUE CASwigRuby::callFunction(QString fileName, QString function, QList<VALUE> 
         return 0;
 
     // require module (loads a method)
-    rb_require(QDir::convertSeparators(fileName).toStdString().c_str());
+    rb_require(QDir::toNativeSeparators(fileName).toStdString().c_str());
 
     // call function
     VALUE recv = 0;
