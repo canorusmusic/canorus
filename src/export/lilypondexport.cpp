@@ -1154,11 +1154,17 @@ void CALilyPondExport::exportScoreBlock(CASheet* sheet)
         // open multiple contexts
         indent();
         out() << "<<\n";
-        indent();
-        out() << "\\pointAndClickOff\n"; // remove point-and-click to decrease PDF size
-        indent();
-        out() << "\\set Score.markFormatter = #format-mark-box-alphabet\n"; // draw nice box around rehersal marks as in Canorus GUI
         indentMore();
+
+        // remove point-and-click to decrease PDF size
+        indent();
+        out() << "\\pointAndClickOff\n";
+        // draw nice box around rehersal marks as in Canorus GUI
+        indent();
+        out() << "\\set Score.markFormatter = #format-mark-box-alphabet\n";
+        // needed for automatic treating of slurs as melisma for lyrics - multiple syllables below the slured notes are allowed in Canorus, but not recommended
+        indent();
+        out() << "\\set Score.melismaBusyProperties = #'()\n";
 
         // Output each staff
         for (int c = 0; c < contextCount; ++c) {
@@ -1271,9 +1277,6 @@ void CALilyPondExport::exportScoreBlock(CASheet* sheet)
                 out() << "\n";
                 indent();
                 out() << "% Voice assignment:\n";
-                indent();
-                // needed for automatic treating of slurs as melisma for lyrics - multiple syllables below the slured notes are allowed in Canorus, but not recommended
-                out() << "\\set Score.melismaBusyProperties = #'()\n";
             }
 
             CALyricsContext* lc;
