@@ -1,0 +1,12 @@
+This folder contains Dockerfile for building windows-like development
+environment for Canorus. It uses minimal Ubuntu docker image as a base and
+using wine installs Qt SDK, Python and Swig for Windows.
+
+To build the docker image locally, type:
+
+docker build . -t buildenv-wine:latest
+
+Once done, you can create and run a container using this image by:
+
+docker exec -it buildenv-wine:latest /bin/bash
+
