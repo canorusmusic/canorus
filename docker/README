@@ -1,0 +1,16 @@
+# Canorus Docker images
+
+This folder contains Dockerfiles for building Canorus development environments.
+They all use minimal Ubuntu/Windows docker images as a base and install Qt SDK,
+cmake, Python and Swig.
+
+To build the docker image locally, type:
+
+docker build . -t canorus/<BUILDENV_NAME>:latest
+
+Once done, you can create a container based on given image and run a command
+by:
+
+docker exec -it canorus/>BUILDENV_NAME>:latest /bin/bash
+
+(The example above is for Ubuntu-based docker images.)

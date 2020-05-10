@@ -1,14 +1,11 @@
 /* jshint asi:true */
 
 var InstallComponents = [
-	"qt.qt5.5130.win64_mingw81"
+	"qt.qt5.5142.win32_mingw73",
+	"qt.tools.win32_mingw730",
 ];
 
-var InstallPath = "C:\\Qt";
-
-var Username = "canorus-qt@protonmail.com"
-var Password = "Canorus-qt123"
-Password = Password.substring(0,10)
+var InstallPath = "c:\\Qt";
 
 // Public domain via CC0.
 
@@ -47,17 +44,37 @@ Controller.prototype.CredentialsPageCallback = function() {
     proceed()
 }
 
+/// Check "I have read and approve..." introduction page
+Controller.prototype.ObligationsPageCallback = function() {
+    logCurrentPage()
+    page().obligationsAgreement.setChecked(true);
+    page().completeChanged();
+    proceed()
+}
+
 /// Skip introduction page
 Controller.prototype.IntroductionPageCallback = function() {
     logCurrentPage()
+    proceed(buttons.NextButton, 2000)
+}
+
+/// Question for tracking usage data, refuse it
+Controller.prototype.DynamicTelemetryPluginFormCallback = function() {
+    logCurrentPage()
+    console.log(Object.keys(page().TelemetryPluginForm.statisticGroupBox))
+    var radioButtons = page().TelemetryPluginForm.statisticGroupBox
+    radioButtons.disableStatisticRadioButton.checked = true
     proceed()
 }
 
 /// Set target directory
 Controller.prototype.TargetDirectoryPageCallback = function() {
     logCurrentPage()
-    page().TargetDirectoryLineEdit.text = InstallPath
-    proceed()
+    console.log(Object.keys(page()))
+//    gui.clickButton(page().BrowseDirectoryButton, 2000)
+    page().TargetDirectoryLineEdit.setText(InstallPath)
+//    console.log(page().TargetDirectoryLineEdit.text);
+    proceed(buttons.NextButton, 2000);
 }
 
 Controller.prototype.ComponentSelectionPageCallback = function() {
@@ -69,7 +86,7 @@ Controller.prototype.ComponentSelectionPageCallback = function() {
         page().selectComponent(component)
     })
 
-    proceed()
+    //proceed()
 }
 
 /// Agree license
@@ -103,11 +120,3 @@ Controller.prototype.FinishedPageCallback = function() {
     proceed(buttons.FinishButton)
 }
 
-/// Question for tracking usage data, refuse it
-Controller.prototype.DynamicTelemetryPluginFormCallback = function() {
-    logCurrentPage()
-    console.log(Object.keys(page().TelemetryPluginForm.statisticGroupBox))
-    var radioButtons = page().TelemetryPluginForm.statisticGroupBox
-    radioButtons.disableStatisticRadioButton.checked = true
-    proceed()
-}
