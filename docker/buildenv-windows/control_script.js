@@ -10,10 +10,8 @@ var InstallPath = "c:\\Qt";
 // Public domain via CC0.
 
 function Controller() {
-    // It tends to complain about XCode, even if all is okay.
-    installer.setMessageBoxAutomaticAnswer("XcodeError", QMessageBox.Ok);
-
-    installer.installationFinished.connect(proceed)
+    installer.autoRejectMessageBoxes();
+    installer.installationFinished.connect(proceed);
 }
 
 function logCurrentPage() {
@@ -61,7 +59,6 @@ Controller.prototype.IntroductionPageCallback = function() {
 /// Question for tracking usage data, refuse it
 Controller.prototype.DynamicTelemetryPluginFormCallback = function() {
     logCurrentPage()
-    console.log(Object.keys(page().TelemetryPluginForm.statisticGroupBox))
     var radioButtons = page().TelemetryPluginForm.statisticGroupBox
     radioButtons.disableStatisticRadioButton.checked = true
     proceed()
@@ -70,10 +67,7 @@ Controller.prototype.DynamicTelemetryPluginFormCallback = function() {
 /// Set target directory
 Controller.prototype.TargetDirectoryPageCallback = function() {
     logCurrentPage()
-    console.log(Object.keys(page()))
-//    gui.clickButton(page().BrowseDirectoryButton, 2000)
     page().TargetDirectoryLineEdit.setText(InstallPath)
-//    console.log(page().TargetDirectoryLineEdit.text);
     proceed(buttons.NextButton, 2000);
 }
 
@@ -86,20 +80,20 @@ Controller.prototype.ComponentSelectionPageCallback = function() {
         page().selectComponent(component)
     })
 
-    //proceed()
+    proceed()
 }
 
 /// Agree license
 Controller.prototype.LicenseAgreementPageCallback = function() {
     logCurrentPage()
     page().AcceptLicenseRadioButton.checked = true
-    gui.clickButton(buttons.NextButton)
+    proceed()
 }
 
 /// Windows-specific, skip it
 Controller.prototype.StartMenuDirectoryPageCallback = function() {
     logCurrentPage()
-    gui.clickButton(buttons.NextButton)
+    proceed()
 }
 
 /// Skip confirmation page
@@ -116,7 +110,7 @@ Controller.prototype.PerformInstallationPageCallback = function() {
 Controller.prototype.FinishedPageCallback = function() {
     logCurrentPage()
     // Deselect "launch QtCreator"
-    page().RunItCheckBox.checked = false
-    proceed(buttons.FinishButton)
+    page().LaunchQtCreatorCheckBoxForm.launchQtCreatorCheckBox.setChecked(false);
+    proceed(buttons.FinishButton, 0);
 }
 
