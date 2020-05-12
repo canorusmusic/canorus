@@ -518,7 +518,6 @@ SET( Canorus_Images "ui/images" )
 SET( Canorus_Examples "../examples" )
 
 set_source_files_properties(${Canorus_RtMidi_Srcs} PROPERTIES COMPILE_FLAGS -Wno-stack-protector)
-set_source_files_properties(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES COMPILE_FLAGS -Wno-error)
 
 # Set translation files
 FILE(GLOB Canorus_Translation_Srcs "lang/*.ts") # lang/*.ts -> Canorus_Translation_Srcs
@@ -652,6 +651,7 @@ IF(USE_PYTHON)
 	)
 	SWIG_LINK_LIBRARIES(CanorusPython ${PYTHON_LIBRARY} Qt5::Widgets Qt5::Core Qt5::Gui Qt5::Svg Qt5::Xml Qt5::PrintSupport)
 	SET_TARGET_PROPERTIES( ${SWIG_MODULE_CanorusPython_REAL_NAME} PROPERTIES COMPILE_FLAGS "-DSWIGCPP" )
+	set_source_files_properties(${CANORUS_PYTHON_WRAP_CXX} PROPERTIES COMPILE_FLAGS -Wno-error)
 ENDIF(USE_PYTHON)
 
 #IF(USE_POPPLER)
