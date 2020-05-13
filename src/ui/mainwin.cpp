@@ -3217,25 +3217,26 @@ CADocument* CAMainWin::openDocument(const QString& fileName)
 {
     stopPlayback();
 
-    CAImport* open = nullptr;
+    if (_importFile) {
+        _importFile.reset();
+    }
+
     if (fileName.endsWith(".xml")) {
-        /// \todo replace raw pointer with shared or unique pointer
-        open = new CACanorusMLImport();
+        _importFile = std::make_unique<CACanorusMLImport>();
         uiSaveDialog->selectNameFilter(CAFileFormats::CANORUSML_FILTER);
     } else if (fileName.endsWith(".can")) {
-        /// \todo replace raw pointer with shared or unique pointer
-        open = new CACanImport();
+        _importFile = std::make_unique<CACanImport>();
         uiSaveDialog->selectNameFilter(CAFileFormats::CAN_FILTER);
     } else {
         return nullptr; // FIXME Failing quietly, add error message
     }
 
-    connect(open, SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
-    open->setStreamFromFile(fileName);
-    open->importDocument();
+    connect(_importFile.get(), SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
+    _importFile->setStreamFromFile(fileName);
+    _importFile->importDocument();
 
-    _mainWinProgressCtl.startProgress(open);
-    return open->importedDocument();
+    _mainWinProgressCtl.startProgress(*_importFile.get());
+    return _importFile->importedDocument();
 }
 
 /*!
@@ -3478,47 +3479,47 @@ void CAMainWin::on_uiImportDocument_triggered()
 
         CACanorus::rebuildUI(document());
     } else {
-        CAImport* import = nullptr;
+        if (_importFile) {
+            _importFile.reset();
+        }
 
         if (uiImportDialog->selectedNameFilter() == CAFileFormats::MIDI_FILTER) {
             if (!document())
                 newDocument();
-            /// \todo replace raw pointer with shared or unique pointer
-            import = new CAMidiImport(document());
-            if (import) {
-                import->setStreamFromFile(s);
-                connect(import, SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
-                import->importSheet();
+            _importFile = std::make_unique<CAMidiImport>();
+            if (_importFile) {
+                _importFile->setStreamFromFile(s);
+                connect(_importFile.get(), SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
+                _importFile->importSheet();
             }
         } else if (uiImportDialog->selectedNameFilter() == CAFileFormats::LILYPOND_FILTER) {
             // activate this filter in src/canorus.cpp when sheet import is usable
             if (!document())
                 newDocument();
-            /// \todo replace raw pointer with shared or unique pointer
-            import = new CALilyPondImport(document());
-            if (import) {
-                import->setStreamFromFile(s);
-                connect(import, SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
-                import->importSheet();
+            _importFile = std::make_unique<CALilyPondImport>();
+            if (_importFile) {
+                _importFile->setStreamFromFile(s);
+                connect(_importFile.get(), SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
+                _importFile->importSheet();
             }
         } else if (uiImportDialog->selectedNameFilter() == CAFileFormats::MUSICXML_FILTER) {
-            /// \todo replace raw pointer with shared or unique pointer
-            import = new CAMusicXmlImport();
-            if (import) {
-                import->setStreamFromFile(s);
-                connect(import, SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
-                import->importDocument();
+            _importFile = std::make_unique<CAMusicXmlImport>();
+            if (_importFile) {
+                _importFile->setStreamFromFile(s);
+                connect(_importFile.get(), SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
+                _importFile->importDocument();
             }
         } else if (uiImportDialog->selectedNameFilter() == CAFileFormats::MXL_FILTER) {
-            import = new CAMXLImport();
-            if (import) {
-                import->setStreamFromFile(s);
-                connect(import, SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
-                import->importDocument();
+            _importFile = std::make_unique<CAMXLImport>();
+            if (_importFile) {
+                _importFile->setStreamFromFile(s);
+                connect(_importFile.get(), SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
+                _importFile->importDocument();
             }
         }
-        if (import)
-            _mainWinProgressCtl.startProgress(import);
+        if (_importFile) {
+            _mainWinProgressCtl.startProgress(*_importFile.get());
+        }
     }
 }
 

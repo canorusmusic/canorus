@@ -22,23 +22,16 @@
 */
 
 CAExternProgram::CAExternProgram(bool bRcvStdErr /* = true */, bool bRcvStdOut /* = true */)
+  : _poExternProgram(new QProcess())
 {
     _bRcvStdErr = bRcvStdErr;
-    _poExternProgram = new QProcess();
     _oParamDelimiter = " ";
-    connect(_poExternProgram, SIGNAL(error(QProcess::ProcessError)), this, SLOT(programError(QProcess::ProcessError)));
-    connect(_poExternProgram, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(programFinished(int, QProcess::ExitStatus)));
+    connect(_poExternProgram.get(), SIGNAL(error(QProcess::ProcessError)), this, SLOT(programError(QProcess::ProcessError)));
+    connect(_poExternProgram.get(), SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(programFinished(int, QProcess::ExitStatus)));
     if (bRcvStdOut)
-        connect(_poExternProgram, SIGNAL(readyReadStandardOutput()), this, SLOT(rcvProgramStdOut()));
+        connect(_poExternProgram.get(), SIGNAL(readyReadStandardOutput()), this, SLOT(rcvProgramStdOut()));
     if (bRcvStdErr)
-        connect(_poExternProgram, SIGNAL(readyReadStandardError()), this, SLOT(rcvProgramStdErr()));
-}
-
-// Destructor
-CAExternProgram::~CAExternProgram()
-{
-    if (_poExternProgram)
-        delete _poExternProgram;
+        connect(_poExternProgram.get(), SIGNAL(readyReadStandardError()), this, SLOT(rcvProgramStdErr()));
 }
 
 /*!

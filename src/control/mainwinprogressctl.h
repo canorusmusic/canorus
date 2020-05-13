@@ -10,6 +10,8 @@
 
 #include <QObject>
 
+#include <memory>
+
 class CAMainWin;
 class CAProgressStatusBar;
 class CAFile;
@@ -21,7 +23,7 @@ public:
     CAMainWinProgressCtl(CAMainWin* mainWin);
     ~CAMainWinProgressCtl();
 
-    void startProgress(CAFile* f);
+    void startProgress(CAFile &f);
 
 private slots:
     void on_updateTimer_timeout();
@@ -30,10 +32,10 @@ private slots:
 private:
     void restoreStatusBar();
 
-    CAMainWin* _mainWin;
-    CAProgressStatusBar* _bar;
-    QTimer* _updateTimer;
-    CAFile* _file;
+    std::unique_ptr<CAMainWin> _mainWin;
+    std::unique_ptr<CAProgressStatusBar> _bar;
+    std::unique_ptr<QTimer> _updateTimer;
+    CAFile *_file;
 };
 
 #endif /* MAINWINPROGRESSCTL_H_ */

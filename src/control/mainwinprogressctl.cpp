@@ -20,10 +20,7 @@ CAMainWinProgressCtl::CAMainWinProgressCtl(CAMainWin* mainWin)
 {
 }
 
-CAMainWinProgressCtl::~CAMainWinProgressCtl()
-{
-    delete _updateTimer;
-}
+CAMainWinProgressCtl::~CAMainWinProgressCtl() = default;
 
 void CAMainWinProgressCtl::on_updateTimer_timeout()
 {
@@ -33,8 +30,6 @@ void CAMainWinProgressCtl::on_updateTimer_timeout()
         if (_file->isFinished()) {
             restoreStatusBar();
             _updateTimer->stop();
-
-            delete _file;
         }
     }
 }
@@ -47,35 +42,33 @@ void CAMainWinProgressCtl::on_cancelButton_clicked(bool)
         _updateTimer->stop();
 
         _file->wait();
-        delete _file;
     }
 }
 
 void CAMainWinProgressCtl::restoreStatusBar()
 {
-    _mainWin->statusBar()->removeWidget(_bar);
-    delete _bar;
-    _bar = nullptr;
+    _mainWin->statusBar()->removeWidget(_bar.get());
+    _bar.reset();
 }
 
-void CAMainWinProgressCtl::startProgress(CAFile* f)
+void CAMainWinProgressCtl::startProgress(CAFile &f)
 {
-    _file = f;
+    _file = &f;
     _mainWin->setMode(CAMainWin::ProgressMode);
 
     if (_updateTimer) {
-        delete _updateTimer;
+        _updateTimer.reset();
     }
 
-    _updateTimer = new QTimer();
+    _updateTimer = std::make_unique<QTimer>(new QTimer());
     _updateTimer->setInterval(150);
     _updateTimer->setSingleShot(false);
 
-    connect(_updateTimer, SIGNAL(timeout()), this, SLOT(on_updateTimer_timeout()));
+    connect(_updateTimer.get(), SIGNAL(timeout()), this, SLOT(on_updateTimer_timeout()));
 
-    _bar = new CAProgressStatusBar(_mainWin);
-    _mainWin->statusBar()->addWidget(_bar);
-    connect(_bar, SIGNAL(cancelButtonClicked(bool)), this, SLOT(on_cancelButton_clicked(bool)));
+    _bar = std::make_unique<CAProgressStatusBar>(new CAProgressStatusBar(_mainWin.get()));
+    _mainWin->statusBar()->addWidget(_bar.get());
+    connect(_bar.get(), SIGNAL(cancelButtonClicked(bool)), this, SLOT(on_cancelButton_clicked(bool)));
 
     _updateTimer->start();
 }

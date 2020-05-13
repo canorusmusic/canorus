@@ -13,6 +13,8 @@
 #include <QProcess>
 #include <QStringList>
 
+#include <memory>
+
 // Forward declarations
 
 // This class is used to run a program in the background
@@ -24,7 +26,6 @@ class CAExternProgram : public QObject {
 
 public:
     CAExternProgram(bool bRcvStdErr = true, bool bRcvStdOut = true);
-    ~CAExternProgram();
 
     void setProgramName(const QString& roProgram);
     void setProgramPath(const QString& roPath);
@@ -64,7 +65,7 @@ protected:
     void programExited();
 
     // References to the real objects(!)
-    QProcess* _poExternProgram; // Process object running the watched program
+    std::unique_ptr<QProcess> _poExternProgram; // Process object running the watched program
     QString _oProgramName; // Program name to be run
     QString _oProgramPath; // Program path being added to the program name
     QStringList _oParameters; // List of program parameters
