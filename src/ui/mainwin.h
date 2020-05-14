@@ -48,8 +48,6 @@ class QAction;
 
 class CAKeySignatureUI;
 
-class CAMainWinProgressCtl;
-
 #ifdef QT_WEBENGINEWIDGETS_LIB
 class CAHelpBrowser;
 #endif
@@ -71,6 +69,7 @@ class CAMidiRecorderView;
 class CAKeybdInput;
 class CAExport;
 class CAActionStorage;
+class CAImport;
 
 class CAMainWin : public QMainWindow, private Ui::uiMainWindow {
     Q_OBJECT
@@ -404,6 +403,7 @@ private:
     unsigned int _timeEditedTime;
     CAMusElementFactory* _musElementFactory;
     CANoteChecker _noteChecker;
+    std::unique_ptr<CAImport> _importFile;
 
 public:
     inline CAMusElementFactory* musElementFactory() { return _musElementFactory; }
