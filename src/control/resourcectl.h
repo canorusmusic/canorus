@@ -11,6 +11,8 @@
 #include <QList>
 #include <QString>
 
+#include <memory>
+
 #include "score/resource.h"
 
 class CAResourceCtl {
@@ -18,9 +20,9 @@ public:
     CAResourceCtl();
     virtual ~CAResourceCtl();
 
-    static CAResource* importResource(QString name, QString fileName, bool isLinked = false, CADocument* parent = nullptr, CAResource::CAResourceType t = CAResource::Other);
-    static CAResource* createEmptyResource(QString name, CADocument* parent = nullptr, CAResource::CAResourceType t = CAResource::Other);
-    static void deleteResource(CAResource*);
+    static std::shared_ptr<CAResource> importResource(QString name, QString fileName, bool isLinked = false, CADocument* parent = nullptr, CAResource::CAResourceType t = CAResource::Other);
+    static std::shared_ptr<CAResource> createEmptyResource(QString name, CADocument* parent = nullptr, CAResource::CAResourceType t = CAResource::Other);
+    static void deleteResource(std::shared_ptr<CAResource>);
 };
 
 #endif /* RESOURCECTL_H_ */

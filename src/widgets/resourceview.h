@@ -11,6 +11,8 @@
 #include <QMap>
 #include <QTreeWidget>
 
+#include <memory>
+
 class QWidget;
 class CADocument;
 class CAResource;
@@ -40,7 +42,7 @@ private:
     void contextMenuEvent(QContextMenuEvent* e);
 
     CADocument* _document;
-    QMap<QTreeWidgetItem*, CAResource*> _items;
+    QMap<QTreeWidgetItem*, std::shared_ptr<CAResource> > _items;
 };
 
 #endif /* RESOURCEVIEW_H_ */

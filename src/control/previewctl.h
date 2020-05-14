@@ -15,6 +15,8 @@
 #include <QVariant>
 #include <QVector>
 
+#include <memory>
+
 // Forward declarations
 class CAMainWin;
 class CAPDFExport;
@@ -34,7 +36,7 @@ protected slots:
 
 protected:
     CAMainWin* _poMainWin;
-    CAPDFExport* _poPDFExport;
+    std::unique_ptr<CAPDFExport> _poPDFExport;
     QString _oOutputPDFName;
 };
 

@@ -12,6 +12,8 @@
 #include <QList>
 #include <QString>
 
+#include <memory>
+
 class CASheet;
 class CAArchive;
 class CAResource;
@@ -30,9 +32,9 @@ public:
     inline void removeSheet(CASheet* sheet) { _sheetList.removeAll(sheet); }
     CASheet* findSheet(const QString name);
 
-    const QList<CAResource*>& resourceList() { return _resourceList; }
-    inline void addResource(CAResource* r) { _resourceList << r; }
-    inline void removeResource(CAResource* r) { _resourceList.removeAll(r); }
+    const QList<std::shared_ptr<CAResource> >& resourceList() { return _resourceList; }
+    inline void addResource(std::shared_ptr<CAResource> r) { _resourceList << r; }
+    inline void removeResource(std::shared_ptr<CAResource> r) { _resourceList.removeAll(r); }
 
     const QString title() { return _title; }
     const QString subtitle() { return _subtitle; }
@@ -73,7 +75,7 @@ public:
 
 private:
     QList<CASheet*> _sheetList;
-    QList<CAResource*> _resourceList;
+    QList<std::shared_ptr<CAResource> > _resourceList;
 
     QString _title;
     QString _subtitle;

@@ -57,25 +57,25 @@ CAResourceCtl::~CAResourceCtl()
 	If the resource is not linked, the \a fileName should be absolute path to the file, resource
 	is copied and registered.
  */
-CAResource* CAResourceCtl::importResource(QString name, QString fileName, bool isLinked, CADocument* parent, CAResource::CAResourceType t)
+std::shared_ptr<CAResource> CAResourceCtl::importResource(QString name, QString fileName, bool isLinked, CADocument* parent, CAResource::CAResourceType t)
 {
-    CAResource* r = nullptr;
+    std::shared_ptr<CAResource> r;
     if (isLinked) {
-        r = new CAResource(fileName, name, true, t, parent);
+        r = std::make_shared<CAResource>(fileName, name, true, t, parent);
     } else {
-        QTemporaryFile* f = new QTemporaryFile(QDir::tempPath() + "/" + name);
+        std::unique_ptr<QTemporaryFile> f = std::make_unique<QTemporaryFile>(QDir::tempPath() + "/" + name);
         f->open();
         QString targetFile = QFileInfo(*f).absoluteFilePath();
         f->close();
-        delete f;
+        f.reset();
 
         if (QFile::exists(fileName)) {
             QFile::copy(fileName, targetFile);
-            r = new CAResource(QUrl::fromLocalFile(targetFile), name, false, t, parent);
+            r = std::make_shared<CAResource>(QUrl::fromLocalFile(targetFile), name, false, t, parent);
         } else {
             // file doesn't exist yet (eg. hasn't been extracted yet)
             // create a dummy resource using fileName url
-            r = new CAResource(fileName, name, false, t, parent);
+            r = std::make_shared<CAResource>(fileName, name, false, t, parent);
         }
     }
 
@@ -98,13 +98,13 @@ CAResource* CAResourceCtl::importResource(QString name, QString fileName, bool i
 	Creates an empty resource file.
 	This function is usually called when launching Midi recorder.
  */
-CAResource* CAResourceCtl::createEmptyResource(QString name, CADocument* parent, CAResource::CAResourceType t)
+std::shared_ptr<CAResource> CAResourceCtl::createEmptyResource(QString name, CADocument* parent, CAResource::CAResourceType t)
 {
     QTemporaryFile f(QDir::tempPath() + "/" + name);
     f.open();
     QString fileName = QFileInfo(f).absoluteFilePath();
     f.close();
-    CAResource* r = new CAResource(QUrl::fromLocalFile(fileName), name, false, t, parent);
+    std::shared_ptr<CAResource> r = std::make_shared<CAResource>(QUrl::fromLocalFile(fileName), name, false, t, parent);
 
     if (parent) {
 #ifndef SWIGCPP
@@ -125,7 +125,7 @@ CAResource* CAResourceCtl::createEmptyResource(QString name, CADocument* parent,
 /*!
 	Removes the given resource \a r from all the undo/redo document instances and destroys it.
  */
-void CAResourceCtl::deleteResource(CAResource* r)
+void CAResourceCtl::deleteResource(std::shared_ptr<CAResource> r)
 {
     if (r->document()) {
 #ifndef SWIGCPP
@@ -140,5 +140,5 @@ void CAResourceCtl::deleteResource(CAResource* r)
 #endif
     }
 
-    delete r;
+    r.reset();
 }

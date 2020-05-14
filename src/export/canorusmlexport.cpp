@@ -560,7 +560,7 @@ void CACanorusMLExport::exportDiatonicKey(CADiatonicKey k, QDomElement& domParen
 void CACanorusMLExport::exportResources(CADocument* doc, QDomElement& dCanorusDocument)
 {
     for (int i = 0; i < doc->resourceList().size(); i++) {
-        CAResource* r = doc->resourceList()[i];
+        std::shared_ptr<CAResource> r = doc->resourceList()[i];
         QUrl url;
 
         if (r->isLinked()) {

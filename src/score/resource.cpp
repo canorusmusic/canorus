@@ -46,7 +46,7 @@ CAResource::CAResource(QUrl url, QString name, bool linked, CAResourceType t, CA
 CAResource::~CAResource()
 {
     if (document()) {
-        document()->removeResource(this);
+        document()->removeResource(shared_from_this());
     }
 
     if (!isLinked()) {

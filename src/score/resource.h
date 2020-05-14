@@ -10,9 +10,15 @@
 
 #include <QUrl>
 
+#include <memory>
+
 class CADocument;
 
-class CAResource {
+class CAResource
+#ifndef SWIG
+        : public std::enable_shared_from_this<CAResource>
+#endif
+{
 public:
     enum CAResourceType {
         Undefined = -1, // error

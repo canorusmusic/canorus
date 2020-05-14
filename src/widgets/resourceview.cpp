@@ -57,7 +57,7 @@ void CAResourceView::rebuildUi()
     clear();
     _items.clear();
 
-    QList<CAResource*> sItems;
+    QList<std::shared_ptr<CAResource> > sItems;
     for (int i = 0; i < selectedItems().size(); i++) {
         if (_items[selectedItems()[i]]) {
             sItems << _items[selectedItems()[i]];
@@ -109,7 +109,7 @@ void CAResourceView::contextMenuEvent(QContextMenuEvent* e)
     QList<QTreeWidgetItem*> selection = selectedItems();
 
     if (selection.size() && _items[selection[0]]) {
-        CAResource* resource = _items[selection[0]];
+        std::shared_ptr<CAResource> resource = _items[selection[0]];
 
         QList<QAction*> actions;
         QAction* rename = new QAction(tr("Rename"), this);

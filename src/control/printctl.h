@@ -16,6 +16,8 @@
 #include <QVariant>
 #include <QVector>
 
+#include <memory>
+
 // Forward declarations
 class CAMainWin;
 class CASVGExport;
@@ -38,7 +40,7 @@ protected:
     void printDocument();
 
     CAMainWin* _poMainWin;
-    CASVGExport* _poSVGExport;
+    std::unique_ptr<CASVGExport> _poSVGExport;
     QString _oOutputSVGName;
     bool _showDialog; // used when printing directly
 };
