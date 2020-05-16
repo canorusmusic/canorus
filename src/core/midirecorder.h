@@ -11,6 +11,8 @@
 #include <QTimer>
 #include <QVector>
 
+#include <memory>
+
 class CAMidiExport;
 class CAResource;
 class CAMidiDevice;
@@ -20,7 +22,7 @@ class CAMidiRecorder : public QObject {
     Q_OBJECT
 #endif
 public:
-    CAMidiRecorder(CAResource* r, CAMidiDevice* d);
+    CAMidiRecorder(std::shared_ptr<CAResource> r, CAMidiDevice* d);
     virtual ~CAMidiRecorder();
 
     void startRecording(int time = 0);
@@ -36,7 +38,7 @@ private slots:
 #endif
 
 private:
-    CAResource* _resource;
+    std::shared_ptr<CAResource> _resource;
     CAMidiExport* _midiExport;
     QTimer* _timer;
     unsigned int _curTime;

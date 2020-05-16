@@ -905,7 +905,7 @@ void CACanorusMLImport::importResource(const QXmlAttributes& attributes)
 {
     bool isLinked = attributes.value("linked").toInt();
 
-    CAResource* r;
+    std::shared_ptr<CAResource> r;
     QUrl url = attributes.value("url");
     QString name = attributes.value("name");
     QString description = attributes.value("description");

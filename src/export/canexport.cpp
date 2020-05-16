@@ -43,7 +43,7 @@ void CACanExport::exportDocumentImpl(CADocument* doc)
     }
 
     for (int i = 0; i < doc->resourceList().size(); i++) {
-        CAResource* r = doc->resourceList()[i];
+        std::shared_ptr<CAResource> r = doc->resourceList()[i];
         if (!r->isLinked()) {
             // /tmp/qt_tempXXXXX -> qt_tempXXXXX
             QFile target(r->url().toLocalFile());
@@ -53,7 +53,7 @@ void CACanExport::exportDocumentImpl(CADocument* doc)
 
     /// \todo fix relative paths
     for (int i = 0; i < doc->resourceList().size(); i++) {
-        CAResource* r = doc->resourceList()[i];
+        std::shared_ptr<CAResource> r = doc->resourceList()[i];
         if (r->isLinked()) {
             // fix relative paths
             continue;

@@ -4475,7 +4475,7 @@ void CAMainWin::on_uiSettings_triggered()
 void CAMainWin::on_uiMidiRecorder_triggered()
 {
     if (document()) {
-        CAResource* myMidiFile = CAResourceCtl::createEmptyResource(tr("Recorded Midi file"), document(), CAResource::Sound);
+        std::shared_ptr<CAResource> myMidiFile = CAResourceCtl::createEmptyResource(tr("Recorded Midi file"), document(), CAResource::Sound);
 
         if (_midiRecorderView) {
             delete _midiRecorderView;

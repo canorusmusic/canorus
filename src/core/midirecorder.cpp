@@ -24,7 +24,7 @@
 	3) Call stop() when recording is done. Class will write the midi data and
 	   close the stream.
  */
-CAMidiRecorder::CAMidiRecorder(CAResource* r, CAMidiDevice* d)
+CAMidiRecorder::CAMidiRecorder(std::shared_ptr<CAResource> r, CAMidiDevice* d)
     : QObject()
     , _resource(r)
     , _midiExport(nullptr)

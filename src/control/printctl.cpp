@@ -24,23 +24,17 @@ CAPrintCtl::CAPrintCtl(CAMainWin* poMainWin)
 {
     setObjectName("oPrintCtl");
     _poMainWin = poMainWin;
-    _poSVGExport = new CASVGExport();
+    _poSVGExport = std::make_unique<CASVGExport>();
     _showDialog = true;
     if (poMainWin == nullptr)
         qCritical("PrintCtl: No mainwindow instance available!");
     else
         CACanorus::connectSlotsByName(_poMainWin, this);
-    connect(_poSVGExport, SIGNAL(svgIsFinished(int)), this, SLOT(printSVG(int)));
+    connect(_poSVGExport.get(), SIGNAL(svgIsFinished(int)), this, SLOT(printSVG(int)));
 }
 
 // Destructor
-CAPrintCtl::~CAPrintCtl()
-{
-    if (_poSVGExport) {
-        delete _poSVGExport;
-    }
-    _poSVGExport = nullptr;
-}
+CAPrintCtl::~CAPrintCtl() = default;
 
 void CAPrintCtl::on_uiPrint_triggered()
 {

@@ -22,22 +22,17 @@ CAPreviewCtl::CAPreviewCtl(CAMainWin* poMainWin)
 {
     setObjectName("oPreviewCtl");
     _poMainWin = poMainWin;
-    _poPDFExport = new CAPDFExport();
-    if (poMainWin == nullptr)
+    _poPDFExport = std::make_unique<CAPDFExport>();
+    if (!poMainWin) {
         qCritical("PreviewCtl: No mainwindow instance available!");
-    else
+    }
+    else {
         CACanorus::connectSlotsByName(_poMainWin, this);
-    connect(_poPDFExport, SIGNAL(pdfIsFinished(int)), this, SLOT(showPDF(int)));
+    }
+    connect(_poPDFExport.get(), SIGNAL(pdfIsFinished(int)), this, SLOT(showPDF(int)));
 }
 
-// Destructor
-CAPreviewCtl::~CAPreviewCtl()
-{
-    if (_poPDFExport) {
-        delete _poPDFExport;
-    }
-    _poPDFExport = nullptr;
-}
+CAPreviewCtl::~CAPreviewCtl() = default;
 
 void CAPreviewCtl::on_uiPrintPreview_triggered()
 {

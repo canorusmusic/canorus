@@ -46,7 +46,7 @@ CADocument* CACanImport::importDocumentImpl()
 
         // extract each resource and correct resource path
         for (int i = 0; i < doc->resourceList().size(); i++) {
-            CAResource* r = doc->resourceList()[i];
+            std::shared_ptr<CAResource> r = doc->resourceList()[i];
             if (!r->isLinked()) {
                 // attached file - copy to /tmp
                 CAIOPtr rPtr = arc->file(r->url().toLocalFile()); // chop the two leading slashes

@@ -310,7 +310,7 @@ void CACanorus::parseOpenFileArguments(int argc, char* argv[])
             if (!file.exists())
                 continue;
 
-            CAMainWin* mainWin = new CAMainWin();
+            std::unique_ptr<CAMainWin> mainWin = std::make_unique<CAMainWin>();
             mainWin->openDocument(file.absoluteFilePath());
             mainWin->show();
         }
