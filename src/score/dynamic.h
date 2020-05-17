@@ -41,7 +41,7 @@ public:
     CADynamic(QString text, int volume, CANote* note);
     virtual ~CADynamic();
 
-    CADynamic* clone(CAMusElement* elt = nullptr);
+    std::shared_ptr<CADynamic> cloneDynamic(CAMusElement* elt = nullptr);
     int compare(CAMusElement*);
 
     inline const QString text() { return _text; }

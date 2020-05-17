@@ -2694,15 +2694,16 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView* v)
 
             success = musElementFactory()->configureNote(drawableStaff->calculatePitch(coords.x(), coords.y()), voice, next, false);
 
-            if (success)
-                playableList.insert(tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()));
+            if (success) {
+                playableList.insert(tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement().get()));
+            }
 
             if (success && tuplet) {
                 new CATuplet(number, actualNumber, playableList);
             }
 
             if (success && CACanorus::settings()->autoBar()) {
-                CAStaff::placeAutoBar(static_cast<CAPlayable*>(musElementFactory()->musElement()));
+                CAStaff::placeAutoBar(static_cast<CAPlayable*>(musElementFactory()->musElement().get()));
             }
         } else {
 
@@ -2714,17 +2715,17 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView* v)
 
             success = musElementFactory()->configureNote(drawableStaff->calculatePitch(coords.x(), coords.y()), voice, dright ? dright->musElement() : nullptr, false);
             if (success && CACanorus::settings()->autoBar())
-                CAStaff::placeAutoBar(static_cast<CAPlayable*>(musElementFactory()->musElement()));
+                CAStaff::placeAutoBar(static_cast<CAPlayable*>(musElementFactory()->musElement().get()));
 
             if (success && uiTupletType->isChecked()) {
                 QList<CAPlayable*> elements;
-                elements << static_cast<CAPlayable*>(musElementFactory()->musElement());
+                elements << static_cast<CAPlayable*>(musElementFactory()->musElement().get());
 
                 for (int i = 1; i < uiTupletNumber->value(); i++) {
                     musElementFactory()->configureRest(voice, dright ? dright->musElement() : nullptr);
-                    elements << static_cast<CAPlayable*>(musElementFactory()->musElement());
+                    elements << static_cast<CAPlayable*>(musElementFactory()->musElement().get());
                 }
-                musElementFactory()->setMusElement(elements[0]);
+                musElementFactory()->setMusElement(std::shared_ptr<CAPlayable>(elements[0]));
 
                 new CATuplet(uiTupletNumber->value(), uiTupletActualNumber->value(), elements);
             }
@@ -2732,7 +2733,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView* v)
 
         if (success) {
             if (musElementFactory()->musElement()->musElementType() == CAMusElement::Note && CACanorus::settings()->playInsertedNotes()) {
-                playImmediately(QList<CAMusElement*>() << musElementFactory()->musElement());
+                playImmediately(QList<CAMusElement*>() << musElementFactory()->musElement().get());
             }
 
             musElementFactory()->setNoteExtraAccs(0);
@@ -2812,7 +2813,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView* v)
             success = musElementFactory()->configureRest(voice, next);
 
             if (success) {
-                playableList.insert(tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement()));
+                playableList.insert(tupIndex, static_cast<CAPlayable*>(musElementFactory()->musElement().get()));
             }
 
             if (success && tuplet) {
@@ -2820,7 +2821,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView* v)
             }
 
             if (success && CACanorus::settings()->autoBar()) {
-                CAStaff::placeAutoBar(static_cast<CAPlayable*>(musElementFactory()->musElement()));
+                CAStaff::placeAutoBar(static_cast<CAPlayable*>(musElementFactory()->musElement().get()));
             }
         } else {
             if (dright && dright->musElement() && dright->musElement()->isPlayable() && static_cast<CAPlayable*>(dright->musElement())->tuplet() && !static_cast<CAPlayable*>(dright->musElement())->isFirstInTuplet()) {
@@ -2829,7 +2830,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView* v)
 
             success = musElementFactory()->configureRest(voice, dright ? dright->musElement() : nullptr);
             if (success && CACanorus::settings()->autoBar())
-                CAStaff::placeAutoBar(static_cast<CAPlayable*>(musElementFactory()->musElement()));
+                CAStaff::placeAutoBar(static_cast<CAPlayable*>(musElementFactory()->musElement().get()));
         }
 
         if (success) {
@@ -2946,7 +2947,7 @@ bool CAMainWin::insertMusElementAt(const QPoint coords, CAScoreView* v)
             _noteChecker.checkSheet(v->sheet());
         }
         CACanorus::rebuildUI(document(), v->sheet());
-        CADrawableMusElement* d = v->selectMElement(musElementFactory()->musElement());
+        CADrawableMusElement* d = v->selectMElement(musElementFactory()->musElement().get());
         musElementFactory()->emptyMusElem();
 
         // move the view to the right, if the right border was hit
@@ -3496,7 +3497,7 @@ void CAMainWin::on_uiImportDocument_triggered()
             // activate this filter in src/canorus.cpp when sheet import is usable
             if (!document())
                 newDocument();
-            _importFile = std::make_unique<CALilyPondImport>();
+            _importFile = std::make_unique<CALilyPondImport>(document());
             if (_importFile) {
                 _importFile->setStreamFromFile(s);
                 connect(_importFile.get(), SIGNAL(importDone(int)), this, SLOT(onImportDone(int)));
@@ -5454,12 +5455,12 @@ void CAMainWin::copySelection(CAScoreView* v)
                             }
                         }
                     }
-                    CAPlayable* cloned = pl->clone(voices[idx]);
+                    CAPlayable* cloned = pl->clonePlayable(voices[idx]).get();
                     voices[idx]->append(cloned, addToChord);
                     if (pl->tuplet()) {
                         tupletMap[pl->tuplet()] << cloned;
                         if (tupletMap[pl->tuplet()].size() == pl->tuplet()->noteList().size())
-                            pl->tuplet()->clone(tupletMap[pl->tuplet()]);
+                            pl->tuplet()->cloneTuplet(tupletMap[pl->tuplet()]).get();
                     }
                     if (note) {
                         QList<CASlur*> slurs;
@@ -5470,7 +5471,7 @@ void CAMainWin::copySelection(CAScoreView* v)
                                 slurMap[s] = static_cast<CANote*>(cloned);
                             else {
                                 CANote *noteStart = slurMap[s], *noteEnd = static_cast<CANote*>(cloned);
-                                CASlur* newSlur = s->clone(noteStart->context(), noteStart, noteEnd);
+                                CASlur* newSlur = s->cloneSlur(noteStart->context(), noteStart, noteEnd).get();
                                 switch (s->slurType()) {
                                 case CASlur::TieType:
                                     noteStart->setTieStart(newSlur);
@@ -5489,7 +5490,7 @@ void CAMainWin::copySelection(CAScoreView* v)
                         }
                     }
                 } else
-                    defaultVoice->append(elt->clone(newStaff));
+                    defaultVoice->append(elt->cloneMusElement(newStaff).get());
             }
 
             voices.removeAll(nullptr);
@@ -5511,7 +5512,7 @@ void CAMainWin::copySelection(CAScoreView* v)
             CALyricsContext* newLc = new CALyricsContext("", 0 /*FIXME*/, associated);
             contexts[i] = newLc;
             for (CAMusElement* elt : eltMap[context])
-                newLc->addSyllable(static_cast<CASyllable*>(elt->clone(newLc)), false);
+                newLc->addSyllable(static_cast<CASyllable*>(elt->cloneMusElement(newLc).get()), false);
         }
 
         QApplication::clipboard()->setMimeData(new CAMimeData(contexts));
@@ -5858,7 +5859,7 @@ void CAMainWin::pasteAt(const QPoint coords, CAScoreView* v)
                     QHash<CATuplet*, QList<CAPlayable*>> tupletMap;
                     QHash<CASlur*, CANote*> slurMap;
                     for (CAMusElement* elt : cbstaff->voiceList()[cbi]->musElementList()) {
-                        CAMusElement* cloned = (elt->isPlayable()) ? static_cast<CAPlayable*>(elt)->clone(staff->voiceList()[i]) : elt->clone(staff);
+                        CAMusElement* cloned = (elt->isPlayable()) ? static_cast<CAPlayable*>(elt)->clonePlayable(staff->voiceList()[i]).get() : elt->cloneMusElement(staff).get();
                         CANote* n = (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr;
                         CAMusElement* prev = cbstaff->voiceList()[cbi]->previous(n);
                         CANote* prevNote = (prev && prev->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(prev) : nullptr;
@@ -5872,7 +5873,7 @@ void CAMainWin::pasteAt(const QPoint coords, CAScoreView* v)
                                     slurMap[s] = static_cast<CANote*>(cloned);
                                 else {
                                     CANote *noteStart = slurMap[s], *noteEnd = static_cast<CANote*>(cloned);
-                                    CASlur* newSlur = s->clone(noteStart->context(), noteStart, noteEnd);
+                                    CASlur* newSlur = s->cloneSlur(noteStart->context(), noteStart, noteEnd).get();
                                     switch (s->slurType()) {
                                     case CASlur::TieType:
                                         noteStart->setTieStart(newSlur);
@@ -5897,7 +5898,7 @@ void CAMainWin::pasteAt(const QPoint coords, CAScoreView* v)
                             if (pl->tuplet()) {
                                 tupletMap[pl->tuplet()] << static_cast<CAPlayable*>(cloned);
                                 if (tupletMap[pl->tuplet()].size() == pl->tuplet()->noteList().size())
-                                    pl->tuplet()->clone(tupletMap[pl->tuplet()]);
+                                    pl->tuplet()->cloneTuplet(tupletMap[pl->tuplet()]);
                             }
                         }
                         // FIXME duplicated from CAMusElementFactory::configureNote.
@@ -5927,7 +5928,7 @@ void CAMainWin::pasteAt(const QPoint coords, CAScoreView* v)
                     int offset = lc->syllableList()[0]->timeStart() - (drawable ? drawable->musElement()->timeStart() : 0);
                     // Add syllables until there are no more notes, [popping existing syllables on the right end?].
                     for (CASyllable* syl : lc->syllableList()) {
-                        CASyllable* clone = syl->clone(currentLc);
+                        CASyllable* clone = syl->cloneSyllable(currentLc).get();
                         clone->setTimeStart(clone->timeStart() - offset);
                         currentLc->addSyllable(clone, false);
                         newEltList << clone;

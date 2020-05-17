@@ -50,16 +50,21 @@ bool CAFunctionMark::isSideDegree()
         return false;
 }
 
-CAFunctionMark* CAFunctionMark::clone(CAContext* context)
+std::shared_ptr<CAMusElement> CAFunctionMark::cloneRealElement(CAContext* context)
 {
-    CAFunctionMark* newElt;
-    newElt = new CAFunctionMark(function(), isMinor(), key(), static_cast<CAFunctionMarkContext*>(context), timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
+    return cloneFunctionMark(context);
+}
+
+std::shared_ptr<CAFunctionMark> CAFunctionMark::cloneFunctionMark(CAContext *context)
+{
+    std::shared_ptr<CAFunctionMark> newElt;
+    newElt = std::make_shared<CAFunctionMark>(function(), isMinor(), key(), static_cast<CAFunctionMarkContext*>(context), timeStart(), timeLength(), chordArea(), isChordAreaMinor(), tonicDegree(), isTonicDegreeMinor(), "", isPartOfEllipse());
     newElt->setAlteredDegrees(_alteredDegrees);
     newElt->setAddedDegrees(_addedDegrees);
 
     for (int i = 0; i < markList().size(); i++) {
-        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(newElt));
-        newElt->addMark(m);
+        auto m = (markList()[i]->cloneMark(newElt.get()));
+        newElt->addMark(m.get());
     }
 
     return newElt;

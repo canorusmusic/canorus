@@ -24,29 +24,17 @@
 
 CATypesetCtl::CATypesetCtl()
 {
-    _poTypesetter = new CAExternProgram;
-    _poConvPS2PDF = new CAExternProgram;
+    _poTypesetter = std::make_unique<CAExternProgram>();
+    _poConvPS2PDF = std::make_unique<CAExternProgram>();
     _poExport = nullptr;
-    _poOutputFile = nullptr;
     _bPDFConversion = false;
     _bOutputFileNameFirst = false;
-    connect(_poTypesetter, SIGNAL(programExited(int)), this, SLOT(typsetterExited(int)));
-    connect(_poTypesetter, SIGNAL(nextOutput(const QByteArray&)), this, SLOT(rcvTypesetterOutput(const QByteArray&)));
+    connect(_poTypesetter.get(), SIGNAL(programExited(int)), this, SLOT(typsetterExited(int)));
+    connect(_poTypesetter.get(), SIGNAL(nextOutput(const QByteArray&)), this, SLOT(rcvTypesetterOutput(const QByteArray&)));
 }
 
 // Destructor
-CATypesetCtl::~CATypesetCtl()
-{
-    if (_poTypesetter)
-        delete _poTypesetter;
-    _poTypesetter = nullptr;
-    if (_poConvPS2PDF)
-        delete _poConvPS2PDF;
-    _poConvPS2PDF = nullptr;
-    if (_poOutputFile)
-        delete _poOutputFile;
-    _poOutputFile = nullptr;
-}
+CATypesetCtl::~CATypesetCtl() = default;
 
 /*!
 	Defines the typesetter executable name to be run
@@ -156,10 +144,10 @@ void CATypesetCtl::exportDocument(CADocument* poDoc)
     /// \todo: Add export options to the document directly ?
     if (_poExport) {
         if (_poOutputFile) {
-            delete _poOutputFile;
+            _poOutputFile.reset();
             _poTypesetter->clearParameters();
         }
-        _poOutputFile = new QTemporaryFile;
+        _poOutputFile = std::make_unique<QTemporaryFile>();
         // Create the unique file as the file name is only defined when opening the file
         _poOutputFile->open();
         // Add the input file name as default parameter.
@@ -169,7 +157,7 @@ void CATypesetCtl::exportDocument(CADocument* poDoc)
         // Only add output file name as first parameter file name if it is needed
         if (true == _bOutputFileNameFirst)
             _poTypesetter->addParameter(_oOutputFileName, false);
-        _poExport->setStreamToDevice(_poOutputFile);
+        _poExport->setStreamToDevice(_poOutputFile.get());
         _poExport->exportDocument(poDoc);
         // @ToDo use signal/slot mechanism to wait for the file
         _poExport->wait();
@@ -191,10 +179,10 @@ void CATypesetCtl::exportSheet(CASheet* poSheet)
     /// \todo: Add export options to the document directly ?
     if (_poExport) {
         if (_poOutputFile) {
-            delete _poOutputFile;
+            _poOutputFile.reset();
             _poTypesetter->clearParameters();
         }
-        _poOutputFile = new QTemporaryFile;
+        _poOutputFile = std::make_unique<QTemporaryFile>();
         // Create the unique file as the file name is only defined when opening the file
         _poOutputFile->open();
         // Add the input file name as default parameter.
@@ -204,7 +192,7 @@ void CATypesetCtl::exportSheet(CASheet* poSheet)
         // Only add output file name as first parameter file name if it is needed
         if (true == _bOutputFileNameFirst)
             _poTypesetter->addParameter(_oOutputFileName, false);
-        _poExport->setStreamToDevice(_poOutputFile);
+        _poExport->setStreamToDevice(_poOutputFile.get());
         _poExport->exportSheet(poSheet);
         // @ToDo use signal/slot mechanism to wait for the file
         _poExport->wait();

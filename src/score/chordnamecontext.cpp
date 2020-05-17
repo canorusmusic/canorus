@@ -44,7 +44,7 @@ void CAChordNameContext::addChordName(CAChordName* m, bool replace)
     for (i = 0; i < _chordNameList.size() && _chordNameList[i]->timeStart() < m->timeStart(); i++)
         ;
     if (i < _chordNameList.size() && replace) {
-        delete _chordNameList.takeAt(i);
+        _chordNameList.takeAt(i);
     }
     _chordNameList.insert(i, m);
     for (i++; i < _chordNameList.size(); i++) {
@@ -61,7 +61,8 @@ void CAChordNameContext::addEmptyChordName(int timeStart, int timeLength)
     int i;
     for (i = 0; i < _chordNameList.size() && _chordNameList[i]->timeStart() < timeStart; i++)
         ;
-    _chordNameList.insert(i, (new CAChordName(CADiatonicPitch::Undefined, "", this, timeStart, timeLength)));
+    auto newChordName = std::make_shared<CAChordName>(CADiatonicPitch::Undefined, "", this, timeStart, timeLength);
+    _chordNameList.insert(i, (newChordName.get()));
     for (i++; i < _chordNameList.size(); i++)
         _chordNameList[i]->setTimeStart(_chordNameList[i]->timeStart() + timeLength);
 }
@@ -112,21 +113,27 @@ CAChordName* CAChordNameContext::chordNameAtTimeStart(int time)
     }
 }
 
-CAContext* CAChordNameContext::clone(CASheet* s)
+std::shared_ptr<CAContext> CAChordNameContext::cloneRealContext(CASheet *s)
 {
-    CAChordNameContext* newCnc = new CAChordNameContext(name(), s);
+    return cloneChordNameContext(s);
+}
+
+std::shared_ptr<CAChordNameContext> CAChordNameContext::cloneChordNameContext(CASheet* s)
+{
+    std::shared_ptr<CAChordNameContext> newCnc = std::make_shared<CAChordNameContext>(name(), s);
 
     for (int i = 0; i < _chordNameList.size(); i++) {
-        CAChordName* newCn = static_cast<CAChordName*>(_chordNameList[i]->clone(newCnc));
-        newCnc->addChordName(newCn);
+        auto newCn = (_chordNameList[i]->cloneChordName(newCnc.get()));
+        newCnc->addChordName(newCn.get());
     }
     return newCnc;
 }
 
 void CAChordNameContext::clear()
 {
-    while (!_chordNameList.isEmpty())
-        delete _chordNameList.takeFirst();
+    while (!_chordNameList.isEmpty()) {
+        _chordNameList.takeFirst();
+    }
 }
 
 CAMusElement* CAChordNameContext::next(CAMusElement* elt)
@@ -160,9 +167,6 @@ bool CAChordNameContext::remove(CAMusElement* elt)
 
     bool success = false;
     success = _chordNameList.removeAll(static_cast<CAChordName*>(elt));
-
-    if (success)
-        delete elt;
 
     return success;
 }

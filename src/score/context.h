@@ -10,6 +10,8 @@
 
 #include <QString>
 
+#include <memory>
+
 class CASheet;
 class CAMusElement;
 
@@ -17,7 +19,7 @@ class CAContext {
 public:
     CAContext(const QString name, CASheet* s);
     virtual ~CAContext();
-    virtual CAContext* clone(CASheet*) = 0;
+    virtual std::shared_ptr<CAContext> cloneRealContext(CASheet*) = 0;
 
     enum CAContextType {
         Staff,

@@ -16,7 +16,7 @@ public:
     CATempo(CAPlayableLength l, unsigned char bpm, CAMusElement* m);
     virtual ~CATempo();
 
-    CATempo* clone(CAMusElement* elt = nullptr);
+    std::shared_ptr<CATempo> cloneTempo(CAMusElement* elt = nullptr);
     int compare(CAMusElement* elt);
 
     inline unsigned char bpm() { return _bpm; }

@@ -26,7 +26,7 @@ public:
     };
 
     CANote(CADiatonicPitch pitch, CAPlayableLength length, CAVoice* voice, int timeStart, int timeLength = -1);
-    CANote* clone(CAVoice* voice = 0);
+    std::shared_ptr<CAPlayable> clonePlayable(CAVoice* voice = 0);
 
     virtual ~CANote();
 

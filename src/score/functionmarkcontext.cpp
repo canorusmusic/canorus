@@ -34,13 +34,18 @@ CAFunctionMarkContext::~CAFunctionMarkContext()
     clear();
 }
 
-CAFunctionMarkContext* CAFunctionMarkContext::clone(CASheet* s)
+std::shared_ptr<CAContext> CAFunctionMarkContext::cloneRealContext(CASheet *s)
 {
-    CAFunctionMarkContext* newFmc = new CAFunctionMarkContext(name(), s);
+    return cloneFMC(s);
+}
+
+std::shared_ptr<CAFunctionMarkContext> CAFunctionMarkContext::cloneFMC(CASheet* s)
+{
+    std::shared_ptr<CAFunctionMarkContext> newFmc = std::make_shared<CAFunctionMarkContext>(name(), s);
 
     for (int i = 0; i < _functionMarkList.size(); i++) {
-        CAFunctionMark* newFm = _functionMarkList[i]->clone(newFmc);
-        newFmc->addFunctionMark(newFm);
+        auto newFm = (_functionMarkList[i]->cloneFunctionMark(newFmc.get()));
+        newFmc->addFunctionMark(newFm.get());
     }
 
     return newFmc;
@@ -49,7 +54,7 @@ CAFunctionMarkContext* CAFunctionMarkContext::clone(CASheet* s)
 void CAFunctionMarkContext::clear()
 {
     for (int i = 0; i < _functionMarkList.size(); i++)
-        delete _functionMarkList[i];
+        _functionMarkList.takeAt(i);
 
     _functionMarkList.clear();
 }
@@ -141,7 +146,7 @@ void CAFunctionMarkContext::repositFunctions()
 */
 void CAFunctionMarkContext::addEmptyFunction(int timeStart, int timeLength)
 {
-    addFunctionMark(new CAFunctionMark(CAFunctionMark::Undefined, false, CADiatonicKey("C"), this, timeStart, timeLength), false);
+    addFunctionMark(std::make_shared<CAFunctionMark>(CAFunctionMark::Undefined, false, CADiatonicKey("C"), this, timeStart, timeLength).get(), false);
 }
 
 /*!

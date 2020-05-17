@@ -38,13 +38,18 @@ CABarline::~CABarline()
 {
 }
 
-CABarline* CABarline::clone(CAContext* context)
+std::shared_ptr<CAMusElement> CABarline::cloneRealElement(CAContext* context)
 {
-    CABarline* b = new CABarline(barlineType(), static_cast<CAStaff*>(context), timeStart());
+    return cloneBarline(context);
+}
+
+std::shared_ptr<CABarline> CABarline::cloneBarline(CAContext *context)
+{
+    std::shared_ptr<CABarline> b = std::make_shared<CABarline>(barlineType(), static_cast<CAStaff*>(context), timeStart());
 
     for (int i = 0; i < markList().size(); i++) {
-        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(b));
-        b->addMark(m);
+        auto m = (markList()[i]->cloneMark(b.get()));
+        b->addMark(m.get());
     }
 
     return b;

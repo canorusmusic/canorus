@@ -28,9 +28,9 @@ CAInstrumentChange::~CAInstrumentChange()
 {
 }
 
-CAInstrumentChange* CAInstrumentChange::clone(CAMusElement* elt)
+std::shared_ptr<CAInstrumentChange> CAInstrumentChange::cloneInstrumentChange(CAMusElement* elt)
 {
-    return new CAInstrumentChange(instrument(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr);
+    return std::make_shared<CAInstrumentChange>(instrument(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr);
 }
 
 int CAInstrumentChange::compare(CAMusElement* elt)

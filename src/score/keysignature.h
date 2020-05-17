@@ -41,7 +41,8 @@ public:
     CAKeySignature(CADiatonicKey k, CAStaff* staff, int timeStart);
     CAKeySignature(CAModus m, CAStaff* staff, int timeStart);
     ~CAKeySignature();
-    CAKeySignature* clone(CAContext* context = nullptr);
+    std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context = nullptr);
+    std::shared_ptr<CAKeySignature> cloneKeySignature(CAContext* context = nullptr);
     CAStaff* staff() { return static_cast<CAStaff*>(context()); }
 
     inline CAKeySignatureType keySignatureType() { return _keySignatureType; }

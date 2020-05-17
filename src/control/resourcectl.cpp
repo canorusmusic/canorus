@@ -31,7 +31,7 @@
 	(eg. audio file of a theme), staff (eg. svg images in contemporary music),
 	voice etc.
 	You can simply add a resource by calling
-	CADocument::addResource( new CAResource( "/home/user/title.jpeg", "My image") );
+	CADocument::addResource( make_shared<CAResource>( "/home/user/title.jpeg", "My image") );
 
 	CAResourceContainer takes care of creating copies for non-linked resources.
 	It picks a random unique name for a new resource in the system temporary file.

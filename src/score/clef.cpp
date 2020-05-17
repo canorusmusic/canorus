@@ -128,13 +128,18 @@ void CAClef::setClefType(CAClefType type)
     _centerPitch += offset();
 }
 
-CAClef* CAClef::clone(CAContext* context)
+std::shared_ptr<CAMusElement> CAClef::cloneRealElement(CAContext* context)
 {
-    CAClef* c = new CAClef(_clefType, _c1, static_cast<CAStaff*>(context), _timeStart, _offset);
+    return cloneClef();
+}
+
+std::shared_ptr<CAClef> CAClef::cloneClef(CAContext *context)
+{
+    std::shared_ptr<CAClef> c = std::make_shared<CAClef>(_clefType, _c1, static_cast<CAStaff*>(context), _timeStart, _offset);
 
     for (int i = 0; i < markList().size(); i++) {
-        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(c));
-        c->addMark(m);
+        auto m = markList()[i]->cloneMark(c.get());
+        c->addMark(m.get());
     }
 
     return c;

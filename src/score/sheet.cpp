@@ -47,36 +47,40 @@ CASheet::~CASheet()
 	Clones the current sheet with all its content.
 	If a new parent document \a doc is given, it also sets the document.
 */
-CASheet* CASheet::clone(CADocument* doc)
+CASheet* CASheet::cloneSheet(CADocument* doc)
 {
-    CASheet* newSheet = new CASheet(name(), doc);
+    auto newSheet = std::make_shared<CASheet>(name(), doc);
 
     QHash<CAContext*, CAContext*> contextMap; // map between oldContexts<->cloned contexts
     QHash<CAVoice*, CAVoice*> voiceMap; // map between oldVoices<->cloned voices
 
     // create clones of contexts
     for (int i = 0; i < contextList().size(); i++) {
-        CAContext* newContext = contextList()[i]->clone(newSheet);
+        std::shared_ptr<CAContext> newContext = contextList()[i]->cloneRealContext(newSheet.get());
         if (newContext->contextType() == CAContext::Staff) {
-            for (int j = 0; j < static_cast<CAStaff*>(contextList()[i])->voiceList().size(); j++) {
-                voiceMap[static_cast<CAStaff*>(contextList()[i])->voiceList()[j]] = static_cast<CAStaff*>(newContext)->voiceList()[j];
+            CAStaff *staff = static_cast<CAStaff*>(contextList()[i]),
+                    *clonedStaff = static_cast<CAStaff*>(newContext.get());
+            for (int j = 0; j < staff->voiceList().size(); j++) {
+                auto clonedVoice = clonedStaff->voiceList()[j];
+                auto voicePosition = staff->voiceList()[j];
+                voiceMap.insert(voicePosition, clonedVoice);
             }
         }
-        contextMap[contextList()[i]] = newContext;
-        newSheet->addContext(newContext);
+        contextMap[contextList()[i]] = newContext.get();
+        newSheet->addContext(newContext.get());
     }
 
     // assign contexts between each other (like associated voice of lyrics context etc.)
     for (int i = 0; i < contextList().size(); i++) {
         if (newSheet->contextList()[i]->contextType() == CAContext::LyricsContext) {
-            CAVoice* voice = voiceMap[static_cast<CALyricsContext*>(newSheet->contextList()[i])->associatedVoice()];
+            CAVoice *voice = voiceMap[static_cast<CALyricsContext*>(newSheet->contextList()[i])->associatedVoice()];
             static_cast<CALyricsContext*>(newSheet->contextList()[i])->setAssociatedVoice(voice);
             if (voice)
                 voice->removeLyricsContext(static_cast<CALyricsContext*>(contextList()[i]));
         }
     }
 
-    return newSheet;
+    return newSheet.get();
 }
 
 /*!
@@ -84,19 +88,19 @@ CASheet* CASheet::clone(CADocument* doc)
  */
 CAStaff* CASheet::addStaff()
 {
-    CAStaff* s = new CAStaff(QObject::tr("Staff%1").arg(staffList().size() + 1), this);
+    auto s = std::make_shared<CAStaff>(QObject::tr("Staff%1").arg(staffList().size() + 1), this);
     s->addVoice();
 
-    _contextList.append(s);
+    _contextList.append(s.get());
+    _contextListShared.append(s);
 
-    return s;
+    return s.get();
 }
 
 void CASheet::clear()
 {
     for (int i = 0; i < _contextList.size(); i++) {
         _contextList[i]->clear();
-        delete _contextList[i];
     }
 
     _contextList.clear();
@@ -177,7 +181,7 @@ QList<CAVoice*> CASheet::voiceList()
     for (int i = 0; i < staffs.size(); i++)
         list << staffs[i]->voiceList();
 
-    return list;
+     return list;
 }
 
 QList<CAStaff*> CASheet::staffList()
@@ -214,7 +218,7 @@ void CASheet::insertContextAfter(CAContext* after, CAContext* c)
 void CASheet::clearNoteCheckerErrors()
 {
     for (int i = 0; i < _noteCheckerErrorList.size(); i++) {
-        delete _noteCheckerErrorList[i]; // delete also remove an instance from _noteCheckerErrorList
+        _noteCheckerErrorList.takeAt(i); // also removes an instance from _noteCheckerErrorList
         i--;
     }
 }

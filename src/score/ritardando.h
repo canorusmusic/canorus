@@ -22,7 +22,7 @@ public:
     CARitardando(int finalTempo, CAPlayable* p, int timeLength, CARitardandoType t = Ritardando);
     virtual ~CARitardando();
 
-    CARitardando* clone(CAMusElement* elt = nullptr);
+    std::shared_ptr<CARitardando> cloneRitardando(CAMusElement* elt = nullptr);
     int compare(CAMusElement*);
 
     inline int finalTempo() { return _finalTempo; }

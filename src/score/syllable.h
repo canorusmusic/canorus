@@ -33,7 +33,8 @@ public:
 
     inline CALyricsContext* lyricsContext() { return static_cast<CALyricsContext*>(_context); }
 
-    CASyllable* clone(CAContext* context);
+    std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context);
+    std::shared_ptr<CASyllable> cloneSyllable(CALyricsContext* context);
     int compare(CAMusElement*);
 
 private:

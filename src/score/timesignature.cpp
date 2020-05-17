@@ -64,13 +64,18 @@ CATimeSignature::~CATimeSignature()
 {
 }
 
-CATimeSignature* CATimeSignature::clone(CAContext* context)
+std::shared_ptr<CAMusElement> CATimeSignature::cloneRealElement(CAContext* context)
 {
-    CATimeSignature* t = new CATimeSignature(_beats, _beat, static_cast<CAStaff*>(context), _timeStart, _timeSignatureType);
+    return cloneTimeSignature(context);
+}
+
+std::shared_ptr<CATimeSignature> CATimeSignature::cloneTimeSignature(CAContext *context)
+{
+    std::shared_ptr<CATimeSignature> t = std::make_shared<CATimeSignature>(_beats, _beat, static_cast<CAStaff*>(context), _timeStart, _timeSignatureType);
 
     for (int i = 0; i < markList().size(); i++) {
-        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(t));
-        t->addMark(m);
+        auto m = (markList()[i]->cloneMark(t.get()));
+        t->addMark(m.get());
     }
 
     return t;

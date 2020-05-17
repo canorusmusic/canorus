@@ -69,9 +69,9 @@ CAVoice::~CAVoice()
 	Clones the current voice including all the music elements.
 	Sets the voice staff to \a newStaff. If none given, use the original staff.
 */
-CAVoice* CAVoice::clone(CAStaff* newStaff)
+std::shared_ptr<CAVoice> CAVoice::cloneVoice(CAStaff* newStaff)
 {
-    CAVoice* newVoice = new CAVoice(name(), newStaff);
+    std::shared_ptr<CAVoice> newVoice = std::make_shared<CAVoice>(name(), newStaff);
     newVoice->cloneVoiceProperties(this);
     newVoice->setStaff(newStaff);
 
@@ -103,7 +103,7 @@ void CAVoice::clear()
     while (_musElementList.size()) {
         // deletes an element only if it's not present in other voices or we're deleting the last voice
         if (_musElementList.front()->isPlayable() || (staff() && staff()->voiceList().size() < 2))
-            delete _musElementList.front(); // CAMusElement's destructor removes it from the list
+            _musElementList.takeFirst();
         else
             _musElementList.removeFirst();
     }
@@ -349,21 +349,21 @@ bool CAVoice::remove(CAMusElement* elt, bool updateSigns)
                     }
                 } else if (!(n->isPartOfChord())) {
                     if (n->slurStart())
-                        delete n->slurStart();
+                        n->setSlurStart(nullptr); // shared pointer autodelete
                     if (n->slurEnd())
-                        delete n->slurEnd();
+                        n->setSlurEnd(nullptr);
                     if (n->phrasingSlurStart())
-                        delete n->phrasingSlurStart();
+                        n->setPhrasingSlurStart(nullptr);
                     if (n->phrasingSlurEnd())
-                        delete n->phrasingSlurEnd();
+                        n->setPhrasingSlurEnd(nullptr);
                     if (n->tuplet())
-                        delete n->tuplet();
+                        n->setTuplet(nullptr);
 
                     updateTimes(musElementList().indexOf(elt) + 1, elt->timeLength() * (-1), updateSigns); // shift back timeStarts of playable elements after it
                 }
             } else {
                 if (elt->isPlayable() && static_cast<CAPlayable*>(elt)->tuplet())
-                    delete static_cast<CAPlayable*>(elt)->tuplet();
+                    static_cast<CAPlayable*>(elt)->setTuplet(nullptr);
                 updateTimes(musElementList().indexOf(elt) + 1, elt->timeLength() * (-1), updateSigns); // shift back timeStarts of playable elements after it
             }
 

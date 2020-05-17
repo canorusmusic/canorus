@@ -52,20 +52,18 @@ CAMusElement::CAMusElement(CAContext* context, int time, int length)
 */
 CAMusElement::~CAMusElement()
 {
+    // All pointers are smart pointers, nothing to destroy manually
     while (!_markList.isEmpty()) {
-        if (!_markList.first()->isCommon() || musElementType() != CAMusElement::Note) {
-            delete _markList.takeFirst();
-        } else {
-            _markList.takeFirst();
-        }
+        _markList.takeFirst();
     }
 
     // needed when removing a shared-voice music element - when an instance is removed, it should be removed from all the voices as well! -Matevz
-    if (context() && !isPlayable())
+    if (context() && !isPlayable()) {
         context()->remove(this);
+    }
 
     while (_noteCheckerErrorList.size()) {
-        delete _noteCheckerErrorList.front(); // also removes instances from _noteCheckerErrorList and CASheet->noteCheckerErrorList
+        _noteCheckerErrorList.takeFirst(); // also removes instances from _noteCheckerErrorList and CASheet->noteCheckerErrorList
     }
 }
 
@@ -190,6 +188,11 @@ void CAMusElement::addMarks(QList<CAMark*> marks)
 {
     for (int i = 0; i < marks.size(); i++)
         addMark(marks[i]);
+}
+
+void CAMusElement::clearMarkList()
+{
+    _markList.clear();
 }
 
 /*!

@@ -34,7 +34,8 @@ CADocument::CADocument()
     setDateCreated(QDateTime::currentDateTime());
     setDateLastModified(QDateTime::currentDateTime());
     setTimeEdited(0);
-    setArchive(new CAArchive());
+    auto newArchive = std::make_shared<CAArchive>();
+    setArchive(newArchive.get());
     setModified(false);
 }
 
@@ -43,7 +44,7 @@ CADocument::CADocument()
 */
 CADocument* CADocument::clone()
 {
-    CADocument* newDocument = new CADocument();
+    auto newDocument = std::make_shared<CADocument>();
 
     // set properties
     newDocument->setTitle(title());
@@ -59,7 +60,7 @@ CADocument* CADocument::clone()
     newDocument->setFileName(fileName());
 
     for (int i = 0; i < sheetList().size(); i++) {
-        CASheet* newSheet = sheetList()[i]->clone(newDocument);
+        CASheet* newSheet = sheetList()[i]->cloneSheet(newDocument.get());
         newDocument->addSheet(newSheet);
     }
 
@@ -67,7 +68,7 @@ CADocument* CADocument::clone()
         newDocument->addResource(resourceList()[i]);
     }
 
-    return newDocument;
+    return newDocument.get();
 }
 
 /*!
@@ -78,8 +79,6 @@ CADocument* CADocument::clone()
 CADocument::~CADocument()
 {
     clear();
-    if (archive())
-        delete archive();
 }
 
 /*!
@@ -100,7 +99,6 @@ void CADocument::clear()
 
     for (int i = 0; i < _sheetList.size(); i++) {
         _sheetList[i]->clear();
-        delete _sheetList[i];
     }
     _sheetList.clear();
 
@@ -117,10 +115,11 @@ void CADocument::clear()
 */
 CASheet* CADocument::addSheetByName(const QString name)
 {
-    CASheet* s = new CASheet(name, this);
-    _sheetList << s;
+    auto s = std::make_shared<CASheet>(name, this);
+    _sheetList << s.get();
+    _sheetListShared << s;
 
-    return s;
+    return s.get();
 }
 
 /*!
@@ -128,10 +127,11 @@ CASheet* CADocument::addSheetByName(const QString name)
  */
 CASheet* CADocument::addSheet()
 {
-    CASheet* s = new CASheet(QObject::tr("Sheet%1").arg(sheetList().size() + 1), this);
-    addSheet(s);
+    auto s = std::make_shared<CASheet>(QObject::tr("Sheet%1").arg(sheetList().size() + 1), this);
+    addSheet(s.get());
+    addSheetShared(s);
 
-    return s;
+    return s.get();
 }
 
 /*!
@@ -145,4 +145,12 @@ CASheet* CADocument::findSheet(const QString name)
     }
 
     return nullptr;
+}
+
+/*!
+	Adds sheet to the document as shared pointer.
+ */
+void CADocument::addSheetShared(std::shared_ptr<CASheet> sheet)
+{
+    _sheetListShared << sheet;
 }

@@ -44,7 +44,7 @@ void CAFiguredBassContext::addFiguredBassMark(CAFiguredBassMark* m, bool replace
         ;
     //int s = _figuredBassMarkList.size();
     if (i < _figuredBassMarkList.size() && replace) {
-        delete _figuredBassMarkList.takeAt(i);
+        _figuredBassMarkList.takeAt(i);
     }
     _figuredBassMarkList.insert(i, m);
     for (i++; i < _figuredBassMarkList.size(); i++)
@@ -60,7 +60,9 @@ void CAFiguredBassContext::addEmptyFiguredBassMark(int timeStart, int timeLength
     int i;
     for (i = 0; i < _figuredBassMarkList.size() && _figuredBassMarkList[i]->timeStart() < timeStart; i++)
         ;
-    _figuredBassMarkList.insert(i, (new CAFiguredBassMark(this, timeStart, timeLength)));
+    auto newFBM = std::make_shared<CAFiguredBassMark>(this, timeStart, timeLength);
+    _figuredBassMarkList.insert(i, newFBM.get());
+    _figuredBassMarkListShared.insert(i, newFBM);
     for (i++; i < _figuredBassMarkList.size(); i++)
         _figuredBassMarkList[i]->setTimeStart(_figuredBassMarkList[i]->timeStart() + timeLength);
 }
@@ -134,21 +136,28 @@ CAFiguredBassMark* CAFiguredBassContext::figuredBassMarkAtTimeStart(int time)
     }
 }
 
-CAContext* CAFiguredBassContext::clone(CASheet* s)
+std::shared_ptr<CAContext> CAFiguredBassContext::cloneRealContext(CASheet* s)
 {
-    CAFiguredBassContext* newFbc = new CAFiguredBassContext(name(), s);
+    return cloneFBC(s);
+}
+
+std::shared_ptr<CAFiguredBassContext> CAFiguredBassContext::cloneFBC(CASheet *s)
+{
+    std::shared_ptr<CAFiguredBassContext> newFbc = std::make_shared<CAFiguredBassContext>(name(), s);
 
     for (int i = 0; i < _figuredBassMarkList.size(); i++) {
-        CAFiguredBassMark* newFbm = static_cast<CAFiguredBassMark*>(_figuredBassMarkList[i]->clone(newFbc));
-        newFbc->addFiguredBassMark(newFbm);
+        auto newFbm = _figuredBassMarkList[i]->cloneFBM(newFbc.get());
+        newFbc->addFiguredBassMark(newFbm.get());
     }
     return newFbc;
 }
 
 void CAFiguredBassContext::clear()
 {
-    while (!_figuredBassMarkList.isEmpty())
-        delete _figuredBassMarkList.takeFirst();
+    while (!_figuredBassMarkList.isEmpty()) {
+        _figuredBassMarkList.takeFirst();
+        _figuredBassMarkListShared.takeFirst();
+    }
 }
 
 CAMusElement* CAFiguredBassContext::next(CAMusElement* elt)
@@ -181,10 +190,14 @@ bool CAFiguredBassContext::remove(CAMusElement* elt)
         return false;
 
     bool success = false;
+    for (int i=0; i<_figuredBassMarkListShared.size(); i++) {
+        if (_figuredBassMarkListShared[i].get() == elt) {
+            _figuredBassMarkListShared.removeAt(i);
+            i--;
+        }
+    }
     success = _figuredBassMarkList.removeAll(static_cast<CAFiguredBassMark*>(elt));
 
-    if (success)
-        delete elt;
 
     return success;
 }

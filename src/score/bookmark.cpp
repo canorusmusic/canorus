@@ -24,9 +24,9 @@ CABookMark::~CABookMark()
 {
 }
 
-CABookMark* CABookMark::clone(CAMusElement* elt)
+std::shared_ptr<CABookMark> CABookMark::cloneBookMark(CAMusElement* elt)
 {
-    return new CABookMark(text(), elt);
+    return std::make_shared<CABookMark>(text(), elt);
 }
 
 int CABookMark::compare(CAMusElement* elt)

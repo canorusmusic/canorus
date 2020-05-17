@@ -13,6 +13,8 @@
 #include "score/muselement.h"
 #include "score/note.h"
 
+#include <memory>
+
 class CAKeySignature;
 class CATimeSignature;
 class CAClef;
@@ -20,7 +22,11 @@ class CALyricsContext;
 class CARest;
 class CATempo;
 
-class CAVoice {
+class CAVoice
+#ifndef SWIG
+        : public std::enable_shared_from_this<CAVoice>
+#endif
+{
     friend class CAStaff; // used for insertion of music elements and updateTimes() when inserting elements and synchronizing voices
 
 public:
@@ -29,7 +35,7 @@ public:
     inline CAStaff* staff() { return _staff; }
     inline void setStaff(CAStaff* staff) { _staff = staff; }
     void clear();
-    CAVoice* clone(CAStaff* newStaff = nullptr);
+    std::shared_ptr<CAVoice> cloneVoice(CAStaff* newStaff = nullptr);
     void cloneVoiceProperties(CAVoice* v);
 
     /////////////////////////////////////////

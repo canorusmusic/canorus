@@ -29,9 +29,9 @@ CACrescendo::~CACrescendo()
 {
 }
 
-CACrescendo* CACrescendo::clone(CAMusElement* elt)
+std::shared_ptr<CACrescendo> CACrescendo::cloneCrescendo(CAMusElement* elt)
 {
-    return new CACrescendo(finalVolume(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr, crescendoType(), timeStart(), timeLength());
+    return std::make_shared<CACrescendo>(finalVolume(), (elt->musElementType() == CAMusElement::Note) ? static_cast<CANote*>(elt) : nullptr, crescendoType(), timeStart(), timeLength());
 }
 
 int CACrescendo::compare(CAMusElement* elt)

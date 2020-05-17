@@ -34,6 +34,8 @@
 #include "score/timesignature.h"
 #include "score/voice.h"
 
+#include <memory>
+
 class CAMusElement;
 
 class CAMusElementFactory {
@@ -47,10 +49,10 @@ public:
 
     void configureMusElem(CAMusElement& roMusElement);
 
-    inline CAMusElement* musElement() { return mpoMusElement; };
-    inline void setMusElement(CAMusElement* elt) { mpoMusElement = elt; }
+    inline std::shared_ptr<CAMusElement> musElement() { return mpoMusElement; };
+    inline void setMusElement(std::shared_ptr<CAMusElement> elt) { mpoMusElement = elt; }
 
-    inline void cloneMusElem() { mpoMusElement = mpoMusElement->clone(); }
+    inline void cloneMusElem() { mpoMusElement = mpoMusElement->cloneMusElement(); }
     inline void emptyMusElem() { mpoMusElement = mpoEmpty; }
 
     bool configureClef(CAStaff* staff,
@@ -268,8 +270,8 @@ public:
     inline void setFingeringOriginal(const int o) { _fingeringOriginal = o; }
 
 private:
-    CAMusElement* mpoMusElement; // Newly created music element itself
-    CAMusElement* mpoEmpty; // An empty (dummy) element.
+    std::shared_ptr<CAMusElement> mpoMusElement; // Newly created music element itself
+    std::shared_ptr<CAMusElement> mpoEmpty; // An empty (dummy) element.
 
     /////////////////////////////////
     // Element creation parameters //

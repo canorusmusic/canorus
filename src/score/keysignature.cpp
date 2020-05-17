@@ -112,13 +112,18 @@ CAKeySignature::~CAKeySignature()
 {
 }
 
-CAKeySignature* CAKeySignature::clone(CAContext* context)
+std::shared_ptr<CAMusElement> CAKeySignature::cloneRealElement(CAContext* context)
 {
-    CAKeySignature* k = nullptr;
+    return cloneKeySignature(context);
+}
+
+std::shared_ptr<CAKeySignature> CAKeySignature::cloneKeySignature(CAContext *context)
+{
+    std::shared_ptr<CAKeySignature> k(nullptr);
 
     switch (keySignatureType()) {
     case MajorMinor:
-        k = new CAKeySignature(diatonicKey(), static_cast<CAStaff*>(context), timeStart());
+        k = std::make_shared<CAKeySignature>(diatonicKey(), static_cast<CAStaff*>(context), timeStart());
         break;
     case Modus:
     case Custom:
@@ -126,8 +131,8 @@ CAKeySignature* CAKeySignature::clone(CAContext* context)
     }
 
     for (int i = 0; i < markList().size(); i++) {
-        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(k));
-        k->addMark(m);
+        auto m = (markList()[i]->cloneMark(k.get()));
+        k->addMark(m.get());
     }
 
     return k;

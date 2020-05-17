@@ -22,7 +22,7 @@ public:
     CACrescendo(int finalVolume, CANote* note, CACrescendoType t = Crescendo, int timeStart = -1, int timeLength = -1);
     virtual ~CACrescendo();
 
-    CACrescendo* clone(CAMusElement* elt = nullptr);
+    std::shared_ptr<CACrescendo> cloneCrescendo(CAMusElement* elt = nullptr);
     int compare(CAMusElement*);
 
     inline int finalVolume() { return _finalVolume; }

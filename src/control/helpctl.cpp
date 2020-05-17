@@ -102,12 +102,12 @@ bool CAHelpCtl::showUsersGuide(QString chapter, QWidget* helpWidget)
 void CAHelpCtl::displayHelp(QUrl url, QWidget* helpWidget)
 {
 #ifdef QT_WEBENGINEWIDGETS_LIB
-    CAHelpBrowser* browser = nullptr;
+    std::unique_ptr<CAHelpBrowser> browser;
     if (!helpWidget) {
-        browser = new CAHelpBrowser;
+        browser = std::make_unique<CAHelpBrowser>();
         browser->setAttribute(Qt::WA_DeleteOnClose);
     } else if (dynamic_cast<CAMainWin*>(helpWidget)) {
-        browser = static_cast<CAMainWin*>(helpWidget)->helpWidget();
+        browser = std::unique_ptr<CAHelpBrowser>(static_cast<CAMainWin*>(helpWidget)->helpWidget());
         static_cast<CAMainWin*>(helpWidget)->helpDock()->show();
     }
 

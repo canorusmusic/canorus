@@ -61,16 +61,15 @@ CATuplet::~CATuplet()
     resetTimes();
 }
 
-CATuplet* CATuplet::clone(CAContext*)
-{ // context is ignored. this method should not be used. FIXME.
-    /// \todo replace raw pointer with shared or unique pointer
-    return new CATuplet(number(), actualNumber(), noteList());
+std::shared_ptr<CAMusElement> CATuplet::cloneRealElement(CAContext*)
+{   // context is ignored. this method should not be used. FIXME.
+    return std::make_shared<CATuplet>(number(), actualNumber(), noteList());
 }
 
-CATuplet* CATuplet::clone(QList<CAPlayable*> newList)
+
+std::shared_ptr<CATuplet> CATuplet::cloneTuplet(QList<CAPlayable*> newList)
 {
-    /// \todo replace raw pointer with shared or unique pointer
-    return new CATuplet(number(), actualNumber(), newList);
+    return std::make_shared<CATuplet>(number(), actualNumber(), newList);
 }
 
 int CATuplet::compare(CAMusElement* elt)

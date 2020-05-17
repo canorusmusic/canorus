@@ -47,16 +47,15 @@ CANote::CANote(CADiatonicPitch pitch, CAPlayableLength length, CAVoice* voice, i
 
 CANote::~CANote()
 {
-    if (tieStart())
-        delete tieStart(); // slurs destructor also disconnects itself from the notes
     if (tieEnd())
         tieEnd()->setNoteEnd(nullptr);
 
+    if (tieStart())
+        setTieStart(nullptr);
+
     // other slurs are removed or moved in CAVoice::removeElement()
 
-    for (int i = 0; i < markList().size(); i++) {
-        delete markList()[i--];
-    }
+    clearMarkList();
 }
 
 /*!
@@ -82,14 +81,14 @@ CANote::~CANote()
 	Clones the note with same pitch, voice, timeStart and other properties.
 	Does *not* create clones of ties, slurs and phrasing slurs!
 */
-CANote* CANote::clone(CAVoice* voice)
+std::shared_ptr<CAPlayable> CANote::clonePlayable(CAVoice* voice)
 {
-    CANote* d = new CANote(diatonicPitch(), playableLength(), voice, timeStart(), timeLength());
+    auto d = std::make_shared<CANote>(diatonicPitch(), playableLength(), voice, timeStart(), timeLength());
     d->setStemDirection(stemDirection());
 
     for (int i = 0; i < markList().size(); i++) {
-        CAMark* m = static_cast<CAMark*>(markList()[i]->clone(d));
-        d->addMark(m);
+        auto m = (markList()[i]->cloneMark(d.get()));
+        d->addMark(m.get());
     }
 
     return d;

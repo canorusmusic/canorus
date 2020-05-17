@@ -20,8 +20,8 @@ public:
     CATuplet(int number, int actualNumber);
     virtual ~CATuplet();
 
-    CATuplet* clone(CAContext* context = nullptr);
-    CATuplet* clone(QList<CAPlayable*> newList);
+    std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context = nullptr);
+    std::shared_ptr<CATuplet> cloneTuplet(QList<CAPlayable*> newList);
     int compare(CAMusElement*);
 
     inline int number() { return _number; }

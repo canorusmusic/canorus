@@ -168,7 +168,7 @@ void CAKeybdInput::midiInEventToScore(CAScoreView* v, QVector<unsigned char> m)
                 elements << static_cast<CAPlayable*>(rest);
             for (int i = 1; i < _mw->uiTupletNumber->value(); i++) {
                 _mw->musElementFactory()->configureRest(voice, nullptr);
-                elements << static_cast<CAPlayable*>(_mw->musElementFactory()->musElement());
+                elements << static_cast<CAPlayable*>(_mw->musElementFactory()->musElement().get());
             }
             _tup = new CATuplet(_mw->uiTupletNumber->value(), _mw->uiTupletActualNumber->value(), elements);
             _tupPla = _tup->firstNote();

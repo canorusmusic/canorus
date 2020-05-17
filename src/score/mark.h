@@ -35,13 +35,13 @@ public:
     CAMark(CAMarkType type, CAContext* context, int timeStart, int timeLength);
     virtual ~CAMark();
 
-    virtual CAMark* clone(CAContext* context)
+    virtual std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context)
     {
-        CAMark* c = clone();
+        auto c = cloneMark();
         c->setContext(context);
         return c;
     }
-    virtual CAMark* clone(CAMusElement* elt = nullptr);
+    virtual std::shared_ptr<CAMark> cloneMark(CAMusElement* elt = nullptr);
     virtual int compare(CAMusElement* elt);
 
     inline CAMusElement* associatedElement() { return _associatedElt; }

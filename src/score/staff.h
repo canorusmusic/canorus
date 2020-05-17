@@ -30,13 +30,14 @@ public:
     inline int numberOfLines() { return _numberOfLines; }
     inline void setNumberOfLines(int val) { _numberOfLines = val; }
     void clear();
-    CAStaff* clone(CASheet* s);
+    std::shared_ptr<CAContext> cloneRealContext(CASheet*);
+    std::shared_ptr<CAStaff> cloneStaff(CASheet*);
 
     inline const QList<CAVoice*>& voiceList() { return _voiceList; }
-    inline void addVoice(CAVoice* voice) { _voiceList << voice; }
-    inline void insertVoice(int idx, CAVoice* voice) { _voiceList.insert(idx, voice); }
+    void addVoice(CAVoice* voice);
+    void insertVoice(int idx, CAVoice* voice);
     CAVoice* addVoice();
-    inline void removeVoice(CAVoice* voice) { _voiceList.removeAll(voice); }
+    void removeVoice(CAVoice* voice);
     CAVoice* findVoice(const QString name);
 
     CAMusElement* next(CAMusElement* elt);

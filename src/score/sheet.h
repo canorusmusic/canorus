@@ -23,14 +23,17 @@ class CASheet {
 public:
     CASheet(const QString name, CADocument* doc);
     ~CASheet();
-    CASheet* clone(CADocument* doc);
-    inline CASheet* clone() { return clone(document()); }
+    CASheet* cloneSheet(CADocument* doc);
+    inline CASheet* cloneSheet() { return cloneSheet(document()); }
 
     inline const QList<CAContext*>& contextList() { return _contextList; }
+    inline const QList<std::shared_ptr<CAContext> >& contextListShared() { return _contextListShared; }
+
     CAContext* findContext(const QString name);
     inline void insertContext(int pos, CAContext* c) { _contextList.insert(pos, c); }
     void insertContextAfter(CAContext* after, CAContext* c);
     inline void addContext(CAContext* c) { _contextList << c; }
+    inline void addContextShared(std::shared_ptr<CAContext> c) { _contextListShared << c; }
     inline void removeContext(CAContext* c) { _contextList.removeAll(c); }
     QString findUniqueContextName(QString mask);
 
@@ -55,6 +58,7 @@ public:
 
 private:
     QList<CAContext*> _contextList;
+    QList<std::shared_ptr<CAContext> > _contextListShared;
     CADocument* _document;
     QList<CANoteCheckerError*> _noteCheckerErrorList;
 

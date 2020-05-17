@@ -19,7 +19,9 @@ public:
     CAFiguredBassMark(CAFiguredBassContext* c, int timeStart, int timeLength);
     ~CAFiguredBassMark();
 
-    CAMusElement* clone(CAContext* context = nullptr);
+    std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context = nullptr);
+    std::shared_ptr<CAFiguredBassMark> cloneFBM(CAContext* context = nullptr);
+
     int compare(CAMusElement* elt);
 
     void addNumber(int number);

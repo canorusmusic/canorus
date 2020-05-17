@@ -51,16 +51,21 @@ CAStaff::~CAStaff()
     clear();
 }
 
-CAStaff* CAStaff::clone(CASheet* s)
+std::shared_ptr<CAContext> CAStaff::cloneRealContext(CASheet* s)
 {
-    CAStaff* newStaff = new CAStaff(name(), s, numberOfLines());
+    return cloneStaff(s);
+}
+
+std::shared_ptr<CAStaff> CAStaff::cloneStaff(CASheet *s)
+{
+    std::shared_ptr<CAStaff> newStaff = std::make_shared<CAStaff>(name(), s, numberOfLines());
 
     // create empty voices
     for (int i = 0; i < voiceList().size(); i++) {
-        newStaff->addVoice(voiceList()[i]->clone(newStaff));
+        newStaff->addVoice(voiceList()[i]->cloneVoice(newStaff.get()).get());
     }
 
-    int* peltIdx = new int[voiceList().size()];
+    auto peltIdx = std::make_shared<int[]>(voiceList().size());
     for (int i = 0; i < voiceList().size(); i++)
         peltIdx[i] = 0;
     QList<CANote*> tiedOrigNotes; // original notes having opened tie
@@ -79,18 +84,18 @@ CAStaff* CAStaff::clone(CASheet* s)
             // clone elements in the current voice until the non-playable element is reached
             while (peltIdx[i] < voiceList()[i]->musElementList().size() && voiceList()[i]->musElementList()[peltIdx[i]]->isPlayable()) {
                 CAPlayable* origElt = static_cast<CAPlayable*>(voiceList()[i]->musElementList()[peltIdx[i]]);
-                CAPlayable* clonedElt = origElt->clone(newStaff->voiceList()[i]);
-                newStaff->voiceList()[i]->append(clonedElt,
+                std::shared_ptr<CAPlayable> clonedElt = origElt->clonePlayable(newStaff->voiceList()[i]);
+                newStaff->voiceList()[i]->append(clonedElt.get(),
                     voiceList()[i]->musElementList()[peltIdx[i]]->musElementType() == CAMusElement::Note && static_cast<CANote*>(origElt)->isPartOfChord() && !static_cast<CANote*>(origElt)->isFirstInChord());
 
                 if (origElt->musElementType() == CAMusElement::Note) {
                     CANote* origNote = static_cast<CANote*>(origElt);
-                    CANote* clonedNote = static_cast<CANote*>(clonedElt);
+                    CANote* clonedNote = static_cast<CANote*>(clonedElt.get());
 
                     // check starting ties, slurs, prasing slurs
                     for (int i = 0; i < tiedOrigNotes.size(); i++) {
                         if (tiedOrigNotes[i]->tieStart()->noteEnd() == origNote) {
-                            CASlur* newTie = tiedOrigNotes[i]->tieStart()->clone(newStaff);
+                            CASlur* newTie = tiedOrigNotes[i]->tieStart()->cloneSlur(newStaff.get()).get();
                             tiedClonedNotes[i]->setTieStart(newTie);
                             newTie->setNoteStart(tiedClonedNotes[i]);
                             newTie->setNoteEnd(clonedNote);
@@ -102,7 +107,7 @@ CAStaff* CAStaff::clone(CASheet* s)
                     }
                     for (int i = 0; i < sluredOrigNotes.size(); i++) {
                         if (sluredOrigNotes[i]->slurStart()->noteEnd() == origNote) {
-                            CASlur* newSlur = sluredOrigNotes[i]->slurStart()->clone(newStaff);
+                            CASlur* newSlur = sluredOrigNotes[i]->slurStart()->cloneSlur(newStaff.get()).get();
                             sluredClonedNotes[i]->setSlurStart(newSlur);
                             newSlur->setNoteStart(sluredClonedNotes[i]);
                             newSlur->setNoteEnd(clonedNote);
@@ -114,7 +119,7 @@ CAStaff* CAStaff::clone(CASheet* s)
                     }
                     for (int i = 0; i < phrasingSluredOrigNotes.size(); i++) {
                         if (phrasingSluredOrigNotes[i]->phrasingSlurStart()->noteEnd() == origNote) {
-                            CASlur* newPhrasingSlur = phrasingSluredOrigNotes[i]->phrasingSlurStart()->clone(newStaff);
+                            CASlur* newPhrasingSlur = phrasingSluredOrigNotes[i]->phrasingSlurStart()->cloneSlur(newStaff.get()).get();
                             phrasingSluredClonedNotes[i]->setPhrasingSlurStart(newPhrasingSlur);
                             newPhrasingSlur->setNoteStart(phrasingSluredClonedNotes[i]);
                             newPhrasingSlur->setNoteEnd(clonedNote);
@@ -128,25 +133,25 @@ CAStaff* CAStaff::clone(CASheet* s)
                     // check ending ties, slurs, phrasing slurs
                     if (origNote->tieStart()) {
                         tiedOrigNotes << origNote;
-                        tiedClonedNotes << static_cast<CANote*>(clonedElt);
+                        tiedClonedNotes << static_cast<CANote*>(clonedElt.get());
                     }
                     if (origNote->slurStart()) {
                         sluredOrigNotes << origNote;
-                        sluredClonedNotes << static_cast<CANote*>(clonedElt);
+                        sluredClonedNotes << static_cast<CANote*>(clonedElt.get());
                     }
                     if (origNote->phrasingSlurStart()) {
                         phrasingSluredOrigNotes << origNote;
-                        phrasingSluredClonedNotes << static_cast<CANote*>(clonedElt);
+                        phrasingSluredClonedNotes << static_cast<CANote*>(clonedElt.get());
                     }
                 }
 
                 // check tuplets
                 if (origElt->tuplet()) {
-                    elementsUnderTuplet << clonedElt;
+                    elementsUnderTuplet << clonedElt.get();
                 }
 
                 if (origElt->isLastInTuplet()) {
-                    new CATuplet(origElt->tuplet()->number(), origElt->tuplet()->actualNumber(), elementsUnderTuplet);
+                    std::make_shared<CATuplet>(origElt->tuplet()->number(), origElt->tuplet()->actualNumber(), elementsUnderTuplet);
                     elementsUnderTuplet.clear();
                 }
 
@@ -157,7 +162,7 @@ CAStaff* CAStaff::clone(CASheet* s)
 
         // append non-playable elements (shared by all voices - only create clone of the first voice element and append it to all)
         if (peltIdx[0] < voiceList()[0]->musElementList().size()) {
-            CAMusElement* newElt = voiceList()[0]->musElementList()[peltIdx[0]]->clone(newStaff);
+            CAMusElement* newElt = voiceList()[0]->musElementList()[peltIdx[0]]->cloneMusElement(newStaff.get()).get();
 
             for (int i = 0; i < voiceList().size(); i++) {
                 newStaff->voiceList()[i]->append(newElt);
@@ -175,14 +180,24 @@ CAStaff* CAStaff::clone(CASheet* s)
         }
     }
 
-    delete[] peltIdx;
+    peltIdx.reset();
     return newStaff;
 }
 
-/*!
-	Returns the end of the last music element in the staff.
+void CAStaff::addVoice(CAVoice *voice)
+{
+    _voiceList << voice;
+}
 
-	\sa CAVoice::lastTimeEnd()
+void CAStaff::insertVoice(int idx, CAVoice *voice)
+{
+    _voiceList.insert(idx, voice);
+}
+
+/*!
+    Returns the end of the last music element in the staff.
+
+    \sa CAVoice::lastTimeEnd()
 */
 int CAStaff::lastTimeEnd()
 {
@@ -197,7 +212,7 @@ int CAStaff::lastTimeEnd()
 void CAStaff::clear()
 {
     while (_voiceList.size()) {
-        delete _voiceList.front(); // CAVoice's destructor removes the voice from the list.
+        _voiceList.takeFirst(); // CAVoice's destructor removes the voice from the list.
     }
 }
 
@@ -207,16 +222,21 @@ void CAStaff::clear()
 */
 CAVoice* CAStaff::addVoice()
 {
-    CAVoice* voice = new CAVoice(name() + QObject::tr("Voice%1").arg(voiceList().size() + 1), this);
-    addVoice(voice);
+    auto voice = std::make_shared<CAVoice>(name() + QObject::tr("Voice%1").arg(voiceList().size() + 1), this);
+    addVoice(voice.get());
 
-    return voice;
+    return voice.get();
+}
+
+void CAStaff::removeVoice(CAVoice *voice)
+{
+    _voiceList.removeAll(voice);
 }
 
 /*!
-	Returns the pointer to the element right next to the given \a elt in any of the voice.
+    Returns the pointer to the element right next to the given \a elt in any of the voice.
 
-	\sa next()
+    \sa next()
 */
 CAMusElement* CAStaff::next(CAMusElement* elt)
 {
@@ -360,12 +380,13 @@ CATempo* CAStaff::getTempo(int time)
 */
 bool CAStaff::synchronizeVoices()
 {
-    int* pidx = new int[voiceList().size()];
+    auto pidx = std::make_shared<int[]>(voiceList().size());
     for (int i = 0; i < voiceList().size(); i++)
         pidx[i] = -1; // array of current indices of voices at current timeStart
-    CAMusElement** plastPlayable = new CAMusElement*[voiceList().size()];
-    for (int i = 0; i < voiceList().size(); i++)
-        plastPlayable[i] = nullptr;
+    QVector<CAMusElement*> plastPlayable;
+    for (int i = 0; i < voiceList().size(); i++) {
+        plastPlayable.push_back(nullptr);
+    }
 
     _clefList.clear();
     _keySignatureList.clear();
@@ -508,7 +529,7 @@ bool CAStaff::synchronizeVoices()
                 done = false;
     }
 
-    delete[] pidx;
+    pidx.reset();
     return changesMade;
 }
 
@@ -544,7 +565,8 @@ bool CAStaff::placeAutoBar(CAPlayable* elt)
 
     if (t) {
         if ((b ? (b->timeStart()) : 0) + t->barDuration() <= elt->timeStart()) {
-            elt->voice()->insert(elt, new CABarline(CABarline::Single, elt->staff(), elt->timeStart()));
+            auto newBarline = std::make_shared<CABarline>(CABarline::Single, elt->staff(), elt->timeStart());
+            elt->voice()->insert(elt, newBarline.get());
             elt->staff()->synchronizeVoices();
 
             return true;

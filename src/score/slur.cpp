@@ -79,14 +79,19 @@ CASlur::~CASlur()
 }
 
 // FIXME copying noteStart/End pointers.
-CASlur* CASlur::clone(CAContext* context)
+std::shared_ptr<CAMusElement> CASlur::cloneRealElement(CAContext* context)
 {
-    return new CASlur(slurType(), slurDirection(), context, noteStart(), noteEnd(), slurStyle());
+    return std::make_shared<CASlur>(slurType(), slurDirection(), context, noteStart(), noteEnd(), slurStyle());
 }
 
-CASlur* CASlur::clone(CAContext* context, CANote* noteStart, CANote* noteEnd)
+std::shared_ptr<CASlur> CASlur::cloneSlur(CAContext *context)
 {
-    return new CASlur(slurType(), slurDirection(), context, noteStart, noteEnd, slurStyle());
+    return cloneSlur(context, noteStart(), noteEnd());
+}
+
+std::shared_ptr<CASlur> CASlur::cloneSlur(CAContext* context, CANote* noteStart, CANote* noteEnd)
+{
+    return std::make_shared<CASlur>(slurType(), slurDirection(), context, noteStart, noteEnd, slurStyle());
 }
 
 int CASlur::compare(CAMusElement* elt)

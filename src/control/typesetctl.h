@@ -15,6 +15,8 @@
 #include <QVariant>
 #include <QVector>
 
+#include <memory>
+
 // Forward declarations
 class CAExternProgram;
 class CAExport;
@@ -57,12 +59,12 @@ protected slots:
 protected:
     bool createPDF();
 
-    CAExternProgram* _poTypesetter; // Transforms exported file to pdf / postscript
-    CAExternProgram* _poConvPS2PDF; // Transforms postscripts files to pdf if needed
+    std::unique_ptr<CAExternProgram> _poTypesetter; // Transforms exported file to pdf / postscript
+    std::unique_ptr<CAExternProgram> _poConvPS2PDF; // Transforms postscripts files to pdf if needed
     CAExport* _poExport; // Transforms canorus document to typesetter format
     QVector<QVariant> _oExpOptList; // List of options for export
     QVector<QVariant> _oTSetOptList; // List of options for typesetter
-    QTemporaryFile* _poOutputFile; // Output file for pdf (also used for exported file)
+    std::unique_ptr<QTemporaryFile> _poOutputFile; // Output file for pdf (also used for exported file)
     QString _oOutputFileName; // Output file name for pdf (temporary file deletes it on close)
     bool _bPDFConversion; // Do a conversion from postscript to pdf
     bool _bOutputFileNameFirst; // File name as first parameter ? (Default: No)

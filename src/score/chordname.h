@@ -25,7 +25,8 @@ public:
     QString qualityModifier() { return _qualityModifier; }
     void setQualityModifier(QString qm) { _qualityModifier = qm; }
 
-    CAChordName* clone(CAContext* c);
+    std::shared_ptr<CAMusElement> cloneRealElement(CAContext* context = nullptr);
+    std::shared_ptr<CAChordName> cloneChordName(CAContext* c);
     int compare(CAMusElement* elt);
 
     bool importFromString(const QString& text);
