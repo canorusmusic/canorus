@@ -59,6 +59,9 @@ IF(MINGW)
 	SET(CANORUS_INSTALL_DATA_DIR "")
 	SET(CANORUS_INSTALL_BIN_DIR "")
 	SET(CANORUS_INSTALL_LIB_DIR "")
+
+	# Windows doesn't ship zlib. Configure it here.
+	ADD_SUBDIRECTORY("lib/zlib-1.2.11")
 ELSE(MINGW)
 IF(APPLE)
 	# This is where OSX-specific resources and scripts live.

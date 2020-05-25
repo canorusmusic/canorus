@@ -114,7 +114,7 @@ ENDIF(PYTHON_INCLUDE_DIRS AND NOT NO_PYTHON)
 #ENDIF(POPPLER_INCLUDE_PATH AND POPPLER_LIBRARY AND POPPLERQT4_LIBRARY)
 
 # Set ZLib sources on windows
-FILE(GLOB ZLIB_Srcs "../lib/zlib-1.2.3/*.c")
+FILE(GLOB ZLIB_Srcs "../lib/zlib-1.2.11/*.c")
 
 ##############################
 # List of Qt4-parsed sources #
