@@ -669,8 +669,8 @@ IF(MINGW)
 	ADD_CUSTOM_COMMAND(
 		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/canorusrc.obj
 		COMMAND ${WINDRES_PROGRAM}
-		-i canorusrc.rc
-		-o canorusrc.obj
+		-i ${CMAKE_CURRENT_SOURCE_DIR}/canorusrc.rc
+		-o ${CMAKE_CURRENT_BINARY_DIR}/canorusrc.obj
 	)
 	SET(Canorus_Srcs ${Canorus_Srcs} ${ZLIB_Srcs} canorusrc.obj)
 ENDIF(MINGW)
