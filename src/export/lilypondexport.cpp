@@ -429,7 +429,7 @@ void CALilyPondExport::exportMarksAfterElement(CAMusElement* elt)
                     out() << " \\set Score.repeatCommands = #'((volta #f) (volta \"" << vn << "\")) ";
                     _voltaBracketIsOpen = true;
                 } else {
-                    out() << " \\set Score.repeatCommands = #'((volta \"" << vn << "\"))";
+                    out() << " \\set Score.repeatCommands = #'((volta \"" << vn << ".\"))";
                     _voltaBracketIsOpen = true;
                     _voltaBracketOccured = true;
                 }
