@@ -22,8 +22,8 @@ Canorus Windows builds:
    md c:\canorus\build; cd c:\canorus\build;
    c:\cmake\bin\cmake.exe -G "MinGW Makefiles" -DCMAKE_MAKE_PROGRAM=C:\Qt\Tools\mingw730_32\bin\mingw32-make.exe -DCMAKE_BUILD_TYPE=Release -D QT_QMAKE_EXECUTABLE=C:\Qt\5.14.2\mingw73_32\bin\qmake.exe -D CMAKE_INSTALL_PREFIX=windows\canorus ..
 
-3) If you want to enable scripting support, you should append the following to the cmake command:
-   -D SWIG_DIR=C:\swigwin\Lib -D SWIG_EXECUTABLE=C:\swigwin\swig.exe -D PYTHON_LIBRARIES=C:\python\libs -D PYTHON_LIBRARY=C:\python\python3.dll -D PYTHON_INCLUDE_PATH=C:\python\include
+3) If you want to enable scripting support, append the following to the cmake command (tested with Python 3.8.2):
+   -D SWIG_DIR=C:\swigwin\Lib -D SWIG_EXECUTABLE=C:\swigwin\swig.exe -D PYTHON_LIBRARIES=C:\python\libs -D PYTHON_LIBRARY=C:\python\python38.dll -D PYTHON_INCLUDE_PATH=C:\python\include
 
 4) Compile the project with make and install it (this will install it to windows/canorus).
    mingw32-make
