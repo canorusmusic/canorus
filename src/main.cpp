@@ -31,6 +31,10 @@ void catch_sig(int)
 }
 #endif
 
+#ifdef Q_OS_WIN
+#include "Windows.h"
+#endif
+
 /*!
 	Main function. This is the first function called when Canorus is run.
 	It initializes CACanorus class and creates the main window.
@@ -44,6 +48,13 @@ int main(int argc, char* argv[])
     signal(SIGQUIT, catch_sig);
 #endif
 
+#ifdef Q_OS_WIN
+    // Enable console output on Windows
+    if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+        freopen("CONOUT$", "w", stdout);
+        freopen("CONOUT$", "w", stderr);
+    }
+#endif
     CACanorus::initSearchPaths();
 
     QPixmap splashPixmap(400, 300);
